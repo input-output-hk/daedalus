@@ -1,84 +1,141 @@
-import { handleChainStorageRequests } from './chainStorageChannel';
-import { logger } from '../utils/logging';
+import type {} from './chainStorageChannel';
+
+const mockChannels: Array<{ onRequest: jest.Mock }> = [];
 
 jest.mock('./lib/MainIpcChannel', () => ({
-  MainIpcChannel: jest.fn().mockImplementation(() => ({
-    onRequest: jest.fn(),
-  })),
+  MainIpcChannel: jest.fn().mockImplementation(() => {
+    const channel = {
+      onRequest: jest.fn(),
+    };
+    mockChannels.push(channel);
+    return channel;
+  }),
 }));
 
-jest.mock('../utils/chainStorageManager', () => {
-  const verifySymlink = jest.fn();
+jest.mock('../utils/chainStorageCoordinator', () => {
   const validate = jest.fn();
   const setDirectory = jest.fn();
   const getConfig = jest.fn();
+  const prepareForLocationChange = jest.fn();
 
   return {
-    ChainStorageManager: jest.fn().mockImplementation(() => ({
-      verifySymlink,
+    chainStorageCoordinator: {
       validate,
       setDirectory,
       getConfig,
-    })),
+      prepareForLocationChange,
+    },
     __mocks: {
-      verifySymlink,
       validate,
       setDirectory,
       getConfig,
+      prepareForLocationChange,
     },
   };
 });
 
-jest.mock('../utils/logging', () => ({
-  logger: {
-    warn: jest.fn(),
-  },
+jest.mock('./mithrilBootstrapChannel', () => ({
+  getMithrilBootstrapNodeState: jest.fn().mockReturnValue(null),
 }));
 
-const chainStorageManagerMock = jest.requireMock('../utils/chainStorageManager')
-  .__mocks;
+const loadModule = () => {
+  let moduleExports;
+  let chainStorageCoordinatorMock;
 
-describe('chainStorageChannel startup verification', () => {
-  const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
-
-  beforeEach(() => {
-    jest.clearAllMocks();
+  jest.isolateModules(() => {
+    moduleExports = require('./chainStorageChannel');
+    chainStorageCoordinatorMock = jest.requireMock(
+      '../utils/chainStorageCoordinator'
+    ).__mocks;
   });
 
-  it('logs warning when startup symlink verification is invalid', async () => {
-    chainStorageManagerMock.verifySymlink.mockResolvedValue({
-      isValid: false,
-      path: '/mnt/missing-chain',
-      reason: 'path-not-found',
+  return {
+    moduleExports: moduleExports as typeof import('./chainStorageChannel'),
+    chainStorageCoordinatorMock,
+  };
+};
+
+describe('chainStorageChannel', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+    mockChannels.length = 0;
+  });
+
+  it('registers request handlers for get, set, validate, and prepare', () => {
+    const { moduleExports } = loadModule();
+    moduleExports.handleChainStorageRequests();
+
+    expect(mockChannels).toHaveLength(4);
+    for (const channel of mockChannels) {
+      expect(channel.onRequest).toHaveBeenCalledTimes(1);
+    }
+  });
+
+  it('delegates get requests to the coordinator config loader', async () => {
+    const { moduleExports, chainStorageCoordinatorMock } = loadModule();
+    moduleExports.handleChainStorageRequests();
+    const getHandler = mockChannels[1].onRequest.mock.calls[0][0];
+    chainStorageCoordinatorMock.getConfig.mockResolvedValue({
+      customPath: null,
+      defaultPath: '/tmp/state/chain',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
     });
 
-    handleChainStorageRequests();
-    await flushPromises();
+    const result = await getHandler();
 
-    expect(chainStorageManagerMock.verifySymlink).toHaveBeenCalledTimes(1);
-    expect(logger.warn).toHaveBeenCalledWith(
-      'Chain storage symlink verification failed on startup',
+    expect(chainStorageCoordinatorMock.getConfig).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(
       expect.objectContaining({
-        verification: expect.objectContaining({
-          isValid: false,
-          path: '/mnt/missing-chain',
-        }),
+        defaultPath: '/tmp/state/chain',
       })
     );
   });
 
-  it('logs warning when startup verification throws', async () => {
-    chainStorageManagerMock.verifySymlink.mockRejectedValue(
-      new Error('verification failed')
-    );
+  it('returns session recovery metadata from get requests when startup fallback happened', async () => {
+    const { moduleExports, chainStorageCoordinatorMock } = loadModule();
+    moduleExports.handleChainStorageRequests();
+    const getHandler = mockChannels[1].onRequest.mock.calls[0][0];
+    chainStorageCoordinatorMock.getConfig.mockResolvedValue({
+      customPath: null,
+      defaultPath: '/tmp/state/chain',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
+      isRecoveryFallback: true,
+    });
 
-    handleChainStorageRequests();
-    await flushPromises();
+    const result = await getHandler();
 
-    expect(logger.warn).toHaveBeenCalledWith(
-      'Chain storage symlink startup verification failed',
+    expect(result).toEqual(
       expect.objectContaining({
-        error: expect.any(Error),
+        customPath: null,
+        isRecoveryFallback: true,
+      })
+    );
+  });
+
+  it('delegates prepare requests to the coordinator cleanup hook', async () => {
+    const { moduleExports, chainStorageCoordinatorMock } = loadModule();
+    moduleExports.handleChainStorageRequests();
+    const prepareHandler = mockChannels[3].onRequest.mock.calls[0][0];
+    chainStorageCoordinatorMock.prepareForLocationChange.mockResolvedValue({
+      isValid: true,
+      path: null,
+      resolvedPath: '/tmp/state/chain',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
+    });
+
+    const result = await prepareHandler();
+
+    expect(
+      chainStorageCoordinatorMock.prepareForLocationChange
+    ).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(
+      expect.objectContaining({
+        path: null,
+        resolvedPath: '/tmp/state/chain',
       })
     );
   });

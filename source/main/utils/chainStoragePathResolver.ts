@@ -1,14 +1,95 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { ChainStorageConfig } from '../../common/types/mithril-bootstrap.types';
 import { logger } from './logging';
-
-const CHAIN_DIRECTORY_NAME = 'chain';
-const CHAIN_STORAGE_CONFIG_FILE = 'chain-storage-config.json';
+import {
+  CHAIN_DIRECTORY_NAME,
+  isPathNotFoundError,
+} from './chainStorageManagerShared';
 
 export type ResolvedStateDirectory = {
   exists: boolean;
   resolvedPath: string;
+};
+
+export const getManagedChainPath = (
+  stateDir: string,
+  customPath: string | null
+): string =>
+  customPath
+    ? path.join(path.resolve(customPath), CHAIN_DIRECTORY_NAME)
+    : path.join(stateDir, CHAIN_DIRECTORY_NAME);
+
+const resolveLinkTarget = async (chainPath: string): Promise<string | null> => {
+  try {
+    return await fs.realpath(chainPath);
+  } catch (error) {
+    logger.warn(
+      'ChainStorageManager: failed to resolve chain entry point target',
+      {
+        error,
+        chainPath,
+      }
+    );
+    return null;
+  }
+};
+
+const resolveManagedChainPathFromEntryPoint = async (
+  stateDir: string
+): Promise<string> => {
+  const chainPath = path.join(stateDir, CHAIN_DIRECTORY_NAME);
+
+  try {
+    const chainStats = await fs.lstat(chainPath);
+
+    if (chainStats.isSymbolicLink()) {
+      const resolvedLinkTarget = await resolveLinkTarget(chainPath);
+      if (resolvedLinkTarget) {
+        return resolvedLinkTarget;
+      }
+
+      return path.resolve(chainPath);
+    }
+
+    if (process.platform === 'win32' && chainStats.isDirectory()) {
+      try {
+        await fs.readlink(chainPath);
+
+        const resolvedJunctionTarget = await resolveLinkTarget(chainPath);
+        if (resolvedJunctionTarget) {
+          return resolvedJunctionTarget;
+        }
+      } catch (error) {
+        const code = (error as NodeJS.ErrnoException)?.code;
+        if (
+          !isPathNotFoundError(error) &&
+          code !== 'EINVAL' &&
+          code !== 'UNKNOWN'
+        ) {
+          logger.warn(
+            'ChainStorageManager: failed to inspect Windows junction target',
+            {
+              error,
+              chainPath,
+            }
+          );
+        }
+      }
+    }
+
+    if (chainStats.isDirectory()) {
+      return path.resolve(chainPath);
+    }
+  } catch (error) {
+    if (!isPathNotFoundError(error)) {
+      logger.warn('ChainStorageManager: failed to inspect chain entry point', {
+        error,
+        chainPath,
+      });
+    }
+  }
+
+  return path.resolve(chainPath);
 };
 
 /**
@@ -31,94 +112,15 @@ export async function resolveStateDirectoryPath(
  * present, falling back to the custom-path in config, then stateDir.
  */
 export async function resolveChainStoragePath(
-  stateDir: string,
-  getConfig: () => Promise<ChainStorageConfig>
+  stateDir: string
 ): Promise<string> {
-  const chainPath = path.join(stateDir, CHAIN_DIRECTORY_NAME);
-
-  try {
-    const chainPathExists = await fs.pathExists(chainPath);
-    if (chainPathExists) {
-      return await fs.realpath(chainPath);
-    }
-  } catch (error) {
-    logger.warn('ChainStorageManager: failed to resolve chain path', {
-      error,
-      chainPath,
-    });
-  }
-
-  const config = await getConfig();
-  if (config.customPath) {
-    try {
-      return await fs.realpath(config.customPath);
-    } catch (error) {
-      logger.warn(
-        'ChainStorageManager: failed to resolve configured custom path',
-        {
-          error,
-          customPath: config.customPath,
-        }
-      );
-    }
-  }
-
-  return stateDir;
+  return resolveManagedChainPathFromEntryPoint(stateDir);
 }
 
 /**
  * Resolves the working directory that Mithril should use. Returns the
  * resolved custom path when configured, otherwise the state directory.
  */
-export async function resolveMithrilWorkDir(
-  stateDir: string,
-  getConfig: () => Promise<ChainStorageConfig>
-): Promise<string> {
-  const config = await getConfig();
-
-  if (!config.customPath) {
-    return stateDir;
-  }
-
-  try {
-    return await fs.realpath(config.customPath);
-  } catch (error) {
-    logger.warn('ChainStorageManager: failed to resolve Mithril work dir', {
-      error,
-      customPath: config.customPath,
-    });
-    return stateDir;
-  }
-}
-
-/**
- * Resolves the current source of chain data: the symlink target, the local
- * chain directory, or null if neither is present.
- */
-export async function resolveCurrentChainSource(
-  chainPath: string
-): Promise<string | null> {
-  const chainPathExists = await fs.pathExists(chainPath);
-  if (!chainPathExists) {
-    return null;
-  }
-
-  const chainStats = await fs.lstat(chainPath);
-  if (chainStats.isSymbolicLink()) {
-    try {
-      return await fs.realpath(chainPath);
-    } catch (error) {
-      logger.warn('ChainStorageManager: unable to resolve chain symlink', {
-        error,
-        chainPath,
-      });
-      return null;
-    }
-  }
-
-  if (chainStats.isDirectory()) {
-    return chainPath;
-  }
-
-  return null;
+export async function resolveMithrilWorkDir(stateDir: string): Promise<string> {
+  return resolveManagedChainPathFromEntryPoint(stateDir);
 }

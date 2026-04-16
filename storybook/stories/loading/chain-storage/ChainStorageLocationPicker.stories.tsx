@@ -11,6 +11,7 @@ import {
   loadingTextKnob,
 } from '../_support/loadingKnobs';
 import {
+  defaultChainStorageValidation,
   defaultChainPath,
   snapshotSize,
   validationPresetOptions,
@@ -73,5 +74,38 @@ storiesOf('Loading / Chain Storage', module)
       estimatedRequiredSpaceBytes={snapshotSize}
       availableSpaceBytes={256 * 1024 * 1024 * 1024}
       isChainStorageLoading
+    />
+  ))
+  .add('Recovery Fallback', () => (
+    <ManagedChainStorageLocationPicker
+      customChainPath={null}
+      defaultChainPath={defaultChainPath}
+      validationPreset="valid-default"
+      estimatedRequiredSpaceBytes={snapshotSize}
+      availableSpaceBytes={256 * 1024 * 1024 * 1024}
+      isRecoveryFallback
+    />
+  ))
+  .add('Data Found', () => (
+    <ManagedChainStorageLocationPicker
+      customChainPath="/mnt/fast-ssd/daedalus-chain"
+      defaultChainPath={defaultChainPath}
+      validationPreset="existing-directory"
+      estimatedRequiredSpaceBytes={snapshotSize}
+      availableSpaceBytes={256 * 1024 * 1024 * 1024}
+    />
+  ))
+  .add('Recovery + Data Found', () => (
+    <ManagedChainStorageLocationPicker
+      customChainPath={null}
+      defaultChainPath={defaultChainPath}
+      validationPreset="valid-default"
+      defaultChainStorageValidation={{
+        ...defaultChainStorageValidation,
+        chainSubdirectoryStatus: 'existing-directory',
+      }}
+      estimatedRequiredSpaceBytes={snapshotSize}
+      availableSpaceBytes={256 * 1024 * 1024 * 1024}
+      isRecoveryFallback
     />
   ));

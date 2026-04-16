@@ -284,6 +284,18 @@ describe('MithrilBootstrapService progress and error stages', () => {
 });
 
 describe('MithrilBootstrapService hardening fixes', () => {
+  it('ignores cancel requests when no bootstrap is active', async () => {
+    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const cleanupSpy = jest.spyOn(service, '_cleanupSnapshotArtifacts');
+    const clearLockSpy = jest.spyOn(service, 'clearLockFile');
+
+    await service.cancel();
+
+    expect(service.status.status).toBe('idle');
+    expect(cleanupSpy).not.toHaveBeenCalled();
+    expect(clearLockSpy).not.toHaveBeenCalled();
+  });
+
   // Gap 1: cancel must not fall through to failed
   it('status stays cancelled after process is killed — never transitions to failed', async () => {
     const service = new MithrilBootstrapService('/tmp/mithril-test');

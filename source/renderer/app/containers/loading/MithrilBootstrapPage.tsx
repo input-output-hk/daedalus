@@ -99,8 +99,8 @@ class MithrilBootstrapPage extends Component<Props> {
     await this.props.stores.mithrilBootstrap.cancelBootstrap();
   };
 
-  handleReturnToStorageLocation = () => {
-    this.props.stores.mithrilBootstrap.clearStorageLocationConfirmation();
+  handleReturnToStorageLocation = async () => {
+    await this.props.stores.mithrilBootstrap.returnToStorageLocation();
   };
 
   handleOpenExternalLink = (url: string) => {
@@ -160,8 +160,11 @@ class MithrilBootstrapPage extends Component<Props> {
           mithrilBootstrap.defaultChainStorageValidation
         }
         chainStorageValidation={mithrilBootstrap.chainStorageValidation}
+        pendingChainPath={mithrilBootstrap.pendingChainPath}
+        isRecoveryFallback={mithrilBootstrap.isRecoveryFallback}
         latestSnapshotSize={latestSnapshot?.size}
         isChainStorageLoading={mithrilBootstrap.isChainStorageLoading}
+        isApplyingStorageLocation={mithrilBootstrap.isApplyingStorageLocation}
         storageLocationConfirmed={mithrilBootstrap.storageLocationConfirmed}
         snapshots={mithrilBootstrap.snapshots}
         selectedDigest={this.state.selectedDigest}

@@ -57,6 +57,14 @@ const validationPresetMap: Record<string, ChainStorageValidation> = {
     availableSpaceBytes: 256 * 1024 * 1024 * 1024,
     requiredSpaceBytes: snapshotSize,
   },
+  'existing-directory': {
+    isValid: true,
+    path: customChainPath,
+    resolvedPath: customChainPath,
+    availableSpaceBytes: 256 * 1024 * 1024 * 1024,
+    requiredSpaceBytes: snapshotSize,
+    chainSubdirectoryStatus: 'existing-directory',
+  },
   'insufficient-space': {
     isValid: false,
     path: customChainPath,
@@ -88,6 +96,7 @@ export type ValidationPresetName = keyof typeof validationPresetMap;
 export const validationPresetOptions: Record<string, ValidationPresetName> = {
   'Valid - Default': 'valid-default',
   'Valid - Custom': 'valid-custom',
+  'Valid - Existing Directory': 'existing-directory',
   'Invalid - Insufficient Space': 'insufficient-space',
   'Invalid - Not Writable': 'not-writable',
   'Invalid - Inside State Dir': 'inside-state-dir',

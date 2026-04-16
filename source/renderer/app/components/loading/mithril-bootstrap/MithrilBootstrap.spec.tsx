@@ -66,6 +66,7 @@ describe('MithrilBootstrap', () => {
             path: '/mnt/current-chain',
             resolvedPath: '/mnt/current-chain',
           }}
+          isRecoveryFallback={false}
           storageLocationConfirmed
           snapshots={snapshots}
           selectedDigest="latest"
@@ -122,6 +123,7 @@ describe('MithrilBootstrap', () => {
     expect(
       screen.getByRole('region', { name: /snapshot details/i })
     ).toBeInTheDocument();
+    expect(screen.getByText('/mnt/current-chain/chain')).toBeInTheDocument();
   });
 
   it('shows the storage picker when storage location is not confirmed', () => {
@@ -143,6 +145,47 @@ describe('MithrilBootstrap', () => {
     expect(
       screen.queryByRole('button', { name: /use mithril fast sync/i })
     ).not.toBeInTheDocument();
+  });
+
+  it('shows the decision view while a storage location change is applying', () => {
+    renderComponent({
+      storageLocationConfirmed: false,
+      isApplyingStorageLocation: true,
+    });
+
+    expect(
+      screen.queryByRole('heading', {
+        name: /select blockchain data location/i,
+      })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /fast sync with mithril/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /use mithril fast sync/i })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: /sync from genesis/i })
+    ).toBeDisabled();
+    expect(screen.getByText('/mnt/current-chain/chain')).toBeInTheDocument();
+    expect(screen.queryByText(/change location/i)).not.toBeInTheDocument();
+  });
+
+  it('passes the recovery fallback notice through to the storage picker', () => {
+    renderComponent({
+      storageLocationConfirmed: false,
+      customChainPath: null,
+      chainStorageValidation: {
+        isValid: true,
+        path: null,
+        resolvedPath: '/tmp/state/chain',
+      },
+      isRecoveryFallback: true,
+    });
+
+    expect(
+      screen.getByText(/we couldn't access your previous storage location/i)
+    ).toBeInTheDocument();
   });
 
   it('shows the progress view for active bootstrap statuses', () => {

@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import { MithrilBootstrapService } from './MithrilBootstrapService';
+import { ChainStorageManager } from '../utils/chainStorageManager';
 
 jest.mock('fs-extra', () => ({
   pathExists: jest.fn(),
@@ -9,6 +10,7 @@ jest.mock('fs-extra', () => ({
   remove: jest.fn(),
   lstat: jest.fn(),
   emptyDir: jest.fn(),
+  ensureDir: jest.fn(),
 }));
 
 jest.mock('../config', () => ({
@@ -31,65 +33,45 @@ jest.mock('../utils/logging', () => ({
 }));
 
 describe('MithrilBootstrapService _installSnapshot', () => {
+  const createChainStorageManager = () =>
+    (({
+      installSnapshot: jest.fn().mockResolvedValue(undefined),
+      emptyManagedContents: jest.fn().mockResolvedValue(undefined),
+    } as unknown) as ChainStorageManager);
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('returns early when resolved db directory equals resolved chain directory', async () => {
-    const service = new MithrilBootstrapService('/tmp/state');
-    (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
-      '/mnt/custom-chain'
+  it('delegates snapshot installation to the shared chain storage manager', async () => {
+    const chainStorageManager = createChainStorageManager();
+    const service = new MithrilBootstrapService(
+      '/tmp/state/chain',
+      chainStorageManager
     );
 
-    await service._installSnapshot('/mnt/custom-chain');
+    await service._installSnapshot('/mnt/custom-parent/chain/db');
 
-    expect(fs.move).not.toHaveBeenCalled();
-    expect(fs.remove).not.toHaveBeenCalled();
+    expect(chainStorageManager.installSnapshot).toHaveBeenCalledWith(
+      '/mnt/custom-parent/chain/db'
+    );
   });
 
-  it('moves db contents into resolved chain directory when db is nested in chain target', async () => {
-    const service = new MithrilBootstrapService('/tmp/state');
+  it('rejects wipeChainAndSnapshots when strict artifact cleanup fails', async () => {
+    const chainStorageManager = createChainStorageManager();
+    const service = new MithrilBootstrapService(
+      '/tmp/state/chain',
+      chainStorageManager
+    );
+    const cleanupError = new Error('cleanup failed');
+
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
-      '/mnt/custom-chain'
-    );
-    (fs.readdir as jest.Mock).mockResolvedValue(['immutable', 'ledger']);
+    (fs.remove as jest.Mock).mockRejectedValue(cleanupError);
 
-    await service._installSnapshot('/mnt/custom-chain/db');
-
-    expect(fs.move).toHaveBeenCalledWith(
-      '/mnt/custom-chain/db/immutable',
-      '/mnt/custom-chain/immutable',
-      { overwrite: true }
+    await expect(service.wipeChainAndSnapshots('wipe-test')).rejects.toThrow(
+      'cleanup failed'
     );
-    expect(fs.move).toHaveBeenCalledWith(
-      '/mnt/custom-chain/db/ledger',
-      '/mnt/custom-chain/ledger',
-      { overwrite: true }
-    );
-    expect(fs.remove).toHaveBeenCalledWith('/mnt/custom-chain/db');
-  });
 
-  it('preserves symlink and installs into resolved target for external storage', async () => {
-    const service = new MithrilBootstrapService('/tmp/state');
-    (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
-      '/mnt/custom-chain'
-    );
-    (fs.lstat as jest.Mock).mockResolvedValue({
-      isSymbolicLink: () => true,
-    });
-    (fs.readdir as jest.Mock).mockResolvedValue(['volatile']);
-
-    await service._installSnapshot('/tmp/state/db');
-
-    expect(fs.emptyDir).toHaveBeenCalledWith('/mnt/custom-chain');
-    expect(fs.move).toHaveBeenCalledWith(
-      '/tmp/state/db/volatile',
-      '/mnt/custom-chain/volatile',
-      { overwrite: true }
-    );
-    expect(fs.remove).toHaveBeenCalledWith('/tmp/state/db');
+    expect(chainStorageManager.emptyManagedContents).toHaveBeenCalledTimes(1);
   });
 });

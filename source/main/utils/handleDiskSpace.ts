@@ -27,14 +27,19 @@ import {
 import {
   getPendingMithrilBootstrapDecision,
   getMithrilBootstrapStatus,
+  isMithrilDecisionCancelledError,
   onMithrilBootstrapDecision,
   onMithrilBootstrapStatus,
+  resetMithrilDecisionState,
   waitForMithrilBootstrapDecision,
   mithrilBootstrapStatusChannel,
   setMithrilBootstrapStatus,
 } from '../ipc/mithrilBootstrapChannel';
-import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
-import { ChainStorageManager } from './chainStorageManager';
+import {
+  chainStorageCoordinator,
+  getChainStorageManager,
+} from './chainStorageCoordinator';
+import type { ManagedChainLayoutResult } from './chainStorageManagerShared';
 
 const getDiskCheckReport = async (
   targetPath: string,
@@ -86,6 +91,21 @@ export const handleDiskSpace = (
   mainWindow: BrowserWindow,
   cardanoNode: CardanoNode
 ) => {
+  const MANAGED_CHAIN_LAYOUT_ERROR = 'MANAGED_CHAIN_LAYOUT_ERROR';
+  const markManagedChainLayoutError = (error: unknown): Error => {
+    const normalizedError =
+      error instanceof Error ? error : new Error(String(error));
+
+    Object.assign(normalizedError, {
+      code: MANAGED_CHAIN_LAYOUT_ERROR,
+    });
+
+    return normalizedError;
+  };
+  const isManagedChainLayoutError = (error: unknown): boolean =>
+    (error as NodeJS.ErrnoException | undefined)?.code ===
+    MANAGED_CHAIN_LAYOUT_ERROR;
+
   let diskSpaceCheckInterval;
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
 
@@ -95,10 +115,23 @@ export const handleDiskSpace = (
   let mithrilFailureDeclineInFlight = false;
   let mithrilCancelledDeclineInFlight = false;
   let mithrilStartupCheckDone = false;
+  let mithrilStartupLayoutResult: ManagedChainLayoutResult | null = null;
   let mithrilDecisionPrompted = false;
   let mithrilDecision: 'accept' | 'decline' | null = null;
   let mithrilBootstrapCompleted = false;
   let mithrilStartInFlight = false;
+  let directoryChangeGeneration = 0;
+  let activeDiskSpaceCheckPromise: Promise<
+    CheckDiskSpaceResponse
+  > | null = null;
+  let pendingDiskSpaceCheckArgs: {
+    hadNotEnoughSpaceLeft?: boolean;
+    forceDiskSpaceRequired?: number;
+  } | null = null;
+  let pendingDiskSpaceCheckWaiters: Array<{
+    resolve: (response: CheckDiskSpaceResponse) => void;
+    reject: (error: unknown) => void;
+  }> = [];
   const mithrilLockFilePath = path.join(
     stateDirectoryPath,
     'Logs',
@@ -111,34 +144,45 @@ export const handleDiskSpace = (
     : undefined;
   const wipeChainFlag =
     envWipeChain ?? argvWipeChain ?? launcherConfig.wipeChain ?? false;
-  const chainStorageManager = new ChainStorageManager();
-  const mithrilBootstrapService = new MithrilBootstrapService();
+  const chainStorageManager = getChainStorageManager();
+  const broadcastMithrilStatus = (
+    update: MithrilBootstrapStatusUpdate,
+    context: string
+  ) => {
+    setMithrilBootstrapStatus(update);
 
-  const syncMithrilWorkDir = async () => {
-    const workDir = await chainStorageManager.resolveMithrilWorkDir();
-    mithrilBootstrapService.setWorkDir(workDir);
+    Promise.resolve()
+      .then(() =>
+        mithrilBootstrapStatusChannel.send(update, mainWindow.webContents)
+      )
+      .catch((error) => {
+        logger.warn('[MITHRIL] Failed to broadcast bootstrap status update', {
+          context,
+          error,
+          status: update.status,
+        });
+      });
   };
-  const emitMithrilDecisionStatus = async () => {
+
+  const emitMithrilDecisionStatus = () => {
     const update: MithrilBootstrapStatusUpdate = {
       status: 'decision',
       snapshot: null,
       error: null,
     };
-    setMithrilBootstrapStatus(update);
-    await mithrilBootstrapStatusChannel.send(update, mainWindow.webContents);
+    broadcastMithrilStatus(update, 'emit-decision');
   };
 
-  const emitMithrilIdleStatus = async () => {
+  const emitMithrilIdleStatus = () => {
     const update: MithrilBootstrapStatusUpdate = {
       status: 'idle',
       snapshot: null,
       error: null,
     };
-    setMithrilBootstrapStatus(update);
-    await mithrilBootstrapStatusChannel.send(update, mainWindow.webContents);
+    broadcastMithrilStatus(update, 'emit-idle');
   };
 
-  const emitMithrilStartFailure = async (error: unknown) => {
+  const emitMithrilStartFailure = (error: unknown) => {
     const message =
       error instanceof Error
         ? error.message
@@ -151,19 +195,17 @@ export const handleDiskSpace = (
         stage: 'node-start',
       },
     };
-    setMithrilBootstrapStatus(update);
-    await mithrilBootstrapStatusChannel.send(update, mainWindow.webContents);
+    broadcastMithrilStatus(update, 'emit-start-failure');
   };
 
-  const emitMithrilStartingNodeStatus = async () => {
+  const emitMithrilStartingNodeStatus = () => {
     const currentStatus = getMithrilBootstrapStatus();
     const update: MithrilBootstrapStatusUpdate = {
       ...currentStatus,
       status: 'starting-node',
       error: null,
     };
-    setMithrilBootstrapStatus(update);
-    await mithrilBootstrapStatusChannel.send(update, mainWindow.webContents);
+    broadcastMithrilStatus(update, 'emit-starting-node');
   };
 
   const canStartNodeAfterMithrilCompletion = () =>
@@ -178,12 +220,31 @@ export const handleDiskSpace = (
   const startNodeAfterMithrilCompletion = async (): Promise<void> => {
     if (mithrilStartInFlight) return;
     mithrilStartInFlight = true;
+    const gen = directoryChangeGeneration;
     try {
+      if (gen !== directoryChangeGeneration) {
+        logger.info(
+          '[MITHRIL] Aborting node start — directory changed during handoff'
+        );
+        return;
+      }
       await emitMithrilStartingNodeStatus();
       await cardanoNode.start();
+      if (gen !== directoryChangeGeneration) {
+        logger.info(
+          '[MITHRIL] Aborting node start — directory changed during handoff'
+        );
+        return;
+      }
       await new Promise<void>((resolve) => {
         setTimeout(resolve, MITHRIL_COMPLETION_DELAY_MS);
       });
+      if (gen !== directoryChangeGeneration) {
+        logger.info(
+          '[MITHRIL] Aborting node start — directory changed during handoff'
+        );
+        return;
+      }
       if (cardanoNode.state !== CardanoNodeStates.RUNNING) {
         throw new Error(
           'Cardano node stopped responding during startup after Mithril bootstrap.'
@@ -204,7 +265,10 @@ export const handleDiskSpace = (
     }
   };
 
-  const handleMithrilFailureDecline = async (source: string) => {
+  const handleMithrilFailureDecline = async (
+    source: string,
+    currentGeneration: number = directoryChangeGeneration
+  ) => {
     if (mithrilFailureDeclineInFlight) return false;
     const pendingDecision = getPendingMithrilBootstrapDecision();
     if (pendingDecision !== 'decline') return false;
@@ -218,16 +282,12 @@ export const handleDiskSpace = (
         }
       );
       await emitMithrilIdleStatus();
-      await syncMithrilWorkDir();
-      await mithrilBootstrapService.wipeChainAndSnapshots(
-        `User declined after bootstrap failure (${source}). Wiped chain directory and Mithril snapshots.`
+      if (currentGeneration !== directoryChangeGeneration) return false;
+      await chainStorageCoordinator.wipeChainAndSnapshots(
+        `User declined after bootstrap failure (${source}). Wiped chain directory and Mithril snapshots.`,
+        cardanoNode.state
       );
-      logger.info(
-        '[MITHRIL] Starting cardano-node after bootstrap failure decline',
-        {
-          source,
-        }
-      );
+      if (currentGeneration !== directoryChangeGeneration) return false;
       await cardanoNode.start();
       logger.info(
         '[MITHRIL] cardano-node start requested after bootstrap failure decline',
@@ -244,7 +304,10 @@ export const handleDiskSpace = (
     }
   };
 
-  const handleMithrilCancelledDecline = async (source: string) => {
+  const handleMithrilCancelledDecline = async (
+    source: string,
+    currentGeneration: number = directoryChangeGeneration
+  ) => {
     if (mithrilCancelledDeclineInFlight) {
       logger.info(
         '[MITHRIL] Decline recovery after bootstrap cancel already in progress',
@@ -272,10 +335,12 @@ export const handleDiskSpace = (
       );
 
       await emitMithrilIdleStatus();
-      await syncMithrilWorkDir();
-      await mithrilBootstrapService.wipeChainAndSnapshots(
-        `User declined after bootstrap cancel (${source}). Wiped chain directory and Mithril snapshots.`
+      if (currentGeneration !== directoryChangeGeneration) return false;
+      await chainStorageCoordinator.wipeChainAndSnapshots(
+        `User declined after bootstrap cancel (${source}). Wiped chain directory and Mithril snapshots.`,
+        cardanoNode.state
       );
+      if (currentGeneration !== directoryChangeGeneration) return false;
 
       logger.info(
         '[MITHRIL] Starting cardano-node after bootstrap cancel decline',
@@ -303,9 +368,14 @@ export const handleDiskSpace = (
     }
   };
 
-  const ensureMithrilStartupGate = async (): Promise<boolean> => {
-    if (mithrilStartupCheckDone) return true;
-    mithrilStartupCheckDone = true;
+  const ensureMithrilStartupGate = async (
+    currentGeneration: number
+  ): Promise<ManagedChainLayoutResult | null> => {
+    if (mithrilStartupCheckDone && mithrilStartupLayoutResult) {
+      return mithrilStartupLayoutResult;
+    }
+
+    let layoutResult: ManagedChainLayoutResult;
 
     try {
       if (wipeChainFlag) {
@@ -321,25 +391,55 @@ export const handleDiskSpace = (
             });
           }
         }
-        await syncMithrilWorkDir();
-        await mithrilBootstrapService.wipeChainAndSnapshots(
-          'wipe-chain flag set. Wiped chain directory and Mithril snapshots.'
+        layoutResult = await chainStorageCoordinator.ensureManagedChainLayout(
+          cardanoNode.state
         );
+        if (currentGeneration !== directoryChangeGeneration) {
+          return null;
+        }
+        await chainStorageCoordinator.wipeChainAndSnapshots(
+          'wipe-chain flag set. Wiped chain directory and Mithril snapshots.',
+          cardanoNode.state
+        );
+        if (currentGeneration !== directoryChangeGeneration) {
+          return null;
+        }
+      } else {
+        layoutResult = await chainStorageCoordinator.ensureManagedChainLayout(
+          cardanoNode.state
+        );
+        if (currentGeneration !== directoryChangeGeneration) {
+          return null;
+        }
       }
       const lockExists = await fs.pathExists(mithrilLockFilePath);
+      if (currentGeneration !== directoryChangeGeneration) {
+        return null;
+      }
       if (lockExists) {
-        await syncMithrilWorkDir();
-        await mithrilBootstrapService.wipeChainAndSnapshots(
-          'Incomplete bootstrap detected. Wiped chain directory and Mithril snapshots.'
+        if (currentGeneration !== directoryChangeGeneration) {
+          return null;
+        }
+        await chainStorageCoordinator.wipeChainAndSnapshots(
+          'Incomplete bootstrap detected. Wiped chain directory and Mithril snapshots.',
+          cardanoNode.state
         );
+        if (currentGeneration !== directoryChangeGeneration) {
+          return null;
+        }
         mithrilDecisionPrompted = false;
         mithrilDecision = null;
       }
     } catch (error) {
-      logger.warn('[MITHRIL] Failed to handle bootstrap lock', { error });
+      logger.error('[MITHRIL] Failed to verify managed chain layout', {
+        error,
+      });
+      throw markManagedChainLayoutError(error);
     }
 
-    return true;
+    mithrilStartupCheckDone = true;
+    mithrilStartupLayoutResult = layoutResult;
+    return layoutResult;
   };
 
   onMithrilBootstrapStatus(async (status) => {
@@ -353,12 +453,20 @@ export const handleDiskSpace = (
     if (status.status !== 'failed') return;
     if (mithrilFailureDecisionInFlight) return;
     mithrilFailureDecisionInFlight = true;
+    const currentGeneration = directoryChangeGeneration;
     waitForMithrilBootstrapDecision()
       .then(async (decision) => {
         if (decision !== 'decline') return;
-        await handleMithrilFailureDecline('status-listener');
+        await handleMithrilFailureDecline('status-listener', currentGeneration);
       })
       .catch((error) => {
+        if (isMithrilDecisionCancelledError(error)) {
+          logger.info(
+            '[MITHRIL] Decision wait cancelled after directory change following bootstrap failure',
+            null
+          );
+          return;
+        }
         logger.error('[MITHRIL] Decision wait failed after failure', { error });
       })
       .finally(() => {
@@ -369,40 +477,62 @@ export const handleDiskSpace = (
   onMithrilBootstrapDecision((decision) => {
     if (decision !== 'decline') return;
     if (getMithrilBootstrapStatus().status !== 'failed') return;
-    handleMithrilFailureDecline('decision-listener').catch((error) => {
-      logger.error('[MITHRIL] Decline handling failed after decision', {
-        error,
-      });
-    });
+    const currentGeneration = directoryChangeGeneration;
+    handleMithrilFailureDecline('decision-listener', currentGeneration).catch(
+      (error) => {
+        logger.error('[MITHRIL] Decline handling failed after decision', {
+          error,
+        });
+      }
+    );
   });
 
   onMithrilBootstrapDecision((decision) => {
     if (decision !== 'decline') return;
     if (getMithrilBootstrapStatus().status !== 'cancelled') return;
-    handleMithrilCancelledDecline('decision-listener').catch((error) => {
-      logger.error('[MITHRIL] Decline handling failed after cancel', {
-        error,
-      });
-    });
+    const currentGeneration = directoryChangeGeneration;
+    handleMithrilCancelledDecline('decision-listener', currentGeneration).catch(
+      (error) => {
+        logger.error('[MITHRIL] Decline handling failed after cancel', {
+          error,
+        });
+      }
+    );
   });
 
-  const isChainEmpty = async (): Promise<boolean> => {
-    const chainDir = path.join(stateDirectoryPath, 'chain');
-    const exists = await fs.pathExists(chainDir);
-    if (!exists) return true;
-    const entries = await fs.readdir(chainDir);
-    return entries.length === 0;
-  };
-
-  const handleCheckDiskSpace = async (
+  const runHandleCheckDiskSpace = async (
     hadNotEnoughSpaceLeft?: boolean,
     forceDiskSpaceRequired?: number
   ): Promise<CheckDiskSpaceResponse> => {
     const hadNotEnoughSpaceFlag = hadNotEnoughSpaceLeft ?? false;
+    const currentGeneration = directoryChangeGeneration;
     const diskSpaceRequired = forceDiskSpaceRequired || DISK_SPACE_REQUIRED;
-    const diskSpacePath = await chainStorageManager.resolveChainStoragePath();
-    const response = await getDiskCheckReport(diskSpacePath);
-    await ensureMithrilStartupGate();
+    const getStaleResponse = (): CheckDiskSpaceResponse => ({
+      isNotEnoughDiskSpace,
+      diskSpaceRequired: '',
+      diskSpaceMissing: '',
+      diskSpaceRecommended: '',
+      diskSpaceAvailable: '',
+      hadNotEnoughSpaceLeft: hadNotEnoughSpaceFlag,
+      diskSpaceAvailableRaw: 0,
+      diskTotalSpaceRaw: 0,
+      isError: false,
+    });
+    const startupLayoutResult = await ensureMithrilStartupGate(
+      currentGeneration
+    );
+    if (
+      !startupLayoutResult ||
+      currentGeneration !== directoryChangeGeneration
+    ) {
+      return getStaleResponse();
+    }
+    const response = await getDiskCheckReport(
+      startupLayoutResult.managedChainPath
+    );
+    if (currentGeneration !== directoryChangeGeneration) {
+      return getStaleResponse();
+    }
     const latestDecision = getPendingMithrilBootstrapDecision();
     if (latestDecision && latestDecision !== mithrilDecision) {
       mithrilDecision = latestDecision;
@@ -485,7 +615,10 @@ export const handleDiskSpace = (
 
         case CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME:
           try {
-            const chainEmpty = await isChainEmpty();
+            const chainEmpty = await chainStorageCoordinator.isManagedChainEmpty();
+            if (currentGeneration !== directoryChangeGeneration) {
+              return getStaleResponse();
+            }
             if (chainEmpty) {
               const mithrilStatus = getMithrilBootstrapStatus();
               if (
@@ -495,7 +628,10 @@ export const handleDiskSpace = (
               }
 
               if (mithrilStatus.status === 'failed') {
-                await handleMithrilFailureDecline('polling-chain-empty');
+                await handleMithrilFailureDecline(
+                  'polling-chain-empty',
+                  currentGeneration
+                );
                 response.hadNotEnoughSpaceLeft = false;
                 break;
               }
@@ -521,10 +657,16 @@ export const handleDiskSpace = (
               if (mithrilDecision === 'decline') {
                 logger.info('[MITHRIL] Processing immediate decline decision');
                 await emitMithrilIdleStatus();
-                await syncMithrilWorkDir();
-                await mithrilBootstrapService.wipeChainAndSnapshots(
-                  'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.'
+                if (currentGeneration !== directoryChangeGeneration) {
+                  return getStaleResponse();
+                }
+                await chainStorageCoordinator.wipeChainAndSnapshots(
+                  'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.',
+                  cardanoNode.state
                 );
+                if (currentGeneration !== directoryChangeGeneration) {
+                  return getStaleResponse();
+                }
                 logger.info(
                   '[MITHRIL] Starting cardano-node after bootstrap decline'
                 );
@@ -535,6 +677,7 @@ export const handleDiskSpace = (
                 mithrilDecisionInFlight = true;
                 waitForMithrilBootstrapDecision()
                   .then(async (decision) => {
+                    if (currentGeneration !== directoryChangeGeneration) return;
                     logger.info(
                       '[MITHRIL] Bootstrap decision waiter resolved',
                       {
@@ -545,10 +688,16 @@ export const handleDiskSpace = (
                     mithrilDecisionPrompted = decision !== 'accept';
                     if (decision === 'decline') {
                       await emitMithrilIdleStatus();
-                      await syncMithrilWorkDir();
-                      await mithrilBootstrapService.wipeChainAndSnapshots(
-                        'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.'
+                      if (currentGeneration !== directoryChangeGeneration) {
+                        return;
+                      }
+                      await chainStorageCoordinator.wipeChainAndSnapshots(
+                        'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.',
+                        cardanoNode.state
                       );
+                      if (currentGeneration !== directoryChangeGeneration) {
+                        return;
+                      }
                       logger.info(
                         '[MITHRIL] Starting cardano-node after waited bootstrap decline'
                       );
@@ -556,6 +705,13 @@ export const handleDiskSpace = (
                     }
                   })
                   .catch((error) => {
+                    if (isMithrilDecisionCancelledError(error)) {
+                      logger.info(
+                        '[MITHRIL] Decision wait cancelled after directory change',
+                        null
+                      );
+                      return;
+                    }
                     logger.error('[MITHRIL] Decision wait failed', { error });
                   })
                   .finally(() => {
@@ -568,23 +724,54 @@ export const handleDiskSpace = (
 
             const mithrilStatus = getMithrilBootstrapStatus();
             if (mithrilStatus.status === 'failed') {
-              await handleMithrilFailureDecline('polling-chain-present');
+              await handleMithrilFailureDecline(
+                'polling-chain-present',
+                currentGeneration
+              );
               response.hadNotEnoughSpaceLeft = false;
               break;
             }
 
             if (mithrilStatus.status === 'cancelled') {
-              await handleMithrilCancelledDecline('polling-chain-present');
+              await handleMithrilCancelledDecline(
+                'polling-chain-present',
+                currentGeneration
+              );
               response.hadNotEnoughSpaceLeft = false;
               break;
             }
 
+            await emitMithrilIdleStatus();
+            if (currentGeneration !== directoryChangeGeneration) {
+              return getStaleResponse();
+            }
+            mithrilDecisionInFlight = false;
+            mithrilDecision = null;
+            mithrilDecisionPrompted = false;
+            resetMithrilDecisionState({ suppressStatusBroadcast: true });
             await cardanoNode.start();
           } catch (error) {
             logger.error('[MITHRIL] Failed to handle bootstrap decision', {
               error,
             });
-            await cardanoNode.start();
+            if (isManagedChainLayoutError(error)) {
+              throw error;
+            }
+
+            if (currentGeneration !== directoryChangeGeneration) {
+              return getStaleResponse();
+            }
+
+            try {
+              await cardanoNode.start();
+            } catch (startError) {
+              logger.error(
+                '[MITHRIL] Fallback cardano-node start failed after bootstrap decision error',
+                {
+                  error: startError,
+                }
+              );
+            }
           }
           break;
 
@@ -595,7 +782,12 @@ export const handleDiskSpace = (
               null
             );
             if (cardanoNode._startupTries > 0) await cardanoNode.restart();
-            else await cardanoNode.start();
+            else {
+              await cardanoNode.start();
+              if (currentGeneration !== directoryChangeGeneration) {
+                return getStaleResponse();
+              }
+            }
             response.hadNotEnoughSpaceLeft = false;
           } catch (error) {
             logger.error(
@@ -609,6 +801,9 @@ export const handleDiskSpace = (
         default:
       }
     } catch (error) {
+      if (isManagedChainLayoutError(error)) {
+        throw error;
+      }
       logger.error('[DISK-SPACE-DEBUG] Unknown error', error);
       resetInterval(DISK_SPACE_CHECK_MEDIUM_INTERVAL);
     }
@@ -616,6 +811,140 @@ export const handleDiskSpace = (
     await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
     return response;
   };
+
+  const flushPendingDiskSpaceCheck = () => {
+    if (activeDiskSpaceCheckPromise || !pendingDiskSpaceCheckArgs) return;
+
+    const nextArgs = pendingDiskSpaceCheckArgs;
+    const nextWaiters = pendingDiskSpaceCheckWaiters;
+
+    pendingDiskSpaceCheckArgs = null;
+    pendingDiskSpaceCheckWaiters = [];
+
+    const nextPromise = startDiskSpaceCheckRun(nextArgs);
+
+    nextPromise.then(
+      (response) => {
+        nextWaiters.forEach(({ resolve }) => resolve(response));
+      },
+      (error) => {
+        nextWaiters.forEach(({ reject }) => reject(error));
+      }
+    );
+  };
+
+  const startDiskSpaceCheckRun = ({
+    hadNotEnoughSpaceLeft,
+    forceDiskSpaceRequired,
+  }: {
+    hadNotEnoughSpaceLeft?: boolean;
+    forceDiskSpaceRequired?: number;
+  }): Promise<CheckDiskSpaceResponse> => {
+    const diskSpaceCheckPromise = runHandleCheckDiskSpace(
+      hadNotEnoughSpaceLeft,
+      forceDiskSpaceRequired
+    );
+
+    activeDiskSpaceCheckPromise = diskSpaceCheckPromise;
+
+    diskSpaceCheckPromise.then(
+      () => {
+        if (activeDiskSpaceCheckPromise === diskSpaceCheckPromise) {
+          activeDiskSpaceCheckPromise = null;
+        }
+        flushPendingDiskSpaceCheck();
+      },
+      () => {
+        if (activeDiskSpaceCheckPromise === diskSpaceCheckPromise) {
+          activeDiskSpaceCheckPromise = null;
+        }
+        flushPendingDiskSpaceCheck();
+      }
+    );
+
+    return diskSpaceCheckPromise;
+  };
+
+  const mergePendingDiskSpaceCheckArgs = (nextArgs: {
+    hadNotEnoughSpaceLeft?: boolean;
+    forceDiskSpaceRequired?: number;
+  }) => {
+    if (!pendingDiskSpaceCheckArgs) {
+      pendingDiskSpaceCheckArgs = nextArgs;
+      return;
+    }
+
+    pendingDiskSpaceCheckArgs = {
+      hadNotEnoughSpaceLeft:
+        pendingDiskSpaceCheckArgs.hadNotEnoughSpaceLeft === false ||
+        nextArgs.hadNotEnoughSpaceLeft === false
+          ? false
+          : nextArgs.hadNotEnoughSpaceLeft ??
+            pendingDiskSpaceCheckArgs.hadNotEnoughSpaceLeft,
+      forceDiskSpaceRequired:
+        nextArgs.forceDiskSpaceRequired ??
+        pendingDiskSpaceCheckArgs.forceDiskSpaceRequired,
+    };
+  };
+
+  const launchHandleCheckDiskSpace = (
+    hadNotEnoughSpaceLeft?: boolean,
+    forceDiskSpaceRequired?: number
+  ): Promise<CheckDiskSpaceResponse> => {
+    const args = {
+      hadNotEnoughSpaceLeft,
+      forceDiskSpaceRequired,
+    };
+
+    if (!activeDiskSpaceCheckPromise) {
+      return startDiskSpaceCheckRun(args);
+    }
+
+    mergePendingDiskSpaceCheckArgs(args);
+
+    return new Promise<CheckDiskSpaceResponse>((resolve, reject) => {
+      pendingDiskSpaceCheckWaiters.push({ resolve, reject });
+    });
+  };
+
+  const resetOnDirectoryChange = () => {
+    mithrilDecisionInFlight = false;
+    mithrilFailureDecisionInFlight = false;
+    mithrilFailureDeclineInFlight = false;
+    mithrilCancelledDeclineInFlight = false;
+    mithrilStartupCheckDone = false;
+    mithrilStartupLayoutResult = null;
+    mithrilDecisionPrompted = false;
+    mithrilDecision = null;
+    mithrilBootstrapCompleted = false;
+    mithrilStartInFlight = false;
+    resetMithrilDecisionState({ suppressStatusBroadcast: true });
+    directoryChangeGeneration += 1;
+    launchHandleCheckDiskSpace(false).catch((error) => {
+      if (isMithrilDecisionCancelledError(error)) {
+        logger.info(
+          '[MITHRIL] Immediate disk-space recheck cancelled after directory change',
+          null
+        );
+        return;
+      }
+
+      logger.error(
+        '[MITHRIL] Immediate disk-space recheck after directory change failed',
+        {
+          error,
+        }
+      );
+    });
+  };
+
+  const handleCheckDiskSpace = (
+    hadNotEnoughSpaceLeft?: boolean,
+    forceDiskSpaceRequired?: number
+  ): Promise<CheckDiskSpaceResponse> =>
+    launchHandleCheckDiskSpace(hadNotEnoughSpaceLeft, forceDiskSpaceRequired);
+
+  chainStorageCoordinator.onDirectoryChanged(resetOnDirectoryChange);
 
   const resetInterval = (interval: number) => {
     // Remove diskSpaceCheckInterval if set
@@ -630,9 +959,24 @@ export const handleDiskSpace = (
 
   const setDiskSpaceIntervalChecking = (interval) => {
     clearInterval(diskSpaceCheckInterval);
-    diskSpaceCheckInterval = setInterval(async () => {
-      const response = await handleCheckDiskSpace(hadNotEnoughSpaceLeft);
-      hadNotEnoughSpaceLeft = response?.hadNotEnoughSpaceLeft;
+    diskSpaceCheckInterval = setInterval(() => {
+      handleCheckDiskSpace(hadNotEnoughSpaceLeft)
+        .then((response) => {
+          hadNotEnoughSpaceLeft = response?.hadNotEnoughSpaceLeft;
+        })
+        .catch((error) => {
+          if (isMithrilDecisionCancelledError(error)) {
+            logger.info(
+              '[MITHRIL] Background disk-space poll cancelled after directory change',
+              null
+            );
+            return;
+          }
+
+          logger.error('[MITHRIL] Background disk-space poll failed', {
+            error,
+          });
+        });
     }, interval);
     diskSpaceCheckIntervalLength = interval;
   };
@@ -640,7 +984,7 @@ export const handleDiskSpace = (
   // Start default interval
   setDiskSpaceIntervalChecking(diskSpaceCheckIntervalLength);
   getDiskSpaceStatusChannel.onReceive(async () => {
-    const diskSpacePath = await chainStorageManager.resolveChainStoragePath();
+    const diskSpacePath = await chainStorageManager.resolveDiskSpaceCheckPath();
     const diskReport = await getDiskCheckReport(diskSpacePath);
     await getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
     return diskReport;

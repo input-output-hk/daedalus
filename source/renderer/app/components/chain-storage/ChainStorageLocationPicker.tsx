@@ -16,8 +16,10 @@ import {
   formatStorageSize,
   formatAvailableSpace,
   getValidationMessage,
+  getStorageHelpText,
   pathsAreEqual,
   createDefaultValidation,
+  getManagedChainDisplayPath,
 } from './chainStorageUtils';
 import { MITHRIL_CHAIN_STORAGE_HEADING_ID } from '../loading/mithril-bootstrap/accessibilityIds';
 
@@ -26,6 +28,8 @@ interface Props {
   defaultChainPath?: string | null;
   defaultChainStorageValidation?: ChainStorageValidation;
   chainStorageValidation?: ChainStorageValidation;
+  pendingChainPath?: string | null;
+  isRecoveryFallback?: boolean;
   estimatedRequiredSpaceBytes?: number;
   isChainStorageLoading?: boolean;
   onSetChainStorageDirectory?: (arg: string | null) => Promise<unknown>;
@@ -46,6 +50,10 @@ type StorageCandidate = {
 };
 
 const STORAGE_LOCATION_INPUT_ID = 'chain-storage-location-input';
+const STORAGE_LOCATION_HELP_TEXT_ID = 'chain-storage-help-text';
+const STORAGE_LOCATION_RECOVERY_NOTICE_ID =
+  'chain-storage-location-recovery-notice';
+const STORAGE_LOCATION_DATA_FOUND_ID = 'chain-storage-location-data-found';
 const STORAGE_LOCATION_VALIDATION_MESSAGE_ID =
   'chain-storage-location-validation-message';
 
@@ -55,6 +63,8 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     defaultChainPath,
     defaultChainStorageValidation,
     chainStorageValidation,
+    pendingChainPath,
+    isRecoveryFallback,
     estimatedRequiredSpaceBytes,
     isChainStorageLoading,
     onSetChainStorageDirectory,
@@ -74,6 +84,11 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     setSelectionValidation,
   ] = React.useState<ChainStorageValidation | null>(null);
   const isMountedRef = React.useRef(true);
+  const recoveryNoticeRef = React.useRef<HTMLDivElement | null>(null);
+  const [
+    isRecoveryNoticeDismissed,
+    setIsRecoveryNoticeDismissed,
+  ] = React.useState(false);
 
   React.useEffect(
     () => () => {
@@ -81,6 +96,12 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     },
     []
   );
+
+  React.useEffect(() => {
+    if (isRecoveryFallback) {
+      setIsRecoveryNoticeDismissed(false);
+    }
+  }, [isRecoveryFallback]);
 
   const defaultValidation = React.useMemo(
     () =>
@@ -93,24 +114,35 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     setSelectionValidation(null);
   }, [
     customChainPath,
+    pendingChainPath,
     defaultChainPath,
     chainStorageValidation,
     defaultChainStorageValidation,
   ]);
 
+  const shouldShowRecoveryNotice =
+    Boolean(isRecoveryFallback) && !isRecoveryNoticeDismissed;
+
+  React.useEffect(() => {
+    if (shouldShowRecoveryNotice) {
+      recoveryNoticeRef.current?.focus();
+    }
+  }, [shouldShowRecoveryNotice]);
+
+  const committedPath =
+    pendingChainPath !== undefined ? pendingChainPath : customChainPath;
   const committedValidation =
-    customChainPath == null
+    committedPath == null
       ? defaultValidation
       : chainStorageValidation || {
           isValid: true,
-          path: customChainPath,
+          path: committedPath,
         };
   const effectiveSelection = candidate || {
-    path: customChainPath,
+    path: committedPath,
     validation: committedValidation,
   };
 
-  const currentPath = effectiveSelection.path || defaultChainPath;
   const displayedValidation =
     selectionValidation != null && !selectionValidation.isValid
       ? selectionValidation
@@ -127,29 +159,50 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
           requiredSpace: estimatedRequiredSpace,
         });
   const validationMessage = getValidationMessage(intl, displayedValidation);
+  const storageHelpText = getStorageHelpText(intl, displayedValidation);
+  const hasBlockchainData =
+    displayedValidation.isValid &&
+    displayedValidation.chainSubdirectoryStatus === 'existing-directory';
   const isCurrentStorageInvalid =
-    customChainPath != null &&
+    committedPath != null &&
     chainStorageValidation != null &&
     !chainStorageValidation.isValid &&
     chainStorageValidation.path != null &&
-    pathsAreEqual(chainStorageValidation.path, customChainPath);
+    pathsAreEqual(chainStorageValidation.path, committedPath);
   const hasValidCandidateOverride =
     candidate != null && candidate.validation.isValid;
+  const hasInvalidCandidate =
+    candidate != null && !candidate.validation.isValid;
   const isBusy =
     Boolean(isSelectingDirectory) ||
     Boolean(isApplyingStorageChange) ||
     Boolean(isChainStorageLoading);
   const isContinueDisabled =
-    isBusy || (isCurrentStorageInvalid && !hasValidCandidateOverride);
+    isBusy ||
+    hasInvalidCandidate ||
+    (isCurrentStorageInvalid && !hasValidCandidateOverride);
   const canResetToDefault = effectiveSelection.path != null;
   const inputClasses = classNames(styles.storageInput, {
     [styles.error]: validationMessage != null,
   });
-  const validationMessageId = validationMessage
-    ? STORAGE_LOCATION_VALIDATION_MESSAGE_ID
-    : undefined;
-  const displayedPath =
-    currentPath || intl.formatMessage(messages.defaultLocationLabel);
+  const describedByIds = [
+    storageHelpText && !hasBlockchainData
+      ? STORAGE_LOCATION_HELP_TEXT_ID
+      : undefined,
+    validationMessage ? STORAGE_LOCATION_VALIDATION_MESSAGE_ID : undefined,
+    shouldShowRecoveryNotice ? STORAGE_LOCATION_RECOVERY_NOTICE_ID : undefined,
+    hasBlockchainData ? STORAGE_LOCATION_DATA_FOUND_ID : undefined,
+  ].filter(Boolean);
+  const describedById =
+    describedByIds.length > 0 ? describedByIds.join(' ') : undefined;
+  const isInvalidDraft =
+    candidate != null &&
+    !candidate.validation.isValid &&
+    candidate.path != null;
+  const displayedPath = isInvalidDraft
+    ? candidate.path
+    : getManagedChainDisplayPath(effectiveSelection.path, defaultChainPath) ||
+      intl.formatMessage(messages.defaultLocationLabel);
   const availableSpace = formatAvailableSpace(
     intl,
     effectiveSelection.validation.availableSpaceBytes
@@ -185,6 +238,7 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
       }
 
       if (pathsAreEqual(selectedPath, defaultChainPath)) {
+        setIsRecoveryNoticeDismissed(true);
         setCandidate({
           path: null,
           validation: defaultValidation,
@@ -217,8 +271,14 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
       setSelectionValidation(validation);
 
       if (validation.isValid) {
+        setIsRecoveryNoticeDismissed(true);
         setCandidate({
           path: validation.path ?? selectedPath,
+          validation,
+        });
+      } else {
+        setCandidate({
+          path: selectedPath,
           validation,
         });
       }
@@ -234,6 +294,7 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
       return;
     }
 
+    setIsRecoveryNoticeDismissed(true);
     setCandidate({
       path: null,
       validation: defaultValidation,
@@ -246,7 +307,9 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
       return;
     }
 
-    const nextPath = candidate ? candidate.path : customChainPath;
+    setIsRecoveryNoticeDismissed(true);
+
+    const nextPath = candidate ? candidate.path : committedPath;
     const shouldResetToDefault = nextPath == null && customChainPath != null;
     const shouldSetCustomPath =
       nextPath != null &&
@@ -282,6 +345,15 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
       }
 
       onConfirmStorageLocation();
+    } catch {
+      if (isMountedRef.current) {
+        setSelectionValidation({
+          isValid: false,
+          path: nextPath ?? null,
+          reason: 'unknown',
+          message: 'An unexpected error occurred. Please try again.',
+        });
+      }
     } finally {
       if (isMountedRef.current) {
         setIsApplyingStorageChange(false);
@@ -310,13 +382,25 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
             availableSpace,
           })}
         </p>
+        {shouldShowRecoveryNotice && (
+          <div
+            ref={recoveryNoticeRef}
+            className={styles.storageSubtext}
+            id={STORAGE_LOCATION_RECOVERY_NOTICE_ID}
+            role="status"
+            aria-live="polite"
+            tabIndex={-1}
+          >
+            {intl.formatMessage(messages.recoveryNotice)}
+          </div>
+        )}
         <div className={styles.storageInputWrapper}>
           <input
             id={STORAGE_LOCATION_INPUT_ID}
             type="text"
             className={inputClasses}
             value={displayedPath}
-            aria-describedby={validationMessageId}
+            aria-describedby={describedById}
             aria-invalid={validationMessage != null}
             placeholder={
               defaultChainPath ||
@@ -339,6 +423,28 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
             />
           </button>
         </div>
+        {storageHelpText && !hasBlockchainData && (
+          <p
+            className={classNames(
+              styles.storageSubtext,
+              styles.storageHelpText
+            )}
+            id={STORAGE_LOCATION_HELP_TEXT_ID}
+          >
+            {storageHelpText}
+          </p>
+        )}
+        {hasBlockchainData && (
+          <p
+            className={classNames(
+              styles.storageSubtext,
+              styles.storageHelpText
+            )}
+            id={STORAGE_LOCATION_DATA_FOUND_ID}
+          >
+            {intl.formatMessage(messages.dataFoundNotice)}
+          </p>
+        )}
         <div className={styles.resetActionRow}>
           {canResetToDefault && (
             <button

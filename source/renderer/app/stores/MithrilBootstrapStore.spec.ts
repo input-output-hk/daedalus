@@ -6,6 +6,7 @@ import { noopAnalyticsTracker } from '../analytics';
 const mockSetChainStorageDirectoryRequest = jest.fn();
 const mockGetChainStorageDirectoryRequest = jest.fn();
 const mockValidateChainStorageDirectoryRequest = jest.fn();
+const mockPrepareChainStorageLocationChangeRequest = jest.fn();
 
 jest.mock('../ipc/chainStorageChannel', () => ({
   setChainStorageDirectoryChannel: {
@@ -17,6 +18,9 @@ jest.mock('../ipc/chainStorageChannel', () => ({
   validateChainStorageDirectoryChannel: {
     request: (...args) => mockValidateChainStorageDirectoryRequest(...args),
   },
+  prepareChainStorageLocationChangeChannel: {
+    request: (...args) => mockPrepareChainStorageLocationChangeRequest(...args),
+  },
 }));
 
 describe('MithrilBootstrapStore', () => {
@@ -27,6 +31,21 @@ describe('MithrilBootstrapStore', () => {
 
   const setupStore = () =>
     new MithrilBootstrapStore(api, actions, noopAnalyticsTracker);
+
+  const createDeferred = <T>() => {
+    let resolve: (value: T | PromiseLike<T>) => void;
+    let reject: (reason?: unknown) => void;
+    const promise = new Promise<T>((promiseResolve, promiseReject) => {
+      resolve = promiseResolve;
+      reject = promiseReject;
+    });
+
+    return {
+      promise,
+      resolve: resolve!,
+      reject: reject!,
+    };
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -117,7 +136,6 @@ describe('MithrilBootstrapStore', () => {
       defaultPath: '/tmp/state/chain',
       availableSpaceBytes: 123456,
       requiredSpaceBytes: 654321,
-      setAt: '2026-03-09T00:00:00.000Z',
     });
     mockValidateChainStorageDirectoryRequest.mockResolvedValue({
       isValid: true,
@@ -141,7 +159,23 @@ describe('MithrilBootstrapStore', () => {
       path: '/mnt/external/daedalus-chain',
       resolvedPath: '/mnt/external/daedalus-chain',
     });
+    expect(store.isRecoveryFallback).toBe(false);
     expect(store.isChainStorageLoading).toBe(false);
+  });
+
+  it('stores recovery fallback state from the IPC config response', async () => {
+    const store = setupStore();
+    mockGetChainStorageDirectoryRequest.mockResolvedValue({
+      customPath: null,
+      defaultPath: '/tmp/state/chain',
+      availableSpaceBytes: 987654321,
+      requiredSpaceBytes: 654321,
+      isRecoveryFallback: true,
+    });
+
+    await store.loadChainStorageConfig();
+
+    expect(store.isRecoveryFallback).toBe(true);
   });
 
   it('surfaces invalid startup custom path validation through store state', async () => {
@@ -203,6 +237,7 @@ describe('MithrilBootstrapStore', () => {
 
   it('sets custom chain storage path when validation succeeds', async () => {
     const store = setupStore();
+    store.isRecoveryFallback = true;
     mockSetChainStorageDirectoryRequest.mockResolvedValue({
       isValid: true,
       path: '/mnt/custom-chain',
@@ -225,7 +260,65 @@ describe('MithrilBootstrapStore', () => {
       path: '/mnt/custom-chain',
       resolvedPath: '/mnt/custom-chain',
     });
+    expect(store.isRecoveryFallback).toBe(false);
     expect(store.isChainStorageLoading).toBe(false);
+  });
+
+  it('switches into the decision view transition while applying a chain storage change', async () => {
+    const store = setupStore();
+    const deferred = createDeferred<{
+      isValid: boolean;
+      path: string;
+      resolvedPath: string;
+    }>();
+
+    mockSetChainStorageDirectoryRequest.mockReturnValue(deferred.promise);
+
+    const pendingChange = store.setChainStorageDirectory('/mnt/custom-chain');
+
+    expect(store.isApplyingStorageLocation).toBe(true);
+    expect(store.storageLocationConfirmed).toBe(false);
+
+    deferred.resolve({
+      isValid: true,
+      path: '/mnt/custom-chain',
+      resolvedPath: '/mnt/custom-chain',
+    });
+
+    await pendingChange;
+
+    expect(store.isApplyingStorageLocation).toBe(false);
+    expect(store.storageLocationConfirmed).toBe(true);
+    expect(store.pendingChainPath).toBeUndefined();
+  });
+
+  it('restores the storage picker after an invalid chain storage apply result', async () => {
+    const store = setupStore();
+    const deferred = createDeferred<{
+      isValid: false;
+      path: string;
+      reason: 'unknown';
+      message: string;
+    }>();
+
+    mockSetChainStorageDirectoryRequest.mockReturnValue(deferred.promise);
+
+    const pendingChange = store.setChainStorageDirectory('/mnt/invalid');
+
+    expect(store.isApplyingStorageLocation).toBe(true);
+
+    deferred.resolve({
+      isValid: false,
+      path: '/mnt/invalid',
+      reason: 'unknown',
+      message: 'Unable to use selected directory.',
+    });
+
+    await pendingChange;
+
+    expect(store.isApplyingStorageLocation).toBe(false);
+    expect(store.storageLocationConfirmed).toBe(false);
+    expect(store.pendingChainPath).toBe('/mnt/invalid');
   });
 
   it('keeps previous custom path when validation fails', async () => {
@@ -252,6 +345,7 @@ describe('MithrilBootstrapStore', () => {
   it('resets chain storage to default through dedicated action', async () => {
     const store = setupStore();
     store.defaultChainPath = '/tmp/state/chain';
+    store.isRecoveryFallback = true;
     mockSetChainStorageDirectoryRequest.mockResolvedValue({
       isValid: true,
       path: null,
@@ -281,6 +375,7 @@ describe('MithrilBootstrapStore', () => {
       availableSpaceBytes: 456789,
       requiredSpaceBytes: 654321,
     });
+    expect(store.isRecoveryFallback).toBe(false);
   });
 
   it('validates chain storage directory without mutating selected config', async () => {
@@ -307,9 +402,11 @@ describe('MithrilBootstrapStore', () => {
 
   it('marks storage location as confirmed when requested', () => {
     const store = setupStore();
+    store.isRecoveryFallback = true;
 
     expect(store.storageLocationConfirmed).toBe(false);
     store.confirmStorageLocation();
+    expect(store.isRecoveryFallback).toBe(false);
     expect(store.storageLocationConfirmed).toBe(true);
   });
 
@@ -317,12 +414,59 @@ describe('MithrilBootstrapStore', () => {
     const store = setupStore();
 
     store.confirmStorageLocation();
+    store.isApplyingStorageLocation = true;
+    store.pendingChainPath = '/mnt/pending-chain';
 
     expect(store.storageLocationConfirmed).toBe(true);
 
     store.clearStorageLocationConfirmation();
 
     expect(store.storageLocationConfirmed).toBe(false);
+    expect(store.isApplyingStorageLocation).toBe(false);
+    expect(store.pendingChainPath).toBeUndefined();
+  });
+
+  it('returns to the picker with the previous custom path as a draft when cleanup resets an empty selection', async () => {
+    const store = setupStore();
+    store.customChainPath = '/mnt/custom-parent';
+    store.storageLocationConfirmed = true;
+    mockPrepareChainStorageLocationChangeRequest.mockResolvedValue({
+      isValid: true,
+      path: null,
+      resolvedPath: '/tmp/state/chain',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
+    });
+
+    await store.returnToStorageLocation();
+
+    expect(mockPrepareChainStorageLocationChangeRequest).toHaveBeenCalledTimes(
+      1
+    );
+    expect(store.storageLocationConfirmed).toBe(false);
+    expect(store.customChainPath).toBeNull();
+    expect(store.pendingChainPath).toBe('/mnt/custom-parent');
+    expect(store.chainStorageValidation).toEqual({
+      isValid: true,
+      path: '/mnt/custom-parent',
+      resolvedPath: '/mnt/custom-parent',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
+      chainSubdirectoryStatus: 'will-create',
+    });
+  });
+
+  it('returns to the picker without resetting the current custom path when cleanup is skipped', async () => {
+    const store = setupStore();
+    store.customChainPath = '/mnt/custom-parent';
+    store.storageLocationConfirmed = true;
+    mockPrepareChainStorageLocationChangeRequest.mockResolvedValue(null);
+
+    await store.returnToStorageLocation();
+
+    expect(store.storageLocationConfirmed).toBe(false);
+    expect(store.customChainPath).toBe('/mnt/custom-parent');
+    expect(store.pendingChainPath).toBeUndefined();
   });
 
   it('resets storage location confirmation when re-entering a decision cycle', async () => {

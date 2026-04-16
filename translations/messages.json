@@ -922,6 +922,31 @@
         "id": "chainStorage.locationPicker.availableSpaceSubtext"
       },
       {
+        "defaultMessage": "!!!We couldn't access your previous storage location. A default fallback location has been selected. You can proceed with this or choose a new one.",
+        "description": "Notice shown when Daedalus falls back to the default chain storage location after the previous location becomes unavailable.",
+        "id": "chainStorage.locationPicker.recoveryNotice"
+      },
+      {
+        "defaultMessage": "!!!Existing blockchain data found. Proceeding will reuse this data.",
+        "description": "Notice shown when the selected blockchain data location already contains chain data that will be reused.",
+        "id": "chainStorage.locationPicker.dataFoundNotice"
+      },
+      {
+        "defaultMessage": "!!!Daedalus will create a chain subdirectory inside the selected parent folder.",
+        "description": "Help text shown when Daedalus will create the managed chain subdirectory.",
+        "id": "chainStorage.locationPicker.subdirectoryCreationNotice"
+      },
+      {
+        "defaultMessage": "!!!Daedalus will use the existing chain subdirectory inside the selected parent folder.",
+        "description": "Help text shown when the managed chain subdirectory already exists.",
+        "id": "chainStorage.locationPicker.subdirectoryWarningExists"
+      },
+      {
+        "defaultMessage": "!!!The selected parent folder already contains a chain entry that is not a directory.",
+        "description": "Validation message shown when the managed chain subdirectory conflicts with an existing file.",
+        "id": "chainStorage.locationPicker.subdirectoryErrorConflict"
+      },
+      {
         "defaultMessage": "!!!Disk space unknown",
         "description": "Fallback value when available disk space is unavailable in the storage picker.",
         "id": "chainStorage.locationPicker.availableSpaceUnknown"
@@ -945,6 +970,11 @@
         "defaultMessage": "!!!Choose a directory outside the Daedalus state directory.",
         "description": "Validation message when the selected chain storage path is inside the state directory.",
         "id": "chainStorage.locationPicker.validation.insideStateDir"
+      },
+      {
+        "defaultMessage": "!!!Select the parent folder, not the existing chain subdirectory managed by Daedalus.",
+        "description": "Validation message when the selected chain storage path is already the managed chain child directory.",
+        "id": "chainStorage.locationPicker.validation.isManagedChild"
       },
       {
         "defaultMessage": "!!!The selected directory does not have enough free space for blockchain data.",

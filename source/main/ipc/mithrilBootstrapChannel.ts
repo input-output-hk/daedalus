@@ -24,9 +24,12 @@ import type {
   MithrilBootstrapStatusUpdate,
 } from '../../common/types/mithril-bootstrap.types';
 import { isMithrilBootstrapBlockingNodeStart } from '../../common/types/mithril-bootstrap.types';
-import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
-import { ChainStorageManager } from '../utils/chainStorageManager';
+import type { CardanoNodeState } from '../../common/types/cardano-node.types';
 import { logger } from '../utils/logging';
+import {
+  chainStorageCoordinator,
+  getMithrilBootstrapService,
+} from '../utils/chainStorageCoordinator';
 
 const mithrilBootstrapDecisionChannel: MainIpcChannel<
   MithrilBootstrapDecisionRendererRequest,
@@ -50,9 +53,16 @@ const mithrilBootstrapSnapshotsChannel: MainIpcChannel<
 > = new MainIpcChannel(MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL);
 
 let pendingDecision: MithrilBootstrapDecision | null = null;
-let decisionWaiters: Array<(decision: MithrilBootstrapDecision) => void> = [];
+let decisionWaiters: Array<{
+  resolve: (decision: MithrilBootstrapDecision) => void;
+  reject: (error: Error) => void;
+}> = [];
 let statusListeners: Array<(status: MithrilBootstrapStatusUpdate) => void> = [];
 let decisionListeners: Array<(decision: MithrilBootstrapDecision) => void> = [];
+let getNodeState: () => CardanoNodeState | null | undefined = () => undefined;
+let sendStatusUpdate:
+  | ((status: MithrilBootstrapStatusUpdate) => Promise<void>)
+  | null = null;
 
 let lastStatus: MithrilBootstrapStatusUpdate = {
   status: 'idle',
@@ -60,8 +70,40 @@ let lastStatus: MithrilBootstrapStatusUpdate = {
   error: null,
 };
 
+export class MithrilDecisionCancelledError extends Error {
+  constructor() {
+    super('Mithril bootstrap decision was cancelled.');
+    this.name = 'MithrilDecisionCancelledError';
+  }
+}
+
+export const isMithrilDecisionCancelledError = (
+  error: unknown
+): error is MithrilDecisionCancelledError =>
+  error instanceof MithrilDecisionCancelledError;
+
+const broadcastMithrilBootstrapStatus = async (
+  status: MithrilBootstrapStatusUpdate
+): Promise<void> => {
+  lastStatus = status;
+  statusListeners.forEach((listener) => listener(status));
+  try {
+    if (sendStatusUpdate) {
+      await sendStatusUpdate(status);
+    }
+  } catch (error) {
+    logger.warn('Failed to send Mithril status to renderer', { error });
+  }
+};
+
 export const getPendingMithrilBootstrapDecision = () => pendingDecision;
 export const getMithrilBootstrapStatus = () => lastStatus;
+export const getMithrilBootstrapNodeState = () => getNodeState();
+export const setMithrilBootstrapNodeStateProvider = (
+  provider: () => CardanoNodeState | null | undefined
+) => {
+  getNodeState = provider;
+};
 export const isMithrilBootstrapNodeStartBlocked = () =>
   isMithrilBootstrapBlockingNodeStart(lastStatus.status);
 export const onMithrilBootstrapStatus = (
@@ -100,31 +142,80 @@ export const waitForMithrilBootstrapDecision = (): Promise<
   MithrilBootstrapDecision
 > => {
   if (pendingDecision) return Promise.resolve(pendingDecision);
-  return new Promise((resolve) => {
-    decisionWaiters.push(resolve);
+  return new Promise((resolve, reject) => {
+    decisionWaiters.push({ resolve, reject });
   });
 };
 
-export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
-  const service = new MithrilBootstrapService();
-  const chainStorageManager = new ChainStorageManager();
-  lastStatus = service.status;
+export const resetMithrilDecisionState = (
+  options: {
+    suppressStatusBroadcast?: boolean;
+  } = {}
+): void => {
+  pendingDecision = null;
+  const cancellationError = new MithrilDecisionCancelledError();
+  decisionWaiters.forEach(({ reject }) => reject(cancellationError));
+  decisionWaiters = [];
 
-  const syncWorkDir = async () => {
-    const workDir = await chainStorageManager.resolveMithrilWorkDir();
-    service.setWorkDir(workDir);
+  const update = setMithrilBootstrapStatus({
+    status: 'idle',
+    snapshot: null,
+    error: null,
+    elapsedSeconds: undefined,
+    filesDownloaded: undefined,
+    filesTotal: undefined,
+    ancillaryBytesDownloaded: undefined,
+    ancillaryBytesTotal: undefined,
+    progressItems: undefined,
+  });
+
+  if (options.suppressStatusBroadcast) {
+    return;
+  }
+
+  broadcastMithrilBootstrapStatus(update).catch((error) => {
+    logger.warn(
+      'Failed to broadcast Mithril idle status during decision reset',
+      {
+        error,
+      }
+    );
+  });
+};
+
+let mithrilBootstrapRequestsInitialized = false;
+
+export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
+  // Always rebind sendStatusUpdate to the latest window so status
+  // targets the current webContents after window recreation.
+  sendStatusUpdate = async (status) => {
+    await mithrilBootstrapStatusChannel.send(status, window.webContents);
   };
 
+  if (mithrilBootstrapRequestsInitialized) return;
+  mithrilBootstrapRequestsInitialized = true;
+
+  const service = getMithrilBootstrapService();
+  lastStatus = service.status;
+
+  chainStorageCoordinator.syncMithrilWorkDir().catch((error) => {
+    logger.warn('Failed to sync Mithril work directory on IPC setup', {
+      error,
+    });
+  });
+
   service.onStatus((status) => {
-    lastStatus = status;
-    mithrilBootstrapStatusChannel.send(status, window.webContents);
-    statusListeners.forEach((listener) => listener(status));
+    broadcastMithrilBootstrapStatus(status).catch((error) => {
+      logger.warn('Failed to broadcast Mithril status update', {
+        error,
+      });
+    });
   });
 
   mithrilBootstrapStatusChannel.onRequest(async () => lastStatus);
 
   mithrilBootstrapSnapshotsChannel.onRequest(async () =>
-    service.listSnapshots()
+    chainStorageCoordinator.listSnapshots()
   );
 
   mithrilBootstrapDecisionChannel.onRequest(async ({ decision }) => {
@@ -134,7 +225,7 @@ export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
       status: lastStatus.status,
     });
     pendingDecision = decision;
-    decisionWaiters.forEach((resolve) => resolve(decision));
+    decisionWaiters.forEach(({ resolve }) => resolve(decision));
     decisionWaiters = [];
     decisionListeners.forEach((listener) => listener(decision));
     if (decision === 'decline') {
@@ -150,15 +241,16 @@ export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
         error: null,
         elapsedSeconds: undefined,
       });
-      await mithrilBootstrapStatusChannel.send(update, window.webContents);
-      statusListeners.forEach((listener) => listener(update));
+      await broadcastMithrilBootstrapStatus(update);
     }
   });
 
   mithrilBootstrapStartChannel.onRequest(async ({ digest, wipeChain }) => {
     try {
-      await syncWorkDir();
-      await service.startBootstrap(digest, { wipeChain });
+      await chainStorageCoordinator.startBootstrap(digest, {
+        wipeChain,
+        nodeState: getNodeState(),
+      });
     } catch (error) {
       logger.error('Mithril bootstrap failed to start', error);
       throw error;
@@ -166,7 +258,6 @@ export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
   });
 
   mithrilBootstrapCancelChannel.onRequest(async () => {
-    await syncWorkDir();
-    await service.cancel();
+    await chainStorageCoordinator.cancelBootstrap();
   });
 };

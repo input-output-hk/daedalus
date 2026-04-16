@@ -26,8 +26,11 @@ interface Props {
   defaultChainPath?: string | null;
   defaultChainStorageValidation?: ChainStorageValidation;
   chainStorageValidation?: ChainStorageValidation;
+  pendingChainPath?: string | null;
+  isRecoveryFallback?: boolean;
   latestSnapshotSize?: number;
   isChainStorageLoading?: boolean;
+  isApplyingStorageLocation?: boolean;
   storageLocationConfirmed?: boolean;
   snapshots: Array<MithrilSnapshotItem>;
   selectedDigest?: string | null;
@@ -73,9 +76,14 @@ const WORKING_STATUSES: Array<MithrilBootstrapStatus> = [
 
 const getActiveHeadingId = (
   status: MithrilBootstrapStatus,
-  storageLocationConfirmed?: boolean
+  storageLocationConfirmed?: boolean,
+  isApplyingStorageLocation?: boolean
 ) => {
-  if (DECISION_STATUSES.includes(status) && !storageLocationConfirmed) {
+  if (
+    DECISION_STATUSES.includes(status) &&
+    !storageLocationConfirmed &&
+    !isApplyingStorageLocation
+  ) {
     return MITHRIL_CHAIN_STORAGE_HEADING_ID;
   }
 
@@ -108,8 +116,11 @@ function MithrilBootstrap(props: Props) {
     defaultChainPath,
     defaultChainStorageValidation,
     chainStorageValidation,
+    pendingChainPath,
+    isRecoveryFallback,
     latestSnapshotSize,
     isChainStorageLoading,
+    isApplyingStorageLocation,
     storageLocationConfirmed,
     snapshots,
     selectedDigest,
@@ -130,15 +141,25 @@ function MithrilBootstrap(props: Props) {
   } = props;
 
   let content = null;
-  const activeHeadingId = getActiveHeadingId(status, storageLocationConfirmed);
+  const activeHeadingId = getActiveHeadingId(
+    status,
+    storageLocationConfirmed,
+    isApplyingStorageLocation
+  );
 
-  if (DECISION_STATUSES.includes(status) && !storageLocationConfirmed) {
+  if (
+    DECISION_STATUSES.includes(status) &&
+    !storageLocationConfirmed &&
+    !isApplyingStorageLocation
+  ) {
     content = (
       <ChainStorageLocationPicker
         customChainPath={customChainPath}
         defaultChainPath={defaultChainPath}
         defaultChainStorageValidation={defaultChainStorageValidation}
         chainStorageValidation={chainStorageValidation}
+        pendingChainPath={pendingChainPath}
+        isRecoveryFallback={isRecoveryFallback}
         estimatedRequiredSpaceBytes={latestSnapshotSize}
         isChainStorageLoading={isChainStorageLoading}
         onSetChainStorageDirectory={onSetChainStorageDirectory}
@@ -154,6 +175,8 @@ function MithrilBootstrap(props: Props) {
         selectedDigest={selectedDigest}
         selectedSnapshot={selectedSnapshot}
         isFetchingSnapshots={isFetchingSnapshots}
+        isStorageLocationApplying={isApplyingStorageLocation}
+        pendingChainPath={pendingChainPath}
         customChainPath={customChainPath}
         defaultChainPath={defaultChainPath}
         onSelectSnapshot={onSelectSnapshot}

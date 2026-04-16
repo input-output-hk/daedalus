@@ -138,10 +138,11 @@ export async function runCommand(
   const binaryPath = installDir
     ? path.join(installDir, binaryName)
     : binaryName;
+  const commandArgs = ['--origin-tag', 'DAEDALUS', ...args];
 
   ensureDirectoryExists(workDir);
 
-  logger.info(`[mithril] Spawning: ${binaryPath} ${args.join(' ')}`, {
+  logger.info(`[mithril] Spawning: ${binaryPath} ${commandArgs.join(' ')}`, {
     binaryPath,
     installDir: installDir || '(not set)',
     cwd: workDir,
@@ -150,7 +151,7 @@ export async function runCommand(
   });
 
   return new Promise((resolve, reject) => {
-    const child = spawn(binaryPath, args, {
+    const child = spawn(binaryPath, commandArgs, {
       cwd: workDir,
       env,
     });

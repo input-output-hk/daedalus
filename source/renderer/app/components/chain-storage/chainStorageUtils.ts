@@ -4,6 +4,8 @@ import type { ChainStorageValidation } from '../../../../common/types/mithril-bo
 import type { Intl } from '../../types/i18nTypes';
 import messages from './ChainStorage.messages';
 
+const MANAGED_CHAIN_DIRECTORY = 'chain';
+
 export const formatStorageSize = (sizeBytes?: number): string | null => {
   if (sizeBytes == null || Number.isNaN(sizeBytes)) {
     return null;
@@ -40,11 +42,33 @@ export const getValidationMessage = (
       return intl.formatMessage(messages.validationNotWritable);
     case 'inside-state-dir':
       return intl.formatMessage(messages.validationInsideStateDir);
+    case 'is-managed-child':
+      return intl.formatMessage(messages.validationIsManagedChild);
     case 'insufficient-space':
       return intl.formatMessage(messages.validationInsufficientSpace);
+    case 'path-is-file':
+      return intl.formatMessage(messages.subdirectoryErrorConflict);
     case 'unknown':
     default:
       return intl.formatMessage(messages.validationUnknown);
+  }
+};
+
+export const getStorageHelpText = (
+  intl: Intl,
+  validation?: ChainStorageValidation
+): string | null => {
+  if (!validation || !validation.isValid) {
+    return null;
+  }
+
+  switch (validation.chainSubdirectoryStatus) {
+    case 'will-create':
+      return intl.formatMessage(messages.subdirectoryCreationNotice);
+    case 'existing-directory':
+      return intl.formatMessage(messages.subdirectoryWarningExists);
+    default:
+      return null;
   }
 };
 
@@ -71,6 +95,20 @@ export const pathsAreEqual = (
     comparableSecondPath != null &&
     comparableFirstPath === comparableSecondPath
   );
+};
+
+export const getManagedChainDisplayPath = (
+  customChainPath?: string | null,
+  defaultChainPath?: string | null
+): string | null => {
+  if (
+    typeof customChainPath === 'string' &&
+    customChainPath.trim().length > 0
+  ) {
+    return path.join(customChainPath, MANAGED_CHAIN_DIRECTORY);
+  }
+
+  return defaultChainPath || null;
 };
 
 export const createDefaultValidation = (

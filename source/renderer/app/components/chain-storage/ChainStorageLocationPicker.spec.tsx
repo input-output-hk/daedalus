@@ -44,6 +44,7 @@ describe('ChainStorageLocationPicker', () => {
           defaultChainPath="/tmp/state/chain"
           defaultChainStorageValidation={defaultValidation}
           chainStorageValidation={customValidation}
+          isRecoveryFallback={false}
           isChainStorageLoading={false}
           onSetChainStorageDirectory={jest.fn()}
           onResetChainStorageDirectory={jest.fn()}
@@ -72,7 +73,7 @@ describe('ChainStorageLocationPicker', () => {
         name: /select blockchain data location/i,
       })
     ).toBeInTheDocument();
-    expect(input).toHaveDisplayValue('/mnt/current-chain');
+    expect(input).toHaveDisplayValue('/mnt/current-chain/chain');
     expect(
       screen.getByText(/the latest available snapshot is about 2 kB/i)
     ).toBeInTheDocument();
@@ -128,7 +129,9 @@ describe('ChainStorageLocationPicker', () => {
     });
 
     expect(onSetChainStorageDirectory).not.toHaveBeenCalled();
-    expect(screen.getByDisplayValue('/mnt/new-chain')).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue('/mnt/new-chain/chain')
+    ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /continue/i }));
 
@@ -137,6 +140,56 @@ describe('ChainStorageLocationPicker', () => {
     });
 
     expect(onConfirmStorageLocation).toHaveBeenCalled();
+  });
+
+  it('applies the canonical parent when a selected alias resolves to chain data', async () => {
+    const onSetChainStorageDirectory = jest.fn().mockResolvedValue({
+      isValid: true,
+      path: '/mnt/external',
+      resolvedPath: '/mnt/external',
+      availableSpaceBytes: 3000,
+      requiredSpaceBytes: 1024,
+      chainSubdirectoryStatus: 'existing-directory',
+    });
+    const onValidateChainStorageDirectory = jest.fn().mockResolvedValue({
+      isValid: true,
+      path: '/mnt/external',
+      resolvedPath: '/mnt/external',
+      availableSpaceBytes: 3000,
+      requiredSpaceBytes: 1024,
+      chainSubdirectoryStatus: 'existing-directory',
+    });
+
+    (showOpenDialogChannel.send as jest.Mock).mockResolvedValue({
+      canceled: false,
+      filePaths: ['/mnt/link-to-chain'],
+    });
+
+    renderComponent({
+      onSetChainStorageDirectory,
+      onValidateChainStorageDirectory,
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /choose directory/i }));
+
+    await waitFor(() => {
+      expect(onValidateChainStorageDirectory).toHaveBeenCalledWith(
+        '/mnt/link-to-chain'
+      );
+    });
+
+    expect(screen.getByDisplayValue('/mnt/external/chain')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /existing blockchain data found\. proceeding will reuse this data\./i
+      )
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /continue/i }));
+
+    await waitFor(() => {
+      expect(onSetChainStorageDirectory).toHaveBeenCalledWith('/mnt/external');
+    });
   });
 
   it('defers reset-to-default until continue is pressed', async () => {
@@ -256,6 +309,24 @@ describe('ChainStorageLocationPicker', () => {
     );
   });
 
+  it('keeps the attempted path visible and continue disabled after an invalid apply remount', () => {
+    renderComponent({
+      pendingChainPath: '/mnt/invalid-chain',
+      chainStorageValidation: {
+        isValid: false,
+        path: '/mnt/invalid-chain',
+        resolvedPath: '/mnt/invalid-chain',
+        reason: 'insufficient-space',
+        message: 'Selected directory does not have enough free space.',
+      },
+    });
+
+    expect(
+      screen.getByDisplayValue('/mnt/invalid-chain/chain')
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled();
+  });
+
   it('announces apply feedback in a polite status region while updating', async () => {
     let resolveStorageChange:
       | React.Dispatch<ChainStorageValidation>
@@ -287,5 +358,178 @@ describe('ChainStorageLocationPicker', () => {
       });
       await Promise.resolve();
     });
+  });
+
+  it('focuses and announces the recovery fallback notice on initial render', () => {
+    renderComponent({
+      customChainPath: null,
+      chainStorageValidation: defaultValidation,
+      isRecoveryFallback: true,
+    });
+
+    const recoveryNotice = screen.getByText(
+      /we couldn't access your previous storage location/i
+    );
+
+    expect(recoveryNotice).toHaveAttribute('role', 'status');
+    expect(recoveryNotice).toHaveAttribute('aria-live', 'polite');
+    expect(recoveryNotice).toHaveFocus();
+  });
+
+  it('clears the recovery notice after choosing a new directory', async () => {
+    const onValidateChainStorageDirectory = jest.fn().mockResolvedValue({
+      isValid: true,
+      path: '/mnt/new-chain',
+      resolvedPath: '/mnt/new-chain',
+      availableSpaceBytes: 3000,
+      requiredSpaceBytes: 1024,
+    });
+
+    (showOpenDialogChannel.send as jest.Mock).mockResolvedValue({
+      canceled: false,
+      filePaths: ['/mnt/new-chain'],
+    });
+
+    renderComponent({
+      customChainPath: null,
+      chainStorageValidation: defaultValidation,
+      isRecoveryFallback: true,
+      onValidateChainStorageDirectory,
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /choose directory/i }));
+
+    await waitFor(() => {
+      expect(onValidateChainStorageDirectory).toHaveBeenCalledWith(
+        '/mnt/new-chain'
+      );
+    });
+
+    expect(
+      screen.queryByText(/we couldn't access your previous storage location/i)
+    ).not.toBeInTheDocument();
+  });
+
+  it('clears the recovery notice immediately after continue is clicked', async () => {
+    const onConfirmStorageLocation = jest.fn();
+
+    renderComponent({
+      customChainPath: null,
+      chainStorageValidation: defaultValidation,
+      isRecoveryFallback: true,
+      onConfirmStorageLocation,
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /continue/i }));
+
+    await waitFor(() => {
+      expect(onConfirmStorageLocation).toHaveBeenCalled();
+    });
+
+    expect(
+      screen.queryByText(/we couldn't access your previous storage location/i)
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows the data-found notice instead of the existing-directory help text', () => {
+    renderComponent({
+      chainStorageValidation: {
+        isValid: true,
+        path: '/mnt/current-chain',
+        resolvedPath: '/mnt/current-chain',
+        availableSpaceBytes: 4000,
+        requiredSpaceBytes: 1024,
+        chainSubdirectoryStatus: 'existing-directory',
+      },
+      isRecoveryFallback: true,
+    });
+
+    const input = screen.getByLabelText(/blockchain data location/i);
+    const recoveryNotice = screen.getByText(
+      /we couldn't access your previous storage location/i
+    );
+    const dataFoundNotice = screen.getByText(
+      /existing blockchain data found\. proceeding will reuse this data\./i
+    );
+    const describedByIds =
+      input.getAttribute('aria-describedby')?.split(' ') ?? [];
+
+    expect(
+      screen.queryByText(/will use the existing chain subdirectory/i)
+    ).not.toBeInTheDocument();
+    expect(dataFoundNotice).toBeInTheDocument();
+    expect(describedByIds).toContain(recoveryNotice.getAttribute('id'));
+    expect(describedByIds).toContain(dataFoundNotice.getAttribute('id'));
+  });
+
+  it('shows no storage status message for an empty directly selected chain directory', () => {
+    renderComponent({
+      customChainPath: '/mnt/current-parent',
+      chainStorageValidation: {
+        isValid: true,
+        path: '/mnt/current-parent',
+        resolvedPath: '/mnt/current-parent',
+        availableSpaceBytes: 4000,
+        requiredSpaceBytes: 1024,
+      },
+    });
+
+    expect(
+      screen.queryByText(/existing blockchain data found/i)
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        /chain subdirectory inside the selected parent folder/i
+      )
+    ).not.toBeInTheDocument();
+  });
+
+  it('displays the raw rejected path after validation failure instead of managed chain path', async () => {
+    const onValidateChainStorageDirectory = jest.fn().mockResolvedValue({
+      isValid: false,
+      path: '/mnt/bad-chain/chain/db',
+      reason: 'is-managed-child',
+      message: 'Cannot select a path inside the managed chain directory.',
+    });
+
+    (showOpenDialogChannel.send as jest.Mock).mockResolvedValue({
+      canceled: false,
+      filePaths: ['/mnt/bad-chain/chain/db'],
+    });
+
+    renderComponent({
+      onValidateChainStorageDirectory,
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /choose directory/i }));
+
+    await waitFor(() => {
+      expect(onValidateChainStorageDirectory).toHaveBeenCalledWith(
+        '/mnt/bad-chain/chain/db'
+      );
+    });
+
+    // Should display the raw rejected path, NOT /mnt/bad-chain/chain/db/chain
+    expect(
+      screen.getByDisplayValue('/mnt/bad-chain/chain/db')
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled();
+  });
+
+  it('displays managed chain path for valid committed custom selections', () => {
+    renderComponent({
+      customChainPath: '/mnt/my-storage',
+      chainStorageValidation: {
+        isValid: true,
+        path: '/mnt/my-storage',
+        resolvedPath: '/mnt/my-storage',
+        availableSpaceBytes: 4000,
+        requiredSpaceBytes: 1024,
+      },
+    });
+
+    expect(
+      screen.getByDisplayValue('/mnt/my-storage/chain')
+    ).toBeInTheDocument();
   });
 });

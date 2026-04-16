@@ -7,8 +7,7 @@ import {
   ChainStorageValidation,
 } from '../../common/types/mithril-bootstrap.types';
 import { logger } from './logging';
-
-const CHAIN_DIRECTORY_NAME = 'chain';
+import { CHAIN_DIRECTORY_NAME } from './chainStorageManagerShared';
 
 type GetDefaultConfig = () => Promise<
   Pick<
@@ -119,29 +118,113 @@ export async function validateChainStorageDirectory(
       };
     }
 
+    // Treat symlink aliases that resolve to the default chain path as reset-to-default.
+    const resolvedDefaultChainPath = await fs
+      .realpath(chainPath)
+      .catch(() => path.resolve(chainPath));
+    if (
+      resolvedPath === resolvedDefaultChainPath ||
+      isSamePath(resolvedPath, chainPath)
+    ) {
+      const defaultStorageConfig = await getDefaultConfig();
+      return {
+        isValid: true,
+        path: null,
+        resolvedPath: defaultStorageConfig.defaultPath,
+        availableSpaceBytes: defaultStorageConfig.availableSpaceBytes,
+        requiredSpaceBytes: defaultStorageConfig.requiredSpaceBytes,
+      };
+    }
+
+    const isDirectChainSelection =
+      path.basename(resolvedPath) === CHAIN_DIRECTORY_NAME;
+    const validationPath = isDirectChainSelection
+      ? path.dirname(resolvedPath)
+      : normalizedPath;
+    const resolvedValidationPath = isDirectChainSelection
+      ? path.dirname(resolvedPath)
+      : resolvedPath;
+
     const stateDirExists = await fs.pathExists(stateDir);
     const resolvedStatePath = stateDirExists
       ? await fs.realpath(stateDir)
       : path.resolve(stateDir);
 
-    if (isSubPath(resolvedStatePath, resolvedPath)) {
+    // Reject paths that are nested inside the current managed chain directory.
+    // Selecting such a path would create a nested chain/ inside existing chain data.
+    // For direct chain selections (path ending in /chain), check the parent directory.
+    const pathToCheckNesting = isDirectChainSelection
+      ? resolvedValidationPath
+      : resolvedPath;
+    if (
+      isSubPath(resolvedDefaultChainPath, pathToCheckNesting) &&
+      pathToCheckNesting !== resolvedDefaultChainPath
+    ) {
       return {
         ...defaultValidation,
-        resolvedPath,
+        resolvedPath: pathToCheckNesting,
+        reason: 'is-managed-child',
+        message:
+          'Selected directory is inside the current chain storage location.',
+      };
+    }
+
+    if (isSubPath(resolvedStatePath, resolvedValidationPath)) {
+      return {
+        ...defaultValidation,
+        resolvedPath: resolvedValidationPath,
         reason: 'inside-state-dir',
         message: 'Selected directory cannot be inside Daedalus state dir.',
       };
     }
 
-    await fs.access(resolvedPath, fs.constants.W_OK);
+    await fs.access(resolvedValidationPath, fs.constants.W_OK);
 
-    const { free } = await checkDiskSpace(resolvedPath);
+    const managedChainPath = isDirectChainSelection
+      ? resolvedPath
+      : path.join(resolvedValidationPath, CHAIN_DIRECTORY_NAME);
+    const managedChainExists = isDirectChainSelection
+      ? true
+      : await fs.pathExists(managedChainPath);
+    let chainSubdirectoryStatus:
+      | ChainStorageValidation['chainSubdirectoryStatus']
+      | undefined = isDirectChainSelection
+      ? 'existing-directory'
+      : 'will-create';
+
+    if (managedChainExists) {
+      const managedChainStats = isDirectChainSelection
+        ? targetStats
+        : await fs.lstat(managedChainPath);
+      if (managedChainStats.isDirectory()) {
+        const existingManagedChainPath = isDirectChainSelection
+          ? resolvedPath
+          : managedChainPath;
+        const managedChainEntries = await fs.readdir(existingManagedChainPath);
+        chainSubdirectoryStatus =
+          managedChainEntries.length > 0 ? 'existing-directory' : undefined;
+      } else {
+        return {
+          ...defaultValidation,
+          resolvedPath: resolvedValidationPath,
+          availableSpaceBytes: undefined,
+          requiredSpaceBytes: requiredSpace,
+          chainSubdirectoryStatus: 'path-is-file',
+          reason: 'path-is-file',
+          message:
+            'Daedalus cannot use this location because <selected directory>/chain already exists as a file.',
+        };
+      }
+    }
+
+    const { free } = await checkDiskSpace(resolvedValidationPath);
     if (free < requiredSpace) {
       return {
         ...defaultValidation,
-        resolvedPath,
+        resolvedPath: resolvedValidationPath,
         availableSpaceBytes: free,
         requiredSpaceBytes: requiredSpace,
+        chainSubdirectoryStatus,
         reason: 'insufficient-space',
         message: 'Selected directory does not have enough free space.',
       };
@@ -149,10 +232,11 @@ export async function validateChainStorageDirectory(
 
     return {
       isValid: true,
-      path: normalizedPath,
-      resolvedPath,
+      path: validationPath,
+      resolvedPath: resolvedValidationPath,
       availableSpaceBytes: free,
       requiredSpaceBytes: requiredSpace,
+      chainSubdirectoryStatus,
     };
   } catch (error) {
     logger.warn('ChainStorageManager: validation failed', {

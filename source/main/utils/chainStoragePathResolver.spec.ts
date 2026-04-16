@@ -1,17 +1,15 @@
 import fs from 'fs-extra';
 import {
   resolveStateDirectoryPath,
-  resolveCurrentChainSource,
   resolveChainStoragePath,
   resolveMithrilWorkDir,
 } from './chainStoragePathResolver';
-import type { ChainStorageConfig } from '../../common/types/mithril-bootstrap.types';
 
 jest.mock('fs-extra', () => ({
   pathExists: jest.fn(),
   realpath: jest.fn(),
   lstat: jest.fn(),
-  readJson: jest.fn(),
+  readlink: jest.fn(),
 }));
 
 jest.mock('./logging', () => ({
@@ -21,13 +19,6 @@ jest.mock('./logging', () => ({
     error: jest.fn(),
   },
 }));
-
-const makeConfig = (customPath: string | null = null): ChainStorageConfig => ({
-  customPath,
-  defaultPath: '/tmp/state/chain',
-  availableSpaceBytes: 4096,
-  requiredSpaceBytes: 1024,
-});
 
 describe('resolveStateDirectoryPath', () => {
   beforeEach(() => jest.clearAllMocks());
@@ -53,19 +44,10 @@ describe('resolveStateDirectoryPath', () => {
   });
 });
 
-describe('resolveCurrentChainSource', () => {
+describe('resolveChainStoragePath', () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it('returns null when chain path does not exist', async () => {
-    (fs.pathExists as jest.Mock).mockResolvedValue(false);
-
-    const result = await resolveCurrentChainSource('/tmp/state/chain');
-
-    expect(result).toBeNull();
-  });
-
-  it('returns symlink target when chain path is a symlink', async () => {
-    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+  it('returns symlink target when chain entry point is a symlink', async () => {
     (fs.lstat as jest.Mock).mockResolvedValue({
       isSymbolicLink: () => true,
       isDirectory: () => false,
@@ -74,140 +56,119 @@ describe('resolveCurrentChainSource', () => {
       '/mnt/external/chain'
     );
 
-    const result = await resolveCurrentChainSource('/tmp/state/chain');
+    const result = await resolveChainStoragePath('/tmp/state');
 
     expect(result).toBe('/mnt/external/chain');
   });
 
-  it('returns null when symlink cannot be resolved', async () => {
-    (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    (fs.lstat as jest.Mock).mockResolvedValue({
-      isSymbolicLink: () => true,
-      isDirectory: () => false,
-    });
-    ((fs.realpath as unknown) as jest.Mock).mockRejectedValue(
-      new Error('broken symlink')
-    );
-
-    const result = await resolveCurrentChainSource('/tmp/state/chain');
-
-    expect(result).toBeNull();
-  });
-
-  it('returns the chain path itself when it is a plain directory', async () => {
-    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+  it('returns entry-point chain path when chain entry point is a plain directory', async () => {
     (fs.lstat as jest.Mock).mockResolvedValue({
       isSymbolicLink: () => false,
       isDirectory: () => true,
     });
 
-    const result = await resolveCurrentChainSource('/tmp/state/chain');
+    const result = await resolveChainStoragePath('/tmp/state');
 
     expect(result).toBe('/tmp/state/chain');
   });
 
-  it('returns null when path is neither symlink nor directory', async () => {
-    (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    (fs.lstat as jest.Mock).mockResolvedValue({
-      isSymbolicLink: () => false,
-      isDirectory: () => false,
+  it('returns entry-point chain path when chain entry point is missing', async () => {
+    ((fs.lstat as unknown) as jest.Mock).mockRejectedValue(
+      Object.assign(new Error('missing'), { code: 'ENOENT' })
+    );
+
+    const result = await resolveChainStoragePath('/tmp/state');
+
+    expect(result).toBe('/tmp/state/chain');
+  });
+
+  it('resolves junction target on win32 when directory entry is a junction', async () => {
+    const originalPlatform = process.platform;
+    Object.defineProperty(process, 'platform', {
+      value: 'win32',
+      configurable: true,
     });
 
-    const result = await resolveCurrentChainSource('/tmp/state/chain');
-
-    expect(result).toBeNull();
-  });
-});
-
-describe('resolveChainStoragePath', () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  it('returns realpath of chain path when it exists', async () => {
-    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+    (fs.lstat as jest.Mock).mockResolvedValue({
+      isSymbolicLink: () => false,
+      isDirectory: () => true,
+    });
+    (fs.readlink as jest.Mock).mockResolvedValue('C:\\target\\chain');
     ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
-      '/mnt/chain-target'
+      'C:\\target\\chain'
     );
-    const getConfig = jest.fn().mockResolvedValue(makeConfig(null));
 
-    const result = await resolveChainStoragePath('/tmp/state', getConfig);
+    const result = await resolveChainStoragePath('/tmp/state');
 
-    expect(result).toBe('/mnt/chain-target');
-    expect(getConfig).not.toHaveBeenCalled();
+    expect(result).toBe('C:\\target\\chain');
+
+    Object.defineProperty(process, 'platform', {
+      value: originalPlatform,
+      configurable: true,
+    });
   });
 
-  it('falls back to custom path from config when chain path does not exist', async () => {
-    (fs.pathExists as jest.Mock).mockResolvedValue(false);
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
-      '/mnt/custom-chain'
+  it('returns entry-point chain path on win32 when directory is not a junction', async () => {
+    const originalPlatform = process.platform;
+    Object.defineProperty(process, 'platform', {
+      value: 'win32',
+      configurable: true,
+    });
+
+    (fs.lstat as jest.Mock).mockResolvedValue({
+      isSymbolicLink: () => false,
+      isDirectory: () => true,
+    });
+    ((fs.readlink as unknown) as jest.Mock).mockRejectedValue(
+      Object.assign(new Error('not a link'), { code: 'EINVAL' })
     );
-    const getConfig = jest
-      .fn()
-      .mockResolvedValue(makeConfig('/mnt/custom-chain'));
 
-    const result = await resolveChainStoragePath('/tmp/state', getConfig);
+    const result = await resolveChainStoragePath('/tmp/state');
 
-    expect(result).toBe('/mnt/custom-chain');
-  });
+    expect(result).toBe('/tmp/state/chain');
 
-  it('falls back to stateDir when chain path fails and no custom path configured', async () => {
-    (fs.pathExists as jest.Mock).mockResolvedValue(false);
-    const getConfig = jest.fn().mockResolvedValue(makeConfig(null));
-
-    const result = await resolveChainStoragePath('/tmp/state', getConfig);
-
-    expect(result).toBe('/tmp/state');
-  });
-
-  it('falls back to stateDir when custom path realpath fails', async () => {
-    (fs.pathExists as jest.Mock).mockResolvedValue(false);
-    ((fs.realpath as unknown) as jest.Mock).mockRejectedValue(
-      new Error('no such path')
-    );
-    const getConfig = jest
-      .fn()
-      .mockResolvedValue(makeConfig('/mnt/missing-chain'));
-
-    const result = await resolveChainStoragePath('/tmp/state', getConfig);
-
-    expect(result).toBe('/tmp/state');
+    Object.defineProperty(process, 'platform', {
+      value: originalPlatform,
+      configurable: true,
+    });
   });
 });
 
 describe('resolveMithrilWorkDir', () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it('returns stateDir when no custom path is configured', async () => {
-    const getConfig = jest.fn().mockResolvedValue(makeConfig(null));
-
-    const result = await resolveMithrilWorkDir('/tmp/state', getConfig);
-
-    expect(result).toBe('/tmp/state');
-    expect(fs.realpath).not.toHaveBeenCalled();
-  });
-
-  it('returns resolved custom path when configured', async () => {
+  it('returns symlink target when chain entry point is a symlink', async () => {
+    (fs.lstat as jest.Mock).mockResolvedValue({
+      isSymbolicLink: () => true,
+      isDirectory: () => false,
+    });
     ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
-      '/mnt/custom-chain'
+      '/mnt/external/chain'
     );
-    const getConfig = jest
-      .fn()
-      .mockResolvedValue(makeConfig('/mnt/custom-chain'));
 
-    const result = await resolveMithrilWorkDir('/tmp/state', getConfig);
+    const result = await resolveMithrilWorkDir('/tmp/state');
 
-    expect(result).toBe('/mnt/custom-chain');
+    expect(result).toBe('/mnt/external/chain');
   });
 
-  it('falls back to stateDir when realpath of custom path fails', async () => {
-    ((fs.realpath as unknown) as jest.Mock).mockRejectedValue(
-      new Error('path unavailable')
+  it('returns entry-point chain path when chain entry point is a plain directory', async () => {
+    (fs.lstat as jest.Mock).mockResolvedValue({
+      isSymbolicLink: () => false,
+      isDirectory: () => true,
+    });
+
+    const result = await resolveMithrilWorkDir('/tmp/state');
+
+    expect(result).toBe('/tmp/state/chain');
+  });
+
+  it('returns entry-point chain path when chain entry point is missing', async () => {
+    ((fs.lstat as unknown) as jest.Mock).mockRejectedValue(
+      Object.assign(new Error('missing'), { code: 'ENOENT' })
     );
-    const getConfig = jest
-      .fn()
-      .mockResolvedValue(makeConfig('/mnt/missing-chain'));
 
-    const result = await resolveMithrilWorkDir('/tmp/state', getConfig);
+    const result = await resolveMithrilWorkDir('/tmp/state');
 
-    expect(result).toBe('/tmp/state');
+    expect(result).toBe('/tmp/state/chain');
   });
 });
