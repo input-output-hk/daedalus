@@ -25,4 +25,20 @@ describe('blockSyncProgressHelpers', () => {
 
     expect(isItFreshLog(applicationStartDate, line)).toBe(false);
   });
+
+  it('should return true for newer logs with Z timezone suffix', () => {
+    const time = '2022-02-18 13:18:47.66';
+    const applicationStartDate = moment.utc(time).add(-1, 'minute');
+    const line = `[${time}Z][node:ChainDB.ReplayBlock.LedgerReplay] Replayed block: slot 9231 out of 184617678. Progress: 0.01%`;
+
+    expect(isItFreshLog(applicationStartDate, line)).toBe(true);
+  });
+
+  it('should return false for older logs with Z timezone suffix', () => {
+    const time = '2022-02-18 13:18:47.66';
+    const applicationStartDate = moment.utc(time).add(1, 'minute');
+    const line = `[${time}Z][node:ChainDB.ReplayBlock.LedgerReplay] Replayed block: slot 9231 out of 184617678. Progress: 0.01%`;
+
+    expect(isItFreshLog(applicationStartDate, line)).toBe(false);
+  });
 });
