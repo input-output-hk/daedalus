@@ -5,6 +5,7 @@
 # Daedalus
 [![Build status](https://badge.buildkite.com/e173494257519752d79bb52c7859df6277c6d759b217b68384.svg?branch=master)](https://buildkite.com/input-output-hk/daedalus)
 [![Release](https://img.shields.io/github/release/input-output-hk/daedalus.svg)](https://github.com/input-output-hk/daedalus/releases)
+[![License](https://img.shields.io/github/license/input-output-hk/daedalus)](https://github.com/input-output-hk/daedalus/blob/develop/LICENSE)
 
 Daedalus - Cryptocurrency Wallet
 
