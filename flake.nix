@@ -12,7 +12,7 @@
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
     cardano-wallet-unpatched.url = "github:cardano-foundation/cardano-wallet/v2025-03-31";
     cardano-wallet-unpatched.flake = false; # otherwise, +10k quadratic dependencies in flake.lock…
-    cardano-node-override.url = "github:IntersectMBO/cardano-node/10.6.2";
+    cardano-node-override.url = "github:IntersectMBO/cardano-node/10.6.4";
     cardano-node-override.flake = false;
     cardano-playground.url = "github:input-output-hk/cardano-playground/node-10.6.2-config";
     cardano-playground.flake = false; # otherwise, +9k dependencies in flake.lock…
