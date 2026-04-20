@@ -4,6 +4,8 @@ set -o errexit
 set -o pipefail
 
 # x86_64 cross-compilation won’t fly in this pure derivation:
+# system is set by the Nix devshell environment:
+system="${system:-}"
 if [[ $system == *darwin* ]]; then
   if [[ $system == *aarch64* ]] ; then
     changeFrom="x86_64"

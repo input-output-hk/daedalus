@@ -50,6 +50,7 @@
           gnumake
           pkg-config
           libusb1
+          pkgs.shellcheck
         ]
         ++ (
           if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") || (pkgs.stdenv.hostPlatform.system == "aarch64-darwin")
