@@ -66,9 +66,16 @@
           devshell = lib.genAttrs supportedSystems (system: self.devShells.${system}.default);
           # Exposing these DLLs for easier development/debugging on Windows:
           nativeModules.x86_64-windows = self.internal.x86_64-windows.nativeModulesZip;
+          checks.x86_64-linux = self.checks.x86_64-linux;
           required = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
             name = "github-required";
             meta.description = "All jobs required to pass CI";
+            constituents =
+              lib.collect lib.isDerivation self.hydraJobs.checks;
+          };
+          nonrequired = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
+            name = "github-nonrequired";
+            meta.description = "Jobs built by Hydra but not required to pass CI";
             constituents =
               lib.collect lib.isDerivation self.hydraJobs.installer
               ++ lib.collect lib.isDerivation self.hydraJobs.devshell;
