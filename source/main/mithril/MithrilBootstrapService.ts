@@ -677,8 +677,10 @@ export class MithrilBootstrapService {
           verifyingUpdate.filesTotal = this._lastFilesTotal;
         }
         if (this._status.ancillaryBytesTotal != null) {
-          verifyingUpdate.ancillaryBytesDownloaded = this._status.ancillaryBytesTotal;
-          verifyingUpdate.ancillaryBytesTotal = this._status.ancillaryBytesTotal;
+          verifyingUpdate.ancillaryBytesDownloaded =
+            this._status.ancillaryBytesTotal;
+          verifyingUpdate.ancillaryBytesTotal =
+            this._status.ancillaryBytesTotal;
         }
         this._updateStatus(verifyingUpdate);
         return;

@@ -1002,9 +1002,8 @@ export class CardanoNode {
   };
   _ensurePreviousCardanoNodeIsNotRunning = async (): Promise<void> => {
     const { _log } = this;
-    const previousPID: number | null | undefined = await this._retrieveData(
-      PREVIOUS_CARDANO_PID
-    );
+    const previousPID: number | null | undefined =
+      await this._retrieveData(PREVIOUS_CARDANO_PID);
 
     _log.info(
       'CardanoNode: checking if previous cardano-node process is still running',

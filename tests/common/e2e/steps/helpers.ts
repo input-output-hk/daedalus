@@ -151,9 +151,8 @@ export const scrollIntoView = async (
   client: Record<string, any>,
   targetSelector: string
 ) => {
-  const isVisibleWithinViewport = await client.isVisibleWithinViewport(
-    targetSelector
-  );
+  const isVisibleWithinViewport =
+    await client.isVisibleWithinViewport(targetSelector);
 
   if (!isVisibleWithinViewport) {
     await client.execute((target) => {

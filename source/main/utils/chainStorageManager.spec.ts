@@ -107,7 +107,7 @@ describe('ChainStorageManager', () => {
       chainSubdirectoryStatus: 'will-create',
     });
     jest.spyOn(manager, 'getConfig').mockResolvedValue(createConfig(null));
-    ((fs.realpath as unknown) as jest.Mock).mockRejectedValueOnce(
+    (fs.realpath as unknown as jest.Mock).mockRejectedValueOnce(
       createPathNotFoundError()
     );
     jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
@@ -199,7 +199,7 @@ describe('ChainStorageManager', () => {
       resolvedPath: '/mnt/new-parent',
     });
     jest.spyOn(manager, 'getConfig').mockResolvedValue(createConfig(null));
-    ((fs.realpath as unknown) as jest.Mock).mockRejectedValueOnce(
+    (fs.realpath as unknown as jest.Mock).mockRejectedValueOnce(
       createPathNotFoundError()
     );
     jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
@@ -228,7 +228,7 @@ describe('ChainStorageManager', () => {
       resolvedPath: '/mnt/external/daedalus-parent',
     });
     jest.spyOn(manager, 'getConfig').mockResolvedValue(createConfig(null));
-    ((fs.realpath as unknown) as jest.Mock).mockRejectedValueOnce(
+    (fs.realpath as unknown as jest.Mock).mockRejectedValueOnce(
       createPathNotFoundError()
     );
     jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
@@ -306,7 +306,7 @@ describe('ChainStorageManager', () => {
     (fs.lstat as jest.Mock).mockResolvedValue({
       isSymbolicLink: () => true,
     });
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue('/tmp/state');
+    (fs.realpath as unknown as jest.Mock).mockResolvedValue('/tmp/state');
     const migrateSpy = jest
       .spyOn(manager, 'migrateData')
       .mockResolvedValue(undefined);
@@ -431,7 +431,7 @@ describe('ChainStorageManager', () => {
       isSymbolicLink: () => true,
       isDirectory: () => false,
     });
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
+    (fs.realpath as unknown as jest.Mock).mockResolvedValue(
       '/mnt/chain-target'
     );
 
@@ -446,7 +446,7 @@ describe('ChainStorageManager', () => {
       isSymbolicLink: () => true,
       isDirectory: () => false,
     });
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
+    (fs.realpath as unknown as jest.Mock).mockResolvedValue(
       '/mnt/custom-parent/chain'
     );
 
@@ -459,7 +459,7 @@ describe('ChainStorageManager', () => {
     const manager = new ChainStorageManager('/tmp/state');
     const checkDiskSpace = require('check-disk-space');
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue('/tmp/state');
+    (fs.realpath as unknown as jest.Mock).mockResolvedValue('/tmp/state');
     checkDiskSpace.mockResolvedValue({ free: 4096 });
 
     const result = await manager.validate('/tmp/state/chain');
@@ -481,7 +481,7 @@ describe('ChainStorageManager', () => {
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(false)
       .mockResolvedValueOnce(false);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation((p: string) =>
+    (fs.realpath as unknown as jest.Mock).mockImplementation((p: string) =>
       Promise.resolve(p === '/mnt/custom-chain' ? '/mnt/custom-chain' : p)
     );
     (fs.stat as jest.Mock).mockResolvedValue({

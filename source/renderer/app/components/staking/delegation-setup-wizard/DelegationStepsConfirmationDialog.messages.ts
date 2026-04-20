@@ -42,14 +42,12 @@ export const getMessages = () => {
         'Deposit label on the delegation setup "confirmation" step dialog.',
     },
     spendingPasswordPlaceholder: {
-      id:
-        'staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder',
+      id: 'staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder',
       defaultMessage: '!!!Spending password',
       description: 'Placeholder for "spending password"',
     },
     spendingPasswordLabel: {
-      id:
-        'staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel',
+      id: 'staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel',
       defaultMessage: '!!!Spending password',
       description: 'Label for "spending password"',
     },

@@ -15,12 +15,8 @@ class Step3ResultContainer extends Component<Props> {
 
   render() {
     const { onBack, onClose, stores, actions } = this.props;
-    const {
-      redeemWallet,
-      transactionFees,
-      redeemedRewards,
-      redeemSuccess,
-    } = stores.staking;
+    const { redeemWallet, transactionFees, redeemedRewards, redeemSuccess } =
+      stores.staking;
     const { onResultContinue } = actions.staking;
     if (!redeemWallet) throw new Error('Redeem wallet required');
 

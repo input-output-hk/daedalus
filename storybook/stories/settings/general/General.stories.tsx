@@ -103,7 +103,9 @@ storiesOf('Settings / General', module)
   ))
   // @ts-ignore ts-migrate(2345)
   .add('Terms of Service', (_, props) => {
-    const termsOfUseSource = require(`../../../../source/renderer/app/i18n/locales/terms-of-use/${props.locale}.md`);
+    const termsOfUseSource = require(
+      `../../../../source/renderer/app/i18n/locales/terms-of-use/${props.locale}.md`
+    );
 
     return (
       <TermsOfUseSettings

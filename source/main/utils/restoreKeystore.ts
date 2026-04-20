@@ -52,7 +52,7 @@ export const decodeKeystore = async (
 
 const toEncryptedSecretKey = ([encryptedPayload, passphraseHash]: [
   Buffer,
-  Buffer
+  Buffer,
 ]): EncryptedSecretKey => {
   const isEmptyPassphrase = $isEmptyPassphrase(passphraseHash);
   return {

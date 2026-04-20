@@ -10,6 +10,7 @@ export const openLocalDirectoryChannel: MainIpcChannel<
   OpenLocalDirectoryRendererRequest,
   OpenLocalDirectoryMainResponse
 > = new MainIpcChannel(OPEN_LOCAL_DIRECTORY_CHANNEL);
-openLocalDirectoryChannel.onReceive((path: OpenLocalDirectoryRendererRequest) =>
-  shell.openPath(path) ? Promise.resolve() : Promise.reject()
+openLocalDirectoryChannel.onReceive(
+  (path: OpenLocalDirectoryRendererRequest) =>
+    shell.openPath(path) ? Promise.resolve() : Promise.reject()
 );

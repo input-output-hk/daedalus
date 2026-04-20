@@ -9,7 +9,7 @@ import { IpcConversation } from '../../../../common/ipc/lib/IpcConversation';
  */
 export class RendererIpcConversation<
   Incoming,
-  Outgoing
+  Outgoing,
 > extends IpcConversation<Incoming, Outgoing> {
   async send(
     message: Outgoing,

@@ -111,9 +111,8 @@ export class ChainStorageManager {
       const previousConfig = await this.getConfig();
 
       const nextManagedChainPath = this._getManagedChainPath(validation.path);
-      const resolvedTargetPath = await this._resolveRealPathOrInput(
-        nextManagedChainPath
-      );
+      const resolvedTargetPath =
+        await this._resolveRealPathOrInput(nextManagedChainPath);
       const previousState = await this._captureChainPathState();
 
       if (

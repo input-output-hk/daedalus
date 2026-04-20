@@ -9,6 +9,5 @@ export type RebuildApplicationMenu = RendererIpcChannel<
   RebuildAppMenuMainResponse,
   RebuildAppMenuRendererRequest
 >;
-export const rebuildApplicationMenu: RebuildApplicationMenu = new RendererIpcChannel(
-  REBUILD_APP_MENU_CHANNEL
-);
+export const rebuildApplicationMenu: RebuildApplicationMenu =
+  new RendererIpcChannel(REBUILD_APP_MENU_CHANNEL);

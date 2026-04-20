@@ -76,11 +76,9 @@ export function normalizeSpawnEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   const normalizedPath = dedupeWindowsPathSegments(
     [installDir, currentPath]
       .filter(Boolean)
-      .reduce<Array<string>>(
-        (segments, value) =>
-          segments.concat(String(value).split(pathDelimiter)),
-        []
-      )
+      .reduce<
+        Array<string>
+      >((segments, value) => segments.concat(String(value).split(pathDelimiter)), [])
   ).join(pathDelimiter);
 
   if (normalizedPath) {

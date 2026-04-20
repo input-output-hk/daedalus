@@ -100,7 +100,8 @@ export function ManagedChainStorageLocationPicker({
   customChainPath = null,
   defaultChainPath,
   validationPreset,
-  defaultChainStorageValidation: managedDefaultValidation = defaultChainStorageValidation,
+  defaultChainStorageValidation:
+    managedDefaultValidation = defaultChainStorageValidation,
   estimatedRequiredSpaceBytes,
   availableSpaceBytes,
   isRecoveryFallback,
@@ -215,7 +216,8 @@ export function ManagedMithrilBootstrap({
   initialStorageLocationConfirmed = true,
   customChainPath = null,
   defaultChainPath,
-  defaultChainStorageValidation: defaultValidation = defaultChainStorageValidation,
+  defaultChainStorageValidation:
+    defaultValidation = defaultChainStorageValidation,
   latestSnapshotSize,
   isFetchingSnapshots,
   validationPreset,

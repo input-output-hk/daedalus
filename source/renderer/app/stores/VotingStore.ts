@@ -57,7 +57,7 @@ type GenericErrorCode = 'generic';
 
 export type InitializeVPDelegationTxError =
   | GenericErrorCode
-  | typeof expectedInitializeVPDelegationTxErrors[number];
+  | (typeof expectedInitializeVPDelegationTxErrors)[number];
 export const expectedInitializeVPDelegationTxErrors = [
   'same_vote',
   'no_utxos_available',
@@ -66,7 +66,7 @@ export const expectedInitializeVPDelegationTxErrors = [
 
 export type DelegateVotesError =
   | GenericErrorCode
-  | typeof expectedDelegateVotesErrors[number];
+  | (typeof expectedDelegateVotesErrors)[number];
 export const expectedDelegateVotesErrors = [
   'wrong_encryption_passphrase',
 ] as const;
@@ -156,9 +156,8 @@ export default class VotingStore extends Store {
     this.api.ada.getWalletPublicKey
   );
   @observable
-  createVotingRegistrationTransactionRequest: Request<
-    WalletTransaction
-  > = new Request(this.api.ada.createVotingRegistrationTransaction);
+  createVotingRegistrationTransactionRequest: Request<WalletTransaction> =
+    new Request(this.api.ada.createVotingRegistrationTransaction);
   @observable
   signMetadataRequest: Request<Buffer> = new Request(
     this.api.ada.createWalletSignature
@@ -292,13 +291,12 @@ export default class VotingStore extends Store {
     }
 
     try {
-      let coinSelection = await this.stores.hardwareWallets.selectDelegationCoins(
-        {
+      let coinSelection =
+        await this.stores.hardwareWallets.selectDelegationCoins({
           walletId: wallet.id,
           delegationAction: 'join',
           poolId,
-        }
-      );
+        });
 
       if (wallet.isHardwareWallet) {
         let certificates: object[] = [
@@ -309,9 +307,10 @@ export default class VotingStore extends Store {
           },
         ];
 
-        const walletNeedsRegisteringRewardAccount = coinSelection.certificates.some(
-          (c) => c.certificateType === 'register_reward_account'
-        );
+        const walletNeedsRegisteringRewardAccount =
+          coinSelection.certificates.some(
+            (c) => c.certificateType === 'register_reward_account'
+          );
         if (walletNeedsRegisteringRewardAccount) {
           certificates = [
             {
@@ -370,10 +369,8 @@ export default class VotingStore extends Store {
         await new Promise<void>((resolve) => {
           const wait = () => {
             setTimeout(() => {
-              const {
-                sendMoneyRequest,
-                isTransactionPending,
-              } = this.stores.hardwareWallets;
+              const { sendMoneyRequest, isTransactionPending } =
+                this.stores.hardwareWallets;
               if (sendMoneyRequest.isExecuting || isTransactionPending) {
                 wait();
                 return;
@@ -436,9 +433,8 @@ export default class VotingStore extends Store {
 
   prepareVotingData = async ({ walletId }: { walletId: string }) => {
     try {
-      const [address] = await this.stores.addresses.getAddressesByWalletId(
-        walletId
-      );
+      const [address] =
+        await this.stores.addresses.getAddressesByWalletId(walletId);
       const addressHex = await this._getHexFromBech32(address.id);
       await this._generateVotingRegistrationKey();
       if (!this.votingRegistrationKey)
@@ -532,9 +528,8 @@ export default class VotingStore extends Store {
       throw new Error(
         'Selected wallet required before send voting registration.'
       );
-    const [address] = await this.stores.addresses.getAddressesByWalletId(
-      walletId
-    );
+    const [address] =
+      await this.stores.addresses.getAddressesByWalletId(walletId);
     const selectedWallet = this.stores.wallets.getWalletById(walletId);
     const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
     const { absoluteSlotNumber } = this.stores.networkStatus;
@@ -636,11 +631,8 @@ export default class VotingStore extends Store {
     if (!selectedWallet) return;
     const { name: walletName } = selectedWallet;
     const { desktopDirectoryPath } = this.stores.profile;
-    const {
-      currentLocale,
-      currentDateFormat,
-      currentTimeFormat,
-    } = this.stores.profile;
+    const { currentLocale, currentDateFormat, currentTimeFormat } =
+      this.stores.profile;
     const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);
 

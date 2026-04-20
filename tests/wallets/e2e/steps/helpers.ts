@@ -261,9 +261,8 @@ export const waitUntilWalletNamesEqual = function (walletName: string) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const context = this;
   return context.client.waitUntil(async () => {
-    const currentWalletName = await getNameOfActiveWalletInSidebar.call(
-      context
-    );
+    const currentWalletName =
+      await getNameOfActiveWalletInSidebar.call(context);
     return currentWalletName === walletName;
   });
 };
@@ -323,9 +322,8 @@ const createWalletsAsync = async function (table, isLegacy?: boolean) {
       const mnemonicsLength = isLegacyWallet ? 12 : 24;
       window.Promise.all(
         wallets.map((wallet) => {
-          const mnemonic = daedalus.utils.crypto.generateMnemonic(
-            mnemonicsLength
-          );
+          const mnemonic =
+            daedalus.utils.crypto.generateMnemonic(mnemonicsLength);
           const recoveryPhrase = !isLegacyWallet
             ? mnemonic
             : mnemonic.split(' ');

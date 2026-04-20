@@ -45,13 +45,12 @@ export default class AddressesStore extends Store {
       const { walletId, passphrase } = params;
       const accountIndex = await this.getAccountIndexByWalletId(walletId);
       // @ts-ignore ts-migrate(2739) FIXME: Type 'Address' is missing the following properties... Remove this comment to see the full error message
-      const address: WalletAddress = await this.createByronWalletAddressRequest.execute(
-        {
+      const address: WalletAddress =
+        await this.createByronWalletAddressRequest.execute({
           addressIndex: accountIndex,
           passphrase,
           walletId,
-        }
-      ).promise;
+        }).promise;
 
       if (address != null) {
         this._refreshAddresses();

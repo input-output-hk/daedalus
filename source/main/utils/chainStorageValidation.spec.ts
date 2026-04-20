@@ -104,7 +104,7 @@ describe('validateChainStorageDirectory', () => {
   it('treats the default chain path as a valid default selection', async () => {
     const getDefaultConfig = makeGetDefaultConfig();
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(STATE_DIR);
+    (fs.realpath as unknown as jest.Mock).mockResolvedValue(STATE_DIR);
 
     const result = await validateChainStorageDirectory(
       CHAIN_PATH,
@@ -142,7 +142,7 @@ describe('validateChainStorageDirectory', () => {
 
   it('returns not-writable when the target path is not a directory', async () => {
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue('/mnt/file.txt');
+    (fs.realpath as unknown as jest.Mock).mockResolvedValue('/mnt/file.txt');
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => false });
 
     const result = await validateChainStorageDirectory(
@@ -161,7 +161,7 @@ describe('validateChainStorageDirectory', () => {
 
   it('returns inside-state-dir when the target is nested under the state directory', async () => {
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
       async (p: string) => p
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
@@ -187,7 +187,7 @@ describe('validateChainStorageDirectory', () => {
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(false);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
       async (p: string) => p
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
@@ -218,7 +218,7 @@ describe('validateChainStorageDirectory', () => {
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(false);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
       async (p: string) => p
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
@@ -247,7 +247,7 @@ describe('validateChainStorageDirectory', () => {
       .mockResolvedValueOnce(true) // target dir exists
       .mockResolvedValueOnce(false) // state dir does not exist yet
       .mockResolvedValueOnce(false); // managed chain dir does not exist yet
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
       async (p: string) => p
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
@@ -276,7 +276,7 @@ describe('validateChainStorageDirectory', () => {
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(true);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
       async (p: string) => p
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
@@ -309,7 +309,7 @@ describe('validateChainStorageDirectory', () => {
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(true);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
       async (p: string) => p
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
@@ -340,7 +340,7 @@ describe('validateChainStorageDirectory', () => {
     (fs.pathExists as jest.Mock)
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(true);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
       async (targetPath: string) => targetPath
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
@@ -368,7 +368,7 @@ describe('validateChainStorageDirectory', () => {
     (fs.pathExists as jest.Mock)
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(true);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
       async (targetPath: string) => targetPath
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
@@ -397,7 +397,7 @@ describe('validateChainStorageDirectory', () => {
     (fs.pathExists as jest.Mock)
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(true);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
       async (targetPath: string) => {
         if (targetPath === '/mnt/link-to-chain') {
           return '/mnt/external/chain';
@@ -431,7 +431,7 @@ describe('validateChainStorageDirectory', () => {
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(true);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
       async (p: string) => p
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
@@ -476,7 +476,7 @@ describe('validateChainStorageDirectory', () => {
 
   it('rejects a path nested inside the current managed chain directory', async () => {
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation((p: string) =>
+    (fs.realpath as unknown as jest.Mock).mockImplementation((p: string) =>
       Promise.resolve(p)
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
@@ -497,7 +497,7 @@ describe('validateChainStorageDirectory', () => {
 
   it('rejects a deeply nested path inside the managed chain directory', async () => {
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation((p: string) =>
+    (fs.realpath as unknown as jest.Mock).mockImplementation((p: string) =>
       Promise.resolve(p)
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
@@ -519,7 +519,7 @@ describe('validateChainStorageDirectory', () => {
   it('treats a symlink alias resolving to the default chain path as reset-to-default', async () => {
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
     // Symlink /tmp/alias resolves to /tmp/state/chain (the default chain path)
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation((p: string) => {
+    (fs.realpath as unknown as jest.Mock).mockImplementation((p: string) => {
       if (p === '/tmp/alias') return Promise.resolve(CHAIN_PATH);
       return Promise.resolve(p);
     });
@@ -540,7 +540,7 @@ describe('validateChainStorageDirectory', () => {
 
   it('rejects a chain-suffixed descendant nested inside the managed chain directory', async () => {
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    ((fs.realpath as unknown) as jest.Mock).mockImplementation((p: string) =>
+    (fs.realpath as unknown as jest.Mock).mockImplementation((p: string) =>
       Promise.resolve(p)
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });

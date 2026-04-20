@@ -48,7 +48,8 @@ export interface Channel<Incoming, Outgoing> {
  * and response cycles.
  */
 export class IpcChannel<Incoming, Outgoing>
-  implements Channel<Incoming, Outgoing> {
+  implements Channel<Incoming, Outgoing>
+{
   /**
    * Each ipc channel should be a singleton (based on the channelName)
    * Here we track the created instances.

@@ -41,15 +41,7 @@ export const KEY_PREFIXES = {
 };
 // Helpers
 const receiverAddressTypes: Set<AddressType> = new Set([
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
+  0, 1, 2, 3, 4, 5, 6, 7, 8,
 ]);
 export const CATALYST_VOTING_REGISTRATION_TYPE = 'CATALYST_VOTING';
 export const HARDENED_THRESHOLD = 0x80000000;

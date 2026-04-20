@@ -118,10 +118,10 @@ export async function buildMithrilEnv(
   if (requireKeys) {
     await resolveVerificationKeys(config);
   }
-  const env = ({
+  const env = {
     ...process.env,
     AGGREGATOR_ENDPOINT: config.aggregatorEndpoint,
-  } as unknown) as NodeJS.ProcessEnv;
+  } as unknown as NodeJS.ProcessEnv;
 
   if (requireKeys && config.genesisKey && config.ancillaryKey) {
     env.GENESIS_VERIFICATION_KEY = config.genesisKey;

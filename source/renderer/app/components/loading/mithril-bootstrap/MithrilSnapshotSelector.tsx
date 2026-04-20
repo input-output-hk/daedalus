@@ -48,12 +48,8 @@ const buildSnapshotLabel = (snapshot: MithrilSnapshotItem, locale: string) => {
 };
 
 function MithrilSnapshotSelector(props: Props, { intl }: Context) {
-  const {
-    snapshots,
-    selectedDigest,
-    isFetchingSnapshots,
-    onSelectSnapshot,
-  } = props;
+  const { snapshots, selectedDigest, isFetchingSnapshots, onSelectSnapshot } =
+    props;
 
   const options: Array<SnapshotOption> = [
     {

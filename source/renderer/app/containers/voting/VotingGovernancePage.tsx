@@ -17,14 +17,8 @@ class VotingGovernancePage extends Component<Props> {
   };
 
   render() {
-    const {
-      wallets,
-      staking,
-      app,
-      voting,
-      hardwareWallets,
-      networkStatus,
-    } = this.props.stores;
+    const { wallets, staking, app, voting, hardwareWallets, networkStatus } =
+      this.props.stores;
     const { openExternalLink } = app;
     const { isSynced, syncPercentage } = networkStatus;
 

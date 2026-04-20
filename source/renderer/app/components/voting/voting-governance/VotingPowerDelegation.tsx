@@ -74,7 +74,7 @@ type State = Form | FormWithError | StateFormComplete | StateConfirmation;
 
 const mapOfTxErrorCodeToIntl: Record<
   InitializeVPDelegationTxError,
-  typeof messages[keyof typeof messages]
+  (typeof messages)[keyof typeof messages]
 > = {
   generic: messages.initializeTxErrorGeneric,
   same_vote: messages.initializeTxErrorSameVote,

@@ -138,14 +138,13 @@ export const setMithrilBootstrapStatus = (
   return lastStatus;
 };
 
-export const waitForMithrilBootstrapDecision = (): Promise<
-  MithrilBootstrapDecision
-> => {
-  if (pendingDecision) return Promise.resolve(pendingDecision);
-  return new Promise((resolve, reject) => {
-    decisionWaiters.push({ resolve, reject });
-  });
-};
+export const waitForMithrilBootstrapDecision =
+  (): Promise<MithrilBootstrapDecision> => {
+    if (pendingDecision) return Promise.resolve(pendingDecision);
+    return new Promise((resolve, reject) => {
+      decisionWaiters.push({ resolve, reject });
+    });
+  };
 
 export const resetMithrilDecisionState = (
   options: {

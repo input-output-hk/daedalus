@@ -142,7 +142,9 @@ $tooltip-width: 280px;
     opacity: 0;
     position: absolute;
     right: 0;
-    transition: opacity 0.25s, height 0.25s;
+    transition:
+      opacity 0.25s,
+      height 0.25s;
     transition-delay: 0s;
     user-select: none;
     width: $tooltip-width;
@@ -192,7 +194,9 @@ $tooltip-width: 280px;
       height: 36px;
       margin-left: 0;
       opacity: 1;
-      transition: opacity 0s, height 0.25s;
+      transition:
+        opacity 0s,
+        height 0.25s;
       transition-delay: 0.25s;
     }
   }

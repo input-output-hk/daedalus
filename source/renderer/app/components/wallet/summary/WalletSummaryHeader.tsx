@@ -61,7 +61,7 @@ class WalletSummaryHeader extends Component<Props> {
       : formattedWalletAmount(wallet.amount, false);
     const totalTransactions = isRestoreActive
       ? '–'
-      : numberOfTransactions ?? numberOfRecentTransactions;
+      : (numberOfTransactions ?? numberOfRecentTransactions);
     const pendingTransactions = isRestoreActive
       ? '–'
       : numberOfPendingTransactions;

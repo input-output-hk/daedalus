@@ -125,9 +125,8 @@ const DappTransactionRequest = observer((props: Props) => {
     [assets, selectedWallet]
   );
   const adaBalanceRequired = adaAmount.plus(transactionFee);
-  const walletsDropdownHasError = selectedWallet?.amount.isLessThan(
-    adaBalanceRequired
-  );
+  const walletsDropdownHasError =
+    selectedWallet?.amount.isLessThan(adaBalanceRequired);
 
   const adaAmountErrorMessage = walletsDropdownHasError ? (
     <FormattedHTMLMessage

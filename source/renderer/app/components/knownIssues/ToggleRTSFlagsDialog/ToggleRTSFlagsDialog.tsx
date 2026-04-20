@@ -41,8 +41,7 @@ const messages = defineMessages({
     description: 'Disable RTS flags button label',
   },
   manualRelaunchConfirmationCheckboxLabel: {
-    id:
-      'knownIssues.dialog.toggleRtsFlagsMode.manualRelaunchConfirmationCheckboxLabel',
+    id: 'knownIssues.dialog.toggleRtsFlagsMode.manualRelaunchConfirmationCheckboxLabel',
     defaultMessage:
       '!!!I understand that I will need to launch Daedalus manually',
     description: 'Manual relaunch confirmation checkbox label',

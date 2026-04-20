@@ -17,8 +17,7 @@ import { Intl } from '../../../types/i18nTypes';
 
 const messages = defineMessages({
   recoveryPhraseNoResults: {
-    id:
-      'paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults',
+    id: 'paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults',
     defaultMessage: '!!!No results',
     description:
       '"Paper wallet create certificate verification dialog" recovery phrase no results label.',
@@ -69,8 +68,9 @@ const MnemonicInput: VFC<
       }
     }, [selectedWords]);
 
-    const providedWordCount = selectedWords.filter((word) => word?.length)
-      .length;
+    const providedWordCount = selectedWords.filter(
+      (word) => word?.length
+    ).length;
     const showError =
       providedWordCount === wordCount &&
       error &&

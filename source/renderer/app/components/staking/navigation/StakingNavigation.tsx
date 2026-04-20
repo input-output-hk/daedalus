@@ -46,12 +46,8 @@ class StakingNavigation extends Component<Props> {
   };
 
   render() {
-    const {
-      onNavItemClick,
-      activeItem,
-      isActiveNavItem,
-      showInfoTab,
-    } = this.props;
+    const { onNavItemClick, activeItem, isActiveNavItem, showInfoTab } =
+      this.props;
     const { intl } = this.context;
     const navigationItems = [
       {

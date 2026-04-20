@@ -209,11 +209,11 @@ Here's an example of how they will look like:
 "{
   ...
   ${orange(toCategory)}: {${
-      !isNewCategory
-        ? `
+    !isNewCategory
+      ? `
     ...`
-        : ''
-    }
+      : ''
+  }
     ${newProperties
       .map((newProperty) => `${cyan(newProperty)}: ${magenta('...')},`)
       .join(`\n    `)}
