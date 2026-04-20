@@ -2,9 +2,9 @@
   "metadata": {
     "title": "Mithril Snapshot UX - Polish & Testing Tasks",
     "created": "2026-03-03",
-    "updated": "2026-03-24",
-    "version": "2.3.0",
-    "totalTasks": 14,
+    "updated": "2026-04-15",
+    "version": "2.4.0",
+    "totalTasks": 15,
     "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
     "description": "Theming, accessibility, Storybook stories, E2E tests, and final verification for Mithril snapshot UX and the standalone chain-storage picker"
   },
@@ -206,13 +206,24 @@
           ],
           "completedAt": "2026-03-24",
           "targetPath": ".agent/plans/mithril/"
+        },
+        {
+          "id": "task-035",
+          "title": "Post-verification polish: theming, fonts, selectors, progress weighting",
+          "description": "Fixed font-inheritance regressions by adding font-family declarations across Mithril and chain-storage SCSS. Fixed MithrilSnapshotSelector.scss stale react-polymorph class selectors. Added loading-spinner mixin imports. Refactored createTheme.ts so mithrilBootstrap and chainStorage derive from theme params via chroma.js. Updated all 9 runtime theme files with per-theme spatial and accent tokens. Changed combined download bar weighting from fixed 85/15 to dynamic sizing based on actual byte totals with 95/5 fallback.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 4,
+          "dependencies": ["task-034"],
+          "completedAt": "2026-04-15",
+          "targetPath": "source/renderer/app/"
         }
       ]
     }
   ],
   "summary": {
     "totalPhases": 4,
-    "totalTasks": 14,
+    "totalTasks": 15,
     "criticalPath": [
       "task-025",
       "task-026",
@@ -223,7 +234,8 @@
       "task-030c",
       "task-030d",
       "task-030e",
-      "task-034"
+      "task-034",
+      "task-035"
     ]
   }
 }

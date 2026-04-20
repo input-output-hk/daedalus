@@ -140,7 +140,7 @@ describe('MithrilStepIndicator', () => {
 
     expect(
       screen.getByRole('progressbar', {
-        name: /snapshot files and fast sync: 56%/i,
+        name: /snapshot files and fast sync: 54%/i,
       })
     ).toBeInTheDocument();
   });

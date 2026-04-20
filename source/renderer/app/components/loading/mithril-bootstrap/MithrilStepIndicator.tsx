@@ -88,8 +88,8 @@ const ITEM_ID_TO_MESSAGE: Record<string, keyof typeof messages> = {
 
 const DOWNLOAD_PROGRESS_ANCHOR_ID = 'step-3';
 const VERIFYING_DIGESTS_ID = 'step-4';
-const SNAPSHOT_PROGRESS_WEIGHT = 85;
-const FAST_SYNC_PROGRESS_WEIGHT = 15;
+const FALLBACK_SNAPSHOT_WEIGHT = 95;
+const FALLBACK_FAST_SYNC_WEIGHT = 5;
 const VERIFYING_TRANSITION_DELAY_MS = 500;
 
 const clampPercent = (value?: number) => {
@@ -142,9 +142,27 @@ function deriveCombinedDownloadPercent({
     return 100;
   }
 
+  // When both byte totals are known, compute weight from actual sizes;
+  // otherwise fall back to snapshot-only progress (ancillary hasn't started).
+  if (
+    typeof snapshotSize === 'number' &&
+    snapshotSize > 0 &&
+    typeof ancillaryBytesTotal === 'number' &&
+    ancillaryBytesTotal > 0
+  ) {
+    const totalBytes = snapshotSize + ancillaryBytesTotal;
+    const snapshotWeight = (snapshotSize / totalBytes) * 100;
+    const ancillaryWeight = (ancillaryBytesTotal / totalBytes) * 100;
+    return (
+      (normalizedSnapshotPercent / 100) * snapshotWeight +
+      (normalizedAncillaryPercent / 100) * ancillaryWeight
+    );
+  }
+
+  // Ancillary size unknown — use fallback weights
   return (
-    (normalizedSnapshotPercent / 100) * SNAPSHOT_PROGRESS_WEIGHT +
-    (normalizedAncillaryPercent / 100) * FAST_SYNC_PROGRESS_WEIGHT
+    (normalizedSnapshotPercent / 100) * FALLBACK_SNAPSHOT_WEIGHT +
+    (normalizedAncillaryPercent / 100) * FALLBACK_FAST_SYNC_WEIGHT
   );
 }
 

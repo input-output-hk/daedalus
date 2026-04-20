@@ -19,7 +19,7 @@ Task tracking is split by context to reduce agent context overhead. Load only th
 |------|--------|-------|--------|
 | [backend tasks](mithril-snapshot-ux-tasks-backend.json) | 1–3: Types, Store, Chain Storage | 21 | All completed |
 | [component & UX tasks](mithril-snapshot-ux-tasks-component-ux.json) | 4–6: i18n, Decomposition, Waterfall | 26 | All completed |
-| [polish & testing tasks](mithril-snapshot-ux-tasks-polish-testing.json) | 7–10: Theming, A11y, Storybook, E2E, Verification | 11 | All completed |
+| [polish & testing tasks](mithril-snapshot-ux-tasks-polish-testing.json) | 7–10: Theming, A11y, Storybook, E2E, Verification | 15 | All completed |
 
 For detailed implementation history, see the [changelog](mithril-snapshot-ux-changelog.md).
 
@@ -77,7 +77,7 @@ Phase 10 is complete with task-034 verification closed on 2026-03-24: compile, l
   - Preparing is the initial mithril-snapshot call; actual download waits until the step process renders
   - All mithril-client steps 1-7 are exposed as individual waterfall sub-items under `Downloading` so users follow along
   - A single combined progress bar renders while `Downloading snapshot data` is active, blending snapshot-files progress and ancillary fast-sync progress into one visible `Snapshot Files and Fast Sync` bar with detailed per-stream transfer totals
-  - The combined bar gives snapshot download progress the first 85% of the range and lets fast sync contribute the final 15% even when both transfers overlap; verification start or either completed transfer forces the visible bar to 100%
+  - The combined bar dynamically weights snapshot and ancillary progress based on actual byte sizes when both totals are known; falls back to a 95/5 split when ancillary size is unavailable. Verification start or either completed transfer forces the visible bar to 100%
   - When download transfer reaches 100%, the renderer briefly pauses, then promotes `Verifying snapshot digests` into an active spinner so the verification rows do not appear late as already completed
   - Finalizing covers only post-mithril-client work: snapshot conversion (only if conversion runs) and DB install/move + cleanup
   - Vertical waterfall layout with spinner (active), checkmark (completed), or red X (error) icons next to each step/sub-item
@@ -114,8 +114,13 @@ Phase 10 is complete with task-034 verification closed on 2026-03-24: compile, l
 ### Theming (follow theme-management skill)
 - [x] Migrate hardcoded RGBA values to `--theme-mithril-*` CSS variables
 - [x] Add `mithrilBootstrap` and standalone `chainStorage` variables to `createTheme` with light/dark values
+- [x] Refactored `createTheme.ts` so `mithrilBootstrap` and `chainStorage` defaults derive from `background.secondary`, `text.secondary`, and `error` params via `chroma.js`, matching the derivation pattern of `connecting`, `automaticUpdate`, and all other overlay sections
+- [x] Made all 9 runtime theme files use per-theme `mithrilBootstrap` and `chainStorage` values — spatial tokens derived from each theme's connecting-screen background color, accent-derived primary buttons/links, with full light-theme inversion for white and yellow
 - [x] Run `yarn themes:check:createTheme` and `yarn themes:update`, then sync the runtime Daedalus `.ts` theme outputs used by the app
 - [x] Run `yarn typedef:sass` after SCSS changes
+- [x] Added `font-family` declarations (`var(--font-regular)` / `var(--font-medium)`) across Mithril and chain-storage SCSS modules to prevent font-inheritance regressions
+- [x] Fixed stale react-polymorph class selectors in `MithrilSnapshotSelector.scss`
+- [x] Added `loading-spinner` mixin imports to SCSS files that use spinner keyframes
 
 ### Storybook (follow storybook-creation skill)
 - [x] Create `storybook/stories/loading/` domain coverage with 16 Mithril stories across decision, storage, progress, and error states
@@ -269,7 +274,7 @@ components/chain-storage/
 - All mithril-client steps 1-7 are tracked as waterfall items with spinner → checkmark transitions
 - Do not use Mithril JSON `message` strings as renderer copy; map `step_num` to localized step labels
 - Graceful degradation: if mithril-client doesn't emit `label` field, fall back to single-stream behavior and hide the ancillary progress bar
-- Weight the combined bar as 85% snapshot transfer progress plus 15% ancillary progress, allowing both inputs to contribute concurrently when the streams overlap
+- Weight the combined bar dynamically based on actual snapshot size and ancillary `bytes_total` when both are known; fall back to a 95/5 split when ancillary size is unavailable, allowing both inputs to contribute concurrently when the streams overlap
 - When step 4 starts, transition backend status to `verifying`, synthesize known download totals to 100%, and ignore late Files/Ancillary events so verification does not regress the displayed transfer state
 - If both streams visibly finish before step 4 arrives, briefly hold the completed bar, then synthesize `Verifying snapshot digests` as the active UI row so the verification handoff feels intentional instead of delayed
 - Finalizing covers only post-mithril-client work: conversion (if enabled), `_installSnapshot()` DB move, and cleanup — each as a waterfall item
