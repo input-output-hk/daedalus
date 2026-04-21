@@ -8,6 +8,9 @@
     nixpkgsJs.flake = true;
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
+    crane.url = "github:ipetkov/crane";
+    fenix.url = "github:nix-community/fenix";
+    fenix.inputs.nixpkgs.follows = "nixpkgs";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
     cardano-wallet-unpatched.url = "github:cardano-foundation/cardano-wallet/v2025-03-31";
