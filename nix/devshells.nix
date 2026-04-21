@@ -1,14 +1,12 @@
-{ inputs
-, targetSystem
-}:
-
-let
+{
+  inputs,
+  targetSystem,
+}: let
   internal = inputs.self.internal.${targetSystem};
   inherit (internal) common;
-  inherit (common) pkgs;
+  inherit (common) pkgs pkgsJs;
 
   devShells = pkgs.lib.genAttrs inputs.self.internal.installerClusters (cluster: let
-
     launcherConfigs = common.mkLauncherConfigs {
       inherit cluster;
       devShell = true;
@@ -25,108 +23,137 @@ let
       pkgs.writeShellScriptBin "regenerate-dev-certs" ''
         ${common.daedalus-bridge.${cluster}}/bin/cardano-launcher --config ${moddedConfig}
       '';
+  in
+    # Use pkgsJs.stdenv for all platforms to ensure consistency
+    # (glibc 2.35 compatibility on Linux, consistent tooling everywhere)
+    pkgsJs.stdenv.mkDerivation rec {
+      buildInputs = with pkgsJs;
+        [
+          # Use nix from updated nixpkgs (nixos-25.11) for modern flake support
+          pkgs.nix
+          internal.common.nodejs
+          internal.common.yarn
+          common.daedalus-bridge.${cluster}
+          common.mock-token-metadata-server
+          regenerateDevCerts
+          bash
+          binutils
+          coreutils
+          curl
+          gnutar
+          git
+          # Python from nixpkgs-22.11 has distutils for node-gyp
+          python3
+          jq
+          nodePackages.node-gyp
+          nodePackages.node-pre-gyp
+          gnumake
+          pkg-config
+          libusb1
+          pkgs.shellcheck
+        ]
+        ++ (
+          if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") || (pkgs.stdenv.hostPlatform.system == "aarch64-darwin")
+          then [
+            internal.darwin-launcher
+            darwin.apple_sdk.frameworks.CoreServices
+            darwin.apple_sdk.frameworks.AppKit
+            darwin.cctools
+            xcbuild
+            perl
+          ]
+          else [
+            internal.relocatableElectron
+            winePackages.minimal
+          ]
+        );
+      name = "daedalus";
+      buildCommand = "export >$out";
+      LAUNCHER_CONFIG = DAEDALUS_CONFIG + "/launcher-config.yaml";
+      CARDANO_NODE_VERSION = common.cardanoNodeVersion;
+      CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
+      DAEDALUS_CONFIG = pkgs.runCommand "daedalus-config" {} ''
+        mkdir -pv $out
+        cp ${pkgs.writeText "launcher-config.yaml" (builtins.toJSON launcherConfigs.launcherConfig)} $out/launcher-config.yaml
+      '';
+      DAEDALUS_INSTALL_DIRECTORY = "./";
+      DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
+      CLUSTER = cluster;
+      NETWORK = cluster;
+      NODE_EXE = "cardano-wallet";
+      CLI_EXE = "cardano-cli";
+      NODE_IMPLEMENTATION = "cardano";
+      BUILDTYPE = "Debug";
+      shellHook = let
+        secretsDir =
+          if pkgs.stdenv.isLinux
+          then "Secrets"
+          else "Secrets-1.0";
+      in ''
+        warn() {
+           (echo "###"; echo "### WARNING:  $*"; echo "###") >&2
+        }
 
-  in pkgs.stdenv.mkDerivation (rec {
-    buildInputs = [
-      internal.common.nodejs
-      internal.common.yarn
-      common.daedalus-bridge.${cluster}
-      common.mock-token-metadata-server
-      regenerateDevCerts
-    ] ++ (with pkgs; [
-      nix bash binutils coreutils curl gnutar
-      git python3 curl jq
-      nodePackages.node-gyp nodePackages.node-pre-gyp
-      gnumake
-      pkgconfig
-      libusb
-    ] ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") || (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then [
-      internal.darwin-launcher
-      darwin.apple_sdk.frameworks.CoreServices
-      darwin.apple_sdk.frameworks.AppKit
-      darwin.cctools
-      xcbuild
-      perl
-    ] else [
-      internal.relocatableElectron
-      winePackages.minimal
-    ]));
-    name = "daedalus";
-    buildCommand = "export >$out";
-    LAUNCHER_CONFIG = DAEDALUS_CONFIG + "/launcher-config.yaml";
-    CARDANO_NODE_VERSION = common.cardanoNodeVersion;
-    CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
-    DAEDALUS_CONFIG = pkgs.runCommand "daedalus-config" {} ''
-      mkdir -pv $out
-      cp ${pkgs.writeText "launcher-config.yaml" (builtins.toJSON launcherConfigs.launcherConfig)} $out/launcher-config.yaml
-    '';
-    DAEDALUS_INSTALL_DIRECTORY = "./";
-    DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
-    CLUSTER = cluster;
-    NETWORK = cluster;
-    NODE_EXE = "cardano-wallet";
-    CLI_EXE = "cardano-cli";
-    NODE_IMPLEMENTATION = "cardano";
-    BUILDTYPE = "Debug";
-    shellHook = let
-      secretsDir = if pkgs.stdenv.isLinux then "Secrets" else "Secrets-1.0";
-    in ''
-      warn() {
-         (echo "###"; echo "### WARNING:  $*"; echo "###") >&2
-      }
+        ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
+          export XDG_DATA_HOME=$HOME/.local/share
+          # Prevent GTK from loading system ibus/input method modules that require newer glibc
+          export GTK_IM_MODULE=xim
+          export GTK_PATH_SUFFIX=
+          export GTK_EXE_PREFIX=
+        ''}
+        ${pkgs.lib.optionalString (cluster == "local") "export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket"}
+        source <(cardano-cli --bash-completion-script cardano-cli)
+        source <(cardano-node --bash-completion-script cardano-node)
+        source <(cardano-address --bash-completion-script cardano-address)
+        [[ $(type -P cardano-wallet) ]] && source <(cardano-wallet --bash-completion-script cardano-wallet)
 
-      ${pkgs.lib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
-      ${pkgs.lib.optionalString (cluster == "local") "export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket"}
-      source <(cardano-cli --bash-completion-script cardano-cli)
-      source <(cardano-node --bash-completion-script cardano-node)
-      source <(cardano-address --bash-completion-script cardano-address)
-      [[ $(type -P cardano-wallet) ]] && source <(cardano-wallet --bash-completion-script cardano-wallet)
+        cp -f ${launcherConfigs.installerConfig.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
-      cp -f ${launcherConfigs.installerConfig.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
+        # These links will only occur to binaries that exist for the
+        # specific build config
+        ln -svf $(type -P cardano-node)
+        ln -svf $(type -P cardano-wallet)
+        ln -svf $(type -P cardano-cli)
 
-      # These links will only occur to binaries that exist for the
-      # specific build config
-      ln -svf $(type -P cardano-node)
-      ln -svf $(type -P cardano-wallet)
-      ln -svf $(type -P cardano-cli)
+        source <(cardano-node --bash-completion-script `type -p cardano-node`)
 
-      source <(cardano-node --bash-completion-script `type -p cardano-node`)
+        export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${internal.common.nodejs}/include/node -I${toString ../../.}/node_modules/node-addon-api"
+        yarn install
 
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${internal.common.nodejs}/include/node -I${toString ../../.}/node_modules/node-addon-api"
-      yarn install
+        # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:
+        yarn build:electron
 
-      # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:
-      yarn build:electron
-
-      # Patchelf possibly downloaded binary blobs (prebuilds) on Linux (most probably not needed – TODO: check):
-      ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
-        for nodeExtension in ${BUILDTYPE}/*.node ; do
-          ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [
-            pkgs.stdenv.cc.cc pkgs.udev
+        # Patchelf possibly downloaded binary blobs (prebuilds) on Linux (most probably not needed – TODO: check):
+        ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
+          for nodeExtension in ${BUILDTYPE}/*.node ; do
+            ${pkgsJs.patchelf}/bin/patchelf --set-rpath ${pkgsJs.lib.makeLibraryPath [
+            pkgsJs.stdenv.cc.cc
+            pkgsJs.systemd
+            pkgsJs.libusb1
           ]} "$(readlink -f "$nodeExtension")"
-        done
-      ''}
+          done
+        ''}
 
-      ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
-        # FIXME: use `internal.patchelfElectron`, like Lace
-        ln -svf ${internal.electronBin}/bin/electron ./node_modules/electron/dist/electron
-      ''}
+        ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
+          # Use relocatableElectron which bundles all libraries from pkgsJs (glibc 2.35)
+          ln -svf ${internal.relocatableElectron}/bin/electron ./node_modules/electron/dist/electron
+        ''}
 
-      echo 'jq < $LAUNCHER_CONFIG'
+        echo 'jq < $LAUNCHER_CONFIG'
 
-      echo 'Resolving environment variables to absolute paths…'
-      # XXX: they originally contain references to HOME or XDG_DATA_HOME in launcher-config.yaml:
-      export CARDANO_WALLET_TLS_PATH="${launcherConfigs.launcherConfig.tlsPath}"
+        echo 'Resolving environment variables to absolute paths…'
+        # XXX: they originally contain references to HOME or XDG_DATA_HOME in launcher-config.yaml:
+        export CARDANO_WALLET_TLS_PATH="${launcherConfigs.launcherConfig.tlsPath}"
 
-      echo 'Re-generating dev certificates for ‘cardano-wallet’…'
-      mkdir -p "$CARDANO_WALLET_TLS_PATH"
-      regenerate-dev-certs >/dev/null
+        echo 'Re-generating dev certificates for ‘cardano-wallet’…'
+        mkdir -p "$CARDANO_WALLET_TLS_PATH"
+        regenerate-dev-certs >/dev/null
 
-      ${common.temporaryNodeModulesPatches}
+        ${common.temporaryNodeModulesPatches}
 
-      echo
-      echo 'Now, run ‘yarn dev’.'
-    '';
-  }));
-
-in devShells // { default = devShells.mainnet; }
+        echo
+        echo 'Now, run ‘yarn dev’.'
+      '';
+    });
+in
+  devShells // {default = devShells.mainnet;}

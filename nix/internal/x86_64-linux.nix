@@ -1,19 +1,16 @@
-{ inputs, targetSystem }:
+{
+  inputs,
+  targetSystem,
+}:
+assert targetSystem == "x86_64-linux"; let
+  common = import ./common.nix {inherit inputs targetSystem;};
 
-assert targetSystem == "x86_64-linux";
-
-let
-
-  common = import ./common.nix { inherit inputs targetSystem; };
-
-  inherit (common) sourceLib pkgs commonSources;
+  inherit (common) sourceLib pkgs pkgsJs commonSources;
   inherit (sourceLib) installerClusters;
   inherit (pkgs) lib;
 
   genClusters = lib.genAttrs installerClusters;
-
 in rec {
-
   inherit common;
   inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
 
@@ -21,10 +18,11 @@ in rec {
 
   unsignedInstaller = selfExtractingArchive;
 
-  makeSignedInstaller = genClusters (cluster: pkgs.writeShellScriptBin "make-signed-installer-stub" ''
-    echo "We don’t sign native code for ‘${targetSystem}’, please, use unsigned ‘nix build .#installer-${cluster}’"
-    exit 1
-  '');
+  makeSignedInstaller = genClusters (cluster:
+    pkgs.writeShellScriptBin "make-signed-installer-stub" ''
+      echo "We don’t sign native code for ‘${targetSystem}’, please, use unsigned ‘nix build .#installer-${cluster}’"
+      exit 1
+    '');
 
   # FIXME: for Tullia/Cicero debugging, remove later:
   inherit (sourceLib) buildRev;
@@ -42,12 +40,14 @@ in rec {
     ln -sf ${linuxSources.electronChromedriver} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/chromedriver-v${electronChromedriverVersion}-linux-x64.zip
   '';
 
-  node_modules = pkgs.stdenv.mkDerivation {
+  node_modules = pkgsJs.stdenv.mkDerivation {
     name = "daedalus-node_modules";
     src = srcLockfiles;
-    nativeBuildInputs = [ yarn nodejs ]
-      ++ (with pkgs; [ python3 pkgconfig jq ]);
-    buildInputs = with pkgs; [ libusb ];
+    nativeBuildInputs =
+      [yarn nodejs]
+      ++ (with pkgsJs; [pkg-config jq python3])
+      ++ [pkgs.jq]; # Use newer jq for JSON parsing
+    buildInputs = with pkgsJs; [libusb1];
     configurePhase = common.setupCacheAndGypDirs + linuxSpecificCaches;
     buildPhase = ''
       # Do not look up in the registry, but in the offline cache:
@@ -84,287 +84,301 @@ in rec {
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
   };
 
-  daedalusJs = genClusters (cluster: pkgs.stdenv.mkDerivation {
-    name = "daedalus-js";
-    src = srcWithoutNix;
-    nativeBuildInputs = [ yarn nodejs ]
-      ++ (with pkgs; [ python3 pkgconfig jq ]);
-    buildInputs = with pkgs; [ libusb ];
-    CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
-    CARDANO_NODE_VERSION = common.cardanoNodeVersion;
-    CI = "nix";
-    NETWORK = common.launcherConfigs.${cluster}.launcherConfig.networkName;
-    BUILD_REV = sourceLib.buildRev;
-    BUILD_REV_SHORT = sourceLib.buildRevShort;
-    BUILD_COUNTER = sourceLib.buildCounter;
-    NODE_ENV = "production";
-    BUILDTYPE = "Release";
-    configurePhase = common.setupCacheAndGypDirs + linuxSpecificCaches + ''
-      # Grab all cached `node_modules` from above:
-      cp -r ${node_modules}/. ./
-      chmod -R +w .
-    '';
-    patchedPackageJson = pkgs.writeText "package.json" (builtins.toJSON (
-      pkgs.lib.recursiveUpdate originalPackageJson {
-        productName = common.launcherConfigs.${cluster}.installerConfig.spacedName;
-        main = "dist/main/index.js";
-      }
-    ));
-    buildPhase = ''
-      cp -v $patchedPackageJson package.json
+  daedalusJs = genClusters (cluster:
+    pkgsJs.stdenv.mkDerivation {
+      name = "daedalus-js";
+      src = srcWithoutNix;
+      nativeBuildInputs =
+        [yarn nodejs]
+        ++ (with pkgsJs; [pkg-config jq python3])
+        ++ [pkgs.jq]; # Use newer jq for JSON parsing
+      buildInputs = with pkgsJs; [libusb1];
+      CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
+      CARDANO_NODE_VERSION = common.cardanoNodeVersion;
+      CI = "nix";
+      NETWORK = common.launcherConfigs.${cluster}.launcherConfig.networkName;
+      BUILD_REV = sourceLib.buildRev;
+      BUILD_REV_SHORT = sourceLib.buildRevShort;
+      BUILD_COUNTER = sourceLib.buildCounter;
+      NODE_ENV = "production";
+      BUILDTYPE = "Release";
+      configurePhase =
+        common.setupCacheAndGypDirs
+        + linuxSpecificCaches
+        + ''
+          # Grab all cached `node_modules` from above:
+          cp -r ${node_modules}/. ./
+          chmod -R +w .
+        '';
+      patchedPackageJson = pkgs.writeText "package.json" (builtins.toJSON (
+        pkgs.lib.recursiveUpdate originalPackageJson {
+          productName = common.launcherConfigs.${cluster}.installerConfig.spacedName;
+          main = "dist/main/index.js";
+        }
+      ));
+      buildPhase = ''
+        cp -v $patchedPackageJson package.json
 
-      patchShebangs .
-      sed -r 's#.*patchElectronRebuild.*#${common.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
-      yarn build:electron
+        patchShebangs .
+        sed -r 's#.*patchElectronRebuild.*#${common.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
+        yarn build:electron
 
-      ${common.temporaryNodeModulesPatches}
+        ${common.temporaryNodeModulesPatches}
 
-      yarn run package -- --name ${lib.escapeShellArg common.launcherConfigs.${cluster}.installerConfig.spacedName}
-    '';
-    installPhase = ''
-      mkdir -p $out/bin $out/share/daedalus
-      cp -R dist/. $out/share/daedalus/.
-      cp $patchedPackageJson $out/share/daedalus/package.json
+        yarn run package -- --name ${lib.escapeShellArg common.launcherConfigs.${cluster}.installerConfig.spacedName}
+      '';
+      installPhase = ''
+        mkdir -p $out/bin $out/share/daedalus
+        cp -R dist/. $out/share/daedalus/.
+        cp $patchedPackageJson $out/share/daedalus/package.json
 
-      chmod +w $out/share/daedalus/package.json
-      sed -r 's,"dist/main/index.js","main/index.js",g' -i $out/share/daedalus/package.json
+        chmod +w $out/share/daedalus/package.json
+        sed -r 's,"dist/main/index.js","main/index.js",g' -i $out/share/daedalus/package.json
 
-      # XXX: the webpack utils embed the original source paths into map files, which causes the derivation
-      # to depend on the original inputs at the nix layer, and double the size of the linux installs.
-      # this will just replace all storepaths with an invalid one:
-      (
-        cd $out/share/daedalus
-        for x in {main,renderer}/{0.,}index.js{,.map} main/preload.js{,.map} main/0.js{,.map} renderer/styles.css.map; do
-          ${pkgs.nukeReferences}/bin/nuke-refs $x
+        # XXX: the webpack utils embed the original source paths into map files, which causes the derivation
+        # to depend on the original inputs at the nix layer, and double the size of the linux installs.
+        # this will just replace all storepaths with an invalid one:
+        (
+          cd $out/share/daedalus
+          for x in {main,renderer}/{0.,}index.js{,.map} main/preload.js{,.map} main/0.js{,.map} renderer/styles.css.map; do
+            ${pkgs.nukeReferences}/bin/nuke-refs $x
+          done
+        )
+
+        mkdir -p $out/share/fonts
+        ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
+
+        mkdir -pv $out/share/daedalus/node_modules
+        jq -r '.[]' <${./runtime-nodejs-deps.json} | while IFS= read -r rtdep ; do
+          cp -r node_modules/"$rtdep" $out/share/daedalus/node_modules/"$rtdep"
         done
-      )
 
-      mkdir -p $out/share/fonts
-      ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
+        chmod -R +w $out
 
-      mkdir -pv $out/share/daedalus/node_modules
-      jq -r '.[]' <${./runtime-nodejs-deps.json} | while IFS= read -r rtdep ; do
-        cp -r node_modules/"$rtdep" $out/share/daedalus/node_modules/"$rtdep"
-      done
+        # XXX: they increase the closure (i.e. installer) size greatly:
+        echo 'Deleting all redundant /nix/store references from to-be-distributed ‘node_modules/’:'
+        (
+          cd $out/share/daedalus/
+          find node_modules -type f '(' -name '*.o' -o -name '*.o.d' -o -name '*.target.mk' -o -name '*.Makefile' -o -name 'Makefile' -o -name 'config.gypi' ')' -exec rm -vf '{}' ';'
 
-      chmod -R +w $out
+          # Get rid of ${nodejs}, too – another 60 MiB:
+          cd node_modules/
+          for file in $(grep -RF ${nodejs} . 2>/dev/null | cut -d: -f1) ; do
+            sed -r 's,^#!${nodejs}/bin/,#!/usr/bin/env ,g' -i "$file"
+          done
+        )
 
-      # XXX: they increase the closure (i.e. installer) size greatly:
-      echo 'Deleting all redundant /nix/store references from to-be-distributed ‘node_modules/’:'
-      (
-        cd $out/share/daedalus/
-        find node_modules -type f '(' -name '*.o' -o -name '*.o.d' -o -name '*.target.mk' -o -name '*.Makefile' -o -name 'Makefile' -o -name 'config.gypi' ')' -exec rm -vf '{}' ';'
+        mkdir -p $out/share/daedalus/node_modules/usb/build
+        cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/node_modules/usb/build
 
-        # Get rid of ${nodejs}, too – another 60 MiB:
-        cd node_modules/
-        for file in $(grep -RF ${nodejs} . 2>/dev/null | cut -d: -f1) ; do
-          sed -r 's,^#!${nodejs}/bin/,#!/usr/bin/env ,g' -i "$file"
+        mkdir -p $out/share/daedalus/node_modules/node-hid/build
+        cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/node_modules/node-hid/build
+
+        mkdir -p $out/share/daedalus/node_modules/usb-detection/build
+        # TODO: we took Release/detection.node before `rebuild-native-modules.sh` ever existed – is this still fine?
+        cp node_modules/usb-detection/build/Debug/detection.node $out/share/daedalus/node_modules/usb-detection/build
+
+        find $out/share/daedalus/node_modules -type f -iname '*.node' | while IFS= read -r file ; do
+          $STRIP "$file"
+          patchelf --set-rpath ${relocatableElectron}/lib/electron/lib "$file"
         done
-      )
+      '';
+      dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
+    });
 
-      mkdir -p $out/share/daedalus/node_modules/usb/build
-      cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/node_modules/usb/build
-
-      mkdir -p $out/share/daedalus/node_modules/node-hid/build
-      cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/node_modules/node-hid/build
-
-      mkdir -p $out/share/daedalus/node_modules/usb-detection/build
-      # TODO: we took Release/detection.node before `rebuild-native-modules.sh` ever existed – is this still fine?
-      cp node_modules/usb-detection/build/Debug/detection.node $out/share/daedalus/node_modules/usb-detection/build
-
-      find $out/share/daedalus/node_modules -type f -iname '*.node' | while IFS= read -r file ; do
-        $STRIP "$file"
-        patchelf --set-rpath ${relocatableElectron}/lib/electron/lib "$file"
-      done
-    '';
-    dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
-  });
-
-  electron-loader = pkgs.glibc.overrideAttrs (drv: {
-    patches = (drv.patches or []) ++ [
-      ./glibc-electron-loader.patch
-    ];
+  # NOTE: Using patched glibc from nixpkgs-22.11 for Electron
+  # The glibc-electron-loader.patch only applies to older glibc versions
+  electron-loader = pkgsJs.glibc.overrideAttrs (oldAttrs: {
+    patches = oldAttrs.patches ++ [./glibc-electron-loader.patch];
   });
 
   relocatableElectron = let
     additionalLibs = ''
       additionalLibs=(
-        ${pkgs.xorg.libX11}/lib/libX11-xcb.so.1
-        ${pkgs.xorg.libxcb}/lib/*.so.?
-        ${pkgs.systemd /* patched */}/lib/{libudev.so.1,libsystemd.so.0,libnss_*.so.2}
-        ${pkgs.nss}/lib/*.so
-        ${pkgs.libusb}/lib/*.so.0
-        ${pkgs.nssmdns}/lib/*.so.2
-        ${pkgs.numactl}/lib/libnuma.so.1
-        ${pkgs.pciutils}/lib/libpci.so.3
-        ${pkgs.libva.out}/lib/*.so.2
-        ${pkgs.atk}/lib/libatk-bridge-2.0.so
-        $(find ${pkgs.glibc}/lib -type l)
+        ${pkgsJs.xorg.libX11}/lib/libX11-xcb.so.1
+        ${pkgsJs.xorg.libxcb}/lib/*.so.?
+        ${pkgsJs.systemd}/lib/{libudev.so.1,libsystemd.so.0,libnss_*.so.2}
+        ${pkgsJs.nss}/lib/*.so
+        ${pkgsJs.libusb1}/lib/*.so.0
+        ${pkgsJs.nssmdns}/lib/*.so.2
+        ${pkgsJs.numactl}/lib/libnuma.so.1
+        ${pkgsJs.pciutils}/lib/libpci.so.3
+        ${pkgsJs.libva.out}/lib/*.so.2
+        ${pkgsJs.atk}/lib/libatk-bridge-2.0.so
+        $(find ${pkgsJs.glibc}/lib -type l)
       )
     '';
-  in (import (pkgs.runCommandNoCC "nix-bundle-exe-patched" {} ''
-    cp -r ${inputs.nix-bundle-exe} $out
-    chmod -R +w $out
-    ${additionalLibs}
-    for additionalLib in "''${additionalLibs[@]}" ; do
-      sed -r '/bundleExe "\$binary"/a\  bundleLib "'"$additionalLib"'" "lib"' -i $out/bundle-linux.sh
-    done
-  '') {
-    exe_dir = "electron";
-    lib_dir = "electron/lib";
-    #bin_dir = "electron-bin";
-    inherit pkgs;
-  } electronBin).overrideAttrs (drv: {
-    buildCommand = additionalLibs + (builtins.replaceStrings ["find '"] ["find -L '"] drv.buildCommand) + ''
-      chmod -R +w $out
+  in
+    (import (pkgsJs.runCommand "nix-bundle-exe-patched" {} ''
+        cp -r ${inputs.nix-bundle-exe} $out
+        chmod -R +w $out
+        ${additionalLibs}
+        for additionalLib in "''${additionalLibs[@]}" ; do
+          sed -r '/bundleExe "\$binary"/a\  bundleLib "'"$additionalLib"'" "lib"' -i $out/bundle-linux.sh
+        done
+      '') {
+        exe_dir = "electron";
+        lib_dir = "electron/lib";
+        #bin_dir = "electron-bin";
+        pkgs = pkgsJs;
+      }
+      electronBin).overrideAttrs (drv: {
+      buildCommand =
+        additionalLibs
+        + (builtins.replaceStrings ["find '"] ["find -L '"] drv.buildCommand)
+        + ''
+          chmod -R +w $out
 
-      mkdir -p $out/lib
-      cp -R ${electronBin}/lib/electron $out/lib/
-      ( cd $out/electron && ${pkgs.rsync}/bin/rsync -Rah . $out/lib/electron/ ; )
-      rm -rf $out/electron/
-      cp ${electron-loader}/lib/ld-linux-x86-64.so.2 $out/lib/electron/
+          mkdir -p $out/lib
+          cp -R ${electronBin}/lib/electron $out/lib/
+          ( cd $out/electron && ${pkgsJs.rsync}/bin/rsync -Rah . $out/lib/electron/ ; )
+          rm -rf $out/electron/
+          cp ${electron-loader}/lib/ld-linux-x86-64.so.2 $out/lib/electron/
 
-      rm $out/lib/electron/lib/ld-linux-x86-64.so.2
-      ( cd $out/lib/electron && rm libffmpeg.so && ln -s lib/libffmpeg.so libffmpeg.so ; )
+          rm $out/lib/electron/lib/ld-linux-x86-64.so.2
+          ( cd $out/lib/electron && rm libffmpeg.so && ln -s lib/libffmpeg.so libffmpeg.so ; )
 
-      ( cd $out/lib/electron/lib && ln -s libatk-bridge-2.0.so libatk-bridge.so ; )
+          ( cd $out/lib/electron/lib && ln -s libatk-bridge-2.0.so libatk-bridge.so ; )
 
-      patchelf --set-rpath '$ORIGIN/lib:$ORIGIN' $out/lib/electron/electron
+          patchelf --set-rpath '$ORIGIN/lib:$ORIGIN' $out/lib/electron/electron
 
-      cp ${pkgs.writeScript "electron" ''
-        #!/bin/sh
-        if [ -z "''${XCURSOR_PATH}" ] && [ -d "/usr/share/icons" ]; then
-          # Debians don't set this, and in effect all cursors are 2x too small on HiDPI displays:
-          export XCURSOR_PATH="/usr/share/icons"
-        fi
-        LIB_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")/lib"
-        export LD_PLEASE_INTERPRET="$LIB_DIR"/electron/electron
-        exec "$LIB_DIR"/electron/ld-linux-x86-64.so.2 "$@"
-      ''} $out/bin/electron
-    '';
-    meta.mainProgram = "electron";
-  });
+          cp ${pkgs.writeScript "electron" ''
+            #!/bin/sh
+            if [ -z "''${XCURSOR_PATH}" ] && [ -d "/usr/share/icons" ]; then
+              # Debians don't set this, and in effect all cursors are 2x too small on HiDPI displays:
+              export XCURSOR_PATH="/usr/share/icons"
+            fi
+            LIB_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")/lib"
+            export LD_PLEASE_INTERPRET="$LIB_DIR"/electron/electron
+            exec "$LIB_DIR"/electron/ld-linux-x86-64.so.2 "$@"
+          ''} $out/bin/electron
+        '';
+      meta.mainProgram = "electron";
+    });
 
   # A completely portable directory that you can run on _any_ Linux:
-  newBundle = genClusters (cluster: pkgs.stdenv.mkDerivation {
-    name = "daedalus-bundle";
-    meta.mainProgram = "daedalus";
-    dontUnpack = true;
-    buildCommand = ''
-      cp -r ${newPackage.${cluster}} $out
-      chmod -R +w $out
-      for symlink in $out/libexec/{daedalus-js,bundle-*} ; do
-        target=$(readlink "$symlink")
-        rm "$symlink"
-        cp -r "$target" "$symlink"
-      done
+  newBundle = genClusters (cluster:
+    pkgs.stdenv.mkDerivation {
+      name = "daedalus-bundle";
+      meta.mainProgram = "daedalus";
+      dontUnpack = true;
+      buildCommand = ''
+        cp -r ${newPackage.${cluster}} $out
+        chmod -R +w $out
+        for symlink in $out/libexec/{daedalus-js,bundle-*} ; do
+          target=$(readlink "$symlink")
+          rm "$symlink"
+          cp -r "$target" "$symlink"
+        done
 
-      find $out/libexec/daedalus-js/ -type f -iname '*.node' | while IFS= read -r file ; do
-        chmod +w "$file"
-        patchelf --set-rpath \
-          "\$ORIGIN/$(realpath --relative-to="$(dirname "$file")" $out/libexec/bundle-electron/lib/electron/lib)" \
-          "$file"
-      done
+        find $out/libexec/daedalus-js/ -type f -iname '*.node' | while IFS= read -r file ; do
+          chmod +w "$file"
+          patchelf --set-rpath \
+            "\$ORIGIN/$(realpath --relative-to="$(dirname "$file")" $out/libexec/bundle-electron/lib/electron/lib)" \
+            "$file"
+        done
 
-      chmod -R +w $out/share/applications/
-      cp ${desktopItemTemplate.${cluster}}/share/applications/*.desktop $out/share/applications/Daedalus-${cluster}.desktop
-    '';
-  });
+        chmod -R +w $out/share/applications/
+        cp ${desktopItemTemplate.${cluster}}/share/applications/*.desktop $out/share/applications/Daedalus-${cluster}.desktop
+      '';
+    });
 
   # A package that will work only on NixOS; the only differences from the bundle above are:
   #   • symlinks instead of copying (to not waste /nix/store space when iterating on something),
   #   • and RPATH of the native *.node modules points to ${relocatableElectron}, not relative to $ORIGIN.
-  newPackage = genClusters (cluster: pkgs.stdenv.mkDerivation {
-    name = "daedalus";
-    meta.mainProgram = "daedalus";
-    dontUnpack = true;
-    buildCommand = ''
-      mkdir -p $out/{bin,libexec,config}
+  newPackage = genClusters (cluster:
+    pkgs.stdenv.mkDerivation {
+      name = "daedalus";
+      meta.mainProgram = "daedalus";
+      dontUnpack = true;
+      buildCommand = ''
+        mkdir -p $out/{bin,libexec,config}
 
-      cp -r ${common.launcherConfigs.${cluster}.configFiles}/. $out/config/
+        cp -r ${common.launcherConfigs.${cluster}.configFiles}/. $out/config/
 
-      ln -sf ${import inputs.nix-bundle-exe { inherit pkgs; } common.daedalus-bridge.${cluster}} $out/libexec/bundle-daedalus-bridge
-      ( cd $out/libexec/ && ln -sf bundle-daedalus-bridge/bin/* ./ ; )
+        ln -sf ${import inputs.nix-bundle-exe {inherit pkgs;} common.daedalus-bridge.${cluster}} $out/libexec/bundle-daedalus-bridge
+        ( cd $out/libexec/ && ln -sf bundle-daedalus-bridge/bin/* ./ ; )
 
-      ln -sf ${daedalusJs.${cluster}}/share/daedalus $out/libexec/daedalus-js
+        ln -sf ${daedalusJs.${cluster}}/share/daedalus $out/libexec/daedalus-js
 
-      ln -sf ${relocatableElectron} $out/libexec/bundle-electron
-      ( cd $out/libexec/ && ln -sf bundle-electron/bin/* ./ ; )
+        ln -sf ${relocatableElectron} $out/libexec/bundle-electron
+        ( cd $out/libexec/ && ln -sf bundle-electron/bin/* ./ ; )
 
-      cp ${pkgs.writeText "daedalus" ''
-        #!/bin/sh
+        cp ${pkgs.writeText "daedalus" ''
+          #!/bin/sh
 
-        if [ -n "$LD_LIBRARY_PATH" ]; then
-          echo >&2 'Warning: ‘LD_LIBRARY_PATH’ is set, it’s been known to cause problems in the past, unsetting it.'
-          unset LD_LIBRARY_PATH
-        fi
+          if [ -n "$LD_LIBRARY_PATH" ]; then
+            echo >&2 'Warning: ‘LD_LIBRARY_PATH’ is set, it’s been known to cause problems in the past, unsetting it.'
+            unset LD_LIBRARY_PATH
+          fi
 
-        set -ex
+          set -ex
 
-        ENTRYPOINT_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
-        export ENTRYPOINT_DIR
-        export PATH="$ENTRYPOINT_DIR/libexec:$PATH"
+          ENTRYPOINT_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
+          export ENTRYPOINT_DIR
+          export PATH="$ENTRYPOINT_DIR/libexec:$PATH"
 
-        XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"
-        export CLUSTER=${cluster}
-        export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
-        export DAEDALUS_CONFIG="$ENTRYPOINT_DIR/config"
+          XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"
+          export CLUSTER=${cluster}
+          export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
+          export DAEDALUS_CONFIG="$ENTRYPOINT_DIR/config"
 
-        mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Logs/pub
-        mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Secrets
-        cd "''${DAEDALUS_DIR}/${cluster}/"
+          mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Logs/pub
+          mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Secrets
+          cd "''${DAEDALUS_DIR}/${cluster}/"
 
-        if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update ] ; then
-          rm "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update || true
-        fi
+          if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update ] ; then
+            rm "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update || true
+          fi
 
-        exec cardano-launcher --config "$ENTRYPOINT_DIR/config/launcher-config.yaml"
-      ''} $out/bin/daedalus
+          exec cardano-launcher --config "$ENTRYPOINT_DIR/config/launcher-config.yaml"
+        ''} $out/bin/daedalus
 
-      cp ${pkgs.writeText "daedalus-frontend" ''
-        #!/bin/sh
-        set -xe
+        cp ${pkgs.writeText "daedalus-frontend" ''
+          #!/bin/sh
+          set -xe
 
-        # `daedalus-frontend` is what `cardano-launcher` restarts during auto-update; let’s detect
-        # this case here, and restart the `cardano-launcher` itself, in case we need it to
-        # be updated as well:
-        if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update ] ; then
-          nohup setsid ~/.daedalus/${cluster}/bin/daedalus </dev/null >/dev/null 2>/dev/null &
-          exit 0
-        fi
+          # `daedalus-frontend` is what `cardano-launcher` restarts during auto-update; let’s detect
+          # this case here, and restart the `cardano-launcher` itself, in case we need it to
+          # be updated as well:
+          if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update ] ; then
+            nohup setsid ~/.daedalus/${cluster}/bin/daedalus </dev/null >/dev/null 2>/dev/null &
+            exit 0
+          fi
 
-        exec electron --disable-setuid-sandbox --no-sandbox "$ENTRYPOINT_DIR"/libexec/daedalus-js "$@"
-      ''} $out/libexec/daedalus-frontend
+          exec electron --disable-setuid-sandbox --no-sandbox "$ENTRYPOINT_DIR"/libexec/daedalus-js "$@"
+        ''} $out/libexec/daedalus-frontend
 
-      cp ${pkgs.writeText "update-runner" ''
-        #!/bin/sh
-        set -xe
-        exec "$1"
-      ''} $out/libexec/update-runner
+        cp ${pkgs.writeText "update-runner" ''
+          #!/bin/sh
+          set -xe
+          exec "$1"
+        ''} $out/libexec/update-runner
 
-      chmod +x $out/bin/* $out/libexec/{daedalus-frontend,update-runner}
+        chmod +x $out/bin/* $out/libexec/{daedalus-frontend,update-runner}
 
-      mkdir -p $out/share/applications
-      cp ${common.launcherConfigs.${cluster}.installerConfig.iconPath.large} $out/share/icon_large.png
-      (
-        cd $out/share/applications/
-        cp ${desktopItemTemplate.${cluster}}/share/applications/*.desktop ./Daedalus-${cluster}.desktop
-        chmod +w *.desktop
-        sed -r "s,INSERT_PATH_HERE,$out/bin/daedalus,g" -i *.desktop
-        sed -r "s,INSERT_ICON_PATH_HERE,$out/share/icon_large.png,g" -i *.desktop
-      )
-    '';
-  });
+        mkdir -p $out/share/applications
+        cp ${common.launcherConfigs.${cluster}.installerConfig.iconPath.large} $out/share/icon_large.png
+        (
+          cd $out/share/applications/
+          cp ${desktopItemTemplate.${cluster}}/share/applications/*.desktop ./Daedalus-${cluster}.desktop
+          chmod +w *.desktop
+          sed -r "s,INSERT_PATH_HERE,$out/bin/daedalus,g" -i *.desktop
+          sed -r "s,INSERT_ICON_PATH_HERE,$out/share/icon_large.png,g" -i *.desktop
+        )
+      '';
+    });
 
-  desktopItemTemplate = genClusters (cluster: pkgs.makeDesktopItem {
-    name = "Daedalus-${cluster}";
-    exec = "INSERT_PATH_HERE";
-    desktopName = "Daedalus ${cluster}";
-    genericName = "Crypto-Currency Wallet";
-    categories = [ "Application" "Network" ];
-    icon = "INSERT_ICON_PATH_HERE";
-    startupWMClass = common.launcherConfigs.${cluster}.installerConfig.spacedName;
-  });
+  desktopItemTemplate = genClusters (cluster:
+    pkgs.makeDesktopItem {
+      name = "Daedalus-${cluster}";
+      exec = "INSERT_PATH_HERE";
+      desktopName = "Daedalus ${cluster}";
+      genericName = "Crypto-Currency Wallet";
+      categories = ["Application" "Network"];
+      icon = "INSERT_ICON_PATH_HERE";
+      startupWMClass = common.launcherConfigs.${cluster}.installerConfig.spacedName;
+    });
 
   # On Windows/macOS, auto-update just launches the new installer, and exits the previous Daedalus.
   #
@@ -385,36 +399,44 @@ in rec {
 
   # XXX: Be *super careful* changing this!!! You WILL DELETE user data if you make a mistake.
   selfExtractingArchive = genClusters (cluster: let
-    scriptTemplate = __replaceStrings [
-      "@CLUSTER@"
-      "@REMOVE_OLD_NIX_CHROOT@"
-    ] [
-      (lib.escapeShellArg cluster)
-      removeOldNixChroot.${cluster}
-    ] (__readFile ./linux-self-extracting-archive.sh);
+    scriptTemplate =
+      __replaceStrings [
+        "@CLUSTER@"
+        "@REMOVE_OLD_NIX_CHROOT@"
+      ] [
+        (lib.escapeShellArg cluster)
+        removeOldNixChroot.${cluster}
+      ] (__readFile ./linux-self-extracting-archive.sh);
     script = __replaceStrings ["1010101010"] [(toString (1000000000 + __stringLength scriptTemplate))] scriptTemplate;
     version = (builtins.fromJSON (builtins.readFile ../../package.json)).version;
-  in pkgs.runCommand "daedalus-${cluster}-installer" {
-    inherit script;
-    passAsFile = [ "script" ];
-  } ''
-    mkdir -p $out
-    target=$out/daedalus-${version}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-x86_64-linux.bin
-    cat $scriptPath >$target
-    chmod +x $target
+  in
+    pkgs.runCommand "daedalus-${cluster}-installer" {
+      inherit script;
+      passAsFile = ["script"];
+      meta.mainProgram = "daedalus-${cluster}-installer";
+    } ''
+      mkdir -p $out
+      target=$out/daedalus-${version}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-x86_64-linux.bin
+      cat $scriptPath >$target
+      chmod +x $target
 
-    echo 'Compressing (xz)...'
-    tar -cJf tmp-archive.tar.xz -C ${newBundle.${cluster}} . -C ${satisfyOldUpdateRunner.${cluster}} .
+      echo 'Compressing (xz)...'
+      tar -cJf tmp-archive.tar.xz -C ${newBundle.${cluster}} . -C ${satisfyOldUpdateRunner.${cluster}} .
 
-    checksum=$(sha256sum tmp-archive.tar.xz | cut -d' ' -f1)
-    sed -r "s/0000000000000000000000000000000000000000000000000000000000000000/$checksum/g" -i $target
+      checksum=$(sha256sum tmp-archive.tar.xz | cut -d' ' -f1)
+      sed -r "s/0000000000000000000000000000000000000000000000000000000000000000/$checksum/g" -i $target
 
-    cat tmp-archive.tar.xz >>$target
+      cat tmp-archive.tar.xz >>$target
 
-    # Make it downloadable from Hydra:
-    mkdir -p $out/nix-support
-    echo "file binary-dist \"$target\"" >$out/nix-support/hydra-build-products
-  '');
+      # Create bin directory with hard link for nix run
+      # (symlink won't work for self-extracting archives)
+      mkdir -p $out/bin
+      ln $target $out/bin/daedalus-${cluster}-installer
+
+      # Make it downloadable from Hydra:
+      mkdir -p $out/nix-support
+      echo "file binary-dist \"$target\"" >$out/nix-support/hydra-build-products
+    '');
 
   # We only want to remove the old nix-chroot, if it contains only one cluster
   # variant – the one we’re updating. Otherwise, we’ll break other cluster
@@ -441,46 +463,49 @@ in rec {
     tarball = pkgs.callPackage (pkgs.path + "/nixos/lib/make-system-tarball.nix") {
       fileName = "tarball"; # don't rename
       contents = [];
-      storeContents = [{
-        symlink = "firstGeneration";
-        object = pkgs.buildEnv {
-          name = "profile";
-          paths = [
-            # We need an auto-update stub to hook into the old auto-update process, and make it launch
-            # our new portable Daedalus outside of `nix-chroot`.
-            #
-            # The previously running `cardano-launcher` (inside the `nix-chroot`) will try to restart
-            # `/bin/daedalus-frontend` after a successful update, so we have to hook here: start the new
-            # independent (nohup, setsid, don’t inherit fds) Deadalus (and new cardano-launcher) after
-            # moving the old cardano-launcher’s lockfile out of the way. The old launcher will exit
-            # after our `exit 0` below.
-            #
-            # And at the very end we get rid of the previous `nix-chroot`.
-            (pkgs.writeShellScriptBin "daedalus-frontend" ''
-              set -euo pipefail
-              echo -n "$HOME/.daedalus${pkgs.writeScript "escape-and-scrap-chroot" ''
-                #!/bin/sh
-                set -eu
-                nohup setsid ~/.daedalus/${cluster}/bin/daedalus </dev/null >/dev/null 2>/dev/null &
-                sleep 5
-                ${removeOldNixChroot.${cluster}}
-              ''}" >/escape-hatch
-              exit 0
-            '')
-          ];
-        };
-      }];
+      storeContents = [
+        {
+          symlink = "firstGeneration";
+          object = pkgs.buildEnv {
+            name = "profile";
+            paths = [
+              # We need an auto-update stub to hook into the old auto-update process, and make it launch
+              # our new portable Daedalus outside of `nix-chroot`.
+              #
+              # The previously running `cardano-launcher` (inside the `nix-chroot`) will try to restart
+              # `/bin/daedalus-frontend` after a successful update, so we have to hook here: start the new
+              # independent (nohup, setsid, don’t inherit fds) Deadalus (and new cardano-launcher) after
+              # moving the old cardano-launcher’s lockfile out of the way. The old launcher will exit
+              # after our `exit 0` below.
+              #
+              # And at the very end we get rid of the previous `nix-chroot`.
+              (pkgs.writeShellScriptBin "daedalus-frontend" ''
+                set -euo pipefail
+                echo -n "$HOME/.daedalus${pkgs.writeScript "escape-and-scrap-chroot" ''
+                  #!/bin/sh
+                  set -eu
+                  nohup setsid ~/.daedalus/${cluster}/bin/daedalus </dev/null >/dev/null 2>/dev/null &
+                  sleep 5
+                  ${removeOldNixChroot.${cluster}}
+                ''}" >/escape-hatch
+                exit 0
+              '')
+            ];
+          };
+        }
+      ];
     };
-  in pkgs.runCommandNoCC "satisfy-old-update-runner" {} ''
-    mkdir -p $out/dat${tarball}
-    cp -r ${tarball}/. $out/dat${tarball}/
-  '');
+  in
+    pkgs.runCommand "satisfy-old-update-runner" {} ''
+      mkdir -p $out/dat${tarball}
+      cp -r ${tarball}/. $out/dat${tarball}/
+    '');
 
-  electronBin = pkgs.stdenv.mkDerivation {
+  electronBin = pkgsJs.stdenv.mkDerivation {
     name = "electron-${electronVersion}";
     src = linuxSources.electron;
-    buildInputs = with pkgs; [ unzip makeWrapper ];
-    buildCommand = with pkgs; ''
+    buildInputs = with pkgsJs; [unzip makeWrapper];
+    buildCommand = with pkgsJs; ''
       mkdir -p $out/lib/electron $out/bin
       unzip -d $out/lib/electron $src
       ln -s $out/lib/electron/electron $out/bin
@@ -489,21 +514,56 @@ in rec {
 
       patchelf \
         --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-        --set-rpath "${atomEnv.libPath}:${lib.makeLibraryPath [ libuuid at-spi2-atk at-spi2-core xorg.libxshmfence libxkbcommon ]}:$out/lib/electron" \
+        --set-rpath "${lib.makeLibraryPath (with pkgsJs; [
+        # Core system libraries
+        stdenv.cc.cc
+        glib
+        nss
+        nspr
+        atk
+        cups
+        dbus
+        expat
+        libdrm
+        libxkbcommon
+        libuuid
+        at-spi2-atk
+        at-spi2-core
+        # X11 libraries
+        xorg.libX11
+        xorg.libXcomposite
+        xorg.libXdamage
+        xorg.libXext
+        xorg.libXfixes
+        xorg.libXrandr
+        xorg.libxcb
+        xorg.libxshmfence
+        # GTK and rendering
+        cairo
+        pango
+        gdk-pixbuf
+        gtk3
+        # Mesa/graphics
+        mesa
+        # Audio
+        alsa-lib
+        libpulseaudio
+        # Other
+        systemd
+      ])}:$out/lib/electron" \
         $out/lib/electron/electron
     '';
   };
 
   linuxSources = {
-    electron = pkgs.fetchurl {
+    electron = pkgsJs.fetchurl {
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-linux-x64.zip";
       hash = "sha256-jXeA3Sr8/l6Uos9XT0+hCiosaRIndx/KSQUcUkrGdRM=";
     };
 
-    electronChromedriver = pkgs.fetchurl {
+    electronChromedriver = pkgsJs.fetchurl {
       url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-linux-x64.zip";
       hash = "sha256-bkeA1l1cBppdsbLISwu8MdC/2E5sjVJx6e+KhLgQ5yA=";
     };
   };
-
 }

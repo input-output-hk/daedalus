@@ -1,31 +1,30 @@
-{ network ? "staging"
-, os ? "linux"
-, cardanoLib
-, runCommand
-, lib
-, devShell ? false
-, topologyOverride ? null
-, configOverride ? null
-, genesisOverride ? null
-, cardano-playground
-, system
+{
+  network ? "staging",
+  os ? "linux",
+  cardanoLib,
+  runCommand,
+  lib,
+  devShell ? false,
+  topologyOverride ? null,
+  configOverride ? null,
+  genesisOverride ? null,
+  cardano-playground,
+  system,
+  jq,
 }:
-
 # Creates an attr set for a cluster containing:
 # * launcherConfig (attr set)
 # * installerConfig (attr set)
 # * nodeConfigFiles
 # * configFiles (launcher config + installer config)
-
-
 let
   clustersAvailable = rec {
-    mainnet    = fromCardanoPlayground "mainnet";
+    mainnet = fromCardanoPlayground "mainnet";
     mainnet_flight = mainnet;
     shelley_qa = fromCardanoPlayground "shelley_qa";
-    vasil_dev  = fromCardanoPlayground "vasil-dev";
-    preprod    = fromCardanoPlayground "preprod";
-    preview    = fromCardanoPlayground "preview";
+    vasil_dev = fromCardanoPlayground "vasil-dev";
+    preprod = fromCardanoPlayground "preprod";
+    preview = fromCardanoPlayground "preview";
   };
 
   smashServers = {
@@ -47,34 +46,59 @@ let
     };
 
     originalNodeConfig = builtins.fromJSON (builtins.unsafeDiscardStringContext (
-      builtins.readFile (originalFiles + "/config.json")));
+      builtins.readFile (originalFiles + "/config.json")
+    ));
 
-    nodeConfig = originalNodeConfig // {
-      AlonzoGenesisFile  = originalFiles + "/" + originalNodeConfig.AlonzoGenesisFile;
-      ByronGenesisFile   = originalFiles + "/" + originalNodeConfig.ByronGenesisFile;
-      ShelleyGenesisFile = originalFiles + "/" + originalNodeConfig.ShelleyGenesisFile;
-      minSeverity = "Info";  # XXX: Needed for sync % updates.
-    } // (if originalNodeConfig ? ConwayGenesisFile then {
-      ConwayGenesisFile  = originalFiles + "/" + originalNodeConfig.ConwayGenesisFile;
-    } else {});
+    nodeConfig =
+      originalNodeConfig
+      // {
+        AlonzoGenesisFile = originalFiles + "/" + originalNodeConfig.AlonzoGenesisFile;
+        ByronGenesisFile = originalFiles + "/" + originalNodeConfig.ByronGenesisFile;
+        ShelleyGenesisFile = originalFiles + "/" + originalNodeConfig.ShelleyGenesisFile;
+        minSeverity = "Info"; # XXX: Needed for sync % updates.
+      }
+      // (
+        if originalNodeConfig ? ConwayGenesisFile
+        then {
+          ConwayGenesisFile = originalFiles + "/" + originalNodeConfig.ConwayGenesisFile;
+        }
+        else {}
+      );
   in {
     cluster = envName;
     networkName = envName;
-    cardanoEnv = {
-      inherit nodeConfig;
-      topologyFile = originalFiles + "/topology.json";
-      peerSnapshotFile = originalFiles + "/peer-snapshot.json";
-      metadataUrl = tokenMetadataServers.${envName};
-    } // (let
-      checkpointsFile = originalFiles + "/checkpoints.json";
-    in if builtins.pathExists checkpointsFile then { inherit checkpointsFile; } else {});
+    cardanoEnv =
+      {
+        inherit nodeConfig;
+        topologyFile = originalFiles + "/topology.json";
+        peerSnapshotFile = originalFiles + "/peer-snapshot.json";
+        metadataUrl = tokenMetadataServers.${envName};
+      }
+      // (let
+        checkpointsFile = originalFiles + "/checkpoints.json";
+      in
+        if builtins.pathExists checkpointsFile
+        then {inherit checkpointsFile;}
+        else {});
   };
 
-  dirSep = if os == "windows" then "\\" else "/";
+  dirSep =
+    if os == "windows"
+    then "\\"
+    else "/";
   configDir = configFilesSource: {
-    linux = if devShell then configFilesSource else "\${ENTRYPOINT_DIR}/config";
-    macos64 = if devShell then configFilesSource else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
-    macos64-arm = if devShell then configFilesSource else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
+    linux =
+      if devShell
+      then configFilesSource
+      else "\${ENTRYPOINT_DIR}/config";
+    macos64 =
+      if devShell
+      then configFilesSource
+      else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
+    macos64-arm =
+      if devShell
+      then configFilesSource
+      else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
 
@@ -86,7 +110,8 @@ let
     frontendBin.windows = "${spacedName}";
     frontendBin.macos64 = "Frontend";
     frontendBin.macos64-arm = "Frontend";
-  in frontendBin.${os};
+  in
+    frontendBin.${os};
 
   selfnodeConfig = rec {
     useByronWallet = true;
@@ -107,15 +132,29 @@ let
       macos64-arm = "\${DAEDALUS_INSTALL_DIRECTORY}";
       windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
     };
-    binary' = if binary == "frontend" then frontendBinPath else binary;
-  in if (devShell || os == "linux") then binary' else "${binDir.${os}}${dirSep}${binary'}${lib.optionalString (os == "windows") ".exe"}";
+    binary' =
+      if binary == "frontend"
+      then frontendBinPath
+      else binary;
+  in
+    if (devShell || os == "linux")
+    then binary'
+    else "${binDir.${os}}${dirSep}${binary'}${lib.optionalString (os == "windows") ".exe"}";
   # Helper function to make a path to a config file
   mkConfigPath = configSrc: configPath: "${(configDir configSrc).${os}}${dirSep}${configPath}";
 
   envCfg = let
     cardanoEnv = clustersAvailable.${network}.cardanoEnv;
-  in if network == "selfnode" then selfnodeConfig else cardanoEnv;
-  kind = if network == "local" then "shelley" else if (envCfg.nodeConfig.Protocol == "RealPBFT" || envCfg.nodeConfig.Protocol == "Byron") then "byron" else "shelley";
+  in
+    if network == "selfnode"
+    then selfnodeConfig
+    else cardanoEnv;
+  kind =
+    if network == "local"
+    then "shelley"
+    else if (envCfg.nodeConfig.Protocol == "RealPBFT" || envCfg.nodeConfig.Protocol == "Byron")
+    then "byron"
+    else "shelley";
 
   installDirectorySuffix = let
     supportedNetworks = {
@@ -133,11 +172,17 @@ let
     };
     unsupported = "Unsupported";
     networkSupported = __hasAttr network supportedNetworks;
-  in if networkSupported then supportedNetworks.${network} else unsupported;
+  in
+    if networkSupported
+    then supportedNetworks.${network}
+    else unsupported;
 
   iconPath = let
     networkIconExists = __pathExists (../../. + "/installers/icons/${network}");
-    network' = if networkIconExists then network else "mainnet";
+    network' =
+      if networkIconExists
+      then network
+      else "mainnet";
   in {
     small = ../../installers/icons + "/${network'}/64x64.png";
     large = ../../installers/icons + "/${network'}/1024x1024.png";
@@ -149,7 +194,8 @@ let
     path.macos64 = "\${HOME}/Library/Application Support/${spacedName}";
     path.macos64-arm = "\${HOME}/Library/Application Support/${spacedName}";
     path.windows = "\${APPDATA}\\${spacedName}";
-  in path.${os};
+  in
+    path.${os};
 
   # Used for flight builds to find legacy paths for migration
   legacyDataDir = let
@@ -157,14 +203,16 @@ let
     path.macos64 = "\${HOME}/Library/Application Support/Daedalus";
     path.macos64-arm = "\${HOME}/Library/Application Support/Daedalus";
     path.windows = "\${APPDATA}\\Daedalus";
-  in path.${os};
+  in
+    path.${os};
 
   logsPrefix = let
     path.linux = "${dataDir}/Logs";
     path.windows = "Logs";
     path.macos64 = "${dataDir}/Logs";
     path.macos64-arm = "${dataDir}/Logs";
-  in path.${os};
+  in
+    path.${os};
 
   tlsConfig = {
     ca = {
@@ -183,11 +231,13 @@ let
         "::1"
       ];
     };
-    clients = [ {
-      organization = "Daedalus";
-      commonName = "Daedalus Frontend";
-      expiryDays = 365;
-    } ];
+    clients = [
+      {
+        organization = "Daedalus";
+        commonName = "Daedalus Frontend";
+        expiryDays = 365;
+      }
+    ];
   };
 
   launcherLogsPrefix = "${logsPrefix}${dirSep}pub";
@@ -207,10 +257,16 @@ let
     workingDir = dataDir;
     stateDir = dataDir;
     tlsPath = "${dataDir}${dirSep}tls";
-    cluster = if __hasAttr network clustersAvailable then clustersAvailable.${network}.cluster else network;
-    networkName = if __hasAttr network clustersAvailable then clustersAvailable.${network}.networkName else network;
+    cluster =
+      if __hasAttr network clustersAvailable
+      then clustersAvailable.${network}.cluster
+      else network;
+    networkName =
+      if __hasAttr network clustersAvailable
+      then clustersAvailable.${network}.networkName
+      else network;
     isFlight = network == "mainnet_flight";
-    isStaging = (envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic");
+    isStaging = envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic";
     nodeImplementation = "cardano";
   };
 
@@ -218,7 +274,7 @@ let
     runCommand "cfg-files" {
       launcherConfig = builtins.toJSON launcherConfig;
       installerConfig = builtins.toJSON installerConfig;
-      passAsFile = [ "launcherConfig" "installerConfig" ];
+      passAsFile = ["launcherConfig" "installerConfig"];
     } ''
       mkdir $out
       cp ${nodeConfigFiles}/* $out/
@@ -228,106 +284,155 @@ let
       ${lib.optionalString (envCfg.nodeConfig ? ShelleyGenesisFile) "cp ${envCfg.nodeConfig.ShelleyGenesisFile} $out/genesis-shelley.json"}
       ${lib.optionalString (envCfg.nodeConfig ? AlonzoGenesisFile) "cp ${envCfg.nodeConfig.AlonzoGenesisFile} $out/genesis-alonzo.json"}
       ${lib.optionalString (envCfg.nodeConfig ? ConwayGenesisFile) "cp ${envCfg.nodeConfig.ConwayGenesisFile} $out/genesis-conway.json"}
+      # Ensure ledger is configured with lsm backend and relative path
+      chmod u+w $out/config.yaml
+      # The custom cardano-playground flake pin that was provided in this diff
+      # has preview set back to genesis mode, but is still using memory backend
+      # for ledger, so force lsm with relative path here.
+      #${lib.getExe jq} '.LedgerDB = {Backend: "V2LSM", LSMDatabasePath: "lsm/"}' < ${nodeConfigFiles}/config.yaml > $out/config.yaml
+
+      # If instead we want to revert to praos with lsm, we could use the following instead:
+      ${lib.getExe jq} '.ConsensusMode = "PraosMode"' < ${nodeConfigFiles}/config.yaml > $out/config.yaml
     '';
 
   mkConfigCardano = let
-    filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
+    filterMonitoring = config:
+      if devShell
+      then config
+      else builtins.removeAttrs config ["hasPrometheus" "hasEKG"];
     cardanoAddressBin = mkBinPath "cardano-address";
     walletBin = mkBinPath "cardano-wallet";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
     nodeConfig = let
-      nodeConfigAttrs = if (configOverride == null) then envCfg.nodeConfig else __fromJSON (__readFile configOverride);
-    in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!devShell || network == "local") ({
-      ByronGenesisFile = "genesis-byron.json";
-      ShelleyGenesisFile = "genesis-shelley.json";
-      AlonzoGenesisFile = "genesis-alonzo.json";
-    } // (if nodeConfigAttrs ? ConwayGenesisFile then {
-      ConwayGenesisFile = "genesis-conway.json";
-    } else {})))));
+      nodeConfigAttrs =
+        if (configOverride == null)
+        then envCfg.nodeConfig
+        else __fromJSON (__readFile configOverride);
+    in
+      builtins.toJSON (filterMonitoring (nodeConfigAttrs
+        // (lib.optionalAttrs (!devShell || network == "local") ({
+            ByronGenesisFile = "genesis-byron.json";
+            ShelleyGenesisFile = "genesis-shelley.json";
+            AlonzoGenesisFile = "genesis-alonzo.json";
+          }
+          // (
+            if nodeConfigAttrs ? ConwayGenesisFile
+            then {
+              ConwayGenesisFile = "genesis-conway.json";
+            }
+            else {}
+          )))));
     genesisFile = let
       genesisFile'.selfnode = ../../utils/cardano/selfnode/genesis.json;
       genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;
-    in if (genesisOverride != null) then genesisOverride else if (network == "selfnode" || network == "local") then genesisFile'.${network} else envCfg.nodeConfig.ByronGenesisFile;
-    normalTopologyFile = if network == "selfnode" then envCfg.topology else throw "no longer supported";
+    in
+      if (genesisOverride != null)
+      then genesisOverride
+      else if (network == "selfnode" || network == "local")
+      then genesisFile'.${network}
+      else envCfg.nodeConfig.ByronGenesisFile;
+    normalTopologyFile =
+      if network == "selfnode"
+      then envCfg.topology
+      else throw "no longer supported";
     localTopology = cardanoLib.mkEdgeTopology {
       edgePort = 30001;
-      edgeNodes = [ "127.0.0.1" ];
+      edgeNodes = ["127.0.0.1"];
     };
     topologyFile =
       if envCfg ? topologyFile
       then envCfg.topologyFile
       else if (topologyOverride == null)
-           then (if network == "local"
-                 then localTopology
-                 else normalTopologyFile)
-           else topologyOverride;
-    nodeConfigFiles = runCommand "node-cfg-files" {
-      inherit nodeConfig topologyFile;
-      passAsFile = [ "nodeConfig" ];
-    } ''
-      mkdir $out
-      cp ${genesisFile} $out/genesis.json
-      cp $nodeConfigPath $out/config.yaml
-      cp $topologyFile $out/topology.yaml
-      ${lib.optionalString (envCfg ? peerSnapshotFile) ''
-        cp ${envCfg.peerSnapshotFile} $out/peer-snapshot.json
-      ''}
-      ${lib.optionalString (envCfg ? checkpointsFile) ''
-        cp ${envCfg.checkpointsFile} $out/checkpoints.json
-      ''}
-      ${lib.optionalString (network == "selfnode") ''
-        cp ${envCfg.delegationCertificate} $out/delegation.cert
-        cp ${envCfg.signingKey} $out/signing.key
-      ''}
-    '';
+      then
+        (
+          if network == "local"
+          then localTopology
+          else normalTopologyFile
+        )
+      else topologyOverride;
+    nodeConfigFiles =
+      runCommand "node-cfg-files" {
+        inherit nodeConfig topologyFile;
+        passAsFile = ["nodeConfig"];
+      } ''
+        mkdir $out
+        cp ${genesisFile} $out/genesis.json
+        cp $nodeConfigPath $out/config.yaml
+        cp $topologyFile $out/topology.yaml
+        ${lib.optionalString (envCfg ? peerSnapshotFile) ''
+          cp ${envCfg.peerSnapshotFile} $out/peer-snapshot.json
+        ''}
+        ${lib.optionalString (envCfg ? checkpointsFile) ''
+          cp ${envCfg.checkpointsFile} $out/checkpoints.json
+        ''}
+        ${lib.optionalString (network == "selfnode") ''
+          cp ${envCfg.delegationCertificate} $out/delegation.cert
+          cp ${envCfg.signingKey} $out/signing.key
+        ''}
+      '';
 
-    legacyStateDir = if (network == "mainnet_flight") || (network == "mainnet") then legacyDataDir else dataDir;
+    legacyStateDir =
+      if (network == "mainnet_flight") || (network == "mainnet")
+      then legacyDataDir
+      else dataDir;
 
     legacyWalletDB = let
       path.linux = "Wallet";
       path.macos64 = "Wallet-1.0";
       path.macos64-arm = "Wallet-1.0";
       path.windows = "Wallet-1.0";
-    in path.${os};
+    in
+      path.${os};
 
     legacySecretKey = let
       path.linux = "Secrets${dirSep}secret.key";
       path.macos64 = "Secrets-1.0${dirSep}secret.key";
       path.macos64-arm = "Secrets-1.0${dirSep}secret.key";
       path.windows = "Secrets-1.0${dirSep}secret.key";
-    in path.${os};
+    in
+      path.${os};
 
-    launcherConfig = defaultLauncherConfig // {
-      inherit
-        nodeBin
-        cliBin
-        walletBin
-        cardanoAddressBin
-        legacyStateDir
-        legacyWalletDB
-        legacySecretKey;
-      syncTolerance = "300s";
-      nodeConfig = {
-        inherit kind;
-        configurationDir = "";
-        network = {
-          configFile = mkConfigPath nodeConfigFiles "config.yaml";
-          genesisFile = mkConfigPath nodeConfigFiles "genesis.json";
-          topologyFile = mkConfigPath nodeConfigFiles "topology.yaml";
+    launcherConfig =
+      defaultLauncherConfig
+      // {
+        inherit
+          nodeBin
+          cliBin
+          walletBin
+          cardanoAddressBin
+          legacyStateDir
+          legacyWalletDB
+          legacySecretKey
+          ;
+        wipeChain = false;
+        syncTolerance = "300s";
+        nodeConfig = {
+          inherit kind;
+          configurationDir = "";
+          network = {
+            configFile = mkConfigPath nodeConfigFiles "config.yaml";
+            genesisFile = mkConfigPath nodeConfigFiles "genesis.json";
+            topologyFile = mkConfigPath nodeConfigFiles "topology.yaml";
+          };
         };
-      };
-    } // (lib.optionalAttrs (network != "selfnode") {
-      metadataUrl = envCfg.metadataUrl;
-    }) // (lib.optionalAttrs (network == "selfnode") {
-      selfnodeBin = mkBinPath "local-cluster";
-      mockTokenMetadataServerBin = mkBinPath "mock-token-metadata-server";
-    }) // (lib.optionalAttrs (__hasAttr network smashServers) {
-      smashUrl = smashServers.${network};
-    });
+      }
+      // (lib.optionalAttrs (network != "selfnode") {
+        metadataUrl = envCfg.metadataUrl;
+      })
+      // (lib.optionalAttrs (network == "selfnode") {
+        selfnodeBin = mkBinPath "local-cluster";
+        mockTokenMetadataServerBin = mkBinPath "mock-token-metadata-server";
+      })
+      // (lib.optionalAttrs (__hasAttr network smashServers) {
+        smashUrl = smashServers.${network};
+      });
 
     installerConfig = {
-      installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
+      installDirectory =
+        if os == "linux"
+        then "Daedalus/${network}"
+        else spacedName;
       inherit spacedName iconPath;
       uglyName = "daedalus";
       macPackageName = "Daedalus${network}";
@@ -340,10 +445,9 @@ let
         "cardano-address.exe"
       ];
     };
-
   in {
     inherit nodeConfigFiles launcherConfig installerConfig;
     configFiles = mkConfigFiles nodeConfigFiles launcherConfig installerConfig;
   };
-
-in mkConfigCardano
+in
+  mkConfigCardano

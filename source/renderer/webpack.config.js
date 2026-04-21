@@ -46,7 +46,7 @@ module.exports = {
             },
             transform: {
               react: {
-                refresh: isDevelopment,
+                refresh: false, // Disabled: React Refresh has Electron compatibility issues
               },
             },
             target: 'es2019',
@@ -142,6 +142,8 @@ module.exports = {
       BUILD_REV: '0000000000000000000000000000000000000000',
       BUILD_REV_SHORT: 'dev',
       BUILD_COUNTER: '0',
+      NEWS_URL: 'https://newsfeed.daedalus.io',
+      NEWS_HASH_URL: 'https://newsfeed.daedaluswallet.io',
     }),
     new HtmlWebpackPlugin({
       template: 'source/renderer/index.ejs',
@@ -151,6 +153,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'styles.css',
     }),
-    isDevelopment && new ReactRefreshWebpackPlugin(),
+    // Disabled: React Refresh has compatibility issues with Electron
+    // isDevelopment && new ReactRefreshWebpackPlugin(),
   ].filter(Boolean),
 };
