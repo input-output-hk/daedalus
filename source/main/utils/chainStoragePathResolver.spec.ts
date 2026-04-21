@@ -25,9 +25,7 @@ describe('resolveStateDirectoryPath', () => {
 
   it('returns exists=true and realpath when directory exists', async () => {
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
-      '/resolved/state'
-    );
+    (fs.realpath as unknown as jest.Mock).mockResolvedValue('/resolved/state');
 
     const result = await resolveStateDirectoryPath('/tmp/state');
 
@@ -52,7 +50,7 @@ describe('resolveChainStoragePath', () => {
       isSymbolicLink: () => true,
       isDirectory: () => false,
     });
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
+    (fs.realpath as unknown as jest.Mock).mockResolvedValue(
       '/mnt/external/chain'
     );
 
@@ -73,7 +71,7 @@ describe('resolveChainStoragePath', () => {
   });
 
   it('returns entry-point chain path when chain entry point is missing', async () => {
-    ((fs.lstat as unknown) as jest.Mock).mockRejectedValue(
+    (fs.lstat as unknown as jest.Mock).mockRejectedValue(
       Object.assign(new Error('missing'), { code: 'ENOENT' })
     );
 
@@ -94,7 +92,7 @@ describe('resolveChainStoragePath', () => {
       isDirectory: () => true,
     });
     (fs.readlink as jest.Mock).mockResolvedValue('C:\\target\\chain');
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
+    (fs.realpath as unknown as jest.Mock).mockResolvedValue(
       'C:\\target\\chain'
     );
 
@@ -119,7 +117,7 @@ describe('resolveChainStoragePath', () => {
       isSymbolicLink: () => false,
       isDirectory: () => true,
     });
-    ((fs.readlink as unknown) as jest.Mock).mockRejectedValue(
+    (fs.readlink as unknown as jest.Mock).mockRejectedValue(
       Object.assign(new Error('not a link'), { code: 'EINVAL' })
     );
 
@@ -142,7 +140,7 @@ describe('resolveMithrilWorkDir', () => {
       isSymbolicLink: () => true,
       isDirectory: () => false,
     });
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
+    (fs.realpath as unknown as jest.Mock).mockResolvedValue(
       '/mnt/external/chain'
     );
 
@@ -163,7 +161,7 @@ describe('resolveMithrilWorkDir', () => {
   });
 
   it('returns entry-point chain path when chain entry point is missing', async () => {
-    ((fs.lstat as unknown) as jest.Mock).mockRejectedValue(
+    (fs.lstat as unknown as jest.Mock).mockRejectedValue(
       Object.assign(new Error('missing'), { code: 'ENOENT' })
     );
 

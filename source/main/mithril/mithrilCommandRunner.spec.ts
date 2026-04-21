@@ -285,11 +285,11 @@ describe('normalizeSpawnEnv', () => {
     environment.isWindows = true;
     process.env.DAEDALUS_INSTALL_DIRECTORY = 'C:\\Program Files\\Daedalus';
 
-    const env = normalizeSpawnEnv(({
+    const env = normalizeSpawnEnv({
       Path: 'C:\\Windows\\System32',
       PATH: 'C:\\Windows\\System32;C:\\Temp',
       SystemRoot: 'C:\\Windows',
-    } as unknown) as NodeJS.ProcessEnv);
+    } as unknown as NodeJS.ProcessEnv);
 
     expect(env.Path).toBe(
       'C:\\Program Files\\Daedalus;C:\\Windows\\System32;C:\\Temp'

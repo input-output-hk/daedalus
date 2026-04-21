@@ -20,10 +20,8 @@ class InstructionsDialogContainer extends Component<Props> {
     onClose: () => {},
   };
   onPrint = async () => {
-    const {
-      currentDateFormat,
-      currentTimeFormatShort,
-    } = this.props.stores.profile;
+    const { currentDateFormat, currentTimeFormatShort } =
+      this.props.stores.profile;
     const date = moment();
     const formattedDate = date.format(currentDateFormat);
     const formattedTime = date.format(currentTimeFormatShort);

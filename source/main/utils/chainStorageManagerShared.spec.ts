@@ -38,7 +38,7 @@ describe('captureChainPathState', () => {
       configurable: true,
     });
     (fs.readlink as jest.Mock).mockResolvedValue('/custom-parent/chain');
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
+    (fs.realpath as unknown as jest.Mock).mockResolvedValue(
       '/custom-parent/chain'
     );
 

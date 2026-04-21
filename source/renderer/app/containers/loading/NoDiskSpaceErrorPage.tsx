@@ -14,11 +14,8 @@ class NoDiskSpaceErrorPage extends Component<Props> {
 
   render() {
     const { stores } = this.props;
-    const {
-      diskSpaceRequired,
-      diskSpaceMissing,
-      diskSpaceRecommended,
-    } = stores.networkStatus;
+    const { diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended } =
+      stores.networkStatus;
     return (
       <NoDiskSpaceError
         diskSpaceRequired={diskSpaceRequired}

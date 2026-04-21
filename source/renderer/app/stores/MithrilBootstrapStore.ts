@@ -382,7 +382,8 @@ export default class MithrilBootstrapStore extends Store {
 
     try {
       const previousCustomPath = this.customChainPath;
-      const cleanupValidation = await prepareChainStorageLocationChangeChannel.request();
+      const cleanupValidation =
+        await prepareChainStorageLocationChangeChannel.request();
 
       runInAction('return to chain storage location picker', () => {
         this.storageLocationConfirmed = false;

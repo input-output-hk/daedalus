@@ -105,17 +105,14 @@ export default class WalletsStore extends Store {
     this.api.ada.getWalletRecoveryPhrase
   );
   @observable
-  getWalletCertificateAdditionalMnemonicsRequest: Request<
-    Array<string>
-  > = new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
+  getWalletCertificateAdditionalMnemonicsRequest: Request<Array<string>> =
+    new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
   @observable
-  getWalletCertificateRecoveryPhraseRequest: Request<
-    Array<string>
-  > = new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
+  getWalletCertificateRecoveryPhraseRequest: Request<Array<string>> =
+    new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
   @observable
-  getWalletRecoveryPhraseFromCertificateRequest: Request<
-    Array<string>
-  > = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
+  getWalletRecoveryPhraseFromCertificateRequest: Request<Array<string>> =
+    new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
   @observable
   restoreDaedalusRequest: Request<Wallet> = new Request(
     this.api.ada.restoreWallet
@@ -141,9 +138,8 @@ export default class WalletsStore extends Store {
     this.api.ada.restoreByronLedgerWallet
   );
   @observable
-  transferFundsCalculateFeeRequest: Request<
-    TransferFundsCalculateFeeRequest
-  > = new Request(this.api.ada.transferFundsCalculateFee);
+  transferFundsCalculateFeeRequest: Request<TransferFundsCalculateFeeRequest> =
+    new Request(this.api.ada.transferFundsCalculateFee);
   @observable
   transferFundsRequest: Request<TransferFundsRequest> = new Request(
     this.api.ada.transferFunds
@@ -415,11 +411,8 @@ export default class WalletsStore extends Store {
     Object.assign(this._newWalletDetails, params);
 
     try {
-      const recoveryPhrase:
-        | Array<string>
-        | null
-        | undefined = await this.getWalletRecoveryPhraseRequest.execute()
-        .promise;
+      const recoveryPhrase: Array<string> | null | undefined =
+        await this.getWalletRecoveryPhraseRequest.execute().promise;
 
       if (recoveryPhrase != null) {
         this.actions.walletBackup.initiateWalletBackup.trigger({
@@ -646,9 +639,8 @@ export default class WalletsStore extends Store {
     }
   };
   _finishWalletBackup = async () => {
-    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(
-      ' '
-    );
+    this._newWalletDetails.mnemonic =
+      this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(
       this._newWalletDetails
     ).promise;
@@ -757,12 +749,11 @@ export default class WalletsStore extends Store {
     // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
     const { passphrase, scrambledInput } = getScrambledInput(mnemonics);
     // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
-    const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
-      {
+    const unscrambledRecoveryPhrase: Array<string> =
+      await this.getWalletRecoveryPhraseFromCertificateRequest.execute({
         passphrase,
         scrambledInput,
-      }
-    ).promise;
+      }).promise;
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
     return unscrambledRecoveryPhrase;
   };
@@ -1258,15 +1249,12 @@ export default class WalletsStore extends Store {
         this.stores.transactions.transactionsRequests = walletIds.map(
           (walletId) => ({
             walletId,
-            recentRequest: this.stores.transactions._getTransactionsRecentRequest(
-              walletId
-            ),
-            allRequest: this.stores.transactions._getTransactionsAllRequest(
-              walletId
-            ),
-            withdrawalsRequest: this.stores.transactions._getWithdrawalsRequest(
-              walletId
-            ),
+            recentRequest:
+              this.stores.transactions._getTransactionsRecentRequest(walletId),
+            allRequest:
+              this.stores.transactions._getTransactionsAllRequest(walletId),
+            withdrawalsRequest:
+              this.stores.transactions._getWithdrawalsRequest(walletId),
           })
         );
 
@@ -1331,9 +1319,8 @@ export default class WalletsStore extends Store {
           this.activeValue = formattedWalletAmount(this.active.amount);
 
           if (this.active && this.active.isHardwareWallet) {
-            const {
-              hardwareWalletsConnectionData,
-            } = this.stores.hardwareWallets;
+            const { hardwareWalletsConnectionData } =
+              this.stores.hardwareWallets;
             const hardwareWalletConnectionData = get(
               hardwareWalletsConnectionData,
               this.active.id
@@ -1420,12 +1407,13 @@ export default class WalletsStore extends Store {
 
       // Generate wallet recovery phrase
 
-      const recoveryPhrase: Array<string> = yield this.getWalletRecoveryPhraseRequest.execute()
-        .promise;
+      const recoveryPhrase: Array<string> =
+        yield this.getWalletRecoveryPhraseRequest.execute().promise;
       // Generate 9-words (additional) mnemonic
 
-      const additionalMnemonicWords: Array<string> = yield this.getWalletCertificateAdditionalMnemonicsRequest.execute()
-        .promise;
+      const additionalMnemonicWords: Array<string> =
+        yield this.getWalletCertificateAdditionalMnemonicsRequest.execute()
+          .promise;
       this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
       // Generate spending password from 9-word mnemonic and save to store
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -1433,15 +1421,13 @@ export default class WalletsStore extends Store {
       this.walletCertificatePassword = spendingPassword;
       // Generate paper wallet scrambled mnemonic
 
-      const walletCertificateRecoveryPhrase: Array<string> = yield this.getWalletCertificateRecoveryPhraseRequest.execute(
-        {
+      const walletCertificateRecoveryPhrase: Array<string> =
+        yield this.getWalletCertificateRecoveryPhraseRequest.execute({
           passphrase: spendingPassword,
           input: recoveryPhrase.join(' '),
-        }
-      ).promise;
-      this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase.join(
-        ' '
-      );
+        }).promise;
+      this.walletCertificateRecoveryPhrase =
+        walletCertificateRecoveryPhrase.join(' ');
       // Create temporary wallet
       const walletData = {
         name: 'Paper Wallet',
@@ -1527,11 +1513,8 @@ export default class WalletsStore extends Store {
     filePath: string;
     wallet: Wallet;
   }) => {
-    const {
-      currentLocale,
-      currentDateFormat,
-      currentTimeFormat,
-    } = this.stores.profile;
+    const { currentLocale, currentDateFormat, currentTimeFormat } =
+      this.stores.profile;
     const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);
 

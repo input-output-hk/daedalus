@@ -5,7 +5,9 @@
   display: flex;
   padding: 20px 0 0;
   position: initial;
-  transition: position 1s ease-out, top 1s ease-out;
+  transition:
+    position 1s ease-out,
+    top 1s ease-out;
   width: 100%;
 }
 

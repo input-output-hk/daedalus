@@ -24,7 +24,8 @@ export const run = () => {
 
   const cardanoAppChannel = createCardanoAppChannel();
   const publicKeyChannel = createGetPublicKeyChannel();
-  const hardwareWalletConnectionChannel = createHardwareWalletConnectionChannel();
+  const hardwareWalletConnectionChannel =
+    createHardwareWalletConnectionChannel();
 
   return new Promise<void>((resolve) => {
     hardwareWalletConnectionChannel.onReceive(

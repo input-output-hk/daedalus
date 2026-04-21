@@ -95,15 +95,13 @@ export default class TransactionsStore extends Store {
     this.api.ada.deleteTransaction
   );
   @observable
-  createExternalTransactionRequest: Request<
-    CreateExternalTransactionRequest
-  > = new Request(this.api.ada.createExternalTransaction);
+  createExternalTransactionRequest: Request<CreateExternalTransactionRequest> =
+    new Request(this.api.ada.createExternalTransaction);
   @observable
   _filterOptionsForWallets = {};
   @observable
-  calculateTransactionFeeRequest: Request<
-    GetTransactionFeeRequest
-  > = new Request(this.api.ada.calculateTransactionFee);
+  calculateTransactionFeeRequest: Request<GetTransactionFeeRequest> =
+    new Request(this.api.ada.calculateTransactionFee);
 
   setup() {
     const {

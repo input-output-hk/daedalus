@@ -34,10 +34,10 @@ jest.mock('../utils/logging', () => ({
 
 describe('MithrilBootstrapService _installSnapshot', () => {
   const createChainStorageManager = () =>
-    (({
+    ({
       installSnapshot: jest.fn().mockResolvedValue(undefined),
       emptyManagedContents: jest.fn().mockResolvedValue(undefined),
-    } as unknown) as ChainStorageManager);
+    }) as unknown as ChainStorageManager;
 
   beforeEach(() => {
     jest.clearAllMocks();

@@ -298,12 +298,11 @@ export default class AppUpdateStore extends Store {
     });
   };
 
-  _getUpdateDownloadLocalData = async (): Promise<
-    DownloadLocalDataMainResponse
-  > =>
-    getDownloadLocalDataChannel.request({
-      id: APP_UPDATE_DOWNLOAD_ID,
-    });
+  _getUpdateDownloadLocalData =
+    async (): Promise<DownloadLocalDataMainResponse> =>
+      getDownloadLocalDataChannel.request({
+        id: APP_UPDATE_DOWNLOAD_ID,
+      });
 
   _checkFileExists = async (): Promise<CheckFileExistsMainResponse> =>
     checkFileExistsChannel.request({

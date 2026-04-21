@@ -11,7 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")"; pwd)"
 
 chmod -R +w node_modules/
 
-echo 'Deleting all current ‘*.node’ files before rebuilding for Electron’s ABI:'
+echo "Deleting all current ‘*.node’ files before rebuilding for Electron’s ABI:"
 find . -type f -name '*.node' -not -path '*/@swc*/*' -exec rm -vf {} ';'
 
 # Let’s patch electron-rebuild to force correct Node.js headers to
@@ -37,7 +37,7 @@ fi
 
 # XXX: we compare sha1sums before any signing (ad-hoc or real),
 # because after signing files that were the same will differ:
-echo '===== all *.node files after ‘electron-rebuild’: ====='
+echo "===== all *.node files after ‘electron-rebuild’: ====="
 find . -type f -name '*.node' | sort | xargs sha1sum
 echo ========================================================
 

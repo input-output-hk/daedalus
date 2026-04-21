@@ -89,7 +89,7 @@ export type TxBodyType = {
 
 export type CborizedVotingRegistrationMetadata = [
   Map<number, Map<number, Buffer | number>>,
-  []
+  [],
 ];
 
 export const toTxInput = (utxoInput: CoinSelectionInput) => {

@@ -41,7 +41,8 @@ export const run = () => {
 
   createAndRegisterHardwareWalletChannels();
 
-  const hardwareWalletConnectionChannel = createHardwareWalletConnectionChannel();
+  const hardwareWalletConnectionChannel =
+    createHardwareWalletConnectionChannel();
 
   createTestInstructions([
     'Connect Nano S',

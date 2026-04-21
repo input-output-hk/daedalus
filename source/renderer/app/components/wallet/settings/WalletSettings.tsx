@@ -181,11 +181,8 @@ class WalletSettings extends Component<Props, State> {
     });
   };
   onUndelegateWalletClick = async () => {
-    const {
-      walletId,
-      openDialogAction,
-      updateDataForActiveDialogAction,
-    } = this.props;
+    const { walletId, openDialogAction, updateDataForActiveDialogAction } =
+      this.props;
     this.onBlockForm();
     openDialogAction({
       dialog: UndelegateWalletConfirmationDialog,
@@ -374,19 +371,21 @@ class WalletSettings extends Component<Props, State> {
           </>
         )}
 
-        {IS_ICO_PUBLIC_KEY_SHARING_ENABLED && !isLegacy && !isHardwareWallet && (
-          <>
-            <ICOPublicKeyBox
-              publicKey={this.props.icoPublicKey}
-              locale={this.props.locale}
-              onCopyICOPublicKey={this.props.onCopyICOPublicKey}
-              openDialogAction={this.props.openDialogAction}
-            />
-            {isDialogOpen(ICOPublicKeyDialog) && icoPublicKeyDialogContainer}
-            {isDialogOpen(ICOPublicKeyQRCodeDialog) &&
-              icoPublicKeyQRCodeDialogContainer}
-          </>
-        )}
+        {IS_ICO_PUBLIC_KEY_SHARING_ENABLED &&
+          !isLegacy &&
+          !isHardwareWallet && (
+            <>
+              <ICOPublicKeyBox
+                publicKey={this.props.icoPublicKey}
+                locale={this.props.locale}
+                onCopyICOPublicKey={this.props.onCopyICOPublicKey}
+                openDialogAction={this.props.openDialogAction}
+              />
+              {isDialogOpen(ICOPublicKeyDialog) && icoPublicKeyDialogContainer}
+              {isDialogOpen(ICOPublicKeyQRCodeDialog) &&
+                icoPublicKeyQRCodeDialogContainer}
+            </>
+          )}
 
         {this.renderUndelegateWalletBox()}
         {isHardwareWallet ? (

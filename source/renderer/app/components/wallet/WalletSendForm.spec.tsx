@@ -477,7 +477,7 @@ describe('wallet/Wallet Send Form', () => {
     Array<[number, number]>,
     [number, number],
     Array<[number, number]>,
-    [string, string, number]
+    [string, string, number],
   ];
 
   const cases: Cases[] = [

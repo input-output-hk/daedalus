@@ -70,11 +70,8 @@ class Wallet extends Component<Props> {
       );
     }
 
-    const {
-      hasNotification,
-    } = walletSettings.getWalletsRecoveryPhraseVerificationData(
-      activeWallet.id
-    );
+    const { hasNotification } =
+      walletSettings.getWalletsRecoveryPhraseVerificationData(activeWallet.id);
     const {
       isRestoring,
       isLegacy,
