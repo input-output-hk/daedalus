@@ -3,6 +3,8 @@
 logs/*
 !logs/.keep
 
+target/
+
 # Runtime data
 pids
 icon.png
