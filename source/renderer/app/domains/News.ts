@@ -83,7 +83,12 @@ class NewsCollection {
   allWithAppUpdates: Array<News> = [];
 
   constructor(data: Array<News>) {
-    const { version, platform } = global.environment;
+    const { version, platform, isAppleSilicon } = global.environment;
+    // On Apple Silicon hardware the newsfeed may target 'darwin-arm' in addition to 'darwin'.
+    const platformKeys =
+      isAppleSilicon && platform === 'darwin'
+        ? ['darwin', 'darwin-arm']
+        : [platform];
     // Filter news by platform and versions
     const filteredNewsWithAppUpdates = filter(data, (newsItem) => {
       const availableTargetVersionRange = get(
@@ -101,7 +106,8 @@ class NewsCollection {
             semver.satisfies(version, availableTargetVersionRange, {
               includePrerelease: true,
             }))) &&
-        (platform === 'browser' || includes(targetPlatforms, platform)) &&
+        (platform === 'browser' ||
+          platformKeys.some((key) => includes(targetPlatforms, key))) &&
         newsItem.id &&
         newsItem.title &&
         newsItem.content &&
