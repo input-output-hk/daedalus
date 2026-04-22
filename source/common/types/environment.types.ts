@@ -32,6 +32,7 @@ export type Environment = {
   isWindows: boolean;
   isMacOS: boolean;
   isLinux: boolean;
+  isAppleSilicon: boolean;
   isBlankScreenFixActive: boolean;
   keepLocalClusterRunning: boolean;
   analyticsFeatureEnabled: boolean;
@@ -61,7 +62,7 @@ export const OS_NAMES = {
   [WINDOWS]: 'Windows',
   [LINUX]: 'Linux',
 };
-export type Platform = 'darwin' | 'win32' | 'linux';
+export type Platform = 'darwin' | 'darwin-arm' | 'win32' | 'linux';
 export type Network =
   | 'mainnet'
   | 'mainnet_flight'

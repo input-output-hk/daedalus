@@ -36,7 +36,14 @@ import type {
 } from '../../../common/types/downloadManager.types';
 import type { FormattedDownloadData } from '../utils/formatters';
 
-const { version: currentVersion, platform } = global.environment;
+const {
+  version: currentVersion,
+  platform,
+  isAppleSilicon,
+} = global.environment;
+// On Apple Silicon hardware (including Rosetta users), prefer the native arm64 installer
+// when it is available in the update feed, falling back to the x86_64 package.
+const updatePlatformKey = isAppleSilicon ? 'darwin-arm' : platform;
 const { News } = NewsDomains;
 export default class AppUpdateStore extends Store {
   @observable
@@ -180,7 +187,10 @@ export default class AppUpdateStore extends Store {
   // @ts-ignore ts-migrate(2749) FIXME: 'News' refers to a value, but is being used as a t... Remove this comment to see the full error message
   getUpdateInfo(update: News): SoftwareUpdateInfo {
     const softwareUpdate = get(update, 'softwareUpdate', {});
-    const { version, hash, url } = softwareUpdate[platform] || {};
+    // Prefer the platform-specific key (e.g. 'darwin-arm' on Apple Silicon),
+    // fall back to the generic platform key if the preferred entry is absent.
+    const { version, hash, url } =
+      softwareUpdate[updatePlatformKey] || softwareUpdate[platform] || {};
     return {
       version,
       hash,
