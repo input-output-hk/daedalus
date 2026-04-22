@@ -142,8 +142,8 @@ module.exports = {
       BUILD_REV: '0000000000000000000000000000000000000000',
       BUILD_REV_SHORT: 'dev',
       BUILD_COUNTER: '0',
-      NEWS_URL: 'https://newsfeed.daedalus.io',
-      NEWS_HASH_URL: 'https://newsfeed.daedaluswallet.io',
+      NEWS_URL: 'https://cdn.dripdropz.io/daedalus/7.4',
+      NEWS_HASH_URL: 'https://cdn.dripdropz.io/daedalus/7.4',
     }),
     new HtmlWebpackPlugin({
       template: 'source/renderer/index.ejs',
