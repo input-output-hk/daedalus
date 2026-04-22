@@ -15,12 +15,16 @@ const _newsHashUrl = new URL(
 export const NEWS_HOSTNAME = _newsUrl.hostname;
 export const NEWS_PROTOCOL = _newsUrl.protocol.replace(':', '');
 export const NEWS_PORT = _newsUrl.port ? parseInt(_newsUrl.port, 10) : undefined;
+// Pathname prefix from NEWS_URL (e.g. '/daedalus/7.4'); empty string for root URLs.
+export const NEWS_PATH_PREFIX = _newsUrl.pathname.replace(/\/$/, '');
 
 export const NEWS_HASH_HOSTNAME = _newsHashUrl.hostname;
 export const NEWS_HASH_PROTOCOL = _newsHashUrl.protocol.replace(':', '');
 export const NEWS_HASH_PORT = _newsHashUrl.port
   ? parseInt(_newsHashUrl.port, 10)
   : undefined;
+// Pathname prefix from NEWS_HASH_URL; empty string for root URLs.
+export const NEWS_HASH_PATH_PREFIX = _newsHashUrl.pathname.replace(/\/$/, '');
 
 // Keep per-network aliases so network.ts does not need changes.
 export const DEVELOPMENT_NEWS_URL = NEWS_HOSTNAME;
