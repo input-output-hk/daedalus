@@ -1,7 +1,8 @@
-{
+{inputs, ...}: {
   perSystem = {
     config,
     pkgs,
+    inputs',
     ...
   }: {
     # This replaces the need for an external treefmt.toml
@@ -11,6 +12,13 @@
 
       # Enable alejandra for nix formatting
       programs.alejandra.enable = true;
+
+      # Enable rustfmt for Rust — use the fenix toolchain rustfmt so it
+      # matches the version used to build drt.
+      programs.rustfmt = {
+        enable = true;
+        package = inputs'.fenix.packages.stable.rustfmt;
+      };
 
       # Enable prettier for JS/TS/JSON/SCSS formatting
       programs.prettier = {
@@ -38,6 +46,7 @@
         "release"
         ".direnv"
         ".agent"
+        "release-cli/target"
         # Exclude specific paths from .prettierignore
         "source/renderer/app/i18n/locales"
         "source/renderer/app/config/newsfeed-files"

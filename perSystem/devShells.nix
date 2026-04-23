@@ -11,16 +11,19 @@
       targetSystem = system;
     };
 
-    # Add treefmt to all devShells
-    devShellsWithFormatter =
+    # Add treefmt (and drt when available) to all devShells.
+    devShellsWithExtras =
       lib.mapAttrs (
-        name: shell:
+        _name: shell:
           shell.overrideAttrs (oldAttrs: {
-            buildInputs = (oldAttrs.buildInputs or []) ++ [config.treefmt.build.wrapper];
+            buildInputs =
+              (oldAttrs.buildInputs or [])
+              ++ [config.treefmt.build.wrapper]
+              ++ lib.optional (config.packages ? drt) config.packages.drt;
           })
       )
       devShells;
   in {
-    devShells = devShellsWithFormatter;
+    devShells = devShellsWithExtras;
   };
 }

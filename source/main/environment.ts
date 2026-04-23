@@ -1,4 +1,5 @@
 import os from 'os';
+import { execFileSync } from 'child_process';
 import { get, includes, uniq } from 'lodash';
 import packageJson from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
@@ -69,6 +70,21 @@ const INSTALLER_VERSION = uniq([CARDANO_WALLET_VERSION, BUILD]).join('.');
 const isMacOS = checkIsMacOS(PLATFORM);
 const isWindows = checkIsWindows(PLATFORM);
 const isLinux = checkIsLinux(PLATFORM);
+// Detect Apple Silicon hardware — true even when running the x86_64 build under Rosetta 2.
+// sysctl hw.optional.arm64 returns "1" on ARM hardware, regardless of process architecture.
+const isAppleSilicon = (() => {
+  if (!isMacOS) return false;
+  try {
+    return (
+      execFileSync('sysctl', ['-n', 'hw.optional.arm64'], {
+        encoding: 'utf8',
+        timeout: 1000,
+      }).trim() === '1'
+    );
+  } catch {
+    return false;
+  }
+})();
 
 /* ==================================================================
 =                       Compose environment                         =
@@ -108,6 +124,7 @@ export const environment: Environment = Object.assign(
     isWindows,
     isMacOS,
     isLinux,
+    isAppleSilicon,
     isBlankScreenFixActive,
     keepLocalClusterRunning,
     hasMetHardwareRequirements,

@@ -483,11 +483,9 @@ in rec {
         if ${shallSignPredicate} ; then
           echo "Signing installer…"
 
-          # FIXME: this doesn’t work outside of `buildkite-agent-default`, it seems:
-          #(
-          #  source ${credentials}
-          #  security unlock-keychain -p "$SIGNING" "$signingKeyChain"
-          #)
+          source ${credentials}
+          security unlock-keychain -p "$KEYCHAIN" "$signingKeyChain"
+          security list-keychains -d user -s "$signingKeyChain" $(security list-keychains -d user | tr -d '"')
 
           productsign --sign "$signingIdentity" --keychain "$signingKeyChain" \
             *.phase2.pkg \

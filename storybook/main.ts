@@ -43,6 +43,10 @@ module.exports = {
         url: require.resolve('url'),
         buffer: require.resolve('buffer/'), // https://www.npmjs.com/package/buffer#usage
         os: require.resolve('os-browserify/browser'),
+        // child_process is only used in the Electron main process (ARM detection).
+        // Provide an empty stub so Storybook's webpack can bundle environment.ts.
+        // The execFileSync call is unreachable in a browser context (isMacOS === false).
+        child_process: false,
       },
     };
     config.module.rules.push(
