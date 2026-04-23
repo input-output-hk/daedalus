@@ -126,6 +126,24 @@ async fn cmd_sign(
         let osx_host = std::env::var("OSX_SIGN_HOST").ok();
         let win_host = std::env::var("WIN_SIGN_HOST").ok();
 
+        let notary_creds = match (
+            std::env::var("APPLE_NOTARY_USER").ok(),
+            std::env::var("APPLE_NOTARY_PASS").ok(),
+            std::env::var("APPLE_TEAM_ID").ok(),
+        ) {
+            (Some(apple_id), Some(password), Some(team_id)) => Some(sign::NotaryCreds {
+                apple_id,
+                password,
+                team_id,
+            }),
+            _ => {
+                println!(
+                    "  [notarization skipped — APPLE_NOTARY_USER / APPLE_NOTARY_PASS / APPLE_TEAM_ID not set]"
+                );
+                None
+            }
+        };
+
         for inst in &installer_dir.installers {
             if inst.is_already_code_signed() {
                 if inst.path.exists() {
@@ -158,6 +176,7 @@ async fn cmd_sign(
                                     &inst.path,
                                     skip_upload,
                                     &installer_dir.meta,
+                                    notary_creds.as_ref(),
                                     verbose,
                                 )?;
                             }
@@ -177,6 +196,7 @@ async fn cmd_sign(
                                     &inst.path,
                                     skip_upload,
                                     &installer_dir.meta,
+                                    notary_creds.as_ref(),
                                     verbose,
                                 )?;
                             }
@@ -196,6 +216,7 @@ async fn cmd_sign(
                                     &inst.path,
                                     skip_upload,
                                     &installer_dir.meta,
+                                    None,
                                     verbose,
                                 )?;
                             }

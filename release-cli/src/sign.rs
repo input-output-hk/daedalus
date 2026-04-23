@@ -8,6 +8,14 @@ use std::io::Read;
 use std::path::Path;
 use std::process::{Command, Stdio};
 
+/// Credentials for Apple's notarization service.
+/// Read from `APPLE_NOTARY_USER`, `APPLE_NOTARY_PASS`, `APPLE_TEAM_ID`.
+pub struct NotaryCreds {
+    pub apple_id: String,
+    pub password: String,
+    pub team_id: String,
+}
+
 /// GPG-sign `path`, producing `<path>.asc`.
 ///
 /// `gpg_user` is passed as `--local-user` when supplied; otherwise
@@ -53,6 +61,7 @@ pub fn code_sign_remote(
     installer_path: &Path,
     skip_upload: bool,
     meta: &crate::installers::Meta,
+    notary_creds: Option<&NotaryCreds>,
     verbose: bool,
 ) -> Result<()> {
     let filename = installer_path
@@ -66,7 +75,15 @@ pub fn code_sign_remote(
         .unwrap_or("");
 
     match ext {
-        "pkg" => code_sign_macos(host, installer_path, filename, skip_upload, meta, verbose),
+        "pkg" => code_sign_macos(
+            host,
+            installer_path,
+            filename,
+            skip_upload,
+            meta,
+            notary_creds,
+            verbose,
+        ),
         "exe" => code_sign_windows(host, installer_path, filename, verbose),
         other => bail!("no code signing support for .{other} installers"),
     }
@@ -84,6 +101,7 @@ fn code_sign_macos(
     filename: &str,
     skip_upload: bool,
     meta: &crate::installers::Meta,
+    notary_creds: Option<&NotaryCreds>,
     verbose: bool,
 ) -> Result<()> {
     let gitrev = meta.gitrev.as_deref().ok_or_else(|| {
@@ -160,6 +178,36 @@ fn code_sign_macos(
         "unexpected last line from nix run (expected a .pkg path): {remote_pkg:?}"
     );
 
+    // Notarize + staple on the signing host before downloading
+    if let Some(creds) = notary_creds {
+        println!("    notarizing on {host}…");
+        let st = Command::new("ssh")
+            .args([
+                host,
+                "xcrun",
+                "notarytool",
+                "submit",
+                &remote_pkg,
+                "--apple-id",
+                &creds.apple_id,
+                "--password",
+                &creds.password,
+                "--team-id",
+                &creds.team_id,
+                "--wait",
+            ])
+            .status()
+            .context("xcrun notarytool failed to start")?;
+        anyhow::ensure!(st.success(), "notarytool submit exited with {st}");
+
+        println!("    stapling…");
+        let st = Command::new("ssh")
+            .args([host, "xcrun", "stapler", "staple", &remote_pkg])
+            .status()
+            .context("xcrun stapler failed to start")?;
+        anyhow::ensure!(st.success(), "stapler staple exited with {st}");
+    }
+
     // Rename local unsigned original
     let unsigned_path = installer_path.with_file_name(unsigned_filename(filename));
     if installer_path.exists() {
@@ -168,7 +216,7 @@ fn code_sign_macos(
             .with_context(|| format!("renaming {}", installer_path.display()))?;
     }
 
-    // SCP signed pkg back
+    // SCP signed (and notarized+stapled if creds were provided) pkg back
     println!("    download← {host}:{remote_pkg}");
     let st = Command::new("scp")
         .args([
