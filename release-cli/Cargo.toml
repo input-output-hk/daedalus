@@ -1,0 +1,43 @@
+[package]
+name = "drt"
+version = "0.1.0"
+edition = "2021"
+description = "Daedalus release tool — hash, sign, upload installers; serve local update mirror"
+
+[[bin]]
+name = "drt"
+path = "src/main.rs"
+
+[dependencies]
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Hashing
+blake2 = "0.10"
+sha2 = "0.10"
+digest = "0.10"
+hex = "0.4"
+
+# S3
+aws-config = { version = "1", features = ["behavior-version-latest"] }
+aws-sdk-s3 = "1"
+bytes = "1"
+
+# HTTP (fetch-installers)
+reqwest = { version = "0.12", default-features = false, features = ["json", "stream", "rustls-tls"] }
+
+# HTTP server (serve command)
+axum = "0.7"
+tower-http = { version = "0.5", features = ["fs", "trace"] }
+
+# Error handling + logging
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

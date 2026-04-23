@@ -1,22 +1,22 @@
-{ runCommand
-, go
-, symlinkJoin
-, writeTextFile
-, runtimeShell
-, writeShellScriptBin
-}:
-
-let
-  darwin-launcher = runCommand "darwin-launcher" {
-    buildInputs = [ go ];
-    passthru = { inherit test; };
-  } ''
-    export HOME=$NIX_BUILD_TOP
-    go env -w GO111MODULE=off
-    mkdir -p $out/bin
-    cp ${./darwin-launcher.go} darwin-launcher.go
-    CGO_ENABLED=0 go build -a -o $out/bin/darwin-launcher
-  '';
+{
+  runCommand,
+  go,
+  symlinkJoin,
+  writeTextFile,
+  runtimeShell,
+  writeShellScriptBin,
+}: let
+  darwin-launcher =
+    runCommand "darwin-launcher" {
+      buildInputs = [go];
+      passthru = {inherit test;};
+    } ''
+      export HOME=$NIX_BUILD_TOP
+      go env -w GO111MODULE=off
+      mkdir -p $out/bin
+      cp ${./darwin-launcher.go} darwin-launcher.go
+      CGO_ENABLED=0 go build -a -o $out/bin/darwin-launcher
+    '';
 
   # To test darwin-launcher.go, run
   #   nix-build -A darwin-launcher.test && ./result/bin/darwin-launcher
@@ -54,6 +54,5 @@ let
       done
     '';
   };
-
 in
   darwin-launcher

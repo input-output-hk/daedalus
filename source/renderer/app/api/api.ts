@@ -75,7 +75,7 @@ import { getCurrencyRate } from './wallets/requests/getCurrencyRate';
 // Staking
 import StakePool from '../domains/StakePool';
 // News requests
-import { getNews } from './news/requests/getNews';
+import { getNews, newsUrl } from './news/requests/getNews';
 // Stake Pools request
 import { getStakePools } from './staking/requests/getStakePools';
 import { getDelegationFee } from './staking/requests/getDelegationFee';
@@ -2659,7 +2659,8 @@ export default class AdaApi {
       news = JSON.parse(rawNews);
     } catch (error) {
       logger.error('AdaApi::getNews error', {
-        error,
+        url: newsUrl,
+        error: error instanceof Error ? error.message : String(error),
       });
       throw new Error('Unable to fetch news');
     }
@@ -2673,12 +2674,17 @@ export default class AdaApi {
       expectedNewsHash = await getNewsHash(news.updatedAt);
     } catch (error) {
       logger.error('AdaApi::getNews (hash) error', {
-        error,
+        error: error instanceof Error ? error.message : String(error),
       });
       throw new Error('Unable to fetch news hash');
     }
 
     if (newsHash !== expectedNewsHash) {
+      logger.error('AdaApi::getNews hash mismatch', {
+        updatedAt: news.updatedAt,
+        localHash: newsHash,
+        remoteHash: expectedNewsHash,
+      });
       throw new Error('Newsfeed could not be verified');
     }
 

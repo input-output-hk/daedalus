@@ -1,1 +1,0 @@
-(import ../. {}).daedalus-installer.env
