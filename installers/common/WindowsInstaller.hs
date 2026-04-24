@@ -228,10 +228,10 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                     file [] "config.yaml"
                     file [] "topology.yaml"
                     file [] "genesis.json"
-                    when (clusterName == Mainnet) $ do
-                      file [] "checkpoints.json"
                     when (clusterName /= Selfnode) $ do
+                      file [NonFatal] "genesis-dijkstra.json"
                       file [NonFatal] "genesis-conway.json"
+                      file [NonFatal] "checkpoints.json"
                       file [] "genesis-byron.json"
                       file [] "genesis-shelley.json"
                       file [] "genesis-alonzo.json"
