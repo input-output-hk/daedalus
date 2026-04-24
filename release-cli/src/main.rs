@@ -126,6 +126,29 @@ async fn cmd_sign(
         let osx_host = std::env::var("OSX_SIGN_HOST").ok();
         let win_host = std::env::var("WIN_SIGN_HOST").ok();
 
+        let notary_creds = match (
+            std::env::var("APPLE_NOTARY_USER").ok(),
+            std::env::var("APPLE_NOTARY_PASS").ok(),
+            std::env::var("APPLE_TEAM_ID").ok(),
+        ) {
+            (Some(apple_id), Some(password), Some(team_id)) => {
+                Some(std::sync::Arc::new(sign::NotaryCreds {
+                    apple_id,
+                    password,
+                    team_id,
+                }))
+            }
+            _ => {
+                println!(
+                    "  [notarization skipped — APPLE_NOTARY_USER / APPLE_NOTARY_PASS / APPLE_TEAM_ID not set]"
+                );
+                None
+            }
+        };
+
+        let meta = std::sync::Arc::new(installer_dir.meta.clone());
+        let mut handles: Vec<(String, tokio::task::JoinHandle<anyhow::Result<()>>)> = vec![];
+
         for inst in &installer_dir.installers {
             if inst.is_already_code_signed() {
                 if inst.path.exists() {
@@ -153,13 +176,26 @@ async fn cmd_sign(
                         match &osx_host {
                             Some(host) => {
                                 println!("  {} → {host}", inst.filename);
-                                sign::code_sign_remote(
-                                    host,
-                                    &inst.path,
-                                    skip_upload,
-                                    &installer_dir.meta,
-                                    verbose,
-                                )?;
+                                let (host, path, filename, meta, creds) = (
+                                    host.clone(),
+                                    inst.path.clone(),
+                                    inst.filename.clone(),
+                                    std::sync::Arc::clone(&meta),
+                                    notary_creds.clone(),
+                                );
+                                handles.push((
+                                    filename,
+                                    tokio::task::spawn_blocking(move || {
+                                        sign::code_sign_remote(
+                                            &host,
+                                            &path,
+                                            skip_upload,
+                                            &meta,
+                                            creds.as_deref(),
+                                            verbose,
+                                        )
+                                    }),
+                                ));
                             }
                             None => println!("  {} [skip — OSX_SIGN_HOST not set]", inst.filename),
                         }
@@ -172,13 +208,26 @@ async fn cmd_sign(
                         match &osx_host {
                             Some(host) => {
                                 println!("  {} → {host}", inst.filename);
-                                sign::code_sign_remote(
-                                    host,
-                                    &inst.path,
-                                    skip_upload,
-                                    &installer_dir.meta,
-                                    verbose,
-                                )?;
+                                let (host, path, filename, meta, creds) = (
+                                    host.clone(),
+                                    inst.path.clone(),
+                                    inst.filename.clone(),
+                                    std::sync::Arc::clone(&meta),
+                                    notary_creds.clone(),
+                                );
+                                handles.push((
+                                    filename,
+                                    tokio::task::spawn_blocking(move || {
+                                        sign::code_sign_remote(
+                                            &host,
+                                            &path,
+                                            skip_upload,
+                                            &meta,
+                                            creds.as_deref(),
+                                            verbose,
+                                        )
+                                    }),
+                                ));
                             }
                             None => println!("  {} [skip — OSX_SIGN_HOST not set]", inst.filename),
                         }
@@ -191,13 +240,25 @@ async fn cmd_sign(
                         match &win_host {
                             Some(host) => {
                                 println!("  {} → {host}", inst.filename);
-                                sign::code_sign_remote(
-                                    host,
-                                    &inst.path,
-                                    skip_upload,
-                                    &installer_dir.meta,
-                                    verbose,
-                                )?;
+                                let (host, path, filename, meta) = (
+                                    host.clone(),
+                                    inst.path.clone(),
+                                    inst.filename.clone(),
+                                    std::sync::Arc::clone(&meta),
+                                );
+                                handles.push((
+                                    filename,
+                                    tokio::task::spawn_blocking(move || {
+                                        sign::code_sign_remote(
+                                            &host,
+                                            &path,
+                                            skip_upload,
+                                            &meta,
+                                            None,
+                                            verbose,
+                                        )
+                                    }),
+                                ));
                             }
                             None => println!("  {} [skip — WIN_SIGN_HOST not set]", inst.filename),
                         }
@@ -206,6 +267,15 @@ async fn cmd_sign(
                 installers::Platform::Linux => {
                     println!("  {} [no code signing for Linux]", inst.filename);
                 }
+            }
+        }
+
+        // All tasks are now running in parallel; collect results.
+        for (filename, handle) in handles {
+            match handle.await {
+                Ok(Ok(())) => {}
+                Ok(Err(e)) => anyhow::bail!("signing failed for {filename}: {e:?}"),
+                Err(e) => anyhow::bail!("signing task panicked for {filename}: {e}"),
             }
         }
     }
