@@ -326,7 +326,7 @@ fn code_sign_windows(
     let stdout = String::from_utf8_lossy(&stdout_bytes);
 
     // makeSignedInstaller prints as its last line:
-    //   Final installer: '/tmp/tmp.XXXXXX/installers/daedalus-*.exe'
+    //   Final installer: /tmp/tmp.XXXXXX/installers/daedalus-*.exe
     let last_line = stdout
         .lines()
         .rev()
@@ -336,11 +336,10 @@ fn code_sign_windows(
         .to_string();
 
     let result_path = last_line
-        .strip_prefix("Final installer: '")
-        .and_then(|s| s.strip_suffix("'"))
+        .strip_prefix("Final installer: ")
         .ok_or_else(|| {
             anyhow::anyhow!(
-                "unexpected last line from nix run (expected \"Final installer: '<path>'\"): {last_line:?}"
+                "unexpected last line from nix run (expected \"Final installer: <path>\"): {last_line:?}"
             )
         })?;
 

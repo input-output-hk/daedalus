@@ -15,7 +15,7 @@ in rec {
 
   package = preSigning; # XXX: this is slightly wrong, as not all files are in their final relative paths
 
-  # XXX: Please, use ‘nix run -L .#packages.x86_64-windows.makeSignedInstaller.mainnet’,
+  # XXX: Please, use 'nix run -L .#packages.x86_64-windows.makeSignedInstaller.mainnet',
   # as the process cannot be done purely, as it requires passing files
   # through `ssh` at the HSM server
   makeSignedInstaller = genClusters (cluster:
@@ -44,7 +44,7 @@ in rec {
       echo "file binary-dist \"$(echo $out/*.exe)\"" >$out/nix-support/hydra-build-products
     '');
 
-  # They’re initially the same as Linux when cross-compiling for Windows:
+  # They're initially the same as Linux when cross-compiling for Windows:
   node_modules = inputs.self.internal.x86_64-linux.node_modules;
 
   electron-cache = pkgs.runCommand "electron-cache" {} ''
@@ -133,7 +133,7 @@ in rec {
         chmod -R +w $out
 
         # XXX: remove redundant native modules, and point bindings.js to C:/Program\ Files/Daedalus/*.node instead:
-        echo 'Deleting all redundant ‘*.node’ files under to-be-distributed ‘node_modules/’:'
+        echo 'Deleting all redundant '*.node' files under to-be-distributed 'node_modules/':'
         (
           cd $out/
           find resources/ -name '*.node' -exec rm -vf '{}' ';'
@@ -179,7 +179,7 @@ in rec {
   };
 
   msvc-cache = let
-    version = "16"; # There doesn’t seem to be an easy way to specify a more stable full version, 16.11.26
+    version = "16"; # There doesn't seem to be an easy way to specify a more stable full version, 16.11.26
   in
     pkgs.stdenv.mkDerivation {
       name = "msvc-cache-${version}";
@@ -218,7 +218,7 @@ in rec {
 
   electronHeadersWithNodeLib =
     pkgs.runCommandLocal "electron-headers" {
-      # XXX: don’t use fetchzip, we need the raw .tar.gz in `patchElectronRebuild` below
+      # XXX: don't use fetchzip, we need the raw .tar.gz in `patchElectronRebuild` below
       inherit (commonSources.electronHeaders) src;
     } ''
       tar -xf $src
@@ -323,7 +323,7 @@ in rec {
 
         set +x
 
-        ${mkSection "Preparing the ‘info’ structure"}
+        ${mkSection "Preparing the 'info' structure"}
         jq --null-input \
           --arg msBuild      "$(winepath -w "$lx_VSINSTALLDIR/MSBuild/Current/Bin/MSBuild.exe")" \
           --arg path         "$VCINSTALLDIR" \
@@ -411,7 +411,7 @@ in rec {
         }
         kill $wine_killer_pid || true
 
-        # XXX: We’re running in a separate namespace, so this is fine.
+        # XXX: We're running in a separate namespace, so this is fine.
         while pgrep wine >/dev/null ; do
           ${mkSection "Wine is still running in the background, will try to kill it"}
           echo 'All remaining processes:'
@@ -431,10 +431,10 @@ in rec {
       cp node_modules/usb/build/Release/usb_bindings.node        $out/build/Release/
       cp node_modules/node-hid/build/Release/HID.node            $out/build/Release/
 
-      # make sure they’re for Windows
+      # make sure they're for Windows
       find $out -iname '*.node' | while IFS= read -r ext ; do
         file "$ext" | grep -F 'MS Windows' || {
-          echo "fatal: $ext is not built for MS Windows (shouldn’t happen)"
+          echo "fatal: $ext is not built for MS Windows (shouldn't happen)"
           exit 2
         }
       done
@@ -475,7 +475,7 @@ in rec {
 
   windowsIcons = genClusters (cluster: let
     buildInputs = with pkgs; [imagemagick];
-    # Allow fallback to `mainnet` if cluster’s icons don’t exist:
+    # Allow fallback to `mainnet` if cluster's icons don't exist:
     srcCluster =
       if builtins.pathExists (../../installers/icons + "/${cluster}")
       then cluster
@@ -600,17 +600,17 @@ in rec {
         then ''
           # We have to do it impurely:
           cd $(mktemp -d)
-          echo "~~~ We’re signing in $PWD:"
+          echo "~~~ We're signing in $PWD:"
 
           sign_cmd() {
-            echo "Signing: ‘$1’…"
-            ssh "’’${WIN_SIGN_HOST: -HSM}" <"$1" >"$1".signed
+            echo "Signing: '$1'..."
+            ssh "''${WIN_SIGN_HOST: -HSM}" <"$1" >"$1".signed
             mv "$1".signed "$1"
           }
         ''
         else ''
           sign_cmd() {
-            echo "Would sign: ‘$1’"
+            echo "Would sign: '$1'"
           }
         ''
       }
@@ -630,7 +630,7 @@ in rec {
 
       sign_cmd installers/daedalus-*-*.exe
 
-      echo "Final installer: ‘$(realpath installers/daedalus-*-*.exe)’"
+      echo "Final installer: $(realpath installers/daedalus-*-*.exe)"
     '';
 
   windowsSources = {
