@@ -21,7 +21,8 @@
     cardano-playground.flake = false; # otherwise, +9k dependencies in flake.lock…
     cardano-shell.url = "github:input-output-hk/cardano-shell/79f48aa3aa8007a1597cbedc22031eab1f05decd";
     cardano-shell.flake = false;
-    mithril.url = "github:input-output-hk/mithril/2617.0";
+    # switch to a release as soon as mac fixes are included
+    mithril.url = "github:input-output-hk/mithril/main";
     mithril.flake = true;
     mithril.inputs.nixpkgs.follows = "nixpkgs";
     tullia.url = "github:input-output-hk/tullia";
