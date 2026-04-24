@@ -604,7 +604,7 @@ in rec {
 
           sign_cmd() {
             echo "Signing: ‘$1’…"
-            ssh HSM <"$1" >"$1".signed
+            ssh "’’${WIN_SIGN_HOST: -HSM}" <"$1" >"$1".signed
             mv "$1".signed "$1"
           }
         ''
