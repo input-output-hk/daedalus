@@ -137,7 +137,30 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
                         }
                         continue;
                     }
-                    println!("hash mismatch, re-downloading");
+                    // Hash mismatch: check whether the file was already code-signed.
+                    // Signing renames the unsigned original to foo-unsigned.ext and
+                    // places the signed file at foo.ext, so the hash will differ from
+                    // Hydra's unsigned artifact.  If the -unsigned companion exists
+                    // AND its hash matches Hydra's expected value, the main file is
+                    // the genuine signed installer — skip re-downloading.
+                    let unsigned_name = match product.name.rsplit_once('.') {
+                        Some((stem, ext)) => format!("{stem}-unsigned.{ext}"),
+                        None => format!("{}-unsigned", product.name),
+                    };
+                    let unsigned_path = out_dir.join(&unsigned_name);
+                    if unsigned_path.exists() {
+                        let unsigned_hash = sha256_file(&unsigned_path)?;
+                        if unsigned_hash == *expected {
+                            println!("already signed ({}), skipping", unsigned_name);
+                            if version.is_none() {
+                                version = extract_version(&product.name);
+                            }
+                            continue;
+                        }
+                        println!("unsigned companion hash mismatch, re-downloading");
+                    } else {
+                        println!("hash mismatch, re-downloading");
+                    }
                 }
             }
 
