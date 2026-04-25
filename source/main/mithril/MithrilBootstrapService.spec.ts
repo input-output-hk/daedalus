@@ -238,8 +238,12 @@ describe('MithrilBootstrapService progress and error stages', () => {
 
   it('annotates conversion failures with convert stage', async () => {
     const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const fse = require('fs-extra');
     jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
-    jest.spyOn(service, '_runCommand').mockResolvedValue({
+    jest
+      .spyOn(fse, 'readdir')
+      .mockResolvedValue([{ name: '12345', isDirectory: () => true }]);
+    jest.spyOn(service, '_runBinary').mockResolvedValue({
       stdout: '',
       stderr: 'conversion failed',
       exitCode: 1,
@@ -256,6 +260,57 @@ describe('MithrilBootstrapService progress and error stages', () => {
       expect.objectContaining({
         stage: 'convert',
       })
+    );
+  });
+
+  it('calls snapshot-converter with paths derived from the most recent ledger slot', async () => {
+    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const fse = require('fs-extra');
+    jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest.spyOn(fse, 'readdir').mockResolvedValue([
+      { name: '10000', isDirectory: () => true },
+      { name: '99999', isDirectory: () => true },
+      { name: '50000', isDirectory: () => true },
+      { name: 'not-a-slot', isDirectory: () => true },
+    ]);
+    const runBinarySpy = jest
+      .spyOn(service, '_runBinary')
+      .mockResolvedValue({ stdout: '', stderr: '', exitCode: 0 });
+
+    await service._convertSnapshot(null);
+
+    expect(runBinarySpy).toHaveBeenCalledWith(
+      'snapshot-converter',
+      expect.arrayContaining([
+        '--input-mem',
+        '/tmp/db/ledger/99999',
+        '--output-lsm-snapshot',
+        '/tmp/db/tmp/snapshots/99999_lsm',
+        '--output-lsm-database',
+        '/tmp/db/tmp/snapshots/lsm',
+        '--config',
+        '/tmp/db/tmp/cardano-node-distribution/share/mainnet/config.json',
+      ])
+    );
+  });
+
+  it('throws a convert-stage error when no ledger slots are found', async () => {
+    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const fse = require('fs-extra');
+    jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest.spyOn(fse, 'readdir').mockResolvedValue([
+      { name: 'not-a-slot', isDirectory: () => true },
+    ]);
+
+    let conversionError: unknown;
+    try {
+      await service._convertSnapshot(null);
+    } catch (error) {
+      conversionError = error;
+    }
+
+    expect(service._buildError(conversionError)).toEqual(
+      expect.objectContaining({ stage: 'convert' })
     );
   });
 

@@ -19,7 +19,7 @@ import type {
   RunCommandResult,
   RunCommandOptions,
 } from './mithrilCommandRunner';
-import { runCommand } from './mithrilCommandRunner';
+import { runCommand, runBinary } from './mithrilCommandRunner';
 import {
   MithrilBootstrapStageError,
   buildMithrilError,
@@ -576,6 +576,21 @@ export class MithrilBootstrapService {
     }
   }
 
+  async _runBinary(
+    binaryName: string,
+    args: Array<string>,
+    workDir: string = this._activeWorkDir ?? this._workDir
+  ): Promise<RunCommandResult> {
+    return runBinary(binaryName, args, workDir, {}, {
+      onProcess: (child) => {
+        this._currentProcess = child;
+      },
+      onLogStream: (logStream) => {
+        this._logStream = logStream;
+      },
+    });
+  }
+
   async _runCommand(
     args: Array<string>,
     options: RunCommandOptions = {},
@@ -781,26 +796,51 @@ export class MithrilBootstrapService {
     });
 
     const dbDirectory = await this._resolveDbDirectory(snapshot?.digest);
-    const cardanoNodeVersion =
-      snapshot?.cardanoNodeVersion || environment.nodeVersion || 'latest';
+    const ledgerDir = path.join(dbDirectory, 'ledger');
 
-    const { exitCode, stderr } = await this._runCommand([
-      'tools',
-      'utxo-hd',
-      'snapshot-converter',
-      '--db-directory',
+    const entries = await fs.readdir(ledgerDir, { withFileTypes: true });
+    const slots = entries
+      .filter((e) => e.isDirectory() && /^\d+$/.test(e.name))
+      .map((e) => BigInt(e.name))
+      .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+
+    if (slots.length === 0) {
+      throw this._buildCommandFailure(
+        'convert',
+        'No ledger snapshots found for conversion',
+        ''
+      );
+    }
+
+    const slot = String(slots[slots.length - 1]);
+    const snapshotsDir = path.join(dbDirectory, 'tmp', 'snapshots');
+    const inputMemPath = path.join(ledgerDir, slot);
+    const outputLsmSnapshot = path.join(snapshotsDir, `${slot}_lsm`);
+    const outputLsmDatabase = path.join(snapshotsDir, 'lsm');
+    const configPath = path.join(
       dbDirectory,
-      '--cardano-node-version',
-      cardanoNodeVersion,
-      '--utxo-hd-flavor',
-      'LSM',
-      '--commit',
+      'tmp',
+      'cardano-node-distribution',
+      'share',
+      String(environment.network),
+      'config.json'
+    );
+
+    const { exitCode, stderr } = await this._runBinary('snapshot-converter', [
+      '--input-mem',
+      inputMemPath,
+      '--output-lsm-snapshot',
+      outputLsmSnapshot,
+      '--output-lsm-database',
+      outputLsmDatabase,
+      '--config',
+      configPath,
     ]);
 
     if (exitCode !== 0) {
       throw this._buildCommandFailure(
         'convert',
-        `Mithril snapshot conversion failed with exit code ${exitCode}`,
+        `Snapshot conversion failed with exit code ${exitCode}`,
         stderr
       );
     }

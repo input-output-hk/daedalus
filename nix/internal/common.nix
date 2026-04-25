@@ -72,7 +72,7 @@
     import ./cardano-bridge.nix {
       target = targetSystem;
       inherit (pkgs) lib runCommandCC darwin;
-      inherit cardano-wallet cardano-node cardano-launcher cardano-cli cardano-address mock-token-metadata-server mithril-client;
+      inherit cardano-wallet cardano-node cardano-launcher cardano-cli cardano-address mock-token-metadata-server mithril-client snapshot-converter;
       local-cluster =
         if cluster == "selfnode"
         then walletPackages.local-cluster
@@ -81,7 +81,7 @@
 
   inherit (walletPackages) cardano-wallet cardano-address mock-token-metadata-server;
 
-  inherit (nodePackages) cardano-node cardano-cli;
+  inherit (nodePackages) cardano-node cardano-cli snapshot-converter;
 
   mithril-client = mithrilPackages.${targetSystem};
 
