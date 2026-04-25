@@ -184,6 +184,7 @@ describe('MithrilBootstrapService progress and error stages', () => {
         elapsedSeconds: 12,
       });
     });
+    jest.spyOn(service, '_convertSnapshot').mockResolvedValue(undefined);
     jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
     jest.spyOn(service, '_installSnapshot').mockResolvedValue(undefined);
     jest
@@ -439,6 +440,7 @@ describe('MithrilBootstrapService hardening fixes', () => {
       .mockResolvedValue(undefined);
     jest.spyOn(service, 'clearLockFile').mockResolvedValue(undefined);
     jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest.spyOn(service, '_convertSnapshot').mockResolvedValue(undefined);
     jest.spyOn(service, '_installSnapshot').mockResolvedValue(undefined);
 
     // _downloadSnapshot sets ancillary data then completes
@@ -904,6 +906,7 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
       .mockResolvedValue(undefined);
     jest.spyOn(service, 'clearLockFile').mockResolvedValue(undefined);
     jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest.spyOn(service, '_convertSnapshot').mockResolvedValue(undefined);
     jest.spyOn(service, '_installSnapshot').mockResolvedValue(undefined);
     jest.spyOn(service, '_downloadSnapshot').mockResolvedValue(undefined);
 
