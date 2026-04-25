@@ -184,16 +184,16 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1777035224,
-        "narHash": "sha256-CBE0wNBCH/i+9t8Dal2CDRswxvimbGclqUJwUUWPis4=",
+        "lastModified": 1777090126,
+        "narHash": "sha256-KHDX/L7Y8SA8DPJhu8RKgtLn79wZjANi8oagvBwTD8Y=",
         "owner": "input-output-hk",
         "repo": "mithril",
-        "rev": "00776eea3c04a980f7db60da88ac40a876ea4273",
+        "rev": "2940975d3f9020d975b4bc62d75a646aa353c03a",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "main",
+        "ref": "sl/fix-mismatch-rust-versions",
         "repo": "mithril",
         "type": "github"
       }
