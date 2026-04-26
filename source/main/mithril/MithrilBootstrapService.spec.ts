@@ -3,6 +3,13 @@ import { MithrilBootstrapService } from './MithrilBootstrapService';
 
 jest.mock('../config', () => ({
   stateDirectoryPath: '/tmp/daedalus-state',
+  launcherConfig: {
+    nodeConfig: {
+      network: {
+        configFile: '/config/config.yaml',
+      },
+    },
+  },
 }));
 
 jest.mock('../environment', () => ({
@@ -243,6 +250,7 @@ describe('MithrilBootstrapService progress and error stages', () => {
     jest
       .spyOn(fse, 'readdir')
       .mockResolvedValue([{ name: '12345', isDirectory: () => true }]);
+    jest.spyOn(fse, 'move').mockResolvedValue(undefined);
     jest.spyOn(service, '_runBinary').mockResolvedValue({
       stdout: '',
       stderr: 'conversion failed',
@@ -273,6 +281,7 @@ describe('MithrilBootstrapService progress and error stages', () => {
       { name: '50000', isDirectory: () => true },
       { name: 'not-a-slot', isDirectory: () => true },
     ]);
+    jest.spyOn(fse, 'move').mockResolvedValue(undefined);
     const runBinarySpy = jest
       .spyOn(service, '_runBinary')
       .mockResolvedValue({ stdout: '', stderr: '', exitCode: 0 });
@@ -283,13 +292,13 @@ describe('MithrilBootstrapService progress and error stages', () => {
       'snapshot-converter',
       expect.arrayContaining([
         '--input-mem',
-        '/tmp/db/ledger/99999',
+        '/tmp/db/99999',
         '--output-lsm-snapshot',
-        '/tmp/db/tmp/snapshots/99999_lsm',
+        '/tmp/db/ledger/99999',
         '--output-lsm-database',
-        '/tmp/db/tmp/snapshots/lsm',
+        '/tmp/db/lsm',
         '--config',
-        '/tmp/db/tmp/cardano-node-distribution/share/mainnet/config.json',
+        '/config/config.yaml',
       ])
     );
   });
@@ -298,9 +307,10 @@ describe('MithrilBootstrapService progress and error stages', () => {
     const service = new MithrilBootstrapService('/tmp/mithril-test');
     const fse = require('fs-extra');
     jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
-    jest.spyOn(fse, 'readdir').mockResolvedValue([
-      { name: 'not-a-slot', isDirectory: () => true },
-    ]);
+    jest
+      .spyOn(fse, 'readdir')
+      .mockResolvedValue([{ name: 'not-a-slot', isDirectory: () => true }]);
+    jest.spyOn(fse, 'move').mockResolvedValue(undefined);
 
     let conversionError: unknown;
     try {

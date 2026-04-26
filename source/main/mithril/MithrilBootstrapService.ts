@@ -6,7 +6,7 @@ import type { WriteStream } from 'fs';
 import { environment } from '../environment';
 import { logger } from '../utils/logging';
 import ensureDirectoryExists from '../utils/ensureDirectoryExists';
-import { stateDirectoryPath } from '../config';
+import { stateDirectoryPath, launcherConfig } from '../config';
 import type {
   MithrilBootstrapError,
   MithrilBootstrapErrorStage,
@@ -203,12 +203,17 @@ export class MithrilBootstrapService {
       this._addProgressItem('conversion', 'conversion', 'active');
       await this._convertSnapshot(snapshot);
 
+      logger.info('[mithril] Resolving db directory', {
+        digest: snapshot?.digest,
+        workDir,
+      });
       const dbDirectory = await this._resolveDbDirectory(
         snapshot?.digest,
         workDir
       );
+      logger.info('[mithril] Resolved db directory', { dbDirectory });
 
-      // Mark final download step complete; begin installation
+      // Mark conversion complete; begin installation
       this._markActiveProgressItemAs('completed');
       this._addProgressItem('install-snapshot', 'install-snapshot', 'active');
       this._updateStatus({
@@ -220,9 +225,11 @@ export class MithrilBootstrapService {
         progressItems: [...this._progressItems],
       });
 
+      logger.info('[mithril] Installing snapshot', { dbDirectory });
       await this._installSnapshot(dbDirectory);
+      logger.info('[mithril] Snapshot installed', { dbDirectory });
 
-      // Mark install complete; begin cleanup
+      // Mark conversion complete; begin cleanup
       this._markActiveProgressItemAs('completed');
       this._addProgressItem('cleanup', 'cleanup', 'active');
       this._updateStatus({
@@ -234,8 +241,11 @@ export class MithrilBootstrapService {
         progressItems: [...this._progressItems],
       });
 
+      logger.info('[mithril] Cleaning up snapshot artifacts', { workDir });
       await this._cleanupSnapshotArtifacts({ preserveDb: true, workDir });
+      logger.info('[mithril] Clearing bootstrap lock file');
       await this.clearLockFile();
+      logger.info('[mithril] Bootstrap lock file cleared');
 
       this._markActiveProgressItemAs('completed');
       this._updateStatus({
@@ -245,6 +255,7 @@ export class MithrilBootstrapService {
         progressItems: [...this._progressItems],
       });
 
+      logger.info('[mithril] Bootstrap completed successfully');
       this._updateStatus({
         status: 'completed',
         filesDownloaded: undefined,
@@ -579,9 +590,10 @@ export class MithrilBootstrapService {
   async _runBinary(
     binaryName: string,
     args: Array<string>,
-    workDir: string = this._activeWorkDir ?? this._workDir
+    workDir: string = this._activeWorkDir ?? this._workDir,
+    options: RunCommandOptions = {}
   ): Promise<RunCommandResult> {
-    return runBinary(binaryName, args, workDir, {}, {
+    return runBinary(binaryName, args, workDir, options, {
       onProcess: (child) => {
         this._currentProcess = child;
       },
@@ -802,7 +814,11 @@ export class MithrilBootstrapService {
     const slots = entries
       .filter((e) => e.isDirectory() && /^\d+$/.test(e.name))
       .map((e) => BigInt(e.name))
-      .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+      .sort((a, b) => {
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+      });
 
     if (slots.length === 0) {
       throw this._buildCommandFailure(
@@ -813,29 +829,47 @@ export class MithrilBootstrapService {
     }
 
     const slot = String(slots[slots.length - 1]);
-    const snapshotsDir = path.join(dbDirectory, 'tmp', 'snapshots');
+    // The in-memory snapshot must be moved out of ledger/ so snapshot-converter
+    // can write the converted LSM snapshot back to the same ledger/<slot> path.
     const inputMemPath = path.join(ledgerDir, slot);
-    const outputLsmSnapshot = path.join(snapshotsDir, `${slot}_lsm`);
-    const outputLsmDatabase = path.join(snapshotsDir, 'lsm');
-    const configPath = path.join(
-      dbDirectory,
-      'tmp',
-      'cardano-node-distribution',
-      'share',
-      String(environment.network),
-      'config.json'
-    );
+    const tempInputPath = path.join(dbDirectory, slot);
+    const outputLsmSnapshot = path.join(ledgerDir, slot);
+    const outputLsmDatabase = path.join(dbDirectory, 'lsm');
+    const configPath = launcherConfig.nodeConfig.network.configFile;
 
-    const { exitCode, stderr } = await this._runBinary('snapshot-converter', [
+    await fs.move(inputMemPath, tempInputPath);
+
+    const converterArgs = [
       '--input-mem',
-      inputMemPath,
+      tempInputPath,
       '--output-lsm-snapshot',
       outputLsmSnapshot,
       '--output-lsm-database',
       outputLsmDatabase,
       '--config',
       configPath,
-    ]);
+    ];
+
+    // Remove any existing lsm directory so snapshot-converter doesn't prompt
+    // for confirmation before wiping it.
+    await fs.remove(outputLsmDatabase);
+
+    logger.info(
+      `[mithril] Doing LSM conversion of snapshot with command: snapshot-converter ${converterArgs.join(' ')}`,
+      { slot, dbDirectory }
+    );
+
+    let exitCode: number | null;
+    let stderr: string;
+    try {
+      ({ exitCode, stderr } = await this._runBinary(
+        'snapshot-converter',
+        converterArgs
+      ));
+    } finally {
+      // Remove the temp in-memory snapshot regardless of outcome.
+      await fs.remove(tempInputPath).catch(() => {});
+    }
 
     if (exitCode !== 0) {
       throw this._buildCommandFailure(

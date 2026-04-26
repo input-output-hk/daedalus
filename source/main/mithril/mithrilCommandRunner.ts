@@ -19,6 +19,7 @@ export type RunCommandOptions = {
   onStdout?: (chunk: string) => void;
   onStderr?: (chunk: string) => void;
   requireKeys?: boolean;
+  stdinInput?: string;
 };
 
 export type RunCommandCallbacks = {
@@ -152,6 +153,11 @@ export async function runBinary(
 
     if (callbacks?.onProcess) callbacks.onProcess(child);
     attachLogStream(child, logStream);
+
+    if (options.stdinInput !== undefined) {
+      child.stdin?.write(options.stdinInput);
+      child.stdin?.end();
+    }
 
     let stdout = '';
     let stderr = '';

@@ -294,13 +294,23 @@ describe('runBinary', () => {
 
     await runBinary(
       'snapshot-converter',
-      ['--input-mem', '/db/ledger/12345', '--output-lsm-snapshot', '/db/tmp/snapshots/12345_lsm'],
+      [
+        '--input-mem',
+        '/db/ledger/12345',
+        '--output-lsm-snapshot',
+        '/db/tmp/snapshots/12345_lsm',
+      ],
       '/tmp/workdir'
     );
 
     expect(spawn).toHaveBeenCalledWith(
       'snapshot-converter',
-      ['--input-mem', '/db/ledger/12345', '--output-lsm-snapshot', '/db/tmp/snapshots/12345_lsm'],
+      [
+        '--input-mem',
+        '/db/ledger/12345',
+        '--output-lsm-snapshot',
+        '/db/tmp/snapshots/12345_lsm',
+      ],
       expect.objectContaining({ cwd: '/tmp/workdir' })
     );
   });
@@ -318,7 +328,11 @@ describe('runBinary', () => {
       return childEmitter;
     });
 
-    await runBinary('snapshot-converter', ['--input-mem', '/db'], '/tmp/workdir');
+    await runBinary(
+      'snapshot-converter',
+      ['--input-mem', '/db'],
+      '/tmp/workdir'
+    );
 
     expect(spawn).toHaveBeenCalledWith(
       '/opt/daedalus/snapshot-converter',
