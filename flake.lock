@@ -1,18 +1,18 @@
 {
   "nodes": {
-    "cardano-node-override": {
+    "cardano-node": {
       "flake": false,
       "locked": {
-        "lastModified": 1775833532,
-        "narHash": "sha256-V5NYiZb0JZPWcxE0ndnd7BOK1zvauUYDE/6DwIIVQ4M=",
+        "lastModified": 1776219966,
+        "narHash": "sha256-D2HMIr65q0RM9+ZAjbtA9xNKyoKYfr3Kc4Vv4+s64uY=",
         "owner": "IntersectMBO",
         "repo": "cardano-node",
-        "rev": "5a4dcd1b410ba78f9faab7acd48f606496909935",
+        "rev": "045bc187a36ef0cbd236db902b85dd8f202fb059",
         "type": "github"
       },
       "original": {
         "owner": "IntersectMBO",
-        "ref": "10.6.4",
+        "ref": "10.7.1",
         "repo": "cardano-node",
         "type": "github"
       }
@@ -20,16 +20,16 @@
     "cardano-playground": {
       "flake": false,
       "locked": {
-        "lastModified": 1774915538,
-        "narHash": "sha256-0jr2MzQnZtC9nLbni5taGhc0gI+Ub5Shf7po1jUSATw=",
+        "lastModified": 1776786612,
+        "narHash": "sha256-RdgFIO5TKDpxWRFlPPZKdDsMw0k+KMFckm2XIOvm3gE=",
         "owner": "input-output-hk",
         "repo": "cardano-playground",
-        "rev": "488c21bbeb1426fcf0b41a1c1a832308ac284080",
+        "rev": "2bcec813024c8043e9d766b86af4d7c3bdfbacdd",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "node-10.6.2-config",
+        "ref": "next-2026-04-16",
         "repo": "cardano-playground",
         "type": "github"
       }
@@ -51,19 +51,19 @@
         "type": "github"
       }
     },
-    "cardano-wallet-unpatched": {
+    "cardano-wallet": {
       "flake": false,
       "locked": {
-        "lastModified": 1743395731,
-        "narHash": "sha256-SdSIgci9IP2tmxiIs9YC/JtF4ih/Vyd7mU4G7/DesHo=",
+        "lastModified": 1776788838,
+        "narHash": "sha256-IcBw7jQISLpECZnYz0uz2yNd6BX0L26AKh5Mwn46fTc=",
         "owner": "cardano-foundation",
         "repo": "cardano-wallet",
-        "rev": "1649791d8e9f14c8c97bd15a5687319672025652",
+        "rev": "1581ceffbb000d80f0ca021f3ae7ca0a0f93b319",
         "type": "github"
       },
       "original": {
         "owner": "cardano-foundation",
-        "ref": "v2025-03-31",
+        "ref": "nightly",
         "repo": "cardano-wallet",
         "type": "github"
       }
@@ -85,11 +85,11 @@
     },
     "crane_2": {
       "locked": {
-        "lastModified": 1767744144,
-        "narHash": "sha256-9/9ntI0D+HbN4G0TrK3KmHbTvwgswz7p8IEJsWyef8Q=",
+        "lastModified": 1776635034,
+        "narHash": "sha256-OEOJrT3ZfwbChzODfIH4GzlNTtOFuZFWPtW7jIeR8xU=",
         "owner": "ipetkov",
         "repo": "crane",
-        "rev": "2fb033290bf6b23f226d4c8b32f7f7a16b043d7e",
+        "rev": "dc7496d8ea6e526b1254b55d09b966e94673750f",
         "type": "github"
       },
       "original": {
@@ -160,11 +160,11 @@
         "nixpkgs-lib": "nixpkgs-lib"
       },
       "locked": {
-        "lastModified": 1769996383,
-        "narHash": "sha256-AnYjnFWgS49RlqX7LrC4uA+sCCDBj0Ry/WOJ5XWAsa0=",
+        "lastModified": 1775087534,
+        "narHash": "sha256-91qqW8lhL7TLwgQWijoGBbiD4t7/q75KTi8NxjVmSmA=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "57928607ea566b5db3ad13af0e57e921e6b12381",
+        "rev": "3107b77cd68437b9a76194f0f7f9c55f2329ca5b",
         "type": "github"
       },
       "original": {
@@ -180,19 +180,20 @@
         "nixpkgs": [
           "nixpkgs"
         ],
+        "rust-overlay": "rust-overlay",
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1769104967,
-        "narHash": "sha256-0amlnplGcwe8KkwdsTCVStfS88bv2+5cOyzVTaFfEhk=",
+        "lastModified": 1777090126,
+        "narHash": "sha256-KHDX/L7Y8SA8DPJhu8RKgtLn79wZjANi8oagvBwTD8Y=",
         "owner": "input-output-hk",
         "repo": "mithril",
-        "rev": "567a8e8e63a449c9da70c8c3ddb09f8fab174e18",
+        "rev": "2940975d3f9020d975b4bc62d75a646aa353c03a",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "2603.1",
+        "ref": "sl/fix-mismatch-rust-versions",
         "repo": "mithril",
         "type": "github"
       }
@@ -231,11 +232,11 @@
     },
     "nixpkgs-lib": {
       "locked": {
-        "lastModified": 1765674936,
-        "narHash": "sha256-k00uTP4JNfmejrCLJOwdObYC9jHRrr/5M/a/8L2EIdo=",
+        "lastModified": 1774748309,
+        "narHash": "sha256-+U7gF3qxzwD5TZuANzZPeJTZRHS29OFQgkQ2kiTJBIQ=",
         "owner": "nix-community",
         "repo": "nixpkgs.lib",
-        "rev": "2075416fcb47225d9b68ac469a5c4801a9c4dd85",
+        "rev": "333c4e0545a6da976206c74db8773a1645b5870a",
         "type": "github"
       },
       "original": {
@@ -262,10 +263,10 @@
     },
     "root": {
       "inputs": {
-        "cardano-node-override": "cardano-node-override",
+        "cardano-node": "cardano-node",
         "cardano-playground": "cardano-playground",
         "cardano-shell": "cardano-shell",
-        "cardano-wallet-unpatched": "cardano-wallet-unpatched",
+        "cardano-wallet": "cardano-wallet",
         "crane": "crane",
         "fenix": "fenix",
         "flake-compat": "flake-compat",
@@ -295,6 +296,27 @@
         "type": "github"
       }
     },
+    "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "mithril",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1776654897,
+        "narHash": "sha256-Vqi4AiJVCcBGn/RmBtRCgyH5rCxqm/w0xV9diJWF1Ic=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "25d75be8139815a53560745fa060909777495105",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
@@ -303,11 +325,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1768158989,
-        "narHash": "sha256-67vyT1+xClLldnumAzCTBvU0jLZ1YBcf4vANRWP3+Ak=",
+        "lastModified": 1775636079,
+        "narHash": "sha256-pc20NRoMdiar8oPQceQT47UUZMBTiMdUuWrYu2obUP0=",
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "rev": "e96d59dff5c0d7fddb9d113ba108f03c3ef99eca",
+        "rev": "790751ff7fd3801feeaf96d7dc416a8d581265ba",
         "type": "github"
       },
       "original": {

@@ -225,6 +225,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                     file [] "cardano-address.exe"
                     file [] "cardano-cli.exe"
                     file [] "mithril-client.exe"
+                    file [] "snapshot-converter.exe"
                     file [] "config.yaml"
                     file [] "topology.yaml"
                     file [] "genesis.json"
