@@ -154,7 +154,7 @@ in rec {
 
       cd $out
       mkdir -p ${exeName}-lib
-      mv *.dylib ${exeName}-lib/
+      for f in *.dylib *.so; do [ -f "$f" ] && mv "$f" ${exeName}-lib/; done
       otool -L ${exeName} \
         | { grep -E '^\s*@executable_path' || true ; } \
         | sed -r 's/^\s*//g ; s/ \(.*//g' \
@@ -165,7 +165,8 @@ in rec {
       codesign -f -s - ${exeName} || true
 
       cd ${exeName}-lib
-      ls *.dylib | while IFS= read -r dylib ; do
+      for dylib in *.dylib *.so; do
+        [ -f "$dylib" ] || continue
         otool -L "$dylib" \
           | { grep -E '^\s*@executable_path' || true ; } \
           | sed -r 's/^\s*//g ; s/ \(.*//g' \
