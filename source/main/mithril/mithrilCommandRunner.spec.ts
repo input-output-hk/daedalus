@@ -3,6 +3,7 @@ import {
   openLogStream,
   attachLogStream,
   runCommand,
+  runBinary,
   normalizeSpawnEnv,
 } from './mithrilCommandRunner';
 
@@ -215,14 +216,11 @@ describe('runCommand', () => {
       return childEmitter;
     });
 
-    await runCommand(
-      ['tools', 'utxo-hd', 'snapshot-converter'],
-      '/tmp/workdir'
-    );
+    await runCommand(['cardano-db', 'snapshot', 'list'], '/tmp/workdir');
 
     expect(spawn).toHaveBeenCalledWith(
       'mithril-client',
-      ['--origin-tag', 'DAEDALUS', 'tools', 'utxo-hd', 'snapshot-converter'],
+      ['--origin-tag', 'DAEDALUS', 'cardano-db', 'snapshot', 'list'],
       expect.objectContaining({
         cwd: '/tmp/workdir',
       })
@@ -263,6 +261,125 @@ describe('runCommand', () => {
 
     expect(onProcess).toHaveBeenCalledWith(childEmitter);
     expect(onProcess).toHaveBeenCalledWith(null);
+  });
+});
+
+describe('runBinary', () => {
+  const originalInstallDir = process.env.DAEDALUS_INSTALL_DIRECTORY;
+
+  afterEach(() => {
+    const { environment } = require('../environment');
+    const { spawn } = require('child_process');
+
+    environment.isWindows = false;
+    spawn.mockReset();
+
+    if (typeof originalInstallDir === 'undefined') {
+      delete process.env.DAEDALUS_INSTALL_DIRECTORY;
+    } else {
+      process.env.DAEDALUS_INSTALL_DIRECTORY = originalInstallDir;
+    }
+  });
+
+  it('spawns the named binary with given args and no origin-tag prefix', async () => {
+    const { spawn } = require('child_process');
+
+    const childEmitter = createChildProcess();
+    spawn.mockImplementation(() => {
+      setTimeout(() => {
+        childEmitter.emit('close', 0);
+      }, 0);
+      return childEmitter;
+    });
+
+    await runBinary(
+      'snapshot-converter',
+      [
+        '--input-mem',
+        '/db/ledger/12345',
+        '--output-lsm-snapshot',
+        '/db/tmp/snapshots/12345_lsm',
+      ],
+      '/tmp/workdir'
+    );
+
+    expect(spawn).toHaveBeenCalledWith(
+      'snapshot-converter',
+      [
+        '--input-mem',
+        '/db/ledger/12345',
+        '--output-lsm-snapshot',
+        '/db/tmp/snapshots/12345_lsm',
+      ],
+      expect.objectContaining({ cwd: '/tmp/workdir' })
+    );
+  });
+
+  it('uses the installed binary path when DAEDALUS_INSTALL_DIRECTORY is set', async () => {
+    const { spawn } = require('child_process');
+
+    process.env.DAEDALUS_INSTALL_DIRECTORY = '/opt/daedalus';
+
+    const childEmitter = createChildProcess();
+    spawn.mockImplementation(() => {
+      setTimeout(() => {
+        childEmitter.emit('close', 0);
+      }, 0);
+      return childEmitter;
+    });
+
+    await runBinary(
+      'snapshot-converter',
+      ['--input-mem', '/db'],
+      '/tmp/workdir'
+    );
+
+    expect(spawn).toHaveBeenCalledWith(
+      '/opt/daedalus/snapshot-converter',
+      expect.any(Array),
+      expect.any(Object)
+    );
+  });
+
+  it('appends .exe on Windows', async () => {
+    const { spawn } = require('child_process');
+    const { environment } = require('../environment');
+
+    environment.isWindows = true;
+
+    const childEmitter = createChildProcess();
+    spawn.mockImplementation(() => {
+      setTimeout(() => {
+        childEmitter.emit('close', 0);
+      }, 0);
+      return childEmitter;
+    });
+
+    await runBinary('snapshot-converter', [], 'C:\\workdir');
+
+    expect(spawn).toHaveBeenCalledWith(
+      'snapshot-converter.exe',
+      expect.any(Array),
+      expect.objectContaining({ cwd: 'C:\\workdir' })
+    );
+  });
+
+  it('resolves with stdout, stderr, and exitCode', async () => {
+    const { spawn } = require('child_process');
+
+    const childEmitter = createChildProcess();
+    spawn.mockImplementation(() => {
+      setTimeout(() => {
+        childEmitter.stdout.emit('data', Buffer.from('converted'));
+        childEmitter.emit('close', 0);
+      }, 0);
+      return childEmitter;
+    });
+
+    const result = await runBinary('snapshot-converter', [], '/tmp/workdir');
+
+    expect(result.stdout).toBe('converted');
+    expect(result.exitCode).toBe(0);
   });
 });
 

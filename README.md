@@ -217,7 +217,7 @@ Nix flake is used to manage the version of upstream dependencies. The versions o
 Dependencies are updated in the `inputs` section of `flake.nix` followed with e.g.:
 
 ```
-nix flake lock --update-input cardano-wallet-unpatched
+nix flake lock --update-input cardano-wallet
 ```
 
 ### Cardano Wallet Api documentation

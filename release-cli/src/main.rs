@@ -152,21 +152,35 @@ async fn cmd_sign(
         for inst in &installer_dir.installers {
             if inst.is_already_code_signed() {
                 if inst.path.exists() {
-                    // Both the signed file and its -unsigned companion exist → done.
+                    // Both the signed file and its -unsigned companion exist.
+                    // Verify their hashes differ: Windows renames the unsigned
+                    // original before signing, so if signing fails and
+                    // fetch-installers re-downloads a fresh unsigned copy the
+                    // two files will be byte-identical even though neither is
+                    // signed.  In that case fall through and retry.
+                    let signed_hash = hash::hash_file(&inst.path)?.sha256;
+                    let unsigned_hash = hash::hash_file(&inst.unsigned_path())?.sha256;
+                    if signed_hash != unsigned_hash {
+                        println!(
+                            "  {} [already signed — {} exists, skipping]",
+                            inst.filename,
+                            inst.unsigned_path().display()
+                        );
+                        continue;
+                    }
                     println!(
-                        "  {} [already signed — {} exists, skipping]",
+                        "  {} [resuming — main file matches unsigned companion, retrying]",
+                        inst.filename,
+                    );
+                } else {
+                    // The -unsigned companion exists but the signed file is missing
+                    // (e.g. network error during SCP/pipe).  Fall through and retry.
+                    println!(
+                        "  {} [resuming — signed file missing, retrying from {}]",
                         inst.filename,
                         inst.unsigned_path().display()
                     );
-                    continue;
                 }
-                // The -unsigned companion exists but the signed file is missing
-                // (e.g. network error during SCP/pipe).  Fall through and retry.
-                println!(
-                    "  {} [resuming — signed file missing, retrying from {}]",
-                    inst.filename,
-                    inst.unsigned_path().display()
-                );
             }
             match inst.platform {
                 installers::Platform::DarwinArm => {
