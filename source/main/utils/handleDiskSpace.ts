@@ -22,6 +22,7 @@ import { CardanoNode } from '../cardano/CardanoNode';
 import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.types';
 import {
   isMithrilBootstrapRestoreCompleteStatus,
+  isMithrilBootstrapBlockingNodeStart,
   MithrilBootstrapStatusUpdate,
 } from '../../common/types/mithril-bootstrap.types';
 import {
@@ -737,6 +738,13 @@ export const handleDiskSpace = (
                 currentGeneration
               );
               response.hadNotEnoughSpaceLeft = false;
+              break;
+            }
+
+            if (isMithrilBootstrapBlockingNodeStart(mithrilStatus.status)) {
+              // Mithril is actively running — the chain data present is a
+              // partial download. Do not start cardano-node; the mithril
+              // completion listener will handle node startup when done.
               break;
             }
 

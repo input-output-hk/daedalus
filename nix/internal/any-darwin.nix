@@ -154,7 +154,7 @@ in rec {
 
       cd $out
       mkdir -p ${exeName}-lib
-      mv *.dylib ${exeName}-lib/
+      for f in *.dylib *.so; do [ -f "$f" ] && mv "$f" ${exeName}-lib/; done
       otool -L ${exeName} \
         | { grep -E '^\s*@executable_path' || true ; } \
         | sed -r 's/^\s*//g ; s/ \(.*//g' \
@@ -165,7 +165,8 @@ in rec {
       codesign -f -s - ${exeName} || true
 
       cd ${exeName}-lib
-      ls *.dylib | while IFS= read -r dylib ; do
+      for dylib in *.dylib *.so; do
+        [ -f "$dylib" ] || continue
         otool -L "$dylib" \
           | { grep -E '^\s*@executable_path' || true ; } \
           | sed -r 's/^\s*//g ; s/ \(.*//g' \
@@ -183,6 +184,7 @@ in rec {
   bundle-cardano-cli = mkBundle "cardano-cli" (lib.getExe common.cardano-cli);
   bundle-cardano-address = mkBundle "cardano-address" (lib.getExe common.cardano-address);
   bundle-mithril-client = mkBundle "mithril-client" (common.mithril-client + "/bin/mithril-client");
+  bundle-snapshot-converter = mkBundle "snapshot-converter" (lib.getExe common.snapshot-converter);
   bundle-mock-token-metadata-server = mkBundle "mock-token-metadata-server" (lib.getExe common.mock-token-metadata-server);
   bundle-local-cluster = mkBundle "local-cluster" (lib.getExe common.walletPackages.local-cluster);
 
@@ -316,6 +318,7 @@ in rec {
         cp -r ${bundle-cardano-address}/. "$dir"/ && chmod -R +w "$dir/"
         cp -r ${bundle-cardano-wallet}/. "$dir"/ && chmod -R +w "$dir/"
         cp -r ${bundle-mithril-client}/. "$dir"/ && chmod -R +w "$dir/"
+        cp -r ${bundle-snapshot-converter}/. "$dir"/ && chmod -R +w "$dir/"
 
         ${lib.optionalString (cluster == "selfnode") ''
           cp -r ${bundle-mock-token-metadata-server}/. "$dir"/ && chmod -R +w "$dir/"
@@ -328,6 +331,8 @@ in rec {
           then ''
             cp installers/{genesis-byron.json,genesis-shelley.json,genesis-alonzo.json} "$dataDir"/
             cp installers/genesis-conway.json "$dataDir"/ || true
+            cp installers/genesis-dijkstra.json "$dataDir"/ || true
+            cp installers/checkpoints.json "$dataDir"/ || true
           ''
           else ''
             cp installers/{signing.key,delegation.cert} "$dataDir"/

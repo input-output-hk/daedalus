@@ -3,6 +3,13 @@ import { MithrilBootstrapService } from './MithrilBootstrapService';
 
 jest.mock('../config', () => ({
   stateDirectoryPath: '/tmp/daedalus-state',
+  launcherConfig: {
+    nodeConfig: {
+      network: {
+        configFile: '/config/config.yaml',
+      },
+    },
+  },
 }));
 
 jest.mock('../environment', () => ({
@@ -184,6 +191,7 @@ describe('MithrilBootstrapService progress and error stages', () => {
         elapsedSeconds: 12,
       });
     });
+    jest.spyOn(service, '_convertSnapshot').mockResolvedValue(undefined);
     jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
     jest.spyOn(service, '_installSnapshot').mockResolvedValue(undefined);
     jest
@@ -237,8 +245,13 @@ describe('MithrilBootstrapService progress and error stages', () => {
 
   it('annotates conversion failures with convert stage', async () => {
     const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const fse = require('fs-extra');
     jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
-    jest.spyOn(service, '_runCommand').mockResolvedValue({
+    jest
+      .spyOn(fse, 'readdir')
+      .mockResolvedValue([{ name: '12345', isDirectory: () => true }]);
+    jest.spyOn(fse, 'move').mockResolvedValue(undefined);
+    jest.spyOn(service, '_runBinary').mockResolvedValue({
       stdout: '',
       stderr: 'conversion failed',
       exitCode: 1,
@@ -255,6 +268,59 @@ describe('MithrilBootstrapService progress and error stages', () => {
       expect.objectContaining({
         stage: 'convert',
       })
+    );
+  });
+
+  it('calls snapshot-converter with paths derived from the most recent ledger slot', async () => {
+    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const fse = require('fs-extra');
+    jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest.spyOn(fse, 'readdir').mockResolvedValue([
+      { name: '10000', isDirectory: () => true },
+      { name: '99999', isDirectory: () => true },
+      { name: '50000', isDirectory: () => true },
+      { name: 'not-a-slot', isDirectory: () => true },
+    ]);
+    jest.spyOn(fse, 'move').mockResolvedValue(undefined);
+    const runBinarySpy = jest
+      .spyOn(service, '_runBinary')
+      .mockResolvedValue({ stdout: '', stderr: '', exitCode: 0 });
+
+    await service._convertSnapshot(null);
+
+    expect(runBinarySpy).toHaveBeenCalledWith(
+      'snapshot-converter',
+      expect.arrayContaining([
+        '--input-mem',
+        '/tmp/db/99999',
+        '--output-lsm-snapshot',
+        '/tmp/db/ledger/99999',
+        '--output-lsm-database',
+        '/tmp/db/lsm',
+        '--config',
+        '/config/config.yaml',
+      ])
+    );
+  });
+
+  it('throws a convert-stage error when no ledger slots are found', async () => {
+    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const fse = require('fs-extra');
+    jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest
+      .spyOn(fse, 'readdir')
+      .mockResolvedValue([{ name: 'not-a-slot', isDirectory: () => true }]);
+    jest.spyOn(fse, 'move').mockResolvedValue(undefined);
+
+    let conversionError: unknown;
+    try {
+      await service._convertSnapshot(null);
+    } catch (error) {
+      conversionError = error;
+    }
+
+    expect(service._buildError(conversionError)).toEqual(
+      expect.objectContaining({ stage: 'convert' })
     );
   });
 
@@ -439,6 +505,7 @@ describe('MithrilBootstrapService hardening fixes', () => {
       .mockResolvedValue(undefined);
     jest.spyOn(service, 'clearLockFile').mockResolvedValue(undefined);
     jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest.spyOn(service, '_convertSnapshot').mockResolvedValue(undefined);
     jest.spyOn(service, '_installSnapshot').mockResolvedValue(undefined);
 
     // _downloadSnapshot sets ancillary data then completes
@@ -904,6 +971,7 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
       .mockResolvedValue(undefined);
     jest.spyOn(service, 'clearLockFile').mockResolvedValue(undefined);
     jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest.spyOn(service, '_convertSnapshot').mockResolvedValue(undefined);
     jest.spyOn(service, '_installSnapshot').mockResolvedValue(undefined);
     jest.spyOn(service, '_downloadSnapshot').mockResolvedValue(undefined);
 

@@ -645,6 +645,62 @@ describe('handleDiskSpace', () => {
     );
   });
 
+  it('does not start cardano-node when the periodic disk check fires during an active mithril download', async () => {
+    const { handleDiskSpace } =
+      require('./handleDiskSpace') as typeof import('./handleDiskSpace');
+    const {
+      getMithrilBootstrapStatus,
+    } = require('../ipc/mithrilBootstrapChannel');
+    const cardanoNode = createCardanoNode();
+
+    // Chain has partial mithril data (~11 GB downloaded) but bootstrap is not done
+    chainStorageCoordinatorMock.isManagedChainEmpty.mockResolvedValue(false);
+    getMithrilBootstrapStatus.mockReturnValue({
+      status: 'downloading',
+      snapshot: null,
+      error: null,
+    });
+
+    const handleCheckDiskSpace = handleDiskSpace(
+      { webContents: {} } as never,
+      cardanoNode as never
+    );
+
+    await handleCheckDiskSpace();
+
+    expect(cardanoNode.start).not.toHaveBeenCalled();
+    // Should not emit idle — mithril is still in control
+    expect(mithrilBootstrapStatusChannelMock.send).not.toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'idle' }),
+      expect.anything()
+    );
+  });
+
+  it('does not start cardano-node when the periodic disk check fires while mithril is finalizing', async () => {
+    const { handleDiskSpace } =
+      require('./handleDiskSpace') as typeof import('./handleDiskSpace');
+    const {
+      getMithrilBootstrapStatus,
+    } = require('../ipc/mithrilBootstrapChannel');
+    const cardanoNode = createCardanoNode();
+
+    chainStorageCoordinatorMock.isManagedChainEmpty.mockResolvedValue(false);
+    getMithrilBootstrapStatus.mockReturnValue({
+      status: 'finalizing',
+      snapshot: null,
+      error: null,
+    });
+
+    const handleCheckDiskSpace = handleDiskSpace(
+      { webContents: {} } as never,
+      cardanoNode as never
+    );
+
+    await handleCheckDiskSpace();
+
+    expect(cardanoNode.start).not.toHaveBeenCalled();
+  });
+
   it('handles cancelled Mithril bootstrap by declining and starting cardano-node when chain is empty', async () => {
     const { handleDiskSpace } =
       require('./handleDiskSpace') as typeof import('./handleDiskSpace');

@@ -42,7 +42,7 @@ let
   fromCardanoPlayground = envName: let
     originalFiles = builtins.path {
       name = "cardano-playground-config-${envName}";
-      path = cardano-playground + ("/docs/environments/" + envName);
+      path = cardano-playground + ("/docs/environments-pre/" + envName);
     };
 
     originalNodeConfig = builtins.fromJSON (builtins.unsafeDiscardStringContext (
@@ -292,7 +292,7 @@ let
       #${lib.getExe jq} '.LedgerDB = {Backend: "V2LSM", LSMDatabasePath: "lsm/"}' < ${nodeConfigFiles}/config.yaml > $out/config.yaml
 
       # If instead we want to revert to praos with lsm, we could use the following instead:
-      ${lib.getExe jq} '.ConsensusMode = "PraosMode"' < ${nodeConfigFiles}/config.yaml > $out/config.yaml
+      ${lib.getExe jq} '.LedgerDB = {Backend: "V2LSM", LSMDatabasePath: "lsm/"} | .ConsensusMode = "PraosMode"' < ${nodeConfigFiles}/config.yaml > $out/config.yaml
     '';
 
   mkConfigCardano = let

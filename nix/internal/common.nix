@@ -29,40 +29,20 @@
 
   flake-compat = import inputs.flake-compat;
 
-  walletFlake = let
-    unpatched = inputs.cardano-wallet-unpatched;
-  in
+  walletFlake =
     (flake-compat {
-      src = {
-        outPath = toString (pkgs.runCommand "source" {} ''
-          cp -r ${unpatched} $out
-          chmod -R +w $out
-          cd $out
-          patch -p1 -i ${./cardano-wallet--expose-packages.patch}
-        '');
-        inherit (unpatched) rev shortRev lastModified lastModifiedDate;
-      };
+      src = inputs.cardano-wallet;
     }).defaultNix;
 
-  nodeFlake = let
-    unpatched = inputs.cardano-node-override;
-  in
+  nodeFlake =
     (flake-compat {
-      src = {
-        outPath = toString (pkgs.runCommand "source" {} ''
-          cp -r ${unpatched} $out
-          chmod -R +w $out
-          cd $out
-          cp ${walletFlake}/nix/supported-systems.nix $out/nix/supported-systems.nix
-        '');
-        inherit (unpatched) rev shortRev lastModified lastModifiedDate;
-      };
+      src = inputs.cardano-node;
     }).defaultNix;
 
   walletPackages =
     {
-      x86_64-windows = walletFlake.packages.x86_64-linux.ci.artifacts.win64.windowsPackages;
-      x86_64-linux = walletFlake.packages.x86_64-linux.musl64Packages;
+      x86_64-windows = walletFlake.packages.x86_64-linux.windowsPackages;
+      x86_64-linux = walletFlake.packages.x86_64-linux.staticPackages;
       x86_64-darwin = walletFlake.packages.x86_64-darwin;
       aarch64-darwin = walletFlake.packages.aarch64-darwin;
     }.${
@@ -79,20 +59,8 @@
       targetSystem
     };
 
-  mithrilReleaseVersion = flakeLock.nodes.mithril.original.ref;
-  mithrilWindowsAssetHash = "sha256-PEO1HKhHwCgEIK+CmkCaYNbWkXqaoDCnqzR/rN+G2Z4=";
-
-  mithrilWindowsAsset = pkgs.fetchurl {
-    # Read the release tag from flake.lock so this stays aligned with the flake input pin.
-    url = "https://github.com/input-output-hk/mithril/releases/download/${mithrilReleaseVersion}/mithril-${mithrilReleaseVersion}-windows-x64.tar.gz";
-    hash = mithrilWindowsAssetHash;
-  };
-
   mithrilPackages = {
-    x86_64-windows = pkgs.runCommand "mithril-client-windows" {} ''
-      mkdir -p $out/bin
-      tar -xzf ${mithrilWindowsAsset} -C $out/bin mithril-client.exe
-    '';
+    x86_64-windows = inputs.mithril.packages.x86_64-linux.mithril-client-cli-windows;
     x86_64-linux = inputs.mithril.packages.x86_64-linux.mithril-client-cli;
     x86_64-darwin = inputs.mithril.packages.x86_64-darwin.mithril-client-cli;
     aarch64-darwin = inputs.mithril.packages.aarch64-darwin.mithril-client-cli;
@@ -104,7 +72,7 @@
     import ./cardano-bridge.nix {
       target = targetSystem;
       inherit (pkgs) lib runCommandCC darwin;
-      inherit cardano-wallet cardano-node cardano-launcher cardano-cli cardano-address mock-token-metadata-server mithril-client;
+      inherit cardano-wallet cardano-node cardano-launcher cardano-cli cardano-address mock-token-metadata-server mithril-client snapshot-converter;
       local-cluster =
         if cluster == "selfnode"
         then walletPackages.local-cluster
@@ -113,7 +81,7 @@
 
   inherit (walletPackages) cardano-wallet cardano-address mock-token-metadata-server;
 
-  inherit (nodePackages) cardano-node cardano-cli;
+  inherit (nodePackages) cardano-node cardano-cli snapshot-converter;
 
   mithril-client = mithrilPackages.${targetSystem};
 

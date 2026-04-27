@@ -11,6 +11,7 @@
   mock-token-metadata-server,
   darwin,
   mithril-client,
+  snapshot-converter,
 }:
 runCommandCC "daedalus-cardano-bridge" {
   passthru = {
@@ -36,6 +37,7 @@ runCommandCC "daedalus-cardano-bridge" {
   copy_glob "cardano-launcher" "${cardano-launcher}/bin/*"
   copy_glob "cardano-node" "${cardano-node}/bin/*"
   copy_glob "cardano-cli" "${cardano-cli}/bin/cardano-cli*"
+  copy_glob "snapshot-converter" "${snapshot-converter}/bin/snapshot-converter*"
   copy_glob "mithril-client" "${mithril-client}/bin/mithril-client*"
   ${lib.optionalString (target == "x86_64-windows") ''
     # Upstream mithril package can emit a binary named `mithril-client`
@@ -71,7 +73,7 @@ runCommandCC "daedalus-cardano-bridge" {
   ''}
   ${lib.optionalString (target == "aarch64-darwin") ''
     chmod +w -R .
-    for x in cardano-address cardano-node cardano-launcher cardano-cli cardano-wallet mithril-client; do
+    for x in cardano-address cardano-node cardano-launcher cardano-cli cardano-wallet mithril-client snapshot-converter; do
       ${darwin.sigtool}/bin/codesign --force -s - $x
     done
   ''}
