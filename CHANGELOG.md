@@ -4,7 +4,9 @@
 
 ### Features
 
-- Added Mithril bootstrap to speed up chain initialization: full snapshot download and restore flow, chain storage management, 3-step progress UX, IPC contracts, and end-to-end tests.
+- Switched to the LSM UTxO on-disk backend to reduce memory requirements.
+
+- Added Mithril bootstrap to speed up chain initialization from a clean state (fresh install): full snapshot download and restore flow. Partial sync resumption via Mithril will be addressed in a future release.
 
 - Daedalus now prefers the native darwin-arm installer on Apple Silicon hardware.
 
@@ -12,19 +14,21 @@
 
 ### Fixes
 
-- Fixed Mithril bootstrap recovery and loading feedback, including clearer progress messaging and decline handling.
-
-- Fixed Windows and macOS installer issues affecting Mithril bootstrap support.
-
 - IPC: properly await `shell.openPath` and surface errors to the caller.
+
+- Fixed ledger replay progress stuck at 0.00% caused by a cardano-tracer log timestamp format change (UTC suffix → ISO 8601 `Z`).
+
+- Fixed installer omitting `checkpoints.json` for non-mainnet clusters (e.g. preview).
+
+- Fixed node config: force `ConsensusMode` to `PraosMode`, overriding upstream cardano-playground defaults.
 
 ### Chores
 
-- Update `cardano-node` to 10.7.1 and enable the LSM UTxO backend.
+- Update `cardano-node` to 10.7.1.
 
 - Nix: migrated to flake-parts with nixpkgs-25.11, including a `nixpkgsJs` compatibility layer and packaging fixes for Windows and macOS.
 
-- Release tooling: added `drt`, the Daedalus release CLI.
+- Release tooling: added `drt`, the Daedalus release CLI, including Apple notarization and stapling of macOS installers via `xcrun notarytool`.
 
 - CI: added JS/TS type checks to `hydraJobs.required` and switched the CI agent queue to `daedalus`.
 
