@@ -1,4 +1,4 @@
-use clap::{Parser, Subcommand};
+use clap::{Args, Parser, Subcommand};
 use std::path::PathBuf;
 
 #[derive(Parser)]
@@ -119,6 +119,13 @@ pub enum Commands {
         out_dir: PathBuf,
     },
 
+    /// Newsfeed management: add release entries, standalone messages, or
+    /// publish the current newsfeed to an S3 bucket for testing.
+    Newsfeed {
+        #[command(subcommand)]
+        command: NewsfeedCommands,
+    },
+
     /// Run a local HTTP server that emulates the S3 update bucket plus
     /// the newsfeed endpoints, for end-to-end tester workflows.
     ///
@@ -140,5 +147,98 @@ pub enum Commands {
         /// Release notes text to embed in the served version JSON.
         #[arg(long)]
         release_notes: Option<String>,
+    },
+}
+
+// ── Shared newsfeed repo args ─────────────────────────────────────────────────
+
+/// Common arguments shared by all `drt newsfeed` subcommands.
+///
+/// All three can be supplied via environment variables so you only need to
+/// set them once in a `.envrc` or shell profile:
+///   NEWSFEED_ENV               — environment (mainnet, preprod, preview, …)
+///   NEWSFEED_REPO     — path to daedalus-newsfeed-content
+///   NEWSFEED_VERIFICATION_REPO — path to daedalus-newsfeed-verification
+#[derive(Args)]
+pub struct NewsfeedRepoArgs {
+    /// Environment: mainnet, preprod, preview, …
+    #[arg(long, env = "NEWSFEED_ENV")]
+    pub env: String,
+
+    /// Path to the daedalus-newsfeed-content repository.
+    #[arg(long, env = "NEWSFEED_REPO")]
+    pub newsfeed_repo: PathBuf,
+
+    /// Path to the daedalus-newsfeed-verification repository.
+    #[arg(long, env = "NEWSFEED_VERIFICATION_REPO")]
+    pub verification_repo: PathBuf,
+}
+
+// ── Newsfeed subcommands ──────────────────────────────────────────────────────
+
+#[derive(Subcommand)]
+pub enum NewsfeedCommands {
+    /// Add a software-update + announcement entry for a new Daedalus release.
+    ///
+    /// Fetches installer metadata (version, SHA-256, URLs) from the installer
+    /// JSON, builds a draft of the two new newsfeed items, opens $EDITOR for
+    /// review, then writes the updated newsfeed JSON and verification file.
+    ///
+    /// NEWSFEED_INSTALLER_JSON — overrides --installer-json
+    Release {
+        #[command(flatten)]
+        repos: NewsfeedRepoArgs,
+
+        /// URL of daedalus-latest-version.json (the installer manifest).
+        #[arg(long, env = "NEWSFEED_INSTALLER_JSON")]
+        installer_json: String,
+
+        /// Release notes URL (e.g. GitHub release page).
+        /// The ja-JP URL is this value suffixed with #japanese.
+        /// Defaults to https://github.com/input-output-hk/daedalus/releases/tag/<version>
+        /// derived from the installer JSON.
+        #[arg(long)]
+        release_notes: Option<String>,
+    },
+
+    /// Upload the local newsfeed JSON and verification file to an S3 bucket.
+    ///
+    /// Reads the current state of both repos and uploads to the bucket so you
+    /// can point a local Daedalus instance at the bucket URL for end-to-end
+    /// testing before pushing to GitHub.
+    ///
+    /// NEWSFEED_BUCKET     — overrides --bucket
+    /// NEWSFEED_BUCKET_URL — overrides --bucket-url
+    Publish {
+        #[command(flatten)]
+        repos: NewsfeedRepoArgs,
+
+        /// S3 bucket name (e.g. update-cardano-mainnet.iohk.io).
+        #[arg(long, env = "NEWSFEED_BUCKET")]
+        bucket: String,
+
+        /// Public base URL for the bucket, without protocol.
+        #[arg(long, env = "NEWSFEED_BUCKET_URL")]
+        bucket_url: String,
+
+        /// Print what would be uploaded without actually uploading.
+        #[arg(long)]
+        dry_run: bool,
+    },
+
+    /// Add a standalone announcement message (not tied to a release).
+    ///
+    /// Opens $EDITOR with a single announcement item template.  Fill in the
+    /// title, content, and action fields, then save to write the updated
+    /// newsfeed JSON and verification file.
+    Message {
+        #[command(flatten)]
+        repos: NewsfeedRepoArgs,
+
+        /// Minimum Daedalus version to target.
+        /// The item's target range will be ">=MIN_VERSION".
+        /// Defaults to "2.3.0" (all auto-update capable installs).
+        #[arg(long, default_value = "2.3.0")]
+        min_version: String,
     },
 }

@@ -2,6 +2,7 @@ mod cli;
 mod fetch;
 mod hash;
 mod installers;
+mod newsfeed_cmd;
 mod s3;
 mod serve;
 mod sign;
@@ -9,7 +10,7 @@ mod version_json;
 
 use anyhow::Result;
 use clap::Parser;
-use cli::{Cli, Commands};
+use cli::{Cli, Commands, NewsfeedCommands};
 use std::collections::HashMap;
 
 struct SignFlags {
@@ -79,6 +80,48 @@ async fn main() -> Result<()> {
             )
             .await
         }
+
+        Commands::Newsfeed { command } => match command {
+            NewsfeedCommands::Release {
+                repos,
+                installer_json,
+                release_notes,
+            } => {
+                newsfeed_cmd::cmd_newsfeed_release(
+                    &repos.env,
+                    &repos.newsfeed_repo,
+                    &repos.verification_repo,
+                    &installer_json,
+                    release_notes.as_deref(),
+                )
+                .await
+            }
+            NewsfeedCommands::Publish {
+                repos,
+                bucket,
+                bucket_url,
+                dry_run,
+            } => {
+                newsfeed_cmd::cmd_newsfeed_publish(
+                    &repos.env,
+                    &repos.newsfeed_repo,
+                    &repos.verification_repo,
+                    &bucket,
+                    &bucket_url,
+                    dry_run,
+                )
+                .await
+            }
+            NewsfeedCommands::Message { repos, min_version } => {
+                newsfeed_cmd::cmd_newsfeed_message(
+                    &repos.env,
+                    &repos.newsfeed_repo,
+                    &repos.verification_repo,
+                    &min_version,
+                )
+                .await
+            }
+        },
 
         Commands::FetchInstallers { url, env, out_dir } => {
             fetch::fetch_installers(&url, &env, &out_dir).await
