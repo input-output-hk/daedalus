@@ -186,6 +186,14 @@ module.exports = {
             tsx: true,
             decorators: true,
           },
+          transform: {
+            // MobX 5 uses legacy (Stage 1) decorators; without this SWC 1.7+
+            // uses the new TC39 Stage 3 proposal which breaks @observable etc.
+            legacyDecorator: true,
+            // Class fields must use assignment (not Object.defineProperty) so
+            // MobX prototype setters can intercept them during initialization.
+            useDefineForClassFields: false,
+          },
           target: 'es2019',
           loose: false,
         },

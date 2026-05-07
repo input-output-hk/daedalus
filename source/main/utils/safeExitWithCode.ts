@@ -9,7 +9,9 @@ export const safeExitWithCode = (exitCode = 0) => {
   // https://nodejs.org/api/stream.html#stream_writable_end_chunk_encoding_callback
   file.stream.end('', 'utf8', () => {
     app.releaseSingleInstanceLock();
-    app.exit(exitCode);
+    // app.exit() triggers Chromium cleanup that causes SIGABRT in Electron 41+.
+    // process.exit() bypasses Electron's Chromium teardown and exits cleanly.
+    process.exit(exitCode);
   });
 };
 export const relaunch = () => {

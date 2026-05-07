@@ -29,6 +29,9 @@ class ManageElectronProcessPlugin {
     if (this._shouldRestart) {
       this.start();
       this._shouldRestart = false;
+    } else {
+      // Electron exited without a pending restart (user closed the app) — stop webpack too.
+      process.exit(0);
     }
   }
   apply(compiler) {

@@ -805,6 +805,19 @@ export class CardanoNode {
       signal,
     });
 
+    // If stop() is managing a controlled shutdown, return immediately and let
+    // stop() own the full sequence: _waitForNodeProcessToExit,
+    // _storeProcessStates, _changeToState(STOPPED), _reset().
+    // Without this guard, both stop() and _handleCardanoNodeExit call
+    // _changeToState(STOPPED), and the second broadcastStateChange(STOPPED) IPC
+    // targets the renderer as it's being destroyed → Chromium SIGABRT in Electron 41.
+    if (
+      this._state === CardanoNodeStates.STOPPING ||
+      this._state === CardanoNodeStates.STOPPED
+    ) {
+      return;
+    }
+
     // We don't know yet what happened but we can be sure cardano-node is exiting
     if (this._state === CardanoNodeStates.RUNNING) {
       this._changeToState(CardanoNodeStates.EXITING);
@@ -840,10 +853,9 @@ export class CardanoNode {
       signal,
     });
 
-    // Handle various exit scenarios
-    if (this._state === CardanoNodeStates.STOPPING) {
-      this._changeToState(CardanoNodeStates.STOPPED);
-    } else if (
+    // Handle various exit scenarios (only reached for uncontrolled exits:
+    // crashes, updates, errors — not controlled stop() shutdowns)
+    if (
       this._state === CardanoNodeStates.UPDATING &&
       code === CARDANO_UPDATE_EXIT_CODE
     ) {

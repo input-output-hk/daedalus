@@ -1,10 +1,23 @@
-import { BridgeInfo, Device as TrezorDevice, UdevInfo } from '@trezor/connect';
+import { Device as TrezorDevice } from '@trezor/connect';
 import {
   TxOutputDestinationType,
   AddressType,
   CIP36VoteRegistrationFormat,
   TxAuxiliaryDataType,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+
+// BridgeInfo was removed from @trezor/connect API; define locally for error payloads
+type BridgeInfo = Record<string, unknown>;
+// UdevInfo is internal to @trezor/connect; define locally for error payloads
+type UdevInfo = {
+  packages: {
+    name: string;
+    platform: string[];
+    url: string;
+    signature?: string;
+    preferred?: boolean;
+  }[];
+};
 
 export type BIP32Path = Array<number>;
 export type LedgerModel = 'nanoS' | 'nanoSP' | 'nanoX';

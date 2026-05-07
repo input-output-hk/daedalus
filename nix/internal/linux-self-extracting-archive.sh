@@ -69,6 +69,19 @@ else
 fi
 chmod -w "$target"
 
+# Re-patch electron's ELF interpreter (PT_INTERP) to use the installed ld-linux.
+# The bundled electron binary has an absolute Nix store path as PT_INTERP (from the
+# relocatableElectron build step), which won't exist on machines without that derivation.
+# Nix store permissions (555 on dirs, 444 on files) are preserved in the archive, so
+# we need to explicitly make the affected paths writable first.
+chmod +w "$target/libexec"                                             # for rm of .patchelf-static
+chmod +w "$target/libexec/bundle-electron/lib/electron"                # for patchelf's rename(tmp, electron)
+chmod +w "$target/libexec/bundle-electron/lib/electron/electron"       # for patchelf's O_RDWR open
+"$target/libexec/.patchelf-static" --set-interpreter \
+  "$target/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2" \
+  "$target/libexec/bundle-electron/lib/electron/electron"
+rm -f "$target/libexec/.patchelf-static"
+
 echo STATUS "Setting up a .desktop entry..."
 echo PROG 4/$num_steps
 mkdir -p "$HOME"/.local/share/applications

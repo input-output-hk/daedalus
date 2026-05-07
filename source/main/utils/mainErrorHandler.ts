@@ -24,13 +24,13 @@ export default (onError?: (...args: Array<any>) => any) => {
       message: error.message,
     });
   });
-  app.on('gpu-process-crashed', (event: any, killed: boolean) => {
+  // 'gpu-process-crashed' was renamed to 'child-process-gone' in Electron 23+
+  app.on('child-process-gone', (event: any, details: any) => {
     logger.error(
-      `uncaughtException::gpu-process-crashed: ${
-        killed ? 'killed' : 'not-killed'
-      }`,
+      `uncaughtException::child-process-gone: ${details?.reason ?? 'unknown'}`,
       {
         error: event,
+        details,
       }
     );
   });

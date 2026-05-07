@@ -45,6 +45,11 @@ module.exports = {
               decorators: true,
             },
             transform: {
+              legacyDecorator: true, // MobX 5 requires legacy experimental decorators (SWC 1.3+ default changed)
+              // MobX 5 requires class fields to use assignment (this.prop = val), not Object.defineProperty,
+              // so that MobX's prototype setter intercepts the initial value. Without this, MobX initializes
+              // observables to `undefined` (ignores the class field initializer value).
+              useDefineForClassFields: false,
               react: {
                 refresh: false, // Disabled: React Refresh has Electron compatibility issues
               },
@@ -103,7 +108,7 @@ module.exports = {
     symlinks: true, // for native libraries
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
-      react: require.resolve('react'), // else, it’s added a few times to index.js 🙄
+      react: require.resolve('react'), // else, it's added a few times to index.js 🙄
     },
     fallback: {
       process: require.resolve('process/browser'),
@@ -153,6 +158,19 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'styles.css',
     }),
+    // @trezor/transport >=1.5 exports NodeUsbTransport and UdpTransport from its barrel.
+    // The package.json browser field maps them to .ts source files that don't exist in
+    // the published package, so webpack won't use them automatically. And since the barrel
+    // uses relative imports (e.g. './transports/nodeusb'), resolve.alias won't intercept
+    // them. NormalModuleReplacementPlugin matches by resolved file path via afterResolve:
+    new webpack.NormalModuleReplacementPlugin(
+      /@trezor[\\/]transport[\\/]lib[\\/]transports[\\/]nodeusb\.js$/,
+      require.resolve('@trezor/transport/lib/transports/nodeusb.browser.js')
+    ),
+    new webpack.NormalModuleReplacementPlugin(
+      /@trezor[\\/]transport[\\/]lib[\\/]transports[\\/]udp\.js$/,
+      require.resolve('@trezor/transport/lib/transports/udp.browser.js')
+    ),
     // Disabled: React Refresh has compatibility issues with Electron
     // isDevelopment && new ReactRefreshWebpackPlugin(),
   ].filter(Boolean),

@@ -1,5 +1,15 @@
 # Changelog
 
+## Upcoming
+
+### Chores
+
+- Nix: removed the `nixpkgsJs` (nixpkgs-22.11-darwin) compatibility shim — all packages now come from the single nixpkgs-25.11 pin, using `nodejs_22`. Also removed the `glibc-electron-loader.patch` (obsolete since glibc 2.36 removed PRELINK) and the pinned 2022-07-18 nixpkgs snapshot for `yarn2nix` (now uses the one bundled in nixos-25.11).
+
+- Bumped JS dependencies: hardware wallet libraries (`@ledgerhq/hw-transport-node-hid` 6.33.0, `@trezor/connect` 9.7.2, `@trezor/transport` 1.5.4, `@cardano-foundation/ledgerjs-hw-app-cardano` 7.1.4), security fixes (`node-forge` 1.4.0, `moment` 2.30.1, `ws` 8.18.2, `axios` 1.7.7), and general updates (`webpack` 5.106.2, `node-hid` 3.3.0, `@electron/rebuild` 4.0.4, `@swc/core` 1.10.18).
+
+- Upgraded Electron from 24.2.0 to 41.3.0: updated Nix packaging (electron headers, patchelf, runtime deps), fixed MobX 5 + SWC 1.10 decorator compatibility (`legacyDecorator`, `useDefineForClassFields`), fixed clean shutdown sequence (`app.exit()` → `process.exit()` to avoid SIGABRT in Chromium teardown, `CardanoNode` exit race condition guard), and updated deprecated Electron APIs (`gpu-process-crashed` → `child-process-gone`, `crashed` → `render-process-gone`).
+
 ## 11.0.0
 
 This release adds support for the upcoming Van Rossem Hard Fork. Updating before the fork is required to maintain network compatibility.

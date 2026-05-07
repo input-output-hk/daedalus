@@ -44,6 +44,9 @@ const DEFAULT_OPTS = {
 const icon = argv.icon || argv.i || 'installers/icons/electron';
 if (icon) DEFAULT_OPTS.icon = icon;
 
+const electronZipDir = argv['electron-zip-dir'];
+if (electronZipDir) DEFAULT_OPTS.electronZipDir = electronZipDir;
+
 const version = argv.version || argv.v;
 if (version) {
   DEFAULT_OPTS.version = version;

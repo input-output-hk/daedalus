@@ -8,6 +8,7 @@ import { HexString } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/type
 import TrezorConnect, {
   DEVICE,
   DEVICE_EVENT,
+  DeviceUniquePath,
   Features,
   Success,
   TRANSPORT,
@@ -290,7 +291,7 @@ export const handleHardwareWalletRequests = async (
         try {
           deviceFeatures = await TrezorConnect.getFeatures({
             device: {
-              path: devicePath,
+              path: devicePath as DeviceUniquePath,
             },
           });
 
