@@ -19,19 +19,23 @@ find . -type f -name '*.node' -not -path '*/@swc*/*' -exec rm -vf {} ';'
 # doesn’t work reliably.
 nix run -L .#internal."${system:-x86_64-darwin}".common.patchElectronRebuild
 
-# XXX: Electron 24.2 requires c++17, not 14 (or old 1y):
+# XXX: Electron requires c++17, not 14 (or old 1y):
 sed -r 's,std=c\+\+(14|1y),std=c++17,g' -i node_modules/usb/binding.gyp
 
 "$SCRIPT_DIR"/darwin-no-x-compile.sh
 
-# TODO: do we really need to run `electron-rebuild` 3×?
+# Remove ALL fsevents instances before electron-rebuild: v1.x uses old v8 NAN APIs
+# (v8::Object::GetIsolate removed in Electron 41+). yarn v1 nests fsevents v1.x
+# inside e.g. node_modules/chokidar/node_modules/fsevents — electron-rebuild scans
+# recursively and would find any nested copy. Not needed at runtime by Daedalus.
+find node_modules -depth -type d -name 'fsevents' -exec rm -rf '{}' ';' 2>/dev/null || true
 
-electron-rebuild --force
-
-electron-rebuild -w usb-detection --force -s # <https://github.com/MadLittleMods/node-usb-detection#install-for-electron>
+# Build all native modules sequentially (required for usb-detection, cf. <https://github.com/MadLittleMods/node-usb-detection#install-for-electron>):
+electron-rebuild --force -s
 
 if [[ $system == *linux* ]]; then
-  # We ship debug version because the release one has issues with Ledger Nano S
+  # Rebuild usb in Debug mode: the debug build ships instead of Release because
+  # the release build has issues with Ledger Nano S:
   electron-rebuild -w usb --force -s --debug
 fi
 

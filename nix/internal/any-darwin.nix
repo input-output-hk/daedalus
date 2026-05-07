@@ -5,7 +5,7 @@
 assert targetSystem == "x86_64-darwin" || targetSystem == "aarch64-darwin"; let
   common = import ./common.nix {inherit inputs targetSystem;};
 
-  inherit (common) sourceLib pkgs pkgsJs;
+  inherit (common) sourceLib pkgs;
   inherit (pkgs) lib;
 
   inherit
@@ -46,11 +46,11 @@ in rec {
   # XXX: we don't use `autoSignDarwinBinariesHook` for ad-hoc signing,
   # because it takes too long (minutes) for all the JS/whatnot files we
   # have. Instead, we locate targets in a more clever way.
-  signAllBinaries = pkgsJs.writeShellScript "signAllBinaries" ''
+  signAllBinaries = pkgs.writeShellScript "signAllBinaries" ''
     set -o nounset
     echo 'Searching for binaries to ad-hoc sign…'
-    source ${pkgsJs.darwin.signingUtils}
-    ${pkgsJs.findutils}/bin/find "$1" -type f -not '(' -name '*.js' -o -name '*.ts' -o -name '*.ts.map' -o -name '*.js.map' -o -name '*.json' ')' -exec ${pkgsJs.file}/bin/file '{}' ';' | grep -F ': Mach-O' | cut -d: -f1 | while IFS= read -r target ; do
+    source ${pkgs.darwin.signingUtils}
+    ${pkgs.findutils}/bin/find "$1" -type f -not '(' -name '*.js' -o -name '*.ts' -o -name '*.ts.map' -o -name '*.js.map' -o -name '*.json' ')' -exec ${pkgs.file}/bin/file '{}' ';' | grep -F ': Mach-O' | cut -d: -f1 | while IFS= read -r target ; do
       echo "ad-hoc signing '$target'…"
       signIfRequired "$target"
     done
@@ -62,47 +62,102 @@ in rec {
   # /nix/store with pure dependencies), then add a newline in the middle
   # of `package.json`, and then build the `package` again, only this time
   # with network turned off system-wise.
-  node_modules = pkgsJs.stdenv.mkDerivation {
+  node_modules = pkgs.stdenv.mkDerivation {
     name = "daedalus-node_modules";
     src = srcLockfiles;
     nativeBuildInputs =
       [yarn nodejs]
       ++ (with pkgs; [perl pkg-config jq])
-      ++ (with pkgsJs; [darwin.cctools xcbuild python3]); # Use nixpkgs-22.11 for build tools to avoid clang/linker compatibility issues
-    buildInputs = with pkgsJs.darwin; [
-      apple_sdk.frameworks.CoreServices
-      apple_sdk.frameworks.AppKit
-    ];
+      ++ (with pkgs; [darwin.cctools xcbuild python3]);
+    buildInputs = [];
     # Disable strict enum checking for cross-compilation compatibility
     NIX_CFLAGS_COMPILE = "-Wno-enum-constexpr-conversion";
     configurePhase = common.setupCacheAndGypDirs + darwinSpecificCaches;
     buildPhase = ''
-      # Do not look up in the registry, but in the offline cache:
-      ${yarn2nix.fixup_yarn_lock}/bin/fixup_yarn_lock yarn.lock
+            # Do not look up in the registry, but in the offline cache:
+            ${yarn2nix.fixup_yarn_lock}/bin/fixup_yarn_lock yarn.lock
 
-      # Now, install from ${offlineCache} to node_modules/
-      yarn install --ignore-scripts
+            # Now, install from ${offlineCache} to node_modules/
+            yarn install --ignore-scripts
 
-      # Remove all prebuilt *.node files extracted from `.tgz`s
-      find . -type f -name '*.node' -not -path '*/@swc*/*' -exec rm -vf {} ';'
+            # Remove prebuilt *.node files that need Electron-ABI-specific compilation.
+            # Preserve N-API prebuilt binaries bundled inside npm tarballs — they are
+            # ABI-stable and work across all Node.js/Electron versions without recompiling:
+            #   node-hid:   prebuilds/HID-darwin-{x64,arm64}/node-napi-v4.node  (N-API v4)
+            #   usb:        prebuilds/darwin-x64+arm64/node.napi.node            (N-API v8, universal fat binary)
+            #   blake-hash: prebuilds/darwin-x64/node.napi.node                  (N-API, x64 only; arm64 compiled below)
+            find . -type f -name '*.node' \
+              -not -path '*/@swc*/*' \
+              -not -path '*/node-hid/prebuilds/*' \
+              -not -path '*/usb/prebuilds/*' \
+              -not -path '*/blake-hash/prebuilds/*' \
+              -exec rm -vf {} ';'
 
-      patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
+            patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
 
-      ${builtins.path {path = inputs.self + "/scripts/darwin-no-x-compile.sh";}}
+            ${builtins.path {path = inputs.self + "/scripts/darwin-no-x-compile.sh";}}
 
-      # And now, with correct shebangs, run the install scripts (we have to do that
-      # semi-manually, because another `yarn install` will overwrite those shebangs…):
-      find node_modules -type f -name 'package.json' | sort | xargs grep -F '"install":' | cut -d: -f1 | while IFS= read -r dependency ; do
-        # The grep pre-filter is not ideal:
-        if [ "$(jq .scripts.install "$dependency")" != "null" ] ; then
-          echo ' '
-          echo "Running the install script for ‘$dependency’:"
+            # Patch all node-addon-api napi.h files: change 'static const' to 'static inline const'
+            # (C++17) to defer the initializer to program startup, removing the constant-expression
+            # requirement that Apple Clang 15+ enforces on static_cast<enum>(-1) in in-class members.
+            # Needed on both x86_64 and aarch64: the package derivation's electron-rebuild rebuilds
+            # all native modules from source (--force), so the patched napi.h must be present for
+            # any darwin target that uses Apple Clang 15+.
+            python3 -c "
+      import sys
+      for path in sys.argv[1:]:
+          with open(path) as f:
+              content = f.read()
+          content = content.replace(
+              'static const napi_typedarray_type unknown_array_type = static_cast<napi_typedarray_type>(-1);',
+              'static inline const napi_typedarray_type unknown_array_type = static_cast<napi_typedarray_type>(-1);'
+          )
+          with open(path, 'w') as f:
+              f.write(content)
+      " $(find node_modules -name 'napi.h' -path '*/node-addon-api/*' 2>/dev/null)
 
-          ( cd "$(dirname "$dependency")" ; yarn run install ; )
-        fi
-      done
+            # And now, with correct shebangs, run the install scripts (we have to do that
+            # semi-manually, because another `yarn install` will overwrite those shebangs…):
+            find node_modules -type f -name 'package.json' | sort | xargs grep -F '"install":' | cut -d: -f1 | while IFS= read -r dependency ; do
+              # The grep pre-filter is not ideal:
+              if [ "$(jq .scripts.install "$dependency")" != "null" ] ; then
+                # Skip packages that download binaries from GitHub — we provide them via Nix instead.
+                # electron: binary comes from pkgs.electron.unwrapped (ELECTRON_SKIP_BINARY_DOWNLOAD=1 also set)
+                # electron-chromedriver: version mismatch with our electron (v12 vs v41); skip, not needed for build
+                case "$dependency" in
+                  */electron/package.json | */electron-chromedriver/package.json)
+                    echo "Skipping binary-download install script for $dependency (binary provided by Nix)"
+                    continue ;;
+                  # node-hid (N-API v4) and usb (N-API v8, universal fat binary) bundle
+                  # ABI-stable prebuilt .node files inside their npm tarballs. Running their
+                  # install scripts would invoke node-gyp which fails on Darwin due to
+                  # Apple Clang 15+ rejecting static_cast<enum>(-1) in napi.h.
+                  */node-hid/package.json | */usb/package.json)
+                    echo "Skipping $dependency — using bundled N-API prebuilt binary"
+                    continue ;;
+                  # fsevents v1.x (optional dep of chokidar v2) uses NAN which calls
+                  # v8::Object::GetIsolate() — removed in Electron 41+ v8 headers.
+                  # Not used at runtime by Daedalus; skip compilation entirely.
+                  */fsevents/package.json)
+                    echo "Skipping $dependency — uses old v8 API incompatible with Electron 41; not needed at runtime"
+                    continue ;;
+                  ${lib.optionalString (targetSystem == "x86_64-darwin") ''
+        # blake-hash ships a darwin-x64 N-API prebuilt — skip the install-script
+        # compilation here. electron-rebuild in the package phase will rebuild it
+        # from source (using the patched napi.h above).
+        */blake-hash/package.json)
+          echo "Skipping blake-hash install script — will be rebuilt by electron-rebuild"
+          continue ;;
+      ''}
+                esac
+                echo ' '
+                echo "Running the install script for '$dependency':"
 
-      patchShebangs . >/dev/null  # a few new files will have appeared
+                ( cd "$(dirname "$dependency")" ; yarn run install ; )
+              fi
+            done
+
+            patchShebangs . >/dev/null  # a few new files will have appeared
     '';
     installPhase = ''
       mkdir $out
@@ -230,23 +285,17 @@ in rec {
   package = genClusters (cluster: let
     pname = "daedalus";
   in
-    pkgsJs.stdenv.mkDerivation {
+    pkgs.stdenv.mkDerivation {
       name = pname;
       src = srcWithoutNix;
       nativeBuildInputs =
         [yarn nodejs]
         ++ (with pkgs; [perl pkg-config darwin.cctools xcbuild jq])
-        ++ [pkgsJs.python3]; # Use Python from nixpkgs-22.11 for distutils
-      buildInputs =
-        (with pkgsJs.darwin; [
-          apple_sdk.frameworks.CoreServices
-          apple_sdk.frameworks.AppKit
-          libobjc
-        ])
-        ++ [
-          darwin-launcher
-          mock-token-metadata-server
-        ];
+        ++ [pkgs.python3];
+      buildInputs = [
+        darwin-launcher
+        mock-token-metadata-server
+      ];
       NETWORK = cluster;
       BUILD_REV = sourceLib.buildRev;
       BUILD_REV_SHORT = sourceLib.buildRevShort;
@@ -287,7 +336,16 @@ in rec {
 
         pathtoapp=release/darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}-darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}.app
         mkdir -p "$pathtoapp"/Contents/Resources/app/node_modules
-        jq -r '.[]' ${./runtime-nodejs-deps.json} | sed -r 's,^,node_modules/,' | xargs -d '\n' cp -r -t "$pathtoapp"/Contents/Resources/app/node_modules/
+        # Copy runtime deps, handling scoped packages (@scope/pkg) correctly:
+        # plain `cp -r -t dest/ node_modules/@scope/pkg` would strip the @scope
+        # parent and create dest/pkg instead of dest/@scope/pkg.
+        jq -r '.[]' ${./runtime-nodejs-deps.json} | while IFS= read -r pkg; do
+          dest="$pathtoapp/Contents/Resources/app/node_modules"
+          if [[ "$pkg" == @*/* ]]; then
+            mkdir -p "$dest/$(dirname "$pkg")"
+          fi
+          cp -r "node_modules/$pkg" "$dest/$(dirname "$pkg")/"
+        done
 
         mkdir -p "$pathtoapp"/Contents/Resources/app/build
 
@@ -360,6 +418,11 @@ in rec {
           ln -sfn ../../../../../../MacOS/detection.node
         )
 
+        # usb v2+ uses node-gyp-build (not the 'bindings' npm package), so it looks for
+        # its native module in node_modules/usb/build/Release/ — not via DAEDALUS_INSTALL_DIRECTORY.
+        # Bundle Nix store dylibs in place so the path survives outside the Nix sandbox.
+        ${bundleNodeJsNativeModule} "$pathtoapp/Contents/Resources/app/node_modules/usb/build/Release/usb_bindings.node"
+
         mv "$dir"/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName} "$dir"/Frontend
         chmod +x "$dir"/Frontend
 
@@ -380,7 +443,9 @@ in rec {
         echo 'Deleting all redundant ‘*.node’ files under to-be-distributed ‘node_modules/’:'
         (
           cd $out/Applications/*/Contents/
-          find Resources/ -name '*.node' -exec rm -vf '{}' ';'
+          find Resources/ -name '*.node' \
+            -not -path '*/usb/build/Release/*.node' \
+            -exec rm -vf '{}' ';'
           find Resources/app/node_modules -type f '(' -name '*.o' -o -name '*.o.d' -o -name '*.target.mk' -o -name '*.Makefile' -o -name 'Makefile' -o -name 'config.gypi' ')' -exec rm -vf '{}' ';'
           sed -r 's#try: \[#\0 [process.env.DAEDALUS_INSTALL_DIRECTORY, "bindings"],#' -i Resources/app/node_modules/bindings/bindings.js
         )
@@ -518,16 +583,16 @@ in rec {
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-darwin-${archSuffix}.zip";
       hash =
         if archSuffix == "x64"
-        then "sha256-I/d/vecsrYMV59Nw2SnNzrVAj1UzSUJB/F3VA9itDNw="
-        else "sha256-Up0HRemSeMZvYxyB7b7yKlrYhxMyNmAC7dNxtAmFCyQ=";
+        then "sha256-nQrMwhV98+s6FcefJ6nddjCZ2WqihgQcwbqaPOau1zc="
+        else "sha256-epj0f0xPSTmdOoOOkVC4go0vW/iqfbdpZXroL6sh+dA=";
     };
 
     electronChromedriver = pkgs.fetchurl {
       url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip";
       hash =
         if archSuffix == "x64"
-        then "sha256-avLZdXPkcZx5SirO2RVjxXN2oRfbUHs5gEymUwne3HI="
-        else "sha256-jehYm1nMlHjQha7AFzMUvKZxfSbedghODhBUXk1qKB4=";
+        then "sha256-S2Vq0oflr+PvvLNxWE/IpgLIr6MyLUsZumVQtC8V0+k="
+        else "sha256-9lTlzUcf8J+GH9e8aKGIZogogdq4a3HlOqrJOawobxY=";
     };
   };
 }
