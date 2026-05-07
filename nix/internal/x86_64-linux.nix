@@ -5,14 +5,14 @@
 assert targetSystem == "x86_64-linux"; let
   common = import ./common.nix {inherit inputs targetSystem;};
 
-  inherit (common) sourceLib pkgs pkgsJs commonSources;
+  inherit (common) sourceLib pkgs commonSources;
   inherit (sourceLib) installerClusters;
   inherit (pkgs) lib;
 
   genClusters = lib.genAttrs installerClusters;
 in rec {
   inherit common;
-  inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
+  inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion originalPackageJson;
 
   package = newPackage;
 
@@ -20,35 +20,22 @@ in rec {
 
   makeSignedInstaller = genClusters (cluster:
     pkgs.writeShellScriptBin "make-signed-installer-stub" ''
-      echo "We don’t sign native code for ‘${targetSystem}’, please, use unsigned ‘nix build .#installer-${cluster}’"
+      echo "We don't sign native code for '${targetSystem}', please, use unsigned 'nix build .#installer-${cluster}'"
       exit 1
     '');
 
   # FIXME: for Tullia/Cicero debugging, remove later:
   inherit (sourceLib) buildRev;
 
-  # The following is used in all `configurePhase`s:
-  linuxSpecificCaches = let
-    cacheDir = "$HOME/.cache";
-  in ''
-    mkdir -p ${cacheDir}/electron/${commonSources.electronCacheHash}/
-    ln -sf ${commonSources.electronShaSums} ${cacheDir}/electron/${commonSources.electronCacheHash}/SHASUMS256.txt
-    ln -sf ${linuxSources.electron} ${cacheDir}/electron/${commonSources.electronCacheHash}/electron-v${electronVersion}-linux-x64.zip
-
-    mkdir -p ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/
-    ln -sf ${commonSources.electronChromedriverShaSums} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/SHASUMS256.txt
-    ln -sf ${linuxSources.electronChromedriver} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/chromedriver-v${electronChromedriverVersion}-linux-x64.zip
-  '';
-
-  node_modules = pkgsJs.stdenv.mkDerivation {
+  node_modules = pkgs.stdenv.mkDerivation {
     name = "daedalus-node_modules";
     src = srcLockfiles;
     nativeBuildInputs =
       [yarn nodejs]
-      ++ (with pkgsJs; [pkg-config jq python3])
+      ++ (with pkgs; [pkg-config jq python3])
       ++ [pkgs.jq]; # Use newer jq for JSON parsing
-    buildInputs = with pkgsJs; [libusb1];
-    configurePhase = common.setupCacheAndGypDirs + linuxSpecificCaches;
+    buildInputs = with pkgs; [libusb1];
+    configurePhase = common.setupCacheAndGypDirs;
     buildPhase = ''
       # Do not look up in the registry, but in the offline cache:
       ${yarn2nix.fixup_yarn_lock}/bin/fixup_yarn_lock yarn.lock
@@ -56,7 +43,7 @@ in rec {
       # Now, install from offlineCache to node_modules/, but do not
       # execute any scripts defined in the project package.json and
       # its dependencies we need to `patchShebangs` first, since even
-      # ‘/usr/bin/env’ is not available in the build sandbox
+      # '/usr/bin/env' is not available in the build sandbox
       yarn install --ignore-scripts
 
       # Remove all prebuilt *.node files extracted from `.tgz`s
@@ -69,8 +56,16 @@ in rec {
       find node_modules -type f -name 'package.json' | sort | xargs grep -F '"install":' | cut -d: -f1 | while IFS= read -r dependency ; do
         # The grep pre-filter is not ideal:
         if [ "$(jq .scripts.install "$dependency")" != "null" ] ; then
+          # Skip packages that download binaries from GitHub — we provide them via Nix instead.
+          # electron: binary comes from pkgs.electron.unwrapped (ELECTRON_SKIP_BINARY_DOWNLOAD=1 also set)
+          # electron-chromedriver: version mismatch with our electron (v12 vs v41); skip, not needed for build
+          case "$dependency" in
+            */electron/package.json | */electron-chromedriver/package.json)
+              echo "Skipping binary-download install script for $dependency (binary provided by Nix)"
+              continue ;;
+          esac
           echo ' '
-          echo "Running the install script for ‘$dependency’:"
+          echo "Running the install script for '$dependency':"
           ( cd "$(dirname "$dependency")" ; yarn run install ; )
         fi
       done
@@ -85,14 +80,14 @@ in rec {
   };
 
   daedalusJs = genClusters (cluster:
-    pkgsJs.stdenv.mkDerivation {
+    pkgs.stdenv.mkDerivation {
       name = "daedalus-js";
       src = srcWithoutNix;
       nativeBuildInputs =
         [yarn nodejs]
-        ++ (with pkgsJs; [pkg-config jq python3])
+        ++ (with pkgs; [pkg-config jq python3])
         ++ [pkgs.jq]; # Use newer jq for JSON parsing
-      buildInputs = with pkgsJs; [libusb1];
+      buildInputs = with pkgs; [libusb1];
       CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
       CARDANO_NODE_VERSION = common.cardanoNodeVersion;
       CI = "nix";
@@ -104,7 +99,6 @@ in rec {
       BUILDTYPE = "Release";
       configurePhase =
         common.setupCacheAndGypDirs
-        + linuxSpecificCaches
         + ''
           # Grab all cached `node_modules` from above:
           cp -r ${node_modules}/. ./
@@ -125,7 +119,8 @@ in rec {
 
         ${common.temporaryNodeModulesPatches}
 
-        yarn run package -- --name ${lib.escapeShellArg common.launcherConfigs.${cluster}.installerConfig.spacedName}
+        yarn build:main
+        yarn build:renderer
       '';
       installPhase = ''
         mkdir -p $out/bin $out/share/daedalus
@@ -150,13 +145,14 @@ in rec {
 
         mkdir -pv $out/share/daedalus/node_modules
         jq -r '.[]' <${./runtime-nodejs-deps.json} | while IFS= read -r rtdep ; do
+          mkdir -p "$out/share/daedalus/node_modules/$(dirname "$rtdep")"
           cp -r node_modules/"$rtdep" $out/share/daedalus/node_modules/"$rtdep"
         done
 
         chmod -R +w $out
 
         # XXX: they increase the closure (i.e. installer) size greatly:
-        echo 'Deleting all redundant /nix/store references from to-be-distributed ‘node_modules/’:'
+        echo 'Deleting all redundant /nix/store references from to-be-distributed 'node_modules/':'
         (
           cd $out/share/daedalus/
           find node_modules -type f '(' -name '*.o' -o -name '*.o.d' -o -name '*.target.mk' -o -name '*.Makefile' -o -name 'Makefile' -o -name 'config.gypi' ')' -exec rm -vf '{}' ';'
@@ -186,30 +182,27 @@ in rec {
       dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
     });
 
-  # NOTE: Using patched glibc from nixpkgs-22.11 for Electron
-  # The glibc-electron-loader.patch only applies to older glibc versions
-  electron-loader = pkgsJs.glibc.overrideAttrs (oldAttrs: {
-    patches = oldAttrs.patches ++ [./glibc-electron-loader.patch];
-  });
+  electron-loader = pkgs.glibc;
 
   relocatableElectron = let
     additionalLibs = ''
       additionalLibs=(
-        ${pkgsJs.xorg.libX11}/lib/libX11-xcb.so.1
-        ${pkgsJs.xorg.libxcb}/lib/*.so.?
-        ${pkgsJs.systemd}/lib/{libudev.so.1,libsystemd.so.0,libnss_*.so.2}
-        ${pkgsJs.nss}/lib/*.so
-        ${pkgsJs.libusb1}/lib/*.so.0
-        ${pkgsJs.nssmdns}/lib/*.so.2
-        ${pkgsJs.numactl}/lib/libnuma.so.1
-        ${pkgsJs.pciutils}/lib/libpci.so.3
-        ${pkgsJs.libva.out}/lib/*.so.2
-        ${pkgsJs.atk}/lib/libatk-bridge-2.0.so
-        $(find ${pkgsJs.glibc}/lib -type l)
+        ${pkgs.xorg.libX11}/lib/libX11-xcb.so.1
+        ${pkgs.xorg.libxcb}/lib/*.so.?
+        ${pkgs.systemd}/lib/{libudev.so.1,libsystemd.so.0,libnss_*.so.2}
+        ${pkgs.nss}/lib/*.so
+        ${pkgs.libusb1}/lib/*.so.0
+        ${pkgs.nssmdns}/lib/*.so.2
+        ${pkgs.numactl}/lib/libnuma.so.1
+        ${pkgs.pciutils}/lib/libpci.so.3
+        ${pkgs.libva.out}/lib/*.so.2
+        ${pkgs.atk}/lib/libatk-bridge-2.0.so
+        ${pkgs.libgbm}/lib/libgbm.so.1
+        $(find ${pkgs.glibc}/lib -type l)
       )
     '';
   in
-    (import (pkgsJs.runCommand "nix-bundle-exe-patched" {} ''
+    (import (pkgs.runCommand "nix-bundle-exe-patched" {} ''
         cp -r ${inputs.nix-bundle-exe} $out
         chmod -R +w $out
         ${additionalLibs}
@@ -220,7 +213,7 @@ in rec {
         exe_dir = "electron";
         lib_dir = "electron/lib";
         #bin_dir = "electron-bin";
-        pkgs = pkgsJs;
+        inherit pkgs;
       }
       electronBin).overrideAttrs (drv: {
       buildCommand =
@@ -231,16 +224,33 @@ in rec {
 
           mkdir -p $out/lib
           cp -R ${electronBin}/lib/electron $out/lib/
-          ( cd $out/electron && ${pkgsJs.rsync}/bin/rsync -Rah . $out/lib/electron/ ; )
+          ( cd $out/electron && ${pkgs.rsync}/bin/rsync -Rah . $out/lib/electron/ ; )
           rm -rf $out/electron/
           cp ${electron-loader}/lib/ld-linux-x86-64.so.2 $out/lib/electron/
 
-          rm $out/lib/electron/lib/ld-linux-x86-64.so.2
-          ( cd $out/lib/electron && rm libffmpeg.so && ln -s lib/libffmpeg.so libffmpeg.so ; )
+          rm -f $out/lib/electron/lib/ld-linux-x86-64.so.2
+          ( cd $out/lib/electron && mv libffmpeg.so lib/libffmpeg.so && ln -s lib/libffmpeg.so libffmpeg.so ; )
 
           ( cd $out/lib/electron/lib && ln -s libatk-bridge-2.0.so libatk-bridge.so ; )
 
+          # nixpkgs-25.11: libgtk-3 now depends on libtinysparql, which has libsqlite3.so
+          # as a full-path DT_NEEDED that was nuked to eeee... Replace with a soname so
+          # the bundled sqlite copy can satisfy it.
+          cp ${pkgs.sqlite.out}/lib/libsqlite3.so.0 $out/lib/electron/lib/
+          for f in $out/lib/electron/lib/libtinysparql-3.0.so*; do
+            patchelf --replace-needed \
+              '/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-sqlite-3.50.4/lib/libsqlite3.so' \
+              'libsqlite3.so.0' \
+              "$f"
+          done
+
           patchelf --set-rpath '$ORIGIN/lib:$ORIGIN' $out/lib/electron/electron
+
+          # Embed the bundled ld-linux as the ELF interpreter so electron can be exec'd
+          # directly. This is critical: if we use `exec ld-linux electron`, /proc/self/exe
+          # points to ld-linux rather than electron, and Electron's subprocess spawning
+          # (zygote, GPU, renderer) breaks with "unrecognized option --type=zygote".
+          patchelf --set-interpreter $out/lib/electron/ld-linux-x86-64.so.2 $out/lib/electron/electron
 
           cp ${pkgs.writeScript "electron" ''
             #!/bin/sh
@@ -248,9 +258,12 @@ in rec {
               # Debians don't set this, and in effect all cursors are 2x too small on HiDPI displays:
               export XCURSOR_PATH="/usr/share/icons"
             fi
+            # nix-bundle-exe nukes the xkeyboard-config path baked into libxkbcommon.so;
+            # restore it so keyboard input works:
+            export XKB_CONFIG_ROOT="${pkgs.xkeyboard-config}/etc/X11/xkb"
             LIB_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")/lib"
-            export LD_PLEASE_INTERPRET="$LIB_DIR"/electron/electron
-            exec "$LIB_DIR"/electron/ld-linux-x86-64.so.2 "$@"
+            # Run electron directly (interpreter is embedded via patchelf above):
+            exec "$LIB_DIR"/electron/electron "$@"
           ''} $out/bin/electron
         '';
       meta.mainProgram = "electron";
@@ -277,6 +290,13 @@ in rec {
             "\$ORIGIN/$(realpath --relative-to="$(dirname "$file")" $out/libexec/bundle-electron/lib/electron/lib)" \
             "$file"
         done
+
+        # The electron binary has a Nix store path as its ELF interpreter (PT_INTERP) pointing to
+        # the relocatableElectron derivation. After installing the bundle outside the Nix store, that
+        # path won't exist. Bundle a static patchelf so the installer script can re-patch PT_INTERP
+        # to the installed ld-linux path after extraction.
+        cp ${(pkgs.pkgsStatic.patchelf.overrideAttrs (_: {doCheck = false;}))}/bin/patchelf $out/libexec/.patchelf-static
+        chmod +x $out/libexec/.patchelf-static
 
         chmod -R +w $out/share/applications/
         cp ${desktopItemTemplate.${cluster}}/share/applications/*.desktop $out/share/applications/Daedalus-${cluster}.desktop
@@ -308,7 +328,7 @@ in rec {
           #!/bin/sh
 
           if [ -n "$LD_LIBRARY_PATH" ]; then
-            echo >&2 'Warning: ‘LD_LIBRARY_PATH’ is set, it’s been known to cause problems in the past, unsetting it.'
+            echo >&2 "Warning: 'LD_LIBRARY_PATH' is set, it's been known to cause problems in the past, unsetting it."
             unset LD_LIBRARY_PATH
           fi
 
@@ -338,7 +358,7 @@ in rec {
           #!/bin/sh
           set -xe
 
-          # `daedalus-frontend` is what `cardano-launcher` restarts during auto-update; let’s detect
+          # `daedalus-frontend` is what `cardano-launcher` restarts during auto-update; let's detect
           # this case here, and restart the `cardano-launcher` itself, in case we need it to
           # be updated as well:
           if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update ] ; then
@@ -394,7 +414,7 @@ in rec {
   # start the new `daedalus` with `xdg-run`, and `exit 0`. But first move the `daedalus_lockfile`
   # to another location, because during the first launch, there will briefly be 2 `cardano-launcher`s.
   #
-  # Now, if there’s no previous nix-chroot, i.e. if the upgrade is from ≥5.5.0 to something newer,
+  # Now, if there's no previous nix-chroot, i.e. if the upgrade is from ≥5.5.0 to something newer,
   # then TODO
 
   # XXX: Be *super careful* changing this!!! You WILL DELETE user data if you make a mistake.
@@ -439,7 +459,7 @@ in rec {
     '');
 
   # We only want to remove the old nix-chroot, if it contains only one cluster
-  # variant – the one we’re updating. Otherwise, we’ll break other cluster
+  # variant – the one we're updating. Otherwise, we'll break other cluster
   # installations of that user.
   removeOldNixChroot = genClusters (cluster: ''
     old_nix="$HOME"/.daedalus/nix
@@ -474,8 +494,8 @@ in rec {
               #
               # The previously running `cardano-launcher` (inside the `nix-chroot`) will try to restart
               # `/bin/daedalus-frontend` after a successful update, so we have to hook here: start the new
-              # independent (nohup, setsid, don’t inherit fds) Deadalus (and new cardano-launcher) after
-              # moving the old cardano-launcher’s lockfile out of the way. The old launcher will exit
+              # independent (nohup, setsid, don't inherit fds) Deadalus (and new cardano-launcher) after
+              # moving the old cardano-launcher's lockfile out of the way. The old launcher will exit
               # after our `exit 0` below.
               #
               # And at the very end we get rid of the previous `nix-chroot`.
@@ -501,69 +521,12 @@ in rec {
       cp -r ${tarball}/. $out/dat${tarball}/
     '');
 
-  electronBin = pkgsJs.stdenv.mkDerivation {
-    name = "electron-${electronVersion}";
-    src = linuxSources.electron;
-    buildInputs = with pkgsJs; [unzip makeWrapper];
-    buildCommand = with pkgsJs; ''
-      mkdir -p $out/lib/electron $out/bin
-      unzip -d $out/lib/electron $src
-      ln -s $out/lib/electron/electron $out/bin
-
-      fixupPhase
-
-      patchelf \
-        --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-        --set-rpath "${lib.makeLibraryPath (with pkgsJs; [
-        # Core system libraries
-        stdenv.cc.cc
-        glib
-        nss
-        nspr
-        atk
-        cups
-        dbus
-        expat
-        libdrm
-        libxkbcommon
-        libuuid
-        at-spi2-atk
-        at-spi2-core
-        # X11 libraries
-        xorg.libX11
-        xorg.libXcomposite
-        xorg.libXdamage
-        xorg.libXext
-        xorg.libXfixes
-        xorg.libXrandr
-        xorg.libxcb
-        xorg.libxshmfence
-        # GTK and rendering
-        cairo
-        pango
-        gdk-pixbuf
-        gtk3
-        # Mesa/graphics
-        mesa
-        # Audio
-        alsa-lib
-        libpulseaudio
-        # Other
-        systemd
-      ])}:$out/lib/electron" \
-        $out/lib/electron/electron
-    '';
-  };
-
-  linuxSources = {
-    electron = pkgsJs.fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-linux-x64.zip";
-      hash = "sha256-jXeA3Sr8/l6Uos9XT0+hCiosaRIndx/KSQUcUkrGdRM=";
-    };
-
-    electronChromedriver = pkgsJs.fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-linux-x64.zip";
-      hash = "sha256-bkeA1l1cBppdsbLISwu8MdC/2E5sjVJx6e+KhLgQ5yA=";
-    };
-  };
+  # Use pkgs.electron.unwrapped (from nixpkgs) directly, no need to download or patchelf.
+  # The nixpkgs electron is already patchelf'd for NixOS; nix-bundle-exe will handle
+  # bundling its shared-library deps for the relocatable build.
+  electronBin = pkgs.runCommand "electron-${electronVersion}" {} ''
+    mkdir -p $out/lib $out/bin
+    cp -r ${pkgs.electron.unwrapped}/libexec/electron $out/lib/
+    ln -sf $out/lib/electron/electron $out/bin/electron
+  '';
 }

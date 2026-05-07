@@ -5,7 +5,7 @@
 assert targetSystem == "x86_64-windows"; let
   common = import ./common.nix {inherit inputs targetSystem;};
 
-  inherit (common) sourceLib pkgs pkgsJs srcWithoutNix yarn nodejs originalPackageJson commonSources electronVersion;
+  inherit (common) sourceLib pkgs srcWithoutNix yarn nodejs originalPackageJson commonSources electronVersion;
   inherit (sourceLib) installerClusters;
   inherit (pkgs) lib;
 
@@ -62,8 +62,8 @@ in rec {
       nativeBuildInputs =
         [yarn nodejs wine64]
         ++ (with pkgs; [pkg-config unzip jq])
-        ++ [pkgsJs.python3]; # Use Python from nixpkgs-22.11 for distutils
-      buildInputs = [pkgsJs.libusb1];
+        ++ [pkgs.python3];
+      buildInputs = [pkgs.libusb1];
       CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
       CARDANO_NODE_VERSION = common.cardanoNodeVersion;
       CI = "nix";
@@ -86,11 +86,10 @@ in rec {
         }
       ));
       buildPhase = ''
-        # old style
-        export ELECTRON_CACHE=${electron-cache}
-        # new style
-        mkdir -pv $HOME/.cache/
-        ln -sv ${electron-cache} $HOME/.cache/electron
+        # Point electron-packager directly at the pre-fetched electron zip via --electron-zip-dir,
+        # bypassing @electron/get's cache/download logic entirely (no hash, no network needed).
+        _electron_zip_dir=$(mktemp -d)
+        ln -sf ${windowsSources.electron} "$_electron_zip_dir/electron-v${electronVersion}-win32-x64.zip"
 
         cp $patchedPackageJson package.json
 
@@ -105,7 +104,7 @@ in rec {
         ${common.temporaryNodeModulesPatches}
 
         export DEBUG=electron-packager
-        yarn --verbose --offline package --win64 --dir $(pwd) --icon installers/icons/${cluster}/${cluster}
+        yarn --verbose --offline package --win64 --dir $(pwd) --icon installers/icons/${cluster}/${cluster} --electron-zip-dir "$_electron_zip_dir"
       '';
       installPhase = ''
         set -x
@@ -127,6 +126,7 @@ in rec {
 
         mkdir -pv $out/resources/app/node_modules
         jq -r '.[]' <${./runtime-nodejs-deps.json} | while IFS= read -r rtdep ; do
+          mkdir -p "$(dirname "$out/resources/app/node_modules/$rtdep")"
           cp -r node_modules/"$rtdep" $out/resources/app/node_modules/"$rtdep"
         done
 
@@ -141,11 +141,15 @@ in rec {
           sed -r 's#try: \[#\0 [process.env.DAEDALUS_INSTALL_DIRECTORY, "bindings"],#' -i resources/app/node_modules/bindings/bindings.js
         )
 
-        # TODO: build the distributed ones from source:
-        (
-          cd $(mktemp -d)
-          cp ${nativeModules}/build/Debug/*.node $out/
-        )
+        # Place Windows-built native binaries where their respective loaders expect them.
+        # detection.node uses 'bindings' (patched above to search DAEDALUS_INSTALL_DIRECTORY):
+        cp ${nativeModules}/build/Release/detection.node $out/
+        # HID.node uses pkg-prebuilds which searches node-hid/build/{Debug,Release}/HID.node:
+        mkdir -p $out/resources/app/node_modules/node-hid/build/Release/
+        cp ${nativeModules}/build/Release/HID.node $out/resources/app/node_modules/node-hid/build/Release/
+        # usb_bindings.node uses node-gyp-build which searches usb/build/{Release,Debug}/*.node:
+        mkdir -p $out/resources/app/node_modules/usb/build/Release/
+        cp ${nativeModules}/build/Release/usb_bindings.node $out/resources/app/node_modules/usb/build/Release/
       '';
       dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
     });
@@ -166,8 +170,7 @@ in rec {
       hash = "sha256-hA11dIOIL9sta+rwGb2EwWrEkRm6nvczpGmLZtr3nHI=";
     };
     buildInputs = [
-      # Use Python from nixpkgs-22.11 for distutils
-      (pkgsJs.python3.withPackages (ps: with ps; [six]))
+      (pkgs.python3.withPackages (ps: with ps; [six]))
     ];
     configurePhase = ":";
     buildPhase = ":";
@@ -221,8 +224,9 @@ in rec {
       # XXX: don't use fetchzip, we need the raw .tar.gz in `patchElectronRebuild` below
       inherit (commonSources.electronHeaders) src;
     } ''
-      tar -xf $src
-      mv node_headers $out
+      mkdir $out
+      tar -xf $src -C $out
+      chmod -R +w $out
       echo 9 >$out/installVersion
       mkdir -p $out/Release
       ln -s ${windowsSources.node-lib} $out/Release/node.lib
@@ -243,7 +247,7 @@ in rec {
         */
       ])
       ++ (with pkgs; [pkg-config jq file procps])
-      ++ [pkgsJs.python3]; # Use Python from nixpkgs-22.11 for distutils
+      ++ [pkgs.python3];
     buildInputs = with pkgs; [libusb1];
     configurePhase =
       common.setupCacheAndGypDirs
@@ -282,7 +286,7 @@ in rec {
         set -euo pipefail
 
         ${mkSection "Setting Windows system version"}
-        winetricks -q win81
+        winetricks -q win10
 
         ${mkSection "Setting up env and symlinks in standard locations"}
 
@@ -340,14 +344,14 @@ in rec {
         (
           cat <<<${pkgs.lib.escapeShellArg ''
           'use strict'
-          function findVisualStudio (nodeSemver, configMsvsVersion, callback) {
-            process.nextTick(() => callback(null,
+          async function findVisualStudio(nodeSemver, configMsvsVersion) {
+            return (
         ''}
           cat vs-info.json
           cat <<<${pkgs.lib.escapeShellArg ''
-            ));
+            );
           }
-          module.exports = findVisualStudio
+          module.exports = { findVisualStudio }
         ''}
         ) >node_modules/node-gyp/lib/find-visualstudio.js
         cat node_modules/node-gyp/lib/find-visualstudio.js
@@ -367,12 +371,11 @@ in rec {
           "$(winepath -w ${electronHeadersWithNodeLib}     | sed -r 's,\\,\\\\\\\\,g')"
 
         ${mkSection "Running @electron/rebuild"}
-        # XXX: we need to run the command with the Node.js env set correcty, `npm.cmd` does that:
         lx_electron_rebuild_bin="$(readlink -f node_modules/.bin/electron-rebuild)"
         export electron_rebuild_bin="$(winepath -w "$lx_electron_rebuild_bin")"
 
         # XXX: for some reason the build hangs (only on Cicero!) after outputting "Rebuild Complete", so let's hack around that:
-        sed -r '/Rebuild Complete/a require("fs").writeFileSync("${completeHack}", "");' -i "$lx_electron_rebuild_bin"
+        sed -r '/Rebuild Complete/a fs.writeFileSync("${completeHack}", "");' -i "$lx_electron_rebuild_bin"
 
         # XXX: re-enable this if you need to simulate Cicero hanging locally:
         # sed -r 's/rebuildSpinner.succeed\(\);/setTimeout(function(){rebuildSpinner.succeed();},10000);/g' -i "$lx_electron_rebuild_bin"
@@ -393,20 +396,13 @@ in rec {
         ) &
         wine_killer_pid=$!
 
-        cp ${pkgs.writeText "package.json" (builtins.toJSON (
-          pkgs.lib.recursiveUpdate originalPackageJson {
-            scripts = {
-              "build:electron:windows" = "node.exe %electron_rebuild_bin% -f -w usb";
-            };
-          }
-        ))} package.json
-        wine npm.cmd run build:electron:windows || {
+        wine ${native.nodejs}/node.exe "$electron_rebuild_bin" -f -w usb || {
           real_ec=$?
           if [ -e ${completeHack} ] ; then
             echo "Wine would return $real_ec, but ${completeHack} exists"
-            return 0
+            exit 0
           else
-            return $real_ec
+            exit $real_ec
           fi
         }
         kill $wine_killer_pid || true
@@ -461,9 +457,12 @@ in rec {
     '';
 
   native = rec {
+    # XXX: Node.js 24 (matching common.nodejs) OOMs in V8 SegmentedTable subspace init under Wine 8.0.
+    # Node.js 20 LTS uses V8 11.x which doesn't have that requirement, and has util.styleText (20.12.0+).
+    nativeNodejsVersion = "20.20.2";
     nodejs = pkgs.fetchzip {
-      url = "https://nodejs.org/dist/v${common.nodejs.version}/node-v${common.nodejs.version}-win-x64.zip";
-      hash = "sha256-n8ux67xrq3Rta1nE715y1m040oaLxUI2bIt12RaJdeM=";
+      url = "https://nodejs.org/dist/v${nativeNodejsVersion}/node-v${nativeNodejsVersion}-win-x64.zip";
+      hash = "sha256-uWoUlUXgejupc2ETcAoBTYcg65cMiNvvb8qseKodLCk=";
     };
 
     python = pkgs.fetchzip {
@@ -495,36 +494,215 @@ in rec {
       convert 16x16.png 24x24.png 32x32.png 48x48.png 64x64.png 128x128.png 256x256.png ${cluster}.ico
     '');
 
-  make-installer = let
-    hsDaedalusPkgs = import ../../installers {
-      pkgs = pkgsJs;
-      inherit (pkgs) system;
-    };
+  # Generate NSIS installer scripts directly from Nix without the Haskell daedalus-installer tool.
+  nsisFiles = genClusters (cluster: let
+    ic = common.launcherConfigs.${cluster}.installerConfig;
+    ver = originalPackageJson.version;
+    verParts = lib.splitString "." ver;
+    # VIProductVersion requires exactly 4 parts; replicate Haskell parseVersion behaviour:
+    viProductVersion =
+      if builtins.length verParts == 4
+      then ver
+      else "0.0.0.0";
+    versionMajor =
+      if builtins.length verParts == 4
+      then builtins.elemAt verParts 0
+      else "0";
+    versionMinor =
+      if builtins.length verParts == 4
+      then builtins.elemAt verParts 1
+      else "0";
+    # Matches Types.hs packageFileName with Win64 / buildkite-cross arguments:
+    packageFileName = "${ic.uglyName}-${ver}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-x86_64-windows.exe";
+
+    uninstallerNsi = pkgs.writeText "uninstaller.nsi" ''
+      Unicode true
+      !addplugindir "nsis_plugins\liteFirewall\bin"
+      SetCompress off
+      Name "${ic.spacedName} Uninstaller ${ver}"
+      OutFile "tempinstaller.exe"
+
+      LoadLanguageFile "''${NSISDIR}\Contrib\Language files\English.nlf"
+      LoadLanguageFile "''${NSISDIR}\Contrib\Language files\Japanese.nlf"
+
+      Section ""
+        SectionIn RO
+        WriteUninstaller "c:\uninstall.exe"
+      SectionEnd
+
+      Section "un."
+        DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}"
+        DeleteRegKey HKLM "Software\${ic.spacedName}"
+        RMDir /r /REBOOTOK "$INSTDIR"
+        Delete "$SMPROGRAMS\${ic.spacedName}\*.*"
+        Delete "$DESKTOP\${ic.spacedName}.lnk"
+        liteFirewall::RemoveRule "$INSTDIR\cardano-node.exe" "Cardano Node"
+        Pop $0
+        DetailPrint "liteFirewall::RemoveRule: $0"
+      SectionEnd
+    '';
+
+    installerNsi = pkgs.writeText "daedalus.nsi" ''
+      Unicode true
+      !define MUI_ICON "icons\${cluster}\${cluster}.ico"
+      !define MUI_HEADERIMAGE
+      !define MUI_HEADERIMAGE_BITMAP "icons\installBanner.bmp"
+      !define MUI_HEADERIMAGE_RIGHT
+      !include WinVer.nsh
+      VIProductVersion ${viProductVersion}
+      VIAddVersionKey "ProductVersion" "${ver}"
+      RequestExecutionLevel highest
+      !addplugindir "nsis_plugins\liteFirewall\bin"
+
+      Name "${ic.spacedName} (${ver})"
+      OutFile "${packageFileName}"
+
+      InstallDir "$PROGRAMFILES64\${ic.spacedName}"
+      InstallDirRegKey HKLM "Software\${ic.spacedName}" "Install_Dir"
+
+      LoadLanguageFile "''${NSISDIR}\Contrib\Language files\English.nlf"
+      LoadLanguageFile "''${NSISDIR}\Contrib\Language files\Japanese.nlf"
+
+      LangString AlreadyRunning ''${LANG_ENGLISH} "is running. It needs to be fully shut down before running the installer!"
+      LangString AlreadyRunning ''${LANG_JAPANESE} "が起動中です。 インストーラーを実行する前に完全にシャットダウンする必要があります！"
+      LangString TooOld ''${LANG_ENGLISH} "This version of Windows is not supported. Windows 8.1 or above required."
+      LangString TooOld ''${LANG_JAPANESE} "このWindowsバージョンはサポートされていません。Windows 8.1以降が必要です。"
+
+      Var INSTALLEDAT
+
+      Function .onInit
+        ''${IfNot} ''${AtLeastWin8.1}
+          MessageBox MB_OK "$(TooOld)"
+          Quit
+        ''${EndIf}
+      FunctionEnd
+
+      Function DirectoryPre
+        ReadRegStr $INSTALLEDAT HKLM "Software\${ic.spacedName}" "Install_Dir"
+        StrLen $R0 $INSTALLEDAT
+        IntCmp $R0 0 +2
+        Abort
+      FunctionEnd
+
+      Page directory DirectoryPre
+      Page instfiles
+
+      Section ""
+        SectionIn RO
+        SetOutPath "$INSTDIR"
+        AllowSkipFiles off
+        WriteRegStr HKLM "Software\${ic.spacedName}" "Install_Dir" "$INSTDIR"
+        CreateDirectory "$APPDATA\${ic.installDirectory}\Secrets-1.0"
+        CreateDirectory "$APPDATA\${ic.installDirectory}\Logs"
+        CreateDirectory "$APPDATA\${ic.installDirectory}\Logs\pub"
+
+        ; Wait up to 30 s for the app to release its lockfile before installing
+        StrCpy $R0 0
+        StrCpy $R1 "false"
+      lockfileLoop:
+        IntCmp $R0 30 lockfileDone 0 lockfileDone
+        StrCmp $R1 "true" lockfileDone 0
+        DetailPrint "Checking if ${ic.spacedName} is not running ($R0/30)..."
+        StrCpy $R1 "true"
+        ClearErrors
+        Delete "$APPDATA\${ic.installDirectory}\${ic.uglyName}_lockfile"
+        IfErrors lockfileNotDeleted lockfileDeleted
+      lockfileNotDeleted:
+        StrCpy $R1 "false"
+      lockfileDeleted:
+        StrCmp $R1 "true" lockfileSkipSleep 0
+        Sleep 1000
+      lockfileSkipSleep:
+        IntOp $R0 $R0 + 1
+        Goto lockfileLoop
+      lockfileDone:
+        StrCmp $R1 "true" lockfileOk 0
+        Abort "${ic.installDirectory} $(AlreadyRunning)"
+      lockfileOk:
+
+        IfFileExists "$INSTDIR\*.*" 0 +2
+          RMDir /r "$INSTDIR"
+
+        IfFileExists "$APPDATA\${ic.installDirectory}\Wallet-1.0\open\*.*" 0 +2
+          RMDir "$APPDATA\${ic.installDirectory}\Wallet-1.0\open"
+
+        File "cardano-node.exe"
+        File "cardano-wallet.exe"
+        File "cardano-address.exe"
+        File "cardano-cli.exe"
+        File "mithril-client.exe"
+        File "snapshot-converter.exe"
+        File "config.yaml"
+        File "topology.yaml"
+        File "genesis.json"
+        ${lib.optionalString (cluster != "selfnode") ''
+        File /nonfatal "genesis-dijkstra.json"
+        File /nonfatal "genesis-conway.json"
+        File /nonfatal "checkpoints.json"
+        File "genesis-byron.json"
+        File "genesis-shelley.json"
+        File "genesis-alonzo.json"
+        File "peer-snapshot.json"
+      ''}
+        File "libsodium-23.dll"
+        File "libsecp256k1-2.dll"
+        ${lib.optionalString (cluster == "selfnode") ''
+        File "signing.key"
+        File "delegation.cert"
+        File "local-cluster.exe"
+        File "libgmpxx-4.dll"
+        File "libwinpthread-1.dll"
+        File "mock-token-metadata-server.exe"
+        File "token-metadata.json"
+      ''}
+        File "cardano-launcher.exe"
+        File "libffi-8.dll"
+        File "libgmp-10.dll"
+        File "libstdc++-6.dll"
+        File "mcfgthread-12.dll"
+        File "libmcfgthread-1.dll"
+        File "libmcfgthread-2.dll"
+        File "libmcfgthread-minimal-1.dll"
+        File "libgcc_s_seh-1.dll"
+        File "zlib1.dll"
+        File "liblmdb.dll"
+        File "libz.dll"
+        File "libsnappy.dll"
+        File "launcher-config.yaml"
+        File /r "..\release\win32-x64\${ic.spacedName}-win32-x64\"
+
+        liteFirewall::AddRule "$INSTDIR\cardano-node.exe" "Cardano Node"
+        Pop $0
+        DetailPrint "liteFirewall::AddRule: $0"
+
+        CreateShortcut "$DESKTOP\${ic.spacedName}.lnk" "$INSTDIR\cardano-launcher.exe" "" "$INSTDIR\${ic.spacedName}.exe" 0 SW_SHOWMINIMIZED
+
+        WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "InstallLocation" "$INSTDIR"
+        WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "Publisher" "IOHK"
+        WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "ProductVersion" "${ver}"
+        WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "VersionMajor" "${versionMajor}"
+        WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "VersionMinor" "${versionMinor}"
+        WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "DisplayName" "${ic.spacedName}"
+        WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "DisplayVersion" "${ver}"
+        WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "UninstallString" "$\"$INSTDIR/uninstall.exe$\""
+        WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "QuietUninstallString" "$\"$INSTDIR/uninstall.exe$\" /S"
+        WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "NoModify" 1
+        WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "NoRepair" 1
+        File "uninstall.exe"
+      SectionEnd
+
+      Section "Start Menu Shortcuts"
+        CreateDirectory "$SMPROGRAMS\${ic.spacedName}"
+        CreateShortcut "$SMPROGRAMS\${ic.spacedName}\Uninstall ${ic.spacedName}.lnk" "$INSTDIR/uninstall.exe" "" "$INSTDIR/uninstall.exe" 0
+        CreateShortcut "$SMPROGRAMS\${ic.spacedName}\${ic.spacedName}.lnk" "$INSTDIR\cardano-launcher.exe" "" "$INSTDIR\${ic.installDirectory}.exe" 0 SW_SHOWMINIMIZED
+      SectionEnd
+    '';
   in
-    pkgsJs.haskell.lib.justStaticExecutables hsDaedalusPkgs.daedalus-installer;
-
-  nsisFiles = genClusters (cluster:
-    pkgs.runCommand "nsis-files" {
-      buildInputs = [make-installer pkgs.glibcLocales];
-    } ''
-      mkdir installers
-      cp -vir ${../../package.json} package.json
-      cd installers
-
-      export LANG=en_US.UTF-8
-      cp -v ${common.launcherConfigs.${cluster}.configFiles}/* .
-      make-installer --cardano dummy \
-        --os win64 \
-        -o $out \
-        --cluster ${cluster} \
-        --build-rev-short ${sourceLib.buildRevShort} \
-        --build-counter ${toString sourceLib.buildCounter} \
-        buildkite-cross
-
+    pkgs.runCommand "nsis-files" {} ''
       mkdir $out
-      cp -v daedalus.nsi uninstaller.nsi $out/
+      cp ${uninstallerNsi} $out/uninstaller.nsi
+      cp ${installerNsi} $out/daedalus.nsi
       cp -v ${common.launcherConfigs.${cluster}.configFiles}/* $out/
-      ls -lR $out
     '');
 
   # the native makensis binary, with cross-compiled windows stubs
@@ -636,7 +814,7 @@ in rec {
   windowsSources = {
     electron = pkgs.fetchurl {
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-win32-x64.zip";
-      hash = "sha256-xYQml960qP3sB/Rp3uEMU7s9aT2Ma4A5VHHzuUx8r9c=";
+      hash = "sha256-CLYOSvnzmAm46Z8UA2pdFQhx9ejiXgLJV8Kg9U7M0Q0=";
     };
 
     # XXX: normally, node-gyp would download it only for Windows,
@@ -644,7 +822,7 @@ in rec {
     node-lib = pkgs.fetchurl {
       name = "node.lib-${electronVersion}"; # cache invalidation
       url = "https://electronjs.org/headers/v${electronVersion}/win-x64/node.lib";
-      hash = "sha256-JhIFzgm+Oig7FsHk1TP85H6PDD3drC7wXpVDfq8hIC4=";
+      hash = "sha256-fmQN5y5hrEf2gbaf+Jc2PF7gEIixrSyAs9S62hu1v4g=";
     };
   };
 }

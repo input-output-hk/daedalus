@@ -19,14 +19,6 @@
   # TODO: Verify Ledger hardware wallet detection still works without the patch
   # If not, the patch needs to be updated for systemd 258.3
 
-  pkgsJs = let
-    system =
-      if targetSystem == "x86_64-windows"
-      then "x86_64-linux"
-      else targetSystem;
-  in
-    inputs.nixpkgsJs.legacyPackages.${system};
-
   flake-compat = import inputs.flake-compat;
 
   walletFlake =
@@ -134,7 +126,7 @@
   #   njPath = pkgs.path + "/pkgs/development/web/nodejs";
   #   buildNodeJs = pkgs.callPackage (import (njPath + "/nodejs.nix")) {
   #     python = pkgs.python39;
-  #     icu = pkgs.icu68; # can’t build against ICU 69: <https://chromium-review.googlesource.com/c/v8/v8/+/2477751>
+  #     icu = pkgs.icu68; # can't build against ICU 69: <https://chromium-review.googlesource.com/c/v8/v8/+/2477751>
   #   };
   # in
   #   buildNodeJs {
@@ -145,24 +137,24 @@
   #   };
 
   nodejs = let
-    base = pkgsJs.nodejs-18_x;
+    base = pkgs.nodejs_24;
   in
-    if !(pkgsJs.lib.hasInfix "-darwin" targetSystem)
+    if !(pkgs.lib.hasInfix "-darwin" targetSystem)
     then base
     else
       base.overrideAttrs (drv: {
         # XXX: we don't want `bypass-xcodebuild.diff` or `bypass-darwin-xcrun-node16.patch`, rather we supply
         # the pure `xcbuild` – without that, `blake2` doesn't build,
         # cf. <https://github.com/NixOS/nixpkgs/blob/29ae6a1f3d7a8886b3772df4dc42a13817875c7d/pkgs/development/web/nodejs/bypass-xcodebuild.diff>
-        patches = pkgsJs.lib.filter (patch:
+        patches = pkgs.lib.filter (patch:
           !(
-            pkgsJs.lib.hasInfix "bypass-xcodebuild" patch
-            || pkgsJs.lib.hasInfix "bypass-darwin-xcrun" patch
+            pkgs.lib.hasInfix "bypass-xcodebuild" patch
+            || pkgs.lib.hasInfix "bypass-darwin-xcrun" patch
           ))
         drv.patches;
       });
 
-  yarn = (pkgsJs.yarn.override {inherit nodejs;}).overrideAttrs (drv: {
+  yarn = (pkgs.yarn.override {inherit nodejs;}).overrideAttrs (drv: {
     # XXX: otherwise, unable to run our package.json scripts in Nix sandbox (patchShebangs doesn't catch this)
     postFixup =
       (drv.postFixup or "")
@@ -171,22 +163,13 @@
       '';
   });
 
-  yarn2nix = let
-    # Nixpkgs master @ 2022-07-18
-    # Why → newer `yarn2nix` uses `deep-equal` to see if anything changed in the lockfile, we need that.
-    source = pkgsJs.fetchzip {
-      url = "https://github.com/NixOS/nixpkgs/archive/e4d49de45a3b5dbcb881656b4e3986e666141ea9.tar.gz";
-      hash = "sha256-X/nhnMCa1Wx4YapsspyAs6QYz6T/85FofrI6NpdPDHg=";
-    };
-    subdir = builtins.path {path = source + "/pkgs/development/tools/yarn2nix-moretea/yarn2nix";};
-  in
-    import subdir {
-      pkgs = pkgsJs;
-      inherit nodejs yarn;
-      allowAliases = true;
-    };
+  yarn2nix = import "${inputs.nixpkgs}/pkgs/development/tools/yarn2nix-moretea" {
+    inherit pkgs;
+    inherit nodejs yarn;
+    allowAliases = true;
+  };
 
-  # To better cache node_modules, let’s only depend on package.json, and yarn.lock:
+  # To better cache node_modules, let's only depend on package.json, and yarn.lock:
   srcLockfiles = pkgs.lib.cleanSourceWith {
     src = inputs.self;
     name = "daedalus-lockfiles";
@@ -231,6 +214,12 @@
     yarnLock = srcLockfiles + "/yarn.lock";
   });
 
+  # installVersion must match the `installVersion` field in the node-gyp bundled
+  # with our Node.js (e.g. 9 for node-gyp 9.x, 11 for node-gyp 11.x).
+  # If stale, node-gyp treats the cached headers as invalid and tries to download them.
+  nodegypInstallVersion =
+    (pkgs.lib.importJSON "${nodejs}/lib/node_modules/npm/node_modules/node-gyp/package.json").installVersion;
+
   # The following is used in all `configurePhase`s:
   setupCacheAndGypDirs = ''
     # XXX: `HOME` (for various caches) cannot be under our source root, that confuses `electron-packager`:
@@ -242,16 +231,18 @@
     echo '"--frozen-lockfile" true' >>$HOME/.yarnrc
     yarn config set yarn-offline-mirror ${offlineCache}
 
-    # Don’t try to download prebuilded packages (with prebuild-install):
+    # Don't try to download prebuilded packages (with prebuild-install):
     export npm_config_build_from_source=true
     ( echo 'buildFromSource=true' ; echo 'compile=true' ; ) >$HOME/.prebuild-installrc
+
+    # Skip electron binary download in install scripts (we use pkgs.electron.unwrapped instead):
+    export ELECTRON_SKIP_BINARY_DOWNLOAD=1
 
     ${pkgs.lib.concatMapStringsSep "\n" (cacheDir: ''
 
         # Node.js headers for building native `*.node` extensions with node-gyp:
-        # TODO: learn why installVersion=9 – where does it come from? see node-gyp
         mkdir -p ${cacheDir}/node-gyp/${nodejs.version}
-        echo 9 > ${cacheDir}/node-gyp/${nodejs.version}/installVersion
+        echo ${toString nodegypInstallVersion} > ${cacheDir}/node-gyp/${nodejs.version}/installVersion
         ln -sf ${nodejs}/include ${cacheDir}/node-gyp/${nodejs.version}
 
       '') [
@@ -288,31 +279,26 @@
 
   electronVersion = originalPackageJson.dependencies.electron;
 
-  versionInOfflineCache = safeName:
-    __unsafeDiscardStringContext (__readFile (pkgs.runCommandLocal "electron-chromedriver-version" {} ''
-      ls ${offlineCache} | grep -F ${pkgs.lib.escapeShellArg (safeName + "___" + safeName)} | grep -Po '\d+(\.\d+)*' | tr -d '\n' >$out
-    ''));
+  # Chromedriver is released alongside electron with a matching version number.
+  electronChromedriverVersion = electronVersion;
 
-  electronChromedriverVersion = versionInOfflineCache "electron_chromedriver";
-
-  commonSources = {
-    electronHeaders =
-      pkgs.runCommandLocal "electron-headers" {
-        # XXX: don’t use fetchzip, we need the raw .tar.gz in `patchElectronRebuild` below
-        src = pkgs.fetchurl {
-          url = "https://electronjs.org/headers/v${electronVersion}/node-v${electronVersion}-headers.tar.gz";
-          hash = "sha256-er08CKt3fwotSjYxqdzpm8Q0YjvD1PhfNBDZ3Jozsvk=";
-        };
-      } ''
-        tar -xf $src
-        mv node_headers $out
-        echo 9 >$out/installVersion
-      '';
+  commonSources = let
+    # Use nixpkgs electron headers instead of fetching from upstream.
+    # A tarball is needed for patchElectronRebuild's --tarball arg (--nodedir takes priority).
+    electronHeadersTarball = pkgs.runCommand "electron-headers-${electronVersion}.tar.gz" {
+      nativeBuildInputs = [pkgs.gnutar];
+    } "tar czf $out -C ${pkgs.electron.headers} .";
+  in {
+    electronHeaders = pkgs.runCommandLocal "electron-headers" {src = electronHeadersTarball;} ''
+      cp -r ${pkgs.electron.headers}/. $out
+      chmod -R +w $out
+      echo ${toString nodegypInstallVersion} >$out/installVersion
+    '';
 
     electronShaSums = pkgs.fetchurl {
       name = "electronShaSums-${electronVersion}"; # cache invalidation
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/SHASUMS256.txt";
-      hash = "sha256-75bNqt2c7u/fm0P2Ha6NvkbGThEifIHXl2x5UCdy4fM=";
+      hash = "sha256-+tI8kWgYS9VrI+DRiXkhN0Nt1CT3yAWxcw8N72XrUE8=";
     };
 
     electronCacheHash =
@@ -322,7 +308,7 @@
     electronChromedriverShaSums = pkgs.fetchurl {
       name = "electronChromedriverShaSums-${electronChromedriverVersion}"; # cache invalidation
       url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/SHASUMS256.txt";
-      hash = "sha256-nV0aT0nuzsVK5J37lEo0egXmRy/tpdF3jyrY3VBVvR8=";
+      hash = "sha256-+tI8kWgYS9VrI+DRiXkhN0Nt1CT3yAWxcw8N72XrUE8=";
     };
 
     electronChromedriverCacheHash =
@@ -332,7 +318,7 @@
 
   # We patch `node_modules/electron-rebuild` to force specific Node.js
   # headers to be used when building native extensions for
-  # Electron. Electron’s Node.js ABI differs from the same version of
+  # Electron. Electron's Node.js ABI differs from the same version of
   # Node.js, because different libraries are used in Electon,
   # e.g. BoringSSL instead of OpenSSL,
   # cf. <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>
