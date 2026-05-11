@@ -3,16 +3,16 @@
     "cardano-node": {
       "flake": false,
       "locked": {
-        "lastModified": 1776219966,
-        "narHash": "sha256-D2HMIr65q0RM9+ZAjbtA9xNKyoKYfr3Kc4Vv4+s64uY=",
+        "lastModified": 1777953209,
+        "narHash": "sha256-+dod+EL73MICgbgflyJnwDlxbCeaBbBLrr2tLX59hAA=",
         "owner": "IntersectMBO",
         "repo": "cardano-node",
-        "rev": "045bc187a36ef0cbd236db902b85dd8f202fb059",
+        "rev": "97036a66bcf8c89f687ae57a048eecc0389977ef",
         "type": "github"
       },
       "original": {
         "owner": "IntersectMBO",
-        "ref": "10.7.1",
+        "ref": "11.0.1",
         "repo": "cardano-node",
         "type": "github"
       }
@@ -20,11 +20,11 @@
     "cardano-playground": {
       "flake": false,
       "locked": {
-        "lastModified": 1776786612,
-        "narHash": "sha256-RdgFIO5TKDpxWRFlPPZKdDsMw0k+KMFckm2XIOvm3gE=",
+        "lastModified": 1777679169,
+        "narHash": "sha256-N4OPm5dNmraZqH1517o2zTc4TDH1sqNa/7h3Qw2cqqs=",
         "owner": "input-output-hk",
         "repo": "cardano-playground",
-        "rev": "2bcec813024c8043e9d766b86af4d7c3bdfbacdd",
+        "rev": "4dcc7c01b288567b239cc60c6a7d2222d0663ae3",
         "type": "github"
       },
       "original": {
