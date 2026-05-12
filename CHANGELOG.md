@@ -1,5 +1,20 @@
 # Changelog
 
+## 11.0.0
+
+This release adds support for the upcoming Van Rossem Hard Fork. Updating before the fork is required to maintain network compatibility.
+
+> **Note on versioning:** Starting with this release, Daedalus major versions align with the bundled `cardano-node` major version (11.0.1). The cardano-node major version indicates which protocol version the node can hard fork to — 11 corresponds to Protocol Version 11 (Van Rossem). Daedalus 8.0.0 was the last release under the previous scheme; versions 9 and 10 were skipped.
+
+### Features
+
+- Supports crossing the Van Rossem Hard Fork (PV11).
+
+### Chores
+
+- Update `cardano-node` to 11.0.1.
+- Update `cardano-wallet` to v2026-05-11.
+
 ## 8.0.0
 
 ### Features
