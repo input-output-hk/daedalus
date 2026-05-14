@@ -1,47 +1,26 @@
+import { usb, Device } from 'usb';
 import { ledgerUSBVendorId } from '@ledgerhq/devices';
-import usbDetect from 'usb-detection';
 
 import { logger } from '../../../../utils/logging';
 import { DeviceTracker } from './deviceTracker';
 import { Detector } from './types';
 
-const deviceToLog = ({ productId, locationId, deviceAddress }) =>
-  `productId=${productId} locationId=${locationId} deviceAddress=${deviceAddress}`;
-
-let isMonitoring = false;
-
 const USB_EVENT_BUFFER_DELAY = 1500;
 
-const monitorUSBDevices = () => {
-  if (!isMonitoring) {
-    isMonitoring = true;
-    usbDetect.startMonitoring();
-  }
-};
+const isLedgerDevice = (device: Device) =>
+  device.deviceDescriptor.idVendor === ledgerUSBVendorId;
 
-const stopMonitoring = () => {
-  if (isMonitoring) {
-    // redeem the monitoring so the process can be terminated.
-    usbDetect.stopMonitoring();
-  }
-};
-
-// No better way for now. see https://github.com/LedgerHQ/ledgerjs/issues/434
-process.on('exit', () => {
-  stopMonitoring();
-});
-
-const addEvent = `add:${ledgerUSBVendorId}`;
-const removeEvent = `remove:${ledgerUSBVendorId}`;
+const deviceToLog = (device: Device) =>
+  `productId=${device.deviceDescriptor.idProduct} busNumber=${device.busNumber} deviceAddress=${device.deviceAddress}`;
 
 export const detectDevices: Detector = (onAdd, onRemove) => {
-  let timeout;
-
-  monitorUSBDevices();
+  let timeout: ReturnType<typeof setTimeout> | null = null;
 
   const deviceTracker = new DeviceTracker();
 
-  const add = (device: usbDetect.Device) => {
+  const add = (device: Device) => {
+    if (!isLedgerDevice(device)) return;
+
     logger.info(
       `[HW-DEBUG] USB-DETECTION ADDED DEVICE: ${deviceToLog(device)}`
     );
@@ -61,7 +40,9 @@ export const detectDevices: Detector = (onAdd, onRemove) => {
     }
   };
 
-  const remove = (device: usbDetect.Device) => {
+  const remove = (device: Device) => {
+    if (!isLedgerDevice(device)) return;
+
     logger.info(
       `[HW-DEBUG] USB-DETECTION REMOVED DEVICE: ${deviceToLog(device)}`
     );
@@ -78,14 +59,12 @@ export const detectDevices: Detector = (onAdd, onRemove) => {
     }
   };
 
-  usbDetect.on(addEvent, add);
-  usbDetect.on(removeEvent, remove);
+  usb.on('attach', add);
+  usb.on('detach', remove);
 
   return () => {
     if (timeout) clearTimeout(timeout);
-    // @ts-expect-error not all EventEmitter methods are covered in its definition file
-    usbDetect.off(addEvent, add);
-    // @ts-expect-error not all EventEmitter methods are covered in its definition file
-    usbDetect.off(removeEvent, remove);
+    usb.off('attach', add);
+    usb.off('detach', remove);
   };
 };

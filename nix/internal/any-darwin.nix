@@ -352,7 +352,6 @@ in rec {
         for f in \
           "usb/build/Release/usb_bindings.node" \
           "node-hid/build/Release/HID.node" \
-          "usb-detection/build/Release/detection.node" \
           ; do
           cp node_modules/"$f" "$pathtoapp"/Contents/Resources/app/build/
         done
@@ -401,7 +400,7 @@ in rec {
         chmod -R +w "$dir"
         rm -r "$dataDir/app/installers"
 
-        for f in "usb_bindings.node" "detection.node" "HID.node" ; do
+        for f in "usb_bindings.node" "HID.node" ; do
           (
             cd "$dataDir"/app/build/
             mv "$f" ../../../MacOS/"$f"
@@ -411,17 +410,14 @@ in rec {
           ${bundleNodeJsNativeModule} "$dir/$f"
         done
 
-        # TODO: why is/was this "reverse" symlink needed? does it make sense?
-        (
-          cd "$dataDir"/app/node_modules/usb-detection/build/Release/
-          rm detection.node
-          ln -sfn ../../../../../../MacOS/detection.node
-        )
-
         # usb v2+ uses node-gyp-build (not the 'bindings' npm package), so it looks for
         # its native module in node_modules/usb/build/Release/ — not via DAEDALUS_INSTALL_DIRECTORY.
         # Bundle Nix store dylibs in place so the path survives outside the Nix sandbox.
         ${bundleNodeJsNativeModule} "$pathtoapp/Contents/Resources/app/node_modules/usb/build/Release/usb_bindings.node"
+
+        # node-hid v3+ uses pkg-prebuilds/bindings, which looks in node_modules/node-hid/build/Release/
+        # — not via DAEDALUS_INSTALL_DIRECTORY. Same treatment as usb above.
+        ${bundleNodeJsNativeModule} "$pathtoapp/Contents/Resources/app/node_modules/node-hid/build/Release/HID.node"
 
         mv "$dir"/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName} "$dir"/Frontend
         chmod +x "$dir"/Frontend
@@ -445,6 +441,7 @@ in rec {
           cd $out/Applications/*/Contents/
           find Resources/ -name '*.node' \
             -not -path '*/usb/build/Release/*.node' \
+            -not -path '*/node-hid/build/Release/*.node' \
             -exec rm -vf '{}' ';'
           find Resources/app/node_modules -type f '(' -name '*.o' -o -name '*.o.d' -o -name '*.target.mk' -o -name '*.Makefile' -o -name 'Makefile' -o -name 'config.gypi' ')' -exec rm -vf '{}' ';'
           sed -r 's#try: \[#\0 [process.env.DAEDALUS_INSTALL_DIRECTORY, "bindings"],#' -i Resources/app/node_modules/bindings/bindings.js
@@ -539,12 +536,20 @@ in rec {
         fi
 
         echo "Making installer…"
+        scriptsDir=$(mktemp -d)
+        cat ${pkgs.writeText "preinstall" ''
+          #!/bin/sh
+          rm -rf /Applications/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}.app
+          exit 0
+        ''} >"$scriptsDir/preinstall"
+        chmod +x "$scriptsDir/preinstall"
         /usr/bin/pkgbuild \
           --identifier ${lib.escapeShellArg ("org." + launcherConfigs.${cluster}.installerConfig.macPackageName + ".pkg")} \
           --component "$workDir/$appName" \
+          --scripts "$scriptsDir" \
           --install-location /Applications \
           ${lib.escapeShellArg ((installerName cluster) + ".phase1.pkg")}
-        rm -r "$workDir/$appName"
+        rm -r "$workDir/$appName" "$scriptsDir"
         /usr/bin/productbuild --product ${../../installers/data/plist} \
           --package *.phase1.pkg \
           ${lib.escapeShellArg ((installerName cluster) + ".phase2.pkg")}

@@ -30,7 +30,6 @@ sed -r 's,std=c\+\+(14|1y),std=c++17,g' -i node_modules/usb/binding.gyp
 # recursively and would find any nested copy. Not needed at runtime by Daedalus.
 find node_modules -depth -type d -name 'fsevents' -exec rm -rf '{}' ';' 2>/dev/null || true
 
-# Build all native modules sequentially (required for usb-detection, cf. <https://github.com/MadLittleMods/node-usb-detection#install-for-electron>):
 electron-rebuild --force -s
 
 if [[ $system == *linux* ]]; then
@@ -69,7 +68,6 @@ tryLink() {
 }
 
 tryLink   "usb"           "usb_bindings.node"
-tryLink   "usb-detection" "detection.node"
 tryLink   "node-hid"      "HID.node"
 
 if [[ $system == *linux* ]]; then

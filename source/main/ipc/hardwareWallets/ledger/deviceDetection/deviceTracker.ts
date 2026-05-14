@@ -34,11 +34,14 @@ export class DeviceTracker {
   constructor() {
     this.knownDevices = new Map();
 
-    // Cast needed: constructor tracks known paths; getTrackedDeviceByPath populates full TrackedDevice on first use
-    getDevices()?.forEach(
-      (d) =>
-        d.path && this.knownDevices.set(d.path, d as unknown as TrackedDevice)
-    );
+    getDevices()?.forEach((d) => {
+      if (d.path) {
+        this.knownDevices.set(
+          d.path,
+          DeviceTracker.getTrackedDeviceByPath(d.path)
+        );
+      }
+    });
   }
 
   findNewDevice() {

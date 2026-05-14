@@ -142,8 +142,6 @@ in rec {
         )
 
         # Place Windows-built native binaries where their respective loaders expect them.
-        # detection.node uses 'bindings' (patched above to search DAEDALUS_INSTALL_DIRECTORY):
-        cp ${nativeModules}/build/Release/detection.node $out/
         # HID.node uses pkg-prebuilds which searches node-hid/build/{Debug,Release}/HID.node:
         mkdir -p $out/resources/app/node_modules/node-hid/build/Release/
         cp ${nativeModules}/build/Release/HID.node $out/resources/app/node_modules/node-hid/build/Release/
@@ -423,7 +421,6 @@ in rec {
       #find -iname '*.node' | xargs file -L
 
       mkdir -p $out/build/Release
-      cp node_modules/usb-detection/build/Release/detection.node $out/build/Release/
       cp node_modules/usb/build/Release/usb_bindings.node        $out/build/Release/
       cp node_modules/node-hid/build/Release/HID.node            $out/build/Release/
 

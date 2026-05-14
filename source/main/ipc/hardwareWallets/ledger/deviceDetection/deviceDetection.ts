@@ -12,7 +12,7 @@ export type DeviceDetectionPayload = {
 
 const getDetector = () => {
   if (TransportNodeHid.isSupported()) {
-    logger.info('[HW-DEBUG] Using usb-detection');
+    logger.info('[HW-DEBUG] Using usb event-driven detection');
 
     return useEventDrivenDetection;
   }
@@ -27,7 +27,10 @@ export const deviceDetection = (
 ) => {
   // detect existing connected devices without blocking the subscription registration
   // https://github.com/LedgerHQ/ledgerjs/blob/master/packages/hw-transport-node-hid-singleton/src/TransportNodeHid.ts#L56
-  Promise.resolve(DeviceTracker.getDevices())
+  // Delay mirrors the USB_EVENT_BUFFER_DELAY in eventDrivenDetection: libusb (from the
+  // usb package) initialises at startup and can briefly make devices unconnectable over HID.
+  new Promise<void>((resolve) => setTimeout(resolve, 1500))
+    .then(() => DeviceTracker.getDevices())
     .then((devices) => {
       // this needs to run asynchronously so the subscription is defined during this phase
       for (const device of devices) {
@@ -38,7 +41,7 @@ export const deviceDetection = (
       }
     })
     .catch((e) => {
-      logger.error(`[HW-DEBUG] ERROR getting devices ${JSON.stringify(e)}`);
+      logger.error(`[HW-DEBUG] ERROR getting devices`, { error: String(e) });
     });
 
   const handleOnAdd = (trackedDevice: TrackedDevice) =>
