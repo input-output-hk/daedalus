@@ -47,6 +47,12 @@ module.exports = {
         // Provide an empty stub so Storybook's webpack can bundle environment.ts.
         // The execFileSync call is unreachable in a browser context (isMacOS === false).
         child_process: false,
+        // dgram is a Node.js UDP socket API used by @trezor/transport for Node USB
+        // transport. Stub it out — Storybook runs in a browser and never opens USB.
+        dgram: false,
+        // fs is used by node-gyp-build (inside usb) to load native .node files.
+        // Stub it out — native modules can't load in a browser context.
+        fs: false,
       },
     };
     config.module.rules.push(
@@ -63,6 +69,12 @@ module.exports = {
               decorators: true,
             },
             transform: {
+              // MobX 5 uses legacy (Stage 1) decorators; without this SWC 1.7+
+              // uses the new TC39 Stage 3 proposal which breaks @observable etc.
+              legacyDecorator: true,
+              // Class fields must use assignment (not Object.defineProperty) so
+              // MobX prototype setters can intercept them during initialization.
+              useDefineForClassFields: false,
               react: {
                 runtime: 'automatic',
               },

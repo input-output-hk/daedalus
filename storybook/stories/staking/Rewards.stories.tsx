@@ -21,7 +21,6 @@ export function StakingRewardsStory() {
       rewards={rewards}
       isLoading={false}
       isExporting={false}
-      onLearnMoreClick={action('onLearnMoreClick')}
       onExportCsv={action('onExportCsv')}
       onCopyAddress={action('onCopyAddress')}
       onOpenExternalLink={action('onOpenExternalLink')}

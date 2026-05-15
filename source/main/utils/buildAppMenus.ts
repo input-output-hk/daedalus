@@ -88,7 +88,7 @@ export const buildAppMenus = async (
         translation('helpSupport.blankScreenFixDialogConfirm'),
         translation('helpSupport.blankScreenFixDialogCancel'),
       ],
-      type: 'warning',
+      type: 'warning' as const,
       title: isBlankScreenFixActive
         ? translation('helpSupport.blankScreenFixDialogTitle')
         : translation('helpSupport.nonBlankScreenFixDialogTitle'),

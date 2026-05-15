@@ -4,7 +4,7 @@
 }: let
   internal = inputs.self.internal.${targetSystem};
   inherit (internal) common;
-  inherit (common) pkgs pkgsJs;
+  inherit (common) pkgs;
 
   devShells = pkgs.lib.genAttrs inputs.self.internal.installerClusters (cluster: let
     launcherConfigs = common.mkLauncherConfigs {
@@ -24,12 +24,9 @@
         ${common.daedalus-bridge.${cluster}}/bin/cardano-launcher --config ${moddedConfig}
       '';
   in
-    # Use pkgsJs.stdenv for all platforms to ensure consistency
-    # (glibc 2.35 compatibility on Linux, consistent tooling everywhere)
-    pkgsJs.stdenv.mkDerivation rec {
-      buildInputs = with pkgsJs;
+    pkgs.stdenv.mkDerivation rec {
+      buildInputs = with pkgs;
         [
-          # Use nix from updated nixpkgs (nixos-25.11) for modern flake support
           pkgs.nix
           internal.common.nodejs
           internal.common.yarn
@@ -42,7 +39,6 @@
           curl
           gnutar
           git
-          # Python from nixpkgs-22.11 has distutils for node-gyp
           python3
           jq
           nodePackages.node-gyp
@@ -56,8 +52,6 @@
           if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") || (pkgs.stdenv.hostPlatform.system == "aarch64-darwin")
           then [
             internal.darwin-launcher
-            darwin.apple_sdk.frameworks.CoreServices
-            darwin.apple_sdk.frameworks.AppKit
             darwin.cctools
             xcbuild
             perl
@@ -126,16 +120,15 @@
         # Patchelf possibly downloaded binary blobs (prebuilds) on Linux (most probably not needed – TODO: check):
         ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
           for nodeExtension in ${BUILDTYPE}/*.node ; do
-            ${pkgsJs.patchelf}/bin/patchelf --set-rpath ${pkgsJs.lib.makeLibraryPath [
-            pkgsJs.stdenv.cc.cc
-            pkgsJs.systemd
-            pkgsJs.libusb1
+            ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [
+            pkgs.stdenv.cc.cc
+            pkgs.systemd
+            pkgs.libusb1
           ]} "$(readlink -f "$nodeExtension")"
           done
         ''}
 
         ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
-          # Use relocatableElectron which bundles all libraries from pkgsJs (glibc 2.35)
           ln -svf ${internal.relocatableElectron}/bin/electron ./node_modules/electron/dist/electron
         ''}
 

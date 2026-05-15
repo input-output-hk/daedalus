@@ -402,7 +402,7 @@ const showExportWalletsWarning = (
       translation('exportWalletsWarning.confirm'),
       translation('exportWalletsWarning.cancel'),
     ],
-    type: 'warning',
+    type: 'warning' as const,
     title: translation('exportWalletsWarning.title'),
     message: translation('exportWalletsWarning.message'),
     defaultId: 0,

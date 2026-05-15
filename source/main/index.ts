@@ -114,7 +114,7 @@ const safeExit = async () => {
     });
     await cardanoNode.stop();
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info(`Daedalus:safeExit: exiting Daedalus with code ${code}`, {
+    logger.info(`Daedalus:safeExit: exiting Daedalus with code ${exitCode}`, {
       code: exitCode,
     });
     safeExitWithCode(exitCode);
@@ -290,7 +290,7 @@ const onAppReady = async () => {
 
       const exitSelfnodeDialogOptions = {
         buttons: ['Yes', 'No'],
-        type: 'warning',
+        type: 'warning' as const,
         title: 'Daedalus is about to close',
         message: 'Do you want to keep the local cluster running?',
         defaultId: 0,

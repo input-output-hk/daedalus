@@ -22,8 +22,12 @@ import {
 import { MatomoAnalyticsTracker } from './analytics/MatomoAnalyticsTracker';
 import { AnalyticsProvider } from './components/analytics';
 // run MobX in strict mode
+// 'observed' (not 'always'): only block mutations to currently-observed observables outside
+// of actions. 'always' would also block class field initialization in constructors, which now
+// goes through MobX's setter (since useDefineForClassFields: false was set in SWC config to
+// fix MobX 5 + SWC 1.10 compatibility). Constructor init is fine since nothing is observing yet.
 configure({
-  enforceActions: 'always',
+  enforceActions: 'observed',
 });
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([...en, ...ja]);

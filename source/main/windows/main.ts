@@ -156,8 +156,8 @@ export const createMainWindow = (
       window.setBounds(savedWindowBounds);
     }
   });
-  window.on('closed', (event) => {
-    event.preventDefault();
+  // 'closed' fires after the window is destroyed and takes no parameters
+  window.on('closed', () => {
     if (ledgerStatus.listening && !!ledgerStatus.Listener) {
       ledgerStatus.Listener.unsubscribe();
       setTimeout(() => app.quit(), 5000);
@@ -168,8 +168,9 @@ export const createMainWindow = (
   window.webContents.on('did-fail-load', (err) => {
     rendererErrorHandler.onError('did-fail-load', err);
   });
-  window.webContents.on('crashed', (err) => {
-    rendererErrorHandler.onError('crashed', err);
+  // 'crashed' was renamed to 'render-process-gone' in Electron 23+
+  window.webContents.on('render-process-gone', (_event, details) => {
+    rendererErrorHandler.onError('render-process-gone', details);
   });
 
   // @ts-ignore ts-migrate(2339) FIXME: Property 'updateTitle' does not exist on type 'Bro... Remove this comment to see the full error message

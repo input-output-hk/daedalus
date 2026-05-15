@@ -9,11 +9,10 @@
     # We reuse the pre-built node_modules from the installer pipeline so there's
     # no redundant yarn install.
     internal = inputs.self.internal.x86_64-linux;
-    pkgsJs = internal.common.pkgsJs;
     inherit (internal) nodejs yarn srcWithoutNix node_modules;
 
     mkJsCheck = name: command:
-      pkgsJs.stdenv.mkDerivation {
+      pkgs.stdenv.mkDerivation {
         inherit name;
         src = srcWithoutNix;
         nativeBuildInputs = [yarn nodejs];

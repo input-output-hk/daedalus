@@ -4,8 +4,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs.flake = true;
-    nixpkgsJs.url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin";
-    nixpkgsJs.flake = true;
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
     crane.url = "github:ipetkov/crane";

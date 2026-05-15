@@ -8,6 +8,7 @@ import { HexString } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/type
 import TrezorConnect, {
   DEVICE,
   DEVICE_EVENT,
+  DeviceUniquePath,
   Features,
   Success,
   TRANSPORT,
@@ -142,7 +143,7 @@ class EventObserver {
         logger.info('[HW-DEBUG] Ledger NEXT - connection NOT changed');
       }
     } catch (error) {
-      logger.error(`[HW-DEBUG] Error on NEXT ${JSON.stringify(error)}`);
+      logger.error(`[HW-DEBUG] Error on NEXT`, { error: String(error) });
     }
   };
 
@@ -290,7 +291,7 @@ export const handleHardwareWalletRequests = async (
         try {
           deviceFeatures = await TrezorConnect.getFeatures({
             device: {
-              path: devicePath,
+              path: devicePath as DeviceUniquePath,
             },
           });
 
@@ -646,17 +647,12 @@ export const handleHardwareWalletRequests = async (
       const { version } = await deviceConnection.getVersion();
 
       logger.info('[HW-DEBUG] getCardanoAdaAppChannel:: appVersion');
-      const { serialHex } = await deviceConnection.getSerial();
-
-      logger.info(
-        `[HW-DEBUG] getCardanoAdaAppChannel:: deviceSerial: ${serialHex}`
-      );
       const { minor, major, patch } = version;
       return Promise.resolve({
         minor,
         major,
         patch,
-        deviceId: serialHex,
+        deviceId: '',
       });
     } catch (error) {
       const errorCode = error.code || '';

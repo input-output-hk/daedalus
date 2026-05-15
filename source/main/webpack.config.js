@@ -29,6 +29,9 @@ class ManageElectronProcessPlugin {
     if (this._shouldRestart) {
       this.start();
       this._shouldRestart = false;
+    } else {
+      // Electron exited without a pending restart (user closed the app) — stop webpack too.
+      process.exit(0);
     }
   }
   apply(compiler) {
@@ -97,7 +100,6 @@ module.exports = {
       'node-hid': 'commonjs2 node-hid',
       '@trezor/connect': 'commonjs2 @trezor/connect',
       pdfkit: 'commonjs2 pdfkit',
-      'usb-detection': 'commonjs2 usb-detection',
     },
   ],
   plugins: [

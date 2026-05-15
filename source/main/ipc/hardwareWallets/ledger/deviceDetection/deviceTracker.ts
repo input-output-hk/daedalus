@@ -12,7 +12,7 @@ export class DeviceTracker {
   }
 
   static getDeviceByPath(path: string): Device {
-    return getDevices().find((d: Device) => d.path === path);
+    return getDevices().find((d: Device) => d.path === path) as Device;
   }
 
   static getTrackedDeviceByPath(path: string) {
@@ -27,13 +27,21 @@ export class DeviceTracker {
   }
 
   static getDevices(): (Device & { deviceName?: string })[] {
-    return getDevices();
+    // Cast needed: node-hid Device.path is optional but we only use devices with paths
+    return getDevices() as unknown as (Device & { deviceName?: string })[];
   }
 
   constructor() {
     this.knownDevices = new Map();
 
-    getDevices()?.forEach((d) => this.knownDevices.set(d.path, d));
+    getDevices()?.forEach((d) => {
+      if (d.path) {
+        this.knownDevices.set(
+          d.path,
+          DeviceTracker.getTrackedDeviceByPath(d.path)
+        );
+      }
+    });
   }
 
   findNewDevice() {
