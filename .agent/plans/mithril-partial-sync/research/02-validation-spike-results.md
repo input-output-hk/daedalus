@@ -289,6 +289,28 @@ Key takeaways for the next task:
 - Treat ancillary-enabled partial restore as conversion-required.
 - Treat cancellation fallout as cleanup-required and not safe for normal restart on the partially restored target.
 - Do not use `--allow-override` as justification for direct in-place mutation of live Daedalus chain storage.
+
+## Required Strategy Decision Addendum For Task-002
+
+This section is the required handoff from `task-001` evidence to the approved `task-002` design decision.
+
+Approved interpretation of the spike:
+
+- Partial sync is staged-only. Direct in-place restore into the populated managed chain target is not approved.
+- `--allow-override` is acceptable only for Daedalus-controlled staging directories and is not evidence that live-target mutation is safe.
+- Ancillary-enabled restore remains conversion-required before any live install step.
+
+Locked managed-target cutover rule:
+
+- After staged restore, verification, and required LSM conversion succeed, Daedalus cuts over by emptying the managed chain target and reinstalling only validated staged entries from this fixed allowlist: `clean`, `immutable`, `ledger`, `lsm`, and `protocolMagicId`.
+- No live top-level entry is merged or preserved across cutover.
+- Existing live `volatile/` is discarded during cutover and must be recreated by cardano-node after restart instead of being merged with staged state.
+- Any unexpected staged top-level entry, including `volatile/`, is a validation failure and blocks install.
+
+Rejected alternative:
+
+- Direct live-target restore via `--allow-override` is rejected because the spike proved only scratch-target overwrite behavior and cancellation left partial artifacts behind without proving live-chain safety.
+
 ## Next Task Handoff
 
 `task-002` can now lock the restore and install strategy from spike evidence using this note as its primary executed-artifact input.

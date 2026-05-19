@@ -107,7 +107,7 @@ This work matters because it turns Mithril from a first-run accelerator into a t
 - `source/main/mithril/`: new partial sync orchestration service and any reusable Mithril helpers
 - `source/main/ipc/`: new partial sync IPC handler channel(s)
 - `source/main/utils/chainStorageCoordinator.ts`: partial sync coordinator APIs and serialization rules
-- `source/main/utils/chainStorageManager.ts` and related layout helpers: safe staged install/merge behavior if validation confirms that path
+- `source/main/utils/chainStorageManager.ts` and related layout helpers: validated staged cutover behavior for the locked top-level install allowlist
 - `source/main/cardano/setup.ts`: suppress generic crash-restart behavior while partial sync is active
 - `source/common/ipc/api.ts`: new IPC channel contracts
 - `source/common/types/`: shared partial sync status and error contracts, or a safe generalization of existing Mithril contracts
@@ -196,17 +196,29 @@ The partial sync start request should not require user-supplied snapshot metadat
 
 ### Restore Strategy
 
-The current Daedalus plan should assume staged restore until the validation spike proves whether direct in-place restore is safe.
+The restore strategy is locked from spike evidence.
 
-Preferred high-safety strategy:
+Approved strategy:
 
 1. Resolve the managed chain target and ensure the node is stopped
 2. Determine the local immutable position and the latest Mithril certified immutable position
 3. Download the missing range into a staging area under the resolved Mithril work directory
 4. Verify the restored range and ancillary data
 5. Convert restored ledger state to an LSM-compatible layout
-6. Install or merge the validated staged result into the managed chain target using rules proven by the validation spike
+6. Cut over by emptying the managed chain target and reinstalling only validated staged entries from the fixed allowlist: `clean`, `immutable`, `ledger`, `lsm`, and `protocolMagicId`
 7. Restart the node only after install succeeds and cleanup completes
+
+Locked cutover rules:
+
+- Partial restore never targets the live managed chain directory directly.
+- `--allow-override` is accepted only for Daedalus-controlled staging directories, not as proof that live-target mutation is safe.
+- No live top-level entry is merged or preserved across cutover.
+- Existing live `volatile/` is discarded during cutover and must be recreated by cardano-node after restart rather than merged with staged state.
+- Any unexpected staged top-level entry, including `volatile/`, is a validation failure and blocks install.
+
+Rejected alternative:
+
+- Direct in-place restore into the populated managed chain target via `--allow-override` is rejected because the spike proved only scratch-target overwrite semantics, while cancellation leaves partial artifacts and did not prove live-chain safety.
 
 ### Validation Spike Scope
 
@@ -216,21 +228,22 @@ Before implementation, confirm the following against the Mithril version Daedalu
 2. Whether partial restore can safely target an existing DB layout without wiping unrelated state
 3. Whether ancillary download is required for meaningful catch-up speed and compatible restart behavior
 4. Whether restored ancillary ledger state still needs the same LSM conversion path Daedalus uses for full bootstrap
-5. Which top-level DB directories can be replaced, merged, or must be preserved:
+5. Which top-level DB artifacts can be installed from staging and which must never be merged through implicitly:
+   - `clean`
    - `immutable`
-   - `volatile`
    - `ledger`
    - `lsm`
-   - `clean`
+   - `protocolMagicId`
+   - `volatile`
 6. Whether cancellation or restore failure leaves the destination usable for a normal restart without rollback
 
-The spike is a gate, not optional polish. The PRD and task graph must be updated with the results before code implementation proceeds past the service skeleton and contract work.
+The spike is a gate, not optional polish. The PRD, tasks graph, and spike-results research note must be updated with the selected strategy before code implementation proceeds past the service skeleton and contract work.
 
 ## Implementation Strategy
 
-1. Run the validation spike and record the exact safe restore/install strategy for live Daedalus chain data.
+1. Run the validation spike and record the exact safe restore/install strategy for live Daedalus chain data, including the fixed cutover allowlist.
 2. Add shared types, IPC contracts, and coordinator APIs for a separate partial sync path.
-3. Implement backend orchestration for latest-snapshot selection, immutable-range derivation, staging, verification, LSM conversion, and safe install/merge.
+3. Implement backend orchestration for latest-snapshot selection, immutable-range derivation, staging, verification, LSM conversion, and the locked staged cutover rule.
 4. Add renderer store wiring, diagnostics CTA, confirmation modal, and progress/error overlay integration.
 5. Add automated tests across main-process orchestration, IPC, store, and renderer flows.
 6. Run supported-network manual QA and finalize rollout and rollback posture based on those results.
@@ -246,7 +259,7 @@ Validation should combine automated coverage with late-phase manual QA.
   - coordinator guards and mutation serialization
   - node stop/start handoff
   - cancellation and failure branching
-  - install/merge preconditions
+  - install allowlist and cutover preconditions
 - **Jest / renderer tests**
   - diagnostics CTA visibility and disabled states
   - confirmation modal behavior
@@ -276,7 +289,6 @@ Validation should combine automated coverage with late-phase manual QA.
 
 ## Open Questions
 
-- Can partial restore safely merge into the existing managed chain target, or must install always replace specific top-level directories atomically from staging?
 - Does the shipped Mithril binary expose all needed partial restore semantics consistently across supported platforms?
 - Is a dedicated shared `mithril-partial-sync.types.ts` cleaner than broadening `mithril-bootstrap.types.ts`, or does safe reuse reduce duplication without obscuring separate invariants?
 - Is a lightweight feature flag sufficient for rollout control, or should launcher config own the primary kill switch?

@@ -17,7 +17,7 @@
       "source/renderer/app/stores/NetworkStatusStore.ts",
       "source/renderer/app/components/status/DaedalusDiagnostics.tsx"
     ],
-    "importantNote": "Do not implement live chain-directory mutation for Mithril partial sync until the validation spike proves the restore, install, and rollback semantics against the exact Mithril binary Daedalus ships."
+    "importantNote": "Do not implement Mithril partial sync live chain cutover until the validation spike and task-002 lock the staged-only allowlist rule: empty the managed target and reinstall only `clean`, `immutable`, `ledger`, `lsm`, and `protocolMagicId` from validated staged output."
   },
   "phases": [
     {
@@ -62,8 +62,8 @@
         {
           "id": "task-002",
           "title": "Lock the restore and install strategy from spike evidence",
-          "description": "Translate the validation spike into a concrete restore strategy and update the PRD and task graph if needed. Decide whether partial sync will use a staged restore plus validated install/merge, or whether direct in-place restore is safe enough to permit. This task must also define whether the latest partial restore will replace, merge, or preserve `immutable`, `volatile`, `ledger`, `lsm`, and `clean` entries in the managed chain target.",
-          "status": "pending",
+          "description": "Translate the validation spike into a concrete restore strategy and update the PRD, tasks graph, and spike-results note. Lock whether partial sync uses staged restore only or permits direct in-place restore, and name one exact managed-target cutover rule. This task must define the handling of `clean`, `immutable`, `ledger`, `lsm`, `protocolMagicId`, and `volatile` in the managed chain target.",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 3,
           "dependencies": ["task-001"],
@@ -78,10 +78,12 @@
             "If the spike forces a materially different design, update dependencies and acceptance criteria in later tasks."
           ],
           "acceptance": [
-            "The PRD names the selected install strategy explicitly.",
-            "Top-level DB directory handling rules are documented.",
+            "The PRD names the selected install strategy and exact cutover rule explicitly.",
+            "Top-level DB artifact handling rules are documented, including `protocolMagicId`.",
+            "The spike-results note contains a required strategy decision addendum.",
             "Any later task whose assumptions changed is updated in the task graph."
-          ]
+          ],
+          "notes": "Completed 2026-05-19. Task-002 locked the staged-only managed-target cutover rule from task-001 evidence: empty the managed chain target and reinstall only validated staged entries from the fixed allowlist `clean`, `immutable`, `ledger`, `lsm`, and `protocolMagicId`. The PRD, tasks graph, and spike-results research note now reject direct live-target `--allow-override`, explicitly discard live `volatile/` across cutover, and carry the locked contract forward to task-203 and later implementation tasks."
         },
         {
           "id": "task-003",
@@ -236,7 +238,7 @@
     {
       "id": "phase-2",
       "name": "Backend Partial Sync Engine",
-      "description": "Implement the latest-snapshot partial restore engine, including range calculation, staged download, verification, LSM conversion, install/merge behavior, and failure branching based on the validated strategy.",
+      "description": "Implement the latest-snapshot partial restore engine, including range calculation, staged download, verification, LSM conversion, fixed-allowlist staged cutover behavior, and failure branching based on the validated strategy.",
       "riskLevel": "high",
       "tasks": [
         {
@@ -317,8 +319,8 @@
         },
         {
           "id": "task-203",
-          "title": "Implement LSM conversion and validated staged install or merge",
-          "description": "Convert any restored ledger snapshot to a Daedalus-compatible LSM layout and install the validated staged result into the managed chain target according to the restore strategy selected after the spike. This task is responsible for top-level directory replacement or merge rules, preservation of safe entries, and cleanup of superseded staged artifacts.",
+          "title": "Implement LSM conversion and validated staged cutover",
+          "description": "Convert any restored ledger snapshot to a Daedalus-compatible LSM layout and install the validated staged result into the managed chain target according to the locked restore strategy. This task must enforce the fixed cutover allowlist, reject unexpected staged top-level entries, discard live `volatile/` during cutover, and clean up superseded staged artifacts.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 6,
@@ -331,7 +333,8 @@
           "implementationNotes": [
             "Generalize the existing snapshot-conversion logic if it is reused; do not duplicate fragile filesystem behavior.",
             "Only touch the live managed chain target once the staged result has passed the verified preconditions from the validated design.",
-            "Make directory replacement or merge semantics explicit in code comments and tests."
+            "Constrain cutover to the locked allowlist `clean`, `immutable`, `ledger`, `lsm`, and `protocolMagicId`; reject any unexpected staged top-level entry instead of copying it through.",
+            "Make cutover semantics explicit in code comments and tests."
           ],
           "testCases": [
             "Ancillary restore requiring LSM conversion",
@@ -341,8 +344,8 @@
           ],
           "acceptance": [
             "Restored ledger state is converted to the required format before node restart.",
-            "Install behavior matches the validated strategy from the spike.",
-            "Live chain target changes are constrained to the documented top-level rules."
+            "Install behavior matches the validated allowlist cutover strategy from the spike.",
+            "Live chain target changes are constrained to the documented top-level rules, including `protocolMagicId` and `volatile`."
           ]
         },
         {
