@@ -335,7 +335,7 @@ Validation should combine automated coverage with late-phase manual QA.
 ## Open Questions
 
 - Does the shipped Mithril binary expose all needed partial restore semantics consistently across supported platforms?
-- Is a dedicated shared `mithril-partial-sync.types.ts` cleaner than broadening `mithril-bootstrap.types.ts`, or does safe reuse reduce duplication without obscuring separate invariants?
+- Shared contract file placement was resolved by `task-100`: partial-sync-specific shared contracts now live in dedicated `source/common/types/mithril-partial-sync.types.ts`, while bootstrap-specific unions remain in `mithril-bootstrap.types.ts`.
 - The primary rollout kill switch is now locked to `LauncherConfig`; only narrower developer convenience overrides remain open if later work proves them necessary.
 
 ---

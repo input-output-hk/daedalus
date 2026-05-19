@@ -152,7 +152,7 @@
           "id": "task-100",
           "title": "Add shared partial sync types and status contracts",
           "description": "Introduce shared types for partial sync status, progress payloads, errors, and failure actions. Decide whether these belong in a new `mithril-partial-sync` shared type file or a carefully separated extension of existing Mithril shared contracts, and implement the option chosen in the design-hardening phase.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": ["task-002"],
@@ -168,7 +168,9 @@
             "Shared types compile cleanly.",
             "Status and error contracts are sufficient for confirmation, progress, cancel, and failure flows.",
             "Bootstrap and partial sync invariants remain understandable from the type layer."
-          ]
+          ],
+          "completedAt": "2026-05-19T18:23:50Z",
+          "notes": "Completed 2026-05-19. Task-100 added `source/common/types/mithril-partial-sync.types.ts` as the dedicated shared contract file for diagnostics-launched partial sync, including backend-owned recovery actions on every status update and minimal shared lifecycle helpers. Bootstrap-specific unions remained in `mithril-bootstrap.types.ts`, and implementation review corrected node-start blocking so `completed` is terminal success rather than an active blocking state. Repo-wide `yarn compile` remains blocked by unrelated pre-existing Trezor typing failures, so targeted shared-contract typechecking was used for truthful verification."
         },
         {
           "id": "task-101",
