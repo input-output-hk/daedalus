@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Mithril Partial Sync From Diagnostics Tasks",
     "created": "2026-05-18",
-    "updated": "2026-05-18",
+    "updated": "2026-05-19",
     "version": "1.0.0",
     "totalTasks": 20,
     "prdReference": ".agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md",
@@ -30,7 +30,7 @@
           "id": "task-001",
           "title": "Validate Mithril partial restore CLI behavior against shipped artifacts",
           "description": "Run a focused validation spike against the exact Mithril client version Daedalus bundles, or the exact version planned for bundling, to confirm partial restore command semantics and artifact layout. Capture how `cardano-db download` behaves with `--start`, `--end`, `--include-ancillary`, and `--allow-override`, including what directory structure is produced and whether ancillary files trigger the same ledger conversion requirement as full bootstrap.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 6,
           "dependencies": [],
@@ -57,7 +57,7 @@
             "The note states whether restored ledger state still requires LSM conversion.",
             "The note captures enough detail to unblock install-strategy design without relying on memory or external chat context."
           ],
-          "notes": "This task is the gate for every live-data decision in later phases."
+          "notes": "Completed 2026-05-19. The validation spike used the flake-pinned Mithril CLI artifact and confirmed partial restore flag support, conversion-required ancillary restores, cleanup-required cancellation fallout, successful override into staged scratch targets, and live latest-snapshot drift that later design work must handle explicitly. This task is the gate for every live-data decision in later phases."
         },
         {
           "id": "task-002",
