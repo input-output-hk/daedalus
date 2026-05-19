@@ -176,7 +176,7 @@
           "id": "task-101",
           "title": "Define partial sync IPC channels and add main/renderer wrappers",
           "description": "Add dedicated partial sync channels in `source/common/ipc/api.ts` and create the matching main-process and renderer-process wrappers. Include start, status, cancel, restart-normal, and wipe-plus-full-sync actions so the renderer does not need to tunnel unsafe fallback behavior through generic restart or bootstrap channels.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": ["task-100"],
@@ -199,7 +199,9 @@
             "New channel names and contracts are defined in `api.ts`.",
             "Main and renderer wrappers exist for every required action.",
             "No bootstrap IPC contract is overloaded with partial-sync-only meaning."
-          ]
+          ],
+          "completedAt": "2026-05-19T18:38:11Z",
+          "notes": "Completed 2026-05-19. Task-101 added dedicated partial-sync IPC contracts, main/renderer wrapper files, and idempotent main-process registration without widening bootstrap channels. The main wrapper uses cached full-status replacement with `allowedRecoveryActions: []` on idle, best-effort renderer fanout, and explicit reject-until-implemented handlers for start, cancel, restart-normal, and wipe-full-sync until later backend tasks provide concrete delegates. Focused Jest coverage passed for wrapper behavior, and `.agent/system/api-endpoints.md` was updated in the same task per the IPC documentation workflow."
         },
         {
           "id": "task-102",

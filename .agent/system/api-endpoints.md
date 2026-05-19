@@ -357,6 +357,7 @@ Daedalus uses type-safe IPC channels for main/renderer communication. All channe
 | Category             | Channels     | Purpose                     |
 |----------------------|--------------|-----------------------------|
 | **Cardano**          | 8 channels   | Node/wallet lifecycle       |
+| **Mithril**          | 10 channels  | Bootstrap and partial sync  |
 | **Hardware Wallets** | 12 channels  | Ledger/Trezor operations    |
 | **File Operations**  | 6 channels   | Dialogs, PDF/CSV generation |
 | **Logging**          | 4 channels   | Log management              |
@@ -375,6 +376,21 @@ Daedalus uses type-safe IPC channels for main/renderer communication. All channe
 | `SET_CACHED_CARDANO_STATUS_CHANNEL` | Renderer → Main | Update cached status |
 | `CARDANO_FAULT_INJECTION_CHANNEL`   | Renderer → Main | Testing only         |
 | `GET_BLOCK_SYNC_PROGRESS_CHANNEL`   | Renderer → Main | Sync progress        |
+
+### Mithril Channels
+
+| Channel                                      | Direction       | Purpose                                          |
+|----------------------------------------------|-----------------|--------------------------------------------------|
+| `MITHRIL_BOOTSTRAP_STATUS_CHANNEL`           | Main → Renderer | Bootstrap progress and cached status updates     |
+| `MITHRIL_BOOTSTRAP_DECISION_CHANNEL`         | Renderer → Main | Accept or decline the bootstrap prompt           |
+| `MITHRIL_BOOTSTRAP_START_CHANNEL`            | Renderer → Main | Start Mithril bootstrap using the chosen snapshot|
+| `MITHRIL_BOOTSTRAP_CANCEL_CHANNEL`           | Renderer → Main | Cancel an in-progress bootstrap                  |
+| `MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL`        | Renderer → Main | List available Mithril snapshots                 |
+| `MITHRIL_PARTIAL_SYNC_STATUS_CHANNEL`        | Main → Renderer | Partial-sync progress and cached status updates  |
+| `MITHRIL_PARTIAL_SYNC_START_CHANNEL`         | Renderer → Main | Start manual partial sync                        |
+| `MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL`        | Renderer → Main | Cancel an in-progress partial sync               |
+| `MITHRIL_PARTIAL_SYNC_RESTART_NORMAL_CHANNEL`| Renderer → Main | Resume normal node startup on the existing DB    |
+| `MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL` | Renderer → Main | Wipe chain data and fall back to full Mithril sync |
 
 ### Hardware Wallet Channels
 
