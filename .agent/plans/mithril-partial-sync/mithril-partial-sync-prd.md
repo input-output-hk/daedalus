@@ -81,6 +81,7 @@ This work matters because it turns Mithril from a first-run accelerator into a t
 - [ ] Add a dedicated main-process partial sync orchestration path that is separate from the current empty-chain bootstrap entrypoint
 - [ ] Use the latest Mithril snapshot only; do not add snapshot selection UI to partial sync
 - [ ] Derive the partial immutable range from local chain state and the latest certified Mithril artifact, not from renderer sync percentage alone
+- [ ] Derive the local immutable position from the highest parseable immutable file number in the resolved managed chain `immutable/` directory
 - [ ] Stop `cardano-node` automatically before running Mithril partial sync
 - [ ] Restore verified Cardano DB data safely for the missing immutable range
 - [ ] Convert restored ledger state to a Daedalus-compatible LSM-backed layout before restarting the node
@@ -163,6 +164,18 @@ Recommended shared data contracts:
 
 The partial sync start request should not require user-supplied snapshot metadata or thresholds. It should resolve `latest` internally and derive the immutable file range from current local chain state plus Mithril artifact metadata.
 
+Immutable range derivation requirements:
+
+- Backend only: renderer sync percentage, slot lag, and recommendation copy are user context only and must not affect range calculation.
+- Resolve and normalize the managed chain target first using existing chain-storage seams.
+- Fail closed if managed-layout normalization reports `ManagedChainLayoutResult.isRecoveryFallback`; partial sync must never derive a range from default-storage fallback state after a broken custom-storage recovery.
+- Read the local immutable position from the highest parseable immutable file number in the resolved managed chain `immutable/` directory.
+- Require a readable `immutable/` directory and readable `protocolMagicId` file before range derivation continues.
+- If no parseable immutable file number exists, block partial sync and force another recovery path instead of guessing.
+- Resolve the latest certified Mithril immutable position in the backend and request `start = localImmutable + 1` through `end = latestCertifiedImmutable`.
+- If `localImmutable >= latestCertifiedImmutable`, do not start partial sync because there is no certified missing immutable range.
+- Re-resolve `latest` immediately before command issuance, or fail safely with a bounded retriable preflight error, so latest-snapshot drift cannot silently produce an invalid range.
+
 ### UI / Store / Process Changes
 
 #### Diagnostics entry point
@@ -201,7 +214,7 @@ The restore strategy is locked from spike evidence.
 Approved strategy:
 
 1. Resolve the managed chain target and ensure the node is stopped
-2. Determine the local immutable position and the latest Mithril certified immutable position
+2. Normalize managed layout without recovery fallback, then determine the local immutable position and the latest Mithril certified immutable position
 3. Download the missing range into a staging area under the resolved Mithril work directory
 4. Verify the restored range and ancillary data
 5. Convert restored ledger state to an LSM-compatible layout
@@ -238,6 +251,8 @@ Before implementation, confirm the following against the Mithril version Daedalu
 6. Whether cancellation or restore failure leaves the destination usable for a normal restart without rollback
 
 The spike is a gate, not optional polish. The PRD, tasks graph, and spike-results research note must be updated with the selected strategy before code implementation proceeds past the service skeleton and contract work.
+
+The same gate applies to range derivation and local preflight assumptions: later backend work must reuse the managed-chain resolution path already present in chain-storage helpers, treat `isRecoveryFallback` as a hard blocker, and keep local validation limited to concrete managed-root, `immutable/`, `protocolMagicId`, and parseable-filename checks instead of speculative corruption heuristics.
 
 ## Implementation Strategy
 

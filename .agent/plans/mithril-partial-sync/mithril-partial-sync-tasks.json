@@ -89,10 +89,10 @@
           "id": "task-003",
           "title": "Define immutable range derivation and chain-layout preconditions",
           "description": "Specify exactly how Daedalus derives the partial immutable range from the current managed chain state and the latest Mithril artifact metadata. This includes identifying which local files or directories determine the current immutable position, what preconditions must hold before partial sync starts, and how the system behaves if local chain layout is inconsistent or partially corrupted.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
-          "dependencies": ["task-001"],
+          "dependencies": ["task-001", "task-002"],
           "targetPaths": [
             ".agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md",
             ".agent/plans/mithril-partial-sync/research/02-validation-spike-results.md",
@@ -100,14 +100,19 @@
           ],
           "implementationNotes": [
             "Use repo-local chain layout helpers where practical instead of inventing separate filesystem heuristics.",
-            "Define what happens if the latest local immutable file cannot be read or the managed chain target is missing expected entries.",
-            "Keep renderer sync percentage out of the backend range calculation except as user-facing context."
+            "Treat completed task-002 as a safety-gate dependency because task-003 relies on the staged-only restore contract and fallback semantics locked there.",
+            "Fail closed if managed-layout normalization reports recovery fallback; partial sync must not derive a range from default-storage fallback state.",
+            "Narrow local preflight checks to concrete managed-root, immutable-directory, protocolMagicId, and parseable immutable filename checks instead of speculative corruption heuristics.",
+            "Keep renderer sync percentage out of the backend range calculation except as user-facing context.",
+            "Handle latest-snapshot drift by re-resolving latest immediately before command issuance or by surfacing a bounded retriable preflight error."
           ],
           "acceptance": [
             "The plan documents the source of truth for current local immutable position.",
-            "Preconditions for starting partial sync are listed.",
-            "The plan states what class of inconsistent local state should block partial sync and force another recovery path."
-          ]
+            "Preconditions for starting partial sync are listed, including fail-closed handling of managed-layout recovery fallback.",
+            "The plan states only the concrete local checks that block partial sync and force another recovery path.",
+            "The plan documents how latest-snapshot drift is handled without relying on renderer input."
+          ],
+          "notes": "Completed 2026-05-19. Task-003 locked the backend-only range derivation rule onto existing chain-storage seams: derive the local immutable position from the highest parseable immutable file number in the resolved managed chain `immutable/` directory, require a readable `protocolMagicId`, fail closed on `ManagedChainLayoutResult.isRecoveryFallback`, and treat latest-snapshot drift as a bounded retriable preflight concern rather than silent range reuse."
         },
         {
           "id": "task-004",

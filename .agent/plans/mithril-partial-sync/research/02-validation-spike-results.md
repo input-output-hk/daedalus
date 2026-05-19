@@ -314,3 +314,13 @@ Rejected alternative:
 ## Next Task Handoff
 
 `task-002` can now lock the restore and install strategy from spike evidence using this note as its primary executed-artifact input.
+
+## Task-003 Addendum: Range Derivation And Preflight Constraints
+
+The live repo adds one more safety boundary that later partial-sync implementation must carry forward alongside the staged-only restore rule.
+
+- Local immutable range derivation must start from the active managed chain target resolved through the existing `stateDir/chain` entry point and chain-storage helpers, not from renderer sync state or ad hoc filesystem discovery.
+- `ensureManagedChainLayout()` can recover by falling back to default storage after a broken custom-storage target. That recovery is acceptable for startup, but partial sync must fail closed if `ManagedChainLayoutResult.isRecoveryFallback` is true. Deriving a partial range from fallback state would risk using the wrong chain root.
+- Local preflight checks should stay concrete and narrow: require a readable managed root, a readable `immutable/` directory, a readable `protocolMagicId` file, and at least one parseable immutable filename from which the highest local immutable number can be derived.
+- If those concrete checks fail, partial sync must be blocked in favor of another recovery path instead of introducing speculative corruption heuristics.
+- Latest-snapshot drift remains a proven runtime risk. Later implementation must re-resolve `latest` immediately before command issuance or treat a range mismatch as a bounded retriable preflight failure.
