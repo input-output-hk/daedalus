@@ -65,6 +65,7 @@ This work matters because it turns Mithril from a first-run accelerator into a t
   - retry partial sync
   - restart normally on the existing DB
   - wipe chain data and perform full Mithril sync
+- Safety of those failure actions is boundary-dependent and must be enforced by backend-owned rules rather than renderer inference.
 - Supported networks are `mainnet`, `preprod`, and `preview`
 - The flow opens with a small confirmation modal before background work begins
 - Partial sync always uses the latest Mithril snapshot
@@ -100,6 +101,7 @@ This work matters because it turns Mithril from a first-run accelerator into a t
 - The UI must remain accessible and consistent with existing Mithril overlay patterns
 - The implementation must remain compatible with custom chain-storage redirection managed by `ChainStorageManager`
 - The rollout must include a fast disable path if post-implementation QA uncovers safety issues
+- Interrupted unsafe installs must still expose a startup-owned recovery path even when the rollout guard disables new diagnostics-launched partial sync
 
 ## Technical Design
 
@@ -162,6 +164,26 @@ Recommended shared data contracts:
   - `restart-normal`
   - `wipe-and-full-sync`
 
+Failure containment and recovery eligibility requirements:
+
+- Backend-owned safety boundaries, not renderer heuristics, determine which recovery actions are allowed.
+- Boundary A: pre-cutover only. This includes `stopping-node`, `preparing`, `downloading`, `verifying`, `converting`, and any validation failure before the managed chain target is emptied.
+  - Allowed actions: `retry`, `restart-normal`, `wipe-and-full-sync`
+- Boundary B: live cutover started but not yet fully completed. This begins when Daedalus empties the managed chain target or otherwise starts replacing live top-level chain entries.
+  - Allowed actions: `wipe-and-full-sync` only
+  - `retry` and `restart-normal` must be rejected
+- Boundary C1: validated staged DB installed, but the first `starting-node` handoff has not yet been proven successful on the installed DB.
+  - Allowed actions: `wipe-and-full-sync` only
+  - `retry` and `restart-normal` must be rejected
+- Boundary C2: the backend has already observed one successful node start on the installed DB, and only later renderer handoff, marker cleanup, or normal app return failed.
+  - Allowed actions: `restart-normal`, `wipe-and-full-sync`
+  - `retry` must be rejected
+- Cancellation is allowed only in Boundary A. Once live cutover begins, cancellation must be denied and the operation must run to terminal success or terminal failure.
+- Partial sync must persist a durable operation marker so startup can distinguish Boundary A interruption from Boundary B or C1 interruption.
+- If startup finds an interrupted Boundary A run, Daedalus may clean staged artifacts, clear the marker, and continue normal startup on the untouched DB.
+- If startup finds an interrupted Boundary B or C1 run, normal node start must remain blocked and the app must expose a minimal startup-owned recovery surface that does not depend on diagnostics UI or a running node. That recovery surface must at least allow `wipe-and-full-sync`, plus any already-existing non-recovery affordances such as quit or log access.
+- If startup finds an interrupted Boundary C2 run, Daedalus may clear the marker and resume normal startup because the installed DB has already passed one successful node-start handoff.
+
 The partial sync start request should not require user-supplied snapshot metadata or thresholds. It should resolve `latest` internally and derive the immutable file range from current local chain state plus Mithril artifact metadata.
 
 Immutable range derivation requirements:
@@ -206,6 +228,7 @@ Immutable range derivation requirements:
   - storage location picker
   - snapshot selection UI
   - startup accept/decline copy
+- Diagnostics-launched partial sync remains separate from startup-owned unsafe-install recovery; the latter exists only when normal startup must stay blocked after interrupted Boundary B or C1 states
 
 ### Restore Strategy
 
@@ -275,6 +298,7 @@ Validation should combine automated coverage with late-phase manual QA.
   - node stop/start handoff
   - cancellation and failure branching
   - install allowlist and cutover preconditions
+  - durable marker branching for interrupted Boundary A versus Boundary B/C1 states
 - **Jest / renderer tests**
   - diagnostics CTA visibility and disabled states
   - confirmation modal behavior
@@ -295,9 +319,15 @@ Validation should combine automated coverage with late-phase manual QA.
 ## Rollout / Migration / Rollback
 
 - No persisted data migration is required beyond any shared status-store additions.
-- Because the feature operates on live chain data, rollout should include a fast disable path such as a temporary launcher or environment kill switch until QA confidence is high.
+- Because the feature operates on live chain data, rollout should include a fast disable path owned by `LauncherConfig` until QA confidence is high.
 - Rollback strategy:
-  - disable the diagnostics entry point and partial sync IPC path
+  - disable new diagnostics-launched partial sync entry and retry paths via the launcher-config kill switch
+  - keep startup-owned unsafe-install recovery available for already interrupted Boundary B or Boundary C1 installs
+  - allow boundary-dependent fallback behavior only:
+    - Boundary A: retry, restart-normal, or wipe-and-full-sync
+    - Boundary B: wipe-and-full-sync only
+    - Boundary C1: wipe-and-full-sync only
+    - Boundary C2: restart-normal or wipe-and-full-sync
   - leave existing full bootstrap behavior unchanged
   - preserve the ability to wipe and perform full Mithril sync if partial sync proves unsafe in the field
 - The existing startup bootstrap flow remains the fallback path for empty-chain recovery and must not regress.
@@ -306,7 +336,7 @@ Validation should combine automated coverage with late-phase manual QA.
 
 - Does the shipped Mithril binary expose all needed partial restore semantics consistently across supported platforms?
 - Is a dedicated shared `mithril-partial-sync.types.ts` cleaner than broadening `mithril-bootstrap.types.ts`, or does safe reuse reduce duplication without obscuring separate invariants?
-- Is a lightweight feature flag sufficient for rollout control, or should launcher config own the primary kill switch?
+- The primary rollout kill switch is now locked to `LauncherConfig`; only narrower developer convenience overrides remain open if later work proves them necessary.
 
 ---
 

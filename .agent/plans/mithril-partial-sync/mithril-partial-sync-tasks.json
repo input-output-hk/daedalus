@@ -118,7 +118,7 @@
           "id": "task-004",
           "title": "Define failure containment, kill-switch, and rollback rules",
           "description": "Document how the feature contains partial-sync failures, which fallback actions remain safe depending on how far the operation progressed, and what kill switch or rollout guard will disable the feature quickly if field issues appear. This task converts the product-level failure options into implementation-ready safety rules for retry, normal restart, and wipe-plus-full-sync behavior.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": ["task-002", "task-003"],
@@ -127,15 +127,18 @@
             ".agent/plans/mithril-partial-sync/mithril-partial-sync-tasks.json"
           ],
           "implementationNotes": [
-            "Spell out when 'restart normally on existing DB' is still safe and when it must be disabled in favor of wipe/full sync.",
-            "Choose a temporary kill-switch mechanism suitable for rollout and rollback.",
+            "Spell out when 'restart normally on existing DB' is still safe and when it must be disabled in favor of wipe/full sync; keep eligibility backend-owned and boundary-dependent.",
+            "Use LauncherConfig as the primary rollout kill switch for new diagnostics-launched partial sync entry and retry paths.",
+            "Interrupted Boundary B and Boundary C1 states must use a startup-owned minimal recovery surface because diagnostics may be unavailable while normal node start is blocked.",
             "Keep the existing empty-chain Mithril bootstrap flow unaffected."
           ],
           "acceptance": [
             "Rollback rules are explicit, not implied.",
             "The plan defines the rollout kill switch and where it will live.",
             "Later backend and renderer tasks can implement failure options without reopening safety questions."
-          ]
+          ],
+          "completedAt": "2026-05-19T17:32:49Z",
+          "notes": "Completed 2026-05-19. Task-004 locked boundary-dependent failure containment rules: Boundary A allows retry/restart-normal/wipe-full-sync, Boundary B and Boundary C1 require wipe-full-sync only, and only Boundary C2 re-enables restart-normal after one proven successful node start on the installed DB. Cancellation is denied once live cutover begins, interrupted unsafe installs are owned by startup rather than diagnostics, and LauncherConfig is the primary kill switch for disabling new diagnostics-launched partial sync without removing recovery for already-unsafe installs or affecting empty-chain Mithril bootstrap."
         }
       ]
     },
@@ -614,7 +617,7 @@
       "Shipped Mithril binary behavior diverging from current public docs or examples"
     ],
     "testingNotes": "Automated verification is intentionally scheduled before manual QA. The only user-intervention-heavy work is in the final phase so the critical path is front-loaded with autonomous research, contract work, backend orchestration, and renderer integration.",
-    "rollbackPlan": "Disable the diagnostics CTA and partial sync IPC path behind the rollout kill switch while leaving empty-chain Mithril bootstrap untouched. If live-data safety is in doubt, force users onto existing restart or full-wipe bootstrap recovery paths only.",
+    "rollbackPlan": "Disable new diagnostics-launched partial sync entry and retry paths behind the LauncherConfig kill switch while leaving empty-chain Mithril bootstrap untouched. Preserve the startup-owned wipe-full-sync recovery path for already interrupted Boundary B or Boundary C1 installs, and keep boundary-dependent restart-normal eligibility enforced in the backend.",
     "securityNotes": [
       "Treat live chain data integrity as the primary safety constraint.",
       "Do not permit renderer-driven unsafe fallback actions if backend state says the managed chain target may be inconsistent.",
