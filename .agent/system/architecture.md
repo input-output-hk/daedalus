@@ -259,6 +259,7 @@ Diagnostics CTA
 | `source/main/utils/handleDiskSpace.ts`                   | Startup-owned interrupted partial-sync blocking and recovery gating   |
 | `source/main/ipc/mithrilPartialSyncChannel.ts`           | Main-side partial-sync status and action channel wrappers            |
 | `source/common/types/mithril-partial-sync.types.ts`      | Shared partial-sync status/error/recovery-action contracts           |
+| `source/renderer/app/stores/MithrilPartialSyncStore.ts`  | Renderer store for cached partial-sync status, recovery actions, and lifecycle-safe polling |
 
 ### Runtime Files
 

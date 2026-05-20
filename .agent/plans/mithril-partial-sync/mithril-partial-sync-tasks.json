@@ -410,7 +410,7 @@
           "id": "task-300",
           "title": "Create MithrilPartialSyncStore and app-level wiring",
           "description": "Add a dedicated renderer store for partial sync status, actions, progress metadata, and terminal failure options. Register it in the store index and wire any app-level overlay or modal mounting needed so the feature can run from the diagnostics dialog while the rest of the app remains in its normal route structure.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": ["task-101", "task-204"],
@@ -428,7 +428,9 @@
             "The renderer has a dedicated partial sync store.",
             "The store can request start, cancel, restart-normal, and wipe-full-sync actions.",
             "The app can display partial sync UI outside the startup loading route."
-          ]
+          ],
+          "completedAt": "2026-05-20T20:43:00Z",
+          "notes": "Completed 2026-05-20. Task-300 added `source/renderer/app/stores/MithrilPartialSyncStore.ts`, registered it in the renderer store map, and implemented a lifecycle-safe status seam for diagnostics-launched partial sync without using reset-unsafe `onReceive()` listeners. The renderer now follows long-running start, active progress, backend-owned recovery actions, stale setup responses, queued catch-up syncs, and teardown/reset races through focused Jest coverage in `source/renderer/app/stores/MithrilPartialSyncStore.spec.ts`. Modal ownership and diagnostics CTA or confirmation UI remain intentionally deferred to tasks 301-303."
         },
         {
           "id": "task-301",
