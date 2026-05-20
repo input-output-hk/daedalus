@@ -286,7 +286,7 @@
           "id": "task-201",
           "title": "Implement range calculation, staging directory preparation, and preflight checks",
           "description": "Teach the service to derive the missing immutable range from the current local managed chain target and prepare a staging location for restore work. Add preflight checks for inconsistent local layout, missing immutable markers, insufficient safety conditions, or unsupported spike-discovered states before any destructive action occurs.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": ["task-003", "task-200"],
@@ -310,7 +310,9 @@
             "The service can compute the intended partial range without renderer input.",
             "Staging directories are prepared before any live install step.",
             "Unsupported local states fail early with actionable errors."
-          ]
+          ],
+          "completedAt": "2026-05-20T14:51:06Z",
+          "notes": "Completed 2026-05-20. Task-201 extended `MithrilPartialSyncService` to derive the local immutable position from the managed-chain `immutable/` directory, extract the latest certified immutable number from backend-local Mithril metadata normalization, compute the missing certified range, and prepare a cleaned staging root under `stateDirectoryPath/mithril-partial-sync/download` while rejecting any staging path inside the managed chain subtree. The implementation kept the bounded pre-download `PARTIAL_SYNC_NOT_READY` boundary from task-200, added fail-closed readability checks for `immutable/` and `protocolMagicId`, and passed focused Jest coverage in `source/main/mithril/MithrilPartialSyncService.spec.ts`."
         },
         {
           "id": "task-202",
