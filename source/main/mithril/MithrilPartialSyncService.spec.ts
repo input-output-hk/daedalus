@@ -5,6 +5,10 @@ import type { MithrilPartialSyncStatusUpdate } from '../../common/types/mithril-
 
 jest.mock('fs-extra', () => ({
   constants: require('fs').constants,
+  pathExists: jest.fn(),
+  readJson: jest.fn(),
+  writeJson: jest.fn(),
+  move: jest.fn(),
   stat: jest.fn(),
   access: jest.fn(),
   readdir: jest.fn(),
@@ -14,6 +18,13 @@ jest.mock('fs-extra', () => ({
 
 jest.mock('../config', () => ({
   stateDirectoryPath: '/tmp/daedalus-state',
+  launcherConfig: {
+    nodeConfig: {
+      network: {
+        configFile: '/config/config.yaml',
+      },
+    },
+  },
 }));
 
 jest.mock('../utils/logging', () => ({
@@ -46,6 +57,8 @@ describe('MithrilPartialSyncService', () => {
   const readdirMock = fs.readdir as jest.Mock;
   const removeMock = fs.remove as jest.Mock;
   const ensureDirMock = fs.ensureDir as jest.Mock;
+  const writeJsonMock = fs.writeJson as jest.Mock;
+  const moveMock = fs.move as jest.Mock;
 
   const mockDirectoryStats = () => ({
     isDirectory: () => true,
@@ -75,6 +88,8 @@ describe('MithrilPartialSyncService', () => {
     ]);
     removeMock.mockResolvedValue(undefined);
     ensureDirMock.mockResolvedValue(undefined);
+    writeJsonMock.mockResolvedValue(undefined);
+    moveMock.mockResolvedValue(undefined);
   });
 
   it('fails latest metadata resolution when no certified immutable number is present', async () => {
@@ -148,8 +163,11 @@ describe('MithrilPartialSyncService', () => {
     });
   });
 
-  it('runs the staged partial restore command and stops at the cutover boundary after verification', async () => {
+  it('runs the staged partial restore command through conversion and validated cutover', async () => {
     const service = new MithrilPartialSyncService();
+    jest
+      .spyOn(service._chainStorageManager, 'installValidatedPartialSyncSnapshot')
+      .mockResolvedValue(undefined);
 
     jest
       .spyOn(service, 'resolveLatestSnapshotMetadata')
@@ -159,10 +177,26 @@ describe('MithrilPartialSyncService', () => {
       stderr: '',
       exitCode: 0,
     });
+    jest.spyOn(service, '_runBinary').mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exitCode: 0,
+    });
+    readdirMock.mockImplementation(async (targetPath: string) => {
+      if (targetPath === '/tmp/chain/immutable') {
+        return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
+      }
+      if (targetPath === '/tmp/daedalus-state/mithril-partial-sync/download/db/ledger') {
+        return [{ name: '12345', isDirectory: () => true }];
+      }
+      if (targetPath === '/tmp/daedalus-state/mithril-partial-sync/download/db') {
+        return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
+      }
 
-    await expect(service.start(createContext())).rejects.toThrow(
-      'Mithril partial sync download and verification completed, but the conversion/install handoff is not implemented yet.'
-    );
+      return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
+    });
+
+    await expect(service.start(createContext())).resolves.toBeUndefined();
 
     expect(runCommandSpy).toHaveBeenCalledWith(
       [
@@ -183,16 +217,19 @@ describe('MithrilPartialSyncService', () => {
       '/tmp/daedalus-state/mithril-partial-sync/download'
     );
 
+    expect(service._chainStorageManager.installValidatedPartialSyncSnapshot).toHaveBeenCalledWith(
+      '/tmp/daedalus-state/mithril-partial-sync/download/db',
+      {
+        expectedTopLevelEntries: ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'],
+      }
+    );
+    expect(writeJsonMock).toHaveBeenCalledTimes(2);
     expect(service.status).toEqual(
       expect.objectContaining({
-        status: 'failed',
-        allowedRecoveryActions: ['retry', 'restart-normal', 'wipe-and-full-sync'],
+        status: 'finalizing',
+        allowedRecoveryActions: ['wipe-and-full-sync'],
         logPath: '/tmp/daedalus-state/Logs/mithril-partial-sync.log',
-        error: expect.objectContaining({
-          stage: 'converting',
-          code: 'PARTIAL_SYNC_CUTOVER_NOT_READY',
-          logPath: '/tmp/daedalus-state/Logs/mithril-partial-sync.log',
-        }),
+        error: null,
       })
     );
 
@@ -331,6 +368,9 @@ describe('MithrilPartialSyncService', () => {
 
   it('prepares staging outside the managed chain subtree for custom storage too', async () => {
     const service = new MithrilPartialSyncService();
+    jest
+      .spyOn(service._chainStorageManager, 'installValidatedPartialSyncSnapshot')
+      .mockResolvedValue(undefined);
 
     jest
       .spyOn(service, 'resolveLatestSnapshotMetadata')
@@ -339,6 +379,24 @@ describe('MithrilPartialSyncService', () => {
       stdout: '',
       stderr: '',
       exitCode: 0,
+    });
+    jest.spyOn(service, '_runBinary').mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exitCode: 0,
+    });
+    readdirMock.mockImplementation(async (targetPath: string) => {
+      if (targetPath === '/mnt/custom-storage/chain/immutable') {
+        return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
+      }
+      if (targetPath === '/tmp/daedalus-state/mithril-partial-sync/download/db/ledger') {
+        return [{ name: '12345', isDirectory: () => true }];
+      }
+      if (targetPath === '/tmp/daedalus-state/mithril-partial-sync/download/db') {
+        return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
+      }
+
+      return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
     });
 
     await expect(
@@ -349,9 +407,7 @@ describe('MithrilPartialSyncService', () => {
         },
         mithrilWorkDir: '/mnt/custom-storage/chain',
       })
-    ).rejects.toThrow(
-      'Mithril partial sync download and verification completed, but the conversion/install handoff is not implemented yet.'
-    );
+    ).resolves.toBeUndefined();
 
     expect(removeMock).toHaveBeenCalledWith('/tmp/daedalus-state/mithril-partial-sync');
     expect(ensureDirMock).toHaveBeenCalledWith(
@@ -405,6 +461,9 @@ describe('MithrilPartialSyncService', () => {
   it('maps Mithril progress into downloading and verifying status updates', async () => {
     const service = new MithrilPartialSyncService();
     const statusUpdates: Array<MithrilPartialSyncStatusUpdate> = [];
+    jest
+      .spyOn(service._chainStorageManager, 'installValidatedPartialSyncSnapshot')
+      .mockResolvedValue(undefined);
 
     service.onStatus((update) => {
       statusUpdates.push(update);
@@ -413,6 +472,24 @@ describe('MithrilPartialSyncService', () => {
     jest
       .spyOn(service, 'resolveLatestSnapshotMetadata')
       .mockResolvedValue(createLatestSnapshot(25));
+    jest.spyOn(service, '_runBinary').mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exitCode: 0,
+    });
+    readdirMock.mockImplementation(async (targetPath: string) => {
+      if (targetPath === '/tmp/chain/immutable') {
+        return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
+      }
+      if (targetPath === '/tmp/daedalus-state/mithril-partial-sync/download/db/ledger') {
+        return [{ name: '12345', isDirectory: () => true }];
+      }
+      if (targetPath === '/tmp/daedalus-state/mithril-partial-sync/download/db') {
+        return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
+      }
+
+      return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
+    });
     jest.spyOn(service, '_runCommand').mockImplementation(async (_args, options) => {
       options.onStdout?.(
         '{"step_num":1,"total_steps":7,"label":"Files","files_downloaded":2,"files_total":10,"seconds_elapsed":3}\n'
@@ -431,9 +508,7 @@ describe('MithrilPartialSyncService', () => {
       };
     });
 
-    await expect(service.start(createContext())).rejects.toThrow(
-      'Mithril partial sync download and verification completed, but the conversion/install handoff is not implemented yet.'
-    );
+    await expect(service.start(createContext())).resolves.toBeUndefined();
 
     expect(statusUpdates).toEqual(
       expect.arrayContaining([
@@ -550,6 +625,67 @@ describe('MithrilPartialSyncService', () => {
           code: 'PARTIAL_SYNC_STAGED_DB_INVALID',
         }),
       })
+    );
+  });
+
+  it('fails in installing when converted staged output includes volatile', async () => {
+    const service = new MithrilPartialSyncService();
+
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValue(createLatestSnapshot(25));
+    jest.spyOn(service, '_runCommand').mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exitCode: 0,
+    });
+    jest.spyOn(service, '_runBinary').mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exitCode: 0,
+    });
+    readdirMock.mockImplementation(async (targetPath: string) => {
+      if (targetPath === '/tmp/chain/immutable') {
+        return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
+      }
+      if (targetPath === '/tmp/daedalus-state/mithril-partial-sync/download/db/ledger') {
+        return [{ name: '12345', isDirectory: () => true }];
+      }
+      if (targetPath === '/tmp/daedalus-state/mithril-partial-sync/download/db') {
+        return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId', 'volatile'];
+      }
+
+      return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
+    });
+
+    await expect(service.start(createContext())).rejects.toThrow(
+      'Mithril partial sync staged output must contain exactly clean, immutable, ledger, lsm, protocolMagicId.'
+    );
+
+    expect(service.status).toEqual(
+      expect.objectContaining({
+        status: 'failed',
+        allowedRecoveryActions: ['wipe-and-full-sync'],
+        error: expect.objectContaining({
+          stage: 'installing',
+          code: 'PARTIAL_SYNC_STAGED_DB_INVALID',
+        }),
+      })
+    );
+  });
+
+  it('rejects cancellation once live cutover has started', async () => {
+    const service = new MithrilPartialSyncService();
+
+    service._activeWorkDir = '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._status = {
+      status: 'installing',
+      allowedRecoveryActions: [],
+      error: null,
+    };
+
+    await expect(service.cancel()).rejects.toThrow(
+      'Mithril partial sync cancellation is no longer allowed after live chain cutover has started.'
     );
   });
 });

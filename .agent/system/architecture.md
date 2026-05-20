@@ -216,6 +216,58 @@ Force a fresh Mithril prompt on any launch by wiping the chain directory:
 
 ---
 
+## Mithril Partial Sync Process
+
+Mithril partial sync is a diagnostics-launched backend flow that runs after a user already has local chain data. Unlike bootstrap, it restores a certified immutable range into a Daedalus-owned staging area, converts ancillary ledger state to the LSM layout, then performs a validated staged cutover into the managed chain target.
+
+### Runtime Flow
+
+```
+Diagnostics CTA
+  └─► MithrilPartialSyncService.start()
+    ├─► derive latest certified immutable range from managed chain state
+    ├─► restore partial snapshot into stateDir/mithril-partial-sync/download/db
+    ├─► convert staged ledger snapshot to lsm/
+    ├─► validate staged top-level allowlist
+    ├─► write mithril-partial-sync.lock = cutover-in-progress
+    ├─► empty managed chain target and install only:
+    │     clean / immutable / ledger / lsm / protocolMagicId
+    ├─► write mithril-partial-sync.lock = installed-awaiting-node-start
+    └─► startup-owned first node-start proof clears the marker on success
+```
+
+### Startup Recovery Rules
+
+- `handleDiskSpace.ts` owns the startup safety gate for persisted partial-sync markers.
+- `stateDir/Logs/mithril-partial-sync.lock` blocks normal node start when the marker shows an unsafe interrupted cutover state.
+- Boundary handling:
+  - `cutover-in-progress` blocks normal startup and offers wipe-full-sync recovery only.
+  - `installed-awaiting-node-start` is allowed one first-start proof attempt.
+  - If that proof fails, fallback normal startup is suppressed and the flow remains wipe-only.
+  - If that proof succeeds, the marker is cleared and normal startup resumes.
+
+### Key Files
+
+| File                                                     | Role                                                                 |
+|----------------------------------------------------------|----------------------------------------------------------------------|
+| `source/main/mithril/MithrilPartialSyncService.ts`       | Partial-sync orchestration, staged restore, conversion, cutover      |
+| `source/main/mithril/mithrilSnapshotConverter.ts`        | Shared bootstrap/partial-sync LSM conversion choreography            |
+| `source/main/mithril/mithrilPartialSyncMarker.ts`        | Durable partial-sync cutover marker persistence                      |
+| `source/main/utils/chainStorageManagerLayout.ts`         | Validated staged cutover install seam for partial sync               |
+| `source/main/utils/handleDiskSpace.ts`                   | Startup-owned interrupted partial-sync blocking and recovery gating   |
+| `source/main/ipc/mithrilPartialSyncChannel.ts`           | Main-side partial-sync status and action channel wrappers            |
+| `source/common/types/mithril-partial-sync.types.ts`      | Shared partial-sync status/error/recovery-action contracts           |
+
+### Runtime Files
+
+| Path                                      | Purpose                                                                 |
+|-------------------------------------------|-------------------------------------------------------------------------|
+| `stateDir/Logs/mithril-partial-sync.log`  | Append-mode log of partial-sync Mithril command and converter output     |
+| `stateDir/Logs/mithril-partial-sync.lock` | Durable cutover/startup recovery marker for Boundary B and Boundary C1   |
+| `stateDir/mithril-partial-sync/download`  | Daedalus-owned staging directory for partial restore output              |
+
+---
+
 ## IPC Communication
 
 Daedalus uses type-safe IPC channels for main/renderer communication. All channels are defined in `source/common/ipc/api.ts`.

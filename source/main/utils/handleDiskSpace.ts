@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, dialog } from 'electron';
 import checkDiskSpace from 'check-disk-space';
 import prettysize from 'prettysize';
 import { getDiskSpaceStatusChannel } from '../ipc/get-disk-space-status';
@@ -41,6 +41,14 @@ import {
   getChainStorageManager,
 } from './chainStorageCoordinator';
 import type { ManagedChainLayoutResult } from './chainStorageManagerShared';
+import {
+  clearMithrilPartialSyncMarker,
+  readMithrilPartialSyncMarker,
+} from '../mithril/mithrilPartialSyncMarker';
+import {
+  emitMithrilPartialSyncStatus,
+  getMithrilPartialSyncStatus,
+} from '../ipc/mithrilPartialSyncChannel';
 
 const getDiskCheckReport = async (
   targetPath: string,
@@ -145,6 +153,60 @@ export const handleDiskSpace = (
   const wipeChainFlag =
     envWipeChain ?? argvWipeChain ?? launcherConfig.wipeChain ?? false;
   const chainStorageManager = getChainStorageManager();
+  const handleInterruptedPartialSyncRecovery = async (
+    currentGeneration: number
+  ): Promise<boolean> => {
+    const marker = await readMithrilPartialSyncMarker();
+
+    if (!marker) {
+      return false;
+    }
+
+    if (marker.state === 'node-start-verified') {
+      await clearMithrilPartialSyncMarker();
+      return false;
+    }
+
+    if (marker.state === 'installed-awaiting-node-start') {
+      return false;
+    }
+
+    await emitMithrilPartialSyncStatus({
+      status: 'failed',
+      allowedRecoveryActions: ['wipe-and-full-sync'],
+      error: {
+        message:
+          'Daedalus detected an interrupted Mithril partial sync after live chain cutover. The installed chain data is not safe to start normally.',
+        stage: 'installing',
+      },
+    });
+
+    const { response } = await dialog.showMessageBox(mainWindow, {
+      type: 'warning',
+      buttons: ['Wipe chain and full Mithril sync', 'Quit'],
+      defaultId: 0,
+      cancelId: 1,
+      noLink: true,
+      title: 'Interrupted Mithril partial sync detected',
+      message:
+        'Daedalus found an interrupted Mithril partial sync after live chain replacement began. Normal startup is blocked until the chain data is wiped and a full Mithril sync can run again.',
+    });
+
+    if (currentGeneration !== directoryChangeGeneration) {
+      return true;
+    }
+
+    if (response === 0) {
+      await chainStorageCoordinator.wipeChainAndSnapshots(
+        'Interrupted Mithril partial sync detected on startup. Wiped chain directory and Mithril snapshots.',
+        cardanoNode.state
+      );
+      await clearMithrilPartialSyncMarker();
+      return false;
+    }
+
+    return true;
+  };
   const broadcastMithrilStatus = (
     update: MithrilBootstrapStatusUpdate,
     context: string
@@ -216,6 +278,87 @@ export const handleDiskSpace = (
     ].includes(cardanoNode.state);
 
   const MITHRIL_COMPLETION_DELAY_MS = 6000;
+
+  const blocksNormalStartupAfterPartialSyncFailure = (
+    markerState?: string | null
+  ): boolean => markerState === 'installed-awaiting-node-start';
+
+  const finalizeInstalledPartialSyncAfterNodeStart = async (
+    currentGeneration: number
+  ): Promise<void> => {
+    const marker = await readMithrilPartialSyncMarker();
+
+    if (!marker || marker.state !== 'installed-awaiting-node-start') {
+      return;
+    }
+
+    await new Promise<void>((resolve) => {
+      setTimeout(resolve, MITHRIL_COMPLETION_DELAY_MS);
+    });
+    if (currentGeneration !== directoryChangeGeneration) {
+      return;
+    }
+
+    if (cardanoNode.state !== CardanoNodeStates.RUNNING) {
+      throw new Error(
+        'Cardano node stopped responding during startup after Mithril partial sync cutover.'
+      );
+    }
+
+    await clearMithrilPartialSyncMarker();
+    await emitMithrilPartialSyncStatus({
+      ...getMithrilPartialSyncStatus(),
+      status: 'completed',
+      allowedRecoveryActions: [],
+      error: null,
+    });
+  };
+
+  const startNodeAfterPartialSyncInstall = async (
+    currentGeneration: number
+  ): Promise<boolean> => {
+    const marker = await readMithrilPartialSyncMarker();
+
+    if (!marker || marker.state !== 'installed-awaiting-node-start') {
+      return false;
+    }
+
+    await emitMithrilPartialSyncStatus({
+      ...getMithrilPartialSyncStatus(),
+      status: 'starting-node',
+      allowedRecoveryActions: ['wipe-and-full-sync'],
+      error: null,
+    });
+
+    try {
+      await cardanoNode.start();
+      if (currentGeneration !== directoryChangeGeneration) {
+        return true;
+      }
+      await finalizeInstalledPartialSyncAfterNodeStart(currentGeneration);
+
+      return true;
+    } catch (error) {
+      await emitMithrilPartialSyncStatus({
+        ...getMithrilPartialSyncStatus(),
+        status: 'failed',
+        allowedRecoveryActions: ['wipe-and-full-sync'],
+        error: {
+          message:
+            error instanceof Error
+              ? error.message
+              : 'Cardano node failed to start after Mithril partial sync cutover.',
+          stage: 'starting-node',
+        },
+      });
+      throw error;
+    }
+  };
+
+  const shouldSuppressPartialSyncStartupFallback = async (): Promise<boolean> => {
+    const marker = await readMithrilPartialSyncMarker();
+    return blocksNormalStartupAfterPartialSyncFailure(marker?.state);
+  };
 
   const startNodeAfterMithrilCompletion = async (): Promise<void> => {
     if (mithrilStartInFlight) return;
@@ -429,6 +572,12 @@ export const handleDiskSpace = (
         }
         mithrilDecisionPrompted = false;
         mithrilDecision = null;
+      }
+
+      const partialSyncRecoveryBlocked =
+        await handleInterruptedPartialSyncRecovery(currentGeneration);
+      if (partialSyncRecoveryBlocked) {
+        return null;
       }
     } catch (error) {
       logger.error('[MITHRIL] Failed to verify managed chain layout', {
@@ -748,6 +897,11 @@ export const handleDiskSpace = (
               break;
             }
 
+            if (await startNodeAfterPartialSyncInstall(currentGeneration)) {
+              response.hadNotEnoughSpaceLeft = false;
+              break;
+            }
+
             await emitMithrilIdleStatus();
             if (currentGeneration !== directoryChangeGeneration) {
               return getStaleResponse();
@@ -757,6 +911,7 @@ export const handleDiskSpace = (
             mithrilDecisionPrompted = false;
             resetMithrilDecisionState({ suppressStatusBroadcast: true });
             await cardanoNode.start();
+            await finalizeInstalledPartialSyncAfterNodeStart(currentGeneration);
           } catch (error) {
             logger.error('[MITHRIL] Failed to handle bootstrap decision', {
               error,
@@ -770,6 +925,9 @@ export const handleDiskSpace = (
             }
 
             try {
+              if (await shouldSuppressPartialSyncStartupFallback()) {
+                return response;
+              }
               await cardanoNode.start();
             } catch (startError) {
               logger.error(

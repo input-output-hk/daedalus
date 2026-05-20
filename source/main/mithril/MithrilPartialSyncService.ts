@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import type { ChildProcess } from 'child_process';
 import EventEmitter from 'events';
 import type { Stats, WriteStream } from 'fs';
-import { stateDirectoryPath } from '../config';
+import { launcherConfig, stateDirectoryPath } from '../config';
 import { logger } from '../utils/logging';
 import type { PartialSyncPreflightContext } from '../utils/chainStorageCoordinator';
 import { isPathWithin } from '../utils/chainStorageManagerShared';
@@ -22,12 +22,23 @@ import type {
 } from './mithrilCommandRunner';
 import { runCommand } from './mithrilCommandRunner';
 import { parseMithrilProgressUpdate } from './mithrilProgress';
+import { ChainStorageManager } from '../utils/chainStorageManager';
+import {
+  writeMithrilPartialSyncMarker,
+} from './mithrilPartialSyncMarker';
+import { convertSnapshotDbToLsm } from './mithrilSnapshotConverter';
 
 const PARTIAL_SYNC_LOG_FILE_NAME = 'mithril-partial-sync.log';
 const PARTIAL_SYNC_STAGING_DIRECTORY_NAME = 'mithril-partial-sync';
 const PARTIAL_SYNC_LATEST_DRIFT_CODE = 'PARTIAL_SYNC_LATEST_DRIFT';
 const PARTIAL_SYNC_STAGED_DB_INVALID_CODE = 'PARTIAL_SYNC_STAGED_DB_INVALID';
-const PARTIAL_SYNC_CUTOVER_NOT_READY_CODE = 'PARTIAL_SYNC_CUTOVER_NOT_READY';
+const PARTIAL_SYNC_ALLOWED_INSTALL_ENTRIES = [
+  'clean',
+  'immutable',
+  'ledger',
+  'lsm',
+  'protocolMagicId',
+];
 
 type ResolvedLatestSnapshot = {
   snapshot: MithrilSnapshotItem;
@@ -157,6 +168,13 @@ export class MithrilPartialSyncService {
   _progressItems: MithrilProgressItem[] = [];
   _latestSnapshot: MithrilSnapshotItem | null = null;
   _stagedDbPath: string | null = null;
+  _chainStorageManager: ChainStorageManager;
+
+  constructor(
+    chainStorageManager: ChainStorageManager = new ChainStorageManager()
+  ) {
+    this._chainStorageManager = chainStorageManager;
+  }
 
   get status(): MithrilPartialSyncStatusUpdate {
     return { ...this._status };
@@ -248,11 +266,26 @@ export class MithrilPartialSyncService {
         progressItems: [...this._progressItems],
       });
 
-      throw this._createStageError(
-        'converting',
-        'Mithril partial sync download and verification completed, but the conversion/install handoff is not implemented yet.',
-        PARTIAL_SYNC_CUTOVER_NOT_READY_CODE
-      );
+      this._activatePostVerificationStage('converting');
+      await this._convertStagedSnapshot(stagingPaths.dbPath);
+      await this._validateConvertedStagedOutput(stagingPaths.dbPath);
+
+      this._activatePostVerificationStage('installing');
+      await writeMithrilPartialSyncMarker('cutover-in-progress', {
+        managedChainPath: context.layoutResult.managedChainPath,
+      });
+      await this._installValidatedStagedSnapshot(stagingPaths.dbPath);
+      await writeMithrilPartialSyncMarker('installed-awaiting-node-start', {
+        managedChainPath: context.layoutResult.managedChainPath,
+      });
+
+      this._markActiveProgressItemAs('completed');
+      this._activatePostVerificationStage('finalizing');
+      this._updateStatus({
+        status: 'finalizing',
+        allowedRecoveryActions: ['wipe-and-full-sync'],
+        progressItems: [...this._progressItems],
+      });
     } catch (error) {
       if (this._isCancelled) {
         return;
@@ -262,7 +295,7 @@ export class MithrilPartialSyncService {
       this._markActiveProgressItemAs('error');
       this._updateStatus({
         status: 'failed',
-        allowedRecoveryActions: ['retry', 'restart-normal', 'wipe-and-full-sync'],
+        allowedRecoveryActions: this._deriveAllowedRecoveryActions(error),
         error: this._buildError(error, fallbackStage),
         logPath: this._getLogPath(),
         progressItems: [...this._progressItems],
@@ -282,6 +315,12 @@ export class MithrilPartialSyncService {
         null
       );
       return;
+    }
+
+    if (['installing', 'finalizing'].includes(this._status.status)) {
+      throw new Error(
+        'Mithril partial sync cancellation is no longer allowed after live chain cutover has started.'
+      );
     }
 
     this._isCancelled = true;
@@ -474,6 +513,81 @@ export class MithrilPartialSyncService {
         );
       }
     }
+  }
+
+  async _convertStagedSnapshot(dbPath: string): Promise<void> {
+    const configPath = launcherConfig.nodeConfig.network.configFile;
+
+    await convertSnapshotDbToLsm({
+      dbDirectory: dbPath,
+      configPath,
+      runBinary: (binaryName, args) => this._runBinary(binaryName, args),
+      createFailure: (message) =>
+        this._createStageError('converting', message, 'PARTIAL_SYNC_CONVERSION_FAILED'),
+      onCommandPrepared: (_args, context) => {
+        logger.info('MithrilPartialSyncService: prepared LSM conversion command', context);
+      },
+    });
+  }
+
+  async _validateConvertedStagedOutput(dbPath: string): Promise<void> {
+    const topLevelEntries = (await fs.readdir(dbPath)).sort();
+    const expectedEntries = [...PARTIAL_SYNC_ALLOWED_INSTALL_ENTRIES].sort();
+
+    if (
+      topLevelEntries.length !== expectedEntries.length ||
+      topLevelEntries.some((entry, index) => entry !== expectedEntries[index])
+    ) {
+      throw this._createStageError(
+        'installing',
+        `Mithril partial sync staged output must contain exactly ${expectedEntries.join(', ')}.`,
+        PARTIAL_SYNC_STAGED_DB_INVALID_CODE
+      );
+    }
+  }
+
+  async _installValidatedStagedSnapshot(dbPath: string): Promise<void> {
+    await this._chainStorageManager.installValidatedPartialSyncSnapshot(dbPath, {
+      expectedTopLevelEntries: PARTIAL_SYNC_ALLOWED_INSTALL_ENTRIES,
+    });
+  }
+
+  async _runBinary(
+    binaryName: string,
+    args: Array<string>
+  ): Promise<RunCommandResult> {
+    const { runBinary } = await import('./mithrilCommandRunner');
+    return runBinary(binaryName, args, this._activeWorkDir || stateDirectoryPath, {
+      logFileName: PARTIAL_SYNC_LOG_FILE_NAME,
+    });
+  }
+
+  _activatePostVerificationStage(
+    stage: 'converting' | 'installing' | 'finalizing'
+  ): void {
+    this._markActiveProgressItemAs('completed');
+    this._upsertProgressItem(stage, stage, 'active');
+    this._updateStatus({
+      status: stage,
+      progressItems: [...this._progressItems],
+      error: null,
+      allowedRecoveryActions: [],
+    });
+  }
+
+  _deriveAllowedRecoveryActions(
+    error: unknown
+  ): MithrilPartialSyncStatusUpdate['allowedRecoveryActions'] {
+    const stage =
+      error instanceof MithrilPartialSyncStageError
+        ? error.stage
+        : this._getFallbackErrorStage();
+
+    if (['installing', 'finalizing', 'starting-node'].includes(stage)) {
+      return ['wipe-and-full-sync'];
+    }
+
+    return ['retry', 'restart-normal', 'wipe-and-full-sync'];
   }
 
   async resolveLatestSnapshotMetadata(): Promise<ResolvedLatestSnapshot> {
@@ -831,6 +945,18 @@ export class MithrilPartialSyncService {
   }
 
   _getFallbackErrorStage(): MithrilPartialSyncErrorStage {
+    if (this._status.status === 'finalizing') {
+      return 'finalizing';
+    }
+
+    if (this._status.status === 'installing') {
+      return 'installing';
+    }
+
+    if (this._status.status === 'converting') {
+      return 'converting';
+    }
+
     if (this._status.status === 'verifying') {
       return 'verifying';
     }

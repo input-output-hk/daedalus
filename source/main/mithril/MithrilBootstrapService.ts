@@ -26,6 +26,7 @@ import {
   createStageError,
   inferErrorStageFromStatus,
 } from './mithrilErrors';
+import { convertSnapshotDbToLsm } from './mithrilSnapshotConverter';
 import { ChainStorageManager } from '../utils/chainStorageManager';
 
 const DEFAULT_STATUS: MithrilBootstrapStatusUpdate = {
@@ -808,76 +809,21 @@ export class MithrilBootstrapService {
     });
 
     const dbDirectory = await this._resolveDbDirectory(snapshot?.digest);
-    const ledgerDir = path.join(dbDirectory, 'ledger');
-
-    const entries = await fs.readdir(ledgerDir, { withFileTypes: true });
-    const slots = entries
-      .filter((e) => e.isDirectory() && /^\d+$/.test(e.name))
-      .map((e) => BigInt(e.name))
-      .sort((a, b) => {
-        if (a < b) return -1;
-        if (a > b) return 1;
-        return 0;
-      });
-
-    if (slots.length === 0) {
-      throw this._buildCommandFailure(
-        'convert',
-        'No ledger snapshots found for conversion',
-        ''
-      );
-    }
-
-    const slot = String(slots[slots.length - 1]);
-    // The in-memory snapshot must be moved out of ledger/ so snapshot-converter
-    // can write the converted LSM snapshot back to the same ledger/<slot> path.
-    const inputMemPath = path.join(ledgerDir, slot);
-    const tempInputPath = path.join(dbDirectory, slot);
-    const outputLsmSnapshot = path.join(ledgerDir, slot);
-    const outputLsmDatabase = path.join(dbDirectory, 'lsm');
     const configPath = launcherConfig.nodeConfig.network.configFile;
 
-    await fs.move(inputMemPath, tempInputPath);
-
-    const converterArgs = [
-      '--input-mem',
-      tempInputPath,
-      '--output-lsm-snapshot',
-      outputLsmSnapshot,
-      '--output-lsm-database',
-      outputLsmDatabase,
-      '--config',
+    await convertSnapshotDbToLsm({
+      dbDirectory,
       configPath,
-    ];
-
-    // Remove any existing lsm directory so snapshot-converter doesn't prompt
-    // for confirmation before wiping it.
-    await fs.remove(outputLsmDatabase);
-
-    logger.info(
-      `[mithril] Doing LSM conversion of snapshot with command: snapshot-converter ${converterArgs.join(' ')}`,
-      { slot, dbDirectory }
-    );
-
-    let exitCode: number | null;
-    let stderr: string;
-    try {
-      ({ exitCode, stderr } = await this._runBinary(
-        'snapshot-converter',
-        converterArgs
-      ));
-    } finally {
-      // Remove the temp in-memory snapshot regardless of outcome.
-      await fs.remove(tempInputPath).catch(() => {});
-    }
-
-    if (exitCode !== 0) {
-      throw this._buildCommandFailure(
-        'convert',
-        `Snapshot conversion failed with exit code ${exitCode}`,
-        stderr
-      );
-    }
+      runBinary: (binaryName, args) => this._runBinary(binaryName, args),
+      createFailure: (message, stderr = '') =>
+        this._buildCommandFailure('convert', message, stderr),
+      onCommandPrepared: (converterArgs, context) => {
+        logger.info(
+          `[mithril] Doing LSM conversion of snapshot with command: snapshot-converter ${converterArgs.join(' ')}`,
+          context
+        );
+      },
+    });
 
     this._updateStatus({
       status: 'finalizing',

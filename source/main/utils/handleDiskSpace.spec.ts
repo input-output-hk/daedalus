@@ -22,6 +22,10 @@ const mithrilBootstrapStatusChannelMock = {
 
 const fsExtraMock = {
   pathExists: jest.fn(),
+  remove: jest.fn(),
+  readJson: jest.fn(),
+  writeJson: jest.fn(),
+  ensureDir: jest.fn(),
 };
 
 const resetMithrilDecisionStateMock = jest.fn();
@@ -35,6 +39,14 @@ let mithrilBootstrapStatus = {
 };
 
 jest.mock('check-disk-space', () => jest.fn());
+
+const electronDialogMock = {
+  showMessageBox: jest.fn(),
+};
+
+jest.mock('electron', () => ({
+  dialog: electronDialogMock,
+}));
 
 jest.mock('fs-extra', () => fsExtraMock);
 
@@ -85,6 +97,15 @@ jest.mock('../ipc/mithrilBootstrapChannel', () => ({
       ...update,
     };
   }),
+}));
+
+jest.mock('../ipc/mithrilPartialSyncChannel', () => ({
+  getMithrilPartialSyncStatus: jest.fn(() => ({
+    status: 'finalizing',
+    allowedRecoveryActions: ['wipe-and-full-sync'],
+    error: null,
+  })),
+  emitMithrilPartialSyncStatus: jest.fn().mockResolvedValue(undefined),
 }));
 
 const { logger } = require('./logging') as typeof import('./logging');
@@ -164,6 +185,10 @@ describe('handleDiskSpace', () => {
       isRecoveryFallback: false,
     });
     fsExtraMock.pathExists.mockResolvedValue(false);
+    fsExtraMock.remove.mockResolvedValue(undefined);
+    fsExtraMock.readJson.mockResolvedValue(undefined);
+    fsExtraMock.writeJson.mockResolvedValue(undefined);
+    fsExtraMock.ensureDir.mockResolvedValue(undefined);
     chainStorageCoordinatorMock.isManagedChainEmpty.mockResolvedValue(false);
     chainStorageCoordinatorMock.wipeChainAndSnapshots.mockResolvedValue(
       undefined
@@ -173,6 +198,19 @@ describe('handleDiskSpace', () => {
         directoryChangedHandler = callback;
       }
     );
+    const mithrilBootstrapChannel = require('../ipc/mithrilBootstrapChannel');
+    mithrilBootstrapChannel.getPendingMithrilBootstrapDecision.mockReturnValue(
+      null
+    );
+    mithrilBootstrapChannel.getMithrilBootstrapStatus.mockImplementation(
+      () => mithrilBootstrapStatus
+    );
+    const mithrilPartialSyncChannel = require('../ipc/mithrilPartialSyncChannel');
+    mithrilPartialSyncChannel.getMithrilPartialSyncStatus.mockReturnValue({
+      status: 'finalizing',
+      allowedRecoveryActions: ['wipe-and-full-sync'],
+      error: null,
+    });
     resetMithrilDecisionStateMock.mockReset();
     directoryChangedHandler = null;
   });
@@ -583,7 +621,11 @@ describe('handleDiskSpace', () => {
       cardanoNode as never
     );
 
-    await handleCheckDiskSpace();
+    const pendingCheck = handleCheckDiskSpace();
+    await flushPromises(20);
+    jest.advanceTimersByTime(6000);
+    await pendingCheck;
+    await flushPromises();
 
     expect(cardanoNode.start).toHaveBeenCalledTimes(1);
     expect(logger.warn).toHaveBeenCalledWith(
@@ -760,4 +802,54 @@ describe('handleDiskSpace', () => {
     ).toHaveBeenCalled();
     expect(cardanoNode.start).toHaveBeenCalledTimes(1);
   });
+
+  it('blocks normal startup and wipes when interrupted partial sync cutover is detected', async () => {
+    const { handleDiskSpace } = require('./handleDiskSpace') as typeof import('./handleDiskSpace');
+    const { emitMithrilPartialSyncStatus } = require('../ipc/mithrilPartialSyncChannel');
+    const cardanoNode = createCardanoNode();
+
+    chainStorageCoordinatorMock.isManagedChainEmpty.mockResolvedValue(false);
+    fsExtraMock.pathExists.mockImplementation(async (targetPath: string) =>
+      targetPath === '/tmp/state/Logs/mithril-partial-sync.lock'
+    );
+    fsExtraMock.readJson.mockResolvedValue({
+      state: 'cutover-in-progress',
+      updatedAt: '2026-05-20T18:00:00Z',
+      managedChainPath: '/tmp/state/chain',
+    });
+    electronDialogMock.showMessageBox.mockResolvedValue({ response: 0 });
+
+    const handleCheckDiskSpace = handleDiskSpace(
+      { webContents: {} } as never,
+      cardanoNode as never
+    );
+
+    const pendingCheck = handleCheckDiskSpace();
+    jest.runOnlyPendingTimers();
+    await pendingCheck;
+
+    expect(emitMithrilPartialSyncStatus).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 'failed',
+        allowedRecoveryActions: ['wipe-and-full-sync'],
+      })
+    );
+    expect(chainStorageCoordinatorMock.wipeChainAndSnapshots).toHaveBeenCalledWith(
+      'Interrupted Mithril partial sync detected on startup. Wiped chain directory and Mithril snapshots.',
+      'stopped'
+    );
+    expect(fsExtraMock.remove).toHaveBeenCalledWith(
+      '/tmp/state/Logs/mithril-partial-sync.lock'
+    );
+    expect(cardanoNode.start).toHaveBeenCalledTimes(1);
+  });
+
+  it('suppresses normal-start fallback for installed-awaiting-node-start marker state only', async () => {
+    const { handleDiskSpace } = require('./handleDiskSpace') as typeof import('./handleDiskSpace');
+    const source = handleDiskSpace.toString();
+
+    expect(source.includes("markerState === 'installed-awaiting-node-start'")).toBe(true);
+    expect(source.includes('shouldSuppressPartialSyncStartupFallback')).toBe(true);
+  });
+
 });

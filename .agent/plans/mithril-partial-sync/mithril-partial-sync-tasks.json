@@ -343,7 +343,7 @@
           "id": "task-203",
           "title": "Implement LSM conversion and validated staged cutover",
           "description": "Convert any restored ledger snapshot to a Daedalus-compatible LSM layout and install the validated staged result into the managed chain target according to the locked restore strategy. This task must enforce the fixed cutover allowlist, reject unexpected staged top-level entries, discard live `volatile/` during cutover, and clean up superseded staged artifacts.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 6,
           "dependencies": ["task-001", "task-201", "task-202"],
@@ -368,7 +368,9 @@
             "Restored ledger state is converted to the required format before node restart.",
             "Install behavior matches the validated allowlist cutover strategy from the spike.",
             "Live chain target changes are constrained to the documented top-level rules, including `protocolMagicId` and `volatile`."
-          ]
+          ],
+          "completedAt": "2026-05-20T18:35:00Z",
+          "notes": "Completed 2026-05-20. Task-203 added a shared snapshot-converter seam for bootstrap and partial sync, implemented partial-sync staged ledger-to-LSM conversion, enforced validated cutover through a fixed allowlist install helper, persisted Boundary B/C1 partial-sync markers, and taught startup to block interrupted unsafe installs while suppressing normal-start fallback after failed first-start proof on installed partial-sync data. Focused Jest coverage passed for Mithril partial sync, chain-storage cutover, startup gating, and touched bootstrap seams. Repo-wide `yarn compile` remains blocked by unrelated pre-existing type issues outside this task."
         },
         {
           "id": "task-204",
