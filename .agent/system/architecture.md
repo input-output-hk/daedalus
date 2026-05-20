@@ -240,11 +240,13 @@ Diagnostics CTA
 
 - `handleDiskSpace.ts` owns the startup safety gate for persisted partial-sync markers.
 - `stateDir/Logs/mithril-partial-sync.lock` blocks normal node start when the marker shows an unsafe interrupted cutover state.
+- Diagnostics-launched `restart-normal` and `wipe-and-full-sync` recovery do not start `cardano-node` directly. `source/main/index.ts` injects the live `handleCheckDiskSpace` closure back into `ChainStorageCoordinator`, so both actions re-enter the same startup-owned generation checks, marker gating, and bootstrap decision flow used at app startup.
 - Boundary handling:
   - `cutover-in-progress` blocks normal startup and offers wipe-full-sync recovery only.
   - `installed-awaiting-node-start` is allowed one first-start proof attempt.
   - If that proof fails, fallback normal startup is suppressed and the flow remains wipe-only.
   - If that proof succeeds, the marker is cleared and normal startup resumes.
+- A LauncherConfig kill switch, `mithrilPartialSyncEnabled`, disables new diagnostics-launched partial sync start and restart-normal entry points in the main process without disabling startup-owned recovery for already-unsafe installs.
 
 ### Key Files
 

@@ -24,6 +24,7 @@ import { runCommand } from './mithrilCommandRunner';
 import { parseMithrilProgressUpdate } from './mithrilProgress';
 import { ChainStorageManager } from '../utils/chainStorageManager';
 import {
+  clearMithrilPartialSyncMarker,
   writeMithrilPartialSyncMarker,
 } from './mithrilPartialSyncMarker';
 import { convertSnapshotDbToLsm } from './mithrilSnapshotConverter';
@@ -302,9 +303,7 @@ export class MithrilPartialSyncService {
       });
       throw error;
     } finally {
-      this._activeWorkDir = null;
-      this._currentProcess = null;
-      this._logStream = null;
+      this._clearRuntimeWorkState();
     }
   }
 
@@ -324,19 +323,6 @@ export class MithrilPartialSyncService {
     }
 
     this._isCancelled = true;
-    this._progressItems = [];
-    this._updateStatus({
-      status: 'cancelled',
-      allowedRecoveryActions: [],
-      error: null,
-      logPath: this._getLogPath(),
-      progressItems: [],
-      filesDownloaded: undefined,
-      filesTotal: undefined,
-      ancillaryBytesDownloaded: undefined,
-      ancillaryBytesTotal: undefined,
-      elapsedSeconds: undefined,
-    });
 
     try {
       if (this._currentProcess) {
@@ -345,13 +331,88 @@ export class MithrilPartialSyncService {
     } catch (error) {
       logger.warn('MithrilPartialSyncService: failed to kill process', {
         error,
-      });
+        });
     }
 
-    this._activeWorkDir = null;
-    this._currentProcess = null;
-    this._logStream = null;
-    this._stagedDbPath = null;
+    try {
+      await this._cleanupPartialSyncArtifacts();
+      this._progressItems = [];
+      this._updateStatus({
+        status: 'cancelled',
+        allowedRecoveryActions: [],
+        error: null,
+        logPath: this._getLogPath(),
+        progressItems: [],
+        filesDownloaded: undefined,
+        filesTotal: undefined,
+        ancillaryBytesDownloaded: undefined,
+        ancillaryBytesTotal: undefined,
+        elapsedSeconds: undefined,
+      });
+    } catch (error) {
+      this._markActiveProgressItemAs('error');
+      this._updateStatus({
+        status: 'failed',
+        allowedRecoveryActions: ['retry', 'restart-normal', 'wipe-and-full-sync'],
+        error: this._buildError(error, this._getCurrentRecoveryStage()),
+        logPath: this._getLogPath(),
+        progressItems: [...this._progressItems],
+        filesDownloaded: undefined,
+        filesTotal: undefined,
+        ancillaryBytesDownloaded: undefined,
+        ancillaryBytesTotal: undefined,
+        elapsedSeconds: undefined,
+      });
+      throw error;
+    } finally {
+      this._clearRuntimeWorkState();
+    }
+  }
+
+  async restartNormal(): Promise<void> {
+    this._assertRecoveryActionAllowed('restart-normal');
+
+    try {
+      await this._cleanupPartialSyncArtifacts();
+      this._resetToIdleStatus();
+    } finally {
+      this._clearRuntimeWorkState();
+    }
+  }
+
+  async wipeAndFullSync(): Promise<void> {
+    this._assertRecoveryActionAllowed('wipe-and-full-sync');
+
+    try {
+      await fs.remove(this._getStagingRootPath());
+      this._resetToIdleStatus();
+    } finally {
+      this._clearRuntimeWorkState();
+    }
+  }
+
+  async finalizeWipeAndFullSync(): Promise<void> {
+    await clearMithrilPartialSyncMarker();
+    this._resetToIdleStatus();
+    this._clearRuntimeWorkState();
+  }
+
+  assertStartAllowed(): void {
+    if (this._status.status === 'failed') {
+      if (!this._status.allowedRecoveryActions.includes('retry')) {
+        throw new Error(
+          'Mithril partial sync cannot retry from the current recovery boundary.'
+        );
+      }
+    }
+
+    if (this._status.status === 'cancelled') {
+      return;
+    }
+
+    if (!['idle', 'failed'].includes(this._status.status)) {
+      throw new Error('Mithril partial sync cannot start from the current state.');
+    }
   }
 
   async _downloadAndVerifyPartialSnapshot(
@@ -590,6 +651,60 @@ export class MithrilPartialSyncService {
     return ['retry', 'restart-normal', 'wipe-and-full-sync'];
   }
 
+  _assertRecoveryActionAllowed(
+    action: 'restart-normal' | 'wipe-and-full-sync'
+  ): void {
+    if (this._activeWorkDir || this._currentProcess) {
+      throw new Error(
+        `Cannot ${action} while Mithril partial sync is still in progress.`
+      );
+    }
+
+    if (!this._status.allowedRecoveryActions.includes(action)) {
+      throw new Error(
+        `Mithril partial sync cannot ${action} from the current recovery boundary.`
+      );
+    }
+  }
+
+  async _cleanupPartialSyncArtifacts(): Promise<void> {
+    await fs.remove(this._getStagingRootPath());
+    await clearMithrilPartialSyncMarker();
+  }
+
+  _resetToIdleStatus(): void {
+    this._progressItems = [];
+    this._latestSnapshot = null;
+    this._updateStatus({
+      status: 'idle',
+      allowedRecoveryActions: [],
+      error: null,
+      logPath: undefined,
+      progressItems: [],
+      filesDownloaded: undefined,
+      filesTotal: undefined,
+      ancillaryBytesDownloaded: undefined,
+      ancillaryBytesTotal: undefined,
+      elapsedSeconds: undefined,
+    });
+  }
+
+  _clearRuntimeWorkState(): void {
+    this._activeWorkDir = null;
+    this._currentProcess = null;
+    this._logStream = null;
+    this._stagedDbPath = null;
+    this._startedAt = null;
+  }
+
+  _getCurrentRecoveryStage(): MithrilPartialSyncErrorStage {
+    return this._status.error?.stage ?? this._getFallbackErrorStage();
+  }
+
+  _getStagingRootPath(): string {
+    return path.join(stateDirectoryPath, PARTIAL_SYNC_STAGING_DIRECTORY_NAME);
+  }
+
   async resolveLatestSnapshotMetadata(): Promise<ResolvedLatestSnapshot> {
     try {
       const latestSnapshot = await this._showSnapshotRaw('latest');
@@ -800,10 +915,7 @@ export class MithrilPartialSyncService {
   async _prepareStagingDirectory(
     managedChainPath: string
   ): Promise<PartialSyncStagingPaths> {
-    const rootPath = path.join(
-      stateDirectoryPath,
-      PARTIAL_SYNC_STAGING_DIRECTORY_NAME
-    );
+    const rootPath = this._getStagingRootPath();
     const resolvedManagedChainPath = path.resolve(managedChainPath);
     const resolvedRootPath = path.resolve(rootPath);
 

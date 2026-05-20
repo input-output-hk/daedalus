@@ -63,13 +63,6 @@ let lastStatus: MithrilPartialSyncStatusUpdate = {
   error: null,
 };
 
-const PARTIAL_SYNC_NOT_IMPLEMENTED_ERROR =
-  'Mithril partial sync action is not implemented yet.';
-
-const rejectUntilImplemented = async (): Promise<void> => {
-  throw new Error(PARTIAL_SYNC_NOT_IMPLEMENTED_ERROR);
-};
-
 const broadcastMithrilPartialSyncStatus = async (
   status: MithrilPartialSyncStatusUpdate
 ): Promise<void> => {
@@ -124,8 +117,13 @@ export const handleMithrilPartialSyncRequests = (window: BrowserWindow) => {
   lastStatus = mithrilPartialSyncService.status;
 
   chainStorageCoordinator.setPartialSyncHandlers({
+    assertStartAllowed: () => mithrilPartialSyncService.assertStartAllowed(),
     start: async (context) => mithrilPartialSyncService.start(context),
     cancel: async () => mithrilPartialSyncService.cancel(),
+    restartNormal: async () => mithrilPartialSyncService.restartNormal(),
+    wipeAndFullSync: async () => mithrilPartialSyncService.wipeAndFullSync(),
+    finalizeWipeAndFullSync: async () =>
+      mithrilPartialSyncService.finalizeWipeAndFullSync(),
   });
 
   mithrilPartialSyncService.onStatus((status) => {
@@ -145,8 +143,16 @@ export const handleMithrilPartialSyncRequests = (window: BrowserWindow) => {
   mithrilPartialSyncCancelChannel.onRequest(async () => {
     await chainStorageCoordinator.cancelPartialSync();
   });
-  mithrilPartialSyncRestartNormalChannel.onRequest(rejectUntilImplemented);
-  mithrilPartialSyncWipeAndFullSyncChannel.onRequest(rejectUntilImplemented);
+  mithrilPartialSyncRestartNormalChannel.onRequest(async () => {
+    await chainStorageCoordinator.restartNormalFromPartialSync({
+      nodeState: getMithrilBootstrapNodeState(),
+    });
+  });
+  mithrilPartialSyncWipeAndFullSyncChannel.onRequest(async () => {
+    await chainStorageCoordinator.wipeAndFullSyncFromPartialSync({
+      nodeState: getMithrilBootstrapNodeState(),
+    });
+  });
 };
 
 export const emitMithrilPartialSyncStatus = async (
@@ -154,6 +160,3 @@ export const emitMithrilPartialSyncStatus = async (
 ): Promise<void> => {
   await broadcastMithrilPartialSyncStatus(status);
 };
-
-export const getMithrilPartialSyncNotImplementedError = () =>
-  PARTIAL_SYNC_NOT_IMPLEMENTED_ERROR;

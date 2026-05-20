@@ -3,6 +3,11 @@ import type { PartialSyncPreflightContext } from '../utils/chainStorageCoordinat
 import { MithrilPartialSyncService } from './MithrilPartialSyncService';
 import type { MithrilPartialSyncStatusUpdate } from '../../common/types/mithril-partial-sync.types';
 
+jest.mock('./mithrilPartialSyncMarker', () => ({
+  clearMithrilPartialSyncMarker: jest.fn().mockResolvedValue(undefined),
+  writeMithrilPartialSyncMarker: jest.fn().mockResolvedValue(undefined),
+}));
+
 jest.mock('fs-extra', () => ({
   constants: require('fs').constants,
   pathExists: jest.fn(),
@@ -19,6 +24,7 @@ jest.mock('fs-extra', () => ({
 jest.mock('../config', () => ({
   stateDirectoryPath: '/tmp/daedalus-state',
   launcherConfig: {
+    mithrilPartialSyncEnabled: true,
     nodeConfig: {
       network: {
         configFile: '/config/config.yaml',
@@ -59,6 +65,10 @@ describe('MithrilPartialSyncService', () => {
   const ensureDirMock = fs.ensureDir as jest.Mock;
   const writeJsonMock = fs.writeJson as jest.Mock;
   const moveMock = fs.move as jest.Mock;
+  const writeMithrilPartialSyncMarkerMock = require('./mithrilPartialSyncMarker')
+    .writeMithrilPartialSyncMarker as jest.Mock;
+  const clearMithrilPartialSyncMarkerMock = require('./mithrilPartialSyncMarker')
+    .clearMithrilPartialSyncMarker as jest.Mock;
 
   const mockDirectoryStats = () => ({
     isDirectory: () => true,
@@ -90,6 +100,8 @@ describe('MithrilPartialSyncService', () => {
     ensureDirMock.mockResolvedValue(undefined);
     writeJsonMock.mockResolvedValue(undefined);
     moveMock.mockResolvedValue(undefined);
+    writeMithrilPartialSyncMarkerMock.mockResolvedValue(undefined);
+    clearMithrilPartialSyncMarkerMock.mockResolvedValue(undefined);
   });
 
   it('fails latest metadata resolution when no certified immutable number is present', async () => {
@@ -223,7 +235,7 @@ describe('MithrilPartialSyncService', () => {
         expectedTopLevelEntries: ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'],
       }
     );
-    expect(writeJsonMock).toHaveBeenCalledTimes(2);
+    expect(writeMithrilPartialSyncMarkerMock).toHaveBeenCalledTimes(2);
     expect(service.status).toEqual(
       expect.objectContaining({
         status: 'finalizing',
@@ -686,6 +698,121 @@ describe('MithrilPartialSyncService', () => {
 
     await expect(service.cancel()).rejects.toThrow(
       'Mithril partial sync cancellation is no longer allowed after live chain cutover has started.'
+    );
+  });
+
+  it('cleans staging artifacts and clears the marker when cancellation succeeds before cutover', async () => {
+    const service = new MithrilPartialSyncService();
+
+    service._activeWorkDir = '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._stagedDbPath = '/tmp/daedalus-state/mithril-partial-sync/download/db';
+    service._status = {
+      status: 'downloading',
+      allowedRecoveryActions: [],
+      error: null,
+    };
+
+    await expect(service.cancel()).resolves.toBeUndefined();
+
+    expect(removeMock).toHaveBeenCalledWith('/tmp/daedalus-state/mithril-partial-sync');
+    expect(clearMithrilPartialSyncMarkerMock).toHaveBeenCalledTimes(1);
+    expect(service.status).toEqual(
+      expect.objectContaining({
+        status: 'cancelled',
+        allowedRecoveryActions: [],
+      })
+    );
+  });
+
+  it('surfaces a boundary-a failure when cancellation cleanup fails', async () => {
+    const service = new MithrilPartialSyncService();
+
+    service._activeWorkDir = '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._status = {
+      status: 'downloading',
+      allowedRecoveryActions: [],
+      error: null,
+    };
+    removeMock.mockRejectedValueOnce(new Error('cleanup failed'));
+
+    await expect(service.cancel()).rejects.toThrow('cleanup failed');
+
+    expect(service.status).toEqual(
+      expect.objectContaining({
+        status: 'failed',
+        allowedRecoveryActions: ['retry', 'restart-normal', 'wipe-and-full-sync'],
+        error: expect.objectContaining({
+          message: 'cleanup failed',
+          stage: 'downloading',
+        }),
+      })
+    );
+  });
+
+  it('resets to idle after restart-normal cleanup when that recovery is allowed', async () => {
+    const service = new MithrilPartialSyncService();
+
+    service._status = {
+      status: 'failed',
+      allowedRecoveryActions: ['restart-normal', 'wipe-and-full-sync'],
+      error: {
+        message: 'node handoff failed',
+        stage: 'starting-node',
+      },
+    };
+
+    await expect(service.restartNormal()).resolves.toBeUndefined();
+
+    expect(removeMock).toHaveBeenCalledWith('/tmp/daedalus-state/mithril-partial-sync');
+    expect(service.status).toEqual({
+      status: 'idle',
+      allowedRecoveryActions: [],
+      error: null,
+      logPath: undefined,
+      progressItems: [],
+      filesDownloaded: undefined,
+      filesTotal: undefined,
+      ancillaryBytesDownloaded: undefined,
+      ancillaryBytesTotal: undefined,
+      elapsedSeconds: undefined,
+    });
+  });
+
+  it('retains the marker during wipe-and-full-sync cleanup until finalization runs', async () => {
+    const service = new MithrilPartialSyncService();
+
+    service._status = {
+      status: 'failed',
+      allowedRecoveryActions: ['wipe-and-full-sync'],
+      error: {
+        message: 'unsafe install',
+        stage: 'installing',
+      },
+    };
+
+    await expect(service.wipeAndFullSync()).resolves.toBeUndefined();
+
+    expect(removeMock).toHaveBeenCalledWith('/tmp/daedalus-state/mithril-partial-sync');
+    expect(clearMithrilPartialSyncMarkerMock).not.toHaveBeenCalled();
+
+    await expect(service.finalizeWipeAndFullSync()).resolves.toBeUndefined();
+    expect(clearMithrilPartialSyncMarkerMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects start reuse from wipe-only failed boundaries', () => {
+    const service = new MithrilPartialSyncService();
+
+    service._status = {
+      status: 'failed',
+      allowedRecoveryActions: ['wipe-and-full-sync'],
+      error: {
+        message: 'unsafe install',
+        stage: 'installing',
+      },
+    };
+
+    expect(() => service.assertStartAllowed()).toThrow(
+      'Mithril partial sync cannot retry from the current recovery boundary.'
     );
   });
 });

@@ -247,6 +247,9 @@ const onAppReady = async () => {
     return handleWindowClose();
   });
   const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
+  chainStorageCoordinator.setPartialSyncStartupHandler(async () => {
+    await handleCheckDiskSpace(false);
+  });
 
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {

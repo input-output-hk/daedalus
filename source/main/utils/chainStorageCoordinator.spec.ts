@@ -21,8 +21,12 @@ const mithrilBootstrapServiceMock = {
 };
 
 const partialSyncHandlersMock = {
+  assertStartAllowed: jest.fn(),
   start: jest.fn(),
   cancel: jest.fn(),
+  restartNormal: jest.fn(),
+  wipeAndFullSync: jest.fn(),
+  finalizeWipeAndFullSync: jest.fn(),
 };
 
 jest.mock('./chainStorageManager', () => ({
@@ -35,6 +39,12 @@ jest.mock('../mithril/MithrilBootstrapService', () => ({
   MithrilBootstrapService: jest
     .fn()
     .mockImplementation(() => mithrilBootstrapServiceMock),
+}));
+
+jest.mock('../config', () => ({
+  launcherConfig: {
+    mithrilPartialSyncEnabled: true,
+  },
 }));
 
 const loadModule = () => {
@@ -75,7 +85,11 @@ describe('chainStorageCoordinator', () => {
       undefined
     );
     partialSyncHandlersMock.start.mockResolvedValue(undefined);
+    partialSyncHandlersMock.assertStartAllowed.mockImplementation(() => {});
     partialSyncHandlersMock.cancel.mockResolvedValue(undefined);
+    partialSyncHandlersMock.restartNormal.mockResolvedValue(undefined);
+    partialSyncHandlersMock.wipeAndFullSync.mockResolvedValue(undefined);
+    partialSyncHandlersMock.finalizeWipeAndFullSync.mockResolvedValue(undefined);
     chainStorageManagerMock.ensureManagedChainLayout.mockResolvedValue({
       managedChainPath: '/mnt/custom-parent/chain',
       isRecoveryFallback: false,
@@ -291,6 +305,7 @@ describe('chainStorageCoordinator', () => {
       },
       mithrilWorkDir: '/mnt/custom-parent/chain',
     });
+    expect(partialSyncHandlersMock.assertStartAllowed).toHaveBeenCalledTimes(1);
     expect(mithrilBootstrapServiceMock.setWorkDir).not.toHaveBeenCalled();
     expect(mithrilBootstrapServiceMock.startBootstrap).not.toHaveBeenCalled();
   });
@@ -627,6 +642,56 @@ describe('chainStorageCoordinator', () => {
 
     await cancelCall;
     await partialSyncCall;
+  });
+
+  it('restarts normally through the configured startup handler after partial-sync cleanup', async () => {
+    const moduleExports = loadModule();
+    const startupHandler = jest.fn().mockResolvedValue(undefined);
+
+    moduleExports.chainStorageCoordinator.setPartialSyncHandlers(
+      partialSyncHandlersMock
+    );
+    moduleExports.chainStorageCoordinator.setPartialSyncStartupHandler(
+      startupHandler
+    );
+
+    await expect(
+      moduleExports.chainStorageCoordinator.restartNormalFromPartialSync({
+        nodeState: 'stopped',
+      })
+    ).resolves.toBeUndefined();
+
+    expect(partialSyncHandlersMock.restartNormal).toHaveBeenCalledTimes(1);
+    expect(startupHandler).toHaveBeenCalledTimes(1);
+  });
+
+  it('wipes to full sync through bootstrap cleanup and then re-enters startup handler', async () => {
+    const moduleExports = loadModule();
+    const startupHandler = jest.fn().mockResolvedValue(undefined);
+
+    moduleExports.chainStorageCoordinator.setPartialSyncHandlers(
+      partialSyncHandlersMock
+    );
+    moduleExports.chainStorageCoordinator.setPartialSyncStartupHandler(
+      startupHandler
+    );
+
+    await expect(
+      moduleExports.chainStorageCoordinator.wipeAndFullSyncFromPartialSync({
+        nodeState: 'stopped',
+      })
+    ).resolves.toBeUndefined();
+
+    expect(partialSyncHandlersMock.wipeAndFullSync).toHaveBeenCalledTimes(1);
+    expect(
+      mithrilBootstrapServiceMock.wipeChainAndSnapshots
+    ).toHaveBeenCalledWith(
+      'Mithril partial sync requested wipe-and-full-sync recovery.'
+    );
+    expect(
+      partialSyncHandlersMock.finalizeWipeAndFullSync
+    ).toHaveBeenCalledTimes(1);
+    expect(startupHandler).toHaveBeenCalledTimes(1);
   });
 
   it('serializes setDirectory while wipeChainAndSnapshots is in progress', async () => {

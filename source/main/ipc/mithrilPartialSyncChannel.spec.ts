@@ -3,6 +3,8 @@ import type {} from './mithrilPartialSyncChannel';
 const chainStorageCoordinatorMock = {
   startPartialSync: jest.fn(),
   cancelPartialSync: jest.fn(),
+  restartNormalFromPartialSync: jest.fn(),
+  wipeAndFullSyncFromPartialSync: jest.fn(),
   setPartialSyncHandlers: jest.fn(),
 };
 
@@ -13,8 +15,12 @@ const mithrilPartialSyncServiceMock = {
     error: null,
   },
   onStatus: jest.fn(),
+  assertStartAllowed: jest.fn(),
   start: jest.fn(),
   cancel: jest.fn(),
+  restartNormal: jest.fn(),
+  wipeAndFullSync: jest.fn(),
+  finalizeWipeAndFullSync: jest.fn(),
 };
 
 const getMithrilBootstrapNodeStateMock = jest.fn().mockReturnValue('stopped');
@@ -146,14 +152,10 @@ describe('mithrilPartialSyncChannel', () => {
     expect(lastSendCall[1]).toBe(secondWindow.webContents);
   });
 
-  it('delegates start and cancel through the coordinator while keeping recovery actions unimplemented', async () => {
+  it('delegates all partial-sync actions through the coordinator', async () => {
     const moduleExports = loadModule();
 
     moduleExports.handleMithrilPartialSyncRequests({ webContents: {} } as never);
-
-    const expectedError = new Error(
-      moduleExports.getMithrilPartialSyncNotImplementedError()
-    );
 
     await expect(mockChannels[0].onRequest.mock.calls[0][0]()).resolves.toBe(
       undefined
@@ -161,11 +163,11 @@ describe('mithrilPartialSyncChannel', () => {
     await expect(mockChannels[2].onRequest.mock.calls[0][0]()).resolves.toBe(
       undefined
     );
-    await expect(mockChannels[3].onRequest.mock.calls[0][0]()).rejects.toThrow(
-      expectedError.message
+    await expect(mockChannels[3].onRequest.mock.calls[0][0]()).resolves.toBe(
+      undefined
     );
-    await expect(mockChannels[4].onRequest.mock.calls[0][0]()).rejects.toThrow(
-      expectedError.message
+    await expect(mockChannels[4].onRequest.mock.calls[0][0]()).resolves.toBe(
+      undefined
     );
 
     expect(chainStorageCoordinatorMock.startPartialSync).toHaveBeenCalledWith({
@@ -174,6 +176,16 @@ describe('mithrilPartialSyncChannel', () => {
     expect(chainStorageCoordinatorMock.cancelPartialSync).toHaveBeenCalledTimes(
       1
     );
+    expect(
+      chainStorageCoordinatorMock.restartNormalFromPartialSync
+    ).toHaveBeenCalledWith({
+      nodeState: 'stopped',
+    });
+    expect(
+      chainStorageCoordinatorMock.wipeAndFullSyncFromPartialSync
+    ).toHaveBeenCalledWith({
+      nodeState: 'stopped',
+    });
   });
 
   it('registers the partial sync service with the coordinator only once', () => {

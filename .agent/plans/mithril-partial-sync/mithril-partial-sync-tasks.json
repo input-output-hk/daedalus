@@ -376,7 +376,7 @@
           "id": "task-204",
           "title": "Implement cancellation, cleanup, and failure branching",
           "description": "Complete the service and coordinator behavior for cancellation, safe cleanup, retry eligibility, normal restart eligibility, and wipe-plus-full-sync escalation. This task must encode the failure containment rules established in phase 0 so that renderer choices cannot request unsafe recovery actions for the current filesystem state.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 5,
           "dependencies": ["task-004", "task-103", "task-203"],
@@ -394,7 +394,9 @@
             "Cancellation and failure leave the backend in a well-defined state.",
             "Retry, restart-normal, and wipe-full-sync actions are enabled only when safe.",
             "Backend state fully clears after terminal outcomes."
-          ]
+          ],
+          "completedAt": "2026-05-20T19:05:00Z",
+          "notes": "Completed 2026-05-20. Task-204 added backend-owned Boundary A cancellation cleanup, restart-normal and wipe/full-sync recovery delegation, retry gating that blocks re-entry from wipe-only boundaries, and a LauncherConfig partial-sync kill switch enforced in main-process entry points. Recovery handoff now reuses the startup-owned `handleCheckDiskSpace` seam, focused Jest passed for the touched service/coordinator/channel specs, and repo-wide `yarn compile` still fails only on unrelated pre-existing type errors outside this task."
         }
       ]
     },
