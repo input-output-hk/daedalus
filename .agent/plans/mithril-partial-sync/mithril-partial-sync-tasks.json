@@ -207,7 +207,7 @@
           "id": "task-102",
           "title": "Add chainStorageCoordinator partial sync APIs and operation locking",
           "description": "Extend `ChainStorageCoordinator` with explicit partial sync entry points and serialize them with existing chain-storage mutations and Mithril operations. The coordinator should ensure managed chain layout, resolve the active managed target and Mithril work directory, and enforce the node-stopped precondition before service execution begins.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": ["task-100"],
@@ -221,7 +221,9 @@
             "Coordinator APIs exist for partial sync lifecycle operations.",
             "Partial sync cannot overlap with other chain-storage mutations.",
             "The node-stopped and managed-layout preconditions are enforced in one place."
-          ]
+          ],
+          "completedAt": "2026-05-20T01:24:16Z",
+          "notes": "Completed 2026-05-20. Task-102 added a coordinator-only partial sync seam with explicit `startPartialSync` and `cancelPartialSync` APIs, delegate registration, separate partial-sync operation locking, fail-closed rejection on `isRecoveryFallback`, and strict node-stopped enforcement before any layout normalization begins. The implementation preserved bootstrap-specific workdir state, kept recovery-action APIs deferred to task-204, and added focused Jest coverage for symmetric bootstrap/partial-sync exclusion, prompt cancel delegation, and mutation blocking while partial sync is active."
         },
         {
           "id": "task-103",

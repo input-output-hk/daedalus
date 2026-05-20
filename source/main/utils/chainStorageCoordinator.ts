@@ -10,11 +10,23 @@ import { logger } from './logging';
 import { ChainStorageManager } from './chainStorageManager';
 import type { ManagedChainLayoutResult } from './chainStorageManagerShared';
 
+export type PartialSyncPreflightContext = {
+  layoutResult: ManagedChainLayoutResult;
+  mithrilWorkDir: string;
+};
+
+type PartialSyncHandlers = {
+  start(context: PartialSyncPreflightContext): Promise<void>;
+  cancel(): Promise<void>;
+};
+
 class ChainStorageCoordinator {
   _chainStorageManager: ChainStorageManager;
   _mithrilBootstrapService: MithrilBootstrapService;
   _mutationQueue: Promise<void> = Promise.resolve();
   _bootstrapInProgress = false;
+  _partialSyncInProgress = false;
+  _partialSyncHandlers: PartialSyncHandlers | null = null;
   _directoryChangedCallbacks: Array<() => void> = [];
 
   constructor() {
@@ -31,6 +43,10 @@ class ChainStorageCoordinator {
 
   getMithrilBootstrapService(): MithrilBootstrapService {
     return this._mithrilBootstrapService;
+  }
+
+  setPartialSyncHandlers(handlers: PartialSyncHandlers | null): void {
+    this._partialSyncHandlers = handlers;
   }
 
   async getConfig(): Promise<ChainStorageConfig> {
@@ -133,6 +149,8 @@ class ChainStorageCoordinator {
     }
   ): Promise<void> {
     await this._withMutationLock('startBootstrap', async () => {
+      this._assertBootstrapMutationAllowed('start Mithril bootstrap');
+
       if (this._bootstrapInProgress) {
         throw new Error('Mithril bootstrap is already in progress.');
       }
@@ -172,6 +190,69 @@ class ChainStorageCoordinator {
     await this._mithrilBootstrapService.cancel();
   }
 
+  async startPartialSync(
+    options?: {
+      nodeState?: CardanoNodeState | null;
+    }
+  ): Promise<void> {
+    if (!this._partialSyncHandlers) {
+      throw new Error('Mithril partial sync handlers are not configured.');
+    }
+
+    const preflightContext = await this._withMutationLock(
+      'startPartialSync',
+      async () => {
+        this._assertPartialSyncStartAllowed();
+
+        this._assertNodeStopped(
+          options?.nodeState,
+          'start Mithril partial sync'
+        );
+
+        const layoutResult =
+          await this._chainStorageManager.ensureManagedChainLayout({
+            nodeState: options?.nodeState,
+          });
+
+        if (layoutResult.isRecoveryFallback) {
+          logger.warn(
+            '[MITHRIL] Rejecting partial sync start on recovery fallback layout',
+            {
+              managedChainPath: layoutResult.managedChainPath,
+            }
+          );
+          throw new Error(
+            'Cannot start Mithril partial sync while chain storage is using recovery fallback state.'
+          );
+        }
+
+        const mithrilWorkDir =
+          await this._chainStorageManager.resolveMithrilWorkDir();
+
+        this._partialSyncInProgress = true;
+
+        return {
+          layoutResult,
+          mithrilWorkDir,
+        };
+      }
+    );
+
+    try {
+      await this._partialSyncHandlers.start(preflightContext);
+    } finally {
+      this._partialSyncInProgress = false;
+    }
+  }
+
+  async cancelPartialSync(): Promise<void> {
+    if (!this._partialSyncHandlers) {
+      throw new Error('Mithril partial sync handlers are not configured.');
+    }
+
+    await this._partialSyncHandlers.cancel();
+  }
+
   async wipeChainAndSnapshots(
     reason: string,
     nodeState?: CardanoNodeState | null
@@ -195,6 +276,24 @@ class ChainStorageCoordinator {
       throw new Error(
         `Cannot ${action} while Mithril bootstrap is in progress.`
       );
+    }
+
+    if (this._partialSyncInProgress) {
+      throw new Error(
+        `Cannot ${action} while Mithril partial sync is in progress.`
+      );
+    }
+  }
+
+  _assertPartialSyncStartAllowed(): void {
+    if (this._bootstrapInProgress) {
+      throw new Error(
+        'Cannot start Mithril partial sync while Mithril bootstrap is in progress.'
+      );
+    }
+
+    if (this._partialSyncInProgress) {
+      throw new Error('Mithril partial sync is already in progress.');
     }
   }
 
