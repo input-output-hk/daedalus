@@ -21,10 +21,13 @@ import type {
   RunCommandResult,
 } from './mithrilCommandRunner';
 import { runCommand } from './mithrilCommandRunner';
+import { parseMithrilProgressUpdate } from './mithrilProgress';
 
 const PARTIAL_SYNC_LOG_FILE_NAME = 'mithril-partial-sync.log';
-const PARTIAL_SYNC_NOT_READY_CODE = 'PARTIAL_SYNC_NOT_READY';
 const PARTIAL_SYNC_STAGING_DIRECTORY_NAME = 'mithril-partial-sync';
+const PARTIAL_SYNC_LATEST_DRIFT_CODE = 'PARTIAL_SYNC_LATEST_DRIFT';
+const PARTIAL_SYNC_STAGED_DB_INVALID_CODE = 'PARTIAL_SYNC_STAGED_DB_INVALID';
+const PARTIAL_SYNC_CUTOVER_NOT_READY_CODE = 'PARTIAL_SYNC_CUTOVER_NOT_READY';
 
 type ResolvedLatestSnapshot = {
   snapshot: MithrilSnapshotItem;
@@ -153,6 +156,7 @@ export class MithrilPartialSyncService {
   _isCancelled = false;
   _progressItems: MithrilProgressItem[] = [];
   _latestSnapshot: MithrilSnapshotItem | null = null;
+  _stagedDbPath: string | null = null;
 
   get status(): MithrilPartialSyncStatusUpdate {
     return { ...this._status };
@@ -175,14 +179,21 @@ export class MithrilPartialSyncService {
     this._isCancelled = false;
     this._progressItems = [];
     this._latestSnapshot = null;
+    this._stagedDbPath = null;
 
     try {
       this._addProgressItem('preparing', 'preparing', 'active');
       this._updateStatus({
         status: 'preparing',
+        allowedRecoveryActions: [],
         error: null,
         logPath: this._getLogPath(),
         progressItems: [...this._progressItems],
+        filesDownloaded: undefined,
+        filesTotal: undefined,
+        ancillaryBytesDownloaded: undefined,
+        ancillaryBytesTotal: undefined,
+        elapsedSeconds: undefined,
       });
 
       const latestSnapshot = await this.resolveLatestSnapshotMetadata();
@@ -200,6 +211,7 @@ export class MithrilPartialSyncService {
       );
 
       this._activeWorkDir = stagingPaths.downloadParentPath;
+      this._stagedDbPath = stagingPaths.dbPath;
 
       logger.info('MithrilPartialSyncService: prepared partial sync preflight', {
         managedChainPath: context.layoutResult.managedChainPath,
@@ -211,20 +223,47 @@ export class MithrilPartialSyncService {
         partialSyncRange,
       });
 
+      const latestSnapshotAtDownload = await this.resolveLatestSnapshotMetadata();
+      if (
+        latestSnapshotAtDownload.latestCertifiedImmutableNumber !==
+        partialSyncRange.end
+      ) {
+        throw this._createStageError(
+          'preparing',
+          'The latest certified Mithril snapshot changed during partial sync preparation. Please retry with the refreshed range.',
+          PARTIAL_SYNC_LATEST_DRIFT_CODE
+        );
+      }
+
+      this._latestSnapshot = latestSnapshotAtDownload.snapshot;
+
+      await this._downloadAndVerifyPartialSnapshot(
+        stagingPaths,
+        partialSyncRange
+      );
+      await this._validateStagedDownloadOutput(stagingPaths);
+      this._markActiveProgressItemAs('completed');
+      this._updateStatus({
+        status: 'verifying',
+        progressItems: [...this._progressItems],
+      });
+
       throw this._createStageError(
-        'preparing',
-        'Mithril partial sync download execution is not implemented yet.',
-        PARTIAL_SYNC_NOT_READY_CODE
+        'converting',
+        'Mithril partial sync download and verification completed, but the conversion/install handoff is not implemented yet.',
+        PARTIAL_SYNC_CUTOVER_NOT_READY_CODE
       );
     } catch (error) {
       if (this._isCancelled) {
         return;
       }
 
+      const fallbackStage = this._getFallbackErrorStage();
       this._markActiveProgressItemAs('error');
       this._updateStatus({
         status: 'failed',
-        error: this._buildError(error, 'preparing'),
+        allowedRecoveryActions: ['retry', 'restart-normal', 'wipe-and-full-sync'],
+        error: this._buildError(error, fallbackStage),
         logPath: this._getLogPath(),
         progressItems: [...this._progressItems],
       });
@@ -249,6 +288,7 @@ export class MithrilPartialSyncService {
     this._progressItems = [];
     this._updateStatus({
       status: 'cancelled',
+      allowedRecoveryActions: [],
       error: null,
       logPath: this._getLogPath(),
       progressItems: [],
@@ -272,6 +312,168 @@ export class MithrilPartialSyncService {
     this._activeWorkDir = null;
     this._currentProcess = null;
     this._logStream = null;
+    this._stagedDbPath = null;
+  }
+
+  async _downloadAndVerifyPartialSnapshot(
+    stagingPaths: PartialSyncStagingPaths,
+    partialSyncRange: { start: number; end: number }
+  ): Promise<void> {
+    this._activateProgressStage('downloading');
+    this._updateStatus({
+      status: 'downloading',
+      allowedRecoveryActions: [],
+      error: null,
+      logPath: this._getLogPath(),
+      progressItems: [...this._progressItems],
+    });
+
+    let stdoutBuffered = '';
+    let stderrBuffered = '';
+    const downloadArgs = [
+      '--json',
+      'cardano-db',
+      'download',
+      'latest',
+      '--download-dir',
+      stagingPaths.downloadParentPath,
+      '--start',
+      String(partialSyncRange.start),
+      '--end',
+      String(partialSyncRange.end),
+      '--include-ancillary',
+      '--allow-override',
+    ];
+
+    const applyProgressUpdate = (line: string) => {
+      if (this._isCancelled) return;
+
+      const update = parseMithrilProgressUpdate(line);
+      if (!update) return;
+
+      const nextStage = this._resolveStageFromProgressUpdate(update);
+      if (nextStage === 'verifying') {
+        this._activateProgressStage('verifying');
+      }
+
+      if (nextStage === 'downloading' && this._status.status === 'preparing') {
+        this._activateProgressStage('downloading');
+      }
+
+      const status =
+        nextStage === 'downloading' && this._status.status === 'verifying'
+          ? 'verifying'
+          : nextStage ?? this._status.status;
+
+      this._updateStatus({
+        status,
+        progressItems: [...this._progressItems],
+        ...(update.filesDownloaded != null
+          ? { filesDownloaded: update.filesDownloaded }
+          : {}),
+        ...(update.filesTotal != null
+          ? { filesTotal: update.filesTotal }
+          : {}),
+        ...(update.bytesDownloaded != null
+          ? { ancillaryBytesDownloaded: update.bytesDownloaded }
+          : {}),
+        ...(update.bytesTotal != null
+          ? { ancillaryBytesTotal: update.bytesTotal }
+          : {}),
+        ...(update.elapsedSeconds != null
+          ? { elapsedSeconds: update.elapsedSeconds }
+          : {}),
+      });
+    };
+
+    const { exitCode, stderr } = await this._runCommand(
+      downloadArgs,
+      {
+        onStdout: (chunk) => {
+          stdoutBuffered += chunk;
+          const lines = stdoutBuffered.split('\n');
+          stdoutBuffered = lines.pop() || '';
+          lines.forEach(applyProgressUpdate);
+        },
+        onStderr: (chunk) => {
+          stderrBuffered += chunk;
+          const lines = stderrBuffered.split('\n');
+          stderrBuffered = lines.pop() || '';
+          lines.forEach(applyProgressUpdate);
+        },
+      },
+      stagingPaths.downloadParentPath
+    );
+
+    if (stdoutBuffered.trim()) {
+      applyProgressUpdate(stdoutBuffered);
+    }
+
+    if (stderrBuffered.trim()) {
+      applyProgressUpdate(stderrBuffered);
+    }
+
+    if (exitCode !== 0) {
+      throw this._createStageError(
+        this._status.status === 'verifying' ? 'verifying' : 'downloading',
+        `Mithril partial sync ${
+          this._status.status === 'verifying' ? 'verification' : 'download'
+        } failed with exit code ${exitCode}`,
+        'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED'
+      );
+    }
+  }
+
+  async _validateStagedDownloadOutput(
+    stagingPaths: PartialSyncStagingPaths
+  ): Promise<void> {
+    const dbStats = await this._statRequiredPath(
+      stagingPaths.dbPath,
+      'Mithril partial sync did not produce the expected staged db directory.',
+      'verifying',
+      PARTIAL_SYNC_STAGED_DB_INVALID_CODE
+    );
+
+    if (!dbStats.isDirectory()) {
+      throw this._createStageError(
+        'verifying',
+        'Mithril partial sync did not produce the expected staged db directory.',
+        PARTIAL_SYNC_STAGED_DB_INVALID_CODE
+      );
+    }
+
+    const requiredEntries: Array<{
+      relativePath: string;
+      type: 'directory' | 'file';
+    }> = [
+      { relativePath: 'clean', type: 'directory' },
+      { relativePath: 'immutable', type: 'directory' },
+      { relativePath: 'ledger', type: 'directory' },
+      { relativePath: 'protocolMagicId', type: 'file' },
+    ];
+
+    for (const entry of requiredEntries) {
+      const entryPath = path.join(stagingPaths.dbPath, entry.relativePath);
+      const entryStats = await this._statRequiredPath(
+        entryPath,
+        `Mithril partial sync staged output is missing ${entry.relativePath}.`,
+        'verifying',
+        PARTIAL_SYNC_STAGED_DB_INVALID_CODE
+      );
+
+      const isExpectedType =
+        entry.type === 'directory'
+          ? entryStats.isDirectory()
+          : entryStats.isFile();
+
+      if (!isExpectedType) {
+        throw this._createStageError(
+          'verifying',
+          `Mithril partial sync staged output has an invalid ${entry.relativePath} entry.`,
+          PARTIAL_SYNC_STAGED_DB_INVALID_CODE
+        );
+      }
+    }
   }
 
   async resolveLatestSnapshotMetadata(): Promise<ResolvedLatestSnapshot> {
@@ -513,11 +715,16 @@ export class MithrilPartialSyncService {
     };
   }
 
-  async _statRequiredPath(targetPath: string, message: string): Promise<Stats> {
+  async _statRequiredPath(
+    targetPath: string,
+    message: string,
+    stage: MithrilPartialSyncErrorStage = 'preparing',
+    code?: string
+  ): Promise<Stats> {
     try {
       return await fs.stat(targetPath);
     } catch (error) {
-      throw this._createStageError('preparing', message);
+      throw this._createStageError(stage, message, code);
     }
   }
 
@@ -542,6 +749,28 @@ export class MithrilPartialSyncService {
         'Unable to read the immutable directory for Mithril partial sync preflight.'
       );
     }
+  }
+
+  _resolveStageFromProgressUpdate(
+    update: ReturnType<typeof parseMithrilProgressUpdate>
+  ): MithrilPartialSyncStatusUpdate['status'] | null {
+    if (!update) return null;
+    if (update.stepNum != null && update.stepNum >= 4) {
+      return 'verifying';
+    }
+
+    if (
+      update.stepNum != null ||
+      update.filesDownloaded != null ||
+      update.filesTotal != null ||
+      update.bytesDownloaded != null ||
+      update.bytesTotal != null ||
+      update.label != null
+    ) {
+      return 'downloading';
+    }
+
+    return null;
   }
 
   _updateStatus(update: Partial<MithrilPartialSyncStatusUpdate>): void {
@@ -578,6 +807,39 @@ export class MithrilPartialSyncService {
     this._progressItems = this._progressItems.map((item) =>
       item.state === 'active' ? { ...item, state } : item
     );
+  }
+
+  _activateProgressStage(id: 'downloading' | 'verifying'): void {
+    this._markActiveProgressItemAs('completed');
+    this._upsertProgressItem(id, id, 'active');
+  }
+
+  _upsertProgressItem(
+    id: string,
+    label: string,
+    state: MithrilProgressItem['state']
+  ): void {
+    const existingItem = this._progressItems.find((item) => item.id === id);
+    if (existingItem) {
+      this._progressItems = this._progressItems.map((item) =>
+        item.id === id ? { ...item, label, state } : item
+      );
+      return;
+    }
+
+    this._addProgressItem(id, label, state);
+  }
+
+  _getFallbackErrorStage(): MithrilPartialSyncErrorStage {
+    if (this._status.status === 'verifying') {
+      return 'verifying';
+    }
+
+    if (this._status.status === 'downloading') {
+      return 'downloading';
+    }
+
+    return 'preparing';
   }
 
   _addProgressItem(

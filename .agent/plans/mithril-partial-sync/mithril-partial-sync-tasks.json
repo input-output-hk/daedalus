@@ -318,7 +318,7 @@
           "id": "task-202",
           "title": "Implement partial restore download and verification flow",
           "description": "Execute the validated Mithril partial restore flow in the staging location, including correct CLI arguments or library calls, progress parsing, certificate verification, and digest verification for the derived immutable range. Ensure status updates remain truthful and sufficiently granular for the renderer overlay.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 5,
           "dependencies": ["task-001", "task-201"],
@@ -335,7 +335,9 @@
             "The service restores the intended immutable range into staging.",
             "Verification failures surface staged errors and do not proceed to install.",
             "Progress and elapsed telemetry reach the renderer through the shared status contract."
-          ]
+          ],
+          "completedAt": "2026-05-20T15:42:03Z",
+          "notes": "Completed 2026-05-20. Task-202 implemented the staged partial-download and verification path in `MithrilPartialSyncService`, using `cardano-db download latest` against the Daedalus-owned staging parent with explicit latest-drift revalidation, truthful download/verifying status mapping, minimal staged `db/` validation, and Boundary A-only failure actions. The service now stops at a deliberate `PARTIAL_SYNC_CUTOVER_NOT_READY` post-verification handoff for task-203, and focused Jest coverage passed for command shape, drift handling, telemetry retention, and failure attribution."
         },
         {
           "id": "task-203",

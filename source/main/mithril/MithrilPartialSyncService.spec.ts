@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import type { PartialSyncPreflightContext } from '../utils/chainStorageCoordinator';
 import { MithrilPartialSyncService } from './MithrilPartialSyncService';
+import type { MithrilPartialSyncStatusUpdate } from '../../common/types/mithril-partial-sync.types';
 
 jest.mock('fs-extra', () => ({
   constants: require('fs').constants,
@@ -28,6 +29,15 @@ const createContext = (): PartialSyncPreflightContext => ({
     isRecoveryFallback: false,
   },
   mithrilWorkDir: '/tmp/mithril-workdir',
+});
+
+const createLatestSnapshot = (latestCertifiedImmutableNumber = 25) => ({
+  snapshot: {
+    digest: 'latest-digest',
+    createdAt: '2026-05-20T00:00:00Z',
+    size: 2,
+  },
+  latestCertifiedImmutableNumber,
 });
 
 describe('MithrilPartialSyncService', () => {
@@ -138,29 +148,49 @@ describe('MithrilPartialSyncService', () => {
     });
   });
 
-  it('fails in preparing with the partial sync log path after preflight and staging complete', async () => {
+  it('runs the staged partial restore command and stops at the cutover boundary after verification', async () => {
     const service = new MithrilPartialSyncService();
 
-    jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValueOnce({
-      snapshot: {
-        digest: 'latest-digest',
-        createdAt: '2026-05-20T00:00:00Z',
-        size: 2,
-      },
-      latestCertifiedImmutableNumber: 25,
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValue(createLatestSnapshot(25));
+    const runCommandSpy = jest.spyOn(service, '_runCommand').mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exitCode: 0,
     });
 
     await expect(service.start(createContext())).rejects.toThrow(
-      'Mithril partial sync download execution is not implemented yet.'
+      'Mithril partial sync download and verification completed, but the conversion/install handoff is not implemented yet.'
+    );
+
+    expect(runCommandSpy).toHaveBeenCalledWith(
+      [
+        '--json',
+        'cardano-db',
+        'download',
+        'latest',
+        '--download-dir',
+        '/tmp/daedalus-state/mithril-partial-sync/download',
+        '--start',
+        '12',
+        '--end',
+        '25',
+        '--include-ancillary',
+        '--allow-override',
+      ],
+      expect.any(Object),
+      '/tmp/daedalus-state/mithril-partial-sync/download'
     );
 
     expect(service.status).toEqual(
       expect.objectContaining({
         status: 'failed',
+        allowedRecoveryActions: ['retry', 'restart-normal', 'wipe-and-full-sync'],
         logPath: '/tmp/daedalus-state/Logs/mithril-partial-sync.log',
         error: expect.objectContaining({
-          stage: 'preparing',
-          code: 'PARTIAL_SYNC_NOT_READY',
+          stage: 'converting',
+          code: 'PARTIAL_SYNC_CUTOVER_NOT_READY',
           logPath: '/tmp/daedalus-state/Logs/mithril-partial-sync.log',
         }),
       })
@@ -212,14 +242,9 @@ describe('MithrilPartialSyncService', () => {
       return mockDirectoryStats();
     });
 
-    jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValueOnce({
-      snapshot: {
-        digest: 'latest-digest',
-        createdAt: '2026-05-20T00:00:00Z',
-        size: 2,
-      },
-      latestCertifiedImmutableNumber: 25,
-    });
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValueOnce(createLatestSnapshot(25));
 
     await expect(service.start(createContext())).rejects.toThrow(
       'Unable to read the immutable directory for Mithril partial sync preflight.'
@@ -231,14 +256,9 @@ describe('MithrilPartialSyncService', () => {
 
     statMock.mockImplementation(async () => mockDirectoryStats());
 
-    jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValueOnce({
-      snapshot: {
-        digest: 'latest-digest',
-        createdAt: '2026-05-20T00:00:00Z',
-        size: 2,
-      },
-      latestCertifiedImmutableNumber: 25,
-    });
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValueOnce(createLatestSnapshot(25));
 
     await expect(service.start(createContext())).rejects.toThrow(
       'The managed chain protocolMagicId path is not a file.'
@@ -254,14 +274,9 @@ describe('MithrilPartialSyncService', () => {
       }
     });
 
-    jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValueOnce({
-      snapshot: {
-        digest: 'latest-digest',
-        createdAt: '2026-05-20T00:00:00Z',
-        size: 2,
-      },
-      latestCertifiedImmutableNumber: 25,
-    });
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValueOnce(createLatestSnapshot(25));
 
     await expect(service.start(createContext())).rejects.toThrow(
       'Unable to read the immutable directory for Mithril partial sync preflight.'
@@ -277,14 +292,9 @@ describe('MithrilPartialSyncService', () => {
       }
     });
 
-    jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValueOnce({
-      snapshot: {
-        digest: 'latest-digest',
-        createdAt: '2026-05-20T00:00:00Z',
-        size: 2,
-      },
-      latestCertifiedImmutableNumber: 25,
-    });
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValueOnce(createLatestSnapshot(25));
 
     await expect(service.start(createContext())).rejects.toThrow(
       'Unable to read protocolMagicId for Mithril partial sync preflight.'
@@ -296,14 +306,9 @@ describe('MithrilPartialSyncService', () => {
 
     readdirMock.mockResolvedValue(['volatile', 'CURRENT', 'primary']);
 
-    jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValueOnce({
-      snapshot: {
-        digest: 'latest-digest',
-        createdAt: '2026-05-20T00:00:00Z',
-        size: 2,
-      },
-      latestCertifiedImmutableNumber: 25,
-    });
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValueOnce(createLatestSnapshot(25));
 
     await expect(service.start(createContext())).rejects.toThrow(
       'Unable to determine the local immutable position from the managed chain immutable directory.'
@@ -315,14 +320,9 @@ describe('MithrilPartialSyncService', () => {
 
     readdirMock.mockResolvedValue(['00025.chunk']);
 
-    jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValueOnce({
-      snapshot: {
-        digest: 'latest-digest',
-        createdAt: '2026-05-20T00:00:00Z',
-        size: 2,
-      },
-      latestCertifiedImmutableNumber: 25,
-    });
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValueOnce(createLatestSnapshot(25));
 
     await expect(service.start(createContext())).rejects.toThrow(
       'The managed chain is not missing any certified immutable files for Mithril partial sync.'
@@ -332,13 +332,13 @@ describe('MithrilPartialSyncService', () => {
   it('prepares staging outside the managed chain subtree for custom storage too', async () => {
     const service = new MithrilPartialSyncService();
 
-    jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValueOnce({
-      snapshot: {
-        digest: 'latest-digest',
-        createdAt: '2026-05-20T00:00:00Z',
-        size: 2,
-      },
-      latestCertifiedImmutableNumber: 12,
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValue(createLatestSnapshot(12));
+    jest.spyOn(service, '_runCommand').mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exitCode: 0,
     });
 
     await expect(
@@ -349,7 +349,9 @@ describe('MithrilPartialSyncService', () => {
         },
         mithrilWorkDir: '/mnt/custom-storage/chain',
       })
-    ).rejects.toThrow('Mithril partial sync download execution is not implemented yet.');
+    ).rejects.toThrow(
+      'Mithril partial sync download and verification completed, but the conversion/install handoff is not implemented yet.'
+    );
 
     expect(removeMock).toHaveBeenCalledWith('/tmp/daedalus-state/mithril-partial-sync');
     expect(ensureDirMock).toHaveBeenCalledWith(
@@ -360,14 +362,9 @@ describe('MithrilPartialSyncService', () => {
   it('rejects staging paths that resolve inside the managed chain subtree', async () => {
     const service = new MithrilPartialSyncService();
 
-    jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValueOnce({
-      snapshot: {
-        digest: 'latest-digest',
-        createdAt: '2026-05-20T00:00:00Z',
-        size: 2,
-      },
-      latestCertifiedImmutableNumber: 12,
-    });
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValueOnce(createLatestSnapshot(12));
 
     await expect(
       service.start({
@@ -379,6 +376,180 @@ describe('MithrilPartialSyncService', () => {
       })
     ).rejects.toThrow(
       'The partial sync staging directory must be outside the managed chain path.'
+    );
+  });
+
+  it('rejects latest snapshot drift before command execution', async () => {
+    const service = new MithrilPartialSyncService();
+
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValueOnce(createLatestSnapshot(25))
+      .mockResolvedValueOnce(createLatestSnapshot(26));
+
+    await expect(service.start(createContext())).rejects.toThrow(
+      'The latest certified Mithril snapshot changed during partial sync preparation. Please retry with the refreshed range.'
+    );
+
+    expect(service.status).toEqual(
+      expect.objectContaining({
+        status: 'failed',
+        error: expect.objectContaining({
+          stage: 'preparing',
+          code: 'PARTIAL_SYNC_LATEST_DRIFT',
+        }),
+      })
+    );
+  });
+
+  it('maps Mithril progress into downloading and verifying status updates', async () => {
+    const service = new MithrilPartialSyncService();
+    const statusUpdates: Array<MithrilPartialSyncStatusUpdate> = [];
+
+    service.onStatus((update) => {
+      statusUpdates.push(update);
+    });
+
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValue(createLatestSnapshot(25));
+    jest.spyOn(service, '_runCommand').mockImplementation(async (_args, options) => {
+      options.onStdout?.(
+        '{"step_num":1,"total_steps":7,"label":"Files","files_downloaded":2,"files_total":10,"seconds_elapsed":3}\n'
+      );
+      options.onStdout?.(
+        '{"step_num":4,"total_steps":7,"message":"Verifying download"}\n'
+      );
+      options.onStdout?.(
+        '{"label":"Ancillary","bytes_downloaded":100,"bytes_total":200,"seconds_elapsed":5}\n'
+      );
+
+      return {
+        stdout: '',
+        stderr: '',
+        exitCode: 0,
+      };
+    });
+
+    await expect(service.start(createContext())).rejects.toThrow(
+      'Mithril partial sync download and verification completed, but the conversion/install handoff is not implemented yet.'
+    );
+
+    expect(statusUpdates).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          status: 'downloading',
+          filesDownloaded: 2,
+          filesTotal: 10,
+          elapsedSeconds: 3,
+        }),
+        expect.objectContaining({
+          status: 'verifying',
+          filesDownloaded: 2,
+          filesTotal: 10,
+          ancillaryBytesDownloaded: 100,
+          ancillaryBytesTotal: 200,
+          elapsedSeconds: 5,
+        }),
+      ])
+    );
+  });
+
+  it('fails in downloading when the Mithril command exits before verification starts', async () => {
+    const service = new MithrilPartialSyncService();
+
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValue(createLatestSnapshot(25));
+    jest.spyOn(service, '_runCommand').mockResolvedValue({
+      stdout: '',
+      stderr: 'download failed',
+      exitCode: 1,
+    });
+
+    await expect(service.start(createContext())).rejects.toThrow(
+      'Mithril partial sync download failed with exit code 1'
+    );
+
+    expect(service.status).toEqual(
+      expect.objectContaining({
+        status: 'failed',
+        error: expect.objectContaining({
+          stage: 'downloading',
+          code: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
+        }),
+      })
+    );
+  });
+
+  it('fails in verifying when the Mithril command exits after verification starts', async () => {
+    const service = new MithrilPartialSyncService();
+
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValue(createLatestSnapshot(25));
+    jest.spyOn(service, '_runCommand').mockImplementation(async (_args, options) => {
+      options.onStdout?.('{"step_num":4,"total_steps":7,"message":"Verifying download"}\n');
+      return {
+        stdout: '',
+        stderr: 'verification failed',
+        exitCode: 1,
+      };
+    });
+
+    await expect(service.start(createContext())).rejects.toThrow(
+      'Mithril partial sync verification failed with exit code 1'
+    );
+
+    expect(service.status).toEqual(
+      expect.objectContaining({
+        status: 'failed',
+        error: expect.objectContaining({
+          stage: 'verifying',
+          code: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
+        }),
+      })
+    );
+  });
+
+  it('fails in verifying when the staged db output is incomplete', async () => {
+    const service = new MithrilPartialSyncService();
+
+    jest
+      .spyOn(service, 'resolveLatestSnapshotMetadata')
+      .mockResolvedValue(createLatestSnapshot(25));
+    jest.spyOn(service, '_runCommand').mockImplementation(async (_args, options) => {
+      options.onStdout?.('{"step_num":4,"total_steps":7,"message":"Verifying download"}\n');
+      return {
+        stdout: '',
+        stderr: '',
+        exitCode: 0,
+      };
+    });
+    statMock.mockImplementation(async (targetPath: string) => {
+      if (targetPath.endsWith('/ledger')) {
+        throw new Error('missing ledger');
+      }
+
+      if (targetPath.endsWith('/protocolMagicId')) {
+        return mockFileStats();
+      }
+
+      return mockDirectoryStats();
+    });
+
+    await expect(service.start(createContext())).rejects.toThrow(
+      'Mithril partial sync staged output is missing ledger.'
+    );
+
+    expect(service.status).toEqual(
+      expect.objectContaining({
+        status: 'failed',
+        error: expect.objectContaining({
+          stage: 'verifying',
+          code: 'PARTIAL_SYNC_STAGED_DB_INVALID',
+        }),
+      })
     );
   });
 });
