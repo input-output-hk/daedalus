@@ -154,4 +154,19 @@ describe('mithrilPartialSyncChannel', () => {
       error: null,
     });
   });
+
+  it('uses the registered active-state provider instead of cached status', () => {
+    const moduleExports = loadModule();
+    const provider = jest.fn(() => true);
+
+    moduleExports.setMithrilPartialSyncStatus({
+      status: 'idle',
+      allowedRecoveryActions: [],
+      error: null,
+    });
+    moduleExports.setMithrilPartialSyncActiveProvider(provider);
+
+    expect(moduleExports.isMithrilPartialSyncActive()).toBe(true);
+    expect(provider).toHaveBeenCalledTimes(1);
+  });
 });

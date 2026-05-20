@@ -45,6 +45,10 @@ class ChainStorageCoordinator {
     return this._mithrilBootstrapService;
   }
 
+  isPartialSyncInProgress(): boolean {
+    return this._partialSyncInProgress;
+  }
+
   setPartialSyncHandlers(handlers: PartialSyncHandlers | null): void {
     this._partialSyncHandlers = handlers;
   }

@@ -229,7 +229,7 @@
           "id": "task-103",
           "title": "Integrate node lifecycle suppression and active-state reporting",
           "description": "Update main-process node lifecycle integration so generic cardano-node crash-restart behavior is suppressed while partial sync is active, matching the safety posture already used for Mithril bootstrap. Add any active-state provider or status accessor needed by that integration.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": ["task-101", "task-102"],
@@ -245,7 +245,9 @@
           "acceptance": [
             "Automatic crash restarts are suppressed during active partial sync.",
             "Main process can tell whether partial sync is active without depending on renderer state."
-          ]
+          ],
+          "completedAt": "2026-05-20T02:12:21Z",
+          "notes": "Completed 2026-05-20. Task-103 kept node lifecycle suppression on the coordinator-owned partial-sync boundary from task-102: `ChainStorageCoordinator.isPartialSyncInProgress()` now feeds a minimal partial-sync provider/accessor seam in `source/main/ipc/mithrilPartialSyncChannel.ts`, `source/main/index.ts` wires that seam from the coordinator, and `source/main/cardano/setup.ts` suppresses generic crash restart while partial sync is active without overloading cached status or renderer state. Focused Jest coverage passed for the new provider seam, coordinator getter, and setup crash-handling branch."
         }
       ]
     },

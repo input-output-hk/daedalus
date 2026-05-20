@@ -295,6 +295,39 @@ describe('chainStorageCoordinator', () => {
     expect(mithrilBootstrapServiceMock.startBootstrap).not.toHaveBeenCalled();
   });
 
+  it('reports whether partial sync is in progress from the coordinator-owned boundary', async () => {
+    const partialSyncMutation = createDeferred();
+
+    partialSyncHandlersMock.start.mockImplementationOnce(async () => {
+      await partialSyncMutation.promise;
+    });
+
+    const moduleExports = loadModule();
+    moduleExports.chainStorageCoordinator.setPartialSyncHandlers(
+      partialSyncHandlersMock
+    );
+
+    const partialSyncCall = moduleExports.chainStorageCoordinator.startPartialSync(
+      {
+        nodeState: 'stopped',
+      }
+    );
+
+    await flushPromises();
+
+    expect(moduleExports.chainStorageCoordinator.isPartialSyncInProgress()).toBe(
+      true
+    );
+
+    partialSyncMutation.resolve();
+
+    await partialSyncCall;
+
+    expect(moduleExports.chainStorageCoordinator.isPartialSyncInProgress()).toBe(
+      false
+    );
+  });
+
   it('rejects partial sync start when recovery fallback layout is active', async () => {
     chainStorageManagerMock.ensureManagedChainLayout.mockResolvedValueOnce({
       managedChainPath: '/tmp/state/chain',

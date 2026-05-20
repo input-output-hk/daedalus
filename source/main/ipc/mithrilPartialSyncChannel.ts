@@ -22,6 +22,8 @@ import type {
 import type { MithrilPartialSyncStatusUpdate } from '../../common/types/mithril-partial-sync.types';
 import { logger } from '../utils/logging';
 
+let isPartialSyncActive: () => boolean = () => false;
+
 const mithrilPartialSyncStartChannel: MainIpcChannel<
   MithrilPartialSyncStartRendererRequest,
   MithrilPartialSyncStartMainResponse
@@ -82,6 +84,12 @@ const broadcastMithrilPartialSyncStatus = async (
 };
 
 export const getMithrilPartialSyncStatus = () => lastStatus;
+
+export const isMithrilPartialSyncActive = () => isPartialSyncActive();
+
+export const setMithrilPartialSyncActiveProvider = (provider: () => boolean) => {
+  isPartialSyncActive = provider;
+};
 
 export const setMithrilPartialSyncStatus = (
   status: MithrilPartialSyncStatusUpdate
