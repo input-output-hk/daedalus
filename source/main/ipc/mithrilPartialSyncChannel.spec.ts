@@ -1,5 +1,24 @@
 import type {} from './mithrilPartialSyncChannel';
 
+const chainStorageCoordinatorMock = {
+  startPartialSync: jest.fn(),
+  cancelPartialSync: jest.fn(),
+  setPartialSyncHandlers: jest.fn(),
+};
+
+const mithrilPartialSyncServiceMock = {
+  status: {
+    status: 'idle',
+    allowedRecoveryActions: [],
+    error: null,
+  },
+  onStatus: jest.fn(),
+  start: jest.fn(),
+  cancel: jest.fn(),
+};
+
+const getMithrilBootstrapNodeStateMock = jest.fn().mockReturnValue('stopped');
+
 const mockChannels: Array<{
   onRequest: jest.Mock;
   send: jest.Mock;
@@ -14,6 +33,20 @@ jest.mock('./lib/MainIpcChannel', () => ({
     mockChannels.push(channel);
     return channel;
   }),
+}));
+
+jest.mock('../utils/chainStorageCoordinator', () => ({
+  chainStorageCoordinator: chainStorageCoordinatorMock,
+}));
+
+jest.mock('../mithril/MithrilPartialSyncService', () => ({
+  MithrilPartialSyncService: jest
+    .fn()
+    .mockImplementation(() => mithrilPartialSyncServiceMock),
+}));
+
+jest.mock('./mithrilBootstrapChannel', () => ({
+  getMithrilBootstrapNodeState: getMithrilBootstrapNodeStateMock,
 }));
 
 const loadModule = () => {
@@ -33,6 +66,11 @@ describe('mithrilPartialSyncChannel', () => {
     jest.resetModules();
     jest.clearAllMocks();
     mockChannels.length = 0;
+    mithrilPartialSyncServiceMock.status = {
+      status: 'idle',
+      allowedRecoveryActions: [],
+      error: null,
+    };
   });
 
   it('returns the cached idle status with allowed recovery actions for status requests', async () => {
@@ -108,7 +146,7 @@ describe('mithrilPartialSyncChannel', () => {
     expect(lastSendCall[1]).toBe(secondWindow.webContents);
   });
 
-  it('rejects each action channel with an explicit not implemented error', async () => {
+  it('delegates start and cancel through the coordinator while keeping recovery actions unimplemented', async () => {
     const moduleExports = loadModule();
 
     moduleExports.handleMithrilPartialSyncRequests({ webContents: {} } as never);
@@ -117,11 +155,11 @@ describe('mithrilPartialSyncChannel', () => {
       moduleExports.getMithrilPartialSyncNotImplementedError()
     );
 
-    await expect(mockChannels[0].onRequest.mock.calls[0][0]()).rejects.toThrow(
-      expectedError.message
+    await expect(mockChannels[0].onRequest.mock.calls[0][0]()).resolves.toBe(
+      undefined
     );
-    await expect(mockChannels[2].onRequest.mock.calls[0][0]()).rejects.toThrow(
-      expectedError.message
+    await expect(mockChannels[2].onRequest.mock.calls[0][0]()).resolves.toBe(
+      undefined
     );
     await expect(mockChannels[3].onRequest.mock.calls[0][0]()).rejects.toThrow(
       expectedError.message
@@ -129,6 +167,25 @@ describe('mithrilPartialSyncChannel', () => {
     await expect(mockChannels[4].onRequest.mock.calls[0][0]()).rejects.toThrow(
       expectedError.message
     );
+
+    expect(chainStorageCoordinatorMock.startPartialSync).toHaveBeenCalledWith({
+      nodeState: 'stopped',
+    });
+    expect(chainStorageCoordinatorMock.cancelPartialSync).toHaveBeenCalledTimes(
+      1
+    );
+  });
+
+  it('registers the partial sync service with the coordinator only once', () => {
+    const moduleExports = loadModule();
+
+    moduleExports.handleMithrilPartialSyncRequests({ webContents: {} } as never);
+    moduleExports.handleMithrilPartialSyncRequests({ webContents: {} } as never);
+
+    expect(chainStorageCoordinatorMock.setPartialSyncHandlers).toHaveBeenCalledTimes(
+      1
+    );
+    expect(mithrilPartialSyncServiceMock.onStatus).toHaveBeenCalledTimes(1);
   });
 
   it('replaces cached status objects instead of merging stale recovery actions', () => {

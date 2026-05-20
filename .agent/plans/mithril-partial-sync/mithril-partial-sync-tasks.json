@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Mithril Partial Sync From Diagnostics Tasks",
     "created": "2026-05-18",
-    "updated": "2026-05-19",
+    "updated": "2026-05-20",
     "version": "1.0.0",
     "totalTasks": 20,
     "prdReference": ".agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md",
@@ -261,7 +261,7 @@
           "id": "task-200",
           "title": "Create MithrilPartialSyncService skeleton and latest-snapshot resolution",
           "description": "Create a dedicated service, or an equally clear separate mode boundary, for partial sync orchestration. The service should own status emission, active-process tracking, log handling, latest-snapshot lookup, and high-level lifecycle orchestration without yet committing to live install details beyond the validated design.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": ["task-002", "task-004", "task-102"],
@@ -278,7 +278,9 @@
             "A distinct partial sync service entrypoint exists.",
             "The service can resolve latest snapshot metadata and emit lifecycle status updates.",
             "Bootstrap and partial sync code paths remain separately understandable."
-          ]
+          ],
+          "completedAt": "2026-05-20T14:09:35Z",
+          "notes": "Completed 2026-05-20. Task-200 added `source/main/mithril/MithrilPartialSyncService.ts` as the dedicated diagnostics-launched partial-sync service, wired start/cancel through the existing coordinator seam, isolated partial-sync logging via a minimal `mithrilCommandRunner.ts` log-file parameter, and implemented bounded latest-snapshot metadata resolution with a `show latest` to snapshot-list fallback. The service intentionally stops at a preparing-stage `PARTIAL_SYNC_NOT_READY` boundary after latest lookup so later tasks can add range derivation and restore/install behavior without widening bootstrap responsibilities. Focused Jest coverage passed for the new service, IPC delegation, and custom log-file seam."
         },
         {
           "id": "task-201",

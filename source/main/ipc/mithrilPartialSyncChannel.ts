@@ -21,6 +21,9 @@ import type {
 } from '../../common/ipc/api';
 import type { MithrilPartialSyncStatusUpdate } from '../../common/types/mithril-partial-sync.types';
 import { logger } from '../utils/logging';
+import { getMithrilBootstrapNodeState } from './mithrilBootstrapChannel';
+import { MithrilPartialSyncService } from '../mithril/MithrilPartialSyncService';
+import { chainStorageCoordinator } from '../utils/chainStorageCoordinator';
 
 let isPartialSyncActive: () => boolean = () => false;
 
@@ -108,6 +111,7 @@ export const onMithrilPartialSyncStatus = (
 };
 
 let mithrilPartialSyncRequestsInitialized = false;
+const mithrilPartialSyncService = new MithrilPartialSyncService();
 
 export const handleMithrilPartialSyncRequests = (window: BrowserWindow) => {
   sendStatusUpdate = async (status) => {
@@ -117,9 +121,30 @@ export const handleMithrilPartialSyncRequests = (window: BrowserWindow) => {
   if (mithrilPartialSyncRequestsInitialized) return;
   mithrilPartialSyncRequestsInitialized = true;
 
+  lastStatus = mithrilPartialSyncService.status;
+
+  chainStorageCoordinator.setPartialSyncHandlers({
+    start: async (context) => mithrilPartialSyncService.start(context),
+    cancel: async () => mithrilPartialSyncService.cancel(),
+  });
+
+  mithrilPartialSyncService.onStatus((status) => {
+    broadcastMithrilPartialSyncStatus(status).catch((error) => {
+      logger.warn('Failed to broadcast Mithril partial sync status update', {
+        error,
+      });
+    });
+  });
+
   mithrilPartialSyncStatusChannel.onRequest(async () => lastStatus);
-  mithrilPartialSyncStartChannel.onRequest(rejectUntilImplemented);
-  mithrilPartialSyncCancelChannel.onRequest(rejectUntilImplemented);
+  mithrilPartialSyncStartChannel.onRequest(async () => {
+    await chainStorageCoordinator.startPartialSync({
+      nodeState: getMithrilBootstrapNodeState(),
+    });
+  });
+  mithrilPartialSyncCancelChannel.onRequest(async () => {
+    await chainStorageCoordinator.cancelPartialSync();
+  });
   mithrilPartialSyncRestartNormalChannel.onRequest(rejectUntilImplemented);
   mithrilPartialSyncWipeAndFullSyncChannel.onRequest(rejectUntilImplemented);
 };
