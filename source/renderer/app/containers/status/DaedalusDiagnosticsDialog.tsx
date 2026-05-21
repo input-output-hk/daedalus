@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
+import { isMithrilBootstrapBlockingNodeStart } from '../../../../common/types/mithril-bootstrap.types';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
@@ -26,7 +27,7 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
     const { restartNode } = actions.networkStatus;
-    const { app, networkStatus } = stores;
+    const { app, mithrilBootstrap, mithrilPartialSync, networkStatus } = stores;
     const { openExternalLink } = app;
     const {
       // Node state
@@ -108,6 +109,10 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
           isSystemTimeIgnored={isSystemTimeIgnored}
+          isMithrilPartialSyncActive={mithrilPartialSync.isActive}
+          isMithrilBootstrapActive={isMithrilBootstrapBlockingNodeStart(
+            mithrilBootstrap.status
+          )}
           nodeConnectionError={getNetworkInfoRequest.error}
           localTip={localTip}
           networkTip={networkTip}

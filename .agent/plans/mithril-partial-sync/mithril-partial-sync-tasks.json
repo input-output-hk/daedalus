@@ -436,23 +436,34 @@
           "id": "task-301",
           "title": "Add diagnostics recommendation copy and manual action",
           "description": "Extend the diagnostics dialog to show recommendation text based on existing sync data and add a manual `Mithril Partial Sync` button. The renderer should not calculate a threshold or auto-trigger; it only surfaces current sync context and lets the user decide.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": ["task-300"],
           "targetPaths": [
             "source/renderer/app/components/status/DaedalusDiagnostics.tsx",
-            "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.tsx"
+            "source/renderer/app/components/status/DaedalusDiagnostics.scss",
+            "source/renderer/app/components/status/DaedalusDiagnostics.spec.tsx",
+            "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.tsx",
+            "translations/messages.json",
+            "source/renderer/app/i18n/locales/defaultMessages.json",
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json"
           ],
           "implementationNotes": [
             "Place the CTA near existing node-state and sync diagnostics so the rationale is visible at the moment of decision.",
-            "Disable or hide the action while any Mithril-managed operation is active to prevent overlapping flows."
+            "Disable or hide the action while any Mithril-managed operation is active to prevent overlapping flows.",
+            "Completed 2026-05-21 by adding renderer-only recommendation copy plus a visible disabled CTA placeholder; confirmation ownership and backend start remain deferred to task-302.",
+            "The implementation uses `stores.mithrilPartialSync.isActive` and `isMithrilBootstrapBlockingNodeStart(stores.mithrilBootstrap.status)` for truthful conflicting-work gating without adding threshold logic or new store seams.",
+            "Renderer review uncovered an i18n gotcha: generated locale catalogs must be polished after `yarn i18n:manage` so runtime diagnostics copy does not ship with `!!!` placeholders."
           ],
           "acceptance": [
             "Diagnostics shows a partial sync recommendation and action button.",
             "The CTA uses existing sync data only and adds no hidden threshold logic.",
             "The action is unavailable while conflicting work is active."
-          ]
+          ],
+          "completedAt": "2026-05-21T15:09:44Z",
+          "notes": "Completed 2026-05-21. Task-301 intentionally narrowed the diagnostics entry point to a truthful renderer-only slice: `DaedalusDiagnostics` now surfaces Mithril partial-sync recommendation copy from existing sync context and shows a visible but disabled CTA placeholder, while `DaedalusDiagnosticsDialog` derives conflicting Mithril work from the partial-sync store plus the shared bootstrap blocking helper. Focused Jest coverage and i18n sync landed with polished en-US and ja-JP runtime strings, and confirmation ownership or backend start wiring remain explicitly deferred to task-302."
         },
         {
           "id": "task-302",

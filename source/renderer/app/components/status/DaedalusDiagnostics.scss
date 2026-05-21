@@ -328,6 +328,39 @@
     display: flex;
   }
 
+  .layoutData.mithrilPartialSyncData {
+    align-items: flex-end;
+    display: flex;
+    max-width: 360px;
+  }
+
+  .mithrilPartialSyncRecommendation {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mithrilPartialSyncRecommendationCopy {
+    color: var(--theme-network-window-text-color);
+    line-height: 1.5;
+    opacity: 0.85;
+    text-align: right;
+  }
+
+  .mithrilPartialSyncButton {
+    margin-right: 0 !important;
+  }
+
+  .mithrilPartialSyncHint {
+    color: var(--theme-network-window-text-color);
+    font-family: var(--font-regular);
+    font-size: 12px;
+    line-height: 1.4;
+    opacity: 0.7;
+    text-align: right;
+  }
+
   .layoutData.lastNetworkBlock,
   .layoutData.lastSynchronizedBlock {
     span {

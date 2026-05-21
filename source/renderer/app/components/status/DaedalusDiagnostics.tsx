@@ -384,6 +384,39 @@ const messages = defineMessages({
     defaultMessage: '!!!slot',
     description: 'slot',
   },
+  mithrilPartialSyncRecommendation: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncRecommendation',
+    defaultMessage:
+      '!!!If Cardano node catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.',
+    description:
+      'Recommendation copy shown in diagnostics near sync status for Mithril partial sync',
+  },
+  mithrilPartialSyncRecommendationWithProgress: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationWithProgress',
+    defaultMessage:
+      '!!!Cardano node is currently {syncPercentage}% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.',
+    description:
+      'Recommendation copy shown in diagnostics with current sync percentage for Mithril partial sync',
+  },
+  mithrilPartialSyncButtonLabel: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonLabel',
+    defaultMessage: '!!!Mithril Partial Sync',
+    description: 'Disabled placeholder CTA label for Mithril partial sync',
+  },
+  mithrilPartialSyncButtonHint: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonHint',
+    defaultMessage:
+      '!!!Available after the confirmation step is added.',
+    description:
+      'Hint text beneath the disabled Mithril partial sync diagnostics button',
+  },
+  mithrilPartialSyncButtonHintBlocked: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintBlocked',
+    defaultMessage:
+      '!!!Unavailable while Mithril work is already active.',
+    description:
+      'Hint text beneath the disabled Mithril partial sync diagnostics button while Mithril work is active',
+  },
 });
 type Props = {
   systemInfo: SystemInfo;
@@ -405,6 +438,8 @@ type Props = {
   isForceCheckingSystemTime: boolean;
   localTip: TipInfo | null | undefined;
   networkTip: TipInfo | null | undefined;
+  isMithrilPartialSyncActive: boolean;
+  isMithrilBootstrapActive: boolean;
   onOpenStateDirectory: (...args: Array<any>) => any;
   onOpenExternalLink: (...args: Array<any>) => any;
   onRestartNode: (...args: Array<any>) => any;
@@ -514,6 +549,8 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isSystemTimeIgnored,
       localTip,
       networkTip,
+      isMithrilPartialSyncActive,
+      isMithrilBootstrapActive,
       onOpenStateDirectory,
       onClose,
       onCopyStateDirectoryPath,
@@ -555,9 +592,18 @@ class DaedalusDiagnostics extends Component<Props, State> {
     const unknownDiskSpaceSupportUrl = intl.formatMessage(
       messages.unknownDiskSpaceSupportUrl
     );
+    const formattedSyncPercentage = formattedNumber(syncPercentage, 2);
     const cardanoNetworkValue = intl.formatMessage(
       globalMessages[`network_${cardanoNetwork}`]
     );
+    const isMithrilActionBlocked =
+      isMithrilPartialSyncActive || isMithrilBootstrapActive;
+    const mithrilRecommendationMessage = isSynced
+      ? messages.mithrilPartialSyncRecommendation
+      : messages.mithrilPartialSyncRecommendationWithProgress;
+    const mithrilButtonHintMessage = isMithrilActionBlocked
+      ? messages.mithrilPartialSyncButtonHintBlocked
+      : messages.mithrilPartialSyncButtonHint;
     const localTimeDifferenceClasses = isCheckingSystemTime
       ? classNames([styles.layoutData, styles.localTimeDifference])
       : classNames([
@@ -706,8 +752,33 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('synced', isSynced)}
               {getRow(
                 'syncPercentage',
-                `${formattedNumber(syncPercentage, 2)}%`
+                `${formattedSyncPercentage}%`
               )}
+              <div className={styles.layoutRow}>
+                <div className={styles.layoutHeader}>
+                  {intl.formatMessage(messages.mithrilPartialSyncButtonLabel)}
+                  {intl.formatMessage(globalMessages.punctuationColon)}
+                </div>
+                <div className={classNames(styles.layoutData, styles.mithrilPartialSyncData)}>
+                  <div className={styles.mithrilPartialSyncRecommendation}>
+                    <div className={styles.mithrilPartialSyncRecommendationCopy}>
+                      {intl.formatMessage(mithrilRecommendationMessage, {
+                        syncPercentage: formattedSyncPercentage,
+                      })}
+                    </div>
+                    <button
+                      className={styles.mithrilPartialSyncButton}
+                      disabled
+                      type="button"
+                    >
+                      {intl.formatMessage(messages.mithrilPartialSyncButtonLabel)}
+                    </button>
+                    <div className={styles.mithrilPartialSyncHint}>
+                      {intl.formatMessage(mithrilButtonHintMessage)}
+                    </div>
+                  </div>
+                </div>
+              </div>
               {getRow(
                 'lastNetworkBlock',
                 <Fragment>
