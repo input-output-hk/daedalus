@@ -51,6 +51,7 @@ const defaultProps = {
   networkTip: ({ epoch: 101, slot: 300 } as any),
   isMithrilPartialSyncActive: false,
   isMithrilBootstrapActive: false,
+  onStartMithrilPartialSync: jest.fn(),
   onOpenStateDirectory: jest.fn(),
   onOpenExternalLink: jest.fn(),
   onRestartNode: ({ trigger: jest.fn() } as any),
@@ -78,12 +79,69 @@ describe('DaedalusDiagnostics', () => {
       )
     ).toBeInTheDocument();
     expect(
-      screen.getByText('Available after the confirmation step is added.')
+      screen.getByText(
+        'Review what will happen before Daedalus starts Mithril partial sync.'
+      )
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Mithril Partial Sync' })
-    ).toBeDisabled();
+    ).toBeEnabled();
     expect(screen.queryByText(/!!!/)).not.toBeInTheDocument();
+  });
+
+  it('opens confirmation first and does not start partial sync before confirm', () => {
+    const onStartMithrilPartialSync = jest.fn();
+    renderComponent({ onStartMithrilPartialSync });
+
+    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Before Mithril partial sync begins',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Daedalus will stop Cardano node automatically, then download and restore verified Mithril data.'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'If Mithril partial sync succeeds, Daedalus will restart Cardano node automatically and normal syncing will resume.'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'If the attempt fails, Daedalus can offer retry partial sync, restart normally on the current database, or wipe chain data and do a full Mithril sync.'
+      )
+    ).toBeInTheDocument();
+    expect(onStartMithrilPartialSync).not.toHaveBeenCalled();
+    expect(screen.queryByText(/!!!/)).not.toBeInTheDocument();
+  });
+
+  it('returns to diagnostics when confirmation is cancelled', () => {
+    const onStartMithrilPartialSync = jest.fn();
+    renderComponent({ onStartMithrilPartialSync });
+
+    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    screen.getByRole('button', { name: 'Back to diagnostics' }).click();
+
+    expect(
+      screen.getByText(
+        'Cardano node is currently 62.50% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.'
+      )
+    ).toBeInTheDocument();
+    expect(onStartMithrilPartialSync).not.toHaveBeenCalled();
+  });
+
+  it('starts partial sync only after confirmation', () => {
+    const onStartMithrilPartialSync = jest.fn();
+    renderComponent({ onStartMithrilPartialSync });
+
+    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    screen.getByRole('button', { name: 'Start Mithril partial sync' }).click();
+
+    expect(onStartMithrilPartialSync).toHaveBeenCalledTimes(1);
   });
 
   it('renders the synced recommendation variant without the percentage text', () => {

@@ -469,7 +469,7 @@
           "id": "task-302",
           "title": "Implement confirmation modal and acknowledgement flow",
           "description": "Add a small confirmation modal that opens before partial sync begins. The modal must explain automatic node stop and restart behavior, the use of verified Mithril data, and the three failure recovery options. Confirming the modal should be the only path that triggers backend start.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": ["task-300", "task-301"],
@@ -487,7 +487,9 @@
             "Clicking the diagnostics CTA opens a confirmation modal first.",
             "No backend work starts until the user confirms.",
             "The modal copy explains the automatic stop and restart behavior and failure options."
-          ]
+          ],
+          "completedAt": "2026-05-21T15:38:56Z",
+          "notes": "Completed 2026-05-21. Task-302 made the diagnostics CTA actionable through a same-owner confirmation view in `DaedalusDiagnostics`, kept `DaedalusDiagnosticsDialog` as the sole `ReactModal` owner, and wired backend start only through explicit confirmation via `mithrilPartialSync.startPartialSync`. Focused Jest coverage and i18n sync passed with polished en-US and ja-JP runtime strings, and progress/error overlay reuse remains explicitly deferred to task-303."
         },
         {
           "id": "task-303",

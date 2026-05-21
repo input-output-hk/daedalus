@@ -113,6 +113,7 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
           isMithrilBootstrapActive={isMithrilBootstrapBlockingNodeStart(
             mithrilBootstrap.status
           )}
+          onStartMithrilPartialSync={mithrilPartialSync.startPartialSync}
           nodeConnectionError={getNetworkInfoRequest.error}
           localTip={localTip}
           networkTip={networkTip}

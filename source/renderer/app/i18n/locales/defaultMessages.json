@@ -1865,6 +1865,41 @@
         "defaultMessage": "!!!Unavailable while Mithril work is already active.",
         "description": "Hint text beneath the disabled Mithril partial sync diagnostics button while Mithril work is active",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintBlocked"
+      },
+      {
+        "defaultMessage": "!!!Review what will happen before Daedalus starts Mithril partial sync.",
+        "description": "Hint text beneath the Mithril partial sync diagnostics button before confirmation opens",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintReady"
+      },
+      {
+        "defaultMessage": "!!!Before Mithril partial sync begins",
+        "description": "Title for the Mithril partial sync confirmation view",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationTitle"
+      },
+      {
+        "defaultMessage": "!!!Daedalus will stop Cardano node automatically, then download and restore verified Mithril data.",
+        "description": "Introductory copy for the Mithril partial sync confirmation view",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationIntro"
+      },
+      {
+        "defaultMessage": "!!!If Mithril partial sync succeeds, Daedalus will restart Cardano node automatically and normal syncing will resume.",
+        "description": "Success copy for the Mithril partial sync confirmation view",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationSuccess"
+      },
+      {
+        "defaultMessage": "!!!If the attempt fails, Daedalus can offer retry partial sync, restart normally on the current database, or wipe chain data and do a full Mithril sync.",
+        "description": "Failure recovery copy for the Mithril partial sync confirmation view",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationRecovery"
+      },
+      {
+        "defaultMessage": "!!!Back to diagnostics",
+        "description": "Cancel button label for the Mithril partial sync confirmation view",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationCancel"
+      },
+      {
+        "defaultMessage": "!!!Start Mithril partial sync",
+        "description": "Confirm button label for the Mithril partial sync confirmation view",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationConfirm"
       }
     ],
     "path": "source/renderer/app/components/status/DaedalusDiagnostics.tsx"

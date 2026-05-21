@@ -417,6 +417,46 @@ const messages = defineMessages({
     description:
       'Hint text beneath the disabled Mithril partial sync diagnostics button while Mithril work is active',
   },
+  mithrilPartialSyncButtonHintReady: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintReady',
+    defaultMessage:
+      '!!!Review what will happen before Daedalus starts Mithril partial sync.',
+    description:
+      'Hint text beneath the Mithril partial sync diagnostics button before confirmation opens',
+  },
+  mithrilPartialSyncConfirmationTitle: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationTitle',
+    defaultMessage: '!!!Before Mithril partial sync begins',
+    description: 'Title for the Mithril partial sync confirmation view',
+  },
+  mithrilPartialSyncConfirmationIntro: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationIntro',
+    defaultMessage:
+      '!!!Daedalus will stop Cardano node automatically, then download and restore verified Mithril data.',
+    description: 'Introductory copy for the Mithril partial sync confirmation view',
+  },
+  mithrilPartialSyncConfirmationSuccess: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationSuccess',
+    defaultMessage:
+      '!!!If Mithril partial sync succeeds, Daedalus will restart Cardano node automatically and normal syncing will resume.',
+    description: 'Success copy for the Mithril partial sync confirmation view',
+  },
+  mithrilPartialSyncConfirmationRecovery: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationRecovery',
+    defaultMessage:
+      '!!!If the attempt fails, Daedalus can offer retry partial sync, restart normally on the current database, or wipe chain data and do a full Mithril sync.',
+    description: 'Failure recovery copy for the Mithril partial sync confirmation view',
+  },
+  mithrilPartialSyncConfirmationCancel: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationCancel',
+    defaultMessage: '!!!Back to diagnostics',
+    description: 'Cancel button label for the Mithril partial sync confirmation view',
+  },
+  mithrilPartialSyncConfirmationConfirm: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationConfirm',
+    defaultMessage: '!!!Start Mithril partial sync',
+    description: 'Confirm button label for the Mithril partial sync confirmation view',
+  },
 });
 type Props = {
   systemInfo: SystemInfo;
@@ -440,6 +480,7 @@ type Props = {
   networkTip: TipInfo | null | undefined;
   isMithrilPartialSyncActive: boolean;
   isMithrilBootstrapActive: boolean;
+  onStartMithrilPartialSync: (...args: Array<any>) => any;
   onOpenStateDirectory: (...args: Array<any>) => any;
   onOpenExternalLink: (...args: Array<any>) => any;
   onRestartNode: (...args: Array<any>) => any;
@@ -449,6 +490,7 @@ type Props = {
 };
 type State = {
   isNodeRestarting: boolean;
+  isShowingMithrilPartialSyncConfirmation: boolean;
 };
 const FINAL_CARDANO_NODE_STATES = [
   CardanoNodeStates.RUNNING,
@@ -468,6 +510,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
     super(props);
     this.state = {
       isNodeRestarting: false,
+      isShowingMithrilPartialSyncConfirmation: false,
     };
   }
 
@@ -482,6 +525,14 @@ class DaedalusDiagnostics extends Component<Props, State> {
       this.setState({
         isNodeRestarting: false,
       }); // eslint-disable-line
+    }
+
+    if (
+      this.state.isShowingMithrilPartialSyncConfirmation &&
+      !prevProps.isMithrilPartialSyncActive &&
+      this.props.isMithrilPartialSyncActive
+    ) {
+      this.hideMithrilPartialSyncConfirmation();
     }
   }
 
@@ -551,6 +602,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
       networkTip,
       isMithrilPartialSyncActive,
       isMithrilBootstrapActive,
+      onStartMithrilPartialSync,
       onOpenStateDirectory,
       onClose,
       onCopyStateDirectoryPath,
@@ -585,7 +637,8 @@ class DaedalusDiagnostics extends Component<Props, State> {
       cardanoNetwork,
       daedalusStateDirectoryPath,
     } = coreInfo;
-    const { isNodeRestarting } = this.state;
+    const { isNodeRestarting, isShowingMithrilPartialSyncConfirmation } =
+      this.state;
     const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError as ErrorType;
@@ -603,7 +656,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
       : messages.mithrilPartialSyncRecommendationWithProgress;
     const mithrilButtonHintMessage = isMithrilActionBlocked
       ? messages.mithrilPartialSyncButtonHintBlocked
-      : messages.mithrilPartialSyncButtonHint;
+      : messages.mithrilPartialSyncButtonHintReady;
     const localTimeDifferenceClasses = isCheckingSystemTime
       ? classNames([styles.layoutData, styles.localTimeDifference])
       : classNames([
@@ -616,6 +669,66 @@ class DaedalusDiagnostics extends Component<Props, State> {
             : styles.green,
         ]);
     const { getSectionRow, getRow } = this;
+
+    if (isShowingMithrilPartialSyncConfirmation) {
+      return (
+        <div className={styles.component}>
+          <DialogCloseButton
+            className={styles.closeButton}
+            icon={closeCrossThin}
+            onClose={onClose}
+          />
+
+          <div className={styles.mithrilPartialSyncConfirmation}>
+            <h1 className={styles.mithrilPartialSyncConfirmationTitle}>
+              {intl.formatMessage(messages.mithrilPartialSyncConfirmationTitle)}
+            </h1>
+
+            <div className={styles.mithrilPartialSyncConfirmationBody}>
+              <p>
+                {intl.formatMessage(messages.mithrilPartialSyncConfirmationIntro)}
+              </p>
+              <p>
+                {intl.formatMessage(
+                  messages.mithrilPartialSyncConfirmationSuccess
+                )}
+              </p>
+              <p>
+                {intl.formatMessage(
+                  messages.mithrilPartialSyncConfirmationRecovery
+                )}
+              </p>
+            </div>
+
+            <div className={styles.mithrilPartialSyncConfirmationActions}>
+              <button
+                className={styles.mithrilPartialSyncConfirmationCancelButton}
+                onClick={this.hideMithrilPartialSyncConfirmation}
+                type="button"
+              >
+                {intl.formatMessage(
+                  messages.mithrilPartialSyncConfirmationCancel
+                )}
+              </button>
+              <button
+                className={styles.mithrilPartialSyncConfirmationConfirmButton}
+                disabled={isMithrilActionBlocked}
+                onClick={() => {
+                  this.hideMithrilPartialSyncConfirmation();
+                  onStartMithrilPartialSync();
+                }}
+                type="button"
+              >
+                {intl.formatMessage(
+                  messages.mithrilPartialSyncConfirmationConfirm
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className={styles.component}>
         <DialogCloseButton
@@ -768,7 +881,8 @@ class DaedalusDiagnostics extends Component<Props, State> {
                     </div>
                     <button
                       className={styles.mithrilPartialSyncButton}
-                      disabled
+                      disabled={isMithrilActionBlocked}
+                      onClick={this.showMithrilPartialSyncConfirmation}
                       type="button"
                     >
                       {intl.formatMessage(messages.mithrilPartialSyncButtonLabel)}
@@ -966,8 +1080,12 @@ class DaedalusDiagnostics extends Component<Props, State> {
     // This method is to be used on buttons which get disabled after click
     // as without it the ReactModal is not closing if you press the ESC key
     // even after the button is later re-enabled
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'focus' does not exist on type 'Element'.
-    document.getElementsByClassName('ReactModal__Content')[0].focus();
+    const modalContent = document.getElementsByClassName('ReactModal__Content')[0];
+
+    if (modalContent && 'focus' in modalContent) {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'focus' does not exist on type 'Element'.
+      modalContent.focus();
+    }
   };
   checkTime = () => {
     this.props.onForceCheckNetworkClock();
@@ -979,6 +1097,25 @@ class DaedalusDiagnostics extends Component<Props, State> {
     });
     // @ts-ignore ts-migrate(2339) FIXME: Property 'trigger' does not exist on type '(...arg... Remove this comment to see the full error message
     this.props.onRestartNode.trigger();
+    this.restoreDialogCloseOnEscKey();
+  };
+  showMithrilPartialSyncConfirmation = () => {
+    if (
+      this.props.isMithrilPartialSyncActive ||
+      this.props.isMithrilBootstrapActive
+    ) {
+      return;
+    }
+
+    this.setState({
+      isShowingMithrilPartialSyncConfirmation: true,
+    });
+    this.restoreDialogCloseOnEscKey();
+  };
+  hideMithrilPartialSyncConfirmation = () => {
+    this.setState({
+      isShowingMithrilPartialSyncConfirmation: false,
+    });
     this.restoreDialogCloseOnEscKey();
   };
 }
