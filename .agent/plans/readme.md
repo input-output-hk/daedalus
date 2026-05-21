@@ -159,6 +159,7 @@ Any unresolved decisions.
 |--------|------|--------|------|
 | mithril | bootstrap-cardano-node | 🚧 In Progress | 2026-02-10 |
 | mithril | mithril-snapshot-ux | 🚧 In Progress | 2026-03-03 |
+| governance | governance-drep-discovery-plan | 🚧 In Progress | 2026-05-21 |
 
 ---
 

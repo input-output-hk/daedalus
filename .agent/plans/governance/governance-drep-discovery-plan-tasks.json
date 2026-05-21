@@ -1,0 +1,438 @@
+{
+  "metadata": {
+    "title": "Governance DRep Discovery Plan Tasks",
+    "created": "2026-05-21",
+    "updated": "2026-05-21",
+    "version": "1.0.0",
+    "totalTasks": 23,
+    "prdReference": ".agent/plans/governance/governance-drep-discovery-plan.md",
+    "description": "Standalone DRep Discovery implementation plan for browse, evaluate, favorite, select, and delegate in Daedalus. Query-path discovery gate findings are captured in the markdown plan."
+  },
+  "phases": [
+    {
+      "id": "sprint-1",
+      "name": "Sprint 1 - Shared Types, Socket Path, Query Service, and IPC",
+      "description": "Lay the data plumbing for DRep Discovery from main process to renderer.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Define shared DRep Discovery TypeScript types",
+          "description": "Add shared types in source/common/ for DRep registration state, active/inactive status, expiry epoch and greater-than-six-epoch eligibility, voting power, anchor presence, metadata-completeness state, current epoch vote positions on active proposals, wallet governance delegation status, source labels, refresh metadata, and query failure payloads.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": [],
+          "targetPath": "source/common/types/",
+          "acceptanceCriteria": [
+            "Use `votingPower: BigNumber | null`; expose optional detail-only delegated stake with the same lossless value if labeled separately.",
+            "Document IPC serialization for lovelace fields as decimal strings with renderer-side BigNumber rehydration.",
+            "Define typed `QueryFailure`, ranking-unavailable failure, refresh metadata, `InvalidDrepId`, and `SelfnodeCliUnsupported` variants."
+          ]
+        },
+        {
+          "id": "task-002",
+          "title": "Own cardano-node socket path across launcher lifecycle",
+          "description": "Implement the DRep Discovery prerequisite for cardano-cli queries: set `nodeConfig.socketFile` explicitly in CardanoWalletLauncher before constructing cardanoLauncher.Launcher, then capture `node.nodeService.socketPath` after `node.start()` resolves in CardanoNode and expose it through a read-only accessor. Do not add a `nodeSocketPath` field to `WalletOptions` or `CardanoNodeConfig`.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 6,
+          "dependencies": [],
+          "targetPath": "source/main/cardano/",
+          "acceptanceCriteria": [
+            "`nodeConfig.socketFile` is set pre-launch in the cardano-node branch of CardanoWalletLauncher.",
+            "`CardanoNode` exposes the launcher-resolved socket path via an instance accessor populated after `node.start()`.",
+            "No new field is added to `WalletOptions` or `CardanoNodeConfig`.",
+            "Selfnode coverage exercises a cardano-cli query through the threaded socket path, or returns typed `SelfnodeCliUnsupported` at service init.",
+            "CLI subprocesses receive the socket via `CARDANO_NODE_SOCKET_PATH` in spawn env, not via `--socket-path` argv."
+          ]
+        },
+        {
+          "id": "task-003",
+          "title": "Add main-process DRep query service",
+          "description": "Implement a singleton GovernanceQueryService in source/main/ for DRep list, DRep detail, current epoch vote positions, and wallet governance status using the confirmed cardano-cli path and shared DRep Discovery types.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 12,
+          "dependencies": [
+            "task-001",
+            "task-002"
+          ],
+          "targetPath": "source/main/",
+          "acceptanceCriteria": [
+            "Representative `drep-state`, `drep-stake-distribution`, and `gov-state` fixtures from a synced node are committed under tests/mocks/governance/ before this service merges, including at least one lovelace value above Number.MAX_SAFE_INTEGER.",
+            "Requests latest local state on load and on user refresh, deduplicating in-flight requests and retaining last-successful data only for stale-while-refresh continuity.",
+            "Bulk `--all-dreps` is invoked once per latest-state refresh; per-DRep CLI invocations are forbidden.",
+            "Reads the captured node socket path from CardanoNode and passes it through `CARDANO_NODE_SOCKET_PATH` in spawn env.",
+            "Parses CLI stdout with json-bigint in lossless mode and constructs BigNumber values from raw decimal strings; native JSON.parse -> Number -> BigNumber is forbidden.",
+            "Includes a fixture/test with lovelace greater than 9_007_199_254_740_991 that round-trips parse -> IPC decimal string -> BigNumber rehydration losslessly.",
+            "Validates any future per-id DRep argv before spawn: bech32 prefix in {drep, drep_script} with valid checksum and CIP-129 length, or 56-char lowercase hex.",
+            "Rejected IDs return typed `InvalidDrepId` and never reach spawn.",
+            "`drep-state` whole-call failure returns typed directory `QueryFailure`; `drep-stake-distribution` whole-call failure returns typed ranking-unavailable `QueryFailure`; `gov-state` whole-call failure sets `currentEpochVotePositions: null` per DRep.",
+            "Era flag uses `latest`, with `conway` fallback only if the query findings report that the alias is missing."
+          ]
+        },
+        {
+          "id": "task-004",
+          "title": "Add governance IPC channels for DRep Discovery",
+          "description": "Add typed IPC channel contracts in source/common/ipc/api.ts for DRep list, DRep detail, wallet governance status, and refresh metadata. Register main-process handlers in source/main/ipc/index.ts wired to GovernanceQueryService.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-003"
+          ],
+          "targetPath": "source/common/ipc/"
+        },
+        {
+          "id": "task-005",
+          "title": "Add renderer IPC clients for DRep Discovery",
+          "description": "Add renderer-side IPC client wrappers in source/renderer/app/ipc/ for DRep Discovery channels, following the same main/renderer split pattern as Mithril IPC clients.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-004"
+          ],
+          "targetPath": "source/renderer/app/ipc/"
+        },
+        {
+          "id": "task-006",
+          "title": "Maintain cardano-wallet API surface checklist",
+          "description": "For future cardano-wallet bumps, run the DRep API surface checklist before merge. If any DRep route beyond wallet-scoped joinDRep appears, stop and re-open the query-path decision before continuing DRep Discovery work.",
+          "status": "ongoing",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": [],
+          "targetPath": "tests/mocks/governance/",
+          "acceptanceCriteria": [
+            "Record the new cardano-wallet tag or revision and NAR hash from flake.lock in the PR description.",
+            "Attach a fresh swagger grep artifact saved under tests/mocks/governance/.",
+            "If directory-wide DRep endpoints appear, re-open the query-path decision before continuing.",
+            "Review upstream cardano-wallet commits, release notes, and security advisories between previous rev and new rev.",
+            "Prefer tagged cardano-wallet releases unless a branch pin is explicitly approved."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sprint-2",
+      "name": "Sprint 2 - GovernanceStore, Directory, Detail, and Selector",
+      "description": "Users can browse, evaluate, favorite, and select a DRep inside Daedalus using local on-chain data only.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-007",
+          "title": "Add GovernanceStore for DRep Discovery",
+          "description": "Create source/renderer/app/stores/GovernanceStore.ts and register it in stores/index.ts. The store owns DRep list, browsing detail, favorites, selectedDRepId, default cohort state, search/show-all state, loading states, refresh state, and typed error states. VotingStore must not read GovernanceStore state directly.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 8,
+          "dependencies": [
+            "task-005"
+          ],
+          "targetPath": "source/renderer/app/stores/"
+        },
+        {
+          "id": "task-008",
+          "title": "Build DRep directory component",
+          "description": "Build a DRep directory list component with default-view scaffold and final verified-metadata cohort rule. Default view excludes the top 35 DReps by voting power and shows up to the next 200 DReps that are active, have expiry more than 6 epochs away, and have completed metadata. Eligible DReps are ranked by voting power high to low and displayed in randomized order. Sprint 2 shows local on-chain fields and anchor presence only until verified metadata completeness lands.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 8,
+          "dependencies": [
+            "task-007"
+          ],
+          "targetPath": "source/renderer/app/components/",
+          "acceptanceCriteria": [
+            "Excluded top-35 and non-cohort DReps remain reachable through search/show-all filters and direct DRep ID entry.",
+            "Columns include DRep ID, active/inactive status, expiry status, voting power, metadata status, and favorite toggle.",
+            "Filters include active status, expiry threshold, metadata status, top-35 exclusion, default cohort, favorited, search, and show-all.",
+            "Refresh button reloads latest local state and updates ranking/cohort state."
+          ]
+        },
+        {
+          "id": "task-009",
+          "title": "Build DRep detail view component",
+          "description": "Build a DRep detail view showing local on-chain fields only in Sprint 2: ID, registration state, active/inactive state, expiry, voting power or delegated stake, current epoch vote positions on active proposals, and anchor presence. Include graceful absence states, latest-state refresh, and favorite toggle.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 8,
+          "dependencies": [
+            "task-007"
+          ],
+          "targetPath": "source/renderer/app/components/",
+          "acceptanceCriteria": [
+            "Anchor metadata is not rendered in Sprint 2; verified anchor rendering lands after anchor fetch and hash-verification hardening.",
+            "Detail view remains useful when current epoch vote positions are unavailable."
+          ]
+        },
+        {
+          "id": "task-010",
+          "title": "Integrate DRep selector into VotingPowerDelegation",
+          "description": "Add a Browse DReps affordance in VotingPowerDelegation.tsx that opens the in-app DRep directory. Selecting a DRep pre-fills selectedDRepId in the delegation form via component prop or route param only. Retain direct DRep ID paste input. Submission must continue through existing software-wallet delegateVotes and hardware-wallet VotingStore paths.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 6,
+          "dependencies": [
+            "task-008",
+            "task-009"
+          ],
+          "targetPath": "source/renderer/app/components/voting/voting-governance/",
+          "acceptanceCriteria": [
+            "No second delegation backend is introduced.",
+            "VotingStore does not read GovernanceStore directly."
+          ]
+        },
+        {
+          "id": "task-011",
+          "title": "Update delegation confirmation with DRep identity",
+          "description": "Update the DRep delegation confirmation dialog to always display the DRep ID in Sprint 2. Do not show verified display names until anchor metadata has been verified, hardened, and source-labeled.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-010"
+          ],
+          "targetPath": "source/renderer/app/components/voting/voting-governance/"
+        },
+        {
+          "id": "task-012",
+          "title": "Persist DRep favorites via Electron local store",
+          "description": "Wire GovernanceStore favorites as a Set<string> of DRep IDs to Electron local store for per-device persistence across sessions. Favorites are not per-wallet and not synced.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-007"
+          ],
+          "targetPath": "source/main/"
+        },
+        {
+          "id": "task-013",
+          "title": "Wire routes for DRep directory and DRep detail",
+          "description": "Add route definitions in source/renderer/app/Routes.tsx for DRep directory and DRep detail if they are implemented as separate routed pages. Update navigation to include DRep Discovery entry points.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-008",
+            "task-009"
+          ],
+          "targetPath": "source/renderer/app/"
+        }
+      ]
+    },
+    {
+      "id": "sprint-3",
+      "name": "Sprint 3 - Local End-to-End Integration",
+      "description": "Prove the local DRep Discovery flow end to end before anchor rendering begins. Not a release checkpoint.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-014",
+          "title": "Verify local browse, select, and delegate flow",
+          "description": "Verify end to end that a user can open the DRep directory, view local on-chain DRep data, view DRep detail with current epoch vote positions, mark a DRep as favorite, select a DRep, see it pre-filled in the delegation form, view the confirmation dialog with DRep ID only, and submit through existing delegateVotes/VotingStore paths. No anchor-derived profile content is required at this stage.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-010",
+            "task-011",
+            "task-012",
+            "task-013"
+          ],
+          "targetPath": "source/renderer/app/",
+          "acceptanceCriteria": [
+            "No anchor-derived content is rendered before anchor fetch, verification, parsing, and source labeling land."
+          ]
+        },
+        {
+          "id": "task-015",
+          "title": "Run internal smoke and integration pass",
+          "description": "Run yarn compile, yarn lint, and a manual smoke test of the local DRep Discovery flow to confirm the local milestone is stable before anchor work begins.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-014"
+          ],
+          "targetPath": "source/"
+        }
+      ]
+    },
+    {
+      "id": "sprint-4",
+      "name": "Sprint 4 - Anchor Enrichment, Source Labeling, and Release Gate",
+      "description": "Add verified DRep profile enrichment and harden all DRep Discovery surfaces for release.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-016",
+          "title": "Add hardened anchor fetch service",
+          "description": "Implement an anchor fetch service in source/main/ with a transport-agnostic interface. HTTP/HTTPS transport is implemented; IPFS interface slot is reserved but not implemented. The service returns only bounded, unparsed raw bytes with size, timeout, SSRF, redirect, content-type, and TLS guards applied. It does not parse JSON or write cache entries.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 6,
+          "dependencies": [
+            "task-004",
+            "task-015"
+          ],
+          "targetPath": "source/main/",
+          "acceptanceCriteria": [
+            "TLS default verification remains on; no `rejectUnauthorized: false`.",
+            "Redirects are disabled by default; 3xx surfaces as the same graceful empty state as 404.",
+            "Per-request connect+total timeout is <= 10 seconds.",
+            "Hard response-size cap is about 1 MB; abort on overflow.",
+            "Content-type allow-list includes application/json and application/ld+json; reject otherwise.",
+            "SSRF guard rejects RFC 1918, loopback, link-local, 0.0.0.0/8, ULA, and IPv6 reserved ranges.",
+            "DNS-rebinding mitigation binds the validated resolved IP to the actual TCP connection through either IP-literal connect with original Host/servername or a custom cached lookup option.",
+            "Fetch result is bounded raw bytes plus transport metadata only; no JSON parsing and no cache writes occur in this task."
+          ]
+        },
+        {
+          "id": "task-017",
+          "title": "Hash-verify, cache, and parse DRep anchor bytes",
+          "description": "Verify fetched raw anchor bytes against the on-chain anchor hash before parsing, caching, use, or rendering. Store verified bytes/content in an immutable local cache keyed by anchor hash. Cache hit skips fetch and remains bound to the current on-chain hash; stale cached content for a new on-chain hash is not served. Parse DRep anchor JSON only after Blake2b-256 hash verification succeeds.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 8,
+          "dependencies": [
+            "task-016"
+          ],
+          "targetPath": "source/main/",
+          "acceptanceCriteria": [
+            "Blake2b-256 hash verification runs on bounded raw bytes before JSON parsing.",
+            "Only hash-verified bytes/content are written to immutable cache keyed by anchor hash.",
+            "Parse failures surface as graceful anchor-unavailable states without rendering partial content.",
+            "Stale cached content for a changed on-chain anchor hash is not served."
+          ]
+        },
+        {
+          "id": "task-018",
+          "title": "Render verified DRep anchor metadata",
+          "description": "Wire verified DRep anchor metadata into DRep detail and delegation confirmation: display name, objectives, motivations, qualifications, and references from CIP-119. Expose verified metadata-completeness state to GovernanceStore so the final default cohort can exclude top-35 DReps by voting power and show up to the next 200 eligible DReps in randomized order.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": [
+            "task-017"
+          ],
+          "targetPath": "source/renderer/app/components/",
+          "acceptanceCriteria": [
+            "All anchor-derived fields carry a verified off-chain content source label.",
+            "Chain-native view remains fully functional when anchor is unavailable or fails verification.",
+            "Delegation confirmation shows verified display name only when verified metadata is available."
+          ]
+        },
+        {
+          "id": "task-019",
+          "title": "Apply source labeling to DRep Discovery content",
+          "description": "Ensure consistent visual distinction between local on-chain state and verified off-chain anchor-derived content across DRep Discovery surfaces. No anchor-derived content is shown without the verified off-chain content label.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-018"
+          ],
+          "targetPath": "source/renderer/app/components/",
+          "acceptanceCriteria": [
+            "Apply the source label to verified display names in DRep detail and delegation confirmation.",
+            "Local on-chain view remains complete and useful without anchor data."
+          ]
+        },
+        {
+          "id": "task-020",
+          "title": "Localize DRep Discovery copy",
+          "description": "Write and polish all DRep Discovery user-visible text in en-US.json and ja-JP.json: directory headings and labels, default cohort filters, refresh states, detail field labels, selector copy, source labels, empty/error states, confirmation dialog DRep ID and verified-name display, and walkthrough updates for the in-app browse -> evaluate -> select -> delegate flow.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 8,
+          "dependencies": [
+            "task-019"
+          ],
+          "targetPath": "source/renderer/app/i18n/locales/",
+          "acceptanceCriteria": [
+            "Product-quality copy exists in both en-US and ja-JP; i18n:manage passing is necessary but not sufficient.",
+            "Update .vscode/docs/walkthroughs/governance/ to remove GovTool-routing language for this flow."
+          ]
+        },
+        {
+          "id": "task-021",
+          "title": "Add Storybook coverage for DRep Discovery",
+          "description": "Add Storybook stories for DRep directory loaded, empty, error, refreshing, default cohort, and search/show-all states; DRep detail local-only, with verified anchor, anchor unavailable, and anchor hash mismatch states; selector within delegation form; favorite toggle; source labels; confirmation dialog with DRep ID only and with verified DRep name; and all loading/error states.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 6,
+          "dependencies": [
+            "task-019"
+          ],
+          "targetPath": "storybook/stories/"
+        },
+        {
+          "id": "task-022",
+          "title": "Add Jest coverage for DRep Discovery",
+          "description": "Add Jest specs for shared DRep types and parsing, query service behavior, latest-on-load and refresh behavior, default cohort ranking/randomization, anchor fetch and verification, hash mismatch, timeout, size limit, GovernanceStore actions and computed values, selector integration, confirmation identity display, and hardware-wallet propagation.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 10,
+          "dependencies": [
+            "task-019"
+          ],
+          "targetPath": "tests/",
+          "acceptanceCriteria": [
+            "Hardware-wallet tests cover selected DRep ID propagation from selector -> confirmation -> signing payload.",
+            "Hardware-wallet tests cover on-device confirmation identity display, DRep ID plus verified name when available, device-disconnected, device-locked, and signing-rejected states.",
+            "Assert no software-signing fallback is invoked when a hardware wallet is selected."
+          ]
+        },
+        {
+          "id": "task-023",
+          "title": "Add Cucumber coverage and release verification",
+          "description": "Add Cucumber scenarios for DRep Discovery: browse directory, refresh latest governance data, use search/show-all for excluded or non-cohort DReps, view detail with local on-chain data, view verified anchor profile, favorite a DRep, select a DRep from the directory, and complete delegation to that DRep. Confirm users can complete browse -> evaluate -> select -> delegate without external portals on a synced mainnet node.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 10,
+          "dependencies": [
+            "task-020",
+            "task-021",
+            "task-022"
+          ],
+          "targetPath": "tests/",
+          "acceptanceCriteria": [
+            "Cucumber scenario coverage includes hardware-wallet browse -> select -> confirm-on-device -> delegate path with mocked Ledger and Trezor transports.",
+            "Release verification confirms the DRep Discovery gate: users can complete browse -> evaluate -> select -> delegate without external portals."
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 4,
+    "totalTasks": 23,
+    "criticalPath": [
+      "task-001",
+      "task-002",
+      "task-003",
+      "task-004",
+      "task-005",
+      "task-007",
+      "task-008",
+      "task-009",
+      "task-010",
+      "task-011",
+      "task-012",
+      "task-013",
+      "task-014",
+      "task-015",
+      "task-016",
+      "task-017",
+      "task-018",
+      "task-019",
+      "task-020",
+      "task-021",
+      "task-022",
+      "task-023"
+    ]
+  }
+}
