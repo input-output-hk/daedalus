@@ -521,7 +521,7 @@
           "id": "task-304",
           "title": "Add i18n, theme, and Storybook coverage",
           "description": "Add all new copy, theme tokens, and component stories needed to keep the partial sync diagnostics CTA, confirmation modal, and progress or error states consistent with Daedalus standards. Storybook coverage should make review of dangerous-action wording and error recovery states straightforward before manual QA.",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 3,
           "dependencies": ["task-303"],
@@ -539,7 +539,9 @@
             "All user-facing strings are localized through the standard message pipeline.",
             "Theme coverage exists for any new visual states or modal styles.",
             "Storybook stories cover the primary and terminal states of the feature."
-          ]
+          ],
+          "completedAt": "2026-05-21T20:20:00Z",
+          "notes": "Completed 2026-05-21. Task-304 refreshed the stale diagnostics Storybook surface, added dedicated partial-sync overlay stories, and kept the new coverage truthful under en-US/ja-JP locale switching and theme validation. Manual validation surfaced Storybook-specific browser incompatibilities from main-process environment imports and native hardware-wallet transport modules, so the task also added narrowly scoped Storybook-only compatibility fixes in `storybook/main.ts`, `storybook/stories/_support/environment.ts`, and story registration order without changing runtime app behavior or message/theme assets. Existing loading-story registration was restored after review to avoid scope-regressing unrelated Storybook coverage."
         }
       ]
     },

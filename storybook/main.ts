@@ -27,6 +27,14 @@ module.exports = {
       new webpack.ProvidePlugin({
         process: 'process/browser',
       }),
+      new webpack.NormalModuleReplacementPlugin(
+        /@trezor[\\/]transport[\\/]lib[\\/]transports[\\/]nodeusb\.js$/,
+        require.resolve('@trezor/transport/lib/transports/nodeusb.browser.js')
+      ),
+      new webpack.NormalModuleReplacementPlugin(
+        /@trezor[\\/]transport[\\/]lib[\\/]transports[\\/]udp\.js$/,
+        require.resolve('@trezor/transport/lib/transports/udp.browser.js')
+      ),
     ];
     config.experiments = {
       syncWebAssembly: true,
@@ -53,6 +61,8 @@ module.exports = {
         // fs is used by node-gyp-build (inside usb) to load native .node files.
         // Stub it out — native modules can't load in a browser context.
         fs: false,
+        usb: false,
+        'node-gyp-build': false,
       },
     };
     config.module.rules.push(
