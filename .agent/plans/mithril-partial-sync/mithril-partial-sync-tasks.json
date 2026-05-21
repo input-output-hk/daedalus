@@ -555,7 +555,7 @@
           "id": "task-400",
           "title": "Add automated tests across backend, IPC, and renderer",
           "description": "Add Jest coverage for service orchestration, coordinator guards, install strategy behavior, cancellation and failure branching, IPC channel handlers, store transitions, diagnostics CTA gating, confirmation flow, and progress or error rendering. This task should also add any focused integration-style tests needed for staged install rules or active-state restart suppression.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 6,
           "dependencies": ["task-204", "task-303", "task-304"],
@@ -582,7 +582,9 @@
             "Main-process, IPC, and renderer automated coverage exists for critical paths.",
             "Tests cover at least one failure mode for each recovery option branch.",
             "Automated verification can run before any user-facing manual QA begins."
-          ]
+          ],
+          "completedAt": "2026-05-21T20:26:30Z",
+          "notes": "Completed 2026-05-21. Task-400 closed the remaining automated-coverage gaps without widening production scope: startup fallback suppression is now verified behaviorally in `handleDiskSpace.spec.ts`, diagnostics close handoff is covered at the container boundary, `App.spec.tsx` now locks global overlay ownership and callback forwarding, and the existing partial-sync log-file assertion in `MithrilPartialSyncService.spec.ts` was repaired to use the stable command-runner seam. Focused Jest evidence passed for the backend, IPC, store, diagnostics, overlay, dialog, and app-shell suites (10 suites / 121 tests)."
         },
         {
           "id": "task-401",

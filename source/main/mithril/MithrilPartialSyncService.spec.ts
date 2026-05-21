@@ -40,6 +40,10 @@ jest.mock('../utils/logging', () => ({
   },
 }));
 
+jest.mock('./mithrilCommandRunner', () => ({
+  runCommand: jest.fn(),
+}));
+
 const createContext = (): PartialSyncPreflightContext => ({
   layoutResult: {
     managedChainPath: '/tmp/chain',
@@ -65,6 +69,7 @@ describe('MithrilPartialSyncService', () => {
   const ensureDirMock = fs.ensureDir as jest.Mock;
   const writeJsonMock = fs.writeJson as jest.Mock;
   const moveMock = fs.move as jest.Mock;
+  const runCommandMock = require('./mithrilCommandRunner').runCommand as jest.Mock;
   const writeMithrilPartialSyncMarkerMock = require('./mithrilPartialSyncMarker')
     .writeMithrilPartialSyncMarker as jest.Mock;
   const clearMithrilPartialSyncMarkerMock = require('./mithrilPartialSyncMarker')
@@ -100,6 +105,7 @@ describe('MithrilPartialSyncService', () => {
     ensureDirMock.mockResolvedValue(undefined);
     writeJsonMock.mockResolvedValue(undefined);
     moveMock.mockResolvedValue(undefined);
+    runCommandMock.mockReset();
     writeMithrilPartialSyncMarkerMock.mockResolvedValue(undefined);
     clearMithrilPartialSyncMarkerMock.mockResolvedValue(undefined);
   });
@@ -254,11 +260,7 @@ describe('MithrilPartialSyncService', () => {
   it('uses a distinct partial sync log file when running Mithril commands', async () => {
     const service = new MithrilPartialSyncService();
 
-    const runCommandSpy = jest.spyOn(
-      require('./mithrilCommandRunner'),
-      'runCommand'
-    );
-    runCommandSpy.mockResolvedValueOnce({
+    runCommandMock.mockResolvedValueOnce({
       stdout: '[]',
       stderr: '',
       exitCode: 0,
@@ -266,10 +268,11 @@ describe('MithrilPartialSyncService', () => {
 
     await service.listSnapshots();
 
-    expect(runCommandSpy).toHaveBeenCalledWith(
+    expect(runCommandMock).toHaveBeenCalledWith(
       ['cardano-db', 'snapshot', 'list', '--json'],
       expect.any(String),
       expect.objectContaining({
+        requireKeys: false,
         logFileName: 'mithril-partial-sync.log',
       }),
       expect.any(Object)

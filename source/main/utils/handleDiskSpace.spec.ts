@@ -844,12 +844,54 @@ describe('handleDiskSpace', () => {
     expect(cardanoNode.start).toHaveBeenCalledTimes(1);
   });
 
-  it('suppresses normal-start fallback for installed-awaiting-node-start marker state only', async () => {
+  it('suppresses normal-start fallback after installed-awaiting-node-start startup proof fails', async () => {
     const { handleDiskSpace } = require('./handleDiskSpace') as typeof import('./handleDiskSpace');
-    const source = handleDiskSpace.toString();
+    const { emitMithrilPartialSyncStatus } = require('../ipc/mithrilPartialSyncChannel');
+    const cardanoNode = createCardanoNode();
 
-    expect(source.includes("markerState === 'installed-awaiting-node-start'")).toBe(true);
-    expect(source.includes('shouldSuppressPartialSyncStartupFallback')).toBe(true);
+    chainStorageCoordinatorMock.isManagedChainEmpty.mockResolvedValue(false);
+    fsExtraMock.pathExists.mockImplementation(async (targetPath: string) =>
+      targetPath === '/tmp/state/Logs/mithril-partial-sync.lock'
+    );
+    fsExtraMock.readJson.mockResolvedValue({
+      state: 'installed-awaiting-node-start',
+      updatedAt: '2026-05-20T18:00:00Z',
+      managedChainPath: '/tmp/state/chain',
+    });
+    cardanoNode.start.mockRejectedValueOnce(
+      new Error('partial sync startup proof failed')
+    );
+
+    const handleCheckDiskSpace = handleDiskSpace(
+      { webContents: {} } as never,
+      cardanoNode as never
+    );
+
+    await handleCheckDiskSpace();
+
+    expect(cardanoNode.start).toHaveBeenCalledTimes(1);
+    expect(mithrilBootstrapStatusChannelMock.send).not.toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'idle' }),
+      expect.anything()
+    );
+    expect(emitMithrilPartialSyncStatus).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        status: 'starting-node',
+        allowedRecoveryActions: ['wipe-and-full-sync'],
+      })
+    );
+    expect(emitMithrilPartialSyncStatus).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        status: 'failed',
+        allowedRecoveryActions: ['wipe-and-full-sync'],
+        error: expect.objectContaining({
+          message: 'partial sync startup proof failed',
+          stage: 'starting-node',
+        }),
+      })
+    );
   });
 
 });
