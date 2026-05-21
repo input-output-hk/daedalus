@@ -37,6 +37,19 @@ const TERMINAL_STATUSES: MithrilPartialSyncStatus[] = [
   'cancelled',
 ];
 
+const DISPLAY_STATUSES: MithrilPartialSyncStatus[] = [
+  'preparing',
+  'downloading',
+  'verifying',
+  'converting',
+  'installing',
+  'finalizing',
+  'starting-node',
+  'completed',
+  'failed',
+  'cancelled',
+];
+
 const STATUS_POLL_INTERVAL = 1000;
 const START_PENDING_STATUS: MithrilPartialSyncStatus = 'stopping-node';
 
@@ -51,6 +64,7 @@ export default class MithrilPartialSyncStore extends Store {
   @observable progressItems = [];
   @observable error = DEFAULT_STATUS.error;
   @observable logPath: string | undefined = undefined;
+  @observable isCompletedOverlayDismissed = false;
   _statusPollingInterval: ReturnType<typeof setInterval> | null = null;
   _syncStatusPromise: Promise<void> | null = null;
   _statusSyncGeneration = 0;
@@ -87,6 +101,16 @@ export default class MithrilPartialSyncStore extends Store {
   @computed
   get isTerminal(): boolean {
     return TERMINAL_STATUSES.includes(this.status);
+  }
+
+  @computed
+  get hasDisplayStatus(): boolean {
+    return DISPLAY_STATUSES.includes(this.status);
+  }
+
+  @computed
+  get shouldShowOverlay(): boolean {
+    return this.hasDisplayStatus && !this.isCompletedOverlayDismissed;
   }
 
   @computed
@@ -177,6 +201,9 @@ export default class MithrilPartialSyncStore extends Store {
     }
 
     this.status = update.status;
+    if (update.status !== 'completed') {
+      this.isCompletedOverlayDismissed = false;
+    }
     this.allowedRecoveryActions = update.allowedRecoveryActions;
 
     if ('filesDownloaded' in update) {
@@ -215,6 +242,13 @@ export default class MithrilPartialSyncStore extends Store {
       this._setStatusPollingInterval();
     } else {
       this._clearStatusPollingInterval();
+    }
+  };
+
+  @action
+  dismissCompletedOverlay = () => {
+    if (this.status === 'completed') {
+      this.isCompletedOverlayDismissed = true;
     }
   };
 

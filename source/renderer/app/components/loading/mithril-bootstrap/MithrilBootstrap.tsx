@@ -196,7 +196,7 @@ function MithrilBootstrap(props: Props) {
         ancillaryBytesTotal={ancillaryBytesTotal}
         ancillaryProgress={ancillaryProgress}
         bootstrapStartedAt={bootstrapStartedAt}
-        onCancel={onCancel}
+        onAction={onCancel}
       />
     );
   } else if (status === 'failed') {

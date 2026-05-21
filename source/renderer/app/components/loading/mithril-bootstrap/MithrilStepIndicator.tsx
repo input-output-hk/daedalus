@@ -9,6 +9,8 @@ import type {
   MithrilBootstrapStatus,
   MithrilProgressItem,
 } from '../../../../../common/types/mithril-bootstrap.types';
+import type { MithrilPartialSyncStatus } from '../../../../../common/types/mithril-partial-sync.types';
+import { isMithrilPartialSyncRestoreCompleteStatus } from '../../../../../common/types/mithril-partial-sync.types';
 import { isMithrilBootstrapRestoreCompleteStatus as isRestoreCompleteStatus } from '../../../../../common/types/mithril-bootstrap.types';
 import InlineProgressBar from './InlineProgressBar';
 import messages from './MithrilBootstrap.messages';
@@ -21,13 +23,14 @@ type StepState = 'completed' | 'active' | 'pending' | 'error';
 type SubItemState = 'completed' | 'active' | 'pending' | 'error';
 
 type Props = {
-  status: MithrilBootstrapStatus;
+  status: MithrilBootstrapStatus | MithrilPartialSyncStatus;
   progressItems?: MithrilProgressItem[];
   bytesDownloaded?: number;
   snapshotSize?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
   ancillaryProgress?: number;
+  showDownloadProgressBar?: boolean;
 };
 
 interface Context {
@@ -36,12 +39,15 @@ interface Context {
 
 const STEPS: ReadonlyArray<StepId> = ['preparing', 'downloading', 'finalizing'];
 
-const STATUS_TO_STEP: Partial<Record<MithrilBootstrapStatus, StepId>> = {
+const STATUS_TO_STEP: Partial<
+  Record<MithrilBootstrapStatus | MithrilPartialSyncStatus, StepId>
+> = {
   preparing: 'preparing',
   downloading: 'downloading',
   verifying: 'downloading',
   unpacking: 'finalizing',
   converting: 'finalizing',
+  installing: 'finalizing',
   finalizing: 'finalizing',
 };
 
@@ -106,12 +112,16 @@ const isTransferComplete = (downloaded?: number, total?: number) =>
   total > 0 &&
   downloaded >= total;
 
-const isVerificationOrLater = (status: MithrilBootstrapStatus) =>
+const isVerificationOrLater = (
+  status: MithrilBootstrapStatus | MithrilPartialSyncStatus
+) =>
   status === 'verifying' ||
   status === 'unpacking' ||
   status === 'converting' ||
+  status === 'installing' ||
   status === 'finalizing' ||
-  isRestoreCompleteStatus(status);
+  isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
+  isMithrilPartialSyncRestoreCompleteStatus(status as MithrilPartialSyncStatus);
 
 function deriveCombinedDownloadPercent({
   status,
@@ -122,7 +132,7 @@ function deriveCombinedDownloadPercent({
   ancillaryBytesDownloaded,
   ancillaryBytesTotal,
 }: {
-  status: MithrilBootstrapStatus;
+  status: MithrilBootstrapStatus | MithrilPartialSyncStatus;
   snapshotPercent?: number;
   ancillaryPercent?: number;
   bytesDownloaded?: number;
@@ -223,8 +233,15 @@ function synthesizeVerifyingDigestProgress(
   ];
 }
 
-function getActiveStepIndex(status: MithrilBootstrapStatus): number {
-  if (isRestoreCompleteStatus(status)) return STEPS.length;
+function getActiveStepIndex(
+  status: MithrilBootstrapStatus | MithrilPartialSyncStatus
+): number {
+  if (
+    isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
+    isMithrilPartialSyncRestoreCompleteStatus(status as MithrilPartialSyncStatus)
+  ) {
+    return STEPS.length;
+  }
   if (status === 'failed') return -1;
   const activeStep = STATUS_TO_STEP[status];
   return activeStep ? STEPS.indexOf(activeStep) : -1;
@@ -243,9 +260,14 @@ function hasPhaseError(items: MithrilProgressItem[], stepId: StepId): boolean {
 function deriveTopLevelState(
   stepIndex: number,
   activeStepIndex: number,
-  status: MithrilBootstrapStatus
+  status: MithrilBootstrapStatus | MithrilPartialSyncStatus
 ): StepState {
-  if (isRestoreCompleteStatus(status)) return 'completed';
+  if (
+    isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
+    isMithrilPartialSyncRestoreCompleteStatus(status as MithrilPartialSyncStatus)
+  ) {
+    return 'completed';
+  }
   if (activeStepIndex < 0) return 'pending';
   if (stepIndex < activeStepIndex) return 'completed';
   if (stepIndex === activeStepIndex) return 'active';
@@ -376,6 +398,7 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
     ancillaryProgress,
+    showDownloadProgressBar = true,
   } = props;
 
   const activeStepIndex = getActiveStepIndex(status);
@@ -515,6 +538,7 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
             ? groupSubItems(displayedProgressItems, stepId, activeStepId)
             : [];
         const showBars =
+          showDownloadProgressBar &&
           stepId === 'downloading' &&
           state === 'active' &&
           activeSubItemId === DOWNLOAD_PROGRESS_ANCHOR_ID;

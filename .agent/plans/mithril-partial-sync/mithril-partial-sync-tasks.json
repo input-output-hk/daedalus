@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Mithril Partial Sync From Diagnostics Tasks",
     "created": "2026-05-18",
-    "updated": "2026-05-20",
+    "updated": "2026-05-21",
     "version": "1.0.0",
     "totalTasks": 20,
     "prdReference": ".agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md",
@@ -495,7 +495,7 @@
           "id": "task-303",
           "title": "Integrate progress and error overlay reuse",
           "description": "Reuse existing Mithril progress and error UI where practical, but adapt it to the diagnostics-launched partial sync lifecycle. Remove bootstrap-only concepts from the reused flow, wire up cancel and terminal recovery actions, and ensure success returns the user to normal app flow while background node resynchronization resumes under existing UX.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": ["task-204", "task-300", "task-302"],
@@ -513,7 +513,9 @@
             "A full progress overlay is shown after confirmation.",
             "Error states expose retry, restart-normal, and wipe-full-sync actions as allowed by backend safety rules.",
             "On success, the partial sync UI clears and normal app flow resumes."
-          ]
+          ],
+          "completedAt": "2026-05-21T16:08:31Z",
+          "notes": "Completed 2026-05-21. Task-303 added an app-level diagnostics-launched partial-sync overlay using existing Mithril loading surfaces with minimal widening, kept diagnostics open through the optimistic start seed until backend-confirmed overlay states arrive, reused backend-owned recovery actions for terminal flows, and held success visible through `starting-node` plus terminal `completed` until explicit dismissal. Focused Jest passed for overlay gating, completed dismissal, helper-level diagnostics handoff, placeholder-free locale strings, and suppression of bootstrap byte-based download telemetry on the partial-sync path." 
         },
         {
           "id": "task-304",

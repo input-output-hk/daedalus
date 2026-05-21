@@ -142,6 +142,42 @@ describe('MithrilPartialSyncStore', () => {
     expect(store.isTerminal).toBe(true);
   });
 
+  it('shows the overlay only for backend-confirmed display states and can dismiss completed', () => {
+    const store = setupStore();
+
+    store._updateStatus({
+      status: 'stopping-node',
+      allowedRecoveryActions: [],
+    });
+
+    expect(store.shouldShowOverlay).toBe(false);
+
+    store._updateStatus({
+      status: 'preparing',
+      allowedRecoveryActions: [],
+    });
+
+    expect(store.shouldShowOverlay).toBe(true);
+
+    store._updateStatus({
+      status: 'completed',
+      allowedRecoveryActions: [],
+    });
+
+    expect(store.shouldShowOverlay).toBe(true);
+
+    store.dismissCompletedOverlay();
+
+    expect(store.shouldShowOverlay).toBe(false);
+
+    store._updateStatus({
+      status: 'failed',
+      allowedRecoveryActions: ['retry'],
+    });
+
+    expect(store.shouldShowOverlay).toBe(true);
+  });
+
   it('delegates recovery and lifecycle actions through payload-free IPC requests and refreshes status afterwards', async () => {
     const store = setupStore();
     mockStartRequest.mockResolvedValue(undefined);

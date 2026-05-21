@@ -8,6 +8,7 @@ import type {
   MithrilBootstrapError,
   MithrilBootstrapErrorStage,
 } from '../../../../../common/types/mithril-bootstrap.types';
+import type { MithrilPartialSyncError } from '../../../../../common/types/mithril-partial-sync.types';
 import { CollapsibleSection } from '../../widgets/collapsible-section/CollapsibleSection';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';
@@ -15,8 +16,15 @@ import { MITHRIL_ERROR_HEADING_ID } from './accessibilityIds';
 import styles from './MithrilErrorView.scss';
 
 interface Props {
-  error?: MithrilBootstrapError | null;
+  error?: MithrilBootstrapError | MithrilPartialSyncError | null;
   onOpenExternalLink?: (arg: string) => void;
+  title?: string;
+  hint?: string | null;
+  actions?: Array<{
+    label: string;
+    onClick(): void;
+    variant?: 'primary' | 'secondary';
+  }>;
   onWipeRetry(): void;
   onDecline(): void;
 }
@@ -68,22 +76,48 @@ const getLogPathHref = (logPath: string) => {
 };
 
 function MithrilErrorView(props: Props, { intl }: Context) {
-  const { error, onOpenExternalLink, onWipeRetry, onDecline } = props;
+  const {
+    error,
+    onOpenExternalLink,
+    onWipeRetry,
+    onDecline,
+    title,
+    hint,
+    actions,
+  } = props;
   const copy =
     (error?.stage && ERROR_COPY_BY_STAGE[error.stage]) ||
     ({ title: 'errorTitle' } as ErrorCopy);
-  const hint = copy.hint ? intl.formatMessage(messages[copy.hint]) : null;
+  const resolvedHint =
+    hint !== undefined
+      ? hint
+      : copy.hint
+        ? intl.formatMessage(messages[copy.hint])
+        : null;
   const detailsHeader = error?.message || error?.code || '';
   const logPath = error?.logPath;
+  const resolvedActions =
+    actions || [
+      {
+        label: intl.formatMessage(messages.wipeAndRetry),
+        onClick: onWipeRetry,
+        variant: 'primary' as const,
+      },
+      {
+        label: intl.formatMessage(messages.decline),
+        onClick: onDecline,
+        variant: 'secondary' as const,
+      },
+    ];
 
   return (
     <div className={styles.root} role="alert">
       <div className={styles.header}>
         <h1 id={MITHRIL_ERROR_HEADING_ID}>
-          {intl.formatMessage(messages[copy.title])}
+          {title || intl.formatMessage(messages[copy.title])}
         </h1>
         {error?.message && <p>{error.message}</p>}
-        {hint && <div className={styles.errorHint}>{hint}</div>}
+        {resolvedHint && <div className={styles.errorHint}>{resolvedHint}</div>}
         {logPath && onOpenExternalLink && (
           <Link
             className={styles.logPathLink}
@@ -122,18 +156,19 @@ function MithrilErrorView(props: Props, { intl }: Context) {
       )}
 
       <div className={styles.actions}>
-        <Button
-          className={styles.primaryAction}
-          skin={ButtonSkin}
-          label={intl.formatMessage(messages.wipeAndRetry)}
-          onClick={onWipeRetry}
-        />
-        <Button
-          className={styles.secondaryAction}
-          skin={ButtonSkin}
-          label={intl.formatMessage(messages.decline)}
-          onClick={onDecline}
-        />
+        {resolvedActions.map((action, index) => (
+          <Button
+            key={`${action.label}-${index}`}
+            className={
+              action.variant === 'primary'
+                ? styles.primaryAction
+                : styles.secondaryAction
+            }
+            skin={ButtonSkin}
+            label={action.label}
+            onClick={action.onClick}
+          />
+        ))}
       </div>
     </div>
   );

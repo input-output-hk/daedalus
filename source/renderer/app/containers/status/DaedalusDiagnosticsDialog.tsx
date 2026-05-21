@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import { isMithrilBootstrapBlockingNodeStart } from '../../../../common/types/mithril-bootstrap.types';
+import { isMithrilPartialSyncOverlayStatus } from '../../components/loading/mithril-bootstrap/MithrilPartialSyncOverlay';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
@@ -9,9 +10,16 @@ import { buildSystemInfo } from '../../utils/buildSystemInfo';
 
 type Props = InjectedDialogContainerProps;
 
+export const shouldCloseDiagnosticsForPartialSyncOverlay = (
+  previousStatus,
+  nextStatus
+) =>
+  !isMithrilPartialSyncOverlayStatus(previousStatus) &&
+  isMithrilPartialSyncOverlayStatus(nextStatus);
+
 @inject('stores', 'actions')
 @observer
-class DaedalusDiagnosticsDialog extends Component<Props> {
+export class DaedalusDiagnosticsDialog extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -22,6 +30,19 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
     this.props.actions.networkStatus.forceCheckNetworkClock.trigger();
   handleCopyStateDirectoryPath = () =>
     this.props.actions.networkStatus.copyStateDirectoryPath.trigger();
+
+  componentDidUpdate(prevProps: Props) {
+    const { actions, stores } = this.props;
+
+    if (
+      shouldCloseDiagnosticsForPartialSyncOverlay(
+        prevProps.stores.mithrilPartialSync.status,
+        stores.mithrilPartialSync.status
+      )
+    ) {
+      actions.app.closeDaedalusDiagnosticsDialog.trigger();
+    }
+  }
 
   render() {
     const { actions, stores } = this.props;
