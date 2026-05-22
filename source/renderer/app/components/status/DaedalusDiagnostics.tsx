@@ -18,6 +18,7 @@ import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
+import { logger } from '../../utils/logging';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
@@ -711,11 +712,16 @@ class DaedalusDiagnostics extends Component<Props, State> {
                 )}
               </button>
               <button
-                className={styles.mithrilPartialSyncConfirmationConfirmButton}
+                className={styles.mithrilPartialSyncConfirmationCancelButton}
                 disabled={isMithrilActionBlocked}
                 onClick={() => {
                   this.hideMithrilPartialSyncConfirmation();
-                  onStartMithrilPartialSync();
+                  Promise.resolve(onStartMithrilPartialSync()).catch((error) => {
+                    logger.warn(
+                      'DaedalusDiagnostics: Mithril partial sync start rejected after confirmation',
+                      { error }
+                    );
+                  });
                 }}
                 type="button"
               >

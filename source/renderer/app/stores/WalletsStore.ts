@@ -1124,7 +1124,17 @@ export default class WalletsStore extends Store {
   };
   _pollRefresh = async () => {
     const { isConnected } = this.stores.networkStatus;
-    return isConnected && this.refreshWalletsData();
+    if (!isConnected) {
+      return false;
+    }
+
+    try {
+      await this.refreshWalletsData();
+      return true;
+    } catch (error) {
+      logger.warn('WalletsStore: poll refresh failed', { error });
+      return false;
+    }
   };
   _updateActiveWalletOnRouteChanges = () => {
     const { currentRoute } = this.stores.app;
@@ -1219,7 +1229,17 @@ export default class WalletsStore extends Store {
     if (this._pollingBlocked) return;
 
     if (this.stores.networkStatus.isConnected) {
-      const result = await this.walletsRequest.execute().promise;
+      let result;
+
+      try {
+        result = await this.walletsRequest.execute().promise;
+      } catch (error) {
+        logger.warn('WalletsStore: refreshWalletsData failed during refresh', {
+          error,
+        });
+        return;
+      }
+
       if (!result) return;
       const walletIds = result
         .filter(

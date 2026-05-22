@@ -1,9 +1,16 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../i18n/locales/en-US.json';
 import DaedalusDiagnostics from './DaedalusDiagnostics';
+import { logger } from '../../utils/logging';
+
+jest.mock('../../utils/logging', () => ({
+  logger: {
+    warn: jest.fn(),
+  },
+}));
 
 jest.mock('react-polymorph/lib/components/PopOver', () => ({
   PopOver: ({ children }: { children: React.ReactNode }) => <>{children}</>,
@@ -22,8 +29,8 @@ const defaultProps = {
   coreInfo: {
     daedalusVersion: '1.0.0',
     daedalusBuildNumber: '1',
-    daedalusProcessID: 100,
-    daedalusMainProcessID: 200,
+    daedalusProcessID: '100',
+    daedalusMainProcessID: '200',
     daedalusStateDirectoryPath: '/tmp/state',
     isBlankScreenFixActive: false,
     cardanoNodeVersion: '10.0.0',
@@ -142,6 +149,26 @@ describe('DaedalusDiagnostics', () => {
     screen.getByRole('button', { name: 'Start Mithril partial sync' }).click();
 
     expect(onStartMithrilPartialSync).toHaveBeenCalledTimes(1);
+  });
+
+  it('catches rejected partial sync start promises from the confirmation action', async () => {
+    const onStartMithrilPartialSync = jest
+      .fn()
+      .mockRejectedValue({ code: 'PARTIAL_SYNC_START_FAILED' });
+
+    renderComponent({ onStartMithrilPartialSync });
+
+    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    screen.getByRole('button', { name: 'Start Mithril partial sync' }).click();
+
+    await waitFor(() => {
+      expect(logger.warn).toHaveBeenCalledWith(
+        'DaedalusDiagnostics: Mithril partial sync start rejected after confirmation',
+        {
+          error: { code: 'PARTIAL_SYNC_START_FAILED' },
+        }
+      );
+    });
   });
 
   it('renders the synced recommendation variant without the percentage text', () => {

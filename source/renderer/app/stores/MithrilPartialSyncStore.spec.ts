@@ -150,7 +150,7 @@ describe('MithrilPartialSyncStore', () => {
       allowedRecoveryActions: [],
     });
 
-    expect(store.shouldShowOverlay).toBe(false);
+    expect(store.shouldShowOverlay).toBe(true);
 
     store._updateStatus({
       status: 'preparing',
@@ -255,6 +255,34 @@ describe('MithrilPartialSyncStore', () => {
 
     expect(store.status).toBe('failed');
     expect(store.canRetry).toBe(true);
+  });
+
+  it('absorbs raw start request rejections once backend status reports the failure', async () => {
+    const store = setupStore();
+    mockStartRequest.mockRejectedValue({
+      stage: 'verifying',
+      code: 'PARTIAL_SYNC_STAGED_DB_INVALID',
+    });
+    mockStatusRequest.mockResolvedValue({
+      status: 'failed',
+      allowedRecoveryActions: ['retry'],
+      error: {
+        stage: 'verifying',
+        code: 'PARTIAL_SYNC_STAGED_DB_INVALID',
+        message: 'Mithril partial sync failed.',
+      },
+    });
+
+    await expect(store.startPartialSync()).resolves.toBeUndefined();
+
+    expect(store.status).toBe('failed');
+    expect(store.canRetry).toBe(true);
+    expect(store.error).toEqual(
+      expect.objectContaining({
+        stage: 'verifying',
+        code: 'PARTIAL_SYNC_STAGED_DB_INVALID',
+      })
+    );
   });
 
   it('ignores an older setup status response once start seeds a working state', async () => {

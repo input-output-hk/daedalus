@@ -49,6 +49,7 @@ import {
   emitMithrilPartialSyncStatus,
   getMithrilPartialSyncStatus,
 } from '../ipc/mithrilPartialSyncChannel';
+import { isMithrilPartialSyncBlockingNodeStart } from '../../common/types/mithril-partial-sync.types';
 
 const getDiskCheckReport = async (
   targetPath: string,
@@ -872,6 +873,7 @@ export const handleDiskSpace = (
             }
 
             const mithrilStatus = getMithrilBootstrapStatus();
+            const partialSyncStatus = getMithrilPartialSyncStatus();
             if (mithrilStatus.status === 'failed') {
               await handleMithrilFailureDecline(
                 'polling-chain-present',
@@ -899,6 +901,15 @@ export const handleDiskSpace = (
 
             if (await startNodeAfterPartialSyncInstall(currentGeneration)) {
               response.hadNotEnoughSpaceLeft = false;
+              break;
+            }
+
+            if (
+              isMithrilPartialSyncBlockingNodeStart(partialSyncStatus.status)
+            ) {
+              // Partial sync owns the stopped-node window until controlled
+              // startup after cutover. Background disk checks must not restart
+              // cardano-node underneath it.
               break;
             }
 

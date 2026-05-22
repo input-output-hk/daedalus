@@ -339,7 +339,7 @@ export class MithrilPartialSyncService {
       this._progressItems = [];
       this._updateStatus({
         status: 'cancelled',
-        allowedRecoveryActions: [],
+        allowedRecoveryActions: ['retry', 'restart-normal', 'wipe-and-full-sync'],
         error: null,
         logPath: this._getLogPath(),
         progressItems: [],
@@ -546,7 +546,7 @@ export class MithrilPartialSyncService {
       relativePath: string;
       type: 'directory' | 'file';
     }> = [
-      { relativePath: 'clean', type: 'directory' },
+      { relativePath: 'clean', type: 'file' },
       { relativePath: 'immutable', type: 'directory' },
       { relativePath: 'ledger', type: 'directory' },
       { relativePath: 'protocolMagicId', type: 'file' },

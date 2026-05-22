@@ -37,6 +37,7 @@ interface Context {
 }
 
 const PROGRESS_STATUSES: MithrilPartialSyncStatus[] = [
+  'stopping-node',
   'preparing',
   'downloading',
   'verifying',
@@ -110,7 +111,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
                 MithrilBootstrapMessages.partialSyncNodeStartingDetail
               )}
               hideAction={status === 'starting-node'}
-              showDownloadProgressBar={false}
+              showDownloadProgressBar
               onAction={
                 status === 'completed' ? onDismissCompleted : onCancel
               }

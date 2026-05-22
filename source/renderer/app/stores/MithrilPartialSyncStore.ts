@@ -38,6 +38,7 @@ const TERMINAL_STATUSES: MithrilPartialSyncStatus[] = [
 ];
 
 const DISPLAY_STATUSES: MithrilPartialSyncStatus[] = [
+  'stopping-node',
   'preparing',
   'downloading',
   'verifying',
@@ -254,6 +255,7 @@ export default class MithrilPartialSyncStore extends Store {
 
   @action
   startPartialSync = async () => {
+    let startError: unknown;
     this._statusSyncGeneration += 1;
     if (this._syncStatusPromise) {
       this._pendingStatusSyncAfterCurrent = true;
@@ -273,8 +275,14 @@ export default class MithrilPartialSyncStore extends Store {
 
     try {
       await mithrilPartialSyncStartChannel.request();
+    } catch (error) {
+      startError = error;
     } finally {
       await this.syncStatus();
+    }
+
+    if (startError && this.status === START_PENDING_STATUS) {
+      throw new Error('Unable to start Mithril partial sync.');
     }
   };
 

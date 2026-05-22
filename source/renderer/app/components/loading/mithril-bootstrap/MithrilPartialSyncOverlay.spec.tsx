@@ -99,14 +99,44 @@ describe('MithrilPartialSyncOverlay', () => {
     });
 
     expect(
-      screen.queryByText(/snapshot files: .*fast sync:/i)
-    ).not.toBeInTheDocument();
+      screen.getByText(/snapshot files: .*fast sync:/i)
+    ).toBeInTheDocument();
+  });
+
+  it('shows cancelled recovery actions when the backend allows them', () => {
+    const onRetry = jest.fn();
+    const onRestartNormally = jest.fn();
+    const onWipeAndFullSync = jest.fn();
+
+    renderComponent({
+      status: 'cancelled',
+      canRetry: true,
+      canRestartNormally: true,
+      canWipeAndFullSync: true,
+      onRetry,
+      onRestartNormally,
+      onWipeAndFullSync,
+    });
+
+    fireEvent.click(
+      screen.getByRole('button', { name: /retry mithril partial sync/i })
+    );
+    fireEvent.click(screen.getByRole('button', { name: /restart normally/i }));
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: /wipe chain data and do full mithril sync/i,
+      })
+    );
+
+    expect(onRetry).toHaveBeenCalledTimes(1);
+    expect(onRestartNormally).toHaveBeenCalledTimes(1);
+    expect(onWipeAndFullSync).toHaveBeenCalledTimes(1);
   });
 });
 
 describe('isMithrilPartialSyncOverlayStatus', () => {
-  it('excludes the optimistic stopping-node seed', () => {
-    expect(isMithrilPartialSyncOverlayStatus('stopping-node')).toBe(false);
+  it('includes the stopping-node handoff and later overlay states', () => {
+    expect(isMithrilPartialSyncOverlayStatus('stopping-node')).toBe(true);
     expect(isMithrilPartialSyncOverlayStatus('preparing')).toBe(true);
     expect(isMithrilPartialSyncOverlayStatus('failed')).toBe(true);
   });

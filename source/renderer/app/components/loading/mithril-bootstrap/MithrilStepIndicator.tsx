@@ -17,6 +17,7 @@ import messages from './MithrilBootstrap.messages';
 import { formatTransferSize } from './snapshotFormatting';
 import styles from './MithrilStepIndicator.scss';
 import type { Intl } from '../../../types/i18nTypes';
+import { formattedNumber } from '../../../utils/formatters';
 
 type StepId = 'preparing' | 'downloading' | 'finalizing';
 type StepState = 'completed' | 'active' | 'pending' | 'error';
@@ -189,9 +190,12 @@ function formatCombinedProgressDetails({
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
 }) {
+  const formatSnapshotCount = (value?: number) =>
+    typeof value === 'number' && value >= 0 ? formattedNumber(value) : '\u2014';
+
   return intl.formatMessage(messages.progressCombinedDetail, {
-    snapshotDownloaded: formatTransferSize(bytesDownloaded) ?? '\u2014',
-    snapshotTotal: formatTransferSize(snapshotSize) ?? '\u2014',
+    snapshotDownloaded: formatSnapshotCount(bytesDownloaded),
+    snapshotTotal: formatSnapshotCount(snapshotSize),
     fastSyncDownloaded:
       formatTransferSize(ancillaryBytesDownloaded) ?? '\u2014',
     fastSyncTotal: formatTransferSize(ancillaryBytesTotal) ?? '\u2014',
@@ -228,6 +232,38 @@ function synthesizeVerifyingDigestProgress(
     {
       id: VERIFYING_DIGESTS_ID,
       label: 'verifying-digests',
+      state: 'active' as const,
+    },
+  ];
+}
+
+function keepInstallingActiveDuringFinalizing(
+  items: MithrilProgressItem[]
+): MithrilProgressItem[] {
+  let hasInstallingItem = false;
+
+  const nextItems = items.map((item) => {
+    if (item.id !== 'install-snapshot') {
+      return item;
+    }
+
+    hasInstallingItem = true;
+    if (item.state === 'error') {
+      return item;
+    }
+
+    return { ...item, state: 'active' as const };
+  });
+
+  if (hasInstallingItem) {
+    return nextItems;
+  }
+
+  return [
+    ...nextItems,
+    {
+      id: 'install-snapshot',
+      label: 'install-snapshot',
       state: 'active' as const,
     },
   ];
@@ -453,9 +489,14 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
     };
   }, [shouldDelayVerifyingTransition]);
 
-  const displayedProgressItems = showVerifyingTransition
+  const progressItemsWithTransitions = showVerifyingTransition
     ? synthesizeVerifyingDigestProgress(progressItems)
     : progressItems;
+
+  const displayedProgressItems =
+    status === 'finalizing'
+      ? keepInstallingActiveDuringFinalizing(progressItemsWithTransitions)
+      : progressItemsWithTransitions;
 
   const activeRef = useRef<HTMLDivElement | null>(null);
   const prevActiveIdRef = useRef<string | null>(null);
@@ -541,7 +582,12 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
           showDownloadProgressBar &&
           stepId === 'downloading' &&
           state === 'active' &&
-          activeSubItemId === DOWNLOAD_PROGRESS_ANCHOR_ID;
+          (activeSubItemId === DOWNLOAD_PROGRESS_ANCHOR_ID ||
+            (activeSubItemId === stepId || activeSubItemId == null) &&
+              (typeof bytesDownloaded === 'number' ||
+                typeof snapshotSize === 'number' ||
+                typeof ancillaryBytesDownloaded === 'number' ||
+                typeof ancillaryBytesTotal === 'number'));
         const {
           itemsBeforeAnchor: subItemsBeforeBars,
           itemsAfterAnchor: subItemsAfterBars,
@@ -603,6 +649,7 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
                       label={intl.formatMessage(messages.progressCombinedLabel)}
                       percent={combinedDownloadPercent}
                       details={combinedProgressDetails}
+                      emphasized
                     />
                   </div>
                 )}

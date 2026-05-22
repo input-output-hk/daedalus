@@ -89,6 +89,9 @@ describe('MithrilPartialSyncService', () => {
     jest.clearAllMocks();
 
     statMock.mockImplementation(async (targetPath: string) => {
+      if (targetPath.endsWith('/clean')) {
+        return mockFileStats();
+      }
       if (targetPath.endsWith('/protocolMagicId')) {
         return mockFileStats();
       }
@@ -617,6 +620,9 @@ describe('MithrilPartialSyncService', () => {
       };
     });
     statMock.mockImplementation(async (targetPath: string) => {
+      if (targetPath.endsWith('/clean')) {
+        return mockFileStats();
+      }
       if (targetPath.endsWith('/ledger')) {
         throw new Error('missing ledger');
       }
@@ -722,7 +728,11 @@ describe('MithrilPartialSyncService', () => {
     expect(service.status).toEqual(
       expect.objectContaining({
         status: 'cancelled',
-        allowedRecoveryActions: [],
+        allowedRecoveryActions: [
+          'retry',
+          'restart-normal',
+          'wipe-and-full-sync',
+        ],
       })
     );
   });

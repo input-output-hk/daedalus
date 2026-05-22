@@ -247,6 +247,9 @@ const onAppReady = async () => {
     return handleWindowClose();
   });
   const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
+  chainStorageCoordinator.setPartialSyncNodeStopHandler(async () => {
+    await cardanoNode.stop();
+  });
   chainStorageCoordinator.setPartialSyncStartupHandler(async () => {
     await handleCheckDiskSpace(false);
   });

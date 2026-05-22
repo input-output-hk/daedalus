@@ -594,9 +594,31 @@ export async function installValidatedPartialSyncSnapshot(
     );
   }
 
-  await ctx._emptyManagedContents(resolvedManagedChainPath);
+  await ctx._emptyManagedContents(resolvedManagedChainPath, {
+    excludeTopLevelEntries: ['immutable'],
+  });
 
   for (const entry of expectedEntries) {
+    if (entry === 'immutable') {
+      const stagedImmutablePath = path.join(resolvedDbDirectory, entry);
+      const targetImmutablePath = path.join(resolvedManagedChainPath, entry);
+      const stagedImmutableEntries = await ctx._safeReadDir(stagedImmutablePath);
+
+      await fs.ensureDir(targetImmutablePath);
+      for (const immutableEntry of stagedImmutableEntries) {
+        await ctx._movePath(
+          path.join(stagedImmutablePath, immutableEntry),
+          path.join(targetImmutablePath, immutableEntry)
+        );
+      }
+
+      if (!ctx._isSamePath(stagedImmutablePath, targetImmutablePath)) {
+        await fs.remove(stagedImmutablePath);
+      }
+
+      continue;
+    }
+
     await ctx._movePath(
       path.join(resolvedDbDirectory, entry),
       path.join(resolvedManagedChainPath, entry)

@@ -6,6 +6,7 @@ const chainStorageCoordinatorMock = {
   restartNormalFromPartialSync: jest.fn(),
   wipeAndFullSyncFromPartialSync: jest.fn(),
   setPartialSyncHandlers: jest.fn(),
+  setPartialSyncNodeStopHandler: jest.fn(),
 };
 
 const mithrilPartialSyncServiceMock = {
@@ -118,6 +119,36 @@ describe('mithrilPartialSyncChannel', () => {
     expect(handler).toHaveBeenCalledWith({
       status: 'downloading',
       allowedRecoveryActions: [],
+      error: null,
+    });
+  });
+
+  it('does not block status emission when renderer delivery never resolves', async () => {
+    const moduleExports = loadModule();
+    const window = { webContents: {} };
+
+    moduleExports.handleMithrilPartialSyncRequests(window as never);
+    mockChannels[1].send.mockReturnValueOnce(new Promise(() => {}));
+
+    const handler = jest.fn();
+    moduleExports.onMithrilPartialSyncStatus(handler);
+
+    await expect(
+      moduleExports.emitMithrilPartialSyncStatus({
+        status: 'starting-node',
+        allowedRecoveryActions: ['wipe-and-full-sync'],
+        error: null,
+      })
+    ).resolves.toBeUndefined();
+
+    expect(handler).toHaveBeenCalledWith({
+      status: 'starting-node',
+      allowedRecoveryActions: ['wipe-and-full-sync'],
+      error: null,
+    });
+    expect(moduleExports.getMithrilPartialSyncStatus()).toEqual({
+      status: 'starting-node',
+      allowedRecoveryActions: ['wipe-and-full-sync'],
       error: null,
     });
   });

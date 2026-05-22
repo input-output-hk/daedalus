@@ -68,15 +68,16 @@ const broadcastMithrilPartialSyncStatus = async (
 ): Promise<void> => {
   lastStatus = status;
   statusListeners.forEach((listener) => listener(status));
-  try {
-    if (sendStatusUpdate) {
-      await sendStatusUpdate(status);
-    }
-  } catch (error) {
+
+  if (!sendStatusUpdate) {
+    return;
+  }
+
+  sendStatusUpdate(status).catch((error) => {
     logger.warn('Failed to send Mithril partial sync status to renderer', {
       error,
     });
-  }
+  });
 };
 
 export const getMithrilPartialSyncStatus = () => lastStatus;

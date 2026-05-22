@@ -101,7 +101,7 @@ const withStatus = (props, status) => ({
 describe('shouldCloseDiagnosticsForPartialSyncOverlay', () => {
   it('closes only when partial sync reaches an overlay-backed status', () => {
     expect(
-      shouldCloseDiagnosticsForPartialSyncOverlay('stopping-node', 'preparing')
+      shouldCloseDiagnosticsForPartialSyncOverlay('idle', 'stopping-node')
     ).toBe(true);
     expect(
       shouldCloseDiagnosticsForPartialSyncOverlay('preparing', 'downloading')
@@ -123,17 +123,22 @@ describe('DaedalusDiagnosticsDialog', () => {
     const { rerender } = render(
       React.createElement(
         DaedalusDiagnosticsDialog,
-        withStatus(baseProps, 'stopping-node') as any
+        withStatus(baseProps, 'idle') as any
       )
     );
 
     rerender(
-      React.createElement(DaedalusDiagnosticsDialog, withStatus(baseProps, 'idle') as any)
+      React.createElement(
+        DaedalusDiagnosticsDialog,
+        withStatus(baseProps, 'stopping-node') as any
+      )
     );
 
     expect(
       baseProps.actions.app.closeDaedalusDiagnosticsDialog.trigger
-    ).not.toHaveBeenCalled();
+    ).toHaveBeenCalledTimes(1);
+
+    baseProps.actions.app.closeDaedalusDiagnosticsDialog.trigger.mockClear();
 
     rerender(
       React.createElement(
@@ -144,7 +149,7 @@ describe('DaedalusDiagnosticsDialog', () => {
 
     expect(
       baseProps.actions.app.closeDaedalusDiagnosticsDialog.trigger
-    ).toHaveBeenCalledTimes(1);
+    ).not.toHaveBeenCalled();
   });
 
   it('also closes when a terminal overlay-backed status arrives directly from idle', () => {

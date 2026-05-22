@@ -407,7 +407,14 @@ export default class AdaApi {
         })
       );
     } catch (error) {
-      logger.error('AdaApi::getWallets error', {
+      const isOpaqueShutdownError =
+        error != null &&
+        typeof error === 'object' &&
+        Object.keys(error as Record<string, any>).length === 0;
+
+      const log = isOpaqueShutdownError ? logger.warn : logger.error;
+
+      log('AdaApi::getWallets error', {
         error,
       });
       throw new ApiError(error);

@@ -590,7 +590,7 @@
           "id": "task-401",
           "title": "Run supported-network manual QA and finalize rollout decision",
           "description": "After automated coverage is green, run manual QA on `mainnet`, `preprod`, and `preview`, including default and custom chain-storage targets and the major success, cancellation, retry, restart-normal, and wipe-plus-full-sync paths. Record the results in the plan workspace, confirm whether the rollout kill switch should remain enabled by default initially, and finalize the rollback checklist for release reviewers.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 8,
           "dependencies": ["task-400"],
@@ -609,7 +609,8 @@
             "A clear rollout enablement or guard decision is documented.",
             "Rollback steps for disabling the feature are written down for release review."
           ],
-          "notes": "This is the only user-intervention-heavy task in the plan and is intentionally scheduled last."
+          "completedAt": "2026-05-22T19:48:24Z",
+          "notes": "Completed 2026-05-22. Task-401 drove the live preview/Linux manual QA that uncovered and then fixed multiple correctness and UX issues across node-stop orchestration, recovery actions, disk-space restart suppression, post-install startup handoff, immutable-history preservation, and finalizing/installing UI state. The latest fixed `preview` / Linux / `yarn dev` flow passed end to end, prior guard-off validation from earlier in the same QA effort was accepted by explicit user direction, and the final rollout posture for this checkpoint was recorded as `enabled by default` by explicit user decision. Broader supported-network matrix coverage, custom chain-storage coverage, additional recovery-path re-validation, and release-equivalent packaged-build evidence were explicitly deferred to later manual QA rather than blocking this task closeout."
         }
       ]
     }

@@ -2,6 +2,16 @@
   display: block;
 }
 
+.inlineBarEmphasized {
+  .inlineBarMeta {
+    color: var(--theme-mithril-step-active-label-color);
+  }
+
+  .inlineBarTrack {
+    background: rgba(255, 255, 255, 0.18);
+  }
+}
+
 .inlineBarMeta {
   color: var(--theme-mithril-progress-meta-color);
   display: flex;
