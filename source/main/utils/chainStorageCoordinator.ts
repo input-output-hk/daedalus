@@ -28,6 +28,12 @@ type PartialSyncHandlers = {
 type PartialSyncStartupHandler = () => Promise<unknown>;
 type PartialSyncNodeStopHandler = () => Promise<void>;
 
+type PartialSyncDependencies = {
+  handlers: PartialSyncHandlers;
+  nodeStopHandler?: PartialSyncNodeStopHandler;
+  startupHandler?: PartialSyncStartupHandler;
+};
+
 const PARTIAL_SYNC_DISABLED_ERROR =
   'Mithril partial sync is disabled by launcher configuration.';
 
@@ -37,9 +43,6 @@ class ChainStorageCoordinator {
   _mutationQueue: Promise<void> = Promise.resolve();
   _bootstrapInProgress = false;
   _partialSyncInProgress = false;
-  _partialSyncHandlers: PartialSyncHandlers | null = null;
-  _partialSyncStartupHandler: PartialSyncStartupHandler | null = null;
-  _partialSyncNodeStopHandler: PartialSyncNodeStopHandler | null = null;
   _directoryChangedCallbacks: Array<() => void> = [];
 
   constructor() {
@@ -60,22 +63,6 @@ class ChainStorageCoordinator {
 
   isPartialSyncInProgress(): boolean {
     return this._partialSyncInProgress;
-  }
-
-  setPartialSyncHandlers(handlers: PartialSyncHandlers | null): void {
-    this._partialSyncHandlers = handlers;
-  }
-
-  setPartialSyncStartupHandler(
-    handler: PartialSyncStartupHandler | null
-  ): void {
-    this._partialSyncStartupHandler = handler;
-  }
-
-  setPartialSyncNodeStopHandler(
-    handler: PartialSyncNodeStopHandler | null
-  ): void {
-    this._partialSyncNodeStopHandler = handler;
   }
 
   async getConfig(): Promise<ChainStorageConfig> {
@@ -220,22 +207,20 @@ class ChainStorageCoordinator {
   }
 
   async startPartialSync(
+    dependencies: PartialSyncDependencies,
     options?: {
       nodeState?: CardanoNodeState | null;
     }
   ): Promise<void> {
-    if (!this._partialSyncHandlers) {
-      throw new Error('Mithril partial sync handlers are not configured.');
-    }
-
     const preflightContext = await this._withMutationLock(
       'startPartialSync',
       async () => {
         this._assertPartialSyncFeatureEnabled();
         this._assertPartialSyncStartAllowed();
-        this._partialSyncHandlers.assertStartAllowed();
+        dependencies.handlers.assertStartAllowed();
 
         const nodeState = await this._ensureNodeStoppedForPartialSync(
+          dependencies.nodeStopHandler,
           options?.nodeState
         );
 
@@ -269,30 +254,23 @@ class ChainStorageCoordinator {
     );
 
     try {
-      await this._partialSyncHandlers.start(preflightContext);
+      await dependencies.handlers.start(preflightContext);
     } finally {
       this._partialSyncInProgress = false;
     }
   }
 
-  async cancelPartialSync(): Promise<void> {
-    if (!this._partialSyncHandlers) {
-      throw new Error('Mithril partial sync handlers are not configured.');
-    }
-
-    await this._partialSyncHandlers.cancel();
+  async cancelPartialSync(dependencies: PartialSyncDependencies): Promise<void> {
+    await dependencies.handlers.cancel();
   }
 
   async restartNormalFromPartialSync(
+    dependencies: PartialSyncDependencies,
     options?: {
       nodeState?: CardanoNodeState | null;
     }
   ): Promise<void> {
-    if (!this._partialSyncHandlers) {
-      throw new Error('Mithril partial sync handlers are not configured.');
-    }
-
-    if (!this._partialSyncStartupHandler) {
+    if (!dependencies.startupHandler) {
       throw new Error('Mithril partial sync startup handler is not configured.');
     }
 
@@ -302,26 +280,24 @@ class ChainStorageCoordinator {
         'restart normally after Mithril partial sync'
       );
       await this._ensureNodeStoppedForPartialSyncAction(
+        dependencies.nodeStopHandler,
         options?.nodeState,
         'restart normally after Mithril partial sync'
       );
 
-      await this._partialSyncHandlers.restartNormal();
+      await dependencies.handlers.restartNormal();
     });
 
-    await this._partialSyncStartupHandler();
+    await dependencies.startupHandler();
   }
 
   async wipeAndFullSyncFromPartialSync(
+    dependencies: PartialSyncDependencies,
     options?: {
       nodeState?: CardanoNodeState | null;
     }
   ): Promise<void> {
-    if (!this._partialSyncHandlers) {
-      throw new Error('Mithril partial sync handlers are not configured.');
-    }
-
-    if (!this._partialSyncStartupHandler) {
+    if (!dependencies.startupHandler) {
       throw new Error('Mithril partial sync startup handler is not configured.');
     }
 
@@ -330,19 +306,20 @@ class ChainStorageCoordinator {
         'wipe chain storage and full sync after Mithril partial sync'
       );
       const nodeState = await this._ensureNodeStoppedForPartialSyncAction(
+        dependencies.nodeStopHandler,
         options?.nodeState,
         'wipe chain storage and full sync after Mithril partial sync'
       );
 
-      await this._partialSyncHandlers.wipeAndFullSync();
+      await dependencies.handlers.wipeAndFullSync();
       await this._ensureManagedChainLayoutAndSyncWorkDir(nodeState);
       await this._mithrilBootstrapService.wipeChainAndSnapshots(
         'Mithril partial sync requested wipe-and-full-sync recovery.'
       );
-      await this._partialSyncHandlers.finalizeWipeAndFullSync();
+      await dependencies.handlers.finalizeWipeAndFullSync();
     });
 
-    await this._partialSyncStartupHandler();
+    await dependencies.startupHandler();
   }
 
   async wipeChainAndSnapshots(
@@ -407,15 +384,18 @@ class ChainStorageCoordinator {
   }
 
   async _ensureNodeStoppedForPartialSync(
+    nodeStopHandler: PartialSyncNodeStopHandler | undefined,
     nodeState: CardanoNodeState | null | undefined
   ): Promise<CardanoNodeState | null | undefined> {
     return this._ensureNodeStoppedForPartialSyncAction(
+      nodeStopHandler,
       nodeState,
       'start Mithril partial sync'
     );
   }
 
   async _ensureNodeStoppedForPartialSyncAction(
+    nodeStopHandler: PartialSyncNodeStopHandler | undefined,
     nodeState: CardanoNodeState | null | undefined,
     action: string
   ): Promise<CardanoNodeState | null | undefined> {
@@ -423,7 +403,7 @@ class ChainStorageCoordinator {
       return nodeState;
     }
 
-    if (!this._partialSyncNodeStopHandler) {
+    if (!nodeStopHandler) {
       this._assertNodeStopped(nodeState, action);
       return nodeState;
     }
@@ -432,7 +412,7 @@ class ChainStorageCoordinator {
       action,
       nodeState,
     });
-    await this._partialSyncNodeStopHandler();
+    await nodeStopHandler();
     return CardanoNodeStates.STOPPED;
   }
 

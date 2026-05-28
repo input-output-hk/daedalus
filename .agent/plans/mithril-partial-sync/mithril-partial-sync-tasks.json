@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Mithril Partial Sync From Diagnostics Tasks",
     "created": "2026-05-18",
-    "updated": "2026-05-21",
+    "updated": "2026-05-28",
     "version": "1.0.0",
     "totalTasks": 20,
     "prdReference": ".agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md",
@@ -656,7 +656,7 @@
       "Keeping 'restart normally' disabled when the live DB may be inconsistent",
       "Shipped Mithril binary behavior diverging from current public docs or examples"
     ],
-    "testingNotes": "Automated verification is intentionally scheduled before manual QA. The only user-intervention-heavy work is in the final phase so the critical path is front-loaded with autonomous research, contract work, backend orchestration, and renderer integration.",
+    "testingNotes": "All tracked tasks are completed. Automated verification completed before task-401 manual QA; the current rollout checkpoint records Linux preview dev-flow success and explicitly defers broader supported-network, custom-storage, recovery-path, and release-equivalent packaged-build evidence to later manual QA.",
     "rollbackPlan": "Disable new diagnostics-launched partial sync entry and retry paths behind the LauncherConfig kill switch while leaving empty-chain Mithril bootstrap untouched. Preserve the startup-owned wipe-full-sync recovery path for already interrupted Boundary B or Boundary C1 installs, and keep boundary-dependent restart-normal eligibility enforced in the backend.",
     "securityNotes": [
       "Treat live chain data integrity as the primary safety constraint.",

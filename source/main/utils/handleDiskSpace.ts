@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { BrowserWindow, dialog } from 'electron';
+import { BrowserWindow } from 'electron';
 import checkDiskSpace from 'check-disk-space';
 import prettysize from 'prettysize';
 import { getDiskSpaceStatusChannel } from '../ipc/get-disk-space-status';
@@ -20,36 +20,13 @@ import {
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoNode } from '../cardano/CardanoNode';
 import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.types';
-import {
-  isMithrilBootstrapRestoreCompleteStatus,
-  isMithrilBootstrapBlockingNodeStart,
-  MithrilBootstrapStatusUpdate,
-} from '../../common/types/mithril-bootstrap.types';
-import {
-  getPendingMithrilBootstrapDecision,
-  getMithrilBootstrapStatus,
-  isMithrilDecisionCancelledError,
-  onMithrilBootstrapDecision,
-  onMithrilBootstrapStatus,
-  resetMithrilDecisionState,
-  waitForMithrilBootstrapDecision,
-  mithrilBootstrapStatusChannel,
-  setMithrilBootstrapStatus,
-} from '../ipc/mithrilBootstrapChannel';
+import { isMithrilDecisionCancelledError } from '../ipc/mithrilBootstrapChannel';
 import {
   chainStorageCoordinator,
   getChainStorageManager,
 } from './chainStorageCoordinator';
-import type { ManagedChainLayoutResult } from './chainStorageManagerShared';
-import {
-  clearMithrilPartialSyncMarker,
-  readMithrilPartialSyncMarker,
-} from '../mithril/mithrilPartialSyncMarker';
-import {
-  emitMithrilPartialSyncStatus,
-  getMithrilPartialSyncStatus,
-} from '../ipc/mithrilPartialSyncChannel';
-import { isMithrilPartialSyncBlockingNodeStart } from '../../common/types/mithril-partial-sync.types';
+import { MithrilPartialSyncNodeStartup } from '../mithril/mithrilPartialSyncNodeStartup';
+import { getMithrilController } from '../mithril/MithrilController';
 
 const getDiskCheckReport = async (
   targetPath: string,
@@ -120,16 +97,6 @@ export const handleDiskSpace = (
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
 
   let isNotEnoughDiskSpace = false; // Default check state
-  let mithrilDecisionInFlight = false;
-  let mithrilFailureDecisionInFlight = false;
-  let mithrilFailureDeclineInFlight = false;
-  let mithrilCancelledDeclineInFlight = false;
-  let mithrilStartupCheckDone = false;
-  let mithrilStartupLayoutResult: ManagedChainLayoutResult | null = null;
-  let mithrilDecisionPrompted = false;
-  let mithrilDecision: 'accept' | 'decline' | null = null;
-  let mithrilBootstrapCompleted = false;
-  let mithrilStartInFlight = false;
   let directoryChangeGeneration = 0;
   let activeDiskSpaceCheckPromise: Promise<CheckDiskSpaceResponse> | null =
     null;
@@ -154,500 +121,22 @@ export const handleDiskSpace = (
   const wipeChainFlag =
     envWipeChain ?? argvWipeChain ?? launcherConfig.wipeChain ?? false;
   const chainStorageManager = getChainStorageManager();
-  const handleInterruptedPartialSyncRecovery = async (
-    currentGeneration: number
-  ): Promise<boolean> => {
-    const marker = await readMithrilPartialSyncMarker();
-
-    if (!marker) {
-      return false;
-    }
-
-    if (marker.state === 'node-start-verified') {
-      await clearMithrilPartialSyncMarker();
-      return false;
-    }
-
-    if (marker.state === 'installed-awaiting-node-start') {
-      return false;
-    }
-
-    await emitMithrilPartialSyncStatus({
-      status: 'failed',
-      allowedRecoveryActions: ['wipe-and-full-sync'],
-      error: {
-        message:
-          'Daedalus detected an interrupted Mithril partial sync after live chain cutover. The installed chain data is not safe to start normally.',
-        stage: 'installing',
-      },
-    });
-
-    const { response } = await dialog.showMessageBox(mainWindow, {
-      type: 'warning',
-      buttons: ['Wipe chain and full Mithril sync', 'Quit'],
-      defaultId: 0,
-      cancelId: 1,
-      noLink: true,
-      title: 'Interrupted Mithril partial sync detected',
-      message:
-        'Daedalus found an interrupted Mithril partial sync after live chain replacement began. Normal startup is blocked until the chain data is wiped and a full Mithril sync can run again.',
-    });
-
-    if (currentGeneration !== directoryChangeGeneration) {
-      return true;
-    }
-
-    if (response === 0) {
-      await chainStorageCoordinator.wipeChainAndSnapshots(
-        'Interrupted Mithril partial sync detected on startup. Wiped chain directory and Mithril snapshots.',
-        cardanoNode.state
-      );
-      await clearMithrilPartialSyncMarker();
-      return false;
-    }
-
-    return true;
-  };
-  const broadcastMithrilStatus = (
-    update: MithrilBootstrapStatusUpdate,
-    context: string
-  ) => {
-    setMithrilBootstrapStatus(update);
-
-    Promise.resolve()
-      .then(() =>
-        mithrilBootstrapStatusChannel.send(update, mainWindow.webContents)
-      )
-      .catch((error) => {
-        logger.warn('[MITHRIL] Failed to broadcast bootstrap status update', {
-          context,
-          error,
-          status: update.status,
-        });
-      });
-  };
-
-  const emitMithrilDecisionStatus = () => {
-    const update: MithrilBootstrapStatusUpdate = {
-      status: 'decision',
-      snapshot: null,
-      error: null,
-    };
-    broadcastMithrilStatus(update, 'emit-decision');
-  };
-
-  const emitMithrilIdleStatus = () => {
-    const update: MithrilBootstrapStatusUpdate = {
-      status: 'idle',
-      snapshot: null,
-      error: null,
-    };
-    broadcastMithrilStatus(update, 'emit-idle');
-  };
-
-  const emitMithrilStartFailure = (error: unknown) => {
-    const message =
-      error instanceof Error
-        ? error.message
-        : 'Cardano node failed to start after Mithril bootstrap. Wipe the chain data and try again.';
-    const update: MithrilBootstrapStatusUpdate = {
-      status: 'failed',
-      snapshot: null,
-      error: {
-        message,
-        stage: 'node-start',
-      },
-    };
-    broadcastMithrilStatus(update, 'emit-start-failure');
-  };
-
-  const emitMithrilStartingNodeStatus = () => {
-    const currentStatus = getMithrilBootstrapStatus();
-    const update: MithrilBootstrapStatusUpdate = {
-      ...currentStatus,
-      status: 'starting-node',
-      error: null,
-    };
-    broadcastMithrilStatus(update, 'emit-starting-node');
-  };
-
-  const canStartNodeAfterMithrilCompletion = () =>
-    [
-      CardanoNodeStates.STOPPED,
-      CardanoNodeStates.CRASHED,
-      CardanoNodeStates.ERRORED,
-    ].includes(cardanoNode.state);
-
-  const MITHRIL_COMPLETION_DELAY_MS = 6000;
-
-  const blocksNormalStartupAfterPartialSyncFailure = (
-    markerState?: string | null
-  ): boolean => markerState === 'installed-awaiting-node-start';
-
-  const finalizeInstalledPartialSyncAfterNodeStart = async (
-    currentGeneration: number
-  ): Promise<void> => {
-    const marker = await readMithrilPartialSyncMarker();
-
-    if (!marker || marker.state !== 'installed-awaiting-node-start') {
-      return;
-    }
-
-    await new Promise<void>((resolve) => {
-      setTimeout(resolve, MITHRIL_COMPLETION_DELAY_MS);
-    });
-    if (currentGeneration !== directoryChangeGeneration) {
-      return;
-    }
-
-    if (cardanoNode.state !== CardanoNodeStates.RUNNING) {
-      throw new Error(
-        'Cardano node stopped responding during startup after Mithril partial sync cutover.'
-      );
-    }
-
-    await clearMithrilPartialSyncMarker();
-    await emitMithrilPartialSyncStatus({
-      ...getMithrilPartialSyncStatus(),
-      status: 'completed',
-      allowedRecoveryActions: [],
-      error: null,
-    });
-  };
-
-  const startNodeAfterPartialSyncInstall = async (
-    currentGeneration: number
-  ): Promise<boolean> => {
-    const marker = await readMithrilPartialSyncMarker();
-
-    if (!marker || marker.state !== 'installed-awaiting-node-start') {
-      return false;
-    }
-
-    await emitMithrilPartialSyncStatus({
-      ...getMithrilPartialSyncStatus(),
-      status: 'starting-node',
-      allowedRecoveryActions: ['wipe-and-full-sync'],
-      error: null,
-    });
-
-    try {
-      await cardanoNode.start();
-      if (currentGeneration !== directoryChangeGeneration) {
-        return true;
-      }
-      await finalizeInstalledPartialSyncAfterNodeStart(currentGeneration);
-
-      return true;
-    } catch (error) {
-      await emitMithrilPartialSyncStatus({
-        ...getMithrilPartialSyncStatus(),
-        status: 'failed',
-        allowedRecoveryActions: ['wipe-and-full-sync'],
-        error: {
-          message:
-            error instanceof Error
-              ? error.message
-              : 'Cardano node failed to start after Mithril partial sync cutover.',
-          stage: 'starting-node',
-        },
-      });
-      throw error;
-    }
-  };
-
-  const shouldSuppressPartialSyncStartupFallback = async (): Promise<boolean> => {
-    const marker = await readMithrilPartialSyncMarker();
-    return blocksNormalStartupAfterPartialSyncFailure(marker?.state);
-  };
-
-  const startNodeAfterMithrilCompletion = async (): Promise<void> => {
-    if (mithrilStartInFlight) return;
-    mithrilStartInFlight = true;
-    const gen = directoryChangeGeneration;
-    try {
-      if (gen !== directoryChangeGeneration) {
-        logger.info(
-          '[MITHRIL] Aborting node start — directory changed during handoff'
-        );
-        return;
-      }
-      await emitMithrilStartingNodeStatus();
-      await cardanoNode.start();
-      if (gen !== directoryChangeGeneration) {
-        logger.info(
-          '[MITHRIL] Aborting node start — directory changed during handoff'
-        );
-        return;
-      }
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, MITHRIL_COMPLETION_DELAY_MS);
-      });
-      if (gen !== directoryChangeGeneration) {
-        logger.info(
-          '[MITHRIL] Aborting node start — directory changed during handoff'
-        );
-        return;
-      }
-      if (cardanoNode.state !== CardanoNodeStates.RUNNING) {
-        throw new Error(
-          'Cardano node stopped responding during startup after Mithril bootstrap.'
-        );
-      }
-      await emitMithrilIdleStatus();
-      mithrilBootstrapCompleted = false;
-      mithrilDecision = null;
-      mithrilDecisionPrompted = false;
-    } catch (error) {
-      logger.error('[MITHRIL] Failed to start cardano-node after bootstrap', {
-        error,
-      });
-      mithrilBootstrapCompleted = false;
-      await emitMithrilStartFailure(error);
-    } finally {
-      mithrilStartInFlight = false;
-    }
-  };
-
-  const handleMithrilFailureDecline = async (
-    source: string,
-    currentGeneration: number = directoryChangeGeneration
-  ) => {
-    if (mithrilFailureDeclineInFlight) return false;
-    const pendingDecision = getPendingMithrilBootstrapDecision();
-    if (pendingDecision !== 'decline') return false;
-    mithrilFailureDeclineInFlight = true;
-    try {
-      logger.info(
-        '[MITHRIL] Starting decline recovery after bootstrap failure',
-        {
-          source,
-          status: getMithrilBootstrapStatus().status,
-        }
-      );
-      await emitMithrilIdleStatus();
-      if (currentGeneration !== directoryChangeGeneration) return false;
-      await chainStorageCoordinator.wipeChainAndSnapshots(
-        `User declined after bootstrap failure (${source}). Wiped chain directory and Mithril snapshots.`,
-        cardanoNode.state
-      );
-      if (currentGeneration !== directoryChangeGeneration) return false;
-      await cardanoNode.start();
-      logger.info(
-        '[MITHRIL] cardano-node start requested after bootstrap failure decline',
-        {
-          source,
-          state: cardanoNode.state,
-        }
-      );
-      mithrilDecision = null;
-      mithrilDecisionPrompted = false;
-      return true;
-    } finally {
-      mithrilFailureDeclineInFlight = false;
-    }
-  };
-
-  const handleMithrilCancelledDecline = async (
-    source: string,
-    currentGeneration: number = directoryChangeGeneration
-  ) => {
-    if (mithrilCancelledDeclineInFlight) {
-      logger.info(
-        '[MITHRIL] Decline recovery after bootstrap cancel already in progress',
-        {
-          source,
-        }
-      );
-      return false;
-    }
-
-    mithrilCancelledDeclineInFlight = true;
-
-    try {
-      const pendingDecision = getPendingMithrilBootstrapDecision();
-      const status = getMithrilBootstrapStatus().status;
-
-      if (pendingDecision !== 'decline' || status !== 'cancelled') return false;
-
-      logger.info(
-        '[MITHRIL] Starting decline recovery after bootstrap cancel',
-        {
-          source,
-          status,
-        }
-      );
-
-      await emitMithrilIdleStatus();
-      if (currentGeneration !== directoryChangeGeneration) return false;
-      await chainStorageCoordinator.wipeChainAndSnapshots(
-        `User declined after bootstrap cancel (${source}). Wiped chain directory and Mithril snapshots.`,
-        cardanoNode.state
-      );
-      if (currentGeneration !== directoryChangeGeneration) return false;
-
-      logger.info(
-        '[MITHRIL] Starting cardano-node after bootstrap cancel decline',
-        {
-          source,
-        }
-      );
-
-      await cardanoNode.start();
-
-      logger.info(
-        '[MITHRIL] cardano-node start requested after bootstrap cancel decline',
-        {
-          source,
-          state: cardanoNode.state,
-        }
-      );
-
-      mithrilDecision = null;
-      mithrilDecisionPrompted = false;
-
-      return true;
-    } finally {
-      mithrilCancelledDeclineInFlight = false;
-    }
-  };
-
-  const ensureMithrilStartupGate = async (
-    currentGeneration: number
-  ): Promise<ManagedChainLayoutResult | null> => {
-    if (mithrilStartupCheckDone && mithrilStartupLayoutResult) {
-      return mithrilStartupLayoutResult;
-    }
-
-    let layoutResult: ManagedChainLayoutResult;
-
-    try {
-      if (wipeChainFlag) {
-        if (
-          cardanoNode.state !== CardanoNodeStates.STOPPING &&
-          cardanoNode.state !== CardanoNodeStates.STOPPED
-        ) {
-          try {
-            await cardanoNode.stop();
-          } catch (error) {
-            logger.warn('[MITHRIL] Failed to stop cardano-node for wipe', {
-              error,
-            });
-          }
-        }
-        layoutResult = await chainStorageCoordinator.ensureManagedChainLayout(
-          cardanoNode.state
-        );
-        if (currentGeneration !== directoryChangeGeneration) {
-          return null;
-        }
-        await chainStorageCoordinator.wipeChainAndSnapshots(
-          'wipe-chain flag set. Wiped chain directory and Mithril snapshots.',
-          cardanoNode.state
-        );
-        if (currentGeneration !== directoryChangeGeneration) {
-          return null;
-        }
-      } else {
-        layoutResult = await chainStorageCoordinator.ensureManagedChainLayout(
-          cardanoNode.state
-        );
-        if (currentGeneration !== directoryChangeGeneration) {
-          return null;
-        }
-      }
-      const lockExists = await fs.pathExists(mithrilLockFilePath);
-      if (currentGeneration !== directoryChangeGeneration) {
-        return null;
-      }
-      if (lockExists) {
-        if (currentGeneration !== directoryChangeGeneration) {
-          return null;
-        }
-        await chainStorageCoordinator.wipeChainAndSnapshots(
-          'Incomplete bootstrap detected. Wiped chain directory and Mithril snapshots.',
-          cardanoNode.state
-        );
-        if (currentGeneration !== directoryChangeGeneration) {
-          return null;
-        }
-        mithrilDecisionPrompted = false;
-        mithrilDecision = null;
-      }
-
-      const partialSyncRecoveryBlocked =
-        await handleInterruptedPartialSyncRecovery(currentGeneration);
-      if (partialSyncRecoveryBlocked) {
-        return null;
-      }
-    } catch (error) {
-      logger.error('[MITHRIL] Failed to verify managed chain layout', {
-        error,
-      });
-      throw markManagedChainLayoutError(error);
-    }
-
-    mithrilStartupCheckDone = true;
-    mithrilStartupLayoutResult = layoutResult;
-    return layoutResult;
-  };
-
-  onMithrilBootstrapStatus(async (status) => {
-    if (status.status !== 'completed' || mithrilStartInFlight) return;
-    if (!canStartNodeAfterMithrilCompletion()) return;
-    mithrilBootstrapCompleted = true;
-    await startNodeAfterMithrilCompletion();
+  const partialSyncNodeStartup = new MithrilPartialSyncNodeStartup({
+    mainWindow,
+    cardanoNode,
+    wipeChainAndSnapshots: (reason, nodeState) =>
+      chainStorageCoordinator.wipeChainAndSnapshots(reason, nodeState),
+    getGeneration: () => directoryChangeGeneration,
   });
-
-  onMithrilBootstrapStatus((status) => {
-    if (status.status !== 'failed') return;
-    if (mithrilFailureDecisionInFlight) return;
-    mithrilFailureDecisionInFlight = true;
-    const currentGeneration = directoryChangeGeneration;
-    waitForMithrilBootstrapDecision()
-      .then(async (decision) => {
-        if (decision !== 'decline') return;
-        await handleMithrilFailureDecline('status-listener', currentGeneration);
-      })
-      .catch((error) => {
-        if (isMithrilDecisionCancelledError(error)) {
-          logger.info(
-            '[MITHRIL] Decision wait cancelled after directory change following bootstrap failure',
-            null
-          );
-          return;
-        }
-        logger.error('[MITHRIL] Decision wait failed after failure', { error });
-      })
-      .finally(() => {
-        mithrilFailureDecisionInFlight = false;
-      });
-  });
-
-  onMithrilBootstrapDecision((decision) => {
-    if (decision !== 'decline') return;
-    if (getMithrilBootstrapStatus().status !== 'failed') return;
-    const currentGeneration = directoryChangeGeneration;
-    handleMithrilFailureDecline('decision-listener', currentGeneration).catch(
-      (error) => {
-        logger.error('[MITHRIL] Decline handling failed after decision', {
-          error,
-        });
-      }
-    );
-  });
-
-  onMithrilBootstrapDecision((decision) => {
-    if (decision !== 'decline') return;
-    if (getMithrilBootstrapStatus().status !== 'cancelled') return;
-    const currentGeneration = directoryChangeGeneration;
-    handleMithrilCancelledDecline('decision-listener', currentGeneration).catch(
-      (error) => {
-        logger.error('[MITHRIL] Decline handling failed after cancel', {
-          error,
-        });
-      }
-    );
+  const mithrilController = getMithrilController();
+  mithrilController.configureStartupGate({
+    cardanoNode,
+    partialSyncNodeStartup,
+    wipeChainFlag,
+    mithrilLockFilePath,
+    markManagedChainLayoutError,
+    isManagedChainLayoutError,
+    getGeneration: () => directoryChangeGeneration,
   });
 
   const runHandleCheckDiskSpace = async (
@@ -669,7 +158,7 @@ export const handleDiskSpace = (
       isError: false,
     });
     const startupLayoutResult =
-      await ensureMithrilStartupGate(currentGeneration);
+      await mithrilController.ensureMithrilStartupGate(currentGeneration);
     if (
       !startupLayoutResult ||
       currentGeneration !== directoryChangeGeneration
@@ -682,10 +171,7 @@ export const handleDiskSpace = (
     if (currentGeneration !== directoryChangeGeneration) {
       return getStaleResponse();
     }
-    const latestDecision = getPendingMithrilBootstrapDecision();
-    if (latestDecision && latestDecision !== mithrilDecision) {
-      mithrilDecision = latestDecision;
-    }
+    mithrilController.syncPendingDecision();
 
     if (response.isError) {
       logger.info(
@@ -766,163 +252,33 @@ export const handleDiskSpace = (
           try {
             const chainEmpty =
               await chainStorageCoordinator.isManagedChainEmpty();
-            if (currentGeneration !== directoryChangeGeneration) {
+            if (
+              currentGeneration !== directoryChangeGeneration
+            ) {
               return getStaleResponse();
             }
             if (chainEmpty) {
-              const mithrilStatus = getMithrilBootstrapStatus();
-              if (
-                isMithrilBootstrapRestoreCompleteStatus(mithrilStatus.status)
-              ) {
-                mithrilBootstrapCompleted = true;
+              const startupResult =
+                await mithrilController.handleStoppedNodeStartup({
+                  currentGeneration,
+                  getStaleResponse,
+                  response,
+                });
+              if (startupResult.handled) {
+                return startupResult.response;
               }
-
-              if (mithrilStatus.status === 'failed') {
-                await handleMithrilFailureDecline(
-                  'polling-chain-empty',
-                  currentGeneration
-                );
-                response.hadNotEnoughSpaceLeft = false;
-                break;
-              }
-
-              if (mithrilStatus.status === 'cancelled') {
-                await handleMithrilCancelledDecline('polling-chain-empty');
-                response.hadNotEnoughSpaceLeft = false;
-                break;
-              }
-
-              if (mithrilBootstrapCompleted) {
-                await startNodeAfterMithrilCompletion();
-                break;
-              }
-              if (mithrilDecision === 'accept') {
-                break;
-              }
-              if (!mithrilDecisionPrompted) {
-                logger.info('[MITHRIL] Emitting decision status');
-                await emitMithrilDecisionStatus();
-                mithrilDecisionPrompted = true;
-              }
-              if (mithrilDecision === 'decline') {
-                logger.info('[MITHRIL] Processing immediate decline decision');
-                await emitMithrilIdleStatus();
-                if (currentGeneration !== directoryChangeGeneration) {
-                  return getStaleResponse();
-                }
-                await chainStorageCoordinator.wipeChainAndSnapshots(
-                  'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.',
-                  cardanoNode.state
-                );
-                if (currentGeneration !== directoryChangeGeneration) {
-                  return getStaleResponse();
-                }
-                logger.info(
-                  '[MITHRIL] Starting cardano-node after bootstrap decline'
-                );
-                await cardanoNode.start();
-                break;
-              }
-              if (!mithrilDecisionInFlight) {
-                mithrilDecisionInFlight = true;
-                waitForMithrilBootstrapDecision()
-                  .then(async (decision) => {
-                    if (currentGeneration !== directoryChangeGeneration) return;
-                    logger.info(
-                      '[MITHRIL] Bootstrap decision waiter resolved',
-                      {
-                        decision,
-                      }
-                    );
-                    mithrilDecision = decision;
-                    mithrilDecisionPrompted = decision !== 'accept';
-                    if (decision === 'decline') {
-                      await emitMithrilIdleStatus();
-                      if (currentGeneration !== directoryChangeGeneration) {
-                        return;
-                      }
-                      await chainStorageCoordinator.wipeChainAndSnapshots(
-                        'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.',
-                        cardanoNode.state
-                      );
-                      if (currentGeneration !== directoryChangeGeneration) {
-                        return;
-                      }
-                      logger.info(
-                        '[MITHRIL] Starting cardano-node after waited bootstrap decline'
-                      );
-                      await cardanoNode.start();
-                    }
-                  })
-                  .catch((error) => {
-                    if (isMithrilDecisionCancelledError(error)) {
-                      logger.info(
-                        '[MITHRIL] Decision wait cancelled after directory change',
-                        null
-                      );
-                      return;
-                    }
-                    logger.error('[MITHRIL] Decision wait failed', { error });
-                  })
-                  .finally(() => {
-                    mithrilDecisionInFlight = false;
-                  });
-              }
-              response.hadNotEnoughSpaceLeft = false;
               break;
             }
 
-            const mithrilStatus = getMithrilBootstrapStatus();
-            const partialSyncStatus = getMithrilPartialSyncStatus();
-            if (mithrilStatus.status === 'failed') {
-              await handleMithrilFailureDecline(
-                'polling-chain-present',
-                currentGeneration
-              );
-              response.hadNotEnoughSpaceLeft = false;
-              break;
+            const startupResult =
+              await mithrilController.handleStoppedNodeStartup({
+                currentGeneration,
+                getStaleResponse,
+                response,
+              });
+            if (startupResult.handled) {
+              return startupResult.response;
             }
-
-            if (mithrilStatus.status === 'cancelled') {
-              await handleMithrilCancelledDecline(
-                'polling-chain-present',
-                currentGeneration
-              );
-              response.hadNotEnoughSpaceLeft = false;
-              break;
-            }
-
-            if (isMithrilBootstrapBlockingNodeStart(mithrilStatus.status)) {
-              // Mithril is actively running — the chain data present is a
-              // partial download. Do not start cardano-node; the mithril
-              // completion listener will handle node startup when done.
-              break;
-            }
-
-            if (await startNodeAfterPartialSyncInstall(currentGeneration)) {
-              response.hadNotEnoughSpaceLeft = false;
-              break;
-            }
-
-            if (
-              isMithrilPartialSyncBlockingNodeStart(partialSyncStatus.status)
-            ) {
-              // Partial sync owns the stopped-node window until controlled
-              // startup after cutover. Background disk checks must not restart
-              // cardano-node underneath it.
-              break;
-            }
-
-            await emitMithrilIdleStatus();
-            if (currentGeneration !== directoryChangeGeneration) {
-              return getStaleResponse();
-            }
-            mithrilDecisionInFlight = false;
-            mithrilDecision = null;
-            mithrilDecisionPrompted = false;
-            resetMithrilDecisionState({ suppressStatusBroadcast: true });
-            await cardanoNode.start();
-            await finalizeInstalledPartialSyncAfterNodeStart(currentGeneration);
           } catch (error) {
             logger.error('[MITHRIL] Failed to handle bootstrap decision', {
               error,
@@ -936,7 +292,7 @@ export const handleDiskSpace = (
             }
 
             try {
-              if (await shouldSuppressPartialSyncStartupFallback()) {
+              if (await partialSyncNodeStartup.shouldSuppressStartupFallback()) {
                 return response;
               }
               await cardanoNode.start();
@@ -1084,18 +440,8 @@ export const handleDiskSpace = (
   };
 
   const resetOnDirectoryChange = () => {
-    mithrilDecisionInFlight = false;
-    mithrilFailureDecisionInFlight = false;
-    mithrilFailureDeclineInFlight = false;
-    mithrilCancelledDeclineInFlight = false;
-    mithrilStartupCheckDone = false;
-    mithrilStartupLayoutResult = null;
-    mithrilDecisionPrompted = false;
-    mithrilDecision = null;
-    mithrilBootstrapCompleted = false;
-    mithrilStartInFlight = false;
-    resetMithrilDecisionState({ suppressStatusBroadcast: true });
     directoryChangeGeneration += 1;
+    mithrilController.resetStartupGateOnDirectoryChange();
     launchHandleCheckDiskSpace(false).catch((error) => {
       if (isMithrilDecisionCancelledError(error)) {
         logger.info(

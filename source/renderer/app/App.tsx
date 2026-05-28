@@ -98,13 +98,15 @@ class App extends Component<{
                   <MithrilPartialSyncOverlay
                     status={mithrilPartialSync.status}
                     progressItems={mithrilPartialSync.progressItems}
-                    filesDownloaded={mithrilPartialSync.filesDownloaded}
-                    filesTotal={mithrilPartialSync.filesTotal}
-                    elapsedSeconds={mithrilPartialSync.elapsedSeconds}
-                    ancillaryBytesDownloaded={
-                      mithrilPartialSync.ancillaryBytesDownloaded
-                    }
-                    ancillaryBytesTotal={mithrilPartialSync.ancillaryBytesTotal}
+                    transferProgress={{
+                      filesDownloaded: mithrilPartialSync.filesDownloaded,
+                      filesTotal: mithrilPartialSync.filesTotal,
+                      elapsedSeconds: mithrilPartialSync.elapsedSeconds,
+                      ancillaryBytesDownloaded:
+                        mithrilPartialSync.ancillaryBytesDownloaded,
+                      ancillaryBytesTotal:
+                        mithrilPartialSync.ancillaryBytesTotal,
+                    }}
                     error={mithrilPartialSync.error}
                     canRetry={mithrilPartialSync.canRetry}
                     canRestartNormally={mithrilPartialSync.canRestartNormally}

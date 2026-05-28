@@ -2,7 +2,13 @@ import { action, computed, observable } from 'mobx';
 import type {
   MithrilPartialSyncFailureAction,
   MithrilPartialSyncStatus,
-  MithrilPartialSyncStatusUpdate,
+  MithrilPartialSyncStatusSnapshot,
+} from '../../../common/types/mithril-partial-sync.types';
+import {
+  isMithrilPartialSyncActiveStatus,
+  isMithrilPartialSyncOverlayStatus,
+  isMithrilPartialSyncTerminalStatus,
+  isMithrilPartialSyncWorkingStatus,
 } from '../../../common/types/mithril-partial-sync.types';
 import Store from './lib/Store';
 import {
@@ -14,45 +20,31 @@ import {
 } from '../ipc/mithrilPartialSyncChannel';
 import { logger } from '../utils/logging';
 
-const DEFAULT_STATUS: MithrilPartialSyncStatusUpdate = {
+const DEFAULT_STATUS: MithrilPartialSyncStatusSnapshot = {
   status: 'idle',
   allowedRecoveryActions: [],
+  transferProgress: {},
+  progressItems: [],
   error: null,
 };
 
-const WORKING_STATUSES: MithrilPartialSyncStatus[] = [
-  'stopping-node',
-  'preparing',
-  'downloading',
-  'verifying',
-  'converting',
-  'installing',
-  'finalizing',
-  'starting-node',
-];
-
-const TERMINAL_STATUSES: MithrilPartialSyncStatus[] = [
-  'completed',
-  'failed',
-  'cancelled',
-];
-
-const DISPLAY_STATUSES: MithrilPartialSyncStatus[] = [
-  'stopping-node',
-  'preparing',
-  'downloading',
-  'verifying',
-  'converting',
-  'installing',
-  'finalizing',
-  'starting-node',
-  'completed',
-  'failed',
-  'cancelled',
-];
-
-const STATUS_POLL_INTERVAL = 1000;
 const START_PENDING_STATUS: MithrilPartialSyncStatus = 'stopping-node';
+
+const toStartError = (error: unknown): Error => {
+  if (error instanceof Error) {
+    return error;
+  }
+
+  if (
+    error &&
+    typeof error === 'object' &&
+    typeof (error as { message?: unknown }).message === 'string'
+  ) {
+    return new Error((error as { message: string }).message);
+  }
+
+  return new Error('Unable to start Mithril partial sync.');
+};
 
 export default class MithrilPartialSyncStore extends Store {
   @observable status: MithrilPartialSyncStatus = DEFAULT_STATUS.status;
@@ -66,47 +58,40 @@ export default class MithrilPartialSyncStore extends Store {
   @observable error = DEFAULT_STATUS.error;
   @observable logPath: string | undefined = undefined;
   @observable isCompletedOverlayDismissed = false;
-  _statusPollingInterval: ReturnType<typeof setInterval> | null = null;
-  _syncStatusPromise: Promise<void> | null = null;
-  _statusSyncGeneration = 0;
-  _teardownGeneration = 0;
-  _pendingStatusSyncAfterCurrent = false;
   _isTornDown = false;
 
   setup() {
+    mithrilPartialSyncStatusChannel.onReceive(async (update) => {
+      this._updateStatus(update);
+    });
     this.syncStatus().catch((error) => {
       logger.warn('MithrilPartialSyncStore: failed to sync status', { error });
     });
-    this._setStatusPollingInterval();
   }
 
   teardown() {
     this._isTornDown = true;
-    this._statusSyncGeneration += 1;
-    this._teardownGeneration += 1;
-    this._pendingStatusSyncAfterCurrent = false;
     super.teardown();
-    this._clearStatusPollingInterval();
   }
 
   @computed
   get isActive(): boolean {
-    return this.status !== 'idle';
+    return isMithrilPartialSyncActiveStatus(this.status);
   }
 
   @computed
   get isWorking(): boolean {
-    return WORKING_STATUSES.includes(this.status);
+    return isMithrilPartialSyncWorkingStatus(this.status);
   }
 
   @computed
   get isTerminal(): boolean {
-    return TERMINAL_STATUSES.includes(this.status);
+    return isMithrilPartialSyncTerminalStatus(this.status);
   }
 
   @computed
   get hasDisplayStatus(): boolean {
-    return DISPLAY_STATUSES.includes(this.status);
+    return isMithrilPartialSyncOverlayStatus(this.status);
   }
 
   @computed
@@ -130,73 +115,17 @@ export default class MithrilPartialSyncStore extends Store {
   }
 
   @action
-  _setStatusPollingInterval = () => {
-    if (!this.isWorking) return;
-    this._clearStatusPollingInterval();
-    this._statusPollingInterval = setInterval(() => {
-      this.syncStatus().catch((error) => {
-        logger.warn('MithrilPartialSyncStore: failed to poll status', {
-          error,
-        });
-      });
-    }, STATUS_POLL_INTERVAL);
-  };
-
-  @action
-  _clearStatusPollingInterval = () => {
-    if (this._statusPollingInterval) {
-      clearInterval(this._statusPollingInterval);
-      this._statusPollingInterval = null;
-    }
-  };
-
-  @action
   syncStatus = async () => {
     if (this._isTornDown) {
       return;
     }
 
-    if (this._syncStatusPromise) {
-      this._pendingStatusSyncAfterCurrent = true;
-      return this._syncStatusPromise;
-    }
-
-    const syncGeneration = this._statusSyncGeneration;
-    const teardownGeneration = this._teardownGeneration;
-
-    const syncPromise = (async () => {
-      const status = await mithrilPartialSyncStatusChannel.request();
-      if (
-        syncGeneration !== this._statusSyncGeneration ||
-        teardownGeneration !== this._teardownGeneration
-      ) {
-        return;
-      }
-      this._updateStatus(status);
-    })();
-
-    this._syncStatusPromise = syncPromise;
-
-    try {
-      await syncPromise;
-    } finally {
-      if (this._syncStatusPromise === syncPromise) {
-        this._syncStatusPromise = null;
-      }
-
-      if (
-        this._pendingStatusSyncAfterCurrent &&
-        !this._isTornDown &&
-        teardownGeneration === this._teardownGeneration
-      ) {
-        this._pendingStatusSyncAfterCurrent = false;
-        await this.syncStatus();
-      }
-    }
+    const status = await mithrilPartialSyncStatusChannel.request();
+    this._updateStatus(status);
   };
 
   @action
-  _updateStatus = (update: MithrilPartialSyncStatusUpdate) => {
+  _updateStatus = (update: MithrilPartialSyncStatusSnapshot) => {
     if (this._isTornDown) {
       return;
     }
@@ -206,44 +135,15 @@ export default class MithrilPartialSyncStore extends Store {
       this.isCompletedOverlayDismissed = false;
     }
     this.allowedRecoveryActions = update.allowedRecoveryActions;
-
-    if ('filesDownloaded' in update) {
-      this.filesDownloaded = update.filesDownloaded;
-    }
-
-    if ('filesTotal' in update) {
-      this.filesTotal = update.filesTotal;
-    }
-
-    if ('elapsedSeconds' in update) {
-      this.elapsedSeconds = update.elapsedSeconds;
-    }
-
-    if ('ancillaryBytesDownloaded' in update) {
-      this.ancillaryBytesDownloaded = update.ancillaryBytesDownloaded;
-    }
-
-    if ('ancillaryBytesTotal' in update) {
-      this.ancillaryBytesTotal = update.ancillaryBytesTotal;
-    }
-
-    if ('progressItems' in update) {
-      this.progressItems = update.progressItems ?? [];
-    }
-
-    if ('error' in update) {
-      this.error = update.error ?? null;
-    }
-
-    if ('logPath' in update) {
-      this.logPath = update.logPath;
-    }
-
-    if (this.isWorking) {
-      this._setStatusPollingInterval();
-    } else {
-      this._clearStatusPollingInterval();
-    }
+    this.filesDownloaded = update.transferProgress.filesDownloaded;
+    this.filesTotal = update.transferProgress.filesTotal;
+    this.elapsedSeconds = update.transferProgress.elapsedSeconds;
+    this.ancillaryBytesDownloaded =
+      update.transferProgress.ancillaryBytesDownloaded;
+    this.ancillaryBytesTotal = update.transferProgress.ancillaryBytesTotal;
+    this.progressItems = update.progressItems;
+    this.error = update.error;
+    this.logPath = update.logPath;
   };
 
   @action
@@ -256,18 +156,10 @@ export default class MithrilPartialSyncStore extends Store {
   @action
   startPartialSync = async () => {
     let startError: unknown;
-    this._statusSyncGeneration += 1;
-    if (this._syncStatusPromise) {
-      this._pendingStatusSyncAfterCurrent = true;
-    }
     this._updateStatus({
       status: START_PENDING_STATUS,
       allowedRecoveryActions: [],
-      filesDownloaded: undefined,
-      filesTotal: undefined,
-      elapsedSeconds: undefined,
-      ancillaryBytesDownloaded: undefined,
-      ancillaryBytesTotal: undefined,
+      transferProgress: {},
       progressItems: [],
       error: null,
       logPath: undefined,
@@ -281,26 +173,29 @@ export default class MithrilPartialSyncStore extends Store {
       await this.syncStatus();
     }
 
-    if (startError && this.status === START_PENDING_STATUS) {
-      throw new Error('Unable to start Mithril partial sync.');
+    if (!startError) {
+      return;
     }
+
+    if (this.status !== START_PENDING_STATUS) {
+      return;
+    }
+
+    throw toStartError(startError);
   };
 
   @action
   cancelPartialSync = async () => {
     await mithrilPartialSyncCancelChannel.request();
-    await this.syncStatus();
   };
 
   @action
   restartNormally = async () => {
     await mithrilPartialSyncRestartNormalChannel.request();
-    await this.syncStatus();
   };
 
   @action
   wipeAndFullSync = async () => {
     await mithrilPartialSyncWipeAndFullSyncChannel.request();
-    await this.syncStatus();
   };
 }

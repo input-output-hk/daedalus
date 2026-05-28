@@ -10,7 +10,6 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import SVGInline from 'react-svg-inline';
-import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
@@ -18,7 +17,6 @@ import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
-import { logger } from '../../utils/logging';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
@@ -26,6 +24,8 @@ import type { SystemInfo } from '../../types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 import type { TipInfo } from '../../api/network/types';
 import { ErrorType } from '../../domains/ApiError';
+import DiagnosticsTimeStatusRow from './DiagnosticsTimeStatusRow';
+import MithrilPartialSyncSection from './MithrilPartialSyncSection';
 
 const messages = defineMessages({
   systemInfo: {
@@ -385,79 +385,6 @@ const messages = defineMessages({
     defaultMessage: '!!!slot',
     description: 'slot',
   },
-  mithrilPartialSyncRecommendation: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncRecommendation',
-    defaultMessage:
-      '!!!If Cardano node catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.',
-    description:
-      'Recommendation copy shown in diagnostics near sync status for Mithril partial sync',
-  },
-  mithrilPartialSyncRecommendationWithProgress: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationWithProgress',
-    defaultMessage:
-      '!!!Cardano node is currently {syncPercentage}% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.',
-    description:
-      'Recommendation copy shown in diagnostics with current sync percentage for Mithril partial sync',
-  },
-  mithrilPartialSyncButtonLabel: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonLabel',
-    defaultMessage: '!!!Mithril Partial Sync',
-    description: 'Disabled placeholder CTA label for Mithril partial sync',
-  },
-  mithrilPartialSyncButtonHint: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonHint',
-    defaultMessage:
-      '!!!Available after the confirmation step is added.',
-    description:
-      'Hint text beneath the disabled Mithril partial sync diagnostics button',
-  },
-  mithrilPartialSyncButtonHintBlocked: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintBlocked',
-    defaultMessage:
-      '!!!Unavailable while Mithril work is already active.',
-    description:
-      'Hint text beneath the disabled Mithril partial sync diagnostics button while Mithril work is active',
-  },
-  mithrilPartialSyncButtonHintReady: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintReady',
-    defaultMessage:
-      '!!!Review what will happen before Daedalus starts Mithril partial sync.',
-    description:
-      'Hint text beneath the Mithril partial sync diagnostics button before confirmation opens',
-  },
-  mithrilPartialSyncConfirmationTitle: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationTitle',
-    defaultMessage: '!!!Before Mithril partial sync begins',
-    description: 'Title for the Mithril partial sync confirmation view',
-  },
-  mithrilPartialSyncConfirmationIntro: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationIntro',
-    defaultMessage:
-      '!!!Daedalus will stop Cardano node automatically, then download and restore verified Mithril data.',
-    description: 'Introductory copy for the Mithril partial sync confirmation view',
-  },
-  mithrilPartialSyncConfirmationSuccess: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationSuccess',
-    defaultMessage:
-      '!!!If Mithril partial sync succeeds, Daedalus will restart Cardano node automatically and normal syncing will resume.',
-    description: 'Success copy for the Mithril partial sync confirmation view',
-  },
-  mithrilPartialSyncConfirmationRecovery: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationRecovery',
-    defaultMessage:
-      '!!!If the attempt fails, Daedalus can offer retry partial sync, restart normally on the current database, or wipe chain data and do a full Mithril sync.',
-    description: 'Failure recovery copy for the Mithril partial sync confirmation view',
-  },
-  mithrilPartialSyncConfirmationCancel: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationCancel',
-    defaultMessage: '!!!Back to diagnostics',
-    description: 'Cancel button label for the Mithril partial sync confirmation view',
-  },
-  mithrilPartialSyncConfirmationConfirm: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationConfirm',
-    defaultMessage: '!!!Start Mithril partial sync',
-    description: 'Confirm button label for the Mithril partial sync confirmation view',
-  },
 });
 type Props = {
   systemInfo: SystemInfo;
@@ -491,7 +418,6 @@ type Props = {
 };
 type State = {
   isNodeRestarting: boolean;
-  isShowingMithrilPartialSyncConfirmation: boolean;
 };
 const FINAL_CARDANO_NODE_STATES = [
   CardanoNodeStates.RUNNING,
@@ -511,7 +437,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
     super(props);
     this.state = {
       isNodeRestarting: false,
-      isShowingMithrilPartialSyncConfirmation: false,
     };
   }
 
@@ -528,26 +453,17 @@ class DaedalusDiagnostics extends Component<Props, State> {
       }); // eslint-disable-line
     }
 
-    if (
-      this.state.isShowingMithrilPartialSyncConfirmation &&
-      !prevProps.isMithrilPartialSyncActive &&
-      this.props.isMithrilPartialSyncActive
-    ) {
-      this.hideMithrilPartialSyncConfirmation();
-    }
   }
 
-  getSectionRow = (messageId: string, content?: Node) => {
-    return (
-      <div className={styles.layoutRow}>
-        <div className={styles.sectionTitle}>
-          <span>{this.context.intl.formatMessage(messages[messageId])}</span>
-          {content}
-          <hr />
-        </div>
+  getSectionRow = (messageId: string, content?: Node) => (
+    <div className={styles.layoutRow}>
+      <div className={styles.sectionTitle}>
+        <span>{this.context.intl.formatMessage(messages[messageId])}</span>
+        {content}
+        <hr />
       </div>
-    );
-  };
+    </div>
+  );
   getRow = (messageId: string, value: Node | boolean) => {
     const { intl } = this.context;
     const key = intl.formatMessage(messages[messageId]);
@@ -603,7 +519,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
       networkTip,
       isMithrilPartialSyncActive,
       isMithrilBootstrapActive,
-      onStartMithrilPartialSync,
       onOpenStateDirectory,
       onClose,
       onCopyStateDirectoryPath,
@@ -638,9 +553,9 @@ class DaedalusDiagnostics extends Component<Props, State> {
       cardanoNetwork,
       daedalusStateDirectoryPath,
     } = coreInfo;
-    const { isNodeRestarting, isShowingMithrilPartialSyncConfirmation } =
-      this.state;
-    const isNTPServiceReachable = localTimeDifference != null;
+    const {
+      isNodeRestarting,
+    } = this.state;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError as ErrorType;
     const unknownDiskSpaceSupportUrl = intl.formatMessage(
@@ -652,88 +567,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
     );
     const isMithrilActionBlocked =
       isMithrilPartialSyncActive || isMithrilBootstrapActive;
-    const mithrilRecommendationMessage = isSynced
-      ? messages.mithrilPartialSyncRecommendation
-      : messages.mithrilPartialSyncRecommendationWithProgress;
-    const mithrilButtonHintMessage = isMithrilActionBlocked
-      ? messages.mithrilPartialSyncButtonHintBlocked
-      : messages.mithrilPartialSyncButtonHintReady;
-    const localTimeDifferenceClasses = isCheckingSystemTime
-      ? classNames([styles.layoutData, styles.localTimeDifference])
-      : classNames([
-          styles.layoutData,
-          styles.localTimeDifference,
-          !isNTPServiceReachable ||
-          (localTimeDifference &&
-            Math.abs(localTimeDifference) > ALLOWED_TIME_DIFFERENCE)
-            ? styles.red
-            : styles.green,
-        ]);
     const { getSectionRow, getRow } = this;
-
-    if (isShowingMithrilPartialSyncConfirmation) {
-      return (
-        <div className={styles.component}>
-          <DialogCloseButton
-            className={styles.closeButton}
-            icon={closeCrossThin}
-            onClose={onClose}
-          />
-
-          <div className={styles.mithrilPartialSyncConfirmation}>
-            <h1 className={styles.mithrilPartialSyncConfirmationTitle}>
-              {intl.formatMessage(messages.mithrilPartialSyncConfirmationTitle)}
-            </h1>
-
-            <div className={styles.mithrilPartialSyncConfirmationBody}>
-              <p>
-                {intl.formatMessage(messages.mithrilPartialSyncConfirmationIntro)}
-              </p>
-              <p>
-                {intl.formatMessage(
-                  messages.mithrilPartialSyncConfirmationSuccess
-                )}
-              </p>
-              <p>
-                {intl.formatMessage(
-                  messages.mithrilPartialSyncConfirmationRecovery
-                )}
-              </p>
-            </div>
-
-            <div className={styles.mithrilPartialSyncConfirmationActions}>
-              <button
-                className={styles.mithrilPartialSyncConfirmationCancelButton}
-                onClick={this.hideMithrilPartialSyncConfirmation}
-                type="button"
-              >
-                {intl.formatMessage(
-                  messages.mithrilPartialSyncConfirmationCancel
-                )}
-              </button>
-              <button
-                className={styles.mithrilPartialSyncConfirmationCancelButton}
-                disabled={isMithrilActionBlocked}
-                onClick={() => {
-                  this.hideMithrilPartialSyncConfirmation();
-                  Promise.resolve(onStartMithrilPartialSync()).catch((error) => {
-                    logger.warn(
-                      'DaedalusDiagnostics: Mithril partial sync start rejected after confirmation',
-                      { error }
-                    );
-                  });
-                }}
-                type="button"
-              >
-                {intl.formatMessage(
-                  messages.mithrilPartialSyncConfirmationConfirm
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    }
 
     return (
       <div className={styles.component}>
@@ -873,32 +707,14 @@ class DaedalusDiagnostics extends Component<Props, State> {
                 'syncPercentage',
                 `${formattedSyncPercentage}%`
               )}
-              <div className={styles.layoutRow}>
-                <div className={styles.layoutHeader}>
-                  {intl.formatMessage(messages.mithrilPartialSyncButtonLabel)}
-                  {intl.formatMessage(globalMessages.punctuationColon)}
-                </div>
-                <div className={classNames(styles.layoutData, styles.mithrilPartialSyncData)}>
-                  <div className={styles.mithrilPartialSyncRecommendation}>
-                    <div className={styles.mithrilPartialSyncRecommendationCopy}>
-                      {intl.formatMessage(mithrilRecommendationMessage, {
-                        syncPercentage: formattedSyncPercentage,
-                      })}
-                    </div>
-                    <button
-                      className={styles.mithrilPartialSyncButton}
-                      disabled={isMithrilActionBlocked}
-                      onClick={this.showMithrilPartialSyncConfirmation}
-                      type="button"
-                    >
-                      {intl.formatMessage(messages.mithrilPartialSyncButtonLabel)}
-                    </button>
-                    <div className={styles.mithrilPartialSyncHint}>
-                      {intl.formatMessage(mithrilButtonHintMessage)}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <MithrilPartialSyncSection
+                formattedSyncPercentage={formattedSyncPercentage}
+                isActionBlocked={isMithrilActionBlocked}
+                isMithrilPartialSyncActive={isMithrilPartialSyncActive}
+                isSynced={isSynced}
+                onRestoreFocus={this.restoreDialogCloseOnEscKey}
+                onStartMithrilPartialSync={this.props.onStartMithrilPartialSync}
+              />
               {getRow(
                 'lastNetworkBlock',
                 <Fragment>
@@ -945,42 +761,13 @@ class DaedalusDiagnostics extends Component<Props, State> {
                   )}
                 </Fragment>
               )}
-              <div className={styles.layoutRow}>
-                <div className={styles.layoutHeader}>
-                  {intl.formatMessage(messages.localTimeDifference)}
-                  {intl.formatMessage(globalMessages.punctuationColon)}
-                </div>
-                <div className={localTimeDifferenceClasses}>
-                  {
-                    <button
-                      onClick={() => this.checkTime()}
-                      disabled={isForceCheckingSystemTime || !isNodeResponding}
-                    >
-                      {isForceCheckingSystemTime
-                        ? intl.formatMessage(
-                            messages.localTimeDifferenceChecking
-                          )
-                        : intl.formatMessage(
-                            messages.localTimeDifferenceCheckTime
-                          )}
-                    </button>
-                  }
-                  {isCheckingSystemTime ? (
-                    <span className={localTimeDifferenceClasses}>
-                      <SVGInline
-                        svg={sandClockIcon}
-                        className={styles.networkTipSandClock}
-                      />
-                    </span>
-                  ) : (
-                    <span className={localTimeDifferenceClasses}>
-                      {isNTPServiceReachable
-                        ? `${formattedNumber(localTimeDifference || 0)} μs`
-                        : intl.formatMessage(messages.serviceUnreachable)}
-                    </span>
-                  )}
-                </div>
-              </div>
+              <DiagnosticsTimeStatusRow
+                isCheckingSystemTime={isCheckingSystemTime}
+                isForceCheckingSystemTime={isForceCheckingSystemTime}
+                isNodeResponding={isNodeResponding}
+                localTimeDifference={localTimeDifference}
+                onCheckTime={this.checkTime}
+              />
               {getRow('systemTimeCorrect', isSystemTimeCorrect)}
               {getRow('systemTimeIgnored', isSystemTimeIgnored)}
               {
@@ -1103,25 +890,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
     });
     // @ts-ignore ts-migrate(2339) FIXME: Property 'trigger' does not exist on type '(...arg... Remove this comment to see the full error message
     this.props.onRestartNode.trigger();
-    this.restoreDialogCloseOnEscKey();
-  };
-  showMithrilPartialSyncConfirmation = () => {
-    if (
-      this.props.isMithrilPartialSyncActive ||
-      this.props.isMithrilBootstrapActive
-    ) {
-      return;
-    }
-
-    this.setState({
-      isShowingMithrilPartialSyncConfirmation: true,
-    });
-    this.restoreDialogCloseOnEscKey();
-  };
-  hideMithrilPartialSyncConfirmation = () => {
-    this.setState({
-      isShowingMithrilPartialSyncConfirmation: false,
-    });
     this.restoreDialogCloseOnEscKey();
   };
 }

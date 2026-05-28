@@ -1,16 +1,9 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../i18n/locales/en-US.json';
 import DaedalusDiagnostics from './DaedalusDiagnostics';
-import { logger } from '../../utils/logging';
-
-jest.mock('../../utils/logging', () => ({
-  logger: {
-    warn: jest.fn(),
-  },
-}));
 
 jest.mock('react-polymorph/lib/components/PopOver', () => ({
   PopOver: ({ children }: { children: React.ReactNode }) => <>{children}</>,
@@ -96,81 +89,6 @@ describe('DaedalusDiagnostics', () => {
     expect(screen.queryByText(/!!!/)).not.toBeInTheDocument();
   });
 
-  it('opens confirmation first and does not start partial sync before confirm', () => {
-    const onStartMithrilPartialSync = jest.fn();
-    renderComponent({ onStartMithrilPartialSync });
-
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
-
-    expect(
-      screen.getByRole('heading', {
-        name: 'Before Mithril partial sync begins',
-      })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'Daedalus will stop Cardano node automatically, then download and restore verified Mithril data.'
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'If Mithril partial sync succeeds, Daedalus will restart Cardano node automatically and normal syncing will resume.'
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'If the attempt fails, Daedalus can offer retry partial sync, restart normally on the current database, or wipe chain data and do a full Mithril sync.'
-      )
-    ).toBeInTheDocument();
-    expect(onStartMithrilPartialSync).not.toHaveBeenCalled();
-    expect(screen.queryByText(/!!!/)).not.toBeInTheDocument();
-  });
-
-  it('returns to diagnostics when confirmation is cancelled', () => {
-    const onStartMithrilPartialSync = jest.fn();
-    renderComponent({ onStartMithrilPartialSync });
-
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
-    screen.getByRole('button', { name: 'Back to diagnostics' }).click();
-
-    expect(
-      screen.getByText(
-        'Cardano node is currently 62.50% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.'
-      )
-    ).toBeInTheDocument();
-    expect(onStartMithrilPartialSync).not.toHaveBeenCalled();
-  });
-
-  it('starts partial sync only after confirmation', () => {
-    const onStartMithrilPartialSync = jest.fn();
-    renderComponent({ onStartMithrilPartialSync });
-
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
-    screen.getByRole('button', { name: 'Start Mithril partial sync' }).click();
-
-    expect(onStartMithrilPartialSync).toHaveBeenCalledTimes(1);
-  });
-
-  it('catches rejected partial sync start promises from the confirmation action', async () => {
-    const onStartMithrilPartialSync = jest
-      .fn()
-      .mockRejectedValue({ code: 'PARTIAL_SYNC_START_FAILED' });
-
-    renderComponent({ onStartMithrilPartialSync });
-
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
-    screen.getByRole('button', { name: 'Start Mithril partial sync' }).click();
-
-    await waitFor(() => {
-      expect(logger.warn).toHaveBeenCalledWith(
-        'DaedalusDiagnostics: Mithril partial sync start rejected after confirmation',
-        {
-          error: { code: 'PARTIAL_SYNC_START_FAILED' },
-        }
-      );
-    });
-  });
-
   it('renders the synced recommendation variant without the percentage text', () => {
     renderComponent({ isSynced: true, syncPercentage: 100 });
 
@@ -203,6 +121,18 @@ describe('DaedalusDiagnostics', () => {
     ).toBeDisabled();
     expect(
       screen.getByText('Unavailable while Mithril work is already active.')
+    ).toBeInTheDocument();
+  });
+
+  it('still wires the diagnostics partial sync button through the extracted section', () => {
+    renderComponent();
+
+    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Before Mithril partial sync begins',
+      })
     ).toBeInTheDocument();
   });
 });

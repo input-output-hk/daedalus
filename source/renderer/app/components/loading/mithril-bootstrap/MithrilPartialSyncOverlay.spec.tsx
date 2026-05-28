@@ -15,11 +15,13 @@ describe('MithrilPartialSyncOverlay', () => {
         <MithrilPartialSyncOverlay
           status="downloading"
           progressItems={[]}
-          filesDownloaded={3}
-          filesTotal={9}
-          elapsedSeconds={65}
-          ancillaryBytesDownloaded={1}
-          ancillaryBytesTotal={2}
+          transferProgress={{
+            filesDownloaded: 3,
+            filesTotal: 9,
+            elapsedSeconds: 65,
+            ancillaryBytesDownloaded: 1,
+            ancillaryBytesTotal: 2,
+          }}
           error={null}
           canRetry={false}
           canRestartNormally={false}
@@ -94,8 +96,10 @@ describe('MithrilPartialSyncOverlay', () => {
           state: 'active',
         },
       ],
-      filesDownloaded: 3,
-      filesTotal: 9,
+      transferProgress: {
+        filesDownloaded: 3,
+        filesTotal: 9,
+      },
     });
 
     expect(

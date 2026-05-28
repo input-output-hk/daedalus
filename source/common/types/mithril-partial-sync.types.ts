@@ -36,22 +36,62 @@ export type MithrilPartialSyncError = {
   stage?: MithrilPartialSyncErrorStage;
 };
 
-export type MithrilPartialSyncStatusUpdate = {
-  status: MithrilPartialSyncStatus;
-  allowedRecoveryActions: MithrilPartialSyncFailureAction[];
+export type MithrilPartialSyncTransferProgress = {
   filesDownloaded?: number;
   filesTotal?: number;
   elapsedSeconds?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
-  progressItems?: MithrilProgressItem[];
-  error?: MithrilPartialSyncError | null;
+};
+
+export type MithrilPartialSyncStatusSnapshot = {
+  status: MithrilPartialSyncStatus;
+  allowedRecoveryActions: MithrilPartialSyncFailureAction[];
+  transferProgress: MithrilPartialSyncTransferProgress;
+  progressItems: MithrilProgressItem[];
+  error: MithrilPartialSyncError | null;
   logPath?: string;
 };
 
+const MITHRIL_PARTIAL_SYNC_WORKING_STATUSES: MithrilPartialSyncStatus[] = [
+  'stopping-node',
+  'preparing',
+  'downloading',
+  'verifying',
+  'converting',
+  'installing',
+  'finalizing',
+  'starting-node',
+];
+
+const MITHRIL_PARTIAL_SYNC_TERMINAL_STATUSES: MithrilPartialSyncStatus[] = [
+  'completed',
+  'failed',
+  'cancelled',
+];
+
+const MITHRIL_PARTIAL_SYNC_OVERLAY_STATUSES: MithrilPartialSyncStatus[] = [
+  ...MITHRIL_PARTIAL_SYNC_WORKING_STATUSES,
+  ...MITHRIL_PARTIAL_SYNC_TERMINAL_STATUSES.filter(
+    (status) => status !== 'idle'
+  ),
+];
+
+export const isMithrilPartialSyncWorkingStatus = (
+  status: MithrilPartialSyncStatus
+): boolean => MITHRIL_PARTIAL_SYNC_WORKING_STATUSES.includes(status);
+
 export const isMithrilPartialSyncTerminalStatus = (
   status: MithrilPartialSyncStatus
-): boolean => ['completed', 'failed', 'cancelled'].includes(status);
+): boolean => MITHRIL_PARTIAL_SYNC_TERMINAL_STATUSES.includes(status);
+
+export const isMithrilPartialSyncOverlayStatus = (
+  status: MithrilPartialSyncStatus
+): boolean => MITHRIL_PARTIAL_SYNC_OVERLAY_STATUSES.includes(status);
+
+export const isMithrilPartialSyncActiveStatus = (
+  status: MithrilPartialSyncStatus
+): boolean => status !== 'idle';
 
 export const isMithrilPartialSyncRestoreCompleteStatus = (
   status: MithrilPartialSyncStatus

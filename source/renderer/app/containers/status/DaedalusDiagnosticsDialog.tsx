@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import { isMithrilBootstrapBlockingNodeStart } from '../../../../common/types/mithril-bootstrap.types';
-import { isMithrilPartialSyncOverlayStatus } from '../../components/loading/mithril-bootstrap/MithrilPartialSyncOverlay';
+import { isMithrilPartialSyncOverlayStatus } from '../../../../common/types/mithril-partial-sync.types';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';

@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import type { PartialSyncPreflightContext } from '../utils/chainStorageCoordinator';
 import { MithrilPartialSyncService } from './MithrilPartialSyncService';
-import type { MithrilPartialSyncStatusUpdate } from '../../common/types/mithril-partial-sync.types';
+import type { MithrilPartialSyncStatusSnapshot } from '../../common/types/mithril-partial-sync.types';
 
 jest.mock('./mithrilPartialSyncMarker', () => ({
   clearMithrilPartialSyncMarker: jest.fn().mockResolvedValue(undefined),
@@ -478,7 +478,7 @@ describe('MithrilPartialSyncService', () => {
 
   it('maps Mithril progress into downloading and verifying status updates', async () => {
     const service = new MithrilPartialSyncService();
-    const statusUpdates: Array<MithrilPartialSyncStatusUpdate> = [];
+    const statusUpdates: Array<MithrilPartialSyncStatusSnapshot> = [];
     jest
       .spyOn(service._chainStorageManager, 'installValidatedPartialSyncSnapshot')
       .mockResolvedValue(undefined);
@@ -532,17 +532,21 @@ describe('MithrilPartialSyncService', () => {
       expect.arrayContaining([
         expect.objectContaining({
           status: 'downloading',
-          filesDownloaded: 2,
-          filesTotal: 10,
-          elapsedSeconds: 3,
+          transferProgress: expect.objectContaining({
+            filesDownloaded: 2,
+            filesTotal: 10,
+            elapsedSeconds: 3,
+          }),
         }),
         expect.objectContaining({
           status: 'verifying',
-          filesDownloaded: 2,
-          filesTotal: 10,
-          ancillaryBytesDownloaded: 100,
-          ancillaryBytesTotal: 200,
-          elapsedSeconds: 5,
+          transferProgress: expect.objectContaining({
+            filesDownloaded: 2,
+            filesTotal: 10,
+            ancillaryBytesDownloaded: 100,
+            ancillaryBytesTotal: 200,
+            elapsedSeconds: 5,
+          }),
         }),
       ])
     );
@@ -702,6 +706,8 @@ describe('MithrilPartialSyncService', () => {
     service._status = {
       status: 'installing',
       allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
       error: null,
     };
 
@@ -718,6 +724,8 @@ describe('MithrilPartialSyncService', () => {
     service._status = {
       status: 'downloading',
       allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
       error: null,
     };
 
@@ -744,6 +752,8 @@ describe('MithrilPartialSyncService', () => {
     service._status = {
       status: 'downloading',
       allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
       error: null,
     };
     removeMock.mockRejectedValueOnce(new Error('cleanup failed'));
@@ -768,6 +778,8 @@ describe('MithrilPartialSyncService', () => {
     service._status = {
       status: 'failed',
       allowedRecoveryActions: ['restart-normal', 'wipe-and-full-sync'],
+      transferProgress: {},
+      progressItems: [],
       error: {
         message: 'node handoff failed',
         stage: 'starting-node',
@@ -780,14 +792,10 @@ describe('MithrilPartialSyncService', () => {
     expect(service.status).toEqual({
       status: 'idle',
       allowedRecoveryActions: [],
+      transferProgress: {},
       error: null,
       logPath: undefined,
       progressItems: [],
-      filesDownloaded: undefined,
-      filesTotal: undefined,
-      ancillaryBytesDownloaded: undefined,
-      ancillaryBytesTotal: undefined,
-      elapsedSeconds: undefined,
     });
   });
 
@@ -797,6 +805,8 @@ describe('MithrilPartialSyncService', () => {
     service._status = {
       status: 'failed',
       allowedRecoveryActions: ['wipe-and-full-sync'],
+      transferProgress: {},
+      progressItems: [],
       error: {
         message: 'unsafe install',
         stage: 'installing',
@@ -818,6 +828,8 @@ describe('MithrilPartialSyncService', () => {
     service._status = {
       status: 'failed',
       allowedRecoveryActions: ['wipe-and-full-sync'],
+      transferProgress: {},
+      progressItems: [],
       error: {
         message: 'unsafe install',
         stage: 'installing',

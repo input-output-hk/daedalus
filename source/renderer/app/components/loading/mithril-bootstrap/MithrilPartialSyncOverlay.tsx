@@ -3,6 +3,7 @@ import { intlShape } from 'react-intl';
 import type {
   MithrilPartialSyncError,
   MithrilPartialSyncStatus,
+  MithrilPartialSyncTransferProgress,
 } from '../../../../../common/types/mithril-partial-sync.types';
 import type { MithrilProgressItem } from '../../../../../common/types/mithril-bootstrap.types';
 import type { Intl } from '../../../types/i18nTypes';
@@ -15,11 +16,7 @@ import styles from './MithrilBootstrap.scss';
 type Props = {
   status: MithrilPartialSyncStatus;
   progressItems?: MithrilProgressItem[];
-  filesDownloaded?: number;
-  filesTotal?: number;
-  elapsedSeconds?: number;
-  ancillaryBytesDownloaded?: number;
-  ancillaryBytesTotal?: number;
+  transferProgress?: MithrilPartialSyncTransferProgress;
   error?: MithrilPartialSyncError | null;
   canRetry: boolean;
   canRestartNormally: boolean;
@@ -52,11 +49,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
   const {
     status,
     progressItems,
-    filesDownloaded,
-    filesTotal,
-    elapsedSeconds,
-    ancillaryBytesDownloaded,
-    ancillaryBytesTotal,
+    transferProgress,
     error,
     canRetry,
     canRestartNormally,
@@ -88,11 +81,11 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
             <MithrilProgressView
               status={status}
               progressItems={progressItems}
-              bytesDownloaded={filesDownloaded}
-              snapshotSize={filesTotal}
-              ancillaryBytesDownloaded={ancillaryBytesDownloaded}
-              ancillaryBytesTotal={ancillaryBytesTotal}
-              elapsedSeconds={elapsedSeconds}
+              bytesDownloaded={transferProgress?.filesDownloaded}
+              snapshotSize={transferProgress?.filesTotal}
+              ancillaryBytesDownloaded={transferProgress?.ancillaryBytesDownloaded}
+              ancillaryBytesTotal={transferProgress?.ancillaryBytesTotal}
+              elapsedSeconds={transferProgress?.elapsedSeconds}
               title={intl.formatMessage(MithrilBootstrapMessages.partialSyncTitle)}
               subtitle={intl.formatMessage(
                 status === 'completed'
@@ -178,10 +171,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
   );
 }
 
-export const isMithrilPartialSyncOverlayStatus = (
-  status: MithrilPartialSyncStatus
-): boolean =>
-  PROGRESS_STATUSES.includes(status) || ['failed', 'cancelled'].includes(status);
+export { isMithrilPartialSyncOverlayStatus } from '../../../../../common/types/mithril-partial-sync.types';
 
 MithrilPartialSyncOverlay.contextTypes = {
   intl: intlShape.isRequired,

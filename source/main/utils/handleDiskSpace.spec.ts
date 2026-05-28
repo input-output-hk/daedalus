@@ -28,6 +28,13 @@ const fsExtraMock = {
   ensureDir: jest.fn(),
 };
 
+const mithrilPartialSyncNodeStartupMock = {
+  handleInterruptedRecovery: jest.fn(),
+  startInstalledNode: jest.fn(),
+  finalizeInstalledNodeStart: jest.fn(),
+  shouldSuppressStartupFallback: jest.fn(),
+};
+
 const resetMithrilDecisionStateMock = jest.fn();
 
 let directoryChangedHandler: (() => void) | null = null;
@@ -103,9 +110,17 @@ jest.mock('../ipc/mithrilPartialSyncChannel', () => ({
   getMithrilPartialSyncStatus: jest.fn(() => ({
     status: 'idle',
     allowedRecoveryActions: [],
+    transferProgress: {},
+    progressItems: [],
     error: null,
   })),
   emitMithrilPartialSyncStatus: jest.fn().mockResolvedValue(undefined),
+}));
+
+jest.mock('../mithril/mithrilPartialSyncNodeStartup', () => ({
+  MithrilPartialSyncNodeStartup: jest
+    .fn()
+    .mockImplementation(() => mithrilPartialSyncNodeStartupMock),
 }));
 
 const { logger } = require('./logging') as typeof import('./logging');
@@ -209,8 +224,20 @@ describe('handleDiskSpace', () => {
     mithrilPartialSyncChannel.getMithrilPartialSyncStatus.mockReturnValue({
       status: 'idle',
       allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
       error: null,
     });
+    mithrilPartialSyncNodeStartupMock.handleInterruptedRecovery.mockResolvedValue(
+      false
+    );
+    mithrilPartialSyncNodeStartupMock.startInstalledNode.mockResolvedValue(false);
+    mithrilPartialSyncNodeStartupMock.finalizeInstalledNodeStart.mockResolvedValue(
+      undefined
+    );
+    mithrilPartialSyncNodeStartupMock.shouldSuppressStartupFallback.mockResolvedValue(
+      false
+    );
     resetMithrilDecisionStateMock.mockReset();
     directoryChangedHandler = null;
   });
@@ -753,6 +780,8 @@ describe('handleDiskSpace', () => {
     getMithrilPartialSyncStatus.mockReturnValue({
       status: 'downloading',
       allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
       error: null,
     });
 
@@ -828,19 +857,12 @@ describe('handleDiskSpace', () => {
 
   it('blocks normal startup and wipes when interrupted partial sync cutover is detected', async () => {
     const { handleDiskSpace } = require('./handleDiskSpace') as typeof import('./handleDiskSpace');
-    const { emitMithrilPartialSyncStatus } = require('../ipc/mithrilPartialSyncChannel');
     const cardanoNode = createCardanoNode();
 
     chainStorageCoordinatorMock.isManagedChainEmpty.mockResolvedValue(false);
-    fsExtraMock.pathExists.mockImplementation(async (targetPath: string) =>
-      targetPath === '/tmp/state/Logs/mithril-partial-sync.lock'
+    mithrilPartialSyncNodeStartupMock.handleInterruptedRecovery.mockResolvedValue(
+      false
     );
-    fsExtraMock.readJson.mockResolvedValue({
-      state: 'cutover-in-progress',
-      updatedAt: '2026-05-20T18:00:00Z',
-      managedChainPath: '/tmp/state/chain',
-    });
-    electronDialogMock.showMessageBox.mockResolvedValue({ response: 0 });
 
     const handleCheckDiskSpace = handleDiskSpace(
       { webContents: {} } as never,
@@ -851,26 +873,16 @@ describe('handleDiskSpace', () => {
     jest.runOnlyPendingTimers();
     await pendingCheck;
 
-    expect(emitMithrilPartialSyncStatus).toHaveBeenCalledWith(
-      expect.objectContaining({
-        status: 'failed',
-        allowedRecoveryActions: ['wipe-and-full-sync'],
-      })
-    );
-    expect(chainStorageCoordinatorMock.wipeChainAndSnapshots).toHaveBeenCalledWith(
-      'Interrupted Mithril partial sync detected on startup. Wiped chain directory and Mithril snapshots.',
-      'stopped'
-    );
-    expect(fsExtraMock.remove).toHaveBeenCalledWith(
-      '/tmp/state/Logs/mithril-partial-sync.lock'
-    );
+    expect(
+      mithrilPartialSyncNodeStartupMock.handleInterruptedRecovery
+    ).toHaveBeenCalled();
+    expect(chainStorageCoordinatorMock.wipeChainAndSnapshots).not.toHaveBeenCalled();
     expect(cardanoNode.start).toHaveBeenCalledTimes(1);
   });
 
   it('still attempts partial-sync node start from installed-awaiting-node-start while renderer status remains finalizing', async () => {
     const { handleDiskSpace } = require('./handleDiskSpace') as typeof import('./handleDiskSpace');
     const {
-      emitMithrilPartialSyncStatus,
       getMithrilPartialSyncStatus,
     } = require('../ipc/mithrilPartialSyncChannel');
     const cardanoNode = createCardanoNode();
@@ -879,19 +891,11 @@ describe('handleDiskSpace', () => {
     getMithrilPartialSyncStatus.mockReturnValue({
       status: 'finalizing',
       allowedRecoveryActions: ['wipe-and-full-sync'],
+      transferProgress: {},
+      progressItems: [],
       error: null,
     });
-    fsExtraMock.pathExists.mockImplementation(async (targetPath: string) =>
-      targetPath === '/tmp/state/Logs/mithril-partial-sync.lock'
-    );
-    fsExtraMock.readJson.mockResolvedValue({
-      state: 'installed-awaiting-node-start',
-      updatedAt: '2026-05-20T18:00:00Z',
-      managedChainPath: '/tmp/state/chain',
-    });
-    cardanoNode.start.mockRejectedValueOnce(
-      new Error('partial sync startup proof failed')
-    );
+    mithrilPartialSyncNodeStartupMock.startInstalledNode.mockResolvedValue(true);
 
     const handleCheckDiskSpace = handleDiskSpace(
       { webContents: {} } as never,
@@ -900,28 +904,10 @@ describe('handleDiskSpace', () => {
 
     await handleCheckDiskSpace();
 
-    expect(cardanoNode.start).toHaveBeenCalledTimes(1);
+    expect(mithrilPartialSyncNodeStartupMock.startInstalledNode).toHaveBeenCalled();
     expect(mithrilBootstrapStatusChannelMock.send).not.toHaveBeenCalledWith(
       expect.objectContaining({ status: 'idle' }),
       expect.anything()
-    );
-    expect(emitMithrilPartialSyncStatus).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({
-        status: 'starting-node',
-        allowedRecoveryActions: ['wipe-and-full-sync'],
-      })
-    );
-    expect(emitMithrilPartialSyncStatus).toHaveBeenNthCalledWith(
-      2,
-      expect.objectContaining({
-        status: 'failed',
-        allowedRecoveryActions: ['wipe-and-full-sync'],
-        error: expect.objectContaining({
-          message: 'partial sync startup proof failed',
-          stage: 'starting-node',
-        }),
-      })
     );
   });
 

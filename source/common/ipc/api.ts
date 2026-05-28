@@ -78,7 +78,7 @@ import type {
   MithrilBootstrapStatusUpdate,
   MithrilSnapshotItem,
 } from '../types/mithril-bootstrap.types';
-import type { MithrilPartialSyncStatusUpdate } from '../types/mithril-partial-sync.types';
+import type { MithrilPartialSyncStatusSnapshot } from '../types/mithril-partial-sync.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -460,7 +460,7 @@ export const MITHRIL_PARTIAL_SYNC_STATUS_CHANNEL =
   'MITHRIL_PARTIAL_SYNC_STATUS_CHANNEL';
 export type MithrilPartialSyncStatusRendererRequest = void;
 export type MithrilPartialSyncStatusMainResponse =
-  MithrilPartialSyncStatusUpdate;
+  MithrilPartialSyncStatusSnapshot;
 
 export const MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL =
   'MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL';

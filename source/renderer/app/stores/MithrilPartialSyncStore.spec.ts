@@ -10,12 +10,14 @@ const mockStartRequest = jest.fn();
 const mockCancelRequest = jest.fn();
 const mockRestartNormalRequest = jest.fn();
 const mockWipeAndFullSyncRequest = jest.fn();
-const mockStatusOnReceive = jest.fn();
+let registeredStatusHandler;
 
 jest.mock('../ipc/mithrilPartialSyncChannel', () => ({
   mithrilPartialSyncStatusChannel: {
     request: (...args) => mockStatusRequest(...args),
-    onReceive: (...args) => mockStatusOnReceive(...args),
+    onReceive: (handler) => {
+      registeredStatusHandler = handler;
+    },
   },
   mithrilPartialSyncStartChannel: {
     request: (...args) => mockStartRequest(...args),
@@ -42,20 +44,24 @@ describe('MithrilPartialSyncStore', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    registeredStatusHandler = undefined;
   });
 
   afterEach(() => {
     jest.clearAllTimers();
   });
 
-  it('syncs cached backend status during setup without registering a long-lived listener', async () => {
+  it('syncs cached backend status during setup and subscribes for pushed updates', async () => {
     const store = setupStore();
     mockStatusRequest.mockResolvedValue({
       status: 'failed',
       allowedRecoveryActions: ['retry', 'restart-normal'],
-      filesDownloaded: 10,
-      filesTotal: 20,
-      elapsedSeconds: 30,
+      transferProgress: {
+        filesDownloaded: 10,
+        filesTotal: 20,
+        elapsedSeconds: 30,
+      },
+      progressItems: [],
       logPath: '/tmp/mithril-partial-sync.log',
       error: {
         message: 'Restore failed',
@@ -68,7 +74,7 @@ describe('MithrilPartialSyncStore', () => {
     await Promise.resolve();
 
     expect(mockStatusRequest).toHaveBeenCalledTimes(1);
-    expect(mockStatusOnReceive).not.toHaveBeenCalled();
+    expect(typeof registeredStatusHandler).toBe('function');
     expect(store.status).toBe('failed');
     expect(store.allowedRecoveryActions).toEqual([
       'retry',
@@ -93,11 +99,13 @@ describe('MithrilPartialSyncStore', () => {
     store._updateStatus({
       status: 'downloading',
       allowedRecoveryActions: ['retry'],
-      filesDownloaded: 5,
-      filesTotal: 10,
-      elapsedSeconds: 12,
-      ancillaryBytesDownloaded: 100,
-      ancillaryBytesTotal: 200,
+      transferProgress: {
+        filesDownloaded: 5,
+        filesTotal: 10,
+        elapsedSeconds: 12,
+        ancillaryBytesDownloaded: 100,
+        ancillaryBytesTotal: 200,
+      },
       progressItems: [
         {
           id: 'download',
@@ -114,12 +122,8 @@ describe('MithrilPartialSyncStore', () => {
     store._updateStatus({
       status: 'cancelled',
       allowedRecoveryActions: ['wipe-and-full-sync'],
-      filesDownloaded: undefined,
-      filesTotal: undefined,
-      elapsedSeconds: undefined,
-      ancillaryBytesDownloaded: undefined,
-      ancillaryBytesTotal: undefined,
-      progressItems: undefined,
+      transferProgress: {},
+      progressItems: [],
       error: null,
       logPath: undefined,
     });
@@ -148,6 +152,9 @@ describe('MithrilPartialSyncStore', () => {
     store._updateStatus({
       status: 'stopping-node',
       allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
     });
 
     expect(store.shouldShowOverlay).toBe(true);
@@ -155,6 +162,9 @@ describe('MithrilPartialSyncStore', () => {
     store._updateStatus({
       status: 'preparing',
       allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
     });
 
     expect(store.shouldShowOverlay).toBe(true);
@@ -162,6 +172,9 @@ describe('MithrilPartialSyncStore', () => {
     store._updateStatus({
       status: 'completed',
       allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
     });
 
     expect(store.shouldShowOverlay).toBe(true);
@@ -173,17 +186,23 @@ describe('MithrilPartialSyncStore', () => {
     store._updateStatus({
       status: 'failed',
       allowedRecoveryActions: ['retry'],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
     });
 
     expect(store.shouldShowOverlay).toBe(true);
   });
 
-  it('delegates recovery and lifecycle actions through payload-free IPC requests and refreshes status afterwards', async () => {
+  it('delegates recovery and lifecycle actions through payload-free IPC requests', async () => {
     const store = setupStore();
     mockStartRequest.mockResolvedValue(undefined);
     mockStatusRequest.mockResolvedValue({
-      status: 'preparing',
+      status: 'stopping-node',
       allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
     });
 
     await store.startPartialSync();
@@ -199,58 +218,71 @@ describe('MithrilPartialSyncStore', () => {
     expect(mockRestartNormalRequest).toHaveBeenCalledWith();
     expect(mockWipeAndFullSyncRequest).toHaveBeenCalledTimes(1);
     expect(mockWipeAndFullSyncRequest).toHaveBeenCalledWith();
-    expect(mockStatusRequest).toHaveBeenCalledTimes(4);
-    expect(store.status).toBe('preparing');
+    expect(mockStatusRequest).toHaveBeenCalledTimes(1);
   });
 
-  it('starts polling immediately while the long-running start request is still pending', async () => {
+  it('absorbs pushed status updates while the long-running start request is still pending', async () => {
     const store = setupStore();
     let resolveStart: () => void;
+    mockStatusRequest
+      .mockResolvedValueOnce({
+        status: 'idle',
+        allowedRecoveryActions: [],
+        transferProgress: {},
+        progressItems: [],
+        error: null,
+      })
+      .mockResolvedValue({
+        status: 'failed',
+        allowedRecoveryActions: ['retry'],
+        transferProgress: {},
+        progressItems: [],
+        error: null,
+      });
+    store.setup();
     mockStartRequest.mockReturnValue(
       new Promise<void>((resolve) => {
         resolveStart = resolve;
       })
     );
-    mockStatusRequest
-      .mockResolvedValueOnce({
-        status: 'preparing',
-        allowedRecoveryActions: [],
-      })
-      .mockResolvedValueOnce({
-        status: 'downloading',
-        allowedRecoveryActions: [],
-        filesDownloaded: 2,
-        filesTotal: 10,
-      })
-      .mockResolvedValueOnce({
-        status: 'failed',
-        allowedRecoveryActions: ['retry'],
-      });
-
     const startPromise = store.startPartialSync();
 
     expect(store.status).toBe('stopping-node');
     expect(mockStartRequest).toHaveBeenCalledTimes(1);
 
-    jest.advanceTimersByTime(1000);
-    await Promise.resolve();
-    await mockStatusRequest.mock.results[0].value;
-    await Promise.resolve();
+    registeredStatusHandler({
+      status: 'preparing',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
 
     expect(store.status).toBe('preparing');
 
-    jest.advanceTimersByTime(1000);
-    await Promise.resolve();
-    await mockStatusRequest.mock.results[1].value;
-    await Promise.resolve();
+    registeredStatusHandler({
+      status: 'downloading',
+      allowedRecoveryActions: [],
+      transferProgress: {
+        filesDownloaded: 2,
+        filesTotal: 10,
+      },
+      progressItems: [],
+      error: null,
+    });
 
     expect(store.status).toBe('downloading');
     expect(store.filesDownloaded).toBe(2);
     expect(store.filesTotal).toBe(10);
 
     resolveStart!();
-    await Promise.resolve();
-    await mockStatusRequest.mock.results[2].value;
+    registeredStatusHandler({
+      status: 'failed',
+      allowedRecoveryActions: ['retry'],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
     await startPromise;
 
     expect(store.status).toBe('failed');
@@ -266,6 +298,8 @@ describe('MithrilPartialSyncStore', () => {
     mockStatusRequest.mockResolvedValue({
       status: 'failed',
       allowedRecoveryActions: ['retry'],
+      transferProgress: {},
+      progressItems: [],
       error: {
         stage: 'verifying',
         code: 'PARTIAL_SYNC_STAGED_DB_INVALID',
@@ -285,293 +319,67 @@ describe('MithrilPartialSyncStore', () => {
     );
   });
 
-  it('ignores an older setup status response once start seeds a working state', async () => {
+  it('rethrows the original start failure while status is still pending', async () => {
     const store = setupStore();
-    let resolveSetupStatus: (value: {
-      status: 'idle';
-      allowedRecoveryActions: [];
-    }) => void;
-    let resolveStart: () => void;
+    mockStartRequest.mockRejectedValue(
+      new Error('Mithril partial sync is disabled by launcher configuration.')
+    );
+    mockStatusRequest.mockResolvedValue({
+      status: 'stopping-node',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
 
-    mockStatusRequest
-      .mockReturnValueOnce(
-        new Promise((resolve) => {
-          resolveSetupStatus = resolve;
-        })
-      )
-      .mockResolvedValueOnce({
-        status: 'preparing',
-        allowedRecoveryActions: [],
-      })
-      .mockResolvedValueOnce({
-        status: 'downloading',
-        allowedRecoveryActions: [],
-        filesDownloaded: 3,
-        filesTotal: 9,
-      })
-      .mockResolvedValueOnce({
-        status: 'downloading',
-        allowedRecoveryActions: [],
-        filesDownloaded: 3,
-        filesTotal: 9,
-      });
-    mockStartRequest.mockReturnValue(
-      new Promise<void>((resolve) => {
-        resolveStart = resolve;
-      })
+    await expect(store.startPartialSync()).rejects.toThrow(
+      'Mithril partial sync is disabled by launcher configuration.'
     );
 
-    store.setup();
-    const startPromise = store.startPartialSync();
-
     expect(store.status).toBe('stopping-node');
-
-    resolveSetupStatus!({
-      status: 'idle',
-      allowedRecoveryActions: [],
-    });
-    await Promise.resolve();
-    await mockStatusRequest.mock.results[0].value;
-    await Promise.resolve();
-    await Promise.resolve();
-
-    expect(store.status).toBe('stopping-node');
-
-    expect(mockStatusRequest).toHaveBeenCalledTimes(2);
-    await mockStatusRequest.mock.results[1].value;
-    await Promise.resolve();
-
-    expect(store.status).toBe('preparing');
-
-    jest.advanceTimersByTime(1000);
-    await Promise.resolve();
-    await mockStatusRequest.mock.results[2].value;
-    await Promise.resolve();
-
-    expect(store.status).toBe('downloading');
-    expect(store.filesDownloaded).toBe(3);
-    expect(store.filesTotal).toBe(9);
-
-    resolveStart!();
-    await startPromise;
   });
 
-  it('queues a follow-up sync after start without overlapping an older in-flight request', async () => {
+  it('accepts pushed backend updates and ignores them after teardown', async () => {
     const store = setupStore();
-    let resolveSetupStatus: (value: {
-      status: 'idle';
-      allowedRecoveryActions: [];
-    }) => void;
-    let resolveStart: () => void;
-
-    mockStatusRequest
-      .mockReturnValueOnce(
-        new Promise((resolve) => {
-          resolveSetupStatus = resolve;
-        })
-      )
-      .mockResolvedValueOnce({
-        status: 'preparing',
-        allowedRecoveryActions: [],
-      })
-      .mockResolvedValueOnce({
-        status: 'downloading',
-        allowedRecoveryActions: [],
-      })
-      .mockResolvedValueOnce({
-        status: 'downloading',
-        allowedRecoveryActions: [],
-      });
-    mockStartRequest.mockReturnValue(
-      new Promise<void>((resolve) => {
-        resolveStart = resolve;
-      })
-    );
-
     store.setup();
-    const startPromise = store.startPartialSync();
 
-    expect(mockStatusRequest).toHaveBeenCalledTimes(1);
-
-    resolveSetupStatus!({
-      status: 'idle',
-      allowedRecoveryActions: [],
+    registeredStatusHandler({
+      status: 'verifying',
+      allowedRecoveryActions: ['retry'],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
     });
-    await mockStatusRequest.mock.results[0].value;
-    await Promise.resolve();
-    await Promise.resolve();
 
-    expect(mockStatusRequest).toHaveBeenCalledTimes(2);
-    await mockStatusRequest.mock.results[1].value;
-    await Promise.resolve();
-    expect(store.status).toBe('preparing');
-
-    jest.advanceTimersByTime(1000);
-    await Promise.resolve();
-    await mockStatusRequest.mock.results[2].value;
-    await Promise.resolve();
-    expect(mockStatusRequest).toHaveBeenCalledTimes(3);
-    expect(store.status).toBe('downloading');
-
-    resolveStart!();
-    await startPromise;
-  });
-
-  it('polls for updated backend status and stops polling on teardown', async () => {
-    const store = setupStore();
-    mockStatusRequest
-      .mockResolvedValueOnce({
-        status: 'downloading',
-        allowedRecoveryActions: ['retry'],
-      })
-      .mockResolvedValueOnce({
-        status: 'verifying',
-        allowedRecoveryActions: ['retry'],
-      });
-
-    store.setup();
-    await mockStatusRequest.mock.results[0].value;
-    await Promise.resolve();
-
-    jest.advanceTimersByTime(1000);
-    await mockStatusRequest.mock.results[1].value;
-    await Promise.resolve();
-
-    expect(mockStatusRequest).toHaveBeenCalledTimes(2);
     expect(store.status).toBe('verifying');
     expect(store.canRetry).toBe(true);
 
     store.teardown();
-    jest.advanceTimersByTime(2000);
+    registeredStatusHandler({
+      status: 'downloading',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
 
-    expect(mockStatusRequest).toHaveBeenCalledTimes(2);
-    expect(mockStatusOnReceive).not.toHaveBeenCalled();
+    expect(store.status).toBe('verifying');
   });
 
-  it('resets polling cleanly when stores are recreated', async () => {
-    mockStatusRequest
-      .mockResolvedValueOnce({
-        status: 'downloading',
-        allowedRecoveryActions: [],
-      })
-      .mockResolvedValueOnce({
-        status: 'downloading',
-        allowedRecoveryActions: [],
-      })
-      .mockResolvedValueOnce({
-        status: 'verifying',
-        allowedRecoveryActions: [],
-      });
-
-    const firstStore = setupStore();
-    firstStore.setup();
-    await mockStatusRequest.mock.results[0].value;
-    await Promise.resolve();
-    firstStore.teardown();
-
-    const secondStore = setupStore();
-    secondStore.setup();
-    await mockStatusRequest.mock.results[1].value;
-    await Promise.resolve();
-
-    jest.advanceTimersByTime(1000);
-    await Promise.resolve();
-    await mockStatusRequest.mock.results[2].value;
-
-    expect(mockStatusOnReceive).not.toHaveBeenCalled();
-    expect(mockStatusRequest).toHaveBeenCalledTimes(3);
-
-    secondStore.teardown();
-  });
-
-  it('reuses an in-flight status request instead of overlapping on the shared IPC response channel', async () => {
+  it('syncStatus requests current backend state directly', async () => {
     const store = setupStore();
-    let resolveStatus: (value: {
-      status: 'preparing';
-      allowedRecoveryActions: [];
-    }) => void;
-    mockStatusRequest.mockReturnValue(
-      new Promise((resolve) => {
-        resolveStatus = resolve;
-      })
-    );
-
-    const firstSync = store.syncStatus();
-    const secondSync = store.syncStatus();
-
-    expect(mockStatusRequest).toHaveBeenCalledTimes(1);
-
-    resolveStatus!({
+    mockStatusRequest.mockResolvedValue({
       status: 'preparing',
       allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
     });
 
-    await Promise.all([firstSync, secondSync]);
+    await store.syncStatus();
 
+    expect(mockStatusRequest).toHaveBeenCalledTimes(1);
     expect(store.status).toBe('preparing');
-  });
-
-  it('ignores late in-flight status completions after teardown', async () => {
-    const store = setupStore();
-    let resolveStatus: (value: {
-      status: 'downloading';
-      allowedRecoveryActions: ['retry'];
-    }) => void;
-
-    mockStatusRequest.mockReturnValue(
-      new Promise((resolve) => {
-        resolveStatus = resolve;
-      })
-    );
-
-    store.setup();
-    store.teardown();
-
-    resolveStatus!({
-      status: 'downloading',
-      allowedRecoveryActions: ['retry'],
-    });
-
-    await mockStatusRequest.mock.results[0].value;
-    await Promise.resolve();
-    jest.advanceTimersByTime(2000);
-
-    expect(store.status).toBe('idle');
-    expect(store.canRetry).toBe(false);
-    expect(mockStatusRequest).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not run a queued follow-up sync after teardown', async () => {
-    const store = setupStore();
-    let resolveSetupStatus: (value: {
-      status: 'idle';
-      allowedRecoveryActions: [];
-    }) => void;
-
-    mockStatusRequest.mockReturnValue(
-      new Promise((resolve) => {
-        resolveSetupStatus = resolve;
-      })
-    );
-    mockStartRequest.mockImplementation(async () => {
-      store.teardown();
-    });
-
-    const setupPromise = store.syncStatus();
-    const startPromise = store.startPartialSync();
-
-    expect(mockStatusRequest).toHaveBeenCalledTimes(1);
-
-    resolveSetupStatus!({
-      status: 'idle',
-      allowedRecoveryActions: [],
-    });
-
-    await Promise.all([setupPromise, startPromise]);
-    await Promise.resolve();
-
-    expect(mockStatusRequest).toHaveBeenCalledTimes(1);
-    expect(store.status).toBe('stopping-node');
   });
 
   it('does not issue a new status request when start settles after teardown', async () => {

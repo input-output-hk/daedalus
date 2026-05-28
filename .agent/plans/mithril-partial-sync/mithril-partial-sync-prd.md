@@ -76,21 +76,21 @@ This work matters because it turns Mithril from a first-run accelerator into a t
 
 ### Functional Requirements
 
-- [ ] Add a Mithril partial sync action to `DaedalusDiagnostics`
-- [ ] Show recommendation copy near the action using existing sync state already surfaced in diagnostics
-- [ ] Open a confirmation modal that explains automatic node stop/restart and failure recovery options
-- [ ] Add a dedicated main-process partial sync orchestration path that is separate from the current empty-chain bootstrap entrypoint
-- [ ] Use the latest Mithril snapshot only; do not add snapshot selection UI to partial sync
-- [ ] Derive the partial immutable range from local chain state and the latest certified Mithril artifact, not from renderer sync percentage alone
-- [ ] Derive the local immutable position from the highest parseable immutable file number in the resolved managed chain `immutable/` directory
-- [ ] Stop `cardano-node` automatically before running Mithril partial sync
-- [ ] Restore verified Cardano DB data safely for the missing immutable range
-- [ ] Convert restored ledger state to a Daedalus-compatible LSM-backed layout before restarting the node
-- [ ] Restart `cardano-node` automatically after successful partial sync
-- [ ] Surface progress, cancellation, error details, and support log location during the operation
-- [ ] Provide failure actions for retry, normal restart, and wipe-plus-full-Mithril-sync
-- [ ] Preserve chain-storage safety for default and custom managed chain targets
-- [ ] Support `mainnet`, `preprod`, and `preview`
+- [x] Add a Mithril partial sync action to `DaedalusDiagnostics`
+- [x] Show recommendation copy near the action using existing sync state already surfaced in diagnostics
+- [x] Open a confirmation modal that explains automatic node stop/restart and failure recovery options
+- [x] Add a dedicated main-process partial sync orchestration path that is separate from the current empty-chain bootstrap entrypoint
+- [x] Use the latest Mithril snapshot only; do not add snapshot selection UI to partial sync
+- [x] Derive the partial immutable range from local chain state and the latest certified Mithril artifact, not from renderer sync percentage alone
+- [x] Derive the local immutable position from the highest parseable immutable file number in the resolved managed chain `immutable/` directory
+- [x] Stop `cardano-node` automatically before running Mithril partial sync
+- [x] Restore verified Cardano DB data safely for the missing immutable range
+- [x] Convert restored ledger state to a Daedalus-compatible LSM-backed layout before restarting the node
+- [x] Restart `cardano-node` automatically after successful partial sync
+- [x] Surface progress, cancellation, error details, and support log location during the operation
+- [x] Provide failure actions for retry, normal restart, and wipe-plus-full-Mithril-sync
+- [x] Preserve chain-storage safety for default and custom managed chain targets
+- [x] Support `mainnet`, `preprod`, and `preview`
 
 ### Non-Functional Requirements
 
@@ -319,7 +319,8 @@ Validation should combine automated coverage with late-phase manual QA.
 ## Rollout / Migration / Rollback
 
 - No persisted data migration is required beyond any shared status-store additions.
-- Because the feature operates on live chain data, rollout should include a fast disable path owned by `LauncherConfig` until QA confidence is high.
+- Because the feature operates on live chain data, rollout includes a fast disable path owned by `LauncherConfig`.
+- Task tracking is complete as of `task-401`, and the current checkpoint rollout posture is `enabled by default` by explicit user decision after Linux `preview` dev-flow validation. Broader supported-network, custom chain-storage, recovery-path, and release-equivalent packaged-build validation remains documented as deferred follow-up evidence in `.agent/plans/mithril-partial-sync/research/18-task-401-manual-qa-results.md`.
 - Rollback strategy:
   - disable new diagnostics-launched partial sync entry and retry paths via the launcher-config kill switch
   - keep startup-owned unsafe-install recovery available for already interrupted Boundary B or Boundary C1 installs
@@ -334,12 +335,12 @@ Validation should combine automated coverage with late-phase manual QA.
 
 ## Open Questions
 
-- Does the shipped Mithril binary expose all needed partial restore semantics consistently across supported platforms?
+- Supported-platform Mithril binary behavior still needs broader release-equivalent packaged-build validation beyond the completed Linux `preview` dev-flow checkpoint.
 - Shared contract file placement was resolved by `task-100`: partial-sync-specific shared contracts now live in dedicated `source/common/types/mithril-partial-sync.types.ts`, while bootstrap-specific unions remain in `mithril-bootstrap.types.ts`.
-- The primary rollout kill switch is now locked to `LauncherConfig`; only narrower developer convenience overrides remain open if later work proves them necessary.
+- The primary rollout kill switch is locked to `LauncherConfig`.
 
 ---
 
-**Status:** Draft
+**Status:** Completed implementation checkpoint
 **Date:** 2026-05-18
 **Author:** OpenCode

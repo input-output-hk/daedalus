@@ -3,7 +3,10 @@ import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
 import { intlShape } from 'react-intl';
 import type { MithrilProgressItem } from '../../../../source/common/types/mithril-bootstrap.types';
-import type { MithrilPartialSyncError } from '../../../../source/common/types/mithril-partial-sync.types';
+import type {
+  MithrilPartialSyncError,
+  MithrilPartialSyncStatus,
+} from '../../../../source/common/types/mithril-partial-sync.types';
 import MithrilPartialSyncOverlay from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay';
 import MithrilBootstrapMessages from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages';
 import type { Intl } from '../../../../source/renderer/app/types/i18nTypes';
@@ -93,7 +96,7 @@ interface Context {
 }
 
 interface StoryProps {
-  status: React.ComponentProps<typeof MithrilPartialSyncOverlay>['status'];
+  status: MithrilPartialSyncStatus;
   error?: MithrilPartialSyncError | null;
   canRetry?: boolean;
   canRestartNormally?: boolean;
@@ -120,9 +123,13 @@ function MithrilPartialSyncOverlayStory(
       canRetry={props.canRetry || false}
       canRestartNormally={props.canRestartNormally || false}
       canWipeAndFullSync={props.canWipeAndFullSync || false}
-      filesDownloaded={props.filesDownloaded || baseProps.filesDownloaded}
-      filesTotal={props.filesTotal || baseProps.filesTotal}
-      elapsedSeconds={props.elapsedSeconds || baseProps.elapsedSeconds}
+      transferProgress={{
+        filesDownloaded: props.filesDownloaded || baseProps.filesDownloaded,
+        filesTotal: props.filesTotal || baseProps.filesTotal,
+        elapsedSeconds: props.elapsedSeconds || baseProps.elapsedSeconds,
+        ancillaryBytesDownloaded: baseProps.ancillaryBytesDownloaded,
+        ancillaryBytesTotal: baseProps.ancillaryBytesTotal,
+      }}
       progressItems={
         props.completed ? completedProgressItems : activeProgressItems
       }

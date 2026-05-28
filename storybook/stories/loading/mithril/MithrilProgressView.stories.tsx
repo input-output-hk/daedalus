@@ -76,7 +76,7 @@ storiesOf('Loading / Mithril / Progress', module)
         ancillaryBytesTotal={ancillaryBytesTotal}
         ancillaryProgress={ancillaryPercent}
         bootstrapStartedAt={createBootstrapStartedAt(elapsedMinutes)}
-        onCancel={() => bootstrapActions.onCancel()}
+        onAction={() => bootstrapActions.onCancel()}
       />
     );
   })
@@ -86,7 +86,7 @@ storiesOf('Loading / Mithril / Progress', module)
       progressItems={getProgressItemsPreset('preparing')}
       snapshotSize={snapshotSize}
       bootstrapStartedAt={createBootstrapStartedAt(4)}
-      onCancel={() => bootstrapActions.onCancel()}
+      onAction={() => bootstrapActions.onCancel()}
     />
   ))
   .add('Starting Node Handoff', () => (
@@ -99,6 +99,6 @@ storiesOf('Loading / Mithril / Progress', module)
       ancillaryBytesTotal={ancillaryBytesTotal}
       ancillaryProgress={100}
       bootstrapStartedAt={createBootstrapStartedAt(24)}
-      onCancel={() => bootstrapActions.onCancel()}
+      onAction={() => bootstrapActions.onCancel()}
     />
   ));

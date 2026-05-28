@@ -19,13 +19,8 @@ import type {
   MithrilPartialSyncWipeAndFullSyncRendererRequest,
   MithrilPartialSyncWipeAndFullSyncMainResponse,
 } from '../../common/ipc/api';
-import type { MithrilPartialSyncStatusUpdate } from '../../common/types/mithril-partial-sync.types';
-import { logger } from '../utils/logging';
-import { getMithrilBootstrapNodeState } from './mithrilBootstrapChannel';
-import { MithrilPartialSyncService } from '../mithril/MithrilPartialSyncService';
-import { chainStorageCoordinator } from '../utils/chainStorageCoordinator';
-
-let isPartialSyncActive: () => boolean = () => false;
+import type { MithrilPartialSyncStatusSnapshot } from '../../common/types/mithril-partial-sync.types';
+import { getMithrilController } from '../mithril/MithrilController';
 
 const mithrilPartialSyncStartChannel: MainIpcChannel<
   MithrilPartialSyncStartRendererRequest,
@@ -52,112 +47,66 @@ const mithrilPartialSyncWipeAndFullSyncChannel: MainIpcChannel<
   MithrilPartialSyncWipeAndFullSyncMainResponse
 > = new MainIpcChannel(MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL);
 
-let statusListeners: Array<(status: MithrilPartialSyncStatusUpdate) => void> = [];
-let sendStatusUpdate:
-  | ((status: MithrilPartialSyncStatusUpdate) => Promise<void>)
-  | null = null;
+export const getMithrilPartialSyncStatus = () =>
+  getMithrilController().getPartialSyncStatus();
 
-let lastStatus: MithrilPartialSyncStatusUpdate = {
-  status: 'idle',
-  allowedRecoveryActions: [],
-  error: null,
-};
+export const isMithrilPartialSyncActive = () =>
+  getMithrilController().isPartialSyncActive();
 
-const broadcastMithrilPartialSyncStatus = async (
-  status: MithrilPartialSyncStatusUpdate
-): Promise<void> => {
-  lastStatus = status;
-  statusListeners.forEach((listener) => listener(status));
-
-  if (!sendStatusUpdate) {
-    return;
-  }
-
-  sendStatusUpdate(status).catch((error) => {
-    logger.warn('Failed to send Mithril partial sync status to renderer', {
-      error,
-    });
-  });
-};
-
-export const getMithrilPartialSyncStatus = () => lastStatus;
-
-export const isMithrilPartialSyncActive = () => isPartialSyncActive();
-
-export const setMithrilPartialSyncActiveProvider = (provider: () => boolean) => {
-  isPartialSyncActive = provider;
-};
+export const setMithrilPartialSyncActiveProvider = (_provider: () => boolean) => {};
 
 export const setMithrilPartialSyncStatus = (
-  status: MithrilPartialSyncStatusUpdate
+  status: MithrilPartialSyncStatusSnapshot
 ) => {
-  lastStatus = status;
-  return lastStatus;
+  getMithrilController().setPartialSyncStatus(status);
+  return status;
 };
 
 export const onMithrilPartialSyncStatus = (
-  handler: (status: MithrilPartialSyncStatusUpdate) => void
+  handler: (status: MithrilPartialSyncStatusSnapshot) => void
 ) => {
-  statusListeners.push(handler);
-  return () => {
-    statusListeners = statusListeners.filter((listener) => listener !== handler);
-  };
+  return getMithrilController().onPartialSyncStatus(handler);
 };
 
 let mithrilPartialSyncRequestsInitialized = false;
-const mithrilPartialSyncService = new MithrilPartialSyncService();
+
+export const configureMithrilPartialSyncRuntime = (dependencies: {
+  stopNode?: () => Promise<void>;
+  restartStartupFlow?: () => Promise<void>;
+}) => {
+  getMithrilController().configurePartialSyncRuntime(dependencies);
+};
 
 export const handleMithrilPartialSyncRequests = (window: BrowserWindow) => {
-  sendStatusUpdate = async (status) => {
+  const controller = getMithrilController();
+  controller.setPartialSyncStatusSender(async (status) => {
     await mithrilPartialSyncStatusChannel.send(status, window.webContents);
-  };
+  });
+
+  controller.initialize();
 
   if (mithrilPartialSyncRequestsInitialized) return;
   mithrilPartialSyncRequestsInitialized = true;
 
-  lastStatus = mithrilPartialSyncService.status;
-
-  chainStorageCoordinator.setPartialSyncHandlers({
-    assertStartAllowed: () => mithrilPartialSyncService.assertStartAllowed(),
-    start: async (context) => mithrilPartialSyncService.start(context),
-    cancel: async () => mithrilPartialSyncService.cancel(),
-    restartNormal: async () => mithrilPartialSyncService.restartNormal(),
-    wipeAndFullSync: async () => mithrilPartialSyncService.wipeAndFullSync(),
-    finalizeWipeAndFullSync: async () =>
-      mithrilPartialSyncService.finalizeWipeAndFullSync(),
-  });
-
-  mithrilPartialSyncService.onStatus((status) => {
-    broadcastMithrilPartialSyncStatus(status).catch((error) => {
-      logger.warn('Failed to broadcast Mithril partial sync status update', {
-        error,
-      });
-    });
-  });
-
-  mithrilPartialSyncStatusChannel.onRequest(async () => lastStatus);
+  mithrilPartialSyncStatusChannel.onRequest(async () =>
+    controller.getPartialSyncStatus()
+  );
   mithrilPartialSyncStartChannel.onRequest(async () => {
-    await chainStorageCoordinator.startPartialSync({
-      nodeState: getMithrilBootstrapNodeState(),
-    });
+    await controller.startPartialSync();
   });
   mithrilPartialSyncCancelChannel.onRequest(async () => {
-    await chainStorageCoordinator.cancelPartialSync();
+    await controller.cancelPartialSync();
   });
   mithrilPartialSyncRestartNormalChannel.onRequest(async () => {
-    await chainStorageCoordinator.restartNormalFromPartialSync({
-      nodeState: getMithrilBootstrapNodeState(),
-    });
+    await controller.restartNormalFromPartialSync();
   });
   mithrilPartialSyncWipeAndFullSyncChannel.onRequest(async () => {
-    await chainStorageCoordinator.wipeAndFullSyncFromPartialSync({
-      nodeState: getMithrilBootstrapNodeState(),
-    });
+    await controller.wipeAndFullSyncFromPartialSync();
   });
 };
 
 export const emitMithrilPartialSyncStatus = async (
-  status: MithrilPartialSyncStatusUpdate
+  status: MithrilPartialSyncStatusSnapshot
 ): Promise<void> => {
-  await broadcastMithrilPartialSyncStatus(status);
+  await getMithrilController().broadcastPartialSyncStatus(status);
 };

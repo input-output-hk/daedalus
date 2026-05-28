@@ -31,14 +31,7 @@ import {
   setCachedCardanoStatusChannel,
   exportWalletsChannel,
 } from '../ipc/cardano.ipc';
-import {
-  getMithrilBootstrapStatus,
-  isMithrilBootstrapNodeStartBlocked,
-} from '../ipc/mithrilBootstrapChannel';
-import {
-  getMithrilPartialSyncStatus,
-  isMithrilPartialSyncActive,
-} from '../ipc/mithrilPartialSyncChannel';
+import { getMithrilController } from '../mithril/MithrilController';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 
 const restartCardanoNode = async (node: CardanoNode) => {
@@ -125,22 +118,24 @@ export const setupCardanoNode = (
       onUpdating: () => {},
       onUpdated: () => {},
       onCrashed: (code) => {
-        if (isMithrilBootstrapNodeStartBlocked()) {
+        const mithrilController = getMithrilController();
+        if (mithrilController.isBootstrapNodeStartBlocked()) {
           logger.info(
             'Cardano backend exited while Mithril bootstrap was active. Suppressing automatic restart.',
             {
               code,
-              mithrilStatus: getMithrilBootstrapStatus().status,
+              mithrilStatus: mithrilController.getBootstrapStatus().status,
             }
           );
           return;
         }
-        if (isMithrilPartialSyncActive()) {
+        if (mithrilController.isPartialSyncNodeStartBlocked()) {
           logger.info(
             'Cardano backend exited while Mithril partial sync was active. Suppressing automatic restart.',
             {
               code,
-              mithrilPartialSyncStatus: getMithrilPartialSyncStatus().status,
+              mithrilPartialSyncStatus:
+                mithrilController.getPartialSyncStatus().status,
             }
           );
           return;

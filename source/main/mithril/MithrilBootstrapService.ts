@@ -28,6 +28,16 @@ import {
 } from './mithrilErrors';
 import { convertSnapshotDbToLsm } from './mithrilSnapshotConverter';
 import { ChainStorageManager } from '../utils/chainStorageManager';
+import {
+  isNonEmptyString,
+  normalizeSnapshotItem,
+  parseMithrilJson,
+} from './mithrilSnapshotMetadata';
+import { MithrilOutputLineBuffer } from './mithrilOutputLineBuffer';
+import {
+  addProgressItem,
+  markActiveProgressItemAs,
+} from './mithrilProgressItems';
 
 const DEFAULT_STATUS: MithrilBootstrapStatusUpdate = {
   status: 'idle',
@@ -44,33 +54,6 @@ const STEP_LABEL_MAP: Record<number, string> = {
   6: 'computing-message',
   7: 'verifying-signature',
 };
-
-const normalizeSnapshotItem = (
-  raw: Record<string, any>
-): MithrilSnapshotItem => {
-  const digest = raw.digest || raw.snapshot_digest || raw.hash || '';
-  const createdAt = raw.created_at || raw.createdAt || raw.timestamp || '';
-  const size = Number(
-    raw.size ??
-      raw.total_size ??
-      raw.total_db_size_uncompressed ??
-      raw.size_bytes ??
-      0
-  );
-  const cardanoNodeVersion =
-    raw.cardano_node_version || raw.cardanoNodeVersion || raw.node_version;
-  const network = raw.network || raw.cardano_network || raw.cardanoNetwork;
-  return {
-    digest,
-    createdAt,
-    size,
-    cardanoNodeVersion,
-    network,
-  };
-};
-
-const isNonEmptyString = (value: unknown): value is string =>
-  typeof value === 'string' && value.trim().length > 0;
 
 export class MithrilBootstrapService {
   _status: MithrilBootstrapStatusUpdate = { ...DEFAULT_STATUS };
@@ -419,9 +402,7 @@ export class MithrilBootstrapService {
   }
 
   _markActiveProgressItemAs(state: 'completed' | 'error'): void {
-    this._progressItems = this._progressItems.map((item) =>
-      item.state === 'active' ? { ...item, state } : item
-    );
+    this._progressItems = markActiveProgressItemAs(this._progressItems, state);
   }
 
   _addProgressItem(
@@ -429,11 +410,12 @@ export class MithrilBootstrapService {
     label: string,
     state: MithrilProgressItem['state']
   ): void {
-    if (this._progressItems.some((item) => item.id === id)) return;
-    this._progressItems = [
-      ...this._progressItems,
-      { id, label, state, timestamp: new Date().toISOString() },
-    ];
+    this._progressItems = addProgressItem(
+      this._progressItems,
+      id,
+      label,
+      state
+    );
   }
 
   async _resolveCardanoDbDownloadMode(): Promise<'download' | 'snapshot'> {
@@ -620,34 +602,12 @@ export class MithrilBootstrapService {
   }
 
   _safeJsonParse(payload: string): any {
-    try {
-      return JSON.parse(payload);
-    } catch (error) {
-      const lines = payload
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean);
-      for (let index = lines.length - 1; index >= 0; index -= 1) {
-        const line = lines[index];
-        if (line.startsWith('{') || line.startsWith('[')) {
-          try {
-            return JSON.parse(line);
-          } catch (nestedError) {
-            logger.warn('MithrilBootstrapService: JSON parse failed', {
-              error: nestedError,
-              payload: line.slice(0, 200),
-            });
-            break;
-          }
-        }
-      }
-
+    return parseMithrilJson(payload, ({ error, payload: badPayload }) => {
       logger.warn('MithrilBootstrapService: JSON parse failed', {
         error,
-        payload: payload?.slice(0, 200),
+        payload: badPayload,
       });
-      return null;
-    }
+    });
   }
 
   async _downloadSnapshot(
@@ -662,8 +622,6 @@ export class MithrilBootstrapService {
       progressItems: [...this._progressItems],
     });
 
-    let stdoutBuffered = '';
-    let stderrBuffered = '';
     const downloadMode = await this._resolveCardanoDbDownloadMode();
     const downloadArgs =
       downloadMode === 'download'
@@ -766,24 +724,18 @@ export class MithrilBootstrapService {
         });
       }
     };
+    const stdoutLines = new MithrilOutputLineBuffer(applyProgressUpdate);
+    const stderrLines = new MithrilOutputLineBuffer(applyProgressUpdate);
     const { exitCode, stderr } = await this._runCommand(
       downloadArgs,
       {
-        onStdout: (chunk) => {
-          stdoutBuffered += chunk;
-          const lines = stdoutBuffered.split('\n');
-          stdoutBuffered = lines.pop() || '';
-          lines.forEach(applyProgressUpdate);
-        },
-        onStderr: (chunk) => {
-          stderrBuffered += chunk;
-          const lines = stderrBuffered.split('\n');
-          stderrBuffered = lines.pop() || '';
-          lines.forEach(applyProgressUpdate);
-        },
+        onStdout: (chunk) => stdoutLines.push(chunk),
+        onStderr: (chunk) => stderrLines.push(chunk),
       },
       workDir
     );
+    stdoutLines.flush();
+    stderrLines.flush();
 
     if (exitCode !== 0) {
       const errorStage = this._verifyingSynthesized ? 'verify' : 'download';
