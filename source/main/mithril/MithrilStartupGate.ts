@@ -88,9 +88,12 @@ export class MithrilStartupGate {
       this._bootstrapCompleted = true;
       this._transition('bootstrapRunning', 'bootstrapCompleted');
       this.startNodeAfterMithrilCompletion().catch((error) => {
-        logger.error('[MITHRIL] Failed to start node after bootstrap completion', {
-          error,
-        });
+        logger.error(
+          '[MITHRIL] Failed to start node after bootstrap completion',
+          {
+            error,
+          }
+        );
       });
       return;
     }
@@ -103,13 +106,20 @@ export class MithrilStartupGate {
     if (status.status === 'decision') {
       this._transition('awaitingBootstrapDecision', 'decisionStatus');
     } else if (
-      ['preparing', 'downloading', 'verifying', 'converting', 'finalizing'].includes(
-        status.status
-      )
+      [
+        'preparing',
+        'downloading',
+        'verifying',
+        'converting',
+        'finalizing',
+      ].includes(status.status)
     ) {
       this._transition('bootstrapRunning', 'bootstrapActive');
     } else if (status.status === 'cancelled') {
-      this._transition('bootstrapCancelledAwaitingDecision', 'bootstrapCancelled');
+      this._transition(
+        'bootstrapCancelledAwaitingDecision',
+        'bootstrapCancelled'
+      );
     } else if (status.status === 'idle') {
       this._transition('idle', 'bootstrapIdle');
     }
@@ -168,7 +178,8 @@ export class MithrilStartupGate {
     let layoutResult: ManagedChainLayoutResult;
 
     try {
-      layoutResult = await this._ensureLayoutAndHandleWipeFlag(currentGeneration);
+      layoutResult =
+        await this._ensureLayoutAndHandleWipeFlag(currentGeneration);
       if (currentGeneration !== deps.getGeneration()) return null;
 
       if (await fs.pathExists(deps.mithrilLockFilePath)) {
@@ -181,15 +192,21 @@ export class MithrilStartupGate {
         this._decision = null;
       }
 
-      const blocked = await deps.partialSyncNodeStartup.handleInterruptedRecovery(
-        currentGeneration
-      );
+      const blocked =
+        await deps.partialSyncNodeStartup.handleInterruptedRecovery(
+          currentGeneration
+        );
       if (blocked) {
-        this._transition('partialSyncCutoverUnsafe', 'partialSyncMarkerDetected');
+        this._transition(
+          'partialSyncCutoverUnsafe',
+          'partialSyncMarkerDetected'
+        );
         return null;
       }
     } catch (error) {
-      logger.error('[MITHRIL] Failed to verify managed chain layout', { error });
+      logger.error('[MITHRIL] Failed to verify managed chain layout', {
+        error,
+      });
       throw deps.markManagedChainLayoutError(error);
     }
 
@@ -208,7 +225,9 @@ export class MithrilStartupGate {
     this._decisionPrompted = false;
     this._bootstrapCompleted = false;
     this._startInFlight = false;
-    this._controller.resetBootstrapDecisionState({ suppressStatusBroadcast: true });
+    this._controller.resetBootstrapDecisionState({
+      suppressStatusBroadcast: true,
+    });
     this._transition('idle', 'directoryChanged');
   }
 
@@ -284,7 +303,8 @@ export class MithrilStartupGate {
   ): Promise<boolean> {
     const deps = this._requireDependencies();
     if (this._failureDeclineInFlight) return false;
-    if (this._controller.getPendingBootstrapDecision() !== 'decline') return false;
+    if (this._controller.getPendingBootstrapDecision() !== 'decline')
+      return false;
 
     this._failureDeclineInFlight = true;
     try {
@@ -342,7 +362,9 @@ export class MithrilStartupGate {
     const deps = this._requireDependencies();
 
     if (!deps.wipeChainFlag) {
-      return chainStorageCoordinator.ensureManagedChainLayout(deps.cardanoNode.state);
+      return chainStorageCoordinator.ensureManagedChainLayout(
+        deps.cardanoNode.state
+      );
     }
 
     if (
@@ -352,7 +374,9 @@ export class MithrilStartupGate {
       try {
         await deps.cardanoNode.stop();
       } catch (error) {
-        logger.warn('[MITHRIL] Failed to stop cardano-node for wipe', { error });
+        logger.warn('[MITHRIL] Failed to stop cardano-node for wipe', {
+          error,
+        });
       }
     }
 
@@ -376,7 +400,10 @@ export class MithrilStartupGate {
     const status = this._controller.getBootstrapStatus().status;
 
     if (status === 'failed') {
-      await this.handleMithrilFailureDecline('polling-chain-empty', currentGeneration);
+      await this.handleMithrilFailureDecline(
+        'polling-chain-empty',
+        currentGeneration
+      );
       this._markHadNotEnoughSpaceLeft(response, false);
       return { handled: true, response };
     }
@@ -407,7 +434,10 @@ export class MithrilStartupGate {
     }
 
     if (this._decision === 'decline') {
-      await this._handleBootstrapDecline('bootstrap decline', currentGeneration);
+      await this._handleBootstrapDecline(
+        'bootstrap decline',
+        currentGeneration
+      );
       return { handled: true, response };
     }
 
@@ -427,7 +457,10 @@ export class MithrilStartupGate {
     const partialSyncStatus = this._controller.getPartialSyncStatus().status;
 
     if (bootstrapStatus === 'failed') {
-      await this.handleMithrilFailureDecline('polling-chain-present', currentGeneration);
+      await this.handleMithrilFailureDecline(
+        'polling-chain-present',
+        currentGeneration
+      );
       this._markHadNotEnoughSpaceLeft(response, false);
       return { handled: true, response };
     }
@@ -445,7 +478,9 @@ export class MithrilStartupGate {
       return { handled: true, response };
     }
 
-    if (await deps.partialSyncNodeStartup.startInstalledNode(currentGeneration)) {
+    if (
+      await deps.partialSyncNodeStartup.startInstalledNode(currentGeneration)
+    ) {
       this._markHadNotEnoughSpaceLeft(response, false);
       return { handled: true, response };
     }
@@ -461,9 +496,13 @@ export class MithrilStartupGate {
     this._decisionInFlight = false;
     this._decision = null;
     this._decisionPrompted = false;
-    this._controller.resetBootstrapDecisionState({ suppressStatusBroadcast: true });
+    this._controller.resetBootstrapDecisionState({
+      suppressStatusBroadcast: true,
+    });
     await deps.cardanoNode.start();
-    await deps.partialSyncNodeStartup.finalizeInstalledNodeStart(currentGeneration);
+    await deps.partialSyncNodeStartup.finalizeInstalledNodeStart(
+      currentGeneration
+    );
     return { handled: true, response };
   }
 
@@ -481,7 +520,9 @@ export class MithrilStartupGate {
       })
       .catch((error) => {
         if (!isMithrilDecisionCancelledError(error)) {
-          logger.error('[MITHRIL] Decision wait failed after failure', { error });
+          logger.error('[MITHRIL] Decision wait failed after failure', {
+            error,
+          });
         }
       })
       .finally(() => {

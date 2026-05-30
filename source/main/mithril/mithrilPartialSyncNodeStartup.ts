@@ -50,9 +50,7 @@ export class MithrilPartialSyncNodeStartup {
     this._getGeneration = getGeneration;
   }
 
-  async handleInterruptedRecovery(
-    currentGeneration: number
-  ): Promise<boolean> {
+  async handleInterruptedRecovery(currentGeneration: number): Promise<boolean> {
     const marker = await readMithrilPartialSyncMarker();
 
     if (!marker) {

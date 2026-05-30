@@ -41,10 +41,7 @@ interface Context {
 
 const TERMINAL_STATUSES = new Set<
   MithrilBootstrapStatus | MithrilPartialSyncStatus
->([
-  'failed',
-  'cancelled',
-]);
+>(['failed', 'cancelled']);
 
 const formatDuration = (value?: number) => {
   if (value == null || Number.isNaN(value)) return null;
@@ -150,10 +147,12 @@ function MithrilProgressView(props: Props, { intl }: Context) {
           aria-atomic="true"
         >
           <h2 className={styles.completionTitle}>
-            {startingNodeTitle || intl.formatMessage(messages.nodeStartingTitle)}
+            {startingNodeTitle ||
+              intl.formatMessage(messages.nodeStartingTitle)}
           </h2>
           <p className={styles.completionDetail}>
-            {startingNodeDetail || intl.formatMessage(messages.nodeStartingDetail)}
+            {startingNodeDetail ||
+              intl.formatMessage(messages.nodeStartingDetail)}
           </p>
           <SVGInline
             svg={spinnerIcon}

@@ -34,15 +34,17 @@ describe('mithrilSnapshotMetadata', () => {
   });
 
   it('returns null when immutable metadata is missing', () => {
-    expect(normalizeResolvedLatestSnapshot({ digest: 'missing-number' })).toBeNull();
+    expect(
+      normalizeResolvedLatestSnapshot({ digest: 'missing-number' })
+    ).toBeNull();
   });
 
   it('parses trailing JSON lines from Mithril command output', () => {
     const warn = jest.fn();
 
-    expect(
-      parseMithrilJson('noise\n{"digest":"digest-1"}', warn)
-    ).toEqual({ digest: 'digest-1' });
+    expect(parseMithrilJson('noise\n{"digest":"digest-1"}', warn)).toEqual({
+      digest: 'digest-1',
+    });
     expect(warn).not.toHaveBeenCalled();
   });
 

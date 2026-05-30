@@ -128,7 +128,9 @@ export const normalizeResolvedLatestSnapshot = (
     return null;
   }
 
-  const normalizedSnapshot = normalizeSnapshotItem(raw as Record<string, unknown>);
+  const normalizedSnapshot = normalizeSnapshotItem(
+    raw as Record<string, unknown>
+  );
   const latestCertifiedImmutableNumber = extractLatestCertifiedImmutableNumber(
     raw as Record<string, unknown>
   );

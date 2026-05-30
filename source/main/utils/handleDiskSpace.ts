@@ -252,9 +252,7 @@ export const handleDiskSpace = (
           try {
             const chainEmpty =
               await chainStorageCoordinator.isManagedChainEmpty();
-            if (
-              currentGeneration !== directoryChangeGeneration
-            ) {
+            if (currentGeneration !== directoryChangeGeneration) {
               return getStaleResponse();
             }
             if (chainEmpty) {
@@ -292,7 +290,9 @@ export const handleDiskSpace = (
             }
 
             try {
-              if (await partialSyncNodeStartup.shouldSuppressStartupFallback()) {
+              if (
+                await partialSyncNodeStartup.shouldSuppressStartupFallback()
+              ) {
                 return response;
               }
               await cardanoNode.start();

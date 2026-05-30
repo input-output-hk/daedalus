@@ -286,7 +286,11 @@ export class ChainStorageManager {
     return this._withMutationLock(
       'installValidatedPartialSyncSnapshot',
       async () => {
-        await installValidatedPartialSyncSnapshotHelper(this, dbDirectory, options);
+        await installValidatedPartialSyncSnapshotHelper(
+          this,
+          dbDirectory,
+          options
+        );
       }
     );
   }

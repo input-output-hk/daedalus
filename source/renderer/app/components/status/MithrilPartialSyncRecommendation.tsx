@@ -52,8 +52,12 @@ export default class MithrilPartialSyncRecommendation extends Component<Props> {
   };
 
   render() {
-    const { formattedSyncPercentage, isActionBlocked, isSynced, onShowConfirmation } =
-      this.props;
+    const {
+      formattedSyncPercentage,
+      isActionBlocked,
+      isSynced,
+      onShowConfirmation,
+    } = this.props;
     const { intl } = this.context;
     const recommendationMessage = isSynced
       ? messages.recommendation
@@ -63,7 +67,9 @@ export default class MithrilPartialSyncRecommendation extends Component<Props> {
       : messages.buttonHintReady;
 
     return (
-      <div className={classNames(styles.layoutData, styles.mithrilPartialSyncData)}>
+      <div
+        className={classNames(styles.layoutData, styles.mithrilPartialSyncData)}
+      >
         <div className={styles.mithrilPartialSyncRecommendation}>
           <div className={styles.mithrilPartialSyncRecommendationCopy}>
             {intl.formatMessage(recommendationMessage, {

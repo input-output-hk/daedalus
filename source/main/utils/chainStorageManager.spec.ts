@@ -921,9 +921,10 @@ describe('ChainStorageManager', () => {
 
   it('installValidatedPartialSyncSnapshot installs only the validated staged allowlist', async () => {
     const manager = new ChainStorageManager('/tmp/state');
-    jest
-      .spyOn(manager, '_ensureManagedChainLayout')
-      .mockResolvedValue({ managedChainPath: '/mnt/custom-parent/chain', isRecoveryFallback: false });
+    jest.spyOn(manager, '_ensureManagedChainLayout').mockResolvedValue({
+      managedChainPath: '/mnt/custom-parent/chain',
+      isRecoveryFallback: false,
+    });
     jest
       .spyOn(manager, 'getManagedChainPath')
       .mockResolvedValue('/mnt/custom-parent/chain');
@@ -943,18 +944,32 @@ describe('ChainStorageManager', () => {
 
         return [];
       });
-    const emptySpy = jest.spyOn(manager, '_emptyManagedContents').mockResolvedValue(undefined);
-    const moveSpy = jest.spyOn(manager, '_movePath').mockResolvedValue(undefined);
+    const emptySpy = jest
+      .spyOn(manager, '_emptyManagedContents')
+      .mockResolvedValue(undefined);
+    const moveSpy = jest
+      .spyOn(manager, '_movePath')
+      .mockResolvedValue(undefined);
 
     await manager.installValidatedPartialSyncSnapshot('/tmp/staged/db', {
-      expectedTopLevelEntries: ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'],
+      expectedTopLevelEntries: [
+        'clean',
+        'immutable',
+        'ledger',
+        'lsm',
+        'protocolMagicId',
+      ],
     });
 
     expect(emptySpy).toHaveBeenCalledWith('/mnt/custom-parent/chain', {
       excludeTopLevelEntries: ['immutable'],
     });
     expect(moveSpy).toHaveBeenCalledTimes(7);
-    expect(moveSpy).toHaveBeenNthCalledWith(1, '/tmp/staged/db/clean', '/mnt/custom-parent/chain/clean');
+    expect(moveSpy).toHaveBeenNthCalledWith(
+      1,
+      '/tmp/staged/db/clean',
+      '/mnt/custom-parent/chain/clean'
+    );
     expect(moveSpy).toHaveBeenCalledWith(
       '/tmp/staged/db/immutable/26108.chunk',
       '/mnt/custom-parent/chain/immutable/26108.chunk'
@@ -973,9 +988,10 @@ describe('ChainStorageManager', () => {
 
   it('installValidatedPartialSyncSnapshot preserves existing immutable history while merging staged immutable entries', async () => {
     const manager = new ChainStorageManager('/tmp/state');
-    jest
-      .spyOn(manager, '_ensureManagedChainLayout')
-      .mockResolvedValue({ managedChainPath: '/mnt/custom-parent/chain', isRecoveryFallback: false });
+    jest.spyOn(manager, '_ensureManagedChainLayout').mockResolvedValue({
+      managedChainPath: '/mnt/custom-parent/chain',
+      isRecoveryFallback: false,
+    });
     jest
       .spyOn(manager, 'getManagedChainPath')
       .mockResolvedValue('/mnt/custom-parent/chain');
@@ -995,17 +1011,29 @@ describe('ChainStorageManager', () => {
 
         return [];
       });
-    const emptySpy = jest.spyOn(manager, '_emptyManagedContents').mockResolvedValue(undefined);
-    const moveSpy = jest.spyOn(manager, '_movePath').mockResolvedValue(undefined);
+    const emptySpy = jest
+      .spyOn(manager, '_emptyManagedContents')
+      .mockResolvedValue(undefined);
+    const moveSpy = jest
+      .spyOn(manager, '_movePath')
+      .mockResolvedValue(undefined);
 
     await manager.installValidatedPartialSyncSnapshot('/tmp/staged/db', {
-      expectedTopLevelEntries: ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'],
+      expectedTopLevelEntries: [
+        'clean',
+        'immutable',
+        'ledger',
+        'lsm',
+        'protocolMagicId',
+      ],
     });
 
     expect(emptySpy).toHaveBeenCalledWith('/mnt/custom-parent/chain', {
       excludeTopLevelEntries: ['immutable'],
     });
-    expect(fs.ensureDir).toHaveBeenCalledWith('/mnt/custom-parent/chain/immutable');
+    expect(fs.ensureDir).toHaveBeenCalledWith(
+      '/mnt/custom-parent/chain/immutable'
+    );
     expect(moveSpy).toHaveBeenCalledWith(
       '/tmp/staged/db/immutable/26108.chunk',
       '/mnt/custom-parent/chain/immutable/26108.chunk'
@@ -1024,28 +1052,39 @@ describe('ChainStorageManager', () => {
 
   it('installValidatedPartialSyncSnapshot rejects unexpected staged entries before live cutover', async () => {
     const manager = new ChainStorageManager('/tmp/state');
-    jest
-      .spyOn(manager, '_ensureManagedChainLayout')
-      .mockResolvedValue({ managedChainPath: '/mnt/custom-parent/chain', isRecoveryFallback: false });
+    jest.spyOn(manager, '_ensureManagedChainLayout').mockResolvedValue({
+      managedChainPath: '/mnt/custom-parent/chain',
+      isRecoveryFallback: false,
+    });
     jest
       .spyOn(manager, 'getManagedChainPath')
       .mockResolvedValue('/mnt/custom-parent/chain');
     jest
       .spyOn(manager, '_resolveRealPathOrInput')
       .mockImplementation(async (targetPath: string) => targetPath);
-    jest.spyOn(manager, '_safeReadDir').mockResolvedValue([
-      'clean',
-      'immutable',
-      'ledger',
-      'lsm',
-      'protocolMagicId',
-      'volatile',
-    ]);
-    const emptySpy = jest.spyOn(manager, '_emptyManagedContents').mockResolvedValue(undefined);
+    jest
+      .spyOn(manager, '_safeReadDir')
+      .mockResolvedValue([
+        'clean',
+        'immutable',
+        'ledger',
+        'lsm',
+        'protocolMagicId',
+        'volatile',
+      ]);
+    const emptySpy = jest
+      .spyOn(manager, '_emptyManagedContents')
+      .mockResolvedValue(undefined);
 
     await expect(
       manager.installValidatedPartialSyncSnapshot('/tmp/staged/db', {
-        expectedTopLevelEntries: ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'],
+        expectedTopLevelEntries: [
+          'clean',
+          'immutable',
+          'ledger',
+          'lsm',
+          'protocolMagicId',
+        ],
       })
     ).rejects.toThrow(
       'Validated partial sync install requires exactly clean, immutable, ledger, lsm, protocolMagicId in staged db output.'

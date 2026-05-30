@@ -106,9 +106,9 @@ describe('shouldCloseDiagnosticsForPartialSyncOverlay', () => {
     expect(
       shouldCloseDiagnosticsForPartialSyncOverlay('preparing', 'downloading')
     ).toBe(false);
-    expect(
-      shouldCloseDiagnosticsForPartialSyncOverlay('idle', 'failed')
-    ).toBe(true);
+    expect(shouldCloseDiagnosticsForPartialSyncOverlay('idle', 'failed')).toBe(
+      true
+    );
     expect(
       shouldCloseDiagnosticsForPartialSyncOverlay('stopping-node', 'idle')
     ).toBe(false);
@@ -155,11 +155,17 @@ describe('DaedalusDiagnosticsDialog', () => {
   it('also closes when a terminal overlay-backed status arrives directly from idle', () => {
     const baseProps = createBaseProps();
     const { rerender } = render(
-      React.createElement(DaedalusDiagnosticsDialog, withStatus(baseProps, 'idle') as any)
+      React.createElement(
+        DaedalusDiagnosticsDialog,
+        withStatus(baseProps, 'idle') as any
+      )
     );
 
     rerender(
-      React.createElement(DaedalusDiagnosticsDialog, withStatus(baseProps, 'failed') as any)
+      React.createElement(
+        DaedalusDiagnosticsDialog,
+        withStatus(baseProps, 'failed') as any
+      )
     );
 
     expect(

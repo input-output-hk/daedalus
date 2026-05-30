@@ -260,7 +260,9 @@ class ChainStorageCoordinator {
     }
   }
 
-  async cancelPartialSync(dependencies: PartialSyncDependencies): Promise<void> {
+  async cancelPartialSync(
+    dependencies: PartialSyncDependencies
+  ): Promise<void> {
     await dependencies.handlers.cancel();
   }
 
@@ -271,7 +273,9 @@ class ChainStorageCoordinator {
     }
   ): Promise<void> {
     if (!dependencies.startupHandler) {
-      throw new Error('Mithril partial sync startup handler is not configured.');
+      throw new Error(
+        'Mithril partial sync startup handler is not configured.'
+      );
     }
 
     await this._withMutationLock('restartNormalFromPartialSync', async () => {
@@ -298,7 +302,9 @@ class ChainStorageCoordinator {
     }
   ): Promise<void> {
     if (!dependencies.startupHandler) {
-      throw new Error('Mithril partial sync startup handler is not configured.');
+      throw new Error(
+        'Mithril partial sync startup handler is not configured.'
+      );
     }
 
     await this._withMutationLock('wipeAndFullSyncFromPartialSync', async () => {

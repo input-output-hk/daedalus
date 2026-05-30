@@ -26,5 +26,7 @@ export const upsertProgressItem = (
     return addProgressItem(items, id, label, state);
   }
 
-  return items.map((item) => (item.id === id ? { ...item, label, state } : item));
+  return items.map((item) =>
+    item.id === id ? { ...item, label, state } : item
+  );
 };

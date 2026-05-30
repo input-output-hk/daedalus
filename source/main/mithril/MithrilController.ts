@@ -71,11 +71,13 @@ export class MithrilController {
     resolve: (decision: MithrilBootstrapDecision) => void;
     reject: (error: Error) => void;
   }> = [];
-  _bootstrapStatusSender: StatusSender<MithrilBootstrapStatusUpdate> | null = null;
+  _bootstrapStatusSender: StatusSender<MithrilBootstrapStatusUpdate> | null =
+    null;
   _partialSyncStatusSender: StatusSender<MithrilPartialSyncStatusSnapshot> | null =
     null;
   _pendingDecision: MithrilBootstrapDecision | null = null;
-  _nodeStateProvider: () => CardanoNodeState | null | undefined = () => undefined;
+  _nodeStateProvider: () => CardanoNodeState | null | undefined = () =>
+    undefined;
   _partialSyncService = new MithrilPartialSyncService();
   _stopNodeForPartialSync: (() => Promise<void>) | undefined;
   _restartStartupFlowAfterPartialSync: (() => Promise<void>) | undefined;
@@ -172,7 +174,9 @@ export class MithrilController {
   }
 
   isPartialSyncNodeStartBlocked(): boolean {
-    return isMithrilPartialSyncBlockingNodeStart(this._partialSyncStatus.status);
+    return isMithrilPartialSyncBlockingNodeStart(
+      this._partialSyncStatus.status
+    );
   }
 
   isPartialSyncActive(): boolean {
@@ -198,9 +202,10 @@ export class MithrilController {
   ): () => void {
     this._partialSyncStatusListeners.push(handler);
     return () => {
-      this._partialSyncStatusListeners = this._partialSyncStatusListeners.filter(
-        (listener) => listener !== handler
-      );
+      this._partialSyncStatusListeners =
+        this._partialSyncStatusListeners.filter(
+          (listener) => listener !== handler
+        );
     };
   }
 
@@ -224,13 +229,13 @@ export class MithrilController {
 
     if (!this._bootstrapStatusSender) return;
 
-    try {
-      await this._bootstrapStatusSender(status);
-    } catch (error) {
-      logger.warn('MithrilController: failed to send bootstrap status', {
-        error,
+    Promise.resolve()
+      .then(() => this._bootstrapStatusSender?.(status))
+      .catch((error) => {
+        logger.warn('MithrilController: failed to send bootstrap status', {
+          error,
+        });
       });
-    }
   }
 
   async broadcastPartialSyncStatus(
@@ -242,13 +247,13 @@ export class MithrilController {
 
     if (!this._partialSyncStatusSender) return;
 
-    try {
-      await this._partialSyncStatusSender(status);
-    } catch (error) {
-      logger.warn('MithrilController: failed to send partial sync status', {
-        error,
+    Promise.resolve()
+      .then(() => this._partialSyncStatusSender?.(status))
+      .catch((error) => {
+        logger.warn('MithrilController: failed to send partial sync status', {
+          error,
+        });
       });
-    }
   }
 
   setBootstrapStatus(
@@ -351,9 +356,7 @@ export class MithrilController {
     });
   }
 
-  async ensureMithrilStartupGate(
-    currentGeneration: number
-  ) {
+  async ensureMithrilStartupGate(currentGeneration: number) {
     return this._startupGate.ensureMithrilStartupGate(currentGeneration);
   }
 

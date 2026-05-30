@@ -274,7 +274,9 @@ function getActiveStepIndex(
 ): number {
   if (
     isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
-    isMithrilPartialSyncRestoreCompleteStatus(status as MithrilPartialSyncStatus)
+    isMithrilPartialSyncRestoreCompleteStatus(
+      status as MithrilPartialSyncStatus
+    )
   ) {
     return STEPS.length;
   }
@@ -300,7 +302,9 @@ function deriveTopLevelState(
 ): StepState {
   if (
     isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
-    isMithrilPartialSyncRestoreCompleteStatus(status as MithrilPartialSyncStatus)
+    isMithrilPartialSyncRestoreCompleteStatus(
+      status as MithrilPartialSyncStatus
+    )
   ) {
     return 'completed';
   }
@@ -583,11 +587,11 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
           stepId === 'downloading' &&
           state === 'active' &&
           (activeSubItemId === DOWNLOAD_PROGRESS_ANCHOR_ID ||
-            (activeSubItemId === stepId || activeSubItemId == null) &&
+            ((activeSubItemId === stepId || activeSubItemId == null) &&
               (typeof bytesDownloaded === 'number' ||
                 typeof snapshotSize === 'number' ||
                 typeof ancillaryBytesDownloaded === 'number' ||
-                typeof ancillaryBytesTotal === 'number'));
+                typeof ancillaryBytesTotal === 'number')));
         const {
           itemsBeforeAnchor: subItemsBeforeBars,
           itemsAfterAnchor: subItemsAfterBars,

@@ -98,7 +98,9 @@ describe('chainStorageCoordinator', () => {
     partialSyncHandlersMock.cancel.mockResolvedValue(undefined);
     partialSyncHandlersMock.restartNormal.mockResolvedValue(undefined);
     partialSyncHandlersMock.wipeAndFullSync.mockResolvedValue(undefined);
-    partialSyncHandlersMock.finalizeWipeAndFullSync.mockResolvedValue(undefined);
+    partialSyncHandlersMock.finalizeWipeAndFullSync.mockResolvedValue(
+      undefined
+    );
     partialSyncNodeStopHandlerMock.mockResolvedValue(undefined);
     partialSyncStartupHandlerMock.mockResolvedValue(undefined);
     chainStorageManagerMock.ensureManagedChainLayout.mockResolvedValue({
@@ -330,26 +332,27 @@ describe('chainStorageCoordinator', () => {
 
     const moduleExports = loadModule();
 
-    const partialSyncCall = moduleExports.chainStorageCoordinator.startPartialSync(
-      getPartialSyncDependencies(),
-      {
-        nodeState: 'stopped',
-      }
-    );
+    const partialSyncCall =
+      moduleExports.chainStorageCoordinator.startPartialSync(
+        getPartialSyncDependencies(),
+        {
+          nodeState: 'stopped',
+        }
+      );
 
     await flushPromises();
 
-    expect(moduleExports.chainStorageCoordinator.isPartialSyncInProgress()).toBe(
-      true
-    );
+    expect(
+      moduleExports.chainStorageCoordinator.isPartialSyncInProgress()
+    ).toBe(true);
 
     partialSyncMutation.resolve();
 
     await partialSyncCall;
 
-    expect(moduleExports.chainStorageCoordinator.isPartialSyncInProgress()).toBe(
-      false
-    );
+    expect(
+      moduleExports.chainStorageCoordinator.isPartialSyncInProgress()
+    ).toBe(false);
   });
 
   it('clears the coordinator partial-sync flag after a rejected start attempt', async () => {
@@ -368,9 +371,9 @@ describe('chainStorageCoordinator', () => {
       )
     ).rejects.toThrow('Partial sync start failed');
 
-    expect(moduleExports.chainStorageCoordinator.isPartialSyncInProgress()).toBe(
-      false
-    );
+    expect(
+      moduleExports.chainStorageCoordinator.isPartialSyncInProgress()
+    ).toBe(false);
   });
 
   it('rejects partial sync start when recovery fallback layout is active', async () => {
@@ -392,7 +395,9 @@ describe('chainStorageCoordinator', () => {
       'Cannot start Mithril partial sync while chain storage is using recovery fallback state.'
     );
 
-    expect(chainStorageManagerMock.resolveMithrilWorkDir).not.toHaveBeenCalled();
+    expect(
+      chainStorageManagerMock.resolveMithrilWorkDir
+    ).not.toHaveBeenCalled();
     expect(partialSyncHandlersMock.start).not.toHaveBeenCalled();
   });
 
@@ -412,7 +417,9 @@ describe('chainStorageCoordinator', () => {
     expect(
       chainStorageManagerMock.ensureManagedChainLayout
     ).toHaveBeenCalledWith({ nodeState: 'stopped' });
-    expect(chainStorageManagerMock.resolveMithrilWorkDir).toHaveBeenCalledTimes(1);
+    expect(chainStorageManagerMock.resolveMithrilWorkDir).toHaveBeenCalledTimes(
+      1
+    );
     expect(partialSyncHandlersMock.start).toHaveBeenCalledTimes(1);
   });
 
@@ -432,7 +439,9 @@ describe('chainStorageCoordinator', () => {
     expect(
       chainStorageManagerMock.ensureManagedChainLayout
     ).toHaveBeenCalledWith({ nodeState: 'stopped' });
-    expect(chainStorageManagerMock.resolveMithrilWorkDir).toHaveBeenCalledTimes(1);
+    expect(chainStorageManagerMock.resolveMithrilWorkDir).toHaveBeenCalledTimes(
+      1
+    );
     expect(partialSyncHandlersMock.start).toHaveBeenCalledTimes(1);
   });
 
@@ -585,12 +594,13 @@ describe('chainStorageCoordinator', () => {
 
     const moduleExports = loadModule();
 
-    const partialSyncCall = moduleExports.chainStorageCoordinator.startPartialSync(
-      getPartialSyncDependencies(),
-      {
-        nodeState: 'stopped',
-      }
-    );
+    const partialSyncCall =
+      moduleExports.chainStorageCoordinator.startPartialSync(
+        getPartialSyncDependencies(),
+        {
+          nodeState: 'stopped',
+        }
+      );
 
     await flushPromises();
 
@@ -651,12 +661,13 @@ describe('chainStorageCoordinator', () => {
 
     const moduleExports = loadModule();
 
-    const partialSyncCall = moduleExports.chainStorageCoordinator.startPartialSync(
-      getPartialSyncDependencies(),
-      {
-        nodeState: 'stopped',
-      }
-    );
+    const partialSyncCall =
+      moduleExports.chainStorageCoordinator.startPartialSync(
+        getPartialSyncDependencies(),
+        {
+          nodeState: 'stopped',
+        }
+      );
 
     await flushPromises();
 
@@ -819,12 +830,13 @@ describe('chainStorageCoordinator', () => {
 
     const moduleExports = loadModule();
 
-    const partialSyncCall = moduleExports.chainStorageCoordinator.startPartialSync(
-      getPartialSyncDependencies(),
-      {
-        nodeState: 'stopped',
-      }
-    );
+    const partialSyncCall =
+      moduleExports.chainStorageCoordinator.startPartialSync(
+        getPartialSyncDependencies(),
+        {
+          nodeState: 'stopped',
+        }
+      );
 
     await flushPromises();
 

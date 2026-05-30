@@ -13,7 +13,8 @@ const messages = defineMessages({
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationIntro',
     defaultMessage:
       '!!!Daedalus will stop Cardano node automatically, then download and restore verified Mithril data.',
-    description: 'Introductory copy for the Mithril partial sync confirmation view',
+    description:
+      'Introductory copy for the Mithril partial sync confirmation view',
   },
   success: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationSuccess',
@@ -25,17 +26,20 @@ const messages = defineMessages({
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationRecovery',
     defaultMessage:
       '!!!If the attempt fails, Daedalus can offer retry partial sync, restart normally on the current database, or wipe chain data and do a full Mithril sync.',
-    description: 'Failure recovery copy for the Mithril partial sync confirmation view',
+    description:
+      'Failure recovery copy for the Mithril partial sync confirmation view',
   },
   cancel: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationCancel',
     defaultMessage: '!!!Back to diagnostics',
-    description: 'Cancel button label for the Mithril partial sync confirmation view',
+    description:
+      'Cancel button label for the Mithril partial sync confirmation view',
   },
   confirm: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationConfirm',
     defaultMessage: '!!!Start Mithril partial sync',
-    description: 'Confirm button label for the Mithril partial sync confirmation view',
+    description:
+      'Confirm button label for the Mithril partial sync confirmation view',
   },
 });
 

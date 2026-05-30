@@ -86,7 +86,9 @@ describe('MithrilPartialSyncSection', () => {
       const { unmount } = renderComponent({ onStartMithrilPartialSync });
 
       screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
-      screen.getByRole('button', { name: 'Start Mithril partial sync' }).click();
+      screen
+        .getByRole('button', { name: 'Start Mithril partial sync' })
+        .click();
 
       await waitFor(() => {
         expect(onStartMithrilPartialSync).toHaveBeenCalledTimes(1);

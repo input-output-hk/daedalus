@@ -452,7 +452,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
         isNodeRestarting: false,
       }); // eslint-disable-line
     }
-
   }
 
   getSectionRow = (messageId: string, content?: Node) => (
@@ -553,9 +552,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
       cardanoNetwork,
       daedalusStateDirectoryPath,
     } = coreInfo;
-    const {
-      isNodeRestarting,
-    } = this.state;
+    const { isNodeRestarting } = this.state;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError as ErrorType;
     const unknownDiskSpaceSupportUrl = intl.formatMessage(
@@ -703,10 +700,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('cardanoNetwork', cardanoNetworkValue)}
               {getRow('connected', isConnected)}
               {getRow('synced', isSynced)}
-              {getRow(
-                'syncPercentage',
-                `${formattedSyncPercentage}%`
-              )}
+              {getRow('syncPercentage', `${formattedSyncPercentage}%`)}
               <MithrilPartialSyncSection
                 formattedSyncPercentage={formattedSyncPercentage}
                 isActionBlocked={isMithrilActionBlocked}
@@ -873,7 +867,9 @@ class DaedalusDiagnostics extends Component<Props, State> {
     // This method is to be used on buttons which get disabled after click
     // as without it the ReactModal is not closing if you press the ESC key
     // even after the button is later re-enabled
-    const modalContent = document.getElementsByClassName('ReactModal__Content')[0];
+    const modalContent = document.getElementsByClassName(
+      'ReactModal__Content'
+    )[0];
 
     if (modalContent && 'focus' in modalContent) {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'focus' does not exist on type 'Element'.

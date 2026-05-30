@@ -26,7 +26,9 @@ export async function writeMithrilPartialSyncMarker(
   const marker = {
     state,
     updatedAt: new Date().toISOString(),
-    ...(options.managedChainPath ? { managedChainPath: options.managedChainPath } : {}),
+    ...(options.managedChainPath
+      ? { managedChainPath: options.managedChainPath }
+      : {}),
   };
   const markerPath = getMithrilPartialSyncMarkerPath();
 
@@ -58,10 +60,13 @@ export async function readMithrilPartialSyncMarker(): Promise<MithrilPartialSync
       return marker as MithrilPartialSyncMarker;
     }
   } catch (error) {
-    logger.warn('Mithril partial sync marker read failed; treating as unsafe cutover state', {
-      error,
-      markerPath,
-    });
+    logger.warn(
+      'Mithril partial sync marker read failed; treating as unsafe cutover state',
+      {
+        error,
+        markerPath,
+      }
+    );
   }
 
   return {

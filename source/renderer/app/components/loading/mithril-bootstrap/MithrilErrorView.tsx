@@ -88,27 +88,24 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   const copy =
     (error?.stage && ERROR_COPY_BY_STAGE[error.stage]) ||
     ({ title: 'errorTitle' } as ErrorCopy);
-  const resolvedHint =
-    hint !== undefined
-      ? hint
-      : copy.hint
-        ? intl.formatMessage(messages[copy.hint])
-        : null;
+  let resolvedHint = hint;
+  if (resolvedHint === undefined) {
+    resolvedHint = copy.hint ? intl.formatMessage(messages[copy.hint]) : null;
+  }
   const detailsHeader = error?.message || error?.code || '';
   const logPath = error?.logPath;
-  const resolvedActions =
-    actions || [
-      {
-        label: intl.formatMessage(messages.wipeAndRetry),
-        onClick: onWipeRetry,
-        variant: 'primary' as const,
-      },
-      {
-        label: intl.formatMessage(messages.decline),
-        onClick: onDecline,
-        variant: 'secondary' as const,
-      },
-    ];
+  const resolvedActions = actions || [
+    {
+      label: intl.formatMessage(messages.wipeAndRetry),
+      onClick: onWipeRetry,
+      variant: 'primary' as const,
+    },
+    {
+      label: intl.formatMessage(messages.decline),
+      onClick: onDecline,
+      variant: 'secondary' as const,
+    },
+  ];
 
   return (
     <div className={styles.root} role="alert">

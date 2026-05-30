@@ -99,7 +99,7 @@ export function normalizeSpawnEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
 }
 
 export function openLogStream(
-  logFileName: string = 'mithril-bootstrap.log'
+  logFileName = 'mithril-bootstrap.log'
 ): WriteStream {
   const logsDir = path.join(stateDirectoryPath, 'Logs');
   ensureDirectoryExists(logsDir);

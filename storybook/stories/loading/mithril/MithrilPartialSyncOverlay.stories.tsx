@@ -26,7 +26,9 @@ const getActiveProgressItems = (intl: Intl): Array<MithrilProgressItem> => [
   },
   {
     id: 'verify',
-    label: intl.formatMessage(MithrilBootstrapMessages.progressVerifyingDatabase),
+    label: intl.formatMessage(
+      MithrilBootstrapMessages.progressVerifyingDatabase
+    ),
     state: 'completed',
   },
   {
@@ -107,10 +109,7 @@ interface StoryProps {
   completed?: boolean;
 }
 
-function MithrilPartialSyncOverlayStory(
-  props: StoryProps,
-  context: Context
-) {
+function MithrilPartialSyncOverlayStory(props: StoryProps, context: Context) {
   const { intl } = context;
   const activeProgressItems = getActiveProgressItems(intl);
   const completedProgressItems = getCompletedProgressItems(intl);

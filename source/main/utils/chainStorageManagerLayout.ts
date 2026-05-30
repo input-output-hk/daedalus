@@ -602,7 +602,8 @@ export async function installValidatedPartialSyncSnapshot(
     if (entry === 'immutable') {
       const stagedImmutablePath = path.join(resolvedDbDirectory, entry);
       const targetImmutablePath = path.join(resolvedManagedChainPath, entry);
-      const stagedImmutableEntries = await ctx._safeReadDir(stagedImmutablePath);
+      const stagedImmutableEntries =
+        await ctx._safeReadDir(stagedImmutablePath);
 
       await fs.ensureDir(targetImmutablePath);
       for (const immutableEntry of stagedImmutableEntries) {
@@ -615,14 +616,12 @@ export async function installValidatedPartialSyncSnapshot(
       if (!ctx._isSamePath(stagedImmutablePath, targetImmutablePath)) {
         await fs.remove(stagedImmutablePath);
       }
-
-      continue;
+    } else {
+      await ctx._movePath(
+        path.join(resolvedDbDirectory, entry),
+        path.join(resolvedManagedChainPath, entry)
+      );
     }
-
-    await ctx._movePath(
-      path.join(resolvedDbDirectory, entry),
-      path.join(resolvedManagedChainPath, entry)
-    );
   }
 
   if (!ctx._isSamePath(resolvedDbDirectory, resolvedManagedChainPath)) {

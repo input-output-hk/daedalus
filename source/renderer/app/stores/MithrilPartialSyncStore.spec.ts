@@ -76,10 +76,7 @@ describe('MithrilPartialSyncStore', () => {
     expect(mockStatusRequest).toHaveBeenCalledTimes(1);
     expect(typeof registeredStatusHandler).toBe('function');
     expect(store.status).toBe('failed');
-    expect(store.allowedRecoveryActions).toEqual([
-      'retry',
-      'restart-normal',
-    ]);
+    expect(store.allowedRecoveryActions).toEqual(['retry', 'restart-normal']);
     expect(store.canRetry).toBe(true);
     expect(store.canRestartNormally).toBe(true);
     expect(store.canWipeAndFullSync).toBe(false);

@@ -53,7 +53,9 @@ export const getMithrilPartialSyncStatus = () =>
 export const isMithrilPartialSyncActive = () =>
   getMithrilController().isPartialSyncActive();
 
-export const setMithrilPartialSyncActiveProvider = (_provider: () => boolean) => {};
+export const setMithrilPartialSyncActiveProvider = (
+  _provider: () => boolean
+) => {};
 
 export const setMithrilPartialSyncStatus = (
   status: MithrilPartialSyncStatusSnapshot

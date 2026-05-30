@@ -25,10 +25,18 @@ const overlayMock = jest.fn(
 );
 
 jest.mock('./Routes', () => ({
-  Routes: () => <div data-testid="routes" />,
+  Routes() {
+    return <div data-testid="routes" />;
+  },
 }));
 
-jest.mock('./ThemeManager', () => () => <div data-testid="theme-manager" />);
+jest.mock(
+  './ThemeManager',
+  () =>
+    function ThemeManager() {
+      return <div data-testid="theme-manager" />;
+    }
+);
 
 jest.mock('./i18n/translations', () => ({
   __esModule: true,
@@ -36,36 +44,81 @@ jest.mock('./i18n/translations', () => ({
 }));
 
 jest.mock('./components/analytics', () => ({
-  AnalyticsProvider: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
+  AnalyticsProvider({ children }: { children: React.ReactNode }) {
+    return <>{children}</>;
+  },
 }));
 
 jest.mock('./containers/MenuUpdater', () => ({
-  MenuUpdater: () => null,
+  MenuUpdater() {
+    return null;
+  },
 }));
 
-jest.mock('./containers/static/AboutDialog', () => () => null);
-jest.mock('./containers/status/DaedalusDiagnosticsDialog', () => () => null);
-jest.mock('./containers/notifications/NotificationsContainer', () => () => null);
-jest.mock('./containers/news/NewsOverlayContainer', () => () => null);
-jest.mock('./containers/news/NewsFeedContainer', () => () => null);
-jest.mock('./containers/knownIssues/ToggleRTSFlagsDialogContainer', () => () => null);
+jest.mock(
+  './containers/static/AboutDialog',
+  () =>
+    function AboutDialog() {
+      return null;
+    }
+);
+jest.mock(
+  './containers/status/DaedalusDiagnosticsDialog',
+  () =>
+    function DaedalusDiagnosticsDialog() {
+      return null;
+    }
+);
+jest.mock(
+  './containers/notifications/NotificationsContainer',
+  () =>
+    function NotificationsContainer() {
+      return null;
+    }
+);
+jest.mock(
+  './containers/news/NewsOverlayContainer',
+  () =>
+    function NewsOverlayContainer() {
+      return null;
+    }
+);
+jest.mock(
+  './containers/news/NewsFeedContainer',
+  () =>
+    function NewsFeedContainer() {
+      return null;
+    }
+);
+jest.mock(
+  './containers/knownIssues/ToggleRTSFlagsDialogContainer',
+  () =>
+    function ToggleRTSFlagsDialogContainer() {
+      return null;
+    }
+);
 jest.mock(
   './containers/knownIssues/RTSFlagsRecommendationOverlayContainer',
-  () => () => null
+  () =>
+    function RTSFlagsRecommendationOverlayContainer() {
+      return null;
+    }
 );
 
 jest.mock(
   './components/loading/mithril-bootstrap/MithrilPartialSyncOverlay',
   () => ({
     __esModule: true,
-    default: (props) => overlayMock(props),
+    default: function MithrilPartialSyncOverlay(props) {
+      return overlayMock(props);
+    },
   })
 );
 
 jest.mock('react-polymorph/lib/components/ThemeProvider', () => ({
-  ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  ThemeProvider({ children }: { children: React.ReactNode }) {
+    return <>{children}</>;
+  },
 }));
 
 jest.mock('react-polymorph/lib/skins/simple', () => ({
@@ -176,7 +229,9 @@ describe('App', () => {
     );
 
     expect(actions.app.initAppEnvironment.trigger).toHaveBeenCalledTimes(1);
-    expect(screen.getByTestId('mithril-partial-sync-overlay')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('mithril-partial-sync-overlay')
+    ).toBeInTheDocument();
     expect(overlayMock).toHaveBeenCalledTimes(1);
     expect(overlayMock.mock.calls[0][0]).toEqual(
       expect.objectContaining({
@@ -196,7 +251,9 @@ describe('App', () => {
     fireEvent.click(screen.getByRole('button', { name: 'wipe' }));
     fireEvent.click(screen.getByRole('button', { name: 'dismiss' }));
 
-    expect(stores.mithrilPartialSync.cancelPartialSync).toHaveBeenCalledTimes(1);
+    expect(stores.mithrilPartialSync.cancelPartialSync).toHaveBeenCalledTimes(
+      1
+    );
     expect(stores.mithrilPartialSync.startPartialSync).toHaveBeenCalledTimes(1);
     expect(stores.mithrilPartialSync.restartNormally).toHaveBeenCalledTimes(1);
     expect(stores.mithrilPartialSync.wipeAndFullSync).toHaveBeenCalledTimes(1);

@@ -9,7 +9,11 @@ const mithrilControllerMock = {
   setBootstrapStatusSender: jest.fn(),
   initialize: jest.fn(),
   getPendingBootstrapDecision: jest.fn(() => null),
-  getBootstrapStatus: jest.fn(() => ({ status: 'idle', snapshot: null, error: null })),
+  getBootstrapStatus: jest.fn(() => ({
+    status: 'idle',
+    snapshot: null,
+    error: null,
+  })),
   getNodeState: jest.fn(() => 'stopped'),
   setNodeStateProvider: jest.fn(),
   isBootstrapNodeStartBlocked: jest.fn(() => false),
@@ -89,7 +93,8 @@ describe('mithrilBootstrapChannel', () => {
     expect(requestHandlerCountAfterSecond).toBe(requestHandlerCountAfterFirst);
     expect(mithrilControllerMock.initialize).toHaveBeenCalledTimes(2);
 
-    const sender = mithrilControllerMock.setBootstrapStatusSender.mock.calls[1][0];
+    const sender =
+      mithrilControllerMock.setBootstrapStatusSender.mock.calls[1][0];
     await sender({ status: 'downloading', snapshot: null, error: null });
 
     expect(mockChannels[2].send).toHaveBeenCalledWith(
@@ -103,11 +108,13 @@ describe('mithrilBootstrapChannel', () => {
 
     moduleExports.handleMithrilBootstrapRequests({ webContents: {} } as never);
 
-    await expect(mockChannels[2].onRequest.mock.calls[0][0]()).resolves.toEqual({
-      status: 'idle',
-      snapshot: null,
-      error: null,
-    });
+    await expect(mockChannels[2].onRequest.mock.calls[0][0]()).resolves.toEqual(
+      {
+        status: 'idle',
+        snapshot: null,
+        error: null,
+      }
+    );
     await expect(mockChannels[4].onRequest.mock.calls[0][0]()).resolves.toEqual(
       []
     );
@@ -137,7 +144,9 @@ describe('mithrilBootstrapChannel', () => {
   it('keeps compatibility exports as controller proxies', () => {
     const moduleExports = loadModule();
 
-    moduleExports.setMithrilBootstrapNodeStateProvider(() => 'running' as never);
+    moduleExports.setMithrilBootstrapNodeStateProvider(
+      () => 'running' as never
+    );
     moduleExports.setMithrilBootstrapStatus({ status: 'decision' });
     moduleExports.waitForMithrilBootstrapDecision();
     moduleExports.resetMithrilDecisionState({ suppressStatusBroadcast: true });
@@ -146,8 +155,12 @@ describe('mithrilBootstrapChannel', () => {
     expect(mithrilControllerMock.setBootstrapStatus).toHaveBeenCalledWith({
       status: 'decision',
     });
-    expect(mithrilControllerMock.waitForBootstrapDecision).toHaveBeenCalledTimes(1);
-    expect(mithrilControllerMock.resetBootstrapDecisionState).toHaveBeenCalledWith({
+    expect(
+      mithrilControllerMock.waitForBootstrapDecision
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      mithrilControllerMock.resetBootstrapDecisionState
+    ).toHaveBeenCalledWith({
       suppressStatusBroadcast: true,
     });
   });

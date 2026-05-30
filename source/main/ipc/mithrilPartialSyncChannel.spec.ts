@@ -63,11 +63,15 @@ describe('mithrilPartialSyncChannel', () => {
     mithrilControllerMock.isPartialSyncActive.mockReturnValue(false);
     mithrilControllerMock.startPartialSync.mockResolvedValue(undefined);
     mithrilControllerMock.cancelPartialSync.mockResolvedValue(undefined);
-    mithrilControllerMock.restartNormalFromPartialSync.mockResolvedValue(undefined);
+    mithrilControllerMock.restartNormalFromPartialSync.mockResolvedValue(
+      undefined
+    );
     mithrilControllerMock.wipeAndFullSyncFromPartialSync.mockResolvedValue(
       undefined
     );
-    mithrilControllerMock.broadcastPartialSyncStatus.mockResolvedValue(undefined);
+    mithrilControllerMock.broadcastPartialSyncStatus.mockResolvedValue(
+      undefined
+    );
   });
 
   it('binds status delivery to the latest window without duplicating request handlers', async () => {
@@ -87,7 +91,8 @@ describe('mithrilPartialSyncChannel', () => {
 
     expect(requestHandlerCountAfterSecond).toBe(requestHandlerCountAfterFirst);
 
-    const sender = mithrilControllerMock.setPartialSyncStatusSender.mock.calls[1][0];
+    const sender =
+      mithrilControllerMock.setPartialSyncStatusSender.mock.calls[1][0];
     await sender({ ...idleStatus, status: 'downloading' });
 
     expect(mockChannels[1].send).toHaveBeenCalledWith(
@@ -99,7 +104,9 @@ describe('mithrilPartialSyncChannel', () => {
   it('registers thin request handlers that delegate to the controller', async () => {
     const moduleExports = loadModule();
 
-    moduleExports.handleMithrilPartialSyncRequests({ webContents: {} } as never);
+    moduleExports.handleMithrilPartialSyncRequests({
+      webContents: {},
+    } as never);
 
     await expect(mockChannels[1].onRequest.mock.calls[0][0]()).resolves.toEqual(
       idleStatus
@@ -144,15 +151,17 @@ describe('mithrilPartialSyncChannel', () => {
 
     expect(moduleExports.getMithrilPartialSyncStatus()).toBe(status);
     expect(moduleExports.isMithrilPartialSyncActive()).toBe(true);
-    expect(mithrilControllerMock.configurePartialSyncRuntime).toHaveBeenCalledTimes(
-      1
+    expect(
+      mithrilControllerMock.configurePartialSyncRuntime
+    ).toHaveBeenCalledTimes(1);
+    expect(mithrilControllerMock.setPartialSyncStatus).toHaveBeenCalledWith(
+      status
     );
-    expect(mithrilControllerMock.setPartialSyncStatus).toHaveBeenCalledWith(status);
     expect(mithrilControllerMock.onPartialSyncStatus).toHaveBeenCalledWith(
       listener
     );
-    expect(mithrilControllerMock.broadcastPartialSyncStatus).toHaveBeenCalledWith(
-      status
-    );
+    expect(
+      mithrilControllerMock.broadcastPartialSyncStatus
+    ).toHaveBeenCalledWith(status);
   });
 });

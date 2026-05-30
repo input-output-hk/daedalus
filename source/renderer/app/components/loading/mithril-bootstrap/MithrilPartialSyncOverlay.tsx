@@ -7,7 +7,10 @@ import type {
 } from '../../../../../common/types/mithril-partial-sync.types';
 import type { MithrilProgressItem } from '../../../../../common/types/mithril-bootstrap.types';
 import type { Intl } from '../../../types/i18nTypes';
-import { MITHRIL_ERROR_HEADING_ID, MITHRIL_PROGRESS_HEADING_ID } from './accessibilityIds';
+import {
+  MITHRIL_ERROR_HEADING_ID,
+  MITHRIL_PROGRESS_HEADING_ID,
+} from './accessibilityIds';
 import MithrilBootstrapMessages from './MithrilBootstrap.messages';
 import MithrilErrorView from './MithrilErrorView';
 import MithrilProgressView from './MithrilProgressView';
@@ -83,10 +86,14 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
               progressItems={progressItems}
               bytesDownloaded={transferProgress?.filesDownloaded}
               snapshotSize={transferProgress?.filesTotal}
-              ancillaryBytesDownloaded={transferProgress?.ancillaryBytesDownloaded}
+              ancillaryBytesDownloaded={
+                transferProgress?.ancillaryBytesDownloaded
+              }
               ancillaryBytesTotal={transferProgress?.ancillaryBytesTotal}
               elapsedSeconds={transferProgress?.elapsedSeconds}
-              title={intl.formatMessage(MithrilBootstrapMessages.partialSyncTitle)}
+              title={intl.formatMessage(
+                MithrilBootstrapMessages.partialSyncTitle
+              )}
               subtitle={intl.formatMessage(
                 status === 'completed'
                   ? MithrilBootstrapMessages.partialSyncCompletedSubtitle
@@ -105,9 +112,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
               )}
               hideAction={status === 'starting-node'}
               showDownloadProgressBar
-              onAction={
-                status === 'completed' ? onDismissCompleted : onCancel
-              }
+              onAction={status === 'completed' ? onDismissCompleted : onCancel}
             />
           ) : (
             <MithrilErrorView
@@ -142,7 +147,9 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
                           MithrilBootstrapMessages.partialSyncRestartNormally
                         ),
                         onClick: onRestartNormally,
-                        variant: canRetry ? ('secondary' as const) : ('primary' as const),
+                        variant: canRetry
+                          ? ('secondary' as const)
+                          : ('primary' as const),
                       },
                     ]
                   : []),

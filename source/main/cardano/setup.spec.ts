@@ -88,7 +88,9 @@ describe('setupCardanoNode', () => {
     restartMock.mockResolvedValue(undefined);
     mithrilControllerMock.isBootstrapNodeStartBlocked.mockReturnValue(false);
     mithrilControllerMock.isPartialSyncNodeStartBlocked.mockReturnValue(false);
-    mithrilControllerMock.getBootstrapStatus.mockReturnValue({ status: 'idle' });
+    mithrilControllerMock.getBootstrapStatus.mockReturnValue({
+      status: 'idle',
+    });
     mithrilControllerMock.getPartialSyncStatus.mockReturnValue({
       status: 'idle',
       allowedRecoveryActions: [],
@@ -162,7 +164,9 @@ describe('setupCardanoNode', () => {
 
   it('preserves bootstrap restart suppression unchanged', () => {
     mithrilControllerMock.isBootstrapNodeStartBlocked.mockReturnValue(true);
-    mithrilControllerMock.getBootstrapStatus.mockReturnValue({ status: 'verifying' });
+    mithrilControllerMock.getBootstrapStatus.mockReturnValue({
+      status: 'verifying',
+    });
 
     const transitions = setup();
 
@@ -177,6 +181,8 @@ describe('setupCardanoNode', () => {
     transitions.onCrashed(9);
 
     expect(global.setTimeout).toHaveBeenCalledTimes(1);
-    expect((global.setTimeout as unknown as jest.Mock).mock.calls[0][1]).toBe(1000);
+    expect((global.setTimeout as unknown as jest.Mock).mock.calls[0][1]).toBe(
+      1000
+    );
   });
 });

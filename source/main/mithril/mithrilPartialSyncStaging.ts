@@ -92,7 +92,9 @@ export async function validateStagedDownloadOutput(
     );
 
     const isExpectedType =
-      entry.type === 'directory' ? entryStats.isDirectory() : entryStats.isFile();
+      entry.type === 'directory'
+        ? entryStats.isDirectory()
+        : entryStats.isFile();
 
     if (!isExpectedType) {
       throw createStageError(

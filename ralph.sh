@@ -236,7 +236,7 @@ for ((iteration = 1; iteration <= max_iterations; iteration++)); do
   stop_reason=''
   while IFS= read -r output_line; do
     if [[ "$output_line" == ${stop_reason_prefix}* ]]; then
-      stop_reason="${output_line#${stop_reason_prefix}}"
+      stop_reason="${output_line#"${stop_reason_prefix}"}"
     fi
   done < "$opencode_output_file"
 

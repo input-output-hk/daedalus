@@ -254,35 +254,41 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   partialSyncTitle: {
     id: 'loading.mithrilPartialSync.title',
     defaultMessage: '!!!Mithril partial sync',
-    description: 'Headline for the diagnostics-launched Mithril partial sync overlay.',
+    description:
+      'Headline for the diagnostics-launched Mithril partial sync overlay.',
   },
   partialSyncProgressSubtitle: {
     id: 'loading.mithrilPartialSync.progress.subtitle',
     defaultMessage:
       '!!!Daedalus is restoring verified Mithril chain data. Download and verification time can vary based on your network connection and storage performance.',
-    description: 'Supporting copy shown under the Mithril partial sync progress title.',
+    description:
+      'Supporting copy shown under the Mithril partial sync progress title.',
   },
   partialSyncNodeStartingTitle: {
     id: 'loading.mithrilPartialSync.progress.nodeStartingTitle',
     defaultMessage: '!!!Starting Cardano node...',
-    description: 'Title shown while Cardano node starts after Mithril partial sync.',
+    description:
+      'Title shown while Cardano node starts after Mithril partial sync.',
   },
   partialSyncNodeStartingDetail: {
     id: 'loading.mithrilPartialSync.progress.nodeStartingDetail',
     defaultMessage:
       '!!!Mithril partial sync has finished restoring chain data. Cardano node is starting so Daedalus can resume normal syncing.',
-    description: 'Detail copy shown while Cardano node starts after Mithril partial sync.',
+    description:
+      'Detail copy shown while Cardano node starts after Mithril partial sync.',
   },
   partialSyncCompletedSubtitle: {
     id: 'loading.mithrilPartialSync.completed.subtitle',
     defaultMessage:
       '!!!Mithril partial sync completed successfully. Continue to return to the normal Daedalus app flow.',
-    description: 'Supporting copy shown after Mithril partial sync reaches completed status.',
+    description:
+      'Supporting copy shown after Mithril partial sync reaches completed status.',
   },
   partialSyncContinue: {
     id: 'loading.mithrilPartialSync.completed.continue',
     defaultMessage: '!!!Continue to Daedalus',
-    description: 'Dismiss button label for the completed Mithril partial sync overlay.',
+    description:
+      'Dismiss button label for the completed Mithril partial sync overlay.',
   },
   partialSyncFailedTitle: {
     id: 'loading.mithrilPartialSync.error.failed.title',
@@ -304,7 +310,8 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     id: 'loading.mithrilPartialSync.error.cancelled.hint',
     defaultMessage:
       '!!!Use one of the available recovery actions to retry Mithril partial sync, restart normally, or wipe chain data and do a full Mithril sync.',
-    description: 'Hint shown for Mithril partial sync cancelled terminal state.',
+    description:
+      'Hint shown for Mithril partial sync cancelled terminal state.',
   },
   partialSyncRetry: {
     id: 'loading.mithrilPartialSync.error.retry',
@@ -314,12 +321,14 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   partialSyncRestartNormally: {
     id: 'loading.mithrilPartialSync.error.restartNormally',
     defaultMessage: '!!!Restart normally',
-    description: 'Recovery action label for restarting Daedalus normally after partial sync failure.',
+    description:
+      'Recovery action label for restarting Daedalus normally after partial sync failure.',
   },
   partialSyncWipeAndFullSync: {
     id: 'loading.mithrilPartialSync.error.wipeAndFullSync',
     defaultMessage: '!!!Wipe chain data and do full Mithril sync',
-    description: 'Recovery action label for wiping chain data and doing a full Mithril sync.',
+    description:
+      'Recovery action label for wiping chain data and doing a full Mithril sync.',
   },
 });
 

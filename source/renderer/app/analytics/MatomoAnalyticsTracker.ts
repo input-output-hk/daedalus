@@ -32,19 +32,20 @@ export class MatomoAnalyticsTracker implements AnalyticsTracker {
   }
 
   sendPageNavigationEvent(pageTitle: string) {
-    return this.#analyticsClient.sendPageNavigationEvent(pageTitle).catch(
-      (error) => {
-        logger.warn(
-          'MatomoAnalyticsTracker: page navigation event failed',
-          { error, pageTitle }
-        );
-      }
-    );
+    return this.#analyticsClient
+      .sendPageNavigationEvent(pageTitle)
+      .catch((error) => {
+        logger.warn('MatomoAnalyticsTracker: page navigation event failed', {
+          error,
+          pageTitle,
+        });
+      });
   }
 
   sendEvent(category: string, name: string, action?: string, value?: number) {
-    return this.#analyticsClient.sendEvent(category, name, action, value).catch(
-      (error) => {
+    return this.#analyticsClient
+      .sendEvent(category, name, action, value)
+      .catch((error) => {
         logger.warn('MatomoAnalyticsTracker: analytics event failed', {
           error,
           category,
@@ -52,8 +53,7 @@ export class MatomoAnalyticsTracker implements AnalyticsTracker {
           action,
           value,
         });
-      }
-    );
+      });
   }
 
   async #enableTrackingIfAccepted() {

@@ -125,6 +125,38 @@ jest.mock('../mithril/mithrilPartialSyncNodeStartup', () => ({
 
 const { logger } = require('./logging') as typeof import('./logging');
 
+const getMithrilController = () =>
+  require('../mithril/MithrilController').getMithrilController() as import('../mithril/MithrilController').MithrilController;
+
+const idlePartialSyncStatus = {
+  status: 'idle' as const,
+  allowedRecoveryActions: [],
+  transferProgress: {},
+  progressItems: [],
+  error: null,
+};
+
+const resetMithrilControllerForTests = () => {
+  const mithrilController = getMithrilController();
+  const { MithrilStartupGate } = require('../mithril/MithrilStartupGate');
+
+  mithrilController.resetBootstrapDecisionState({
+    suppressStatusBroadcast: true,
+  });
+  mithrilController.setPartialSyncStatus(idlePartialSyncStatus);
+  mithrilController.setBootstrapStatus({
+    status: 'idle',
+    snapshot: null,
+    error: null,
+  });
+  mithrilController._startupGate = new MithrilStartupGate(mithrilController);
+  mithrilController._bootstrapStatusSender = null;
+  mithrilController._partialSyncStatusSender = null;
+  mithrilController._bootstrapStatusListeners = [];
+  mithrilController._partialSyncStatusListeners = [];
+  mithrilController._decisionListeners = [];
+};
+
 const flushPromises = async (count = 6) => {
   for (let index = 0; index < count; index += 1) {
     await Promise.resolve();
@@ -182,6 +214,7 @@ describe('handleDiskSpace', () => {
   const realClearInterval = global.clearInterval;
 
   beforeEach(() => {
+    jest.restoreAllMocks();
     jest.clearAllMocks();
     jest.useFakeTimers();
     global.setInterval = jest.fn(() => 1) as unknown as typeof setInterval;
@@ -213,25 +246,26 @@ describe('handleDiskSpace', () => {
         directoryChangedHandler = callback;
       }
     );
-    const mithrilBootstrapChannel = require('../ipc/mithrilBootstrapChannel');
-    mithrilBootstrapChannel.getPendingMithrilBootstrapDecision.mockReturnValue(
-      null
-    );
-    mithrilBootstrapChannel.getMithrilBootstrapStatus.mockImplementation(
-      () => mithrilBootstrapStatus
-    );
-    const mithrilPartialSyncChannel = require('../ipc/mithrilPartialSyncChannel');
-    mithrilPartialSyncChannel.getMithrilPartialSyncStatus.mockReturnValue({
-      status: 'idle',
-      allowedRecoveryActions: [],
-      transferProgress: {},
-      progressItems: [],
-      error: null,
+    resetMithrilControllerForTests();
+    const mithrilController = getMithrilController();
+    const resetBootstrapDecisionState =
+      mithrilController.resetBootstrapDecisionState.bind(mithrilController);
+    jest
+      .spyOn(mithrilController, 'resetBootstrapDecisionState')
+      .mockImplementation((options) => {
+        resetMithrilDecisionStateMock(options);
+        resetBootstrapDecisionState(options);
+      });
+    mithrilController.setBootstrapStatusSender(async (status) => {
+      await mithrilBootstrapStatusChannelMock.send(status, {});
     });
+    mithrilController.setPartialSyncStatus(idlePartialSyncStatus);
     mithrilPartialSyncNodeStartupMock.handleInterruptedRecovery.mockResolvedValue(
       false
     );
-    mithrilPartialSyncNodeStartupMock.startInstalledNode.mockResolvedValue(false);
+    mithrilPartialSyncNodeStartupMock.startInstalledNode.mockResolvedValue(
+      false
+    );
     mithrilPartialSyncNodeStartupMock.finalizeInstalledNodeStart.mockResolvedValue(
       undefined
     );
@@ -656,13 +690,11 @@ describe('handleDiskSpace', () => {
 
     expect(cardanoNode.start).toHaveBeenCalledTimes(1);
     expect(logger.warn).toHaveBeenCalledWith(
-      '[MITHRIL] Failed to broadcast bootstrap status update',
+      'MithrilController: failed to send bootstrap status',
       expect.objectContaining({
-        context: 'emit-idle',
         error: expect.objectContaining({
           message: 'webContents unavailable',
         }),
-        status: 'idle',
       })
     );
   });
@@ -717,14 +749,11 @@ describe('handleDiskSpace', () => {
   it('does not start cardano-node when the periodic disk check fires during an active mithril download', async () => {
     const { handleDiskSpace } =
       require('./handleDiskSpace') as typeof import('./handleDiskSpace');
-    const {
-      getMithrilBootstrapStatus,
-    } = require('../ipc/mithrilBootstrapChannel');
     const cardanoNode = createCardanoNode();
 
     // Chain has partial mithril data (~11 GB downloaded) but bootstrap is not done
     chainStorageCoordinatorMock.isManagedChainEmpty.mockResolvedValue(false);
-    getMithrilBootstrapStatus.mockReturnValue({
+    getMithrilController().setBootstrapStatus({
       status: 'downloading',
       snapshot: null,
       error: null,
@@ -748,13 +777,10 @@ describe('handleDiskSpace', () => {
   it('does not start cardano-node when the periodic disk check fires while mithril is finalizing', async () => {
     const { handleDiskSpace } =
       require('./handleDiskSpace') as typeof import('./handleDiskSpace');
-    const {
-      getMithrilBootstrapStatus,
-    } = require('../ipc/mithrilBootstrapChannel');
     const cardanoNode = createCardanoNode();
 
     chainStorageCoordinatorMock.isManagedChainEmpty.mockResolvedValue(false);
-    getMithrilBootstrapStatus.mockReturnValue({
+    getMithrilController().setBootstrapStatus({
       status: 'finalizing',
       snapshot: null,
       error: null,
@@ -773,11 +799,10 @@ describe('handleDiskSpace', () => {
   it('does not start cardano-node when the periodic disk check fires while partial sync is downloading', async () => {
     const { handleDiskSpace } =
       require('./handleDiskSpace') as typeof import('./handleDiskSpace');
-    const { getMithrilPartialSyncStatus } = require('../ipc/mithrilPartialSyncChannel');
     const cardanoNode = createCardanoNode();
 
     chainStorageCoordinatorMock.isManagedChainEmpty.mockResolvedValue(false);
-    getMithrilPartialSyncStatus.mockReturnValue({
+    getMithrilController().setPartialSyncStatus({
       status: 'downloading',
       allowedRecoveryActions: [],
       transferProgress: {},
@@ -798,14 +823,10 @@ describe('handleDiskSpace', () => {
   it('handles cancelled Mithril bootstrap by declining and starting cardano-node when chain is empty', async () => {
     const { handleDiskSpace } =
       require('./handleDiskSpace') as typeof import('./handleDiskSpace');
-    const {
-      getPendingMithrilBootstrapDecision,
-      getMithrilBootstrapStatus,
-    } = require('../ipc/mithrilBootstrapChannel');
     const cardanoNode = createCardanoNode();
 
-    getPendingMithrilBootstrapDecision.mockReturnValue('decline');
-    getMithrilBootstrapStatus.mockReturnValue({
+    getMithrilController()._pendingDecision = 'decline';
+    getMithrilController().setBootstrapStatus({
       status: 'cancelled',
       snapshot: null,
       error: null,
@@ -828,14 +849,10 @@ describe('handleDiskSpace', () => {
   it('handles cancelled Mithril bootstrap by declining and starting cardano-node when chain has data', async () => {
     const { handleDiskSpace } =
       require('./handleDiskSpace') as typeof import('./handleDiskSpace');
-    const {
-      getPendingMithrilBootstrapDecision,
-      getMithrilBootstrapStatus,
-    } = require('../ipc/mithrilBootstrapChannel');
     const cardanoNode = createCardanoNode();
 
-    getPendingMithrilBootstrapDecision.mockReturnValue('decline');
-    getMithrilBootstrapStatus.mockReturnValue({
+    getMithrilController()._pendingDecision = 'decline';
+    getMithrilController().setBootstrapStatus({
       status: 'cancelled',
       snapshot: null,
       error: null,
@@ -856,7 +873,8 @@ describe('handleDiskSpace', () => {
   });
 
   it('blocks normal startup and wipes when interrupted partial sync cutover is detected', async () => {
-    const { handleDiskSpace } = require('./handleDiskSpace') as typeof import('./handleDiskSpace');
+    const { handleDiskSpace } =
+      require('./handleDiskSpace') as typeof import('./handleDiskSpace');
     const cardanoNode = createCardanoNode();
 
     chainStorageCoordinatorMock.isManagedChainEmpty.mockResolvedValue(false);
@@ -876,26 +894,28 @@ describe('handleDiskSpace', () => {
     expect(
       mithrilPartialSyncNodeStartupMock.handleInterruptedRecovery
     ).toHaveBeenCalled();
-    expect(chainStorageCoordinatorMock.wipeChainAndSnapshots).not.toHaveBeenCalled();
+    expect(
+      chainStorageCoordinatorMock.wipeChainAndSnapshots
+    ).not.toHaveBeenCalled();
     expect(cardanoNode.start).toHaveBeenCalledTimes(1);
   });
 
   it('still attempts partial-sync node start from installed-awaiting-node-start while renderer status remains finalizing', async () => {
-    const { handleDiskSpace } = require('./handleDiskSpace') as typeof import('./handleDiskSpace');
-    const {
-      getMithrilPartialSyncStatus,
-    } = require('../ipc/mithrilPartialSyncChannel');
+    const { handleDiskSpace } =
+      require('./handleDiskSpace') as typeof import('./handleDiskSpace');
     const cardanoNode = createCardanoNode();
 
     chainStorageCoordinatorMock.isManagedChainEmpty.mockResolvedValue(false);
-    getMithrilPartialSyncStatus.mockReturnValue({
+    getMithrilController().setPartialSyncStatus({
       status: 'finalizing',
       allowedRecoveryActions: ['wipe-and-full-sync'],
       transferProgress: {},
       progressItems: [],
       error: null,
     });
-    mithrilPartialSyncNodeStartupMock.startInstalledNode.mockResolvedValue(true);
+    mithrilPartialSyncNodeStartupMock.startInstalledNode.mockResolvedValue(
+      true
+    );
 
     const handleCheckDiskSpace = handleDiskSpace(
       { webContents: {} } as never,
@@ -904,11 +924,12 @@ describe('handleDiskSpace', () => {
 
     await handleCheckDiskSpace();
 
-    expect(mithrilPartialSyncNodeStartupMock.startInstalledNode).toHaveBeenCalled();
+    expect(
+      mithrilPartialSyncNodeStartupMock.startInstalledNode
+    ).toHaveBeenCalled();
     expect(mithrilBootstrapStatusChannelMock.send).not.toHaveBeenCalledWith(
       expect.objectContaining({ status: 'idle' }),
       expect.anything()
     );
   });
-
 });

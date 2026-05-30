@@ -98,12 +98,7 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
   };
 
   render() {
-    const {
-      formattedSyncPercentage,
-      isActionBlocked,
-      isSynced,
-    } =
-      this.props;
+    const { formattedSyncPercentage, isActionBlocked, isSynced } = this.props;
     const { isShowingConfirmation, startError } = this.state;
     const { intl } = this.context;
 
