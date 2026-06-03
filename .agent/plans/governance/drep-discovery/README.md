@@ -2,8 +2,8 @@
 
 **Status:** Design locked on Governance section via renamed `Voting` entry
 **Date:** 2026-05-27
-**Plan:** [governance-drep-discovery-plan.md](../../../plans/governance/governance-drep-discovery-plan.md)
-**Tasks:** [governance-drep-discovery-plan-tasks.json](../../../plans/governance/governance-drep-discovery-plan-tasks.json)
+**Plan:** [governance-drep-discovery-plan.md](./governance-drep-discovery-plan.md)
+**Tasks:** [governance-drep-discovery-plan-tasks.json](./governance-drep-discovery-plan-tasks.json)
 
 This folder contains the chosen UX direction for the in-app DRep Discovery feature in Daedalus, plus shared design tokens and external research. Implementation (Storybook + React) is intentionally deferred to the sprint phases in the plan and tasks JSON.
 
@@ -11,11 +11,11 @@ This folder contains the chosen UX direction for the in-app DRep Discovery featu
 
 | File | Purpose |
 |---|---|
-| [external-research.md](./external-research.md) | Findings from GovTool, 1694.io, CIP-1694, CIP-119. Patterns to adopt and reject. |
-| [shared-design-tokens.md](./shared-design-tokens.md) | Status badges, source labels, voting-power formatting, randomization indicator, refresh state. |
-| [drep-discovery-design.md](./drep-discovery-design.md) | Governance section via renamed `Voting` entry, with sub-routes for directory / detail / favorites — the chosen direction. |
-| [current-vote-display-design.md](./current-vote-display-design.md) | `cv-1` / `cv-2` tech design: data model, mapper rules, normalizer, `CurrentVoteSummary` component, sequence diagrams, sanitization. |
-| [current-vote-display-ux.md](./current-vote-display-ux.md) | `cv-1` / `cv-2` UX spec: wireframes, knob spec, i18n key inventory. |
+| [external-research.md](./research/external-research.md) | Findings from GovTool, 1694.io, CIP-1694, CIP-119. Patterns to adopt and reject. |
+| [shared-design-tokens.md](./designs/shared-design-tokens.md) | Status badges, source labels, voting-power formatting, randomization indicator, refresh state. |
+| [drep-discovery-design.md](./designs/drep-discovery-design.md) | Governance section via renamed `Voting` entry, with sub-routes for directory / detail / favorites — the chosen direction. |
+| [current-vote-display-design.md](./designs/current-vote-display-design.md) | `cv-1` / `cv-2` tech design: data model, mapper rules, normalizer, `CurrentVoteSummary` component, sequence diagrams, sanitization. |
+| [current-vote-display-ux.md](./designs/current-vote-display-ux.md) | `cv-1` / `cv-2` UX spec: wireframes, knob spec, i18n key inventory. |
 
 ## Feature Scope (binding)
 

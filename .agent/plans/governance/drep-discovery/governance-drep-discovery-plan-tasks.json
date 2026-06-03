@@ -5,7 +5,7 @@
     "updated": "2026-06-03",
     "version": "1.0",
     "totalTasks": 58,
-    "prdReference": ".agent/plans/governance/governance-drep-discovery-plan.md",
+    "prdReference": ".agent/plans/governance/drep-discovery/governance-drep-discovery-plan.md",
     "description": "DRep Discovery + Wallet Current Vote Display, organized as a vertical-slice plan. Each slice is a thin end-to-end capability — minimum main-process/backend + IPC + store + UI, demoable behind the REAL IPC path, with its own Storybook + Jest + (where user-facing) Cucumber + i18n landed in the same slice. There is no terminal i18n phase, no terminal test phase, and no pure-backend phase. Three sequential foundation slices close the browse -> select -> delegate journey for both wallet types: slice-1 (walking skeleton + log/analytics sanitization floor), slice-2 (software-wallet delegate), and slice-3 (hardware-wallet delegate). Three parallelizable tracks then thicken the product: Track D (discovery: detail -> cohort+badges+banner -> search/show-all -> favorites -> refresh+selfnode+release-verification), Track V (current vote: plumbing+core -> enrichment), and Track A (anchor: hardened-fetch+givenName -> completion). Two floors are never thinned across slices: the log/analytics sanitization invariant (lands in slice-1, asserted by every later slice) and the anchor transport security guards (land complete in anchor-1). Product content includes: BMVG citation, four-category badge, default-cohort-as-Recommended, 6-epoch drepActivity floor, CurrentVoteSummary live status badge, CIP-119 givenName + anchor links."
   },
   "phases": [

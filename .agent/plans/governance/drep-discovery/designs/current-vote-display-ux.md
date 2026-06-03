@@ -1,7 +1,7 @@
 # Governance — Current Vote Display UX
 
-**Plan:** [../../../plans/governance/governance-drep-discovery-plan.md](../../../plans/governance/governance-drep-discovery-plan.md) (`cv-1` / `cv-2`)
-**Tasks:** [../../../plans/governance/governance-drep-discovery-plan-tasks.json](../../../plans/governance/governance-drep-discovery-plan-tasks.json) (`task-126`..`task-148`, plus slice-1 sanitization floor `task-109`..`task-111`)
+**Plan:** [../governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md) (`cv-1` / `cv-2`)
+**Tasks:** [../governance-drep-discovery-plan-tasks.json](../governance-drep-discovery-plan-tasks.json) (`task-126`..`task-148`, plus slice-1 sanitization floor `task-109`..`task-111`)
 **Design:** [current-vote-display-design.md](./current-vote-display-design.md)
 **Scope:** renderer-only • no new IPC • no hardware-wallet signing changes
 **Status:** draft, pending architecture + product review
@@ -12,7 +12,7 @@
 
 This document specifies the UX for surfacing the selected wallet's current governance delegation: no delegation, DRep, Abstain, and No Confidence. The feature consumes data already returned by cardano-wallet's `delegation.active.voting` and uses CIP-1694 liquid-democracy semantics: the newest on-chain vote delegation is current.
 
-The UI reuses the existing presentational primitives under [source/renderer/app/components/governance/_shared/](../../../../source/renderer/app/components/governance/_shared/) (`DRepIdDisplay`, `DRepSourceLabel`, `DRepStatusBadge`) and adds one presentational component, `CurrentVoteSummary`, plus Storybook coverage across the production and dedicated-Governance-section layouts.
+The UI reuses the existing presentational primitives under `source/renderer/app/components/governance/_shared/` (`DRepIdDisplay`, `DRepSourceLabel`, `DRepStatusBadge`) and adds one presentational component, `CurrentVoteSummary`, plus Storybook coverage across the production and dedicated-Governance-section layouts.
 
 ## 2. User stories addressed
 
@@ -213,8 +213,7 @@ Every governance story exposes one **Current vote (mock)** knob with exactly fiv
 ## 14. References
 
 - Current Vote Display tech design: [current-vote-display-design.md](./current-vote-display-design.md)
-- Governance DRep Discovery plan: [../../../plans/governance/governance-drep-discovery-plan.md](../../../plans/governance/governance-drep-discovery-plan.md)
-- Storybook current-vote mock: [../../../../storybook/stories/governance/_utils/CurrentVoteMock.tsx](../../../../storybook/stories/governance/_utils/CurrentVoteMock.tsx)
+- Governance DRep Discovery plan: [../governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md)
 - CIP-1694 (liquid democracy, vote delegation semantics, reward-withdrawal gate): https://github.com/cardano-foundation/CIPs/blob/master/CIP-1694/README.md
 - CIP-119 test vector spec: https://github.com/cardano-foundation/CIPs/blob/master/CIP-0119/test-vector.md
 - CIP-119 canonical example (`drep.jsonld`): https://github.com/cardano-foundation/CIPs/blob/master/CIP-0119/examples/drep.jsonld

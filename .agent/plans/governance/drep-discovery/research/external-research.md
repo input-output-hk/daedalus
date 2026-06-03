@@ -6,7 +6,7 @@
 
 | Source | URL | Notes |
 |---|---|---|
-| GovTool DRep Directory | Ecosystem DRep directory | Live, canonical reference UX. Patterns authoritative. |
+| GovTool DRep Directory | https://gov.tools/ | Live, canonical reference UX. Patterns authoritative. |
 | 1694.io | https://www.1694.io/ | CIP-1694 explainer + voting-power calculator. Not a directory, but useful tone/voice. |
 | AdaStat Governance | https://adastat.net/governance | Returned HTTP 404 at fetch time; superseded by 1694.io for ecosystem framing. |
 | CIP-1694 | https://cips.cardano.org/cip/CIP-1694 | DRep model, active/inactive, anchor structure, ratification mechanics. |

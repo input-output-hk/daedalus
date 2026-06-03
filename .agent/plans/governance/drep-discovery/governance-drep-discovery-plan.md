@@ -209,7 +209,7 @@ The initial query-path gate has been folded into this plan as research findings 
 - Integrate a Browse DReps affordance into [source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx](../../../source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx).
 - Retain direct DRep ID paste entry.
 
-The committed information architecture renames the existing `Voting` sidebar entry to `Governance` and nests the governance delegation form, DRep directory/detail/favorites, and Catalyst voting beneath that single entry. It avoids a second top-level governance item while still absorbing the future governance surfaces flagged in the Plan Boundary (proposals, constitution, committee, treasury, dashboard). The largest early routing cost (layout container, navigation updates, and additional sub-routes) remains the acknowledged trade-off. See the [design folder README](../../designs/governance/drep-discovery/README.md) and [drep-discovery-design.md](../../designs/governance/drep-discovery/drep-discovery-design.md) for full rationale; shared tokens, copy, and component contracts live in [shared-design-tokens.md](../../designs/governance/drep-discovery/shared-design-tokens.md).
+The committed information architecture renames the existing `Voting` sidebar entry to `Governance` and nests the governance delegation form, DRep directory/detail/favorites, and Catalyst voting beneath that single entry. It avoids a second top-level governance item while still absorbing the future governance surfaces flagged in the Plan Boundary (proposals, constitution, committee, treasury, dashboard). The largest early routing cost (layout container, navigation updates, and additional sub-routes) remains the acknowledged trade-off. See the [design folder README](./README.md) and [drep-discovery-design.md](./designs/drep-discovery-design.md) for full rationale; shared tokens, copy, and component contracts live in [shared-design-tokens.md](./designs/shared-design-tokens.md).
 
 ### Anchor Metadata Pipeline
 
@@ -333,16 +333,15 @@ Every slice is a thin, demoable, end-to-end capability:
 
 ### UX Design Artifacts
 
-- Design folder overview, rationale, and locked decisions: [.agent/designs/governance/drep-discovery/README.md](../../designs/governance/drep-discovery/README.md)
-- External research: [.agent/designs/governance/drep-discovery/external-research.md](../../designs/governance/drep-discovery/external-research.md)
-- Shared design tokens (status badges, source labels, formatting, refresh state, copy): [.agent/designs/governance/drep-discovery/shared-design-tokens.md](../../designs/governance/drep-discovery/shared-design-tokens.md)
-- Dedicated Governance section design: [.agent/designs/governance/drep-discovery/drep-discovery-design.md](../../designs/governance/drep-discovery/drep-discovery-design.md)
+- Design folder overview, rationale, and locked decisions: [README.md](./README.md)
+- External research: [external-research.md](./research/external-research.md)
+- Shared design tokens (status badges, source labels, formatting, refresh state, copy): [shared-design-tokens.md](./designs/shared-design-tokens.md)
+- Dedicated Governance section design: [drep-discovery-design.md](./designs/drep-discovery-design.md)
 
 ### Wallet Current Vote Display
 
-- Current Vote Display tech design: [current-vote-display-design.md](../../designs/governance/drep-discovery/current-vote-display-design.md)
-- Current Vote Display UX spec: [current-vote-display-ux.md](../../designs/governance/drep-discovery/current-vote-display-ux.md)
-- Storybook current-vote mock: [../../../storybook/stories/governance/_utils/CurrentVoteMock.tsx](../../../storybook/stories/governance/_utils/CurrentVoteMock.tsx)
+- Current Vote Display tech design: [current-vote-display-design.md](./designs/current-vote-display-design.md)
+- Current Vote Display UX spec: [current-vote-display-ux.md](./designs/current-vote-display-ux.md)
 - CIP-1694 (liquid democracy, vote delegation semantics, reward-withdrawal gate): https://github.com/cardano-foundation/CIPs/blob/master/CIP-1694/README.md
 - CIP-119 test vector spec: https://github.com/cardano-foundation/CIPs/blob/master/CIP-0119/test-vector.md
 - CIP-119 canonical example (`drep.jsonld`, hash `a14a5ad4f36bddc00f92ddb39fd9ac633c0fd43f8bfa57758f9163d10ef916de`): https://github.com/cardano-foundation/CIPs/blob/master/CIP-0119/examples/drep.jsonld
@@ -363,4 +362,4 @@ Use the date of change `[year-month-day]` and a short description of the plan ch
 
 **Status:** In Progress
 **Date:** 2026-06-03
-**Author:** david-profrontsolutions (ft. Github Copilot)
+**Author:** david-profrontsolutions (ft. GitHub Copilot)

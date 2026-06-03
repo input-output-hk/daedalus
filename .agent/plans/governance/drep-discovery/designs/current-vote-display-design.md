@@ -1,8 +1,8 @@
 # Governance — Current Vote Display Design
 
 **Status:** draft, merged into Governance DRep Discovery `cv-1` / `cv-2`
-**Plan:** [../../../plans/governance/governance-drep-discovery-plan.md](../../../plans/governance/governance-drep-discovery-plan.md) (`cv-1` / `cv-2`)
-**Tasks:** [../../../plans/governance/governance-drep-discovery-plan-tasks.json](../../../plans/governance/governance-drep-discovery-plan-tasks.json) (`task-126`..`task-148`, plus slice-1 sanitization floor `task-109`..`task-111`)
+**Plan:** [../governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md) (`cv-1` / `cv-2`)
+**Tasks:** [../governance-drep-discovery-plan-tasks.json](../governance-drep-discovery-plan-tasks.json) (`task-126`..`task-148`, plus slice-1 sanitization floor `task-109`..`task-111`)
 **UX:** [current-vote-display-ux.md](./current-vote-display-ux.md)
 
 ---
@@ -263,8 +263,7 @@ Event id and category are unchanged. This is a schema break for any Matomo dashb
 ## 14. References
 
 - Current Vote Display UX spec: [current-vote-display-ux.md](./current-vote-display-ux.md)
-- Governance DRep Discovery plan: [../../../plans/governance/governance-drep-discovery-plan.md](../../../plans/governance/governance-drep-discovery-plan.md)
-- Storybook current-vote mock: [../../../../storybook/stories/governance/_utils/CurrentVoteMock.tsx](../../../../storybook/stories/governance/_utils/CurrentVoteMock.tsx)
+- Governance DRep Discovery plan: [../governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md)
 - CIP-1694 (liquid democracy, vote delegation semantics, reward-withdrawal gate): https://github.com/cardano-foundation/CIPs/blob/master/CIP-1694/README.md
 - CIP-119 test vector spec: https://github.com/cardano-foundation/CIPs/blob/master/CIP-0119/test-vector.md
 - CIP-119 canonical example (`drep.jsonld`): https://github.com/cardano-foundation/CIPs/blob/master/CIP-0119/examples/drep.jsonld
