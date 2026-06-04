@@ -24,7 +24,8 @@ import type {
   TlsConfig,
 } from '../../common/types/cardano-node.types';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
-import { CardanoWalletLauncher } from './CardanoWalletLauncher';
+import { startWatchdog } from './CardanoWatchdog';
+import type { WatchdogHandle } from './CardanoWatchdog';
 import { CardanoSelfnodeLauncher } from './CardanoSelfnodeLauncher';
 import { launcherConfig } from '../config';
 import type { NodeConfig } from '../config';
@@ -114,7 +115,7 @@ export class CardanoNode {
    * The managed cardano-node child process
    * @private
    */
-  _node: Launcher | null | undefined;
+  _node: Launcher | WatchdogHandle | null | undefined;
 
   /**
    * The ipc channel used for broadcasting messages to the outside world
@@ -237,6 +238,9 @@ export class CardanoNode {
     return Object.assign({}, this._status, {
       cardanoNodePID: get(this, '_node.pid', 0),
       cardanoWalletPID: get(this, '_node.wpid', 0),
+      cardanoNodeStartedAt: get(this, '_node.nodeStartedAt', null),
+      cardanoWalletStartedAt: get(this, '_node.walletStartedAt', null),
+      cardanoWalletRestartCount: get(this, '_node.walletRestartCount', 0),
       isRTSFlagsModeEnabled: containsRTSFlags(this._config.rtsFlags),
     });
   }
@@ -381,102 +385,58 @@ export class CardanoNode {
           );
         }
       } else {
-        try {
-          const node = await CardanoWalletLauncher({
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+        _log.info('Starting cardano-node via watchdog...');
+
+        _log.info(`Current working directory is: ${process.cwd()}`, {
+          cwd: process.cwd(),
+        });
+
+        startWatchdog(
+          {
+            watchdogBin: launcherConfig.watchdogBin,
+            nodeBin: launcherConfig.nodeBin,
+            walletBin: launcherConfig.walletBin,
             ...this._config,
-            nodeImplementation,
-            nodeLogFile,
-            walletLogFile,
+            nodeLogFile: require('path').join(this._config.logFilePath, 'node.log'),
+            walletLogFile: require('path').join(this._config.logFilePath, 'cardano-wallet.log'),
+          },
+          (code, signal) => {
+            // cardano-node exited → treat as a node crash
+            _log.info('CardanoNode: node_exited from watchdog', { code, signal });
+            this._handleCardanoNodeExit(code, signal);
+          },
+          (code, signal) => {
+            // cardano-wallet exited → watchdog will restart it; just log
+            _log.info('CardanoNode: wallet crashed, watchdog restarting', { code, signal });
+          },
+          () => {
+            // cardano-wallet restarted and is ready again
+            _log.info('CardanoNode: wallet restarted and ready, re-broadcasting TLS config');
+            this.broadcastTlsConfig();
+          }
+        )
+          .then((handle) => {
+            this._node = handle;
+
+            _log.info(
+              `CardanoNode#start: cardano-node spawned with PID ${handle.pid}`,
+              { pid: handle.pid }
+            );
+            _log.info(
+              `CardanoNode#start: cardano-wallet spawned with PID ${handle.wpid}`,
+              { pid: handle.wpid }
+            );
+
+            this._handleCardanoNodeMessage({ ReplyPort: handle.walletPort });
+            resolve();
+          })
+          .catch(async (error) => {
+            _log.error('CardanoNode#start: watchdog failed to start', { error });
+            const { code, signal } = error || {};
+            await this._handleCardanoNodeError(code, signal);
+            reject(new Error('CardanoNode#start: watchdog failed to start'));
           });
-          this._node = node;
-
-          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-          _log.info('Starting cardano-node now...');
-
-          _log.info(`Current working directory is: ${process.cwd()}`, {
-            cwd: process.cwd(),
-          });
-
-          // await promisedCondition(() => node.connected, startupTimeout);
-          node
-            .start()
-            .then((api) => {
-              const processes: {
-                wallet: ChildProcess;
-                node: ChildProcess;
-              } = {
-                wallet: node.walletService.getProcess(),
-                node: node.nodeService.getProcess(),
-              };
-              // Setup event handling
-              node.walletBackend.events.on('exit', (exitStatus) => {
-                _log.info('CardanoNode#exit', {
-                  exitStatus,
-                });
-
-                const { code, signal } = exitStatus.wallet;
-
-                this._handleCardanoNodeExit(code, signal);
-              });
-              // @ts-ignore ts-migrate(2339) FIXME: Property 'pid' does not exist on type 'Launcher'.
-              node.pid = processes.node.pid;
-              // @ts-ignore ts-migrate(2339) FIXME: Property 'wpid' does not exist on type 'Launcher'.
-              node.wpid = processes.wallet.pid;
-              // @ts-ignore ts-migrate(2339) FIXME: Property 'connected' does not exist on type 'Launc... Remove this comment to see the full error message
-              node.connected = true; // TODO: use processes.wallet.connected here
-
-              _log.info(
-                `CardanoNode#start: cardano-node child process spawned with PID ${processes.node.pid}`,
-                {
-                  pid: processes.node.pid,
-                }
-              );
-
-              _log.info(
-                `CardanoNode#start: cardano-wallet child process spawned with PID ${processes.wallet.pid}`,
-                {
-                  pid: processes.wallet.pid,
-                }
-              );
-
-              this._handleCardanoNodeMessage({
-                ReplyPort: api.requestParams.port,
-              });
-
-              resolve();
-            })
-            .catch(async (exitStatus) => {
-              _log.error(
-                'CardanoNode#start: Error while spawning cardano-node',
-                {
-                  exitStatus,
-                }
-              );
-
-              const { code, signal } = exitStatus.wallet || {};
-              await this._handleCardanoNodeError(code, signal);
-              reject(
-                new Error(
-                  'CardanoNode#start: Error while spawning cardano-node'
-                )
-              );
-            });
-        } catch (error) {
-          _log.error(
-            'CardanoNode#start: Unable to initialize cardano-launcher',
-            {
-              error,
-            }
-          );
-
-          const { code, signal } = error || {};
-          await this._handleCardanoNodeError(code, signal);
-          reject(
-            new Error(
-              'CardanoNode#start: Unable to initialize cardano-launcher'
-            )
-          );
-        }
       }
     });
   };

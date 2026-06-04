@@ -146,6 +146,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!Cardano node process ID',
     description: 'Cardano node process ID',
   },
+  cardanoNodeUptime: {
+    id: 'daedalus.diagnostics.dialog.cardanoNodeUptime',
+    defaultMessage: '!!!Cardano node uptime',
+    description: 'How long cardano-node has been running',
+  },
   cardanoNodeApiPort: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeApiPort',
     defaultMessage: '!!!Cardano node port',
@@ -155,6 +160,16 @@ export const messages = defineMessages({
     id: 'daedalus.diagnostics.dialog.cardanoWalletPID',
     defaultMessage: '!!!Cardano wallet process ID',
     description: 'Cardano wallet process ID',
+  },
+  cardanoWalletUptime: {
+    id: 'daedalus.diagnostics.dialog.cardanoWalletUptime',
+    defaultMessage: '!!!Cardano wallet uptime',
+    description: 'How long cardano-wallet has been running since last start',
+  },
+  cardanoWalletRestartCount: {
+    id: 'daedalus.diagnostics.dialog.cardanoWalletRestartCount',
+    defaultMessage: '!!!Cardano wallet restarts',
+    description: 'Number of times cardano-wallet has been restarted by the watchdog',
   },
   cardanoWalletVersion: {
     id: 'daedalus.diagnostics.dialog.cardanoWalletVersion',
@@ -557,8 +572,11 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isBlankScreenFixActive,
       cardanoNodeVersion,
       cardanoNodePID,
+      cardanoNodeUptime,
       cardanoWalletVersion,
       cardanoWalletPID,
+      cardanoWalletUptime,
+      cardanoWalletRestartCount,
       cardanoWalletApiPort,
       cardanoNetwork,
       daedalusStateDirectoryPath,
@@ -689,10 +707,13 @@ class DaedalusDiagnostics extends Component<Props, State> {
               )}
               {getRow('cardanoNodeVersion', cardanoNodeVersion)}
               {getRow('cardanoNodePID', cardanoNodePID || '-')}
+              {getRow('cardanoNodeUptime', cardanoNodeUptime)}
               {/* getRow('cardanoNodeApiPort', '-') */}
               {getRow('cardanoWalletVersion', cardanoWalletVersion)}
               {getRow('cardanoWalletPID', cardanoWalletPID || '-')}
+              {getRow('cardanoWalletUptime', cardanoWalletUptime)}
               {getRow('cardanoWalletApiPort', cardanoWalletApiPort || '-')}
+              {getRow('cardanoWalletRestartCount', cardanoWalletRestartCount)}
             </div>
             {isConnected && nodeConnectionError ? (
               <div>
