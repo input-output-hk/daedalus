@@ -78,6 +78,7 @@ import type {
   MithrilBootstrapStatusUpdate,
   MithrilSnapshotItem,
 } from '../types/mithril-bootstrap.types';
+import type { MithrilPartialSyncStatusSnapshot } from '../types/mithril-partial-sync.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -449,6 +450,32 @@ export const MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL =
   'MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL';
 export type MithrilBootstrapSnapshotsRendererRequest = void;
 export type MithrilBootstrapSnapshotsMainResponse = Array<MithrilSnapshotItem>;
+
+export const MITHRIL_PARTIAL_SYNC_START_CHANNEL =
+  'MITHRIL_PARTIAL_SYNC_START_CHANNEL';
+export type MithrilPartialSyncStartRendererRequest = void;
+export type MithrilPartialSyncStartMainResponse = void;
+
+export const MITHRIL_PARTIAL_SYNC_STATUS_CHANNEL =
+  'MITHRIL_PARTIAL_SYNC_STATUS_CHANNEL';
+export type MithrilPartialSyncStatusRendererRequest = void;
+export type MithrilPartialSyncStatusMainResponse =
+  MithrilPartialSyncStatusSnapshot;
+
+export const MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL =
+  'MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL';
+export type MithrilPartialSyncCancelRendererRequest = void;
+export type MithrilPartialSyncCancelMainResponse = void;
+
+export const MITHRIL_PARTIAL_SYNC_RESTART_NORMAL_CHANNEL =
+  'MITHRIL_PARTIAL_SYNC_RESTART_NORMAL_CHANNEL';
+export type MithrilPartialSyncRestartNormalRendererRequest = void;
+export type MithrilPartialSyncRestartNormalMainResponse = void;
+
+export const MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL =
+  'MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL';
+export type MithrilPartialSyncWipeAndFullSyncRendererRequest = void;
+export type MithrilPartialSyncWipeAndFullSyncMainResponse = void;
 
 export const SET_CHAIN_STORAGE_DIRECTORY_CHANNEL =
   'SET_CHAIN_STORAGE_DIRECTORY_CHANNEL';

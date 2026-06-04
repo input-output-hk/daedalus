@@ -406,6 +406,7 @@ let
           legacySecretKey
           ;
         wipeChain = false;
+        mithrilPartialSyncEnabled = false;
         syncTolerance = "300s";
         nodeConfig = {
           inherit kind;

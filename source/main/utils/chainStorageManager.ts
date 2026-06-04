@@ -25,6 +25,7 @@ import {
   detectLayout,
   emptyManagedContents as emptyManagedChainContents,
   ensureManagedChainLayout as ensureManagedChainLayoutHelper,
+  installValidatedPartialSyncSnapshot as installValidatedPartialSyncSnapshotHelper,
   installSnapshot as installChainSnapshot,
   migrateLegacyCustomLayout,
   preflightLegacyMigration,
@@ -60,6 +61,7 @@ import type {
   EmptyManagedContentsOptions,
   EnsureManagedLayoutOptions,
   ManagedChainLayoutResult,
+  ValidatedPartialSyncInstallOptions,
 } from './chainStorageManagerShared';
 
 export { CHAIN_DIRECTORY_NAME };
@@ -275,6 +277,22 @@ export class ChainStorageManager {
     return this._withMutationLock('installSnapshot', async () => {
       await installChainSnapshot(this, dbDirectory);
     });
+  }
+
+  async installValidatedPartialSyncSnapshot(
+    dbDirectory: string,
+    options: ValidatedPartialSyncInstallOptions
+  ): Promise<void> {
+    return this._withMutationLock(
+      'installValidatedPartialSyncSnapshot',
+      async () => {
+        await installValidatedPartialSyncSnapshotHelper(
+          this,
+          dbDirectory,
+          options
+        );
+      }
+    );
   }
 
   async migrateData(

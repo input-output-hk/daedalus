@@ -1,0 +1,667 @@
+{
+  "metadata": {
+    "title": "Mithril Partial Sync From Diagnostics Tasks",
+    "created": "2026-05-18",
+    "updated": "2026-05-28",
+    "version": "1.0.0",
+    "totalTasks": 20,
+    "prdReference": ".agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md",
+    "description": "Validation-gated implementation plan for adding a diagnostics-launched Mithril partial sync flow to Daedalus",
+    "sourceFiles": [
+      ".agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md",
+      ".agent/plans/mithril-partial-sync/research/01-codebase-and-cli-findings.md",
+      "source/main/mithril/MithrilBootstrapService.ts",
+      "source/main/utils/chainStorageCoordinator.ts",
+      "source/main/cardano/setup.ts",
+      "source/common/ipc/api.ts",
+      "source/renderer/app/stores/NetworkStatusStore.ts",
+      "source/renderer/app/components/status/DaedalusDiagnostics.tsx"
+    ],
+    "importantNote": "Do not implement Mithril partial sync live chain cutover until the validation spike and task-002 lock the staged-only allowlist rule: empty the managed target and reinstall only `clean`, `immutable`, `ledger`, `lsm`, and `protocolMagicId` from validated staged output."
+  },
+  "phases": [
+    {
+      "id": "phase-0",
+      "name": "Validation Spike And Design Hardening",
+      "description": "Front-load all high-risk unknowns around Mithril partial restore semantics, LSM compatibility, and failure containment before feature code is allowed to rely on live chain data mutation.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Validate Mithril partial restore CLI behavior against shipped artifacts",
+          "description": "Run a focused validation spike against the exact Mithril client version Daedalus bundles, or the exact version planned for bundling, to confirm partial restore command semantics and artifact layout. Capture how `cardano-db download` behaves with `--start`, `--end`, `--include-ancillary`, and `--allow-override`, including what directory structure is produced and whether ancillary files trigger the same ledger conversion requirement as full bootstrap.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 6,
+          "dependencies": [],
+          "targetPaths": [
+            ".agent/plans/mithril-partial-sync/research/01-codebase-and-cli-findings.md",
+            ".agent/plans/mithril-partial-sync/research/02-validation-spike-results.md",
+            "source/main/mithril/"
+          ],
+          "implementationNotes": [
+            "Use the same Mithril binary family Daedalus ships, not generic latest docs alone.",
+            "Record stdout/stderr examples, directory trees, and any platform-specific differences that could matter for install logic.",
+            "Confirm whether the command can safely target an already populated DB or whether staging is mandatory.",
+            "Explicitly document whether ancillary data is required for a fast and restart-safe catch-up path."
+          ],
+          "testCases": [
+            "Partial download without ancillary files",
+            "Partial download with ancillary files",
+            "Partial download with allow-override into an existing directory",
+            "Cancellation during active download"
+          ],
+          "acceptance": [
+            "A written validation note exists under the plan workspace.",
+            "The note documents safe and unsafe target directory assumptions.",
+            "The note states whether restored ledger state still requires LSM conversion.",
+            "The note captures enough detail to unblock install-strategy design without relying on memory or external chat context."
+          ],
+          "notes": "Completed 2026-05-19. The validation spike used the flake-pinned Mithril CLI artifact and confirmed partial restore flag support, conversion-required ancillary restores, cleanup-required cancellation fallout, successful override into staged scratch targets, and live latest-snapshot drift that later design work must handle explicitly. This task is the gate for every live-data decision in later phases."
+        },
+        {
+          "id": "task-002",
+          "title": "Lock the restore and install strategy from spike evidence",
+          "description": "Translate the validation spike into a concrete restore strategy and update the PRD, tasks graph, and spike-results note. Lock whether partial sync uses staged restore only or permits direct in-place restore, and name one exact managed-target cutover rule. This task must define the handling of `clean`, `immutable`, `ledger`, `lsm`, `protocolMagicId`, and `volatile` in the managed chain target.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 3,
+          "dependencies": ["task-001"],
+          "targetPaths": [
+            ".agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md",
+            ".agent/plans/mithril-partial-sync/mithril-partial-sync-tasks.json",
+            ".agent/plans/mithril-partial-sync/research/02-validation-spike-results.md"
+          ],
+          "implementationNotes": [
+            "Treat the PRD and tasks JSON as living documents and update them immediately after the spike, before feature coding begins.",
+            "Document a preferred path and at least one rejected alternative with reasons.",
+            "If the spike forces a materially different design, update dependencies and acceptance criteria in later tasks."
+          ],
+          "acceptance": [
+            "The PRD names the selected install strategy and exact cutover rule explicitly.",
+            "Top-level DB artifact handling rules are documented, including `protocolMagicId`.",
+            "The spike-results note contains a required strategy decision addendum.",
+            "Any later task whose assumptions changed is updated in the task graph."
+          ],
+          "notes": "Completed 2026-05-19. Task-002 locked the staged-only managed-target cutover rule from task-001 evidence: empty the managed chain target and reinstall only validated staged entries from the fixed allowlist `clean`, `immutable`, `ledger`, `lsm`, and `protocolMagicId`. The PRD, tasks graph, and spike-results research note now reject direct live-target `--allow-override`, explicitly discard live `volatile/` across cutover, and carry the locked contract forward to task-203 and later implementation tasks."
+        },
+        {
+          "id": "task-003",
+          "title": "Define immutable range derivation and chain-layout preconditions",
+          "description": "Specify exactly how Daedalus derives the partial immutable range from the current managed chain state and the latest Mithril artifact metadata. This includes identifying which local files or directories determine the current immutable position, what preconditions must hold before partial sync starts, and how the system behaves if local chain layout is inconsistent or partially corrupted.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-001", "task-002"],
+          "targetPaths": [
+            ".agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md",
+            ".agent/plans/mithril-partial-sync/research/02-validation-spike-results.md",
+            "source/main/utils/chainStorageManager.ts"
+          ],
+          "implementationNotes": [
+            "Use repo-local chain layout helpers where practical instead of inventing separate filesystem heuristics.",
+            "Treat completed task-002 as a safety-gate dependency because task-003 relies on the staged-only restore contract and fallback semantics locked there.",
+            "Fail closed if managed-layout normalization reports recovery fallback; partial sync must not derive a range from default-storage fallback state.",
+            "Narrow local preflight checks to concrete managed-root, immutable-directory, protocolMagicId, and parseable immutable filename checks instead of speculative corruption heuristics.",
+            "Keep renderer sync percentage out of the backend range calculation except as user-facing context.",
+            "Handle latest-snapshot drift by re-resolving latest immediately before command issuance or by surfacing a bounded retriable preflight error."
+          ],
+          "acceptance": [
+            "The plan documents the source of truth for current local immutable position.",
+            "Preconditions for starting partial sync are listed, including fail-closed handling of managed-layout recovery fallback.",
+            "The plan states only the concrete local checks that block partial sync and force another recovery path.",
+            "The plan documents how latest-snapshot drift is handled without relying on renderer input."
+          ],
+          "notes": "Completed 2026-05-19. Task-003 locked the backend-only range derivation rule onto existing chain-storage seams: derive the local immutable position from the highest parseable immutable file number in the resolved managed chain `immutable/` directory, require a readable `protocolMagicId`, fail closed on `ManagedChainLayoutResult.isRecoveryFallback`, and treat latest-snapshot drift as a bounded retriable preflight concern rather than silent range reuse."
+        },
+        {
+          "id": "task-004",
+          "title": "Define failure containment, kill-switch, and rollback rules",
+          "description": "Document how the feature contains partial-sync failures, which fallback actions remain safe depending on how far the operation progressed, and what kill switch or rollout guard will disable the feature quickly if field issues appear. This task converts the product-level failure options into implementation-ready safety rules for retry, normal restart, and wipe-plus-full-sync behavior.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-002", "task-003"],
+          "targetPaths": [
+            ".agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md",
+            ".agent/plans/mithril-partial-sync/mithril-partial-sync-tasks.json"
+          ],
+          "implementationNotes": [
+            "Spell out when 'restart normally on existing DB' is still safe and when it must be disabled in favor of wipe/full sync; keep eligibility backend-owned and boundary-dependent.",
+            "Use LauncherConfig as the primary rollout kill switch for new diagnostics-launched partial sync entry and retry paths.",
+            "Interrupted Boundary B and Boundary C1 states must use a startup-owned minimal recovery surface because diagnostics may be unavailable while normal node start is blocked.",
+            "Keep the existing empty-chain Mithril bootstrap flow unaffected."
+          ],
+          "acceptance": [
+            "Rollback rules are explicit, not implied.",
+            "The plan defines the rollout kill switch and where it will live.",
+            "Later backend and renderer tasks can implement failure options without reopening safety questions."
+          ],
+          "completedAt": "2026-05-19T17:32:49Z",
+          "notes": "Completed 2026-05-19. Task-004 locked boundary-dependent failure containment rules: Boundary A allows retry/restart-normal/wipe-full-sync, Boundary B and Boundary C1 require wipe-full-sync only, and only Boundary C2 re-enables restart-normal after one proven successful node start on the installed DB. Cancellation is denied once live cutover begins, interrupted unsafe installs are owned by startup rather than diagnostics, and LauncherConfig is the primary kill switch for disabling new diagnostics-launched partial sync without removing recovery for already-unsafe installs or affecting empty-chain Mithril bootstrap."
+        }
+      ]
+    },
+    {
+      "id": "phase-1",
+      "name": "Shared Contracts And Main-Process Orchestration",
+      "description": "Add the cross-process contracts and main-process orchestration boundaries for a diagnostics-launched partial sync path that remains separate from the existing startup bootstrap flow.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-100",
+          "title": "Add shared partial sync types and status contracts",
+          "description": "Introduce shared types for partial sync status, progress payloads, errors, and failure actions. Decide whether these belong in a new `mithril-partial-sync` shared type file or a carefully separated extension of existing Mithril shared contracts, and implement the option chosen in the design-hardening phase.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-002"],
+          "targetPaths": [
+            "source/common/types/",
+            "source/common/types/mithril-bootstrap.types.ts"
+          ],
+          "implementationNotes": [
+            "Do not blur bootstrap-only states and partial-sync-only states if that makes safety semantics harder to reason about.",
+            "Include progress items, elapsed time, and support-log path fields up front so the renderer does not invent copy or derive unsupported state."
+          ],
+          "acceptance": [
+            "Shared types compile cleanly.",
+            "Status and error contracts are sufficient for confirmation, progress, cancel, and failure flows.",
+            "Bootstrap and partial sync invariants remain understandable from the type layer."
+          ],
+          "completedAt": "2026-05-19T18:23:50Z",
+          "notes": "Completed 2026-05-19. Task-100 added `source/common/types/mithril-partial-sync.types.ts` as the dedicated shared contract file for diagnostics-launched partial sync, including backend-owned recovery actions on every status update and minimal shared lifecycle helpers. Bootstrap-specific unions remained in `mithril-bootstrap.types.ts`, and implementation review corrected node-start blocking so `completed` is terminal success rather than an active blocking state. Repo-wide `yarn compile` remains blocked by unrelated pre-existing Trezor typing failures, so targeted shared-contract typechecking was used for truthful verification."
+        },
+        {
+          "id": "task-101",
+          "title": "Define partial sync IPC channels and add main/renderer wrappers",
+          "description": "Add dedicated partial sync channels in `source/common/ipc/api.ts` and create the matching main-process and renderer-process wrappers. Include start, status, cancel, restart-normal, and wipe-plus-full-sync actions so the renderer does not need to tunnel unsafe fallback behavior through generic restart or bootstrap channels.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-100"],
+          "targetPaths": [
+            "source/common/ipc/api.ts",
+            "source/main/ipc/",
+            "source/renderer/app/ipc/"
+          ],
+          "implementationNotes": [
+            "Follow existing Daedalus IPC patterns and naming conventions.",
+            "Keep request payloads minimal; the backend resolves latest snapshot and range details.",
+            "Model status as a push/broadcast channel so the renderer can follow long-running work."
+          ],
+          "testCases": [
+            "Renderer can request partial sync start",
+            "Renderer receives status updates during active work",
+            "Renderer can request cancel and fallback actions without malformed payloads"
+          ],
+          "acceptance": [
+            "New channel names and contracts are defined in `api.ts`.",
+            "Main and renderer wrappers exist for every required action.",
+            "No bootstrap IPC contract is overloaded with partial-sync-only meaning."
+          ],
+          "completedAt": "2026-05-19T18:38:11Z",
+          "notes": "Completed 2026-05-19. Task-101 added dedicated partial-sync IPC contracts, main/renderer wrapper files, and idempotent main-process registration without widening bootstrap channels. The main wrapper uses cached full-status replacement with `allowedRecoveryActions: []` on idle, best-effort renderer fanout, and explicit reject-until-implemented handlers for start, cancel, restart-normal, and wipe-full-sync until later backend tasks provide concrete delegates. Focused Jest coverage passed for wrapper behavior, and `.agent/system/api-endpoints.md` was updated in the same task per the IPC documentation workflow."
+        },
+        {
+          "id": "task-102",
+          "title": "Add chainStorageCoordinator partial sync APIs and operation locking",
+          "description": "Extend `ChainStorageCoordinator` with explicit partial sync entry points and serialize them with existing chain-storage mutations and Mithril operations. The coordinator should ensure managed chain layout, resolve the active managed target and Mithril work directory, and enforce the node-stopped precondition before service execution begins.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-100"],
+          "targetPath": "source/main/utils/chainStorageCoordinator.ts",
+          "implementationNotes": [
+            "Do not reuse `startBootstrap()` because its empty-chain guard is a different invariant.",
+            "Add coordinator methods for start, cancel, and any failure-path escalation that must coordinate with chain storage.",
+            "Preserve the existing serialized mutation pattern."
+          ],
+          "acceptance": [
+            "Coordinator APIs exist for partial sync lifecycle operations.",
+            "Partial sync cannot overlap with other chain-storage mutations.",
+            "The node-stopped and managed-layout preconditions are enforced in one place."
+          ],
+          "completedAt": "2026-05-20T01:24:16Z",
+          "notes": "Completed 2026-05-20. Task-102 added a coordinator-only partial sync seam with explicit `startPartialSync` and `cancelPartialSync` APIs, delegate registration, separate partial-sync operation locking, fail-closed rejection on `isRecoveryFallback`, and strict node-stopped enforcement before any layout normalization begins. The implementation preserved bootstrap-specific workdir state, kept recovery-action APIs deferred to task-204, and added focused Jest coverage for symmetric bootstrap/partial-sync exclusion, prompt cancel delegation, and mutation blocking while partial sync is active."
+        },
+        {
+          "id": "task-103",
+          "title": "Integrate node lifecycle suppression and active-state reporting",
+          "description": "Update main-process node lifecycle integration so generic cardano-node crash-restart behavior is suppressed while partial sync is active, matching the safety posture already used for Mithril bootstrap. Add any active-state provider or status accessor needed by that integration.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-101", "task-102"],
+          "targetPaths": [
+            "source/main/cardano/setup.ts",
+            "source/main/ipc/",
+            "source/main/index.ts"
+          ],
+          "implementationNotes": [
+            "Mirror the existing bootstrap restart-suppression pattern where it fits, but keep state separation clear.",
+            "Ensure a partially active Mithril operation cannot be undercut by generic restart retries."
+          ],
+          "acceptance": [
+            "Automatic crash restarts are suppressed during active partial sync.",
+            "Main process can tell whether partial sync is active without depending on renderer state."
+          ],
+          "completedAt": "2026-05-20T02:12:21Z",
+          "notes": "Completed 2026-05-20. Task-103 kept node lifecycle suppression on the coordinator-owned partial-sync boundary from task-102: `ChainStorageCoordinator.isPartialSyncInProgress()` now feeds a minimal partial-sync provider/accessor seam in `source/main/ipc/mithrilPartialSyncChannel.ts`, `source/main/index.ts` wires that seam from the coordinator, and `source/main/cardano/setup.ts` suppresses generic crash restart while partial sync is active without overloading cached status or renderer state. Focused Jest coverage passed for the new provider seam, coordinator getter, and setup crash-handling branch."
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Backend Partial Sync Engine",
+      "description": "Implement the latest-snapshot partial restore engine, including range calculation, staged download, verification, LSM conversion, fixed-allowlist staged cutover behavior, and failure branching based on the validated strategy.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-200",
+          "title": "Create MithrilPartialSyncService skeleton and latest-snapshot resolution",
+          "description": "Create a dedicated service, or an equally clear separate mode boundary, for partial sync orchestration. The service should own status emission, active-process tracking, log handling, latest-snapshot lookup, and high-level lifecycle orchestration without yet committing to live install details beyond the validated design.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": ["task-002", "task-004", "task-102"],
+          "targetPaths": [
+            "source/main/mithril/",
+            "source/main/ipc/"
+          ],
+          "implementationNotes": [
+            "Prefer a separate service class if mixing partial-sync and bootstrap invariants would make the code harder to audit.",
+            "Use `latest` internally; do not expose snapshot selection in the renderer contract.",
+            "Reuse existing Mithril command-runner and log-path helpers only where doing so does not hide distinct semantics."
+          ],
+          "acceptance": [
+            "A distinct partial sync service entrypoint exists.",
+            "The service can resolve latest snapshot metadata and emit lifecycle status updates.",
+            "Bootstrap and partial sync code paths remain separately understandable."
+          ],
+          "completedAt": "2026-05-20T14:09:35Z",
+          "notes": "Completed 2026-05-20. Task-200 added `source/main/mithril/MithrilPartialSyncService.ts` as the dedicated diagnostics-launched partial-sync service, wired start/cancel through the existing coordinator seam, isolated partial-sync logging via a minimal `mithrilCommandRunner.ts` log-file parameter, and implemented bounded latest-snapshot metadata resolution with a `show latest` to snapshot-list fallback. The service intentionally stops at a preparing-stage `PARTIAL_SYNC_NOT_READY` boundary after latest lookup so later tasks can add range derivation and restore/install behavior without widening bootstrap responsibilities. Focused Jest coverage passed for the new service, IPC delegation, and custom log-file seam."
+        },
+        {
+          "id": "task-201",
+          "title": "Implement range calculation, staging directory preparation, and preflight checks",
+          "description": "Teach the service to derive the missing immutable range from the current local managed chain target and prepare a staging location for restore work. Add preflight checks for inconsistent local layout, missing immutable markers, insufficient safety conditions, or unsupported spike-discovered states before any destructive action occurs.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": ["task-003", "task-200"],
+          "targetPaths": [
+            "source/main/mithril/",
+            "source/main/utils/chainStorageManager.ts",
+            "source/main/utils/chainStorageManagerLayout.ts"
+          ],
+          "implementationNotes": [
+            "Resolve the managed chain target via existing chain-storage helpers so custom storage behaves identically to default storage.",
+            "Keep staging preparation completely separate from live install.",
+            "If preconditions fail, surface a precise error and keep fallback options safe."
+          ],
+          "testCases": [
+            "Managed chain target with readable immutable position",
+            "Managed chain target with missing or unreadable immutable state",
+            "Custom chain-storage target resolution",
+            "Preflight rejection on unsupported local layout"
+          ],
+          "acceptance": [
+            "The service can compute the intended partial range without renderer input.",
+            "Staging directories are prepared before any live install step.",
+            "Unsupported local states fail early with actionable errors."
+          ],
+          "completedAt": "2026-05-20T14:51:06Z",
+          "notes": "Completed 2026-05-20. Task-201 extended `MithrilPartialSyncService` to derive the local immutable position from the managed-chain `immutable/` directory, extract the latest certified immutable number from backend-local Mithril metadata normalization, compute the missing certified range, and prepare a cleaned staging root under `stateDirectoryPath/mithril-partial-sync/download` while rejecting any staging path inside the managed chain subtree. The implementation kept the bounded pre-download `PARTIAL_SYNC_NOT_READY` boundary from task-200, added fail-closed readability checks for `immutable/` and `protocolMagicId`, and passed focused Jest coverage in `source/main/mithril/MithrilPartialSyncService.spec.ts`."
+        },
+        {
+          "id": "task-202",
+          "title": "Implement partial restore download and verification flow",
+          "description": "Execute the validated Mithril partial restore flow in the staging location, including correct CLI arguments or library calls, progress parsing, certificate verification, and digest verification for the derived immutable range. Ensure status updates remain truthful and sufficiently granular for the renderer overlay.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": ["task-001", "task-201"],
+          "targetPaths": [
+            "source/main/mithril/",
+            "source/main/mithril/mithrilProgress.ts"
+          ],
+          "implementationNotes": [
+            "Match the exact partial restore semantics proven in the spike.",
+            "Keep progress contract compatible with a reused Mithril progress UI where practical.",
+            "Do not claim success until local verification steps complete."
+          ],
+          "acceptance": [
+            "The service restores the intended immutable range into staging.",
+            "Verification failures surface staged errors and do not proceed to install.",
+            "Progress and elapsed telemetry reach the renderer through the shared status contract."
+          ],
+          "completedAt": "2026-05-20T15:42:03Z",
+          "notes": "Completed 2026-05-20. Task-202 implemented the staged partial-download and verification path in `MithrilPartialSyncService`, using `cardano-db download latest` against the Daedalus-owned staging parent with explicit latest-drift revalidation, truthful download/verifying status mapping, minimal staged `db/` validation, and Boundary A-only failure actions. The service now stops at a deliberate `PARTIAL_SYNC_CUTOVER_NOT_READY` post-verification handoff for task-203, and focused Jest coverage passed for command shape, drift handling, telemetry retention, and failure attribution."
+        },
+        {
+          "id": "task-203",
+          "title": "Implement LSM conversion and validated staged cutover",
+          "description": "Convert any restored ledger snapshot to a Daedalus-compatible LSM layout and install the validated staged result into the managed chain target according to the locked restore strategy. This task must enforce the fixed cutover allowlist, reject unexpected staged top-level entries, discard live `volatile/` during cutover, and clean up superseded staged artifacts.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 6,
+          "dependencies": ["task-001", "task-201", "task-202"],
+          "targetPaths": [
+            "source/main/mithril/",
+            "source/main/utils/chainStorageManager.ts",
+            "source/main/utils/chainStorageManagerLayout.ts"
+          ],
+          "implementationNotes": [
+            "Generalize the existing snapshot-conversion logic if it is reused; do not duplicate fragile filesystem behavior.",
+            "Only touch the live managed chain target once the staged result has passed the verified preconditions from the validated design.",
+            "Constrain cutover to the locked allowlist `clean`, `immutable`, `ledger`, `lsm`, and `protocolMagicId`; reject any unexpected staged top-level entry instead of copying it through.",
+            "Make cutover semantics explicit in code comments and tests."
+          ],
+          "testCases": [
+            "Ancillary restore requiring LSM conversion",
+            "Existing managed target with preexisting `lsm/` directory",
+            "Custom chain-storage target install path",
+            "Install failure after successful staging verification"
+          ],
+          "acceptance": [
+            "Restored ledger state is converted to the required format before node restart.",
+            "Install behavior matches the validated allowlist cutover strategy from the spike.",
+            "Live chain target changes are constrained to the documented top-level rules, including `protocolMagicId` and `volatile`."
+          ],
+          "completedAt": "2026-05-20T18:35:00Z",
+          "notes": "Completed 2026-05-20. Task-203 added a shared snapshot-converter seam for bootstrap and partial sync, implemented partial-sync staged ledger-to-LSM conversion, enforced validated cutover through a fixed allowlist install helper, persisted Boundary B/C1 partial-sync markers, and taught startup to block interrupted unsafe installs while suppressing normal-start fallback after failed first-start proof on installed partial-sync data. Focused Jest coverage passed for Mithril partial sync, chain-storage cutover, startup gating, and touched bootstrap seams. Repo-wide `yarn compile` remains blocked by unrelated pre-existing type issues outside this task."
+        },
+        {
+          "id": "task-204",
+          "title": "Implement cancellation, cleanup, and failure branching",
+          "description": "Complete the service and coordinator behavior for cancellation, safe cleanup, retry eligibility, normal restart eligibility, and wipe-plus-full-sync escalation. This task must encode the failure containment rules established in phase 0 so that renderer choices cannot request unsafe recovery actions for the current filesystem state.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 5,
+          "dependencies": ["task-004", "task-103", "task-203"],
+          "targetPaths": [
+            "source/main/mithril/",
+            "source/main/utils/chainStorageCoordinator.ts",
+            "source/main/ipc/"
+          ],
+          "implementationNotes": [
+            "Restart-normal should be denied automatically if the validated safety rules say the live DB may be inconsistent.",
+            "Cancellation should clean staging artifacts and clear active-process state without silently mutating the live managed chain target beyond the validated design.",
+            "Wipe-plus-full-sync should reuse existing full bootstrap machinery only after chain cleanup is confirmed."
+          ],
+          "acceptance": [
+            "Cancellation and failure leave the backend in a well-defined state.",
+            "Retry, restart-normal, and wipe-full-sync actions are enabled only when safe.",
+            "Backend state fully clears after terminal outcomes."
+          ],
+          "completedAt": "2026-05-20T19:05:00Z",
+          "notes": "Completed 2026-05-20. Task-204 added backend-owned Boundary A cancellation cleanup, restart-normal and wipe/full-sync recovery delegation, retry gating that blocks re-entry from wipe-only boundaries, and a LauncherConfig partial-sync kill switch enforced in main-process entry points. Recovery handoff now reuses the startup-owned `handleCheckDiskSpace` seam, focused Jest passed for the touched service/coordinator/channel specs, and repo-wide `yarn compile` still fails only on unrelated pre-existing type errors outside this task."
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Renderer Diagnostics And UX Integration",
+      "description": "Wire the new diagnostics entry point, confirmation flow, store integration, and progress or error overlay into the renderer without coupling the feature to startup-only bootstrap routes.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-300",
+          "title": "Create MithrilPartialSyncStore and app-level wiring",
+          "description": "Add a dedicated renderer store for partial sync status, actions, progress metadata, and terminal failure options. Register it in the store index and wire any app-level overlay or modal mounting needed so the feature can run from the diagnostics dialog while the rest of the app remains in its normal route structure.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-101", "task-204"],
+          "targetPaths": [
+            "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+            "source/renderer/app/stores/index.ts",
+            "source/renderer/app/App.tsx",
+            "source/renderer/app/ipc/"
+          ],
+          "implementationNotes": [
+            "Do not overload `MithrilBootstrapStore` unless that choice was explicitly revalidated after the spike.",
+            "Keep overlay and modal state under the store so renderer components remain mostly declarative."
+          ],
+          "acceptance": [
+            "The renderer has a dedicated partial sync store.",
+            "The store can request start, cancel, restart-normal, and wipe-full-sync actions.",
+            "The app can display partial sync UI outside the startup loading route."
+          ],
+          "completedAt": "2026-05-20T20:43:00Z",
+          "notes": "Completed 2026-05-20. Task-300 added `source/renderer/app/stores/MithrilPartialSyncStore.ts`, registered it in the renderer store map, and implemented a lifecycle-safe status seam for diagnostics-launched partial sync without using reset-unsafe `onReceive()` listeners. The renderer now follows long-running start, active progress, backend-owned recovery actions, stale setup responses, queued catch-up syncs, and teardown/reset races through focused Jest coverage in `source/renderer/app/stores/MithrilPartialSyncStore.spec.ts`. Modal ownership and diagnostics CTA or confirmation UI remain intentionally deferred to tasks 301-303."
+        },
+        {
+          "id": "task-301",
+          "title": "Add diagnostics recommendation copy and manual action",
+          "description": "Extend the diagnostics dialog to show recommendation text based on existing sync data and add a manual `Mithril Partial Sync` button. The renderer should not calculate a threshold or auto-trigger; it only surfaces current sync context and lets the user decide.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-300"],
+          "targetPaths": [
+            "source/renderer/app/components/status/DaedalusDiagnostics.tsx",
+            "source/renderer/app/components/status/DaedalusDiagnostics.scss",
+            "source/renderer/app/components/status/DaedalusDiagnostics.spec.tsx",
+            "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.tsx",
+            "translations/messages.json",
+            "source/renderer/app/i18n/locales/defaultMessages.json",
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json"
+          ],
+          "implementationNotes": [
+            "Place the CTA near existing node-state and sync diagnostics so the rationale is visible at the moment of decision.",
+            "Disable or hide the action while any Mithril-managed operation is active to prevent overlapping flows.",
+            "Completed 2026-05-21 by adding renderer-only recommendation copy plus a visible disabled CTA placeholder; confirmation ownership and backend start remain deferred to task-302.",
+            "The implementation uses `stores.mithrilPartialSync.isActive` and `isMithrilBootstrapBlockingNodeStart(stores.mithrilBootstrap.status)` for truthful conflicting-work gating without adding threshold logic or new store seams.",
+            "Renderer review uncovered an i18n gotcha: generated locale catalogs must be polished after `yarn i18n:manage` so runtime diagnostics copy does not ship with `!!!` placeholders."
+          ],
+          "acceptance": [
+            "Diagnostics shows a partial sync recommendation and action button.",
+            "The CTA uses existing sync data only and adds no hidden threshold logic.",
+            "The action is unavailable while conflicting work is active."
+          ],
+          "completedAt": "2026-05-21T15:09:44Z",
+          "notes": "Completed 2026-05-21. Task-301 intentionally narrowed the diagnostics entry point to a truthful renderer-only slice: `DaedalusDiagnostics` now surfaces Mithril partial-sync recommendation copy from existing sync context and shows a visible but disabled CTA placeholder, while `DaedalusDiagnosticsDialog` derives conflicting Mithril work from the partial-sync store plus the shared bootstrap blocking helper. Focused Jest coverage and i18n sync landed with polished en-US and ja-JP runtime strings, and confirmation ownership or backend start wiring remain explicitly deferred to task-302."
+        },
+        {
+          "id": "task-302",
+          "title": "Implement confirmation modal and acknowledgement flow",
+          "description": "Add a small confirmation modal that opens before partial sync begins. The modal must explain automatic node stop and restart behavior, the use of verified Mithril data, and the three failure recovery options. Confirming the modal should be the only path that triggers backend start.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-300", "task-301"],
+          "targetPaths": [
+            "source/renderer/app/components/",
+            "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.tsx",
+            "source/renderer/app/actions/"
+          ],
+          "implementationNotes": [
+            "Follow existing Daedalus dialog patterns instead of inventing a one-off modal system.",
+            "The modal should remain lightweight and not duplicate progress-screen content.",
+            "Keep the latest-snapshot decision implicit; users do not pick a snapshot here."
+          ],
+          "acceptance": [
+            "Clicking the diagnostics CTA opens a confirmation modal first.",
+            "No backend work starts until the user confirms.",
+            "The modal copy explains the automatic stop and restart behavior and failure options."
+          ],
+          "completedAt": "2026-05-21T15:38:56Z",
+          "notes": "Completed 2026-05-21. Task-302 made the diagnostics CTA actionable through a same-owner confirmation view in `DaedalusDiagnostics`, kept `DaedalusDiagnosticsDialog` as the sole `ReactModal` owner, and wired backend start only through explicit confirmation via `mithrilPartialSync.startPartialSync`. Focused Jest coverage and i18n sync passed with polished en-US and ja-JP runtime strings, and progress/error overlay reuse remains explicitly deferred to task-303."
+        },
+        {
+          "id": "task-303",
+          "title": "Integrate progress and error overlay reuse",
+          "description": "Reuse existing Mithril progress and error UI where practical, but adapt it to the diagnostics-launched partial sync lifecycle. Remove bootstrap-only concepts from the reused flow, wire up cancel and terminal recovery actions, and ensure success returns the user to normal app flow while background node resynchronization resumes under existing UX.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": ["task-204", "task-300", "task-302"],
+          "targetPaths": [
+            "source/renderer/app/components/loading/mithril-bootstrap/",
+            "source/renderer/app/components/",
+            "source/renderer/app/App.tsx"
+          ],
+          "implementationNotes": [
+            "Do not route users through storage-location or snapshot-selection views in this flow.",
+            "Ensure terminal states clear correctly so the app returns to its normal UI after success or chosen fallback.",
+            "Map partial-sync-only statuses cleanly onto any reused step indicators."
+          ],
+          "acceptance": [
+            "A full progress overlay is shown after confirmation.",
+            "Error states expose retry, restart-normal, and wipe-full-sync actions as allowed by backend safety rules.",
+            "On success, the partial sync UI clears and normal app flow resumes."
+          ],
+          "completedAt": "2026-05-21T16:08:31Z",
+          "notes": "Completed 2026-05-21. Task-303 added an app-level diagnostics-launched partial-sync overlay using existing Mithril loading surfaces with minimal widening, kept diagnostics open through the optimistic start seed until backend-confirmed overlay states arrive, reused backend-owned recovery actions for terminal flows, and held success visible through `starting-node` plus terminal `completed` until explicit dismissal. Focused Jest passed for overlay gating, completed dismissal, helper-level diagnostics handoff, placeholder-free locale strings, and suppression of bootstrap byte-based download telemetry on the partial-sync path." 
+        },
+        {
+          "id": "task-304",
+          "title": "Add i18n, theme, and Storybook coverage",
+          "description": "Add all new copy, theme tokens, and component stories needed to keep the partial sync diagnostics CTA, confirmation modal, and progress or error states consistent with Daedalus standards. Storybook coverage should make review of dangerous-action wording and error recovery states straightforward before manual QA.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": ["task-303"],
+          "targetPaths": [
+            "source/renderer/app/components/",
+            "source/renderer/app/themes/",
+            "translations/messages.json",
+            "storybook/stories/"
+          ],
+          "implementationNotes": [
+            "Follow existing Mithril and diagnostics copy style, and use the repo's i18n workflow.",
+            "Add stories for at least confirmation, active progress, cancel, safe-restart error, and wipe-required error states."
+          ],
+          "acceptance": [
+            "All user-facing strings are localized through the standard message pipeline.",
+            "Theme coverage exists for any new visual states or modal styles.",
+            "Storybook stories cover the primary and terminal states of the feature."
+          ],
+          "completedAt": "2026-05-21T20:20:00Z",
+          "notes": "Completed 2026-05-21. Task-304 refreshed the stale diagnostics Storybook surface, added dedicated partial-sync overlay stories, and kept the new coverage truthful under en-US/ja-JP locale switching and theme validation. Manual validation surfaced Storybook-specific browser incompatibilities from main-process environment imports and native hardware-wallet transport modules, so the task also added narrowly scoped Storybook-only compatibility fixes in `storybook/main.ts`, `storybook/stories/_support/environment.ts`, and story registration order without changing runtime app behavior or message/theme assets. Existing loading-story registration was restored after review to avoid scope-regressing unrelated Storybook coverage."
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Automated Verification And Manual Rollout Readiness",
+      "description": "Lock down the feature with automated coverage first, then defer supported-network manual QA and final rollout posture to the last phase on the critical path.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-400",
+          "title": "Add automated tests across backend, IPC, and renderer",
+          "description": "Add Jest coverage for service orchestration, coordinator guards, install strategy behavior, cancellation and failure branching, IPC channel handlers, store transitions, diagnostics CTA gating, confirmation flow, and progress or error rendering. This task should also add any focused integration-style tests needed for staged install rules or active-state restart suppression.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 6,
+          "dependencies": ["task-204", "task-303", "task-304"],
+          "targetPaths": [
+            "source/main/mithril/*.spec.ts",
+            "source/main/ipc/*.spec.ts",
+            "source/main/utils/*.spec.ts",
+            "source/renderer/app/**/*.spec.tsx",
+            "tests/"
+          ],
+          "implementationNotes": [
+            "Bias toward deterministic unit and focused integration tests before adding expensive end-to-end coverage.",
+            "Test the validated install strategy and failure safety rules directly, not only through happy-path status assertions.",
+            "Ensure renderer tests verify that partial sync stays manual and diagnostics-launched."
+          ],
+          "testCases": [
+            "Node stop-start orchestration across success and failure",
+            "Restart suppression while partial sync active",
+            "Unsafe restart-normal path disabled by backend rules",
+            "Diagnostics CTA opens confirmation modal before start",
+            "Terminal error states expose the correct recovery actions"
+          ],
+          "acceptance": [
+            "Main-process, IPC, and renderer automated coverage exists for critical paths.",
+            "Tests cover at least one failure mode for each recovery option branch.",
+            "Automated verification can run before any user-facing manual QA begins."
+          ],
+          "completedAt": "2026-05-21T20:26:30Z",
+          "notes": "Completed 2026-05-21. Task-400 closed the remaining automated-coverage gaps without widening production scope: startup fallback suppression is now verified behaviorally in `handleDiskSpace.spec.ts`, diagnostics close handoff is covered at the container boundary, `App.spec.tsx` now locks global overlay ownership and callback forwarding, and the existing partial-sync log-file assertion in `MithrilPartialSyncService.spec.ts` was repaired to use the stable command-runner seam. Focused Jest evidence passed for the backend, IPC, store, diagnostics, overlay, dialog, and app-shell suites (10 suites / 121 tests)."
+        },
+        {
+          "id": "task-401",
+          "title": "Run supported-network manual QA and finalize rollout decision",
+          "description": "After automated coverage is green, run manual QA on `mainnet`, `preprod`, and `preview`, including default and custom chain-storage targets and the major success, cancellation, retry, restart-normal, and wipe-plus-full-sync paths. Record the results in the plan workspace, confirm whether the rollout kill switch should remain enabled by default initially, and finalize the rollback checklist for release reviewers.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 8,
+          "dependencies": ["task-400"],
+          "targetPaths": [
+            ".agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md",
+            ".agent/plans/mithril-partial-sync/research/03-manual-qa-results.md",
+            ".agent/plans/mithril-partial-sync/mithril-partial-sync-tasks.json"
+          ],
+          "implementationNotes": [
+            "Keep this task late on the critical path because it requires human-driven validation and rollout judgment.",
+            "Record environment, platform, network, chain-storage target, and observed behavior for every QA pass.",
+            "Use the results to decide whether the feature ships enabled, guarded by a kill switch, or held back."
+          ],
+          "acceptance": [
+            "Manual QA results are captured in repo-local planning artifacts.",
+            "A clear rollout enablement or guard decision is documented.",
+            "Rollback steps for disabling the feature are written down for release review."
+          ],
+          "completedAt": "2026-05-22T19:48:24Z",
+          "notes": "Completed 2026-05-22. Task-401 drove the live preview/Linux manual QA that uncovered and then fixed multiple correctness and UX issues across node-stop orchestration, recovery actions, disk-space restart suppression, post-install startup handoff, immutable-history preservation, and finalizing/installing UI state. The latest fixed `preview` / Linux / `yarn dev` flow passed end to end, prior guard-off validation from earlier in the same QA effort was accepted by explicit user direction, and the final rollout posture for this checkpoint was recorded as `enabled by default` by explicit user decision. Broader supported-network matrix coverage, custom chain-storage coverage, additional recovery-path re-validation, and release-equivalent packaged-build evidence were explicitly deferred to later manual QA rather than blocking this task closeout."
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 5,
+    "totalTasks": 20,
+    "estimatedTotalHours": 78,
+    "criticalPath": [
+      "task-001",
+      "task-002",
+      "task-004",
+      "task-100",
+      "task-101",
+      "task-102",
+      "task-103",
+      "task-200",
+      "task-201",
+      "task-202",
+      "task-203",
+      "task-204",
+      "task-300",
+      "task-301",
+      "task-302",
+      "task-303",
+      "task-304",
+      "task-400",
+      "task-401"
+    ],
+    "keyFiles": [
+      "source/main/mithril/MithrilBootstrapService.ts",
+      "source/main/utils/chainStorageCoordinator.ts",
+      "source/main/cardano/setup.ts",
+      "source/common/ipc/api.ts",
+      "source/renderer/app/stores/NetworkStatusStore.ts",
+      "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+      "source/renderer/app/components/status/DaedalusDiagnostics.tsx",
+      "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.tsx"
+    ],
+    "riskAreas": [
+      "Safe application of partial restore to a populated managed chain target",
+      "Correct LSM conversion and replacement semantics after ancillary partial restore",
+      "Keeping 'restart normally' disabled when the live DB may be inconsistent",
+      "Shipped Mithril binary behavior diverging from current public docs or examples"
+    ],
+    "testingNotes": "All tracked tasks are completed. Automated verification completed before task-401 manual QA; the current rollout checkpoint records Linux preview dev-flow success and explicitly defers broader supported-network, custom-storage, recovery-path, and release-equivalent packaged-build evidence to later manual QA.",
+    "rollbackPlan": "Disable new diagnostics-launched partial sync entry and retry paths behind the LauncherConfig kill switch while leaving empty-chain Mithril bootstrap untouched. Preserve the startup-owned wipe-full-sync recovery path for already interrupted Boundary B or Boundary C1 installs, and keep boundary-dependent restart-normal eligibility enforced in the backend.",
+    "securityNotes": [
+      "Treat live chain data integrity as the primary safety constraint.",
+      "Do not permit renderer-driven unsafe fallback actions if backend state says the managed chain target may be inconsistent.",
+      "Keep support log paths and error surfacing detailed enough for incident review without leaking unrelated secrets."
+    ]
+  }
+}

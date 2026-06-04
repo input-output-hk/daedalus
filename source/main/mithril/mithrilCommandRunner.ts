@@ -20,6 +20,7 @@ export type RunCommandOptions = {
   onStderr?: (chunk: string) => void;
   requireKeys?: boolean;
   stdinInput?: string;
+  logFileName?: string;
 };
 
 export type RunCommandCallbacks = {
@@ -97,10 +98,12 @@ export function normalizeSpawnEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   return nextEnv;
 }
 
-export function openLogStream(): WriteStream {
+export function openLogStream(
+  logFileName = 'mithril-bootstrap.log'
+): WriteStream {
   const logsDir = path.join(stateDirectoryPath, 'Logs');
   ensureDirectoryExists(logsDir);
-  const logPath = path.join(logsDir, 'mithril-bootstrap.log');
+  const logPath = path.join(logsDir, logFileName);
   return fs.createWriteStream(logPath, { flags: 'a' });
 }
 
@@ -123,8 +126,8 @@ export async function runBinary(
   options: RunCommandOptions = {},
   callbacks?: RunCommandCallbacks
 ): Promise<RunCommandResult> {
-  const { onStdout, onStderr } = options;
-  const logStream = openLogStream();
+  const { onStdout, onStderr, logFileName } = options;
+  const logStream = openLogStream(logFileName);
   if (callbacks?.onLogStream) callbacks.onLogStream(logStream);
 
   const env = normalizeSpawnEnv(process.env);
@@ -198,8 +201,8 @@ export async function runCommand(
   options: RunCommandOptions = {},
   callbacks?: RunCommandCallbacks
 ): Promise<RunCommandResult> {
-  const { onStdout, onStderr, requireKeys = true } = options;
-  const logStream = openLogStream();
+  const { onStdout, onStderr, requireKeys = true, logFileName } = options;
+  const logStream = openLogStream(logFileName);
   if (callbacks?.onLogStream) callbacks.onLogStream(logStream);
 
   const env = normalizeSpawnEnv(await buildMithrilEnv(requireKeys));

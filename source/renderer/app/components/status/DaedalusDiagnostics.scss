@@ -328,6 +328,85 @@
     display: flex;
   }
 
+  .layoutData.mithrilPartialSyncData {
+    align-items: flex-end;
+    display: flex;
+    max-width: 360px;
+  }
+
+  .mithrilPartialSyncRecommendation {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mithrilPartialSyncConfirmation {
+    color: var(--theme-network-window-text-color);
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 560px;
+    width: 100%;
+  }
+
+  .mithrilPartialSyncConfirmationTitle {
+    color: var(--theme-network-window-white-color);
+    font-family: var(--font-medium);
+    font-size: 24px;
+    line-height: 1.33;
+    margin: 0 0 20px;
+  }
+
+  .mithrilPartialSyncConfirmationBody {
+    font-family: var(--font-regular);
+    font-size: 16px;
+    line-height: 1.5;
+    opacity: 0.85;
+
+    p {
+      margin: 0 0 16px;
+    }
+  }
+
+  .mithrilPartialSyncConfirmationActions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+
+    button {
+      height: 36px;
+      margin-right: 0;
+      min-width: 180px;
+      padding: 0 14px;
+    }
+  }
+
+  .mithrilPartialSyncConfirmationCancelButton {
+    margin-right: 12px !important;
+  }
+
+  .mithrilPartialSyncRecommendationCopy {
+    color: var(--theme-network-window-text-color);
+    line-height: 1.5;
+    opacity: 0.85;
+    text-align: right;
+  }
+
+  .mithrilPartialSyncButton {
+    margin-right: 0 !important;
+  }
+
+  .mithrilPartialSyncHint {
+    color: var(--theme-network-window-text-color);
+    font-family: var(--font-regular);
+    font-size: 12px;
+    line-height: 1.4;
+    opacity: 0.7;
+    text-align: right;
+  }
+
   .layoutData.lastNetworkBlock,
   .layoutData.lastSynchronizedBlock {
     span {

@@ -7,6 +7,7 @@ import type {
   MithrilBootstrapStatus,
   MithrilProgressItem,
 } from '../../../../../common/types/mithril-bootstrap.types';
+import type { MithrilPartialSyncStatus } from '../../../../../common/types/mithril-partial-sync.types';
 import spinnerIcon from '../../../assets/images/spinner-universal.inline.svg';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';
@@ -15,7 +16,7 @@ import MithrilStepIndicator from './MithrilStepIndicator';
 import styles from './MithrilProgressView.scss';
 
 interface Props {
-  status: MithrilBootstrapStatus;
+  status: MithrilBootstrapStatus | MithrilPartialSyncStatus;
   progressItems?: MithrilProgressItem[];
   bytesDownloaded?: number;
   snapshotSize?: number;
@@ -23,17 +24,24 @@ interface Props {
   ancillaryBytesTotal?: number;
   ancillaryProgress?: number;
   bootstrapStartedAt?: number | null;
-  onCancel(): void;
+  elapsedSeconds?: number;
+  title?: string;
+  subtitle?: string;
+  actionLabel?: string;
+  startingNodeTitle?: string;
+  startingNodeDetail?: string;
+  hideAction?: boolean;
+  showDownloadProgressBar?: boolean;
+  onAction(): void;
 }
 
 interface Context {
   intl: Intl;
 }
 
-const TERMINAL_STATUSES: ReadonlySet<MithrilBootstrapStatus> = new Set([
-  'failed',
-  'cancelled',
-]);
+const TERMINAL_STATUSES = new Set<
+  MithrilBootstrapStatus | MithrilPartialSyncStatus
+>(['failed', 'cancelled']);
 
 const formatDuration = (value?: number) => {
   if (value == null || Number.isNaN(value)) return null;
@@ -62,7 +70,15 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     ancillaryBytesTotal,
     ancillaryProgress,
     bootstrapStartedAt,
-    onCancel,
+    elapsedSeconds: elapsedSecondsProp,
+    title,
+    subtitle,
+    actionLabel,
+    startingNodeTitle,
+    startingNodeDetail,
+    hideAction,
+    showDownloadProgressBar,
+    onAction,
   } = props;
 
   const isStartingNode = status === 'starting-node';
@@ -73,6 +89,11 @@ function MithrilProgressView(props: Props, { intl }: Context) {
   );
 
   useEffect(() => {
+    if (elapsedSecondsProp != null) {
+      setElapsedSeconds(elapsedSecondsProp);
+      return undefined;
+    }
+
     if (bootstrapStartedAt == null || TERMINAL_STATUSES.has(status)) {
       // Freeze value on terminal status; clear on null start
       if (bootstrapStartedAt == null) setElapsedSeconds(undefined);
@@ -85,7 +106,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [bootstrapStartedAt, status]);
+  }, [bootstrapStartedAt, elapsedSecondsProp, status]);
 
   const elapsedLabel = formatDuration(elapsedSeconds) ?? '0:00';
 
@@ -93,9 +114,9 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     <div className={styles.root}>
       <div className={styles.header}>
         <h1 id={MITHRIL_PROGRESS_HEADING_ID}>
-          {intl.formatMessage(messages.title)}
+          {title || intl.formatMessage(messages.title)}
         </h1>
-        <p>{intl.formatMessage(messages.progressSubtitle)}</p>
+        <p>{subtitle || intl.formatMessage(messages.progressSubtitle)}</p>
       </div>
 
       <div className={styles.timerDisplay}>
@@ -114,6 +135,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
           ancillaryBytesDownloaded={ancillaryBytesDownloaded}
           ancillaryBytesTotal={ancillaryBytesTotal}
           ancillaryProgress={ancillaryProgress}
+          showDownloadProgressBar={showDownloadProgressBar}
         />
       </div>
 
@@ -125,10 +147,12 @@ function MithrilProgressView(props: Props, { intl }: Context) {
           aria-atomic="true"
         >
           <h2 className={styles.completionTitle}>
-            {intl.formatMessage(messages.nodeStartingTitle)}
+            {startingNodeTitle ||
+              intl.formatMessage(messages.nodeStartingTitle)}
           </h2>
           <p className={styles.completionDetail}>
-            {intl.formatMessage(messages.nodeStartingDetail)}
+            {startingNodeDetail ||
+              intl.formatMessage(messages.nodeStartingDetail)}
           </p>
           <SVGInline
             svg={spinnerIcon}
@@ -138,15 +162,17 @@ function MithrilProgressView(props: Props, { intl }: Context) {
         </div>
       )}
 
-      <div className={styles.actions}>
-        <Button
-          className={styles.secondaryAction}
-          skin={ButtonSkin}
-          label={intl.formatMessage(messages.cancel)}
-          onClick={onCancel}
-          disabled={isStartingNode}
-        />
-      </div>
+      {!hideAction && (
+        <div className={styles.actions}>
+          <Button
+            className={styles.secondaryAction}
+            skin={ButtonSkin}
+            label={actionLabel || intl.formatMessage(messages.cancel)}
+            onClick={onAction}
+            disabled={isStartingNode}
+          />
+        </div>
+      )}
     </div>
   );
 }

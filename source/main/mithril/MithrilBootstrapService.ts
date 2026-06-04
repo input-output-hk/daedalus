@@ -26,7 +26,18 @@ import {
   createStageError,
   inferErrorStageFromStatus,
 } from './mithrilErrors';
+import { convertSnapshotDbToLsm } from './mithrilSnapshotConverter';
 import { ChainStorageManager } from '../utils/chainStorageManager';
+import {
+  isNonEmptyString,
+  normalizeSnapshotItem,
+  parseMithrilJson,
+} from './mithrilSnapshotMetadata';
+import { MithrilOutputLineBuffer } from './mithrilOutputLineBuffer';
+import {
+  addProgressItem,
+  markActiveProgressItemAs,
+} from './mithrilProgressItems';
 
 const DEFAULT_STATUS: MithrilBootstrapStatusUpdate = {
   status: 'idle',
@@ -43,33 +54,6 @@ const STEP_LABEL_MAP: Record<number, string> = {
   6: 'computing-message',
   7: 'verifying-signature',
 };
-
-const normalizeSnapshotItem = (
-  raw: Record<string, any>
-): MithrilSnapshotItem => {
-  const digest = raw.digest || raw.snapshot_digest || raw.hash || '';
-  const createdAt = raw.created_at || raw.createdAt || raw.timestamp || '';
-  const size = Number(
-    raw.size ??
-      raw.total_size ??
-      raw.total_db_size_uncompressed ??
-      raw.size_bytes ??
-      0
-  );
-  const cardanoNodeVersion =
-    raw.cardano_node_version || raw.cardanoNodeVersion || raw.node_version;
-  const network = raw.network || raw.cardano_network || raw.cardanoNetwork;
-  return {
-    digest,
-    createdAt,
-    size,
-    cardanoNodeVersion,
-    network,
-  };
-};
-
-const isNonEmptyString = (value: unknown): value is string =>
-  typeof value === 'string' && value.trim().length > 0;
 
 export class MithrilBootstrapService {
   _status: MithrilBootstrapStatusUpdate = { ...DEFAULT_STATUS };
@@ -418,9 +402,7 @@ export class MithrilBootstrapService {
   }
 
   _markActiveProgressItemAs(state: 'completed' | 'error'): void {
-    this._progressItems = this._progressItems.map((item) =>
-      item.state === 'active' ? { ...item, state } : item
-    );
+    this._progressItems = markActiveProgressItemAs(this._progressItems, state);
   }
 
   _addProgressItem(
@@ -428,11 +410,12 @@ export class MithrilBootstrapService {
     label: string,
     state: MithrilProgressItem['state']
   ): void {
-    if (this._progressItems.some((item) => item.id === id)) return;
-    this._progressItems = [
-      ...this._progressItems,
-      { id, label, state, timestamp: new Date().toISOString() },
-    ];
+    this._progressItems = addProgressItem(
+      this._progressItems,
+      id,
+      label,
+      state
+    );
   }
 
   async _resolveCardanoDbDownloadMode(): Promise<'download' | 'snapshot'> {
@@ -619,34 +602,12 @@ export class MithrilBootstrapService {
   }
 
   _safeJsonParse(payload: string): any {
-    try {
-      return JSON.parse(payload);
-    } catch (error) {
-      const lines = payload
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean);
-      for (let index = lines.length - 1; index >= 0; index -= 1) {
-        const line = lines[index];
-        if (line.startsWith('{') || line.startsWith('[')) {
-          try {
-            return JSON.parse(line);
-          } catch (nestedError) {
-            logger.warn('MithrilBootstrapService: JSON parse failed', {
-              error: nestedError,
-              payload: line.slice(0, 200),
-            });
-            break;
-          }
-        }
-      }
-
+    return parseMithrilJson(payload, ({ error, payload: badPayload }) => {
       logger.warn('MithrilBootstrapService: JSON parse failed', {
         error,
-        payload: payload?.slice(0, 200),
+        payload: badPayload,
       });
-      return null;
-    }
+    });
   }
 
   async _downloadSnapshot(
@@ -661,8 +622,6 @@ export class MithrilBootstrapService {
       progressItems: [...this._progressItems],
     });
 
-    let stdoutBuffered = '';
-    let stderrBuffered = '';
     const downloadMode = await this._resolveCardanoDbDownloadMode();
     const downloadArgs =
       downloadMode === 'download'
@@ -765,24 +724,18 @@ export class MithrilBootstrapService {
         });
       }
     };
+    const stdoutLines = new MithrilOutputLineBuffer(applyProgressUpdate);
+    const stderrLines = new MithrilOutputLineBuffer(applyProgressUpdate);
     const { exitCode, stderr } = await this._runCommand(
       downloadArgs,
       {
-        onStdout: (chunk) => {
-          stdoutBuffered += chunk;
-          const lines = stdoutBuffered.split('\n');
-          stdoutBuffered = lines.pop() || '';
-          lines.forEach(applyProgressUpdate);
-        },
-        onStderr: (chunk) => {
-          stderrBuffered += chunk;
-          const lines = stderrBuffered.split('\n');
-          stderrBuffered = lines.pop() || '';
-          lines.forEach(applyProgressUpdate);
-        },
+        onStdout: (chunk) => stdoutLines.push(chunk),
+        onStderr: (chunk) => stderrLines.push(chunk),
       },
       workDir
     );
+    stdoutLines.flush();
+    stderrLines.flush();
 
     if (exitCode !== 0) {
       const errorStage = this._verifyingSynthesized ? 'verify' : 'download';
@@ -808,76 +761,21 @@ export class MithrilBootstrapService {
     });
 
     const dbDirectory = await this._resolveDbDirectory(snapshot?.digest);
-    const ledgerDir = path.join(dbDirectory, 'ledger');
-
-    const entries = await fs.readdir(ledgerDir, { withFileTypes: true });
-    const slots = entries
-      .filter((e) => e.isDirectory() && /^\d+$/.test(e.name))
-      .map((e) => BigInt(e.name))
-      .sort((a, b) => {
-        if (a < b) return -1;
-        if (a > b) return 1;
-        return 0;
-      });
-
-    if (slots.length === 0) {
-      throw this._buildCommandFailure(
-        'convert',
-        'No ledger snapshots found for conversion',
-        ''
-      );
-    }
-
-    const slot = String(slots[slots.length - 1]);
-    // The in-memory snapshot must be moved out of ledger/ so snapshot-converter
-    // can write the converted LSM snapshot back to the same ledger/<slot> path.
-    const inputMemPath = path.join(ledgerDir, slot);
-    const tempInputPath = path.join(dbDirectory, slot);
-    const outputLsmSnapshot = path.join(ledgerDir, slot);
-    const outputLsmDatabase = path.join(dbDirectory, 'lsm');
     const configPath = launcherConfig.nodeConfig.network.configFile;
 
-    await fs.move(inputMemPath, tempInputPath);
-
-    const converterArgs = [
-      '--input-mem',
-      tempInputPath,
-      '--output-lsm-snapshot',
-      outputLsmSnapshot,
-      '--output-lsm-database',
-      outputLsmDatabase,
-      '--config',
+    await convertSnapshotDbToLsm({
+      dbDirectory,
       configPath,
-    ];
-
-    // Remove any existing lsm directory so snapshot-converter doesn't prompt
-    // for confirmation before wiping it.
-    await fs.remove(outputLsmDatabase);
-
-    logger.info(
-      `[mithril] Doing LSM conversion of snapshot with command: snapshot-converter ${converterArgs.join(' ')}`,
-      { slot, dbDirectory }
-    );
-
-    let exitCode: number | null;
-    let stderr: string;
-    try {
-      ({ exitCode, stderr } = await this._runBinary(
-        'snapshot-converter',
-        converterArgs
-      ));
-    } finally {
-      // Remove the temp in-memory snapshot regardless of outcome.
-      await fs.remove(tempInputPath).catch(() => {});
-    }
-
-    if (exitCode !== 0) {
-      throw this._buildCommandFailure(
-        'convert',
-        `Snapshot conversion failed with exit code ${exitCode}`,
-        stderr
-      );
-    }
+      runBinary: (binaryName, args) => this._runBinary(binaryName, args),
+      createFailure: (message, stderr = '') =>
+        this._buildCommandFailure('convert', message, stderr),
+      onCommandPrepared: (converterArgs, context) => {
+        logger.info(
+          `[mithril] Doing LSM conversion of snapshot with command: snapshot-converter ${converterArgs.join(' ')}`,
+          context
+        );
+      },
+    });
 
     this._updateStatus({
       status: 'finalizing',

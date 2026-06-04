@@ -9,6 +9,7 @@ type Props = {
   downloaded?: number;
   total?: number;
   details?: string;
+  emphasized?: boolean;
 };
 
 function InlineProgressBar({
@@ -17,6 +18,7 @@ function InlineProgressBar({
   downloaded,
   total,
   details,
+  emphasized = false,
 }: Props) {
   const clamped = Math.min(100, Math.max(0, percent));
   const roundedPercent = Math.round(clamped);
@@ -25,7 +27,11 @@ function InlineProgressBar({
   const footerText = details ?? `${downloadedStr} / ${totalStr}`;
 
   return (
-    <div className={styles.inlineBar}>
+    <div
+      className={classNames(styles.inlineBar, {
+        [styles.inlineBarEmphasized]: emphasized,
+      })}
+    >
       <div
         role="progressbar"
         aria-valuenow={roundedPercent}

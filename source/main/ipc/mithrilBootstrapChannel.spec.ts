@@ -5,21 +5,30 @@ const mockChannels: Array<{
   send: jest.Mock;
 }> = [];
 
-const mithrilBootstrapServiceMock = {
-  status: {
+const mithrilControllerMock = {
+  setBootstrapStatusSender: jest.fn(),
+  initialize: jest.fn(),
+  getPendingBootstrapDecision: jest.fn(() => null),
+  getBootstrapStatus: jest.fn(() => ({
     status: 'idle',
     snapshot: null,
     error: null,
-  },
-  onStatus: jest.fn(),
-};
-
-const chainStorageCoordinatorMock = {
-  syncMithrilWorkDir: jest.fn(),
+  })),
+  getNodeState: jest.fn(() => 'stopped'),
+  setNodeStateProvider: jest.fn(),
+  isBootstrapNodeStartBlocked: jest.fn(() => false),
+  onBootstrapStatus: jest.fn(),
+  onBootstrapDecision: jest.fn(),
+  setBootstrapStatus: jest.fn((status) => status),
+  waitForBootstrapDecision: jest.fn(),
+  resetBootstrapDecisionState: jest.fn(),
   listSnapshots: jest.fn(),
+  submitBootstrapDecision: jest.fn(),
   startBootstrap: jest.fn(),
   cancelBootstrap: jest.fn(),
 };
+
+class MithrilDecisionCancelledError extends Error {}
 
 jest.mock('./lib/MainIpcChannel', () => ({
   MainIpcChannel: jest.fn().mockImplementation(() => {
@@ -32,9 +41,11 @@ jest.mock('./lib/MainIpcChannel', () => ({
   }),
 }));
 
-jest.mock('../utils/chainStorageCoordinator', () => ({
-  chainStorageCoordinator: chainStorageCoordinatorMock,
-  getMithrilBootstrapService: jest.fn(() => mithrilBootstrapServiceMock),
+jest.mock('../mithril/MithrilController', () => ({
+  getMithrilController: () => mithrilControllerMock,
+  MithrilDecisionCancelledError,
+  isMithrilDecisionCancelledError: (error) =>
+    error instanceof MithrilDecisionCancelledError,
 }));
 
 const loadModule = () => {
@@ -47,152 +58,110 @@ const loadModule = () => {
   return moduleExports as typeof import('./mithrilBootstrapChannel');
 };
 
-const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
-
 describe('mithrilBootstrapChannel', () => {
   beforeEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
     mockChannels.length = 0;
-    mithrilBootstrapServiceMock.status = {
+    mithrilControllerMock.getPendingBootstrapDecision.mockReturnValue(null);
+    mithrilControllerMock.getBootstrapStatus.mockReturnValue({
       status: 'idle',
       snapshot: null,
       error: null,
-    };
-    chainStorageCoordinatorMock.syncMithrilWorkDir.mockResolvedValue(
-      '/tmp/state/chain'
-    );
-    chainStorageCoordinatorMock.listSnapshots.mockResolvedValue([]);
-    chainStorageCoordinatorMock.startBootstrap.mockResolvedValue(undefined);
-    chainStorageCoordinatorMock.cancelBootstrap.mockResolvedValue(undefined);
-  });
-
-  it('rejects outstanding decision waiters, clears pending state, and emits idle on reset', async () => {
-    const moduleExports = loadModule();
-    const window = { webContents: {} };
-
-    moduleExports.handleMithrilBootstrapRequests(window as never);
-
-    const waiter = moduleExports.waitForMithrilBootstrapDecision();
-    const waiterResult = waiter
-      .then(() => ({ error: null }))
-      .catch((error) => ({ error }));
-
-    moduleExports.resetMithrilDecisionState();
-    await flushPromises();
-
-    const { error } = await waiterResult;
-    expect(error).toBeInstanceOf(moduleExports.MithrilDecisionCancelledError);
-    expect(moduleExports.getPendingMithrilBootstrapDecision()).toBeNull();
-    expect(moduleExports.getMithrilBootstrapStatus()).toEqual(
-      expect.objectContaining({ status: 'idle' })
-    );
-    expect(mockChannels[2].send).toHaveBeenCalledWith(
-      expect.objectContaining({ status: 'idle' }),
-      window.webContents
-    );
-  });
-
-  it('can reset outstanding decision waiters without broadcasting idle', async () => {
-    const moduleExports = loadModule();
-    const window = { webContents: {} };
-
-    moduleExports.handleMithrilBootstrapRequests(window as never);
-
-    const waiter = moduleExports.waitForMithrilBootstrapDecision();
-    const waiterResult = waiter
-      .then(() => ({ error: null }))
-      .catch((error) => ({ error }));
-
-    moduleExports.resetMithrilDecisionState({
-      suppressStatusBroadcast: true,
     });
-    await flushPromises();
-
-    const { error } = await waiterResult;
-    expect(error).toBeInstanceOf(moduleExports.MithrilDecisionCancelledError);
-    expect(moduleExports.getPendingMithrilBootstrapDecision()).toBeNull();
-    expect(moduleExports.getMithrilBootstrapStatus()).toEqual(
-      expect.objectContaining({ status: 'idle' })
-    );
-    expect(mockChannels[2].send).not.toHaveBeenCalled();
+    mithrilControllerMock.listSnapshots.mockResolvedValue([]);
+    mithrilControllerMock.submitBootstrapDecision.mockResolvedValue(undefined);
+    mithrilControllerMock.startBootstrap.mockResolvedValue(undefined);
+    mithrilControllerMock.cancelBootstrap.mockResolvedValue(undefined);
   });
 
-  it('resolves decision waiters and stores the pending decision until reset', async () => {
-    const moduleExports = loadModule();
-
-    moduleExports.handleMithrilBootstrapRequests({ webContents: {} } as never);
-
-    const waiter = moduleExports.waitForMithrilBootstrapDecision();
-    const decisionHandler = mockChannels[0].onRequest.mock.calls[0][0];
-
-    await decisionHandler({ decision: 'accept' });
-
-    await expect(waiter).resolves.toBe('accept');
-    expect(moduleExports.getPendingMithrilBootstrapDecision()).toBe('accept');
-  });
-
-  it('fires status listeners even when sendStatusUpdate rejects', async () => {
-    const moduleExports = loadModule();
-    const window = { webContents: {} };
-    moduleExports.handleMithrilBootstrapRequests(window as never);
-
-    // Make sendStatusUpdate reject
-    mockChannels[2].send.mockRejectedValueOnce(
-      new Error('webContents destroyed')
-    );
-
-    const handler = jest.fn();
-    moduleExports.onMithrilBootstrapStatus(handler);
-
-    // Get the onStatus callback and invoke it with a status
-    const onStatusCallback =
-      mithrilBootstrapServiceMock.onStatus.mock.calls[0][0];
-    await onStatusCallback({
-      status: 'downloading',
-      snapshot: null,
-      error: null,
-    });
-    await flushPromises();
-
-    expect(handler).toHaveBeenCalledWith(
-      expect.objectContaining({ status: 'downloading' })
-    );
-  });
-
-  it('rebinds status delivery to a replacement window without duplicating request handlers', async () => {
+  it('binds status delivery to the latest window without duplicating request handlers', async () => {
     const moduleExports = loadModule();
     const firstWindow = { webContents: { id: 1 } };
     const secondWindow = { webContents: { id: 2 } };
 
     moduleExports.handleMithrilBootstrapRequests(firstWindow as never);
-
     const requestHandlerCountAfterFirst = mockChannels.filter(
-      (ch) => ch.onRequest.mock.calls.length > 0
+      (channel) => channel.onRequest.mock.calls.length > 0
     ).length;
 
     moduleExports.handleMithrilBootstrapRequests(secondWindow as never);
-
-    // IPC request handlers should NOT be registered again
     const requestHandlerCountAfterSecond = mockChannels.filter(
-      (ch) => ch.onRequest.mock.calls.length > 0
+      (channel) => channel.onRequest.mock.calls.length > 0
     ).length;
+
     expect(requestHandlerCountAfterSecond).toBe(requestHandlerCountAfterFirst);
+    expect(mithrilControllerMock.initialize).toHaveBeenCalledTimes(2);
 
-    // Status updates should now target the second window
-    const onStatusCallback =
-      mithrilBootstrapServiceMock.onStatus.mock.calls[0][0];
-    await onStatusCallback({
-      status: 'downloading',
-      snapshot: null,
-      error: null,
+    const sender =
+      mithrilControllerMock.setBootstrapStatusSender.mock.calls[1][0];
+    await sender({ status: 'downloading', snapshot: null, error: null });
+
+    expect(mockChannels[2].send).toHaveBeenCalledWith(
+      { status: 'downloading', snapshot: null, error: null },
+      secondWindow.webContents
+    );
+  });
+
+  it('registers thin request handlers that delegate to the controller', async () => {
+    const moduleExports = loadModule();
+
+    moduleExports.handleMithrilBootstrapRequests({ webContents: {} } as never);
+
+    await expect(mockChannels[2].onRequest.mock.calls[0][0]()).resolves.toEqual(
+      {
+        status: 'idle',
+        snapshot: null,
+        error: null,
+      }
+    );
+    await expect(mockChannels[4].onRequest.mock.calls[0][0]()).resolves.toEqual(
+      []
+    );
+    await expect(
+      mockChannels[0].onRequest.mock.calls[0][0]({ decision: 'accept' })
+    ).resolves.toBeUndefined();
+    await expect(
+      mockChannels[1].onRequest.mock.calls[0][0]({
+        digest: 'digest',
+        wipeChain: true,
+      })
+    ).resolves.toBeUndefined();
+    await expect(mockChannels[3].onRequest.mock.calls[0][0]()).resolves.toBe(
+      undefined
+    );
+
+    expect(mithrilControllerMock.submitBootstrapDecision).toHaveBeenCalledWith(
+      'accept'
+    );
+    expect(mithrilControllerMock.startBootstrap).toHaveBeenCalledWith({
+      digest: 'digest',
+      wipeChain: true,
     });
-    await flushPromises();
+    expect(mithrilControllerMock.cancelBootstrap).toHaveBeenCalledTimes(1);
+  });
 
-    // The status channel send should have targeted the second window's webContents
-    const statusChannel = mockChannels[2];
-    const lastSendCall =
-      statusChannel.send.mock.calls[statusChannel.send.mock.calls.length - 1];
-    expect(lastSendCall[1]).toBe(secondWindow.webContents);
+  it('keeps compatibility exports as controller proxies', () => {
+    const moduleExports = loadModule();
+
+    moduleExports.setMithrilBootstrapNodeStateProvider(
+      () => 'running' as never
+    );
+    moduleExports.setMithrilBootstrapStatus({ status: 'decision' });
+    moduleExports.waitForMithrilBootstrapDecision();
+    moduleExports.resetMithrilDecisionState({ suppressStatusBroadcast: true });
+
+    expect(mithrilControllerMock.setNodeStateProvider).toHaveBeenCalledTimes(1);
+    expect(mithrilControllerMock.setBootstrapStatus).toHaveBeenCalledWith({
+      status: 'decision',
+    });
+    expect(
+      mithrilControllerMock.waitForBootstrapDecision
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      mithrilControllerMock.resetBootstrapDecisionState
+    ).toHaveBeenCalledWith({
+      suppressStatusBroadcast: true,
+    });
   });
 });

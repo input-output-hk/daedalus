@@ -205,7 +205,11 @@ export const handleHardwareWalletRequests = async (
     });
     TrezorConnect.on(TRANSPORT_EVENT, (event) => {
       if (event.type === TRANSPORT.ERROR) {
-        logger.info(
+        const isNoDevicePollingNoise =
+          get(event, ['payload', 'apiType']) === 'usb' &&
+          get(event, ['payload', 'error']) === 'Network request failed';
+
+        logger[isNoDevicePollingNoise ? 'debug' : 'info'](
           '[TREZOR-CONNECT] Received TRANSPORT_EVENT: transport-error',
           event.payload
         );

@@ -63,6 +63,17 @@ describe('openLogStream', () => {
       }
     );
   });
+
+  it('creates a write stream for a custom log file name', () => {
+    const fs = require('fs-extra');
+    openLogStream('mithril-partial-sync.log');
+    expect(fs.createWriteStream).toHaveBeenCalledWith(
+      '/tmp/daedalus-state/Logs/mithril-partial-sync.log',
+      {
+        flags: 'a',
+      }
+    );
+  });
 });
 
 describe('attachLogStream', () => {

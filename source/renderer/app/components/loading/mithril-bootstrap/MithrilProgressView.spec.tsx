@@ -32,7 +32,7 @@ describe('MithrilProgressView', () => {
           bytesDownloaded={bytesDownloaded}
           snapshotSize={snapshotSize}
           bootstrapStartedAt={bootstrapStartedAt}
-          onCancel={jest.fn()}
+          onAction={jest.fn()}
         />
       </IntlProvider>
     );

@@ -10,6 +10,7 @@ import type {
   EmptyManagedContentsOptions,
   EnsureManagedLayoutOptions,
   ManagedChainLayoutResult,
+  ValidatedPartialSyncInstallOptions,
 } from './chainStorageManagerShared';
 import { isPathWithin, toIsoString } from './chainStorageManagerShared';
 
@@ -560,6 +561,67 @@ export async function installSnapshot(
       path.join(resolvedDbDirectory, entry),
       path.join(resolvedManagedChainPath, entry)
     );
+  }
+
+  if (!ctx._isSamePath(resolvedDbDirectory, resolvedManagedChainPath)) {
+    await fs.remove(resolvedDbDirectory);
+  }
+}
+
+export async function installValidatedPartialSyncSnapshot(
+  ctx: ChainStorageManagerContext,
+  dbDirectory: string,
+  options: ValidatedPartialSyncInstallOptions
+): Promise<void> {
+  await ctx._ensureManagedChainLayout({
+    nodeState: CardanoNodeStates.STOPPED,
+  });
+
+  const managedChainPath = await ctx.getManagedChainPath();
+  const resolvedManagedChainPath =
+    await ctx._resolveRealPathOrInput(managedChainPath);
+  const resolvedDbDirectory = path.resolve(dbDirectory);
+  const stagedEntries = await ctx._safeReadDir(resolvedDbDirectory);
+  const expectedEntries = [...options.expectedTopLevelEntries].sort();
+  const actualEntries = [...stagedEntries].sort();
+
+  if (
+    actualEntries.length !== expectedEntries.length ||
+    actualEntries.some((entry, index) => entry !== expectedEntries[index])
+  ) {
+    throw new Error(
+      `Validated partial sync install requires exactly ${expectedEntries.join(', ')} in staged db output.`
+    );
+  }
+
+  await ctx._emptyManagedContents(resolvedManagedChainPath, {
+    excludeTopLevelEntries: ['immutable'],
+  });
+
+  for (const entry of expectedEntries) {
+    if (entry === 'immutable') {
+      const stagedImmutablePath = path.join(resolvedDbDirectory, entry);
+      const targetImmutablePath = path.join(resolvedManagedChainPath, entry);
+      const stagedImmutableEntries =
+        await ctx._safeReadDir(stagedImmutablePath);
+
+      await fs.ensureDir(targetImmutablePath);
+      for (const immutableEntry of stagedImmutableEntries) {
+        await ctx._movePath(
+          path.join(stagedImmutablePath, immutableEntry),
+          path.join(targetImmutablePath, immutableEntry)
+        );
+      }
+
+      if (!ctx._isSamePath(stagedImmutablePath, targetImmutablePath)) {
+        await fs.remove(stagedImmutablePath);
+      }
+    } else {
+      await ctx._movePath(
+        path.join(resolvedDbDirectory, entry),
+        path.join(resolvedManagedChainPath, entry)
+      );
+    }
   }
 
   if (!ctx._isSamePath(resolvedDbDirectory, resolvedManagedChainPath)) {

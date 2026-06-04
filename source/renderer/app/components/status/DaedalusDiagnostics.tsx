@@ -10,7 +10,6 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import SVGInline from 'react-svg-inline';
-import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
@@ -25,6 +24,8 @@ import type { SystemInfo } from '../../types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 import type { TipInfo } from '../../api/network/types';
 import { ErrorType } from '../../domains/ApiError';
+import DiagnosticsTimeStatusRow from './DiagnosticsTimeStatusRow';
+import MithrilPartialSyncSection from './MithrilPartialSyncSection';
 
 const messages = defineMessages({
   systemInfo: {
@@ -405,6 +406,9 @@ type Props = {
   isForceCheckingSystemTime: boolean;
   localTip: TipInfo | null | undefined;
   networkTip: TipInfo | null | undefined;
+  isMithrilPartialSyncActive: boolean;
+  isMithrilBootstrapActive: boolean;
+  onStartMithrilPartialSync: (...args: Array<any>) => any;
   onOpenStateDirectory: (...args: Array<any>) => any;
   onOpenExternalLink: (...args: Array<any>) => any;
   onRestartNode: (...args: Array<any>) => any;
@@ -450,17 +454,15 @@ class DaedalusDiagnostics extends Component<Props, State> {
     }
   }
 
-  getSectionRow = (messageId: string, content?: Node) => {
-    return (
-      <div className={styles.layoutRow}>
-        <div className={styles.sectionTitle}>
-          <span>{this.context.intl.formatMessage(messages[messageId])}</span>
-          {content}
-          <hr />
-        </div>
+  getSectionRow = (messageId: string, content?: Node) => (
+    <div className={styles.layoutRow}>
+      <div className={styles.sectionTitle}>
+        <span>{this.context.intl.formatMessage(messages[messageId])}</span>
+        {content}
+        <hr />
       </div>
-    );
-  };
+    </div>
+  );
   getRow = (messageId: string, value: Node | boolean) => {
     const { intl } = this.context;
     const key = intl.formatMessage(messages[messageId]);
@@ -514,6 +516,8 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isSystemTimeIgnored,
       localTip,
       networkTip,
+      isMithrilPartialSyncActive,
+      isMithrilBootstrapActive,
       onOpenStateDirectory,
       onClose,
       onCopyStateDirectoryPath,
@@ -549,27 +553,19 @@ class DaedalusDiagnostics extends Component<Props, State> {
       daedalusStateDirectoryPath,
     } = coreInfo;
     const { isNodeRestarting } = this.state;
-    const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError as ErrorType;
     const unknownDiskSpaceSupportUrl = intl.formatMessage(
       messages.unknownDiskSpaceSupportUrl
     );
+    const formattedSyncPercentage = formattedNumber(syncPercentage, 2);
     const cardanoNetworkValue = intl.formatMessage(
       globalMessages[`network_${cardanoNetwork}`]
     );
-    const localTimeDifferenceClasses = isCheckingSystemTime
-      ? classNames([styles.layoutData, styles.localTimeDifference])
-      : classNames([
-          styles.layoutData,
-          styles.localTimeDifference,
-          !isNTPServiceReachable ||
-          (localTimeDifference &&
-            Math.abs(localTimeDifference) > ALLOWED_TIME_DIFFERENCE)
-            ? styles.red
-            : styles.green,
-        ]);
+    const isMithrilActionBlocked =
+      isMithrilPartialSyncActive || isMithrilBootstrapActive;
     const { getSectionRow, getRow } = this;
+
     return (
       <div className={styles.component}>
         <DialogCloseButton
@@ -704,10 +700,15 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('cardanoNetwork', cardanoNetworkValue)}
               {getRow('connected', isConnected)}
               {getRow('synced', isSynced)}
-              {getRow(
-                'syncPercentage',
-                `${formattedNumber(syncPercentage, 2)}%`
-              )}
+              {getRow('syncPercentage', `${formattedSyncPercentage}%`)}
+              <MithrilPartialSyncSection
+                formattedSyncPercentage={formattedSyncPercentage}
+                isActionBlocked={isMithrilActionBlocked}
+                isMithrilPartialSyncActive={isMithrilPartialSyncActive}
+                isSynced={isSynced}
+                onRestoreFocus={this.restoreDialogCloseOnEscKey}
+                onStartMithrilPartialSync={this.props.onStartMithrilPartialSync}
+              />
               {getRow(
                 'lastNetworkBlock',
                 <Fragment>
@@ -754,42 +755,13 @@ class DaedalusDiagnostics extends Component<Props, State> {
                   )}
                 </Fragment>
               )}
-              <div className={styles.layoutRow}>
-                <div className={styles.layoutHeader}>
-                  {intl.formatMessage(messages.localTimeDifference)}
-                  {intl.formatMessage(globalMessages.punctuationColon)}
-                </div>
-                <div className={localTimeDifferenceClasses}>
-                  {
-                    <button
-                      onClick={() => this.checkTime()}
-                      disabled={isForceCheckingSystemTime || !isNodeResponding}
-                    >
-                      {isForceCheckingSystemTime
-                        ? intl.formatMessage(
-                            messages.localTimeDifferenceChecking
-                          )
-                        : intl.formatMessage(
-                            messages.localTimeDifferenceCheckTime
-                          )}
-                    </button>
-                  }
-                  {isCheckingSystemTime ? (
-                    <span className={localTimeDifferenceClasses}>
-                      <SVGInline
-                        svg={sandClockIcon}
-                        className={styles.networkTipSandClock}
-                      />
-                    </span>
-                  ) : (
-                    <span className={localTimeDifferenceClasses}>
-                      {isNTPServiceReachable
-                        ? `${formattedNumber(localTimeDifference || 0)} μs`
-                        : intl.formatMessage(messages.serviceUnreachable)}
-                    </span>
-                  )}
-                </div>
-              </div>
+              <DiagnosticsTimeStatusRow
+                isCheckingSystemTime={isCheckingSystemTime}
+                isForceCheckingSystemTime={isForceCheckingSystemTime}
+                isNodeResponding={isNodeResponding}
+                localTimeDifference={localTimeDifference}
+                onCheckTime={this.checkTime}
+              />
               {getRow('systemTimeCorrect', isSystemTimeCorrect)}
               {getRow('systemTimeIgnored', isSystemTimeIgnored)}
               {
@@ -895,8 +867,14 @@ class DaedalusDiagnostics extends Component<Props, State> {
     // This method is to be used on buttons which get disabled after click
     // as without it the ReactModal is not closing if you press the ESC key
     // even after the button is later re-enabled
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'focus' does not exist on type 'Element'.
-    document.getElementsByClassName('ReactModal__Content')[0].focus();
+    const modalContent = document.getElementsByClassName(
+      'ReactModal__Content'
+    )[0];
+
+    if (modalContent && 'focus' in modalContent) {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'focus' does not exist on type 'Element'.
+      modalContent.focus();
+    }
   };
   checkTime = () => {
     this.props.onForceCheckNetworkClock();

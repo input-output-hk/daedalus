@@ -12,6 +12,7 @@ import { themeOverrides } from './themes/overrides';
 import translations from './i18n/translations';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
+import MithrilPartialSyncOverlay from './components/loading/mithril-bootstrap/MithrilPartialSyncOverlay';
 import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDialog';
 import NotificationsContainer from './containers/notifications/NotificationsContainer';
 import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
@@ -39,7 +40,7 @@ class App extends Component<{
 
   render() {
     const { stores, actions, history } = this.props;
-    const { app, networkStatus } = stores;
+    const { app, mithrilPartialSync, networkStatus } = stores;
     const { isActiveDialog, isSetupPage } = app;
     const { isNodeStopping, isNodeStopped } = networkStatus;
     const locale = stores.profile.currentLocale;
@@ -93,6 +94,33 @@ class App extends Component<{
                     <ToggleRTSFlagsDialogContainer key="toggleRTSFlagsDialog" />
                   ),
                 ]}
+                {mithrilPartialSync.shouldShowOverlay && (
+                  <MithrilPartialSyncOverlay
+                    status={mithrilPartialSync.status}
+                    progressItems={mithrilPartialSync.progressItems}
+                    transferProgress={{
+                      filesDownloaded: mithrilPartialSync.filesDownloaded,
+                      filesTotal: mithrilPartialSync.filesTotal,
+                      elapsedSeconds: mithrilPartialSync.elapsedSeconds,
+                      ancillaryBytesDownloaded:
+                        mithrilPartialSync.ancillaryBytesDownloaded,
+                      ancillaryBytesTotal:
+                        mithrilPartialSync.ancillaryBytesTotal,
+                    }}
+                    error={mithrilPartialSync.error}
+                    canRetry={mithrilPartialSync.canRetry}
+                    canRestartNormally={mithrilPartialSync.canRestartNormally}
+                    canWipeAndFullSync={mithrilPartialSync.canWipeAndFullSync}
+                    onCancel={mithrilPartialSync.cancelPartialSync}
+                    onRetry={mithrilPartialSync.startPartialSync}
+                    onRestartNormally={mithrilPartialSync.restartNormally}
+                    onWipeAndFullSync={mithrilPartialSync.wipeAndFullSync}
+                    onDismissCompleted={
+                      mithrilPartialSync.dismissCompletedOverlay
+                    }
+                    onOpenExternalLink={app.openExternalLink}
+                  />
+                )}
                 <RTSFlagsRecommendationOverlayContainer />
                 <NotificationsContainer />
                 {canShowNews && [

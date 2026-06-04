@@ -74,6 +74,7 @@ export type LauncherConfig = {
   isFlight: boolean;
   isStaging: boolean;
   wipeChain?: boolean;
+  mithrilPartialSyncEnabled?: boolean;
   smashUrl?: string;
   metadataUrl?: string;
   updateRunnerBin: string;

@@ -1,9 +1,11 @@
 import '../../source/renderer/app/themes/index.global.scss';
 import './_support/environment';
-// Wallets
-import './wallets';
 // Nodes
 import './nodes';
+// Loading
+import './loading';
+// Wallets
+import './wallets';
 // Staking
 import './staking/Staking.stories';
 import './staking/CountdownParty.stories';
@@ -17,8 +19,6 @@ import './settings';
 // Assets
 import './assets/Asset.stories';
 import './assets/AssetSettingsDialog.stories';
-// Loading
-import './loading';
 // News
 import './news/NewsFeed.stories';
 import './news/IncidentOverlay.stories';

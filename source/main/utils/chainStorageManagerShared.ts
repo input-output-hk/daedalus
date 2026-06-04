@@ -81,6 +81,10 @@ export type EmptyManagedContentsOptions = {
   excludeTopLevelEntries?: string[];
 };
 
+export type ValidatedPartialSyncInstallOptions = {
+  expectedTopLevelEntries: string[];
+};
+
 export type ChainStorageDefaults = Pick<
   ChainStorageConfig,
   'defaultPath' | 'availableSpaceBytes' | 'requiredSpaceBytes'
@@ -130,6 +134,10 @@ export interface ChainStorageManagerContext {
   _emptyManagedContents(
     managedChainPath: string,
     options?: EmptyManagedContentsOptions
+  ): Promise<void>;
+  installValidatedPartialSyncSnapshot(
+    dbDirectory: string,
+    options: ValidatedPartialSyncInstallOptions
   ): Promise<void>;
   _writeMigrationJournal(journal: ChainStorageMigrationJournal): Promise<void>;
   _readMigrationJournal(): Promise<ChainStorageMigrationJournal | null>;

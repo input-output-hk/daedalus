@@ -55,6 +55,7 @@ import {
 import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
 import { setMithrilBootstrapNodeStateProvider } from './ipc/mithrilBootstrapChannel';
+import { configureMithrilPartialSyncRuntime } from './ipc/mithrilPartialSyncChannel';
 
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
@@ -242,6 +243,14 @@ const onAppReady = async () => {
     return handleWindowClose();
   });
   const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
+  configureMithrilPartialSyncRuntime({
+    stopNode: async () => {
+      await cardanoNode.stop();
+    },
+    restartStartupFlow: async () => {
+      await handleCheckDiskSpace(false);
+    },
+  });
 
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {

@@ -9,6 +9,7 @@ import {
 } from '../config/analyticsConfig';
 import { getShortCpuDescription } from '../utils/getShortCpuDescription';
 import { formattedBytesToSize } from '../utils/formatters';
+import { logger } from '../utils/logging';
 import AdaApi from '../api/api';
 
 const booleanToText = (flag: boolean) => (flag ? 'yes' : 'no');
@@ -17,7 +18,17 @@ export const getCustomDimensions = async (
   environment: Environment,
   adaApi: AdaApi
 ) => {
-  const userWallets = await adaApi.getWallets();
+  let userWallets = [];
+
+  try {
+    userWallets = await adaApi.getWallets();
+  } catch (error) {
+    logger.warn(
+      'getCustomDimensions: unable to load wallets while collecting analytics dimensions',
+      { error }
+    );
+  }
+
   const usesByronWallets = userWallets.some((wallet) => wallet.isLegacy);
   const usesHardwareWallets = userWallets.some(
     (wallet) => wallet.isHardwareWallet
