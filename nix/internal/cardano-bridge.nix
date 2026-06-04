@@ -12,6 +12,7 @@
   darwin,
   mithril-client,
   snapshot-converter,
+  cardano-watchdog ? null,
 }:
 runCommandCC "daedalus-cardano-bridge" {
   passthru = {
@@ -39,6 +40,9 @@ runCommandCC "daedalus-cardano-bridge" {
   copy_glob "cardano-cli" "${cardano-cli}/bin/cardano-cli*"
   copy_glob "snapshot-converter" "${snapshot-converter}/bin/snapshot-converter*"
   copy_glob "mithril-client" "${mithril-client}/bin/mithril-client*"
+  ${lib.optionalString (cardano-watchdog != null) ''
+    copy_glob "cardano-watchdog" "${cardano-watchdog}/bin/cardano-watchdog*"
+  ''}
   ${lib.optionalString (target == "x86_64-windows") ''
     # Upstream mithril package can emit a binary named `mithril-client`
     # even for Windows cross builds; NSIS/runtime expect `mithril-client.exe`.

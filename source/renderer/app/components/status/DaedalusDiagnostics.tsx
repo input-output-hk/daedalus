@@ -146,6 +146,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!Cardano node process ID',
     description: 'Cardano node process ID',
   },
+  cardanoNodeUptime: {
+    id: 'daedalus.diagnostics.dialog.cardanoNodeUptime',
+    defaultMessage: '!!!Cardano node uptime',
+    description: 'How long cardano-node has been running',
+  },
   cardanoNodeApiPort: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeApiPort',
     defaultMessage: '!!!Cardano node port',
@@ -155,6 +160,45 @@ export const messages = defineMessages({
     id: 'daedalus.diagnostics.dialog.cardanoWalletPID',
     defaultMessage: '!!!Cardano wallet process ID',
     description: 'Cardano wallet process ID',
+  },
+  cardanoWalletUptime: {
+    id: 'daedalus.diagnostics.dialog.cardanoWalletUptime',
+    defaultMessage: '!!!Cardano wallet uptime',
+    description: 'How long cardano-wallet has been running since last start',
+  },
+  cardanoWalletRestartCount: {
+    id: 'daedalus.diagnostics.dialog.cardanoWalletRestartCount',
+    defaultMessage: '!!!Cardano wallet restarts',
+    description:
+      'Number of times cardano-wallet has been restarted by the watchdog',
+  },
+  watchdogPid: {
+    id: 'daedalus.diagnostics.dialog.watchdogPid',
+    defaultMessage: '!!!Watchdog process ID',
+    description: 'PID of the cardano-watchdog supervisor process',
+  },
+  nodeForceKilled: {
+    id: 'daedalus.diagnostics.dialog.nodeForceKilled',
+    defaultMessage: '!!!Node force-killed',
+    description:
+      'Whether the watchdog had to SIGKILL cardano-node during shutdown',
+  },
+  cardanoWalletLastExitCode: {
+    id: 'daedalus.diagnostics.dialog.cardanoWalletLastExitCode',
+    defaultMessage: '!!!Wallet last exit code',
+    description:
+      'Exit code from the most recent cardano-wallet crash before watchdog restart',
+  },
+  nodeSocketWaitMs: {
+    id: 'daedalus.diagnostics.dialog.nodeSocketWaitMs',
+    defaultMessage: '!!!Node socket wait',
+    description:
+      'Time the watchdog waited for the cardano-node socket to appear',
+  },
+  walletReadyWaitMs: {
+    id: 'daedalus.diagnostics.dialog.walletReadyWaitMs',
+    defaultMessage: '!!!Wallet ready wait',
+    description: 'Time the watchdog waited for cardano-wallet to become ready',
   },
   cardanoWalletVersion: {
     id: 'daedalus.diagnostics.dialog.cardanoWalletVersion',
@@ -557,11 +601,19 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isBlankScreenFixActive,
       cardanoNodeVersion,
       cardanoNodePID,
+      cardanoNodeUptime,
       cardanoWalletVersion,
       cardanoWalletPID,
+      cardanoWalletUptime,
+      cardanoWalletRestartCount,
       cardanoWalletApiPort,
       cardanoNetwork,
       daedalusStateDirectoryPath,
+      watchdogPid,
+      nodeForceKilled,
+      lastWalletExitCode,
+      nodeSocketWaitMs,
+      walletReadyWaitMs,
     } = coreInfo;
     const { isNodeRestarting } = this.state;
     const connectionError = get(nodeConnectionError, 'values', '{}');
@@ -689,10 +741,25 @@ class DaedalusDiagnostics extends Component<Props, State> {
               )}
               {getRow('cardanoNodeVersion', cardanoNodeVersion)}
               {getRow('cardanoNodePID', cardanoNodePID || '-')}
+              {getRow('cardanoNodeUptime', cardanoNodeUptime)}
               {/* getRow('cardanoNodeApiPort', '-') */}
               {getRow('cardanoWalletVersion', cardanoWalletVersion)}
               {getRow('cardanoWalletPID', cardanoWalletPID || '-')}
+              {getRow('cardanoWalletUptime', cardanoWalletUptime)}
               {getRow('cardanoWalletApiPort', cardanoWalletApiPort || '-')}
+              {getRow('cardanoWalletRestartCount', cardanoWalletRestartCount)}
+              {watchdogPid != null &&
+                watchdogPid > 0 &&
+                getRow('watchdogPid', watchdogPid)}
+              {nodeForceKilled != null &&
+                getRow('nodeForceKilled', nodeForceKilled)}
+              {cardanoWalletRestartCount > 0 &&
+                lastWalletExitCode != null &&
+                getRow('cardanoWalletLastExitCode', String(lastWalletExitCode))}
+              {nodeSocketWaitMs != null &&
+                getRow('nodeSocketWaitMs', `${nodeSocketWaitMs}ms`)}
+              {walletReadyWaitMs != null &&
+                getRow('walletReadyWaitMs', `${walletReadyWaitMs}ms`)}
             </div>
             {isConnected && nodeConnectionError ? (
               <div>
