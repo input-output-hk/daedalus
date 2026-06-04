@@ -81,6 +81,9 @@ export type LauncherConfig = {
   updateRunnerBin: string;
   selfnodeBin: string;
   mockTokenMetadataServerBin: string;
+  watchdogBin: string;
+  walletBin: string;
+  nodeBin: string;
 };
 type WindowOptionsType = {
   show: boolean;

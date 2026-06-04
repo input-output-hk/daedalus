@@ -25,8 +25,11 @@ const coreInfo = {
   isBlankScreenFixActive: false,
   cardanoNodeVersion: '10.2.1',
   cardanoNodePID: 87212,
+  cardanoNodeUptime: '2h 15m 30s',
   cardanoWalletVersion: '2026.4.0',
   cardanoWalletPID: 87213,
+  cardanoWalletUptime: '2h 15m 28s',
+  cardanoWalletRestartCount: 0,
   cardanoWalletApiPort: 59982,
   cardanoNetwork: 'mainnet',
   daedalusStateDirectoryPath:
