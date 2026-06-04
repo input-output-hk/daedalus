@@ -58,13 +58,92 @@
     aarch64-darwin = inputs.mithril.packages.aarch64-darwin.mithril-client-cli;
   };
 
+  # cardano-watchdog: locally-built Rust process supervisor.
+  cardano-watchdog = let
+    cargoLockExists = builtins.pathExists ./../../watchdog/Cargo.lock;
+    isWindows = targetSystem == "x86_64-windows";
+    isLinux = pkgs.stdenv.hostPlatform.isLinux;
+    src = pkgs.lib.fileset.toSource {
+      root = ./../../watchdog;
+      fileset = pkgs.lib.fileset.unions [
+        ./../../watchdog/Cargo.toml
+        ./../../watchdog/Cargo.lock
+        ./../../watchdog/src
+      ];
+    };
+    fenixPkgs = inputs.fenix.packages.${pkgs.stdenv.hostPlatform.system};
+  in
+    if !cargoLockExists
+    then null
+    else if isWindows
+    then
+      # Cross-compile to x86_64-pc-windows-gnu (mingw) from Linux, same as mithril-client.
+      let
+        mingwToolchain = fenixPkgs.combine [
+          fenixPkgs.stable.cargo
+          fenixPkgs.stable.rustc
+          fenixPkgs.targets.x86_64-pc-windows-gnu.stable.rust-std
+        ];
+        craneLib = (inputs.crane.mkLib pkgs).overrideToolchain mingwToolchain;
+        mingwW64 = pkgs.pkgsCross.mingwW64;
+      in
+        craneLib.buildPackage {
+          inherit src;
+          pname = "cardano-watchdog";
+          version = "0.1.0";
+          strictDeps = true;
+          CARGO_BUILD_TARGET = "x86_64-pc-windows-gnu";
+          CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER = "${mingwW64.stdenv.cc}/bin/${mingwW64.stdenv.cc.targetPrefix}cc";
+          CARGO_TARGET_X86_64_PC_WINDOWS_GNU_RUSTFLAGS = "-L ${mingwW64.windows.pthreads}/lib";
+          depsBuildBuild = [mingwW64.stdenv.cc];
+          # Only build the supervisor binary; mock-* are Unix-only test helpers
+          # not needed in the installer and they use fd-based Unix APIs.
+          cargoExtraArgs = "--bin cardano-watchdog";
+          # Cannot run Windows executables on the Linux build host.
+          doCheck = false;
+        }
+    else if isLinux
+    then
+      # Build a fully static musl binary so nix-bundle-exe doesn't need to trace
+      # and bundle glibc, libgcc_s, etc. — consistent with cardano-node et al.
+      let
+        muslToolchain = fenixPkgs.combine [
+          fenixPkgs.stable.cargo
+          fenixPkgs.stable.rustc
+          fenixPkgs.targets.x86_64-unknown-linux-musl.stable.rust-std
+        ];
+        craneLib = (inputs.crane.mkLib pkgs).overrideToolchain muslToolchain;
+      in
+        craneLib.buildPackage {
+          inherit src;
+          pname = "cardano-watchdog";
+          version = "0.1.0";
+          strictDeps = true;
+          CARGO_BUILD_TARGET = "x86_64-unknown-linux-musl";
+          CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER = "${pkgs.pkgsStatic.stdenv.cc}/bin/${pkgs.pkgsStatic.stdenv.cc.targetPrefix}cc";
+          # Only build the supervisor binary; mock-* are Unix-only test helpers.
+          cargoExtraArgs = "--bin cardano-watchdog";
+        }
+    else let
+      toolchain = fenixPkgs.stable.toolchain;
+      craneLib = (inputs.crane.mkLib pkgs).overrideToolchain toolchain;
+    in
+      craneLib.buildPackage {
+        inherit src;
+        pname = "cardano-watchdog";
+        version = "0.1.0";
+        strictDeps = true;
+        # Only build the supervisor binary; mock-* are test helpers.
+        cargoExtraArgs = "--bin cardano-watchdog";
+      };
+
   inherit (walletFlake.legacyPackages.${pkgs.stdenv.hostPlatform.system}.pkgs) cardanoLib;
 
   daedalus-bridge = pkgs.lib.genAttrs sourceLib.installerClusters (cluster:
     import ./cardano-bridge.nix {
       target = targetSystem;
       inherit (pkgs) lib runCommandCC darwin;
-      inherit cardano-wallet cardano-node cardano-launcher cardano-cli cardano-address mock-token-metadata-server mithril-client snapshot-converter;
+      inherit cardano-wallet cardano-node cardano-launcher cardano-cli cardano-address mock-token-metadata-server mithril-client snapshot-converter cardano-watchdog;
       local-cluster =
         if cluster == "selfnode"
         then walletPackages.local-cluster

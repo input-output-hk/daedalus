@@ -8,6 +8,7 @@ import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 import { buildSystemInfo } from '../../utils/buildSystemInfo';
+import { formatUptime } from '../../utils/formatUptime';
 
 type Props = InjectedDialogContainerProps;
 
@@ -74,6 +75,14 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
       tlsConfig,
       cardanoNodePID,
       cardanoWalletPID,
+      cardanoNodeStartedAt,
+      cardanoWalletStartedAt,
+      cardanoWalletRestartCount,
+      watchdogPid,
+      nodeForceKilled,
+      lastWalletExitCode,
+      nodeSocketWaitMs,
+      walletReadyWaitMs,
       stateDirectoryPath,
       getNetworkClockRequest,
     } = networkStatus;
@@ -97,10 +106,18 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
       isBlankScreenFixActive,
       cardanoNodeVersion: nodeVersion,
       cardanoNodePID,
+      cardanoNodeUptime: formatUptime(cardanoNodeStartedAt),
       cardanoWalletVersion: apiVersion,
       cardanoWalletPID,
+      cardanoWalletUptime: formatUptime(cardanoWalletStartedAt),
+      cardanoWalletRestartCount,
       cardanoWalletApiPort: tlsConfig ? tlsConfig.port : 0,
       cardanoNetwork: network,
+      watchdogPid,
+      nodeForceKilled,
+      lastWalletExitCode,
+      nodeSocketWaitMs,
+      walletReadyWaitMs,
     };
     return (
       <ReactModal
