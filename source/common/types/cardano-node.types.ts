@@ -149,6 +149,15 @@ export type CardanoStatus = {
   cardanoNodePID: number;
   cardanoWalletPID: number;
   isRTSFlagsModeEnabled: boolean;
+  cardanoNodeStartedAt: number | null;
+  cardanoWalletStartedAt: number | null;
+  cardanoWalletRestartCount: number;
+  watchdogPid?: number;
+  nodeForceKilled?: boolean;
+  lastWalletExitCode?: number | null;
+  lastWalletExitSignal?: string | null;
+  nodeSocketWaitMs?: number | null;
+  walletReadyWaitMs?: number | null;
 };
 export type NetworkMagicType = Array<number | null | undefined>;
 export const NetworkMagics: {

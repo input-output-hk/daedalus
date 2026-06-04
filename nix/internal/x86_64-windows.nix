@@ -625,6 +625,7 @@ in rec {
 
         File "cardano-node.exe"
         File "cardano-wallet.exe"
+        File "cardano-watchdog.exe"
         File "cardano-address.exe"
         File "cardano-cli.exe"
         File "mithril-client.exe"
