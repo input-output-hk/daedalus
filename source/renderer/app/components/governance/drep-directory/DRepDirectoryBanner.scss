@@ -1,0 +1,26 @@
+.banner {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--theme-separator, #e0e0e0);
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--theme-text-primary);
+}
+
+.lastUpdated {
+  font-size: 13px;
+  color: var(--theme-text-secondary, #6b7384);
+  margin: 0;
+}

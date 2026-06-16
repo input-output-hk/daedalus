@@ -1,0 +1,30 @@
+.container {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.id {
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 14px;
+  color: var(--theme-text-primary);
+  cursor: default;
+}
+
+.copyButton {
+  background: none !important;
+  border: none !important;
+  padding: 2px 6px !important;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:focus {
+    outline: 2px solid var(--theme-focus-outline);
+  }
+}

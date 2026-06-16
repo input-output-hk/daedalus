@@ -183,7 +183,7 @@ The summary renders without a connected device because the data comes from cache
 | `voting.governance.currentVote.abstain.caption` | `Your stake is recorded on chain as not participating in governance. Rewards can be withdrawn.` |
 | `voting.governance.currentVote.noConfidence.caption` | `Your stake counts as Yes on every motion of no-confidence. Rewards can be withdrawn.` |
 
-All ja-JP strings require translator review in Storybook across the five `currentVote` knob values and all four layouts.
+All en-US and ja-JP strings remain preliminary with a leading `!!!` until the final manual review pass, and ja-JP still requires translator review in Storybook across the five `currentVote` knob values and all four layouts before those markers are removed.
 
 ## 12. Accessibility
 

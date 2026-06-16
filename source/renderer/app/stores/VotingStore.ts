@@ -192,6 +192,14 @@ export default class VotingStore extends Store {
   _closeConfirmationDialog = () => {
     this.isConfirmationDialogOpen = false;
   };
+  /** Maps a chosenOption (bech32 DRep ID or sentinel) to its vote kind for analytics. */
+  private _getVoteKind(
+    chosenOption: string
+  ): 'drep' | 'abstain' | 'no_confidence' {
+    if (chosenOption === 'abstain') return 'abstain';
+    if (chosenOption === 'no_confidence') return 'no_confidence';
+    return 'drep';
+  }
   @action
   _setSelectedWalletId = (walletId: string) => {
     this.selectedWalletId = walletId;
@@ -386,8 +394,7 @@ export default class VotingStore extends Store {
         this.analytics.sendEvent(
           EventCategories.VOTING,
           'Casted governance vote',
-          chosenOption, // 'abstain' | 'no_confidence' | 'drep'
-          wallet.amount.toNumber() // ADA amount as float with 6 decimal precision
+          this._getVoteKind(chosenOption) // 'drep' | 'abstain' | 'no_confidence'
         );
 
         return {
@@ -416,8 +423,7 @@ export default class VotingStore extends Store {
       this.analytics.sendEvent(
         EventCategories.VOTING,
         'Casted governance vote',
-        chosenOption, // 'abstain' | 'no_confidence' | 'drep'
-        wallet.amount.toNumber() // ADA amount as float with 6 decimal precision
+        this._getVoteKind(chosenOption) // 'drep' | 'abstain' | 'no_confidence'
       );
 
       return {

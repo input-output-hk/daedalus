@@ -1,17 +1,26 @@
 # DRep Discovery — UX Design Index
 
-**Status:** Design locked on Governance section via renamed `Voting` entry
+**Status:** Governance-section IA locked; current-vote and anchor follow-on docs remain draft by owning slice
 **Date:** 2026-05-27
 **Plan:** [governance-drep-discovery-plan.md](./governance-drep-discovery-plan.md)
 **Tasks:** [governance-drep-discovery-plan-tasks.json](./governance-drep-discovery-plan-tasks.json)
 
 This folder contains the chosen UX direction for the in-app DRep Discovery feature in Daedalus, plus shared design tokens and external research. Implementation (Storybook + React) is intentionally deferred to the sprint phases in the plan and tasks JSON.
 
+## Working Conventions
+
+- **Canonical status source.** Task status lives in [governance-drep-discovery-plan-tasks.json](./governance-drep-discovery-plan-tasks.json). The current status vocabulary is `pending`, `in_progress`, `partial`, `blocked`, `complete`, `verified`, `deferred`.
+- **Document precedence.** Use the plan + task tracker for scope and acceptance, slice PRDs for slice-level DoD, implementation guides for execution detail, and design docs for UX/IA/copy contracts.
+- **Preliminary i18n copy.** Until the full DRep Discovery feature set is implemented and a final manual copy review is complete, all new en-US and ja-JP DRep Discovery strings must remain explicitly preliminary with `!!!` prefixed to the source text. Removing the `!!!` prefix is a release-end review task, not a per-slice task.
+- **Terminology.** In product copy, `Abstain` and `No Confidence` are the built-in DRep options. In analytics docs, `drepOption` is the sanitized field name whose values remain `drep | abstain | no_confidence`.
+
 ## Documents
 
 | File | Purpose |
 |---|---|
 | [external-research.md](./research/external-research.md) | Findings from GovTool, 1694.io, CIP-1694, CIP-119. Patterns to adopt and reject. |
+| [research/ux-refinement-sync-and-load-research.md](./research/ux-refinement-sync-and-load-research.md) | Node-sync state, two-phase load, per-phase timeouts, ID-only v1 directory — basis for the `ux-refinement` plan phase. |
+| [research/slice-1-final-pass-findings.md](./research/slice-1-final-pass-findings.md) | Verified technical findings from the slice-1 final pass: cardano-cli network-flag placement, bundled CLI version, IPC error transport, test-runner quirk, conway-retry heuristic, FP-11 LSM assessment. |
 | [shared-design-tokens.md](./designs/shared-design-tokens.md) | Status badges, source labels, voting-power formatting, randomization indicator, refresh state. |
 | [drep-discovery-design.md](./designs/drep-discovery-design.md) | Governance section via renamed `Voting` entry, with sub-routes for directory / detail / favorites — the chosen direction. |
 | [current-vote-display-design.md](./designs/current-vote-display-design.md) | `cv-1` / `cv-2` tech design: data model, mapper rules, normalizer, `CurrentVoteSummary` component, sequence diagrams, sanitization. |

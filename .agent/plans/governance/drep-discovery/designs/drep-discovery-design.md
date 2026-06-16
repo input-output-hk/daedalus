@@ -96,8 +96,8 @@ The directory list is paginated at **25 cards per page**. Total page count deriv
 │ ┌── Anchor ────────────────────────────────────────────────┐  │
 │ │ Anchor URL:    https://example.org/drep.json   (present) │  │
 │ │ Anchor digest: b5e2…f3a1                                 │  │
-│ │ Status:        Unverified anchor (anchor-1 will fetch    │  │
-│ │                and verify off-chain profile)             │  │
+│ │ Source label:  On-chain anchor reference                 │  │
+│ │                (anchor-1 will fetch and verify profile)  │  │
 │ └──────────────────────────────────────────────────────────┘  │
 │                                                                │
 │ [Select for delegation]                                        │
@@ -191,13 +191,15 @@ Container components (MobX `@observer`) live under `containers/governance/` mirr
 
 | Scenario | Treatment |
 |---|---|
-| First load, no cached data | Full skeleton list, banner visible, refresh button disabled |
-| First load completed, default cohort | List rendered, banner visible, "Last updated just now" |
+| First load, no cached data (phase 1) | Full skeleton list, banner visible, refresh button disabled |
+| First load completed, default cohort | List rendered (IDs + status; voting power may still be enriching), banner visible, "Last updated just now" |
+| Voting-power enrich (phase 2) | List interactive, voting-power column shows `—`/skeleton + "Loading voting power…" until stake lands |
 | Refresh in flight, cached data present | Spinner badge next to timestamp, list still interactive |
-| Refresh failed (timeout/parse) | `DRepErrorBanner` at top; cached list still shown; explicit retry |
-| Ranking unavailable | List shown, voting-power column `—`, banner with `error.rankingUnavailable` |
+| Refresh failed (phase 1 timeout/parse) | `DRepErrorBanner` at top; cached list still shown; explicit retry |
+| Ranking unavailable (phase 2 failed) | List shown, voting-power column `—`, banner with `error.rankingUnavailable` |
 | Selfnode CLI unsupported | Replace list area with `DRepEmptyState selfnode` |
-| Node syncing | Replace list area with `DRepEmptyState noSync` |
+| Node syncing (soft warning) | Render the directory + query anyway; persistent `governance.drepDirectory.syncing` banner with live sync %; refetch when the node reaches tip. See [shared-design-tokens.md §6](shared-design-tokens.md). |
+| Node syncing + query empty/era failure | Fallback: replace list area with `DRepEmptyState noSync` |
 | No filter results | List area shows `DRepEmptyState noResults` with `Clear filters` and `Show all` actions |
 | Favorites empty | `DRepFavoritesEmptyState` with CTA back to Directory |
 | DRep detail load failure | Inline error in main pane; "Back to directory" link |
@@ -208,7 +210,7 @@ Container components (MobX `@observer`) live under `containers/governance/` mirr
 
 - Anchor URL (raw, no fetch)
 - Anchor digest (truncated, copy button)
-- Status badge: `Unverified anchor` (per shared tokens §2)
+- Source label: `On-chain anchor reference` (per shared tokens §2)
 
 In anchor-1 (givenName) and anchor-2 (remaining fields), after `GovernanceQueryService` + anchor fetch verify the content, the section adds a child `DRepDetailAnchorContent` rendering `givenName`, `image`, `objectives`, `motivations`, `qualifications`, `references[Link|Identity]`, `paymentAddress`. Each rendered field carries the `Verified off-chain content` label. `DRepCard` does **not** render verified anchor content even after anchor-1/anchor-2 (cards stay on-chain-only) — the verified enrichment surfaces in detail and favorites only.
 
@@ -216,7 +218,7 @@ In anchor-1 (givenName) and anchor-2 (remaining fields), after `GovernanceQueryS
 
 - Banner copy (shared tokens §5) is sticky at the top of the directory list, including the Beyond MVG (BMVG) Simplified attribution as the secondary line.
 - The default cohort IS the "Recommended" sort for this release. No separate Recommended tab and no per-card Recommended badge ship in Phase 1; the four-category badge (shared tokens §1a) is the per-DRep explanation surface.
-- Default cohort eligibility hard floor: `drep-state` active AND remaining `drepActivity` > 6 epochs. Mock fixtures that surface "Expiring in 3 epochs" cards inside the default cohort are fixture-only — production renders MUST respect the 6-epoch floor. The "Expiring in {n} epochs" status badge from shared tokens §1 only fires for the 6–12 epoch window (Threshold category) or for entries surfaced via search / show-all that fall below the floor.
+- Default cohort eligibility hard floor: `drep-state` active AND remaining `drepActivity` > 6 epochs. Mock fixtures that surface "Expiring in 3 epochs" cards inside the default cohort are fixture-only — production renders MUST respect the 6-epoch floor. The "Expiring in {n} epochs" status badge from shared tokens §1 fires for the 7–12 epoch threshold window inside the default cohort, and may also appear for entries surfaced via search / show-all that fall below the floor.
 - "Excluded from default cohort" badge appears on any top-35 DRep when it surfaces via search or show-all.
 - Default cohort is randomized; the seed is held in `GovernanceStore` and persists for the app session. "Reshuffle" reseeds without re-querying.
 - Filtering or searching switches the banner copy to remove the randomization claim.

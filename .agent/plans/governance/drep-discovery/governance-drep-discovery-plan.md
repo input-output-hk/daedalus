@@ -10,6 +10,27 @@ The plan remains local-first: DRep discovery data comes from the Daedalus-manage
 
 - Companion tasks JSON: [governance-drep-discovery-plan-tasks.json](governance-drep-discovery-plan-tasks.json)
 
+## Tracker Status Model
+
+- `pending`: not started
+- `in_progress`: actively being implemented
+- `partial`: landed in part, but acceptance gaps remain
+- `blocked`: cannot satisfy acceptance until a named upstream gap is resolved
+- `complete`: implementation landed, but slice-level validation is still outstanding
+- `verified`: implementation and validation are both complete
+- `deferred`: intentionally pushed out of the owning slice/track
+
+## Terminology
+
+- `drepOption` is the sanitized analytics field for governance delegation choice. Its current wire values remain `drep | abstain | no_confidence`.
+- In product-facing copy, `Abstain` and `No Confidence` are the built-in DRep options. Reserve the raw literals `abstain` and `no_confidence` for protocol, parser, test, and sanitization contexts.
+
+## Copy Review Rule
+
+- All new DRep Discovery i18n source copy remains preliminary until the end of the full feature implementation cycle.
+- Preliminary en-US and ja-JP strings must keep the `!!!` prefix in source text across plan slices, Storybook fixtures, and implementation-ready examples.
+- Final copy polish and removal of the `!!!` prefix happen only in one final manual review pass after the entire feature is implemented.
+
 ---
 
 ## Plan Boundary
@@ -71,10 +92,10 @@ Artifact placement decision: this plan and its task tracker are canonical under 
 - [ ] DRep selector state crosses into the delegation form through React Router `location.state`. `VotingStore` must not read `GovernanceStore` directly.
 - [ ] Delegation submission continues through the existing software-wallet `delegateVotes` request and existing hardware-wallet signing path in `VotingStore`.
 - [ ] Slice 2 confirmation shows the DRep ID only; verified display names are added only after the verified anchor pipeline is active.
-- [ ] All user-visible DRep Discovery text ships with polished en-US and ja-JP copy.
+- [ ] All user-visible DRep Discovery text ships with preliminary en-US and ja-JP copy prefixed with `!!!` until the final manual review pass at the end of the full feature cycle.
 - [ ] Widen `WalletDelegation` / `WalletNextDelegation` with `voting?: WalletVotingTarget` (discriminated by `kind`) carrying a canonical `DRepIdentity` (`raw`, `cip129?`, `cip105?`, `credentialHex?`, `credentialType: 'key' | 'script'`).
 - [ ] Fix the latent literal mismatch where Daedalus writes `'voting_and_delegating'` but the cardano-wallet wire emits `'delegating_and_voting'`, preserving the public `WalletDelegationStatuses.VOTING_AND_DELEGATING` export name.
-- [ ] Sanitize `filterLogData` for `dRepId`, `vote`, `voting` keys and reduce the `Casted governance vote` analytics payload to `voteKind` only.
+- [ ] Sanitize `filterLogData` for `dRepId`, `vote`, `voting` keys and reduce the `Casted governance vote` analytics payload to `drepOption` only.
 - [ ] Render a `CurrentVoteSummary` panel above the `VotingPowerDelegation` form. The panel ALWAYS renders; states are: `noDelegation` (warning + nudge), `drep` (givenName + source label + id + two links: in-app view details, external anchor URL), `abstain`, and `no_confidence`. The `drep` state also renders the delegated DRep's current active/inactive/expiring status badge so the user can tell at a glance whether their existing delegation is still effective. Pre-fill form state from the current on-chain delegation (or leave empty for `noDelegation`); disable submit when the form selection matches the current delegation after canonical normalization.
 - [ ] Add a five-value `currentVote` Storybook knob (`noDelegation | drepVerified | drepUnverified | abstain | noConfidence`) to every governance story via a pure wallet factory and `key`-based remount. Default value is `noDelegation` so the warning + nudge state is visible on first load.
 - [ ] Surface a reward-withdrawal warning in the `noDelegation` state using copy grounded in CIP-1694 (rewards blocked from withdrawal until the stake credential delegates to a DRep, Abstain, or No Confidence). Daedalus must not auto-select a delegation.
@@ -114,7 +135,9 @@ Artifact placement decision: this plan and its task tracker are canonical under 
 | Query mechanism | Main-process `cardano-cli` wrapper against the cardano-launcher-managed local node IPC endpoint. |
 | Era flag | Prefer `cardano-cli latest query ...`; fall back to `conway` only if the bundled CLI lacks `latest`. |
 | Socket path | Configure `nodeConfig.socketFile` pre-launch and read the launcher-resolved socket path after `node.start()`. CLI subcommands receive it through `CARDANO_NODE_SOCKET_PATH` in `spawn.env`. |
-| DRep query shape | Bulk `--all-dreps` once per latest-state refresh. Per-DRep CLI invocations are forbidden for directory/detail refresh. |
+| Network flag | Every `cardano-cli` governance query also carries a network flag (`--mainnet` or `--testnet-magic <magic>`) derived from `CardanoNode._config.cluster` via `NetworkMagics`. The flag is set from node config only — never from IPC/renderer input. Without it the bundled CLI rejects every `drep-state`/`tip` query with `Missing: (--mainnet | --testnet-magic NATURAL)`. (Discovered in the slice-1 live-app smoke test; fixed in slice-1 final pass FP-1.) |
+| DRep query shape | Bulk `--all-dreps` once per latest-state refresh. Slice-1 reads voting power from `drep-state --all-dreps --include-stake` and the current epoch from `query tip --output-json`; the separate `drep-stake-distribution` and `gov-state` queries are deferred to the slices that need them (cohort ranking in slice-5 may derive top-35 from the inline `--include-stake` per-DRep stake instead of a second query; proposal vote positions need `gov-state` in slice-4). Per-DRep CLI invocations are forbidden for directory/detail refresh. |
+| DRep status grounding | Canonical on-chain status is `active \| inactive` (ledger semantics): a DRep is `inactive` once `currentEpoch >= expiry`, otherwise `active`. `Expiring` is a renderer-derived display state from remaining `drepActivity` (≤12 epochs), not a stored status. `Retired` requires a distinct unregistration signal and is deferred past slice-1. The shipped slice-1 code currently names the inactive condition `expired` — a misnomer tracked for rename in slice-1 final pass FP-9. |
 | Lovelace precision | `BigNumber | null` in app models; decimal-string serialization across IPC; lossless CLI JSON parsing with `json-bigint`. |
 | DRep selector handoff | Pass `selectedDRepId` through React Router `location.state`. |
 | Default cohort | Exclude top 35 by voting power, then show up to the next 200 eligible DReps in randomized order. The "200 with top-35 excluded" sizing follows the Beyond MVG (BMVG) Simplified one-click-delegation analysis (Phase-1 variant, BMVG 2026-05-19); product copy and documentation cite BMVG when explaining the default. |
@@ -132,8 +155,14 @@ Artifact placement decision: this plan and its task tracker are canonical under 
 | Same-vote prevention | Client-side after canonical-form normalization; server `same_vote` error retained as authoritative safety net. |
 | Storybook isolation | Each `currentVote` knob change uses a pure wallet factory and force-remounts `VotingPowerDelegation` via a React `key`. No mutation of module-level `GOVERNANCE_WALLETS`. |
 | No auto-delegation | Daedalus never sets a default DRep. When a wallet has not delegated, the panel must show the CIP-1694 reward-withdrawal warning and a CTA to choose one. |
-| DRep name source | CIP-119 `body.givenName` only. If the anchor has not been verified, the name is hidden and only the DRep id is shown with an unverified source label. |
+| DRep name source | CIP-119 `body.givenName` only. If the anchor has not been verified, the name is hidden and only the DRep id is shown with the on-chain source label until verified anchor content is available. |
+| Analytics field naming | The sanitized `Casted governance vote` event action field is named `drepOption` in planning/docs; its current value set remains `drep | abstain | no_confidence`. |
 | Anchor URL display | Show as an external link with `target="_blank" rel="noopener noreferrer"`. Never render the raw anchor JSON inline in the panel; the DRep detail view owns full anchor rendering. |
+| Sync behaviour | **Soft warning, query anyway.** The directory renders and queries during node sync, with a persistent sync-percentage banner that the list may be incomplete until tip. `drep-state` returns a correct-but-stale snapshot as of the node's local tip, so the banner is mandatory. The `noSync` empty state is retained only as the fallback when the query yields no data or an era/availability error while syncing. Hard-gating / blocking the Governance nav was rejected. (UX refinement, 2026-06-15.) |
+| First-load shape | **Two-phase load.** Phase 1 `drep-state --all-dreps` (no `--include-stake`) paints the list; Phase 2 `drep-stake-distribution --all-dreps` enriches voting power under stale-while-refresh (`—` + `rankingUnavailable` on phase-2 failure). Decouples the cheap registration read from the officially "potentially expensive" stake computation. (UX refinement, 2026-06-15.) |
+| Query trigger | Fetch fires on Governance-route entry and explicit refresh only — **not** from `GovernanceStore.setup()` at app startup (which queried an un-synced node and double-fired with the container). In-flight dedup retained. (UX refinement, 2026-06-15.) |
+| CLI timeouts | Per-phase budgets: bare-list phase 10s, stake phase 30s (replacing the single unvalidated 10s `CLI_TIMEOUT_MS`). The 30s value is provisional pending real synced-node latency measurement. (UX refinement, 2026-06-15.) |
+| Directory names (v1) | Directory cards and search are **DRep-ID-only** in v1. Verified `givenName` (CIP-119) appears only in the detail view (anchor-1) and confirmation; directory-wide name + name-search await a future bulk anchor-prefetch phase. (UX refinement, 2026-06-15.) |
 
 ---
 
@@ -177,8 +206,8 @@ The initial query-path gate has been folded into this plan as research findings 
 ### Main-Process Query Service
 
 - Add a singleton `GovernanceQueryService` in the Electron main process.
-- Use the confirmed `cardano-cli` path and call `latest query drep-state --all-dreps --output-json`, `latest query drep-stake-distribution --all-dreps --output-json`, and `latest query gov-state --output-json`.
-- Read the captured node socket path from the running `CardanoNode` instance and pass it through `CARDANO_NODE_SOCKET_PATH` in `child_process.spawn` environment.
+- Use the confirmed `cardano-cli` path. Slice-1 calls `latest query drep-state --all-dreps --include-stake --output-json` (voting power returned inline) and `latest query tip --output-json` (current epoch used to derive active/inactive). The separate `drep-stake-distribution` and `gov-state` queries are deferred to the slices that consume them (cohort ranking / proposal vote positions).
+- Read the captured node socket path from the running `CardanoNode` instance and pass it through `CARDANO_NODE_SOCKET_PATH` in `child_process.spawn` environment. Also pass the network flag (`--mainnet` / `--testnet-magic <magic>`) in argv, derived from `CardanoNode._config.cluster`; never accept the network selector from renderer/IPC input.
 - Deduplicate in-flight refreshes and retain last-successful data only for stale-while-refresh continuity.
 - Return typed failures for whole-call query errors, ranking-unavailable states, invalid DRep IDs, parse failures, and selfnode capability errors.
 - Preserve large lovelace values by parsing CLI stdout with `json-bigint` in lossless mode and converting raw decimal strings into `BigNumber`.
@@ -240,19 +269,19 @@ The committed information architecture renames the existing `Voting` sidebar ent
 Every slice is a thin, demoable, end-to-end capability:
 
 - It is demoable behind **real IPC** — no slice is pure-backend or pure-UI.
-- It lands its **own** Storybook, Jest, Cucumber, and i18n coverage in-slice. There is no terminal test phase and no terminal i18n phase.
+- It lands its **own** Storybook, Jest, and i18n coverage in-slice. There is no terminal test phase and no terminal i18n phase.
 - Later slices **inherit a no-leak acceptance check**: no DRep id / `abstain` / `no_confidence` / CIP-129 / CIP-105 string appears in any logger or analytics payload.
 
 ### Foundation slices (sequential)
 
 1. **Slice 1 — Walking skeleton + sanitization floor.** Real node socket path, real `cardano-cli --all-dreps`, lossless `json-bigint` parse, decimal-string IPC, `BigNumber` rehydrate, `GovernanceStore` with `drepIndex`, a bare directory list (id / voting power / active-inactive), the directory route inside the renamed Governance section, and the log/analytics sanitization. This is the first demoable slice.
 2. **Slice 2 — Software-wallet delegate.** Closes the primary journey: select a directory row → pre-fill `VotingPowerDelegation` → confirm DRep-ID-only → submit via the existing software `delegateVotes` path. Drops the false detail-view dependency that previously blocked select→delegate.
-3. **Slice 3 — Hardware-wallet delegate.** The HW delegate path with DRep-ID-only confirmation, in-slice Cucumber with mocked Ledger/Trezor and on-device byte-equality (`vote.chosenOption` equals the selected DRep id).
+3. **Slice 3 — Hardware-wallet delegate.** The HW delegate path with DRep-ID-only confirmation, in-slice Jest coverage with mocked Ledger/Trezor and on-device byte-equality (`vote.chosenOption` equals the selected DRep id).
 
 ### Parallelizable tracks (after the foundation)
 
 - **Track D (discovery thickening, evaluation-quality first):** `slice-4` detail view (on-chain only) → `slice-5` default cohort + category badges + BMVG banner → `slice-6` search / show-all → `slice-7` favorites → `slice-8` refresh-latency + selfnode + release verification.
-- **Track V (current vote):** `cv-1` voting-field plumbing + the `CurrentVoteSummary` core states (noDelegation / abstain / no_confidence / DRep-ID-only) → `cv-2` live status badge from the directory `drepIndex` + pre-fill + same-vote prevention + e2e.
+- **Track V (current vote):** `cv-1` voting-field plumbing + the `CurrentVoteSummary` core states (noDelegation / abstain / no_confidence / DRep-ID-only) → `cv-2` live status badge from the directory `drepIndex` + pre-fill + same-vote prevention + focused Jest regression coverage.
 - **Track A (anchor enrichment):** `anchor-1` hardened fetch + hash-verify + immutable cache + first verified `givenName` render → `anchor-2` remaining CIP-119 profile fields + `doNotList` + confirmation identity migration + source-label sweep.
 
 ### Non-negotiable floors (never thinned across slices)
@@ -273,10 +302,9 @@ Every slice is a thin, demoable, end-to-end capability:
 
 - Run `yarn compile`, `yarn lint`, `yarn prettier:check`, `yarn i18n:manage`, and `yarn storybook:build` for release readiness.
 - Add Jest coverage for shared DRep types, lossless parsing, query-service behavior, latest-on-load and refresh behavior, default cohort ranking/randomization, anchor fetch and verification, immutable cache behavior, `GovernanceStore`, selector integration, confirmation identity display, and hardware-wallet propagation.
-- Add Cucumber coverage for DRep directory browsing, refresh, search/show-all, DRep detail, verified anchor profile display, favorite persistence, selector handoff, software-wallet delegation, and mocked Ledger/Trezor delegation paths.
 - Add Storybook stories for directory, detail, selector, favorite toggle, source labels, confirmation dialog states, and loading/error/empty states.
 - Perform manual release validation on a synced node for the complete browse -> evaluate -> select -> delegate flow.
-- For Track V (cv-1 / cv-2): cover `_createWalletFromServerData` voting mapping, `Wallet.currentVote` / `isVoting` computeds, `CurrentVoteSummary` component snapshots per knob value, the Cucumber `@e2e` governance-current-vote feature, and the sanitization regression spying over `logger.*` and `AnalyticsTracker.sendEvent`.
+- For Track V (cv-1 / cv-2): cover `_createWalletFromServerData` voting mapping, `Wallet.currentVote` / `isVoting` computeds, `CurrentVoteSummary` component snapshots per knob value, focused same-vote and current-vote Jest regressions, and the sanitization regression spying over `logger.*` and `AnalyticsTracker.sendEvent`.
 
 ---
 
@@ -313,6 +341,8 @@ Every slice is a thin, demoable, end-to-end capability:
 | `json-bigint` lossless-mode objects are not plain JS and may not survive structured-clone across IPC or MobX observability | Convert lossless values to decimal strings before they cross IPC (per the lovelace serialization rule) and rehydrate to `BigNumber` in the renderer; never pass raw `JSONbig` objects through `ipcRenderer.invoke` or into observable state. |
 | Anchor 1 MB response cap can reject valid CIP-119 metadata that inlines a base64 `imageObject` | Confirm the cap against realistic CIP-119 payloads with inline images; either raise the cap for the image case or document that inline-image DReps degrade to the default avatar with an explicit source label. |
 | `cardano-launcher@0.20220119.0` is the pinned launcher; `nodeConfig.socketFile` support (relied on by task-102) is unverified against this version | Verify `socketFile` support in the pinned launcher version before starting slice-1; if unsupported, escalate the socket-path ownership approach. |
+| Directory silently serves an incomplete DRep list while the node is behind the chain tip (`drep-state` returns a stale-as-of-local-tip snapshot, not an error) | Soft-warning sync banner driven by `NetworkStatusStore.syncProgress`; refetch on `isNodeInSync` transition; `noSync` fallback on empty/era failure. See [UX refinement research](research/ux-refinement-sync-and-load-research.md). |
+| 10s CLI timeout is an unvalidated guess; `drep-state --all-dreps --include-stake` is officially "potentially expensive" and has never run against mainnet-scale data | Two-phase load moves stake off the first-paint path; stake-phase timeout raised to 30s; deferred follow-up to capture real synced-node fixtures + p50/p95 latency and re-derive the budget. |
 
 ---
 
@@ -335,6 +365,7 @@ Every slice is a thin, demoable, end-to-end capability:
 
 - Design folder overview, rationale, and locked decisions: [README.md](./README.md)
 - External research: [external-research.md](./research/external-research.md)
+- UX refinement research (sync awareness, two-phase load, cardano-node 11 / LSM findings): [ux-refinement-sync-and-load-research.md](./research/ux-refinement-sync-and-load-research.md)
 - Shared design tokens (status badges, source labels, formatting, refresh state, copy): [shared-design-tokens.md](./designs/shared-design-tokens.md)
 - Dedicated Governance section design: [drep-discovery-design.md](./designs/drep-discovery-design.md)
 
@@ -356,10 +387,15 @@ Use the date of change `[year-month-day]` and a short description of the plan ch
 
 ### Added
 
+- [2026-06-15] **UX refinement (sync awareness + two-phase first load)** — four ratified decisions: soft-warning sync banner (vs. silently serving a stale-as-of-local-tip list), two-phase load (registration read paints the list, stake enriches voting power after), per-phase CLI timeouts (10s list / 30s stake), and an ID-only v1 directory/search. Research record: [ux-refinement-sync-and-load-research.md](research/ux-refinement-sync-and-load-research.md); tasks live in the `ux-refinement` tracker phase (task-159–task-167), with the route-scoped fetch trigger folded into slice-1 final pass FP-10 and cardano-node 11 / LSM verification as FP-11.
+- [2026-06-15] **Slice-1 Key Decisions from the live smoke test** — `Network flag` (every governance query carries `--mainnet`/`--testnet-magic` from the node cluster; fixed in final pass FP-1) and `DRep status grounding` (canonical `active | inactive`; `Expiring` renderer-derived, `Retired` deferred; code `expired` renamed in FP-9).
+
 ### Changed
+
+- [2026-06-15] Ratified `DRep query shape` and the Technical Design to the as-built slice-1 shape — `drep-state --all-dreps --include-stake` (inline voting power) + `query tip` (current epoch); `drep-stake-distribution`/`gov-state` deferred to their owning slices.
 
 ---
 
 **Status:** In Progress
-**Date:** 2026-06-03
+**Date:** 2026-06-15
 **Author:** david-profrontsolutions (ft. GitHub Copilot)

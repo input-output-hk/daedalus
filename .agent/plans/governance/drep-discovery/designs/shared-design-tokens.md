@@ -10,12 +10,14 @@ These tokens are referenced across the DRep Discovery design. They are intention
 |---|---|---|---|---|---|---|
 | Active | `drep-state` | Active | アクティブ | `--badge-success-bg` / `--badge-success-fg` | same tokens | dot |
 | Inactive | `drep-state` (no votes within `drepActivity`) | Inactive | 非アクティブ | `--badge-neutral-bg` / `--badge-neutral-fg` | same | dot |
-| Expiring soon (≤6 epochs) | derived | Expiring in {n} epochs | あと{n}エポックで失効 | `--badge-warning-bg` / `--badge-warning-fg` | same | warning triangle |
+| Expiring soon (≤12 epochs; default-cohort entries only when 7–12 remain) | derived | Expiring in {n} epochs | あと{n}エポックで失効 | `--badge-warning-bg` / `--badge-warning-fg` | same | warning triangle |
 | Retired | `drep-state` | Retired | 退任 | `--badge-disabled-bg` / `--badge-disabled-fg` | same | none |
-| Top-35 (search/show-all only) | derived from `drep-stake-distribution` | Excluded from default cohort | デフォルト候補外 | `--badge-info-bg` / `--badge-info-fg` | same | info `i` |
+| Top-35 (search/show-all only) | derived from per-DRep voting power | Excluded from default cohort | デフォルト候補外 | `--badge-info-bg` / `--badge-info-fg` | same | info `i` |
 | Selfnode / CLI unsupported | `SelfnodeCliUnsupported` | DRep data unavailable on selfnode | DRepデータ利用不可 | `--badge-disabled-bg` | same | warning |
 
 Contrast rule: every badge must meet **WCAG 2.1 AA 4.5:1** in both themes. Color must never be the sole indicator — pair every status with an icon **and** the textual label. Existing `_votingConfig.scss` already exposes the success/warning/neutral palette; reuse, don't redefine.
+
+**Status grounding and slice staging (canonical).** `Active`/`Inactive` are the two ledger-grounded stored states from `drep-state`: a DRep is `Inactive` once `currentEpoch >= expiry`, otherwise `Active`. `Expiring soon` is **derived** in the renderer from the remaining `drepActivity` (≤12 epochs) — it is a display overlay, not a stored status. `Retired` requires a distinct unregistration signal that `drep-state --include-stake` does not surface, so it is deferred past slice-1. **Slice-1 ships `Active`/`Inactive` only**; `Expiring soon` joins with the slice-5 `Threshold` category window, and `Retired` lands when its signal is available. Implementation note: the shipped slice-1 code currently labels the inactive condition `expired`; the canonical term is `inactive` and the rename is tracked as slice-1 final pass FP-9.
 
 **Where the status badge is rendered.** The status badge appears on every DRep card in the directory, on the DRep detail view, and on the `CurrentVoteSummary` panel's `drep` state. Surfacing it on `CurrentVoteSummary` is binding: users must be able to tell at a glance whether the DRep they currently delegate to is still active or about to lapse.
 
@@ -29,12 +31,12 @@ Implementation staging is locked: `slice-5` renders Primary / Threshold / Non-me
 |---|---|---|---|
 | High value | Inside the default randomized cohort AND completed metadata AND voting power above the cohort median | High value | "Inside the default Recommended view, with verified metadata and voting power above the cohort median." |
 | Primary | Inside the default randomized cohort AND completed metadata | Primary | "Inside the default Recommended view with verified metadata." |
-| Threshold | Inside the default randomized cohort but expiry within the 6\u201312 epoch window (still above the 6-epoch floor) | Threshold | "Inside the default Recommended view but approaching expiry \u2014 review before delegating." |
+| Threshold | Inside the default randomized cohort but expiry within the 7–12 epoch window (still above the 6-epoch floor) | Threshold | "Inside the default Recommended view but approaching expiry — review before delegating." |
 | Non-metadata | Eligible for the cohort but anchor metadata is missing or unverified | Non-metadata | "Eligible for delegation but has no verified off-chain metadata yet." |
 
 Labels and tooltip copy land in i18n under `governance.drepDirectory.category.*` (see \u00a79). The four labels are deliberately short to avoid wrapping inside cards in JA / DE; copy can iterate but the four-value enum is fixed for Phase 1.
 
-**Priority rule (binding).** When a DRep satisfies more than one category simultaneously, the highest-priority badge wins. Priority order (highest → lowest): **High Value → Threshold → Primary → Non-metadata**. A DRep with metadata that is also approaching expiry (6–12 epochs) always shows **Threshold**, not Primary.
+**Priority rule (binding).** When a DRep satisfies more than one category simultaneously, the highest-priority badge wins. Priority order (highest → lowest): **High Value → Threshold → Primary → Non-metadata**. A DRep with metadata that is also approaching expiry (7–12 epochs) always shows **Threshold**, not Primary.
 
 ## 2. Source Labels (anchor-ready)
 
@@ -49,6 +51,8 @@ Every rendered field gets an explicit provenance label. This is the single most 
 | **Anchor unavailable** | Fetch or hash check failed | small pill, `--source-warning-fg`, warning triangle | "The anchor URL could not be retrieved or did not match the on-chain hash. Off-chain profile is not shown." |
 
 Token names follow the existing `themes/` convention (e.g., `--theme-source-onchain-color`); naming-only — actual hex deferred to theme tokens used by `staking/delegation-center/`.
+
+Slice-4 on-chain anchor placeholders use **On-chain anchor reference**. The **Unverified anchor** label is reserved for fetched anchor content that has not yet passed hash verification.
 
 ## 3. Voting Power Formatting
 
@@ -84,12 +88,18 @@ The default-cohort view is randomized. Users must understand this without surpri
 
 ## 6. Refresh State
 
+Loading is **two-phase** (see [UX refinement research](../research/ux-refinement-sync-and-load-research.md)): Phase 1 reads DRep registrations (`drep-state --all-dreps`, no `--include-stake`) and paints the list; Phase 2 enriches voting power (`drep-stake-distribution --all-dreps`). Phase 1 is the cheap registration read; Phase 2 is the officially "potentially expensive" stake computation, kept off the first-paint path.
+
 | Phase | Trigger | Visual | Time budget |
 |---|---|---|---|
-| Initial load | route enter, no cached state | full skeleton list | ≤700 ms before skeleton |
-| Stale-while-refresh | explicit refresh or route re-enter with cached data | small spinner badge next to "Last updated {time}" timestamp, list interactive | up to 10 s |
-| Timeout / failed | spawn or parse failure from `GovernanceQueryService` | inline error banner: `"Couldn't refresh DRep data. {Retry}. Showing last successful snapshot from {time}."` | banner appears at 10 s |
-| Ranking unavailable (partial) | `drep-stake-distribution` failed but `drep-state` succeeded | list renders, voting-power column shows `—` with tooltip, banner: `"Voting power data unavailable this refresh. Ranking-based filters disabled."` | immediate |
+| Initial load (phase 1) | route enter, no cached state | full skeleton list | ≤700 ms before skeleton; list ≤10 s |
+| Voting-power enrich (phase 2) | after phase 1 paints | voting-power column shows `—`/skeleton with "Loading voting power…" tooltip until stake lands | ≤30 s |
+| Stale-while-refresh | explicit refresh or route re-enter with cached data | small spinner badge next to "Last updated {time}" timestamp, list interactive | phase 1 ≤10 s, phase 2 ≤30 s |
+| Timeout / failed (phase 1) | spawn or parse failure on registrations | inline error banner: `"Couldn't refresh DRep data. {Retry}. Showing last successful snapshot from {time}."` | banner appears at 10 s |
+| Ranking unavailable (phase 2 failed) | `drep-stake-distribution` failed but `drep-state` succeeded | list renders, voting-power column shows `—` with tooltip, banner: `"Voting power data unavailable this refresh. Ranking-based filters disabled."` | banner appears at 30 s |
+| Node syncing (soft warning) | `!networkStatus.isNodeInSync` on route enter | persistent banner `governance.drepDirectory.syncing` (`"Your node is still syncing ({n}%). The DRep list may be incomplete until sync completes."`); the query still runs and shows whatever data is available; refetch when sync reaches tip | banner visible for the whole sync; clears at `isNodeInSync` |
+
+**Why a soft sync banner, not a hard gate:** `drep-state` returns a correct-but-stale snapshot as of the node's *local* tip while syncing — never an error (except era-mismatch before Conway). Without the banner the user would silently see an incomplete list. The `noSync` empty state (§ below / `governance.drepDirectory.empty.noSync`) is the fallback only when the syncing query yields zero DReps or an era/availability error.
 
 The "Last updated {time}" timestamp is part of the directory header. Format: relative ("3 minutes ago") with absolute ISO timestamp in tooltip.
 
@@ -122,7 +132,7 @@ Never show an unverified anchor name in the confirmation dialog — confirmation
 
 **Identity equality rule (binding):** The DRep identifier displayed on the hardware device must be **byte-equal** to the identifier rendered in the confirmation dialog *and* to the `vote.id` field of the signed payload. The CIP-129 and CIP-105 strings shown to the user must both decode to the same underlying DRep credential bytes as the payload `id`.
 
-**Acceptance criterion (HW tests):** A hardware-wallet e2e test must assert that the identifier surfaced by the device prompt is byte-equal to `vote.chosenOption` (or the equivalent field in the constructed tx body). This is a release-blocking assertion.
+**Acceptance criterion (HW tests):** A hardware-wallet Jest test must assert that the identifier surfaced by the device prompt is byte-equal to `vote.chosenOption` (or the equivalent field in the constructed tx body). This is a release-blocking assertion.
 
 ## 8. Hardware Wallet Confirmation
 
@@ -142,7 +152,7 @@ Sub-state mapping is driven by the canonical `HwDeviceStatus` enum in `source/co
 
 ## 9. Microcopy Inventory (message IDs)
 
-All IDs below are shared so `yarn i18n:manage` produces a stable set. Status-badge ja-JP labels are locked above; broader ja-JP copy may land as slice-level placeholders and is fully reviewed as a pre-release batch gate.
+All IDs below are shared so `yarn i18n:manage` produces a stable set. Status-badge ja-JP labels are locked above; broader en-US and ja-JP copy may land as slice-level placeholders, must retain the leading `!!!` marker while preliminary, and is fully reviewed only in the final end-of-feature manual copy pass.
 
 | ID | en source |
 |---|---|
@@ -166,12 +176,13 @@ All IDs below are shared so `yarn i18n:manage` produces a stable set. Status-bad
 | `governance.drepDirectory.empty.noResults` | No DReps match your filters. {ClearFilters} or {ShowAll}. |
 | `governance.drepDirectory.empty.selfnode` | DRep directory data is unavailable on the selfnode cluster. |
 | `governance.drepDirectory.empty.noSync` | Your node is still syncing. DRep data becomes available once the node reaches the tip. |
+| `governance.drepDirectory.syncing` | Your node is still syncing ({progress}%). The DRep list may be incomplete until sync completes. |
 | `governance.drepDirectory.error.refresh` | Couldn't refresh DRep data. {Retry}. Showing last successful snapshot from {time}. |
 | `governance.drepDirectory.error.rankingUnavailable` | Voting power data unavailable this refresh. Ranking-based filters disabled. |
-| `governance.drepDirectory.card.status.active` | Active |
-| `governance.drepDirectory.card.status.inactive` | Inactive |
-| `governance.drepDirectory.card.status.expiring` | Expiring in {n} epochs |
-| `governance.drepDirectory.card.status.retired` | Retired |
+| `governance.drepDirectory.status.active` | Active |
+| `governance.drepDirectory.status.inactive` | Inactive |
+| `governance.drepDirectory.status.expiring` | Expiring in {n} epochs |
+| `governance.drepDirectory.status.retired` | Retired |
 | `governance.drepDirectory.category.highValue` | High value |
 | `governance.drepDirectory.category.primary` | Primary |
 | `governance.drepDirectory.category.threshold` | Threshold |
@@ -181,7 +192,7 @@ All IDs below are shared so `yarn i18n:manage` produces a stable set. Status-bad
 | `governance.drepDirectory.category.threshold.tooltip` | Inside the default Recommended view but approaching expiry — review before delegating. |
 | `governance.drepDirectory.category.nonMetadata.tooltip` | Eligible for delegation but has no verified off-chain metadata yet. |
 | `governance.drepDirectory.cohortBanner.source` | Cohort sizing follows the Beyond MVG (BMVG) Simplified one-click-delegation analysis. |
-| `governance.drepDirectory.card.votingPower` | Voting power |
+| `governance.drepDirectory.votingPower` | Voting power |
 | `governance.drepDirectory.card.viewDetails` | View details |
 | `governance.drepDirectory.card.select` | Select for delegation |
 | `governance.drepDirectory.card.favorite.add` | Add to favorites |
@@ -208,7 +219,7 @@ The show-all sort-bias warning is the only additional ID beyond the shared set a
 
 **JA-length risk:** The longer en-US strings — cohort banner (`governance.drepDirectory.cohortBanner`), refresh error banner (`governance.drepDirectory.error.refresh`), ranking-unavailable banner (`governance.drepDirectory.error.rankingUnavailable`), and the Show-all sort-bias warning — are expected to expand 30–60% in Japanese and German. Each surface must allow a minimum of 2 wrapped lines without truncating; in cards/banners the layout must reflow vertically rather than ellipsizing.
 
-ja-JP source strings may land as slice-level placeholders; full Japanese review is a pre-release batch gate rather than a per-slice blocker.
+ja-JP source strings may land as slice-level placeholders; both en-US and ja-JP strings keep the leading `!!!` marker until the final manual review batch gate rather than being finalized per slice.
 
 ## 10. Accessibility Floor
 

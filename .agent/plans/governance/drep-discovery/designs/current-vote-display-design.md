@@ -9,9 +9,9 @@
 
 ## 1. Overview
 
-This design realises the renderer-only Current Vote Display feature defined by the companion plan. It parses the existing `cardano-wallet v2026-05-11` `delegation.active.voting` field, exposes the selected wallet's current governance delegation on the `Wallet` domain model, renders a new `CurrentVoteSummary` above the existing `VotingPowerDelegation` form, pre-fills the form from the current on-chain delegation, and blocks identical re-submissions client-side.
+This design realises the renderer-only Current Vote Display feature defined by the companion plan. It parses the existing `cardano-wallet` `delegation.active.voting` field, exposes the selected wallet's current governance delegation on the `Wallet` domain model, renders a new `CurrentVoteSummary` above the existing `VotingPowerDelegation` form, pre-fills the form from the current on-chain delegation, and blocks identical re-submissions client-side.
 
-No new IPC channel, no new cardano-wallet endpoint, no signing-path change, and no `WalletsStore` polling change are introduced. A blocking slice-1 sanitization floor (`task-109`, `task-110`) widens `filterLogData` and reduces the `Casted governance vote` analytics payload to `{ voteKind }` before any vote target ever leaves the renderer DOM.
+No new IPC channel, no new cardano-wallet endpoint, no signing-path change, and no `WalletsStore` polling change are introduced. A blocking slice-1 sanitization floor (`task-109`, `task-110`) widens `filterLogData` and reduces the `Casted governance vote` analytics payload to `{ drepOption }` before any vote target ever leaves the renderer DOM.
 
 ## 2. Goals / Non-Goals
 
@@ -56,7 +56,7 @@ The wallet has not delegated its voting power to a DRep, Abstain, or No Confiden
 
 ### `drep`
 
-The wallet currently delegates voting power to a DRep. The panel reads `givenName` from `GovernanceStore.drepIndex[drepId]?.givenName`. If no index entry exists, the name is hidden and only the DRep ID is shown with an unverified source label. No wallet re-poll is required when verification completes; the MobX reaction on `drepIndex` updates the panel automatically. The panel also shows the DRep source label, the compact CIP-129/CIP-105 id pair, an in-app "View details" link, and an external "Anchor metadata" link.
+The wallet currently delegates voting power to a DRep. The panel reads `givenName` from `GovernanceStore.drepIndex[drepId]?.givenName`. If no index entry exists, the name is hidden and only the DRep ID is shown with the on-chain source label until verified anchor content is available. No wallet re-poll is required when verification completes; the MobX reaction on `drepIndex` updates the panel automatically. The panel also shows the DRep source label, the compact CIP-129/CIP-105 id pair, an in-app "View details" link, and an external "Anchor metadata" link.
 
 ### `abstain`
 
@@ -229,13 +229,13 @@ Contract:
 
 Add the flat keys `dRepId`, `vote`, and `voting` to the existing redaction list in [source/common/utils/logging.ts](../../../../source/common/utils/logging.ts) (`filterLogData`). Daedalus's `filterLogData` uses `omit-deep-lodash` with a flat key list; redaction by key name recurses at any depth and covers `delegation.active.voting`, `delegation.next[*].voting`, and `certificates[*].vote` once those flat keys are added.
 
-The existing `Casted governance vote` event in [source/renderer/app/stores/VotingStore.ts](../../../../source/renderer/app/stores/VotingStore.ts) is reduced to vote kind only:
+The existing `Casted governance vote` event in [source/renderer/app/stores/VotingStore.ts](../../../../source/renderer/app/stores/VotingStore.ts) is reduced to `drepOption` only:
 
 ```ts
 analyticsTracker.sendEvent(
   EventCategories.VOTING,
   'Casted governance vote',
-  voteKind,
+  drepOption,
 );
 ```
 
@@ -249,7 +249,7 @@ Event id and category are unchanged. This is a schema break for any Matomo dashb
 | Unit - normalizer | `drep1` / `drep_vkh1` / `drep_script1` round-trips; invalid bech32 -> `null` | colocated with `normalizeDRepIdentity.ts` |
 | Unit - Wallet computeds | `currentVote`, `isVoting` per `kind` plus null cases | `source/renderer/app/domains/__tests__/Wallet.test.ts` |
 | Component - snapshot | `CurrentVoteSummary` snapshot per five `currentVote` knob values x en-US / ja-JP | colocated with component |
-| Cucumber `@e2e` | Software + hardware-wallet paths include noDelegation, DRep, Abstain, No Confidence, same-vote prevention, and leak assertions | `tests/voting/features/governance-current-vote.feature` |
+| Jest - interaction/regression | Software + hardware-wallet paths include noDelegation, DRep, Abstain, No Confidence, same-vote prevention, and leak assertions | `tests/jest/` |
 | Sanitization regression | `filterLogData` + injected `AnalyticsTracker.sendEvent` spy assertions; `same_vote` safety net reachability | `tests/jest/security/voting-sanitization.test.ts` |
 
 ## 13. Risks

@@ -1312,9 +1312,9 @@
         "id": "sidebar.categoryTooltip.settings"
       },
       {
-        "defaultMessage": "!!!Voting",
-        "description": "Text for the tooltip of voting category",
-        "id": "sidebar.categoryTooltip.voting"
+        "defaultMessage": "!!!Governance",
+        "description": "Text for the tooltip of governance category",
+        "id": "sidebar.categoryTooltip.governance"
       }
     ],
     "path": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts"
@@ -1662,11 +1662,6 @@
         "id": "daedalus.diagnostics.dialog.syncPercentage"
       },
       {
-        "defaultMessage": "!!!Local time difference",
-        "description": "Local time difference",
-        "id": "daedalus.diagnostics.dialog.localTimeDifference"
-      },
-      {
         "defaultMessage": "!!!System time correct",
         "description": "System time correct",
         "id": "daedalus.diagnostics.dialog.systemTimeCorrect"
@@ -1777,16 +1772,6 @@
         "id": "daedalus.diagnostics.dialog.cardanoNodeInSync"
       },
       {
-        "defaultMessage": "!!!Checking...",
-        "description": "Checking...",
-        "id": "daedalus.diagnostics.dialog.localTimeDifferenceChecking"
-      },
-      {
-        "defaultMessage": "!!!Check time",
-        "description": "Check time",
-        "id": "daedalus.diagnostics.dialog.localTimeDifferenceCheckTime"
-      },
-      {
         "defaultMessage": "!!!Yes",
         "description": "Yes",
         "id": "daedalus.diagnostics.dialog.statusOn"
@@ -1805,11 +1790,6 @@
         "defaultMessage": "!!!Off",
         "description": "Off",
         "id": "daedalus.diagnostics.dialog.statusOffForUserSettings"
-      },
-      {
-        "defaultMessage": "!!!NTP service unreachable",
-        "description": "NTP service unreachable",
-        "id": "daedalus.diagnostics.dialog.serviceUnreachable"
       },
       {
         "defaultMessage": "!!!message",
@@ -2462,6 +2442,16 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Directory",
+        "description": "Label for the DRep directory tab.",
+        "id": "governance.tabs.directory"
+      }
+    ],
+    "path": "source/renderer/app/containers/voting/Governance.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Catalyst Voting",
         "description": "Label for the catalyst voting tab.",
         "id": "voting.tabs.catalyst"
@@ -2493,6 +2483,126 @@
       }
     ],
     "path": "source/renderer/app/containers/wallet/WalletSummaryPage.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Copy",
+        "description": "Copy button label for a DRep ID",
+        "id": "governance.drepDirectory.copyButton"
+      },
+      {
+        "defaultMessage": "!!!Copy DRep ID",
+        "description": "Accessible label for the DRep ID copy button",
+        "id": "governance.drepDirectory.copyId"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/DRepIdDisplay.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!On-chain",
+        "description": "Source label for on-chain DRep data",
+        "id": "governance.drepDirectory.source.onChain"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/DRepSourceLabel.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Active",
+        "description": "DRep active status badge label",
+        "id": "governance.drepDirectory.status.active"
+      },
+      {
+        "defaultMessage": "!!!Inactive",
+        "description": "DRep inactive status badge label",
+        "id": "governance.drepDirectory.status.inactive"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/DRepStatusBadge.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Voting power",
+        "description": "Label for the voting power column in DRep directory",
+        "id": "governance.drepDirectory.votingPower"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepCard.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!DRep Directory",
+        "description": "Title banner for DRep directory",
+        "id": "governance.drepDirectory.title"
+      },
+      {
+        "defaultMessage": "!!!Refresh",
+        "description": "Refresh button label",
+        "id": "governance.drepDirectory.refresh"
+      },
+      {
+        "defaultMessage": "!!!Last updated {time}",
+        "description": "Last updated timestamp label",
+        "id": "governance.drepDirectory.lastUpdated"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryBanner.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Loading DRep data…",
+        "description": "Loading state message",
+        "id": "governance.drepDirectory.loading"
+      },
+      {
+        "defaultMessage": "!!!No DReps found on-chain.",
+        "description": "Empty directory state",
+        "id": "governance.drepDirectory.empty"
+      },
+      {
+        "defaultMessage": "!!!Could not load DRep data.",
+        "description": "Error state message",
+        "id": "governance.drepDirectory.error"
+      },
+      {
+        "defaultMessage": "!!!Retry",
+        "description": "Retry button label",
+        "id": "governance.drepDirectory.retry"
+      },
+      {
+        "defaultMessage": "!!!Refreshing…",
+        "description": "Refreshing state badge label",
+        "id": "governance.drepDirectory.refreshing"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectory.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Previous",
+        "description": "Previous page button label",
+        "id": "governance.drepDirectory.pagination.previous"
+      },
+      {
+        "defaultMessage": "!!!Next",
+        "description": "Next page button label",
+        "id": "governance.drepDirectory.pagination.next"
+      },
+      {
+        "defaultMessage": "!!!Page {current} of {total}",
+        "description": "Current page info",
+        "id": "governance.drepDirectory.pagination.pageInfo"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryList.tsx"
   },
   {
     "descriptors": [

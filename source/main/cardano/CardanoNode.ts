@@ -2,7 +2,7 @@ import Store from 'electron-store';
 import { spawn, exec } from 'child_process';
 import type { ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
-import type { Launcher } from 'cardano-launcher';
+import type { Launcher, NodeStartService } from 'cardano-launcher';
 import { get, toInteger } from 'lodash';
 import moment from 'moment';
 import rfs from 'rotating-file-stream';
@@ -30,6 +30,7 @@ import { launcherConfig } from '../config';
 import type { NodeConfig } from '../config';
 import type { Logger } from '../../common/types/logging.types';
 import { containsRTSFlags } from '../utils/containsRTSFlags';
+import { GovernanceQueryService } from '../governance/GovernanceQueryService';
 
 /* eslint-disable consistent-return */
 type Actions = {
@@ -198,6 +199,13 @@ export class CardanoNode {
   _injectedFaults: Array<FaultInjection> = [];
 
   /**
+   * The filesystem path to the cardano-node Unix socket.
+   * Populated after node.start() resolves. null before start.
+   * @private
+   */
+  _nodeSocketPath: string | null = null;
+
+  /**
    * Cardano Node config getter
    * @returns {CardanoNodeImplementations}
    */
@@ -239,6 +247,15 @@ export class CardanoNode {
       cardanoWalletPID: get(this, '_node.wpid', 0),
       isRTSFlagsModeEnabled: containsRTSFlags(this._config.rtsFlags),
     });
+  }
+
+  /**
+   * Getter for the resolved cardano-node socket path.
+   * Returns null before node.start() resolves.
+   * @returns {string | null}
+   */
+  get nodeSocketPath(): string | null {
+    return this._nodeSocketPath;
   }
 
   /**
@@ -359,6 +376,14 @@ export class CardanoNode {
           // @ts-ignore ts-migrate(2740) FIXME: Type 'Selfnode' is missing the following propertie... Remove this comment to see the full error message
           this._node = node;
 
+          // Selfnode mode: DRep CLI queries are unsupported.
+          GovernanceQueryService.getInstance().setCliBin(this._config.cliBin);
+          GovernanceQueryService.getInstance().setNetwork(this._config.cluster);
+          GovernanceQueryService.getInstance().setSelfnodeMode(true);
+          _log.info(
+            'CardanoNode#start: governance service set to selfnode mode'
+          );
+
           this._handleCardanoNodeMessage({
             ReplyPort: replyPort,
           });
@@ -408,6 +433,24 @@ export class CardanoNode {
                 wallet: node.walletService.getProcess(),
                 node: node.nodeService.getProcess(),
               };
+
+              // Capture the launcher-resolved node socket path for DRep Discovery CLI queries.
+              const nodeConfig =
+                node.nodeService.getConfig() as NodeStartService | null;
+              this._nodeSocketPath = nodeConfig?.socketPath ?? null;
+              GovernanceQueryService.getInstance().setCliBin(
+                this._config.cliBin
+              );
+              GovernanceQueryService.getInstance().setNodeSocketPath(
+                this._nodeSocketPath
+              );
+              GovernanceQueryService.getInstance().setNetwork(
+                this._config.cluster
+              );
+              GovernanceQueryService.getInstance().setSelfnodeMode(false);
+              _log.info('CardanoNode#start: captured node socket path', {
+                nodeSocketPath: this._nodeSocketPath,
+              });
               // Setup event handling
               node.walletBackend.events.on('exit', (exitStatus) => {
                 _log.info('CardanoNode#exit', {
@@ -873,6 +916,8 @@ export class CardanoNode {
     if (this._mockTokenMetadataServerLogFile)
       this._mockTokenMetadataServerLogFile.end();
     if (this._node) this._node = null;
+    this._nodeSocketPath = null;
+    GovernanceQueryService.getInstance().reset();
     this._tlsConfig = null;
   };
 

@@ -38,6 +38,8 @@ import AnalyticsConsentPage from './containers/profile/AnalyticsConsentPage';
 import TrackedRoute from './analytics/TrackedRoute';
 import Voting from './containers/voting/Voting';
 import VotingGovernancePage from './containers/voting/VotingGovernancePage';
+import Governance from './containers/voting/Governance';
+import DRepDirectoryPage from './containers/governance/DRepDirectoryPage';
 
 export const Routes = withRouter(() => (
   <Route path={ROUTES.ROOT}>
@@ -220,6 +222,20 @@ export const Routes = withRouter(() => (
               component={VotingGovernancePage}
             />
           </Voting>
+        </Route>
+        <Route path={ROUTES.GOVERNANCE.ROOT}>
+          <Governance>
+            <Route
+              exact
+              path={ROUTES.GOVERNANCE.ROOT}
+              component={() => <Redirect to={ROUTES.GOVERNANCE.DREPS} />}
+            />
+            <TrackedRoute
+              pageTitle="DRep Directory"
+              path={ROUTES.GOVERNANCE.DREPS}
+              component={DRepDirectoryPage}
+            />
+          </Governance>
         </Route>
       </Switch>
     </Root>

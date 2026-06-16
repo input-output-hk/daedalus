@@ -1,0 +1,49 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.stateContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 48px 0;
+  text-align: center;
+}
+
+.errorMessage {
+  color: var(--theme-error-color, #d32f2f);
+  font-weight: 600;
+}
+
+.errorDetails {
+  font-size: 13px;
+  color: var(--theme-text-secondary, #6b7384);
+  max-width: 480px;
+}
+
+.errorBanner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--theme-error-color, #d32f2f);
+  border-radius: 8px;
+  background: rgba(211, 47, 47, 0.06);
+}
+
+.refreshingBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--theme-text-secondary, #6b7384);
+  padding: 4px 0;
+}

@@ -2,11 +2,20 @@
   "metadata": {
     "title": "Governance DRep Discovery Plan Tasks",
     "created": "2026-05-21",
-    "updated": "2026-06-03",
-    "version": "1.0",
-    "totalTasks": 58,
+    "updated": "2026-06-16",
+    "version": "2.0",
+    "statusVocabulary": [
+      "pending",
+      "in_progress",
+      "partial",
+      "blocked",
+      "complete",
+      "verified",
+      "deferred"
+    ],
+    "totalTasks": 69,
     "prdReference": ".agent/plans/governance/drep-discovery/governance-drep-discovery-plan.md",
-    "description": "DRep Discovery + Wallet Current Vote Display, organized as a vertical-slice plan. Each slice is a thin end-to-end capability — minimum main-process/backend + IPC + store + UI, demoable behind the REAL IPC path, with its own Storybook + Jest + (where user-facing) Cucumber + i18n landed in the same slice. There is no terminal i18n phase, no terminal test phase, and no pure-backend phase. Three sequential foundation slices close the browse -> select -> delegate journey for both wallet types: slice-1 (walking skeleton + log/analytics sanitization floor), slice-2 (software-wallet delegate), and slice-3 (hardware-wallet delegate). Three parallelizable tracks then thicken the product: Track D (discovery: detail -> cohort+badges+banner -> search/show-all -> favorites -> refresh+selfnode+release-verification), Track V (current vote: plumbing+core -> enrichment), and Track A (anchor: hardened-fetch+givenName -> completion). Two floors are never thinned across slices: the log/analytics sanitization invariant (lands in slice-1, asserted by every later slice) and the anchor transport security guards (land complete in anchor-1). Product content includes: BMVG citation, four-category badge, default-cohort-as-Recommended, 6-epoch drepActivity floor, CurrentVoteSummary live status badge, CIP-119 givenName + anchor links."
+    "description": "DRep Discovery + Wallet Current Vote Display, organized as a vertical-slice plan. Each slice is a thin end-to-end capability — minimum main-process/backend + IPC + store + UI, demoable behind the REAL IPC path, with its own Storybook + Jest + i18n landed in the same slice. There is no terminal i18n phase, no terminal test phase, and no pure-backend phase. Three sequential foundation slices close the browse -> select -> delegate journey for both wallet types: slice-1 (walking skeleton + log/analytics sanitization floor), slice-2 (software-wallet delegate), and slice-3 (hardware-wallet delegate). Three parallelizable tracks then thicken the product: Track D (discovery: detail -> cohort+badges+banner -> search/show-all -> favorites -> refresh+selfnode+release-verification), Track V (current vote: plumbing+core -> enrichment), and Track A (anchor: hardened-fetch+givenName -> completion). Two floors are never thinned across slices: the log/analytics sanitization invariant (lands in slice-1, asserted by every later slice) and the anchor transport security guards (land complete in anchor-1). Product content includes: BMVG citation, four-category badge, default-cohort-as-Recommended, 6-epoch drepActivity floor, CurrentVoteSummary live status badge, CIP-119 givenName + anchor links. All newly introduced en-US and ja-JP copy remains preliminary with a leading !!! until the final manual review at the end of the feature cycle. The slice-1 final pass (defect fixes) is tracked separately in task-plans/slice-1-final-pass-sprint.yaml. 2026-06-15 final-pass status refresh (FP-5): task-103 (query service) moved partial -> complete after FP-1 added the cardano-cli network flag and FP-9 renamed the DRep status literal to the ledger-correct active/inactive; the only residual limitation is the design constraint that drep-state exposes just expiry. slice-1 auditSummary.statusCounts updated to complete 8 / partial 0 / verified 3, and task-103/task-104/task-107 statusReason text was confirmed accurate and refreshed. 2026-06-15 final-pass bookkeeping (FP-6): the dead per-task origin property (legacy task numbers no tooling reads) was removed from all task entries and stale split/dissolved/hour-split parentheticals were cleaned from task descriptions; the original task lineage is preserved in git history. 2026-06-16 slice-1 closeout (Next Steps reconciliation): the disposable Next Steps section of task-plans/slice-1-final-pass-review.md was removed after confirming items 1-5 are already tracked across the tasking and PRDs; its only residual not previously in the tasking — the optional CLI-robustness cleanups (conway era-retry structured signal + real-binary argv smoke test) distilled from the slice-1 final-pass standing risks — was folded in as task-169 (ux-refinement phase, low priority)."
   },
   "phases": [
     {
@@ -14,35 +23,51 @@
       "name": "Slice 1 - Walking skeleton + sanitization floor",
       "description": "Thin end-to-end skeleton: real cardano-node socket-path ownership, real `cardano-cli --all-dreps`, lossless json-bigint parse, decimal-string IPC, BigNumber rehydration, and a BARE directory list (DRep id, voting power, active/inactive status) on its own route. Folds in the log/analytics sanitization floor so no vote target can leak from the first slice onward. The sanitization invariant established here is an inherited acceptance check that every later slice also asserts.",
       "riskLevel": "high",
+      "auditSummary": {
+        "updatedAt": "2026-06-15",
+        "reviewReference": ".agent/plans/governance/drep-discovery/task-plans/slice-1-code-review.md",
+        "statusCounts": {
+          "complete": 8,
+          "partial": 0,
+          "verified": 3
+        },
+        "finalPassPRD": ".agent/plans/governance/drep-discovery/task-plans/slice-1-final-pass-PRD.md"
+      },
       "tasks": [
         {
           "id": "task-101",
           "title": "Define shared DRep Discovery TypeScript types",
-          "description": "Add shared types in source/common/ for DRep registration state, active/inactive status, expiry epoch and greater-than-six-epoch eligibility, voting power, anchor presence, metadata-completeness state, current epoch vote positions on active proposals, wallet governance delegation status, source labels, refresh metadata, and query failure payloads.",
-          "status": "pending",
+          "description": "Add shared types in source/common/ for DRep registration state, active/expired status, expiry epoch and greater-than-six-epoch eligibility, voting power, anchor presence, metadata-completeness state, current epoch vote positions on active proposals, wallet governance delegation status, source labels, refresh metadata, and query failure payloads.",
+          "status": "complete",
+          "statusReason": "Core shared governance types landed in source/common/types/governance.types.ts and continue to compile after the slice-1 governance validation pass. Dedicated type-level validation beyond compile is still not isolated, so this remains complete rather than verified.",
+          "evidence": [
+            "source/common/types/governance.types.ts"
+          ],
+          "updatedAt": "2026-06-11",
           "priority": "high",
           "estimatedHours": 5,
-          "origin": [
-            "task-001"
-          ],
           "dependencies": [],
           "targetPath": "source/common/types/",
           "acceptanceCriteria": [
             "Use `votingPower: BigNumber | null`; expose optional detail-only delegated stake with the same lossless value if labeled separately.",
             "Document IPC serialization for lovelace fields as decimal strings with renderer-side BigNumber rehydration.",
-            "Define typed `QueryFailure`, ranking-unavailable failure, refresh metadata, `InvalidDrepId`, and `SelfnodeCliUnsupported` variants."
+            "Define the slice-1 typed governance failure variants required by the DRep list flow, including `QueryFailed`, `ParseFailed`, `SelfnodeCliUnsupported`, socket-unavailable, CLI-not-found, timeout, and unknown fallback states. Defer ranking-unavailable, refresh-metadata enrichment, and `InvalidDrepId` to the later slices that introduce those surfaces."
           ]
         },
         {
           "id": "task-102",
           "title": "Own cardano-node socket path across launcher lifecycle",
           "description": "Implement the DRep Discovery prerequisite for cardano-cli queries: set `nodeConfig.socketFile` explicitly in CardanoWalletLauncher before constructing cardanoLauncher.Launcher, then capture `node.nodeService.socketPath` after `node.start()` resolves in CardanoNode and expose it through a read-only accessor. Do not add a `nodeSocketPath` field to `WalletOptions` or `CardanoNodeConfig`.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "CardanoWalletLauncher sets socketFile pre-launch, CardanoNode wires the launcher-resolved socket path and cli bin into GovernanceQueryService, _reset() clears stale state, and selfnode mode now emits typed SelfnodeCliUnsupported through an explicit guard. The CardanoNode selfnode branch calls setSelfnodeMode(true) on GovernanceQueryService.",
+          "evidence": [
+            "source/main/cardano/CardanoWalletLauncher.ts",
+            "source/main/cardano/CardanoNode.ts",
+            "source/main/governance/GovernanceQueryService.ts"
+          ],
+          "updatedAt": "2026-06-12",
           "priority": "high",
           "estimatedHours": 6,
-          "origin": [
-            "task-002"
-          ],
           "dependencies": [],
           "targetPath": "source/main/cardano/",
           "acceptanceCriteria": [
@@ -56,13 +81,18 @@
         {
           "id": "task-103",
           "title": "Add main-process DRep query service",
-          "description": "Implement a singleton GovernanceQueryService in source/main/ for DRep list, DRep detail, current epoch vote positions, and wallet governance status using the confirmed cardano-cli path and shared DRep Discovery types. Slice-1 renders only the bare list, but this service also produces the detail, vote-position, and wallet-status payloads consumed by later slices (slice-4 detail, Track V, Track A).",
-          "status": "pending",
+          "description": "Implement the slice-1 singleton GovernanceQueryService in source/main/ for the DRep list query using the confirmed cardano-cli path and shared DRep Discovery types. The broader detail, vote-position, and wallet-governance-status surfaces are deferred to their later owning slices (slice-4 detail, Track V, Track A).",
+          "status": "complete",
+          "statusReason": "Singleton service is wired from CardanoNode with selfnode/non-selfnode modes and a reset() boundary. Parser consumes real CLI tuple output (`[[credential, state], ...]`), derives CIP-129 DRep IDs from credential hashes via Cardano.DRepID.cip129FromCredential, requires an integer epoch scalar from `query tip`, retries with `conway` when the installed CLI rejects the `latest` era alias, and rejects partial anchors or non-string anchor fields instead of emitting broken placeholder data. Voting power is nullable when `--include-stake` returns no stake. 10 s CLI_TIMEOUT_MS budget emits Timeout. Both slice-1 final-pass follow-ups that previously held this task at partial are fixed this sprint: FP-1 added the required network flag (`--mainnet` / `--testnet-magic <N>`) to the CLI argv after the subcommand, so live queries no longer fail with the \"Missing: (--mainnet | --testnet-magic NATURAL)\" CLI error; FP-9 renamed the status literal to the ledger-correct `active | inactive` (derived from `expiry <= currentEpoch`), aligning with shared-design-tokens §1 and the downstream slice-5 Threshold / cv-2 status badges. Focused Jest coverage (26 tests passing) validates: tuple parsing, era fallback, raw oversized-lovelace preservation through `json-bigint`, strict tip parsing, strict scalar validation for tip/expiry/anchor fields, parse failures, timeout, CliNotFound, cache reset, dedup, and the network flag in spawn argv for both mainnet and testnet clusters. Representative drep-state / drep-stake-distribution / gov-state fixtures (including a lovelace value above Number.MAX_SAFE_INTEGER) are committed under tests/mocks/governance/. Moved to complete: the only remaining limitation is a known design constraint, not unfinished work — the ledger's drep-state output exposes just `expiry`, so the parser can ground only the two `active`/`inactive` states; `expiring` is intentionally a renderer-derived display state and `retired` is deferred until a distinct unregistration signal exists. Live synced-node confirmation that the UTxO-HD backend serves drep-state from in-memory ledger tables remains a manual release-verification item (FP-8 / FP-11), not implementation work.",
+          "evidence": [
+            "source/main/governance/GovernanceQueryService.ts",
+            "source/main/cardano/CardanoNode.ts",
+            "tests/mocks/governance/",
+            "tests/jest/governance/GovernanceQueryService.spec.ts"
+          ],
+          "updatedAt": "2026-06-15",
           "priority": "high",
           "estimatedHours": 12,
-          "origin": [
-            "task-003"
-          ],
           "dependencies": [
             "task-101",
             "task-102"
@@ -75,22 +105,26 @@
             "Reads the captured node socket path from CardanoNode and passes it through `CARDANO_NODE_SOCKET_PATH` in spawn env.",
             "Parses CLI stdout with json-bigint in lossless mode and constructs BigNumber values from raw decimal strings; native JSON.parse -> Number -> BigNumber is forbidden.",
             "Includes a fixture/test with lovelace greater than 9_007_199_254_740_991 that round-trips parse -> IPC decimal string -> BigNumber rehydration losslessly.",
-            "Validates any future per-id DRep argv before spawn: bech32 prefix in {drep, drep_script} with valid checksum and CIP-129 length, or 56-char lowercase hex.",
-            "Rejected IDs return typed `InvalidDrepId` and never reach spawn.",
-            "`drep-state` whole-call failure returns typed directory `QueryFailure`; `drep-stake-distribution` whole-call failure returns typed ranking-unavailable `QueryFailure`; `gov-state` whole-call failure sets `currentEpochVotePositions: null` per DRep.",
+            "Slice-1 remains list-only: per-id DRep validation, `InvalidDrepId`, ranking-unavailable error surfaces, and `gov-state` / proposal-vote-position behavior are deferred to the later slices that introduce those queries.",
+            "`drep-state` whole-call failures return a typed directory error surface over IPC for the renderer store to normalize.",
             "Era flag uses `latest`, with `conway` fallback only if the query findings report that the alias is missing."
           ]
         },
         {
           "id": "task-104",
           "title": "Add governance IPC channels for DRep Discovery",
-          "description": "Add typed IPC channel contracts in source/common/ipc/api.ts for DRep list, DRep detail, wallet governance status, and refresh metadata. Register main-process handlers in source/main/ipc/index.ts wired to GovernanceQueryService.",
-          "status": "pending",
+          "description": "Add the slice-1 typed IPC contract for the DRep list query in source/common/ipc/api.ts and register the main-process handler in source/main/ipc/index.ts wired to GovernanceQueryService. Additional governance detail/status channels are deferred to later slices.",
+          "status": "complete",
+          "statusReason": "The DRep list contract and handler registration work end-to-end. The governanceChannel.ts error serialization now preserves the `details` field in the JSON payload alongside `type` and `message`; GovernanceStore._normalizeError already parses this shape.",
+          "evidence": [
+            "source/common/ipc/api.ts",
+            "source/main/ipc/index.ts",
+            "source/main/ipc/governanceChannel.ts",
+            "source/renderer/app/stores/GovernanceStore.ts"
+          ],
+          "updatedAt": "2026-06-12",
           "priority": "high",
           "estimatedHours": 4,
-          "origin": [
-            "task-004"
-          ],
           "dependencies": [
             "task-103"
           ],
@@ -100,12 +134,14 @@
           "id": "task-105",
           "title": "Add renderer IPC clients for DRep Discovery",
           "description": "Add renderer-side IPC client wrappers in source/renderer/app/ipc/ for DRep Discovery channels, following the same main/renderer split pattern as Mithril IPC clients.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "The renderer governance channel wrapper exists, follows the existing RendererIpcChannel pattern, and compiles in the current slice-1 governance validation pass. No dedicated renderer-IPC-only test was added, so this remains complete rather than verified.",
+          "evidence": [
+            "source/renderer/app/ipc/governanceChannel.ts"
+          ],
+          "updatedAt": "2026-06-11",
           "priority": "high",
           "estimatedHours": 3,
-          "origin": [
-            "task-005"
-          ],
           "dependencies": [
             "task-104"
           ],
@@ -114,13 +150,17 @@
         {
           "id": "task-106",
           "title": "Add bare GovernanceStore (list + drepIndex + loading/error)",
-          "description": "Create source/renderer/app/stores/GovernanceStore.ts and register it in stores/index.ts. In this slice the store owns ONLY the DRep list, a drepIndex keyed by DRep id for O(1) status lookup, loading states, refresh state, and typed error states. Favorites, default-cohort, search/show-all, and selectedDRepId state are added in their later owning slices (slice-7, slice-5, slice-6, slice-2). VotingStore must not read GovernanceStore state directly. (Split from task-007: bare-list portion; estimate 4 of 8 hours, remaining store state lands in slice-2/5/6/7.)",
-          "status": "pending",
+          "description": "Create source/renderer/app/stores/GovernanceStore.ts and register it in stores/index.ts. In this slice the store owns ONLY the DRep list, a drepIndex keyed by DRep id for O(1) status lookup, loading states, refresh state, and typed error states. Favorites, default-cohort, search/show-all, and selectedDRepId state are added in their later owning slices (slice-7, slice-5, slice-6, slice-2). VotingStore must not read GovernanceStore state directly.",
+          "status": "complete",
+          "statusReason": "GovernanceStore is now instantiated at runtime, owns the bare directory list/index/loading/error state, and the directory page refreshes on first navigation after idle or failed bootstrap state. The store compiles and is exercised indirectly through the slice-1 directory component tests.",
+          "evidence": [
+            "source/renderer/app/stores/GovernanceStore.ts",
+            "source/renderer/app/stores/index.ts",
+            "source/renderer/app/containers/governance/DRepDirectoryPage.tsx"
+          ],
+          "updatedAt": "2026-06-11",
           "priority": "high",
           "estimatedHours": 4,
-          "origin": [
-            "task-007 (bare-list portion)"
-          ],
           "dependencies": [
             "task-105"
           ],
@@ -134,39 +174,52 @@
         {
           "id": "task-107",
           "title": "Build the BARE DRep directory list (id / power / status)",
-          "description": "Build the BARE DRep directory list component rendering only DRep id, voting power, and active/inactive status columns, backed by GovernanceStore. Cohort randomization, category badges, filters, search, show-all, expiry/metadata columns, and the favorite toggle are deferred to their owning slices. Includes the in-slice Storybook (loaded / empty / error / refreshing) and Jest coverage for the bare list. (Split from task-008: bare-list portion, ~4 of task-008's 8h plus dissolved Storybook/Jest coverage hours; cohort rule -> slice-5, filters/show-all -> slice-6. Coverage from dissolved task-021/task-022 directory portions.)",
-          "status": "pending",
+          "description": "Build the BARE DRep directory list component rendering only DRep id, voting power, and status columns, backed by GovernanceStore. Cohort randomization, category badges, filters, search, show-all, expiry/metadata columns, and the favorite toggle are deferred to their owning slices. Includes the in-slice Storybook (loaded / empty / error / refreshing) and Jest coverage for the bare list.",
+          "status": "complete",
+          "statusReason": "Directory components are compatible with react-intl 2.9.0, dedicated stories exist for loaded/empty/error/refreshing plus en-US loading and 30-entry pagination variants. Focused Jest now passes for the directory slice with loading, empty, blocking error, retained-list error, pagination controls, page navigation, entries-per-page, and ja-JP locale rendering covered. The status column renders the ledger-correct active/inactive vocabulary (FP-9); `expiring` is a renderer-derived display state and is added by its later owning slice, while `retired` stays deferred until a distinct unregistration signal exists.",
+          "evidence": [
+            "source/renderer/app/components/governance/drep-directory/",
+            "source/renderer/app/components/governance/_shared/DRepStatusBadge.tsx",
+            "source/renderer/app/components/governance/drep-directory/DRepCard.tsx",
+            "storybook/stories/governance/DRepDirectory.stories.tsx",
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
+            "translations/messages.json"
+          ],
+          "updatedAt": "2026-06-15",
           "priority": "high",
           "estimatedHours": 5,
-          "origin": [
-            "task-008 (bare-list portion)",
-            "task-021 (directory portion)",
-            "task-022 (directory portion)"
-          ],
           "dependencies": [
             "task-106"
           ],
           "targetPath": "source/renderer/app/components/",
           "acceptanceCriteria": [
-            "Columns are limited to DRep ID, voting power, and active/inactive status; expiry/metadata columns, filters, cohort, and favorite toggle are deferred.",
+            "Columns are limited to DRep ID, voting power, and status; expiry/metadata columns, filters, cohort, and favorite toggle are deferred.",
             "Refresh button reloads latest local state.",
             "Directory list is paginated at 25 cards per page (page N of M). Total page count derives from filtered cohort size. Pagination controls and page count are covered by a Storybook story and a Jest render test.",
             "Ships reusable DRepIdDisplay and DRepSourceLabel components under source/renderer/app/components/governance/_shared/; cv-1 (task-132) reuses them without duplication.",
-            "Storybook covers loaded, empty, error, and refreshing states in en-US and ja-JP without overflow.",
-            "Jest covers the bare list rendering plus loading/error states.",
+            "Storybook covers loaded, empty, error, and refreshing states without overflow, plus loading coverage where the environment supports it.",
+            "Jest covers bare-list rendering, loading, pagination, locale rendering, and error states.",
             "INHERITED sanitization floor: no raw DRep id, no 'abstain', no 'no_confidence', and no bech32 CIP-129/CIP-105 string appears in any logger or analytics payload during directory browsing."
           ]
         },
         {
           "id": "task-108",
           "title": "Wire the DRep directory route",
-          "description": "Add the DRep directory route definition in source/renderer/app/Routes.tsx and a navigation entry point for the directory. The DRep detail route is added in slice-4. (Split from task-013: directory-route portion; estimate 1 of 2 hours.)",
-          "status": "pending",
+          "description": "Add the DRep directory route definition in source/renderer/app/Routes.tsx and a navigation entry point for the directory. The DRep detail route is added in slice-4.",
+          "status": "complete",
+          "statusReason": "The governance routes are wired, the sidebar entry is renamed to Governance, and active-state matching now covers both /governance/* and /voting/* paths. This compiles cleanly, but has not yet been manually revalidated in a live renderer session.",
+          "evidence": [
+            "source/renderer/app/Routes.tsx",
+            "source/renderer/app/routes-config.ts",
+            "source/renderer/app/containers/voting/Governance.tsx",
+            "source/renderer/app/config/sidebarConfig.ts",
+            "source/renderer/app/stores/SidebarStore.ts",
+            "source/renderer/app/components/sidebar/SidebarCategory.messages.ts"
+          ],
+          "updatedAt": "2026-06-11",
           "priority": "medium",
           "estimatedHours": 1,
-          "origin": [
-            "task-013 (directory-route portion)"
-          ],
           "dependencies": [
             "task-107"
           ],
@@ -176,12 +229,15 @@
           "id": "task-109",
           "title": "Redact governance vote targets in filterLogData",
           "description": "Use the existing omit-deep-lodash invocation pattern in filterLogData — flat key list, no path-aware visitor. Add keys dRepId, vote, voting (the existing helper recurses by key name at any depth, which already covers delegation.active.voting, delegation.next[*].voting, certificates[*].vote, etc.). This is part of the slice-1 sanitization floor that every later slice inherits.",
-          "status": "pending",
+          "status": "verified",
+          "statusReason": "filterLogData now recursively redacts governance vote keys including nested array elements, and focused Jest coverage plus logger-boundary assertions verify the inherited sanitization floor.",
+          "evidence": [
+            "source/common/utils/logging.ts",
+            "tests/jest/security/governance-sanitization.spec.ts"
+          ],
+          "updatedAt": "2026-06-11",
           "priority": "high",
           "estimatedHours": 4,
-          "origin": [
-            "task-031"
-          ],
           "dependencies": [],
           "targetPath": "source/common/utils/logging.ts",
           "acceptanceCriteria": [
@@ -192,22 +248,25 @@
         },
         {
           "id": "task-110",
-          "title": "Reduce 'Casted governance vote' analytics payload to voteKind only",
-          "description": "Change the 'Casted governance vote' analytics call in source/renderer/app/stores/VotingStore.ts to call the existing positional analytics API sendEvent(category, name, action?, value?) with action = voteKind (one of 'drep' | 'abstain' | 'no_confidence') and NO raw DRep id in either the action or value slot. Add a one-line CHANGELOG note: \"analytics: 'Casted governance vote' event action field now carries the vote kind only (drep/abstain/no_confidence) instead of the raw DRep id — telemetry dashboards keyed on event action must be updated.\"",
-          "status": "pending",
+          "title": "Reduce 'Casted governance vote' analytics payload to drepOption only",
+          "description": "Change the 'Casted governance vote' analytics call in source/renderer/app/stores/VotingStore.ts to call the existing positional analytics API sendEvent(category, name, action?, value?) with action = drepOption (one of 'drep' | 'abstain' | 'no_confidence') and the value argument omitted. No raw DRep id may appear in either analytics slot. Add a one-line CHANGELOG note: \"analytics: 'Casted governance vote' event action field now carries the drepOption only (drep/abstain/no_confidence) instead of the raw DRep id — telemetry dashboards keyed on event action must be updated.\"",
+          "status": "verified",
+          "statusReason": "The governance analytics event now sends only the sanitized drepOption action with the value slot omitted, the behavior is covered by focused Jest assertions, and CHANGELOG documents the schema change for dashboard owners.",
+          "evidence": [
+            "source/renderer/app/stores/VotingStore.ts",
+            "CHANGELOG.md"
+          ],
+          "updatedAt": "2026-06-11",
           "priority": "high",
           "estimatedHours": 3,
-          "origin": [
-            "task-032"
-          ],
           "dependencies": [
             "task-109"
           ],
           "targetPath": "source/renderer/app/stores/VotingStore.ts",
           "acceptanceCriteria": [
-            "`sendEvent` call uses the existing positional signature (category, name, action, value).",
+            "`sendEvent` call uses the existing positional signature (category, name, action, value) with `action = drepOption` and `value` omitted/undefined.",
             "`action` is one of `drep | abstain | no_confidence` — never a raw DRep id.",
-            "`value` slot does NOT carry a DRep id.",
+            "`value` is omitted/undefined for this event.",
             "Event `category` and `name` are unchanged.",
             "CHANGELOG entry calls out the action-field schema change for Matomo dashboard owners."
           ]
@@ -215,13 +274,15 @@
         {
           "id": "task-111",
           "title": "Establish the sanitization regression spy floor",
-          "description": "Jest test using spies over logger and the injected AnalyticsTracker.sendEvent (and optionally MatomoClient.sendEvent for integration-level coverage) asserting that no DRep id, no 'abstain' / 'no_confidence' literal, and no CIP-129/CIP-105 string appears in any logger.* payload or analytics call args. This establishes the sanitization floor asserted by every later slice. (Split from task-052: spy-test portion; estimate 3 of 4 hours, the same_vote server-error regression moves to cv-2.)",
-          "status": "pending",
+          "description": "Jest test using spies over logger and the injected AnalyticsTracker.sendEvent (and optionally MatomoClient.sendEvent for integration-level coverage) asserting that no DRep id, no 'abstain' / 'no_confidence' literal, and no CIP-129/CIP-105 string appears in any logger.* payload or analytics call args. This establishes the sanitization floor asserted by every later slice.",
+          "status": "verified",
+          "statusReason": "The governance sanitization spec now spies on both logger and AnalyticsTracker call boundaries to enforce the inherited no-leak floor for DRep ids and vote literals.",
+          "evidence": [
+            "tests/jest/security/governance-sanitization.spec.ts"
+          ],
+          "updatedAt": "2026-06-11",
           "priority": "high",
           "estimatedHours": 3,
-          "origin": [
-            "task-052 (spy-test portion)"
-          ],
           "dependencies": [
             "task-109",
             "task-110"
@@ -238,19 +299,16 @@
     {
       "id": "slice-2",
       "name": "Slice 2 - Software-wallet delegate",
-      "description": "Close the primary journey for software wallets: select a DRep from a directory list row, pre-fill VotingPowerDelegation, confirm with the DRep ID only, and submit through the existing software-wallet delegateVotes path. Includes in-slice Jest + Cucumber for the browse -> select -> delegate path. Selection is from the list row, NOT the detail view, so this slice does not depend on the detail slice.",
+      "description": "Close the primary journey for software wallets: select a DRep from a directory list row, pre-fill VotingPowerDelegation, confirm with the DRep ID only, and submit through the existing software-wallet delegateVotes path. Includes in-slice Jest coverage for the browse -> select -> delegate path. Selection is from the list row, NOT the detail view, so this slice does not depend on the detail slice.",
       "riskLevel": "medium",
       "tasks": [
         {
           "id": "task-112",
           "title": "Integrate DRep selector into VotingPowerDelegation (list-row selection)",
-          "description": "Add a Browse DReps affordance in VotingPowerDelegation.tsx that opens the in-app DRep directory. Selecting a DRep from a directory LIST ROW pre-fills selectedDRepId in the delegation form through React Router location.state only. Retain direct DRep ID paste input. Submission continues through existing software-wallet delegateVotes. (Re-homed from task-010 with its task-009 detail-view dependency removed — selection is from the list row, not the detail page.)",
+          "description": "Add a Browse DReps affordance in VotingPowerDelegation.tsx that opens the in-app DRep directory. Selecting a DRep from a directory LIST ROW pre-fills selectedDRepId in the delegation form through React Router location.state only. Retain direct DRep ID paste input. Submission continues through existing software-wallet delegateVotes.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 6,
-          "origin": [
-            "task-010"
-          ],
           "dependencies": [
             "task-107",
             "task-108"
@@ -271,9 +329,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 3,
-          "origin": [
-            "task-011"
-          ],
           "dependencies": [
             "task-112"
           ],
@@ -287,29 +342,21 @@
         {
           "id": "task-114",
           "title": "In-slice verification of the software-wallet delegate path",
-          "description": "In-slice verification of the software-wallet browse -> select -> delegate path: Jest for selector -> confirmation -> delegateVotes payload, a Cucumber scenario for browse -> select -> confirm (DRep ID only) -> delegate, Storybook for the selector within the delegation form, polished en-US/ja-JP copy for the delegate flow, and the walkthrough update removing GovTool-routing language. Also runs the compile/lint smoke gate. (Absorbs task-014 and task-015, plus the software-wallet portions of dissolved task-020/021/022/023.)",
+          "description": "In-slice verification of the software-wallet browse -> select -> delegate path: Jest for selector -> confirmation -> delegateVotes payload and browse-state regressions, Storybook for the selector within the delegation form, preliminary en-US/ja-JP copy for the delegate flow that keeps the leading !!! marker, and the walkthrough update removing GovTool-routing language. Also runs the compile/lint smoke gate.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 8,
-          "origin": [
-            "task-014",
-            "task-015",
-            "task-020 (software-wallet portion)",
-            "task-021 (selector portion)",
-            "task-022 (software-wallet portion)",
-            "task-023 (software-wallet portion)"
-          ],
           "dependencies": [
             "task-112",
             "task-113"
           ],
           "targetPath": "tests/",
           "acceptanceCriteria": [
-            "Cucumber covers software-wallet browse -> select -> confirm (DRep ID only) -> delegate via existing delegateVotes.",
+            "Jest covers software-wallet browse -> select -> confirm (DRep ID only) -> delegate via existing delegateVotes.",
             "Jest covers selected DRep ID propagation from selector -> confirmation -> delegateVotes payload.",
             "No anchor-derived content is rendered before anchor fetch, verification, parsing, and source labeling land.",
             "Storybook covers the selector within the delegation form and the DRep-ID-only confirmation in en-US and ja-JP.",
-            "Product-quality delegate-flow copy exists in en-US and ja-JP (i18n:manage passing is necessary but not sufficient).",
+            "Preliminary delegate-flow copy exists in en-US and ja-JP, and all new strings keep the leading !!! marker until the final manual review (i18n:manage passing is necessary but not sufficient).",
             "Update .vscode/docs/walkthroughs/governance/ to remove GovTool-routing language for this flow.",
             "yarn compile and yarn lint pass for the local software-wallet milestone.",
             "INHERITED sanitization floor: no DRep id / 'abstain' / 'no_confidence' / CIP-129 / CIP-105 string appears in any logger or analytics payload throughout the flow."
@@ -320,20 +367,16 @@
     {
       "id": "slice-3",
       "name": "Slice 3 - Hardware-wallet delegate",
-      "description": "Add the hardware-wallet signing path with DRep-ID-only confirmation, immediately after the software-wallet path. Built from the hardware-wallet acceptance criteria previously buried in the terminal Jest/Cucumber sprints. Cucumber runs against mocked Ledger/Trezor transports and asserts on-device DRep ID byte-equality with vote.chosenOption.",
+      "description": "Add the hardware-wallet signing path with DRep-ID-only confirmation, immediately after the software-wallet path. Built from the hardware-wallet acceptance criteria previously buried in the terminal test sprints. Jest runs against mocked Ledger/Trezor transports and asserts on-device DRep ID byte-equality with vote.chosenOption.",
       "riskLevel": "high",
       "tasks": [
         {
           "id": "task-115",
           "title": "Complete the hardware-wallet delegate path (DRep-ID-only confirmation)",
-          "description": "Complete the hardware-wallet delegation path through the existing VotingStore signing flow with DRep-ID-only confirmation. Add Jest + Cucumber coverage with mocked Ledger and Trezor transports, asserting on-device DRep ID byte-equality with vote.chosenOption and covering disconnected / locked / app-not-open / signing-rejected states. (Re-homed hardware-wallet criteria from dissolved task-022 and task-023.)",
+          "description": "Complete the hardware-wallet delegation path through the existing VotingStore signing flow with DRep-ID-only confirmation. Add Jest coverage with mocked Ledger and Trezor transports, asserting on-device DRep ID byte-equality with vote.chosenOption and covering disconnected / locked / app-not-open / signing-rejected states.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 8,
-          "origin": [
-            "task-022 (hardware-wallet portion)",
-            "task-023 (hardware-wallet portion)"
-          ],
           "dependencies": [
             "task-113"
           ],
@@ -342,7 +385,7 @@
             "Hardware-wallet tests cover selected DRep ID propagation from selector -> confirmation -> signing payload.",
             "Hardware-wallet tests cover on-device confirmation identity display (DRep ID only in this slice; verified name is added in anchor-2), device-disconnected, device-locked, app-not-open, and signing-rejected states.",
             "Assert no software-signing fallback is invoked when a hardware wallet is selected.",
-            "Cucumber covers the hardware-wallet browse -> select -> confirm-on-device -> delegate path with mocked Ledger and Trezor transports.",
+            "Jest covers the hardware-wallet browse -> select -> confirm-on-device -> delegate path with mocked Ledger and Trezor transports.",
             "On-device DRep ID equals `vote.chosenOption` (byte-equality).",
             "INHERITED sanitization floor: no DRep id / 'abstain' / 'no_confidence' / CIP-129 / CIP-105 string appears in any logger or analytics payload throughout the flow."
           ]
@@ -352,23 +395,16 @@
     {
       "id": "slice-4",
       "name": "Slice 4 - DRep detail view (on-chain only)",
-      "description": "Track D (discovery thickening), evaluation-quality first. Add the DRep detail view rendering on-chain fields only (no anchor), with its own route, Storybook, Jest, Cucumber, and i18n in-slice.",
+      "description": "Track D (discovery thickening), evaluation-quality first. Add the DRep detail view rendering on-chain fields only (no anchor), with its own route, Storybook, Jest, and i18n in-slice.",
       "riskLevel": "medium",
       "tasks": [
         {
           "id": "task-116",
           "title": "Build DRep detail view component (on-chain only)",
-          "description": "Build a DRep detail view showing local on-chain fields only: ID, registration state, active/inactive state, expiry, voting power or delegated stake, current epoch vote positions on active proposals, and anchor presence. Include graceful absence states, latest-state refresh, and favorite toggle. Lands its own Storybook (local-only state), Jest, Cucumber (view detail with on-chain data), and i18n for detail field labels. (task-009 plus the detail portions of dissolved task-020/021/022/023.)",
+          "description": "Build a DRep detail view showing local on-chain fields only: ID, registration state, active/inactive state, expiry, voting power or delegated stake, current epoch vote positions on active proposals, and anchor presence. Include graceful absence states, latest-state refresh, and favorite toggle. Lands its own Storybook (local-only state), Jest, and i18n for detail field labels.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 8,
-          "origin": [
-            "task-009",
-            "task-020 (detail portion)",
-            "task-021 (detail portion)",
-            "task-022 (detail portion)",
-            "task-023 (detail portion)"
-          ],
           "dependencies": [
             "task-106"
           ],
@@ -377,7 +413,7 @@
             "Anchor metadata is not rendered in this slice; verified anchor rendering lands in anchor-1 after fetch and hash-verification hardening.",
             "Detail view remains useful when current epoch vote positions are unavailable.",
             "Storybook covers the detail local-only state in en-US and ja-JP.",
-            "Cucumber covers viewing DRep detail with local on-chain data.",
+            "Jest covers viewing DRep detail with local on-chain data.",
             "Detail field labels are localized in en-US and ja-JP.",
             "INHERITED sanitization floor: no DRep id / 'abstain' / 'no_confidence' / CIP-129 / CIP-105 string appears in any logger or analytics payload."
           ]
@@ -385,13 +421,10 @@
         {
           "id": "task-117",
           "title": "Wire the DRep detail route",
-          "description": "Add the DRep detail route definition in source/renderer/app/Routes.tsx and wire navigation into the detail view. (Split from task-013: detail-route portion; estimate 1 of 2 hours.)",
+          "description": "Add the DRep detail route definition in source/renderer/app/Routes.tsx and wire navigation into the detail view.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 1,
-          "origin": [
-            "task-013 (detail-route portion)"
-          ],
           "dependencies": [
             "task-116"
           ],
@@ -411,13 +444,10 @@
         {
           "id": "task-118",
           "title": "Implement the default-cohort rule + own randomization seed in GovernanceStore",
-          "description": "Implement the default-cohort rule in the directory: exclude the top 35 DReps by voting power and show up to the next 200 DReps that are active, have remaining drepActivity greater than 6 epochs, and have completed metadata when available, ranked by voting power high to low and displayed in randomized order. Assign ownership of the randomization-seed lifetime, reseed-on-refresh semantics, and the Reshuffle control to GovernanceStore. (Split from task-008: cohort-rule portion, ~2 of task-008's 8h plus seed-ownership work; the remaining 2 of 8 are the show-all/filter portion in slice-6 task-121, so the bare-list/cohort/filter split sums to task-008's original 8h. Reachability filters land in slice-6; doNotList exclusion in anchor-2.)",
+          "description": "Implement the default-cohort rule in the directory: exclude the top 35 DReps by voting power and show up to the next 200 DReps that are active, have remaining drepActivity greater than 6 epochs, and have completed metadata when available, ranked by voting power high to low and displayed in randomized order. Assign ownership of the randomization-seed lifetime, reseed-on-refresh semantics, and the Reshuffle control to GovernanceStore.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 3,
-          "origin": [
-            "task-008 (cohort-rule portion)"
-          ],
           "dependencies": [
             "task-107"
           ],
@@ -439,9 +469,6 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 5,
-          "origin": [
-            "task-053"
-          ],
           "dependencies": [
             "task-107",
             "task-116"
@@ -453,7 +480,7 @@
             "Slice-5 adds the primary / threshold / nonMetadata i18n keys and tooltip siblings to en-US.json and ja-JP.json via yarn i18n:manage; High value copy lands with the anchor-1 activation.",
             "Storybook story renders each category in en-US and ja-JP without overflow.",
             "Component is rendered by DRepCard and DRepDetail; snapshot tests cover both call sites.",
-            "Badge priority rule is enforced: Threshold > Primary > Non-metadata. A DRep in the 6–12 epoch expiry window shows Threshold even when it has verified metadata. Unit test covers the tie-breaking path."
+            "Badge priority rule is enforced: Threshold > Primary > Non-metadata. A DRep in the 7–12 epoch expiry window shows Threshold even when it has verified metadata. Unit test covers the tie-breaking path."
           ]
         },
         {
@@ -463,9 +490,6 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 1,
-          "origin": [
-            "task-054"
-          ],
           "dependencies": [
             "task-118"
           ],
@@ -487,21 +511,17 @@
         {
           "id": "task-121",
           "title": "Implement DRep ID search + show-all / reachability filters",
-          "description": "Implement DRep-ID search semantics from shared-design-tokens §11 and the show-all / non-cohort reachability filters: minimum 8-character prefix before filtering, prefix matches never auto-select a row, an exact bech32 match opens the DRep detail view directly, both CIP-105 and CIP-129 encodings are searched and deduped by credential, bech32 validation runs in the renderer before IPC, plus the directory filters (active status, expiry threshold, metadata status, top-35 exclusion, default cohort, favorited, search, show-all) that keep excluded/non-cohort DReps reachable. (task-028 plus the show-all/filter portion of task-008; estimate 7 hours = 5 from task-028 + 2 from the task-008 filter portion.)",
+          "description": "Implement DRep-ID search semantics from shared-design-tokens §11 and the show-all / non-cohort reachability filters: minimum 8-character prefix before filtering, prefix matches never auto-select a row, an exact bech32 match opens the DRep detail view directly, both CIP-105 and CIP-129 encodings are searched and deduped by credential, bech32 validation runs in the renderer before IPC, plus the directory filters (active status, expiry threshold, metadata status, top-35 exclusion, default cohort, favorited, search, show-all) that keep excluded/non-cohort DReps reachable.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 7,
-          "origin": [
-            "task-028",
-            "task-008 (show-all/filter portion)"
-          ],
           "dependencies": [
             "task-118"
           ],
           "targetPath": "source/renderer/app/components/",
           "acceptanceCriteria": [
             "Jest tests cover each rule: 8-char minimum, no auto-select on prefix, exact-match detail open, dual-encoding search, dedupe by credential, pre-IPC bech32 validation.",
-            "Cucumber covers the prefix-match list path and the exact-match detail-open path.",
+            "Jest covers the prefix-match list path and the exact-match detail-open path.",
             "Filters include active status, expiry threshold, metadata status, top-35 exclusion, default cohort, favorited, search, and show-all.",
             "Excluded top-35 and non-cohort DReps remain reachable through search/show-all filters and direct DRep ID entry.",
             "Search/show-all copy is localized in en-US and ja-JP.",
@@ -519,16 +539,10 @@
         {
           "id": "task-122",
           "title": "Persist DRep favorites via Electron local store",
-          "description": "Wire GovernanceStore favorites as a Set<string> of DRep IDs to Electron local store for per-device persistence across sessions. Favorites are not per-wallet and not synced. Adds the favorite toggle wiring, in-slice Storybook + Jest + Cucumber, and i18n for favorites copy (including the empty-state copy that owns the per-device expectation). The generic favorited filter predicate is owned by the slice-6 filter framework (task-121); this slice owns favorites persistence + the toggle and feeds the favorited set into that framework, so filter semantics are defined in exactly one place. (task-012 plus the favorites portions of dissolved task-021/022/023.)",
+          "description": "Wire GovernanceStore favorites as a Set<string> of DRep IDs to Electron local store for per-device persistence across sessions. Favorites are not per-wallet and not synced. Adds the favorite toggle wiring, in-slice Storybook + Jest, and i18n for favorites copy (including the empty-state copy that owns the per-device expectation). The generic favorited filter predicate is owned by the slice-6 filter framework (task-121); this slice owns favorites persistence + the toggle and feeds the favorited set into that framework, so filter semantics are defined in exactly one place.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 3,
-          "origin": [
-            "task-012",
-            "task-021 (favorites portion)",
-            "task-022 (favorites portion)",
-            "task-023 (favorites persistence portion)"
-          ],
           "dependencies": [
             "task-106",
             "task-121"
@@ -537,7 +551,7 @@
           "acceptanceCriteria": [
             "Favorites persist across app restart via Electron local store, per device, not per wallet and not synced.",
             "Favorite toggle is wired into the directory; the favorited filter predicate is owned by the slice-6 filter framework (task-121) and is not re-implemented here.",
-            "In-slice Storybook + Jest cover the favorite toggle and persistence; an in-slice Cucumber scenario covers favorite persistence across an app restart; favorites copy is localized in en-US and ja-JP.",
+            "In-slice Storybook + Jest cover the favorite toggle and persistence, including persistence across an app restart; favorites copy is localized in en-US and ja-JP.",
             "INHERITED sanitization floor: no DRep id / 'abstain' / 'no_confidence' / CIP-129 / CIP-105 string appears in any logger or analytics payload.",
             "Favorites page renders Retired and doNotList-excluded DReps with the appropriate status badge and the staleCaption message ID. A Storybook story covers the stale-favorite state. No automatic purge of favorites on status change."
           ]
@@ -557,9 +571,6 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 4,
-          "origin": [
-            "task-025"
-          ],
           "dependencies": [
             "task-103"
           ],
@@ -577,9 +588,6 @@
           "status": "pending",
           "priority": "low",
           "estimatedHours": 2,
-          "origin": [
-            "task-026"
-          ],
           "dependencies": [
             "task-103"
           ],
@@ -592,20 +600,17 @@
         {
           "id": "task-125",
           "title": "Release verification: browse -> evaluate -> select -> delegate without external portals",
-          "description": "The single surviving aggregate from the dissolved terminal Cucumber sprint: a release-verification acceptance confirming users can complete browse -> evaluate -> select -> delegate without external portals on a synced node, exercising both wallet types, the detail view, search/show-all, and favorites. (Release-verification portion of task-023; the software/hardware Cucumber scenarios live in slice-2 and slice-3. Estimate 4 of the original 10 hours.)",
+          "description": "The single surviving aggregate from the dissolved terminal acceptance sprint: a manual release-verification checklist confirming users can complete browse -> evaluate -> select -> delegate without external portals on a synced node, exercising both wallet types, the detail view, search/show-all, and favorites.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 4,
-          "origin": [
-            "task-023 (release-verification portion)"
-          ],
           "dependencies": [
             "task-115",
             "task-116",
             "task-121",
             "task-122"
           ],
-          "targetPath": "tests/",
+          "targetPath": ".agent/plans/governance/drep-discovery/",
           "acceptanceCriteria": [
             "Release verification confirms users can complete browse -> evaluate -> select -> delegate without external portals on a synced node."
           ]
@@ -625,9 +630,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 4,
-          "origin": [
-            "task-033"
-          ],
           "dependencies": [],
           "targetPath": "tests/mocks/wallets/",
           "acceptanceCriteria": [
@@ -643,9 +645,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 3,
-          "origin": [
-            "task-034"
-          ],
           "dependencies": [
             "task-126"
           ],
@@ -664,9 +663,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 3,
-          "origin": [
-            "task-035"
-          ],
           "dependencies": [
             "task-127"
           ],
@@ -685,9 +681,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 6,
-          "origin": [
-            "task-036"
-          ],
           "dependencies": [
             "task-128"
           ],
@@ -709,9 +702,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 6,
-          "origin": [
-            "task-037"
-          ],
           "dependencies": [
             "task-128",
             "task-129"
@@ -732,9 +722,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 4,
-          "origin": [
-            "task-038"
-          ],
           "dependencies": [
             "task-130"
           ],
@@ -749,13 +736,10 @@
         {
           "id": "task-132",
           "title": "Implement CurrentVoteSummary core states (no live status badge)",
-          "description": "New component CurrentVoteSummary accepting { currentVote }. Renders the CORE states only: noDelegation warning + CTA, the DRep-ID-only current-delegation state, abstain, and no_confidence. The live active/inactive/expiring status badge sourced from GovernanceStore.drepIndex is deferred to cv-2 (task-136). Reuses DRepIdDisplay, DRepSourceLabel from source/renderer/app/components/governance/_shared/. (Core-states portion of task-039.)",
+          "description": "New component CurrentVoteSummary accepting { currentVote }. Renders the CORE states only: noDelegation warning + CTA, the DRep-ID-only current-delegation state, abstain, and no_confidence. The live active/inactive/expiring status badge sourced from GovernanceStore.drepIndex is deferred to cv-2 (task-136). Reuses DRepIdDisplay, DRepSourceLabel from source/renderer/app/components/governance/_shared/.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 4,
-          "origin": [
-            "task-039 (core-states portion)"
-          ],
           "dependencies": [
             "task-131",
             "task-109",
@@ -774,13 +758,10 @@
         {
           "id": "task-133",
           "title": "Add CurrentVoteSummary Storybook entry (core knobs)",
-          "description": "Storybook story covering the four core knob option ids: noDelegation | drepUnverified | abstain | noConfidence. The drepVerified knob (which needs the live status badge + verified anchor) lands in cv-2. (Core-states portion of task-040.)",
+          "description": "Storybook story covering the four core knob option ids: noDelegation | drepUnverified | abstain | noConfidence. The drepVerified knob (which needs the live status badge + verified anchor) lands in cv-2.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
-          "origin": [
-            "task-040 (core-states portion)"
-          ],
           "dependencies": [
             "task-132"
           ],
@@ -793,13 +774,10 @@
         {
           "id": "task-134",
           "title": "Unit tests: mapper, Wallet computeds, and CurrentVoteSummary core snapshots",
-          "description": "Jest unit test for _createWalletFromServerData mapping (drep / abstain / no_confidence / delegating_and_voting / pending / voting-only => delegatedStakePoolId === null). Jest unit test for Wallet.currentVote, Wallet.pendingVote, isVoting computeds. Component snapshot tests for the CurrentVoteSummary core states. (Mapper/Wallet-computed/core-snapshot portion of task-050.)",
+          "description": "Jest unit test for _createWalletFromServerData mapping (drep / abstain / no_confidence / delegating_and_voting / pending / voting-only => delegatedStakePoolId === null). Jest unit test for Wallet.currentVote, Wallet.pendingVote, isVoting computeds. Component snapshot tests for the CurrentVoteSummary core states.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 4,
-          "origin": [
-            "task-050 (mapper/Wallet-computed portion)"
-          ],
           "dependencies": [
             "task-130",
             "task-131"
@@ -815,20 +793,17 @@
         {
           "id": "task-135",
           "title": "Add i18n keys for CurrentVoteSummary core states",
-          "description": "Create CurrentVoteSummary.messages.ts with the CORE-state keys under namespace voting.governance.currentVote.*. Run yarn i18n:manage to populate en-US.json and ja-JP.json, then write final ja-JP copy for the core keys. The remaining enrichment keys (sameVoteHint, status.*) land in cv-2 (task-146). (CurrentVoteSummary core subset of task-049.)",
+          "description": "Create CurrentVoteSummary.messages.ts with the CORE-state keys under namespace voting.governance.currentVote.*. Run yarn i18n:manage to populate en-US.json and ja-JP.json, and keep the generated copy preliminary with the leading !!! marker for the core keys until the final manual review pass. The remaining enrichment keys (sameVoteHint, status.*) land in cv-2 (task-146).",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
-          "origin": [
-            "task-049 (CurrentVoteSummary core subset)"
-          ],
           "dependencies": [
             "task-132"
           ],
           "targetPath": "source/renderer/app/i18n/locales/",
           "acceptanceCriteria": [
             "Core keys present in en-US.json and ja-JP.json: headerCurrent, statusDelegatedToDRep, statusAbstain, statusNoConfidence, noDelegation title/warning/subline/cta, DRep link labels, abstain/noConfidence captions.",
-            "ja-JP copy reviewed for length / layout overflow.",
+            "Preliminary ja-JP copy is reviewed for length / layout overflow while retaining the leading !!! marker.",
             "yarn i18n:manage runs clean."
           ]
         }
@@ -837,20 +812,16 @@
     {
       "id": "cv-2",
       "name": "Current-vote 2 - Enrichment",
-      "description": "Track V. Add the live DRep status badge sourced from the directory's drepIndex, pre-fill VotingPowerDelegation from the current on-chain delegation, disable same-vote submit, keep the confirmation dialog current-target-only, the remaining i18n, and the e2e + same_vote regression coverage.",
+      "description": "Track V. Add the live DRep status badge sourced from the directory's drepIndex, pre-fill VotingPowerDelegation from the current on-chain delegation, disable same-vote submit, keep the confirmation dialog current-target-only, the remaining i18n, and the focused Jest + same_vote regression coverage.",
       "riskLevel": "medium",
       "tasks": [
         {
           "id": "task-136",
           "title": "Add live DRep status badge to CurrentVoteSummary from drepIndex",
-          "description": "Extend CurrentVoteSummary so the delegated DRep state renders the live active / inactive / expiring-in-{n}-epochs status badge from shared-design-tokens §1, sourced from GovernanceStore.drepIndex[drepId]. No new IPC / cardano-cli invocation is issued by this component. Adds the drepVerified Storybook knob. (Live-status-badge portion of task-039 plus the verified-story portion of task-040; depends on the directory drepIndex from slice-1.)",
+          "description": "Extend CurrentVoteSummary so the delegated DRep state renders the live active / inactive / expiring-in-{n}-epochs status badge from shared-design-tokens §1, sourced from GovernanceStore.drepIndex[drepId]. No new IPC / cardano-cli invocation is issued by this component. Adds the drepVerified Storybook knob.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 3,
-          "origin": [
-            "task-039 (live-status-badge portion)",
-            "task-040 (verified-story portion)"
-          ],
           "dependencies": [
             "task-132",
             "task-106"
@@ -870,9 +841,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 3,
-          "origin": [
-            "plan-review D9"
-          ],
           "dependencies": [
             "task-132"
           ],
@@ -890,9 +858,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 5,
-          "origin": [
-            "task-041"
-          ],
           "dependencies": [
             "task-132",
             "task-137"
@@ -911,9 +876,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
-          "origin": [
-            "task-042"
-          ],
           "dependencies": [
             "task-138",
             "task-136"
@@ -932,10 +894,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 4,
-          "origin": [
-            "task-043",
-            "task-036"
-          ],
           "dependencies": [
             "task-138",
             "task-129"
@@ -954,9 +912,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
-          "origin": [
-            "task-044"
-          ],
           "dependencies": [
             "task-140"
           ],
@@ -973,9 +928,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 3,
-          "origin": [
-            "task-045"
-          ],
           "dependencies": [
             "task-141"
           ],
@@ -993,9 +945,6 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 4,
-          "origin": [
-            "task-046"
-          ],
           "dependencies": [
             "task-131"
           ],
@@ -1014,9 +963,6 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 3,
-          "origin": [
-            "task-047"
-          ],
           "dependencies": [
             "task-143"
           ],
@@ -1033,9 +979,6 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 6,
-          "origin": [
-            "task-048"
-          ],
           "dependencies": [
             "task-144",
             "task-139"
@@ -1051,13 +994,10 @@
         {
           "id": "task-146",
           "title": "Add remaining CurrentVoteSummary enrichment i18n keys",
-          "description": "Add the remaining enrichment keys under namespace voting.governance.currentVote.* (sameVoteHint, status.expiring, status.inactive, status.unavailable) to CurrentVoteSummary.messages.ts. In VotingPowerDelegationConfirmationDialog.messages.ts confirm existing target copy remains valid. Run yarn i18n:manage to populate en-US.json and ja-JP.json, then write final ja-JP copy. (Remaining-i18n portion of task-049; the core keys landed in cv-1 task-135.)",
+          "description": "Add the remaining enrichment keys under namespace voting.governance.currentVote.* (sameVoteHint, status.expiring, status.inactive, status.unavailable) to CurrentVoteSummary.messages.ts. In VotingPowerDelegationConfirmationDialog.messages.ts confirm existing target copy remains valid. Run yarn i18n:manage to populate en-US.json and ja-JP.json, and keep the generated copy preliminary with the leading !!! marker until the final manual review pass.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
-          "origin": [
-            "task-049 (remaining i18n)"
-          ],
           "dependencies": [
             "task-136",
             "task-142"
@@ -1066,29 +1006,26 @@
           "acceptanceCriteria": [
             "Remaining keys present in en-US.json and ja-JP.json: sameVoteHint, status.expiring, status.inactive, status.unavailable.",
             "Confirmation dialog copy remains compatible with the selected current target.",
-            "ja-JP copy reviewed for length / layout overflow.",
+            "Preliminary ja-JP copy is reviewed for length / layout overflow while retaining the leading !!! marker.",
             "yarn i18n:manage runs clean."
           ]
         },
         {
           "id": "task-147",
-          "title": "Cucumber @e2e governance current-vote scenario + HW path",
-          "description": "Given mocked wallet with current DRep X, when user opens Governance and selects the wallet, then CurrentVoteSummary shows the correct current/noDelegation state, the unchanged-submit is disabled, changing to a different vote reaches the confirmation dialog, and no DRep id / abstain / no_confidence / CIP-129/CIP-105 string appears in logger.* or analytics spy call args throughout the flow. HW path: HW wallet renders CurrentVoteSummary without device connection; same-vote submit is blocked before tx initialization; changing the vote opens the existing HW confirmation flow with disconnected / locked / app-not-open status.",
+          "title": "Jest governance current-vote regressions + HW path",
+          "description": "Given mocked wallet with current DRep X, when user opens Governance and selects the wallet, then CurrentVoteSummary shows the correct current/noDelegation state, the unchanged-submit is disabled, changing to a different vote reaches the confirmation dialog, and no DRep id / abstain / no_confidence / CIP-129/CIP-105 string appears in logger.* or analytics spy call args throughout the flow. HW path: HW wallet renders CurrentVoteSummary without device connection; same-vote submit is blocked before tx initialization; changing the vote opens the existing HW confirmation flow with disconnected / locked / app-not-open status. Implement this coverage with focused Jest interaction and store/component regression tests.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 8,
-          "origin": [
-            "task-051"
-          ],
           "dependencies": [
             "task-140",
             "task-142",
             "task-145",
             "task-146"
           ],
-          "targetPath": "tests/voting/features/",
+          "targetPath": "tests/jest/",
           "acceptanceCriteria": [
-            "Scenario green in @e2e suite.",
+            "Focused Jest regression suite is green.",
             "HW path green for at least disconnected / locked / app-not-open.",
             "Logger and analytics spies confirm no leaked vote target.",
             "INHERITED sanitization floor: no DRep id / 'abstain' / 'no_confidence' / CIP-129 / CIP-105 string appears in any logger or analytics payload."
@@ -1097,13 +1034,10 @@
         {
           "id": "task-148",
           "title": "Same-vote path regression",
-          "description": "Confirm the VotingStore.expectedInitializeVPDelegationTxErrors.same_vote server-error path remains reachable as the safety net behind the client-side same-vote disable. (Same_vote-path portion of task-052; the broader sanitization regression is the inherited floor asserted per-slice.)",
+          "description": "Confirm the VotingStore.expectedInitializeVPDelegationTxErrors.same_vote server-error path remains reachable as the safety net behind the client-side same-vote disable.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 1,
-          "origin": [
-            "task-052 (same_vote-path portion)"
-          ],
           "dependencies": [
             "task-140",
             "task-109",
@@ -1130,9 +1064,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 6,
-          "origin": [
-            "task-016"
-          ],
           "dependencies": [
             "task-104"
           ],
@@ -1155,9 +1086,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 8,
-          "origin": [
-            "task-017"
-          ],
           "dependencies": [
             "task-149"
           ],
@@ -1172,14 +1100,10 @@
         {
           "id": "task-151",
           "title": "Render verified givenName with source label + expose metadata-completeness",
-          "description": "Wire the verified CIP-119 givenName into the DRep detail view with a verified off-chain content source label, and expose verified metadata-completeness state to GovernanceStore so the slice-5 default cohort can use the completed-metadata-when-available signal. Remaining profile fields (objectives/motivations/qualifications/references) and confirmation-dialog identity land in anchor-2. (givenName-only portion of task-018 plus the givenName-label portion of task-019.)",
+          "description": "Wire the verified CIP-119 givenName into the DRep detail view with a verified off-chain content source label, and expose verified metadata-completeness state to GovernanceStore so the slice-5 default cohort can use the completed-metadata-when-available signal. Remaining profile fields (objectives/motivations/qualifications/references) and confirmation-dialog identity land in anchor-2.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 4,
-          "origin": [
-            "task-018 (givenName-only portion)",
-            "task-019 (givenName label portion)"
-          ],
           "dependencies": [
             "task-150",
             "task-116"
@@ -1199,9 +1123,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
-          "origin": [
-            "plan-review D7"
-          ],
           "dependencies": [],
           "targetPath": "source/main/ipc/open-external-url.ts",
           "acceptanceCriteria": [
@@ -1225,9 +1146,6 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 4,
-          "origin": [
-            "task-024"
-          ],
           "dependencies": [
             "task-151",
             "task-118"
@@ -1237,7 +1155,7 @@
             "Default cohort excludes DReps with `doNotList=true`.",
             "Show-all and search still surface `doNotList=true` DReps.",
             "Direct DRep ID entry resolves `doNotList=true` DReps to their detail view.",
-            "E2e covers both the excluded default-cohort path and the search/direct-entry reachability path."
+            "Jest covers both the excluded default-cohort path and the search/direct-entry reachability path."
           ]
         },
         {
@@ -1247,9 +1165,6 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 4,
-          "origin": [
-            "task-029"
-          ],
           "dependencies": [
             "task-151",
             "task-115"
@@ -1264,13 +1179,10 @@
         {
           "id": "task-155",
           "title": "Apply source labeling to DRep Discovery content",
-          "description": "Ensure consistent visual distinction between local on-chain state and verified off-chain anchor-derived content across DRep Discovery surfaces. No anchor-derived content is shown without the verified off-chain content label. (Remainder of task-019 after the givenName-label portion landed in anchor-1.)",
+          "description": "Ensure consistent visual distinction between local on-chain state and verified off-chain anchor-derived content across DRep Discovery surfaces. No anchor-derived content is shown without the verified off-chain content label.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
-          "origin": [
-            "task-019 (remainder)"
-          ],
           "dependencies": [
             "task-151"
           ],
@@ -1289,9 +1201,6 @@
           "status": "pending",
           "priority": "low",
           "estimatedHours": 2,
-          "origin": [
-            "task-030"
-          ],
           "dependencies": [
             "task-151"
           ],
@@ -1305,13 +1214,10 @@
         {
           "id": "task-157",
           "title": "Render remaining verified CIP-119 profile fields",
-          "description": "Wire the remaining verified CIP-119 anchor fields (objectives, motivations, qualifications, references) into the DRep detail view, each with a verified off-chain content source label, and surface the verified display name in the delegation confirmation only when available. (Remaining-profile-fields portion of task-018 after the givenName-only portion landed in anchor-1.)",
+          "description": "Wire the remaining verified CIP-119 anchor fields (objectives, motivations, qualifications, references) into the DRep detail view, each with a verified off-chain content source label, and surface the verified display name in the delegation confirmation only when available.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
-          "origin": [
-            "task-018 (remaining profile fields)"
-          ],
           "dependencies": [
             "task-151"
           ],
@@ -1337,9 +1243,6 @@
           "status": "ongoing",
           "priority": "medium",
           "estimatedHours": 2,
-          "origin": [
-            "task-006"
-          ],
           "dependencies": [],
           "targetPath": "tests/mocks/governance/",
           "acceptanceCriteria": [
@@ -1354,11 +1257,203 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ux-refinement",
+      "name": "UX refinement - Sync awareness + two-phase first load",
+      "description": "Hardens the load and sync experience of the slice-1 directory without widening feature scope. Sourced from the 2026-06-15 sync/load review (research doc research/ux-refinement-sync-and-load-research.md); the four decisions are recorded in the plan Key Decisions. Surfaces node-sync state with a soft-warning banner, splits the query into a cheap registration read (paints the list) plus a deferred stake-distribution enrich (voting power), raises the stake-phase timeout, and documents the ID-only v1 directory. The route-scoped fetch trigger (former UX-3) was folded into the slice-1 final pass as FP-10; the cardano-node 11 / LSM verification is FP-11. Depends on the slice-1 walking skeleton (task-103) and assumes the final pass has landed. Also carries task-169, the optional CLI-robustness cleanups (conway era-retry structured signal + real-binary argv smoke test) distilled from the slice-1 final-pass standing risks.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-159",
+          "title": "Container reads node-sync state and passes it to the directory",
+          "description": "DRepDirectoryPage (container) reads stores.networkStatus.isNodeInSync and syncProgress and passes them into DRepDirectory as props. GovernanceStore stays decoupled from NetworkStatusStore — the container is the integration point.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 1.5,
+          "dependencies": [
+            "task-103"
+          ],
+          "targetPath": "source/renderer/app/containers/governance/",
+          "acceptanceCriteria": [
+            "DRepDirectoryPage reads networkStatus.isNodeInSync and syncProgress and passes them to DRepDirectory as props.",
+            "GovernanceStore does not import or read NetworkStatusStore; the store boundary is preserved."
+          ]
+        },
+        {
+          "id": "task-160",
+          "title": "Persistent syncing banner + noSync fallback + clear-on-sync refetch",
+          "description": "When !isNodeInSync, DRepDirectory renders a persistent, non-dismissible syncing banner above the list (governance.drepDirectory.syncing with live progress %). Color is never the sole cue (icon + text), using the --badge-warning-* token slots. If a syncing query returns zero DReps or an era/availability error, the list area falls back to the existing DRepEmptyState noSync. When isNodeInSync flips true the banner clears and a fresh fetch runs so the complete list appears without manual refresh.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-159"
+          ],
+          "targetPath": "source/renderer/app/components/governance/drep-directory/",
+          "acceptanceCriteria": [
+            "Persistent syncing banner renders with live sync % while !isNodeInSync, using the inline-warning visual pattern (icon + text, never color alone).",
+            "Zero-result or era/availability failure while syncing falls back to DRepEmptyState noSync rather than a bare error.",
+            "On isNodeInSync transition to true, the banner clears and a fresh fetch (or stale-while-refresh path) runs without manual refresh."
+          ]
+        },
+        {
+          "id": "task-161",
+          "title": "Split query service into registration + stake phases",
+          "description": "Split GovernanceQueryService.fetchDRepList() into Phase 1 fetchDRepRegistrations (cardano-cli latest query drep-state --all-dreps --output-json, NO --include-stake, plus query tip; returns entries with votingPower null; 10s timeout) and Phase 2 fetchDRepStake (drep-stake-distribution --all-dreps --output-json; credential->lovelace map merged into entries by DRep credential; 30s timeout). Preserve all existing guarantees: lossless json-bigint parse, decimal-string IPC, BigNumber rehydrate, network flag + era fallback on BOTH calls, CARDANO_NODE_SOCKET_PATH via spawn.env only.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-103"
+          ],
+          "targetPath": "source/main/governance/",
+          "acceptanceCriteria": [
+            "Phase 1 reads drep-state --all-dreps WITHOUT --include-stake plus query tip and returns entries with votingPower null.",
+            "Phase 2 reads drep-stake-distribution --all-dreps and merges a credential->lovelace map into the entries by DRep credential.",
+            "Both CLI calls carry the network flag and the latest/conway era fallback; the socket path is passed via spawn.env only.",
+            "Lovelace precision is preserved end to end (json-bigint lossless parse, decimal-string IPC, BigNumber rehydrate)."
+          ]
+        },
+        {
+          "id": "task-162",
+          "title": "Store drives the two phases (Loaded then enrich)",
+          "description": "GovernanceStore drives the two phases: Phase 1 -> Loaded (list visible, voting-power column shows — with loading tooltip); Phase 2 success -> voting power populated; Phase 2 failure -> keep the list, surface the already-designed error.rankingUnavailable banner and leave —. Manual Refresh re-runs both phases; Reshuffle still reseeds without re-querying.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2.5,
+          "dependencies": [
+            "task-161"
+          ],
+          "targetPath": "source/renderer/app/stores/",
+          "acceptanceCriteria": [
+            "First paint shows the list from Phase 1; voting power fills in after Phase 2.",
+            "Phase 2 failure keeps the list and surfaces error.rankingUnavailable with — in the voting-power column (stale-while-refresh).",
+            "Manual Refresh re-runs both phases; Reshuffle reseeds without re-querying."
+          ]
+        },
+        {
+          "id": "task-163",
+          "title": "Per-phase CLI timeouts + design-token time budgets",
+          "description": "Replace the single CLI_TIMEOUT_MS with per-phase budgets: bare-list phase 10s, stake phase 30s. Update shared-design-tokens.md §6 refresh-state time budgets to the two-phase model (skeleton <=700ms; list <=10s; voting-power enrich <=30s; rankingUnavailable banner at 30s). The 30s value is provisional pending real synced-node latency measurement.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": [
+            "task-161"
+          ],
+          "targetPath": "source/main/governance/",
+          "acceptanceCriteria": [
+            "Bare-list phase uses a 10s timeout; stake phase uses 30s.",
+            "shared-design-tokens.md §6 time budgets reflect the two-phase model."
+          ]
+        },
+        {
+          "id": "task-164",
+          "title": "i18n: syncing key + voting-power loading tooltip",
+          "description": "Add the governance.drepDirectory.syncing key (en-US + ja-JP placeholder, keep the !!! prefix) and the voting-power loading tooltip copy. Run yarn i18n:manage.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 1,
+          "dependencies": [
+            "task-160",
+            "task-162"
+          ],
+          "targetPath": "source/renderer/app/i18n/locales/",
+          "acceptanceCriteria": [
+            "governance.drepDirectory.syncing and the voting-power loading tooltip exist in en-US and ja-JP with the !!! prefix.",
+            "yarn i18n:manage passes."
+          ]
+        },
+        {
+          "id": "task-165",
+          "title": "Document the ID-only v1 directory limitation",
+          "description": "Record in the plan and the directory design that v1 directory cards and search are DRep-ID-only; verified givenName (CIP-119) appears only in the detail view (anchor-1) and confirmation, and name search is deferred to a bulk anchor-prefetch phase. The ID-only directory must remain fully usable (dual-ID display, copy, status badge, voting power post-Phase-2, View details / Select CTAs) with no name dependency on the card.",
+          "status": "pending",
+          "priority": "low",
+          "estimatedHours": 0.5,
+          "dependencies": [],
+          "targetPath": ".agent/plans/governance/drep-discovery/",
+          "acceptanceCriteria": [
+            "The ID-only v1 directory + search limitation is documented in the plan and the directory design.",
+            "No card renders a name in v1; the directory remains fully usable on ID alone."
+          ]
+        },
+        {
+          "id": "task-166",
+          "title": "Record the deferred real-fixture + latency-measurement follow-up",
+          "description": "Record an explicit deferred follow-up (plan Rollout/Risks): capture real synced-node fixtures (mainnet + preprod), record p50/p95 latency for both phases, and re-derive the 30s budget from data. PREPROD FIXTURE CAPTURED (2026-06-16): the live preprod drep-state query (cardano-cli 11.0.0.0 / cardano-node 11.0.1, epoch 295, 258 DReps) was run against the running node socket and saved to the Daedalus state dir (Logs-adjacent) and copied to research/drep-state-preprod-epoch295-sample.json. REMAINING: mainnet fixture, p50/p95 latency measurement, and promotion into a committed tests/jest/governance/ fixture to replace the synthetic mocks.",
+          "status": "partial",
+          "priority": "low",
+          "dependencies": [],
+          "estimatedHours": 0.5,
+          "targetPath": ".agent/plans/governance/drep-discovery/",
+          "acceptanceCriteria": [
+            "A deferred follow-up to capture real synced-node fixtures and measure p50/p95 latency (re-deriving the 30s budget) is recorded in the plan."
+          ]
+        },
+        {
+          "id": "task-167",
+          "title": "Jest: sync banner, two-phase store transitions, ranking-unavailable",
+          "description": "Jest coverage: sync-banner render under !isNodeInSync + clear-on-sync, two-phase store transitions (Phase 1 Loaded then Phase 2 enrich), and stake-phase failure -> rankingUnavailable with —. The no-startup-fetch assertion is covered by the slice-1 final pass FP-10; this task asserts the route-entry / two-phase behaviour built on it.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-160",
+            "task-162",
+            "task-163"
+          ],
+          "targetPath": "tests/jest/governance/",
+          "acceptanceCriteria": [
+            "Tests cover sync-banner render + clear-on-sync, the Phase 1 -> Phase 2 store transitions, and stake-failure -> rankingUnavailable.",
+            "Focused governance Jest suite passes."
+          ]
+        },
+        {
+          "id": "task-168",
+          "title": "DRep-state snapshot log file (latest refreshed directory) + support bundling",
+          "description": "Add a logDRepStateSnapshot writer (mirroring logStateSnapshot in setupLogging.ts) that writes the latest successful DRep directory payload to Logs/pub/DRep-state-snapshot.json on each successful GovernanceQueryService.fetchDRepList(), overwriting the previous file. Register the filename in ALLOWED_LOGS (config.ts) so it is bundled into support log archives (get-logs/compress-logs). SANITIZATION BOUNDARY: this is PUBLIC on-chain directory data (the full DRep list), NOT a user vote target -- it must BYPASS filterLogData (which would strip every drepId and make the file useless) and must NEVER include the user's own delegation/vote choice. Document the boundary in shared-design-tokens.md so it is not mistaken for a sanitization-floor violation. The snapshot doubles as an on-chain anchor-POINTER cache (url+dataHash per DRep) to seed/cross-check slice-4 metadata fetch -- it is NOT a substitute for fetching off-chain JSON-LD and hash-verifying it (CIP-100/119), which stays a slice-4 concern.",
+          "status": "pending",
+          "priority": "medium",
+          "dependencies": [
+            "task-162"
+          ],
+          "estimatedHours": 2,
+          "targetPath": "source/main/utils/setupLogging.ts",
+          "acceptanceCriteria": [
+            "logDRepStateSnapshot writes the latest successful DRep payload to Logs/pub/DRep-state-snapshot.json on each successful fetch, overwriting the previous file.",
+            "The filename is registered in ALLOWED_LOGS and appears in a generated support log bundle.",
+            "The snapshot bypasses filterLogData (drepId values are retained) and contains no user delegation/vote data; the boundary is documented in shared-design-tokens.md.",
+            "A focused Jest test asserts the file is written with public directory data and never includes a user vote target."
+          ]
+        },
+        {
+          "id": "task-169",
+          "title": "Harden GovernanceQueryService CLI robustness (era-retry signal + real-binary argv smoke test)",
+          "description": "Optional cleanup distilled from the slice-1 final-pass standing risks (carried over when the slice-1-final-pass-review.md Next Steps section was removed at slice-1 closeout). PART A - era-retry signal: replace the substring-based conway fallback gate in GovernanceQueryService._shouldRetryWithConway, which currently fires when the free-text error message/stderr contains the literal 'latest' plus an era-ish keyword (invalid|unknown|expected|expecting|conway|era). That couples the retry decision to incidental cardano-cli wording and to the implicit constraint that every other error string avoid the word 'latest' (see the deliberately reworded 'network not set' message). Gate the fallback on a structured signal instead (e.g. exit-code/error-class, or a one-time supported-era probe) so an unrelated QueryFailed can never trigger a spurious conway retry that masks the real error and burns a CLI timeout. PART B - real-binary argv smoke test: the unit suite mocks spawn and can only confirm the argv matches the developer's belief about cardano-cli grammar (the FP-1 prepend-vs-append regression class is structurally unclosable at the unit level). Add a parse-only smoke test that runs the bundled cardano-cli with the exact argv the service builds (era token + appended --mainnet / --testnet-magic <N>) WITHOUT CARDANO_NODE_SOCKET_PATH and asserts it passes the argument parser - failing only on a socket/connection error, never on a parse error (Invalid option / 'Missing: (--mainnet | --testnet-magic NATURAL)' / unknown era). Gated to environments where the real cardano-cli is on PATH (Nix shell). If task-161 lands first, apply the structured era-retry signal to both phase calls.",
+          "status": "pending",
+          "dependencies": [
+            "task-103"
+          ],
+          "estimatedHours": 4,
+          "priority": "low",
+          "targetPath": "source/main/governance/GovernanceQueryService.ts",
+          "acceptanceCriteria": [
+            "PART A: the conway fallback is gated on a structured signal (exit-code/error-class or a supported-era probe), not on substring-matching the free-text error message/stderr.",
+            "PART A: a negative unit test mocks both parallel queries failing with a non-era QueryFailed stderr and asserts spawn is called exactly twice (no conway retry); the existing positive era-fallback test still passes.",
+            "PART A: no production error message depends on avoiding the word 'latest' to suppress the retry (the implicit coupling on the 'network not set' message is removed).",
+            "PART B: a parse-only smoke test runs the real bundled cardano-cli with the exact argv the service builds (latest/conway era token + appended network flag) and no CARDANO_NODE_SOCKET_PATH.",
+            "PART B: the test asserts the invocation clears the argument parser - failing only on a socket/connection error, never on Invalid option / missing network flag / unknown era.",
+            "PART B: the smoke test is skipped (not failed) when the real cardano-cli is not on PATH, so the mocked CI unit lane stays green."
+          ]
+        }
+      ]
     }
   ],
   "summary": {
-    "totalPhases": 13,
-    "totalTasks": 58,
+    "totalPhases": 14,
+    "totalTasks": 69,
     "criticalPath": [
       "task-101",
       "task-102",
