@@ -1,5 +1,14 @@
 # Mithril Partial Sync From Diagnostics PRD
 
+> **⚠ UX superseded (2026-06-19):** A Phase-2 UX-refinement PRD now governs the user-facing flow —
+> see [`mithril-partial-sync-ux-refinement-prd.md`](./mithril-partial-sync-ux-refinement-prd.md)
+> (tracks GitHub issue #10). It refines the UX (adds the "significantly behind the tip" detection +
+> proactive prompt, exposes the kill switch to the renderer, unifies/ corrects progress display
+> across partial sync and bootstrap, makes failures legible, and single-surfaces recovery). This
+> document remains the source of truth for backend orchestration, restore-safety posture, the
+> boundary recovery model, and LSM compatibility. Where the two disagree on UX, the refinement PRD
+> wins. Current-state evidence: [`research/19-ux-refinement-state-and-gaps.md`](./research/19-ux-refinement-state-and-gaps.md).
+
 ## Overview
 
 Add a user-initiated Mithril partial sync flow to Daedalus so a user who judges that their node is far behind the network tip can request a faster catch-up path from `DaedalusDiagnostics`. The feature will stop `cardano-node`, restore the latest certified Mithril Cardano DB range needed to catch up, convert any restored ledger snapshot to Daedalus's LSM-compatible format, install the validated result safely, and restart the node automatically.
