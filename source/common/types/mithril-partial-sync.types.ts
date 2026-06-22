@@ -53,6 +53,12 @@ export type MithrilPartialSyncStatusSnapshot = {
   logPath?: string;
 };
 
+export type MithrilPartialSyncAvailability = {
+  isEnabled: boolean;
+  isSignificantlyBehind: boolean;
+  behindByImmutables?: number;
+};
+
 const MITHRIL_PARTIAL_SYNC_WORKING_STATUSES: MithrilPartialSyncStatus[] = [
   'stopping-node',
   'preparing',

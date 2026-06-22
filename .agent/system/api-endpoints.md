@@ -357,7 +357,7 @@ Daedalus uses type-safe IPC channels for main/renderer communication. All channe
 | Category             | Channels     | Purpose                     |
 |----------------------|--------------|-----------------------------|
 | **Cardano**          | 8 channels   | Node/wallet lifecycle       |
-| **Mithril**          | 10 channels  | Bootstrap and partial sync  |
+| **Mithril**          | 11 channels  | Bootstrap and partial sync  |
 | **Hardware Wallets** | 12 channels  | Ledger/Trezor operations    |
 | **File Operations**  | 6 channels   | Dialogs, PDF/CSV generation |
 | **Logging**          | 4 channels   | Log management              |
@@ -387,6 +387,7 @@ Daedalus uses type-safe IPC channels for main/renderer communication. All channe
 | `MITHRIL_BOOTSTRAP_CANCEL_CHANNEL`           | Renderer → Main | Cancel an in-progress bootstrap                  |
 | `MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL`        | Renderer → Main | List available Mithril snapshots                 |
 | `MITHRIL_PARTIAL_SYNC_STATUS_CHANNEL`        | Main → Renderer | Partial-sync progress and cached status updates  |
+| `MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL`  | Renderer → Main | Read kill-switch state + behind-ness availability (one-shot + periodic refresh) |
 | `MITHRIL_PARTIAL_SYNC_START_CHANNEL`         | Renderer → Main | Start manual partial sync                        |
 | `MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL`        | Renderer → Main | Cancel an in-progress partial sync               |
 | `MITHRIL_PARTIAL_SYNC_RESTART_NORMAL_CHANNEL`| Renderer → Main | Resume normal node startup on the existing DB    |

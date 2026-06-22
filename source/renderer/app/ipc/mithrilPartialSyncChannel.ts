@@ -5,6 +5,7 @@ import {
   MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL,
   MITHRIL_PARTIAL_SYNC_RESTART_NORMAL_CHANNEL,
   MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL,
+  MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL,
 } from '../../../common/ipc/api';
 import type {
   MithrilPartialSyncStartRendererRequest,
@@ -17,6 +18,8 @@ import type {
   MithrilPartialSyncRestartNormalMainResponse,
   MithrilPartialSyncWipeAndFullSyncRendererRequest,
   MithrilPartialSyncWipeAndFullSyncMainResponse,
+  MithrilPartialSyncAvailabilityRendererRequest,
+  MithrilPartialSyncAvailabilityMainResponse,
 } from '../../../common/ipc/api';
 
 export const mithrilPartialSyncStartChannel: RendererIpcChannel<
@@ -43,3 +46,8 @@ export const mithrilPartialSyncWipeAndFullSyncChannel: RendererIpcChannel<
   MithrilPartialSyncWipeAndFullSyncMainResponse,
   MithrilPartialSyncWipeAndFullSyncRendererRequest
 > = new RendererIpcChannel(MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL);
+
+export const mithrilPartialSyncAvailabilityChannel: RendererIpcChannel<
+  MithrilPartialSyncAvailabilityMainResponse,
+  MithrilPartialSyncAvailabilityRendererRequest
+> = new RendererIpcChannel(MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL);

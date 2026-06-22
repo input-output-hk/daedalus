@@ -5,7 +5,10 @@ import type {
   MithrilSnapshotItem,
 } from '../../common/types/mithril-bootstrap.types';
 import { isMithrilBootstrapBlockingNodeStart } from '../../common/types/mithril-bootstrap.types';
-import type { MithrilPartialSyncStatusSnapshot } from '../../common/types/mithril-partial-sync.types';
+import type {
+  MithrilPartialSyncAvailability,
+  MithrilPartialSyncStatusSnapshot,
+} from '../../common/types/mithril-partial-sync.types';
 import { isMithrilPartialSyncBlockingNodeStart } from '../../common/types/mithril-partial-sync.types';
 import type { PartialSyncPreflightContext } from '../utils/chainStorageCoordinator';
 import {
@@ -159,6 +162,10 @@ export class MithrilController {
 
   getPartialSyncStatus(): MithrilPartialSyncStatusSnapshot {
     return this._partialSyncStatus;
+  }
+
+  getPartialSyncAvailability(): MithrilPartialSyncAvailability {
+    return chainStorageCoordinator.getPartialSyncAvailability();
   }
 
   getPendingBootstrapDecision(): MithrilBootstrapDecision | null {

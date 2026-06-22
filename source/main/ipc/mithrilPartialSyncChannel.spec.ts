@@ -14,6 +14,8 @@ const idleStatus: MithrilPartialSyncStatusSnapshot = {
   error: null,
 };
 
+const availabilityEnabled = { isEnabled: true, isSignificantlyBehind: false };
+
 const mithrilControllerMock = {
   setPartialSyncStatusSender: jest.fn(),
   initialize: jest.fn(),
@@ -27,6 +29,7 @@ const mithrilControllerMock = {
   restartNormalFromPartialSync: jest.fn(),
   wipeAndFullSyncFromPartialSync: jest.fn(),
   broadcastPartialSyncStatus: jest.fn(),
+  getPartialSyncAvailability: jest.fn(() => availabilityEnabled),
 };
 
 jest.mock('./lib/MainIpcChannel', () => ({
@@ -71,6 +74,9 @@ describe('mithrilPartialSyncChannel', () => {
     );
     mithrilControllerMock.broadcastPartialSyncStatus.mockResolvedValue(
       undefined
+    );
+    mithrilControllerMock.getPartialSyncAvailability.mockReturnValue(
+      availabilityEnabled
     );
   });
 
@@ -163,5 +169,61 @@ describe('mithrilPartialSyncChannel', () => {
     expect(
       mithrilControllerMock.broadcastPartialSyncStatus
     ).toHaveBeenCalledWith(status);
+  });
+
+  it('returns isEnabled reflecting launcher config for a renderer one-shot availability query', async () => {
+    const moduleExports = loadModule();
+
+    moduleExports.handleMithrilPartialSyncRequests({
+      webContents: {},
+    } as never);
+
+    await expect(
+      mockChannels[5].onRequest.mock.calls[0][0]()
+    ).resolves.toEqual(availabilityEnabled);
+    expect(
+      mithrilControllerMock.getPartialSyncAvailability
+    ).toHaveBeenCalledTimes(1);
+  });
+
+  it('exposes availability on a channel separate from the status snapshot channel', async () => {
+    const moduleExports = loadModule();
+
+    moduleExports.handleMithrilPartialSyncRequests({
+      webContents: {},
+    } as never);
+
+    expect(mockChannels[5]).not.toBe(mockChannels[1]);
+
+    await mockChannels[5].onRequest.mock.calls[0][0]();
+
+    expect(
+      mithrilControllerMock.getPartialSyncAvailability
+    ).toHaveBeenCalledTimes(1);
+    expect(mithrilControllerMock.getPartialSyncStatus).not.toHaveBeenCalled();
+  });
+
+  it('surfaces isEnabled false when the kill switch is off and true on this branch', async () => {
+    const moduleExports = loadModule();
+
+    moduleExports.handleMithrilPartialSyncRequests({
+      webContents: {},
+    } as never);
+
+    mithrilControllerMock.getPartialSyncAvailability.mockReturnValue({
+      isEnabled: false,
+      isSignificantlyBehind: false,
+    });
+    await expect(
+      mockChannels[5].onRequest.mock.calls[0][0]()
+    ).resolves.toEqual({ isEnabled: false, isSignificantlyBehind: false });
+
+    mithrilControllerMock.getPartialSyncAvailability.mockReturnValue({
+      isEnabled: true,
+      isSignificantlyBehind: false,
+    });
+    await expect(
+      mockChannels[5].onRequest.mock.calls[0][0]()
+    ).resolves.toEqual({ isEnabled: true, isSignificantlyBehind: false });
   });
 });

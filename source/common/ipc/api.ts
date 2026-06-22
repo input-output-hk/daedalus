@@ -78,7 +78,10 @@ import type {
   MithrilBootstrapStatusUpdate,
   MithrilSnapshotItem,
 } from '../types/mithril-bootstrap.types';
-import type { MithrilPartialSyncStatusSnapshot } from '../types/mithril-partial-sync.types';
+import type {
+  MithrilPartialSyncStatusSnapshot,
+  MithrilPartialSyncAvailability,
+} from '../types/mithril-partial-sync.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -476,6 +479,12 @@ export const MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL =
   'MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL';
 export type MithrilPartialSyncWipeAndFullSyncRendererRequest = void;
 export type MithrilPartialSyncWipeAndFullSyncMainResponse = void;
+
+export const MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL =
+  'MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL';
+export type MithrilPartialSyncAvailabilityRendererRequest = void;
+export type MithrilPartialSyncAvailabilityMainResponse =
+  MithrilPartialSyncAvailability;
 
 export const SET_CHAIN_STORAGE_DIRECTORY_CHANNEL =
   'SET_CHAIN_STORAGE_DIRECTORY_CHANNEL';

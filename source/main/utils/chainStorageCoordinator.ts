@@ -5,6 +5,7 @@ import type {
   ChainStorageValidation,
   MithrilSnapshotItem,
 } from '../../common/types/mithril-bootstrap.types';
+import type { MithrilPartialSyncAvailability } from '../../common/types/mithril-partial-sync.types';
 import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
 import { launcherConfig } from '../config';
 import { logger } from './logging';
@@ -63,6 +64,14 @@ class ChainStorageCoordinator {
 
   isPartialSyncInProgress(): boolean {
     return this._partialSyncInProgress;
+  }
+
+  getPartialSyncAvailability(): MithrilPartialSyncAvailability {
+    return {
+      isEnabled: launcherConfig.mithrilPartialSyncEnabled === true,
+      isSignificantlyBehind: false, // task-ux-102 replaces with certified-immutable-gap signal
+      behindByImmutables: undefined, // task-ux-102 populates the raw gap
+    };
   }
 
   async getConfig(): Promise<ChainStorageConfig> {
