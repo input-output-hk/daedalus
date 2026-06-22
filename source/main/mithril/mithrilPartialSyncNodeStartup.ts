@@ -1,3 +1,4 @@
+import fs from 'fs-extra';
 import { dialog } from 'electron';
 import type { BrowserWindow } from 'electron';
 
@@ -11,6 +12,7 @@ import type { CardanoNode } from '../cardano/CardanoNode';
 import {
   clearMithrilPartialSyncMarker,
   readMithrilPartialSyncMarker,
+  writeMithrilPartialSyncMarker,
 } from './mithrilPartialSyncMarker';
 
 const MITHRIL_COMPLETION_DELAY_MS = 6000;
@@ -58,6 +60,12 @@ export class MithrilPartialSyncNodeStartup {
     }
 
     if (marker.state === 'node-start-verified') {
+      // Boundary C2: a prior run already proved one successful node start on the installed DB.
+      // Reclaim leftover staging on a close-without-dismiss / crash (PRD D9, gap #41), then resume
+      // a normal boot. stagingRootPath is the durable colocated root persisted at cutover.
+      if (marker.stagingRootPath) {
+        await fs.remove(marker.stagingRootPath);
+      }
       await clearMithrilPartialSyncMarker();
       return false;
     }
@@ -162,7 +170,13 @@ export class MithrilPartialSyncNodeStartup {
       );
     }
 
-    await clearMithrilPartialSyncMarker();
+    // PRD D9 steps 2–3: stamp node-start-verified (Boundary C2) and emit completed. The marker clear
+    // is DEFERRED to the dismiss-driven service finalize (finalizeCompletedPartialSync). Carry the
+    // durable stagingRootPath forward so the dismiss finalize / C2 reclaim can remove the exact dir.
+    await writeMithrilPartialSyncMarker('node-start-verified', {
+      managedChainPath: marker.managedChainPath,
+      stagingRootPath: marker.stagingRootPath,
+    });
     await emitMithrilPartialSyncStatus({
       ...getMithrilPartialSyncStatus(),
       status: 'completed',

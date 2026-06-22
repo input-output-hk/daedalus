@@ -425,6 +425,12 @@ export class MithrilController {
     );
   }
 
+  async finalizePartialSync(): Promise<void> {
+    // Dismiss-driven success finalize (PRD D9). No node orchestration → direct to the service,
+    // bypassing the coordinator (Decision (b)). Idempotent / terminal-state only.
+    await this._partialSyncService.finalizeCompletedPartialSync();
+  }
+
   _getPartialSyncDependencies(): {
     handlers: PartialSyncHandlers;
     nodeStopHandler?: () => Promise<void>;

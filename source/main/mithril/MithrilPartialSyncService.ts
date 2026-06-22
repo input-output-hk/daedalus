@@ -25,6 +25,7 @@ import { parseMithrilProgressUpdate } from './mithrilProgress';
 import { ChainStorageManager } from '../utils/chainStorageManager';
 import {
   clearMithrilPartialSyncMarker,
+  readMithrilPartialSyncMarker,
   writeMithrilPartialSyncMarker,
 } from './mithrilPartialSyncMarker';
 import { convertSnapshotDbToLsm } from './mithrilSnapshotConverter';
@@ -225,10 +226,12 @@ export class MithrilPartialSyncService {
       this._activatePostVerificationStage('installing');
       await writeMithrilPartialSyncMarker('cutover-in-progress', {
         managedChainPath: context.layoutResult.managedChainPath,
+        stagingRootPath: this._getStagingRootPath(),
       });
       await this._installValidatedStagedSnapshot(stagingPaths.dbPath);
       await writeMithrilPartialSyncMarker('installed-awaiting-node-start', {
         managedChainPath: context.layoutResult.managedChainPath,
+        stagingRootPath: this._getStagingRootPath(),
       });
 
       this._markActiveProgressItemAs('completed');
@@ -345,6 +348,19 @@ export class MithrilPartialSyncService {
   async finalizeWipeAndFullSync(): Promise<void> {
     await clearMithrilPartialSyncMarker();
     this._resetToIdleStatus();
+    this._clearRuntimeWorkState();
+  }
+
+  async finalizeCompletedPartialSync(): Promise<void> {
+    // PRD D9 step 4 (dismiss-driven). Idempotent: safe even when already idle (gap #41).
+    // Resolve the staging root from the durable marker first so it is correct cross-session;
+    // fall back to the in-session resolver if the marker carries no path.
+    const marker = await readMithrilPartialSyncMarker();
+    const stagingRoot = marker?.stagingRootPath ?? this._getStagingRootPath();
+
+    this._resetToIdleStatus();
+    await fs.remove(stagingRoot);
+    await clearMithrilPartialSyncMarker();
     this._clearRuntimeWorkState();
   }
 

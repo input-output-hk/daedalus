@@ -6,6 +6,7 @@ import type { MithrilPartialSyncStatusSnapshot } from '../../common/types/mithri
 jest.mock('./mithrilPartialSyncMarker', () => ({
   clearMithrilPartialSyncMarker: jest.fn().mockResolvedValue(undefined),
   writeMithrilPartialSyncMarker: jest.fn().mockResolvedValue(undefined),
+  readMithrilPartialSyncMarker: jest.fn().mockResolvedValue(null),
 }));
 
 jest.mock('check-disk-space', () => jest.fn());
@@ -80,6 +81,9 @@ describe('MithrilPartialSyncService', () => {
   const clearMithrilPartialSyncMarkerMock =
     require('./mithrilPartialSyncMarker')
       .clearMithrilPartialSyncMarker as jest.Mock;
+  const readMithrilPartialSyncMarkerMockTop =
+    require('./mithrilPartialSyncMarker')
+      .readMithrilPartialSyncMarker as jest.Mock;
 
   const mockDirectoryStats = () => ({
     isDirectory: () => true,
@@ -119,6 +123,7 @@ describe('MithrilPartialSyncService', () => {
     runCommandMock.mockReset();
     writeMithrilPartialSyncMarkerMock.mockResolvedValue(undefined);
     clearMithrilPartialSyncMarkerMock.mockResolvedValue(undefined);
+    readMithrilPartialSyncMarkerMockTop.mockResolvedValue(null);
   });
 
   it('fails latest metadata resolution when no certified immutable number is present', async () => {
@@ -1022,6 +1027,132 @@ describe('MithrilPartialSyncService', () => {
       require('check-disk-space').mockRejectedValueOnce(new Error('no measure'));
 
       await expect(service.start(createContext())).resolves.toBeUndefined();
+    });
+  });
+
+  describe('finalizeCompletedPartialSync', () => {
+    const readMithrilPartialSyncMarkerMock =
+      require('./mithrilPartialSyncMarker')
+        .readMithrilPartialSyncMarker as jest.Mock;
+
+    beforeEach(() => {
+      readMithrilPartialSyncMarkerMock.mockResolvedValue(null);
+    });
+
+    it('resets to idle, removes marker-persisted stagingRoot, and clears the marker exactly once', async () => {
+      readMithrilPartialSyncMarkerMock.mockResolvedValue({
+        state: 'node-start-verified',
+        updatedAt: '2026-06-01T00:00:00.000Z',
+        stagingRootPath: '/vol/mithril-partial-sync',
+      });
+      const service = new MithrilPartialSyncService();
+      // Prime status to something non-idle to confirm the reset
+      service._status = {
+        status: 'completed',
+        allowedRecoveryActions: [],
+        transferProgress: {},
+        progressItems: [],
+        error: null,
+      };
+
+      await expect(service.finalizeCompletedPartialSync()).resolves.toBeUndefined();
+
+      expect(removeMock).toHaveBeenCalledWith('/vol/mithril-partial-sync');
+      expect(clearMithrilPartialSyncMarkerMock).toHaveBeenCalledTimes(1);
+      expect(service.status).toEqual(
+        expect.objectContaining({
+          status: 'idle',
+          allowedRecoveryActions: [],
+          progressItems: [],
+          error: null,
+        })
+      );
+    });
+
+    it('falls back to _getStagingRootPath() when the marker carries no stagingRootPath', async () => {
+      readMithrilPartialSyncMarkerMock.mockResolvedValue({
+        state: 'node-start-verified',
+        updatedAt: '2026-06-01T00:00:00.000Z',
+        // no stagingRootPath
+      });
+      const service = new MithrilPartialSyncService();
+
+      await expect(service.finalizeCompletedPartialSync()).resolves.toBeUndefined();
+
+      // Falls back to stateDirectoryPath-based default path (stateDirectoryPath = /tmp/daedalus-state)
+      expect(removeMock).toHaveBeenCalledWith('/tmp/daedalus-state/mithril-partial-sync');
+    });
+
+    it('is idempotent from idle (no throw, safe no-ops on fs.remove and clearMarker)', async () => {
+      readMithrilPartialSyncMarkerMock.mockResolvedValue(null);
+      const service = new MithrilPartialSyncService();
+
+      await expect(service.finalizeCompletedPartialSync()).resolves.toBeUndefined();
+      await expect(service.finalizeCompletedPartialSync()).resolves.toBeUndefined();
+
+      expect(service.status.status).toBe('idle');
+      expect(removeMock).toHaveBeenCalledTimes(2);
+      expect(clearMithrilPartialSyncMarkerMock).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('cutover marker writes persist stagingRootPath', () => {
+    it('passes stagingRootPath at both cutover marker writes during start()', async () => {
+      const service = new MithrilPartialSyncService();
+      jest
+        .spyOn(
+          service._chainStorageManager,
+          'installValidatedPartialSyncSnapshot'
+        )
+        .mockResolvedValue(undefined);
+
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue(createLatestSnapshot(25));
+      jest.spyOn(service, '_runCommand').mockResolvedValue({
+        stdout: '',
+        stderr: '',
+        exitCode: 0,
+      });
+      jest.spyOn(service, '_runBinary').mockResolvedValue({
+        stdout: '',
+        stderr: '',
+        exitCode: 0,
+      });
+      readdirMock.mockImplementation(async (targetPath: string) => {
+        if (targetPath === '/tmp/chain/immutable') {
+          return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
+        }
+        if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
+          return [{ name: '12345', isDirectory: () => true }];
+        }
+        if (targetPath === '/tmp/mithril-partial-sync/download/db') {
+          return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
+        }
+        return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
+      });
+
+      await expect(service.start(createContext())).resolves.toBeUndefined();
+
+      // Both cutover writes must include stagingRootPath
+      const cutoverCall = writeMithrilPartialSyncMarkerMock.mock.calls.find(
+        ([state]: [string]) => state === 'cutover-in-progress'
+      );
+      const awaitingCall = writeMithrilPartialSyncMarkerMock.mock.calls.find(
+        ([state]: [string]) => state === 'installed-awaiting-node-start'
+      );
+
+      expect(cutoverCall).toBeDefined();
+      expect(cutoverCall[1]).toMatchObject({
+        managedChainPath: '/tmp/chain',
+        stagingRootPath: '/tmp/mithril-partial-sync',
+      });
+
+      expect(awaitingCall).toBeDefined();
+      expect(awaitingCall[1]).toMatchObject({
+        managedChainPath: '/tmp/chain',
+        stagingRootPath: '/tmp/mithril-partial-sync',
+      });
     });
   });
 

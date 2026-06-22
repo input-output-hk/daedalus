@@ -486,6 +486,11 @@ export type MithrilPartialSyncAvailabilityRendererRequest = void;
 export type MithrilPartialSyncAvailabilityMainResponse =
   MithrilPartialSyncAvailability;
 
+export const MITHRIL_PARTIAL_SYNC_FINALIZE_CHANNEL =
+  'MITHRIL_PARTIAL_SYNC_FINALIZE_CHANNEL';
+export type MithrilPartialSyncFinalizeRendererRequest = void;
+export type MithrilPartialSyncFinalizeMainResponse = void;
+
 export const SET_CHAIN_STORAGE_DIRECTORY_CHANNEL =
   'SET_CHAIN_STORAGE_DIRECTORY_CHANNEL';
 export type SetChainStorageDirectoryRendererRequest = {

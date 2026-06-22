@@ -30,6 +30,7 @@ const mithrilControllerMock = {
   wipeAndFullSyncFromPartialSync: jest.fn(),
   broadcastPartialSyncStatus: jest.fn(),
   getPartialSyncAvailability: jest.fn(() => availabilityEnabled),
+  finalizePartialSync: jest.fn(),
 };
 
 jest.mock('./lib/MainIpcChannel', () => ({
@@ -78,6 +79,7 @@ describe('mithrilPartialSyncChannel', () => {
     mithrilControllerMock.getPartialSyncAvailability.mockReturnValue(
       availabilityEnabled
     );
+    mithrilControllerMock.finalizePartialSync.mockResolvedValue(undefined);
   });
 
   it('binds status delivery to the latest window without duplicating request handlers', async () => {
@@ -225,5 +227,31 @@ describe('mithrilPartialSyncChannel', () => {
     await expect(
       mockChannels[5].onRequest.mock.calls[0][0]()
     ).resolves.toEqual({ isEnabled: true, isSignificantlyBehind: false });
+  });
+
+  it('finalize channel (mockChannels[6]) delegates to controller.finalizePartialSync() and resolves to undefined', async () => {
+    const moduleExports = loadModule();
+
+    moduleExports.handleMithrilPartialSyncRequests({
+      webContents: {},
+    } as never);
+
+    // The finalize channel is the 7th channel constructed (index 6)
+    await expect(
+      mockChannels[6].onRequest.mock.calls[0][0]()
+    ).resolves.toBeUndefined();
+
+    expect(mithrilControllerMock.finalizePartialSync).toHaveBeenCalledTimes(1);
+  });
+
+  it('finalize channel is on a distinct channel from the availability and status channels', async () => {
+    const moduleExports = loadModule();
+
+    moduleExports.handleMithrilPartialSyncRequests({
+      webContents: {},
+    } as never);
+
+    expect(mockChannels[6]).not.toBe(mockChannels[5]); // not availability
+    expect(mockChannels[6]).not.toBe(mockChannels[1]); // not status
   });
 });

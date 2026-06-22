@@ -12,6 +12,7 @@ export type MithrilPartialSyncMarker = {
   state: MithrilPartialSyncMarkerState;
   updatedAt: string;
   managedChainPath?: string;
+  stagingRootPath?: string;
 };
 
 const PARTIAL_SYNC_MARKER_FILE_NAME = 'mithril-partial-sync.lock';
@@ -21,13 +22,16 @@ export const getMithrilPartialSyncMarkerPath = (): string =>
 
 export async function writeMithrilPartialSyncMarker(
   state: MithrilPartialSyncMarkerState,
-  options: { managedChainPath?: string } = {}
+  options: { managedChainPath?: string; stagingRootPath?: string } = {}
 ): Promise<MithrilPartialSyncMarker> {
   const marker = {
     state,
     updatedAt: new Date().toISOString(),
     ...(options.managedChainPath
       ? { managedChainPath: options.managedChainPath }
+      : {}),
+    ...(options.stagingRootPath
+      ? { stagingRootPath: options.stagingRootPath }
       : {}),
   };
   const markerPath = getMithrilPartialSyncMarkerPath();
