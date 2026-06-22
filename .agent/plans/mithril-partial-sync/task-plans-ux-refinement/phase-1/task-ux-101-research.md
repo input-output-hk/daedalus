@@ -33,11 +33,12 @@
   undefined`). task-ux-102 replaces the coordinator method body with the certified-immutable-gap
   computation (reuse `resolveLatestSnapshotMetadata` + `derivePartialSyncRange` math; cached, no
   restore; `false` when no certified range).
-- **Open question for 102 planning (non-blocking):** the coordinator read is currently synchronous
-  and lock-free (matches `isPartialSyncInProgress()`). Confirm 102's behind-ness read can stay
-  lock-free off a CACHED value (not a live FS/aggregator read on the hot path). If 102 must read disk
-  under the mutation lock, the seam becomes async + queued and BOTH the coordinator and controller
-  signatures (and the channel's already-`async` handler) change together. Decide at 102 planning.
+- **Open question for 102 planning (non-blocking) — RESOLVED in task-ux-102 (see [[task-ux-102-research]]):**
+  102 made the read **async** at the controller hop and computes behind-ness in
+  `MithrilPartialSyncService` (the coordinator cannot reach the service). It is **lock-free** —
+  `getManagedChainPath()` and the snapshot helpers do not take the mutation lock — and the aggregator
+  query is TTL-cached (5 min) so it is not a hot-path live read. The channel's already-`async` handler
+  absorbed the change; the channel/type/renderer wrapper stayed frozen. No mutation lock was needed.
 
 ## Conflicts found between PRD / research / tasks JSON / live repo
 - None. D2/D3, research-19, and the tasks JSON were consistent with the live repo for this task. The

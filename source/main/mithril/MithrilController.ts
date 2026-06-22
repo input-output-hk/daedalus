@@ -164,8 +164,13 @@ export class MithrilController {
     return this._partialSyncStatus;
   }
 
-  getPartialSyncAvailability(): MithrilPartialSyncAvailability {
-    return chainStorageCoordinator.getPartialSyncAvailability();
+  async getPartialSyncAvailability(): Promise<MithrilPartialSyncAvailability> {
+    const { isEnabled } = chainStorageCoordinator.getPartialSyncAvailability();
+    if (!isEnabled) {
+      return { isEnabled: false, isSignificantlyBehind: false };
+    }
+    const behindness = await this._partialSyncService.getPartialSyncBehindness();
+    return { isEnabled, ...behindness };
   }
 
   getPendingBootstrapDecision(): MithrilBootstrapDecision | null {

@@ -57,6 +57,12 @@ const PARTIAL_SYNC_LOG_FILE_NAME = 'mithril-partial-sync.log';
 const PARTIAL_SYNC_STAGING_DIRECTORY_NAME = 'mithril-partial-sync';
 const PARTIAL_SYNC_LATEST_DRIFT_CODE = 'PARTIAL_SYNC_LATEST_DRIFT';
 
+// Behind-ness threshold in IMMUTABLE FILES. Backend-owned; overridable via launcher config.
+// Conservative starting point (≈ 1 epoch-equivalent of immutable files per PRD D2); calibrate down
+// during QA so the prompt actually fires on a node that is days behind.
+const DEFAULT_PARTIAL_SYNC_THRESHOLD_IMMUTABLES = 20; // ≈ 1 epoch (10·k = 21,600 slots ≈ 6h/file ⇒ ~20 files/5-day epoch); QA-calibratable
+const PARTIAL_SYNC_BEHINDNESS_CACHE_TTL_MS = 5 * 60 * 1000; // 5 min; only the aggregator query is cached
+
 const DEFAULT_STATUS: MithrilPartialSyncStatusSnapshot = {
   status: 'idle',
   allowedRecoveryActions: [],
@@ -93,6 +99,10 @@ export class MithrilPartialSyncService {
   _latestSnapshot: MithrilSnapshotItem | null = null;
   _stagedDbPath: string | null = null;
   _chainStorageManager: ChainStorageManager;
+  _latestCertifiedImmutableCache: {
+    value: number;
+    fetchedAt: number;
+  } | null = null;
 
   constructor(
     chainStorageManager: ChainStorageManager = new ChainStorageManager()
@@ -598,6 +608,61 @@ export class MithrilPartialSyncService {
     }
 
     return latestSnapshot;
+  }
+
+  async _getCachedLatestCertifiedImmutableNumber(): Promise<number> {
+    const now = Date.now();
+    if (
+      this._latestCertifiedImmutableCache &&
+      now - this._latestCertifiedImmutableCache.fetchedAt <
+        PARTIAL_SYNC_BEHINDNESS_CACHE_TTL_MS
+    ) {
+      return this._latestCertifiedImmutableCache.value;
+    }
+    const snapshot = await this.resolveLatestSnapshotMetadata();
+    this._latestCertifiedImmutableCache = {
+      value: snapshot.latestCertifiedImmutableNumber,
+      fetchedAt: now,
+    };
+    return snapshot.latestCertifiedImmutableNumber;
+  }
+
+  _getBehindnessThresholdImmutables(): number {
+    const configured = launcherConfig.mithrilPartialSyncThresholdImmutables;
+    return typeof configured === 'number' && configured > 0
+      ? configured
+      : DEFAULT_PARTIAL_SYNC_THRESHOLD_IMMUTABLES;
+  }
+
+  async getPartialSyncBehindness(): Promise<{
+    isSignificantlyBehind: boolean;
+    behindByImmutables?: number;
+  }> {
+    try {
+      const latest = await this._getCachedLatestCertifiedImmutableNumber();
+      const managedChainPath =
+        await this._chainStorageManager.getManagedChainPath();
+      const localImmutableNumber = await resolveLocalImmutableNumber(
+        managedChainPath,
+        (stage, message, code) => this._createStageError(stage, message, code)
+      );
+      const gap = latest - localImmutableNumber;
+      if (gap <= 0) {
+        // local >= latest ⇒ no certified range to restore ⇒ never nudge (PRD D2 truthfulness)
+        return { isSignificantlyBehind: false };
+      }
+      return {
+        isSignificantlyBehind: gap >= this._getBehindnessThresholdImmutables(),
+        behindByImmutables: gap,
+      };
+    } catch (error) {
+      // Aggregator unreachable, no immutable dir yet, or any failure ⇒ degrade to not-behind.
+      logger.warn(
+        'MithrilPartialSyncService: behind-ness probe failed; treating as not significantly behind',
+        { error }
+      );
+      return { isSignificantlyBehind: false };
+    }
   }
 
   async listSnapshots(): Promise<Array<MithrilSnapshotItem>> {

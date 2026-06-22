@@ -915,4 +915,94 @@ describe('MithrilPartialSyncService', () => {
       'Mithril partial sync cannot retry from the current recovery boundary.'
     );
   });
+
+  describe('getPartialSyncBehindness', () => {
+    // Stub the local immutable read deterministically. The fs-extra mock lacks lstat/realpath, so
+    // mock getManagedChainPath directly and drive `local` through the immutable directory readdir.
+    const stubLocalImmutableNumber = (
+      service: MithrilPartialSyncService,
+      localImmutableNumber: number
+    ) => {
+      jest
+        .spyOn(service._chainStorageManager, 'getManagedChainPath')
+        .mockResolvedValue('/tmp/chain');
+      readdirMock.mockResolvedValue([
+        `${String(localImmutableNumber).padStart(5, '0')}.chunk`,
+        'not-an-immutable-entry',
+      ]);
+    };
+
+    it('reports significantly behind when the gap meets the threshold', async () => {
+      const service = new MithrilPartialSyncService();
+      stubLocalImmutableNumber(service, 5);
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue(createLatestSnapshot(25));
+
+      await expect(service.getPartialSyncBehindness()).resolves.toEqual({
+        isSignificantlyBehind: true,
+        behindByImmutables: 20,
+      });
+    });
+
+    it('reports not significantly behind but sets the gap when below the threshold', async () => {
+      const service = new MithrilPartialSyncService();
+      stubLocalImmutableNumber(service, 20);
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue(createLatestSnapshot(25));
+
+      await expect(service.getPartialSyncBehindness()).resolves.toEqual({
+        isSignificantlyBehind: false,
+        behindByImmutables: 5,
+      });
+    });
+
+    it('reports not behind without throwing when the local position is at or beyond latest', async () => {
+      const service = new MithrilPartialSyncService();
+      stubLocalImmutableNumber(service, 25);
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue(createLatestSnapshot(25));
+
+      await expect(service.getPartialSyncBehindness()).resolves.toEqual({
+        isSignificantlyBehind: false,
+      });
+    });
+
+    it('degrades to not behind without throwing when the latest snapshot lookup rejects', async () => {
+      const service = new MithrilPartialSyncService();
+      stubLocalImmutableNumber(service, 5);
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockRejectedValue(new Error('aggregator unreachable'));
+
+      await expect(service.getPartialSyncBehindness()).resolves.toEqual({
+        isSignificantlyBehind: false,
+      });
+    });
+
+    it('caches the aggregator query within the TTL and re-queries after it expires', async () => {
+      const service = new MithrilPartialSyncService();
+      stubLocalImmutableNumber(service, 5);
+      const resolveSpy = jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue(createLatestSnapshot(25));
+      const nowSpy = jest.spyOn(Date, 'now');
+
+      nowSpy.mockReturnValue(1_000);
+      await service.getPartialSyncBehindness();
+      nowSpy.mockReturnValue(1_000 + 60_000); // within the 5 min TTL
+      await service.getPartialSyncBehindness();
+
+      expect(resolveSpy).toHaveBeenCalledTimes(1);
+
+      nowSpy.mockReturnValue(1_000 + 6 * 60_000); // past the 5 min TTL
+      await service.getPartialSyncBehindness();
+
+      expect(resolveSpy).toHaveBeenCalledTimes(2);
+
+      nowSpy.mockRestore();
+    });
+  });
 });

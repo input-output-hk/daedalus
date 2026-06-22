@@ -407,6 +407,7 @@ let
           ;
         wipeChain = false;
         mithrilPartialSyncEnabled = true;
+        mithrilPartialSyncThresholdImmutables = 20;  # behind-ness threshold in immutable files; calibrate in QA
         syncTolerance = "300s";
         nodeConfig = {
           inherit kind;

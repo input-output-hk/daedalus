@@ -69,8 +69,10 @@ class ChainStorageCoordinator {
   getPartialSyncAvailability(): MithrilPartialSyncAvailability {
     return {
       isEnabled: launcherConfig.mithrilPartialSyncEnabled === true,
-      isSignificantlyBehind: false, // task-ux-102 replaces with certified-immutable-gap signal
-      behindByImmutables: undefined, // task-ux-102 populates the raw gap
+      // Behind-ness is computed by MithrilController + MithrilPartialSyncService (task-ux-102);
+      // these defaults are only the disabled-path / fallback shape.
+      isSignificantlyBehind: false,
+      behindByImmutables: undefined,
     };
   }
 
