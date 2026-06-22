@@ -8,6 +8,8 @@ jest.mock('./mithrilPartialSyncMarker', () => ({
   writeMithrilPartialSyncMarker: jest.fn().mockResolvedValue(undefined),
 }));
 
+jest.mock('check-disk-space', () => jest.fn());
+
 jest.mock('fs-extra', () => ({
   constants: require('fs').constants,
   pathExists: jest.fn(),
@@ -23,6 +25,7 @@ jest.mock('fs-extra', () => ({
 
 jest.mock('../config', () => ({
   stateDirectoryPath: '/tmp/daedalus-state',
+  DISK_SPACE_REQUIRED: 1024,
   launcherConfig: {
     mithrilPartialSyncEnabled: true,
     nodeConfig: {
@@ -90,6 +93,8 @@ describe('MithrilPartialSyncService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    require('check-disk-space').mockResolvedValue({ free: 1_000_000_000_000, size: 2_000_000_000_000 });
 
     statMock.mockImplementation(async (targetPath: string) => {
       if (targetPath.endsWith('/clean')) {
@@ -215,12 +220,12 @@ describe('MithrilPartialSyncService', () => {
       }
       if (
         targetPath ===
-        '/tmp/daedalus-state/mithril-partial-sync/download/db/ledger'
+        '/tmp/mithril-partial-sync/download/db/ledger'
       ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
       if (
-        targetPath === '/tmp/daedalus-state/mithril-partial-sync/download/db'
+        targetPath === '/tmp/mithril-partial-sync/download/db'
       ) {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
@@ -237,7 +242,7 @@ describe('MithrilPartialSyncService', () => {
         'download',
         'latest',
         '--download-dir',
-        '/tmp/daedalus-state/mithril-partial-sync/download',
+        '/tmp/mithril-partial-sync/download',
         '--start',
         '12',
         '--end',
@@ -246,13 +251,13 @@ describe('MithrilPartialSyncService', () => {
         '--allow-override',
       ],
       expect.any(Object),
-      '/tmp/daedalus-state/mithril-partial-sync/download'
+      '/tmp/mithril-partial-sync/download'
     );
 
     expect(
       service._chainStorageManager.installValidatedPartialSyncSnapshot
     ).toHaveBeenCalledWith(
-      '/tmp/daedalus-state/mithril-partial-sync/download/db',
+      '/tmp/mithril-partial-sync/download/db',
       {
         expectedTopLevelEntries: [
           'clean',
@@ -274,10 +279,10 @@ describe('MithrilPartialSyncService', () => {
     );
 
     expect(removeMock).toHaveBeenCalledWith(
-      '/tmp/daedalus-state/mithril-partial-sync'
+      '/tmp/mithril-partial-sync'
     );
     expect(ensureDirMock).toHaveBeenCalledWith(
-      '/tmp/daedalus-state/mithril-partial-sync/download'
+      '/tmp/mithril-partial-sync/download'
     );
   });
 
@@ -433,12 +438,12 @@ describe('MithrilPartialSyncService', () => {
       }
       if (
         targetPath ===
-        '/tmp/daedalus-state/mithril-partial-sync/download/db/ledger'
+        '/mnt/custom-storage/mithril-partial-sync/download/db/ledger'
       ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
       if (
-        targetPath === '/tmp/daedalus-state/mithril-partial-sync/download/db'
+        targetPath === '/mnt/custom-storage/mithril-partial-sync/download/db'
       ) {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
@@ -457,10 +462,16 @@ describe('MithrilPartialSyncService', () => {
     ).resolves.toBeUndefined();
 
     expect(removeMock).toHaveBeenCalledWith(
-      '/tmp/daedalus-state/mithril-partial-sync'
+      '/mnt/custom-storage/mithril-partial-sync'
     );
     expect(ensureDirMock).toHaveBeenCalledWith(
-      '/tmp/daedalus-state/mithril-partial-sync/download'
+      '/mnt/custom-storage/mithril-partial-sync/download'
+    );
+    // Cutover colocation assertion: staging parent dir equals chain parent dir (intra-volume)
+    expect(
+      require('path').dirname('/mnt/custom-storage/mithril-partial-sync')
+    ).toBe(
+      require('path').dirname('/mnt/custom-storage/chain')
     );
   });
 
@@ -471,13 +482,15 @@ describe('MithrilPartialSyncService', () => {
       .spyOn(service, 'resolveLatestSnapshotMetadata')
       .mockResolvedValueOnce(createLatestSnapshot(12));
 
+    // mithrilWorkDir '/something' → dirname '/' → staging '/mithril-partial-sync'
+    // managedChainPath '/' → isPathWithin('/', '/mithril-partial-sync') = true → guard fires
     await expect(
       service.start({
         layoutResult: {
-          managedChainPath: '/tmp',
+          managedChainPath: '/',
           isRecoveryFallback: false,
         },
-        mithrilWorkDir: '/tmp',
+        mithrilWorkDir: '/something',
       })
     ).rejects.toThrow(
       'The partial sync staging directory must be outside the managed chain path.'
@@ -535,12 +548,12 @@ describe('MithrilPartialSyncService', () => {
       }
       if (
         targetPath ===
-        '/tmp/daedalus-state/mithril-partial-sync/download/db/ledger'
+        '/tmp/mithril-partial-sync/download/db/ledger'
       ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
       if (
-        targetPath === '/tmp/daedalus-state/mithril-partial-sync/download/db'
+        targetPath === '/tmp/mithril-partial-sync/download/db'
       ) {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
@@ -724,12 +737,12 @@ describe('MithrilPartialSyncService', () => {
       }
       if (
         targetPath ===
-        '/tmp/daedalus-state/mithril-partial-sync/download/db/ledger'
+        '/tmp/mithril-partial-sync/download/db/ledger'
       ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
       if (
-        targetPath === '/tmp/daedalus-state/mithril-partial-sync/download/db'
+        targetPath === '/tmp/mithril-partial-sync/download/db'
       ) {
         return [
           'clean',
@@ -914,6 +927,102 @@ describe('MithrilPartialSyncService', () => {
     expect(() => service.assertStartAllowed()).toThrow(
       'Mithril partial sync cannot retry from the current recovery boundary.'
     );
+  });
+
+  describe('disk-space preflight', () => {
+    const setupStartMocks = (service: MithrilPartialSyncService) => {
+      jest
+        .spyOn(
+          service._chainStorageManager,
+          'installValidatedPartialSyncSnapshot'
+        )
+        .mockResolvedValue(undefined);
+      jest.spyOn(service, '_runCommand').mockResolvedValue({
+        stdout: '',
+        stderr: '',
+        exitCode: 0,
+      });
+      jest.spyOn(service, '_runBinary').mockResolvedValue({
+        stdout: '',
+        stderr: '',
+        exitCode: 0,
+      });
+      readdirMock.mockImplementation(async (targetPath: string) => {
+        if (targetPath === '/tmp/chain/immutable') {
+          return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
+        }
+        if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
+          return [{ name: '12345', isDirectory: () => true }];
+        }
+        if (targetPath === '/tmp/mithril-partial-sync/download/db') {
+          return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
+        }
+        return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
+      });
+    };
+
+    it('fails closed with PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE when free space is insufficient', async () => {
+      const service = new MithrilPartialSyncService();
+      setupStartMocks(service);
+
+      // Inject a large snapshot size so the required threshold exceeds the free space
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue({
+          snapshot: {
+            digest: 'latest-digest',
+            createdAt: '2026-05-20T00:00:00Z',
+            size: 10_000_000_000,
+          },
+          latestCertifiedImmutableNumber: 25,
+        });
+
+      const runCommandSpy = jest.spyOn(service, '_runCommand');
+
+      require('check-disk-space').mockResolvedValue({ free: 1, size: 2 });
+
+      await expect(service.start(createContext())).rejects.toThrow(
+        'Not enough free disk space'
+      );
+
+      expect(service.status).toEqual(
+        expect.objectContaining({
+          status: 'failed',
+          error: expect.objectContaining({
+            code: 'PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE',
+            stage: 'preparing',
+          }),
+          allowedRecoveryActions: expect.arrayContaining(['retry']),
+        })
+      );
+
+      // Download command must never have been called (preflight precedes download)
+      expect(runCommandSpy).not.toHaveBeenCalledWith(
+        expect.arrayContaining(['cardano-db', 'download']),
+        expect.anything(),
+        expect.anything()
+      );
+    });
+
+    it('proceeds when disk measurement throws (fail-open on measurement error)', async () => {
+      const service = new MithrilPartialSyncService();
+      setupStartMocks(service);
+
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue({
+          snapshot: {
+            digest: 'latest-digest',
+            createdAt: '2026-05-20T00:00:00Z',
+            size: 10_000_000_000,
+          },
+          latestCertifiedImmutableNumber: 25,
+        });
+
+      require('check-disk-space').mockRejectedValueOnce(new Error('no measure'));
+
+      await expect(service.start(createContext())).resolves.toBeUndefined();
+    });
   });
 
   describe('getPartialSyncBehindness', () => {

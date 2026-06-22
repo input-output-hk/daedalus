@@ -3,7 +3,8 @@ import fs from 'fs-extra';
 import type { ChildProcess } from 'child_process';
 import EventEmitter from 'events';
 import type { WriteStream } from 'fs';
-import { launcherConfig, stateDirectoryPath } from '../config';
+import checkDiskSpace from 'check-disk-space';
+import { launcherConfig, stateDirectoryPath, DISK_SPACE_REQUIRED } from '../config';
 import { logger } from '../utils/logging';
 import type { PartialSyncPreflightContext } from '../utils/chainStorageCoordinator';
 import type {
@@ -56,6 +57,12 @@ import {
 const PARTIAL_SYNC_LOG_FILE_NAME = 'mithril-partial-sync.log';
 const PARTIAL_SYNC_STAGING_DIRECTORY_NAME = 'mithril-partial-sync';
 const PARTIAL_SYNC_LATEST_DRIFT_CODE = 'PARTIAL_SYNC_LATEST_DRIFT';
+const PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE_CODE =
+  'PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE';
+// Scratch-space requirement. snapshot.size is the FULL certified DB (a conservative over-estimate of the
+// partial range); 1.2× covers LSM-conversion + FS slack. Floored at DISK_SPACE_REQUIRED so a missing/zero
+// size still fails closed on a near-full disk. Renderer copy for the code lives in task-ux-403.
+const PARTIAL_SYNC_DISK_SAFETY_FACTOR = 1.2;
 
 // Behind-ness threshold in IMMUTABLE FILES. Backend-owned; overridable via launcher config.
 // Conservative starting point (≈ 1 epoch-equivalent of immutable files per PRD D2); calibrate down
@@ -93,6 +100,7 @@ export class MithrilPartialSyncService {
   _currentProcess: ChildProcess | null = null;
   _logStream: WriteStream | null = null;
   _activeWorkDir: string | null = null;
+  _stagingChainDir: string | null = null;
   _startedAt: number | null = null;
   _isCancelled = false;
   _progressItems: MithrilProgressItem[] = [];
@@ -127,6 +135,7 @@ export class MithrilPartialSyncService {
     }
 
     this._activeWorkDir = context.mithrilWorkDir;
+    this._stagingChainDir = context.mithrilWorkDir;
     this._startedAt = Date.now();
     this._isCancelled = false;
     this._progressItems = [];
@@ -159,6 +168,8 @@ export class MithrilPartialSyncService {
       const stagingPaths = await this._prepareStagingDirectory(
         context.layoutResult.managedChainPath
       );
+
+      await this._assertSufficientDiskSpace(stagingPaths.rootPath);   // D7/BUG3 preflight
 
       this._activeWorkDir = stagingPaths.downloadParentPath;
       this._stagedDbPath = stagingPaths.dbPath;
@@ -575,7 +586,15 @@ export class MithrilPartialSyncService {
   }
 
   _getStagingRootPath(): string {
-    return path.join(stateDirectoryPath, PARTIAL_SYNC_STAGING_DIRECTORY_NAME);
+    // Colocate staging as a SIBLING of the resolved managed chain (backend PRD:250 / D7/BUG3): same volume
+    // as the chain so cutover is an intra-volume rename, never inside the live chain subtree (the
+    // isPathWithin guard in preparePartialSyncStagingDirectory still enforces that). _stagingChainDir is the
+    // realpath-resolved chain dir captured at start(); the stateDirectoryPath fallback preserves the legacy
+    // default location when no sync has run this session (cross-session reclaim is task-ux-202).
+    const stagingParent = this._stagingChainDir
+      ? path.dirname(this._stagingChainDir)
+      : stateDirectoryPath;
+    return path.join(stagingParent, PARTIAL_SYNC_STAGING_DIRECTORY_NAME);
   }
 
   async resolveLatestSnapshotMetadata(): Promise<ResolvedLatestSnapshot> {
@@ -749,6 +768,37 @@ export class MithrilPartialSyncService {
       managedChainPath,
       (stage, message, code) => this._createStageError(stage, message, code)
     );
+  }
+
+  async _assertSufficientDiskSpace(stagingRootPath: string): Promise<void> {
+    const snapshotSize = this._latestSnapshot?.size ?? 0;
+    const requiredBytes = Math.max(
+      snapshotSize * PARTIAL_SYNC_DISK_SAFETY_FACTOR,
+      DISK_SPACE_REQUIRED
+    );
+
+    let freeBytes: number;
+    try {
+      ({ free: freeBytes } = await checkDiskSpace(stagingRootPath));
+    } catch (error) {
+      // Could not measure — do NOT false-block (repo precedent: handleDiskSpace.ts:176-181 fail-open).
+      logger.warn(
+        'MithrilPartialSyncService: disk-space preflight could not measure free space; proceeding',
+        { error, stagingRootPath }
+      );
+      return;
+    }
+
+    if (freeBytes < requiredBytes) {
+      const requiredGb = Math.ceil(requiredBytes / 1073741824);
+      const freeGb = Math.floor(freeBytes / 1073741824);
+      throw this._createStageError(
+        'preparing',
+        `Not enough free disk space to stage the Mithril partial sync on the chain storage volume. ` +
+          `Required ~${requiredGb} GB, available ~${freeGb} GB.`,
+        PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE_CODE
+      );
+    }
   }
 
   _resolveStageFromProgressUpdate(
