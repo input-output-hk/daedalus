@@ -1,0 +1,793 @@
+{
+  "metadata": {
+    "title": "Mithril Partial Sync UX Refinement Tasks (Phase 2)",
+    "created": "2026-06-19",
+    "updated": "2026-06-19",
+    "version": "1.0.0",
+    "totalTasks": 19,
+    "prdReference": ".agent/plans/mithril-partial-sync/mithril-partial-sync-ux-refinement-prd.md",
+    "description": "High-level, validation-gated implementation plan for the Mithril partial sync UX refinement sprint (issue #10 Phase 2). The backend, IPC, store, and overlay already exist on feat/mithril-partial-sync-ux-refinement; this sprint refines the UX to (a) prompt the user when significantly behind the tip and (b) close the 35 research gaps plus the 13 issue-#10-comment items. Tasks are organized so task-ux-1xx maps to phase-1, task-ux-2xx to phase-2, and so on, matching the task-plans-ux-refinement/phase-N subdirectory layout.",
+    "sourceFiles": [
+      ".agent/plans/mithril-partial-sync/mithril-partial-sync-ux-refinement-prd.md",
+      ".agent/plans/mithril-partial-sync/research/19-ux-refinement-state-and-gaps.md",
+      ".agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md",
+      "source/common/types/mithril-partial-sync.types.ts",
+      "source/common/ipc/api.ts",
+      "source/main/mithril/MithrilPartialSyncService.ts",
+      "source/main/mithril/mithrilPartialSyncNodeStartup.ts",
+      "source/main/mithril/mithrilPartialSyncMarker.ts",
+      "source/main/utils/chainStorageCoordinator.ts",
+      "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+      "source/renderer/app/stores/MithrilBootstrapStore.ts",
+      "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
+      "source/renderer/app/components/status/MithrilPartialSyncRecommendation.tsx",
+      "source/renderer/app/components/status/MithrilPartialSyncConfirmation.tsx",
+      "source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay.tsx",
+      "source/renderer/app/components/loading/mithril-bootstrap/MithrilProgressView.tsx",
+      "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.tsx",
+      "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.tsx"
+    ],
+    "importantNote": "This is a refinement sprint, not a rebuild. Every locked safety boundary from the backend PRD and research-19 §5 MUST be preserved: staged-only restore; the Boundary A vs B/C1/C2 recovery model rendered strictly from backend allowedRecoveryActions (never inferred from status names); confirmation precedes start; no auto-trigger; no renderer-computed threshold (the backend owns behind-ness); latest-snapshot-only with no snapshot-selection UI and no user-facing storage-location picker (engineering scratch/staging placement is in scope per D7/BUG3); supported networks mainnet/preprod/preview; serialized mutation lock; marker-driven startup recovery; and no synthetic throughput/remaining-time/overall-% over IPC. Locked decision #16 is intentionally amended by PRD D9 (post-dismiss backend reset-to-idle + staging cleanup + node-start-verified marker). Per PRD D7, the backend-correctness de-risking track and the full manual QA matrix are REFERENCED deployment gates that this PRD does not fully re-specify; tasks task-ux-701 and task-ux-702 represent those gates and require operator/user involvement rather than autonomous implementation."
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Cross-Process Availability Contract And Behind-ness Signal",
+      "description": "Add the backend-owned availability read model (kill-switch state + certified-immutable-gap behind-ness) and its dedicated IPC channel so the renderer can gate all partial-sync UI truthfully without ever computing a threshold. Implements PRD D2 and D3. This phase is foundational: every renderer discovery surface in phase 3 gates on it.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-ux-101",
+          "title": "Add MithrilPartialSyncAvailability read model, dedicated channel, and kill-switch exposure",
+          "description": "Introduce a backend-owned availability read model carrying both the kill-switch state and the D2 behind-ness signal, delivered on a dedicated channel kept separate from the in-flight MithrilPartialSyncStatusSnapshot (which describes an operation, not static availability). Surface launcherConfig.mithrilPartialSyncEnabled into it and enable mithrilPartialSyncEnabled = true on this branch's launcher config for manual testing. Closes blocker #1's contract half (kill switch invisible to the renderer). Implements PRD D3 and the contract surface for D2.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 4,
+          "dependencies": [],
+          "targetPaths": [
+            "source/common/types/mithril-partial-sync.types.ts",
+            "source/common/ipc/api.ts",
+            "source/main/ipc/mithrilPartialSyncChannel.ts",
+            "source/renderer/app/ipc/mithrilPartialSyncChannel.ts",
+            "source/main/utils/chainStorageCoordinator.ts",
+            "nix/internal/launcher-config.nix",
+            ".agent/system/api-endpoints.md"
+          ],
+          "implementationNotes": [
+            "Define `type MithrilPartialSyncAvailability = { isEnabled: boolean; isSignificantlyBehind: boolean; behindByImmutables?: number }` in `mithril-partial-sync.types.ts`; the renderer receives only this and never thresholds `behindByImmutables`.",
+            "Add a dedicated availability channel (one-shot request at store setup plus a periodic refresh while syncing); do NOT widen the existing status snapshot channel.",
+            "Follow the existing Daedalus IPC patterns already used by the partial-sync status/action channels; add both main and renderer wrappers.",
+            "`isEnabled` comes from `launcherConfig.mithrilPartialSyncEnabled`, already enforced at the coordinator level (`chainStorageCoordinator.ts:37-38,375-379`).",
+            "Set `mithrilPartialSyncEnabled = true` at `nix/internal/launcher-config.nix:409` for this branch's full manual testing (PRD D3 rollout context); production default and network-scoping are deferred to the readiness gate, so document the change as branch-scoped.",
+            "This task wires the contract and the kill-switch field; the behind-ness computation that populates `isSignificantlyBehind`/`behindByImmutables` is task-ux-102.",
+            "Update `.agent/system/api-endpoints.md` per the IPC documentation workflow."
+          ],
+          "testCases": [
+            "Renderer one-shot availability query returns isEnabled reflecting launcher config",
+            "Availability channel is separate from the status snapshot channel",
+            "isEnabled false when kill switch off; true on this branch"
+          ],
+          "acceptance": [
+            "Shared MithrilPartialSyncAvailability type compiles and is exported.",
+            "A dedicated availability channel exists with main and renderer wrappers, separate from MithrilPartialSyncStatusSnapshot.",
+            "mithrilPartialSyncEnabled is surfaced into the availability read model and set true on this branch's launcher config.",
+            "api-endpoints.md documents the new channel."
+          ]
+        },
+        {
+          "id": "task-ux-102",
+          "title": "Compute the certified-immutable-gap behind-ness signal (cached, no restore)",
+          "description": "Teach the backend to compute isSignificantlyBehind from the certified-immutable gap and feed it (plus the raw behindByImmutables) into the availability read model from task-ux-101. The signal fires only when a real certified range exists, so the user is never nudged toward a partial sync that would dead-end in PARTIAL_SYNC_NO_CERTIFIED_RANGE. Implements PRD D2. Closes the contract+backend half of blocker #2.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 4,
+          "dependencies": ["task-ux-101"],
+          "targetPaths": [
+            "source/main/mithril/MithrilPartialSyncService.ts",
+            "source/main/mithril/mithrilPartialSyncPreflight.ts",
+            "source/main/utils/chainStorageCoordinator.ts",
+            "nix/internal/launcher-config.nix"
+          ],
+          "implementationNotes": [
+            "gap = latestCertifiedImmutableNumber - localImm, where localImm is the highest parseable immutable file number on disk. Reuse the EXISTING seams: `resolveLatestSnapshotMetadata` (`MithrilPartialSyncService.ts:571`) for the latest certified immutable number and `derivePartialSyncRange` (`mithrilPartialSyncPreflight.ts:143`) for the gap math; do not add new restore machinery.",
+            "isSignificantlyBehind = gap >= THRESHOLD_IMMUTABLES; THRESHOLD_IMMUTABLES is backend-owned and tunable via launcher config (default ~= one epoch-equivalent of immutable files, conservative; calibrate down during QA).",
+            "Reuse one cached Mithril aggregator query refreshed periodically while syncing; do NOT tight-poll the aggregator (Non-Functional requirement).",
+            "Renderer never sees or computes the threshold; expose only isSignificantlyBehind and optionally behindByImmutables for honest copy.",
+            "When no certified range exists, isSignificantlyBehind must be false (truthfulness rationale, D2)."
+          ],
+          "testCases": [
+            "gap >= threshold yields isSignificantlyBehind true with behindByImmutables set",
+            "gap < threshold yields false",
+            "No certified range available yields false (never nudges into a dead-end)",
+            "Aggregator query is cached, not tight-polled"
+          ],
+          "acceptance": [
+            "Backend computes isSignificantlyBehind from the certified-immutable gap reusing the existing latest-snapshot resolver.",
+            "THRESHOLD_IMMUTABLES is launcher-config-tunable and backend-owned.",
+            "The availability read model carries isSignificantlyBehind and behindByImmutables.",
+            "The behind-ness Mithril query is cached and low-frequency."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Backend UX-Enabling Correctness",
+      "description": "Land the UX-enabling backend changes the renderer depends on: relocate staging onto the chain volume with a disk preflight, finalize the success path (reset-to-idle + staging cleanup + truthful marker), guarantee cancel always re-emits status, and make the native startup dialog the single interrupted-cutover recovery surface. Implements PRD D5a, D5f (backend half), D7/BUG3, and D9.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-ux-201",
+          "title": "Colocate partial-sync staging on the resolved chain volume + disk-space preflight",
+          "description": "Derive partial-sync staging from the resolved chain work directory (a sibling of the managed chain) instead of the hardcoded top-level state directory, so it honors backend PRD line 250, fills the correct volume on relocated/symlinked chains, and makes cutover an intra-volume rename rather than a cross-device copy. Add a disk-space preflight. Implements PRD D7/BUG3. No user-facing storage picker (the non-goal is about user snapshot pickers, not scratch placement).",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [],
+          "targetPaths": [
+            "source/main/mithril/MithrilPartialSyncService.ts",
+            "source/main/utils/chainStorageManager.ts"
+          ],
+          "implementationNotes": [
+            "Change the staging root in `_getStagingRootPath()` (`MithrilPartialSyncService.ts:567-568`, which joins `stateDirectoryPath` + the `PARTIAL_SYNC_STAGING_DIRECTORY_NAME` constant at `:57` -- not a string literal) to derive from the resolved chain work dir / `_activeWorkDir` (`:153`), so staging is a sibling of the managed chain (gap #42).",
+            "Keep the existing guard that rejects any staging path inside the managed chain subtree.",
+            "Add a disk-space preflight before download begins; surface a precise, retriable preflight error if space is insufficient (renderer copy handled by the error-copy map task).",
+            "Preserve the staged-only restore lock; staging must never mutate the live chain in place."
+          ],
+          "testCases": [
+            "Staging path resolves under the chain work dir, not the top-level state dir",
+            "Relocated/symlinked chain stages on the same volume as the chain",
+            "Disk-space preflight fails closed with an actionable error when space is insufficient",
+            "Cutover is an intra-volume operation when staging is colocated"
+          ],
+          "acceptance": [
+            "Staging is colocated on the resolved chain volume, honoring backend PRD line 250.",
+            "A disk-space preflight runs before any destructive/download step.",
+            "No user-facing storage picker is introduced."
+          ]
+        },
+        {
+          "id": "task-ux-202",
+          "title": "Success-path finalization: finalize channel, reset-to-idle, staging cleanup, and node-start-verified marker (Boundary C2)",
+          "description": "Make a verified partial-sync success finalize the operation rather than parking in completed. Add a dedicated finalize/dismiss IPC request channel (a fifth partial-sync action channel) routed through MithrilController to MithrilPartialSyncService; on success-overlay dismiss the service idempotently runs _resetToIdleStatus + fs.remove(stagingRoot) + clearMithrilPartialSyncMarker. Write the node-start-verified marker after the node is proven RUNNING (Option A), activating the dead Boundary C2 startup branch, and defer the marker clear to the dismiss-driven finalize. Extend the C2 startup branch to also reclaim leftover staging on a close-without-dismiss. Implements PRD D9 (amends locked decision #16); fixes BUG1, BUG2, and gap #44.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 6,
+          "dependencies": ["task-ux-201"],
+          "targetPaths": [
+            "source/common/ipc/api.ts",
+            "source/main/ipc/mithrilPartialSyncChannel.ts",
+            "source/main/mithril/MithrilPartialSyncService.ts",
+            "source/main/mithril/mithrilPartialSyncNodeStartup.ts",
+            "source/main/mithril/mithrilPartialSyncMarker.ts"
+          ],
+          "implementationNotes": [
+            "Add a finalize/dismiss request channel alongside start/cancel/restart-normal/wipe; route it MithrilController -> MithrilPartialSyncService. This is genuinely new behavior with no seam to reuse, so a new channel is warranted (does not contradict the retry=start reuse decision).",
+            "Implement the D9 'Ordered finalization sequence' (PRD D9) -- the canonical task-ux-202 doc owns the exact step order. Seams: `finalizeInstalledNodeStart` (`mithrilPartialSyncNodeStartup.ts:147-172`), `writeMithrilPartialSyncMarker`/`clearMithrilPartialSyncMarker` (`mithrilPartialSyncMarker.ts`), `_resetToIdleStatus` (`MithrilPartialSyncService.ts`, already used by cancel/restart/wipe). Net effect: verified success stamps node-start-verified + emits completed; the dismiss-driven finalize does reset-to-idle + fs.remove(stagingRoot) + clear-marker idempotently (gap #41 staging-leftover).",
+            "Do NOT reset to idle at verified success: pushing idle would drop shouldShowOverlay and hide the success screen before the user sees it (violates lock #16). The dismiss-driven finalize is the authoritative reset/cleanup trigger.",
+            "Activate the never-written node-start-verified state (`mithrilPartialSyncMarker.ts:6-9`); `finalizeInstalledNodeStart` currently jumps from C1 straight to clearing the marker (`:165`), leaving the C2 branch (`mithrilPartialSyncNodeStartup.ts:60-63`) dead.",
+            "Extend the C2 startup branch (`:60-63`) to also fs.remove(stagingRoot) so a close-without-dismiss / crash reclaims leftover staging on next launch.",
+            "The verified-success marker stamp + completed emission run in the main-process startup path; the dismiss-driven finalize runs in MithrilPartialSyncService.",
+            "The renderer half (dismissCompletedOverlay invokes this channel; isActionBlocked derived from isWorking) is task-ux-404 and task-ux-301 respectively."
+          ],
+          "testCases": [
+            "Verified success stamps node-start-verified then emits completed; marker not cleared until dismiss",
+            "Dismiss-driven finalize resets to idle, removes stagingRoot, and clears the marker exactly once",
+            "Finalize channel is idempotent (safe when already idle)",
+            "Close-without-dismiss leaves node-start-verified; next launch C2 branch resumes normal boot and reclaims staging",
+            "Interrupted-after-verification run resumes a normal boot (C2), not a C1 re-drive"
+          ],
+          "acceptance": [
+            "A finalize/dismiss channel exists and is routed to the service idempotently.",
+            "node-start-verified is written after the node is proven RUNNING; Boundary C2 startup branch is live.",
+            "Verified success keeps the completed overlay visible; reset + staging removal + marker clear happen on dismiss.",
+            "Close-without-dismiss reclaims leftover staging via the C2 branch on next launch.",
+            "Locked decision #16 amendment (D9) is implemented as documented."
+          ]
+        },
+        {
+          "id": "task-ux-203",
+          "title": "Guarantee cancel always re-emits status (backend half of cancel-during-stop fix)",
+          "description": "Ensure a cancel request always results in a status emission so the renderer never sticks on an optimistic frame. Today service.cancel early-returns while _activeWorkDir/_currentProcess are still null during the node-stop window (MithrilPartialSyncService.ts:241-247), so the UI looks dead. Implements the backend half of PRD D5f (gap #39). True abort-during-stop (a cancel flag honored before the node-stop handler) remains deferred to the backend-correctness track (D7).",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [],
+          "targetPaths": [
+            "source/main/mithril/MithrilPartialSyncService.ts",
+            "source/main/ipc/mithrilPartialSyncChannel.ts"
+          ],
+          "implementationNotes": [
+            "On any cancel request, re-emit/sync the current status even when the early-return path is taken, so the renderer can resync rather than stick.",
+            "Do not change the post-cutover cancel hard-rejection (`MithrilPartialSyncService.ts:249-253`); that lock stays (gap #9 is handled in the renderer).",
+            "Optionally have the backend emit stopping-node when it actually stops the node so the status is truthful rather than purely renderer-optimistic (polish; pairs with D8#19).",
+            "The renderer disable-Cancel-during-stop tooltip + always-syncStatus-after-cancel is task-ux-404."
+          ],
+          "testCases": [
+            "Cancel during the node-stop window re-emits status (renderer can resync)",
+            "Post-cutover cancel still hard-rejects unchanged"
+          ],
+          "acceptance": [
+            "A cancel request always produces a status emission the renderer can act on.",
+            "Post-cutover cancel rejection is preserved."
+          ]
+        },
+        {
+          "id": "task-ux-204",
+          "title": "Native dialog is the single startup-interrupted recovery surface",
+          "description": "When startup detects an unsafe interrupted cutover, make the native Electron blocking dialog the single authoritative recovery surface and remove the redundant React failed emission on that startup path, eliminating the two-competing-surfaces problem. Implements PRD D5a; closes gap #7. In-session failures are unaffected and keep using the React overlay.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [],
+          "targetPaths": [
+            "source/main/mithril/mithrilPartialSyncNodeStartup.ts",
+            "source/main/mithril/MithrilStartupGate.ts"
+          ],
+          "implementationNotes": [
+            "Remove the redundant React failed emission on the startup-interrupted path (`mithrilPartialSyncNodeStartup.ts:69-90`); keep the native dialog.showMessageBox with Wipe & full sync / Quit.",
+            "Honor the lock that startup-owned recovery must not depend on diagnostics UI or a running node and works before the renderer is ready.",
+            "Do not touch the in-session failure path, which must keep using the React overlay."
+          ],
+          "testCases": [
+            "Startup-interrupted unsafe cutover shows only the native dialog (no React overlay)",
+            "In-session failure still shows the React overlay"
+          ],
+          "acceptance": [
+            "Only one surface (native dialog) handles startup-interrupted unsafe-cutover recovery.",
+            "In-session failure overlay behavior is unchanged."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Renderer Discovery, Gating, And Confirmation",
+      "description": "Consume the availability read model, gate all partial-sync UI on it, add the proactive session-dismissible prompt with a deep-link into the confirmation modal, and replace the in-place confirmation row-swap with a proper decision-style modal. Implements PRD D1, D3 (renderer), D6, and the renderer half of D9's CTA re-arm.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-ux-301",
+          "title": "Consume availability in the store, gate all partial-sync UI, and re-arm the CTA via isWorking",
+          "description": "Wire MithrilPartialSyncStore to the availability read model (one-shot query at setup + periodic refresh while syncing) and gate ALL partial-sync UI on isEnabled: when the kill switch is off, the diagnostics recommendation/CTA and (later) the proactive prompt are fully hidden, never an enabled button that throws a raw rejection string. Additionally gate the recommendation/CTA on isSignificantlyBehind. Derive isActionBlocked from isWorking (in-flight phases) rather than isActive so terminal completed/cancelled/failed never block the CTA, re-arming it without an app restart. Implements PRD D1/D3 (renderer) and the CTA re-arm half of D9 (BUG1). Closes blocker #1's renderer half.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 4,
+          "dependencies": ["task-ux-101", "task-ux-102"],
+          "targetPaths": [
+            "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+            "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
+            "source/renderer/app/components/status/MithrilPartialSyncRecommendation.tsx",
+            "source/common/types/mithril-partial-sync.types.ts"
+          ],
+          "implementationNotes": [
+            "Consume the availability channel from task-ux-101 in setup(); expose isEnabled, isSignificantlyBehind, behindByImmutables on the store.",
+            "Gate MithrilPartialSyncSection/Recommendation visibility on isEnabled (all UI) and additionally on isSignificantlyBehind (recommendation/CTA), so no dead control renders near the tip (D1 sign-off: hide, not disable).",
+            "Change isActionBlocked to derive from isWorking (in-flight phases) instead of `isActive = (status !== 'idle')` (`mithril-partial-sync.types.ts:92-94`), so completed/cancelled/failed re-arm the CTA immediately (D9/BUG1).",
+            "Keep disabling the CTA while any Mithril work is active (isActionBlocked still reflects the serialized mutation lock).",
+            "Honor the locked no-renderer-threshold rule: the renderer consumes booleans/figures, never computes the threshold.",
+            "Verify the existing _isTornDown guard keeps the status handler inert after teardown (D8/#15) and document that no IPC-abstraction unsubscribe is added."
+          ],
+          "testCases": [
+            "Kill switch off hides all partial-sync UI (no enabled button)",
+            "isEnabled && isSignificantlyBehind shows the recommendation/CTA; otherwise hidden",
+            "Terminal completed/cancelled/failed re-arms the CTA (isActionBlocked clears)",
+            "CTA stays disabled while other Mithril work is active"
+          ],
+          "acceptance": [
+            "All partial-sync UI is hidden when the kill switch is off.",
+            "Recommendation/CTA appears only when isEnabled && isSignificantlyBehind.",
+            "isActionBlocked derives from isWorking so the CTA re-arms on terminal states without restart.",
+            "Renderer computes no threshold; the _isTornDown teardown guard is documented."
+          ]
+        },
+        {
+          "id": "task-ux-302",
+          "title": "Proactive session-dismissible prompt on the syncing screen with deep-link handoff",
+          "description": "Add a dismissible prompt on the loading/sync screen (SyncingConnecting) shown only when isEnabled && isSignificantlyBehind && !proactivePromptDismissedThisSession, guiding the user to Mithril partial sync as a faster catch-up path. Review deep-links into the Diagnostics-owned confirmation modal (no separate start path); Not now / dismiss sets an in-memory session flag and the copy notes the user can start it later from Diagnostics. Implements PRD D1 (the proactive surface + deep-link handoff). Closes blocker #2's prompt half.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": ["task-ux-301", "task-ux-303"],
+          "targetPaths": [
+            "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.tsx",
+            "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+            "source/renderer/app/components/status/DaedalusDiagnostics.tsx",
+            "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
+            "source/renderer/app/actions/app-actions.ts",
+            "translations/messages.json"
+          ],
+          "implementationNotes": [
+            "Mount the prompt in SyncingConnecting; gate on isEnabled && isSignificantlyBehind && !proactivePromptDismissedThisSession.",
+            "Add proactivePromptDismissedThisSession as an in-memory store flag (same pattern as isCompletedOverlayDismissed); not persisted across restarts.",
+            "Give openDaedalusDiagnosticsDialog an optional payload `{ showMithrilConfirmation: true }`; Review triggers it. DaedalusDiagnostics threads a showConfirmationOnOpen prop to MithrilPartialSyncSection, which opens the confirmation modal on mount, respecting isActionBlocked.",
+            "No separate start path: the deep-link lands on the confirmation modal; confirmation still precedes start (lock #3).",
+            "Dismissal copy must tell the user they can still trigger partial sync manually later from the Diagnostics page."
+          ],
+          "testCases": [
+            "Prompt appears only when enabled, significantly behind, and not yet dismissed this session",
+            "Dismiss sets the in-memory flag so it does not reappear this session",
+            "Review opens Diagnostics directly in the confirmation modal (deep-link)",
+            "Prompt never starts partial sync directly (confirmation precedes start)"
+          ],
+          "acceptance": [
+            "A gated, session-dismissible proactive prompt renders on the syncing screen.",
+            "Review deep-links into the confirmation modal via the openDaedalusDiagnosticsDialog payload + showConfirmationOnOpen prop.",
+            "Dismissal is session-scoped (in-memory) and copy points to the manual Diagnostics path.",
+            "No second start path is introduced; confirmation precedes start."
+          ]
+        },
+        {
+          "id": "task-ux-303",
+          "title": "Replace in-place confirmation with a decision-style modal carrying behind-ness context",
+          "description": "Replace the in-place prose row-swap with a proper focus-trapped modal: scrim, ESC/scrim-click = Back to diagnostics (not close the whole diagnostics dialog), a behind-ness context line from behindByImmutables, what-happens steps (stop node, download & verify, restart), the verified-data wording lock, and a primary Start / secondary Back-to-diagnostics button hierarchy. Stays lighter than bootstrap: no snapshot-selection and no storage-location picker; reuse bootstrap decision-view styling for visual consistency. Implements PRD D6; closes gaps #11, #14, #22, #23.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": ["task-ux-301"],
+          "targetPaths": [
+            "source/renderer/app/components/status/MithrilPartialSyncConfirmation.tsx",
+            "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
+            "source/renderer/app/components/status/DaedalusDiagnostics.scss",
+            "translations/messages.json"
+          ],
+          "implementationNotes": [
+            "Convert MithrilPartialSyncConfirmation from the in-place 560px row swap into a scrim + focus-trapped modal following existing Daedalus dialog patterns; do not invent a one-off modal system.",
+            "ESC / scrim-click = Back to diagnostics, not close the whole diagnostics dialog (fixes gap #23).",
+            "Behind-ness context line uses behindByImmutables (e.g., 'Your node is about N immutable files behind the latest verified snapshot'); renderer still does no thresholding. This closes gap #29 (no 'how far behind' copy) and the surfaced half of gap #26 (snapshot identity); full snapshot-metadata stays a non-goal.",
+            "Keep the locked 'verified Mithril data' wording (lock #4); keep copy simple (#34, no IOG-key/no-ancillary nuance).",
+            "Primary 'Start Mithril partial sync' vs secondary 'Back to diagnostics' with distinct styles (fixes gap #14, the shared-cancel-style bug).",
+            "Reuse bootstrap decision-view styling but NOT its snapshot-metadata grid; no snapshot-selection, no storage-location picker (locked non-goals).",
+            "Confirmation remains the only path to backend start (lock #3); it must support being opened on mount via showConfirmationOnOpen (deep-link from task-ux-302)."
+          ],
+          "testCases": [
+            "Confirmation renders as a focus-trapped modal with scrim",
+            "ESC / scrim-click returns to diagnostics without closing the whole dialog",
+            "Behind-ness line reflects behindByImmutables",
+            "Primary/secondary buttons have distinct styles",
+            "Confirming is the only path to backend start"
+          ],
+          "acceptance": [
+            "Confirmation is a focus-trapped decision-style modal with behind-ness context.",
+            "ESC / scrim-click = back to diagnostics, not full-dialog close.",
+            "Button hierarchy is primary/secondary with distinct styles.",
+            "No snapshot-selection or storage-location picker; verified-data wording preserved.",
+            "Confirming remains the only path to start."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Renderer Progress And Error Overlay Honesty",
+      "description": "Make download progress honest and consistent across partial sync and bootstrap, add live activity affordances so long phases never look frozen, and make failure/recovery legible and safe. Implements PRD D4, D5b-f (renderer), and the renderer half of D9. Touches the shared MithrilProgressView/MithrilStepIndicator components, so bootstrap regression must be verified.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-ux-401",
+          "title": "Honest file-count download progress in both partial sync and bootstrap",
+          "description": "Drive the download bar from filesDownloaded / filesTotal and label it as files (e.g., 'Restoring verified data - 142 / 980 files') in both flows, and stop both current misbehaviors: bootstrap's synthetic byte readout and partial sync feeding raw file counts into byte-named props. Real snapshot.size may appear as static '~ N GB total' context where available, but the bar fill and running readout are file-based, not synthetic bytes. Implements PRD D4 (download semantic); resolves the note-15 contradiction by making the readout truthful rather than deleting it. Closes gap #4 and gap #5's download portion.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": [],
+          "targetPaths": [
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilProgressView.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay.tsx",
+            "source/renderer/app/stores/MithrilBootstrapStore.ts",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages.ts",
+            "translations/messages.json"
+          ],
+          "implementationNotes": [
+            "Partial sync currently passes file counts into byte props (`MithrilPartialSyncOverlay.tsx:87-88`: bytesDownloaded={filesDownloaded}, snapshotSize={filesTotal}), so formatSnapshotCount renders counts through a byte formatter (broken). Fix to true file-count display.",
+            "Bootstrap currently shows a synthetic byte readout bytesDownloaded = (filesDownloaded / filesTotal) * snapshot.size (`MithrilBootstrapStore.ts:79-97`) rendered as plain numbers on the combined download line (`MithrilStepIndicator.tsx:196-198`); replace with file-count presentation. Drop the synthetic-byte getter.",
+            "Keep real ancillary bytes (the ancillary stream carries true bytes) where shown.",
+            "Optional static '~ N GB total' context from snapshot.size where cheaply available; if partial sync's metadata has no real total size, omit it and show file counts only (PRD open question).",
+            "Unify on the shared MithrilProgressView/MithrilStepIndicator with a single semantic; do NOT introduce synthetic throughput/remaining-time/overall-% over IPC (lock #18).",
+            "Cross-feature: verify no regression to the bootstrap success path; update bootstrap progress tests/stories for the file-count semantic (coordinate with the storybook and test tasks)."
+          ],
+          "testCases": [
+            "Partial sync shows file counts, not counts-through-a-byte-formatter",
+            "Bootstrap shows file counts, not synthetic bytes",
+            "Static total-size context renders only when a real size is available",
+            "No synthetic throughput/remaining-time/overall-% is introduced",
+            "Bootstrap success path unchanged"
+          ],
+          "acceptance": [
+            "Download bar/readout is file-count based and truthful in both flows.",
+            "Bootstrap synthetic-byte getter is removed; partial sync no longer routes counts through a byte formatter.",
+            "Any total-size figure is static context derived from real snapshot.size only.",
+            "No regression to the bootstrap success path."
+          ]
+        },
+        {
+          "id": "task-ux-402",
+          "title": "Live activity affordances: rotating active step, ticking elapsed, reassurance, and populated stopping-node frame",
+          "description": "Make long phases and the node-stop window visibly active in both flows. Render the existing .iconSpinner/loading-spin for the active top-level step (rotating circle), drive elapsed from a renderer-side 1s timer anchored to a backend start timestamp (stop passing the frozen elapsedSeconds), add an active/indeterminate indicator + elapsed + 'this can take several minutes' for verify/convert/install/finalize, and add a populated in-dialogue stopping-node frame with an isStoppingNode reassurance block. Implements PRD D4 (UX6/UX7) and D8#19 (UX5). Closes gaps #5 (non-download), #19(status), #36, #37, #38.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": ["task-ux-401"],
+          "targetPaths": [
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.scss",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.spec.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilProgressView.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay.tsx",
+            "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+            "translations/messages.json"
+          ],
+          "implementationNotes": [
+            "Render the existing .iconSpinner/loading-spin for the active top-level step in both flows (`MithrilStepIndicator.tsx:386-388` .activeCircle is a static dot today; reduced-motion already handled `.scss:299-311`). Update the spec that locks .iconSpinner to null (`MithrilStepIndicator.spec.tsx:59-60`).",
+            "Add startedAt to MithrilPartialSyncStore; pass it as bootstrapStartedAt (`MithrilProgressView.tsx:97-109`, the bootstrap-proven ticking path) and stop passing the frozen elapsedSeconds prop (`MithrilPartialSyncOverlay.tsx:93`). No new IPC (lock #18).",
+            "For verifying/converting/installing/finalizing (and bootstrap equivalents) show an active/indeterminate indicator + elapsed + 'this can take several minutes'.",
+            "Add an isStoppingNode reassurance block mirroring isStartingNode (`MithrilProgressView.tsx:142-163`) e.g. 'Stopping Cardano node... this can take a couple of minutes', and a populated active stopping-node step (not a greyed placeholder).",
+            "stopping-node stays the optimistic start-pending status; backend emit on actual stop is optional polish (task-ux-203).",
+            "Cross-feature: spinner + elapsed apply to bootstrap too; verify no bootstrap regression."
+          ],
+          "testCases": [
+            "Active top-level step renders the rotating spinner in both flows (spec updated)",
+            "Elapsed ticks continuously via the renderer-side timer (no freeze between events; advances from 0:00 immediately)",
+            "Long phases show an active indicator + elapsed + reassurance",
+            "stopping-node shows a populated step + reassurance block, not greyed placeholders",
+            "Reduced-motion preference still suppresses animation"
+          ],
+          "acceptance": [
+            "Active step circle animates (rotating spinner) in both flows; the locking spec is updated.",
+            "Elapsed ticks continuously via a renderer-side timer anchored to startedAt/bootstrapStartedAt.",
+            "Long phases and the node-stop window never look frozen.",
+            "No new IPC throughput math; no bootstrap regression."
+          ]
+        },
+        {
+          "id": "task-ux-403",
+          "title": "Stage/code-specific failure copy and distinct cancelled-vs-failed copy",
+          "description": "Add a partial-sync error-copy map keyed by error.code / MithrilPartialSyncErrorStage and feed its title/hint into the overlay (the overlay always passes explicit title+hint, which short-circuits the bootstrap-keyed ERROR_COPY_BY_STAGE). Provide bespoke, actionable copy for at least PARTIAL_SYNC_NO_CERTIFIED_RANGE, PARTIAL_SYNC_LATEST_DRIFT, PARTIAL_SYNC_STAGED_DB_INVALID, DOWNLOAD_COMMAND_FAILED, CONVERSION_FAILED; everything else falls back to generic failed/cancelled copy. Give cancelled distinct, calmer copy from failed. Implements PRD D5b and D5e; also D5 latest-drift retriable copy (#17). Closes gaps #6, #12, #17(UX), #32.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [],
+          "targetPaths": [
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilErrorView.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages.ts",
+            "source/common/types/mithril-partial-sync.types.ts",
+            "translations/messages.json"
+          ],
+          "implementationNotes": [
+            "Add a partial-sync error-copy map keyed by error.code / MithrilPartialSyncErrorStage; feed title/hint into the overlay so it is partial-sync-specific (the backend already emits these codes + a correctly-typed stage).",
+            "PARTIAL_SYNC_LATEST_DRIFT is a pre-cutover (preparing) failure, so it surfaces as a specific retriable error ('the verified snapshot advanced while preparing; please retry'), not a silent reset (gap #17 UX).",
+            "Localize/humanize the start-rejection error (gap #12); never render raw mithril-client JSON strings (lock #18).",
+            "Give cancelled distinct, calmer copy (user chose to stop) vs failed (something went wrong); they are byte-identical today (gap #32).",
+            "Keep copy simple per #34; preserve verified-data wording where relevant.",
+            "Triage note (UX9 / gap #43): the transient nix dev-env overlay error is tracked here under D5b and is expected to be mitigated by the D9 staging/marker cleanup in task-ux-202; no dedicated fix unless QA reproduces it."
+          ],
+          "testCases": [
+            "Each enumerated error code maps to bespoke title/hint",
+            "Unknown codes fall back to generic failed/cancelled copy",
+            "PARTIAL_SYNC_LATEST_DRIFT shows a specific retriable message",
+            "cancelled copy differs from failed copy",
+            "No raw client JSON reaches UI copy"
+          ],
+          "acceptance": [
+            "Failures show stage/code-specific copy via a partial-sync error-copy map.",
+            "At least the five enumerated codes have bespoke copy; others fall back gracefully.",
+            "cancelled and failed have distinct copy.",
+            "Latest-drift surfaces as a specific retriable error."
+          ]
+        },
+        {
+          "id": "task-ux-404",
+          "title": "Overlay recovery action safety + success-dismiss finalize wiring",
+          "description": "Make the overlay's recovery affordances match backend safety and wire the renderer half of success finalization. Extend hideAction so Cancel is hidden for all post-cutover phases (installing, finalizing, starting-node); add a defensive Quit fallback rendered only if allowedRecoveryActions is ever empty; disable Cancel during stopping-node with an explanatory tooltip and always call syncStatus() after any cancel; remove the dead onWipeRetry/onDecline props; and on dismissCompletedOverlay invoke the finalize channel so the backend resets to idle + cleans staging + clears the marker. Implements PRD D5c, D5d, D5f (renderer), D8#33, and the dismiss half of D9. Closes gaps #8, #9, #31, #33, #39(renderer); documents the retry=start reuse (#24).",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": ["task-ux-202", "task-ux-203", "task-ux-403"],
+          "targetPaths": [
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilErrorView.tsx",
+            "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+            "source/renderer/app/ipc/mithrilPartialSyncChannel.ts",
+            "translations/messages.json"
+          ],
+          "implementationNotes": [
+            "Extend hideAction so Cancel is hidden for installing, finalizing, AND starting-node (currently only starting-node; backend rejects cancel post-cutover - gap #9/lock #6). Pre-cutover keeps Cancel.",
+            "Render recovery actions strictly from allowedRecoveryActions (lock #5); add a defensive Quit fallback ONLY if allowedRecoveryActions is empty so a failure can never become an unclosable dead-end (gaps #8/#31). Do NOT add a generic 'close & ignore' to post-cutover failures.",
+            "Disable Cancel during stopping-node with an explanatory tooltip ('Cancellation available once the node has stopped'); always call syncStatus() after any cancel so the UI never sticks (D5f renderer; pairs with task-ux-203 backend re-emit).",
+            "Remove the unused onWipeRetry/onDecline bootstrap-reuse props from the partial-sync overlay path (`MithrilErrorView.tsx:97-108`; #33).",
+            "On dismissCompletedOverlay, invoke the finalize channel (task-ux-202) so the backend resets to idle + removes staging + clears the marker; keep the success screen visible until explicit dismiss (lock #16 as amended by D9).",
+            "Document that retry re-invokes the start path (no dedicated channel) so it reads intentionally (#24)."
+          ],
+          "testCases": [
+            "Cancel hidden for installing/finalizing/starting-node; shown pre-cutover",
+            "Defensive Quit renders only when allowedRecoveryActions is empty",
+            "Cancel during stopping-node is disabled with a tooltip; status always resyncs after a cancel",
+            "Dead onWipeRetry/onDecline props removed",
+            "dismissCompletedOverlay invokes the finalize channel"
+          ],
+          "acceptance": [
+            "Cancel is hidden for all post-cutover phases; recovery actions render strictly from allowedRecoveryActions.",
+            "A defensive Quit fallback exists only when no actions are available.",
+            "Cancel during stopping-node is disabled-with-explanation and the UI always resyncs after a cancel.",
+            "Success dismiss invokes the backend finalize channel; dead props removed; retry=start documented."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "name": "Hygiene, Storybook, And Automated Coverage",
+      "description": "Close the cleanup, documentation, Storybook, and cross-cutting test gaps. Implements PRD D8 (i18n hygiene, doc re-baseline, broken/missing stories, handoff test) and the Testing Strategy coverage that each feature task does not already carry.",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-ux-501",
+          "title": "i18n and label hygiene, dead-copy cleanup, and doc re-baseline",
+          "description": "Delete the orphaned mithrilPartialSyncButtonHint key from all catalogs; correct the stale 'Disabled placeholder CTA' descriptions on buttonLabel/hints; i18n the hardcoded diagnostics row label 'Mithril Partial Sync'; clarify the confirmation hand-off copy so it is clear retry/restart/wipe appear only if the attempt fails (in the overlay); document the kept _isTornDown teardown guard (#15) and the retry=start reuse (#24); re-baseline the 300-series task-plan references to the live 3-component structure; and add a partial-sync section to the historical UX plan that today covers only the empty-DB bootstrap flow. Implements PRD D8 (#10, #15-doc, #20, #21, #24-doc, #25, #27).",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": ["task-ux-303"],
+          "targetPaths": [
+            "source/renderer/app/components/status/MithrilPartialSyncRecommendation.tsx",
+            "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
+            "translations/messages.json",
+            "source/renderer/app/i18n/locales/defaultMessages.json",
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
+            ".agent/plans/mithril-partial-sync/",
+            ".agent/plans/mithril/mithril-snapshot-ux.md"
+          ],
+          "implementationNotes": [
+            "Delete orphaned mithrilPartialSyncButtonHint ('Available after the confirmation step is added.') from all catalogs; the live component uses buttonHintReady/buttonHintBlocked (#20).",
+            "Fix the stale 'Disabled placeholder CTA' description on buttonLabel (`MithrilPartialSyncRecommendation.tsx:25`).",
+            "i18n the hardcoded row label 'Mithril Partial Sync' (`MithrilPartialSyncSection.tsx:117-121`) (#21).",
+            "Clarify confirmation hand-off copy that retry/restart/wipe appear in the progress/error overlay if the attempt fails, not in confirmation (#25).",
+            "Document the kept _isTornDown teardown guard (no IPC-abstraction unsubscribe; benign listener retention) (#15) and the retry=start reuse (#24) as engineering notes.",
+            "Re-baseline doc references to the live MithrilPartialSyncSection/Recommendation/Confirmation structure; the 300-series plans cite the pre-refactor inline paths (#10). Use the standard i18n workflow; do not ship !!! placeholders.",
+            "Add a brief partial-sync section to the historical UX plan `.agent/plans/mithril/mithril-snapshot-ux.md`, which today documents only the empty-DB bootstrap flow (gap #27); point to the UX-refinement PRD as the detailed source rather than duplicating it."
+          ],
+          "testCases": [
+            "No orphaned mithrilPartialSyncButtonHint key remains in any catalog",
+            "Row label renders from i18n, not a hardcoded string",
+            "No !!! placeholders in en-US/ja-JP runtime strings"
+          ],
+          "acceptance": [
+            "Orphaned/stale i18n removed/corrected; row label localized.",
+            "Hand-off copy clarified; #15 guard and #24 retry=start documented.",
+            "300-series doc references re-baselined to the 3-component structure."
+          ]
+        },
+        {
+          "id": "task-ux-502",
+          "title": "Storybook coverage for recommendation, confirmation modal, prompt, progress, and error states",
+          "description": "Fix the broken 'Partial Sync Confirmation' story (it sets a non-existent state key so confirmation never renders) and add isolated stories for the recommendation, the new confirmation modal, the proactive prompt, all error stages (downloading/converting/installing/finalizing) with the full retry+restart+wipe layout, cancelled-vs-failed, and the unified bootstrap + partial-sync file-count progress states (including the stopping-node frame). Reuse the locale-at-render-time fixture seams. Implements PRD D8 (#13, #28, #35).",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 4,
+          "dependencies": ["task-ux-302", "task-ux-303", "task-ux-401", "task-ux-402", "task-ux-403", "task-ux-404"],
+          "targetPaths": [
+            "storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx",
+            "storybook/stories/nodes/status/Diagnostics.stories.tsx"
+          ],
+          "implementationNotes": [
+            "Fix the broken confirmation story (`Diagnostics.stories.tsx:76-85` sets a non-existent state key vs `MithrilPartialSyncSection.tsx:19-30`).",
+            "Add isolated stories: recommendation, confirmation modal, proactive prompt, each error stage with the full 3-action layout, cancelled-vs-failed, and the unified file-count progress for both flows plus the populated stopping-node frame.",
+            "Use the storybook-creation skill and reuse the existing locale-at-render-time fixture seams (#35); keep stories truthful under en-US/ja-JP locale switching and theme validation."
+          ],
+          "testCases": [
+            "Confirmation story renders the confirmation modal (no longer broken)",
+            "Stories exist for recommendation, prompt, every error stage, cancelled-vs-failed, and file-count progress for both flows",
+            "Stories render under en-US and ja-JP without placeholder strings"
+          ],
+          "acceptance": [
+            "The broken confirmation story is fixed.",
+            "Isolated stories cover recommendation, confirmation modal, proactive prompt, all error stages, cancelled-vs-failed, and unified file-count progress.",
+            "Locale-at-render fixture seams are reused."
+          ]
+        },
+        {
+          "id": "task-ux-503",
+          "title": "Close cross-cutting automated coverage (handoff, bootstrap progress, success-finalization, gating)",
+          "description": "Add the cross-cutting Jest/IPC coverage that individual feature tasks do not already carry: direct live-injection coverage for the diagnostics -> overlay handoff (#30); bootstrap progress tests updated for the file-count semantic; and per-Testing-Strategy coverage for availability/threshold + kill-switch gating, success-path reset-to-idle + staging cleanup + CTA re-arm (D9), elapsed-ticks-via-renderer-timer + animated active step circle (D4/UX6/UX7), populated stopping-node frame + cancel-disabled-during-stop + resync-on-cancel (D8#19/D5f), and recovery-action rendering. Implements PRD D8 (#30) and the agent-executable Testing Strategy.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": ["task-ux-202", "task-ux-203", "task-ux-204", "task-ux-301", "task-ux-302", "task-ux-303", "task-ux-401", "task-ux-402", "task-ux-403", "task-ux-404"],
+          "targetPaths": [
+            "source/main/mithril/*.spec.ts",
+            "source/main/ipc/*.spec.ts",
+            "source/renderer/app/**/*.spec.tsx",
+            "source/renderer/app/**/*.spec.ts",
+            "tests/"
+          ],
+          "implementationNotes": [
+            "Add direct live-injection coverage for the diagnostics -> overlay handoff (#30).",
+            "Update bootstrap progress tests for the file-count semantic (paired with task-ux-401).",
+            "Cover: availability/threshold + kill-switch gating (UI hidden when off); success-path reset-to-idle + staging cleanup + CTA re-arm (D9); elapsed-ticks-via-renderer-timer + animated active step circle (D4/UX6/UX7); populated stopping-node frame + cancel-disabled-during-stop + resync-on-cancel (D8#19/D5f); error-copy mapping; native startup-dialog single-surface; recovery-action rendering strictly from allowedRecoveryActions.",
+            "Bias toward deterministic unit/focused-integration tests; verify partial sync stays manual and diagnostics-launched.",
+            "Each feature task should already include its own focused tests; this task closes the remaining cross-cutting gaps."
+          ],
+          "testCases": [
+            "Live-injection diagnostics -> overlay handoff test passes",
+            "Bootstrap file-count progress tests pass",
+            "Kill-switch-off hides all partial-sync UI (covered)",
+            "Success finalize resets to idle, cleans staging, re-arms CTA (covered)",
+            "Cancel-during-stop disabled + resync covered"
+          ],
+          "acceptance": [
+            "Cross-cutting automated coverage exists for handoff, bootstrap progress, gating, success finalization, live activity affordances, and recovery actions.",
+            "At least one failure mode is covered for each recovery-option branch.",
+            "Automated verification can run before manual QA begins."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-6",
+      "name": "Holistic EN + JA Copy Pass",
+      "description": "After all copy-touching changes land, run a single holistic English + Japanese copy review so the review sees final strings rather than chasing churn. Implements PRD D10 (UX1).",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-ux-601",
+          "title": "Holistic EN+JA copy review, one canonical ja-JP rendering, and glossary",
+          "description": "Run a single holistic English + Japanese copy review over every mithrilPartialSync* string (diagnostics + overlay + prompt) for tone, consistency, and translation fidelity. Pick one canonical ja-JP rendering of 'partial sync' and apply it across both the diagnostics and overlay namespaces (the diagnostics keys still carry the English string while the overlay keys use the Japanese rendering). Give the new D1/D5/D6 copy first-class JA, not English fallbacks, and add a short EN+JA glossary for the canonical terms (partial sync, verified data, snapshot, cutover). Implements PRD D10.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 4,
+          "dependencies": ["task-ux-302", "task-ux-303", "task-ux-402", "task-ux-403", "task-ux-501"],
+          "targetPaths": [
+            "translations/messages.json",
+            "source/renderer/app/i18n/locales/defaultMessages.json",
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
+            ".agent/plans/mithril-partial-sync/"
+          ],
+          "implementationNotes": [
+            "Correct the 'ja-JP fully translated' overstatement: diagnostics keys carry the English 'Mithril partial sync' (`ja-JP.json:158-167`) while overlay keys use the Japanese rendering (`ja-JP.json:332-343`). Pick one canonical ja-JP rendering and apply it across both namespaces.",
+            "Provide first-class JA for the new behind-ness line, proactive prompt, stage/code error copy, and cancelled-vs-failed copy.",
+            "Add a short EN + JA glossary for the canonical terms; the existing research glossary (research-19 §7) is EN-only.",
+            "Run this pass last, once the copy-producing changes (D1/D5b/D5e/D6/D8) are merged, so it reviews final strings. Use the i18n-messaging skill; do not ship !!! placeholders.",
+            "Preserve the verified-data wording lock (#4) and keep copy simple (#34)."
+          ],
+          "testCases": [
+            "ja-JP renders one canonical 'partial sync' across diagnostics and overlay namespaces",
+            "New D1/D5/D6 strings have first-class JA",
+            "No !!! placeholders in any catalog"
+          ],
+          "acceptance": [
+            "A single holistic EN+JA review covered every mithrilPartialSync* string.",
+            "ja-JP uses one canonical 'partial sync' rendering across namespaces.",
+            "An EN+JA glossary exists for the canonical terms."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-7",
+      "name": "Backend-Correctness Re-validation And Manual QA / Rollout Gate",
+      "description": "The referenced deployment-readiness gates from PRD D7. This PRD references but does NOT fully re-specify these; they require operator/user involvement. The branch does not merge to master / ship until both these gates and the UX work above are complete.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-ux-701",
+          "title": "Backend-correctness de-risking re-validation (referenced gate)",
+          "description": "Re-validate the referenced backend-correctness track that the UX safety posture depends on: cancellation/failure must leave staged artifacts cleaned so restart-normal is genuinely safe (gap #16); latest-snapshot drift backend handling (gap #17 backend behavior; UX covered by D5); and cutover / immutable-merge correctness (gaps #18/#19 - the immutable-merge fix landed in task-401, re-validate rather than assume). This PRD references but does not re-specify these; treat targeted fixes as in-scope only where re-validation proves a defect. Implements the backend-correctness half of PRD D7.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 6,
+          "dependencies": ["task-ux-201", "task-ux-202", "task-ux-203", "task-ux-204"],
+          "targetPaths": [
+            "source/main/mithril/MithrilPartialSyncService.ts",
+            "source/main/utils/chainStorageManager.ts",
+            "source/main/utils/chainStorageManagerLayout.ts",
+            ".agent/plans/mithril-partial-sync/research/"
+          ],
+          "implementationNotes": [
+            "Confirm cancellation/failure cleanup leaves the live managed chain restart-safe (gap #16) so D5d's restart-normal escape is genuinely safe.",
+            "Re-validate latest-snapshot drift backend handling (gap #17); UX is covered by the retriable error in task-ux-403.",
+            "Re-validate cutover / immutable-merge correctness including preserve/merge of existing immutable/ and presence of 00000.primary (gaps #18/#19; QA amendment to lock #10).",
+            "This is the referenced backend-correctness track (D7): do not re-architect; land targeted fixes only where re-validation proves a defect, and record evidence in the research brain.",
+            "Likely interactive_validation or manual_execution because it depends on live chain state and may require operator-run validation."
+          ],
+          "testCases": [
+            "Cancel/fail leaves a restart-safe live chain (restart-normal is safe)",
+            "Latest-drift backend behavior matches the documented retriable UX",
+            "Cutover preserves/merges immutable history without missing 00000.primary"
+          ],
+          "acceptance": [
+            "The three referenced backend-correctness concerns are re-validated with recorded evidence.",
+            "Any defect found is fixed with targeted changes (no re-architecture).",
+            "Findings are recorded in the research brain."
+          ]
+        },
+        {
+          "id": "task-ux-702",
+          "title": "Full manual QA matrix and rollout-readiness decision (deployment gate)",
+          "description": "After automated coverage is green and backend-correctness re-validation passes, run the full manual QA matrix: all 3 networks (mainnet, preprod, preview) x default + custom chain storage x success/cancel/retry/restart-normal/wipe-and-full-sync recovery paths x packaged builds on Windows/macOS/Linux. Re-test the six task-401 regressions individually (gap #18). Record results in the plan workspace, finalize the production default and any network-scoping of the kill switch, and finalize the rollback checklist. This branch does not merge to master / ship until this matrix passes. Implements the QA gate of PRD D7 and the Rollout section.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 10,
+          "dependencies": ["task-ux-503", "task-ux-601", "task-ux-701"],
+          "targetPaths": [
+            ".agent/plans/mithril-partial-sync/mithril-partial-sync-ux-refinement-prd.md",
+            ".agent/plans/mithril-partial-sync/research/",
+            ".agent/plans/mithril-partial-sync/mithril-partial-sync-ux-refinement-tasks.json"
+          ],
+          "implementationNotes": [
+            "manual_execution: requires human-driven validation on supported networks, custom storage, packaged builds, and recovery paths; do not relabel autonomous.",
+            "Record environment, platform, network, chain-storage target, and observed behavior for every QA pass.",
+            "Re-test the six task-401 regressions individually rather than via one combined pass (gap #18). Completing this matrix is the disposition for gap #3 (the previously-deferred manual QA matrix).",
+            "Decide the production default and network-scoping of mithrilPartialSyncEnabled (deferred from D3) and whether the feature ships enabled, guarded, or held back.",
+            "Finalize the rollback checklist: the kill switch hides all partial-sync UI when off while the startup-owned native recovery dialog remains for already-interrupted unsafe-cutover installs."
+          ],
+          "testCases": [
+            "All 3 networks x default + custom storage x recovery paths validated",
+            "Packaged builds validated on Windows/macOS/Linux",
+            "Six task-401 regressions individually re-tested"
+          ],
+          "acceptance": [
+            "Manual QA results are captured in repo-local planning artifacts.",
+            "The production default / network-scoping decision for the kill switch is documented.",
+            "A rollback checklist is written for release review.",
+            "A clear merge/ship readiness decision is recorded."
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 7,
+    "totalTasks": 19,
+    "estimatedTotalHours": 86,
+    "criticalPath": [
+      "task-ux-101",
+      "task-ux-102",
+      "task-ux-201",
+      "task-ux-202",
+      "task-ux-301",
+      "task-ux-303",
+      "task-ux-302",
+      "task-ux-502",
+      "task-ux-503",
+      "task-ux-601",
+      "task-ux-701",
+      "task-ux-702"
+    ],
+    "keyFiles": [
+      "source/common/types/mithril-partial-sync.types.ts",
+      "source/common/ipc/api.ts",
+      "source/main/mithril/MithrilPartialSyncService.ts",
+      "source/main/mithril/mithrilPartialSyncNodeStartup.ts",
+      "source/main/mithril/mithrilPartialSyncMarker.ts",
+      "source/main/utils/chainStorageCoordinator.ts",
+      "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+      "source/renderer/app/stores/MithrilBootstrapStore.ts",
+      "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
+      "source/renderer/app/components/status/MithrilPartialSyncConfirmation.tsx",
+      "source/renderer/app/components/status/MithrilPartialSyncRecommendation.tsx",
+      "source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay.tsx",
+      "source/renderer/app/components/loading/mithril-bootstrap/MithrilProgressView.tsx",
+      "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.tsx",
+      "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.tsx",
+      "nix/internal/launcher-config.nix"
+    ],
+    "riskAreas": [
+      "Preserving every locked safety boundary while changing renderer gating and overlay behavior (allowedRecoveryActions-only rendering, confirmation precedes start, no renderer threshold).",
+      "Amending locked decision #16 (D9): the success-finalization sequence must keep the success screen visible until dismiss while resetting to idle, cleaning staging, and stamping the node-start-verified marker exactly once.",
+      "Shared MithrilProgressView/MithrilStepIndicator changes (D4) must not regress the bootstrap success path.",
+      "Staging relocation (D7/BUG3) must remain staged-only and fail closed on insufficient disk space.",
+      "Referenced backend-correctness gates (gaps #16/#17/#18/#19) and the full QA matrix are deployment prerequisites that require operator validation and are not fully specified by this PRD."
+    ],
+    "testingNotes": "Each feature task carries its own focused Jest/Storybook coverage; task-ux-503 closes cross-cutting gaps (diagnostics->overlay handoff, bootstrap file-count progress, gating, success finalization, live activity affordances, recovery actions). Automated verification must be green before task-ux-702 manual QA. The full manual QA matrix (3 networks x default+custom storage x recovery paths x packaged builds) is the deployment gate and is human-executed.",
+    "rollbackPlan": "mithrilPartialSyncEnabled remains the rollout lever; exposed to the renderer so all partial-sync UI hides when off. This branch enables it for manual testing; the production default and network-scoping are deferred to the readiness gate (task-ux-702). The startup-owned native recovery dialog remains available for any already-interrupted unsafe-cutover install even when the diagnostics entry is disabled.",
+    "securityNotes": [
+      "Live chain data integrity remains the primary safety constraint; never render recovery actions the backend did not authorize via allowedRecoveryActions.",
+      "Never route raw mithril-client JSON strings into UI copy; map structured error codes to localized copy instead.",
+      "Keep support-log paths and error surfacing detailed enough for incident review without leaking unrelated secrets."
+    ]
+  }
+}
