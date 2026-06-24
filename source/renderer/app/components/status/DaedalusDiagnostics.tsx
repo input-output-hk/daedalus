@@ -87,14 +87,16 @@ const messages = defineMessages({
       'Displayed on the right of the Recommended system requirements status row when hardware requirements are ok',
   },
   hasMetHardwareRequirementsStatusLowTooltip: {
-    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowTooltip',
+    id:
+      'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowTooltip',
     defaultMessage:
       '!!!Your system specifications do not meet Daedalus’ recommended hardware requirements. We suggest using a machine with at least 16 GB of RAM',
     description:
       'Visible on hovering over Recommended system requirement status when status is Low',
   },
   hasMetHardwareRequirementsStatusGoodTooltip: {
-    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodTooltip',
+    id:
+      'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodTooltip',
     defaultMessage:
       '!!!Your system specifications meet Daedalus’ recommended hardware requirements',
     description:
@@ -409,6 +411,8 @@ type Props = {
   isMithrilPartialSyncWorking: boolean;
   isMithrilPartialSyncEnabled: boolean;
   isMithrilPartialSyncSignificantlyBehind: boolean;
+  mithrilPartialSyncBehindByImmutables?: number;
+  showMithrilPartialSyncConfirmationOnOpen?: boolean;
   isMithrilBootstrapActive: boolean;
   onStartMithrilPartialSync: (...args: Array<any>) => any;
   onOpenStateDirectory: (...args: Array<any>) => any;
@@ -521,6 +525,8 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isMithrilPartialSyncWorking,
       isMithrilPartialSyncEnabled,
       isMithrilPartialSyncSignificantlyBehind,
+      mithrilPartialSyncBehindByImmutables,
+      showMithrilPartialSyncConfirmationOnOpen,
       isMithrilBootstrapActive,
       onOpenStateDirectory,
       onClose,
@@ -714,6 +720,10 @@ class DaedalusDiagnostics extends Component<Props, State> {
                   shouldShowRecommendation={
                     isMithrilPartialSyncEnabled &&
                     isMithrilPartialSyncSignificantlyBehind
+                  }
+                  behindByImmutables={mithrilPartialSyncBehindByImmutables}
+                  showConfirmationOnOpen={
+                    showMithrilPartialSyncConfirmationOnOpen
                   }
                   onRestoreFocus={this.restoreDialogCloseOnEscKey}
                   onStartMithrilPartialSync={

@@ -387,6 +387,40 @@
     margin-right: 12px !important;
   }
 
+  .mithrilPartialSyncConfirmationDialog {
+    max-width: 560px;
+  }
+
+  .mithrilPartialSyncConfirmationBehind {
+    color: var(--theme-network-window-white-color);
+    font-family: var(--font-medium);
+    margin: 0 0 16px;
+  }
+
+  .mithrilPartialSyncConfirmationSteps {
+    margin: 0 0 16px;
+    padding-left: 20px;
+
+    li {
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+  }
+
+  .mithrilPartialSyncConfirmationRecovery {
+    font-size: 14px;
+    margin: 0;
+    opacity: 0.85;
+  }
+
+  .mithrilPartialSyncConfirmationPrimaryButton {
+    min-width: 180px;
+  }
+
+  .mithrilPartialSyncConfirmationSecondaryButton {
+    min-width: 180px;
+  }
+
   .mithrilPartialSyncRecommendationCopy {
     color: var(--theme-network-window-text-color);
     line-height: 1.5;

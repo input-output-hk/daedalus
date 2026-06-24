@@ -1,6 +1,13 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
-import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import translations from '../../i18n/locales/en-US.json';
@@ -19,6 +26,8 @@ const defaultProps = {
   isMithrilPartialSyncWorking: false,
   isSynced: false,
   shouldShowRecommendation: true,
+  behindByImmutables: undefined,
+  showConfirmationOnOpen: false,
   onRestoreFocus: jest.fn(),
   onStartMithrilPartialSync: jest.fn(),
 };
@@ -179,5 +188,75 @@ describe('MithrilPartialSyncSection', () => {
       screen.queryByRole('button', { name: 'Mithril Partial Sync' })
     ).toBeNull();
     expect(container.textContent).not.toMatch(/Mithril Partial Sync/);
+  });
+
+  it('opens the confirmation modal on mount when deep-linked, without starting', () => {
+    const onStartMithrilPartialSync = jest.fn();
+    renderComponent({
+      showConfirmationOnOpen: true,
+      onStartMithrilPartialSync,
+    });
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Before Mithril partial sync begins',
+      })
+    ).toBeInTheDocument();
+    expect(onStartMithrilPartialSync).not.toHaveBeenCalled();
+  });
+
+  it('deep-link open works even when the recommendation is gated off', () => {
+    renderComponent({
+      showConfirmationOnOpen: true,
+      shouldShowRecommendation: false,
+    });
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Before Mithril partial sync begins',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('does not deep-link open the confirmation when the action is blocked', () => {
+    renderComponent({ showConfirmationOnOpen: true, isActionBlocked: true });
+
+    expect(
+      screen.queryByRole('heading', {
+        name: 'Before Mithril partial sync begins',
+      })
+    ).toBeNull();
+  });
+
+  it('threads the behind-ness figure into the confirmation modal', () => {
+    renderComponent({ showConfirmationOnOpen: true, behindByImmutables: 42 });
+
+    expect(
+      screen.getByText(
+        'Your node is about 42 immutable files behind the latest verified snapshot.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('returns to the recommendation when ESC is pressed on the confirmation', () => {
+    renderComponent();
+
+    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    expect(
+      screen.getByRole('heading', {
+        name: 'Before Mithril partial sync begins',
+      })
+    ).toBeInTheDocument();
+
+    fireEvent.keyDown(
+      document.querySelector('.ReactModal__Content') as Element,
+      { key: 'Escape', keyCode: 27 }
+    );
+
+    expect(
+      screen.getByText(
+        'Cardano node is currently 62.50% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.'
+      )
+    ).toBeInTheDocument();
   });
 });

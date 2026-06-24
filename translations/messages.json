@@ -1662,11 +1662,6 @@
         "id": "daedalus.diagnostics.dialog.syncPercentage"
       },
       {
-        "defaultMessage": "!!!Local time difference",
-        "description": "Local time difference",
-        "id": "daedalus.diagnostics.dialog.localTimeDifference"
-      },
-      {
         "defaultMessage": "!!!System time correct",
         "description": "System time correct",
         "id": "daedalus.diagnostics.dialog.systemTimeCorrect"
@@ -1777,16 +1772,6 @@
         "id": "daedalus.diagnostics.dialog.cardanoNodeInSync"
       },
       {
-        "defaultMessage": "!!!Checking...",
-        "description": "Checking...",
-        "id": "daedalus.diagnostics.dialog.localTimeDifferenceChecking"
-      },
-      {
-        "defaultMessage": "!!!Check time",
-        "description": "Check time",
-        "id": "daedalus.diagnostics.dialog.localTimeDifferenceCheckTime"
-      },
-      {
         "defaultMessage": "!!!Yes",
         "description": "Yes",
         "id": "daedalus.diagnostics.dialog.statusOn"
@@ -1805,11 +1790,6 @@
         "defaultMessage": "!!!Off",
         "description": "Off",
         "id": "daedalus.diagnostics.dialog.statusOffForUserSettings"
-      },
-      {
-        "defaultMessage": "!!!NTP service unreachable",
-        "description": "NTP service unreachable",
-        "id": "daedalus.diagnostics.dialog.serviceUnreachable"
       },
       {
         "defaultMessage": "!!!message",
@@ -1840,37 +1820,33 @@
         "defaultMessage": "!!!slot",
         "description": "slot",
         "id": "daedalus.diagnostics.dialog.slot"
+      }
+    ],
+    "path": "source/renderer/app/components/status/DaedalusDiagnostics.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Local time difference",
+        "id": "daedalus.diagnostics.dialog.localTimeDifference"
       },
       {
-        "defaultMessage": "!!!If Cardano node catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.",
-        "description": "Recommendation copy shown in diagnostics near sync status for Mithril partial sync",
-        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncRecommendation"
+        "defaultMessage": "!!!Checking...",
+        "id": "daedalus.diagnostics.dialog.localTimeDifferenceChecking"
       },
       {
-        "defaultMessage": "!!!Cardano node is currently {syncPercentage}% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.",
-        "description": "Recommendation copy shown in diagnostics with current sync percentage for Mithril partial sync",
-        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationWithProgress"
+        "defaultMessage": "!!!Check time",
+        "id": "daedalus.diagnostics.dialog.localTimeDifferenceCheckTime"
       },
       {
-        "defaultMessage": "!!!Mithril Partial Sync",
-        "description": "Disabled placeholder CTA label for Mithril partial sync",
-        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonLabel"
-      },
-      {
-        "defaultMessage": "!!!Available after the confirmation step is added.",
-        "description": "Hint text beneath the disabled Mithril partial sync diagnostics button",
-        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHint"
-      },
-      {
-        "defaultMessage": "!!!Unavailable while Mithril work is already active.",
-        "description": "Hint text beneath the disabled Mithril partial sync diagnostics button while Mithril work is active",
-        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintBlocked"
-      },
-      {
-        "defaultMessage": "!!!Review what will happen before Daedalus starts Mithril partial sync.",
-        "description": "Hint text beneath the Mithril partial sync diagnostics button before confirmation opens",
-        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintReady"
-      },
+        "defaultMessage": "!!!Service unreachable",
+        "id": "daedalus.diagnostics.dialog.serviceUnreachable"
+      }
+    ],
+    "path": "source/renderer/app/components/status/DiagnosticsTimeStatusRow.tsx"
+  },
+  {
+    "descriptors": [
       {
         "defaultMessage": "!!!Before Mithril partial sync begins",
         "description": "Title for the Mithril partial sync confirmation view",
@@ -1885,6 +1861,31 @@
         "defaultMessage": "!!!If Mithril partial sync succeeds, Daedalus will restart Cardano node automatically and normal syncing will resume.",
         "description": "Success copy for the Mithril partial sync confirmation view",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationSuccess"
+      },
+      {
+        "defaultMessage": "!!!Your node is about {count} immutable files behind the latest verified snapshot.",
+        "description": "Behind-ness context line (with a file count) for the Mithril partial sync confirmation modal",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehind"
+      },
+      {
+        "defaultMessage": "!!!Your node is behind the latest verified snapshot.",
+        "description": "Behind-ness context line shown when the immutable-file gap figure is unavailable",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehindUnknown"
+      },
+      {
+        "defaultMessage": "!!!Daedalus stops Cardano node.",
+        "description": "What-happens step 1 for the Mithril partial sync confirmation modal",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationStepStop"
+      },
+      {
+        "defaultMessage": "!!!Daedalus downloads and verifies Mithril data.",
+        "description": "What-happens step 2 for the Mithril partial sync confirmation modal",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationStepDownload"
+      },
+      {
+        "defaultMessage": "!!!Daedalus restarts Cardano node automatically and normal syncing resumes.",
+        "description": "What-happens step 3 for the Mithril partial sync confirmation modal",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationStepRestart"
       },
       {
         "defaultMessage": "!!!If the attempt fails, Daedalus can offer retry partial sync, restart normally on the current database, or wipe chain data and do a full Mithril sync.",
@@ -1902,7 +1903,37 @@
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationConfirm"
       }
     ],
-    "path": "source/renderer/app/components/status/DaedalusDiagnostics.tsx"
+    "path": "source/renderer/app/components/status/MithrilPartialSyncConfirmation.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!If Cardano node catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.",
+        "description": "Recommendation copy shown in diagnostics near sync status for Mithril partial sync",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncRecommendation"
+      },
+      {
+        "defaultMessage": "!!!Cardano node is currently {syncPercentage}% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.",
+        "description": "Recommendation copy shown in diagnostics with current sync percentage for Mithril partial sync",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationWithProgress"
+      },
+      {
+        "defaultMessage": "!!!Mithril Partial Sync",
+        "description": "Disabled placeholder CTA label for Mithril partial sync",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonLabel"
+      },
+      {
+        "defaultMessage": "!!!Unavailable while Mithril work is already active.",
+        "description": "Hint text beneath the disabled Mithril partial sync diagnostics button while Mithril work is active",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintBlocked"
+      },
+      {
+        "defaultMessage": "!!!Review what will happen before Daedalus starts Mithril partial sync.",
+        "description": "Hint text beneath the Mithril partial sync diagnostics button before confirmation opens",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintReady"
+      }
+    ],
+    "path": "source/renderer/app/components/status/MithrilPartialSyncRecommendation.tsx"
   },
   {
     "descriptors": [

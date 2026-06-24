@@ -13,6 +13,8 @@ type Props = {
   isMithrilPartialSyncWorking: boolean;
   isSynced: boolean;
   shouldShowRecommendation: boolean;
+  behindByImmutables?: number;
+  showConfirmationOnOpen?: boolean;
   onRestoreFocus: () => void;
   onStartMithrilPartialSync: (...args: Array<any>) => any;
 };
@@ -35,6 +37,9 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
 
   componentDidMount() {
     this._isMounted = true;
+    if (this.props.showConfirmationOnOpen && !this.props.isActionBlocked) {
+      this.showConfirmation();
+    }
   }
 
   componentWillUnmount() {
@@ -113,6 +118,7 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
         <MithrilPartialSyncConfirmation
           isActionBlocked={isActionBlocked}
           startError={startError}
+          behindByImmutables={this.props.behindByImmutables}
           onCancel={this.hideConfirmation}
           onConfirm={this.startFromConfirmation}
         />

@@ -52,6 +52,8 @@ const defaultProps = {
   isMithrilPartialSyncWorking: false,
   isMithrilPartialSyncEnabled: true,
   isMithrilPartialSyncSignificantlyBehind: true,
+  mithrilPartialSyncBehindByImmutables: undefined,
+  showMithrilPartialSyncConfirmationOnOpen: false,
   isMithrilBootstrapActive: false,
   onStartMithrilPartialSync: jest.fn(),
   onOpenStateDirectory: jest.fn(),
