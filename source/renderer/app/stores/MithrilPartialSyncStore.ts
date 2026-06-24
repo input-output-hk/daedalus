@@ -1,5 +1,6 @@
 import { action, computed, observable } from 'mobx';
 import type {
+  MithrilPartialSyncAvailability,
   MithrilPartialSyncFailureAction,
   MithrilPartialSyncStatus,
   MithrilPartialSyncStatusSnapshot,
@@ -12,6 +13,7 @@ import {
 } from '../../../common/types/mithril-partial-sync.types';
 import Store from './lib/Store';
 import {
+  mithrilPartialSyncAvailabilityChannel,
   mithrilPartialSyncCancelChannel,
   mithrilPartialSyncRestartNormalChannel,
   mithrilPartialSyncStartChannel,
@@ -29,6 +31,8 @@ const DEFAULT_STATUS: MithrilPartialSyncStatusSnapshot = {
 };
 
 const START_PENDING_STATUS: MithrilPartialSyncStatus = 'stopping-node';
+
+const AVAILABILITY_REFRESH_INTERVAL = 30_000;
 
 const toStartError = (error: unknown): Error => {
   if (error instanceof Error) {
@@ -58,6 +62,10 @@ export default class MithrilPartialSyncStore extends Store {
   @observable error = DEFAULT_STATUS.error;
   @observable logPath: string | undefined = undefined;
   @observable isCompletedOverlayDismissed = false;
+  @observable isPartialSyncEnabled = false;
+  @observable isSignificantlyBehind = false;
+  @observable behindByImmutables: number | undefined = undefined;
+  _availabilityRefreshInterval: ReturnType<typeof setInterval> | null = null;
   _isTornDown = false;
 
   setup() {
@@ -67,10 +75,20 @@ export default class MithrilPartialSyncStore extends Store {
     this.syncStatus().catch((error) => {
       logger.warn('MithrilPartialSyncStore: failed to sync status', { error });
     });
+    this._refreshAvailability();
+    this._availabilityRefreshInterval = setInterval(() => {
+      if (this.isWorking) {
+        this._refreshAvailability();
+      }
+    }, AVAILABILITY_REFRESH_INTERVAL);
   }
 
   teardown() {
     this._isTornDown = true;
+    if (this._availabilityRefreshInterval) {
+      clearInterval(this._availabilityRefreshInterval);
+      this._availabilityRefreshInterval = null;
+    }
     super.teardown();
   }
 
@@ -144,6 +162,34 @@ export default class MithrilPartialSyncStore extends Store {
     this.progressItems = update.progressItems;
     this.error = update.error;
     this.logPath = update.logPath;
+  };
+
+  @action
+  _refreshAvailability = async () => {
+    if (this._isTornDown) {
+      return;
+    }
+
+    try {
+      const availability: MithrilPartialSyncAvailability =
+        await mithrilPartialSyncAvailabilityChannel.request();
+      this._applyAvailability(availability);
+    } catch (error) {
+      logger.warn('MithrilPartialSyncStore: failed to refresh availability', {
+        error,
+      });
+    }
+  };
+
+  @action
+  _applyAvailability = (availability: MithrilPartialSyncAvailability) => {
+    if (this._isTornDown) {
+      return;
+    }
+
+    this.isPartialSyncEnabled = availability.isEnabled;
+    this.isSignificantlyBehind = availability.isSignificantlyBehind;
+    this.behindByImmutables = availability.behindByImmutables;
   };
 
   @action

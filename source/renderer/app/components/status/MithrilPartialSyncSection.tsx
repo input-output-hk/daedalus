@@ -10,8 +10,9 @@ import styles from './DaedalusDiagnostics.scss';
 type Props = {
   formattedSyncPercentage: string;
   isActionBlocked: boolean;
-  isMithrilPartialSyncActive: boolean;
+  isMithrilPartialSyncWorking: boolean;
   isSynced: boolean;
+  shouldShowRecommendation: boolean;
   onRestoreFocus: () => void;
   onStartMithrilPartialSync: (...args: Array<any>) => any;
 };
@@ -43,8 +44,8 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
   componentDidUpdate(prevProps: Props) {
     if (
       this.state.isShowingConfirmation &&
-      !prevProps.isMithrilPartialSyncActive &&
-      this.props.isMithrilPartialSyncActive
+      !prevProps.isMithrilPartialSyncWorking &&
+      this.props.isMithrilPartialSyncWorking
     ) {
       this.hideConfirmation();
     }
@@ -98,7 +99,12 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
   };
 
   render() {
-    const { formattedSyncPercentage, isActionBlocked, isSynced } = this.props;
+    const {
+      formattedSyncPercentage,
+      isActionBlocked,
+      isSynced,
+      shouldShowRecommendation,
+    } = this.props;
     const { isShowingConfirmation, startError } = this.state;
     const { intl } = this.context;
 
@@ -111,6 +117,10 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
           onConfirm={this.startFromConfirmation}
         />
       );
+    }
+
+    if (!shouldShowRecommendation) {
+      return null;
     }
 
     return (

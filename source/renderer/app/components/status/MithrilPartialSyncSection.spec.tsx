@@ -16,8 +16,9 @@ jest.mock('../../utils/logging', () => ({
 const defaultProps = {
   formattedSyncPercentage: '62.50',
   isActionBlocked: false,
-  isMithrilPartialSyncActive: false,
+  isMithrilPartialSyncWorking: false,
   isSynced: false,
+  shouldShowRecommendation: true,
   onRestoreFocus: jest.fn(),
   onStartMithrilPartialSync: jest.fn(),
 };
@@ -159,7 +160,7 @@ describe('MithrilPartialSyncSection', () => {
       <IntlProvider locale="en-US" messages={translations}>
         <MithrilPartialSyncSection
           {...defaultProps}
-          isMithrilPartialSyncActive
+          isMithrilPartialSyncWorking
         />
       </IntlProvider>
     );
@@ -169,5 +170,14 @@ describe('MithrilPartialSyncSection', () => {
         'Cardano node is currently 62.50% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.'
       )
     ).toBeInTheDocument();
+  });
+
+  it('renders nothing and leaves no header row when the recommendation is gated off', () => {
+    const { container } = renderComponent({ shouldShowRecommendation: false });
+
+    expect(
+      screen.queryByRole('button', { name: 'Mithril Partial Sync' })
+    ).toBeNull();
+    expect(container.textContent).not.toMatch(/Mithril Partial Sync/);
   });
 });

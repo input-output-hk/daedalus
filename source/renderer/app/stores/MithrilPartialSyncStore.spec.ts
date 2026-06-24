@@ -10,6 +10,7 @@ const mockStartRequest = jest.fn();
 const mockCancelRequest = jest.fn();
 const mockRestartNormalRequest = jest.fn();
 const mockWipeAndFullSyncRequest = jest.fn();
+const mockAvailabilityRequest = jest.fn();
 let registeredStatusHandler;
 
 jest.mock('../ipc/mithrilPartialSyncChannel', () => ({
@@ -31,6 +32,9 @@ jest.mock('../ipc/mithrilPartialSyncChannel', () => ({
   mithrilPartialSyncWipeAndFullSyncChannel: {
     request: (...args) => mockWipeAndFullSyncRequest(...args),
   },
+  mithrilPartialSyncAvailabilityChannel: {
+    request: (...args) => mockAvailabilityRequest(...args),
+  },
 }));
 
 describe('MithrilPartialSyncStore', () => {
@@ -45,6 +49,10 @@ describe('MithrilPartialSyncStore', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     registeredStatusHandler = undefined;
+    mockAvailabilityRequest.mockResolvedValue({
+      isEnabled: true,
+      isSignificantlyBehind: false,
+    });
   });
 
   afterEach(() => {
@@ -397,5 +405,109 @@ describe('MithrilPartialSyncStore', () => {
 
     expect(mockStatusRequest).not.toHaveBeenCalled();
     expect(store.status).toBe('stopping-node');
+  });
+
+  it('consumes the availability read model with a one-shot query during setup', async () => {
+    const store = setupStore();
+    mockStatusRequest.mockResolvedValue({
+      status: 'idle',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+    mockAvailabilityRequest.mockResolvedValue({
+      isEnabled: true,
+      isSignificantlyBehind: true,
+      behindByImmutables: 42,
+    });
+
+    store.setup();
+    await mockAvailabilityRequest.mock.results[0].value;
+    await Promise.resolve();
+
+    expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
+    expect(store.isPartialSyncEnabled).toBe(true);
+    expect(store.isSignificantlyBehind).toBe(true);
+    expect(store.behindByImmutables).toBe(42);
+  });
+
+  it('keeps partial sync hidden by default until the first availability response lands', () => {
+    const store = setupStore();
+
+    expect(store.isPartialSyncEnabled).toBe(false);
+    expect(store.isSignificantlyBehind).toBe(false);
+    expect(store.behindByImmutables).toBeUndefined();
+  });
+
+  it('refreshes availability on the interval only while partial sync work is in flight', async () => {
+    const store = setupStore();
+    mockStatusRequest.mockResolvedValue({
+      status: 'idle',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+
+    store.setup();
+    await mockAvailabilityRequest.mock.results[0].value;
+    await Promise.resolve();
+
+    expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
+
+    // Idle: the interval fires but does not refresh.
+    jest.advanceTimersByTime(30_000);
+    expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
+
+    // In-flight: the interval refreshes behind-ness while syncing.
+    registeredStatusHandler({
+      status: 'downloading',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+    jest.advanceTimersByTime(30_000);
+    expect(mockAvailabilityRequest).toHaveBeenCalledTimes(2);
+  });
+
+  it('clears the availability refresh interval on teardown', async () => {
+    const store = setupStore();
+    mockStatusRequest.mockResolvedValue({
+      status: 'downloading',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+
+    store.setup();
+    await mockAvailabilityRequest.mock.results[0].value;
+    await Promise.resolve();
+
+    expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
+
+    store.teardown();
+    jest.advanceTimersByTime(30_000 * 3);
+
+    expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
+  });
+
+  it('re-arms isWorking on terminal completed, cancelled, and failed states', () => {
+    const store = setupStore();
+
+    (['completed', 'cancelled', 'failed'] as const).forEach((status) => {
+      store._updateStatus({
+        status,
+        allowedRecoveryActions: [],
+        transferProgress: {},
+        progressItems: [],
+        error: null,
+      });
+
+      expect(store.isWorking).toBe(false);
+      expect(store.isTerminal).toBe(true);
+    });
   });
 });

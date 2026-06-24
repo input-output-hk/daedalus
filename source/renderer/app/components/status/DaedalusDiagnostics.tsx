@@ -406,7 +406,9 @@ type Props = {
   isForceCheckingSystemTime: boolean;
   localTip: TipInfo | null | undefined;
   networkTip: TipInfo | null | undefined;
-  isMithrilPartialSyncActive: boolean;
+  isMithrilPartialSyncWorking: boolean;
+  isMithrilPartialSyncEnabled: boolean;
+  isMithrilPartialSyncSignificantlyBehind: boolean;
   isMithrilBootstrapActive: boolean;
   onStartMithrilPartialSync: (...args: Array<any>) => any;
   onOpenStateDirectory: (...args: Array<any>) => any;
@@ -516,7 +518,9 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isSystemTimeIgnored,
       localTip,
       networkTip,
-      isMithrilPartialSyncActive,
+      isMithrilPartialSyncWorking,
+      isMithrilPartialSyncEnabled,
+      isMithrilPartialSyncSignificantlyBehind,
       isMithrilBootstrapActive,
       onOpenStateDirectory,
       onClose,
@@ -563,7 +567,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
       globalMessages[`network_${cardanoNetwork}`]
     );
     const isMithrilActionBlocked =
-      isMithrilPartialSyncActive || isMithrilBootstrapActive;
+      isMithrilPartialSyncWorking || isMithrilBootstrapActive;
     const { getSectionRow, getRow } = this;
 
     return (
@@ -701,14 +705,22 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('connected', isConnected)}
               {getRow('synced', isSynced)}
               {getRow('syncPercentage', `${formattedSyncPercentage}%`)}
-              <MithrilPartialSyncSection
-                formattedSyncPercentage={formattedSyncPercentage}
-                isActionBlocked={isMithrilActionBlocked}
-                isMithrilPartialSyncActive={isMithrilPartialSyncActive}
-                isSynced={isSynced}
-                onRestoreFocus={this.restoreDialogCloseOnEscKey}
-                onStartMithrilPartialSync={this.props.onStartMithrilPartialSync}
-              />
+              {isMithrilPartialSyncEnabled && (
+                <MithrilPartialSyncSection
+                  formattedSyncPercentage={formattedSyncPercentage}
+                  isActionBlocked={isMithrilActionBlocked}
+                  isMithrilPartialSyncWorking={isMithrilPartialSyncWorking}
+                  isSynced={isSynced}
+                  shouldShowRecommendation={
+                    isMithrilPartialSyncEnabled &&
+                    isMithrilPartialSyncSignificantlyBehind
+                  }
+                  onRestoreFocus={this.restoreDialogCloseOnEscKey}
+                  onStartMithrilPartialSync={
+                    this.props.onStartMithrilPartialSync
+                  }
+                />
+              )}
               {getRow(
                 'lastNetworkBlock',
                 <Fragment>

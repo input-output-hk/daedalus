@@ -130,7 +130,11 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
           isSystemTimeIgnored={isSystemTimeIgnored}
-          isMithrilPartialSyncActive={mithrilPartialSync.isActive}
+          isMithrilPartialSyncWorking={mithrilPartialSync.isWorking}
+          isMithrilPartialSyncEnabled={mithrilPartialSync.isPartialSyncEnabled}
+          isMithrilPartialSyncSignificantlyBehind={
+            mithrilPartialSync.isSignificantlyBehind
+          }
           isMithrilBootstrapActive={isMithrilBootstrapBlockingNodeStart(
             mithrilBootstrap.status
           )}

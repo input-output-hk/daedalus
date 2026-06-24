@@ -49,7 +49,9 @@ const defaultProps = {
   isForceCheckingSystemTime: false,
   localTip: { epoch: 100, slot: 200 } as any,
   networkTip: { epoch: 101, slot: 300 } as any,
-  isMithrilPartialSyncActive: false,
+  isMithrilPartialSyncWorking: false,
+  isMithrilPartialSyncEnabled: true,
+  isMithrilPartialSyncSignificantlyBehind: true,
   isMithrilBootstrapActive: false,
   onStartMithrilPartialSync: jest.fn(),
   onOpenStateDirectory: jest.fn(),
@@ -102,8 +104,8 @@ describe('DaedalusDiagnostics', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('keeps the CTA disabled while partial sync is active', () => {
-    renderComponent({ isMithrilPartialSyncActive: true });
+  it('keeps the CTA disabled while partial sync work is in flight', () => {
+    renderComponent({ isMithrilPartialSyncWorking: true });
 
     expect(
       screen.getByRole('button', { name: 'Mithril Partial Sync' })
@@ -111,6 +113,49 @@ describe('DaedalusDiagnostics', () => {
     expect(
       screen.getByText('Unavailable while Mithril work is already active.')
     ).toBeInTheDocument();
+  });
+
+  it('re-arms the CTA once partial sync work reaches a terminal state', () => {
+    renderComponent({ isMithrilPartialSyncWorking: false });
+
+    expect(
+      screen.getByRole('button', { name: 'Mithril Partial Sync' })
+    ).toBeEnabled();
+  });
+
+  it('hides all partial sync UI when the kill switch is off', () => {
+    renderComponent({ isMithrilPartialSyncEnabled: false });
+
+    expect(
+      screen.queryByRole('button', { name: 'Mithril Partial Sync' })
+    ).toBeNull();
+    expect(screen.queryByText(/Mithril Partial Sync/)).toBeNull();
+  });
+
+  it('shows the recommendation/CTA only when enabled and significantly behind', () => {
+    const { rerender } = renderComponent({
+      isMithrilPartialSyncEnabled: true,
+      isMithrilPartialSyncSignificantlyBehind: true,
+    });
+
+    expect(
+      screen.getByRole('button', { name: 'Mithril Partial Sync' })
+    ).toBeEnabled();
+
+    rerender(
+      <IntlProvider locale="en-US" messages={translations}>
+        <DaedalusDiagnostics
+          {...defaultProps}
+          isMithrilPartialSyncEnabled
+          isMithrilPartialSyncSignificantlyBehind={false}
+        />
+      </IntlProvider>
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Mithril Partial Sync' })
+    ).toBeNull();
+    expect(screen.queryByText(/Mithril Partial Sync/)).toBeNull();
   });
 
   it('keeps the CTA disabled while bootstrap work is active', () => {
