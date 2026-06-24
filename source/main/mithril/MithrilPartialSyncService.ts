@@ -267,6 +267,11 @@ export class MithrilPartialSyncService {
         'MithrilPartialSyncService: ignoring cancel request with no active partial sync',
         null
       );
+      // PRD D5(f) / gap #39: nothing to cancel in the node-stop window, but a cancel request MUST
+      // always re-emit a status so the renderer never sticks on its optimistic stopping-node frame.
+      // Re-emit the TRUE current status verbatim (do NOT fabricate `cancelled`); the existing push
+      // pipeline (service.onStatus -> broadcastPartialSyncStatus -> _partialSyncStatusSender) delivers it.
+      this._updateStatus({});
       return;
     }
 

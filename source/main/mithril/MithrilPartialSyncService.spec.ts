@@ -796,6 +796,60 @@ describe('MithrilPartialSyncService', () => {
     );
   });
 
+  it('re-emits the current status when cancel is requested during the node-stop window', async () => {
+    const service = new MithrilPartialSyncService();
+
+    // node-stop window: nothing active, both work refs null.
+    service._activeWorkDir = null;
+    service._currentProcess = null;
+    service._status = {
+      status: 'completed',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    };
+
+    const emissions: Array<MithrilPartialSyncStatusSnapshot> = [];
+    service.onStatus((update) => emissions.push(update));
+
+    await expect(service.cancel()).resolves.toBeUndefined();
+
+    // A status emission happened (renderer can resync off it) ...
+    expect(emissions).toHaveLength(1);
+    // ... and it is the TRUE current status, not a fabricated `cancelled`/`failed`.
+    expect(emissions[0]).toEqual(
+      expect.objectContaining({
+        status: 'completed',
+        allowedRecoveryActions: [],
+      })
+    );
+    expect(service.status.status).toBe('completed');
+  });
+
+  it('does not emit a status when post-cutover cancel hard-rejects (lock #6 regression guard)', async () => {
+    const service = new MithrilPartialSyncService();
+
+    service._activeWorkDir =
+      '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._status = {
+      status: 'installing',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    };
+
+    const emissions: Array<MithrilPartialSyncStatusSnapshot> = [];
+    service.onStatus((update) => emissions.push(update));
+
+    await expect(service.cancel()).rejects.toThrow(
+      'Mithril partial sync cancellation is no longer allowed after live chain cutover has started.'
+    );
+    // The throw path emits nothing; the early-return re-emit did not leak into it.
+    expect(emissions).toHaveLength(0);
+  });
+
   it('cleans staging artifacts and clears the marker when cancellation succeeds before cutover', async () => {
     const service = new MithrilPartialSyncService();
 
