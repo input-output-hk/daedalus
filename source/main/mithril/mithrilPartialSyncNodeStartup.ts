@@ -74,17 +74,10 @@ export class MithrilPartialSyncNodeStartup {
       return false;
     }
 
-    await emitMithrilPartialSyncStatus({
-      status: 'failed',
-      allowedRecoveryActions: ['wipe-and-full-sync'],
-      transferProgress: {},
-      progressItems: [],
-      error: {
-        message:
-          'Daedalus detected an interrupted Mithril partial sync after live chain cutover. The installed chain data is not safe to start normally.',
-        stage: 'installing',
-      },
-    });
+    // PRD D5(a) / gap #7: the native dialog below is the SINGLE authoritative startup-interrupted recovery
+    // surface (startup-owned recovery must not depend on diagnostics UI or a running node, and works before
+    // the renderer is ready). The redundant React `failed` emission was removed here to eliminate the
+    // two-competing-surfaces problem. In-session failures keep the React overlay (startInstalledNode catch).
 
     const { response } = await dialog.showMessageBox(this._mainWindow, {
       type: 'warning',

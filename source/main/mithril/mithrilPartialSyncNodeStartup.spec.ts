@@ -154,6 +154,74 @@ describe('handleInterruptedRecovery', () => {
     expect(result).toBe(false);
     expect(clearMithrilPartialSyncMarker).not.toHaveBeenCalled();
   });
+
+  // --- Unsafe cutover (cutover-in-progress): native dialog is the SINGLE recovery surface (PRD D5a / gap #7) ---
+
+  it('unsafe cutover: shows ONLY the native dialog and does NOT emit a failed status (single surface, PRD D5a)', async () => {
+    readMithrilPartialSyncMarker.mockResolvedValue({
+      state: 'cutover-in-progress',
+      updatedAt: '2026-06-01T00:00:00.000Z',
+    });
+    (dialog.showMessageBox as jest.Mock).mockResolvedValue({ response: 1 }); // Quit
+    const { instance } = makeInstance();
+
+    await instance.handleInterruptedRecovery(0);
+
+    // The native dialog IS the recovery surface ...
+    expect(dialog.showMessageBox).toHaveBeenCalledTimes(1);
+    // ... and the redundant React `failed` emission is GONE.
+    expect(emitMithrilPartialSyncStatus).not.toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'failed' })
+    );
+  });
+
+  it('unsafe cutover, Wipe (response 0): wipes chain + snapshots, clears the marker, returns false', async () => {
+    readMithrilPartialSyncMarker.mockResolvedValue({
+      state: 'cutover-in-progress',
+      updatedAt: '2026-06-01T00:00:00.000Z',
+    });
+    (dialog.showMessageBox as jest.Mock).mockResolvedValue({ response: 0 });
+    const { instance, wipeChainAndSnapshots } = makeInstance();
+
+    const result = await instance.handleInterruptedRecovery(0);
+
+    expect(result).toBe(false);
+    expect(wipeChainAndSnapshots).toHaveBeenCalledTimes(1);
+    expect(clearMithrilPartialSyncMarker).toHaveBeenCalledTimes(1);
+    expect(emitMithrilPartialSyncStatus).not.toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'failed' })
+    );
+  });
+
+  it('unsafe cutover, Quit (response 1): returns true (blocked) without wiping or clearing the marker', async () => {
+    readMithrilPartialSyncMarker.mockResolvedValue({
+      state: 'cutover-in-progress',
+      updatedAt: '2026-06-01T00:00:00.000Z',
+    });
+    (dialog.showMessageBox as jest.Mock).mockResolvedValue({ response: 1 });
+    const { instance, wipeChainAndSnapshots } = makeInstance();
+
+    const result = await instance.handleInterruptedRecovery(0);
+
+    expect(result).toBe(true);
+    expect(wipeChainAndSnapshots).not.toHaveBeenCalled();
+    expect(clearMithrilPartialSyncMarker).not.toHaveBeenCalled();
+  });
+
+  it('unsafe cutover, generation changed during the dialog: returns true without wiping', async () => {
+    readMithrilPartialSyncMarker.mockResolvedValue({
+      state: 'cutover-in-progress',
+      updatedAt: '2026-06-01T00:00:00.000Z',
+    });
+    (dialog.showMessageBox as jest.Mock).mockResolvedValue({ response: 0 }); // user picked Wipe...
+    const { instance, getGeneration, wipeChainAndSnapshots } = makeInstance();
+    getGeneration.mockReturnValue(1); // ...but generation moved on (re-check sees 0 !== 1)
+
+    const result = await instance.handleInterruptedRecovery(0);
+
+    expect(result).toBe(true); // stale generation short-circuits before the wipe
+    expect(wipeChainAndSnapshots).not.toHaveBeenCalled();
+  });
 });
 
 // --- finalizeInstalledNodeStart tests ---
