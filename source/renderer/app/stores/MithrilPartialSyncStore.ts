@@ -62,6 +62,7 @@ export default class MithrilPartialSyncStore extends Store {
   @observable error = DEFAULT_STATUS.error;
   @observable logPath: string | undefined = undefined;
   @observable isCompletedOverlayDismissed = false;
+  @observable proactivePromptDismissedThisSession = false;
   @observable isPartialSyncEnabled = false;
   @observable isSignificantlyBehind = false;
   @observable behindByImmutables: number | undefined = undefined;
@@ -171,8 +172,7 @@ export default class MithrilPartialSyncStore extends Store {
     }
 
     try {
-      const availability: MithrilPartialSyncAvailability =
-        await mithrilPartialSyncAvailabilityChannel.request();
+      const availability: MithrilPartialSyncAvailability = await mithrilPartialSyncAvailabilityChannel.request();
       this._applyAvailability(availability);
     } catch (error) {
       logger.warn('MithrilPartialSyncStore: failed to refresh availability', {
@@ -197,6 +197,11 @@ export default class MithrilPartialSyncStore extends Store {
     if (this.status === 'completed') {
       this.isCompletedOverlayDismissed = true;
     }
+  };
+
+  @action
+  dismissProactivePrompt = () => {
+    this.proactivePromptDismissedThisSession = true;
   };
 
   @action

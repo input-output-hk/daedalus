@@ -15,8 +15,14 @@ class LoadingSyncingConnectingPage extends Component<Props> {
   };
 
   render() {
-    const { newsFeed, appUpdate, networkStatus, profile, app } =
-      this.props.stores;
+    const {
+      newsFeed,
+      appUpdate,
+      networkStatus,
+      profile,
+      app,
+      mithrilPartialSync,
+    } = this.props.stores;
     const {
       cardanoNodeState,
       isNodeResponding,
@@ -33,7 +39,26 @@ class LoadingSyncingConnectingPage extends Component<Props> {
       isTlsCertInvalid,
       isVerifyingBlockchain,
       blockSyncProgress,
+      networkTip,
+      localTip,
     } = networkStatus;
+    // The proactive Mithril prompt yields to the partial-sync overlay once
+    // "Start now" flips status to `stopping-node`: this gate stays true, but the
+    // loading routing swaps the overlay in and the prompt unmounts. "Start now"
+    // is disabled via the prompt's own `isStarting` flag to prevent a
+    // double-start during any brief lingering mount.
+    const networkEpoch =
+      networkTip && Number.isFinite(networkTip.epoch) ? networkTip.epoch : null;
+    const localEpoch =
+      localTip && Number.isFinite(localTip.epoch) ? localTip.epoch : null;
+    const behindByEpochs =
+      networkEpoch !== null && localEpoch !== null
+        ? Math.max(1, networkEpoch - localEpoch)
+        : undefined;
+    const showMithrilPrompt =
+      mithrilPartialSync.isPartialSyncEnabled &&
+      mithrilPartialSync.isSignificantlyBehind &&
+      !mithrilPartialSync.proactivePromptDismissedThisSession;
     const { displayAppUpdateNewsItem } = appUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = profile;
     const { toggleNewsFeed } = this.props.actions.app;
@@ -72,6 +97,10 @@ class LoadingSyncingConnectingPage extends Component<Props> {
         showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
         isVerifyingBlockchain={isVerifyingBlockchain}
         blockSyncProgress={blockSyncProgress}
+        showMithrilPrompt={showMithrilPrompt}
+        mithrilBehindByEpochs={behindByEpochs}
+        onStartMithrilSync={mithrilPartialSync.startPartialSync}
+        onDismissMithrilPrompt={mithrilPartialSync.dismissProactivePrompt}
       />
     );
   }

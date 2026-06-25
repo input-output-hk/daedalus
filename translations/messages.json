@@ -3033,6 +3033,56 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Your node is about {epochs} epochs behind.",
+        "description": "Epochs-behind body line (line 1) for the proactive Mithril fork prompt on the syncing screen",
+        "id": "daedalus.diagnostics.dialog.mithrilProactivePromptBody"
+      },
+      {
+        "defaultMessage": "!!!Your node is behind the blockchain tip.",
+        "description": "Body line (line 1) shown when the epochs-behind figure is unavailable for the proactive Mithril fork prompt",
+        "id": "daedalus.diagnostics.dialog.mithrilProactivePromptBodyUnknown"
+      },
+      {
+        "defaultMessage": "!!!Mithril can catch you up faster than the standard sync.",
+        "description": "Benefit-vs-standard-sync body line (line 2) for the proactive Mithril fork prompt",
+        "id": "daedalus.diagnostics.dialog.mithrilProactivePromptBodyBenefit"
+      },
+      {
+        "defaultMessage": "!!!If skipped, you can still start the Mithril sync from the Diagnostics screen.",
+        "description": "Handoff note telling the user they can start Mithril later from Diagnostics if they skip the proactive prompt",
+        "id": "daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNote"
+      },
+      {
+        "defaultMessage": "!!!Mithril Sync (fast)",
+        "description": "Primary choice-view button label that opens the concise inline confirm step for the proactive Mithril fork prompt",
+        "id": "daedalus.diagnostics.dialog.mithrilProactivePromptMithrilButton"
+      },
+      {
+        "defaultMessage": "!!!Standard Sync (slow)",
+        "description": "Secondary choice-view button label that dismisses the proactive Mithril fork prompt for this session",
+        "id": "daedalus.diagnostics.dialog.mithrilProactivePromptStandardButton"
+      },
+      {
+        "defaultMessage": "!!!Mithril will stop your Cardano node, restore verified chain data, and restart it — so you catch up faster.",
+        "description": "Concise confirm-view body for the proactive Mithril fork prompt on the syncing screen",
+        "id": "daedalus.diagnostics.dialog.mithrilProactivePromptConfirmBody"
+      },
+      {
+        "defaultMessage": "!!!Start now",
+        "description": "Confirm-view primary button label that starts the Mithril sync for the proactive Mithril fork prompt",
+        "id": "daedalus.diagnostics.dialog.mithrilProactivePromptConfirmStart"
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "Confirm-view secondary button label that returns to the choice view for the proactive Mithril fork prompt",
+        "id": "daedalus.diagnostics.dialog.mithrilProactivePromptConfirmCancel"
+      }
+    ],
+    "path": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Starting Cardano node",
         "description": "Message \"Starting Cardano node\" on the loading screen.",
         "id": "loading.screen.startingCardanoMessage"

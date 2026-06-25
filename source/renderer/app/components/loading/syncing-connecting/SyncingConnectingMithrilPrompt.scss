@@ -1,0 +1,70 @@
+.component {
+  background-color: var(--theme-report-issue-connecting-background-color);
+  border-radius: 6px;
+  box-sizing: border-box;
+  margin: 24px auto 0;
+  max-width: 520px;
+  padding: 20px 24px;
+  position: fixed;
+  left: 50%;
+  text-align: center;
+  top: 0;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.body {
+  color: var(--theme-report-issue-connecting-text-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.benefit {
+  color: var(--theme-report-issue-connecting-text-color);
+  font-family: var(--font-regular);
+  font-size: 15px;
+  line-height: 1.4;
+  margin: 8px 0 0;
+}
+
+.handoffNote {
+  color: var(--theme-report-issue-connecting-text-color);
+  font-family: var(--font-regular);
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 12px 0 0;
+  opacity: 0.8;
+}
+
+.confirmBody {
+  color: var(--theme-report-issue-connecting-text-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.actionButton {
+  margin: 0 8px;
+  min-width: 180px;
+}
+
+.primaryButton {
+  background-color: var(--theme-report-issue-button-background-color);
+}
+
+.error {
+  color: var(--theme-color-error);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 12px 0 0;
+}

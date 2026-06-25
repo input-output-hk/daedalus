@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import StatusIcons from './StatusIcons';
 import ReportIssue from './ReportIssue';
 import LogosDisplay from './LogosDisplay';
+import SyncingConnectingMithrilPrompt from './SyncingConnectingMithrilPrompt';
 import SyncingConnectingBackground from './SyncingConnectingBackground';
 import SyncingConnectingStatus from './SyncingConnectingStatus';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
@@ -44,6 +45,10 @@ export type Props = {
   disableDownloadLogs: boolean;
   showNewsFeedIcon: boolean;
   isVerifyingBlockchain: boolean;
+  showMithrilPrompt: boolean;
+  mithrilBehindByEpochs?: number;
+  onStartMithrilSync: () => Promise<void>;
+  onDismissMithrilPrompt: () => void;
   onIssueClick: (...args: Array<any>) => any;
   onOpenExternalLink: (...args: Array<any>) => any;
   onDownloadLogs: (...args: Array<any>) => any;
@@ -168,6 +173,10 @@ class SyncingConnecting extends Component<Props, State> {
       showNewsFeedIcon,
       isVerifyingBlockchain,
       blockSyncProgress,
+      showMithrilPrompt,
+      mithrilBehindByEpochs,
+      onStartMithrilSync,
+      onDismissMithrilPrompt,
     } = this.props;
     const newsFeedIconStyles = classNames([
       isConnecting ? 'connectingScreen' : null,
@@ -198,6 +207,13 @@ class SyncingConnecting extends Component<Props, State> {
             />
           )}
           <LogosDisplay isConnected={isConnected} />
+          {showMithrilPrompt && (
+            <SyncingConnectingMithrilPrompt
+              behindByEpochs={mithrilBehindByEpochs}
+              onStart={onStartMithrilSync}
+              onDismiss={onDismissMithrilPrompt}
+            />
+          )}
         </div>
         <SyncingConnectingStatus
           cardanoNodeState={cardanoNodeState}

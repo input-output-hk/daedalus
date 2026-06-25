@@ -98,6 +98,12 @@ identical — no offer — while being driven by a truthful backend signal.
 *user-facing figure* is now **epochs** (derived from that same gap) followed by a **sync-%** sentence —
 immutable files are never shown to the user. See **D11**.
 
+**Flow refinement (D13, 2026-06-25).** The proactive prompt (item 3) is reframed into a **fast/standard
+fork** that confirms and starts **in place** via a **concise inline confirm** — it no longer deep-links
+into the Diagnostics modal. Confirmation-precedes-start is preserved by the concise confirm. The
+user-facing term becomes **"Mithril" / "Mithril Sync"** (vs "standard sync") and the display is
+**epochs-only** (sync-% dropped). See **D13** (which amends the item-3 deep-link mechanism below).
+
 **Open dependents:** D2 (what "significantly behind" means + threshold), D3 (kill-switch gating &
 default), and the proactive prompt's exact surface/visual treatment.
 
@@ -652,6 +658,57 @@ never immutable files, % as its own trailing sentence).
 **`interactive_decision`** at task-ux-304 implementation time. Whether to leave `behindByImmutables` in
 the availability read model as an internal/debug field or remove it as cleanup is **non-blocking**.
 
+### D13 — Proactive prompt = a fast/standard fork with a **concise inline confirm** (not a Diagnostics deep-link); user-facing **"Mithril"** vocabulary; **epochs-only** display
+
+**Decision (2026-06-25, explicit user sign-off; amends D1, the D1 deep-link handoff, and the
+user-facing-figure half of D11/D12).** The proactive prompt on the syncing screen
+(`SyncingConnecting.tsx`) is reframed from a "Review → deep-link into the Diagnostics confirmation
+modal" handoff into a **self-contained fast/standard fork that confirms and starts in place**:
+
+1. **Fork, not a recommendation hand-off.** The prompt presents two choices with the fast path led
+   visually:
+   - **Primary "Mithril Sync (fast)"** (emphasized) → opens a **concise inline confirm step** rendered
+     on the syncing screen itself (a two-state prompt: choice view → confirm view). It does **not**
+     navigate to Diagnostics and does **not** reuse the full `MithrilPartialSyncConfirmation` modal.
+   - **Secondary "Standard Sync (slow)"** → **session-dismiss** (`proactivePromptDismissedThisSession`,
+     in-memory); the user keeps normal syncing.
+2. **Confirmation precedes start is PRESERVED (lock #3 honored, mechanism amended).** The concise confirm
+   view ("Mithril will stop your Cardano node, restore verified chain data, and restart it — so you catch
+   up faster.") carries the only **"Start now"** control; the fast button alone never starts the backend.
+   "Start now" invokes the **same** existing partial-sync start path (no new start channel). This amends
+   D1's "deep-link lands on the confirmation modal" mechanism: the prompt now owns a *second confirmation
+   surface*, but **not** a second *un-confirmed* start path — confirming still gates every start.
+3. **Deep-link plumbing dropped.** The `openDaedalusDiagnosticsDialog({ showMithrilConfirmation })`
+   payload, the AppStore payload capture, and the `DaedalusDiagnosticsDialog`→`showConfirmationOnOpen`
+   wiring planned under D1 are **not built**. The already-shipped `showConfirmationOnOpen` prop on
+   `MithrilPartialSyncSection` (tasks 301/303) is left in place, unused, as a benign residual.
+4. **User-facing vocabulary = "Mithril" (drop "partial sync").** To the user the feature is **"Mithril"
+   / "Mithril Sync"**, contrasted with **"standard sync"** — "Mithril partial sync" is internal/engineering
+   language only. This task applies it to the new prompt copy; **sprint-wide rollout** of the term to the
+   confirmation modal, recommendation, and overlay is **deferred to task-ux-601** (the holistic copy pass).
+5. **Epochs-only display; sync-% dropped (supersedes D12's "sync-% retained" for user-facing copy).**
+   Per explicit user decision (2026-06-25), the sync percentage is a poor catch-up indicator in this
+   context and is **removed** from user-facing behind-ness copy — the prompt shows the epochs sentence
+   only. The behind-ness **figure source is unchanged** (renderer node-tip difference
+   `behindByEpochs = max(1, networkTip.epoch − localTip.epoch)`, D12) and the **gate is unchanged**
+   (backend certified-immutable gap, D2). Removing the sync-% sentence from the **confirmation modal**
+   (shipped by task-ux-304) is **deferred to task-ux-601**.
+
+**Options considered.** Concise inline confirm that starts in place *(chosen — honors the user's "lead
+straight into Mithril, not another review screen" intent while keeping informed consent before the node
+stops)*; start immediately with no confirm (rejected by the user — removes the node-stop consent step and
+would break lock #3 outright); keep the D1 deep-link into the full Diagnostics modal (rejected — the user
+found the full review screen redundant after the prompt).
+
+**Locks touched.** ✅ **Lock #3 (confirmation precedes start)** preserved — the concise confirm is the
+sole start trigger. ✅ "No auto-trigger" preserved — the user explicitly taps fast *and* confirms.
+✅ "No renderer threshold" preserved — the offer-or-hide gate stays backend-owned (D2); only the display
+figure is renderer-computed (D12). ⚠️ **Amends D1's deep-link handoff mechanism** and **D12's "sync-%
+retained"** clause for user-facing copy, by explicit user decision 2026-06-25.
+
+**Open dependents:** task-ux-601 rolls the "Mithril" vocabulary and the sync-% removal across the
+confirmation modal, recommendation, and overlay, and reconciles the canonical EN+JA behind-ness copy.
+
 ---
 
 ## Overview
@@ -700,18 +757,19 @@ status handler leaks on store teardown.
 
 ## UX Flows (target)
 
-1. **Proactive prompt (NEW).** While the node is connecting/syncing
+1. **Proactive prompt (NEW; refined by D13).** While the node is connecting/syncing
    (`components/loading/syncing-connecting/SyncingConnecting.tsx`), if `isEnabled &&
-   isSignificantlyBehind && !proactivePromptDismissedThisSession`, show a dismissible prompt using the
-   canonical D11 behind-ness copy (epochs lead; the sync-% sentence is optional in the space-constrained
-   prompt):
-   *"Your node is about N epochs behind. Mithril partial sync can catch it up faster than waiting for
-   normal sync. [Review] [Not now]"*. **Review** opens the Diagnostics dialog at the partial-sync
-   confirmation modal. **Not
-   now / dismiss** sets an in-memory session flag (same pattern as `isCompletedOverlayDismissed`) so
-   it does not reappear this session, and the copy notes the user can start it later from the
-   Diagnostics page. **Review** carries a `{ showMithrilConfirmation: true }` payload so Diagnostics
-   opens directly in the confirmation modal (D1 deep-link handoff).
+   isSignificantlyBehind && !proactivePromptDismissedThisSession`, show a **fast/standard fork** prompt
+   using the canonical epochs-only behind-ness copy (D11/D12/D13; sync-% dropped):
+   *"Your node is about N epochs behind. Mithril can catch you up faster than the standard sync."* with
+   **[Mithril Sync (fast)]** (emphasized) and **[Standard Sync (slow)]**. **Mithril Sync (fast)** opens a
+   **concise inline confirm** on the syncing screen — *"Mithril will stop your Cardano node, restore
+   verified chain data, and restart it — so you catch up faster."* with **[Start now] [Cancel]** — and
+   **Start now** invokes the existing partial-sync start path directly (no Diagnostics deep-link, no full
+   review modal; confirmation precedes start, lock #3, via the concise confirm). **Standard Sync (slow) /
+   dismiss** sets an in-memory session flag (same pattern as `isCompletedOverlayDismissed`) so it does not
+   reappear this session, and the copy notes the user can still start the Mithril sync later from the
+   Diagnostics page. (D13 drops the earlier `{ showMithrilConfirmation: true }` deep-link handoff.)
 2. **Diagnostics manual trigger.** The recommendation + Start CTA appear in Diagnostics only when
    `isEnabled && isSignificantlyBehind`; hidden otherwise (no enabled button that can throw). Button
    still disabled while any Mithril work is active (`isActionBlocked`).
@@ -742,9 +800,9 @@ status handler leaks on store teardown.
   `isEnabled`; gates the prompt + manual trigger additionally on `isSignificantlyBehind` (D1/D3).
 - [ ] Proactive, session-dismissible prompt on the syncing screen that routes into the Diagnostics
   confirmation (D1).
-- [ ] The prompt's **Review** deep-links into the confirmation modal via an
-  `openDaedalusDiagnosticsDialog({ showMithrilConfirmation })` payload + a `showConfirmationOnOpen` prop;
-  confirmation still precedes start (D1/lock #3).
+- [ ] The prompt's **Mithril Sync (fast)** opens a concise inline confirm whose **Start now** invokes the
+  existing partial-sync start path directly (no Diagnostics deep-link); confirmation still precedes start
+  (D13/lock #3). *(D13 supersedes the earlier `{ showMithrilConfirmation }` deep-link mechanism.)*
 - [ ] Confirmation is a focus-trapped modal with behind-ness context and a proper button hierarchy
   (D6).
 - [ ] User-facing behind-ness copy uses **epochs** (renderer-computed node-tip difference

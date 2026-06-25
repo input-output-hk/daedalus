@@ -3,7 +3,7 @@
     "title": "Mithril Partial Sync UX Refinement Tasks (Phase 2)",
     "created": "2026-06-19",
     "updated": "2026-06-25",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "totalTasks": 20,
     "prdReference": ".agent/plans/mithril-partial-sync/mithril-partial-sync-ux-refinement-prd.md",
     "description": "High-level, validation-gated implementation plan for the Mithril partial sync UX refinement sprint (issue #10 Phase 2). The backend, IPC, store, and overlay already exist on feat/mithril-partial-sync-ux-refinement; this sprint refines the UX to (a) prompt the user when significantly behind the tip and (b) close the 35 research gaps plus the 13 issue-#10-comment items. Tasks are organized so task-ux-1xx maps to phase-1, task-ux-2xx to phase-2, and so on, matching the task-plans-ux-refinement/phase-N subdirectory layout.",
@@ -290,41 +290,44 @@
         },
         {
           "id": "task-ux-302",
-          "title": "Proactive session-dismissible prompt on the syncing screen with deep-link handoff",
-          "description": "Add a dismissible prompt on the loading/sync screen (SyncingConnecting) shown only when isEnabled && isSignificantlyBehind && !proactivePromptDismissedThisSession, guiding the user to Mithril partial sync as a faster catch-up path. Review deep-links into the Diagnostics-owned confirmation modal (no separate start path); Not now / dismiss sets an in-memory session flag and the copy notes the user can start it later from Diagnostics. Implements PRD D1 (the proactive surface + deep-link handoff). Closes blocker #2's prompt half.",
-          "status": "pending",
+          "title": "Proactive fast/standard fork prompt on the syncing screen with concise inline confirm",
+          "description": "Add a fast/standard FORK prompt on the loading/sync screen (SyncingConnecting), shown only when isPartialSyncEnabled && isSignificantlyBehind && !proactivePromptDismissedThisSession. Primary 'Mithril Sync (fast)' (emphasized) opens a CONCISE INLINE CONFIRM step on the syncing screen ('Start now / Cancel') whose Start now invokes the existing partial-sync start path DIRECTLY -- no Diagnostics deep-link and no full review modal; confirmation still precedes start (lock #3) via the concise confirm. Secondary 'Standard Sync (slow)' sets an in-memory session flag (keeps normal syncing) and the copy notes the user can still start the Mithril sync later from Diagnostics. User-facing term is 'Mithril'/'Mithril Sync' (not 'partial sync'); display is epochs-only (sync-% dropped). Implements PRD D1 as amended by D13. Closes blocker #2's prompt half.",
+          "status": "completed",
+          "completedAt": "2026-06-25",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": ["task-ux-301", "task-ux-303", "task-ux-304"],
           "targetPaths": [
             "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.tsx",
+            "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt.tsx",
             "source/renderer/app/containers/loading/SyncingConnectingPage.tsx",
             "source/renderer/app/stores/MithrilPartialSyncStore.ts",
-            "source/renderer/app/components/status/DaedalusDiagnostics.tsx",
-            "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
-            "source/renderer/app/actions/app-actions.ts",
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
             "translations/messages.json"
           ],
           "implementationNotes": [
-            "Mount the prompt in SyncingConnecting; gate on isEnabled && isSignificantlyBehind && !proactivePromptDismissedThisSession.",
-            "Add proactivePromptDismissedThisSession as an in-memory store flag (same pattern as isCompletedOverlayDismissed); not persisted across restarts.",
-            "Give openDaedalusDiagnosticsDialog an optional payload `{ showMithrilConfirmation: true }`; Review triggers it. DaedalusDiagnostics threads a showConfirmationOnOpen prop to MithrilPartialSyncSection, which opens the confirmation modal on mount, respecting isActionBlocked.",
-            "No separate start path: the deep-link lands on the confirmation modal; confirmation still precedes start (lock #3).",
-            "Dismissal copy must tell the user they can still trigger partial sync manually later from the Diagnostics page.",
-            "Use the canonical behind-ness framing established by task-ux-304 (PRD D11 as amended by D12): epochs primary sentence + sync-% as a separate trailing sentence (no 'immutable files' language); the prompt copy should convey the time/effort benefit of partial sync vs waiting for normal sync.",
-            "Source the epochs figure the SAME way as the modal -- the RENDERER node-tip difference max(1, networkTip.epoch - localTip.epoch), not a backend field (D12). SyncingConnectingPage already injects networkStatus (`SyncingConnectingPage.tsx:18`), so compute it in the container and pass it into the prompt. The sync-% sentence is optional in the space-constrained prompt (PRD UX Flow 1)."
+            "PRD D13 redesign (explicit user sign-off 2026-06-25): the prompt is a fast/standard fork that confirms + starts IN PLACE, not a Diagnostics deep-link. DROP the deep-link plumbing entirely (no openDaedalusDiagnosticsDialog payload, no AppStore payload capture, no DaedalusDiagnosticsDialog showConfirmationOnOpen wiring); leave the already-shipped showConfirmationOnOpen prop on MithrilPartialSyncSection unused as a benign residual.",
+            "Mount a new presentational prompt component in SyncingConnecting (which is pure/props-only); gate on isPartialSyncEnabled && isSignificantlyBehind && !proactivePromptDismissedThisSession. NOTE the live store observable is `isPartialSyncEnabled` (MithrilPartialSyncStore.ts), fed by availability.isEnabled -- not a getter named isEnabled.",
+            "Prompt is two-state: choice view (epochs body + 'Mithril Sync (fast)' / 'Standard Sync (slow)') then a concise confirm view ('Mithril will stop your Cardano node, restore verified chain data, and restart it -- so you catch up faster.' + 'Start now' / 'Cancel'). Start now calls the SAME start path partial sync already uses (trace the start action used by DaedalusDiagnostics/MithrilPartialSyncSection; no new channel).",
+            "Add proactivePromptDismissedThisSession as an in-memory store flag + a dismiss action (same pattern as isCompletedOverlayDismissed); not persisted across restarts. 'Standard Sync (slow)' triggers the dismiss.",
+            "Behind-ness figure = RENDERER node-tip difference behindByEpochs = max(1, networkTip.epoch - localTip.epoch), computed in SyncingConnectingPage (mirror the task-ux-304 block in DaedalusDiagnostics.tsx). Keep a behind-unknown body fallback when tips/epoch are unavailable. NO sync-% (D13). NO 'immutable files' language.",
+            "Copy (approved EN; first-class JA, no placeholders): choice body L1 'Your node is about {epochs} epochs behind.' (unknown fallback 'Your node is behind the blockchain tip.'), L2 'Mithril can catch you up faster than the standard sync.'; handoff 'If skipped, you can still start the Mithril sync from the Diagnostics screen.'; buttons 'Mithril Sync (fast)' / 'Standard Sync (slow)'; confirm body 'Mithril will stop your Cardano node, restore verified chain data, and restart it -- so you catch up faster.'; confirm buttons 'Start now' / 'Cancel'. Preserve the locked 'verified ... chain data ... catch up faster' wording (#4).",
+            "Sprint-wide rollout of the 'Mithril' vocabulary and the sync-% removal across the confirmation modal / recommendation / overlay is task-ux-601, NOT this task."
           ],
           "testCases": [
             "Prompt appears only when enabled, significantly behind, and not yet dismissed this session",
-            "Dismiss sets the in-memory flag so it does not reappear this session",
-            "Review opens Diagnostics directly in the confirmation modal (deep-link)",
-            "Prompt never starts partial sync directly (confirmation precedes start)"
+            "Choice view shows epochs body + fast/standard buttons; no sync-% and no 'immutable files' string",
+            "'Mithril Sync (fast)' reveals the concise confirm view; the fast button alone never starts the backend (confirmation precedes start)",
+            "'Start now' invokes the existing partial-sync start path directly (no Diagnostics navigation)",
+            "'Standard Sync (slow)' sets the in-memory session flag so the prompt does not reappear this session",
+            "behind-unknown fallback body renders when networkTip/localTip (or epoch) is unavailable"
           ],
           "acceptance": [
-            "A gated, session-dismissible proactive prompt renders on the syncing screen.",
-            "Review deep-links into the confirmation modal via the openDaedalusDiagnosticsDialog payload + showConfirmationOnOpen prop.",
-            "Dismissal is session-scoped (in-memory) and copy points to the manual Diagnostics path.",
-            "No second start path is introduced; confirmation precedes start."
+            "A gated, session-dismissible fast/standard fork prompt renders on the syncing screen (epochs-only, 'Mithril' vocabulary).",
+            "'Mithril Sync (fast)' opens a concise inline confirm whose 'Start now' invokes the existing start path directly; no Diagnostics deep-link, no full review modal.",
+            "Confirmation precedes start (lock #3) is preserved via the concise confirm; no second un-confirmed start path.",
+            "'Standard Sync (slow)' dismiss is session-scoped (in-memory) and copy points to the manual Diagnostics path."
           ]
         },
         {
@@ -709,7 +712,8 @@
           ],
           "implementationNotes": [
             "Correct the 'ja-JP fully translated' overstatement: diagnostics keys carry the English 'Mithril partial sync' (`ja-JP.json:158-167`) while overlay keys use the Japanese rendering (`ja-JP.json:332-343`). Pick one canonical ja-JP rendering and apply it across both namespaces.",
-            "Provide first-class JA for the new behind-ness line (epochs + sync-%, D11/task-ux-304), proactive prompt, stage/code error copy, and cancelled-vs-failed copy.",
+            "D13 rollout (deferred here from task-ux-302, explicit user decision 2026-06-25): apply the user-facing 'Mithril' / 'Mithril Sync' vocabulary (drop 'partial sync' from user-facing copy; it stays internal) across the confirmation modal, recommendation, and overlay; and REMOVE the sync-% trailing sentence from the confirmation modal behind-ness copy (mithrilPartialSyncConfirmationBehind, shipped epochs + sync-% by task-ux-304) so user-facing behind-ness is epochs-only -- reconcile against the new SyncingConnecting prompt copy task-ux-302 establishes.",
+            "Provide first-class JA for the new behind-ness line (epochs-only, D11/D12 as amended by D13), the fast/standard fork proactive prompt + concise confirm (task-ux-302), stage/code error copy, and cancelled-vs-failed copy.",
             "Add a short EN + JA glossary for the canonical terms (partial sync, verified data, snapshot, cutover, epochs behind, sync percentage); the existing research glossary (research-19 §7) is EN-only.",
             "Run this pass last, once the copy-producing changes (D1/D5b/D5e/D6/D8) are merged, so it reviews final strings. Use the i18n-messaging skill; do not ship !!! placeholders.",
             "Preserve the verified-data wording lock (#4) and keep copy simple (#34)."

@@ -38,10 +38,10 @@ jest.mock('../ipc/mithrilPartialSyncChannel', () => ({
 }));
 
 describe('MithrilPartialSyncStore', () => {
-  const api: Api = {
+  const api: Api = ({
     ada: jest.fn(),
-  } as unknown as Api;
-  const actions: ActionsMap = jest.fn() as unknown as ActionsMap;
+  } as unknown) as Api;
+  const actions: ActionsMap = (jest.fn() as unknown) as ActionsMap;
 
   const setupStore = () =>
     new MithrilPartialSyncStore(api, actions, noopAnalyticsTracker);
@@ -492,6 +492,35 @@ describe('MithrilPartialSyncStore', () => {
     jest.advanceTimersByTime(30_000 * 3);
 
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
+  });
+
+  it('defaults the proactive prompt dismissal to false and sets it on dismiss', () => {
+    const store = setupStore();
+
+    expect(store.proactivePromptDismissedThisSession).toBe(false);
+
+    store.dismissProactivePrompt();
+
+    expect(store.proactivePromptDismissedThisSession).toBe(true);
+  });
+
+  it('keeps the proactive prompt dismissal across status updates (session scope)', () => {
+    const store = setupStore();
+
+    store.dismissProactivePrompt();
+    expect(store.proactivePromptDismissedThisSession).toBe(true);
+
+    store._updateStatus({
+      status: 'idle',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+
+    // Distinct from isCompletedOverlayDismissed, which IS reset on a
+    // non-completed status update; the proactive dismissal is session-scoped.
+    expect(store.proactivePromptDismissedThisSession).toBe(true);
   });
 
   it('re-arms isWorking on terminal completed, cancelled, and failed states', () => {
