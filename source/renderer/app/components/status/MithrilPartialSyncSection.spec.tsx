@@ -26,7 +26,7 @@ const defaultProps = {
   isMithrilPartialSyncWorking: false,
   isSynced: false,
   shouldShowRecommendation: true,
-  behindByImmutables: undefined,
+  behindByEpochs: undefined,
   showConfirmationOnOpen: false,
   onRestoreFocus: jest.fn(),
   onStartMithrilPartialSync: jest.fn(),
@@ -228,14 +228,15 @@ describe('MithrilPartialSyncSection', () => {
     ).toBeNull();
   });
 
-  it('threads the behind-ness figure into the confirmation modal', () => {
-    renderComponent({ showConfirmationOnOpen: true, behindByImmutables: 42 });
+  it('threads the epochs figure and sync-% into the confirmation modal', () => {
+    renderComponent({ showConfirmationOnOpen: true, behindByEpochs: 3 });
 
     expect(
       screen.getByText(
-        'Your node is about 42 immutable files behind the latest verified snapshot.'
+        'Your node is about 3 epochs behind the blockchain tip. Mithril partial sync can restore verified chain data to help it catch up faster than waiting for normal sync.'
       )
     ).toBeInTheDocument();
+    expect(screen.getByText('(62.50% synced)')).toBeInTheDocument();
   });
 
   it('returns to the recommendation when ESC is pressed on the confirmation', () => {

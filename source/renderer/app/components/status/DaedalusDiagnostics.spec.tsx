@@ -52,7 +52,6 @@ const defaultProps = {
   isMithrilPartialSyncWorking: false,
   isMithrilPartialSyncEnabled: true,
   isMithrilPartialSyncSignificantlyBehind: true,
-  mithrilPartialSyncBehindByImmutables: undefined,
   showMithrilPartialSyncConfirmationOnOpen: false,
   isMithrilBootstrapActive: false,
   onStartMithrilPartialSync: jest.fn(),
@@ -180,6 +179,46 @@ describe('DaedalusDiagnostics', () => {
       screen.getByRole('heading', {
         name: 'Before Mithril partial sync begins',
       })
+    ).toBeInTheDocument();
+  });
+
+  it('computes the renderer node-tip epoch difference for the confirmation copy', () => {
+    renderComponent({
+      networkTip: { epoch: 500, slot: 0, absoluteSlotNumber: 0 } as any,
+      localTip: { epoch: 497, slot: 0, absoluteSlotNumber: 0 } as any,
+    });
+
+    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+
+    expect(
+      screen.getByText(
+        'Your node is about 3 epochs behind the blockchain tip. Mithril partial sync can restore verified chain data to help it catch up faster than waiting for normal sync.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('falls back to the unknown behind-ness line when a tip is missing', () => {
+    renderComponent({ networkTip: null });
+
+    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+
+    expect(
+      screen.getByText('Your node is behind the latest verified snapshot.')
+    ).toBeInTheDocument();
+  });
+
+  it('floors the epoch difference at 1 when the tips share an epoch', () => {
+    renderComponent({
+      networkTip: { epoch: 100, slot: 0, absoluteSlotNumber: 0 } as any,
+      localTip: { epoch: 100, slot: 0, absoluteSlotNumber: 0 } as any,
+    });
+
+    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+
+    expect(
+      screen.getByText(
+        'Your node is about 1 epochs behind the blockchain tip. Mithril partial sync can restore verified chain data to help it catch up faster than waiting for normal sync.'
+      )
     ).toBeInTheDocument();
   });
 });

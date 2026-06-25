@@ -9,7 +9,8 @@ import MithrilPartialSyncConfirmation from './MithrilPartialSyncConfirmation';
 const defaultProps = {
   isActionBlocked: false,
   startError: null,
-  behindByImmutables: undefined,
+  behindByEpochs: undefined,
+  formattedSyncPercentage: '62.50',
   onCancel: jest.fn(),
   onConfirm: jest.fn(),
 };
@@ -50,22 +51,35 @@ describe('MithrilPartialSyncConfirmation', () => {
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the behind-ness line from the immutable-file figure', () => {
-    renderComponent({ behindByImmutables: 42 });
+  it('renders the epochs behind-ness line plus the compact sync-% reference below it', () => {
+    renderComponent({ behindByEpochs: 3, formattedSyncPercentage: '62.50' });
 
+    const primary = screen.getByText(
+      'Your node is about 3 epochs behind the blockchain tip. Mithril partial sync can restore verified chain data to help it catch up faster than waiting for normal sync.'
+    );
+    const syncContext = screen.getByText('(62.50% synced)');
+
+    expect(primary).toBeInTheDocument();
+    expect(syncContext).toBeInTheDocument();
+    // The sync-% reference renders directly BELOW the primary behind-ness line.
     expect(
-      screen.getByText(
-        'Your node is about 42 immutable files behind the latest verified snapshot.'
-      )
-    ).toBeInTheDocument();
+      primary.compareDocumentPosition(syncContext) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+    // Never expose the internal "immutable files" unit to the user.
+    expect(screen.queryByText(/immutable/i)).toBeNull();
   });
 
-  it('falls back to generic behind-ness copy when the figure is unavailable', () => {
-    renderComponent({ behindByImmutables: undefined });
+  it('falls back to generic behind-ness copy when the figure is unavailable but still shows sync-%', () => {
+    renderComponent({
+      behindByEpochs: undefined,
+      formattedSyncPercentage: '62.50',
+    });
 
     expect(
       screen.getByText('Your node is behind the latest verified snapshot.')
     ).toBeInTheDocument();
+    expect(screen.getByText('(62.50% synced)')).toBeInTheDocument();
     expect(screen.queryByText(/undefined/)).toBeNull();
   });
 

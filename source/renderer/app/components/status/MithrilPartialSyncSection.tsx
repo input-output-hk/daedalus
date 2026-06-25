@@ -13,7 +13,7 @@ type Props = {
   isMithrilPartialSyncWorking: boolean;
   isSynced: boolean;
   shouldShowRecommendation: boolean;
-  behindByImmutables?: number;
+  behindByEpochs?: number;
   showConfirmationOnOpen?: boolean;
   onRestoreFocus: () => void;
   onStartMithrilPartialSync: (...args: Array<any>) => any;
@@ -118,7 +118,8 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
         <MithrilPartialSyncConfirmation
           isActionBlocked={isActionBlocked}
           startError={startError}
-          behindByImmutables={this.props.behindByImmutables}
+          behindByEpochs={this.props.behindByEpochs}
+          formattedSyncPercentage={formattedSyncPercentage}
           onCancel={this.hideConfirmation}
           onConfirm={this.startFromConfirmation}
         />

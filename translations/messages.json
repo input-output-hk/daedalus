@@ -1863,13 +1863,18 @@
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationSuccess"
       },
       {
-        "defaultMessage": "!!!Your node is about {count} immutable files behind the latest verified snapshot.",
-        "description": "Behind-ness context line (with a file count) for the Mithril partial sync confirmation modal",
+        "defaultMessage": "!!!Your node is about {epochs} epochs behind the blockchain tip. Mithril partial sync can restore verified chain data to help it catch up faster than waiting for normal sync.",
+        "description": "Behind-ness context line (epochs behind the blockchain tip) for the Mithril partial sync confirmation modal",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehind"
       },
       {
+        "defaultMessage": "!!!({syncPercentage}% synced)",
+        "description": "Compact parenthetical sync-percentage reference line shown directly below the epochs behind-ness line in the Mithril partial sync confirmation modal",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehindSyncContext"
+      },
+      {
         "defaultMessage": "!!!Your node is behind the latest verified snapshot.",
-        "description": "Behind-ness context line shown when the immutable-file gap figure is unavailable",
+        "description": "Behind-ness context line shown when the epochs-behind figure is unavailable (tips/epoch missing)",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehindUnknown"
       },
       {

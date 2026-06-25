@@ -411,7 +411,6 @@ type Props = {
   isMithrilPartialSyncWorking: boolean;
   isMithrilPartialSyncEnabled: boolean;
   isMithrilPartialSyncSignificantlyBehind: boolean;
-  mithrilPartialSyncBehindByImmutables?: number;
   showMithrilPartialSyncConfirmationOnOpen?: boolean;
   isMithrilBootstrapActive: boolean;
   onStartMithrilPartialSync: (...args: Array<any>) => any;
@@ -525,7 +524,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isMithrilPartialSyncWorking,
       isMithrilPartialSyncEnabled,
       isMithrilPartialSyncSignificantlyBehind,
-      mithrilPartialSyncBehindByImmutables,
       showMithrilPartialSyncConfirmationOnOpen,
       isMithrilBootstrapActive,
       onOpenStateDirectory,
@@ -569,6 +567,14 @@ class DaedalusDiagnostics extends Component<Props, State> {
       messages.unknownDiskSpaceSupportUrl
     );
     const formattedSyncPercentage = formattedNumber(syncPercentage, 2);
+    const networkEpoch =
+      networkTip && Number.isFinite(networkTip.epoch) ? networkTip.epoch : null;
+    const localEpoch =
+      localTip && Number.isFinite(localTip.epoch) ? localTip.epoch : null;
+    const behindByEpochs =
+      networkEpoch !== null && localEpoch !== null
+        ? Math.max(1, networkEpoch - localEpoch)
+        : undefined;
     const cardanoNetworkValue = intl.formatMessage(
       globalMessages[`network_${cardanoNetwork}`]
     );
@@ -721,7 +727,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
                     isMithrilPartialSyncEnabled &&
                     isMithrilPartialSyncSignificantlyBehind
                   }
-                  behindByImmutables={mithrilPartialSyncBehindByImmutables}
+                  behindByEpochs={behindByEpochs}
                   showConfirmationOnOpen={
                     showMithrilPartialSyncConfirmationOnOpen
                   }

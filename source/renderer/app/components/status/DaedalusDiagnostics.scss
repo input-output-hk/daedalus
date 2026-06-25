@@ -394,7 +394,13 @@
   .mithrilPartialSyncConfirmationBehind {
     color: var(--theme-network-window-white-color);
     font-family: var(--font-medium);
+    margin: 0 0 4px;
+  }
+
+  .mithrilPartialSyncConfirmationBehindSyncContext {
+    font-size: 14px;
     margin: 0 0 16px;
+    opacity: 0.7;
   }
 
   .mithrilPartialSyncConfirmationSteps {

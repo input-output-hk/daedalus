@@ -27,16 +27,23 @@ const messages = defineMessages({
   behind: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehind',
     defaultMessage:
-      '!!!Your node is about {count} immutable files behind the latest verified snapshot.',
+      '!!!Your node is about {epochs} epochs behind the blockchain tip. Mithril partial sync can restore verified chain data to help it catch up faster than waiting for normal sync.',
     description:
-      'Behind-ness context line (with a file count) for the Mithril partial sync confirmation modal',
+      'Behind-ness context line (epochs behind the blockchain tip) for the Mithril partial sync confirmation modal',
+  },
+  behindSyncContext: {
+    id:
+      'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehindSyncContext',
+    defaultMessage: '!!!({syncPercentage}% synced)',
+    description:
+      'Compact parenthetical sync-percentage reference line shown directly below the epochs behind-ness line in the Mithril partial sync confirmation modal',
   },
   behindUnknown: {
     id:
       'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehindUnknown',
     defaultMessage: '!!!Your node is behind the latest verified snapshot.',
     description:
-      'Behind-ness context line shown when the immutable-file gap figure is unavailable',
+      'Behind-ness context line shown when the epochs-behind figure is unavailable (tips/epoch missing)',
   },
   stepStop: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationStepStop',
@@ -82,7 +89,8 @@ const messages = defineMessages({
 type Props = {
   isActionBlocked: boolean;
   startError: string | null;
-  behindByImmutables?: number;
+  behindByEpochs?: number;
+  formattedSyncPercentage: string;
   onCancel: () => void;
   onConfirm: () => void;
 };
@@ -96,15 +104,15 @@ export default class MithrilPartialSyncConfirmation extends Component<Props> {
     const {
       isActionBlocked,
       startError,
-      behindByImmutables,
+      behindByEpochs,
+      formattedSyncPercentage,
       onCancel,
       onConfirm,
     } = this.props;
     const { intl } = this.context;
 
     const hasBehindFigure =
-      typeof behindByImmutables === 'number' &&
-      Number.isFinite(behindByImmutables);
+      typeof behindByEpochs === 'number' && Number.isFinite(behindByEpochs);
 
     return (
       <Dialog
@@ -133,9 +141,14 @@ export default class MithrilPartialSyncConfirmation extends Component<Props> {
           <p className={styles.mithrilPartialSyncConfirmationBehind}>
             {hasBehindFigure
               ? intl.formatMessage(messages.behind, {
-                  count: behindByImmutables,
+                  epochs: behindByEpochs,
                 })
               : intl.formatMessage(messages.behindUnknown)}
+          </p>
+          <p className={styles.mithrilPartialSyncConfirmationBehindSyncContext}>
+            {intl.formatMessage(messages.behindSyncContext, {
+              syncPercentage: formattedSyncPercentage,
+            })}
           </p>
 
           <ol className={styles.mithrilPartialSyncConfirmationSteps}>
