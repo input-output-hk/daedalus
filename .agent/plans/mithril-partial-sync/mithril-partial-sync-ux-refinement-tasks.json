@@ -2,9 +2,9 @@
   "metadata": {
     "title": "Mithril Partial Sync UX Refinement Tasks (Phase 2)",
     "created": "2026-06-19",
-    "updated": "2026-06-19",
-    "version": "1.0.0",
-    "totalTasks": 19,
+    "updated": "2026-06-25",
+    "version": "1.2.0",
+    "totalTasks": 20,
     "prdReference": ".agent/plans/mithril-partial-sync/mithril-partial-sync-ux-refinement-prd.md",
     "description": "High-level, validation-gated implementation plan for the Mithril partial sync UX refinement sprint (issue #10 Phase 2). The backend, IPC, store, and overlay already exist on feat/mithril-partial-sync-ux-refinement; this sprint refines the UX to (a) prompt the user when significantly behind the tip and (b) close the 35 research gaps plus the 13 issue-#10-comment items. Tasks are organized so task-ux-1xx maps to phase-1, task-ux-2xx to phase-2, and so on, matching the task-plans-ux-refinement/phase-N subdirectory layout.",
     "sourceFiles": [
@@ -295,9 +295,10 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 4,
-          "dependencies": ["task-ux-301", "task-ux-303"],
+          "dependencies": ["task-ux-301", "task-ux-303", "task-ux-304"],
           "targetPaths": [
             "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.tsx",
+            "source/renderer/app/containers/loading/SyncingConnectingPage.tsx",
             "source/renderer/app/stores/MithrilPartialSyncStore.ts",
             "source/renderer/app/components/status/DaedalusDiagnostics.tsx",
             "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
@@ -309,7 +310,9 @@
             "Add proactivePromptDismissedThisSession as an in-memory store flag (same pattern as isCompletedOverlayDismissed); not persisted across restarts.",
             "Give openDaedalusDiagnosticsDialog an optional payload `{ showMithrilConfirmation: true }`; Review triggers it. DaedalusDiagnostics threads a showConfirmationOnOpen prop to MithrilPartialSyncSection, which opens the confirmation modal on mount, respecting isActionBlocked.",
             "No separate start path: the deep-link lands on the confirmation modal; confirmation still precedes start (lock #3).",
-            "Dismissal copy must tell the user they can still trigger partial sync manually later from the Diagnostics page."
+            "Dismissal copy must tell the user they can still trigger partial sync manually later from the Diagnostics page.",
+            "Use the canonical behind-ness framing established by task-ux-304 (PRD D11 as amended by D12): epochs primary sentence + sync-% as a separate trailing sentence (no 'immutable files' language); the prompt copy should convey the time/effort benefit of partial sync vs waiting for normal sync.",
+            "Source the epochs figure the SAME way as the modal -- the RENDERER node-tip difference max(1, networkTip.epoch - localTip.epoch), not a backend field (D12). SyncingConnectingPage already injects networkStatus (`SyncingConnectingPage.tsx:18`), so compute it in the container and pass it into the prompt. The sync-% sentence is optional in the space-constrained prompt (PRD UX Flow 1)."
           ],
           "testCases": [
             "Prompt appears only when enabled, significantly behind, and not yet dismissed this session",
@@ -346,7 +349,8 @@
             "Keep the locked 'verified Mithril data' wording (lock #4); keep copy simple (#34, no IOG-key/no-ancillary nuance).",
             "Primary 'Start Mithril partial sync' vs secondary 'Back to diagnostics' with distinct styles (fixes gap #14, the shared-cancel-style bug).",
             "Reuse bootstrap decision-view styling but NOT its snapshot-metadata grid; no snapshot-selection, no storage-location picker (locked non-goals).",
-            "Confirmation remains the only path to backend start (lock #3); it must support being opened on mount via showConfirmationOnOpen (deep-link from task-ux-302)."
+            "Confirmation remains the only path to backend start (lock #3); it must support being opened on mount via showConfirmationOnOpen (deep-link from task-ux-302).",
+            "NOTE (D11/task-ux-304): the behind-ness copy shipped by this task ('about {count} immutable files behind') is REVISED by task-ux-304 to Cardano-native epochs (primary sentence) + a sync-% sentence; immutable files are an internal unit and are not shown to the user. This task remains the modal-structure source of truth; task-ux-304 owns the behind-ness figure and copy."
           ],
           "testCases": [
             "Confirmation renders as a focus-trapped modal with scrim",
@@ -361,6 +365,52 @@
             "Button hierarchy is primary/secondary with distinct styles.",
             "No snapshot-selection or storage-location picker; verified-data wording preserved.",
             "Confirming remains the only path to start."
+          ]
+        },
+        {
+          "id": "task-ux-304",
+          "title": "User-facing behind-ness figure: epochs (node-tip epoch difference, renderer-computed) + sync-% context sentence",
+          "description": "Replace the 'N immutable files behind' user-facing copy with Cardano-native language WITHOUT changing the behind-ness gate. Per PRD D12 (supersedes D11's figure source), the displayed figure is the EXACT node-tip epoch difference computed in the RENDERER -- behindByEpochs = Math.max(1, networkTip.epoch - localTip.epoch) read from NetworkStatusStore -- NOT a backend immutable->epochs conversion. No new backend field and no per-network filesPerEpoch constant are added. The confirmation modal (revising the copy shipped by the completed task-ux-303) renders 'Your node is about {epochs} epochs behind the blockchain tip.' as the primary sentence, then the current sync percentage as a SEPARATE trailing reference sentence (never interpolated mid-sentence), framed to convey the time/effort benefit of running partial sync versus waiting for normal sync. Immutable files remain an internal/engineering unit and are never shown to the user. The gate (isSignificantlyBehind / behindByImmutables) stays backend-owned and unchanged (D2 reaffirmed); node-tip distance >= the certified gap, so the figure can never show fewer epochs than the offer implies. Implements PRD D11 as amended by D12; reaffirms D2 and 'no renderer-computed threshold'. Establishes the single canonical behind-ness copy + node-tip figure reused by the proactive prompt (task-ux-302).",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": ["task-ux-301", "task-ux-303"],
+          "targetPaths": [
+            "source/renderer/app/components/status/DaedalusDiagnostics.tsx",
+            "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
+            "source/renderer/app/components/status/MithrilPartialSyncConfirmation.tsx",
+            "source/renderer/app/i18n/locales/defaultMessages.json",
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
+            "translations/messages.json"
+          ],
+          "implementationNotes": [
+            "PRD D12 supersedes D11's figure source: compute the figure in the RENDERER where the node tips already live. `behindByEpochs = Math.max(1, networkTip.epoch - localTip.epoch)`, guarding for null/missing tips or epoch. Use WHOLE-EPOCH subtraction (explicit user decision 2026-06-25), NOT a slot-fractional `round(deltaAbsoluteSlot / epochLength)`, for visual consistency with the 'Last network block'/'Last synchronized block' epoch rows shown beside it on Diagnostics. Floor at 1 whenever offered (node-tip distance >= the certified gap guarantees >= 1 when the gate fires).",
+            "Do NOT add a backend `behindByEpochs` field, a per-network `filesPerEpoch` table, or any change to `getPartialSyncBehindness` (`MithrilPartialSyncService.ts:677-706`) for display. The gate is unchanged and backend-owned: `isSignificantlyBehind` / `behindByImmutables` stay exactly as-is (D2 reaffirmed). `behindByImmutables` is INTERNAL only and is no longer consumed by the renderer for display (leaving it on the read model as a debug field or removing it is non-blocking cleanup, D12).",
+            "`DaedalusDiagnostics` already holds `localTip`/`networkTip` and `syncPercentage` and already passes `formattedSyncPercentage` + `behindByImmutables` into `MithrilPartialSyncSection` (`DaedalusDiagnostics.tsx:716-724`). Compute `behindByEpochs` there from the tips and pass it (alongside `formattedSyncPercentage`) down; stop using `behindByImmutables` for display.",
+            "Confirmation modal (`MithrilPartialSyncConfirmation.tsx`): add NET-NEW `behindByEpochs?: number` and `formattedSyncPercentage: string` props (replacing the `behindByImmutables` display prop). Change `mithrilPartialSyncConfirmationBehind` from '...{count} immutable files behind the latest verified snapshot.' to an epochs-first sentence, e.g. 'Your node is about {epochs} epochs behind the blockchain tip.', followed by a SEPARATE sentence using syncPercentage, e.g. 'Cardano node is currently {syncPercentage}% synced.' The percentage must be its own trailing reference sentence, never mid-sentence (explicit user directive 2026-06-24/25).",
+            "`MithrilPartialSyncSection` already RECEIVES `formattedSyncPercentage`; thread `behindByEpochs` + `formattedSyncPercentage` into the `<MithrilPartialSyncConfirmation>` element (`MithrilPartialSyncSection.tsx:118-124`; today only `behindByImmutables` is passed there).",
+            "Keep the `mithrilPartialSyncConfirmationBehindUnknown` fallback for when `networkTip`/`localTip` (or their `epoch`) are unavailable -- no fabricated number. Update message `description`s away from 'immutable-file gap' wording.",
+            "INTERACTION MODE = interactive_decision: the example EN+JA sentences here (epochs lead + separate sync-% sentence + benefit-vs-waiting framing) are illustrative. Pin the final wording with the user at implementation time (sprint copy-approval stop condition); benefit-framing is a judgment call the user cares about.",
+            "Frame the copy to convey the time/effort benefit of partial sync vs waiting for normal sync (explicit user directive 2026-06-24); keep the locked 'verified ... chain data ... catch up faster' wording (#4) and keep copy simple (#34).",
+            "Do NOT introduce a renderer-computed THRESHOLD. The gate stays backend-owned; this task only renders backend-provided booleans plus the epochs figure derived from the node tips the renderer already authoritatively displays.",
+            "No `.agent/system/api-endpoints.md` change is needed (no new IPC field); the figure is renderer-derived. Provide first-class EN+JA for the new/changed keys (no !!! placeholders); the holistic JA review is task-ux-601. NOTE: the existing ja-JP `mithrilPartialSyncConfirmationBehind` (ja-JP.json:160) literally says '約{count}個のimmutableファイル' (immutable files in JA) -- it MUST be replaced with the epochs+sync-% JA too, not just the EN. Use the i18n-messaging skill."
+          ],
+          "testCases": [
+            "behindByEpochs = max(1, networkTip.epoch - localTip.epoch) is computed in the renderer from NetworkStatusStore tips (whole-epoch subtraction)",
+            "Figure is floored at 1 when offered and never shows fewer epochs than the offer implies (node-tip distance >= certified gap)",
+            "Confirmation modal renders epochs as the primary sentence and sync-% as a separate trailing sentence",
+            "Behind-unknown fallback renders when networkTip/localTip (or epoch) is unavailable (no fabricated number)",
+            "Gate is unchanged: isSignificantlyBehind still derives from the backend immutable gap >= THRESHOLD_IMMUTABLES",
+            "No backend behindByEpochs field or per-network filesPerEpoch constant is added",
+            "No 'immutable files' string is shown to the user in any behind-ness copy"
+          ],
+          "acceptance": [
+            "User-facing epochs figure is the renderer-computed whole-epoch node-tip difference (max(1, networkTip.epoch - localTip.epoch)); no per-network constant and no backend behindByEpochs field.",
+            "User-facing behind-ness copy uses epochs (primary sentence) + sync-% (separate trailing sentence); no 'immutable files' language reaches the user.",
+            "The gate (isSignificantlyBehind, backend immutable gap) and 'no renderer-computed threshold' are unchanged (D2 reaffirmed).",
+            "Copy conveys the time/effort benefit vs waiting; verified-data wording preserved.",
+            "New/changed EN+JA keys are first-class (no placeholders); behind-unknown fallback retained."
           ]
         }
       ]
@@ -555,6 +605,7 @@
             "Clarify confirmation hand-off copy that retry/restart/wipe appear in the progress/error overlay if the attempt fails, not in confirmation (#25).",
             "Document the kept _isTornDown teardown guard (no IPC-abstraction unsubscribe; benign listener retention) (#15) and the retry=start reuse (#24) as engineering notes.",
             "Re-baseline doc references to the live MithrilPartialSyncSection/Recommendation/Confirmation structure; the 300-series plans cite the pre-refactor inline paths (#10). Use the standard i18n workflow; do not ship !!! placeholders.",
+            "Do NOT re-touch the behind-ness copy keys (mithrilPartialSyncConfirmationBehind / mithrilPartialSyncConfirmationBehindUnknown) -- those are owned by task-ux-304 (D11, epochs + sync-%). This hygiene pass covers only the orphaned/stale keys and the hardcoded row label.",
             "Add a brief partial-sync section to the historical UX plan `.agent/plans/mithril/mithril-snapshot-ux.md`, which today documents only the empty-DB bootstrap flow (gap #27); point to the UX-refinement PRD as the detailed source rather than duplicating it."
           ],
           "testCases": [
@@ -575,7 +626,7 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 4,
-          "dependencies": ["task-ux-302", "task-ux-303", "task-ux-401", "task-ux-402", "task-ux-403", "task-ux-404"],
+          "dependencies": ["task-ux-302", "task-ux-303", "task-ux-304", "task-ux-401", "task-ux-402", "task-ux-403", "task-ux-404"],
           "targetPaths": [
             "storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx",
             "storybook/stories/nodes/status/Diagnostics.stories.tsx"
@@ -603,7 +654,7 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 5,
-          "dependencies": ["task-ux-202", "task-ux-203", "task-ux-204", "task-ux-301", "task-ux-302", "task-ux-303", "task-ux-401", "task-ux-402", "task-ux-403", "task-ux-404"],
+          "dependencies": ["task-ux-202", "task-ux-203", "task-ux-204", "task-ux-301", "task-ux-302", "task-ux-303", "task-ux-304", "task-ux-401", "task-ux-402", "task-ux-403", "task-ux-404"],
           "targetPaths": [
             "source/main/mithril/*.spec.ts",
             "source/main/ipc/*.spec.ts",
@@ -616,6 +667,7 @@
             "Update bootstrap progress tests for the file-count semantic (paired with task-ux-401).",
             "Cover: availability/threshold + kill-switch gating (UI hidden when off); success-path reset-to-idle + staging cleanup + CTA re-arm (D9); elapsed-ticks-via-renderer-timer + animated active step circle (D4/UX6/UX7); populated stopping-node frame + cancel-disabled-during-stop + resync-on-cancel (D8#19/D5f); error-copy mapping; native startup-dialog single-surface; recovery-action rendering strictly from allowedRecoveryActions.",
             "Bias toward deterministic unit/focused-integration tests; verify partial sync stays manual and diagnostics-launched.",
+            "Cover the D11/D12 behind-ness display (task-ux-304): behindByEpochs is the RENDERER-computed node-tip difference max(1, networkTip.epoch - localTip.epoch) read from NetworkStatusStore -- NOT a backend immutable->epochs conversion and with NO per-network filesPerEpoch constant (D12 supersedes D11's figure source). When offered it is >= 1 (node-tip distance >= the certified gap, so the figure can never undercut the offer); cover whole-epoch subtraction, epochs-primary + sync-% separate-sentence rendering, the unknown-figure fallback (missing tips/epoch), and that no 'immutable files' string reaches the user. Assert the gate stays backend-owned and unchanged and that no backend behindByEpochs field is added.",
             "Each feature task should already include its own focused tests; this task closes the remaining cross-cutting gaps."
           ],
           "testCases": [
@@ -646,7 +698,7 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 4,
-          "dependencies": ["task-ux-302", "task-ux-303", "task-ux-402", "task-ux-403", "task-ux-501"],
+          "dependencies": ["task-ux-302", "task-ux-303", "task-ux-304", "task-ux-402", "task-ux-403", "task-ux-501"],
           "targetPaths": [
             "translations/messages.json",
             "source/renderer/app/i18n/locales/defaultMessages.json",
@@ -656,8 +708,8 @@
           ],
           "implementationNotes": [
             "Correct the 'ja-JP fully translated' overstatement: diagnostics keys carry the English 'Mithril partial sync' (`ja-JP.json:158-167`) while overlay keys use the Japanese rendering (`ja-JP.json:332-343`). Pick one canonical ja-JP rendering and apply it across both namespaces.",
-            "Provide first-class JA for the new behind-ness line, proactive prompt, stage/code error copy, and cancelled-vs-failed copy.",
-            "Add a short EN + JA glossary for the canonical terms; the existing research glossary (research-19 §7) is EN-only.",
+            "Provide first-class JA for the new behind-ness line (epochs + sync-%, D11/task-ux-304), proactive prompt, stage/code error copy, and cancelled-vs-failed copy.",
+            "Add a short EN + JA glossary for the canonical terms (partial sync, verified data, snapshot, cutover, epochs behind, sync percentage); the existing research glossary (research-19 §7) is EN-only.",
             "Run this pass last, once the copy-producing changes (D1/D5b/D5e/D6/D8) are merged, so it reviews final strings. Use the i18n-messaging skill; do not ship !!! placeholders.",
             "Preserve the verified-data wording lock (#4) and keep copy simple (#34)."
           ],
@@ -749,8 +801,8 @@
   ],
   "summary": {
     "totalPhases": 7,
-    "totalTasks": 19,
-    "estimatedTotalHours": 86,
+    "totalTasks": 20,
+    "estimatedTotalHours": 90,
     "criticalPath": [
       "task-ux-101",
       "task-ux-102",
@@ -758,6 +810,7 @@
       "task-ux-202",
       "task-ux-301",
       "task-ux-303",
+      "task-ux-304",
       "task-ux-302",
       "task-ux-502",
       "task-ux-503",

@@ -1,8 +1,11 @@
 # Mithril Partial Sync — UX Refinement PRD (Phase 2)
 
-> **Status:** Draft for review — grilling round 3 complete (success-finalization seam, proactive-prompt
-> deep-link handoff, and `onReceive` teardown reconciled; issue #10 comment 4623095092 audited &
-> integrated), 2026-06-19.
+> **Status:** Draft for review — grilling round 5 complete (behind-ness *figure source* changed to the
+> exact **node-tip epoch difference** computed in the renderer — D12 supersedes D11's backend
+> immutable→epochs derivation; the gate and the epochs+sync-% framing are unchanged), 2026-06-25.
+> Round 4: behind-ness display refined to Cardano-native **epochs + sync-%** via D11, 2026-06-24. Round 3: success-finalization seam,
+> proactive-prompt deep-link handoff, and `onReceive` teardown reconciled; issue #10 comment 4623095092
+> audited & integrated.
 > **Supersedes for UX:** the UX sections of `mithril-partial-sync-prd.md` where this doc decides
 > a question differently. The original PRD remains the source of truth for backend orchestration,
 > restore-safety posture, and the boundary recovery model.
@@ -91,6 +94,10 @@ range to help (truthfulness rationale, D2; honors the locked "no renderer thresh
 inverted (surface-when-far-behind rather than suppress-when-near-tip) but the near-tip effect is
 identical — no offer — while being driven by a truthful backend signal.
 
+**Display refinement (D11, 2026-06-24).** The *gate* stays the certified-immutable gap (above); the
+*user-facing figure* is now **epochs** (derived from that same gap) followed by a **sync-%** sentence —
+immutable files are never shown to the user. See **D11**.
+
 **Open dependents:** D2 (what "significantly behind" means + threshold), D3 (kill-switch gating &
 default), and the proactive prompt's exact surface/visual treatment.
 
@@ -123,9 +130,15 @@ dead-end); both combined (most precise, most plumbing).
 **Locks touched.** ✅ Honors "no renderer threshold" (backend owns it). Reuses the certified-range
 resolver already governed by the staged-restore safety posture.
 
+**Display note (D11, 2026-06-24).** The gate stays immutable-based and backend-owned; only the
+*user-facing figure* changes. The displayed figure is **epochs behind** (derived from this same
+certified-immutable gap) plus a **sync-%** context sentence — immutable files are an internal unit and
+are never shown to the user. Deriving the displayed figure from the gate's own quantity keeps it
+consistent with the offer. See **D11**.
+
 **Open dependents:** delivery mechanism for the signal (status snapshot vs a dedicated
-behind-ness/availability query — see D3/technical design); whether to also surface the raw `gap`
-in confirmation copy (D6, TBD).
+behind-ness/availability query — see D3/technical design); the user-facing-figure question is
+**resolved by D11** (epochs + sync-%).
 
 ### D3 — Expose the kill switch to the renderer via an availability read model; branch enables it for QA, production default deferred
 
@@ -137,7 +150,8 @@ in confirmation copy (D6, TBD).
   type MithrilPartialSyncAvailability = {
     isEnabled: boolean;              // from launcherConfig.mithrilPartialSyncEnabled
     isSignificantlyBehind: boolean;  // D2 certified-immutable-gap signal
-    behindByImmutables?: number;     // raw gap, for honest copy (renderer never thresholds it)
+    behindByImmutables?: number;     // raw gap — internal GATE BASIS only (never shown to users; renderer never thresholds it)
+    // D12: NO behindByEpochs field — the user-facing epochs figure is the renderer node-tip difference (max(1, networkTip.epoch − localTip.epoch)), not a backend field.
   };
   ```
   Delivered on a **dedicated channel** (one-shot query at store setup + periodic refresh while
@@ -236,8 +250,13 @@ bootstrap. "Size" therefore means static context, never a moving bar.
 ### D6 — Confirmation is a proper decision-style **modal** with behind-ness context
 
 **Decision.** Replace the in-place prose row-swap with a proper **modal** confirmation:
-- **Behind-ness context line** from the D2 signal: "Your node is about N immutable files behind the
-  latest verified snapshot." (Uses `behindByImmutables`; renderer still does no thresholding.)
+- **Behind-ness context line (epochs + sync-%, D11/D12).** A two-sentence, Cardano-native line: the primary
+  sentence is the renderer-computed node-tip epoch difference (`max(1, networkTip.epoch − localTip.epoch)`, D12) (e.g. "Your node is about N epochs
+  behind the blockchain tip."), followed by a **separate** sentence with the current sync percentage
+  (e.g. "Cardano node is currently X% synced.") — never interpolated mid-sentence. Immutable files are an
+  internal unit and are **not** shown to the user; node-tip distance ≥ the certified gap, so the figure can
+  never show fewer epochs than the offer implies (D12), and the copy conveys the benefit of partial
+  sync versus waiting. Renderer still does no thresholding. See **D11**.
 - **What-happens steps:** (1) stop Cardano node, (2) download & verify Mithril data, (3) restart
   node automatically — and the recovery note (retry / restart normally / wipe & full sync).
   Confirmation copy must keep the locked wording that the data is **verified** (lock #4).
@@ -495,16 +514,143 @@ translation fidelity. Specifically:
   carry the English string "Mithril partial sync" (`ja-JP.json:158-167`) while the overlay keys use
   「部分同期」 (`ja-JP.json:332-343`). Pick **one canonical ja-JP rendering of "partial sync"** and apply it
   across both namespaces.
-- The new D1/D5/D6 copy **materially expands the JA translation burden** (behind-ness line, proactive
-  prompt, stage/code error copy, cancelled-vs-failed) — these need first-class JA, not English
-  fallbacks.
+- The new D1/D5/D6/D11 copy **materially expands the JA translation burden** (behind-ness line — now
+  epochs + sync-%, proactive prompt, stage/code error copy, cancelled-vs-failed) — these need
+  first-class JA, not English fallbacks.
 - Add a short **EN + JA glossary** for the canonical terms (partial sync, verified data, snapshot,
-  cutover); the existing research glossary (research §7) is EN-only.
+  cutover, **epochs behind**, **sync percentage**); the existing research glossary (research §7) is
+  EN-only.
 
 **Sequencing.** This pass runs **last**, once the copy-producing changes are merged, so it reviews final
 strings rather than chasing churn.
 
 **Locks touched.** None; preserves the "verified data" wording lock (#4) and "keep copy simple" (#34).
+
+### D11 — User-facing behind-ness figure: **epochs** (backend-derived from the immutable gap) **+** sync-% context sentence; gate unchanged
+
+> **Partially superseded by D12 (2026-06-25).** The figure *source* is now the exact **node-tip epoch
+> difference** computed in the renderer (`max(1, networkTip.epoch − localTip.epoch)`), **not** a backend
+> immutable→epochs conversion. D11's gate decision, the epochs-lead + sync-% trailing-sentence framing,
+> the never-show-immutable-files rule, and the value-proposition framing all **stand**; only the
+> derivation of the number changes. The `behindByEpochs` availability field and the per-network
+> `filesPerEpoch` constant described below are **dropped** — see D12.
+
+**Decision (2026-06-24).** Replace the "N immutable files behind" user-facing copy with Cardano-native
+language **without changing the behind-ness gate**:
+
+- **Gate unchanged (D2 reaffirmed).** `isSignificantlyBehind` and the offer-or-hide decision remain
+  backend-owned and computed from the **certified-immutable gap** (`behindByImmutables`, threshold ≈ 1
+  epoch-equivalent). Immutable files are an *internal/engineering* unit and are **never shown to the
+  user**. The locked "no renderer-computed threshold" and the D2 truthfulness rationale (offer only when
+  a real certified range exists) are preserved.
+- **Primary figure = epochs behind, derived from the SAME gap.** The backend converts the gate's own
+  immutable gap into an approximate **epochs-behind** figure (`behindByEpochs`) and adds it to the
+  `MithrilPartialSyncAvailability` read model. Deriving the displayed figure from the gate's own quantity
+  guarantees the user-facing number is **accurately connected to the immutable-based gating** (explicit
+  user requirement, 2026-06-24) — it can never disagree with the offer (when the option is shown,
+  `behindByImmutables ≥ ~1 epoch`, so epochs ≥ 1). Conversion uses a **per-network files-per-epoch**
+  factor (mainnet/preprod ≈ 20 files/epoch = 432,000 slots/epoch ÷ ~21,600-slot immutable chunk;
+  preview ≈ 4 = 86,400 slots/epoch). The factor is a **per-network constant keyed off
+  `environment.network`** (mirroring the existing `mithrilNetworkConfig.ts` lookup) — **not** derived
+  from a live epoch length, which exists only in the renderer's `NetworkStatusStore`, never in the main
+  process; an unknown network defaults to 20 (mainnet-equivalent, no throw). The figure is approximate by
+  design, so copy says "about"; if an operator tunes the gate threshold below one epoch's worth of files,
+  `behindByEpochs` (floored at 1) can round up to "about 1" — benign given the "about" hedge.
+- **Secondary context = sync %, as a SEPARATE following sentence.** After the epochs sentence, show the
+  node's current sync percentage (`NetworkStatusStore.syncPercentage`, already plumbed into the
+  diagnostics recommendation via `mithrilPartialSyncRecommendationWithProgress`). Per explicit user
+  directive (2026-06-24) the percentage is its **own trailing sentence** — never interpolated mid-sentence.
+  Sync-% is supporting color only; it is **not** the gate and **not** the primary figure (a near-100%
+  sync-% must never undercut the "significantly behind" message — precisely why D2 rejected sync-% as the
+  gate).
+- **Value-proposition framing (explicit user requirement, 2026-06-24).** The copy must convey the
+  **time/effort benefit of running partial sync versus simply waiting for normal sync to catch up** — the
+  figure exists to show the user they are far enough behind that the recovery flow is worth it. Keep the
+  locked "verified … chain data … catch up faster" wording (#4). The gate threshold default (≈ 1 epoch ≈
+  ~5 days on mainnet) already corresponds to a meaningful benefit; calibrate so the offer never appears
+  when waiting would be just as fast.
+- **Unknown-figure fallback retained.** When `behindByEpochs` is unavailable, fall back to the generic
+  "Your node is behind the latest verified snapshot." line (no fabricated number).
+- **Canonical behind-ness *figure* copy = confirmation modal + proactive prompt.** The epochs-first +
+  sync-% framing is the single behind-ness *figure* copy used by the confirmation modal (**revises the
+  copy shipped by the completed task-ux-303**) **and** the proactive prompt (task-ux-302), so the nudge
+  and the decision read consistently. The **diagnostics recommendation** row
+  (`mithrilPartialSyncRecommendation` / `…WithProgress`) already leads with **sync-%** (common Cardano
+  vocabulary, *no* "immutable files" language) — it is **not** the source of the user's complaint and
+  stays a lighter teaser; adopting the epochs lead there too is **optional polish deferred to the
+  holistic copy pass (task-ux-601)**, not required by task-ux-304.
+
+**Options considered.** Epochs (backend-derived from the immutable gap) + sync-% context *(chosen)*;
+sync-% gap alone (rejected — near-tip sync-% contradicts "significantly behind"); raw immutable-file
+count (rejected — not user vocabulary; this is the issue being fixed); renderer-computed epochs from
+node-tip distance (rejected — that measures node-tip vs network-tip, a *different* quantity than the
+gate, so it could disagree with the offer and violates the "connected to gating" requirement).
+
+**Locks touched.** ✅ Reaffirms D2 (immutable gate) and "no renderer-computed threshold" — the backend
+still owns behind-ness, now including the epochs figure. ✅ Preserves "verified data" wording (#4) and
+"keep copy simple" (#34). Adds one optional field (`behindByEpochs`) to the availability read model.
+
+**Open dependents:** none blocking. The files-per-epoch source is **resolved** to a per-network constant
+keyed off `environment.network` (mainnet/preprod 20, preview 4, unknown → 20). The final EN+JA behind-ness
+sentences (the benefit-vs-waiting framing) are an **`interactive_decision`** requiring user sign-off at
+implementation time (task-ux-304), per the sprint's copy-approval stop condition.
+
+### D12 — User-facing epochs figure = exact **node-tip epoch difference** (renderer), not a backend immutable→epochs conversion
+
+**Decision (2026-06-25, supersedes the *figure-source* half of D11).** The displayed "about N epochs
+behind" figure is computed in the **renderer** as a whole-epoch subtraction of the node's own consensus
+tips, read straight from `NetworkStatusStore`:
+
+```
+behindByEpochs = Math.max(1, networkTip.epoch − localTip.epoch)   // node-computed, exact, no constant
+```
+
+floored at 1 whenever the option is offered. The sync-% sentence is **retained** as a separate trailing
+reference ("Cardano node is currently {X}% synced."), per the locked vocabulary and an explicit user
+directive (2026-06-25).
+
+- **Gate unchanged (D2 reaffirmed).** `isSignificantlyBehind` stays backend-owned, computed from the
+  certified-immutable gap in `getPartialSyncBehindness` (`MithrilPartialSyncService.ts:677-706`).
+  `behindByImmutables` remains an **internal** gate basis; it is **no longer consumed by the renderer for
+  display**, and the planned `behindByEpochs` availability field + per-network `filesPerEpoch` table
+  (D11) are **dropped** from task-ux-304's backend work.
+- **Why node-tip, not the immutable→epochs conversion.** (1) The data is **already exact and already
+  plumbed** to both consuming surfaces — `DaedalusDiagnostics` holds `localTip`/`networkTip`
+  (`DaedalusDiagnostics.tsx:716-775`) and `SyncingConnectingPage` injects `networkStatus`
+  (`SyncingConnectingPage.tsx:18`) — so neither the confirmation modal nor the proactive prompt needs a
+  new backend field. (2) **No constant.** It is two integers the consensus layer already computes — the
+  same epoch numbers shown in the "Last network block / Last synchronized block" rows on the very same
+  Diagnostics screen — so the figure is **visually consistent** with what the user already sees. (3) **It
+  cannot undercut the offer.** The network tip is always at-or-ahead of the latest certified snapshot, so
+  node-tip distance ≥ the certified-immutable gap; whenever the gate fires (gap ≥ ~1 epoch) the displayed
+  epochs is ≥ that, so the "never show 0 epochs while offering" property that motivated D11's 2026-06-24
+  "connected to gating" requirement is **preserved without the conversion**.
+- **Copy is now literally truthful.** Because the figure is the real distance to the live tip, "Your node
+  is about {N} epochs behind the blockchain tip." is exactly correct. Partial sync restores verified data
+  down to the latest *certified* point (a small residual — the aggregator's certification lag — is
+  finished by normal sync), which the locked "catch up faster" framing already conveys.
+- **Whole-epoch subtraction over slot-fractional (explicit user decision, 2026-06-25).**
+  `networkTip.epoch − localTip.epoch` is preferred over `round(Δabsolute-slot ÷ epochLength)` for visual
+  consistency with the displayed tip rows; the sub-epoch coarseness (±<1 epoch) is benign under the
+  "about" hedge.
+- **Unknown-figure fallback retained.** When `networkTip`/`localTip` (or their `epoch`) are unavailable,
+  fall back to the generic `mithrilPartialSyncConfirmationBehindUnknown` line — no fabricated number.
+
+**Options considered.** Node-tip whole-epoch subtraction in the renderer *(chosen)*; node-tip
+slot-fractional (`Δabsolute-slot ÷ epochLength`) rounded (rejected — diverges from the epoch numbers
+shown beside it, no real benefit under "about"); backend immutable-gap → epochs via per-network
+`filesPerEpoch` (the prior D11 plan — rejected now that exact node data is confirmed already-plumbed; it
+added a constant + a backend field for an approximation); hybrid backend-gap + renderer `epochLength`
+(rejected — still measures the gate quantity and still needs a chunk-size constant).
+
+**Locks touched.** ✅ Honors "no renderer-computed **threshold**" — this is a *display figure*, not a
+threshold; the offer-or-hide gate stays backend-owned. ✅ Reaffirms D2. ✅ Preserves "verified data"
+wording (#4) and "keep copy simple" (#34). ✅ Honors the locked behind-ness vocabulary (epochs + sync-%,
+never immutable files, % as its own trailing sentence).
+
+**Open dependents:** the final EN+JA behind-ness sentences (benefit-vs-waiting framing) remain an
+**`interactive_decision`** at task-ux-304 implementation time. Whether to leave `behindByImmutables` in
+the availability read model as an internal/debug field or remove it as cleanup is **non-blocking**.
 
 ---
 
@@ -556,9 +702,12 @@ status handler leaks on store teardown.
 
 1. **Proactive prompt (NEW).** While the node is connecting/syncing
    (`components/loading/syncing-connecting/SyncingConnecting.tsx`), if `isEnabled &&
-   isSignificantlyBehind && !proactivePromptDismissedThisSession`, show a dismissible prompt:
-   *"Your node is far behind the tip. Mithril partial sync can catch it up faster. [Review] [Not
-   now]"*. **Review** opens the Diagnostics dialog at the partial-sync confirmation modal. **Not
+   isSignificantlyBehind && !proactivePromptDismissedThisSession`, show a dismissible prompt using the
+   canonical D11 behind-ness copy (epochs lead; the sync-% sentence is optional in the space-constrained
+   prompt):
+   *"Your node is about N epochs behind. Mithril partial sync can catch it up faster than waiting for
+   normal sync. [Review] [Not now]"*. **Review** opens the Diagnostics dialog at the partial-sync
+   confirmation modal. **Not
    now / dismiss** sets an in-memory session flag (same pattern as `isCompletedOverlayDismissed`) so
    it does not reappear this session, and the copy notes the user can start it later from the
    Diagnostics page. **Review** carries a `{ showMithrilConfirmation: true }` payload so Diagnostics
@@ -566,8 +715,9 @@ status handler leaks on store teardown.
 2. **Diagnostics manual trigger.** The recommendation + Start CTA appear in Diagnostics only when
    `isEnabled && isSignificantlyBehind`; hidden otherwise (no enabled button that can throw). Button
    still disabled while any Mithril work is active (`isActionBlocked`).
-3. **Confirmation modal (D6).** Scrim + focus trap; behind-ness context line; what-happens steps;
-   verified-data wording; primary "Start" / secondary "Back to diagnostics"; ESC = back.
+3. **Confirmation modal (D6/D11).** Scrim + focus trap; behind-ness context line (epochs primary
+   sentence + sync-% following sentence, D11); what-happens steps; verified-data wording; primary
+   "Start" / secondary "Back to diagnostics"; ESC = back.
 4. **Progress overlay (D4).** File-count download readout + real ancillary bytes; active indicator +
    elapsed + "can take several minutes" for verify/convert/install/finalize; **no Cancel** once
    post-cutover; the same presentation is applied to the bootstrap overlay.
@@ -585,7 +735,9 @@ status handler leaks on store teardown.
 
 - [ ] Backend computes `isSignificantlyBehind` from the certified-immutable gap with a launcher-
   config-tunable threshold; emits a `MithrilPartialSyncAvailability { isEnabled,
-  isSignificantlyBehind, behindByImmutables? }` read model on a dedicated channel (D2/D3).
+  isSignificantlyBehind, behindByImmutables? }` read model on a dedicated channel (D2/D3). The
+  user-facing epochs figure is the renderer node-tip difference, not a backend field (D12 — no
+  `behindByEpochs` on the contract).
 - [ ] Renderer gates **all** partial-sync UI (proactive prompt + diagnostics rec/CTA) on
   `isEnabled`; gates the prompt + manual trigger additionally on `isSignificantlyBehind` (D1/D3).
 - [ ] Proactive, session-dismissible prompt on the syncing screen that routes into the Diagnostics
@@ -595,6 +747,9 @@ status handler leaks on store teardown.
   confirmation still precedes start (D1/lock #3).
 - [ ] Confirmation is a focus-trapped modal with behind-ness context and a proper button hierarchy
   (D6).
+- [ ] User-facing behind-ness copy uses **epochs** (renderer-computed node-tip difference
+  `max(1, networkTip.epoch − localTip.epoch)`, D12) as the primary sentence and **sync-%** as a separate
+  following sentence; immutable files are never shown to the user; copy conveys the time/effort benefit vs waiting (D11/D12).
 - [ ] Download progress is file-count based and truthful in **both** partial sync and bootstrap;
   long phases show active progress (D4).
 - [ ] Failures show stage/code-specific copy; cancelled ≠ failed; Cancel hidden post-cutover;
@@ -632,14 +787,19 @@ status handler leaks on store teardown.
 ### Contracts (`source/common/types/mithril-partial-sync.types.ts`, `source/common/ipc/api.ts`)
 - Add `MithrilPartialSyncAvailability` + a dedicated availability channel (one-shot query at store
   setup + periodic refresh while syncing). Keep it **separate** from the operation
-  `MithrilPartialSyncStatusSnapshot`.
+  `MithrilPartialSyncStatusSnapshot`. `behindByImmutables?` stays the internal **gate basis only**; the
+  user-facing epochs figure is the **renderer** node-tip difference, **not** a backend field — no
+  `behindByEpochs` is added to the contract (D12 supersedes D11).
 - Add a partial-sync error-copy mapping keyed by `error.code` / `MithrilPartialSyncErrorStage`.
 - Add a **finalize/dismiss request channel** (a fifth partial-sync action channel) the renderer invokes
   on success-overlay dismiss to trigger the backend reset-to-idle + staging removal + marker clear (D9).
 
 ### Main process
 - `MithrilPartialSyncService` / preflight: expose a cached behind-ness check reusing the existing
-  latest-snapshot resolver (`derivePartialSyncRange` math) without running a restore.
+  latest-snapshot resolver (`derivePartialSyncRange` math) without running a restore — it computes the
+  gate (`isSignificantlyBehind`) and the internal `behindByImmutables` only. The user-facing epochs figure
+  is computed in the **renderer** from the node tips (D12); the main process does **no** epochs conversion
+  and carries **no** files-per-epoch factor.
 - `chainStorageCoordinator` / `config.ts`: surface `mithrilPartialSyncEnabled` into the availability
   read model.
 - `mithrilPartialSyncNodeStartup.ts`: drop the redundant React `failed` emission on the
@@ -666,7 +826,10 @@ status handler leaks on store teardown.
   resync status on cancel (D5f).
 - `SyncingConnecting.tsx`: mount the proactive prompt (gated, dismissible); its **Review** action calls
   `openDaedalusDiagnosticsDialog.trigger({ showMithrilConfirmation: true })` (D1 deep-link handoff).
-- `MithrilPartialSyncConfirmation` → modal (scrim/focus-trap/hierarchy/ESC); add behind-ness line.
+- `MithrilPartialSyncConfirmation` → modal (scrim/focus-trap/hierarchy/ESC); behind-ness line =
+  epochs (renderer node-tip difference `max(1, networkTip.epoch − localTip.epoch)`, D12) primary sentence
+  + sync-% (existing `syncPercentage`) separate trailing sentence; no "immutable files" language to the
+  user (D11/D12). `DaedalusDiagnostics` computes the figure from `localTip`/`networkTip` and passes it down.
 - `MithrilPartialSyncRecommendation` / `Section`: gate visibility on availability; `Section` accepts a
   `showConfirmationOnOpen` prop (threaded from `openDaedalusDiagnosticsDialog`'s `showMithrilConfirmation`
   payload via `DaedalusDiagnostics`) and opens the confirmation modal on mount, respecting
@@ -749,7 +912,7 @@ status handler leaks on store teardown.
 | #26 snapshot identity unsurfaced | **D2/D6** — surface behind-ness; full metadata = non-goal |
 | #27 historical UX undocumented | this PRD documents the partial-sync UX |
 | #28 missing stories | **D8** — add stories |
-| #29 no "how far behind" copy | **D2/D6** — behind-ness line (backend-owned figure) |
+| #29 no "how far behind" copy | **D2/D6/D11/D12** — behind-ness line: epochs (renderer node-tip difference) + sync-% context |
 | #30 handoff under-tested | **D8** — live-injection test |
 | #31 no dismiss for failed/cancelled | **D5d** — actions are exits; no unsafe ignore |
 | #32 cancelled==failed copy | **D5e** — distinct copy |
@@ -768,7 +931,7 @@ integrated?"
 | UX1 | EN + JA copy review & polish | scoped | **D10** — holistic EN+JA pass after copy churn; one canonical ja-JP "partial sync"; glossary |
 | UX2 | Diagnostics partial-sync copy cleanup | integrated | **D8** #20/#21 + behind-ness line (D2/D6) |
 | UX3 | Acknowledgment-message cleanup | integrated | **D6** modal confirmation; **D8** #25 hand-off copy |
-| UX4 | Disable option when < 5% from tip | reframed (signed off) | **D1** sign-off — *hide* (not disable) on the **D2** certified-immutable gap (not sync-%) |
+| UX4 | Disable option when < 5% from tip | reframed (signed off) | **D1** sign-off — *hide* (not disable) on the **D2** certified-immutable gap (not sync-%); display figure = epochs + sync-% (**D11**) |
 | UX5 | Node-stop refinement (no updates / `0:00` / greyed / hidden in bg / cancel dead) | scoped | **D8#19** in-dialogue node-stop frame; **D4** ticking elapsed; **D5(f)** cancel-during-stop fix |
 | UX6 | Elapsed only updates on step finish (freezes) | scoped | **D4** — renderer-side ticking timer (`bootstrapStartedAt`) |
 | UX7 | Step circles don't rotate (also bootstrap) | scoped | **D4** — render the existing `.iconSpinner` for the active step, both flows |
@@ -786,6 +949,9 @@ triage note (UX9); and **1** is deliberately deferred to a separate issue (BUG4)
 
 ---
 
-**Status:** Draft for review (grilling round 3 complete — success-finalization seam, proactive-prompt
-deep-link handoff, and `onReceive` teardown reconciled; issue #10 comment 4623095092 audited &
-integrated) · **Date:** 2026-06-19 · **Author:** Claude (with David Kirshon)
+**Status:** Draft for review (grilling round 5 complete — behind-ness *figure source* changed to the
+exact node-tip epoch difference computed in the renderer via D12, superseding D11's backend
+immutable→epochs derivation; the gate and the epochs + sync-% framing are unchanged; round 4: behind-ness
+display refined to Cardano-native epochs + sync-% via D11; round 3: success-finalization seam,
+proactive-prompt deep-link handoff, and `onReceive` teardown reconciled; issue #10 comment 4623095092
+audited & integrated) · **Date:** 2026-06-25 · **Author:** Claude (with David Kirshon)

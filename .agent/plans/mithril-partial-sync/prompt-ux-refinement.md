@@ -136,7 +136,7 @@ builds the confirmation modal it deep-links into). The JSON's `dependencies` are
    missing tests/docs, and **whether the lower detail is concise and small-model-implementable**. It returns
    a consolidated blocker list + `Decision: approved | requires_changes`, appended as a `Critiquer:` entry.
    One critique pass + at most one Planner fix pass, then build.
-4. **Implement.** Execute the approved plan; keep each task's focused tests with it. Append an
+4. **Implement.** Execute the approved plan via a subagent; keep each task's focused tests with it. Append an
    `Implementation:` entry to `task-ux-NNN-impl-review.md` summarizing changes, files, verification, and
    any deviations or user handoff.
 5. **Code review (subagent — REQUIRED).** Dispatch a reviewer subagent for one broad pass over the diff vs
@@ -147,8 +147,8 @@ builds the confirmation modal it deep-links into). The JSON's `dependencies` are
    `completed` (+ `completedAt`), and record durable findings in `task-ux-NNN-research.md` (or
    `no new research`).
 7. **Commit.** Create exactly **one** commit per task with `git-commit-formatter`:
-   `<type>(mithril): task-ux-NNN <short imperative summary>`. Commit only task-relevant files. The task is
-   not done until the commit exists.
+   `<type>(mithril): task-ux-NNN <short imperative summary>`. Only include the subject, don't include a body.
+    Commit only task-relevant files. The task is not done until the commit exists.
 
 Review logs are **append-only** chronological transcripts: each entry carries a speaker label, an ISO-8601
 UTC `Timestamp:`, and an outcome; Critiquer/Code-Review entries end with `Decision: approved` or
