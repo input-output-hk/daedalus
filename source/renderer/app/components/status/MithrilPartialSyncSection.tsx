@@ -10,17 +10,15 @@ import styles from './DaedalusDiagnostics.scss';
 const messages = defineMessages({
   sectionLabel: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncSectionLabel',
-    defaultMessage: '!!!Mithril Partial Sync',
+    defaultMessage: '!!!Mithril Sync',
     description:
       'Row label for the Mithril partial sync section in the diagnostics dialog',
   },
 });
 
 type Props = {
-  formattedSyncPercentage: string;
   isActionBlocked: boolean;
   isMithrilPartialSyncWorking: boolean;
-  isSynced: boolean;
   shouldShowRecommendation: boolean;
   behindByEpochs?: number;
   showConfirmationOnOpen?: boolean;
@@ -113,12 +111,7 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
   };
 
   render() {
-    const {
-      formattedSyncPercentage,
-      isActionBlocked,
-      isSynced,
-      shouldShowRecommendation,
-    } = this.props;
+    const { isActionBlocked, shouldShowRecommendation } = this.props;
     const { isShowingConfirmation, startError } = this.state;
     const { intl } = this.context;
 
@@ -128,7 +121,6 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
           isActionBlocked={isActionBlocked}
           startError={startError}
           behindByEpochs={this.props.behindByEpochs}
-          formattedSyncPercentage={formattedSyncPercentage}
           onCancel={this.hideConfirmation}
           onConfirm={this.startFromConfirmation}
         />
@@ -146,9 +138,7 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
           {intl.formatMessage(globalMessages.punctuationColon)}
         </div>
         <MithrilPartialSyncRecommendation
-          formattedSyncPercentage={formattedSyncPercentage}
           isActionBlocked={isActionBlocked}
-          isSynced={isSynced}
           onShowConfirmation={this.showConfirmation}
         />
       </div>

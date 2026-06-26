@@ -1848,7 +1848,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Before Mithril partial sync begins",
+        "defaultMessage": "!!!Before Mithril Sync begins",
         "description": "Title for the Mithril partial sync confirmation view",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationTitle"
       },
@@ -1858,19 +1858,14 @@
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationIntro"
       },
       {
-        "defaultMessage": "!!!If Mithril partial sync succeeds, Daedalus will restart Cardano node automatically and normal syncing will resume.",
+        "defaultMessage": "!!!If Mithril Sync succeeds, Daedalus will restart Cardano node automatically and standard syncing will resume.",
         "description": "Success copy for the Mithril partial sync confirmation view",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationSuccess"
       },
       {
-        "defaultMessage": "!!!Your node is about {epochs} epochs behind the blockchain tip. Mithril partial sync can restore verified chain data to help it catch up faster than waiting for normal sync.",
+        "defaultMessage": "!!!Your node is about {epochs} epochs behind the blockchain tip. Mithril Sync can restore verified chain data to help it catch up faster than waiting for standard sync.",
         "description": "Behind-ness context line (epochs behind the blockchain tip) for the Mithril partial sync confirmation modal",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehind"
-      },
-      {
-        "defaultMessage": "!!!({syncPercentage}% synced)",
-        "description": "Compact parenthetical sync-percentage reference line shown directly below the epochs behind-ness line in the Mithril partial sync confirmation modal",
-        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehindSyncContext"
       },
       {
         "defaultMessage": "!!!Your node is behind the latest verified snapshot.",
@@ -1888,7 +1883,7 @@
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationStepDownload"
       },
       {
-        "defaultMessage": "!!!Daedalus restarts Cardano node automatically and normal syncing resumes.",
+        "defaultMessage": "!!!Daedalus restarts Cardano node automatically and standard syncing resumes.",
         "description": "What-happens step 3 for the Mithril partial sync confirmation modal",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationStepRestart"
       },
@@ -1903,7 +1898,7 @@
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationCancel"
       },
       {
-        "defaultMessage": "!!!Start Mithril partial sync",
+        "defaultMessage": "!!!Start Mithril Sync",
         "description": "Confirm button label for the Mithril partial sync confirmation view",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationConfirm"
       }
@@ -1913,17 +1908,12 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!If Cardano node catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.",
+        "defaultMessage": "!!!If Cardano node catch-up is taking longer than you want, Mithril Sync can restore verified chain data to help it catch up faster.",
         "description": "Recommendation copy shown in diagnostics near sync status for Mithril partial sync",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncRecommendation"
       },
       {
-        "defaultMessage": "!!!Cardano node is currently {syncPercentage}% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.",
-        "description": "Recommendation copy shown in diagnostics with current sync percentage for Mithril partial sync",
-        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationWithProgress"
-      },
-      {
-        "defaultMessage": "!!!Mithril Partial Sync",
+        "defaultMessage": "!!!Mithril Sync",
         "description": "CTA label that opens the Mithril partial sync confirmation from diagnostics",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonLabel"
       },
@@ -1933,7 +1923,7 @@
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintBlocked"
       },
       {
-        "defaultMessage": "!!!Review what will happen before Daedalus starts Mithril partial sync.",
+        "defaultMessage": "!!!Review what will happen before Daedalus starts Mithril Sync.",
         "description": "Hint text beneath the Mithril partial sync diagnostics button before confirmation opens",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintReady"
       }
@@ -1943,7 +1933,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Mithril Partial Sync",
+        "defaultMessage": "!!!Mithril Sync",
         "description": "Row label for the Mithril partial sync section in the diagnostics dialog",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncSectionLabel"
       }
@@ -2823,7 +2813,7 @@
         "id": "loading.mithrilBootstrap.progress.nodeStartingDetail"
       },
       {
-        "defaultMessage": "!!!Mithril partial sync",
+        "defaultMessage": "!!!Mithril Sync",
         "description": "Headline for the diagnostics-launched Mithril partial sync overlay.",
         "id": "loading.mithrilPartialSync.title"
       },
@@ -2838,7 +2828,7 @@
         "id": "loading.mithrilPartialSync.progress.nodeStartingTitle"
       },
       {
-        "defaultMessage": "!!!Mithril partial sync has finished restoring chain data. Cardano node is starting so Daedalus can resume normal syncing.",
+        "defaultMessage": "!!!Mithril Sync has finished restoring chain data. Cardano node is starting so Daedalus can resume standard syncing.",
         "description": "Detail copy shown while Cardano node starts after Mithril partial sync.",
         "id": "loading.mithrilPartialSync.progress.nodeStartingDetail"
       },
@@ -2853,7 +2843,7 @@
         "id": "loading.mithrilPartialSync.progress.nodeStoppingDetail"
       },
       {
-        "defaultMessage": "!!!Mithril partial sync completed successfully. Continue to return to the normal Daedalus app flow.",
+        "defaultMessage": "!!!Mithril Sync completed successfully. Continue to return to the normal Daedalus app flow.",
         "description": "Supporting copy shown after Mithril partial sync reaches completed status.",
         "id": "loading.mithrilPartialSync.completed.subtitle"
       },
@@ -2863,22 +2853,22 @@
         "id": "loading.mithrilPartialSync.completed.continue"
       },
       {
-        "defaultMessage": "!!!Mithril partial sync failed",
+        "defaultMessage": "!!!Mithril Sync failed",
         "description": "Title for Mithril partial sync failed terminal state.",
         "id": "loading.mithrilPartialSync.error.failed.title"
       },
       {
-        "defaultMessage": "!!!Use one of the available recovery actions to retry Mithril partial sync, restart normally, or wipe chain data and do a full Mithril sync.",
+        "defaultMessage": "!!!Use one of the available recovery actions to retry Mithril Sync, restart normally, or wipe chain data and do a full Mithril sync.",
         "description": "Hint shown for Mithril partial sync failed terminal state.",
         "id": "loading.mithrilPartialSync.error.failed.hint"
       },
       {
-        "defaultMessage": "!!!Mithril partial sync was cancelled",
+        "defaultMessage": "!!!Mithril Sync was cancelled",
         "description": "Title for Mithril partial sync cancelled terminal state.",
         "id": "loading.mithrilPartialSync.error.cancelled.title"
       },
       {
-        "defaultMessage": "!!!Mithril sync was stopped before it finished. Your existing chain data is unchanged — choose how to continue below.",
+        "defaultMessage": "!!!Mithril Sync was stopped before it finished. Your existing chain data is unchanged — choose how to continue below.",
         "description": "Calmer hint shown when the user cancelled Mithril partial sync (distinct from the failed hint).",
         "id": "loading.mithrilPartialSync.error.cancelled.hint"
       },
@@ -2898,7 +2888,7 @@
         "id": "loading.mithrilPartialSync.error.latestDrift.title"
       },
       {
-        "defaultMessage": "!!!A newer verified snapshot became available while Daedalus was preparing. Retry Mithril sync to use the refreshed snapshot — your chain data was not changed.",
+        "defaultMessage": "!!!A newer verified snapshot became available while Daedalus was preparing. Retry Mithril Sync to use the refreshed snapshot — your chain data was not changed.",
         "description": "Retriable hint shown for PARTIAL_SYNC_LATEST_DRIFT (pre-cutover; not a silent reset).",
         "id": "loading.mithrilPartialSync.error.latestDrift.hint"
       },
@@ -2933,7 +2923,7 @@
         "id": "loading.mithrilPartialSync.error.conversionFailed.hint"
       },
       {
-        "defaultMessage": "!!!Retry Mithril partial sync",
+        "defaultMessage": "!!!Retry Mithril Sync",
         "description": "Recovery action label for retrying Mithril partial sync.",
         "id": "loading.mithrilPartialSync.error.retry"
       },

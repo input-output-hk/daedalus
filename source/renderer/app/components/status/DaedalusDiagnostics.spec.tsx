@@ -73,31 +73,31 @@ const renderComponent = (overrides = {}) =>
 describe('DaedalusDiagnostics', () => {
   afterEach(cleanup);
 
-  it('renders the Mithril partial sync recommendation with current sync context', () => {
+  it('renders the Mithril sync recommendation as epochs-only copy without any sync-%', () => {
     renderComponent();
 
     expect(
       screen.getByText(
-        'Cardano node is currently 62.50% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.'
+        'If Cardano node catch-up is taking longer than you want, Mithril Sync can restore verified chain data to help it catch up faster.'
       )
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Review what will happen before Daedalus starts Mithril partial sync.'
+        'Review what will happen before Daedalus starts Mithril Sync.'
       )
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Mithril Partial Sync' })
-    ).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
+    // Sync-% was removed from the recommendation per D-A.
+    expect(screen.queryByText(/% synced/)).not.toBeInTheDocument();
     expect(screen.queryByText(/!!!/)).not.toBeInTheDocument();
   });
 
-  it('renders the synced recommendation variant without the percentage text', () => {
+  it('renders the same epochs-only recommendation copy when fully synced', () => {
     renderComponent({ isSynced: true, syncPercentage: 100 });
 
     expect(
       screen.getByText(
-        'If Cardano node catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.'
+        'If Cardano node catch-up is taking longer than you want, Mithril Sync can restore verified chain data to help it catch up faster.'
       )
     ).toBeInTheDocument();
     expect(
@@ -109,7 +109,7 @@ describe('DaedalusDiagnostics', () => {
     renderComponent({ isMithrilPartialSyncWorking: true });
 
     expect(
-      screen.getByRole('button', { name: 'Mithril Partial Sync' })
+      screen.getByRole('button', { name: 'Mithril Sync' })
     ).toBeDisabled();
     expect(
       screen.getByText('Unavailable while Mithril work is already active.')
@@ -120,7 +120,7 @@ describe('DaedalusDiagnostics', () => {
     renderComponent({ isMithrilPartialSyncWorking: false });
 
     expect(
-      screen.getByRole('button', { name: 'Mithril Partial Sync' })
+      screen.getByRole('button', { name: 'Mithril Sync' })
     ).toBeEnabled();
   });
 
@@ -128,9 +128,9 @@ describe('DaedalusDiagnostics', () => {
     renderComponent({ isMithrilPartialSyncEnabled: false });
 
     expect(
-      screen.queryByRole('button', { name: 'Mithril Partial Sync' })
+      screen.queryByRole('button', { name: 'Mithril Sync' })
     ).toBeNull();
-    expect(screen.queryByText(/Mithril Partial Sync/)).toBeNull();
+    expect(screen.queryByText(/Mithril Sync/)).toBeNull();
   });
 
   it('shows the recommendation/CTA only when enabled and significantly behind', () => {
@@ -140,7 +140,7 @@ describe('DaedalusDiagnostics', () => {
     });
 
     expect(
-      screen.getByRole('button', { name: 'Mithril Partial Sync' })
+      screen.getByRole('button', { name: 'Mithril Sync' })
     ).toBeEnabled();
 
     rerender(
@@ -154,16 +154,16 @@ describe('DaedalusDiagnostics', () => {
     );
 
     expect(
-      screen.queryByRole('button', { name: 'Mithril Partial Sync' })
+      screen.queryByRole('button', { name: 'Mithril Sync' })
     ).toBeNull();
-    expect(screen.queryByText(/Mithril Partial Sync/)).toBeNull();
+    expect(screen.queryByText(/Mithril Sync/)).toBeNull();
   });
 
   it('keeps the CTA disabled while bootstrap work is active', () => {
     renderComponent({ isMithrilBootstrapActive: true });
 
     expect(
-      screen.getByRole('button', { name: 'Mithril Partial Sync' })
+      screen.getByRole('button', { name: 'Mithril Sync' })
     ).toBeDisabled();
     expect(
       screen.getByText('Unavailable while Mithril work is already active.')
@@ -173,11 +173,11 @@ describe('DaedalusDiagnostics', () => {
   it('still wires the diagnostics partial sync button through the extracted section', () => {
     renderComponent();
 
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
 
     expect(
       screen.getByRole('heading', {
-        name: 'Before Mithril partial sync begins',
+        name: 'Before Mithril Sync begins',
       })
     ).toBeInTheDocument();
   });
@@ -188,11 +188,11 @@ describe('DaedalusDiagnostics', () => {
       localTip: { epoch: 497, slot: 0, absoluteSlotNumber: 0 } as any,
     });
 
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
 
     expect(
       screen.getByText(
-        'Your node is about 3 epochs behind the blockchain tip. Mithril partial sync can restore verified chain data to help it catch up faster than waiting for normal sync.'
+        'Your node is about 3 epochs behind the blockchain tip. Mithril Sync can restore verified chain data to help it catch up faster than waiting for standard sync.'
       )
     ).toBeInTheDocument();
   });
@@ -200,7 +200,7 @@ describe('DaedalusDiagnostics', () => {
   it('falls back to the unknown behind-ness line when a tip is missing', () => {
     renderComponent({ networkTip: null });
 
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
 
     expect(
       screen.getByText('Your node is behind the latest verified snapshot.')
@@ -213,11 +213,11 @@ describe('DaedalusDiagnostics', () => {
       localTip: { epoch: 100, slot: 0, absoluteSlotNumber: 0 } as any,
     });
 
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
 
     expect(
       screen.getByText(
-        'Your node is about 1 epochs behind the blockchain tip. Mithril partial sync can restore verified chain data to help it catch up faster than waiting for normal sync.'
+        'Your node is about 1 epochs behind the blockchain tip. Mithril Sync can restore verified chain data to help it catch up faster than waiting for standard sync.'
       )
     ).toBeInTheDocument();
   });

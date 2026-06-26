@@ -719,10 +719,8 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('syncPercentage', `${formattedSyncPercentage}%`)}
               {isMithrilPartialSyncEnabled && (
                 <MithrilPartialSyncSection
-                  formattedSyncPercentage={formattedSyncPercentage}
                   isActionBlocked={isMithrilActionBlocked}
                   isMithrilPartialSyncWorking={isMithrilPartialSyncWorking}
-                  isSynced={isSynced}
                   shouldShowRecommendation={
                     isMithrilPartialSyncEnabled &&
                     isMithrilPartialSyncSignificantlyBehind

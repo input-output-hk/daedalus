@@ -8,7 +8,7 @@ import styles from './DaedalusDiagnostics.scss';
 const messages = defineMessages({
   title: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationTitle',
-    defaultMessage: '!!!Before Mithril partial sync begins',
+    defaultMessage: '!!!Before Mithril Sync begins',
     description: 'Title for the Mithril partial sync confirmation view',
   },
   intro: {
@@ -21,22 +21,15 @@ const messages = defineMessages({
   success: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationSuccess',
     defaultMessage:
-      '!!!If Mithril partial sync succeeds, Daedalus will restart Cardano node automatically and normal syncing will resume.',
+      '!!!If Mithril Sync succeeds, Daedalus will restart Cardano node automatically and standard syncing will resume.',
     description: 'Success copy for the Mithril partial sync confirmation view',
   },
   behind: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehind',
     defaultMessage:
-      '!!!Your node is about {epochs} epochs behind the blockchain tip. Mithril partial sync can restore verified chain data to help it catch up faster than waiting for normal sync.',
+      '!!!Your node is about {epochs} epochs behind the blockchain tip. Mithril Sync can restore verified chain data to help it catch up faster than waiting for standard sync.',
     description:
       'Behind-ness context line (epochs behind the blockchain tip) for the Mithril partial sync confirmation modal',
-  },
-  behindSyncContext: {
-    id:
-      'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehindSyncContext',
-    defaultMessage: '!!!({syncPercentage}% synced)',
-    description:
-      'Compact parenthetical sync-percentage reference line shown directly below the epochs behind-ness line in the Mithril partial sync confirmation modal',
   },
   behindUnknown: {
     id:
@@ -61,7 +54,7 @@ const messages = defineMessages({
   stepRestart: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationStepRestart',
     defaultMessage:
-      '!!!Daedalus restarts Cardano node automatically and normal syncing resumes.',
+      '!!!Daedalus restarts Cardano node automatically and standard syncing resumes.',
     description:
       'What-happens step 3 for the Mithril partial sync confirmation modal',
   },
@@ -80,7 +73,7 @@ const messages = defineMessages({
   },
   confirm: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationConfirm',
-    defaultMessage: '!!!Start Mithril partial sync',
+    defaultMessage: '!!!Start Mithril Sync',
     description:
       'Confirm button label for the Mithril partial sync confirmation view',
   },
@@ -90,7 +83,6 @@ type Props = {
   isActionBlocked: boolean;
   startError: string | null;
   behindByEpochs?: number;
-  formattedSyncPercentage: string;
   onCancel: () => void;
   onConfirm: () => void;
 };
@@ -105,7 +97,6 @@ export default class MithrilPartialSyncConfirmation extends Component<Props> {
       isActionBlocked,
       startError,
       behindByEpochs,
-      formattedSyncPercentage,
       onCancel,
       onConfirm,
     } = this.props;
@@ -144,11 +135,6 @@ export default class MithrilPartialSyncConfirmation extends Component<Props> {
                   epochs: behindByEpochs,
                 })
               : intl.formatMessage(messages.behindUnknown)}
-          </p>
-          <p className={styles.mithrilPartialSyncConfirmationBehindSyncContext}>
-            {intl.formatMessage(messages.behindSyncContext, {
-              syncPercentage: formattedSyncPercentage,
-            })}
           </p>
 
           <ol className={styles.mithrilPartialSyncConfirmationSteps}>

@@ -66,7 +66,7 @@ describe('MithrilPartialSyncOverlay', () => {
     renderComponent();
 
     expect(
-      screen.getByRole('heading', { name: /mithril partial sync/i })
+      screen.getByRole('heading', { name: /mithril sync/i })
     ).toBeInTheDocument();
     expect(screen.getByText('1:05')).toBeInTheDocument();
   });
@@ -86,7 +86,7 @@ describe('MithrilPartialSyncOverlay', () => {
     });
 
     fireEvent.click(
-      screen.getByRole('button', { name: /retry mithril partial sync/i })
+      screen.getByRole('button', { name: /retry mithril sync/i })
     );
     fireEvent.click(screen.getByRole('button', { name: /restart normally/i }));
 
@@ -148,7 +148,7 @@ describe('MithrilPartialSyncOverlay', () => {
       screen.queryByRole('button', { name: /quit daedalus/i })
     ).not.toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: /retry mithril partial sync/i })
+      screen.getByRole('button', { name: /retry mithril sync/i })
     ).toBeInTheDocument();
   });
 
@@ -197,7 +197,7 @@ describe('MithrilPartialSyncOverlay', () => {
     });
 
     fireEvent.click(
-      screen.getByRole('button', { name: /retry mithril partial sync/i })
+      screen.getByRole('button', { name: /retry mithril sync/i })
     );
     fireEvent.click(screen.getByRole('button', { name: /restart normally/i }));
     fireEvent.click(

@@ -78,9 +78,7 @@ const baseProps = {
 // Isolated CTA/recommendation fixtures (section-level component, intl pulled
 // from context at render so en-US/ja-JP and theme switching stay truthful).
 const recommendationBaseProps = {
-  formattedSyncPercentage: '62.5',
   isActionBlocked: false,
-  isSynced: false,
   onShowConfirmation: action('onShowConfirmation'),
 };
 
@@ -89,7 +87,6 @@ const recommendationBaseProps = {
 const confirmationBaseProps = {
   isActionBlocked: false,
   startError: null as string | null,
-  formattedSyncPercentage: '62.5',
   onCancel: action('onCancel'),
   onConfirm: action('onConfirm'),
 };
@@ -124,9 +121,6 @@ storiesOf('Nodes / Status / Mithril Partial Sync Recommendation', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Behind (CTA Ready)', () => (
     <MithrilPartialSyncRecommendation {...recommendationBaseProps} />
-  ))
-  .add('Synced', () => (
-    <MithrilPartialSyncRecommendation {...recommendationBaseProps} isSynced />
   ))
   .add('Blocked', () => (
     <MithrilPartialSyncRecommendation

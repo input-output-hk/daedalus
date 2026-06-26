@@ -103,7 +103,7 @@ const restartAllowedError: MithrilPartialSyncError = {
   stage: 'verifying',
   code: 'MITHRIL_PARTIAL_SYNC_VERIFY_FAILED',
   message:
-    'Verification failed before cutover completed, so Daedalus can safely retry partial sync or restart Cardano node normally on the current database.',
+    'Verification failed before cutover completed, so Daedalus can safely retry Mithril Sync or restart Cardano node normally on the current database.',
   logPath:
     '/home/ada/.local/share/Daedalus/mainnet/Logs/mithril-partial-sync.log',
 };

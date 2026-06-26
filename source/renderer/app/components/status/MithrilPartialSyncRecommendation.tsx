@@ -8,20 +8,13 @@ const messages = defineMessages({
   recommendation: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncRecommendation',
     defaultMessage:
-      '!!!If Cardano node catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.',
+      '!!!If Cardano node catch-up is taking longer than you want, Mithril Sync can restore verified chain data to help it catch up faster.',
     description:
       'Recommendation copy shown in diagnostics near sync status for Mithril partial sync',
   },
-  recommendationWithProgress: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationWithProgress',
-    defaultMessage:
-      '!!!Cardano node is currently {syncPercentage}% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.',
-    description:
-      'Recommendation copy shown in diagnostics with current sync percentage for Mithril partial sync',
-  },
   buttonLabel: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonLabel',
-    defaultMessage: '!!!Mithril Partial Sync',
+    defaultMessage: '!!!Mithril Sync',
     description:
       'CTA label that opens the Mithril partial sync confirmation from diagnostics',
   },
@@ -34,16 +27,14 @@ const messages = defineMessages({
   buttonHintReady: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintReady',
     defaultMessage:
-      '!!!Review what will happen before Daedalus starts Mithril partial sync.',
+      '!!!Review what will happen before Daedalus starts Mithril Sync.',
     description:
       'Hint text beneath the Mithril partial sync diagnostics button before confirmation opens',
   },
 });
 
 type Props = {
-  formattedSyncPercentage: string;
   isActionBlocked: boolean;
-  isSynced: boolean;
   onShowConfirmation: () => void;
 };
 
@@ -53,16 +44,8 @@ export default class MithrilPartialSyncRecommendation extends Component<Props> {
   };
 
   render() {
-    const {
-      formattedSyncPercentage,
-      isActionBlocked,
-      isSynced,
-      onShowConfirmation,
-    } = this.props;
+    const { isActionBlocked, onShowConfirmation } = this.props;
     const { intl } = this.context;
-    const recommendationMessage = isSynced
-      ? messages.recommendation
-      : messages.recommendationWithProgress;
     const hintMessage = isActionBlocked
       ? messages.buttonHintBlocked
       : messages.buttonHintReady;
@@ -73,9 +56,7 @@ export default class MithrilPartialSyncRecommendation extends Component<Props> {
       >
         <div className={styles.mithrilPartialSyncRecommendation}>
           <div className={styles.mithrilPartialSyncRecommendationCopy}>
-            {intl.formatMessage(recommendationMessage, {
-              syncPercentage: formattedSyncPercentage,
-            })}
+            {intl.formatMessage(messages.recommendation)}
           </div>
           <button
             className={styles.mithrilPartialSyncButton}

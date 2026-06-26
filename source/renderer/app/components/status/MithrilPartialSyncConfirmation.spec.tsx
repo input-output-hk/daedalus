@@ -10,7 +10,6 @@ const defaultProps = {
   isActionBlocked: false,
   startError: null,
   behindByEpochs: undefined,
-  formattedSyncPercentage: '62.50',
   onCancel: jest.fn(),
   onConfirm: jest.fn(),
 };
@@ -30,7 +29,7 @@ describe('MithrilPartialSyncConfirmation', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: 'Before Mithril partial sync begins',
+        name: 'Before Mithril Sync begins',
       })
     ).toBeInTheDocument();
     // A real react-modal renders a scrim overlay rather than the old inline div.
@@ -51,35 +50,29 @@ describe('MithrilPartialSyncConfirmation', () => {
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the epochs behind-ness line plus the compact sync-% reference below it', () => {
-    renderComponent({ behindByEpochs: 3, formattedSyncPercentage: '62.50' });
+  it('renders the epochs-only behind-ness line without any sync-% reference', () => {
+    renderComponent({ behindByEpochs: 3 });
 
     const primary = screen.getByText(
-      'Your node is about 3 epochs behind the blockchain tip. Mithril partial sync can restore verified chain data to help it catch up faster than waiting for normal sync.'
+      'Your node is about 3 epochs behind the blockchain tip. Mithril Sync can restore verified chain data to help it catch up faster than waiting for standard sync.'
     );
-    const syncContext = screen.getByText('(62.50% synced)');
 
     expect(primary).toBeInTheDocument();
-    expect(syncContext).toBeInTheDocument();
-    // The sync-% reference renders directly BELOW the primary behind-ness line.
-    expect(
-      primary.compareDocumentPosition(syncContext) &
-        Node.DOCUMENT_POSITION_FOLLOWING
-    ).toBeTruthy();
+    // Sync-% was removed from the confirmation behind-ness per D-A.
+    expect(screen.queryByText(/% synced/)).toBeNull();
     // Never expose the internal "immutable files" unit to the user.
     expect(screen.queryByText(/immutable/i)).toBeNull();
   });
 
-  it('falls back to generic behind-ness copy when the figure is unavailable but still shows sync-%', () => {
+  it('falls back to generic behind-ness copy when the figure is unavailable', () => {
     renderComponent({
       behindByEpochs: undefined,
-      formattedSyncPercentage: '62.50',
     });
 
     expect(
       screen.getByText('Your node is behind the latest verified snapshot.')
     ).toBeInTheDocument();
-    expect(screen.getByText('(62.50% synced)')).toBeInTheDocument();
+    expect(screen.queryByText(/% synced/)).toBeNull();
     expect(screen.queryByText(/undefined/)).toBeNull();
   });
 
@@ -95,7 +88,7 @@ describe('MithrilPartialSyncConfirmation', () => {
     renderComponent();
 
     const startButton = screen.getByRole('button', {
-      name: 'Start Mithril partial sync',
+      name: 'Start Mithril Sync',
     });
     const backButton = screen.getByRole('button', {
       name: 'Back to diagnostics',
@@ -119,7 +112,7 @@ describe('MithrilPartialSyncConfirmation', () => {
     const onCancel = jest.fn();
     renderComponent({ onConfirm, onCancel });
 
-    screen.getByRole('button', { name: 'Start Mithril partial sync' }).click();
+    screen.getByRole('button', { name: 'Start Mithril Sync' }).click();
 
     expect(onConfirm).toHaveBeenCalledTimes(1);
     expect(onCancel).not.toHaveBeenCalled();
@@ -130,7 +123,7 @@ describe('MithrilPartialSyncConfirmation', () => {
     renderComponent({ onConfirm, isActionBlocked: true });
 
     const startButton = screen.getByRole('button', {
-      name: 'Start Mithril partial sync',
+      name: 'Start Mithril Sync',
     });
     expect(startButton).toBeDisabled();
     startButton.click();

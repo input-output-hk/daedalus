@@ -279,7 +279,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   partialSyncTitle: {
     id: 'loading.mithrilPartialSync.title',
-    defaultMessage: '!!!Mithril partial sync',
+    defaultMessage: '!!!Mithril Sync',
     description:
       'Headline for the diagnostics-launched Mithril partial sync overlay.',
   },
@@ -299,7 +299,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   partialSyncNodeStartingDetail: {
     id: 'loading.mithrilPartialSync.progress.nodeStartingDetail',
     defaultMessage:
-      '!!!Mithril partial sync has finished restoring chain data. Cardano node is starting so Daedalus can resume normal syncing.',
+      '!!!Mithril Sync has finished restoring chain data. Cardano node is starting so Daedalus can resume standard syncing.',
     description:
       'Detail copy shown while Cardano node starts after Mithril partial sync.',
   },
@@ -319,7 +319,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   partialSyncCompletedSubtitle: {
     id: 'loading.mithrilPartialSync.completed.subtitle',
     defaultMessage:
-      '!!!Mithril partial sync completed successfully. Continue to return to the normal Daedalus app flow.',
+      '!!!Mithril Sync completed successfully. Continue to return to the normal Daedalus app flow.',
     description:
       'Supporting copy shown after Mithril partial sync reaches completed status.',
   },
@@ -331,24 +331,24 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   partialSyncFailedTitle: {
     id: 'loading.mithrilPartialSync.error.failed.title',
-    defaultMessage: '!!!Mithril partial sync failed',
+    defaultMessage: '!!!Mithril Sync failed',
     description: 'Title for Mithril partial sync failed terminal state.',
   },
   partialSyncFailedHint: {
     id: 'loading.mithrilPartialSync.error.failed.hint',
     defaultMessage:
-      '!!!Use one of the available recovery actions to retry Mithril partial sync, restart normally, or wipe chain data and do a full Mithril sync.',
+      '!!!Use one of the available recovery actions to retry Mithril Sync, restart normally, or wipe chain data and do a full Mithril sync.',
     description: 'Hint shown for Mithril partial sync failed terminal state.',
   },
   partialSyncCancelledTitle: {
     id: 'loading.mithrilPartialSync.error.cancelled.title',
-    defaultMessage: '!!!Mithril partial sync was cancelled',
+    defaultMessage: '!!!Mithril Sync was cancelled',
     description: 'Title for Mithril partial sync cancelled terminal state.',
   },
   partialSyncCancelledHint: {
     id: 'loading.mithrilPartialSync.error.cancelled.hint',
     defaultMessage:
-      '!!!Mithril sync was stopped before it finished. Your existing chain data is unchanged — choose how to continue below.',
+      '!!!Mithril Sync was stopped before it finished. Your existing chain data is unchanged — choose how to continue below.',
     description:
       'Calmer hint shown when the user cancelled Mithril partial sync (distinct from the failed hint).',
   },
@@ -373,7 +373,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   partialSyncErrorLatestDriftHint: {
     id: 'loading.mithrilPartialSync.error.latestDrift.hint',
     defaultMessage:
-      '!!!A newer verified snapshot became available while Daedalus was preparing. Retry Mithril sync to use the refreshed snapshot — your chain data was not changed.',
+      '!!!A newer verified snapshot became available while Daedalus was preparing. Retry Mithril Sync to use the refreshed snapshot — your chain data was not changed.',
     description:
       'Retriable hint shown for PARTIAL_SYNC_LATEST_DRIFT (pre-cutover; not a silent reset).',
   },
@@ -414,7 +414,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   partialSyncRetry: {
     id: 'loading.mithrilPartialSync.error.retry',
-    defaultMessage: '!!!Retry Mithril partial sync',
+    defaultMessage: '!!!Retry Mithril Sync',
     description: 'Recovery action label for retrying Mithril partial sync.',
   },
   partialSyncRestartNormally: {

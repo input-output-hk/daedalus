@@ -21,10 +21,8 @@ jest.mock('../../utils/logging', () => ({
 }));
 
 const defaultProps = {
-  formattedSyncPercentage: '62.50',
   isActionBlocked: false,
   isMithrilPartialSyncWorking: false,
-  isSynced: false,
   shouldShowRecommendation: true,
   behindByEpochs: undefined,
   showConfirmationOnOpen: false,
@@ -46,11 +44,11 @@ describe('MithrilPartialSyncSection', () => {
     const onStartMithrilPartialSync = jest.fn();
     renderComponent({ onStartMithrilPartialSync });
 
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
 
     expect(
       screen.getByRole('heading', {
-        name: 'Before Mithril partial sync begins',
+        name: 'Before Mithril Sync begins',
       })
     ).toBeInTheDocument();
     expect(onStartMithrilPartialSync).not.toHaveBeenCalled();
@@ -59,12 +57,12 @@ describe('MithrilPartialSyncSection', () => {
   it('returns to the recommendation when confirmation is cancelled', () => {
     renderComponent();
 
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
     screen.getByRole('button', { name: 'Back to diagnostics' }).click();
 
     expect(
       screen.getByText(
-        'Cardano node is currently 62.50% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.'
+        'If Cardano node catch-up is taking longer than you want, Mithril Sync can restore verified chain data to help it catch up faster.'
       )
     ).toBeInTheDocument();
   });
@@ -73,8 +71,8 @@ describe('MithrilPartialSyncSection', () => {
     const onStartMithrilPartialSync = jest.fn();
     renderComponent({ onStartMithrilPartialSync });
 
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
-    screen.getByRole('button', { name: 'Start Mithril partial sync' }).click();
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
+    screen.getByRole('button', { name: 'Start Mithril Sync' }).click();
 
     await waitFor(() => {
       expect(onStartMithrilPartialSync).toHaveBeenCalledTimes(1);
@@ -95,9 +93,9 @@ describe('MithrilPartialSyncSection', () => {
     try {
       const { unmount } = renderComponent({ onStartMithrilPartialSync });
 
-      screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+      screen.getByRole('button', { name: 'Mithril Sync' }).click();
       screen
-        .getByRole('button', { name: 'Start Mithril partial sync' })
+        .getByRole('button', { name: 'Start Mithril Sync' })
         .click();
 
       await waitFor(() => {
@@ -132,8 +130,8 @@ describe('MithrilPartialSyncSection', () => {
 
     renderComponent({ onStartMithrilPartialSync });
 
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
-    screen.getByRole('button', { name: 'Start Mithril partial sync' }).click();
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
+    screen.getByRole('button', { name: 'Start Mithril Sync' }).click();
 
     await waitFor(() => {
       expect(logger.warn).toHaveBeenCalledWith(
@@ -158,10 +156,10 @@ describe('MithrilPartialSyncSection', () => {
       </IntlProvider>
     );
 
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
     expect(
       screen.getByRole('heading', {
-        name: 'Before Mithril partial sync begins',
+        name: 'Before Mithril Sync begins',
       })
     ).toBeInTheDocument();
 
@@ -176,7 +174,7 @@ describe('MithrilPartialSyncSection', () => {
 
     expect(
       screen.getByText(
-        'Cardano node is currently 62.50% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.'
+        'If Cardano node catch-up is taking longer than you want, Mithril Sync can restore verified chain data to help it catch up faster.'
       )
     ).toBeInTheDocument();
   });
@@ -185,9 +183,9 @@ describe('MithrilPartialSyncSection', () => {
     const { container } = renderComponent({ shouldShowRecommendation: false });
 
     expect(
-      screen.queryByRole('button', { name: 'Mithril Partial Sync' })
+      screen.queryByRole('button', { name: 'Mithril Sync' })
     ).toBeNull();
-    expect(container.textContent).not.toMatch(/Mithril Partial Sync/);
+    expect(container.textContent).not.toMatch(/Mithril Sync/);
   });
 
   it('opens the confirmation modal on mount when deep-linked, without starting', () => {
@@ -199,7 +197,7 @@ describe('MithrilPartialSyncSection', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: 'Before Mithril partial sync begins',
+        name: 'Before Mithril Sync begins',
       })
     ).toBeInTheDocument();
     expect(onStartMithrilPartialSync).not.toHaveBeenCalled();
@@ -213,7 +211,7 @@ describe('MithrilPartialSyncSection', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: 'Before Mithril partial sync begins',
+        name: 'Before Mithril Sync begins',
       })
     ).toBeInTheDocument();
   });
@@ -223,29 +221,29 @@ describe('MithrilPartialSyncSection', () => {
 
     expect(
       screen.queryByRole('heading', {
-        name: 'Before Mithril partial sync begins',
+        name: 'Before Mithril Sync begins',
       })
     ).toBeNull();
   });
 
-  it('threads the epochs figure and sync-% into the confirmation modal', () => {
+  it('threads the epochs figure into the confirmation modal without any sync-%', () => {
     renderComponent({ showConfirmationOnOpen: true, behindByEpochs: 3 });
 
     expect(
       screen.getByText(
-        'Your node is about 3 epochs behind the blockchain tip. Mithril partial sync can restore verified chain data to help it catch up faster than waiting for normal sync.'
+        'Your node is about 3 epochs behind the blockchain tip. Mithril Sync can restore verified chain data to help it catch up faster than waiting for standard sync.'
       )
     ).toBeInTheDocument();
-    expect(screen.getByText('(62.50% synced)')).toBeInTheDocument();
+    expect(screen.queryByText(/% synced/)).toBeNull();
   });
 
   it('returns to the recommendation when ESC is pressed on the confirmation', () => {
     renderComponent();
 
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
     expect(
       screen.getByRole('heading', {
-        name: 'Before Mithril partial sync begins',
+        name: 'Before Mithril Sync begins',
       })
     ).toBeInTheDocument();
 
@@ -256,7 +254,7 @@ describe('MithrilPartialSyncSection', () => {
 
     expect(
       screen.getByText(
-        'Cardano node is currently 62.50% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.'
+        'If Cardano node catch-up is taking longer than you want, Mithril Sync can restore verified chain data to help it catch up faster.'
       )
     ).toBeInTheDocument();
   });
