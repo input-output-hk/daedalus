@@ -18,8 +18,9 @@ import styles from './MithrilProgressView.scss';
 interface Props {
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus;
   progressItems?: MithrilProgressItem[];
-  bytesDownloaded?: number;
-  snapshotSize?: number;
+  filesDownloaded?: number;
+  filesTotal?: number;
+  snapshotSizeBytes?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
   ancillaryProgress?: number;
@@ -64,8 +65,9 @@ function MithrilProgressView(props: Props, { intl }: Context) {
   const {
     status,
     progressItems,
-    bytesDownloaded,
-    snapshotSize,
+    filesDownloaded,
+    filesTotal,
+    snapshotSizeBytes,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
     ancillaryProgress,
@@ -130,8 +132,9 @@ function MithrilProgressView(props: Props, { intl }: Context) {
         <MithrilStepIndicator
           status={status}
           progressItems={progressItems}
-          bytesDownloaded={bytesDownloaded}
-          snapshotSize={snapshotSize}
+          filesDownloaded={filesDownloaded}
+          filesTotal={filesTotal}
+          snapshotSizeBytes={snapshotSizeBytes}
           ancillaryBytesDownloaded={ancillaryBytesDownloaded}
           ancillaryBytesTotal={ancillaryBytesTotal}
           ancillaryProgress={ancillaryProgress}

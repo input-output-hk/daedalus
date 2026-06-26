@@ -9,8 +9,8 @@ import { MITHRIL_PROGRESS_HEADING_ID } from './accessibilityIds';
 describe('MithrilProgressView', () => {
   const renderComponent = ({
     status = 'unpacking' as const,
-    bytesDownloaded,
-    snapshotSize,
+    filesDownloaded,
+    filesTotal,
     bootstrapStartedAt,
   }: {
     status?:
@@ -21,16 +21,16 @@ describe('MithrilProgressView', () => {
       | 'finalizing'
       | 'completed'
       | 'starting-node';
-    bytesDownloaded?: number;
-    snapshotSize?: number;
+    filesDownloaded?: number;
+    filesTotal?: number;
     bootstrapStartedAt?: number | null;
   } = {}) =>
     render(
       <IntlProvider locale="en-US" messages={translations}>
         <MithrilProgressView
           status={status}
-          bytesDownloaded={bytesDownloaded}
-          snapshotSize={snapshotSize}
+          filesDownloaded={filesDownloaded}
+          filesTotal={filesTotal}
           bootstrapStartedAt={bootstrapStartedAt}
           onAction={jest.fn()}
         />

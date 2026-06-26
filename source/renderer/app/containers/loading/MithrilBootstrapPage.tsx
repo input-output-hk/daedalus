@@ -141,8 +141,9 @@ class MithrilBootstrapPage extends Component<Props> {
           );
     const progressProps = isProgressVisible
       ? {
-          bytesDownloaded: mithrilBootstrap.bytesDownloaded,
-          snapshotSize: mithrilBootstrap.snapshot?.size,
+          filesDownloaded: mithrilBootstrap.filesDownloaded,
+          filesTotal: mithrilBootstrap.filesTotal,
+          snapshotSizeBytes: mithrilBootstrap.snapshot?.size,
           ancillaryBytesDownloaded: mithrilBootstrap.ancillaryBytesDownloaded,
           ancillaryBytesTotal: mithrilBootstrap.ancillaryBytesTotal,
           ancillaryProgress: mithrilBootstrap.ancillaryProgress,

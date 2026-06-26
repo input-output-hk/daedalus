@@ -76,29 +76,6 @@ export default class MithrilBootstrapStore extends Store {
   @observable bootstrapStartedAt: number | null = null;
 
   @computed
-  get bytesDownloaded(): number | undefined {
-    if (
-      this.snapshot == null ||
-      typeof this.snapshot.size !== 'number' ||
-      this.snapshot.size <= 0 ||
-      this.filesDownloaded == null ||
-      this.filesTotal == null ||
-      this.filesTotal <= 0
-    ) {
-      return undefined;
-    }
-
-    const normalizedFilesDownloaded = Math.min(
-      Math.max(this.filesDownloaded, 0),
-      this.filesTotal
-    );
-
-    return Math.round(
-      (normalizedFilesDownloaded / this.filesTotal) * this.snapshot.size
-    );
-  }
-
-  @computed
   get ancillaryProgress(): number | undefined {
     if (
       this.ancillaryBytesDownloaded == null ||
@@ -382,8 +359,7 @@ export default class MithrilBootstrapStore extends Store {
 
     try {
       const previousCustomPath = this.customChainPath;
-      const cleanupValidation =
-        await prepareChainStorageLocationChangeChannel.request();
+      const cleanupValidation = await prepareChainStorageLocationChangeChannel.request();
 
       runInAction('return to chain storage location picker', () => {
         this.storageLocationConfirmed = false;

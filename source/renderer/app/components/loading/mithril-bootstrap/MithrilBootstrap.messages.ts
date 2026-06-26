@@ -234,9 +234,15 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   progressCombinedDetail: {
     id: 'loading.mithrilBootstrap.progress.combinedDetail',
     defaultMessage:
-      '!!!Snapshot files: {snapshotDownloaded} / {snapshotTotal} | Fast sync: {fastSyncDownloaded} / {fastSyncTotal}',
+      '!!!Snapshot files: {snapshotDownloaded} / {snapshotTotal} files | Fast sync: {fastSyncDownloaded} / {fastSyncTotal}',
     description:
       'Detail line for the combined Mithril download progress bar showing snapshot and fast sync transfer totals.',
+  },
+  progressSnapshotSizeContext: {
+    id: 'loading.mithrilBootstrap.progress.snapshotSizeContext',
+    defaultMessage: '!!!≈ {totalSize} total',
+    description:
+      'Static, real-size context appended to the Mithril download readout (derived from snapshot.size); not a moving bar.',
   },
   nodeStartingTitle: {
     id: 'loading.mithrilBootstrap.progress.nodeStartingTitle',

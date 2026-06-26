@@ -84,8 +84,8 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
             <MithrilProgressView
               status={status}
               progressItems={progressItems}
-              bytesDownloaded={transferProgress?.filesDownloaded}
-              snapshotSize={transferProgress?.filesTotal}
+              filesDownloaded={transferProgress?.filesDownloaded}
+              filesTotal={transferProgress?.filesTotal}
               ancillaryBytesDownloaded={
                 transferProgress?.ancillaryBytesDownloaded
               }

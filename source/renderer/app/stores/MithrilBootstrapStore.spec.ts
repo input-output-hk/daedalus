@@ -24,10 +24,10 @@ jest.mock('../ipc/chainStorageChannel', () => ({
 }));
 
 describe('MithrilBootstrapStore', () => {
-  const api: Api = {
+  const api: Api = ({
     ada: jest.fn(),
-  } as unknown as Api;
-  const actions: ActionsMap = jest.fn() as unknown as ActionsMap;
+  } as unknown) as Api;
+  const actions: ActionsMap = (jest.fn() as unknown) as ActionsMap;
 
   const setupStore = () =>
     new MithrilBootstrapStore(api, actions, noopAnalyticsTracker);
@@ -49,42 +49,6 @@ describe('MithrilBootstrapStore', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  it('derives bytes downloaded from file counts and snapshot size', async () => {
-    const store = setupStore();
-
-    await store._updateStatus({
-      status: 'downloading',
-      snapshot: {
-        digest: 'snapshot-1',
-        createdAt: '2026-03-06T12:00:00.000Z',
-        size: 800,
-      },
-      filesDownloaded: 1,
-      filesTotal: 4,
-      elapsedSeconds: 5,
-    });
-
-    expect(store.bytesDownloaded).toBe(200);
-  });
-
-  it('caps derived bytes when file counts exceed the reported total', async () => {
-    const store = setupStore();
-
-    await store._updateStatus({
-      status: 'downloading',
-      snapshot: {
-        digest: 'snapshot-2',
-        createdAt: '2026-03-06T12:00:00.000Z',
-        size: 1200,
-      },
-      filesDownloaded: 8,
-      filesTotal: 4,
-      elapsedSeconds: 4,
-    });
-
-    expect(store.bytesDownloaded).toBe(1200);
   });
 
   it('clears transient progress metadata when download transitions into unpacking', async () => {
@@ -114,7 +78,6 @@ describe('MithrilBootstrapStore', () => {
     expect(store.filesDownloaded).toBeUndefined();
     expect(store.filesTotal).toBeUndefined();
     expect(store.elapsedSeconds).toBeUndefined();
-    expect(store.bytesDownloaded).toBeUndefined();
   });
 
   it('tracks elapsed time state through the node-start handoff', async () => {

@@ -20,8 +20,9 @@ import styles from './MithrilBootstrap.scss';
 
 interface Props {
   status: MithrilBootstrapStatus;
-  bytesDownloaded?: number;
-  snapshotSize?: number;
+  filesDownloaded?: number;
+  filesTotal?: number;
+  snapshotSizeBytes?: number;
   customChainPath?: string | null;
   defaultChainPath?: string | null;
   defaultChainStorageValidation?: ChainStorageValidation;
@@ -106,8 +107,9 @@ function MithrilBootstrap(props: Props) {
   const {
     status,
     progressItems,
-    bytesDownloaded,
-    snapshotSize,
+    filesDownloaded,
+    filesTotal,
+    snapshotSizeBytes,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
     ancillaryProgress,
@@ -190,8 +192,9 @@ function MithrilBootstrap(props: Props) {
       <MithrilProgressView
         status={status}
         progressItems={progressItems}
-        bytesDownloaded={bytesDownloaded}
-        snapshotSize={snapshotSize}
+        filesDownloaded={filesDownloaded}
+        filesTotal={filesTotal}
+        snapshotSizeBytes={snapshotSizeBytes}
         ancillaryBytesDownloaded={ancillaryBytesDownloaded}
         ancillaryBytesTotal={ancillaryBytesTotal}
         ancillaryProgress={ancillaryProgress}

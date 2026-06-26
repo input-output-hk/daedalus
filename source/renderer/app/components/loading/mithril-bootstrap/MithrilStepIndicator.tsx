@@ -14,7 +14,7 @@ import { isMithrilPartialSyncRestoreCompleteStatus } from '../../../../../common
 import { isMithrilBootstrapRestoreCompleteStatus as isRestoreCompleteStatus } from '../../../../../common/types/mithril-bootstrap.types';
 import InlineProgressBar from './InlineProgressBar';
 import messages from './MithrilBootstrap.messages';
-import { formatTransferSize } from './snapshotFormatting';
+import { formatSnapshotSize, formatTransferSize } from './snapshotFormatting';
 import styles from './MithrilStepIndicator.scss';
 import type { Intl } from '../../../types/i18nTypes';
 import { formattedNumber } from '../../../utils/formatters';
@@ -26,8 +26,9 @@ type SubItemState = 'completed' | 'active' | 'pending' | 'error';
 type Props = {
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus;
   progressItems?: MithrilProgressItem[];
-  bytesDownloaded?: number;
-  snapshotSize?: number;
+  filesDownloaded?: number;
+  filesTotal?: number;
+  snapshotSizeBytes?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
   ancillaryProgress?: number;
@@ -40,9 +41,10 @@ interface Context {
 
 const STEPS: ReadonlyArray<StepId> = ['preparing', 'downloading', 'finalizing'];
 
-const STATUS_TO_STEP: Partial<
-  Record<MithrilBootstrapStatus | MithrilPartialSyncStatus, StepId>
-> = {
+const STATUS_TO_STEP: Partial<Record<
+  MithrilBootstrapStatus | MithrilPartialSyncStatus,
+  StepId
+>> = {
   preparing: 'preparing',
   downloading: 'downloading',
   verifying: 'downloading',
@@ -128,16 +130,18 @@ function deriveCombinedDownloadPercent({
   status,
   snapshotPercent,
   ancillaryPercent,
-  bytesDownloaded,
-  snapshotSize,
+  filesDownloaded,
+  filesTotal,
+  snapshotSizeBytes,
   ancillaryBytesDownloaded,
   ancillaryBytesTotal,
 }: {
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus;
   snapshotPercent?: number;
   ancillaryPercent?: number;
-  bytesDownloaded?: number;
-  snapshotSize?: number;
+  filesDownloaded?: number;
+  filesTotal?: number;
+  snapshotSizeBytes?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
 }) {
@@ -146,23 +150,24 @@ function deriveCombinedDownloadPercent({
 
   if (
     isVerificationOrLater(status) ||
-    isTransferComplete(bytesDownloaded, snapshotSize) ||
+    isTransferComplete(filesDownloaded, filesTotal) ||
     isTransferComplete(ancillaryBytesDownloaded, ancillaryBytesTotal) ||
     normalizedAncillaryPercent >= 100
   ) {
     return 100;
   }
 
-  // When both byte totals are known, compute weight from actual sizes;
-  // otherwise fall back to snapshot-only progress (ancillary hasn't started).
+  // When the real snapshot byte size and ancillary byte total are known,
+  // weight the bar by actual bytes; otherwise fall back to snapshot-only
+  // progress (e.g. partial sync, which carries no real total size).
   if (
-    typeof snapshotSize === 'number' &&
-    snapshotSize > 0 &&
+    typeof snapshotSizeBytes === 'number' &&
+    snapshotSizeBytes > 0 &&
     typeof ancillaryBytesTotal === 'number' &&
     ancillaryBytesTotal > 0
   ) {
-    const totalBytes = snapshotSize + ancillaryBytesTotal;
-    const snapshotWeight = (snapshotSize / totalBytes) * 100;
+    const totalBytes = snapshotSizeBytes + ancillaryBytesTotal;
+    const snapshotWeight = (snapshotSizeBytes / totalBytes) * 100;
     const ancillaryWeight = (ancillaryBytesTotal / totalBytes) * 100;
     return (
       (normalizedSnapshotPercent / 100) * snapshotWeight +
@@ -179,27 +184,39 @@ function deriveCombinedDownloadPercent({
 
 function formatCombinedProgressDetails({
   intl,
-  bytesDownloaded,
-  snapshotSize,
+  filesDownloaded,
+  filesTotal,
+  snapshotSizeBytes,
   ancillaryBytesDownloaded,
   ancillaryBytesTotal,
 }: {
   intl: Intl;
-  bytesDownloaded?: number;
-  snapshotSize?: number;
+  filesDownloaded?: number;
+  filesTotal?: number;
+  snapshotSizeBytes?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
 }) {
-  const formatSnapshotCount = (value?: number) =>
+  const formatFileCount = (value?: number) =>
     typeof value === 'number' && value >= 0 ? formattedNumber(value) : '\u2014';
 
-  return intl.formatMessage(messages.progressCombinedDetail, {
-    snapshotDownloaded: formatSnapshotCount(bytesDownloaded),
-    snapshotTotal: formatSnapshotCount(snapshotSize),
+  const base = intl.formatMessage(messages.progressCombinedDetail, {
+    snapshotDownloaded: formatFileCount(filesDownloaded),
+    snapshotTotal: formatFileCount(filesTotal),
     fastSyncDownloaded:
       formatTransferSize(ancillaryBytesDownloaded) ?? '\u2014',
     fastSyncTotal: formatTransferSize(ancillaryBytesTotal) ?? '\u2014',
   });
+
+  const totalSize = formatSnapshotSize(snapshotSizeBytes);
+  if (!totalSize) {
+    return base;
+  }
+
+  const sizeContext = intl.formatMessage(messages.progressSnapshotSizeContext, {
+    totalSize,
+  });
+  return `${base} \u00b7 ${sizeContext}`;
 }
 
 function synthesizeVerifyingDigestProgress(
@@ -433,8 +450,9 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
   const {
     status,
     progressItems = [],
-    bytesDownloaded,
-    snapshotSize,
+    filesDownloaded,
+    filesTotal,
+    snapshotSizeBytes,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
     ancillaryProgress,
@@ -448,8 +466,8 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
       : undefined;
 
   const snapshotPercent =
-    typeof snapshotSize === 'number' && snapshotSize > 0
-      ? ((bytesDownloaded ?? 0) / snapshotSize) * 100
+    typeof filesTotal === 'number' && filesTotal > 0
+      ? ((filesDownloaded ?? 0) / filesTotal) * 100
       : 0;
   const ancPercent =
     typeof ancillaryProgress === 'number' ? ancillaryProgress : 0;
@@ -457,15 +475,17 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
     status,
     snapshotPercent,
     ancillaryPercent: ancPercent,
-    bytesDownloaded,
-    snapshotSize,
+    filesDownloaded,
+    filesTotal,
+    snapshotSizeBytes,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
   });
   const combinedProgressDetails = formatCombinedProgressDetails({
     intl,
-    bytesDownloaded,
-    snapshotSize,
+    filesDownloaded,
+    filesTotal,
+    snapshotSizeBytes,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
   });
@@ -588,8 +608,8 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
           state === 'active' &&
           (activeSubItemId === DOWNLOAD_PROGRESS_ANCHOR_ID ||
             ((activeSubItemId === stepId || activeSubItemId == null) &&
-              (typeof bytesDownloaded === 'number' ||
-                typeof snapshotSize === 'number' ||
+              (typeof filesDownloaded === 'number' ||
+                typeof filesTotal === 'number' ||
                 typeof ancillaryBytesDownloaded === 'number' ||
                 typeof ancillaryBytesTotal === 'number')));
         const {

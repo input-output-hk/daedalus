@@ -13,9 +13,10 @@ type TestProps = Partial<{
   ancillaryBytesDownloaded: number;
   ancillaryBytesTotal: number;
   ancillaryProgress: number;
-  bytesDownloaded: number;
+  filesDownloaded: number;
+  filesTotal: number;
   progressItems: MithrilProgressItem[];
-  snapshotSize: number;
+  snapshotSizeBytes: number;
 }>;
 
 describe('MithrilStepIndicator', () => {
@@ -44,8 +45,9 @@ describe('MithrilStepIndicator', () => {
 
     renderComponent('downloading', {
       progressItems,
-      bytesDownloaded: 1200 * 1024 * 1024,
-      snapshotSize: 1900 * 1024 * 1024,
+      filesDownloaded: 1200 * 1024 * 1024,
+      filesTotal: 1900 * 1024 * 1024,
+      snapshotSizeBytes: 1900 * 1024 * 1024,
     });
 
     const downloadingStep = screen
@@ -91,9 +93,10 @@ describe('MithrilStepIndicator', () => {
       ancillaryBytesDownloaded: 24 * 1024 * 1024,
       ancillaryBytesTotal: 195 * 1024 * 1024,
       ancillaryProgress: 12,
-      bytesDownloaded: 1200 * 1024 * 1024,
+      filesDownloaded: 1200 * 1024 * 1024,
       progressItems,
-      snapshotSize: 1900 * 1024 * 1024,
+      filesTotal: 1900 * 1024 * 1024,
+      snapshotSizeBytes: 1900 * 1024 * 1024,
     });
 
     const downloadingDetails = screen.getByRole('list', {
@@ -133,9 +136,10 @@ describe('MithrilStepIndicator', () => {
       ancillaryBytesDownloaded: 90,
       ancillaryBytesTotal: 100,
       ancillaryProgress: 90,
-      bytesDownloaded: 500,
+      filesDownloaded: 500,
       progressItems,
-      snapshotSize: 1000,
+      filesTotal: 1000,
+      snapshotSizeBytes: 1000,
     });
 
     expect(
@@ -154,16 +158,34 @@ describe('MithrilStepIndicator', () => {
     renderComponent('downloading', {
       ancillaryBytesDownloaded: 24 * 1024,
       ancillaryBytesTotal: 195 * 1024,
-      bytesDownloaded: 901,
+      filesDownloaded: 901,
       progressItems,
-      snapshotSize: 25400,
+      filesTotal: 25400,
     });
 
     expect(
       screen.getByText(
-        /snapshot files: 901 \/ 25,400 \| fast sync: 24\.0 kb \/ 195\.0 kb/i
+        /snapshot files: 901 \/ 25,400 files \| fast sync: 24\.0 kb \/ 195\.0 kb/i
       )
     ).toBeInTheDocument();
+  });
+
+  it('shows file counts and a static total-size context when a real snapshot size is available', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'preparing', label: 'Preparing', state: 'completed' },
+      { id: 'downloading', label: 'Downloading', state: 'active' },
+      { id: 'step-3', label: 'Step 3', state: 'active' },
+    ];
+
+    renderComponent('downloading', {
+      filesDownloaded: 142,
+      filesTotal: 980,
+      snapshotSizeBytes: 9_700_000_000,
+      progressItems,
+    });
+
+    expect(screen.getByText(/142 \/ 980 files/i)).toBeInTheDocument();
+    expect(screen.getByText(/≈ .* total/i)).toBeInTheDocument();
   });
 
   it('marks the combined progress as complete when fast sync completes before verification starts', () => {
@@ -178,9 +200,10 @@ describe('MithrilStepIndicator', () => {
       ancillaryBytesDownloaded: 100,
       ancillaryBytesTotal: 100,
       ancillaryProgress: 99,
-      bytesDownloaded: 500,
+      filesDownloaded: 500,
       progressItems,
-      snapshotSize: 1000,
+      filesTotal: 1000,
+      snapshotSizeBytes: 1000,
     });
 
     expect(
@@ -205,9 +228,10 @@ describe('MithrilStepIndicator', () => {
       ancillaryBytesDownloaded: 100,
       ancillaryBytesTotal: 100,
       ancillaryProgress: 100,
-      bytesDownloaded: 1000,
+      filesDownloaded: 1000,
       progressItems,
-      snapshotSize: 1000,
+      filesTotal: 1000,
+      snapshotSizeBytes: 1000,
     });
 
     expect(
@@ -239,9 +263,10 @@ describe('MithrilStepIndicator', () => {
       ancillaryBytesDownloaded: 24 * 1024 * 1024,
       ancillaryBytesTotal: 195 * 1024 * 1024,
       ancillaryProgress: 12,
-      bytesDownloaded: 1200 * 1024 * 1024,
+      filesDownloaded: 1200 * 1024 * 1024,
       progressItems,
-      snapshotSize: 1900 * 1024 * 1024,
+      filesTotal: 1900 * 1024 * 1024,
+      snapshotSizeBytes: 1900 * 1024 * 1024,
     });
 
     const downloadingDetails = screen.getByRole('list', {
@@ -263,9 +288,10 @@ describe('MithrilStepIndicator', () => {
     renderComponent('downloading', {
       ancillaryBytesDownloaded: 24 * 1024 * 1024,
       ancillaryBytesTotal: 195 * 1024 * 1024,
-      bytesDownloaded: 1200 * 1024 * 1024,
+      filesDownloaded: 1200 * 1024 * 1024,
       progressItems,
-      snapshotSize: 1900 * 1024 * 1024,
+      filesTotal: 1900 * 1024 * 1024,
+      snapshotSizeBytes: 1900 * 1024 * 1024,
     });
 
     const downloadingDetails = screen.getByRole('list', {
