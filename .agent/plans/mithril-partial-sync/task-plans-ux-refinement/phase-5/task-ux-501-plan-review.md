@@ -43,7 +43,7 @@ Awaiting Critiquer pass.
 ---
 
 ## Critiquer
-Timestamp: 2026-06-26T13:30:12Z
+Timestamp: 2026-06-26
 Decision: requires_changes
 
 Broad pass. The plan is well-grounded and well-scoped. Re-verified anchors against live files:
@@ -111,3 +111,15 @@ Single allowed fix pass on `task-ux-501.md`:
 Scope unchanged: still hygiene/doc only — no new IPC channels, types, or backend logic; behind-ness
 keys and bootstrap untouched; recovery copy still phrased as "available options" to honor the
 `allowedRecoveryActions` render contract. Ready for build.
+
+---
+
+## Reconciliation (Maintainer + Orchestrator) — 2026-06-26
+Outcome: post-completion scope correction. Maintainer directed that all partial-sync
+research/information remain inside `.agent/plans/mithril-partial-sync/` and that plans outside that
+folder not be touched. Gap **#27** (Step 8 — pointer section added to
+`.agent/plans/mithril/mithril-snapshot-ux.md`) is **reverted**; that file is restored to its pre-task
+state. The three acceptance criteria are unaffected (none required editing the historical plan).
+Architecture map remains covered by `task-ux-501.md` + the UX-refinement PRD; maintainer chose not to
+relocate it (no in-folder duplication needed). Canonical doc + research note updated accordingly;
+these append-only logs are not rewritten. A separate follow-up commit records the revert.

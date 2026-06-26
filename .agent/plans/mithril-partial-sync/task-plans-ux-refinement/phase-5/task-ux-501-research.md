@@ -30,8 +30,7 @@ on a dead store). Intentional and benign — kept as-is.
 ## #24 — `retry` = start reuse (doc-only)
 `MithrilPartialSyncStore.ts:238-241` comment confirms `retry` reuses the `startPartialSync` path with
 no dedicated retry IPC channel (PRD D8 / #24). The overlay `onRetry` wires straight to
-`startPartialSync`. Preserved verbatim; cross-referenced in the canonical doc and the historical UX
-plan.
+`startPartialSync`. Preserved verbatim; cross-referenced in the canonical doc.
 
 ## #10 — 300-series re-baseline reconciliation (conflict resolved)
 tasks.json wants "300-series doc references re-baselined to the live 3-component structure"; the
@@ -42,8 +41,8 @@ orchestrator prompt **forbids editing the original `task-plans/` tree**. Resolut
   not rewritten.
 - The genuinely-stale pre-refactor plans ("inline in `DaedalusDiagnostics.tsx`") live only in the
   immutable `task-plans/` tree, left untouched.
-- The live 3-component baseline is captured in `task-ux-501.md` (Engineering notes) and in the
-  historical UX plan `.agent/plans/mithril/mithril-snapshot-ux.md` (new partial-sync pointer section).
+- The live 3-component baseline is captured in `task-ux-501.md` (Engineering notes). (The
+  historical-plan pointer originally added under #27 was reverted post-completion — see below.)
 
 ## #25 — confirmation hand-off copy
 Reworded the `mithrilPartialSyncConfirmationRecovery` copy (EN + JA) to make explicit that the
@@ -57,8 +56,18 @@ The new section row label (`mithrilPartialSyncSectionLabel`) and the CTA button 
 identical EN text "Mithril Partial Sync". Acceptable for this hygiene pass; task-ux-601 may
 disambiguate if desired.
 
-## Scribe finalization (2026-06-26T13:41:11Z)
+## Scribe finalization (2026-06-26)
 No new research surfaced at finalize beyond the above. Code-review APPROVED (Code Reviewer
-2026-06-26T13:40:12Z). tasks.json task-ux-501 → `completed`, `completedAt` 2026-06-26T13:41:11Z.
+2026-06-26). tasks.json task-ux-501 → `completed`, `completedAt` 2026-06-26.
 The doc-only #15 / #24 anchors and the #10 `task-plans/`-immutability reconciliation are the durable
 findings carried forward for task-ux-601.
+
+## Post-completion correction (2026-06-26)
+Maintainer direction: **all partial-sync research/information stays inside
+`.agent/plans/mithril-partial-sync/`; do not touch plans outside that folder.** Gap **#27** (a pointer
+section in `.agent/plans/mithril/mithril-snapshot-ux.md`) was therefore **reverted** and that file
+restored to its pre-task state. The three acceptance criteria are unaffected (they never required the
+historical plan). The architecture map is fully covered by `task-ux-501.md` and
+`mithril-partial-sync-ux-refinement-prd.md`, so the maintainer chose not to relocate it. Durable rule
+for future tasks: keep every feature doc/reference in-folder; treat `#27`-style cross-links into legacy
+plans as out of bounds.

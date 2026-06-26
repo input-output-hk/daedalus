@@ -192,6 +192,8 @@ in-session overlay is `MithrilPartialSyncOverlay.tsx` under
   (Step 8) instead. This honors both the acceptance criterion and the hard rule.
 
 ### Step 8 — Historical UX plan pointer (#27) — `.agent/plans/mithril/mithril-snapshot-ux.md`
+> **SUPERSEDED — reverted post-completion. See "Post-completion reconciliation" below; the historical
+> plan was left untouched and this step was not kept.**
 That doc today covers only the empty-DB **bootstrap** flow. Add a brief new section (e.g. after
 `## Overview` or near `## References`) titled **"Partial Sync (catch-up) — see UX-refinement PRD"**
 that: (a) states partial sync reuses the shared Mithril progress components for a **non-empty** DB
@@ -209,7 +211,7 @@ catch-up; (b) names the live diagnostics trio + the overlay (Step 7 paths); (c) 
 5. `translations/messages.json` (Step 4a — regenerated).
 6. `source/renderer/app/i18n/locales/en-US.json` (Step 4c).
 7. `source/renderer/app/i18n/locales/ja-JP.json` (Step 4c).
-8. `.agent/plans/mithril/mithril-snapshot-ux.md` (Step 8).
+8. ~~`.agent/plans/mithril/mithril-snapshot-ux.md` (Step 8).~~ — superseded/reverted (see reconciliation).
 9. Phase-5 canonical/review/research docs (this task's own four files).
 10. `mithril-partial-sync-ux-refinement-tasks.json` — status → `completed` (scribe step).
 
@@ -286,8 +288,8 @@ Confirmed live at implementation (`:238-241`), comment preserved verbatim:
 startPartialSync = async () => {
 ```
 The overlay's `onRetry` wires straight to `startPartialSync`; there is no separate retry channel
-(PRD #24). **Preserved — no code change in this task.** Cross-referenced in the historical UX plan's
-new partial-sync section and in `task-ux-501-research.md`.
+(PRD #24). **Preserved — no code change in this task.** Cross-referenced in
+`task-ux-501-research.md`.
 
 ### #10 — 300-series doc re-baseline reconciliation
 The ux-refinement `phase-3/` docs are append-only chronological review transcripts that already
@@ -298,17 +300,16 @@ in-session overlay `MithrilPartialSyncOverlay.tsx` under
 `source/renderer/app/components/loading/mithril-bootstrap/`. **Already aligned — no edit needed.**
 The genuinely-stale "inline in `DaedalusDiagnostics.tsx`" plans live in the original `task-plans/`
 tree, which the orchestrator prompt forbids editing; that tree is left as an immutable pre-refactor
-record. The live 3-component baseline is captured here and in the historical UX plan
-(`.agent/plans/mithril/mithril-snapshot-ux.md`) instead.
+record. The live 3-component baseline is captured here in this canonical doc instead.
 
 ---
 
 ## Final outcome (scribe — shipped)
 
 Status flipped to `completed` after code-review APPROVAL (impl-review log
-`task-ux-501-impl-review.md`: Implementer 2026-06-26T13:36:38Z; Code Reviewer 2026-06-26T13:40:12Z =
+`task-ux-501-impl-review.md`: Implementer 2026-06-26; Code Reviewer 2026-06-26 =
 APPROVED). `mithril-partial-sync-ux-refinement-tasks.json` task-ux-501 `status` → `completed`,
-`completedAt` = `2026-06-26T13:41:11Z`. All three acceptance criteria met; locked safety invariants
+`completedAt` = `2026-06-26`. All three acceptance criteria met; locked safety invariants
 and the bootstrap (empty-DB) flow untouched.
 
 ### What shipped (code — hygiene only, no IPC/types/backend)
@@ -328,9 +329,10 @@ and the bootstrap (empty-DB) flow untouched.
   placeholders.
 
 ### What shipped (docs)
-- `.agent/plans/mithril/mithril-snapshot-ux.md` (#27) — added a "Partial Sync (catch-up)" pointer
-  section naming the live diagnostics trio + the overlay, linking to the UX-refinement PRD (no
-  duplication).
+- **#27 reverted post-completion** — the historical bootstrap plan
+  `.agent/plans/mithril/mithril-snapshot-ux.md` was left **untouched**. See
+  "Post-completion reconciliation" below. The live 3-component baseline is captured in this canonical
+  doc only; all partial-sync research/information stays inside `.agent/plans/mithril-partial-sync/`.
 - Phase-5 docs: this canonical doc, `task-ux-501-research.md`, and the append-only review logs.
 
 ### Decisions recorded (doc-only — no code change)
@@ -341,19 +343,32 @@ and the bootstrap (empty-DB) flow untouched.
   Kept as-is.
 - **#24 `retry` = start reuse** — no dedicated retry IPC channel. The overlay `onRetry` wires
   straight to `startPartialSync` (`MithrilPartialSyncStore.ts:238-241` comment preserved verbatim).
-  Kept as-is; cross-referenced in `mithril-snapshot-ux.md` and `task-ux-501-research.md`.
+  Kept as-is; cross-referenced in `task-ux-501-research.md`.
 - **#10 300-series re-baseline** — ux-refinement `phase-3/` transcripts already cite the live
   3-component trio + overlay (already aligned, no edit; append-only logs not rewritten); the stale
   pre-refactor "inline in `DaedalusDiagnostics.tsx`" plans live only in the immutable `task-plans/`
-  tree (forbidden to edit), left untouched; the live baseline is captured here + in
-  `mithril-snapshot-ux.md`.
+  tree (forbidden to edit), left untouched; the live baseline is captured here in this canonical doc.
 
 ### Handoff
 task-ux-601 (holistic copy pass) is unblocked. Pre-existing, out-of-scope here: the section row
 label (`mithrilPartialSyncSectionLabel`) and the CTA button (`buttonLabel`) share identical EN text
 "Mithril Partial Sync" — flagged for task-ux-601 to disambiguate if desired.
 
+## Post-completion reconciliation (2026-06-26)
+Per maintainer direction after completion, **all partial-sync research/information must stay inside
+`.agent/plans/mithril-partial-sync/`**; plans outside that folder must not be touched. The original
+Step 8 / gap **#27** (adding a "Partial Sync (catch-up)" pointer to
+`.agent/plans/mithril/mithril-snapshot-ux.md`) violated that principle, so it was **reverted** — that
+file is restored to its pre-task state and the feature is not referenced from the historical bootstrap
+plan. This does **not** affect the task's three acceptance criteria (i18n/label hygiene; hand-off copy +
+#15/#24 doc; 300-series re-baseline), which never required editing the historical plan. The component
+architecture map that the reverted pointer carried already lives in this canonical doc (Engineering
+notes / #10) and the authoritative `mithril-partial-sync-ux-refinement-prd.md`, so no relocation was
+needed. The Step 8 / item-8 references in the Plan section above are superseded by this note.
+
 ## Status
 - Planning status: `approved`
 - Build status: `completed`
-- Final status: `completed` (`completedAt` 2026-06-26T13:41:11Z)
+- Final status: `completed` (`completedAt` 2026-06-26)
+- Post-completion: `#27 reverted` — historical plan left untouched; all docs kept in-folder
+  (2026-06-26)

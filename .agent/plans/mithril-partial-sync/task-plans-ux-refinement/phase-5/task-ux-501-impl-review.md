@@ -6,7 +6,7 @@ Append-only chronological transcript. Each entry: speaker, ISO-8601 UTC timestam
 
 Implementation:
 Speaker: Implementer
-Timestamp: 2026-06-26T13:36:38Z
+Timestamp: 2026-06-26
 Outcome: Implemented PRD D8 hygiene/doc gaps (#10, #15-doc, #20, #21, #24-doc, #25, #27). Executed the
 approved canonical plan (`task-ux-501.md`) step by step. Autonomous mode; no scope change. All
 verification green (see below).
@@ -84,7 +84,7 @@ Handoff: ready for impl review. Scribe to stamp/confirm the timestamp and flip
 
 Code Review:
 Speaker: Code Reviewer
-Timestamp: 2026-06-26T13:40:12Z
+Timestamp: 2026-06-26
 Decision: APPROVED
 
 Reviewed the working-tree diff (deliverable files only; numerous untracked `.js`/`.js.map` are
@@ -125,3 +125,14 @@ predates this session — not part of the deliverable; (b) as flagged by the imp
 and `buttonLabel` now share identical EN text "Mithril Partial Sync" — disambiguation is correctly
 deferred to task-ux-601. Scribe to confirm the timestamp and flip tasks.json task-ux-501 →
 `completed`.
+
+---
+
+## Reconciliation (Maintainer + Orchestrator) — 2026-06-26
+Outcome: reverted the #27 out-of-folder edit. `.agent/plans/mithril/mithril-snapshot-ux.md` is
+restored to its pre-task (parent-commit `67679c123`) state — the "Partial Sync (catch-up)" pointer
+section is removed. No dangling references (review confirmed nothing links to that section). i18n /
+component / copy deliverables (#10/#15-doc/#20/#21/#24-doc/#25) are unchanged and were independently
+re-reviewed as ship-as-is (no medium/high issues). Canonical doc + research note corrected to drop
+historical-plan cross-references; this transcript is append-only and not rewritten. Recorded in a
+follow-up commit (task-501 commit `b8cb819e8` left intact — append-only history honored).
