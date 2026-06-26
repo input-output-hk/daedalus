@@ -49,6 +49,47 @@ const getCompletedProgressItems = (intl: Intl): Array<MithrilProgressItem> =>
     state: 'completed' as const,
   }));
 
+// stopping-node frame: nothing has started yet, so every waterfall step is
+// pending while the populated stopping-node completion block spins above it.
+const getStoppingProgressItems = (intl: Intl): Array<MithrilProgressItem> =>
+  getActiveProgressItems(intl).map((item) => ({
+    ...item,
+    state: 'pending' as const,
+  }));
+
+// downloading frame: prepare done, download in flight (drives the file-count +
+// progress bar), later steps still pending.
+const getDownloadingProgressItems = (intl: Intl): Array<MithrilProgressItem> =>
+  getActiveProgressItems(intl).map((item) => {
+    if (item.id === 'prepare') {
+      return { ...item, state: 'completed' as const };
+    }
+    if (item.id === 'download') {
+      return { ...item, state: 'active' as const };
+    }
+    return { ...item, state: 'pending' as const };
+  });
+
+// Single selector so each story's waterfall matches its status; all variants
+// build their labels from getActiveProgressItems(intl), keeping the intl seam at
+// render time (labels are never captured at module scope).
+const getProgressItemsForStory = (
+  intl: Intl,
+  status: MithrilPartialSyncStatus,
+  completed?: boolean
+): Array<MithrilProgressItem> => {
+  if (completed || status === 'completed') {
+    return getCompletedProgressItems(intl);
+  }
+  if (status === 'stopping-node') {
+    return getStoppingProgressItems(intl);
+  }
+  if (status === 'downloading') {
+    return getDownloadingProgressItems(intl);
+  }
+  return getActiveProgressItems(intl);
+};
+
 const cancelledError: MithrilPartialSyncError = {
   stage: 'preparing',
   code: 'MITHRIL_PARTIAL_SYNC_CANCELLED',
@@ -73,6 +114,46 @@ const wipeOnlyError: MithrilPartialSyncError = {
   message:
     'The staged database was installed but the first Cardano node start did not succeed, so Daedalus must keep recovery on the wipe-and-full-sync path.',
   logPath: '/home/ada/.local/share/Daedalus/mainnet/Logs/cardano-node.log',
+};
+
+// Per-stage failure fixtures. Codes resolve through partialSyncErrorCopy.ts:
+// downloading/converting/installing map to bespoke title+hint copy by code;
+// finalizing's code is intentionally absent from COPY_BY_CODE and `finalizing`
+// is absent from COPY_BY_STAGE, so it exercises the generic FAILED fallthrough.
+const downloadingError: MithrilPartialSyncError = {
+  stage: 'downloading',
+  code: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
+  message:
+    'Downloading verified Mithril data failed before any chain data was replaced, so your current database is still intact.',
+  logPath:
+    '/home/ada/.local/share/Daedalus/mainnet/Logs/mithril-partial-sync.log',
+};
+
+const convertingError: MithrilPartialSyncError = {
+  stage: 'converting',
+  code: 'PARTIAL_SYNC_CONVERSION_FAILED',
+  message:
+    'Converting the downloaded snapshot failed before cutover completed, so your current database is still intact.',
+  logPath:
+    '/home/ada/.local/share/Daedalus/mainnet/Logs/mithril-partial-sync.log',
+};
+
+const installingError: MithrilPartialSyncError = {
+  stage: 'installing',
+  code: 'PARTIAL_SYNC_STAGED_DB_INVALID',
+  message:
+    'The staged database failed its integrity check during installation, so Daedalus stopped before replacing your current data.',
+  logPath:
+    '/home/ada/.local/share/Daedalus/mainnet/Logs/mithril-partial-sync.log',
+};
+
+const finalizingError: MithrilPartialSyncError = {
+  stage: 'finalizing',
+  code: 'PARTIAL_SYNC_FINALIZE_FAILED',
+  message:
+    'Finalizing the restored database failed, so Daedalus kept your previous chain data in place.',
+  logPath:
+    '/home/ada/.local/share/Daedalus/mainnet/Logs/mithril-partial-sync.log',
 };
 
 const baseProps = {
@@ -112,8 +193,6 @@ interface StoryProps {
 
 function MithrilPartialSyncOverlayStory(props: StoryProps, context: Context) {
   const { intl } = context;
-  const activeProgressItems = getActiveProgressItems(intl);
-  const completedProgressItems = getCompletedProgressItems(intl);
 
   return (
     <MithrilPartialSyncOverlay
@@ -130,9 +209,11 @@ function MithrilPartialSyncOverlayStory(props: StoryProps, context: Context) {
         ancillaryBytesDownloaded: baseProps.ancillaryBytesDownloaded,
         ancillaryBytesTotal: baseProps.ancillaryBytesTotal,
       }}
-      progressItems={
-        props.completed ? completedProgressItems : activeProgressItems
-      }
+      progressItems={getProgressItemsForStory(
+        intl,
+        props.status,
+        props.completed
+      )}
     />
   );
 }
@@ -181,5 +262,58 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       filesTotal={9}
       elapsedSeconds={845}
       completed
+    />
+  ))
+  // Unified file-count progress (download in flight): file counter + download
+  // progress bar, Cancel enabled.
+  .add('Downloading File Count', () => (
+    <MithrilPartialSyncOverlayStory
+      status="downloading"
+      filesDownloaded={4}
+      filesTotal={9}
+    />
+  ))
+  // Populated stopping-node frame: spinning completion block + every waterfall
+  // step pending, Cancel disabled with its stopping tooltip.
+  .add('Stopping Node', () => (
+    <MithrilPartialSyncOverlayStory status="stopping-node" />
+  ))
+  // Failure stages with the full retry + restart-normally + wipe-and-full-sync
+  // 3-action recovery layout (cancelled-vs-failed: the Cancelled story above uses
+  // the same can* flags but renders the cancelled copy).
+  .add('Failed - Downloading (All Recovery Actions)', () => (
+    <MithrilPartialSyncOverlayStory
+      status="failed"
+      error={downloadingError}
+      canRetry
+      canRestartNormally
+      canWipeAndFullSync
+    />
+  ))
+  .add('Failed - Converting (All Recovery Actions)', () => (
+    <MithrilPartialSyncOverlayStory
+      status="failed"
+      error={convertingError}
+      canRetry
+      canRestartNormally
+      canWipeAndFullSync
+    />
+  ))
+  .add('Failed - Installing (All Recovery Actions)', () => (
+    <MithrilPartialSyncOverlayStory
+      status="failed"
+      error={installingError}
+      canRetry
+      canRestartNormally
+      canWipeAndFullSync
+    />
+  ))
+  .add('Failed - Finalizing (All Recovery Actions)', () => (
+    <MithrilPartialSyncOverlayStory
+      status="failed"
+      error={finalizingError}
+      canRetry
+      canRestartNormally
+      canWipeAndFullSync
     />
   ));
