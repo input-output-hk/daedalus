@@ -25,8 +25,8 @@ interface Props {
     onClick(): void;
     variant?: 'primary' | 'secondary';
   }>;
-  onWipeRetry(): void;
-  onDecline(): void;
+  onWipeRetry?(): void;
+  onDecline?(): void;
 }
 
 interface Context {

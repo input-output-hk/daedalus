@@ -90,6 +90,7 @@ const baseProps = {
   onRestartNormally: action('onRestartNormally'),
   onWipeAndFullSync: action('onWipeAndFullSync'),
   onDismissCompleted: action('onDismissCompleted'),
+  onQuit: action('onQuit'),
   onOpenExternalLink: action('onOpenExternalLink'),
 };
 

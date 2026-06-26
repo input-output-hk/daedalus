@@ -11,6 +11,7 @@ const mockCancelRequest = jest.fn();
 const mockRestartNormalRequest = jest.fn();
 const mockWipeAndFullSyncRequest = jest.fn();
 const mockAvailabilityRequest = jest.fn();
+const mockFinalizeRequest = jest.fn();
 let registeredStatusHandler;
 
 jest.mock('../ipc/mithrilPartialSyncChannel', () => ({
@@ -34,6 +35,9 @@ jest.mock('../ipc/mithrilPartialSyncChannel', () => ({
   },
   mithrilPartialSyncAvailabilityChannel: {
     request: (...args) => mockAvailabilityRequest(...args),
+  },
+  mithrilPartialSyncFinalizeChannel: {
+    request: (...args) => mockFinalizeRequest(...args),
   },
 }));
 
@@ -151,8 +155,9 @@ describe('MithrilPartialSyncStore', () => {
     expect(store.isTerminal).toBe(true);
   });
 
-  it('shows the overlay only for backend-confirmed display states and can dismiss completed', () => {
+  it('shows the overlay only for backend-confirmed display states and can dismiss completed', async () => {
     const store = setupStore();
+    mockFinalizeRequest.mockResolvedValue(undefined);
 
     store._updateStatus({
       status: 'stopping-node',
@@ -184,9 +189,10 @@ describe('MithrilPartialSyncStore', () => {
 
     expect(store.shouldShowOverlay).toBe(true);
 
-    store.dismissCompletedOverlay();
+    await store.dismissCompletedOverlay();
 
     expect(store.shouldShowOverlay).toBe(false);
+    expect(mockFinalizeRequest).toHaveBeenCalledTimes(1);
 
     store._updateStatus({
       status: 'failed',
@@ -223,7 +229,27 @@ describe('MithrilPartialSyncStore', () => {
     expect(mockRestartNormalRequest).toHaveBeenCalledWith();
     expect(mockWipeAndFullSyncRequest).toHaveBeenCalledTimes(1);
     expect(mockWipeAndFullSyncRequest).toHaveBeenCalledWith();
+    // startPartialSync resyncs once (its finally) and cancelPartialSync now
+    // always resyncs too (its finally), so syncStatus fires twice.
+    expect(mockStatusRequest).toHaveBeenCalledTimes(2);
+  });
+
+  it('always resyncs after a cancel even when the cancel request rejects', async () => {
+    const store = setupStore();
+    mockCancelRequest.mockRejectedValue(new Error('post-cutover'));
+    mockStatusRequest.mockResolvedValue({
+      status: 'failed',
+      allowedRecoveryActions: ['retry'],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+
+    await expect(store.cancelPartialSync()).rejects.toThrow('post-cutover');
+
+    expect(mockCancelRequest).toHaveBeenCalledTimes(1);
     expect(mockStatusRequest).toHaveBeenCalledTimes(1);
+    expect(store.status).toBe('failed');
   });
 
   it('absorbs pushed status updates while the long-running start request is still pending', async () => {

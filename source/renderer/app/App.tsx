@@ -118,6 +118,7 @@ class App extends Component<{
                     onDismissCompleted={
                       mithrilPartialSync.dismissCompletedOverlay
                     }
+                    onQuit={() => actions.window.closeWindow.trigger()}
                     onOpenExternalLink={app.openExternalLink}
                   />
                 )}

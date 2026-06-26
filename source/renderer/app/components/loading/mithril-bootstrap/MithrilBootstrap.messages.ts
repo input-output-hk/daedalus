@@ -429,6 +429,18 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Recovery action label for wiping chain data and doing a full Mithril sync.',
   },
+  partialSyncQuit: {
+    id: 'loading.mithrilPartialSync.error.quit',
+    defaultMessage: '!!!Quit Daedalus',
+    description:
+      'Defensive Quit fallback button shown on a partial-sync failure only when no recovery actions are available (so the overlay is never an unclosable dead-end).',
+  },
+  partialSyncCancelStoppingTooltip: {
+    id: 'loading.mithrilPartialSync.progress.cancelStoppingTooltip',
+    defaultMessage: '!!!Cancellation available once the node has stopped',
+    description:
+      'Tooltip explaining why the Cancel button is disabled while the Cardano node is still stopping (stopping-node phase).',
+  },
 });
 
 export default messages;

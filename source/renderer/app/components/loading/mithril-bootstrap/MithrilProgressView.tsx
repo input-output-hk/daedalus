@@ -3,6 +3,7 @@ import { intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import type {
   MithrilBootstrapStatus,
   MithrilProgressItem,
@@ -34,6 +35,8 @@ interface Props {
   stoppingNodeTitle?: string;
   stoppingNodeDetail?: string;
   hideAction?: boolean;
+  actionDisabled?: boolean;
+  actionDisabledTooltip?: string;
   showDownloadProgressBar?: boolean;
   onAction(): void;
 }
@@ -87,6 +90,8 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     stoppingNodeTitle,
     stoppingNodeDetail,
     hideAction,
+    actionDisabled,
+    actionDisabledTooltip,
     showDownloadProgressBar,
     onAction,
   } = props;
@@ -206,13 +211,27 @@ function MithrilProgressView(props: Props, { intl }: Context) {
 
       {!hideAction && (
         <div className={styles.actions}>
-          <Button
-            className={styles.secondaryAction}
-            skin={ButtonSkin}
-            label={actionLabel || intl.formatMessage(messages.cancel)}
-            onClick={onAction}
-            disabled={isStartingNode}
-          />
+          {(() => {
+            const actionButton = (
+              <Button
+                className={styles.secondaryAction}
+                skin={ButtonSkin}
+                label={actionLabel || intl.formatMessage(messages.cancel)}
+                onClick={onAction}
+                disabled={isStartingNode || actionDisabled}
+              />
+            );
+            // A disabled <button> swallows hover events, so the tooltip is hosted
+            // on a wrapping <span> that still receives them (matches the
+            // SidebarCategory PopOver pattern).
+            return actionDisabledTooltip ? (
+              <PopOver content={actionDisabledTooltip}>
+                <span>{actionButton}</span>
+              </PopOver>
+            ) : (
+              actionButton
+            );
+          })()}
         </div>
       )}
     </div>

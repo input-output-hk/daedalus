@@ -15,6 +15,7 @@ import Store from './lib/Store';
 import {
   mithrilPartialSyncAvailabilityChannel,
   mithrilPartialSyncCancelChannel,
+  mithrilPartialSyncFinalizeChannel,
   mithrilPartialSyncRestartNormalChannel,
   mithrilPartialSyncStartChannel,
   mithrilPartialSyncStatusChannel,
@@ -218,10 +219,15 @@ export default class MithrilPartialSyncStore extends Store {
   };
 
   @action
-  dismissCompletedOverlay = () => {
-    if (this.status === 'completed') {
-      this.isCompletedOverlayDismissed = true;
+  dismissCompletedOverlay = async () => {
+    if (this.status !== 'completed') {
+      return;
     }
+    // Flip the renderer dismiss flag first so the success screen hides on the
+    // user's explicit "Continue" (lock #16 / D9), then tell the backend to
+    // finalize: reset-to-idle + remove staging + clear the marker.
+    this.isCompletedOverlayDismissed = true;
+    await mithrilPartialSyncFinalizeChannel.request();
   };
 
   @action
@@ -229,6 +235,8 @@ export default class MithrilPartialSyncStore extends Store {
     this.proactivePromptDismissedThisSession = true;
   };
 
+  // `retry` reuses this start path — there is no dedicated retry IPC channel
+  // (PRD D8 / gap #24). onRetry in the overlay wires straight to startPartialSync.
   @action
   startPartialSync = async () => {
     let startError: unknown;
@@ -262,7 +270,13 @@ export default class MithrilPartialSyncStore extends Store {
 
   @action
   cancelPartialSync = async () => {
-    await mithrilPartialSyncCancelChannel.request();
+    try {
+      await mithrilPartialSyncCancelChannel.request();
+    } finally {
+      // Always resync so the UI never sticks on the optimistic frame (D5f) —
+      // including the stopping-node no-op and the post-cutover rejection.
+      await this.syncStatus();
+    }
   };
 
   @action

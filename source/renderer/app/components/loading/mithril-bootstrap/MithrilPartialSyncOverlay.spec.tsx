@@ -18,6 +18,18 @@ jest.mock('react-polymorph/lib/components/Link', () => ({
   ),
 }));
 
+// react-polymorph's PopOver needs a skin/theme context not provided here; the
+// disabled-Cancel tooltip (stopping-node) pulls it in. Stub it so the wrapped
+// trigger and the tooltip content both render in the test.
+jest.mock('react-polymorph/lib/components/PopOver', () => ({
+  PopOver: ({ children, content }: { children?: any; content?: any }) => (
+    <>
+      {children}
+      <span>{content}</span>
+    </>
+  ),
+}));
+
 describe('MithrilPartialSyncOverlay', () => {
   const renderComponent = (overrides = {}) =>
     render(
@@ -41,6 +53,7 @@ describe('MithrilPartialSyncOverlay', () => {
           onRestartNormally={jest.fn()}
           onWipeAndFullSync={jest.fn()}
           onDismissCompleted={jest.fn()}
+          onQuit={jest.fn()}
           onOpenExternalLink={jest.fn()}
           {...overrides}
         />
@@ -95,6 +108,57 @@ describe('MithrilPartialSyncOverlay', () => {
     );
 
     expect(onDismissCompleted).toHaveBeenCalledTimes(1);
+  });
+
+  it('hides Cancel for every post-cutover phase but keeps it pre-cutover', () => {
+    (['installing', 'finalizing', 'starting-node'] as const).forEach(
+      (status) => {
+        const { unmount } = renderComponent({ status });
+        expect(
+          screen.queryByRole('button', { name: /cancel/i })
+        ).not.toBeInTheDocument();
+        unmount();
+      }
+    );
+
+    (['downloading', 'preparing'] as const).forEach((status) => {
+      const { unmount } = renderComponent({ status });
+      expect(
+        screen.getByRole('button', { name: /cancel/i })
+      ).toBeInTheDocument();
+      unmount();
+    });
+  });
+
+  it('renders a defensive Quit fallback only when no recovery actions are available', () => {
+    const onQuit = jest.fn();
+    const { unmount } = renderComponent({
+      status: 'failed',
+      error: null,
+      onQuit,
+    });
+
+    const quitButton = screen.getByRole('button', { name: /quit daedalus/i });
+    fireEvent.click(quitButton);
+    expect(onQuit).toHaveBeenCalledTimes(1);
+    unmount();
+
+    renderComponent({ status: 'failed', error: null, canRetry: true });
+    expect(
+      screen.queryByRole('button', { name: /quit daedalus/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /retry mithril partial sync/i })
+    ).toBeInTheDocument();
+  });
+
+  it('disables Cancel with an explanatory tooltip during stopping-node', () => {
+    renderComponent({ status: 'stopping-node' });
+
+    expect(screen.getByRole('button', { name: /cancel/i })).toBeDisabled();
+    expect(
+      screen.getByText(/cancellation available once the node has stopped/i)
+    ).toBeInTheDocument();
   });
 
   it('does not reuse the bootstrap byte-progress bar for partial sync file counts', () => {

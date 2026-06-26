@@ -31,6 +31,7 @@ type Props = {
   onRestartNormally(): void;
   onWipeAndFullSync(): void;
   onDismissCompleted(): void;
+  onQuit(): void;
   onOpenExternalLink?: (arg: string) => void;
 };
 
@@ -65,6 +66,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
     onRestartNormally,
     onWipeAndFullSync,
     onDismissCompleted,
+    onQuit,
     onOpenExternalLink,
   } = props;
 
@@ -73,6 +75,60 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
     ? MITHRIL_PROGRESS_HEADING_ID
     : MITHRIL_ERROR_HEADING_ID;
   const errorCopy = resolvePartialSyncErrorCopy(status, error);
+
+  // lock #5: recovery actions render strictly from allowedRecoveryActions (here
+  // via the canRetry/canRestartNormally/canWipeAndFullSync booleans).
+  const recoveryActions = [
+    ...(canRetry
+      ? [
+          {
+            label: intl.formatMessage(
+              MithrilBootstrapMessages.partialSyncRetry
+            ),
+            onClick: onRetry,
+            variant: 'primary' as const,
+          },
+        ]
+      : []),
+    ...(canRestartNormally
+      ? [
+          {
+            label: intl.formatMessage(
+              MithrilBootstrapMessages.partialSyncRestartNormally
+            ),
+            onClick: onRestartNormally,
+            variant: canRetry ? ('secondary' as const) : ('primary' as const),
+          },
+        ]
+      : []),
+    ...(canWipeAndFullSync
+      ? [
+          {
+            label: intl.formatMessage(
+              MithrilBootstrapMessages.partialSyncWipeAndFullSync
+            ),
+            onClick: onWipeAndFullSync,
+            variant:
+              canRetry || canRestartNormally
+                ? ('secondary' as const)
+                : ('primary' as const),
+          },
+        ]
+      : []),
+  ];
+  // Defensive Quit (D5d, gaps #8/#31): rendered ONLY when no recovery actions are
+  // available, so a failure can never become an unclosable dead-end. `quit` is
+  // renderer-only — it is NOT a backend allowedRecoveryActions value.
+  const errorActions =
+    recoveryActions.length > 0
+      ? recoveryActions
+      : [
+          {
+            label: intl.formatMessage(MithrilBootstrapMessages.partialSyncQuit),
+            onClick: onQuit,
+            variant: 'primary' as const,
+          },
+        ];
 
   return (
     <div className={styles.component}>
@@ -120,7 +176,19 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
               stoppingNodeDetail={intl.formatMessage(
                 MithrilBootstrapMessages.partialSyncNodeStoppingDetail
               )}
-              hideAction={status === 'starting-node'}
+              hideAction={[
+                'installing',
+                'finalizing',
+                'starting-node',
+              ].includes(status)}
+              actionDisabled={status === 'stopping-node'}
+              actionDisabledTooltip={
+                status === 'stopping-node'
+                  ? intl.formatMessage(
+                      MithrilBootstrapMessages.partialSyncCancelStoppingTooltip
+                    )
+                  : undefined
+              }
               showDownloadProgressBar
               onAction={status === 'completed' ? onDismissCompleted : onCancel}
             />
@@ -130,48 +198,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
               onOpenExternalLink={onOpenExternalLink}
               title={intl.formatMessage(errorCopy.title)}
               hint={intl.formatMessage(errorCopy.hint)}
-              actions={[
-                ...(canRetry
-                  ? [
-                      {
-                        label: intl.formatMessage(
-                          MithrilBootstrapMessages.partialSyncRetry
-                        ),
-                        onClick: onRetry,
-                        variant: 'primary' as const,
-                      },
-                    ]
-                  : []),
-                ...(canRestartNormally
-                  ? [
-                      {
-                        label: intl.formatMessage(
-                          MithrilBootstrapMessages.partialSyncRestartNormally
-                        ),
-                        onClick: onRestartNormally,
-                        variant: canRetry
-                          ? ('secondary' as const)
-                          : ('primary' as const),
-                      },
-                    ]
-                  : []),
-                ...(canWipeAndFullSync
-                  ? [
-                      {
-                        label: intl.formatMessage(
-                          MithrilBootstrapMessages.partialSyncWipeAndFullSync
-                        ),
-                        onClick: onWipeAndFullSync,
-                        variant:
-                          canRetry || canRestartNormally
-                            ? ('secondary' as const)
-                            : ('primary' as const),
-                      },
-                    ]
-                  : []),
-              ]}
-              onWipeRetry={onRetry}
-              onDecline={onRestartNormally}
+              actions={errorActions}
             />
           )}
         </div>
