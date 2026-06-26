@@ -566,6 +566,102 @@ describe('MithrilPartialSyncStore', () => {
     });
   });
 
+  describe('diagnostics → overlay handoff (live store contract)', () => {
+    // Each test in this describe calls store.setup(), which internally calls
+    // syncStatus(). Mock the status request to return idle so that the async
+    // syncStatus() path does not reach logger.warn (electronLog is unavailable
+    // in jsdom). The outer beforeEach already calls jest.resetAllMocks(), so
+    // this nested beforeEach runs after the reset and restores the safe mock.
+    beforeEach(() => {
+      mockStatusRequest.mockResolvedValue({
+        status: 'idle',
+        allowedRecoveryActions: [],
+        transferProgress: {},
+        progressItems: [],
+        error: null,
+      });
+    });
+
+    it('fresh live store hides the overlay before any backend push', () => {
+      const store = setupStore();
+      store.setup();
+
+      expect(store.shouldShowOverlay).toBe(false);
+    });
+
+    it('live downloading push flips shouldShowOverlay true and populates overlay-driving getters', () => {
+      const store = setupStore();
+      store.setup();
+
+      jest.setSystemTime(100_000);
+      registeredStatusHandler({
+        status: 'downloading',
+        allowedRecoveryActions: [],
+        transferProgress: {
+          filesDownloaded: 4,
+          filesTotal: 9,
+          elapsedSeconds: 12,
+        },
+        progressItems: [],
+        error: null,
+      });
+
+      expect(store.shouldShowOverlay).toBe(true);
+      expect(store.status).toBe('downloading');
+      expect(store.filesDownloaded).toBe(4);
+      expect(store.filesTotal).toBe(9);
+      expect(store.startedAt).toBe(100_000 - 12_000);
+    });
+
+    it('live failed push exposes all three recovery flags and error for the overlay', () => {
+      const store = setupStore();
+      store.setup();
+
+      registeredStatusHandler({
+        status: 'failed',
+        allowedRecoveryActions: [
+          'retry',
+          'restart-normal',
+          'wipe-and-full-sync',
+        ],
+        transferProgress: {},
+        progressItems: [],
+        error: { message: 'Restore failed', stage: 'installing' },
+      });
+
+      expect(store.shouldShowOverlay).toBe(true);
+      expect(store.status).toBe('failed');
+      expect(store.canRetry).toBe(true);
+      expect(store.canRestartNormally).toBe(true);
+      expect(store.canWipeAndFullSync).toBe(true);
+      expect(store.error).toEqual({
+        message: 'Restore failed',
+        stage: 'installing',
+      });
+    });
+
+    it('live completed push keeps overlay shown; dismissCompletedOverlay flips it off and calls finalize once', async () => {
+      const store = setupStore();
+      mockFinalizeRequest.mockResolvedValue(undefined);
+      store.setup();
+
+      registeredStatusHandler({
+        status: 'completed',
+        allowedRecoveryActions: [],
+        transferProgress: {},
+        progressItems: [],
+        error: null,
+      });
+
+      expect(store.shouldShowOverlay).toBe(true);
+
+      await store.dismissCompletedOverlay();
+
+      expect(store.shouldShowOverlay).toBe(false);
+      expect(mockFinalizeRequest).toHaveBeenCalledTimes(1);
+    });
+  });
+
   it('anchors a renderer-side startedAt when entering a working status', () => {
     const store = setupStore();
     jest.setSystemTime(10_000);
