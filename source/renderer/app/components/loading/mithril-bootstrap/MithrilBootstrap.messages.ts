@@ -348,9 +348,69 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   partialSyncCancelledHint: {
     id: 'loading.mithrilPartialSync.error.cancelled.hint',
     defaultMessage:
-      '!!!Use one of the available recovery actions to retry Mithril partial sync, restart normally, or wipe chain data and do a full Mithril sync.',
+      '!!!Mithril sync was stopped before it finished. Your existing chain data is unchanged — choose how to continue below.',
     description:
-      'Hint shown for Mithril partial sync cancelled terminal state.',
+      'Calmer hint shown when the user cancelled Mithril partial sync (distinct from the failed hint).',
+  },
+  partialSyncErrorNoCertifiedRangeTitle: {
+    id: 'loading.mithrilPartialSync.error.noCertifiedRange.title',
+    defaultMessage: '!!!No verified Mithril snapshot is available yet',
+    description:
+      'Title shown when PARTIAL_SYNC_NO_CERTIFIED_RANGE is emitted (no certified snapshot for the current chain position).',
+  },
+  partialSyncErrorNoCertifiedRangeHint: {
+    id: 'loading.mithrilPartialSync.error.noCertifiedRange.hint',
+    defaultMessage:
+      '!!!Daedalus could not find a verified Mithril snapshot for your current chain position. Choose how to continue below — you can keep syncing on your existing chain data.',
+    description: 'Hint shown for PARTIAL_SYNC_NO_CERTIFIED_RANGE.',
+  },
+  partialSyncErrorLatestDriftTitle: {
+    id: 'loading.mithrilPartialSync.error.latestDrift.title',
+    defaultMessage: '!!!The verified Mithril snapshot moved on',
+    description:
+      'Title shown when PARTIAL_SYNC_LATEST_DRIFT is emitted (a newer verified snapshot appeared while preparing).',
+  },
+  partialSyncErrorLatestDriftHint: {
+    id: 'loading.mithrilPartialSync.error.latestDrift.hint',
+    defaultMessage:
+      '!!!A newer verified snapshot became available while Daedalus was preparing. Retry Mithril sync to use the refreshed snapshot — your chain data was not changed.',
+    description:
+      'Retriable hint shown for PARTIAL_SYNC_LATEST_DRIFT (pre-cutover; not a silent reset).',
+  },
+  partialSyncErrorStagedDbInvalidTitle: {
+    id: 'loading.mithrilPartialSync.error.stagedDbInvalid.title',
+    defaultMessage: '!!!The Mithril snapshot could not be verified',
+    description:
+      'Title shown when PARTIAL_SYNC_STAGED_DB_INVALID is emitted (staged output incomplete or invalid).',
+  },
+  partialSyncErrorStagedDbInvalidHint: {
+    id: 'loading.mithrilPartialSync.error.stagedDbInvalid.hint',
+    defaultMessage:
+      '!!!The downloaded snapshot was incomplete or did not match the expected verified chain data. Choose how to continue below.',
+    description: 'Hint shown for PARTIAL_SYNC_STAGED_DB_INVALID.',
+  },
+  partialSyncErrorDownloadFailedTitle: {
+    id: 'loading.mithrilPartialSync.error.downloadFailed.title',
+    defaultMessage: '!!!Downloading the Mithril snapshot failed',
+    description:
+      'Title shown when PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED is emitted.',
+  },
+  partialSyncErrorDownloadFailedHint: {
+    id: 'loading.mithrilPartialSync.error.downloadFailed.hint',
+    defaultMessage:
+      '!!!Daedalus could not finish downloading and verifying the Mithril snapshot. Check your internet connection, then choose how to continue below.',
+    description: 'Hint shown for PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED.',
+  },
+  partialSyncErrorConversionFailedTitle: {
+    id: 'loading.mithrilPartialSync.error.conversionFailed.title',
+    defaultMessage: '!!!Preparing the Mithril snapshot failed',
+    description: 'Title shown when PARTIAL_SYNC_CONVERSION_FAILED is emitted.',
+  },
+  partialSyncErrorConversionFailedHint: {
+    id: 'loading.mithrilPartialSync.error.conversionFailed.hint',
+    defaultMessage:
+      '!!!Daedalus downloaded the verified snapshot but could not prepare it for use. Choose how to continue below.',
+    description: 'Hint shown for PARTIAL_SYNC_CONVERSION_FAILED.',
   },
   partialSyncRetry: {
     id: 'loading.mithrilPartialSync.error.retry',

@@ -14,6 +14,7 @@ import {
 import MithrilBootstrapMessages from './MithrilBootstrap.messages';
 import MithrilErrorView from './MithrilErrorView';
 import MithrilProgressView from './MithrilProgressView';
+import { resolvePartialSyncErrorCopy } from './partialSyncErrorCopy';
 import styles from './MithrilBootstrap.scss';
 
 type Props = {
@@ -71,6 +72,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
   const activeHeadingId = isProgressStatus
     ? MITHRIL_PROGRESS_HEADING_ID
     : MITHRIL_ERROR_HEADING_ID;
+  const errorCopy = resolvePartialSyncErrorCopy(status, error);
 
   return (
     <div className={styles.component}>
@@ -126,16 +128,8 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
             <MithrilErrorView
               error={error as any}
               onOpenExternalLink={onOpenExternalLink}
-              title={intl.formatMessage(
-                status === 'cancelled'
-                  ? MithrilBootstrapMessages.partialSyncCancelledTitle
-                  : MithrilBootstrapMessages.partialSyncFailedTitle
-              )}
-              hint={intl.formatMessage(
-                status === 'cancelled'
-                  ? MithrilBootstrapMessages.partialSyncCancelledHint
-                  : MithrilBootstrapMessages.partialSyncFailedHint
-              )}
+              title={intl.formatMessage(errorCopy.title)}
+              hint={intl.formatMessage(errorCopy.hint)}
               actions={[
                 ...(canRetry
                   ? [

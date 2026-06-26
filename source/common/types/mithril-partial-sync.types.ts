@@ -29,6 +29,13 @@ export type MithrilPartialSyncErrorStage =
   | 'finalizing'
   | 'starting-node';
 
+export type MithrilPartialSyncErrorCode =
+  | 'PARTIAL_SYNC_NO_CERTIFIED_RANGE'
+  | 'PARTIAL_SYNC_LATEST_DRIFT'
+  | 'PARTIAL_SYNC_STAGED_DB_INVALID'
+  | 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED'
+  | 'PARTIAL_SYNC_CONVERSION_FAILED';
+
 export type MithrilPartialSyncError = {
   message: string;
   code?: string;

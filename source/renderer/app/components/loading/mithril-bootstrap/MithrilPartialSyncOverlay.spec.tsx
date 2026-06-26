@@ -8,6 +8,16 @@ import MithrilPartialSyncOverlay, {
   isMithrilPartialSyncOverlayStatus,
 } from './MithrilPartialSyncOverlay';
 
+// react-polymorph's Link needs a skin/theme context not provided in this spec; the
+// collapsible technical-details section (rendered only when an error message exists)
+// pulls it in. Stub it to a plain anchor so error frames with a message can render.
+jest.mock('react-polymorph/lib/components/Link', () => ({
+  Link: ({ label, onClick }: { label?: string; onClick?: () => void }) => (
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid
+    <a onClick={onClick}>{label}</a>
+  ),
+}));
+
 describe('MithrilPartialSyncOverlay', () => {
   const renderComponent = (overrides = {}) =>
     render(
@@ -135,6 +145,43 @@ describe('MithrilPartialSyncOverlay', () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
     expect(onRestartNormally).toHaveBeenCalledTimes(1);
     expect(onWipeAndFullSync).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows bespoke copy for a mapped error code and never the raw backend message as the title', () => {
+    renderComponent({
+      status: 'failed',
+      error: {
+        message: '{"raw":"mithril-client json"}',
+        code: 'PARTIAL_SYNC_LATEST_DRIFT',
+        stage: 'preparing',
+      },
+    });
+    // the primary (level-1) error heading is the bespoke localized title
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: /verified mithril snapshot moved on/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/retry mithril sync to use the refreshed snapshot/i)
+    ).toBeInTheDocument();
+    // the raw backend message is never promoted to the primary error title
+    expect(
+      screen.queryByRole('heading', { level: 1, name: /mithril-client json/i })
+    ).not.toBeInTheDocument();
+  });
+
+  it('gives cancelled a calmer hint distinct from failed', () => {
+    const { unmount } = renderComponent({ status: 'cancelled', error: null });
+    expect(
+      screen.getByText(/was stopped before it finished/i)
+    ).toBeInTheDocument();
+    unmount();
+    renderComponent({ status: 'failed', error: null });
+    expect(
+      screen.queryByText(/was stopped before it finished/i)
+    ).not.toBeInTheDocument();
   });
 });
 
