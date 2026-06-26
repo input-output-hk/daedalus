@@ -11,6 +11,24 @@
 - Extend backend types to carry `filesDownloaded`, `filesTotal`, and error `stage` through IPC
 - Full Storybook and E2E test coverage
 
+## Partial Sync (catch-up) — see UX-refinement PRD
+
+This plan covers the **empty-DB bootstrap** flow. A separate **partial sync** (catch-up) flow
+reuses the same shared Mithril progress UI to restore verified chain data onto a **non-empty**
+local database, so a node that has fallen behind can catch up faster than waiting for normal sync.
+
+- **Entry point (diagnostics trio):** `source/renderer/app/components/status/MithrilPartialSyncSection.tsx`
+  hosts the row label and renders `MithrilPartialSyncRecommendation.tsx`
+  (recommendation + CTA) and `MithrilPartialSyncConfirmation.tsx` (pre-start confirmation modal).
+  These are mounted from the diagnostics dialog (`DaedalusDiagnostics.tsx`).
+- **In-session progress/error overlay:** `source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay.tsx`
+  (shared Mithril progress components), driven by `MithrilPartialSyncStore.ts`. Recovery actions
+  (retry / restart normally / wipe + full Mithril sync) appear here **only if the attempt fails**,
+  and strictly from the backend `allowedRecoveryActions` — never inferred in the renderer.
+- **Detailed source of truth:** see
+  [`mithril-partial-sync-ux-refinement-prd.md`](../mithril-partial-sync/mithril-partial-sync-ux-refinement-prd.md)
+  for the full PRD, decisions (D8–D13), and gap tracking. Do not duplicate that content here.
+
 ## Task Tracking
 
 Task tracking is split by context to reduce agent context overhead. Load only the file relevant to your current work:

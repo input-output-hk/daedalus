@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
-import { intlShape } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 
 import globalMessages from '../../i18n/global-messages';
 import { logger } from '../../utils/logging';
 import MithrilPartialSyncConfirmation from './MithrilPartialSyncConfirmation';
 import MithrilPartialSyncRecommendation from './MithrilPartialSyncRecommendation';
 import styles from './DaedalusDiagnostics.scss';
+
+const messages = defineMessages({
+  sectionLabel: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncSectionLabel',
+    defaultMessage: '!!!Mithril Partial Sync',
+    description:
+      'Row label for the Mithril partial sync section in the diagnostics dialog',
+  },
+});
 
 type Props = {
   formattedSyncPercentage: string;
@@ -133,7 +142,7 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
     return (
       <div className={styles.layoutRow}>
         <div className={styles.layoutHeader}>
-          Mithril Partial Sync
+          {intl.formatMessage(messages.sectionLabel)}
           {intl.formatMessage(globalMessages.punctuationColon)}
         </div>
         <MithrilPartialSyncRecommendation

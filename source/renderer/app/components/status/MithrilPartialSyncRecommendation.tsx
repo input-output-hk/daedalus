@@ -22,7 +22,8 @@ const messages = defineMessages({
   buttonLabel: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonLabel',
     defaultMessage: '!!!Mithril Partial Sync',
-    description: 'Disabled placeholder CTA label for Mithril partial sync',
+    description:
+      'CTA label that opens the Mithril partial sync confirmation from diagnostics',
   },
   buttonHintBlocked: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintBlocked',

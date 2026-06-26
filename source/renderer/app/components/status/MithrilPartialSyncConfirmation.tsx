@@ -68,7 +68,7 @@ const messages = defineMessages({
   recovery: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationRecovery',
     defaultMessage:
-      '!!!If the attempt fails, Daedalus can offer retry partial sync, restart normally on the current database, or wipe chain data and do a full Mithril sync.',
+      "!!!You don't need to choose now. If the sync fails, the progress screen will then offer the available recovery options — such as retrying, restarting normally on your current data, or wiping chain data and running a full Mithril sync.",
     description:
       'Failure recovery copy for the Mithril partial sync confirmation view',
   },
