@@ -19,6 +19,7 @@ import styles from './MithrilBootstrap.scss';
 type Props = {
   status: MithrilPartialSyncStatus;
   progressItems?: MithrilProgressItem[];
+  startedAt?: number | null;
   transferProgress?: MithrilPartialSyncTransferProgress;
   error?: MithrilPartialSyncError | null;
   canRetry: boolean;
@@ -52,6 +53,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
   const {
     status,
     progressItems,
+    startedAt,
     transferProgress,
     error,
     canRetry,
@@ -90,7 +92,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
                 transferProgress?.ancillaryBytesDownloaded
               }
               ancillaryBytesTotal={transferProgress?.ancillaryBytesTotal}
-              elapsedSeconds={transferProgress?.elapsedSeconds}
+              bootstrapStartedAt={startedAt}
               title={intl.formatMessage(
                 MithrilBootstrapMessages.partialSyncTitle
               )}
@@ -109,6 +111,12 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
               )}
               startingNodeDetail={intl.formatMessage(
                 MithrilBootstrapMessages.partialSyncNodeStartingDetail
+              )}
+              stoppingNodeTitle={intl.formatMessage(
+                MithrilBootstrapMessages.partialSyncNodeStoppingTitle
+              )}
+              stoppingNodeDetail={intl.formatMessage(
+                MithrilBootstrapMessages.partialSyncNodeStoppingDetail
               )}
               hideAction={status === 'starting-node'}
               showDownloadProgressBar

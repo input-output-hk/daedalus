@@ -2788,6 +2788,21 @@
         "id": "loading.mithrilBootstrap.progress.snapshotSizeContext"
       },
       {
+        "defaultMessage": "!!!This can take several minutes — Daedalus is still working.",
+        "description": "Reassurance line shown during long non-download Mithril phases (verifying/unpacking/converting/installing/finalizing) so the dialogue never looks frozen.",
+        "id": "loading.mithrilBootstrap.progress.longPhaseReassurance"
+      },
+      {
+        "defaultMessage": "!!!Stopping Cardano node...",
+        "description": "Title shown for the in-dialogue node-stop frame (default; bootstrap fallback).",
+        "id": "loading.mithrilBootstrap.progress.nodeStoppingTitle"
+      },
+      {
+        "defaultMessage": "!!!Daedalus is stopping the Cardano node so it can restore verified chain data. This can take a couple of minutes.",
+        "description": "Detail copy shown for the in-dialogue node-stop frame (default; bootstrap fallback).",
+        "id": "loading.mithrilBootstrap.progress.nodeStoppingDetail"
+      },
+      {
         "defaultMessage": "!!!Starting Cardano node...",
         "description": "Title shown for the dedicated starting-node handoff state after Mithril snapshot restore.",
         "id": "loading.mithrilBootstrap.progress.nodeStartingTitle"
@@ -2816,6 +2831,16 @@
         "defaultMessage": "!!!Mithril partial sync has finished restoring chain data. Cardano node is starting so Daedalus can resume normal syncing.",
         "description": "Detail copy shown while Cardano node starts after Mithril partial sync.",
         "id": "loading.mithrilPartialSync.progress.nodeStartingDetail"
+      },
+      {
+        "defaultMessage": "!!!Stopping Cardano node...",
+        "description": "Title shown while the Cardano node is being stopped before Mithril partial sync restores chain data.",
+        "id": "loading.mithrilPartialSync.progress.nodeStoppingTitle"
+      },
+      {
+        "defaultMessage": "!!!Daedalus is stopping the Cardano node before restoring verified Mithril chain data. This can take a couple of minutes.",
+        "description": "Detail copy shown while the Cardano node is being stopped before Mithril partial sync restores chain data.",
+        "id": "loading.mithrilPartialSync.progress.nodeStoppingDetail"
       },
       {
         "defaultMessage": "!!!Mithril partial sync completed successfully. Continue to return to the normal Daedalus app flow.",

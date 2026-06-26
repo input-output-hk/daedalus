@@ -1,6 +1,6 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../../i18n/locales/en-US.json';
 import MithrilProgressView from './MithrilProgressView';
@@ -14,8 +14,10 @@ describe('MithrilProgressView', () => {
     bootstrapStartedAt,
   }: {
     status?:
+      | 'stopping-node'
       | 'preparing'
       | 'downloading'
+      | 'verifying'
       | 'unpacking'
       | 'converting'
       | 'finalizing'
@@ -38,6 +40,56 @@ describe('MithrilProgressView', () => {
     );
 
   afterEach(cleanup);
+  afterEach(() => jest.useRealTimers());
+
+  it('ticks elapsed every second from the start anchor (advances from 0:00 immediately)', () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(0);
+    renderComponent({ status: 'verifying', bootstrapStartedAt: 0 });
+
+    expect(screen.getByText('0:00')).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+
+    expect(screen.getByText('0:03')).toBeInTheDocument();
+  });
+
+  it('shows the long-phase reassurance for verifying/finalizing', () => {
+    renderComponent({ status: 'finalizing', bootstrapStartedAt: Date.now() });
+
+    expect(
+      screen.getByText(/this can take several minutes/i)
+    ).toBeInTheDocument();
+  });
+
+  it('shows the in-dialogue node-stop frame while stopping-node', () => {
+    renderComponent({
+      status: 'stopping-node',
+      bootstrapStartedAt: Date.now(),
+    });
+
+    expect(
+      screen.getByRole('heading', { name: /stopping cardano node/i })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveAttribute('aria-live', 'polite');
+  });
+
+  it('freezes elapsed on the completed frame instead of ticking', () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(0);
+    renderComponent({ status: 'completed', bootstrapStartedAt: 0 });
+
+    expect(screen.getByText('0:00')).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(screen.getByText('0:00')).toBeInTheDocument();
+    expect(screen.queryByText('0:05')).not.toBeInTheDocument();
+  });
 
   it('renders the header and timer', () => {
     renderComponent({

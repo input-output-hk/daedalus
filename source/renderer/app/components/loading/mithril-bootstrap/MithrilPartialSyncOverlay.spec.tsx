@@ -15,10 +15,10 @@ describe('MithrilPartialSyncOverlay', () => {
         <MithrilPartialSyncOverlay
           status="downloading"
           progressItems={[]}
+          startedAt={Date.now() - 65_000}
           transferProgress={{
             filesDownloaded: 3,
             filesTotal: 9,
-            elapsedSeconds: 65,
             ancillaryBytesDownloaded: 1,
             ancillaryBytesTotal: 2,
           }}

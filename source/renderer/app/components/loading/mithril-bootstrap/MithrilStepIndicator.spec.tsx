@@ -6,6 +6,7 @@ import type {
   MithrilBootstrapStatus,
   MithrilProgressItem,
 } from '../../../../../common/types/mithril-bootstrap.types';
+import type { MithrilPartialSyncStatus } from '../../../../../common/types/mithril-partial-sync.types';
 import translations from '../../../i18n/locales/en-US.json';
 import MithrilStepIndicator from './MithrilStepIndicator';
 
@@ -21,7 +22,7 @@ type TestProps = Partial<{
 
 describe('MithrilStepIndicator', () => {
   const renderComponent = (
-    status: MithrilBootstrapStatus = 'finalizing',
+    status: MithrilBootstrapStatus | MithrilPartialSyncStatus = 'finalizing',
     props: TestProps = {}
   ) =>
     render(
@@ -35,7 +36,7 @@ describe('MithrilStepIndicator', () => {
     jest.useRealTimers();
   });
 
-  it('uses an open dot for active top-level steps while subitems keep their spinner', () => {
+  it('renders a rotating spinner for the active top-level step while subitems keep their spinner', () => {
     const progressItems: MithrilProgressItem[] = [
       { id: 'step-1', label: 'Step 1', state: 'pending' },
       { id: 'step-2', label: 'Step 2', state: 'pending' },
@@ -58,9 +59,29 @@ describe('MithrilStepIndicator', () => {
     });
 
     expect(downloadingStep).not.toBeNull();
-    expect(downloadingStep?.querySelector('.activeCircle')).not.toBeNull();
-    expect(downloadingStep?.querySelector('.iconSpinner')).toBeNull();
+    // The active top-level step now renders the rotating spinner svg
+    // (styles.iconSpinner) instead of the static .activeCircle dot. Under the
+    // svg-jest transform react-svg-inline renders a bare <svg> without its
+    // wrapper className, so the spinner is asserted via the top-level
+    // .iconContainer svg rather than the .iconSpinner class token.
+    expect(downloadingStep?.querySelector('.activeCircle')).toBeNull();
+    expect(downloadingStep?.querySelector('.iconContainer svg')).not.toBeNull();
     expect(downloadingDetails.querySelector('svg')).not.toBeNull();
+  });
+
+  it('renders the preparing step as active during stopping-node (no greyed placeholders)', () => {
+    renderComponent('stopping-node', { progressItems: [] });
+
+    const preparingStep = screen
+      .getByText(/preparing$/i)
+      .closest('[role="listitem"]');
+
+    expect(preparingStep).toHaveClass('stepActive');
+    expect(preparingStep).not.toHaveClass('stepPending');
+    // Active step shows the rotating spinner svg, not a greyed pending dot.
+    expect(preparingStep?.querySelector('.iconContainer svg')).not.toBeNull();
+    expect(preparingStep?.querySelector('.pendingCircle')).toBeNull();
+    expect(preparingStep?.querySelector('.activeCircle')).toBeNull();
   });
 
   it('renders the visible Mithril flow as preparing, downloading, and finalizing', () => {

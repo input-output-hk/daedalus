@@ -51,6 +51,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+.reassurance {
+  color: var(--theme-mithril-secondary-text-color);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: -8px 0 16px;
+}
+
 .waterfallContainer {
   margin-bottom: 18px;
   max-height: 480px;

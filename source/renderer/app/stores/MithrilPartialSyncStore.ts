@@ -56,6 +56,7 @@ export default class MithrilPartialSyncStore extends Store {
   @observable filesDownloaded: number | undefined = undefined;
   @observable filesTotal: number | undefined = undefined;
   @observable elapsedSeconds: number | undefined = undefined;
+  @observable startedAt: number | null = null;
   @observable ancillaryBytesDownloaded: number | undefined = undefined;
   @observable ancillaryBytesTotal: number | undefined = undefined;
   @observable progressItems = [];
@@ -149,7 +150,31 @@ export default class MithrilPartialSyncStore extends Store {
       return;
     }
 
+    const previousStatus = this.status;
     this.status = update.status;
+
+    // Renderer-side elapsed anchor (mirrors MithrilBootstrapStore). A fresh
+    // working run re-anchors to THIS run; we then stamp the anchor on the first
+    // working frame (honoring any backend elapsedSeconds so a re-attach to an
+    // in-flight op shows the true elapsed); the anchor is released only when
+    // fully idle so terminal overlays keep their frozen elapsed value.
+    const isWorkingNow = isMithrilPartialSyncWorkingStatus(this.status);
+    if (isWorkingNow && !isMithrilPartialSyncWorkingStatus(previousStatus)) {
+      this.startedAt = null;
+    }
+    if (isWorkingNow && this.startedAt == null) {
+      const backendElapsed = update.transferProgress.elapsedSeconds;
+      this.startedAt =
+        typeof backendElapsed === 'number' &&
+        Number.isFinite(backendElapsed) &&
+        backendElapsed > 0
+          ? Date.now() - backendElapsed * 1000
+          : Date.now();
+    }
+    if (this.status === 'idle') {
+      this.startedAt = null;
+    }
+
     if (update.status !== 'completed') {
       this.isCompletedOverlayDismissed = false;
     }

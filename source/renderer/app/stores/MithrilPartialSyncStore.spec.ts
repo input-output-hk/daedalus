@@ -539,4 +539,79 @@ describe('MithrilPartialSyncStore', () => {
       expect(store.isTerminal).toBe(true);
     });
   });
+
+  it('anchors a renderer-side startedAt when entering a working status', () => {
+    const store = setupStore();
+    jest.setSystemTime(10_000);
+    store._updateStatus({
+      status: 'stopping-node',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+    expect(store.startedAt).toBe(10_000);
+  });
+
+  it('anchors startedAt to the backend elapsed when present', () => {
+    const store = setupStore();
+    jest.setSystemTime(100_000);
+    store._updateStatus({
+      status: 'downloading',
+      allowedRecoveryActions: [],
+      transferProgress: { elapsedSeconds: 12 },
+      progressItems: [],
+      error: null,
+    });
+    expect(store.startedAt).toBe(100_000 - 12_000);
+  });
+
+  it('keeps startedAt stable across a run, frozen on terminal, released on idle', () => {
+    const store = setupStore();
+    jest.setSystemTime(5_000);
+    store._updateStatus({
+      status: 'stopping-node',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+    jest.setSystemTime(9_000);
+    store._updateStatus({
+      status: 'downloading',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+    expect(store.startedAt).toBe(5_000); // stable through the run
+
+    store._updateStatus({
+      status: 'completed',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+    expect(store.startedAt).toBe(5_000); // frozen on terminal
+
+    store._updateStatus({
+      status: 'idle',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+    expect(store.startedAt).toBeNull(); // released on idle
+
+    jest.setSystemTime(20_000);
+    store._updateStatus({
+      status: 'stopping-node',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+    expect(store.startedAt).toBe(20_000); // re-anchors next run
+  });
 });

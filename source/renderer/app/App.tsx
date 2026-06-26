@@ -98,10 +98,10 @@ class App extends Component<{
                   <MithrilPartialSyncOverlay
                     status={mithrilPartialSync.status}
                     progressItems={mithrilPartialSync.progressItems}
+                    startedAt={mithrilPartialSync.startedAt}
                     transferProgress={{
                       filesDownloaded: mithrilPartialSync.filesDownloaded,
                       filesTotal: mithrilPartialSync.filesTotal,
-                      elapsedSeconds: mithrilPartialSync.elapsedSeconds,
                       ancillaryBytesDownloaded:
                         mithrilPartialSync.ancillaryBytesDownloaded,
                       ancillaryBytesTotal:

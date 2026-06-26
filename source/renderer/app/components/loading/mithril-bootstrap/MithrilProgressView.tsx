@@ -31,6 +31,8 @@ interface Props {
   actionLabel?: string;
   startingNodeTitle?: string;
   startingNodeDetail?: string;
+  stoppingNodeTitle?: string;
+  stoppingNodeDetail?: string;
   hideAction?: boolean;
   showDownloadProgressBar?: boolean;
   onAction(): void;
@@ -42,7 +44,11 @@ interface Context {
 
 const TERMINAL_STATUSES = new Set<
   MithrilBootstrapStatus | MithrilPartialSyncStatus
->(['failed', 'cancelled']);
+>(['failed', 'cancelled', 'completed']);
+
+const LONG_RUNNING_STATUSES = new Set<
+  MithrilBootstrapStatus | MithrilPartialSyncStatus
+>(['verifying', 'unpacking', 'converting', 'installing', 'finalizing']);
 
 const formatDuration = (value?: number) => {
   if (value == null || Number.isNaN(value)) return null;
@@ -78,12 +84,16 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     actionLabel,
     startingNodeTitle,
     startingNodeDetail,
+    stoppingNodeTitle,
+    stoppingNodeDetail,
     hideAction,
     showDownloadProgressBar,
     onAction,
   } = props;
 
   const isStartingNode = status === 'starting-node';
+  const isStoppingNode = status === 'stopping-node';
+  const isLongRunningPhase = LONG_RUNNING_STATUSES.has(status);
 
   // Local elapsed-seconds timer — only this component re-renders each second
   const [elapsedSeconds, setElapsedSeconds] = useState<number | undefined>(
@@ -128,6 +138,12 @@ function MithrilProgressView(props: Props, { intl }: Context) {
         <span className={styles.timerValue}>{elapsedLabel}</span>
       </div>
 
+      {isLongRunningPhase && (
+        <p className={styles.reassurance} aria-live="polite">
+          {intl.formatMessage(messages.progressLongPhaseReassurance)}
+        </p>
+      )}
+
       <div className={styles.waterfallContainer}>
         <MithrilStepIndicator
           status={status}
@@ -141,6 +157,29 @@ function MithrilProgressView(props: Props, { intl }: Context) {
           showDownloadProgressBar={showDownloadProgressBar}
         />
       </div>
+
+      {isStoppingNode && (
+        <div
+          className={styles.completionBlock}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <h2 className={styles.completionTitle}>
+            {stoppingNodeTitle ||
+              intl.formatMessage(messages.nodeStoppingTitle)}
+          </h2>
+          <p className={styles.completionDetail}>
+            {stoppingNodeDetail ||
+              intl.formatMessage(messages.nodeStoppingDetail)}
+          </p>
+          <SVGInline
+            svg={spinnerIcon}
+            className={styles.completionSpinner}
+            aria-hidden="true"
+          />
+        </div>
+      )}
 
       {isStartingNode && (
         <div

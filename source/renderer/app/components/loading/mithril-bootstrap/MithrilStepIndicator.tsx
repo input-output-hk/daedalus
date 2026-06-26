@@ -45,6 +45,7 @@ const STATUS_TO_STEP: Partial<Record<
   MithrilBootstrapStatus | MithrilPartialSyncStatus,
   StepId
 >> = {
+  'stopping-node': 'preparing',
   preparing: 'preparing',
   downloading: 'downloading',
   verifying: 'downloading',
@@ -401,7 +402,13 @@ function TopLevelIcon({ state }: { state: StepState }) {
     );
   }
   if (state === 'active') {
-    return <div className={styles.activeCircle} />;
+    return (
+      <SVGInline
+        svg={spinnerIcon}
+        aria-hidden="true"
+        className={classNames(styles.icon, styles.iconSpinner)}
+      />
+    );
   }
   if (state === 'error') {
     return (
