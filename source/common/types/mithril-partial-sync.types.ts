@@ -64,6 +64,11 @@ export type MithrilPartialSyncAvailability = {
   isEnabled: boolean;
   isSignificantlyBehind: boolean;
   behindByImmutables?: number;
+  // #16 (D-702b-10): the Mithril certified-beacon epoch — the horizon-free,
+  // early-resolving fallback anchor for cardano-wallet's late `networkTip.epoch`.
+  // OPTIONAL so the renderer type-checks before CAT-H produces the value; until
+  // then it is `undefined` ⇒ the figure degrades to networkTip-only (no regression).
+  certifiedEpoch?: number | null;
 };
 
 const MITHRIL_PARTIAL_SYNC_WORKING_STATUSES: MithrilPartialSyncStatus[] = [

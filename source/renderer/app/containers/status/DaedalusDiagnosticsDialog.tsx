@@ -143,6 +143,7 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           nodeConnectionError={getNetworkInfoRequest.error}
           localTip={localTip}
           networkTip={networkTip}
+          certifiedEpoch={mithrilPartialSync.certifiedEpoch}
           isCheckingSystemTime={
             !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
           }

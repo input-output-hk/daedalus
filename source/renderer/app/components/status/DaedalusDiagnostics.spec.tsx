@@ -97,9 +97,7 @@ describe('DaedalusDiagnostics', () => {
   it('keeps the CTA disabled while partial sync work is in flight', () => {
     renderComponent({ isMithrilPartialSyncWorking: true });
 
-    expect(
-      screen.getByRole('button', { name: 'Mithril Sync' })
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeDisabled();
     expect(
       screen.getByText('Unavailable while Mithril work is already active.')
     ).toBeInTheDocument();
@@ -108,17 +106,13 @@ describe('DaedalusDiagnostics', () => {
   it('re-arms the CTA once partial sync work reaches a terminal state', () => {
     renderComponent({ isMithrilPartialSyncWorking: false });
 
-    expect(
-      screen.getByRole('button', { name: 'Mithril Sync' })
-    ).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
   });
 
   it('hides all partial sync UI when the kill switch is off', () => {
     renderComponent({ isMithrilPartialSyncEnabled: false });
 
-    expect(
-      screen.queryByRole('button', { name: 'Mithril Sync' })
-    ).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Mithril Sync' })).toBeNull();
     expect(screen.queryByText(/Mithril Sync/)).toBeNull();
   });
 
@@ -128,9 +122,7 @@ describe('DaedalusDiagnostics', () => {
       isMithrilPartialSyncSignificantlyBehind: true,
     });
 
-    expect(
-      screen.getByRole('button', { name: 'Mithril Sync' })
-    ).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
 
     rerender(
       <IntlProvider locale="en-US" messages={translations}>
@@ -142,18 +134,14 @@ describe('DaedalusDiagnostics', () => {
       </IntlProvider>
     );
 
-    expect(
-      screen.queryByRole('button', { name: 'Mithril Sync' })
-    ).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Mithril Sync' })).toBeNull();
     expect(screen.queryByText(/Mithril Sync/)).toBeNull();
   });
 
   it('keeps the CTA disabled while bootstrap work is active', () => {
     renderComponent({ isMithrilBootstrapActive: true });
 
-    expect(
-      screen.getByRole('button', { name: 'Mithril Sync' })
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeDisabled();
     expect(
       screen.getByText('Unavailable while Mithril work is already active.')
     ).toBeInTheDocument();
@@ -198,7 +186,7 @@ describe('DaedalusDiagnostics', () => {
     ).toBeInTheDocument();
   });
 
-  it('floors the epoch difference at 1 when the tips share an epoch', () => {
+  it('shows the unknown behind-ness line when the tips share an epoch (no misleading floor-to-1)', () => {
     renderComponent({
       networkTip: { epoch: 100, slot: 0, absoluteSlotNumber: 0 } as any,
       localTip: { epoch: 100, slot: 0, absoluteSlotNumber: 0 } as any,
@@ -208,7 +196,7 @@ describe('DaedalusDiagnostics', () => {
 
     expect(
       screen.getByText(
-        'Your node is about 1 epochs behind. Mithril Sync will restore verified chain data to help your node sync faster.'
+        'Your node is behind the latest verified snapshot. Mithril Sync will restore verified chain data to help your node sync faster.'
       )
     ).toBeInTheDocument();
   });

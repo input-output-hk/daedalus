@@ -105,6 +105,32 @@ describe('MithrilPartialSyncOverlay', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('renders the live wipe-and-full-sync recovery action and wires its handler (#8/D-702b-8)', () => {
+    // Drive from the post-cutover `failed` state, NOT `cancelled` — locked
+    // invariant #6 forbids cancellation after cutover and D-702a-2 removed wipe
+    // from the pre-cutover cancelled dialogue. With canRetry/canRestartNormally
+    // both false, the wipe action resolves to the primary variant from the
+    // boolean combo (not the status string).
+    const onWipeAndFullSync = jest.fn();
+
+    renderComponent({
+      status: 'failed',
+      canRetry: false,
+      canRestartNormally: false,
+      canWipeAndFullSync: true,
+      error: null,
+      onWipeAndFullSync,
+    });
+
+    const wipeButton = screen.getByRole('button', {
+      name: /wipe chain data and do full mithril sync/i,
+    });
+    expect(wipeButton).toBeInTheDocument();
+
+    fireEvent.click(wipeButton);
+    expect(onWipeAndFullSync).toHaveBeenCalledTimes(1);
+  });
+
   it('auto-fires finalize on the completed timeout with no Continue button (ADR D-702a-1)', () => {
     jest.useFakeTimers();
     const onDismissCompleted = jest.fn();
@@ -129,6 +155,39 @@ describe('MithrilPartialSyncOverlay', () => {
       expect(onDismissCompleted).toHaveBeenCalledTimes(1);
     } finally {
       jest.useRealTimers();
+    }
+  });
+
+  it('catches a rejecting onDismissCompleted from the auto-dismiss timer (no unhandled rejection)', async () => {
+    // #2 (D-702b-4): onDismissCompleted now awaits the async finalize IPC, so the
+    // timeout wraps it in Promise.resolve(...).catch(...). A finalize rejection
+    // must therefore never surface as an unhandled promise rejection.
+    jest.useFakeTimers();
+    const onDismissCompleted = jest
+      .fn()
+      .mockRejectedValue(new Error('finalize failed'));
+    const onUnhandledRejection = jest.fn();
+    process.on('unhandledRejection', onUnhandledRejection);
+    try {
+      renderComponent({ status: 'completed', onDismissCompleted });
+
+      expect(() => {
+        act(() => {
+          jest.advanceTimersByTime(4000);
+        });
+      }).not.toThrow();
+      expect(onDismissCompleted).toHaveBeenCalledTimes(1);
+
+      // Give any (improperly) unhandled rejection a real macrotask to surface.
+      jest.useRealTimers();
+      await new Promise((resolve) => {
+        setTimeout(resolve, 0);
+      });
+
+      expect(onUnhandledRejection).not.toHaveBeenCalled();
+    } finally {
+      jest.useRealTimers();
+      process.off('unhandledRejection', onUnhandledRejection);
     }
   });
 

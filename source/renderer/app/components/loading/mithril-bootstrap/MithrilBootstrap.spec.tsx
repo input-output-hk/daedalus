@@ -233,6 +233,41 @@ describe('MithrilBootstrap', () => {
     expect(dialog).toHaveAttribute('aria-labelledby', MITHRIL_ERROR_HEADING_ID);
   });
 
+  it('restores the empty-chain bootstrap error default: wipe primary first, left-aligned', () => {
+    renderComponent({ status: 'failed' });
+
+    // The bootstrap caller passes no `actions`/`rightAlignActions` prop, so the
+    // shared, render-order-agnostic MithrilErrorView renders its default verbatim:
+    // the destructive primary "Wipe chain & retry" FIRST/left, "Sync from genesis"
+    // second (locked invariant #11 — D-702b-5 / finding #1 remediation).
+    const actionLabels = screen
+      .getAllByRole('button')
+      .map((button) => button.textContent);
+    expect(actionLabels).toEqual(['Wipe chain & retry', 'Sync from genesis']);
+
+    // Left-aligned default: the actions footer must NOT opt into right-alignment
+    // (that opt-in is owned by the partial-sync overlay caller only).
+    const footer = screen
+      .getByRole('button', { name: /wipe chain & retry/i })
+      .closest('div');
+    expect(footer).toHaveClass('actions');
+    expect(footer).not.toHaveClass('actionsRightAligned');
+  });
+
+  it('renders the decision view with decline before accept in the DOM', () => {
+    renderComponent();
+
+    // #5 / D-702b-5: decline (secondary) renders BEFORE accept (primary); the
+    // .actions flex-end then puts the primary on the right, matching the error view.
+    const actionLabels = screen
+      .getAllByRole('button')
+      .map((button) => button.textContent);
+    expect(actionLabels).toEqual([
+      'Sync from genesis',
+      'Use Mithril fast sync',
+    ]);
+  });
+
   it('renders progress view when status is verifying', () => {
     renderComponent({ status: 'verifying' });
 

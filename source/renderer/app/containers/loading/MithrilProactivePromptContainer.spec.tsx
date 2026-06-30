@@ -25,9 +25,11 @@ const makeStores = ({
     // Tips are ALWAYS present + finite here (network 100, local 97 -> 3 epochs),
     // so a (wrong) local `behindByEpochs !== undefined` re-derivation would be
     // truthy in every case. Only `isBehindnessKnown` gates the prompt, which is
-    // what the anti-flash test below exercises.
+    // what the anti-flash test below exercises. `isConnected` is the node-loaded
+    // gate (CAT-A / D-702b-1).
     networkTip: { epoch: 100 },
     localTip: { epoch: 97 },
+    isConnected: true,
     isBehindnessKnown: true,
     ...networkStatus,
   },
@@ -36,6 +38,11 @@ const makeStores = ({
     isPartialSyncEnabled: true,
     isSignificantlyBehind: true,
     proactivePromptDismissedThisSession: false,
+    // #4 re-pop guard (D-702b-3) + #16 beacon anchor (D-702b-10) default to the
+    // "no attempt yet / no certified epoch" state so the networkTip cases above
+    // are unaffected.
+    mithrilAttemptStartedThisSession: false,
+    certifiedEpoch: undefined,
     startPartialSync: jest.fn(() => Promise.resolve()),
     dismissProactivePrompt: jest.fn(),
     ...mithrilPartialSync,
@@ -45,10 +52,7 @@ const makeStores = ({
 const renderContainer = (overrides: StoreOverrides = {}) =>
   render(
     <IntlProvider locale="en-US" messages={translations}>
-      <MithrilProactivePromptContainer
-        stores={makeStores(overrides) as any}
-        actions={{} as any}
-      />
+      <MithrilProactivePromptContainer stores={makeStores(overrides) as any} />
     </IntlProvider>
   );
 
@@ -93,6 +97,69 @@ describe('MithrilProactivePromptContainer', () => {
 
     expect(screen.queryByText(KNOWN_EPOCHS_TEXT)).not.toBeInTheDocument();
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it('renders nothing while the node is not yet loaded (isConnected false — node-loaded gate)', () => {
+    // Everything else passes (finite tips, behind-ness known), but the node is
+    // still connecting / verifying the blockchain: the prompt must stay hidden.
+    const { container } = renderContainer({
+      networkStatus: { isConnected: false },
+    });
+
+    expect(screen.queryByText(KNOWN_EPOCHS_TEXT)).not.toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('renders nothing near the tip (behind-by <= 0 -> undefined) even though behind-ness is known', () => {
+    // Equal epochs -> computeBehindByEpochs returns undefined (near-tip hide),
+    // although isBehindnessKnown is still true (both tips finite).
+    const { container } = renderContainer({
+      networkStatus: { networkTip: { epoch: 97 }, localTip: { epoch: 97 } },
+    });
+
+    expect(screen.queryByText(KNOWN_EPOCHS_TEXT)).not.toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('renders nothing once a Mithril attempt has begun this session (re-pop guard)', () => {
+    const { container } = renderContainer({
+      mithrilPartialSync: { mithrilAttemptStartedThisSession: true },
+    });
+
+    expect(screen.queryByText(KNOWN_EPOCHS_TEXT)).not.toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('#16: renders during early sync via the certified-beacon epoch when networkTip is null', () => {
+    // networkTip not yet resolved (isBehindnessKnown false), but a finite
+    // certifiedEpoch > localTip.epoch means behind-ness IS known via the beacon:
+    // the prompt now appears (certified-anchored figure) instead of staying
+    // suppressed — the core #16 defect fix. 105 - 97 = 8 epochs.
+    renderContainer({
+      networkStatus: {
+        networkTip: null,
+        localTip: { epoch: 97 },
+        isBehindnessKnown: false,
+      },
+      mithrilPartialSync: { certifiedEpoch: 105 },
+    });
+
+    expect(
+      screen.getByText('Your node is about 8 epochs behind.')
+    ).toBeInTheDocument();
+  });
+
+  it('#16: prefers networkTip.epoch over certifiedEpoch when both are finite', () => {
+    // networkTip 100 vs certifiedEpoch 105, local 97: the hybrid anchor prefers
+    // the live networkTip -> 100 - 97 = 3, NOT the certified diff (105 - 97 = 8).
+    renderContainer({
+      mithrilPartialSync: { certifiedEpoch: 105 },
+    });
+
+    expect(screen.getByText(KNOWN_EPOCHS_TEXT)).toBeInTheDocument();
+    expect(
+      screen.queryByText('Your node is about 8 epochs behind.')
+    ).not.toBeInTheDocument();
   });
 
   it('renders nothing until behind-ness is KNOWN — gates on networkStatus.isBehindnessKnown, NOT a local tip re-derivation (anti-flash)', () => {

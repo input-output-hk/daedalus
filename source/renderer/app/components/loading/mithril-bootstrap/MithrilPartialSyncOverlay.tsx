@@ -30,7 +30,7 @@ type Props = {
   onRetry(): void;
   onRestartNormally(): void;
   onWipeAndFullSync(): void;
-  onDismissCompleted(): void;
+  onDismissCompleted(): void | Promise<void>;
   onQuit(): void;
   onOpenExternalLink?: (arg: string) => void;
 };
@@ -83,10 +83,12 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
   // preserved; only the trigger changes from a click to this timeout.
   useEffect(() => {
     if (status !== 'completed') return undefined;
-    const timer = setTimeout(
-      () => onDismissCompleted(),
-      COMPLETED_AUTO_DISMISS_DELAY_MS
-    );
+    // #2 (D-702b-4): not fire-and-forget — `onDismissCompleted` awaits the async
+    // finalize IPC, so wrap it in `Promise.resolve(...).catch(...)` to ensure a
+    // finalize rejection can never surface as an unhandled promise rejection.
+    const timer = setTimeout(() => {
+      Promise.resolve(onDismissCompleted()).catch(() => {});
+    }, COMPLETED_AUTO_DISMISS_DELAY_MS);
     return () => clearTimeout(timer);
   }, [status, onDismissCompleted]);
 
@@ -149,6 +151,16 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
             variant: 'primary' as const,
           },
         ];
+  // This caller (not the shared, render-order-agnostic MithrilErrorView) owns the
+  // partial-sync overlay's display order: secondary actions first (left), the
+  // primary action last (right), opting into right-alignment below. This is a
+  // STABLE reorder of the SAME action set (locked invariant #2) — it never
+  // filters, drops, or adds an action; allowedRecoveryActions still owns
+  // membership. Non-primary actions keep their relative order.
+  const orderedErrorActions = [
+    ...errorActions.filter((action) => action.variant !== 'primary'),
+    ...errorActions.filter((action) => action.variant === 'primary'),
+  ];
 
   return (
     <div className={styles.component}>
@@ -219,7 +231,8 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
               title={intl.formatMessage(errorCopy.title)}
               hint={intl.formatMessage(errorCopy.hint)}
               hintAsBody={status === 'cancelled'}
-              actions={errorActions}
+              actions={orderedErrorActions}
+              rightAlignActions
             />
           )}
         </div>

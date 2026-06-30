@@ -75,6 +75,10 @@
 .actions {
   display: flex;
   gap: 12px;
+  justify-content: flex-start;
+}
+
+.actionsRightAligned {
   justify-content: flex-end;
 }
 

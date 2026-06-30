@@ -229,6 +229,28 @@ describe('mithrilPartialSyncChannel', () => {
     ).resolves.toEqual({ isEnabled: true, isSignificantlyBehind: false });
   });
 
+  it('forwards certifiedEpoch on the availability payload (#16)', async () => {
+    const moduleExports = loadModule();
+
+    moduleExports.handleMithrilPartialSyncRequests({
+      webContents: {},
+    } as never);
+
+    const availabilityWithEpoch = {
+      isEnabled: true,
+      isSignificantlyBehind: true,
+      behindByImmutables: 30,
+      certifiedEpoch: 320,
+    };
+    mithrilControllerMock.getPartialSyncAvailability.mockReturnValue(
+      availabilityWithEpoch
+    );
+
+    await expect(
+      mockChannels[5].onRequest.mock.calls[0][0]()
+    ).resolves.toEqual(availabilityWithEpoch);
+  });
+
   it('finalize channel (mockChannels[6]) delegates to controller.finalizePartialSync() and resolves to undefined', async () => {
     const moduleExports = loadModule();
 

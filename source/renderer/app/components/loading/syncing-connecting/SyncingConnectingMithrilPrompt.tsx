@@ -172,11 +172,7 @@ export default class SyncingConnectingMithrilPrompt extends Component<
               visible-highlight contrast across themes is CAT-D's concern (theme
               tokens / .scss); CAT-F makes no scss change here. */}
           <Button
-            className={classNames([
-              'primary',
-              styles.actionButton,
-              styles.primaryButton,
-            ])}
+            className={classNames(['primary', styles.actionButton])}
             label={intl.formatMessage(messages.promptMithrilButton)}
             onClick={this.showConfirmation}
             skin={ButtonSkin}
@@ -204,11 +200,7 @@ export default class SyncingConnectingMithrilPrompt extends Component<
             skin={ButtonSkin}
           />
           <Button
-            className={classNames([
-              'primary',
-              styles.actionButton,
-              styles.primaryButton,
-            ])}
+            className={classNames(['primary', styles.actionButton])}
             label={intl.formatMessage(messages.promptConfirmStart)}
             disabled={isStarting}
             onClick={this.handleStart}

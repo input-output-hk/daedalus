@@ -56,13 +56,17 @@ const createContext = (): PartialSyncPreflightContext => ({
   mithrilWorkDir: '/tmp/mithril-workdir',
 });
 
-const createLatestSnapshot = (latestCertifiedImmutableNumber = 25) => ({
+const createLatestSnapshot = (
+  latestCertifiedImmutableNumber = 25,
+  certifiedEpoch: number | null = null
+) => ({
   snapshot: {
     digest: 'latest-digest',
     createdAt: '2026-05-20T00:00:00Z',
     size: 2,
   },
   latestCertifiedImmutableNumber,
+  certifiedEpoch,
 });
 
 describe('MithrilPartialSyncService', () => {
@@ -159,6 +163,7 @@ describe('MithrilPartialSyncService', () => {
         digest: 'latest-digest',
       }),
       latestCertifiedImmutableNumber: 25,
+      certifiedEpoch: null,
     });
   });
 
@@ -194,6 +199,7 @@ describe('MithrilPartialSyncService', () => {
         digest: 'latest-digest',
       }),
       latestCertifiedImmutableNumber: 25,
+      certifiedEpoch: null,
     });
   });
 
@@ -1026,6 +1032,7 @@ describe('MithrilPartialSyncService', () => {
             size: 10_000_000_000,
           },
           latestCertifiedImmutableNumber: 25,
+          certifiedEpoch: null,
         });
 
       const runCommandSpy = jest.spyOn(service, '_runCommand');
@@ -1068,6 +1075,7 @@ describe('MithrilPartialSyncService', () => {
             size: 10_000_000_000,
           },
           latestCertifiedImmutableNumber: 25,
+          certifiedEpoch: null,
         });
 
       require('check-disk-space').mockRejectedValueOnce(new Error('no measure'));
@@ -1289,6 +1297,101 @@ describe('MithrilPartialSyncService', () => {
       expect(resolveSpy).toHaveBeenCalledTimes(2);
 
       nowSpy.mockRestore();
+    });
+
+    it('caches the local immutable read within the TTL and re-resolves after it expires (#15)', async () => {
+      // #15 (D-702b-9): a cache hit must skip getManagedChainPath (which forks checkDiskSpace via
+      // getConfig) AND the immutable/ readdir — count getManagedChainPath as the proxy for both.
+      const service = new MithrilPartialSyncService();
+      stubLocalImmutableNumber(service, 5);
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue(createLatestSnapshot(25));
+      const getManagedChainPathSpy = jest.spyOn(
+        service._chainStorageManager,
+        'getManagedChainPath'
+      );
+      const nowSpy = jest.spyOn(Date, 'now');
+
+      nowSpy.mockReturnValue(1_000);
+      await service.getPartialSyncBehindness();
+      nowSpy.mockReturnValue(1_000 + 60_000); // within the 5 min TTL
+      await service.getPartialSyncBehindness();
+
+      expect(getManagedChainPathSpy).toHaveBeenCalledTimes(1);
+
+      nowSpy.mockReturnValue(1_000 + 6 * 60_000); // past the 5 min TTL
+      await service.getPartialSyncBehindness();
+
+      expect(getManagedChainPathSpy).toHaveBeenCalledTimes(2);
+
+      nowSpy.mockRestore();
+    });
+
+    it('invalidates the cached local read on a lifecycle reset so the next probe re-resolves it (#15)', async () => {
+      const service = new MithrilPartialSyncService();
+      stubLocalImmutableNumber(service, 5);
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue(createLatestSnapshot(25));
+      const getManagedChainPathSpy = jest.spyOn(
+        service._chainStorageManager,
+        'getManagedChainPath'
+      );
+      const nowSpy = jest.spyOn(Date, 'now');
+      nowSpy.mockReturnValue(1_000);
+
+      await service.getPartialSyncBehindness();
+      expect(getManagedChainPathSpy).toHaveBeenCalledTimes(1);
+
+      // A lifecycle reset (finalize-completed → _resetToIdleStatus) drops both behind-ness caches.
+      await service.finalizeCompletedPartialSync();
+
+      // No Date.now advance: without invalidation the within-TTL cache would serve the stale value.
+      await service.getPartialSyncBehindness();
+      expect(getManagedChainPathSpy).toHaveBeenCalledTimes(2);
+
+      nowSpy.mockRestore();
+    });
+
+    it('returns the certified epoch on the success result when the beacon carries one (#16)', async () => {
+      const service = new MithrilPartialSyncService();
+      stubLocalImmutableNumber(service, 5);
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue(createLatestSnapshot(25, 320));
+
+      await expect(service.getPartialSyncBehindness()).resolves.toEqual({
+        isSignificantlyBehind: true,
+        behindByImmutables: 20,
+        certifiedEpoch: 320,
+      });
+    });
+
+    it('returns the certified epoch on the not-behind (gap <= 0) result too (#16)', async () => {
+      const service = new MithrilPartialSyncService();
+      stubLocalImmutableNumber(service, 25);
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue(createLatestSnapshot(25, 320));
+
+      await expect(service.getPartialSyncBehindness()).resolves.toEqual({
+        isSignificantlyBehind: false,
+        certifiedEpoch: 320,
+      });
+    });
+
+    it('omits the certified epoch when the beacon has none, leaving the verdict unchanged (#16 safe-degrade)', async () => {
+      const service = new MithrilPartialSyncService();
+      stubLocalImmutableNumber(service, 5);
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue(createLatestSnapshot(25, null));
+
+      await expect(service.getPartialSyncBehindness()).resolves.toEqual({
+        isSignificantlyBehind: true,
+        behindByImmutables: 20,
+      });
     });
   });
 });

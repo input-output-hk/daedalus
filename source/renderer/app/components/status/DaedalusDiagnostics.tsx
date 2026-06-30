@@ -17,6 +17,7 @@ import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
+import { computeBehindByEpochs } from '../../utils/mithrilBehindness';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
@@ -408,6 +409,7 @@ type Props = {
   isForceCheckingSystemTime: boolean;
   localTip: TipInfo | null | undefined;
   networkTip: TipInfo | null | undefined;
+  certifiedEpoch?: number | null;
   isMithrilPartialSyncWorking: boolean;
   isMithrilPartialSyncEnabled: boolean;
   isMithrilPartialSyncSignificantlyBehind: boolean;
@@ -521,6 +523,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isSystemTimeIgnored,
       localTip,
       networkTip,
+      certifiedEpoch,
       isMithrilPartialSyncWorking,
       isMithrilPartialSyncEnabled,
       isMithrilPartialSyncSignificantlyBehind,
@@ -567,14 +570,11 @@ class DaedalusDiagnostics extends Component<Props, State> {
       messages.unknownDiskSpaceSupportUrl
     );
     const formattedSyncPercentage = formattedNumber(syncPercentage, 2);
-    const networkEpoch =
-      networkTip && Number.isFinite(networkTip.epoch) ? networkTip.epoch : null;
-    const localEpoch =
-      localTip && Number.isFinite(localTip.epoch) ? localTip.epoch : null;
-    const behindByEpochs =
-      networkEpoch !== null && localEpoch !== null
-        ? Math.max(1, networkEpoch - localEpoch)
-        : undefined;
+    const behindByEpochs = computeBehindByEpochs(
+      localTip,
+      networkTip,
+      certifiedEpoch
+    );
     const cardanoNetworkValue = intl.formatMessage(
       globalMessages[`network_${cardanoNetwork}`]
     );

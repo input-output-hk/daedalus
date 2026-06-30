@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -26,6 +27,12 @@ interface Props {
     onClick(): void;
     variant?: 'primary' | 'secondary';
   }>;
+  // Opt-in: right-align the actions footer (e.g. partial-sync overlay caller,
+  // which supplies actions in display order — secondary first, primary last).
+  // Default (no prop) keeps the footer left-aligned in caller order, so the
+  // bootstrap default renders [Wipe chain & retry (primary), Decline] on the
+  // left, primary-first (locked invariant #11).
+  rightAlignActions?: boolean;
   onWipeRetry?(): void;
   onDecline?(): void;
 }
@@ -86,6 +93,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
     hint,
     hintAsBody,
     actions,
+    rightAlignActions,
   } = props;
   const copy =
     (error?.stage && ERROR_COPY_BY_STAGE[error.stage]) ||
@@ -108,12 +116,10 @@ function MithrilErrorView(props: Props, { intl }: Context) {
       variant: 'secondary' as const,
     },
   ];
-  // Render the primary action LAST so it sits on the right (consistent with other
-  // Daedalus dialogs). Non-primary actions keep their relative order on the left.
-  const orderedActions = [
-    ...resolvedActions.filter((action) => action.variant !== 'primary'),
-    ...resolvedActions.filter((action) => action.variant === 'primary'),
-  ];
+  // Render-order-agnostic: actions are rendered verbatim in caller order. Any
+  // primary-last/right-align ordering is owned by the caller (e.g. the
+  // partial-sync overlay), keeping the bootstrap default (no actions prop)
+  // primary-first and left-aligned (locked invariant #11).
 
   return (
     <div className={styles.root} role="alert">
@@ -165,8 +171,13 @@ function MithrilErrorView(props: Props, { intl }: Context) {
         </div>
       )}
 
-      <div className={styles.actions}>
-        {orderedActions.map((action, index) => (
+      <div
+        className={classNames([
+          styles.actions,
+          rightAlignActions && styles.actionsRightAligned,
+        ])}
+      >
+        {resolvedActions.map((action, index) => (
           <Button
             key={`${action.label}-${index}`}
             className={

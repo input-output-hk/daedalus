@@ -95,19 +95,22 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
       <MithrilSnapshotDetails selectedSnapshot={selectedSnapshot} />
 
       <div className={styles.actions}>
-        <Button
-          className={styles.primaryAction}
-          skin={ButtonSkin}
-          disabled={isDecisionDisabled}
-          label={intl.formatMessage(messages.accept)}
-          onClick={onAccept}
-        />
+        {/* secondary (decline) first → left; primary (accept) last → right via
+            the .actions flex-end, matching the corrected MithrilErrorView and the
+            widgets/Dialog.tsx convention (caller lists primary last). */}
         <Button
           className={styles.secondaryAction}
           skin={ButtonSkin}
           disabled={isDecisionDisabled}
           label={intl.formatMessage(messages.decline)}
           onClick={onDecline}
+        />
+        <Button
+          className={styles.primaryAction}
+          skin={ButtonSkin}
+          disabled={isDecisionDisabled}
+          label={intl.formatMessage(messages.accept)}
+          onClick={onAccept}
         />
       </div>
     </div>

@@ -110,6 +110,14 @@ export class MithrilPartialSyncService {
   _chainStorageManager: ChainStorageManager;
   _latestCertifiedImmutableCache: {
     value: number;
+    epoch: number | null;
+    fetchedAt: number;
+  } | null = null;
+  // #15 (D-702b-9): dedupe the per-probe local immutable read (getManagedChainPath → fork
+  // checkDiskSpace via getConfig, plus the immutable/ readdir) under the SAME 5-min TTL as the
+  // aggregator cache. Invalidated on Mithril lifecycle transitions via _invalidateBehindnessCaches().
+  _localImmutableCache: {
+    value: number;
     fetchedAt: number;
   } | null = null;
 
@@ -134,6 +142,10 @@ export class MithrilPartialSyncService {
     if (this._activeWorkDir) {
       throw new Error('Mithril partial sync is already in progress.');
     }
+
+    // #15 (D-702b-9): the local immutable position is about to change — drop the behind-ness
+    // input caches so the next probe re-resolves fresh inputs without waiting out the TTL.
+    this._invalidateBehindnessCaches();
 
     this._activeWorkDir = context.mithrilWorkDir;
     this._stagingChainDir = context.mithrilWorkDir;
@@ -262,6 +274,9 @@ export class MithrilPartialSyncService {
   }
 
   async cancel(): Promise<void> {
+    // #15 (D-702b-9): invalidate behind-ness input caches at cancel entry so the next probe is fresh.
+    this._invalidateBehindnessCaches();
+
     if (!this._activeWorkDir && !this._currentProcess) {
       logger.info(
         'MithrilPartialSyncService: ignoring cancel request with no active partial sync',
@@ -574,6 +589,9 @@ export class MithrilPartialSyncService {
   }
 
   _resetToIdleStatus(): void {
+    // #15 (D-702b-9): covers restart-normal/wipe/finalize-wipe/finalize-completed — after a cutover
+    // the next probe must re-resolve both behind-ness inputs so the prompt/Diagnostics flip promptly.
+    this._invalidateBehindnessCaches();
     this._progressItems = [];
     this._latestSnapshot = null;
     this._updateStatus({
@@ -654,9 +672,49 @@ export class MithrilPartialSyncService {
     const snapshot = await this.resolveLatestSnapshotMetadata();
     this._latestCertifiedImmutableCache = {
       value: snapshot.latestCertifiedImmutableNumber,
+      epoch: snapshot.certifiedEpoch, // #16 (D-702b-10): carry the certified epoch from the same beacon
       fetchedAt: now,
     };
     return snapshot.latestCertifiedImmutableNumber;
+  }
+
+  // #16 (D-702b-10): sibling getter for the certified epoch carried on the aggregator cache. Returns
+  // `null` when the cache is unpopulated or the beacon had no epoch. Does NOT change the immutable
+  // getter's `number` return; read it AFTER _getCachedLatestCertifiedImmutableNumber populates the cache.
+  _getCachedCertifiedEpoch(): number | null {
+    return this._latestCertifiedImmutableCache?.epoch ?? null;
+  }
+
+  // #15 (D-702b-9): cache the local immutable read under the same 5-min TTL as the aggregator. On a
+  // hit we skip BOTH getManagedChainPath (which transitively forks checkDiskSpace via getConfig) AND
+  // resolveLocalImmutableNumber's immutable/ readdir — the per-probe CPU cost the 30s poll paid every tick.
+  async _getCachedLocalImmutableNumber(): Promise<number> {
+    const now = Date.now();
+    if (
+      this._localImmutableCache &&
+      now - this._localImmutableCache.fetchedAt <
+        PARTIAL_SYNC_BEHINDNESS_CACHE_TTL_MS
+    ) {
+      return this._localImmutableCache.value;
+    }
+    const managedChainPath =
+      await this._chainStorageManager.getManagedChainPath();
+    const localImmutableNumber = await resolveLocalImmutableNumber(
+      managedChainPath,
+      (stage, message, code) => this._createStageError(stage, message, code)
+    );
+    this._localImmutableCache = {
+      value: localImmutableNumber,
+      fetchedAt: now,
+    };
+    return localImmutableNumber;
+  }
+
+  // #15 (D-702b-9): drop both behind-ness input caches so the next probe re-resolves fresh. Called at
+  // start()/cancel() entry and inside _resetToIdleStatus() (restart-normal/wipe/finalize paths).
+  _invalidateBehindnessCaches(): void {
+    this._latestCertifiedImmutableCache = null;
+    this._localImmutableCache = null;
   }
 
   _getBehindnessThresholdImmutables(): number {
@@ -669,23 +727,26 @@ export class MithrilPartialSyncService {
   async getPartialSyncBehindness(): Promise<{
     isSignificantlyBehind: boolean;
     behindByImmutables?: number;
+    certifiedEpoch?: number | null;
   }> {
     try {
       const latest = await this._getCachedLatestCertifiedImmutableNumber();
-      const managedChainPath =
-        await this._chainStorageManager.getManagedChainPath();
-      const localImmutableNumber = await resolveLocalImmutableNumber(
-        managedChainPath,
-        (stage, message, code) => this._createStageError(stage, message, code)
-      );
+      // #15 (D-702b-9): cached local read dedupes the checkDiskSpace fork + immutable/ readdir.
+      const localImmutableNumber = await this._getCachedLocalImmutableNumber();
+      // #16 (D-702b-10): same beacon → consistent epoch; null/undefined ⇒ omitted below.
+      const certifiedEpoch = this._getCachedCertifiedEpoch();
       const gap = latest - localImmutableNumber;
       if (gap <= 0) {
         // local >= latest ⇒ no certified range to restore ⇒ never nudge (PRD D2 truthfulness)
-        return { isSignificantlyBehind: false };
+        return {
+          isSignificantlyBehind: false,
+          ...(certifiedEpoch != null ? { certifiedEpoch } : {}),
+        };
       }
       return {
         isSignificantlyBehind: gap >= this._getBehindnessThresholdImmutables(),
         behindByImmutables: gap,
+        ...(certifiedEpoch != null ? { certifiedEpoch } : {}),
       };
     } catch (error) {
       // Aggregator unreachable, no immutable dir yet, or any failure ⇒ degrade to not-behind.

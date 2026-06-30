@@ -530,11 +530,17 @@ Sanctioned ADR + intentional asymmetry: ADR D-702a-2 amendment applied (backend 
 set (`_deriveAllowedRecoveryActions:552`) UNCHANGED — the cancelled(2)/failed(3) asymmetry is intentional
 per the literal citation, flagged for review.
 
-Shared-error-view note (#11, sanctioned visual-only): the `flex-end` + primary-last reorder also flips the
-empty-chain bootstrap error view's footer (primary now on the right) — this cross-dialog alignment is
-explicitly sanctioned by the decisions doc "Deferred / investigate" note ("if the footer/action layout is
-shared with the bootstrap dialogs, align those too visual-only"). No logic/handler change; verified the
-bootstrap spec stays green.
+Shared-error-view note (#11) — CORRECTED by task-ux-702b (D-702b-5, finding #1): the original claim
+here that the `flex-end` + primary-last reorder was "sanctioned visual-only … no logic/handler change"
+is **inaccurate**. The `orderedActions` "primary-last" filter added on the **shared** `MithrilErrorView`
+was a **real DOM child reorder** that silently moved the **destructive "Wipe chain & retry" primary to
+the far right** of the empty-chain bootstrap default (`MithrilBootstrap.tsx` renders the view with **no**
+`actions` prop), regressing a flow the 702a decision record explicitly said to leave visual-only and not
+regress (`task-ux-702a-decisions.md:167-168`). It was **not** visual-only. **702b remediation (CAT-C):**
+`MithrilErrorView` is made render-order-agnostic (the `orderedActions` filter is removed; actions render
+verbatim in caller order), the secondary-first/primary-last ordering + opt-in right-alignment moved into
+the partial-sync overlay caller only, and the empty-chain bootstrap default is restored (primary-first,
+left-aligned).
 
 Locked-invariant adherence: honors #2/#4/#5 (only the backend-emitted array is trimmed; renderer/store
 action logic renders strictly from `allowedRecoveryActions` — unchanged), #6 (`cancel()` still hard-rejects

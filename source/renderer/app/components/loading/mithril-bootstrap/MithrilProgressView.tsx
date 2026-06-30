@@ -71,6 +71,43 @@ const formatDuration = (value?: number) => {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 };
 
+// Shared completion frame for the in-dialogue node stop/start hand-offs and the
+// partial-sync completed-transition frame (#12). The three blocks differ only in
+// spinner position (top for the completed transition) and whether a detail line
+// is present, so they collapse into one helper while keeping
+// role=status/aria-live=polite/aria-atomic=true and the spinner verbatim.
+function CompletionBlock({
+  title,
+  detail,
+  spinnerPosition = 'bottom',
+}: {
+  title: string;
+  detail?: string;
+  spinnerPosition?: 'top' | 'bottom';
+}) {
+  const spinner = (
+    <SVGInline
+      svg={spinnerIcon}
+      className={styles.completionSpinner}
+      aria-hidden="true"
+    />
+  );
+
+  return (
+    <div
+      className={styles.completionBlock}
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      {spinnerPosition === 'top' && spinner}
+      <h2 className={styles.completionTitle}>{title}</h2>
+      {detail != null && <p className={styles.completionDetail}>{detail}</p>}
+      {spinnerPosition === 'bottom' && spinner}
+    </div>
+  );
+}
+
 function MithrilProgressView(props: Props, { intl }: Context) {
   const {
     status,
@@ -172,65 +209,34 @@ function MithrilProgressView(props: Props, { intl }: Context) {
       </div>
 
       {isStoppingNode && (
-        <div
-          className={styles.completionBlock}
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          <h2 className={styles.completionTitle}>
-            {stoppingNodeTitle ||
-              intl.formatMessage(messages.nodeStoppingTitle)}
-          </h2>
-          <p className={styles.completionDetail}>
-            {stoppingNodeDetail ||
-              intl.formatMessage(messages.nodeStoppingDetail)}
-          </p>
-          <SVGInline
-            svg={spinnerIcon}
-            className={styles.completionSpinner}
-            aria-hidden="true"
-          />
-        </div>
+        <CompletionBlock
+          title={
+            stoppingNodeTitle || intl.formatMessage(messages.nodeStoppingTitle)
+          }
+          detail={
+            stoppingNodeDetail ||
+            intl.formatMessage(messages.nodeStoppingDetail)
+          }
+        />
       )}
 
       {isStartingNode && (
-        <div
-          className={styles.completionBlock}
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          <h2 className={styles.completionTitle}>
-            {startingNodeTitle ||
-              intl.formatMessage(messages.nodeStartingTitle)}
-          </h2>
-          <p className={styles.completionDetail}>
-            {startingNodeDetail ||
-              intl.formatMessage(messages.nodeStartingDetail)}
-          </p>
-          <SVGInline
-            svg={spinnerIcon}
-            className={styles.completionSpinner}
-            aria-hidden="true"
-          />
-        </div>
+        <CompletionBlock
+          title={
+            startingNodeTitle || intl.formatMessage(messages.nodeStartingTitle)
+          }
+          detail={
+            startingNodeDetail ||
+            intl.formatMessage(messages.nodeStartingDetail)
+          }
+        />
       )}
 
       {isCompletedTransition && (
-        <div
-          className={styles.completionBlock}
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          <SVGInline
-            svg={spinnerIcon}
-            className={styles.completionSpinner}
-            aria-hidden="true"
-          />
-          <h2 className={styles.completionTitle}>{completedTransitionLabel}</h2>
-        </div>
+        <CompletionBlock
+          title={completedTransitionLabel || ''}
+          spinnerPosition="top"
+        />
       )}
 
       {!hideAction && (
