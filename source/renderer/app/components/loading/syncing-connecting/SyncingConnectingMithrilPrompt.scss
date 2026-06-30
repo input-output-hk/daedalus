@@ -1,20 +1,22 @@
 .component {
-  background-color: var(--theme-report-issue-connecting-background-color);
+  background-color: var(--theme-mithril-card-background);
+  border: 1px solid var(--theme-mithril-panel-border-color);
   border-radius: 6px;
+  box-shadow: 0 12px 42px var(--theme-mithril-card-shadow);
   box-sizing: border-box;
+  left: 50%;
   margin: 24px auto 0;
   max-width: 520px;
   padding: 20px 24px;
   position: fixed;
-  left: 50%;
   text-align: center;
-  top: 0;
+  top: 84px;
   transform: translateX(-50%);
   z-index: 10;
 }
 
 .body {
-  color: var(--theme-report-issue-connecting-text-color);
+  color: var(--theme-mithril-card-text-color);
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.4;
@@ -22,7 +24,7 @@
 }
 
 .benefit {
-  color: var(--theme-report-issue-connecting-text-color);
+  color: var(--theme-mithril-body-text-color);
   font-family: var(--font-regular);
   font-size: 15px;
   line-height: 1.4;
@@ -30,7 +32,7 @@
 }
 
 .handoffNote {
-  color: var(--theme-report-issue-connecting-text-color);
+  color: var(--theme-mithril-secondary-text-color);
   font-family: var(--font-regular);
   font-size: 13px;
   line-height: 1.4;
@@ -39,7 +41,7 @@
 }
 
 .confirmBody {
-  color: var(--theme-report-issue-connecting-text-color);
+  color: var(--theme-mithril-card-text-color);
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.4;
@@ -57,12 +59,16 @@
   min-width: 180px;
 }
 
+// The primary highlight is governed by the global `primary` ButtonSkin; this
+// rule keeps the `styles.primaryButton` reference valid (consumed in
+// SyncingConnectingMithrilPrompt.tsx) without re-imposing a report-issue
+// background that previously fought the card surface.
 .primaryButton {
-  background-color: var(--theme-report-issue-button-background-color);
+  min-width: 180px;
 }
 
 .error {
-  color: var(--theme-color-error);
+  color: var(--theme-mithril-error-text-color);
   font-family: var(--font-regular);
   font-size: 14px;
   line-height: 1.4;

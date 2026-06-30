@@ -20,6 +20,7 @@ interface Props {
   onOpenExternalLink?: (arg: string) => void;
   title?: string;
   hint?: string | null;
+  hintAsBody?: boolean;
   actions?: Array<{
     label: string;
     onClick(): void;
@@ -83,6 +84,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
     onDecline,
     title,
     hint,
+    hintAsBody,
     actions,
   } = props;
   const copy =
@@ -106,6 +108,12 @@ function MithrilErrorView(props: Props, { intl }: Context) {
       variant: 'secondary' as const,
     },
   ];
+  // Render the primary action LAST so it sits on the right (consistent with other
+  // Daedalus dialogs). Non-primary actions keep their relative order on the left.
+  const orderedActions = [
+    ...resolvedActions.filter((action) => action.variant !== 'primary'),
+    ...resolvedActions.filter((action) => action.variant === 'primary'),
+  ];
 
   return (
     <div className={styles.root} role="alert">
@@ -114,7 +122,12 @@ function MithrilErrorView(props: Props, { intl }: Context) {
           {title || intl.formatMessage(messages[copy.title])}
         </h1>
         {error?.message && <p>{error.message}</p>}
-        {resolvedHint && <div className={styles.errorHint}>{resolvedHint}</div>}
+        {resolvedHint &&
+          (hintAsBody ? (
+            <p className={styles.hintBody}>{resolvedHint}</p>
+          ) : (
+            <div className={styles.errorHint}>{resolvedHint}</div>
+          ))}
         {logPath && onOpenExternalLink && (
           <Link
             className={styles.logPathLink}
@@ -153,7 +166,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
       )}
 
       <div className={styles.actions}>
-        {resolvedActions.map((action, index) => (
+        {orderedActions.map((action, index) => (
           <Button
             key={`${action.label}-${index}`}
             className={

@@ -874,11 +874,7 @@ describe('MithrilPartialSyncService', () => {
     expect(service.status).toEqual(
       expect.objectContaining({
         status: 'cancelled',
-        allowedRecoveryActions: [
-          'retry',
-          'restart-normal',
-          'wipe-and-full-sync',
-        ],
+        allowedRecoveryActions: ['retry', 'restart-normal'],
       })
     );
   });
@@ -902,11 +898,7 @@ describe('MithrilPartialSyncService', () => {
     expect(service.status).toEqual(
       expect.objectContaining({
         status: 'failed',
-        allowedRecoveryActions: [
-          'retry',
-          'restart-normal',
-          'wipe-and-full-sync',
-        ],
+        allowedRecoveryActions: ['retry', 'restart-normal'],
         error: expect.objectContaining({
           message: 'cleanup failed',
           stage: 'downloading',

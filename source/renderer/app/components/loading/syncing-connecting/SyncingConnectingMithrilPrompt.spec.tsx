@@ -63,6 +63,30 @@ describe('SyncingConnectingMithrilPrompt', () => {
     expect(container.textContent).not.toMatch(/undefined/);
   });
 
+  it('shows the capitalized "Mithril Sync" handoff note in the choice view', () => {
+    renderComponent({ behindByEpochs: 3 });
+
+    expect(
+      screen.getByText(
+        'If skipped, you can still start the Mithril Sync from the Diagnostics screen.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('shows the shared canonical process summary in the confirm view', () => {
+    const { container } = renderComponent({ behindByEpochs: 3 });
+
+    clickButton('Mithril Sync (fast)');
+
+    expect(
+      screen.getByText(
+        'For this process to begin your Cardano node will need to be shutdown. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.'
+      )
+    ).toBeInTheDocument();
+    // The old private confirm-body copy is gone (consolidated into the shared key).
+    expect(container.textContent).not.toMatch(/so you catch up faster/i);
+  });
+
   it('does NOT start when the fast button is clicked — only reveals the confirm view', () => {
     const onStart = jest.fn(() => Promise.resolve());
     renderComponent({ behindByEpochs: 3, onStart });

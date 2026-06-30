@@ -20,6 +20,23 @@ jest.mock('../../utils/logging', () => ({
   },
 }));
 
+// Render both the trigger (children) and the tooltip body (content) so the
+// hover-only recommendation copy is assertable without simulating hover.
+jest.mock('react-polymorph/lib/components/PopOver', () => ({
+  PopOver: ({
+    children,
+    content,
+  }: {
+    children: React.ReactNode;
+    content: React.ReactNode;
+  }) => (
+    <>
+      {children}
+      {content}
+    </>
+  ),
+}));
+
 const defaultProps = {
   isActionBlocked: false,
   isMithrilPartialSyncWorking: false,
@@ -61,9 +78,35 @@ describe('MithrilPartialSyncSection', () => {
     screen.getByRole('button', { name: 'Back to diagnostics' }).click();
 
     expect(
+      screen.getByRole('button', { name: 'Mithril Sync' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: 'Before Mithril Sync begins' })
+    ).toBeNull();
+  });
+
+  it('exposes the recommendation copy as the Mithril Sync button tooltip', () => {
+    renderComponent();
+
+    expect(
       screen.getByText(
-        'If Cardano node catch-up is taking longer than you want, Mithril Sync can restore verified chain data to help it catch up faster.'
+        'If Cardano Node syncing is taking longer than you want, Mithril Sync can restore verified chain data to help speed up the sync.'
       )
+    ).toBeInTheDocument();
+    // The always-visible ready-hint was removed by D-702a-3.
+    expect(
+      screen.queryByText(/Review what will happen before Daedalus/)
+    ).toBeNull();
+  });
+
+  it('disables the button and shows only the blocked hint when blocked', () => {
+    renderComponent({ isActionBlocked: true });
+
+    expect(
+      screen.getByRole('button', { name: 'Mithril Sync' })
+    ).toBeDisabled();
+    expect(
+      screen.getByText('Unavailable while Mithril work is already active.')
     ).toBeInTheDocument();
   });
 
@@ -173,10 +216,11 @@ describe('MithrilPartialSyncSection', () => {
     );
 
     expect(
-      screen.getByText(
-        'If Cardano node catch-up is taking longer than you want, Mithril Sync can restore verified chain data to help it catch up faster.'
-      )
+      screen.getByRole('button', { name: 'Mithril Sync' })
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: 'Before Mithril Sync begins' })
+    ).toBeNull();
   });
 
   it('renders nothing and leaves no header row when the recommendation is gated off', () => {
@@ -231,7 +275,7 @@ describe('MithrilPartialSyncSection', () => {
 
     expect(
       screen.getByText(
-        'Your node is about 3 epochs behind the blockchain tip. Mithril Sync can restore verified chain data to help it catch up faster than waiting for standard sync.'
+        'Your node is about 3 epochs behind. Mithril Sync will restore verified chain data to help your node sync faster.'
       )
     ).toBeInTheDocument();
     expect(screen.queryByText(/% synced/)).toBeNull();
@@ -253,9 +297,10 @@ describe('MithrilPartialSyncSection', () => {
     );
 
     expect(
-      screen.getByText(
-        'If Cardano node catch-up is taking longer than you want, Mithril Sync can restore verified chain data to help it catch up faster.'
-      )
+      screen.getByRole('button', { name: 'Mithril Sync' })
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: 'Before Mithril Sync begins' })
+    ).toBeNull();
   });
 });

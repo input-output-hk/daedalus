@@ -3,9 +3,7 @@ import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
 import StoryDecorator from '../../_support/StoryDecorator';
 import DaedalusDiagnostics from '../../../../source/renderer/app/components/status/DaedalusDiagnostics';
-import MithrilPartialSyncRecommendation from '../../../../source/renderer/app/components/status/MithrilPartialSyncRecommendation';
 import MithrilPartialSyncConfirmation from '../../../../source/renderer/app/components/status/MithrilPartialSyncConfirmation';
-import SyncingConnectingMithrilPrompt from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt';
 
 const systemInfo = {
   platform: 'macOS',
@@ -75,13 +73,6 @@ const baseProps = {
   onForceCheckNetworkClock: action('onForceCheckNetworkClock'),
 } as any;
 
-// Isolated CTA/recommendation fixtures (section-level component, intl pulled
-// from context at render so en-US/ja-JP and theme switching stay truthful).
-const recommendationBaseProps = {
-  isActionBlocked: false,
-  onShowConfirmation: action('onShowConfirmation'),
-};
-
 // Isolated confirmation-modal fixtures (the real `isShowingConfirmation` seam is
 // exercised through DaedalusDiagnostics below; here the modal is rendered direct).
 const confirmationBaseProps = {
@@ -91,16 +82,7 @@ const confirmationBaseProps = {
   onConfirm: action('onConfirm'),
 };
 
-// Proactive (syncing-screen) prompt fixtures. `onStart` MUST return a Promise so
-// the confirm-view "Start now" await resolves like the real store call.
-const proactivePromptBaseProps = {
-  onStart: async () => {
-    action('onStart')();
-  },
-  onDismiss: action('onDismiss'),
-};
-
-storiesOf('Nodes / Status', module)
+storiesOf('Nodes / Diagnostic', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Partial Sync CTA Ready', () => <DaedalusDiagnostics {...baseProps} />)
   .add('Partial Sync CTA Blocked', () => (
@@ -117,19 +99,7 @@ storiesOf('Nodes / Status', module)
     />
   ));
 
-storiesOf('Nodes / Status / Mithril Partial Sync Recommendation', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .add('Behind (CTA Ready)', () => (
-    <MithrilPartialSyncRecommendation {...recommendationBaseProps} />
-  ))
-  .add('Blocked', () => (
-    <MithrilPartialSyncRecommendation
-      {...recommendationBaseProps}
-      isActionBlocked
-    />
-  ));
-
-storiesOf('Nodes / Status / Mithril Partial Sync Confirmation', module)
+storiesOf('Nodes / Diagnostic / Mithril Partial Sync Confirmation', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Known Epochs Behind', () => (
     <MithrilPartialSyncConfirmation
@@ -146,16 +116,4 @@ storiesOf('Nodes / Status / Mithril Partial Sync Confirmation', module)
       behindByEpochs={42}
       startError="Unable to start Mithril sync. Cardano node did not stop in time."
     />
-  ));
-
-storiesOf('Nodes / Status / Mithril Proactive Prompt', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .add('Known Epochs Behind', () => (
-    <SyncingConnectingMithrilPrompt
-      {...proactivePromptBaseProps}
-      behindByEpochs={120}
-    />
-  ))
-  .add('Unknown Behind', () => (
-    <SyncingConnectingMithrilPrompt {...proactivePromptBaseProps} />
   ));

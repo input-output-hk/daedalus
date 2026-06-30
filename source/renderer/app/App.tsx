@@ -13,6 +13,7 @@ import translations from './i18n/translations';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
 import MithrilPartialSyncOverlay from './components/loading/mithril-bootstrap/MithrilPartialSyncOverlay';
+import MithrilProactivePromptContainer from './containers/loading/MithrilProactivePromptContainer';
 import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDialog';
 import NotificationsContainer from './containers/notifications/NotificationsContainer';
 import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
@@ -122,6 +123,11 @@ class App extends Component<{
                     onOpenExternalLink={app.openExternalLink}
                   />
                 )}
+                {/* Proactive Mithril prompt: mounted app-level (sibling of
+                    <Router>) so it PERSISTS across the loading -> Wallet Summary
+                    transition (D-702a-5). It self-gates to status === 'idle', so
+                    it never co-renders with the MithrilPartialSyncOverlay above. */}
+                <MithrilProactivePromptContainer />
                 <RTSFlagsRecommendationOverlayContainer />
                 <NotificationsContainer />
                 {canShowNews && [

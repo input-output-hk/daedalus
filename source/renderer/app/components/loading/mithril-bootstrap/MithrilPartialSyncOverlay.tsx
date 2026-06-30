@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { intlShape } from 'react-intl';
 import type {
   MithrilPartialSyncError,
@@ -51,6 +51,12 @@ const PROGRESS_STATUSES: MithrilPartialSyncStatus[] = [
   'completed',
 ];
 
+// ADR D-702a-1: the completed overlay is a success acknowledgment that
+// auto-hands-off to the normal loading/Wallet-Summary screen — no "Continue"
+// click. This linger keeps the success frame visible long enough to read before
+// the finalize IPC fires automatically (see the effect below).
+const COMPLETED_AUTO_DISMISS_DELAY_MS = 4000;
+
 function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
   const {
     status,
@@ -69,6 +75,20 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
     onQuit,
     onOpenExternalLink,
   } = props;
+
+  // ADR D-702a-1: on 'completed', auto-fire the finalize IPC (reset-to-idle +
+  // remove staging dir + clear marker + folder deletion) via the stable
+  // `onDismissCompleted` MobX action once the success frame has lingered — the
+  // explicit "Continue to Daedalus" click is gone. All cleanup semantics are
+  // preserved; only the trigger changes from a click to this timeout.
+  useEffect(() => {
+    if (status !== 'completed') return undefined;
+    const timer = setTimeout(
+      () => onDismissCompleted(),
+      COMPLETED_AUTO_DISMISS_DELAY_MS
+    );
+    return () => clearTimeout(timer);
+  }, [status, onDismissCompleted]);
 
   const isProgressStatus = PROGRESS_STATUSES.includes(status);
   const activeHeadingId = isProgressStatus
@@ -159,11 +179,10 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
                   ? MithrilBootstrapMessages.partialSyncCompletedSubtitle
                   : MithrilBootstrapMessages.partialSyncProgressSubtitle
               )}
-              actionLabel={intl.formatMessage(
-                status === 'completed'
-                  ? MithrilBootstrapMessages.partialSyncContinue
-                  : MithrilBootstrapMessages.cancel
+              completedTransitionLabel={intl.formatMessage(
+                MithrilBootstrapMessages.partialSyncCompletedTransition
               )}
+              actionLabel={intl.formatMessage(MithrilBootstrapMessages.cancel)}
               startingNodeTitle={intl.formatMessage(
                 MithrilBootstrapMessages.partialSyncNodeStartingTitle
               )}
@@ -180,6 +199,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
                 'installing',
                 'finalizing',
                 'starting-node',
+                'completed',
               ].includes(status)}
               actionDisabled={status === 'stopping-node'}
               actionDisabledTooltip={
@@ -190,7 +210,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
                   : undefined
               }
               showDownloadProgressBar
-              onAction={status === 'completed' ? onDismissCompleted : onCancel}
+              onAction={onCancel}
             />
           ) : (
             <MithrilErrorView
@@ -198,6 +218,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
               onOpenExternalLink={onOpenExternalLink}
               title={intl.formatMessage(errorCopy.title)}
               hint={intl.formatMessage(errorCopy.hint)}
+              hintAsBody={status === 'cancelled'}
               actions={errorActions}
             />
           )}

@@ -23,8 +23,15 @@
 }
 
 .errorHint {
-  color: var(--theme-mithril-secondary-text-color);
+  color: var(--theme-mithril-body-text-color);
   font-size: 13px;
+  margin-top: 8px;
+}
+
+.hintBody {
+  color: var(--theme-mithril-body-text-color);
+  font-size: 15px;
+  line-height: 1.5;
   margin-top: 8px;
 }
 
@@ -68,7 +75,7 @@
 .actions {
   display: flex;
   gap: 12px;
-  justify-content: flex-start;
+  justify-content: flex-end;
 }
 
 .primaryAction {

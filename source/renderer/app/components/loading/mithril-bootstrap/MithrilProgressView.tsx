@@ -34,6 +34,7 @@ interface Props {
   startingNodeDetail?: string;
   stoppingNodeTitle?: string;
   stoppingNodeDetail?: string;
+  completedTransitionLabel?: string;
   hideAction?: boolean;
   actionDisabled?: boolean;
   actionDisabledTooltip?: string;
@@ -89,6 +90,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     startingNodeDetail,
     stoppingNodeTitle,
     stoppingNodeDetail,
+    completedTransitionLabel,
     hideAction,
     actionDisabled,
     actionDisabledTooltip,
@@ -99,6 +101,12 @@ function MithrilProgressView(props: Props, { intl }: Context) {
   const isStartingNode = status === 'starting-node';
   const isStoppingNode = status === 'stopping-node';
   const isLongRunningPhase = LONG_RUNNING_STATUSES.has(status);
+  // ADR D-702a-1: the partial-sync overlay passes `completedTransitionLabel` to
+  // turn the 'completed' frame into a loading-style hand-off (spinner +
+  // "Returning to Daedalus...") while the finalize auto-timeout runs. Bootstrap
+  // never passes the prop, so its 'completed' frame is byte-for-byte unchanged.
+  const isCompletedTransition =
+    status === 'completed' && !!completedTransitionLabel;
 
   // Local elapsed-seconds timer — only this component re-renders each second
   const [elapsedSeconds, setElapsedSeconds] = useState<number | undefined>(
@@ -206,6 +214,22 @@ function MithrilProgressView(props: Props, { intl }: Context) {
             className={styles.completionSpinner}
             aria-hidden="true"
           />
+        </div>
+      )}
+
+      {isCompletedTransition && (
+        <div
+          className={styles.completionBlock}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <SVGInline
+            svg={spinnerIcon}
+            className={styles.completionSpinner}
+            aria-hidden="true"
+          />
+          <h2 className={styles.completionTitle}>{completedTransitionLabel}</h2>
         </div>
       )}
 

@@ -466,7 +466,7 @@ describe('MithrilPartialSyncStore', () => {
     expect(store.behindByImmutables).toBeUndefined();
   });
 
-  it('refreshes availability on the interval only while partial sync work is in flight', async () => {
+  it('refreshes availability on every interval tick while idle so first load self-corrects', async () => {
     const store = setupStore();
     mockStatusRequest.mockResolvedValue({
       status: 'idle',
@@ -482,20 +482,16 @@ describe('MithrilPartialSyncStore', () => {
 
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
 
-    // Idle: the interval fires but does not refresh.
+    // Idle: the interval still refreshes so the Diagnostics Mithril section
+    // self-corrects on first load without a full reload (ISSUE-1). Awaiting the
+    // previous probe lets the re-entrancy guard clear before the next tick.
     jest.advanceTimersByTime(30_000);
-    expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
-
-    // In-flight: the interval refreshes behind-ness while syncing.
-    registeredStatusHandler({
-      status: 'downloading',
-      allowedRecoveryActions: [],
-      transferProgress: {},
-      progressItems: [],
-      error: null,
-    });
-    jest.advanceTimersByTime(30_000);
+    await mockAvailabilityRequest.mock.results[1].value;
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(2);
+
+    jest.advanceTimersByTime(30_000);
+    await mockAvailabilityRequest.mock.results[2].value;
+    expect(mockAvailabilityRequest).toHaveBeenCalledTimes(3);
   });
 
   it('clears the availability refresh interval on teardown', async () => {

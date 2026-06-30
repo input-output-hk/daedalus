@@ -341,25 +341,8 @@
     gap: 8px;
   }
 
-  .mithrilPartialSyncConfirmation {
-    color: var(--theme-network-window-text-color);
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: center;
-    max-width: 560px;
-    width: 100%;
-  }
-
-  .mithrilPartialSyncConfirmationTitle {
-    color: var(--theme-network-window-white-color);
-    font-family: var(--font-medium);
-    font-size: 24px;
-    line-height: 1.33;
-    margin: 0 0 20px;
-  }
-
   .mithrilPartialSyncConfirmationBody {
+    color: var(--theme-dialog-text-color);
     font-family: var(--font-regular);
     font-size: 16px;
     line-height: 1.5;
@@ -392,25 +375,21 @@
   }
 
   .mithrilPartialSyncConfirmationBehind {
-    color: var(--theme-network-window-white-color);
+    color: var(--theme-dialog-title-color);
     font-family: var(--font-medium);
     margin: 0 0 16px;
   }
 
-  .mithrilPartialSyncConfirmationSteps {
-    margin: 0 0 16px;
-    padding-left: 20px;
-
-    li {
-      line-height: 1.5;
-      margin-bottom: 8px;
-    }
-  }
-
+  // Live subtext paragraph rendered by MithrilPartialSyncConfirmation.tsx (the
+  // canonical shutdown/restore/restart sentence). Restyled IN PLACE to read as
+  // standard dialog body text on the white modal surface (no white-on-white).
   .mithrilPartialSyncConfirmationRecovery {
+    color: var(--theme-dialog-text-color);
+    font-family: var(--font-regular);
     font-size: 14px;
-    margin: 0;
-    opacity: 0.85;
+    line-height: 1.5;
+    margin: 16px 0 0;
+    opacity: 0.7;
   }
 
   .mithrilPartialSyncConfirmationPrimaryButton {

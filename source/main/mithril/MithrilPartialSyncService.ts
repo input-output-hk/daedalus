@@ -298,11 +298,7 @@ export class MithrilPartialSyncService {
       this._progressItems = [];
       this._updateStatus({
         status: 'cancelled',
-        allowedRecoveryActions: [
-          'retry',
-          'restart-normal',
-          'wipe-and-full-sync',
-        ],
+        allowedRecoveryActions: ['retry', 'restart-normal'],
         error: null,
         logPath: this._getLogPath(),
         progressItems: [],
@@ -312,11 +308,7 @@ export class MithrilPartialSyncService {
       this._markActiveProgressItemAs('error');
       this._updateStatus({
         status: 'failed',
-        allowedRecoveryActions: [
-          'retry',
-          'restart-normal',
-          'wipe-and-full-sync',
-        ],
+        allowedRecoveryActions: ['retry', 'restart-normal'],
         error: this._buildError(error, this._getCurrentRecoveryStage()),
         logPath: this._getLogPath(),
         progressItems: [...this._progressItems],

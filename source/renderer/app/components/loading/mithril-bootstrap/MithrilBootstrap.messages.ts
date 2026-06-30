@@ -318,16 +318,15 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   partialSyncCompletedSubtitle: {
     id: 'loading.mithrilPartialSync.completed.subtitle',
-    defaultMessage:
-      '!!!Mithril Sync completed successfully. Continue to return to the normal Daedalus app flow.',
+    defaultMessage: '!!!Mithril Sync completed successfully.',
     description:
       'Supporting copy shown after Mithril partial sync reaches completed status.',
   },
-  partialSyncContinue: {
-    id: 'loading.mithrilPartialSync.completed.continue',
-    defaultMessage: '!!!Continue to Daedalus',
+  partialSyncCompletedTransition: {
+    id: 'loading.mithrilPartialSync.completed.transition',
+    defaultMessage: '!!!Returning to Daedalus...',
     description:
-      'Dismiss button label for the completed Mithril partial sync overlay.',
+      'Spinner caption shown on the completed Mithril partial sync overlay while it auto-hands-off back to the normal Daedalus loading flow (ADR D-702a-1).',
   },
   partialSyncFailedTitle: {
     id: 'loading.mithrilPartialSync.error.failed.title',
@@ -414,12 +413,12 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   partialSyncRetry: {
     id: 'loading.mithrilPartialSync.error.retry',
-    defaultMessage: '!!!Retry Mithril Sync',
+    defaultMessage: '!!!Retry Mithril Sync (fast)',
     description: 'Recovery action label for retrying Mithril partial sync.',
   },
   partialSyncRestartNormally: {
     id: 'loading.mithrilPartialSync.error.restartNormally',
-    defaultMessage: '!!!Restart normally',
+    defaultMessage: '!!!Restart Node Sync (slow)',
     description:
       'Recovery action label for restarting Daedalus normally after partial sync failure.',
   },

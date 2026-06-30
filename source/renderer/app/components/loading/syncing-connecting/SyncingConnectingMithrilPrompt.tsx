@@ -5,6 +5,10 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 
 import { logger } from '../../../utils/logging';
+// Shared canonical D-702a-6 shutdown/restore/restart sentence (single i18n key,
+// created in CAT-C). Reused here so the prompt confirm view and the diagnostics
+// confirmation modal stay byte-identical; do NOT redeclare the id locally.
+import mithrilSyncProcessSummaryMessages from '../../status/MithrilSyncProcessSummary.messages';
 import styles from './SyncingConnectingMithrilPrompt.scss';
 
 const messages = defineMessages({
@@ -30,7 +34,7 @@ const messages = defineMessages({
   promptHandoffNote: {
     id: 'daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNote',
     defaultMessage:
-      '!!!If skipped, you can still start the Mithril sync from the Diagnostics screen.',
+      '!!!If skipped, you can still start the Mithril Sync from the Diagnostics screen.',
     description:
       'Handoff note telling the user they can start Mithril later from Diagnostics if they skip the proactive prompt',
   },
@@ -45,13 +49,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Standard Sync (slow)',
     description:
       'Secondary choice-view button label that dismisses the proactive Mithril fork prompt for this session',
-  },
-  promptConfirmBody: {
-    id: 'daedalus.diagnostics.dialog.mithrilProactivePromptConfirmBody',
-    defaultMessage:
-      '!!!Mithril will stop your Cardano node, restore verified chain data, and restart it — so you catch up faster.',
-    description:
-      'Concise confirm-view body for the proactive Mithril fork prompt on the syncing screen',
   },
   promptConfirmStart: {
     id: 'daedalus.diagnostics.dialog.mithrilProactivePromptConfirmStart',
@@ -171,6 +168,9 @@ export default class SyncingConnectingMithrilPrompt extends Component<
             onClick={onDismiss}
             skin={ButtonSkin}
           />
+          {/* "Mithril Sync (fast)" is the primary/right (default) action. The
+              visible-highlight contrast across themes is CAT-D's concern (theme
+              tokens / .scss); CAT-F makes no scss change here. */}
           <Button
             className={classNames([
               'primary',
@@ -193,7 +193,7 @@ export default class SyncingConnectingMithrilPrompt extends Component<
     return (
       <div className={styles.component}>
         <p className={styles.confirmBody}>
-          {intl.formatMessage(messages.promptConfirmBody)}
+          {intl.formatMessage(mithrilSyncProcessSummaryMessages.processSummary)}
         </p>
         {startError ? <div className={styles.error}>{startError}</div> : null}
         <div className={styles.actions}>

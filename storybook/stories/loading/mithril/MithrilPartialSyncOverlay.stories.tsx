@@ -57,18 +57,31 @@ const getStoppingProgressItems = (intl: Intl): Array<MithrilProgressItem> =>
     state: 'pending' as const,
   }));
 
-// downloading frame: prepare done, download in flight (drives the file-count +
-// progress bar), later steps still pending.
-const getDownloadingProgressItems = (intl: Intl): Array<MithrilProgressItem> =>
-  getActiveProgressItems(intl).map((item) => {
-    if (item.id === 'prepare') {
-      return { ...item, state: 'completed' as const };
-    }
-    if (item.id === 'download') {
-      return { ...item, state: 'active' as const };
-    }
-    return { ...item, state: 'pending' as const };
-  });
+// downloading frame: the download phase's disk-check + certificate-chain sub-steps
+// are completed and the snapshot-download anchor (`step-3`) is active. The active
+// sub-item id MUST be `step-3` (MithrilStepIndicator's DOWNLOAD_PROGRESS_ANCHOR_ID)
+// so `showBars` matches and the combined InlineProgressBar renders — a non-anchor
+// active id (the old `download`) never satisfied the anchor check, so the bar was
+// silently dropped. Labels are still pulled from intl at render (never module scope).
+const getDownloadingProgressItems = (intl: Intl): Array<MithrilProgressItem> => [
+  {
+    id: 'step-1',
+    label: intl.formatMessage(MithrilBootstrapMessages.progressDiskCheck),
+    state: 'completed' as const,
+  },
+  {
+    id: 'step-2',
+    label: intl.formatMessage(MithrilBootstrapMessages.progressCertificateChain),
+    state: 'completed' as const,
+  },
+  {
+    id: 'step-3',
+    label: intl.formatMessage(
+      MithrilBootstrapMessages.progressDownloadingSnapshot
+    ),
+    state: 'active' as const,
+  },
+];
 
 // Single selector so each story's waterfall matches its status; all variants
 // build their labels from getActiveProgressItems(intl), keeping the intl seam at
@@ -237,7 +250,6 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       error={cancelledError}
       canRetry
       canRestartNormally
-      canWipeAndFullSync
     />
   ))
   .add('Failed With Restart Allowed', () => (
@@ -270,6 +282,16 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
     <MithrilPartialSyncOverlayStory
       status="downloading"
       filesDownloaded={4}
+      filesTotal={9}
+    />
+  ))
+  // Explicit partial download-progress-bar story (ISSUE-12): the combined
+  // InlineProgressBar at a partial fill (6/9 files) with its file-count snapshot
+  // counter, proving the bar renders mid-download via the `step-3` anchor.
+  .add('Download Progress Bar (Partial)', () => (
+    <MithrilPartialSyncOverlayStory
+      status="downloading"
+      filesDownloaded={6}
       filesTotal={9}
     />
   ))

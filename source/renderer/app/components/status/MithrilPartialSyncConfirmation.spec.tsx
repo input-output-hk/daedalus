@@ -54,7 +54,7 @@ describe('MithrilPartialSyncConfirmation', () => {
     renderComponent({ behindByEpochs: 3 });
 
     const primary = screen.getByText(
-      'Your node is about 3 epochs behind the blockchain tip. Mithril Sync can restore verified chain data to help it catch up faster than waiting for standard sync.'
+      'Your node is about 3 epochs behind. Mithril Sync will restore verified chain data to help your node sync faster.'
     );
 
     expect(primary).toBeInTheDocument();
@@ -70,18 +70,27 @@ describe('MithrilPartialSyncConfirmation', () => {
     });
 
     expect(
-      screen.getByText('Your node is behind the latest verified snapshot.')
+      screen.getByText(
+        'Your node is behind the latest verified snapshot. Mithril Sync will restore verified chain data to help your node sync faster.'
+      )
     ).toBeInTheDocument();
     expect(screen.queryByText(/% synced/)).toBeNull();
     expect(screen.queryByText(/undefined/)).toBeNull();
   });
 
-  it('keeps the verified Mithril data wording in the what-happens steps', () => {
+  it('renders the canonical shutdown/restore/restart subtext and drops the old step copy', () => {
     renderComponent();
 
     expect(
-      screen.getByText('Daedalus downloads and verifies Mithril data.')
+      screen.getByText(
+        'For this process to begin your Cardano node will need to be shutdown. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.'
+      )
     ).toBeInTheDocument();
+    // The verbose what-happens step copy was removed per D-702a-4.
+    expect(screen.queryByText(/Daedalus stops Cardano node/)).toBeNull();
+    expect(
+      screen.queryByText(/downloads and verifies Mithril data/)
+    ).toBeNull();
   });
 
   it('gives the primary and secondary buttons distinct styles', () => {

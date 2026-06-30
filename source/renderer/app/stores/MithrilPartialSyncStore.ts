@@ -70,6 +70,7 @@ export default class MithrilPartialSyncStore extends Store {
   @observable behindByImmutables: number | undefined = undefined;
   _availabilityRefreshInterval: ReturnType<typeof setInterval> | null = null;
   _isTornDown = false;
+  _isRefreshingAvailability = false;
 
   setup() {
     mithrilPartialSyncStatusChannel.onReceive(async (update) => {
@@ -79,10 +80,14 @@ export default class MithrilPartialSyncStore extends Store {
       logger.warn('MithrilPartialSyncStore: failed to sync status', { error });
     });
     this._refreshAvailability();
+    // Re-fetch availability on EVERY tick — not only while work is in flight.
+    // The one-shot setup read can land before the backend behind-ness probe has
+    // settled, so the Diagnostics Mithril section must self-correct on first
+    // load (ISSUE-1) without a full reload. The re-entrancy guard in
+    // `_refreshAvailability` keeps overlapping probes from piling up, and the
+    // kill switch short-circuits cheaply when partial sync is disabled.
     this._availabilityRefreshInterval = setInterval(() => {
-      if (this.isWorking) {
-        this._refreshAvailability();
-      }
+      this._refreshAvailability();
     }, AVAILABILITY_REFRESH_INTERVAL);
   }
 
@@ -193,10 +198,11 @@ export default class MithrilPartialSyncStore extends Store {
 
   @action
   _refreshAvailability = async () => {
-    if (this._isTornDown) {
+    if (this._isTornDown || this._isRefreshingAvailability) {
       return;
     }
 
+    this._isRefreshingAvailability = true;
     try {
       const availability: MithrilPartialSyncAvailability = await mithrilPartialSyncAvailabilityChannel.request();
       this._applyAvailability(availability);
@@ -204,6 +210,8 @@ export default class MithrilPartialSyncStore extends Store {
       logger.warn('MithrilPartialSyncStore: failed to refresh availability', {
         error,
       });
+    } finally {
+      this._isRefreshingAvailability = false;
     }
   };
 
@@ -223,9 +231,11 @@ export default class MithrilPartialSyncStore extends Store {
     if (this.status !== 'completed') {
       return;
     }
-    // Flip the renderer dismiss flag first so the success screen hides on the
-    // user's explicit "Continue" (lock #16 / D9), then tell the backend to
-    // finalize: reset-to-idle + remove staging + clear the marker.
+    // Flip the renderer dismiss flag first so the success screen hides, then
+    // tell the backend to finalize: reset-to-idle + remove staging + clear the
+    // marker. ADR D-702a-1 amends lock #16/D9 — this finalize is now invoked by
+    // the completed-overlay auto-timeout (MithrilPartialSyncOverlay) instead of
+    // an explicit "Continue to Daedalus" click; the finalize call is unchanged.
     this.isCompletedOverlayDismissed = true;
     await mithrilPartialSyncFinalizeChannel.request();
   };

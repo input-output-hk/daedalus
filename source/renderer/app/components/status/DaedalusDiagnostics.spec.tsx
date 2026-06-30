@@ -73,33 +73,22 @@ const renderComponent = (overrides = {}) =>
 describe('DaedalusDiagnostics', () => {
   afterEach(cleanup);
 
-  it('renders the Mithril sync recommendation as epochs-only copy without any sync-%', () => {
+  it('renders the Mithril Sync button without any sync-% or untranslated copy', () => {
+    // PopOver is mocked to render only children, so the hover-only tooltip copy
+    // is intentionally absent; the always-visible ready-hint was removed per
+    // D-702a-3.
     renderComponent();
 
-    expect(
-      screen.getByText(
-        'If Cardano node catch-up is taking longer than you want, Mithril Sync can restore verified chain data to help it catch up faster.'
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'Review what will happen before Daedalus starts Mithril Sync.'
-      )
-    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
     // Sync-% was removed from the recommendation per D-A.
     expect(screen.queryByText(/% synced/)).not.toBeInTheDocument();
     expect(screen.queryByText(/!!!/)).not.toBeInTheDocument();
   });
 
-  it('renders the same epochs-only recommendation copy when fully synced', () => {
+  it('keeps the Mithril Sync button visible without sync-% when fully synced', () => {
     renderComponent({ isSynced: true, syncPercentage: 100 });
 
-    expect(
-      screen.getByText(
-        'If Cardano node catch-up is taking longer than you want, Mithril Sync can restore verified chain data to help it catch up faster.'
-      )
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
     expect(
       screen.queryByText(/currently 100% synced/i)
     ).not.toBeInTheDocument();
@@ -192,7 +181,7 @@ describe('DaedalusDiagnostics', () => {
 
     expect(
       screen.getByText(
-        'Your node is about 3 epochs behind the blockchain tip. Mithril Sync can restore verified chain data to help it catch up faster than waiting for standard sync.'
+        'Your node is about 3 epochs behind. Mithril Sync will restore verified chain data to help your node sync faster.'
       )
     ).toBeInTheDocument();
   });
@@ -203,7 +192,9 @@ describe('DaedalusDiagnostics', () => {
     screen.getByRole('button', { name: 'Mithril Sync' }).click();
 
     expect(
-      screen.getByText('Your node is behind the latest verified snapshot.')
+      screen.getByText(
+        'Your node is behind the latest verified snapshot. Mithril Sync will restore verified chain data to help your node sync faster.'
+      )
     ).toBeInTheDocument();
   });
 
@@ -217,7 +208,7 @@ describe('DaedalusDiagnostics', () => {
 
     expect(
       screen.getByText(
-        'Your node is about 1 epochs behind the blockchain tip. Mithril Sync can restore verified chain data to help it catch up faster than waiting for standard sync.'
+        'Your node is about 1 epochs behind. Mithril Sync will restore verified chain data to help your node sync faster.'
       )
     ).toBeInTheDocument();
   });

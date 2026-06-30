@@ -1,6 +1,12 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../../i18n/locales/en-US.json';
 import jaTranslations from '../../../i18n/locales/ja-JP.json';
@@ -88,7 +94,7 @@ describe('MithrilPartialSyncOverlay', () => {
     fireEvent.click(
       screen.getByRole('button', { name: /retry mithril sync/i })
     );
-    fireEvent.click(screen.getByRole('button', { name: /restart normally/i }));
+    fireEvent.click(screen.getByRole('button', { name: /restart node sync/i }));
 
     expect(onRetry).toHaveBeenCalledTimes(1);
     expect(onRestartNormally).toHaveBeenCalledTimes(1);
@@ -99,15 +105,31 @@ describe('MithrilPartialSyncOverlay', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('shows a completed dismiss action', () => {
+  it('auto-fires finalize on the completed timeout with no Continue button (ADR D-702a-1)', () => {
+    jest.useFakeTimers();
     const onDismissCompleted = jest.fn();
-    renderComponent({ status: 'completed', onDismissCompleted });
+    try {
+      renderComponent({ status: 'completed', onDismissCompleted });
 
-    fireEvent.click(
-      screen.getByRole('button', { name: /continue to daedalus/i })
-    );
+      // The explicit "Continue to Daedalus" button is gone; the completed frame
+      // is a loading-style hand-off (spinner + "Returning to Daedalus...").
+      expect(
+        screen.queryByRole('button', { name: /continue to daedalus/i })
+      ).not.toBeInTheDocument();
+      expect(screen.getByText(/returning to daedalus/i)).toBeInTheDocument();
 
-    expect(onDismissCompleted).toHaveBeenCalledTimes(1);
+      // Finalize must not fire until the auto-dismiss linger elapses...
+      expect(onDismissCompleted).not.toHaveBeenCalled();
+
+      act(() => {
+        jest.advanceTimersByTime(4000);
+      });
+
+      // ...then exactly once (reset-to-idle + remove staging + clear marker).
+      expect(onDismissCompleted).toHaveBeenCalledTimes(1);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it('hides Cancel for every post-cutover phase but keeps it pre-cutover', () => {
@@ -181,34 +203,44 @@ describe('MithrilPartialSyncOverlay', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows cancelled recovery actions when the backend allows them', () => {
+  it('shows the trimmed cancelled recovery actions with the primary on the right and no wipe', () => {
     const onRetry = jest.fn();
     const onRestartNormally = jest.fn();
-    const onWipeAndFullSync = jest.fn();
 
     renderComponent({
       status: 'cancelled',
       canRetry: true,
       canRestartNormally: true,
-      canWipeAndFullSync: true,
+      // D-702a-2: the cancelled (pre-cutover) dialogue no longer offers wipe.
+      canWipeAndFullSync: false,
       onRetry,
       onRestartNormally,
-      onWipeAndFullSync,
     });
 
     fireEvent.click(
-      screen.getByRole('button', { name: /retry mithril sync/i })
+      screen.getByRole('button', { name: /retry mithril sync \(fast\)/i })
     );
-    fireEvent.click(screen.getByRole('button', { name: /restart normally/i }));
     fireEvent.click(
-      screen.getByRole('button', {
-        name: /wipe chain data and do full mithril sync/i,
-      })
+      screen.getByRole('button', { name: /restart node sync \(slow\)/i })
     );
 
     expect(onRetry).toHaveBeenCalledTimes(1);
     expect(onRestartNormally).toHaveBeenCalledTimes(1);
-    expect(onWipeAndFullSync).toHaveBeenCalledTimes(1);
+    expect(
+      screen.queryByRole('button', {
+        name: /wipe chain data and do full mithril sync/i,
+      })
+    ).not.toBeInTheDocument();
+
+    // the primary action ("Retry Mithril Sync (fast)") renders last/rightmost; the
+    // secondary ("Restart Node Sync (slow)") renders first/left.
+    const actionLabels = screen
+      .getAllByRole('button')
+      .map((button) => button.textContent);
+    expect(actionLabels).toEqual([
+      'Restart Node Sync (slow)',
+      'Retry Mithril Sync (fast)',
+    ]);
   });
 
   it('shows bespoke copy for a mapped error code and never the raw backend message as the title', () => {
@@ -236,11 +268,12 @@ describe('MithrilPartialSyncOverlay', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('gives cancelled a calmer hint distinct from failed', () => {
+  it('gives cancelled a calmer hint distinct from failed, rendered as body text', () => {
     const { unmount } = renderComponent({ status: 'cancelled', error: null });
-    expect(
-      screen.getByText(/was stopped before it finished/i)
-    ).toBeInTheDocument();
+    const cancelledHint = screen.getByText(/was stopped before it finished/i);
+    expect(cancelledHint).toBeInTheDocument();
+    // the cancelled hint is promoted to normal body text (a <p>), not the subtext <div>
+    expect(cancelledHint.tagName).toBe('P');
     unmount();
     renderComponent({ status: 'failed', error: null });
     expect(
