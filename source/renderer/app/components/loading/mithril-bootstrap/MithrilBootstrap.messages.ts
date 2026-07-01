@@ -316,6 +316,19 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Detail copy shown while the Cardano node is being stopped before Mithril partial sync restores chain data.',
   },
+  partialSyncCancellingTitle: {
+    id: 'loading.mithrilPartialSync.progress.cancellingTitle',
+    defaultMessage: '!!!Cleaning up...',
+    description:
+      'Title shown while Daedalus is cleaning up after a cancelled Mithril partial sync.',
+  },
+  partialSyncCancellingDetail: {
+    id: 'loading.mithrilPartialSync.progress.cancellingDetail',
+    defaultMessage:
+      '!!!Daedalus is cleaning up Mithril Sync before you continue.',
+    description:
+      'Detail copy shown while Daedalus is cleaning up after a cancelled Mithril partial sync.',
+  },
   partialSyncCompletedSubtitle: {
     id: 'loading.mithrilPartialSync.completed.subtitle',
     defaultMessage: '!!!Mithril Sync completed successfully.',

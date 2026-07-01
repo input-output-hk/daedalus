@@ -10,6 +10,7 @@ import {
 import '@testing-library/jest-dom';
 import translations from '../../../i18n/locales/en-US.json';
 import jaTranslations from '../../../i18n/locales/ja-JP.json';
+import { isMithrilPartialSyncBlockingNodeStart } from '../../../../../common/types/mithril-partial-sync.types';
 import MithrilPartialSyncOverlay, {
   isMithrilPartialSyncOverlayStatus,
 } from './MithrilPartialSyncOverlay';
@@ -211,6 +212,24 @@ describe('MithrilPartialSyncOverlay', () => {
     });
   });
 
+  it('renders cancelling as a cleanup progress frame with no timer, waterfall, or actions', () => {
+    renderComponent({ status: 'cancelling' });
+
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Cleaning up...' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/cleaning up mithril sync before you continue/i)
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/elapsed time:/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText(/mithril sync progress/i)
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /cancel/i })
+    ).not.toBeInTheDocument();
+  });
+
   it('renders a defensive Quit fallback only when no recovery actions are available', () => {
     const onQuit = jest.fn();
     const { unmount } = renderComponent({
@@ -344,8 +363,15 @@ describe('MithrilPartialSyncOverlay', () => {
 describe('isMithrilPartialSyncOverlayStatus', () => {
   it('includes the stopping-node handoff and later overlay states', () => {
     expect(isMithrilPartialSyncOverlayStatus('stopping-node')).toBe(true);
+    expect(isMithrilPartialSyncOverlayStatus('cancelling')).toBe(true);
     expect(isMithrilPartialSyncOverlayStatus('preparing')).toBe(true);
     expect(isMithrilPartialSyncOverlayStatus('failed')).toBe(true);
+  });
+});
+
+describe('isMithrilPartialSyncBlockingNodeStart', () => {
+  it('blocks node start while cancellation cleanup is in progress', () => {
+    expect(isMithrilPartialSyncBlockingNodeStart('cancelling')).toBe(true);
   });
 });
 

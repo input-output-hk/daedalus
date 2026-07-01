@@ -82,6 +82,20 @@ const confirmationBaseProps = {
   onConfirm: action('onConfirm'),
 };
 
+const renderConfirmationStory = (storyProps = {}): any =>
+  function RenderConfirmationStory(
+    _: unknown,
+    props: { currentTheme: string }
+  ) {
+    return (
+      <MithrilPartialSyncConfirmation
+        key={props.currentTheme}
+        {...confirmationBaseProps}
+        {...storyProps}
+      />
+    );
+  };
+
 storiesOf('Nodes / Diagnostic', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Partial Sync CTA Ready', () => <DaedalusDiagnostics {...baseProps} />)
@@ -101,19 +115,13 @@ storiesOf('Nodes / Diagnostic', module)
 
 storiesOf('Nodes / Diagnostic / Mithril Partial Sync Confirmation', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .add('Known Epochs Behind', () => (
-    <MithrilPartialSyncConfirmation
-      {...confirmationBaseProps}
-      behindByEpochs={42}
-    />
-  ))
-  .add('Unknown Behind', () => (
-    <MithrilPartialSyncConfirmation {...confirmationBaseProps} />
-  ))
-  .add('Start Error', () => (
-    <MithrilPartialSyncConfirmation
-      {...confirmationBaseProps}
-      behindByEpochs={42}
-      startError="Unable to start Mithril sync. Cardano node did not stop in time."
-    />
-  ));
+  .add('Known Epochs Behind', renderConfirmationStory({ behindByEpochs: 42 }))
+  .add('Unknown Behind', renderConfirmationStory())
+  .add(
+    'Start Error',
+    renderConfirmationStory({
+      behindByEpochs: 42,
+      startError:
+        'Unable to start Mithril sync. Cardano node did not stop in time.',
+    })
+  );

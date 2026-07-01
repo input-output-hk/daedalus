@@ -63,7 +63,9 @@ const getStoppingProgressItems = (intl: Intl): Array<MithrilProgressItem> =>
 // so `showBars` matches and the combined InlineProgressBar renders — a non-anchor
 // active id (the old `download`) never satisfied the anchor check, so the bar was
 // silently dropped. Labels are still pulled from intl at render (never module scope).
-const getDownloadingProgressItems = (intl: Intl): Array<MithrilProgressItem> => [
+const getDownloadingProgressItems = (
+  intl: Intl
+): Array<MithrilProgressItem> => [
   {
     id: 'step-1',
     label: intl.formatMessage(MithrilBootstrapMessages.progressDiskCheck),
@@ -71,7 +73,9 @@ const getDownloadingProgressItems = (intl: Intl): Array<MithrilProgressItem> => 
   },
   {
     id: 'step-2',
-    label: intl.formatMessage(MithrilBootstrapMessages.progressCertificateChain),
+    label: intl.formatMessage(
+      MithrilBootstrapMessages.progressCertificateChain
+    ),
     state: 'completed' as const,
   },
   {
@@ -251,6 +255,9 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       canRetry
       canRestartNormally
     />
+  ))
+  .add('Cancelling', () => (
+    <MithrilPartialSyncOverlayStory status="cancelling" />
   ))
   .add('Failed With Restart Allowed', () => (
     <MithrilPartialSyncOverlayStory

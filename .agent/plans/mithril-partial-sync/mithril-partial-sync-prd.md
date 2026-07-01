@@ -146,8 +146,8 @@ Recommended shared data contracts:
 
 - `MithrilPartialSyncStatus`
   - `idle`
-  - `confirming`
   - `stopping-node`
+  - `cancelling`
   - `preparing`
   - `downloading`
   - `verifying`
@@ -176,7 +176,7 @@ Recommended shared data contracts:
 Failure containment and recovery eligibility requirements:
 
 - Backend-owned safety boundaries, not renderer heuristics, determine which recovery actions are allowed.
-- Boundary A: pre-cutover only. This includes `stopping-node`, `preparing`, `downloading`, `verifying`, `converting`, and any validation failure before the managed chain target is emptied.
+- Boundary A: pre-cutover only. This includes `stopping-node`, `cancelling`, `preparing`, `downloading`, `verifying`, `converting`, and any validation failure before the managed chain target is emptied.
   - Allowed actions: `retry`, `restart-normal`, `wipe-and-full-sync`
 - Boundary B: live cutover started but not yet fully completed. This begins when Daedalus empties the managed chain target or otherwise starts replacing live top-level chain entries.
   - Allowed actions: `wipe-and-full-sync` only

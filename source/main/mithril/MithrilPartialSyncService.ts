@@ -4,7 +4,11 @@ import type { ChildProcess } from 'child_process';
 import EventEmitter from 'events';
 import type { WriteStream } from 'fs';
 import checkDiskSpace from 'check-disk-space';
-import { launcherConfig, stateDirectoryPath, DISK_SPACE_REQUIRED } from '../config';
+import {
+  launcherConfig,
+  stateDirectoryPath,
+  DISK_SPACE_REQUIRED,
+} from '../config';
 import { logger } from '../utils/logging';
 import type { PartialSyncPreflightContext } from '../utils/chainStorageCoordinator';
 import type {
@@ -104,6 +108,7 @@ export class MithrilPartialSyncService {
   _stagingChainDir: string | null = null;
   _startedAt: number | null = null;
   _isCancelled = false;
+  _cancelFallbackErrorStage: MithrilPartialSyncErrorStage | null = null;
   _progressItems: MithrilProgressItem[] = [];
   _latestSnapshot: MithrilSnapshotItem | null = null;
   _stagedDbPath: string | null = null;
@@ -151,6 +156,7 @@ export class MithrilPartialSyncService {
     this._stagingChainDir = context.mithrilWorkDir;
     this._startedAt = Date.now();
     this._isCancelled = false;
+    this._cancelFallbackErrorStage = null;
     this._progressItems = [];
     this._latestSnapshot = null;
     this._stagedDbPath = null;
@@ -182,7 +188,7 @@ export class MithrilPartialSyncService {
         context.layoutResult.managedChainPath
       );
 
-      await this._assertSufficientDiskSpace(stagingPaths.rootPath);   // D7/BUG3 preflight
+      await this._assertSufficientDiskSpace(stagingPaths.rootPath); // D7/BUG3 preflight
 
       this._activeWorkDir = stagingPaths.downloadParentPath;
       this._stagedDbPath = stagingPaths.dbPath;
@@ -200,8 +206,7 @@ export class MithrilPartialSyncService {
         }
       );
 
-      const latestSnapshotAtDownload =
-        await this.resolveLatestSnapshotMetadata();
+      const latestSnapshotAtDownload = await this.resolveLatestSnapshotMetadata();
       if (
         latestSnapshotAtDownload.latestCertifiedImmutableNumber !==
         partialSyncRange.end
@@ -296,7 +301,18 @@ export class MithrilPartialSyncService {
       );
     }
 
+    this._cancelFallbackErrorStage = this._getCurrentRecoveryStage();
     this._isCancelled = true;
+    this._progressItems = [];
+    this._addProgressItem('cleanup', 'cleanup', 'active');
+    this._updateStatus({
+      status: 'cancelling',
+      allowedRecoveryActions: [],
+      error: null,
+      logPath: this._getLogPath(),
+      progressItems: [...this._progressItems],
+      transferProgress: {},
+    });
 
     try {
       if (this._currentProcess) {
@@ -306,6 +322,12 @@ export class MithrilPartialSyncService {
       logger.warn('MithrilPartialSyncService: failed to kill process', {
         error,
       });
+    }
+  }
+
+  async finalizeCancel(): Promise<void> {
+    if (this._status.status !== 'cancelling') {
+      return;
     }
 
     try {
@@ -324,15 +346,48 @@ export class MithrilPartialSyncService {
       this._updateStatus({
         status: 'failed',
         allowedRecoveryActions: ['retry', 'restart-normal'],
-        error: this._buildError(error, this._getCurrentRecoveryStage()),
+        error: this._buildError(
+          error,
+          this._cancelFallbackErrorStage ?? this._getCurrentRecoveryStage()
+        ),
         logPath: this._getLogPath(),
         progressItems: [...this._progressItems],
         transferProgress: {},
       });
-      throw error;
     } finally {
       this._clearRuntimeWorkState();
     }
+  }
+
+  forceKill(): void {
+    try {
+      this._currentProcess?.kill('SIGKILL');
+    } catch (error) {
+      logger.warn('MithrilPartialSyncService: failed to force kill process', {
+        error,
+      });
+    }
+  }
+
+  async abandonCancel(): Promise<void> {
+    if (this._status.status !== 'cancelling') {
+      return;
+    }
+
+    this._markActiveProgressItemAs('error');
+    this._updateStatus({
+      status: 'failed',
+      allowedRecoveryActions: [],
+      error: {
+        message:
+          "Daedalus couldn't finish cleaning up Mithril Sync. Restart Daedalus to continue safely.",
+        stage: this._cancelFallbackErrorStage ?? 'preparing',
+        logPath: this._getLogPath(),
+      },
+      logPath: this._getLogPath(),
+      progressItems: [...this._progressItems],
+      transferProgress: {},
+    });
   }
 
   async restartNormal(): Promise<void> {
@@ -442,7 +497,7 @@ export class MithrilPartialSyncService {
       const status =
         nextStage === 'downloading' && this._status.status === 'verifying'
           ? 'verifying'
-          : (nextStage ?? this._status.status);
+          : nextStage ?? this._status.status;
 
       this._updateStatus({
         status,
@@ -594,6 +649,7 @@ export class MithrilPartialSyncService {
     this._invalidateBehindnessCaches();
     this._progressItems = [];
     this._latestSnapshot = null;
+    this._cancelFallbackErrorStage = null;
     this._updateStatus({
       status: 'idle',
       allowedRecoveryActions: [],
@@ -610,6 +666,7 @@ export class MithrilPartialSyncService {
     this._logStream = null;
     this._stagedDbPath = null;
     this._startedAt = null;
+    this._cancelFallbackErrorStage = null;
   }
 
   _getCurrentRecoveryStage(): MithrilPartialSyncErrorStage {
@@ -697,8 +754,7 @@ export class MithrilPartialSyncService {
     ) {
       return this._localImmutableCache.value;
     }
-    const managedChainPath =
-      await this._chainStorageManager.getManagedChainPath();
+    const managedChainPath = await this._chainStorageManager.getManagedChainPath();
     const localImmutableNumber = await resolveLocalImmutableNumber(
       managedChainPath,
       (stage, message, code) => this._createStageError(stage, message, code)

@@ -393,6 +393,13 @@ export default class MithrilPartialSyncStore extends Store {
     }
 
     if (this.status !== START_PENDING_STATUS) {
+      logger.warn(
+        'MithrilPartialSyncStore: swallowed partial sync start rejection after backend status resync',
+        {
+          error: startError,
+          status: this.status,
+        }
+      );
       return;
     }
 

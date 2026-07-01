@@ -34,6 +34,8 @@ interface Props {
   startingNodeDetail?: string;
   stoppingNodeTitle?: string;
   stoppingNodeDetail?: string;
+  cancellingTitle?: string;
+  cancellingDetail?: string;
   completedTransitionLabel?: string;
   hideAction?: boolean;
   actionDisabled?: boolean;
@@ -127,6 +129,8 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     startingNodeDetail,
     stoppingNodeTitle,
     stoppingNodeDetail,
+    cancellingTitle,
+    cancellingDetail,
     completedTransitionLabel,
     hideAction,
     actionDisabled,
@@ -137,6 +141,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
 
   const isStartingNode = status === 'starting-node';
   const isStoppingNode = status === 'stopping-node';
+  const isCancelling = status === 'cancelling';
   const isLongRunningPhase = LONG_RUNNING_STATUSES.has(status);
   // ADR D-702a-1: the partial-sync overlay passes `completedTransitionLabel` to
   // turn the 'completed' frame into a loading-style hand-off (spinner +
@@ -181,12 +186,14 @@ function MithrilProgressView(props: Props, { intl }: Context) {
         <p>{subtitle || intl.formatMessage(messages.progressSubtitle)}</p>
       </div>
 
-      <div className={styles.timerDisplay}>
-        <span className={styles.timerLabel}>
-          {intl.formatMessage(messages.progressElapsedLabel)}
-        </span>
-        <span className={styles.timerValue}>{elapsedLabel}</span>
-      </div>
+      {!isCancelling && (
+        <div className={styles.timerDisplay}>
+          <span className={styles.timerLabel}>
+            {intl.formatMessage(messages.progressElapsedLabel)}
+          </span>
+          <span className={styles.timerValue}>{elapsedLabel}</span>
+        </div>
+      )}
 
       {isLongRunningPhase && (
         <p className={styles.reassurance} aria-live="polite">
@@ -194,19 +201,21 @@ function MithrilProgressView(props: Props, { intl }: Context) {
         </p>
       )}
 
-      <div className={styles.waterfallContainer}>
-        <MithrilStepIndicator
-          status={status}
-          progressItems={progressItems}
-          filesDownloaded={filesDownloaded}
-          filesTotal={filesTotal}
-          snapshotSizeBytes={snapshotSizeBytes}
-          ancillaryBytesDownloaded={ancillaryBytesDownloaded}
-          ancillaryBytesTotal={ancillaryBytesTotal}
-          ancillaryProgress={ancillaryProgress}
-          showDownloadProgressBar={showDownloadProgressBar}
-        />
-      </div>
+      {!isCancelling && (
+        <div className={styles.waterfallContainer}>
+          <MithrilStepIndicator
+            status={status}
+            progressItems={progressItems}
+            filesDownloaded={filesDownloaded}
+            filesTotal={filesTotal}
+            snapshotSizeBytes={snapshotSizeBytes}
+            ancillaryBytesDownloaded={ancillaryBytesDownloaded}
+            ancillaryBytesTotal={ancillaryBytesTotal}
+            ancillaryProgress={ancillaryProgress}
+            showDownloadProgressBar={showDownloadProgressBar}
+          />
+        </div>
+      )}
 
       {isStoppingNode && (
         <CompletionBlock
@@ -216,6 +225,19 @@ function MithrilProgressView(props: Props, { intl }: Context) {
           detail={
             stoppingNodeDetail ||
             intl.formatMessage(messages.nodeStoppingDetail)
+          }
+        />
+      )}
+
+      {isCancelling && (
+        <CompletionBlock
+          title={
+            cancellingTitle ||
+            intl.formatMessage(messages.partialSyncCancellingTitle)
+          }
+          detail={
+            cancellingDetail ||
+            intl.formatMessage(messages.partialSyncCancellingDetail)
           }
         />
       )}

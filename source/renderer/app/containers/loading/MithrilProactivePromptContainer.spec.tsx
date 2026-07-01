@@ -62,7 +62,11 @@ describe('MithrilProactivePromptContainer', () => {
   it('renders the prompt with the displayed epochs figure when every gate passes', () => {
     renderContainer();
 
+    expect(
+      screen.getByRole('heading', { name: 'Mithril Sync' })
+    ).toBeInTheDocument();
     expect(screen.getByText(KNOWN_EPOCHS_TEXT)).toBeInTheDocument();
+    expect(screen.getByText('Note:')).toBeInTheDocument();
     // The persisted-prompt choice view exposes both actions.
     expect(
       screen.getByRole('button', { name: 'Mithril Sync (fast)' })

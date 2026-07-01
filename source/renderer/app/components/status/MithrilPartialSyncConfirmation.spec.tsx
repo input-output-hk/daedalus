@@ -81,6 +81,16 @@ describe('MithrilPartialSyncConfirmation', () => {
   it('renders the canonical shutdown/restore/restart subtext and drops the old step copy', () => {
     renderComponent();
 
+    const body = document.querySelector('.mithrilPartialSyncConfirmationBody');
+    const paragraphs = body?.querySelectorAll('p');
+
+    expect(body).not.toBeNull();
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs?.[0]).toHaveClass('mithrilPartialSyncConfirmationBehind');
+    expect(paragraphs?.[1]).toHaveClass(
+      'mithrilPartialSyncConfirmationRecovery'
+    );
+
     expect(
       screen.getByText(
         'For this process to begin your Cardano node will need to be shutdown. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.'
@@ -145,10 +155,11 @@ describe('MithrilPartialSyncConfirmation', () => {
       startError: 'Mithril partial sync is disabled by launcher configuration.',
     });
 
-    expect(
-      screen.getByText(
-        'Mithril partial sync is disabled by launcher configuration.'
-      )
-    ).toBeInTheDocument();
+    const error = screen.getByText(
+      'Mithril partial sync is disabled by launcher configuration.'
+    );
+
+    expect(error).toBeInTheDocument();
+    expect(error).toHaveClass('mithrilPartialSyncConfirmationError');
   });
 });

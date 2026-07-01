@@ -105,7 +105,11 @@ export default class MithrilPartialSyncConfirmation extends Component<Props> {
             )}
           </p>
 
-          {startError ? <div className={styles.error}>{startError}</div> : null}
+          {startError ? (
+            <div className={styles.mithrilPartialSyncConfirmationError}>
+              {startError}
+            </div>
+          ) : null}
         </div>
       </Dialog>
     );

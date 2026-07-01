@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
-import classNames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 
@@ -12,6 +11,12 @@ import mithrilSyncProcessSummaryMessages from '../../status/MithrilSyncProcessSu
 import styles from './SyncingConnectingMithrilPrompt.scss';
 
 const messages = defineMessages({
+  promptTitle: {
+    id: 'daedalus.diagnostics.dialog.mithrilProactivePromptTitle',
+    defaultMessage: '!!!Mithril Sync',
+    description:
+      'Choice-view title for the proactive Mithril prompt on the syncing screen',
+  },
   promptBody: {
     id: 'daedalus.diagnostics.dialog.mithrilProactivePromptBody',
     defaultMessage: '!!!Your node is about {epochs} epochs behind.',
@@ -38,6 +43,12 @@ const messages = defineMessages({
     description:
       'Handoff note telling the user they can start Mithril later from Diagnostics if they skip the proactive prompt',
   },
+  promptHandoffNoteLabel: {
+    id: 'daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNoteLabel',
+    defaultMessage: '!!!Note:',
+    description:
+      'Label for the proactive Mithril prompt handoff note line on the syncing screen',
+  },
   promptMithrilButton: {
     id: 'daedalus.diagnostics.dialog.mithrilProactivePromptMithrilButton',
     defaultMessage: '!!!Mithril Sync (fast)',
@@ -61,6 +72,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Cancel',
     description:
       'Confirm-view secondary button label that returns to the choice view for the proactive Mithril fork prompt',
+  },
+  promptConfirmTitle: {
+    id: 'daedalus.diagnostics.dialog.mithrilProactivePromptConfirmTitle',
+    defaultMessage: '!!!Mithril Sync Process',
+    description:
+      'Confirm-view title for the proactive Mithril prompt on the syncing screen',
   },
 });
 
@@ -148,22 +165,28 @@ export default class SyncingConnectingMithrilPrompt extends Component<
 
     return (
       <div className={styles.component}>
+        <h1 className={styles.title}>
+          {intl.formatMessage(messages.promptTitle)}
+        </h1>
         <p className={styles.body}>
-          {hasBehindFigure
-            ? intl.formatMessage(messages.promptBody, {
-                epochs: behindByEpochs,
-              })
-            : intl.formatMessage(messages.promptBodyUnknown)}
-        </p>
-        <p className={styles.benefit}>
-          {intl.formatMessage(messages.promptBodyBenefit)}
+          <span>
+            {hasBehindFigure
+              ? intl.formatMessage(messages.promptBody, {
+                  epochs: behindByEpochs,
+                })
+              : intl.formatMessage(messages.promptBodyUnknown)}
+          </span>{' '}
+          <span>{intl.formatMessage(messages.promptBodyBenefit)}</span>
         </p>
         <p className={styles.handoffNote}>
-          {intl.formatMessage(messages.promptHandoffNote)}
+          <strong className={styles.noteLabel}>
+            {intl.formatMessage(messages.promptHandoffNoteLabel)}
+          </strong>{' '}
+          <span>{intl.formatMessage(messages.promptHandoffNote)}</span>
         </p>
         <div className={styles.actions}>
           <Button
-            className={classNames([styles.actionButton])}
+            className={styles.secondaryAction}
             label={intl.formatMessage(messages.promptStandardButton)}
             onClick={onDismiss}
             skin={ButtonSkin}
@@ -172,7 +195,7 @@ export default class SyncingConnectingMithrilPrompt extends Component<
               visible-highlight contrast across themes is CAT-D's concern (theme
               tokens / .scss); CAT-F makes no scss change here. */}
           <Button
-            className={classNames(['primary', styles.actionButton])}
+            className={styles.primaryAction}
             label={intl.formatMessage(messages.promptMithrilButton)}
             onClick={this.showConfirmation}
             skin={ButtonSkin}
@@ -188,19 +211,22 @@ export default class SyncingConnectingMithrilPrompt extends Component<
 
     return (
       <div className={styles.component}>
+        <h1 className={styles.title}>
+          {intl.formatMessage(messages.promptConfirmTitle)}
+        </h1>
         <p className={styles.confirmBody}>
           {intl.formatMessage(mithrilSyncProcessSummaryMessages.processSummary)}
         </p>
         {startError ? <div className={styles.error}>{startError}</div> : null}
         <div className={styles.actions}>
           <Button
-            className={classNames([styles.actionButton])}
+            className={styles.secondaryAction}
             label={intl.formatMessage(messages.promptConfirmCancel)}
             onClick={this.cancelConfirmation}
             skin={ButtonSkin}
           />
           <Button
-            className={classNames(['primary', styles.actionButton])}
+            className={styles.primaryAction}
             label={intl.formatMessage(messages.promptConfirmStart)}
             disabled={isStarting}
             onClick={this.handleStart}

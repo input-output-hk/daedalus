@@ -477,6 +477,12 @@ describe('MithrilPartialSyncStore', () => {
         code: 'PARTIAL_SYNC_STAGED_DB_INVALID',
       })
     );
+    expect(logger.warn).toHaveBeenCalledWith(
+      'MithrilPartialSyncStore: swallowed partial sync start rejection after backend status resync',
+      expect.objectContaining({
+        status: 'failed',
+      })
+    );
   });
 
   it('rethrows the original start failure while status is still pending', async () => {

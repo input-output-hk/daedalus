@@ -79,15 +79,12 @@ describe('MithrilPartialSyncService', () => {
   const moveMock = fs.move as jest.Mock;
   const runCommandMock = require('./mithrilCommandRunner')
     .runCommand as jest.Mock;
-  const writeMithrilPartialSyncMarkerMock =
-    require('./mithrilPartialSyncMarker')
-      .writeMithrilPartialSyncMarker as jest.Mock;
-  const clearMithrilPartialSyncMarkerMock =
-    require('./mithrilPartialSyncMarker')
-      .clearMithrilPartialSyncMarker as jest.Mock;
-  const readMithrilPartialSyncMarkerMockTop =
-    require('./mithrilPartialSyncMarker')
-      .readMithrilPartialSyncMarker as jest.Mock;
+  const writeMithrilPartialSyncMarkerMock = require('./mithrilPartialSyncMarker')
+    .writeMithrilPartialSyncMarker as jest.Mock;
+  const clearMithrilPartialSyncMarkerMock = require('./mithrilPartialSyncMarker')
+    .clearMithrilPartialSyncMarker as jest.Mock;
+  const readMithrilPartialSyncMarkerMockTop = require('./mithrilPartialSyncMarker')
+    .readMithrilPartialSyncMarker as jest.Mock;
 
   const mockDirectoryStats = () => ({
     isDirectory: () => true,
@@ -102,7 +99,10 @@ describe('MithrilPartialSyncService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    require('check-disk-space').mockResolvedValue({ free: 1_000_000_000_000, size: 2_000_000_000_000 });
+    require('check-disk-space').mockResolvedValue({
+      free: 1_000_000_000_000,
+      size: 2_000_000_000_000,
+    });
 
     statMock.mockImplementation(async (targetPath: string) => {
       if (targetPath.endsWith('/clean')) {
@@ -229,15 +229,10 @@ describe('MithrilPartialSyncService', () => {
       if (targetPath === '/tmp/chain/immutable') {
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
       }
-      if (
-        targetPath ===
-        '/tmp/mithril-partial-sync/download/db/ledger'
-      ) {
+      if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
         return [{ name: '12345', isDirectory: () => true }];
       }
-      if (
-        targetPath === '/tmp/mithril-partial-sync/download/db'
-      ) {
+      if (targetPath === '/tmp/mithril-partial-sync/download/db') {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
 
@@ -267,18 +262,15 @@ describe('MithrilPartialSyncService', () => {
 
     expect(
       service._chainStorageManager.installValidatedPartialSyncSnapshot
-    ).toHaveBeenCalledWith(
-      '/tmp/mithril-partial-sync/download/db',
-      {
-        expectedTopLevelEntries: [
-          'clean',
-          'immutable',
-          'ledger',
-          'lsm',
-          'protocolMagicId',
-        ],
-      }
-    );
+    ).toHaveBeenCalledWith('/tmp/mithril-partial-sync/download/db', {
+      expectedTopLevelEntries: [
+        'clean',
+        'immutable',
+        'ledger',
+        'lsm',
+        'protocolMagicId',
+      ],
+    });
     expect(writeMithrilPartialSyncMarkerMock).toHaveBeenCalledTimes(2);
     expect(service.status).toEqual(
       expect.objectContaining({
@@ -289,9 +281,7 @@ describe('MithrilPartialSyncService', () => {
       })
     );
 
-    expect(removeMock).toHaveBeenCalledWith(
-      '/tmp/mithril-partial-sync'
-    );
+    expect(removeMock).toHaveBeenCalledWith('/tmp/mithril-partial-sync');
     expect(ensureDirMock).toHaveBeenCalledWith(
       '/tmp/mithril-partial-sync/download'
     );
@@ -481,9 +471,7 @@ describe('MithrilPartialSyncService', () => {
     // Cutover colocation assertion: staging parent dir equals chain parent dir (intra-volume)
     expect(
       require('path').dirname('/mnt/custom-storage/mithril-partial-sync')
-    ).toBe(
-      require('path').dirname('/mnt/custom-storage/chain')
-    );
+    ).toBe(require('path').dirname('/mnt/custom-storage/chain'));
   });
 
   it('rejects staging paths that resolve inside the managed chain subtree', async () => {
@@ -557,15 +545,10 @@ describe('MithrilPartialSyncService', () => {
       if (targetPath === '/tmp/chain/immutable') {
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
       }
-      if (
-        targetPath ===
-        '/tmp/mithril-partial-sync/download/db/ledger'
-      ) {
+      if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
         return [{ name: '12345', isDirectory: () => true }];
       }
-      if (
-        targetPath === '/tmp/mithril-partial-sync/download/db'
-      ) {
+      if (targetPath === '/tmp/mithril-partial-sync/download/db') {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
 
@@ -746,15 +729,10 @@ describe('MithrilPartialSyncService', () => {
       if (targetPath === '/tmp/chain/immutable') {
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
       }
-      if (
-        targetPath ===
-        '/tmp/mithril-partial-sync/download/db/ledger'
-      ) {
+      if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
         return [{ name: '12345', isDirectory: () => true }];
       }
-      if (
-        targetPath === '/tmp/mithril-partial-sync/download/db'
-      ) {
+      if (targetPath === '/tmp/mithril-partial-sync/download/db') {
         return [
           'clean',
           'immutable',
@@ -856,7 +834,7 @@ describe('MithrilPartialSyncService', () => {
     expect(emissions).toHaveLength(0);
   });
 
-  it('cleans staging artifacts and clears the marker when cancellation succeeds before cutover', async () => {
+  it('emits cancelling and defers cleanup until finalizeCancel when cancellation succeeds before cutover', async () => {
     const service = new MithrilPartialSyncService();
 
     service._activeWorkDir =
@@ -871,7 +849,27 @@ describe('MithrilPartialSyncService', () => {
       error: null,
     };
 
+    const emissions: Array<MithrilPartialSyncStatusSnapshot> = [];
+    service.onStatus((update) => emissions.push(update));
+
     await expect(service.cancel()).resolves.toBeUndefined();
+
+    expect(removeMock).not.toHaveBeenCalled();
+    expect(clearMithrilPartialSyncMarkerMock).not.toHaveBeenCalled();
+    expect(service.status).toEqual(
+      expect.objectContaining({
+        status: 'cancelling',
+        allowedRecoveryActions: [],
+      })
+    );
+    expect(emissions).toEqual([
+      expect.objectContaining({
+        status: 'cancelling',
+        allowedRecoveryActions: [],
+      }),
+    ]);
+
+    await expect(service.finalizeCancel()).resolves.toBeUndefined();
 
     expect(removeMock).toHaveBeenCalledWith(
       '/tmp/daedalus-state/mithril-partial-sync'
@@ -885,7 +883,7 @@ describe('MithrilPartialSyncService', () => {
     );
   });
 
-  it('surfaces a boundary-a failure when cancellation cleanup fails', async () => {
+  it('emits cancelling and surfaces a boundary-a failure from finalizeCancel when cleanup fails', async () => {
     const service = new MithrilPartialSyncService();
 
     service._activeWorkDir =
@@ -899,7 +897,16 @@ describe('MithrilPartialSyncService', () => {
     };
     removeMock.mockRejectedValueOnce(new Error('cleanup failed'));
 
-    await expect(service.cancel()).rejects.toThrow('cleanup failed');
+    await expect(service.cancel()).resolves.toBeUndefined();
+
+    expect(service.status).toEqual(
+      expect.objectContaining({
+        status: 'cancelling',
+        allowedRecoveryActions: [],
+      })
+    );
+
+    await expect(service.finalizeCancel()).resolves.toBeUndefined();
 
     expect(service.status).toEqual(
       expect.objectContaining({
@@ -909,6 +916,31 @@ describe('MithrilPartialSyncService', () => {
           message: 'cleanup failed',
           stage: 'downloading',
         }),
+      })
+    );
+  });
+
+  it('emits a non-retryable failed state from abandonCancel without cleanup', async () => {
+    const service = new MithrilPartialSyncService();
+
+    service._activeWorkDir =
+      '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._status = {
+      status: 'cancelling',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    };
+
+    await expect(service.abandonCancel()).resolves.toBeUndefined();
+
+    expect(removeMock).not.toHaveBeenCalled();
+    expect(clearMithrilPartialSyncMarkerMock).not.toHaveBeenCalled();
+    expect(service.status).toEqual(
+      expect.objectContaining({
+        status: 'failed',
+        allowedRecoveryActions: [],
       })
     );
   });
@@ -1023,17 +1055,15 @@ describe('MithrilPartialSyncService', () => {
       setupStartMocks(service);
 
       // Inject a large snapshot size so the required threshold exceeds the free space
-      jest
-        .spyOn(service, 'resolveLatestSnapshotMetadata')
-        .mockResolvedValue({
-          snapshot: {
-            digest: 'latest-digest',
-            createdAt: '2026-05-20T00:00:00Z',
-            size: 10_000_000_000,
-          },
-          latestCertifiedImmutableNumber: 25,
-          certifiedEpoch: null,
-        });
+      jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValue({
+        snapshot: {
+          digest: 'latest-digest',
+          createdAt: '2026-05-20T00:00:00Z',
+          size: 10_000_000_000,
+        },
+        latestCertifiedImmutableNumber: 25,
+        certifiedEpoch: null,
+      });
 
       const runCommandSpy = jest.spyOn(service, '_runCommand');
 
@@ -1066,28 +1096,27 @@ describe('MithrilPartialSyncService', () => {
       const service = new MithrilPartialSyncService();
       setupStartMocks(service);
 
-      jest
-        .spyOn(service, 'resolveLatestSnapshotMetadata')
-        .mockResolvedValue({
-          snapshot: {
-            digest: 'latest-digest',
-            createdAt: '2026-05-20T00:00:00Z',
-            size: 10_000_000_000,
-          },
-          latestCertifiedImmutableNumber: 25,
-          certifiedEpoch: null,
-        });
+      jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValue({
+        snapshot: {
+          digest: 'latest-digest',
+          createdAt: '2026-05-20T00:00:00Z',
+          size: 10_000_000_000,
+        },
+        latestCertifiedImmutableNumber: 25,
+        certifiedEpoch: null,
+      });
 
-      require('check-disk-space').mockRejectedValueOnce(new Error('no measure'));
+      require('check-disk-space').mockRejectedValueOnce(
+        new Error('no measure')
+      );
 
       await expect(service.start(createContext())).resolves.toBeUndefined();
     });
   });
 
   describe('finalizeCompletedPartialSync', () => {
-    const readMithrilPartialSyncMarkerMock =
-      require('./mithrilPartialSyncMarker')
-        .readMithrilPartialSyncMarker as jest.Mock;
+    const readMithrilPartialSyncMarkerMock = require('./mithrilPartialSyncMarker')
+      .readMithrilPartialSyncMarker as jest.Mock;
 
     beforeEach(() => {
       readMithrilPartialSyncMarkerMock.mockResolvedValue(null);
@@ -1109,7 +1138,9 @@ describe('MithrilPartialSyncService', () => {
         error: null,
       };
 
-      await expect(service.finalizeCompletedPartialSync()).resolves.toBeUndefined();
+      await expect(
+        service.finalizeCompletedPartialSync()
+      ).resolves.toBeUndefined();
 
       expect(removeMock).toHaveBeenCalledWith('/vol/mithril-partial-sync');
       expect(clearMithrilPartialSyncMarkerMock).toHaveBeenCalledTimes(1);
@@ -1131,18 +1162,26 @@ describe('MithrilPartialSyncService', () => {
       });
       const service = new MithrilPartialSyncService();
 
-      await expect(service.finalizeCompletedPartialSync()).resolves.toBeUndefined();
+      await expect(
+        service.finalizeCompletedPartialSync()
+      ).resolves.toBeUndefined();
 
       // Falls back to stateDirectoryPath-based default path (stateDirectoryPath = /tmp/daedalus-state)
-      expect(removeMock).toHaveBeenCalledWith('/tmp/daedalus-state/mithril-partial-sync');
+      expect(removeMock).toHaveBeenCalledWith(
+        '/tmp/daedalus-state/mithril-partial-sync'
+      );
     });
 
     it('is idempotent from idle (no throw, safe no-ops on fs.remove and clearMarker)', async () => {
       readMithrilPartialSyncMarkerMock.mockResolvedValue(null);
       const service = new MithrilPartialSyncService();
 
-      await expect(service.finalizeCompletedPartialSync()).resolves.toBeUndefined();
-      await expect(service.finalizeCompletedPartialSync()).resolves.toBeUndefined();
+      await expect(
+        service.finalizeCompletedPartialSync()
+      ).resolves.toBeUndefined();
+      await expect(
+        service.finalizeCompletedPartialSync()
+      ).resolves.toBeUndefined();
 
       expect(service.status.status).toBe('idle');
       expect(removeMock).toHaveBeenCalledTimes(2);

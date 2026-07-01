@@ -41,6 +41,7 @@ interface Context {
 
 const PROGRESS_STATUSES: MithrilPartialSyncStatus[] = [
   'stopping-node',
+  'cancelling',
   'preparing',
   'downloading',
   'verifying',
@@ -207,7 +208,14 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
               stoppingNodeDetail={intl.formatMessage(
                 MithrilBootstrapMessages.partialSyncNodeStoppingDetail
               )}
+              cancellingTitle={intl.formatMessage(
+                MithrilBootstrapMessages.partialSyncCancellingTitle
+              )}
+              cancellingDetail={intl.formatMessage(
+                MithrilBootstrapMessages.partialSyncCancellingDetail
+              )}
               hideAction={[
+                'cancelling',
                 'installing',
                 'finalizing',
                 'starting-node',

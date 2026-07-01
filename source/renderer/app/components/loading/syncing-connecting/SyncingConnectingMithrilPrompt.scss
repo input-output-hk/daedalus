@@ -9,54 +9,91 @@
   max-width: 520px;
   padding: 20px 24px;
   position: fixed;
-  text-align: center;
   top: 84px;
   transform: translateX(-50%);
   z-index: 10;
 }
 
-.body {
-  color: var(--theme-mithril-card-text-color);
-  font-family: var(--font-regular);
-  font-size: 16px;
-  line-height: 1.4;
-  margin: 0;
+.title {
+  color: var(--theme-mithril-heading-color);
+  font-family: var(--font-medium);
+  font-size: 18px;
+  margin: 0 0 8px;
 }
 
-.benefit {
+.body {
   color: var(--theme-mithril-body-text-color);
   font-family: var(--font-regular);
   font-size: 15px;
-  line-height: 1.4;
-  margin: 8px 0 0;
+  line-height: 1.5;
+  margin: 0;
+  text-align: left;
 }
 
 .handoffNote {
   color: var(--theme-mithril-secondary-text-color);
   font-family: var(--font-regular);
   font-size: 13px;
-  line-height: 1.4;
+  line-height: 1.5;
   margin: 12px 0 0;
-  opacity: 0.8;
+  text-align: left;
+}
+
+.noteLabel {
+  font-family: var(--font-medium);
 }
 
 .confirmBody {
-  color: var(--theme-mithril-card-text-color);
+  color: var(--theme-mithril-body-text-color);
   font-family: var(--font-regular);
-  font-size: 16px;
-  line-height: 1.4;
+  font-size: 15px;
+  line-height: 1.5;
   margin: 0;
+  text-align: left;
 }
 
 .actions {
   display: flex;
-  justify-content: center;
+  gap: 12px;
+  justify-content: flex-end;
   margin-top: 20px;
 }
 
-.actionButton {
-  margin: 0 8px;
+.primaryAction {
+  background-color: var(--theme-mithril-button-primary-background);
+  border: none;
+  color: var(--theme-mithril-button-primary-text-color);
+  font-family: var(--font-medium);
+  font-size: 14px;
   min-width: 180px;
+  padding: 12px 24px;
+
+  &:hover,
+  &:focus {
+    background-color: var(--theme-mithril-button-primary-background-hover);
+    color: var(--theme-mithril-button-primary-text-color);
+  }
+
+  &[disabled] {
+    background-color: var(--theme-mithril-button-primary-background-hover);
+    color: var(--theme-mithril-button-primary-text-color);
+    opacity: 0.6;
+  }
+}
+
+.secondaryAction {
+  background-color: transparent;
+  border: 1px solid var(--theme-mithril-button-secondary-border-color);
+  color: var(--theme-mithril-button-secondary-text-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  min-width: 180px;
+  padding: 12px 24px;
+
+  &:hover {
+    border-color: var(--theme-mithril-button-secondary-border-color-hover);
+    color: var(--theme-mithril-button-secondary-text-color-hover);
+  }
 }
 
 .error {
@@ -65,4 +102,12 @@
   font-size: 14px;
   line-height: 1.4;
   margin: 12px 0 0;
+  text-align: left;
+}
+
+@media (max-width: 720px) {
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }

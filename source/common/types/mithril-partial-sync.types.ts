@@ -3,6 +3,7 @@ import type { MithrilProgressItem } from './mithril-bootstrap.types';
 export type MithrilPartialSyncStatus =
   | 'idle'
   | 'stopping-node'
+  | 'cancelling'
   | 'preparing'
   | 'downloading'
   | 'verifying'
@@ -73,6 +74,7 @@ export type MithrilPartialSyncAvailability = {
 
 const MITHRIL_PARTIAL_SYNC_WORKING_STATUSES: MithrilPartialSyncStatus[] = [
   'stopping-node',
+  'cancelling',
   'preparing',
   'downloading',
   'verifying',
@@ -120,6 +122,7 @@ export const isMithrilPartialSyncBlockingNodeStart = (
 ): boolean =>
   [
     'stopping-node',
+    'cancelling',
     'preparing',
     'downloading',
     'verifying',

@@ -2818,6 +2818,16 @@
         "id": "loading.mithrilPartialSync.progress.nodeStoppingDetail"
       },
       {
+        "defaultMessage": "!!!Cleaning up...",
+        "description": "Title shown while Daedalus is cleaning up after a cancelled Mithril partial sync.",
+        "id": "loading.mithrilPartialSync.progress.cancellingTitle"
+      },
+      {
+        "defaultMessage": "!!!Daedalus is cleaning up Mithril Sync before you continue.",
+        "description": "Detail copy shown while Daedalus is cleaning up after a cancelled Mithril partial sync.",
+        "id": "loading.mithrilPartialSync.progress.cancellingDetail"
+      },
+      {
         "defaultMessage": "!!!Mithril Sync completed successfully.",
         "description": "Supporting copy shown after Mithril partial sync reaches completed status.",
         "id": "loading.mithrilPartialSync.completed.subtitle"
@@ -3098,6 +3108,11 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Mithril Sync",
+        "description": "Choice-view title for the proactive Mithril prompt on the syncing screen",
+        "id": "daedalus.diagnostics.dialog.mithrilProactivePromptTitle"
+      },
+      {
         "defaultMessage": "!!!Your node is about {epochs} epochs behind.",
         "description": "Epochs-behind body line (line 1) for the proactive Mithril fork prompt on the syncing screen",
         "id": "daedalus.diagnostics.dialog.mithrilProactivePromptBody"
@@ -3118,6 +3133,11 @@
         "id": "daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNote"
       },
       {
+        "defaultMessage": "!!!Note:",
+        "description": "Label for the proactive Mithril prompt handoff note line on the syncing screen",
+        "id": "daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNoteLabel"
+      },
+      {
         "defaultMessage": "!!!Mithril Sync (fast)",
         "description": "Primary choice-view button label that opens the concise inline confirm step for the proactive Mithril fork prompt",
         "id": "daedalus.diagnostics.dialog.mithrilProactivePromptMithrilButton"
@@ -3136,6 +3156,11 @@
         "defaultMessage": "!!!Cancel",
         "description": "Confirm-view secondary button label that returns to the choice view for the proactive Mithril fork prompt",
         "id": "daedalus.diagnostics.dialog.mithrilProactivePromptConfirmCancel"
+      },
+      {
+        "defaultMessage": "!!!Mithril Sync Process",
+        "description": "Confirm-view title for the proactive Mithril prompt on the syncing screen",
+        "id": "daedalus.diagnostics.dialog.mithrilProactivePromptConfirmTitle"
       }
     ],
     "path": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt.tsx"

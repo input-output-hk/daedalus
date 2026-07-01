@@ -13,6 +13,7 @@ import '@testing-library/jest-dom';
 import translations from '../../../i18n/locales/en-US.json';
 import { logger } from '../../../utils/logging';
 import SyncingConnectingMithrilPrompt from './SyncingConnectingMithrilPrompt';
+import styles from './SyncingConnectingMithrilPrompt.scss';
 
 jest.mock('../../../utils/logging', () => ({
   logger: {
@@ -43,6 +44,9 @@ describe('SyncingConnectingMithrilPrompt', () => {
     const { container } = renderComponent({ behindByEpochs: 3 });
 
     expect(
+      screen.getByRole('heading', { name: 'Mithril Sync' })
+    ).toBeInTheDocument();
+    expect(
       screen.getByText('Your node is about 3 epochs behind.')
     ).toBeInTheDocument();
     expect(
@@ -66,11 +70,23 @@ describe('SyncingConnectingMithrilPrompt', () => {
   it('shows the capitalized "Mithril Sync" handoff note in the choice view', () => {
     renderComponent({ behindByEpochs: 3 });
 
+    expect(screen.getByText('Note:')).toBeInTheDocument();
     expect(
       screen.getByText(
         'If skipped, you can still start the Mithril Sync from the Diagnostics screen.'
       )
     ).toBeInTheDocument();
+  });
+
+  it('uses the local Mithril action chrome in the choice view', () => {
+    renderComponent({ behindByEpochs: 3 });
+
+    expect(
+      screen.getByRole('button', { name: 'Standard Sync (slow)' })
+    ).toHaveClass(styles.secondaryAction);
+    expect(
+      screen.getByRole('button', { name: 'Mithril Sync (fast)' })
+    ).toHaveClass(styles.primaryAction);
   });
 
   it('shows the shared canonical process summary in the confirm view', () => {
@@ -79,12 +95,28 @@ describe('SyncingConnectingMithrilPrompt', () => {
     clickButton('Mithril Sync (fast)');
 
     expect(
+      screen.getByRole('heading', { name: 'Mithril Sync Process' })
+    ).toBeInTheDocument();
+    expect(
       screen.getByText(
         'For this process to begin your Cardano node will need to be shutdown. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.'
       )
     ).toBeInTheDocument();
     // The old private confirm-body copy is gone (consolidated into the shared key).
     expect(container.textContent).not.toMatch(/so you catch up faster/i);
+  });
+
+  it('uses the local Mithril action chrome in the confirm view', () => {
+    renderComponent({ behindByEpochs: 3 });
+
+    clickButton('Mithril Sync (fast)');
+
+    expect(screen.getByRole('button', { name: 'Cancel' })).toHaveClass(
+      styles.secondaryAction
+    );
+    expect(screen.getByRole('button', { name: 'Start now' })).toHaveClass(
+      styles.primaryAction
+    );
   });
 
   it('does NOT start when the fast button is clicked — only reveals the confirm view', () => {
