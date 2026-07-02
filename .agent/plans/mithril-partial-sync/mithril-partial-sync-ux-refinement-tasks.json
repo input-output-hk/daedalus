@@ -3,7 +3,7 @@
     "title": "Mithril Partial Sync UX Refinement Tasks (Phase 2)",
     "created": "2026-06-19",
     "updated": "2026-07-02",
-    "version": "1.10.1",
+    "version": "1.11.0",
     "totalTasks": 24,
     "prdReference": ".agent/plans/mithril-partial-sync/mithril-partial-sync-ux-refinement-prd.md",
     "description": "High-level, validation-gated implementation plan for the Mithril partial sync UX refinement sprint (issue #10 Phase 2). The backend, IPC, store, and overlay already exist on feat/mithril-partial-sync-ux-refinement; this sprint refines the UX to (a) prompt the user when significantly behind the tip and (b) close the 35 research gaps plus the 13 issue-#10-comment items. Tasks are organized so task-ux-1xx maps to phase-1, task-ux-2xx to phase-2, and so on, matching the task-plans-ux-refinement/phase-N subdirectory layout.",
@@ -1166,7 +1166,8 @@
           "id": "task-ux-702",
           "title": "Full manual QA matrix and rollout-readiness decision (deployment gate)",
           "description": "After automated coverage is green and backend-correctness re-validation passes, run the full manual QA matrix: all 3 networks (mainnet, preprod, preview) x default + custom chain storage x success/cancel/retry/restart-normal/wipe-and-full-sync recovery paths x packaged builds on Windows/macOS/Linux. Re-test the six task-401 regressions individually (gap #18). Record results in the plan workspace, finalize the production default and any network-scoping of the kill switch, and finalize the rollback checklist. This branch does not merge to master / ship until this matrix passes. Implements the QA gate of PRD D7 and the Rollout section.",
-          "status": "pending",
+          "status": "completed",
+          "completedAt": "2026-07-02",
           "priority": "high",
           "estimatedHours": 10,
           "dependencies": [

@@ -929,6 +929,13 @@ status handler leaks on store teardown.
 - **Production default deferred** to deployment-readiness (post full QA); flippable via launcher
   config without an app release. The startup-owned native recovery dialog remains available for any
   already-interrupted unsafe-cutover install even if the diagnostics entry is disabled.
+- **RESOLVED at the readiness gate (task-ux-702, 2026-07-02):** production default is
+  **`keep guarded by default`** — `mithrilPartialSyncEnabled` ships OFF as a single global default;
+  staged testnets-first enablement is the designated path to `enabled by default` once
+  mainnet + preview coverage and Windows/macOS release-equivalent packaged-build evidence lands.
+  Operator sign-off, matrix results (preprod/Linux closeout scope), the confirmed rollback checklist,
+  and the APPROVED-TO-MERGE ship decision:
+  `task-plans-ux-refinement/phase-7/task-ux-702-research.md` §2-§6.
 
 ## Open Questions
 
@@ -937,6 +944,9 @@ status handler leaks on store teardown.
 - Whether partial sync's snapshot metadata can cheaply carry a real total **size** for the optional
   "≈ N GB total" context line (else omit).
 - Final production default / network-scoping of the kill switch (deferred to readiness gate).
+  **Resolved 2026-07-02:** ships OFF (`keep guarded by default`, single global default); staged
+  testnets-first is the documented path to enablement — see the Rollout / Kill Switch section above
+  and `task-ux-702-research.md` §4.
 
 ## Remaining-Issues Coverage Map (all 35 research gaps)
 

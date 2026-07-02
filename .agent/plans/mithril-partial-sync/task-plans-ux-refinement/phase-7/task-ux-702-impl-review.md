@@ -191,3 +191,39 @@ the operator matrix, regression re-tests, guard-off checks, and ship decision ar
 task reach completion and get committed.
 
 Decision: approved
+
+---
+
+## Operator Close-out
+
+Timestamp: 2026-07-02T12:50:50Z
+Speaker: Scribe (operator-directed gate closure)
+
+The operator (David Kirshon) confirmed manual testing complete and directed the 702 tasking be
+closed as completed, with PR creation to follow. Recorded in this close-out:
+
+- **`task-ux-702-research.md` operator sections finalized:** §2 preprod/Linux closeout matrix
+  (10/10 PASS across default + custom storage), §2b guard-off (PASS), §2c startup-owned recovery
+  (PASS), §2d bootstrap re-check (PASS), §3 six task-401 regressions re-tested individually
+  (6/6 PASS, R6 sub-paths exercised individually), §4 kill-switch FINAL DECISION locked —
+  **`keep guarded by default`**, single global default OFF, staged testnets-first (option ii) as the
+  path to `enabled by default` — §5 rollback checklist confirmed (6/6), §6 execution log with the
+  ship decision: **APPROVED TO MERGE**. Build IDs / per-run logs are held in the operator's run
+  records; evidence lines record operator sign-off.
+- **No open defects:** findings from the earlier operator manual-testing waves were remediated and
+  re-verified under task-ux-702a/702b/702c/702d before this closeout; the final pass recorded no new
+  defects. The deferred Windows cancel/quit tree-kill verification stays a kill-switch-gated
+  follow-up per the closeout scope amendment.
+- **PRD updated:** Rollout / Kill Switch + Open Questions now record the finalized production
+  default (`keep guarded by default`) and network-scoping, per the plan's "record after operator
+  sign-off" instruction.
+- **Ledger sync:** tasks.json task-ux-702 → `"completed"`, `"completedAt": "2026-07-02"`; version
+  1.10.1 → 1.11.0. Canonical plan header + footer flipped to **deployment gate CLOSED**.
+- **Orchestration residue removed:** the stale untracked `.agent/scheduled_tasks.lock` (owner pid no
+  longer running) flagged by the 702d impl-review is deleted as part of this close-out. The
+  operator's unrelated unstaged `.gitignore` `.devcontainer` hunk is left untouched.
+
+All 24 ledger tasks are now `completed`. The sprint's deployment gate is CLOSED; the branch is ready
+for PR to `develop`.
+
+Decision: gate CLOSED — approved to merge

@@ -13,6 +13,13 @@
 > scope; the broader axes are retained only as the not-yet-met `enabled by default` criteria. The original
 > full-matrix `## Planner` sign-off at the foot is preserved verbatim as historical record.
 
+> **GATE CLOSED (2026-07-02):** The operator's manual assessment is complete. The preprod/Linux
+> closeout matrix, the six individual task-401 regression re-tests, and the guard-off /
+> startup-owned-recovery / bootstrap re-checks are all PASS (`-research.md` §2-§3); the kill-switch
+> decision is locked to `keep guarded by default` (§4); the rollback checklist is confirmed (§5); and
+> the ship decision is **APPROVED TO MERGE** (§6). task-ux-702 is `completed` (completedAt 2026-07-02)
+> in tasks.json. PR creation follows this closeout.
+
 ## Task id + title
 - **Id:** task-ux-702
 - **Title:** Full manual QA matrix and rollout-readiness decision (deployment gate)
@@ -310,16 +317,14 @@ From research/18:165-169 and `prd.md:925-931`:
 - Planning status: `approved` (Planner approved; Critiquer approved in `-plan-review.md`).
 - Implementation status: `scaffolding complete` — autonomous-eligible deliverables authored and
   code-reviewed (pass 1 of max 3 — no blockers; Decision: approved in `-impl-review.md`).
-- Build status: **scaffolding complete / deployment gate OPEN.** The QA-results matrix template (10
-  cells, preprod/Linux scope), the six task-401 regression re-test rows (R1-R6), the kill-switch
-  production-default + network-scoping decision framework (advisory: `keep guarded by default`), and
-  the rollback checklist (6 items) are artifacts in `task-ux-702-research.md`.
-  task-ux-702 is **NOT** marked completed and no `completedAt` is set. The deployment gate remains
-  OPEN pending the operator's manual assessment (to be brought in separately via
-  `task-ux-702-manual-assessment.md` and recorded in `-impl-review.md` / `-research.md`).
-- Tasks JSON sync decision: only `"pending"` and `"completed"` status values exist in the file; no
-  in-progress enum exists to set. Status remains `"pending"` in tasks.json. Scaffolding-done /
-  gate-open state is recorded here and in the Scribe entry in `-impl-review.md`.
+- Build status: **deployment gate CLOSED (2026-07-02).** The QA-results matrix (10 cells,
+  preprod/Linux scope), the six task-401 regression re-tests (R1-R6), the guard-off /
+  startup-owned-recovery / bootstrap re-checks, the locked kill-switch decision
+  (`keep guarded by default`), the confirmed rollback checklist (6 items), and the
+  **APPROVED TO MERGE** ship decision are recorded with operator sign-off in
+  `task-ux-702-research.md` §2-§6.
+- Tasks JSON sync: task-ux-702 is `"completed"` with `"completedAt": "2026-07-02"` (ledger version
+  1.11.0). The close-out entry is appended to `-impl-review.md`.
 
 ---
 

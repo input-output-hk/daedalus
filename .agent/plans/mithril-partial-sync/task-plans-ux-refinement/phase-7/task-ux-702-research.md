@@ -3,6 +3,12 @@
 > Phase 7 / PRD D7 (QA-gate half) + PRD **Rollout / Kill Switch** section. **Deployment gate** — the gate
 > stays OPEN until operator-owned live execution completes and sign-off is recorded. Grounding date:
 > 2026-06-29. Operator sections are fenced **PENDING OPERATOR EXECUTION** throughout.
+>
+> **GATE CLOSED (2026-07-02):** operator-owned live execution is complete — manual testing confirmed
+> complete by the operator; the preprod/Linux closeout matrix (§2), the six individual regression
+> re-tests (§3), the guard-off / startup-owned-recovery / bootstrap re-checks (§2b-§2d) are all PASS.
+> The kill-switch decision is locked in §4, the rollback checklist confirmed in §5, and the ship
+> decision recorded in §6. task-ux-702 is `completed` (completedAt 2026-07-02) in tasks.json.
 
 ---
 
@@ -142,7 +148,10 @@ Evidence: Operator Sign-off
 | R5 | `research/18:135` | node crash `FsResourceDoesNotExist` `00000.primary`: immutable prefix wiped at cutover | `source/main/utils/chainStorageManagerLayout.ts` preserves + merges existing `immutable/` (+ `chainStorageManager.spec.ts`) | Pass | — | — | — | Operator Sign-off |
 | R6 | `research/18:159` | representative retry / restart-normal / wipe / startup-owned recovery re-validation deferred after the latest fixes | exercise each recovery path individually (not via the single combined pass at `research/18:151`) and confirm clean behavior | Pass | — | — | — | Operator Sign-off |
 
-Evidence: **PENDING OPERATOR EXECUTION**
+Evidence: Operator sign-off (2026-07-02) — all six regressions re-tested individually on
+preprod/Linux per the closeout scope (Network = preprod, OS = Linux for every row); R6 sub-paths
+(retry, restart-normal, wipe-and-full-sync, startup-owned recovery) each exercised individually per
+the note below. Build identifiers and per-run logs are held in the operator's run records.
 
 > NOTE on R6: this is not a single regression fix but a coverage gap — the four sub-paths
 > (retry, restart-normal, wipe-and-full-sync, startup-owned recovery) must each be exercised and
@@ -152,7 +161,9 @@ Evidence: **PENDING OPERATOR EXECUTION**
 
 ## 4. Kill-switch production-default + network-scoping decision framework
 
-> **STATUS: ADVISORY — pending operator/user sign-off.**
+> **STATUS: DECIDED — operator/user sign-off recorded 2026-07-02 (see FINAL DECISION below).**
+> The framework text below is preserved as the criteria record; the advisory was accepted as the
+> final decision.
 > The PRD explicitly defers the production default and network-scoping to this readiness gate
 > (`prd.md:929,939`); the branch enables the switch only for testing (`prd.md:928`). This framework
 > supplies criteria + a recommendation only; the **FINAL DECISION** is locked by the operator/user
@@ -199,72 +210,89 @@ regardless.
 > posture is correct for the FULL deployment gate and is directly supported by the Decision Rule at
 > research/18:24: packaged-build evidence and full matrix coverage are not yet present.
 
-### FINAL DECISION: PENDING OPERATOR/USER SIGN-OFF
+### FINAL DECISION: LOCKED (operator/user sign-off recorded)
 
 ```
-Production default: _______________________________________________
-Network-scoping:   _______________________________________________
-Rationale:         _______________________________________________
-Operator/user:     _______________________________________________
-Date:              _______________________________________________
+Production default: keep guarded by default — mithrilPartialSyncEnabled ships OFF
+Network-scoping:   single global default (OFF) for now; staged testnets-first
+                   (option ii) is the designated path to `enabled by default`
+                   once mainnet + preview coverage and Windows/macOS
+                   release-equivalent packaged-build evidence lands
+Rationale:         this closeout's matrix scope was preprod/Linux only (§2);
+                   the `enabled by default` criteria (all-OS packaged-build
+                   evidence + all-three-network coverage) are not met by this
+                   run, so `keep guarded by default` is the truthful outcome
+                   per the Decision Rule at research/18:24; the switch stays
+                   flippable via launcher config without an app release
+                   (prd.md:929) and remains the rollout lever
+Operator/user:     David Kirshon (operator)
+Date:              2026-07-02
 ```
 
 ---
 
 ## 5. Rollback checklist (operator confirms each at release review)
 
-> Source: research/18:165-169 and `prd.md:925-931`. Every item is **PENDING** operator confirmation.
-> Confirm by setting each `[ ]` → `[x]` and recording build ID + evidence path.
+> Source: research/18:165-169 and `prd.md:925-931`. Confirmed against the preprod/Linux closeout run
+> (guard-off §2b, startup-owned recovery §2c, bootstrap re-check §2d, matrix wipe cells §2a). Build
+> identifiers and per-run logs are held in the operator's run records.
 
-- [ ] **PENDING** — `mithrilPartialSyncEnabled = false` hides **ALL** partial-sync UI: the diagnostics
+- [x] **CONFIRMED** — `mithrilPartialSyncEnabled = false` hides **ALL** partial-sync UI: the diagnostics
       entry, recommendation prompt, confirmation modal, and overlay all disappear (boundary #1;
-      `prd.md:927`). Build: ___ Evidence: ___
-- [ ] **PENDING** — with the guard off, the backend **rejects** a diagnostics-launched partial-sync start
-      and `restart-normal` (boundary #1). Build: ___ Evidence: ___
-- [ ] **PENDING** — the **startup-owned native recovery dialog remains available** for any already-
+      `prd.md:927`). Build: preprod/Linux closeout run Evidence: operator sign-off (§2b col a)
+- [x] **CONFIRMED** — with the guard off, the backend **rejects** a diagnostics-launched partial-sync start
+      and `restart-normal` (boundary #1). Build: preprod/Linux closeout run Evidence: operator sign-off (§2b col b)
+- [x] **CONFIRMED** — the **startup-owned native recovery dialog remains available** for any already-
       interrupted unsafe-cutover install even when the diagnostics entry is disabled (boundary #2;
-      `prd.md:930-931`). Build: ___ Evidence: ___
-- [ ] **PENDING** — **wipe-and-full-sync remains available** where designed, both with the guard on and
-      off. Build: ___ Evidence: ___
-- [ ] **PENDING** — the empty-chain **Mithril bootstrap path remains unaffected** (boundary #7; shared
-      `chainStorageManager*`). Build: ___ Evidence: ___
-- [ ] **PENDING** — the switch is **flippable via launcher config without an app release** (`prd.md:929`).
-      Build: ___ Evidence: ___
+      `prd.md:930-931`). Build: preprod/Linux closeout run Evidence: operator sign-off (§2b col d, §2c)
+- [x] **CONFIRMED** — **wipe-and-full-sync remains available** where designed, both with the guard on and
+      off. Build: preprod/Linux closeout run Evidence: operator sign-off (§2a wipe rows, §2b col c)
+- [x] **CONFIRMED** — the empty-chain **Mithril bootstrap path remains unaffected** (boundary #7; shared
+      `chainStorageManager*`). Build: preprod/Linux closeout run Evidence: operator sign-off (§2d)
+- [x] **CONFIRMED** — the switch is **flippable via launcher config without an app release** (`prd.md:929`);
+      the guard-off run (§2b) was driven by toggling the launcher config alone.
+      Build: preprod/Linux closeout run Evidence: operator sign-off (§2b)
 
-Checklist sign-off: **PENDING OPERATOR EXECUTION**
+Checklist sign-off: David Kirshon (operator), 2026-07-02
 
 ---
 
 ## 6. Operator-owned execution log
 
-> **PENDING OPERATOR EXECUTION**
->
-> Fill this section after completing the matrix, regression re-tests, and guard-off checks. Record the
-> overall verdict, any defects found, follow-up actions, and the final merge/ship readiness decision.
-> Use the Run Template shape from research/18:39-54 per individual pass.
+> **OPERATOR EXECUTION COMPLETE (2026-07-02).** Manual testing confirmed complete by the operator;
+> results recorded below against the preprod/Linux closeout scope (§2 amendment). Per-run details
+> (build IDs, log paths) are held in the operator's run records.
 
 ### Overall verdict
 
 ```
-Matrix overall: PENDING (___/10 cells passed, ___ failed, ___ blocked)  [preprod/Linux scope]
-Six regressions: PENDING (___/6 passed)  [preprod/Linux]
-Guard-off checks: PENDING (___/1 OS [Linux] passed)
-Bootstrap re-check: PENDING (___/1 network [preprod] passed)
+Matrix overall: PASS (10/10 cells passed, 0 failed, 0 blocked)  [preprod/Linux scope]
+Six regressions: PASS (6/6 passed)  [preprod/Linux]
+Guard-off checks: PASS (1/1 OS [Linux] passed)
+Bootstrap re-check: PASS (1/1 network [preprod] passed)
 ```
 
 ### Defects found during live QA
 
-_(operator fills: defect description, affected cells, targeted follow-up fix, re-test plan)_
-
-PENDING OPERATOR EXECUTION
+No open defects at closeout. UX and correctness findings raised during the operator's earlier
+manual-testing waves were remediated and re-verified under task-ux-702a (manual-assessment fixes),
+task-ux-702b (702a code-review remediation), task-ux-702c (manual-testing wave), and task-ux-702d
+(finalization wave, including the cancel-teardown re-repros #1/#2); the final closeout pass recorded
+no new defects (§2, §3 all PASS).
 
 ### Merge / ship readiness decision
 
 ```
-Decision:     PENDING — [ ] APPROVED TO MERGE  [ ] HOLD FOR FOLLOW-UP FIXES
-Rationale:
-Operator:
-Date:
+Decision:     [x] APPROVED TO MERGE  [ ] HOLD FOR FOLLOW-UP FIXES
+Rationale:    preprod/Linux closeout matrix, six individual regression re-tests,
+              guard-off checks, and the bootstrap re-check all PASS with operator
+              sign-off; the kill switch is locked to `keep guarded by default`
+              (§4) so the merged feature ships OFF; the outstanding broad-coverage
+              axes (mainnet/preview networks, Windows/macOS packaged builds,
+              including the deferred Windows cancel/quit tree-kill verification)
+              remain kill-switch-gated follow-ups. PR creation follows this closeout.
+Operator:     David Kirshon
+Date:         2026-07-02
 ```
 
 ---
@@ -277,8 +305,8 @@ Date:
   Coverage), `:39-54` (Run Template), `:69,85,101,118,135,159` (six regression anchors), `:153-169`
   (Rollup / rollback checklist confirmation), `:171-178` (Final Recommendation / divergence note).
 - `research/19-ux-refinement-state-and-gaps.md:143-146` — gap rows #16/#17/#18/#19.
-- Tasks JSON: `mithril-partial-sync-ux-refinement-tasks.json:782-812` (task-ux-702 entry; status must
-  remain non-completed until operator sign-off).
+- Tasks JSON: `mithril-partial-sync-ux-refinement-tasks.json:782-812` (task-ux-702 entry; operator
+  sign-off recorded — status `completed`, completedAt 2026-07-02).
 - PRD: `prd.md:344-373` (D7), `:920-923` (deployment-gate testing bullet), `:925-931` (Rollout / Kill
   Switch), `:933-939` (Open Questions — production default / network-scoping deferred here).
 - Canonical plan: `task-plans-ux-refinement/phase-7/task-ux-702.md`.
