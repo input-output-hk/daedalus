@@ -41,10 +41,9 @@ interface Context {
 
 const STEPS: ReadonlyArray<StepId> = ['preparing', 'downloading', 'finalizing'];
 
-const STATUS_TO_STEP: Partial<Record<
-  MithrilBootstrapStatus | MithrilPartialSyncStatus,
-  StepId
->> = {
+const STATUS_TO_STEP: Partial<
+  Record<MithrilBootstrapStatus | MithrilPartialSyncStatus, StepId>
+> = {
   'stopping-node': 'preparing',
   preparing: 'preparing',
   downloading: 'downloading',

@@ -80,12 +80,10 @@ export class MithrilController {
     resolve: (decision: MithrilBootstrapDecision) => void;
     reject: (error: Error) => void;
   }> = [];
-  _bootstrapStatusSender: StatusSender<
-    MithrilBootstrapStatusUpdate
-  > | null = null;
-  _partialSyncStatusSender: StatusSender<
-    MithrilPartialSyncStatusSnapshot
-  > | null = null;
+  _bootstrapStatusSender: StatusSender<MithrilBootstrapStatusUpdate> | null =
+    null;
+  _partialSyncStatusSender: StatusSender<MithrilPartialSyncStatusSnapshot> | null =
+    null;
   _pendingDecision: MithrilBootstrapDecision | null = null;
   _nodeStateProvider: () => CardanoNodeState | null | undefined = () =>
     undefined;
@@ -190,7 +188,8 @@ export class MithrilController {
     if (isMithrilPartialSyncWorkingStatus(status) || status === 'cancelled') {
       return { isEnabled, isSignificantlyBehind: false };
     }
-    const behindness = await this._partialSyncService.getPartialSyncBehindness();
+    const behindness =
+      await this._partialSyncService.getPartialSyncBehindness();
     return { isEnabled, ...behindness };
   }
 
@@ -262,9 +261,10 @@ export class MithrilController {
   ): () => void {
     this._partialSyncStatusListeners.push(handler);
     return () => {
-      this._partialSyncStatusListeners = this._partialSyncStatusListeners.filter(
-        (listener) => listener !== handler
-      );
+      this._partialSyncStatusListeners =
+        this._partialSyncStatusListeners.filter(
+          (listener) => listener !== handler
+        );
     };
   }
 

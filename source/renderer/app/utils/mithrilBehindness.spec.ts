@@ -5,11 +5,11 @@ import {
 import type { TipInfo } from '../api/network/types';
 
 const tip = (epoch: unknown): TipInfo =>
-  (({
+  ({
     epoch,
     slot: 0,
     absoluteSlotNumber: 0,
-  } as unknown) as TipInfo);
+  }) as unknown as TipInfo;
 
 describe('isMithrilBehindnessKnown', () => {
   it('is false when the network tip is missing', () => {

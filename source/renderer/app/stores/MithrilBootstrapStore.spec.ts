@@ -24,10 +24,10 @@ jest.mock('../ipc/chainStorageChannel', () => ({
 }));
 
 describe('MithrilBootstrapStore', () => {
-  const api: Api = ({
+  const api: Api = {
     ada: jest.fn(),
-  } as unknown) as Api;
-  const actions: ActionsMap = (jest.fn() as unknown) as ActionsMap;
+  } as unknown as Api;
+  const actions: ActionsMap = jest.fn() as unknown as ActionsMap;
 
   const setupStore = () =>
     new MithrilBootstrapStore(api, actions, noopAnalyticsTracker);

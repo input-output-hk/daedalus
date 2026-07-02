@@ -49,12 +49,8 @@ class MithrilProactivePromptContainer extends Component<Props> {
 
   render() {
     const { networkStatus, mithrilPartialSync } = this.props.stores;
-    const {
-      localTip,
-      networkTip,
-      isConnected,
-      isBehindnessKnown,
-    } = networkStatus;
+    const { localTip, networkTip, isConnected, isBehindnessKnown } =
+      networkStatus;
     const { certifiedEpoch } = mithrilPartialSync; // early-sync beacon anchor
 
     // combined known-ness = local epoch finite AND (live network tip finite OR

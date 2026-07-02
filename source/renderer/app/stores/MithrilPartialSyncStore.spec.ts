@@ -57,10 +57,10 @@ jest.mock('../ipc/mithrilPartialSyncChannel', () => ({
 }));
 
 describe('MithrilPartialSyncStore', () => {
-  const api: Api = ({
+  const api: Api = {
     ada: jest.fn(),
-  } as unknown) as Api;
-  const actions: ActionsMap = (jest.fn() as unknown) as ActionsMap;
+  } as unknown as Api;
+  const actions: ActionsMap = jest.fn() as unknown as ActionsMap;
 
   const setupStore = () =>
     new MithrilPartialSyncStore(api, actions, noopAnalyticsTracker);

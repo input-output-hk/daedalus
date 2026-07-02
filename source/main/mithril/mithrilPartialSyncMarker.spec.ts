@@ -75,10 +75,13 @@ describe('mithrilPartialSyncMarker', () => {
     });
 
     it('writes node-start-verified carrying both paths', async () => {
-      const marker = await writeMithrilPartialSyncMarker('node-start-verified', {
-        managedChainPath: '/chain',
-        stagingRootPath: '/vol/mithril-partial-sync',
-      });
+      const marker = await writeMithrilPartialSyncMarker(
+        'node-start-verified',
+        {
+          managedChainPath: '/chain',
+          stagingRootPath: '/vol/mithril-partial-sync',
+        }
+      );
 
       expect(marker.state).toBe('node-start-verified');
       expect(marker.stagingRootPath).toBe('/vol/mithril-partial-sync');
@@ -123,9 +126,9 @@ describe('mithrilPartialSyncMarker', () => {
     it('round-trips stagingRootPath through write then read', async () => {
       // Capture what was written and return it from readJson
       let writtenValue: unknown;
-      writeJsonMock.mockImplementation(
-        async (_path: string, data: unknown) => { writtenValue = data; }
-      );
+      writeJsonMock.mockImplementation(async (_path: string, data: unknown) => {
+        writtenValue = data;
+      });
       pathExistsMock.mockResolvedValue(true);
       readJsonMock.mockImplementation(async () => writtenValue);
 

@@ -192,10 +192,8 @@ describe('MithrilController', () => {
       controller.reapPartialSyncOnShutdown();
 
       expect(mockForceKillForShutdown).not.toHaveBeenCalled();
-      const {
-        info: infoLog,
-        warn: warnLog,
-      } = require('../utils/logging').logger;
+      const { info: infoLog, warn: warnLog } =
+        require('../utils/logging').logger;
       expect(infoLog).not.toHaveBeenCalled();
       expect(warnLog).not.toHaveBeenCalled();
     });

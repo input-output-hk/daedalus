@@ -180,9 +180,9 @@ describe('mithrilPartialSyncChannel', () => {
       webContents: {},
     } as never);
 
-    await expect(
-      mockChannels[5].onRequest.mock.calls[0][0]()
-    ).resolves.toEqual(availabilityEnabled);
+    await expect(mockChannels[5].onRequest.mock.calls[0][0]()).resolves.toEqual(
+      availabilityEnabled
+    );
     expect(
       mithrilControllerMock.getPartialSyncAvailability
     ).toHaveBeenCalledTimes(1);
@@ -216,17 +216,17 @@ describe('mithrilPartialSyncChannel', () => {
       isEnabled: false,
       isSignificantlyBehind: false,
     });
-    await expect(
-      mockChannels[5].onRequest.mock.calls[0][0]()
-    ).resolves.toEqual({ isEnabled: false, isSignificantlyBehind: false });
+    await expect(mockChannels[5].onRequest.mock.calls[0][0]()).resolves.toEqual(
+      { isEnabled: false, isSignificantlyBehind: false }
+    );
 
     mithrilControllerMock.getPartialSyncAvailability.mockReturnValue({
       isEnabled: true,
       isSignificantlyBehind: false,
     });
-    await expect(
-      mockChannels[5].onRequest.mock.calls[0][0]()
-    ).resolves.toEqual({ isEnabled: true, isSignificantlyBehind: false });
+    await expect(mockChannels[5].onRequest.mock.calls[0][0]()).resolves.toEqual(
+      { isEnabled: true, isSignificantlyBehind: false }
+    );
   });
 
   it('forwards certifiedEpoch on the availability payload', async () => {
@@ -246,9 +246,9 @@ describe('mithrilPartialSyncChannel', () => {
       availabilityWithEpoch
     );
 
-    await expect(
-      mockChannels[5].onRequest.mock.calls[0][0]()
-    ).resolves.toEqual(availabilityWithEpoch);
+    await expect(mockChannels[5].onRequest.mock.calls[0][0]()).resolves.toEqual(
+      availabilityWithEpoch
+    );
   });
 
   it('finalize channel (mockChannels[6]) delegates to controller.finalizePartialSync() and resolves to undefined', async () => {

@@ -155,12 +155,10 @@ describe('chainStorageCoordinator', () => {
 
     const moduleExports = loadModule();
 
-    const firstCall = moduleExports.chainStorageCoordinator.setDirectory(
-      '/mnt/one'
-    );
-    const secondCall = moduleExports.chainStorageCoordinator.setDirectory(
-      '/mnt/two'
-    );
+    const firstCall =
+      moduleExports.chainStorageCoordinator.setDirectory('/mnt/one');
+    const secondCall =
+      moduleExports.chainStorageCoordinator.setDirectory('/mnt/two');
 
     await flushPromises();
 
@@ -211,7 +209,8 @@ describe('chainStorageCoordinator', () => {
 
     moduleExports.chainStorageCoordinator.onDirectoryChanged(directoryChanged);
 
-    const result = await moduleExports.chainStorageCoordinator.prepareForLocationChange();
+    const result =
+      await moduleExports.chainStorageCoordinator.prepareForLocationChange();
 
     expect(chainStorageManagerMock.prepareForLocationChange).toHaveBeenCalled();
     expect(chainStorageManagerMock.resolveMithrilWorkDir).toHaveBeenCalled();
@@ -233,7 +232,8 @@ describe('chainStorageCoordinator', () => {
 
     moduleExports.chainStorageCoordinator.onDirectoryChanged(directoryChanged);
 
-    const result = await moduleExports.chainStorageCoordinator.prepareForLocationChange();
+    const result =
+      await moduleExports.chainStorageCoordinator.prepareForLocationChange();
 
     expect(chainStorageManagerMock.prepareForLocationChange).toHaveBeenCalled();
     expect(
@@ -265,9 +265,8 @@ describe('chainStorageCoordinator', () => {
 
     const moduleExports = loadModule();
 
-    const ensureLayoutCall = moduleExports.chainStorageCoordinator.ensureManagedChainLayout(
-      'stopped'
-    );
+    const ensureLayoutCall =
+      moduleExports.chainStorageCoordinator.ensureManagedChainLayout('stopped');
 
     await flushPromises();
 
@@ -306,9 +305,10 @@ describe('chainStorageCoordinator', () => {
     expect(mithrilBootstrapServiceMock.setWorkDir).toHaveBeenCalledWith(
       '/mnt/custom-parent/chain'
     );
-    expect(
-      mithrilBootstrapServiceMock.startBootstrap
-    ).toHaveBeenCalledWith('digest-1', { wipeChain: true });
+    expect(mithrilBootstrapServiceMock.startBootstrap).toHaveBeenCalledWith(
+      'digest-1',
+      { wipeChain: true }
+    );
   });
 
   it('starts partial sync with explicit preflight context and no bootstrap service reuse', async () => {
@@ -349,12 +349,13 @@ describe('chainStorageCoordinator', () => {
 
     const moduleExports = loadModule();
 
-    const partialSyncCall = moduleExports.chainStorageCoordinator.startPartialSync(
-      getPartialSyncDependencies(),
-      {
-        nodeState: 'stopped',
-      }
-    );
+    const partialSyncCall =
+      moduleExports.chainStorageCoordinator.startPartialSync(
+        getPartialSyncDependencies(),
+        {
+          nodeState: 'stopped',
+        }
+      );
 
     await flushPromises();
 
@@ -510,9 +511,10 @@ describe('chainStorageCoordinator', () => {
     expect(
       chainStorageManagerMock.ensureManagedChainLayout
     ).toHaveBeenCalledWith({ nodeState: 'stopped' });
-    expect(
-      mithrilBootstrapServiceMock.startBootstrap
-    ).toHaveBeenCalledWith('digest-2', { wipeChain: undefined });
+    expect(mithrilBootstrapServiceMock.startBootstrap).toHaveBeenCalledWith(
+      'digest-2',
+      { wipeChain: undefined }
+    );
     expect(chainStorageManagerMock.setDirectory).not.toHaveBeenCalled();
 
     await expect(
@@ -609,12 +611,13 @@ describe('chainStorageCoordinator', () => {
 
     const moduleExports = loadModule();
 
-    const partialSyncCall = moduleExports.chainStorageCoordinator.startPartialSync(
-      getPartialSyncDependencies(),
-      {
-        nodeState: 'stopped',
-      }
-    );
+    const partialSyncCall =
+      moduleExports.chainStorageCoordinator.startPartialSync(
+        getPartialSyncDependencies(),
+        {
+          nodeState: 'stopped',
+        }
+      );
 
     await flushPromises();
 
@@ -675,12 +678,13 @@ describe('chainStorageCoordinator', () => {
 
     const moduleExports = loadModule();
 
-    const partialSyncCall = moduleExports.chainStorageCoordinator.startPartialSync(
-      getPartialSyncDependencies(),
-      {
-        nodeState: 'stopped',
-      }
-    );
+    const partialSyncCall =
+      moduleExports.chainStorageCoordinator.startPartialSync(
+        getPartialSyncDependencies(),
+        {
+          nodeState: 'stopped',
+        }
+      );
 
     await flushPromises();
 
@@ -708,10 +712,9 @@ describe('chainStorageCoordinator', () => {
       const moduleExports = loadModule();
       const neverSettles = new Promise<void>(() => {});
 
-      const awaitSettledWithin = (moduleExports.chainStorageCoordinator as any)._awaitSettledWithin(
-        neverSettles,
-        15_000
-      );
+      const awaitSettledWithin = (
+        moduleExports.chainStorageCoordinator as any
+      )._awaitSettledWithin(neverSettles, 15_000);
 
       jest.advanceTimersByTime(15_000);
       await Promise.resolve();
@@ -762,7 +765,8 @@ describe('chainStorageCoordinator', () => {
       )
       .mockResolvedValueOnce(false);
 
-    (moduleExports.chainStorageCoordinator as any)._partialSyncRunPromise = Promise.resolve();
+    (moduleExports.chainStorageCoordinator as any)._partialSyncRunPromise =
+      Promise.resolve();
 
     await moduleExports.chainStorageCoordinator.cancelPartialSync(
       getPartialSyncDependencies()
@@ -791,7 +795,8 @@ describe('chainStorageCoordinator', () => {
     // cancel, where start() unwinds at CP-A/CP-B with no subprocess at all.
     const moduleExports = loadModule();
 
-    (moduleExports.chainStorageCoordinator as any)._partialSyncRunPromise = Promise.resolve();
+    (moduleExports.chainStorageCoordinator as any)._partialSyncRunPromise =
+      Promise.resolve();
 
     await moduleExports.chainStorageCoordinator.cancelPartialSync(
       getPartialSyncDependencies()
@@ -823,11 +828,13 @@ describe('chainStorageCoordinator', () => {
       const moduleExports = loadModule();
 
       const neverSettles = new Promise<void>(() => {});
-      (moduleExports.chainStorageCoordinator as any)._partialSyncRunPromise = neverSettles;
+      (moduleExports.chainStorageCoordinator as any)._partialSyncRunPromise =
+        neverSettles;
 
-      const cancelCall = moduleExports.chainStorageCoordinator.cancelPartialSync(
-        getPartialSyncDependencies()
-      );
+      const cancelCall =
+        moduleExports.chainStorageCoordinator.cancelPartialSync(
+          getPartialSyncDependencies()
+        );
 
       // Flush handlers.cancel() so the first bounded wait arms its timeout.
       for (let i = 0; i < 10; i += 1) {
@@ -967,16 +974,16 @@ describe('chainStorageCoordinator', () => {
 
     const moduleExports = loadModule();
 
-    const wipeCall = moduleExports.chainStorageCoordinator.wipeChainAndSnapshots(
-      'wipe-reason',
-      'stopped'
-    );
+    const wipeCall =
+      moduleExports.chainStorageCoordinator.wipeChainAndSnapshots(
+        'wipe-reason',
+        'stopped'
+      );
 
     await flushPromises();
 
-    const setDirectoryCall = moduleExports.chainStorageCoordinator.setDirectory(
-      '/mnt/next'
-    );
+    const setDirectoryCall =
+      moduleExports.chainStorageCoordinator.setDirectory('/mnt/next');
 
     await flushPromises();
 
@@ -1017,12 +1024,13 @@ describe('chainStorageCoordinator', () => {
 
     const moduleExports = loadModule();
 
-    const partialSyncCall = moduleExports.chainStorageCoordinator.startPartialSync(
-      getPartialSyncDependencies(),
-      {
-        nodeState: 'stopped',
-      }
-    );
+    const partialSyncCall =
+      moduleExports.chainStorageCoordinator.startPartialSync(
+        getPartialSyncDependencies(),
+        {
+          nodeState: 'stopped',
+        }
+      );
 
     await flushPromises();
 

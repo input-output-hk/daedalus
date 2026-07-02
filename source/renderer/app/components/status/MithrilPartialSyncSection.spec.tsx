@@ -102,9 +102,7 @@ describe('MithrilPartialSyncSection', () => {
   it('disables the button and shows only the blocked hint when blocked', () => {
     renderComponent({ isActionBlocked: true });
 
-    expect(
-      screen.getByRole('button', { name: 'Mithril Sync' })
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeDisabled();
     expect(
       screen.getByText('Unavailable while Mithril work is already active.')
     ).toBeInTheDocument();
@@ -137,9 +135,7 @@ describe('MithrilPartialSyncSection', () => {
       const { unmount } = renderComponent({ onStartMithrilPartialSync });
 
       screen.getByRole('button', { name: 'Mithril Sync' }).click();
-      screen
-        .getByRole('button', { name: 'Start Mithril Sync' })
-        .click();
+      screen.getByRole('button', { name: 'Start Mithril Sync' }).click();
 
       await waitFor(() => {
         expect(onStartMithrilPartialSync).toHaveBeenCalledTimes(1);
@@ -226,9 +222,7 @@ describe('MithrilPartialSyncSection', () => {
   it('renders nothing and leaves no header row when the recommendation is gated off', () => {
     const { container } = renderComponent({ shouldShowRecommendation: false });
 
-    expect(
-      screen.queryByRole('button', { name: 'Mithril Sync' })
-    ).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Mithril Sync' })).toBeNull();
     expect(container.textContent).not.toMatch(/Mithril Sync/);
   });
 

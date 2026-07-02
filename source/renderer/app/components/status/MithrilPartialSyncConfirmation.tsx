@@ -20,8 +20,7 @@ const messages = defineMessages({
       'Behind-ness context line (epochs behind the blockchain tip) for the Mithril partial sync confirmation modal',
   },
   behindUnknown: {
-    id:
-      'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehindUnknown',
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehindUnknown',
     defaultMessage:
       '!!!Your node is behind the latest verified snapshot. Mithril Sync will restore verified chain data to help your node sync faster.',
     description:
@@ -55,13 +54,8 @@ export default class MithrilPartialSyncConfirmation extends Component<Props> {
   };
 
   render() {
-    const {
-      isActionBlocked,
-      startError,
-      behindByEpochs,
-      onCancel,
-      onConfirm,
-    } = this.props;
+    const { isActionBlocked, startError, behindByEpochs, onCancel, onConfirm } =
+      this.props;
     const { intl } = this.context;
 
     const hasBehindFigure =

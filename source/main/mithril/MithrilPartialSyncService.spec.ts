@@ -90,12 +90,15 @@ describe('MithrilPartialSyncService', () => {
     .runBinary as jest.Mock;
   const killProcessTreeMock = require('./killProcessTree')
     .killProcessTree as jest.Mock;
-  const writeMithrilPartialSyncMarkerMock = require('./mithrilPartialSyncMarker')
-    .writeMithrilPartialSyncMarker as jest.Mock;
-  const clearMithrilPartialSyncMarkerMock = require('./mithrilPartialSyncMarker')
-    .clearMithrilPartialSyncMarker as jest.Mock;
-  const readMithrilPartialSyncMarkerMockTop = require('./mithrilPartialSyncMarker')
-    .readMithrilPartialSyncMarker as jest.Mock;
+  const writeMithrilPartialSyncMarkerMock =
+    require('./mithrilPartialSyncMarker')
+      .writeMithrilPartialSyncMarker as jest.Mock;
+  const clearMithrilPartialSyncMarkerMock =
+    require('./mithrilPartialSyncMarker')
+      .clearMithrilPartialSyncMarker as jest.Mock;
+  const readMithrilPartialSyncMarkerMockTop =
+    require('./mithrilPartialSyncMarker')
+      .readMithrilPartialSyncMarker as jest.Mock;
 
   const mockDirectoryStats = () => ({
     isDirectory: () => true,
@@ -1839,8 +1842,9 @@ describe('MithrilPartialSyncService', () => {
   });
 
   describe('finalizeCompletedPartialSync', () => {
-    const readMithrilPartialSyncMarkerMock = require('./mithrilPartialSyncMarker')
-      .readMithrilPartialSyncMarker as jest.Mock;
+    const readMithrilPartialSyncMarkerMock =
+      require('./mithrilPartialSyncMarker')
+        .readMithrilPartialSyncMarker as jest.Mock;
 
     beforeEach(() => {
       readMithrilPartialSyncMarkerMock.mockResolvedValue(null);

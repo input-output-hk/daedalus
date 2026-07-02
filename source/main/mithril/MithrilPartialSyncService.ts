@@ -622,7 +622,7 @@ export class MithrilPartialSyncService {
       const status =
         nextStage === 'downloading' && this._status.status === 'verifying'
           ? 'verifying'
-          : nextStage ?? this._status.status;
+          : (nextStage ?? this._status.status);
 
       this._updateStatus({
         status,
@@ -946,7 +946,8 @@ export class MithrilPartialSyncService {
     ) {
       return this._localImmutableCache.value;
     }
-    const managedChainPath = await this._chainStorageManager.getManagedChainPath();
+    const managedChainPath =
+      await this._chainStorageManager.getManagedChainPath();
     const localImmutableNumber = await resolveLocalImmutableNumber(
       managedChainPath,
       (stage, message, code) => this._createStageError(stage, message, code)

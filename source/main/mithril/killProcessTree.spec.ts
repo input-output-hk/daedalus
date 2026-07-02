@@ -24,7 +24,7 @@ const createFakeChild = (pid: number | undefined) =>
   ({
     pid,
     kill: jest.fn(),
-  } as any);
+  }) as any;
 
 describe('killProcessTree', () => {
   let processKillSpy: jest.SpyInstance;

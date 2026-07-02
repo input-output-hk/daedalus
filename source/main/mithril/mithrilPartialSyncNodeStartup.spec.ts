@@ -43,14 +43,15 @@ const {
   writeMithrilPartialSyncMarker: jest.Mock;
 };
 
-const {
-  emitMithrilPartialSyncStatus,
-} = require('../ipc/mithrilPartialSyncChannel') as {
-  emitMithrilPartialSyncStatus: jest.Mock;
-  getMithrilPartialSyncStatus: jest.Mock;
-};
+const { emitMithrilPartialSyncStatus } =
+  require('../ipc/mithrilPartialSyncChannel') as {
+    emitMithrilPartialSyncStatus: jest.Mock;
+    getMithrilPartialSyncStatus: jest.Mock;
+  };
 
-const { dialog } = require('electron') as unknown as { dialog: { showMessageBox: jest.Mock } };
+const { dialog } = require('electron') as unknown as {
+  dialog: { showMessageBox: jest.Mock };
+};
 
 const fsMock = fs as unknown as { remove: jest.Mock };
 
@@ -229,9 +230,7 @@ describe('handleInterruptedRecovery', () => {
 describe('finalizeInstalledNodeStart', () => {
   // Override the startup delay to 0 ms for all finalize tests so no fake timers needed
   beforeEach(() => {
-    jest.spyOn(global, 'setTimeout').mockImplementation(((
-      fn: () => void
-    ) => {
+    jest.spyOn(global, 'setTimeout').mockImplementation(((fn: () => void) => {
       fn();
       return 0 as unknown as ReturnType<typeof global.setTimeout>;
     }) as typeof global.setTimeout);

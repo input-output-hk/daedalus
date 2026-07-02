@@ -103,7 +103,8 @@ class ChainStorageCoordinator {
         'prepare chain storage location change'
       );
 
-      const validation = await this._chainStorageManager.prepareForLocationChange();
+      const validation =
+        await this._chainStorageManager.prepareForLocationChange();
 
       if (!validation) {
         return null;
@@ -191,7 +192,8 @@ class ChainStorageCoordinator {
         options?.nodeState
       );
       if (!options?.wipeChain) {
-        const isManagedChainEmpty = await this._chainStorageManager.isManagedChainEmpty();
+        const isManagedChainEmpty =
+          await this._chainStorageManager.isManagedChainEmpty();
 
         if (!isManagedChainEmpty) {
           logger.warn(
@@ -239,11 +241,10 @@ class ChainStorageCoordinator {
           options?.nodeState
         );
 
-        const layoutResult = await this._chainStorageManager.ensureManagedChainLayout(
-          {
+        const layoutResult =
+          await this._chainStorageManager.ensureManagedChainLayout({
             nodeState,
-          }
-        );
+          });
 
         if (layoutResult.isRecoveryFallback) {
           logger.warn(
@@ -257,7 +258,8 @@ class ChainStorageCoordinator {
           );
         }
 
-        const mithrilWorkDir = await this._chainStorageManager.resolveMithrilWorkDir();
+        const mithrilWorkDir =
+          await this._chainStorageManager.resolveMithrilWorkDir();
 
         this._partialSyncInProgress = true;
 
@@ -472,9 +474,8 @@ class ChainStorageCoordinator {
   async _ensureManagedChainLayoutAndSyncWorkDir(
     nodeState?: CardanoNodeState | null
   ): Promise<ManagedChainLayoutResult> {
-    const layoutResult = await this._chainStorageManager.ensureManagedChainLayout(
-      { nodeState }
-    );
+    const layoutResult =
+      await this._chainStorageManager.ensureManagedChainLayout({ nodeState });
 
     await this._syncMithrilWorkDir();
     return layoutResult;
