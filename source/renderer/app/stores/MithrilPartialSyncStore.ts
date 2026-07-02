@@ -34,15 +34,15 @@ const DEFAULT_STATUS: MithrilPartialSyncStatusSnapshot = {
 const START_PENDING_STATUS: MithrilPartialSyncStatus = 'stopping-node';
 
 const AVAILABILITY_REFRESH_INTERVAL = 30_000;
-// #6 (D-702b-6): bound each availability `request()` so a wedged main process can
+// Bound each availability `request()` so a wedged main process can
 // never keep `_isRefreshingAvailability` pinned `true` forever (which would kill
 // every future refresh and strand the idle consumers — the proactive prompt and
 // the Diagnostics dialog).
 const AVAILABILITY_REQUEST_TIMEOUT_MS = 10_000;
-// #9 (D-702b-6): known-stable back-off cadence (5 min). The poll SLOWS to this once
+// Known-stable back-off cadence (5 min). The poll SLOWS to this once
 // availability is settled-stable; it never STOPS, so the idle consumers keep updating.
 const AVAILABILITY_REFRESH_BACKOFF_INTERVAL = 300_000;
-// ISSUE-1 guard: require this many CONSECUTIVE stable reads before slowing, so a
+// Guard: require this many CONSECUTIVE stable reads before slowing, so a
 // premature first not-behind read (a probe that lands before the backend behind-ness
 // settles) can never slow the poll before it self-corrects.
 const STABLE_READS_BEFORE_BACKOFF = 2;
@@ -77,7 +77,7 @@ export default class MithrilPartialSyncStore extends Store {
   @observable logPath: string | undefined = undefined;
   @observable isCompletedOverlayDismissed = false;
   @observable proactivePromptDismissedThisSession = false;
-  // #4 (D-702b-3): separate session-scoped re-pop guard, set true when a Mithril
+  // Separate session-scoped re-pop guard, set true when a Mithril
   // attempt begins (`startPartialSync`). AND-ed into the proactive-prompt gate so
   // the prompt never re-offers after an attempt regardless of the terminal
   // outcome (completed/cancelled/failed/restart-normal). In-memory, session-scoped,
@@ -87,16 +87,16 @@ export default class MithrilPartialSyncStore extends Store {
   @observable isPartialSyncEnabled = false;
   @observable isSignificantlyBehind = false;
   @observable behindByImmutables: number | undefined = undefined;
-  // #16 (D-702b-10): the Mithril certified-beacon epoch, the early-sync fallback
+  // The Mithril certified-beacon epoch, the early-sync fallback
   // anchor for the late-resolving `networkTip.epoch`. DECLARATION ONLY here —
-  // CAT-A populates it in `_applyAvailability`, CAT-H produces it in the backend
+  // `_applyAvailability` populates it; the backend produces it in the
   // probe + IPC payload. Until then it stays `undefined` ⇒ `computeBehindByEpochs`
   // degrades to networkTip-only (no regression).
   @observable certifiedEpoch: number | null | undefined = undefined;
   _availabilityRefreshInterval: ReturnType<typeof setInterval> | null = null;
   _isTornDown = false;
   _isRefreshingAvailability = false;
-  // #9 (D-702b-6): count of consecutive settled-stable availability reads. Plain
+  // Count of consecutive settled-stable availability reads. Plain
   // internal poll-state (not observable — no computed/component reads it). Reset to
   // 0 on every unstable read; the back-off engages only once it reaches
   // STABLE_READS_BEFORE_BACKOFF.
@@ -110,18 +110,25 @@ export default class MithrilPartialSyncStore extends Store {
       logger.warn('MithrilPartialSyncStore: failed to sync status', { error });
     });
     this._refreshAvailability();
-    // Re-fetch availability on EVERY tick — not only while work is in flight.
-    // The one-shot setup read can land before the backend behind-ness probe has
+    // Re-fetch availability on every tick EXCEPT while partial-sync work is
+    // active or terminal-`cancelled` — the skip-when-active guard inside
+    // `_refreshAvailability` returns early on those ticks so no concurrent
+    // mithril-client metadata child is spawned mid-run.
+    // In `idle`/`failed`/`completed` the probe still fires on EVERY tick: the
+    // one-shot setup read can land before the backend behind-ness probe has
     // settled, so the Diagnostics Mithril section must self-correct on first
-    // load (ISSUE-1) without a full reload. The re-entrancy guard in
+    // load without a full reload. The re-entrancy guard in
     // `_refreshAvailability` keeps overlapping probes from piling up, and the
     // kill switch short-circuits cheaply when partial sync is disabled. The poll
     // starts at the fast 30s cadence and self-rearms to the known-stable back-off
-    // cadence (and back) inside `_refreshAvailability`; it never stops.
+    // cadence (and back) inside `_refreshAvailability`; the interval itself
+    // never stops — a gated tick simply returns early until status leaves the
+    // active set, after which the next tick resumes against freshly
+    // invalidated caches.
     this._armAvailabilityInterval(AVAILABILITY_REFRESH_INTERVAL);
   }
 
-  // #9 (D-702b-6): (re)arm the availability poll at the given cadence. Clears any
+  // (Re)arm the availability poll at the given cadence. Clears any
   // existing interval first so a cadence switch (fast ⇄ back-off) never leaves two
   // intervals running. Used by `setup()` and the back-off in `_refreshAvailability`.
   _armAvailabilityInterval(intervalMs: number) {
@@ -238,9 +245,9 @@ export default class MithrilPartialSyncStore extends Store {
     this.logPath = update.logPath;
   };
 
-  // #9 (D-702b-6): availability is settled-stable when partial sync is disabled
+  // Availability is settled-stable when partial sync is disabled
   // (never available) or enabled-and-not-behind (caught up). A SINGLE stable read
-  // must not slow the poll (ISSUE-1) — that gating lives in the back-off below.
+  // must not slow the poll — that gating lives in the back-off below.
   _isAvailabilityStable(): boolean {
     return !this.isPartialSyncEnabled || !this.isSignificantlyBehind;
   }
@@ -251,8 +258,18 @@ export default class MithrilPartialSyncStore extends Store {
       return;
     }
 
+    // Skip the probe while Mithril work is active or a cancel outcome is
+    // terminal-cancelled: a probe here would spawn a concurrent
+    // mithril-client metadata child (and pay the fork/readdir cost) for a
+    // figure only the Diagnostics dialog could display mid-run (frozen
+    // pre-run values; accepted trade-off). Behavior change from "re-fetch on
+    // EVERY tick".
+    if (this.isWorking || this.status === 'cancelled') {
+      return;
+    }
+
     this._isRefreshingAvailability = true;
-    // #6 (D-702b-6): race the request against a timeout that is ALWAYS cleared in
+    // Race the request against a timeout that is ALWAYS cleared in
     // `finally`, so a wedged main process cannot pin `_isRefreshingAvailability`
     // forever (the timeout rejects, the catch logs, and the guard clears so the
     // next tick can refresh). A settled request leaves no dangling timer.
@@ -269,9 +286,9 @@ export default class MithrilPartialSyncStore extends Store {
         withTimeout,
       ]);
       this._applyAvailability(availability);
-      // #9 (D-702b-6): known-stable back-off. Slow the poll only after
+      // Known-stable back-off. Slow the poll only after
       // STABLE_READS_BEFORE_BACKOFF CONSECUTIVE settled-stable reads — never on the
-      // premature FIRST not-behind read (ISSUE-1: a probe that lands before the
+      // premature FIRST not-behind read (a probe that lands before the
       // backend behind-ness settles reads not-behind while the node IS behind; a
       // counter of 1 keeps the fast poll so it self-corrects). On the first unstable
       // read after a back-off, reset the counter and re-arm the fast 30s cadence
@@ -310,8 +327,9 @@ export default class MithrilPartialSyncStore extends Store {
     this.isPartialSyncEnabled = availability.isEnabled;
     this.isSignificantlyBehind = availability.isSignificantlyBehind;
     this.behindByImmutables = availability.behindByImmutables;
-    // #16 (D-702b-10): the early-sync beacon anchor for the container figure/gate.
-    // Undefined until CAT-H supplies it ⇒ degrades to networkTip-only (no regression).
+    // The early-sync beacon anchor for the container figure/gate.
+    // Undefined until the backend supplies it ⇒ degrades to networkTip-only
+    // (no regression).
     this.certifiedEpoch = availability.certifiedEpoch;
   };
 
@@ -320,8 +338,8 @@ export default class MithrilPartialSyncStore extends Store {
     if (this.status !== 'completed') {
       return;
     }
-    // #2 (D-702b-4): await the finalize BEFORE flipping the dismiss flag, and
-    // resync on any outcome. ADR D-702a-1 amends lock #16/D9 — this finalize is
+    // Await the finalize BEFORE flipping the dismiss flag, and
+    // resync on any outcome. This finalize is
     // invoked by the completed-overlay auto-timeout (MithrilPartialSyncOverlay)
     // instead of an explicit "Continue to Daedalus" click; the finalize call is
     // unchanged. Reuses the store's `try { … } finally { await this.syncStatus() }`
@@ -363,12 +381,12 @@ export default class MithrilPartialSyncStore extends Store {
     this.proactivePromptDismissedThisSession = true;
   };
 
-  // `retry` reuses this start path — there is no dedicated retry IPC channel
-  // (PRD D8 / gap #24). onRetry in the overlay wires straight to startPartialSync.
+  // `retry` reuses this start path — there is no dedicated retry IPC channel.
+  // onRetry in the overlay wires straight to startPartialSync.
   @action
   startPartialSync = async () => {
     let startError: unknown;
-    // #4 (D-702b-3): mark that a Mithril attempt has begun this session so the
+    // Mark that a Mithril attempt has begun this session so the
     // proactive prompt never re-offers once status returns to idle (any outcome).
     this.mithrilAttemptStartedThisSession = true;
     this._updateStatus({
@@ -411,7 +429,7 @@ export default class MithrilPartialSyncStore extends Store {
     try {
       await mithrilPartialSyncCancelChannel.request();
     } finally {
-      // Always resync so the UI never sticks on the optimistic frame (D5f) —
+      // Always resync so the UI never sticks on the optimistic frame —
       // including the stopping-node no-op and the post-cutover rejection.
       await this.syncStatus();
     }

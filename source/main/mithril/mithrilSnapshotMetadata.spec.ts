@@ -40,7 +40,7 @@ describe('mithrilSnapshotMetadata', () => {
     ).toBeNull();
   });
 
-  it('extracts the certified beacon epoch from the production beacon shape (#16)', () => {
+  it('extracts the certified beacon epoch from the production beacon shape', () => {
     // Mirror the real immutable fixture (cardano_db_beacon, string-valued) with an epoch added.
     expect(
       extractCertifiedEpoch({
@@ -49,17 +49,17 @@ describe('mithrilSnapshotMetadata', () => {
     ).toBe(320);
   });
 
-  it('parses a string-valued certified epoch via toPositiveInteger (#16)', () => {
+  it('parses a string-valued certified epoch via toPositiveInteger', () => {
     expect(extractCertifiedEpoch({ beacon: { epoch: '512' } })).toBe(512);
   });
 
-  it('prefers beacon.epoch over the bare top-level epoch path (#16)', () => {
+  it('prefers beacon.epoch over the bare top-level epoch path', () => {
     expect(extractCertifiedEpoch({ epoch: 7, beacon: { epoch: 320 } })).toBe(
       320
     );
   });
 
-  it('returns null when no epoch key is present, while the immutable number still resolves (#16 safe-degrade)', () => {
+  it('returns null when no epoch key is present, while the immutable number still resolves (safe-degrade)', () => {
     const beaconWithoutEpoch = {
       cardano_db_beacon: { immutable_file_number: '25' },
     };
@@ -68,7 +68,7 @@ describe('mithrilSnapshotMetadata', () => {
     expect(extractLatestCertifiedImmutableNumber(beaconWithoutEpoch)).toBe(25);
   });
 
-  it('carries the certified epoch onto the resolved latest snapshot (#16)', () => {
+  it('carries the certified epoch onto the resolved latest snapshot', () => {
     expect(
       normalizeResolvedLatestSnapshot({
         digest: 'latest-digest',

@@ -125,7 +125,7 @@ class App extends Component<{
                 )}
                 {/* Proactive Mithril prompt: mounted app-level (sibling of
                     <Router>) so it PERSISTS across the loading -> Wallet Summary
-                    transition (D-702a-5). It self-gates to status === 'idle', so
+                    transition. It self-gates to status === 'idle', so
                     it never co-renders with the MithrilPartialSyncOverlay above. */}
                 <MithrilProactivePromptContainer />
                 <RTSFlagsRecommendationOverlayContainer />

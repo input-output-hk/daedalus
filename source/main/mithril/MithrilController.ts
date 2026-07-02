@@ -9,7 +9,10 @@ import type {
   MithrilPartialSyncAvailability,
   MithrilPartialSyncStatusSnapshot,
 } from '../../common/types/mithril-partial-sync.types';
-import { isMithrilPartialSyncBlockingNodeStart } from '../../common/types/mithril-partial-sync.types';
+import {
+  isMithrilPartialSyncBlockingNodeStart,
+  isMithrilPartialSyncWorkingStatus,
+} from '../../common/types/mithril-partial-sync.types';
 import type { PartialSyncPreflightContext } from '../utils/chainStorageCoordinator';
 import {
   chainStorageCoordinator,
@@ -174,6 +177,19 @@ export class MithrilController {
     if (!isEnabled) {
       return { isEnabled: false, isSignificantlyBehind: false };
     }
+    // Belt-and-braces main-side guard: while a partial sync is working (or
+    // terminal-`cancelled`), skip the behind-ness probe — it would spawn a
+    // concurrent mithril-client metadata child mid-run. The renderer store
+    // already gates its poll the same way; this guard keeps any future
+    // caller from re-introducing the concurrent spawn.
+    // Degrading to not-behind while active is safe: the proactive prompt is
+    // session-suppressed once an attempt starts, and getPartialSyncBehindness
+    // itself degrades to `{ isSignificantlyBehind: false }` on any failure.
+    // The `_partialSyncStatus` seam is kept fresh by broadcastPartialSyncStatus.
+    const { status } = this._partialSyncStatus;
+    if (isMithrilPartialSyncWorkingStatus(status) || status === 'cancelled') {
+      return { isEnabled, isSignificantlyBehind: false };
+    }
     const behindness = await this._partialSyncService.getPartialSyncBehindness();
     return { isEnabled, ...behindness };
   }
@@ -201,6 +217,33 @@ export class MithrilController {
       chainStorageCoordinator.isPartialSyncInProgress() ||
       this._partialSyncStatus.status !== 'idle'
     );
+  }
+
+  // Shutdown reap: best-effort, called ONCE from safeExit() right after
+  // pauseActiveDownloads(). cancel()/forceKill() never run on a plain quit, so this is
+  // the only thing standing between a quit-mid-download and an orphaned (detached on
+  // POSIX) mithril-client. Guarded by isPartialSyncActive() — true for every non-idle
+  // status, which is broader than strictly needed and harmless (in the extra states the
+  // service slot is null, so the sync-mode SIGKILL no-ops). Fully try/caught so it can
+  // never throw into (or block) the shutdown funnel.
+  reapPartialSyncOnShutdown(): void {
+    try {
+      if (!this.isPartialSyncActive()) return;
+      logger.info(
+        'MithrilController: reaping active partial sync process on shutdown',
+        {
+          status: this._partialSyncStatus.status,
+        }
+      );
+      this._partialSyncService.forceKillForShutdown();
+    } catch (error) {
+      logger.warn(
+        'MithrilController: failed to reap partial sync process on shutdown',
+        {
+          error,
+        }
+      );
+    }
   }
 
   onBootstrapStatus(
@@ -430,8 +473,8 @@ export class MithrilController {
   }
 
   async finalizePartialSync(): Promise<void> {
-    // Dismiss-driven success finalize (PRD D9). No node orchestration → direct to the service,
-    // bypassing the coordinator (Decision (b)). Idempotent / terminal-state only.
+    // Dismiss-driven success finalize. No node orchestration → direct to the service,
+    // bypassing the coordinator. Idempotent / terminal-state only.
     await this._partialSyncService.finalizeCompletedPartialSync();
   }
 

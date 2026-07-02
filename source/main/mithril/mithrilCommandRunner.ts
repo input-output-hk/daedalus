@@ -152,10 +152,28 @@ export async function runBinary(
   });
 
   return new Promise((resolve, reject) => {
-    const child = spawn(binaryPath, args, { cwd: workDir, env });
+    // Detach on POSIX so the child leads its own process group and
+    // killProcessTree's process.kill(-pid) reaps its whole tree. Gated off Windows
+    // (documented launcher breakage — see CardanoSelfnodeLauncher.ts); stdio stays
+    // piped and the child is deliberately NOT unref()'d.
+    const child = spawn(binaryPath, args, {
+      cwd: workDir,
+      env,
+      detached: !environment.isWindows,
+    });
 
     if (callbacks?.onProcess) callbacks.onProcess(child);
     attachLogStream(child, logStream);
+
+    logger.info('[mithril] child spawned', { pid: child.pid });
+    child.on('exit', (code, signal) =>
+      logger.info('[mithril] child exited', {
+        pid: child.pid,
+        code,
+        signal,
+        killed: child.killed,
+      })
+    );
 
     if (options.stdinInput !== undefined) {
       child.stdin?.write(options.stdinInput);
@@ -190,6 +208,7 @@ export async function runBinary(
     child.on('close', (exitCode) => {
       if (callbacks?.onProcess) callbacks.onProcess(null);
       logStream.end();
+      logger.info('[mithril] child closed', { pid: child.pid, exitCode });
       resolve({ stdout, stderr, exitCode });
     });
   });
@@ -229,13 +248,28 @@ export async function runCommand(
   });
 
   return new Promise((resolve, reject) => {
+    // Detach on POSIX so the child leads its own process group and
+    // killProcessTree's process.kill(-pid) reaps its whole tree. Gated off Windows
+    // (documented launcher breakage — see CardanoSelfnodeLauncher.ts); stdio stays
+    // piped and the child is deliberately NOT unref()'d.
     const child = spawn(binaryPath, commandArgs, {
       cwd: workDir,
       env,
+      detached: !environment.isWindows,
     });
 
     if (callbacks?.onProcess) callbacks.onProcess(child);
     attachLogStream(child, logStream);
+
+    logger.info('[mithril] child spawned', { pid: child.pid });
+    child.on('exit', (code, signal) =>
+      logger.info('[mithril] child exited', {
+        pid: child.pid,
+        code,
+        signal,
+        killed: child.killed,
+      })
+    );
 
     let stdout = '';
     let stderr = '';
@@ -265,6 +299,7 @@ export async function runCommand(
     child.on('close', (exitCode) => {
       if (callbacks?.onProcess) callbacks.onProcess(null);
       logStream.end();
+      logger.info('[mithril] child closed', { pid: child.pid, exitCode });
       resolve({ stdout, stderr, exitCode });
     });
   });

@@ -173,7 +173,7 @@ describe('MithrilPartialSyncStore', () => {
   it('shows the overlay only for backend-confirmed display states and can dismiss completed', async () => {
     const store = setupStore();
     mockFinalizeRequest.mockResolvedValue(undefined);
-    // CAT-D (#2/D-702b-4): dismissCompletedOverlay now resyncs via syncStatus()
+    // dismissCompletedOverlay now resyncs via syncStatus()
     // in its finally; back the status channel with a realistic post-finalize
     // idle snapshot so the added resync resolves.
     mockStatusRequest.mockResolvedValue({
@@ -601,7 +601,7 @@ describe('MithrilPartialSyncStore', () => {
     expect(store.behindByImmutables).toBeUndefined();
   });
 
-  it('#16: populates certifiedEpoch from the availability payload and leaves it undefined when absent', () => {
+  it('populates certifiedEpoch from the availability payload and leaves it undefined when absent', () => {
     const store = setupStore();
 
     expect(store.certifiedEpoch).toBeUndefined();
@@ -614,7 +614,7 @@ describe('MithrilPartialSyncStore', () => {
     });
     expect(store.certifiedEpoch).toBe(320);
 
-    // A payload without the field (e.g. before CAT-H lands, or a degraded probe)
+    // A payload without the field (e.g. a degraded probe)
     // leaves certifiedEpoch undefined so the figure degrades to networkTip-only.
     store._applyAvailability({
       isEnabled: true,
@@ -632,7 +632,7 @@ describe('MithrilPartialSyncStore', () => {
       progressItems: [],
       error: null,
     });
-    // CAT-E (#9/D-702b-6): a BEHIND node (unstable read) keeps the fast 30s
+    // A BEHIND node (unstable read) keeps the fast 30s
     // cadence — the known-stable back-off only engages once availability is
     // settled-stable. Using an unstable read here keeps this test exercising the
     // idle-poll-still-fires contract (the `isWorking` guard stays removed) without
@@ -649,7 +649,7 @@ describe('MithrilPartialSyncStore', () => {
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
 
     // Idle: the interval still refreshes so the Diagnostics Mithril section
-    // self-corrects on first load without a full reload (ISSUE-1). Awaiting the
+    // self-corrects on first load without a full reload. Awaiting the
     // previous probe plus a microtask flush lets `_refreshAvailability`'s finally
     // clear the re-entrancy guard before the next tick (the bounded request races
     // the call against a timeout, so the continuation resolves one microtask after
@@ -665,7 +665,7 @@ describe('MithrilPartialSyncStore', () => {
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(3);
   });
 
-  it('#6: clears the re-entrancy guard via the request timeout when a refresh never settles', async () => {
+  it('clears the re-entrancy guard via the request timeout when a refresh never settles', async () => {
     const store = setupStore();
     mockStatusRequest.mockResolvedValue({
       status: 'idle',
@@ -712,7 +712,7 @@ describe('MithrilPartialSyncStore', () => {
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(2);
   });
 
-  it('#9 (HIGH-1 i): a single premature not-behind read does NOT slow the poll; only the SECOND consecutive stable read backs off', async () => {
+  it('a single premature not-behind read does NOT slow the poll; only the SECOND consecutive stable read backs off', async () => {
     const store = setupStore();
     mockStatusRequest.mockResolvedValue({
       status: 'idle',
@@ -756,7 +756,7 @@ describe('MithrilPartialSyncStore', () => {
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(3);
   });
 
-  it('#9 (HIGH-1 ii): a later fall-behind re-arms the fast 30s cadence immediately', async () => {
+  it('a later fall-behind re-arms the fast 30s cadence immediately', async () => {
     const store = setupStore();
     mockStatusRequest.mockResolvedValue({
       status: 'idle',
@@ -799,6 +799,126 @@ describe('MithrilPartialSyncStore', () => {
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(4);
   });
 
+  it('skips the availability probe while partial-sync work is active or terminal-cancelled without touching the guard or stable-read counter', async () => {
+    const store = setupStore();
+
+    // The mid-run availability gate: every working status plus terminal
+    // `cancelled` returns early — no channel request, no
+    // `_isRefreshingAvailability` flip, no `_consecutiveStableReads` advance
+    // (a probe here would spawn a concurrent mithril-client metadata child
+    // mid-run).
+    const gatedStatuses = [
+      'downloading',
+      'converting',
+      'cancelling',
+      'cancelled',
+      'verifying',
+    ] as const;
+
+    for (const status of gatedStatuses) {
+      store._updateStatus({
+        status,
+        allowedRecoveryActions: [],
+        transferProgress: {},
+        progressItems: [],
+        error: null,
+      });
+      store._consecutiveStableReads = 1;
+
+      const refresh = store._refreshAvailability();
+      // The gate sits BEFORE `_isRefreshingAvailability = true`, so a skipped
+      // tick never consumes the in-flight guard — checked synchronously so
+      // even a transient flip would be visible.
+      expect(store._isRefreshingAvailability).toBe(false);
+      await refresh;
+
+      expect(mockAvailabilityRequest).not.toHaveBeenCalled();
+      expect(store._isRefreshingAvailability).toBe(false);
+      expect(store._consecutiveStableReads).toBe(1);
+    }
+  });
+
+  it('still probes availability on idle, failed, and completed ticks (the gate skips only active/cancelled)', async () => {
+    const store = setupStore();
+    // Unstable reads keep the back-off out of play so only the gate is under test.
+    mockAvailabilityRequest.mockResolvedValue({
+      isEnabled: true,
+      isSignificantlyBehind: true,
+    });
+
+    let expectedRequests = 0;
+    for (const status of ['idle', 'failed', 'completed'] as const) {
+      store._updateStatus({
+        status,
+        allowedRecoveryActions: [],
+        transferProgress: {},
+        progressItems: [],
+        error: null,
+      });
+
+      await store._refreshAvailability();
+
+      expectedRequests += 1;
+      expect(mockAvailabilityRequest).toHaveBeenCalledTimes(expectedRequests);
+    }
+  });
+
+  it('a gated tick neither re-arms nor clears the availability interval — the poll resumes once status leaves the active set', async () => {
+    const store = setupStore();
+    mockStatusRequest.mockResolvedValue({
+      status: 'idle',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+    // Unstable reads pin the fast 30s cadence so a back-off re-arm can never
+    // mask the assertion that gated ticks leave the interval untouched.
+    mockAvailabilityRequest.mockResolvedValue({
+      isEnabled: true,
+      isSignificantlyBehind: true,
+    });
+
+    store.setup();
+    await mockAvailabilityRequest.mock.results[0].value;
+    await Promise.resolve();
+    expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
+    const armedInterval = store._availabilityRefreshInterval;
+    expect(armedInterval).not.toBeNull();
+
+    // Work starts: the interval keeps ticking but every tick is gated.
+    store._updateStatus({
+      status: 'downloading',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+
+    jest.advanceTimersByTime(30_000 * 3);
+    await Promise.resolve();
+
+    expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
+    // Same interval handle: the skipped ticks neither cleared nor re-armed it.
+    expect(store._availabilityRefreshInterval).toBe(armedInterval);
+
+    // Status leaves the active set (`failed` is not gated): the very next tick
+    // probes again — the interval never stopped ticking through the gated window.
+    store._updateStatus({
+      status: 'failed',
+      allowedRecoveryActions: ['retry'],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+
+    jest.advanceTimersByTime(30_000);
+    await mockAvailabilityRequest.mock.results[1].value;
+    await Promise.resolve();
+    expect(mockAvailabilityRequest).toHaveBeenCalledTimes(2);
+    expect(store._availabilityRefreshInterval).toBe(armedInterval);
+  });
+
   it('clears the availability refresh interval on teardown', async () => {
     const store = setupStore();
     mockStatusRequest.mockResolvedValue({
@@ -831,7 +951,7 @@ describe('MithrilPartialSyncStore', () => {
     expect(store.proactivePromptDismissedThisSession).toBe(true);
   });
 
-  it('#4: sets the re-pop guard when a Mithril attempt begins (startPartialSync)', async () => {
+  it('sets the re-pop guard when a Mithril attempt begins (startPartialSync)', async () => {
     const store = setupStore();
     mockStartRequest.mockResolvedValue(undefined);
     mockStatusRequest.mockResolvedValue({

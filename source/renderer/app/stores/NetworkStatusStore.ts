@@ -872,7 +872,7 @@ export default class NetworkStatusStore extends Store {
 
   @computed
   get isBehindnessKnown(): boolean {
-    // Reactive availability signal for the Mithril proactive prompt (CAT-F):
+    // Reactive availability signal for the Mithril proactive prompt:
     // true only once both tips have finite epochs, so consumers re-render the
     // moment the network tip ("Last network block") arrives. Reads the tracked
     // `localTip`/`networkTip` observables — NOT a renderer threshold (the

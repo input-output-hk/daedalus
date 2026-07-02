@@ -106,9 +106,9 @@ describe('MithrilPartialSyncOverlay', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders the live wipe-and-full-sync recovery action and wires its handler (#8/D-702b-8)', () => {
-    // Drive from the post-cutover `failed` state, NOT `cancelled` — locked
-    // invariant #6 forbids cancellation after cutover and D-702a-2 removed wipe
+  it('renders the live wipe-and-full-sync recovery action and wires its handler', () => {
+    // Drive from the post-cutover `failed` state, NOT `cancelled` —
+    // cancellation after cutover is forbidden and wipe was removed
     // from the pre-cutover cancelled dialogue. With canRetry/canRestartNormally
     // both false, the wipe action resolves to the primary variant from the
     // boolean combo (not the status string).
@@ -132,7 +132,7 @@ describe('MithrilPartialSyncOverlay', () => {
     expect(onWipeAndFullSync).toHaveBeenCalledTimes(1);
   });
 
-  it('auto-fires finalize on the completed timeout with no Continue button (ADR D-702a-1)', () => {
+  it('auto-fires finalize on the completed timeout with no Continue button', () => {
     jest.useFakeTimers();
     const onDismissCompleted = jest.fn();
     try {
@@ -160,7 +160,7 @@ describe('MithrilPartialSyncOverlay', () => {
   });
 
   it('catches a rejecting onDismissCompleted from the auto-dismiss timer (no unhandled rejection)', async () => {
-    // #2 (D-702b-4): onDismissCompleted now awaits the async finalize IPC, so the
+    // onDismissCompleted now awaits the async finalize IPC, so the
     // timeout wraps it in Promise.resolve(...).catch(...). A finalize rejection
     // must therefore never surface as an unhandled promise rejection.
     jest.useFakeTimers();
@@ -289,7 +289,7 @@ describe('MithrilPartialSyncOverlay', () => {
       status: 'cancelled',
       canRetry: true,
       canRestartNormally: true,
-      // D-702a-2: the cancelled (pre-cutover) dialogue no longer offers wipe.
+      // The cancelled (pre-cutover) dialogue no longer offers wipe.
       canWipeAndFullSync: false,
       onRetry,
       onRestartNormally,

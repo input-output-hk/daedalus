@@ -93,7 +93,7 @@ describe('MithrilPartialSyncSection', () => {
         'If Cardano Node syncing is taking longer than you want, Mithril Sync can restore verified chain data to help speed up the sync.'
       )
     ).toBeInTheDocument();
-    // The always-visible ready-hint was removed by D-702a-3.
+    // The always-visible ready-hint was removed.
     expect(
       screen.queryByText(/Review what will happen before Daedalus/)
     ).toBeNull();

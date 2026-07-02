@@ -73,7 +73,7 @@ describe('SyncingConnectingMithrilPrompt', () => {
     expect(screen.getByText('Note:')).toBeInTheDocument();
     expect(
       screen.getByText(
-        'If skipped, you can still start the Mithril Sync from the Diagnostics screen.'
+        'If skipped, you can still start the Mithril Sync from the Daedalus Diagnostics screen under the Help menu. (Ctrl + D)'
       )
     ).toBeInTheDocument();
   });

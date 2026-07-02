@@ -56,6 +56,7 @@ import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
 import { setMithrilBootstrapNodeStateProvider } from './ipc/mithrilBootstrapChannel';
 import { configureMithrilPartialSyncRuntime } from './ipc/mithrilPartialSyncChannel';
+import { getMithrilController } from './mithril/MithrilController';
 
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
@@ -86,6 +87,12 @@ EventEmitter.defaultMaxListeners = 100; // Default: 10
 
 const safeExit = async () => {
   pauseActiveDownloads();
+
+  // Reap any live Mithril partial-sync child BEFORE the exit branches below —
+  // safeExit only stops cardanoNode, so a quit mid-download would otherwise orphan the
+  // (POSIX-detached) mithril-client past process.exit(). Best-effort: the call is fully
+  // try/caught inside reapPartialSyncOnShutdown and can never block exit.
+  getMithrilController().reapPartialSyncOnShutdown();
 
   const exitCode =
     (mainWindow as any).daedalusExitCode !== undefined

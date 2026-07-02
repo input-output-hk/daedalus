@@ -292,7 +292,7 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       filesTotal={9}
     />
   ))
-  // Explicit partial download-progress-bar story (ISSUE-12): the combined
+  // Explicit partial download-progress-bar story: the combined
   // InlineProgressBar at a partial fill (6/9 files) with its file-count snapshot
   // counter, proving the bar renders mid-download via the `step-3` anchor.
   .add('Download Progress Bar (Partial)', () => (

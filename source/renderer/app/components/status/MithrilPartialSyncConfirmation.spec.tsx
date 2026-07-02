@@ -58,7 +58,7 @@ describe('MithrilPartialSyncConfirmation', () => {
     );
 
     expect(primary).toBeInTheDocument();
-    // Sync-% was removed from the confirmation behind-ness per D-A.
+    // Sync-% was removed from the confirmation behind-ness.
     expect(screen.queryByText(/% synced/)).toBeNull();
     // Never expose the internal "immutable files" unit to the user.
     expect(screen.queryByText(/immutable/i)).toBeNull();
@@ -96,7 +96,7 @@ describe('MithrilPartialSyncConfirmation', () => {
         'For this process to begin your Cardano node will need to be shutdown. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.'
       )
     ).toBeInTheDocument();
-    // The verbose what-happens step copy was removed per D-702a-4.
+    // The verbose what-happens step copy was removed.
     expect(screen.queryByText(/Daedalus stops Cardano node/)).toBeNull();
     expect(
       screen.queryByText(/downloads and verifies Mithril data/)

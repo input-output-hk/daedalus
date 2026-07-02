@@ -168,7 +168,7 @@
   "daedalus.diagnostics.dialog.mithrilProactivePromptConfirmCancel": "キャンセル",
   "daedalus.diagnostics.dialog.mithrilProactivePromptConfirmStart": "今すぐ開始",
   "daedalus.diagnostics.dialog.mithrilProactivePromptConfirmTitle": "Mithril同期の処理",
-  "daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNote": "スキップした場合でも、Diagnostics画面からMithril同期を開始できます。",
+  "daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNote": "スキップした場合でも、ヘルプメニューにあるDaedalus Diagnostics画面からMithril同期を開始できます。(Ctrl + D)",
   "daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNoteLabel": "注:",
   "daedalus.diagnostics.dialog.mithrilProactivePromptMithrilButton": "Mithril Sync（高速）",
   "daedalus.diagnostics.dialog.mithrilProactivePromptStandardButton": "標準同期（低速）",

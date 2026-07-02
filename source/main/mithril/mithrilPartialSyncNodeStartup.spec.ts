@@ -155,9 +155,9 @@ describe('handleInterruptedRecovery', () => {
     expect(clearMithrilPartialSyncMarker).not.toHaveBeenCalled();
   });
 
-  // --- Unsafe cutover (cutover-in-progress): native dialog is the SINGLE recovery surface (PRD D5a / gap #7) ---
+  // --- Unsafe cutover (cutover-in-progress): native dialog is the SINGLE recovery surface ---
 
-  it('unsafe cutover: shows ONLY the native dialog and does NOT emit a failed status (single surface, PRD D5a)', async () => {
+  it('unsafe cutover: shows ONLY the native dialog and does NOT emit a failed status (single surface)', async () => {
     readMithrilPartialSyncMarker.mockResolvedValue({
       state: 'cutover-in-progress',
       updatedAt: '2026-06-01T00:00:00.000Z',

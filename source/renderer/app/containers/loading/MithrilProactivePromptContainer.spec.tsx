@@ -26,7 +26,7 @@ const makeStores = ({
     // so a (wrong) local `behindByEpochs !== undefined` re-derivation would be
     // truthy in every case. Only `isBehindnessKnown` gates the prompt, which is
     // what the anti-flash test below exercises. `isConnected` is the node-loaded
-    // gate (CAT-A / D-702b-1).
+    // gate.
     networkTip: { epoch: 100 },
     localTip: { epoch: 97 },
     isConnected: true,
@@ -38,7 +38,7 @@ const makeStores = ({
     isPartialSyncEnabled: true,
     isSignificantlyBehind: true,
     proactivePromptDismissedThisSession: false,
-    // #4 re-pop guard (D-702b-3) + #16 beacon anchor (D-702b-10) default to the
+    // re-pop guard + beacon anchor default to the
     // "no attempt yet / no certified epoch" state so the networkTip cases above
     // are unaffected.
     mithrilAttemptStartedThisSession: false,
@@ -134,11 +134,11 @@ describe('MithrilProactivePromptContainer', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('#16: renders during early sync via the certified-beacon epoch when networkTip is null', () => {
+  it('renders during early sync via the certified-beacon epoch when networkTip is null', () => {
     // networkTip not yet resolved (isBehindnessKnown false), but a finite
     // certifiedEpoch > localTip.epoch means behind-ness IS known via the beacon:
     // the prompt now appears (certified-anchored figure) instead of staying
-    // suppressed — the core #16 defect fix. 105 - 97 = 8 epochs.
+    // suppressed — the core defect fix. 105 - 97 = 8 epochs.
     renderContainer({
       networkStatus: {
         networkTip: null,
@@ -153,7 +153,7 @@ describe('MithrilProactivePromptContainer', () => {
     ).toBeInTheDocument();
   });
 
-  it('#16: prefers networkTip.epoch over certifiedEpoch when both are finite', () => {
+  it('prefers networkTip.epoch over certifiedEpoch when both are finite', () => {
     // networkTip 100 vs certifiedEpoch 105, local 97: the hybrid anchor prefers
     // the live networkTip -> 100 - 97 = 3, NOT the certified diff (105 - 97 = 8).
     renderContainer({
@@ -168,8 +168,8 @@ describe('MithrilProactivePromptContainer', () => {
 
   it('renders nothing until behind-ness is KNOWN — gates on networkStatus.isBehindnessKnown, NOT a local tip re-derivation (anti-flash)', () => {
     // Tips ARE present + finite (so a local `behindByEpochs !== undefined`
-    // re-derivation would be true), but CAT-A's `isBehindnessKnown` is still
-    // false: the prompt must stay hidden. This proves the gate consumes CAT-A's
+    // re-derivation would be true), but `isBehindnessKnown` is still
+    // false: the prompt must stay hidden. This proves the gate consumes the
     // computed signal and never flashes during the early connecting / verifying
     // checks.
     const { container } = renderContainer({

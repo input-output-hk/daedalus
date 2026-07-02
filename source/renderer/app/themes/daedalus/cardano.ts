@@ -376,9 +376,9 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-loading-spinner-medium-color': '#fff',
   },
   mithrilBootstrap: {
-    '--theme-mithril-overlay-backdrop-start': 'rgba(18, 20, 23, 0.92)',
-    '--theme-mithril-overlay-backdrop-end': 'rgba(28, 30, 33, 0.92)',
-    '--theme-mithril-card-background': 'rgba(24, 26, 29, 0.96)',
+    '--theme-mithril-overlay-backdrop-start': 'rgba(18, 20, 23, 1)',
+    '--theme-mithril-overlay-backdrop-end': 'rgba(28, 30, 33, 1)',
+    '--theme-mithril-card-background': 'rgba(24, 26, 29, 1)',
     '--theme-mithril-card-shadow': 'rgba(0, 0, 0, 0.35)',
     '--theme-mithril-card-text-color': 'rgba(233, 237, 242, 0.92)',
     '--theme-mithril-heading-color': 'rgba(255, 255, 255, 0.98)',

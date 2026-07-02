@@ -362,9 +362,9 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-loading-spinner-medium-color': '#ffffff',
   },
   mithrilBootstrap: {
-    '--theme-mithril-overlay-backdrop-start': 'rgba(40, 41, 63, 0.92)',
-    '--theme-mithril-overlay-backdrop-end': 'rgba(50, 51, 73, 0.92)',
-    '--theme-mithril-card-background': 'rgba(46, 47, 69, 0.96)',
+    '--theme-mithril-overlay-backdrop-start': 'rgba(40, 41, 63, 1)',
+    '--theme-mithril-overlay-backdrop-end': 'rgba(50, 51, 73, 1)',
+    '--theme-mithril-card-background': 'rgba(46, 47, 69, 1)',
     '--theme-mithril-card-shadow': 'rgba(0, 0, 0, 0.35)',
     '--theme-mithril-card-text-color': 'rgba(233, 237, 242, 0.92)',
     '--theme-mithril-heading-color': 'rgba(255, 255, 255, 0.98)',

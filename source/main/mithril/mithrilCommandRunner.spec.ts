@@ -273,6 +273,92 @@ describe('runCommand', () => {
     expect(onProcess).toHaveBeenCalledWith(childEmitter);
     expect(onProcess).toHaveBeenCalledWith(null);
   });
+
+  it('logs the spawned pid, registers an exit listener that logs code/signal, and resolves un-truncated stdout on close', async () => {
+    const { spawn } = require('child_process');
+    const { logger } = require('../utils/logging');
+
+    const childEmitter = createChildProcess();
+    childEmitter.pid = 111;
+    childEmitter.killed = false;
+
+    // A payload larger than any UI-facing truncation to prove `close` resolves the full stdout.
+    const bigStdout = 'x'.repeat(100_000);
+
+    spawn.mockImplementation(() => {
+      setTimeout(() => {
+        childEmitter.stdout.emit('data', Buffer.from(bigStdout));
+        childEmitter.emit('exit', 0, null);
+        childEmitter.emit('close', 0);
+      }, 0);
+      return childEmitter;
+    });
+
+    const result = await runCommand(['snapshot', 'list'], '/tmp/workdir', {});
+
+    // An 'exit' listener is registered purely for logging (there was none previously).
+    expect(childEmitter.listenerCount('exit')).toBeGreaterThan(0);
+
+    expect(logger.info).toHaveBeenCalledWith('[mithril] child spawned', {
+      pid: 111,
+    });
+    expect(logger.info).toHaveBeenCalledWith(
+      '[mithril] child exited',
+      expect.objectContaining({ pid: 111, code: 0, signal: null })
+    );
+    expect(logger.info).toHaveBeenCalledWith('[mithril] child closed', {
+      pid: 111,
+      exitCode: 0,
+    });
+
+    // `close` still resolves the un-truncated stdout/stderr/exitCode contract.
+    expect(result.stdout).toBe(bigStdout);
+    expect(result.stderr).toBe('');
+    expect(result.exitCode).toBe(0);
+  });
+
+  it('spawns detached on POSIX so the child leads its own process group', async () => {
+    const { spawn } = require('child_process');
+
+    const childEmitter = createChildProcess();
+    spawn.mockImplementation(() => {
+      setTimeout(() => {
+        childEmitter.emit('close', 0);
+      }, 0);
+      return childEmitter;
+    });
+
+    await runCommand(['snapshot', 'list'], '/tmp/workdir', {});
+
+    expect(spawn).toHaveBeenCalledWith(
+      'mithril-client',
+      expect.any(Array),
+      expect.objectContaining({ detached: true })
+    );
+  });
+
+  it('does NOT spawn detached on Windows', async () => {
+    const { spawn } = require('child_process');
+    const { environment } = require('../environment');
+
+    environment.isWindows = true;
+
+    const childEmitter = createChildProcess();
+    spawn.mockImplementation(() => {
+      setTimeout(() => {
+        childEmitter.emit('close', 0);
+      }, 0);
+      return childEmitter;
+    });
+
+    await runCommand(['snapshot', 'list'], 'C:\\workdir', {});
+
+    expect(spawn).toHaveBeenCalledWith(
+      'mithril-client.exe',
+      expect.any(Array),
+      expect.objectContaining({ detached: false })
+    );
+  });
 });
 
 describe('runBinary', () => {
@@ -391,6 +477,89 @@ describe('runBinary', () => {
 
     expect(result.stdout).toBe('converted');
     expect(result.exitCode).toBe(0);
+  });
+
+  it('logs the spawned pid, registers an exit listener that logs code/signal, and resolves un-truncated stdout on close', async () => {
+    const { spawn } = require('child_process');
+    const { logger } = require('../utils/logging');
+
+    const childEmitter = createChildProcess();
+    childEmitter.pid = 222;
+    childEmitter.killed = false;
+
+    const bigStdout = 'y'.repeat(100_000);
+
+    spawn.mockImplementation(() => {
+      setTimeout(() => {
+        childEmitter.stdout.emit('data', Buffer.from(bigStdout));
+        childEmitter.emit('exit', 0, null);
+        childEmitter.emit('close', 0);
+      }, 0);
+      return childEmitter;
+    });
+
+    const result = await runBinary('snapshot-converter', [], '/tmp/workdir');
+
+    expect(childEmitter.listenerCount('exit')).toBeGreaterThan(0);
+
+    expect(logger.info).toHaveBeenCalledWith('[mithril] child spawned', {
+      pid: 222,
+    });
+    expect(logger.info).toHaveBeenCalledWith(
+      '[mithril] child exited',
+      expect.objectContaining({ pid: 222, code: 0, signal: null })
+    );
+    expect(logger.info).toHaveBeenCalledWith('[mithril] child closed', {
+      pid: 222,
+      exitCode: 0,
+    });
+
+    expect(result.stdout).toBe(bigStdout);
+    expect(result.stderr).toBe('');
+    expect(result.exitCode).toBe(0);
+  });
+
+  it('spawns detached on POSIX so the child leads its own process group', async () => {
+    const { spawn } = require('child_process');
+
+    const childEmitter = createChildProcess();
+    spawn.mockImplementation(() => {
+      setTimeout(() => {
+        childEmitter.emit('close', 0);
+      }, 0);
+      return childEmitter;
+    });
+
+    await runBinary('snapshot-converter', [], '/tmp/workdir');
+
+    expect(spawn).toHaveBeenCalledWith(
+      'snapshot-converter',
+      expect.any(Array),
+      expect.objectContaining({ detached: true })
+    );
+  });
+
+  it('does NOT spawn detached on Windows', async () => {
+    const { spawn } = require('child_process');
+    const { environment } = require('../environment');
+
+    environment.isWindows = true;
+
+    const childEmitter = createChildProcess();
+    spawn.mockImplementation(() => {
+      setTimeout(() => {
+        childEmitter.emit('close', 0);
+      }, 0);
+      return childEmitter;
+    });
+
+    await runBinary('snapshot-converter', [], 'C:\\workdir');
+
+    expect(spawn).toHaveBeenCalledWith(
+      'snapshot-converter.exe',
+      expect.any(Array),
+      expect.objectContaining({ detached: false })
+    );
   });
 });
 

@@ -362,9 +362,9 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-loading-spinner-medium-color': '#2d2d2d',
   },
   mithrilBootstrap: {
-    '--theme-mithril-overlay-backdrop-start': 'rgba(240, 240, 240, 0.92)',
-    '--theme-mithril-overlay-backdrop-end': 'rgba(248, 248, 248, 0.92)',
-    '--theme-mithril-card-background': 'rgba(255, 255, 255, 0.96)',
+    '--theme-mithril-overlay-backdrop-start': 'rgba(240, 240, 240, 1)',
+    '--theme-mithril-overlay-backdrop-end': 'rgba(248, 248, 248, 1)',
+    '--theme-mithril-card-background': 'rgba(255, 255, 255, 1)',
     '--theme-mithril-card-shadow': 'rgba(0, 0, 0, 0.12)',
     '--theme-mithril-card-text-color': 'rgba(60, 64, 72, 0.92)',
     '--theme-mithril-heading-color': 'rgba(30, 30, 30, 0.98)',

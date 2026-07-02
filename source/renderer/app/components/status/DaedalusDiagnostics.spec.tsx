@@ -75,12 +75,11 @@ describe('DaedalusDiagnostics', () => {
 
   it('renders the Mithril Sync button without any sync-% or untranslated copy', () => {
     // PopOver is mocked to render only children, so the hover-only tooltip copy
-    // is intentionally absent; the always-visible ready-hint was removed per
-    // D-702a-3.
+    // is intentionally absent; the always-visible ready-hint was removed.
     renderComponent();
 
     expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
-    // Sync-% was removed from the recommendation per D-A.
+    // Sync-% was removed from the recommendation.
     expect(screen.queryByText(/% synced/)).not.toBeInTheDocument();
     expect(screen.queryByText(/!!!/)).not.toBeInTheDocument();
   });

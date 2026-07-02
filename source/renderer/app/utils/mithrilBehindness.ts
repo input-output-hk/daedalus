@@ -8,12 +8,11 @@ import type { TipInfo } from '../api/network/types';
  * ("Last network block") are present with finite epoch numbers — i.e. the node
  * has connected and the network tip has arrived. Before that the epochs figure
  * is `undefined`, so the proactive Mithril prompt and any behind-ness copy must
- * stay suppressed (anti-flash gate; CAT-A → CAT-F coupling).
+ * stay suppressed (anti-flash gate).
  *
  * This is deliberately a boolean availability check, never a renderer-computed
- * threshold: the backend `isSignificantlyBehind` remains the sole offer signal
- * (locked safety boundary #4). It surfaces no %/immutable values (D13:
- * behind-ness is epochs-only).
+ * threshold: the backend `isSignificantlyBehind` remains the sole offer signal.
+ * It surfaces no %/immutable values (behind-ness is epochs-only).
  */
 export const isMithrilBehindnessKnown = (
   localTip: TipInfo | null | undefined,
@@ -27,7 +26,7 @@ export const isMithrilBehindnessKnown = (
  *
  * Returns `undefined` when the epoch gap is `<= 0` (the node is level with or
  * ahead of the anchor) instead of the old `Math.max(1, …)` clamp that
- * misleadingly rendered "about 1 epochs behind" near the tip (finding #7). Every
+ * misleadingly rendered "about 1 epochs behind" near the tip. Every
  * consumer already has an unknown/fallback branch for `undefined`
  * (`SyncingConnectingMithrilPrompt` `promptBodyUnknown`,
  * `MithrilPartialSyncConfirmation` `behindUnknown`).
@@ -35,7 +34,7 @@ export const isMithrilBehindnessKnown = (
  * This is NOT the gate — the gate is the unchanged, clamp-free
  * `isMithrilBehindnessKnown`. The `<= 0 ⇒ undefined` rule lives ONLY here.
  *
- * #16 hybrid anchor (D-702b-10): prefer `networkTip.epoch` when finite (accurate
+ * Hybrid anchor: prefer `networkTip.epoch` when finite (accurate
  * to the live tip near the end of sync, where the certified-beacon lag is most
  * visible), else fall back to `certifiedEpoch` — the Mithril certified-beacon
  * epoch, which is horizon-free and available from the first moment so the figure

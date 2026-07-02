@@ -74,7 +74,7 @@ const formatDuration = (value?: number) => {
 };
 
 // Shared completion frame for the in-dialogue node stop/start hand-offs and the
-// partial-sync completed-transition frame (#12). The three blocks differ only in
+// partial-sync completed-transition frame. The three blocks differ only in
 // spinner position (top for the completed transition) and whether a detail line
 // is present, so they collapse into one helper while keeping
 // role=status/aria-live=polite/aria-atomic=true and the spinner verbatim.
@@ -143,7 +143,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
   const isStoppingNode = status === 'stopping-node';
   const isCancelling = status === 'cancelling';
   const isLongRunningPhase = LONG_RUNNING_STATUSES.has(status);
-  // ADR D-702a-1: the partial-sync overlay passes `completedTransitionLabel` to
+  // The partial-sync overlay passes `completedTransitionLabel` to
   // turn the 'completed' frame into a loading-style hand-off (spinner +
   // "Returning to Daedalus...") while the finalize auto-timeout runs. Bootstrap
   // never passes the prop, so its 'completed' frame is byte-for-byte unchanged.

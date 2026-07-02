@@ -339,7 +339,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     id: 'loading.mithrilPartialSync.completed.transition',
     defaultMessage: '!!!Returning to Daedalus...',
     description:
-      'Spinner caption shown on the completed Mithril partial sync overlay while it auto-hands-off back to the normal Daedalus loading flow (ADR D-702a-1).',
+      'Spinner caption shown on the completed Mithril partial sync overlay while it auto-hands-off back to the normal Daedalus loading flow.',
   },
   partialSyncFailedTitle: {
     id: 'loading.mithrilPartialSync.error.failed.title',

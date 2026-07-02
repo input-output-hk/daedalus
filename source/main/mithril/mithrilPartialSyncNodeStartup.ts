@@ -61,7 +61,7 @@ export class MithrilPartialSyncNodeStartup {
 
     if (marker.state === 'node-start-verified') {
       // Boundary C2: a prior run already proved one successful node start on the installed DB.
-      // Reclaim leftover staging on a close-without-dismiss / crash (PRD D9, gap #41), then resume
+      // Reclaim leftover staging on a close-without-dismiss / crash, then resume
       // a normal boot. stagingRootPath is the durable colocated root persisted at cutover.
       if (marker.stagingRootPath) {
         await fs.remove(marker.stagingRootPath);
@@ -74,7 +74,7 @@ export class MithrilPartialSyncNodeStartup {
       return false;
     }
 
-    // PRD D5(a) / gap #7: the native dialog below is the SINGLE authoritative startup-interrupted recovery
+    // The native dialog below is the SINGLE authoritative startup-interrupted recovery
     // surface (startup-owned recovery must not depend on diagnostics UI or a running node, and works before
     // the renderer is ready). The redundant React `failed` emission was removed here to eliminate the
     // two-competing-surfaces problem. In-session failures keep the React overlay (startInstalledNode catch).
@@ -163,7 +163,7 @@ export class MithrilPartialSyncNodeStartup {
       );
     }
 
-    // PRD D9 steps 2–3: stamp node-start-verified (Boundary C2) and emit completed. The marker clear
+    // Stamp node-start-verified (Boundary C2) and emit completed. The marker clear
     // is DEFERRED to the dismiss-driven service finalize (finalizeCompletedPartialSync). Carry the
     // durable stagingRootPath forward so the dismiss finalize / C2 reclaim can remove the exact dir.
     await writeMithrilPartialSyncMarker('node-start-verified', {

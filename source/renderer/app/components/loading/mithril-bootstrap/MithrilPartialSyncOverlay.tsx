@@ -52,7 +52,7 @@ const PROGRESS_STATUSES: MithrilPartialSyncStatus[] = [
   'completed',
 ];
 
-// ADR D-702a-1: the completed overlay is a success acknowledgment that
+// The completed overlay is a success acknowledgment that
 // auto-hands-off to the normal loading/Wallet-Summary screen — no "Continue"
 // click. This linger keeps the success frame visible long enough to read before
 // the finalize IPC fires automatically (see the effect below).
@@ -77,14 +77,14 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
     onOpenExternalLink,
   } = props;
 
-  // ADR D-702a-1: on 'completed', auto-fire the finalize IPC (reset-to-idle +
+  // On 'completed', auto-fire the finalize IPC (reset-to-idle +
   // remove staging dir + clear marker + folder deletion) via the stable
   // `onDismissCompleted` MobX action once the success frame has lingered — the
   // explicit "Continue to Daedalus" click is gone. All cleanup semantics are
   // preserved; only the trigger changes from a click to this timeout.
   useEffect(() => {
     if (status !== 'completed') return undefined;
-    // #2 (D-702b-4): not fire-and-forget — `onDismissCompleted` awaits the async
+    // Not fire-and-forget — `onDismissCompleted` awaits the async
     // finalize IPC, so wrap it in `Promise.resolve(...).catch(...)` to ensure a
     // finalize rejection can never surface as an unhandled promise rejection.
     const timer = setTimeout(() => {
@@ -99,7 +99,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
     : MITHRIL_ERROR_HEADING_ID;
   const errorCopy = resolvePartialSyncErrorCopy(status, error);
 
-  // lock #5: recovery actions render strictly from allowedRecoveryActions (here
+  // Recovery actions render strictly from allowedRecoveryActions (here
   // via the canRetry/canRestartNormally/canWipeAndFullSync booleans).
   const recoveryActions = [
     ...(canRetry
@@ -139,7 +139,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
         ]
       : []),
   ];
-  // Defensive Quit (D5d, gaps #8/#31): rendered ONLY when no recovery actions are
+  // Defensive Quit: rendered ONLY when no recovery actions are
   // available, so a failure can never become an unclosable dead-end. `quit` is
   // renderer-only — it is NOT a backend allowedRecoveryActions value.
   const errorActions =
@@ -155,7 +155,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
   // This caller (not the shared, render-order-agnostic MithrilErrorView) owns the
   // partial-sync overlay's display order: secondary actions first (left), the
   // primary action last (right), opting into right-alignment below. This is a
-  // STABLE reorder of the SAME action set (locked invariant #2) — it never
+  // STABLE reorder of the SAME action set — it never
   // filters, drops, or adds an action; allowedRecoveryActions still owns
   // membership. Non-primary actions keep their relative order.
   const orderedErrorActions = [

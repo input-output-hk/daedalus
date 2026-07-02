@@ -2,7 +2,7 @@ import { defineMessages } from 'react-intl';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 
 /**
- * Canonical D-702a-6 shutdown/restore/restart summary sentence.
+ * Canonical shutdown/restore/restart summary sentence.
  *
  * Shared by BOTH the Mithril partial sync confirmation modal
  * (`MithrilPartialSyncConfirmation.tsx`) and the proactive prompt confirmation

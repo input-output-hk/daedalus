@@ -229,7 +229,7 @@ describe('mithrilPartialSyncChannel', () => {
     ).resolves.toEqual({ isEnabled: true, isSignificantlyBehind: false });
   });
 
-  it('forwards certifiedEpoch on the availability payload (#16)', async () => {
+  it('forwards certifiedEpoch on the availability payload', async () => {
     const moduleExports = loadModule();
 
     moduleExports.handleMithrilPartialSyncRequests({

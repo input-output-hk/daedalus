@@ -31,7 +31,7 @@ interface Props {
   // which supplies actions in display order — secondary first, primary last).
   // Default (no prop) keeps the footer left-aligned in caller order, so the
   // bootstrap default renders [Wipe chain & retry (primary), Decline] on the
-  // left, primary-first (locked invariant #11).
+  // left, primary-first.
   rightAlignActions?: boolean;
   onWipeRetry?(): void;
   onDecline?(): void;
@@ -119,7 +119,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   // Render-order-agnostic: actions are rendered verbatim in caller order. Any
   // primary-last/right-align ordering is owned by the caller (e.g. the
   // partial-sync overlay), keeping the bootstrap default (no actions prop)
-  // primary-first and left-aligned (locked invariant #11).
+  // primary-first and left-aligned.
 
   return (
     <div className={styles.root} role="alert">

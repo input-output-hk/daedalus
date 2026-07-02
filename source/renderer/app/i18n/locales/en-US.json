@@ -168,7 +168,7 @@
   "daedalus.diagnostics.dialog.mithrilProactivePromptConfirmCancel": "Cancel",
   "daedalus.diagnostics.dialog.mithrilProactivePromptConfirmStart": "Start now",
   "daedalus.diagnostics.dialog.mithrilProactivePromptConfirmTitle": "Mithril Sync Process",
-  "daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNote": "If skipped, you can still start the Mithril Sync from the Diagnostics screen.",
+  "daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNote": "If skipped, you can still start the Mithril Sync from the Daedalus Diagnostics screen under the Help menu. (Ctrl + D)",
   "daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNoteLabel": "Note:",
   "daedalus.diagnostics.dialog.mithrilProactivePromptMithrilButton": "Mithril Sync (fast)",
   "daedalus.diagnostics.dialog.mithrilProactivePromptStandardButton": "Standard Sync (slow)",

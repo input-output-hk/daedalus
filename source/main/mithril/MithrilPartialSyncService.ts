@@ -21,10 +21,12 @@ import type {
   MithrilPartialSyncStatusSnapshot,
 } from '../../common/types/mithril-partial-sync.types';
 import type {
+  RunCommandCallbacks,
   RunCommandOptions,
   RunCommandResult,
 } from './mithrilCommandRunner';
 import { runCommand } from './mithrilCommandRunner';
+import { killProcessTree } from './killProcessTree';
 import { parseMithrilProgressUpdate } from './mithrilProgress';
 import { ChainStorageManager } from '../utils/chainStorageManager';
 import {
@@ -66,14 +68,33 @@ const PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE_CODE =
   'PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE';
 // Scratch-space requirement. snapshot.size is the FULL certified DB (a conservative over-estimate of the
 // partial range); 1.2× covers LSM-conversion + FS slack. Floored at DISK_SPACE_REQUIRED so a missing/zero
-// size still fails closed on a near-full disk. Renderer copy for the code lives in task-ux-403.
+// size still fails closed on a near-full disk.
 const PARTIAL_SYNC_DISK_SAFETY_FACTOR = 1.2;
 
 // Behind-ness threshold in IMMUTABLE FILES. Backend-owned; overridable via launcher config.
-// Conservative starting point (≈ 1 epoch-equivalent of immutable files per PRD D2); calibrate down
+// Conservative starting point (≈ 1 epoch-equivalent of immutable files); calibrate down
 // during QA so the prompt actually fires on a node that is days behind.
 const DEFAULT_PARTIAL_SYNC_THRESHOLD_IMMUTABLES = 20; // ≈ 1 epoch (10·k = 21,600 slots ≈ 6h/file ⇒ ~20 files/5-day epoch); QA-calibratable
 const PARTIAL_SYNC_BEHINDNESS_CACHE_TTL_MS = 5 * 60 * 1000; // 5 min; only the aggregator query is cached
+
+// Slot-lifecycle: service-LOCAL _runCommand options. `trackAsCancelable` is the
+// explicit, call-site-threaded opt-in that lets a run register its child into the cancelable
+// _currentProcess slot. It is deliberately NOT a field on the runner's RunCommandOptions —
+// _runCommand strips it before spreading the remaining fields into the runner options — and it
+// MUST NOT be inferred from this._activeWorkDir: the 30s behind-ness probe also runs while
+// _activeWorkDir is set during `downloading`, so inferring would re-introduce the exact
+// slot-clobber this flag fixes.
+type PartialSyncRunCommandOptions = RunCommandOptions & {
+  trackAsCancelable?: boolean;
+};
+
+// Threading shape for the shared metadata-read helpers (resolveLatestSnapshotMetadata →
+// _showSnapshotRaw/_listSnapshotsRaw), which call _runCommand WITHOUT the workDir positional —
+// the flag rides the options object from the call site down to _runCommand.
+type PartialSyncMetadataReadOptions = Pick<
+  PartialSyncRunCommandOptions,
+  'trackAsCancelable'
+>;
 
 const DEFAULT_STATUS: MithrilPartialSyncStatusSnapshot = {
   status: 'idle',
@@ -99,6 +120,17 @@ class MithrilPartialSyncStageError extends Error {
   }
 }
 
+// Cancellation sentinel thrown by the _throwIfCancelled() checkpoints in
+// start(). It is caught by start()'s existing `if (this._isCancelled) return;` guard, so it never
+// reaches the `failed` emit — a requested cancel unwinds the stage machine while status is still
+// `cancelling`, letting the coordinator join settle into finalizeCancel() (not abandonCancel()).
+class MithrilPartialSyncCancelledError extends Error {
+  constructor() {
+    super('Mithril partial sync was cancelled.');
+    this.name = 'MithrilPartialSyncCancelledError';
+  }
+}
+
 export class MithrilPartialSyncService {
   _status: MithrilPartialSyncStatusSnapshot = { ...DEFAULT_STATUS };
   _statusEmitter = new EventEmitter();
@@ -118,7 +150,7 @@ export class MithrilPartialSyncService {
     epoch: number | null;
     fetchedAt: number;
   } | null = null;
-  // #15 (D-702b-9): dedupe the per-probe local immutable read (getManagedChainPath → fork
+  // Dedupe the per-probe local immutable read (getManagedChainPath → fork
   // checkDiskSpace via getConfig, plus the immutable/ readdir) under the SAME 5-min TTL as the
   // aggregator cache. Invalidated on Mithril lifecycle transitions via _invalidateBehindnessCaches().
   _localImmutableCache: {
@@ -148,7 +180,7 @@ export class MithrilPartialSyncService {
       throw new Error('Mithril partial sync is already in progress.');
     }
 
-    // #15 (D-702b-9): the local immutable position is about to change — drop the behind-ness
+    // The local immutable position is about to change — drop the behind-ness
     // input caches so the next probe re-resolves fresh inputs without waiting out the TTL.
     this._invalidateBehindnessCaches();
 
@@ -172,7 +204,12 @@ export class MithrilPartialSyncService {
         progressItems: [...this._progressItems],
       });
 
-      const latestSnapshot = await this.resolveLatestSnapshotMetadata();
+      // This start()-phase metadata read is PART of the cancelable run — it
+      // registers into _currentProcess so a cancel landing during `preparing` can still kill an
+      // in-flight metadata child (preserves cancel-at-`preparing` coverage).
+      const latestSnapshot = await this.resolveLatestSnapshotMetadata({
+        trackAsCancelable: true,
+      });
       this._latestSnapshot = latestSnapshot.snapshot;
 
       const localImmutableNumber = await resolveLocalImmutableNumber(
@@ -188,7 +225,11 @@ export class MithrilPartialSyncService {
         context.layoutResult.managedChainPath
       );
 
-      await this._assertSufficientDiskSpace(stagingPaths.rootPath); // D7/BUG3 preflight
+      await this._assertSufficientDiskSpace(stagingPaths.rootPath); // preflight
+
+      // CP-A: a cancel requested during `preparing` unwinds here — before the
+      // latest-drift re-resolve and the download re-spawn — while status is still `cancelling`.
+      this._throwIfCancelled();
 
       this._activeWorkDir = stagingPaths.downloadParentPath;
       this._stagedDbPath = stagingPaths.dbPath;
@@ -206,7 +247,10 @@ export class MithrilPartialSyncService {
         }
       );
 
-      const latestSnapshotAtDownload = await this.resolveLatestSnapshotMetadata();
+      // The latest-drift re-resolve is also part of the cancelable run.
+      const latestSnapshotAtDownload = await this.resolveLatestSnapshotMetadata(
+        { trackAsCancelable: true }
+      );
       if (
         latestSnapshotAtDownload.latestCertifiedImmutableNumber !==
         partialSyncRange.end
@@ -227,6 +271,11 @@ export class MithrilPartialSyncService {
       await validateStagedDownloadOutput(stagingPaths, (stage, message, code) =>
         this._createStageError(stage, message, code)
       );
+
+      // CP-C: a cancel during `downloading`/`verifying` unwinds before the
+      // `verifying` emit and the `converting` stage.
+      this._throwIfCancelled();
+
       this._markActiveProgressItemAs('completed');
       this._updateStatus({
         status: 'verifying',
@@ -239,6 +288,13 @@ export class MithrilPartialSyncService {
         stagingPaths.dbPath,
         (stage, message, code) => this._createStageError(stage, message, code)
       );
+
+      // CP-D: last checkpoint before the cutover marker/install. A cancel
+      // during `converting` never reaches live-chain cutover (Boundary-A-only cancel invariant).
+      // Prompt interruption of an in-flight conversion comes from the tracked converter child
+      // (_runBinary onProcess); CP-D is defense-in-depth for the window where a conversion
+      // completes successfully just as the kill lands.
+      this._throwIfCancelled();
 
       this._activatePostVerificationStage('installing');
       await writeMithrilPartialSyncMarker('cutover-in-progress', {
@@ -279,7 +335,7 @@ export class MithrilPartialSyncService {
   }
 
   async cancel(): Promise<void> {
-    // #15 (D-702b-9): invalidate behind-ness input caches at cancel entry so the next probe is fresh.
+    // Invalidate behind-ness input caches at cancel entry so the next probe is fresh.
     this._invalidateBehindnessCaches();
 
     if (!this._activeWorkDir && !this._currentProcess) {
@@ -287,7 +343,7 @@ export class MithrilPartialSyncService {
         'MithrilPartialSyncService: ignoring cancel request with no active partial sync',
         null
       );
-      // PRD D5(f) / gap #39: nothing to cancel in the node-stop window, but a cancel request MUST
+      // Nothing to cancel in the node-stop window, but a cancel request MUST
       // always re-emit a status so the renderer never sticks on its optimistic stopping-node frame.
       // Re-emit the TRUE current status verbatim (do NOT fabricate `cancelled`); the existing push
       // pipeline (service.onStatus -> broadcastPartialSyncStatus -> _partialSyncStatusSender) delivers it.
@@ -314,9 +370,28 @@ export class MithrilPartialSyncService {
       transferProgress: {},
     });
 
+    // UNCONDITIONAL cancel-entry line — fires even when the slot is EMPTY
+    // (hadChild: false), the case the in-branch line below can never log, so a re-repro
+    // directly observes the slot state at cancel instead of inferring it from missing kill lines.
+    logger.info('MithrilPartialSyncService: cancel entry', {
+      status: this._status.status,
+      pid: this._currentProcess?.pid ?? null,
+      hadChild: this._currentProcess != null,
+    });
+
     try {
       if (this._currentProcess) {
-        this._currentProcess.kill();
+        logger.info(
+          'MithrilPartialSyncService: cancelling active partial sync process',
+          {
+            status: this._status.status,
+            pid: this._currentProcess?.pid,
+            hadChild: !!this._currentProcess,
+          }
+        );
+        // Group/tree kill (POSIX process.kill(-pid) via the detached spawn;
+        // Windows async taskkill /t /f) instead of the direct-pid child.kill().
+        killProcessTree(this._currentProcess, 'SIGTERM');
       }
     } catch (error) {
       logger.warn('MithrilPartialSyncService: failed to kill process', {
@@ -330,9 +405,17 @@ export class MithrilPartialSyncService {
       return;
     }
 
+    logger.info('MithrilPartialSyncService: finalizing cancel', {
+      status: this._status.status,
+    });
+
     try {
       await this._cleanupPartialSyncArtifacts();
       this._progressItems = [];
+      logger.info(
+        'MithrilPartialSyncService: cancel finalized; partial sync artifacts cleaned up',
+        null
+      );
       this._updateStatus({
         status: 'cancelled',
         allowedRecoveryActions: ['retry', 'restart-normal'],
@@ -342,6 +425,13 @@ export class MithrilPartialSyncService {
         transferProgress: {},
       });
     } catch (error) {
+      logger.warn(
+        'MithrilPartialSyncService: finalizeCancel cleanup failed; surfacing boundary-A failure',
+        {
+          error,
+          cancelFallbackErrorStage: this._cancelFallbackErrorStage,
+        }
+      );
       this._markActiveProgressItemAs('error');
       this._updateStatus({
         status: 'failed',
@@ -361,7 +451,8 @@ export class MithrilPartialSyncService {
 
   forceKill(): void {
     try {
-      this._currentProcess?.kill('SIGKILL');
+      // Group/tree SIGKILL (killProcessTree no-ops on an empty slot).
+      killProcessTree(this._currentProcess, 'SIGKILL');
     } catch (error) {
       logger.warn('MithrilPartialSyncService: failed to force kill process', {
         error,
@@ -369,10 +460,38 @@ export class MithrilPartialSyncService {
     }
   }
 
+  // Shutdown reap: SIGKILL the tracked cancelable child as the app quits.
+  // cancel()/forceKill() never run on a plain quit, so without this a live (detached on
+  // POSIX) mithril-client would survive process.exit(). The _currentProcess slot
+  // durably names the live download/conversion child while start() is still awaiting it;
+  // when start() has already returned the slot is null and this is a harmless no-op.
+  // sync: true — safeExitWithCode reaches process.exit() inside a stream-end callback, so
+  // an async Windows taskkill issued that late would never launch. Fully try/caught: it
+  // must never throw or block inside safeExit().
+  forceKillForShutdown(): void {
+    try {
+      killProcessTree(this._currentProcess, 'SIGKILL', { sync: true });
+    } catch (error) {
+      logger.warn(
+        'MithrilPartialSyncService: failed to force kill process on shutdown',
+        {
+          error,
+        }
+      );
+    }
+  }
+
   async abandonCancel(): Promise<void> {
     if (this._status.status !== 'cancelling') {
       return;
     }
+
+    logger.warn(
+      'MithrilPartialSyncService: abandoning cancel; cleanup could not be completed — user must restart Daedalus',
+      {
+        cancelFallbackErrorStage: this._cancelFallbackErrorStage ?? 'preparing',
+      }
+    );
 
     this._markActiveProgressItemAs('error');
     this._updateStatus({
@@ -419,7 +538,7 @@ export class MithrilPartialSyncService {
   }
 
   async finalizeCompletedPartialSync(): Promise<void> {
-    // PRD D9 step 4 (dismiss-driven). Idempotent: safe even when already idle (gap #41).
+    // Dismiss-driven. Idempotent: safe even when already idle.
     // Resolve the staging root from the durable marker first so it is correct cross-session;
     // fall back to the in-session resolver if the marker carries no path.
     const marker = await readMithrilPartialSyncMarker();
@@ -455,6 +574,12 @@ export class MithrilPartialSyncService {
     stagingPaths: PartialSyncStagingPaths,
     partialSyncRange: { start: number; end: number }
   ): Promise<void> {
+    // CP-B: a cancel requested during `preparing` (no download process spawned
+    // yet, so cancel() has nothing to kill) unwinds here BEFORE the unconditional `downloading`
+    // re-emit and the download spawn — this is what stops the "Mithril Sync screen pops back over"
+    // frame and the background download re-spawn.
+    this._throwIfCancelled();
+
     this._activateProgressStage('downloading');
     this._updateStatus({
       status: 'downloading',
@@ -530,6 +655,9 @@ export class MithrilPartialSyncService {
       {
         onStdout: (chunk) => stdoutLines.push(chunk),
         onStderr: (chunk) => stderrLines.push(chunk),
+        // The download IS the cancelable run — its child must occupy the durable
+        // _currentProcess slot that cancel()/forceKill() and the late-kill guard target.
+        trackAsCancelable: true,
       },
       stagingPaths.downloadParentPath
     );
@@ -590,8 +718,56 @@ export class MithrilPartialSyncService {
       this._activeWorkDir || stateDirectoryPath,
       {
         logFileName: PARTIAL_SYNC_LOG_FILE_NAME,
+      },
+      {
+        // Track the awaited `snapshot-converter` conversion child in
+        // the cancelable slot exactly as _runCommand does for the download, so cancel()/forceKill()
+        // can kill an in-flight conversion instead of only being observed after it returns. The
+        // runner nulls _currentProcess again via onProcess(null) on close/error.
+        // Invariant: _runBinary is conversion-only (sole consumer:
+        // _convertStagedSnapshot), so this unconditional onProcess is opt-in by construction —
+        // it never runs for metadata reads and needs no trackAsCancelable flag.
+        onProcess: (child) => {
+          this._trackCurrentProcess(child);
+        },
       }
     );
+  }
+
+  // Invariant: only CANCELABLE runs may register here — the download and the two
+  // start()-phase metadata reads (via _runCommand with trackAsCancelable: true) and the
+  // conversion (via _runBinary's unconditional onProcess). Untracked metadata reads (the 30s
+  // behind-ness probe, ad-hoc listSnapshots/showSnapshot) receive NO onProcess callback, so
+  // they can neither overwrite nor null the slot mid-run (the confirmed slot-clobber). They DO
+  // keep onLogStream, which still overwrites the shared _logStream slot mid-run — safe ONLY
+  // while _logStream stays write-only (declared as a class field, nulled in
+  // _clearRuntimeWorkState(), assigned in _runCommand, never read).
+  _trackCurrentProcess(child: ChildProcess | null): void {
+    this._currentProcess = child;
+
+    // A cancel can land after the UI has exposed the stage but before the spawned child reaches
+    // the tracked slot (notably _runCommand's async env prep before spawn). When that happens,
+    // cancel()/forceKill() would otherwise miss the late child and the coordinator would fall to
+    // abandonCancel() while the download keeps running in the background.
+    if (child && this._isCancelled) {
+      logger.info(
+        'MithrilPartialSyncService: killing late-arriving child after cancel',
+        {
+          pid: child.pid,
+        }
+      );
+      try {
+        // Group/tree kill, matching the cancel()/forceKill() routing.
+        killProcessTree(child, 'SIGTERM');
+      } catch (error) {
+        logger.warn(
+          'MithrilPartialSyncService: failed to kill late-spawned cancelled process',
+          {
+            error,
+          }
+        );
+      }
+    }
   }
 
   _activatePostVerificationStage(
@@ -644,7 +820,7 @@ export class MithrilPartialSyncService {
   }
 
   _resetToIdleStatus(): void {
-    // #15 (D-702b-9): covers restart-normal/wipe/finalize-wipe/finalize-completed — after a cutover
+    // Covers restart-normal/wipe/finalize-wipe/finalize-completed — after a cutover
     // the next probe must re-resolve both behind-ness inputs so the prompt/Diagnostics flip promptly.
     this._invalidateBehindnessCaches();
     this._progressItems = [];
@@ -658,6 +834,15 @@ export class MithrilPartialSyncService {
       logPath: undefined,
       progressItems: [],
     });
+  }
+
+  // Cancellation checkpoint used at each `await` seam in start() (CP-A..CP-D)
+  // and at the top of _downloadAndVerifyPartialSnapshot (CP-B). A no-op on the success path; throws
+  // the swallowed cancellation sentinel once cancel() has flipped _isCancelled.
+  _throwIfCancelled(): void {
+    if (this._isCancelled) {
+      throw new MithrilPartialSyncCancelledError();
+    }
   }
 
   _clearRuntimeWorkState(): void {
@@ -674,20 +859,25 @@ export class MithrilPartialSyncService {
   }
 
   _getStagingRootPath(): string {
-    // Colocate staging as a SIBLING of the resolved managed chain (backend PRD:250 / D7/BUG3): same volume
+    // Colocate staging as a SIBLING of the resolved managed chain: same volume
     // as the chain so cutover is an intra-volume rename, never inside the live chain subtree (the
     // isPathWithin guard in preparePartialSyncStagingDirectory still enforces that). _stagingChainDir is the
     // realpath-resolved chain dir captured at start(); the stateDirectoryPath fallback preserves the legacy
-    // default location when no sync has run this session (cross-session reclaim is task-ux-202).
+    // default location when no sync has run this session.
     const stagingParent = this._stagingChainDir
       ? path.dirname(this._stagingChainDir)
       : stateDirectoryPath;
     return path.join(stagingParent, PARTIAL_SYNC_STAGING_DIRECTORY_NAME);
   }
 
-  async resolveLatestSnapshotMetadata(): Promise<ResolvedLatestSnapshot> {
+  // Callers opt their metadata child into the cancelable _currentProcess slot via
+  // options.trackAsCancelable — true ONLY from the two start()-phase reads (part of the
+  // cancelable run); the 30s behind-ness probe uses the untracked default.
+  async resolveLatestSnapshotMetadata(
+    options: PartialSyncMetadataReadOptions = {}
+  ): Promise<ResolvedLatestSnapshot> {
     try {
-      const latestSnapshot = await this._showSnapshotRaw('latest');
+      const latestSnapshot = await this._showSnapshotRaw('latest', options);
       if (latestSnapshot) {
         return latestSnapshot;
       }
@@ -698,7 +888,7 @@ export class MithrilPartialSyncService {
       );
     }
 
-    const snapshots = await this._listSnapshotsRaw();
+    const snapshots = await this._listSnapshotsRaw(options);
     const latestSnapshot = snapshots
       .filter(({ snapshot }) => Boolean(snapshot.digest))
       .sort(
@@ -726,23 +916,25 @@ export class MithrilPartialSyncService {
     ) {
       return this._latestCertifiedImmutableCache.value;
     }
+    // Untracked (the default): the background behind-ness probe must NEVER occupy the
+    // cancelable _currentProcess slot — it runs concurrently with an active download.
     const snapshot = await this.resolveLatestSnapshotMetadata();
     this._latestCertifiedImmutableCache = {
       value: snapshot.latestCertifiedImmutableNumber,
-      epoch: snapshot.certifiedEpoch, // #16 (D-702b-10): carry the certified epoch from the same beacon
+      epoch: snapshot.certifiedEpoch, // Carry the certified epoch from the same beacon
       fetchedAt: now,
     };
     return snapshot.latestCertifiedImmutableNumber;
   }
 
-  // #16 (D-702b-10): sibling getter for the certified epoch carried on the aggregator cache. Returns
+  // Sibling getter for the certified epoch carried on the aggregator cache. Returns
   // `null` when the cache is unpopulated or the beacon had no epoch. Does NOT change the immutable
   // getter's `number` return; read it AFTER _getCachedLatestCertifiedImmutableNumber populates the cache.
   _getCachedCertifiedEpoch(): number | null {
     return this._latestCertifiedImmutableCache?.epoch ?? null;
   }
 
-  // #15 (D-702b-9): cache the local immutable read under the same 5-min TTL as the aggregator. On a
+  // Cache the local immutable read under the same 5-min TTL as the aggregator. On a
   // hit we skip BOTH getManagedChainPath (which transitively forks checkDiskSpace via getConfig) AND
   // resolveLocalImmutableNumber's immutable/ readdir — the per-probe CPU cost the 30s poll paid every tick.
   async _getCachedLocalImmutableNumber(): Promise<number> {
@@ -766,7 +958,7 @@ export class MithrilPartialSyncService {
     return localImmutableNumber;
   }
 
-  // #15 (D-702b-9): drop both behind-ness input caches so the next probe re-resolves fresh. Called at
+  // Drop both behind-ness input caches so the next probe re-resolves fresh. Called at
   // start()/cancel() entry and inside _resetToIdleStatus() (restart-normal/wipe/finalize paths).
   _invalidateBehindnessCaches(): void {
     this._latestCertifiedImmutableCache = null;
@@ -787,13 +979,13 @@ export class MithrilPartialSyncService {
   }> {
     try {
       const latest = await this._getCachedLatestCertifiedImmutableNumber();
-      // #15 (D-702b-9): cached local read dedupes the checkDiskSpace fork + immutable/ readdir.
+      // Cached local read dedupes the checkDiskSpace fork + immutable/ readdir.
       const localImmutableNumber = await this._getCachedLocalImmutableNumber();
-      // #16 (D-702b-10): same beacon → consistent epoch; null/undefined ⇒ omitted below.
+      // Same beacon → consistent epoch; null/undefined ⇒ omitted below.
       const certifiedEpoch = this._getCachedCertifiedEpoch();
       const gap = latest - localImmutableNumber;
       if (gap <= 0) {
-        // local >= latest ⇒ no certified range to restore ⇒ never nudge (PRD D2 truthfulness)
+        // local >= latest ⇒ no certified range to restore ⇒ never nudge
         return {
           isSignificantlyBehind: false,
           ...(certifiedEpoch != null ? { certifiedEpoch } : {}),
@@ -835,10 +1027,12 @@ export class MithrilPartialSyncService {
     return normalizeSnapshotItem(parsed);
   }
 
-  async _listSnapshotsRaw(): Promise<Array<ResolvedLatestSnapshot>> {
+  async _listSnapshotsRaw(
+    options: PartialSyncMetadataReadOptions = {}
+  ): Promise<Array<ResolvedLatestSnapshot>> {
     const { stdout } = await this._runCommand(
       ['cardano-db', 'snapshot', 'list', '--json'],
-      { requireKeys: false }
+      { requireKeys: false, ...options }
     );
     const parsed = this._safeJsonParse(stdout);
     if (!Array.isArray(parsed)) return [];
@@ -861,13 +1055,14 @@ export class MithrilPartialSyncService {
   }
 
   async _showSnapshotRaw(
-    digest: string
+    digest: string,
+    options: PartialSyncMetadataReadOptions = {}
   ): Promise<ResolvedLatestSnapshot | null> {
     if (!digest || !digest.trim()) return null;
 
     const { stdout } = await this._runCommand(
       ['cardano-db', 'snapshot', 'show', digest, '--json'],
-      { requireKeys: false }
+      { requireKeys: false, ...options }
     );
     const parsed = this._safeJsonParse(stdout);
     if (!parsed || typeof parsed !== 'object') return null;
@@ -1099,24 +1294,41 @@ export class MithrilPartialSyncService {
 
   async _runCommand(
     args: Array<string>,
-    options: RunCommandOptions = {},
+    options: PartialSyncRunCommandOptions = {},
     workDir: string = this._activeWorkDir || stateDirectoryPath
   ): Promise<RunCommandResult> {
+    // Strip the service-local trackAsCancelable flag BEFORE building the runner options: the
+    // spread below must forward only the runner's own RunCommandOptions fields.
+    const { trackAsCancelable, ...runnerOptions } = options;
+
+    const callbacks: RunCommandCallbacks = {
+      // ALWAYS registered — even untracked metadata reads write to the shared partial-sync log
+      // file. A metadata read's onLogStream overwrites the shared _logStream slot mid-run,
+      // which is harmless ONLY because _logStream is write-only plumbing today: declared as a
+      // class field, nulled in _clearRuntimeWorkState(), assigned here, never read.
+      onLogStream: (logStream) => {
+        this._logStream = logStream;
+      },
+    };
+    // Only explicitly cancelable runs (the download and the start()-phase metadata
+    // reads) may register into the cancelable _currentProcess slot. When trackAsCancelable is
+    // false/absent, omit onProcess ENTIRELY so an untracked metadata child can neither
+    // overwrite the slot on spawn nor null it on its own clean close (the confirmed
+    // slot-clobber that left a cancelled download untracked and unkillable).
+    if (trackAsCancelable === true) {
+      callbacks.onProcess = (child) => {
+        this._trackCurrentProcess(child);
+      };
+    }
+
     return runCommand(
       args,
       workDir,
       {
-        ...options,
+        ...runnerOptions,
         logFileName: PARTIAL_SYNC_LOG_FILE_NAME,
       },
-      {
-        onProcess: (child) => {
-          this._currentProcess = child;
-        },
-        onLogStream: (logStream) => {
-          this._logStream = logStream;
-        },
-      }
+      callbacks
     );
   }
 

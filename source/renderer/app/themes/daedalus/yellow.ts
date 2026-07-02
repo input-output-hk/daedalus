@@ -363,9 +363,9 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-loading-spinner-medium-color': '#2d2d2d',
   },
   mithrilBootstrap: {
-    '--theme-mithril-overlay-backdrop-start': 'rgba(240, 235, 228, 0.92)',
-    '--theme-mithril-overlay-backdrop-end': 'rgba(246, 241, 234, 0.92)',
-    '--theme-mithril-card-background': 'rgba(252, 249, 243, 0.96)',
+    '--theme-mithril-overlay-backdrop-start': 'rgba(240, 235, 228, 1)',
+    '--theme-mithril-overlay-backdrop-end': 'rgba(246, 241, 234, 1)',
+    '--theme-mithril-card-background': 'rgba(252, 249, 243, 1)',
     '--theme-mithril-card-shadow': 'rgba(0, 0, 0, 0.12)',
     '--theme-mithril-card-text-color': 'rgba(55, 55, 55, 0.92)',
     '--theme-mithril-heading-color': 'rgba(30, 30, 30, 0.98)',

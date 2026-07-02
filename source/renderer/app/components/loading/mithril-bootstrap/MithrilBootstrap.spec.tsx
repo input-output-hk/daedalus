@@ -239,7 +239,7 @@ describe('MithrilBootstrap', () => {
     // The bootstrap caller passes no `actions`/`rightAlignActions` prop, so the
     // shared, render-order-agnostic MithrilErrorView renders its default verbatim:
     // the destructive primary "Wipe chain & retry" FIRST/left, "Sync from genesis"
-    // second (locked invariant #11 — D-702b-5 / finding #1 remediation).
+    // second.
     const actionLabels = screen
       .getAllByRole('button')
       .map((button) => button.textContent);
@@ -257,7 +257,7 @@ describe('MithrilBootstrap', () => {
   it('renders the decision view with decline before accept in the DOM', () => {
     renderComponent();
 
-    // #5 / D-702b-5: decline (secondary) renders BEFORE accept (primary); the
+    // decline (secondary) renders BEFORE accept (primary); the
     // .actions flex-end then puts the primary on the right, matching the error view.
     const actionLabels = screen
       .getAllByRole('button')

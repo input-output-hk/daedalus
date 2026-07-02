@@ -363,9 +363,9 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-loading-spinner-medium-color': '#ffffff',
   },
   mithrilBootstrap: {
-    '--theme-mithril-overlay-backdrop-start': 'rgba(28, 29, 46, 0.92)',
-    '--theme-mithril-overlay-backdrop-end': 'rgba(38, 39, 56, 0.92)',
-    '--theme-mithril-card-background': 'rgba(34, 35, 52, 0.96)',
+    '--theme-mithril-overlay-backdrop-start': 'rgba(28, 29, 46, 1)',
+    '--theme-mithril-overlay-backdrop-end': 'rgba(38, 39, 56, 1)',
+    '--theme-mithril-card-background': 'rgba(34, 35, 52, 1)',
     '--theme-mithril-card-shadow': 'rgba(0, 0, 0, 0.35)',
     '--theme-mithril-card-text-color': 'rgba(233, 237, 242, 0.92)',
     '--theme-mithril-heading-color': 'rgba(255, 255, 255, 0.98)',

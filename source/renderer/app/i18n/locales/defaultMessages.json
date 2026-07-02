@@ -2834,7 +2834,7 @@
       },
       {
         "defaultMessage": "!!!Returning to Daedalus...",
-        "description": "Spinner caption shown on the completed Mithril partial sync overlay while it auto-hands-off back to the normal Daedalus loading flow (ADR D-702a-1).",
+        "description": "Spinner caption shown on the completed Mithril partial sync overlay while it auto-hands-off back to the normal Daedalus loading flow.",
         "id": "loading.mithrilPartialSync.completed.transition"
       },
       {
@@ -3128,7 +3128,7 @@
         "id": "daedalus.diagnostics.dialog.mithrilProactivePromptBodyBenefit"
       },
       {
-        "defaultMessage": "!!!If skipped, you can still start the Mithril Sync from the Diagnostics screen.",
+        "defaultMessage": "!!!If skipped, you can still start the Mithril Sync from the Daedalus Diagnostics screen under the Help menu. (Ctrl + D)",
         "description": "Handoff note telling the user they can start Mithril later from Diagnostics if they skip the proactive prompt",
         "id": "daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNote"
       },

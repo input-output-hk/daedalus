@@ -2,9 +2,9 @@
   "metadata": {
     "title": "Mithril Partial Sync UX Refinement Tasks (Phase 2)",
     "created": "2026-06-19",
-    "updated": "2026-06-30",
-    "version": "1.5.0",
-    "totalTasks": 22,
+    "updated": "2026-07-02",
+    "version": "1.10.1",
+    "totalTasks": 24,
     "prdReference": ".agent/plans/mithril-partial-sync/mithril-partial-sync-ux-refinement-prd.md",
     "description": "High-level, validation-gated implementation plan for the Mithril partial sync UX refinement sprint (issue #10 Phase 2). The backend, IPC, store, and overlay already exist on feat/mithril-partial-sync-ux-refinement; this sprint refines the UX to (a) prompt the user when significantly behind the tip and (b) close the 35 research gaps plus the 13 issue-#10-comment items. Tasks are organized so task-ux-1xx maps to phase-1, task-ux-2xx to phase-2, and so on, matching the task-plans-ux-refinement/phase-N subdirectory layout.",
     "sourceFiles": [
@@ -83,7 +83,9 @@
           "completedAt": "2026-06-22",
           "priority": "critical",
           "estimatedHours": 4,
-          "dependencies": ["task-ux-101"],
+          "dependencies": [
+            "task-ux-101"
+          ],
           "targetPaths": [
             "source/main/mithril/MithrilPartialSyncService.ts",
             "source/main/mithril/mithrilPartialSyncPreflight.ts",
@@ -157,7 +159,9 @@
           "completedAt": "2026-06-22",
           "priority": "critical",
           "estimatedHours": 6,
-          "dependencies": ["task-ux-201"],
+          "dependencies": [
+            "task-ux-201"
+          ],
           "targetPaths": [
             "source/common/ipc/api.ts",
             "source/main/ipc/mithrilPartialSyncChannel.ts",
@@ -260,7 +264,10 @@
           "completedAt": "2026-06-24",
           "priority": "critical",
           "estimatedHours": 4,
-          "dependencies": ["task-ux-101", "task-ux-102"],
+          "dependencies": [
+            "task-ux-101",
+            "task-ux-102"
+          ],
           "targetPaths": [
             "source/renderer/app/stores/MithrilPartialSyncStore.ts",
             "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
@@ -296,7 +303,11 @@
           "completedAt": "2026-06-25",
           "priority": "high",
           "estimatedHours": 4,
-          "dependencies": ["task-ux-301", "task-ux-303", "task-ux-304"],
+          "dependencies": [
+            "task-ux-301",
+            "task-ux-303",
+            "task-ux-304"
+          ],
           "targetPaths": [
             "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.tsx",
             "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt.tsx",
@@ -338,7 +349,9 @@
           "completedAt": "2026-06-24",
           "priority": "high",
           "estimatedHours": 5,
-          "dependencies": ["task-ux-301"],
+          "dependencies": [
+            "task-ux-301"
+          ],
           "targetPaths": [
             "source/renderer/app/components/status/MithrilPartialSyncConfirmation.tsx",
             "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
@@ -378,7 +391,10 @@
           "completedAt": "2026-06-25",
           "priority": "high",
           "estimatedHours": 4,
-          "dependencies": ["task-ux-301", "task-ux-303"],
+          "dependencies": [
+            "task-ux-301",
+            "task-ux-303"
+          ],
           "targetPaths": [
             "source/renderer/app/components/status/DaedalusDiagnostics.tsx",
             "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
@@ -472,7 +488,9 @@
           "completedAt": "2026-06-26",
           "priority": "high",
           "estimatedHours": 5,
-          "dependencies": ["task-ux-401"],
+          "dependencies": [
+            "task-ux-401"
+          ],
           "targetPaths": [
             "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.tsx",
             "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.scss",
@@ -550,7 +568,11 @@
           "completedAt": "2026-06-26",
           "priority": "high",
           "estimatedHours": 4,
-          "dependencies": ["task-ux-202", "task-ux-203", "task-ux-403"],
+          "dependencies": [
+            "task-ux-202",
+            "task-ux-203",
+            "task-ux-403"
+          ],
           "targetPaths": [
             "source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay.tsx",
             "source/renderer/app/components/loading/mithril-bootstrap/MithrilErrorView.tsx",
@@ -596,7 +618,9 @@
           "completedAt": "2026-06-26",
           "priority": "medium",
           "estimatedHours": 3,
-          "dependencies": ["task-ux-303"],
+          "dependencies": [
+            "task-ux-303"
+          ],
           "targetPaths": [
             "source/renderer/app/components/status/MithrilPartialSyncRecommendation.tsx",
             "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
@@ -636,7 +660,15 @@
           "completedAt": "2026-06-26",
           "priority": "medium",
           "estimatedHours": 4,
-          "dependencies": ["task-ux-302", "task-ux-303", "task-ux-304", "task-ux-401", "task-ux-402", "task-ux-403", "task-ux-404"],
+          "dependencies": [
+            "task-ux-302",
+            "task-ux-303",
+            "task-ux-304",
+            "task-ux-401",
+            "task-ux-402",
+            "task-ux-403",
+            "task-ux-404"
+          ],
           "targetPaths": [
             "storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx",
             "storybook/stories/nodes/status/Diagnostics.stories.tsx"
@@ -665,7 +697,19 @@
           "completedAt": "2026-06-26",
           "priority": "high",
           "estimatedHours": 5,
-          "dependencies": ["task-ux-202", "task-ux-203", "task-ux-204", "task-ux-301", "task-ux-302", "task-ux-303", "task-ux-304", "task-ux-401", "task-ux-402", "task-ux-403", "task-ux-404"],
+          "dependencies": [
+            "task-ux-202",
+            "task-ux-203",
+            "task-ux-204",
+            "task-ux-301",
+            "task-ux-302",
+            "task-ux-303",
+            "task-ux-304",
+            "task-ux-401",
+            "task-ux-402",
+            "task-ux-403",
+            "task-ux-404"
+          ],
           "targetPaths": [
             "source/main/mithril/*.spec.ts",
             "source/main/ipc/*.spec.ts",
@@ -710,7 +754,14 @@
           "completedAt": "2026-06-26",
           "priority": "medium",
           "estimatedHours": 4,
-          "dependencies": ["task-ux-302", "task-ux-303", "task-ux-304", "task-ux-402", "task-ux-403", "task-ux-501"],
+          "dependencies": [
+            "task-ux-302",
+            "task-ux-303",
+            "task-ux-304",
+            "task-ux-402",
+            "task-ux-403",
+            "task-ux-501"
+          ],
           "targetPaths": [
             "translations/messages.json",
             "source/renderer/app/i18n/locales/defaultMessages.json",
@@ -753,7 +804,12 @@
           "completedAt": "2026-06-29",
           "priority": "high",
           "estimatedHours": 6,
-          "dependencies": ["task-ux-201", "task-ux-202", "task-ux-203", "task-ux-204"],
+          "dependencies": [
+            "task-ux-201",
+            "task-ux-202",
+            "task-ux-203",
+            "task-ux-204"
+          ],
           "targetPaths": [
             "source/main/mithril/MithrilPartialSyncService.ts",
             "source/main/utils/chainStorageManager.ts",
@@ -787,7 +843,11 @@
           "priority": "high",
           "estimatedHours": 8,
           "interactionMode": "interactive_validation",
-          "dependencies": ["task-ux-503", "task-ux-601", "task-ux-701"],
+          "dependencies": [
+            "task-ux-503",
+            "task-ux-601",
+            "task-ux-701"
+          ],
           "targetPaths": [
             "source/renderer/app/stores/MithrilPartialSyncStore.ts",
             "source/renderer/app/stores/NetworkStatusStore.ts",
@@ -853,7 +913,9 @@
           "priority": "high",
           "estimatedHours": 10,
           "interactionMode": "interactive_validation",
-          "dependencies": ["task-ux-702a"],
+          "dependencies": [
+            "task-ux-702a"
+          ],
           "targetPaths": [
             "source/main/mithril/MithrilPartialSyncService.ts",
             "source/main/mithril/MithrilPartialSyncService.spec.ts",
@@ -920,11 +982,14 @@
           "id": "task-ux-702c",
           "title": "Mithril partial-sync UX cleanup (manual-testing wave)",
           "description": "Net-new phase-7 manual-testing cleanup task gating the deployment QA gate (task-ux-702), the second remediation wave after the 702a copy/UX round and the 702b code-review round. Operator manual testing of the shipped UX surfaced 1 functional defect (finding #1): after cancelling a Mithril partial sync, the 'Retry Mithril Sync (fast)' button drops straight back to the 'Mithril Sync was cancelled' prompt and only works after a wait, and no cleanup state is shown before the terminal cancelled prompt. Root cause (D-702c-1, verified live): MithrilPartialSyncService.cancel() (:276-336) emits terminal cancelled+['retry','restart-normal'] (:314-321) on a chain un-coordinated with the still-unwinding start() that owns the coordinator's _partialSyncInProgress guard (chainStorageCoordinator.ts:258 set, :270 cleared in start()'s finally OUTSIDE the mutation lock); the killed download resolves late on the runner's 'close' event (mithrilCommandRunner.ts:190-193, exitCode null), so during the teardown window a quick Retry hits _assertPartialSyncStartAllowed 'already in progress' (:381-383) and the store silently swallows it (MithrilPartialSyncStore.ts:395-397 'if (this.status !== START_PENDING_STATUS) return'), dropping back to the cancelled prompt; waiting lets the process reach close and the guard clear. Fix depth = Full (D-702c-2, LOCKED), remediated as CAT-A (one code subagent + a code-review/compile pass). C-A1: also add 'cancelling' to the STANDALONE isMithrilPartialSyncBlockingNodeStart literal (:118-131), not derived from the working set. Decisions locked in task-ux-702c-decisions.md (D-702c-0..13). State model (D-702c-3): add a new 'cancelling' working-status shown 'Cleaning up...' with empty allowedRecoveryActions so Retry/Restart are structurally absent during teardown (UI-layer gate); terminal cancelled stays ['retry','restart-normal'] (D-702a-2, no wipe). Mechanism (D-702c-4): coordinator-owned _partialSyncRunPromise join so terminal cancelled is emitted only after start() unwinds and _partialSyncInProgress is false; split cancel() to emit 'cancelling'+kill+await cleanup then stop, add a guarded finalizeCancel() handler (mirrors finalizeWipeAndFullSync :360-364, guarded on status==='cancelling') that emits terminal cancelled ONLY on the settled branch, add forceKill() and a NON-retryable abandonCancel() for the no-settle anti-wedge escalation. Anti-wedge (D-702c-5): bound the join with PARTIAL_SYNC_CANCEL_JOIN_TIMEOUT_MS (recommend 15000ms) -> SIGKILL; the join helper returns whether the run settled - settled -> finalizeCancel (retry-enabled terminal, guard proven clear); no-settle -> abandonCancel (a NON-retryable 'failed' floor, 'retry' excluded, NO cleanup) so 'cancelling' can never strand AND Retry is never re-advertised while _partialSyncInProgress may still be true (proceeding to finalizeCancel there would re-open the exact race). Renderer defense-in-depth (D-702c-6): logger.warn the swallowed start rejection. Preserves the no-op cancel branch (D5f/gap #39, :280-291) and the Boundary-A-only cancel invariant (installing/finalizing still throw :293-297). Vocab guardrail holds (Mithril Sync / Standard Sync; never 'partial sync' in user copy). EN + JA updated for the new 'Cleaning up...' strings (JA best-effort per the 601 glossary). A second manual-testing pass added five presentation findings (#2-#6 -> CAT-B..CAT-F, decisions D-702c-7..13), all presentation/renderer/i18n scope (none touches the cancelling state machine, the Boundary A/B/C model, or the backend offer-signal boundary #4): CAT-B (D-702c-8) the app-level MithrilPartialSyncOverlay shares the bootstrap .backdrop (MithrilBootstrap.scss:10-16) which is translucent (token alpha 0.92 x opacity 0.97 ~= 0.89) with no backdrop-filter, so the live SyncingConnectingPage bleeds through -> add the app-wide overlay-backrop blur mixin (+ opacity:1) to the single shared rule, keep the --theme-mithril-overlay-backdrop-start tint (no per-theme alpha edits); CAT-C (D-702c-9) the Diagnostics 'Mithril Sync' option gates on isMithrilPartialSyncEnabled && isSignificantlyBehind (DaedalusDiagnostics.tsx:724-727), and isSignificantlyBehind fails safe to false on first-load-after-genesis (empty immutable/ dir -> PARTIAL_SYNC_IMMUTABLE_POSITION_UNAVAILABLE, probe catch MithrilPartialSyncService.ts:751-758) with a 30s->5min back-off (reads as needs-a-restart) -> KEEP THE AND-GATE, NO renderer change: the figure-based OR-gate (|| behindByEpochs !== undefined) is REJECTED as unsound (behindByEpochs anchors on the live networkTip.epoch while isSignificantlyBehind measures the certified-snapshot gap, so the OR-gate offers an unfulfillable sync that dead-ends in PARTIAL_SYNC_NO_CERTIFIED_RANGE and burns mithrilAttemptStartedThisSession, permanently suppressing the legitimate proactive prompt; isSignificantlyBehind is the sole offer signal, boundary #4). behindByEpochs stays display-only (computed :573, passed :728; CTA gate is MithrilPartialSyncSection.tsx:130-132). Verify-only: proactive suppression (MithrilProactivePromptContainer.tsx:67-74,88) stays coupled. The real first-load-availability gap is a SEPARATE backend probe-hardening follow-up (getPartialSyncBehindness must distinguish 'unknown/unavailable' from 'not behind') - touches boundary #4, NOT this wave. CAT-D (D-702c-10) + CAT-E (D-702c-11) MERGED (D-702c-13, same component/buttons): re-align the proactive choice view and the confirm/process view of SyncingConnectingMithrilPrompt to the MithrilBootstrap/MithrilErrorView reference - add titles 'Mithril Sync' and 'Mithril Sync Process', merge sentence 1+2 into one left-aligned paragraph (as sibling spans to keep spec queries), de-dim the '.handoffNote' note (drop opacity:0.8, 'Note:' in its OWN element), remove .component text-align:center (left-align BOTH views), and swap the app-wide 'primary' + font-less .actionButton for .primaryAction/.secondaryAction copied verbatim into the component SCSS locally (they do NOT exist there; augment the copied .primaryAction with [disabled]/:focus) on BOTH views, keeping min-width:180px + gap:12px; the reported 'blur' is a misdiagnosis (no backdrop-filter on that surface); new EN+JA title keys via defineMessages + yarn i18n:manage; update SyncingConnectingMithrilPrompt.spec.tsx + MithrilProactivePromptContainer.spec.tsx; extend the existing MithrilPartialSyncDialogue.stories.tsx; regen .scss.d.ts. CAT-F (D-702c-12) the 'Before Mithril Sync begins' dialog CSS is dead: .mithrilPartialSyncConfirmation* rules are authored as descendants of .component (DaedalusDiagnostics.scss:28-481) but the shared Dialog portals to document.body (react-modal), so the descendant selectors never match and the two paragraphs fall back to the global Meyer reset (themes/index.global.scss:92-93) -> un-nest to flat top-level selectors (mirror ExportWalletToFileDialog), add p+p{margin-top:20px} (drop the collapsing Behind/Recovery margins), lift a NEW flat .mithrilPartialSyncConfirmationError + swap styles.error -> it at MithrilPartialSyncConfirmation.tsx:108 (one-line TSX change), DROP the .Body opacity:0.85 (contrast regression), delete the two dead classes (.mithrilPartialSyncConfirmationActions/CancelButton), regen .scss.d.ts; QA the whole dialog light+dark for behindByEpochs set AND behindUnknown. Every CAT-B..CAT-F fix reuses an existing token/mixin/reference (no new colors/classes/theme vars). All decisions (D-702c-0..13) are LOCKED; only operator verification-only items remain (U1-U4, the 15s join-timeout value). The plan is task-ux-702c.md; source is not edited by this task entry.",
-          "status": "pending",
+          "status": "completed",
+          "completedAt": "2026-07-02",
           "priority": "high",
           "estimatedHours": 12,
           "interactionMode": "interactive_validation",
-          "dependencies": ["task-ux-702b"],
+          "dependencies": [
+            "task-ux-702b"
+          ],
           "targetPaths": [
             "source/common/types/mithril-partial-sync.types.ts",
             "source/main/mithril/MithrilPartialSyncService.ts",
@@ -997,13 +1062,122 @@
           ]
         },
         {
+          "id": "task-ux-702d",
+          "title": "Mithril Sync UX finalization cleanup (ad-hoc wave)",
+          "description": "Net-new phase-7 ad-hoc finalization cleanup wave gating the deployment QA gate (task-ux-702), collecting the small independent presentation/copy polish that surfaced after the 702c manual-testing round. Intentionally OPEN/extensible (categories CAT-A.., appended as triaged); the wave closes and task-ux-702 may re-run once all appended CATs land and are operator-validated. CAT-A (presentation/theme tokens): the proactive prompt (SyncingConnectingMithrilPrompt) is a position:fixed floating card with NO dimming backdrop (SyncingConnectingMithrilPrompt.scss:2,:11), so its own fill is the only thing over the wallet summary; the fill token --theme-mithril-card-background was defined at alpha 0.96 in every theme, bleeding the summary through and hurting legibility. Fix: flip that token alpha 0.96->1 at all 10 definition sites (9 static themes/daedalus/*.ts + the dynamic createTheme.ts:599 chroma(...).alpha), preserving each theme hue; styling/token-only, no TSX/i18n/store/IPC/backend change. Distinct from 702c CAT-B (the full-screen overlay backdrop) and 702c CAT-D (proactive-prompt chrome; the 'blur' report there was a confirmed misdiagnosis - no backdrop-filter on this card). The token is shared with the bootstrap/working-overlay card (MithrilBootstrap.scss:32); making it solid there too is accepted as harmless/consistent (that card sits on a dimmed backdrop). No spec/snapshot references the token. CAT-B (copy/i18n): the proactive-prompt handoff note body (mithrilProactivePromptHandoffNote) said only '...from the Diagnostics screen' - under-specified (no app qualifier, no shortcut). Retarget it to '...from the Daedalus Diagnostics screen under the Help menu. (Ctrl + D)' across the tsx defaultMessage (SyncingConnectingMithrilPrompt.tsx:42, !!! prefix kept), en-US.json, ja-JP.json (translated), and the generated defaultMessages.json + translations/messages.json (regenerated via yarn i18n:manage); the SyncingConnectingMithrilPrompt.spec.tsx:76 assertion is updated to the new string. Copy/i18n-only; the separate bold 'Note:' label span (promptHandoffNoteLabel) is untouched; Mithril-Sync vocabulary preserved (no 'partial sync'/%/immutable). CAT-C (presentation/theme tokens): the Mithril Partial Sync overlay (MithrilPartialSyncOverlay - the download-status/progress and failure/error prompts) shares MithrilBootstrap.scss's translucent .backdrop, which paints --theme-mithril-overlay-backdrop-start at alpha 0.92 (+ blur). Because the overlay is mounted at App.tsx:99 OVER the live SyncingConnecting (Cardano Node status) page - unlike the fast-sync bootstrap, which LoadingPage renders INSTEAD of the syncing page over a solid CenteredLayout background - that 8% transparency bleeds the node status page through the download and failure prompts. Fix: flip --theme-mithril-overlay-backdrop-start and its gradient-partner --theme-mithril-overlay-backdrop-end alpha 0.92->1 at all 10 definition sites (9 static themes/daedalus/*.ts + createTheme.ts:592/595), preserving each theme hue so the overlay reads as the same solid per-theme backdrop the fast-sync flow shows (the 'light blue' is the light-blue theme's own backdrop hue; each theme keeps its own). Styling/token-only; the shared .backdrop SCSS (and its now-moot blur) is unchanged; no spec/snapshot references the token. CAT-D (correctness / main-process cancel flow, IMPLEMENTED + late-spawn hardening synced 2026-07-01): the wave's first behavioral fix - canceling a Mithril Sync must actually stop the backend and clean up the lingering mithril-partial-sync directory. MithrilPartialSyncService.start() (:164-278) is an uninterruptible stage machine (never checks _isCancelled between awaits; re-emits 'downloading' unconditionally at :458), so a cancel re-spawns the download (continues in background), pops back to the sync page, can reach installing/cutover (Boundary-A safety hole), and skips staging cleanup (finalizeCancel no-ops on its :329 guard); the 'Downloading the Mithril snapshot failed / logs+quit' prompt is the abandonCancel no-settle floor. Fix = add a MithrilPartialSyncCancelledError sentinel + a _throwIfCancelled() guard and 4 checkpoints in start() (CP-A :191 after disk-space, CP-B top of _downloadAndVerifyPartialSnapshot before :458, CP-C :229 after validateStagedDownloadOutput, CP-D before installing :243) so cancel unwinds promptly -> coordinator join settles -> finalizeCancel cleans the staging dir + clears the marker -> terminal cancelled. 1 source file + spec; no new status, no PRD-status-contract/Boundary A/B/C change (cancelling/cancelled already exist from 702c CAT-A), Boundary-A-only preserved (CP-D before the cutover marker). CAT-A/B/C reviewed inline; CAT-D adds task-ux-702d-plan-review.md (plan-critique Decision: approved). Initial CAT-D added the interruptible stage machine + tracked converter child; follow-up hardening added _trackCurrentProcess(child), which immediately kills a late-registered child when _isCancelled is already true, closing the async buildMithrilEnv()-before-spawn race without changing mithrilCommandRunner.ts. CAT-E (correctness / main-process cancel teardown + observability, PLANNED - not yet implemented): after CAT-D made cancel effective, cleanup now fails on the FIRST cancel (previously a later attempt), with a live mithril-client surviving the failure prompt AND app exit. Root cause = two structural gaps CAT-D deferred plus missing logging: (1) mithrilCommandRunner spawns without detached (:155,:231-235) and every kill signals only the direct child pid (MithrilPartialSyncService.ts:346 cancel SIGTERM, :391 forceKill SIGKILL, :648 late-kill), so a mithril-client descendant is never reaped (falsifies CAT-D's 'single-process, harmless' assumption - this is the CAT-D process-tree/group residual's trigger condition); (2) the runner resolves only on child 'close' (stdio-EOF, :190,:265) with no 'exit' listener, so a descendant holding the inherited pipe keeps the run pending until the ~16s bounded join (chainStorageCoordinator.ts:43-44,473-492) times out into abandonCancel (the 'restart Daedalus' floor); and safeExit() (index.ts:87-129) reaps only cardanoNode, so the child survives app exit. The cancel path is also near-silent. Fix in three dependency-ordered parts: Part 1 add cancel-lifecycle logging and ship FIRST as the diagnostic gate (cancel entry/kill sends, _trackCurrentProcess late-kill, finalizeCancel entry/success/catch, abandonCancel floor, coordinator join/escalation/settled-branch, runner child exit+close), then re-repro once to confirm the mechanism and whether Part 3 is needed. Part 2 spawn detached: !environment.isWindows, add killProcessTree(child,signal) (POSIX process.kill(-pid,signal) ESRCH-safe with child.kill fallback; Windows execSync taskkill /pid <pid> /t /f - same taskkill command as CardanoNode._killProcessWithName:1068-1115, synchronous timeout-bounded variant chosen for the shutdown race), route the three kill sites through it, and reap the group on quit via a best-effort MithrilController.reapPartialSyncOnShutdown() called once from safeExit() immediately after pauseActiveDownloads() (single insertion covering all terminal paths incl. the STOPPING branch). Part 3 (evidence-gated) add a child-'exit'-derived settle signal ONLY if Part 1 shows 'close' still hangs after group-kill, additive so it never truncates the stdout the metadata reads parse (no close->exit swap). detached is POSIX-only (Windows keeps taskkill /t /f) to preserve the Windows-launch invariant (CardanoSelfnodeLauncher.ts:112). NO new status/channel/message, NO PRD status-contract or Boundary-model change, NO renderer/i18n/theme change, NO user-facing copy; cancel stays Boundary-A-only. Touch-set widens beyond CAT-D to mithrilCommandRunner.ts, chainStorageCoordinator.ts, MithrilController.ts, source/main/index.ts, and a new killProcessTree.ts. CAT-E plan authored + plan-critique recorded in task-ux-702d-plan-review.md; implementation and operator proof pending. 2026-07-01: the canonical plan was decomposed 702b-style into five per-category docs (task-ux-702d-cat-a..e.md; master = single source of truth + index; journal entries relocated to the plan-review/impl-review logs).",
+          "status": "completed",
+          "completedAt": "2026-07-02",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "interactionMode": "interactive_validation",
+          "dependencies": [
+            "task-ux-702c"
+          ],
+          "targetPaths": [
+            "source/renderer/app/themes/daedalus/yellow.ts",
+            "source/renderer/app/themes/daedalus/white.ts",
+            "source/renderer/app/themes/daedalus/dark-blue.ts",
+            "source/renderer/app/themes/daedalus/dark-cardano.ts",
+            "source/renderer/app/themes/daedalus/shelley-testnet.ts",
+            "source/renderer/app/themes/daedalus/cardano.ts",
+            "source/renderer/app/themes/daedalus/flight-candidate.ts",
+            "source/renderer/app/themes/daedalus/light-blue.ts",
+            "source/renderer/app/themes/daedalus/incentivized-testnet.ts",
+            "source/renderer/app/themes/utils/createTheme.ts",
+            "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt.tsx",
+            "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt.spec.tsx",
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
+            "source/renderer/app/i18n/locales/defaultMessages.json",
+            "translations/messages.json",
+            "source/main/mithril/MithrilPartialSyncService.ts",
+            "source/main/mithril/MithrilPartialSyncService.spec.ts",
+            ".agent/plans/mithril-partial-sync/task-plans-ux-refinement/phase-7/task-ux-702d.md",
+            ".agent/plans/mithril-partial-sync/task-plans-ux-refinement/phase-7/task-ux-702d-plan-review.md",
+            ".agent/plans/mithril-partial-sync/task-plans-ux-refinement/phase-7/task-ux-702d-impl-review.md",
+            ".agent/plans/mithril-partial-sync/task-plans-ux-refinement/phase-7/task-ux-702d-research.md",
+            ".agent/plans/mithril-partial-sync/task-plans-ux-refinement/phase-7/task-ux-702d-cat-a.md",
+            ".agent/plans/mithril-partial-sync/task-plans-ux-refinement/phase-7/task-ux-702d-cat-b.md",
+            ".agent/plans/mithril-partial-sync/task-plans-ux-refinement/phase-7/task-ux-702d-cat-c.md",
+            ".agent/plans/mithril-partial-sync/task-plans-ux-refinement/phase-7/task-ux-702d-cat-d.md",
+            ".agent/plans/mithril-partial-sync/task-plans-ux-refinement/phase-7/task-ux-702d-cat-e.md",
+            "source/main/mithril/mithrilCommandRunner.ts",
+            "source/main/mithril/mithrilCommandRunner.spec.ts",
+            "source/main/mithril/killProcessTree.ts",
+            "source/main/mithril/killProcessTree.spec.ts",
+            "source/main/mithril/MithrilController.ts",
+            "source/main/mithril/MithrilController.spec.ts",
+            "source/main/utils/chainStorageCoordinator.ts",
+            "source/main/utils/chainStorageCoordinator.spec.ts",
+            "source/main/index.ts",
+            "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+            "source/renderer/app/stores/MithrilPartialSyncStore.spec.ts"
+          ],
+          "implementationNotes": [
+            "CAT-A: flip --theme-mithril-card-background alpha 0.96->1 in the 9 themes/daedalus/*.ts static tokens and in createTheme.ts:599 (.alpha(0.96)->.alpha(1)); preserve each rgb. The SCSS .component (SyncingConnectingMithrilPrompt.scss:2) is unchanged (correctly references the token). Only the card fill changes - card-shadow/panel-border/overlay-backdrop tokens are untouched.",
+            "CAT-A shared-token note: the same token fills the bootstrap/working-overlay card (MithrilBootstrap.scss:32); it becomes solid there too. Accepted as harmless/consistent (dimmed backdrop already behind it). If a future finding needs that card translucent, split a dedicated proactive-prompt token then - do not fork pre-emptively.",
+            "CAT-B: change only the note BODY message (mithrilProactivePromptHandoffNote); the 'Note:' prefix is a separate promptHandoffNoteLabel span and must not absorb the sentence. Keep '(Ctrl + D)', 'under the Help menu', and 'Daedalus' verbatim. defaultMessages.json + translations/messages.json are generated - regenerate via yarn i18n:manage (do not hand-edit). Update the spec assertion (SyncingConnectingMithrilPrompt.spec.tsx:76) to the new string.",
+            "CAT-C: flip --theme-mithril-overlay-backdrop-start AND -end alpha 0.92->1 in the 9 themes/daedalus/*.ts static tokens and in createTheme.ts:592/595 (.alpha(0.92)->.alpha(1) for both stops); preserve each rgb. The SCSS .backdrop (MithrilBootstrap.scss:14) and the overlay-backdrop mixin blur are unchanged (the backdrop just becomes fully opaque, so the blur is moot). -end is currently unused by any SCSS but is flipped to keep the backdrop gradient-stop pair internally consistent. Only the overlay-backdrop tokens change - card-background/card-shadow/panel-border tokens are untouched.",
+            "CAT-C shared-token note: the same --theme-mithril-overlay-backdrop-start fills the fast-sync bootstrap backdrop too (MithrilBootstrap.scss is shared by MithrilBootstrap + MithrilPartialSyncOverlay). Making it solid there is harmless - fast-sync is rendered by LoadingPage INSTEAD of SyncingConnectingPage over a solid CenteredLayout --theme-loading-background-color, so nothing meaningful sits behind its backdrop. This deliberately makes the two Mithril backdrops read identically (the goal: partial-sync matches fast-sync).",
+            "interactive_validation: per-category code-review + operator visual re-test across themes; do not relabel autonomous.",
+            "CAT-D (correctness / main-process cancel flow, IMPLEMENTED + late-spawn hardening synced 2026-07-01): make canceling a Mithril Sync actually stop the backend and clean up. Root cause: MithrilPartialSyncService.start() (:164-278) never checked _isCancelled between its awaits and _downloadAndVerifyPartialSnapshot re-emitted 'downloading' unconditionally (:458-465), so a cancel during preparing (when cancel() had no live _currentProcess to kill, :318-320) re-spawned the download (background process), overwrote the 'cancelling' frame (pop-back), could reach installing/cutover (Boundary-A safety hole), and skipped cleanup because finalizeCancel no-oped on its :329 guard once a stage re-emitted a non-cancelling status; the 'Downloading the Mithril snapshot failed / logs+quit' prompt was the abandonCancel no-settle floor. Initial fix: add a MithrilPartialSyncCancelledError sentinel + a _throwIfCancelled() guard and insert this._throwIfCancelled() at 4 await seams - CP-A after _assertSufficientDiskSpace (:191), CP-B at the top of _downloadAndVerifyPartialSnapshot before the downloading emit (:458), CP-C after validateStagedDownloadOutput (:229), CP-D before _activatePostVerificationStage('installing') (:243) - plus converter-child onProcess wiring in _runBinary so converting-stage cancel settles into finalizeCancel. Follow-up hardening: route both _runCommand and _runBinary through _trackCurrentProcess(child), which immediately kills a late-registered child when _isCancelled is already true, closing the buildMithrilEnv()-before-spawn registration race seen in manual retest while leaving mithrilCommandRunner.ts untouched.",
+            "CAT-D constraints: 1 source file (MithrilPartialSyncService.ts: one sentinel class + two helper methods + four checkpoints + shared _trackCurrentProcess(child) registration hardening for _runCommand/_runBinary) + spec cases (MithrilPartialSyncService.spec.ts). NO new status/channel/message, NO PRD status-contract or Boundary A/B/C model change (cancelling/cancelled already exist from 702c CAT-A), NO renderer/i18n/theme change; cancel stays Boundary-A-only (CP-D sits before the cutover marker; installing/finalizing still throw in cancel() :298-302). Do NOT change cancel()/finalizeCancel()/abandonCancel()/forceKill()/the coordinator/the runner. Deferred residuals (NOT in scope): process-tree kill (single-child spawn; modern mithril-client downloads in-process so SIGTERM->SIGKILL suffices) and a startup orphaned-staging sweep (next attempt's preparePartialSyncStagingDirectory pre-wipe covers it). Plan-critique returned Decision: approved (no blockers); the late-spawn follow-up addendum is also approved; see task-ux-702d-plan-review.md.",
+            "CAT-E (PLANNED - not yet implemented): sequence the fix Part 1 -> Part 2 -> Part 3. Part 1 (logging, non-behavioral) ships FIRST and is re-repro'd before Part 2/3 land, because its logs decide the exact failure mode, select the Part-2 mechanism (group-kill vs find-process tree walk vs _currentProcess slot-lifecycle fix - see the three hypotheses in task-ux-702d-cat-e.md's Risks), and whether Part 3 is needed: add logger.info/warn across cancel() entry + each kill send, _trackCurrentProcess late-kill, finalizeCancel entry/success/catch (:371-383), abandonCancel floor, the coordinator join timeout / forceKill escalation / settled / finalizeCancel-vs-abandonCancel branch (chainStorageCoordinator.ts:473-492,284-300), and the runner's child 'exit' (pid/code/signal/killed) + 'close' (with pid) + a post-spawn '[mithril] child spawned' {pid} line (mithrilCommandRunner.ts:190,:265). Extend the service spec's ../utils/logging mock (stubs only info/warn) if a new error/debug line is added. Per-file log prefixes: 'MithrilPartialSyncService: ', '[MITHRIL] '/'ChainStorageCoordinator: ', '[mithril] '.",
+            "[SUPERSEDED 2026-07-02 by the operator-gate resolution + 2A/2B/2C re-scope (conflict rule: the locked task-ux-702d-cat-e.md wins) - kept for history; see the 'CAT-E operator gate RESOLVED', 'RE-GROUNDED' and 'Parts 2A/2B/2C IMPLEMENTED' notes below] CAT-E Part 2 (termination; mechanism gated on Part-1 pstree evidence - the following is the primary in-group hypothesis): add source/main/mithril/killProcessTree.ts (POSIX process.kill(-pid,signal) ESRCH-safe with a child.kill fallback; Windows execSync('taskkill /pid <pid> /t /f', { stdio: 'ignore', timeout: 5000, windowsHide: true }) - MUST be synchronous: the safeExit shutdown reap runs before process.exit() fires inside safeExitWithCode's stream-end callback (safeExitWithCode.ts:10-14), so a fire-and-forget exec may never launch; same taskkill command as CardanoNode._killProcessWithName:1068-1115, whose bounded-async exec+await variant is deliberately NOT mirrored here). Set detached: !environment.isWindows on both spawns (mithrilCommandRunner.ts:155,:231-235); keep stdio piped, do NOT unref(). Route the three kill sites (cancel :346 SIGTERM, forceKill :391 SIGKILL, _trackCurrentProcess late-kill :648) through killProcessTree. Add best-effort MithrilController.reapPartialSyncOnShutdown() (guarded by isPartialSyncActive() :199-204, fully try/caught) and call it from safeExit() exactly ONCE, immediately after pauseActiveDownloads() (index.ts:88) - the single insertion covers all terminal paths including the STOPPING branch (cardanoNode.exitOnStop() at index.ts:103-108 returns without safeExitWithCode); do NOT place it before each safeExitWithCode (duplicates the reap and misses STOPPING). Part 3 (conditional): only if step-2 re-repro shows 'close' still hangs after group-kill, add a child-'exit'-derived settle signal the coordinator races against run, leaving the runner's stdout-bearing promise resolving on 'close' (metadata reads depend on it). detached POSIX-only preserves the Windows-launch invariant (CardanoSelfnodeLauncher.ts:112).",
+            "CAT-E constraints: NO new status/channel/message, NO PRD status-contract or Boundary A/B/C change, NO renderer/i18n/theme change, NO user-facing copy; cancel stays Boundary-A-only (no checkpoint moved). Touch-set widens beyond CAT-D (which kept the runner untouched) to mithrilCommandRunner.ts, chainStorageCoordinator.ts, MithrilController.ts, source/main/index.ts, and the new killProcessTree.ts. CAT-E is main-process TS + jest (no .scss.d.ts) so the Node v24 renderer verify-env caveat does not apply. No production tree-kill dependency exists (tree-kill is dev-transitive only - do not import it in source/main); find-process (prod dep) is available for post-kill verification. Plan authored + plan-critique recorded in task-ux-702d-plan-review.md; implementation + operator proof pending.",
+            "Wave is OPEN: each further ad-hoc CAT (CAT-F..) gets its own self-contained per-category doc task-ux-702d-cat-f.md (702b-style template); the master task-ux-702d.md gains only a traceability row, a 2-4-line Scope entry, a status-table row, and an index-table row; Planner/Critiquer entries go to task-ux-702d-plan-review.md and Implementer/Code-Review entries to task-ux-702d-impl-review.md (never to the master tail); mirror each CAT to this tasks JSON (targetPaths + notes/tests/acceptance + minor version bump). Node v24 renderer verify-env caveat applies to any renderer jest/tsc run (typed-scss-modules .scss.d.ts regen + identity-obj-proxy jest sidecar); CAT-D and CAT-E are main-process TS + jest (no .scss.d.ts) so that caveat does not apply to them.",
+            "CAT-E Part 1 LANDED 2026-07-02 (uncommitted on the working tree; folds into the single 702d commit): non-behavioral cancel-lifecycle logging only - logger.info/warn added in mithrilCommandRunner.ts (runBinary+runCommand child spawned/exited/closed, additive logging-only 'exit' listeners, 'close' resolve left un-truncated and un-swapped), MithrilPartialSyncService.ts (cancel real-kill branch, _trackCurrentProcess late-kill, finalizeCancel entry/success/previously-silent-catch, abandonCancel floor), and chainStorageCoordinator.ts (join-timeout/forceKill escalation + cancelPartialSync settled/unsettled branch-decision); the three in-scope specs extended (+ a ./logging mock added to the coordinator spec). Verified: yarn compile PASS, yarn lint PASS (warnings only), specs 17/55/41 PASS. NO detached/killProcessTree.ts/reapPartialSyncOnShutdown/index.ts change. See task-ux-702d-impl-review.md (Implementation + Code Review: approved) and task-ux-702d-cat-e.md Progress. Parts 2 & 3 remain OPERATOR-GATED on the preprod/Linux cancel-at-downloading re-repro (ps -eo pid,ppid,pgid,sess,args / pstree -gp) that selects the Part-2 mechanism among the three hypotheses and gates Part 3. task-ux-702d stays pending (interactive_validation): NOT completed.",
+            "CAT-E operator gate RESOLVED 2026-07-02 (Linux/WSL2 cancel-at-downloading re-repro): hypothesis (iii) _currentProcess slot-clobber CONFIRMED as the operative root cause; (ii) re-grouping RULED OUT by ps (survivor pid 229730 in Daedalus's own group/session - ppid 228282 == Daedalus main, pgid 227499 == Daedalus pgid, sess 218848 == Daedalus sess); (i)'s in-group topology present but NOT the operative failure. Mechanism: the concurrent ~30s behind-ness metadata probe shares the single _currentProcess slot with the download via the unconditional _trackCurrentProcess seam, overwriting then nulling it on the probe's clean 'close' (onProcess(null)), so at cancel the slot is empty and SIGTERM/SIGKILL send nothing -> download survives -> 15s coordinator join -> abandonCancel floor -> survives app exit. Part-2 plan RE-SCOPED and SOLIDIFIED (plan-reviewed APPROVE-WITH-CHANGES, B1/B2 folded in), ordered 2A -> 2B -> 2C: 2A slot-lifecycle fix PRIMARY (opt-in trackAsCancelable on _runCommand, default false = omit onProcess; threaded from the download :591 AND both start() resolveLatestSnapshotMetadata reads :186/:224 via _showSnapshotRaw/_listSnapshotsRaw, conversion via _runBinary already opt-in - NEVER inferred from _activeWorkDir because the probe's :837 read also runs while _activeWorkDir is set; service+spec only); 2B gate the behind-ness probe during active work (renderer MithrilPartialSyncStore._refreshAvailability skip when isWorking||status==='cancelled' + belt-and-braces MithrilController.getPartialSyncAvailability guard - a documented behavior change to the store's re-fetch-on-EVERY-tick design; offer-signal #4 untouched); 2C defense-in-depth = detached: !environment.isWindows on both spawns + killProcessTree helper with an async-interactive/sync-shutdown Windows split (interactive sites use non-blocking exec so the UI never freezes; only the safeExit shutdown reap uses execSync) + MithrilController.reapPartialSyncOnShutdown() called once from safeExit after pauseActiveDownloads. Part 3 (child-'exit'-derived additive settle) stays evidence-gated, expected NOT needed once 2A makes cancel kill the direct child so 'close' fires (never a close->exit swap). B2 honest #7 framing: detached is on the SHARED runner so it also detaches MithrilBootstrapService's POSIX children - in-app behavior unchanged, dev-terminal SIGINT/SIGHUP delivery to the bootstrap child changes = accepted dev-only regression (do NOT un-detach the bootstrap path); the bootstrap reap-on-quit gap and the sibling MithrilBootstrapService slot-clobber are separate branch tickets. Cross-platform per locked decision 3: Linux/WSL2 operator gate is the wave's proof, NO QA-matrix gate; Windows (execSync UI-freeze/async-sync split, forceKill pid-reuse, packaged taskkill.exe PATH, /t vs job-breakaway) and macOS (POSIX kill == Linux but packaged hardened-runtime spawn, .app before-quit reap, possible re-grouped descendant) concerns are DOCUMENTED and verified in the manual PR-testing phase; per-env findings become separate branch tickets. Parts 2 & 3 remain PLANNED-not-implemented; the ordered operator re-repros (#1 after 2A, #2 after 2B+2C) are the proof gates. See task-ux-702d-cat-e.md (RESOLVED box + Implementation 2A/2B/2C + Risks) and task-ux-702d-research.md findings #8/#10/#11. task-ux-702d stays pending (interactive_validation): NOT completed.",
+            "CAT-E Part-2 plan RE-GROUNDED 2026-07-02 (grounded plan review - four Opus exploration subagents vs the live post-Part-1 tree + captured logs/ps.log, logs/pub/Daedalus.json, logs/mithril-partial-sync.log; tasks JSON v1.9.1): the (iii) slot-clobber verdict STANDS but is now recorded as CODE-PLUS-LOG INFERENCE, not direct observation - Part 1's landed cancel-entry log sits inside the real-kill branch (if (this._currentProcess)), so an EMPTY slot logs nothing, and the captured repro carries no cancel-entry line and no hadChild field. Directly observed: download pid 229730 appears exactly once (spawn-only, no exit/close/kill line references it), probe pid 230124 (snapshot show latest) overwrote+nulled the slot ~5s before the inferred cancel (join-timeout 07:58:47.314Z minus 15s ~= 07:58:32), no kill line at cancel against any pid, join-timeout -> abandonCancel (settled:false), download still advancing at 08:00:43 (2034/5845 files); post-cancel probes 230842/230843 WERE SIGTERM'd by the late-child guard (late-kill works). ps.log was captured while Daedalus was STILL RUNNING (main 228282/launcher 228275/renderer 228377 present), so it proves the survivor topology (pid 229730/ppid 228282/pgid 227499/sess 218848) NOT the survives-app-exit leg - that stays gated on operator re-repro #2 (quit mid-download). Corrections C1-C8 folded into task-ux-702d-cat-e.md: 2A adds an UNCONDITIONAL {status,pid,hadChild} cancel-entry log BEFORE the :345 gate (+ test + re-repro #1 wording) so re-repro #1 DIRECTLY observes the empty slot; step-12 reap-synergy premise fixed (start()'s catch returns THROUGH the finally which nulls the slot, so the 2C reap reads the slot and DEPENDS on 2A - the reap alone would NOT have caught the untracked pid-229730 survivor); MithrilPartialSyncStore.spec.ts is NOT new (exists ~34.7 KB, 2B EXTENDS it; only killProcessTree.spec.ts + MithrilController.spec.ts are new - all three already in targetPaths); isPartialSyncActive() is status!=='idle' (true for completed/cancelled too, broader than 'true for failed'); the Daedalus Diagnostics dialog reads isSignificantlyBehind/certifiedEpoch mid-run so 2B leaves it showing frozen pre-run values (accepted, documented); isMithrilPartialSyncWorkingStatus must be imported in MithrilController.ts; the 2A flag rides a service-local options field (primary), not a 4th positional param; behind-ness cache 5-min TTL => repeat clobber windows on >5-min downloads; 'single shutdown funnel' qualified (fatal/startup paths bypass safeExit: setup.ts:197, CardanoNode.ts:602, config.ts:38, ensureDirectoryExists.ts:14/:19, relaunch()); Reference-details live-line shifts recorded (coordinator finalizeCancel :302 / abandonCancel :313 / _awaitRunSettledBounded :487-514; runner env-branch :223; CardanoSelfnodeLauncher detach-breaks-Windows comment only at :112-115, :254 a bare second site). CAT-E Parts 2/3 remain PLANNED-not-implemented; operator re-repros #1/#2 stay the proof gates (re-repro #1 now a DIRECT slot observation). Plan-review Decision: requires_changes -> re-LOCKED; see task-ux-702d-plan-review.md (2026-07-02T09:42:45Z Critiquer + Planner) and task-ux-702d-research.md findings #8/#10 addenda. task-ux-702d stays pending (interactive_validation): NOT completed.",
+            "CAT-E Parts 2A/2B/2C IMPLEMENTED 2026-07-02 (uncommitted on the working tree; folds into the single 702d commit; Part 3 NOT implemented - evidence-gated, expected unnecessary; runner still resolves on 'close'). 2A slot-lifecycle fix PRIMARY: service-local non-exported PartialSyncRunCommandOptions/PartialSyncMetadataReadOptions carry an opt-in trackAsCancelable, destructure-stripped in _runCommand before the runner-options spread (never on RunCommandOptions, never inferred from _activeWorkDir); onProcess registered ONLY when trackAsCancelable === true, onLogStream always kept; threaded true from the download _runCommand and both start()-phase resolveLatestSnapshotMetadata reads (via _showSnapshotRaw/_listSnapshotsRaw); the 30s behind-ness probe chain and ad-hoc listSnapshots/showSnapshot stay untracked; _runBinary functionally unchanged (comments only); plus the C2 UNCONDITIONAL 'MithrilPartialSyncService: cancel entry' info {status,pid,hadChild} after the cancelling emit and before the if (this._currentProcess) gate (re-repro #1 now directly observes an empty slot). 2B probe gating: MithrilPartialSyncStore._refreshAvailability early-returns while isWorking||status==='cancelled' (before _isRefreshingAvailability = true; setup()'s re-fetch-on-EVERY-tick design comment updated; _armAvailabilityInterval untouched) + belt-and-braces MithrilController.getPartialSyncAvailability guard (after the !isEnabled short-circuit, returns {isEnabled, isSignificantlyBehind: false} while the status seam reports working/cancelled, before getPartialSyncBehindness; isMithrilPartialSyncWorkingStatus imported). 2C defense-in-depth: new killProcessTree.ts (POSIX process.kill(-pid,signal) with child.kill fallback, swallowed+warned fallback throw; Windows async exec taskkill at interactive sites / execSync {stdio:'ignore',timeout:5000,windowsHide:true} ONLY in the sync shutdown reap) + detached: !environment.isWindows on both shared-runner spawns (piped stdio, no unref(), no tree-kill import; bootstrap children detach too = accepted dev-only regression) + the three interactive kill sites routed through killProcessTree (cancel SIGTERM / forceKill SIGKILL / late-kill SIGTERM) + service forceKillForShutdown() (killProcessTree(child,'SIGKILL',{sync:true})) + MithrilController.reapPartialSyncOnShutdown() (isPartialSyncActive-gated, try/caught) called exactly ONCE from safeExit() immediately after pauseActiveDownloads(); MithrilBootstrapService untouched. Tests: plan cases 1-10 landed across the six specs (slot-clobber regression with the exact runner-options pin proving no flag leak + converter variant; B1 start()-phase pin; empty-slot {hadChild:false,pid:null} cancel-entry case; store gating; controller guard + reap delegation incl. swallowed throw; killProcessTree 9 cases; detached both-spawns POSIX/Windows; coordinator settled + never-settles escalation); new MithrilController.spec.ts needs a ./MithrilStartupGate mock beyond the plan's three (module graph otherwise reaches electron dialog); setImmediate is undefined under this jest config (use setTimeout(0) flushes) - see task-ux-702d-research.md finding #12. Verified GREEN: yarn compile PASS, yarn lint 0 errors, prettier clean on all authored files (sole excusals = the two pre-existing mithrilCommandRunner drift regions confirmed at HEAD), scoped jest 59/8/9/21/42/35 = 174 PASS (store spec green under the stock jest config - no Node-v24 scss sidecar needed). Code review: approved after 2 iterations (iteration-1 sole mustFix - the forceKillForShutdown -> killProcessTree(child,'SIGKILL',{sync:true}) seam unpinned + a misleading spec comment - closed in the service spec before iteration 2). Out-of-scope residue for the commit stage to keep/drop deliberately: unstaged .gitignore '.devcontainer' hunk + untracked .agent/scheduled_tasks.lock. Operator re-repros #1 (cancel-at-downloading: terminal cancelled, no floor, no live mithril-client, staging dir removed, cancel-entry log shows hadChild directly) and #2 (quit mid-download: no surviving mithril-client after app exit) are NOW THE PENDING PROOF GATES. See task-ux-702d-impl-review.md (2026-07-02T11:29:03Z Implementation + Code Review) and task-ux-702d-cat-e.md. task-ux-702d stays pending (interactive_validation): NOT completed.",
+            "WAVE CLOSED 2026-07-02 (operator validation): the operator re-ran the cancel flow on the live app and confirmed re-repro #1 - cancelling out of the Mithril partial sync progress overlay now reaches the terminal cancelled prompt without error (no 'restart Daedalus'/'Downloading the Mithril snapshot failed' floor), and every option on the cancel prompt works as expected. This was the last major issue spotted for the session; the wave closes with CAT-A..E landed (CAT-E Part 3 stays evidence-gated and UNIMPLEMENTED - the observed behavior did not require it). Re-repro #2 (quit mid-download) was not separately re-run this session; it rides with the documented Windows/macOS teardown concerns into the task-ux-702 manual PR-testing/QA phase. task-ux-702d -> completed (completedAt 2026-07-02); the deployment QA gate task-ux-702 is unblocked and may re-run."
+          ],
+          "testCases": [
+            "CAT-A: proactive prompt card renders fully solid (no wallet-summary bleed-through) and copy is legible across light (white, yellow) and dark (cardano, dark-blue) themes - Storybook MithrilPartialSyncDialogue + on-device.",
+            "CAT-A: grep confirms no --theme-mithril-card-background definition retains alpha 0.96.",
+            "CAT-B: the handoff note renders 'Note: If skipped, you can still start the Mithril Sync from the Daedalus Diagnostics screen under the Help menu. (Ctrl + D)'; EN + JA updated; no stale 'CTRL + D' / 'from the Diagnostics screen' copy remains.",
+            "CAT-C: on a significantly-behind node, the Mithril Partial Sync download-status (progress) AND failure/error prompts render on a fully solid per-theme backdrop with NO Cardano Node status page bleeding through, matching the fast-sync bootstrap; verified across light-blue + at least one other light and one dark theme - Storybook MithrilPartialSyncDialogue + on-device.",
+            "CAT-C: grep confirms no --theme-mithril-overlay-backdrop-start/-end definition retains alpha 0.92.",
+            "CAT-D: MithrilPartialSyncService.spec.ts - cancel during preparing (flip _isCancelled in an early stage stub) makes start() return without spawning the download (_runCommand not called for download), without calling _installValidatedStagedSnapshot, without writing the cutover-in-progress marker, and without emitting a 'failed' terminal.",
+            "CAT-D: cancel before install (flip _isCancelled in the _convertStagedSnapshot stub) does not call _installValidatedStagedSnapshot and writes no cutover marker (no cancel-past-CP-D into cutover).",
+            "CAT-D: _throwIfCancelled() throws MithrilPartialSyncCancelledError when _isCancelled is true and is a no-op when false; the existing 702c cancel-sequence specs (cancel emits 'cancelling'; finalizeCancel emits 'cancelled' + runs _cleanupPartialSyncArtifacts; abandonCancel no cleanup) still pass unchanged.",
+            "CAT-D: yarn test:jest for MithrilPartialSyncService.spec.ts (+ chainStorageCoordinator.spec.ts if the coordinator assertion is added) green; operator (verify-only): cancel during preparing/downloading/converting each lands on the terminal cancelled prompt, no background process/pop-back, mithril-partial-sync dir removed, no 'Downloading the Mithril snapshot failed / logs+quit' prompt.",
+            "CAT-D: _runCommand and _runBinary kill a late-spawned child immediately when cancel already won the race (callbacks.onProcess(fakeChild) -> fakeChild.kill() called once), covering the async buildMithrilEnv()-before-spawn registration window seen in manual retest.",
+            "CAT-E: mithrilCommandRunner.spec.ts - both spawns pass detached: true when environment.isWindows is false and falsy when true; child.on('exit') is registered and logs {code,signal}, while 'close' still resolves with {stdout,stderr,exitCode} (stdout not truncated).",
+            "CAT-E: killProcessTree unit - POSIX branch calls process.kill(-pid, signal); Windows branch calls execSync('taskkill /pid <pid> /t /f') with { stdio: 'ignore', timeout: 5000, windowsHide: true } (asserted via the child_process execSync mock); a null/no-pid child is a no-op; a throwing group-kill falls back to child.kill(signal) and logs a warn.",
+            "CAT-E: MithrilPartialSyncService.spec.ts - cancel() on a live child routes the kill through killProcessTree with 'SIGTERM' and emits the cancel-entry info log {status,pid,hadChild:true}; forceKill() routes through killProcessTree with 'SIGKILL'; a late-spawn child with _isCancelled already true routes the immediate kill through killProcessTree (group-aware late-kill); abandonCancel() and finalizeCancel() (success + catch) each emit their new log line.",
+            "CAT-E: chainStorageCoordinator.spec.ts - a run that settles within the bounded join chooses finalizeCancel and logs the settled=true branch; a run that does not settle logs the forceKill escalation + settled=false -> abandonCancel branch (the finding's coverage gap - the branch decision is now observable/asserted). If Part 3 lands, a run whose direct child 'exit's while 'close' is withheld still settles via the exit-derived signal -> finalizeCancel, not abandonCancel.",
+            "CAT-E: MithrilController spec - reapPartialSyncOnShutdown() calls the service forceKill (-> killProcessTree) when isPartialSyncActive() is true, is a no-op when false, and swallows a throwing forceKill (never rethrows into safeExit).",
+            "CAT-E operator (verify-only, staged): (1) after Part 1 only - cancel during downloading and confirm the logs disambiguate the mechanism (child present? SIGTERM/SIGKILL sent? 'exit' fired while 'close' hung? surviving descendant in ps -eo pid,ppid,pgid,sess,args / pstree -gp, with Daedalus's own pid+pgid recorded first?), recorded in task-ux-702d-research.md to select the Part-2 mechanism and gate Part 3; (2) after Part 2 (+Part 3 if needed) - cancel during preparing/downloading/converting each reaches terminal cancelled with no 'restart Daedalus'/'Downloading the Mithril snapshot failed' floor, no live mithril-client after the prompt (ps), staging dir removed; then quit mid-download and confirm no mithril-client survives app exit.",
+            "yarn compile + touched-file lint/prettier green."
+          ],
+          "acceptance": [
+            "The proactive-prompt card is a solid, per-theme surface with no bleed-through, verified across at least one light and one dark theme.",
+            "The handoff note points to 'the Daedalus Diagnostics screen under the Help menu (Ctrl + D)' in EN and JA, with the generated i18n files in sync and the spec assertion updated.",
+            "CAT-A and CAT-B are documented in task-ux-702d.md; the wave remains open for further ad-hoc CATs.",
+            "CAT-C: the Mithril Partial Sync download-status and failure prompts sit on the same solid light-blue (per-theme) backdrop as the fast-sync flow, with no Cardano Node status page showing through, verified across at least one light and one dark theme; CAT-C is documented in task-ux-702d.md.",
+            "CAT-A/B/C: no behavioral/state-machine/offer-signal change; boundary invariants preserved.",
+            "CAT-D (implemented 2026-07-01; late-spawn hardening synced 2026-07-01): canceling a Mithril Sync at any stage where Cancel is available stops the backend (no re-spawn, no pop-back, no cutover-after-cancel), transitions to the terminal cancelled prompt, and removes the mithril-partial-sync staging directory - via four _isCancelled checkpoints in start(), tracked converter-child onProcess wiring, and _trackCurrentProcess(child) killing any late-registered child when cancel already won the race; no new status and no PRD status-contract/Boundary-model change (Boundary-A-only cancel enforced, not weakened). Verified by MithrilPartialSyncService.spec.ts cases + focused late-spawn regression coverage + operator cancel-at-each-stage re-test. Documented in task-ux-702d.md; plan-critique in task-ux-702d-plan-review.md (Decision: approved).",
+            "CAT-E (Parts 1 + 2A/2B/2C IMPLEMENTED 2026-07-02, uncommitted - folds into the single 702d commit; Part 3 evidence-gated, expected unnecessary; ACCEPTANCE STILL GATED on the operator re-repros): a genuine cancel at any stage terminates the mithril-client process (no live mithril-client after the cancelled prompt, verified by ps), lands on the terminal cancelled prompt without the 'restart Daedalus'/'Downloading the Mithril snapshot failed' floor, and removes the mithril-partial-sync staging dir; quitting mid-download leaves no surviving mithril-client after app exit; and the cancel path is logged end-to-end. Delivered per the RESOLVED slot-clobber root cause (hypothesis iii) via 2A slot-lifecycle fix PRIMARY (service-local opt-in trackAsCancelable stripped before the runner spread - onProcess only for the download and both start()-phase metadata reads, probe/ad-hoc reads untracked, never inferred from _activeWorkDir; plus the unconditional {status,pid,hadChild} cancel-entry log), 2B behind-ness probe gating during active work (store _refreshAvailability skip + belt-and-braces controller getPartialSyncAvailability guard), and 2C defense-in-depth (detached: !environment.isWindows on both spawns + killProcessTree with the async-interactive/sync-shutdown Windows split + MithrilController.reapPartialSyncOnShutdown() called once from safeExit after pauseActiveDownloads) - on top of Part-1 cancel-lifecycle logging (shipped first as the diagnostic gate). Part 3 exit-settle NOT implemented (runner still resolves on 'close'); it lands only if re-repro evidence requires it. No new status and no PRD status-contract/Boundary-model change; cancel stays Boundary-A-only. Verified: yarn compile PASS, lint 0 errors, prettier clean on authored files, scoped jest 174/174 across the six touched specs; code review approved after 2 iterations. PENDING before the wave closes: operator re-repro #1 (cancel-at-downloading - terminal cancelled, no floor, no live mithril-client, staging dir removed, cancel-entry log shows hadChild directly) and re-repro #2 (quit mid-download - no surviving mithril-client after app exit); Windows/macOS teardown concerns stay documented and verified in the manual PR-testing phase.",
+            "CLOSURE 2026-07-02: operator re-repro #1 CONFIRMED on the live app (cancel from the partial-sync progress overlay lands on the cancelled prompt with no error/floor; all cancel-prompt options work); re-repro #2 (quit mid-download) deferred to the task-ux-702 manual PR-testing/QA phase alongside the documented Windows/macOS teardown checks. Wave CLOSED; task-ux-702d completed."
+          ]
+        },
+        {
           "id": "task-ux-702",
           "title": "Full manual QA matrix and rollout-readiness decision (deployment gate)",
           "description": "After automated coverage is green and backend-correctness re-validation passes, run the full manual QA matrix: all 3 networks (mainnet, preprod, preview) x default + custom chain storage x success/cancel/retry/restart-normal/wipe-and-full-sync recovery paths x packaged builds on Windows/macOS/Linux. Re-test the six task-401 regressions individually (gap #18). Record results in the plan workspace, finalize the production default and any network-scoping of the kill switch, and finalize the rollback checklist. This branch does not merge to master / ship until this matrix passes. Implements the QA gate of PRD D7 and the Rollout section.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 10,
-          "dependencies": ["task-ux-503", "task-ux-601", "task-ux-701", "task-ux-702a", "task-ux-702b", "task-ux-702c"],
+          "dependencies": [
+            "task-ux-503",
+            "task-ux-601",
+            "task-ux-701",
+            "task-ux-702a",
+            "task-ux-702b",
+            "task-ux-702c",
+            "task-ux-702d"
+          ],
           "targetPaths": [
             ".agent/plans/mithril-partial-sync/mithril-partial-sync-ux-refinement-prd.md",
             ".agent/plans/mithril-partial-sync/research/",
@@ -1019,7 +1193,8 @@
           "testCases": [
             "All 3 networks x default + custom storage x recovery paths validated",
             "Packaged builds validated on Windows/macOS/Linux",
-            "Six task-401 regressions individually re-tested"
+            "Six task-401 regressions individually re-tested",
+            "Windows packaged build: cancel a Mithril Sync (exercises the taskkill /t /f tree path) and separately quit mid-download; verify no mithril-client survives the cancelled prompt or app exit (deferred Windows on-platform verification for task-ux-702d CAT-E)."
           ],
           "acceptance": [
             "Manual QA results are captured in repo-local planning artifacts.",
@@ -1033,8 +1208,8 @@
   ],
   "summary": {
     "totalPhases": 7,
-    "totalTasks": 23,
-    "estimatedTotalHours": 106,
+    "totalTasks": 24,
+    "estimatedTotalHours": 109,
     "criticalPath": [
       "task-ux-101",
       "task-ux-102",
@@ -1051,6 +1226,7 @@
       "task-ux-702a",
       "task-ux-702b",
       "task-ux-702c",
+      "task-ux-702d",
       "task-ux-702"
     ],
     "keyFiles": [

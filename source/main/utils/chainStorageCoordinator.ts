@@ -75,7 +75,7 @@ class ChainStorageCoordinator {
   getPartialSyncAvailability(): MithrilPartialSyncAvailability {
     return {
       isEnabled: launcherConfig.mithrilPartialSyncEnabled === true,
-      // Behind-ness is computed by MithrilController + MithrilPartialSyncService (task-ux-102);
+      // Behind-ness is computed by MithrilController + MithrilPartialSyncService;
       // these defaults are only the disabled-path / fallback shape.
       isSignificantlyBehind: false,
       behindByImmutables: undefined,
@@ -292,10 +292,24 @@ class ChainStorageCoordinator {
       : true;
 
     if (settled) {
+      logger.info(
+        '[MITHRIL] Partial sync run settled after cancel; finalizing cancel',
+        {
+          hadRun: !!run,
+          settled,
+        }
+      );
       await dependencies.handlers.finalizeCancel();
       return;
     }
 
+    logger.warn(
+      '[MITHRIL] Partial sync run unsettled after cancel; abandoning cancel',
+      {
+        hadRun: !!run,
+        settled,
+      }
+    );
     await dependencies.handlers.abandonCancel();
   }
 
@@ -482,6 +496,14 @@ class ChainStorageCoordinator {
     if (settled) {
       return true;
     }
+
+    logger.warn(
+      '[MITHRIL] Partial sync run did not settle within cancel join timeout; escalating to forceKill',
+      {
+        joinTimeoutMs: PARTIAL_SYNC_CANCEL_JOIN_TIMEOUT_MS,
+        forceKillTimeoutMs: PARTIAL_SYNC_CANCEL_FORCE_KILL_TIMEOUT_MS,
+      }
+    );
 
     await forceKill();
 

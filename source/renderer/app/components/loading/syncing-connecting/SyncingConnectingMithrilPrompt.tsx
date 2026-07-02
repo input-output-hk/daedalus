@@ -4,8 +4,8 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 
 import { logger } from '../../../utils/logging';
-// Shared canonical D-702a-6 shutdown/restore/restart sentence (single i18n key,
-// created in CAT-C). Reused here so the prompt confirm view and the diagnostics
+// Shared canonical shutdown/restore/restart sentence (single i18n key).
+// Reused here so the prompt confirm view and the diagnostics
 // confirmation modal stay byte-identical; do NOT redeclare the id locally.
 import mithrilSyncProcessSummaryMessages from '../../status/MithrilSyncProcessSummary.messages';
 import styles from './SyncingConnectingMithrilPrompt.scss';
@@ -39,7 +39,7 @@ const messages = defineMessages({
   promptHandoffNote: {
     id: 'daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNote',
     defaultMessage:
-      '!!!If skipped, you can still start the Mithril Sync from the Diagnostics screen.',
+      '!!!If skipped, you can still start the Mithril Sync from the Daedalus Diagnostics screen under the Help menu. (Ctrl + D)',
     description:
       'Handoff note telling the user they can start Mithril later from Diagnostics if they skip the proactive prompt',
   },
@@ -192,8 +192,8 @@ export default class SyncingConnectingMithrilPrompt extends Component<
             skin={ButtonSkin}
           />
           {/* "Mithril Sync (fast)" is the primary/right (default) action. The
-              visible-highlight contrast across themes is CAT-D's concern (theme
-              tokens / .scss); CAT-F makes no scss change here. */}
+              visible-highlight contrast across themes is a theme-token / .scss
+              concern; no scss change here. */}
           <Button
             className={styles.primaryAction}
             label={intl.formatMessage(messages.promptMithrilButton)}
