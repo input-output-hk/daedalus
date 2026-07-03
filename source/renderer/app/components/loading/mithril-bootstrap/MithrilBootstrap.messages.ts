@@ -165,6 +165,12 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: '!!!Node failed to start',
     description: 'Title for node-start failures after Mithril bootstrap.',
   },
+  errorDetailsHeader: {
+    id: 'loading.mithrilBootstrap.errorDetailsHeader',
+    defaultMessage: '!!!Technical details',
+    description:
+      'Collapsed technical-details section header on the Mithril error view (bootstrap and Mithril Sync overlays).',
+  },
   progressDiskCheck: {
     id: 'loading.mithrilBootstrap.progress.diskCheck',
     defaultMessage: '!!!Checking local disk info',
@@ -352,6 +358,25 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
       '!!!Use one of the available recovery actions to retry Mithril Sync, restart normally, or wipe chain data and do a full Mithril sync.',
     description: 'Hint shown for Mithril partial sync failed terminal state.',
   },
+  partialSyncFinalizeFailedTitle: {
+    id: 'loading.mithrilPartialSync.error.finalizeFailed.title',
+    defaultMessage: '!!!Finishing Mithril Sync failed',
+    description:
+      'Title shown when the automatic finalize hand-off after a completed Mithril partial sync fails twice.',
+  },
+  partialSyncFinalizeFailedHint: {
+    id: 'loading.mithrilPartialSync.error.finalizeFailed.hint',
+    defaultMessage:
+      '!!!Mithril Sync completed, but Daedalus could not finish the final cleanup step. Try again to continue to Daedalus.',
+    description:
+      'Hint shown when the automatic finalize hand-off after a completed Mithril partial sync fails twice.',
+  },
+  partialSyncFinalizeFailedRetry: {
+    id: 'loading.mithrilPartialSync.error.finalizeFailed.retry',
+    defaultMessage: '!!!Try again',
+    description:
+      'Retry action label on the finalize-failed error view; re-invokes the finalize hand-off.',
+  },
   partialSyncCancelledTitle: {
     id: 'loading.mithrilPartialSync.error.cancelled.title',
     defaultMessage: '!!!Mithril Sync was cancelled',
@@ -424,6 +449,32 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
       '!!!Daedalus downloaded the verified snapshot but could not prepare it for use. Choose how to continue below.',
     description: 'Hint shown for PARTIAL_SYNC_CONVERSION_FAILED.',
   },
+  partialSyncErrorInsufficientDiskSpaceTitle: {
+    id: 'loading.mithrilPartialSync.error.insufficientDiskSpace.title',
+    defaultMessage: '!!!Not enough disk space for Mithril Sync',
+    description:
+      'Title shown when PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE is emitted (disk-space preflight failed).',
+  },
+  partialSyncErrorInsufficientDiskSpaceHint: {
+    id: 'loading.mithrilPartialSync.error.insufficientDiskSpace.hint',
+    defaultMessage:
+      '!!!Daedalus does not have enough free disk space to prepare the verified snapshot. The required and available amounts are shown in the error details. Free up space on the disk that stores your chain data, then retry Mithril Sync.',
+    description:
+      'Hint shown for PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE. The needed/available GB figures come from the backend error message rendered by MithrilErrorView.',
+  },
+  partialSyncErrorMetadataUnavailableTitle: {
+    id: 'loading.mithrilPartialSync.error.metadataUnavailable.title',
+    defaultMessage: '!!!Checking the latest Mithril snapshot failed',
+    description:
+      'Title shown when Daedalus cannot resolve the latest verified Mithril snapshot metadata before or during Mithril Sync.',
+  },
+  partialSyncErrorMetadataUnavailableHint: {
+    id: 'loading.mithrilPartialSync.error.metadataUnavailable.hint',
+    defaultMessage:
+      '!!!Daedalus could not read the latest verified snapshot details. Check your internet connection, then choose how to continue below.',
+    description:
+      'Hint shown when Daedalus cannot resolve the latest verified Mithril snapshot metadata before or during Mithril Sync.',
+  },
   partialSyncRetry: {
     id: 'loading.mithrilPartialSync.error.retry',
     defaultMessage: '!!!Retry Mithril Sync (fast)',
@@ -452,6 +503,30 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: '!!!Cancellation available once the node has stopped',
     description:
       'Tooltip explaining why the Cancel button is disabled while the Cardano node is still stopping (stopping-node phase).',
+  },
+  partialSyncStageVerifying: {
+    id: 'loading.mithrilPartialSync.progress.stageVerifying',
+    defaultMessage: '!!!Verifying snapshot...',
+    description:
+      'Step-indicator label for the verifying stage emitted during Mithril Sync.',
+  },
+  partialSyncStageConverting: {
+    id: 'loading.mithrilPartialSync.progress.stageConverting',
+    defaultMessage: '!!!Converting snapshot format...',
+    description:
+      'Step-indicator label for the converting stage emitted during Mithril Sync.',
+  },
+  partialSyncStageInstalling: {
+    id: 'loading.mithrilPartialSync.progress.stageInstalling',
+    defaultMessage: '!!!Installing snapshot...',
+    description:
+      'Step-indicator label for the installing stage emitted during Mithril Sync.',
+  },
+  partialSyncStartFailure: {
+    id: 'loading.mithrilPartialSync.error.startFailure',
+    defaultMessage: '!!!Unable to start Mithril Sync.',
+    description:
+      'Fallback message shown when a Mithril Sync start request is rejected.',
   },
 });
 

@@ -31,6 +31,17 @@ jest.mock('../ipc/mithrilPartialSyncChannel', () => ({
   })),
 }));
 
+jest.mock('../utils/logging', () => ({
+  logger: {
+    warn: jest.fn(),
+    info: jest.fn(),
+  },
+}));
+
+jest.mock('../utils/safeExitWithCode', () => ({
+  safeExitWithCode: jest.fn(),
+}));
+
 // --- Helpers ---
 
 const {
@@ -51,6 +62,10 @@ const { emitMithrilPartialSyncStatus } =
 
 const { dialog } = require('electron') as unknown as {
   dialog: { showMessageBox: jest.Mock };
+};
+
+const { safeExitWithCode } = require('../utils/safeExitWithCode') as {
+  safeExitWithCode: jest.Mock;
 };
 
 const fsMock = fs as unknown as { remove: jest.Mock };
@@ -127,6 +142,27 @@ describe('handleInterruptedRecovery', () => {
     expect(clearMithrilPartialSyncMarker).toHaveBeenCalledTimes(1);
   });
 
+  it('C2 branch: continues normal boot and clears the marker even when staging reclaim fails', async () => {
+    readMithrilPartialSyncMarker.mockResolvedValue({
+      state: 'node-start-verified',
+      updatedAt: '2026-06-01T00:00:00.000Z',
+      managedChainPath: '/chain',
+      stagingRootPath: '/vol/mithril-partial-sync',
+    });
+    const busyError = Object.assign(new Error('resource busy or locked'), {
+      code: 'EBUSY',
+    });
+    fsMock.remove.mockRejectedValueOnce(busyError);
+    const { instance } = makeInstance();
+
+    const result = await instance.handleInterruptedRecovery(0);
+
+    expect(result).toBe(false);
+    expect(clearMithrilPartialSyncMarker).toHaveBeenCalledTimes(1);
+    expect(dialog.showMessageBox).not.toHaveBeenCalled();
+    expect(safeExitWithCode).not.toHaveBeenCalled();
+  });
+
   it('C2 branch: does NOT emit failed status and does NOT call dialog.showMessageBox (not a C1 re-drive)', async () => {
     readMithrilPartialSyncMarker.mockResolvedValue({
       state: 'node-start-verified',
@@ -194,7 +230,24 @@ describe('handleInterruptedRecovery', () => {
     );
   });
 
-  it('unsafe cutover, Quit (response 1): returns true (blocked) without wiping or clearing the marker', async () => {
+  it('unsafe cutover, Wipe (response 0): also reclaims the marker-persisted staging root', async () => {
+    readMithrilPartialSyncMarker.mockResolvedValue({
+      state: 'cutover-in-progress',
+      updatedAt: '2026-06-01T00:00:00.000Z',
+      stagingRootPath: '/vol/mithril-partial-sync',
+    });
+    (dialog.showMessageBox as jest.Mock).mockResolvedValue({ response: 0 });
+    const { instance, wipeChainAndSnapshots } = makeInstance();
+
+    const result = await instance.handleInterruptedRecovery(0);
+
+    expect(result).toBe(false);
+    expect(wipeChainAndSnapshots).toHaveBeenCalledTimes(1);
+    expect(fsMock.remove).toHaveBeenCalledWith('/vol/mithril-partial-sync');
+    expect(clearMithrilPartialSyncMarker).toHaveBeenCalledTimes(1);
+  });
+
+  it('unsafe cutover, Quit (response 1): exits via safeExitWithCode without wiping or clearing the marker', async () => {
     readMithrilPartialSyncMarker.mockResolvedValue({
       state: 'cutover-in-progress',
       updatedAt: '2026-06-01T00:00:00.000Z',
@@ -205,6 +258,8 @@ describe('handleInterruptedRecovery', () => {
     const result = await instance.handleInterruptedRecovery(0);
 
     expect(result).toBe(true);
+    expect(safeExitWithCode).toHaveBeenCalledTimes(1);
+    expect(safeExitWithCode).toHaveBeenCalledWith(0);
     expect(wipeChainAndSnapshots).not.toHaveBeenCalled();
     expect(clearMithrilPartialSyncMarker).not.toHaveBeenCalled();
   });
@@ -222,6 +277,7 @@ describe('handleInterruptedRecovery', () => {
 
     expect(result).toBe(true); // stale generation short-circuits before the wipe
     expect(wipeChainAndSnapshots).not.toHaveBeenCalled();
+    expect(safeExitWithCode).not.toHaveBeenCalled();
   });
 });
 

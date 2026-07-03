@@ -18,6 +18,7 @@ jest.mock('fs-extra', () => ({
   writeJson: jest.fn(),
   move: jest.fn(),
   stat: jest.fn(),
+  lstat: jest.fn(),
   access: jest.fn(),
   readdir: jest.fn(),
   remove: jest.fn(),
@@ -321,6 +322,44 @@ describe('MithrilPartialSyncService', () => {
       }),
       expect.any(Object)
     );
+  });
+
+  it('serves snapshot list and show reads from the shared metadata pipeline', async () => {
+    const service = new MithrilPartialSyncService();
+
+    runCommandMock.mockResolvedValueOnce({
+      stdout: JSON.stringify([
+        {
+          digest: 'list-digest',
+          created_at: '2026-07-01T00:00:00Z',
+          size: 10,
+          beacon: { immutable_file_number: 1200, epoch: 320 },
+        },
+      ]),
+      stderr: '',
+      exitCode: 0,
+    });
+
+    await expect(service.listSnapshots()).resolves.toEqual([
+      expect.objectContaining({ digest: 'list-digest', size: 10 }),
+    ]);
+
+    runCommandMock.mockResolvedValueOnce({
+      stdout: JSON.stringify({
+        digest: 'show-digest',
+        created_at: '2026-07-02T00:00:00Z',
+        size: 20,
+        beacon: { immutable_file_number: 1300, epoch: 321 },
+      }),
+      stderr: '',
+      exitCode: 0,
+    });
+
+    await expect(service.showSnapshot('show-digest')).resolves.toEqual(
+      expect.objectContaining({ digest: 'show-digest', size: 20 })
+    );
+
+    await expect(service.showSnapshot('   ')).resolves.toBeNull();
   });
 
   it('fails when the managed chain does not expose a readable immutable directory', async () => {
@@ -790,7 +829,7 @@ describe('MithrilPartialSyncService', () => {
     };
 
     await expect(service.cancel()).rejects.toThrow(
-      'Mithril partial sync cancellation is no longer allowed after live chain cutover has started.'
+      'PARTIAL_SYNC_CANCEL_NOT_ALLOWED'
     );
   });
 
@@ -842,7 +881,7 @@ describe('MithrilPartialSyncService', () => {
     service.onStatus((update) => emissions.push(update));
 
     await expect(service.cancel()).rejects.toThrow(
-      'Mithril partial sync cancellation is no longer allowed after live chain cutover has started.'
+      'PARTIAL_SYNC_CANCEL_NOT_ALLOWED'
     );
     // The throw path emits nothing; the early-return re-emit did not leak into it.
     expect(emissions).toHaveLength(0);
@@ -897,7 +936,7 @@ describe('MithrilPartialSyncService', () => {
     );
   });
 
-  it('emits cancelling and surfaces a boundary-a failure from finalizeCancel when cleanup fails', async () => {
+  it('lands on cancelled with retry and restart-normal when finalizeCancel cleanup fails', async () => {
     const service = new MithrilPartialSyncService();
 
     service._activeWorkDir =
@@ -924,12 +963,9 @@ describe('MithrilPartialSyncService', () => {
 
     expect(service.status).toEqual(
       expect.objectContaining({
-        status: 'failed',
+        status: 'cancelled',
         allowedRecoveryActions: ['retry', 'restart-normal'],
-        error: expect.objectContaining({
-          message: 'cleanup failed',
-          stage: 'downloading',
-        }),
+        error: null,
       })
     );
   });
@@ -1104,7 +1140,7 @@ describe('MithrilPartialSyncService', () => {
     );
   });
 
-  it('logs a warn on the previously-silent finalizeCancel cleanup-failure catch (observability)', async () => {
+  it('logs a warn when finalizeCancel cleanup fails and cancel proceeds (observability)', async () => {
     const { warn: warnLog } = require('../utils/logging').logger;
     const service = new MithrilPartialSyncService();
 
@@ -1123,7 +1159,7 @@ describe('MithrilPartialSyncService', () => {
     await expect(service.finalizeCancel()).resolves.toBeUndefined();
 
     expect(warnLog).toHaveBeenCalledWith(
-      'MithrilPartialSyncService: finalizeCancel cleanup failed; surfacing boundary-A failure',
+      'MithrilPartialSyncService: finalizeCancel cleanup failed; landing on cancelled and leaving staging for the next start to reclaim',
       expect.objectContaining({ error: expect.any(Error) })
     );
   });
@@ -1219,8 +1255,94 @@ describe('MithrilPartialSyncService', () => {
     };
 
     expect(() => service.assertStartAllowed()).toThrow(
-      'Mithril partial sync cannot retry from the current recovery boundary.'
+      'PARTIAL_SYNC_START_NOT_ALLOWED'
     );
+  });
+
+  describe('adoptRecoverySnapshot (cross-session recovery boundary)', () => {
+    const failedStartupSnapshot = (): MithrilPartialSyncStatusSnapshot => ({
+      status: 'failed',
+      allowedRecoveryActions: ['wipe-and-full-sync'],
+      transferProgress: {},
+      progressItems: [],
+      error: {
+        message:
+          'Cardano node failed to start after Mithril partial sync cutover.',
+        stage: 'starting-node',
+      },
+    });
+
+    it('adopts a broadcast failure snapshot while idle so the offered wipe succeeds', async () => {
+      const service = new MithrilPartialSyncService();
+
+      service.adoptRecoverySnapshot(failedStartupSnapshot());
+
+      expect(service.status).toEqual(
+        expect.objectContaining({
+          status: 'failed',
+          allowedRecoveryActions: ['wipe-and-full-sync'],
+        })
+      );
+      await expect(service.wipeAndFullSync()).resolves.toBeUndefined();
+      expect(removeMock).toHaveBeenCalledWith(
+        '/tmp/daedalus-state/mithril-partial-sync'
+      );
+    });
+
+    it('still rejects the wipe from idle when no snapshot was adopted', async () => {
+      const service = new MithrilPartialSyncService();
+
+      await expect(service.wipeAndFullSync()).rejects.toThrow(
+        'PARTIAL_SYNC_RECOVERY_NOT_ALLOWED'
+      );
+    });
+
+    it('does not adopt a snapshot while the service is mid-run', () => {
+      const service = new MithrilPartialSyncService();
+      service._status = {
+        status: 'downloading',
+        allowedRecoveryActions: [],
+        transferProgress: {},
+        progressItems: [],
+        error: null,
+      };
+
+      service.adoptRecoverySnapshot(failedStartupSnapshot());
+
+      expect(service.status.status).toBe('downloading');
+    });
+
+    it('ignores idle snapshots and snapshots without recovery actions', () => {
+      const service = new MithrilPartialSyncService();
+
+      service.adoptRecoverySnapshot({
+        status: 'idle',
+        allowedRecoveryActions: [],
+        transferProgress: {},
+        progressItems: [],
+        error: null,
+      });
+      expect(service.status.status).toBe('idle');
+
+      service.adoptRecoverySnapshot({
+        status: 'completed',
+        allowedRecoveryActions: [],
+        transferProgress: {},
+        progressItems: [],
+        error: null,
+      });
+      expect(service.status.status).toBe('idle');
+    });
+
+    it('does not re-emit the adopted snapshot', () => {
+      const service = new MithrilPartialSyncService();
+      const emissions: MithrilPartialSyncStatusSnapshot[] = [];
+      service.onStatus((update) => emissions.push(update));
+
+      service.adoptRecoverySnapshot(failedStartupSnapshot());
+
+      expect(emissions).toHaveLength(0);
+    });
   });
 
   describe('cancel correctness — interruptible stage machine', () => {
@@ -1792,6 +1914,9 @@ describe('MithrilPartialSyncService', () => {
         certifiedEpoch: null,
       });
 
+      jest
+        .spyOn(service._chainStorageManager, '_getPathSizeBytes')
+        .mockResolvedValue(0);
       const runCommandSpy = jest.spyOn(service, '_runCommand');
 
       require('check-disk-space').mockResolvedValue({ free: 1, size: 2 });
@@ -1833,9 +1958,121 @@ describe('MithrilPartialSyncService', () => {
         certifiedEpoch: null,
       });
 
+      jest
+        .spyOn(service._chainStorageManager, '_getPathSizeBytes')
+        .mockResolvedValue(0);
       require('check-disk-space').mockRejectedValueOnce(
         new Error('no measure')
       );
+
+      await expect(service.start(createContext())).resolves.toBeUndefined();
+    });
+
+    const mockSnapshotMetadata = (
+      service: MithrilPartialSyncService,
+      size: number
+    ) => {
+      jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValue({
+        snapshot: {
+          digest: 'latest-digest',
+          createdAt: '2026-05-20T00:00:00Z',
+          size,
+        },
+        latestCertifiedImmutableNumber: 25,
+        certifiedEpoch: null,
+      });
+    };
+
+    it('requires only the missing delta plus the snapshot-proportional margin when local data is measured', async () => {
+      const service = new MithrilPartialSyncService();
+      setupStartMocks(service);
+      mockSnapshotMetadata(service, 10_000);
+      const sizeSpy = jest
+        .spyOn(service._chainStorageManager, '_getPathSizeBytes')
+        .mockResolvedValue(10_000);
+
+      // delta = 0; margin = 0.2 × 10,000 = 2,000 (above the mocked 1,024 floor)
+      require('check-disk-space').mockResolvedValue({ free: 1_999, size: 1 });
+
+      await expect(service.start(createContext())).rejects.toThrow(
+        'Not enough free disk space'
+      );
+      expect(service.status.error).toEqual(
+        expect.objectContaining({
+          code: 'PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE',
+          stage: 'preparing',
+        })
+      );
+      expect(sizeSpy).toHaveBeenCalledWith('/tmp/chain');
+      expect(service.status.error.message).toContain('Mithril Sync');
+      expect(service.status.error.message).not.toMatch(/partial sync/i);
+    });
+
+    it('proceeds near the tip when free space covers just the margin', async () => {
+      const service = new MithrilPartialSyncService();
+      setupStartMocks(service);
+      mockSnapshotMetadata(service, 10_000);
+      jest
+        .spyOn(service._chainStorageManager, '_getPathSizeBytes')
+        .mockResolvedValue(10_000);
+
+      // 2,000 = exactly the margin; the old whole-snapshot bound (12,000) would block this
+      require('check-disk-space').mockResolvedValue({ free: 2_000, size: 1 });
+
+      await expect(service.start(createContext())).resolves.toBeUndefined();
+    });
+
+    it('enforces the absolute floor when the margin falls below it', async () => {
+      const service = new MithrilPartialSyncService();
+      setupStartMocks(service);
+      mockSnapshotMetadata(service, 4_000);
+      jest
+        .spyOn(service._chainStorageManager, '_getPathSizeBytes')
+        .mockResolvedValue(4_000);
+
+      // margin = 800 < mocked DISK_SPACE_REQUIRED (1,024) → required = 1,024
+      require('check-disk-space').mockResolvedValue({ free: 1_023, size: 1 });
+
+      await expect(service.start(createContext())).rejects.toThrow(
+        'Not enough free disk space'
+      );
+      expect(service.status.error).toEqual(
+        expect.objectContaining({
+          code: 'PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE',
+        })
+      );
+    });
+
+    it('falls back to the whole-snapshot bound when the local chain size cannot be measured', async () => {
+      const service = new MithrilPartialSyncService();
+      setupStartMocks(service);
+      mockSnapshotMetadata(service, 10_000);
+      jest
+        .spyOn(service._chainStorageManager, '_getPathSizeBytes')
+        .mockRejectedValue(new Error('unreadable'));
+
+      // fallback bound = 10,000 × 1.2 = 12,000
+      require('check-disk-space').mockResolvedValue({ free: 11_999, size: 1 });
+
+      await expect(service.start(createContext())).rejects.toThrow(
+        'Not enough free disk space'
+      );
+      expect(require('../utils/logging').logger.warn).toHaveBeenCalledWith(
+        expect.stringContaining('could not measure the local chain size'),
+        expect.objectContaining({ managedChainPath: '/tmp/chain' })
+      );
+    });
+
+    it('keeps roughly the whole-snapshot bound when nothing is held locally', async () => {
+      const service = new MithrilPartialSyncService();
+      setupStartMocks(service);
+      mockSnapshotMetadata(service, 10_000);
+      jest
+        .spyOn(service._chainStorageManager, '_getPathSizeBytes')
+        .mockResolvedValue(0);
+
+      // delta = 10,000; + margin 2,000 → 12,000, same as the fallback bound
+      require('check-disk-space').mockResolvedValue({ free: 12_000, size: 1 });
 
       await expect(service.start(createContext())).resolves.toBeUndefined();
     });
@@ -1914,6 +2151,63 @@ describe('MithrilPartialSyncService', () => {
       expect(service.status.status).toBe('idle');
       expect(removeMock).toHaveBeenCalledTimes(2);
       expect(clearMithrilPartialSyncMarkerMock).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('staging root resolution from the durable marker', () => {
+    const readMithrilPartialSyncMarkerMock = require('./mithrilPartialSyncMarker')
+      .readMithrilPartialSyncMarker as jest.Mock;
+
+    it('removes the marker-persisted staging root on wipe-and-full-sync and retains the marker', async () => {
+      readMithrilPartialSyncMarkerMock.mockResolvedValueOnce({
+        state: 'cutover-in-progress',
+        updatedAt: '2026-06-01T00:00:00.000Z',
+        stagingRootPath: '/custom-volume/mithril-partial-sync',
+      });
+      const service = new MithrilPartialSyncService();
+      service._status = {
+        status: 'failed',
+        allowedRecoveryActions: ['wipe-and-full-sync'],
+        transferProgress: {},
+        progressItems: [],
+        error: {
+          message: 'unsafe install',
+          stage: 'installing',
+        },
+      };
+
+      await expect(service.wipeAndFullSync()).resolves.toBeUndefined();
+
+      expect(removeMock).toHaveBeenCalledWith(
+        '/custom-volume/mithril-partial-sync'
+      );
+      expect(clearMithrilPartialSyncMarkerMock).not.toHaveBeenCalled();
+    });
+
+    it('removes the marker-persisted staging root on restart-normal cleanup', async () => {
+      readMithrilPartialSyncMarkerMock.mockResolvedValueOnce({
+        state: 'cutover-in-progress',
+        updatedAt: '2026-06-01T00:00:00.000Z',
+        stagingRootPath: '/custom-volume/mithril-partial-sync',
+      });
+      const service = new MithrilPartialSyncService();
+      service._status = {
+        status: 'failed',
+        allowedRecoveryActions: ['restart-normal', 'wipe-and-full-sync'],
+        transferProgress: {},
+        progressItems: [],
+        error: {
+          message: 'download failed',
+          stage: 'downloading',
+        },
+      };
+
+      await expect(service.restartNormal()).resolves.toBeUndefined();
+
+      expect(removeMock).toHaveBeenCalledWith(
+        '/custom-volume/mithril-partial-sync'
+      );
+      expect(clearMithrilPartialSyncMarkerMock).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -2040,6 +2334,22 @@ describe('MithrilPartialSyncService', () => {
 
       await expect(service.getPartialSyncBehindness()).resolves.toEqual({
         isSignificantlyBehind: false,
+        isProbeFailed: true,
+      });
+    });
+
+    it('flags the probe as failed when the local immutable read rejects', async () => {
+      const service = new MithrilPartialSyncService();
+      jest
+        .spyOn(service._chainStorageManager, 'getManagedChainPath')
+        .mockRejectedValue(new Error('no chain dir yet'));
+      jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue(createLatestSnapshot(25));
+
+      await expect(service.getPartialSyncBehindness()).resolves.toEqual({
+        isSignificantlyBehind: false,
+        isProbeFailed: true,
       });
     });
 
@@ -2119,6 +2429,65 @@ describe('MithrilPartialSyncService', () => {
       expect(getManagedChainPathSpy).toHaveBeenCalledTimes(2);
 
       nowSpy.mockRestore();
+    });
+
+    it('invalidates both cached reads on a chain-directory change so the next probe re-resolves them', async () => {
+      const service = new MithrilPartialSyncService();
+      stubLocalImmutableNumber(service, 5);
+      const resolveSpy = jest
+        .spyOn(service, 'resolveLatestSnapshotMetadata')
+        .mockResolvedValue(createLatestSnapshot(25));
+      const getManagedChainPathSpy = jest.spyOn(
+        service._chainStorageManager,
+        'getManagedChainPath'
+      );
+      const nowSpy = jest.spyOn(Date, 'now');
+      nowSpy.mockReturnValue(1_000);
+
+      await service.getPartialSyncBehindness();
+      expect(getManagedChainPathSpy).toHaveBeenCalledTimes(1);
+      expect(resolveSpy).toHaveBeenCalledTimes(1);
+
+      service.onChainDirectoryChanged();
+
+      // No Date.now advance: without invalidation the within-TTL caches would
+      // serve the stale values.
+      await service.getPartialSyncBehindness();
+      expect(getManagedChainPathSpy).toHaveBeenCalledTimes(2);
+      expect(resolveSpy).toHaveBeenCalledTimes(2);
+
+      nowSpy.mockRestore();
+    });
+
+    it('starts the aggregator query and the local read concurrently', async () => {
+      const service = new MithrilPartialSyncService();
+      stubLocalImmutableNumber(service, 5);
+      let resolveLatest;
+      jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveLatest = resolve;
+          })
+      );
+      const getManagedChainPathSpy = jest.spyOn(
+        service._chainStorageManager,
+        'getManagedChainPath'
+      );
+
+      const probe = service.getPartialSyncBehindness();
+      // Flush a few microtask turns so both joined reads have started while
+      // the aggregator query is still pending; a sequential await would not
+      // have touched the local read yet.
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(getManagedChainPathSpy).toHaveBeenCalledTimes(1);
+
+      resolveLatest(createLatestSnapshot(25));
+      await expect(probe).resolves.toEqual({
+        isSignificantlyBehind: true,
+        behindByImmutables: 20,
+      });
     });
 
     it('returns the certified epoch on the success result when the beacon carries one', async () => {

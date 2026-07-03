@@ -64,6 +64,16 @@ describe('MithrilPartialSyncConfirmation', () => {
     expect(screen.queryByText(/immutable/i)).toBeNull();
   });
 
+  it('uses singular epoch phrasing when exactly one epoch behind', () => {
+    renderComponent({ behindByEpochs: 1 });
+
+    expect(
+      screen.getByText(
+        'Your node is about 1 epoch behind. Mithril Sync will restore verified chain data to help your node sync faster.'
+      )
+    ).toBeInTheDocument();
+  });
+
   it('falls back to generic behind-ness copy when the figure is unavailable', () => {
     renderComponent({
       behindByEpochs: undefined,
@@ -93,7 +103,7 @@ describe('MithrilPartialSyncConfirmation', () => {
 
     expect(
       screen.getByText(
-        'For this process to begin your Cardano node will need to be shutdown. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.'
+        'For this process to begin your Cardano node will need to be shut down. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.'
       )
     ).toBeInTheDocument();
     // The verbose what-happens step copy was removed.

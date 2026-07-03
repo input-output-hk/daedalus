@@ -4,10 +4,14 @@ import type {
 } from '../../common/types/mithril-partial-sync.types';
 import { MithrilController } from './MithrilController';
 
-const mockGetPartialSyncAvailability = jest.fn();
+const mockIsPartialSyncEnabled = jest.fn();
 const mockIsPartialSyncInProgress = jest.fn();
 const mockGetPartialSyncBehindness = jest.fn();
 const mockForceKillForShutdown = jest.fn();
+const mockOnChainDirectoryChanged = jest.fn();
+const mockAdoptRecoverySnapshot = jest.fn();
+const mockServiceWipeAndFullSync = jest.fn();
+const mockServiceRestartNormal = jest.fn();
 
 jest.mock('../utils/logging', () => ({
   logger: {
@@ -18,8 +22,7 @@ jest.mock('../utils/logging', () => ({
 
 jest.mock('../utils/chainStorageCoordinator', () => ({
   chainStorageCoordinator: {
-    getPartialSyncAvailability: (...args) =>
-      mockGetPartialSyncAvailability(...args),
+    isPartialSyncEnabled: (...args) => mockIsPartialSyncEnabled(...args),
     isPartialSyncInProgress: (...args) => mockIsPartialSyncInProgress(...args),
     syncMithrilWorkDir: jest.fn().mockResolvedValue(undefined),
   },
@@ -42,6 +45,10 @@ jest.mock('./MithrilPartialSyncService', () => ({
     getPartialSyncBehindness: (...args) =>
       mockGetPartialSyncBehindness(...args),
     forceKillForShutdown: (...args) => mockForceKillForShutdown(...args),
+    onChainDirectoryChanged: (...args) => mockOnChainDirectoryChanged(...args),
+    adoptRecoverySnapshot: (...args) => mockAdoptRecoverySnapshot(...args),
+    wipeAndFullSync: (...args) => mockServiceWipeAndFullSync(...args),
+    restartNormal: (...args) => mockServiceRestartNormal(...args),
   })),
 }));
 
@@ -88,7 +95,7 @@ describe('MithrilController', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetPartialSyncAvailability.mockReturnValue({ isEnabled: true });
+    mockIsPartialSyncEnabled.mockReturnValue(true);
     mockIsPartialSyncInProgress.mockReturnValue(false);
     mockGetPartialSyncBehindness.mockResolvedValue({
       isSignificantlyBehind: true,
@@ -143,8 +150,23 @@ describe('MithrilController', () => {
       }
     });
 
+    it('passes the probe-failed flag through to the availability payload', async () => {
+      mockGetPartialSyncBehindness.mockResolvedValue({
+        isSignificantlyBehind: false,
+        isProbeFailed: true,
+      });
+      const controller = createController();
+      controller.setPartialSyncStatus(createStatusSnapshot('idle'));
+
+      await expect(controller.getPartialSyncAvailability()).resolves.toEqual({
+        isEnabled: true,
+        isSignificantlyBehind: false,
+        isProbeFailed: true,
+      });
+    });
+
     it('short-circuits to disabled before the status guard or the behind-ness probe', async () => {
-      mockGetPartialSyncAvailability.mockReturnValue({ isEnabled: false });
+      mockIsPartialSyncEnabled.mockReturnValue(false);
       const controller = createController();
       controller.setPartialSyncStatus(createStatusSnapshot('idle'));
 
@@ -153,6 +175,19 @@ describe('MithrilController', () => {
         isSignificantlyBehind: false,
       });
       expect(mockGetPartialSyncBehindness).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('resetStartupGateOnDirectoryChange', () => {
+    it('drops the behind-ness caches together with the startup-gate reset', () => {
+      const controller = createController();
+
+      controller.resetStartupGateOnDirectoryChange();
+
+      expect(mockOnChainDirectoryChanged).toHaveBeenCalledTimes(1);
+      expect(
+        (controller as any)._startupGate.resetOnDirectoryChange
+      ).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -213,6 +248,54 @@ describe('MithrilController', () => {
         'MithrilController: failed to reap partial sync process on shutdown',
         expect.objectContaining({ error: killError })
       );
+    });
+  });
+
+  describe('recovery-action wiring (cross-session snapshot adoption)', () => {
+    it('seeds the service with the controller-held snapshot before delegating wipe-and-full-sync', async () => {
+      const controller = createController();
+      const failedSnapshot: MithrilPartialSyncStatusSnapshot = {
+        status: 'failed',
+        allowedRecoveryActions: ['wipe-and-full-sync'],
+        transferProgress: {},
+        progressItems: [],
+        error: {
+          message: 'node failed to start',
+          stage: 'starting-node',
+        },
+      };
+      controller.setPartialSyncStatus(failedSnapshot);
+
+      await controller._getPartialSyncDependencies().handlers.wipeAndFullSync();
+
+      expect(mockAdoptRecoverySnapshot).toHaveBeenCalledWith(failedSnapshot);
+      expect(mockServiceWipeAndFullSync).toHaveBeenCalledTimes(1);
+      expect(
+        mockAdoptRecoverySnapshot.mock.invocationCallOrder[0]
+      ).toBeLessThan(mockServiceWipeAndFullSync.mock.invocationCallOrder[0]);
+    });
+
+    it('seeds the service with the controller-held snapshot before delegating restart-normal', async () => {
+      const controller = createController();
+      const failedSnapshot: MithrilPartialSyncStatusSnapshot = {
+        status: 'failed',
+        allowedRecoveryActions: ['retry', 'restart-normal'],
+        transferProgress: {},
+        progressItems: [],
+        error: {
+          message: 'download failed',
+          stage: 'downloading',
+        },
+      };
+      controller.setPartialSyncStatus(failedSnapshot);
+
+      await controller._getPartialSyncDependencies().handlers.restartNormal();
+
+      expect(mockAdoptRecoverySnapshot).toHaveBeenCalledWith(failedSnapshot);
+      expect(mockServiceRestartNormal).toHaveBeenCalledTimes(1);
+      expect(
+        mockAdoptRecoverySnapshot.mock.invocationCallOrder[0]
+      ).toBeLessThan(mockServiceRestartNormal.mock.invocationCallOrder[0]);
     });
   });
 });

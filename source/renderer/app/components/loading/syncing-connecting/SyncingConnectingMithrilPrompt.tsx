@@ -4,6 +4,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 
 import { logger } from '../../../utils/logging';
+import { getMithrilStartErrorMessage } from '../../../utils/mithrilErrorMessage';
 // Shared canonical shutdown/restore/restart sentence (single i18n key).
 // Reused here so the prompt confirm view and the diagnostics
 // confirmation modal stay byte-identical; do NOT redeclare the id locally.
@@ -19,7 +20,8 @@ const messages = defineMessages({
   },
   promptBody: {
     id: 'daedalus.diagnostics.dialog.mithrilProactivePromptBody',
-    defaultMessage: '!!!Your node is about {epochs} epochs behind.',
+    defaultMessage:
+      '!!!Your node is about {epochs, plural, one {# epoch} other {# epochs}} behind.',
     description:
       'Epochs-behind body line (line 1) for the proactive Mithril fork prompt on the syncing screen',
   },
@@ -148,10 +150,7 @@ export default class SyncingConnectingMithrilPrompt extends Component<
 
       this.setState({
         isStarting: false,
-        startError:
-          error instanceof Error
-            ? error.message
-            : 'Unable to start Mithril sync.',
+        startError: getMithrilStartErrorMessage(error, this.context.intl),
       });
     }
   };

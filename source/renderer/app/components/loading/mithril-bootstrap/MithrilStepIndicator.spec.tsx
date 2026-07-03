@@ -376,4 +376,36 @@ describe('MithrilStepIndicator', () => {
     expect(movingSnapshotItem).toHaveClass('subItemActive');
     expect(movingSnapshotItem).not.toHaveClass('subItemCompleted');
   });
+
+  it('renders a localized label for the verifying stage item instead of its raw id', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'preparing', label: 'preparing', state: 'completed' },
+      { id: 'downloading', label: 'downloading', state: 'completed' },
+      { id: 'verifying', label: 'verifying', state: 'active' },
+    ];
+
+    renderComponent('verifying', { progressItems });
+
+    expect(screen.getByText('Verifying snapshot...')).toBeInTheDocument();
+    expect(screen.queryByText(/^verifying$/)).not.toBeInTheDocument();
+  });
+
+  it('renders localized labels for the converting and installing stage items', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'preparing', label: 'preparing', state: 'completed' },
+      { id: 'downloading', label: 'downloading', state: 'completed' },
+      { id: 'verifying', label: 'verifying', state: 'completed' },
+      { id: 'converting', label: 'converting', state: 'completed' },
+      { id: 'installing', label: 'installing', state: 'active' },
+    ];
+
+    renderComponent('installing', { progressItems });
+
+    expect(
+      screen.getByText('Converting snapshot format...')
+    ).toBeInTheDocument();
+    expect(screen.getByText('Installing snapshot...')).toBeInTheDocument();
+    expect(screen.queryByText(/^converting$/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^installing$/)).not.toBeInTheDocument();
+  });
 });

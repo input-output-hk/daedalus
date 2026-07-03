@@ -5,7 +5,7 @@ All user-facing copy added or changed between the state **before PR #3333** and 
 | # | English | Japanese | Screen / Prompt |
 | --- | --- | --- | --- |
 | 1 | Mithril Sync | Mithril同期 | Syncing screen — Mithril prompt (title) |
-| 2 | Your node is about {epochs} epochs behind. | ノードは約{epochs}エポック遅れています。 | Syncing screen — Mithril prompt (body) |
+| 2 | Your node is about {epochs, plural, one {# epoch} other {# epochs}} behind. | ノードは約{epochs, plural, other {#エポック}}遅れています。 | Syncing screen — Mithril prompt (body) |
 | 3 | Your node is behind the blockchain tip. | ノードはブロックチェーンの先端より遅れています。 | Syncing screen — Mithril prompt (body, epochs unknown) |
 | 4 | Mithril can catch you up faster than the standard sync. | Mithrilを使えば、標準同期よりも速く追いつけます。 | Syncing screen — Mithril prompt (body) |
 | 5 | Mithril Sync (fast) | Mithril Sync（高速） | Syncing screen — Mithril prompt (button) |
@@ -15,13 +15,13 @@ All user-facing copy added or changed between the state **before PR #3333** and 
 | 9 | Mithril Sync Process | Mithril同期の処理 | Syncing screen — Mithril prompt, confirm step (title) |
 | 10 | Start now | 今すぐ開始 | Syncing screen — Mithril prompt, confirm step (button) |
 | 11 | Cancel | キャンセル | Syncing screen — Mithril prompt, confirm step (button) |
-| 12 | For this process to begin your Cardano node will need to be shutdown. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks. | この処理を開始するには、お使いのCardanoノードをシャットダウンする必要があります。その後、Mithrilを使用して検証済みのチェーンデータを同期します。Mithril同期の完了時に、ノードを再起動して残りのブロックを同期します。 | Shared — prompt confirm step & Diagnostics confirmation modal |
+| 12 | For this process to begin your Cardano node will need to be shut down. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks. | この処理を開始するには、お使いのCardanoノードをシャットダウンする必要があります。その後、Mithrilを使用して検証済みのチェーンデータを同期します。Mithril同期の完了時に、ノードを再起動して残りのブロックを同期します。 | Shared — prompt confirm step & Diagnostics confirmation modal |
 | 13 | Mithril Sync | Mithril同期 | Diagnostics — Mithril Sync row (label) |
 | 14 | Mithril Sync | Mithril同期 | Diagnostics — Mithril Sync row (button) |
 | 15 | If Cardano Node syncing is taking longer than you want, Mithril Sync can restore verified chain data to help speed up the sync. | Cardanoノードの同期に時間がかかりすぎると感じる場合は、Mithril同期で検証済みのチェーンデータを復元することで、同期を高速化できます。 | Diagnostics — Mithril Sync row (button tooltip) |
 | 16 | Unavailable while Mithril work is already active. | Mithrilの処理がすでに進行中のため利用できません。 | Diagnostics — Mithril Sync row (disabled-button hint) |
 | 17 | Before Mithril Sync begins | Mithril同期を始める前に | Diagnostics — confirmation modal (title) |
-| 18 | Your node is about {epochs} epochs behind. Mithril Sync will restore verified chain data to help your node sync faster. | ノードは約{epochs}エポック遅れています。Mithril同期で検証済みのチェーンデータを復元し、ノードの同期を高速化します。 | Diagnostics — confirmation modal (body) |
+| 18 | Your node is about {epochs, plural, one {# epoch} other {# epochs}} behind. Mithril Sync will restore verified chain data to help your node sync faster. | ノードは約{epochs, plural, other {#エポック}}遅れています。Mithril同期で検証済みのチェーンデータを復元し、ノードの同期を高速化します。 | Diagnostics — confirmation modal (body) |
 | 19 | Your node is behind the latest verified snapshot. Mithril Sync will restore verified chain data to help your node sync faster. | ノードは最新の検証済みスナップショットより遅れています。Mithril同期で検証済みのチェーンデータを復元し、ノードの同期を高速化します。 | Diagnostics — confirmation modal (body, epochs unknown) |
 | 20 | Start Mithril Sync | Mithril同期を開始 | Diagnostics — confirmation modal (button) |
 | 21 | Back to diagnostics | 診断に戻る | Diagnostics — confirmation modal (button) |
@@ -59,3 +59,12 @@ All user-facing copy added or changed between the state **before PR #3333** and 
 | 53 | This can take several minutes — Daedalus is still working. | 数分かかることがあります。Daedalusは引き続き処理しています。 | First-run Mithril bootstrap screen (long-phase reassurance) |
 | 54 | Stopping Cardano node... | Cardanoノードを停止しています... | First-run Mithril bootstrap screen (stopping node, title) |
 | 55 | Daedalus is stopping the Cardano node so it can restore verified chain data. This can take a couple of minutes. | Daedalusは検証済みのチェーンデータを復元するために、Cardanoノードを停止しています。数分かかることがあります。 | First-run Mithril bootstrap screen (stopping node, detail) |
+| 56 | Not enough disk space for Mithril Sync | Mithril同期に必要なディスクの空き容量が不足しています | Sync overlay — error (insufficient disk space, title) |
+| 57 | Daedalus does not have enough free disk space to prepare the verified snapshot. The required and available amounts are shown in the error details. Free up space on the disk that stores your chain data, then retry Mithril Sync. | 検証済みスナップショットを準備するためのディスクの空き容量が不足しています。必要な容量と利用可能な容量はエラー詳細に表示されています。チェーンデータを保存しているディスクの空き容量を確保してから、Mithril同期を再試行してください。 | Sync overlay — error (insufficient disk space, hint) |
+| 58 | Verifying snapshot... | スナップショットを検証しています... | Sync overlay — progress (stage item) |
+| 59 | Converting snapshot format... | スナップショットの形式を変換しています... | Sync overlay — progress (stage item) |
+| 60 | Installing snapshot... | スナップショットをインストールしています... | Sync overlay — progress (stage item) |
+| 61 | Technical details | 技術的な詳細 | Sync overlay / bootstrap — error (details header) |
+| 62 | Unable to start Mithril Sync. | Mithril同期を開始できませんでした。 | Diagnostics — confirmation modal (start-failure fallback) |
+| 63 | Checking the latest Mithril snapshot failed | 最新のMithrilスナップショットの確認に失敗しました | Sync overlay — error (metadata unavailable, title/hint) |
+| 64 | Daedalus could not read the latest verified snapshot details. Check your internet connection, then choose how to continue below. | 最新の検証済みスナップショットの詳細を読み取れませんでした。インターネット接続を確認してから、下のオプションから続行方法を選択してください。 | Sync overlay — error (metadata unavailable, title/hint) |

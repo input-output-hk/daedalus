@@ -206,6 +206,7 @@ interface StoryProps {
   filesTotal?: number;
   elapsedSeconds?: number;
   completed?: boolean;
+  onDismissCompleted?: () => void | Promise<void>;
 }
 
 function MithrilPartialSyncOverlayStory(props: StoryProps, context: Context) {
@@ -219,6 +220,9 @@ function MithrilPartialSyncOverlayStory(props: StoryProps, context: Context) {
       canRetry={props.canRetry || false}
       canRestartNormally={props.canRestartNormally || false}
       canWipeAndFullSync={props.canWipeAndFullSync || false}
+      onDismissCompleted={
+        props.onDismissCompleted || baseProps.onDismissCompleted
+      }
       transferProgress={{
         filesDownloaded: props.filesDownloaded || baseProps.filesDownloaded,
         filesTotal: props.filesTotal || baseProps.filesTotal,
@@ -344,5 +348,23 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       canRetry
       canRestartNormally
       canWipeAndFullSync
+    />
+  ))
+  // Auto-plays the finalize-failure path: the completed frame lingers ~4 s,
+  // the automatic finalize rejects, the single silent retry rejects ~2 s
+  // later, and the overlay then swaps to the finalize-failed error view with
+  // its retry action (which re-rejects here, so the story stays on the error
+  // frame).
+  .add('Completed - Finalize Failed (auto-plays)', () => (
+    <MithrilPartialSyncOverlayStory
+      status="completed"
+      filesDownloaded={9}
+      filesTotal={9}
+      elapsedSeconds={845}
+      completed
+      onDismissCompleted={() => {
+        action('onDismissCompleted')();
+        return Promise.reject(new Error('finalize failed'));
+      }}
     />
   ));

@@ -25,10 +25,33 @@ describe('resolvePartialSyncErrorCopy', () => {
       'PARTIAL_SYNC_CONVERSION_FAILED',
       'loading.mithrilPartialSync.error.conversionFailed.title',
     ],
+    [
+      'PARTIAL_SYNC_METADATA_UNAVAILABLE',
+      'loading.mithrilPartialSync.error.metadataUnavailable.title',
+    ],
+    [
+      'PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE',
+      'loading.mithrilPartialSync.error.insufficientDiskSpace.title',
+    ],
   ])('maps code %s to bespoke copy', (code, titleId) => {
     expect(resolvePartialSyncErrorCopy('failed', err(code)).title.id).toBe(
       titleId
     );
+  });
+
+  it('maps start/cancel/recovery rejection codes to the generic failed copy', () => {
+    [
+      'PARTIAL_SYNC_DISABLED',
+      'PARTIAL_SYNC_ALREADY_RUNNING',
+      'PARTIAL_SYNC_START_NOT_ALLOWED',
+      'PARTIAL_SYNC_LAYOUT_UNSUPPORTED',
+      'PARTIAL_SYNC_CANCEL_NOT_ALLOWED',
+      'PARTIAL_SYNC_RECOVERY_NOT_ALLOWED',
+    ].forEach((code) => {
+      expect(resolvePartialSyncErrorCopy('failed', err(code)).title.id).toBe(
+        'loading.mithrilPartialSync.error.failed.title'
+      );
+    });
   });
 
   it('latest-drift hint is the retriable message', () => {

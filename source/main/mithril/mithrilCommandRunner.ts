@@ -119,18 +119,32 @@ export function attachLogStream(
   }
 }
 
-export async function runBinary(
-  binaryName: string,
-  args: string[],
-  workDir: string,
-  options: RunCommandOptions = {},
-  callbacks?: RunCommandCallbacks
-): Promise<RunCommandResult> {
-  const { onStdout, onStderr, logFileName } = options;
-  const logStream = openLogStream(logFileName);
-  if (callbacks?.onLogStream) callbacks.onLogStream(logStream);
+type SpawnMithrilChildParams = {
+  binaryName: string;
+  args: string[];
+  workDir: string;
+  env: NodeJS.ProcessEnv;
+  logStream: WriteStream;
+  onStdout?: (chunk: string) => void;
+  onStderr?: (chunk: string) => void;
+  stdinInput?: string;
+  callbacks?: RunCommandCallbacks;
+};
 
-  const env = normalizeSpawnEnv(process.env);
+// Shared spawn pipeline for runBinary/runCommand: binary resolution, spawn
+// logging, output accumulation, and exit settlement are identical for every
+// Mithril child; only args, env, and stdin handling differ per caller.
+function spawnMithrilChild({
+  binaryName,
+  args,
+  workDir,
+  env,
+  logStream,
+  onStdout,
+  onStderr,
+  stdinInput,
+  callbacks,
+}: SpawnMithrilChildParams): Promise<RunCommandResult> {
   const pathKey = getWindowsPathKey(env);
 
   const resolvedBinaryName = environment.isWindows
@@ -175,8 +189,8 @@ export async function runBinary(
       })
     );
 
-    if (options.stdinInput !== undefined) {
-      child.stdin?.write(options.stdinInput);
+    if (stdinInput !== undefined) {
+      child.stdin?.write(stdinInput);
       child.stdin?.end();
     }
 
@@ -214,6 +228,32 @@ export async function runBinary(
   });
 }
 
+export async function runBinary(
+  binaryName: string,
+  args: string[],
+  workDir: string,
+  options: RunCommandOptions = {},
+  callbacks?: RunCommandCallbacks
+): Promise<RunCommandResult> {
+  const { onStdout, onStderr, stdinInput, logFileName } = options;
+  const logStream = openLogStream(logFileName);
+  if (callbacks?.onLogStream) callbacks.onLogStream(logStream);
+
+  const env = normalizeSpawnEnv(process.env);
+
+  return spawnMithrilChild({
+    binaryName,
+    args,
+    workDir,
+    env,
+    logStream,
+    onStdout,
+    onStderr,
+    stdinInput,
+    callbacks,
+  });
+}
+
 export async function runCommand(
   args: string[],
   workDir: string,
@@ -225,82 +265,15 @@ export async function runCommand(
   if (callbacks?.onLogStream) callbacks.onLogStream(logStream);
 
   const env = normalizeSpawnEnv(await buildMithrilEnv(requireKeys));
-  const pathKey = getWindowsPathKey(env);
 
-  // Resolve mithril-client binary path
-  const binaryName = environment.isWindows
-    ? 'mithril-client.exe'
-    : 'mithril-client';
-  const installDir = process.env.DAEDALUS_INSTALL_DIRECTORY;
-  const binaryPath = installDir
-    ? path.join(installDir, binaryName)
-    : binaryName;
-  const commandArgs = ['--origin-tag', 'DAEDALUS', ...args];
-
-  ensureDirectoryExists(workDir);
-
-  logger.info(`[mithril] Spawning: ${binaryPath} ${commandArgs.join(' ')}`, {
-    binaryPath,
-    installDir: installDir || '(not set)',
-    cwd: workDir,
-    pathEnv: env[pathKey] || '(not set)',
-    pathKey,
-  });
-
-  return new Promise((resolve, reject) => {
-    // Detach on POSIX so the child leads its own process group and
-    // killProcessTree's process.kill(-pid) reaps its whole tree. Gated off Windows
-    // (documented launcher breakage — see CardanoSelfnodeLauncher.ts); stdio stays
-    // piped and the child is deliberately NOT unref()'d.
-    const child = spawn(binaryPath, commandArgs, {
-      cwd: workDir,
-      env,
-      detached: !environment.isWindows,
-    });
-
-    if (callbacks?.onProcess) callbacks.onProcess(child);
-    attachLogStream(child, logStream);
-
-    logger.info('[mithril] child spawned', { pid: child.pid });
-    child.on('exit', (code, signal) =>
-      logger.info('[mithril] child exited', {
-        pid: child.pid,
-        code,
-        signal,
-        killed: child.killed,
-      })
-    );
-
-    let stdout = '';
-    let stderr = '';
-
-    if (child.stdout) {
-      child.stdout.on('data', (chunk) => {
-        const text = chunk.toString();
-        stdout += text;
-        if (onStdout) onStdout(text);
-      });
-    }
-
-    if (child.stderr) {
-      child.stderr.on('data', (chunk) => {
-        const text = chunk.toString();
-        stderr += text;
-        if (onStderr) onStderr(text);
-      });
-    }
-
-    child.on('error', (error) => {
-      if (callbacks?.onProcess) callbacks.onProcess(null);
-      logStream.end();
-      reject(error);
-    });
-
-    child.on('close', (exitCode) => {
-      if (callbacks?.onProcess) callbacks.onProcess(null);
-      logStream.end();
-      logger.info('[mithril] child closed', { pid: child.pid, exitCode });
-      resolve({ stdout, stderr, exitCode });
-    });
+  return spawnMithrilChild({
+    binaryName: 'mithril-client',
+    args: ['--origin-tag', 'DAEDALUS', ...args],
+    workDir,
+    env,
+    logStream,
+    onStdout,
+    onStderr,
+    callbacks,
   });
 }

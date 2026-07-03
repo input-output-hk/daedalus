@@ -14,6 +14,8 @@ import {
   readMithrilPartialSyncMarker,
   writeMithrilPartialSyncMarker,
 } from './mithrilPartialSyncMarker';
+import { logger } from '../utils/logging';
+import { safeExitWithCode } from '../utils/safeExitWithCode';
 
 const MITHRIL_COMPLETION_DELAY_MS = 6000;
 
@@ -64,7 +66,17 @@ export class MithrilPartialSyncNodeStartup {
       // Reclaim leftover staging on a close-without-dismiss / crash, then resume
       // a normal boot. stagingRootPath is the durable colocated root persisted at cutover.
       if (marker.stagingRootPath) {
-        await fs.remove(marker.stagingRootPath);
+        try {
+          await fs.remove(marker.stagingRootPath);
+        } catch (error) {
+          // Reclaim is best-effort: a locked or busy staging directory must not
+          // block a normal boot. The next partial sync start reclaims it when it
+          // prepares the staging directory.
+          logger.warn(
+            'MithrilPartialSyncNodeStartup: staging reclaim failed; continuing normal boot',
+            { error, stagingRootPath: marker.stagingRootPath }
+          );
+        }
       }
       await clearMithrilPartialSyncMarker();
       return false;
@@ -99,10 +111,29 @@ export class MithrilPartialSyncNodeStartup {
         'Interrupted Mithril partial sync detected on startup. Wiped chain directory and Mithril snapshots.',
         this._cardanoNode.state
       );
+      if (marker.stagingRootPath) {
+        try {
+          await fs.remove(marker.stagingRootPath);
+        } catch (error) {
+          // Best-effort: a stuck staging directory must not block the wipe
+          // recovery; the next partial sync start reclaims it.
+          logger.warn(
+            'MithrilPartialSyncNodeStartup: staging reclaim failed during startup wipe recovery; continuing',
+            { error, stagingRootPath: marker.stagingRootPath }
+          );
+        }
+      }
       await clearMithrilPartialSyncMarker();
       return false;
     }
 
+    // The user chose Quit: actually exit. Startup stays blocked (return true)
+    // while the log stream flushes and the process exits.
+    logger.warn(
+      'MithrilPartialSyncNodeStartup: user chose Quit at the interrupted-cutover recovery dialog; exiting',
+      { markerState: marker.state }
+    );
+    safeExitWithCode(0);
     return true;
   }
 

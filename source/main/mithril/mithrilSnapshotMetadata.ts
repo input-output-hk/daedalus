@@ -92,19 +92,16 @@ export const extractLatestCertifiedImmutableNumber = (
 };
 
 // Extract the Mithril certified-beacon epoch. Mirrors
-// extractLatestCertifiedImmutableNumber (multi-path, undefined-safe). `['beacon','epoch']` is the
-// confirmed upstream key (CardanoDbBeacon `required: [epoch, immutable_file_number]`, snake_case),
-// so it is FIRST; the `epoch_number`/`epochNumber` paths are dead defense-in-depth and the bare
-// top-level `['epoch']` stays LAST so it cannot shadow the beacon epoch.
+// extractLatestCertifiedImmutableNumber (multi-path, undefined-safe).
+// `['beacon','epoch']` is the confirmed upstream key (CardanoDbBeacon
+// `required: [epoch, immutable_file_number]`, snake_case);
+// `['cardano_db_beacon','epoch']` matches the production listing shape.
 export const extractCertifiedEpoch = (
   raw: Record<string, unknown>
 ): number | null => {
   const explicitPaths = [
     ['beacon', 'epoch'],
     ['cardano_db_beacon', 'epoch'],
-    ['beacon', 'epoch_number'],
-    ['cardanoDbBeacon', 'epochNumber'],
-    ['epoch'],
   ];
 
   for (const keyPath of explicitPaths) {

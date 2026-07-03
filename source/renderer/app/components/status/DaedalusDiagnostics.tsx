@@ -411,6 +411,7 @@ type Props = {
   isMithrilPartialSyncWorking: boolean;
   isMithrilPartialSyncEnabled: boolean;
   isMithrilPartialSyncSignificantlyBehind: boolean;
+  isMithrilPartialSyncProbeFailed: boolean;
   showMithrilPartialSyncConfirmationOnOpen?: boolean;
   isMithrilBootstrapActive: boolean;
   onStartMithrilPartialSync: (...args: Array<any>) => any;
@@ -525,6 +526,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isMithrilPartialSyncWorking,
       isMithrilPartialSyncEnabled,
       isMithrilPartialSyncSignificantlyBehind,
+      isMithrilPartialSyncProbeFailed,
       showMithrilPartialSyncConfirmationOnOpen,
       isMithrilBootstrapActive,
       onOpenStateDirectory,
@@ -719,10 +721,10 @@ class DaedalusDiagnostics extends Component<Props, State> {
                 <MithrilPartialSyncSection
                   isActionBlocked={isMithrilActionBlocked}
                   isMithrilPartialSyncWorking={isMithrilPartialSyncWorking}
-                  shouldShowRecommendation={
-                    isMithrilPartialSyncEnabled &&
+                  isSignificantlyBehind={
                     isMithrilPartialSyncSignificantlyBehind
                   }
+                  isProbeFailed={isMithrilPartialSyncProbeFailed}
                   behindByEpochs={behindByEpochs}
                   showConfirmationOnOpen={
                     showMithrilPartialSyncConfirmationOnOpen

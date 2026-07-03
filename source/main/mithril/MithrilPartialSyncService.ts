@@ -20,12 +20,13 @@ import type {
   MithrilPartialSyncErrorStage,
   MithrilPartialSyncStatusSnapshot,
 } from '../../common/types/mithril-partial-sync.types';
+import { makeIdlePartialSyncStatus } from '../../common/types/mithril-partial-sync.types';
 import type {
   RunCommandCallbacks,
   RunCommandOptions,
   RunCommandResult,
 } from './mithrilCommandRunner';
-import { runCommand } from './mithrilCommandRunner';
+import { runBinary, runCommand } from './mithrilCommandRunner';
 import { killProcessTree } from './killProcessTree';
 import { parseMithrilProgressUpdate } from './mithrilProgress';
 import { ChainStorageManager } from '../utils/chainStorageManager';
@@ -37,7 +38,6 @@ import {
 import { convertSnapshotDbToLsm } from './mithrilSnapshotConverter';
 import {
   normalizeResolvedLatestSnapshot,
-  normalizeSnapshotItem,
   parseMithrilJson,
   ResolvedLatestSnapshot,
   toTimestamp,
@@ -66,10 +66,22 @@ const PARTIAL_SYNC_STAGING_DIRECTORY_NAME = 'mithril-partial-sync';
 const PARTIAL_SYNC_LATEST_DRIFT_CODE = 'PARTIAL_SYNC_LATEST_DRIFT';
 const PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE_CODE =
   'PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE';
-// Scratch-space requirement. snapshot.size is the FULL certified DB (a conservative over-estimate of the
-// partial range); 1.2× covers LSM-conversion + FS slack. Floored at DISK_SPACE_REQUIRED so a missing/zero
-// size still fails closed on a near-full disk.
-const PARTIAL_SYNC_DISK_SAFETY_FACTOR = 1.2;
+const PARTIAL_SYNC_ALREADY_RUNNING_CODE = 'PARTIAL_SYNC_ALREADY_RUNNING';
+const PARTIAL_SYNC_START_NOT_ALLOWED_CODE = 'PARTIAL_SYNC_START_NOT_ALLOWED';
+const PARTIAL_SYNC_CANCEL_NOT_ALLOWED_CODE = 'PARTIAL_SYNC_CANCEL_NOT_ALLOWED';
+const PARTIAL_SYNC_RECOVERY_NOT_ALLOWED_CODE =
+  'PARTIAL_SYNC_RECOVERY_NOT_ALLOWED';
+const PARTIAL_SYNC_METADATA_UNAVAILABLE_CODE =
+  'PARTIAL_SYNC_METADATA_UNAVAILABLE';
+// Disk preflight. snapshot.size is the FULL certified DB, but bytes already present in the
+// local chain dir do not need to be fetched again, so the requirement is the missing delta
+// (snapshot − chain dir, floored at 0) plus a margin proportional to the FULL snapshot —
+// deliberately not to the delta — as headroom for chain growth, LSM-conversion and FS slack.
+// Floored at DISK_SPACE_REQUIRED so a missing/zero snapshot size still fails closed on a
+// near-full disk. If the local chain size cannot be measured, fall back to the conservative
+// whole-snapshot bound (snapshot × safety factor).
+const PARTIAL_SYNC_DISK_MARGIN_FACTOR = 0.2;
+const PARTIAL_SYNC_DISK_SAFETY_FACTOR = 1 + PARTIAL_SYNC_DISK_MARGIN_FACTOR;
 
 // Behind-ness threshold in IMMUTABLE FILES. Backend-owned; overridable via launcher config.
 // Conservative starting point (≈ 1 epoch-equivalent of immutable files); calibrate down
@@ -95,14 +107,6 @@ type PartialSyncMetadataReadOptions = Pick<
   PartialSyncRunCommandOptions,
   'trackAsCancelable'
 >;
-
-const DEFAULT_STATUS: MithrilPartialSyncStatusSnapshot = {
-  status: 'idle',
-  allowedRecoveryActions: [],
-  transferProgress: {},
-  progressItems: [],
-  error: null,
-};
 
 class MithrilPartialSyncStageError extends Error {
   stage: MithrilPartialSyncErrorStage;
@@ -132,7 +136,7 @@ class MithrilPartialSyncCancelledError extends Error {
 }
 
 export class MithrilPartialSyncService {
-  _status: MithrilPartialSyncStatusSnapshot = { ...DEFAULT_STATUS };
+  _status: MithrilPartialSyncStatusSnapshot = makeIdlePartialSyncStatus();
   _statusEmitter = new EventEmitter();
   _currentProcess: ChildProcess | null = null;
   _logStream: WriteStream | null = null;
@@ -177,7 +181,11 @@ export class MithrilPartialSyncService {
 
   async start(context: PartialSyncPreflightContext): Promise<void> {
     if (this._activeWorkDir) {
-      throw new Error('Mithril partial sync is already in progress.');
+      logger.warn(
+        'MithrilPartialSyncService: rejecting start; a partial sync run is already in progress',
+        { status: this._status.status }
+      );
+      throw new Error(PARTIAL_SYNC_ALREADY_RUNNING_CODE);
     }
 
     // The local immutable position is about to change — drop the behind-ness
@@ -225,7 +233,10 @@ export class MithrilPartialSyncService {
         context.layoutResult.managedChainPath
       );
 
-      await this._assertSufficientDiskSpace(stagingPaths.rootPath); // preflight
+      await this._assertSufficientDiskSpace(
+        stagingPaths.rootPath,
+        context.layoutResult.managedChainPath
+      ); // preflight
 
       // CP-A: a cancel requested during `preparing` unwinds here — before the
       // latest-drift re-resolve and the download re-spawn — while status is still `cancelling`.
@@ -352,9 +363,11 @@ export class MithrilPartialSyncService {
     }
 
     if (['installing', 'finalizing'].includes(this._status.status)) {
-      throw new Error(
-        'Mithril partial sync cancellation is no longer allowed after live chain cutover has started.'
+      logger.warn(
+        'MithrilPartialSyncService: rejecting cancel; live chain cutover has already started',
+        { status: this._status.status }
       );
+      throw new Error(PARTIAL_SYNC_CANCEL_NOT_ALLOWED_CODE);
     }
 
     this._cancelFallbackErrorStage = this._getCurrentRecoveryStage();
@@ -411,42 +424,35 @@ export class MithrilPartialSyncService {
 
     try {
       await this._cleanupPartialSyncArtifacts();
-      this._progressItems = [];
       logger.info(
         'MithrilPartialSyncService: cancel finalized; partial sync artifacts cleaned up',
         null
       );
-      this._updateStatus({
-        status: 'cancelled',
-        allowedRecoveryActions: ['retry', 'restart-normal'],
-        error: null,
-        logPath: this._getLogPath(),
-        progressItems: [],
-        transferProgress: {},
-      });
     } catch (error) {
+      // Staging removal is best-effort on cancel: a locked or busy staging
+      // directory must not strand the user on a failed screen with a cleanup
+      // retry loop. No cutover has happened yet, so nothing installed is at
+      // risk and no marker exists; the orphaned staging directory is reclaimed
+      // when the next partial sync prepares its staging directory.
       logger.warn(
-        'MithrilPartialSyncService: finalizeCancel cleanup failed; surfacing boundary-A failure',
+        'MithrilPartialSyncService: finalizeCancel cleanup failed; landing on cancelled and leaving staging for the next start to reclaim',
         {
           error,
           cancelFallbackErrorStage: this._cancelFallbackErrorStage,
         }
       );
-      this._markActiveProgressItemAs('error');
-      this._updateStatus({
-        status: 'failed',
-        allowedRecoveryActions: ['retry', 'restart-normal'],
-        error: this._buildError(
-          error,
-          this._cancelFallbackErrorStage ?? this._getCurrentRecoveryStage()
-        ),
-        logPath: this._getLogPath(),
-        progressItems: [...this._progressItems],
-        transferProgress: {},
-      });
-    } finally {
-      this._clearRuntimeWorkState();
     }
+
+    this._progressItems = [];
+    this._updateStatus({
+      status: 'cancelled',
+      allowedRecoveryActions: ['retry', 'restart-normal'],
+      error: null,
+      logPath: this._getLogPath(),
+      progressItems: [],
+      transferProgress: {},
+    });
+    this._clearRuntimeWorkState();
   }
 
   forceKill(): void {
@@ -509,6 +515,26 @@ export class MithrilPartialSyncService {
     });
   }
 
+  // Startup-owned recovery emissions update only the controller-held broadcast
+  // snapshot; this service starts each session idle, so the allowed-action
+  // assertion would reject the very action the backend itself offered. Before a
+  // recovery action delegates here, the controller hands us its snapshot and we
+  // adopt it as the local boundary — only from idle, and only when the snapshot
+  // is a real recovery boundary (non-idle with at least one allowed action).
+  // No re-emit: the broadcast that produced the snapshot already delivered it.
+  adoptRecoverySnapshot(snapshot: MithrilPartialSyncStatusSnapshot): void {
+    if (this._status.status !== 'idle') {
+      return;
+    }
+    if (
+      snapshot.status === 'idle' ||
+      snapshot.allowedRecoveryActions.length === 0
+    ) {
+      return;
+    }
+    this._status = { ...snapshot };
+  }
+
   async restartNormal(): Promise<void> {
     this._assertRecoveryActionAllowed('restart-normal');
 
@@ -524,7 +550,10 @@ export class MithrilPartialSyncService {
     this._assertRecoveryActionAllowed('wipe-and-full-sync');
 
     try {
-      await fs.remove(this._getStagingRootPath());
+      // Marker-first staging resolution (see _cleanupPartialSyncArtifacts); the
+      // marker itself is retained here until finalizeWipeAndFullSync clears it.
+      const marker = await readMithrilPartialSyncMarker();
+      await fs.remove(marker?.stagingRootPath ?? this._getStagingRootPath());
       this._resetToIdleStatus();
     } finally {
       this._clearRuntimeWorkState();
@@ -553,9 +582,11 @@ export class MithrilPartialSyncService {
   assertStartAllowed(): void {
     if (this._status.status === 'failed') {
       if (!this._status.allowedRecoveryActions.includes('retry')) {
-        throw new Error(
-          'Mithril partial sync cannot retry from the current recovery boundary.'
+        logger.warn(
+          'MithrilPartialSyncService: rejecting start; retry is not an allowed recovery action',
+          { allowedRecoveryActions: this._status.allowedRecoveryActions }
         );
+        throw new Error(PARTIAL_SYNC_START_NOT_ALLOWED_CODE);
       }
     }
 
@@ -564,9 +595,11 @@ export class MithrilPartialSyncService {
     }
 
     if (!['idle', 'failed'].includes(this._status.status)) {
-      throw new Error(
-        'Mithril partial sync cannot start from the current state.'
+      logger.warn(
+        'MithrilPartialSyncService: rejecting start; a run cannot start from the current status',
+        { status: this._status.status }
       );
+      throw new Error(PARTIAL_SYNC_START_NOT_ALLOWED_CODE);
     }
   }
 
@@ -711,7 +744,6 @@ export class MithrilPartialSyncService {
     binaryName: string,
     args: Array<string>
   ): Promise<RunCommandResult> {
-    const { runBinary } = await import('./mithrilCommandRunner');
     return runBinary(
       binaryName,
       args,
@@ -802,20 +834,29 @@ export class MithrilPartialSyncService {
     action: 'restart-normal' | 'wipe-and-full-sync'
   ): void {
     if (this._activeWorkDir || this._currentProcess) {
-      throw new Error(
-        `Cannot ${action} while Mithril partial sync is still in progress.`
+      logger.warn(
+        'MithrilPartialSyncService: rejecting recovery action; a partial sync run is still in progress',
+        { action }
       );
+      throw new Error(PARTIAL_SYNC_RECOVERY_NOT_ALLOWED_CODE);
     }
 
     if (!this._status.allowedRecoveryActions.includes(action)) {
-      throw new Error(
-        `Mithril partial sync cannot ${action} from the current recovery boundary.`
+      logger.warn(
+        'MithrilPartialSyncService: rejecting recovery action; not allowed from the current recovery boundary',
+        { action, allowedRecoveryActions: this._status.allowedRecoveryActions }
       );
+      throw new Error(PARTIAL_SYNC_RECOVERY_NOT_ALLOWED_CODE);
     }
   }
 
   async _cleanupPartialSyncArtifacts(): Promise<void> {
-    await fs.remove(this._getStagingRootPath());
+    // Resolve the staging root from the durable marker first so cleanup is
+    // correct cross-session and on custom volumes; fall back to the in-session
+    // resolver when no persisted path exists.
+    const marker = await readMithrilPartialSyncMarker();
+    const stagingRoot = marker?.stagingRootPath ?? this._getStagingRootPath();
+    await fs.remove(stagingRoot);
     await clearMithrilPartialSyncMarker();
   }
 
@@ -900,7 +941,8 @@ export class MithrilPartialSyncService {
     if (!latestSnapshot) {
       throw this._createStageError(
         'preparing',
-        'Unable to resolve the latest Mithril snapshot metadata.'
+        'Unable to resolve the latest Mithril snapshot metadata.',
+        PARTIAL_SYNC_METADATA_UNAVAILABLE_CODE
       );
     }
 
@@ -960,10 +1002,17 @@ export class MithrilPartialSyncService {
   }
 
   // Drop both behind-ness input caches so the next probe re-resolves fresh. Called at
-  // start()/cancel() entry and inside _resetToIdleStatus() (restart-normal/wipe/finalize paths).
+  // start()/cancel() entry, inside _resetToIdleStatus() (restart-normal/wipe/finalize
+  // paths), and on chain-directory changes (onChainDirectoryChanged).
   _invalidateBehindnessCaches(): void {
     this._latestCertifiedImmutableCache = null;
     this._localImmutableCache = null;
+  }
+
+  // A chain-directory change swaps the chain store under the probe; the cached
+  // inputs describe the old location, so drop them before the next read.
+  onChainDirectoryChanged(): void {
+    this._invalidateBehindnessCaches();
   }
 
   _getBehindnessThresholdImmutables(): number {
@@ -975,13 +1024,18 @@ export class MithrilPartialSyncService {
 
   async getPartialSyncBehindness(): Promise<{
     isSignificantlyBehind: boolean;
+    isProbeFailed?: boolean;
     behindByImmutables?: number;
     certifiedEpoch?: number | null;
   }> {
     try {
-      const latest = await this._getCachedLatestCertifiedImmutableNumber();
-      // Cached local read dedupes the checkDiskSpace fork + immutable/ readdir.
-      const localImmutableNumber = await this._getCachedLocalImmutableNumber();
+      // Cached local read dedupes the checkDiskSpace fork + immutable/ readdir;
+      // the aggregator query and the local read are independent, so run them
+      // concurrently.
+      const [latest, localImmutableNumber] = await Promise.all([
+        this._getCachedLatestCertifiedImmutableNumber(),
+        this._getCachedLocalImmutableNumber(),
+      ]);
       // Same beacon → consistent epoch; null/undefined ⇒ omitted below.
       const certifiedEpoch = this._getCachedCertifiedEpoch();
       const gap = latest - localImmutableNumber;
@@ -998,34 +1052,25 @@ export class MithrilPartialSyncService {
         ...(certifiedEpoch != null ? { certifiedEpoch } : {}),
       };
     } catch (error) {
-      // Aggregator unreachable, no immutable dir yet, or any failure ⇒ degrade to not-behind.
+      // Aggregator unreachable, no immutable dir yet, or any failure ⇒ degrade
+      // to not-behind, but flag the failure so consumers can render an
+      // availability-unknown state instead of a confident near-tip one.
       logger.warn(
         'MithrilPartialSyncService: behind-ness probe failed; treating as not significantly behind',
         { error }
       );
-      return { isSignificantlyBehind: false };
+      return { isSignificantlyBehind: false, isProbeFailed: true };
     }
   }
 
   async listSnapshots(): Promise<Array<MithrilSnapshotItem>> {
-    const { stdout } = await this._runCommand(
-      ['cardano-db', 'snapshot', 'list', '--json'],
-      { requireKeys: false }
-    );
-    const parsed = this._safeJsonParse(stdout);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.map((item) => normalizeSnapshotItem(item));
+    const snapshots = await this._listSnapshotsRaw();
+    return snapshots.map(({ snapshot }) => snapshot);
   }
 
   async showSnapshot(digest: string): Promise<MithrilSnapshotItem | null> {
-    if (!digest || !digest.trim()) return null;
-    const { stdout } = await this._runCommand(
-      ['cardano-db', 'snapshot', 'show', digest, '--json'],
-      { requireKeys: false }
-    );
-    const parsed = this._safeJsonParse(stdout);
-    if (!parsed || typeof parsed !== 'object') return null;
-    return normalizeSnapshotItem(parsed);
+    const resolved = await this._showSnapshotRaw(digest);
+    return resolved ? resolved.snapshot : null;
   }
 
   async _listSnapshotsRaw(
@@ -1079,7 +1124,8 @@ export class MithrilPartialSyncService {
     if (normalizedSnapshot == null) {
       throw this._createStageError(
         'preparing',
-        'Unable to determine the latest certified immutable number from Mithril snapshot metadata.'
+        'Unable to determine the latest certified range from Mithril snapshot metadata.',
+        PARTIAL_SYNC_METADATA_UNAVAILABLE_CODE
       );
     }
 
@@ -1096,12 +1142,34 @@ export class MithrilPartialSyncService {
     );
   }
 
-  async _assertSufficientDiskSpace(stagingRootPath: string): Promise<void> {
+  async _assertSufficientDiskSpace(
+    stagingRootPath: string,
+    managedChainPath: string
+  ): Promise<void> {
     const snapshotSize = this._latestSnapshot?.size ?? 0;
-    const requiredBytes = Math.max(
-      snapshotSize * PARTIAL_SYNC_DISK_SAFETY_FACTOR,
-      DISK_SPACE_REQUIRED
-    );
+
+    let requiredBytes: number;
+    try {
+      const chainDirBytes = await this._chainStorageManager._getPathSizeBytes(
+        managedChainPath
+      );
+      requiredBytes = Math.max(
+        Math.max(snapshotSize - chainDirBytes, 0) +
+          snapshotSize * PARTIAL_SYNC_DISK_MARGIN_FACTOR,
+        DISK_SPACE_REQUIRED
+      );
+    } catch (error) {
+      // Local size unmeasurable — require the conservative whole-snapshot bound
+      // instead of under-requiring.
+      logger.warn(
+        'MithrilPartialSyncService: disk-space preflight could not measure the local chain size; using the whole-snapshot bound',
+        { error, managedChainPath }
+      );
+      requiredBytes = Math.max(
+        snapshotSize * PARTIAL_SYNC_DISK_SAFETY_FACTOR,
+        DISK_SPACE_REQUIRED
+      );
+    }
 
     let freeBytes: number;
     try {
@@ -1120,7 +1188,7 @@ export class MithrilPartialSyncService {
       const freeGb = Math.floor(freeBytes / 1073741824);
       throw this._createStageError(
         'preparing',
-        `Not enough free disk space to stage the Mithril partial sync on the chain storage volume. ` +
+        `Not enough free disk space on the chain storage volume for Mithril Sync. ` +
           `Required ~${requiredGb} GB, available ~${freeGb} GB.`,
         PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE_CODE
       );

@@ -52,6 +52,7 @@ const defaultProps = {
   isMithrilPartialSyncWorking: false,
   isMithrilPartialSyncEnabled: true,
   isMithrilPartialSyncSignificantlyBehind: true,
+  isMithrilPartialSyncProbeFailed: false,
   showMithrilPartialSyncConfirmationOnOpen: false,
   isMithrilBootstrapActive: false,
   onStartMithrilPartialSync: jest.fn(),
@@ -115,7 +116,7 @@ describe('DaedalusDiagnostics', () => {
     expect(screen.queryByText(/Mithril Sync/)).toBeNull();
   });
 
-  it('shows the recommendation/CTA only when enabled and significantly behind', () => {
+  it('keeps the recommendation/CTA visible when enabled but not significantly behind', () => {
     const { rerender } = renderComponent({
       isMithrilPartialSyncEnabled: true,
       isMithrilPartialSyncSignificantlyBehind: true,
@@ -133,8 +134,7 @@ describe('DaedalusDiagnostics', () => {
       </IntlProvider>
     );
 
-    expect(screen.queryByRole('button', { name: 'Mithril Sync' })).toBeNull();
-    expect(screen.queryByText(/Mithril Sync/)).toBeNull();
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
   });
 
   it('keeps the CTA disabled while bootstrap work is active', () => {

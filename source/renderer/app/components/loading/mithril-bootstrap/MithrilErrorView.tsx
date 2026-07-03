@@ -102,7 +102,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   if (resolvedHint === undefined) {
     resolvedHint = copy.hint ? intl.formatMessage(messages[copy.hint]) : null;
   }
-  const detailsHeader = error?.message || error?.code || '';
+  const hasTechnicalDetails = Boolean(error?.message || error?.code);
   const logPath = error?.logPath;
   const resolvedActions = actions || [
     {
@@ -127,7 +127,6 @@ function MithrilErrorView(props: Props, { intl }: Context) {
         <h1 id={MITHRIL_ERROR_HEADING_ID}>
           {title || intl.formatMessage(messages[copy.title])}
         </h1>
-        {error?.message && <p>{error.message}</p>}
         {resolvedHint &&
           (hintAsBody ? (
             <p className={styles.hintBody}>{resolvedHint}</p>
@@ -144,10 +143,10 @@ function MithrilErrorView(props: Props, { intl }: Context) {
         )}
       </div>
 
-      {detailsHeader && (
+      {hasTechnicalDetails && (
         <div className={styles.detailsSection}>
           <CollapsibleSection
-            header={detailsHeader}
+            header={intl.formatMessage(messages.errorDetailsHeader)}
             headerFontStyle="light"
             expandButtonStyle="link"
           >

@@ -32,6 +32,14 @@ const CONVERSION_FAILED: PartialSyncErrorCopy = {
   title: messages.partialSyncErrorConversionFailedTitle,
   hint: messages.partialSyncErrorConversionFailedHint,
 };
+const METADATA_UNAVAILABLE: PartialSyncErrorCopy = {
+  title: messages.partialSyncErrorMetadataUnavailableTitle,
+  hint: messages.partialSyncErrorMetadataUnavailableHint,
+};
+const INSUFFICIENT_DISK_SPACE: PartialSyncErrorCopy = {
+  title: messages.partialSyncErrorInsufficientDiskSpaceTitle,
+  hint: messages.partialSyncErrorInsufficientDiskSpaceHint,
+};
 
 const FAILED: PartialSyncErrorCopy = {
   title: messages.partialSyncFailedTitle,
@@ -50,6 +58,14 @@ const COPY_BY_CODE: Record<MithrilPartialSyncErrorCode, PartialSyncErrorCopy> =
     PARTIAL_SYNC_STAGED_DB_INVALID: STAGED_DB_INVALID,
     PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED: DOWNLOAD_FAILED,
     PARTIAL_SYNC_CONVERSION_FAILED: CONVERSION_FAILED,
+    PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE: INSUFFICIENT_DISK_SPACE,
+    PARTIAL_SYNC_METADATA_UNAVAILABLE: METADATA_UNAVAILABLE,
+    PARTIAL_SYNC_DISABLED: FAILED,
+    PARTIAL_SYNC_ALREADY_RUNNING: FAILED,
+    PARTIAL_SYNC_START_NOT_ALLOWED: FAILED,
+    PARTIAL_SYNC_LAYOUT_UNSUPPORTED: FAILED,
+    PARTIAL_SYNC_CANCEL_NOT_ALLOWED: FAILED,
+    PARTIAL_SYNC_RECOVERY_NOT_ALLOWED: FAILED,
   };
 
 // 2nd tier — stage, for a code-less failure at a meaningful phase (reuses the same descriptors,
@@ -83,3 +99,16 @@ export function resolvePartialSyncErrorCopy(
   }
   return FAILED;
 }
+
+// Single shared fallback for a rejected Mithril Sync start request; the
+// renderer must never surface the raw rejection message.
+export const partialSyncStartFailureMessage: MessageDescriptor =
+  messages.partialSyncStartFailure;
+
+// Start rejections carry stable backend codes as their message. Expose a
+// code-keyed lookup so the start-failure seams can reuse this copy map
+// without the map itself leaking out of this module.
+export const resolvePartialSyncErrorCopyByCode = (
+  code: string
+): PartialSyncErrorCopy | undefined =>
+  COPY_BY_CODE[code as MithrilPartialSyncErrorCode];

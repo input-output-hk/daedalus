@@ -9,9 +9,11 @@
 
 - The feature flag (`mithrilPartialSyncEnabled`) is **ON for all networks on this branch**.
   If no Mithril UI appears anywhere, check you're on the right build before filing a bug.
-- The offer appears only when the node is **significantly behind**: ≥ 20 immutable files
-  (≈ 1 epoch ≈ ~5 days on mainnet) behind the latest certified Mithril snapshot. The UI
-  always shows the distance in **epochs**.
+- The **proactive prompt** appears only when the node is **significantly behind**: ≥ 20
+  immutable files (≈ 1 epoch ≈ ~5 days on mainnet) behind the latest certified Mithril
+  snapshot. The Diagnostics **"Mithril Sync"** section is always visible while the feature
+  is enabled — near tip and even when the behind-ness check fails — only its copy changes.
+  The UI always shows the distance in **epochs**.
 - The behind-ness check refreshes about every **30 seconds** — allow up to a minute for
   offers to appear after conditions change (and up to ~5 minutes to *re*-appear after the
   check has gone quiet, e.g. after reconnecting the network).
@@ -80,12 +82,15 @@ Mithril Sync completed and caught you up.
 
 Expected state of the **"Mithril Sync"** row:
 
+The section is **always visible** while the feature is enabled; only its copy and button
+state change:
+
 | Condition | Expected |
 |---|---|
-| Significantly behind, no Mithril work running | Row visible, button **enabled** |
+| Significantly behind, no Mithril work running | Row visible with the recommendation copy, button **enabled** |
 | Any Mithril work in flight (partial sync or fresh-install fast sync) | Row visible, button **disabled** + hint *"Unavailable while Mithril work is already active."* |
-| Node near tip / fully synced | Row **absent** |
-| Aggregator unreachable (machine offline) | Row **absent** (offer quietly hides) |
+| Node near tip / fully synced | Row **visible** with informational (non-recommending) copy, button still **enabled** |
+| Aggregator unreachable / behind-ness check failing (e.g. machine offline) | Row **visible** with an "availability unknown" note, button still **enabled** |
 
 - [ ] While behind (from Setup): open Diagnostics → "Mithril Sync" section and button
       visible and enabled. Hover the button → tooltip explaining Mithril Sync restores
@@ -98,10 +103,12 @@ Expected state of the **"Mithril Sync"** row:
       takes over.
 - [ ] During a run: reopen Diagnostics → button visible but **disabled** with the
       "already active" hint.
-- [ ] After a completed Mithril Sync (node near tip): the row is gone entirely — there
-      must never be a dead or misleading button near the tip.
-- [ ] Optional: go offline, wait ≥ 1 min, reopen Diagnostics → row absent. Reconnect →
-      row returns (may take up to ~5 min; the check slows down while the offer is hidden).
+- [ ] After a completed Mithril Sync (node near tip): the row **stays visible** with
+      informational copy that no longer claims you are behind; the button stays enabled —
+      never a dead or misleading recommendation near the tip.
+- [ ] Optional: go offline, wait ≥ 1 min, reopen Diagnostics → row stays visible with the
+      "availability unknown" note and the button still enabled. Reconnect → the
+      recommendation / informational copy returns (may take up to ~5 min).
 
 ## 3 · Progress overlay & success
 
@@ -120,9 +127,14 @@ Expected state of the **"Mithril Sync"** row:
 - [ ] *"Starting Cardano node..."* frame appears after the restore.
 - [ ] Success: *"Mithril Sync completed successfully."* → auto-transition *"Returning to
       Daedalus..."* after ~4 s → normal UI, node syncing near the tip.
+- [ ] Failure path (hard to force — verify only if it happens): if the automatic
+      "Returning to Daedalus..." hand-off fails, it retries once by itself; if the retry
+      also fails, the overlay switches to the Mithril **error screen with a Retry action**
+      that re-runs the hand-off — never a silently stuck success frame.
 - [ ] Post-success cleanup: staging folder `mithril-partial-sync` **gone**; marker
-      `Logs/mithril-partial-sync.lock` **gone**; Diagnostics row **absent** (no longer
-      behind); prompt does not reappear; you can quit/relaunch with no recovery dialog.
+      `Logs/mithril-partial-sync.lock` **gone**; Diagnostics row shows the near-tip
+      informational copy (no longer recommends); prompt does not reappear; you can
+      quit/relaunch with no recovery dialog.
 
 ## 4 · Cancelling attempts
 
@@ -161,10 +173,12 @@ Cancel button availability by phase:
       blocking dialog **"Interrupted Mithril partial sync detected"** with
       **"Wipe chain and full Mithril sync"** / **"Quit"**. Wipe leads back to the
       fresh-start flow (Setup step 3). The window is seconds wide — best effort only.
-- [ ] **Low disk:** with less than ~4 GB free (or < 1.2× snapshot size) on the chain
-      volume, starting Mithril Sync fails cleanly during Preparing with a
-      "not enough free disk space" message quoting required vs available GB, plus
-      retry/restart recovery — never a crash.
+- [ ] **Low disk:** with less free space on the chain volume than Mithril Sync needs
+      (snapshot size minus current chain-data size, plus a 20%-of-snapshot margin;
+      never less than ~4 GB), starting Mithril Sync fails cleanly during Preparing
+      with a "not enough free disk space" message quoting required vs available GB,
+      plus retry/restart recovery — never a crash. A node already near the tip now
+      needs far less free space than the full snapshot.
 - [ ] **Offline mid-download:** cut the network while Downloading →
       **"Downloading the Mithril snapshot failed"** + *"Check your internet
       connection..."* with retry/restart actions; reconnect and Retry succeeds.

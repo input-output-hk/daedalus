@@ -10,6 +10,7 @@ import {
   isMithrilPartialSyncOverlayStatus,
   isMithrilPartialSyncTerminalStatus,
   isMithrilPartialSyncWorkingStatus,
+  makeIdlePartialSyncStatus,
 } from '../../../common/types/mithril-partial-sync.types';
 import Store from './lib/Store';
 import {
@@ -22,14 +23,9 @@ import {
   mithrilPartialSyncWipeAndFullSyncChannel,
 } from '../ipc/mithrilPartialSyncChannel';
 import { logger } from '../utils/logging';
+import { toMithrilStartError } from '../utils/mithrilErrorMessage';
 
-const DEFAULT_STATUS: MithrilPartialSyncStatusSnapshot = {
-  status: 'idle',
-  allowedRecoveryActions: [],
-  transferProgress: {},
-  progressItems: [],
-  error: null,
-};
+const DEFAULT_STATUS: MithrilPartialSyncStatusSnapshot = makeIdlePartialSyncStatus();
 
 const START_PENDING_STATUS: MithrilPartialSyncStatus = 'stopping-node';
 
@@ -47,28 +43,11 @@ const AVAILABILITY_REFRESH_BACKOFF_INTERVAL = 300_000;
 // settles) can never slow the poll before it self-corrects.
 const STABLE_READS_BEFORE_BACKOFF = 2;
 
-const toStartError = (error: unknown): Error => {
-  if (error instanceof Error) {
-    return error;
-  }
-
-  if (
-    error &&
-    typeof error === 'object' &&
-    typeof (error as { message?: unknown }).message === 'string'
-  ) {
-    return new Error((error as { message: string }).message);
-  }
-
-  return new Error('Unable to start Mithril partial sync.');
-};
-
 export default class MithrilPartialSyncStore extends Store {
   @observable status: MithrilPartialSyncStatus = DEFAULT_STATUS.status;
   @observable allowedRecoveryActions: MithrilPartialSyncFailureAction[] = [];
   @observable filesDownloaded: number | undefined = undefined;
   @observable filesTotal: number | undefined = undefined;
-  @observable elapsedSeconds: number | undefined = undefined;
   @observable startedAt: number | null = null;
   @observable ancillaryBytesDownloaded: number | undefined = undefined;
   @observable ancillaryBytesTotal: number | undefined = undefined;
@@ -80,13 +59,17 @@ export default class MithrilPartialSyncStore extends Store {
   // Separate session-scoped re-pop guard, set true when a Mithril
   // attempt begins (`startPartialSync`). AND-ed into the proactive-prompt gate so
   // the prompt never re-offers after an attempt regardless of the terminal
-  // outcome (completed/cancelled/failed/restart-normal). In-memory, session-scoped,
-  // never reset (no idle reset). Distinct from `proactivePromptDismissedThisSession`,
-  // which stays single-purpose ("user clicked Standard Sync on the prompt").
+  // outcome (completed/cancelled/failed/restart-normal). In-memory and
+  // session-scoped; reset ONLY when a start rejection resyncs to idle (the
+  // attempt never took hold, so the prompt may re-offer). Distinct from
+  // `proactivePromptDismissedThisSession`, which stays single-purpose ("user
+  // clicked Standard Sync on the prompt").
   @observable mithrilAttemptStartedThisSession = false;
   @observable isPartialSyncEnabled = false;
   @observable isSignificantlyBehind = false;
-  @observable behindByImmutables: number | undefined = undefined;
+  // True when the backend behind-ness probe failed, so "not behind" cannot be
+  // trusted; the Diagnostics section shows an availability-unknown hint instead.
+  @observable isProbeFailed = false;
   // The Mithril certified-beacon epoch, the early-sync fallback
   // anchor for the late-resolving `networkTip.epoch`. DECLARATION ONLY here —
   // `_applyAvailability` populates it; the backend produces it in the
@@ -236,7 +219,6 @@ export default class MithrilPartialSyncStore extends Store {
     this.allowedRecoveryActions = update.allowedRecoveryActions;
     this.filesDownloaded = update.transferProgress.filesDownloaded;
     this.filesTotal = update.transferProgress.filesTotal;
-    this.elapsedSeconds = update.transferProgress.elapsedSeconds;
     this.ancillaryBytesDownloaded =
       update.transferProgress.ancillaryBytesDownloaded;
     this.ancillaryBytesTotal = update.transferProgress.ancillaryBytesTotal;
@@ -326,7 +308,7 @@ export default class MithrilPartialSyncStore extends Store {
 
     this.isPartialSyncEnabled = availability.isEnabled;
     this.isSignificantlyBehind = availability.isSignificantlyBehind;
-    this.behindByImmutables = availability.behindByImmutables;
+    this.isProbeFailed = Boolean(availability.isProbeFailed);
     // The early-sync beacon anchor for the container figure/gate.
     // Undefined until the backend supplies it ⇒ degrades to networkTip-only
     // (no regression).
@@ -410,7 +392,9 @@ export default class MithrilPartialSyncStore extends Store {
       return;
     }
 
-    if (this.status !== START_PENDING_STATUS) {
+    if (this.status === 'failed') {
+      // The backend already reports the failure and the error view renders
+      // from that status; rethrowing would only duplicate the surface.
       logger.warn(
         'MithrilPartialSyncStore: swallowed partial sync start rejection after backend status resync',
         {
@@ -421,13 +405,32 @@ export default class MithrilPartialSyncStore extends Store {
       return;
     }
 
-    throw toStartError(startError);
+    if (this.status === 'idle') {
+      // The attempt never took hold, so re-arm the session-scoped proactive
+      // prompt guard. This mutation resumes after the awaits above, outside
+      // the enclosing action's synchronous span, so it needs its own action
+      // context under strict mode.
+      runInAction(
+        'MithrilPartialSyncStore: re-arm prompt after rejected start',
+        () => {
+          this.mithrilAttemptStartedThisSession = false;
+        }
+      );
+    }
+
+    throw toMithrilStartError(startError);
   };
 
   @action
   cancelPartialSync = async () => {
     try {
       await mithrilPartialSyncCancelChannel.request();
+    } catch (error) {
+      // The resync below reflects the true backend outcome (a failed status
+      // drives the error view); the rejection adds no renderer state.
+      logger.warn('MithrilPartialSyncStore: cancel partial sync rejected', {
+        error,
+      });
     } finally {
       // Always resync so the UI never sticks on the optimistic frame —
       // including the stopping-node no-op and the post-cutover rejection.
@@ -437,11 +440,30 @@ export default class MithrilPartialSyncStore extends Store {
 
   @action
   restartNormally = async () => {
-    await mithrilPartialSyncRestartNormalChannel.request();
+    try {
+      await mithrilPartialSyncRestartNormalChannel.request();
+    } catch (error) {
+      // Same contract as cancel: resync reflects the backend outcome; no
+      // renderer-side error surface is added.
+      logger.warn('MithrilPartialSyncStore: restart-normal request rejected', {
+        error,
+      });
+    } finally {
+      await this.syncStatus();
+    }
   };
 
   @action
   wipeAndFullSync = async () => {
-    await mithrilPartialSyncWipeAndFullSyncChannel.request();
+    try {
+      await mithrilPartialSyncWipeAndFullSyncChannel.request();
+    } catch (error) {
+      logger.warn(
+        'MithrilPartialSyncStore: wipe-and-full-sync request rejected',
+        { error }
+      );
+    } finally {
+      await this.syncStatus();
+    }
   };
 }

@@ -13,6 +13,20 @@ const messages = defineMessages({
     description:
       'Tooltip copy shown on hover over the Mithril Sync button in diagnostics',
   },
+  recommendationNearTip: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationNearTip',
+    defaultMessage:
+      '!!!Your node is close to the blockchain tip. You can still use Mithril Sync to restore verified chain data.',
+    description:
+      'Tooltip copy for the Mithril Sync button in diagnostics when the node is not significantly behind',
+  },
+  recommendationUnknown: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationUnknown',
+    defaultMessage:
+      '!!!Daedalus could not check how far behind your node is. You can still use Mithril Sync to restore verified chain data.',
+    description:
+      'Tooltip copy for the Mithril Sync button in diagnostics when the behind-ness check failed',
+  },
   buttonLabel: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonLabel',
     defaultMessage: '!!!Mithril Sync',
@@ -27,8 +41,14 @@ const messages = defineMessages({
   },
 });
 
+export type MithrilAvailabilityVariant =
+  | 'behind'
+  | 'near-tip'
+  | 'availability-unknown';
+
 type Props = {
   isActionBlocked: boolean;
+  variant: MithrilAvailabilityVariant;
   onShowConfirmation: () => void;
 };
 
@@ -38,8 +58,15 @@ export default class MithrilPartialSyncRecommendation extends Component<Props> {
   };
 
   render() {
-    const { isActionBlocked, onShowConfirmation } = this.props;
+    const { isActionBlocked, variant, onShowConfirmation } = this.props;
     const { intl } = this.context;
+
+    let tooltipMessage = messages.recommendation;
+    if (variant === 'near-tip') {
+      tooltipMessage = messages.recommendationNearTip;
+    } else if (variant === 'availability-unknown') {
+      tooltipMessage = messages.recommendationUnknown;
+    }
 
     return (
       <div
@@ -50,7 +77,7 @@ export default class MithrilPartialSyncRecommendation extends Component<Props> {
             maxWidth={280}
             content={
               <div className={styles.tooltipLabelWrapper}>
-                {intl.formatMessage(messages.recommendation)}
+                {intl.formatMessage(tooltipMessage)}
               </div>
             }
           >

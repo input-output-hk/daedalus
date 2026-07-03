@@ -1853,7 +1853,7 @@
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationTitle"
       },
       {
-        "defaultMessage": "!!!Your node is about {epochs} epochs behind. Mithril Sync will restore verified chain data to help your node sync faster.",
+        "defaultMessage": "!!!Your node is about {epochs, plural, one {# epoch} other {# epochs}} behind. Mithril Sync will restore verified chain data to help your node sync faster.",
         "description": "Behind-ness context line (epochs behind the blockchain tip) for the Mithril partial sync confirmation modal",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehind"
       },
@@ -1883,6 +1883,16 @@
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncRecommendation"
       },
       {
+        "defaultMessage": "!!!Your node is close to the blockchain tip. You can still use Mithril Sync to restore verified chain data.",
+        "description": "Tooltip copy for the Mithril Sync button in diagnostics when the node is not significantly behind",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationNearTip"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not check how far behind your node is. You can still use Mithril Sync to restore verified chain data.",
+        "description": "Tooltip copy for the Mithril Sync button in diagnostics when the behind-ness check failed",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationUnknown"
+      },
+      {
         "defaultMessage": "!!!Mithril Sync",
         "description": "CTA label that opens the Mithril partial sync confirmation from diagnostics",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonLabel"
@@ -1908,7 +1918,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!For this process to begin your Cardano node will need to be shutdown. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.",
+        "defaultMessage": "!!!For this process to begin your Cardano node will need to be shut down. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.",
         "description": "Canonical shutdown/restore/restart summary sentence shared by the Mithril partial sync confirmation modal and the proactive prompt confirmation view.",
         "id": "daedalus.diagnostics.dialog.mithrilSyncProcessSummary"
       }
@@ -2698,6 +2708,11 @@
         "id": "loading.mithrilBootstrap.error.nodeStart.title"
       },
       {
+        "defaultMessage": "!!!Technical details",
+        "description": "Collapsed technical-details section header on the Mithril error view (bootstrap and Mithril Sync overlays).",
+        "id": "loading.mithrilBootstrap.errorDetailsHeader"
+      },
+      {
         "defaultMessage": "!!!Checking local disk info",
         "description": "Label for Mithril progress step 1 (mithril-client disk-check step).",
         "id": "loading.mithrilBootstrap.progress.diskCheck"
@@ -2848,6 +2863,21 @@
         "id": "loading.mithrilPartialSync.error.failed.hint"
       },
       {
+        "defaultMessage": "!!!Finishing Mithril Sync failed",
+        "description": "Title shown when the automatic finalize hand-off after a completed Mithril partial sync fails twice.",
+        "id": "loading.mithrilPartialSync.error.finalizeFailed.title"
+      },
+      {
+        "defaultMessage": "!!!Mithril Sync completed, but Daedalus could not finish the final cleanup step. Try again to continue to Daedalus.",
+        "description": "Hint shown when the automatic finalize hand-off after a completed Mithril partial sync fails twice.",
+        "id": "loading.mithrilPartialSync.error.finalizeFailed.hint"
+      },
+      {
+        "defaultMessage": "!!!Try again",
+        "description": "Retry action label on the finalize-failed error view; re-invokes the finalize hand-off.",
+        "id": "loading.mithrilPartialSync.error.finalizeFailed.retry"
+      },
+      {
         "defaultMessage": "!!!Mithril Sync was cancelled",
         "description": "Title for Mithril partial sync cancelled terminal state.",
         "id": "loading.mithrilPartialSync.error.cancelled.title"
@@ -2908,6 +2938,26 @@
         "id": "loading.mithrilPartialSync.error.conversionFailed.hint"
       },
       {
+        "defaultMessage": "!!!Not enough disk space for Mithril Sync",
+        "description": "Title shown when PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE is emitted (disk-space preflight failed).",
+        "id": "loading.mithrilPartialSync.error.insufficientDiskSpace.title"
+      },
+      {
+        "defaultMessage": "!!!Daedalus does not have enough free disk space to prepare the verified snapshot. The required and available amounts are shown in the error details. Free up space on the disk that stores your chain data, then retry Mithril Sync.",
+        "description": "Hint shown for PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE. The needed/available GB figures come from the backend error message rendered by MithrilErrorView.",
+        "id": "loading.mithrilPartialSync.error.insufficientDiskSpace.hint"
+      },
+      {
+        "defaultMessage": "!!!Checking the latest Mithril snapshot failed",
+        "description": "Title shown when Daedalus cannot resolve the latest verified Mithril snapshot metadata before or during Mithril Sync.",
+        "id": "loading.mithrilPartialSync.error.metadataUnavailable.title"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not read the latest verified snapshot details. Check your internet connection, then choose how to continue below.",
+        "description": "Hint shown when Daedalus cannot resolve the latest verified Mithril snapshot metadata before or during Mithril Sync.",
+        "id": "loading.mithrilPartialSync.error.metadataUnavailable.hint"
+      },
+      {
         "defaultMessage": "!!!Retry Mithril Sync (fast)",
         "description": "Recovery action label for retrying Mithril partial sync.",
         "id": "loading.mithrilPartialSync.error.retry"
@@ -2931,6 +2981,26 @@
         "defaultMessage": "!!!Cancellation available once the node has stopped",
         "description": "Tooltip explaining why the Cancel button is disabled while the Cardano node is still stopping (stopping-node phase).",
         "id": "loading.mithrilPartialSync.progress.cancelStoppingTooltip"
+      },
+      {
+        "defaultMessage": "!!!Verifying snapshot...",
+        "description": "Step-indicator label for the verifying stage emitted during Mithril Sync.",
+        "id": "loading.mithrilPartialSync.progress.stageVerifying"
+      },
+      {
+        "defaultMessage": "!!!Converting snapshot format...",
+        "description": "Step-indicator label for the converting stage emitted during Mithril Sync.",
+        "id": "loading.mithrilPartialSync.progress.stageConverting"
+      },
+      {
+        "defaultMessage": "!!!Installing snapshot...",
+        "description": "Step-indicator label for the installing stage emitted during Mithril Sync.",
+        "id": "loading.mithrilPartialSync.progress.stageInstalling"
+      },
+      {
+        "defaultMessage": "!!!Unable to start Mithril Sync.",
+        "description": "Fallback message shown when a Mithril Sync start request is rejected.",
+        "id": "loading.mithrilPartialSync.error.startFailure"
       }
     ],
     "path": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages.ts"
@@ -3113,7 +3183,7 @@
         "id": "daedalus.diagnostics.dialog.mithrilProactivePromptTitle"
       },
       {
-        "defaultMessage": "!!!Your node is about {epochs} epochs behind.",
+        "defaultMessage": "!!!Your node is about {epochs, plural, one {# epoch} other {# epochs}} behind.",
         "description": "Epochs-behind body line (line 1) for the proactive Mithril fork prompt on the syncing screen",
         "id": "daedalus.diagnostics.dialog.mithrilProactivePromptBody"
       },

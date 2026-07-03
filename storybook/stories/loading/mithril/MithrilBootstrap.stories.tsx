@@ -21,12 +21,11 @@ import {
   getProgressItemsPreset,
   latestSnapshot,
   progressPresetOptions,
+  snapshotFilesTotal,
   snapshotSize,
   snapshots,
   validationPresetOptions,
 } from '../_support/mithrilFixtures';
-
-const SNAPSHOT_FILES_TOTAL = 980;
 
 const statusOptions: Record<string, MithrilBootstrapStatus> = {
   Decision: 'decision',
@@ -116,9 +115,9 @@ storiesOf('Loading / Mithril / Bootstrap', module)
           false
         )}
         filesDownloaded={Math.round(
-          SNAPSHOT_FILES_TOTAL * (snapshotDownloadPercent / 100)
+          snapshotFilesTotal * (snapshotDownloadPercent / 100)
         )}
-        filesTotal={SNAPSHOT_FILES_TOTAL}
+        filesTotal={snapshotFilesTotal}
         snapshotSizeBytes={snapshotSize}
         ancillaryBytesDownloaded={Math.round(
           ancillaryBytesTotal * (ancillaryPercent / 100)

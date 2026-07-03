@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { intlShape } from 'react-intl';
 import type {
   MithrilPartialSyncError,
   MithrilPartialSyncStatus,
   MithrilPartialSyncTransferProgress,
 } from '../../../../../common/types/mithril-partial-sync.types';
+import { isMithrilPartialSyncWorkingStatus } from '../../../../../common/types/mithril-partial-sync.types';
 import type { MithrilProgressItem } from '../../../../../common/types/mithril-bootstrap.types';
 import type { Intl } from '../../../types/i18nTypes';
 import {
@@ -39,24 +40,15 @@ interface Context {
   intl: Intl;
 }
 
-const PROGRESS_STATUSES: MithrilPartialSyncStatus[] = [
-  'stopping-node',
-  'cancelling',
-  'preparing',
-  'downloading',
-  'verifying',
-  'converting',
-  'installing',
-  'finalizing',
-  'starting-node',
-  'completed',
-];
-
 // The completed overlay is a success acknowledgment that
 // auto-hands-off to the normal loading/Wallet-Summary screen — no "Continue"
 // click. This linger keeps the success frame visible long enough to read before
 // the finalize IPC fires automatically (see the effect below).
 const COMPLETED_AUTO_DISMISS_DELAY_MS = 4000;
+// Delay before the single, silent retry of a rejected automatic finalize; long
+// enough for a transient hiccup to clear, short enough that the success frame
+// does not linger noticeably beyond its normal hand-off.
+const FINALIZE_RETRY_DELAY_MS = 2000;
 
 function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
   const {
@@ -77,6 +69,22 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
     onOpenExternalLink,
   } = props;
 
+  // A finalize failure must not strand the success frame: this local flag
+  // switches the overlay to the error view once the automatic finalize attempt
+  // and its single silent retry have both failed. It has to be component-local
+  // state because 'completed' renders through the progress view.
+  const [finalizeFailed, setFinalizeFailed] = useState(false);
+  // Finalize outcomes resolve asynchronously and can land after the store has
+  // already hidden (unmounted) the overlay; guard state updates so a late
+  // outcome never sets state on an unmounted component.
+  const isUnmountedRef = useRef(false);
+  useEffect(
+    () => () => {
+      isUnmountedRef.current = true;
+    },
+    []
+  );
+
   // On 'completed', auto-fire the finalize IPC (reset-to-idle +
   // remove staging dir + clear marker + folder deletion) via the stable
   // `onDismissCompleted` MobX action once the success frame has lingered — the
@@ -84,20 +92,66 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
   // preserved; only the trigger changes from a click to this timeout.
   useEffect(() => {
     if (status !== 'completed') return undefined;
-    // Not fire-and-forget — `onDismissCompleted` awaits the async
-    // finalize IPC, so wrap it in `Promise.resolve(...).catch(...)` to ensure a
-    // finalize rejection can never surface as an unhandled promise rejection.
+    let disposed = false;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
+    // Not fire-and-forget — `onDismissCompleted` awaits the async finalize
+    // IPC. A rejection is retried once, silently, after a short delay; a second
+    // rejection surfaces the finalize-failed error view below instead of being
+    // swallowed, so a failure can neither strand the success frame nor become
+    // an unhandled promise rejection.
     const timer = setTimeout(() => {
-      Promise.resolve(onDismissCompleted()).catch(() => {});
+      Promise.resolve(onDismissCompleted()).catch(() => {
+        if (disposed || isUnmountedRef.current) return;
+        retryTimer = setTimeout(() => {
+          Promise.resolve(onDismissCompleted()).catch(() => {
+            if (disposed || isUnmountedRef.current) return;
+            setFinalizeFailed(true);
+          });
+        }, FINALIZE_RETRY_DELAY_MS);
+      });
     }, COMPLETED_AUTO_DISMISS_DELAY_MS);
-    return () => clearTimeout(timer);
+    return () => {
+      disposed = true;
+      clearTimeout(timer);
+      if (retryTimer !== undefined) clearTimeout(retryTimer);
+    };
   }, [status, onDismissCompleted]);
 
-  const isProgressStatus = PROGRESS_STATUSES.includes(status);
-  const activeHeadingId = isProgressStatus
+  // Manual finalize retry from the error view. It re-invokes the same finalize
+  // hand-off and is renderer-local (same footing as the defensive Quit below) —
+  // it is NOT a backend recovery action and never joins the
+  // allowedRecoveryActions-driven membership.
+  const handleFinalizeRetry = () => {
+    Promise.resolve(onDismissCompleted())
+      .then(() => {
+        if (isUnmountedRef.current) return;
+        // Success hands control back to the store-driven dismissal; clear the
+        // failure flag so the hand-off frame shows until the overlay hides.
+        setFinalizeFailed(false);
+      })
+      .catch(() => {
+        if (isUnmountedRef.current) return;
+        // Remain on the failure view; the retry action stays available.
+        setFinalizeFailed(true);
+      });
+  };
+
+  const isProgressStatus =
+    isMithrilPartialSyncWorkingStatus(status) || status === 'completed';
+  // 'completed' is a progress status, so the finalize-failed frame needs this
+  // explicit override to leave the progress view. Gating on 'completed' keeps
+  // a stale flag from ever leaking into any other status.
+  const isFinalizeFailureShown = finalizeFailed && status === 'completed';
+  const showProgressView = isProgressStatus && !isFinalizeFailureShown;
+  const activeHeadingId = showProgressView
     ? MITHRIL_PROGRESS_HEADING_ID
     : MITHRIL_ERROR_HEADING_ID;
-  const errorCopy = resolvePartialSyncErrorCopy(status, error);
+  const errorCopy = isFinalizeFailureShown
+    ? {
+        title: MithrilBootstrapMessages.partialSyncFinalizeFailedTitle,
+        hint: MithrilBootstrapMessages.partialSyncFinalizeFailedHint,
+      }
+    : resolvePartialSyncErrorCopy(status, error);
 
   // Recovery actions render strictly from allowedRecoveryActions (here
   // via the canRetry/canRestartNormally/canWipeAndFullSync booleans).
@@ -163,6 +217,18 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
     ...errorActions.filter((action) => action.variant === 'primary'),
   ];
 
+  // The finalize-failed frame offers exactly one action: retry the finalize
+  // hand-off. It deliberately bypasses the recovery-action membership above.
+  const finalizeFailureActions = [
+    {
+      label: intl.formatMessage(
+        MithrilBootstrapMessages.partialSyncFinalizeFailedRetry
+      ),
+      onClick: handleFinalizeRetry,
+      variant: 'primary' as const,
+    },
+  ];
+
   return (
     <div className={styles.component}>
       <div className={styles.backdrop} />
@@ -173,9 +239,10 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
           aria-modal="true"
           aria-labelledby={activeHeadingId}
         >
-          {isProgressStatus ? (
+          {showProgressView ? (
             <MithrilProgressView
               status={status}
+              variant="partial-sync"
               progressItems={progressItems}
               filesDownloaded={transferProgress?.filesDownloaded}
               filesTotal={transferProgress?.filesTotal}
@@ -184,36 +251,6 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
               }
               ancillaryBytesTotal={transferProgress?.ancillaryBytesTotal}
               bootstrapStartedAt={startedAt}
-              title={intl.formatMessage(
-                MithrilBootstrapMessages.partialSyncTitle
-              )}
-              subtitle={intl.formatMessage(
-                status === 'completed'
-                  ? MithrilBootstrapMessages.partialSyncCompletedSubtitle
-                  : MithrilBootstrapMessages.partialSyncProgressSubtitle
-              )}
-              completedTransitionLabel={intl.formatMessage(
-                MithrilBootstrapMessages.partialSyncCompletedTransition
-              )}
-              actionLabel={intl.formatMessage(MithrilBootstrapMessages.cancel)}
-              startingNodeTitle={intl.formatMessage(
-                MithrilBootstrapMessages.partialSyncNodeStartingTitle
-              )}
-              startingNodeDetail={intl.formatMessage(
-                MithrilBootstrapMessages.partialSyncNodeStartingDetail
-              )}
-              stoppingNodeTitle={intl.formatMessage(
-                MithrilBootstrapMessages.partialSyncNodeStoppingTitle
-              )}
-              stoppingNodeDetail={intl.formatMessage(
-                MithrilBootstrapMessages.partialSyncNodeStoppingDetail
-              )}
-              cancellingTitle={intl.formatMessage(
-                MithrilBootstrapMessages.partialSyncCancellingTitle
-              )}
-              cancellingDetail={intl.formatMessage(
-                MithrilBootstrapMessages.partialSyncCancellingDetail
-              )}
               hideAction={[
                 'cancelling',
                 'installing',
@@ -222,24 +259,21 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
                 'completed',
               ].includes(status)}
               actionDisabled={status === 'stopping-node'}
-              actionDisabledTooltip={
-                status === 'stopping-node'
-                  ? intl.formatMessage(
-                      MithrilBootstrapMessages.partialSyncCancelStoppingTooltip
-                    )
-                  : undefined
-              }
               showDownloadProgressBar
               onAction={onCancel}
             />
           ) : (
             <MithrilErrorView
-              error={error as any}
+              error={isFinalizeFailureShown ? null : (error as any)}
               onOpenExternalLink={onOpenExternalLink}
               title={intl.formatMessage(errorCopy.title)}
               hint={intl.formatMessage(errorCopy.hint)}
               hintAsBody={status === 'cancelled'}
-              actions={orderedErrorActions}
+              actions={
+                isFinalizeFailureShown
+                  ? finalizeFailureActions
+                  : orderedErrorActions
+              }
               rightAlignActions
             />
           )}

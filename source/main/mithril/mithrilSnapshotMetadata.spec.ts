@@ -53,7 +53,9 @@ describe('mithrilSnapshotMetadata', () => {
     expect(extractCertifiedEpoch({ beacon: { epoch: '512' } })).toBe(512);
   });
 
-  it('prefers beacon.epoch over the bare top-level epoch path', () => {
+  it('ignores the bare top-level epoch key and non-beacon epoch spellings', () => {
+    expect(extractCertifiedEpoch({ epoch: 7 })).toBeNull();
+    expect(extractCertifiedEpoch({ beacon: { epoch_number: 9 } })).toBeNull();
     expect(extractCertifiedEpoch({ epoch: 7, beacon: { epoch: 320 } })).toBe(
       320
     );

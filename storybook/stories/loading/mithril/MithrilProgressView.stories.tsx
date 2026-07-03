@@ -16,10 +16,9 @@ import {
   createBootstrapStartedAt,
   getProgressItemsPreset,
   progressPresetOptions,
+  snapshotFilesTotal,
   snapshotSize,
 } from '../_support/mithrilFixtures';
-
-const SNAPSHOT_FILES_TOTAL = 980;
 
 const statusOptions: Record<string, MithrilBootstrapStatus> = {
   Preparing: 'preparing',
@@ -69,9 +68,9 @@ storiesOf('Loading / Mithril / Progress', module)
         status={status}
         progressItems={getProgressItemsPreset(progressPreset)}
         filesDownloaded={Math.round(
-          SNAPSHOT_FILES_TOTAL * (snapshotDownloadPercent / 100)
+          snapshotFilesTotal * (snapshotDownloadPercent / 100)
         )}
-        filesTotal={SNAPSHOT_FILES_TOTAL}
+        filesTotal={snapshotFilesTotal}
         snapshotSizeBytes={snapshotSize}
         ancillaryBytesDownloaded={Math.round(
           ancillaryBytesTotal * (ancillaryPercent / 100)
@@ -96,8 +95,8 @@ storiesOf('Loading / Mithril / Progress', module)
     <MithrilProgressView
       status="starting-node"
       progressItems={getProgressItemsPreset('finalizing-with-conversion')}
-      filesDownloaded={SNAPSHOT_FILES_TOTAL}
-      filesTotal={SNAPSHOT_FILES_TOTAL}
+      filesDownloaded={snapshotFilesTotal}
+      filesTotal={snapshotFilesTotal}
       snapshotSizeBytes={snapshotSize}
       ancillaryBytesDownloaded={ancillaryBytesTotal}
       ancillaryBytesTotal={ancillaryBytesTotal}

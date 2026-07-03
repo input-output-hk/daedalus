@@ -109,7 +109,6 @@ describe('MithrilPartialSyncStore', () => {
     expect(store.canWipeAndFullSync).toBe(false);
     expect(store.filesDownloaded).toBe(10);
     expect(store.filesTotal).toBe(20);
-    expect(store.elapsedSeconds).toBe(30);
     expect(store.logPath).toBe('/tmp/mithril-partial-sync.log');
     expect(store.error).toEqual({
       message: 'Restore failed',
@@ -159,7 +158,6 @@ describe('MithrilPartialSyncStore', () => {
     expect(store.canWipeAndFullSync).toBe(true);
     expect(store.filesDownloaded).toBeUndefined();
     expect(store.filesTotal).toBeUndefined();
-    expect(store.elapsedSeconds).toBeUndefined();
     expect(store.ancillaryBytesDownloaded).toBeUndefined();
     expect(store.ancillaryBytesTotal).toBeUndefined();
     expect(store.progressItems).toEqual([]);
@@ -358,9 +356,9 @@ describe('MithrilPartialSyncStore', () => {
     expect(mockRestartNormalRequest).toHaveBeenCalledWith();
     expect(mockWipeAndFullSyncRequest).toHaveBeenCalledTimes(1);
     expect(mockWipeAndFullSyncRequest).toHaveBeenCalledWith();
-    // startPartialSync resyncs once (its finally) and cancelPartialSync now
-    // always resyncs too (its finally), so syncStatus fires twice.
-    expect(mockStatusRequest).toHaveBeenCalledTimes(2);
+    // Every lifecycle action resyncs in its finally (start, cancel,
+    // restart-normal, wipe-and-full-sync), so syncStatus fires four times.
+    expect(mockStatusRequest).toHaveBeenCalledTimes(4);
   });
 
   it('always resyncs after a cancel even when the cancel request rejects', async () => {
@@ -374,11 +372,57 @@ describe('MithrilPartialSyncStore', () => {
       error: null,
     });
 
-    await expect(store.cancelPartialSync()).rejects.toThrow('post-cutover');
+    await expect(store.cancelPartialSync()).resolves.toBeUndefined();
 
     expect(mockCancelRequest).toHaveBeenCalledTimes(1);
     expect(mockStatusRequest).toHaveBeenCalledTimes(1);
     expect(store.status).toBe('failed');
+    expect(logger.warn).toHaveBeenCalledWith(
+      'MithrilPartialSyncStore: cancel partial sync rejected',
+      expect.objectContaining({ error: expect.any(Error) })
+    );
+  });
+
+  it('resyncs and never throws when the restart-normal request rejects', async () => {
+    const store = setupStore();
+    mockRestartNormalRequest.mockRejectedValue(new Error('backend refused'));
+    mockStatusRequest.mockResolvedValue({
+      status: 'failed',
+      allowedRecoveryActions: ['retry'],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+
+    await expect(store.restartNormally()).resolves.toBeUndefined();
+
+    expect(mockStatusRequest).toHaveBeenCalledTimes(1);
+    expect(store.status).toBe('failed');
+    expect(logger.warn).toHaveBeenCalledWith(
+      'MithrilPartialSyncStore: restart-normal request rejected',
+      expect.objectContaining({ error: expect.any(Error) })
+    );
+  });
+
+  it('resyncs and never throws when the wipe-and-full-sync request rejects', async () => {
+    const store = setupStore();
+    mockWipeAndFullSyncRequest.mockRejectedValue(new Error('backend refused'));
+    mockStatusRequest.mockResolvedValue({
+      status: 'failed',
+      allowedRecoveryActions: ['retry'],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+
+    await expect(store.wipeAndFullSync()).resolves.toBeUndefined();
+
+    expect(mockStatusRequest).toHaveBeenCalledTimes(1);
+    expect(store.status).toBe('failed');
+    expect(logger.warn).toHaveBeenCalledWith(
+      'MithrilPartialSyncStore: wipe-and-full-sync request rejected',
+      expect.objectContaining({ error: expect.any(Error) })
+    );
   });
 
   it('absorbs pushed status updates while the long-running start request is still pending', async () => {
@@ -505,6 +549,73 @@ describe('MithrilPartialSyncStore', () => {
     expect(store.status).toBe('stopping-node');
   });
 
+  it('wraps a non-Error start rejection that carries a message string', async () => {
+    const store = setupStore();
+    mockStartRequest.mockRejectedValue({ message: 'start rejected over IPC' });
+    mockStatusRequest.mockResolvedValue({
+      status: 'stopping-node',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+
+    await expect(store.startPartialSync()).rejects.toThrow(
+      'start rejected over IPC'
+    );
+  });
+
+  it('throws an empty-message error for unusable rejections so the UI applies its fallback', async () => {
+    const store = setupStore();
+    mockStartRequest.mockRejectedValue('not-an-error');
+    mockStatusRequest.mockResolvedValue({
+      status: 'stopping-node',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+
+    await expect(store.startPartialSync()).rejects.toMatchObject({
+      message: '',
+    });
+  });
+
+  it('rethrows a start rejection that resyncs to idle and re-arms the proactive prompt guard', async () => {
+    const store = setupStore();
+    mockStartRequest.mockRejectedValue(new Error('preflight rejected'));
+    mockStatusRequest.mockResolvedValue({
+      status: 'idle',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+
+    await expect(store.startPartialSync()).rejects.toThrow(
+      'preflight rejected'
+    );
+
+    expect(store.status).toBe('idle');
+    expect(store.mithrilAttemptStartedThisSession).toBe(false);
+  });
+
+  it('rethrows a start rejection that resyncs to a working status and keeps the attempt guard set', async () => {
+    const store = setupStore();
+    mockStartRequest.mockRejectedValue(new Error('channel dropped'));
+    mockStatusRequest.mockResolvedValue({
+      status: 'preparing',
+      allowedRecoveryActions: [],
+      transferProgress: {},
+      progressItems: [],
+      error: null,
+    });
+
+    await expect(store.startPartialSync()).rejects.toThrow('channel dropped');
+
+    expect(store.mithrilAttemptStartedThisSession).toBe(true);
+  });
+
   it('accepts pushed backend updates and ignores them after teardown', async () => {
     const store = setupStore();
     store.setup();
@@ -590,7 +701,6 @@ describe('MithrilPartialSyncStore', () => {
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
     expect(store.isPartialSyncEnabled).toBe(true);
     expect(store.isSignificantlyBehind).toBe(true);
-    expect(store.behindByImmutables).toBe(42);
   });
 
   it('keeps partial sync hidden by default until the first availability response lands', () => {
@@ -598,7 +708,6 @@ describe('MithrilPartialSyncStore', () => {
 
     expect(store.isPartialSyncEnabled).toBe(false);
     expect(store.isSignificantlyBehind).toBe(false);
-    expect(store.behindByImmutables).toBeUndefined();
   });
 
   it('populates certifiedEpoch from the availability payload and leaves it undefined when absent', () => {
@@ -621,6 +730,25 @@ describe('MithrilPartialSyncStore', () => {
       isSignificantlyBehind: false,
     });
     expect(store.certifiedEpoch).toBeUndefined();
+  });
+
+  it('flags a failed behind-ness probe from the availability payload and clears it when absent', () => {
+    const store = setupStore();
+
+    expect(store.isProbeFailed).toBe(false);
+
+    store._applyAvailability({
+      isEnabled: true,
+      isSignificantlyBehind: false,
+      isProbeFailed: true,
+    });
+    expect(store.isProbeFailed).toBe(true);
+
+    store._applyAvailability({
+      isEnabled: true,
+      isSignificantlyBehind: false,
+    });
+    expect(store.isProbeFailed).toBe(false);
   });
 
   it('refreshes availability on every interval tick while idle so first load self-corrects', async () => {

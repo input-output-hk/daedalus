@@ -18,6 +18,7 @@ import styles from './MithrilProgressView.scss';
 
 interface Props {
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus;
+  variant?: 'bootstrap' | 'partial-sync';
   progressItems?: MithrilProgressItem[];
   filesDownloaded?: number;
   filesTotal?: number;
@@ -27,19 +28,8 @@ interface Props {
   ancillaryProgress?: number;
   bootstrapStartedAt?: number | null;
   elapsedSeconds?: number;
-  title?: string;
-  subtitle?: string;
-  actionLabel?: string;
-  startingNodeTitle?: string;
-  startingNodeDetail?: string;
-  stoppingNodeTitle?: string;
-  stoppingNodeDetail?: string;
-  cancellingTitle?: string;
-  cancellingDetail?: string;
-  completedTransitionLabel?: string;
   hideAction?: boolean;
   actionDisabled?: boolean;
-  actionDisabledTooltip?: string;
   showDownloadProgressBar?: boolean;
   onAction(): void;
 }
@@ -113,6 +103,7 @@ function CompletionBlock({
 function MithrilProgressView(props: Props, { intl }: Context) {
   const {
     status,
+    variant = 'bootstrap',
     progressItems,
     filesDownloaded,
     filesTotal,
@@ -122,19 +113,8 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     ancillaryProgress,
     bootstrapStartedAt,
     elapsedSeconds: elapsedSecondsProp,
-    title,
-    subtitle,
-    actionLabel,
-    startingNodeTitle,
-    startingNodeDetail,
-    stoppingNodeTitle,
-    stoppingNodeDetail,
-    cancellingTitle,
-    cancellingDetail,
-    completedTransitionLabel,
     hideAction,
     actionDisabled,
-    actionDisabledTooltip,
     showDownloadProgressBar,
     onAction,
   } = props;
@@ -143,12 +123,12 @@ function MithrilProgressView(props: Props, { intl }: Context) {
   const isStoppingNode = status === 'stopping-node';
   const isCancelling = status === 'cancelling';
   const isLongRunningPhase = LONG_RUNNING_STATUSES.has(status);
-  // The partial-sync overlay passes `completedTransitionLabel` to
-  // turn the 'completed' frame into a loading-style hand-off (spinner +
-  // "Returning to Daedalus...") while the finalize auto-timeout runs. Bootstrap
-  // never passes the prop, so its 'completed' frame is byte-for-byte unchanged.
-  const isCompletedTransition =
-    status === 'completed' && !!completedTransitionLabel;
+  const isPartialSync = variant === 'partial-sync';
+  // The partial-sync variant turns the 'completed' frame into a loading-style
+  // hand-off (spinner + "Returning to Daedalus...") while the finalize
+  // auto-timeout runs. The default bootstrap variant keeps its own 'completed'
+  // frame byte-for-byte unchanged.
+  const isCompletedTransition = status === 'completed' && isPartialSync;
 
   // Local elapsed-seconds timer — only this component re-renders each second
   const [elapsedSeconds, setElapsedSeconds] = useState<number | undefined>(
@@ -177,13 +157,29 @@ function MithrilProgressView(props: Props, { intl }: Context) {
 
   const elapsedLabel = formatDuration(elapsedSeconds) ?? '0:00';
 
+  let subtitleMessage = messages.progressSubtitle;
+  if (isPartialSync) {
+    subtitleMessage =
+      status === 'completed'
+        ? messages.partialSyncCompletedSubtitle
+        : messages.partialSyncProgressSubtitle;
+  }
+  // A disabled Cancel needs an explanation; only the partial-sync flow
+  // disables it (while the node is still stopping).
+  const actionDisabledTooltip =
+    isPartialSync && isStoppingNode
+      ? intl.formatMessage(messages.partialSyncCancelStoppingTooltip)
+      : undefined;
+
   return (
     <div className={styles.root}>
       <div className={styles.header}>
         <h1 id={MITHRIL_PROGRESS_HEADING_ID}>
-          {title || intl.formatMessage(messages.title)}
+          {intl.formatMessage(
+            isPartialSync ? messages.partialSyncTitle : messages.title
+          )}
         </h1>
-        <p>{subtitle || intl.formatMessage(messages.progressSubtitle)}</p>
+        <p>{intl.formatMessage(subtitleMessage)}</p>
       </div>
 
       {!isCancelling && (
@@ -219,44 +215,44 @@ function MithrilProgressView(props: Props, { intl }: Context) {
 
       {isStoppingNode && (
         <CompletionBlock
-          title={
-            stoppingNodeTitle || intl.formatMessage(messages.nodeStoppingTitle)
-          }
-          detail={
-            stoppingNodeDetail ||
-            intl.formatMessage(messages.nodeStoppingDetail)
-          }
+          title={intl.formatMessage(
+            isPartialSync
+              ? messages.partialSyncNodeStoppingTitle
+              : messages.nodeStoppingTitle
+          )}
+          detail={intl.formatMessage(
+            isPartialSync
+              ? messages.partialSyncNodeStoppingDetail
+              : messages.nodeStoppingDetail
+          )}
         />
       )}
 
       {isCancelling && (
         <CompletionBlock
-          title={
-            cancellingTitle ||
-            intl.formatMessage(messages.partialSyncCancellingTitle)
-          }
-          detail={
-            cancellingDetail ||
-            intl.formatMessage(messages.partialSyncCancellingDetail)
-          }
+          title={intl.formatMessage(messages.partialSyncCancellingTitle)}
+          detail={intl.formatMessage(messages.partialSyncCancellingDetail)}
         />
       )}
 
       {isStartingNode && (
         <CompletionBlock
-          title={
-            startingNodeTitle || intl.formatMessage(messages.nodeStartingTitle)
-          }
-          detail={
-            startingNodeDetail ||
-            intl.formatMessage(messages.nodeStartingDetail)
-          }
+          title={intl.formatMessage(
+            isPartialSync
+              ? messages.partialSyncNodeStartingTitle
+              : messages.nodeStartingTitle
+          )}
+          detail={intl.formatMessage(
+            isPartialSync
+              ? messages.partialSyncNodeStartingDetail
+              : messages.nodeStartingDetail
+          )}
         />
       )}
 
       {isCompletedTransition && (
         <CompletionBlock
-          title={completedTransitionLabel || ''}
+          title={intl.formatMessage(messages.partialSyncCompletedTransition)}
           spinnerPosition="top"
         />
       )}
@@ -268,7 +264,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
               <Button
                 className={styles.secondaryAction}
                 skin={ButtonSkin}
-                label={actionLabel || intl.formatMessage(messages.cancel)}
+                label={intl.formatMessage(messages.cancel)}
                 onClick={onAction}
                 disabled={isStartingNode || actionDisabled}
               />

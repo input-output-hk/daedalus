@@ -9,7 +9,9 @@
 - Branch: `feat/mithril-partial-sync-ux-refinement`
 - Planning status: `approved` (grill 2026-07-03 + critique pass with one Planner fix pass + verification
   grill 2026-07-03 with 4-agent code verification of all 41 items — see plan-review log)
-- Build status: `pending` (pre-build; precedes the `in_progress|in_review|completed` build lifecycle)
+- Build status: `completed` (2026-07-03 — all CAT-A–G chunks implemented and staged; see Outcome)
+- Review status: `completed` (per-chunk implementation reviews all APPROVED; final 6-gate
+  verification green — see Outcome)
 - Interaction mode: `autonomous`
 - Priority: critical · Estimated: 16h · Dependencies: task-ux-702 (completed)
 
@@ -574,6 +576,54 @@ beside `mithrilPartialSyncNodeStartup` and the service specs; overlay/step-indic
 - `.agent/plans/mithril-partial-sync/task-plans-ux-refinement/phase-7/task-ux-703-plan-review.md`
 - `.agent/plans/mithril-partial-sync/task-plans-ux-refinement/phase-7/task-ux-703-impl-review.md`
 
+## Outcome (2026-07-03)
+
+All 32 threads and 9 nits remediated per plan; every chunk implemented, code-reviewed (APPROVED),
+and staged. Per-section plan docs (implementation mechanics per CAT):
+`task-ux-703-plan-cat-a.md` … `task-ux-703-plan-cat-g.md` (same directory).
+
+- **CAT-A — cross-session recovery & startup correctness.** `adoptRecoverySnapshot` seeds the
+  service from the last broadcast so the cross-session wipe button works (T5); node-start-verified
+  staging reclaim and cancel-path cleanup are best-effort (T6, T9/DD-703-9); the interrupted-cutover
+  Quit branch exits via `safeExitWithCode` (T8); staging root resolves marker-first (T10); T14
+  no-op — detachment kept with a rationale comment (DD-703-6 rev.).
+- **CAT-B — start flow & availability.** Diagnostics section renders whenever the feature is
+  enabled, with copy branching on behind / near-tip / probe-failed via the new `isProbeFailed`
+  plumbing, CTA always enabled (T11/DD-703-2/DD-703-10, N7); start rejections surface and the
+  prompt re-arms on idle resync (T12/T31); recovery actions catch + resync + log (T15/DD-703-11,
+  incl. the `App.tsx` retry wiring); behind-ness caches invalidate on chain-directory change (T21);
+  probe fetch + readdir parallelized (T28); T2 answered in the checklist only (DD-703-3).
+- **CAT-C — finalize resilience.** Auto-finalize (D9 + ADR D-702a-1) stands; a finalize rejection
+  now retries once, then renders `MithrilErrorView` with a working `retry` action (T13/DD-703-4).
+- **CAT-D — disk preflight.** Delta-based estimate per DD-703-5 (`max(snapshot − chainDir, 0) +
+  0.2 × snapshot`, 4 GB floor, whole-snapshot ×1.2 fallback on measurement failure) (T7);
+  `PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE` code + copy (T18). Preflight reuses
+  `context.layoutResult.managedChainPath` instead of re-calling `getManagedChainPath`.
+- **CAT-E — i18n / copy.** Translated stage labels for `verifying`/`converting`/`installing`
+  (T1/T17); "shut down" (T4); every user-reachable service throw carries a stable error code
+  mapped to intl copy, prose demoted to logs (T16/DD-703-12); error-view body renders only
+  code/stage-keyed copy, raw `error?.message` confined to collapsed details (T19); ICU plurals for
+  the epochs-behind strings (T20/T32); intl start-failure fallback with approved vocabulary (T22).
+  14 new message ids, EN + JA (several JA strings flagged for native review — see research notes).
+- **CAT-F — structure / duplication / perf.** Shared error-message helper (T23) — **amended
+  mid-build** after an implementer escalation exposed a conflict with landed CAT-E behavior: the
+  helper maps coded rejections through `COPY_BY_CODE` (`title` copy, via one additive lookup
+  export), returns the shared intl fallback otherwise, and never renders raw rejection prose or
+  code text (Amendment recorded in `task-ux-703-plan-cat-f.md` and the plan-review log). Status
+  predicates deduplicated (T24, T25); shared spawn helper preserving detachment + POSIX rationale
+  (T26); snapshot list/show pipeline deduplicated (T27); dead `behindByImmutables` /
+  `elapsedSeconds` observables removed (T29/T30); vestigial backdrop blur mixin removed (T3).
+- **CAT-G — nits.** N2, N3, N5, N6, N8, N9 applied; N4 `MithrilProgressView` variant flag landed
+  with the bootstrap `completed` frame byte-identical (locked boundary 11 held, DD-703-14); N1
+  declined per DD-703-13; N7 absorbed by CAT-B.
+
+Verification (final gate, 2026-07-03): lint 0 errors; `tsc --noEmit` clean; jest
+`--testPathPattern mithril` 63/63 suites, 759/759 tests (bootstrap suites green — boundary 11
+intact); i18n catalogs complete for all 14 new ids in EN + JA, `yarn i18n:manage` exit 0;
+`yarn prettier:check` failures classified 100% pre-existing drift at HEAD (see research notes for
+the classification technique). Smoke-test cheat sheet, PRD pointers, and the PR-comment checklist
+updated per DD-703-7/DD-703-8; no GitHub writes.
+
 ## Status
 
 - Planning status: `approved` — grill session 2026-07-03, one critique pass
@@ -581,4 +631,7 @@ beside `mithrilPartialSyncNodeStartup` and the service specs; overlay/step-indic
   verification grill 2026-07-03 (4-agent code verification of all 41 items): DD-703-6 revised (T14
   no code change), DD-703-10…14 added (T11 plumbing, T15 handling, T16 scope, N1 declined, N4
   guards); see plan-review log.
-- Build status: `pending` — not started (pre-build; precedes `in_progress|in_review|completed`).
+- Build status: `completed` — 2026-07-03; all CAT-A–G chunks implemented and staged (one T23
+  amendment mid-build, see Outcome); see `task-ux-703-impl-review.md`.
+- Review status: `completed` — every chunk's code review APPROVED; final 6-gate verification green
+  (see Outcome).

@@ -12,6 +12,7 @@ import type {
 import {
   isMithrilPartialSyncBlockingNodeStart,
   isMithrilPartialSyncWorkingStatus,
+  makeIdlePartialSyncStatus,
 } from '../../common/types/mithril-partial-sync.types';
 import type { PartialSyncPreflightContext } from '../utils/chainStorageCoordinator';
 import {
@@ -51,14 +52,6 @@ const DEFAULT_BOOTSTRAP_STATUS: MithrilBootstrapStatusUpdate = {
   error: null,
 };
 
-const DEFAULT_PARTIAL_SYNC_STATUS: MithrilPartialSyncStatusSnapshot = {
-  status: 'idle',
-  allowedRecoveryActions: [],
-  transferProgress: {},
-  progressItems: [],
-  error: null,
-};
-
 export { isMithrilDecisionCancelledError, MithrilDecisionCancelledError };
 
 export class MithrilController {
@@ -66,9 +59,7 @@ export class MithrilController {
   _bootstrapStatus: MithrilBootstrapStatusUpdate = {
     ...DEFAULT_BOOTSTRAP_STATUS,
   };
-  _partialSyncStatus: MithrilPartialSyncStatusSnapshot = {
-    ...DEFAULT_PARTIAL_SYNC_STATUS,
-  };
+  _partialSyncStatus: MithrilPartialSyncStatusSnapshot = makeIdlePartialSyncStatus();
   _bootstrapStatusListeners: Array<
     (status: MithrilBootstrapStatusUpdate) => void
   > = [];
@@ -171,7 +162,7 @@ export class MithrilController {
   }
 
   async getPartialSyncAvailability(): Promise<MithrilPartialSyncAvailability> {
-    const { isEnabled } = chainStorageCoordinator.getPartialSyncAvailability();
+    const isEnabled = chainStorageCoordinator.isPartialSyncEnabled();
     if (!isEnabled) {
       return { isEnabled: false, isSignificantlyBehind: false };
     }
@@ -420,6 +411,9 @@ export class MithrilController {
   }
 
   resetStartupGateOnDirectoryChange(): void {
+    // The behind-ness caches describe the previous chain directory; drop them
+    // together with the startup-gate reset so the next probe re-reads.
+    this._partialSyncService.onChainDirectoryChanged();
     this._startupGate.resetOnDirectoryChange();
   }
 
@@ -491,8 +485,21 @@ export class MithrilController {
         finalizeCancel: async () => this._partialSyncService.finalizeCancel(),
         forceKill: () => this._partialSyncService.forceKill(),
         abandonCancel: async () => this._partialSyncService.abandonCancel(),
-        restartNormal: async () => this._partialSyncService.restartNormal(),
-        wipeAndFullSync: async () => this._partialSyncService.wipeAndFullSync(),
+        // Recovery actions may target a boundary reached in a previous session
+        // (startup-owned emission); seed the service with the broadcast snapshot
+        // before delegating so its allowed-action assertion sees that boundary.
+        restartNormal: async () => {
+          this._partialSyncService.adoptRecoverySnapshot(
+            this.getPartialSyncStatus()
+          );
+          await this._partialSyncService.restartNormal();
+        },
+        wipeAndFullSync: async () => {
+          this._partialSyncService.adoptRecoverySnapshot(
+            this.getPartialSyncStatus()
+          );
+          await this._partialSyncService.wipeAndFullSync();
+        },
         finalizeWipeAndFullSync: async () =>
           this._partialSyncService.finalizeWipeAndFullSync(),
       },

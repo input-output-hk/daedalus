@@ -422,8 +422,9 @@ above. Fixed in `<commit>`.
 banned vocabulary, drifted from the sibling fallback in the prompt component.
 
 **Detailed response:** Fixed in `<commit>`: the fallback is an intl message with approved
-vocabulary ("Unable to start Mithril Sync.") and all three fallback sites share one extraction
-helper (see the duplication thread T23), eliminating the drift.
+vocabulary ("Unable to start Mithril Sync.") and all three sites route through one shared helper
+(see the duplication thread T23) that resolves known error codes to their mapped intl copy and
+uses this message as the single fallback otherwise, eliminating the drift.
 
 **Brief response:** Fixed in `<commit>` — intl fallback, approved vocabulary, single shared helper.
 
@@ -450,10 +451,15 @@ look shipped deliberately in the 702 wave; the blur was vestigial).
 **Comment:** `error instanceof Error ? error.message : fallback` implemented three times with
 divergent fallback copy.
 
-**Detailed response:** Fixed in `<commit>`: one shared helper with a single intl-backed fallback,
-used at all three sites (prompt, Diagnostics section, store).
+**Detailed response:** Fixed in `<commit>`: one shared helper used at all three sites (prompt,
+Diagnostics section, store). Because start rejections now carry stable error codes as their
+`message` (see the error-code thread T16), the helper maps a known code through the existing
+code-keyed copy map to its localized copy and returns a single shared intl-backed fallback for
+everything else — raw rejection prose or code text never renders as user copy. The store variant
+still throws an `Error` carrying the extracted text for logging.
 
-**Brief response:** Fixed in `<commit>` — shared extraction helper, one fallback.
+**Brief response:** Fixed in `<commit>` — one shared helper: known codes resolve their mapped intl
+copy, everything else gets one intl fallback; raw messages/codes never render.
 
 ### T24 — `source/common/types/mithril-partial-sync.types.ts:123` · self-review · comment 3514323739 · minor
 

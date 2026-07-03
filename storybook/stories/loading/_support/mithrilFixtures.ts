@@ -38,6 +38,7 @@ export const snapshots: Array<MithrilSnapshotItem> = [
 export const latestSnapshot = snapshots[0];
 export const explicitSnapshot = snapshots[1];
 export const snapshotSize = latestSnapshot.size;
+export const snapshotFilesTotal = 980;
 export const ancillaryBytesTotal = 9 * 1024 * 1024 * 1024;
 
 export const defaultChainStorageValidation: ChainStorageValidation = {

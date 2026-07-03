@@ -10,6 +10,7 @@ import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
 import { themeOverrides } from './themes/overrides';
 import translations from './i18n/translations';
+import { logger } from './utils/logging';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
 import MithrilPartialSyncOverlay from './components/loading/mithril-bootstrap/MithrilPartialSyncOverlay';
@@ -113,7 +114,18 @@ class App extends Component<{
                     canRestartNormally={mithrilPartialSync.canRestartNormally}
                     canWipeAndFullSync={mithrilPartialSync.canWipeAndFullSync}
                     onCancel={mithrilPartialSync.cancelPartialSync}
-                    onRetry={mithrilPartialSync.startPartialSync}
+                    onRetry={() => {
+                      // Retry has no confirmation surface to show a rejection;
+                      // the resynced backend status drives the error view.
+                      mithrilPartialSync.startPartialSync().catch((error) => {
+                        logger.warn(
+                          'App: Mithril partial sync retry rejected',
+                          {
+                            error,
+                          }
+                        );
+                      });
+                    }}
                     onRestartNormally={mithrilPartialSync.restartNormally}
                     onWipeAndFullSync={mithrilPartialSync.wipeAndFullSync}
                     onDismissCompleted={

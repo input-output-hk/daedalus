@@ -6,9 +6,22 @@ import translations from '../../../i18n/locales/en-US.json';
 import MithrilProgressView from './MithrilProgressView';
 import { MITHRIL_PROGRESS_HEADING_ID } from './accessibilityIds';
 
+// react-polymorph's PopOver needs a skin/theme context not provided here; the
+// disabled-Cancel tooltip (stopping-node) pulls it in. Stub it so the wrapped
+// trigger and the tooltip content both render in the test.
+jest.mock('react-polymorph/lib/components/PopOver', () => ({
+  PopOver: ({ children, content }: { children?: any; content?: any }) => (
+    <>
+      {children}
+      <span>{content}</span>
+    </>
+  ),
+}));
+
 describe('MithrilProgressView', () => {
   const renderComponent = ({
     status = 'unpacking' as const,
+    variant,
     filesDownloaded,
     filesTotal,
     bootstrapStartedAt,
@@ -23,6 +36,7 @@ describe('MithrilProgressView', () => {
       | 'finalizing'
       | 'completed'
       | 'starting-node';
+    variant?: 'bootstrap' | 'partial-sync';
     filesDownloaded?: number;
     filesTotal?: number;
     bootstrapStartedAt?: number | null;
@@ -31,6 +45,7 @@ describe('MithrilProgressView', () => {
       <IntlProvider locale="en-US" messages={translations}>
         <MithrilProgressView
           status={status}
+          variant={variant}
           filesDownloaded={filesDownloaded}
           filesTotal={filesTotal}
           bootstrapStartedAt={bootstrapStartedAt}
@@ -130,6 +145,43 @@ describe('MithrilProgressView', () => {
     expect(statusRegion).toHaveAttribute('aria-atomic', 'true');
     expect(
       screen.getByText(/mithril snapshot has been restored/i)
+    ).toBeInTheDocument();
+  });
+
+  it('renders the hand-off frame on completed for the partial-sync variant', () => {
+    renderComponent({ status: 'completed', variant: 'partial-sync' });
+
+    expect(screen.getByText(/returning to daedalus/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /^mithril sync$/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/mithril sync completed successfully/i)
+    ).toBeInTheDocument();
+  });
+
+  it('keeps the bootstrap completed frame free of the hand-off transition', () => {
+    renderComponent({ status: 'completed' });
+
+    expect(
+      screen.queryByText(/returning to daedalus/i)
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /fast sync with mithril/i })
+    ).toBeInTheDocument();
+  });
+
+  it('shows the partial-sync node-stop copy for the partial-sync variant', () => {
+    renderComponent({
+      status: 'stopping-node',
+      variant: 'partial-sync',
+      bootstrapStartedAt: Date.now(),
+    });
+
+    expect(
+      screen.getByText(
+        /stopping the cardano node before restoring verified mithril chain data/i
+      )
     ).toBeInTheDocument();
   });
 

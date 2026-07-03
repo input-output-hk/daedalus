@@ -58,6 +58,14 @@ describe('SyncingConnectingMithrilPrompt', () => {
     expect(container.textContent).not.toMatch(/partial sync/i);
   });
 
+  it('uses singular epoch phrasing when exactly one epoch behind', () => {
+    renderComponent({ behindByEpochs: 1 });
+
+    expect(
+      screen.getByText('Your node is about 1 epoch behind.')
+    ).toBeInTheDocument();
+  });
+
   it('renders the unknown-figure fallback when no epochs figure is available', () => {
     const { container } = renderComponent({ behindByEpochs: undefined });
 
@@ -99,7 +107,7 @@ describe('SyncingConnectingMithrilPrompt', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'For this process to begin your Cardano node will need to be shutdown. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.'
+        'For this process to begin your Cardano node will need to be shut down. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.'
       )
     ).toBeInTheDocument();
     // The old private confirm-body copy is gone (consolidated into the shared key).
@@ -167,7 +175,29 @@ describe('SyncingConnectingMithrilPrompt', () => {
     expect(onStart).not.toHaveBeenCalled();
   });
 
-  it('shows a start-error line when the start action rejects', async () => {
+  it('shows the mapped copy when the start rejection carries a known error code', async () => {
+    const onStart = jest
+      .fn()
+      .mockRejectedValue(new Error('PARTIAL_SYNC_DISABLED'));
+    renderComponent({ behindByEpochs: 3, onStart });
+
+    clickButton('Mithril Sync (fast)');
+    clickButton('Start now');
+
+    await waitFor(() => {
+      expect(
+        logger.warn
+      ).toHaveBeenCalledWith(
+        'SyncingConnectingMithrilPrompt: Mithril sync start rejected after confirmation',
+        { error: expect.any(Error) }
+      );
+    });
+
+    expect(screen.getByText('Mithril Sync failed')).toBeInTheDocument();
+    expect(screen.queryByText('PARTIAL_SYNC_DISABLED')).not.toBeInTheDocument();
+  });
+
+  it('shows the shared fallback when the start rejection carries no known code', async () => {
     const onStart = jest
       .fn()
       .mockRejectedValue(
@@ -179,15 +209,13 @@ describe('SyncingConnectingMithrilPrompt', () => {
     clickButton('Start now');
 
     await waitFor(() => {
-      expect(logger.warn).toHaveBeenCalledWith(
-        'SyncingConnectingMithrilPrompt: Mithril sync start rejected after confirmation',
-        { error: expect.any(Error) }
-      );
+      expect(
+        screen.getByText('Unable to start Mithril Sync.')
+      ).toBeInTheDocument();
     });
-
     expect(
-      screen.getByText('Mithril sync is disabled by launcher configuration.')
-    ).toBeInTheDocument();
+      screen.queryByText('Mithril sync is disabled by launcher configuration.')
+    ).not.toBeInTheDocument();
   });
 
   it('does not update state when start rejects after unmount', async () => {

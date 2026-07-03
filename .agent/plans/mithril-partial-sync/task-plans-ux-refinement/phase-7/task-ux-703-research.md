@@ -74,3 +74,42 @@ Additional durable findings from the 2026-07-03 verification grill (4-agent code
   `ChildProcess`, group kill, fire-and-forget, direct-kill fallback;
   `CardanoNode._killProcessWithName` = raw pid (possibly a stored previous-session PID), single-pid
   kill, `promisedCondition` death-poll.
+
+Durable findings from implementation (2026-07-03, build wave):
+
+- **Pre-existing prettier 2.1.2 drift is far broader than the two `mithrilCommandRunner` files**
+  the planning note flagged. At the final gate `yarn prettier:check` failed on 240 files, all
+  pre-existing: 225 untouched by the task, plus these 15 task-changed files whose drift exists
+  byte-identically at HEAD — `mithrilCommandRunner.ts`, `MithrilController.ts`/`.spec`,
+  `mithrilPartialSyncNodeStartup.spec`, `MithrilPartialSyncService.ts`/`.spec`,
+  `chainStorageCoordinator.ts`/`.spec`, `MithrilErrorView.tsx`, `MithrilStepIndicator.tsx`,
+  `partialSyncErrorCopy.ts`/`.spec`, `DaedalusDiagnostics.tsx`, `MithrilPartialSyncConfirmation.tsx`,
+  `MithrilPartialSyncStore.spec.ts`. Never whole-file reformat these; format only edited hunks.
+  **Classification technique:** prove drift pre-exists by piping the HEAD/staged blob through
+  prettier with the real path — `git show HEAD:<file> | prettier --stdin-filepath <file> --check`
+  (or `git show :<file>` for the index) — and compare drift regions against the working tree; a
+  file is clean of *new* drift when every failing region is byte-identical to the blob's. Beware
+  duplicated drift: `MithrilPartialSyncService.spec.ts` carries two byte-identical badly-formatted
+  `require(...)` declarations — one pre-existing (HEAD line 1845), one task-added; a blind
+  replace-all would reformat the pre-existing copy.
+- **Sequenced CAT plans can conflict with later-landed sections — cross-check before implementing.**
+  The approved T23 helper spec (prefer the concrete extracted rejection message) was written before
+  CAT-E landed; post-T16 rejection messages are stable codes, so preferring the concrete message
+  would render raw codes like `PARTIAL_SYNC_DISABLED` as user copy (banned), and CAT-E had already
+  made the section format the shared fallback unconditionally. The implementer escalated (edits
+  reverted cleanly) and the T23 step was amended (recorded in `task-ux-703-plan-cat-f.md`
+  AMENDMENT + the plan-review log): the helper maps a known code through `COPY_BY_CODE` to that
+  entry's `title` copy (via one additive lookup export; `hint` never used at the one-line start
+  seams), returns the shared `partialSyncStartFailureMessage` otherwise, and never returns raw
+  rejection prose or code text. Same lesson class as the T9/T13 ADR cross-checks above, but
+  intra-wave.
+- **Disk preflight reuses `context.layoutResult.managedChainPath`** instead of re-calling
+  `getManagedChainPath()`: each `getManagedChainPath` call transitively forks a `checkDiskSpace`
+  probe (see the availability-probe cost finding from 702b), so the T7 preflight measures
+  `chainDirBytes` against the path already resolved in the start context rather than paying a
+  second fork per start.
+- **JA strings flagged for native review** (composed from the ja-copy-table patterns, no exact
+  precedent): the T11 near-tip informational first sentence; the T19 technical-details label; the
+  three T1/T17 stage labels and the start-failure fallback (patterned on copy-table rows
+  24/26/33/44); the T7/T18 disk-preflight copy. All follow the table's closest patterns; none are
+  free guesses.

@@ -14,7 +14,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   processSummary: {
     id: 'daedalus.diagnostics.dialog.mithrilSyncProcessSummary',
     defaultMessage:
-      '!!!For this process to begin your Cardano node will need to be shutdown. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.',
+      '!!!For this process to begin your Cardano node will need to be shut down. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.',
     description:
       'Canonical shutdown/restore/restart summary sentence shared by the Mithril partial sync confirmation modal and the proactive prompt confirmation view.',
   },

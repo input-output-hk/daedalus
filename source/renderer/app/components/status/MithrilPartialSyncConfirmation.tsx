@@ -15,7 +15,7 @@ const messages = defineMessages({
   behind: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehind',
     defaultMessage:
-      '!!!Your node is about {epochs} epochs behind. Mithril Sync will restore verified chain data to help your node sync faster.',
+      '!!!Your node is about {epochs, plural, one {# epoch} other {# epochs}} behind. Mithril Sync will restore verified chain data to help your node sync faster.',
     description:
       'Behind-ness context line (epochs behind the blockchain tip) for the Mithril partial sync confirmation modal',
   },

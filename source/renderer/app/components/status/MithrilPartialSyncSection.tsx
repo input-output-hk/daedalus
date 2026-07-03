@@ -3,8 +3,10 @@ import { defineMessages, intlShape } from 'react-intl';
 
 import globalMessages from '../../i18n/global-messages';
 import { logger } from '../../utils/logging';
+import { getMithrilStartErrorMessage } from '../../utils/mithrilErrorMessage';
 import MithrilPartialSyncConfirmation from './MithrilPartialSyncConfirmation';
 import MithrilPartialSyncRecommendation from './MithrilPartialSyncRecommendation';
+import type { MithrilAvailabilityVariant } from './MithrilPartialSyncRecommendation';
 import styles from './DaedalusDiagnostics.scss';
 
 const messages = defineMessages({
@@ -19,7 +21,8 @@ const messages = defineMessages({
 type Props = {
   isActionBlocked: boolean;
   isMithrilPartialSyncWorking: boolean;
-  shouldShowRecommendation: boolean;
+  isSignificantlyBehind: boolean;
+  isProbeFailed: boolean;
   behindByEpochs?: number;
   showConfirmationOnOpen?: boolean;
   onRestoreFocus: () => void;
@@ -101,17 +104,18 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
       }
 
       this.setState({
-        startError:
-          error instanceof Error
-            ? error.message
-            : 'Unable to start Mithril partial sync.',
+        startError: getMithrilStartErrorMessage(error, this.context.intl),
       });
       this.props.onRestoreFocus();
     }
   };
 
   render() {
-    const { isActionBlocked, shouldShowRecommendation } = this.props;
+    const {
+      isActionBlocked,
+      isSignificantlyBehind,
+      isProbeFailed,
+    } = this.props;
     const { isShowingConfirmation, startError } = this.state;
     const { intl } = this.context;
 
@@ -127,8 +131,14 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
       );
     }
 
-    if (!shouldShowRecommendation) {
-      return null;
+    // The section stays visible in every probe state; only the tooltip copy
+    // adapts. A confident behind result outranks the failure hint, and a
+    // failed probe outranks the near-tip reassurance.
+    let availabilityVariant: MithrilAvailabilityVariant = 'near-tip';
+    if (isSignificantlyBehind) {
+      availabilityVariant = 'behind';
+    } else if (isProbeFailed) {
+      availabilityVariant = 'availability-unknown';
     }
 
     return (
@@ -139,6 +149,7 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
         </div>
         <MithrilPartialSyncRecommendation
           isActionBlocked={isActionBlocked}
+          variant={availabilityVariant}
           onShowConfirmation={this.showConfirmation}
         />
       </div>

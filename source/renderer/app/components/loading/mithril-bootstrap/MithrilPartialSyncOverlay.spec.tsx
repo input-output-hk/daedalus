@@ -344,6 +344,12 @@ describe('MithrilPartialSyncOverlay', () => {
     expect(
       screen.queryByRole('heading', { level: 1, name: /mithril-client json/i })
     ).not.toBeInTheDocument();
+    // the raw backend message is confined to the collapsed technical-details
+    // section (hidden until expanded); the visible header is localized
+    expect(
+      screen.queryByText('{"raw":"mithril-client json"}')
+    ).not.toBeInTheDocument();
+    expect(screen.getByText(/technical details/i)).toBeInTheDocument();
   });
 
   it('gives cancelled a calmer hint distinct from failed, rendered as body text', () => {
@@ -357,6 +363,88 @@ describe('MithrilPartialSyncOverlay', () => {
     expect(
       screen.queryByText(/was stopped before it finished/i)
     ).not.toBeInTheDocument();
+  });
+
+  it('retries a rejected finalize once and stays on the hand-off frame when the retry succeeds', async () => {
+    jest.useFakeTimers();
+    const onDismissCompleted = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('finalize failed'))
+      .mockResolvedValue(undefined);
+    try {
+      renderComponent({ status: 'completed', onDismissCompleted });
+
+      await act(async () => {
+        jest.advanceTimersByTime(4000);
+      });
+      expect(onDismissCompleted).toHaveBeenCalledTimes(1);
+      // the silent retry is pending: still the success hand-off frame
+      expect(screen.getByText(/returning to daedalus/i)).toBeInTheDocument();
+
+      await act(async () => {
+        jest.advanceTimersByTime(2000);
+      });
+      expect(onDismissCompleted).toHaveBeenCalledTimes(2);
+      // the successful retry never surfaces the failure frame
+      expect(
+        screen.queryByRole('heading', {
+          name: /finishing mithril sync failed/i,
+        })
+      ).not.toBeInTheDocument();
+      expect(screen.getByText(/returning to daedalus/i)).toBeInTheDocument();
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('shows the finalize-failed error view after both finalize attempts fail and recovers through its retry action', async () => {
+    jest.useFakeTimers();
+    const onDismissCompleted = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('finalize failed'))
+      .mockRejectedValueOnce(new Error('finalize failed again'))
+      .mockResolvedValue(undefined);
+    try {
+      renderComponent({ status: 'completed', onDismissCompleted });
+
+      await act(async () => {
+        jest.advanceTimersByTime(4000);
+      });
+      await act(async () => {
+        jest.advanceTimersByTime(2000);
+      });
+      expect(onDismissCompleted).toHaveBeenCalledTimes(2);
+
+      // both attempts failed: the success frame gives way to the error view
+      expect(
+        screen.getByRole('heading', {
+          level: 1,
+          name: /finishing mithril sync failed/i,
+        })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/could not finish the final cleanup step/i)
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(/returning to daedalus/i)
+      ).not.toBeInTheDocument();
+
+      // a successful manual retry re-invokes the finalize and hands control
+      // back to the store-driven dismissal (the hand-off frame returns while
+      // the store hides the overlay via status)
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: /try again/i }));
+      });
+      expect(onDismissCompleted).toHaveBeenCalledTimes(3);
+      expect(
+        screen.queryByRole('heading', {
+          name: /finishing mithril sync failed/i,
+        })
+      ).not.toBeInTheDocument();
+      expect(screen.getByText(/returning to daedalus/i)).toBeInTheDocument();
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });
 
@@ -372,6 +460,14 @@ describe('isMithrilPartialSyncOverlayStatus', () => {
 describe('isMithrilPartialSyncBlockingNodeStart', () => {
   it('blocks node start while cancellation cleanup is in progress', () => {
     expect(isMithrilPartialSyncBlockingNodeStart('cancelling')).toBe(true);
+  });
+
+  it('matches the working-status window exactly', () => {
+    expect(isMithrilPartialSyncBlockingNodeStart('downloading')).toBe(true);
+    expect(isMithrilPartialSyncBlockingNodeStart('starting-node')).toBe(true);
+    expect(isMithrilPartialSyncBlockingNodeStart('completed')).toBe(false);
+    expect(isMithrilPartialSyncBlockingNodeStart('failed')).toBe(false);
+    expect(isMithrilPartialSyncBlockingNodeStart('idle')).toBe(false);
   });
 });
 

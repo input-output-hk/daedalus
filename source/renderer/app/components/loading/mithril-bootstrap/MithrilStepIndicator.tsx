@@ -74,12 +74,15 @@ const DOWNLOAD_SUB_IDS = new Set<string>([
   'step-5',
   'step-6',
   'step-7',
+  'verifying',
 ]);
 
 const FINALIZE_SUB_IDS = new Set<string>([
   'install-snapshot',
   'cleanup',
   'conversion',
+  'converting',
+  'installing',
 ]);
 
 const ITEM_ID_TO_MESSAGE: Record<string, keyof typeof messages> = {
@@ -93,6 +96,9 @@ const ITEM_ID_TO_MESSAGE: Record<string, keyof typeof messages> = {
   'install-snapshot': 'progressInstallSnapshot',
   cleanup: 'progressCleanup',
   conversion: 'progressConversion',
+  verifying: 'partialSyncStageVerifying',
+  converting: 'partialSyncStageConverting',
+  installing: 'partialSyncStageInstalling',
 };
 
 const DOWNLOAD_PROGRESS_ANCHOR_ID = 'step-3';

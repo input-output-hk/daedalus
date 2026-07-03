@@ -5,7 +5,6 @@ import type {
   ChainStorageValidation,
   MithrilSnapshotItem,
 } from '../../common/types/mithril-bootstrap.types';
-import type { MithrilPartialSyncAvailability } from '../../common/types/mithril-partial-sync.types';
 import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
 import { launcherConfig } from '../config';
 import { logger } from './logging';
@@ -38,8 +37,9 @@ type PartialSyncDependencies = {
   startupHandler?: PartialSyncStartupHandler;
 };
 
-const PARTIAL_SYNC_DISABLED_ERROR =
-  'Mithril partial sync is disabled by launcher configuration.';
+const PARTIAL_SYNC_DISABLED_CODE = 'PARTIAL_SYNC_DISABLED';
+const PARTIAL_SYNC_ALREADY_RUNNING_CODE = 'PARTIAL_SYNC_ALREADY_RUNNING';
+const PARTIAL_SYNC_LAYOUT_UNSUPPORTED_CODE = 'PARTIAL_SYNC_LAYOUT_UNSUPPORTED';
 const PARTIAL_SYNC_CANCEL_JOIN_TIMEOUT_MS = 15_000;
 const PARTIAL_SYNC_CANCEL_FORCE_KILL_TIMEOUT_MS = 1_000;
 
@@ -72,14 +72,8 @@ class ChainStorageCoordinator {
     return this._partialSyncInProgress;
   }
 
-  getPartialSyncAvailability(): MithrilPartialSyncAvailability {
-    return {
-      isEnabled: launcherConfig.mithrilPartialSyncEnabled === true,
-      // Behind-ness is computed by MithrilController + MithrilPartialSyncService;
-      // these defaults are only the disabled-path / fallback shape.
-      isSignificantlyBehind: false,
-      behindByImmutables: undefined,
-    };
+  isPartialSyncEnabled(): boolean {
+    return launcherConfig.mithrilPartialSyncEnabled === true;
   }
 
   async getConfig(): Promise<ChainStorageConfig> {
@@ -253,9 +247,7 @@ class ChainStorageCoordinator {
               managedChainPath: layoutResult.managedChainPath,
             }
           );
-          throw new Error(
-            'Cannot start Mithril partial sync while chain storage is using recovery fallback state.'
-          );
+          throw new Error(PARTIAL_SYNC_LAYOUT_UNSUPPORTED_CODE);
         }
 
         const mithrilWorkDir =
@@ -411,19 +403,29 @@ class ChainStorageCoordinator {
 
   _assertPartialSyncStartAllowed(): void {
     if (this._bootstrapInProgress) {
-      throw new Error(
-        'Cannot start Mithril partial sync while Mithril bootstrap is in progress.'
+      logger.warn(
+        '[MITHRIL] Rejecting partial sync start: Mithril bootstrap is in progress',
+        null
       );
+      throw new Error(PARTIAL_SYNC_ALREADY_RUNNING_CODE);
     }
 
     if (this._partialSyncInProgress) {
-      throw new Error('Mithril partial sync is already in progress.');
+      logger.warn(
+        '[MITHRIL] Rejecting partial sync start: a partial sync run is already in progress',
+        null
+      );
+      throw new Error(PARTIAL_SYNC_ALREADY_RUNNING_CODE);
     }
   }
 
   _assertPartialSyncFeatureEnabled(): void {
     if (launcherConfig.mithrilPartialSyncEnabled !== true) {
-      throw new Error(PARTIAL_SYNC_DISABLED_ERROR);
+      logger.warn(
+        '[MITHRIL] Rejecting partial sync action: partial sync is disabled by launcher configuration',
+        null
+      );
+      throw new Error(PARTIAL_SYNC_DISABLED_CODE);
     }
   }
 
@@ -588,4 +590,4 @@ export const getMithrilBootstrapService = (): MithrilBootstrapService =>
   chainStorageCoordinator.getMithrilBootstrapService();
 
 export const getMithrilPartialSyncDisabledError = (): string =>
-  PARTIAL_SYNC_DISABLED_ERROR;
+  PARTIAL_SYNC_DISABLED_CODE;

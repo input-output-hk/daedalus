@@ -40,7 +40,8 @@ jest.mock('react-polymorph/lib/components/PopOver', () => ({
 const defaultProps = {
   isActionBlocked: false,
   isMithrilPartialSyncWorking: false,
-  shouldShowRecommendation: true,
+  isSignificantlyBehind: true,
+  isProbeFailed: false,
   behindByEpochs: undefined,
   showConfirmationOnOpen: false,
   onRestoreFocus: jest.fn(),
@@ -160,7 +161,7 @@ describe('MithrilPartialSyncSection', () => {
     expect(didLogUnmountedUpdate).toBe(false);
   });
 
-  it('keeps confirmation open and shows concrete start failure', async () => {
+  it('keeps confirmation open and shows the localized start-failure fallback', async () => {
     const onStartMithrilPartialSync = jest
       .fn()
       .mockRejectedValue(
@@ -182,10 +183,29 @@ describe('MithrilPartialSyncSection', () => {
     });
 
     expect(
-      screen.getByText(
+      screen.getByText('Unable to start Mithril Sync.')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
         'Mithril partial sync is disabled by launcher configuration.'
       )
-    ).toBeInTheDocument();
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows the mapped copy when the start rejection carries a known error code', async () => {
+    const onStartMithrilPartialSync = jest
+      .fn()
+      .mockRejectedValue(new Error('PARTIAL_SYNC_DISABLED'));
+
+    renderComponent({ onStartMithrilPartialSync });
+
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
+    screen.getByRole('button', { name: 'Start Mithril Sync' }).click();
+
+    await waitFor(() => {
+      expect(screen.getByText('Mithril Sync failed')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('PARTIAL_SYNC_DISABLED')).not.toBeInTheDocument();
   });
 
   it('closes confirmation when partial sync becomes active externally', () => {
@@ -219,11 +239,26 @@ describe('MithrilPartialSyncSection', () => {
     ).toBeNull();
   });
 
-  it('renders nothing and leaves no header row when the recommendation is gated off', () => {
-    const { container } = renderComponent({ shouldShowRecommendation: false });
+  it('keeps the section and an enabled CTA visible with near-tip copy when not significantly behind', () => {
+    renderComponent({ isSignificantlyBehind: false });
 
-    expect(screen.queryByRole('button', { name: 'Mithril Sync' })).toBeNull();
-    expect(container.textContent).not.toMatch(/Mithril Sync/);
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
+    expect(
+      screen.getByText(
+        'Your node is close to the blockchain tip. You can still use Mithril Sync to restore verified chain data.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('keeps the section and an enabled CTA visible with availability-unknown copy when the probe failed', () => {
+    renderComponent({ isSignificantlyBehind: false, isProbeFailed: true });
+
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
+    expect(
+      screen.getByText(
+        'Daedalus could not check how far behind your node is. You can still use Mithril Sync to restore verified chain data.'
+      )
+    ).toBeInTheDocument();
   });
 
   it('opens the confirmation modal on mount when deep-linked, without starting', () => {
@@ -241,10 +276,10 @@ describe('MithrilPartialSyncSection', () => {
     expect(onStartMithrilPartialSync).not.toHaveBeenCalled();
   });
 
-  it('deep-link open works even when the recommendation is gated off', () => {
+  it('deep-link open works even when the node is not significantly behind', () => {
     renderComponent({
       showConfirmationOnOpen: true,
-      shouldShowRecommendation: false,
+      isSignificantlyBehind: false,
     });
 
     expect(

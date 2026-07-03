@@ -362,6 +362,9 @@ a required deployment-readiness gate:
   and cutover is an intra-volume rename, plus add a **disk-space preflight**. **No user storage
   picker** — the "no storage-location picker" non-goal is about *user snapshot pickers*, not the
   engineering placement of scratch space (the docs previously conflated these).
+  *Amended by task-ux-703 (DD-703-5): the preflight estimate is now delta-based —
+  `max(snapshotBytes − chainDirBytes, 0) + 0.2 × snapshotBytes`, floored at the 4 GB constant,
+  falling back to the whole-snapshot ×1.2 bound if the chain-dir measurement fails.*
 - Latest-snapshot drift backend handling (gap #17) — UX is covered (retriable error, D5); backend
   behavior is correctness work.
 - Cutover / immutable-merge correctness re-validation (gaps #18/#19; the immutable-merge fix landed
@@ -494,6 +497,11 @@ rather than leaving it parked in `completed`:
   lifecycle through `completed` and still requires an explicit user dismiss, **but on that dismiss the
   backend (via the finalize channel above) resets to `idle`, removes staging, and clears the marker**,
   returning the feature to a clean, re-runnable state without an app restart.
+
+*Further amended by ADR D-702a-1 (success overlay auto-finalizes after ~4 s; see
+`task-ux-702a-decisions.md`) and by task-ux-703 (DD-703-4): auto-finalize stands — only the failure
+path changed, a finalize rejection now retries once and then surfaces `MithrilErrorView` with a
+`retry` action instead of being swallowed.*
 
 **Options considered.** Both backend reset + renderer guard, with Option A realising Boundary C2
 *(chosen — most robust + truthful marker model)*; renderer-only (keeps #16 intact, but the backend still

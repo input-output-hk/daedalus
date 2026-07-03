@@ -126,6 +126,12 @@ describe('chainStorageCoordinator', () => {
     });
   });
 
+  it('reports the launcher-config partial-sync flag as a boolean', () => {
+    const { chainStorageCoordinator } = loadModule();
+
+    expect(chainStorageCoordinator.isPartialSyncEnabled()).toBe(true);
+  });
+
   it('exposes the singleton-backed manager and Mithril service accessors', () => {
     const moduleExports = loadModule();
 
@@ -408,9 +414,7 @@ describe('chainStorageCoordinator', () => {
           nodeState: 'stopped',
         }
       )
-    ).rejects.toThrow(
-      'Cannot start Mithril partial sync while chain storage is using recovery fallback state.'
-    );
+    ).rejects.toThrow('PARTIAL_SYNC_LAYOUT_UNSUPPORTED');
 
     expect(
       chainStorageManagerMock.resolveMithrilWorkDir
@@ -593,9 +597,7 @@ describe('chainStorageCoordinator', () => {
           nodeState: 'stopped',
         }
       )
-    ).rejects.toThrow(
-      'Cannot start Mithril partial sync while Mithril bootstrap is in progress.'
-    );
+    ).rejects.toThrow('PARTIAL_SYNC_ALREADY_RUNNING');
 
     bootstrapMutation.resolve();
 
