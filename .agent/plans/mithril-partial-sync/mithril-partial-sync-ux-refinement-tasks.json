@@ -2,9 +2,9 @@
   "metadata": {
     "title": "Mithril Partial Sync UX Refinement Tasks (Phase 2)",
     "created": "2026-06-19",
-    "updated": "2026-07-02",
-    "version": "1.11.0",
-    "totalTasks": 24,
+    "updated": "2026-07-03",
+    "version": "1.12.0",
+    "totalTasks": 25,
     "prdReference": ".agent/plans/mithril-partial-sync/mithril-partial-sync-ux-refinement-prd.md",
     "description": "High-level, validation-gated implementation plan for the Mithril partial sync UX refinement sprint (issue #10 Phase 2). The backend, IPC, store, and overlay already exist on feat/mithril-partial-sync-ux-refinement; this sprint refines the UX to (a) prompt the user when significantly behind the tip and (b) close the 35 research gaps plus the 13 issue-#10-comment items. Tasks are organized so task-ux-1xx maps to phase-1, task-ux-2xx to phase-2, and so on, matching the task-plans-ux-refinement/phase-N subdirectory layout.",
     "sourceFiles": [
@@ -1203,14 +1203,77 @@
             "A rollback checklist is written for release review.",
             "A clear merge/ship readiness decision is recorded."
           ]
+        },
+        {
+          "id": "task-ux-703",
+          "title": "PR #3337 review-comment remediation wave (CAT-A-G)",
+          "description": "Remediate all 32 unresolved review threads on PR #3337 (1 critical, 8 major, 17 minor from the multi-agent self-review, Copilot, and AndrewWestberg) plus the 9 nit-level cleanups listed only in the review body. Categories: CAT-A cross-session recovery/startup correctness (critical T5 recovery-button dead-end, staging reclaim, interrupted-cutover quit, best-effort cancel cleanup (DD-703-9, preserves ADR D-702a-2 - no wipe restore), marker-first staging resolution, T14 answered in checklist - detached kept, load-bearing for the killProcessTree group kill (DD-703-6 rev.)); CAT-B start flow and availability (Diagnostics section always rendered when enabled, start-rejection surfacing + prompt re-arm, recovery-action rejection handling, behind-ness cache invalidation on directory change, parallelized probe); CAT-C completed-overlay finalize retry + error-view fallback (keeps ADR D-702a-1); CAT-D disk preflight delta estimate (snapshot minus chain dir + 20% snapshot margin) + insufficient-disk-space error code/copy; CAT-E i18n/copy (stage-id labels, ICU plurals, error codes over English prose, vocabulary); CAT-F structure/dead code/perf; CAT-G review-body nits (N1 declined per DD-703-13). All design decisions resolved in the 2026-07-03 grilling sessions incl. the verification grill (DD-703-1..14); no PR writes - responses ship as a checklist doc. Addresses PR #3337 review feedback end-to-end.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 16,
+          "interactionMode": "autonomous",
+          "dependencies": [
+            "task-ux-702"
+          ],
+          "targetPaths": [
+            "source/main/mithril/MithrilPartialSyncService.ts",
+            "source/main/mithril/mithrilPartialSyncNodeStartup.ts",
+            "source/main/mithril/mithrilCommandRunner.ts",
+            "source/main/mithril/MithrilController.ts",
+            "source/main/ipc/mithrilPartialSyncChannel.ts",
+            "source/main/utils/chainStorageCoordinator.ts",
+            "source/main/mithril/mithrilSnapshotMetadata.ts",
+            "source/common/types/mithril-partial-sync.types.ts",
+            "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+            "source/renderer/app/App.tsx",
+            "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilErrorView.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/partialSyncErrorCopy.ts",
+            "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt.tsx",
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
+            ".agent/plans/mithril-partial-sync/mithril-partial-sync-smoke-test-cheat-sheet.md"
+          ],
+          "implementationNotes": [
+            "Canonical plan: task-plans-ux-refinement/phase-7/task-ux-703.md - ordered steps 1-40 across CAT-A..G with verified anchors against PR head 7723298239; implementer makes no decisions (DD-703-1..14 resolved; critique blockers fixed in the Planner fix pass; 4-agent verification grill revised DD-703-6 and added DD-703-10..14, see task-ux-703-plan-review.md).",
+            "Preflight formula (DD-703-5): requiredBytes = max(snapshotTotalUncompressed - chainDirBytes, 0) + 0.2 * snapshotTotalUncompressed, floored at DISK_SPACE_REQUIRED; whole-snapshot bound as du-failure fallback.",
+            "Diagnostics Mithril Sync section renders whenever mithrilPartialSyncEnabled (DD-703-2); threshold constant stays as proactive-prompt gate only (DD-703-3, reply to AndrewWestberg in checklist).",
+            "Completed overlay keeps auto-finalize per ADR D-702a-1; rejection retries once then routes to MithrilErrorView with retry action (DD-703-4).",
+            "T14: NO code change (DD-703-6 revised) - detached is load-bearing (killProcessTree kills via process.kill(-pid); POSIX children reparent to init on crash regardless); answered in checklist; optional rationale comment at the spawn options.",
+            "T9 (DD-703-9): do NOT restore wipe-and-full-sync (ADR D-702a-2 stands); finalizeCancel staging removal becomes best-effort so restart-normal proceeds on the intact DB; the leftover staging is reclaimed at the next partial-sync start (no marker exists pre-cutover, so startup reclaim never sees it).",
+            "No GitHub writes: per-thread responses live in task-ux-703-pr-comment-checklist.md (DD-703-8)."
+          ],
+          "testCases": [
+            "Cross-session starting-node failure: wipe-and-full-sync succeeds instead of throwing in _assertRecoveryActionAllowed (T5 repro).",
+            "Staging remove EBUSY during node-start-verified reclaim: node start proceeds, marker cleared (T6).",
+            "Interrupted-cutover dialog: Quit branch invokes safeExitWithCode; continue branch still wipes and returns false to resume a healthy boot (T8).",
+            "Cancel with a locked staging dir lands on cancelled (not a retry-loop failed) and restart-normal proceeds on the intact DB (T9/DD-703-9).",
+            "Preflight: near-tip delta yields floor+margin; du failure falls back to whole-snapshot bound (T7/DD-703-5).",
+            "startPartialSync preflight rejection surfaces in prompt and Diagnostics confirmation; mithrilAttemptStartedThisSession resets on idle resync (T12/T31).",
+            "Finalize rejects twice: overlay renders error view with working retry; rejects once: retry dismisses (T13).",
+            "Step indicator renders translated labels for verifying/converting/installing in en-US and ja-JP (T1/T17).",
+            "Prompt and confirmation render '1 epoch' via ICU plural (T20/T32).",
+            "No unhandled promise rejection from cancel/restart/wipe button actions (T15).",
+            "Empty-chain Mithril bootstrap flow specs stay green (locked boundary 11)."
+          ],
+          "acceptance": [
+            "Every thread T1-T32 and nit N1-N9 fixed per plan or explicitly answered with no code change (T2, T14, and N1 qualify).",
+            "No recovery flow can dead-end without an interactive recovery action (T5, T8, T9, T13).",
+            "Diagnostics Mithril Sync section visible whenever the feature is enabled, in behind/near-tip/probe-failed states (T11).",
+            "No user-visible hardcoded English, banned 'partial sync' vocabulary, raw stage ids, or '1 epochs' pluralization (CAT-E).",
+            "yarn check:all green; smoke-test cheat sheet updated for changed behaviors (DD-703-7).",
+            "task-ux-703-pr-comment-checklist.md response text matches what was implemented (DD-703-8)."
+          ]
         }
       ]
     }
   ],
   "summary": {
     "totalPhases": 7,
-    "totalTasks": 24,
-    "estimatedTotalHours": 109,
+    "totalTasks": 25,
+    "estimatedTotalHours": 125,
     "criticalPath": [
       "task-ux-101",
       "task-ux-102",
@@ -1228,7 +1291,8 @@
       "task-ux-702b",
       "task-ux-702c",
       "task-ux-702d",
-      "task-ux-702"
+      "task-ux-702",
+      "task-ux-703"
     ],
     "keyFiles": [
       "source/common/types/mithril-partial-sync.types.ts",
