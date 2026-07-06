@@ -174,6 +174,7 @@ in rec {
     cp -R ${inputs.nix-bundle-exe} $out
     chmod -R +w $out
     sed -r 's+@executable_path/\$relative_bin_to_lib/\$lib_dir+@executable_path+g' -i $out/bundle-macos.sh
+    sed -i 's+builtins\.pathExists "''${path}/bin"+true+' "$out/default.nix"
   '';
 
   # XXX: they cannot be a symlinks, because:
