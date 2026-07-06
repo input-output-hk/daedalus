@@ -236,10 +236,7 @@ describe('MithrilBootstrap', () => {
   it('restores the empty-chain bootstrap error default: wipe primary first, left-aligned', () => {
     renderComponent({ status: 'failed' });
 
-    // The bootstrap caller passes no `actions`/`rightAlignActions` prop, so the
-    // shared, render-order-agnostic MithrilErrorView renders its default verbatim:
-    // the destructive primary "Wipe chain & retry" FIRST/left, "Sync from genesis"
-    // second.
+    // With no actions prop, MithrilErrorView renders its default order: destructive primary "Wipe chain & retry" first (left), "Sync from genesis" second.
     const actionLabels = screen
       .getAllByRole('button')
       .map((button) => button.textContent);

@@ -7,6 +7,7 @@ import type {
   MithrilProgressItem,
   MithrilSnapshotItem,
 } from '../../../../source/common/types/mithril-bootstrap.types';
+import { DOWNLOAD_PROGRESS_ANCHOR_ID } from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator';
 
 export const defaultChainPath = '/home/ada/.local/share/Daedalus/mainnet/chain';
 export const customChainPath = '/mnt/fast-ssd/daedalus-chain';
@@ -162,7 +163,7 @@ const progressPresetMap: Record<string, Array<MithrilProgressItem>> = {
       state: 'completed',
     },
     {
-      id: 'step-3',
+      id: DOWNLOAD_PROGRESS_ANCHOR_ID,
       label: 'Downloading snapshot archive',
       state: 'active',
     },
@@ -179,7 +180,7 @@ const progressPresetMap: Record<string, Array<MithrilProgressItem>> = {
       state: 'completed',
     },
     {
-      id: 'step-3',
+      id: DOWNLOAD_PROGRESS_ANCHOR_ID,
       label: 'Downloading snapshot archive',
       state: 'active',
     },
@@ -196,7 +197,7 @@ const progressPresetMap: Record<string, Array<MithrilProgressItem>> = {
       state: 'completed',
     },
     {
-      id: 'step-3',
+      id: DOWNLOAD_PROGRESS_ANCHOR_ID,
       label: 'Downloading snapshot archive',
       state: 'completed',
     },
@@ -233,7 +234,7 @@ const progressPresetMap: Record<string, Array<MithrilProgressItem>> = {
       state: 'completed',
     },
     {
-      id: 'step-3',
+      id: DOWNLOAD_PROGRESS_ANCHOR_ID,
       label: 'Downloading snapshot archive',
       state: 'completed',
     },
@@ -275,7 +276,7 @@ const progressPresetMap: Record<string, Array<MithrilProgressItem>> = {
       state: 'completed',
     },
     {
-      id: 'step-3',
+      id: DOWNLOAD_PROGRESS_ANCHOR_ID,
       label: 'Downloading snapshot archive',
       state: 'completed',
     },

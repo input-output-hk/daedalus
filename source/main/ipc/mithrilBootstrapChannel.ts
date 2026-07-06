@@ -19,17 +19,9 @@ import type {
   MithrilBootstrapSnapshotsRendererRequest,
   MithrilBootstrapSnapshotsMainResponse,
 } from '../../common/ipc/api';
-import type {
-  MithrilBootstrapDecision,
-  MithrilBootstrapStatusUpdate,
-} from '../../common/types/mithril-bootstrap.types';
 import type { CardanoNodeState } from '../../common/types/cardano-node.types';
 import { logger } from '../utils/logging';
-import {
-  getMithrilController,
-  isMithrilDecisionCancelledError,
-  MithrilDecisionCancelledError,
-} from '../mithril/MithrilController';
+import { getMithrilController } from '../mithril/MithrilController';
 
 const mithrilBootstrapDecisionChannel: MainIpcChannel<
   MithrilBootstrapDecisionRendererRequest,
@@ -52,12 +44,6 @@ const mithrilBootstrapSnapshotsChannel: MainIpcChannel<
   MithrilBootstrapSnapshotsMainResponse
 > = new MainIpcChannel(MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL);
 
-export { isMithrilDecisionCancelledError, MithrilDecisionCancelledError };
-
-export const getPendingMithrilBootstrapDecision = () =>
-  getMithrilController().getPendingBootstrapDecision();
-export const getMithrilBootstrapStatus = () =>
-  getMithrilController().getBootstrapStatus();
 export const getMithrilBootstrapNodeState = () =>
   getMithrilController().getNodeState();
 export const setMithrilBootstrapNodeStateProvider = (
@@ -65,37 +51,12 @@ export const setMithrilBootstrapNodeStateProvider = (
 ) => {
   getMithrilController().setNodeStateProvider(provider);
 };
-export const isMithrilBootstrapNodeStartBlocked = () =>
-  getMithrilController().isBootstrapNodeStartBlocked();
-export const onMithrilBootstrapStatus = (
-  handler: (status: MithrilBootstrapStatusUpdate) => void
-) => getMithrilController().onBootstrapStatus(handler);
-
-export const onMithrilBootstrapDecision = (
-  handler: (decision: MithrilBootstrapDecision) => void
-) => getMithrilController().onBootstrapDecision(handler);
-
-export const setMithrilBootstrapStatus = (
-  update: Partial<MithrilBootstrapStatusUpdate>
-) => getMithrilController().setBootstrapStatus(update);
-
-export const waitForMithrilBootstrapDecision =
-  (): Promise<MithrilBootstrapDecision> =>
-    getMithrilController().waitForBootstrapDecision();
-
-export const resetMithrilDecisionState = (
-  options: {
-    suppressStatusBroadcast?: boolean;
-  } = {}
-): void => {
-  getMithrilController().resetBootstrapDecisionState(options);
-};
 
 let mithrilBootstrapRequestsInitialized = false;
 
 export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
-  // Always rebind sendStatusUpdate to the latest window so status
-  // targets the current webContents after window recreation.
+  // Rebind the status sender to the latest window each call, so status targets the current webContents
+  //  after window recreation.
   const controller = getMithrilController();
   controller.setBootstrapStatusSender(async (status) => {
     await mithrilBootstrapStatusChannel.send(status, window.webContents);

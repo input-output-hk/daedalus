@@ -282,7 +282,6 @@ describe('runCommand', () => {
     childEmitter.pid = 111;
     childEmitter.killed = false;
 
-    // A payload larger than any UI-facing truncation to prove `close` resolves the full stdout.
     const bigStdout = 'x'.repeat(100_000);
 
     spawn.mockImplementation(() => {
@@ -296,7 +295,6 @@ describe('runCommand', () => {
 
     const result = await runCommand(['snapshot', 'list'], '/tmp/workdir', {});
 
-    // An 'exit' listener is registered purely for logging (there was none previously).
     expect(childEmitter.listenerCount('exit')).toBeGreaterThan(0);
 
     expect(logger.info).toHaveBeenCalledWith('[mithril] child spawned', {
@@ -311,7 +309,6 @@ describe('runCommand', () => {
       exitCode: 0,
     });
 
-    // `close` still resolves the un-truncated stdout/stderr/exitCode contract.
     expect(result.stdout).toBe(bigStdout);
     expect(result.stderr).toBe('');
     expect(result.exitCode).toBe(0);

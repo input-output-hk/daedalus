@@ -509,7 +509,6 @@ describe('ChainStorageLocationPicker', () => {
       );
     });
 
-    // Should display the raw rejected path, NOT /mnt/bad-chain/chain/db/chain
     expect(
       screen.getByDisplayValue('/mnt/bad-chain/chain/db')
     ).toBeInTheDocument();

@@ -3,9 +3,9 @@ import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
 import StoryDecorator from '../../_support/StoryDecorator';
 import SyncingConnectingMithrilPrompt from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt';
+import styles from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt.scss';
 
-// Proactive (syncing-screen) prompt fixtures. `onStart` MUST return a Promise so
-// the confirm-view "Start now" await resolves like the real store call.
+// onStart must return a Promise so the confirm-view "Start now" await resolves like the real store call.
 const proactivePromptBaseProps = {
   onStart: async () => {
     action('onStart')();
@@ -17,11 +17,16 @@ function ConfirmViewPrompt({ behindByEpochs }: { behindByEpochs?: number }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const actionButton = Array.from(
-      containerRef.current?.querySelectorAll('button') || []
-    ).find((button) => button.textContent === 'Mithril Sync (fast)');
-
-    actionButton?.click();
+    // Reach the confirm view through the real click path. Selecting by the
+    // component's own .scss class stays truthful across copy edits and locale
+    // switches; a missing button fails loudly instead of showing choice view.
+    const actionButton = containerRef.current?.querySelector<HTMLButtonElement>(
+      `button.${styles.primaryAction}`
+    );
+    if (!actionButton) {
+      throw new Error('confirm-view story: primary action button not found');
+    }
+    actionButton.click();
   }, []);
 
   return (
@@ -34,10 +39,6 @@ function ConfirmViewPrompt({ behindByEpochs }: { behindByEpochs?: number }) {
   );
 }
 
-// Moved out of "Nodes / Status" (now "Nodes / Diagnostic") into the Mithril
-// loading group so the proactive dialogue lives with the other Mithril loading
-// views and renders the full styled dialogue (not a bare text block). The prompt
-// pulls intl + its own .scss at render, so theme switching stays truthful.
 storiesOf('Loading / Mithril / Mithril Partial Sync Dialogue', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Known Epochs Behind', () => (

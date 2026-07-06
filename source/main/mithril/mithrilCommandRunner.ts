@@ -19,13 +19,11 @@ export type RunCommandOptions = {
   onStdout?: (chunk: string) => void;
   onStderr?: (chunk: string) => void;
   requireKeys?: boolean;
-  stdinInput?: string;
   logFileName?: string;
 };
 
 export type RunCommandCallbacks = {
   onProcess?: (child: ChildProcess | null) => void;
-  onLogStream?: (logStream: WriteStream) => void;
 };
 
 const getWindowsPathKey = (env: NodeJS.ProcessEnv): string => {
@@ -127,13 +125,12 @@ type SpawnMithrilChildParams = {
   logStream: WriteStream;
   onStdout?: (chunk: string) => void;
   onStderr?: (chunk: string) => void;
-  stdinInput?: string;
   callbacks?: RunCommandCallbacks;
 };
 
 // Shared spawn pipeline for runBinary/runCommand: binary resolution, spawn
 // logging, output accumulation, and exit settlement are identical for every
-// Mithril child; only args, env, and stdin handling differ per caller.
+// Mithril child; only args and env differ per caller.
 function spawnMithrilChild({
   binaryName,
   args,
@@ -142,7 +139,6 @@ function spawnMithrilChild({
   logStream,
   onStdout,
   onStderr,
-  stdinInput,
   callbacks,
 }: SpawnMithrilChildParams): Promise<RunCommandResult> {
   const pathKey = getWindowsPathKey(env);
@@ -166,10 +162,9 @@ function spawnMithrilChild({
   });
 
   return new Promise((resolve, reject) => {
-    // Detach on POSIX so the child leads its own process group and
-    // killProcessTree's process.kill(-pid) reaps its whole tree. Gated off Windows
-    // (documented launcher breakage — see CardanoSelfnodeLauncher.ts); stdio stays
-    // piped and the child is deliberately NOT unref()'d.
+    // Detach on POSIX so the child leads its own process group and killProcessTree's process.kill(-pid)
+    //  reaps the whole tree. Off on Windows (documented launcher breakage — see CardanoSelfnodeLauncher.ts);
+    //  stdio stays piped and the child is not unref()'d.
     const child = spawn(binaryPath, args, {
       cwd: workDir,
       env,
@@ -188,11 +183,6 @@ function spawnMithrilChild({
         killed: child.killed,
       })
     );
-
-    if (stdinInput !== undefined) {
-      child.stdin?.write(stdinInput);
-      child.stdin?.end();
-    }
 
     let stdout = '';
     let stderr = '';
@@ -235,9 +225,8 @@ export async function runBinary(
   options: RunCommandOptions = {},
   callbacks?: RunCommandCallbacks
 ): Promise<RunCommandResult> {
-  const { onStdout, onStderr, stdinInput, logFileName } = options;
+  const { onStdout, onStderr, logFileName } = options;
   const logStream = openLogStream(logFileName);
-  if (callbacks?.onLogStream) callbacks.onLogStream(logStream);
 
   const env = normalizeSpawnEnv(process.env);
 
@@ -249,7 +238,6 @@ export async function runBinary(
     logStream,
     onStdout,
     onStderr,
-    stdinInput,
     callbacks,
   });
 }
@@ -262,7 +250,6 @@ export async function runCommand(
 ): Promise<RunCommandResult> {
   const { onStdout, onStderr, requireKeys = true, logFileName } = options;
   const logStream = openLogStream(logFileName);
-  if (callbacks?.onLogStream) callbacks.onLogStream(logStream);
 
   const env = normalizeSpawnEnv(await buildMithrilEnv(requireKeys));
 

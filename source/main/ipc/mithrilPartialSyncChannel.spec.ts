@@ -20,15 +20,11 @@ const mithrilControllerMock = {
   setPartialSyncStatusSender: jest.fn(),
   initialize: jest.fn(),
   getPartialSyncStatus: jest.fn(() => idleStatus),
-  isPartialSyncActive: jest.fn(() => false),
-  setPartialSyncStatus: jest.fn((status) => status),
-  onPartialSyncStatus: jest.fn(),
   configurePartialSyncRuntime: jest.fn(),
   startPartialSync: jest.fn(),
   cancelPartialSync: jest.fn(),
   restartNormalFromPartialSync: jest.fn(),
   wipeAndFullSyncFromPartialSync: jest.fn(),
-  broadcastPartialSyncStatus: jest.fn(),
   getPartialSyncAvailability: jest.fn(() => availabilityEnabled),
   finalizePartialSync: jest.fn(),
 };
@@ -64,16 +60,12 @@ describe('mithrilPartialSyncChannel', () => {
     jest.clearAllMocks();
     mockChannels.length = 0;
     mithrilControllerMock.getPartialSyncStatus.mockReturnValue(idleStatus);
-    mithrilControllerMock.isPartialSyncActive.mockReturnValue(false);
     mithrilControllerMock.startPartialSync.mockResolvedValue(undefined);
     mithrilControllerMock.cancelPartialSync.mockResolvedValue(undefined);
     mithrilControllerMock.restartNormalFromPartialSync.mockResolvedValue(
       undefined
     );
     mithrilControllerMock.wipeAndFullSyncFromPartialSync.mockResolvedValue(
-      undefined
-    );
-    mithrilControllerMock.broadcastPartialSyncStatus.mockResolvedValue(
       undefined
     );
     mithrilControllerMock.getPartialSyncAvailability.mockReturnValue(
@@ -142,35 +134,17 @@ describe('mithrilPartialSyncChannel', () => {
     ).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps compatibility exports as controller proxies', async () => {
+  it('configures the partial sync runtime through the controller', () => {
     const moduleExports = loadModule();
-    const status = { ...idleStatus, status: 'starting-node' as const };
-    const listener = jest.fn();
 
-    mithrilControllerMock.getPartialSyncStatus.mockReturnValue(status);
-    mithrilControllerMock.isPartialSyncActive.mockReturnValue(true);
     moduleExports.configureMithrilPartialSyncRuntime({
       stopNode: jest.fn(),
       restartStartupFlow: jest.fn(),
     });
-    moduleExports.setMithrilPartialSyncStatus(status);
-    moduleExports.onMithrilPartialSyncStatus(listener);
-    await moduleExports.emitMithrilPartialSyncStatus(status);
 
-    expect(moduleExports.getMithrilPartialSyncStatus()).toBe(status);
-    expect(moduleExports.isMithrilPartialSyncActive()).toBe(true);
     expect(
       mithrilControllerMock.configurePartialSyncRuntime
     ).toHaveBeenCalledTimes(1);
-    expect(mithrilControllerMock.setPartialSyncStatus).toHaveBeenCalledWith(
-      status
-    );
-    expect(mithrilControllerMock.onPartialSyncStatus).toHaveBeenCalledWith(
-      listener
-    );
-    expect(
-      mithrilControllerMock.broadcastPartialSyncStatus
-    ).toHaveBeenCalledWith(status);
   });
 
   it('returns isEnabled reflecting launcher config for a renderer one-shot availability query', async () => {

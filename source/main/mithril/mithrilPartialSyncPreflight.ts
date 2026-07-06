@@ -1,18 +1,16 @@
 import path from 'path';
 import fs from 'fs-extra';
 import type { Stats } from 'fs';
-import type { MithrilPartialSyncErrorStage } from '../../common/types/mithril-partial-sync.types';
+import type {
+  MithrilPartialSyncErrorCode,
+  MithrilPartialSyncErrorStage,
+} from '../../common/types/mithril-partial-sync.types';
+import { createPartialSyncStageError } from './mithrilErrors';
 
 export const PARTIAL_SYNC_STAGED_DB_INVALID_CODE =
   'PARTIAL_SYNC_STAGED_DB_INVALID';
 
 export type PartialSyncRange = { start: number; end: number };
-
-export type PartialSyncStageErrorFactory = (
-  stage: MithrilPartialSyncErrorStage,
-  message: string,
-  code?: string
-) => Error;
 
 const parseImmutableFileNumber = (entryName: string): number | null => {
   const stem = entryName.split('.')[0]?.trim();
@@ -22,38 +20,35 @@ const parseImmutableFileNumber = (entryName: string): number | null => {
 export async function statRequiredPath(
   targetPath: string,
   message: string,
-  createStageError: PartialSyncStageErrorFactory,
   stage: MithrilPartialSyncErrorStage = 'preparing',
-  code?: string
+  code?: MithrilPartialSyncErrorCode
 ): Promise<Stats> {
   try {
     return await fs.stat(targetPath);
   } catch (error) {
-    throw createStageError(stage, message, code);
+    throw createPartialSyncStageError(stage, message, code);
   }
 }
 
 export async function ensureReadablePath(
   targetPath: string,
   message: string,
-  createStageError: PartialSyncStageErrorFactory,
   mode: number
 ): Promise<void> {
   try {
     await fs.access(targetPath, mode);
   } catch (error) {
-    throw createStageError('preparing', message);
+    throw createPartialSyncStageError('preparing', message);
   }
 }
 
 export async function readImmutableDirectory(
-  immutablePath: string,
-  createStageError: PartialSyncStageErrorFactory
+  immutablePath: string
 ): Promise<Array<string>> {
   try {
     return await fs.readdir(immutablePath);
   } catch (error) {
-    throw createStageError(
+    throw createPartialSyncStageError(
       'preparing',
       'Unable to read the immutable directory for Mithril partial sync preflight.'
     );
@@ -61,17 +56,15 @@ export async function readImmutableDirectory(
 }
 
 export async function resolveLocalImmutableNumber(
-  managedChainPath: string,
-  createStageError: PartialSyncStageErrorFactory
+  managedChainPath: string
 ): Promise<number> {
   const managedChainStats = await statRequiredPath(
     managedChainPath,
-    'Unable to read the managed chain directory for Mithril partial sync preflight.',
-    createStageError
+    'Unable to read the managed chain directory for Mithril partial sync preflight.'
   );
 
   if (!managedChainStats.isDirectory()) {
-    throw createStageError(
+    throw createPartialSyncStageError(
       'preparing',
       'The managed chain path is not a directory.',
       'PARTIAL_SYNC_MANAGED_CHAIN_INVALID'
@@ -81,12 +74,11 @@ export async function resolveLocalImmutableNumber(
   const immutablePath = path.join(managedChainPath, 'immutable');
   const immutableStats = await statRequiredPath(
     immutablePath,
-    'Unable to read the immutable directory for Mithril partial sync preflight.',
-    createStageError
+    'Unable to read the immutable directory for Mithril partial sync preflight.'
   );
 
   if (!immutableStats.isDirectory()) {
-    throw createStageError(
+    throw createPartialSyncStageError(
       'preparing',
       'The managed chain immutable path is not a directory.',
       'PARTIAL_SYNC_IMMUTABLE_INVALID'
@@ -96,19 +88,17 @@ export async function resolveLocalImmutableNumber(
   await ensureReadablePath(
     immutablePath,
     'Unable to read the immutable directory for Mithril partial sync preflight.',
-    createStageError,
     fs.constants.R_OK | fs.constants.X_OK
   );
 
   const protocolMagicIdPath = path.join(managedChainPath, 'protocolMagicId');
   const protocolMagicIdStats = await statRequiredPath(
     protocolMagicIdPath,
-    'Unable to read protocolMagicId for Mithril partial sync preflight.',
-    createStageError
+    'Unable to read protocolMagicId for Mithril partial sync preflight.'
   );
 
   if (!protocolMagicIdStats.isFile()) {
-    throw createStageError(
+    throw createPartialSyncStageError(
       'preparing',
       'The managed chain protocolMagicId path is not a file.',
       'PARTIAL_SYNC_PROTOCOL_MAGIC_INVALID'
@@ -118,19 +108,16 @@ export async function resolveLocalImmutableNumber(
   await ensureReadablePath(
     protocolMagicIdPath,
     'Unable to read protocolMagicId for Mithril partial sync preflight.',
-    createStageError,
     fs.constants.R_OK
   );
 
-  const localImmutableNumber = (
-    await readImmutableDirectory(immutablePath, createStageError)
-  )
+  const localImmutableNumber = (await readImmutableDirectory(immutablePath))
     .map((entryName) => parseImmutableFileNumber(entryName))
     .filter((value): value is number => value != null)
     .sort((left, right) => right - left)[0];
 
   if (localImmutableNumber == null) {
-    throw createStageError(
+    throw createPartialSyncStageError(
       'preparing',
       'Unable to determine the local immutable position from the managed chain immutable directory.',
       'PARTIAL_SYNC_IMMUTABLE_POSITION_UNAVAILABLE'
@@ -142,11 +129,10 @@ export async function resolveLocalImmutableNumber(
 
 export function derivePartialSyncRange(
   localImmutableNumber: number,
-  latestCertifiedImmutableNumber: number,
-  createStageError: PartialSyncStageErrorFactory
+  latestCertifiedImmutableNumber: number
 ): PartialSyncRange {
   if (localImmutableNumber >= latestCertifiedImmutableNumber) {
-    throw createStageError(
+    throw createPartialSyncStageError(
       'preparing',
       'The managed chain is not missing any certified immutable files for Mithril partial sync.',
       'PARTIAL_SYNC_NO_CERTIFIED_RANGE'

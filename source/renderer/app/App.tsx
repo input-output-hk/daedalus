@@ -135,10 +135,7 @@ class App extends Component<{
                     onOpenExternalLink={app.openExternalLink}
                   />
                 )}
-                {/* Proactive Mithril prompt: mounted app-level (sibling of
-                    <Router>) so it PERSISTS across the loading -> Wallet Summary
-                    transition. It self-gates to status === 'idle', so
-                    it never co-renders with the MithrilPartialSyncOverlay above. */}
+                {/* Mounted app-level so it survives the loading -> Wallet Summary route change; self-gates to idle so it never co-renders with the overlay above. */}
                 <MithrilProactivePromptContainer />
                 <RTSFlagsRecommendationOverlayContainer />
                 <NotificationsContainer />

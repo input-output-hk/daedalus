@@ -24,9 +24,8 @@ type Props = {
   isSignificantlyBehind: boolean;
   isProbeFailed: boolean;
   behindByEpochs?: number;
-  showConfirmationOnOpen?: boolean;
   onRestoreFocus: () => void;
-  onStartMithrilPartialSync: (...args: Array<any>) => any;
+  onStartMithrilPartialSync: () => Promise<void>;
 };
 
 type State = {
@@ -47,9 +46,6 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
 
   componentDidMount() {
     this._isMounted = true;
-    if (this.props.showConfirmationOnOpen && !this.props.isActionBlocked) {
-      this.showConfirmation();
-    }
   }
 
   componentWillUnmount() {
@@ -111,11 +107,8 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
   };
 
   render() {
-    const {
-      isActionBlocked,
-      isSignificantlyBehind,
-      isProbeFailed,
-    } = this.props;
+    const { isActionBlocked, isSignificantlyBehind, isProbeFailed } =
+      this.props;
     const { isShowingConfirmation, startError } = this.state;
     const { intl } = this.context;
 

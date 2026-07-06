@@ -10,7 +10,6 @@ import { isSamePath } from './chainStorageValidation';
 import {
   getManagedChainPath,
   resolveStateDirectoryPath,
-  resolveChainStoragePath as resolveChainStoragePathFn,
   resolveMithrilWorkDir as resolveMithrilWorkDirFn,
 } from './chainStoragePathResolver';
 import type { ResolvedStateDirectory } from './chainStoragePathResolver';
@@ -39,6 +38,7 @@ import {
   CHAIN_DIRECTORY_NAME,
   CHAIN_STORAGE_MIGRATION_JOURNAL_FILE,
   createSymlink,
+  deriveCustomPathFromChainState,
   ensureDefaultChainDirectory,
   getEntriesSizeBytes,
   getPathSizeBytes,
@@ -50,6 +50,7 @@ import {
   resolveExistingDirectory,
   resolveRealPathOrInput,
   rollbackSetDirectory,
+  runSerializedMutation,
   safeLstat,
   safeReadDir,
 } from './chainStorageManagerShared';
@@ -105,9 +106,9 @@ export class ChainStorageManager {
       }
 
       if (validation.path == null) {
-        const validation = await this._resetToDefault();
+        const defaultValidation = await this._resetToDefault();
         this._isRecoveryFallback = false;
-        return validation;
+        return defaultValidation;
       }
 
       const previousConfig = await this.getConfig();
@@ -173,17 +174,12 @@ export class ChainStorageManager {
     });
   }
 
-  async resolveChainStoragePath(): Promise<string> {
-    return resolveChainStoragePathFn(this._stateDirectoryPath);
-  }
-
   async resolveMithrilWorkDir(): Promise<string> {
     return resolveMithrilWorkDirFn(this._stateDirectoryPath);
   }
 
   async resolveDiskSpaceCheckPath(): Promise<string> {
-    const config = await this.getConfig();
-    const managedChainPath = this._getManagedChainPath(config.customPath);
+    const managedChainPath = await this.getManagedChainPath();
     const managedChainExists = await fs.pathExists(managedChainPath);
 
     return managedChainExists
@@ -191,20 +187,29 @@ export class ChainStorageManager {
       : path.dirname(managedChainPath);
   }
 
+  // Path-only twin of getConfig's customPath derivation: reads the chain entry
+  // point without getConfig's disk-space probe, so hot callers (emptiness
+  // checks, the behind-ness probe, disk-check path resolution) never fork
+  // checkDiskSpace just to learn a path.
+  async _getActiveCustomPath(): Promise<string | null> {
+    try {
+      return deriveCustomPathFromChainState(
+        await this._captureChainPathState()
+      );
+    } catch (error) {
+      logger.warn(
+        'ChainStorageManager: failed to derive custom chain parent from entry point',
+        {
+          error,
+          chainPath: this._chainPath,
+        }
+      );
+      return null;
+    }
+  }
+
   async getManagedChainPath(): Promise<string> {
-    const config = await this.getConfig();
-    return this._getManagedChainPath(config.customPath);
-  }
-
-  async getResolvedManagedChainPath(): Promise<string> {
-    return this._resolveRealPathOrInput(await this.getManagedChainPath());
-  }
-
-  async getManagedParentPath(): Promise<string> {
-    const config = await this.getConfig();
-    return config.customPath
-      ? path.resolve(config.customPath)
-      : this._stateDirectoryPath;
+    return this._getManagedChainPath(await this._getActiveCustomPath());
   }
 
   async isManagedChainEmpty(): Promise<boolean> {
@@ -293,42 +298,6 @@ export class ChainStorageManager {
         );
       }
     );
-  }
-
-  async migrateData(
-    fromPath: string,
-    toPath: string,
-    options: {
-      preserveSourceRoot?: boolean;
-    } = {}
-  ): Promise<void> {
-    const source = path.resolve(fromPath);
-    const target = path.resolve(toPath);
-    const { preserveSourceRoot = false } = options;
-
-    if (source === target) {
-      return;
-    }
-
-    const sourceStats = await this._safeLstat(source);
-    if (!sourceStats) {
-      return;
-    }
-
-    if (!sourceStats.isDirectory()) {
-      throw new Error('Chain storage source must be a directory.');
-    }
-
-    await fs.ensureDir(target);
-    const entries = await this._safeReadDir(source);
-
-    for (const entry of entries) {
-      await this._movePath(path.join(source, entry), path.join(target, entry));
-    }
-
-    if (!preserveSourceRoot) {
-      await fs.remove(source);
-    }
   }
 
   async _getDefaultStorageConfig(): Promise<ChainStorageDefaults> {
@@ -436,7 +405,7 @@ export class ChainStorageManager {
     nodeState: string | null | undefined,
     reason: string
   ): Promise<void> {
-    return assertNodeStopped(this, nodeState, reason);
+    return assertNodeStopped(nodeState, reason);
   }
 
   async _emptyManagedContents(
@@ -451,19 +420,19 @@ export class ChainStorageManager {
   }
 
   async _createSymlink(targetPath: string, symlinkPath: string): Promise<void> {
-    return createSymlink(this, targetPath, symlinkPath);
+    return createSymlink(targetPath, symlinkPath);
   }
 
   async _movePath(sourcePath: string, targetPath: string): Promise<void> {
-    return movePath(this, sourcePath, targetPath);
+    return movePath(sourcePath, targetPath);
   }
 
   async _safeReadDir(targetPath: string): Promise<string[]> {
-    return safeReadDir(this, targetPath);
+    return safeReadDir(targetPath);
   }
 
   async _safeLstat(targetPath: string): Promise<fs.Stats | null> {
-    return safeLstat(this, targetPath);
+    return safeLstat(targetPath);
   }
 
   async _pathExistsViaLstat(targetPath: string): Promise<boolean> {
@@ -473,11 +442,11 @@ export class ChainStorageManager {
   async _resolveExistingDirectory(
     directoryPath: string
   ): Promise<string | undefined> {
-    return resolveExistingDirectory(this, directoryPath);
+    return resolveExistingDirectory(directoryPath);
   }
 
   async _resolveRealPathOrInput(targetPath: string): Promise<string> {
-    return resolveRealPathOrInput(this, targetPath);
+    return resolveRealPathOrInput(targetPath);
   }
 
   _getManagedChainPath(customPath: string | null): string {
@@ -506,25 +475,6 @@ export class ChainStorageManager {
     label: string,
     operation: () => Promise<T>
   ): Promise<T> {
-    const previousMutation = this._mutationQueue;
-    let releaseLock: (() => void) | undefined;
-
-    this._mutationQueue = new Promise<void>((resolve) => {
-      releaseLock = resolve;
-    });
-
-    await previousMutation.catch(() => undefined);
-
-    try {
-      return await operation();
-    } catch (error) {
-      logger.warn('ChainStorageManager: serialized mutation failed', {
-        error,
-        label,
-      });
-      throw error;
-    } finally {
-      releaseLock?.();
-    }
+    return runSerializedMutation(this, 'ChainStorageManager', label, operation);
   }
 }

@@ -43,7 +43,6 @@ const defaultProps = {
   isSignificantlyBehind: true,
   isProbeFailed: false,
   behindByEpochs: undefined,
-  showConfirmationOnOpen: false,
   onRestoreFocus: jest.fn(),
   onStartMithrilPartialSync: jest.fn(),
 };
@@ -94,7 +93,6 @@ describe('MithrilPartialSyncSection', () => {
         'If Cardano Node syncing is taking longer than you want, Mithril Sync can restore verified chain data to help speed up the sync.'
       )
     ).toBeInTheDocument();
-    // The always-visible ready-hint was removed.
     expect(
       screen.queryByText(/Review what will happen before Daedalus/)
     ).toBeNull();
@@ -261,46 +259,10 @@ describe('MithrilPartialSyncSection', () => {
     ).toBeInTheDocument();
   });
 
-  it('opens the confirmation modal on mount when deep-linked, without starting', () => {
-    const onStartMithrilPartialSync = jest.fn();
-    renderComponent({
-      showConfirmationOnOpen: true,
-      onStartMithrilPartialSync,
-    });
-
-    expect(
-      screen.getByRole('heading', {
-        name: 'Before Mithril Sync begins',
-      })
-    ).toBeInTheDocument();
-    expect(onStartMithrilPartialSync).not.toHaveBeenCalled();
-  });
-
-  it('deep-link open works even when the node is not significantly behind', () => {
-    renderComponent({
-      showConfirmationOnOpen: true,
-      isSignificantlyBehind: false,
-    });
-
-    expect(
-      screen.getByRole('heading', {
-        name: 'Before Mithril Sync begins',
-      })
-    ).toBeInTheDocument();
-  });
-
-  it('does not deep-link open the confirmation when the action is blocked', () => {
-    renderComponent({ showConfirmationOnOpen: true, isActionBlocked: true });
-
-    expect(
-      screen.queryByRole('heading', {
-        name: 'Before Mithril Sync begins',
-      })
-    ).toBeNull();
-  });
-
   it('threads the epochs figure into the confirmation modal without any sync-%', () => {
-    renderComponent({ showConfirmationOnOpen: true, behindByEpochs: 3 });
+    renderComponent({ behindByEpochs: 3 });
+
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
 
     expect(
       screen.getByText(

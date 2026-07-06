@@ -5,10 +5,7 @@ import MithrilPartialSyncStore from './MithrilPartialSyncStore';
 import { noopAnalyticsTracker } from '../analytics';
 import { logger } from '../utils/logging';
 
-// The real logger writes to the `electronLog` global, which jest does not
-// provide (jsdom). Stub it so the store's catch-branch logger.warn calls (e.g.
-// dismissCompletedOverlay's finalize-failure path) do not crash and stay
-// assertable. Mirrors the pattern in MithrilPartialSyncSection.spec.tsx.
+// The real logger writes to the electronLog global, absent under jsdom; stub it so the store's catch-branch logger.warn calls stay assertable and don't crash.
 jest.mock('../utils/logging', () => ({
   logger: {
     warn: jest.fn(),
@@ -163,7 +160,6 @@ describe('MithrilPartialSyncStore', () => {
     expect(store.progressItems).toEqual([]);
     expect(store.error).toBeNull();
     expect(store.logPath).toBeUndefined();
-    expect(store.isActive).toBe(true);
     expect(store.isWorking).toBe(false);
     expect(store.isTerminal).toBe(true);
   });
@@ -171,9 +167,7 @@ describe('MithrilPartialSyncStore', () => {
   it('shows the overlay only for backend-confirmed display states and can dismiss completed', async () => {
     const store = setupStore();
     mockFinalizeRequest.mockResolvedValue(undefined);
-    // dismissCompletedOverlay now resyncs via syncStatus()
-    // in its finally; back the status channel with a realistic post-finalize
-    // idle snapshot so the added resync resolves.
+    // dismissCompletedOverlay resyncs via syncStatus() in its finally, so back the status channel with a post-finalize idle snapshot.
     mockStatusRequest.mockResolvedValue({
       status: 'idle',
       allowedRecoveryActions: [],
@@ -236,9 +230,7 @@ describe('MithrilPartialSyncStore', () => {
         resolveFinalize = resolve;
       })
     );
-    // Keep the post-finalize resync on 'completed' so the success flag flip is
-    // the only thing under test (an idle resync would also clear the flag via
-    // _updateStatus, masking the flip).
+    // Keep the resync status on 'completed'; an idle resync would clear the flag via _updateStatus and mask the flip under test.
     mockStatusRequest.mockResolvedValue({
       status: 'completed',
       allowedRecoveryActions: [],
@@ -255,17 +247,9 @@ describe('MithrilPartialSyncStore', () => {
       error: null,
     });
 
-    // Exercise the production strict-mode path: the post-await flag flip resumes
-    // OUTSIDE the enclosing `@action`, so it must run in its own action context
-    // (the store wraps it in `runInAction`). Under `enforceActions: 'observed'`
-    // (the renderer's config in source/renderer/app/index.tsx) with an active
-    // observer reading `shouldShowOverlay` (→ `isCompletedOverlayDismissed`),
-    // mutating that observable outside an action throws — and that throw would be
-    // swallowed by `dismissCompletedOverlay`'s catch, leaving the flag stuck
-    // false and logging a false finalize-failure. Both are asserted against
-    // below. The MobX 5 default is no enforcement, so without this configure the
-    // regression is invisible (the defect this test guards). Restored to the
-    // default in the finally so it does not leak to other tests in this file.
+    // Enable MobX strict mode (the renderer's enforceActions: 'observed'): the post-await flag
+    // flip runs outside the enclosing @action, so it must be wrapped in runInAction. The MobX 5
+    // default enforces nothing and hides this regression; restored in finally so it doesn't leak.
     configure({ enforceActions: 'observed' });
     const observedOverlay: boolean[] = [];
     const dispose = autorun(() => {
@@ -275,7 +259,6 @@ describe('MithrilPartialSyncStore', () => {
 
     try {
       const dismissal = store.dismissCompletedOverlay();
-      // The finalize IPC is still pending → the flag must NOT have flipped yet.
       await Promise.resolve();
       expect(store.isCompletedOverlayDismissed).toBe(false);
       expect(mockFinalizeRequest).toHaveBeenCalledTimes(1);
@@ -283,12 +266,8 @@ describe('MithrilPartialSyncStore', () => {
       resolveFinalize();
       await dismissal;
 
-      // Flag flips only after the awaited finalize; the finally resync ran. The
-      // flip would be false here if the runInAction wrap regressed (strict-mode
-      // throw swallowed by the catch).
       expect(store.isCompletedOverlayDismissed).toBe(true);
       expect(mockStatusRequest).toHaveBeenCalled();
-      // Success path must NOT take the catch branch (no false finalize-failure).
       expect(logger.warn).not.toHaveBeenCalled();
     } finally {
       dispose();
@@ -299,10 +278,7 @@ describe('MithrilPartialSyncStore', () => {
   it('dismissCompletedOverlay swallows a finalize rejection: keeps the flag false, resyncs, and never throws (overlay hides via idle resync)', async () => {
     const store = setupStore();
     mockFinalizeRequest.mockRejectedValue(new Error('finalize failed'));
-    // Today's backend runs _resetToIdleStatus() BEFORE the (failing) fs.remove,
-    // so on failure the resync pulls idle and the overlay hides via status —
-    // NOT via the dismiss flag (which must stay false). The staging/.lock leak
-    // is renderer-unreachable and deferred to the out-of-scope backend reorder.
+    // The backend runs _resetToIdleStatus() before the failing fs.remove, so a finalize failure still resyncs to idle and hides the overlay via status, not the dismiss flag (which stays false).
     mockStatusRequest.mockResolvedValue({
       status: 'idle',
       allowedRecoveryActions: [],
@@ -356,8 +332,6 @@ describe('MithrilPartialSyncStore', () => {
     expect(mockRestartNormalRequest).toHaveBeenCalledWith();
     expect(mockWipeAndFullSyncRequest).toHaveBeenCalledTimes(1);
     expect(mockWipeAndFullSyncRequest).toHaveBeenCalledWith();
-    // Every lifecycle action resyncs in its finally (start, cancel,
-    // restart-normal, wipe-and-full-sync), so syncStatus fires four times.
     expect(mockStatusRequest).toHaveBeenCalledTimes(4);
   });
 
@@ -723,8 +697,6 @@ describe('MithrilPartialSyncStore', () => {
     });
     expect(store.certifiedEpoch).toBe(320);
 
-    // A payload without the field (e.g. a degraded probe)
-    // leaves certifiedEpoch undefined so the figure degrades to networkTip-only.
     store._applyAvailability({
       isEnabled: true,
       isSignificantlyBehind: false,
@@ -760,11 +732,7 @@ describe('MithrilPartialSyncStore', () => {
       progressItems: [],
       error: null,
     });
-    // A BEHIND node (unstable read) keeps the fast 30s
-    // cadence — the known-stable back-off only engages once availability is
-    // settled-stable. Using an unstable read here keeps this test exercising the
-    // idle-poll-still-fires contract (the `isWorking` guard stays removed) without
-    // the cadence backing off mid-test.
+    // Use an unstable (behind) read so the known-stable back-off never engages and the fast 30s cadence stays fixed for the idle-poll assertion.
     mockAvailabilityRequest.mockResolvedValue({
       isEnabled: true,
       isSignificantlyBehind: true,
@@ -776,12 +744,7 @@ describe('MithrilPartialSyncStore', () => {
 
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
 
-    // Idle: the interval still refreshes so the Diagnostics Mithril section
-    // self-corrects on first load without a full reload. Awaiting the
-    // previous probe plus a microtask flush lets `_refreshAvailability`'s finally
-    // clear the re-entrancy guard before the next tick (the bounded request races
-    // the call against a timeout, so the continuation resolves one microtask after
-    // the request promise itself).
+    // Await the prior probe plus a microtask flush so _refreshAvailability's finally clears the re-entrancy guard before the next tick (the bounded request resolves one microtask after its own promise).
     jest.advanceTimersByTime(30_000);
     await mockAvailabilityRequest.mock.results[1].value;
     await Promise.resolve();
@@ -802,9 +765,6 @@ describe('MithrilPartialSyncStore', () => {
       progressItems: [],
       error: null,
     });
-    // The first availability request never settles — without the bounded request
-    // it would pin `_isRefreshingAvailability` true forever and kill all future
-    // refreshes. Subsequent requests resolve normally.
     mockAvailabilityRequest
       .mockReturnValueOnce(new Promise(() => {}))
       .mockResolvedValue({
@@ -814,14 +774,10 @@ describe('MithrilPartialSyncStore', () => {
 
     store.setup();
 
-    // The setup refresh issued the never-settling request and pinned the guard.
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
     expect(store._isRefreshingAvailability).toBe(true);
 
-    // Advance past AVAILABILITY_REQUEST_TIMEOUT_MS (10_000) → the race rejects →
-    // the catch logs → the finally clears the guard. Flush the rejection
-    // microtasks (the never-settling request itself stays pending, so we cannot
-    // await its result).
+    // Advance past AVAILABILITY_REQUEST_TIMEOUT_MS so the bounded race rejects and the finally clears the guard; flush the rejection microtasks since the never-settling request itself can't be awaited.
     jest.advanceTimersByTime(10_000);
     await Promise.resolve();
     await Promise.resolve();
@@ -833,7 +789,6 @@ describe('MithrilPartialSyncStore', () => {
       expect.objectContaining({ error: expect.any(Error) })
     );
 
-    // The next interval tick can now issue a fresh request (guard no longer pinned).
     jest.advanceTimersByTime(30_000);
     await mockAvailabilityRequest.mock.results[1].value;
     await Promise.resolve();
@@ -849,8 +804,6 @@ describe('MithrilPartialSyncStore', () => {
       progressItems: [],
       error: null,
     });
-    // Settled-stable reads (enabled && !behind). The FIRST such read may be a
-    // premature probe before behind-ness settles, so it must NOT slow the poll.
     mockAvailabilityRequest.mockResolvedValue({
       isEnabled: true,
       isSignificantlyBehind: false,
@@ -859,25 +812,19 @@ describe('MithrilPartialSyncStore', () => {
     store.setup();
     await mockAvailabilityRequest.mock.results[0].value;
     await Promise.resolve();
-    // First stable read → counter 1, still the fast cadence.
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
     expect(store._consecutiveStableReads).toBe(1);
 
-    // The 30s tick still fires (proving the first stable read did NOT back off),
-    // producing the SECOND consecutive stable read → counter 2 → back off to 5 min.
     jest.advanceTimersByTime(30_000);
     await mockAvailabilityRequest.mock.results[1].value;
     await Promise.resolve();
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(2);
     expect(store._consecutiveStableReads).toBe(2);
 
-    // Now backed off: a further 30s does NOT tick.
     jest.advanceTimersByTime(30_000);
     await Promise.resolve();
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(2);
 
-    // The slow interval fires only after the full back-off window (5 min total
-    // from when it was armed at the 30s mark).
     jest.advanceTimersByTime(300_000 - 30_000);
     await mockAvailabilityRequest.mock.results[2].value;
     await Promise.resolve();
@@ -898,7 +845,6 @@ describe('MithrilPartialSyncStore', () => {
       isSignificantlyBehind: false,
     });
 
-    // Two consecutive stable reads → back off to the 5-min cadence.
     store.setup();
     await mockAvailabilityRequest.mock.results[0].value;
     await Promise.resolve();
@@ -908,7 +854,6 @@ describe('MithrilPartialSyncStore', () => {
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(2);
     expect(store._consecutiveStableReads).toBe(2);
 
-    // The node falls behind: the next (slow) tick reads unstable.
     mockAvailabilityRequest.mockResolvedValue({
       isEnabled: true,
       isSignificantlyBehind: true,
@@ -916,11 +861,9 @@ describe('MithrilPartialSyncStore', () => {
     jest.advanceTimersByTime(300_000);
     await mockAvailabilityRequest.mock.results[2].value;
     await Promise.resolve();
-    // Unstable read → counter resets and the fast 30s cadence is re-armed.
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(3);
     expect(store._consecutiveStableReads).toBe(0);
 
-    // Fast cadence restored: a 30s advance ticks again (no need to wait 5 min).
     jest.advanceTimersByTime(30_000);
     await mockAvailabilityRequest.mock.results[3].value;
     await Promise.resolve();
@@ -930,11 +873,7 @@ describe('MithrilPartialSyncStore', () => {
   it('skips the availability probe while partial-sync work is active or terminal-cancelled without touching the guard or stable-read counter', async () => {
     const store = setupStore();
 
-    // The mid-run availability gate: every working status plus terminal
-    // `cancelled` returns early — no channel request, no
-    // `_isRefreshingAvailability` flip, no `_consecutiveStableReads` advance
-    // (a probe here would spawn a concurrent mithril-client metadata child
-    // mid-run).
+    // The gate exists because a probe mid-run would spawn a concurrent mithril-client metadata child.
     const gatedStatuses = [
       'downloading',
       'converting',
@@ -954,9 +893,6 @@ describe('MithrilPartialSyncStore', () => {
       store._consecutiveStableReads = 1;
 
       const refresh = store._refreshAvailability();
-      // The gate sits BEFORE `_isRefreshingAvailability = true`, so a skipped
-      // tick never consumes the in-flight guard — checked synchronously so
-      // even a transient flip would be visible.
       expect(store._isRefreshingAvailability).toBe(false);
       await refresh;
 
@@ -1014,7 +950,6 @@ describe('MithrilPartialSyncStore', () => {
     const armedInterval = store._availabilityRefreshInterval;
     expect(armedInterval).not.toBeNull();
 
-    // Work starts: the interval keeps ticking but every tick is gated.
     store._updateStatus({
       status: 'downloading',
       allowedRecoveryActions: [],
@@ -1027,11 +962,8 @@ describe('MithrilPartialSyncStore', () => {
     await Promise.resolve();
 
     expect(mockAvailabilityRequest).toHaveBeenCalledTimes(1);
-    // Same interval handle: the skipped ticks neither cleared nor re-armed it.
     expect(store._availabilityRefreshInterval).toBe(armedInterval);
 
-    // Status leaves the active set (`failed` is not gated): the very next tick
-    // probes again — the interval never stopped ticking through the gated window.
     store._updateStatus({
       status: 'failed',
       allowedRecoveryActions: ['retry'],
@@ -1134,11 +1066,7 @@ describe('MithrilPartialSyncStore', () => {
   });
 
   describe('diagnostics → overlay handoff (live store contract)', () => {
-    // Each test in this describe calls store.setup(), which internally calls
-    // syncStatus(). Mock the status request to return idle so that the async
-    // syncStatus() path does not reach logger.warn (electronLog is unavailable
-    // in jsdom). The outer beforeEach already calls jest.resetAllMocks(), so
-    // this nested beforeEach runs after the reset and restores the safe mock.
+    // setup() calls syncStatus(); the outer beforeEach's resetAllMocks() wipes the status mock, so re-mock it here (after the reset) to return idle and keep syncStatus() off the jsdom-unavailable logger.warn path.
     beforeEach(() => {
       mockStatusRequest.mockResolvedValue({
         status: 'idle',

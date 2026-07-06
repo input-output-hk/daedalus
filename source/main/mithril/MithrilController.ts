@@ -25,12 +25,8 @@ import {
   MithrilStartupGate,
   MithrilStartupGateDependencies,
   MithrilStartupGateResult,
-  MithrilStartupGateState,
 } from './MithrilStartupGate';
-import {
-  isMithrilDecisionCancelledError,
-  MithrilDecisionCancelledError,
-} from './mithrilDecision';
+import { MithrilDecisionCancelledError } from './mithrilDecision';
 
 type StatusSender<T> = (status: T) => Promise<void>;
 
@@ -52,20 +48,13 @@ const DEFAULT_BOOTSTRAP_STATUS: MithrilBootstrapStatusUpdate = {
   error: null,
 };
 
-export { isMithrilDecisionCancelledError, MithrilDecisionCancelledError };
-
 export class MithrilController {
   _isInitialized = false;
   _bootstrapStatus: MithrilBootstrapStatusUpdate = {
     ...DEFAULT_BOOTSTRAP_STATUS,
   };
-  _partialSyncStatus: MithrilPartialSyncStatusSnapshot = makeIdlePartialSyncStatus();
-  _bootstrapStatusListeners: Array<
-    (status: MithrilBootstrapStatusUpdate) => void
-  > = [];
-  _partialSyncStatusListeners: Array<
-    (status: MithrilPartialSyncStatusSnapshot) => void
-  > = [];
+  _partialSyncStatus: MithrilPartialSyncStatusSnapshot =
+    makeIdlePartialSyncStatus();
   _decisionListeners: Array<(decision: MithrilBootstrapDecision) => void> = [];
   _decisionWaiters: Array<{
     resolve: (decision: MithrilBootstrapDecision) => void;
@@ -149,10 +138,6 @@ export class MithrilController {
     this._startupGate.configure(dependencies);
   }
 
-  getStartupGateState(): MithrilStartupGateState {
-    return this._startupGate.state;
-  }
-
   getBootstrapStatus(): MithrilBootstrapStatusUpdate {
     return this._bootstrapStatus;
   }
@@ -166,15 +151,9 @@ export class MithrilController {
     if (!isEnabled) {
       return { isEnabled: false, isSignificantlyBehind: false };
     }
-    // Belt-and-braces main-side guard: while a partial sync is working (or
-    // terminal-`cancelled`), skip the behind-ness probe — it would spawn a
-    // concurrent mithril-client metadata child mid-run. The renderer store
-    // already gates its poll the same way; this guard keeps any future
-    // caller from re-introducing the concurrent spawn.
-    // Degrading to not-behind while active is safe: the proactive prompt is
-    // session-suppressed once an attempt starts, and getPartialSyncBehindness
-    // itself degrades to `{ isSignificantlyBehind: false }` on any failure.
-    // The `_partialSyncStatus` seam is kept fresh by broadcastPartialSyncStatus.
+    // Skip the behind-ness probe while a sync is working or terminal-'cancelled': it would spawn a
+    //  concurrent mithril-client metadata child mid-run. Degrading to not-behind is safe — the prompt is
+    //  session-suppressed once a sync starts, and the probe degrades to not-behind on any failure anyway.
     const { status } = this._partialSyncStatus;
     if (isMithrilPartialSyncWorkingStatus(status) || status === 'cancelled') {
       return { isEnabled, isSignificantlyBehind: false };
@@ -209,13 +188,9 @@ export class MithrilController {
     );
   }
 
-  // Shutdown reap: best-effort, called ONCE from safeExit() right after
-  // pauseActiveDownloads(). cancel()/forceKill() never run on a plain quit, so this is
-  // the only thing standing between a quit-mid-download and an orphaned (detached on
-  // POSIX) mithril-client. Guarded by isPartialSyncActive() — true for every non-idle
-  // status, which is broader than strictly needed and harmless (in the extra states the
-  // service slot is null, so the sync-mode SIGKILL no-ops). Fully try/caught so it can
-  // never throw into (or block) the shutdown funnel.
+  // Best-effort shutdown reap, called once from safeExit(): cancel()/forceKill() don't run on a plain
+  //  quit, so this is all that stops a quit-mid-download orphaning a detached mithril-client. The
+  //  isPartialSyncActive() guard is broader than needed but harmless. Fully try/caught so it can't block shutdown.
   reapPartialSyncOnShutdown(): void {
     try {
       if (!this.isPartialSyncActive()) return;
@@ -236,29 +211,6 @@ export class MithrilController {
     }
   }
 
-  onBootstrapStatus(
-    handler: (status: MithrilBootstrapStatusUpdate) => void
-  ): () => void {
-    this._bootstrapStatusListeners.push(handler);
-    return () => {
-      this._bootstrapStatusListeners = this._bootstrapStatusListeners.filter(
-        (listener) => listener !== handler
-      );
-    };
-  }
-
-  onPartialSyncStatus(
-    handler: (status: MithrilPartialSyncStatusSnapshot) => void
-  ): () => void {
-    this._partialSyncStatusListeners.push(handler);
-    return () => {
-      this._partialSyncStatusListeners =
-        this._partialSyncStatusListeners.filter(
-          (listener) => listener !== handler
-        );
-    };
-  }
-
   onBootstrapDecision(
     handler: (decision: MithrilBootstrapDecision) => void
   ): () => void {
@@ -275,7 +227,6 @@ export class MithrilController {
   ): Promise<void> {
     this._bootstrapStatus = status;
     this._startupGate.onBootstrapStatus(status);
-    this._bootstrapStatusListeners.forEach((listener) => listener(status));
 
     if (!this._bootstrapStatusSender) return;
 
@@ -293,7 +244,6 @@ export class MithrilController {
   ): Promise<void> {
     this._partialSyncStatus = status;
     this._startupGate.onPartialSyncStatus(status);
-    this._partialSyncStatusListeners.forEach((listener) => listener(status));
 
     if (!this._partialSyncStatusSender) return;
 

@@ -53,7 +53,6 @@ const defaultProps = {
   isMithrilPartialSyncEnabled: true,
   isMithrilPartialSyncSignificantlyBehind: true,
   isMithrilPartialSyncProbeFailed: false,
-  showMithrilPartialSyncConfirmationOnOpen: false,
   isMithrilBootstrapActive: false,
   onStartMithrilPartialSync: jest.fn(),
   onOpenStateDirectory: jest.fn(),
@@ -75,12 +74,10 @@ describe('DaedalusDiagnostics', () => {
   afterEach(cleanup);
 
   it('renders the Mithril Sync button without any sync-% or untranslated copy', () => {
-    // PopOver is mocked to render only children, so the hover-only tooltip copy
-    // is intentionally absent; the always-visible ready-hint was removed.
+    // PopOver is mocked to render only its children, so the hover-only tooltip copy is intentionally absent from these assertions.
     renderComponent();
 
     expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
-    // Sync-% was removed from the recommendation.
     expect(screen.queryByText(/% synced/)).not.toBeInTheDocument();
     expect(screen.queryByText(/!!!/)).not.toBeInTheDocument();
   });

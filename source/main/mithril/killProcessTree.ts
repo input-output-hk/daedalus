@@ -6,25 +6,13 @@ import { environment } from '../environment';
 const TASKKILL_TIMEOUT_MS = 5000;
 
 /**
- * Defense-in-depth: kill a runner-spawned mithril child together with any
- * descendants it may have forked.
- *
- * - POSIX (both modes): `process.kill(-pid, signal)` — a synchronous process-GROUP kill.
- *   It relies on the shared runner spawning with `detached: !environment.isWindows`, which
- *   makes the child a group leader, so `-pid` names its whole tree.
- * - Windows, default async (interactive kill sites — cancel()/forceKill()/late-kill):
- *   non-blocking `exec('taskkill /pid <pid> /t /f')` so the main thread (and UI) never
- *   freezes for up to 5 s; the callback logs a failure and falls back to a direct
- *   `child.kill()`.
- * - Windows, `opts.sync: true` (the shutdown reap ONLY): `execSync` of the same command —
- *   `safeExitWithCode` reaches `process.exit()` inside a stream-end callback, so an async
- *   taskkill issued that late would never actually launch.
- *
- * `taskkill /f` is always a hard kill, so the `signal` argument is a documented no-op on
- * Windows (the graceful SIGTERM stage collapses into a force kill there, matching
- * CardanoNode's Windows behavior). A null child or missing pid is a no-op. Any throw from
- * the group kill falls back to `child.kill(signal)`; a throwing fallback is swallowed with
- * a warn — this helper must never propagate during cancel or shutdown.
+ * Kill a runner-spawned mithril child and its descendants.
+ * POSIX: process.kill(-pid) group-kills the tree — relies on the runner's detached spawn making the child a group leader.
+ * Windows: taskkill /t /f — async by default so interactive kill sites never block the main thread;
+ *   sync when opts.sync, because the shutdown reap runs as safeExitWithCode reaches process.exit() inside
+ *   a stream-end callback, where an async taskkill would never launch.
+ * signal is a no-op on Windows (taskkill is always a hard kill). Null/missing pid no-ops; a failed group kill
+ *   falls back to child.kill() and never throws.
  */
 export function killProcessTree(
   child: ChildProcess | null,

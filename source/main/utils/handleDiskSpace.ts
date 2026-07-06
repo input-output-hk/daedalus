@@ -20,7 +20,7 @@ import {
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoNode } from '../cardano/CardanoNode';
 import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.types';
-import { isMithrilDecisionCancelledError } from '../ipc/mithrilBootstrapChannel';
+import { isMithrilDecisionCancelledError } from '../mithril/mithrilDecision';
 import {
   chainStorageCoordinator,
   getChainStorageManager,
@@ -139,6 +139,9 @@ export const handleDiskSpace = (
     wipeChainAndSnapshots: (reason, nodeState) =>
       chainStorageCoordinator.wipeChainAndSnapshots(reason, nodeState),
     getGeneration: () => directoryChangeGeneration,
+    emitPartialSyncStatus: (status) =>
+      getMithrilController().broadcastPartialSyncStatus(status),
+    getPartialSyncStatus: () => getMithrilController().getPartialSyncStatus(),
   });
   const mithrilController = getMithrilController();
   mithrilController.configureStartupGate({
@@ -262,24 +265,6 @@ export const handleDiskSpace = (
 
         case CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME:
           try {
-            const chainEmpty =
-              await chainStorageCoordinator.isManagedChainEmpty();
-            if (currentGeneration !== directoryChangeGeneration) {
-              return getStaleResponse();
-            }
-            if (chainEmpty) {
-              const startupResult =
-                await mithrilController.handleStoppedNodeStartup({
-                  currentGeneration,
-                  getStaleResponse,
-                  response,
-                });
-              if (startupResult.handled) {
-                return startupResult.response;
-              }
-              break;
-            }
-
             const startupResult =
               await mithrilController.handleStoppedNodeStartup({
                 currentGeneration,

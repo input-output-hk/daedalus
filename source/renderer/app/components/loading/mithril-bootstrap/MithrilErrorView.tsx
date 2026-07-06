@@ -27,11 +27,7 @@ interface Props {
     onClick(): void;
     variant?: 'primary' | 'secondary';
   }>;
-  // Opt-in: right-align the actions footer (e.g. partial-sync overlay caller,
-  // which supplies actions in display order — secondary first, primary last).
-  // Default (no prop) keeps the footer left-aligned in caller order, so the
-  // bootstrap default renders [Wipe chain & retry (primary), Decline] on the
-  // left, primary-first.
+  // Opt-in right-alignment of the actions footer; default keeps it left-aligned in caller order.
   rightAlignActions?: boolean;
   onWipeRetry?(): void;
   onDecline?(): void;
@@ -116,10 +112,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
       variant: 'secondary' as const,
     },
   ];
-  // Render-order-agnostic: actions are rendered verbatim in caller order. Any
-  // primary-last/right-align ordering is owned by the caller (e.g. the
-  // partial-sync overlay), keeping the bootstrap default (no actions prop)
-  // primary-first and left-aligned.
+  // Actions render verbatim in caller order; any reordering is the caller's responsibility.
 
   return (
     <div className={styles.root} role="alert">

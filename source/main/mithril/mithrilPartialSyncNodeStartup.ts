@@ -4,10 +4,7 @@ import type { BrowserWindow } from 'electron';
 
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import type { CardanoNodeState } from '../../common/types/cardano-node.types';
-import {
-  emitMithrilPartialSyncStatus,
-  getMithrilPartialSyncStatus,
-} from '../ipc/mithrilPartialSyncChannel';
+import type { MithrilPartialSyncStatusSnapshot } from '../../common/types/mithril-partial-sync.types';
 import type { CardanoNode } from '../cardano/CardanoNode';
 import {
   clearMithrilPartialSyncMarker,
@@ -29,6 +26,10 @@ type NodeStartupDependencies = {
   cardanoNode: CardanoNode;
   wipeChainAndSnapshots: WipeChainAndSnapshots;
   getGeneration: () => number;
+  emitPartialSyncStatus: (
+    status: MithrilPartialSyncStatusSnapshot
+  ) => Promise<void>;
+  getPartialSyncStatus: () => MithrilPartialSyncStatusSnapshot;
 };
 
 const waitForNodeStartupProof = () =>
@@ -41,17 +42,25 @@ export class MithrilPartialSyncNodeStartup {
   _cardanoNode: CardanoNode;
   _wipeChainAndSnapshots: WipeChainAndSnapshots;
   _getGeneration: () => number;
+  _emitPartialSyncStatus: (
+    status: MithrilPartialSyncStatusSnapshot
+  ) => Promise<void>;
+  _getPartialSyncStatus: () => MithrilPartialSyncStatusSnapshot;
 
   constructor({
     mainWindow,
     cardanoNode,
     wipeChainAndSnapshots,
     getGeneration,
+    emitPartialSyncStatus,
+    getPartialSyncStatus,
   }: NodeStartupDependencies) {
     this._mainWindow = mainWindow;
     this._cardanoNode = cardanoNode;
     this._wipeChainAndSnapshots = wipeChainAndSnapshots;
     this._getGeneration = getGeneration;
+    this._emitPartialSyncStatus = emitPartialSyncStatus;
+    this._getPartialSyncStatus = getPartialSyncStatus;
   }
 
   async handleInterruptedRecovery(currentGeneration: number): Promise<boolean> {
@@ -62,9 +71,8 @@ export class MithrilPartialSyncNodeStartup {
     }
 
     if (marker.state === 'node-start-verified') {
-      // Boundary C2: a prior run already proved one successful node start on the installed DB.
-      // Reclaim leftover staging on a close-without-dismiss / crash, then resume
-      // a normal boot. stagingRootPath is the durable colocated root persisted at cutover.
+      // This marker state means a prior run already proved one successful node start on the installed DB.
+      //  Reclaim leftover staging (close-without-dismiss or crash) and resume a normal boot.
       if (marker.stagingRootPath) {
         try {
           await fs.remove(marker.stagingRootPath);
@@ -86,10 +94,9 @@ export class MithrilPartialSyncNodeStartup {
       return false;
     }
 
-    // The native dialog below is the SINGLE authoritative startup-interrupted recovery
-    // surface (startup-owned recovery must not depend on diagnostics UI or a running node, and works before
-    // the renderer is ready). The redundant React `failed` emission was removed here to eliminate the
-    // two-competing-surfaces problem. In-session failures keep the React overlay (startInstalledNode catch).
+    // This dialog is the single startup-interrupted recovery surface: startup-owned recovery must work
+    //  before the renderer is ready and can't depend on diagnostics UI or a running node. In-session failures
+    //  still use the React overlay (startInstalledNode catch).
 
     const { response } = await dialog.showMessageBox(this._mainWindow, {
       type: 'warning',
@@ -144,8 +151,8 @@ export class MithrilPartialSyncNodeStartup {
       return false;
     }
 
-    await emitMithrilPartialSyncStatus({
-      ...getMithrilPartialSyncStatus(),
+    await this._emitPartialSyncStatus({
+      ...this._getPartialSyncStatus(),
       status: 'starting-node',
       allowedRecoveryActions: ['wipe-and-full-sync'],
       error: null,
@@ -160,8 +167,8 @@ export class MithrilPartialSyncNodeStartup {
       await this.finalizeInstalledNodeStart(currentGeneration);
       return true;
     } catch (error) {
-      await emitMithrilPartialSyncStatus({
-        ...getMithrilPartialSyncStatus(),
+      await this._emitPartialSyncStatus({
+        ...this._getPartialSyncStatus(),
         status: 'failed',
         allowedRecoveryActions: ['wipe-and-full-sync'],
         error: {
@@ -194,15 +201,14 @@ export class MithrilPartialSyncNodeStartup {
       );
     }
 
-    // Stamp node-start-verified (Boundary C2) and emit completed. The marker clear
-    // is DEFERRED to the dismiss-driven service finalize (finalizeCompletedPartialSync). Carry the
-    // durable stagingRootPath forward so the dismiss finalize / C2 reclaim can remove the exact dir.
+    // Stamp node-start-verified and emit completed; the marker clear is deferred to the dismiss-driven
+    //  finalize (finalizeCompletedPartialSync). Carry stagingRootPath forward so finalize can remove the exact dir.
     await writeMithrilPartialSyncMarker('node-start-verified', {
       managedChainPath: marker.managedChainPath,
       stagingRootPath: marker.stagingRootPath,
     });
-    await emitMithrilPartialSyncStatus({
-      ...getMithrilPartialSyncStatus(),
+    await this._emitPartialSyncStatus({
+      ...this._getPartialSyncStatus(),
       status: 'completed',
       allowedRecoveryActions: [],
       error: null,

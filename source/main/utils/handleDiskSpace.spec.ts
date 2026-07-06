@@ -40,12 +40,6 @@ const resetMithrilDecisionStateMock = jest.fn();
 
 let directoryChangedHandler: (() => void) | null = null;
 
-let mithrilBootstrapStatus = {
-  status: 'idle',
-  snapshot: null,
-  error: null,
-};
-
 jest.mock('check-disk-space', () => jest.fn());
 
 const electronDialogMock = {
@@ -88,36 +82,6 @@ jest.mock('./chainStorageCoordinator', () => ({
   getChainStorageManager: jest.fn(() => chainStorageManagerMock),
 }));
 
-jest.mock('../ipc/mithrilBootstrapChannel', () => ({
-  getPendingMithrilBootstrapDecision: jest.fn(() => null),
-  getMithrilBootstrapStatus: jest.fn(() => mithrilBootstrapStatus),
-  isMithrilDecisionCancelledError: jest.fn(
-    (error) => error?.name === 'MithrilDecisionCancelledError'
-  ),
-  onMithrilBootstrapDecision: jest.fn(),
-  onMithrilBootstrapStatus: jest.fn(),
-  resetMithrilDecisionState: resetMithrilDecisionStateMock,
-  waitForMithrilBootstrapDecision: jest.fn(() => new Promise(() => {})),
-  mithrilBootstrapStatusChannel: mithrilBootstrapStatusChannelMock,
-  setMithrilBootstrapStatus: jest.fn((update) => {
-    mithrilBootstrapStatus = {
-      ...mithrilBootstrapStatus,
-      ...update,
-    };
-  }),
-}));
-
-jest.mock('../ipc/mithrilPartialSyncChannel', () => ({
-  getMithrilPartialSyncStatus: jest.fn(() => ({
-    status: 'idle',
-    allowedRecoveryActions: [],
-    transferProgress: {},
-    progressItems: [],
-    error: null,
-  })),
-  emitMithrilPartialSyncStatus: jest.fn().mockResolvedValue(undefined),
-}));
-
 jest.mock('../mithril/mithrilPartialSyncNodeStartup', () => ({
   MithrilPartialSyncNodeStartup: jest
     .fn()
@@ -153,8 +117,6 @@ const resetMithrilControllerForTests = () => {
   mithrilController._startupGate = new MithrilStartupGate(mithrilController);
   mithrilController._bootstrapStatusSender = null;
   mithrilController._partialSyncStatusSender = null;
-  mithrilController._bootstrapStatusListeners = [];
-  mithrilController._partialSyncStatusListeners = [];
   mithrilController._decisionListeners = [];
 };
 
@@ -220,11 +182,6 @@ describe('handleDiskSpace', () => {
     jest.useFakeTimers();
     global.setInterval = jest.fn(() => 1) as unknown as typeof setInterval;
     global.clearInterval = jest.fn() as unknown as typeof clearInterval;
-    mithrilBootstrapStatus = {
-      status: 'idle',
-      snapshot: null,
-      error: null,
-    };
     checkDiskSpace.mockResolvedValue({ free: 4096, size: 16384 });
     fsExtraMock.realpath.mockImplementation(async (p: string) => p);
     chainStorageManagerMock.resolveDiskSpaceCheckPath.mockResolvedValue(
@@ -311,6 +268,9 @@ describe('handleDiskSpace', () => {
     expect(
       chainStorageManagerMock.resolveDiskSpaceCheckPath
     ).not.toHaveBeenCalled();
+    expect(
+      chainStorageCoordinatorMock.isManagedChainEmpty
+    ).toHaveBeenCalledTimes(1);
     expect(cardanoNode.start).toHaveBeenCalledTimes(1);
     expect(mithrilBootstrapStatusChannelMock.send).not.toHaveBeenCalledWith(
       expect.objectContaining({ status: 'decision' }),
@@ -753,7 +713,6 @@ describe('handleDiskSpace', () => {
       require('./handleDiskSpace') as typeof import('./handleDiskSpace');
     const cardanoNode = createCardanoNode();
 
-    // Chain has partial mithril data (~11 GB downloaded) but bootstrap is not done
     chainStorageCoordinatorMock.isManagedChainEmpty.mockResolvedValue(false);
     getMithrilController().setBootstrapStatus({
       status: 'downloading',
@@ -769,7 +728,6 @@ describe('handleDiskSpace', () => {
     await handleCheckDiskSpace();
 
     expect(cardanoNode.start).not.toHaveBeenCalled();
-    // Should not emit idle — mithril is still in control
     expect(mithrilBootstrapStatusChannelMock.send).not.toHaveBeenCalledWith(
       expect.objectContaining({ status: 'idle' }),
       expect.anything()

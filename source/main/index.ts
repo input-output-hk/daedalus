@@ -88,10 +88,9 @@ EventEmitter.defaultMaxListeners = 100; // Default: 10
 const safeExit = async () => {
   pauseActiveDownloads();
 
-  // Reap any live Mithril partial-sync child BEFORE the exit branches below —
-  // safeExit only stops cardanoNode, so a quit mid-download would otherwise orphan the
-  // (POSIX-detached) mithril-client past process.exit(). Best-effort: the call is fully
-  // try/caught inside reapPartialSyncOnShutdown and can never block exit.
+  // Reap any live Mithril partial-sync child before the exit branches: safeExit only stops cardanoNode,
+  //  so a quit mid-download would otherwise orphan the detached mithril-client past process.exit().
+  //  Best-effort and fully try/caught, so it can't block exit.
   getMithrilController().reapPartialSyncOnShutdown();
 
   const exitCode =

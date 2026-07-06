@@ -25,7 +25,6 @@ import type {
   MithrilPartialSyncFinalizeRendererRequest,
   MithrilPartialSyncFinalizeMainResponse,
 } from '../../common/ipc/api';
-import type { MithrilPartialSyncStatusSnapshot } from '../../common/types/mithril-partial-sync.types';
 import { getMithrilController } from '../mithril/MithrilController';
 
 const mithrilPartialSyncStartChannel: MainIpcChannel<
@@ -62,29 +61,6 @@ const mithrilPartialSyncFinalizeChannel: MainIpcChannel<
   MithrilPartialSyncFinalizeRendererRequest,
   MithrilPartialSyncFinalizeMainResponse
 > = new MainIpcChannel(MITHRIL_PARTIAL_SYNC_FINALIZE_CHANNEL);
-
-export const getMithrilPartialSyncStatus = () =>
-  getMithrilController().getPartialSyncStatus();
-
-export const isMithrilPartialSyncActive = () =>
-  getMithrilController().isPartialSyncActive();
-
-export const setMithrilPartialSyncActiveProvider = (
-  _provider: () => boolean
-) => {};
-
-export const setMithrilPartialSyncStatus = (
-  status: MithrilPartialSyncStatusSnapshot
-) => {
-  getMithrilController().setPartialSyncStatus(status);
-  return status;
-};
-
-export const onMithrilPartialSyncStatus = (
-  handler: (status: MithrilPartialSyncStatusSnapshot) => void
-) => {
-  return getMithrilController().onPartialSyncStatus(handler);
-};
 
 let mithrilPartialSyncRequestsInitialized = false;
 
@@ -127,10 +103,4 @@ export const handleMithrilPartialSyncRequests = (window: BrowserWindow) => {
   mithrilPartialSyncFinalizeChannel.onRequest(async () => {
     await controller.finalizePartialSync();
   });
-};
-
-export const emitMithrilPartialSyncStatus = async (
-  status: MithrilPartialSyncStatusSnapshot
-): Promise<void> => {
-  await getMithrilController().broadcastPartialSyncStatus(status);
 };

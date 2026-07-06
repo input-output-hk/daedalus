@@ -28,7 +28,7 @@ import { ErrorType } from '../../domains/ApiError';
 import DiagnosticsTimeStatusRow from './DiagnosticsTimeStatusRow';
 import MithrilPartialSyncSection from './MithrilPartialSyncSection';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   systemInfo: {
     id: 'daedalus.diagnostics.dialog.system.info',
     defaultMessage: '!!!SYSTEM INFO',
@@ -412,12 +412,11 @@ type Props = {
   isMithrilPartialSyncEnabled: boolean;
   isMithrilPartialSyncSignificantlyBehind: boolean;
   isMithrilPartialSyncProbeFailed: boolean;
-  showMithrilPartialSyncConfirmationOnOpen?: boolean;
   isMithrilBootstrapActive: boolean;
   onStartMithrilPartialSync: (...args: Array<any>) => any;
   onOpenStateDirectory: (...args: Array<any>) => any;
   onOpenExternalLink: (...args: Array<any>) => any;
-  onRestartNode: (...args: Array<any>) => any;
+  onRestartNode: { trigger: (...args: Array<any>) => any };
   onClose: (...args: Array<any>) => any;
   onCopyStateDirectoryPath: (...args: Array<any>) => any;
   onForceCheckNetworkClock: (...args: Array<any>) => any;
@@ -527,7 +526,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isMithrilPartialSyncEnabled,
       isMithrilPartialSyncSignificantlyBehind,
       isMithrilPartialSyncProbeFailed,
-      showMithrilPartialSyncConfirmationOnOpen,
       isMithrilBootstrapActive,
       onOpenStateDirectory,
       onClose,
@@ -726,9 +724,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
                   }
                   isProbeFailed={isMithrilPartialSyncProbeFailed}
                   behindByEpochs={behindByEpochs}
-                  showConfirmationOnOpen={
-                    showMithrilPartialSyncConfirmationOnOpen
-                  }
                   onRestoreFocus={this.restoreDialogCloseOnEscKey}
                   onStartMithrilPartialSync={
                     this.props.onStartMithrilPartialSync
@@ -910,7 +905,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
     this.setState({
       isNodeRestarting: true,
     });
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'trigger' does not exist on type '(...arg... Remove this comment to see the full error message
     this.props.onRestartNode.trigger();
     this.restoreDialogCloseOnEscKey();
   };

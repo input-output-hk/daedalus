@@ -545,9 +545,7 @@ describe('validateChainStorageDirectory', () => {
     );
     (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
 
-    // Selecting /tmp/state/chain/db/chain — basename is "chain", so
-    // isDirectChainSelection=true, but the parent /tmp/state/chain/db
-    // is still inside the managed chain dir.
+    // Path basename is "chain" (so isDirectChainSelection=true), yet its parent /tmp/state/chain/db still sits inside the managed chain dir — the edge this asserts.
     const result = await validateChainStorageDirectory(
       `${CHAIN_PATH}/db/chain`,
       STATE_DIR,

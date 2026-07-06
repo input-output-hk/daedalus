@@ -1,8 +1,7 @@
 import fs from 'fs-extra';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
+import type { MithrilPartialSyncStatusSnapshot } from '../../common/types/mithril-partial-sync.types';
 import { MithrilPartialSyncNodeStartup } from './mithrilPartialSyncNodeStartup';
-
-// --- Module mocks ---
 
 jest.mock('fs-extra', () => ({
   remove: jest.fn().mockResolvedValue(undefined),
@@ -20,17 +19,6 @@ jest.mock('./mithrilPartialSyncMarker', () => ({
   writeMithrilPartialSyncMarker: jest.fn().mockResolvedValue(undefined),
 }));
 
-jest.mock('../ipc/mithrilPartialSyncChannel', () => ({
-  emitMithrilPartialSyncStatus: jest.fn().mockResolvedValue(undefined),
-  getMithrilPartialSyncStatus: jest.fn(() => ({
-    status: 'starting-node',
-    allowedRecoveryActions: [],
-    transferProgress: {},
-    progressItems: [],
-    error: null,
-  })),
-}));
-
 jest.mock('../utils/logging', () => ({
   logger: {
     warn: jest.fn(),
@@ -42,8 +30,6 @@ jest.mock('../utils/safeExitWithCode', () => ({
   safeExitWithCode: jest.fn(),
 }));
 
-// --- Helpers ---
-
 const {
   readMithrilPartialSyncMarker,
   clearMithrilPartialSyncMarker,
@@ -54,11 +40,16 @@ const {
   writeMithrilPartialSyncMarker: jest.Mock;
 };
 
-const { emitMithrilPartialSyncStatus } =
-  require('../ipc/mithrilPartialSyncChannel') as {
-    emitMithrilPartialSyncStatus: jest.Mock;
-    getMithrilPartialSyncStatus: jest.Mock;
-  };
+const emitPartialSyncStatus = jest.fn().mockResolvedValue(undefined);
+const getPartialSyncStatus = jest.fn(
+  (): MithrilPartialSyncStatusSnapshot => ({
+    status: 'starting-node',
+    allowedRecoveryActions: [],
+    transferProgress: {},
+    progressItems: [],
+    error: null,
+  })
+);
 
 const { dialog } = require('electron') as unknown as {
   dialog: { showMessageBox: jest.Mock };
@@ -84,8 +75,17 @@ const makeInstance = (cardanoNode?: ReturnType<typeof makeCardanoNodeMock>) => {
     cardanoNode: node as never,
     wipeChainAndSnapshots,
     getGeneration,
+    emitPartialSyncStatus,
+    getPartialSyncStatus,
   });
-  return { instance, node, getGeneration, wipeChainAndSnapshots };
+  return {
+    instance,
+    node,
+    getGeneration,
+    wipeChainAndSnapshots,
+    emitPartialSyncStatus,
+    getPartialSyncStatus,
+  };
 };
 
 beforeEach(() => {
@@ -93,10 +93,8 @@ beforeEach(() => {
   writeMithrilPartialSyncMarker.mockResolvedValue(undefined);
   clearMithrilPartialSyncMarker.mockResolvedValue(undefined);
   fsMock.remove.mockResolvedValue(undefined);
-  emitMithrilPartialSyncStatus.mockResolvedValue(undefined);
+  emitPartialSyncStatus.mockResolvedValue(undefined);
 });
-
-// --- handleInterruptedRecovery tests ---
 
 describe('handleInterruptedRecovery', () => {
   it('returns false with no marker (no interrupted recovery)', async () => {
@@ -131,7 +129,6 @@ describe('handleInterruptedRecovery', () => {
       state: 'node-start-verified',
       updatedAt: '2026-06-01T00:00:00.000Z',
       managedChainPath: '/chain',
-      // no stagingRootPath
     });
     const { instance } = makeInstance();
 
@@ -173,7 +170,7 @@ describe('handleInterruptedRecovery', () => {
 
     await instance.handleInterruptedRecovery(0);
 
-    expect(emitMithrilPartialSyncStatus).not.toHaveBeenCalledWith(
+    expect(emitPartialSyncStatus).not.toHaveBeenCalledWith(
       expect.objectContaining({ status: 'failed' })
     );
     expect(dialog.showMessageBox).not.toHaveBeenCalled();
@@ -192,8 +189,6 @@ describe('handleInterruptedRecovery', () => {
     expect(clearMithrilPartialSyncMarker).not.toHaveBeenCalled();
   });
 
-  // --- Unsafe cutover (cutover-in-progress): native dialog is the SINGLE recovery surface ---
-
   it('unsafe cutover: shows ONLY the native dialog and does NOT emit a failed status (single surface)', async () => {
     readMithrilPartialSyncMarker.mockResolvedValue({
       state: 'cutover-in-progress',
@@ -204,10 +199,8 @@ describe('handleInterruptedRecovery', () => {
 
     await instance.handleInterruptedRecovery(0);
 
-    // The native dialog IS the recovery surface ...
     expect(dialog.showMessageBox).toHaveBeenCalledTimes(1);
-    // ... and the redundant React `failed` emission is GONE.
-    expect(emitMithrilPartialSyncStatus).not.toHaveBeenCalledWith(
+    expect(emitPartialSyncStatus).not.toHaveBeenCalledWith(
       expect.objectContaining({ status: 'failed' })
     );
   });
@@ -225,7 +218,7 @@ describe('handleInterruptedRecovery', () => {
     expect(result).toBe(false);
     expect(wipeChainAndSnapshots).toHaveBeenCalledTimes(1);
     expect(clearMithrilPartialSyncMarker).toHaveBeenCalledTimes(1);
-    expect(emitMithrilPartialSyncStatus).not.toHaveBeenCalledWith(
+    expect(emitPartialSyncStatus).not.toHaveBeenCalledWith(
       expect.objectContaining({ status: 'failed' })
     );
   });
@@ -281,8 +274,6 @@ describe('handleInterruptedRecovery', () => {
   });
 });
 
-// --- finalizeInstalledNodeStart tests ---
-
 describe('finalizeInstalledNodeStart', () => {
   // Override the startup delay to 0 ms for all finalize tests so no fake timers needed
   beforeEach(() => {
@@ -318,7 +309,7 @@ describe('finalizeInstalledNodeStart', () => {
       }
     );
     expect(clearMithrilPartialSyncMarker).not.toHaveBeenCalled();
-    expect(emitMithrilPartialSyncStatus).toHaveBeenCalledWith(
+    expect(emitPartialSyncStatus).toHaveBeenCalledWith(
       expect.objectContaining({ status: 'completed' })
     );
   });
@@ -328,7 +319,6 @@ describe('finalizeInstalledNodeStart', () => {
       state: 'installed-awaiting-node-start',
       updatedAt: '2026-06-01T00:00:00.000Z',
       stagingRootPath: '/vol/mithril-partial-sync',
-      // no managedChainPath
     });
 
     const node = makeCardanoNodeMock(CardanoNodeStates.RUNNING);

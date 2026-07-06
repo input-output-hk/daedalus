@@ -65,8 +65,6 @@ export const getStorageHelpText = (
   switch (validation.chainSubdirectoryStatus) {
     case 'will-create':
       return intl.formatMessage(messages.subdirectoryCreationNotice);
-    case 'existing-directory':
-      return intl.formatMessage(messages.subdirectoryWarningExists);
     default:
       return null;
   }

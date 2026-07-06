@@ -50,8 +50,7 @@ jest.mock('./mithrilCommandRunner', () => ({
   runBinary: jest.fn(),
 }));
 
-// The three interactive kill sites route through killProcessTree; mock it so
-// no test ever issues a real process-group kill against a fake pid.
+// Mock killProcessTree so no test issues a real process-group kill against a fake pid.
 jest.mock('./killProcessTree', () => ({
   killProcessTree: jest.fn(),
 }));
@@ -311,7 +310,7 @@ describe('MithrilPartialSyncService', () => {
       exitCode: 0,
     });
 
-    await service.listSnapshots();
+    await service._listSnapshotsRaw();
 
     expect(runCommandMock).toHaveBeenCalledWith(
       ['cardano-db', 'snapshot', 'list', '--json'],
@@ -322,44 +321,6 @@ describe('MithrilPartialSyncService', () => {
       }),
       expect.any(Object)
     );
-  });
-
-  it('serves snapshot list and show reads from the shared metadata pipeline', async () => {
-    const service = new MithrilPartialSyncService();
-
-    runCommandMock.mockResolvedValueOnce({
-      stdout: JSON.stringify([
-        {
-          digest: 'list-digest',
-          created_at: '2026-07-01T00:00:00Z',
-          size: 10,
-          beacon: { immutable_file_number: 1200, epoch: 320 },
-        },
-      ]),
-      stderr: '',
-      exitCode: 0,
-    });
-
-    await expect(service.listSnapshots()).resolves.toEqual([
-      expect.objectContaining({ digest: 'list-digest', size: 10 }),
-    ]);
-
-    runCommandMock.mockResolvedValueOnce({
-      stdout: JSON.stringify({
-        digest: 'show-digest',
-        created_at: '2026-07-02T00:00:00Z',
-        size: 20,
-        beacon: { immutable_file_number: 1300, epoch: 321 },
-      }),
-      stderr: '',
-      exitCode: 0,
-    });
-
-    await expect(service.showSnapshot('show-digest')).resolves.toEqual(
-      expect.objectContaining({ digest: 'show-digest', size: 20 })
-    );
-
-    await expect(service.showSnapshot('   ')).resolves.toBeNull();
   });
 
   it('fails when the managed chain does not expose a readable immutable directory', async () => {
@@ -521,7 +482,6 @@ describe('MithrilPartialSyncService', () => {
     expect(ensureDirMock).toHaveBeenCalledWith(
       '/mnt/custom-storage/mithril-partial-sync/download'
     );
-    // Cutover colocation assertion: staging parent dir equals chain parent dir (intra-volume)
     expect(
       require('path').dirname('/mnt/custom-storage/mithril-partial-sync')
     ).toBe(require('path').dirname('/mnt/custom-storage/chain'));
@@ -534,8 +494,7 @@ describe('MithrilPartialSyncService', () => {
       .spyOn(service, 'resolveLatestSnapshotMetadata')
       .mockResolvedValueOnce(createLatestSnapshot(12));
 
-    // mithrilWorkDir '/something' → dirname '/' → staging '/mithril-partial-sync'
-    // managedChainPath '/' → isPathWithin('/', '/mithril-partial-sync') = true → guard fires
+    // Root-path edge case: managedChainPath '/' keeps staging under '/', so isPathWithin fires.
     await expect(
       service.start({
         layoutResult: {
@@ -836,7 +795,6 @@ describe('MithrilPartialSyncService', () => {
   it('re-emits the current status when cancel is requested during the node-stop window', async () => {
     const service = new MithrilPartialSyncService();
 
-    // node-stop window: nothing active, both work refs null.
     service._activeWorkDir = null;
     service._currentProcess = null;
     service._status = {
@@ -852,9 +810,7 @@ describe('MithrilPartialSyncService', () => {
 
     await expect(service.cancel()).resolves.toBeUndefined();
 
-    // A status emission happened (renderer can resync off it) ...
     expect(emissions).toHaveLength(1);
-    // ... and it is the TRUE current status, not a fabricated `cancelled`/`failed`.
     expect(emissions[0]).toEqual(
       expect.objectContaining({
         status: 'completed',
@@ -883,7 +839,6 @@ describe('MithrilPartialSyncService', () => {
     await expect(service.cancel()).rejects.toThrow(
       'PARTIAL_SYNC_CANCEL_NOT_ALLOWED'
     );
-    // The throw path emits nothing; the early-return re-emit did not leak into it.
     expect(emissions).toHaveLength(0);
   });
 
@@ -995,7 +950,7 @@ describe('MithrilPartialSyncService', () => {
     );
   });
 
-  it('logs an info event at the real-cancel branch before killing the tracked process (observability)', async () => {
+  it('logs the cancel entry with the tracked child before killing it (observability)', async () => {
     const { info: infoLog } = require('../utils/logging').logger;
     const service = new MithrilPartialSyncService();
 
@@ -1013,20 +968,8 @@ describe('MithrilPartialSyncService', () => {
 
     await expect(service.cancel()).resolves.toBeUndefined();
 
-    // cancel() now routes through killProcessTree (group/tree SIGTERM), not a
-    // direct child.kill().
     expect(killProcessTreeMock).toHaveBeenCalledWith(fakeChild, 'SIGTERM');
     expect(fakeChild.kill).not.toHaveBeenCalled();
-    expect(infoLog).toHaveBeenCalledWith(
-      'MithrilPartialSyncService: cancelling active partial sync process',
-      expect.objectContaining({
-        status: 'cancelling',
-        pid: 999,
-        hadChild: true,
-      })
-    );
-    // The UNCONDITIONAL cancel-entry line fires alongside the in-branch line,
-    // carrying the tracked child's real pid.
     expect(infoLog).toHaveBeenCalledWith(
       'MithrilPartialSyncService: cancel entry',
       expect.objectContaining({
@@ -1041,9 +984,7 @@ describe('MithrilPartialSyncService', () => {
     const { info: infoLog } = require('../utils/logging').logger;
     const service = new MithrilPartialSyncService();
 
-    // Empty cancelable slot but an ACTIVE work dir: the real cancel branch must be reachable —
-    // an empty slot AND empty workDir short-circuits on the no-active-sync early return, which
-    // never emits the entry line.
+    // An active work dir is required here: an empty slot AND empty workDir would short-circuit on the no-active-sync early return.
     service._activeWorkDir =
       '/tmp/daedalus-state/mithril-partial-sync/download';
     service._currentProcess = null;
@@ -1057,8 +998,6 @@ describe('MithrilPartialSyncService', () => {
 
     await expect(service.cancel()).resolves.toBeUndefined();
 
-    // The entry line is UNCONDITIONAL — it fires even with no child to kill (the case the
-    // in-branch line can never log), directly observing the slot state at cancel.
     expect(infoLog).toHaveBeenCalledWith(
       'MithrilPartialSyncService: cancel entry',
       expect.objectContaining({
@@ -1067,12 +1006,7 @@ describe('MithrilPartialSyncService', () => {
         hadChild: false,
       })
     );
-    // No child: neither the in-branch line nor any kill routing fires.
     expect(killProcessTreeMock).not.toHaveBeenCalled();
-    expect(infoLog).not.toHaveBeenCalledWith(
-      'MithrilPartialSyncService: cancelling active partial sync process',
-      expect.anything()
-    );
   });
 
   it('forceKillForShutdown() issues the sync-mode SIGKILL through killProcessTree (shutdown reap)', () => {
@@ -1082,10 +1016,7 @@ describe('MithrilPartialSyncService', () => {
 
     service.forceKillForShutdown();
 
-    // The shutdown reap MUST stay sync: true — safeExitWithCode reaches process.exit()
-    // inside a stream-end callback, so an async Windows taskkill issued that late would
-    // never launch. Dropping { sync: true } or downgrading SIGKILL here is the exact
-    // regression this pin exists to catch.
+    // sync: true is required: safeExitWithCode calls process.exit() inside a stream-end callback, so an async taskkill issued that late would never launch.
     expect(killProcessTreeMock).toHaveBeenCalledWith(
       fakeChild,
       'SIGKILL',
@@ -1346,10 +1277,6 @@ describe('MithrilPartialSyncService', () => {
   });
 
   describe('cancel correctness — interruptible stage machine', () => {
-    // Drive the real start() stage machine with the stage helpers stubbed to succeed (mirroring the
-    // happy-path / disk-space-preflight setup). Each test injects a concurrent cancel by flipping
-    // _isCancelled inside a chosen stage stub, then asserts the checkpoints (CP-A..CP-D) unwind
-    // start() without re-spawning the download, reaching cutover, or emitting `failed`.
     const primeStart = (service: MithrilPartialSyncService) => {
       jest
         .spyOn(
@@ -1407,8 +1334,7 @@ describe('MithrilPartialSyncService', () => {
       );
       const installSpy = jest.spyOn(service, '_installValidatedStagedSnapshot');
 
-      // Simulate a concurrent cancel() landing during `preparing`: the disk-space preflight is the
-      // last await before CP-A, so flip the flag there (cancel() has no live _currentProcess yet).
+      // Flip the cancel flag in the disk-space stub — the last await before the first checkpoint (no live process yet).
       jest
         .spyOn(service, '_assertSufficientDiskSpace')
         .mockImplementation(async () => {
@@ -1420,30 +1346,23 @@ describe('MithrilPartialSyncService', () => {
 
       await expect(service.start(createContext())).resolves.toBeUndefined();
 
-      // CP-A unwound the stage machine before the download re-spawn: the flag flips in the
-      // disk-space stub that runs immediately before CP-A, so start() throws there — the download
-      // stage (and CP-B) is never entered.
       expect(downloadSpy).not.toHaveBeenCalled();
       expect(runCommandSpy).not.toHaveBeenCalled();
-      // Never reached cutover.
       expect(installSpy).not.toHaveBeenCalled();
       expect(writeMithrilPartialSyncMarkerMock).not.toHaveBeenCalledWith(
         'cutover-in-progress',
         expect.anything()
       );
-      // The _isCancelled catch short-circuits: no `failed`, and no re-emitted `downloading` frame.
       const statuses = emissions.map((emission) => emission.status);
       expect(statuses).not.toContain('failed');
       expect(statuses).not.toContain('downloading');
     });
 
-    it('a cancel during converting unwinds at CP-D before install — no cutover marker, no install', async () => {
+    it('a cancel during converting unwinds at the last checkpoint before install — no cutover marker, no install', async () => {
       const service = new MithrilPartialSyncService();
       primeStart(service);
       const installSpy = jest.spyOn(service, '_installValidatedStagedSnapshot');
 
-      // Concurrent cancel lands during `converting`; the (stubbed) conversion returns normally, then
-      // CP-D fires before the cutover marker/install (Boundary-A-only cancel invariant).
       jest
         .spyOn(service, '_convertStagedSnapshot')
         .mockImplementation(async () => {
@@ -1464,10 +1383,6 @@ describe('MithrilPartialSyncService', () => {
       primeStart(service);
       const installSpy = jest.spyOn(service, '_installValidatedStagedSnapshot');
 
-      // Model the killed converter: cancel flips _isCancelled AND the conversion throws a `converting`
-      // stage error (the tracked child exits non-zero). start()'s existing `if (this._isCancelled)
-      // return;` catch must swallow it — no `failed` emit, no cutover — so the run settles quickly and
-      // the coordinator join reaches finalizeCancel rather than the abandonCancel floor.
       jest
         .spyOn(service, '_convertStagedSnapshot')
         .mockImplementation(async () => {
@@ -1512,8 +1427,6 @@ describe('MithrilPartialSyncService', () => {
 
       await service._runBinary('snapshot-converter', ['--convert']);
 
-      // _runBinary now passes the fifth `callbacks` arg with onProcess, mirroring _runCommand, so an
-      // in-flight conversion lands in the cancelable slot that cancel()/forceKill() kill.
       expect(runBinaryMock).toHaveBeenCalledWith(
         'snapshot-converter',
         ['--convert'],
@@ -1523,7 +1436,6 @@ describe('MithrilPartialSyncService', () => {
       );
       expect(capturedCallbacks).toBeDefined();
 
-      // onProcess(child) populates the cancelable slot; onProcess(null) clears it on close/error.
       capturedCallbacks.onProcess(fakeChild);
       expect(service._currentProcess).toBe(fakeChild);
       capturedCallbacks.onProcess(null);
@@ -1547,8 +1459,6 @@ describe('MithrilPartialSyncService', () => {
         }
       );
 
-      // The download call site threads trackAsCancelable: true; without it the
-      // runner callbacks now (correctly) omit onProcess entirely.
       await service._runCommand(['cardano-db', 'download', 'latest'], {
         trackAsCancelable: true,
       });
@@ -1559,7 +1469,6 @@ describe('MithrilPartialSyncService', () => {
       capturedCallbacks.onProcess(fakeChild);
 
       expect(service._currentProcess).toBe(fakeChild);
-      // The late-kill routes through killProcessTree (group/tree SIGTERM).
       expect(killProcessTreeMock).toHaveBeenCalledWith(fakeChild, 'SIGTERM');
       expect(fakeChild.kill).not.toHaveBeenCalled();
 
@@ -1596,7 +1505,6 @@ describe('MithrilPartialSyncService', () => {
       capturedCallbacks.onProcess(fakeChild);
 
       expect(service._currentProcess).toBe(fakeChild);
-      // The late-kill routes through killProcessTree (group/tree SIGTERM).
       expect(killProcessTreeMock).toHaveBeenCalledWith(fakeChild, 'SIGTERM');
       expect(fakeChild.kill).not.toHaveBeenCalled();
 
@@ -1626,12 +1534,10 @@ describe('MithrilPartialSyncService', () => {
         ) => {
           invocations.push({ args, options, callbacks });
           if (args.includes('download')) {
-            // Hold the download in flight while the probe runs to completion.
             return new Promise((resolve) => {
               releaseDownload = resolve;
             });
           }
-          // The untracked metadata read (snapshot show latest) resolves immediately.
           return Promise.resolve({
             stdout: JSON.stringify({
               digest: 'latest-digest',
@@ -1644,7 +1550,6 @@ describe('MithrilPartialSyncService', () => {
         }
       );
 
-      // The tracked download registers its child into the durable cancelable slot.
       const downloadPromise = service._runCommand(
         ['cardano-db', 'download', 'latest'],
         { trackAsCancelable: true }
@@ -1653,7 +1558,6 @@ describe('MithrilPartialSyncService', () => {
       invocations[0].callbacks.onProcess(downloadChild);
       expect(service._currentProcess).toBe(downloadChild);
 
-      // Drive the REAL 30s behind-ness probe to completion mid-download (untracked default).
       jest
         .spyOn(service._chainStorageManager, 'getManagedChainPath')
         .mockResolvedValue('/tmp/chain');
@@ -1663,10 +1567,6 @@ describe('MithrilPartialSyncService', () => {
         behindByImmutables: 20,
       });
 
-      // The metadata invocation carried NO onProcess callback AT ALL — it can neither
-      // overwrite the slot on spawn nor null it on its own clean close (the confirmed
-      // slot-clobber) — while it KEEPS onLogStream, and trackAsCancelable never leaks
-      // into the runner options.
       expect(invocations).toHaveLength(2);
       const metadataInvocation = invocations[1];
       expect(metadataInvocation.args).toEqual([
@@ -1677,19 +1577,14 @@ describe('MithrilPartialSyncService', () => {
         '--json',
       ]);
       expect(metadataInvocation.callbacks.onProcess).toBeUndefined();
-      expect(metadataInvocation.callbacks.onLogStream).toEqual(
-        expect.any(Function)
-      );
+      expect(metadataInvocation.callbacks.onLogStream).toBeUndefined();
       expect(metadataInvocation.options).toEqual({
         requireKeys: false,
         logFileName: 'mithril-partial-sync.log',
       });
 
-      // The durable slot still names the download child ...
       expect(service._currentProcess).toBe(downloadChild);
 
-      // ... so cancel() and forceKill() still target IT — not a no-op on a nulled slot, not
-      // a metadata child (none was ever surfaced).
       service._activeWorkDir =
         '/tmp/daedalus-state/mithril-partial-sync/download';
       service._status = {
@@ -1754,8 +1649,6 @@ describe('MithrilPartialSyncService', () => {
         }
       );
 
-      // Hold the conversion in flight with its child in the durable slot (_runBinary's
-      // unconditional onProcess — opt-in by construction).
       const conversionPromise = service._runBinary('snapshot-converter', [
         '--convert',
       ]);
@@ -1769,7 +1662,6 @@ describe('MithrilPartialSyncService', () => {
       converterCallbacks.onProcess(converterChild);
       expect(service._currentProcess).toBe(converterChild);
 
-      // An ad-hoc untracked list read completes mid-conversion without touching the slot.
       await expect(service._listSnapshotsRaw()).resolves.toEqual([]);
       expect(metadataInvocations).toHaveLength(1);
       expect(metadataInvocations[0].callbacks.onProcess).toBeUndefined();
@@ -1779,7 +1671,6 @@ describe('MithrilPartialSyncService', () => {
       });
       expect(service._currentProcess).toBe(converterChild);
 
-      // The conversion child registered via _runBinary stays killable.
       service.forceKill();
       expect(killProcessTreeMock).toHaveBeenCalledWith(
         converterChild,
@@ -1824,8 +1715,6 @@ describe('MithrilPartialSyncService', () => {
         }
       );
 
-      // Drive the REAL start() so the preparing-phase resolveLatestSnapshotMetadata threads
-      // trackAsCancelable: true down to _runCommand (no metadata/spawn stubs in the way).
       const startPromise = service.start(createContext());
       while (invocations.length === 0) {
         await new Promise((resolve) => {
@@ -1833,8 +1722,6 @@ describe('MithrilPartialSyncService', () => {
         });
       }
 
-      // Pins that the start()-phase read DOES register — onProcess is passed to the runner —
-      // while the service-local flag is stripped from the runner options.
       expect(invocations[0].args).toEqual([
         'cardano-db',
         'snapshot',
@@ -1852,13 +1739,10 @@ describe('MithrilPartialSyncService', () => {
       expect(service._currentProcess).toBe(metaChild);
       expect(service.status.status).toBe('preparing');
 
-      // A cancel landing during `preparing` kills the in-flight metadata child.
       await expect(service.cancel()).resolves.toBeUndefined();
       expect(killProcessTreeMock).toHaveBeenCalledWith(metaChild, 'SIGTERM');
       expect(service.status.status).toBe('cancelling');
 
-      // The runner closes out (slot cleared, stdout settles); start() unwinds via the
-      // cancelled checkpoints without ever re-spawning a download or metadata re-resolve.
       invocations[0].callbacks.onProcess(null);
       releaseShowLatest();
       await expect(startPromise).resolves.toBeUndefined();
@@ -1903,7 +1787,6 @@ describe('MithrilPartialSyncService', () => {
       const service = new MithrilPartialSyncService();
       setupStartMocks(service);
 
-      // Inject a large snapshot size so the required threshold exceeds the free space
       jest.spyOn(service, 'resolveLatestSnapshotMetadata').mockResolvedValue({
         snapshot: {
           digest: 'latest-digest',
@@ -1936,7 +1819,6 @@ describe('MithrilPartialSyncService', () => {
         })
       );
 
-      // Download command must never have been called (preflight precedes download)
       expect(runCommandSpy).not.toHaveBeenCalledWith(
         expect.arrayContaining(['cardano-db', 'download']),
         expect.anything(),
@@ -2094,7 +1976,6 @@ describe('MithrilPartialSyncService', () => {
         stagingRootPath: '/vol/mithril-partial-sync',
       });
       const service = new MithrilPartialSyncService();
-      // Prime status to something non-idle to confirm the reset
       service._status = {
         status: 'completed',
         allowedRecoveryActions: [],
@@ -2123,7 +2004,6 @@ describe('MithrilPartialSyncService', () => {
       readMithrilPartialSyncMarkerMock.mockResolvedValue({
         state: 'node-start-verified',
         updatedAt: '2026-06-01T00:00:00.000Z',
-        // no stagingRootPath
       });
       const service = new MithrilPartialSyncService();
 
@@ -2131,7 +2011,6 @@ describe('MithrilPartialSyncService', () => {
         service.finalizeCompletedPartialSync()
       ).resolves.toBeUndefined();
 
-      // Falls back to stateDirectoryPath-based default path (stateDirectoryPath = /tmp/daedalus-state)
       expect(removeMock).toHaveBeenCalledWith(
         '/tmp/daedalus-state/mithril-partial-sync'
       );
@@ -2155,8 +2034,9 @@ describe('MithrilPartialSyncService', () => {
   });
 
   describe('staging root resolution from the durable marker', () => {
-    const readMithrilPartialSyncMarkerMock = require('./mithrilPartialSyncMarker')
-      .readMithrilPartialSyncMarker as jest.Mock;
+    const readMithrilPartialSyncMarkerMock =
+      require('./mithrilPartialSyncMarker')
+        .readMithrilPartialSyncMarker as jest.Mock;
 
     it('removes the marker-persisted staging root on wipe-and-full-sync and retains the marker', async () => {
       readMithrilPartialSyncMarkerMock.mockResolvedValueOnce({
@@ -2249,7 +2129,6 @@ describe('MithrilPartialSyncService', () => {
 
       await expect(service.start(createContext())).resolves.toBeUndefined();
 
-      // Both cutover writes must include stagingRootPath
       const cutoverCall = writeMithrilPartialSyncMarkerMock.mock.calls.find(
         ([state]: [string]) => state === 'cutover-in-progress'
       );
@@ -2272,8 +2151,7 @@ describe('MithrilPartialSyncService', () => {
   });
 
   describe('getPartialSyncBehindness', () => {
-    // Stub the local immutable read deterministically. The fs-extra mock lacks lstat/realpath, so
-    // mock getManagedChainPath directly and drive `local` through the immutable directory readdir.
+    // The fs-extra mock lacks lstat/realpath, so getManagedChainPath is mocked directly and the local read is driven through the immutable-directory readdir.
     const stubLocalImmutableNumber = (
       service: MithrilPartialSyncService,
       localImmutableNumber: number
@@ -2377,8 +2255,8 @@ describe('MithrilPartialSyncService', () => {
     });
 
     it('caches the local immutable read within the TTL and re-resolves after it expires', async () => {
-      // A cache hit must skip getManagedChainPath (which forks checkDiskSpace via
-      // getConfig) AND the immutable/ readdir — count getManagedChainPath as the proxy for both.
+      // A cache hit must skip getManagedChainPath and the immutable/ readdir —
+      // count getManagedChainPath as the proxy for both.
       const service = new MithrilPartialSyncService();
       stubLocalImmutableNumber(service, 5);
       jest
@@ -2421,7 +2299,6 @@ describe('MithrilPartialSyncService', () => {
       await service.getPartialSyncBehindness();
       expect(getManagedChainPathSpy).toHaveBeenCalledTimes(1);
 
-      // A lifecycle reset (finalize-completed → _resetToIdleStatus) drops both behind-ness caches.
       await service.finalizeCompletedPartialSync();
 
       // No Date.now advance: without invalidation the within-TTL cache would serve the stale value.

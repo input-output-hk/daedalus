@@ -10,10 +10,11 @@ import {
 import '@testing-library/jest-dom';
 import translations from '../../../i18n/locales/en-US.json';
 import jaTranslations from '../../../i18n/locales/ja-JP.json';
-import { isMithrilPartialSyncBlockingNodeStart } from '../../../../../common/types/mithril-partial-sync.types';
-import MithrilPartialSyncOverlay, {
+import {
+  isMithrilPartialSyncBlockingNodeStart,
   isMithrilPartialSyncOverlayStatus,
-} from './MithrilPartialSyncOverlay';
+} from '../../../../../common/types/mithril-partial-sync.types';
+import MithrilPartialSyncOverlay from './MithrilPartialSyncOverlay';
 
 // react-polymorph's Link needs a skin/theme context not provided in this spec; the
 // collapsible technical-details section (rendered only when an error message exists)
@@ -107,11 +108,7 @@ describe('MithrilPartialSyncOverlay', () => {
   });
 
   it('renders the live wipe-and-full-sync recovery action and wires its handler', () => {
-    // Drive from the post-cutover `failed` state, NOT `cancelled` —
-    // cancellation after cutover is forbidden and wipe was removed
-    // from the pre-cutover cancelled dialogue. With canRetry/canRestartNormally
-    // both false, the wipe action resolves to the primary variant from the
-    // boolean combo (not the status string).
+    // Drive from the post-cutover 'failed' state, not 'cancelled': post-cutover cancel is forbidden and the pre-cutover cancelled dialogue no longer offers wipe. With canRetry/canRestartNormally false, wipe resolves to the primary variant.
     const onWipeAndFullSync = jest.fn();
 
     renderComponent({
@@ -138,21 +135,17 @@ describe('MithrilPartialSyncOverlay', () => {
     try {
       renderComponent({ status: 'completed', onDismissCompleted });
 
-      // The explicit "Continue to Daedalus" button is gone; the completed frame
-      // is a loading-style hand-off (spinner + "Returning to Daedalus...").
       expect(
         screen.queryByRole('button', { name: /continue to daedalus/i })
       ).not.toBeInTheDocument();
       expect(screen.getByText(/returning to daedalus/i)).toBeInTheDocument();
 
-      // Finalize must not fire until the auto-dismiss linger elapses...
       expect(onDismissCompleted).not.toHaveBeenCalled();
 
       act(() => {
         jest.advanceTimersByTime(4000);
       });
 
-      // ...then exactly once (reset-to-idle + remove staging + clear marker).
       expect(onDismissCompleted).toHaveBeenCalledTimes(1);
     } finally {
       jest.useRealTimers();
@@ -160,9 +153,7 @@ describe('MithrilPartialSyncOverlay', () => {
   });
 
   it('catches a rejecting onDismissCompleted from the auto-dismiss timer (no unhandled rejection)', async () => {
-    // onDismissCompleted now awaits the async finalize IPC, so the
-    // timeout wraps it in Promise.resolve(...).catch(...). A finalize rejection
-    // must therefore never surface as an unhandled promise rejection.
+    // A finalize rejection must never surface as an unhandled promise rejection.
     jest.useFakeTimers();
     const onDismissCompleted = jest
       .fn()
@@ -289,7 +280,6 @@ describe('MithrilPartialSyncOverlay', () => {
       status: 'cancelled',
       canRetry: true,
       canRestartNormally: true,
-      // The cancelled (pre-cutover) dialogue no longer offers wipe.
       canWipeAndFullSync: false,
       onRetry,
       onRestartNormally,
@@ -310,8 +300,6 @@ describe('MithrilPartialSyncOverlay', () => {
       })
     ).not.toBeInTheDocument();
 
-    // the primary action ("Retry Mithril Sync (fast)") renders last/rightmost; the
-    // secondary ("Restart Node Sync (slow)") renders first/left.
     const actionLabels = screen
       .getAllByRole('button')
       .map((button) => button.textContent);
@@ -330,7 +318,6 @@ describe('MithrilPartialSyncOverlay', () => {
         stage: 'preparing',
       },
     });
-    // the primary (level-1) error heading is the bespoke localized title
     expect(
       screen.getByRole('heading', {
         level: 1,
@@ -340,12 +327,9 @@ describe('MithrilPartialSyncOverlay', () => {
     expect(
       screen.getByText(/retry mithril sync to use the refreshed snapshot/i)
     ).toBeInTheDocument();
-    // the raw backend message is never promoted to the primary error title
     expect(
       screen.queryByRole('heading', { level: 1, name: /mithril-client json/i })
     ).not.toBeInTheDocument();
-    // the raw backend message is confined to the collapsed technical-details
-    // section (hidden until expanded); the visible header is localized
     expect(
       screen.queryByText('{"raw":"mithril-client json"}')
     ).not.toBeInTheDocument();
@@ -356,7 +340,6 @@ describe('MithrilPartialSyncOverlay', () => {
     const { unmount } = renderComponent({ status: 'cancelled', error: null });
     const cancelledHint = screen.getByText(/was stopped before it finished/i);
     expect(cancelledHint).toBeInTheDocument();
-    // the cancelled hint is promoted to normal body text (a <p>), not the subtext <div>
     expect(cancelledHint.tagName).toBe('P');
     unmount();
     renderComponent({ status: 'failed', error: null });
@@ -378,14 +361,12 @@ describe('MithrilPartialSyncOverlay', () => {
         jest.advanceTimersByTime(4000);
       });
       expect(onDismissCompleted).toHaveBeenCalledTimes(1);
-      // the silent retry is pending: still the success hand-off frame
       expect(screen.getByText(/returning to daedalus/i)).toBeInTheDocument();
 
       await act(async () => {
         jest.advanceTimersByTime(2000);
       });
       expect(onDismissCompleted).toHaveBeenCalledTimes(2);
-      // the successful retry never surfaces the failure frame
       expect(
         screen.queryByRole('heading', {
           name: /finishing mithril sync failed/i,
@@ -415,7 +396,6 @@ describe('MithrilPartialSyncOverlay', () => {
       });
       expect(onDismissCompleted).toHaveBeenCalledTimes(2);
 
-      // both attempts failed: the success frame gives way to the error view
       expect(
         screen.getByRole('heading', {
           level: 1,
@@ -429,9 +409,6 @@ describe('MithrilPartialSyncOverlay', () => {
         screen.queryByText(/returning to daedalus/i)
       ).not.toBeInTheDocument();
 
-      // a successful manual retry re-invokes the finalize and hands control
-      // back to the store-driven dismissal (the hand-off frame returns while
-      // the store hides the overlay via status)
       await act(async () => {
         fireEvent.click(screen.getByRole('button', { name: /try again/i }));
       });

@@ -101,7 +101,7 @@ const ITEM_ID_TO_MESSAGE: Record<string, keyof typeof messages> = {
   installing: 'partialSyncStageInstalling',
 };
 
-const DOWNLOAD_PROGRESS_ANCHOR_ID = 'step-3';
+export const DOWNLOAD_PROGRESS_ANCHOR_ID = 'step-3';
 const VERIFYING_DIGESTS_ID = 'step-4';
 const FALLBACK_SNAPSHOT_WEIGHT = 95;
 const FALLBACK_FAST_SYNC_WEIGHT = 5;
@@ -121,6 +121,15 @@ const isTransferComplete = (downloaded?: number, total?: number) =>
   total > 0 &&
   downloaded >= total;
 
+// Each guard narrows within its own status family and only compares against
+// members of that family, so funnelling the union through both is safe; the
+// two casts live here once instead of at every call site.
+const isAnyRestoreCompleteStatus = (
+  status: MithrilBootstrapStatus | MithrilPartialSyncStatus
+): boolean =>
+  isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
+  isMithrilPartialSyncRestoreCompleteStatus(status as MithrilPartialSyncStatus);
+
 const isVerificationOrLater = (
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus
 ) =>
@@ -129,8 +138,7 @@ const isVerificationOrLater = (
   status === 'converting' ||
   status === 'installing' ||
   status === 'finalizing' ||
-  isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
-  isMithrilPartialSyncRestoreCompleteStatus(status as MithrilPartialSyncStatus);
+  isAnyRestoreCompleteStatus(status);
 
 function deriveCombinedDownloadPercent({
   status,
@@ -295,12 +303,7 @@ function keepInstallingActiveDuringFinalizing(
 function getActiveStepIndex(
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus
 ): number {
-  if (
-    isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
-    isMithrilPartialSyncRestoreCompleteStatus(
-      status as MithrilPartialSyncStatus
-    )
-  ) {
+  if (isAnyRestoreCompleteStatus(status)) {
     return STEPS.length;
   }
   if (status === 'failed') return -1;
@@ -323,12 +326,7 @@ function deriveTopLevelState(
   activeStepIndex: number,
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus
 ): StepState {
-  if (
-    isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
-    isMithrilPartialSyncRestoreCompleteStatus(
-      status as MithrilPartialSyncStatus
-    )
-  ) {
+  if (isAnyRestoreCompleteStatus(status)) {
     return 'completed';
   }
   if (activeStepIndex < 0) return 'pending';

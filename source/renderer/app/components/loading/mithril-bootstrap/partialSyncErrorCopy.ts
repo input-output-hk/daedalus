@@ -66,6 +66,13 @@ const COPY_BY_CODE: Record<MithrilPartialSyncErrorCode, PartialSyncErrorCopy> =
     PARTIAL_SYNC_LAYOUT_UNSUPPORTED: FAILED,
     PARTIAL_SYNC_CANCEL_NOT_ALLOWED: FAILED,
     PARTIAL_SYNC_RECOVERY_NOT_ALLOWED: FAILED,
+    // Preflight/staging invariant codes have no bespoke copy; they resolve to
+    // the generic failure pair.
+    PARTIAL_SYNC_MANAGED_CHAIN_INVALID: FAILED,
+    PARTIAL_SYNC_IMMUTABLE_INVALID: FAILED,
+    PARTIAL_SYNC_PROTOCOL_MAGIC_INVALID: FAILED,
+    PARTIAL_SYNC_IMMUTABLE_POSITION_UNAVAILABLE: FAILED,
+    PARTIAL_SYNC_STAGING_INSIDE_MANAGED_CHAIN: FAILED,
   };
 
 // 2nd tier — stage, for a code-less failure at a meaningful phase (reuses the same descriptors,
@@ -87,9 +94,7 @@ export function resolvePartialSyncErrorCopy(
   if (status === 'cancelled') {
     return CANCELLED;
   }
-  const byCode = error?.code
-    ? COPY_BY_CODE[error.code as MithrilPartialSyncErrorCode]
-    : undefined;
+  const byCode = error?.code ? COPY_BY_CODE[error.code] : undefined;
   if (byCode) {
     return byCode;
   }

@@ -22,10 +22,7 @@ export const extractMithrilErrorMessage = (error: unknown): string | null => {
   return null;
 };
 
-// For components: the user-facing line for a rejected start request. Start
-// rejections carry stable backend codes, not user copy — a known code resolves
-// to its localized copy and anything else gets the shared fallback, so the raw
-// rejection message never surfaces to the user.
+// Start rejections carry backend codes, not user copy: resolve a known code to localized copy, else the shared fallback, so the raw message never reaches the user.
 export const getMithrilStartErrorMessage = (
   error: unknown,
   intl: Intl
@@ -37,10 +34,7 @@ export const getMithrilStartErrorMessage = (
   return intl.formatMessage(copy ? copy.title : partialSyncStartFailureMessage);
 };
 
-// For the store, which throws instead of rendering (stores have no intl
-// context): a real Error passes through unchanged; anything else is wrapped
-// around the extracted message. An empty message means "no usable message" —
-// the catching component resolves it to the shared fallback.
+// Store-side variant (no intl context): pass a real Error through, else wrap the extracted message; an empty message signals the component to use the shared fallback.
 export const toMithrilStartError = (error: unknown): Error =>
   error instanceof Error
     ? error

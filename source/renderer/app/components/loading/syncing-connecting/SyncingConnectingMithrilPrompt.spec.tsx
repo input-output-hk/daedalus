@@ -110,7 +110,6 @@ describe('SyncingConnectingMithrilPrompt', () => {
         'For this process to begin your Cardano node will need to be shut down. Mithril will then be used to sync the verified chain data. On Mithril Sync completion, the node will be restarted to sync the remaining blocks.'
       )
     ).toBeInTheDocument();
-    // The old private confirm-body copy is gone (consolidated into the shared key).
     expect(container.textContent).not.toMatch(/so you catch up faster/i);
   });
 
@@ -185,9 +184,7 @@ describe('SyncingConnectingMithrilPrompt', () => {
     clickButton('Start now');
 
     await waitFor(() => {
-      expect(
-        logger.warn
-      ).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         'SyncingConnectingMithrilPrompt: Mithril sync start rejected after confirmation',
         { error: expect.any(Error) }
       );

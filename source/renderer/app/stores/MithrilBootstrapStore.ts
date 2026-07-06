@@ -362,6 +362,14 @@ export default class MithrilBootstrapStore extends Store {
       const cleanupValidation =
         await prepareChainStorageLocationChangeChannel.request();
 
+      // Revalidate the previous custom path instead of forging a validation:
+      // a hand-built 'will-create' is wrong when that directory already holds
+      // a chain subdirectory, and the status drives the picker's helper copy.
+      const previousPathValidation =
+        cleanupValidation && previousCustomPath != null
+          ? await this.validateChainStorageDirectory(previousCustomPath)
+          : null;
+
       runInAction('return to chain storage location picker', () => {
         this.storageLocationConfirmed = false;
         this.isApplyingStorageLocation = false;
@@ -371,14 +379,17 @@ export default class MithrilBootstrapStore extends Store {
           this.defaultChainPath =
             cleanupValidation.resolvedPath ?? this.defaultChainPath;
           this.defaultChainStorageValidation = cleanupValidation;
-          this.chainStorageValidation = {
-            isValid: true,
-            path: previousCustomPath,
-            resolvedPath: previousCustomPath,
-            availableSpaceBytes: cleanupValidation.availableSpaceBytes,
-            requiredSpaceBytes: cleanupValidation.requiredSpaceBytes,
-            chainSubdirectoryStatus: 'will-create',
-          };
+          this.chainStorageValidation =
+            previousPathValidation && previousPathValidation.isValid
+              ? previousPathValidation
+              : {
+                  isValid: true,
+                  path: previousCustomPath,
+                  resolvedPath: previousCustomPath,
+                  availableSpaceBytes: cleanupValidation.availableSpaceBytes,
+                  requiredSpaceBytes: cleanupValidation.requiredSpaceBytes,
+                  chainSubdirectoryStatus: 'will-create',
+                };
           this.pendingChainPath = previousCustomPath;
         } else {
           this.pendingChainPath = undefined;

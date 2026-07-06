@@ -5,6 +5,7 @@ import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { logger } from './logging';
 import type {
   ChainStorageLayout,
+  ChainStorageLayoutKind,
   ChainStorageManagerContext,
   ChainStorageMigrationJournal,
   EmptyManagedContentsOptions,
@@ -54,11 +55,7 @@ export async function ensureManagedChainLayout(
   const layout = await ctx._detectLayout(customPath);
 
   switch (layout.kind) {
-    case 'managed-custom-root': {
-      await ctx._adoptManagedLayout(layout);
-      return toLayoutResult(layout.managedChainPath);
-    }
-
+    case 'managed-custom-root':
     case 'inconsistent': {
       await ctx._adoptManagedLayout(layout);
       return toLayoutResult(layout.managedChainPath);
@@ -108,6 +105,11 @@ export async function ensureManagedChainLayout(
   }
 }
 
+const buildLayout = (
+  kind: ChainStorageLayoutKind,
+  common: Omit<ChainStorageLayout, 'kind'>
+): ChainStorageLayout => ({ kind, ...common });
+
 export async function detectLayout(
   ctx: ChainStorageManagerContext,
   customPath: string
@@ -129,90 +131,7 @@ export async function detectLayout(
   const { managedEntries, ignoredEntries } =
     await ctx._listLegacyManagedEntries(normalizedCustomPath, managedChainPath);
 
-  if (currentChainSource) {
-    if (ctx._isSamePath(currentChainSource, managedChainPath)) {
-      return {
-        kind: 'managed-custom-root',
-        customPath,
-        resolvedCustomPath: normalizedCustomPath,
-        managedChainPath,
-        resolvedManagedChainPath,
-        currentChainSource,
-        entryPointState,
-        managedChainExists,
-        managedChainIsDirectory,
-        managedLegacyEntries: managedEntries,
-        ignoredLegacyEntries: ignoredEntries,
-      };
-    }
-
-    if (ctx._isSamePath(currentChainSource, normalizedCustomPath)) {
-      return {
-        kind: 'legacy-custom-root',
-        customPath,
-        resolvedCustomPath: normalizedCustomPath,
-        managedChainPath,
-        resolvedManagedChainPath,
-        currentChainSource,
-        entryPointState,
-        managedChainExists,
-        managedChainIsDirectory,
-        managedLegacyEntries: managedEntries,
-        ignoredLegacyEntries: ignoredEntries,
-      };
-    }
-  }
-
-  if (managedChainIsDirectory) {
-    if (entryPointState.type === 'directory') {
-      return {
-        kind: 'inconsistent',
-        customPath,
-        resolvedCustomPath: normalizedCustomPath,
-        managedChainPath,
-        resolvedManagedChainPath,
-        currentChainSource,
-        entryPointState,
-        managedChainExists,
-        managedChainIsDirectory,
-        managedLegacyEntries: managedEntries,
-        ignoredLegacyEntries: ignoredEntries,
-      };
-    }
-
-    return {
-      kind: 'managed-custom-root',
-      customPath,
-      resolvedCustomPath: normalizedCustomPath,
-      managedChainPath,
-      resolvedManagedChainPath,
-      currentChainSource,
-      entryPointState,
-      managedChainExists,
-      managedChainIsDirectory,
-      managedLegacyEntries: managedEntries,
-      ignoredLegacyEntries: ignoredEntries,
-    };
-  }
-
-  if (managedEntries.length > 0) {
-    return {
-      kind: 'legacy-custom-root',
-      customPath,
-      resolvedCustomPath: normalizedCustomPath,
-      managedChainPath,
-      resolvedManagedChainPath,
-      currentChainSource,
-      entryPointState,
-      managedChainExists,
-      managedChainIsDirectory,
-      managedLegacyEntries: managedEntries,
-      ignoredLegacyEntries: ignoredEntries,
-    };
-  }
-
-  return {
-    kind: 'broken-link',
+  const common: Omit<ChainStorageLayout, 'kind'> = {
     customPath,
     resolvedCustomPath: normalizedCustomPath,
     managedChainPath,
@@ -224,6 +143,30 @@ export async function detectLayout(
     managedLegacyEntries: managedEntries,
     ignoredLegacyEntries: ignoredEntries,
   };
+
+  if (currentChainSource) {
+    if (ctx._isSamePath(currentChainSource, managedChainPath)) {
+      return buildLayout('managed-custom-root', common);
+    }
+
+    if (ctx._isSamePath(currentChainSource, normalizedCustomPath)) {
+      return buildLayout('legacy-custom-root', common);
+    }
+  }
+
+  if (managedChainIsDirectory) {
+    if (entryPointState.type === 'directory') {
+      return buildLayout('inconsistent', common);
+    }
+
+    return buildLayout('managed-custom-root', common);
+  }
+
+  if (managedEntries.length > 0) {
+    return buildLayout('legacy-custom-root', common);
+  }
+
+  return buildLayout('broken-link', common);
 }
 
 export async function adoptManagedLayout(
@@ -495,7 +438,6 @@ export async function readMigrationJournal(
 }
 
 export async function assertNodeStopped(
-  _ctx: ChainStorageManagerContext,
   nodeState: string | null | undefined,
   reason: string
 ): Promise<void> {

@@ -6,9 +6,7 @@ import '@testing-library/jest-dom';
 import translations from '../../i18n/locales/en-US.json';
 import MithrilProactivePromptContainer from './MithrilProactivePromptContainer';
 
-// The container renders the real SyncingConnectingMithrilPrompt so the gating
-// matrix is asserted against the actually-displayed copy ("about 3 epochs
-// behind") rather than an internal flag.
+// Renders the real SyncingConnectingMithrilPrompt so the gating matrix is asserted against displayed copy, not an internal flag.
 
 const KNOWN_EPOCHS_TEXT = 'Your node is about 3 epochs behind.';
 
@@ -22,11 +20,7 @@ const makeStores = ({
   mithrilPartialSync = {},
 }: StoreOverrides = {}) => ({
   networkStatus: {
-    // Tips are ALWAYS present + finite here (network 100, local 97 -> 3 epochs),
-    // so a (wrong) local `behindByEpochs !== undefined` re-derivation would be
-    // truthy in every case. Only `isBehindnessKnown` gates the prompt, which is
-    // what the anti-flash test below exercises. `isConnected` is the node-loaded
-    // gate.
+    // The shared fixture keeps tips finite (network 100, local 97 → 3 epochs) so only isBehindnessKnown — not a re-derived behindByEpochs — can gate the prompt; that's what the anti-flash tests isolate.
     networkTip: { epoch: 100 },
     localTip: { epoch: 97 },
     isConnected: true,
@@ -67,7 +61,6 @@ describe('MithrilProactivePromptContainer', () => {
     ).toBeInTheDocument();
     expect(screen.getByText(KNOWN_EPOCHS_TEXT)).toBeInTheDocument();
     expect(screen.getByText('Note:')).toBeInTheDocument();
-    // The persisted-prompt choice view exposes both actions.
     expect(
       screen.getByRole('button', { name: 'Mithril Sync (fast)' })
     ).toBeInTheDocument();
@@ -104,8 +97,6 @@ describe('MithrilProactivePromptContainer', () => {
   });
 
   it('renders nothing while the node is not yet loaded (isConnected false — node-loaded gate)', () => {
-    // Everything else passes (finite tips, behind-ness known), but the node is
-    // still connecting / verifying the blockchain: the prompt must stay hidden.
     const { container } = renderContainer({
       networkStatus: { isConnected: false },
     });
@@ -115,8 +106,7 @@ describe('MithrilProactivePromptContainer', () => {
   });
 
   it('renders nothing near the tip (behind-by <= 0 -> undefined) even though behind-ness is known', () => {
-    // Equal epochs -> computeBehindByEpochs returns undefined (near-tip hide),
-    // although isBehindnessKnown is still true (both tips finite).
+    // Equal epochs → computeBehindByEpochs returns undefined (near-tip hide) even though isBehindnessKnown stays true.
     const { container } = renderContainer({
       networkStatus: { networkTip: { epoch: 97 }, localTip: { epoch: 97 } },
     });
@@ -135,10 +125,7 @@ describe('MithrilProactivePromptContainer', () => {
   });
 
   it('renders during early sync via the certified-beacon epoch when networkTip is null', () => {
-    // networkTip not yet resolved (isBehindnessKnown false), but a finite
-    // certifiedEpoch > localTip.epoch means behind-ness IS known via the beacon:
-    // the prompt now appears (certified-anchored figure) instead of staying
-    // suppressed — the core defect fix. 105 - 97 = 8 epochs.
+    // networkTip unresolved (isBehindnessKnown false) but a finite certifiedEpoch > localTip.epoch makes behind-ness known via the beacon, so the prompt appears with the certified figure (105 − 97 = 8).
     renderContainer({
       networkStatus: {
         networkTip: null,
@@ -167,11 +154,7 @@ describe('MithrilProactivePromptContainer', () => {
   });
 
   it('renders nothing until behind-ness is KNOWN — gates on networkStatus.isBehindnessKnown, NOT a local tip re-derivation (anti-flash)', () => {
-    // Tips ARE present + finite (so a local `behindByEpochs !== undefined`
-    // re-derivation would be true), but `isBehindnessKnown` is still
-    // false: the prompt must stay hidden. This proves the gate consumes the
-    // computed signal and never flashes during the early connecting / verifying
-    // checks.
+    // Tips are finite (a local re-derivation would fire) but isBehindnessKnown is false: the prompt must stay hidden — the anti-flash guard consumes only the computed signal.
     const { container } = renderContainer({
       networkStatus: { isBehindnessKnown: false },
     });

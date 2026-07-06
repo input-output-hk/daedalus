@@ -34,10 +34,6 @@ class LoadingSyncingConnectingPage extends Component<Props> {
       isVerifyingBlockchain,
       blockSyncProgress,
     } = networkStatus;
-    // The proactive Mithril prompt is no longer mounted here. It now lives in an
-    // app-level container (`MithrilProactivePromptContainer`, mounted from
-    // `App.tsx`) so it PERSISTS across the loading -> Wallet Summary transition
-    // instead of unmounting with this loading screen.
     const { displayAppUpdateNewsItem } = appUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = profile;
     const { toggleNewsFeed } = this.props.actions.app;

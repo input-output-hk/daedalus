@@ -872,11 +872,7 @@ export default class NetworkStatusStore extends Store {
 
   @computed
   get isBehindnessKnown(): boolean {
-    // Reactive availability signal for the Mithril proactive prompt:
-    // true only once both tips have finite epochs, so consumers re-render the
-    // moment the network tip ("Last network block") arrives. Reads the tracked
-    // `localTip`/`networkTip` observables — NOT a renderer threshold (the
-    // backend `isSignificantlyBehind` stays the sole offer signal).
+    // Reactive availability signal for the proactive prompt: true once both tips have finite epochs, so consumers re-render when the network tip arrives. Not a threshold; backend isSignificantlyBehind owns the offer.
     return isMithrilBehindnessKnown(this.localTip, this.networkTip);
   }
 

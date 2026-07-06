@@ -40,14 +40,9 @@ interface Context {
   intl: Intl;
 }
 
-// The completed overlay is a success acknowledgment that
-// auto-hands-off to the normal loading/Wallet-Summary screen — no "Continue"
-// click. This linger keeps the success frame visible long enough to read before
-// the finalize IPC fires automatically (see the effect below).
+// Linger the success frame long enough to read before the finalize IPC fires automatically.
 const COMPLETED_AUTO_DISMISS_DELAY_MS = 4000;
-// Delay before the single, silent retry of a rejected automatic finalize; long
-// enough for a transient hiccup to clear, short enough that the success frame
-// does not linger noticeably beyond its normal hand-off.
+// Delay before the single silent retry of a rejected finalize: long enough for a transient hiccup to clear, short enough not to linger.
 const FINALIZE_RETRY_DELAY_MS = 2000;
 
 function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
@@ -69,14 +64,9 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
     onOpenExternalLink,
   } = props;
 
-  // A finalize failure must not strand the success frame: this local flag
-  // switches the overlay to the error view once the automatic finalize attempt
-  // and its single silent retry have both failed. It has to be component-local
-  // state because 'completed' renders through the progress view.
+  // Switches to the error view after the finalize attempt and its retry both fail; component-local because 'completed' otherwise renders through the progress view.
   const [finalizeFailed, setFinalizeFailed] = useState(false);
-  // Finalize outcomes resolve asynchronously and can land after the store has
-  // already hidden (unmounted) the overlay; guard state updates so a late
-  // outcome never sets state on an unmounted component.
+  // Guards state updates so a late finalize outcome never sets state after the overlay has unmounted.
   const isUnmountedRef = useRef(false);
   useEffect(
     () => () => {
@@ -85,20 +75,12 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
     []
   );
 
-  // On 'completed', auto-fire the finalize IPC (reset-to-idle +
-  // remove staging dir + clear marker + folder deletion) via the stable
-  // `onDismissCompleted` MobX action once the success frame has lingered — the
-  // explicit "Continue to Daedalus" click is gone. All cleanup semantics are
-  // preserved; only the trigger changes from a click to this timeout.
+  // On 'completed', auto-fire the finalize IPC via onDismissCompleted once the success frame has lingered.
   useEffect(() => {
     if (status !== 'completed') return undefined;
     let disposed = false;
     let retryTimer: ReturnType<typeof setTimeout> | undefined;
-    // Not fire-and-forget — `onDismissCompleted` awaits the async finalize
-    // IPC. A rejection is retried once, silently, after a short delay; a second
-    // rejection surfaces the finalize-failed error view below instead of being
-    // swallowed, so a failure can neither strand the success frame nor become
-    // an unhandled promise rejection.
+    // Retry a rejected finalize once, then surface the error view — never swallow it, so a failure neither strands the success frame nor becomes an unhandled rejection.
     const timer = setTimeout(() => {
       Promise.resolve(onDismissCompleted()).catch(() => {
         if (disposed || isUnmountedRef.current) return;
@@ -117,10 +99,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
     };
   }, [status, onDismissCompleted]);
 
-  // Manual finalize retry from the error view. It re-invokes the same finalize
-  // hand-off and is renderer-local (same footing as the defensive Quit below) —
-  // it is NOT a backend recovery action and never joins the
-  // allowedRecoveryActions-driven membership.
+  // Manual finalize retry from the error view; renderer-local, not a backend recovery action.
   const handleFinalizeRetry = () => {
     Promise.resolve(onDismissCompleted())
       .then(() => {
@@ -131,16 +110,13 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
       })
       .catch(() => {
         if (isUnmountedRef.current) return;
-        // Remain on the failure view; the retry action stays available.
         setFinalizeFailed(true);
       });
   };
 
   const isProgressStatus =
     isMithrilPartialSyncWorkingStatus(status) || status === 'completed';
-  // 'completed' is a progress status, so the finalize-failed frame needs this
-  // explicit override to leave the progress view. Gating on 'completed' keeps
-  // a stale flag from ever leaking into any other status.
+  // 'completed' is a progress status, so this flag forces the error view; gating on 'completed' keeps a stale flag from leaking into other statuses.
   const isFinalizeFailureShown = finalizeFailed && status === 'completed';
   const showProgressView = isProgressStatus && !isFinalizeFailureShown;
   const activeHeadingId = showProgressView
@@ -193,9 +169,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
         ]
       : []),
   ];
-  // Defensive Quit: rendered ONLY when no recovery actions are
-  // available, so a failure can never become an unclosable dead-end. `quit` is
-  // renderer-only — it is NOT a backend allowedRecoveryActions value.
+  // Quit renders only when no recovery actions exist, so a failure is never an unclosable dead-end; renderer-only, not a backend recovery action.
   const errorActions =
     recoveryActions.length > 0
       ? recoveryActions
@@ -206,12 +180,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
             variant: 'primary' as const,
           },
         ];
-  // This caller (not the shared, render-order-agnostic MithrilErrorView) owns the
-  // partial-sync overlay's display order: secondary actions first (left), the
-  // primary action last (right), opting into right-alignment below. This is a
-  // STABLE reorder of the SAME action set — it never
-  // filters, drops, or adds an action; allowedRecoveryActions still owns
-  // membership. Non-primary actions keep their relative order.
+  // Reorders this overlay's actions to secondary-first, primary-last (a stable reorder that never adds or drops actions; membership still comes from allowedRecoveryActions).
   const orderedErrorActions = [
     ...errorActions.filter((action) => action.variant !== 'primary'),
     ...errorActions.filter((action) => action.variant === 'primary'),
@@ -264,7 +233,7 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
             />
           ) : (
             <MithrilErrorView
-              error={isFinalizeFailureShown ? null : (error as any)}
+              error={isFinalizeFailureShown ? null : error}
               onOpenExternalLink={onOpenExternalLink}
               title={intl.formatMessage(errorCopy.title)}
               hint={intl.formatMessage(errorCopy.hint)}
@@ -282,8 +251,6 @@ function MithrilPartialSyncOverlay(props: Props, { intl }: Context) {
     </div>
   );
 }
-
-export { isMithrilPartialSyncOverlayStatus } from '../../../../../common/types/mithril-partial-sync.types';
 
 MithrilPartialSyncOverlay.contextTypes = {
   intl: intlShape.isRequired,

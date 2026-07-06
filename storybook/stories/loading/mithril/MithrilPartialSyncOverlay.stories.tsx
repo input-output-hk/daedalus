@@ -8,6 +8,7 @@ import type {
   MithrilPartialSyncStatus,
 } from '../../../../source/common/types/mithril-partial-sync.types';
 import MithrilPartialSyncOverlay from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay';
+import { DOWNLOAD_PROGRESS_ANCHOR_ID } from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator';
 import MithrilBootstrapMessages from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages';
 import type { Intl } from '../../../../source/renderer/app/types/i18nTypes';
 import StoryDecorator from '../../_support/StoryDecorator';
@@ -49,20 +50,15 @@ const getCompletedProgressItems = (intl: Intl): Array<MithrilProgressItem> =>
     state: 'completed' as const,
   }));
 
-// stopping-node frame: nothing has started yet, so every waterfall step is
-// pending while the populated stopping-node completion block spins above it.
 const getStoppingProgressItems = (intl: Intl): Array<MithrilProgressItem> =>
   getActiveProgressItems(intl).map((item) => ({
     ...item,
     state: 'pending' as const,
   }));
 
-// downloading frame: the download phase's disk-check + certificate-chain sub-steps
-// are completed and the snapshot-download anchor (`step-3`) is active. The active
-// sub-item id MUST be `step-3` (MithrilStepIndicator's DOWNLOAD_PROGRESS_ANCHOR_ID)
-// so `showBars` matches and the combined InlineProgressBar renders — a non-anchor
-// active id (the old `download`) never satisfied the anchor check, so the bar was
-// silently dropped. Labels are still pulled from intl at render (never module scope).
+// downloading frame: disk-check + certificate-chain completed, snapshot-download
+// anchor active. The active id must be the imported DOWNLOAD_PROGRESS_ANCHOR_ID
+// or MithrilStepIndicator silently drops the combined progress bar.
 const getDownloadingProgressItems = (
   intl: Intl
 ): Array<MithrilProgressItem> => [
@@ -79,7 +75,7 @@ const getDownloadingProgressItems = (
     state: 'completed' as const,
   },
   {
-    id: 'step-3',
+    id: DOWNLOAD_PROGRESS_ANCHOR_ID,
     label: intl.formatMessage(
       MithrilBootstrapMessages.progressDownloadingSnapshot
     ),
@@ -87,9 +83,6 @@ const getDownloadingProgressItems = (
   },
 ];
 
-// Single selector so each story's waterfall matches its status; all variants
-// build their labels from getActiveProgressItems(intl), keeping the intl seam at
-// render time (labels are never captured at module scope).
 const getProgressItemsForStory = (
   intl: Intl,
   status: MithrilPartialSyncStatus,
@@ -109,7 +102,6 @@ const getProgressItemsForStory = (
 
 const cancelledError: MithrilPartialSyncError = {
   stage: 'preparing',
-  code: 'MITHRIL_PARTIAL_SYNC_CANCELLED',
   message:
     'Partial sync stopped before live chain data was replaced. Your existing database is still available for the selected recovery actions.',
   logPath:
@@ -118,7 +110,6 @@ const cancelledError: MithrilPartialSyncError = {
 
 const restartAllowedError: MithrilPartialSyncError = {
   stage: 'verifying',
-  code: 'MITHRIL_PARTIAL_SYNC_VERIFY_FAILED',
   message:
     'Verification failed before cutover completed, so Daedalus can safely retry Mithril Sync or restart Cardano node normally on the current database.',
   logPath:
@@ -127,7 +118,6 @@ const restartAllowedError: MithrilPartialSyncError = {
 
 const wipeOnlyError: MithrilPartialSyncError = {
   stage: 'starting-node',
-  code: 'MITHRIL_PARTIAL_SYNC_NODE_START_FAILED',
   message:
     'The staged database was installed but the first Cardano node start did not succeed, so Daedalus must keep recovery on the wipe-and-full-sync path.',
   logPath: '/home/ada/.local/share/Daedalus/mainnet/Logs/cardano-node.log',
@@ -135,8 +125,8 @@ const wipeOnlyError: MithrilPartialSyncError = {
 
 // Per-stage failure fixtures. Codes resolve through partialSyncErrorCopy.ts:
 // downloading/converting/installing map to bespoke title+hint copy by code;
-// finalizing's code is intentionally absent from COPY_BY_CODE and `finalizing`
-// is absent from COPY_BY_STAGE, so it exercises the generic FAILED fallthrough.
+// finalizing carries no code and `finalizing` is absent from COPY_BY_STAGE,
+// so it exercises the generic FAILED fallthrough.
 const downloadingError: MithrilPartialSyncError = {
   stage: 'downloading',
   code: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
@@ -166,7 +156,6 @@ const installingError: MithrilPartialSyncError = {
 
 const finalizingError: MithrilPartialSyncError = {
   stage: 'finalizing',
-  code: 'PARTIAL_SYNC_FINALIZE_FAILED',
   message:
     'Finalizing the restored database failed, so Daedalus kept your previous chain data in place.',
   logPath:
@@ -224,9 +213,9 @@ function MithrilPartialSyncOverlayStory(props: StoryProps, context: Context) {
         props.onDismissCompleted || baseProps.onDismissCompleted
       }
       transferProgress={{
-        filesDownloaded: props.filesDownloaded || baseProps.filesDownloaded,
-        filesTotal: props.filesTotal || baseProps.filesTotal,
-        elapsedSeconds: props.elapsedSeconds || baseProps.elapsedSeconds,
+        filesDownloaded: props.filesDownloaded ?? baseProps.filesDownloaded,
+        filesTotal: props.filesTotal ?? baseProps.filesTotal,
+        elapsedSeconds: props.elapsedSeconds ?? baseProps.elapsedSeconds,
         ancillaryBytesDownloaded: baseProps.ancillaryBytesDownloaded,
         ancillaryBytesTotal: baseProps.ancillaryBytesTotal,
       }}
@@ -287,8 +276,6 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       completed
     />
   ))
-  // Unified file-count progress (download in flight): file counter + download
-  // progress bar, Cancel enabled.
   .add('Downloading File Count', () => (
     <MithrilPartialSyncOverlayStory
       status="downloading"
@@ -296,9 +283,6 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       filesTotal={9}
     />
   ))
-  // Explicit partial download-progress-bar story: the combined
-  // InlineProgressBar at a partial fill (6/9 files) with its file-count snapshot
-  // counter, proving the bar renders mid-download via the `step-3` anchor.
   .add('Download Progress Bar (Partial)', () => (
     <MithrilPartialSyncOverlayStory
       status="downloading"
@@ -306,14 +290,9 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       filesTotal={9}
     />
   ))
-  // Populated stopping-node frame: spinning completion block + every waterfall
-  // step pending, Cancel disabled with its stopping tooltip.
   .add('Stopping Node', () => (
     <MithrilPartialSyncOverlayStory status="stopping-node" />
   ))
-  // Failure stages with the full retry + restart-normally + wipe-and-full-sync
-  // 3-action recovery layout (cancelled-vs-failed: the Cancelled story above uses
-  // the same can* flags but renders the cancelled copy).
   .add('Failed - Downloading (All Recovery Actions)', () => (
     <MithrilPartialSyncOverlayStory
       status="failed"
@@ -350,11 +329,6 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       canWipeAndFullSync
     />
   ))
-  // Auto-plays the finalize-failure path: the completed frame lingers ~4 s,
-  // the automatic finalize rejects, the single silent retry rejects ~2 s
-  // later, and the overlay then swaps to the finalize-failed error view with
-  // its retry action (which re-rejects here, so the story stays on the error
-  // frame).
   .add('Completed - Finalize Failed (auto-plays)', () => (
     <MithrilPartialSyncOverlayStory
       status="completed"

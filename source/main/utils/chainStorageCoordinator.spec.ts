@@ -746,7 +746,6 @@ describe('chainStorageCoordinator', () => {
 
     expect(partialSyncHandlersMock.forceKill).toHaveBeenCalledTimes(1);
 
-    // Observability: the join-timeout / forceKill escalation is logged.
     expect(loggerMock.warn).toHaveBeenCalledWith(
       '[MITHRIL] Partial sync run did not settle within cancel join timeout; escalating to forceKill',
       expect.objectContaining({
@@ -778,7 +777,6 @@ describe('chainStorageCoordinator', () => {
     expect(partialSyncHandlersMock.finalizeCancel).not.toHaveBeenCalled();
     expect(partialSyncHandlersMock.abandonCancel).toHaveBeenCalledTimes(1);
 
-    // Observability: the unsettled branch decision (abandonCancel) is logged.
     expect(loggerMock.warn).toHaveBeenCalledWith(
       '[MITHRIL] Partial sync run unsettled after cancel; abandoning cancel',
       expect.objectContaining({ settled: false })
@@ -788,13 +786,6 @@ describe('chainStorageCoordinator', () => {
   });
 
   it('routes a settled cancel join (killed-converter converting cancel) to finalizeCancel, not abandonCancel', async () => {
-    // A cancel during `converting` now kills the tracked converter child, so
-    // start() unwinds via its _isCancelled catch and the run promise settles promptly — within the
-    // bounded join (PARTIAL_SYNC_CANCEL_JOIN_TIMEOUT_MS). Drive the REAL _awaitRunSettledBounded with
-    // an already-settled run and assert cancelPartialSync routes to finalizeCancel (cleanup + terminal
-    // `cancelled`), NOT the abandonCancel "download failed / logs+quit" floor. Complements the
-    // unsettled→abandonCancel test above. The same settle→finalize path also covers a preparing-stage
-    // cancel, where start() unwinds at CP-A/CP-B with no subprocess at all.
     const moduleExports = loadModule();
 
     (moduleExports.chainStorageCoordinator as any)._partialSyncRunPromise =
@@ -809,7 +800,6 @@ describe('chainStorageCoordinator', () => {
     expect(partialSyncHandlersMock.abandonCancel).not.toHaveBeenCalled();
     expect(partialSyncHandlersMock.forceKill).not.toHaveBeenCalled();
 
-    // Observability: the settled branch decision (finalizeCancel) is logged.
     expect(loggerMock.info).toHaveBeenCalledWith(
       '[MITHRIL] Partial sync run settled after cancel; finalizing cancel',
       expect.objectContaining({ settled: true })
@@ -817,14 +807,6 @@ describe('chainStorageCoordinator', () => {
   });
 
   it('escalates a never-settling cancel join through forceKill and then routes to abandonCancel', async () => {
-    // End-to-end pin for the unsettled branch:
-    // the two tests above cover the forceKill escalation (driving
-    // _awaitRunSettledBounded directly) and the abandonCancel routing (with
-    // the bounded join spied out) separately. This test drives
-    // cancelPartialSync against the REAL _awaitRunSettledBounded with a run
-    // promise that never settles, pinning the full chain: 15s join timeout →
-    // forceKill escalation → 1s post-forceKill bound also misses →
-    // settled=false → abandonCancel (never finalizeCancel).
     jest.useFakeTimers();
     try {
       const moduleExports = loadModule();
@@ -845,7 +827,6 @@ describe('chainStorageCoordinator', () => {
       expect(partialSyncHandlersMock.cancel).toHaveBeenCalledTimes(1);
       expect(partialSyncHandlersMock.forceKill).not.toHaveBeenCalled();
 
-      // Miss the 15s cancel join bound → forceKill escalation fires.
       jest.advanceTimersByTime(15_000);
       for (let i = 0; i < 10; i += 1) {
         await Promise.resolve();
@@ -860,7 +841,6 @@ describe('chainStorageCoordinator', () => {
       );
       expect(partialSyncHandlersMock.abandonCancel).not.toHaveBeenCalled();
 
-      // Miss the 1s post-forceKill bound too → settled=false → abandonCancel.
       jest.advanceTimersByTime(1_000);
       await cancelCall;
 
@@ -870,7 +850,6 @@ describe('chainStorageCoordinator', () => {
         '[MITHRIL] Partial sync run unsettled after cancel; abandoning cancel',
         expect.objectContaining({ hadRun: true, settled: false })
       );
-      // The escalation strictly precedes the abandonCancel floor.
       expect(
         partialSyncHandlersMock.forceKill.mock.invocationCallOrder[0]
       ).toBeLessThan(

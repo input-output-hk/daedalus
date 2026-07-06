@@ -43,11 +43,17 @@ export type MithrilPartialSyncErrorCode =
   | 'PARTIAL_SYNC_LAYOUT_UNSUPPORTED'
   | 'PARTIAL_SYNC_CANCEL_NOT_ALLOWED'
   | 'PARTIAL_SYNC_RECOVERY_NOT_ALLOWED'
-  | 'PARTIAL_SYNC_METADATA_UNAVAILABLE';
+  | 'PARTIAL_SYNC_METADATA_UNAVAILABLE'
+  // Preflight/staging invariant failures — real wire codes with generic copy.
+  | 'PARTIAL_SYNC_MANAGED_CHAIN_INVALID'
+  | 'PARTIAL_SYNC_IMMUTABLE_INVALID'
+  | 'PARTIAL_SYNC_PROTOCOL_MAGIC_INVALID'
+  | 'PARTIAL_SYNC_IMMUTABLE_POSITION_UNAVAILABLE'
+  | 'PARTIAL_SYNC_STAGING_INSIDE_MANAGED_CHAIN';
 
 export type MithrilPartialSyncError = {
   message: string;
-  code?: string;
+  code?: MithrilPartialSyncErrorCode;
   logPath?: string;
   stage?: MithrilPartialSyncErrorStage;
 };
@@ -71,13 +77,14 @@ export type MithrilPartialSyncStatusSnapshot = {
 
 // Fresh idle snapshot per call so no two holders ever share the nested
 // transferProgress / progressItems references.
-export const makeIdlePartialSyncStatus = (): MithrilPartialSyncStatusSnapshot => ({
-  status: 'idle',
-  allowedRecoveryActions: [],
-  transferProgress: {},
-  progressItems: [],
-  error: null,
-});
+export const makeIdlePartialSyncStatus =
+  (): MithrilPartialSyncStatusSnapshot => ({
+    status: 'idle',
+    allowedRecoveryActions: [],
+    transferProgress: {},
+    progressItems: [],
+    error: null,
+  });
 
 export type MithrilPartialSyncAvailability = {
   isEnabled: boolean;
@@ -87,11 +94,10 @@ export type MithrilPartialSyncAvailability = {
   // means the probe succeeded and isSignificantlyBehind is trustworthy.
   isProbeFailed?: boolean;
   behindByImmutables?: number;
-  // The Mithril certified-beacon epoch — the horizon-free,
-  // early-resolving fallback anchor for cardano-wallet's late `networkTip.epoch`.
-  // OPTIONAL so the renderer type-checks before the backend produces the value; until
-  // then it is `undefined` ⇒ the figure degrades to networkTip-only (no regression).
-  certifiedEpoch?: number | null;
+  // Mithril certified-beacon epoch: early-resolving fallback anchor for the
+  // late networkTip.epoch. Optional; when absent the figure degrades to
+  // networkTip-only.
+  certifiedEpoch?: number;
 };
 
 const MITHRIL_PARTIAL_SYNC_WORKING_STATUSES: MithrilPartialSyncStatus[] = [
@@ -128,10 +134,6 @@ export const isMithrilPartialSyncTerminalStatus = (
 export const isMithrilPartialSyncOverlayStatus = (
   status: MithrilPartialSyncStatus
 ): boolean => MITHRIL_PARTIAL_SYNC_OVERLAY_STATUSES.includes(status);
-
-export const isMithrilPartialSyncActiveStatus = (
-  status: MithrilPartialSyncStatus
-): boolean => status !== 'idle';
 
 export const isMithrilPartialSyncRestoreCompleteStatus = (
   status: MithrilPartialSyncStatus

@@ -8,6 +8,15 @@ const mockGetChainStorageDirectoryRequest = jest.fn();
 const mockValidateChainStorageDirectoryRequest = jest.fn();
 const mockPrepareChainStorageLocationChangeRequest = jest.fn();
 
+jest.mock('../utils/logging', () => ({
+  logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
 jest.mock('../ipc/chainStorageChannel', () => ({
   setChainStorageDirectoryChannel: {
     request: (...args) => mockSetChainStorageDirectoryRequest(...args),
@@ -400,6 +409,14 @@ describe('MithrilBootstrapStore', () => {
       availableSpaceBytes: 4096,
       requiredSpaceBytes: 1024,
     });
+    mockValidateChainStorageDirectoryRequest.mockResolvedValueOnce({
+      isValid: true,
+      path: '/mnt/custom-parent',
+      resolvedPath: '/mnt/custom-parent',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
+      chainSubdirectoryStatus: 'existing-directory',
+    });
 
     await store.returnToStorageLocation();
 
@@ -408,6 +425,37 @@ describe('MithrilBootstrapStore', () => {
     );
     expect(store.storageLocationConfirmed).toBe(false);
     expect(store.customChainPath).toBeNull();
+    expect(store.pendingChainPath).toBe('/mnt/custom-parent');
+    expect(store.chainStorageValidation).toEqual({
+      isValid: true,
+      path: '/mnt/custom-parent',
+      resolvedPath: '/mnt/custom-parent',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
+      chainSubdirectoryStatus: 'existing-directory',
+    });
+    expect(mockValidateChainStorageDirectoryRequest).toHaveBeenCalledWith({
+      path: '/mnt/custom-parent',
+    });
+  });
+
+  it('falls back to a provisional draft validation when revalidating the previous path fails', async () => {
+    const store = setupStore();
+    store.customChainPath = '/mnt/custom-parent';
+    store.storageLocationConfirmed = true;
+    mockPrepareChainStorageLocationChangeRequest.mockResolvedValue({
+      isValid: true,
+      path: null,
+      resolvedPath: '/tmp/state/chain',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
+    });
+    mockValidateChainStorageDirectoryRequest.mockRejectedValueOnce(
+      new Error('validation channel unavailable')
+    );
+
+    await store.returnToStorageLocation();
+
     expect(store.pendingChainPath).toBe('/mnt/custom-parent');
     expect(store.chainStorageValidation).toEqual({
       isValid: true,

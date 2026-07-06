@@ -2,7 +2,6 @@ import path from 'path';
 import fs from 'fs-extra';
 import type { ChildProcess } from 'child_process';
 import EventEmitter from 'events';
-import type { WriteStream } from 'fs';
 import { environment } from '../environment';
 import { logger } from '../utils/logging';
 import ensureDirectoryExists from '../utils/ensureDirectoryExists';
@@ -59,7 +58,6 @@ export class MithrilBootstrapService {
   _status: MithrilBootstrapStatusUpdate = { ...DEFAULT_STATUS };
   _statusEmitter = new EventEmitter();
   _currentProcess: ChildProcess | null = null;
-  _logStream: WriteStream | null = null;
   _cardanoDbDownloadMode?: 'download' | 'snapshot';
   _lockFilePath: string;
   _workDir: string;
@@ -180,24 +178,22 @@ export class MithrilBootstrapService {
 
       // Mark preparing complete before beginning download
       this._markActiveProgressItemAs('completed');
-      await this._downloadSnapshot(snapshotDigest, snapshot, workDir);
+      await this._downloadSnapshot(snapshotDigest, snapshot);
 
       // Convert snapshot from in-memory format to LSM (required after Mithril LSM snapshot support)
       this._markActiveProgressItemAs('completed');
       this._addProgressItem('conversion', 'conversion', 'active');
       await this._convertSnapshot(snapshot);
 
-      logger.info('[mithril] Resolving db directory', {
+      logger.info('MithrilBootstrapService: resolving db directory', {
         digest: snapshot?.digest,
         workDir,
       });
-      const dbDirectory = await this._resolveDbDirectory(
-        snapshot?.digest,
-        workDir
-      );
-      logger.info('[mithril] Resolved db directory', { dbDirectory });
+      const dbDirectory = await this._resolveDbDirectory(snapshot?.digest);
+      logger.info('MithrilBootstrapService: resolved db directory', {
+        dbDirectory,
+      });
 
-      // Mark conversion complete; begin installation
       this._markActiveProgressItemAs('completed');
       this._addProgressItem('install-snapshot', 'install-snapshot', 'active');
       this._updateStatus({
@@ -209,11 +205,15 @@ export class MithrilBootstrapService {
         progressItems: [...this._progressItems],
       });
 
-      logger.info('[mithril] Installing snapshot', { dbDirectory });
+      logger.info('MithrilBootstrapService: installing snapshot', {
+        dbDirectory,
+      });
       await this._installSnapshot(dbDirectory);
-      logger.info('[mithril] Snapshot installed', { dbDirectory });
+      logger.info('MithrilBootstrapService: snapshot installed', {
+        dbDirectory,
+      });
 
-      // Mark conversion complete; begin cleanup
+      // Mark installation complete; begin cleanup
       this._markActiveProgressItemAs('completed');
       this._addProgressItem('cleanup', 'cleanup', 'active');
       this._updateStatus({
@@ -225,11 +225,12 @@ export class MithrilBootstrapService {
         progressItems: [...this._progressItems],
       });
 
-      logger.info('[mithril] Cleaning up snapshot artifacts', { workDir });
-      await this._cleanupSnapshotArtifacts({ preserveDb: true, workDir });
-      logger.info('[mithril] Clearing bootstrap lock file');
+      logger.info('MithrilBootstrapService: cleaning up snapshot artifacts', {
+        workDir,
+      });
+      await this._cleanupSnapshotArtifacts({ preserveDb: true });
       await this.clearLockFile();
-      logger.info('[mithril] Bootstrap lock file cleared');
+      logger.info('MithrilBootstrapService: cleared bootstrap lock file');
 
       this._markActiveProgressItemAs('completed');
       this._updateStatus({
@@ -239,7 +240,7 @@ export class MithrilBootstrapService {
         progressItems: [...this._progressItems],
       });
 
-      logger.info('[mithril] Bootstrap completed successfully');
+      logger.info('MithrilBootstrapService: bootstrap completed successfully');
       this._updateStatus({
         status: 'completed',
         filesDownloaded: undefined,
@@ -255,7 +256,7 @@ export class MithrilBootstrapService {
         this._inferErrorStageFromStatus(this._status.status)
       );
       this._markActiveProgressItemAs('error');
-      await this._cleanupSnapshotArtifacts({ preserveDb: false, workDir });
+      await this._cleanupSnapshotArtifacts({ preserveDb: false });
       this._updateStatus({
         status: 'failed',
         filesDownloaded: undefined,
@@ -269,7 +270,6 @@ export class MithrilBootstrapService {
     } finally {
       this._activeWorkDir = null;
       this._currentProcess = null;
-      this._logStream = null;
     }
   }
 
@@ -281,8 +281,6 @@ export class MithrilBootstrapService {
       );
       return;
     }
-
-    const workDir = this._activeWorkDir ?? this._workDir;
 
     this._isCancelled = true;
     this._progressItems = [];
@@ -301,17 +299,15 @@ export class MithrilBootstrapService {
     try {
       if (this._currentProcess) {
         this._currentProcess.kill();
-        this._currentProcess = null;
       }
     } catch (error) {
       logger.warn('MithrilBootstrapService: failed to kill process', { error });
     }
 
-    await this._cleanupSnapshotArtifacts({ preserveDb: false, workDir });
+    await this._cleanupSnapshotArtifacts({ preserveDb: false });
     await this.clearLockFile();
     this._activeWorkDir = null;
     this._currentProcess = null;
-    this._logStream = null;
   }
 
   async wipeChainAndSnapshots(reason: string): Promise<void> {
@@ -332,7 +328,6 @@ export class MithrilBootstrapService {
     try {
       await this._cleanupSnapshotArtifacts({
         preserveDb: false,
-        workDir,
         strict: true,
       });
     } catch (error) {
@@ -354,7 +349,7 @@ export class MithrilBootstrapService {
       });
     }
 
-    logger.info(`[MITHRIL] ${reason}`);
+    logger.info(`MithrilBootstrapService: ${reason}`);
   }
 
   _updateStatus(update: Partial<MithrilBootstrapStatusUpdate>) {
@@ -544,11 +539,10 @@ export class MithrilBootstrapService {
 
   async _cleanupSnapshotArtifacts(options: {
     preserveDb: boolean;
-    workDir?: string;
     strict?: boolean;
   }): Promise<void> {
     try {
-      const workDir = options.workDir ?? this._activeWorkDir ?? this._workDir;
+      const workDir = this._activeWorkDir ?? this._workDir;
       const dataDir = path.join(workDir, 'data');
       if (await fs.pathExists(dataDir)) {
         await fs.remove(dataDir);
@@ -573,30 +567,24 @@ export class MithrilBootstrapService {
   async _runBinary(
     binaryName: string,
     args: Array<string>,
-    workDir: string = this._activeWorkDir ?? this._workDir,
     options: RunCommandOptions = {}
   ): Promise<RunCommandResult> {
+    const workDir = this._activeWorkDir ?? this._workDir;
     return runBinary(binaryName, args, workDir, options, {
       onProcess: (child) => {
         this._currentProcess = child;
-      },
-      onLogStream: (logStream) => {
-        this._logStream = logStream;
       },
     });
   }
 
   async _runCommand(
     args: Array<string>,
-    options: RunCommandOptions = {},
-    workDir: string = this._activeWorkDir ?? this._workDir
+    options: RunCommandOptions = {}
   ): Promise<RunCommandResult> {
+    const workDir = this._activeWorkDir ?? this._workDir;
     return runCommand(args, workDir, options, {
       onProcess: (child) => {
         this._currentProcess = child;
-      },
-      onLogStream: (logStream) => {
-        this._logStream = logStream;
       },
     });
   }
@@ -612,10 +600,9 @@ export class MithrilBootstrapService {
 
   async _downloadSnapshot(
     digest: string,
-    snapshot: MithrilSnapshotItem | null,
-    workDir: string = this._activeWorkDir ?? this._workDir
+    snapshot: MithrilSnapshotItem | null
   ): Promise<void> {
-    await this._cleanupSnapshotArtifacts({ preserveDb: false, workDir });
+    await this._cleanupSnapshotArtifacts({ preserveDb: false });
     this._addProgressItem('downloading', 'downloading', 'active');
     this._updateStatus({
       status: 'downloading',
@@ -726,14 +713,10 @@ export class MithrilBootstrapService {
     };
     const stdoutLines = new MithrilOutputLineBuffer(applyProgressUpdate);
     const stderrLines = new MithrilOutputLineBuffer(applyProgressUpdate);
-    const { exitCode, stderr } = await this._runCommand(
-      downloadArgs,
-      {
-        onStdout: (chunk) => stdoutLines.push(chunk),
-        onStderr: (chunk) => stderrLines.push(chunk),
-      },
-      workDir
-    );
+    const { exitCode, stderr } = await this._runCommand(downloadArgs, {
+      onStdout: (chunk) => stdoutLines.push(chunk),
+      onStderr: (chunk) => stderrLines.push(chunk),
+    });
     stdoutLines.flush();
     stderrLines.flush();
 
@@ -771,7 +754,7 @@ export class MithrilBootstrapService {
         this._buildCommandFailure('convert', message, stderr),
       onCommandPrepared: (converterArgs, context) => {
         logger.info(
-          `[mithril] Doing LSM conversion of snapshot with command: snapshot-converter ${converterArgs.join(' ')}`,
+          `MithrilBootstrapService: doing LSM conversion of snapshot with command: snapshot-converter ${converterArgs.join(' ')}`,
           context
         );
       },
@@ -782,10 +765,8 @@ export class MithrilBootstrapService {
     });
   }
 
-  async _resolveDbDirectory(
-    digest?: string,
-    workDir: string = this._activeWorkDir ?? this._workDir
-  ): Promise<string> {
+  async _resolveDbDirectory(digest?: string): Promise<string> {
+    const workDir = this._activeWorkDir ?? this._workDir;
     const candidates = [
       path.join(workDir, 'db'),
       digest

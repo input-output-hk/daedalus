@@ -2,13 +2,9 @@ import { defineMessages } from 'react-intl';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 
 /**
- * Canonical shutdown/restore/restart summary sentence.
- *
- * Shared by BOTH the Mithril partial sync confirmation modal
- * (`MithrilPartialSyncConfirmation.tsx`) and the proactive prompt confirmation
- * view (`SyncingConnectingMithrilPrompt.tsx`) so the byte-identical sentence
- * lives behind a single i18n key (`daedalus.diagnostics.dialog.mithrilSyncProcessSummary`).
- * Do NOT redeclare this id in either consumer — import this module instead.
+ * Canonical shutdown/restore/restart summary sentence, kept behind one i18n key
+ * and shared by the partial-sync confirmation modal and the prompt confirm view;
+ * import this module rather than redeclaring the id.
  */
 const messages: Record<string, ReactIntlMessage> = defineMessages({
   processSummary: {

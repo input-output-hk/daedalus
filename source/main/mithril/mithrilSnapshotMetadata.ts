@@ -3,9 +3,8 @@ import type { MithrilSnapshotItem } from '../../common/types/mithril-bootstrap.t
 export type ResolvedLatestSnapshot = {
   snapshot: MithrilSnapshotItem;
   latestCertifiedImmutableNumber: number;
-  // The Mithril certified-beacon epoch — horizon-free, early-resolving.
-  // Best-effort/optional anchor; `null` when the beacon carries no epoch. The immutable
-  // number remains the sole offer signal, so this is never gated on for resolution.
+  // Optional certified-beacon epoch; null when the beacon carries no epoch. The immutable number is
+  //  the sole resolution signal, so this is never gated on.
   certifiedEpoch: number | null;
 };
 
@@ -91,11 +90,8 @@ export const extractLatestCertifiedImmutableNumber = (
   return null;
 };
 
-// Extract the Mithril certified-beacon epoch. Mirrors
-// extractLatestCertifiedImmutableNumber (multi-path, undefined-safe).
-// `['beacon','epoch']` is the confirmed upstream key (CardanoDbBeacon
-// `required: [epoch, immutable_file_number]`, snake_case);
-// `['cardano_db_beacon','epoch']` matches the production listing shape.
+// Extract the certified-beacon epoch, mirroring extractLatestCertifiedImmutableNumber. 'beacon.epoch'
+//  is the upstream key (CardanoDbBeacon, snake_case); 'cardano_db_beacon.epoch' matches the listing shape.
 export const extractCertifiedEpoch = (
   raw: Record<string, unknown>
 ): number | null => {

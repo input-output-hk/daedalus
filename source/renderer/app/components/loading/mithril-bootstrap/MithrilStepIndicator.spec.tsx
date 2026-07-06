@@ -59,11 +59,7 @@ describe('MithrilStepIndicator', () => {
     });
 
     expect(downloadingStep).not.toBeNull();
-    // The active top-level step now renders the rotating spinner svg
-    // (styles.iconSpinner) instead of the static .activeCircle dot. Under the
-    // svg-jest transform react-svg-inline renders a bare <svg> without its
-    // wrapper className, so the spinner is asserted via the top-level
-    // .iconContainer svg rather than the .iconSpinner class token.
+    // Under the svg-jest transform, react-svg-inline renders a bare <svg> without its wrapper className, so the active-step spinner is asserted via the .iconContainer svg, not the .iconSpinner token.
     expect(downloadingStep?.querySelector('.activeCircle')).toBeNull();
     expect(downloadingStep?.querySelector('.iconContainer svg')).not.toBeNull();
     expect(downloadingDetails.querySelector('svg')).not.toBeNull();
@@ -78,7 +74,6 @@ describe('MithrilStepIndicator', () => {
 
     expect(preparingStep).toHaveClass('stepActive');
     expect(preparingStep).not.toHaveClass('stepPending');
-    // Active step shows the rotating spinner svg, not a greyed pending dot.
     expect(preparingStep?.querySelector('.iconContainer svg')).not.toBeNull();
     expect(preparingStep?.querySelector('.pendingCircle')).toBeNull();
     expect(preparingStep?.querySelector('.activeCircle')).toBeNull();

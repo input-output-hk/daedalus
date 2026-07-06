@@ -7,6 +7,7 @@ import type {
 } from '../../common/types/mithril-bootstrap.types';
 import { logger } from './logging';
 import { validateChainStorageDirectory } from './chainStorageValidation';
+import { deriveCustomPathFromChainState } from './chainStorageManagerShared';
 import type {
   ChainStorageDefaults,
   ChainStorageManagerContext,
@@ -35,11 +36,7 @@ export async function getConfig(
   try {
     const defaultStorageConfig = await ctx._getDefaultStorageConfig();
     const chainState = await ctx._captureChainPathState();
-    let customPath = null;
-
-    if (chainState.type === 'symlink' && chainState.resolvedPath) {
-      customPath = path.dirname(chainState.resolvedPath);
-    }
+    const customPath = deriveCustomPathFromChainState(chainState);
 
     return {
       customPath,

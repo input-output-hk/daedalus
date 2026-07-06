@@ -689,7 +689,10 @@ modal" handoff into a **self-contained fast/standard fork that confirms and star
 3. **Deep-link plumbing dropped.** The `openDaedalusDiagnosticsDialog({ showMithrilConfirmation })`
    payload, the AppStore payload capture, and the `DaedalusDiagnosticsDialog`→`showConfirmationOnOpen`
    wiring planned under D1 are **not built**. The already-shipped `showConfirmationOnOpen` prop on
-   `MithrilPartialSyncSection` (tasks 301/303) is left in place, unused, as a benign residual.
+   `MithrilPartialSyncSection` (tasks 301/303) was left in place, unused, as a benign residual.
+   **Update (2026-07-04, task-ux-704 CAT-E):** the residual was removed — the prop and its
+   `DaedalusDiagnostics`/`DaedalusDiagnosticsDialog` threading were deleted; deep-linking remains
+   unbuilt and this decision otherwise stands.
 4. **User-facing vocabulary = "Mithril" (drop "partial sync").** To the user the feature is **"Mithril"
    / "Mithril Sync"**, contrasted with **"standard sync"** — "Mithril partial sync" is internal/engineering
    language only. This task applies it to the new prompt copy; **sprint-wide rollout** of the term to the

@@ -9,6 +9,7 @@ import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
 import { launcherConfig } from '../config';
 import { logger } from './logging';
 import { ChainStorageManager } from './chainStorageManager';
+import { runSerializedMutation } from './chainStorageManagerShared';
 import type { ManagedChainLayoutResult } from './chainStorageManagerShared';
 
 export type PartialSyncPreflightContext = {
@@ -177,10 +178,6 @@ class ChainStorageCoordinator {
   ): Promise<void> {
     await this._withMutationLock('startBootstrap', async () => {
       this._assertBootstrapMutationAllowed('start Mithril bootstrap');
-
-      if (this._bootstrapInProgress) {
-        throw new Error('Mithril bootstrap is already in progress.');
-      }
 
       const layoutResult = await this._ensureManagedChainLayoutAndSyncWorkDir(
         options?.nodeState
@@ -420,7 +417,7 @@ class ChainStorageCoordinator {
   }
 
   _assertPartialSyncFeatureEnabled(): void {
-    if (launcherConfig.mithrilPartialSyncEnabled !== true) {
+    if (!this.isPartialSyncEnabled()) {
       logger.warn(
         '[MITHRIL] Rejecting partial sync action: partial sync is disabled by launcher configuration',
         null
@@ -558,26 +555,12 @@ class ChainStorageCoordinator {
     label: string,
     operation: () => Promise<T>
   ): Promise<T> {
-    const previousMutation = this._mutationQueue;
-    let releaseLock: (() => void) | undefined;
-
-    this._mutationQueue = new Promise<void>((resolve) => {
-      releaseLock = resolve;
-    });
-
-    await previousMutation.catch(() => undefined);
-
-    try {
-      return await operation();
-    } catch (error) {
-      logger.warn('ChainStorageCoordinator: serialized mutation failed', {
-        error,
-        label,
-      });
-      throw error;
-    } finally {
-      releaseLock?.();
-    }
+    return runSerializedMutation(
+      this,
+      'ChainStorageCoordinator',
+      label,
+      operation
+    );
   }
 }
 
@@ -588,6 +571,3 @@ export const getChainStorageManager = (): ChainStorageManager =>
 
 export const getMithrilBootstrapService = (): MithrilBootstrapService =>
   chainStorageCoordinator.getMithrilBootstrapService();
-
-export const getMithrilPartialSyncDisabledError = (): string =>
-  PARTIAL_SYNC_DISABLED_CODE;

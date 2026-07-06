@@ -5,9 +5,7 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 
 import { logger } from '../../../utils/logging';
 import { getMithrilStartErrorMessage } from '../../../utils/mithrilErrorMessage';
-// Shared canonical shutdown/restore/restart sentence (single i18n key).
-// Reused here so the prompt confirm view and the diagnostics
-// confirmation modal stay byte-identical; do NOT redeclare the id locally.
+// Shared summary sentence, imported so the confirm view and the diagnostics modal stay identical; do not redeclare the id locally.
 import mithrilSyncProcessSummaryMessages from '../../status/MithrilSyncProcessSummary.messages';
 import styles from './SyncingConnectingMithrilPrompt.scss';
 
@@ -126,19 +124,12 @@ export default class SyncingConnectingMithrilPrompt extends Component<
     this.setState({ view: 'choice', startError: null });
   };
 
-  // The choice-view fast button NEVER starts Mithril sync — it only reveals the
-  // confirm view; `handleStart` (the confirm-view "Start now") is the single
-  // call site of `onStart` (the store's `startPartialSync`), so confirmation
-  // always precedes start.
+  // The choice-view button only reveals the confirm view; handleStart is the single caller of onStart, so confirmation always precedes start.
   handleStart = async () => {
     this.setState({ isStarting: true, startError: null });
     try {
       await this.props.onStart();
-      // On success the store flips status to a working/overlay status
-      // (`stopping-node`); the syncing screen yields to the partial-sync overlay
-      // and this prompt naturally unmounts. The container gate stays true; the
-      // overlay simply routes in. "Start now" is disabled via `isStarting` so a
-      // brief lingering mount cannot trigger a second start.
+      // On success the store flips to a working status and the overlay takes over, unmounting this prompt; isStarting disables the button so a lingering mount cannot start twice.
     } catch (error) {
       logger.warn(
         'SyncingConnectingMithrilPrompt: Mithril sync start rejected after confirmation',

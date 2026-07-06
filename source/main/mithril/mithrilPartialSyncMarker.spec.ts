@@ -124,7 +124,6 @@ describe('mithrilPartialSyncMarker', () => {
     });
 
     it('round-trips stagingRootPath through write then read', async () => {
-      // Capture what was written and return it from readJson
       let writtenValue: unknown;
       writeJsonMock.mockImplementation(async (_path: string, data: unknown) => {
         writtenValue = data;

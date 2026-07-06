@@ -63,7 +63,6 @@ jest.mock('./MithrilStartupGate', () => ({
     onPartialSyncStatus: jest.fn(),
     syncPendingDecision: jest.fn(),
     resetOnDirectoryChange: jest.fn(),
-    state: 'idle',
   })),
 }));
 
@@ -77,7 +76,6 @@ const createStatusSnapshot = (
   error: null,
 });
 
-// All nine partial-sync working statuses (isMithrilPartialSyncWorkingStatus).
 const WORKING_STATUSES: MithrilPartialSyncStatus[] = [
   'stopping-node',
   'cancelling',
@@ -192,10 +190,7 @@ describe('MithrilController', () => {
   });
 
   describe('reapPartialSyncOnShutdown (shutdown reap)', () => {
-    // The partial-sync service is class-mocked in this spec, so the observable
-    // here is the delegation to forceKillForShutdown(); the sync-mode SIGKILL
-    // it issues — killProcessTree(child, 'SIGKILL', { sync: true }) — is
-    // pinned in MithrilPartialSyncService.spec.ts.
+    // The service is class-mocked here, so this only asserts delegation to forceKillForShutdown(); the sync-mode SIGKILL itself is pinned in MithrilPartialSyncService.spec.ts.
     it('delegates to the service sync force-kill and logs while partial sync is active', () => {
       const controller = createController();
       controller.setPartialSyncStatus(createStatusSnapshot('downloading'));

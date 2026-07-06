@@ -9,7 +9,7 @@ const makeIntl = () => {
   const formatMessage = jest.fn(
     (message: { id: string }) => `formatted:${message.id}`
   );
-  return { intl: ({ formatMessage } as unknown) as Intl, formatMessage };
+  return { intl: { formatMessage } as unknown as Intl, formatMessage };
 };
 
 describe('extractMithrilErrorMessage', () => {

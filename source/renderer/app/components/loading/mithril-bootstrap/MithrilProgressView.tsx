@@ -63,11 +63,7 @@ const formatDuration = (value?: number) => {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 };
 
-// Shared completion frame for the in-dialogue node stop/start hand-offs and the
-// partial-sync completed-transition frame. The three blocks differ only in
-// spinner position (top for the completed transition) and whether a detail line
-// is present, so they collapse into one helper while keeping
-// role=status/aria-live=polite/aria-atomic=true and the spinner verbatim.
+// Shared completion frame for the node stop/start hand-offs and the completed transition; they differ only in spinner position and whether a detail line is shown.
 function CompletionBlock({
   title,
   detail,
@@ -124,10 +120,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
   const isCancelling = status === 'cancelling';
   const isLongRunningPhase = LONG_RUNNING_STATUSES.has(status);
   const isPartialSync = variant === 'partial-sync';
-  // The partial-sync variant turns the 'completed' frame into a loading-style
-  // hand-off (spinner + "Returning to Daedalus...") while the finalize
-  // auto-timeout runs. The default bootstrap variant keeps its own 'completed'
-  // frame byte-for-byte unchanged.
+  // Partial-sync turns 'completed' into a loading-style hand-off frame while the finalize auto-timeout runs; bootstrap keeps its own completed frame.
   const isCompletedTransition = status === 'completed' && isPartialSync;
 
   // Local elapsed-seconds timer — only this component re-renders each second
