@@ -1,6 +1,8 @@
 import classNames from 'classnames';
 import React, { Component } from 'react';
 import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import {
   BlockSyncType,
   CardanoNodeState,
@@ -80,6 +82,12 @@ const messages = defineMessages({
     defaultMessage: '!!!TLS certificate is not valid, please restart Daedalus.',
     description: 'The TLS cert is not valid and Daedalus should be restarted',
   },
+  mithrilSyncInterrupt: {
+    id: 'loading.screen.mithrilSyncInterrupt',
+    defaultMessage: '!!!Use Mithril Sync instead',
+    description:
+      'Button label shown during ledger replay to interrupt and switch to Mithril Sync',
+  },
 });
 
 interface Props {
@@ -92,6 +100,8 @@ interface Props {
   isNodeStopping: boolean;
   isNodeStopped: boolean;
   isVerifyingBlockchain: boolean;
+  isPartialSyncEnabled?: boolean;
+  onMithrilSync?: () => void;
 }
 
 export default class SyncingConnectingStatus extends Component<Props> {
@@ -186,6 +196,8 @@ export default class SyncingConnectingStatus extends Component<Props> {
       hasLoadedCurrentLocale,
       blockSyncProgress,
       cardanoNodeState,
+      isPartialSyncEnabled,
+      onMithrilSync,
     } = this.props;
     if (!hasLoadedCurrentLocale) return null;
 
@@ -196,9 +208,20 @@ export default class SyncingConnectingStatus extends Component<Props> {
       cardanoNodeState === CardanoNodeStates.RUNNING &&
       isVerifyingBlockchain
     ) {
+      const replayProgress = blockSyncProgress[BlockSyncType.replayedBlock];
+      const isReplaying = replayProgress > 0 && replayProgress < 100;
       return (
         <div className={styles.component}>
           <SyncingProgress {...blockSyncProgress} />
+          {isPartialSyncEnabled && isReplaying && onMithrilSync && (
+            <div className={styles.mithrilAction}>
+              <Button
+                label={intl.formatMessage(messages.mithrilSyncInterrupt)}
+                onClick={onMithrilSync}
+                skin={ButtonSkin}
+              />
+            </div>
+          )}
         </div>
       );
     }

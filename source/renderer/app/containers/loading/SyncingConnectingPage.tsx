@@ -15,7 +15,7 @@ class LoadingSyncingConnectingPage extends Component<Props> {
   };
 
   render() {
-    const { newsFeed, appUpdate, networkStatus, profile, app } =
+    const { newsFeed, appUpdate, networkStatus, profile, app, mithrilPartialSync } =
       this.props.stores;
     const {
       cardanoNodeState,
@@ -72,6 +72,8 @@ class LoadingSyncingConnectingPage extends Component<Props> {
         showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
         isVerifyingBlockchain={isVerifyingBlockchain}
         blockSyncProgress={blockSyncProgress}
+        isPartialSyncEnabled={mithrilPartialSync.isPartialSyncEnabled}
+        onMithrilSync={mithrilPartialSync.startPartialSync}
       />
     );
   }
