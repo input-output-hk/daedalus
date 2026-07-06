@@ -132,11 +132,15 @@ export function derivePartialSyncRange(
   latestCertifiedImmutableNumber: number
 ): PartialSyncRange {
   if (localImmutableNumber >= latestCertifiedImmutableNumber) {
-    throw createPartialSyncStageError(
-      'preparing',
-      'The managed chain is not missing any certified immutable files for Mithril partial sync.',
-      'PARTIAL_SYNC_NO_CERTIFIED_RANGE'
-    );
+    // Immutables are at or ahead of the certified tip — the ledger state may
+    // still be missing or from an incompatible snapshot (e.g. the user deleted
+    // it, or the node fell into a full replay). Download just the ledger state
+    // at the certified position; --allow-override handles the one overlapping
+    // immutable chunk harmlessly. The node replays the small trailing gap.
+    return {
+      start: latestCertifiedImmutableNumber,
+      end: latestCertifiedImmutableNumber,
+    };
   }
 
   return {
