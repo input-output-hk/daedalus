@@ -27,6 +27,7 @@ import {
 } from './chainStorageCoordinator';
 import { MithrilPartialSyncNodeStartup } from '../mithril/mithrilPartialSyncNodeStartup';
 import { getMithrilController } from '../mithril/MithrilController';
+import { isMithrilPartialSyncSuppressingDiskSpaceCheck } from '../../common/types/mithril-partial-sync.types';
 
 const getDiskCheckReport = async (
   targetPath: string,
@@ -172,6 +173,12 @@ export const handleDiskSpace = (
       diskTotalSpaceRaw: 0,
       isError: false,
     });
+
+    const partialSyncStatus = mithrilController.getPartialSyncStatus().status;
+    if (isMithrilPartialSyncSuppressingDiskSpaceCheck(partialSyncStatus)) {
+      return getStaleResponse();
+    }
+
     const startupLayoutResult =
       await mithrilController.ensureMithrilStartupGate(currentGeneration);
     if (

@@ -145,3 +145,23 @@ export const isMithrilPartialSyncBlockingNodeStart = (
   // Node start is blocked exactly while a Mithril run is doing work; the
   // working-status list is the single source of truth for that window.
   isMithrilPartialSyncWorkingStatus(status);
+
+// Disk space polling is suppressed during the download/install phases to avoid
+// interfering with an active Mithril run. `finalizing` and `starting-node` are
+// excluded because by then the snapshot is installed and we want the node to
+// start immediately via the restart-startup-flow trigger.
+const MITHRIL_PARTIAL_SYNC_DISK_SPACE_SUPPRESSED_STATUSES: MithrilPartialSyncStatus[] =
+  [
+    'stopping-node',
+    'cancelling',
+    'preparing',
+    'downloading',
+    'verifying',
+    'converting',
+    'installing',
+  ];
+
+export const isMithrilPartialSyncSuppressingDiskSpaceCheck = (
+  status: MithrilPartialSyncStatus
+): boolean =>
+  MITHRIL_PARTIAL_SYNC_DISK_SPACE_SUPPRESSED_STATUSES.includes(status);

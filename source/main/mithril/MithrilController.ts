@@ -242,8 +242,18 @@ export class MithrilController {
   async broadcastPartialSyncStatus(
     status: MithrilPartialSyncStatusSnapshot
   ): Promise<void> {
+    const previousStatus = this._partialSyncStatus.status;
     this._partialSyncStatus = status;
     this._startupGate.onPartialSyncStatus(status);
+
+    if (status.status === 'finalizing' && previousStatus !== 'finalizing') {
+      this._restartStartupFlowAfterPartialSync?.().catch((error) => {
+        logger.warn(
+          'MithrilController: failed to restart startup flow after partial sync install',
+          { error }
+        );
+      });
+    }
 
     if (!this._partialSyncStatusSender) return;
 
