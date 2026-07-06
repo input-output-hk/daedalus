@@ -20,7 +20,7 @@ const makeStores = ({
   mithrilPartialSync = {},
 }: StoreOverrides = {}) => ({
   networkStatus: {
-    // The shared fixture keeps tips finite (network 100, local 97 → 3 epochs) so only isBehindnessKnown — not a re-derived behindByEpochs — can gate the prompt; that's what the anti-flash tests isolate.
+    // The shared fixture keeps tips finite (network 100, local 97 → 3 epochs) so computeBehindByEpochs returns 3. isSignificantlyBehind=true is the sole gate signal; the anti-flash tests verify isBehindnessKnown no longer gates independently.
     networkTip: { epoch: 100 },
     localTip: { epoch: 97 },
     isConnected: true,
@@ -105,14 +105,21 @@ describe('MithrilProactivePromptContainer', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders nothing near the tip (behind-by <= 0 -> undefined) even though behind-ness is known', () => {
-    // Equal epochs → computeBehindByEpochs returns undefined (near-tip hide) even though isBehindnessKnown stays true.
-    const { container } = renderContainer({
+  it('renders the prompt with generic behind text when isSignificantlyBehind is true but epoch diff is zero', () => {
+    // isSignificantlyBehind is the definitive gate — it confirms an immutable-file gap even when epoch
+    // math resolves to zero (both tips at the same epoch). computeBehindByEpochs returns undefined,
+    // so the component falls back to "Your node is behind the blockchain tip." rather than hiding.
+    renderContainer({
       networkStatus: { networkTip: { epoch: 97 }, localTip: { epoch: 97 } },
     });
 
+    expect(
+      screen.getByRole('heading', { name: 'Mithril Sync' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Your node is behind the blockchain tip.')
+    ).toBeInTheDocument();
     expect(screen.queryByText(KNOWN_EPOCHS_TEXT)).not.toBeInTheDocument();
-    expect(container).toBeEmptyDOMElement();
   });
 
   it('renders nothing once a Mithril attempt has begun this session (re-pop guard)', () => {
@@ -153,14 +160,18 @@ describe('MithrilProactivePromptContainer', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders nothing until behind-ness is KNOWN — gates on networkStatus.isBehindnessKnown, NOT a local tip re-derivation (anti-flash)', () => {
-    // Tips are finite (a local re-derivation would fire) but isBehindnessKnown is false: the prompt must stay hidden — the anti-flash guard consumes only the computed signal.
-    const { container } = renderContainer({
+  it('renders the prompt even when isBehindnessKnown is false — isSignificantlyBehind is the sole anti-flash guard', () => {
+    // The backend probe, not epoch math, is the offer signal: isSignificantlyBehind starts false and
+    // becomes true only after the probe confirms an immutable-file gap. isBehindnessKnown being false
+    // (networkTip epoch not yet resolved) no longer blocks the prompt.
+    renderContainer({
       networkStatus: { isBehindnessKnown: false },
     });
 
-    expect(screen.queryByText(KNOWN_EPOCHS_TEXT)).not.toBeInTheDocument();
-    expect(container).toBeEmptyDOMElement();
+    expect(
+      screen.getByRole('heading', { name: 'Mithril Sync' })
+    ).toBeInTheDocument();
+    expect(screen.getByText(KNOWN_EPOCHS_TEXT)).toBeInTheDocument();
   });
 
   it('renders nothing once the prompt has been dismissed for the session', () => {

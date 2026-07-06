@@ -907,8 +907,25 @@ export class MithrilPartialSyncService {
     }
     const managedChainPath =
       await this._chainStorageManager.getManagedChainPath();
-    const localImmutableNumber =
-      await resolveLocalImmutableNumber(managedChainPath);
+    // Fresh install: the chain directory (or its immutable/ subdir) may not exist
+    // yet, or the immutable directory may be empty (node just initialised).
+    // Treat these as local position 0 so the probe can still fire and the
+    // proactive prompt can surface for a no-snapshot node.
+    const immutablePath = path.join(managedChainPath, 'immutable');
+    let localImmutableNumber: number;
+    if (!(await fs.pathExists(immutablePath))) {
+      localImmutableNumber = 0;
+    } else {
+      try {
+        localImmutableNumber = await resolveLocalImmutableNumber(managedChainPath);
+      } catch (err: any) {
+        if (err?.code === 'PARTIAL_SYNC_IMMUTABLE_POSITION_UNAVAILABLE') {
+          localImmutableNumber = 0;
+        } else {
+          throw err;
+        }
+      }
+    }
     this._localImmutableCache = {
       value: localImmutableNumber,
       fetchedAt: now,

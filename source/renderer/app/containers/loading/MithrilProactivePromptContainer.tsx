@@ -20,20 +20,18 @@ class MithrilProactivePromptContainer extends Component<Props> {
 
   render() {
     const { networkStatus, mithrilPartialSync } = this.props.stores;
-    const { localTip, networkTip, isConnected, isBehindnessKnown } =
-      networkStatus;
+    const { localTip, networkTip, isConnected } = networkStatus;
     const { certifiedEpoch } = mithrilPartialSync; // early-sync beacon anchor
 
-    // Broadens the networkTip-only isBehindnessKnown so a known-behind state is recognised early via the certified epoch too.
-    const certifiedKnown =
-      Number.isFinite(localTip?.epoch) && Number.isFinite(certifiedEpoch);
-
+    // isSignificantlyBehind is the definitive backend signal (immutable-file gap ≥ threshold);
+    // it starts false and only becomes true after the probe confirms the gap, so it provides
+    // anti-flash protection on its own. The separate epoch-based gate was redundant and blocked
+    // the prompt when certifiedEpoch was absent or below localTip.epoch (semi-recent data).
     const isGated =
       mithrilPartialSync.status === 'idle' &&
       mithrilPartialSync.isPartialSyncEnabled &&
       mithrilPartialSync.isSignificantlyBehind && // backend offer signal (near-tip ⇒ false)
       isConnected && // node loaded, past verifying
-      (isBehindnessKnown || certifiedKnown) && // anti-flash known-gate, now beacon-aware
       !mithrilPartialSync.mithrilAttemptStartedThisSession && // re-pop guard
       !mithrilPartialSync.proactivePromptDismissedThisSession;
 
@@ -41,15 +39,14 @@ class MithrilProactivePromptContainer extends Component<Props> {
       return null;
     }
 
-    // Computed after the gate so it runs only when the prompt renders; undefined here also hides the prompt (node at/ahead of the anchor).
+    // Computed after the gate so it runs only when the prompt renders. undefined means no
+    // epoch anchor is available yet; the component falls back to "Your node is behind the
+    // blockchain tip." rather than hiding — isSignificantlyBehind already confirmed the gap.
     const behindByEpochs = computeBehindByEpochs(
       localTip,
       networkTip,
       certifiedEpoch
     );
-    if (behindByEpochs === undefined) {
-      return null;
-    }
 
     return (
       <SyncingConnectingMithrilPrompt
