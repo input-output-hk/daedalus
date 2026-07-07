@@ -32,6 +32,18 @@ const getDiskCheckReport = async (
   targetPath: string,
   timeout: number = DISK_SPACE_CHECK_TIMEOUT
 ): Promise<CheckDiskSpaceResponse> => {
+  // On Windows, checkDiskSpace uses GetDiskFreeSpaceEx which may report the
+  // host drive's (C:) free space when given a junction path rather than the
+  // junction target's (D:). Resolve the real path first so we always check
+  // the volume that actually holds the chain data.
+  let resolvedPath = targetPath;
+  try {
+    resolvedPath = await fs.realpath(targetPath);
+  } catch {
+    // Path does not exist yet (fresh install). Fall back to the original so
+    // checkDiskSpace can still run against the nearest existing ancestor.
+  }
+
   const initialReport: CheckDiskSpaceResponse = {
     isNotEnoughDiskSpace: false,
     diskSpaceRequired: '',
@@ -44,7 +56,7 @@ const getDiskCheckReport = async (
     isError: false,
   };
   const diskCheckPromise = new Promise<CheckDiskSpaceResponse>((resolve) => {
-    checkDiskSpace(targetPath)
+    checkDiskSpace(resolvedPath)
       .then(({ free, size }) => {
         logger.info('[DISK-SPACE-DEBUG] Disk space check completed', {
           free,

@@ -26,6 +26,7 @@ const fsExtraMock = {
   readJson: jest.fn(),
   writeJson: jest.fn(),
   ensureDir: jest.fn(),
+  realpath: jest.fn(),
 };
 
 const mithrilPartialSyncNodeStartupMock = {
@@ -225,6 +226,7 @@ describe('handleDiskSpace', () => {
       error: null,
     };
     checkDiskSpace.mockResolvedValue({ free: 4096, size: 16384 });
+    fsExtraMock.realpath.mockImplementation(async (p: string) => p);
     chainStorageManagerMock.resolveDiskSpaceCheckPath.mockResolvedValue(
       '/tmp/unused'
     );
@@ -844,6 +846,50 @@ describe('handleDiskSpace', () => {
       chainStorageCoordinatorMock.wipeChainAndSnapshots
     ).toHaveBeenCalled();
     expect(cardanoNode.start).toHaveBeenCalledTimes(1);
+  });
+
+  it('resolves junction/symlink target path before checking disk space so cross-drive storage reports the correct volume', async () => {
+    const { handleDiskSpace } =
+      require('./handleDiskSpace') as typeof import('./handleDiskSpace');
+    const cardanoNode = createCardanoNode();
+
+    // Simulate Windows junction: C:\state\chain points to D:\blockchain\chain.
+    // checkDiskSpace on the junction path would report C:'s free space; after
+    // realpath resolution it should report D:'s.
+    chainStorageCoordinatorMock.ensureManagedChainLayout.mockResolvedValue({
+      managedChainPath: '/tmp/state/chain',
+      isRecoveryFallback: false,
+    });
+    fsExtraMock.realpath.mockResolvedValue('/volumes/D/blockchain/chain');
+
+    const handleCheckDiskSpace = handleDiskSpace(
+      { webContents: {} } as never,
+      cardanoNode as never
+    );
+
+    await handleCheckDiskSpace();
+
+    expect(checkDiskSpace).toHaveBeenCalledWith('/volumes/D/blockchain/chain');
+    expect(checkDiskSpace).not.toHaveBeenCalledWith('/tmp/state/chain');
+  });
+
+  it('falls back to the original path for the disk space check when realpath fails (chain not yet created)', async () => {
+    const { handleDiskSpace } =
+      require('./handleDiskSpace') as typeof import('./handleDiskSpace');
+    const cardanoNode = createCardanoNode();
+
+    fsExtraMock.realpath.mockRejectedValue(
+      Object.assign(new Error('no such file or directory'), { code: 'ENOENT' })
+    );
+
+    const handleCheckDiskSpace = handleDiskSpace(
+      { webContents: {} } as never,
+      cardanoNode as never
+    );
+
+    await handleCheckDiskSpace();
+
+    expect(checkDiskSpace).toHaveBeenCalledWith('/tmp/state/chain');
   });
 
   it('handles cancelled Mithril bootstrap by declining and starting cardano-node when chain has data', async () => {
