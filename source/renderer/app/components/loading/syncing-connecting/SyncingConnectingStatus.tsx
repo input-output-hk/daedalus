@@ -209,11 +209,10 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isVerifyingBlockchain
     ) {
       const replayProgress = blockSyncProgress[BlockSyncType.replayedBlock];
-      const isReplaying = replayProgress > 0 && replayProgress < 100;
       return (
         <div className={styles.component}>
           <SyncingProgress {...blockSyncProgress} />
-          {isPartialSyncEnabled && isReplaying && onMithrilSync && (
+          {isPartialSyncEnabled && replayProgress < 100 && onMithrilSync && (
             <div className={styles.mithrilAction}>
               <Button
                 label={intl.formatMessage(messages.mithrilSyncInterrupt)}
