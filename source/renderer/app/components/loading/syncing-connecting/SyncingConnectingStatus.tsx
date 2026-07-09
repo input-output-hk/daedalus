@@ -104,10 +104,54 @@ interface Props {
   onMithrilSync?: () => void;
 }
 
-export default class SyncingConnectingStatus extends Component<Props> {
+const MITHRIL_BUTTON_DEBOUNCE_MS = 2000;
+
+interface State {
+  showMithrilButton: boolean;
+}
+
+export default class SyncingConnectingStatus extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  state: State = { showMithrilButton: false };
+  _mithrilButtonTimer: ReturnType<typeof setTimeout> | null = null;
+
+  _isMithrilButtonEligible(): boolean {
+    const { blockSyncProgress, isPartialSyncEnabled, onMithrilSync } =
+      this.props;
+    const replayProgress = blockSyncProgress[BlockSyncType.replayedBlock];
+    return (
+      !!isPartialSyncEnabled && replayProgress < 100 && onMithrilSync != null
+    );
+  }
+
+  componentDidUpdate(): void {
+    const eligible = this._isMithrilButtonEligible();
+    if (eligible && !this._mithrilButtonTimer && !this.state.showMithrilButton) {
+      this._mithrilButtonTimer = setTimeout(() => {
+        this._mithrilButtonTimer = null;
+        if (this._isMithrilButtonEligible()) {
+          this.setState({ showMithrilButton: true });
+        }
+      }, MITHRIL_BUTTON_DEBOUNCE_MS);
+    } else if (!eligible) {
+      if (this._mithrilButtonTimer) {
+        clearTimeout(this._mithrilButtonTimer);
+        this._mithrilButtonTimer = null;
+      }
+      if (this.state.showMithrilButton) {
+        this.setState({ showMithrilButton: false });
+      }
+    }
+  }
+
+  componentWillUnmount(): void {
+    if (this._mithrilButtonTimer) {
+      clearTimeout(this._mithrilButtonTimer);
+    }
+  }
 
   _getConnectingMessage = (): {
     connectingMessage: string;
@@ -208,11 +252,10 @@ export default class SyncingConnectingStatus extends Component<Props> {
       cardanoNodeState === CardanoNodeStates.RUNNING &&
       isVerifyingBlockchain
     ) {
-      const replayProgress = blockSyncProgress[BlockSyncType.replayedBlock];
       return (
         <div className={styles.component}>
           <SyncingProgress {...blockSyncProgress} />
-          {isPartialSyncEnabled && replayProgress < 100 && onMithrilSync && (
+          {this.state.showMithrilButton && onMithrilSync && (
             <div className={styles.mithrilAction}>
               <Button
                 label={intl.formatMessage(messages.mithrilSyncInterrupt)}
