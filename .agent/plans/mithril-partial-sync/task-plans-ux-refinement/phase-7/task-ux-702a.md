@@ -927,5 +927,3 @@ CAT-D/CAT-H across all 10 themes, the manual Japanese-translator review of the p
 `task-ux-702a-copy-overview.md` (D-702a-7), and the OPTIONAL backend `getPartialSyncAvailability`
 probe-delay decoupling flagged for the backend-correctness track (CAT-A, out of scope here). With 702a
 complete, `task-ux-702` (the deployment QA gate) is unblocked.
-</content>
-</invoke>

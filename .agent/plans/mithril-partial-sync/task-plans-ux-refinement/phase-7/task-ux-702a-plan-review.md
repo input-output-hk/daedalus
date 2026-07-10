@@ -123,7 +123,6 @@ Non-blocking notes:
   the operator during validation.
 
 Decision: requires_changes
-</content>
 
 ---
 
