@@ -14,7 +14,7 @@ import { isMithrilPartialSyncRestoreCompleteStatus } from '../../../../../common
 import { isMithrilBootstrapRestoreCompleteStatus as isRestoreCompleteStatus } from '../../../../../common/types/mithril-bootstrap.types';
 import InlineProgressBar from './InlineProgressBar';
 import messages from './MithrilBootstrap.messages';
-import { formatTransferSize } from './snapshotFormatting';
+import { formatSnapshotSize, formatTransferSize } from './snapshotFormatting';
 import styles from './MithrilStepIndicator.scss';
 import type { Intl } from '../../../types/i18nTypes';
 import { formattedNumber } from '../../../utils/formatters';
@@ -25,9 +25,11 @@ type SubItemState = 'completed' | 'active' | 'pending' | 'error';
 
 type Props = {
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus;
+  variant?: 'bootstrap' | 'partial-sync';
   progressItems?: MithrilProgressItem[];
-  bytesDownloaded?: number;
-  snapshotSize?: number;
+  filesDownloaded?: number;
+  filesTotal?: number;
+  snapshotSizeBytes?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
   ancillaryProgress?: number;
@@ -43,6 +45,7 @@ const STEPS: ReadonlyArray<StepId> = ['preparing', 'downloading', 'finalizing'];
 const STATUS_TO_STEP: Partial<
   Record<MithrilBootstrapStatus | MithrilPartialSyncStatus, StepId>
 > = {
+  'stopping-node': 'preparing',
   preparing: 'preparing',
   downloading: 'downloading',
   verifying: 'downloading',
@@ -72,12 +75,15 @@ const DOWNLOAD_SUB_IDS = new Set<string>([
   'step-5',
   'step-6',
   'step-7',
+  'verifying',
 ]);
 
 const FINALIZE_SUB_IDS = new Set<string>([
   'install-snapshot',
   'cleanup',
   'conversion',
+  'converting',
+  'installing',
 ]);
 
 const ITEM_ID_TO_MESSAGE: Record<string, keyof typeof messages> = {
@@ -91,9 +97,12 @@ const ITEM_ID_TO_MESSAGE: Record<string, keyof typeof messages> = {
   'install-snapshot': 'progressInstallSnapshot',
   cleanup: 'progressCleanup',
   conversion: 'progressConversion',
+  verifying: 'partialSyncStageVerifying',
+  converting: 'partialSyncStageConverting',
+  installing: 'partialSyncStageInstalling',
 };
 
-const DOWNLOAD_PROGRESS_ANCHOR_ID = 'step-3';
+export const DOWNLOAD_PROGRESS_ANCHOR_ID = 'step-3';
 const VERIFYING_DIGESTS_ID = 'step-4';
 const FALLBACK_SNAPSHOT_WEIGHT = 95;
 const FALLBACK_FAST_SYNC_WEIGHT = 5;
@@ -113,6 +122,15 @@ const isTransferComplete = (downloaded?: number, total?: number) =>
   total > 0 &&
   downloaded >= total;
 
+// Each guard narrows within its own status family and only compares against
+// members of that family, so funnelling the union through both is safe; the
+// two casts live here once instead of at every call site.
+const isAnyRestoreCompleteStatus = (
+  status: MithrilBootstrapStatus | MithrilPartialSyncStatus
+): boolean =>
+  isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
+  isMithrilPartialSyncRestoreCompleteStatus(status as MithrilPartialSyncStatus);
+
 const isVerificationOrLater = (
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus
 ) =>
@@ -121,23 +139,24 @@ const isVerificationOrLater = (
   status === 'converting' ||
   status === 'installing' ||
   status === 'finalizing' ||
-  isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
-  isMithrilPartialSyncRestoreCompleteStatus(status as MithrilPartialSyncStatus);
+  isAnyRestoreCompleteStatus(status);
 
 function deriveCombinedDownloadPercent({
   status,
   snapshotPercent,
   ancillaryPercent,
-  bytesDownloaded,
-  snapshotSize,
+  filesDownloaded,
+  filesTotal,
+  snapshotSizeBytes,
   ancillaryBytesDownloaded,
   ancillaryBytesTotal,
 }: {
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus;
   snapshotPercent?: number;
   ancillaryPercent?: number;
-  bytesDownloaded?: number;
-  snapshotSize?: number;
+  filesDownloaded?: number;
+  filesTotal?: number;
+  snapshotSizeBytes?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
 }) {
@@ -146,23 +165,24 @@ function deriveCombinedDownloadPercent({
 
   if (
     isVerificationOrLater(status) ||
-    isTransferComplete(bytesDownloaded, snapshotSize) ||
+    isTransferComplete(filesDownloaded, filesTotal) ||
     isTransferComplete(ancillaryBytesDownloaded, ancillaryBytesTotal) ||
     normalizedAncillaryPercent >= 100
   ) {
     return 100;
   }
 
-  // When both byte totals are known, compute weight from actual sizes;
-  // otherwise fall back to snapshot-only progress (ancillary hasn't started).
+  // When the real snapshot byte size and ancillary byte total are known,
+  // weight the bar by actual bytes; otherwise fall back to snapshot-only
+  // progress (e.g. partial sync, which carries no real total size).
   if (
-    typeof snapshotSize === 'number' &&
-    snapshotSize > 0 &&
+    typeof snapshotSizeBytes === 'number' &&
+    snapshotSizeBytes > 0 &&
     typeof ancillaryBytesTotal === 'number' &&
     ancillaryBytesTotal > 0
   ) {
-    const totalBytes = snapshotSize + ancillaryBytesTotal;
-    const snapshotWeight = (snapshotSize / totalBytes) * 100;
+    const totalBytes = snapshotSizeBytes + ancillaryBytesTotal;
+    const snapshotWeight = (snapshotSizeBytes / totalBytes) * 100;
     const ancillaryWeight = (ancillaryBytesTotal / totalBytes) * 100;
     return (
       (normalizedSnapshotPercent / 100) * snapshotWeight +
@@ -179,27 +199,39 @@ function deriveCombinedDownloadPercent({
 
 function formatCombinedProgressDetails({
   intl,
-  bytesDownloaded,
-  snapshotSize,
+  filesDownloaded,
+  filesTotal,
+  snapshotSizeBytes,
   ancillaryBytesDownloaded,
   ancillaryBytesTotal,
 }: {
   intl: Intl;
-  bytesDownloaded?: number;
-  snapshotSize?: number;
+  filesDownloaded?: number;
+  filesTotal?: number;
+  snapshotSizeBytes?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
 }) {
-  const formatSnapshotCount = (value?: number) =>
+  const formatFileCount = (value?: number) =>
     typeof value === 'number' && value >= 0 ? formattedNumber(value) : '\u2014';
 
-  return intl.formatMessage(messages.progressCombinedDetail, {
-    snapshotDownloaded: formatSnapshotCount(bytesDownloaded),
-    snapshotTotal: formatSnapshotCount(snapshotSize),
+  const base = intl.formatMessage(messages.progressCombinedDetail, {
+    snapshotDownloaded: formatFileCount(filesDownloaded),
+    snapshotTotal: formatFileCount(filesTotal),
     fastSyncDownloaded:
       formatTransferSize(ancillaryBytesDownloaded) ?? '\u2014',
     fastSyncTotal: formatTransferSize(ancillaryBytesTotal) ?? '\u2014',
   });
+
+  const totalSize = formatSnapshotSize(snapshotSizeBytes);
+  if (!totalSize) {
+    return base;
+  }
+
+  const sizeContext = intl.formatMessage(messages.progressSnapshotSizeContext, {
+    totalSize,
+  });
+  return `${base} \u00b7 ${sizeContext}`;
 }
 
 function synthesizeVerifyingDigestProgress(
@@ -272,12 +304,7 @@ function keepInstallingActiveDuringFinalizing(
 function getActiveStepIndex(
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus
 ): number {
-  if (
-    isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
-    isMithrilPartialSyncRestoreCompleteStatus(
-      status as MithrilPartialSyncStatus
-    )
-  ) {
+  if (isAnyRestoreCompleteStatus(status)) {
     return STEPS.length;
   }
   if (status === 'failed') return -1;
@@ -300,12 +327,7 @@ function deriveTopLevelState(
   activeStepIndex: number,
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus
 ): StepState {
-  if (
-    isRestoreCompleteStatus(status as MithrilBootstrapStatus) ||
-    isMithrilPartialSyncRestoreCompleteStatus(
-      status as MithrilPartialSyncStatus
-    )
-  ) {
+  if (isAnyRestoreCompleteStatus(status)) {
     return 'completed';
   }
   if (activeStepIndex < 0) return 'pending';
@@ -384,7 +406,13 @@ function TopLevelIcon({ state }: { state: StepState }) {
     );
   }
   if (state === 'active') {
-    return <div className={styles.activeCircle} />;
+    return (
+      <SVGInline
+        svg={spinnerIcon}
+        aria-hidden="true"
+        className={classNames(styles.icon, styles.iconSpinner)}
+      />
+    );
   }
   if (state === 'error') {
     return (
@@ -432,9 +460,11 @@ function SubItemIcon({ state }: { state: SubItemState }) {
 function MithrilStepIndicator(props: Props, { intl }: Context) {
   const {
     status,
+    variant = 'bootstrap',
     progressItems = [],
-    bytesDownloaded,
-    snapshotSize,
+    filesDownloaded,
+    filesTotal,
+    snapshotSizeBytes,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
     ancillaryProgress,
@@ -448,8 +478,8 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
       : undefined;
 
   const snapshotPercent =
-    typeof snapshotSize === 'number' && snapshotSize > 0
-      ? ((bytesDownloaded ?? 0) / snapshotSize) * 100
+    typeof filesTotal === 'number' && filesTotal > 0
+      ? ((filesDownloaded ?? 0) / filesTotal) * 100
       : 0;
   const ancPercent =
     typeof ancillaryProgress === 'number' ? ancillaryProgress : 0;
@@ -457,15 +487,17 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
     status,
     snapshotPercent,
     ancillaryPercent: ancPercent,
-    bytesDownloaded,
-    snapshotSize,
+    filesDownloaded,
+    filesTotal,
+    snapshotSizeBytes,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
   });
   const combinedProgressDetails = formatCombinedProgressDetails({
     intl,
-    bytesDownloaded,
-    snapshotSize,
+    filesDownloaded,
+    filesTotal,
+    snapshotSizeBytes,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
   });
@@ -497,8 +529,13 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
     ? synthesizeVerifyingDigestProgress(progressItems)
     : progressItems;
 
+  // Bootstrap's finalizing status still covers cleanup after the snapshot
+  // move, so the don't-close caution must stay on screen; partial sync
+  // reports the move as its own 'installing' item and completes it before
+  // finalizing, so fabricating the bootstrap 'install-snapshot' step there
+  // would show a stage that never runs in that flow.
   const displayedProgressItems =
-    status === 'finalizing'
+    status === 'finalizing' && variant === 'bootstrap'
       ? keepInstallingActiveDuringFinalizing(progressItemsWithTransitions)
       : progressItemsWithTransitions;
 
@@ -537,6 +574,11 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
     const itemLabel = msgKey
       ? intl.formatMessage(messages[msgKey])
       : item.label;
+    // Interrupting the snapshot move can leave the chain store half-written,
+    // so the active move step carries a "don't close Daedalus" caution.
+    // Bootstrap reports the move as 'install-snapshot'; partial sync as 'installing'.
+    const showMoveCaution =
+      (item.id === 'install-snapshot' || item.id === 'installing') && isActive;
 
     return (
       <div
@@ -550,12 +592,22 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
           [styles.subItemPending]: itemState === 'pending',
           [styles.subItemError]: itemState === 'error',
           [styles.subItemNoAnimate]: itemState === 'completed',
+          [styles.subItemWithCaution]: showMoveCaution,
         })}
       >
         <div className={styles.subItemIconContainer}>
           <SubItemIcon state={itemState} />
         </div>
-        <span className={styles.subItemLabel}>{itemLabel}</span>
+        {showMoveCaution ? (
+          <div className={styles.subItemLabelGroup}>
+            <span className={styles.subItemLabel}>{itemLabel}</span>
+            <span className={styles.subItemCaution}>
+              {intl.formatMessage(messages.progressMoveCaution)}
+            </span>
+          </div>
+        ) : (
+          <span className={styles.subItemLabel}>{itemLabel}</span>
+        )}
       </div>
     );
   };
@@ -588,8 +640,8 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
           state === 'active' &&
           (activeSubItemId === DOWNLOAD_PROGRESS_ANCHOR_ID ||
             ((activeSubItemId === stepId || activeSubItemId == null) &&
-              (typeof bytesDownloaded === 'number' ||
-                typeof snapshotSize === 'number' ||
+              (typeof filesDownloaded === 'number' ||
+                typeof filesTotal === 'number' ||
                 typeof ancillaryBytesDownloaded === 'number' ||
                 typeof ancillaryBytesTotal === 'number')));
         const {

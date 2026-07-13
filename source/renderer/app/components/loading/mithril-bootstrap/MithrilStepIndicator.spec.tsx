@@ -6,6 +6,7 @@ import type {
   MithrilBootstrapStatus,
   MithrilProgressItem,
 } from '../../../../../common/types/mithril-bootstrap.types';
+import type { MithrilPartialSyncStatus } from '../../../../../common/types/mithril-partial-sync.types';
 import translations from '../../../i18n/locales/en-US.json';
 import MithrilStepIndicator from './MithrilStepIndicator';
 
@@ -13,14 +14,16 @@ type TestProps = Partial<{
   ancillaryBytesDownloaded: number;
   ancillaryBytesTotal: number;
   ancillaryProgress: number;
-  bytesDownloaded: number;
+  filesDownloaded: number;
+  filesTotal: number;
   progressItems: MithrilProgressItem[];
-  snapshotSize: number;
+  snapshotSizeBytes: number;
+  variant: 'bootstrap' | 'partial-sync';
 }>;
 
 describe('MithrilStepIndicator', () => {
   const renderComponent = (
-    status: MithrilBootstrapStatus = 'finalizing',
+    status: MithrilBootstrapStatus | MithrilPartialSyncStatus = 'finalizing',
     props: TestProps = {}
   ) =>
     render(
@@ -34,7 +37,7 @@ describe('MithrilStepIndicator', () => {
     jest.useRealTimers();
   });
 
-  it('uses an open dot for active top-level steps while subitems keep their spinner', () => {
+  it('renders a rotating spinner for the active top-level step while subitems keep their spinner', () => {
     const progressItems: MithrilProgressItem[] = [
       { id: 'step-1', label: 'Step 1', state: 'pending' },
       { id: 'step-2', label: 'Step 2', state: 'pending' },
@@ -44,8 +47,9 @@ describe('MithrilStepIndicator', () => {
 
     renderComponent('downloading', {
       progressItems,
-      bytesDownloaded: 1200 * 1024 * 1024,
-      snapshotSize: 1900 * 1024 * 1024,
+      filesDownloaded: 1200 * 1024 * 1024,
+      filesTotal: 1900 * 1024 * 1024,
+      snapshotSizeBytes: 1900 * 1024 * 1024,
     });
 
     const downloadingStep = screen
@@ -56,9 +60,24 @@ describe('MithrilStepIndicator', () => {
     });
 
     expect(downloadingStep).not.toBeNull();
-    expect(downloadingStep?.querySelector('.activeCircle')).not.toBeNull();
-    expect(downloadingStep?.querySelector('.iconSpinner')).toBeNull();
+    // Under the svg-jest transform, react-svg-inline renders a bare <svg> without its wrapper className, so the active-step spinner is asserted via the .iconContainer svg, not the .iconSpinner token.
+    expect(downloadingStep?.querySelector('.activeCircle')).toBeNull();
+    expect(downloadingStep?.querySelector('.iconContainer svg')).not.toBeNull();
     expect(downloadingDetails.querySelector('svg')).not.toBeNull();
+  });
+
+  it('renders the preparing step as active during stopping-node (no greyed placeholders)', () => {
+    renderComponent('stopping-node', { progressItems: [] });
+
+    const preparingStep = screen
+      .getByText(/preparing$/i)
+      .closest('[role="listitem"]');
+
+    expect(preparingStep).toHaveClass('stepActive');
+    expect(preparingStep).not.toHaveClass('stepPending');
+    expect(preparingStep?.querySelector('.iconContainer svg')).not.toBeNull();
+    expect(preparingStep?.querySelector('.pendingCircle')).toBeNull();
+    expect(preparingStep?.querySelector('.activeCircle')).toBeNull();
   });
 
   it('renders the visible Mithril flow as preparing, downloading, and finalizing', () => {
@@ -91,9 +110,10 @@ describe('MithrilStepIndicator', () => {
       ancillaryBytesDownloaded: 24 * 1024 * 1024,
       ancillaryBytesTotal: 195 * 1024 * 1024,
       ancillaryProgress: 12,
-      bytesDownloaded: 1200 * 1024 * 1024,
+      filesDownloaded: 1200 * 1024 * 1024,
       progressItems,
-      snapshotSize: 1900 * 1024 * 1024,
+      filesTotal: 1900 * 1024 * 1024,
+      snapshotSizeBytes: 1900 * 1024 * 1024,
     });
 
     const downloadingDetails = screen.getByRole('list', {
@@ -103,7 +123,7 @@ describe('MithrilStepIndicator', () => {
       /downloading snapshot data/i
     );
     const combinedProgressLabel = within(downloadingDetails).getByText(
-      /snapshot files and fast sync/i
+      /snapshot files and ledger state/i
     );
     const verifyingDigests = within(downloadingDetails).getByText(
       /verifying snapshot digests/i
@@ -133,14 +153,15 @@ describe('MithrilStepIndicator', () => {
       ancillaryBytesDownloaded: 90,
       ancillaryBytesTotal: 100,
       ancillaryProgress: 90,
-      bytesDownloaded: 500,
+      filesDownloaded: 500,
       progressItems,
-      snapshotSize: 1000,
+      filesTotal: 1000,
+      snapshotSizeBytes: 1000,
     });
 
     expect(
       screen.getByRole('progressbar', {
-        name: /snapshot files and fast sync: 54%/i,
+        name: /snapshot files and ledger state: 54%/i,
       })
     ).toBeInTheDocument();
   });
@@ -154,16 +175,34 @@ describe('MithrilStepIndicator', () => {
     renderComponent('downloading', {
       ancillaryBytesDownloaded: 24 * 1024,
       ancillaryBytesTotal: 195 * 1024,
-      bytesDownloaded: 901,
+      filesDownloaded: 901,
       progressItems,
-      snapshotSize: 25400,
+      filesTotal: 25400,
     });
 
     expect(
       screen.getByText(
-        /snapshot files: 901 \/ 25,400 \| fast sync: 24\.0 kb \/ 195\.0 kb/i
+        /snapshot files: 901 \/ 25,400 files \| ledger state: 24\.0 kb \/ 195\.0 kb/i
       )
     ).toBeInTheDocument();
+  });
+
+  it('shows file counts and a static total-size context when a real snapshot size is available', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'preparing', label: 'Preparing', state: 'completed' },
+      { id: 'downloading', label: 'Downloading', state: 'active' },
+      { id: 'step-3', label: 'Step 3', state: 'active' },
+    ];
+
+    renderComponent('downloading', {
+      filesDownloaded: 142,
+      filesTotal: 980,
+      snapshotSizeBytes: 9_700_000_000,
+      progressItems,
+    });
+
+    expect(screen.getByText(/142 \/ 980 files/i)).toBeInTheDocument();
+    expect(screen.getByText(/≈ .* total/i)).toBeInTheDocument();
   });
 
   it('marks the combined progress as complete when fast sync completes before verification starts', () => {
@@ -178,14 +217,15 @@ describe('MithrilStepIndicator', () => {
       ancillaryBytesDownloaded: 100,
       ancillaryBytesTotal: 100,
       ancillaryProgress: 99,
-      bytesDownloaded: 500,
+      filesDownloaded: 500,
       progressItems,
-      snapshotSize: 1000,
+      filesTotal: 1000,
+      snapshotSizeBytes: 1000,
     });
 
     expect(
       screen.getByRole('progressbar', {
-        name: /snapshot files and fast sync: 100%/i,
+        name: /snapshot files and ledger state: 100%/i,
       })
     ).toBeInTheDocument();
   });
@@ -205,14 +245,15 @@ describe('MithrilStepIndicator', () => {
       ancillaryBytesDownloaded: 100,
       ancillaryBytesTotal: 100,
       ancillaryProgress: 100,
-      bytesDownloaded: 1000,
+      filesDownloaded: 1000,
       progressItems,
-      snapshotSize: 1000,
+      filesTotal: 1000,
+      snapshotSizeBytes: 1000,
     });
 
     expect(
       screen.getByRole('progressbar', {
-        name: /snapshot files and fast sync: 100%/i,
+        name: /snapshot files and ledger state: 100%/i,
       })
     ).toBeInTheDocument();
 
@@ -239,9 +280,10 @@ describe('MithrilStepIndicator', () => {
       ancillaryBytesDownloaded: 24 * 1024 * 1024,
       ancillaryBytesTotal: 195 * 1024 * 1024,
       ancillaryProgress: 12,
-      bytesDownloaded: 1200 * 1024 * 1024,
+      filesDownloaded: 1200 * 1024 * 1024,
       progressItems,
-      snapshotSize: 1900 * 1024 * 1024,
+      filesTotal: 1900 * 1024 * 1024,
+      snapshotSizeBytes: 1900 * 1024 * 1024,
     });
 
     const downloadingDetails = screen.getByRole('list', {
@@ -249,7 +291,7 @@ describe('MithrilStepIndicator', () => {
     });
 
     expect(
-      within(downloadingDetails).queryByText(/snapshot files and fast sync/i)
+      within(downloadingDetails).queryByText(/snapshot files and ledger state/i)
     ).not.toBeInTheDocument();
     expect(screen.queryAllByRole('progressbar')).toHaveLength(0);
   });
@@ -263,9 +305,10 @@ describe('MithrilStepIndicator', () => {
     renderComponent('downloading', {
       ancillaryBytesDownloaded: 24 * 1024 * 1024,
       ancillaryBytesTotal: 195 * 1024 * 1024,
-      bytesDownloaded: 1200 * 1024 * 1024,
+      filesDownloaded: 1200 * 1024 * 1024,
       progressItems,
-      snapshotSize: 1900 * 1024 * 1024,
+      filesTotal: 1900 * 1024 * 1024,
+      snapshotSizeBytes: 1900 * 1024 * 1024,
     });
 
     const downloadingDetails = screen.getByRole('list', {
@@ -273,7 +316,7 @@ describe('MithrilStepIndicator', () => {
     });
 
     expect(
-      within(downloadingDetails).getByText(/snapshot files and fast sync/i)
+      within(downloadingDetails).getByText(/snapshot files and ledger state/i)
     ).toBeInTheDocument();
     expect(screen.getAllByRole('progressbar')).toHaveLength(1);
     expect(
@@ -328,5 +371,104 @@ describe('MithrilStepIndicator', () => {
     expect(movingSnapshotItem).toHaveAttribute('aria-current', 'step');
     expect(movingSnapshotItem).toHaveClass('subItemActive');
     expect(movingSnapshotItem).not.toHaveClass('subItemCompleted');
+  });
+
+  it('attaches the data-integrity caution to the active moving step', () => {
+    renderComponent('finalizing', { progressItems: [] });
+
+    const movingSnapshot = screen.getByText(/moving snapshot to storage/i);
+    const movingSnapshotItem = movingSnapshot.closest('[role="listitem"]');
+    const caution = screen.getByText(
+      "To preserve data integrity, please don't close Daedalus until this step is complete."
+    );
+
+    expect(movingSnapshotItem).toContainElement(caution);
+  });
+
+  it('does not fabricate the bootstrap moving step during partial-sync finalizing', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'preparing', label: 'preparing', state: 'completed' },
+      { id: 'downloading', label: 'downloading', state: 'completed' },
+      { id: 'verifying', label: 'verifying', state: 'completed' },
+      { id: 'converting', label: 'converting', state: 'completed' },
+      { id: 'installing', label: 'installing', state: 'completed' },
+      { id: 'finalizing', label: 'finalizing', state: 'active' },
+    ];
+
+    renderComponent('finalizing', { variant: 'partial-sync', progressItems });
+
+    expect(
+      screen.queryByText(/moving snapshot to storage/i)
+    ).not.toBeInTheDocument();
+
+    const installing = screen.getByText(/installing snapshot/i);
+    const installingItem = installing.closest('[role="listitem"]');
+    expect(installingItem).toHaveClass('subItemCompleted');
+    expect(installingItem).not.toHaveClass('subItemActive');
+  });
+
+  it('drops the caution once the moving step is no longer active', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'install-snapshot', label: 'install-snapshot', state: 'completed' },
+      { id: 'cleanup', label: 'cleanup', state: 'active' },
+    ];
+
+    renderComponent('installing', { progressItems });
+
+    expect(screen.getByText(/moving snapshot to storage/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/please don't close Daedalus/i)
+    ).not.toBeInTheDocument();
+  });
+
+  it('attaches the data-integrity caution to the active installing stage item', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'verifying', label: 'verifying', state: 'completed' },
+      { id: 'converting', label: 'converting', state: 'completed' },
+      { id: 'installing', label: 'installing', state: 'active' },
+    ];
+
+    renderComponent('installing', { progressItems });
+
+    const installingItem = screen
+      .getByText(/installing snapshot/i)
+      .closest('[role="listitem"]');
+    const caution = screen.getByText(
+      "To preserve data integrity, please don't close Daedalus until this step is complete."
+    );
+
+    expect(installingItem).toContainElement(caution);
+  });
+
+  it('renders a localized label for the verifying stage item instead of its raw id', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'preparing', label: 'preparing', state: 'completed' },
+      { id: 'downloading', label: 'downloading', state: 'completed' },
+      { id: 'verifying', label: 'verifying', state: 'active' },
+    ];
+
+    renderComponent('verifying', { progressItems });
+
+    expect(screen.getByText('Verifying snapshot...')).toBeInTheDocument();
+    expect(screen.queryByText(/^verifying$/)).not.toBeInTheDocument();
+  });
+
+  it('renders localized labels for the converting and installing stage items', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'preparing', label: 'preparing', state: 'completed' },
+      { id: 'downloading', label: 'downloading', state: 'completed' },
+      { id: 'verifying', label: 'verifying', state: 'completed' },
+      { id: 'converting', label: 'converting', state: 'completed' },
+      { id: 'installing', label: 'installing', state: 'active' },
+    ];
+
+    renderComponent('installing', { progressItems });
+
+    expect(
+      screen.getByText('Converting snapshot format...')
+    ).toBeInTheDocument();
+    expect(screen.getByText('Installing snapshot...')).toBeInTheDocument();
+    expect(screen.queryByText(/^converting$/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^installing$/)).not.toBeInTheDocument();
   });
 });

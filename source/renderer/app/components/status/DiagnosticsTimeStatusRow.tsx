@@ -5,6 +5,7 @@ import SVGInline from 'react-svg-inline';
 
 import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
 import globalMessages from '../../i18n/global-messages';
+import { messages } from './DaedalusDiagnostics';
 import { formattedNumber } from '../../utils/formatters';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import styles from './DaedalusDiagnostics.scss';
@@ -47,10 +48,7 @@ export default class DiagnosticsTimeStatusRow extends Component<Props> {
     return (
       <div className={styles.layoutRow}>
         <div className={styles.layoutHeader}>
-          {intl.formatMessage({
-            id: 'daedalus.diagnostics.dialog.localTimeDifference',
-            defaultMessage: '!!!Local time difference',
-          })}
+          {intl.formatMessage(messages.localTimeDifference)}
           {intl.formatMessage(globalMessages.punctuationColon)}
         </div>
         <div className={localTimeDifferenceClasses}>
@@ -59,14 +57,8 @@ export default class DiagnosticsTimeStatusRow extends Component<Props> {
             disabled={isForceCheckingSystemTime || !isNodeResponding}
           >
             {isForceCheckingSystemTime
-              ? intl.formatMessage({
-                  id: 'daedalus.diagnostics.dialog.localTimeDifferenceChecking',
-                  defaultMessage: '!!!Checking...',
-                })
-              : intl.formatMessage({
-                  id: 'daedalus.diagnostics.dialog.localTimeDifferenceCheckTime',
-                  defaultMessage: '!!!Check time',
-                })}
+              ? intl.formatMessage(messages.localTimeDifferenceChecking)
+              : intl.formatMessage(messages.localTimeDifferenceCheckTime)}
           </button>
           {isCheckingSystemTime ? (
             <span className={localTimeDifferenceClasses}>
@@ -79,10 +71,7 @@ export default class DiagnosticsTimeStatusRow extends Component<Props> {
             <span className={localTimeDifferenceClasses}>
               {isNTPServiceReachable
                 ? `${formattedNumber(localTimeDifference || 0)} μs`
-                : intl.formatMessage({
-                    id: 'daedalus.diagnostics.dialog.serviceUnreachable',
-                    defaultMessage: '!!!Service unreachable',
-                  })}
+                : intl.formatMessage(messages.serviceUnreachable)}
             </span>
           )}
         </div>

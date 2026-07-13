@@ -1,43 +1,47 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 
+import Dialog from '../widgets/Dialog';
+import DialogBackButton from '../widgets/DialogBackButton';
+import mithrilSyncProcessSummaryMessages from './MithrilSyncProcessSummary.messages';
 import styles from './DaedalusDiagnostics.scss';
 
 const messages = defineMessages({
   title: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationTitle',
-    defaultMessage: '!!!Before Mithril partial sync begins',
+    defaultMessage: '!!!Before Mithril Sync begins',
     description: 'Title for the Mithril partial sync confirmation view',
   },
-  intro: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationIntro',
+  behind: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehind',
     defaultMessage:
-      '!!!Daedalus will stop Cardano node automatically, then download and restore verified Mithril data.',
+      '!!!Your node is about {epochs, plural, one {# epoch} other {# epochs}} behind. Mithril Sync will restore verified chain data to help your node sync faster.',
     description:
-      'Introductory copy for the Mithril partial sync confirmation view',
+      'Behind-ness context line (epochs behind the blockchain tip) for the Mithril partial sync confirmation modal',
   },
-  success: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationSuccess',
+  behindUnknown: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehindUnknown',
     defaultMessage:
-      '!!!If Mithril partial sync succeeds, Daedalus will restart Cardano node automatically and normal syncing will resume.',
-    description: 'Success copy for the Mithril partial sync confirmation view',
-  },
-  recovery: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationRecovery',
-    defaultMessage:
-      '!!!If the attempt fails, Daedalus can offer retry partial sync, restart normally on the current database, or wipe chain data and do a full Mithril sync.',
+      '!!!Your node is behind the latest verified snapshot. Mithril Sync will restore verified chain data to help your node sync faster.',
     description:
-      'Failure recovery copy for the Mithril partial sync confirmation view',
+      'Behind-ness context line shown when the epochs-behind figure is unavailable (tips/epoch missing)',
+  },
+  atOrPastSnapshot: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationAtOrPastSnapshot',
+    defaultMessage:
+      '!!!Your node is at or past the latest Mithril snapshot, so Blockchain Sync can finish the remaining blocks on its own. If sync seems slow or runs into verification issues, continuing will restore a verified ledger state at the snapshot position.',
+    description:
+      'Context line for the Mithril partial sync confirmation modal when the node is at or past the latest certified snapshot',
   },
   cancel: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationCancel',
-    defaultMessage: '!!!Back to diagnostics',
+    defaultMessage: '!!!Back to Daedalus Diagnostics',
     description:
       'Cancel button label for the Mithril partial sync confirmation view',
   },
   confirm: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationConfirm',
-    defaultMessage: '!!!Start Mithril partial sync',
+    defaultMessage: '!!!Start Mithril Sync',
     description:
       'Confirm button label for the Mithril partial sync confirmation view',
   },
@@ -46,6 +50,8 @@ const messages = defineMessages({
 type Props = {
   isActionBlocked: boolean;
   startError: string | null;
+  isAtOrPastSnapshot?: boolean;
+  behindByEpochs?: number;
   onCancel: () => void;
   onConfirm: () => void;
 };
@@ -56,41 +62,71 @@ export default class MithrilPartialSyncConfirmation extends Component<Props> {
   };
 
   render() {
-    const { isActionBlocked, startError, onCancel, onConfirm } = this.props;
+    const {
+      isActionBlocked,
+      startError,
+      isAtOrPastSnapshot,
+      behindByEpochs,
+      onCancel,
+      onConfirm,
+    } = this.props;
     const { intl } = this.context;
 
+    const hasBehindFigure =
+      typeof behindByEpochs === 'number' && Number.isFinite(behindByEpochs);
+
+    // The at/past-snapshot signal wins regardless of any epochs figure: a
+    // node at or past the snapshot must never read "behind".
+    let contextMessage = messages.behindUnknown;
+    if (isAtOrPastSnapshot) {
+      contextMessage = messages.atOrPastSnapshot;
+    } else if (hasBehindFigure) {
+      contextMessage = messages.behind;
+    }
+
     return (
-      <div className={styles.mithrilPartialSyncConfirmation}>
-        <h1 className={styles.mithrilPartialSyncConfirmationTitle}>
-          {intl.formatMessage(messages.title)}
-        </h1>
-
+      <Dialog
+        className={styles.mithrilPartialSyncConfirmationDialog}
+        title={intl.formatMessage(messages.title)}
+        closeOnOverlayClick
+        primaryButtonAutoFocus
+        backButton={<DialogBackButton onBack={onCancel} />}
+        onClose={onCancel}
+        actions={[
+          {
+            label: intl.formatMessage(messages.cancel),
+            onClick: onCancel,
+            className: styles.mithrilPartialSyncConfirmationSecondaryButton,
+          },
+          {
+            label: intl.formatMessage(messages.confirm),
+            primary: true,
+            disabled: isActionBlocked,
+            onClick: onConfirm,
+            className: styles.mithrilPartialSyncConfirmationPrimaryButton,
+          },
+        ]}
+      >
         <div className={styles.mithrilPartialSyncConfirmationBody}>
-          <p>{intl.formatMessage(messages.intro)}</p>
-          <p>{intl.formatMessage(messages.success)}</p>
-          <p>{intl.formatMessage(messages.recovery)}</p>
-        </div>
+          <p className={styles.mithrilPartialSyncConfirmationBehind}>
+            {intl.formatMessage(contextMessage, {
+              epochs: behindByEpochs,
+            })}
+          </p>
 
-        {startError ? <div className={styles.error}>{startError}</div> : null}
+          <p className={styles.mithrilPartialSyncConfirmationRecovery}>
+            {intl.formatMessage(
+              mithrilSyncProcessSummaryMessages.processSummary
+            )}
+          </p>
 
-        <div className={styles.mithrilPartialSyncConfirmationActions}>
-          <button
-            className={styles.mithrilPartialSyncConfirmationCancelButton}
-            onClick={onCancel}
-            type="button"
-          >
-            {intl.formatMessage(messages.cancel)}
-          </button>
-          <button
-            className={styles.mithrilPartialSyncConfirmationCancelButton}
-            disabled={isActionBlocked}
-            onClick={onConfirm}
-            type="button"
-          >
-            {intl.formatMessage(messages.confirm)}
-          </button>
+          {startError ? (
+            <div className={styles.mithrilPartialSyncConfirmationError}>
+              {startError}
+            </div>
+          ) : null}
         </div>
-      </div>
+      </Dialog>
     );
   }
 }

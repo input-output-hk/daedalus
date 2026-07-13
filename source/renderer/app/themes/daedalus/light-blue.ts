@@ -374,9 +374,9 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-loading-spinner-medium-color': '#fafbfc',
   },
   mithrilBootstrap: {
-    '--theme-mithril-overlay-backdrop-start': 'rgba(14, 48, 87, 0.92)',
-    '--theme-mithril-overlay-backdrop-end': 'rgba(24, 58, 97, 0.92)',
-    '--theme-mithril-card-background': 'rgba(20, 54, 93, 0.96)',
+    '--theme-mithril-overlay-backdrop-start': 'rgba(14, 48, 87, 1)',
+    '--theme-mithril-overlay-backdrop-end': 'rgba(24, 58, 97, 1)',
+    '--theme-mithril-card-background': 'rgba(20, 54, 93, 1)',
     '--theme-mithril-card-shadow': 'rgba(0, 0, 0, 0.35)',
     '--theme-mithril-card-text-color': 'rgba(233, 237, 242, 0.92)',
     '--theme-mithril-heading-color': 'rgba(255, 255, 255, 0.98)',

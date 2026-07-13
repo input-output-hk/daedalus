@@ -23,8 +23,15 @@
 }
 
 .errorHint {
-  color: var(--theme-mithril-secondary-text-color);
+  color: var(--theme-mithril-body-text-color);
   font-size: 13px;
+  margin-top: 8px;
+}
+
+.hintBody {
+  color: var(--theme-mithril-body-text-color);
+  font-size: 15px;
+  line-height: 1.5;
   margin-top: 8px;
 }
 
@@ -67,8 +74,29 @@
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   justify-content: flex-start;
+}
+
+.actionsRightAligned {
+  justify-content: flex-end;
+}
+
+// Long labels must wrap and grow the button instead of spilling past the fixed
+// theme geometry. Only the --rp-* custom properties override the theme values
+// reliably; class-level height/width vs the skin's .root is injection-order dependent.
+.primaryAction,
+.secondaryAction {
+  --rp-button-height: auto;
+  --rp-button-line-height: 1.3;
+  --rp-button-width: auto;
+  height: auto;
+  max-width: 100%;
+  min-height: 50px;
+  min-width: 180px;
+  white-space: normal;
+  width: auto;
 }
 
 .primaryAction {

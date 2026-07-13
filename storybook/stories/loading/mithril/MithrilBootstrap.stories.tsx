@@ -17,10 +17,10 @@ import {
   defaultChainStorageValidation,
   errorStageOptions,
   explicitSnapshot,
+  getBootstrapProgressItems,
   getErrorPreset,
-  getProgressItemsPreset,
   latestSnapshot,
-  progressPresetOptions,
+  snapshotFilesTotal,
   snapshotSize,
   snapshots,
   validationPresetOptions,
@@ -31,6 +31,8 @@ const statusOptions: Record<string, MithrilBootstrapStatus> = {
   Preparing: 'preparing',
   Downloading: 'downloading',
   Verifying: 'verifying',
+  Converting: 'converting',
+  Unpacking: 'unpacking',
   Finalizing: 'finalizing',
   'Starting Node': 'starting-node',
   Failed: 'failed',
@@ -60,11 +62,6 @@ storiesOf('Loading / Mithril / Bootstrap', module)
       'chainStorageValidationPreset',
       validationPresetOptions,
       'valid-custom'
-    );
-    const progressPreset = loadingSelectKnob(
-      'progressPreset',
-      progressPresetOptions,
-      'download-mid'
     );
     const errorStage = loadingSelectKnob(
       'errorStage',
@@ -113,16 +110,17 @@ storiesOf('Loading / Mithril / Bootstrap', module)
           'isChainStorageLoading',
           false
         )}
-        bytesDownloaded={Math.round(
-          snapshotSize * (snapshotDownloadPercent / 100)
+        filesDownloaded={Math.round(
+          snapshotFilesTotal * (snapshotDownloadPercent / 100)
         )}
-        snapshotSize={snapshotSize}
+        filesTotal={snapshotFilesTotal}
+        snapshotSizeBytes={snapshotSize}
         ancillaryBytesDownloaded={Math.round(
           ancillaryBytesTotal * (ancillaryPercent / 100)
         )}
         ancillaryBytesTotal={ancillaryBytesTotal}
         ancillaryProgress={ancillaryPercent}
-        progressItems={getProgressItemsPreset(progressPreset)}
+        progressItems={getBootstrapProgressItems(status)}
         bootstrapStartedAt={createBootstrapStartedAt(elapsedMinutes)}
         error={getErrorPreset(errorStage)}
       />

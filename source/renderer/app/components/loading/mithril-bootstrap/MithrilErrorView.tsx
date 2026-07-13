@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -20,13 +21,16 @@ interface Props {
   onOpenExternalLink?: (arg: string) => void;
   title?: string;
   hint?: string | null;
+  hintAsBody?: boolean;
   actions?: Array<{
     label: string;
     onClick(): void;
     variant?: 'primary' | 'secondary';
   }>;
-  onWipeRetry(): void;
-  onDecline(): void;
+  // Opt-in right-alignment of the actions footer; default keeps it left-aligned in caller order.
+  rightAlignActions?: boolean;
+  onWipeRetry?(): void;
+  onDecline?(): void;
 }
 
 interface Context {
@@ -83,7 +87,9 @@ function MithrilErrorView(props: Props, { intl }: Context) {
     onDecline,
     title,
     hint,
+    hintAsBody,
     actions,
+    rightAlignActions,
   } = props;
   const copy =
     (error?.stage && ERROR_COPY_BY_STAGE[error.stage]) ||
@@ -92,7 +98,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   if (resolvedHint === undefined) {
     resolvedHint = copy.hint ? intl.formatMessage(messages[copy.hint]) : null;
   }
-  const detailsHeader = error?.message || error?.code || '';
+  const hasTechnicalDetails = Boolean(error?.message || error?.code);
   const logPath = error?.logPath;
   const resolvedActions = actions || [
     {
@@ -106,6 +112,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
       variant: 'secondary' as const,
     },
   ];
+  // Actions render verbatim in caller order; any reordering is the caller's responsibility.
 
   return (
     <div className={styles.root} role="alert">
@@ -113,8 +120,12 @@ function MithrilErrorView(props: Props, { intl }: Context) {
         <h1 id={MITHRIL_ERROR_HEADING_ID}>
           {title || intl.formatMessage(messages[copy.title])}
         </h1>
-        {error?.message && <p>{error.message}</p>}
-        {resolvedHint && <div className={styles.errorHint}>{resolvedHint}</div>}
+        {resolvedHint &&
+          (hintAsBody ? (
+            <p className={styles.hintBody}>{resolvedHint}</p>
+          ) : (
+            <div className={styles.errorHint}>{resolvedHint}</div>
+          ))}
         {logPath && onOpenExternalLink && (
           <Link
             className={styles.logPathLink}
@@ -125,10 +136,10 @@ function MithrilErrorView(props: Props, { intl }: Context) {
         )}
       </div>
 
-      {detailsHeader && (
+      {hasTechnicalDetails && (
         <div className={styles.detailsSection}>
           <CollapsibleSection
-            header={detailsHeader}
+            header={intl.formatMessage(messages.errorDetailsHeader)}
             headerFontStyle="light"
             expandButtonStyle="link"
           >
@@ -152,7 +163,12 @@ function MithrilErrorView(props: Props, { intl }: Context) {
         </div>
       )}
 
-      <div className={styles.actions}>
+      <div
+        className={classNames([
+          styles.actions,
+          rightAlignActions && styles.actionsRightAligned,
+        ])}
+      >
         {resolvedActions.map((action, index) => (
           <Button
             key={`${action.label}-${index}`}

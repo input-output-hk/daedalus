@@ -589,14 +589,14 @@ export const createDaedalusComponentsTheme = (
         background.secondary.regular
       )
         .darken(0.5)
-        .alpha(0.92)}`,
+        .alpha(1)}`,
       '--theme-mithril-overlay-backdrop-end': `${chroma(
         background.secondary.regular
-      ).alpha(0.92)}`,
+      ).alpha(1)}`,
       // Card container
       '--theme-mithril-card-background': `${chroma(background.secondary.regular)
         .darken(0.3)
-        .alpha(0.96)}`,
+        .alpha(1)}`,
       '--theme-mithril-card-shadow': 'rgba(0, 0, 0, 0.35)',
       '--theme-mithril-card-text-color': `${chroma(text.secondary).alpha(
         0.92

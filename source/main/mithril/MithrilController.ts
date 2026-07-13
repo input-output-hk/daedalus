@@ -5,8 +5,15 @@ import type {
   MithrilSnapshotItem,
 } from '../../common/types/mithril-bootstrap.types';
 import { isMithrilBootstrapBlockingNodeStart } from '../../common/types/mithril-bootstrap.types';
-import type { MithrilPartialSyncStatusSnapshot } from '../../common/types/mithril-partial-sync.types';
-import { isMithrilPartialSyncBlockingNodeStart } from '../../common/types/mithril-partial-sync.types';
+import type {
+  MithrilPartialSyncAvailability,
+  MithrilPartialSyncStatusSnapshot,
+} from '../../common/types/mithril-partial-sync.types';
+import {
+  isMithrilPartialSyncBlockingNodeStart,
+  isMithrilPartialSyncWorkingStatus,
+  makeIdlePartialSyncStatus,
+} from '../../common/types/mithril-partial-sync.types';
 import type { PartialSyncPreflightContext } from '../utils/chainStorageCoordinator';
 import {
   chainStorageCoordinator,
@@ -18,18 +25,17 @@ import {
   MithrilStartupGate,
   MithrilStartupGateDependencies,
   MithrilStartupGateResult,
-  MithrilStartupGateState,
 } from './MithrilStartupGate';
-import {
-  isMithrilDecisionCancelledError,
-  MithrilDecisionCancelledError,
-} from './mithrilDecision';
+import { MithrilDecisionCancelledError } from './mithrilDecision';
 
 type StatusSender<T> = (status: T) => Promise<void>;
 
 type PartialSyncHandlers = {
   start(context: PartialSyncPreflightContext): Promise<void>;
   cancel(): Promise<void>;
+  finalizeCancel(): Promise<void>;
+  forceKill(): void | Promise<void>;
+  abandonCancel(): Promise<void>;
   assertStartAllowed(): void;
   restartNormal(): Promise<void>;
   wipeAndFullSync(): Promise<void>;
@@ -42,30 +48,13 @@ const DEFAULT_BOOTSTRAP_STATUS: MithrilBootstrapStatusUpdate = {
   error: null,
 };
 
-const DEFAULT_PARTIAL_SYNC_STATUS: MithrilPartialSyncStatusSnapshot = {
-  status: 'idle',
-  allowedRecoveryActions: [],
-  transferProgress: {},
-  progressItems: [],
-  error: null,
-};
-
-export { isMithrilDecisionCancelledError, MithrilDecisionCancelledError };
-
 export class MithrilController {
   _isInitialized = false;
   _bootstrapStatus: MithrilBootstrapStatusUpdate = {
     ...DEFAULT_BOOTSTRAP_STATUS,
   };
-  _partialSyncStatus: MithrilPartialSyncStatusSnapshot = {
-    ...DEFAULT_PARTIAL_SYNC_STATUS,
-  };
-  _bootstrapStatusListeners: Array<
-    (status: MithrilBootstrapStatusUpdate) => void
-  > = [];
-  _partialSyncStatusListeners: Array<
-    (status: MithrilPartialSyncStatusSnapshot) => void
-  > = [];
+  _partialSyncStatus: MithrilPartialSyncStatusSnapshot =
+    makeIdlePartialSyncStatus();
   _decisionListeners: Array<(decision: MithrilBootstrapDecision) => void> = [];
   _decisionWaiters: Array<{
     resolve: (decision: MithrilBootstrapDecision) => void;
@@ -149,16 +138,29 @@ export class MithrilController {
     this._startupGate.configure(dependencies);
   }
 
-  getStartupGateState(): MithrilStartupGateState {
-    return this._startupGate.state;
-  }
-
   getBootstrapStatus(): MithrilBootstrapStatusUpdate {
     return this._bootstrapStatus;
   }
 
   getPartialSyncStatus(): MithrilPartialSyncStatusSnapshot {
     return this._partialSyncStatus;
+  }
+
+  async getPartialSyncAvailability(): Promise<MithrilPartialSyncAvailability> {
+    const isEnabled = chainStorageCoordinator.isPartialSyncEnabled();
+    if (!isEnabled) {
+      return { isEnabled: false, isSignificantlyBehind: false };
+    }
+    // Skip the behind-ness probe while a sync is working or terminal-'cancelled': it would spawn a
+    //  concurrent mithril-client metadata child mid-run. Degrading to not-behind is safe — the prompt is
+    //  session-suppressed once a sync starts, and the probe degrades to not-behind on any failure anyway.
+    const { status } = this._partialSyncStatus;
+    if (isMithrilPartialSyncWorkingStatus(status) || status === 'cancelled') {
+      return { isEnabled, isSignificantlyBehind: false };
+    }
+    const behindness =
+      await this._partialSyncService.getPartialSyncBehindness();
+    return { isEnabled, ...behindness };
   }
 
   getPendingBootstrapDecision(): MithrilBootstrapDecision | null {
@@ -186,27 +188,27 @@ export class MithrilController {
     );
   }
 
-  onBootstrapStatus(
-    handler: (status: MithrilBootstrapStatusUpdate) => void
-  ): () => void {
-    this._bootstrapStatusListeners.push(handler);
-    return () => {
-      this._bootstrapStatusListeners = this._bootstrapStatusListeners.filter(
-        (listener) => listener !== handler
+  // Best-effort shutdown reap, called once from safeExit(): cancel()/forceKill() don't run on a plain
+  //  quit, so this is all that stops a quit-mid-download orphaning a detached mithril-client. The
+  //  isPartialSyncActive() guard is broader than needed but harmless. Fully try/caught so it can't block shutdown.
+  reapPartialSyncOnShutdown(): void {
+    try {
+      if (!this.isPartialSyncActive()) return;
+      logger.info(
+        'MithrilController: reaping active partial sync process on shutdown',
+        {
+          status: this._partialSyncStatus.status,
+        }
       );
-    };
-  }
-
-  onPartialSyncStatus(
-    handler: (status: MithrilPartialSyncStatusSnapshot) => void
-  ): () => void {
-    this._partialSyncStatusListeners.push(handler);
-    return () => {
-      this._partialSyncStatusListeners =
-        this._partialSyncStatusListeners.filter(
-          (listener) => listener !== handler
-        );
-    };
+      this._partialSyncService.forceKillForShutdown();
+    } catch (error) {
+      logger.warn(
+        'MithrilController: failed to reap partial sync process on shutdown',
+        {
+          error,
+        }
+      );
+    }
   }
 
   onBootstrapDecision(
@@ -225,7 +227,6 @@ export class MithrilController {
   ): Promise<void> {
     this._bootstrapStatus = status;
     this._startupGate.onBootstrapStatus(status);
-    this._bootstrapStatusListeners.forEach((listener) => listener(status));
 
     if (!this._bootstrapStatusSender) return;
 
@@ -241,9 +242,18 @@ export class MithrilController {
   async broadcastPartialSyncStatus(
     status: MithrilPartialSyncStatusSnapshot
   ): Promise<void> {
+    const previousStatus = this._partialSyncStatus.status;
     this._partialSyncStatus = status;
     this._startupGate.onPartialSyncStatus(status);
-    this._partialSyncStatusListeners.forEach((listener) => listener(status));
+
+    if (status.status === 'finalizing' && previousStatus !== 'finalizing') {
+      this._restartStartupFlowAfterPartialSync?.().catch((error) => {
+        logger.warn(
+          'MithrilController: failed to restart startup flow after partial sync install',
+          { error }
+        );
+      });
+    }
 
     if (!this._partialSyncStatusSender) return;
 
@@ -361,6 +371,9 @@ export class MithrilController {
   }
 
   resetStartupGateOnDirectoryChange(): void {
+    // The behind-ness caches describe the previous chain directory; drop them
+    // together with the startup-gate reset so the next probe re-reads.
+    this._partialSyncService.onChainDirectoryChanged();
     this._startupGate.resetOnDirectoryChange();
   }
 
@@ -413,23 +426,47 @@ export class MithrilController {
     );
   }
 
+  async finalizePartialSync(): Promise<void> {
+    // Dismiss-driven success finalize. No node orchestration → direct to the service,
+    // bypassing the coordinator. Idempotent / terminal-state only.
+    await this._partialSyncService.finalizeCompletedPartialSync();
+  }
+
   _getPartialSyncDependencies(): {
     handlers: PartialSyncHandlers;
     nodeStopHandler?: () => Promise<void>;
     startupHandler?: () => Promise<void>;
+    getNodeState?: () => CardanoNodeState | null | undefined;
   } {
     return {
       handlers: {
         assertStartAllowed: () => this._partialSyncService.assertStartAllowed(),
         start: async (context) => this._partialSyncService.start(context),
         cancel: async () => this._partialSyncService.cancel(),
-        restartNormal: async () => this._partialSyncService.restartNormal(),
-        wipeAndFullSync: async () => this._partialSyncService.wipeAndFullSync(),
+        finalizeCancel: async () => this._partialSyncService.finalizeCancel(),
+        forceKill: () => this._partialSyncService.forceKill(),
+        abandonCancel: async () => this._partialSyncService.abandonCancel(),
+        // Recovery actions may target a boundary reached in a previous session
+        // (startup-owned emission); seed the service with the broadcast snapshot
+        // before delegating so its allowed-action assertion sees that boundary.
+        restartNormal: async () => {
+          this._partialSyncService.adoptRecoverySnapshot(
+            this.getPartialSyncStatus()
+          );
+          await this._partialSyncService.restartNormal();
+        },
+        wipeAndFullSync: async () => {
+          this._partialSyncService.adoptRecoverySnapshot(
+            this.getPartialSyncStatus()
+          );
+          await this._partialSyncService.wipeAndFullSync();
+        },
         finalizeWipeAndFullSync: async () =>
           this._partialSyncService.finalizeWipeAndFullSync(),
       },
       nodeStopHandler: this._stopNodeForPartialSync,
       startupHandler: this._restartStartupFlowAfterPartialSync,
+      getNodeState: () => this.getNodeState(),
     };
   }
 }

@@ -165,7 +165,7 @@ describe('MithrilBootstrap', () => {
       screen.getByRole('button', { name: /use mithril fast sync/i })
     ).toBeDisabled();
     expect(
-      screen.getByRole('button', { name: /sync from genesis/i })
+      screen.getByRole('button', { name: /blockchain sync from genesis/i })
     ).toBeDisabled();
     expect(screen.getByText('/mnt/current-chain/chain')).toBeInTheDocument();
     expect(screen.queryByText(/change location/i)).not.toBeInTheDocument();
@@ -231,6 +231,41 @@ describe('MithrilBootstrap', () => {
       screen.getByRole('heading', { name: /mithril bootstrap failed/i })
     ).toHaveAttribute('id', MITHRIL_ERROR_HEADING_ID);
     expect(dialog).toHaveAttribute('aria-labelledby', MITHRIL_ERROR_HEADING_ID);
+  });
+
+  it('restores the empty-chain bootstrap error default: wipe primary first, left-aligned', () => {
+    renderComponent({ status: 'failed' });
+
+    // With no actions prop, MithrilErrorView renders its default order: destructive primary "Wipe chain & retry" first (left), "Blockchain Sync from Genesis" second.
+    const actionLabels = screen
+      .getAllByRole('button')
+      .map((button) => button.textContent);
+    expect(actionLabels).toEqual([
+      'Wipe chain & retry',
+      'Blockchain Sync from Genesis',
+    ]);
+
+    // Left-aligned default: the actions footer must NOT opt into right-alignment
+    // (that opt-in is owned by the partial-sync overlay caller only).
+    const footer = screen
+      .getByRole('button', { name: /wipe chain & retry/i })
+      .closest('div');
+    expect(footer).toHaveClass('actions');
+    expect(footer).not.toHaveClass('actionsRightAligned');
+  });
+
+  it('renders the decision view with decline before accept in the DOM', () => {
+    renderComponent();
+
+    // decline (secondary) renders BEFORE accept (primary); the
+    // .actions flex-end then puts the primary on the right, matching the error view.
+    const actionLabels = screen
+      .getAllByRole('button')
+      .map((button) => button.textContent);
+    expect(actionLabels).toEqual([
+      'Blockchain Sync from Genesis',
+      'Use Mithril fast sync',
+    ]);
   });
 
   it('renders progress view when status is verifying', () => {

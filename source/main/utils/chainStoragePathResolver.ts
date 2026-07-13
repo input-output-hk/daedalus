@@ -108,18 +108,9 @@ export async function resolveStateDirectoryPath(
 }
 
 /**
- * Resolves the actual chain storage path, preferring the symlink target if
- * present, falling back to the custom-path in config, then stateDir.
- */
-export async function resolveChainStoragePath(
-  stateDir: string
-): Promise<string> {
-  return resolveManagedChainPathFromEntryPoint(stateDir);
-}
-
-/**
- * Resolves the working directory that Mithril should use. Returns the
- * resolved custom path when configured, otherwise the state directory.
+ * Resolves the directory Mithril work products live in: the managed chain
+ * directory the chain entry point currently targets — the resolved custom
+ * target when a symlink/junction is configured, otherwise `<stateDir>/chain`.
  */
 export async function resolveMithrilWorkDir(stateDir: string): Promise<string> {
   return resolveManagedChainPathFromEntryPoint(stateDir);

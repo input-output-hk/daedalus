@@ -1,19 +1,32 @@
 import React, { Component } from 'react';
-import { intlShape } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 
 import globalMessages from '../../i18n/global-messages';
 import { logger } from '../../utils/logging';
+import { getMithrilStartErrorMessage } from '../../utils/mithrilErrorMessage';
 import MithrilPartialSyncConfirmation from './MithrilPartialSyncConfirmation';
 import MithrilPartialSyncRecommendation from './MithrilPartialSyncRecommendation';
+import type { MithrilAvailabilityVariant } from './MithrilPartialSyncRecommendation';
 import styles from './DaedalusDiagnostics.scss';
 
+const messages = defineMessages({
+  sectionLabel: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncSectionLabel',
+    defaultMessage: '!!!Mithril Sync',
+    description:
+      'Row label for the Mithril partial sync section in the diagnostics dialog',
+  },
+});
+
 type Props = {
-  formattedSyncPercentage: string;
   isActionBlocked: boolean;
-  isMithrilPartialSyncActive: boolean;
-  isSynced: boolean;
+  isMithrilPartialSyncWorking: boolean;
+  isSignificantlyBehind: boolean;
+  isProbeFailed: boolean;
+  isAtOrPastSnapshot: boolean;
+  behindByEpochs?: number;
   onRestoreFocus: () => void;
-  onStartMithrilPartialSync: (...args: Array<any>) => any;
+  onStartMithrilPartialSync: () => Promise<void>;
 };
 
 type State = {
@@ -43,8 +56,8 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
   componentDidUpdate(prevProps: Props) {
     if (
       this.state.isShowingConfirmation &&
-      !prevProps.isMithrilPartialSyncActive &&
-      this.props.isMithrilPartialSyncActive
+      !prevProps.isMithrilPartialSyncWorking &&
+      this.props.isMithrilPartialSyncWorking
     ) {
       this.hideConfirmation();
     }
@@ -88,17 +101,19 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
       }
 
       this.setState({
-        startError:
-          error instanceof Error
-            ? error.message
-            : 'Unable to start Mithril partial sync.',
+        startError: getMithrilStartErrorMessage(error, this.context.intl),
       });
       this.props.onRestoreFocus();
     }
   };
 
   render() {
-    const { formattedSyncPercentage, isActionBlocked, isSynced } = this.props;
+    const {
+      isActionBlocked,
+      isSignificantlyBehind,
+      isProbeFailed,
+      isAtOrPastSnapshot,
+    } = this.props;
     const { isShowingConfirmation, startError } = this.state;
     const { intl } = this.context;
 
@@ -107,22 +122,36 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
         <MithrilPartialSyncConfirmation
           isActionBlocked={isActionBlocked}
           startError={startError}
+          isAtOrPastSnapshot={isAtOrPastSnapshot}
+          behindByEpochs={this.props.behindByEpochs}
           onCancel={this.hideConfirmation}
           onConfirm={this.startFromConfirmation}
         />
       );
     }
 
+    // The section stays visible in every probe state; only the tooltip copy
+    // adapts. A confident behind result outranks the failure hint, a failed
+    // probe outranks both reassurances, and the at/past-snapshot fact
+    // outranks the generic near-tip copy.
+    let availabilityVariant: MithrilAvailabilityVariant = 'near-tip';
+    if (isSignificantlyBehind) {
+      availabilityVariant = 'behind';
+    } else if (isProbeFailed) {
+      availabilityVariant = 'availability-unknown';
+    } else if (isAtOrPastSnapshot) {
+      availabilityVariant = 'at-or-past-snapshot';
+    }
+
     return (
       <div className={styles.layoutRow}>
         <div className={styles.layoutHeader}>
-          Mithril Partial Sync
+          {intl.formatMessage(messages.sectionLabel)}
           {intl.formatMessage(globalMessages.punctuationColon)}
         </div>
         <MithrilPartialSyncRecommendation
-          formattedSyncPercentage={formattedSyncPercentage}
           isActionBlocked={isActionBlocked}
-          isSynced={isSynced}
+          variant={availabilityVariant}
           onShowConfirmation={this.showConfirmation}
         />
       </div>

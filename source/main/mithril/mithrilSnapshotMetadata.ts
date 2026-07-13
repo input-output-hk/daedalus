@@ -3,6 +3,9 @@ import type { MithrilSnapshotItem } from '../../common/types/mithril-bootstrap.t
 export type ResolvedLatestSnapshot = {
   snapshot: MithrilSnapshotItem;
   latestCertifiedImmutableNumber: number;
+  // Optional certified-beacon epoch; null when the beacon carries no epoch. The immutable number is
+  //  the sole resolution signal, so this is never gated on.
+  certifiedEpoch: number | null;
 };
 
 export const normalizeSnapshotItem = (
@@ -27,6 +30,15 @@ export const normalizeSnapshotItem = (
     cardanoNodeVersion,
     network,
   };
+};
+
+// Aggregator metadata may omit the size (normalized to 0) or carry a
+// non-numeric value (Number() yields NaN); neither is a usable size.
+export const hasKnownSnapshotSize = (
+  snapshot: MithrilSnapshotItem | null | undefined
+): boolean => {
+  const size = snapshot?.size;
+  return typeof size === 'number' && Number.isFinite(size) && size > 0;
 };
 
 export const isNonEmptyString = (value: unknown): value is string =>
@@ -75,6 +87,26 @@ export const extractLatestCertifiedImmutableNumber = (
     ['immutableFileNumber'],
     ['last_immutable_file_number'],
     ['lastImmutableFileNumber'],
+  ];
+
+  for (const keyPath of explicitPaths) {
+    const parsedNumber = toPositiveInteger(getNestedValue(raw, keyPath));
+    if (parsedNumber != null) {
+      return parsedNumber;
+    }
+  }
+
+  return null;
+};
+
+// Extract the certified-beacon epoch, mirroring extractLatestCertifiedImmutableNumber. 'beacon.epoch'
+//  is the upstream key (CardanoDbBeacon, snake_case); 'cardano_db_beacon.epoch' matches the listing shape.
+export const extractCertifiedEpoch = (
+  raw: Record<string, unknown>
+): number | null => {
+  const explicitPaths = [
+    ['beacon', 'epoch'],
+    ['cardano_db_beacon', 'epoch'],
   ];
 
   for (const keyPath of explicitPaths) {
@@ -139,8 +171,12 @@ export const normalizeResolvedLatestSnapshot = (
     return null;
   }
 
+  // Best-effort epoch; a present immutable number with a null epoch must still resolve.
+  const certifiedEpoch = extractCertifiedEpoch(raw as Record<string, unknown>);
+
   return {
     snapshot: normalizedSnapshot,
     latestCertifiedImmutableNumber,
+    certifiedEpoch,
   };
 };

@@ -79,6 +79,23 @@ describe('ChainStorageLocationPicker', () => {
     ).toBeInTheDocument();
   });
 
+  it('joins the chain subdirectory with a backslash for a Windows parent path', () => {
+    renderComponent({
+      customChainPath: 'D:\\Cardano\\wallet',
+      chainStorageValidation: {
+        isValid: true,
+        path: 'D:\\Cardano\\wallet',
+        resolvedPath: 'D:\\Cardano\\wallet',
+        availableSpaceBytes: 4000,
+        requiredSpaceBytes: 1024,
+      },
+    });
+
+    expect(
+      screen.getByLabelText(/blockchain data location/i)
+    ).toHaveDisplayValue('D:\\Cardano\\wallet\\chain');
+  });
+
   it('shows a large-space warning when no estimate is available', () => {
     renderComponent({
       estimatedRequiredSpaceBytes: undefined,
@@ -509,7 +526,6 @@ describe('ChainStorageLocationPicker', () => {
       );
     });
 
-    // Should display the raw rejected path, NOT /mnt/bad-chain/chain/db/chain
     expect(
       screen.getByDisplayValue('/mnt/bad-chain/chain/db')
     ).toBeInTheDocument();

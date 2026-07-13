@@ -1,0 +1,129 @@
+.component {
+  background-color: var(--theme-mithril-card-background);
+  border: 1px solid var(--theme-mithril-panel-border-color);
+  border-radius: 6px;
+  box-shadow: 0 12px 42px var(--theme-mithril-card-shadow);
+  box-sizing: border-box;
+  left: 50%;
+  margin: 24px auto 0;
+  max-width: 520px;
+  padding: 20px 24px;
+  position: fixed;
+  top: 84px;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.title {
+  color: var(--theme-mithril-heading-color);
+  font-family: var(--font-medium);
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.body {
+  color: var(--theme-mithril-body-text-color);
+  font-family: var(--font-regular);
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+  text-align: left;
+}
+
+.handoffNote {
+  color: var(--theme-mithril-secondary-text-color);
+  font-family: var(--font-regular);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 12px 0 0;
+  text-align: left;
+}
+
+.noteLabel {
+  font-family: var(--font-medium);
+}
+
+.confirmBody {
+  color: var(--theme-mithril-body-text-color);
+  font-family: var(--font-regular);
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+  text-align: left;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+// Long labels must wrap and grow the button instead of spilling past the fixed
+// theme geometry. Only the --rp-* custom properties override the theme values
+// reliably; class-level height/width vs the skin's .root is injection-order dependent.
+.primaryAction,
+.secondaryAction {
+  --rp-button-height: auto;
+  --rp-button-line-height: 1.3;
+  --rp-button-width: auto;
+  height: auto;
+  max-width: 100%;
+  min-height: 50px;
+  white-space: normal;
+  width: auto;
+}
+
+.primaryAction {
+  background-color: var(--theme-mithril-button-primary-background);
+  border: none;
+  color: var(--theme-mithril-button-primary-text-color);
+  font-family: var(--font-medium);
+  font-size: 14px;
+  min-width: 180px;
+  padding: 12px 24px;
+
+  &:hover,
+  &:focus {
+    background-color: var(--theme-mithril-button-primary-background-hover);
+    color: var(--theme-mithril-button-primary-text-color);
+  }
+
+  &[disabled] {
+    background-color: var(--theme-mithril-button-primary-background-hover);
+    color: var(--theme-mithril-button-primary-text-color);
+    opacity: 0.6;
+  }
+}
+
+.secondaryAction {
+  background-color: transparent;
+  border: 1px solid var(--theme-mithril-button-secondary-border-color);
+  color: var(--theme-mithril-button-secondary-text-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  min-width: 180px;
+  padding: 12px 24px;
+
+  &:hover {
+    border-color: var(--theme-mithril-button-secondary-border-color-hover);
+    color: var(--theme-mithril-button-secondary-text-color-hover);
+  }
+}
+
+.error {
+  color: var(--theme-mithril-error-text-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 12px 0 0;
+  text-align: left;
+}
+
+@media (max-width: 720px) {
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

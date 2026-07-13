@@ -9,6 +9,7 @@ import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
 import { launcherConfig } from '../config';
 import { logger } from './logging';
 import { ChainStorageManager } from './chainStorageManager';
+import { runSerializedMutation } from './chainStorageManagerShared';
 import type { ManagedChainLayoutResult } from './chainStorageManagerShared';
 
 export type PartialSyncPreflightContext = {
@@ -19,6 +20,9 @@ export type PartialSyncPreflightContext = {
 type PartialSyncHandlers = {
   start(context: PartialSyncPreflightContext): Promise<void>;
   cancel(): Promise<void>;
+  finalizeCancel(): Promise<void>;
+  forceKill(): void | Promise<void>;
+  abandonCancel(): Promise<void>;
   assertStartAllowed(): void;
   restartNormal(): Promise<void>;
   wipeAndFullSync(): Promise<void>;
@@ -27,15 +31,20 @@ type PartialSyncHandlers = {
 
 type PartialSyncStartupHandler = () => Promise<unknown>;
 type PartialSyncNodeStopHandler = () => Promise<void>;
+type PartialSyncNodeStateGetter = () => CardanoNodeState | null | undefined;
 
 type PartialSyncDependencies = {
   handlers: PartialSyncHandlers;
   nodeStopHandler?: PartialSyncNodeStopHandler;
   startupHandler?: PartialSyncStartupHandler;
+  getNodeState?: PartialSyncNodeStateGetter;
 };
 
-const PARTIAL_SYNC_DISABLED_ERROR =
-  'Mithril partial sync is disabled by launcher configuration.';
+const PARTIAL_SYNC_DISABLED_CODE = 'PARTIAL_SYNC_DISABLED';
+const PARTIAL_SYNC_ALREADY_RUNNING_CODE = 'PARTIAL_SYNC_ALREADY_RUNNING';
+const PARTIAL_SYNC_LAYOUT_UNSUPPORTED_CODE = 'PARTIAL_SYNC_LAYOUT_UNSUPPORTED';
+const PARTIAL_SYNC_CANCEL_JOIN_TIMEOUT_MS = 15_000;
+const PARTIAL_SYNC_CANCEL_FORCE_KILL_TIMEOUT_MS = 1_000;
 
 class ChainStorageCoordinator {
   _chainStorageManager: ChainStorageManager;
@@ -43,6 +52,7 @@ class ChainStorageCoordinator {
   _mutationQueue: Promise<void> = Promise.resolve();
   _bootstrapInProgress = false;
   _partialSyncInProgress = false;
+  _partialSyncRunPromise: Promise<void> | null = null;
   _directoryChangedCallbacks: Array<() => void> = [];
 
   constructor() {
@@ -63,6 +73,10 @@ class ChainStorageCoordinator {
 
   isPartialSyncInProgress(): boolean {
     return this._partialSyncInProgress;
+  }
+
+  isPartialSyncEnabled(): boolean {
+    return launcherConfig.mithrilPartialSyncEnabled === true;
   }
 
   async getConfig(): Promise<ChainStorageConfig> {
@@ -167,10 +181,6 @@ class ChainStorageCoordinator {
     await this._withMutationLock('startBootstrap', async () => {
       this._assertBootstrapMutationAllowed('start Mithril bootstrap');
 
-      if (this._bootstrapInProgress) {
-        throw new Error('Mithril bootstrap is already in progress.');
-      }
-
       const layoutResult = await this._ensureManagedChainLayoutAndSyncWorkDir(
         options?.nodeState
       );
@@ -219,9 +229,14 @@ class ChainStorageCoordinator {
         this._assertPartialSyncStartAllowed();
         dependencies.handlers.assertStartAllowed();
 
+        // The click-time snapshot can go stale while this call waits on the
+        // mutation lock, so prefer the live node state. This only narrows the
+        // race window: process exit does not guarantee file handles are released.
         const nodeState = await this._ensureNodeStoppedForPartialSync(
           dependencies.nodeStopHandler,
-          options?.nodeState
+          dependencies.getNodeState
+            ? dependencies.getNodeState()
+            : options?.nodeState
         );
 
         const layoutResult =
@@ -236,9 +251,7 @@ class ChainStorageCoordinator {
               managedChainPath: layoutResult.managedChainPath,
             }
           );
-          throw new Error(
-            'Cannot start Mithril partial sync while chain storage is using recovery fallback state.'
-          );
+          throw new Error(PARTIAL_SYNC_LAYOUT_UNSUPPORTED_CODE);
         }
 
         const mithrilWorkDir =
@@ -253,17 +266,49 @@ class ChainStorageCoordinator {
       }
     );
 
-    try {
-      await dependencies.handlers.start(preflightContext);
-    } finally {
-      this._partialSyncInProgress = false;
-    }
+    const runPromise = (async () => {
+      try {
+        await dependencies.handlers.start(preflightContext);
+      } finally {
+        this._partialSyncInProgress = false;
+        this._partialSyncRunPromise = null;
+      }
+    })();
+
+    this._partialSyncRunPromise = runPromise;
+    await runPromise;
   }
 
   async cancelPartialSync(
     dependencies: PartialSyncDependencies
   ): Promise<void> {
     await dependencies.handlers.cancel();
+
+    const run = this._partialSyncRunPromise;
+    const settled = run
+      ? await this._awaitRunSettledBounded(run, dependencies.handlers.forceKill)
+      : true;
+
+    if (settled) {
+      logger.info(
+        '[MITHRIL] Partial sync run settled after cancel; finalizing cancel',
+        {
+          hadRun: !!run,
+          settled,
+        }
+      );
+      await dependencies.handlers.finalizeCancel();
+      return;
+    }
+
+    logger.warn(
+      '[MITHRIL] Partial sync run unsettled after cancel; abandoning cancel',
+      {
+        hadRun: !!run,
+        settled,
+      }
+    );
+    await dependencies.handlers.abandonCancel();
   }
 
   async restartNormalFromPartialSync(
@@ -362,19 +407,29 @@ class ChainStorageCoordinator {
 
   _assertPartialSyncStartAllowed(): void {
     if (this._bootstrapInProgress) {
-      throw new Error(
-        'Cannot start Mithril partial sync while Mithril bootstrap is in progress.'
+      logger.warn(
+        '[MITHRIL] Rejecting partial sync start: Mithril bootstrap is in progress',
+        null
       );
+      throw new Error(PARTIAL_SYNC_ALREADY_RUNNING_CODE);
     }
 
     if (this._partialSyncInProgress) {
-      throw new Error('Mithril partial sync is already in progress.');
+      logger.warn(
+        '[MITHRIL] Rejecting partial sync start: a partial sync run is already in progress',
+        null
+      );
+      throw new Error(PARTIAL_SYNC_ALREADY_RUNNING_CODE);
     }
   }
 
   _assertPartialSyncFeatureEnabled(): void {
-    if (launcherConfig.mithrilPartialSyncEnabled !== true) {
-      throw new Error(PARTIAL_SYNC_DISABLED_ERROR);
+    if (!this.isPartialSyncEnabled()) {
+      logger.warn(
+        '[MITHRIL] Rejecting partial sync action: partial sync is disabled by launcher configuration',
+        null
+      );
+      throw new Error(PARTIAL_SYNC_DISABLED_CODE);
     }
   }
 
@@ -436,6 +491,58 @@ class ChainStorageCoordinator {
     await this._mutationQueue.catch(() => undefined);
   }
 
+  async _awaitRunSettledBounded(
+    run: Promise<void>,
+    forceKill: () => void | Promise<void>
+  ): Promise<boolean> {
+    const settled = await this._awaitSettledWithin(
+      run,
+      PARTIAL_SYNC_CANCEL_JOIN_TIMEOUT_MS
+    );
+
+    if (settled) {
+      return true;
+    }
+
+    logger.warn(
+      '[MITHRIL] Partial sync run did not settle within cancel join timeout; escalating to forceKill',
+      {
+        joinTimeoutMs: PARTIAL_SYNC_CANCEL_JOIN_TIMEOUT_MS,
+        forceKillTimeoutMs: PARTIAL_SYNC_CANCEL_FORCE_KILL_TIMEOUT_MS,
+      }
+    );
+
+    await forceKill();
+
+    return this._awaitSettledWithin(
+      run,
+      PARTIAL_SYNC_CANCEL_FORCE_KILL_TIMEOUT_MS
+    );
+  }
+
+  async _awaitSettledWithin(
+    run: Promise<void>,
+    timeoutMs: number
+  ): Promise<boolean> {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    try {
+      return await Promise.race([
+        run.then(
+          () => true,
+          () => true
+        ),
+        new Promise<boolean>((resolve) => {
+          timeoutId = setTimeout(() => resolve(false), timeoutMs);
+        }),
+      ]);
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    }
+  }
+
   _notifyDirectoryChanged(): void {
     for (const callback of this._directoryChangedCallbacks) {
       try {
@@ -455,26 +562,12 @@ class ChainStorageCoordinator {
     label: string,
     operation: () => Promise<T>
   ): Promise<T> {
-    const previousMutation = this._mutationQueue;
-    let releaseLock: (() => void) | undefined;
-
-    this._mutationQueue = new Promise<void>((resolve) => {
-      releaseLock = resolve;
-    });
-
-    await previousMutation.catch(() => undefined);
-
-    try {
-      return await operation();
-    } catch (error) {
-      logger.warn('ChainStorageCoordinator: serialized mutation failed', {
-        error,
-        label,
-      });
-      throw error;
-    } finally {
-      releaseLock?.();
-    }
+    return runSerializedMutation(
+      this,
+      'ChainStorageCoordinator',
+      label,
+      operation
+    );
   }
 }
 
@@ -485,6 +578,3 @@ export const getChainStorageManager = (): ChainStorageManager =>
 
 export const getMithrilBootstrapService = (): MithrilBootstrapService =>
   chainStorageCoordinator.getMithrilBootstrapService();
-
-export const getMithrilPartialSyncDisabledError = (): string =>
-  PARTIAL_SYNC_DISABLED_ERROR;

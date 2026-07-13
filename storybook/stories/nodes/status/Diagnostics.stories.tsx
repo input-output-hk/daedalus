@@ -1,8 +1,11 @@
 import React from 'react';
+import type { ComponentProps } from 'react';
 import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
 import StoryDecorator from '../../_support/StoryDecorator';
 import DaedalusDiagnostics from '../../../../source/renderer/app/components/status/DaedalusDiagnostics';
+import MithrilPartialSyncConfirmation from '../../../../source/renderer/app/components/status/MithrilPartialSyncConfirmation';
+import MithrilPartialSyncSection from '../../../../source/renderer/app/components/status/MithrilPartialSyncSection';
 
 const systemInfo = {
   platform: 'macOS',
@@ -17,8 +20,8 @@ const systemInfo = {
 const coreInfo = {
   daedalusVersion: '7.1.0',
   daedalusBuildNumber: '12500',
-  daedalusProcessID: 98954,
-  daedalusMainProcessID: 82734,
+  daedalusProcessID: '98954',
+  daedalusMainProcessID: '82734',
   isBlankScreenFixActive: false,
   cardanoNodeVersion: '10.2.1',
   cardanoNodePID: 87212,
@@ -30,7 +33,7 @@ const coreInfo = {
     '/Users/daedalus/Library/Application Support/Daedalus Mainnet',
 };
 
-const baseProps = {
+const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
   systemInfo,
   coreInfo,
   cardanoNodeState: 'running' as const,
@@ -57,7 +60,11 @@ const baseProps = {
     slot: 46789,
     absoluteSlotNumber: 15134567,
   },
-  isMithrilPartialSyncActive: false,
+  isMithrilPartialSyncWorking: false,
+  isMithrilPartialSyncEnabled: true,
+  isMithrilPartialSyncSignificantlyBehind: true,
+  isMithrilPartialSyncProbeFailed: false,
+  isMithrilPartialSyncAtOrPastSnapshot: false,
   isMithrilBootstrapActive: false,
   onStartMithrilPartialSync: action('onStartMithrilPartialSync'),
   onOpenStateDirectory: action('onOpenStateDirectory'),
@@ -68,26 +75,88 @@ const baseProps = {
   onClose: action('onClose'),
   onCopyStateDirectoryPath: action('onCopyStateDirectoryPath'),
   onForceCheckNetworkClock: action('onForceCheckNetworkClock'),
-} as any;
+};
 
-class PartialSyncConfirmationStory extends React.Component {
-  hasOpenedConfirmation = false;
+type ConfirmationProps = ComponentProps<typeof MithrilPartialSyncConfirmation>;
 
-  setDiagnosticsRef = (instance: any) => {
-    if (instance == null || this.hasOpenedConfirmation) return;
-    this.hasOpenedConfirmation = true;
-    instance.setState({ isShowingMithrilPartialSyncConfirmation: true });
+const confirmationBaseProps: ConfirmationProps = {
+  isActionBlocked: false,
+  startError: null,
+  onCancel: action('onCancel'),
+  onConfirm: action('onConfirm'),
+};
+
+// StoryWrapper hands currentTheme to the story as a prop (first parameter);
+// keying the modal on it remounts per theme switch.
+const renderConfirmationStory = (
+  storyProps: Partial<ConfirmationProps> = {}
+): ((props: { currentTheme: string }) => JSX.Element) =>
+  function RenderConfirmationStory(props: { currentTheme: string }) {
+    return (
+      <MithrilPartialSyncConfirmation
+        key={props.currentTheme}
+        {...confirmationBaseProps}
+        {...storyProps}
+      />
+    );
   };
 
-  render() {
-    return <DaedalusDiagnostics {...baseProps} ref={this.setDiagnosticsRef} />;
-  }
+// Drives the section's real confirmation seam: mount it, then click the
+// single CTA button its recommendation view renders (no copy-text matching),
+// which runs showConfirmation() → setState({ isShowingConfirmation: true }).
+function AutoOpenedPartialSyncConfirmation() {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    containerRef.current?.querySelector('button')?.click();
+  }, []);
+  return (
+    <div ref={containerRef}>
+      <MithrilPartialSyncSection
+        isActionBlocked={false}
+        isMithrilPartialSyncWorking={false}
+        isSignificantlyBehind
+        isProbeFailed={false}
+        isAtOrPastSnapshot={false}
+        behindByEpochs={1}
+        onRestoreFocus={action('onRestoreFocus')}
+        onStartMithrilPartialSync={async () => {
+          action('onStartMithrilPartialSync')();
+        }}
+      />
+    </div>
+  );
 }
 
-storiesOf('Nodes / Status', module)
+storiesOf('Nodes / Diagnostic', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Partial Sync CTA Ready', () => <DaedalusDiagnostics {...baseProps} />)
   .add('Partial Sync CTA Blocked', () => (
     <DaedalusDiagnostics {...baseProps} isMithrilBootstrapActive />
   ))
-  .add('Partial Sync Confirmation', () => <PartialSyncConfirmationStory />);
+  .add('Partial Sync At Or Past Snapshot', () => (
+    <DaedalusDiagnostics
+      {...baseProps}
+      isMithrilPartialSyncSignificantlyBehind={false}
+      isMithrilPartialSyncAtOrPastSnapshot
+    />
+  ))
+  .add('Partial Sync Confirmation', () => (
+    <AutoOpenedPartialSyncConfirmation />
+  ));
+
+storiesOf('Nodes / Diagnostic / Mithril Partial Sync Confirmation', module)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+  .add('Known Epochs Behind', renderConfirmationStory({ behindByEpochs: 42 }))
+  .add('Unknown Behind', renderConfirmationStory())
+  .add(
+    'At Or Past Snapshot',
+    renderConfirmationStory({ isAtOrPastSnapshot: true })
+  )
+  .add(
+    'Start Error',
+    renderConfirmationStory({
+      behindByEpochs: 42,
+      startError:
+        'Unable to start Mithril sync. Cardano node did not stop in time.',
+    })
+  );

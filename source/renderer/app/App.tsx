@@ -10,9 +10,11 @@ import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
 import { themeOverrides } from './themes/overrides';
 import translations from './i18n/translations';
+import { logger } from './utils/logging';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
 import MithrilPartialSyncOverlay from './components/loading/mithril-bootstrap/MithrilPartialSyncOverlay';
+import MithrilProactivePromptContainer from './containers/loading/MithrilProactivePromptContainer';
 import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDialog';
 import NotificationsContainer from './containers/notifications/NotificationsContainer';
 import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
@@ -98,10 +100,10 @@ class App extends Component<{
                   <MithrilPartialSyncOverlay
                     status={mithrilPartialSync.status}
                     progressItems={mithrilPartialSync.progressItems}
+                    startedAt={mithrilPartialSync.startedAt}
                     transferProgress={{
                       filesDownloaded: mithrilPartialSync.filesDownloaded,
                       filesTotal: mithrilPartialSync.filesTotal,
-                      elapsedSeconds: mithrilPartialSync.elapsedSeconds,
                       ancillaryBytesDownloaded:
                         mithrilPartialSync.ancillaryBytesDownloaded,
                       ancillaryBytesTotal:
@@ -112,15 +114,29 @@ class App extends Component<{
                     canRestartNormally={mithrilPartialSync.canRestartNormally}
                     canWipeAndFullSync={mithrilPartialSync.canWipeAndFullSync}
                     onCancel={mithrilPartialSync.cancelPartialSync}
-                    onRetry={mithrilPartialSync.startPartialSync}
+                    onRetry={() => {
+                      // Retry has no confirmation surface to show a rejection;
+                      // the resynced backend status drives the error view.
+                      mithrilPartialSync.startPartialSync().catch((error) => {
+                        logger.warn(
+                          'App: Mithril partial sync retry rejected',
+                          {
+                            error,
+                          }
+                        );
+                      });
+                    }}
                     onRestartNormally={mithrilPartialSync.restartNormally}
                     onWipeAndFullSync={mithrilPartialSync.wipeAndFullSync}
                     onDismissCompleted={
                       mithrilPartialSync.dismissCompletedOverlay
                     }
+                    onQuit={() => actions.window.closeWindow.trigger()}
                     onOpenExternalLink={app.openExternalLink}
                   />
                 )}
+                {/* Mounted app-level so it survives the loading -> Wallet Summary route change; self-gates to idle so it never co-renders with the overlay above. */}
+                <MithrilProactivePromptContainer />
                 <RTSFlagsRecommendationOverlayContainer />
                 <NotificationsContainer />
                 {canShowNews && [

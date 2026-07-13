@@ -3,6 +3,10 @@ import type {
   MithrilBootstrapErrorStage,
   MithrilBootstrapStatusUpdate,
 } from '../../common/types/mithril-bootstrap.types';
+import type {
+  MithrilPartialSyncErrorCode,
+  MithrilPartialSyncErrorStage,
+} from '../../common/types/mithril-partial-sync.types';
 
 export class MithrilBootstrapStageError extends Error {
   stage: MithrilBootstrapErrorStage;
@@ -51,6 +55,30 @@ export function createStageError(
   code?: string
 ): MithrilBootstrapStageError {
   return new MithrilBootstrapStageError(message, stage, code);
+}
+
+export class MithrilPartialSyncStageError extends Error {
+  stage: MithrilPartialSyncErrorStage;
+  code?: MithrilPartialSyncErrorCode;
+
+  constructor(
+    message: string,
+    stage: MithrilPartialSyncErrorStage,
+    code?: MithrilPartialSyncErrorCode
+  ) {
+    super(message);
+    this.name = 'MithrilPartialSyncStageError';
+    this.stage = stage;
+    this.code = code;
+  }
+}
+
+export function createPartialSyncStageError(
+  stage: MithrilPartialSyncErrorStage,
+  message: string,
+  code?: MithrilPartialSyncErrorCode
+): MithrilPartialSyncStageError {
+  return new MithrilPartialSyncStageError(message, stage, code);
 }
 
 export function inferErrorStageFromStatus(

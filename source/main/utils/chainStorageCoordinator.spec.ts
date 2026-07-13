@@ -24,6 +24,9 @@ const partialSyncHandlersMock = {
   assertStartAllowed: jest.fn(),
   start: jest.fn(),
   cancel: jest.fn(),
+  finalizeCancel: jest.fn(),
+  forceKill: jest.fn(),
+  abandonCancel: jest.fn(),
   restartNormal: jest.fn(),
   wipeAndFullSync: jest.fn(),
   finalizeWipeAndFullSync: jest.fn(),
@@ -31,6 +34,13 @@ const partialSyncHandlersMock = {
 
 const partialSyncNodeStopHandlerMock = jest.fn();
 const partialSyncStartupHandlerMock = jest.fn();
+
+const loggerMock = {
+  info: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+  debug: jest.fn(),
+};
 
 const getPartialSyncDependencies = () => ({
   handlers: partialSyncHandlersMock,
@@ -54,6 +64,10 @@ jest.mock('../config', () => ({
   launcherConfig: {
     mithrilPartialSyncEnabled: true,
   },
+}));
+
+jest.mock('./logging', () => ({
+  logger: loggerMock,
 }));
 
 const loadModule = () => {
@@ -96,6 +110,9 @@ describe('chainStorageCoordinator', () => {
     partialSyncHandlersMock.start.mockResolvedValue(undefined);
     partialSyncHandlersMock.assertStartAllowed.mockImplementation(() => {});
     partialSyncHandlersMock.cancel.mockResolvedValue(undefined);
+    partialSyncHandlersMock.finalizeCancel.mockResolvedValue(undefined);
+    partialSyncHandlersMock.forceKill.mockImplementation(() => {});
+    partialSyncHandlersMock.abandonCancel.mockResolvedValue(undefined);
     partialSyncHandlersMock.restartNormal.mockResolvedValue(undefined);
     partialSyncHandlersMock.wipeAndFullSync.mockResolvedValue(undefined);
     partialSyncHandlersMock.finalizeWipeAndFullSync.mockResolvedValue(
@@ -107,6 +124,12 @@ describe('chainStorageCoordinator', () => {
       managedChainPath: '/mnt/custom-parent/chain',
       isRecoveryFallback: false,
     });
+  });
+
+  it('reports the launcher-config partial-sync flag as a boolean', () => {
+    const { chainStorageCoordinator } = loadModule();
+
+    expect(chainStorageCoordinator.isPartialSyncEnabled()).toBe(true);
   });
 
   it('exposes the singleton-backed manager and Mithril service accessors', () => {
@@ -391,9 +414,7 @@ describe('chainStorageCoordinator', () => {
           nodeState: 'stopped',
         }
       )
-    ).rejects.toThrow(
-      'Cannot start Mithril partial sync while chain storage is using recovery fallback state.'
-    );
+    ).rejects.toThrow('PARTIAL_SYNC_LAYOUT_UNSUPPORTED');
 
     expect(
       chainStorageManagerMock.resolveMithrilWorkDir
@@ -442,6 +463,51 @@ describe('chainStorageCoordinator', () => {
     expect(chainStorageManagerMock.resolveMithrilWorkDir).toHaveBeenCalledTimes(
       1
     );
+    expect(partialSyncHandlersMock.start).toHaveBeenCalledTimes(1);
+  });
+
+  it('stops the node before partial sync start when a stale stopped snapshot hides a stopping node', async () => {
+    const getNodeState = jest.fn().mockReturnValue('stopping');
+    const moduleExports = loadModule();
+
+    await expect(
+      moduleExports.chainStorageCoordinator.startPartialSync(
+        {
+          ...getPartialSyncDependencies(),
+          getNodeState,
+        },
+        {
+          nodeState: 'stopped',
+        }
+      )
+    ).resolves.toBeUndefined();
+
+    expect(getNodeState).toHaveBeenCalledTimes(1);
+    expect(partialSyncNodeStopHandlerMock).toHaveBeenCalledTimes(1);
+    expect(
+      partialSyncNodeStopHandlerMock.mock.invocationCallOrder[0]
+    ).toBeLessThan(partialSyncHandlersMock.start.mock.invocationCallOrder[0]);
+    expect(
+      chainStorageManagerMock.ensureManagedChainLayout
+    ).toHaveBeenCalledWith({ nodeState: 'stopped' });
+    expect(partialSyncHandlersMock.start).toHaveBeenCalledTimes(1);
+  });
+
+  it('stops the node before partial sync start when no snapshot is given and the live node state is stopping', async () => {
+    const getNodeState = jest.fn().mockReturnValue('stopping');
+    const moduleExports = loadModule();
+
+    await expect(
+      moduleExports.chainStorageCoordinator.startPartialSync({
+        ...getPartialSyncDependencies(),
+        getNodeState,
+      })
+    ).resolves.toBeUndefined();
+
+    expect(partialSyncNodeStopHandlerMock).toHaveBeenCalledTimes(1);
+    expect(
+      partialSyncNodeStopHandlerMock.mock.invocationCallOrder[0]
+    ).toBeLessThan(partialSyncHandlersMock.start.mock.invocationCallOrder[0]);
     expect(partialSyncHandlersMock.start).toHaveBeenCalledTimes(1);
   });
 
@@ -576,9 +642,7 @@ describe('chainStorageCoordinator', () => {
           nodeState: 'stopped',
         }
       )
-    ).rejects.toThrow(
-      'Cannot start Mithril partial sync while Mithril bootstrap is in progress.'
-    );
+    ).rejects.toThrow('PARTIAL_SYNC_ALREADY_RUNNING');
 
     bootstrapMutation.resolve();
 
@@ -678,11 +742,167 @@ describe('chainStorageCoordinator', () => {
     await flushPromises();
 
     expect(partialSyncHandlersMock.cancel).toHaveBeenCalledTimes(1);
+    expect(partialSyncHandlersMock.finalizeCancel).not.toHaveBeenCalled();
 
     partialSyncMutation.resolve();
 
     await cancelCall;
     await partialSyncCall;
+
+    expect(partialSyncHandlersMock.finalizeCancel).toHaveBeenCalledTimes(1);
+    expect(partialSyncHandlersMock.abandonCancel).not.toHaveBeenCalled();
+  });
+
+  it('times out an unsettled partial sync run in the bounded wait helper', async () => {
+    jest.useFakeTimers();
+    try {
+      const moduleExports = loadModule();
+      const neverSettles = new Promise<void>(() => {});
+
+      const awaitSettledWithin = (
+        moduleExports.chainStorageCoordinator as any
+      )._awaitSettledWithin(neverSettles, 15_000);
+
+      jest.advanceTimersByTime(15_000);
+      await Promise.resolve();
+
+      await expect(awaitSettledWithin).resolves.toBe(false);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('calls forceKill and reports false when the partial sync run misses both settle bounds', async () => {
+    const moduleExports = loadModule();
+    const awaitSettledWithinSpy = jest
+      .spyOn(
+        moduleExports.chainStorageCoordinator as any,
+        '_awaitSettledWithin'
+      )
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(false);
+
+    await expect(
+      (moduleExports.chainStorageCoordinator as any)._awaitRunSettledBounded(
+        new Promise<void>(() => {}),
+        partialSyncHandlersMock.forceKill
+      )
+    ).resolves.toBe(false);
+
+    expect(partialSyncHandlersMock.forceKill).toHaveBeenCalledTimes(1);
+
+    expect(loggerMock.warn).toHaveBeenCalledWith(
+      '[MITHRIL] Partial sync run did not settle within cancel join timeout; escalating to forceKill',
+      expect.objectContaining({
+        joinTimeoutMs: 15_000,
+        forceKillTimeoutMs: 1_000,
+      })
+    );
+
+    awaitSettledWithinSpy.mockRestore();
+  });
+
+  it('routes an unsettled cancel join to abandonCancel', async () => {
+    const moduleExports = loadModule();
+    const awaitRunSettledBoundedSpy = jest
+      .spyOn(
+        moduleExports.chainStorageCoordinator as any,
+        '_awaitRunSettledBounded'
+      )
+      .mockResolvedValueOnce(false);
+
+    (moduleExports.chainStorageCoordinator as any)._partialSyncRunPromise =
+      Promise.resolve();
+
+    await moduleExports.chainStorageCoordinator.cancelPartialSync(
+      getPartialSyncDependencies()
+    );
+
+    expect(partialSyncHandlersMock.cancel).toHaveBeenCalledTimes(1);
+    expect(partialSyncHandlersMock.finalizeCancel).not.toHaveBeenCalled();
+    expect(partialSyncHandlersMock.abandonCancel).toHaveBeenCalledTimes(1);
+
+    expect(loggerMock.warn).toHaveBeenCalledWith(
+      '[MITHRIL] Partial sync run unsettled after cancel; abandoning cancel',
+      expect.objectContaining({ settled: false })
+    );
+
+    awaitRunSettledBoundedSpy.mockRestore();
+  });
+
+  it('routes a settled cancel join (killed-converter converting cancel) to finalizeCancel, not abandonCancel', async () => {
+    const moduleExports = loadModule();
+
+    (moduleExports.chainStorageCoordinator as any)._partialSyncRunPromise =
+      Promise.resolve();
+
+    await moduleExports.chainStorageCoordinator.cancelPartialSync(
+      getPartialSyncDependencies()
+    );
+
+    expect(partialSyncHandlersMock.cancel).toHaveBeenCalledTimes(1);
+    expect(partialSyncHandlersMock.finalizeCancel).toHaveBeenCalledTimes(1);
+    expect(partialSyncHandlersMock.abandonCancel).not.toHaveBeenCalled();
+    expect(partialSyncHandlersMock.forceKill).not.toHaveBeenCalled();
+
+    expect(loggerMock.info).toHaveBeenCalledWith(
+      '[MITHRIL] Partial sync run settled after cancel; finalizing cancel',
+      expect.objectContaining({ settled: true })
+    );
+  });
+
+  it('escalates a never-settling cancel join through forceKill and then routes to abandonCancel', async () => {
+    jest.useFakeTimers();
+    try {
+      const moduleExports = loadModule();
+
+      const neverSettles = new Promise<void>(() => {});
+      (moduleExports.chainStorageCoordinator as any)._partialSyncRunPromise =
+        neverSettles;
+
+      const cancelCall =
+        moduleExports.chainStorageCoordinator.cancelPartialSync(
+          getPartialSyncDependencies()
+        );
+
+      // Flush handlers.cancel() so the first bounded wait arms its timeout.
+      for (let i = 0; i < 10; i += 1) {
+        await Promise.resolve();
+      }
+      expect(partialSyncHandlersMock.cancel).toHaveBeenCalledTimes(1);
+      expect(partialSyncHandlersMock.forceKill).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(15_000);
+      for (let i = 0; i < 10; i += 1) {
+        await Promise.resolve();
+      }
+      expect(partialSyncHandlersMock.forceKill).toHaveBeenCalledTimes(1);
+      expect(loggerMock.warn).toHaveBeenCalledWith(
+        '[MITHRIL] Partial sync run did not settle within cancel join timeout; escalating to forceKill',
+        expect.objectContaining({
+          joinTimeoutMs: 15_000,
+          forceKillTimeoutMs: 1_000,
+        })
+      );
+      expect(partialSyncHandlersMock.abandonCancel).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(1_000);
+      await cancelCall;
+
+      expect(partialSyncHandlersMock.abandonCancel).toHaveBeenCalledTimes(1);
+      expect(partialSyncHandlersMock.finalizeCancel).not.toHaveBeenCalled();
+      expect(loggerMock.warn).toHaveBeenCalledWith(
+        '[MITHRIL] Partial sync run unsettled after cancel; abandoning cancel',
+        expect.objectContaining({ hadRun: true, settled: false })
+      );
+      expect(
+        partialSyncHandlersMock.forceKill.mock.invocationCallOrder[0]
+      ).toBeLessThan(
+        partialSyncHandlersMock.abandonCancel.mock.invocationCallOrder[0]
+      );
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it('restarts normally through the configured startup handler after partial-sync cleanup', async () => {

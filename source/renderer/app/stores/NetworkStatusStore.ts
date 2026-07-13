@@ -12,6 +12,7 @@ import {
 } from '../config/timingConfig';
 import { INITIAL_DESIRED_POOLS_NUMBER } from '../config/stakingConfig';
 import { logger } from '../utils/logging';
+import { isMithrilBehindnessKnown } from '../utils/mithrilBehindness';
 import {
   cardanoStateChangeChannel,
   cardanoTlsConfigChannel,
@@ -867,6 +868,12 @@ export default class NetworkStatusStore extends Store {
       get(networkTip, 'epoch', null) !== null &&
       get(networkTip, 'slot', null) !== null
     );
+  }
+
+  @computed
+  get isBehindnessKnown(): boolean {
+    // Reactive availability signal for the proactive prompt: true once both tips have finite epochs, so consumers re-render when the network tip arrives. Not a threshold; backend isSignificantlyBehind owns the offer.
+    return isMithrilBehindnessKnown(this.localTip, this.networkTip);
   }
 
   @computed

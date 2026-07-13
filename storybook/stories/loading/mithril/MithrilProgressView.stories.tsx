@@ -5,17 +5,13 @@ import type { MithrilBootstrapStatus } from '../../../../source/common/types/mit
 import MithrilProgressView from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilProgressView';
 import StoryDecorator from '../../_support/StoryDecorator';
 import LoadingOverlayStoryFrame from '../_support/LoadingOverlayStoryFrame';
-import {
-  loadingNumberKnob,
-  loadingRadiosKnob,
-  loadingSelectKnob,
-} from '../_support/loadingKnobs';
+import { loadingNumberKnob, loadingRadiosKnob } from '../_support/loadingKnobs';
 import {
   ancillaryBytesTotal,
   bootstrapActions,
   createBootstrapStartedAt,
-  getProgressItemsPreset,
-  progressPresetOptions,
+  getBootstrapProgressItems,
+  snapshotFilesTotal,
   snapshotSize,
 } from '../_support/mithrilFixtures';
 
@@ -23,6 +19,8 @@ const statusOptions: Record<string, MithrilBootstrapStatus> = {
   Preparing: 'preparing',
   Downloading: 'downloading',
   Verifying: 'verifying',
+  Converting: 'converting',
+  Unpacking: 'unpacking',
   Finalizing: 'finalizing',
   'Starting Node': 'starting-node',
 };
@@ -45,11 +43,6 @@ storiesOf('Loading / Mithril / Progress', module)
   ))
   .add('Interactive Working State', () => {
     const status = loadingRadiosKnob('status', statusOptions, 'downloading');
-    const progressPreset = loadingSelectKnob(
-      'progressPreset',
-      progressPresetOptions,
-      'download-mid'
-    );
     const snapshotDownloadPercent = makePercentKnob(
       'snapshotDownloadPercent',
       47
@@ -65,11 +58,12 @@ storiesOf('Loading / Mithril / Progress', module)
     return (
       <MithrilProgressView
         status={status}
-        progressItems={getProgressItemsPreset(progressPreset)}
-        bytesDownloaded={Math.round(
-          snapshotSize * (snapshotDownloadPercent / 100)
+        progressItems={getBootstrapProgressItems(status)}
+        filesDownloaded={Math.round(
+          snapshotFilesTotal * (snapshotDownloadPercent / 100)
         )}
-        snapshotSize={snapshotSize}
+        filesTotal={snapshotFilesTotal}
+        snapshotSizeBytes={snapshotSize}
         ancillaryBytesDownloaded={Math.round(
           ancillaryBytesTotal * (ancillaryPercent / 100)
         )}
@@ -83,8 +77,8 @@ storiesOf('Loading / Mithril / Progress', module)
   .add('Preparing', () => (
     <MithrilProgressView
       status="preparing"
-      progressItems={getProgressItemsPreset('preparing')}
-      snapshotSize={snapshotSize}
+      progressItems={getBootstrapProgressItems('preparing')}
+      snapshotSizeBytes={snapshotSize}
       bootstrapStartedAt={createBootstrapStartedAt(4)}
       onAction={() => bootstrapActions.onCancel()}
     />
@@ -92,9 +86,10 @@ storiesOf('Loading / Mithril / Progress', module)
   .add('Starting Node Handoff', () => (
     <MithrilProgressView
       status="starting-node"
-      progressItems={getProgressItemsPreset('finalizing-with-conversion')}
-      bytesDownloaded={snapshotSize}
-      snapshotSize={snapshotSize}
+      progressItems={getBootstrapProgressItems('starting-node')}
+      filesDownloaded={snapshotFilesTotal}
+      filesTotal={snapshotFilesTotal}
+      snapshotSizeBytes={snapshotSize}
       ancillaryBytesDownloaded={ancillaryBytesTotal}
       ancillaryBytesTotal={ancillaryBytesTotal}
       ancillaryProgress={100}

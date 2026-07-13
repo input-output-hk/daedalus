@@ -3,6 +3,7 @@ import { intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import type {
   MithrilBootstrapStatus,
   MithrilProgressItem,
@@ -17,20 +18,18 @@ import styles from './MithrilProgressView.scss';
 
 interface Props {
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus;
+  variant?: 'bootstrap' | 'partial-sync';
   progressItems?: MithrilProgressItem[];
-  bytesDownloaded?: number;
-  snapshotSize?: number;
+  filesDownloaded?: number;
+  filesTotal?: number;
+  snapshotSizeBytes?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
   ancillaryProgress?: number;
   bootstrapStartedAt?: number | null;
   elapsedSeconds?: number;
-  title?: string;
-  subtitle?: string;
-  actionLabel?: string;
-  startingNodeTitle?: string;
-  startingNodeDetail?: string;
   hideAction?: boolean;
+  actionDisabled?: boolean;
   showDownloadProgressBar?: boolean;
   onAction(): void;
 }
@@ -41,7 +40,11 @@ interface Context {
 
 const TERMINAL_STATUSES = new Set<
   MithrilBootstrapStatus | MithrilPartialSyncStatus
->(['failed', 'cancelled']);
+>(['failed', 'cancelled', 'completed']);
+
+const LONG_RUNNING_STATUSES = new Set<
+  MithrilBootstrapStatus | MithrilPartialSyncStatus
+>(['verifying', 'unpacking', 'converting', 'installing', 'finalizing']);
 
 const formatDuration = (value?: number) => {
   if (value == null || Number.isNaN(value)) return null;
@@ -60,28 +63,65 @@ const formatDuration = (value?: number) => {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 };
 
+// Shared completion frame for the node stop/start hand-offs and the completed transition; they differ only in spinner position and whether a detail line is shown.
+function CompletionBlock({
+  title,
+  detail,
+  spinnerPosition = 'bottom',
+}: {
+  title: string;
+  detail?: string;
+  spinnerPosition?: 'top' | 'bottom';
+}) {
+  const spinner = (
+    <SVGInline
+      svg={spinnerIcon}
+      className={styles.completionSpinner}
+      aria-hidden="true"
+    />
+  );
+
+  return (
+    <div
+      className={styles.completionBlock}
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      {spinnerPosition === 'top' && spinner}
+      <h2 className={styles.completionTitle}>{title}</h2>
+      {detail != null && <p className={styles.completionDetail}>{detail}</p>}
+      {spinnerPosition === 'bottom' && spinner}
+    </div>
+  );
+}
+
 function MithrilProgressView(props: Props, { intl }: Context) {
   const {
     status,
+    variant = 'bootstrap',
     progressItems,
-    bytesDownloaded,
-    snapshotSize,
+    filesDownloaded,
+    filesTotal,
+    snapshotSizeBytes,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
     ancillaryProgress,
     bootstrapStartedAt,
     elapsedSeconds: elapsedSecondsProp,
-    title,
-    subtitle,
-    actionLabel,
-    startingNodeTitle,
-    startingNodeDetail,
     hideAction,
+    actionDisabled,
     showDownloadProgressBar,
     onAction,
   } = props;
 
   const isStartingNode = status === 'starting-node';
+  const isStoppingNode = status === 'stopping-node';
+  const isCancelling = status === 'cancelling';
+  const isLongRunningPhase = LONG_RUNNING_STATUSES.has(status);
+  const isPartialSync = variant === 'partial-sync';
+  // Partial-sync turns 'completed' into a loading-style hand-off frame while the finalize auto-timeout runs; bootstrap keeps its own completed frame.
+  const isCompletedTransition = status === 'completed' && isPartialSync;
 
   // Local elapsed-seconds timer — only this component re-renders each second
   const [elapsedSeconds, setElapsedSeconds] = useState<number | undefined>(
@@ -110,67 +150,130 @@ function MithrilProgressView(props: Props, { intl }: Context) {
 
   const elapsedLabel = formatDuration(elapsedSeconds) ?? '0:00';
 
+  let subtitleMessage = messages.progressSubtitle;
+  if (isPartialSync) {
+    subtitleMessage =
+      status === 'completed'
+        ? messages.partialSyncCompletedSubtitle
+        : messages.partialSyncProgressSubtitle;
+  }
+  // A disabled Cancel needs an explanation; only the partial-sync flow
+  // disables it (while the node is still stopping).
+  const actionDisabledTooltip =
+    isPartialSync && isStoppingNode
+      ? intl.formatMessage(messages.partialSyncCancelStoppingTooltip)
+      : undefined;
+
   return (
     <div className={styles.root}>
       <div className={styles.header}>
         <h1 id={MITHRIL_PROGRESS_HEADING_ID}>
-          {title || intl.formatMessage(messages.title)}
+          {intl.formatMessage(
+            isPartialSync ? messages.partialSyncTitle : messages.title
+          )}
         </h1>
-        <p>{subtitle || intl.formatMessage(messages.progressSubtitle)}</p>
+        <p>{intl.formatMessage(subtitleMessage)}</p>
       </div>
 
-      <div className={styles.timerDisplay}>
-        <span className={styles.timerLabel}>
-          {intl.formatMessage(messages.progressElapsedLabel)}
-        </span>
-        <span className={styles.timerValue}>{elapsedLabel}</span>
-      </div>
+      {!isCancelling && (
+        <div className={styles.timerDisplay}>
+          <span className={styles.timerLabel}>
+            {intl.formatMessage(messages.progressElapsedLabel)}
+          </span>
+          <span className={styles.timerValue}>{elapsedLabel}</span>
+        </div>
+      )}
 
-      <div className={styles.waterfallContainer}>
-        <MithrilStepIndicator
-          status={status}
-          progressItems={progressItems}
-          bytesDownloaded={bytesDownloaded}
-          snapshotSize={snapshotSize}
-          ancillaryBytesDownloaded={ancillaryBytesDownloaded}
-          ancillaryBytesTotal={ancillaryBytesTotal}
-          ancillaryProgress={ancillaryProgress}
-          showDownloadProgressBar={showDownloadProgressBar}
-        />
-      </div>
+      {isLongRunningPhase && (
+        <p className={styles.reassurance} aria-live="polite">
+          {intl.formatMessage(messages.progressLongPhaseReassurance)}
+        </p>
+      )}
 
-      {isStartingNode && (
-        <div
-          className={styles.completionBlock}
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          <h2 className={styles.completionTitle}>
-            {startingNodeTitle ||
-              intl.formatMessage(messages.nodeStartingTitle)}
-          </h2>
-          <p className={styles.completionDetail}>
-            {startingNodeDetail ||
-              intl.formatMessage(messages.nodeStartingDetail)}
-          </p>
-          <SVGInline
-            svg={spinnerIcon}
-            className={styles.completionSpinner}
-            aria-hidden="true"
+      {!isCancelling && (
+        <div className={styles.waterfallContainer}>
+          <MithrilStepIndicator
+            status={status}
+            variant={variant}
+            progressItems={progressItems}
+            filesDownloaded={filesDownloaded}
+            filesTotal={filesTotal}
+            snapshotSizeBytes={snapshotSizeBytes}
+            ancillaryBytesDownloaded={ancillaryBytesDownloaded}
+            ancillaryBytesTotal={ancillaryBytesTotal}
+            ancillaryProgress={ancillaryProgress}
+            showDownloadProgressBar={showDownloadProgressBar}
           />
         </div>
       )}
 
+      {isStoppingNode && (
+        <CompletionBlock
+          title={intl.formatMessage(
+            isPartialSync
+              ? messages.partialSyncNodeStoppingTitle
+              : messages.nodeStoppingTitle
+          )}
+          detail={intl.formatMessage(
+            isPartialSync
+              ? messages.partialSyncNodeStoppingDetail
+              : messages.nodeStoppingDetail
+          )}
+        />
+      )}
+
+      {isCancelling && (
+        <CompletionBlock
+          title={intl.formatMessage(messages.partialSyncCancellingTitle)}
+          detail={intl.formatMessage(messages.partialSyncCancellingDetail)}
+        />
+      )}
+
+      {isStartingNode && (
+        <CompletionBlock
+          title={intl.formatMessage(
+            isPartialSync
+              ? messages.partialSyncNodeStartingTitle
+              : messages.nodeStartingTitle
+          )}
+          detail={intl.formatMessage(
+            isPartialSync
+              ? messages.partialSyncNodeStartingDetail
+              : messages.nodeStartingDetail
+          )}
+        />
+      )}
+
+      {isCompletedTransition && (
+        <CompletionBlock
+          title={intl.formatMessage(messages.partialSyncCompletedTransition)}
+          spinnerPosition="top"
+        />
+      )}
+
       {!hideAction && (
         <div className={styles.actions}>
-          <Button
-            className={styles.secondaryAction}
-            skin={ButtonSkin}
-            label={actionLabel || intl.formatMessage(messages.cancel)}
-            onClick={onAction}
-            disabled={isStartingNode}
-          />
+          {(() => {
+            const actionButton = (
+              <Button
+                className={styles.secondaryAction}
+                skin={ButtonSkin}
+                label={intl.formatMessage(messages.cancel)}
+                onClick={onAction}
+                disabled={isStartingNode || actionDisabled}
+              />
+            );
+            // A disabled <button> swallows hover events, so the tooltip is hosted
+            // on a wrapping <span> that still receives them (matches the
+            // SidebarCategory PopOver pattern).
+            return actionDisabledTooltip ? (
+              <PopOver content={actionDisabledTooltip}>
+                <span>{actionButton}</span>
+              </PopOver>
+            ) : (
+              actionButton
+            );
+          })()}
         </div>
       )}
     </div>

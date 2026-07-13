@@ -1,36 +1,53 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../../i18n/locales/en-US.json';
 import MithrilProgressView from './MithrilProgressView';
 import { MITHRIL_PROGRESS_HEADING_ID } from './accessibilityIds';
 
+// react-polymorph's PopOver needs a skin/theme context not provided here; the
+// disabled-Cancel tooltip (stopping-node) pulls it in. Stub it so the wrapped
+// trigger and the tooltip content both render in the test.
+jest.mock('react-polymorph/lib/components/PopOver', () => ({
+  PopOver: ({ children, content }: { children?: any; content?: any }) => (
+    <>
+      {children}
+      <span>{content}</span>
+    </>
+  ),
+}));
+
 describe('MithrilProgressView', () => {
   const renderComponent = ({
     status = 'unpacking' as const,
-    bytesDownloaded,
-    snapshotSize,
+    variant,
+    filesDownloaded,
+    filesTotal,
     bootstrapStartedAt,
   }: {
     status?:
+      | 'stopping-node'
       | 'preparing'
       | 'downloading'
+      | 'verifying'
       | 'unpacking'
       | 'converting'
       | 'finalizing'
       | 'completed'
       | 'starting-node';
-    bytesDownloaded?: number;
-    snapshotSize?: number;
+    variant?: 'bootstrap' | 'partial-sync';
+    filesDownloaded?: number;
+    filesTotal?: number;
     bootstrapStartedAt?: number | null;
   } = {}) =>
     render(
       <IntlProvider locale="en-US" messages={translations}>
         <MithrilProgressView
           status={status}
-          bytesDownloaded={bytesDownloaded}
-          snapshotSize={snapshotSize}
+          variant={variant}
+          filesDownloaded={filesDownloaded}
+          filesTotal={filesTotal}
           bootstrapStartedAt={bootstrapStartedAt}
           onAction={jest.fn()}
         />
@@ -38,6 +55,56 @@ describe('MithrilProgressView', () => {
     );
 
   afterEach(cleanup);
+  afterEach(() => jest.useRealTimers());
+
+  it('ticks elapsed every second from the start anchor (advances from 0:00 immediately)', () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(0);
+    renderComponent({ status: 'verifying', bootstrapStartedAt: 0 });
+
+    expect(screen.getByText('0:00')).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+
+    expect(screen.getByText('0:03')).toBeInTheDocument();
+  });
+
+  it('shows the long-phase reassurance for verifying/finalizing', () => {
+    renderComponent({ status: 'finalizing', bootstrapStartedAt: Date.now() });
+
+    expect(
+      screen.getByText(/this can take several minutes/i)
+    ).toBeInTheDocument();
+  });
+
+  it('shows the in-dialogue node-stop frame while stopping-node', () => {
+    renderComponent({
+      status: 'stopping-node',
+      bootstrapStartedAt: Date.now(),
+    });
+
+    expect(
+      screen.getByRole('heading', { name: /stopping cardano node/i })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveAttribute('aria-live', 'polite');
+  });
+
+  it('freezes elapsed on the completed frame instead of ticking', () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(0);
+    renderComponent({ status: 'completed', bootstrapStartedAt: 0 });
+
+    expect(screen.getByText('0:00')).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(screen.getByText('0:00')).toBeInTheDocument();
+    expect(screen.queryByText('0:05')).not.toBeInTheDocument();
+  });
 
   it('renders the header and timer', () => {
     renderComponent({
@@ -78,6 +145,43 @@ describe('MithrilProgressView', () => {
     expect(statusRegion).toHaveAttribute('aria-atomic', 'true');
     expect(
       screen.getByText(/mithril snapshot has been restored/i)
+    ).toBeInTheDocument();
+  });
+
+  it('renders the hand-off frame on completed for the partial-sync variant', () => {
+    renderComponent({ status: 'completed', variant: 'partial-sync' });
+
+    expect(screen.getByText(/returning to daedalus/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /^mithril sync$/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/mithril sync completed successfully/i)
+    ).toBeInTheDocument();
+  });
+
+  it('keeps the bootstrap completed frame free of the hand-off transition', () => {
+    renderComponent({ status: 'completed' });
+
+    expect(
+      screen.queryByText(/returning to daedalus/i)
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /fast sync with mithril/i })
+    ).toBeInTheDocument();
+  });
+
+  it('shows the partial-sync node-stop copy for the partial-sync variant', () => {
+    renderComponent({
+      status: 'stopping-node',
+      variant: 'partial-sync',
+      bootstrapStartedAt: Date.now(),
+    });
+
+    expect(
+      screen.getByText(
+        /stopping the cardano node before restoring verified mithril chain data/i
+      )
     ).toBeInTheDocument();
   });
 

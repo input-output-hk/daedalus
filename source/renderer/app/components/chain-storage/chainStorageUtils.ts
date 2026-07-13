@@ -65,8 +65,6 @@ export const getStorageHelpText = (
   switch (validation.chainSubdirectoryStatus) {
     case 'will-create':
       return intl.formatMessage(messages.subdirectoryCreationNotice);
-    case 'existing-directory':
-      return intl.formatMessage(messages.subdirectoryWarningExists);
     default:
       return null;
   }
@@ -105,6 +103,13 @@ export const getManagedChainDisplayPath = (
     typeof customChainPath === 'string' &&
     customChainPath.trim().length > 0
   ) {
+    // The renderer's `path` is path-browserify, which always joins with '/';
+    // a Windows parent from the native directory picker keeps '\', so join it
+    // manually to avoid a mixed-separator preview. Display-only.
+    if (customChainPath.includes('\\') && !customChainPath.includes('/')) {
+      const trimmedParent = customChainPath.replace(/\\+$/, '');
+      return `${trimmedParent}\\${MANAGED_CHAIN_DIRECTORY}`;
+    }
     return path.join(customChainPath, MANAGED_CHAIN_DIRECTORY);
   }
 

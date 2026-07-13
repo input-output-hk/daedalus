@@ -62,8 +62,10 @@ export class MithrilStartupGate {
   _dependencies: MithrilStartupGateDependencies | null = null;
   _decisionInFlight = false;
   _failureDecisionInFlight = false;
-  _failureDeclineInFlight = false;
-  _cancelledDeclineInFlight = false;
+  _declineInFlight: Record<'failure' | 'cancelled', boolean> = {
+    failure: false,
+    cancelled: false,
+  };
   _startupCheckDone = false;
   _startupLayoutResult: ManagedChainLayoutResult | null = null;
   _decisionPrompted = false;
@@ -77,10 +79,6 @@ export class MithrilStartupGate {
 
   configure(dependencies: MithrilStartupGateDependencies): void {
     this._dependencies = dependencies;
-  }
-
-  get state(): MithrilStartupGateState {
-    return this._state;
   }
 
   onBootstrapStatus(status: MithrilBootstrapStatusUpdate): void {
@@ -133,7 +131,7 @@ export class MithrilStartupGate {
     const generation = this._getGeneration();
 
     if (status === 'failed') {
-      this.handleMithrilFailureDecline('decision-listener', generation).catch(
+      this._handleDecline('failure', 'decision-listener', generation).catch(
         (error) => {
           logger.error('[MITHRIL] Decline handling failed after decision', {
             error,
@@ -144,7 +142,7 @@ export class MithrilStartupGate {
     }
 
     if (status === 'cancelled') {
-      this.handleMithrilCancelledDecline('decision-listener', generation).catch(
+      this._handleDecline('cancelled', 'decision-listener', generation).catch(
         (error) => {
           logger.error('[MITHRIL] Decline handling failed after cancel', {
             error,
@@ -218,8 +216,7 @@ export class MithrilStartupGate {
   resetOnDirectoryChange(): void {
     this._decisionInFlight = false;
     this._failureDecisionInFlight = false;
-    this._failureDeclineInFlight = false;
-    this._cancelledDeclineInFlight = false;
+    this._declineInFlight = { failure: false, cancelled: false };
     this._startupCheckDone = false;
     this._startupLayoutResult = null;
     this._decisionPrompted = false;
@@ -297,44 +294,21 @@ export class MithrilStartupGate {
     }
   }
 
-  async handleMithrilFailureDecline(
+  async _handleDecline(
+    kind: 'failure' | 'cancelled',
     source: string,
     currentGeneration: number = this._getGeneration()
   ): Promise<boolean> {
     const deps = this._requireDependencies();
-    if (this._failureDeclineInFlight) return false;
-    if (this._controller.getPendingBootstrapDecision() !== 'decline')
-      return false;
+    if (this._declineInFlight[kind]) return false;
 
-    this._failureDeclineInFlight = true;
+    this._declineInFlight[kind] = true;
     try {
-      await this._emitIdleStatus();
-      if (currentGeneration !== deps.getGeneration()) return false;
-      await chainStorageCoordinator.wipeChainAndSnapshots(
-        `User declined after bootstrap failure (${source}). Wiped chain directory and Mithril snapshots.`,
-        deps.cardanoNode.state
-      );
-      if (currentGeneration !== deps.getGeneration()) return false;
-      await deps.cardanoNode.start();
-      this._decision = null;
-      this._decisionPrompted = false;
-      return true;
-    } finally {
-      this._failureDeclineInFlight = false;
-    }
-  }
-
-  async handleMithrilCancelledDecline(
-    source: string,
-    currentGeneration: number = this._getGeneration()
-  ): Promise<boolean> {
-    const deps = this._requireDependencies();
-    if (this._cancelledDeclineInFlight) return false;
-
-    this._cancelledDeclineInFlight = true;
-    try {
+      if (this._controller.getPendingBootstrapDecision() !== 'decline') {
+        return false;
+      }
       if (
-        this._controller.getPendingBootstrapDecision() !== 'decline' ||
+        kind === 'cancelled' &&
         this._controller.getBootstrapStatus().status !== 'cancelled'
       ) {
         return false;
@@ -343,7 +317,9 @@ export class MithrilStartupGate {
       await this._emitIdleStatus();
       if (currentGeneration !== deps.getGeneration()) return false;
       await chainStorageCoordinator.wipeChainAndSnapshots(
-        `User declined after bootstrap cancel (${source}). Wiped chain directory and Mithril snapshots.`,
+        `User declined after bootstrap ${
+          kind === 'failure' ? 'failure' : 'cancel'
+        } (${source}). Wiped chain directory and Mithril snapshots.`,
         deps.cardanoNode.state
       );
       if (currentGeneration !== deps.getGeneration()) return false;
@@ -352,7 +328,7 @@ export class MithrilStartupGate {
       this._decisionPrompted = false;
       return true;
     } finally {
-      this._cancelledDeclineInFlight = false;
+      this._declineInFlight[kind] = false;
     }
   }
 
@@ -391,6 +367,23 @@ export class MithrilStartupGate {
     return layoutResult;
   }
 
+  async _handleTerminalStatusDecline<TResponse>(options: {
+    status: MithrilBootstrapStatusUpdate['status'];
+    source: string;
+    currentGeneration: number;
+    response: TResponse;
+  }): Promise<MithrilStartupGateResult<TResponse> | null> {
+    const { status, source, currentGeneration, response } = options;
+    if (status !== 'failed' && status !== 'cancelled') return null;
+    await this._handleDecline(
+      status === 'failed' ? 'failure' : 'cancelled',
+      source,
+      currentGeneration
+    );
+    this._markHadNotEnoughSpaceLeft(response);
+    return { handled: true, response };
+  }
+
   async _handleEmptyChainStartup<TResponse>(options: {
     currentGeneration: number;
     getStaleResponse: () => TResponse;
@@ -399,23 +392,13 @@ export class MithrilStartupGate {
     const { currentGeneration, response } = options;
     const status = this._controller.getBootstrapStatus().status;
 
-    if (status === 'failed') {
-      await this.handleMithrilFailureDecline(
-        'polling-chain-empty',
-        currentGeneration
-      );
-      this._markHadNotEnoughSpaceLeft(response, false);
-      return { handled: true, response };
-    }
-
-    if (status === 'cancelled') {
-      await this.handleMithrilCancelledDecline(
-        'polling-chain-empty',
-        currentGeneration
-      );
-      this._markHadNotEnoughSpaceLeft(response, false);
-      return { handled: true, response };
-    }
+    const declineResult = await this._handleTerminalStatusDecline({
+      status,
+      source: 'polling-chain-empty',
+      currentGeneration,
+      response,
+    });
+    if (declineResult) return declineResult;
 
     if (status === 'completed' || status === 'starting-node') {
       this._bootstrapCompleted = true;
@@ -442,7 +425,7 @@ export class MithrilStartupGate {
     }
 
     this._waitForInitialDecision(currentGeneration);
-    this._markHadNotEnoughSpaceLeft(response, false);
+    this._markHadNotEnoughSpaceLeft(response);
     return { handled: true, response };
   }
 
@@ -456,23 +439,13 @@ export class MithrilStartupGate {
     const bootstrapStatus = this._controller.getBootstrapStatus().status;
     const partialSyncStatus = this._controller.getPartialSyncStatus().status;
 
-    if (bootstrapStatus === 'failed') {
-      await this.handleMithrilFailureDecline(
-        'polling-chain-present',
-        currentGeneration
-      );
-      this._markHadNotEnoughSpaceLeft(response, false);
-      return { handled: true, response };
-    }
-
-    if (bootstrapStatus === 'cancelled') {
-      await this.handleMithrilCancelledDecline(
-        'polling-chain-present',
-        currentGeneration
-      );
-      this._markHadNotEnoughSpaceLeft(response, false);
-      return { handled: true, response };
-    }
+    const declineResult = await this._handleTerminalStatusDecline({
+      status: bootstrapStatus,
+      source: 'polling-chain-present',
+      currentGeneration,
+      response,
+    });
+    if (declineResult) return declineResult;
 
     if (isMithrilBootstrapBlockingNodeStart(bootstrapStatus)) {
       return { handled: true, response };
@@ -481,7 +454,7 @@ export class MithrilStartupGate {
     if (
       await deps.partialSyncNodeStartup.startInstalledNode(currentGeneration)
     ) {
-      this._markHadNotEnoughSpaceLeft(response, false);
+      this._markHadNotEnoughSpaceLeft(response);
       return { handled: true, response };
     }
 
@@ -515,7 +488,7 @@ export class MithrilStartupGate {
       .waitForBootstrapDecision()
       .then(async (decision) => {
         if (decision === 'decline') {
-          await this.handleMithrilFailureDecline('status-listener', generation);
+          await this._handleDecline('failure', 'status-listener', generation);
         }
       })
       .catch((error) => {
@@ -637,13 +610,10 @@ export class MithrilStartupGate {
     });
   }
 
-  _markHadNotEnoughSpaceLeft<TResponse>(
-    response: TResponse,
-    value: boolean
-  ): void {
+  _markHadNotEnoughSpaceLeft<TResponse>(response: TResponse): void {
     if (response && typeof response === 'object') {
       (response as { hadNotEnoughSpaceLeft?: boolean }).hadNotEnoughSpaceLeft =
-        value;
+        false;
     }
   }
 }

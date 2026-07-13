@@ -1,5 +1,6 @@
 import React from 'react';
 import { cleanup, render } from '@testing-library/react';
+import { isMithrilPartialSyncWorkingStatus } from '../../../../common/types/mithril-partial-sync.types';
 import {
   DaedalusDiagnosticsDialog,
   shouldCloseDiagnosticsForPartialSyncOverlay,
@@ -38,6 +39,9 @@ const createBaseProps = () => ({
     mithrilPartialSync: {
       status: 'idle',
       isActive: false,
+      isWorking: false,
+      isPartialSyncEnabled: true,
+      isSignificantlyBehind: true,
       startPartialSync: jest.fn(),
     },
     networkStatus: {
@@ -94,6 +98,7 @@ const withStatus = (props, status) => ({
       ...props.stores.mithrilPartialSync,
       status,
       isActive: status !== 'idle',
+      isWorking: isMithrilPartialSyncWorkingStatus(status),
     },
   },
 });

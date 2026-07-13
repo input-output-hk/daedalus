@@ -805,12 +805,9 @@ export class CardanoNode {
       signal,
     });
 
-    // If stop() is managing a controlled shutdown, return immediately and let
-    // stop() own the full sequence: _waitForNodeProcessToExit,
-    // _storeProcessStates, _changeToState(STOPPED), _reset().
-    // Without this guard, both stop() and _handleCardanoNodeExit call
-    // _changeToState(STOPPED), and the second broadcastStateChange(STOPPED) IPC
-    // targets the renderer as it's being destroyed → Chromium SIGABRT in Electron 41.
+    // If stop() is driving a controlled shutdown, let it own the STOPPED sequence and return. Otherwise
+    //  both stop() and _handleCardanoNodeExit call _changeToState(STOPPED), and the second broadcast targets
+    //  a renderer being destroyed → Chromium SIGABRT on Electron 41.
     if (
       this._state === CardanoNodeStates.STOPPING ||
       this._state === CardanoNodeStates.STOPPED

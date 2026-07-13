@@ -240,6 +240,23 @@
   line-height: 1.4;
 }
 
+/* Icon stays on the first text line when the caution adds a second one. */
+.subItemWithCaution {
+  align-items: flex-start;
+}
+
+.subItemLabelGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.subItemCaution {
+  color: var(--theme-mithril-secondary-text-color);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .subItemPending .subItemLabel {
   color: var(--theme-mithril-sub-item-pending-color);
 }

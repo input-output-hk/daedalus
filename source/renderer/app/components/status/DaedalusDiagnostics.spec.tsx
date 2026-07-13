@@ -49,7 +49,11 @@ const defaultProps = {
   isForceCheckingSystemTime: false,
   localTip: { epoch: 100, slot: 200 } as any,
   networkTip: { epoch: 101, slot: 300 } as any,
-  isMithrilPartialSyncActive: false,
+  isMithrilPartialSyncWorking: false,
+  isMithrilPartialSyncEnabled: true,
+  isMithrilPartialSyncSignificantlyBehind: true,
+  isMithrilPartialSyncProbeFailed: false,
+  isMithrilPartialSyncAtOrPastSnapshot: false,
   isMithrilBootstrapActive: false,
   onStartMithrilPartialSync: jest.fn(),
   onOpenStateDirectory: jest.fn(),
@@ -70,55 +74,71 @@ const renderComponent = (overrides = {}) =>
 describe('DaedalusDiagnostics', () => {
   afterEach(cleanup);
 
-  it('renders the Mithril partial sync recommendation with current sync context', () => {
+  it('renders the Mithril Sync button without any sync-% or untranslated copy', () => {
+    // PopOver is mocked to render only its children, so the hover-only tooltip copy is intentionally absent from these assertions.
     renderComponent();
 
-    expect(
-      screen.getByText(
-        'Cardano node is currently 62.50% synced. If catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.'
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'Review what will happen before Daedalus starts Mithril partial sync.'
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Mithril Partial Sync' })
-    ).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
+    expect(screen.queryByText(/% synced/)).not.toBeInTheDocument();
     expect(screen.queryByText(/!!!/)).not.toBeInTheDocument();
   });
 
-  it('renders the synced recommendation variant without the percentage text', () => {
+  it('keeps the Mithril Sync button visible without sync-% when fully synced', () => {
     renderComponent({ isSynced: true, syncPercentage: 100 });
 
-    expect(
-      screen.getByText(
-        'If Cardano node catch-up is taking longer than you want, Mithril partial sync can restore verified chain data to help it catch up faster.'
-      )
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
     expect(
       screen.queryByText(/currently 100% synced/i)
     ).not.toBeInTheDocument();
   });
 
-  it('keeps the CTA disabled while partial sync is active', () => {
-    renderComponent({ isMithrilPartialSyncActive: true });
+  it('keeps the CTA disabled while partial sync work is in flight', () => {
+    renderComponent({ isMithrilPartialSyncWorking: true });
 
-    expect(
-      screen.getByRole('button', { name: 'Mithril Partial Sync' })
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeDisabled();
     expect(
       screen.getByText('Unavailable while Mithril work is already active.')
     ).toBeInTheDocument();
   });
 
+  it('re-arms the CTA once partial sync work reaches a terminal state', () => {
+    renderComponent({ isMithrilPartialSyncWorking: false });
+
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
+  });
+
+  it('hides all partial sync UI when the kill switch is off', () => {
+    renderComponent({ isMithrilPartialSyncEnabled: false });
+
+    expect(screen.queryByRole('button', { name: 'Mithril Sync' })).toBeNull();
+    expect(screen.queryByText(/Mithril Sync/)).toBeNull();
+  });
+
+  it('keeps the recommendation/CTA visible when enabled but not significantly behind', () => {
+    const { rerender } = renderComponent({
+      isMithrilPartialSyncEnabled: true,
+      isMithrilPartialSyncSignificantlyBehind: true,
+    });
+
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
+
+    rerender(
+      <IntlProvider locale="en-US" messages={translations}>
+        <DaedalusDiagnostics
+          {...defaultProps}
+          isMithrilPartialSyncEnabled
+          isMithrilPartialSyncSignificantlyBehind={false}
+        />
+      </IntlProvider>
+    );
+
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
+  });
+
   it('keeps the CTA disabled while bootstrap work is active', () => {
     renderComponent({ isMithrilBootstrapActive: true });
 
-    expect(
-      screen.getByRole('button', { name: 'Mithril Partial Sync' })
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeDisabled();
     expect(
       screen.getByText('Unavailable while Mithril work is already active.')
     ).toBeInTheDocument();
@@ -127,12 +147,54 @@ describe('DaedalusDiagnostics', () => {
   it('still wires the diagnostics partial sync button through the extracted section', () => {
     renderComponent();
 
-    screen.getByRole('button', { name: 'Mithril Partial Sync' }).click();
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
 
     expect(
       screen.getByRole('heading', {
-        name: 'Before Mithril partial sync begins',
+        name: 'Before Mithril Sync begins',
       })
+    ).toBeInTheDocument();
+  });
+
+  it('computes the renderer node-tip epoch difference for the confirmation copy', () => {
+    renderComponent({
+      networkTip: { epoch: 500, slot: 0, absoluteSlotNumber: 0 } as any,
+      localTip: { epoch: 497, slot: 0, absoluteSlotNumber: 0 } as any,
+    });
+
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
+
+    expect(
+      screen.getByText(
+        'Your node is about 3 epochs behind. Mithril Sync will restore verified chain data to help your node sync faster.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('falls back to the unknown behind-ness line when a tip is missing', () => {
+    renderComponent({ networkTip: null });
+
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
+
+    expect(
+      screen.getByText(
+        'Your node is behind the latest verified snapshot. Mithril Sync will restore verified chain data to help your node sync faster.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('shows the unknown behind-ness line when the tips share an epoch (no misleading floor-to-1)', () => {
+    renderComponent({
+      networkTip: { epoch: 100, slot: 0, absoluteSlotNumber: 0 } as any,
+      localTip: { epoch: 100, slot: 0, absoluteSlotNumber: 0 } as any,
+    });
+
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
+
+    expect(
+      screen.getByText(
+        'Your node is behind the latest verified snapshot. Mithril Sync will restore verified chain data to help your node sync faster.'
+      )
     ).toBeInTheDocument();
   });
 });

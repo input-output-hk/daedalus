@@ -153,6 +153,39 @@ export interface ChainStorageManagerContext {
 
 export const toIsoString = () => new Date().toISOString();
 
+type SerializedMutationHost = { _mutationQueue: Promise<void> };
+
+// FIFO-serializes mutations per host. The queue swap must stay synchronous
+// (before the first await) so concurrent callers chain in call order; a
+// failed operation is logged and rethrown but never blocks the queue.
+export async function runSerializedMutation<T>(
+  host: SerializedMutationHost,
+  logPrefix: string,
+  label: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const previousMutation = host._mutationQueue;
+  let releaseLock: (() => void) | undefined;
+
+  host._mutationQueue = new Promise<void>((resolve) => {
+    releaseLock = resolve;
+  });
+
+  await previousMutation.catch(() => undefined);
+
+  try {
+    return await operation();
+  } catch (error) {
+    logger.warn(`${logPrefix}: serialized mutation failed`, {
+      error,
+      label,
+    });
+    throw error;
+  } finally {
+    releaseLock?.();
+  }
+}
+
 export const isPathNotFoundError = (error: unknown): boolean => {
   const code = (error as NodeJS.ErrnoException)?.code;
   return code === 'ENOENT' || code === 'ENOTDIR';
@@ -168,6 +201,16 @@ export const isPathWithin = (
     (!relativePath.startsWith('..') && !path.isAbsolute(relativePath))
   );
 };
+
+// The chain entry point encodes the active custom location: a symlink (or
+// Windows junction) targets `<customParent>/chain`; anything else means the
+// default location. getConfig and the path-only readers share this rule.
+export const deriveCustomPathFromChainState = (
+  chainState: ChainPathState
+): string | null =>
+  chainState.type === 'symlink' && chainState.resolvedPath
+    ? path.dirname(chainState.resolvedPath)
+    : null;
 
 export async function captureChainPathState(
   ctx: ChainStorageManagerContext
@@ -355,7 +398,6 @@ export async function replaceCustomChainEntryPoint(
 }
 
 export async function createSymlink(
-  _ctx: ChainStorageManagerContext,
   targetPath: string,
   symlinkPath: string
 ): Promise<void> {
@@ -367,7 +409,6 @@ export async function createSymlink(
 }
 
 export async function movePath(
-  _ctx: ChainStorageManagerContext,
   sourcePath: string,
   targetPath: string
 ): Promise<void> {
@@ -383,10 +424,7 @@ export async function movePath(
   }
 }
 
-export async function safeReadDir(
-  _ctx: ChainStorageManagerContext,
-  targetPath: string
-): Promise<string[]> {
+export async function safeReadDir(targetPath: string): Promise<string[]> {
   try {
     return await fs.readdir(targetPath);
   } catch (error) {
@@ -397,10 +435,7 @@ export async function safeReadDir(
   }
 }
 
-export async function safeLstat(
-  _ctx: ChainStorageManagerContext,
-  targetPath: string
-): Promise<fs.Stats | null> {
+export async function safeLstat(targetPath: string): Promise<fs.Stats | null> {
   try {
     return await fs.lstat(targetPath);
   } catch (error) {
@@ -419,7 +454,6 @@ export async function pathExistsViaLstat(
 }
 
 export async function resolveExistingDirectory(
-  _ctx: ChainStorageManagerContext,
   directoryPath: string
 ): Promise<string | undefined> {
   try {
@@ -441,7 +475,6 @@ export async function resolveExistingDirectory(
 }
 
 export async function resolveRealPathOrInput(
-  _ctx: ChainStorageManagerContext,
   targetPath: string
 ): Promise<string> {
   try {

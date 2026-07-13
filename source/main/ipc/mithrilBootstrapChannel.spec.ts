@@ -8,7 +8,6 @@ const mockChannels: Array<{
 const mithrilControllerMock = {
   setBootstrapStatusSender: jest.fn(),
   initialize: jest.fn(),
-  getPendingBootstrapDecision: jest.fn(() => null),
   getBootstrapStatus: jest.fn(() => ({
     status: 'idle',
     snapshot: null,
@@ -16,19 +15,11 @@ const mithrilControllerMock = {
   })),
   getNodeState: jest.fn(() => 'stopped'),
   setNodeStateProvider: jest.fn(),
-  isBootstrapNodeStartBlocked: jest.fn(() => false),
-  onBootstrapStatus: jest.fn(),
-  onBootstrapDecision: jest.fn(),
-  setBootstrapStatus: jest.fn((status) => status),
-  waitForBootstrapDecision: jest.fn(),
-  resetBootstrapDecisionState: jest.fn(),
   listSnapshots: jest.fn(),
   submitBootstrapDecision: jest.fn(),
   startBootstrap: jest.fn(),
   cancelBootstrap: jest.fn(),
 };
-
-class MithrilDecisionCancelledError extends Error {}
 
 jest.mock('./lib/MainIpcChannel', () => ({
   MainIpcChannel: jest.fn().mockImplementation(() => {
@@ -43,9 +34,6 @@ jest.mock('./lib/MainIpcChannel', () => ({
 
 jest.mock('../mithril/MithrilController', () => ({
   getMithrilController: () => mithrilControllerMock,
-  MithrilDecisionCancelledError,
-  isMithrilDecisionCancelledError: (error) =>
-    error instanceof MithrilDecisionCancelledError,
 }));
 
 const loadModule = () => {
@@ -63,7 +51,6 @@ describe('mithrilBootstrapChannel', () => {
     jest.resetModules();
     jest.clearAllMocks();
     mockChannels.length = 0;
-    mithrilControllerMock.getPendingBootstrapDecision.mockReturnValue(null);
     mithrilControllerMock.getBootstrapStatus.mockReturnValue({
       status: 'idle',
       snapshot: null,
@@ -147,21 +134,7 @@ describe('mithrilBootstrapChannel', () => {
     moduleExports.setMithrilBootstrapNodeStateProvider(
       () => 'running' as never
     );
-    moduleExports.setMithrilBootstrapStatus({ status: 'decision' });
-    moduleExports.waitForMithrilBootstrapDecision();
-    moduleExports.resetMithrilDecisionState({ suppressStatusBroadcast: true });
 
     expect(mithrilControllerMock.setNodeStateProvider).toHaveBeenCalledTimes(1);
-    expect(mithrilControllerMock.setBootstrapStatus).toHaveBeenCalledWith({
-      status: 'decision',
-    });
-    expect(
-      mithrilControllerMock.waitForBootstrapDecision
-    ).toHaveBeenCalledTimes(1);
-    expect(
-      mithrilControllerMock.resetBootstrapDecisionState
-    ).toHaveBeenCalledWith({
-      suppressStatusBroadcast: true,
-    });
   });
 });

@@ -346,7 +346,6 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
           isValid: false,
           path: nextPath ?? null,
           reason: 'unknown',
-          message: 'An unexpected error occurred. Please try again.',
         });
       }
     } finally {
@@ -418,26 +417,21 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
             />
           </button>
         </div>
-        {storageHelpText && !hasBlockchainData && (
+        {(storageHelpText || hasBlockchainData) && (
           <p
             className={classNames(
               styles.storageSubtext,
               styles.storageHelpText
             )}
-            id={STORAGE_LOCATION_HELP_TEXT_ID}
+            id={
+              hasBlockchainData
+                ? STORAGE_LOCATION_DATA_FOUND_ID
+                : STORAGE_LOCATION_HELP_TEXT_ID
+            }
           >
-            {storageHelpText}
-          </p>
-        )}
-        {hasBlockchainData && (
-          <p
-            className={classNames(
-              styles.storageSubtext,
-              styles.storageHelpText
-            )}
-            id={STORAGE_LOCATION_DATA_FOUND_ID}
-          >
-            {intl.formatMessage(messages.dataFoundNotice)}
+            {hasBlockchainData
+              ? intl.formatMessage(messages.dataFoundNotice)
+              : storageHelpText}
           </p>
         )}
         <div className={styles.resetActionRow}>

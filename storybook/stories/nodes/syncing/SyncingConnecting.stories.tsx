@@ -74,6 +74,8 @@ export function DefaultSyncingConnectingStory() {
       disableDownloadLogs={boolean('disableDownloadLogs', true)}
       showNewsFeedIcon
       blockSyncProgress={makeBlockSyncProgress()}
+      isPartialSyncEnabled={boolean('isPartialSyncEnabled', false)}
+      onMithrilSync={action('onMithrilSync')}
     />
   );
 }

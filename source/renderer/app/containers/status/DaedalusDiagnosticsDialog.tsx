@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import { isMithrilBootstrapBlockingNodeStart } from '../../../../common/types/mithril-bootstrap.types';
 import { isMithrilPartialSyncOverlayStatus } from '../../../../common/types/mithril-partial-sync.types';
+import type { MithrilPartialSyncStatus } from '../../../../common/types/mithril-partial-sync.types';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
@@ -11,8 +12,8 @@ import { buildSystemInfo } from '../../utils/buildSystemInfo';
 type Props = InjectedDialogContainerProps;
 
 export const shouldCloseDiagnosticsForPartialSyncOverlay = (
-  previousStatus,
-  nextStatus
+  previousStatus: MithrilPartialSyncStatus,
+  nextStatus: MithrilPartialSyncStatus
 ) =>
   !isMithrilPartialSyncOverlayStatus(previousStatus) &&
   isMithrilPartialSyncOverlayStatus(nextStatus);
@@ -130,7 +131,15 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
           isSystemTimeIgnored={isSystemTimeIgnored}
-          isMithrilPartialSyncActive={mithrilPartialSync.isActive}
+          isMithrilPartialSyncWorking={mithrilPartialSync.isWorking}
+          isMithrilPartialSyncEnabled={mithrilPartialSync.isPartialSyncEnabled}
+          isMithrilPartialSyncSignificantlyBehind={
+            mithrilPartialSync.isSignificantlyBehind
+          }
+          isMithrilPartialSyncProbeFailed={mithrilPartialSync.isProbeFailed}
+          isMithrilPartialSyncAtOrPastSnapshot={
+            mithrilPartialSync.isAtOrPastSnapshot
+          }
           isMithrilBootstrapActive={isMithrilBootstrapBlockingNodeStart(
             mithrilBootstrap.status
           )}
@@ -138,6 +147,7 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           nodeConnectionError={getNetworkInfoRequest.error}
           localTip={localTip}
           networkTip={networkTip}
+          certifiedEpoch={mithrilPartialSync.certifiedEpoch}
           isCheckingSystemTime={
             !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
           }

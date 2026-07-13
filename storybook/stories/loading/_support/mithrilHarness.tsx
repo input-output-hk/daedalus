@@ -199,8 +199,9 @@ interface ManagedMithrilBootstrapProps {
   availableSpaceBytes?: number;
   isRecoveryFallback?: boolean;
   isChainStorageLoading?: boolean;
-  bytesDownloaded?: number;
-  snapshotSize?: number;
+  filesDownloaded?: number;
+  filesTotal?: number;
+  snapshotSizeBytes?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
   ancillaryProgress?: number;
@@ -224,8 +225,9 @@ export function ManagedMithrilBootstrap({
   availableSpaceBytes,
   isRecoveryFallback,
   isChainStorageLoading,
-  bytesDownloaded,
-  snapshotSize,
+  filesDownloaded,
+  filesTotal,
+  snapshotSizeBytes,
   ancillaryBytesDownloaded,
   ancillaryBytesTotal,
   ancillaryProgress,
@@ -302,8 +304,9 @@ export function ManagedMithrilBootstrap({
       latestSnapshotSize={latestSnapshotSize}
       isChainStorageLoading={isChainStorageLoading}
       isFetchingSnapshots={isFetchingSnapshots}
-      bytesDownloaded={bytesDownloaded}
-      snapshotSize={snapshotSize}
+      filesDownloaded={filesDownloaded}
+      filesTotal={filesTotal}
+      snapshotSizeBytes={snapshotSizeBytes}
       ancillaryBytesDownloaded={ancillaryBytesDownloaded}
       ancillaryBytesTotal={ancillaryBytesTotal}
       ancillaryProgress={ancillaryProgress}

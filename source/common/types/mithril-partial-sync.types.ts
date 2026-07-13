@@ -3,6 +3,7 @@ import type { MithrilProgressItem } from './mithril-bootstrap.types';
 export type MithrilPartialSyncStatus =
   | 'idle'
   | 'stopping-node'
+  | 'cancelling'
   | 'preparing'
   | 'downloading'
   | 'verifying'
@@ -29,9 +30,29 @@ export type MithrilPartialSyncErrorStage =
   | 'finalizing'
   | 'starting-node';
 
+export type MithrilPartialSyncErrorCode =
+  | 'PARTIAL_SYNC_LATEST_DRIFT'
+  | 'PARTIAL_SYNC_STAGED_DB_INVALID'
+  | 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED'
+  | 'PARTIAL_SYNC_CONVERSION_FAILED'
+  | 'PARTIAL_SYNC_INSUFFICIENT_DISK_SPACE'
+  | 'PARTIAL_SYNC_DISABLED'
+  | 'PARTIAL_SYNC_ALREADY_RUNNING'
+  | 'PARTIAL_SYNC_START_NOT_ALLOWED'
+  | 'PARTIAL_SYNC_LAYOUT_UNSUPPORTED'
+  | 'PARTIAL_SYNC_CANCEL_NOT_ALLOWED'
+  | 'PARTIAL_SYNC_RECOVERY_NOT_ALLOWED'
+  | 'PARTIAL_SYNC_METADATA_UNAVAILABLE'
+  // Preflight/staging invariant failures — real wire codes with generic copy.
+  | 'PARTIAL_SYNC_MANAGED_CHAIN_INVALID'
+  | 'PARTIAL_SYNC_IMMUTABLE_INVALID'
+  | 'PARTIAL_SYNC_PROTOCOL_MAGIC_INVALID'
+  | 'PARTIAL_SYNC_IMMUTABLE_POSITION_UNAVAILABLE'
+  | 'PARTIAL_SYNC_STAGING_INSIDE_MANAGED_CHAIN';
+
 export type MithrilPartialSyncError = {
   message: string;
-  code?: string;
+  code?: MithrilPartialSyncErrorCode;
   logPath?: string;
   stage?: MithrilPartialSyncErrorStage;
 };
@@ -53,8 +74,38 @@ export type MithrilPartialSyncStatusSnapshot = {
   logPath?: string;
 };
 
+// Fresh idle snapshot per call so no two holders ever share the nested
+// transferProgress / progressItems references.
+export const makeIdlePartialSyncStatus =
+  (): MithrilPartialSyncStatusSnapshot => ({
+    status: 'idle',
+    allowedRecoveryActions: [],
+    transferProgress: {},
+    progressItems: [],
+    error: null,
+  });
+
+export type MithrilPartialSyncAvailability = {
+  isEnabled: boolean;
+  isSignificantlyBehind: boolean;
+  // Set when the behind-ness probe itself failed, so "not significantly
+  // behind" can be told apart from "behind-ness unknown". Optional: absent
+  // means the probe succeeded and isSignificantlyBehind is trustworthy.
+  isProbeFailed?: boolean;
+  // Set when the probe found the local tip at or past the latest certified
+  // snapshot (gap <= 0). Optional: the disabled/working short-circuits omit
+  // it, and consumers must treat absence as false.
+  isAtOrPastSnapshot?: boolean;
+  behindByImmutables?: number;
+  // Mithril certified-beacon epoch: early-resolving fallback anchor for the
+  // late networkTip.epoch. Optional; when absent the figure degrades to
+  // networkTip-only.
+  certifiedEpoch?: number;
+};
+
 const MITHRIL_PARTIAL_SYNC_WORKING_STATUSES: MithrilPartialSyncStatus[] = [
   'stopping-node',
+  'cancelling',
   'preparing',
   'downloading',
   'verifying',
@@ -72,9 +123,7 @@ const MITHRIL_PARTIAL_SYNC_TERMINAL_STATUSES: MithrilPartialSyncStatus[] = [
 
 const MITHRIL_PARTIAL_SYNC_OVERLAY_STATUSES: MithrilPartialSyncStatus[] = [
   ...MITHRIL_PARTIAL_SYNC_WORKING_STATUSES,
-  ...MITHRIL_PARTIAL_SYNC_TERMINAL_STATUSES.filter(
-    (status) => status !== 'idle'
-  ),
+  ...MITHRIL_PARTIAL_SYNC_TERMINAL_STATUSES,
 ];
 
 export const isMithrilPartialSyncWorkingStatus = (
@@ -89,10 +138,6 @@ export const isMithrilPartialSyncOverlayStatus = (
   status: MithrilPartialSyncStatus
 ): boolean => MITHRIL_PARTIAL_SYNC_OVERLAY_STATUSES.includes(status);
 
-export const isMithrilPartialSyncActiveStatus = (
-  status: MithrilPartialSyncStatus
-): boolean => status !== 'idle';
-
 export const isMithrilPartialSyncRestoreCompleteStatus = (
   status: MithrilPartialSyncStatus
 ): boolean => status === 'completed' || status === 'starting-node';
@@ -100,13 +145,26 @@ export const isMithrilPartialSyncRestoreCompleteStatus = (
 export const isMithrilPartialSyncBlockingNodeStart = (
   status: MithrilPartialSyncStatus
 ): boolean =>
+  // Node start is blocked exactly while a Mithril run is doing work; the
+  // working-status list is the single source of truth for that window.
+  isMithrilPartialSyncWorkingStatus(status);
+
+// Disk space polling is suppressed during the download/install phases to avoid
+// interfering with an active Mithril run. `finalizing` and `starting-node` are
+// excluded because by then the snapshot is installed and we want the node to
+// start immediately via the restart-startup-flow trigger.
+const MITHRIL_PARTIAL_SYNC_DISK_SPACE_SUPPRESSED_STATUSES: MithrilPartialSyncStatus[] =
   [
     'stopping-node',
+    'cancelling',
     'preparing',
     'downloading',
     'verifying',
     'converting',
     'installing',
-    'finalizing',
-    'starting-node',
-  ].includes(status);
+  ];
+
+export const isMithrilPartialSyncSuppressingDiskSpaceCheck = (
+  status: MithrilPartialSyncStatus
+): boolean =>
+  MITHRIL_PARTIAL_SYNC_DISK_SPACE_SUPPRESSED_STATUSES.includes(status);

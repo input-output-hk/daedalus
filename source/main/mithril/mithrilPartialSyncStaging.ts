@@ -3,9 +3,9 @@ import fs from 'fs-extra';
 import { isPathWithin } from '../utils/chainStorageManagerShared';
 import {
   PARTIAL_SYNC_STAGED_DB_INVALID_CODE,
-  PartialSyncStageErrorFactory,
   statRequiredPath,
 } from './mithrilPartialSyncPreflight';
+import { createPartialSyncStageError } from './mithrilErrors';
 
 export type PartialSyncStagingPaths = {
   rootPath: string;
@@ -23,14 +23,13 @@ export const PARTIAL_SYNC_ALLOWED_INSTALL_ENTRIES = [
 
 export async function preparePartialSyncStagingDirectory(
   rootPath: string,
-  managedChainPath: string,
-  createStageError: PartialSyncStageErrorFactory
+  managedChainPath: string
 ): Promise<PartialSyncStagingPaths> {
   const resolvedManagedChainPath = path.resolve(managedChainPath);
   const resolvedRootPath = path.resolve(rootPath);
 
   if (isPathWithin(resolvedManagedChainPath, resolvedRootPath)) {
-    throw createStageError(
+    throw createPartialSyncStageError(
       'preparing',
       'The partial sync staging directory must be outside the managed chain path.',
       'PARTIAL_SYNC_STAGING_INSIDE_MANAGED_CHAIN'
@@ -52,19 +51,17 @@ export async function preparePartialSyncStagingDirectory(
 }
 
 export async function validateStagedDownloadOutput(
-  stagingPaths: PartialSyncStagingPaths,
-  createStageError: PartialSyncStageErrorFactory
+  stagingPaths: PartialSyncStagingPaths
 ): Promise<void> {
   const dbStats = await statRequiredPath(
     stagingPaths.dbPath,
     'Mithril partial sync did not produce the expected staged db directory.',
-    createStageError,
     'verifying',
     PARTIAL_SYNC_STAGED_DB_INVALID_CODE
   );
 
   if (!dbStats.isDirectory()) {
-    throw createStageError(
+    throw createPartialSyncStageError(
       'verifying',
       'Mithril partial sync did not produce the expected staged db directory.',
       PARTIAL_SYNC_STAGED_DB_INVALID_CODE
@@ -86,7 +83,6 @@ export async function validateStagedDownloadOutput(
     const entryStats = await statRequiredPath(
       entryPath,
       `Mithril partial sync staged output is missing ${entry.relativePath}.`,
-      createStageError,
       'verifying',
       PARTIAL_SYNC_STAGED_DB_INVALID_CODE
     );
@@ -97,7 +93,7 @@ export async function validateStagedDownloadOutput(
         : entryStats.isFile();
 
     if (!isExpectedType) {
-      throw createStageError(
+      throw createPartialSyncStageError(
         'verifying',
         `Mithril partial sync staged output has an invalid ${entry.relativePath} entry.`,
         PARTIAL_SYNC_STAGED_DB_INVALID_CODE
@@ -107,8 +103,7 @@ export async function validateStagedDownloadOutput(
 }
 
 export async function validateConvertedStagedOutput(
-  dbPath: string,
-  createStageError: PartialSyncStageErrorFactory
+  dbPath: string
 ): Promise<void> {
   const topLevelEntries = (await fs.readdir(dbPath)).sort();
   const expectedEntries = [...PARTIAL_SYNC_ALLOWED_INSTALL_ENTRIES].sort();
@@ -117,7 +112,7 @@ export async function validateConvertedStagedOutput(
     topLevelEntries.length !== expectedEntries.length ||
     topLevelEntries.some((entry, index) => entry !== expectedEntries[index])
   ) {
-    throw createStageError(
+    throw createPartialSyncStageError(
       'installing',
       `Mithril partial sync staged output must contain exactly ${expectedEntries.join(', ')}.`,
       PARTIAL_SYNC_STAGED_DB_INVALID_CODE

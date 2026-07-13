@@ -6,6 +6,8 @@ import {
   MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL,
   MITHRIL_PARTIAL_SYNC_RESTART_NORMAL_CHANNEL,
   MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL,
+  MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL,
+  MITHRIL_PARTIAL_SYNC_FINALIZE_CHANNEL,
 } from '../../common/ipc/api';
 import type {
   MithrilPartialSyncStartRendererRequest,
@@ -18,8 +20,11 @@ import type {
   MithrilPartialSyncRestartNormalMainResponse,
   MithrilPartialSyncWipeAndFullSyncRendererRequest,
   MithrilPartialSyncWipeAndFullSyncMainResponse,
+  MithrilPartialSyncAvailabilityRendererRequest,
+  MithrilPartialSyncAvailabilityMainResponse,
+  MithrilPartialSyncFinalizeRendererRequest,
+  MithrilPartialSyncFinalizeMainResponse,
 } from '../../common/ipc/api';
-import type { MithrilPartialSyncStatusSnapshot } from '../../common/types/mithril-partial-sync.types';
 import { getMithrilController } from '../mithril/MithrilController';
 
 const mithrilPartialSyncStartChannel: MainIpcChannel<
@@ -47,28 +52,15 @@ const mithrilPartialSyncWipeAndFullSyncChannel: MainIpcChannel<
   MithrilPartialSyncWipeAndFullSyncMainResponse
 > = new MainIpcChannel(MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL);
 
-export const getMithrilPartialSyncStatus = () =>
-  getMithrilController().getPartialSyncStatus();
+const mithrilPartialSyncAvailabilityChannel: MainIpcChannel<
+  MithrilPartialSyncAvailabilityRendererRequest,
+  MithrilPartialSyncAvailabilityMainResponse
+> = new MainIpcChannel(MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL);
 
-export const isMithrilPartialSyncActive = () =>
-  getMithrilController().isPartialSyncActive();
-
-export const setMithrilPartialSyncActiveProvider = (
-  _provider: () => boolean
-) => {};
-
-export const setMithrilPartialSyncStatus = (
-  status: MithrilPartialSyncStatusSnapshot
-) => {
-  getMithrilController().setPartialSyncStatus(status);
-  return status;
-};
-
-export const onMithrilPartialSyncStatus = (
-  handler: (status: MithrilPartialSyncStatusSnapshot) => void
-) => {
-  return getMithrilController().onPartialSyncStatus(handler);
-};
+const mithrilPartialSyncFinalizeChannel: MainIpcChannel<
+  MithrilPartialSyncFinalizeRendererRequest,
+  MithrilPartialSyncFinalizeMainResponse
+> = new MainIpcChannel(MITHRIL_PARTIAL_SYNC_FINALIZE_CHANNEL);
 
 let mithrilPartialSyncRequestsInitialized = false;
 
@@ -105,10 +97,10 @@ export const handleMithrilPartialSyncRequests = (window: BrowserWindow) => {
   mithrilPartialSyncWipeAndFullSyncChannel.onRequest(async () => {
     await controller.wipeAndFullSyncFromPartialSync();
   });
-};
-
-export const emitMithrilPartialSyncStatus = async (
-  status: MithrilPartialSyncStatusSnapshot
-): Promise<void> => {
-  await getMithrilController().broadcastPartialSyncStatus(status);
+  mithrilPartialSyncAvailabilityChannel.onRequest(async () =>
+    controller.getPartialSyncAvailability()
+  );
+  mithrilPartialSyncFinalizeChannel.onRequest(async () => {
+    await controller.finalizePartialSync();
+  });
 };
