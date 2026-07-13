@@ -64,6 +64,7 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
   isMithrilPartialSyncEnabled: true,
   isMithrilPartialSyncSignificantlyBehind: true,
   isMithrilPartialSyncProbeFailed: false,
+  isMithrilPartialSyncAtOrPastSnapshot: false,
   isMithrilBootstrapActive: false,
   onStartMithrilPartialSync: action('onStartMithrilPartialSync'),
   onOpenStateDirectory: action('onOpenStateDirectory'),
@@ -115,6 +116,7 @@ function AutoOpenedPartialSyncConfirmation() {
         isMithrilPartialSyncWorking={false}
         isSignificantlyBehind
         isProbeFailed={false}
+        isAtOrPastSnapshot={false}
         behindByEpochs={1}
         onRestoreFocus={action('onRestoreFocus')}
         onStartMithrilPartialSync={async () => {
@@ -131,6 +133,13 @@ storiesOf('Nodes / Diagnostic', module)
   .add('Partial Sync CTA Blocked', () => (
     <DaedalusDiagnostics {...baseProps} isMithrilBootstrapActive />
   ))
+  .add('Partial Sync At Or Past Snapshot', () => (
+    <DaedalusDiagnostics
+      {...baseProps}
+      isMithrilPartialSyncSignificantlyBehind={false}
+      isMithrilPartialSyncAtOrPastSnapshot
+    />
+  ))
   .add('Partial Sync Confirmation', () => (
     <AutoOpenedPartialSyncConfirmation />
   ));
@@ -139,6 +148,10 @@ storiesOf('Nodes / Diagnostic / Mithril Partial Sync Confirmation', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Known Epochs Behind', renderConfirmationStory({ behindByEpochs: 42 }))
   .add('Unknown Behind', renderConfirmationStory())
+  .add(
+    'At Or Past Snapshot',
+    renderConfirmationStory({ isAtOrPastSnapshot: true })
+  )
   .add(
     'Start Error',
     renderConfirmationStory({

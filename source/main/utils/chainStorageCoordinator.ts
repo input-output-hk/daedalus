@@ -31,11 +31,13 @@ type PartialSyncHandlers = {
 
 type PartialSyncStartupHandler = () => Promise<unknown>;
 type PartialSyncNodeStopHandler = () => Promise<void>;
+type PartialSyncNodeStateGetter = () => CardanoNodeState | null | undefined;
 
 type PartialSyncDependencies = {
   handlers: PartialSyncHandlers;
   nodeStopHandler?: PartialSyncNodeStopHandler;
   startupHandler?: PartialSyncStartupHandler;
+  getNodeState?: PartialSyncNodeStateGetter;
 };
 
 const PARTIAL_SYNC_DISABLED_CODE = 'PARTIAL_SYNC_DISABLED';
@@ -227,9 +229,14 @@ class ChainStorageCoordinator {
         this._assertPartialSyncStartAllowed();
         dependencies.handlers.assertStartAllowed();
 
+        // The click-time snapshot can go stale while this call waits on the
+        // mutation lock, so prefer the live node state. This only narrows the
+        // race window: process exit does not guarantee file handles are released.
         const nodeState = await this._ensureNodeStoppedForPartialSync(
           dependencies.nodeStopHandler,
-          options?.nodeState
+          dependencies.getNodeState
+            ? dependencies.getNodeState()
+            : options?.nodeState
         );
 
         const layoutResult =

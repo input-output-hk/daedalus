@@ -100,7 +100,7 @@ false claim is made in either direction. Locked strings in Step D1 below.
 `MithrilPartialSyncRecommendation.tsx:64-69` for `variant === 'at-or-past-snapshot'`. LOCKED EN
 (product sign-off 2026-07-09; offer-framed per the resolution above), JA still round-2 draft:
 - EN: `Your node is at or past the latest Mithril snapshot. Blockchain Sync will finish the remaining blocks on its own. If sync seems slow or runs into verification issues, Mithril Sync can restore a verified ledger state.`
-- JA (draft, round 2): `ノードは最新のMithrilスナップショットに到達しているか、それを超えています。残りのブロックはBlockchain Syncが自動的に同期します。同期が遅い場合や検証に問題がある場合は、Mithril Syncで検証済みの台帳状態を復元できます。`
+- JA (draft, round 2): `ノードは最新のMithrilスナップショットに到達しているか、それを超えています。残りのブロックはブロックチェーン同期が自動的に同期します。同期が遅い場合や検証に問題がある場合は、Mithril同期で検証済みの台帳状態を復元できます。`
 
 **Confirmation body — new variant `atOrPastSnapshot`** (Extra #3). In `MithrilPartialSyncConfirmation.tsx`
 the body currently chooses `behind` (epochs finite) vs `behindUnknown` (`:89-93`). At `gap <= 0` today it
@@ -114,7 +114,7 @@ offer framing as the tooltip, but the final clause describes the action since th
 clicked "Mithril Sync"; do **not** re-open a "you don't need this" argument on a dialog the user opened
 on purpose. JA still round-2 draft:
 - EN: `Your node is at or past the latest Mithril snapshot, so Blockchain Sync can finish the remaining blocks on its own. If sync seems slow or runs into verification issues, continuing will restore a verified ledger state at the snapshot position.`
-- JA (draft, round 2): `ノードは最新のMithrilスナップショットに到達しているか、それを超えているため、残りのブロックはBlockchain Syncが同期できます。同期が遅い場合や検証に問題がある場合は、続行するとスナップショット位置の検証済み台帳状態が復元されます。`
+- JA (draft, round 2): `ノードは最新のMithrilスナップショットに到達しているか、それを超えているため、残りのブロックはブロックチェーン同期が同期できます。同期が遅い場合や検証に問題がある場合は、続行するとスナップショット位置の検証済み台帳状態が復元されます。`
 
 **Reconciliation with CAT-B B3 and the existing `near-tip` copy:** `recommendationNearTip` (line 164)
 now stays scoped to `0 < gap < threshold` and keeps its "close to the blockchain tip, you can still use

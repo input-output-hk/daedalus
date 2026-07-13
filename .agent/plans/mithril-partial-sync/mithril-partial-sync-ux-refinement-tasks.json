@@ -2,9 +2,9 @@
   "metadata": {
     "title": "Mithril Partial Sync UX Refinement Tasks (Phase 2)",
     "created": "2026-06-19",
-    "updated": "2026-07-03",
-    "version": "1.12.0",
-    "totalTasks": 25,
+    "updated": "2026-07-12",
+    "version": "1.13.0",
+    "totalTasks": 28,
     "prdReference": ".agent/plans/mithril-partial-sync/mithril-partial-sync-ux-refinement-prd.md",
     "description": "High-level, validation-gated implementation plan for the Mithril partial sync UX refinement sprint (issue #10 Phase 2). The backend, IPC, store, and overlay already exist on feat/mithril-partial-sync-ux-refinement; this sprint refines the UX to (a) prompt the user when significantly behind the tip and (b) close the 35 research gaps plus the 13 issue-#10-comment items. Tasks are organized so task-ux-1xx maps to phase-1, task-ux-2xx to phase-2, and so on, matching the task-plans-ux-refinement/phase-N subdirectory layout.",
     "sourceFiles": [
@@ -793,7 +793,7 @@
     {
       "id": "phase-7",
       "name": "Backend-Correctness Re-validation And Manual QA / Rollout Gate",
-      "description": "The referenced deployment-readiness gates from PRD D7. This PRD references but does NOT fully re-specify these; they require operator/user involvement. The branch does not merge to master / ship until both these gates and the UX work above are complete.",
+      "description": "The referenced deployment-readiness gates from PRD D7. This PRD references but does NOT fully re-specify these; they require operator/user involvement. The branch does not merge to master / ship until both these gates and the UX work above are complete. After the gates passed, the pre-merge waves also ride in this phase: PR #3337 review remediation (task-ux-703), the code-quality remediation wave (task-ux-704), the retrospective ledger-replay interrupt work (task-ux-705), and the copy standardization + cleanup wave (task-ux-706).",
       "riskLevel": "high",
       "tasks": [
         {
@@ -1267,14 +1267,147 @@
             "yarn check:all green; smoke-test cheat sheet updated for changed behaviors (DD-703-7).",
             "task-ux-703-pr-comment-checklist.md response text matches what was implemented (DD-703-8)."
           ]
+        },
+        {
+          "id": "task-ux-704",
+          "title": "Code-quality remediation wave from the 2026-07-04 deep branch review (CAT-A-H)",
+          "description": "Remediate the verified findings of the 2026-07-04 deep code-quality review of the whole branch (diff base 48b557a02), cross-validated by an adversarial 4-agent verification pass against HEAD and the locked design decisions (DD-703-1..14, PRD locked boundaries, ADR D-702a-1/2). Eight behavior-preserving CATs, one commit each: CAT-A dead IPC facade + dead main-process plumbing (pure deletions); CAT-B main-process structure (mithril->ipc->mithril import-cycle break via injected NodeStartupDependencies, stage-error class moved to mithrilErrors.ts, gate-decline dedupe); CAT-C chain-storage/disk layer (de-fork getManagedChainPath, inert chainEmpty branch, dead API, mutation-lock dedupe); CAT-D type-contract tightening (error-code union, certifiedEpoch, typed observables, status-guard casts); CAT-E renderer cleanups (dead showMithrilPartialSyncConfirmationOnOpen deep-link pipeline, forged ChainStorageValidation, picker/message hygiene); CAT-F storybook hardening (anchor-id constant, copy-proof story seam, typed stories, ?? fallbacks); CAT-G repo-root agent-tooling debris removal; CAT-H comment cleanup. Behavior-preserving up to four documented accepted deltas; larger refactors were explicitly deferred to post-merge follow-ups.",
+          "status": "completed",
+          "completedAt": "2026-07-06",
+          "priority": "high",
+          "estimatedHours": 12,
+          "interactionMode": "autonomous",
+          "dependencies": [
+            "task-ux-703"
+          ],
+          "targetPaths": [
+            "source/main/ipc/mithrilPartialSyncChannel.ts",
+            "source/main/ipc/mithrilBootstrapChannel.ts",
+            "source/main/mithril/MithrilPartialSyncService.ts",
+            "source/main/mithril/MithrilController.ts",
+            "source/main/mithril/MithrilStartupGate.ts",
+            "source/main/mithril/mithrilCommandRunner.ts",
+            "source/main/mithril/mithrilErrors.ts",
+            "source/main/mithril/mithrilPartialSyncNodeStartup.ts",
+            "source/main/utils/chainStorageManager.ts",
+            "source/main/utils/chainStoragePathResolver.ts",
+            "source/main/utils/handleDiskSpace.ts",
+            "source/common/types/mithril-partial-sync.types.ts",
+            "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+            "source/renderer/app/components/status/DaedalusDiagnostics.tsx",
+            "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
+            "storybook/stories/nodes/status/Diagnostics.stories.tsx",
+            "storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx",
+            "storybook/stories/loading/_support/mithrilFixtures.ts"
+          ],
+          "implementationNotes": [
+            "Canonical plan: task-plans-ux-refinement/phase-7/task-ux-704.md (thin master + one plan doc per CAT); executed in letter order A->H under seam contracts S1-S4 (S1 channel keep-list, S2 stage-error home then typing, S3 stories seam then retype, S4 CAT-H rides last); per-CAT commit + review record in task-ux-704-impl-review.md (eight commits 519b69ff5..73112b753, all landed 2026-07-06, each approved by the adversarial review panel).",
+            "Only findings that survived verification AND rated better than diminishing returns were in scope; the four accepted behavior deltas are C-1's probe-failure error path (a strict correctness improvement), B-3's transient 'already in progress' rejection window during cancel teardown, CAT-C's one new warn line (the _getActiveCustomPath failure), and CAT-D Step 1.7's story-visible removal of the story-invented error-code line.",
+            "Verified-but-deferred follow-ups (e.g. A1 service file split, D2 availability push model, E1 finalize-orchestration relocation) and refuted findings (C7 Windows path-casing) are inventoried in the master doc; do not re-raise."
+          ],
+          "testCases": [
+            "Per-CAT verification gates recorded in task-ux-704-impl-review.md; existing Jest/Storybook suites stay green (behavior-preserving wave)",
+            "CAT-A nets 12 insertions / 277 deletions with no IPC channel names, emitted status shapes, or user-visible copy changed"
+          ],
+          "acceptance": [
+            "All eight CATs landed as one commit each in letter order honoring seam contracts S1-S4.",
+            "No behavior change beyond the four documented accepted deltas.",
+            "Deferred and refuted findings are recorded in the master doc as post-merge follow-up candidates."
+          ]
+        },
+        {
+          "id": "task-ux-705",
+          "title": "Mithril interrupt path for nodes stuck in a full ledger replay (retrospective capture)",
+          "description": "Retrospective record of six commits authored by Samuel Leathers (2026-07-06 through 2026-07-09) directly on the branch, closing the failure mode isSignificantlyBehind cannot see: a node with recent on-disk blockchain data but missing/corrupted/incompatible ledger state has a small immutable gap, so no offer surfaced, yet it drops into a full from-genesis ledger replay that Mithril Sync could short-circuit. WI-1 un-gates the proactive prompt (isSignificantlyBehind becomes the sole gate; the fresh-install probe maps a missing immutable/ directory to local position 0); WI-2 adds the inline 'Use Mithril Sync instead' interrupt button below the replay progress table, revealed behind a 2 s debounce to kill flicker; WI-3 makes derivePartialSyncRange return {start: N, end: N} instead of throwing PARTIAL_SYNC_NO_CERTIFIED_RANGE when local immutables are at/ahead of the certified tip (deliberate ledger-only restore under --allow-override); WI-4 suppresses the 10-minute disk-space poll during working partial-sync phases and triggers node start on the finalizing transition (fixes the ~8.5-minute post-install hang).",
+          "status": "completed",
+          "completedAt": "2026-07-09",
+          "priority": "high",
+          "estimatedHours": 6,
+          "dependencies": [
+            "task-ux-704"
+          ],
+          "targetPaths": [
+            "source/renderer/app/containers/loading/MithrilProactivePromptContainer.tsx",
+            "source/renderer/app/containers/loading/SyncingConnectingPage.tsx",
+            "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.tsx",
+            "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.tsx",
+            "source/main/mithril/MithrilPartialSyncService.ts",
+            "source/main/mithril/mithrilPartialSyncPreflight.ts",
+            "source/main/mithril/MithrilController.ts",
+            "source/main/utils/handleDiskSpace.ts",
+            "source/common/types/mithril-partial-sync.types.ts",
+            "storybook/stories/nodes/syncing/SyncingConnecting.stories.tsx"
+          ],
+          "implementationNotes": [
+            "Canonical doc: task-plans-ux-refinement/phase-7/task-ux-705.md -- a retrospective capture of shipped work, not a plan-ahead task; commits are identified by subject line and ordinal because this branch rebases frequently; net diffstat 13 files, +235/-31.",
+            "Interrupt-button eligibility is isPartialSyncEnabled && replayProgress < 100 && onMithrilSync != null, rendered only after holding continuously for MITHRIL_BUTTON_DEBOUNCE_MS (2000 ms); the pending timer is cleared when eligibility drops and on unmount (commits 2 + 5 + 6).",
+            "New i18n message loading.screen.mithrilSyncInterrupt = 'Use Mithril Sync instead'; its message-structure extraction and JA rendering landed in task-ux-706 CAT-F.",
+            "Residual gaps recorded in the doc: no automated coverage yet for the WI-2 visibility/debounce matrix beyond Storybook knobs; WI-3 relies on --allow-override tolerating the one overlapping immutable chunk; Windows manual QA for the replay-interrupt flow is outstanding."
+          ],
+          "testCases": [
+            "Proactive prompt renders the generic behind-the-tip fallback when behindByEpochs is undefined (anti-flash specs reframed in MithrilProactivePromptContainer.spec.tsx)",
+            "Fresh install with a missing/empty immutable/ directory yields local position 0 and a working availability probe",
+            "derivePartialSyncRange returns {start: N, end: N} when local immutables are at/ahead of the certified tip",
+            "Disk-space check serves a stale response during working partial-sync phases; node start fires edge-guarded on the finalizing transition"
+          ],
+          "acceptance": [
+            "All six commits are on the branch (last: 'fix(loading): debounce Mithril sync button during ledger replay', 2026-07-09).",
+            "The replay screen offers an always-available, debounced Mithril interrupt affordance whenever the feature is enabled and replay is incomplete.",
+            "Intentional behavior deltas are documented in the doc's Behavior deltas section."
+          ]
+        },
+        {
+          "id": "task-ux-706",
+          "title": "Pre-merge copy standardization + cleanup wave (JA review, code-review comments, extra punch-list)",
+          "description": "Consolidated pre-merge consistency/polish wave sourced from four threads: the 2026-07-03 JA translator review, its resolutions, the extra punch-list (code-review comments + manual-QA findings), and the validated PR #3337 follow-up review (accepted finding N1). Seven CATs under locked decisions DD-706-1..10: CAT-A three-term sync vocabulary sweep (Mithril Sync / Blockchain Sync / Blockchain Sync from Genesis with native-JA renderings, DD-706-1) including the native startup-dialog literals; CAT-B JA consistency fixes (page name aligned to the Help-menu label, shutdown and tip renderings) plus the handoff-note Ctrl/Cmd platform substitution; CAT-C 'Fast sync:' -> 'Ledger state:' relabel (DD-706-2); CAT-D at/past-snapshot variant split (isAtOrPastSnapshot threaded from getPartialSyncBehindness to tooltip + confirmation, DD-706-6) plus the moving-stage caution; CAT-E button-overflow CSS fix on three surfaces; CAT-F code-review cluster (dead PARTIAL_SYNC_NO_CERTIFIED_RANGE removal per DD-706-3, broken service spec fix, mithrilSyncInterrupt message extraction, DD-706-8 unknown/malformed-snapshot-size preflight fail-safe); CAT-G Windows storage-picker mixed-separator display fix + stop->download race guard.",
+          "status": "completed",
+          "completedAt": "2026-07-12",
+          "priority": "high",
+          "estimatedHours": 12,
+          "interactionMode": "guided",
+          "dependencies": [
+            "task-ux-705"
+          ],
+          "targetPaths": [
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
+            "source/main/mithril/MithrilPartialSyncService.ts",
+            "source/main/mithril/mithrilPartialSyncPreflight.ts",
+            "source/main/mithril/mithrilPartialSyncNodeStartup.ts",
+            "source/common/types/mithril-partial-sync.types.ts",
+            "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+            "source/renderer/app/components/status/MithrilPartialSyncSection.tsx",
+            "source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay.tsx",
+            "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt.tsx",
+            "source/renderer/app/components/chain-storage/ChainStorageLocationPicker.tsx"
+          ],
+          "implementationNotes": [
+            "Canonical plan: task-plans-ux-refinement/phase-7/task-ux-706.md (thin master + CAT docs A-G; decisions DD-706-1..10; build reviewed in task-ux-706-impl-review.md).",
+            "All seven CATs landed, verified per the per-CAT gates, and code-review approved (pass 1, 2026-07-12); CAT-A and CAT-E closed completed-with-deviations, documented in the master doc's Final outcome section.",
+            "First-pass JA drafts knowingly shipped pending translator round 2 per DD-706-10 (the DD-706-1 family renderings, the ledger-state label, the three CAT-D drafts, and the interrupt-button string); merge is not gated on round 2.",
+            "Follow-ups tracked, none dropped: the Tier-3 snapshot-size plumbing, the CAT-G G2 bounded-settle deep fix (the live re-query is a window-narrowing placeholder), the smoke-test cheat-sheet update (Extra #7), the final pre-push gates (nix fmt + full-tree lint/prettier), and the CAT-E visual eyeball pass.",
+            "Tracker provenance: this tracker had stopped at task-ux-703; a minimal completed task-706 entry was added at the 2026-07-12 close-out with totals left as found, then task-ux-704/705 were backfilled and metadata/summary reconciled in v1.13.0."
+          ],
+          "testCases": [
+            "Service spec green 78/78 after the CAT-F primary-test rewrite",
+            "Jest test pins the macOS Cmd+D branch of the handoff-note shortcut substitution",
+            "CAT-G stop->download race reproduced deterministically at spec level before the guard was added",
+            "Zero PARTIAL_SYNC_NO_CERTIFIED_RANGE references repo-wide after the live reachability re-check"
+          ],
+          "acceptance": [
+            "The DD-706-1 three-term vocabulary is applied across EN+JA locales with no stray 'standard sync' family strings remaining.",
+            "The at/past-snapshot state renders its own variant copy instead of the near-tip state (DD-706-6).",
+            "The disk preflight fails safe on unknown/malformed snapshot size (DD-706-8, PR #3337 N1).",
+            "The JA round-2 hand-off package is produced; pending strings are flagged, and merge is not gated on round 2."
+          ]
         }
       ]
     }
   ],
   "summary": {
     "totalPhases": 7,
-    "totalTasks": 25,
-    "estimatedTotalHours": 125,
+    "totalTasks": 28,
+    "estimatedTotalHours": 169,
     "criticalPath": [
       "task-ux-101",
       "task-ux-102",
@@ -1293,7 +1426,10 @@
       "task-ux-702c",
       "task-ux-702d",
       "task-ux-702",
-      "task-ux-703"
+      "task-ux-703",
+      "task-ux-704",
+      "task-ux-705",
+      "task-ux-706"
     ],
     "keyFiles": [
       "source/common/types/mithril-partial-sync.types.ts",

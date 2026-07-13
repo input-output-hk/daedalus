@@ -1,103 +1,80 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
+import { withKnobs } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
-import { intlShape } from 'react-intl';
 import type { MithrilProgressItem } from '../../../../source/common/types/mithril-bootstrap.types';
 import type {
   MithrilPartialSyncError,
   MithrilPartialSyncStatus,
 } from '../../../../source/common/types/mithril-partial-sync.types';
 import MithrilPartialSyncOverlay from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay';
-import { DOWNLOAD_PROGRESS_ANCHOR_ID } from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator';
-import MithrilBootstrapMessages from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages';
-import type { Intl } from '../../../../source/renderer/app/types/i18nTypes';
 import StoryDecorator from '../../_support/StoryDecorator';
 import LoadingOverlayStoryFrame from '../_support/LoadingOverlayStoryFrame';
+import {
+  loadingBooleanKnob,
+  loadingNumberKnob,
+  loadingRadiosKnob,
+  loadingSelectKnob,
+} from '../_support/loadingKnobs';
 
-const getActiveProgressItems = (intl: Intl): Array<MithrilProgressItem> => [
-  {
-    id: 'prepare',
-    label: intl.formatMessage(MithrilBootstrapMessages.stepPreparing),
-    state: 'completed',
-  },
-  {
-    id: 'download',
-    label: intl.formatMessage(MithrilBootstrapMessages.stepDownloading),
-    state: 'completed',
-  },
-  {
-    id: 'verify',
-    label: intl.formatMessage(
-      MithrilBootstrapMessages.progressVerifyingDatabase
-    ),
-    state: 'completed',
-  },
-  {
-    id: 'convert',
-    label: intl.formatMessage(MithrilBootstrapMessages.progressConversion),
-    state: 'active',
-  },
-  {
-    id: 'install',
-    label: intl.formatMessage(MithrilBootstrapMessages.progressInstallSnapshot),
-    state: 'pending',
-  },
-];
+// The partial-sync service emits one cumulative progress item per stage, in
+// this order, with label always equal to the id (the renderer's
+// MithrilStepIndicator owns the user-facing copy, keyed by id). Stories must
+// send this wire format so a missing id→copy mapping fails loudly as a raw id.
+const PARTIAL_SYNC_STAGES = [
+  'preparing',
+  'downloading',
+  'verifying',
+  'converting',
+  'installing',
+  'finalizing',
+] as const;
 
-const getCompletedProgressItems = (intl: Intl): Array<MithrilProgressItem> =>
-  getActiveProgressItems(intl).map((item) => ({
-    ...item,
-    state: 'completed' as const,
-  }));
+type PartialSyncStage = (typeof PARTIAL_SYNC_STAGES)[number];
 
-const getStoppingProgressItems = (intl: Intl): Array<MithrilProgressItem> =>
-  getActiveProgressItems(intl).map((item) => ({
-    ...item,
-    state: 'pending' as const,
-  }));
-
-// downloading frame: disk-check + certificate-chain completed, snapshot-download
-// anchor active. The active id must be the imported DOWNLOAD_PROGRESS_ANCHOR_ID
-// or MithrilStepIndicator silently drops the combined progress bar.
-const getDownloadingProgressItems = (
-  intl: Intl
-): Array<MithrilProgressItem> => [
-  {
-    id: 'step-1',
-    label: intl.formatMessage(MithrilBootstrapMessages.progressDiskCheck),
-    state: 'completed' as const,
-  },
-  {
-    id: 'step-2',
-    label: intl.formatMessage(
-      MithrilBootstrapMessages.progressCertificateChain
-    ),
-    state: 'completed' as const,
-  },
-  {
-    id: DOWNLOAD_PROGRESS_ANCHOR_ID,
-    label: intl.formatMessage(
-      MithrilBootstrapMessages.progressDownloadingSnapshot
-    ),
-    state: 'active' as const,
-  },
-];
-
-const getProgressItemsForStory = (
-  intl: Intl,
-  status: MithrilPartialSyncStatus,
-  completed?: boolean
+const getStageItems = (
+  reachedStage: PartialSyncStage,
+  reachedState: MithrilProgressItem['state']
 ): Array<MithrilProgressItem> => {
-  if (completed || status === 'completed') {
-    return getCompletedProgressItems(intl);
+  const reachedIndex = PARTIAL_SYNC_STAGES.indexOf(reachedStage);
+  return PARTIAL_SYNC_STAGES.slice(0, reachedIndex + 1).map((stage, index) => ({
+    id: stage,
+    label: stage,
+    state: index < reachedIndex ? ('completed' as const) : reachedState,
+  }));
+};
+
+const isPartialSyncStage = (value: string): value is PartialSyncStage =>
+  (PARTIAL_SYNC_STAGES as ReadonlyArray<string>).includes(value);
+
+// Mirrors the backend's per-status item state: nothing before start(),
+// stage-cumulative while working, carried forward unchanged into
+// starting-node/completed, the reached stage marked error on failure, a lone
+// cleanup item while cancelling, and reset to empty on cancelled.
+const getProgressItemsForStory = (
+  status: MithrilPartialSyncStatus,
+  error?: MithrilPartialSyncError | null
+): Array<MithrilProgressItem> => {
+  if (status === 'stopping-node' || status === 'cancelled') {
+    return [];
   }
-  if (status === 'stopping-node') {
-    return getStoppingProgressItems(intl);
+  if (status === 'cancelling') {
+    return [{ id: 'cleanup', label: 'cleanup', state: 'active' }];
   }
-  if (status === 'downloading') {
-    return getDownloadingProgressItems(intl);
+  if (status === 'starting-node' || status === 'completed') {
+    return getStageItems('finalizing', 'active');
   }
-  return getActiveProgressItems(intl);
+  if (status === 'failed') {
+    const stage =
+      error?.stage && isPartialSyncStage(error.stage)
+        ? error.stage
+        : 'preparing';
+    return getStageItems(stage, 'error');
+  }
+  if (isPartialSyncStage(status)) {
+    return getStageItems(status, 'active');
+  }
+  return [];
 };
 
 const cancelledError: MithrilPartialSyncError = {
@@ -166,8 +143,8 @@ const baseProps = {
   filesDownloaded: 7,
   filesTotal: 9,
   elapsedSeconds: 645,
-  ancillaryBytesDownloaded: 0,
-  ancillaryBytesTotal: 0,
+  ancillaryBytesDownloaded: 850 * 1024 * 1024,
+  ancillaryBytesTotal: 2200 * 1024 * 1024,
   error: null,
   canRetry: false,
   canRestartNormally: false,
@@ -181,10 +158,6 @@ const baseProps = {
   onOpenExternalLink: action('onOpenExternalLink'),
 };
 
-interface Context {
-  intl: Intl;
-}
-
 interface StoryProps {
   status: MithrilPartialSyncStatus;
   error?: MithrilPartialSyncError | null;
@@ -194,49 +167,118 @@ interface StoryProps {
   filesDownloaded?: number;
   filesTotal?: number;
   elapsedSeconds?: number;
-  completed?: boolean;
+  ancillaryComplete?: boolean;
   onDismissCompleted?: () => void | Promise<void>;
 }
 
-function MithrilPartialSyncOverlayStory(props: StoryProps, context: Context) {
-  const { intl } = context;
+function MithrilPartialSyncOverlayStory(props: StoryProps) {
+  const { ancillaryBytesTotal } = baseProps;
+  const error = props.error || null;
 
   return (
     <MithrilPartialSyncOverlay
       {...baseProps}
       status={props.status}
-      error={props.error || null}
+      error={error}
       canRetry={props.canRetry || false}
       canRestartNormally={props.canRestartNormally || false}
       canWipeAndFullSync={props.canWipeAndFullSync || false}
       onDismissCompleted={
         props.onDismissCompleted || baseProps.onDismissCompleted
       }
+      // The real store pins startedAt once per run and the progress view ticks
+      // its own timer from it; wiring the knob through startedAt (instead of
+      // the wire-only transferProgress.elapsedSeconds, which the overlay
+      // ignores) reproduces the live ticking timer.
+      startedAt={
+        Date.now() -
+        loadingNumberKnob(
+          'elapsedSeconds',
+          props.elapsedSeconds ?? baseProps.elapsedSeconds
+        ) *
+          1000
+      }
       transferProgress={{
-        filesDownloaded: props.filesDownloaded ?? baseProps.filesDownloaded,
-        filesTotal: props.filesTotal ?? baseProps.filesTotal,
-        elapsedSeconds: props.elapsedSeconds ?? baseProps.elapsedSeconds,
-        ancillaryBytesDownloaded: baseProps.ancillaryBytesDownloaded,
-        ancillaryBytesTotal: baseProps.ancillaryBytesTotal,
+        filesDownloaded: loadingNumberKnob(
+          'filesDownloaded',
+          props.filesDownloaded ?? baseProps.filesDownloaded
+        ),
+        filesTotal: loadingNumberKnob(
+          'filesTotal',
+          props.filesTotal ?? baseProps.filesTotal
+        ),
+        ancillaryBytesDownloaded: props.ancillaryComplete
+          ? ancillaryBytesTotal
+          : baseProps.ancillaryBytesDownloaded,
+        ancillaryBytesTotal,
       }}
-      progressItems={getProgressItemsForStory(
-        intl,
-        props.status,
-        props.completed
-      )}
+      progressItems={getProgressItemsForStory(props.status, error)}
     />
   );
 }
 
-MithrilPartialSyncOverlayStory.contextTypes = {
-  intl: intlShape.isRequired,
+const interactiveStatusOptions: Record<string, MithrilPartialSyncStatus> = {
+  'Stopping Node': 'stopping-node',
+  Cancelling: 'cancelling',
+  Preparing: 'preparing',
+  Downloading: 'downloading',
+  Verifying: 'verifying',
+  Converting: 'converting',
+  Installing: 'installing',
+  Finalizing: 'finalizing',
+  'Starting Node': 'starting-node',
+  Completed: 'completed',
+  Failed: 'failed',
+  Cancelled: 'cancelled',
+};
+
+const interactiveErrorPresets: Record<string, MithrilPartialSyncError | null> =
+  {
+    none: null,
+    cancelled: cancelledError,
+    'restart-allowed': restartAllowedError,
+    'wipe-only': wipeOnlyError,
+    downloading: downloadingError,
+    converting: convertingError,
+    installing: installingError,
+    finalizing: finalizingError,
+  };
+
+const interactiveErrorOptions = {
+  None: 'none',
+  Cancelled: 'cancelled',
+  'Restart Allowed': 'restart-allowed',
+  'Wipe Only': 'wipe-only',
+  Downloading: 'downloading',
+  Converting: 'converting',
+  Installing: 'installing',
+  Finalizing: 'finalizing',
 };
 
 storiesOf('Loading / Mithril / Partial Sync Overlay', module)
-  .addDecorator((story) => (
+  .addDecorator((story, context) => (
     <StoryDecorator>
-      <LoadingOverlayStoryFrame>{story()}</LoadingOverlayStoryFrame>
+      <LoadingOverlayStoryFrame>
+        {withKnobs(story, context)}
+      </LoadingOverlayStoryFrame>
     </StoryDecorator>
+  ))
+  .add('Interactive', () => (
+    <MithrilPartialSyncOverlayStory
+      status={loadingRadiosKnob(
+        'status',
+        interactiveStatusOptions,
+        'converting'
+      )}
+      error={
+        interactiveErrorPresets[
+          loadingSelectKnob('errorPreset', interactiveErrorOptions, 'none')
+        ]
+      }
+      canRetry={loadingBooleanKnob('canRetry', false)}
+      canRestartNormally={loadingBooleanKnob('canRestartNormally', false)}
+      canWipeAndFullSync={loadingBooleanKnob('canWipeAndFullSync', false)}
+    />
   ))
   .add('Active Progress', () => (
     <MithrilPartialSyncOverlayStory status="converting" />
@@ -273,7 +315,7 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       filesDownloaded={9}
       filesTotal={9}
       elapsedSeconds={845}
-      completed
+      ancillaryComplete
     />
   ))
   .add('Downloading File Count', () => (
@@ -335,7 +377,7 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       filesDownloaded={9}
       filesTotal={9}
       elapsedSeconds={845}
-      completed
+      ancillaryComplete
       onDismissCompleted={() => {
         action('onDismissCompleted')();
         return Promise.reject(new Error('finalize failed'));

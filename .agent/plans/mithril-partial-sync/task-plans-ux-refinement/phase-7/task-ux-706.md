@@ -11,7 +11,8 @@
 - Branch: `feat/mithril-partial-sync-ux-refinement`
 - Planning status: `approved` (decisions locked 2026-07-08/09; plan-review pass complete 2026-07-10 —
   findings resolved per DD-706-9 and folded into this doc + the CAT docs)
-- Build status: `not-started`
+- Build status: `completed` (2026-07-12 — all seven CATs landed, verified, code-review approved;
+  see the Final outcome section)
 - Interaction mode: `guided` — several copy items still need external sign-off (JA translator round 2
   and/or product; see the pending sign-off table) before their strings are final; the plan marks each.
   Everything else is implement-ready.
@@ -44,19 +45,23 @@ Four source threads feed this task:
 
 ### DD-706-1 — Three-term sync vocabulary (supersedes the "standard sync" copy decision)
 
-Replaces the earlier "Mithril Sync vs standard sync" naming. Three canonical names, **each rendered in
-Latin script even inside Japanese copy** (treated as fixed product tokens, idiomatic in JA UIs):
+Replaces the earlier "Mithril Sync vs standard sync" naming. Three canonical names; JA renders each in
+**established native vocabulary** — simple for Japanese users and consistent with the app's existing
+translations. "Mithril" itself stays Latin as a proper noun (matching the existing JA copy, e.g.
+「Mithrilを使えば…」):
 
-| Term | Meaning | Replaces |
-| --- | --- | --- |
-| **Mithril Sync** | Fast verified-snapshot restore (partial or bootstrap) | JA 「Mithril同期」 (all 31 occurrences across 30 keys) |
-| **Blockchain Sync** | Normal block-by-block sync / resume from current tip | "Standard Sync" / 「標準同期」 |
-| **Blockchain Sync from Genesis** | Full sync from block 0 (fresh install / after wipe) | "Sync from genesis" / 「ジェネシスから同期」 |
+| Term | JA rendering | Meaning | Replaces |
+| --- | --- | --- | --- |
+| **Mithril Sync** | 「Mithril同期」 | Fast verified-snapshot restore (partial or bootstrap) | — (already the JA rendering across 30 keys; one outlier button fixed, CAT-A A1) |
+| **Blockchain Sync** | 「ブロックチェーン同期」 | Normal block-by-block sync / resume from current tip | "Standard Sync" / 「標準同期」 |
+| **Blockchain Sync from Genesis** | 「ジェネシスからのブロックチェーン同期」 (name form; sentences use ジェネシスからブロックチェーン同期を実行…) | Full sync from block 0 (fresh install / after wipe) | "Sync from genesis" / 「ジェネシスから同期」 |
 
 Rationale for the split: a partially-synced node that declines Mithril does **not** sync from genesis —
 it resumes from its tip. Calling that "Blockchain Sync" is accurate; reserving "…from Genesis" for the
 true block-0 case (bootstrap decline, wipe-and-restart) keeps the copy honest while still giving the
-slow path one consistent family name. Owned by **CAT-A**.
+slow path one consistent family name — the JA renderings keep the 「ブロックチェーン同期」 family name
+visible in both slow-path terms for the same reason. ブロックチェーン and ジェネシス are the established
+katakana in `ja-JP.json` (36 and 5 pre-existing occurrences respectively). Owned by **CAT-A**.
 
 ### DD-706-2 — Progress label "Fast sync:" → "Ledger state:" / 「台帳状態:」
 
@@ -152,8 +157,8 @@ The remaining open items were grilled and locked; details live in the owning CAT
 - **CAT-C jitter (DD-706-4)** → *superseded 2026-07-10*: plan-review R-1 showed the size plumbing cannot
   smooth the bar (whole-DB size ⇒ ≥95% weight; ancillary percent never supplied); downgraded outright to
   the Tier-3 follow-up — see the DD-706-4 resolution note and DD-706-9.
-- **JA round-2 strings** → the translator's call, not ours; the Latin-script product-token rule
-  (DD-706-1) is the only JA decision that was ours and it is already locked.
+- **JA round-2 strings** → the translator's call, not ours; the DD-706-1 vocabulary renderings are the
+  only JA decision that was ours and they are already locked.
 
 ### DD-706-8 — Unknown/malformed snapshot size fails the disk preflight safe (PR #3337 N1; decided 2026-07-10)
 
@@ -206,11 +211,11 @@ Its findings were resolved as follows and are folded into this doc and the CAT d
   non-i18n, shown before the renderer exists) → **CAT-A owns**: new Step A5, casing-only (the dialog
   stays EN-only native copy; no spec asserts the literals).
 - **JA Help-menu label** (`menu.helpSupport.daedalusDiagnostics` = 「Daedalus診断」,
-  `source/main/locales/ja-JP.json:36`) → **B1 extended** to the main-process locale
-  ("Daedalus Diagnostics"), flagged for JA round-2 confirmation — it is the menu the B1 handoff note
-  points users at, so leaving it mismatched would defeat B1's purpose.
-- **All remaining plan-text corrections applied as written** — CAT-A key list (30 keys / 31
-  occurrences) + descriptor name + spec inventory; CAT-B `environment.isMacOS` idiom; CAT-D threading
+  `source/main/locales/ja-JP.json:36`) → **B1 anchors to it**: the Help menu is the only place the JA
+  UI names the Diagnostics page, so B1 aligns the two renderer strings to 「Daedalus診断」 (no
+  main-process change) — the handoff note must name a menu entry that exists verbatim.
+- **All remaining plan-text corrections applied as written** — CAT-A descriptor name + spec inventory;
+  CAT-B `environment.isMacOS` idiom; CAT-D threading
   list (+`DaedalusDiagnostics.tsx`, +`MithrilPartialSyncAvailability`) + acceptance rewritten to the
   locked hedge copy; CAT-E decline-button redirect + CSS-var-first technique; CAT-F `yarn i18n:manage`
   procedure + fifth generated JSON; CAT-G trace correction (download spawns **outside** the mutation
@@ -224,12 +229,32 @@ the factual minors (stale spans/cites, a stale B3↔D hedge, leaked doc markup, 
 missing CAT-F's surface) were fixed in place the same day. Left as-is by convention: append-only
 resolution paragraphs whose body text predates their correction notes.
 
+### DD-706-10 — JA close-out decisions (decided 2026-07-12)
+
+The remaining JA review threads were grilled to closure:
+
+- **Round-1 typography flags (ellipsis style, parenthesis style) — resolved by codebase convention;
+  not sent to round 2.** Measured at the merge-base with `develop` (feature strings excluded): JA
+  ellipsis is ASCII `...` (7 pre-existing strings, zero 「…」 — including the same-screen sibling
+  「Cardanoノードを再起動しています...」); JA parens are full-width （） around Japanese text (39 lines)
+  and ASCII around Latin/technical content (`(ADA)`, `(Ctrl + D)`). The feature copy already matches
+  both conventions, so the round-1 flags were not feature inconsistencies; changing either style would
+  be an app-wide sweep outside 706's scope. Closed silently — no round-2 mention.
+- **PR merge is not gated on JA round 2.** Send the round-2 package as soon as CAT A–F land; merge on
+  code-review approval regardless; translator wording feedback lands as a tracked post-merge follow-up
+  (Tier-3 list). The first-pass JA drafts (CAT-A A4, CAT-C C1, CAT-D D1/D2, CAT-F F3) ship knowingly.
+- **Round-2 package shape:** regenerated full copy-table as current-state reference + a delta review
+  doc (new/revised/unconfirmed entries only, with prior wording and per-entry status; linked-term
+  groups noted). No screenshots. Includes the optional `recommendationUnknown` softening question and
+  the §9 chain-storage strings flagged "confirm if not previously reviewed". Details in the Round-2
+  hand-off section.
+
 ## CAT table
 
 | CAT | Doc | Scope (one line) | Tier | Type |
 | --- | --- | --- | --- | --- |
 | A | `task-ux-706-plan-cat-a.md` | Three-term vocabulary sweep (DD-706-1) + EN casing fix, incl. the native startup-dialog literals (Step A5, DD-706-9) | 1 (high) | copy/i18n |
-| B | `task-ux-706-plan-cat-b.md` | JA consistency fixes: Daedalus Diagnostics full name ×3 (incl. the main-process Help-menu label, DD-706-9), shutdown→停止, tip 先端→最新ブロック; + handoff-note Ctrl/Cmd platform substitution | 1 (high) | copy/i18n + small code |
+| B | `task-ux-706-plan-cat-b.md` | JA consistency fixes: page name aligned to the Help-menu label 「Daedalus診断」 ×2 (DD-706-9), shutdown→停止, tip 先端→最新ブロック; + handoff-note Ctrl/Cmd platform substitution | 1 (high) | copy/i18n + small code |
 | C | `task-ux-706-plan-cat-c.md` | Progress metrics: Ledger state relabel (DD-706-2) + unit sanity; size/jitter plumbing downgraded to the Tier-3 follow-up (DD-706-4 resolution) | 1 (label) | copy/i18n |
 | D | `task-ux-706-plan-cat-d.md` | At/past-snapshot variant split + copy (DD-706-6, Extra #2/#3) + moving-stage "don't close Daedalus" caution (locked shutdown voice, no "corrupt") | 1 (high) | copy + code (needs sign-off) |
 | E | `task-ux-706-plan-cat-e.md` | Recovery/action button copy-overflow layout fix | 1 (high) | css |
@@ -238,7 +263,7 @@ resolution paragraphs whose body text predates their correction notes.
 
 `mithrilSyncInterrupt` appears in both A and F: **CAT-F owns it end-to-end** (ownership locked 2026-07-09)
 — the locale extraction (the code-review "message structure" item) **and** the JA string
-(`代わりにMithril Syncを使う`); CAT-A does not edit the key, only reviews DD-706-1 vocabulary. See S3.
+(`代わりにMithril同期を使う`); CAT-A does not edit the key, only reviews DD-706-1 vocabulary. See S3.
 
 ## Structure, execution order, and seam contracts
 
@@ -252,18 +277,16 @@ guard). CAT-C is copy-only after the DD-706-4 downgrade. Shared-file seams:
   `defaultMessages.json` is EN-only and NOT line-aligned). Each CAT owns disjoint keys — mirror EN↔JA by
   line and keep `defaultMessages.json` + `MithrilBootstrap.messages.ts` `!!!` defaults in lockstep with
   EN (i18n-messaging skill governs this; run its sync/validation, do not hand-desync the four sources).
-  Two additions land outside the blocks: CAT-F's extracted `loading.screen.mithrilSyncInterrupt` inserts
+  One addition lands outside the blocks: CAT-F's extracted `loading.screen.mithrilSyncInterrupt` inserts
   at ~line 391 (between `loading.screen.loadingWalletData` and `loading.screen.pushingLedger`) — a fifth
-  locale region; keep the EN↔JA insertion line-parallel. CAT-B additionally edits the **main-process**
-  locale `source/main/locales/ja-JP.json:36` (Help-menu label, DD-706-9) — outside the renderer trio, no
-  `defaultMessages.json` involvement.
+  locale region; keep the EN↔JA insertion line-parallel.
 - **S2 — `MithrilBootstrap.messages.ts`**: A (genesis strings, casing), C (Ledger state label), D
   (moving-stage caution — the new optional caution id `moveCaution` is CAT-D's, not CAT-C's), F (delete
   the two `noCertifiedRange` descriptors). Disjoint descriptors; letter order avoids collisions.
 - **S3 — `mithrilSyncInterrupt`**: currently an un-extracted inline def at
   `SyncingConnectingStatus.tsx:85-90`. **Owner locked 2026-07-09: CAT-F, end-to-end** — F extracts it to
   the three locale files and (optionally) a messages module **and** supplies the JA
-  (`代わりにMithril Syncを使う`). CAT-A does not edit the key; it only reviews the JA against DD-706-1. No
+  (`代わりにMithril同期を使う`). CAT-A does not edit the key; it only reviews the JA against DD-706-1. No
   build-time coordination needed — single owner.
 - **S4 — `mithril-partial-sync.types.ts`**: D adds `isAtOrPastSnapshot` to
   `MithrilPartialSyncAvailability` (lines 89-101 — the typed IPC payload the store consumes); F removes
@@ -305,7 +328,9 @@ guard). CAT-C is copy-only after the DD-706-4 downgrade. Shared-file seams:
   R-1). Corrected root cause on record: the fix needs a **ranged-delta** byte size (doesn't exist in
   today's metadata — must be derived, e.g. from the download child's reported totals) plus an
   ancillary-percent feed for the partial-sync path; the whole-DB `_latestSnapshot.size` cannot smooth
-  the bar. Must import `hasKnownSnapshotSize` (S7).
+  the bar. Must import `hasKnownSnapshotSize` (S7). Also Tier 3: **JA translator round-2 wording
+  feedback** (DD-706-10 — the package goes out when CAT A–F land; merge does not wait, so any feedback
+  lands as a post-merge copy pass).
 
 ## Manual QA / smoke-test coverage (Extra #7)
 
@@ -327,18 +352,34 @@ step — logged here as a tracked follow-up, not a silent gap.
 | Item | CAT | Blocker |
 | --- | --- | --- |
 | "Ledger state:" / 「台帳状態:」 | C | JA review ❓#6 — awaiting round-2 confirmation |
-| At/past-snapshot copy (DD tooltip + confirmation prompt) | D | **EN locked 2026-07-09** (hedge-as-offer, DD-706-6); JA translator to translate in round 2 |
-| Moving-stage caution wording | D | **EN locked 2026-07-09** (mirrors shutdown "preserve data integrity" voice); JA translator to translate in round 2 |
-| Whole DD-706-1 vocabulary (Blockchain Sync / …from Genesis) | A | decided by product; JA translator has not reviewed the new terms — send in round 2 |
-| Help-menu label 「Daedalus診断」 → "Daedalus Diagnostics" (main-process JA) | B | shipped per DD-706-9; JA translator confirms in round 2 |
+| At/past-snapshot copy (DD tooltip + confirmation prompt) | D | **EN locked 2026-07-09** (hedge-as-offer, DD-706-6); JA translator to review the draft in round 2 |
+| Moving-stage caution wording | D | **EN locked 2026-07-09** (mirrors shutdown "preserve data integrity" voice); JA translator to review the draft in round 2 |
+| Whole DD-706-1 vocabulary (ブロックチェーン同期 / ジェネシスからのブロックチェーン同期) | A | decided by product; JA translator has not reviewed the new terms — send in round 2 |
 
-**Round-2 hand-off:** after CAT-A–F land (F also changes the round-2 surface: it deletes copy-table
-rows §7.5/§7.6 and adds the `mithrilSyncInterrupt` JA string), regenerate `mithril-partial-sync-ja-copy-table.md` and
-`mithril-partial-sync-ja-copy-review.md` so the JA translator reviews the final wording (the current
-table is already stale — it predates `recommendationNearTip`, `finalizeFailed`, `insufficientDiskSpace`,
-`startFailure`, and `recommendationUnknown`, and now the new at/past-snapshot variant), and flag the B1
-Help-menu label change (「Daedalus診断」 → "Daedalus Diagnostics") for confirmation. Tracked as the
-final process step alongside `nix fmt`.
+**Round-2 hand-off (package shape locked 2026-07-12, DD-706-10):** after CAT-A–F land (F also changes
+the round-2 surface: it deletes copy-table rows §7.5/§7.6 and adds the `mithrilSyncInterrupt` JA
+string), produce two documents:
+
+1. **Regenerate `mithril-partial-sync-ja-copy-table.md`** as the full current-state EN↔JA reference
+   (the current table is already stale — it predates `recommendationNearTip`, `finalizeFailed`,
+   `insufficientDiskSpace`, `startFailure`, and `recommendationUnknown`, and now the new
+   at/past-snapshot variant).
+2. **Write the round-2 review doc as a delta** (replacing the round-1 format of
+   `mithril-partial-sync-ja-copy-review.md`): only new / revised / unconfirmed strings (~20 entries),
+   each with the current EN+JA, the prior wording where changed, and a status. Include the optional
+   `recommendationUnknown` softening question (low priority, CAT-D) and the six §9 chain-storage
+   strings marked "confirm if not previously reviewed" (round-1 coverage unconfirmed). Note the
+   linked-term groups so the translator rewords them together: 「台帳状態」 (C1 label + CAT-D D1
+   drafts), 「データの完全性を保つために…」 (D2 caution mirrors
+   `loading.screen.stoppingCardanoDescription`), 「最新ブロック」 (B3's two keys).
+
+No screenshots in the package (decided 2026-07-12). Text-only; the translator can request visuals for
+specific entries. Tracked as the final process step alongside `nix fmt`.
+
+**Produced 2026-07-12 (close-out):** both documents exist —
+`mithril-partial-sync-ja-copy-table.md` regenerated to the full current-state EN↔JA reference
+(noCertifiedRange rows dropped, all 706 wordings + new keys in), and the delta review doc written as
+`mithril-partial-sync-ja-copy-review-round-2.md` (round-1 doc left intact as the historical record).
 
 ## Verification gates (per CAT and final)
 
@@ -370,3 +411,92 @@ final process step alongside `nix fmt`.
 
 - `task-ux-706-plan-review.md` (plan validation pass over this master + the per-CAT docs)
 - `task-ux-706-impl-review.md` (per-CAT implementation reviews)
+
+## Final outcome (build close-out, 2026-07-12)
+
+All seven CATs landed on the working tree of `feat/mithril-partial-sync-ux-refinement` (nothing
+committed), verified per the gates, and approved by code review (pass 1, 2026-07-12). What landed:
+
+- **A** — DD-706-1 three-term vocabulary sweep across EN+JA locales, `!!!` defaults, and the two
+  native startup-dialog literals (A5); completed-with-deviations (the `i18n:manage` auto-add of
+  `mithrilSyncInterrupt` was re-removed per S3 until CAT-F landed the key).
+- **B** — page name aligned to 「Daedalus診断」 (cancel button + handoff note), シャットダウン→停止,
+  先端→最新ブロック ×2, and the handoff-note `({shortcut})` substitution (Cmd + D on macOS,
+  Ctrl + D elsewhere), with a jest test pinning the macOS branch.
+- **C** — C1 "Ledger state:" / 「台帳状態:」 relabel; C2 stayed downgraded to Tier 3 per DD-706-4/R-1
+  (follow-up entry verified, nothing implemented by design); C3 unit sanity confirmed the chunk count
+  renders only as a file count (no chunk-as-bytes anomaly, no backend follow-up).
+- **D** — at/past-snapshot variant split threaded end-to-end (`isAtOrPastSnapshot` from
+  `getPartialSyncBehindness` through store/dialog to tooltip + confirmation) with the locked hedge
+  copy, plus the D2 moving-stage caution on both overlays in the shutdown voice; S8 applied (service
+  spec handed to F at 75/76).
+- **E** — CSS-only button-overflow fix on three surfaces (error view, decision view, proactive
+  prompt); confirmation dialog verified as fitting and left untouched; completed-with-deviations
+  (reasoned width computation in lieu of storybook eyeballing; `min-width: 180px` tuning).
+- **F** — dead `PARTIAL_SYNC_NO_CERTIFIED_RANGE` deleted after a live reachability re-check (zero
+  references repo-wide); service spec green 78/78 with the primary test rewritten;
+  `mithrilSyncInterrupt` extracted end-to-end with the JA (代わりにMithril同期を使う); DD-706-8
+  unknown-size preflight fail-fast via `hasKnownSnapshotSize`.
+- **G** — Windows storage-picker display-path separator fix (renderer-only; main-side resolver
+  untouched) and the reproduce-first stop→download race guard (live `getNodeState` re-query),
+  reproduced deterministically at spec level before fixing.
+
+**JA round-2 flags:** the round-2 package was produced with this close-out (see the Round-2 hand-off
+section). First-pass JA drafts knowingly shipped pending translator review (DD-706-10): the DD-706-1
+family renderings ブロックチェーン同期 / ジェネシスからのブロックチェーン同期 (A), 「台帳状態」 (C1),
+the three CAT-D drafts (at/past-snapshot tooltip + confirmation body, moveCaution), and
+代わりにMithril同期を使う (F3). Round-1 typography flags stayed closed by codebase convention (not
+sent to round 2); the bootstrap feature title / accept button deliberately keep the fast-sync name.
+Merge is not gated on round 2.
+
+**Follow-up outcomes (tracked, none dropped):**
+
+- Tier-3 size-plumbing follow-up unchanged (ranged-delta byte size + ancillary-percent feed; must
+  import `hasKnownSnapshotSize` per S7).
+- CAT-G G2 deep fix: the live re-query is a window-narrowing placeholder only — the real guard needs
+  a bounded settle on ImmutableDB lock / immutable-directory release before the download child
+  spawns (repro recipe: the two stale-snapshot coordinator specs).
+- Cheat sheet still pending: replay interrupt-button smoke-test step + DD-706-1 vocabulary re-sync
+  (Extra #7); B4 makes its macOS ⌘D note verifiable.
+- Final pre-push gates still to run: `nix fmt` (gate 5) + full-tree lint/prettier; several touched
+  files carry pre-existing HEAD prettier drift — classify, don't reformat. The pre-existing
+  `.gitignore` modification (2026-07-09, not wave-touched) should not ride into the feature commit
+  unless intended.
+- CAT-E: visual eyeball pass on the three fixed button rows when a display is available; re-audit
+  the confirmation dialog only if round 2 lengthens `mithrilPartialSyncConfirmationCancel` beyond
+  ~16 full-width glyphs.
+- Tracker hygiene: `mithril-partial-sync-ux-refinement-tasks.json` had stopped at task-703 (no
+  704/705/706 entries); a minimal completed task-706 entry was added at close-out, totals left as
+  found.
+
+## Post-review fix wave (2026-07-13, amended into the task commit)
+
+The consolidated audit of the task commit confirmed two medium misses; both were fixed and amended
+in, with decisions grilled against DD-706-1/DD-706-9 and CAT-D:
+
+- **A5 extended beyond casing (dialog rename):** DD-706-9 scoped the native startup dialog to
+  casing-only, but DD-706-1 bans "partial sync" in user-facing copy and no doc exempted the phrase.
+  Decision: minimal phrase swap — title `Interrupted Mithril Sync detected`, message
+  "…an interrupted Mithril Sync after live chain replacement began…". Internal strings (wipe-log
+  reason, post-cutover error messages, preflight errors) deliberately keep "Mithril partial sync":
+  the MithrilErrorView technical-details pane is a verbatim raw-diagnostics surface, and renaming
+  ~20 log/error literals would hurt log greppability for zero authored-copy gain.
+- **D2 caution timing (partial-sync cutover):** the "don't close Daedalus" caution keyed only on
+  `install-snapshot` (bootstrap), so on the partial-sync overlay it never showed during the actual
+  live-chain cutover (item `installing`) and appeared only at `finalizing` — after the move, once
+  the recoverable marker was written. Fixed minimally: caution now keys on
+  `install-snapshot || installing` when active, with a spec pinning the partial-sync shape. The
+  pre-existing `keepInstallingActiveDuringFinalizing` over-extension (caution persists through
+  cleanup on the bootstrap overlay) stays — conservative direction, pre-dates the wave; follow-up
+  if it ever bothers QA.
+- **Cheat sheet §5 corrected against the marker state machine:** the blocking dialog corresponds
+  exactly to marker `cutover-in-progress`, i.e. the "Installing snapshot..." stage; quitting during
+  Finalizing (marker `installed-awaiting-node-start`) resumes normally. The edge check previously
+  named the wrong stage and the old dialog title.
+- **Low sweeps:** the two combined-progress translator descriptions ("fast sync" → "ledger state",
+  matching the DD-706-2 relabel) and the lowercase "full Mithril sync" description, mirrored into
+  both generated i18n JSONs; the staged tasks.json v1.13.0 backfill (704/705 entries, totals
+  reconciled to 28/169) committed with the amend per grill decision.
+- **No action:** S7 drift re-resolve and G2 restart/wipe live-getter seams stay deferred as already
+  tracked above; the Cmd + D test misattribution existed only in the implementer's chat summary
+  (repo docs attribute it correctly to `SyncingConnectingMithrilPrompt.spec.tsx`).

@@ -6,10 +6,6 @@ const err = (code?: string, stage?: any) =>
 describe('resolvePartialSyncErrorCopy', () => {
   it.each([
     [
-      'PARTIAL_SYNC_NO_CERTIFIED_RANGE',
-      'loading.mithrilPartialSync.error.noCertifiedRange.title',
-    ],
-    [
       'PARTIAL_SYNC_LATEST_DRIFT',
       'loading.mithrilPartialSync.error.latestDrift.title',
     ],

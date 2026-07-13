@@ -26,9 +26,16 @@ const messages = defineMessages({
     description:
       'Behind-ness context line shown when the epochs-behind figure is unavailable (tips/epoch missing)',
   },
+  atOrPastSnapshot: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationAtOrPastSnapshot',
+    defaultMessage:
+      '!!!Your node is at or past the latest Mithril snapshot, so Blockchain Sync can finish the remaining blocks on its own. If sync seems slow or runs into verification issues, continuing will restore a verified ledger state at the snapshot position.',
+    description:
+      'Context line for the Mithril partial sync confirmation modal when the node is at or past the latest certified snapshot',
+  },
   cancel: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationCancel',
-    defaultMessage: '!!!Back to diagnostics',
+    defaultMessage: '!!!Back to Daedalus Diagnostics',
     description:
       'Cancel button label for the Mithril partial sync confirmation view',
   },
@@ -43,6 +50,7 @@ const messages = defineMessages({
 type Props = {
   isActionBlocked: boolean;
   startError: string | null;
+  isAtOrPastSnapshot?: boolean;
   behindByEpochs?: number;
   onCancel: () => void;
   onConfirm: () => void;
@@ -54,12 +62,27 @@ export default class MithrilPartialSyncConfirmation extends Component<Props> {
   };
 
   render() {
-    const { isActionBlocked, startError, behindByEpochs, onCancel, onConfirm } =
-      this.props;
+    const {
+      isActionBlocked,
+      startError,
+      isAtOrPastSnapshot,
+      behindByEpochs,
+      onCancel,
+      onConfirm,
+    } = this.props;
     const { intl } = this.context;
 
     const hasBehindFigure =
       typeof behindByEpochs === 'number' && Number.isFinite(behindByEpochs);
+
+    // The at/past-snapshot signal wins regardless of any epochs figure: a
+    // node at or past the snapshot must never read "behind".
+    let contextMessage = messages.behindUnknown;
+    if (isAtOrPastSnapshot) {
+      contextMessage = messages.atOrPastSnapshot;
+    } else if (hasBehindFigure) {
+      contextMessage = messages.behind;
+    }
 
     return (
       <Dialog
@@ -86,11 +109,9 @@ export default class MithrilPartialSyncConfirmation extends Component<Props> {
       >
         <div className={styles.mithrilPartialSyncConfirmationBody}>
           <p className={styles.mithrilPartialSyncConfirmationBehind}>
-            {hasBehindFigure
-              ? intl.formatMessage(messages.behind, {
-                  epochs: behindByEpochs,
-                })
-              : intl.formatMessage(messages.behindUnknown)}
+            {intl.formatMessage(contextMessage, {
+              epochs: behindByEpochs,
+            })}
           </p>
 
           <p className={styles.mithrilPartialSyncConfirmationRecovery}>

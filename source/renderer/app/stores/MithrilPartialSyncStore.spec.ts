@@ -704,6 +704,25 @@ describe('MithrilPartialSyncStore', () => {
     expect(store.certifiedEpoch).toBeUndefined();
   });
 
+  it('mirrors the at-or-past-snapshot flag from the availability payload and clears it when absent', () => {
+    const store = setupStore();
+
+    expect(store.isAtOrPastSnapshot).toBe(false);
+
+    store._applyAvailability({
+      isEnabled: true,
+      isSignificantlyBehind: false,
+      isAtOrPastSnapshot: true,
+    });
+    expect(store.isAtOrPastSnapshot).toBe(true);
+
+    store._applyAvailability({
+      isEnabled: true,
+      isSignificantlyBehind: false,
+    });
+    expect(store.isAtOrPastSnapshot).toBe(false);
+  });
+
   it('flags a failed behind-ness probe from the availability payload and clears it when absent', () => {
     const store = setupStore();
 

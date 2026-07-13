@@ -129,7 +129,11 @@ export default class SyncingConnectingStatus extends Component<Props, State> {
 
   componentDidUpdate(): void {
     const eligible = this._isMithrilButtonEligible();
-    if (eligible && !this._mithrilButtonTimer && !this.state.showMithrilButton) {
+    if (
+      eligible &&
+      !this._mithrilButtonTimer &&
+      !this.state.showMithrilButton
+    ) {
       this._mithrilButtonTimer = setTimeout(() => {
         this._mithrilButtonTimer = null;
         if (this._isMithrilButtonEligible()) {

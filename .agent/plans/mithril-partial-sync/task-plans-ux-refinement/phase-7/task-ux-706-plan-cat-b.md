@@ -5,30 +5,28 @@ copy/i18n; B4 adds one small platform-aware render tweak. Same i18n mechanics as
 default + `ja-JP.json`, then re-sync `defaultMessages.json` via i18n-messaging). Lines are shared between
 `en-US.json` and `ja-JP.json`.
 
-## Step B1 — "Daedalus Diagnostics" as the full page name in all three locations (JA review #2)
+## Step B1 — full page name everywhere, matching how each locale's menu names it (JA review #2)
 
-Direction: use the full screen name "Daedalus Diagnostics" everywhere it is named (English in both
-locales, not 「診断」).
+Direction: every reference to the Diagnostics page uses the full name **as the user's Help menu shows
+it** — EN "Daedalus Diagnostics" (`en-US.json:36`), JA 「Daedalus診断」
+(`menu.helpSupport.daedalusDiagnostics`, `source/main/locales/ja-JP.json:36`, rendered by `osx.ts:204`
+/ `win-linux.ts:223`). The page itself renders no title, so the menu label is the only place the JA UI
+names it — copy that references the page must match that label verbatim. The menu label itself does
+**not** change (no main-process edit).
 
-- `daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNote` (line 173) — **already** contains
-  "Daedalus Diagnostics" in both EN and JA. **No change** beyond CAT-A's `Mithril同期`→`Mithril Sync`
-  edit on the same line. Confirm it reads "…からMithril Syncを開始できます" (no spaces around the token
-  — CAT-A's in-place rule keeps surrounding particles untouched) with the page name intact.
+- `daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNote` (line 173) — EN already reads
+  "Daedalus Diagnostics screen"; JA-only edit:
+  - JA: `…ヘルプメニューにあるDaedalus Diagnostics画面からMithril同期を開始できます。…`
+      → `…ヘルプメニューにあるDaedalus診断画面からMithril同期を開始できます。…`
 - `daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationCancel` (line 160):
   - EN: `Back to diagnostics` → `Back to Daedalus Diagnostics`
-  - JA: `診断に戻る` → `Daedalus Diagnosticsに戻る`
-- `menu.helpSupport.daedalusDiagnostics` (`source/main/locales/ja-JP.json:36` — **main-process**
-  locale, added 2026-07-10 per DD-706-9): JA `Daedalus診断` → `Daedalus Diagnostics`. This is the Help
-  menu item the handoff note points users at (`osx.ts:204` / `win-linux.ts:223` render this label);
-  after the renderer edits, JA copy would otherwise name a menu entry that doesn't exist verbatim.
-  EN (`en-US.json:36`) already reads "Daedalus Diagnostics" — JA-only, hand-edited (the main-process
-  locales are outside the renderer i18n trio; no `defaultMessages.json` re-sync). Flag in the round-2
-  table for translator confirmation.
+  - JA: `診断に戻る` → `Daedalus診断に戻る`
 
-The two renderer edits plus the menu label remove the last user-facing 「診断」 occurrences (the
-original "only occurrence" recon claim missed the Help menu — plan-review CAT-B #1). Edit the
-`mithrilPartialSyncConfirmationCancel` source default (in `MithrilPartialSyncConfirmation.tsx` message
-defs) + re-sync.
+After these two edits, every JA reference to the page reads 「Daedalus診断」, matching the Help-menu
+entry the handoff note points users at (the original "only occurrence" recon claim missed the Help menu
+— plan-review CAT-B #1). Edit the `mithrilPartialSyncConfirmationCancel` source default (in
+`MithrilPartialSyncConfirmation.tsx` message defs) + re-sync. Both revised JA strings go in the round-2
+delta as normal entries.
 
 ## Step B2 — 「シャットダウン」 → 「停止」 (JA review #3)
 
@@ -37,8 +35,7 @@ JA-only; pairs "stop ↔ start" consistently (rows using 停止 elsewhere).
 - `daedalus.diagnostics.dialog.mithrilSyncProcessSummary` (line 178):
   - JA: `…お使いのCardanoノードをシャットダウンする必要があります。…`
       → `…お使いのCardanoノードを停止する必要があります。…`
-  - EN unchanged ("shut down" stays). This line also carries CAT-A's `Mithril同期`→`Mithril Sync` edit —
-    apply both in one edit.
+  - EN unchanged ("shut down" stays).
 
 ## Step B3 — 「先端」 → 「最新ブロック」 for "blockchain tip" (JA review #5)
 
@@ -51,9 +48,8 @@ tip" is unchanged.
 - `daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationNearTip` (line 164):
   - JA: `ノードはブロックチェーンの先端に近い状態です。…`
       → `ノードはブロックチェーンの最新ブロックに近い状態です。…`
-  - This line also carries CAT-A (`Mithril同期`). Settled (CAT-D D1 reconciliation, 2026-07-09/10):
-    CAT-D does **not** rewrite this string — `recommendationNearTip` stays scoped to
-    `0 < gap < threshold` — so apply B3's 最新ブロック edit here.
+  - Settled (CAT-D D1 reconciliation, 2026-07-09/10): CAT-D does **not** rewrite this string —
+    `recommendationNearTip` stays scoped to `0 < gap < threshold` — so apply B3's 最新ブロック edit here.
 
 ## Step B4 — Handoff-note shortcut: platform-aware "(Ctrl + D)" vs "(Cmd + D)" (Extra #8)
 
@@ -88,13 +84,14 @@ macOS (try ⌘D)") — the Extra #7 cheat-sheet update should tick it off once f
 
 ## Acceptance
 
-- No user-facing 「診断」 or 「先端」 remains — including the main-process Help-menu label; no
+- No bare user-facing 「診断」 (i.e. without the Daedalus prefix) or 「先端」 remains; no
   「シャットダウン」 remains in the process summary.
-- "Daedalus Diagnostics" appears as the full page name in the handoff note, the confirmation cancel
-  button, and the JA Help menu (flagged for round-2 confirmation).
+- The full page name appears in the handoff note and the confirmation cancel button, matching each
+  locale's Help-menu label — EN "Daedalus Diagnostics", JA 「Daedalus診断」. The menu label itself is
+  unchanged.
 - The handoff-note shortcut renders "(Cmd + D)" on macOS and "(Ctrl + D)" on Windows/Linux; the `{...}`
   placeholder (if used) stays byte-identical across EN/JA and is never translated.
 - EN copy changes limited to the confirmation-cancel button and the handoff-note shortcut wording;
-  everything else JA-only (incl. the main-process menu label). B4 also adds a small platform check in
-  the prompt component (`global.environment.isMacOS`).
+  everything else JA-only. B4 also adds a small platform check in the prompt component
+  (`global.environment.isMacOS`).
 - i18n-messaging validation clean; `yarn compile` + lint clean.

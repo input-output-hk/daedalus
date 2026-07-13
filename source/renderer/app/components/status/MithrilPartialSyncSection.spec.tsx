@@ -42,6 +42,7 @@ const defaultProps = {
   isMithrilPartialSyncWorking: false,
   isSignificantlyBehind: true,
   isProbeFailed: false,
+  isAtOrPastSnapshot: false,
   behindByEpochs: undefined,
   onRestoreFocus: jest.fn(),
   onStartMithrilPartialSync: jest.fn(),
@@ -75,7 +76,9 @@ describe('MithrilPartialSyncSection', () => {
     renderComponent();
 
     screen.getByRole('button', { name: 'Mithril Sync' }).click();
-    screen.getByRole('button', { name: 'Back to diagnostics' }).click();
+    screen
+      .getByRole('button', { name: 'Back to Daedalus Diagnostics' })
+      .click();
 
     expect(
       screen.getByRole('button', { name: 'Mithril Sync' })
@@ -257,6 +260,57 @@ describe('MithrilPartialSyncSection', () => {
         'Daedalus could not check how far behind your node is. You can still use Mithril Sync to restore verified chain data.'
       )
     ).toBeInTheDocument();
+  });
+
+  it('keeps the section and an enabled CTA visible with at-or-past-snapshot copy when the node is at or past the snapshot', () => {
+    renderComponent({ isSignificantlyBehind: false, isAtOrPastSnapshot: true });
+
+    expect(screen.getByRole('button', { name: 'Mithril Sync' })).toBeEnabled();
+    expect(
+      screen.getByText(
+        'Your node is at or past the latest Mithril snapshot. Blockchain Sync will finish the remaining blocks on its own. If sync seems slow or runs into verification issues, Mithril Sync can restore a verified ledger state.'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/close to the blockchain tip/)
+    ).not.toBeInTheDocument();
+  });
+
+  it('lets a failed probe outrank the at-or-past-snapshot reassurance', () => {
+    renderComponent({
+      isSignificantlyBehind: false,
+      isProbeFailed: true,
+      isAtOrPastSnapshot: true,
+    });
+
+    expect(
+      screen.getByText(
+        'Daedalus could not check how far behind your node is. You can still use Mithril Sync to restore verified chain data.'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/at or past the latest Mithril snapshot/)
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows the at-or-past-snapshot confirmation body instead of behind copy, regardless of epochs', () => {
+    renderComponent({
+      isSignificantlyBehind: false,
+      isAtOrPastSnapshot: true,
+      behindByEpochs: 3,
+    });
+
+    screen.getByRole('button', { name: 'Mithril Sync' }).click();
+
+    expect(
+      screen.getByText(
+        'Your node is at or past the latest Mithril snapshot, so Blockchain Sync can finish the remaining blocks on its own. If sync seems slow or runs into verification issues, continuing will restore a verified ledger state at the snapshot position.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/epochs behind/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/behind the latest verified snapshot/)
+    ).not.toBeInTheDocument();
   });
 
   it('threads the epochs figure into the confirmation modal without any sync-%', () => {

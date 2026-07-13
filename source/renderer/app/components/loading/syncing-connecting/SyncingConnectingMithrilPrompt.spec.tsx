@@ -50,9 +50,7 @@ describe('SyncingConnectingMithrilPrompt', () => {
       screen.getByText('Your node is about 3 epochs behind.')
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'Mithril can catch you up faster than the standard sync.'
-      )
+      screen.getByText('Mithril can catch you up faster than Blockchain Sync.')
     ).toBeInTheDocument();
     expect(container.textContent).not.toMatch(/immutable/i);
     expect(container.textContent).not.toMatch(/partial sync/i);
@@ -86,11 +84,27 @@ describe('SyncingConnectingMithrilPrompt', () => {
     ).toBeInTheDocument();
   });
 
+  it('shows the Cmd + D shortcut in the handoff note on macOS', () => {
+    const originalIsMacOS = global.environment.isMacOS;
+    global.environment.isMacOS = true;
+    try {
+      renderComponent({ behindByEpochs: 3 });
+
+      expect(
+        screen.getByText(
+          'If skipped, you can still start the Mithril Sync from the Daedalus Diagnostics screen under the Help menu. (Cmd + D)'
+        )
+      ).toBeInTheDocument();
+    } finally {
+      global.environment.isMacOS = originalIsMacOS;
+    }
+  });
+
   it('uses the local Mithril action chrome in the choice view', () => {
     renderComponent({ behindByEpochs: 3 });
 
     expect(
-      screen.getByRole('button', { name: 'Standard Sync (slow)' })
+      screen.getByRole('button', { name: 'Blockchain Sync (slow)' })
     ).toHaveClass(styles.secondaryAction);
     expect(
       screen.getByRole('button', { name: 'Mithril Sync (fast)' })
@@ -143,7 +157,7 @@ describe('SyncingConnectingMithrilPrompt', () => {
     const onDismiss = jest.fn();
     renderComponent({ behindByEpochs: 3, onStart, onDismiss });
 
-    clickButton('Standard Sync (slow)');
+    clickButton('Blockchain Sync (slow)');
 
     expect(onDismiss).toHaveBeenCalledTimes(1);
     expect(onStart).not.toHaveBeenCalled();

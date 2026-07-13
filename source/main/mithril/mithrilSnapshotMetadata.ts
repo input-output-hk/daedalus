@@ -32,6 +32,15 @@ export const normalizeSnapshotItem = (
   };
 };
 
+// Aggregator metadata may omit the size (normalized to 0) or carry a
+// non-numeric value (Number() yields NaN); neither is a usable size.
+export const hasKnownSnapshotSize = (
+  snapshot: MithrilSnapshotItem | null | undefined
+): boolean => {
+  const size = snapshot?.size;
+  return typeof size === 'number' && Number.isFinite(size) && size > 0;
+};
+
 export const isNonEmptyString = (value: unknown): value is string =>
   typeof value === 'string' && value.trim().length > 0;
 

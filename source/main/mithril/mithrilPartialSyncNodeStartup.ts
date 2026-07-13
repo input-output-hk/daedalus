@@ -100,13 +100,13 @@ export class MithrilPartialSyncNodeStartup {
 
     const { response } = await dialog.showMessageBox(this._mainWindow, {
       type: 'warning',
-      buttons: ['Wipe chain and full Mithril sync', 'Quit'],
+      buttons: ['Wipe chain and full Mithril Sync', 'Quit'],
       defaultId: 0,
       cancelId: 1,
       noLink: true,
-      title: 'Interrupted Mithril partial sync detected',
+      title: 'Interrupted Mithril Sync detected',
       message:
-        'Daedalus found an interrupted Mithril partial sync after live chain replacement began. Normal startup is blocked until the chain data is wiped and a full Mithril sync can run again.',
+        'Daedalus found an interrupted Mithril Sync after live chain replacement began. Normal startup is blocked until the chain data is wiped and a full Mithril Sync can run again.',
     });
 
     if (currentGeneration !== this._getGeneration()) {

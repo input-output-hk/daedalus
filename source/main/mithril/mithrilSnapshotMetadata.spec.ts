@@ -1,6 +1,7 @@
 import {
   extractCertifiedEpoch,
   extractLatestCertifiedImmutableNumber,
+  hasKnownSnapshotSize,
   normalizeResolvedLatestSnapshot,
   normalizeSnapshotItem,
   parseMithrilJson,
@@ -24,6 +25,20 @@ describe('mithrilSnapshotMetadata', () => {
       cardanoNodeVersion: '10.4.0',
       network: 'mainnet',
     });
+  });
+
+  it('accepts only a positive finite snapshot size as known', () => {
+    const item = (size: number) => ({
+      digest: 'digest-1',
+      createdAt: '2026-05-20T00:00:00Z',
+      size,
+    });
+
+    expect(hasKnownSnapshotSize(item(42))).toBe(true);
+    expect(hasKnownSnapshotSize(item(0))).toBe(false);
+    expect(hasKnownSnapshotSize(item(-1))).toBe(false);
+    expect(hasKnownSnapshotSize(item(Number('garbage')))).toBe(false);
+    expect(hasKnownSnapshotSize(null)).toBe(false);
   });
 
   it('extracts the latest certified immutable number from known beacon locations', () => {

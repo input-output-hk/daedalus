@@ -16,7 +16,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   description: {
     id: 'loading.mithrilBootstrap.description',
     defaultMessage:
-      '!!!Mithril can download a verified snapshot to sync your blockchain data faster. Choose a snapshot and continue, or sync from genesis.',
+      '!!!Mithril can download a verified snapshot to sync your blockchain data faster. Choose a snapshot and continue, or do a Blockchain Sync from Genesis.',
     description: 'Description for the Mithril bootstrap prompt.',
   },
   accept: {
@@ -26,7 +26,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   decline: {
     id: 'loading.mithrilBootstrap.decline',
-    defaultMessage: '!!!Sync from genesis',
+    defaultMessage: '!!!Blockchain Sync from Genesis',
     description: 'Button label to decline Mithril bootstrap.',
   },
   selectLabel: {
@@ -92,7 +92,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   startFailureHint: {
     id: 'loading.mithrilBootstrap.startFailureHint',
     defaultMessage:
-      '!!!The node could not start with the restored chain data. Wipe the chain and try Mithril again, or sync from genesis.',
+      '!!!The node could not start with the restored chain data. Wipe the chain and try Mithril Sync again, or do a Blockchain Sync from Genesis.',
     description: 'Hint for node-start failures after Mithril bootstrap.',
   },
   stepPreparing: {
@@ -113,7 +113,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   stepIndicatorLabel: {
     id: 'loading.mithrilBootstrap.stepIndicatorLabel',
-    defaultMessage: '!!!Mithril sync progress',
+    defaultMessage: '!!!Mithril Sync progress',
     description: 'Accessible label for the Mithril step indicator list.',
   },
   stepIndicatorDetailsLabel: {
@@ -146,7 +146,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   errorVerifyHint: {
     id: 'loading.mithrilBootstrap.error.verify.hint',
     defaultMessage:
-      '!!!Daedalus could not verify the snapshot integrity. Try another snapshot or sync from genesis.',
+      '!!!Daedalus could not verify the snapshot integrity. Try another snapshot or do a Blockchain Sync from Genesis.',
     description: 'Hint shown for Mithril verification-stage failures.',
   },
   errorConvertTitle: {
@@ -157,7 +157,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   errorConvertHint: {
     id: 'loading.mithrilBootstrap.error.convert.hint',
     defaultMessage:
-      '!!!Daedalus could not prepare the downloaded snapshot for use. Try again or sync from genesis.',
+      '!!!Daedalus could not prepare the downloaded snapshot for use. Try again or do a Blockchain Sync from Genesis.',
     description: 'Hint shown for Mithril conversion-stage failures.',
   },
   errorNodeStartTitle: {
@@ -219,6 +219,13 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Label for Mithril progress install-snapshot finalizing step (moving/restoring snapshot to blockchain storage).',
   },
+  progressMoveCaution: {
+    id: 'loading.mithrilBootstrap.progress.moveCaution',
+    defaultMessage:
+      "!!!To preserve data integrity, please don't close Daedalus until this step is complete.",
+    description:
+      'Caution shown while the snapshot is being moved to blockchain storage (install-snapshot step), on both the bootstrap and Mithril Sync overlays.',
+  },
   progressCleanup: {
     id: 'loading.mithrilBootstrap.progress.cleanup',
     defaultMessage: '!!!Cleaning up bootstrap files',
@@ -233,16 +240,16 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   progressCombinedLabel: {
     id: 'loading.mithrilBootstrap.progress.combinedLabel',
-    defaultMessage: '!!!Snapshot Files and Fast Sync',
+    defaultMessage: '!!!Snapshot Files and Ledger State',
     description:
-      'Label for the combined Mithril download progress bar that merges snapshot files and fast sync progress.',
+      'Label for the combined Mithril download progress bar that merges snapshot files and ledger state progress.',
   },
   progressCombinedDetail: {
     id: 'loading.mithrilBootstrap.progress.combinedDetail',
     defaultMessage:
-      '!!!Snapshot files: {snapshotDownloaded} / {snapshotTotal} files | Fast sync: {fastSyncDownloaded} / {fastSyncTotal}',
+      '!!!Snapshot files: {snapshotDownloaded} / {snapshotTotal} files | Ledger state: {fastSyncDownloaded} / {fastSyncTotal}',
     description:
-      'Detail line for the combined Mithril download progress bar showing snapshot and fast sync transfer totals.',
+      'Detail line for the combined Mithril download progress bar showing snapshot and ledger state transfer totals.',
   },
   progressSnapshotSizeContext: {
     id: 'loading.mithrilBootstrap.progress.snapshotSizeContext',
@@ -305,7 +312,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   partialSyncNodeStartingDetail: {
     id: 'loading.mithrilPartialSync.progress.nodeStartingDetail',
     defaultMessage:
-      '!!!Mithril Sync has finished restoring chain data. Cardano node is starting so Daedalus can resume standard syncing.',
+      '!!!Mithril Sync has finished restoring chain data. Cardano node is starting so Daedalus can resume Blockchain Sync.',
     description:
       'Detail copy shown while Cardano node starts after Mithril partial sync.',
   },
@@ -355,7 +362,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   partialSyncFailedHint: {
     id: 'loading.mithrilPartialSync.error.failed.hint',
     defaultMessage:
-      '!!!Use one of the available recovery actions to retry Mithril Sync, restart normally, or wipe chain data and do a full Mithril sync.',
+      '!!!Use one of the available recovery actions to retry Mithril Sync, restart normally, or wipe chain data and do a full Mithril Sync.',
     description: 'Hint shown for Mithril partial sync failed terminal state.',
   },
   partialSyncFinalizeFailedTitle: {
@@ -388,18 +395,6 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
       '!!!Mithril Sync was stopped before it finished. Your existing chain data is unchanged — choose how to continue below.',
     description:
       'Calmer hint shown when the user cancelled Mithril partial sync (distinct from the failed hint).',
-  },
-  partialSyncErrorNoCertifiedRangeTitle: {
-    id: 'loading.mithrilPartialSync.error.noCertifiedRange.title',
-    defaultMessage: '!!!No verified Mithril snapshot is available yet',
-    description:
-      'Title shown when PARTIAL_SYNC_NO_CERTIFIED_RANGE is emitted (no certified snapshot for the current chain position).',
-  },
-  partialSyncErrorNoCertifiedRangeHint: {
-    id: 'loading.mithrilPartialSync.error.noCertifiedRange.hint',
-    defaultMessage:
-      '!!!Daedalus could not find a verified Mithril snapshot for your current chain position. Choose how to continue below — you can keep syncing on your existing chain data.',
-    description: 'Hint shown for PARTIAL_SYNC_NO_CERTIFIED_RANGE.',
   },
   partialSyncErrorLatestDriftTitle: {
     id: 'loading.mithrilPartialSync.error.latestDrift.title',
@@ -482,15 +477,15 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   partialSyncRestartNormally: {
     id: 'loading.mithrilPartialSync.error.restartNormally',
-    defaultMessage: '!!!Restart Node Sync (slow)',
+    defaultMessage: '!!!Restart Blockchain Sync (slow)',
     description:
       'Recovery action label for restarting Daedalus normally after partial sync failure.',
   },
   partialSyncWipeAndFullSync: {
     id: 'loading.mithrilPartialSync.error.wipeAndFullSync',
-    defaultMessage: '!!!Wipe chain data and do full Mithril sync',
+    defaultMessage: '!!!Wipe chain data and do full Mithril Sync',
     description:
-      'Recovery action label for wiping chain data and doing a full Mithril sync.',
+      'Recovery action label for wiping chain data and doing a full Mithril Sync.',
   },
   partialSyncQuit: {
     id: 'loading.mithrilPartialSync.error.quit',

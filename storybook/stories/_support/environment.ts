@@ -48,4 +48,13 @@ const environment: Environment = {
   votingVisibleOverride: false,
 };
 
+// The DaedalusMenu OS switch only reaches stories as their `osName` prop while
+// this fixture stays static. Stories whose components read the OS from
+// global.environment call this to keep both in step.
+export const applyEnvironmentOs = (osName: string) => {
+  environment.isWindows = osName === 'Windows';
+  environment.isLinux = osName === 'Linux';
+  environment.isMacOS = osName === 'Mac';
+};
+
 global.environment = environment;

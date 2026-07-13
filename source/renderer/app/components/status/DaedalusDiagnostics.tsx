@@ -412,6 +412,7 @@ type Props = {
   isMithrilPartialSyncEnabled: boolean;
   isMithrilPartialSyncSignificantlyBehind: boolean;
   isMithrilPartialSyncProbeFailed: boolean;
+  isMithrilPartialSyncAtOrPastSnapshot: boolean;
   isMithrilBootstrapActive: boolean;
   onStartMithrilPartialSync: (...args: Array<any>) => any;
   onOpenStateDirectory: (...args: Array<any>) => any;
@@ -526,6 +527,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isMithrilPartialSyncEnabled,
       isMithrilPartialSyncSignificantlyBehind,
       isMithrilPartialSyncProbeFailed,
+      isMithrilPartialSyncAtOrPastSnapshot,
       isMithrilBootstrapActive,
       onOpenStateDirectory,
       onClose,
@@ -723,6 +725,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
                     isMithrilPartialSyncSignificantlyBehind
                   }
                   isProbeFailed={isMithrilPartialSyncProbeFailed}
+                  isAtOrPastSnapshot={isMithrilPartialSyncAtOrPastSnapshot}
                   behindByEpochs={behindByEpochs}
                   onRestoreFocus={this.restoreDialogCloseOnEscKey}
                   onStartMithrilPartialSync={

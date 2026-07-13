@@ -15,8 +15,14 @@ class LoadingSyncingConnectingPage extends Component<Props> {
   };
 
   render() {
-    const { newsFeed, appUpdate, networkStatus, profile, app, mithrilPartialSync } =
-      this.props.stores;
+    const {
+      newsFeed,
+      appUpdate,
+      networkStatus,
+      profile,
+      app,
+      mithrilPartialSync,
+    } = this.props.stores;
     const {
       cardanoNodeState,
       isNodeResponding,

@@ -98,7 +98,7 @@ first (A→G order) and apply this same top-level default — verify it is prese
 ## Step F3 — Integrate `mithrilSyncInterrupt` into the message structure (code-review comment a)
 
 > **Ownership locked 2026-07-09: CAT-F owns this end-to-end** — the extraction into all three locale files
-> (+ optional messages module) **and** the JA string (`代わりにMithril Syncを使う`). CAT-A does **not**
+> (+ optional messages module) **and** the JA string (`代わりにMithril同期を使う`). CAT-A does **not**
 > edit this key; it only reviews that the JA uses DD-706-1 vocabulary. Single owner resolves the S3 seam.
 
 The interrupt-button label added in task-705 is an **un-extracted** inline `defineMessages` entry at
@@ -109,7 +109,7 @@ the extracted message set.
 - Extract it into the i18n structure via the generated-artifact pipeline (plan-review): `i18n:extract`
   alone writes only `translations/messages.json`; `defaultMessages.json` / `en-US.json` come from
   `i18n:check` — so run `yarn i18n:manage`, then add the JA string to `ja-JP.json` by hand under
-  DD-706-1: `代わりにMithril Syncを使う`. Keep the `!!!` prefix in the descriptor's defaultMessage
+  DD-706-1: `代わりにMithril同期を使う`. Keep the `!!!` prefix in the descriptor's defaultMessage
   (locale values are stored stripped). The key inserts outside locale Blocks A/B (~line 391, between
   `loading.screen.loadingWalletData` and `loading.screen.pushingLedger`) — keep the EN↔JA insertion
   line-parallel (master seam S1).

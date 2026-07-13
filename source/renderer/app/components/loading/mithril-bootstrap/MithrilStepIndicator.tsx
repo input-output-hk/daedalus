@@ -25,6 +25,7 @@ type SubItemState = 'completed' | 'active' | 'pending' | 'error';
 
 type Props = {
   status: MithrilBootstrapStatus | MithrilPartialSyncStatus;
+  variant?: 'bootstrap' | 'partial-sync';
   progressItems?: MithrilProgressItem[];
   filesDownloaded?: number;
   filesTotal?: number;
@@ -459,6 +460,7 @@ function SubItemIcon({ state }: { state: SubItemState }) {
 function MithrilStepIndicator(props: Props, { intl }: Context) {
   const {
     status,
+    variant = 'bootstrap',
     progressItems = [],
     filesDownloaded,
     filesTotal,
@@ -527,8 +529,13 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
     ? synthesizeVerifyingDigestProgress(progressItems)
     : progressItems;
 
+  // Bootstrap's finalizing status still covers cleanup after the snapshot
+  // move, so the don't-close caution must stay on screen; partial sync
+  // reports the move as its own 'installing' item and completes it before
+  // finalizing, so fabricating the bootstrap 'install-snapshot' step there
+  // would show a stage that never runs in that flow.
   const displayedProgressItems =
-    status === 'finalizing'
+    status === 'finalizing' && variant === 'bootstrap'
       ? keepInstallingActiveDuringFinalizing(progressItemsWithTransitions)
       : progressItemsWithTransitions;
 
@@ -567,6 +574,11 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
     const itemLabel = msgKey
       ? intl.formatMessage(messages[msgKey])
       : item.label;
+    // Interrupting the snapshot move can leave the chain store half-written,
+    // so the active move step carries a "don't close Daedalus" caution.
+    // Bootstrap reports the move as 'install-snapshot'; partial sync as 'installing'.
+    const showMoveCaution =
+      (item.id === 'install-snapshot' || item.id === 'installing') && isActive;
 
     return (
       <div
@@ -580,12 +592,22 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
           [styles.subItemPending]: itemState === 'pending',
           [styles.subItemError]: itemState === 'error',
           [styles.subItemNoAnimate]: itemState === 'completed',
+          [styles.subItemWithCaution]: showMoveCaution,
         })}
       >
         <div className={styles.subItemIconContainer}>
           <SubItemIcon state={itemState} />
         </div>
-        <span className={styles.subItemLabel}>{itemLabel}</span>
+        {showMoveCaution ? (
+          <div className={styles.subItemLabelGroup}>
+            <span className={styles.subItemLabel}>{itemLabel}</span>
+            <span className={styles.subItemCaution}>
+              {intl.formatMessage(messages.progressMoveCaution)}
+            </span>
+          </div>
+        ) : (
+          <span className={styles.subItemLabel}>{itemLabel}</span>
+        )}
       </div>
     );
   };

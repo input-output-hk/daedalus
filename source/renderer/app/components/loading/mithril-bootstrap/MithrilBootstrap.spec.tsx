@@ -165,7 +165,7 @@ describe('MithrilBootstrap', () => {
       screen.getByRole('button', { name: /use mithril fast sync/i })
     ).toBeDisabled();
     expect(
-      screen.getByRole('button', { name: /sync from genesis/i })
+      screen.getByRole('button', { name: /blockchain sync from genesis/i })
     ).toBeDisabled();
     expect(screen.getByText('/mnt/current-chain/chain')).toBeInTheDocument();
     expect(screen.queryByText(/change location/i)).not.toBeInTheDocument();
@@ -236,11 +236,14 @@ describe('MithrilBootstrap', () => {
   it('restores the empty-chain bootstrap error default: wipe primary first, left-aligned', () => {
     renderComponent({ status: 'failed' });
 
-    // With no actions prop, MithrilErrorView renders its default order: destructive primary "Wipe chain & retry" first (left), "Sync from genesis" second.
+    // With no actions prop, MithrilErrorView renders its default order: destructive primary "Wipe chain & retry" first (left), "Blockchain Sync from Genesis" second.
     const actionLabels = screen
       .getAllByRole('button')
       .map((button) => button.textContent);
-    expect(actionLabels).toEqual(['Wipe chain & retry', 'Sync from genesis']);
+    expect(actionLabels).toEqual([
+      'Wipe chain & retry',
+      'Blockchain Sync from Genesis',
+    ]);
 
     // Left-aligned default: the actions footer must NOT opt into right-alignment
     // (that opt-in is owned by the partial-sync overlay caller only).
@@ -260,7 +263,7 @@ describe('MithrilBootstrap', () => {
       .getAllByRole('button')
       .map((button) => button.textContent);
     expect(actionLabels).toEqual([
-      'Sync from genesis',
+      'Blockchain Sync from Genesis',
       'Use Mithril fast sync',
     ]);
   });

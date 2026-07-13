@@ -118,6 +118,10 @@ describe('MithrilPartialSyncService', () => {
       size: 2_000_000_000_000,
     });
 
+    // The behindness probe treats a missing immutable/ dir as local position 0;
+    // the mock must resolve true (not undefined) so tests exercise the real
+    // readdir-driven local read.
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
     statMock.mockImplementation(async (targetPath: string) => {
       if (targetPath.endsWith('/clean')) {
         return mockFileStats();
@@ -411,17 +415,61 @@ describe('MithrilPartialSyncService', () => {
     );
   });
 
-  it('fails when there is no certified immutable range to download', async () => {
+  it('downloads a ledger-only range when local immutables are at the certified tip', async () => {
     const service = new MithrilPartialSyncService();
-
-    readdirMock.mockResolvedValue(['00025.chunk']);
+    jest
+      .spyOn(
+        service._chainStorageManager,
+        'installValidatedPartialSyncSnapshot'
+      )
+      .mockResolvedValue(undefined);
 
     jest
       .spyOn(service, 'resolveLatestSnapshotMetadata')
-      .mockResolvedValueOnce(createLatestSnapshot(25));
+      .mockResolvedValue(createLatestSnapshot(25));
+    const runCommandSpy = jest.spyOn(service, '_runCommand').mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exitCode: 0,
+    });
+    jest.spyOn(service, '_runBinary').mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exitCode: 0,
+    });
+    readdirMock.mockImplementation(async (targetPath: string) => {
+      if (targetPath === '/tmp/chain/immutable') {
+        return ['00025.chunk'];
+      }
+      if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
+        return [{ name: '12345', isDirectory: () => true }];
+      }
+      if (targetPath === '/tmp/mithril-partial-sync/download/db') {
+        return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
+      }
 
-    await expect(service.start(createContext())).rejects.toThrow(
-      'The managed chain is not missing any certified immutable files for Mithril partial sync.'
+      return ['00025.chunk'];
+    });
+
+    await expect(service.start(createContext())).resolves.toBeUndefined();
+
+    expect(runCommandSpy).toHaveBeenCalledWith(
+      [
+        '--json',
+        'cardano-db',
+        'download',
+        'latest',
+        '--download-dir',
+        '/tmp/mithril-partial-sync/download',
+        '--start',
+        '25',
+        '--end',
+        '25',
+        '--include-ancillary',
+        '--allow-override',
+      ],
+      expect.any(Object),
+      '/tmp/mithril-partial-sync/download'
     );
   });
 
@@ -1564,6 +1612,7 @@ describe('MithrilPartialSyncService', () => {
       readdirMock.mockResolvedValue(['00005.chunk', 'not-an-immutable-entry']);
       await expect(service.getPartialSyncBehindness()).resolves.toEqual({
         isSignificantlyBehind: true,
+        isAtOrPastSnapshot: false,
         behindByImmutables: 20,
       });
 
@@ -1958,6 +2007,44 @@ describe('MithrilPartialSyncService', () => {
 
       await expect(service.start(createContext())).resolves.toBeUndefined();
     });
+
+    it('rejects as a metadata failure when the snapshot size is missing, before measuring free space', async () => {
+      const service = new MithrilPartialSyncService();
+      setupStartMocks(service);
+      mockSnapshotMetadata(service, 0);
+
+      await expect(service.start(createContext())).rejects.toThrow(
+        'Unable to determine the Mithril snapshot size'
+      );
+      expect(service.status).toEqual(
+        expect.objectContaining({
+          status: 'failed',
+          error: expect.objectContaining({
+            code: 'PARTIAL_SYNC_METADATA_UNAVAILABLE',
+            stage: 'preparing',
+          }),
+        })
+      );
+      expect(require('check-disk-space')).not.toHaveBeenCalled();
+    });
+
+    it('rejects as a metadata failure when the snapshot size is malformed (NaN), before measuring free space', async () => {
+      const service = new MithrilPartialSyncService();
+      setupStartMocks(service);
+      // What normalizeSnapshotItem yields for a non-numeric aggregator size field.
+      mockSnapshotMetadata(service, Number('garbage'));
+
+      await expect(service.start(createContext())).rejects.toThrow(
+        'Unable to determine the Mithril snapshot size'
+      );
+      expect(service.status.error).toEqual(
+        expect.objectContaining({
+          code: 'PARTIAL_SYNC_METADATA_UNAVAILABLE',
+          stage: 'preparing',
+        })
+      );
+      expect(require('check-disk-space')).not.toHaveBeenCalled();
+    });
   });
 
   describe('finalizeCompletedPartialSync', () => {
@@ -2174,6 +2261,7 @@ describe('MithrilPartialSyncService', () => {
 
       await expect(service.getPartialSyncBehindness()).resolves.toEqual({
         isSignificantlyBehind: true,
+        isAtOrPastSnapshot: false,
         behindByImmutables: 20,
       });
     });
@@ -2187,6 +2275,7 @@ describe('MithrilPartialSyncService', () => {
 
       await expect(service.getPartialSyncBehindness()).resolves.toEqual({
         isSignificantlyBehind: false,
+        isAtOrPastSnapshot: false,
         behindByImmutables: 5,
       });
     });
@@ -2200,6 +2289,7 @@ describe('MithrilPartialSyncService', () => {
 
       await expect(service.getPartialSyncBehindness()).resolves.toEqual({
         isSignificantlyBehind: false,
+        isAtOrPastSnapshot: true,
       });
     });
 
@@ -2213,6 +2303,7 @@ describe('MithrilPartialSyncService', () => {
       await expect(service.getPartialSyncBehindness()).resolves.toEqual({
         isSignificantlyBehind: false,
         isProbeFailed: true,
+        isAtOrPastSnapshot: false,
       });
     });
 
@@ -2228,6 +2319,7 @@ describe('MithrilPartialSyncService', () => {
       await expect(service.getPartialSyncBehindness()).resolves.toEqual({
         isSignificantlyBehind: false,
         isProbeFailed: true,
+        isAtOrPastSnapshot: false,
       });
     });
 
@@ -2363,6 +2455,7 @@ describe('MithrilPartialSyncService', () => {
       resolveLatest(createLatestSnapshot(25));
       await expect(probe).resolves.toEqual({
         isSignificantlyBehind: true,
+        isAtOrPastSnapshot: false,
         behindByImmutables: 20,
       });
     });
@@ -2376,6 +2469,7 @@ describe('MithrilPartialSyncService', () => {
 
       await expect(service.getPartialSyncBehindness()).resolves.toEqual({
         isSignificantlyBehind: true,
+        isAtOrPastSnapshot: false,
         behindByImmutables: 20,
         certifiedEpoch: 320,
       });
@@ -2390,6 +2484,7 @@ describe('MithrilPartialSyncService', () => {
 
       await expect(service.getPartialSyncBehindness()).resolves.toEqual({
         isSignificantlyBehind: false,
+        isAtOrPastSnapshot: true,
         certifiedEpoch: 320,
       });
     });
@@ -2403,6 +2498,7 @@ describe('MithrilPartialSyncService', () => {
 
       await expect(service.getPartialSyncBehindness()).resolves.toEqual({
         isSignificantlyBehind: true,
+        isAtOrPastSnapshot: false,
         behindByImmutables: 20,
       });
     });

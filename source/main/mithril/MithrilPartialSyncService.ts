@@ -38,6 +38,7 @@ import {
 } from './mithrilPartialSyncMarker';
 import { convertSnapshotDbToLsm } from './mithrilSnapshotConverter';
 import {
+  hasKnownSnapshotSize,
   normalizeResolvedLatestSnapshot,
   parseMithrilJson,
   ResolvedLatestSnapshot,
@@ -77,7 +78,8 @@ const PARTIAL_SYNC_METADATA_UNAVAILABLE_CODE =
   'PARTIAL_SYNC_METADATA_UNAVAILABLE';
 // Required space = missing bytes (snapshot − local chain, floored at 0) plus a margin sized on the full
 //  snapshot — deliberately not the delta, as headroom for chain growth, conversion and FS slack — floored at
-//  DISK_SPACE_REQUIRED so a zero/missing size still fails closed; unmeasurable local size ⇒ whole-snapshot bound.
+//  DISK_SPACE_REQUIRED. A missing or malformed snapshot size is rejected as a metadata failure before the
+//  formula runs; unmeasurable local size ⇒ whole-snapshot bound.
 const PARTIAL_SYNC_DISK_MARGIN_FACTOR = 0.2;
 const PARTIAL_SYNC_DISK_SAFETY_FACTOR = 1 + PARTIAL_SYNC_DISK_MARGIN_FACTOR;
 
@@ -917,7 +919,8 @@ export class MithrilPartialSyncService {
       localImmutableNumber = 0;
     } else {
       try {
-        localImmutableNumber = await resolveLocalImmutableNumber(managedChainPath);
+        localImmutableNumber =
+          await resolveLocalImmutableNumber(managedChainPath);
       } catch (err: any) {
         if (err?.code === 'PARTIAL_SYNC_IMMUTABLE_POSITION_UNAVAILABLE') {
           localImmutableNumber = 0;
@@ -955,6 +958,7 @@ export class MithrilPartialSyncService {
   async getPartialSyncBehindness(): Promise<{
     isSignificantlyBehind: boolean;
     isProbeFailed?: boolean;
+    isAtOrPastSnapshot: boolean;
     behindByImmutables?: number;
     certifiedEpoch?: number;
   }> {
@@ -968,14 +972,19 @@ export class MithrilPartialSyncService {
       const certifiedEpoch = this._getCachedCertifiedEpoch();
       const gap = latest - localImmutableNumber;
       if (gap <= 0) {
-        // local >= latest ⇒ no certified range to restore ⇒ never nudge
+        // local >= latest ⇒ no certified range to restore ⇒ never nudge.
+        // Surfaced as an explicit flag so the UI can tell "at/past the
+        // snapshot" apart from "a few immutables behind" without inferring
+        // it from absent fields.
         return {
           isSignificantlyBehind: false,
+          isAtOrPastSnapshot: true,
           ...(certifiedEpoch != null ? { certifiedEpoch } : {}),
         };
       }
       return {
         isSignificantlyBehind: gap >= this._getBehindnessThresholdImmutables(),
+        isAtOrPastSnapshot: false,
         behindByImmutables: gap,
         ...(certifiedEpoch != null ? { certifiedEpoch } : {}),
       };
@@ -987,7 +996,11 @@ export class MithrilPartialSyncService {
         'MithrilPartialSyncService: behind-ness probe failed; treating as not significantly behind',
         { error }
       );
-      return { isSignificantlyBehind: false, isProbeFailed: true };
+      return {
+        isSignificantlyBehind: false,
+        isProbeFailed: true,
+        isAtOrPastSnapshot: false,
+      };
     }
   }
 
@@ -1063,6 +1076,15 @@ export class MithrilPartialSyncService {
     stagingRootPath: string,
     managedChainPath: string
   ): Promise<void> {
+    // A 0 size would collapse the requirement to the 4 GB floor and a NaN
+    // would pass every comparison, so an unknown size must fail the preflight.
+    if (!hasKnownSnapshotSize(this._latestSnapshot)) {
+      throw this._createStageError(
+        'preparing',
+        'Unable to determine the Mithril snapshot size for the disk-space check.',
+        PARTIAL_SYNC_METADATA_UNAVAILABLE_CODE
+      );
+    }
     const snapshotSize = this._latestSnapshot?.size ?? 0;
 
     let requiredBytes: number;

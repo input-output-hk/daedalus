@@ -59,6 +59,10 @@ export default class MithrilPartialSyncStore extends Store {
   // True when the backend behind-ness probe failed, so "not behind" cannot be
   // trusted; the Diagnostics section shows an availability-unknown hint instead.
   @observable isProbeFailed = false;
+  // True when the backend probe found the local tip at or past the latest
+  // certified snapshot. Defaults to false: the disabled/working availability
+  // short-circuits return no flag at all.
+  @observable isAtOrPastSnapshot = false;
   // Mithril certified-beacon epoch: early-resolving fallback anchor for the late networkTip.epoch.
   //  Undefined until the backend supplies it; then computeBehindByEpochs degrades to networkTip-only.
   @observable certifiedEpoch: number | undefined = undefined;
@@ -254,6 +258,7 @@ export default class MithrilPartialSyncStore extends Store {
     this.isPartialSyncEnabled = availability.isEnabled;
     this.isSignificantlyBehind = availability.isSignificantlyBehind;
     this.isProbeFailed = Boolean(availability.isProbeFailed);
+    this.isAtOrPastSnapshot = Boolean(availability.isAtOrPastSnapshot);
     this.certifiedEpoch = availability.certifiedEpoch;
   };
 

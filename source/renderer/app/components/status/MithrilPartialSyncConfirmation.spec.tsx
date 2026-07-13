@@ -9,6 +9,7 @@ import MithrilPartialSyncConfirmation from './MithrilPartialSyncConfirmation';
 const defaultProps = {
   isActionBlocked: false,
   startError: null,
+  isAtOrPastSnapshot: false,
   behindByEpochs: undefined,
   onCancel: jest.fn(),
   onConfirm: jest.fn(),
@@ -86,6 +87,20 @@ describe('MithrilPartialSyncConfirmation', () => {
     expect(screen.queryByText(/undefined/)).toBeNull();
   });
 
+  it('renders the at-or-past-snapshot copy over any behind copy when the signal is set', () => {
+    renderComponent({ isAtOrPastSnapshot: true, behindByEpochs: 3 });
+
+    expect(
+      screen.getByText(
+        'Your node is at or past the latest Mithril snapshot, so Blockchain Sync can finish the remaining blocks on its own. If sync seems slow or runs into verification issues, continuing will restore a verified ledger state at the snapshot position.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/epochs behind/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/behind the latest verified snapshot/)
+    ).not.toBeInTheDocument();
+  });
+
   it('renders the canonical shutdown/restore/restart subtext and drops the old step copy', () => {
     renderComponent();
 
@@ -117,7 +132,7 @@ describe('MithrilPartialSyncConfirmation', () => {
       name: 'Start Mithril Sync',
     });
     const backButton = screen.getByRole('button', {
-      name: 'Back to diagnostics',
+      name: 'Back to Daedalus Diagnostics',
     });
 
     expect(startButton).toHaveClass('primary');

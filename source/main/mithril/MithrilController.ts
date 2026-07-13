@@ -436,6 +436,7 @@ export class MithrilController {
     handlers: PartialSyncHandlers;
     nodeStopHandler?: () => Promise<void>;
     startupHandler?: () => Promise<void>;
+    getNodeState?: () => CardanoNodeState | null | undefined;
   } {
     return {
       handlers: {
@@ -465,6 +466,7 @@ export class MithrilController {
       },
       nodeStopHandler: this._stopNodeForPartialSync,
       startupHandler: this._restartStartupFlowAfterPartialSync,
+      getNodeState: () => this.getNodeState(),
     };
   }
 }

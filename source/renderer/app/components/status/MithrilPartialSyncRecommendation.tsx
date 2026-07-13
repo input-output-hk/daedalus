@@ -13,6 +13,13 @@ const messages = defineMessages({
     description:
       'Tooltip copy shown on hover over the Mithril Sync button in diagnostics',
   },
+  recommendationAtOrPastSnapshot: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationAtOrPastSnapshot',
+    defaultMessage:
+      '!!!Your node is at or past the latest Mithril snapshot. Blockchain Sync will finish the remaining blocks on its own. If sync seems slow or runs into verification issues, Mithril Sync can restore a verified ledger state.',
+    description:
+      'Tooltip copy for the Mithril Sync button in diagnostics when the node is at or past the latest certified snapshot',
+  },
   recommendationNearTip: {
     id: 'daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationNearTip',
     defaultMessage:
@@ -44,6 +51,7 @@ const messages = defineMessages({
 export type MithrilAvailabilityVariant =
   | 'behind'
   | 'near-tip'
+  | 'at-or-past-snapshot'
   | 'availability-unknown';
 
 type Props = {
@@ -64,6 +72,8 @@ export default class MithrilPartialSyncRecommendation extends Component<Props> {
     let tooltipMessage = messages.recommendation;
     if (variant === 'near-tip') {
       tooltipMessage = messages.recommendationNearTip;
+    } else if (variant === 'at-or-past-snapshot') {
+      tooltipMessage = messages.recommendationAtOrPastSnapshot;
     } else if (variant === 'availability-unknown') {
       tooltipMessage = messages.recommendationUnknown;
     }

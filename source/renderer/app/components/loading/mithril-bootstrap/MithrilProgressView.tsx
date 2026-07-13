@@ -194,6 +194,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
         <div className={styles.waterfallContainer}>
           <MithrilStepIndicator
             status={status}
+            variant={variant}
             progressItems={progressItems}
             filesDownloaded={filesDownloaded}
             filesTotal={filesTotal}

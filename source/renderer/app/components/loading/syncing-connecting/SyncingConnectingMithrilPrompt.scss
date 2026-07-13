@@ -54,9 +54,25 @@
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   justify-content: flex-end;
   margin-top: 20px;
+}
+
+// Long labels must wrap and grow the button instead of spilling past the fixed
+// theme geometry. Only the --rp-* custom properties override the theme values
+// reliably; class-level height/width vs the skin's .root is injection-order dependent.
+.primaryAction,
+.secondaryAction {
+  --rp-button-height: auto;
+  --rp-button-line-height: 1.3;
+  --rp-button-width: auto;
+  height: auto;
+  max-width: 100%;
+  min-height: 50px;
+  white-space: normal;
+  width: auto;
 }
 
 .primaryAction {

@@ -65,7 +65,7 @@ describe('MithrilProactivePromptContainer', () => {
       screen.getByRole('button', { name: 'Mithril Sync (fast)' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Standard Sync (slow)' })
+      screen.getByRole('button', { name: 'Blockchain Sync (slow)' })
     ).toBeInTheDocument();
   });
 

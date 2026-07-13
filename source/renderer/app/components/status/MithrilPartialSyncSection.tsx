@@ -23,6 +23,7 @@ type Props = {
   isMithrilPartialSyncWorking: boolean;
   isSignificantlyBehind: boolean;
   isProbeFailed: boolean;
+  isAtOrPastSnapshot: boolean;
   behindByEpochs?: number;
   onRestoreFocus: () => void;
   onStartMithrilPartialSync: () => Promise<void>;
@@ -107,8 +108,12 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
   };
 
   render() {
-    const { isActionBlocked, isSignificantlyBehind, isProbeFailed } =
-      this.props;
+    const {
+      isActionBlocked,
+      isSignificantlyBehind,
+      isProbeFailed,
+      isAtOrPastSnapshot,
+    } = this.props;
     const { isShowingConfirmation, startError } = this.state;
     const { intl } = this.context;
 
@@ -117,6 +122,7 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
         <MithrilPartialSyncConfirmation
           isActionBlocked={isActionBlocked}
           startError={startError}
+          isAtOrPastSnapshot={isAtOrPastSnapshot}
           behindByEpochs={this.props.behindByEpochs}
           onCancel={this.hideConfirmation}
           onConfirm={this.startFromConfirmation}
@@ -125,13 +131,16 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
     }
 
     // The section stays visible in every probe state; only the tooltip copy
-    // adapts. A confident behind result outranks the failure hint, and a
-    // failed probe outranks the near-tip reassurance.
+    // adapts. A confident behind result outranks the failure hint, a failed
+    // probe outranks both reassurances, and the at/past-snapshot fact
+    // outranks the generic near-tip copy.
     let availabilityVariant: MithrilAvailabilityVariant = 'near-tip';
     if (isSignificantlyBehind) {
       availabilityVariant = 'behind';
     } else if (isProbeFailed) {
       availabilityVariant = 'availability-unknown';
+    } else if (isAtOrPastSnapshot) {
+      availabilityVariant = 'at-or-past-snapshot';
     }
 
     return (

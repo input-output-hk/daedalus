@@ -31,7 +31,6 @@ export type MithrilPartialSyncErrorStage =
   | 'starting-node';
 
 export type MithrilPartialSyncErrorCode =
-  | 'PARTIAL_SYNC_NO_CERTIFIED_RANGE'
   | 'PARTIAL_SYNC_LATEST_DRIFT'
   | 'PARTIAL_SYNC_STAGED_DB_INVALID'
   | 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED'
@@ -93,6 +92,10 @@ export type MithrilPartialSyncAvailability = {
   // behind" can be told apart from "behind-ness unknown". Optional: absent
   // means the probe succeeded and isSignificantlyBehind is trustworthy.
   isProbeFailed?: boolean;
+  // Set when the probe found the local tip at or past the latest certified
+  // snapshot (gap <= 0). Optional: the disabled/working short-circuits omit
+  // it, and consumers must treat absence as false.
+  isAtOrPastSnapshot?: boolean;
   behindByImmutables?: number;
   // Mithril certified-beacon epoch: early-resolving fallback anchor for the
   // late networkTip.epoch. Optional; when absent the figure degrades to

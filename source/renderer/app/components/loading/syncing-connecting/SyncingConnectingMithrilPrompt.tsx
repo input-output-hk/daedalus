@@ -31,15 +31,14 @@ const messages = defineMessages({
   },
   promptBodyBenefit: {
     id: 'daedalus.diagnostics.dialog.mithrilProactivePromptBodyBenefit',
-    defaultMessage:
-      '!!!Mithril can catch you up faster than the standard sync.',
+    defaultMessage: '!!!Mithril can catch you up faster than Blockchain Sync.',
     description:
       'Benefit-vs-standard-sync body line (line 2) for the proactive Mithril fork prompt',
   },
   promptHandoffNote: {
     id: 'daedalus.diagnostics.dialog.mithrilProactivePromptHandoffNote',
     defaultMessage:
-      '!!!If skipped, you can still start the Mithril Sync from the Daedalus Diagnostics screen under the Help menu. (Ctrl + D)',
+      '!!!If skipped, you can still start the Mithril Sync from the Daedalus Diagnostics screen under the Help menu. ({shortcut})',
     description:
       'Handoff note telling the user they can start Mithril later from Diagnostics if they skip the proactive prompt',
   },
@@ -57,7 +56,7 @@ const messages = defineMessages({
   },
   promptStandardButton: {
     id: 'daedalus.diagnostics.dialog.mithrilProactivePromptStandardButton',
-    defaultMessage: '!!!Standard Sync (slow)',
+    defaultMessage: '!!!Blockchain Sync (slow)',
     description:
       'Secondary choice-view button label that dismisses the proactive Mithril fork prompt for this session',
   },
@@ -149,6 +148,7 @@ export default class SyncingConnectingMithrilPrompt extends Component<
   renderChoiceView() {
     const { behindByEpochs, onDismiss } = this.props;
     const { intl } = this.context;
+    const { isMacOS } = global.environment;
 
     const hasBehindFigure =
       typeof behindByEpochs === 'number' && Number.isFinite(behindByEpochs);
@@ -172,7 +172,11 @@ export default class SyncingConnectingMithrilPrompt extends Component<
           <strong className={styles.noteLabel}>
             {intl.formatMessage(messages.promptHandoffNoteLabel)}
           </strong>{' '}
-          <span>{intl.formatMessage(messages.promptHandoffNote)}</span>
+          <span>
+            {intl.formatMessage(messages.promptHandoffNote, {
+              shortcut: isMacOS ? 'Cmd + D' : 'Ctrl + D',
+            })}
+          </span>
         </p>
         <div className={styles.actions}>
           <Button

@@ -4,10 +4,10 @@ import type {
   ChainStorageValidationReason,
   MithrilBootstrapError,
   MithrilBootstrapErrorStage,
+  MithrilBootstrapStatus,
   MithrilProgressItem,
   MithrilSnapshotItem,
 } from '../../../../source/common/types/mithril-bootstrap.types';
-import { DOWNLOAD_PROGRESS_ANCHOR_ID } from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator';
 
 export const defaultChainPath = '/home/ada/.local/share/Daedalus/mainnet/chain';
 export const customChainPath = '/mnt/fast-ssd/daedalus-chain';
@@ -143,190 +143,69 @@ export const getValidationPresetForReason = (
   }
 };
 
-const progressPresetMap: Record<string, Array<MithrilProgressItem>> = {
-  preparing: [
-    {
-      id: 'prepare-workspace',
-      label: 'Preparing local workspace',
-      state: 'active',
-    },
-  ],
-  'download-early': [
-    {
-      id: 'step-1',
-      label: 'Checking disk space',
-      state: 'completed',
-    },
-    {
-      id: 'step-2',
-      label: 'Validating certificate chain',
-      state: 'completed',
-    },
-    {
-      id: DOWNLOAD_PROGRESS_ANCHOR_ID,
-      label: 'Downloading snapshot archive',
-      state: 'active',
-    },
-  ],
-  'download-mid': [
-    {
-      id: 'step-1',
-      label: 'Checking disk space',
-      state: 'completed',
-    },
-    {
-      id: 'step-2',
-      label: 'Validating certificate chain',
-      state: 'completed',
-    },
-    {
-      id: DOWNLOAD_PROGRESS_ANCHOR_ID,
-      label: 'Downloading snapshot archive',
-      state: 'active',
-    },
-  ],
-  verifying: [
-    {
-      id: 'step-1',
-      label: 'Checking disk space',
-      state: 'completed',
-    },
-    {
-      id: 'step-2',
-      label: 'Validating certificate chain',
-      state: 'completed',
-    },
-    {
-      id: DOWNLOAD_PROGRESS_ANCHOR_ID,
-      label: 'Downloading snapshot archive',
-      state: 'completed',
-    },
-    {
-      id: 'step-4',
-      label: 'Verifying digests',
-      state: 'active',
-    },
-    {
-      id: 'step-5',
-      label: 'Verifying database',
-      state: 'pending',
-    },
-    {
-      id: 'step-6',
-      label: 'Computing message',
-      state: 'pending',
-    },
-    {
-      id: 'step-7',
-      label: 'Verifying signature',
-      state: 'pending',
-    },
-  ],
-  finalizing: [
-    {
-      id: 'step-1',
-      label: 'Checking disk space',
-      state: 'completed',
-    },
-    {
-      id: 'step-2',
-      label: 'Validating certificate chain',
-      state: 'completed',
-    },
-    {
-      id: DOWNLOAD_PROGRESS_ANCHOR_ID,
-      label: 'Downloading snapshot archive',
-      state: 'completed',
-    },
-    {
-      id: 'step-4',
-      label: 'Verifying digests',
-      state: 'completed',
-    },
-    {
-      id: 'step-5',
-      label: 'Verifying database',
-      state: 'completed',
-    },
-    {
-      id: 'step-6',
-      label: 'Computing message',
-      state: 'completed',
-    },
-    {
-      id: 'step-7',
-      label: 'Verifying signature',
-      state: 'completed',
-    },
-    {
-      id: 'cleanup',
-      label: 'Cleaning up temporary data',
-      state: 'active',
-    },
-  ],
-  'finalizing-with-conversion': [
-    {
-      id: 'step-1',
-      label: 'Checking disk space',
-      state: 'completed',
-    },
-    {
-      id: 'step-2',
-      label: 'Validating certificate chain',
-      state: 'completed',
-    },
-    {
-      id: DOWNLOAD_PROGRESS_ANCHOR_ID,
-      label: 'Downloading snapshot archive',
-      state: 'completed',
-    },
-    {
-      id: 'step-4',
-      label: 'Verifying digests',
-      state: 'completed',
-    },
-    {
-      id: 'step-5',
-      label: 'Verifying database',
-      state: 'completed',
-    },
-    {
-      id: 'step-6',
-      label: 'Computing message',
-      state: 'completed',
-    },
-    {
-      id: 'step-7',
-      label: 'Verifying signature',
-      state: 'completed',
-    },
-    {
-      id: 'conversion',
-      label: 'Converting ledger state',
-      state: 'completed',
-    },
-    {
-      id: 'cleanup',
-      label: 'Cleaning up temporary data',
-      state: 'active',
-    },
-  ],
+// The bootstrap service emits progress items cumulatively — an item exists
+// only once its stage has been reached (never as a pending placeholder), each
+// new item completes the previous active one, and labels are wire ids that
+// MithrilStepIndicator maps to user-facing copy. The sequence per status:
+// preparing → downloading (structural) → step-1..step-3 (download) →
+// step-4..step-7 (verifying) → conversion (converting) → install-snapshot
+// (unpacking) → cleanup (finalizing) → everything completed.
+const BOOTSTRAP_ITEM_SEQUENCE = [
+  { id: 'preparing', reachedBy: 'preparing' },
+  { id: 'downloading', reachedBy: 'downloading' },
+  { id: 'step-1', reachedBy: 'downloading' },
+  { id: 'step-2', reachedBy: 'downloading' },
+  { id: 'step-3', reachedBy: 'downloading' },
+  { id: 'step-4', reachedBy: 'verifying' },
+  { id: 'step-5', reachedBy: 'verifying' },
+  { id: 'step-6', reachedBy: 'verifying' },
+  { id: 'step-7', reachedBy: 'verifying' },
+  { id: 'conversion', reachedBy: 'converting' },
+  { id: 'install-snapshot', reachedBy: 'unpacking' },
+  { id: 'cleanup', reachedBy: 'finalizing' },
+] as const;
+
+// Canonical mid-status frames: how far through the sequence each status has
+// progressed when a tester lands on it (downloading sits on the snapshot
+// transfer, verifying on the long database check).
+const BOOTSTRAP_STATUS_REACHED_ID: Partial<
+  Record<MithrilBootstrapStatus, string>
+> = {
+  preparing: 'preparing',
+  downloading: 'step-3',
+  verifying: 'step-5',
+  converting: 'conversion',
+  unpacking: 'install-snapshot',
+  finalizing: 'cleanup',
 };
 
-export type ProgressPresetName = keyof typeof progressPresetMap;
+export const getBootstrapProgressItems = (
+  status: MithrilBootstrapStatus
+): Array<MithrilProgressItem> => {
+  if (status === 'starting-node' || status === 'completed') {
+    return BOOTSTRAP_ITEM_SEQUENCE.map(({ id }) => ({
+      id,
+      label: id,
+      state: 'completed' as const,
+    }));
+  }
 
-export const progressPresetOptions: Record<string, ProgressPresetName> = {
-  Preparing: 'preparing',
-  'Download - Early': 'download-early',
-  'Download - Mid': 'download-mid',
-  Verifying: 'verifying',
-  Finalizing: 'finalizing',
-  'Finalizing - With Conversion': 'finalizing-with-conversion',
+  const reachedId = BOOTSTRAP_STATUS_REACHED_ID[status];
+  if (!reachedId) {
+    return [];
+  }
+  const reachedIndex = BOOTSTRAP_ITEM_SEQUENCE.findIndex(
+    ({ id }) => id === reachedId
+  );
+  return BOOTSTRAP_ITEM_SEQUENCE.slice(0, reachedIndex + 1).map(
+    ({ id }, index) => ({
+      id,
+      label: id,
+      state:
+        index < reachedIndex ? ('completed' as const) : ('active' as const),
+    })
+  );
 };
-
-export const getProgressItemsPreset = (
-  presetName: ProgressPresetName
-): Array<MithrilProgressItem> => progressPresetMap[presetName];
 
 const errorPresetMap: Record<
   MithrilBootstrapErrorStage,

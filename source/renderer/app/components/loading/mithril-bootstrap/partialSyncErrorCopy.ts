@@ -12,10 +12,6 @@ export type PartialSyncErrorCopy = {
   hint: MessageDescriptor;
 };
 
-const NO_CERTIFIED_RANGE: PartialSyncErrorCopy = {
-  title: messages.partialSyncErrorNoCertifiedRangeTitle,
-  hint: messages.partialSyncErrorNoCertifiedRangeHint,
-};
 const LATEST_DRIFT: PartialSyncErrorCopy = {
   title: messages.partialSyncErrorLatestDriftTitle,
   hint: messages.partialSyncErrorLatestDriftHint,
@@ -53,7 +49,6 @@ const CANCELLED: PartialSyncErrorCopy = {
 // 1st tier — exact backend code (wins; code disambiguates a code shared across stages).
 const COPY_BY_CODE: Record<MithrilPartialSyncErrorCode, PartialSyncErrorCopy> =
   {
-    PARTIAL_SYNC_NO_CERTIFIED_RANGE: NO_CERTIFIED_RANGE,
     PARTIAL_SYNC_LATEST_DRIFT: LATEST_DRIFT,
     PARTIAL_SYNC_STAGED_DB_INVALID: STAGED_DB_INVALID,
     PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED: DOWNLOAD_FAILED,

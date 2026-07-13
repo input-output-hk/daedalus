@@ -96,7 +96,9 @@ describe('MithrilPartialSyncOverlay', () => {
     fireEvent.click(
       screen.getByRole('button', { name: /retry mithril sync/i })
     );
-    fireEvent.click(screen.getByRole('button', { name: /restart node sync/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: /restart blockchain sync/i })
+    );
 
     expect(onRetry).toHaveBeenCalledTimes(1);
     expect(onRestartNormally).toHaveBeenCalledTimes(1);
@@ -268,7 +270,7 @@ describe('MithrilPartialSyncOverlay', () => {
     });
 
     expect(
-      screen.getByText(/snapshot files: .*fast sync:/i)
+      screen.getByText(/snapshot files: .*ledger state:/i)
     ).toBeInTheDocument();
   });
 
@@ -289,7 +291,7 @@ describe('MithrilPartialSyncOverlay', () => {
       screen.getByRole('button', { name: /retry mithril sync \(fast\)/i })
     );
     fireEvent.click(
-      screen.getByRole('button', { name: /restart node sync \(slow\)/i })
+      screen.getByRole('button', { name: /restart blockchain sync \(slow\)/i })
     );
 
     expect(onRetry).toHaveBeenCalledTimes(1);
@@ -304,7 +306,7 @@ describe('MithrilPartialSyncOverlay', () => {
       .getAllByRole('button')
       .map((button) => button.textContent);
     expect(actionLabels).toEqual([
-      'Restart Node Sync (slow)',
+      'Restart Blockchain Sync (slow)',
       'Retry Mithril Sync (fast)',
     ]);
   });

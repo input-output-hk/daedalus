@@ -137,6 +137,9 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
             mithrilPartialSync.isSignificantlyBehind
           }
           isMithrilPartialSyncProbeFailed={mithrilPartialSync.isProbeFailed}
+          isMithrilPartialSyncAtOrPastSnapshot={
+            mithrilPartialSync.isAtOrPastSnapshot
+          }
           isMithrilBootstrapActive={isMithrilBootstrapBlockingNodeStart(
             mithrilBootstrap.status
           )}

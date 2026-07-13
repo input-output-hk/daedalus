@@ -466,6 +466,51 @@ describe('chainStorageCoordinator', () => {
     expect(partialSyncHandlersMock.start).toHaveBeenCalledTimes(1);
   });
 
+  it('stops the node before partial sync start when a stale stopped snapshot hides a stopping node', async () => {
+    const getNodeState = jest.fn().mockReturnValue('stopping');
+    const moduleExports = loadModule();
+
+    await expect(
+      moduleExports.chainStorageCoordinator.startPartialSync(
+        {
+          ...getPartialSyncDependencies(),
+          getNodeState,
+        },
+        {
+          nodeState: 'stopped',
+        }
+      )
+    ).resolves.toBeUndefined();
+
+    expect(getNodeState).toHaveBeenCalledTimes(1);
+    expect(partialSyncNodeStopHandlerMock).toHaveBeenCalledTimes(1);
+    expect(
+      partialSyncNodeStopHandlerMock.mock.invocationCallOrder[0]
+    ).toBeLessThan(partialSyncHandlersMock.start.mock.invocationCallOrder[0]);
+    expect(
+      chainStorageManagerMock.ensureManagedChainLayout
+    ).toHaveBeenCalledWith({ nodeState: 'stopped' });
+    expect(partialSyncHandlersMock.start).toHaveBeenCalledTimes(1);
+  });
+
+  it('stops the node before partial sync start when no snapshot is given and the live node state is stopping', async () => {
+    const getNodeState = jest.fn().mockReturnValue('stopping');
+    const moduleExports = loadModule();
+
+    await expect(
+      moduleExports.chainStorageCoordinator.startPartialSync({
+        ...getPartialSyncDependencies(),
+        getNodeState,
+      })
+    ).resolves.toBeUndefined();
+
+    expect(partialSyncNodeStopHandlerMock).toHaveBeenCalledTimes(1);
+    expect(
+      partialSyncNodeStopHandlerMock.mock.invocationCallOrder[0]
+    ).toBeLessThan(partialSyncHandlersMock.start.mock.invocationCallOrder[0]);
+    expect(partialSyncHandlersMock.start).toHaveBeenCalledTimes(1);
+  });
+
   it('rejects startBootstrap when the managed chain is non-empty and wipeChain is false', async () => {
     chainStorageManagerMock.isManagedChainEmpty.mockResolvedValue(false);
 

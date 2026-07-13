@@ -18,6 +18,7 @@ type TestProps = Partial<{
   filesTotal: number;
   progressItems: MithrilProgressItem[];
   snapshotSizeBytes: number;
+  variant: 'bootstrap' | 'partial-sync';
 }>;
 
 describe('MithrilStepIndicator', () => {
@@ -122,7 +123,7 @@ describe('MithrilStepIndicator', () => {
       /downloading snapshot data/i
     );
     const combinedProgressLabel = within(downloadingDetails).getByText(
-      /snapshot files and fast sync/i
+      /snapshot files and ledger state/i
     );
     const verifyingDigests = within(downloadingDetails).getByText(
       /verifying snapshot digests/i
@@ -160,7 +161,7 @@ describe('MithrilStepIndicator', () => {
 
     expect(
       screen.getByRole('progressbar', {
-        name: /snapshot files and fast sync: 54%/i,
+        name: /snapshot files and ledger state: 54%/i,
       })
     ).toBeInTheDocument();
   });
@@ -181,7 +182,7 @@ describe('MithrilStepIndicator', () => {
 
     expect(
       screen.getByText(
-        /snapshot files: 901 \/ 25,400 files \| fast sync: 24\.0 kb \/ 195\.0 kb/i
+        /snapshot files: 901 \/ 25,400 files \| ledger state: 24\.0 kb \/ 195\.0 kb/i
       )
     ).toBeInTheDocument();
   });
@@ -224,7 +225,7 @@ describe('MithrilStepIndicator', () => {
 
     expect(
       screen.getByRole('progressbar', {
-        name: /snapshot files and fast sync: 100%/i,
+        name: /snapshot files and ledger state: 100%/i,
       })
     ).toBeInTheDocument();
   });
@@ -252,7 +253,7 @@ describe('MithrilStepIndicator', () => {
 
     expect(
       screen.getByRole('progressbar', {
-        name: /snapshot files and fast sync: 100%/i,
+        name: /snapshot files and ledger state: 100%/i,
       })
     ).toBeInTheDocument();
 
@@ -290,7 +291,7 @@ describe('MithrilStepIndicator', () => {
     });
 
     expect(
-      within(downloadingDetails).queryByText(/snapshot files and fast sync/i)
+      within(downloadingDetails).queryByText(/snapshot files and ledger state/i)
     ).not.toBeInTheDocument();
     expect(screen.queryAllByRole('progressbar')).toHaveLength(0);
   });
@@ -315,7 +316,7 @@ describe('MithrilStepIndicator', () => {
     });
 
     expect(
-      within(downloadingDetails).getByText(/snapshot files and fast sync/i)
+      within(downloadingDetails).getByText(/snapshot files and ledger state/i)
     ).toBeInTheDocument();
     expect(screen.getAllByRole('progressbar')).toHaveLength(1);
     expect(
@@ -370,6 +371,73 @@ describe('MithrilStepIndicator', () => {
     expect(movingSnapshotItem).toHaveAttribute('aria-current', 'step');
     expect(movingSnapshotItem).toHaveClass('subItemActive');
     expect(movingSnapshotItem).not.toHaveClass('subItemCompleted');
+  });
+
+  it('attaches the data-integrity caution to the active moving step', () => {
+    renderComponent('finalizing', { progressItems: [] });
+
+    const movingSnapshot = screen.getByText(/moving snapshot to storage/i);
+    const movingSnapshotItem = movingSnapshot.closest('[role="listitem"]');
+    const caution = screen.getByText(
+      "To preserve data integrity, please don't close Daedalus until this step is complete."
+    );
+
+    expect(movingSnapshotItem).toContainElement(caution);
+  });
+
+  it('does not fabricate the bootstrap moving step during partial-sync finalizing', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'preparing', label: 'preparing', state: 'completed' },
+      { id: 'downloading', label: 'downloading', state: 'completed' },
+      { id: 'verifying', label: 'verifying', state: 'completed' },
+      { id: 'converting', label: 'converting', state: 'completed' },
+      { id: 'installing', label: 'installing', state: 'completed' },
+      { id: 'finalizing', label: 'finalizing', state: 'active' },
+    ];
+
+    renderComponent('finalizing', { variant: 'partial-sync', progressItems });
+
+    expect(
+      screen.queryByText(/moving snapshot to storage/i)
+    ).not.toBeInTheDocument();
+
+    const installing = screen.getByText(/installing snapshot/i);
+    const installingItem = installing.closest('[role="listitem"]');
+    expect(installingItem).toHaveClass('subItemCompleted');
+    expect(installingItem).not.toHaveClass('subItemActive');
+  });
+
+  it('drops the caution once the moving step is no longer active', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'install-snapshot', label: 'install-snapshot', state: 'completed' },
+      { id: 'cleanup', label: 'cleanup', state: 'active' },
+    ];
+
+    renderComponent('installing', { progressItems });
+
+    expect(screen.getByText(/moving snapshot to storage/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/please don't close Daedalus/i)
+    ).not.toBeInTheDocument();
+  });
+
+  it('attaches the data-integrity caution to the active installing stage item', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'verifying', label: 'verifying', state: 'completed' },
+      { id: 'converting', label: 'converting', state: 'completed' },
+      { id: 'installing', label: 'installing', state: 'active' },
+    ];
+
+    renderComponent('installing', { progressItems });
+
+    const installingItem = screen
+      .getByText(/installing snapshot/i)
+      .closest('[role="listitem"]');
+    const caution = screen.getByText(
+      "To preserve data integrity, please don't close Daedalus until this step is complete."
+    );
+
+    expect(installingItem).toContainElement(caution);
   });
 
   it('renders a localized label for the verifying stage item instead of its raw id', () => {
