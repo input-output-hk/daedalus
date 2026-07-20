@@ -1,8 +1,18 @@
 # Changelog
 
-## Upcoming
+## 11.1.0
+
+### Features
+
+- Added Mithril Partial Sync: existing Daedalus installs can now use Mithril to fast-forward their chain data without a full reinstall. When the syncing screen detects the node is significantly behind the certified tip, a prompt offers to download only the missing immutable chunk range via Mithril. Behind-ness is expressed in epochs, progress is shown with live file-count statistics, and the overlay includes cancel, error, and recovery flows. An interrupt button is displayed throughout ledger replay so users can abort at any point.
+
+### Fixes
+
+- Windows: disk space check now resolves NTFS junctions and symlinks to their target volume before measuring free space ([PR #3338](https://github.com/input-output-hk/daedalus/pull/3338)).
 
 ### Chores
+
+- Switched the USB HID device-detection dependency from the unmaintained `usb-detection` to the `usb` package.
 
 - Nix: removed the `nixpkgsJs` (nixpkgs-22.11-darwin) compatibility shim — all packages now come from the single nixpkgs-25.11 pin, using `nodejs_22`. Also removed the `glibc-electron-loader.patch` (obsolete since glibc 2.36 removed PRELINK) and the pinned 2022-07-18 nixpkgs snapshot for `yarn2nix` (now uses the one bundled in nixos-25.11).
 
