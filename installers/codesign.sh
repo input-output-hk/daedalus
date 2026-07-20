@@ -35,6 +35,11 @@ sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/
 sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libGLESv2.dylib"
 sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libvk_swiftshader.dylib"
 
+# Sign native Node.js addons — --deep does not recurse into node_modules
+while IFS= read -r -d '' node_addon; do
+  sign_cmd "$node_addon"
+done < <(find "$ABS_PATH/Contents/Resources/app/node_modules" -name "*.node" -print0 2>/dev/null)
+
 # Sign the whole component deeply
 sign_cmd "$ABS_PATH"
 
