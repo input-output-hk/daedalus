@@ -15,25 +15,25 @@ export const MITHRIL_NETWORK_CONFIG: Record<string, MithrilNetworkConfig> = {
     aggregatorEndpoint:
       'https://aggregator.release-mainnet.api.mithril.network/aggregator',
     genesisKeyUrl:
-      'https://raw.githubusercontent.com/input-output-hk/mithril/main/mithril-infra/configuration/release-mainnet/genesis.vkey',
+      'https://raw.githubusercontent.com/IntersectMBO/mithril/main/mithril-infra/configuration/release-mainnet/genesis.vkey',
     ancillaryKeyUrl:
-      'https://raw.githubusercontent.com/input-output-hk/mithril/main/mithril-infra/configuration/release-mainnet/ancillary.vkey',
+      'https://raw.githubusercontent.com/IntersectMBO/mithril/main/mithril-infra/configuration/release-mainnet/ancillary.vkey',
   },
   preprod: {
     aggregatorEndpoint:
       'https://aggregator.release-preprod.api.mithril.network/aggregator',
     genesisKeyUrl:
-      'https://raw.githubusercontent.com/input-output-hk/mithril/main/mithril-infra/configuration/release-preprod/genesis.vkey',
+      'https://raw.githubusercontent.com/IntersectMBO/mithril/main/mithril-infra/configuration/release-preprod/genesis.vkey',
     ancillaryKeyUrl:
-      'https://raw.githubusercontent.com/input-output-hk/mithril/main/mithril-infra/configuration/release-preprod/ancillary.vkey',
+      'https://raw.githubusercontent.com/IntersectMBO/mithril/main/mithril-infra/configuration/release-preprod/ancillary.vkey',
   },
   preview: {
     aggregatorEndpoint:
       'https://aggregator.pre-release-preview.api.mithril.network/aggregator',
     genesisKeyUrl:
-      'https://raw.githubusercontent.com/input-output-hk/mithril/main/mithril-infra/configuration/pre-release-preview/genesis.vkey',
+      'https://raw.githubusercontent.com/IntersectMBO/mithril/main/mithril-infra/configuration/pre-release-preview/genesis.vkey',
     ancillaryKeyUrl:
-      'https://raw.githubusercontent.com/input-output-hk/mithril/main/mithril-infra/configuration/pre-release-preview/ancillary.vkey',
+      'https://raw.githubusercontent.com/IntersectMBO/mithril/main/mithril-infra/configuration/pre-release-preview/ancillary.vkey',
   },
 };
 
