@@ -69,6 +69,7 @@ async fn main() -> Result<()> {
             release_notes,
             dry_run,
             test,
+            skip_version_json,
         } => {
             cmd_release(
                 &installers_dir,
@@ -77,6 +78,7 @@ async fn main() -> Result<()> {
                 release_notes,
                 dry_run,
                 test,
+                skip_version_json,
             )
             .await
         }
@@ -367,6 +369,7 @@ async fn cmd_release(
     release_notes: Option<String>,
     dry_run: bool,
     test: bool,
+    skip_version_json: bool,
 ) -> Result<()> {
     let installer_dir = installers::InstallerDir::load(installers_dir)?;
 
@@ -467,6 +470,11 @@ async fn cmd_release(
         release_notes,
     );
     let json = serde_json::to_vec_pretty(&vj)?;
+    if skip_version_json {
+        println!("\n=== Skipping daedalus-latest-version.json (--skip-version-json) ===");
+        println!("{}", String::from_utf8_lossy(&json));
+        return Ok(());
+    }
     let version_url = s3.upload_version_json(&json).await?;
 
     // ── 6. (Test mode) Upload newsfeed stub + verification ────────────────────

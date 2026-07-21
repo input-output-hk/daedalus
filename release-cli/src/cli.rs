@@ -44,6 +44,11 @@ pub enum Commands {
         /// In production, newsfeeds are managed via GitHub — omit this flag.
         #[arg(long)]
         test: bool,
+
+        /// Upload installers and signatures but skip updating daedalus-latest-version.json.
+        /// Useful for staging binaries before making them the latest version.
+        #[arg(long)]
+        skip_version_json: bool,
     },
 
     /// Code-sign macOS (.pkg) and/or Windows (.exe) installers via SSH
