@@ -358,18 +358,30 @@ fn extract_version(filename: &str) -> Option<String> {
 }
 
 /// Extract (gitrev, nar_hash) from a locked flake URL.
-/// e.g. `github:input-output-hk/daedalus/<rev>?narHash=sha256-...`
+///
+/// Handles two formats Hydra has used:
+///   Old: `github:input-output-hk/daedalus/<rev>?narHash=sha256-...`
+///   New: `git+https://github.com/input-output-hk/daedalus?ref=refs/heads/master&rev=<rev>&submodules=1`
 fn parse_flake(flake: &str) -> (Option<String>, Option<String>) {
     let (path, query) = flake.split_once('?').unwrap_or((flake, ""));
-    let gitrev = path.rsplit('/').next().map(|s| s.to_string());
-    let nar_hash = query.split('&').find_map(|kv| {
-        let (k, v) = kv.split_once('=')?;
-        if k == "narHash" {
-            Some(percent_decode(v))
-        } else {
-            None
+
+    let mut gitrev = None;
+    let mut nar_hash = None;
+    for kv in query.split('&') {
+        if let Some((k, v)) = kv.split_once('=') {
+            match k {
+                "rev" => gitrev = Some(percent_decode(v)),
+                "narHash" => nar_hash = Some(percent_decode(v)),
+                _ => {}
+            }
         }
-    });
+    }
+
+    // Fall back to last path component for the old github: flake format
+    if gitrev.is_none() {
+        gitrev = path.rsplit('/').next().map(|s| s.to_string());
+    }
+
     (gitrev, nar_hash)
 }
 
@@ -378,4 +390,27 @@ fn percent_decode(s: &str) -> String {
     s.replace("%2B", "+")
         .replace("%3D", "=")
         .replace("%2F", "/")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_flake_old_github_format() {
+        let (gitrev, nar_hash) = parse_flake(
+            "github:input-output-hk/daedalus/50706edb8f5a772bc961d0ff6bcc54b9e4f8403f?narHash=sha256-pLZ7mM65BevAulHq%2B43ecshkgHSarNvDUTeldp8KxjY%3D",
+        );
+        assert_eq!(gitrev.as_deref(), Some("50706edb8f5a772bc961d0ff6bcc54b9e4f8403f"));
+        assert_eq!(nar_hash.as_deref(), Some("sha256-pLZ7mM65BevAulHq+43ecshkgHSarNvDUTeldp8KxjY="));
+    }
+
+    #[test]
+    fn parse_flake_new_git_https_format() {
+        let (gitrev, nar_hash) = parse_flake(
+            "git+https://github.com/input-output-hk/daedalus?ref=refs/heads/master&rev=32af7f154b8556dbf794eed2365661ef4ed2670d&submodules=1",
+        );
+        assert_eq!(gitrev.as_deref(), Some("32af7f154b8556dbf794eed2365661ef4ed2670d"));
+        assert_eq!(nar_hash, None);
+    }
 }
