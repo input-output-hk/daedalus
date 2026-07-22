@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router-dom';
+import type { RouteComponentProps } from 'react-router-dom';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingPowerDelegation from '../../components/voting/voting-governance/VotingPowerDelegation';
 import VotingPowerDelegationConfirmationDialog from '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog';
 import { ROUTES } from '../../routes-config';
 import VotingUnavailable from '../../components/voting/VotingUnavailable';
+import type { VoteType } from '../../components/voting/voting-governance/types';
+import { pickDelegationFormNavigationState } from '../governance/delegationFormState';
 
-type Props = InjectedProps;
+type Props = InjectedProps & RouteComponentProps;
 
 @inject('stores', 'actions')
 @observer
@@ -16,9 +20,28 @@ class VotingGovernancePage extends Component<Props> {
     stores: null,
   };
 
+  handleBrowseDRepsClick = (formState: {
+    selectedWalletId: string | null;
+    voteType: VoteType;
+  }) => {
+    // The round trip carries wallet + vote type out and back through
+    // location.state only (invariant: no second delegation backend).
+    this.props.history.push(ROUTES.GOVERNANCE.DREPS, {
+      from: ROUTES.VOTING.GOVERNANCE,
+      selectedWalletId: formState.selectedWalletId,
+      voteType: formState.voteType,
+    });
+  };
+
   render() {
-    const { wallets, staking, app, voting, hardwareWallets, networkStatus } =
-      this.props.stores;
+    const {
+      wallets,
+      staking,
+      app,
+      voting,
+      hardwareWallets,
+      networkStatus,
+    } = this.props.stores;
     const { openExternalLink } = app;
     const { isSynced, syncPercentage } = networkStatus;
 
@@ -32,10 +55,16 @@ class VotingGovernancePage extends Component<Props> {
       );
     }
 
+    const initialFormState = pickDelegationFormNavigationState(
+      this.props.location.state
+    );
+
     return (
       <VotingPowerDelegation
         onExternalLinkClick={openExternalLink}
         initiateTransaction={voting.initializeVPDelegationTx}
+        initialFormState={initialFormState}
+        onBrowseDRepsClick={this.handleBrowseDRepsClick}
         wallets={wallets.all}
         stakePools={staking.stakePools}
         getStakePoolById={staking.getStakePoolById}
@@ -77,4 +106,4 @@ class VotingGovernancePage extends Component<Props> {
   }
 }
 
-export default VotingGovernancePage;
+export default withRouter(VotingGovernancePage);

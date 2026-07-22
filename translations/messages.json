@@ -1662,6 +1662,11 @@
         "id": "daedalus.diagnostics.dialog.syncPercentage"
       },
       {
+        "defaultMessage": "!!!Local time difference",
+        "description": "Local time difference",
+        "id": "daedalus.diagnostics.dialog.localTimeDifference"
+      },
+      {
         "defaultMessage": "!!!System time correct",
         "description": "System time correct",
         "id": "daedalus.diagnostics.dialog.systemTimeCorrect"
@@ -1772,6 +1777,16 @@
         "id": "daedalus.diagnostics.dialog.cardanoNodeInSync"
       },
       {
+        "defaultMessage": "!!!Checking...",
+        "description": "Checking...",
+        "id": "daedalus.diagnostics.dialog.localTimeDifferenceChecking"
+      },
+      {
+        "defaultMessage": "!!!Check time",
+        "description": "Check time",
+        "id": "daedalus.diagnostics.dialog.localTimeDifferenceCheckTime"
+      },
+      {
         "defaultMessage": "!!!Yes",
         "description": "Yes",
         "id": "daedalus.diagnostics.dialog.statusOn"
@@ -1790,6 +1805,11 @@
         "defaultMessage": "!!!Off",
         "description": "Off",
         "id": "daedalus.diagnostics.dialog.statusOffForUserSettings"
+      },
+      {
+        "defaultMessage": "!!!NTP service unreachable",
+        "description": "NTP service unreachable",
+        "id": "daedalus.diagnostics.dialog.serviceUnreachable"
       },
       {
         "defaultMessage": "!!!message",
@@ -2530,6 +2550,11 @@
         "defaultMessage": "!!!Voting power",
         "description": "Label for the voting power column in DRep directory",
         "id": "governance.drepDirectory.votingPower"
+      },
+      {
+        "defaultMessage": "!!!Select for delegation",
+        "description": "Row-level CTA that hands the DRep ID to the delegation form",
+        "id": "governance.drepDirectory.card.select"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepCard.tsx"
@@ -5242,29 +5267,14 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please type or paste a valid DRep ID here. Look up {drepDirectoryLink}",
+        "defaultMessage": "!!!Please type or paste a valid DRep ID here, or {browseDRepsLink}.",
         "description": "Label for DRep input on the governance page",
         "id": "voting.governance.drepInputLabel"
       },
       {
-        "defaultMessage": "!!!Please type or paste a valid DRep ID here.",
-        "description": "Label for DRep input on the governance page for preprod",
-        "id": "voting.governance.drepInputLabelPreprod"
-      },
-      {
-        "defaultMessage": "!!!DRep directory",
-        "description": "Label link text for DRep input on the governance page",
-        "id": "voting.governance.drepInputLabelLinkText"
-      },
-      {
-        "defaultMessage": "https://gov.tools/drep_directory",
-        "description": "Label link url for DRep input on the governance page",
-        "id": "voting.governance.drepInputLabelLinkUrl"
-      },
-      {
-        "defaultMessage": "https://preview.gov.tools/drep_directory",
-        "description": "Label link url for DRep input on the governance page",
-        "id": "voting.governance.drepInputLabelLinkUrlPreview"
+        "defaultMessage": "!!!Browse DReps",
+        "description": "In-app link next to the DRep ID input that opens the DRep directory",
+        "id": "voting.governance.browseDRepsLink"
       },
       {
         "defaultMessage": "!!!Invalid DRep ID",

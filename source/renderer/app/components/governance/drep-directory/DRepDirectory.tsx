@@ -51,6 +51,7 @@ interface Props {
   error: GovernanceStoreError | null;
   lastFetchedAt: number | null;
   onRefresh: () => void;
+  onSelectForDelegation: (drepId: string) => void;
   intl: intlShape.isRequired;
 }
 
@@ -60,6 +61,7 @@ function DRepDirectory({
   error,
   lastFetchedAt,
   onRefresh,
+  onSelectForDelegation,
   intl,
 }: Props) {
   const hasRetainedData = drepList.length > 0;
@@ -133,7 +135,10 @@ function DRepDirectory({
                 {intl.formatMessage(messages.refreshing)}
               </div>
             )}
-            <DRepDirectoryList entries={drepList} />
+            <DRepDirectoryList
+              entries={drepList}
+              onSelectForDelegation={onSelectForDelegation}
+            />
           </>
         );
     }

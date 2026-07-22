@@ -28,10 +28,11 @@ const messages = defineMessages({
 
 interface Props {
   entries: AppDRepDirectoryEntry[];
+  onSelectForDelegation: (drepId: string) => void;
   intl: intlShape.isRequired;
 }
 
-function DRepDirectoryList({ entries, intl }: Props) {
+function DRepDirectoryList({ entries, onSelectForDelegation, intl }: Props) {
   const [page, setPage] = useState(0);
 
   const totalPages = Math.max(1, Math.ceil(entries.length / CARDS_PER_PAGE));
@@ -62,7 +63,11 @@ function DRepDirectoryList({ entries, intl }: Props) {
     <div className={styles.container}>
       <div className={styles.list}>
         {pageEntries.map((entry) => (
-          <DRepCard key={entry.drepId} entry={entry} />
+          <DRepCard
+            key={entry.drepId}
+            entry={entry}
+            onSelectForDelegation={onSelectForDelegation}
+          />
         ))}
       </div>
       {totalPages > 1 && (

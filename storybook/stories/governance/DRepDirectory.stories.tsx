@@ -130,6 +130,7 @@ const renderDirectory = (
     error={error}
     lastFetchedAt={Date.now() - 3 * 60 * 1000}
     onRefresh={action('onRefresh')}
+    onSelectForDelegation={action('onSelectForDelegation')}
     refreshState={refreshState}
   />
 );

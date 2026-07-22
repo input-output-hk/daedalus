@@ -1,7 +1,7 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { IntlProvider } from 'react-intl';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../../i18n/locales/en-US.json';
 import jaTranslations from '../../../i18n/locales/ja-JP.json';
@@ -41,11 +41,13 @@ const renderComponent = ({
   error = null,
   refreshState = GovernanceRefreshState.Loaded,
   locale = 'en-US',
+  onSelectForDelegation = jest.fn(),
 }: {
   drepList?: AppDRepDirectoryEntry[];
   error?: { message: string; type: string; details?: string } | null;
   refreshState?: GovernanceRefreshState;
   locale?: string;
+  onSelectForDelegation?: jest.Mock;
 } = {}) => {
   const messages = locale === 'ja-JP' ? jaTranslations : translations;
   return render(
@@ -55,6 +57,7 @@ const renderComponent = ({
         error={error}
         lastFetchedAt={Date.now() - 60_000}
         onRefresh={jest.fn()}
+        onSelectForDelegation={onSelectForDelegation}
         refreshState={refreshState}
       />
     </IntlProvider>
@@ -218,5 +221,17 @@ describe('DRepDirectory', () => {
     // With 30 entries and pageSize=25, page 1 shows 25 cards
     const cards = document.querySelectorAll('[class*="card"]');
     expect(cards.length).toBe(25);
+  });
+
+  it('invokes onSelectForDelegation with the row DRep ID when the Select CTA is clicked', () => {
+    const onSelectForDelegation = jest.fn();
+    renderComponent({ onSelectForDelegation });
+
+    fireEvent.click(
+      screen.getAllByRole('button', { name: '!!!Select for delegation' })[0]
+    );
+
+    expect(onSelectForDelegation).toHaveBeenCalledTimes(1);
+    expect(onSelectForDelegation).toHaveBeenCalledWith(baseEntries[0].drepId);
   });
 });

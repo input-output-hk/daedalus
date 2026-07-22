@@ -172,3 +172,83 @@ and the un-synced return hop remain slated for `slice-2-findings.md` at build ti
 Planning status set to `approved` in `slice-2-PRD.md`. Slice-2 is cleared for build.
 
 ---
+
+## Code Review: task-112 — round 1 — 2026-07-22
+
+Reviewed the uncommitted worktree state against `slice-2-implementation-guide.md`
+(task-112 section), the task-112 acceptance criteria in
+`governance-drep-discovery-plan-tasks.json`, and the locked invariants. All gates were
+re-run independently.
+
+**Acceptance criteria**
+
+- AC-1 (no second delegation backend): PASS. `VotingStore.ts`, `GovernanceStore.ts`,
+  `routes-config.ts`, and `Routes.tsx` are byte-identical to base (`git diff` empty).
+- AC-2 (VotingStore does not read GovernanceStore): PASS. No store file touched; no new
+  imports of either store anywhere in the diff.
+- AC-3 (list-row selection, no detail view): PASS. `DRepCard.tsx` gains only the
+  "Select for delegation" `Button` (real `<button>` per shared-tokens §10); no
+  "View details" CTA, no `DREP_DETAIL` literal in production (D1 honored).
+- AC-4 (location.state-only handoff): PASS. `grep -rn selectedDRepId source/` hits only
+  `delegationFormState.ts`, `DRepDirectoryPage.tsx`, `VotingPowerDelegation.tsx`, and the
+  spec. No query params (`?…=` grep clean), no store-backed pending form state.
+- AC-5 (two-hop coverage): PASS. `VotingGovernancePage.spec.tsx` registers the
+  harness-only `DetailRouteStub`; both the Directory return hop and the
+  Form → Directory → Detail → Form sequence use the production
+  `pickDelegationFormReturnState` picker; wallet + vote type restored and ID pre-filled,
+  asserted end-to-end.
+
+**Invariants**
+
+- #2 sanitization floor: no new `logger.*` / `analytics.*` / electron-store call in the
+  diff (grep clean); sanitization suite re-run: 17/17 green.
+- #10 byte-equality: `selectedDRepId` seeds `drepInputState.value` verbatim in the lazy
+  `useState` initializer; `chosenOption` derivation untouched; no trim/normalization.
+- #11 copy: 3 new/changed strings in BOTH locales, all `!!!`-prefixed
+  (`browseDRepsLink`, `card.select`, changed `drepInputLabel`); `git diff` shows zero
+  removed `!!!` lines in either locale; the four deleted `drepInputLabel*` keys are
+  whole-key removals sanctioned by D2, with no stale references left
+  (`gov.tools` / `environment` / removed-key greps all clean).
+- #13 sentinels: Browse affordance lives inside the DRep input label, which renders only
+  when `selectedWallet && selectedVoteType === 'drep'` (VotingPowerDelegation.tsx:260);
+  directory rows are DReps only.
+
+**Gates (run by reviewer)**
+
+- `node_modules/.bin/tsc --noEmit` → exit 0, zero errors.
+- `eslint` on all 13 touched files → 0 errors, 25 warnings (all pre-existing repo
+  patterns: decorator-import false positives, unused-vars on function-type parameter
+  names, inherited `@ts-ignore`).
+- `jest --testPathPattern="VotingGovernancePage|DRepDirectory"` → 15/15 pass.
+- `jest --testPathPattern="voting/Governance"` → 2/2 pass (no regression from the
+  `withRouter` wrapping).
+- `jest --testPathPattern="governance-sanitization"` → 17/17 pass.
+- `yarn i18n:manage` → exit 0 and idempotent (regenerated files stable).
+
+**Non-blocking observations**
+
+1. prettier 2.1.2 cannot parse the inline `import { withRouter, type RouteComponentProps }`
+   syntax in `DRepDirectoryPage.tsx`, `VotingGovernancePage.tsx`, and the new spec
+   (exit 2, SyntaxError). This is a pre-existing condition: the committed slice-1
+   `containers/voting/Governance.tsx` fails identically at base, and the guide prescribes
+   copying that exact pattern. tsc/eslint/babel-jest all handle it. Consequence: the D4
+   `prettier --write` substitute step cannot format these three files — record in
+   `slice-2-findings.md` so the pre-merge `nix fmt` run covers them.
+2. `waitFor` is omitted from the spec's testing-library import — explicitly sanctioned by
+   the guide's parenthetical; task-114 must add it with the appended payload test.
+3. prettier 2.1.2 reformat drift rode along in `Governance.stories.tsx`
+   (`(STAKE_POOLS as unknown) as …`, `Record<…>` reflow) and `VotingPowerDelegation.tsx`
+   (`(typeof messages)[…]` → `typeof messages[…]`, semantically identical) — expected
+   under D4 given the known HEAD-drift situation; acceptable to ride with the commit.
+4. `translations/messages.json` regeneration re-added unrelated
+   `daedalus.diagnostics.dialog.*` descriptor hunks — tool-managed output of
+   `yarn i18n:manage`, rides with the task commit per convention.
+5. Directory-first entry edge (Select with no inherited wallet state → `WalletsDropdown`
+   onChange resets to `initialState`, wiping the pre-filled ID) was already logged by the
+   Critiquer as N-4 for `ux-refinement`; unchanged by this implementation and outside
+   task-112's ACs.
+
+No blockers found. Implementation matches the guide step-for-step, including the D1/D2
+scope boundaries.
+
+Decision: approved

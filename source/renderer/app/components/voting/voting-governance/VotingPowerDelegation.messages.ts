@@ -4,28 +4,14 @@ export const messages = defineMessages({
   drepInputLabel: {
     id: 'voting.governance.drepInputLabel',
     defaultMessage:
-      '!!!Please type or paste a valid DRep ID here. Look up {drepDirectoryLink}',
+      '!!!Please type or paste a valid DRep ID here, or {browseDRepsLink}.',
     description: 'Label for DRep input on the governance page',
   },
-  drepInputLabelPreprod: {
-    id: 'voting.governance.drepInputLabelPreprod',
-    defaultMessage: '!!!Please type or paste a valid DRep ID here.',
-    description: 'Label for DRep input on the governance page for preprod',
-  },
-  drepInputLabelLinkText: {
-    id: 'voting.governance.drepInputLabelLinkText',
-    defaultMessage: '!!!DRep directory',
-    description: 'Label link text for DRep input on the governance page',
-  },
-  drepInputLabelLinkUrl: {
-    id: 'voting.governance.drepInputLabelLinkUrl',
-    defaultMessage: 'https://gov.tools/drep_directory',
-    description: 'Label link url for DRep input on the governance page',
-  },
-  drepInputLabelLinkUrlPreview: {
-    id: 'voting.governance.drepInputLabelLinkUrlPreview',
-    defaultMessage: 'https://preview.gov.tools/drep_directory',
-    description: 'Label link url for DRep input on the governance page',
+  browseDRepsLink: {
+    id: 'voting.governance.browseDRepsLink',
+    defaultMessage: '!!!Browse DReps',
+    description:
+      'In-app link next to the DRep ID input that opens the DRep directory',
   },
   drepInputError: {
     id: 'voting.governance.drepInputError',

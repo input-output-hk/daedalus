@@ -39,3 +39,8 @@
   font-size: 12px;
   color: var(--theme-text-tertiary, #8e939e);
 }
+
+.actionsRow {
+  display: flex;
+  justify-content: flex-end;
+}

@@ -39,6 +39,15 @@ type Props = {
     onClose: () => void;
     selectedWallet: Wallet;
   }) => React.ReactElement;
+  initialFormState?: {
+    selectedWalletId?: string | null;
+    voteType?: VoteType;
+    selectedDRepId?: string;
+  };
+  onBrowseDRepsClick: (formState: {
+    selectedWalletId: string | null;
+    voteType: VoteType;
+  }) => void;
 };
 
 type FormData = {
@@ -74,7 +83,7 @@ type State = Form | FormWithError | StateFormComplete | StateConfirmation;
 
 const mapOfTxErrorCodeToIntl: Record<
   InitializeVPDelegationTxError,
-  (typeof messages)[keyof typeof messages]
+  typeof messages[keyof typeof messages]
 > = {
   generic: messages.initializeTxErrorGeneric,
   same_vote: messages.initializeTxErrorSameVote,
@@ -95,13 +104,31 @@ const initialState: State = {
 function VotingPowerDelegation({
   getStakePoolById,
   initiateTransaction,
+  initialFormState,
   intl,
+  onBrowseDRepsClick,
   onExternalLinkClick,
   renderConfirmationDialog,
   wallets,
   stakePools,
 }: Props) {
-  const [state, setState] = useState<State>(initialState);
+  const [state, setState] = useState<State>(() => {
+    if (!initialFormState) return initialState;
+    const { selectedWalletId, voteType, selectedDRepId } = initialFormState;
+    const selectedWallet =
+      (selectedWalletId && wallets.find((w) => w.id === selectedWalletId)) ||
+      null;
+    return {
+      ...initialState,
+      selectedWallet,
+      selectedVoteType: voteType || initialState.selectedVoteType,
+      // The directory-selected ID is used verbatim: it must reach chosenOption
+      // and the delegateVotes dRepId byte-for-byte (no trim, no re-encoding).
+      drepInputState: selectedDRepId
+        ? { dirty: true, value: selectedDRepId }
+        : initialState.drepInputState,
+    };
+  });
 
   const drepInputIsValid = Cardano.DRepID.isValid(state.drepInputState.value);
 
@@ -247,26 +274,18 @@ function VotingPowerDelegation({
               value={state.drepInputState.value}
               label={
                 <FormattedMessage
-                  {...(environment.isPreprod
-                    ? messages.drepInputLabelPreprod
-                    : messages.drepInputLabel)}
+                  {...messages.drepInputLabel}
                   values={{
-                    drepDirectoryLink: (
+                    browseDRepsLink: (
                       <Link
                         className={styles.link}
-                        label={intl.formatMessage(
-                          messages.drepInputLabelLinkText
-                        )}
-                        href="#"
-                        onClick={(event) =>
-                          onExternalLinkClick(
-                            intl.formatMessage(
-                              environment.isMainnet
-                                ? messages.drepInputLabelLinkUrl
-                                : messages.drepInputLabelLinkUrlPreview
-                            ),
-                            event
-                          )
+                        label={intl.formatMessage(messages.browseDRepsLink)}
+                        hasIconAfter={false}
+                        onClick={() =>
+                          onBrowseDRepsClick({
+                            selectedWalletId: state.selectedWallet?.id ?? null,
+                            voteType: state.selectedVoteType,
+                          })
                         }
                       />
                     ),
