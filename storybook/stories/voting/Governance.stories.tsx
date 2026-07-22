@@ -402,6 +402,27 @@ storiesOf('Voting / Governance', module)
   .add('Voting power delegation', () => (
     <div style={CENTERED_STORY_STYLE}>{renderGovernancePanel()}</div>
   ))
+  .add('Voting power delegation - prefilled from directory', () => (
+    <div style={CENTERED_STORY_STYLE}>
+      <VotingPowerDelegation
+        getStakePoolById={getStakePoolById}
+        initiateTransaction={async (params) => {
+          action('initiateTransaction')(params);
+          return { success: true, fees: new BigNumber('0.174257') };
+        }}
+        initialFormState={{
+          selectedDRepId: VALID_DREP_ID,
+          selectedWalletId: 'governance-wallet-1',
+          voteType: 'drep',
+        }}
+        onBrowseDRepsClick={action('onBrowseDRepsClick')}
+        onExternalLinkClick={action('onExternalLinkClick')}
+        renderConfirmationDialog={renderGovernanceConfirmationDialog}
+        stakePools={STAKE_POOLS_LIST}
+        wallets={GOVERNANCE_WALLETS}
+      />
+    </div>
+  ))
   .add('Confirmation dialog - software wallet', () => {
     const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
     return (

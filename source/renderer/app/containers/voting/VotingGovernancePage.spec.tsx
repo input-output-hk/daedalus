@@ -14,6 +14,7 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../i18n/locales/en-US.json';
@@ -220,5 +221,47 @@ describe('DRep selection handoff via location.state', () => {
     expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
     expect(screen.getByTestId('vote-type-dropdown')).toHaveTextContent('drep');
     expect(screen.getByDisplayValue(VALID_DREP_ID)).toBeInTheDocument();
+  });
+
+  it('propagates the selected DRep ID byte-for-byte: row select → confirmation → delegateVotes payload', async () => {
+    const { stores } = renderFlow([
+      {
+        pathname: ROUTES.GOVERNANCE.DREPS,
+        state: {
+          from: ROUTES.VOTING.GOVERNANCE,
+          selectedWalletId: WALLET_ID,
+          voteType: 'drep',
+        },
+      },
+    ]);
+
+    fireEvent.click(
+      screen.getByRole('button', { name: '!!!Select for delegation' })
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+
+    await screen.findByText('Confirm Transaction');
+    // The confirmation renders the selected ID itself (task-113), byte-equal.
+    expect(screen.getByText(VALID_DREP_ID).textContent).toBe(VALID_DREP_ID);
+
+    const passwordInput = document.querySelector('input[type="password"]');
+    expect(passwordInput).not.toBeNull();
+    fireEvent.change(passwordInput as Element, {
+      target: { value: 'secret123' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+
+    await waitFor(() =>
+      expect(stores.voting.delegateVotes).toHaveBeenCalledTimes(1)
+    );
+    expect(stores.voting.delegateVotes).toHaveBeenCalledWith(
+      expect.objectContaining({
+        chosenOption: VALID_DREP_ID,
+        passphrase: 'secret123',
+      })
+    );
+    expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
+      expect.objectContaining({ chosenOption: VALID_DREP_ID })
+    );
   });
 });

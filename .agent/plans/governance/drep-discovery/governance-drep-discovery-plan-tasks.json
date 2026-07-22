@@ -372,7 +372,20 @@
           "id": "task-114",
           "title": "In-slice verification of the software-wallet delegate path",
           "description": "In-slice verification of the software-wallet browse -> select -> delegate path: Jest for selector -> confirmation -> delegateVotes payload and browse-state regressions, Storybook for the selector within the delegation form, preliminary en-US/ja-JP copy for the delegate flow that keeps the leading !!! marker, and the walkthrough update removing GovTool-routing language. Also runs the compile/lint smoke gate.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "End-to-end payload Jest appended to VotingGovernancePage.spec.tsx pins byte-equality from row Select through confirmation to the delegateVotes payload (focused suites 20/20), a 'prefilled from directory' Storybook story covers the selector via the global locale toggle, all new locale strings keep the leading !!! marker with i18n:manage idempotent, and the governance walkthroughs were de-GovTool-ed per D2. All eight acceptance criteria verified in review round 1 with tsc zero errors, lint clean, and the sanitization floor 17/17 green.",
+          "evidence": [
+            "source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx",
+            "storybook/stories/voting/Governance.stories.tsx",
+            ".vscode/docs/walkthroughs/governance/02-voting-power-delegation.md",
+            ".vscode/docs/walkthroughs/governance/04-troubleshooting.md",
+            ".vscode/docs/walkthroughs/governance/05-improvements-vs-light-wallets.md",
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
+            "translations/messages.json",
+            ".agent/plans/governance/drep-discovery/research/slice-2-findings.md"
+          ],
+          "updatedAt": "2026-07-22",
           "priority": "high",
           "estimatedHours": 8,
           "dependencies": [

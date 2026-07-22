@@ -327,3 +327,94 @@ No blockers found. Implementation matches the guide step-for-step, including the
 scope boundary (raw-ID-only, no CIP-105 line, no signed-payload line, no source label).
 
 Decision: approved
+
+---
+
+## Code Review: task-114 — round 1 — 2026-07-22
+
+Reviewed the uncommitted worktree state (appended payload test in
+`VotingGovernancePage.spec.tsx`, prefilled story in `Governance.stories.tsx`, walkthrough
+worktree copies under `.vscode/docs/walkthroughs/governance/`, and the new
+`research/slice-2-findings.md`) against `slice-2-implementation-guide.md` (task-114
+section), the task-114 acceptance criteria, and the locked invariants. All gates re-run
+independently.
+
+**Acceptance criteria**
+
+- AC-1/AC-2 (browse → select → confirm (ID only) → `delegateVotes`, byte-equal payload):
+  PASS. The appended test drives row Select → Submit → confirmation → passphrase →
+  Confirm and asserts the rendered confirmation text is byte-equal to `VALID_DREP_ID`,
+  `voting.delegateVotes` called exactly once with
+  `expect.objectContaining({ chosenOption: VALID_DREP_ID, passphrase: 'secret123' })`,
+  and `initializeVPDelegationTx` with the same `chosenOption`. Assertion style follows
+  the `expect.objectContaining` rule. Focused run: 20/20 pass across
+  `VotingGovernancePage|VotingPowerDelegationConfirmationDialog|DRepDirectory`.
+- AC-3 (no anchor-derived content): PASS. `git diff feat/drep-discovery --stat` contains
+  no anchor-fetch/parse/name-render change; the only rendered identity anywhere new is
+  the raw bech32 ID, and the task-113 "never renders a name field" test remains the
+  automated pin.
+- AC-4 (Storybook selector + ID-only confirmation, en-US/ja-JP): PASS at
+  compile/lint/fixture level. The new
+  `'Voting power delegation - prefilled from directory'` story sits after
+  `'Voting power delegation'`, uses `initialFormState` with
+  `selectedWalletId: 'governance-wallet-1'` (a real `GOVERNANCE_WALLETS` id, so the
+  wallet restore and the drep input actually render), and no local `IntlProvider` or
+  per-locale duplicate was added — locale coverage rides the global toggle. Confirmation
+  stories carry `drepIdentity` from task-113. (Storybook itself was not launched in this
+  container; coverage verified via tsc/eslint plus fixture-id correctness.)
+- AC-5 (preliminary copy audit): PASS. `git diff feat/drep-discovery -- …/locales/`
+  shows exactly 3 new keys + 1 changed key per locale, all `!!!`-prefixed in BOTH
+  locales (+4 `!!!` values each vs base, ≥ the guide's +3 floor); zero `!!!` removed
+  from any kept key; the four deleted `drepInputLabel*` keys are whole-key removals
+  sanctioned by D2. `yarn i18n:manage` exits 0 and is idempotent (no tree drift after
+  re-run).
+- AC-6 (walkthrough de-GovTool-ing): PASS. Worktree copies diffed against the
+  main-checkout originals match the guide's Step 3 edits line-for-line (02 :60/:62/:78
+  and the corrected :84 "ID not displayed" claim; 04 :17/:57/:140; 05 :23/:204/:252 with
+  the Lace note :33 untouched).
+  `grep -rn -i "gov\.tools\|govtool" .vscode/docs/walkthroughs/governance/` hits only
+  the two sanctioned 05 lines. The gitignore deviation and manual sync-back are recorded
+  in the findings note.
+- AC-7 (compile + lint): PASS. `node_modules/.bin/tsc --noEmit` → exit 0, zero errors
+  (tsconfig has no `include`/only `exclude: node_modules`, so storybook is covered);
+  `yarn lint` → exit 0 (warnings only, all pre-existing repo patterns).
+- AC-8 (sanitization floor): PASS. Suite re-run 17/17 green; grep over the whole slice
+  source diff shows no `logger.*`, `analytics.*`, `sendEvent`, or electron-store call.
+
+**Invariants**
+
+- #4 handoff: `grep -rn selectedDRepId source/` still hits only
+  `delegationFormState.ts`, `DRepDirectoryPage.tsx`, `VotingPowerDelegation.tsx`, and
+  the two specs; no query-param usage; `VotingStore.ts`, `GovernanceStore.ts`,
+  `routes-config.ts`, `Routes.tsx` byte-identical to base.
+- #10 byte-equality: now pinned end-to-end by the new payload test (rendered
+  confirmation text === `chosenOption` === the mocked `delegateVotes` payload).
+- #11/#13: locale audit above; sentinel label rendering still pinned by the dialog spec.
+
+**Gates (run by reviewer):** tsc 0 errors · `yarn lint` exit 0 · focused Jest 20/20 ·
+sanitization 17/17 · `yarn i18n:manage` idempotent · `prettier --check` clean on the two
+touched TS files and the findings note · eslint on the two touched TS files → 0 errors,
+3 pre-existing `no-explicit-any` warnings (task-112 harness fixtures, unchanged here).
+
+**Non-blocking observations**
+
+1. The appended test's comment "The confirmation renders the selected ID itself
+   (task-113), byte-equal." embeds a task ID, which the repo comment convention forbids.
+   It is guide-prescribed verbatim and consistent with the already-committed task-117
+   reference in the same file's `DetailRouteStub` comment, so it is not a round-1 defect
+   of this implementation — but the cross-references should be stripped to plain "why"
+   comments whenever this file is next touched (or at slice close).
+2. `slice-2-findings.md` is complete and accurate against the tree: D1–D4 as
+   implemented, the P-5 walkthrough sync-back action, the prettier/nix-fmt deviation,
+   and both `ux-refinement` behavior notes (un-synced return hop, Critiquer N-4). Its
+   "+4 `!!!` strings per locale" claim matches the measured diff.
+3. Tracker `task-114` is still `pending` with no `statusReason`/`evidence`/`updatedAt` —
+   expected at this point; the Scribe step lands them with the commit.
+4. Storybook stories were not executed (no display in this container) — flagged so the
+   pre-merge check can eyeball the prefilled story in both locales via the global
+   toggle.
+
+No blockers found. The uncommitted task-114 work matches the guide step-for-step; all
+eight acceptance criteria verified, all gates green.
+
+Decision: approved
