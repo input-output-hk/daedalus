@@ -133,6 +133,7 @@ Debug
 /cardano-cli
 /cardano-wallet
 .vscode
+.devcontainer
 .yalc
 yalc.lock
 
