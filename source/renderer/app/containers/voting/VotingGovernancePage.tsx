@@ -9,6 +9,7 @@ import { ROUTES } from '../../routes-config';
 import VotingUnavailable from '../../components/voting/VotingUnavailable';
 import type { VoteType } from '../../components/voting/voting-governance/types';
 import { pickDelegationFormNavigationState } from '../governance/delegationFormState';
+import type { DRepIdentity } from '../../../../common/types/governance.types';
 
 type Props = InjectedProps & RouteComponentProps;
 
@@ -73,34 +74,49 @@ class VotingGovernancePage extends Component<Props> {
           fees,
           onClose,
           selectedWallet,
-        }) => (
-          <VotingPowerDelegationConfirmationDialog
-            chosenOption={chosenOption}
-            fees={fees}
-            hwDeviceStatus={hardwareWallets.hwDeviceStatus}
-            isTrezor={hardwareWallets.checkIsTrezorByWalletId(
-              selectedWallet.id
-            )}
-            onClose={onClose}
-            onExternalLinkClick={openExternalLink}
-            onSubmit={(passphrase) =>
-              voting.delegateVotes({
-                chosenOption,
-                passphrase,
-                wallet: selectedWallet,
-              })
-            }
-            redirectToWallet={(id) => {
-              this.props.actions.router.goToRoute.trigger({
-                route: ROUTES.WALLETS.SUMMARY,
-                params: {
-                  id,
-                },
-              });
-            }}
-            selectedWallet={selectedWallet}
-          />
-        )}
+        }) => {
+          // Sentinels render as labels; a drep target renders its raw ID.
+          // credentialType is a syntactic classification only — the rendered
+          // and submitted string is chosenOption itself, untouched.
+          const drepIdentity: DRepIdentity | null =
+            chosenOption === 'abstain' || chosenOption === 'no_confidence'
+              ? null
+              : {
+                  credentialType: chosenOption.startsWith('drep_script')
+                    ? 'script'
+                    : 'key',
+                  raw: chosenOption,
+                };
+          return (
+            <VotingPowerDelegationConfirmationDialog
+              chosenOption={chosenOption}
+              drepIdentity={drepIdentity}
+              fees={fees}
+              hwDeviceStatus={hardwareWallets.hwDeviceStatus}
+              isTrezor={hardwareWallets.checkIsTrezorByWalletId(
+                selectedWallet.id
+              )}
+              onClose={onClose}
+              onExternalLinkClick={openExternalLink}
+              onSubmit={(passphrase) =>
+                voting.delegateVotes({
+                  chosenOption,
+                  passphrase,
+                  wallet: selectedWallet,
+                })
+              }
+              redirectToWallet={(id) => {
+                this.props.actions.router.goToRoute.trigger({
+                  route: ROUTES.WALLETS.SUMMARY,
+                  params: {
+                    id,
+                  },
+                });
+              }}
+              selectedWallet={selectedWallet}
+            />
+          );
+        }}
       />
     );
   }

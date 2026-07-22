@@ -252,3 +252,78 @@ No blockers found. Implementation matches the guide step-for-step, including the
 scope boundaries.
 
 Decision: approved
+
+---
+
+## Code Review: task-113 — round 1 — 2026-07-22
+
+Reviewed the uncommitted worktree state against `slice-2-implementation-guide.md`
+(task-113 section), the task-113 acceptance criteria in
+`governance-drep-discovery-plan-tasks.json`, and the locked invariants. All gates were
+re-run independently.
+
+**Acceptance criteria**
+
+- AC-1 (prop contract widens to `DRepIdentity`): PASS.
+  `VotingPowerDelegationConfirmationDialogProps` gains `drepIdentity: DRepIdentity | null`
+  with the type imported from `common/types/governance.types` via the corrected
+  five-level path (matches the guide's post-fix quoted code; container uses the
+  four-level path per the Planner fix pass — both resolve, tsc exit 0).
+- AC-2 (renders the selected DRep ID instead of the generic label): PASS. For a non-null
+  `drepIdentity` the dialog renders `messages.drepId` + `<code>{drepIdentity.raw}</code>`
+  (full, monospaced, `word-break: break-all` — deliberately not the truncating
+  `DRepIdDisplay`, per D3). The spec's negative assertion uses the exact finalized
+  literal `Delegate to DRep (default)` (verified against en-US.json:889 — not vacuous).
+- AC-3 (name slot reserved for anchor-2): PASS. Only `drepIdentity.raw` is read from the
+  identity; the "never renders a name field" regression test injects a `givenName` and
+  asserts it does not render.
+
+**Invariants**
+
+- #10 byte-equality: the container builds `raw: chosenOption` verbatim (sentinels → null;
+  `credentialType` is a prefix classification that never touches the string); the dialog
+  renders `drepIdentity.raw` with no trim/normalization; `onSubmit` still passes the same
+  `chosenOption` into `voting.delegateVotes`. `VotingStore.ts` byte-identical to base.
+- #13 sentinels: `abstain` / `no_confidence` map to `drepIdentity: null` and keep their
+  label rendering via the untouched `mapVoteToIntlMessage`; both pinned by passing tests.
+- #2 sanitization floor: no new `logger.*` / `analytics.*` / electron-store call anywhere
+  in the diff (grep clean); suite re-run 17/17 green.
+- #4 handoff: this task adds no navigation, no query params, no store reads;
+  `GovernanceStore.ts`, `routes-config.ts`, `Routes.tsx` byte-identical to base.
+- #11 copy: one new key `voting.governance.confirmationDialog.drepId` = `!!!DRep ID` in
+  BOTH locales, correctly alphabetized after `button.confirm`; zero removed `!!!` lines
+  in the diff; `defaultMessages.json` + `translations/messages.json` regenerated
+  consistently (5-line insertions each).
+
+**Gates (run by reviewer)**
+
+- `node_modules/.bin/tsc --noEmit` → exit 0, zero errors.
+- `eslint` on the five touched .ts/.tsx files → 0 errors, 12 warnings (pre-existing repo
+  patterns plus the guide's own `as any` spec fixtures).
+- `jest --testPathPattern="VotingPowerDelegationConfirmationDialog"` → 4/4 pass.
+- `jest --testPathPattern="VotingGovernancePage|DRepDirectory"` → 15/15 pass (no
+  regression from the container callback-body change).
+- `jest --testPathPattern="governance-sanitization"` → 17/17 pass.
+- `prettier --check` on all touched .ts/.tsx/.scss → clean (the task-112 round's
+  inline-`type`-import parse failure is gone: the container now uses separate
+  `import type` statements, which prettier 2.1.2 parses).
+- `yarn i18n:manage` → exit 0 and idempotent (no further tree changes).
+
+**Non-blocking observations**
+
+1. prettier 2.1.2 reformat drift rode along in the dialog
+   (`(typeof messages)[…]` → `typeof messages[…]`, `useState<…>` generic reflow) —
+   semantically identical, expected under D4.
+2. The walkthrough claim "the specific DRep ID is not displayed in the dialog"
+   (02-voting-power-delegation.md) is now false after this task, but its rewrite is
+   explicitly task-114 Step 3 scope — recorded here so it is not lost, not a task-113
+   defect.
+3. The dialog itself does not assert `drepIdentity.raw === chosenOption`; the guarantee
+   lives at the single production call site (container builds `raw: chosenOption`
+   verbatim) and the task-114 end-to-end payload test pins the full path — consistent
+   with the guide's design.
+
+No blockers found. Implementation matches the guide step-for-step, including the D3
+scope boundary (raw-ID-only, no CIP-105 line, no signed-payload line, no source label).
+
+Decision: approved

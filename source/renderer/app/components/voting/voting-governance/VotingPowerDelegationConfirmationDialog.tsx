@@ -18,10 +18,11 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { VoteType } from './types';
 import { sharedGovernanceMessages } from './shared-messages';
 import { messages as apiErrorMessage } from '../../../api/errors';
+import type { DRepIdentity } from '../../../../../common/types/governance.types';
 
 const mapOfTxErrorCodeToIntl: Record<
   DelegateVotesError,
-  (typeof messages)[keyof typeof messages]
+  typeof messages[keyof typeof messages]
 > = {
   generic: messages.errorGeneric,
   wrong_encryption_passphrase: apiErrorMessage.wrongEncryptionPassphrase,
@@ -52,6 +53,7 @@ export type VotingPowerDelegationConfirmationDialogState =
 
 type VotingPowerDelegationConfirmationDialogProps = {
   chosenOption: string;
+  drepIdentity: DRepIdentity | null;
   fees: BigNumber;
   hwDeviceStatus: HwDeviceStatus;
   intl: Intl;
@@ -69,6 +71,7 @@ type VotingPowerDelegationConfirmationDialogProps = {
 
 function VotingPowerDelegationConfirmationDialog({
   chosenOption,
+  drepIdentity,
   fees,
   hwDeviceStatus,
   intl,
@@ -79,11 +82,12 @@ function VotingPowerDelegationConfirmationDialog({
   redirectToWallet,
   selectedWallet,
 }: VotingPowerDelegationConfirmationDialogProps) {
-  const [state, setState] =
-    useState<VotingPowerDelegationConfirmationDialogState>({
-      passphrase: '',
-      status: 'awaiting',
-    });
+  const [state, setState] = useState<
+    VotingPowerDelegationConfirmationDialogState
+  >({
+    passphrase: '',
+    status: 'awaiting',
+  });
 
   useEffect(() => {
     (async () => {
@@ -145,12 +149,28 @@ function VotingPowerDelegationConfirmationDialog({
       ]}
     >
       <div className={styles.content}>
-        <p className={styles.paragraphTitle}>
-          {intl.formatMessage(messages.vote)}
-        </p>
-        <p className={styles.paragraphValue}>
-          {intl.formatMessage(mapVoteToIntlMessage(chosenOption))}
-        </p>
+        {drepIdentity ? (
+          <>
+            <p className={styles.paragraphTitle}>
+              {intl.formatMessage(messages.drepId)}
+            </p>
+            <p className={styles.paragraphValue}>
+              {/* Rendered untouched: must stay byte-equal to chosenOption and
+                  the delegateVotes dRepId. Name slot is reserved for anchor-2;
+                  unverified names never render here. */}
+              <code className={styles.drepIdValue}>{drepIdentity.raw}</code>
+            </p>
+          </>
+        ) : (
+          <>
+            <p className={styles.paragraphTitle}>
+              {intl.formatMessage(messages.vote)}
+            </p>
+            <p className={styles.paragraphValue}>
+              {intl.formatMessage(mapVoteToIntlMessage(chosenOption))}
+            </p>
+          </>
+        )}
 
         <p className={styles.paragraphTitle}>
           {intl.formatMessage(messages.fee)}

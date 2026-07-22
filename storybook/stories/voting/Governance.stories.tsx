@@ -43,6 +43,7 @@ import type StakePool from '../../../source/renderer/app/domains/StakePool';
 import type { CatalystFund } from '../../../source/renderer/app/api/voting/types';
 import { TESTNET } from '../../../source/common/types/environment.types';
 import type { Locale } from '../../../source/common/types/locales.types';
+import type { DRepIdentity } from '../../../source/common/types/governance.types';
 import { ROUTES } from '../../../source/renderer/app/routes-config';
 import { FundPhase } from '../../../source/renderer/app/stores/VotingStore';
 import type {
@@ -53,6 +54,11 @@ import { generateWallet } from '../_support/utils';
 
 const VALID_DREP_ID =
   'drep1ygqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq7vlc9n';
+
+const toStoryDRepIdentity = (option: string): DRepIdentity | null =>
+  option === 'abstain' || option === 'no_confidence'
+    ? null
+    : { credentialType: 'key', raw: option };
 
 const GOVERNANCE_WALLETS = [
   generateWallet(
@@ -275,6 +281,7 @@ const renderGovernanceConfirmationDialog = ({
 }) => (
   <VotingPowerDelegationConfirmationDialog
     chosenOption={chosenOption}
+    drepIdentity={toStoryDRepIdentity(chosenOption)}
     fees={fees}
     hwDeviceStatus={
       select(
@@ -395,71 +402,79 @@ storiesOf('Voting / Governance', module)
   .add('Voting power delegation', () => (
     <div style={CENTERED_STORY_STYLE}>{renderGovernancePanel()}</div>
   ))
-  .add('Confirmation dialog - software wallet', () => (
-    <div style={CENTERED_STORY_STYLE}>
-      <VotingPowerDelegationConfirmationDialog
-        chosenOption={select('Vote option', voteOptions, VALID_DREP_ID)}
-        fees={
-          new BigNumber(
-            number('Transaction fee', 0.174257, {
-              min: 0,
-              step: 0.000001,
-            })
-          )
-        }
-        hwDeviceStatus={HwDeviceStatuses.READY}
-        isTrezor={false}
-        onClose={action('onClose')}
-        onExternalLinkClick={action('onExternalLinkClick')}
-        onSubmit={async (passphrase) => {
-          action('delegateVotes')({ passphrase });
-          return boolean('Submission succeeds', true)
-            ? { success: true }
-            : {
-                success: false,
-                errorCode: select(
-                  'Submission error',
-                  delegateVotesErrorOptions,
-                  'wrong_encryption_passphrase'
-                ),
-              };
-        }}
-        redirectToWallet={action('redirectToWallet')}
-        selectedWallet={GOVERNANCE_WALLETS[0]}
-      />
-    </div>
-  ))
-  .add('Confirmation dialog - hardware wallet', () => (
-    <div style={CENTERED_STORY_STYLE}>
-      <VotingPowerDelegationConfirmationDialog
-        chosenOption={select('Vote option', voteOptions, VALID_DREP_ID)}
-        fees={
-          new BigNumber(
-            number('Transaction fee', 0.174257, {
-              min: 0,
-              step: 0.000001,
-            })
-          )
-        }
-        hwDeviceStatus={
-          select(
-            'Hardware wallet status',
-            hwDeviceStatusOptions,
-            HwDeviceStatuses.VERIFYING_TRANSACTION
-          ) as HwDeviceStatus
-        }
-        isTrezor={boolean('Is Trezor', false)}
-        onClose={action('onClose')}
-        onExternalLinkClick={action('onExternalLinkClick')}
-        onSubmit={async () => {
-          action('delegateVotes')();
-          return { success: true };
-        }}
-        redirectToWallet={action('redirectToWallet')}
-        selectedWallet={GOVERNANCE_WALLETS[1]}
-      />
-    </div>
-  ))
+  .add('Confirmation dialog - software wallet', () => {
+    const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
+    return (
+      <div style={CENTERED_STORY_STYLE}>
+        <VotingPowerDelegationConfirmationDialog
+          chosenOption={voteOption}
+          drepIdentity={toStoryDRepIdentity(voteOption)}
+          fees={
+            new BigNumber(
+              number('Transaction fee', 0.174257, {
+                min: 0,
+                step: 0.000001,
+              })
+            )
+          }
+          hwDeviceStatus={HwDeviceStatuses.READY}
+          isTrezor={false}
+          onClose={action('onClose')}
+          onExternalLinkClick={action('onExternalLinkClick')}
+          onSubmit={async (passphrase) => {
+            action('delegateVotes')({ passphrase });
+            return boolean('Submission succeeds', true)
+              ? { success: true }
+              : {
+                  success: false,
+                  errorCode: select(
+                    'Submission error',
+                    delegateVotesErrorOptions,
+                    'wrong_encryption_passphrase'
+                  ),
+                };
+          }}
+          redirectToWallet={action('redirectToWallet')}
+          selectedWallet={GOVERNANCE_WALLETS[0]}
+        />
+      </div>
+    );
+  })
+  .add('Confirmation dialog - hardware wallet', () => {
+    const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
+    return (
+      <div style={CENTERED_STORY_STYLE}>
+        <VotingPowerDelegationConfirmationDialog
+          chosenOption={voteOption}
+          drepIdentity={toStoryDRepIdentity(voteOption)}
+          fees={
+            new BigNumber(
+              number('Transaction fee', 0.174257, {
+                min: 0,
+                step: 0.000001,
+              })
+            )
+          }
+          hwDeviceStatus={
+            select(
+              'Hardware wallet status',
+              hwDeviceStatusOptions,
+              HwDeviceStatuses.VERIFYING_TRANSACTION
+            ) as HwDeviceStatus
+          }
+          isTrezor={boolean('Is Trezor', false)}
+          onClose={action('onClose')}
+          onExternalLinkClick={action('onExternalLinkClick')}
+          onSubmit={async () => {
+            action('delegateVotes')();
+            return { success: true };
+          }}
+          redirectToWallet={action('redirectToWallet')}
+          selectedWallet={GOVERNANCE_WALLETS[1]}
+        />
+      </div>
+    );
+  })
   .add('Unavailable while syncing', () => (
     <div style={CENTERED_STORY_STYLE}>
       <VotingUnavailable

@@ -342,7 +342,20 @@
           "id": "task-113",
           "title": "Update delegation confirmation with DRep identity (ID only)",
           "description": "Update the DRep delegation confirmation dialog to always display the DRep ID in this slice. Do not show verified display names until anchor metadata has been verified, hardened, and source-labeled (anchor-2).",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "Confirmation dialog prop contract widened with drepIdentity: DRepIdentity | null; for DRep targets it renders the raw selected ID full and monospaced (byte-equal to chosenOption, no normalization) while abstain/no_confidence keep their sentinel labels via a null identity, and a regression test proves injected names never render. Code review round 1 approved with zero blockers: tsc clean, eslint clean, dialog spec 4/4, container/directory suites 15/15, sanitization floor 17/17, i18n:manage idempotent with the single new !!!-marked drepId key in both locales.",
+          "evidence": [
+            "source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.tsx",
+            "source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.spec.tsx",
+            "source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.messages.ts",
+            "source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.scss",
+            "source/renderer/app/containers/voting/VotingGovernancePage.tsx",
+            "storybook/stories/voting/Governance.stories.tsx",
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
+            "translations/messages.json"
+          ],
+          "updatedAt": "2026-07-22",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [

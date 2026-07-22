@@ -5357,6 +5357,11 @@
         "id": "voting.governance.confirmationDialog.vote"
       },
       {
+        "defaultMessage": "!!!DRep ID",
+        "description": "Label above the DRep ID in the delegation confirmation dialog",
+        "id": "voting.governance.confirmationDialog.drepId"
+      },
+      {
         "defaultMessage": "!!!Transaction fee",
         "description": "Fee title",
         "id": "voting.governance.confirmationDialog.fee"

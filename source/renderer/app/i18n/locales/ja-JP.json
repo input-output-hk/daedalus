@@ -880,6 +880,7 @@
   "voting.governance.browseDRepsLink": "!!!DRep一覧",
   "voting.governance.confirmationDialog.button.cancel": "キャンセル",
   "voting.governance.confirmationDialog.button.confirm": "確認",
+  "voting.governance.confirmationDialog.drepId": "!!!DRep ID",
   "voting.governance.confirmationDialog.error.generic": "トランザクションの初期化中に問題が発生しました。しばらくしてからもう一度お試しください。",
   "voting.governance.confirmationDialog.fee": "平均手数料",
   "voting.governance.confirmationDialog.password": "パスワードを入力してください",

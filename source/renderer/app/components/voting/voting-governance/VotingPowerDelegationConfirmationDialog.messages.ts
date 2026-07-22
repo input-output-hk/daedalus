@@ -11,6 +11,12 @@ export const messages = defineMessages({
     defaultMessage: '!!!Vote',
     description: 'Vote title',
   },
+  drepId: {
+    id: 'voting.governance.confirmationDialog.drepId',
+    defaultMessage: '!!!DRep ID',
+    description:
+      'Label above the DRep ID in the delegation confirmation dialog',
+  },
   fee: {
     id: 'voting.governance.confirmationDialog.fee',
     defaultMessage: '!!!Transaction fee',

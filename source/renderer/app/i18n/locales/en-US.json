@@ -880,6 +880,7 @@
   "voting.governance.browseDRepsLink": "!!!Browse DReps",
   "voting.governance.confirmationDialog.button.cancel": "Cancel",
   "voting.governance.confirmationDialog.button.confirm": "Confirm",
+  "voting.governance.confirmationDialog.drepId": "!!!DRep ID",
   "voting.governance.confirmationDialog.error.generic": "Something went wrong during transaction submission. Please try again in a few minutes.",
   "voting.governance.confirmationDialog.fee": "Transaction fee",
   "voting.governance.confirmationDialog.password": "Spending password",
