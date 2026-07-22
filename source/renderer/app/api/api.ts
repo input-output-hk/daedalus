@@ -1017,10 +1017,27 @@ export default class AdaApi {
       return _createTransactionFromServerData(response);
     } catch (error) {
       logger.error('AdaApi::createTransaction error', {
-        error,
+        error:
+          error instanceof Error
+            ? {
+                message: error.message,
+                stack: error.stack,
+                // @ts-ignore
+                statusCode: error.statusCode,
+                // @ts-ignore
+                responseBody: error.responseBody,
+                // @ts-ignore
+                code: error.code,
+              }
+            : error,
       });
 
-      const apiError = new ApiError(error)
+      const rawError =
+        error instanceof Error
+          ? { code: 'wallet_internal_error' as const, message: error.message }
+          : error;
+
+      const apiError = new ApiError(rawError)
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
@@ -1103,9 +1120,25 @@ export default class AdaApi {
         return _createTransactionFromServerData(response);
       } catch (error) {
         logger.error('AdaApi::createTransaction error', {
-          error,
+          error:
+            error instanceof Error
+              ? {
+                  message: error.message,
+                  stack: error.stack,
+                  // @ts-ignore
+                  statusCode: error.statusCode,
+                  // @ts-ignore
+                  responseBody: error.responseBody,
+                  // @ts-ignore
+                  code: error.code,
+                }
+              : error,
         });
-        throw new ApiError(error)
+        const rawError =
+          error instanceof Error
+            ? { code: 'wallet_internal_error' as const, message: error.message }
+            : error;
+        throw new ApiError(rawError)
           .set('wrongEncryptionPassphrase')
           .where('code', 'bad_request')
           .inc('message', 'passphrase is too short')
