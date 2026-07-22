@@ -149,6 +149,9 @@ export type CardanoStatus = {
   cardanoNodePID: number;
   cardanoWalletPID: number;
   isRTSFlagsModeEnabled: boolean;
+  cardanoNodeStartedAt: number | null;
+  cardanoWalletStartedAt: number | null;
+  cardanoWalletRestartCount: number;
 };
 export type NetworkMagicType = Array<number | null | undefined>;
 export const NetworkMagics: {

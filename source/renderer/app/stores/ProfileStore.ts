@@ -41,6 +41,7 @@ import {
   TIME_OPTIONS,
 } from '../config/profileConfig';
 import { buildSystemInfo } from '../utils/buildSystemInfo';
+import { formatUptime } from '../utils/formatUptime';
 import { AnalyticsAcceptanceStatus, EventCategories } from '../analytics/types';
 
 export default class ProfileStore extends Store {
@@ -614,6 +615,9 @@ export default class ProfileStore extends Store {
       const {
         cardanoNodePID,
         cardanoWalletPID,
+        cardanoNodeStartedAt,
+        cardanoWalletStartedAt,
+        cardanoWalletRestartCount,
         tlsConfig,
         stateDirectoryPath,
         cardanoNodeState,
@@ -649,8 +653,11 @@ export default class ProfileStore extends Store {
         isBlankScreenFixActive,
         cardanoNodeVersion: nodeVersion,
         cardanoNodePID,
+        cardanoNodeUptime: formatUptime(cardanoNodeStartedAt),
         cardanoWalletVersion: apiVersion,
         cardanoWalletPID,
+        cardanoWalletUptime: formatUptime(cardanoWalletStartedAt),
+        cardanoWalletRestartCount,
         cardanoWalletApiPort: tlsConfig ? tlsConfig.port : 0,
         cardanoNetwork: network,
         daedalusStateDirectoryPath: stateDirectoryPath,

@@ -11,7 +11,7 @@
     fenix.inputs.nixpkgs.follows = "nixpkgs";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
-    cardano-wallet.url = "github:cardano-foundation/cardano-wallet/v2026-05-11";
+    cardano-wallet.url = "github:disassembler/cardano-wallet/f5902ce3b16bfcb9ff9a619b29fcf0d5eb4b2524";
     cardano-wallet.flake = false; # otherwise, +10k quadratic dependencies in flake.lock…
     cardano-node.url = "github:IntersectMBO/cardano-node/11.0.1";
     cardano-node.flake = false;

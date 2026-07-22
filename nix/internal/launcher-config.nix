@@ -304,6 +304,7 @@ let
     walletBin = mkBinPath "cardano-wallet";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
+    watchdogBin = mkBinPath "cardano-watchdog";
     nodeConfig = let
       nodeConfigAttrs =
         if (configOverride == null)
@@ -400,6 +401,7 @@ let
           nodeBin
           cliBin
           walletBin
+          watchdogBin
           cardanoAddressBin
           legacyStateDir
           legacyWalletDB

@@ -58,13 +58,61 @@
     aarch64-darwin = inputs.mithril.packages.aarch64-darwin.mithril-client-cli;
   };
 
+  # cardano-watchdog: locally-built Rust process supervisor.
+  # Windows cross-compilation is not yet supported; the binary is omitted for that target.
+  cardano-watchdog = let
+    cargoLockExists = builtins.pathExists ./../../watchdog/Cargo.lock;
+    isWindows = targetSystem == "x86_64-windows";
+    isLinux = pkgs.stdenv.hostPlatform.isLinux;
+    src = pkgs.lib.fileset.toSource {
+      root = ./../../watchdog;
+      fileset = pkgs.lib.fileset.unions [
+        ./../../watchdog/Cargo.toml
+        ./../../watchdog/Cargo.lock
+        ./../../watchdog/src
+      ];
+    };
+  in
+    if isWindows || !cargoLockExists
+    then null
+    else if isLinux then
+      # Build a fully static musl binary so nix-bundle-exe doesn't need to trace
+      # and bundle glibc, libgcc_s, etc. — consistent with cardano-node et al.
+      let
+        fenixPkgs = inputs.fenix.packages.${pkgs.stdenv.hostPlatform.system};
+        muslToolchain = fenixPkgs.combine [
+          fenixPkgs.stable.cargo
+          fenixPkgs.stable.rustc
+          fenixPkgs.targets.x86_64-unknown-linux-musl.stable.rust-std
+        ];
+        craneLib = (inputs.crane.mkLib pkgs).overrideToolchain muslToolchain;
+      in craneLib.buildPackage {
+        inherit src;
+        pname = "cardano-watchdog";
+        version = "0.1.0";
+        strictDeps = true;
+        CARGO_BUILD_TARGET = "x86_64-unknown-linux-musl";
+        CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER =
+          "${pkgs.pkgsStatic.stdenv.cc}/bin/${pkgs.pkgsStatic.stdenv.cc.targetPrefix}cc";
+      }
+    else
+      let
+        toolchain = inputs.fenix.packages.${pkgs.stdenv.hostPlatform.system}.stable.toolchain;
+        craneLib = (inputs.crane.mkLib pkgs).overrideToolchain toolchain;
+      in craneLib.buildPackage {
+        inherit src;
+        pname = "cardano-watchdog";
+        version = "0.1.0";
+        strictDeps = true;
+      };
+
   inherit (walletFlake.legacyPackages.${pkgs.stdenv.hostPlatform.system}.pkgs) cardanoLib;
 
   daedalus-bridge = pkgs.lib.genAttrs sourceLib.installerClusters (cluster:
     import ./cardano-bridge.nix {
       target = targetSystem;
       inherit (pkgs) lib runCommandCC darwin;
-      inherit cardano-wallet cardano-node cardano-launcher cardano-cli cardano-address mock-token-metadata-server mithril-client snapshot-converter;
+      inherit cardano-wallet cardano-node cardano-launcher cardano-cli cardano-address mock-token-metadata-server mithril-client snapshot-converter cardano-watchdog;
       local-cluster =
         if cluster == "selfnode"
         then walletPackages.local-cluster

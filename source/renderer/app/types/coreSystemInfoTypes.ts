@@ -6,8 +6,11 @@ export type CoreSystemInfo = {
   isBlankScreenFixActive: boolean;
   cardanoNodeVersion: string;
   cardanoNodePID: number;
+  cardanoNodeUptime: string;
   cardanoWalletVersion: string;
   cardanoWalletPID: number;
+  cardanoWalletUptime: string;
+  cardanoWalletRestartCount: number;
   cardanoWalletApiPort: number;
   cardanoNetwork: string;
   daedalusStateDirectoryPath: string;

@@ -42,6 +42,13 @@ export const messages = defineMessages({
     defaultMessage: '!!!Invalid phrase entered, please check.',
     description: 'Error message shown when invalid bip39 mnemonic was entered.',
   },
+  walletInternalError: {
+    id: 'api.errors.WalletInternalError',
+    defaultMessage:
+      '!!!The wallet service encountered an internal error. Please check your wallet logs and restart Daedalus.',
+    description:
+      'Error shown when cardano-wallet returns an unhandled internal error (HTTP 500).',
+  },
   // transactions
   notEnoughMoney: {
     id: 'api.errors.NotEnoughMoneyToSendError',
