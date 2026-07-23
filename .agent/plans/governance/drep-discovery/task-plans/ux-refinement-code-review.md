@@ -216,3 +216,68 @@ against guide Step 1 (1a-1e) and PRD FR-1 / task-159 contract row.
 **Blockers:** none.
 
 **Decision: approved**
+
+## Code Review: task-160 — round 1 (2026-07-23)
+
+**Scope reviewed:** the uncommitted diff (4 edits: `DRepDirectory.tsx`,
+`DRepDirectory.scss`, `DRepDirectoryPage.tsx`, `DRepDirectory.stories.tsx`; 2
+creates: `_shared/DRepEmptyState.tsx`, `_shared/DRepEmptyState.scss`) against guide
+Step 2 (2a-2f) and PRD FR-2/FR-3/FR-4 + the task-160 contract row.
+
+**Findings:**
+
+1. **Guide conformance — exact.** All six files match the Step-2 post-edit quotes
+   and full-file CREATE contents verbatim: syncing banner (icon + text + live `%`,
+   `role="status"`, `aria-hidden` SVG, `--badge-warning-*` token slots with the
+   `DRepStatusBadge`-pattern fallbacks, `Math.floor(syncProgress ?? 0)` pinning the
+   fractional/null cases); `DRepEmptyState` ships only the `noSync` variant (PD-1)
+   with the canonical `!!!`-prefixed §9 copy; `showNoSyncFallback` predicate covers
+   Loaded-empty and Failed-non-selfnode exactly as specified, placed after the
+   Loading case so the spinner and retained-list behaviors are preserved; container
+   `reaction` on `stores?.networkStatus.isNodeInSync` refetches on the false→true
+   edge and is disposed in `componentWillUnmount`; both `Node syncing` stories use
+   the task-159 `syncState` override arg with the ranged `number` knob and the
+   global locale toggle (no local IntlProvider).
+2. **FR coverage.** FR-2 (persistent banner, no dismiss control), FR-3 (`noSync`
+   fallback replacing the empty/error branch while `!isNodeInSync`), FR-4
+   (refetch-once reaction + disposal) all present. New behavior tests are
+   deliberately deferred to task-167 per PD-11/Step 2g — not a gap in this round.
+3. **Invariants held by construction.** No IPC/store/CLI/logging changes, so
+   local-first, lovelace, CLI discipline, and the IPC contract are untouched;
+   both new strings carry `!!!` (i18n locale keys land in task-164 per the guide —
+   `yarn i18n:manage` correctly not run this step); no status vocabulary additions;
+   floor suite re-run green (below). The generated `DRepEmptyState.scss.d.ts` from
+   the compile pass is gitignored (`.gitignore:141`), consistent with PD-12 (global
+   `*.scss` declaration at `source/renderer/declaration.d.ts:1` covers tsc).
+4. **Scope clean.** `git status --short` shows exactly the six Step-2 files —
+   matching the guide's file table rows 1/2/4/5/6/7. (The close-out section's
+   "seven Step-2 files" at guide `:4020` is a miscount in the guide, not a diff
+   problem: `DRepDirectory.spec.tsx` belongs to Steps 1/4 only.)
+5. **Pre-existing lint warnings (note):** eslint on the four ts/tsx files reports
+   0 errors / 5 warnings — the known `observer`/`inject` decorator false positives
+   (`DRepDirectoryPage.tsx:2`) and the `drepId` function-type-param
+   (`DRepDirectory.tsx:64`); none introduced by this diff.
+6. **Optional-chain note (carried from Critiquer note 3, still non-blocking):**
+   the reaction data fn chains `stores?.` but not `networkStatus?.`; safe in
+   practice since `networkStatus` is always in `StoresMap` and mobx reports
+   reaction-body errors without crashing the tree.
+
+**Verification (re-run by reviewer, not taken on faith):**
+
+- `yarn compile` → exit 0 (tsc clean; typed-scss-modules generation succeeded,
+  including the new `DRepEmptyState.scss`), and `node_modules/.bin/tsc --noEmit`
+  independently → exit 0.
+- `yarn test:jest source/renderer/app/components/governance/drep-directory/DRepDirectory.spec.tsx`
+  → 12/12 pass (defaults render in-sync; banner absent, fallback never triggers).
+- `yarn test:jest tests/jest/security/governance-sanitization.spec.ts` → 20/20
+  pass (floor intact).
+- `yarn test:jest tests/jest/governance/GovernanceStore.spec.ts` → 8/8 pass;
+  `yarn test:jest source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx`
+  → 7/7 pass (container change breaks no existing mount).
+- `node_modules/.bin/eslint <4 changed ts/tsx files>` → 0 errors / 5 pre-existing
+  warnings.
+- `node_modules/.bin/prettier --check <4 changed ts/tsx files>` → all clean.
+
+**Blockers:** none.
+
+**Decision: approved**

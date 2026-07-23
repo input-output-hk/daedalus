@@ -1345,7 +1345,16 @@
           "id": "task-160",
           "title": "Persistent syncing banner + noSync fallback + clear-on-sync refetch",
           "description": "When !isNodeInSync, DRepDirectory renders a persistent, non-dismissible syncing banner above the list (governance.drepDirectory.syncing with live progress %). Color is never the sole cue (icon + text), using the --badge-warning-* token slots. If a syncing query returns zero DReps or an era/availability error, the list area falls back to the existing DRepEmptyState noSync. When isNodeInSync flips true the banner clears and a fresh fetch runs so the complete list appears without manual refresh.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "DRepDirectory renders a persistent, non-dismissible syncing banner (role=status, warning triangle icon + text, --badge-warning-* token slots) with live floor(syncProgress)% while !isNodeInSync, via the new governance.drepDirectory.syncing message. When syncing yields zero DReps or a non-selfnode failure, the list area falls back to DRepEmptyState noSync instead of a bare error. DRepDirectoryPage installs a MobX reaction on networkStatus.isNodeInSync that triggers governanceStore.refresh() once on the false -> true edge (disposed on unmount), so the complete list appears without manual refresh; the change is review-approved.",
+          "evidence": [
+            "source/renderer/app/components/governance/drep-directory/DRepDirectory.tsx",
+            "source/renderer/app/components/governance/drep-directory/DRepDirectory.scss",
+            "source/renderer/app/components/governance/_shared/DRepEmptyState.tsx",
+            "source/renderer/app/containers/governance/DRepDirectoryPage.tsx",
+            "storybook/stories/governance/DRepDirectory.stories.tsx"
+          ],
+          "updatedAt": "2026-07-23",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": [

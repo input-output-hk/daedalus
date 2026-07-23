@@ -47,3 +47,20 @@
   color: var(--theme-text-secondary, #6b7384);
   padding: 4px 0;
 }
+
+.syncingBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--badge-warning-fg, #b76e00);
+  background: var(--badge-warning-bg, rgba(230, 162, 60, 0.12));
+}
+
+.syncingIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}

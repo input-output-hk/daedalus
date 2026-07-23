@@ -4,12 +4,14 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DRepDirectoryList from './DRepDirectoryList';
 import DRepDirectoryBanner from './DRepDirectoryBanner';
+import DRepEmptyState from '../_shared/DRepEmptyState';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import {
   GovernanceRefreshState,
   AppDRepDirectoryEntry,
   GovernanceStoreError,
 } from '../../../stores/GovernanceStore';
+import { GovernanceQueryErrorType } from '../../../../../common/types/governance.types';
 import styles from './DRepDirectory.scss';
 
 const messages = defineMessages({
@@ -43,6 +45,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Refreshing…',
     description: 'Refreshing state badge label',
   },
+  syncing: {
+    id: 'governance.drepDirectory.syncing',
+    defaultMessage:
+      '!!!Your node is still syncing ({progress}%). The DRep list may be incomplete until sync completes.',
+    description: 'Persistent soft-warning banner while the node is syncing',
+  },
 });
 
 interface Props {
@@ -62,12 +70,23 @@ function DRepDirectory({
   refreshState,
   error,
   lastFetchedAt,
+  isNodeInSync,
+  syncProgress,
   onRefresh,
   onSelectForDelegation,
   intl,
 }: Props) {
   const hasRetainedData = drepList.length > 0;
   const showErrorBanner = error && hasRetainedData;
+
+  // While syncing, an empty or unavailable directory is expected — fall back
+  // to the noSync empty state instead of a bare error or "No DReps found".
+  const showNoSyncFallback =
+    !isNodeInSync &&
+    !hasRetainedData &&
+    (refreshState === GovernanceRefreshState.Loaded ||
+      (refreshState === GovernanceRefreshState.Failed &&
+        error?.type !== GovernanceQueryErrorType.SelfnodeCliUnsupported));
 
   const renderContent = () => {
     switch (true) {
@@ -78,6 +97,9 @@ function DRepDirectory({
             <p>{intl.formatMessage(messages.loading)}</p>
           </div>
         );
+
+      case showNoSyncFallback:
+        return <DRepEmptyState variant="noSync" />;
 
       case refreshState === GovernanceRefreshState.Failed:
         return (
@@ -153,6 +175,32 @@ function DRepDirectory({
         onRefresh={onRefresh}
         isRefreshing={refreshState === GovernanceRefreshState.Refreshing}
       />
+      {!isNodeInSync && (
+        <div className={styles.syncingBanner} role="status">
+          <svg
+            className={styles.syncingIcon}
+            aria-hidden="true"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M8 1.5 15 14H1L8 1.5z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+            <path d="M8 6v4" stroke="currentColor" strokeWidth="1.5" />
+            <circle cx="8" cy="12" r="0.9" fill="currentColor" />
+          </svg>
+          <span>
+            {intl.formatMessage(messages.syncing, {
+              progress: Math.floor(syncProgress ?? 0),
+            })}
+          </span>
+        </div>
+      )}
       {renderContent()}
     </div>
   );

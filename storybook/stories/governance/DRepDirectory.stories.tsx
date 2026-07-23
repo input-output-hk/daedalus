@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withState } from '@dump247/storybook-state';
-import { withKnobs, select } from '@storybook/addon-knobs';
+import { withKnobs, select, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
@@ -322,6 +322,28 @@ storiesOf('Governance / DRep Directory', module)
       baseEntries,
       REFRESH_ERROR
     )
+  )
+  .add('Node syncing', () =>
+    renderCentered(GovernanceRefreshState.Loaded, baseEntries, null, {
+      isNodeInSync: false,
+      syncProgress: number('Sync progress (%)', 87, {
+        max: 100,
+        min: 0,
+        range: true,
+        step: 1,
+      }),
+    })
+  )
+  .add('Node syncing — empty fallback', () =>
+    renderCentered(GovernanceRefreshState.Loaded, [], null, {
+      isNodeInSync: false,
+      syncProgress: number('Sync progress (%)', 87, {
+        max: 100,
+        min: 0,
+        range: true,
+        step: 1,
+      }),
+    })
   )
   .add('Pagination — 30 entries', () =>
     renderCentered(GovernanceRefreshState.Loaded, paginatedEntries)

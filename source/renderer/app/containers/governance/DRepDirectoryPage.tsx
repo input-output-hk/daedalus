@@ -1,5 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
+import { reaction } from 'mobx';
+import type { IReactionDisposer } from 'mobx';
 import { withRouter } from 'react-router-dom';
 import type { RouteComponentProps } from 'react-router-dom';
 import DRepDirectory from '../../components/governance/drep-directory/DRepDirectory';
@@ -17,9 +19,11 @@ interface Props extends RouteComponentProps {
 @inject('stores')
 @observer
 class DRepDirectoryPage extends React.Component<Props> {
+  syncReactionDisposer: IReactionDisposer | null = null;
+
   componentDidMount() {
-    const governanceStore: GovernanceStore | undefined = this.props.stores
-      ?.governance;
+    const { stores } = this.props;
+    const governanceStore: GovernanceStore | undefined = stores?.governance;
 
     if (!governanceStore) {
       return;
@@ -30,6 +34,24 @@ class DRepDirectoryPage extends React.Component<Props> {
       governanceStore.refreshState === GovernanceRefreshState.Failed
     ) {
       governanceStore.refresh();
+    }
+
+    // Replace the possibly-incomplete syncing snapshot exactly once when the
+    // node reaches the tip; reaction fires only on the false -> true edge.
+    this.syncReactionDisposer = reaction(
+      () => stores?.networkStatus.isNodeInSync,
+      (isNodeInSync) => {
+        if (isNodeInSync) {
+          governanceStore.refresh();
+        }
+      }
+    );
+  }
+
+  componentWillUnmount() {
+    if (this.syncReactionDisposer) {
+      this.syncReactionDisposer();
+      this.syncReactionDisposer = null;
     }
   }
 
