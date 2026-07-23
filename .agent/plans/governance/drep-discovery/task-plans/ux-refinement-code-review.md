@@ -511,3 +511,66 @@ the guide's Step 5 (`ux-refinement-implementation-guide.md:2211-2433`) names.
 **Blockers:** none.
 
 **Decision: approved**
+
+## Code Review: task-164 — round 1 (2026-07-23)
+
+**Scope reviewed:** uncommitted diff on `wt/ux-refinement` (base `6328ac0f9`,
+task-163): `source/renderer/app/i18n/locales/en-US.json`,
+`source/renderer/app/i18n/locales/ja-JP.json`, plus the two files
+`yarn i18n:manage` rewrote (`source/renderer/app/i18n/locales/defaultMessages.json`,
+`translations/messages.json`) — exactly the file set the guide's Step 6
+(`ux-refinement-implementation-guide.md:2437-2551`) and commit note (`:4025`)
+sanction. 80 insertions, zero deletions, no other files touched.
+
+**Findings:**
+
+1. **Matches the approved step verbatim.** All five keys land at the exact
+   alphabetical positions the guide pins (6a/6b): `empty.noSync` (en-US:288,
+   ja-JP:288), `error.rankingUnavailable` (:290), `syncing` (:302),
+   `votingPower.loadingTooltip` (:305), `votingPower.unavailableTooltip`
+   (:306). The en strings are byte-identical to the guide's block and to the
+   component `defaultMessage`s from Steps 2/4 (`DRepEmptyState.tsx:9`,
+   `DRepErrorBanner.tsx:9`, `DRepCard.tsx:26,31`, `DRepDirectory.tsx:53`);
+   the ja-JP strings match the guide's four insert snippets exactly, and the
+   `{progress}` placeholder name matches across locales (FR-11 satisfied).
+2. **`!!!` invariant held.** All ten new strings (5 × 2 locales) carry the
+   leading `!!!`; the diff is insertion-only, so no existing marker was
+   removed. No copy beyond this phase's surfaces (`empty.selfnode`,
+   `error.refresh` absent, per the PRD constraint row `:84`).
+3. **`yarn i18n:manage` re-run by reviewer → exit 0** (no environment debt
+   needed) **and idempotent**: the working tree is byte-identical after the
+   re-run, confirming the committed `defaultMessages.json`/`messages.json`
+   rewrites are exactly what the manager produces. The generated-file diffs
+   contain only the five new descriptors.
+4. **ja-JP render test green, missing-key warnings gone.**
+   `DRepDirectory.spec.tsx:190` renders the directory under `ja-JP` against
+   the real locale JSON; suite 12/12 with no missing-message console output
+   in the run (Step 6c-3 satisfied).
+5. **Invariants held.** No code paths touched: local-first, lovelace
+   losslessness, CLI discipline, and IPC channel/payload shapes are all
+   untouched by a locale-only diff. Status vocabulary unchanged
+   (`status.active`/`status.inactive` only). Sanitization floor suite re-run:
+   20/20. New copy contains no DRep ids or bech32 strings.
+6. **Scope and formatting clean.** Locale JSONs were hand-edited (two-space
+   indentation matches neighbors, no reformat noise elsewhere in either
+   file); prettier was correctly not run (JSON-only step). Vocabulary note:
+   the `syncing` string's `({progress}%)` is the guide's pinned canonical
+   copy for this surface, so the Mithril-era "sync-% dropped" convention does
+   not apply here.
+
+**Verification (re-run by reviewer, not taken on faith):**
+
+- `yarn i18n:manage` → exit 0; working tree unchanged afterwards
+  (idempotent).
+- Step 6c grep → exactly 5 hits per locale file at the pinned positions.
+- `yarn compile` (`tsc --noEmit`) → exit 0.
+- `yarn test:jest source/renderer/app/components/governance/drep-directory/DRepDirectory.spec.tsx`
+  → 12/12 pass, no missing-key warnings.
+- `yarn test:jest tests/jest/security/governance-sanitization.spec.ts` →
+  20/20 pass (NFR-4 checkpoint intact).
+- `yarn lint` not applicable — the diff is JSON-only, outside ESLint's
+  targets.
+
+**Blockers:** none.
+
+**Decision: approved**

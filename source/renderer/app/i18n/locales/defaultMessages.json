@@ -2507,6 +2507,26 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Your node is still syncing. DRep data becomes available once the node reaches the tip.",
+        "description": "Directory fallback while the node has not reached the tip",
+        "id": "governance.drepDirectory.empty.noSync"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/DRepEmptyState.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Voting power data unavailable this refresh. Ranking-based filters disabled.",
+        "description": "Non-blocking banner when the stake phase fails",
+        "id": "governance.drepDirectory.error.rankingUnavailable"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/DRepErrorBanner.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Copy",
         "description": "Copy button label for a DRep ID",
         "id": "governance.drepDirectory.copyButton"
@@ -2555,6 +2575,16 @@
         "defaultMessage": "!!!Select for delegation",
         "description": "Row-level CTA that hands the DRep ID to the delegation form",
         "id": "governance.drepDirectory.card.select"
+      },
+      {
+        "defaultMessage": "!!!Loading voting power…",
+        "description": "Tooltip on the voting-power placeholder during enrichment",
+        "id": "governance.drepDirectory.votingPower.loadingTooltip"
+      },
+      {
+        "defaultMessage": "!!!Stake distribution unavailable this refresh.",
+        "description": "Tooltip on the voting-power placeholder when stake failed",
+        "id": "governance.drepDirectory.votingPower.unavailableTooltip"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepCard.tsx"
@@ -2605,6 +2635,11 @@
         "defaultMessage": "!!!Refreshing…",
         "description": "Refreshing state badge label",
         "id": "governance.drepDirectory.refreshing"
+      },
+      {
+        "defaultMessage": "!!!Your node is still syncing ({progress}%). The DRep list may be incomplete until sync completes.",
+        "description": "Persistent soft-warning banner while the node is syncing",
+        "id": "governance.drepDirectory.syncing"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectory.tsx"

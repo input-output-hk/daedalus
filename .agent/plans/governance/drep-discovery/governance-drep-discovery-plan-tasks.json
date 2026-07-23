@@ -1450,7 +1450,15 @@
           "id": "task-164",
           "title": "i18n: syncing key + voting-power loading tooltip",
           "description": "Add the governance.drepDirectory.syncing key (en-US + ja-JP placeholder, keep the !!! prefix) and the voting-power loading tooltip copy. Run yarn i18n:manage.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "governance.drepDirectory.syncing and governance.drepDirectory.votingPower.loadingTooltip landed in en-US and ja-JP with the !!! prefix, placed alphabetically in the governance block, and yarn i18n:manage regenerated defaultMessages.json and translations/messages.json cleanly.",
+          "evidence": [
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
+            "source/renderer/app/i18n/locales/defaultMessages.json",
+            "translations/messages.json"
+          ],
+          "updatedAt": "2026-07-23",
           "priority": "medium",
           "estimatedHours": 1,
           "dependencies": [
