@@ -26,7 +26,7 @@ const castVote = (vote: string): CoinSelectionCertificate =>
     certificateType: 'cast_vote',
     rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
     vote,
-  } as CoinSelectionCertificate);
+  }) as CoinSelectionCertificate;
 
 const decodedHash = (vote: string): string =>
   Cardano.DRepID.toCredential(Cardano.DRepID(vote)).hash;

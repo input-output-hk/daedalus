@@ -304,4 +304,28 @@ meets the stop-conditions bar.
 
 ## Final Outcome
 
-_To be filled at slice close._
+**Slice closed 2026-07-23.**
+
+- **task-115: `complete`** (never self-promoted to `verified`; dedicated proof remains
+  task-125 release verification). Code review: **1 round, approved, zero blockers.**
+- **Gates (independently re-run at review):** `tsc --noEmit` zero errors; eslint 0
+  errors on touched files (the floor suite is eslint-ignored by a pre-existing repo
+  pattern — findings I-5); focused Jest **49/49** (shelleyLedger 7, shelleyTrezor 7,
+  VotingStore 15 = 9 pre-existing Catalyst + 6 new, dialog 13, flow 7); sanitization
+  floor **20/20** (grew from 17, never below); `prettier --check` clean.
+- **Shipped:** the D-2 production fix (stale HW TODO removed; both HW catch blocks log
+  `{ errorCode }` only — leak proven pre-fix and clean post-fix), plus the full FR-4…
+  FR-9 test matrix. All six acceptance criteria discharged per the review's AC ↔ test
+  mapping; invariants #2/#4/#10/#11/#13 held (no copy, no new backend, byte-equality
+  at mapper/store/dialog layers).
+- **Deviations from the guide (all reviewed and sound):** (1) `VotingStore.spec.ts`
+  existed at HEAD — appended instead of created (suite 15, not 6); (2) the
+  `@trezor/device-authenticity` stub sits below the imports (ESLint `import/first`;
+  Jest hoists it); (3) the floor tests gained a `jsonStrWithErrors` replacer — the
+  guide's plain `JSON.stringify` was vacuous against `Error` internals; discriminance
+  proven by mutation; (4) prettier 2.1.2 reformatted pre-existing HEAD drift in
+  untouched regions of `VotingStore.ts` (pure formatting, kept per the format
+  convention).
+- **auditSummary:** none for slice-3.
+- **Findings:** implementation findings I-1…I-5 and the D-2/F-2 leak closure are
+  recorded in [research/slice-3-findings.md](../research/slice-3-findings.md).

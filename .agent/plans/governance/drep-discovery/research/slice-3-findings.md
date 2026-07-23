@@ -156,4 +156,52 @@ a future task touches this seam for its own reasons.
 
 ## Implementation findings (appended at slice close)
 
-_Pending._
+### I-1 — `JSON.stringify` cannot see `Error` internals; floor tests need a replacer to be discriminating
+
+The guide's two new floor tests asserted leak-freedom via
+`JSON.stringify(errorSpy.mock.calls)`, but `Error` `message`/`stack` are
+non-enumerable, so `JSON.stringify(new Error(…))` yields `{}` — verified empirically:
+the tests as written **passed against the unfixed catch blocks**, contradicting their
+stated fails-pre-fix intent. Fix: a `jsonStrWithErrors` helper (a `JSON.stringify`
+replacer expanding any `Error` to `message` + `stack`) used in both tests.
+Discriminance then proven by mutation: with `VotingStore.ts` reverted to HEAD the two
+tests fail; with the fix all 20 pass. Any future floor test that inspects logger spy
+calls for `Error` contents must use this helper (it lives in the floor suite).
+
+### I-2 — `VotingStore.spec.ts` already existed at HEAD; the guide's CREATE was wrong
+
+`source/renderer/app/stores/VotingStore.spec.ts` is tracked at HEAD (DDW-809 Catalyst
+fund-phase suite, 9 `test.each` cases). Live code wins: the slice-3 HW describe block
+was appended and imports merged instead of overwriting. The suite therefore reports
+15 tests (9 pre-existing + 6 new); reviewers comparing against the guide's per-suite
+table should expect 49 focused tests total, not 40.
+
+### I-3 — `jest.mock('@trezor/device-authenticity')` goes below the imports, not first
+
+F-3's "first statement" placement trips ESLint `import/first` (4 errors). Jest hoists
+`jest.mock` above imports regardless, so placing it after the import block is
+semantically identical; repo precedent (`VotingGovernancePage.spec.tsx`) uses the same
+ordering. The spec's comment notes the hoisting.
+
+### I-4 — prettier 2.1.2 reformats pre-existing HEAD drift in `VotingStore.ts`
+
+The mandated pre-commit `prettier --write` (repo pins 2.1.2) reformatted ~8 hunks of
+untouched regions of `VotingStore.ts` beyond the three fenced edits — the file at HEAD
+carries formatting from a newer prettier (known repo-wide drift, see the slice-1
+oscillation note). Pure formatting, no behavior change; kept so `prettier --check`
+passes. Expect the same on any future edit to drift-carrying files.
+
+### I-5 — the floor suite is outside the eslint gate
+
+`tests/jest/security/governance-sanitization.spec.ts` is excluded by a pre-existing
+eslint ignore pattern, so the lint gate exercises only 6 of the 7 files touched this
+slice. Conventions there are held by review, not tooling.
+
+### Leak outcome (D-2 / F-2 closure)
+
+The HW logger leak is **fixed and proven**: both catch blocks now log `{ errorCode }`
+only, and the floor suite's adversarial errors (embedding a CIP-129 DRep ID and both
+sentinel literals in `message`) demonstrate pre-fix failure / post-fix cleanliness via
+I-1's helper. HW analytics remain vote-kind-only (F-5 precedent unchanged). The
+`HardwareWalletsStore` `[HW-DEBUG] { error }` surfaces stay a noted residual risk
+(out of slice scope, F-2).
