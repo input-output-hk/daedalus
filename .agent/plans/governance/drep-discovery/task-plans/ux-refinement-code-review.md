@@ -447,3 +447,67 @@ US-UX.2 acceptance + the task-162 contract row.
 **Blockers:** none.
 
 **Decision: approved**
+
+## Code Review: task-163 — round 1 (2026-07-23)
+
+**Scope reviewed:** uncommitted diff on `wt/ux-refinement` (base `32938d0da`,
+task-162): `source/main/governance/GovernanceQueryService.ts` and
+`tests/jest/governance/GovernanceQueryService.spec.ts` — exactly the two files
+the guide's Step 5 (`ux-refinement-implementation-guide.md:2211-2433`) names.
+
+**Findings:**
+
+1. **Matches the approved step verbatim.** The static `CLI_TIMEOUT_MS` is
+   replaced by `REGISTRATION_TIMEOUT_MS = 10_000` / `STAKE_TIMEOUT_MS = 30_000`
+   with the guide's exact doc comment (5a); the budget is threaded as a
+   parameter through `_runCliQueryWithEraFallback` → `_runCliQuery` per PD-7
+   (5b/5c) and reused on the conway retry, so the fallback keeps the same
+   phase budget; both registration call sites (`drep-state`, `tip`) pass the
+   10 s budget and the stake call site passes 30 s (5d). The timeout message
+   interpolates the per-call `${timeoutMs}` (FR-10 satisfied).
+2. **Grep gate met.** `grep -rn "CLI_TIMEOUT_MS" source/ tests/` → empty, as
+   the guide requires (`:2356-2357`, test-matrix row `:3958`).
+3. **Spec updates are the guide's exactly.** First timeout test renamed to the
+   10 s-registration title; the static-pin test now pins both budgets; the new
+   30 s stake test asserts the promise is still pending at 10 001 ms (double
+   `Promise.resolve()` microtask flush per the Jest 27 note) and rejects with
+   `GovernanceQueryErrorType.Timeout` after the full 30 s. Suite is 35 (34 + 1
+   net new), matching the guide's expected count.
+4. **Design tokens confirmed, not rewritten.** `shared-design-tokens.md` is
+   untouched in the diff; §6 already states phase-1 ≤10 s / phase-2 ≤30 s —
+   the constants agree with the tokens. The 30 s value is carried as
+   provisional (comment + PRD defer to the task-166 manual measurement); no
+   re-derivation attempted, per the constraint.
+5. **Invariants held.** Local-first: no network paths touched. Sanitization:
+   the only log payload in the changed code is the pre-existing `{ args }` on
+   the conway-retry warn (CLI flags only, no DRep ids); floor suite re-run at
+   20/20. Lovelace: parse/IPC paths untouched. CLI discipline: bulk
+   `--all-dreps`, era `latest`→`conway` fallback, env-only socket, and
+   config-derived network flag all unchanged. No new copy (no `!!!`/i18n
+   surface), no status-vocabulary changes, no IPC/payload drift — channels and
+   shapes untouched.
+6. **Scope clean.** Exactly the two named files changed; no doc, locale, or
+   renderer files touched. No unnecessary complexity — the diff is the
+   smallest change that threads the budgets per call.
+7. **Pre-existing lint warnings (note):** eslint on
+   `GovernanceQueryService.ts` reports 0 errors / 4 warnings
+   (`no-non-null-assertion` ×2, `no-explicit-any` ×2); the identical set
+   exists at HEAD (verified by stash/compare) — nothing introduced by this
+   diff. The spec file is outside the eslint `lint` script's roots
+   (`source storybook utils`), consistent with all prior suites.
+
+**Verification (re-run by reviewer, not taken on faith):**
+
+- `yarn test:jest tests/jest/governance/GovernanceQueryService.spec.ts` →
+  35/35 pass.
+- `yarn test:jest tests/jest/security/governance-sanitization.spec.ts` →
+  20/20 pass (NFR-4 checkpoint intact).
+- `yarn compile` (`tsc --noEmit`) → exit 0.
+- `node_modules/.bin/eslint` on both changed files → 0 errors (4 pre-existing
+  warnings, unchanged from HEAD).
+- `node_modules/.bin/prettier --check` on both changed files → clean.
+- `grep -rn "CLI_TIMEOUT_MS" source/ tests/` → empty.
+
+**Blockers:** none.
+
+**Decision: approved**

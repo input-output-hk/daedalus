@@ -448,7 +448,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
   // ---- timeout ----
 
   describe('timeout behavior', () => {
-    it('emits Timeout after CLI_TIMEOUT_MS when CLI never responds', async () => {
+    it('emits Timeout after the 10s registration budget when the CLI never responds', async () => {
       jest.useFakeTimers();
 
       mockSpawn
@@ -469,8 +469,38 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
       jest.useRealTimers();
     });
 
-    it('has a static CLI_TIMEOUT_MS matching the design token budget', () => {
-      expect((GovernanceQueryService as any).CLI_TIMEOUT_MS).toBe(10_000);
+    it('pins the per-phase budgets to the design-token contract', () => {
+      expect((GovernanceQueryService as any).REGISTRATION_TIMEOUT_MS).toBe(
+        10_000
+      );
+      expect((GovernanceQueryService as any).STAKE_TIMEOUT_MS).toBe(30_000);
+    });
+
+    it('gives the stake phase its full 30s budget before timing out', async () => {
+      jest.useFakeTimers();
+
+      mockSpawn.mockReturnValueOnce(createNeverClosingChildProcess());
+
+      let settled = false;
+      const fetchPromise = service.fetchDRepStake();
+      fetchPromise.catch(() => {
+        settled = true;
+      });
+
+      // Past the registration budget the stake query must still be running.
+      jest.advanceTimersByTime(10_001);
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(settled).toBe(false);
+
+      jest.advanceTimersByTime(20_000);
+      await Promise.resolve();
+
+      await expect(fetchPromise).rejects.toMatchObject({
+        queryErrorType: GovernanceQueryErrorType.Timeout,
+      });
+
+      jest.useRealTimers();
     });
   });
 

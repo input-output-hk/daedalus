@@ -1427,7 +1427,14 @@
           "id": "task-163",
           "title": "Per-phase CLI timeouts + design-token time budgets",
           "description": "Replace the single CLI_TIMEOUT_MS with per-phase budgets: bare-list phase 10s, stake phase 30s. Update shared-design-tokens.md §6 refresh-state time budgets to the two-phase model (skeleton <=700ms; list <=10s; voting-power enrich <=30s; rankingUnavailable banner at 30s). The 30s value is provisional pending real synced-node latency measurement.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "The single CLI_TIMEOUT_MS is replaced by per-phase budgets REGISTRATION_TIMEOUT_MS = 10_000 (drep-state + tip queries) and STAKE_TIMEOUT_MS = 30_000 (drep-stake-distribution), threaded per call through _runCliQueryWithEraFallback and _runCliQuery so both the latest and conway-fallback attempts of every query use the correct budget, and the Timeout error message interpolates the per-call budget. shared-design-tokens.md §6 was already written to the two-phase model (skeleton <=700ms; list <=10s; voting-power enrich <=30s; rankingUnavailable at 30s) and was confirmed unchanged per the PRD, so no doc edit was needed. Jest spec updated: budgets pinned to the design-token values, the registration timeout test renamed to the 10s budget, and a new test proves the stake phase survives past 10s and times out only at 30s — suite 35/35 green; sanitization floor suite 20/20 green; yarn compile clean; reviewer re-ran all checks and approved. The 30s stake value remains provisional pending the task-166 real synced-node latency measurement.",
+          "evidence": [
+            "source/main/governance/GovernanceQueryService.ts",
+            "tests/jest/governance/GovernanceQueryService.spec.ts",
+            ".agent/plans/governance/drep-discovery/designs/shared-design-tokens.md"
+          ],
+          "updatedAt": "2026-07-23",
           "priority": "medium",
           "estimatedHours": 0.5,
           "dependencies": [

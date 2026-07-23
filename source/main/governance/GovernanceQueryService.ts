@@ -49,8 +49,13 @@ export class GovernanceQueryError extends Error {
 export class GovernanceQueryService {
   private static instance: GovernanceQueryService | null = null;
 
-  /** CLI subprocess timeout budget (ms) per the shared-design-tokens refresh contract. */
-  private static readonly CLI_TIMEOUT_MS = 10_000;
+  /**
+   * Per-phase CLI timeout budgets (ms) per the shared-design-tokens two-phase
+   * refresh contract. The 30s stake budget is provisional until real
+   * synced-node latency is measured.
+   */
+  private static readonly REGISTRATION_TIMEOUT_MS = 10_000;
+  private static readonly STAKE_TIMEOUT_MS = 30_000;
 
   private cliBin = 'cardano-cli';
   private nodeSocketPath: string | null = null;
@@ -213,13 +218,14 @@ export class GovernanceQueryService {
 
     try {
       const [drepStateStdout, tipStdout] = await Promise.all([
-        this._runCliQueryWithEraFallback([
-          'query',
-          'drep-state',
-          '--all-dreps',
-          '--output-json',
-        ]),
-        this._runCliQueryWithEraFallback(['query', 'tip', '--output-json']),
+        this._runCliQueryWithEraFallback(
+          ['query', 'drep-state', '--all-dreps', '--output-json'],
+          GovernanceQueryService.REGISTRATION_TIMEOUT_MS
+        ),
+        this._runCliQueryWithEraFallback(
+          ['query', 'tip', '--output-json'],
+          GovernanceQueryService.REGISTRATION_TIMEOUT_MS
+        ),
       ]);
 
       const currentEpoch = this._parseTipEpoch(tipStdout);
@@ -247,12 +253,10 @@ export class GovernanceQueryService {
     this._assertQueryable();
 
     try {
-      const stakeStdout = await this._runCliQueryWithEraFallback([
-        'query',
-        'drep-stake-distribution',
-        '--all-dreps',
-        '--output-json',
-      ]);
+      const stakeStdout = await this._runCliQueryWithEraFallback(
+        ['query', 'drep-stake-distribution', '--all-dreps', '--output-json'],
+        GovernanceQueryService.STAKE_TIMEOUT_MS
+      );
 
       return {
         stakeByDRepId: this._parseStakeDistribution(stakeStdout),
@@ -275,16 +279,19 @@ export class GovernanceQueryService {
    * Run a governance query with the preferred `latest` era flag.
    * Falls back to `conway` only when the installed cardano-cli rejects `latest`.
    */
-  private async _runCliQueryWithEraFallback(args: string[]): Promise<string> {
+  private async _runCliQueryWithEraFallback(
+    args: string[],
+    timeoutMs: number
+  ): Promise<string> {
     try {
-      return await this._runCliQuery(['latest', ...args]);
+      return await this._runCliQuery(['latest', ...args], timeoutMs);
     } catch (error) {
       if (this._shouldRetryWithConway(error)) {
         logger.warn(
           'GovernanceQueryService: retrying governance query with conway era flag',
           { args }
         );
-        return this._runCliQuery(['conway', ...args]);
+        return this._runCliQuery(['conway', ...args], timeoutMs);
       }
       throw error;
     }
@@ -313,7 +320,7 @@ export class GovernanceQueryService {
    * Sets CARDANO_NODE_SOCKET_PATH in the child process environment — never as
    * a user-controllable argv flag.
    */
-  private _runCliQuery(args: string[]): Promise<string> {
+  private _runCliQuery(args: string[], timeoutMs: number): Promise<string> {
     return new Promise((resolve, reject) => {
       if (this.networkFlag === null) {
         reject(
@@ -380,10 +387,10 @@ export class GovernanceQueryService {
         reject(
           new GovernanceQueryError(
             GovernanceQueryErrorType.Timeout,
-            `cardano-cli DRep query timed out after ${GovernanceQueryService.CLI_TIMEOUT_MS}ms`
+            `cardano-cli DRep query timed out after ${timeoutMs}ms`
           )
         );
-      }, GovernanceQueryService.CLI_TIMEOUT_MS);
+      }, timeoutMs);
 
       child.on('close', (code) => {
         if (timeout) clearTimeout(timeout);
