@@ -1496,6 +1496,12 @@
           "title": "Record the deferred real-fixture + latency-measurement follow-up",
           "description": "Record an explicit deferred follow-up (plan Rollout/Risks): capture real synced-node fixtures (mainnet + preprod), record p50/p95 latency for both phases, and re-derive the 30s budget from data. PREPROD FIXTURE CAPTURED (2026-06-16): the live preprod drep-state query (cardano-cli 11.0.0.0 / cardano-node 11.0.1, epoch 295, 258 DReps) was run against the running node socket and saved to the Daedalus state dir (Logs-adjacent) and copied to research/drep-state-preprod-epoch295-sample.json. REMAINING: mainnet fixture, p50/p95 latency measurement, and promotion into a committed tests/jest/governance/ fixture to replace the synthetic mocks.",
           "status": "partial",
+          "statusReason": "Preprod fixture captured 2026-06-16; the mainnet fixture, p50/p95 latency measurement (re-deriving the 30s stake budget), and promotion into a committed tests/jest/governance/ fixture remain deferred as a manual follow-up. The deferred follow-up is now recorded in the plan's Risks table row for the CLI timeout, satisfying the recording half of the acceptance criteria.",
+          "evidence": [
+            ".agent/plans/governance/drep-discovery/governance-drep-discovery-plan.md",
+            ".agent/plans/governance/drep-discovery/research/drep-state-preprod-epoch295-sample.json"
+          ],
+          "updatedAt": "2026-07-23",
           "priority": "low",
           "dependencies": [],
           "estimatedHours": 0.5,

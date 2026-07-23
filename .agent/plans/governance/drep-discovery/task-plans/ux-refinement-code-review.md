@@ -624,3 +624,56 @@ sanctions (docs-only; "No code changes anywhere in this step").
 **Blockers:** none.
 
 **Decision: approved**
+
+---
+
+## Code Review: task-166 — round 1 (2026-07-23)
+
+**Scope reviewed:** uncommitted diff on `wt/ux-refinement`: single file,
+`.agent/plans/governance/drep-discovery/governance-drep-discovery-plan.md`,
+1 insertion / 1 deletion — exactly the one doc edit Step 8 sanctions
+(autonomous portion only; docs-only).
+
+**Findings:**
+
+1. **Matches the approved step byte-for-byte.** The replaced Risks-table
+   row at `governance-drep-discovery-plan.md:345` is byte-identical to the
+   guide's prescribed replacement
+   (`ux-refinement-implementation-guide.md:2680`; verified by extracting
+   both lines and diffing them). The risk cell (left column) is unchanged —
+   only the mitigation cell was rewritten, as Step 8a requires.
+2. **FR-13 satisfied.** The new mitigation cell names all three remaining
+   manual items explicitly: (1) mainnet fixture capture, (2) p50/p95
+   latency measurement for both phases and re-derivation of the 30 s stake
+   budget, (3) promotion of real captures into a committed
+   `tests/jest/governance/` fixture — including confirming the real
+   `drep-stake-distribution` container/key shape. The tracker
+   `statusReason`/`evidence` update is deferred to Step 13 per the guide,
+   so its absence here is correct, not a gap.
+3. **Manual-execution guard held.** Nothing manual was attempted: no new
+   fixture files, no changes under `tests/jest/governance/` or `research/`,
+   no code or config touching a node socket. `git status` shows only the
+   one plan file.
+4. **Step 8b checks re-run, both green.**
+   `grep -c "drep-stake-distribution"` on the plan → 9 (≥ 2 required);
+   `research/drep-state-preprod-epoch295-sample.json` exists (90,155 bytes)
+   so the mitigation's fixture reference is truthful.
+5. **Invariants untouched by a docs-only diff.** No code, IPC, i18n, or
+   test paths changed: local-first, sanitization floor, lovelace
+   losslessness, CLI discipline, pinned channel/payload shapes, and the
+   active|inactive status vocabulary are all unaffected. No new copy, so no
+   `!!!` obligations. No slice-1/2/3 docs modified.
+6. **Scope clean.** No files outside the single sanctioned plan doc.
+
+**Verification (re-run by reviewer, not taken on faith):**
+
+- Step 8b greps + fixture existence check → results in finding 4.
+- `yarn test:jest tests/jest/security/governance-sanitization.spec.ts` →
+  20/20 pass (floor intact at exactly 20/20 — no code changed, confirmed
+  green rather than inferred).
+- tsc/lint/prettier/`yarn i18n:manage` correctly not run per Step 8b
+  (Markdown-only change; no touched Jest suites claimed or applicable).
+
+**Blockers:** none.
+
+**Decision: approved**
