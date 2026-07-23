@@ -574,3 +574,53 @@ sanction. 80 insertions, zero deletions, no other files touched.
 **Blockers:** none.
 
 **Decision: approved**
+
+---
+
+## Code Review: task-165 — round 1 (2026-07-23)
+
+**Scope reviewed:** uncommitted diff on `wt/ux-refinement`: single file,
+`.agent/plans/governance/drep-discovery/designs/drep-discovery-design.md`,
+16 insertions, zero deletions — exactly the file set the guide's Step 7
+sanctions (docs-only; "No code changes anywhere in this step").
+
+**Findings:**
+
+1. **Matches the approved step verbatim.** The new "## Directory Identity:
+   ID-Only in v1" section is word-for-word the Step 7a block
+   (`ux-refinement-implementation-guide.md:2624-2638`; extraction diff showed
+   only the required trailing blank line), inserted at the pinned seam:
+   after the Filter/Search paragraph ending "…sorted by relevance only."
+   and before `## Hardware Wallet Confirmation`, blank line above and below.
+2. **AC greps re-run (Step 7b), all green.**
+   `grep -rn "givenName" source/renderer/app/components/governance/` → empty
+   (AC-2); `grep -n "Directory names (v1)"` on the plan → line 165, and the
+   plan file is absent from the diff, so the Key Decisions row was verified,
+   not edited (constraint held); `grep -n "ID-Only in v1"` on the design doc
+   → line 238 (new heading present — FR-12 design half satisfied).
+3. **Cross-references truthful.** `shared-design-tokens.md` §11 "DRep ID
+   Search Semantics" exists (`:237`) and the relative link resolves within
+   `designs/`; live `DRepCard.tsx` renders only `DRepStatusBadge`,
+   `DRepIdDisplay`, the voting-power span (loading/unavailable tooltip by
+   enrich state), `DRepSourceLabel`, and the Select button — no name field,
+   exactly as the section claims. No contradiction with the token §10
+   identity-display rule or the §11 v1 ID-search contract.
+4. **Invariants untouched by a docs-only diff.** No code, IPC, i18n, or test
+   paths changed: local-first, sanitization floor, lovelace losslessness,
+   CLI discipline, channel/payload shapes, and the active|inactive status
+   vocabulary are all unaffected. No new copy, so no `!!!` obligations. No
+   slice-1/2/3 docs modified.
+5. **Scope clean.** No files outside the single sanctioned design doc.
+
+**Verification (re-run by reviewer, not taken on faith):**
+
+- Step 7b greps → results in finding 2.
+- `node_modules/.bin/tsc --noEmit` → exit 0 (baseline sanity; Step 7c
+  requires no tsc/lint/jest/prettier for a Markdown-only change).
+- No Jest suites claimed or applicable (no code touched); the sanitization
+  floor re-run is not an NFR-4 checkpoint for this task.
+- prettier / `yarn i18n:manage` correctly not run (Markdown-only).
+
+**Blockers:** none.
+
+**Decision: approved**

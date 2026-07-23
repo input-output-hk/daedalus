@@ -1475,7 +1475,13 @@
           "id": "task-165",
           "title": "Document the ID-only v1 directory limitation",
           "description": "Record in the plan and the directory design that v1 directory cards and search are DRep-ID-only; verified givenName (CIP-119) appears only in the detail view (anchor-1) and confirmation, and name search is deferred to a bulk anchor-prefetch phase. The ID-only directory must remain fully usable (dual-ID display, copy, status badge, voting power post-Phase-2, View details / Select CTAs) with no name dependency on the card.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "The ID-only v1 limitation is documented in the directory design (new 'Directory Identity: ID-Only in v1' section: cards and search are DRep-ID-only, verified givenName appears only in the detail view and confirmation, name search deferred to a bulk anchor-prefetch phase, and the card stays fully usable on ID alone) and the documentation review is recorded in the ux-refinement code-review log.",
+          "evidence": [
+            ".agent/plans/governance/drep-discovery/designs/drep-discovery-design.md",
+            ".agent/plans/governance/drep-discovery/task-plans/ux-refinement-code-review.md"
+          ],
+          "updatedAt": "2026-07-23",
           "priority": "low",
           "estimatedHours": 0.5,
           "dependencies": [],

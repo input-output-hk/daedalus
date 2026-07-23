@@ -235,6 +235,22 @@ The disclosure dismisses with the same user action that returns to default sort.
 
 Search is always available regardless of cohort and applies fuzzy match on DRep ID prefix only in v1 (slice-6). Verified `givenName` search is deferred until a bulk cohort anchor-prefetch phase populates names for the whole directory; per-DRep lazy anchor fetch (anchor-1) does not make names searchable across unvisited DReps. Search results are sorted by relevance only.
 
+## Directory Identity: ID-Only in v1
+
+v1 directory cards and search are **DRep-ID-only**. Card identity is the dual-ID
+display (`DRepIdDisplay`: CIP-129 + CIP-105 + copy) — no name field exists on the
+card, and no card may grow one in v1. The card remains fully usable on ID alone:
+status badge (tokens §1), voting power (enriched by load Phase 2; `—` with a
+loading/unavailable tooltip until stake lands), on-chain source label, and the
+View details / Select for delegation CTAs carry the complete v1 interaction with
+no name dependency.
+
+Verified `givenName` (CIP-119) appears **only** in the detail view (anchor-1,
+after fetch + hash verification) and in the delegation confirmation.
+Directory-wide names and name search await a future bulk anchor-prefetch phase —
+see [shared-design-tokens.md §11](shared-design-tokens.md) for the complete v1
+ID-search contract and the plan Key Decisions row "Directory names (v1)".
+
 ## Hardware Wallet Confirmation
 
 Handed off to existing `VotingPowerDelegation` confirmation. This direction adds nothing new to the HW flow; it inherits everything from shared tokens §7 (identity equality rule — CIP-129 + CIP-105 + signed payload all byte-equal) and §8 (HW sub-states). After a successful delegation, the user lands back on the voting confirmation screen; from there a `View DRep in directory` link returns to `/governance/dreps/:drepId` to inspect ongoing state.
