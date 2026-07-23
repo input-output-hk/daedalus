@@ -21,6 +21,12 @@ const softwareWallet = {
   name: 'Test Wallet',
 } as any;
 
+const hardwareWallet = {
+  id: 'hw-wallet-1',
+  isHardwareWallet: true,
+  name: 'HW Test Wallet',
+} as any;
+
 const renderDialog = (overrides: Record<string, unknown> = {}) =>
   render(
     <ThemeProvider
@@ -89,5 +95,75 @@ describe('VotingPowerDelegationConfirmationDialog — DRep identity', () => {
       screen.queryByText('Sneaky Unverified Name')
     ).not.toBeInTheDocument();
     expect(screen.getByText(VALID_DREP_ID).textContent).toBe(VALID_DREP_ID);
+  });
+});
+
+describe('VotingPowerDelegationConfirmationDialog — hardware-wallet device states', () => {
+  afterEach(cleanup);
+
+  // The AC device states map onto the real HwDeviceStatuses: disconnected and
+  // locked surface as CONNECTING/CONNECTING_FAILED (PIN-unlock copy),
+  // app-not-open as LAUNCHING_CARDANO_APP, signing-rejected as
+  // VERIFYING_TRANSACTION_FAILED, Trezor invalid-state as UNRECOGNIZED_WALLET.
+  it.each([
+    [
+      HwDeviceStatuses.CONNECTING,
+      'Connect the "HW Test Wallet" device and enter your PIN to unlock it',
+    ],
+    [
+      HwDeviceStatuses.CONNECTING_FAILED,
+      'Disconnect and reconnect your hardware wallet to restart the process.',
+    ],
+    [
+      HwDeviceStatuses.LAUNCHING_CARDANO_APP,
+      'Launch Cardano application on your device',
+    ],
+    [
+      HwDeviceStatuses.VERIFYING_TRANSACTION,
+      'Confirm the transaction using the "HW Test Wallet" device',
+    ],
+    [
+      HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED,
+      'Transaction confirmation failed',
+    ],
+    [
+      HwDeviceStatuses.UNRECOGNIZED_WALLET,
+      'We do not recognize this wallet on your device. Please ensure that you are using the same device that you selected for pairing "HW Test Wallet" and that you have entered the correct passphrase.',
+    ],
+  ])('renders the %s device state', (hwDeviceStatus, expectedText) => {
+    renderDialog({ hwDeviceStatus, selectedWallet: hardwareWallet });
+    expect(screen.getByText(expectedText)).toBeInTheDocument();
+  });
+
+  it('shows the Trezor passphrase hint while the device verifies the transaction', () => {
+    renderDialog({
+      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION,
+      isTrezor: true,
+      selectedWallet: hardwareWallet,
+    });
+    expect(screen.getByText('Enter passphrase if needed')).toBeInTheDocument();
+  });
+
+  it('shows the byte-equal DRep ID and no passphrase input on the hardware-wallet confirmation', () => {
+    renderDialog({
+      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION,
+      selectedWallet: hardwareWallet,
+    });
+    expect(screen.getByText(VALID_DREP_ID).textContent).toBe(VALID_DREP_ID);
+    expect(document.querySelector('input[type="password"]')).toBeNull();
+  });
+
+  it('enables Confirm only after the device reports signing success', () => {
+    const { unmount } = renderDialog({
+      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION,
+      selectedWallet: hardwareWallet,
+    });
+    expect(screen.getByRole('button', { name: 'Confirm' })).toBeDisabled();
+    unmount();
+    renderDialog({
+      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED,
+      selectedWallet: hardwareWallet,
+    });
+    expect(screen.getByRole('button', { name: 'Confirm' })).not.toBeDisabled();
   });
 });

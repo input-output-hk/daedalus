@@ -416,7 +416,18 @@
           "id": "task-115",
           "title": "Complete the hardware-wallet delegate path (DRep-ID-only confirmation)",
           "description": "Complete the hardware-wallet delegation path through the existing VotingStore signing flow with DRep-ID-only confirmation. Add Jest coverage with mocked Ledger and Trezor transports, asserting on-device DRep ID byte-equality with vote.chosenOption and covering disconnected / locked / app-not-open / signing-rejected states.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "HW delegate path completed on the existing two-stage VotingStore flow with a minimal production fix: the stale HW TODO was removed and both HW catch blocks now log only the derived errorCode, closing the proven raw-error log-leak surface. Layered Jest pins the path: new shelleyLedger/shelleyTrezor mapper suites (7+7) prove the device-bound credential is byte-equal to Cardano.DRepID.toCredential(chosenOption) across CIP-129/CIP-105 key- and script-hash forms plus abstain/no_confidence sentinel mapping; 6 new VotingStore HW-branch tests cover the verbatim vote: chosenOption certificate, register_reward_account prepend, device-not-connected and rejected-signing errors, and prove delegateVotesRequest/api.ada.delegateVotes never fire on the HW path; the dialog spec grew 4 -> 13 across the real HwDeviceStatuses (disconnected/locked -> CONNECTING/CONNECTING_FAILED, app-not-open -> LAUNCHING_CARDANO_APP, rejected -> VERIFYING_TRANSACTION_FAILED, Trezor invalid-state -> UNRECOGNIZED_WALLET) with Confirm gated on VERIFYING_TRANSACTION_SUCCEEDED; the flow spec grew 4 -> 7 with Ledger byte-for-byte propagation into the signing payload and the Trezor treatment. Code review round 1 approved with zero blockers: tsc zero errors, eslint clean of new errors, focused suites 49/49 (incl. 9 pre-existing Catalyst VotingStore tests), prettier clean, and the sanitization floor grew 17 -> 20 with adversarial HW logger tests proven discriminating against the unfixed catch blocks.",
+          "evidence": [
+            "source/renderer/app/stores/VotingStore.ts",
+            "source/renderer/app/stores/VotingStore.spec.ts",
+            "source/renderer/app/utils/shelleyLedger.spec.ts",
+            "source/renderer/app/utils/shelleyTrezor.spec.ts",
+            "source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.spec.tsx",
+            "source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx",
+            "tests/jest/security/governance-sanitization.spec.ts"
+          ],
+          "updatedAt": "2026-07-23",
           "priority": "high",
           "estimatedHours": 8,
           "dependencies": [

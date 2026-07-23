@@ -22,6 +22,7 @@ import { daedalusTheme } from '../../themes/daedalus';
 import { themeOverrides } from '../../themes/overrides';
 import { ROUTES } from '../../routes-config';
 import { HwDeviceStatuses } from '../../domains/Wallet';
+import type { HwDeviceStatus } from '../../domains/Wallet';
 import { GovernanceRefreshState } from '../../stores/GovernanceStore';
 import { pickDelegationFormReturnState } from '../governance/delegationFormState';
 import VotingGovernancePage from './VotingGovernancePage';
@@ -51,6 +52,14 @@ const softwareWallet = {
   isHardwareWallet: false,
 } as any;
 
+const HW_WALLET_ID = 'hw-wallet-1';
+
+const hardwareWallet = {
+  id: HW_WALLET_ID,
+  name: 'HW Flow Wallet',
+  isHardwareWallet: true,
+} as any;
+
 const drepEntry = {
   anchor: null,
   drepActivity: 12,
@@ -61,10 +70,10 @@ const drepEntry = {
 
 const DETAIL_STUB_PATH = '/governance/dreps/:drepId';
 
-// Test-only stand-in for the slice-4 Detail route: it forwards the inherited
-// { from, selectedWalletId, voteType } plus the route's DRep ID back to the
-// form, exactly as task-117's acceptance criteria specify. It is registered
-// ONLY in this harness — production has no Detail route in this slice.
+// Test-only stand-in for the future DRep detail route: it forwards the
+// inherited { from, selectedWalletId, voteType } plus the route's DRep ID
+// back to the form. It is registered only in this harness — production has
+// no detail route yet.
 function DetailRouteStub({
   history,
   location,
@@ -86,7 +95,17 @@ function DetailRouteStub({
   );
 }
 
-const buildStores = () => ({
+type StoreOverrides = {
+  hwDeviceStatus?: HwDeviceStatus;
+  isTrezor?: boolean;
+  wallets?: any[];
+};
+
+const buildStores = ({
+  hwDeviceStatus = HwDeviceStatuses.READY,
+  isTrezor = false,
+  wallets = [softwareWallet],
+}: StoreOverrides = {}) => ({
   app: {
     currentRoute: ROUTES.VOTING.GOVERNANCE,
     openExternalLink: jest.fn(),
@@ -99,8 +118,8 @@ const buildStores = () => ({
     refreshState: GovernanceRefreshState.Loaded,
   },
   hardwareWallets: {
-    checkIsTrezorByWalletId: jest.fn(() => false),
-    hwDeviceStatus: HwDeviceStatuses.READY,
+    checkIsTrezorByWalletId: jest.fn(() => isTrezor),
+    hwDeviceStatus,
   },
   networkStatus: { isSynced: true, syncPercentage: 100 },
   staking: { getStakePoolById: jest.fn(), stakePools: [] },
@@ -111,15 +130,18 @@ const buildStores = () => ({
       success: true as const,
     })),
   },
-  wallets: { all: [softwareWallet] },
+  wallets: { all: wallets },
 });
 
 type InitialEntry = { pathname: string; state?: Record<string, unknown> };
 
-const renderFlow = (initialEntries: InitialEntry[]) => {
+const renderFlow = (
+  initialEntries: InitialEntry[],
+  storeOverrides: StoreOverrides = {}
+) => {
   const history = createMemoryHistory({ initialEntries });
   const pushSpy = jest.spyOn(history, 'push');
-  const stores = buildStores();
+  const stores = buildStores(storeOverrides);
   const actions = { router: { goToRoute: { trigger: jest.fn() } } };
   render(
     <Provider stores={stores as any} actions={actions as any}>
@@ -207,7 +229,7 @@ describe('DRep selection handoff via location.state', () => {
 
     fireEvent.click(screen.getByText('!!!Browse DReps'));
 
-    // Simulate the slice-4 "View details" push: the Directory forwards its
+    // Simulate the future "View details" push: the Directory forwards its
     // inherited state toward the detail path via the production picker.
     act(() => {
       history.push(
@@ -241,7 +263,7 @@ describe('DRep selection handoff via location.state', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     await screen.findByText('Confirm Transaction');
-    // The confirmation renders the selected ID itself (task-113), byte-equal.
+    // The confirmation renders the selected ID itself, byte-equal.
     expect(screen.getByText(VALID_DREP_ID).textContent).toBe(VALID_DREP_ID);
 
     const passwordInput = document.querySelector('input[type="password"]');
@@ -263,5 +285,94 @@ describe('DRep selection handoff via location.state', () => {
     expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
       expect.objectContaining({ chosenOption: VALID_DREP_ID })
     );
+  });
+});
+
+describe('Hardware-wallet delegate flow via location.state handoff', () => {
+  afterEach(() => {
+    cleanup();
+    jest.restoreAllMocks();
+  });
+
+  const hwEntry = {
+    pathname: ROUTES.GOVERNANCE.DREPS,
+    state: {
+      from: ROUTES.VOTING.GOVERNANCE,
+      selectedWalletId: HW_WALLET_ID,
+      voteType: 'drep',
+    },
+  };
+
+  it('propagates the selected DRep ID byte-for-byte into the HW signing payload (Ledger)', async () => {
+    const { stores } = renderFlow([hwEntry], {
+      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED,
+      wallets: [hardwareWallet],
+    });
+
+    fireEvent.click(
+      screen.getByRole('button', { name: '!!!Select for delegation' })
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+
+    await screen.findByText('Confirm Transaction');
+    expect(screen.getByText(VALID_DREP_ID).textContent).toBe(VALID_DREP_ID);
+    // The HW confirmation collects no passphrase: signing happened on-device.
+    expect(document.querySelector('input[type="password"]')).toBeNull();
+    expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
+      expect.objectContaining({
+        chosenOption: VALID_DREP_ID,
+        wallet: expect.objectContaining({
+          id: HW_WALLET_ID,
+          isHardwareWallet: true,
+        }),
+      })
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+
+    await waitFor(() =>
+      expect(stores.voting.delegateVotes).toHaveBeenCalledTimes(1)
+    );
+    expect(stores.voting.delegateVotes).toHaveBeenCalledWith(
+      expect.objectContaining({
+        chosenOption: VALID_DREP_ID,
+        passphrase: '',
+        wallet: expect.objectContaining({ id: HW_WALLET_ID }),
+      })
+    );
+  });
+
+  it('keeps Confirm disabled until the device reports signing success', async () => {
+    renderFlow([hwEntry], {
+      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION,
+      wallets: [hardwareWallet],
+    });
+
+    fireEvent.click(
+      screen.getByRole('button', { name: '!!!Select for delegation' })
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+
+    await screen.findByText('Confirm Transaction');
+    expect(screen.getByRole('button', { name: 'Confirm' })).toBeDisabled();
+  });
+
+  it('applies the Trezor status treatment for Trezor devices', async () => {
+    const { stores } = renderFlow([hwEntry], {
+      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION,
+      isTrezor: true,
+      wallets: [hardwareWallet],
+    });
+
+    fireEvent.click(
+      screen.getByRole('button', { name: '!!!Select for delegation' })
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+
+    await screen.findByText('Confirm Transaction');
+    expect(stores.hardwareWallets.checkIsTrezorByWalletId).toHaveBeenCalledWith(
+      HW_WALLET_ID
+    );
+    expect(screen.getByText('Enter passphrase if needed')).toBeInTheDocument();
   });
 });
