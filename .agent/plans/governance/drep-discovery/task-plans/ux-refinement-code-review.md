@@ -751,3 +751,73 @@ doc, locale, or tracker changes.
 **Blockers:** none.
 
 **Decision: approved**
+
+## Code Review: task-168 — round 1 (2026-07-23)
+
+**Scope reviewed:** uncommitted diff — `source/main/utils/setupLogging.ts`,
+`source/main/config.ts`, `source/main/ipc/governanceChannel.ts`,
+`.agent/plans/governance/drep-discovery/designs/shared-design-tokens.md` (§12
+append), and new `tests/jest/governance/logDRepStateSnapshot.spec.ts` — judged
+against Step 10 of the implementation guide and FR-15 / PD-9 / NFR-4 in the PRD.
+
+**Findings:**
+
+1. **Matches the approved Step 10 verbatim.** The writer (10a), the
+   `ALLOWED_LOGS` registration after `'State-snapshot.json'` (10b), the
+   Phase-1 hook with the inner write-failure catch (10c), the §12 boundary
+   doc appended after the file's last line (10d), and the four-test spec
+   (10e) are byte-equivalent to the guide's prescribed content modulo
+   prettier line-wrapping. FR-15 fully covered.
+2. **The one sanitization-floor exception is implemented exactly as
+   bounded.** The writer accepts only `DRepListQueryPayload`
+   (`governance.types.ts:87-94`), whose entries
+   (`DRepDirectoryEntry`, `:51-62`) structurally carry no wallet, vote, or
+   delegation fields (PD-9). `constructMessageBody`
+   (`common/utils/logging.ts:86-112`) re-verified to apply no filtering —
+   the `filterLogData` bypass is structural, not accidental. Exactly one
+   production call site exists (`governanceChannel.ts:55`), fed only the
+   Phase-1 response at the IPC boundary. The write-failure catch logs
+   `{ error }` for an fs error (path only, no DRep data) — stays under the
+   floor as the guide specifies. Floor suite re-run: **20/20, never below**
+   (NFR-4 checkpoint met).
+3. **Other locked invariants intact.** #1 local-first: the snapshot is a
+   local fs write of the local-node payload, no network. #5 losslessness:
+   `votingPower` remains a `Lovelace | null` decimal string through
+   `JSON.stringify`; no JSONbig objects, no Number coercion. #6 CLI
+   discipline: untouched. Status vocabulary: spec fixture uses
+   `'active'` only. No new copy, so the `!!!` rule and `yarn i18n:manage`
+   are correctly not applicable.
+4. **No IPC/contract drift.** The Phase-1 handler still resolves with the
+   unmodified `DRepListQueryPayload` and the error path
+   (`toGovernanceIpcError` re-throw) is byte-identical; the snapshot write
+   cannot fail the directory response (inner try/catch verified).
+5. **Bundling registration is safe.** Insertion is mid-array, so the
+   `ALLOWED_LOGS[0]` name-parsing assumption in `get-logs.ts:28/:36` is
+   preserved, and `isFileAllowed` (`get-logs.ts:46-47`) is plain name
+   membership — sufficient for bundling. End-to-end bundle-generation
+   proof correctly recorded as verification debt (task-125), per the PRD's
+   documented Jest limitation.
+6. **Notes (non-blocking):** (a) `config.ts:115-117` and
+   `setupLogging.ts:127-133` carry collateral prettier-2.1.2 rewraps of
+   pre-existing HEAD drift on lines the task otherwise didn't touch — a
+   known consequence of the mandated scoped `prettier --write`; no
+   semantic change. (b) The spec's fixture `drepId` is not valid bech32
+   (contains charset-excluded characters); it is only used for string
+   containment and is the guide's own pinned fixture, so no action needed.
+
+**Verification (re-run by reviewer, not taken on faith):**
+
+- `yarn test:jest tests/jest/governance/logDRepStateSnapshot.spec.ts` →
+  **4/4** (public-data-written, overwrite, no-vote-keys, `ALLOWED_LOGS`
+  source check — matches the Step-13 matrix row).
+- `yarn test:jest tests/jest/security/governance-sanitization.spec.ts` →
+  **20/20** (floor intact).
+- `node_modules/.bin/tsc --noEmit` → exit 0 (and `yarn compile` also
+  completed cleanly this run).
+- `yarn lint` → completes with pre-existing warnings only, no errors.
+- `node_modules/.bin/prettier --check` on the four touched `.ts` files →
+  all clean.
+
+**Blockers:** none.
+
+**Decision: approved**

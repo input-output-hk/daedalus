@@ -1540,7 +1540,16 @@
           "id": "task-168",
           "title": "DRep-state snapshot log file (latest refreshed directory) + support bundling",
           "description": "Add a logDRepStateSnapshot writer (mirroring logStateSnapshot in setupLogging.ts) that writes the latest successful DRep directory payload to Logs/pub/DRep-state-snapshot.json on each successful GovernanceQueryService.fetchDRepList(), overwriting the previous file. Register the filename in ALLOWED_LOGS (config.ts) so it is bundled into support log archives (get-logs/compress-logs). SANITIZATION BOUNDARY: this is PUBLIC on-chain directory data (the full DRep list), NOT a user vote target -- it must BYPASS filterLogData (which would strip every drepId and make the file useless) and must NEVER include the user's own delegation/vote choice. Document the boundary in shared-design-tokens.md so it is not mistaken for a sanitization-floor violation. The snapshot doubles as an on-chain anchor-POINTER cache (url+dataHash per DRep) to seed/cross-check slice-4 metadata fetch -- it is NOT a substitute for fetching off-chain JSON-LD and hash-verifying it (CIP-100/119), which stays a slice-4 concern.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "logDRepStateSnapshot (setupLogging.ts, mirroring logStateSnapshot) writes the full public DRep directory payload to Logs/pub/DRep-state-snapshot.json, overwriting on each write; governanceChannel.ts invokes it after every successful fetchDRepRegistrations with a guarded try/catch so a snapshot write failure can never fail the directory response. 'DRep-state-snapshot.json' is registered in ALLOWED_LOGS (config.ts) so it rides into support log bundles via the existing get-logs/compress-logs path. The writer deliberately bypasses filterLogData (drepId values retained) and the DRepListQueryPayload type cannot carry the user's delegation or vote; the sanitization boundary is documented in shared-design-tokens.md and the code-review log. New Jest suite logDRepStateSnapshot.spec.ts plus the sanitization floor suite pass (24/24 across both).",
+          "evidence": [
+            "source/main/utils/setupLogging.ts",
+            "source/main/ipc/governanceChannel.ts",
+            "source/main/config.ts",
+            "tests/jest/governance/logDRepStateSnapshot.spec.ts",
+            ".agent/plans/governance/drep-discovery/designs/shared-design-tokens.md"
+          ],
+          "updatedAt": "2026-07-23",
           "priority": "medium",
           "dependencies": [
             "task-162"

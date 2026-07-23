@@ -4,6 +4,7 @@ import log from 'electron-log-daedalus';
 import rimraf from 'rimraf';
 import ensureDirectoryExists from './ensureDirectoryExists';
 import { pubLogsFolderPath, appLogsFolderPath } from '../config';
+import { environment } from '../environment';
 import {
   constructMessageBody,
   formatMessage,
@@ -17,6 +18,7 @@ import type {
   StateSnapshotLogParams,
   WalletMigrationReportData,
 } from '../../common/types/logging.types';
+import type { DRepListQueryPayload } from '../../common/types/governance.types';
 
 const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
@@ -122,8 +124,13 @@ export const logStateSnapshot = (
 ): MessageBody => {
   const { ...data } = props;
   const { currentTime: at, systemInfo, coreInfo } = data;
-  const { platform, platformVersion, cpu, ram, availableDiskSpace } =
-    systemInfo;
+  const {
+    platform,
+    platformVersion,
+    cpu,
+    ram,
+    availableDiskSpace,
+  } = systemInfo;
   const {
     daedalusVersion,
     daedalusProcessID,
@@ -171,6 +178,33 @@ export const logStateSnapshot = (
     'State-snapshot.json'
   );
   fs.writeFileSync(stateSnapshotFilePath, JSON.stringify(messageBody));
+  return messageBody;
+};
+/**
+ * Public on-chain DRep directory snapshot for support bundles. This payload
+ * deliberately bypasses filterLogData: every value is public ledger data,
+ * and the payload type cannot carry the user's delegation or vote.
+ */
+export const logDRepStateSnapshot = (
+  payload: DRepListQueryPayload
+): MessageBody => {
+  const { network, os, platformVersion, version } = environment;
+  const messageBodyParams: ConstructMessageBodyParams = {
+    at: new Date().toISOString(),
+    env: `${network}:${os}:${platformVersion}`,
+    ns: ['daedalus', `v${version}`, `*${network}*`],
+    data: (payload as unknown) as ConstructMessageBodyParams['data'],
+    msg: 'Updating DRep-state-snapshot.json file',
+    pid: '',
+    sev: 'info',
+    thread: '',
+  };
+  const messageBody: MessageBody = constructMessageBody(messageBodyParams);
+  const drepStateSnapshotFilePath = path.join(
+    pubLogsFolderPath,
+    'DRep-state-snapshot.json'
+  );
+  fs.writeFileSync(drepStateSnapshotFilePath, JSON.stringify(messageBody));
   return messageBody;
 };
 export const generateWalletMigrationReport = (

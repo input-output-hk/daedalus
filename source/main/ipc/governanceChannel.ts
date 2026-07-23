@@ -11,6 +11,7 @@ import type {
 } from '../../common/ipc/api';
 import { GovernanceQueryService } from '../governance/GovernanceQueryService';
 import { logger } from '../utils/logging';
+import { logDRepStateSnapshot } from '../utils/setupLogging';
 
 const governanceDRepListChannel: MainIpcChannel<
   GovernanceDRepListRendererRequest,
@@ -47,7 +48,17 @@ export const handleGovernanceRequests = () => {
   governanceDRepListChannel.onRequest(async (_request) => {
     logger.info('Governance IPC: DRep list requested from renderer');
     try {
-      return await GovernanceQueryService.getInstance().fetchDRepRegistrations();
+      const payload = await GovernanceQueryService.getInstance().fetchDRepRegistrations();
+      // Support-bundle snapshot only; a write failure must never fail the
+      // directory response.
+      try {
+        logDRepStateSnapshot(payload);
+      } catch (snapshotError) {
+        logger.error('Governance IPC: DRep-state snapshot write failed', {
+          error: snapshotError,
+        });
+      }
+      return payload;
     } catch (error) {
       logger.error('Governance IPC: DRep list query failed', { error });
       // eslint-disable-next-line

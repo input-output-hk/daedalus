@@ -244,3 +244,22 @@ Search input accepts partial and full bech32 DRep IDs across both CIP forms. Beh
 - **Both ID forms are searched.** CIP-105 (`drep1…` legacy) and CIP-129 (new bech32) are both indexed. If the same underlying DRep credential matches via both forms, the result list **deduplicates by underlying DRep credential** (the row shows both ID forms stacked).
 - **Validation before IPC.** Any input that the user submits as a full bech32 ID runs the same bech32 prefix / checksum / length checks defined in task-103 *before* `GovernanceQueryService` is called. Invalid full-form entries surface the existing "Invalid DRep ID" error and never reach the main process.
 - **Verified-name search (deferred beyond v1).** v1 search matches DRep IDs only. Verified `givenName` is populated in `GovernanceStore.drepIndex` lazily per detail visit (anchor-1), so it does not cover unvisited DReps; name search is deferred until a bulk cohort anchor-prefetch phase makes names available directory-wide. ID search semantics above are the complete v1 contract.
+
+## 12. DRep-State Snapshot Log Boundary (the one sanitization-floor exception)
+
+`Logs/pub/DRep-state-snapshot.json` is written by `logDRepStateSnapshot`
+(`source/main/utils/setupLogging.ts`) on every successful Phase-1 registration
+response in the main governance IPC handler, overwriting the previous file, and is
+bundled into support archives via `ALLOWED_LOGS`.
+
+- **It deliberately BYPASSES `filterLogData`.** The payload is the public on-chain
+  DRep directory (`DRepListQueryPayload`: DRep ids, status, activity, anchor
+  url+hash pointers, epoch, fetch timestamp). `filterLogData` would redact every
+  `drepId` and make the file useless for support diagnosis.
+- **It must NEVER contain the user's own vote or delegation.** The writer accepts
+  only the directory payload type, which structurally carries no wallet or vote
+  data. No other call site may feed it anything else; wallet/vote state everywhere
+  else remains under the slice-1 sanitization floor.
+- The snapshot doubles as an on-chain anchor-POINTER cache (url + dataHash per
+  DRep) to seed/cross-check the metadata-fetch slice. It is NOT a substitute for
+  CIP-100/119 off-chain fetch + hash verification, which stays a slice-4 concern.

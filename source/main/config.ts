@@ -112,8 +112,9 @@ export const windowOptions: WindowOptionsType = {
   },
   useContentSize: true,
 };
-export const launcherConfig: LauncherConfig =
-  readLauncherConfig(LAUNCHER_CONFIG);
+export const launcherConfig: LauncherConfig = readLauncherConfig(
+  LAUNCHER_CONFIG
+);
 export const {
   cluster,
   nodeImplementation,
@@ -139,6 +140,7 @@ export const ALLOWED_LOGS = [
   'System-info.json',
   'Daedalus-versions.json',
   'State-snapshot.json',
+  'DRep-state-snapshot.json',
   'Wallet-migration-report.json',
   'cardano-wallet.log',
   'node.log',
