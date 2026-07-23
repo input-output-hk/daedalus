@@ -19,7 +19,10 @@ import {
 } from '../../../source/renderer/app/config/sidebarConfig';
 import { ROUTES } from '../../../source/renderer/app/routes-config';
 import { TESTNET } from '../../../source/common/types/environment.types';
-import { GovernanceRefreshState } from '../../../source/renderer/app/stores/GovernanceStore';
+import {
+  GovernanceRefreshState,
+  VotingPowerEnrichState,
+} from '../../../source/renderer/app/stores/GovernanceStore';
 import type { AppDRepDirectoryEntry } from '../../../source/renderer/app/stores/GovernanceStore';
 
 type DirectoryError = { message: string; type: string } | null;
@@ -145,6 +148,7 @@ const renderDirectory = (
     onSelectForDelegation={action('onSelectForDelegation')}
     refreshState={refreshState}
     syncProgress={syncState.syncProgress}
+    votingPowerState={VotingPowerEnrichState.Loaded}
   />
 );
 
@@ -345,6 +349,21 @@ storiesOf('Governance / DRep Directory', module)
       }),
     })
   )
+  .add('Ranking unavailable', () => (
+    <div style={CENTERED_STYLE}>
+      <DRepDirectory
+        drepList={baseEntries.map((entry) => ({ ...entry, votingPower: null }))}
+        error={null}
+        isNodeInSync
+        lastFetchedAt={Date.now() - 3 * 60 * 1000}
+        onRefresh={action('onRefresh')}
+        onSelectForDelegation={action('onSelectForDelegation')}
+        refreshState={GovernanceRefreshState.Loaded}
+        syncProgress={100}
+        votingPowerState={VotingPowerEnrichState.Failed}
+      />
+    </div>
+  ))
   .add('Pagination — 30 entries', () =>
     renderCentered(GovernanceRefreshState.Loaded, paginatedEntries)
   );

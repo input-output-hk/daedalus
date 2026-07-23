@@ -1,0 +1,20 @@
+.banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--badge-warning-fg, #b76e00);
+  background: var(--badge-warning-bg, rgba(230, 162, 60, 0.12));
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.message {
+  max-width: 640px;
+}

@@ -80,6 +80,7 @@ class DRepDirectoryPage extends React.Component<Props> {
         lastFetchedAt={governanceStore.lastFetchedAt}
         isNodeInSync={networkStatus.isNodeInSync}
         syncProgress={networkStatus.syncProgress}
+        votingPowerState={governanceStore.votingPowerState}
         onRefresh={() => governanceStore.refresh()}
         onSelectForDelegation={this.handleSelectForDelegation}
       />

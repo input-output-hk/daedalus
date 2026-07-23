@@ -5,9 +5,11 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DRepDirectoryList from './DRepDirectoryList';
 import DRepDirectoryBanner from './DRepDirectoryBanner';
 import DRepEmptyState from '../_shared/DRepEmptyState';
+import DRepErrorBanner from '../_shared/DRepErrorBanner';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import {
   GovernanceRefreshState,
+  VotingPowerEnrichState,
   AppDRepDirectoryEntry,
   GovernanceStoreError,
 } from '../../../stores/GovernanceStore';
@@ -60,6 +62,7 @@ interface Props {
   lastFetchedAt: number | null;
   isNodeInSync: boolean;
   syncProgress: number | null;
+  votingPowerState: VotingPowerEnrichState;
   onRefresh: () => void;
   onSelectForDelegation: (drepId: string) => void;
   intl: intlShape.isRequired;
@@ -72,6 +75,7 @@ function DRepDirectory({
   lastFetchedAt,
   isNodeInSync,
   syncProgress,
+  votingPowerState,
   onRefresh,
   onSelectForDelegation,
   intl,
@@ -159,9 +163,13 @@ function DRepDirectory({
                 {intl.formatMessage(messages.refreshing)}
               </div>
             )}
+            {votingPowerState === VotingPowerEnrichState.Failed && (
+              <DRepErrorBanner variant="rankingUnavailable" />
+            )}
             <DRepDirectoryList
               entries={drepList}
               onSelectForDelegation={onSelectForDelegation}
+              votingPowerState={votingPowerState}
             />
           </>
         );

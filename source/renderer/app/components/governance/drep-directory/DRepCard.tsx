@@ -7,6 +7,7 @@ import DRepStatusBadge from '../_shared/DRepStatusBadge';
 import DRepIdDisplay from '../_shared/DRepIdDisplay';
 import DRepSourceLabel from '../_shared/DRepSourceLabel';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
+import { VotingPowerEnrichState } from '../../../stores/GovernanceStore';
 import styles from './DRepCard.scss';
 
 const messages = defineMessages({
@@ -20,11 +21,22 @@ const messages = defineMessages({
     defaultMessage: '!!!Select for delegation',
     description: 'Row-level CTA that hands the DRep ID to the delegation form',
   },
+  votingPowerLoadingTooltip: {
+    id: 'governance.drepDirectory.votingPower.loadingTooltip',
+    defaultMessage: '!!!Loading voting power…',
+    description: 'Tooltip on the voting-power placeholder during enrichment',
+  },
+  votingPowerUnavailableTooltip: {
+    id: 'governance.drepDirectory.votingPower.unavailableTooltip',
+    defaultMessage: '!!!Stake distribution unavailable this refresh.',
+    description: 'Tooltip on the voting-power placeholder when stake failed',
+  },
 });
 
 interface Props {
   entry: AppDRepDirectoryEntry;
   onSelectForDelegation: (drepId: string) => void;
+  votingPowerState: VotingPowerEnrichState;
   intl: intlShape.isRequired;
 }
 
@@ -41,7 +53,23 @@ function formatVotingPower(value: BigNumber | null): string {
   return `₳ ${ada.toFormat(0)}`;
 }
 
-function DRepCard({ entry, onSelectForDelegation, intl }: Props) {
+function DRepCard({
+  entry,
+  onSelectForDelegation,
+  votingPowerState,
+  intl,
+}: Props) {
+  // Native title/aria-label keep the placeholder accessible without a
+  // PopOver dependency; loading vs unavailable follows the enrich state.
+  const votingPowerTooltip =
+    entry.votingPower === null
+      ? intl.formatMessage(
+          votingPowerState === VotingPowerEnrichState.Loading
+            ? messages.votingPowerLoadingTooltip
+            : messages.votingPowerUnavailableTooltip
+        )
+      : undefined;
+
   return (
     <div className={styles.card}>
       <div className={styles.topRow}>
@@ -52,7 +80,11 @@ function DRepCard({ entry, onSelectForDelegation, intl }: Props) {
         <span className={styles.votingPowerLabel}>
           {intl.formatMessage(messages.votingPowerLabel)}:
         </span>
-        <span className={styles.votingPowerValue}>
+        <span
+          className={styles.votingPowerValue}
+          title={votingPowerTooltip}
+          aria-label={votingPowerTooltip}
+        >
           {formatVotingPower(entry.votingPower)}
         </span>
         <DRepSourceLabel className={styles.sourceLabel} source="on-chain" />

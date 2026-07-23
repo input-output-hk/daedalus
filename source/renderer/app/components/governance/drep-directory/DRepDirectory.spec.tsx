@@ -8,6 +8,7 @@ import jaTranslations from '../../../i18n/locales/ja-JP.json';
 import DRepDirectory from './DRepDirectory';
 import {
   GovernanceRefreshState,
+  VotingPowerEnrichState,
   AppDRepDirectoryEntry,
 } from '../../../stores/GovernanceStore';
 
@@ -44,6 +45,7 @@ const renderComponent = ({
   locale = 'en-US',
   onSelectForDelegation = jest.fn(),
   syncProgress = 100,
+  votingPowerState = VotingPowerEnrichState.Loaded,
 }: {
   drepList?: AppDRepDirectoryEntry[];
   error?: { message: string; type: string; details?: string } | null;
@@ -52,6 +54,7 @@ const renderComponent = ({
   locale?: string;
   onSelectForDelegation?: jest.Mock;
   syncProgress?: number | null;
+  votingPowerState?: VotingPowerEnrichState;
 } = {}) => {
   const messages = locale === 'ja-JP' ? jaTranslations : translations;
   return render(
@@ -65,6 +68,7 @@ const renderComponent = ({
         onSelectForDelegation={onSelectForDelegation}
         refreshState={refreshState}
         syncProgress={syncProgress}
+        votingPowerState={votingPowerState}
       />
     </IntlProvider>
   );

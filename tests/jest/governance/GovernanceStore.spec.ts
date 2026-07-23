@@ -9,6 +9,7 @@ import {
 // Mock the IPC channel so fetchDRepList never reaches Electron's ipcRenderer.
 jest.mock('../../../source/renderer/app/ipc/governanceChannel', () => ({
   governanceDRepListChannel: { request: jest.fn() },
+  governanceDRepStakeChannel: { request: jest.fn() },
 }));
 
 const mockRequest = governanceDRepListChannel.request as jest.Mock;

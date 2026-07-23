@@ -4,6 +4,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DRepCard from './DRepCard';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
+import { VotingPowerEnrichState } from '../../../stores/GovernanceStore';
 import styles from './DRepDirectoryList.scss';
 
 const CARDS_PER_PAGE = 25;
@@ -29,10 +30,16 @@ const messages = defineMessages({
 interface Props {
   entries: AppDRepDirectoryEntry[];
   onSelectForDelegation: (drepId: string) => void;
+  votingPowerState: VotingPowerEnrichState;
   intl: intlShape.isRequired;
 }
 
-function DRepDirectoryList({ entries, onSelectForDelegation, intl }: Props) {
+function DRepDirectoryList({
+  entries,
+  onSelectForDelegation,
+  votingPowerState,
+  intl,
+}: Props) {
   const [page, setPage] = useState(0);
 
   const totalPages = Math.max(1, Math.ceil(entries.length / CARDS_PER_PAGE));
@@ -67,6 +74,7 @@ function DRepDirectoryList({ entries, onSelectForDelegation, intl }: Props) {
             key={entry.drepId}
             entry={entry}
             onSelectForDelegation={onSelectForDelegation}
+            votingPowerState={votingPowerState}
           />
         ))}
       </div>

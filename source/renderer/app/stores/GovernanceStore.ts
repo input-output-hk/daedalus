@@ -1,7 +1,10 @@
 import { action, observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
-import { governanceDRepListChannel } from '../ipc/governanceChannel';
+import {
+  governanceDRepListChannel,
+  governanceDRepStakeChannel,
+} from '../ipc/governanceChannel';
 import { logger } from '../utils/logging';
 import {
   GovernanceQueryErrorType,
@@ -34,6 +37,13 @@ export enum GovernanceRefreshState {
   Failed = 'failed',
 }
 
+export enum VotingPowerEnrichState {
+  Idle = 'idle',
+  Loading = 'loading',
+  Loaded = 'loaded',
+  Failed = 'failed',
+}
+
 export interface GovernanceStoreError {
   type: string;
   message: string;
@@ -58,6 +68,10 @@ export default class GovernanceStore extends Store {
 
   /** Unix timestamp (ms) when data was last successfully fetched. */
   @observable lastFetchedAt: number | null = null;
+
+  /** Phase-2 voting-power enrichment lifecycle, independent of the list. */
+  @observable votingPowerState: VotingPowerEnrichState =
+    VotingPowerEnrichState.Idle;
 
   // ---- Computed ----
 
@@ -85,18 +99,25 @@ export default class GovernanceStore extends Store {
     return this.drepList.length;
   }
 
+  @computed get isRankingUnavailable(): boolean {
+    return this.votingPowerState === VotingPowerEnrichState.Failed;
+  }
+
   // ---- Actions ----
 
   /**
-   * Fetch the DRep list from the main process.
-   * Deduplicates in-flight requests locally.
+   * Fetch the DRep directory in two phases: registrations paint the list,
+   * then the stake distribution enriches voting power. Deduplicates
+   * in-flight requests locally, including the enrich window.
    */
   @action
   async fetchDRepList(): Promise<void> {
-    // Prevent concurrent requests
+    // A re-entrant refresh during the enrich window would restart Phase 1
+    // mid-merge, so the guard covers both phases.
     if (
       this.refreshState === GovernanceRefreshState.Loading ||
-      this.refreshState === GovernanceRefreshState.Refreshing
+      this.refreshState === GovernanceRefreshState.Refreshing ||
+      this.votingPowerState === VotingPowerEnrichState.Loading
     ) {
       return;
     }
@@ -120,14 +141,55 @@ export default class GovernanceStore extends Store {
         this.refreshState = GovernanceRefreshState.Loaded;
         this.lastFetchedAt = payload.fetchedAt;
         this.error = null;
+        this.votingPowerState = VotingPowerEnrichState.Loading;
       });
     } catch (err) {
-      logger.error('GovernanceStore: fetchDRepList failed', { error: err });
+      const normalized = this._normalizeError(err);
+      // CLI stderr can carry query context; log only the normalized type.
+      logger.error('GovernanceStore: fetchDRepList failed', {
+        errorType: normalized.type,
+      });
       runInAction(() => {
-        this.error = this._normalizeError(err);
+        this.error = normalized;
         this.refreshState = hasExistingData
           ? GovernanceRefreshState.Loaded
           : GovernanceRefreshState.Failed;
+      });
+      return;
+    }
+
+    await this._enrichVotingPower();
+  }
+
+  /**
+   * Phase 2: merge the stake distribution into the painted list by DRep id.
+   * Failure keeps the list and flags ranking-unavailable — never an error
+   * state for the directory itself.
+   */
+  @action
+  private async _enrichVotingPower(): Promise<void> {
+    try {
+      const payload = await governanceDRepStakeChannel.request();
+
+      runInAction(() => {
+        const entries = this.drepList.map((entry) => {
+          const stake = payload.stakeByDRepId[entry.drepId];
+          return {
+            ...entry,
+            votingPower: stake ? new BigNumber(stake) : null,
+          };
+        });
+        this.drepList = entries;
+        this.drepIndex = new Map(entries.map((e) => [e.drepId, e]));
+        this.votingPowerState = VotingPowerEnrichState.Loaded;
+      });
+    } catch (err) {
+      const normalized = this._normalizeError(err);
+      logger.error('GovernanceStore: voting power enrich failed', {
+        errorType: normalized.type,
+      });
+      runInAction(() => {
+        this.votingPowerState = VotingPowerEnrichState.Failed;
       });
     }
   }
