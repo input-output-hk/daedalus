@@ -18,6 +18,9 @@ import { GovernanceQueryErrorType } from '../../../source/common/types/governanc
 
 // We import spawn so we can mock it — jest.mock is hoisted above imports.
 import * as childProcess from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { Cardano } from '@cardano-sdk/core';
 
 jest.mock('child_process', () => {
   const actual = jest.requireActual('child_process');
@@ -31,7 +34,7 @@ const mockSpawn = childProcess.spawn as jest.Mock;
 
 // ---- Mock fixtures ----
 
-/** Realistic drep-state tuple output from cardano-cli --include-stake. */
+/** Realistic drep-state tuple output from cardano-cli (registration phase). */
 const VALID_DREP_STATE_JSON = JSON.stringify([
   [
     { keyHash: 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4' },
@@ -39,11 +42,11 @@ const VALID_DREP_STATE_JSON = JSON.stringify([
       anchor: {
         dataHash:
           '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
-        url: 'https://governance-preview.example.org/dreps/ledger-policy-lab.json',
+        url:
+          'https://governance-preview.example.org/dreps/ledger-policy-lab.json',
       },
       deposit: 500000000,
       expiry: 535,
-      stake: '23137980123456',
     },
   ],
   [
@@ -68,17 +71,11 @@ const VALID_TIP_JSON = JSON.stringify({
 const LATEST_ALIAS_MISSING_STDERR =
   'Invalid argument `latest`\nExpected one of: conway';
 
-const RAW_OVERSIZED_STAKE_DREP_STATE_JSON = `[
-  [
-    { "keyHash": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4" },
-    {
-      "anchor": null,
-      "deposit": 500000000,
-      "expiry": 535,
-      "stake": 9007199254740993
-    }
-  ]
-]`;
+/** Canonical object-map drep-stake-distribution output (committed mock). */
+const STAKE_DISTRIBUTION_FIXTURE = fs.readFileSync(
+  path.join(__dirname, '../../mocks/governance/drep-stake-distribution.json'),
+  'utf-8'
+);
 
 /** DRep state as a non-array (invalid). */
 const NON_ARRAY_DREP_STATE = JSON.stringify({ dreps: 'not-an-array' });
@@ -175,7 +172,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
     it('emits SelfnodeCliUnsupported when selfnode mode is active', async () => {
       service.setSelfnodeMode(true);
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.SelfnodeCliUnsupported,
       });
     });
@@ -183,7 +180,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
     it('emits SocketUnavailable when nodeSocketPath is null', async () => {
       service.setNodeSocketPath(null);
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.SocketUnavailable,
       });
     });
@@ -197,22 +194,24 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess(VALID_DREP_STATE_JSON))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      const result = await service.fetchDRepList();
+      const result = await service.fetchDRepRegistrations();
 
       expect(result.epoch).toBe(512);
       expect(result.dreps).toHaveLength(2);
       expect(result.fetchedAt).toBeGreaterThan(0);
 
-      // First DRep (keyHash, with stake and anchor)
+      // First DRep (keyHash, with anchor); voting power is a Phase-2 concern
       const drep0 = result.dreps[0];
       expect(drep0.drepId).toMatch(/^drep1/);
-      expect(drep0.votingPower).toBe('23137980123456');
+      expect(drep0.votingPower).toBeNull();
       expect(drep0.status).toBe('active');
       expect(typeof drep0.drepActivity).toBe('number');
       expect(drep0.drepActivity as number).toBe(23); // 535 - 512
       expect(drep0.anchor).toEqual({
-        url: 'https://governance-preview.example.org/dreps/ledger-policy-lab.json',
-        hash: '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
+        url:
+          'https://governance-preview.example.org/dreps/ledger-policy-lab.json',
+        hash:
+          '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
       });
 
       // Second DRep (scriptHash, no stake, no anchor)
@@ -230,7 +229,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess(VALID_DREP_STATE_JSON))
         .mockReturnValueOnce(createMockChildProcess(tipAt600));
 
-      const result = await service.fetchDRepList();
+      const result = await service.fetchDRepRegistrations();
       expect(result.epoch).toBe(600);
       expect(result.dreps[0].status).toBe('inactive');
       expect(result.dreps[0].drepActivity).toBe(0); // max(0, 535-600)
@@ -247,7 +246,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess(VALID_DREP_STATE_JSON))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      const result = await service.fetchDRepList();
+      const result = await service.fetchDRepRegistrations();
 
       expect(result.epoch).toBe(512);
       expect(result.dreps).toHaveLength(2);
@@ -259,7 +258,6 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
           'query',
           'drep-state',
           '--all-dreps',
-          '--include-stake',
           '--output-json',
           '--mainnet',
         ],
@@ -279,7 +277,6 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
           'query',
           'drep-state',
           '--all-dreps',
-          '--include-stake',
           '--output-json',
           '--mainnet',
         ],
@@ -293,24 +290,12 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
       );
     });
 
-    it('preserves oversized unquoted lovelace values through json-bigint parsing', async () => {
-      mockSpawn
-        .mockReturnValueOnce(
-          createMockChildProcess(RAW_OVERSIZED_STAKE_DREP_STATE_JSON)
-        )
-        .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
-
-      const result = await service.fetchDRepList();
-
-      expect(result.dreps[0].votingPower).toBe('9007199254740993');
-    });
-
     it('fails when query tip is unparseable', async () => {
       mockSpawn
         .mockReturnValueOnce(createMockChildProcess(VALID_DREP_STATE_JSON))
         .mockReturnValueOnce(createMockChildProcess('not json'));
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.ParseFailed,
       });
     });
@@ -322,7 +307,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
           createMockChildProcess(JSON.stringify({ epoch: true }))
         );
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.ParseFailed,
       });
     });
@@ -332,7 +317,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess(VALID_DREP_STATE_JSON))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      const result = await service.fetchDRepList();
+      const result = await service.fetchDRepRegistrations();
       const cached = service.getLastSuccessfulData();
       expect(cached).toEqual(result);
     });
@@ -346,7 +331,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess(NON_ARRAY_DREP_STATE))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.ParseFailed,
       });
     });
@@ -356,7 +341,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess(MALFORMED_TUPLE_DREP_STATE))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.ParseFailed,
       });
     });
@@ -368,7 +353,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         )
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.ParseFailed,
       });
     });
@@ -378,7 +363,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess(MISSING_EXPIRY_DREP_STATE))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.ParseFailed,
       });
     });
@@ -388,7 +373,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess(BOOLEAN_EXPIRY_DREP_STATE))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.ParseFailed,
       });
     });
@@ -413,7 +398,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess(PARTIAL_ANCHOR_DREP_STATE))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.ParseFailed,
       });
     });
@@ -428,7 +413,8 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
             anchor: {
               dataHash: 12345,
               url: {
-                href: 'https://governance-preview.example.org/dreps/invalid.json',
+                href:
+                  'https://governance-preview.example.org/dreps/invalid.json',
               },
             },
             deposit: 500000000,
@@ -443,7 +429,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         )
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.ParseFailed,
       });
     });
@@ -453,7 +439,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess('{ not valid json }'))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.ParseFailed,
       });
     });
@@ -469,7 +455,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createNeverClosingChildProcess())
         .mockReturnValueOnce(createNeverClosingChildProcess());
 
-      const fetchPromise = service.fetchDRepList();
+      const fetchPromise = service.fetchDRepRegistrations();
 
       // Advance fake timers past the 10s timeout
       jest.advanceTimersByTime(10_001);
@@ -496,7 +482,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createErrorChildProcess('ENOENT'))
         .mockReturnValueOnce(createErrorChildProcess('ENOENT'));
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.CliNotFound,
       });
     });
@@ -509,15 +495,15 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
       mockSpawn
         .mockReturnValueOnce(createMockChildProcess(VALID_DREP_STATE_JSON))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
-      await service.fetchDRepList();
+      await service.fetchDRepRegistrations();
       expect(service.getLastSuccessfulData()).not.toBeNull();
 
       service.reset();
 
       expect(service.getLastSuccessfulData()).toBeNull();
 
-      // After reset, socket is null — fetchDRepList should emit SocketUnavailable
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      // After reset, socket is null — fetchDRepRegistrations should emit SocketUnavailable
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.SocketUnavailable,
       });
     });
@@ -528,14 +514,14 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
       // Complete first fetch then reset
-      const first = await service.fetchDRepList();
+      const first = await service.fetchDRepRegistrations();
       expect(first.dreps).toHaveLength(2);
 
       service.reset();
 
       // After reset, lastSuccessfulData is cleared and socket is null
       expect(service.getLastSuccessfulData()).toBeNull();
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.SocketUnavailable,
       });
     });
@@ -544,13 +530,13 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
   // ---- in-flight deduplication ----
 
   describe('in-flight deduplication', () => {
-    it('returns the same promise for concurrent fetchDRepList calls', async () => {
+    it('returns the same promise for concurrent fetchDRepRegistrations calls', async () => {
       mockSpawn
         .mockReturnValueOnce(createMockChildProcess(VALID_DREP_STATE_JSON))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      const promise1 = service.fetchDRepList();
-      const promise2 = service.fetchDRepList();
+      const promise1 = service.fetchDRepRegistrations();
+      const promise2 = service.fetchDRepRegistrations();
 
       // Deduplication: both should resolve to the same result
       const [r1, r2] = await Promise.all([promise1, promise2]);
@@ -558,6 +544,145 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
 
       // Only 2 spawn calls should have been made (one drep-state, one tip)
       expect(mockSpawn).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  // ---- stake distribution phase ----
+
+  describe('stake distribution phase', () => {
+    const KEY_HASH = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+    const SCRIPT_HASH =
+      'c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6';
+    // Ids derived through the same production path the parser uses, so the
+    // merge-key alignment is proven rather than assumed.
+    const keyHashDRepId = Cardano.DRepID.cip129FromCredential({
+      type: Cardano.CredentialType.KeyHash,
+      hash: KEY_HASH,
+    } as any);
+    const scriptHashDRepId = Cardano.DRepID.cip129FromCredential({
+      type: Cardano.CredentialType.ScriptHash,
+      hash: SCRIPT_HASH,
+    } as any);
+
+    it('parses the object-map container shape from the committed fixture', async () => {
+      mockSpawn.mockReturnValueOnce(
+        createMockChildProcess(STAKE_DISTRIBUTION_FIXTURE)
+      );
+
+      const result = await service.fetchDRepStake();
+
+      expect(result.fetchedAt).toBeGreaterThan(0);
+      expect(result.stakeByDRepId[keyHashDRepId]).toBe('23137980123456');
+      expect(result.stakeByDRepId[scriptHashDRepId]).toBe('9007199254740993');
+    });
+
+    it('skips the two voting sentinels without creating entries', async () => {
+      mockSpawn.mockReturnValueOnce(
+        createMockChildProcess(STAKE_DISTRIBUTION_FIXTURE)
+      );
+
+      const result = await service.fetchDRepStake();
+
+      expect(Object.keys(result.stakeByDRepId)).toHaveLength(2);
+    });
+
+    it('parses the array-of-pairs container shape', async () => {
+      const arrayShape = `[
+        ["drep-keyHash-${KEY_HASH}", 23137980123456],
+        ["drep-alwaysAbstain", 5000000000]
+      ]`;
+      mockSpawn.mockReturnValueOnce(createMockChildProcess(arrayShape));
+
+      const result = await service.fetchDRepStake();
+
+      expect(result.stakeByDRepId).toEqual({
+        [keyHashDRepId]: '23137980123456',
+      });
+    });
+
+    it('preserves oversized unquoted lovelace values through json-bigint parsing', async () => {
+      const oversized = `{ "drep-keyHash-${KEY_HASH}": 9007199254740993 }`;
+      mockSpawn.mockReturnValueOnce(createMockChildProcess(oversized));
+
+      const result = await service.fetchDRepStake();
+
+      expect(result.stakeByDRepId[keyHashDRepId]).toBe('9007199254740993');
+    });
+
+    it('throws ParseFailed on an unknown stake key shape', async () => {
+      mockSpawn.mockReturnValueOnce(
+        createMockChildProcess('{ "pool-keyHash-abc123": 42 }')
+      );
+
+      await expect(service.fetchDRepStake()).rejects.toMatchObject({
+        queryErrorType: GovernanceQueryErrorType.ParseFailed,
+      });
+    });
+
+    it('builds the exact bulk argv with era token leading and network flag trailing', async () => {
+      mockSpawn.mockReturnValueOnce(
+        createMockChildProcess(STAKE_DISTRIBUTION_FIXTURE)
+      );
+
+      await service.fetchDRepStake();
+
+      expect(mockSpawn).toHaveBeenCalledTimes(1);
+      expect(mockSpawn).toHaveBeenCalledWith(
+        'cardano-cli',
+        [
+          'latest',
+          'query',
+          'drep-stake-distribution',
+          '--all-dreps',
+          '--output-json',
+          '--mainnet',
+        ],
+        expect.any(Object)
+      );
+    });
+
+    it('retries the stake query with conway when the CLI rejects the latest alias', async () => {
+      mockSpawn
+        .mockReturnValueOnce(
+          createMockChildProcess('', 1, LATEST_ALIAS_MISSING_STDERR)
+        )
+        .mockReturnValueOnce(
+          createMockChildProcess(STAKE_DISTRIBUTION_FIXTURE)
+        );
+
+      const result = await service.fetchDRepStake();
+
+      expect(result.stakeByDRepId[keyHashDRepId]).toBe('23137980123456');
+      const secondCallArgs = mockSpawn.mock.calls[1][1] as string[];
+      expect(secondCallArgs[0]).toBe('conway');
+    });
+
+    it('deduplicates concurrent stake fetches per phase', async () => {
+      mockSpawn.mockReturnValueOnce(
+        createMockChildProcess(STAKE_DISTRIBUTION_FIXTURE)
+      );
+
+      const [r1, r2] = await Promise.all([
+        service.fetchDRepStake(),
+        service.fetchDRepStake(),
+      ]);
+
+      expect(r1).toBe(r2);
+      expect(mockSpawn).toHaveBeenCalledTimes(1);
+    });
+
+    it('guards selfnode and missing socket like the registration phase', async () => {
+      service.setSelfnodeMode(true);
+      await expect(service.fetchDRepStake()).rejects.toMatchObject({
+        queryErrorType: GovernanceQueryErrorType.SelfnodeCliUnsupported,
+      });
+
+      service.setSelfnodeMode(false);
+      service.setNodeSocketPath(null);
+      await expect(service.fetchDRepStake()).rejects.toMatchObject({
+        queryErrorType: GovernanceQueryErrorType.SocketUnavailable,
+      });
+      expect(mockSpawn).not.toHaveBeenCalled();
     });
   });
 
@@ -570,7 +695,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess(VALID_DREP_STATE_JSON))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      await service.fetchDRepList();
+      await service.fetchDRepRegistrations();
 
       const firstCallArgs = mockSpawn.mock.calls[0][1] as string[];
       // The era token leads; the network flag is a per-subcommand option appended
@@ -585,7 +710,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         .mockReturnValueOnce(createMockChildProcess(VALID_DREP_STATE_JSON))
         .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
 
-      await service.fetchDRepList();
+      await service.fetchDRepRegistrations();
 
       const firstCallArgs = mockSpawn.mock.calls[0][1] as string[];
       expect(firstCallArgs.slice(0, 2)).toEqual(['latest', 'query']);
@@ -600,7 +725,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
       service.setCliBin('cardano-cli');
       service.setSelfnodeMode(false);
 
-      await expect(service.fetchDRepList()).rejects.toMatchObject({
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
         queryErrorType: GovernanceQueryErrorType.QueryFailed,
       });
       // The CLI must never be spawned without a network flag.

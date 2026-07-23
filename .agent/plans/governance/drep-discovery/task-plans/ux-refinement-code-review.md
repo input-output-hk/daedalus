@@ -281,3 +281,81 @@ Step 2 (2a-2f) and PRD FR-2/FR-3/FR-4 + the task-160 contract row.
 **Blockers:** none.
 
 **Decision: approved**
+
+## Code Review: task-161 — round 1 (2026-07-23)
+
+**Scope reviewed:** the uncommitted diff (7 files: `governance.types.ts`,
+`common/ipc/api.ts`, `GovernanceQueryService.ts`, main + renderer
+`governanceChannel.ts`, `GovernanceQueryService.spec.ts`,
+`tests/mocks/governance/drep-stake-distribution.json`) against guide Step 3
+(3a-3h) and PRD FR-5 / FR-6 / FR-7 plus the task-161 contract row.
+
+**Findings:**
+
+1. **Guide conformance — exact.** Every edit matches the Step-3 post-edit quotes:
+   `DRepStakeQueryPayload` added after `DRepListQueryPayload`
+   (`governance.types.ts:96-101`); `GOVERNANCE_DREP_STAKE_CHANNEL` + request/
+   response types appended to the governance block (`api.ts:664-666`);
+   `fetchDRepList` split into `fetchDRepRegistrations` (no `--include-stake`,
+   `votingPower` hard-null at `GovernanceQueryService.ts:504-505`) and
+   `fetchDRepStake` with per-phase in-flight dedup fields and `reset()` clearing
+   both; shared `_assertQueryable()` guard; `_parseStakeDistribution` accepts both
+   the object-map and array-of-pairs container shapes, skips the two voting
+   sentinels, and derives ids through the same `_credentialToDRepId` CIP-129 path
+   the list payload uses. Main + renderer channel files are the guide's full
+   replacements (the `__governanceError` plain-object contract now lives in a
+   shared `toGovernanceIpcError` helper used by both handlers — FR-7 held).
+2. **Contract shapes pinned.** Channel name, `void` request, and payload types
+   match the guide verbatim; no drift. `main/ipc/index.ts` needed no change
+   (`handleGovernanceRequests()` already registered) and none was made.
+3. **Invariants held.** Local-first: no fetch/HTTP anywhere in the diff — both
+   phases spawn `cardano-cli` against the local socket. Sanitization floor: every
+   new `GovernanceQueryError` message identifies stake entries by index only
+   (`GovernanceQueryService.ts:560-604`); floor suite re-run at 20/20. Lovelace
+   losslessness: `JSONBig({ storeAsString: true })` parse → decimal-string map →
+   wire; the oversized `9007199254740993` round-trips intact in both the fixture
+   and the dedicated json-bigint test. CLI discipline: one bulk `--all-dreps`
+   spawn per phase (`toHaveBeenCalledTimes(1)` asserted), era `latest`→`conway`
+   fallback proven for the stake query, network flag trailing in the exact-argv
+   test, socket handling untouched. Status vocabulary untouched; no new user copy
+   in this task (logger strings are not copy), so no `!!!`/i18n work applies.
+4. **Guardrails respected.** No store changes (`GovernanceStore.ts` untouched —
+   store spec still 8/8 against the unchanged list channel), no timeout changes
+   (`CLI_TIMEOUT_MS` intact for task-163), no streaming/push IPC, no per-DRep
+   calls. `git status --short` shows exactly the seven Step-3 files.
+5. **Spec updated per 3g, mock rewritten per 3f.** All 8 mechanical changes
+   applied (rename ×28, fixture stake line dropped, argv arrays trimmed, old
+   oversized-stake test deleted with its constant, fixture read as a raw string
+   via `fs.readFileSync`); the new stake-phase describe block carries all 9 tests
+   from the guide, ids derived through `Cardano.DRepID.cip129FromCredential` so
+   merge-key alignment is proven, not assumed. Mock JSON matches the canonical
+   object-map shape byte-for-byte and was not prettier-formatted.
+6. **Incidental reformat (note, not a finding):** prettier 2.1.2's mandated
+   format pass wrapped three long string properties in the spec fixtures
+   (`url:`/`hash:`/`href:` onto their own lines); semantically identical.
+7. **Pre-existing prettier drift in `api.ts` (note, not a finding):**
+   `prettier --check source/common/ipc/api.ts` fails on 6 long type-alias hunks
+   (`:343`, `:392`, `:405`, `:412`, `:465`, `:485`-area) that this diff did not
+   touch — the HEAD content fails the same check under repo config (verified via
+   a temp in-repo copy). The implementer correctly left them alone rather than
+   flooding the diff; none of the task's added lines are flagged.
+
+**Verification (re-run by reviewer, not taken on faith):**
+
+- `yarn compile` → exit 0 (tsc clean, typed-scss-modules regeneration clean, tree
+  unchanged after), and `node_modules/.bin/tsc --noEmit` independently → exit 0.
+- `yarn test:jest tests/jest/governance/GovernanceQueryService.spec.ts` →
+  **34/34** pass — exactly the guide's predicted 26 − 1 + 9.
+- `yarn test:jest tests/jest/governance/GovernanceStore.spec.ts` → 8/8 pass
+  (store untouched, list channel unchanged).
+- `yarn test:jest tests/jest/security/governance-sanitization.spec.ts` → 20/20
+  pass (floor intact).
+- `yarn lint` → exit 0 (warnings only, repo-wide and pre-existing).
+- `node_modules/.bin/prettier --check <6 changed .ts files>` → clean except the
+  pre-existing `api.ts` drift documented in finding 7.
+- `grep fetchDRepList|inFlightRefresh` across `source/main` + `source/common` →
+  no stale references.
+
+**Blockers:** none.
+
+**Decision: approved**

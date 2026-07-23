@@ -82,7 +82,10 @@ import type {
   MithrilPartialSyncStatusSnapshot,
   MithrilPartialSyncAvailability,
 } from '../types/mithril-partial-sync.types';
-import type { DRepListQueryPayload } from '../types/governance.types';
+import type {
+  DRepListQueryPayload,
+  DRepStakeQueryPayload,
+} from '../types/governance.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -657,3 +660,7 @@ export type waitForLedgerDevicesResponse = LedgerDevicePayload;
 export const GOVERNANCE_DREP_LIST_CHANNEL = 'GOVERNANCE_DREP_LIST_CHANNEL';
 export type GovernanceDRepListRendererRequest = void;
 export type GovernanceDRepListMainResponse = DRepListQueryPayload;
+
+export const GOVERNANCE_DREP_STAKE_CHANNEL = 'GOVERNANCE_DREP_STAKE_CHANNEL';
+export type GovernanceDRepStakeRendererRequest = void;
+export type GovernanceDRepStakeMainResponse = DRepStakeQueryPayload;

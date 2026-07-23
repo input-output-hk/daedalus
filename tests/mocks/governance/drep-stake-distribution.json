@@ -1,8 +1,6 @@
 {
-  "drep1yg7s8vuv87f8a8f5d0m9yk4p5xqw6r4s3t2u1v9w8x7y6z5a4b": {
-    "stake": "23137980123456"
-  },
-  "drep1xj23tk3yqyv7cqv7jn9mkz6xq8c7e5m3s2w1v0p9n8m7l6k5j": {
-    "stake": "9007199254740993"
-  }
+  "drep-keyHash-a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4": 23137980123456,
+  "drep-scriptHash-c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6": 9007199254740993,
+  "drep-alwaysAbstain": 5000000000,
+  "drep-alwaysNoConfidence": 1000000000
 }

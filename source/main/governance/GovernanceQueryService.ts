@@ -6,6 +6,7 @@ import { NetworkMagics } from '../../common/types/cardano-node.types';
 import {
   GovernanceQueryErrorType,
   DRepListQueryPayload,
+  DRepStakeQueryPayload,
   DRepDirectoryEntry,
   DRepStatus,
   DrepActivity,
@@ -61,7 +62,8 @@ export class GovernanceQueryService {
    */
   private networkFlag: string | null = null;
   private lastSuccessfulData: DRepListQueryPayload | null = null;
-  private inFlightRefresh: Promise<DRepListQueryPayload> | null = null;
+  private inFlightRegistrations: Promise<DRepListQueryPayload> | null = null;
+  private inFlightStake: Promise<DRepStakeQueryPayload> | null = null;
 
   private constructor() {
     // singleton — use getInstance()
@@ -130,34 +132,56 @@ export class GovernanceQueryService {
    */
   reset(): void {
     this.lastSuccessfulData = null;
-    this.inFlightRefresh = null;
+    this.inFlightRegistrations = null;
+    this.inFlightStake = null;
     this.nodeSocketPath = null;
     this.isSelfnode = false;
     this.networkFlag = null;
   }
 
   /**
-   * Fetch the full DRep list from the local node.
+   * Phase 1: fetch DRep registrations (no stake read) from the local node.
+   * Voting power is always null here; fetchDRepStake() enriches it.
    * Deduplicates in-flight requests — if a refresh is already running,
    * the same promise is returned to all concurrent callers.
    *
    * @throws {GovernanceQueryError} on socket-unavailable, CLI-not-found,
    *         query-failed, parse-failed, or timeout.
    */
-  async fetchDRepList(): Promise<DRepListQueryPayload> {
-    // Deduplicate in-flight requests
-    if (this.inFlightRefresh) {
-      return this.inFlightRefresh;
+  async fetchDRepRegistrations(): Promise<DRepListQueryPayload> {
+    if (this.inFlightRegistrations) {
+      return this.inFlightRegistrations;
     }
 
-    this.inFlightRefresh = this._doFetchDRepList();
+    this.inFlightRegistrations = this._doFetchDRepRegistrations();
 
     try {
-      const result = await this.inFlightRefresh;
+      const result = await this.inFlightRegistrations;
       this.lastSuccessfulData = result;
       return result;
     } finally {
-      this.inFlightRefresh = null;
+      this.inFlightRegistrations = null;
+    }
+  }
+
+  /**
+   * Phase 2: fetch the DRep stake distribution keyed by the same CIP-129
+   * DRep id the registration payload derives, so the renderer merges by
+   * plain string equality.
+   *
+   * @throws {GovernanceQueryError} on the same failure classes as Phase 1.
+   */
+  async fetchDRepStake(): Promise<DRepStakeQueryPayload> {
+    if (this.inFlightStake) {
+      return this.inFlightStake;
+    }
+
+    this.inFlightStake = this._doFetchDRepStake();
+
+    try {
+      return await this.inFlightStake;
+    } finally {
+      this.inFlightStake = null;
     }
   }
 
@@ -168,7 +192,7 @@ export class GovernanceQueryService {
 
   // ---- Private Implementation ----
 
-  private async _doFetchDRepList(): Promise<DRepListQueryPayload> {
+  private _assertQueryable(): void {
     if (this.isSelfnode) {
       throw new GovernanceQueryError(
         GovernanceQueryErrorType.SelfnodeCliUnsupported,
@@ -182,6 +206,10 @@ export class GovernanceQueryService {
         'Cardano node socket path is not available. The node may not be fully started.'
       );
     }
+  }
+
+  private async _doFetchDRepRegistrations(): Promise<DRepListQueryPayload> {
+    this._assertQueryable();
 
     try {
       const [drepStateStdout, tipStdout] = await Promise.all([
@@ -189,7 +217,6 @@ export class GovernanceQueryService {
           'query',
           'drep-state',
           '--all-dreps',
-          '--include-stake',
           '--output-json',
         ]),
         this._runCliQueryWithEraFallback(['query', 'tip', '--output-json']),
@@ -210,6 +237,34 @@ export class GovernanceQueryService {
       throw new GovernanceQueryError(
         GovernanceQueryErrorType.QueryFailed,
         `DRep query failed: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+    }
+  }
+
+  private async _doFetchDRepStake(): Promise<DRepStakeQueryPayload> {
+    this._assertQueryable();
+
+    try {
+      const stakeStdout = await this._runCliQueryWithEraFallback([
+        'query',
+        'drep-stake-distribution',
+        '--all-dreps',
+        '--output-json',
+      ]);
+
+      return {
+        stakeByDRepId: this._parseStakeDistribution(stakeStdout),
+        fetchedAt: Date.now(),
+      };
+    } catch (error) {
+      if (error instanceof GovernanceQueryError) {
+        throw error;
+      }
+      throw new GovernanceQueryError(
+        GovernanceQueryErrorType.QueryFailed,
+        `DRep stake query failed: ${
           error instanceof Error ? error.message : String(error)
         }`
       );
@@ -378,16 +433,15 @@ export class GovernanceQueryService {
   }
 
   /**
-   * Parse the raw JSON stdout from `cardano-cli latest query drep-state --all-dreps --include-stake --output-json`.
+   * Parse the raw JSON stdout from `cardano-cli latest query drep-state --all-dreps --output-json`.
    *
    * The CLI output is an array of tuples: `[[credential, state], ...]` where:
    * - `credential` is `{ keyHash: "hex" }` or `{ scriptHash: "hex" }`
-   * - `state` has `expiry` (epoch number), `anchor` (object|null), `deposit` (lovelace),
-   *   and optional `stake` (lovelace string) only when `--include-stake` is used.
+   * - `state` has `expiry` (epoch number), `anchor` (object|null), `deposit` (lovelace).
    *
    * DRep IDs are derived from credentials using `Cardano.DRepID.cip129FromCredential`.
    * Status is conservatively derived from `expiry` vs `currentEpoch`.
-   * Voting power is nullable when `stake` is absent.
+   * Voting power is always null in this phase; the stake phase enriches it.
    *
    * A parse failure on any entry throws ParseFailed so the renderer
    * never renders partial/corrupt data.
@@ -447,11 +501,8 @@ export class GovernanceQueryService {
         // drepActivity: remaining epochs until expiry; 0 when inactive
         const drepActivity: DrepActivity = Math.max(0, expiry - currentEpoch);
 
-        // Voting power from optional stake (only with --include-stake)
-        const votingPower: string | null =
-          state.stake !== undefined && state.stake !== null
-            ? String(state.stake)
-            : null;
+        // Phase 1 never reads stake; fetchDRepStake() fills voting power.
+        const votingPower: string | null = null;
 
         const anchor = this._parseAnchor(state, index);
 
@@ -471,6 +522,89 @@ export class GovernanceQueryService {
         );
       }
     });
+  }
+
+  /**
+   * Parse `drep-stake-distribution --all-dreps --output-json` into a
+   * CIP-129-keyed decimal-string lovelace map.
+   *
+   * cardano-cli serialized this query as an object map in some major versions
+   * and as an array of [key, value] pairs in others; both container shapes are
+   * accepted. Keys are `drep-keyHash-<hex>` / `drep-scriptHash-<hex>` plus the
+   * two voting sentinels, which are skipped (sentinels are ballot forms, never
+   * directory entries). Any other key or value shape throws ParseFailed.
+   * Error messages identify entries by index only — never by key or id.
+   */
+  private _parseStakeDistribution(rawOutput: string): Record<string, string> {
+    let parsed: unknown;
+    try {
+      parsed = JSONBig.parse(rawOutput);
+    } catch (err) {
+      throw new GovernanceQueryError(
+        GovernanceQueryErrorType.ParseFailed,
+        'Failed to parse drep-stake-distribution JSON output',
+        err instanceof Error ? err.message : undefined
+      );
+    }
+
+    let pairs: Array<[string, unknown]>;
+    if (Array.isArray(parsed)) {
+      pairs = (parsed as Array<unknown>).map((entry, index) => {
+        if (
+          !Array.isArray(entry) ||
+          entry.length < 2 ||
+          typeof entry[0] !== 'string'
+        ) {
+          throw new GovernanceQueryError(
+            GovernanceQueryErrorType.ParseFailed,
+            `Stake entry at index ${index} is not a [key, value] pair`
+          );
+        }
+        return [entry[0], entry[1]] as [string, unknown];
+      });
+    } else if (parsed && typeof parsed === 'object') {
+      pairs = Object.entries(parsed as Record<string, unknown>);
+    } else {
+      throw new GovernanceQueryError(
+        GovernanceQueryErrorType.ParseFailed,
+        `Expected an object map or array of pairs from drep-stake-distribution, got ${typeof parsed}`
+      );
+    }
+
+    const stakeByDRepId: Record<string, string> = {};
+    pairs.forEach(([key, value], index) => {
+      if (key === 'drep-alwaysAbstain' || key === 'drep-alwaysNoConfidence') {
+        return;
+      }
+
+      const keyHashMatch = /^drep-keyHash-([0-9a-fA-F]+)$/.exec(key);
+      const scriptHashMatch = /^drep-scriptHash-([0-9a-fA-F]+)$/.exec(key);
+      if (!keyHashMatch && !scriptHashMatch) {
+        throw new GovernanceQueryError(
+          GovernanceQueryErrorType.ParseFailed,
+          `Stake entry at index ${index} has an unknown key shape`
+        );
+      }
+
+      const stakeString = String(value);
+      if (
+        (typeof value !== 'string' && typeof value !== 'number') ||
+        !/^\d+$/.test(stakeString)
+      ) {
+        throw new GovernanceQueryError(
+          GovernanceQueryErrorType.ParseFailed,
+          `Stake entry at index ${index} has a non-numeric stake value`
+        );
+      }
+
+      const drepId = keyHashMatch
+        ? this._credentialToDRepId({ keyHash: keyHashMatch[1] }, index)
+        : this._credentialToDRepId({ scriptHash: scriptHashMatch![1] }, index);
+
+      stakeByDRepId[drepId] = stakeString;
+    });
+
+    return stakeByDRepId;
   }
 
   /**

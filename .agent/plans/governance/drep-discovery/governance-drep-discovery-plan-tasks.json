@@ -1371,7 +1371,18 @@
           "id": "task-161",
           "title": "Split query service into registration + stake phases",
           "description": "Split GovernanceQueryService.fetchDRepList() into Phase 1 fetchDRepRegistrations (cardano-cli latest query drep-state --all-dreps --output-json, NO --include-stake, plus query tip; returns entries with votingPower null; 10s timeout) and Phase 2 fetchDRepStake (drep-stake-distribution --all-dreps --output-json; credential->lovelace map merged into entries by DRep credential; 30s timeout). Preserve all existing guarantees: lossless json-bigint parse, decimal-string IPC, BigNumber rehydrate, network flag + era fallback on BOTH calls, CARDANO_NODE_SOCKET_PATH via spawn.env only.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "fetchDRepList() is split into fetchDRepRegistrations (drep-state --all-dreps WITHOUT --include-stake plus query tip, votingPower always null) and fetchDRepStake (drep-stake-distribution --all-dreps parsed into a CIP-129-keyed decimal-string lovelace map, DRepStakeQueryPayload), each with its own in-flight dedup slot cleared by reset(). The stake parser accepts both cardano-cli container shapes (object map and array of pairs), skips the alwaysAbstain/alwaysNoConfidence sentinels, rejects unknown key/value shapes with ParseFailed identifying entries by index only, and preserves oversized lovelace via json-bigint. Both phases share _assertQueryable and _runCliQueryWithEraFallback, so the network flag, latest/conway era fallback, and spawn.env socket path apply to every call. A new GOVERNANCE_DREP_STAKE_CHANNEL IPC contract with renderer wrapper and shared toGovernanceIpcError plain-object serialization is wired end to end. Jest suite (34 tests) passes, covering both phases, both stake container shapes, sentinel skipping, and parse/error paths; tests/jest/security/governance-sanitization.spec.ts stays green (20 tests). Per-phase timeouts (10s/30s) remain the single 10s CLI_TIMEOUT_MS here by design — that replacement is task-163's scope.",
+          "evidence": [
+            "source/main/governance/GovernanceQueryService.ts",
+            "source/common/types/governance.types.ts",
+            "source/common/ipc/api.ts",
+            "source/main/ipc/governanceChannel.ts",
+            "source/renderer/app/ipc/governanceChannel.ts",
+            "tests/jest/governance/GovernanceQueryService.spec.ts",
+            "tests/mocks/governance/drep-stake-distribution.json"
+          ],
+          "updatedAt": "2026-07-23",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [

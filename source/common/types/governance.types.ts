@@ -93,6 +93,13 @@ export interface DRepListQueryPayload {
   epoch: number | null;
 }
 
+export interface DRepStakeQueryPayload {
+  /** Voting power in lovelace (decimal string) keyed by CIP-129 DRep id. */
+  stakeByDRepId: Record<DRepId, Lovelace>;
+  /** Unix timestamp (ms) when the stake distribution was fetched. */
+  fetchedAt: number;
+}
+
 // ---- Error Types ----
 
 export enum GovernanceQueryErrorType {
