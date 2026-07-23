@@ -57,6 +57,13 @@ export class GovernanceQueryService {
   private static readonly REGISTRATION_TIMEOUT_MS = 10_000;
   private static readonly STAKE_TIMEOUT_MS = 30_000;
 
+  /**
+   * Structural signature of an optparse-applicative argv rejection (bad era
+   * token, invalid flag, missing required argument). Node-side query failures
+   * never print it, so it gates the conway era fallback safely.
+   */
+  private static readonly CLI_USAGE_SIGNATURE = /(invalid (option|argument)|missing:|usage:)/i;
+
   private cliBin = 'cardano-cli';
   private nodeSocketPath: string | null = null;
   private isSelfnode = false;
@@ -298,20 +305,9 @@ export class GovernanceQueryService {
   }
 
   private _shouldRetryWithConway(error: unknown): boolean {
-    if (!(error instanceof GovernanceQueryError)) {
-      return false;
-    }
-
-    if (error.queryErrorType !== GovernanceQueryErrorType.QueryFailed) {
-      return false;
-    }
-
-    const failureText = `${error.message}\n${
-      error.details ?? ''
-    }`.toLowerCase();
     return (
-      failureText.includes('latest') &&
-      /(invalid|unknown|expected|expecting|conway|era)/.test(failureText)
+      error instanceof GovernanceQueryError &&
+      error.queryErrorType === GovernanceQueryErrorType.UsageError
     );
   }
 
@@ -395,11 +391,17 @@ export class GovernanceQueryService {
       child.on('close', (code) => {
         if (timeout) clearTimeout(timeout);
         if (code !== 0) {
+          const trimmedStderr = stderr.trim();
+          const isUsageRejection = GovernanceQueryService.CLI_USAGE_SIGNATURE.test(
+            trimmedStderr
+          );
           reject(
             new GovernanceQueryError(
-              GovernanceQueryErrorType.QueryFailed,
+              isUsageRejection
+                ? GovernanceQueryErrorType.UsageError
+                : GovernanceQueryErrorType.QueryFailed,
               `cardano-cli exited with code ${code}`,
-              stderr.trim() || undefined
+              trimmedStderr || undefined
             )
           );
           return;

@@ -106,6 +106,7 @@ export enum GovernanceQueryErrorType {
   SocketUnavailable = 'SOCKET_UNAVAILABLE',
   CliNotFound = 'CLI_NOT_FOUND',
   QueryFailed = 'QUERY_FAILED',
+  UsageError = 'USAGE_ERROR',
   ParseFailed = 'PARSE_FAILED',
   SelfnodeCliUnsupported = 'SELFNODE_CLI_UNSUPPORTED',
   Timeout = 'TIMEOUT',

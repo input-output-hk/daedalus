@@ -71,6 +71,10 @@ const VALID_TIP_JSON = JSON.stringify({
 const LATEST_ALIAS_MISSING_STDERR =
   'Invalid argument `latest`\nExpected one of: conway';
 
+/** Node-side failure that mentions era words but is not an argv rejection. */
+const NODE_QUERY_FAILURE_STDERR =
+  'MuxError MuxBearerClosed: the latest era ledger query failed unexpectedly';
+
 /** Canonical object-map drep-stake-distribution output (committed mock). */
 const STAKE_DISTRIBUTION_FIXTURE = fs.readFileSync(
   path.join(__dirname, '../../mocks/governance/drep-stake-distribution.json'),
@@ -713,6 +717,56 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         queryErrorType: GovernanceQueryErrorType.SocketUnavailable,
       });
       expect(mockSpawn).not.toHaveBeenCalled();
+    });
+  });
+
+  // ---- era-retry signal ----
+
+  describe('era-retry signal', () => {
+    it('classifies an argv usage rejection as UsageError and still retries with conway', async () => {
+      mockSpawn
+        .mockReturnValueOnce(
+          createMockChildProcess('', 1, LATEST_ALIAS_MISSING_STDERR)
+        )
+        .mockReturnValueOnce(
+          createMockChildProcess('', 1, LATEST_ALIAS_MISSING_STDERR)
+        );
+
+      // The conway retry also rejects, so the classified error surfaces.
+      await expect(service.fetchDRepStake()).rejects.toMatchObject({
+        queryErrorType: GovernanceQueryErrorType.UsageError,
+      });
+      expect(mockSpawn).toHaveBeenCalledTimes(2);
+      const retryArgs = mockSpawn.mock.calls[1][1] as string[];
+      expect(retryArgs[0]).toBe('conway');
+    });
+
+    it('does not retry with conway when both queries fail with a non-era QueryFailed', async () => {
+      mockSpawn
+        .mockReturnValueOnce(
+          createMockChildProcess('', 1, NODE_QUERY_FAILURE_STDERR)
+        )
+        .mockReturnValueOnce(
+          createMockChildProcess('', 1, NODE_QUERY_FAILURE_STDERR)
+        );
+
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
+        queryErrorType: GovernanceQueryErrorType.QueryFailed,
+      });
+      // Both parallel phase-1 queries spawned once each — no conway retry,
+      // even though the stderr contains the words "latest" and "era".
+      expect(mockSpawn).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not retry the stake query on a non-era failure', async () => {
+      mockSpawn.mockReturnValueOnce(
+        createMockChildProcess('', 1, NODE_QUERY_FAILURE_STDERR)
+      );
+
+      await expect(service.fetchDRepStake()).rejects.toMatchObject({
+        queryErrorType: GovernanceQueryErrorType.QueryFailed,
+      });
+      expect(mockSpawn).toHaveBeenCalledTimes(1);
     });
   });
 

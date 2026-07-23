@@ -821,3 +821,79 @@ against Step 10 of the implementation guide and FR-15 / PD-9 / NFR-4 in the PRD.
 **Blockers:** none.
 
 **Decision: approved**
+
+## Code Review: task-169 — round 1 (2026-07-23)
+
+**Scope reviewed:** uncommitted worktree diff — `source/common/types/governance.types.ts`,
+`source/main/governance/GovernanceQueryService.ts`,
+`tests/jest/governance/GovernanceQueryService.spec.ts` (modified), and NEW
+`tests/jest/governance/GovernanceCliArgvSmoke.spec.ts` — exactly the four
+Step-11 files the guide scopes for task-169; nothing else touched.
+
+**Findings:**
+
+1. **Guide conformance (Step 11a–11e).** The enum insertion (`UsageError =
+   'USAGE_ERROR'` after `QueryFailed`), the `CLI_USAGE_SIGNATURE` constant
+   with its pinned comment, the close-handler classification, the reduced
+   `_shouldRetryWithConway` (pure error-class gate), the three new
+   `era-retry signal` tests with the pinned `NODE_QUERY_FAILURE_STDERR`
+   constant and placement before the `network flag injection (FP-1)`
+   comment, and the PART B smoke file all match the guide's pinned content
+   line for line. No existing tests were modified, per 11d(3).
+2. **FR-16 met.** Classification happens at the spawn boundary only; the
+   retry gate no longer inspects message text, so the AC-3 wording
+   coupling is gone. Positive test proves `UsageError` + conway retry
+   (`retryArgs[0] === 'conway'`); negative tests prove exactly 2 spawns
+   for the parallel phase-1 pair and exactly 1 spawn for the stake query
+   on a stderr that deliberately contains "latest" and "era" — the
+   spurious-retry regression the old substring gate had.
+3. **FR-17 met.** Smoke suite covers 12 argv forms (2 eras × 3 queries ×
+   2 network-flag forms), era token first / network flag appended last,
+   strips `CARDANO_NODE_SOCKET_PATH` from the child env so a parser-clean
+   invocation can only die at the socket stage, and self-skips via
+   `describe.skip` when `cardano-cli` is absent. In this environment it
+   reports **12 skipped, 0 failed** — the AC-6 skip mechanism proven;
+   the positive real-binary run stays recorded as verification debt.
+4. **Locked invariants held.** #2 sanitization: error message still
+   identifies nothing but the exit code; `details` is the same trimmed
+   stderr as before; no new logger/analytics/store payloads
+   (sanitization suite 20/20). #4 local-first: no network surface
+   touched. #5 losslessness: untouched. #6 CLI discipline: happy-path
+   argv unchanged; `latest`→`conway` fallback intact on both phases
+   (`LATEST_ALIAS_MISSING_STDERR` matches the usage signature, so both
+   pre-existing positive fallback tests pass untouched); network flag
+   still appended, socket still env-only. Status vocabulary: no copy
+   changes at all, so `!!!`/i18n rules are correctly not applicable.
+5. **No IPC/contract drift.** `toGovernanceIpcError`
+   (`source/main/ipc/governanceChannel.ts:40`) passes `queryErrorType`
+   through as a string and the renderer's `_normalizeError` /
+   `DRepDirectory` branches treat non-`SelfnodeCliUnsupported` types
+   generically, so `USAGE_ERROR` flows through the existing generic
+   failure branch — no renderer change needed, exactly as the guide
+   states.
+6. **Note (non-blocking):** `GovernanceCliArgvSmoke.spec.ts:59` writes
+   `env: env as typeof process.env` where the guide's pinned content is
+   the bare `{ env, timeout: 15_000 }`. I verified the uncast version
+   also passes the project `tsc --noEmit`, so the assertion is
+   unnecessary — but it is runtime-identical, prettier-clean, and inside
+   a test file; a candidate cleanup for a later pass, not a defect.
+
+**Verification (re-run by reviewer, not taken on faith):**
+
+- `node_modules/.bin/tsc --noEmit` → exit 0 (and `yarn compile` also
+  completed cleanly this run).
+- `yarn lint` → pre-existing warnings only, no errors.
+- `yarn test:jest tests/jest/governance/GovernanceQueryService.spec.ts`
+  → **38 passed** (35 + 3, matching the Step-11f count).
+- `yarn test:jest tests/jest/governance/GovernanceCliArgvSmoke.spec.ts`
+  → **12 skipped, 0 failed** (reported as skipped, not passed).
+- `yarn test:jest tests/jest/governance/GovernanceStore.spec.ts` →
+  **13 passed** (renderer untouched).
+- `yarn test:jest tests/jest/security/governance-sanitization.spec.ts`
+  → **20 passed** (floor intact, NFR-4).
+- `node_modules/.bin/prettier --check` on the four touched files → all
+  clean.
+
+**Blockers:** none.
+
+**Decision: approved**

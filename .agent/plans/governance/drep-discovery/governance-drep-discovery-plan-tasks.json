@@ -1567,7 +1567,15 @@
           "id": "task-169",
           "title": "Harden GovernanceQueryService CLI robustness (era-retry signal + real-binary argv smoke test)",
           "description": "Optional cleanup distilled from the slice-1 final-pass standing risks (carried over when the slice-1-final-pass-review.md Next Steps section was removed at slice-1 closeout). PART A - era-retry signal: replace the substring-based conway fallback gate in GovernanceQueryService._shouldRetryWithConway, which currently fires when the free-text error message/stderr contains the literal 'latest' plus an era-ish keyword (invalid|unknown|expected|expecting|conway|era). That couples the retry decision to incidental cardano-cli wording and to the implicit constraint that every other error string avoid the word 'latest' (see the deliberately reworded 'network not set' message). Gate the fallback on a structured signal instead (e.g. exit-code/error-class, or a one-time supported-era probe) so an unrelated QueryFailed can never trigger a spurious conway retry that masks the real error and burns a CLI timeout. PART B - real-binary argv smoke test: the unit suite mocks spawn and can only confirm the argv matches the developer's belief about cardano-cli grammar (the FP-1 prepend-vs-append regression class is structurally unclosable at the unit level). Add a parse-only smoke test that runs the bundled cardano-cli with the exact argv the service builds (era token + appended --mainnet / --testnet-magic <N>) WITHOUT CARDANO_NODE_SOCKET_PATH and asserts it passes the argument parser - failing only on a socket/connection error, never on a parse error (Invalid option / 'Missing: (--mainnet | --testnet-magic NATURAL)' / unknown era). Gated to environments where the real cardano-cli is on PATH (Nix shell). If task-161 lands first, apply the structured era-retry signal to both phase calls.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "PART A: the conway fallback is now gated on a structured UsageError error-class (new GovernanceQueryErrorType.UsageError, assigned in _runCliQuery from the optparse-applicative usage signature on stderr), so a non-era QueryFailed can never trigger a spurious conway retry and no production error message depends on avoiding the word 'latest'; negative and positive fallback unit tests cover both paths. PART B: GovernanceCliArgvSmoke.spec.ts runs the real cardano-cli with the exact per-phase argv forms (latest/conway era token, network flag appended) without CARDANO_NODE_SOCKET_PATH and asserts the parser is cleared, self-skipping when the binary is not on PATH so the mocked CI lane stays green; the smoke lane could not be exercised positively in this devcontainer (no cardano-cli on PATH), which the skip gate is designed for.",
+          "evidence": [
+            "source/main/governance/GovernanceQueryService.ts",
+            "source/common/types/governance.types.ts",
+            "tests/jest/governance/GovernanceQueryService.spec.ts",
+            "tests/jest/governance/GovernanceCliArgvSmoke.spec.ts"
+          ],
+          "updatedAt": "2026-07-23",
           "dependencies": [
             "task-103"
           ],
