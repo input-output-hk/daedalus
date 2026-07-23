@@ -244,4 +244,103 @@ describe('DRepDirectory', () => {
     expect(onSelectForDelegation).toHaveBeenCalledTimes(1);
     expect(onSelectForDelegation).toHaveBeenCalledWith(baseEntries[0].drepId);
   });
+
+  it('renders the persistent syncing banner with the floored live sync %', () => {
+    renderComponent({ isNodeInSync: false, syncProgress: 87.6 });
+
+    expect(
+      screen.getByText(
+        '!!!Your node is still syncing (87%). The DRep list may be incomplete until sync completes.'
+      )
+    ).toBeInTheDocument();
+    // The soft warning never hides the data underneath it.
+    expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
+  });
+
+  it('renders 0% in the syncing banner when syncProgress is null mid-boot', () => {
+    renderComponent({ isNodeInSync: false, syncProgress: null });
+
+    expect(screen.getByText(/still syncing \(0%\)/)).toBeInTheDocument();
+  });
+
+  it('does not render the syncing banner when the node is in sync', () => {
+    renderComponent();
+
+    expect(screen.queryByText(/still syncing/)).not.toBeInTheDocument();
+  });
+
+  it('falls back to the noSync empty state when syncing yields zero DReps', () => {
+    renderComponent({ drepList: [], isNodeInSync: false, syncProgress: 42 });
+
+    expect(
+      screen.getByText(
+        '!!!Your node is still syncing. DRep data becomes available once the node reaches the tip.'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('!!!No DReps found on-chain.')
+    ).not.toBeInTheDocument();
+  });
+
+  it('falls back to the noSync empty state on an availability failure while syncing', () => {
+    renderComponent({
+      drepList: [],
+      error: {
+        message: 'Cardano node socket path is not available.',
+        type: 'SOCKET_UNAVAILABLE',
+      },
+      isNodeInSync: false,
+      refreshState: GovernanceRefreshState.Failed,
+      syncProgress: 42,
+    });
+
+    expect(
+      screen.getByText(
+        /DRep data becomes available once the node reaches the tip/
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('!!!Could not load DRep data.')
+    ).not.toBeInTheDocument();
+  });
+
+  it('keeps the retained list without the fallback when syncing with data present', () => {
+    renderComponent({ isNodeInSync: false, syncProgress: 42 });
+
+    expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
+    expect(
+      screen.queryByText(/DRep data becomes available/)
+    ).not.toBeInTheDocument();
+  });
+
+  it('drives the — tooltip by enrich state and shows the rankingUnavailable banner on stake failure', () => {
+    const { unmount } = renderComponent({
+      drepList: [{ ...baseEntries[0], votingPower: null }],
+      votingPowerState: VotingPowerEnrichState.Loading,
+    });
+
+    expect(screen.getByText('—')).toHaveAttribute(
+      'title',
+      '!!!Loading voting power…'
+    );
+    expect(
+      screen.queryByText(/Voting power data unavailable/)
+    ).not.toBeInTheDocument();
+    unmount();
+
+    renderComponent({
+      drepList: [{ ...baseEntries[0], votingPower: null }],
+      votingPowerState: VotingPowerEnrichState.Failed,
+    });
+
+    expect(screen.getByText('—')).toHaveAttribute(
+      'title',
+      '!!!Stake distribution unavailable this refresh.'
+    );
+    expect(
+      screen.getByText(
+        '!!!Voting power data unavailable this refresh. Ranking-based filters disabled.'
+      )
+    ).toBeInTheDocument();
+  });
 });

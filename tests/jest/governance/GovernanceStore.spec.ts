@@ -1,6 +1,13 @@
 import BigNumber from 'bignumber.js';
-import GovernanceStore from '../../../source/renderer/app/stores/GovernanceStore';
-import { governanceDRepListChannel } from '../../../source/renderer/app/ipc/governanceChannel';
+import GovernanceStore, {
+  GovernanceRefreshState,
+  VotingPowerEnrichState,
+} from '../../../source/renderer/app/stores/GovernanceStore';
+import { logger } from '../../../source/renderer/app/utils/logging';
+import {
+  governanceDRepListChannel,
+  governanceDRepStakeChannel,
+} from '../../../source/renderer/app/ipc/governanceChannel';
 import {
   GovernanceQueryErrorType,
   DRepDirectoryEntry,
@@ -12,13 +19,45 @@ jest.mock('../../../source/renderer/app/ipc/governanceChannel', () => ({
   governanceDRepStakeChannel: { request: jest.fn() },
 }));
 
+// The real renderer logger writes through global.electronLog, which does not
+// exist in the Jest environment; the mock records calls for the assertions.
+jest.mock('../../../source/renderer/app/utils/logging', () => ({
+  logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+  },
+}));
+
 const mockRequest = governanceDRepListChannel.request as jest.Mock;
+const mockStakeRequest = governanceDRepStakeChannel.request as jest.Mock;
+
+/** Drain pending async continuations behind a macrotask boundary. */
+const flushAsync = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+const DREP_ID = 'drep1xj23tk3yqyv7cqv7jn9mkz6xq8c7e5m3s2w1v0p9n8m7l6k5j';
+
+const phase1Payload = () => ({
+  dreps: [
+    {
+      anchor: null,
+      drepActivity: 8,
+      drepId: DREP_ID,
+      status: 'active' as const,
+      votingPower: null,
+    },
+  ],
+  epoch: 512,
+  fetchedAt: 1_750_000_000_000,
+});
 
 describe('GovernanceStore', () => {
   beforeEach(() => {
     // Reset between cases so the never-resolving impl from the dedup test
     // does not bleed into other cases.
     mockRequest.mockReset();
+    mockStakeRequest.mockReset();
   });
   it('rehydrates oversized lovelace strings into exact BigNumber values', () => {
     const store = new GovernanceStore({} as any, {} as any, {} as any);
@@ -148,5 +187,126 @@ describe('GovernanceStore', () => {
 
     expect(mockRequest).toHaveBeenCalledTimes(1);
     expect(store.isLoading).toBe(true);
+  });
+
+  it('paints the list from Phase 1 with null voting power, then merges stake by DRep id', async () => {
+    mockRequest.mockResolvedValue(phase1Payload());
+    let resolveStake: (value: unknown) => void = () => {};
+    mockStakeRequest.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveStake = resolve;
+        })
+    );
+
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    void store.fetchDRepList();
+    await flushAsync();
+
+    // Phase 1 painted: list visible, voting power still null, enrich running.
+    expect(store.refreshState).toBe(GovernanceRefreshState.Loaded);
+    expect(store.drepList).toHaveLength(1);
+    expect(store.drepList[0].votingPower).toBeNull();
+    expect(store.votingPowerState).toBe(VotingPowerEnrichState.Loading);
+
+    resolveStake({
+      fetchedAt: 1_750_000_000_500,
+      stakeByDRepId: { [DREP_ID]: '9007199254740993' },
+    });
+    await flushAsync();
+
+    expect(store.votingPowerState).toBe(VotingPowerEnrichState.Loaded);
+    expect(store.drepList[0].votingPower?.toFixed()).toBe('9007199254740993');
+  });
+
+  it('keeps voting power null for DReps absent from the stake map', async () => {
+    mockRequest.mockResolvedValue(phase1Payload());
+    mockStakeRequest.mockResolvedValue({
+      fetchedAt: 1_750_000_000_500,
+      stakeByDRepId: {},
+    });
+
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    await store.fetchDRepList();
+
+    // Never a silent fallback to 0 — absence renders as unavailable.
+    expect(store.votingPowerState).toBe(VotingPowerEnrichState.Loaded);
+    expect(store.drepList[0].votingPower).toBeNull();
+  });
+
+  it('keeps the painted list and flags ranking unavailable when the stake phase fails', async () => {
+    mockRequest.mockResolvedValue(phase1Payload());
+    mockStakeRequest.mockRejectedValue({
+      __governanceError: true,
+      type: 'QUERY_FAILED',
+      message: 'DRep stake query failed.',
+    });
+
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    await store.fetchDRepList();
+
+    expect(store.refreshState).toBe(GovernanceRefreshState.Loaded);
+    expect(store.drepList).toHaveLength(1);
+    expect(store.drepList[0].votingPower).toBeNull();
+    expect(store.votingPowerState).toBe(VotingPowerEnrichState.Failed);
+    expect(store.isRankingUnavailable).toBe(true);
+    // A stake failure never becomes a directory error.
+    expect(store.error).toBeNull();
+  });
+
+  it('deduplicates a refresh fired during the voting-power enrich window', async () => {
+    mockRequest.mockResolvedValue(phase1Payload());
+    mockStakeRequest.mockImplementation(() => new Promise(() => {}));
+
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    void store.refresh();
+    await flushAsync();
+    expect(store.votingPowerState).toBe(VotingPowerEnrichState.Loading);
+
+    void store.refresh();
+    await flushAsync();
+
+    expect(mockRequest).toHaveBeenCalledTimes(1);
+  });
+
+  it('logs only the normalized errorType from both phase failures', async () => {
+    const errorSpy = jest.spyOn(logger, 'error').mockImplementation(() => {});
+    const sensitive =
+      'query failed for drep1qqsensitive000000000000000000000000000000000 drep-alwaysAbstain';
+
+    mockRequest.mockRejectedValueOnce({
+      __governanceError: true,
+      type: 'QUERY_FAILED',
+      message: sensitive,
+      details: sensitive,
+    });
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    await store.fetchDRepList();
+
+    expect(errorSpy).toHaveBeenCalledWith(
+      'GovernanceStore: fetchDRepList failed',
+      expect.objectContaining({ errorType: 'QUERY_FAILED' })
+    );
+    // Phase 2 never fires after a Phase-1 failure.
+    expect(mockStakeRequest).not.toHaveBeenCalled();
+
+    errorSpy.mockClear();
+    mockRequest.mockResolvedValue(phase1Payload());
+    mockStakeRequest.mockRejectedValue({
+      __governanceError: true,
+      type: 'PARSE_FAILED',
+      message: sensitive,
+    });
+    await store.fetchDRepList();
+
+    expect(errorSpy).toHaveBeenCalledWith(
+      'GovernanceStore: voting power enrich failed',
+      expect.objectContaining({ errorType: 'PARSE_FAILED' })
+    );
+
+    const serializedCalls = JSON.stringify(errorSpy.mock.calls);
+    expect(serializedCalls).not.toContain('drep1qq');
+    expect(serializedCalls).not.toContain('drep-alwaysAbstain');
+    errorSpy.mockRestore();
   });
 });

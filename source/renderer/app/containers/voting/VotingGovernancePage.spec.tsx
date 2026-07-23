@@ -23,7 +23,10 @@ import { themeOverrides } from '../../themes/overrides';
 import { ROUTES } from '../../routes-config';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
-import { GovernanceRefreshState } from '../../stores/GovernanceStore';
+import {
+  GovernanceRefreshState,
+  VotingPowerEnrichState,
+} from '../../stores/GovernanceStore';
 import { pickDelegationFormReturnState } from '../governance/delegationFormState';
 import VotingGovernancePage from './VotingGovernancePage';
 import DRepDirectoryPage from '../governance/DRepDirectoryPage';
@@ -116,12 +119,18 @@ const buildStores = ({
     lastFetchedAt: Date.now() - 60_000,
     refresh: jest.fn(),
     refreshState: GovernanceRefreshState.Loaded,
+    votingPowerState: VotingPowerEnrichState.Loaded,
   },
   hardwareWallets: {
     checkIsTrezorByWalletId: jest.fn(() => isTrezor),
     hwDeviceStatus,
   },
-  networkStatus: { isSynced: true, syncPercentage: 100 },
+  networkStatus: {
+    isNodeInSync: true,
+    isSynced: true,
+    syncPercentage: 100,
+    syncProgress: 100,
+  },
   staking: { getStakePoolById: jest.fn(), stakePools: [] },
   voting: {
     delegateVotes: jest.fn(async () => ({ success: true as const })),

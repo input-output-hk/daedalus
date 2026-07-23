@@ -1514,7 +1514,15 @@
           "id": "task-167",
           "title": "Jest: sync banner, two-phase store transitions, ranking-unavailable",
           "description": "Jest coverage: sync-banner render under !isNodeInSync + clear-on-sync, two-phase store transitions (Phase 1 Loaded then Phase 2 enrich), and stake-phase failure -> rankingUnavailable with —. The no-startup-fetch assertion is covered by the slice-1 final pass FP-10; this task asserts the route-entry / two-phase behaviour built on it.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "Jest coverage added and review-approved: sync-banner render under !isNodeInSync plus clear-on-sync (page/container specs), Phase 1 Loaded -> Phase 2 enrich store transitions including the enrich-window dedup and error-path matrix in GovernanceStore.spec.ts, and stake-phase failure -> rankingUnavailable rendering the em-dash in DRepDirectory.spec.tsx; the focused governance Jest suite passes.",
+          "evidence": [
+            "tests/jest/governance/GovernanceStore.spec.ts",
+            "source/renderer/app/components/governance/drep-directory/DRepDirectory.spec.tsx",
+            "source/renderer/app/containers/governance/DRepDirectoryPage.spec.tsx",
+            "source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx"
+          ],
+          "updatedAt": "2026-07-23",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [

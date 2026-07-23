@@ -677,3 +677,77 @@ sanctions (docs-only; "No code changes anywhere in this step").
 **Blockers:** none.
 
 **Decision: approved**
+
+---
+
+## Code Review: task-167 — round 1 (2026-07-23)
+
+**Scope reviewed:** uncommitted diff on `wt/ux-refinement`: three modified
+spec files (`DRepDirectory.spec.tsx` +99, `GovernanceStore.spec.ts` +164/-3,
+`VotingGovernancePage.spec.tsx` +13/-2) and one new file
+(`source/renderer/app/containers/governance/DRepDirectoryPage.spec.tsx`).
+Test files only — exactly the four files Step 9 sanctions; no production,
+doc, locale, or tracker changes.
+
+**Findings:**
+
+1. **Matches the approved Step 9 near-verbatim.** The seven component
+   tests (9a), five store tests (9b), the full container spec (9c), and
+   the three harness-stub edits to `VotingGovernancePage.spec.tsx` (9d)
+   are byte-equivalent to the guide's prescribed content modulo prettier
+   line-wrapping. FR-14 is fully covered: banner render/clear + noSync
+   fallback (component), Phase-1-paint → merge, never-silent-0,
+   ranking-unavailable, enrich-window dedup, `{ errorType }`-only log
+   hygiene (store), sync props + once-only reaction refetch + dispose
+   (container).
+2. **One justified deviation: `jest.mock` of `utils/logging` in
+   `GovernanceStore.spec.ts` (~:22).** The guide planned to import the
+   real logger and `jest.spyOn` it, but the real module dereferences
+   `global.environment` at import time (`logging.ts:12`), which is
+   undefined under Jest — the suite would crash on import. The module
+   mock is the smallest fix, carries a 2-line why-comment per
+   conventions, and the assertions still exercise exactly what the store
+   passes to `logger.error`. Note, not a blocker.
+3. **Locked invariants verified in the new tests, not just untouched.**
+   #2: the log-hygiene test adversarially serializes all `logger.error`
+   calls and asserts no `drep1…` id and no `drep-alwaysAbstain` literal;
+   floor suite re-run 20/20 (NFR-4 checkpoint met). #5: the merge test
+   pins BigNumber-from-decimal-string with `9007199254740993` (2^53+1,
+   unrepresentable as a double) round-tripped via `toFixed()`, and the
+   absent-from-stake-map DRep stays `null`. #1/#4: no production or main
+   process code touched. Status vocabulary: new fixtures use
+   `'active' as const` only.
+4. **No IPC/contract drift.** Test payloads match the pinned shapes:
+   Phase-1 `{ dreps, epoch, fetchedAt }`, Phase-2
+   `{ stakeByDRepId, fetchedAt }` (`governance.types.ts:96-101`), and
+   the `__governanceError` plain-object error contract on both channels.
+5. **NFR-2 honored.** Both `toHaveBeenCalledWith` assertions with an
+   object arg next to a string use `expect.objectContaining` (prettier
+   2.1.2 oscillation guard); all four files are prettier-clean when
+   checked individually.
+6. **Scope clean; docs correctly untouched.** Tracker/plan updates for
+   task-167 belong to Step 13 by design; no slice-1/2/3 docs modified.
+
+**Verification (re-run by reviewer, not taken on faith):**
+
+- `yarn test:jest …DRepDirectory.spec.tsx` → **19/19** (12 + 7, matches
+  the Step-9e pinned count).
+- `yarn test:jest tests/jest/governance/GovernanceStore.spec.ts` →
+  **13/13** (8 + 5).
+- `yarn test:jest …DRepDirectoryPage.spec.tsx` → **3/3** (new file).
+- `yarn test:jest …VotingGovernancePage.spec.tsx` → **7/7** (unchanged
+  count — harness stubs only).
+- `yarn test:jest tests/jest/security/governance-sanitization.spec.ts` →
+  **20/20** (floor intact, never below).
+- `node_modules/.bin/tsc --noEmit` → exit 0 (and `yarn compile` also
+  completed cleanly this run).
+- `yarn lint` → completes with pre-existing warnings only, no errors.
+- `node_modules/.bin/prettier --check` on the four touched files →
+  all clean. (`yarn prettier --check <files>` is misleading here: the
+  package script bakes in a repo-wide `"**/*.*"` glob, so it reports
+  pre-existing drift in unrelated files — scope the binary directly.)
+- `yarn i18n:manage` correctly not run: no copy changes in this task.
+
+**Blockers:** none.
+
+**Decision: approved**
