@@ -39,15 +39,19 @@ const paginatedEntries: AppDRepDirectoryEntry[] = Array.from(
 const renderComponent = ({
   drepList = baseEntries,
   error = null,
+  isNodeInSync = true,
   refreshState = GovernanceRefreshState.Loaded,
   locale = 'en-US',
   onSelectForDelegation = jest.fn(),
+  syncProgress = 100,
 }: {
   drepList?: AppDRepDirectoryEntry[];
   error?: { message: string; type: string; details?: string } | null;
+  isNodeInSync?: boolean;
   refreshState?: GovernanceRefreshState;
   locale?: string;
   onSelectForDelegation?: jest.Mock;
+  syncProgress?: number | null;
 } = {}) => {
   const messages = locale === 'ja-JP' ? jaTranslations : translations;
   return render(
@@ -55,10 +59,12 @@ const renderComponent = ({
       <DRepDirectory
         drepList={drepList}
         error={error}
+        isNodeInSync={isNodeInSync}
         lastFetchedAt={Date.now() - 60_000}
         onRefresh={jest.fn()}
         onSelectForDelegation={onSelectForDelegation}
         refreshState={refreshState}
+        syncProgress={syncProgress}
       />
     </IntlProvider>
   );

@@ -161,3 +161,58 @@ the implementer; PD-1…PD-12 pre-resolve the ambiguities the tracker wording
    the parser's accept-string-or-number branch already covers this — no change needed.
 
 **Decision: approved**
+
+## Code Review: task-159 — round 1 (2026-07-23)
+
+**Scope reviewed:** the uncommitted diff (4 files: `DRepDirectory.tsx`,
+`DRepDirectoryPage.tsx`, `DRepDirectory.spec.tsx`, `DRepDirectory.stories.tsx`)
+against guide Step 1 (1a-1e) and PRD FR-1 / task-159 contract row.
+
+**Findings:**
+
+1. **Guide conformance — exact.** All four edits match the Step-1 post-edit quotes
+   verbatim: `isNodeInSync: boolean` / `syncProgress: number | null` added to the
+   `Props` interface (`DRepDirectory.tsx:53-54`) and deliberately NOT destructured
+   in the component body (grep confirms only the two interface lines — the
+   lint-trap avoidance the guide mandates); container reads
+   `stores?.networkStatus`, guards `!governanceStore || !networkStatus`, and passes
+   both observables in `render()` (`DRepDirectoryPage.tsx:49-60`); spec helper
+   gains `isNodeInSync = true` / `syncProgress = 100` defaults with matching
+   optional types; stories gain `DirectorySyncState` + `DEFAULT_SYNC_STATE` and
+   thread `syncState` through both render helpers.
+2. **Store boundary (AC-2 / FR-1) held.**
+   `grep -n "NetworkStatus" source/renderer/app/stores/GovernanceStore.ts` prints
+   nothing (exit 1). Container remains the integration point per research R1.
+3. **Scope clean.** `git status --short` shows exactly the four Step-1 files;
+   nothing else touched. No banner rendering (task-160 territory), no store
+   changes, no new tests (PD-11 — task-167 owns them), no i18n/IPC/CLI changes,
+   so the sanitization floor, local-first, lovelace, and CLI invariants are
+   untouched by construction — and the floor suite was re-run anyway (below).
+4. **Incidental reformat (note, not a finding):** `componentDidMount`'s
+   `this.props.stores\n  ?.governance` line-break shift in `DRepDirectoryPage.tsx`
+   is prettier 2.1.2's own output from the mandated Step-1e format pass;
+   semantically identical.
+5. **Pre-existing lint warnings (note):** eslint on the four files reports
+   0 errors / 7 warnings (`observer`/`inject` decorator false positives at
+   `DRepDirectoryPage.tsx:2`, `drepId` function-type-param at
+   `DRepDirectory.tsx:56`); all attach to lines the diff did not introduce.
+
+**Verification (re-run by reviewer, not taken on faith):**
+
+- `node_modules/.bin/tsc --noEmit` → exit 0 (yarn compile unreliable under
+  Node v24 per standing note; tsc run directly).
+- `yarn test:jest source/renderer/app/components/governance/drep-directory/DRepDirectory.spec.tsx`
+  → 12/12 pass (matches the guide's expected count; defaults keep behavior
+  unchanged).
+- `yarn test:jest tests/jest/security/governance-sanitization.spec.ts` → 20/20
+  pass (floor intact).
+- `node_modules/.bin/eslint <4 changed files>` → 0 errors.
+- `node_modules/.bin/prettier --check <4 changed files>` → all clean (the bare
+  `yarn prettier --check` script globs the whole repo and trips on pre-existing
+  drift in untouched files — not attributable to this task).
+- `NetworkStatusStore.ts:96/:119/:608-611` and `stores/index.ts:69` re-verified:
+  prop types `boolean` / `number | null` are faithful to the observables.
+
+**Blockers:** none.
+
+**Decision: approved**

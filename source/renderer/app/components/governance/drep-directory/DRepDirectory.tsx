@@ -50,6 +50,8 @@ interface Props {
   refreshState: GovernanceRefreshState;
   error: GovernanceStoreError | null;
   lastFetchedAt: number | null;
+  isNodeInSync: boolean;
+  syncProgress: number | null;
   onRefresh: () => void;
   onSelectForDelegation: (drepId: string) => void;
   intl: intlShape.isRequired;

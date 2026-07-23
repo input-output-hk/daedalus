@@ -1321,7 +1321,15 @@
           "id": "task-159",
           "title": "Container reads node-sync state and passes it to the directory",
           "description": "DRepDirectoryPage (container) reads stores.networkStatus.isNodeInSync and syncProgress and passes them into DRepDirectory as props. GovernanceStore stays decoupled from NetworkStatusStore — the container is the integration point.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "DRepDirectoryPage now reads stores.networkStatus.isNodeInSync and syncProgress in render() and passes them into DRepDirectory as props, guarding on both stores being present. GovernanceStore remains decoupled from NetworkStatusStore — the container is the sole integration point. DRepDirectory accepts the new props and the spec plus Storybook stories exercise them; the change is review-approved.",
+          "evidence": [
+            "source/renderer/app/containers/governance/DRepDirectoryPage.tsx",
+            "source/renderer/app/components/governance/drep-directory/DRepDirectory.tsx",
+            "source/renderer/app/components/governance/drep-directory/DRepDirectory.spec.tsx",
+            "storybook/stories/governance/DRepDirectory.stories.tsx"
+          ],
+          "updatedAt": "2026-07-23",
           "priority": "high",
           "estimatedHours": 1.5,
           "dependencies": [

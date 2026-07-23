@@ -24,6 +24,16 @@ import type { AppDRepDirectoryEntry } from '../../../source/renderer/app/stores/
 
 type DirectoryError = { message: string; type: string } | null;
 
+type DirectorySyncState = {
+  isNodeInSync: boolean;
+  syncProgress: number | null;
+};
+
+const DEFAULT_SYNC_STATE: DirectorySyncState = {
+  isNodeInSync: true,
+  syncProgress: 100,
+};
+
 const baseEntries: AppDRepDirectoryEntry[] = [
   {
     anchor: {
@@ -123,25 +133,29 @@ const EMPTY_SIDEBAR_MENUS: SidebarMenus = {
 const renderDirectory = (
   refreshState: GovernanceRefreshState,
   entries: AppDRepDirectoryEntry[],
-  error: DirectoryError = null
+  error: DirectoryError = null,
+  syncState: DirectorySyncState = DEFAULT_SYNC_STATE
 ) => (
   <DRepDirectory
     drepList={entries}
     error={error}
+    isNodeInSync={syncState.isNodeInSync}
     lastFetchedAt={Date.now() - 3 * 60 * 1000}
     onRefresh={action('onRefresh')}
     onSelectForDelegation={action('onSelectForDelegation')}
     refreshState={refreshState}
+    syncProgress={syncState.syncProgress}
   />
 );
 
 const renderCentered = (
   refreshState: GovernanceRefreshState,
   entries: AppDRepDirectoryEntry[],
-  error: DirectoryError = null
+  error: DirectoryError = null,
+  syncState: DirectorySyncState = DEFAULT_SYNC_STATE
 ) => (
   <div style={CENTERED_STYLE}>
-    {renderDirectory(refreshState, entries, error)}
+    {renderDirectory(refreshState, entries, error, syncState)}
   </div>
 );
 

@@ -18,8 +18,8 @@ interface Props extends RouteComponentProps {
 @observer
 class DRepDirectoryPage extends React.Component<Props> {
   componentDidMount() {
-    const governanceStore: GovernanceStore | undefined =
-      this.props.stores?.governance;
+    const governanceStore: GovernanceStore | undefined = this.props.stores
+      ?.governance;
 
     if (!governanceStore) {
       return;
@@ -46,8 +46,9 @@ class DRepDirectoryPage extends React.Component<Props> {
   render() {
     const { stores } = this.props;
     const governanceStore: GovernanceStore | undefined = stores?.governance;
+    const networkStatus = stores?.networkStatus;
 
-    if (!governanceStore) return null;
+    if (!governanceStore || !networkStatus) return null;
 
     return (
       <DRepDirectory
@@ -55,6 +56,8 @@ class DRepDirectoryPage extends React.Component<Props> {
         refreshState={governanceStore.refreshState}
         error={governanceStore.error}
         lastFetchedAt={governanceStore.lastFetchedAt}
+        isNodeInSync={networkStatus.isNodeInSync}
+        syncProgress={networkStatus.syncProgress}
         onRefresh={() => governanceStore.refresh()}
         onSelectForDelegation={this.handleSelectForDelegation}
       />
