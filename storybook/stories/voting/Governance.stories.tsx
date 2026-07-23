@@ -102,15 +102,13 @@ const voteOptions = {
   'No confidence': 'no_confidence',
 };
 
-const initializeTxErrorOptions: Record<
-  string,
-  InitializeVPDelegationTxError
-> = {
-  Generic: 'generic',
-  'Same vote': 'same_vote',
-  'No UTxOs available': 'no_utxos_available',
-  'Not enough money': 'not_enough_money',
-};
+const initializeTxErrorOptions: Record<string, InitializeVPDelegationTxError> =
+  {
+    Generic: 'generic',
+    'Same vote': 'same_vote',
+    'No UTxOs available': 'no_utxos_available',
+    'Not enough money': 'not_enough_money',
+  };
 
 const delegateVotesErrorOptions: Record<string, DelegateVotesError> = {
   Generic: 'generic',
@@ -124,7 +122,7 @@ const hwDeviceStatusOptions = {
   Failed: HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED,
 };
 
-const STAKE_POOLS_LIST = (STAKE_POOLS as unknown) as Array<StakePool>;
+const STAKE_POOLS_LIST = STAKE_POOLS as unknown as Array<StakePool>;
 
 const mockFundInfo: CatalystFund = {
   current: {

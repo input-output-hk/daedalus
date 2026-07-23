@@ -353,14 +353,91 @@ without needing user input.
 
 ## Final Outcome
 
-_To be filled at slice close._ Must record: per-task closing status + evidence; D4
-deviation (prettier substituted for `nix fmt` — run `nix fmt` before merge); P-5 deviation
-(walkthrough copies in the worktree's gitignored `.vscode/` need manual sync to the main
-checkout); confirmation the sanitization floor closed green; whether
-`research/slice-2-findings.md` captured all durable findings (it must — D1/D2/D3
-resolutions at minimum); un-synced-return behavior handed to `ux-refinement`; and the
-`auditSummary` note (slice-2 has none in the tracker — nothing to refresh; the outcome
-lives here).
+_Filled at slice close, 2026-07-22._
+
+### What shipped, per task
+
+- **task-112** (`284e4fb71e8f60f1cbedfe41d08b65a54de3e32c`,
+  `feat(gov): task-112 integrate DRep directory selection into voting power delegation form`) —
+  in-app "Browse DReps" affordance replacing the external gov.tools label link (D2, with
+  the four dead `drepInputLabel*` keys removed per P-1); typed `location.state` pickers in
+  `containers/governance/delegationFormState.ts`; `withRouter`-wrapped
+  `VotingGovernancePage` (browse-out push + `initialFormState` restore) and
+  `DRepDirectoryPage` (return push); row-level "Select for delegation" CTA on `DRepCard`
+  threaded through `DRepDirectoryList`/`DRepDirectory`; flow Jest including the two-hop
+  contract via the harness-only `DetailRouteStub` (D1 — `routes-config.ts`/`Routes.tsx`
+  untouched). Tracker status: **verified** (promoted at slice close on task-114's
+  dedicated proof, per the orchestration contract's dedicated-proof rule).
+- **task-113** (`bdad1d22735f0e31e096d246ef147f17196f3f6a`,
+  `feat(gov): task-113 render selected DRep ID in delegation confirmation dialog`) —
+  `VotingPowerDelegationConfirmationDialog` widened with
+  `drepIdentity: DRepIdentity | null`; drep targets render the full raw selected ID
+  (monospaced, breakable, untruncated — D3 raw-ID-only scope), sentinels keep their
+  labels via a null identity, and a regression test pins that no name ever renders
+  (anchor-2 reservation). Container builds `raw: chosenOption` verbatim. Tracker status:
+  **verified** (promoted at slice close on task-114's dedicated proof).
+- **task-114** (`35aa4792e4979fff44fc36fe22200d69c4959563`,
+  `test(gov): task-114 verify software-wallet delegate path end to end`) — end-to-end
+  payload Jest (row Select → pre-fill → confirmation renders the byte-equal raw ID →
+  passphrase → `delegateVotes` called once with
+  `objectContaining({ chosenOption, passphrase })` and `initializeVPDelegationTx` with
+  the same `chosenOption`); the "Voting power delegation - prefilled from directory"
+  story (global locale toggle); the `!!!` copy audit (+4 `!!!` values per locale, zero
+  removed); the walkthrough de-GovTool-ing (D2 scope, P-5 worktree copies); and
+  `research/slice-2-findings.md`. Tracker status: **complete** (it is the verification
+  task itself; no further dedicated proof exists — the release-end `!!!` review stays
+  user-owned).
+
+### Verification results
+
+- One code-review round per task — three rounds total, each **approved with zero
+  blockers** ([slice-2-code-review.md](./slice-2-code-review.md): "Code Review:
+  task-112/113/114 — round 1 — 2026-07-22"). Planning itself took one Critiquer round
+  (`requires_changes` on a wrong quoted import path) plus a fix pass to `approved`.
+- Gates at close (re-run by the reviewer in round 3 and re-confirmed by the slice-close
+  assurance run): `tsc --noEmit` zero errors; `yarn lint` exit 0 (pre-existing warnings
+  only); focused Jest 20/20 across the flow/dialog/directory suites; sanitization floor
+  **17/17 green**; `yarn i18n:manage` idempotent; `prettier --check` clean on touched
+  `.ts/.tsx/.scss`.
+- Invariants: #1/#2/#4/#10/#11/#13 verified per round — `VotingStore.ts`,
+  `GovernanceStore.ts`, `routes-config.ts`, `Routes.tsx` byte-identical to base;
+  byte-equality pinned end-to-end; no new logger/analytics/electron-store calls.
+
+### Deviations
+
+- **D4 — `nix fmt` unavailable:** `node_modules/.bin/prettier --write` on changed
+  `.ts/.tsx/.scss/.md` files substituted throughout (never tracker JSON or locale/
+  `translations` JSONs). **Run `nix fmt` from a nix-capable environment before merge.**
+  The task-112 round found prettier 2.1.2 cannot parse inline
+  `import { type … }` syntax; resolved in task-113 by separate `import type` statements —
+  `prettier --check` is clean at close.
+- **P-5 — gitignored walkthroughs:** the edited copies live in the worktree's
+  `.vscode/docs/walkthroughs/governance/` and do not travel with the branch. **Manually
+  sync them back to the main checkout's `.vscode/docs/walkthroughs/governance/` at
+  merge.**
+- Expected-drift riders recorded by the reviews: prettier 2.1.2 reformat drift in
+  `Governance.stories.tsx`/`VotingPowerDelegation.tsx`/dialog (semantically identical);
+  `translations/messages.json` regeneration re-added unrelated
+  `daedalus.diagnostics.dialog.*` descriptor hunks (tool-managed output).
+- Guide-prescribed comments in `VotingGovernancePage.spec.tsx` embed task IDs (against
+  the repo comment convention) — strip to plain "why" comments on the file's next touch.
+- Storybook was not launched in this container (no display): stories verified at
+  tsc/eslint/fixture level; eyeball the prefilled story in both locales via the global
+  toggle before merge.
+
+### Handoffs and notes
+
+- Durable findings are captured in
+  [research/slice-2-findings.md](../research/slice-2-findings.md) — D1 (harness
+  `DetailRouteStub` contract that slice-4 task-116/117 must honor via
+  `pickDelegationFormReturnState`), D2 (GovTool link replacement + P-1 label
+  unification), D3 (raw-ID-only scope; derivation deferred to cv-1), D4/P-5 deviations,
+  and the two `ux-refinement` behavior notes.
+- Handed to `ux-refinement`: the un-synced return hop (lands on `VotingUnavailable` with
+  the pre-fill parked in `location.state`) and the directory-first entry edge (Critiquer
+  N-4: `WalletsDropdown` reset wipes a pre-filled ID when no form state was inherited).
+- `auditSummary`: slice-2 has none in the tracker — nothing to refresh; this section is
+  the slice's outcome of record.
 
 ---
 

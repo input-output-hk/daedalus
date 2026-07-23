@@ -18,8 +18,8 @@ interface Props extends RouteComponentProps {
 @observer
 class DRepDirectoryPage extends React.Component<Props> {
   componentDidMount() {
-    const governanceStore: GovernanceStore | undefined = this.props.stores
-      ?.governance;
+    const governanceStore: GovernanceStore | undefined =
+      this.props.stores?.governance;
 
     if (!governanceStore) {
       return;

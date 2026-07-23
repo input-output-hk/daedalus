@@ -418,3 +418,50 @@ No blockers found. The uncommitted task-114 work matches the guide step-for-step
 eight acceptance criteria verified, all gates green.
 
 Decision: approved
+
+---
+
+## Planner: 2026-07-22 — slice-2 closed
+
+**Tasks landed.** Three commits on `feat/drep-discovery-slice-2`, one per task,
+subject-only:
+
+- task-112 — `284e4fb71` `feat(gov): task-112 integrate DRep directory selection into
+  voting power delegation form`
+- task-113 — `bdad1d227` `feat(gov): task-113 render selected DRep ID in delegation
+  confirmation dialog`
+- task-114 — `35aa4792e` `test(gov): task-114 verify software-wallet delegate path end
+  to end`
+
+**Review rounds.** One round per task (three total), each `Decision: approved` with zero
+blockers. Planning took one Critiquer round (`requires_changes` on a single
+compile-breaking quoted import path) plus a fix pass to `approved`.
+
+**Tracker.** task-112 and task-113 promoted `complete` → `verified`: the task-114
+in-slice verification suite (end-to-end byte-equal payload test, `!!!` copy audit,
+walkthrough sweep, full gate re-run) is dedicated proof beyond each task's own unit
+tests, per the orchestration contract's dedicated-proof rule. task-114 itself stays
+`complete`. Slice-2 has no `auditSummary` — the outcome of record is the PRD Final
+Outcome section.
+
+**Invariant status at close.** #1 (in-app browse only, gov.tools keys deleted), #2
+(sanitization suite 17/17; no new logger/analytics/electron-store calls in the slice
+diff), #4 (`location.state`-only handoff; `VotingStore.ts`, `GovernanceStore.ts`,
+`routes-config.ts`, `Routes.tsx` byte-identical to base), #10 (byte-equality pinned
+end-to-end by the payload test), #11 (+4 `!!!` values per locale, zero removed), #13
+(sentinels never in the directory; labels kept in the dialog) — all verified in the
+per-task rounds above and re-confirmed at close: `tsc --noEmit` zero errors,
+sanitization floor 17/17 green.
+
+**Deviations carried to merge.** D4: prettier substituted for the unavailable
+`nix fmt` — run `nix fmt` before merge. P-5: sync the edited walkthrough copies from
+the worktree's gitignored `.vscode/docs/walkthroughs/governance/` back to the main
+checkout. Storybook stories were compile/fixture-verified only — eyeball in both
+locales via the global toggle.
+
+**Docs.** PRD Final Outcome filled ([slice-2-PRD.md](./slice-2-PRD.md)); durable
+findings in
+[research/slice-2-findings.md](../research/slice-2-findings.md) (D1 harness contract
+binding slice-4 task-116/117, D2/P-1, D3 scope, D4/P-5, ux-refinement handoffs).
+
+Slice-2 is closed.

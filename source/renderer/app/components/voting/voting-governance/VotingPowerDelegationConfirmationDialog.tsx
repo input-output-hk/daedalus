@@ -22,7 +22,7 @@ import type { DRepIdentity } from '../../../../../common/types/governance.types'
 
 const mapOfTxErrorCodeToIntl: Record<
   DelegateVotesError,
-  typeof messages[keyof typeof messages]
+  (typeof messages)[keyof typeof messages]
 > = {
   generic: messages.errorGeneric,
   wrong_encryption_passphrase: apiErrorMessage.wrongEncryptionPassphrase,
@@ -82,12 +82,11 @@ function VotingPowerDelegationConfirmationDialog({
   redirectToWallet,
   selectedWallet,
 }: VotingPowerDelegationConfirmationDialogProps) {
-  const [state, setState] = useState<
-    VotingPowerDelegationConfirmationDialogState
-  >({
-    passphrase: '',
-    status: 'awaiting',
-  });
+  const [state, setState] =
+    useState<VotingPowerDelegationConfirmationDialogState>({
+      passphrase: '',
+      status: 'awaiting',
+    });
 
   useEffect(() => {
     (async () => {

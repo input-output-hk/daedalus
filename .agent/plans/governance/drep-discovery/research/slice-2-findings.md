@@ -22,8 +22,13 @@
   `DetailRouteStub` registered only in that Jest harness (path literal
   `/governance/dreps/:drepId` defined inside the spec). The stub forwards inherited
   state plus `selectedDRepId` using the production `pickDelegationFormReturnState`
-  picker, so slice-4's real "View details" push can adopt the same helper and the
-  contract stays code, not convention.
+  picker.
+- **Binding on slice-4 (task-116/117):** the production Detail view must honor this
+  exact contract — receive `{ from, selectedWalletId, voteType }` from the Directory's
+  detail push and return it plus `selectedDRepId` to the form through the same
+  `pickDelegationFormReturnState` helper. The harness stub is the executable
+  specification; adopting the shared picker keeps the contract code, not convention,
+  and the existing two-hop test then covers the real route unchanged.
 
 ## D2 as implemented — GovTool link removed, label unified
 
@@ -85,6 +90,24 @@
 - **Action at slice close: manually sync the edited worktree copies back to the
   main checkout's `.vscode/docs/walkthroughs/governance/`** (worktree isolation
   forbade editing the main checkout directly; gitignored files do not commit).
+
+## Durable notes from the slice-2 code-review log
+
+All three tasks passed code review in one round each, approved with zero blockers
+([slice-2-code-review.md](../task-plans/slice-2-code-review.md)). Items worth keeping:
+
+- **Task-ID comments to strip:** guide-prescribed comments in
+  `source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx` embed task IDs
+  (e.g. the `DetailRouteStub` and payload-test comments), which the repo comment
+  convention forbids. Strip them to plain "why" comments on the file's next touch.
+- **Storybook not executed here:** the container has no display, so the new/updated
+  stories (prefilled-from-directory, confirmation with `drepIdentity`) were verified at
+  tsc/eslint/fixture-id level only. Eyeball them in both locales via the global
+  English/Japanese toggle before merge.
+- **`translations/messages.json` regeneration side effect:** `yarn i18n:manage`
+  re-added unrelated `daedalus.diagnostics.dialog.*` descriptor hunks; this is
+  tool-managed output and rides with whichever commit triggers regeneration — do not
+  hand-edit it back.
 
 ## Behavior notes handed to `ux-refinement`
 
