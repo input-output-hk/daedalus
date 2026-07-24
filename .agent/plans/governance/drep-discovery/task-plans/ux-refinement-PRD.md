@@ -448,4 +448,82 @@ Nix-shell / task-125 environments by design.
 
 ## Final Outcome
 
-*(to be filled at phase close)*
+**Phase closed 2026-07-23.** Eleven tasks executed in guide order, one subject-only
+commit each (`fbb93707b` task-159 … `bd6c21e80` task-169 on `wt/ux-refinement`,
+above the planning-docs base `807e4df05`); eleven code-review rounds — every task
+approved in round 1 with zero blockers.
+
+**Shipped per task:**
+
+- **task-159** — `DRepDirectoryPage` passes `isNodeInSync` + `syncProgress` into
+  `DRepDirectory` as required props; store boundary preserved (`NetworkStatus` grep
+  on `GovernanceStore.ts` empty, re-verified at close).
+- **task-160** — persistent syncing banner (icon + text + floored live `%`,
+  `role="status"`, `--badge-warning-*` slots), NEW `_shared/DRepEmptyState.tsx`
+  (`noSync` variant only — PD-1), refetch-once container reaction on the
+  false→true sync edge.
+- **task-161** — service split into `fetchDRepRegistrations` (no `--include-stake`;
+  `votingPower` always null) + `fetchDRepStake` (dual-shape-tolerant,
+  CIP-129-keyed decimal-string map, sentinels skipped — PD-6); new
+  `GOVERNANCE_DREP_STAKE_CHANNEL` with the shared `__governanceError` contract.
+- **task-162** — store sequences Phase 1 (paint at `Loaded`) → Phase 2 (merge by
+  `drepId`); `VotingPowerEnrichState` + `isRankingUnavailable`; NEW
+  `_shared/DRepErrorBanner.tsx` (`rankingUnavailable` only); `—` tooltips by enrich
+  state; `{ errorType }`-only phase logging. The Reshuffle half of AC-3 is
+  **deferred as forward-compat only** (PD-4 — Reshuffle/seed arrive with slice-5
+  task-118; the two-phase path adds no seed coupling).
+- **task-163** — `REGISTRATION_TIMEOUT_MS = 10_000` / `STAKE_TIMEOUT_MS = 30_000`
+  threaded per call (PD-7); the 30 s stake budget stays **provisional** pending the
+  task-166 latency measurement; tokens §6 confirmed, not rewritten.
+- **task-164** — 5 keys × 2 locales, alphabetical, `!!!` kept; `yarn i18n:manage`
+  exit 0 and idempotent — the anticipated environment debt was not needed.
+- **task-165** — "Directory Identity: ID-Only in v1" section added to
+  `drep-discovery-design.md`; `givenName` grep empty under governance components.
+- **task-166** — plan Risks mitigation now names all three remaining manual items;
+  the remainder (mainnet fixture + p50/p95 latency + fixture promotion) is locked
+  `manual_execution` and was **not attempted** — **status stays `partial`**.
+- **task-167** — consolidated behavior matrix landed: DRepDirectory 19,
+  GovernanceStore 13, DRepDirectoryPage 3 (new), VotingGovernancePage 7.
+- **task-168** — `logDRepStateSnapshot` → `Logs/pub/DRep-state-snapshot.json` on
+  Phase-1 success + `ALLOWED_LOGS` registration + tokens §12 boundary doc — the ONE
+  documented sanitization-floor exception; focused spec 4/4. End-to-end
+  support-bundle proof deferred to task-125 (verification debt).
+- **task-169** — PART A structured `UsageError` era-retry gate at the spawn
+  boundary (negative + positive tests); PART B real-binary argv smoke suite
+  **self-skipped** in this environment (no `cardano-cli` on PATH) — the positive
+  run is Nix-shell verification debt.
+
+**Step-12 verification (run at close, 2026-07-23 — honest results):**
+
+- `node_modules/.bin/tsc --noEmit` → exit 0, zero errors (run directly per NFR-1;
+  the `yarn compile` script is this same `tsc --noEmit`).
+- `yarn lint` → exit 0; 0 errors (5,566 pre-existing repo-wide warnings, none new).
+- `yarn test:jest tests/jest/governance/` → **55 passed, 12 skipped, 0 failed**
+  (GovernanceQueryService 38, GovernanceStore 13, logDRepStateSnapshot 4;
+  GovernanceCliArgvSmoke **12 skipped** — the expected self-skip, reported as
+  skipped, never as passing).
+- `yarn test:jest` DRepDirectory + DRepDirectoryPage + VotingGovernancePage →
+  **29 passed, 0 failed** (19 + 3 + 7).
+- Sanitization floor `tests/jest/security/governance-sanitization.spec.ts` →
+  **20/20, never below**.
+- `yarn i18n:manage` → exit 0, idempotent (working tree unchanged after the run).
+- Invariant greps: `NetworkStatus` in `GovernanceStore.ts`, `CLI_TIMEOUT_MS`, and
+  `include-stake` under `source/main/governance/` → all empty. The `filterLogData`
+  grep on `setupLogging.ts` prints exactly one line — the `logDRepStateSnapshot`
+  doc comment *stating* the deliberate bypass; no functional `filterLogData` call
+  exists in the file, so the gate's intent holds (findings F-8).
+- `DRep-state-snapshot.json` registered exactly once (`config.ts:143`).
+
+**Recorded verification debts (both by design):** task-169 PART B positive smoke
+run (Nix shell); task-168 end-to-end support-bundle proof (task-125).
+
+**Tracker at close:** task-160 promoted to `verified` — task-167's consolidated
+suites are dedicated proof beyond the task's own commit (slice-2/task-114
+precedent). task-162 raised `partial` → `complete` per PD-4 and guide Step 13a
+(`verified` withheld: the Reshuffle half of AC-3 cannot be demonstrated until
+slice-5 exists). All other tasks `complete`; task-166 stays `partial`. No
+`auditSummary` exists for this phase (slice-2/3 precedent) and none was added;
+`metadata.updated` bumped to 2026-07-23.
+
+**Findings:** durable findings F-1…F-9 recorded in
+[research/ux-refinement-findings.md](../research/ux-refinement-findings.md).

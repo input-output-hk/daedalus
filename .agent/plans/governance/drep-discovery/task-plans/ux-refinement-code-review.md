@@ -897,3 +897,51 @@ Step-11 files the guide scopes for task-169; nothing else touched.
 **Blockers:** none.
 
 **Decision: approved**
+
+## Planner: 2026-07-23 — ux-refinement closed
+
+Eleven tasks landed in guide order (task-159 … task-169), one subject-only commit
+each (`fbb93707b` … `bd6c21e80` on `wt/ux-refinement`, above the planning-docs
+base `807e4df05`); eleven review rounds, every task approved in round 1 with zero
+blockers. Shipped: container-fed sync awareness (required `isNodeInSync` /
+`syncProgress` props), the persistent syncing banner + `DRepEmptyState noSync`
+fallback + refetch-once reaction, the two-phase service split
+(`fetchDRepRegistrations` / `fetchDRepStake`) over a new
+`GOVERNANCE_DREP_STAKE_CHANNEL`, store-sequenced enrich with
+`VotingPowerEnrichState` and the `DRepErrorBanner rankingUnavailable` degradation,
+per-phase CLI budgets (10 s / 30 s provisional), 5 × 2 `!!!`-marked locale keys,
+the ID-only-v1 design section, the recorded fixture/latency follow-up, the
+consolidated behavior Jest matrix, the `DRep-state-snapshot.json` support log (the
+one documented sanitization-floor exception), and the structured `UsageError`
+era-retry gate + real-binary argv smoke suite.
+
+Phase-close verification (guide Step 12, re-run at close): `tsc --noEmit` zero
+errors; `yarn lint` 0 errors (5,566 pre-existing repo-wide warnings);
+`tests/jest/governance/` 55 passed / 12 skipped / 0 failed (GovernanceQueryService
+38, GovernanceStore 13, logDRepStateSnapshot 4; GovernanceCliArgvSmoke 12 skipped
+— the expected self-skip, no `cardano-cli` on PATH); DRepDirectory +
+DRepDirectoryPage + VotingGovernancePage 29 passed (19 + 3 + 7); sanitization
+floor 20/20, never below; `yarn i18n:manage` exit 0 and idempotent; invariant
+greps empty except the `filterLogData` grep's single doc-comment hit (expected —
+findings F-8); `DRep-state-snapshot.json` registered exactly once
+(`config.ts:143`).
+
+Deferred at close: the task-166 remainder (mainnet fixture + p50/p95 latency +
+fixture promotion — locked `manual_execution`, untouched, status stays `partial`);
+the task-162 Reshuffle half of AC-3 (forward-compat only per PD-4, slice-5
+task-118); the task-169 PART B positive smoke run (Nix-shell verification debt);
+the task-168 end-to-end support-bundle proof (task-125 verification debt).
+
+Close-out bookkeeping: tracker — task-160 promoted to `verified` on task-167's
+dedicated suites (slice-2/task-114 precedent: banner, fallback, and reaction all
+pinned outside the task's own commit); task-162 raised `partial` → `complete` per
+PD-4 and guide Step 13a (`verified` withheld — the Reshuffle half cannot be
+demonstrated until slice-5); all other tasks `complete`, task-166 `partial`;
+`metadata.updated` → 2026-07-23; no phase `auditSummary` (slice-2/3 precedent).
+PRD Final Outcome filled; durable findings F-1…F-9 recorded in
+`research/ux-refinement-findings.md`. Housekeeping: at close the worktree carried
+243 files of repo-wide prettier-2.1.2 drift; every file was verified byte-identical
+to prettier(HEAD) output before the drift was stashed (not committed) to restore
+the clean baseline — see findings F-9.
+
+Decision: n/a (Planner close-out entry)

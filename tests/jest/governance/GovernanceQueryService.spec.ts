@@ -42,8 +42,7 @@ const VALID_DREP_STATE_JSON = JSON.stringify([
       anchor: {
         dataHash:
           '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
-        url:
-          'https://governance-preview.example.org/dreps/ledger-policy-lab.json',
+        url: 'https://governance-preview.example.org/dreps/ledger-policy-lab.json',
       },
       deposit: 500000000,
       expiry: 535,
@@ -212,10 +211,8 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
       expect(typeof drep0.drepActivity).toBe('number');
       expect(drep0.drepActivity as number).toBe(23); // 535 - 512
       expect(drep0.anchor).toEqual({
-        url:
-          'https://governance-preview.example.org/dreps/ledger-policy-lab.json',
-        hash:
-          '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
+        url: 'https://governance-preview.example.org/dreps/ledger-policy-lab.json',
+        hash: '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
       });
 
       // Second DRep (scriptHash, no stake, no anchor)
@@ -417,8 +414,7 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
             anchor: {
               dataHash: 12345,
               url: {
-                href:
-                  'https://governance-preview.example.org/dreps/invalid.json',
+                href: 'https://governance-preview.example.org/dreps/invalid.json',
               },
             },
             deposit: 500000000,

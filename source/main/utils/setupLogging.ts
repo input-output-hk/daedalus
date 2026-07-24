@@ -124,13 +124,8 @@ export const logStateSnapshot = (
 ): MessageBody => {
   const { ...data } = props;
   const { currentTime: at, systemInfo, coreInfo } = data;
-  const {
-    platform,
-    platformVersion,
-    cpu,
-    ram,
-    availableDiskSpace,
-  } = systemInfo;
+  const { platform, platformVersion, cpu, ram, availableDiskSpace } =
+    systemInfo;
   const {
     daedalusVersion,
     daedalusProcessID,
@@ -193,7 +188,7 @@ export const logDRepStateSnapshot = (
     at: new Date().toISOString(),
     env: `${network}:${os}:${platformVersion}`,
     ns: ['daedalus', `v${version}`, `*${network}*`],
-    data: (payload as unknown) as ConstructMessageBodyParams['data'],
+    data: payload as unknown as ConstructMessageBodyParams['data'],
     msg: 'Updating DRep-state-snapshot.json file',
     pid: '',
     sev: 'info',

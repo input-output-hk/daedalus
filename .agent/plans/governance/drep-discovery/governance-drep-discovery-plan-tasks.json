@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Governance DRep Discovery Plan Tasks",
     "created": "2026-05-21",
-    "updated": "2026-06-16",
+    "updated": "2026-07-23",
     "version": "2.0",
     "statusVocabulary": [
       "pending",
@@ -1345,8 +1345,8 @@
           "id": "task-160",
           "title": "Persistent syncing banner + noSync fallback + clear-on-sync refetch",
           "description": "When !isNodeInSync, DRepDirectory renders a persistent, non-dismissible syncing banner above the list (governance.drepDirectory.syncing with live progress %). Color is never the sole cue (icon + text), using the --badge-warning-* token slots. If a syncing query returns zero DReps or an era/availability error, the list area falls back to the existing DRepEmptyState noSync. When isNodeInSync flips true the banner clears and a fresh fetch runs so the complete list appears without manual refresh.",
-          "status": "complete",
-          "statusReason": "DRepDirectory renders a persistent, non-dismissible syncing banner (role=status, warning triangle icon + text, --badge-warning-* token slots) with live floor(syncProgress)% while !isNodeInSync, via the new governance.drepDirectory.syncing message. When syncing yields zero DReps or a non-selfnode failure, the list area falls back to DRepEmptyState noSync instead of a bare error. DRepDirectoryPage installs a MobX reaction on networkStatus.isNodeInSync that triggers governanceStore.refresh() once on the false -> true edge (disposed on unmount), so the complete list appears without manual refresh; the change is review-approved.",
+          "status": "verified",
+          "statusReason": "DRepDirectory renders a persistent, non-dismissible syncing banner (role=status, warning triangle icon + text, --badge-warning-* token slots) with live floor(syncProgress)% while !isNodeInSync, via the new governance.drepDirectory.syncing message. When syncing yields zero DReps or a non-selfnode failure, the list area falls back to DRepEmptyState noSync instead of a bare error. DRepDirectoryPage installs a MobX reaction on networkStatus.isNodeInSync that triggers governanceStore.refresh() once on the false -> true edge (disposed on unmount), so the complete list appears without manual refresh; the change is review-approved. Promoted to verified at phase close: the task-167 consolidated suites are dedicated proof beyond this task's own commit (which landed no behavior tests by PD-11) - component tests pin the banner with the floored live %, the 0%-on-null mid-boot case, banner absence in sync, both noSync fallback triggers, and the retained-list guard; the new DRepDirectoryPage spec pins the live-% pass-through, the refetch-exactly-once reaction, and its disposal. The phase-close verification re-ran all of it green (DRepDirectory 19/19, DRepDirectoryPage 3/3) with tsc zero errors and the sanitization floor 20/20.",
           "evidence": [
             "source/renderer/app/components/governance/drep-directory/DRepDirectory.tsx",
             "source/renderer/app/components/governance/drep-directory/DRepDirectory.scss",
@@ -1400,8 +1400,8 @@
           "id": "task-162",
           "title": "Store drives the two phases (Loaded then enrich)",
           "description": "GovernanceStore drives the two phases: Phase 1 -> Loaded (list visible, voting-power column shows — with loading tooltip); Phase 2 success -> voting power populated; Phase 2 failure -> keep the list, surface the already-designed error.rankingUnavailable banner and leave —. Manual Refresh re-runs both phases; Reshuffle still reseeds without re-querying.",
-          "status": "partial",
-          "statusReason": "GovernanceStore now sequences the two phases: fetchDRepList paints the registrations list (Loaded, votingPower null), then _enrichVotingPower requests the stake channel and merges by drepId; the new VotingPowerEnrichState observable and isRankingUnavailable computed drive the UI, and Phase-2 failure keeps the list, flags ranking-unavailable via the new DRepErrorBanner rankingUnavailable variant, and leaves — in the column with loading/unavailable tooltips on DRepCard. The in-flight guard covers the enrich window and phase-failure logs carry only the normalized errorType. Manual Refresh re-runs both phases. Reshuffle half of AC-3 is forward-compat only — Reshuffle/seed do not exist until slice-5 task-118; the two-phase path re-queries only via fetchDRepList and adds no seed coupling.",
+          "status": "complete",
+          "statusReason": "GovernanceStore now sequences the two phases: fetchDRepList paints the registrations list (Loaded, votingPower null), then _enrichVotingPower requests the stake channel and merges by drepId; the new VotingPowerEnrichState observable and isRankingUnavailable computed drive the UI, and Phase-2 failure keeps the list, flags ranking-unavailable via the new DRepErrorBanner rankingUnavailable variant, and leaves — in the column with loading/unavailable tooltips on DRepCard. The in-flight guard covers the enrich window and phase-failure logs carry only the normalized errorType. Manual Refresh re-runs both phases. Reshuffle half of AC-3 is forward-compat only — Reshuffle/seed do not exist until slice-5 task-118; the two-phase path re-queries only via fetchDRepList and adds no seed coupling. Set complete at phase close per PD-4 and the guide's close-out rule: the in-phase acceptance scope is fully met and the task-167 store/component suites pin the two-phase behavior (Phase-1 paint then merge, absent-id stays null, stake failure keeps the list and flags rankingUnavailable, enrich-window dedup, errorType-only logging). Not promoted to verified because the Reshuffle half of AC-3 cannot be demonstrated until slice-5 exists.",
           "evidence": [
             "source/renderer/app/stores/GovernanceStore.ts",
             "source/renderer/app/components/governance/_shared/DRepErrorBanner.tsx",

@@ -48,7 +48,8 @@ export const handleGovernanceRequests = () => {
   governanceDRepListChannel.onRequest(async (_request) => {
     logger.info('Governance IPC: DRep list requested from renderer');
     try {
-      const payload = await GovernanceQueryService.getInstance().fetchDRepRegistrations();
+      const payload =
+        await GovernanceQueryService.getInstance().fetchDRepRegistrations();
       // Support-bundle snapshot only; a write failure must never fail the
       // directory response.
       try {

@@ -62,7 +62,8 @@ export class GovernanceQueryService {
    * token, invalid flag, missing required argument). Node-side query failures
    * never print it, so it gates the conway era fallback safely.
    */
-  private static readonly CLI_USAGE_SIGNATURE = /(invalid (option|argument)|missing:|usage:)/i;
+  private static readonly CLI_USAGE_SIGNATURE =
+    /(invalid (option|argument)|missing:|usage:)/i;
 
   private cliBin = 'cardano-cli';
   private nodeSocketPath: string | null = null;
@@ -392,9 +393,8 @@ export class GovernanceQueryService {
         if (timeout) clearTimeout(timeout);
         if (code !== 0) {
           const trimmedStderr = stderr.trim();
-          const isUsageRejection = GovernanceQueryService.CLI_USAGE_SIGNATURE.test(
-            trimmedStderr
-          );
+          const isUsageRejection =
+            GovernanceQueryService.CLI_USAGE_SIGNATURE.test(trimmedStderr);
           reject(
             new GovernanceQueryError(
               isUsageRejection
