@@ -194,6 +194,7 @@ in rec {
         ${pkgs.libva.out}/lib/*.so.2
         ${pkgs.atk}/lib/libatk-bridge-2.0.so
         ${pkgs.libgbm}/lib/libgbm.so.1
+        ${pkgs.mesa}/lib/gbm/dri_gbm.so
         $(find ${pkgs.glibc}/lib -type l)
       )
     '';
@@ -218,7 +219,9 @@ in rec {
         + ''
           chmod -R +w $out
 
-          mkdir -p $out/lib
+          mkdir -p $out/lib $out/share/X11
+          rm -rf $out/share/X11/xkb
+          cp -RL ${pkgs.xkeyboard-config}/etc/X11/xkb $out/share/X11/xkb
           cp -R ${electronBin}/lib/electron $out/lib/
           ( cd $out/electron && ${pkgs.rsync}/bin/rsync -Rah . $out/lib/electron/ ; )
           rm -rf $out/electron/
@@ -256,8 +259,10 @@ in rec {
             fi
             # nix-bundle-exe nukes the xkeyboard-config path baked into libxkbcommon.so;
             # restore it so keyboard input works:
-            export XKB_CONFIG_ROOT="${pkgs.xkeyboard-config}/etc/X11/xkb"
             LIB_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")/lib"
+            BUNDLE_DIR="$(dirname "$LIB_DIR")"
+            export XKB_CONFIG_ROOT="$BUNDLE_DIR/share/X11/xkb"
+            export GBM_BACKENDS_PATH="$LIB_DIR/electron/lib"
             # Run electron directly (interpreter is embedded via patchelf above):
             exec "$LIB_DIR"/electron/electron "$@"
           ''} $out/bin/electron
