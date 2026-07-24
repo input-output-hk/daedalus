@@ -137,14 +137,17 @@ const renderDirectory = (
   refreshState: GovernanceRefreshState,
   entries: AppDRepDirectoryEntry[],
   error: DirectoryError = null,
-  syncState: DirectorySyncState = DEFAULT_SYNC_STATE
+  syncState: DirectorySyncState = DEFAULT_SYNC_STATE,
+  isCohortActive = false
 ) => (
   <DRepDirectory
     drepList={entries}
     error={error}
+    isCohortActive={isCohortActive}
     isNodeInSync={syncState.isNodeInSync}
     lastFetchedAt={Date.now() - 3 * 60 * 1000}
     onRefresh={action('onRefresh')}
+    onReshuffle={action('onReshuffle')}
     onSelectForDelegation={action('onSelectForDelegation')}
     onViewDetails={action('onViewDetails')}
     refreshState={refreshState}
@@ -157,10 +160,11 @@ const renderCentered = (
   refreshState: GovernanceRefreshState,
   entries: AppDRepDirectoryEntry[],
   error: DirectoryError = null,
-  syncState: DirectorySyncState = DEFAULT_SYNC_STATE
+  syncState: DirectorySyncState = DEFAULT_SYNC_STATE,
+  isCohortActive = false
 ) => (
   <div style={CENTERED_STYLE}>
-    {renderDirectory(refreshState, entries, error, syncState)}
+    {renderDirectory(refreshState, entries, error, syncState, isCohortActive)}
   </div>
 );
 
@@ -299,7 +303,14 @@ storiesOf('Governance / DRep Directory', module)
                         store.set({ currentContentRoute: navItemId });
                       }}
                     />
-                    {renderDirectory(refreshState, entries, error)}
+                    {renderDirectory(
+                      refreshState,
+                      entries,
+                      error,
+                      DEFAULT_SYNC_STATE,
+                      refreshState === GovernanceRefreshState.Loaded ||
+                        refreshState === GovernanceRefreshState.Refreshing
+                    )}
                   </div>
                 ) : (
                   renderNonGovernancePlaceholder(
@@ -314,7 +325,13 @@ storiesOf('Governance / DRep Directory', module)
     )
   )
   .add('Loaded', () =>
-    renderCentered(GovernanceRefreshState.Loaded, baseEntries)
+    renderCentered(
+      GovernanceRefreshState.Loaded,
+      baseEntries,
+      null,
+      DEFAULT_SYNC_STATE,
+      true
+    )
   )
   .add('Empty', () => renderCentered(GovernanceRefreshState.Loaded, []))
   .add('Error', () =>
@@ -325,19 +342,27 @@ storiesOf('Governance / DRep Directory', module)
     renderCentered(
       GovernanceRefreshState.Refreshing,
       baseEntries,
-      REFRESH_ERROR
+      REFRESH_ERROR,
+      DEFAULT_SYNC_STATE,
+      true
     )
   )
   .add('Node syncing', () =>
-    renderCentered(GovernanceRefreshState.Loaded, baseEntries, null, {
-      isNodeInSync: false,
-      syncProgress: number('Sync progress (%)', 87, {
-        max: 100,
-        min: 0,
-        range: true,
-        step: 1,
-      }),
-    })
+    renderCentered(
+      GovernanceRefreshState.Loaded,
+      baseEntries,
+      null,
+      {
+        isNodeInSync: false,
+        syncProgress: number('Sync progress (%)', 87, {
+          max: 100,
+          min: 0,
+          range: true,
+          step: 1,
+        }),
+      },
+      true
+    )
   )
   .add('Node syncing — empty fallback', () =>
     renderCentered(GovernanceRefreshState.Loaded, [], null, {
@@ -355,9 +380,11 @@ storiesOf('Governance / DRep Directory', module)
       <DRepDirectory
         drepList={baseEntries.map((entry) => ({ ...entry, votingPower: null }))}
         error={null}
+        isCohortActive={false}
         isNodeInSync
         lastFetchedAt={Date.now() - 3 * 60 * 1000}
         onRefresh={action('onRefresh')}
+        onReshuffle={action('onReshuffle')}
         onSelectForDelegation={action('onSelectForDelegation')}
         onViewDetails={action('onViewDetails')}
         refreshState={GovernanceRefreshState.Loaded}
@@ -367,5 +394,11 @@ storiesOf('Governance / DRep Directory', module)
     </div>
   ))
   .add('Pagination — 30 entries', () =>
-    renderCentered(GovernanceRefreshState.Loaded, paginatedEntries)
+    renderCentered(
+      GovernanceRefreshState.Loaded,
+      paginatedEntries,
+      null,
+      DEFAULT_SYNC_STATE,
+      true
+    )
   );

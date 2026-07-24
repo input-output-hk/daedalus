@@ -63,7 +63,9 @@ interface Props {
   isNodeInSync: boolean;
   syncProgress: number | null;
   votingPowerState: VotingPowerEnrichState;
+  isCohortActive: boolean;
   onRefresh: () => void;
+  onReshuffle: () => void;
   onSelectForDelegation: (drepId: string) => void;
   onViewDetails: (drepId: string) => void;
   intl: intlShape.isRequired;
@@ -77,7 +79,9 @@ function DRepDirectory({
   isNodeInSync,
   syncProgress,
   votingPowerState,
+  isCohortActive,
   onRefresh,
+  onReshuffle,
   onSelectForDelegation,
   onViewDetails,
   intl,
@@ -185,6 +189,8 @@ function DRepDirectory({
         lastFetchedAt={lastFetchedAt}
         onRefresh={onRefresh}
         isRefreshing={refreshState === GovernanceRefreshState.Refreshing}
+        isCohortActive={isCohortActive}
+        onReshuffle={onReshuffle}
       />
       {!isNodeInSync && (
         <div className={styles.syncingBanner} role="status">

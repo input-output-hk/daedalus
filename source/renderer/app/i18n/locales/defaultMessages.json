@@ -2730,6 +2730,16 @@
         "defaultMessage": "!!!Last updated {time}",
         "description": "Last updated timestamp label",
         "id": "governance.drepDirectory.lastUpdated"
+      },
+      {
+        "defaultMessage": "!!!Default view shows up to 200 eligible DReps in randomized order, excluding the 35 largest by voting power.",
+        "description": "Primary line explaining the randomized default cohort",
+        "id": "governance.drepDirectory.cohortBanner"
+      },
+      {
+        "defaultMessage": "!!!Reshuffle order",
+        "description": "Control that reseeds the randomized cohort order",
+        "id": "governance.drepDirectory.cohortBanner.reshuffle"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryBanner.tsx"

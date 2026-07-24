@@ -41,6 +41,8 @@ const renderComponent = ({
   drepList = baseEntries,
   error = null,
   isNodeInSync = true,
+  isCohortActive = false,
+  onReshuffle = jest.fn(),
   refreshState = GovernanceRefreshState.Loaded,
   locale = 'en-US',
   onSelectForDelegation = jest.fn(),
@@ -51,6 +53,8 @@ const renderComponent = ({
   drepList?: AppDRepDirectoryEntry[];
   error?: { message: string; type: string; details?: string } | null;
   isNodeInSync?: boolean;
+  isCohortActive?: boolean;
+  onReshuffle?: jest.Mock;
   refreshState?: GovernanceRefreshState;
   locale?: string;
   onSelectForDelegation?: jest.Mock;
@@ -65,6 +69,8 @@ const renderComponent = ({
         drepList={drepList}
         error={error}
         isNodeInSync={isNodeInSync}
+        isCohortActive={isCohortActive}
+        onReshuffle={onReshuffle}
         lastFetchedAt={Date.now() - 60_000}
         onRefresh={jest.fn()}
         onSelectForDelegation={onSelectForDelegation}
@@ -357,5 +363,48 @@ describe('DRepDirectory', () => {
         '!!!Voting power data unavailable this refresh. Ranking-based filters disabled.'
       )
     ).toBeInTheDocument();
+  });
+
+  it('renders the cohort banner line and Reshuffle control when the cohort is active', () => {
+    renderComponent({ isCohortActive: true });
+
+    expect(
+      screen.getByText(
+        '!!!Default view shows up to 200 eligible DReps in randomized order, excluding the 35 largest by voting power.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByText('!!!Reshuffle order')).toBeInTheDocument();
+  });
+
+  it('invokes onReshuffle when the Reshuffle control is clicked', () => {
+    const onReshuffle = jest.fn();
+    renderComponent({ isCohortActive: true, onReshuffle });
+
+    fireEvent.click(screen.getByText('!!!Reshuffle order'));
+
+    expect(onReshuffle).toHaveBeenCalledTimes(1);
+  });
+
+  it('makes no cohort claim while ranking is unavailable', () => {
+    renderComponent({
+      drepList: [{ ...baseEntries[0], votingPower: null }],
+      isCohortActive: false,
+      votingPowerState: VotingPowerEnrichState.Failed,
+    });
+
+    expect(screen.queryByText(/Default view shows/)).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Reshuffle order')).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        '!!!Voting power data unavailable this refresh. Ranking-based filters disabled.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('renders the cohort banner in ja-JP', () => {
+    renderComponent({ isCohortActive: true, locale: 'ja-JP' });
+
+    expect(screen.getByText(/最大200の適格なDRep/)).toBeInTheDocument();
+    expect(screen.getByText('!!!順序をシャッフル')).toBeInTheDocument();
   });
 });

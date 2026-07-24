@@ -24,3 +24,17 @@
   color: var(--theme-text-secondary, #6b7384);
   margin: 0;
 }
+
+.cohortLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--theme-text-secondary, #6b7384);
+}
+
+.reshuffleLink {
+  font-size: 13px;
+  white-space: nowrap;
+}

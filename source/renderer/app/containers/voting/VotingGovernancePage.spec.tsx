@@ -85,12 +85,15 @@ const buildStores = ({
     openExternalLink: jest.fn(),
   },
   governance: {
+    displayedDRepList: [drepEntry],
     drepIndex: new Map([[VALID_DREP_ID, drepEntry]]),
     drepList: [drepEntry],
     error: null,
+    isCohortActive: false,
     lastFetchedAt: Date.now() - 60_000,
     refresh: jest.fn(),
     refreshState: GovernanceRefreshState.Loaded,
+    reshuffleCohort: jest.fn(),
     votingPowerState: VotingPowerEnrichState.Loaded,
   },
   hardwareWallets: {

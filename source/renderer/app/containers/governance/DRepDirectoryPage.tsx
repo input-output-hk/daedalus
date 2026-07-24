@@ -81,14 +81,16 @@ class DRepDirectoryPage extends React.Component<Props> {
 
     return (
       <DRepDirectory
-        drepList={governanceStore.drepList}
+        drepList={governanceStore.displayedDRepList}
         refreshState={governanceStore.refreshState}
         error={governanceStore.error}
         lastFetchedAt={governanceStore.lastFetchedAt}
         isNodeInSync={networkStatus.isNodeInSync}
         syncProgress={networkStatus.syncProgress}
         votingPowerState={governanceStore.votingPowerState}
+        isCohortActive={governanceStore.isCohortActive}
         onRefresh={() => governanceStore.refresh()}
+        onReshuffle={() => governanceStore.reshuffleCohort()}
         onSelectForDelegation={this.handleSelectForDelegation}
         onViewDetails={this.handleViewDetails}
       />

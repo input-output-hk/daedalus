@@ -3,6 +3,8 @@ import moment from 'moment';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './DRepDirectoryBanner.scss';
 
 const messages = defineMessages({
@@ -21,12 +23,25 @@ const messages = defineMessages({
     defaultMessage: '!!!Last updated {time}',
     description: 'Last updated timestamp label',
   },
+  cohortBanner: {
+    id: 'governance.drepDirectory.cohortBanner',
+    defaultMessage:
+      '!!!Default view shows up to 200 eligible DReps in randomized order, excluding the 35 largest by voting power.',
+    description: 'Primary line explaining the randomized default cohort',
+  },
+  reshuffle: {
+    id: 'governance.drepDirectory.cohortBanner.reshuffle',
+    defaultMessage: '!!!Reshuffle order',
+    description: 'Control that reseeds the randomized cohort order',
+  },
 });
 
 interface Props {
   lastFetchedAt: number | null;
   onRefresh: () => void;
   isRefreshing: boolean;
+  isCohortActive: boolean;
+  onReshuffle: () => void;
   intl: intlShape.isRequired;
 }
 
@@ -34,6 +49,8 @@ function DRepDirectoryBanner({
   lastFetchedAt,
   onRefresh,
   isRefreshing,
+  isCohortActive,
+  onReshuffle,
   intl,
 }: Props) {
   const timeAgo = lastFetchedAt ? moment(lastFetchedAt).fromNow() : null;
@@ -55,6 +72,18 @@ function DRepDirectoryBanner({
             time: timeAgo,
           })}
         </p>
+      )}
+      {isCohortActive && (
+        <div className={styles.cohortLine}>
+          <span>{intl.formatMessage(messages.cohortBanner)}</span>
+          <Link
+            className={styles.reshuffleLink}
+            label={intl.formatMessage(messages.reshuffle)}
+            hasIconAfter={false}
+            onClick={onReshuffle}
+            skin={LinkSkin}
+          />
+        </div>
       )}
     </div>
   );

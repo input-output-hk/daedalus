@@ -304,6 +304,8 @@
   "governance.drepDirectory.backToDirectory": "!!!Back to directory",
   "governance.drepDirectory.card.select": "!!!Select for delegation",
   "governance.drepDirectory.card.viewDetails": "!!!View details",
+  "governance.drepDirectory.cohortBanner": "!!!Default view shows up to 200 eligible DReps in randomized order, excluding the 35 largest by voting power.",
+  "governance.drepDirectory.cohortBanner.reshuffle": "!!!Reshuffle order",
   "governance.drepDirectory.copyButton": "!!!Copy",
   "governance.drepDirectory.copyId": "!!!Copy DRep ID",
   "governance.drepDirectory.empty": "!!!No DReps found on-chain.",

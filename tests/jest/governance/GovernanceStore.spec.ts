@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { runInAction } from 'mobx';
 import GovernanceStore, {
   GovernanceRefreshState,
   VotingPowerEnrichState,
@@ -308,5 +309,244 @@ describe('GovernanceStore', () => {
     expect(serializedCalls).not.toContain('drep1qq');
     expect(serializedCalls).not.toContain('drep-alwaysAbstain');
     errorSpy.mockRestore();
+  });
+});
+
+describe('GovernanceStore default cohort', () => {
+  beforeEach(() => {
+    mockRequest.mockReset();
+    mockStakeRequest.mockReset();
+  });
+
+  const drepIdAt = (i: number) =>
+    `drep1cohort${String(i).padStart(4, '0')}aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`;
+
+  const buildDrep = (
+    i: number,
+    overrides: Partial<DRepDirectoryEntry> = {}
+  ): DRepDirectoryEntry => ({
+    anchor: null,
+    drepActivity: 10,
+    drepId: drepIdAt(i),
+    status: 'active',
+    votingPower: null,
+    ...overrides,
+  });
+
+  // Stake descending with index: entry 0 is the largest, so ranks equal ids.
+  const stakeFor = (count: number): Record<string, string> => {
+    const map: Record<string, string> = {};
+    for (let i = 0; i < count; i++) {
+      map[drepIdAt(i)] = String(1_000_000_000_000 - i * 1_000_000);
+    }
+    return map;
+  };
+
+  const loadStore = async (
+    dreps: DRepDirectoryEntry[],
+    stakeByDRepId: Record<string, string>
+  ): Promise<GovernanceStore> => {
+    mockRequest.mockResolvedValue({
+      dreps,
+      epoch: 512,
+      fetchedAt: 1_750_000_000_000,
+    });
+    mockStakeRequest.mockResolvedValue({
+      fetchedAt: 1_750_000_000_500,
+      stakeByDRepId,
+    });
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    await store.fetchDRepList();
+    return store;
+  };
+
+  it('exposes no cohort until voting-power enrichment has loaded', async () => {
+    mockRequest.mockResolvedValue({
+      dreps: [buildDrep(0)],
+      epoch: 512,
+      fetchedAt: 1_750_000_000_000,
+    });
+    mockStakeRequest.mockImplementation(() => new Promise(() => {}));
+
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    void store.fetchDRepList();
+    await flushAsync();
+
+    expect(store.votingPowerState).toBe(VotingPowerEnrichState.Loading);
+    expect(store.isCohortActive).toBe(false);
+    expect(store.defaultCohort).toBeNull();
+    // Phase-1 full-list behavior is preserved while the enrich runs.
+    expect(store.displayedDRepList).toBe(store.drepList);
+  });
+
+  it('keeps the full list displayed when the stake phase fails', async () => {
+    mockRequest.mockResolvedValue({
+      dreps: [buildDrep(0)],
+      epoch: 512,
+      fetchedAt: 1_750_000_000_000,
+    });
+    mockStakeRequest.mockRejectedValue({
+      __governanceError: true,
+      type: 'QUERY_FAILED',
+      message: 'DRep stake query failed.',
+    });
+
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    await store.fetchDRepList();
+
+    expect(store.isRankingUnavailable).toBe(true);
+    expect(store.isCohortActive).toBe(false);
+    expect(store.defaultCohort).toBeNull();
+    expect(store.displayedDRepList).toHaveLength(1);
+  });
+
+  it('excludes the 35 largest by voting power and keeps the rest', async () => {
+    const dreps = Array.from({ length: 40 }, (_, i) => buildDrep(i));
+    const store = await loadStore(dreps, stakeFor(40));
+
+    const cohort = store.defaultCohort!;
+    expect(cohort).toHaveLength(5);
+    const cohortIds = new Set(cohort.map((e) => e.drepId));
+    for (let i = 0; i < 35; i++) {
+      expect(cohortIds.has(drepIdAt(i))).toBe(false);
+    }
+    for (let i = 35; i < 40; i++) {
+      expect(cohortIds.has(drepIdAt(i))).toBe(true);
+    }
+  });
+
+  it('ranks the top-35 boundary with lossless BigNumber comparison', async () => {
+    // The two boundary stakes differ by one lovelace beyond Number precision,
+    // and the LARGER stake sits on the LARGER drepId: a float-coerced compare
+    // would tie them, fall to the drepId tie-break, and invert which entry
+    // lands in the top 35.
+    const dreps = Array.from({ length: 37 }, (_, i) => buildDrep(i));
+    const stake: Record<string, string> = {};
+    for (let i = 0; i < 34; i++) {
+      stake[drepIdAt(i)] = `90071992547410${String(10 + i)}`;
+    }
+    stake[drepIdAt(34)] = '9007199254740992';
+    stake[drepIdAt(35)] = '9007199254740993';
+    stake[drepIdAt(36)] = '1000000';
+    const store = await loadStore(dreps, stake);
+
+    const cohortIds = new Set(store.defaultCohort!.map((e) => e.drepId));
+    expect(cohortIds.has(drepIdAt(35))).toBe(false);
+    expect(cohortIds.has(drepIdAt(34))).toBe(true);
+    expect(cohortIds.has(drepIdAt(36))).toBe(true);
+  });
+
+  it('applies the eligibility floor after the exclusion: active and more than 6 epochs', async () => {
+    // Sub-floor and inactive entries appear here ONLY to prove exclusion;
+    // no fixture may place them inside a cohort.
+    const dreps = [
+      ...Array.from({ length: 35 }, (_, i) => buildDrep(i)),
+      buildDrep(35, { drepActivity: 7 }),
+      buildDrep(36, { drepActivity: 6 }),
+      buildDrep(37, { drepActivity: 0, status: 'inactive' }),
+      buildDrep(38, { drepActivity: null }),
+    ];
+    const store = await loadStore(dreps, stakeFor(39));
+
+    expect(store.defaultCohort!.map((e) => e.drepId)).toEqual([drepIdAt(35)]);
+  });
+
+  it('caps the cohort at the 200 highest-ranked eligible entries', async () => {
+    const dreps = Array.from({ length: 245 }, (_, i) => buildDrep(i));
+    const store = await loadStore(dreps, stakeFor(245));
+
+    const cohort = store.defaultCohort!;
+    expect(cohort).toHaveLength(200);
+    const cohortIds = new Set(cohort.map((e) => e.drepId));
+    expect(cohortIds.has(drepIdAt(35))).toBe(true);
+    expect(cohortIds.has(drepIdAt(234))).toBe(true);
+    expect(cohortIds.has(drepIdAt(235))).toBe(false);
+    expect(cohortIds.has(drepIdAt(244))).toBe(false);
+  });
+
+  it('derives a stable order from the session seed', async () => {
+    const dreps = Array.from({ length: 45 }, (_, i) => buildDrep(i));
+    const storeA = await loadStore(dreps, stakeFor(45));
+    runInAction(() => {
+      storeA.cohortSeed = 7;
+    });
+    const first = storeA.defaultCohort!.map((e) => e.drepId);
+
+    expect(storeA.defaultCohort!.map((e) => e.drepId)).toEqual(first);
+
+    const storeB = await loadStore(dreps, stakeFor(45));
+    runInAction(() => {
+      storeB.cohortSeed = 7;
+    });
+    expect(storeB.defaultCohort!.map((e) => e.drepId)).toEqual(first);
+
+    runInAction(() => {
+      storeB.cohortSeed = 8;
+    });
+    // Deterministic PRNG: if seeds 7 and 8 ever collide on this membership,
+    // pick a different second seed rather than weakening the assertion.
+    expect(storeB.defaultCohort!.map((e) => e.drepId)).not.toEqual(first);
+  });
+
+  it('keeps the display order stable when voting powers change but membership does not', async () => {
+    const dreps = Array.from({ length: 45 }, (_, i) => buildDrep(i));
+    const storeA = await loadStore(dreps, stakeFor(45));
+    runInAction(() => {
+      storeA.cohortSeed = 7;
+    });
+    const before = storeA.defaultCohort!.map((e) => e.drepId);
+
+    // Same membership, different in-cohort ranking: swap two stakes below
+    // the top-35 boundary.
+    const jiggled = stakeFor(45);
+    const tmp = jiggled[drepIdAt(40)];
+    jiggled[drepIdAt(40)] = jiggled[drepIdAt(44)];
+    jiggled[drepIdAt(44)] = tmp;
+    const storeB = await loadStore(dreps, jiggled);
+    runInAction(() => {
+      storeB.cohortSeed = 7;
+    });
+
+    expect(storeB.defaultCohort!.map((e) => e.drepId)).toEqual(before);
+  });
+
+  it('reshuffles without any IPC query and preserves membership', async () => {
+    const dreps = Array.from({ length: 45 }, (_, i) => buildDrep(i));
+    const store = await loadStore(dreps, stakeFor(45));
+    const before = store.defaultCohort!.map((e) => e.drepId);
+    const seedBefore = store.cohortSeed;
+
+    store.reshuffleCohort();
+
+    // Reshuffle must never re-query: both channel call counts are unchanged.
+    expect(mockRequest).toHaveBeenCalledTimes(1);
+    expect(mockStakeRequest).toHaveBeenCalledTimes(1);
+    expect(store.cohortSeed).not.toBe(seedBefore);
+    const after = store.defaultCohort!.map((e) => e.drepId);
+    expect([...after].sort()).toEqual([...before].sort());
+  });
+
+  it('preserves the session seed across an explicit refresh', async () => {
+    const dreps = Array.from({ length: 45 }, (_, i) => buildDrep(i));
+    const store = await loadStore(dreps, stakeFor(45));
+    const seedBefore = store.cohortSeed;
+    const before = store.defaultCohort!.map((e) => e.drepId);
+
+    await store.refresh();
+
+    expect(store.cohortSeed).toBe(seedBefore);
+    expect(store.defaultCohort!.map((e) => e.drepId)).toEqual(before);
+    expect(mockRequest).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps excluded DReps in drepList and drepIndex', async () => {
+    const dreps = Array.from({ length: 40 }, (_, i) => buildDrep(i));
+    const store = await loadStore(dreps, stakeFor(40));
+
+    expect(store.drepList).toHaveLength(40);
+    expect(store.drepIndex.get(drepIdAt(0))).toBeDefined();
+    expect(store.defaultCohort!.map((e) => e.drepId)).not.toContain(
+      drepIdAt(0)
+    );
   });
 });

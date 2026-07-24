@@ -5,7 +5,13 @@ import { Provider } from 'mobx-react';
 import { Route, Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { IntlProvider } from 'react-intl';
-import { act, cleanup, render, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../i18n/locales/en-US.json';
 import { ROUTES } from '../../routes-config';
@@ -24,11 +30,14 @@ const drepEntry = {
 };
 
 const buildGovernanceStore = () => ({
+  displayedDRepList: [drepEntry],
   drepList: [drepEntry],
   error: null,
+  isCohortActive: true,
   lastFetchedAt: Date.now() - 60_000,
   refresh: jest.fn(),
   refreshState: GovernanceRefreshState.Loaded,
+  reshuffleCohort: jest.fn(),
   votingPowerState: VotingPowerEnrichState.Loaded,
 });
 
@@ -91,6 +100,15 @@ describe('DRepDirectoryPage', () => {
       networkStatus.isNodeInSync = true;
     });
 
+    expect(governance.refresh).not.toHaveBeenCalled();
+  });
+
+  it('renders the displayed list and forwards Reshuffle to the store', () => {
+    const { governance } = renderPage();
+
+    fireEvent.click(screen.getByText('!!!Reshuffle order'));
+
+    expect(governance.reshuffleCohort).toHaveBeenCalledTimes(1);
     expect(governance.refresh).not.toHaveBeenCalled();
   });
 });

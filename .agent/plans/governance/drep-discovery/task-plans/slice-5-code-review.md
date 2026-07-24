@@ -104,3 +104,49 @@ required):**
 3. The Step-9 parenthetical justifying `runInAction` via `index.tsx` `enforceActions`
    slightly overstates (that config is not loaded in Jest), but the construction is
    correct and harmless either way.
+
+---
+
+## Code Review: task-118 pass 1 — 2026-07-24
+
+Code Review: task-118 pass 1 2026-07-24 — none — Decision: approved
+
+**Scope of the pass.** One broad review of the full uncommitted diff (14 modified files
++ 2 new `seededShuffle` files) against the task-118 guide section and the PRD
+acceptance (FR-1…FR-5), with every verification command re-run independently.
+
+**Blockers: none.**
+
+- Implementation matches the approved guide steps 1–13 essentially verbatim: util,
+  store constants/comparator/computeds/action, container swap to `displayedDRepList`,
+  banner cohort line + Reshuffle link gated on `isCohortActive`, SCSS append, both
+  locale keys, 11 store cases + 5 util cases + 4 directory cases + container wiring
+  test + harness mock fields + story updates.
+- Verified independently: `tsc --noEmit` 0 errors; focused Jest 65/65 across the 5
+  suites; sanitization floor 23/23 with the suite file untouched; scoped eslint 0
+  errors (29 warnings are pre-existing decorator/enum false positives); prettier
+  clean on all touched files; `defaultMessages.json`/`translations/messages.json`
+  rewrites present (i18n:manage was run).
+- Invariants: #7 pipeline pinned per stage, boundary 6 excluded / 7 included, sub-floor
+  fixtures appear only to prove exclusion; #5 pinned by the discriminating 2^53
+  boundary pair (checked the arithmetic: a float compare ties 9007199254740992/…93 and
+  the drepId tie-break inverts the boundary); #6 reshuffle is one seed assignment with
+  channel call counts pinned at store AND container level, zero `source/main/` or
+  channel files touched; #8 trivially holds (no category code exists yet; the store
+  imports only `seededShuffle`; `DRepDirectory` renders the list as given); #2 grep of
+  the diff finds zero logger/analytics/storage touchpoints and the seed reaches no
+  sink; #11 both new keys `!!!`-prefixed in both locales at the correct alphabetical
+  positions; #14 fixtures use only `active`/`inactive`.
+- No IPC/contract drift, no new dependencies, no tracked `.scss.d.ts`, no local
+  IntlProvider in stories, banner has no consumers outside `DRepDirectory`.
+
+**Non-blocking notes:**
+
+1. Empty-cohort edge: with `isCohortActive` true but zero eligible entries (e.g., a
+   network with ≤35 DReps), the banner's cohort claim renders above the "No DReps
+   found on-chain" empty state — a slightly contradictory composition. This is exactly
+   the guide's prescribed code, unrealistic on mainnet, and slice-6's show-all seam is
+   the natural place to absorb it; recording only.
+2. Guide-internal drift, no implementer impact: the task-118 file table says the store
+   spec gains "2 imports" while step 9a (and the implementation) needs only one
+   (`runInAction`; `DRepDirectoryEntry` was already imported).

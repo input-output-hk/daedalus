@@ -11,6 +11,7 @@ import {
   DRepDirectoryEntry,
   DRepAnchorPresence,
 } from '../../../common/types/governance.types';
+import { generateCohortSeed, seededShuffle } from '../utils/seededShuffle';
 
 /**
  * App-domain DRep directory entry with BigNumber voting power.
@@ -50,6 +51,38 @@ export interface GovernanceStoreError {
   details?: string;
 }
 
+/**
+ * Default-cohort rule (BMVG Simplified Phase-1 sizing): exclude the 35
+ * largest DReps by voting power, then show up to the next 200 eligible
+ * DReps - active with more than 6 remaining drepActivity epochs - in
+ * seeded-random order.
+ */
+const COHORT_TOP_EXCLUSION = 35;
+const COHORT_MAX_SIZE = 200;
+const COHORT_MIN_REMAINING_EPOCHS = 6;
+
+/**
+ * Total, deterministic ranking: BigNumber voting power descending, null
+ * powers last, drepId ascending as the tie-break. Never coerces lovelace
+ * to Number.
+ */
+function compareByVotingPowerDesc(
+  a: AppDRepDirectoryEntry,
+  b: AppDRepDirectoryEntry
+): number {
+  if (a.votingPower && b.votingPower) {
+    const cmp = b.votingPower.comparedTo(a.votingPower);
+    if (cmp !== 0) return cmp;
+  } else if (a.votingPower) {
+    return -1;
+  } else if (b.votingPower) {
+    return 1;
+  }
+  if (a.drepId < b.drepId) return -1;
+  if (a.drepId > b.drepId) return 1;
+  return 0;
+}
+
 export default class GovernanceStore extends Store {
   // ---- Observables ----
 
@@ -72,6 +105,9 @@ export default class GovernanceStore extends Store {
   /** Phase-2 voting-power enrichment lifecycle, independent of the list. */
   @observable votingPowerState: VotingPowerEnrichState =
     VotingPowerEnrichState.Idle;
+
+  /** Session randomization seed; replaced only by reshuffleCohort(). */
+  @observable cohortSeed: number = generateCohortSeed();
 
   // ---- Computed ----
 
@@ -101,6 +137,46 @@ export default class GovernanceStore extends Store {
 
   @computed get isRankingUnavailable(): boolean {
     return this.votingPowerState === VotingPowerEnrichState.Failed;
+  }
+
+  /** The default cohort only exists once Phase-2 voting power has loaded. */
+  @computed get isCohortActive(): boolean {
+    return (
+      this.votingPowerState === VotingPowerEnrichState.Loaded &&
+      this.drepList.length > 0
+    );
+  }
+
+  /**
+   * Default cohort: rank by voting power, drop the top 35, keep up to the
+   * next 200 eligible entries, then shuffle from the session seed. The
+   * shuffle input is drepId-canonicalized so display order is a pure
+   * function of (membership, seed) - stable across refreshes that change
+   * voting powers without changing membership.
+   */
+  @computed get defaultCohort(): AppDRepDirectoryEntry[] | null {
+    if (!this.isCohortActive) return null;
+    const ranked = [...this.drepList].sort(compareByVotingPowerDesc);
+    const eligible = ranked
+      .slice(COHORT_TOP_EXCLUSION)
+      .filter(
+        (entry) =>
+          entry.status === 'active' &&
+          entry.drepActivity != null &&
+          entry.drepActivity > COHORT_MIN_REMAINING_EPOCHS
+      );
+    const selected = eligible.slice(0, COHORT_MAX_SIZE);
+    const canonical = [...selected].sort((a, b) => {
+      if (a.drepId < b.drepId) return -1;
+      if (a.drepId > b.drepId) return 1;
+      return 0;
+    });
+    return seededShuffle(canonical, this.cohortSeed);
+  }
+
+  /** What the directory renders: the cohort when active, else the full list. */
+  @computed get displayedDRepList(): AppDRepDirectoryEntry[] {
+    return this.defaultCohort ?? this.drepList;
   }
 
   // ---- Actions ----
@@ -198,6 +274,16 @@ export default class GovernanceStore extends Store {
   @action
   refresh(): Promise<void> {
     return this.fetchDRepList();
+  }
+
+  /**
+   * Replace the session seed to reorder the default cohort. Never triggers
+   * a CLI query or IPC re-fetch - membership is recomputed from the
+   * already-loaded list.
+   */
+  @action
+  reshuffleCohort(): void {
+    this.cohortSeed = generateCohortSeed();
   }
 
   // ---- Lifecycle ----
