@@ -303,6 +303,7 @@
   "governance.drepDetail.votingPowerLovelace": "!!!({amount} lovelace)",
   "governance.drepDirectory.backToDirectory": "!!!Back to directory",
   "governance.drepDirectory.card.select": "!!!Select for delegation",
+  "governance.drepDirectory.card.viewDetails": "!!!View details",
   "governance.drepDirectory.copyButton": "!!!Copy",
   "governance.drepDirectory.copyId": "!!!Copy DRep ID",
   "governance.drepDirectory.empty": "!!!No DReps found on-chain.",

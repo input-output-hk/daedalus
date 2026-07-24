@@ -65,6 +65,7 @@ interface Props {
   votingPowerState: VotingPowerEnrichState;
   onRefresh: () => void;
   onSelectForDelegation: (drepId: string) => void;
+  onViewDetails: (drepId: string) => void;
   intl: intlShape.isRequired;
 }
 
@@ -78,6 +79,7 @@ function DRepDirectory({
   votingPowerState,
   onRefresh,
   onSelectForDelegation,
+  onViewDetails,
   intl,
 }: Props) {
   const hasRetainedData = drepList.length > 0;
@@ -169,6 +171,7 @@ function DRepDirectory({
             <DRepDirectoryList
               entries={drepList}
               onSelectForDelegation={onSelectForDelegation}
+              onViewDetails={onViewDetails}
               votingPowerState={votingPowerState}
             />
           </>

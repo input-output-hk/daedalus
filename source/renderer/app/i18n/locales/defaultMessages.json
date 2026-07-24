@@ -2612,6 +2612,11 @@
         "id": "governance.drepDirectory.votingPower"
       },
       {
+        "defaultMessage": "!!!View details",
+        "description": "Card CTA that opens the DRep detail view",
+        "id": "governance.drepDirectory.card.viewDetails"
+      },
+      {
         "defaultMessage": "!!!Loading voting power…",
         "description": "Tooltip on the voting-power placeholder during enrichment",
         "id": "governance.drepDirectory.votingPower.loadingTooltip"

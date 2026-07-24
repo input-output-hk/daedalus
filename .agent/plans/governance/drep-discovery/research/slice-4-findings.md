@@ -64,3 +64,18 @@ the tool runs, so every `npx tsc/eslint/jest/prettier` invocation fails. Verifie
 working substitutes: `node_modules/.bin/tsc` (4.9.5), `node_modules/.bin/eslint`
 (8.13.0), `node_modules/.bin/jest` (27.5.1), `node_modules/.bin/prettier` (2.1.2),
 and `yarn <tool>`.
+
+## F-7 (planning drift, for future planners) — Stale anchors and counts in earlier-slice docs
+
+Three earlier-slice documentation anchors had drifted by the time slice-4 was planned
+and built:
+
+- The harness route registrations live at `VotingGovernancePage.spec.tsx:165-175`,
+  not the `:169-174` the planning brief cited.
+- The sanitization floor suite was already 20 tests before this slice (slice-2 docs
+  said 17 — slice-3 added 3). Task-117 extends it to 23 with the three
+  `maskAnalyticsRoute`/`MatomoClient` masking tests; any future id-bearing route must
+  extend `maskAnalyticsRoute` and this suite.
+- Shared-design-tokens §9 pre-assigns no message id for the "On-chain anchor
+  reference" label (§9 lists only `sourceLabel.onchain|verified|unverified|anchorUnavailable`);
+  the new id is `governance.drepDetail.sourceLabel.anchorReference` (PRD P-1).

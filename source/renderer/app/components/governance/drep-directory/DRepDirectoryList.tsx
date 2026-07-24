@@ -30,6 +30,7 @@ const messages = defineMessages({
 interface Props {
   entries: AppDRepDirectoryEntry[];
   onSelectForDelegation: (drepId: string) => void;
+  onViewDetails: (drepId: string) => void;
   votingPowerState: VotingPowerEnrichState;
   intl: intlShape.isRequired;
 }
@@ -37,6 +38,7 @@ interface Props {
 function DRepDirectoryList({
   entries,
   onSelectForDelegation,
+  onViewDetails,
   votingPowerState,
   intl,
 }: Props) {
@@ -74,6 +76,7 @@ function DRepDirectoryList({
             key={entry.drepId}
             entry={entry}
             onSelectForDelegation={onSelectForDelegation}
+            onViewDetails={onViewDetails}
             votingPowerState={votingPowerState}
           />
         ))}

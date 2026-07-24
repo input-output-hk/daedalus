@@ -21,6 +21,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Select for delegation',
     description: 'Row-level CTA that hands the DRep ID to the delegation form',
   },
+  viewDetails: {
+    id: 'governance.drepDirectory.card.viewDetails',
+    defaultMessage: '!!!View details',
+    description: 'Card CTA that opens the DRep detail view',
+  },
   votingPowerLoadingTooltip: {
     id: 'governance.drepDirectory.votingPower.loadingTooltip',
     defaultMessage: '!!!Loading voting power…',
@@ -36,6 +41,7 @@ const messages = defineMessages({
 interface Props {
   entry: AppDRepDirectoryEntry;
   onSelectForDelegation: (drepId: string) => void;
+  onViewDetails: (drepId: string) => void;
   votingPowerState: VotingPowerEnrichState;
   intl: intlShape.isRequired;
 }
@@ -56,6 +62,7 @@ function formatVotingPower(value: BigNumber | null): string {
 function DRepCard({
   entry,
   onSelectForDelegation,
+  onViewDetails,
   votingPowerState,
   intl,
 }: Props) {
@@ -90,6 +97,11 @@ function DRepCard({
         <DRepSourceLabel className={styles.sourceLabel} source="on-chain" />
       </div>
       <div className={styles.actionsRow}>
+        <Button
+          label={intl.formatMessage(messages.viewDetails)}
+          onClick={() => onViewDetails(entry.drepId)}
+          skin={ButtonSkin}
+        />
         <Button
           label={intl.formatMessage(messages.select)}
           onClick={() => onSelectForDelegation(entry.drepId)}

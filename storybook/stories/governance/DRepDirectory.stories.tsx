@@ -146,6 +146,7 @@ const renderDirectory = (
     lastFetchedAt={Date.now() - 3 * 60 * 1000}
     onRefresh={action('onRefresh')}
     onSelectForDelegation={action('onSelectForDelegation')}
+    onViewDetails={action('onViewDetails')}
     refreshState={refreshState}
     syncProgress={syncState.syncProgress}
     votingPowerState={VotingPowerEnrichState.Loaded}
@@ -358,6 +359,7 @@ storiesOf('Governance / DRep Directory', module)
         lastFetchedAt={Date.now() - 3 * 60 * 1000}
         onRefresh={action('onRefresh')}
         onSelectForDelegation={action('onSelectForDelegation')}
+        onViewDetails={action('onViewDetails')}
         refreshState={GovernanceRefreshState.Loaded}
         syncProgress={100}
         votingPowerState={VotingPowerEnrichState.Failed}

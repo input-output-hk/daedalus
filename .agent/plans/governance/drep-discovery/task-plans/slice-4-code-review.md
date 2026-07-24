@@ -216,3 +216,63 @@ work product.
 
 **Decision: approved** — task-116 may be committed as staged
 (`feat(gov): task-116 build DRep detail view with on-chain fields and anchor presence`).
+
+---
+
+## Code Review: task-117 pass 1 — 2026-07-24
+
+**Scope.** One broad pass over the staged (uncommitted) task-117 diff against the
+implementation guide and PRD: route literal + `Routes.tsx` wiring, card "View details"
+CTA threaded Directory → List → Card, `DRepDirectoryPage.handleViewDetails` push, the
+new `maskAnalyticsRoute` helper + `MatomoClient.getAnalyticsURL` masking, the
+sanitization-suite extension, the `DetailRouteStub` → production migration in
+`VotingGovernancePage.spec.tsx`, one locale key per language, Storybook prop fixes,
+the F-7 findings append, and the tool-managed message-JSON regeneration.
+
+**Verified during review (re-run, not taken on trust).**
+
+- `node_modules/.bin/tsc --noEmit` — exit 0, zero errors.
+- Scoped eslint on the guide's 11-path list — 0 errors, 17 warnings, all in the
+  pre-existing baseline classes (`no-unused-vars` on type positions, harness
+  `no-explicit-any`).
+- Focused Jest — 42/42 green with the exact expected split: `VotingGovernancePage` 8,
+  `DRepDirectory` 20, `DRepDetailPage` 11, `DRepDirectoryPage` 3.
+- Sanitization floor — 23/23 green; the diff of the suite is append-only (matomo
+  mock + three imports + one new describe); the inherited 20 tests are byte-identical.
+- The tracked-URL boundary test pins `http://daedalus/governance/dreps/:drepId` and
+  `not.toContain(CIP129_DREP)` against the real `MatomoClient.sendEvent` through the
+  mocked `matomo-tracker` — the analytics-URL regression the slice required.
+- Pins byte-identical to base across the whole slice: `VotingStore.ts`,
+  `GovernanceStore.ts`, `delegationFormState.ts` (checked `d5e3a03f2..staged`); no
+  `.scss.d.ts` anywhere under `source/`.
+- `VotingGovernancePage.spec.tsx` diff contains exactly the nine permitted Step-12
+  edits; the browse-push, single-hop, payload, and all three HW tests are untouched,
+  and the migrated two-hop test keeps its three final assertions identical.
+- i18n: `governance.drepDirectory.card.viewDetails` present in BOTH locales,
+  `!!!`-prefixed, correctly sorted after `card.select`; `defaultMessages.json` /
+  `translations/messages.json` carry only the one new descriptor (tool-managed).
+
+**Invariant check.** Sanitization floor holds and is strengthened: the D2 mask closes
+the hash-URL leak at the single `getAnalyticsURL` boundary (feeding both
+`sendPageNavigationEvent` and `sendEvent`), `pageTitle` strings are static, and the
+new renderer code makes zero logger/analytics/storage calls (grep-verified).
+Local-first holds (no new IPC/CLI; the detail still reads `drepIndex` only).
+Delegation handoff is `location.state`-only: `handleViewDetails` pushes
+`${ROUTES.GOVERNANCE.DREPS}/${drepId}` (raw, byte-equal) with only the picked
+`{ from, selectedWalletId, voteType }`, and the new forwarding-state test pins
+`selectedDRepId` absent on the outbound hop. D8 `exact` is on the directory route, so
+no double render (the two-hop test would fail loudly). Anchor floor and CIP-129-only
+display are untouched by this diff and re-covered by the still-green detail spec.
+
+**Deviations accepted.** Both implementer-reported deviations are sound: (1) Step 14
+said CREATE `slice-4-findings.md`, but task-116 had already created it with F-1..F-6
+covering D1/D4/D2/D10/npx — the F-7 append supplies the remaining required
+planning-drift items (harness-route anchor, 20-not-17 floor count, missing §9 anchor
+label id), so all Step 14 content exists; (2) `node_modules/.bin/<tool>` invocation
+per the guide's own npx correction. Tracker/PRD status updates ride at orchestrator
+commit time (task-116 precedent: its statusReason embeds post-review outcomes).
+
+**Blockers:** none.
+
+**Decision: approved** — task-117 may be committed as staged
+(`feat(gov): task-117 wire DRep detail route and mask drep id from analytics urls`).

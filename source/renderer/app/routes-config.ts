@@ -39,6 +39,7 @@ export const ROUTES = {
   GOVERNANCE: {
     ROOT: '/governance',
     DREPS: '/governance/dreps',
+    DREP_DETAIL: '/governance/dreps/:drepId',
   },
   SETTINGS: {
     ROOT: '/settings',

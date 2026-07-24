@@ -2,14 +2,12 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import { Provider } from 'mobx-react';
 import { Route, Router } from 'react-router-dom';
-import type { RouteComponentProps } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { IntlProvider } from 'react-intl';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import {
-  act,
   cleanup,
   fireEvent,
   render,
@@ -27,9 +25,9 @@ import {
   GovernanceRefreshState,
   VotingPowerEnrichState,
 } from '../../stores/GovernanceStore';
-import { pickDelegationFormReturnState } from '../governance/delegationFormState';
 import VotingGovernancePage from './VotingGovernancePage';
 import DRepDirectoryPage from '../governance/DRepDirectoryPage';
+import DRepDetailPage from '../governance/DRepDetailPage';
 
 // The wallet and vote-type dropdowns are react-polymorph-heavy; the flow tests
 // assert the values they RECEIVE, so plain pass-through mocks are enough.
@@ -71,33 +69,6 @@ const drepEntry = {
   votingPower: new BigNumber('23137980123456'),
 };
 
-const DETAIL_STUB_PATH = '/governance/dreps/:drepId';
-
-// Test-only stand-in for the future DRep detail route: it forwards the
-// inherited { from, selectedWalletId, voteType } plus the route's DRep ID
-// back to the form. It is registered only in this harness — production has
-// no detail route yet.
-function DetailRouteStub({
-  history,
-  location,
-  match,
-}: RouteComponentProps<{ drepId: string }>) {
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        const inherited = pickDelegationFormReturnState(location.state);
-        history.push(inherited?.from ?? ROUTES.VOTING.GOVERNANCE, {
-          ...inherited,
-          selectedDRepId: match.params.drepId,
-        });
-      }}
-    >
-      Stub select for delegation
-    </button>
-  );
-}
-
 type StoreOverrides = {
   hwDeviceStatus?: HwDeviceStatus;
   isTrezor?: boolean;
@@ -114,6 +85,7 @@ const buildStores = ({
     openExternalLink: jest.fn(),
   },
   governance: {
+    drepIndex: new Map([[VALID_DREP_ID, drepEntry]]),
     drepList: [drepEntry],
     error: null,
     lastFetchedAt: Date.now() - 60_000,
@@ -171,7 +143,10 @@ const renderFlow = (
               path={ROUTES.GOVERNANCE.DREPS}
               component={DRepDirectoryPage}
             />
-            <Route path={DETAIL_STUB_PATH} component={DetailRouteStub} />
+            <Route
+              path={ROUTES.GOVERNANCE.DREP_DETAIL}
+              component={DRepDetailPage}
+            />
           </Router>
         </IntlProvider>
       </ThemeProvider>
@@ -229,7 +204,7 @@ describe('DRep selection handoff via location.state', () => {
   });
 
   it('two-hop Form → Directory → Detail → Form restores wallet + vote type and pre-fills the ID', () => {
-    const { history } = renderFlow([
+    renderFlow([
       {
         pathname: ROUTES.VOTING.GOVERNANCE,
         state: { selectedWalletId: WALLET_ID, voteType: 'drep' },
@@ -237,21 +212,43 @@ describe('DRep selection handoff via location.state', () => {
     ]);
 
     fireEvent.click(screen.getByText('!!!Browse DReps'));
-
-    // Simulate the future "View details" push: the Directory forwards its
-    // inherited state toward the detail path via the production picker.
-    act(() => {
-      history.push(
-        `/governance/dreps/${VALID_DREP_ID}`,
-        pickDelegationFormReturnState(history.location.state)
-      );
-    });
-
-    fireEvent.click(screen.getByText('Stub select for delegation'));
+    fireEvent.click(screen.getByRole('button', { name: '!!!View details' }));
+    fireEvent.click(
+      screen.getByRole('button', { name: '!!!Select for delegation' })
+    );
 
     expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
     expect(screen.getByTestId('vote-type-dropdown')).toHaveTextContent('drep');
     expect(screen.getByDisplayValue(VALID_DREP_ID)).toBeInTheDocument();
+  });
+
+  it('View details forwards { from, selectedWalletId, voteType } without selectedDRepId', () => {
+    const { history, pushSpy } = renderFlow([
+      {
+        pathname: ROUTES.GOVERNANCE.DREPS,
+        state: {
+          from: ROUTES.VOTING.GOVERNANCE,
+          selectedWalletId: WALLET_ID,
+          voteType: 'drep',
+        },
+      },
+    ]);
+
+    fireEvent.click(screen.getByRole('button', { name: '!!!View details' }));
+
+    expect(history.location.pathname).toBe(
+      `${ROUTES.GOVERNANCE.DREPS}/${VALID_DREP_ID}`
+    );
+    expect(pushSpy).toHaveBeenCalledWith(
+      `${ROUTES.GOVERNANCE.DREPS}/${VALID_DREP_ID}`,
+      expect.objectContaining({
+        from: ROUTES.VOTING.GOVERNANCE,
+        selectedWalletId: WALLET_ID,
+        voteType: 'drep',
+      })
+    );
+    const forwardedState = pushSpy.mock.calls[0][1] as Record<string, unknown>;
+    expect(forwardedState.selectedDRepId).toBeUndefined();
   });
 
   it('propagates the selected DRep ID byte-for-byte: row select → confirmation → delegateVotes payload', async () => {

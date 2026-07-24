@@ -44,6 +44,7 @@ const renderComponent = ({
   refreshState = GovernanceRefreshState.Loaded,
   locale = 'en-US',
   onSelectForDelegation = jest.fn(),
+  onViewDetails = jest.fn(),
   syncProgress = 100,
   votingPowerState = VotingPowerEnrichState.Loaded,
 }: {
@@ -53,6 +54,7 @@ const renderComponent = ({
   refreshState?: GovernanceRefreshState;
   locale?: string;
   onSelectForDelegation?: jest.Mock;
+  onViewDetails?: jest.Mock;
   syncProgress?: number | null;
   votingPowerState?: VotingPowerEnrichState;
 } = {}) => {
@@ -66,6 +68,7 @@ const renderComponent = ({
         lastFetchedAt={Date.now() - 60_000}
         onRefresh={jest.fn()}
         onSelectForDelegation={onSelectForDelegation}
+        onViewDetails={onViewDetails}
         refreshState={refreshState}
         syncProgress={syncProgress}
         votingPowerState={votingPowerState}
@@ -243,6 +246,18 @@ describe('DRepDirectory', () => {
 
     expect(onSelectForDelegation).toHaveBeenCalledTimes(1);
     expect(onSelectForDelegation).toHaveBeenCalledWith(baseEntries[0].drepId);
+  });
+
+  it('invokes onViewDetails with the row DRep ID when the View details CTA is clicked', () => {
+    const onViewDetails = jest.fn();
+    renderComponent({ onViewDetails });
+
+    fireEvent.click(
+      screen.getAllByRole('button', { name: '!!!View details' })[0]
+    );
+
+    expect(onViewDetails).toHaveBeenCalledTimes(1);
+    expect(onViewDetails).toHaveBeenCalledWith(baseEntries[0].drepId);
   });
 
   it('renders the persistent syncing banner with the floored live sync %', () => {

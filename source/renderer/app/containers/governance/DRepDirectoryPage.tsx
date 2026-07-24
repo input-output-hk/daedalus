@@ -65,6 +65,13 @@ class DRepDirectoryPage extends React.Component<Props> {
     });
   };
 
+  handleViewDetails = (drepId: string) => {
+    // Forward only { from, selectedWalletId, voteType } toward the detail
+    // hop; the detail view returns it plus selectedDRepId to the form.
+    const inherited = pickDelegationFormReturnState(this.props.location.state);
+    this.props.history.push(`${ROUTES.GOVERNANCE.DREPS}/${drepId}`, inherited);
+  };
+
   render() {
     const { stores } = this.props;
     const governanceStore: GovernanceStore | undefined = stores?.governance;
@@ -83,6 +90,7 @@ class DRepDirectoryPage extends React.Component<Props> {
         votingPowerState={governanceStore.votingPowerState}
         onRefresh={() => governanceStore.refresh()}
         onSelectForDelegation={this.handleSelectForDelegation}
+        onViewDetails={this.handleViewDetails}
       />
     );
   }

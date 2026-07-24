@@ -14,11 +14,18 @@ jest.mock(
   })
 );
 
+jest.mock('matomo-tracker', () =>
+  jest.fn().mockImplementation(() => ({ track: jest.fn() }))
+);
+
 import { filterLogData } from '../../../source/common/utils/logging';
 import BigNumber from 'bignumber.js';
 import { logger as rendererLogger } from '../../../source/renderer/app/utils/logging';
 import VotingStore from '../../../source/renderer/app/stores/VotingStore';
 import { EventCategories } from '../../../source/renderer/app/analytics';
+import MatomoTracker from 'matomo-tracker';
+import { maskAnalyticsRoute } from '../../../source/renderer/app/analytics/maskAnalyticsRoute';
+import { MatomoClient } from '../../../source/renderer/app/analytics/MatomoClient';
 
 // ---- Test vectors ----
 
@@ -394,6 +401,44 @@ describe('Governance sanitization — call boundaries', () => {
       );
     } finally {
       jest.useRealTimers();
+    }
+  });
+});
+
+describe('Governance sanitization — analytics URL masking', () => {
+  it('masks the DRep id out of the detail route for both CIP forms', () => {
+    expect(maskAnalyticsRoute(`governance/dreps/${CIP129_DREP}`)).toBe(
+      'governance/dreps/:drepId'
+    );
+    expect(maskAnalyticsRoute(`governance/dreps/${CIP105_SCRIPT}`)).toBe(
+      'governance/dreps/:drepId'
+    );
+  });
+
+  it('leaves non-detail routes untouched', () => {
+    expect(maskAnalyticsRoute('governance/dreps')).toBe('governance/dreps');
+    expect(maskAnalyticsRoute('voting/governance')).toBe('voting/governance');
+    expect(maskAnalyticsRoute('wallets/add')).toBe('wallets/add');
+  });
+
+  it('never embeds the current detail-route DRep id in a tracked event URL', async () => {
+    window.location.hash = `#/governance/dreps/${CIP129_DREP}`;
+    try {
+      const client = new MatomoClient(
+        { isDev: true } as any,
+        {} as any,
+        'user-1'
+      );
+      await client.sendEvent('Governance', 'Test event');
+
+      const tracker = ((MatomoTracker as unknown) as jest.Mock).mock.results[0]
+        .value;
+      expect(tracker.track).toHaveBeenCalledTimes(1);
+      const { url } = tracker.track.mock.calls[0][0];
+      expect(url).toBe('http://daedalus/governance/dreps/:drepId');
+      expect(url).not.toContain(CIP129_DREP);
+    } finally {
+      window.location.hash = '';
     }
   });
 });
