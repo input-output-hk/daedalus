@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DRepStatusBadge from '../_shared/DRepStatusBadge';
+import DRepCategoryBadge from '../_shared/DRepCategoryBadge';
 import DRepIdDisplay from '../_shared/DRepIdDisplay';
 import DRepSourceLabel from '../_shared/DRepSourceLabel';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
@@ -81,6 +82,7 @@ function DRepCard({
     <div className={styles.card}>
       <div className={styles.topRow}>
         <DRepStatusBadge status={entry.status} />
+        <DRepCategoryBadge entry={entry} />
         <DRepIdDisplay drepId={entry.drepId} />
       </div>
       <div className={styles.bottomRow}>

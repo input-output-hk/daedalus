@@ -1,0 +1,50 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.label {
+  white-space: nowrap;
+}
+
+/* Category colors — reuses existing Daedalus theme variables via CSS custom properties */
+.primary {
+  color: var(--badge-info-fg, #4a7bd4);
+  background: var(--badge-info-bg, rgba(74, 123, 212, 0.1));
+
+  .dot {
+    background: var(--badge-info-fg, #4a7bd4);
+  }
+}
+
+.threshold {
+  color: var(--badge-warning-fg, #b26a00);
+  background: var(--badge-warning-bg, rgba(230, 162, 60, 0.12));
+
+  .dot {
+    background: var(--badge-warning-fg, #b26a00);
+  }
+}
+
+.nonMetadata {
+  color: var(--badge-neutral-fg, #8e939e);
+  background: var(--badge-neutral-bg, rgba(142, 147, 158, 0.1));
+
+  .dot {
+    background: var(--badge-neutral-fg, #8e939e);
+  }
+}

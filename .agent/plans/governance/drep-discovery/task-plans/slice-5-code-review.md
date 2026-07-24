@@ -150,3 +150,56 @@ acceptance (FR-1…FR-5), with every verification command re-run independently.
 2. Guide-internal drift, no implementer impact: the task-118 file table says the store
    spec gains "2 imports" while step 9a (and the implementation) needs only one
    (`runInAction`; `DRepDirectoryEntry` was already imported).
+
+---
+
+## Code Review: task-119 pass 1 — 2026-07-24
+
+Code Review: task-119 pass 1 2026-07-24 — none — Decision: approved
+
+**Scope of the pass.** One broad review of the full uncommitted diff (4 modified
+source/test files + 4 i18n artifacts + 4 new files + 2 generated snapshots) against
+the task-119 guide section and the PRD acceptance (FR-6…FR-8), with every
+verification command re-run independently.
+
+**Blockers: none.**
+
+- Implementation matches the approved guide steps 1–9 verbatim: `getDRepCategory`
+  with binding priority Threshold > Primary > Non-metadata (7–12 window strict on
+  both edges, `!= null` activity guard, anchor-presence proxy otherwise), the
+  presentational badge on the `DRepStatusBadge` pattern with native `title` tooltip
+  and combined aria-label, SCSS on the info/warning/neutral token families, card
+  topRow + detail header placements per P-8, 7 classifier + 4 render spec cases
+  (edges 6/7/12/13, null activity, both tie-breaks, ja-JP), one snapshot per call
+  site with the badge span's class/title/label captured, one story under the global
+  locale toggle, 6 `!!!`-prefixed keys per locale in correct alphabetical position.
+- Verified independently: `tsc --noEmit` 0 errors; focused Jest 56/56 across the 4
+  suites (2 snapshots pass); sanitization floor 23/23 with the suite file untouched;
+  scoped eslint 0 errors (6 warnings pre-existing in touched files); prettier
+  `--check` clean on all changed .tsx/.scss; `defaultMessages.json` /
+  `translations/messages.json` rewrites present (i18n:manage was run).
+- Invariants: #8 holds in every code path — the module exports a pure classifier and
+  a callback-free presentational component; grep shows its only importers are
+  `DRepCard`, `DRepDetail`, and the story; `GovernanceStore`, `DRepDirectoryList`,
+  and all ordering/filtering code untouched. #7 untouched (no cohort code in the
+  diff; no Recommended tab or badge; the "Recommended view" wording appears only
+  inside approved tooltip copy). #6/#5: zero IPC, CLI, or votingPower touchpoints.
+  #14: `DRepStatusBadge` and `DRepStatus` untouched; `status` is carried in
+  `DRepCategorySource` but unread, per the documented anchor-1 extension seam.
+  #2: no logger/analytics/electron-store call anywhere in the new code. #11: all 12
+  new locale strings `!!!`-prefixed. No High value category or key anywhere.
+- Snapshot fixture claims verified against the harnesses: `baseEntries[0]`
+  (drepActivity 12, anchor null) does hit the Threshold upper edge on the card;
+  `DRepDetailPage` `baseEntry` (anchor present, drepActivity 34) is Primary. The
+  card test also pins exactly one category badge per card via the three-label regex.
+- No new dependencies, no tracked `.scss.d.ts`, no local IntlProvider in the story
+  (jest specs use one per established spec convention), no main-process or channel
+  drift.
+
+**Non-blocking notes:**
+
+1. The 6 scoped eslint warnings (unused `drepId` render-prop args, `as any` /
+   non-null assertions in the `DRepDetailPage` test harness) all pre-date this diff.
+2. The badge formats all six messages on every render though only one
+   label/tooltip pair is used; this is the guide's exact prescribed code and the
+   cost is negligible — recording only.

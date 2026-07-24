@@ -3,6 +3,7 @@ import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import DRepIdDisplay from '../_shared/DRepIdDisplay';
+import DRepCategoryBadge from '../_shared/DRepCategoryBadge';
 import DRepDetailOnchainSection from './DRepDetailOnchainSection';
 import DRepDetailAnchorSection from './DRepDetailAnchorSection';
 import DRepDetailActions from './DRepDetailActions';
@@ -100,6 +101,7 @@ function DRepDetail({
       <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
       <div className={styles.header}>
         <DRepIdDisplay drepId={entry.drepId} showCopiedConfirmation />
+        <DRepCategoryBadge entry={entry} />
       </div>
       <DRepDetailOnchainSection
         entry={entry}

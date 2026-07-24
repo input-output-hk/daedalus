@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DRepDetailPage renders the category badge in the detail header (snapshot) 1`] = `
+<span
+  aria-label="!!!Primary. !!!Inside the default Recommended view with verified metadata."
+  class="badge primary"
+  title="!!!Inside the default Recommended view with verified metadata."
+>
+  <span
+    aria-hidden="true"
+    class="dot"
+  />
+  <span
+    class="label"
+  >
+    !!!Primary
+  </span>
+</span>
+`;

@@ -280,4 +280,13 @@ describe('DRepDetailPage', () => {
     expect(screen.getByText('!!!アンカー')).toBeInTheDocument();
     expect(screen.getByText('!!!34エポック')).toBeInTheDocument();
   });
+
+  it('renders the category badge in the detail header (snapshot)', () => {
+    renderPage();
+
+    // baseEntry: anchor present, drepActivity 34 -> Primary.
+    expect(
+      screen.getByText('!!!Primary').closest('span[title]')
+    ).toMatchSnapshot();
+  });
 });

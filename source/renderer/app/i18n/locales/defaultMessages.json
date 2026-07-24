@@ -2507,6 +2507,41 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Primary",
+        "description": "Category badge for DReps with anchor metadata",
+        "id": "governance.drepDirectory.category.primary"
+      },
+      {
+        "defaultMessage": "!!!Inside the default Recommended view with verified metadata.",
+        "description": "Tooltip explaining the Primary category",
+        "id": "governance.drepDirectory.category.primary.tooltip"
+      },
+      {
+        "defaultMessage": "!!!Threshold",
+        "description": "Category badge for DReps in the 7-12 epoch expiry window",
+        "id": "governance.drepDirectory.category.threshold"
+      },
+      {
+        "defaultMessage": "!!!Inside the default Recommended view but approaching expiry — review before delegating.",
+        "description": "Tooltip explaining the Threshold category",
+        "id": "governance.drepDirectory.category.threshold.tooltip"
+      },
+      {
+        "defaultMessage": "!!!Non-metadata",
+        "description": "Category badge for DReps without anchor metadata",
+        "id": "governance.drepDirectory.category.nonMetadata"
+      },
+      {
+        "defaultMessage": "!!!Eligible for delegation but has no verified off-chain metadata yet.",
+        "description": "Tooltip explaining the Non-metadata category",
+        "id": "governance.drepDirectory.category.nonMetadata.tooltip"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/DRepCategoryBadge.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Your node is still syncing. DRep data becomes available once the node reaches the tip.",
         "description": "Directory fallback while the node has not reached the tip",
         "id": "governance.drepDirectory.empty.noSync"

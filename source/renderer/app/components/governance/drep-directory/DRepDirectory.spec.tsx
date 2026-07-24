@@ -407,4 +407,16 @@ describe('DRepDirectory', () => {
     expect(screen.getByText(/最大200の適格なDRep/)).toBeInTheDocument();
     expect(screen.getByText('!!!順序をシャッフル')).toBeInTheDocument();
   });
+
+  it('renders exactly one category badge per card (snapshot)', () => {
+    renderComponent();
+
+    // baseEntries[0]: drepActivity 12, anchor null -> Threshold window edge.
+    expect(
+      screen.getAllByText(/^!!!(Primary|Threshold|Non-metadata)$/)
+    ).toHaveLength(1);
+    expect(
+      screen.getByText('!!!Threshold').closest('span[title]')
+    ).toMatchSnapshot();
+  });
 });
