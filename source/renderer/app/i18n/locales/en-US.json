@@ -312,6 +312,7 @@
   "governance.drepDirectory.category.threshold.tooltip": "!!!Inside the default Recommended view but approaching expiry — review before delegating.",
   "governance.drepDirectory.cohortBanner": "!!!Default view shows up to 200 eligible DReps in randomized order, excluding the 35 largest by voting power.",
   "governance.drepDirectory.cohortBanner.reshuffle": "!!!Reshuffle order",
+  "governance.drepDirectory.cohortBanner.source": "!!!Cohort sizing follows the Beyond MVG (BMVG) Simplified one-click-delegation analysis.",
   "governance.drepDirectory.copyButton": "!!!Copy",
   "governance.drepDirectory.copyId": "!!!Copy DRep ID",
   "governance.drepDirectory.empty": "!!!No DReps found on-chain.",

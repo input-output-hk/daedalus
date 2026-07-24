@@ -2775,6 +2775,11 @@
         "defaultMessage": "!!!Reshuffle order",
         "description": "Control that reseeds the randomized cohort order",
         "id": "governance.drepDirectory.cohortBanner.reshuffle"
+      },
+      {
+        "defaultMessage": "!!!Cohort sizing follows the Beyond MVG (BMVG) Simplified one-click-delegation analysis.",
+        "description": "Secondary line crediting the BMVG cohort-sizing analysis",
+        "id": "governance.drepDirectory.cohortBanner.source"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryBanner.tsx"

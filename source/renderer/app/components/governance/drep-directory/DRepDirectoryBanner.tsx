@@ -34,6 +34,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Reshuffle order',
     description: 'Control that reseeds the randomized cohort order',
   },
+  source: {
+    id: 'governance.drepDirectory.cohortBanner.source',
+    defaultMessage:
+      '!!!Cohort sizing follows the Beyond MVG (BMVG) Simplified one-click-delegation analysis.',
+    description: 'Secondary line crediting the BMVG cohort-sizing analysis',
+  },
 });
 
 interface Props {
@@ -42,6 +48,8 @@ interface Props {
   isRefreshing: boolean;
   isCohortActive: boolean;
   onReshuffle: () => void;
+  // Story-only escape hatch; production call sites always keep the default true.
+  showSource?: boolean;
   intl: intlShape.isRequired;
 }
 
@@ -51,6 +59,7 @@ function DRepDirectoryBanner({
   isRefreshing,
   isCohortActive,
   onReshuffle,
+  showSource = true,
   intl,
 }: Props) {
   const timeAgo = lastFetchedAt ? moment(lastFetchedAt).fromNow() : null;
@@ -84,6 +93,11 @@ function DRepDirectoryBanner({
             skin={LinkSkin}
           />
         </div>
+      )}
+      {isCohortActive && showSource && (
+        <p className={styles.sourceLine}>
+          {intl.formatMessage(messages.source)}
+        </p>
       )}
     </div>
   );

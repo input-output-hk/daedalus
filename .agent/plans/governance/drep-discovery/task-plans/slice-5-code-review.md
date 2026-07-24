@@ -203,3 +203,45 @@ verification command re-run independently.
 2. The badge formats all six messages on every render though only one
    label/tooltip pair is used; this is the guide's exact prescribed code and the
    cost is negligible — recording only.
+
+## Code Review: task-120 pass 1 — 2026-07-24
+
+Code Review: task-120 pass 1 2026-07-24 — none — Decision: approved
+
+**Scope of the pass.** One broad review of the full uncommitted diff (banner .tsx/.scss
+edits, new co-located banner spec, new banner stories, both locale keys plus the
+i18n:manage rewrites of `defaultMessages.json` / `translations/messages.json`)
+against the task-120 guide section and PRD FR-9 / P-10 / P-11 / P-12, with every
+verification command re-run independently.
+
+**Blockers: none.**
+
+- Implementation matches the approved guide steps 1–5 verbatim: `source` message with
+  the §9 pre-assigned P-10 copy, `showSource?: boolean` defaulting `true`, citation
+  block gated `isCohortActive && showSource` immediately beneath the cohort line,
+  `.sourceLine` SCSS append, spec and stories as prescribed, locale keys inserted
+  alphabetically after `.cohortBanner.reshuffle`.
+- P-11 held: grep confirms `showSource` appears only in the banner, its spec, and the
+  stories — `DRepDirectory.tsx` passes nothing, so production always renders the
+  citation whenever the cohort line renders. The `false` variant exists only for the
+  acceptance-required story.
+- Verified independently: `tsc --noEmit` 0 errors; banner spec 4/4 (both locales,
+  inactive case, story-only hide case); sanitization floor 23/23 with the suite file
+  untouched; `DRepDirectory.spec.tsx` 25/25 incl. snapshot; scoped eslint 0
+  errors/warnings on all three touched .tsx files.
+- Invariants: #2 — zero logger/analytics/electron-store calls in the diff; #6 — no
+  IPC, CLI, or fetch touchpoints; #5/#7/#8/#14 — no store, cohort, seed, badge,
+  ranking, or status code touched anywhere in this diff; zero files under
+  `source/main/`. #11 — both new locale strings `!!!`-prefixed. `.sourceLine`
+  follows the sibling `--theme-text-tertiary` fallback pattern already in
+  `DRepDetail.scss` / `DRepCard.scss`.
+
+**Non-blocking notes:**
+
+1. The first spec assertion pins the exact `!!!`-prefixed en-US literal; the
+   release-end copy review that strips the markers will break it while the
+   regex-based assertions survive. This is the guide's prescribed file verbatim —
+   recording only, for the copy-finalization pass.
+2. The tree is intentionally uncommitted at review time; the single
+   `feat(gov): task-120 add BMVG citation line to the cohort banner` commit
+   (subject-only) remains the implementer's close-out step.

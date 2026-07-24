@@ -609,7 +609,20 @@
           "id": "task-120",
           "title": "Add Beyond MVG (BMVG) citation secondary line to the cohort banner",
           "description": "Extend DRepDirectoryBanner to render the BMVG citation as the secondary line of the default-cohort banner per shared-design-tokens §5. The line credits the Beyond MVG (BMVG) Simplified Phase-1 one-click-delegation analysis (2026-05-19) as the source of the cohort-eligibility rules. (Dependency re-pointed from the old detail task to the cohort task, since the banner sits on the cohort directory.)",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "BMVG citation secondary line shipped in DRepDirectoryBanner: a source message with the §9 P-10 copy rendered beneath the cohort line whenever the cohort banner shows, a showSource prop defaulting true (false variant exists only for the acceptance-required story), .sourceLine SCSS, a co-located spec covering both locales plus the inactive and hidden cases, one Storybook story under the global locale toggle, and !!!-prefixed keys in both locales via i18n:manage. Code review approved on pass 1 with zero blockers (tsc 0 errors, banner spec 4/4, sanitization floor 23/23, scoped eslint clean).",
+          "evidence": [
+            "source/renderer/app/components/governance/drep-directory/DRepDirectoryBanner.tsx",
+            "source/renderer/app/components/governance/drep-directory/DRepDirectoryBanner.scss",
+            "source/renderer/app/components/governance/drep-directory/DRepDirectoryBanner.spec.tsx",
+            "storybook/stories/governance/DRepDirectoryBanner.stories.tsx",
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
+            "source/renderer/app/i18n/locales/defaultMessages.json",
+            "translations/messages.json",
+            ".agent/plans/governance/drep-discovery/task-plans/slice-5-code-review.md"
+          ],
+          "updatedAt": "2026-07-24",
           "priority": "medium",
           "estimatedHours": 1,
           "dependencies": [

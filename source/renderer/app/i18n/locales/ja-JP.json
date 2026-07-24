@@ -312,6 +312,7 @@
   "governance.drepDirectory.category.threshold.tooltip": "!!!デフォルトの推奨ビュー内ですが、失効が近づいています。委任前にご確認ください。",
   "governance.drepDirectory.cohortBanner": "!!!デフォルト表示では、投票権が最大の35のDRepを除き、最大200の適格なDRepをランダムな順序で表示します。",
   "governance.drepDirectory.cohortBanner.reshuffle": "!!!順序をシャッフル",
+  "governance.drepDirectory.cohortBanner.source": "!!!コホートの規模はBeyond MVG(BMVG)Simplifiedワンクリック委任分析に基づいています。",
   "governance.drepDirectory.copyButton": "コピー",
   "governance.drepDirectory.copyId": "DRep IDをコピー",
   "governance.drepDirectory.empty": "オンチェーンで利用可能なDRepが見つかりません。",
