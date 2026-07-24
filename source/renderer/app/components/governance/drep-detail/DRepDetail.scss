@@ -1,0 +1,112 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.backLink {
+  align-self: flex-start;
+  font-size: 14px;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--theme-text-primary);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section {
+  padding: 16px;
+  border: 1px solid var(--theme-separator, #e0e0e0);
+  border-radius: 8px;
+}
+
+.sectionTitle {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--theme-text-secondary, #6b7384);
+}
+
+.fieldList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+
+.fieldRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.fieldLabel {
+  min-width: 120px;
+  font-size: 14px;
+  color: var(--theme-text-secondary, #6b7384);
+}
+
+.fieldValue {
+  margin: 0;
+  font-size: 14px;
+  color: var(--theme-text-primary);
+}
+
+.mutedValue {
+  margin: 0;
+  font-size: 14px;
+  color: var(--theme-text-tertiary, #8e939e);
+}
+
+.votingPowerAda {
+  display: block;
+  font-weight: 600;
+}
+
+.votingPowerLovelace {
+  display: block;
+  font-size: 12px;
+  color: var(--theme-text-secondary, #6b7384);
+}
+
+.anchorValue {
+  margin: 0;
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 13px;
+  word-break: break-all;
+  color: var(--theme-text-primary);
+}
+
+.sourceLabel {
+  font-size: 12px;
+  color: var(--theme-text-tertiary, #8e939e);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.stateContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 0;
+}
+
+.errorMessage {
+  font-weight: 600;
+  color: var(--theme-color-error, #ea4c5b);
+}

@@ -7,22 +7,31 @@ const messages = defineMessages({
     defaultMessage: '!!!On-chain',
     description: 'Source label for on-chain DRep data',
   },
+  anchorReference: {
+    id: 'governance.drepDetail.sourceLabel.anchorReference',
+    defaultMessage: '!!!On-chain anchor reference',
+    description:
+      'Source label for the raw anchor URL and hash pair recorded on-chain',
+  },
 });
 
+export type DRepSourceLabelVariant = 'on-chain' | 'on-chain-anchor-reference';
+
 type Props = {
-  source: 'on-chain';
+  source: DRepSourceLabelVariant;
   className?: string;
   intl: intlShape.isRequired;
 };
 
 function DRepSourceLabel({ source, className, intl }: Props) {
-  if (source !== 'on-chain') {
-    return null;
-  }
+  const messageBySource = {
+    'on-chain': messages.onChain,
+    'on-chain-anchor-reference': messages.anchorReference,
+  };
+  const message = messageBySource[source];
+  if (!message) return null;
 
-  return (
-    <span className={className}>{intl.formatMessage(messages.onChain)}</span>
-  );
+  return <span className={className}>{intl.formatMessage(message)}</span>;
 }
 
 export default injectIntl(DRepSourceLabel);

@@ -28,3 +28,8 @@
     outline: 2px solid var(--theme-focus-outline);
   }
 }
+
+.copiedConfirmation {
+  font-size: 12px;
+  color: var(--theme-text-secondary, #6b7384);
+}

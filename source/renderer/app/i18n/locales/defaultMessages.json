@@ -2535,6 +2535,11 @@
         "defaultMessage": "!!!Copy DRep ID",
         "description": "Accessible label for the DRep ID copy button",
         "id": "governance.drepDirectory.copyId"
+      },
+      {
+        "defaultMessage": "!!!DRep ID copied",
+        "description": "Inline confirmation shown after copying a DRep ID",
+        "id": "governance.drepDetail.copyIdToast"
       }
     ],
     "path": "source/renderer/app/components/governance/_shared/DRepIdDisplay.tsx"
@@ -2545,6 +2550,11 @@
         "defaultMessage": "!!!On-chain",
         "description": "Source label for on-chain DRep data",
         "id": "governance.drepDirectory.source.onChain"
+      },
+      {
+        "defaultMessage": "!!!On-chain anchor reference",
+        "description": "Source label for the raw anchor URL and hash pair recorded on-chain",
+        "id": "governance.drepDetail.sourceLabel.anchorReference"
       }
     ],
     "path": "source/renderer/app/components/governance/_shared/DRepSourceLabel.tsx"
@@ -2567,14 +2577,39 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Voting power",
-        "description": "Label for the voting power column in DRep directory",
-        "id": "governance.drepDirectory.votingPower"
+        "defaultMessage": "!!!DRep detail",
+        "description": "Title of the DRep detail page",
+        "id": "governance.drepDetail.title"
       },
+      {
+        "defaultMessage": "!!!Back to directory",
+        "description": "Link from the DRep detail back to the directory",
+        "id": "governance.drepDirectory.backToDirectory"
+      },
+      {
+        "defaultMessage": "!!!Loading DRep data…",
+        "description": "Loading state on the DRep detail page",
+        "id": "governance.drepDetail.loading"
+      },
+      {
+        "defaultMessage": "!!!This DRep was not found in the latest on-chain data.",
+        "description": "Inline error when the requested DRep is not in the index",
+        "id": "governance.drepDetail.notFound"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-detail/DRepDetail.tsx"
+  },
+  {
+    "descriptors": [
       {
         "defaultMessage": "!!!Select for delegation",
         "description": "Row-level CTA that hands the DRep ID to the delegation form",
         "id": "governance.drepDirectory.card.select"
+      },
+      {
+        "defaultMessage": "!!!Voting power",
+        "description": "Label for the voting power column in DRep directory",
+        "id": "governance.drepDirectory.votingPower"
       },
       {
         "defaultMessage": "!!!Loading voting power…",
@@ -2588,6 +2623,91 @@
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepCard.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Anchor",
+        "description": "Heading of the anchor section on the DRep detail view",
+        "id": "governance.drepDetail.anchor.title"
+      },
+      {
+        "defaultMessage": "!!!Anchor URL",
+        "description": "Label for the on-chain anchor URL field",
+        "id": "governance.drepDetail.anchor.url"
+      },
+      {
+        "defaultMessage": "!!!Anchor hash",
+        "description": "Label for the on-chain anchor hash field",
+        "id": "governance.drepDetail.anchor.hash"
+      },
+      {
+        "defaultMessage": "!!!Source",
+        "description": "Label for the anchor source-label row",
+        "id": "governance.drepDetail.anchor.source"
+      },
+      {
+        "defaultMessage": "!!!No anchor is recorded on-chain for this DRep.",
+        "description": "Shown when the DRep registered without an anchor",
+        "id": "governance.drepDetail.anchor.none"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-detail/DRepDetailAnchorSection.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!On-chain",
+        "description": "Heading of the on-chain section on the DRep detail view",
+        "id": "governance.drepDetail.onchain.title"
+      },
+      {
+        "defaultMessage": "!!!Status",
+        "description": "Label for the DRep status field on the detail view",
+        "id": "governance.drepDetail.status"
+      },
+      {
+        "defaultMessage": "!!!Expires in",
+        "description": "Label for the remaining-epochs field on the detail view",
+        "id": "governance.drepDetail.expiresIn"
+      },
+      {
+        "defaultMessage": "!!!{count} epochs",
+        "description": "Remaining epochs until the DRep expires",
+        "id": "governance.drepDetail.expiresInEpochs"
+      },
+      {
+        "defaultMessage": "!!!Voting power",
+        "description": "Label for the voting power field on the detail view",
+        "id": "governance.drepDetail.votingPower"
+      },
+      {
+        "defaultMessage": "!!!({amount} lovelace)",
+        "description": "Secondary raw-lovelace line under the ADA voting power",
+        "id": "governance.drepDetail.votingPowerLovelace"
+      },
+      {
+        "defaultMessage": "!!!Loading voting power…",
+        "description": "Tooltip on the voting-power placeholder during enrichment",
+        "id": "governance.drepDetail.votingPower.loadingTooltip"
+      },
+      {
+        "defaultMessage": "!!!Stake distribution unavailable this refresh.",
+        "description": "Tooltip on the voting-power placeholder when stake failed",
+        "id": "governance.drepDetail.votingPower.unavailableTooltip"
+      },
+      {
+        "defaultMessage": "!!!Current votes",
+        "description": "Label for the current-epoch vote positions field",
+        "id": "governance.drepDetail.votePositions"
+      },
+      {
+        "defaultMessage": "!!!Vote positions are not available in this version.",
+        "description": "Graceful value when vote positions cannot be shown",
+        "id": "governance.drepDetail.votePositions.unavailable"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-detail/DRepDetailOnchainSection.tsx"
   },
   {
     "descriptors": [

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -18,10 +18,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Copy DRep ID',
     description: 'Accessible label for the DRep ID copy button',
   },
+  copiedToast: {
+    id: 'governance.drepDetail.copyIdToast',
+    defaultMessage: '!!!DRep ID copied',
+    description: 'Inline confirmation shown after copying a DRep ID',
+  },
 });
 
 interface Props {
   drepId: string;
+  showCopiedConfirmation?: boolean;
   intl: intlShape.isRequired;
 }
 
@@ -35,7 +41,12 @@ function truncateId(id: string): string {
   return `${id.slice(0, PREFIX_LENGTH)}…${id.slice(-SUFFIX_LENGTH)}`;
 }
 
-function DRepIdDisplay({ drepId, intl }: Props) {
+function DRepIdDisplay({
+  drepId,
+  showCopiedConfirmation = false,
+  intl,
+}: Props) {
+  const [copied, setCopied] = useState(false);
   const handleCopy = useCallback(() => {
     if (!navigator.clipboard || !navigator.clipboard.writeText) {
       logger.warn('DRepIdDisplay: clipboard API is unavailable', {
@@ -44,12 +55,15 @@ function DRepIdDisplay({ drepId, intl }: Props) {
       return;
     }
 
-    navigator.clipboard.writeText(drepId).catch((error) => {
-      logger.warn('DRepIdDisplay: failed to copy DRep ID', {
-        error,
-        drepIdLength: drepId.length,
+    navigator.clipboard
+      .writeText(drepId)
+      .then(() => setCopied(true))
+      .catch((error) => {
+        logger.warn('DRepIdDisplay: failed to copy DRep ID', {
+          error,
+          drepIdLength: drepId.length,
+        });
       });
-    });
   }, [drepId]);
 
   const truncated = truncateId(drepId);
@@ -68,6 +82,15 @@ function DRepIdDisplay({ drepId, intl }: Props) {
         skin={ButtonSkin}
         aria-label={intl.formatMessage(messages.copyLabel)}
       />
+      {showCopiedConfirmation && copied && (
+        <span
+          className={styles.copiedConfirmation}
+          role="status"
+          aria-live="polite"
+        >
+          {intl.formatMessage(messages.copiedToast)}
+        </span>
+      )}
     </span>
   );
 }
