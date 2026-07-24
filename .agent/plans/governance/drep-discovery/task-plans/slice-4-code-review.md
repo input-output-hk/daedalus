@@ -276,3 +276,36 @@ commit time (task-116 precedent: its statusReason embeds post-review outcomes).
 
 **Decision: approved** — task-117 may be committed as staged
 (`feat(gov): task-117 wire DRep detail route and mask drep id from analytics urls`).
+
+---
+
+## Planner: slice-4 close-out
+
+Slice-4 is closed. Both tasks completed and committed on `job/slice-4`: task-116
+(`34296ec16`, on-chain-only DRep detail — component tree, `DRepDetailPage` container
+with the directory refresh contract, shared `DRepSourceLabel`/`DRepIdDisplay`
+extensions, 21 locale keys, 11-test spec, five global-toggle stories) and task-117
+(`f4fec59c9`, detail route + directory `exact`, View-details CTA with picked-state
+push, `maskAnalyticsRoute` in `getAnalyticsURL`, stub → production harness migration,
+floor suite 20 → 23).
+
+**Review iterations.** Planning: one Critiquer pass returned `requires_changes` with
+three blockers (B-1 duplicate status badge, B-2 broken `npx`, B-3 wrong
+`DRepDirectory` count); a single Planner fix pass cleared all three and planning was
+approved. Implementation: one code-review pass per task, both approved with zero
+blockers and no unsanctioned deviations.
+
+**Invariant checks run.** Sanitization floor green at every gate (20/20 after
+task-116, 23/23 after task-117, inherited 20 tests byte-identical), with the D2 mask
+closing the detail-route hash-URL leak at the single `getAnalyticsURL` boundary and
+grep confirming zero logger/analytics/storage calls in new code. Anchor floor: inert
+anchor URL + hash under "On-chain anchor reference", interactivity grep empty,
+`.closest('a')` pinned null. Local-first: detail reads the existing `drepIndex` only,
+no new IPC/CLI. Delegation handoff: `location.state`-only, DRep id byte-equal and
+untransformed, proven by the migrated two-hop test with slice-2/3 assertions
+unchanged.
+
+**Deferrals.** Vote positions → future `gov-state` slice (D1, graceful unavailable
+state shipped); favorites → slice-7 (D3); dual-ID display → cv-1 (D5, CIP-129-only
+here); "Registered: epoch N" dropped (D4, no data source). Durable findings F-1…F-7
+recorded in `research/slice-4-findings.md`.

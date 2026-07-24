@@ -429,7 +429,62 @@ interactive checkpoint exists in this slice.
 
 ## Final Outcome
 
-_To be filled at slice close._
+Slice-4 is complete: both tasks shipped, each code-review approved on pass 1 with zero
+blockers, one commit per task on `job/slice-4`.
+
+**task-116 — DRep detail view (on-chain only)** (`34296ec16`,
+`feat(gov): task-116 build DRep detail view with on-chain fields and anchor presence`).
+The `drep-detail/` component tree (`DRepDetail`, `DRepDetailOnchainSection` with the
+single status badge per the B-1 fix, `DRepDetailAnchorSection` rendering anchor URL +
+hash as inert text under the "On-chain anchor reference" label, `DRepDetailActions`
+select-CTA-only) plus a `DRepDetailPage` container replicating the directory refresh
+contract with deep-link/not-found handling. Shared extensions: `DRepSourceLabel` gains
+the `on-chain-anchor-reference` variant; `DRepIdDisplay` gains an opt-in copied
+confirmation (defaults off — directory cards behaviorally unchanged). 21 `!!!`-prefixed
+keys per locale, an 11-test container spec, five Storybook stories under the global
+locale toggle.
+
+**task-117 — detail route wiring + analytics mask** (`f4fec59c9`,
+`feat(gov): task-117 wire DRep detail route and mask drep id from analytics urls`).
+`ROUTES.GOVERNANCE.DREP_DETAIL` (`/governance/dreps/:drepId`) registered in
+`Routes.tsx` with the mandatory `exact` added to the directory route (D8, no double
+render); the card "View details" CTA threaded Directory → List → Card into
+`DRepDirectoryPage.handleViewDetails`, which pushes the byte-equal DRep id via the
+route param with only the picked `{ from, selectedWalletId, voteType }` state; the pure
+`maskAnalyticsRoute` helper applied inside `MatomoClient.getAnalyticsURL` (D2) keeps
+the id out of every tracked URL; the slice-2 `DetailRouteStub` harness migrated to the
+production `DRepDetailPage` within the nine-edit whitelist (D10), slice-2/3 pins
+byte-identical; one new `!!!` key per locale.
+
+**Verification executed** (all via `node_modules/.bin/<tool>` — `npx` is unusable in
+this devcontainer, F-6): `tsc --noEmit` zero errors after each task; scoped eslint 0
+errors (warnings confined to pre-existing baseline classes); focused Jest green —
+task-116: `DRepDetailPage` 11/11, directory regression 22/22, floor 20/20; task-117:
+42/42 (`VotingGovernancePage` 8, `DRepDirectory` 20, `DRepDetailPage` 11,
+`DRepDirectoryPage` 3), floor 23/23 with the inherited 20 tests byte-identical. The
+two-hop delegation contract was proven against the production detail route with the
+slice-2/3 final assertions unchanged; the tracked-URL boundary test pins
+`http://daedalus/governance/dreps/:drepId` and asserts the CIP-129 id absent at the
+real `sendEvent` path. Anchor-floor grep (`onExternalLinkClick|<a |href=`) over
+`drep-detail/` came back empty; no logger/analytics/storage call exists in the new
+code. Message JSONs (`defaultMessages.json`, `translations/messages.json`) were
+regenerated tool-managed with each task. Storybook was verified at tsc/eslint level
+only (no display in this devcontainer — slice-2 precedent); eyeball both locales via
+the global toggle before merge.
+
+**Deferrals.** Current-epoch vote positions → a future `gov-state` slice (D1/F-1: no
+`gov-state` query exists; the detail renders a graceful "unavailable" value; the plan's
+Key-Decisions row must be reconciled when that slice lands). Favorite toggle → slice-7
+(D3). Dual-ID (CIP-105 alongside CIP-129) display → cv-1; slice-4 is CIP-129-only
+(D5). The wireframe's "Registered: epoch N" row is dropped outright (D4/F-2:
+`drep-state` carries no registration epoch — restoring it needs a new data source, not
+a UI change).
+
+**Research.** [research/slice-4-findings.md](../research/slice-4-findings.md) records
+F-1…F-7: the vote-positions plan conflict, the registration-epoch data gap, the
+`getAnalyticsURL` single-boundary mask, the `exact` requirement, the stub-migration
+contract, the broken-`npx` devcontainer convention, and earlier-slice anchor/count
+drift for future planners.
 
 ---
 
