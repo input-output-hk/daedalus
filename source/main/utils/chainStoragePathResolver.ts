@@ -43,22 +43,32 @@ const resolveManagedChainPathFromEntryPoint = async (
     const chainStats = await fs.lstat(chainPath);
 
     if (chainStats.isSymbolicLink()) {
+      const rawLinkTarget = await fs.readlink(chainPath);
+      const linkTargetPath = path.isAbsolute(rawLinkTarget)
+        ? rawLinkTarget
+        : path.resolve(path.dirname(chainPath), rawLinkTarget);
+
       const resolvedLinkTarget = await resolveLinkTarget(chainPath);
       if (resolvedLinkTarget) {
         return resolvedLinkTarget;
       }
 
-      return path.resolve(chainPath);
+      return linkTargetPath;
     }
 
     if (process.platform === 'win32' && chainStats.isDirectory()) {
       try {
-        await fs.readlink(chainPath);
+        const rawLinkTarget = await fs.readlink(chainPath);
+        const linkTargetPath = path.isAbsolute(rawLinkTarget)
+          ? rawLinkTarget
+          : path.resolve(path.dirname(chainPath), rawLinkTarget);
 
         const resolvedJunctionTarget = await resolveLinkTarget(chainPath);
         if (resolvedJunctionTarget) {
           return resolvedJunctionTarget;
         }
+
+        return linkTargetPath;
       } catch (error) {
         const code = (error as NodeJS.ErrnoException)?.code;
         if (
