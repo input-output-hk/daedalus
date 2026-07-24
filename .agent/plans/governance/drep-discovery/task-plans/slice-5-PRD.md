@@ -443,7 +443,55 @@ tasks JSON), P-10 (task-text vs §9 BMVG copy).
 
 ## Final Outcome
 
-_To be filled at slice close._
+Slice-5 is complete: all three tasks shipped (`complete` in the tracker), one
+subject-only commit per task on `feat/drep-discovery-slice-5`.
+
+**task-118 — default cohort + randomization seed** (`c4bafff9c`,
+`feat(gov): task-118 implement default cohort and reshuffle seed in GovernanceStore`)
+— **complete**. `seededShuffle.ts` (mulberry32 + Fisher–Yates + `generateCohortSeed`,
+no new dependency) with a 5-test co-located spec; `GovernanceStore` gains `cohortSeed`
+(initialized at construction, `GovernanceStore.ts:110`), `reshuffleCohort()` (a single
+seed assignment, :284-287), and the `isCohortActive` / `defaultCohort` /
+`displayedDRepList` computed chain (:143-180) implementing P-1…P-3 with module-level
+constants 35/200/6 (:60-62) and the BigNumber `comparedTo` comparator (:69-84);
+container/banner wiring (`DRepDirectoryPage.tsx:84,91,93`; cohort line + Reshuffle
+`Link` gated on `isCohortActive`, `DRepDirectoryBanner.tsx:85-96`); `cohortBanner` +
+`cohortBanner.reshuffle` keys in both locales; cohort Jest in
+`GovernanceStore.spec.ts` plus the P-14 harness/story updates.
+
+**task-119 — DRepCategoryBadge** (`6fc9371fa`,
+`feat(gov): task-119 add DRepCategoryBadge with primary, threshold, non-metadata`) —
+**complete**. `_shared/DRepCategoryBadge.tsx` + `.scss` with exported pure
+`getDRepCategory` (binding priority Threshold > Primary > Non-metadata,
+`DRepCategoryBadge.tsx:60-69`), native-title tooltip, render sites in `DRepCard`
+topRow and the `DRepDetail` header per P-8, 6 `!!!` keys per locale, an 11-test
+component spec, snapshots at both call sites, and one global-toggle story.
+
+**task-120 — BMVG citation line** (`9a17bc891`,
+`feat(gov): task-120 add BMVG citation line to the cohort banner`) — **complete**.
+`cohortBanner.source` secondary line gated `isCohortActive && showSource`
+(`DRepDirectoryBanner.tsx:97-101`), `showSource` story-only prop defaulting `true`
+(P-11), banner spec, with/without-citation stories, 1 `!!!` key per locale.
+
+**Verification executed at slice close** (2026-07-24, all via
+`node_modules/.bin/<tool>` — NFR-6): `tsc --noEmit` zero errors. Focused Jest all
+green — 93/93 across the eight slice suites: `GovernanceStore.spec.ts` 24,
+`DRepDirectory.spec.tsx` 25 (incl. card-site snapshot), `DRepDirectoryPage.spec.tsx`
+4, `DRepDetailPage.spec.tsx` 12 (incl. detail-site snapshot),
+`DRepCategoryBadge.spec.tsx` 11, `DRepDirectoryBanner.spec.tsx` 4,
+`seededShuffle.spec.ts` 5, `VotingGovernancePage.spec.tsx` 8. Sanitization floor
+23/23 with the suite file untouched. Scoped eslint over the slice's touched files: 0
+errors, 36 warnings — all in pre-existing baseline classes (`no-unused-vars` on
+type-position imports, `no-explicit-any` in spec mocks, plus the standing
+`tests/jest/**` ignored-by-default notice). Storybook verified at tsc/eslint level
+only (no display in this devcontainer); eyeball both locales via the global toggle
+before merge.
+
+**Findings.** Durable slice decisions (R1 stale plan row, R2 cohort gating, R3
+anchor-presence proxy, R4 expiring-badge drift, R5 no banner links, R8 shuffle
+mechanics/seed lifetime) live in
+[research/slice-5-findings.md](../research/slice-5-findings.md); the plan's
+Key-Decisions "DRep query shape" row was reconciled per R1 at slice close.
 
 ---
 

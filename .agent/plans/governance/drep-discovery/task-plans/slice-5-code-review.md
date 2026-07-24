@@ -245,3 +245,21 @@ verification command re-run independently.
 2. The tree is intentionally uncommitted at review time; the single
    `feat(gov): task-120 add BMVG citation line to the cohort banner` commit
    (subject-only) remains the implementer's close-out step.
+
+---
+
+Planner: 2026-07-24 — slice-5 close: All three tasks are complete and committed
+(task-118 `c4bafff9c` default cohort + reshuffle seed in `GovernanceStore`, task-119
+`6fc9371fa` `DRepCategoryBadge` with Primary/Threshold/Non-metadata, task-120
+`9a17bc891` BMVG citation line on the cohort banner). Full slice verification at
+close: `tsc --noEmit` zero errors; focused Jest 93/93 across the eight slice suites
+(`GovernanceStore` 24, `DRepDirectory` 25, `DRepDirectoryPage` 4, `DRepDetailPage`
+12, `DRepCategoryBadge` 11, `DRepDirectoryBanner` 4, `seededShuffle` 5,
+`VotingGovernancePage` 8); sanitization floor 23/23 with the suite untouched; scoped
+eslint over the slice's touched files 0 errors (36 warnings, all pre-existing
+baseline classes). Durable findings F-1…F-6 (R1 stale plan query-shape row, R2
+cohort gating with full-list fallback, R3 interim anchor-presence proxy, R4
+expiring-status-badge drift, R5 link-free banner until slice-6, R8 shuffle
+mechanics and seed lifetime) are recorded in `research/slice-5-findings.md`, and the
+plan's Key-Decisions "DRep query shape" row was reconciled to the Phase-2
+`drep-stake-distribution` derivation.
