@@ -836,3 +836,295 @@ comment, contrary to convention; `git log -S` confirms it was introduced in
 0f47402b6 (slice-1), not by this task, and it was correctly left alone.
 
 Decision: approved
+
+---
+
+## Code Review: task-130 — iteration 1 (2026-07-27)
+
+**Scope reviewed.** The working diff against the guide section "task-130:
+Mapper in `_createWalletFromServerData` + collision rules"
+(cv-1-implementation-guide.md:961-1204 — seven ordered steps with verbatim
+code blocks, the resolved-judgment-calls block at `:990-1007`, the
+verification commands at `:1179-1184` and the seven-item acceptance checklist
+at `:1186-1202`), the design contract
+(designs/current-vote-display-design.md:101-110 HRP→kind table, `:114`
+in-memory-only storage, `:118-146` mapper pseudocode, `:164` the HRP-only
+warning allowance) and task-130's five acceptance criteria in
+governance-drep-discovery-plan-tasks.json (pre-scribe `:927-931`). This is a
+modify-only task: two tracked files, `+49/-2`. Working-tree state at review
+time: `git status --porcelain --untracked-files=all` = exactly
+` M source/renderer/app/api/api.ts` and
+` M source/renderer/app/domains/Wallet.ts`, zero untracked paths, empty
+`git diff package.json yarn.lock`. HEAD unchanged at 40bcd990a. One review
+round; no iteration 2 was needed.
+
+**What landed.**
+
+- `source/renderer/app/api/api.ts:100` — `import { normalizeDRepIdentity }
+  from '../utils/governance/normalizeDRepIdentity';`, placed directly after
+  the `filterLogData` import. `:162` — `WalletVotingTarget,` inserted
+  immediately after `AdaWallets,` in the existing wallets-types import block.
+  `logger` (`:91`), lodash `get`/`last` (`:1`) and `WalletDelegationStatuses`
+  (`:6-9`) were already imported; nothing redundant was added.
+- `:3012` — `const LOGGABLE_HRP_PATTERN = /^[a-z_]{1,16}$/;`, module-private.
+- `:3014-3031` — the three-line contract comment plus
+  `const parseVoting = (voting: unknown): WalletVotingTarget | null`. Guards
+  `null`/non-string first (`:3018`), then the two sentinel branches
+  (`:3019-3020`), then `normalizeDRepIdentity(voting)` (`:3021`), then the
+  unknown-HRP degradation with a single sanitized `logger.warn` (`:3025-3027`),
+  then `{ kind: 'drep', drep, source: 'onchain' }` (`:3030`).
+- `:3033` — `export const _createWalletFromServerData = action(`. The `export`
+  keyword is the guide's own resolved judgment call (`:990-993`) so task-134
+  can import the mapper.
+- `:3078-3100` — `delegationStakePoolStatus` (unchanged expression) moved one
+  line up, a two-line collision comment (`:3079-3080`), the two
+  `let … = null` initializers
+  and the four-way `switch (status)` inside the pre-existing `if (!isLegacy)`
+  guard. `:3153` — `votingTarget,` in the `new Wallet({ … })` literal, between
+  `pendingDelegations: next,` and `discovery,`.
+- `source/renderer/app/domains/Wallet.ts:11` — `WalletVotingTarget,` appended
+  to the existing type-only import; `:130` —
+  `votingTarget?: WalletVotingTarget | null;` directly after
+  `pendingDelegations?`. Exactly two added lines; nothing else in the file
+  changed.
+- Nothing else. One deleted line only:
+  `const delegatedStakePoolId = isLegacy ? null : target;`.
+
+**Review method (three parallel lenses, one round).** Guide fidelity and
+acceptance-criteria adjudication; locked invariants and sanitization-floor
+regression; runtime correctness, edge cases and unnecessary complexity. As in
+the previous cv-1 tasks, any blocker a lens raised would have been handed to
+three independent skeptics for refutation and allowed to stand only if it
+survived — no lens raised one on this diff, so the panel had nothing to
+adjudicate.
+
+1. *Guide-fidelity lens.* Extracted all ten fenced `ts` blocks from the
+   guide's task-130 section and substring-matched each against the live files
+   rather than eyeballing them: every "after" block is present byte-for-byte
+   (blocks 0,1,2,4,6,7 in api.ts; blocks 8,9 in Wallet.ts), including comment
+   wording and the em dash, and block 5 — the Step 4 "before" snippet
+   containing `const delegatedStakePoolId = isLegacy ? null : target;` — is
+   correctly absent, being the line replaced. All seven steps implemented,
+   zero skipped, zero divergent. The one apparent departure from the design
+   pseudocode (`:137`/`:143` write `delegation.active.target ?? null` where
+   the code reuses the pre-existing `target`) is the guide's own deliberate
+   byte-identity formulation (`:1124-1127`) and is semantically equivalent,
+   lodash `get` substituting `null` for `undefined`. Greped `source/`,
+   `tests/` and `storybook/` for `_createWalletFromServerData`: the only hits
+   are the declaration and the 15 internal call sites (api.ts:404…:2080), none
+   changed, no re-export, no name collision.
+2. *Invariant / sanitization lens.* Invariant 2 (sanitization floor): the diff
+   introduces exactly one new sink, and a diff-scoped grep for
+   `logger\.|analytics|electron-store|JSON.stringify` returns exactly one line,
+   `logger.warn('AdaApi::parseVoting unrecognized voting target', {`. Its only
+   payload member is `hrp`. Bounding was reasoned adversarially rather than
+   assumed: bech32's data charset excludes `1`, so `lastIndexOf('1')` is the
+   true separator for well-formed input; `separatorIndex > 0` (not `>= 0`)
+   forces `hrp = ''` for a missing or leading separator, and `''` fails
+   `{1,16}`; any slice that reaches into a data part necessarily carries
+   digits, and the allowlist admits none — so every such case collapses to the
+   fixed literal `'invalid'`. All-uppercase bech32 (BIP-173 legal, F-9)
+   likewise collapses to `'invalid'`. Neither the raw id nor the full input is
+   reachable from the payload, matching design `:164`. The sentinels cannot
+   reach the logger at all (they return two lines earlier and contain no `1`).
+   The warn deliberately does not route through `filterLogData`, correctly:
+   `hrp` is not a sensitive key (source/common/utils/logging.ts:32-48 lists
+   `votingKey`/`drepId`/`vote`/`voting`) and the value is already bounded.
+   Downstream reachability was walked, not assumed — a repo-wide grep for
+   `votingTarget` returns exactly six hits (api.ts:3082/3087/3091/3097/3153,
+   Wallet.ts:130), and the two sinks that take a `Wallet`
+   (analytics/utils/getEventNameFromWallet.ts:3-4, which derives a constant
+   string from `isHardwareWallet` alone, and stores/WalletsLocalStore.ts:57-67,
+   which accepts `walletId` plus an explicit object) never serialize the
+   instance, so design `:114` (in-memory only, no electron-store, no IPC,
+   never user input) holds. Invariant 10 (byte-equality): a diff-scoped grep
+   for `toLowerCase|toUpperCase|\.trim\(|\.normalize\(|\.replace\(|substring`
+   returns no matches; the single `slice(` in the diff builds the log token
+   only, and the value handed to the normalizer is the untouched `voting`
+   binding, which `normalizeDRepIdentity.ts:39`/`:54` return by reference.
+   Invariant 13 (form-only sentinels): `:3019` and `:3020` both precede the
+   normalizer call at `:3021`. Invariants 5 and 4: no balance-parsing line and
+   no submission path appears in the diff; api.ts:3060-3072, the
+   BigNumber balance/reward block, is byte-identical and sits above the first
+   changed line.
+3. *Correctness / complexity lens.* Traced the edge cases individually.
+   `active === null` (or `delegation` absent): the `get` chain yields
+   `target = null`, `status = null`, the switch falls to `default`, and both
+   locals end `null` — identical to the old `isLegacy ? null : target`.
+   `isLegacy === true`: the `if (!isLegacy)` guard is never entered and both
+   locals keep their `null` initializers, matching today exactly, with
+   `delegationStakePoolStatus = isLegacy ? null : status` untouched.
+   Non-string `voting` (object/number/boolean): short-circuits to `null` with
+   no log, so no object can be spread into the logger. A pool id supplied as
+   `voting` decodes with prefix `pool`, falls through
+   `normalizeDRepIdentity.ts:61` to `null`, and warns with `hrp: 'pool'` —
+   exactly the last row of the design's HRP table. `votingTarget` is never
+   `undefined` on the constructor literal (initialized `null`, every arm
+   assigns `null` or an object), and `WalletProps.votingTarget?:
+   WalletVotingTarget | null` accepts both, landing on the instance through
+   the `Object.assign` at Wallet.ts:173-175.
+
+**Blockers raised and adjudicated.** Zero blockers were raised by any of the
+three lenses, so no change was made during review — the diff as reviewed is
+the diff as written. Recorded as non-blocking:
+
+1. *Type-vs-wire divergence carried forward.*
+   `source/renderer/app/api/wallets/types.ts:117` and `:123` declare
+   `voting?: WalletVotingTarget` (an object) while the wire value is a raw
+   string, as the task-126 fixtures show. `parseVoting` absorbs this correctly
+   by taking `unknown` and guarding on `typeof voting !== 'string'`, and the
+   guide's resolved-judgment-calls block (`:997-1000`) acknowledges it, so
+   there is no runtime hazard today. Worth tightening to an `ApiDRep` string
+   alias in cv-2; not a task-130 change.
+2. *Log cadence.* `stores/WalletsStore.ts:69,264` polls every 5000 ms and the
+   mapper runs per wallet per poll, so a persistently unrecognized `voting`
+   value emits one bounded `logger.warn` roughly every 5 s per affected
+   wallet. The payload is floor-compliant and the warn is guide-mandated
+   verbatim; adding rate-limiting here would itself be an unrequested
+   abstraction and a guide deviation. Flagged so the choice is conscious.
+3. *Asymmetry in `parseVoting`.* A non-string `voting` degrades to `null`
+   silently while an unknown-HRP string warns. Guide-verbatim and the safer
+   choice (never spread an unknown object into the logger), but it means a
+   cardano-wallet wire-shape change would degrade without a signal. Better
+   answered by a task-134 spec assertion than by a code change.
+4. *Import-block placement.* `WalletVotingTarget` joins the value import block
+   at api.ts:159-190 rather than an `import type` block. This matches the
+   guide's Step 1 instruction and every other type already in that block;
+   `isolatedModules` is commented out (tsconfig.json:72) and `tsc` is clean,
+   so there is no emit hazard. Observation only.
+5. *Pre-existing sanitization exposure outside the fence.* api.ts:379-383 logs
+   the raw `wallets` array, which carries `delegation.active.voting`. Verified
+   byte-identical at HEAD via `git show`, therefore neither introduced nor
+   worsened here, and outside task-130's scope fence. Recorded as F-11 for a
+   follow-up floor task rather than fixed.
+
+**Verification commands run (results as observed).**
+
+1. `node_modules/.bin/typed-scss-modules source/renderer/app` → exit 0;
+   regenerated the gitignored `*.scss.d.ts` files in the fresh worktree, no
+   errors.
+2. `node_modules/.bin/tsc --noEmit` → exit 0, zero diagnostics. Per PRD R-4
+   this was the planned Node-v24 fallback; it ran clean under Node v24.16.0
+   (see F-13).
+3. `node_modules/.bin/eslint source/renderer/app/api/api.ts
+   source/renderer/app/domains/Wallet.ts --ext .ts` → exit 0; 72 problems,
+   0 errors, 72 warnings — exactly the pre-existing per-file baseline
+   (`consistent-return`, `@ts-ignore` bans, unused mobx/type imports in
+   Wallet.ts). No warning points at any new line.
+4. `node_modules/.bin/jest tests/jest --runInBand` → exit 0; 6 passed +
+   1 skipped = 7 of 7 suites, 110 passed + 12 skipped = 122 tests. Recorded
+   with the caveat that this path filter matches only 7 of the repo's 82 test
+   files and is *not* the tree-wide baseline quoted in earlier cv-1 entries
+   (F-13).
+5. `node_modules/.bin/jest --runInBand --coverage=false` (unfiltered, the run
+   the tree-wide baseline actually describes) → exit 0; 81 passed + 1 skipped
+   = 82 suites, 1038 passed + 12 skipped = 1050 tests, 2 snapshots passed,
+   zero failures. AC-3's byte-identity claim is corroborated by this run.
+6. `node_modules/.bin/jest tests/jest/security/governance-sanitization.spec.ts
+   --runInBand` → 1 suite passed, 23 of 23 tests passed. The inherited
+   sanitization floor is intact with the new `logger.warn` in place.
+7. `node_modules/.bin/jest tests/jest/governance/normalizeDRepIdentity.spec.ts
+   --runInBand` → 1 suite passed, 8 of 8 tests passed.
+8. `node_modules/.bin/prettier --check` on the two changed files → exit 1.
+   Wallet.ts is clean; api.ts is flagged and the failure is proven
+   pre-existing: extracting the HEAD blob of api.ts to a scratch file and
+   running the identical check fails the same way, and formatting each yields
+   the *same nine* drift hunks at offsets differing by exactly `+2` (the two
+   added import lines) — `@@788/790`, `1035/1037`, `1637/1639`, `1655/1657`,
+   `2162/2164`, `2187/2189`, `2211/2213`, `2400/2402`, `2605/2607`. Every hunk
+   is the known prettier-2.1.2 assignment-break drift and the furthest sits
+   ~400 lines above the new code at `:3012+`, so no new line is implicated.
+   Correctly left unformatted per F-5; the scratch files were deleted and the
+   tree returned to exactly two modified paths.
+9. `git diff HEAD -- <the two files> | grep -nE
+   "logger\.|analytics|electron-store|JSON.stringify"` → exactly one match,
+   the sanctioned warn at diff line 39. No analytics call, no electron-store
+   write, no `JSON.stringify` anywhere in the diff.
+10. `git diff HEAD | grep -nE "toLowerCase|toUpperCase|\.trim\(|normalize\("`
+    → exit 1, "no matches". Invariant 10 holds.
+11. `grep -n "givenName\|anchorUrl" source/renderer/app/api/api.ts` → no
+    matches. `grep -n "votingTarget"` → the five api.ts insertions and the one
+    Wallet.ts line, i.e. exactly the guide's edits.
+12. `git status --porcelain --untracked-files=all` → the two ` M` entries and
+    nothing else; `git diff package.json yarn.lock` = 0 bytes.
+13. Independent bech32 2.0.0 decode of both task-126 DRep vectors:
+    `drep1y2sm9s75uhm…` → prefix `drep`, 29 payload bytes, header `0x22`;
+    `drep_vkh15xev84897…` → prefix `drep_vkh`, 28 payload bytes. Both clear
+    `normalizeDRepIdentity`'s length and header gates, so AC-1 and AC-2 are
+    non-vacuous rather than silently degrading to a warning plus `null`.
+
+**Acceptance criteria.** AC-1 met — `wallet-voting-drep.json` (`status:
+'voting'`) enters the `VOTING` case (`api.ts:3084-3088`), which pins
+`delegatedStakePoolId = null` and sets `votingTarget = parseVoting(get(active,
+'voting', null))`, yielding `{ kind: 'drep', drep: { raw: 'drep1y2sm9s75…'
+byte-equal, cip129, derived cip105, credentialHex, credentialType: 'key' },
+source: 'onchain' }`; no `logger.warn` fires on this path. AC-2 met —
+`wallet-delegating-and-voting.json` matches
+`WalletDelegationStatuses.VOTING_AND_DELEGATING` (Wallet.ts:42, the value
+task-127 corrected) and enters `api.ts:3089-3092`, giving
+`delegatedStakePoolId = 'pool1qvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsx6m90l2'`
+*and* a populated `votingTarget` built from the CIP-105 form; the fixture's
+`next[]` entry still flows through the untouched `// Last` block. AC-3 met —
+the only deleted line is `const delegatedStakePoolId = isLegacy ? null :
+target;`; the legacy path short-circuits on the `null` initializers
+(`:3081-3083`), and `delegating`, `not_delegating` and every unrecognized or
+`null` status share the `default` arm (`:3093-3098`), assigning the same
+`target` read from the same unmoved `get(active, 'target', null)`. The
+`const`→`let` change and the one-line statement reorder are semantically
+inert (both operands are pure `get` reads), `delegationStakePoolStatus` is
+byte-identical, and the full unfiltered jest run is green. AC-4 met —
+`parseVoting` is called at exactly two sites and both pass
+`get(active, 'voting', null)`; `target` is never passed to it anywhere in the
+file, so an absent `active.voting` returns `null` on the first guard without
+reaching the normalizer or the logger, and the `VOTING` arm independently
+forces `delegatedStakePoolId = null` so a DRep-era `active.target` cannot
+surface as a pool id either. AC-5 met — `DRepIdentity`
+(source/common/types/governance.types.ts:20-31) declares only `raw`,
+`cip129?`, `cip105?`, `credentialHex?` and `credentialType`, and grep confirms
+neither `givenName` nor `anchorUrl` appears anywhere in api.ts; the mapper
+hydrates no anchor-derived display metadata, so invariant 3 is enforced
+negatively as specified. Separately, `source: 'onchain'` is present at
+`:3030` — the required member of `WalletVotingTarget.drep`
+(api/wallets/types.ts:86-93) that no acceptance criterion names (F-6).
+
+**Comment convention.** Two comments were added: the three-line `parseVoting`
+contract note at api.ts:3014-3016, stating the wire values and the
+sanitization floor, and the two-line collision note at api.ts:3079-3080,
+stating that a voting-only status never carries a stake-pool target. Both are
+plain prose stating the invariant or the why; neither carries a task id, a
+review label, an ALL-CAPS marker or change history. Both are the approved
+guide's exact text.
+
+**No unnecessary complexity.** One module-private arrow function, one module
+constant, one `switch`, two `let` locals and one added object property. No new
+file, no class, no error type, no barrel, no caching, no helper module, no
+rate-limiter. The only new export is the one the guide explicitly resolved
+(`:990-993`) so task-134 can import the mapper, and it is a no-op at runtime.
+The seemingly redundant `delegatedStakePoolId = null` in the `VOTING` arm and
+`votingTarget = null` in the `default` arm are guide-verbatim and are the
+point of the task ("explicit collision rules") — removing them would be the
+deviation. Scope fence clean in both directions: Wallet.ts has no `@observable
+votingTarget`, no `currentVote`, no `isVoting`, and its `update()` pick list
+still holds exactly its 19 pre-existing entries with `votingTarget` absent
+(task-131's boundary), and no spec file was created (task-134's boundary).
+
+**Out-of-scope observations carried forward.** The pre-existing ad-hoc
+`DRepIdentity` construction at
+`source/renderer/app/containers/voting/VotingGovernancePage.tsx:75-83` — which
+infers `credentialType` from `chosenOption.startsWith('drep_script')` and so
+mislabels a CIP-129 `drep1…` script DRep as `'key'` — and the matching
+shortcut at `storybook/stories/voting/Governance.stories.tsx:58-61` both
+survive untouched. Carried over from the task-129 review; the approved guide
+does not touch either file and no task-130 acceptance criterion covers them,
+so their correct home is cv-2 / task-140. Newly recorded as F-11: api.ts:379-383
+logs the raw `wallets` array in `AdaApi::getWallets success` with only
+`hwLocalData` sanitized, so `delegation.active.voting` — a CIP-129/CIP-105 id
+or a sentinel literal — reaches the log file verbatim; the line is
+byte-identical at HEAD, `filterLogData` is call-site-only
+(utils/logging.ts:26-43 forwards `data` untouched and there is no global
+sanitizing transport), and the floor suite has no `getWallets` case. Also
+still open: `source/common/types/governance.types.ts:18` carries a task id
+inside a code comment from slice-1 (0f47402b6), deliberately left alone; and
+the api.ts prettier drift under F-5, which `nix fmt` still owes pre-merge.
+
+Decision: approved

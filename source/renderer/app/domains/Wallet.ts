@@ -8,6 +8,7 @@ import type {
   WalletUnit,
   WalletPendingDelegations,
   Discovery,
+  WalletVotingTarget,
 } from '../api/wallets/types';
 import type { WalletTokens } from '../api/assets/types';
 
@@ -126,6 +127,7 @@ export type WalletProps = {
   lastDelegatedStakePoolId?: string | null | undefined;
   lastDelegationStakePoolStatus?: string | null | undefined;
   pendingDelegations?: WalletPendingDelegations;
+  votingTarget?: WalletVotingTarget | null;
   discovery: Discovery;
   hasPassword: boolean;
   walletNotConnected?: boolean;

@@ -243,3 +243,127 @@ sanitized unknown-HRP warning; the floor assertion covering
 `normalizeDRepIdentity` itself should land in the same task, and the `:48`
 vector is a cheap add once the guide's byte-exactness constraint no longer
 applies.
+
+## F-11 — `AdaApi::getWallets` logs the raw `wallets` array, so `delegation.active.voting` reaches the log file unsanitized (pre-existing at HEAD, outside task-130's fence, unguarded by the floor suite)
+
+Found during the task-130 review's invariant lens while auditing every sink the
+new `votingTarget` could reach. `source/renderer/app/api/api.ts:379-383` reads
+`logger.debug('AdaApi::getWallets success', { wallets, legacyWallets,
+hwLocalData: filterLogData(hwLocalData) })` — only `hwLocalData` is sanitized.
+The `wallets` array is the raw `GET /v2/wallets` payload, so from cv-1 onward
+it carries `delegation.active.voting`, i.e. the CIP-129/CIP-105 DRep id or an
+`abstain` / `no_confidence` sentinel literal, straight into the log file. There
+is no global sanitizing transport to catch it: `source/renderer/app/utils/
+logging.ts:26-43` forwards `data` untouched to `electronLog[level]`, and a grep
+for electron-log hooks or custom transports finds none — `filterLogData` is
+call-site-only. The floor suite `tests/jest/security/governance-sanitization.spec.ts`
+pins the `delegateVotes` call boundary (`:203-240`) but has no `getWallets`
+case, so nothing currently guards this line. Invariant 2 (sanitization floor)
+is the invariant at stake.
+
+**Resolution:** not a task-130 regression and deliberately not fixed there. The
+line is byte-identical at HEAD — verified with `git show HEAD:source/renderer/
+app/api/api.ts` — and task-130's scope fence covers only `parseVoting`, the
+delegation switch and the constructor pass-through, so touching it would have
+been scope creep. Task-130's own new sink is clean by contrast: the single
+`logger.warn` at `api.ts:3025-3027` emits one bounded `hrp` token and nothing
+else. The durable action is a follow-up floor task that either wraps `wallets`
+in `filterLogData` at the call site or drops it from the payload, plus a
+`getWallets` case in the floor suite so the gap cannot reopen. Sizing note: the
+same shape may exist at other `logger.debug`/`logger.info` call sites in
+`api.ts` that pass whole server payloads — the audit was scoped to the wallet
+list, not exhaustive.
+
+## F-12 — task-130 discharges F-8 and populates F-6's `source` member, but ships with no test of its own by design: AC-1..AC-5 and its new sanitized warning are pinned only by task-134 (and F-10's resolution line mis-locates the logger spy at task-130)
+
+Three prior findings changed state with the task-130 build.
+
+**F-8 is discharged in code.** The sentinel branch now lives where invariant 13
+requires it: `source/renderer/app/api/api.ts:3019` returns `{ kind: 'abstain' }`
+and `:3020` returns `{ kind: 'no_confidence' }`, both *ahead* of
+`normalizeDRepIdentity(voting)` at `:3021`. `'abstain'` and `'no_confidence'`
+therefore never reach the bech32 decoder, never produce a `null`, and never
+trigger the unknown-HRP warning. F-8's stale tracker sentence at
+`governance-drep-discovery-plan-tasks.json` (task-129's `description`) was
+again left unedited — each scribe's JSON mandate is confined to its own task's
+status fields — so the prose stays stale while the code is now unambiguous.
+
+**F-6's `source` member is consumed, half of it.** `api.ts:3030` returns
+`{ kind: 'drep', drep, source: 'onchain' }`, so the provenance channel that
+task-128 declared but nothing populated is now written on the only path that
+produces a DRep target. The `'verified' | 'unverified'` arms remain unwritten
+by any code in cv-1; they belong to the cv-2 status/badge work, exactly as F-6
+predicted.
+
+**F-10's two gaps stay open, and its anchor is wrong.** F-10's resolution says
+"the guide places the logger spy at task-130 (`cv-1-implementation-guide.md:
+2041-2062`, `:2165`)". Those anchors are inside the **task-134** section, which
+runs from `cv-1-implementation-guide.md:1957`; they are the `jest.mock` of the
+renderer logger and the unknown-HRP assertion in
+`tests/jest/api/createWalletFromServerData.spec.ts`, a file task-134 creates.
+The task-130 section (`:961-1204`) creates no test at all: `:1179-1184` states
+plainly that behavioural assertions "are formally pinned by the task-134
+specs", and this task's gate is "compile + lint + all existing suites + the
+floor suite + the greps". So the `:48` coverage vector and the floor assertion
+over `normalizeDRepIdentity` both roll forward to task-134, and task-130's own
+`logger.warn` joins them as a third unasserted behaviour.
+
+**Resolution:** the guide governs and the absence of a task-130 test is by
+design, not an omission — it is why the tracker records task-130 as `complete`
+and explicitly not `verified`. AC-1..AC-5 were adjudicated at review by static
+reading plus hand-tracing the four task-126 fixtures (with both DRep vectors
+independently decoded through the repo's bech32 2.0.0), which is evidence but
+not an executing test. Task-134 is now the single point where the mapper's
+behaviour, the sentinel branches, the unknown-HRP warning payload, the
+`normalizeDRepIdentity` floor assertion and the `:48` vector all become
+regression-proof; if task-134 is trimmed, cv-1 ships with the mapper untested.
+F-10's task-130 attribution should be read as task-134.
+
+## F-13 — cv-1 gate-recipe corrections: `jest tests/jest` runs only 7 of 82 suites, PRD R-4 (Node v24 `yarn compile` flakiness) is stale, and api.ts's prettier failure is proven pre-existing
+
+Three gate facts established while running task-130's verification.
+
+**The `tests/jest` path filter under-runs the tree by an order of magnitude.**
+`node_modules/.bin/jest tests/jest` treats its argument as a path regex, and
+`jest.config.js` collects from `roots: ['<rootDir>/tests', '<rootDir>/source']`
+with `testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)']`, so specs colocated under
+`source/` and those under `tests/assets`, `tests/common` and `tests/wallets`
+are all excluded by the filter. Measured on this build: the filtered run is
+7 of 7 suites and 122 tests (110 passed, 12 skipped); the unfiltered
+`node_modules/.bin/jest --runInBand --coverage=false` is 82 suites and 1050
+tests (1038 passed, 12 skipped, 2 snapshots), exit 0 in both cases. The
+"80 suites / 1030 tests" baseline quoted in the task-127 and task-128 tracker
+entries is the *unfiltered* number; the small excess over it comes from suites
+added earlier on the branch, and the skip count matches exactly at 12.
+
+**PRD R-4 is stale.** `cv-1-PRD.md:407-411` rates "Node v24 gate flakiness" as
+an open low risk on the grounds that `yarn compile` has previously failed for
+environment reasons under Node v24.16.0. It did not fail here, and it did not
+fail for task-129 either: `node_modules/.bin/typed-scss-modules
+source/renderer/app` regenerated every gitignored `*.scss.d.ts` in a fresh
+worktree with no errors, and `node_modules/.bin/tsc --noEmit` then exited 0
+with zero diagnostics. Two consecutive cv-1 tasks have now cleared the gate on
+Node v24.16.0.
+
+**The api.ts prettier failure is pre-existing, and provably so.**
+`node_modules/.bin/prettier --check source/renderer/app/api/api.ts` exits 1 on
+the task-130 working copy — and exits 1 identically on the *HEAD blob* of the
+same file extracted to a scratch path. Formatting each yields the same nine
+drift hunks at offsets differing by exactly `+2`, the two added import lines:
+`@@788/790`, `1035/1037`, `1637/1639`, `1655/1657`, `2162/2164`, `2187/2189`,
+`2211/2213`, `2400/2402`, `2605/2607`. All nine are the known prettier-2.1.2
+assignment-break drift, and the furthest sits ~400 lines above the new code at
+`api.ts:3012+`. `Wallet.ts` is clean.
+
+**Resolution:** for future cv-1 tasks, run the unfiltered `node_modules/.bin/
+jest --runInBand` (optionally `--coverage=false`) as the tree-wide gate and use
+a path filter only for focused suite runs — a filtered green proves 7 suites,
+not 82, and a recipe that conflates them can report a false all-clear. Keep
+`node_modules/.bin/tsc --noEmit` as the compile gate (it is the authoritative
+one under F-5's no-nix constraint), but stop treating R-4 as an expected
+failure; capture the error if it ever does recur rather than pre-assuming it.
+For prettier, the F-5 rule stands and is now backed by a repeatable proof
+technique: when `--check` fails on a file you modified, diff the HEAD blob's
+formatting against the working copy's before touching anything — if the hunk
+sets match modulo your line offsets, the drift is inherited and the file must
+be left unformatted. `nix fmt` remains owed pre-merge.
