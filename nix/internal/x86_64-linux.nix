@@ -180,7 +180,10 @@ in rec {
 
   electron-loader = pkgs.glibc;
 
-  relocatableElectron = let
+  # nix-bundle-exe pass: patches the electron binary and collects all .so deps.
+  # exe_dir/lib_dir are set so the output lands directly at lib/electron/ with no
+  # intermediate directory to shuffle around afterwards.
+  electronBundleExe = let
     additionalLibs = ''
       additionalLibs=(
         ${pkgs.xorg.libX11}/lib/libX11-xcb.so.1
@@ -194,6 +197,7 @@ in rec {
         ${pkgs.libva.out}/lib/*.so.2
         ${pkgs.atk}/lib/libatk-bridge-2.0.so
         ${pkgs.libgbm}/lib/libgbm.so.1
+        ${pkgs.mesa}/lib/gbm/dri_gbm.so
         $(find ${pkgs.glibc}/lib -type l)
       )
     '';
@@ -206,64 +210,76 @@ in rec {
           sed -r '/bundleExe "\$binary"/a\  bundleLib "'"$additionalLib"'" "lib"' -i $out/bundle-linux.sh
         done
       '') {
-        exe_dir = "electron";
-        lib_dir = "electron/lib";
-        #bin_dir = "electron-bin";
+        exe_dir = "lib/electron";
+        lib_dir = "lib/electron/lib";
         inherit pkgs;
       }
       electronBin).overrideAttrs (drv: {
       buildCommand =
         additionalLibs
-        + (builtins.replaceStrings ["find '"] ["find -L '"] drv.buildCommand)
-        + ''
-          chmod -R +w $out
-
-          mkdir -p $out/lib
-          cp -R ${electronBin}/lib/electron $out/lib/
-          ( cd $out/electron && ${pkgs.rsync}/bin/rsync -Rah . $out/lib/electron/ ; )
-          rm -rf $out/electron/
-          cp ${electron-loader}/lib/ld-linux-x86-64.so.2 $out/lib/electron/
-
-          rm -f $out/lib/electron/lib/ld-linux-x86-64.so.2
-          ( cd $out/lib/electron && mv libffmpeg.so lib/libffmpeg.so && ln -s lib/libffmpeg.so libffmpeg.so ; )
-
-          ( cd $out/lib/electron/lib && ln -s libatk-bridge-2.0.so libatk-bridge.so ; )
-
-          # nixpkgs-25.11: libgtk-3 now depends on libtinysparql, which has libsqlite3.so
-          # as a full-path DT_NEEDED that was nuked to eeee... Replace with a soname so
-          # the bundled sqlite copy can satisfy it.
-          cp ${pkgs.sqlite.out}/lib/libsqlite3.so.0 $out/lib/electron/lib/
-          for f in $out/lib/electron/lib/libtinysparql-3.0.so*; do
-            patchelf --replace-needed \
-              '/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-sqlite-3.50.4/lib/libsqlite3.so' \
-              'libsqlite3.so.0' \
-              "$f"
-          done
-
-          patchelf --set-rpath '$ORIGIN/lib:$ORIGIN' $out/lib/electron/electron
-
-          # Embed the bundled ld-linux as the ELF interpreter so electron can be exec'd
-          # directly. This is critical: if we use `exec ld-linux electron`, /proc/self/exe
-          # points to ld-linux rather than electron, and Electron's subprocess spawning
-          # (zygote, GPU, renderer) breaks with "unrecognized option --type=zygote".
-          patchelf --set-interpreter $out/lib/electron/ld-linux-x86-64.so.2 $out/lib/electron/electron
-
-          cp ${pkgs.writeScript "electron" ''
-            #!/bin/sh
-            if [ -z "''${XCURSOR_PATH}" ] && [ -d "/usr/share/icons" ]; then
-              # Debians don't set this, and in effect all cursors are 2x too small on HiDPI displays:
-              export XCURSOR_PATH="/usr/share/icons"
-            fi
-            # nix-bundle-exe nukes the xkeyboard-config path baked into libxkbcommon.so;
-            # restore it so keyboard input works:
-            export XKB_CONFIG_ROOT="${pkgs.xkeyboard-config}/etc/X11/xkb"
-            LIB_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")/lib"
-            # Run electron directly (interpreter is embedded via patchelf above):
-            exec "$LIB_DIR"/electron/electron "$@"
-          ''} $out/bin/electron
-        '';
-      meta.mainProgram = "electron";
+        + (builtins.replaceStrings ["find '"] ["find -L '"] drv.buildCommand);
     });
+
+  relocatableElectron = pkgs.stdenv.mkDerivation {
+    name = "relocatable-electron";
+    dontUnpack = true;
+    dontFixup = true;
+    nativeBuildInputs = [pkgs.patchelf];
+    buildCommand = ''
+      mkdir -p $out/lib $out/bin $out/share/X11
+      cp -RL ${pkgs.xkeyboard-config}/etc/X11/xkb $out/share/X11/xkb
+
+      # Start with the nix-bundle-exe output: patched binary + bundled .so deps
+      # at lib/electron/ (exe_dir) and lib/electron/lib/ (lib_dir):
+      cp -R ${electronBundleExe}/lib/electron $out/lib/
+      chmod -R +w $out/lib/electron
+
+      # Overlay the raw electron app assets (resources, locales, etc.); -n ensures
+      # the patched binary and bundled libs from electronBundleExe are not clobbered:
+      cp -Rn ${electronBin}/lib/electron/. $out/lib/electron/
+
+      cp ${electron-loader}/lib/ld-linux-x86-64.so.2 $out/lib/electron/
+      rm -f $out/lib/electron/lib/ld-linux-x86-64.so.2
+      ( cd $out/lib/electron && mv libffmpeg.so lib/libffmpeg.so && ln -s lib/libffmpeg.so libffmpeg.so ; )
+      ( cd $out/lib/electron/lib && ln -s libatk-bridge-2.0.so libatk-bridge.so ; )
+
+      # nixpkgs-25.11: libgtk-3 now depends on libtinysparql, which has libsqlite3.so
+      # as a full-path DT_NEEDED that was nuked to eeee... Replace with a soname so
+      # the bundled sqlite copy can satisfy it.
+      cp ${pkgs.sqlite.out}/lib/libsqlite3.so.0 $out/lib/electron/lib/
+      for f in $out/lib/electron/lib/libtinysparql-3.0.so*; do
+        patchelf --replace-needed \
+          '/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-sqlite-3.50.4/lib/libsqlite3.so' \
+          'libsqlite3.so.0' \
+          "$f"
+      done
+
+      patchelf --set-rpath '$ORIGIN/lib:$ORIGIN' $out/lib/electron/electron
+
+      # Embed the bundled ld-linux as the ELF interpreter so electron can be exec'd
+      # directly. This is critical: if we use `exec ld-linux electron`, /proc/self/exe
+      # points to ld-linux rather than electron, and Electron's subprocess spawning
+      # (zygote, GPU, renderer) breaks with "unrecognized option --type=zygote".
+      patchelf --set-interpreter $out/lib/electron/ld-linux-x86-64.so.2 $out/lib/electron/electron
+
+      cp ${pkgs.writeScript "electron" ''
+        #!/bin/sh
+        if [ -z "''${XCURSOR_PATH}" ] && [ -d "/usr/share/icons" ]; then
+          # Debians don't set this, and in effect all cursors are 2x too small on HiDPI displays:
+          export XCURSOR_PATH="/usr/share/icons"
+        fi
+        # nix-bundle-exe nukes the xkeyboard-config path baked into libxkbcommon.so;
+        # restore it so keyboard input works:
+        LIB_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")/lib"
+        BUNDLE_DIR="$(dirname "$LIB_DIR")"
+        export XKB_CONFIG_ROOT="$BUNDLE_DIR/share/X11/xkb"
+        export GBM_BACKENDS_PATH="$LIB_DIR/electron/lib"
+        # Run electron directly (interpreter is embedded via patchelf above):
+        exec "$LIB_DIR"/electron/electron "$@"
+      ''} $out/bin/electron
+    '';
+    meta.mainProgram = "electron";
+  };
 
   # A completely portable directory that you can run on _any_ Linux:
   newBundle = genClusters (cluster:
