@@ -213,6 +213,19 @@ the pair is required. UNVERIFIED whether any upstream source actually emits
 uppercase: every observed cardano-wallet fixture and cardano-cli output is
 lowercase, so this is defensive rather than reactive.
 
+**Tasked:** task-140 (cv-2) — the downstream constraint recorded here is owned
+by the task-140 amendment: `isSameAsCurrent` compares on a case-stable key (the
+`credentialHex` + `credentialType` pair, or a case-insensitive `cip129`), its
+behaviour when `credentialHex` is absent is explicit, and the letter-case
+regression vector is placed on task-147. Worth recording with the marker: this
+finding prescribed the correct key at review time and two governing docs then
+drifted from it — `designs/current-vote-display-design.md:95` still offers
+"canonical CIP-129 string including the type-byte header" as an acceptable
+comparison key, and `task-plans/cv-1-code-review.md:736-738` still offers
+`cip129` alone. Both are corrected under the same amendment; the code-review
+file is append-only (`README.md:14`), so its correction is appended rather than
+edited in place.
+
 ## F-10 — two residual test gaps on `normalizeDRepIdentity`, both deliberately deferred to task-130
 
 Found during task-129 review; both were raised as blockers and both were
@@ -244,6 +257,19 @@ sanitized unknown-HRP warning; the floor assertion covering
 vector is a cheap add once the guide's byte-exactness constraint no longer
 applies.
 
+**Tasked:** task-134 (cv-1) — both gaps are owned by the task-134 amendment. It
+adds a checksum-valid wrong-length `drep_vkh` / `drep_script` vector that
+reaches the `:48` length guard rather than the decode catch, and it asserts
+`expect(mockedWarn).not.toHaveBeenCalled()` in the valid-DRep mapper tests, so
+the no-logging floor is pinned on the accepted-id path and not only on the
+rejection paths the spec already covers. The amendment also records
+`tests/jest/governance/normalizeDRepIdentity.spec.ts` as a MODIFIED file in the
+guide's task-134 section, whose file-list header at
+`cv-1-implementation-guide.md:1959` currently declares every file new. The
+"deferred to task-130" wording in this finding's heading and resolution stands
+as written history — F-12 below already records that it should be read as
+task-134.
+
 ## F-11 — `AdaApi::getWallets` logs the raw `wallets` array, so `delegation.active.voting` reaches the log file unsanitized (pre-existing at HEAD, outside task-130's fence, unguarded by the floor suite)
 
 Found during the task-130 review's invariant lens while auditing every sink the
@@ -273,6 +299,24 @@ in `filterLogData` at the call site or drops it from the payload, plus a
 same shape may exist at other `logger.debug`/`logger.info` call sites in
 `api.ts` that pass whole server payloads — the audit was scoped to the wallet
 list, not exhaustive.
+
+**Tasked:** task-170 (cv-1) — the follow-up floor task now exists as a row. It
+wraps `wallets` / `legacyWallets` at `api.ts:379-383` and `wallet` at
+`:458-460` in `filterLogData` (or reduces them to non-identifying fields) and
+adds the `getWallets` call-boundary case to
+`tests/jest/security/governance-sanitization.spec.ts`. The sizing note above is
+discharged rather than carried forward: task-170's third acceptance criterion
+makes the audit of every remaining whole-payload `logger.*` call site in
+`api.ts` a deliverable, with the audit list recorded in the task evidence. This
+finding also drives the tracker bookkeeping for the two slice-1 sanitization
+tasks — task-109 records this call site and task-170 in its statusReason, and
+task-111 keeps a statusReason caveat that its floor suite has no `getWallets`
+case. One scope bound belongs with the marker: task-170's fence is `api.ts`, so
+the neighbouring uncontrolled sink recorded at `slice-3-findings.md:71-74`
+(`HardwareWalletsStore` logs raw `{ error }` across its `[HW-DEBUG]` calls)
+stays open by design — it is a substring-inside-`error.message` class that
+key-based `filterLogData` cannot reach at all (`slice-3-findings.md:65`), not a
+call site task-170 declines.
 
 ## F-12 — task-130 discharges F-8 and populates F-6's `source` member, but ships with no test of its own by design: AC-1..AC-5 and its new sanitized warning are pinned only by task-134 (and F-10's resolution line mis-locates the logger spy at task-130)
 
@@ -367,3 +411,60 @@ technique: when `--check` fails on a file you modified, diff the HEAD blob's
 formatting against the working copy's before touching anything — if the hunk
 sets match modulo your line offsets, the drift is inherited and the file must
 be left unformatted. `nix fmt` remains owed pre-merge.
+
+**Tasked:** task-131 (cv-1) — the gate-recipe half is owned by the task-131
+amendment: task-131's own verification runs the unfiltered
+`yarn test:jest --runInBand` and reports suite and test counts in its
+statusReason, and the two filtered recipes still attached to pending tasks are
+rewritten to the unfiltered form — `cv-1-implementation-guide.md:1331` (inside
+`## task-131`) and `:1740` (inside `## task-132`). The same recipe at `:547`,
+`:674` and `:1172` belongs to task-127, task-128 and task-130, all complete, so
+those three are historical and deliberately left; `:2424` is a deliberate
+focused run whose comment makes no tree-wide claim. The PRD R-4 and prettier
+halves of this finding stay record-only and have no owner.
+
+## F-14 — nineteen feature-introduced ja-JP strings carry no `!!!` preliminary marker while their en-US counterparts do; invariant 11 binds both locales and nothing guards the gap
+
+Found while sweeping the dossier for durable work, not during a cv-1 build.
+Invariant 11 is explicit that the marker is a both-locale obligation: "Every new
+en-US and ja-JP string keeps the leading `!!!` marker. Removing `!!!` is a
+release-end manual review, never a per-slice task"
+(`prompt.md:132-133`). The two locale files disagree. Measured at HEAD by
+diffing them key-by-key: twenty keys exist in both files with an en-US value
+starting `!!!` and a ja-JP value that does not. One is the pre-existing
+non-feature exception
+`wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement`
+(`source/renderer/app/i18n/locales/ja-JP.json:1420`), which carries the same
+asymmetry on `develop`. The other nineteen are this feature's: eighteen
+`governance.*` keys (seventeen `governance.drepDirectory.*` plus
+`governance.tabs.directory`) and `sidebar.categoryTooltip.governance` — e.g.
+`ja-JP.json:359` (`"DRepディレクトリ"`) against `en-US.json:359`
+(`"!!!DRep Directory"`), and `ja-JP.json:633` against `en-US.json:633`. All
+nineteen were introduced by the single slice-1 commit `0f47402b6`
+(`git log -S` per key against `ja-JP.json`), and the same diff run against
+`develop` returns only the one pre-existing key.
+
+The gap is confined to slice-1, and that is what makes it invisible: of the 87
+branch-introduced keys that carry `!!!` in en-US and exist in ja-JP, 68 are
+marked in both files and 19 are marked in en-US only, so every later slice
+minted its pairs correctly and no reviewer had reason to look. Nothing enforces
+it either — no Jest guard compares the two files — so the governance strings
+still to be minted (task-135 in cv-1, task-146 in cv-2, and anchor-2 copy) can
+reopen the gap one key at a time with nothing failing.
+
+**Resolution:** the invariant governs and the ja-JP side is the wrong side. The
+first surface a Japanese user sees — directory title, status badges, voting
+power, pagination, refresh/retry, empty and error states, the copy-ID control
+and the Governance sidebar tooltip — currently reads as final copy and would
+bypass the release-end `!!!` review entirely. Restoring markers is the inverse
+of the operation that review owns, so it does not encroach on it
+(`README.md:16`, `:18`).
+
+**Tasked:** task-171 (cv-1) — restores the leading `!!!` on the nineteen keys
+and adds the Jest guard: for every key present in both files whose en-US value
+starts with `!!!`, the ja-JP value must too, with a documented allow-list
+holding only the one pre-existing exception. Phase placement is load-bearing
+rather than bookkeeping here — a guard landing after the mints it is meant to
+protect protects nothing. The guard fires only where the en-US value is marked,
+so once the release-end review strips an en-US marker the assertion is simply
+vacuous for that key; no allow-list maintenance is created for that review.

@@ -41,9 +41,15 @@ wins outright, otherwise anchor presence decides Primary vs Non-metadata
 eligibility is `status === 'active'` AND `drepActivity > 6` and never reads `anchor`
 (`GovernanceStore.ts:160-167`), and `GovernanceStore` never imports the badge module
 (imports at `GovernanceStore.ts:1-14`) — invariant #8 holds structurally. anchor-1
-(task-151) upgrades the proxy to the verified flag; `getDRepCategory` takes the entry
-snapshot (`Pick<..., 'status' | 'drepActivity' | 'anchor'>`,
-`DRepCategoryBadge.tsx:45-48`) so the rules can extend without a signature change.
+(task-151) upgrades the proxy to the verified flag, and the entry snapshot
+`getDRepCategory` takes today (`Pick<..., 'status' | 'drepActivity' | 'anchor'>`,
+`DRepCategoryBadge.tsx:45-48`) does not survive that upgrade: the classifier needs an
+explicit cohort-membership input plus the verified completeness flag in place of
+`anchor`, so anchor-1 changes the signature rather than extending the rules within it.
+
+**Tasked:** task-172 (anchor-1) — ground `getDRepCategory` in a store-owned
+cohort-membership input, consume task-151's verified metadata-completeness flag in
+place of `entry.anchor`, and activate the fourth `High value` category.
 
 ## F-4 (R4) — The "Expiring soon" status-badge variant is design drift with no owner; `DRepStatus` is unchanged
 
@@ -55,6 +61,17 @@ to base (absent from the slice diff). The 7–12-epoch window is displayed by th
 Threshold **category** badge instead (`DRepCategoryBadge.tsx:60-67`). The
 status-badge variant remains unbuilt and needs a future owner before the tokens-§1
 staging claim is true.
+
+**Considered and dropped (2026-07-27 sweep):** a 5h anchor-1 row for this variant and
+its top-35 sibling (carried as slice-6 F-6, `slice-6-findings.md:73`) was weighed and
+left below the cutoff — the expiry information is one click away
+(`DRepDetailOnchainSection.tsx:102-113` renders `Expires in {n} epochs` for every
+active entry with `drepActivity`, and the Threshold category badge covers the 7–12
+window for cohort entries), and slice-6 had already declined both badges deliberately
+(`slice-6-PRD.md:110` D-5, `:230` P-13). The drift stays unowned and
+`drep-discovery-design.md:111` still names both badges for stale favorites; task-172's
+cohort-membership input is the plumbing the top-35 half would need if it is ever
+resurrected.
 
 ## F-5 (R5, task-118/120) — The cohort banner ships link-free; Show-all / Search land in slice-6
 

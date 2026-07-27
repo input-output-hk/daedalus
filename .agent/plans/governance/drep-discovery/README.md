@@ -9,7 +9,7 @@ This folder contains the chosen UX direction for the in-app DRep Discovery featu
 
 ## Working Conventions
 
-- **Canonical status source.** Task status lives in [governance-drep-discovery-plan-tasks.json](./governance-drep-discovery-plan-tasks.json). The current status vocabulary is `pending`, `in_progress`, `partial`, `blocked`, `complete`, `verified`, `deferred`. `complete` means implementation + focused tests + code review are clean; `verified` additionally requires dedicated proof (an in-slice verification task, a targeted regression suite, or manual release verification) — never implementation evidence alone.
+- **Canonical status source.** Task status lives in [governance-drep-discovery-plan-tasks.json](./governance-drep-discovery-plan-tasks.json). The current status vocabulary is `pending`, `in_progress`, `partial`, `blocked`, `complete`, `verified`, `deferred`. `complete` means implementation + focused tests + code review are clean; `verified` additionally requires dedicated proof (an in-slice verification task, a targeted regression suite, or manual release verification) — never implementation evidence alone. Standing, event-triggered rows (the `standing` phase) take no extra status term: they rest at `pending` between firings and are reset to `pending` after each one, so recurrence lives in the phase description, not in the vocabulary.
 - **Orchestration.** Remaining phases are driven by [prompt.md](./prompt.md) in the locked serial order `slice-2 → slice-3 → ux-refinement → slice-4…7 → cv-1 → cv-2 → anchor-1 → anchor-2 → slice-8`, with JSON `dependencies` always authoritative.
 - **Slice-level docs.** Each phase gets `task-plans/<id>-PRD.md`, `<id>-implementation-guide.md`, and `<id>-code-review.md` (append-only), plus an optional `research/<id>-findings.md` — following the slice-1 precedent. No per-task doc file sets.
 - **Commits.** One commit per task: `<type>(gov): task-NNN <short imperative summary>`, Conventional Commits, subject only. (Slice-1's single squashed commit predates this convention and stands as-is.)
@@ -42,6 +42,7 @@ This folder contains the chosen UX direction for the in-app DRep Discovery featu
 - Confirmation dialog shows DRep ID only until verified anchor pipeline lands.
 - Slice-5 ships Primary / Threshold / Non-metadata badges; High value activates in `anchor-1` once verified metadata exists.
 - The `CurrentVoteSummary` panel renders the user's currently delegated DRep with its live active/inactive/expiring status badge so users can tell at a glance whether their existing delegation is still effective.
+- No Cucumber / e2e coverage in v1: the Governance section ships no `.feature` files or step definitions. Browse → select → delegate stays covered by the Jest suites plus the operator-owned release verification (task-125) — a deliberate scope boundary, not an oversight.
 
 ## Direction
 

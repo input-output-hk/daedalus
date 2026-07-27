@@ -434,8 +434,20 @@ _Filled at slice close, 2026-07-22._
   unification), D3 (raw-ID-only scope; derivation deferred to cv-1), D4/P-5 deviations,
   and the two `ux-refinement` behavior notes.
 - Handed to `ux-refinement`: the un-synced return hop (lands on `VotingUnavailable` with
-  the pre-fill parked in `location.state`) and the directory-first entry edge (Critiquer
-  N-4: `WalletsDropdown` reset wipes a pre-filled ID when no form state was inherited).
+  the pre-fill parked in `location.state`).
+- **Directory-first entry edge now owned.** The Critiquer N-4 residual
+  (`WalletsDropdown` reset wipes a pre-filled ID when no form state was inherited) was
+  handed to `ux-refinement` alongside the return-hop note, but that phase closed without
+  taking it. It is now owned by task-138 (cv-2), whose AC-2 is replaced by a
+  `currentVote` → inherited `selectedDRepId` → blank fallback chain, with the
+  byte-identical carry-over and the directory-select-then-pick-wallet Jest regression as
+  further criteria.
+- **D3 residual now owned.** The pre-anchor shared-tokens §7 identity block D3 deferred —
+  CIP-105 secondary line, signed-payload line and the `(Source: On-chain)` label — is
+  task-175 (cv-2, after task-173). cv-1 shipped the `normalizeDRepIdentity` helper
+  (task-129) but no dialog consumer, so the deferral landed a phase later than the
+  findings file records; the verified-name slot stays with task-154 (anchor-2). Slice-2's
+  own scope is unchanged by either assignment.
 - `auditSummary`: slice-2 has none in the tracker — nothing to refresh; this section is
   the slice's outcome of record.
 

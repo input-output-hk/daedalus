@@ -18,6 +18,21 @@ version.` value; task-116's acceptance only requires the view to stay useful wit
 positions. Any future slice that adds vote positions must first land a `gov-state`
 query task and reconcile the plan row.
 
+**Not tasked:** the 2026-07-27 cross-slice planning sweep weighed a
+plan-reconciliation row for this finding and left it below the cutoff — no pending
+task is scoped to editing `governance-drep-discovery-plan.md`, so nobody builds from
+the stale text today. The absorption it proposed, folding the correction into
+task-125's release-verification prep, was considered and dropped with it: task-125
+kept its single manual release-verification criterion and gained no documentation
+edit. The residual to carry forward is that the feature Acceptance Criteria bullet at
+`governance-drep-discovery-plan.md:112` still promises "current epoch vote positions
+on active proposals" as a delivered detail field, so a release verifier signing off
+against that bullet records a false failure — the shipped contract is the PRD D1
+resolution above. The stale `--include-stake` / `gov-state` clauses in the
+Key-Decisions row (`:139`) and the Technical Design bullet (`:209`) describe an
+invocation no code makes (`grep -rn 'include-stake\|gov-state' source/ tests/` returns
+zero) and ride whichever future task next opens the plan.
+
 ## F-2 (task-116) — The wireframe's "Registered: epoch N" row is dropped: `drep-state` has no registration epoch
 
 `drep-state` output carries no registration epoch — the slice-1 parser reads
@@ -25,6 +40,13 @@ expiry/anchor/deposit only, and `DRepDirectoryEntry` (`governance.types.ts:51-62
 no registration field. The design wireframe (`drep-discovery-design.md:92`) drifts
 from the data model (PRD D4). The row does not exist in the shipped detail; restoring
 it would require a new on-chain data source, not a UI change.
+
+**Tasked:** task-151 (anchor-1) — the wireframe correction rides the verified-givenName
+edit: `drep-discovery-design.md:92` loses the `Registered: epoch N` row or is annotated
+as having no local source, the adjacent `Current votes` row at `:93` is retained with
+the shipped unavailable value, and the On-chain box is pinned to the four fields
+`DRepDetailOnchainSection` renders (`DRepDetailOnchainSection.tsx:95-143` — Status,
+Expires in, Voting power, Current votes).
 
 ## F-3 (task-116 → task-117) — `MatomoClient.getAnalyticsURL` is the single analytics URL-embedding boundary; the detail route requires masking
 

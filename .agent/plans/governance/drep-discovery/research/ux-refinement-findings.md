@@ -110,3 +110,55 @@ prettier(HEAD) output** on every file (a repo-wide prettier run had happened at
 some point); the drift was verified file-by-file against `git show HEAD:<f> |
 prettier --stdin-filepath <f>` before being stashed to restore the clean
 baseline. Verify equality the same way before ever discarding such drift.
+
+## F-10 — F-3 reopened: the argv smoke assertion rejects its own pass condition
+
+F-3 above records the positive parse run as verification debt. On re-reading the
+suite that framing is too kind: the assertion is inverted, so this is a live test
+defect rather than an unexecuted one. `USAGE_SIGNATURE` at
+`tests/jest/governance/GovernanceCliArgvSmoke.spec.ts:15` mirrors
+`GovernanceQueryService.CLI_USAGE_SIGNATURE`
+(`source/main/governance/GovernanceQueryService.ts:65-66`) and therefore carries
+the `missing:` alternative — while the suite deliberately strips
+`CARDANO_NODE_SOCKET_PATH` from the child env (`:50-56`) precisely so a
+parser-clean invocation dies at the socket stage. The documented outcome of that
+invocation against a real binary is `Missing: --socket-path`
+(`research/slice-1-final-pass-findings.md:19-20`), which the regex matches
+case-insensitively, so `expect(stderr).not.toMatch(USAGE_SIGNATURE)` at `:69`
+fails on the exact stderr that proves the argv parsed. All twelve parameterized
+cases are dead on arrival wherever `cardano-cli` is on PATH; the skip gate is the
+only reason nobody has seen it. The suite's own comment at `:64-67` names the
+rejections it means to catch correctly (`Invalid option` /
+`Missing: (--mainnet | --testnet-magic NATURAL)` / unknown era) — the regex is
+simply wider than the comment. Production classification is **unaffected**:
+`_runCliQuery` always sets `CARDANO_NODE_SOCKET_PATH` (`:350`), so a node-side
+failure never prints `Missing:` and the conway-fallback gate at `:397` holds on
+the reasoning F-5 records; the mismatch is confined to the smoke lane, which
+inverts that precondition by design. The first Nix-shell run should therefore
+expect red, and the correction belongs in the test rather than the service
+signature: narrow the smoke assertion to reject `Invalid option` and
+`Missing: (--mainnet | --testnet-magic` while tolerating the expected
+`Missing: --socket-path`.
+
+## F-11 — task-169 PART B is `complete` on criteria only its skip gate exercised
+
+Tracker consequence of F-10, recorded so the status is read for what it actually
+proves. task-169 is `complete` with two PART B acceptance criteria that describe
+a real run — AC-4 ("a parse-only smoke test runs the real bundled cardano-cli
+with the exact argv the service builds … and no `CARDANO_NODE_SOCKET_PATH`") and
+AC-5 ("the test asserts the invocation clears the argument parser - failing only
+on a socket/connection error") — plus AC-6, which permits the skip. In the only
+environment the suite has ever run, AC-6 is what executed: AC-4 and AC-5 are
+discharged by a gate, and F-10 shows AC-5's assertion would have gone red had it
+run. This is not a mislabelled status on the vocabulary's own terms
+(`README.md:12` — `complete` is implementation + focused tests + code review
+clean, and all three happened), but nothing downstream owns the positive run:
+task-125 is the only pending item that brings both a Nix shell and a synced node,
+and its single acceptance criterion is the browse → evaluate → select → delegate
+journey. The gap matters because the regression class this suite exists to close
+already shipped broken once — the network flag must follow the subcommand,
+discovered in the slice-1 live-app smoke test and fixed as FP-1
+(`governance-drep-discovery-plan.md:138`) — and F-3 establishes it is
+structurally unclosable at the mocked-spawn level, so no autonomous task can
+substitute. Whoever runs the suite first should record the twelve-case result
+verbatim; a skipped run does not discharge AC-4 or AC-5.

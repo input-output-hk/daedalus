@@ -92,7 +92,9 @@ export type WalletVotingTarget =
 
 ```
 
-`credentialType` is set from the HRP detected during normalization: `drep1...` and `drep_vkh1...` -> `'key'`; `drep_script1...` -> `'script'`. The same-vote comparator must compare `credentialType` AND credential bytes, or canonical CIP-129 string including the type-byte header, never bytes alone.
+`credentialType` is derived during normalization, and for CIP-129 it comes from the payload rather than the HRP: a `drep1...` id carries its type in the leading header byte — `0x22` -> `'key'`, `0x23` -> `'script'` — so a `drep1...` string is just as likely to be a script DRep as a key DRep. Only the CIP-105 HRPs are self-describing: `drep_vkh1...` -> `'key'`, `drep_script1...` -> `'script'`. No consumer may infer the credential type from a `drep_script` string prefix; every consumer calls `normalizeDRepIdentity` (§8) and reads `credentialType` off the result.
+
+The same-vote comparator (`task-140`) must key on a case-stable form: the (`credentialHex`, `credentialType`) pair, or a case-insensitive `cip129` comparison. A case-sensitive bech32 string comparison — including canonical CIP-129 with its type-byte header — is not acceptable, because BIP-173 permits all-uppercase ids and `raw` is returned byte-untouched, so two representations of one identity can legitimately differ in case (see [cv-1-findings.md](../research/cv-1-findings.md) F-9). `credentialHex` is optional on `DRepIdentity` while `credentialType` is required, so the comparator must define its behaviour when the hex is absent instead of equating two absent values; `credentialType` alone never establishes equality.
 
 `WalletDelegationStatuses.VOTING_AND_DELEGATING` remains the constant name; its string value is corrected to `'delegating_and_voting'`. A unit test pins `WalletDelegationStatuses.VOTING_AND_DELEGATING === 'delegating_and_voting'`.
 

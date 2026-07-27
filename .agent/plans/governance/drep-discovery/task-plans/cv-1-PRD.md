@@ -2,7 +2,7 @@
 
 > **Planning Status:** approved | **Date:** 2026-07-27 | **Parent Plan:** [governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md)
 > **Phase:** `cv-1` — "Current-vote 1 - Plumbing + CurrentVoteSummary core" (riskLevel: medium)
-> **Tasks:** task-126 … task-135 (10 tasks, all `pending`; cross-phase deps task-109/task-110 verified)
+> **Tasks:** task-126 … task-135, plus task-170 / task-171 added post-approval (12 tasks; cross-phase deps task-109 complete, task-110 verified)
 > **Findings:** [research/cv-1-findings.md](../research/cv-1-findings.md)
 > **Implementation guide:** cv-1-implementation-guide.md (authored after PRD review)
 
@@ -22,6 +22,13 @@ component's four CORE states only: `noDelegation` (warning + CTA), DRep-ID-only,
 `abstain`, `no_confidence`. Storybook (4 core knobs), Jest (mapper + computeds +
 snapshots), and core i18n keys land in-slice. The live status badge and every
 other enrichment is cv-2.
+
+Two rows were added to the phase after this PRD was approved and land in the
+same slice: task-170 redacts the raw wallet payloads at the
+`AdaApi::getWallets` / `AdaApi::getWallet` log sites — a live invariant-2 breach
+that task-128's `voting` field widened (`api.ts:379-383`, `:458-460`) — and
+task-171 restores the leading `!!!` marker on the nineteen feature-introduced
+ja-JP strings and adds the Jest guard that keeps the gap closed (invariant 11).
 
 Everything is renderer-only: no new IPC channel, no new cardano-wallet endpoint,
 no signing-path change, no WalletsStore polling change
@@ -50,8 +57,9 @@ no signing-path change, no WalletsStore polling change
 
 No cv-1 task is in the locked non-autonomous set (task-125, task-166 remainder,
 task-158, release-end `!!!` copy review). Planning surfaced no blocking decision,
-so all ten tasks are classified `autonomous`. Decisions D-1 … D-10 below close
-every question planning raised.
+so all twelve tasks are classified `autonomous` — including task-171, which only
+restores `!!!` markers and never strips one, so it is not the release-end copy
+review. Decisions D-1 … D-10 below close every question planning raised.
 
 | Task | Interaction mode | Scope | Non-goals | Deps |
 |---|---|---|---|---|
@@ -64,31 +72,33 @@ every question planning raised.
 | **task-132** — `CurrentVoteSummary` CORE states, no live badge | `autonomous` | New `source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.tsx` + `.scss` module; props `{ currentVote: WalletVotingTarget \| null }`; four render rules (design :182-185); reuse `DRepIdDisplay`; status labels via a component-local react-intl renderer because `DRepSourceLabelVariant = 'on-chain' \| 'on-chain-anchor-reference'` cannot express them (D-4); `noDelegation` shows reward-withdrawal warning + CTA, never hides the panel | NO live status badge (cv-2 task-136, invariant 14); no cardano-cli spawn or fallback IPC lookup (design :187); no `givenName`/anchor URL (anchor-1/2); no view-details link (cv-2, gated on task-116) | task-131, task-109 ✔, task-110 ✔ |
 | **task-133** — Storybook entry, 4 core knobs | `autonomous` | `storybook/stories/governance/CurrentVoteSummary.stories.tsx` with knob ids `noDelegation \| drepUnverified \| abstain \| noConfidence`; global English/Japanese toggle only (D-3); follow existing `storybook/stories/governance/` conventions; pure wallet factory shape per plan :156 | No `drepVerified` knob and no 5-value knob (cv-2); no local `IntlProvider`, no per-locale story variants; no `GOVERNANCE_WALLETS` mutation | task-132 |
 | **task-134** — Jest: mapper + Wallet computeds + core snapshots | `autonomous` | Specs under `tests/jest/` using the live `.spec.ts(x)` convention (F-3): mapper cases drep / abstain / no_confidence / delegating_and_voting / pending, voting-only asserts `delegatedStakePoolId === null`; `currentVote`/`isVoting` per kind plus null; snapshots for the 4 core states; re-assert `tests/jest/security/governance-sanitization.spec.ts` green (invariant 2) | No `.test.ts` naming (stale design-doc names, F-3); no cv-2 same-vote regression tests (task-147/148) | task-130, task-131 |
-| **task-135** — i18n core keys `voting.governance.currentVote.*` | `autonomous` | `CurrentVoteSummary.messages.ts` with the core-state keys (inventory below); `yarn i18n:manage` populates `en-US.json` / `ja-JP.json`; every new string keeps the leading `!!!` (invariant 11); ja-JP reviewed for overflow | No `sameVoteHint`, no `status.expiring/.inactive/.unavailable` (cv-2 task-146); `confirmationDialog.previousVote/.newVote` reserved-not-wired (ux :168); no `!!!` removal | task-132 |
+| **task-171** — Restore the `!!!` marker on ja-JP DRep Discovery copy and guard it | `autonomous` | Restore the leading `!!!` on the nineteen feature-introduced ja-JP keys in `ja-JP.json` (seventeen `governance.drepDirectory.*` plus `governance.tabs.directory` and `sidebar.categoryTooltip.governance`); add a Jest guard asserting every key whose en-US value starts with `!!!` is also marked in ja-JP, with an allow-list holding only the pre-existing `wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement` | Never strips a marker — removal stays the user-owned release-end copy review (README :16, :18); no en-US edit and no `defaultMessages.json` / `translations/messages.json` change (the `!!!` lives in each component's source `defaultMessage`) | — (no deps of its own; it is a dependency of task-135 and of cv-2's task-146, so the guard precedes every remaining governance copy mint) |
+| **task-135** — i18n core keys `voting.governance.currentVote.*` | `autonomous` | `CurrentVoteSummary.messages.ts` with the core-state keys (inventory below); `yarn i18n:manage` populates `en-US.json` / `ja-JP.json`; every new string keeps the leading `!!!` (invariant 11); ja-JP reviewed for overflow | No `sameVoteHint`, no `status.expiring/.inactive/.unavailable` (cv-2 task-146); `confirmationDialog.previousVote/.newVote` reserved-not-wired (ux :168); no `!!!` removal | task-132, task-171 |
+| **task-170** — Redact raw wallet payloads at the AdaApi wallet-list log sites | `autonomous` | Wrap `wallets` / `legacyWallets` at `AdaApi::getWallets success` (`api.ts:379-383`) and the single `wallet` at `AdaApi::getWallet success` (`:458-460`) in `filterLogData`, or reduce them to non-identifying fields; audit the remaining whole-payload `logger.*` sites in `api.ts` that can carry `delegation.*.voting`; add a `getWallets` call-boundary case to `tests/jest/security/governance-sanitization.spec.ts` | No change to the existing `hwLocalData` filtering or to non-governance log shapes; the `[HW-DEBUG]` error-message surface (slice-3-findings :71-74) is a substring-in-message class `filterLogData` cannot reach and stays out | task-130, task-109 (complete) |
 
 ## Acceptance Criteria (verbatim from governance-drep-discovery-plan-tasks.json)
 
-### task-126 — Commit cardano-wallet voting/delegating fixtures (json :811-823)
+### task-126 — Commit cardano-wallet voting/delegating fixtures (json :811-832)
 
 - "Fixtures cover voting / delegating_and_voting / abstain / no_confidence."
 - "All fixtures conform to ApiWallet shape from cardano-wallet v2026-05-11 swagger."
 - "Each fixture is small (only the fields needed for mapper tests) and contains no real wallet ids."
 
-### task-127 — Fix latent delegating_and_voting literal mismatch (json :826-841)
+### task-127 — Fix latent delegating_and_voting literal mismatch (json :835-859)
 
 - "DelegationStatus union contains 'delegating_and_voting', not 'voting_and_delegating'."
 - "WalletDelegationStatuses.VOTING_AND_DELEGATING === 'delegating_and_voting' (constant name preserved)."
 - "Unit test asserts the constant equals the wire literal."
 - "No remaining 'voting_and_delegating' string literal in the renderer codebase (except possibly in changelog/migration notes)."
 
-### task-128 — Widen WalletDelegation and WalletNextDelegation with voting field (json :844-859)
+### task-128 — Widen WalletDelegation and WalletNextDelegation with voting field (json :862-885)
 
 - "WalletDelegation and WalletNextDelegation expose voting?: WalletVotingTarget."
 - "WalletVotingTarget discriminator is 'kind' with values 'drep' | 'abstain' | 'no_confidence'."
 - "DRepIdentity contains raw (required) plus optional cip129/cip105/credentialHex."
 - "DRepIdentity carries `credentialType` to prevent key/script collision in the same-vote comparator."
 
-### task-129 — Implement normalizeDRepIdentity helper (json :862-880)
+### task-129 — Implement normalizeDRepIdentity helper (json :888-912)
 
 - "Pure function with no side effects."
 - "Round-trips drep1 → cip105 → drep1 losslessly."
@@ -98,7 +108,7 @@ every question planning raised.
 - "Returns `DRepIdentity` carrying `credentialType: 'key' | 'script'` so the same-vote comparator does not falsely equate a key DRep and a script DRep with the same hash."
 - "Reuses an existing bech32 helper from the renderer bundle (e.g. `@cardano-sdk/core` or the existing `bech32` dependency) — no new direct dependency added to package.json."
 
-### task-130 — Extract current vote in _createWalletFromServerData with explicit collision rules (json :883-900)
+### task-130 — Extract current vote in _createWalletFromServerData with explicit collision rules (json :915-944)
 
 - "For status === 'voting' fixture, delegatedStakePoolId === null and votingTarget is populated."
 - "For status === 'delegating_and_voting' fixture, both delegatedStakePoolId and votingTarget are populated."
@@ -106,14 +116,19 @@ every question planning raised.
 - "When status === 'voting' and active.voting is absent, votingTarget is null — never parses active.target (which is a pool id)."
 - "`DRepIdentity` shape does NOT include `givenName` or `anchorUrl`. These fields are removed. The mapper is not responsible for hydrating anchor-derived display values."
 
-### task-131 — Extend Wallet domain model with currentVote / isVoting (json :903-918)
+### task-131 — Extend Wallet domain model with currentVote / isVoting (json :947-967)
 
 - "Wallet.currentVote returns the parsed WalletVotingTarget or null."
 - "isVoting === true iff currentVote !== null."
 - "Unit tests cover all four delegation statuses plus pending."
 - "Wallet.update() pick list explicitly includes `votingTarget` (and the new computeds' dependencies) so polled wallet refreshes propagate the new vote target — preventing the well-known \"stuck stale value\" Daedalus pitfall."
+- "Verification runs the unfiltered `yarn test:jest --runInBand` — 82 suites at HEAD — not the `tests/jest` path filter, which is a testPathPattern matching only 7; the statusReason reports the suite and test counts from that unfiltered run."
+- "The four Wallet-importing specs the filter excludes — source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx, source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.spec.tsx, source/renderer/app/components/wallet/WalletSendForm.spec.tsx, tests/wallets/unit/wallet-utils.spec.ts — are green after the Wallet.ts edit, as is tests/jest/security/governance-sanitization.spec.ts."
+- "cv-1-implementation-guide.md:1331 (this task's verify block) and :1740 (task-132's) drop the `tests/jest` argument, so neither trailing \"suites stay green\" comment describes a run that skipped 75 of 82 suites."
+- "The `(cv-1, task-129)` parenthetical is removed from source/common/types/governance.types.ts:18 with the \"Populated by normalizeDRepIdentity\" sentence left intact, after which `grep -rn 'task-1[0-9][0-9]' source/ tests/ storybook/` returns zero hits."
+- "That comment edit rides this task's single commit, and nothing this task adds introduces a task id, review label, or change history into a code comment."
 
-### task-132 — Implement CurrentVoteSummary core states (no live status badge) (json :921-940)
+### task-132 — Implement CurrentVoteSummary core states (no live status badge) (json :970-989)
 
 - "Renders DRep id (via DRepIdDisplay) + source label (via DRepSourceLabel)."
 - "When the wallet has no governance delegation, renders the reward-withdrawal warning and CTA instead of hiding the panel."
@@ -122,23 +137,44 @@ every question planning raised.
 - "Live active/inactive/expiring status badge is explicitly out of scope here and lands in cv-2 (task-136)."
 - "If DRepSourceLabel cannot localize the new abstain / noConfidence / delegatedToDRep labels with its existing prop contract, wrap it in a CurrentVoteSummary-local renderer that consumes react-intl directly. Do NOT silently fall back to English literals."
 
-### task-133 — Add CurrentVoteSummary Storybook entry (core knobs) (json :943-956)
+### task-133 — Add CurrentVoteSummary Storybook entry (core knobs) (json :992-1005)
 
 - "Four core knob values (noDelegation | drepUnverified | abstain | noConfidence) render without console errors."
 - "Story renders in both en-US and ja-JP locales without overflow."
 
-### task-134 — Unit tests: mapper, Wallet computeds, and CurrentVoteSummary core snapshots (json :959-975)
+### task-134 — Unit tests: mapper, Wallet computeds, and CurrentVoteSummary core snapshots (json :1008-1030)
 
 - "All five mapping cases pass."
 - "voting-only fixture asserts delegatedStakePoolId === null."
 - "Wallet computeds covered for every WalletVotingTarget kind plus null."
 - "CurrentVoteSummary core-state snapshots cover noDelegation / drepUnverified / abstain / noConfidence."
+- "tests/jest/governance/normalizeDRepIdentity.spec.ts gains a wrong-length `drep_vkh` (or `drep_script`) vector exercising the CIP-105 length guard at normalizeDRepIdentity.ts:47-49, and a coverage run over that module reports no uncovered lines."
+- "The added vector is checksum-valid and decodes under the repo's bech32 version — a 29-byte payload under a CIP-105 HRP — so it reaches the length guard rather than the decode catch."
+- "The accepted-target mapper cases (voting-only DRep, delegating_and_voting, abstain, no_confidence) assert `expect(mockedWarn).not.toHaveBeenCalled()`, pinning the never-logs floor on the accepted-id path and not only on the rejection paths."
+- "The existing eight normalizeDRepIdentity cases and tests/jest/security/governance-sanitization.spec.ts stay green."
+- "This task edits tests/jest/governance/normalizeDRepIdentity.spec.ts alongside the new files under its tests/jest/api/ targetPath, and the cv-1 guide's task-134 file list records that spec as MODIFIED rather than created."
 
-### task-135 — Add i18n keys for CurrentVoteSummary core states (json :978-992)
+### task-171 — Restore the !!! preliminary marker on ja-JP DRep Discovery copy and guard it (json :1033-1047)
+
+- "All nineteen feature-introduced keys carry the leading `!!!` in ja-JP.json: the eighteen governance.\* keys plus sidebar.categoryTooltip.governance."
+- "A Jest guard asserts that for every key present in both locale files whose en-US value starts with `!!!`, the ja-JP value also starts with `!!!`, with a documented allow-list containing only the one pre-existing non-feature exception (wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement)."
+- "The guard demonstrably fails when a newly marked en-US key has an unmarked ja-JP counterpart, so task-135, task-146 and anchor-2 copy cannot silently reopen the gap."
+- "`yarn i18n:manage` runs clean and defaultMessages.json / translations/messages.json are unchanged by the restoration (the `!!!` lives in each component's source defaultMessage; only the ja-JP translation file is edited)."
+- "The task restores markers only and never strips one: removal remains the release-end manual copy review, user-owned per README.md:16 and :18."
+
+### task-135 — Add i18n keys for CurrentVoteSummary core states (json :1050-1064)
 
 - "Core keys present in en-US.json and ja-JP.json: headerCurrent, statusDelegatedToDRep, statusAbstain, statusNoConfidence, noDelegation title/warning/subline/cta, DRep link labels, abstain/noConfidence captions."
 - "Preliminary ja-JP copy is reviewed for length / layout overflow while retaining the leading !!! marker."
 - "yarn i18n:manage runs clean."
+
+### task-170 — Redact raw wallet payloads at the AdaApi wallet-list log sites (json :1067-1084)
+
+- "`wallets` and `legacyWallets` at the `AdaApi::getWallets success` call site are wrapped in `filterLogData`, or reduced to non-identifying fields; `hwLocalData` filtering unchanged."
+- "The `AdaApi::getWallet success` call site (:458-460) receives the same treatment on the single `wallet` object."
+- "Every remaining whole-payload `logger.*` call site in api.ts that can carry `delegation.*.voting` is audited; those that can are wrapped, and the audit list is recorded in the task evidence."
+- "tests/jest/security/governance-sanitization.spec.ts gains a `getWallets` call-boundary case driving a voting-wallet fixture through `AdaApi.getWallets`, asserting no CIP-129/CIP-105 bech32 string and no abstain / no_confidence literal reaches the emitted logger payload."
+- "INHERITED sanitization floor: the full governance-sanitization suite is green with the new case; non-governance log shapes for the wallet-list flow are otherwise unchanged."
 
 ## Planning Decisions (binding, as applied)
 
@@ -305,6 +341,12 @@ Explicitly out:
 - **No historical governance views**, no `drepVerified` Storybook knob, no
   5-value knob (cv-2), no fix to the singular `AdaWallet.delegation.next` type
   (D-9).
+- **No logging sweep beyond `api.ts`.** task-170 widens cv-1's `api.ts`
+  footprint past task-130's mapper fence to the two wallet-payload log sites,
+  but only for key-redactable payloads `filterLogData` can reach. The
+  `HardwareWalletsStore` `[HW-DEBUG]` surface recorded at slice-3-findings
+  :71-74 is a substring-in-error-message class the key filter cannot fix, and it
+  stays out of cv-1.
 
 ## i18n Core-Key Inventory (task-135; ux :154-186 — all keep leading `!!!`)
 
@@ -353,20 +395,26 @@ counts as Yes on every motion of no-confidence. Rewards can be withdrawn."
 
 ## Locked Invariants Touched (inlined)
 
-- **(2) Sanitization floor** — touched by task-130 (warning path) and re-asserted
-  by task-134. No DRep id, no abstain/no_confidence literal, no CIP-129/CIP-105
-  bech32 string in any logger, analytics, or electron-store payload; the
-  task-111 spy suite `tests/jest/security/governance-sanitization.spec.ts` must
-  be re-asserted green in this slice. Fixtures/docs MAY contain DRep ids — the
-  floor binds runtime logging/analytics/store paths only.
+- **(2) Sanitization floor** — touched by task-130 (warning path) and task-170
+  (the `AdaApi::getWallets` / `AdaApi::getWallet` payload log sites, a live
+  breach at HEAD), re-asserted by task-134 and by task-170's new `getWallets`
+  call-boundary case. No DRep id, no abstain/no_confidence literal, no
+  CIP-129/CIP-105 bech32 string in any logger, analytics, or electron-store
+  payload; the task-111 spy suite
+  `tests/jest/security/governance-sanitization.spec.ts` must be re-asserted
+  green in this slice. Fixtures/docs MAY contain DRep ids — the floor binds
+  runtime logging/analytics/store paths only.
 - **(9) No auto-delegation** — touched by task-132/135. The `noDelegation` state
   shows the CIP-1694 reward-withdrawal warning + CTA; Daedalus never picks a
   delegation.
 - **(10) Byte-equality** — touched by task-129/130. CIP-129, CIP-105, and the
   signed payload `vote.id` remain byte-equal through every identity-display
   change; `normalizeDRepIdentity` must round-trip losslessly.
-- **(11) `!!!` markers** — touched by task-135. Every new en-US and ja-JP string
-  keeps the leading `!!!`; removal is release-end manual review only.
+- **(11) `!!!` markers** — touched by task-135 and task-171. Every new en-US and
+  ja-JP string keeps the leading `!!!`; removal is release-end manual review
+  only. task-171 restores the marker on the nineteen ja-JP keys that lost it and
+  adds the Jest guard that fails when an en-US-marked key has an unmarked ja-JP
+  counterpart; it strips nothing.
 - **(13) Sentinels** — touched by task-128/129/132. Abstain / No Confidence are
   form-only sentinels, never DRep directory entries.
 - **(14) Status badge boundary** — respected by task-132/133. Canonical on-chain
@@ -383,9 +431,16 @@ counts as Yes on every motion of no-confidence. Rewards can be withdrawn."
 ## Dependencies
 
 - In-phase chain: 126 → 127 → 128 → 129 → 130 → 131 → 132 → {133, 135}; 134
-  depends on {130, 131}; 130 also depends on 129; 132 also depends on task-109 ✔
-  and task-110 ✔ (both verified — `DRepIdDisplay` / `DRepSourceLabel` exist under
-  `source/renderer/app/components/governance/_shared/`).
+  depends on {129, 130, 131}; 130 also depends on 129; 132 also depends on
+  task-109 ✔ and task-110 ✔ (`DRepIdDisplay` / `DRepSourceLabel` exist under
+  `source/renderer/app/components/governance/_shared/`; task-109 is `complete`
+  and task-110 `verified`).
+- The two post-approval rows sit outside that chain: task-171 has no
+  dependencies of its own and is a dependency of task-135, so the `!!!` guard
+  lands before cv-1's own copy mint (the same edge is added to cv-2's task-146
+  — listing order is not authoritative, `dependencies` is); task-170 depends on
+  task-130 (complete) and cross-phase task-109 (complete — its AC-2 is the
+  residual gap task-170 closes).
 - Slices 1-7 and ux-refinement are complete/verified; no cv-1 task depends on
   cv-2, anchor-1/2, or standing work.
 - Environment: pinned cardano-wallet v2026-05-11 swagger (commit
@@ -420,7 +475,9 @@ counts as Yes on every motion of no-confidence. Rewards can be withdrawn."
 
 ## Definition of Done
 
-- All 42 verbatim acceptance criteria above pass.
+- All 62 verbatim acceptance criteria above pass (42 at PRD approval, plus the
+  five each that task-131 and task-134 gained and the five each on task-170 and
+  task-171).
 - Gates (from the worktree root): `yarn compile` — zero TS errors (Node v24
   fallback per R-4: `node_modules/.bin/tsc --noEmit`, plus `typed-scss-modules`
   for new scss modules); `yarn lint`; `yarn prettier:check` (devcontainer

@@ -30,13 +30,15 @@ Implementation staging is locked: `slice-5` renders Primary / Threshold / Non-me
 | Category | Rule (informational) | Label (en) | Tooltip copy (en) |
 |---|---|---|---|
 | High value | Inside the default randomized cohort AND completed metadata AND voting power above the cohort median | High value | "Inside the default Recommended view, with verified metadata and voting power above the cohort median." |
-| Primary | Inside the default randomized cohort AND completed metadata | Primary | "Inside the default Recommended view with verified metadata." |
-| Threshold | Inside the default randomized cohort but expiry within the 7–12 epoch window (still above the 6-epoch floor) | Threshold | "Inside the default Recommended view but approaching expiry — review before delegating." |
+| Primary | Inside the default randomized cohort AND completed metadata | Primary | "Has verified off-chain metadata." |
+| Threshold | Inside the default randomized cohort but expiry within the 7–12 epoch window (still above the 6-epoch floor) | Threshold | "Approaching expiry — review before delegating." |
 | Non-metadata | Eligible for the cohort but anchor metadata is missing or unverified | Non-metadata | "Eligible for delegation but has no verified off-chain metadata yet." |
 
 Labels and tooltip copy land in i18n under `governance.drepDirectory.category.*` (see \u00a79). The four labels are deliberately short to avoid wrapping inside cards in JA / DE; copy can iterate but the four-value enum is fixed for Phase 1.
 
 **Priority rule (binding).** When a DRep satisfies more than one category simultaneously, the highest-priority badge wins. Priority order (highest → lowest): **High Value → Threshold → Primary → Non-metadata**. A DRep with metadata that is also approaching expiry (7–12 epochs) always shows **Threshold**, not Primary.
+
+**Out-of-cohort classification (binding).** The rules in the table are the *in-cohort* rules. The badge also renders on surfaces the default cohort excludes by construction — the detail view reached by deep link or ID search, favorites, show-all, deduplicated search rows, and the whole directory whenever `isCohortActive` is false and the list falls back to the unfiltered registrations (ranking unavailable, §6). Cohort membership is therefore an explicit input to the classifier, taken from `GovernanceStore.defaultCohort` and never re-derived from the top-35 / 200 / 6-epoch rule, so a later cohort exclusion reaches the badge without changing the classifier. Outside the cohort **High value never renders** — "above the cohort median" is a cohort statistic and is undefined for an excluded entry — and the entry classifies into Threshold / Primary / Non-metadata on its own properties under the same priority order. The same DRep can therefore carry different badges in the directory and in favorites; that is intended. No tooltip may assert default-cohort membership for an entry the cohort excludes.
 
 ## 2. Source Labels (anchor-ready)
 
@@ -130,6 +132,8 @@ Signed payload:   { vote: { type: "drep", id: "<hex credential>" } }
 
 Never show an unverified anchor name in the confirmation dialog — confirmation is a security surface.
 
+**Block ownership (planning).** The two templates are one contract split across two tasks. task-175 (cv-2) renders the pre-anchor block — the CIP-129 line, the CIP-105 line when derivable, the signed-payload line and the `(Source: On-chain)` label — over the identity object task-173 supplies from `normalizeDRepIdentity`. task-154 (anchor-2) then owns only the swap to the after-`anchor-2` template: the `{verified givenName}` line and the extended `On-chain · Name: Verified off-chain content` source label. Neither task changes the block contents above, and task-154 does not own the pre-anchor block.
+
 **Identity equality rule (binding):** The DRep identifier displayed on the hardware device must be **byte-equal** to the identifier rendered in the confirmation dialog *and* to the `vote.id` field of the signed payload. The CIP-129 and CIP-105 strings shown to the user must both decode to the same underlying DRep credential bytes as the payload `id`.
 
 **Acceptance criterion (HW tests):** A hardware-wallet Jest test must assert that the identifier surfaced by the device prompt is byte-equal to `vote.chosenOption` (or the equivalent field in the constructed tx body). This is a release-blocking assertion.
@@ -188,8 +192,8 @@ All IDs below are shared so `yarn i18n:manage` produces a stable set. Status-bad
 | `governance.drepDirectory.category.threshold` | Threshold |
 | `governance.drepDirectory.category.nonMetadata` | Non-metadata |
 | `governance.drepDirectory.category.highValue.tooltip` | Inside the default Recommended view, with verified metadata and voting power above the cohort median. |
-| `governance.drepDirectory.category.primary.tooltip` | Inside the default Recommended view with verified metadata. |
-| `governance.drepDirectory.category.threshold.tooltip` | Inside the default Recommended view but approaching expiry — review before delegating. |
+| `governance.drepDirectory.category.primary.tooltip` | Has verified off-chain metadata. |
+| `governance.drepDirectory.category.threshold.tooltip` | Approaching expiry — review before delegating. |
 | `governance.drepDirectory.category.nonMetadata.tooltip` | Eligible for delegation but has no verified off-chain metadata yet. |
 | `governance.drepDirectory.cohortBanner.source` | Cohort sizing follows the Beyond MVG (BMVG) Simplified one-click-delegation analysis. |
 | `governance.drepDirectory.votingPower` | Voting power |

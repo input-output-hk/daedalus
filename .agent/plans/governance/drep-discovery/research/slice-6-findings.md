@@ -58,6 +58,14 @@ seeded/zero-IPC ordering (`:648`); reachability through the UI is pinned at
 `DRepDirectory.spec.tsx:552` (show-all) and `:571` (the critiquer-mandated
 non-cohort search + exact-open path with show-all off).
 
+**Tasked:** task-153 (anchor-2, amendment) — the delta is closed on the design
+side rather than left standing: `drep-discovery-design.md:228` is rewritten to
+the shipped membership rule (the full registration list — top-35, sub-floor and
+inactive included — in seeded session order), and the same sentence records that
+`doNotList=true` entries stay reachable through show-all, search and direct DRep
+ID entry. The opt-in sorts and the popularity-sort guardrail at :230-234 are
+unchanged.
+
 ## F-5 (D-4, task-121) — §9 key-inventory gap: `cohortBanner.filtered` plus 14 support keys are minted outside the inventory
 
 Tokens §5 (:86) specifies the filtered-banner copy but the §9 inventory has no
@@ -70,6 +78,15 @@ locale, only 6 are §9-inventoried (`cohortBanner.showAll`, `empty.noResults`,
 sort labels/options, `empty.noResults.clearFilters`) are mints. The §9 inventory
 needs a docs-only pass to add the rows before it can be treated as complete.
 
+**Not tasked:** considered as a docs-only §9 inventory pass and dropped. The
+stated harm — that the mints are invisible to the release-end `!!!` copy review —
+assumes that review works from the hand-maintained §9 inventory; grepping
+`en-US.json` for the leading `!!!` enumerates every reviewable string with no
+inventory maintenance at all, and the ja-JP marker guard (task-171, cv-1) keeps
+the two locales in sync. §9 is left to be corrected opportunistically by whichever
+task next opens the tokens file; the 15 mints listed above are the record of what
+is missing.
+
 ## F-6 (D-5 + P-13, carried from slice-5 F-4) — Both designed badges remain unowned drift: "Expiring soon" (status) and "Excluded from default cohort" (top-35)
 
 Design :221-222 and tokens §1 (:13-15) describe both badges for entries surfaced
@@ -80,6 +97,21 @@ render only the existing status + category badges: `DRepStatus` stays
 `DRepStatusBadge.tsx` / `DRepCategoryBadge.tsx` are absent from the slice diff.
 Both variants still need a future owner before the design/tokens staging claims
 are true (slice-5 R4/F-4 precedent, reaffirmed this slice).
+
+**Not tasked:** considered as an anchor-1 row carrying both variants and dropped
+on value. The expiry information is one click away rather than absent —
+`DRepDetailOnchainSection.tsx:102-113` already renders an "Expires in {n} epochs"
+row for every active entry carrying `drepActivity`, and the shipped Threshold
+category badge fires across the same 7-12 epoch window
+(`DRepCategoryBadge.tsx:50-51`, `:60-68`) — so the residual gap is card-level
+convenience on the show-all and search surfaces, which is where slice-6 declined
+both badges deliberately (D-5/P-13). The plumbing gets cheaper rather than
+harder: task-172 (anchor-1) lands the store-owned cohort-membership computed the
+"Excluded from default cohort" variant would consume. Both variants therefore
+stay unowned drift, and `drep-discovery-design.md:111` keeps naming them for
+stale favorites after task-153 lands; revisit only if release verification
+surfaces user confusion about DReps appearing and disappearing between the
+default view and show-all.
 
 ## F-7 (D-3, task-121) — The favorited filter contract exists without any favorites UI; task-122 only feeds the set and renders the control
 
@@ -102,6 +134,17 @@ per credential keyed by the canonical CIP-129 id, matched against both encodings
 (`DRepIdDisplay.tsx:69-77`), a gap pre-existing since slice-2/3 (reviews approved).
 Card identity is outside task-121's acceptance; the stacked display needs a future
 owner.
+
+**Tasked:** task-174 (anchor-2) — an additive both-forms mode on `DRepIdDisplay`,
+adopted by `DRepDetail` (`DRepDetail.tsx:103`) and by the deduped search rows.
+The ambiguity this finding names is resolved the other way: "stacked" at §11 :244
+binds the deduped SEARCH row, while tokens §4 (:76) keeps directory cards on the
+CIP-129-primary truncated form with a single copy button — so the card rendering
+(`DRepCard.tsx:121`) is correct as shipped and is not the gap. What remains
+unbuilt is the deduped search row plus detail's both-forms-in-full rendering,
+which §4 (:76) also requires. The contradicting design line
+`drep-discovery-design.md:240-241` ("Card identity is the dual-ID display") is
+corrected by the same task.
 
 ## F-9 (build, task-121) — jsdom realm vs the SDK bech32 encoder: three test-only harness fixes any future suite touching `Cardano.DRepID` encoding will need
 

@@ -56,11 +56,24 @@
 - The container (`VotingGovernancePage`) builds the identity from `chosenOption`
   verbatim; `credentialType` is a syntactic `drep_script` prefix classification
   that never touches the rendered or submitted bytes. Sentinels map to `null` and
-  keep their label rendering.
+  keep their label rendering. That prefix test is systematically wrong for
+  CIP-129 script credentials: `GovernanceQueryService._credentialToDRepId`
+  (`:629-641`) emits a `drep1…` CIP-129 id for both `keyHash` and `scriptHash`,
+  so every script-credential DRep reaches the dialog labelled `'key'`. Invisible
+  while the dialog reads only `.raw`; load-bearing the moment any consumer reads
+  `credentialType`. **Tasked:** task-173 (cv-2) — derive the identity through
+  `normalizeDRepIdentity`, which classifies `drep1…` by header byte (`0x22` key /
+  `0x23` script, `normalizeDRepIdentity.ts:27-35`).
 - CIP-105 dual display, signed-payload line, source label, and the name slot are
-  deferred (cv-1 / anchor-2). Byte-equality is pinned end-to-end by the task-114
-  payload test: row select → rendered confirmation ID → `delegateVotes` called
-  with the identical `chosenOption` string.
+  deferred; cv-1 owns none of them — its only identity work is the
+  `normalizeDRepIdentity` helper (task-129, complete). Byte-equality is pinned
+  end-to-end by the task-114 payload test: row select → rendered confirmation ID
+  → `delegateVotes` called with the identical `chosenOption` string.
+  **Tasked:** task-175 (cv-2) — the pre-anchor shared-design-tokens §7 block on
+  top of task-173's identity (CIP-129 primary, CIP-105 secondary when derivable,
+  the signed-payload line carrying the `vote.id` credential hex, and the on-chain
+  source label via `DRepSourceLabel`); the verified-name slot stays with task-154
+  (anchor-2).
 
 ## D4 deviation — prettier substituted for nix fmt
 
@@ -73,6 +86,16 @@
   `import { withRouter, type RouteComponentProps }` syntax; this was resolved
   during task-113 by switching to separate `import type` statements. At slice
   close `prettier --check` passes on all touched `.ts/.tsx/.scss` files.
+- **Considered and dropped:** a slice-8 formatting-reconciliation task (~3h) was
+  weighed against this deviation and cut. `47304d7d8` ("style: apply treefmt
+  formatting", 219 files) is an ancestor of HEAD and is not on `develop`, so a
+  treefmt pass already rides on this branch, and the branch-wide failure count
+  measured with `yarn prettier:check` is prettier 2.1.2 disagreeing with the
+  flake formatter rather than accumulated debt — treefmt is the gate behind the
+  required check, prettier 2.1.2 is not wired into it. What is left is the single
+  pre-merge `nix fmt` already recorded above plus writing down which gate is
+  authoritative. Reopens as a merge blocker if that reading of `47304d7d8` is
+  wrong.
 
 ## P-5 deviation — walkthrough copies live in gitignored `.vscode/`
 
@@ -103,7 +126,15 @@ All three tasks passed code review in one round each, approved with zero blocker
 - **Storybook not executed here:** the container has no display, so the new/updated
   stories (prefilled-from-directory, confirmation with `drepIdentity`) were verified at
   tsc/eslint/fixture-id level only. Eyeball them in both locales via the global
-  English/Japanese toggle before merge.
+  English/Japanese toggle before merge. **Considered and dropped:** a dedicated slice-8
+  manual Storybook-walk task (~3h) was weighed and cut — it duplicates the
+  display-and-synced-node environment task-125 already requires, whose browse →
+  evaluate → select → delegate journey covers the same directory, detail, confirmation
+  and empty/error surfaces in both locales. The named absorption (one acceptance
+  criterion on task-125) was not added to the tracker, so this bullet stays the record:
+  walk the stories during the task-125 session, use the GLOBAL locale toggle rather than
+  a per-story `IntlProvider`, and note that a green `yarn storybook:build` does not
+  discharge it.
 - **`translations/messages.json` regeneration side effect:** `yarn i18n:manage`
   re-added unrelated `daedalus.diagnostics.dialog.*` descriptor hunks; this is
   tool-managed output and rides with whichever commit triggers regeneration — do not
@@ -122,4 +153,10 @@ All three tasks passed code review in one round each, approved with zero blocker
   directory without inherited form state pre-fills the ID, but the form's
   `WalletsDropdown` onChange resets to `initialState`, wiping the pre-filled ID
   when the user then picks a wallet. Outside slice-2's ACs (the round trip starts
-  at the form); flagged for `ux-refinement`.
+  at the form); flagged for `ux-refinement`, which closed without picking it up.
+  **Tasked:** task-138 (cv-2) — its second acceptance criterion was REPLACED, not
+  extended: wallet selection now resets through the fallback chain `currentVote`
+  → inherited `initialFormState.selectedDRepId` from `location.state` → blank,
+  and a directory-supplied ID stays byte-identical. The criterion it replaced
+  ("Selecting a wallet with no vote behaves identically to today (form starts
+  blank)") described this wipe as correct behavior.

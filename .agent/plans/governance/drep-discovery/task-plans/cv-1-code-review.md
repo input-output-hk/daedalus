@@ -1128,3 +1128,107 @@ inside a code comment from slice-1 (0f47402b6), deliberately left alone; and
 the api.ts prettier drift under F-5, which `nix fmt` still owes pre-merge.
 
 Decision: approved
+
+---
+
+## Planner: 2026-07-27 — findings audit outcome (six new rows, nine amendments)
+
+**What was audited.** Every findings, code-review and research file in this
+plan directory was swept against the tracker and the outcome approved. Result:
+six new task rows (task-170 … task-175), nine acceptance-criterion amendments
+across seven pending host tasks, one status demotion with one status caveat,
+and one recorded non-goal. Two of the new rows and three of the amendments are
+cv-1 work; the cv-1 PRD and implementation guide are not rewritten by this
+entry — the guide lines that change are named inside the amendments' own
+acceptance criteria.
+
+**New rows.**
+
+- **task-170** (cv-1) — closes F-11 as recorded at `:1119-1125`: wrap the
+  `AdaApi::getWallets` and `AdaApi::getWallet` payloads so
+  `delegation.active.voting` cannot reach the log file, and add the missing
+  `getWallets` case to `tests/jest/security/governance-sanitization.spec.ts`.
+- **task-171** (cv-1) — restore the leading `!!!` on the nineteen
+  feature-introduced ja-JP keys and add a Jest guard, so the governance
+  strings still to be minted (task-135, task-146, anchor-2 copy) cannot
+  silently reopen the gap. The guard restores markers only; stripping them
+  remains the user-owned release-end copy review.
+- **task-172** (anchor-1) — ground `getDRepCategory` in a store-owned
+  cohort-membership input and activate the fourth (High value) category.
+- **task-173** (cv-2) — build the confirmation-dialog identity with
+  `normalizeDRepIdentity`; must be sequenced before task-141.
+- **task-174** (anchor-2) — additive dual CIP-129 / CIP-105 mode on
+  `DRepIdDisplay`.
+- **task-175** (cv-2) — render the pre-anchor shared-design-tokens §7
+  confirmation identity block (CIP-129, CIP-105 when derivable, the
+  signed-payload line, the on-chain source label); depends on task-173.
+
+**Amendments (nine across eight hosts).** task-131 takes two — F-13's
+unfiltered `yarn test:jest --runInBand` gate in place of the `tests/jest` path
+filter (the filter matches 7 of 82 suites, as recorded at `:1014-1018`), and
+the governance.types.ts:18 comment fix. task-134 takes one (F-10's
+length-guard and success-path no-logging pins). F-9's case-stable comparison
+key spans two hosts in one amendment: task-140 defines the comparator and
+task-147 carries its letter-case regression vector, because task-140's own
+criterion delegates that vector rather than writing it, and task-147 already
+depends on task-140 so the split adds no edge. task-138, task-151 and
+task-157 take one each; task-153 takes two. task-154 takes none — its §7 work
+became task-175 instead.
+
+**One below-cutoff absorption was applied rather than dropped.** The merged
+governance-IPC-error-contract item stayed below the cutoff as a row, but its
+load-bearing half landed as a single acceptance criterion on task-149: a
+task-111-style spy case over the new fetch service's failure paths. This one
+could not be discharged the way the other cut riders were — by recording the
+drop in the item's own findings file — because its source is the slice-1
+final-pass record, which is closed precedent. The gap it closes is live:
+`source/main/utils/logging.ts:26-33` forwards `data` to electron-log with no
+`filterLogData` equivalent, and the existing governance sinks
+(`GovernanceQueryService.ts:523-526`, `governanceChannel.ts:64` and `:77`)
+log whole error objects, so invariant 2 has had no main-process assertion at
+all. task-149 estimatedHours 6 → 7.5. The discardable remainder — the
+`GovernanceWireError` type and the structured-clone round-trip test — is not
+tasked; if it is ever added it must not re-introduce a task id into
+`governance.types.ts`.
+
+**Ordering is carried by `dependencies`, not by listing order.** The two
+sequencing constraints the new rows assert in prose are now in the
+authoritative field: task-135 and task-146 gain `task-171` (the `!!!` guard
+must precede every remaining governance copy mint), and task-141 gains
+`task-173` (the container identity fix must land before the task that edits
+the same container). `summary.criticalPath` gains `task-173` between
+`task-140` and `task-141` — the only critical-path change this sweep earns.
+
+**task-109 / task-111.** task-109 moves `verified` → `complete`, carrying a
+statusReason that names the api.ts:379-383 gap its AC-2 never covered and
+points at task-170; it returns to `verified` when task-170 lands. task-111
+stays `verified` and gains a statusReason caveat recording the same residual:
+the floor suite has no `getWallets` case, exactly as this log noted at
+`:1125`.
+
+**Non-goal recorded.** Cucumber/e2e coverage of DRep Discovery is a deliberate
+non-goal for v1 — recorded in the plan's Key Decisions and the README binding
+scope, with no task row.
+
+**Ownership of the observations this log carried forward.** The ad-hoc
+`DRepIdentity` construction at `VotingGovernancePage.tsx:75-83` and its
+Storybook twin at `Governance.stories.tsx:58-61`, recorded at `:825-833` and
+again at `:1111-1119`, are now owned by task-173. Both homes this log
+predicted for them are superseded: task-130 and task-131 leave the call sites
+untouched (`:831-833`), and the "cv-2 / task-140" reading at `:1119` is not
+the owner either. The task id inside the
+`source/common/types/governance.types.ts:18` comment — flagged twice and
+deliberately left, at `:833-836` and `:1126-1128` — is owned by the task-131
+amendment above.
+
+**Correction owed on the comparator note at `:737-739`.** That note offers
+`cip129` or the (`credentialHex`, `credentialType`) pair as the same-vote key.
+Read as a plain string comparison the `cip129` half is case-unstable — BIP-173
+permits an all-uppercase encoding and the live form gate accepts it (F-9) — so
+a case-stable comparator must use the pair, or a *case-insensitive* `cip129`
+comparison, never a case-sensitive canonical-string one. task-140's amendment
+owns this correction here and on designs/current-vote-display-design.md:95;
+the substance is recorded now so the note is not read at face value in the
+meantime. Per the README's slice-level-docs convention this log is
+append-only, so that amendment must discharge it by appending too, never by
+editing `:737-739` in place.

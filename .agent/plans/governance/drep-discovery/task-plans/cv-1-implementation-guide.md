@@ -12,7 +12,8 @@
 >
 > This document carries the full sections for `task-126` … `task-130`;
 > sections for `task-131` … `task-135` are appended below by the second
-> authoring pass.
+> authoring pass, and the `task-170` / `task-171` sections by the
+> reconciliation pass that added those two rows to cv-1.
 
 ## Implementation Order
 
@@ -45,9 +46,18 @@ deps task-109/task-110 are already verified):
    the finished component's four core states via the global EN/JA toggle.
 9. **task-134 — Jest: mapper + Wallet computeds + core snapshots.** After 130
    and 131 (consumes the task-126 fixtures and the export added by 130).
-10. **task-135 — i18n core keys `voting.governance.currentVote.*`.** After
-    132: `yarn i18n:manage` extracts the component's message definitions into
-    both catalogs, keeping the leading `!!!`.
+10. **task-170 — Redact raw wallet payloads at the AdaApi wallet-list log
+    sites.** After 130: it re-logs the same `getWallets` / `getWallet` seam
+    task-128 widened and task-130 populates, so it lands once that seam is
+    final.
+11. **task-171 — Restore the ja-JP `!!!` markers and guard them.** No
+    dependencies of its own, but task-135 and cv-2's task-146 both depend on
+    it: the guard is the only thing that stops task-135 — and cv-2 /
+    anchor-2 copy after it — from minting an unmarked ja-JP value.
+12. **task-135 — i18n core keys `voting.governance.currentVote.*`.** After
+    132 and 171: `yarn i18n:manage` extracts the component's message
+    definitions into both catalogs, keeping the leading `!!!`, and the
+    task-171 guard covers the twelve new keys.
 
 ## Cross-Cutting Renderer Note
 
@@ -90,6 +100,15 @@ deps task-109/task-110 are already verified):
   `typedef:sass` script, `package.json:73`).
 - Focused jest runs use the precedent form:
   `yarn test:jest <path-to-spec> --runInBand`.
+- Whole-tree jest runs use `node_modules/.bin/jest --runInBand` (bare
+  `yarn test:jest` is the identical run — `package.json:21` is `"test:jest":
+  "jest"` — and is the form used in the Cross-Cutting gate). NEVER append
+  `tests/jest` to a whole-tree gate: because the script is bare `jest`, a
+  trailing path is a `testPathPattern` regex, and jest's `roots` are BOTH
+  `<rootDir>/tests` and `<rootDir>/source` (`jest.config.js:129`) with most
+  specs colocated under `source/`. Measured at HEAD with `jest --listTests`:
+  the unfiltered tree is 82 suites, `tests/jest` selects 7 of them. Only the
+  unfiltered run may be reported as "all suites green".
 - `yarn i18n:manage` (`package.json:54`) runs only after task-135 copy
   changes.
 
@@ -1207,7 +1226,10 @@ task-126 fixtures — this task's gate is compile + lint + all existing suites
 
 **Files touched:**
 
-- `source/renderer/app/domains/Wallet.ts` (edit — the ONLY file in this task)
+- `source/renderer/app/domains/Wallet.ts` (edit — the substantive change; the
+  whole of Steps 1-3)
+- `source/common/types/governance.types.ts` (edit — one comment line, Step 4;
+  no type change)
 
 **Context.** Task-130 already added the `votingTarget?: WalletVotingTarget |
 null` entry to `WalletProps` and `WalletVotingTarget` to the type-only import
@@ -1320,7 +1342,29 @@ Directly after the closing brace of the `isDelegating` computed
   }
 ```
 
-#### Step 4: Verify
+#### Step 4: Drop the task id from the `DRepIdentity` comment
+
+`source/common/types/governance.types.ts:16-19` currently reads:
+
+```ts
+/**
+ * Discriminated DRep identity with all known encodings.
+ * Populated by normalizeDRepIdentity (cv-1, task-129).
+ */
+```
+
+Remove the parenthetical only, so line 18 reads:
+
+```ts
+ * Populated by normalizeDRepIdentity.
+```
+
+Nothing else in the file changes — the interface, its members, and every
+member doc comment stay byte-identical. This is the repo's only remaining
+task id in a code comment; the Cross-Cutting grep floor below pins it at
+zero.
+
+#### Step 5: Verify
 
 ```bash
 yarn compile   # Node v24 fallback: node_modules/.bin/tsc --noEmit
@@ -1328,12 +1372,23 @@ grep -n "votingTarget" source/renderer/app/domains/Wallet.ts
 # Expected exactly 4 hits: the WalletProps entry (task-130), the @observable
 # field, the 'votingTarget' pick-list entry, and `this.votingTarget` in
 # currentVote.
-yarn test:jest tests/jest --runInBand   # all existing suites stay green
+grep -rn "task-1[0-9][0-9]" source tests storybook || echo "OK: no task ids in code"
+node_modules/.bin/jest --runInBand   # whole tree: all 82 suites stay green
 yarn lint
 ```
 
-Do NOT run prettier on `Wallet.ts` (pre-existing file) — match the
-surrounding style shown in the blocks above.
+`Wallet.ts` is a shared domain object: five specs import it, and only
+`tests/jest/api/walletDelegationStatuses.spec.ts` is inside the `tests/jest`
+path filter. Confirm the other four are green in the unfiltered run above —
+`source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx`,
+`source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.spec.tsx`,
+`source/renderer/app/components/wallet/WalletSendForm.spec.tsx`, and
+`tests/wallets/unit/wallet-utils.spec.ts` — and report the suite/test counts
+of the whole-tree run in the task's statusReason. A filtered run may never be
+reported as "all existing suites green".
+
+Do NOT run prettier on `Wallet.ts` or `governance.types.ts` (pre-existing
+files) — match the surrounding style shown in the blocks above.
 
 ### Acceptance
 
@@ -1348,8 +1403,13 @@ surrounding style shown in the blocks above.
 - [ ] `Wallet.update()` pick list explicitly includes `'votingTarget'`
       (AC-4 — Step 2; propagation pinned by the task-134 `update()` cases).
 - [ ] `WalletProps` and the type import were NOT re-modified (they already
-      carry the task-130 entries; Step 4 grep shows exactly 4 hits).
-- [ ] `tsc` clean; full existing jest run green.
+      carry the task-130 entries; Step 5 grep shows exactly 4 hits).
+- [ ] The `(cv-1, task-129)` parenthetical is gone from
+      `governance.types.ts:18` while the "Populated by normalizeDRepIdentity"
+      sentence remains; `grep -rn "task-1[0-9][0-9]" source tests storybook`
+      returns zero hits (Step 4).
+- [ ] `tsc` clean; the UNFILTERED 82-suite jest run is green and its counts
+      are recorded in the statusReason.
 
 ---
 
@@ -1737,7 +1797,7 @@ node_modules/.bin/prettier --check \
   source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.messages.ts \
   source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.scss \
   source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.tsx
-yarn test:jest tests/jest --runInBand   # existing suites stay green
+node_modules/.bin/jest --runInBand   # whole tree: all 82 suites stay green
 # Boundary greps — all must come back empty:
 grep -n "GovernanceStore\|drepIndex\|DRepStatusBadge\|givenName\|anchorUrl" \
   source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.tsx \
@@ -1964,6 +2024,12 @@ checkout):
 - `source/renderer/app/components/voting/voting-governance/__snapshots__/CurrentVoteSummary.spec.tsx.snap`
   (generated on first run — commit it)
 
+**Files modified:**
+
+- `tests/jest/governance/normalizeDRepIdentity.spec.ts` (task-129's existing
+  eight-case spec — EXTENDED in place by Step 5 with the wrong-length CIP-105
+  vector; never re-created, never renamed)
+
 **Context.** `tests/jest/api/` already exists (created by task-127's pin
 spec). Jest picks everything up via `roots: ['<rootDir>/tests',
 '<rootDir>/source']` (`jest.config.js:129`) and `testMatch:
@@ -2104,6 +2170,7 @@ describe('_createWalletFromServerData voting mapping', () => {
       },
       source: 'onchain',
     });
+    expect(mockedWarn).not.toHaveBeenCalled();
   });
 
   it('maps delegating_and_voting: pool target AND votingTarget populated', () => {
@@ -2123,6 +2190,7 @@ describe('_createWalletFromServerData voting mapping', () => {
       },
       source: 'onchain',
     });
+    expect(mockedWarn).not.toHaveBeenCalled();
   });
 
   it('maps the abstain sentinel with no pool id', () => {
@@ -2417,11 +2485,40 @@ Review it before committing: it must contain NO badge markup, NO
 text is the truncated form while the `aria-label` carries the full raw id.
 Stage the snapshot file explicitly alongside the spec.
 
-#### Step 5: Verify
+#### Step 5: Extend the task-129 normalizer spec
+
+`tests/jest/governance/normalizeDRepIdentity.spec.ts` already exists with
+eight cases (task-129). Add ONE case to its existing `describe` block — do
+NOT create a second spec file:
+
+```ts
+  it('returns null for a drep_vkh payload of the wrong length', () => {
+    const wrongLength = bech32.encode(
+      'drep_vkh',
+      bech32.toWords(new Array(29).fill(7))
+    );
+    expect(normalizeDRepIdentity(wrongLength)).toBeNull();
+  });
+```
+
+`bech32` is already imported at the top of that spec. The vector is
+synthesized with the library rather than hand-written (D-8), so its checksum
+is valid by construction and the input reaches the CIP-105 length guard
+(`normalizeDRepIdentity.ts`, the `bytes.length !== CREDENTIAL_BYTE_LENGTH`
+return in the `drep_vkh` / `drep_script` branch) instead of the decode
+`catch`. That guard is the one branch task-129's eight cases leave uncovered.
+
+Together with the two `expect(mockedWarn).not.toHaveBeenCalled()` assertions
+in the Step-1 valid-DRep cases, this pins the normalizer's "never logs"
+contract on the ACCEPTED-id path, not only on the rejection paths the
+sanitized-warning cases already cover.
+
+#### Step 6: Verify
 
 ```bash
 yarn compile   # Node v24 fallback: node_modules/.bin/tsc --noEmit
 yarn test:jest tests/jest/api --runInBand
+yarn test:jest tests/jest/governance/normalizeDRepIdentity.spec.ts --runInBand
 yarn test:jest source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.spec.tsx --runInBand
 yarn test:jest tests/jest/security/governance-sanitization.spec.ts --runInBand   # floor re-asserted (invariant 2)
 yarn test:jest   # whole tree: tests/ + colocated source/ specs
@@ -2446,6 +2543,11 @@ node_modules/.bin/prettier --check \
       `DREP_VOTE` with `source: 'onchain'` IS the drepUnverified state).
 - [ ] Sanitized-warning cases: HRP-only payload, fixed `'invalid'` token,
       raw string absent from every logged call (invariant 2).
+- [ ] The valid-DRep mapper cases assert `mockedWarn` was never called, so the
+      no-logging floor is pinned on the accepted-id path too (Step 1).
+- [ ] `tests/jest/governance/normalizeDRepIdentity.spec.ts` is EXTENDED (nine
+      cases) with the wrong-length CIP-105 vector, and a coverage run over
+      `normalizeDRepIdentity.ts` reports no uncovered lines (Step 5).
 - [ ] Floor suite green; whole-tree jest green; `tsc` clean.
 
 ---
@@ -2609,15 +2711,407 @@ a main-checkout follow-up in the code-review log rather than skipping it.
 
 ---
 
+## task-170: Redact raw wallet payloads at the AdaApi wallet-list log sites
+
+**Files touched:**
+
+- `source/renderer/app/api/api.ts` (edit — logger call sites ONLY)
+- `tests/jest/security/governance-sanitization.spec.ts` (edit — one new case
+  in the existing `call boundaries` describe)
+
+**Context.** `filterLogData` has redacted `drepId` / `dRepId` / `vote` /
+`voting` at any depth since slice-1 (`source/common/utils/logging.ts:21`;
+governance keys at `:45-48`), but the two wallet-shaped debug logs in
+`api.ts` never apply it to the wallet payload: `api.ts:379-383` logs
+`wallets` and `legacyWallets` whole with only `hwLocalData` filtered, and
+`api.ts:458-460` logs the raw `wallet`. Task-128 widened `WalletDelegation`
+with `voting?: WalletVotingTarget`, so `delegation.active.voting` — the
+user's own CIP-129/CIP-105 DRep id, or the `abstain` / `no_confidence`
+sentinel — now rides those payloads verbatim into the log file. `getWallets`
+runs on every wallet-list poll, which makes it the highest-frequency logging
+path in the app.
+
+**Locked invariants (inline).**
+
+- Sanitization floor (invariant 2): after this task no DRep id, no
+  CIP-129/CIP-105 bech32 string and no `abstain` / `no_confidence` literal
+  reaches a logger payload from any Shelley-wallet `api.ts` call site.
+- No behavioral change: the requests, their return values and
+  `_createWalletFromServerData` are untouched. Only the argument handed to
+  `logger.debug` changes.
+- Renderer-only: no IPC and no main-process edit. `filterLogData` is already
+  imported (`api.ts:99`) — add no new import.
+- This closes the highest-frequency key-redactable path. It does NOT close
+  the message-substring class (a DRep id embedded in an error *message*),
+  which `filterLogData` structurally cannot reach — that stays open by
+  design, as slice-3 recorded.
+
+**Resolved judgment calls (do not revisit):**
+
+- The whole payload object is wrapped in the shared `filterLogData` rather
+  than filtered field by field: `filterLogData` is typed
+  `(data: Record<string, any>)` and an array is not assignable to that type,
+  so a per-field call would need a cast — and a second bespoke redactor on a
+  security seam is exactly what the floor exists to prevent.
+- Wrapping the whole object also omits each wallet's `passphrase` metadata
+  (`{ last_updated_at }` — `passphrase` is already on the shared sensitive
+  list). That is the ONE non-governance shape change, and it is deliberate:
+  strictly more redaction, on a field with no diagnostic value. No other
+  logged field changes.
+- Legacy/Byron wallet log sites are NOT wrapped. A `LegacyAdaWallet` carries
+  no wire `delegation` — Daedalus injects `NOT_DELEGATING` at `api.ts:918` —
+  so it cannot carry a vote target, and wrapping would churn unrelated log
+  shapes for no floor gain.
+
+### Step-by-Step
+
+#### Step 1: Wrap the `getWallets` success payload
+
+At `api.ts:379-383` the current code is:
+
+```ts
+      logger.debug('AdaApi::getWallets success', {
+        wallets,
+        legacyWallets,
+        hwLocalData: filterLogData(hwLocalData),
+      });
+```
+
+Replace with:
+
+```ts
+      logger.debug(
+        'AdaApi::getWallets success',
+        filterLogData({ wallets, legacyWallets, hwLocalData })
+      );
+```
+
+`filterLogData` recurses by key name at any depth, so the single outer call
+covers `delegation.active.voting` and `delegation.next[*].voting` on every
+wallet in both arrays and still filters `hwLocalData` exactly as the nested
+call did.
+
+#### Step 2: Wrap the `getWallet` success payload
+
+At `api.ts:458-460` the current code is:
+
+```ts
+      logger.debug('AdaApi::getWallet success', {
+        wallet,
+      });
+```
+
+Replace with:
+
+```ts
+      logger.debug('AdaApi::getWallet success', filterLogData({ wallet }));
+```
+
+#### Step 3: Audit the remaining whole-payload wallet logs
+
+```bash
+grep -n "logger.debug('AdaApi::.* success'," -A2 source/renderer/app/api/api.ts \
+  | grep -B1 "^[0-9]*-        wallets\?,$"
+```
+
+Thirteen sites log a bare `wallet` / `wallets` payload. Classify each by the
+type of the logged value and wrap every site whose payload is a Shelley
+`AdaWallet` / `AdaWallets`. Measured at HEAD, six can carry
+`delegation.active.voting`:
+
+| Call site | Payload |
+| --- | --- |
+| `api.ts:379` `AdaApi::getWallets success` | `wallets` (Step 1) |
+| `api.ts:458` `AdaApi::getWallet success` | `wallet` (Step 2) |
+| `api.ts:870` `AdaApi::createWallet success` | `wallet: AdaWallet` (`api.ts:867`) |
+| `api.ts:1588` `AdaApi::restoreWallet success` | `wallet: AdaWallet` (`api.ts:1585`) |
+| `api.ts:1628` `AdaApi::createHardwareWallet success` | spread of `hardwareWallet: AdaWallet` (`api.ts:1621`) |
+| `api.ts:2077` `AdaApi::updateWallet success` | `wallet` — `AdaWallet` on the non-legacy branch (`api.ts:2071`) |
+
+The seven legacy/Byron sites (`:927`, `:1705`, `:1768`, `:1822`, `:1876`,
+`:1930`, `:1976`) stay unwrapped per the judgment call above. Record the
+audited list in the task evidence.
+
+#### Step 4: Add the `getWallets` call-boundary case
+
+In `tests/jest/security/governance-sanitization.spec.ts`, beside the existing
+module-scope `jest.mock` of `delegateVotes` (the file's established pattern —
+factories may `require`, but must not close over a module-scope const), add:
+
+```ts
+jest.mock(
+  '../../../source/renderer/app/api/wallets/requests/getWallets',
+  () => ({
+    getWallets: jest.fn(async () => [
+      // eslint-disable-next-line global-require
+      require('../../mocks/wallets/wallet-voting-drep.json'),
+    ]),
+  })
+);
+
+jest.mock(
+  '../../../source/renderer/app/api/wallets/requests/getLegacyWallets',
+  () => ({ getLegacyWallets: jest.fn(async () => []) })
+);
+```
+
+The fixture is the checksum-verified task-126 one, so its `voting` value is
+the canonical CIP-129 key vector. Then add this case to the existing
+`describe('Governance sanitization — call boundaries', …)` block, modelled on
+the `AdaApi::delegateVotes` case above it:
+
+```ts
+  it('redacts the vote target from the AdaApi wallet-list poll log', async () => {
+    const FIXTURE_DREP =
+      'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
+    (global as any).environment = {
+      ...(global as any).environment,
+      isSelfnode: false,
+    };
+    (global as any).https = require('https');
+    (global as any).daedalus = {
+      api: {
+        localStorage: {
+          getHardwareWalletsLocalData: jest.fn(async () => ({})),
+        },
+      },
+    };
+
+    const loggerSpy = jest
+      .spyOn(rendererLogger, 'debug')
+      .mockImplementation(() => undefined);
+    // eslint-disable-next-line global-require
+    const AdaApi = require('../../../source/renderer/app/api/api').default;
+    const api = new AdaApi(false, {} as any);
+
+    await api.getWallets();
+
+    const getWalletsLog = loggerSpy.mock.calls.find(
+      ([message]) => message === 'AdaApi::getWallets success'
+    );
+    expect(getWalletsLog).toBeDefined();
+    const payload = JSON.stringify(getWalletsLog?.[1]);
+    expect(payload).not.toContain(FIXTURE_DREP);
+    expect(payload).not.toContain('abstain');
+    expect(payload).not.toContain('no_confidence');
+  });
+```
+
+`global.daedalus.api.localStorage.getHardwareWalletsLocalData` must be stubbed
+because `getWallets` destructures it at `api.ts:369` and then indexes the
+result by wallet id (`api.ts:401`), so an object — not `undefined` — is
+required. If the run reports the fixture id rather than a redaction failure,
+re-read the fixture: it must be the committed
+`tests/mocks/wallets/wallet-voting-drep.json`, not a hand-written copy.
+
+#### Step 5: Verify
+
+```bash
+yarn compile   # Node v24 fallback: node_modules/.bin/tsc --noEmit
+yarn lint
+yarn test:jest tests/jest/security/governance-sanitization.spec.ts --runInBand
+node_modules/.bin/jest --runInBand   # whole tree: all 82 suites stay green
+grep -n "logger.debug('AdaApi::getWallets success'" -A3 source/renderer/app/api/api.ts
+grep -n "logger.debug('AdaApi::getWallet success'" source/renderer/app/api/api.ts
+```
+
+Do NOT run prettier on `api.ts` or on the sanitization spec (both
+pre-existing) — match the surrounding style shown in the blocks above.
+
+### Acceptance
+
+- [ ] `wallets` and `legacyWallets` at the `AdaApi::getWallets success` call
+      site pass through `filterLogData`; `hwLocalData` is still filtered
+      (AC-1 — Step 1).
+- [ ] The `AdaApi::getWallet success` call site gets the same treatment on
+      the single `wallet` object (AC-2 — Step 2).
+- [ ] Every remaining whole-payload `logger.*` site in `api.ts` that can
+      carry `delegation.*.voting` is audited, the six Shelley sites are
+      wrapped, and the audit list is in the task evidence (AC-3 — Step 3).
+- [ ] `tests/jest/security/governance-sanitization.spec.ts` gains a
+      `getWallets` call-boundary case driving a voting-wallet fixture through
+      `AdaApi.getWallets` and asserting no bech32 DRep id and no
+      `abstain` / `no_confidence` literal reaches the emitted payload (AC-4 —
+      Step 4).
+- [ ] INHERITED sanitization floor: the full governance-sanitization suite is
+      green with the new case, and no non-governance log shape for the
+      wallet-list flow changes beyond the deliberate `passphrase` omission.
+- [ ] `tsc` clean; lint clean; the UNFILTERED 82-suite jest run is green.
+
+---
+
+## task-171: Restore the ja-JP `!!!` markers and guard them
+
+**Files touched:**
+
+- `source/renderer/app/i18n/locales/ja-JP.json` (edit — nineteen VALUES gain
+  a leading `!!!`; nothing else changes)
+- `tests/jest/i18n/preliminaryCopyMarkers.spec.ts` (new — creates
+  `tests/jest/i18n/`)
+
+**Context.** Invariant 11 binds BOTH locales, and slice-1's ja-JP copy landed
+without the marker. Measured at HEAD by diffing the two catalogs: exactly 20
+keys are present in both files with an en-US value starting `!!!` and a ja-JP
+value that does not. Nineteen are this feature's — the seventeen
+`governance.drepDirectory.*` keys, `governance.tabs.directory`, and
+`sidebar.categoryTooltip.governance`. The twentieth,
+`wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement`,
+predates the feature and its ja-JP copy has already been reviewed; it is the
+guard's single allow-list entry.
+
+This task is ordered before task-135 because the guard is what makes the rule
+enforceable for every later mint — task-135's twelve keys here, task-146's in
+cv-2, and anchor-2's copy after that. A guard landing after the mints
+protects nothing.
+
+**Locked invariants (inline).**
+
+- This task RESTORES markers and never strips one. Removing `!!!` is the
+  release-end manual copy review and is user-owned; no en-US value and no
+  already-reviewed ja-JP value is touched here.
+- Only the nineteen values listed below change. No key is added, removed,
+  renamed or reordered — the catalog stays key-sorted exactly as the i18n
+  runner left it.
+- `defaultMessages.json` and `translations/messages.json` are NOT edited: the
+  `!!!` in those files comes from each component's source `defaultMessage`,
+  which is untouched, so `yarn i18n:manage` must leave them byte-identical.
+
+**Resolved judgment calls (do not revisit):**
+
+- The guard lives at `tests/jest/i18n/preliminaryCopyMarkers.spec.ts`, a new
+  directory alongside the existing `tests/jest/{api,governance,security}`
+  grouping; jest picks it up through `roots` with no config change
+  (`jest.config.js:129`).
+- The guard is asymmetric on purpose: it fires only when the en-US value
+  starts with `!!!`. Once the release-end review clears an en-US marker the
+  assertion goes silent for that key on its own, so the allow-list needs no
+  maintenance and stays at its one pre-existing entry.
+- Keys present in only one catalog are out of scope — there are none at HEAD,
+  and the missing-key case is already the i18n runner's job.
+
+### Step-by-Step
+
+#### Step 1: Restore the nineteen ja-JP markers
+
+In `source/renderer/app/i18n/locales/ja-JP.json`, prefix `!!!` to the VALUE of
+exactly these keys, leaving the key, its position, and the rest of the string
+untouched:
+
+```
+governance.drepDirectory.copyButton
+governance.drepDirectory.copyId
+governance.drepDirectory.empty
+governance.drepDirectory.error
+governance.drepDirectory.lastUpdated
+governance.drepDirectory.loading
+governance.drepDirectory.pagination.next
+governance.drepDirectory.pagination.pageInfo
+governance.drepDirectory.pagination.previous
+governance.drepDirectory.refresh
+governance.drepDirectory.refreshing
+governance.drepDirectory.retry
+governance.drepDirectory.source.onChain
+governance.drepDirectory.status.active
+governance.drepDirectory.status.inactive
+governance.drepDirectory.title
+governance.drepDirectory.votingPower
+governance.tabs.directory
+sidebar.categoryTooltip.governance
+```
+
+Do NOT run prettier on the locale files — they are tool-managed by the i18n
+runner and a reformat produces a whole-file diff.
+
+#### Step 2: Create the guard
+
+```bash
+mkdir -p tests/jest/i18n
+```
+
+Create `tests/jest/i18n/preliminaryCopyMarkers.spec.ts` with exactly:
+
+```ts
+import enUS from '../../../source/renderer/app/i18n/locales/en-US.json';
+import jaJP from '../../../source/renderer/app/i18n/locales/ja-JP.json';
+
+// Copy that is still preliminary carries a leading `!!!` in every locale
+// until the release-end review clears it. This one key's ja-JP copy was
+// reviewed before the rule existed, so its en-US marker outlives its ja-JP
+// one; it is the only permitted asymmetry.
+const REVIEWED_JA_JP_EXCEPTIONS = [
+  'wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement',
+];
+
+const en: Record<string, string> = enUS;
+const ja: Record<string, string> = jaJP;
+
+describe('preliminary copy markers', () => {
+  it('keeps the ja-JP !!! marker on every key whose en-US copy is still preliminary', () => {
+    const unmarked = Object.keys(en).filter(
+      (key) =>
+        key in ja &&
+        en[key].startsWith('!!!') &&
+        !ja[key].startsWith('!!!') &&
+        !REVIEWED_JA_JP_EXCEPTIONS.includes(key)
+    );
+    expect(unmarked).toEqual([]);
+  });
+});
+```
+
+(`resolveJsonModule` is on — `tsconfig.json:38` — and catalog JSON is already
+imported from specs, e.g. `VotingPowerDelegationConfirmationDialog.spec.tsx:9`.
+The failure message lists the offending keys, which is the point: a reviewer
+should see WHICH key reopened the gap.)
+
+#### Step 3: Verify
+
+```bash
+yarn compile   # Node v24 fallback: node_modules/.bin/tsc --noEmit
+yarn test:jest tests/jest/i18n/preliminaryCopyMarkers.spec.ts --runInBand
+yarn i18n:manage        # zero added, zero deleted keys
+git diff --stat         # ja-JP.json and the new spec only
+git diff --stat source/renderer/app/i18n/locales/defaultMessages.json translations/messages.json \
+  || echo "OK: generated catalogs untouched"
+node_modules/.bin/prettier --check tests/jest/i18n/preliminaryCopyMarkers.spec.ts
+node_modules/.bin/jest --runInBand   # whole tree: all 82 suites stay green
+```
+
+Then prove the guard bites rather than merely passing: temporarily strip the
+`!!!` from one restored ja-JP value, re-run the focused spec, confirm it fails
+and names that key, and put the marker back.
+
+### Acceptance
+
+- [ ] All nineteen feature-introduced keys carry a leading `!!!` in
+      `ja-JP.json` — the eighteen `governance.*` keys plus
+      `sidebar.categoryTooltip.governance` (AC-1 — Step 1).
+- [ ] The Jest guard asserts, for every key in both catalogs whose en-US
+      value starts with `!!!`, that the ja-JP value does too, with an
+      allow-list holding only
+      `wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement`
+      (AC-2 — Step 2).
+- [ ] The guard demonstrably FAILS on a newly unmarked ja-JP counterpart, so
+      task-135, task-146 and anchor-2 copy cannot silently reopen the gap
+      (AC-3 — Step 3).
+- [ ] `yarn i18n:manage` runs clean and `defaultMessages.json` /
+      `translations/messages.json` are unchanged by the restoration (AC-4 —
+      only the ja-JP translation file is edited).
+- [ ] The task restores markers only and never strips one; removal stays the
+      user-owned release-end copy review (AC-5).
+- [ ] `tsc` clean; the UNFILTERED 82-suite jest run is green.
+
+---
+
 ## Cross-Cutting Acceptance (All Tasks)
 
-After all ten tasks are complete, run from the worktree root:
+After all twelve tasks are complete, run from the worktree root:
 
 ```bash
 yarn compile          # Zero TS errors (Node v24 fallback: node_modules/.bin/tsc --noEmit)
 node_modules/.bin/typed-scss-modules source/renderer/app   # scss typings regenerate cleanly
 yarn lint             # Zero ESLint errors (covers source, storybook, utils)
-yarn test:jest        # Whole tree green: tests/jest/* plus colocated source specs
+yarn test:jest        # Whole tree green: all 82 suites — tests/ plus colocated source specs
 yarn test:jest tests/jest/security/governance-sanitization.spec.ts --runInBand   # floor re-asserted (invariant 2)
 yarn i18n:manage      # Clean re-run: no missing/deleted keys
 node_modules/.bin/prettier --check \
@@ -2631,7 +3125,8 @@ node_modules/.bin/prettier --check \
   source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.scss \
   source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.tsx \
   source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.spec.tsx \
-  storybook/stories/governance/CurrentVoteSummary.stories.tsx
+  storybook/stories/governance/CurrentVoteSummary.stories.tsx \
+  tests/jest/i18n/preliminaryCopyMarkers.spec.ts
 ```
 
 (Prettier runs ONLY on the files cv-1 created — never `yarn prettier:check`
@@ -2646,7 +3141,11 @@ grep -rn "interface DRepIdentity" source | wc -l                       # exactly
 grep -n "votingTarget" source/renderer/app/domains/Wallet.ts | wc -l   # exactly 4 (props, field, pick list, computed)
 grep -n "GovernanceStore\|drepIndex\|DRepStatusBadge" source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.tsx || echo "OK"
 git diff package.json || echo "OK: no new dependency"                  # task-129 AC-7
+grep -rn "task-1[0-9][0-9]" source tests storybook || echo "OK"        # task-131 Step 4: no task ids in code
 ```
+
+(The ja-JP `!!!` floor is not a grep here — task-171's Jest guard is the
+durable check and it runs inside the whole-tree gate above.)
 
 Manual verification (this devcontainer has no running cardano-wallet and no
 network — plan D-5 — so the manual pass is Storybook-scoped):

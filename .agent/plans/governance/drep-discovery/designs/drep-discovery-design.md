@@ -89,7 +89,6 @@ The directory list is paginated at **25 cards per page**. Total page count deriv
 │ │ Expires in:    34 epochs                                 │  │
 │ │ Voting power:  ₳ 688,964.12                              │  │
 │ │                (688,964,123,456 lovelace)                │  │
-│ │ Registered:    epoch 502                                 │  │
 │ │ Current votes: 2 Yes · 1 No · 0 Abstain (this epoch)     │  │
 │ └──────────────────────────────────────────────────────────┘  │
 │                                                                │
@@ -104,9 +103,11 @@ The directory list is paginated at **25 cards per page**. Total page count deriv
 └────────────────────────────────────────────────────────────────┘
 ```
 
+The On-chain box lists exactly the fields `DRepDetailOnchainSection` renders: Status, Expires in, Voting power, Current votes. There is deliberately no `Registered: epoch N` row — no local `drep-state` output carries a registration epoch, so restoring that row would need a new on-chain data source, not a UI change. `Current votes` ships today as a labeled row carrying the graceful `governance.drepDetail.votePositions.unavailable` value ("Vote positions are not available in this version.") until a `gov-state` query lands (slice-4 D1); the row itself is not deferred and must stay in this box.
+
 ### Favorites route `/governance/favorites`
 
-Same card layout as Directory, but cohort banner replaced with: `"{n} DReps you've favorited. Favorites are stored on this device only."` Empty state: prominent illustration + copy + CTA back to Directory.
+Same card layout as Directory, but cohort banner replaced with: `"{n} DReps you've favorited. Favorites are stored on this device only."` Empty state: title + body copy + CTA back to Directory. No illustration ships — the earlier "prominent illustration" claim is resolved as dropped, not deferred.
 
 **Stale favorites.** If a favorited DRep becomes Retired or appears with `doNotList=true` after `anchor-2` lands, it remains in the favorites list with its current `Retired` or `Excluded from default cohort` status badge (shared tokens §1) and an inline caption: `governance.drepFavorites.staleCaption` → *"This DRep is no longer in the default cohort."* No automatic removal. The user unfavorites explicitly.
 
@@ -167,7 +168,7 @@ components/governance/
     DRepStatusBadge.tsx                   ← per shared tokens §1
     DRepCategoryBadge.tsx                 ← per shared tokens §1a (High value / Primary / Threshold / Non-metadata)
     DRepSourceLabel.tsx                   ← per shared tokens §2
-    DRepIdDisplay.tsx                     ← dual-ID + copy
+    DRepIdDisplay.tsx                     ← CIP-129-primary + copy on cards; both forms in detail/search (§4)
     DRepRefreshIndicator.tsx              ← last-updated + spinner
     helpers.ts                            ← filter/sort helpers analog to stake-pools/helpers.ts
   drep-detail/
@@ -212,7 +213,17 @@ Container components (MobX `@observer`) live under `containers/governance/` mirr
 - Anchor digest (truncated, copy button)
 - Source label: `On-chain anchor reference` (per shared tokens §2)
 
-In anchor-1 (givenName) and anchor-2 (remaining fields), after `GovernanceQueryService` + anchor fetch verify the content, the section adds a child `DRepDetailAnchorContent` rendering `givenName`, `image`, `objectives`, `motivations`, `qualifications`, `references[Link|Identity]`, `paymentAddress`. Each rendered field carries the `Verified off-chain content` label. `DRepCard` does **not** render verified anchor content even after anchor-1/anchor-2 (cards stay on-chain-only) — the verified enrichment surfaces in detail and favorites only.
+In anchor-1 (givenName) and anchor-2 (remaining fields), after `GovernanceQueryService` + anchor fetch verify the content, the section adds a child `DRepDetailAnchorContent` rendering `givenName`, `objectives`, `motivations`, `qualifications`, `references[Link|Identity]`, `paymentAddress`. Each rendered field carries the `Verified off-chain content` label. `DRepCard` does **not** render verified anchor content even after anchor-1/anchor-2 (cards stay on-chain-only) — the verified enrichment surfaces in detail and favorites only.
+
+**`image` / `imageObject` is deferred out of this render set** — dropped, not staged. Rendering it requires a second hash check over the image bytes on top of the anchor digest, and the inline-base64-versus-URL tradeoff against the anchor size cap is an open product question; until that decision is taken the detail view keeps the default avatar shown in the wireframe above.
+
+**`references` are rendered per `@type`**, never as one flat list:
+
+- `Link` entries render as outbound links with an explicit external-link icon, opened only through the hardened HTTPS-only `open-external-url` path.
+- `Identity` entries render in a distinct sub-section under a caption stating that the identity is claimed by the DRep and unverified by Daedalus, with guidance to visit the URL and confirm the DRep ID is published there. Hash verification proves only that the registrant authored the blob, which an impersonator satisfies exactly, so an `Identity` entry must never inherit the plain `Link` treatment.
+- Unrecognised, missing or `Other` `@type` values fall into one documented default bucket that inherits the `Link` treatment and never the `Identity` caption, so an unknown type can never read as a verified identity.
+
+**`paymentAddress`** renders in the detail view only, read-only with a copy button, under a stated-payment-address label alongside the `Verified off-chain content` source label. The accompanying copy states that the address is the DRep's own claim and that delegating voting power requires no payment to any address. The value never pre-populates a send form or a delegation form field, and never appears on a card.
 
 ## Default-Cohort UX
 
@@ -225,7 +236,7 @@ In anchor-1 (givenName) and anchor-2 (remaining fields), after `GovernanceQueryS
 
 ## Filter / Search — Show-All Without Re-introducing Bias
 
-`Show all` toggles the cohort to "all eligible + top-35". When `Show all` is active, sort options become available (default still `randomized`; user can pick `voting power desc`, `voting power asc`, `expiry asc`). Sort is opt-in only; the user must make an explicit choice. This preserves anti-bias intent while letting power users find specific large DReps.
+`Show all` replaces the cohort with the **full registration list** — every registered DRep, including the top 35, entries below the 6-epoch floor and inactive entries — in the same seeded session order as the cohort, so the escape hatch introduces no ranking bias of its own. "Eligible" is a term of art in this plan (active AND remaining `drepActivity` > 6 epochs) and deliberately does not bound show-all: the same list also backs the ID search index, so narrowing it would make a legitimately registered DRep unreachable anywhere in the app. Once `doNotList` lands in `anchor-2`, a `doNotList=true` DRep is excluded from the default cohort but stays reachable through show-all, search and direct DRep ID entry. When `Show all` is active, sort options become available (default still `randomized`; user can pick `voting power desc`, `voting power asc`, `expiry asc`). Sort is opt-in only; the user must make an explicit choice. This preserves anti-bias intent while letting power users find specific large DReps.
 
 **Popularity-sort guardrail.** When the user activates the `voting power desc` sort under Show-all, an inline disclosure appears directly above the list (message ID `governance.drepDirectory.showAll.sortBiasWarning`):
 
@@ -237,9 +248,11 @@ Search is always available regardless of cohort and applies fuzzy match on DRep 
 
 ## Directory Identity: ID-Only in v1
 
-v1 directory cards and search are **DRep-ID-only**. Card identity is the dual-ID
-display (`DRepIdDisplay`: CIP-129 + CIP-105 + copy) — no name field exists on the
-card, and no card may grow one in v1. The card remains fully usable on ID alone:
+v1 directory cards and search are **DRep-ID-only**. Card identity is the
+CIP-129-primary truncated ID with a single copy button (`DRepIdDisplay`, shared
+tokens §4); the full dual CIP-129 + CIP-105 rendering belongs to the detail view
+and the deduped search row, not to the card. No name field exists on the card,
+and no card may grow one in v1. The card remains fully usable on ID alone:
 status badge (tokens §1), voting power (enriched by load Phase 2; `—` with a
 loading/unavailable tooltip until stake lands), on-chain source label, and the
 View details / Select for delegation CTAs carry the complete v1 interaction with
