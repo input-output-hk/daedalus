@@ -1,16 +1,29 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
+import { Cardano } from '@cardano-sdk/core';
 import { IntlProvider } from 'react-intl';
+import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
+import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
+import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../../i18n/locales/en-US.json';
 import jaTranslations from '../../../i18n/locales/ja-JP.json';
+import { daedalusTheme } from '../../../themes/daedalus';
+import { themeOverrides } from '../../../themes/overrides';
 import DRepDirectory from './DRepDirectory';
 import {
   GovernanceRefreshState,
   VotingPowerEnrichState,
   AppDRepDirectoryEntry,
 } from '../../../stores/GovernanceStore';
+
+// jsdom's Uint8Array constructor lives in a different realm than Node's
+// Buffer, so the SDK's bech32 encoder rejects Buffer payloads; point the
+// suite's global at Node's realm (decode paths are unaffected).
+(global as { Uint8Array: unknown }).Uint8Array = Object.getPrototypeOf(
+  Buffer.prototype
+).constructor;
 
 const baseEntries: AppDRepDirectoryEntry[] = [
   {
@@ -37,8 +50,42 @@ const paginatedEntries: AppDRepDirectoryEntry[] = Array.from(
   (_, i) => buildEntry(i + 1)
 );
 
+// Distinct from the first hash byte so a prefix of one id never matches another.
+const credHash = (n: number) =>
+  n.toString(16).padStart(2, '0').repeat(28).slice(0, 56);
+const realDrepId = (n: number): string =>
+  String(
+    Cardano.DRepID.cip129FromCredential({
+      type: Cardano.CredentialType.KeyHash,
+      hash: credHash(n),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any)
+  );
+const realCip105Id = (n: number): string =>
+  String(
+    Cardano.DRepID.cip105FromCredential({
+      type: Cardano.CredentialType.KeyHash,
+      hash: credHash(n),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any)
+  );
+const realEntry = (
+  n: number,
+  overrides: Partial<AppDRepDirectoryEntry> = {}
+): AppDRepDirectoryEntry => ({
+  anchor: null,
+  drepActivity: 20,
+  drepId: realDrepId(n),
+  status: 'active',
+  votingPower: new BigNumber(`${1_000_000_000 - n}`),
+  ...overrides,
+});
+
 const renderComponent = ({
   drepList = baseEntries,
+  showAllList = drepList,
+  drepIndex = new Map(showAllList.map((e) => [e.drepId, e])),
+  top35DRepIds = new Set<string>(),
   error = null,
   isNodeInSync = true,
   isCohortActive = false,
@@ -51,6 +98,9 @@ const renderComponent = ({
   votingPowerState = VotingPowerEnrichState.Loaded,
 }: {
   drepList?: AppDRepDirectoryEntry[];
+  showAllList?: AppDRepDirectoryEntry[];
+  drepIndex?: Map<string, AppDRepDirectoryEntry>;
+  top35DRepIds?: Set<string>;
   error?: { message: string; type: string; details?: string } | null;
   isNodeInSync?: boolean;
   isCohortActive?: boolean;
@@ -64,22 +114,32 @@ const renderComponent = ({
 } = {}) => {
   const messages = locale === 'ja-JP' ? jaTranslations : translations;
   return render(
-    <IntlProvider locale={locale} messages={messages}>
-      <DRepDirectory
-        drepList={drepList}
-        error={error}
-        isNodeInSync={isNodeInSync}
-        isCohortActive={isCohortActive}
-        onReshuffle={onReshuffle}
-        lastFetchedAt={Date.now() - 60_000}
-        onRefresh={jest.fn()}
-        onSelectForDelegation={onSelectForDelegation}
-        onViewDetails={onViewDetails}
-        refreshState={refreshState}
-        syncProgress={syncProgress}
-        votingPowerState={votingPowerState}
-      />
-    </IntlProvider>
+    <ThemeProvider
+      theme={daedalusTheme}
+      skins={SimpleSkins}
+      variables={SimpleDefaults}
+      themeOverrides={themeOverrides}
+    >
+      <IntlProvider locale={locale} messages={messages}>
+        <DRepDirectory
+          drepList={drepList}
+          showAllList={showAllList}
+          drepIndex={drepIndex}
+          top35DRepIds={top35DRepIds}
+          error={error}
+          isNodeInSync={isNodeInSync}
+          isCohortActive={isCohortActive}
+          onReshuffle={onReshuffle}
+          lastFetchedAt={Date.now() - 60_000}
+          onRefresh={jest.fn()}
+          onSelectForDelegation={onSelectForDelegation}
+          onViewDetails={onViewDetails}
+          refreshState={refreshState}
+          syncProgress={syncProgress}
+          votingPowerState={votingPowerState}
+        />
+      </IntlProvider>
+    </ThemeProvider>
   );
 };
 
@@ -91,7 +151,7 @@ describe('DRepDirectory', () => {
 
     expect(screen.getByText('!!!DRep Directory')).toBeInTheDocument();
     expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
-    expect(screen.getByText('!!!Active')).toBeInTheDocument();
+    expect(screen.getAllByText('!!!Active')[0]).toBeInTheDocument();
     expect(screen.getByText('!!!On-chain')).toBeInTheDocument();
   });
 
@@ -202,7 +262,7 @@ describe('DRepDirectory', () => {
     // Title and labels render in Japanese (text may have trailing colons)
     expect(screen.getByText('DRepディレクトリ')).toBeInTheDocument();
     expect(screen.getByText(/投票権/)).toBeInTheDocument();
-    expect(screen.getByText('アクティブ')).toBeInTheDocument();
+    expect(screen.getAllByText('アクティブ')[0]).toBeInTheDocument();
     expect(screen.getByText('オンチェーン')).toBeInTheDocument();
   });
 
@@ -418,5 +478,213 @@ describe('DRepDirectory', () => {
     expect(
       screen.getByText('!!!Threshold').closest('span[title]')
     ).toMatchSnapshot();
+  });
+
+  it('shows the min-length hint below 8 post-HRP characters and leaves the list unfiltered', () => {
+    renderComponent({ drepList: [realEntry(1), realEntry(2)] });
+
+    const input = screen.getByPlaceholderText('!!!Search by DRep ID');
+    fireEvent.change(input, { target: { value: 'drep1abcdefg' } });
+
+    expect(
+      screen.getByText('!!!Enter at least 8 characters to search by ID')
+    ).toBeInTheDocument();
+    expect(screen.getAllByText('!!!View details')).toHaveLength(2);
+  });
+
+  it('filters by prefix at 8 characters and never auto-selects, even on Enter with one match', () => {
+    const onViewDetails = jest.fn();
+    renderComponent({
+      drepList: [realEntry(1), realEntry(2)],
+      onViewDetails,
+    });
+
+    const input = screen.getByPlaceholderText('!!!Search by DRep ID');
+    const uniquePrefix = realDrepId(1).slice(0, 'drep1'.length + 20);
+    fireEvent.change(input, { target: { value: uniquePrefix } });
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(onViewDetails).not.toHaveBeenCalled();
+  });
+
+  it('opens the detail view once for an exact CIP-129 match', () => {
+    const onViewDetails = jest.fn();
+    renderComponent({ drepList: [realEntry(1)], onViewDetails });
+
+    fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID'), {
+      target: { value: realDrepId(1) },
+    });
+
+    expect(onViewDetails).toHaveBeenCalledTimes(1);
+    expect(onViewDetails).toHaveBeenCalledWith(realDrepId(1));
+  });
+
+  it('canonicalizes an exact CIP-105 match to the CIP-129 detail id', () => {
+    const onViewDetails = jest.fn();
+    renderComponent({ drepList: [realEntry(1)], onViewDetails });
+
+    fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID'), {
+      target: { value: realCip105Id(1) },
+    });
+
+    expect(onViewDetails).toHaveBeenCalledTimes(1);
+    expect(onViewDetails).toHaveBeenCalledWith(realDrepId(1));
+  });
+
+  it('shows the invalid-ID error for a full-form string with a bad checksum and never navigates', () => {
+    const onViewDetails = jest.fn();
+    renderComponent({ drepList: [realEntry(1)], onViewDetails });
+
+    fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID'), {
+      target: { value: `drep1${'q'.repeat(51)}` },
+    });
+
+    expect(screen.getByText('!!!Invalid DRep ID')).toBeInTheDocument();
+    expect(onViewDetails).not.toHaveBeenCalled();
+    // FormattedMessage splits the noResults copy across nested nodes; take
+    // the first match instead of requiring a single element.
+    expect(
+      screen.getAllByText(/No DReps match your filters/)[0]
+    ).toBeInTheDocument();
+  });
+
+  it('reaches top-35 and non-cohort entries through show-all', () => {
+    // drepList (the cohort) holds only entry 1; the full list adds a top-35
+    // and a sub-floor entry that must surface when show-all is on.
+    const cohortEntry = realEntry(1);
+    const top35Entry = realEntry(2);
+    const subFloorEntry = realEntry(3, { drepActivity: 3 });
+    renderComponent({
+      drepList: [cohortEntry],
+      showAllList: [cohortEntry, top35Entry, subFloorEntry],
+      top35DRepIds: new Set([top35Entry.drepId]),
+    });
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+
+    fireEvent.click(screen.getByText('!!!Show all DReps'));
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(3);
+  });
+
+  it('finds and opens a non-cohort entry by ID with show-all off', () => {
+    // Entry 2 exists only in showAllList (and, via the harness default, in
+    // drepIndex) - never in the cohort. Search must run over the full
+    // membership and exact-match lookup over the index, or non-cohort DReps
+    // are unreachable without the show-all toggle.
+    const onViewDetails = jest.fn();
+    const cohortEntry = realEntry(1);
+    const nonCohortEntry = realEntry(2);
+    renderComponent({
+      drepList: [cohortEntry],
+      showAllList: [cohortEntry, nonCohortEntry],
+      onViewDetails,
+    });
+
+    const input = screen.getByPlaceholderText('!!!Search by DRep ID');
+    fireEvent.change(input, {
+      target: { value: realDrepId(2).slice(0, 'drep1'.length + 20) },
+    });
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(onViewDetails).not.toHaveBeenCalled();
+
+    fireEvent.change(input, { target: { value: realDrepId(2) } });
+
+    expect(onViewDetails).toHaveBeenCalledTimes(1);
+    expect(onViewDetails).toHaveBeenCalledWith(realDrepId(2));
+  });
+
+  it('applies facet filters through the native selects', () => {
+    renderComponent({
+      drepList: [
+        realEntry(1),
+        realEntry(2, { status: 'inactive', drepActivity: 0 }),
+      ],
+    });
+
+    fireEvent.change(screen.getByLabelText('!!!Status'), {
+      target: { value: 'inactive' },
+    });
+
+    // Card count is the unambiguous signal (the select option shares the
+    // '!!!Inactive' label with the badge).
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+  });
+
+  it('excludes the top-35 under show-all via the exclusion toggle', () => {
+    const top35Entry = realEntry(1);
+    const rest = realEntry(2);
+    renderComponent({
+      drepList: [rest],
+      showAllList: [top35Entry, rest],
+      top35DRepIds: new Set([top35Entry.drepId]),
+    });
+
+    fireEvent.click(screen.getByText('!!!Show all DReps'));
+    expect(screen.getAllByText('!!!View details')).toHaveLength(2);
+
+    fireEvent.click(screen.getByText('!!!Exclude the 35 largest'));
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+  });
+
+  it('shows the sort-bias disclosure only while voting-power-descending is active', () => {
+    renderComponent({ drepList: [realEntry(1)] });
+
+    fireEvent.click(screen.getByText('!!!Show all DReps'));
+    fireEvent.change(screen.getByLabelText('!!!Sort'), {
+      target: { value: 'votingPowerDesc' },
+    });
+
+    expect(screen.getByText(/Sorted by voting power/)).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('!!!Sort'), {
+      target: { value: 'randomized' },
+    });
+
+    expect(
+      screen.queryByText(/Sorted by voting power/)
+    ).not.toBeInTheDocument();
+  });
+
+  it('switches the banner to the filtered line with a live count under show-all', () => {
+    renderComponent({
+      drepList: [realEntry(1)],
+      showAllList: [realEntry(1), realEntry(2)],
+      isCohortActive: true,
+    });
+
+    expect(screen.getByText(/Default view shows/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('!!!Show all DReps'));
+
+    expect(
+      screen.getByText(/Showing 2 DReps matching your filters/)
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Default view shows/)).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Reshuffle order')).not.toBeInTheDocument();
+  });
+
+  it('recovers from zero results via the Clear filters action', () => {
+    renderComponent({ drepList: [realEntry(1)] });
+
+    fireEvent.change(screen.getByLabelText('!!!Status'), {
+      target: { value: 'inactive' },
+    });
+    expect(
+      screen.getAllByText(/No DReps match your filters/)[0]
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('!!!Clear filters'));
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+  });
+
+  it('renders the search surface in ja-JP', () => {
+    renderComponent({ locale: 'ja-JP' });
+
+    expect(screen.getByPlaceholderText('!!!DRep IDで検索')).toBeInTheDocument();
+    expect(screen.getByText('!!!すべてのDRepを表示')).toBeInTheDocument();
   });
 });

@@ -2545,9 +2545,104 @@
         "defaultMessage": "!!!Your node is still syncing. DRep data becomes available once the node reaches the tip.",
         "description": "Directory fallback while the node has not reached the tip",
         "id": "governance.drepDirectory.empty.noSync"
+      },
+      {
+        "defaultMessage": "!!!No DReps match your filters. {ClearFilters} or {ShowAll}.",
+        "description": "Empty state when search/filters match nothing",
+        "id": "governance.drepDirectory.empty.noResults"
+      },
+      {
+        "defaultMessage": "!!!Clear filters",
+        "description": "Action that resets search, filters and sort",
+        "id": "governance.drepDirectory.empty.noResults.clearFilters"
       }
     ],
     "path": "source/renderer/app/components/governance/_shared/DRepEmptyState.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Show all DReps",
+        "description": "Toggle that switches from the default cohort to all DReps",
+        "id": "governance.drepDirectory.cohortBanner.showAll"
+      },
+      {
+        "defaultMessage": "!!!Active",
+        "description": "Active status label",
+        "id": "governance.drepDirectory.status.active"
+      },
+      {
+        "defaultMessage": "!!!Inactive",
+        "description": "Inactive status label",
+        "id": "governance.drepDirectory.status.inactive"
+      },
+      {
+        "defaultMessage": "!!!Status",
+        "description": "Label of the status filter",
+        "id": "governance.drepDirectory.filter.active"
+      },
+      {
+        "defaultMessage": "!!!Metadata",
+        "description": "Label of the metadata filter",
+        "id": "governance.drepDirectory.filter.metadata"
+      },
+      {
+        "defaultMessage": "!!!Expiry",
+        "description": "Label of the expiry-threshold filter",
+        "id": "governance.drepDirectory.filter.expiry"
+      },
+      {
+        "defaultMessage": "!!!All",
+        "description": "Neutral option of every filter dropdown",
+        "id": "governance.drepDirectory.filter.all"
+      },
+      {
+        "defaultMessage": "!!!With metadata",
+        "description": "Metadata filter option: anchor present",
+        "id": "governance.drepDirectory.filter.metadata.with"
+      },
+      {
+        "defaultMessage": "!!!Without metadata",
+        "description": "Metadata filter option: no anchor",
+        "id": "governance.drepDirectory.filter.metadata.without"
+      },
+      {
+        "defaultMessage": "!!!Expiring in 7–12 epochs",
+        "description": "Expiry filter option: the threshold window",
+        "id": "governance.drepDirectory.filter.expiry.thresholdWindow"
+      },
+      {
+        "defaultMessage": "!!!Exclude the 35 largest",
+        "description": "Show-all filter that removes the top-35 by voting power",
+        "id": "governance.drepDirectory.filter.excludeTop35"
+      },
+      {
+        "defaultMessage": "!!!Sort",
+        "description": "Label of the show-all sort dropdown",
+        "id": "governance.drepDirectory.sort.label"
+      },
+      {
+        "defaultMessage": "!!!Randomized (default)",
+        "description": "Default seeded-random sort option",
+        "id": "governance.drepDirectory.sort.randomized"
+      },
+      {
+        "defaultMessage": "!!!Voting power (high to low)",
+        "description": "Voting power descending sort option",
+        "id": "governance.drepDirectory.sort.votingPowerDesc"
+      },
+      {
+        "defaultMessage": "!!!Voting power (low to high)",
+        "description": "Voting power ascending sort option",
+        "id": "governance.drepDirectory.sort.votingPowerAsc"
+      },
+      {
+        "defaultMessage": "!!!Expiry (soonest first)",
+        "description": "Soonest-expiry-first sort option",
+        "id": "governance.drepDirectory.sort.expiryAsc"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryFilters.tsx"
   },
   {
     "descriptors": [
@@ -2593,21 +2688,6 @@
       }
     ],
     "path": "source/renderer/app/components/governance/_shared/DRepSourceLabel.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Active",
-        "description": "DRep active status badge label",
-        "id": "governance.drepDirectory.status.active"
-      },
-      {
-        "defaultMessage": "!!!Inactive",
-        "description": "DRep inactive status badge label",
-        "id": "governance.drepDirectory.status.inactive"
-      }
-    ],
-    "path": "source/renderer/app/components/governance/_shared/DRepStatusBadge.tsx"
   },
   {
     "descriptors": [
@@ -2780,6 +2860,11 @@
         "defaultMessage": "!!!Cohort sizing follows the Beyond MVG (BMVG) Simplified one-click-delegation analysis.",
         "description": "Secondary line crediting the BMVG cohort-sizing analysis",
         "id": "governance.drepDirectory.cohortBanner.source"
+      },
+      {
+        "defaultMessage": "!!!Showing {n} DReps matching your filters. Default randomized order does not apply.",
+        "description": "Banner line replacing the cohort claim while filtered",
+        "id": "governance.drepDirectory.cohortBanner.filtered"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryBanner.tsx"
@@ -2815,6 +2900,11 @@
         "defaultMessage": "!!!Your node is still syncing ({progress}%). The DRep list may be incomplete until sync completes.",
         "description": "Persistent soft-warning banner while the node is syncing",
         "id": "governance.drepDirectory.syncing"
+      },
+      {
+        "defaultMessage": "!!!Sorted by voting power. Default randomized order is designed to reduce popularity bias — consider returning to default for unbiased browsing.",
+        "description": "Disclosure shown while voting-power-descending sort is active",
+        "id": "governance.drepDirectory.showAll.sortBiasWarning"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectory.tsx"
@@ -2838,6 +2928,26 @@
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryList.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Search by DRep ID",
+        "description": "Placeholder of the DRep ID search input",
+        "id": "governance.drepDirectory.searchPlaceholder"
+      },
+      {
+        "defaultMessage": "!!!Enter at least 8 characters to search by ID",
+        "description": "Hint shown while the search query is below the minimum",
+        "id": "governance.drepDirectory.search.minLengthHint"
+      },
+      {
+        "defaultMessage": "!!!Invalid DRep ID",
+        "description": "Error shown for a full-length DRep ID that fails validation",
+        "id": "governance.drepDirectory.search.invalidId"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectorySearch.tsx"
   },
   {
     "descriptors": [

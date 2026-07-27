@@ -142,6 +142,9 @@ const renderDirectory = (
 ) => (
   <DRepDirectory
     drepList={entries}
+    drepIndex={new Map(entries.map((e) => [e.drepId, e]))}
+    showAllList={entries}
+    top35DRepIds={new Set<string>()}
     error={error}
     isCohortActive={isCohortActive}
     isNodeInSync={syncState.isNodeInSync}
@@ -379,6 +382,16 @@ storiesOf('Governance / DRep Directory', module)
     <div style={CENTERED_STYLE}>
       <DRepDirectory
         drepList={baseEntries.map((entry) => ({ ...entry, votingPower: null }))}
+        drepIndex={
+          new Map(
+            baseEntries.map((e) => [e.drepId, { ...e, votingPower: null }])
+          )
+        }
+        showAllList={baseEntries.map((entry) => ({
+          ...entry,
+          votingPower: null,
+        }))}
+        top35DRepIds={new Set<string>()}
         error={null}
         isCohortActive={false}
         isNodeInSync

@@ -5,6 +5,9 @@ import { Provider } from 'mobx-react';
 import { Route, Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { IntlProvider } from 'react-intl';
+import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
+import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
+import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import {
   act,
   cleanup,
@@ -14,6 +17,8 @@ import {
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../i18n/locales/en-US.json';
+import { daedalusTheme } from '../../themes/daedalus';
+import { themeOverrides } from '../../themes/overrides';
 import { ROUTES } from '../../routes-config';
 import {
   GovernanceRefreshState,
@@ -31,6 +36,7 @@ const drepEntry = {
 
 const buildGovernanceStore = () => ({
   displayedDRepList: [drepEntry],
+  drepIndex: new Map([[drepEntry.drepId, drepEntry]]),
   drepList: [drepEntry],
   error: null,
   isCohortActive: true,
@@ -38,6 +44,8 @@ const buildGovernanceStore = () => ({
   refresh: jest.fn(),
   refreshState: GovernanceRefreshState.Loaded,
   reshuffleCohort: jest.fn(),
+  showAllList: [drepEntry],
+  top35DRepIds: new Set<string>(),
   votingPowerState: VotingPowerEnrichState.Loaded,
 });
 
@@ -53,11 +61,21 @@ const renderPage = ({
   });
   const view = render(
     <Provider stores={{ governance, networkStatus } as any}>
-      <IntlProvider locale="en-US" messages={translations}>
-        <Router history={history}>
-          <Route path={ROUTES.GOVERNANCE.DREPS} component={DRepDirectoryPage} />
-        </Router>
-      </IntlProvider>
+      <ThemeProvider
+        theme={daedalusTheme}
+        skins={SimpleSkins}
+        variables={SimpleDefaults}
+        themeOverrides={themeOverrides}
+      >
+        <IntlProvider locale="en-US" messages={translations}>
+          <Router history={history}>
+            <Route
+              path={ROUTES.GOVERNANCE.DREPS}
+              component={DRepDirectoryPage}
+            />
+          </Router>
+        </IntlProvider>
+      </ThemeProvider>
     </Provider>
   );
   return { governance, networkStatus, ...view };
@@ -110,5 +128,16 @@ describe('DRepDirectoryPage', () => {
 
     expect(governance.reshuffleCohort).toHaveBeenCalledTimes(1);
     expect(governance.refresh).not.toHaveBeenCalled();
+  });
+
+  it('never triggers a store fetch from search interactions', () => {
+    const { governance } = renderPage();
+
+    const input = screen.getByPlaceholderText('!!!Search by DRep ID');
+    fireEvent.change(input, { target: { value: 'drep1abcdefgh' } });
+    fireEvent.change(input, { target: { value: `drep1${'q'.repeat(51)}` } });
+
+    expect(governance.refresh).not.toHaveBeenCalled();
+    expect(governance.reshuffleCohort).not.toHaveBeenCalled();
   });
 });

@@ -82,6 +82,9 @@ class DRepDirectoryPage extends React.Component<Props> {
     return (
       <DRepDirectory
         drepList={governanceStore.displayedDRepList}
+        drepIndex={governanceStore.drepIndex}
+        showAllList={governanceStore.showAllList}
+        top35DRepIds={governanceStore.top35DRepIds}
         refreshState={governanceStore.refreshState}
         error={governanceStore.error}
         lastFetchedAt={governanceStore.lastFetchedAt}

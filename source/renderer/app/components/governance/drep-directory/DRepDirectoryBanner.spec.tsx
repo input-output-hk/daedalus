@@ -10,10 +10,14 @@ const renderBanner = ({
   isCohortActive = true,
   locale = 'en-US',
   showSource,
+  isFilteredView,
+  displayedCount,
 }: {
   isCohortActive?: boolean;
   locale?: string;
   showSource?: boolean;
+  isFilteredView?: boolean;
+  displayedCount?: number;
 } = {}) => {
   const messages = locale === 'ja-JP' ? jaTranslations : translations;
   return render(
@@ -25,6 +29,8 @@ const renderBanner = ({
         onRefresh={jest.fn()}
         onReshuffle={jest.fn()}
         showSource={showSource}
+        isFilteredView={isFilteredView}
+        displayedCount={displayedCount}
       />
     </IntlProvider>
   );
@@ -69,5 +75,32 @@ describe('DRepDirectoryBanner', () => {
 
     expect(screen.getByText(/Beyond MVG/)).toBeInTheDocument();
     expect(screen.getByText(/ワンクリック委任分析/)).toBeInTheDocument();
+  });
+
+  it('replaces the cohort claim, Reshuffle and citation with the filtered line', () => {
+    renderBanner({ isFilteredView: true, displayedCount: 7 });
+
+    expect(
+      screen.getByText(
+        '!!!Showing 7 DReps matching your filters. Default randomized order does not apply.'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/Default view shows up to 200/)
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Reshuffle order')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Beyond MVG/)).not.toBeInTheDocument();
+  });
+
+  it('shows the filtered line even when the cohort is inactive', () => {
+    renderBanner({
+      isCohortActive: false,
+      isFilteredView: true,
+      displayedCount: 1,
+    });
+
+    expect(
+      screen.getByText(/Showing 1 DReps matching your filters/)
+    ).toBeInTheDocument();
   });
 });

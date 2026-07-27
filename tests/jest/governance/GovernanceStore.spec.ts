@@ -550,3 +550,113 @@ describe('GovernanceStore default cohort', () => {
     );
   });
 });
+
+describe('GovernanceStore search and show-all seams', () => {
+  beforeEach(() => {
+    mockRequest.mockReset();
+    mockStakeRequest.mockReset();
+  });
+
+  const drepIdAt = (i: number) =>
+    `drep1seam${String(i).padStart(4, '0')}aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`;
+
+  const buildDrep = (
+    i: number,
+    overrides: Partial<DRepDirectoryEntry> = {}
+  ): DRepDirectoryEntry => ({
+    anchor: null,
+    drepActivity: 10,
+    drepId: drepIdAt(i),
+    status: 'active',
+    votingPower: null,
+    ...overrides,
+  });
+
+  const stakeFor = (count: number): Record<string, string> => {
+    const map: Record<string, string> = {};
+    for (let i = 0; i < count; i++) {
+      map[drepIdAt(i)] = String(1_000_000_000_000 - i * 1_000_000);
+    }
+    return map;
+  };
+
+  const loadStore = async (
+    dreps: DRepDirectoryEntry[],
+    stakeByDRepId: Record<string, string>
+  ): Promise<GovernanceStore> => {
+    mockRequest.mockResolvedValue({
+      dreps,
+      epoch: 512,
+      fetchedAt: 1_750_000_000_000,
+    });
+    mockStakeRequest.mockResolvedValue({
+      fetchedAt: 1_750_000_000_500,
+      stakeByDRepId,
+    });
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    await store.fetchDRepList();
+    return store;
+  };
+
+  it('exposes the 35 largest ids once ranking has loaded', async () => {
+    const dreps = Array.from({ length: 40 }, (_, i) => buildDrep(i));
+    const store = await loadStore(dreps, stakeFor(40));
+
+    expect(store.top35DRepIds.size).toBe(35);
+    for (let i = 0; i < 35; i++) {
+      expect(store.top35DRepIds.has(drepIdAt(i))).toBe(true);
+    }
+    expect(store.top35DRepIds.has(drepIdAt(35))).toBe(false);
+  });
+
+  it('exposes no top-35 set when the ranking phase failed', async () => {
+    mockRequest.mockResolvedValue({
+      dreps: [buildDrep(0)],
+      epoch: 512,
+      fetchedAt: 1_750_000_000_000,
+    });
+    mockStakeRequest.mockRejectedValue({
+      __governanceError: true,
+      type: 'QUERY_FAILED',
+      message: 'DRep stake query failed.',
+    });
+
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    await store.fetchDRepList();
+
+    expect(store.isRankingUnavailable).toBe(true);
+    expect(store.top35DRepIds.size).toBe(0);
+  });
+
+  it('keeps full membership in showAllList including top-35, sub-floor and inactive entries', async () => {
+    // Sub-floor and inactive entries appear here to prove show-all
+    // reachability - they are never placed inside a cohort fixture.
+    const dreps = [
+      ...Array.from({ length: 36 }, (_, i) => buildDrep(i)),
+      buildDrep(36, { drepActivity: 3 }),
+      buildDrep(37, { drepActivity: 0, status: 'inactive' }),
+    ];
+    const store = await loadStore(dreps, stakeFor(38));
+
+    const ids = new Set(store.showAllList.map((e) => e.drepId));
+    expect(store.showAllList).toHaveLength(38);
+    expect(ids.has(drepIdAt(0))).toBe(true);
+    expect(ids.has(drepIdAt(36))).toBe(true);
+    expect(ids.has(drepIdAt(37))).toBe(true);
+  });
+
+  it('orders showAllList from the session seed and reshuffles without any IPC query', async () => {
+    const dreps = Array.from({ length: 20 }, (_, i) => buildDrep(i));
+    const store = await loadStore(dreps, stakeFor(20));
+    const before = store.showAllList.map((e) => e.drepId);
+
+    expect(store.showAllList.map((e) => e.drepId)).toEqual(before);
+
+    store.reshuffleCohort();
+
+    expect(mockRequest).toHaveBeenCalledTimes(1);
+    expect(mockStakeRequest).toHaveBeenCalledTimes(1);
+    const after = store.showAllList.map((e) => e.drepId);
+    expect([...after].sort()).toEqual([...before].sort());
+  });
+});

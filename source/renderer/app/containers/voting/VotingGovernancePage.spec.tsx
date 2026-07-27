@@ -94,6 +94,8 @@ const buildStores = ({
     refresh: jest.fn(),
     refreshState: GovernanceRefreshState.Loaded,
     reshuffleCohort: jest.fn(),
+    showAllList: [drepEntry],
+    top35DRepIds: new Set<string>(),
     votingPowerState: VotingPowerEnrichState.Loaded,
   },
   hardwareWallets: {

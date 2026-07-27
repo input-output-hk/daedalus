@@ -14,3 +14,8 @@
   color: var(--theme-text-secondary, #6b7384);
   max-width: 480px;
 }
+
+.actionLink {
+  font-size: inherit;
+  white-space: nowrap;
+}

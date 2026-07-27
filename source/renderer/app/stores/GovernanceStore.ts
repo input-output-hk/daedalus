@@ -83,6 +83,16 @@ function compareByVotingPowerDesc(
   return 0;
 }
 
+/** Canonical, deterministic tie/canonicalization order shared by the derived views. */
+function compareDRepIdAsc(
+  a: AppDRepDirectoryEntry,
+  b: AppDRepDirectoryEntry
+): number {
+  if (a.drepId < b.drepId) return -1;
+  if (a.drepId > b.drepId) return 1;
+  return 0;
+}
+
 export default class GovernanceStore extends Store {
   // ---- Observables ----
 
@@ -166,17 +176,38 @@ export default class GovernanceStore extends Store {
           entry.drepActivity > COHORT_MIN_REMAINING_EPOCHS
       );
     const selected = eligible.slice(0, COHORT_MAX_SIZE);
-    const canonical = [...selected].sort((a, b) => {
-      if (a.drepId < b.drepId) return -1;
-      if (a.drepId > b.drepId) return 1;
-      return 0;
-    });
+    const canonical = [...selected].sort(compareDRepIdAsc);
     return seededShuffle(canonical, this.cohortSeed);
   }
 
   /** What the directory renders: the cohort when active, else the full list. */
   @computed get displayedDRepList(): AppDRepDirectoryEntry[] {
     return this.defaultCohort ?? this.drepList;
+  }
+
+  /**
+   * Ids of the 35 largest DReps by voting power. Empty until ranking has
+   * loaded - the ranking-unavailable banner promises that ranking-based
+   * filters are disabled in that state.
+   */
+  @computed get top35DRepIds(): Set<string> {
+    if (this.votingPowerState !== VotingPowerEnrichState.Loaded) {
+      return new Set();
+    }
+    const ranked = [...this.drepList].sort(compareByVotingPowerDesc);
+    return new Set(
+      ranked.slice(0, COHORT_TOP_EXCLUSION).map((entry) => entry.drepId)
+    );
+  }
+
+  /**
+   * Show-all base list: every registration (top-35, sub-floor and inactive
+   * included) in the same seeded-random session order as the cohort, so
+   * enabling show-all never introduces ranking bias by default.
+   */
+  @computed get showAllList(): AppDRepDirectoryEntry[] {
+    const canonical = [...this.drepList].sort(compareDRepIdAsc);
+    return seededShuffle(canonical, this.cohortSeed);
   }
 
   // ---- Actions ----

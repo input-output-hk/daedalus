@@ -40,6 +40,12 @@ const messages = defineMessages({
       '!!!Cohort sizing follows the Beyond MVG (BMVG) Simplified one-click-delegation analysis.',
     description: 'Secondary line crediting the BMVG cohort-sizing analysis',
   },
+  filtered: {
+    id: 'governance.drepDirectory.cohortBanner.filtered',
+    defaultMessage:
+      '!!!Showing {n} DReps matching your filters. Default randomized order does not apply.',
+    description: 'Banner line replacing the cohort claim while filtered',
+  },
 });
 
 interface Props {
@@ -50,6 +56,10 @@ interface Props {
   onReshuffle: () => void;
   // Story-only escape hatch; production call sites always keep the default true.
   showSource?: boolean;
+  // Both default to the pure-default-view state so existing call sites and
+  // stories keep compiling unchanged.
+  isFilteredView?: boolean;
+  displayedCount?: number;
   intl: intlShape.isRequired;
 }
 
@@ -60,6 +70,8 @@ function DRepDirectoryBanner({
   isCohortActive,
   onReshuffle,
   showSource = true,
+  isFilteredView = false,
+  displayedCount = 0,
   intl,
 }: Props) {
   const timeAgo = lastFetchedAt ? moment(lastFetchedAt).fromNow() : null;
@@ -82,7 +94,7 @@ function DRepDirectoryBanner({
           })}
         </p>
       )}
-      {isCohortActive && (
+      {isCohortActive && !isFilteredView && (
         <div className={styles.cohortLine}>
           <span>{intl.formatMessage(messages.cohortBanner)}</span>
           <Link
@@ -94,9 +106,14 @@ function DRepDirectoryBanner({
           />
         </div>
       )}
-      {isCohortActive && showSource && (
+      {isCohortActive && !isFilteredView && showSource && (
         <p className={styles.sourceLine}>
           {intl.formatMessage(messages.source)}
+        </p>
+      )}
+      {isFilteredView && (
+        <p className={styles.filteredLine}>
+          {intl.formatMessage(messages.filtered, { n: displayedCount })}
         </p>
       )}
     </div>

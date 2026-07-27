@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DRepDirectoryList from './DRepDirectoryList';
 import DRepDirectoryBanner from './DRepDirectoryBanner';
+import DRepDirectorySearch from './DRepDirectorySearch';
+import DRepDirectoryFilters from './DRepDirectoryFilters';
 import DRepEmptyState from '../_shared/DRepEmptyState';
 import DRepErrorBanner from '../_shared/DRepErrorBanner';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -14,6 +16,18 @@ import {
   GovernanceStoreError,
 } from '../../../stores/GovernanceStore';
 import { GovernanceQueryErrorType } from '../../../../../common/types/governance.types';
+import {
+  DEFAULT_DREP_FILTER_STATE,
+  EMPTY_DREP_ID_SET,
+  buildDRepSearchIndex,
+  filterDReps,
+  getDRepQueryKind,
+  isDefaultFilterState,
+  resolveExactDRepMatch,
+  searchDRepsByIdPrefix,
+  sortDReps,
+} from './helpers';
+import type { DRepFilterState, DRepSortOption } from './helpers';
 import styles from './DRepDirectory.scss';
 
 const messages = defineMessages({
@@ -53,10 +67,21 @@ const messages = defineMessages({
       '!!!Your node is still syncing ({progress}%). The DRep list may be incomplete until sync completes.',
     description: 'Persistent soft-warning banner while the node is syncing',
   },
+  sortBiasWarning: {
+    id: 'governance.drepDirectory.showAll.sortBiasWarning',
+    defaultMessage:
+      '!!!Sorted by voting power. Default randomized order is designed to reduce popularity bias — consider returning to default for unbiased browsing.',
+    description:
+      'Disclosure shown while voting-power-descending sort is active',
+  },
 });
 
 interface Props {
   drepList: AppDRepDirectoryEntry[];
+  drepIndex: ReadonlyMap<string, AppDRepDirectoryEntry>;
+  showAllList: AppDRepDirectoryEntry[];
+  top35DRepIds: ReadonlySet<string>;
+  favoriteDRepIds?: ReadonlySet<string>;
   refreshState: GovernanceRefreshState;
   error: GovernanceStoreError | null;
   lastFetchedAt: number | null;
@@ -73,6 +98,10 @@ interface Props {
 
 function DRepDirectory({
   drepList,
+  drepIndex,
+  showAllList,
+  top35DRepIds,
+  favoriteDRepIds = EMPTY_DREP_ID_SET,
   refreshState,
   error,
   lastFetchedAt,
@@ -86,7 +115,93 @@ function DRepDirectory({
   onViewDetails,
   intl,
 }: Props) {
-  const hasRetainedData = drepList.length > 0;
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isShowAll, setIsShowAll] = useState(false);
+  const [filters, setFilters] = useState<DRepFilterState>(
+    DEFAULT_DREP_FILTER_STATE
+  );
+  const [sort, setSort] = useState<DRepSortOption>('randomized');
+
+  const queryKind = getDRepQueryKind(searchQuery);
+  const isSearchActive =
+    queryKind === 'prefix' ||
+    queryKind === 'exactValid' ||
+    queryKind === 'invalidFullForm';
+  const isRankingAvailable = votingPowerState === VotingPowerEnrichState.Loaded;
+
+  // Search always covers the full membership so excluded and non-cohort
+  // DReps stay reachable regardless of the current view.
+  const searchIndex = useMemo(
+    () => buildDRepSearchIndex(showAllList),
+    [showAllList]
+  );
+
+  const visibleEntries = useMemo(() => {
+    let base: AppDRepDirectoryEntry[];
+    if (isSearchActive) {
+      base = searchDRepsByIdPrefix(searchIndex, searchQuery);
+    } else if (isShowAll) {
+      base = showAllList;
+    } else {
+      base = drepList;
+    }
+    const filtered = filterDReps(base, filters, {
+      favoriteDRepIds,
+      top35DRepIds,
+    });
+    // Search results keep relevance order; the cohort keeps its seeded order.
+    if (isSearchActive || !isShowAll) return filtered;
+    return sortDReps(filtered, sort);
+  }, [
+    drepList,
+    favoriteDRepIds,
+    filters,
+    isSearchActive,
+    isShowAll,
+    searchIndex,
+    searchQuery,
+    showAllList,
+    sort,
+    top35DRepIds,
+  ]);
+
+  // A checksum-valid full ID that resolves in the index bypasses the result
+  // list and opens the detail view directly, once per distinct query.
+  const lastOpenedQueryRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (queryKind !== 'exactValid') return;
+    if (lastOpenedQueryRef.current === searchQuery) return;
+    const match = resolveExactDRepMatch(searchQuery, drepIndex);
+    if (match) {
+      lastOpenedQueryRef.current = searchQuery;
+      onViewDetails(match.drepId);
+    }
+  }, [queryKind, searchQuery, drepIndex, onViewDetails]);
+
+  const isFilteredView =
+    isSearchActive ||
+    isShowAll ||
+    sort !== 'randomized' ||
+    !isDefaultFilterState(filters);
+
+  const handleShowAllChange = (nextShowAll: boolean) => {
+    setIsShowAll(nextShowAll);
+    // Sorts exist only under show-all; leaving it restores the default order.
+    if (!nextShowAll) setSort('randomized');
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery('');
+    setFilters(DEFAULT_DREP_FILTER_STATE);
+    setSort('randomized');
+  };
+
+  const handleShowAllFromEmptyState = () => {
+    handleClearFilters();
+    setIsShowAll(true);
+  };
+
+  const hasRetainedData = showAllList.length > 0;
   const showErrorBanner = error && hasRetainedData;
 
   // While syncing, an empty or unavailable directory is expected — fall back
@@ -129,7 +244,7 @@ function DRepDirectory({
           </div>
         );
 
-      case drepList.length === 0 &&
+      case showAllList.length === 0 &&
         refreshState === GovernanceRefreshState.Loaded:
         return (
           <div className={styles.stateContainer}>
@@ -145,6 +260,23 @@ function DRepDirectory({
       default:
         return (
           <>
+            <div className={styles.controlsRow}>
+              <DRepDirectorySearch
+                value={searchQuery}
+                queryKind={queryKind}
+                onChange={setSearchQuery}
+              />
+              <DRepDirectoryFilters
+                filters={filters}
+                onFiltersChange={setFilters}
+                isShowAll={isShowAll}
+                onShowAllChange={handleShowAllChange}
+                sort={sort}
+                onSortChange={setSort}
+                isRankingAvailable={isRankingAvailable}
+                isSearchActive={isSearchActive}
+              />
+            </div>
             {showErrorBanner && error && (
               <div className={styles.errorBanner}>
                 <div>
@@ -172,12 +304,25 @@ function DRepDirectory({
             {votingPowerState === VotingPowerEnrichState.Failed && (
               <DRepErrorBanner variant="rankingUnavailable" />
             )}
-            <DRepDirectoryList
-              entries={drepList}
-              onSelectForDelegation={onSelectForDelegation}
-              onViewDetails={onViewDetails}
-              votingPowerState={votingPowerState}
-            />
+            {isShowAll && !isSearchActive && sort === 'votingPowerDesc' && (
+              <div className={styles.sortBiasWarning} role="status">
+                {intl.formatMessage(messages.sortBiasWarning)}
+              </div>
+            )}
+            {visibleEntries.length === 0 ? (
+              <DRepEmptyState
+                variant="noResults"
+                onClearFilters={handleClearFilters}
+                onShowAll={handleShowAllFromEmptyState}
+              />
+            ) : (
+              <DRepDirectoryList
+                entries={visibleEntries}
+                onSelectForDelegation={onSelectForDelegation}
+                onViewDetails={onViewDetails}
+                votingPowerState={votingPowerState}
+              />
+            )}
           </>
         );
     }
@@ -191,6 +336,8 @@ function DRepDirectory({
         isRefreshing={refreshState === GovernanceRefreshState.Refreshing}
         isCohortActive={isCohortActive}
         onReshuffle={onReshuffle}
+        isFilteredView={isFilteredView}
+        displayedCount={visibleEntries.length}
       />
       {!isNodeInSync && (
         <div className={styles.syncingBanner} role="status">

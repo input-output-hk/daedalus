@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input {
+  max-width: 480px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--theme-text-secondary, #6b7384);
+  margin: 0;
+}
+
+.error {
+  font-size: 12px;
+  color: var(--theme-error-color, #ea4c5b);
+  margin: 0;
+}
