@@ -81,7 +81,7 @@ export type DelegationStatus =
   | 'delegating'
   | 'not_delegating'
   | 'voting'
-  | 'voting_and_delegating';
+  | 'delegating_and_voting';
 export type WalletSyncStateProgress = {
   quantity: number;
   unit: 'percentage';

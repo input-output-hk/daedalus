@@ -63,3 +63,55 @@ that cv-1 must re-assert green is `tests/jest/security/governance-sanitization.s
 `tests/jest/security/governance-sanitization.spec.ts`. The design doc is not
 edited in this slice; its §12 table is recorded here as stale naming only — the
 coverage rows themselves remain valid.
+
+## F-4 — `.agent/system/api-endpoints.md:50` listed the stale `voting_and_delegating` status value as current fact (live wire value authoritative; doc reconciled)
+
+Found during the task-127 build, not at planning. The system API reference
+listed the delegation status enum under the heading "Delegation status values
+in `delegation.active.status` include:" (`.agent/system/api-endpoints.md:46`)
+and its fourth entry read `voting_and_delegating` (`:50`) — the same latent
+bug F-1 tracks in the renderer source, mirrored into a system doc where it
+read as an assertion about the cardano-wallet wire contract rather than as
+prose about a known defect. Left alone it would have kept re-seeding the wrong
+literal into future work after the code was fixed.
+
+**Resolution:** prefer the live repo. The one in-repo artifact that claims
+wire truth is the task-126 fixture
+`tests/mocks/wallets/wallet-delegating-and-voting.json:25`
+(`"status": "delegating_and_voting"`), and task-127 made
+`source/renderer/app/domains/Wallet.ts:42` and
+`source/renderer/app/api/wallets/types.ts:84` byte-match it. `:50` was changed
+to `delegating_and_voting` — a single-line value swap, the only occurrence of
+the enum in that file, with `:47-49` untouched. Residual, recorded rather than
+resolved: the value still cannot be confirmed against the pinned
+cardano-wallet v2026-05-11 swagger in this devcontainer (no vendored spec, no
+live wallet), and the fixture was itself authored from the swagger *shape*
+rather than captured live (`cv-1-PRD.md:58`), so fixture, source and doc now
+agree by construction. Pre-merge: confirm `delegating_and_voting` against the
+swagger `ApiWalletDelegationStatus` enum in an environment that has it. Note
+this is a doc *value* fix only — the surviving `voting_and_delegating` strings
+elsewhere in `.agent/` are prose narrating the bug (including task-127's own
+tracker description and acceptance criteria at
+`governance-drep-discovery-plan-tasks.json:837,846,849`) and were correctly
+left in place.
+
+## F-5 — `nix fmt` cannot run in this devcontainer; `node_modules/.bin/prettier` is the substitute (pre-merge obligation, carried forward)
+
+Found during the task-126/task-127 builds. The repo's formatting gate is
+`nix fmt`, but this devcontainer has no nix, so the gate cannot be executed
+here at all. Every cv-1 build task to date has instead run the prettier 2.1.2
+binary directly — `node_modules/.bin/prettier --check <paths>`, never
+`yarn prettier` — which passed clean on all task-127 touched files
+(`source/renderer/app/api/wallets/types.ts`,
+`source/renderer/app/domains/Wallet.ts`,
+`tests/jest/api/walletDelegationStatuses.spec.ts`,
+`.agent/system/api-endpoints.md`,
+`.agent/plans/governance/drep-discovery/governance-drep-discovery-plan.md`).
+
+**Resolution:** substitution accepted for in-devcontainer work; the `nix fmt`
+pass is **owed pre-merge** and is not discharged by the prettier run. Two
+related scope facts worth keeping: `package.json:43` scopes `yarn lint` to
+source/storybook/utils, so new specs under `tests/` are outside lint's reach
+by convention (matching the existing `tests/jest/security` spec), and
+`npx jest` fails in this devcontainer with `npm error Invalid property
+"devEngines.node"` — invoke `node_modules/.bin/jest` directly instead.

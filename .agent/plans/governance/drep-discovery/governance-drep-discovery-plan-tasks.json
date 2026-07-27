@@ -835,7 +835,16 @@
           "id": "task-127",
           "title": "Fix latent delegating_and_voting literal mismatch",
           "description": "In source/renderer/app/api/wallets/types.ts (DelegationStatus union, line ~80) and source/renderer/app/domains/Wallet.ts (WalletDelegationStatuses.VOTING_AND_DELEGATING, line ~42) change the underlying string from 'voting_and_delegating' to 'delegating_and_voting' to match the actual cardano-wallet wire value. Preserve the constant export name VOTING_AND_DELEGATING. Grep for any code that compares against the old literal and update.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "Both string values corrected in place (types.ts:84 union member, Wallet.ts:42 constant value) with the VOTING_AND_DELEGATING export name and Wallet.ts:244-245 isDelegating untouched; new pin spec green (2/2), full Jest tree green (80 suites / 1030 tests, 12 skipped), yarn compile exit 0, yarn lint 0 errors at the 5591-warning baseline, sanitization floor unchanged at 23/23, and zero 'voting_and_delegating' hits remain in source/ tests/ storybook/; code-review approved on pass 1 with zero blockers (five nits, all deferred or already answered); complete, NOT verified - the spec pins the constant to a second hardcoded literal rather than to the task-126 fixture, no test yet exercises the isDelegating computed the constant feeds (task-134), and the wire value could not be checked against the pinned cardano-wallet v2026-05-11 swagger in this devcontainer.",
+          "evidence": [
+            "source/renderer/app/api/wallets/types.ts",
+            "source/renderer/app/domains/Wallet.ts",
+            "tests/jest/api/walletDelegationStatuses.spec.ts",
+            ".agent/system/api-endpoints.md",
+            ".agent/plans/governance/drep-discovery/governance-drep-discovery-plan.md"
+          ],
+          "updatedAt": "2026-07-27",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [

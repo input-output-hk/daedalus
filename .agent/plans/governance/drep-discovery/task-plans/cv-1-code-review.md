@@ -258,3 +258,134 @@ acceptance boxes verified.
 **Findings.** None. No blockers, no advisories.
 
 Decision: approved
+
+---
+
+## Code Review: task-127 — iteration 1 (2026-07-27)
+
+**Scope reviewed.** Working tree vs guide section "task-127: Fix latent
+delegating_and_voting literal mismatch"
+(cv-1-implementation-guide.md:443-559) + task-127 acceptance criteria in
+governance-drep-discovery-plan-tasks.json:846-849. Working-tree state at
+review time: four tracked modifications plus one new untracked spec —
+`git diff --stat` = 4 insertions / 4 deletions across four files, and
+`tests/jest/api/walletDelegationStatuses.spec.ts` (new, 17 lines).
+
+**The diff.**
+
+- `source/renderer/app/api/wallets/types.ts:84` — union member
+  `'voting_and_delegating'` → `'delegating_and_voting'`. Only the last member
+  changed; `:81-83` untouched.
+- `source/renderer/app/domains/Wallet.ts:42` —
+  `VOTING_AND_DELEGATING: 'delegating_and_voting',`. Key name, the type
+  annotation block (`:33-38`) and every sibling entry untouched.
+- `tests/jest/api/walletDelegationStatuses.spec.ts` — new pin spec, matching
+  the guide's prescribed content (cv-1-implementation-guide.md:519-534).
+- `.agent/system/api-endpoints.md:50` — authorized doc fix; single-line value
+  swap under the heading "Delegation status values in
+  `delegation.active.status` include:" (`:46`), which is correctly scoped to
+  wallet delegation, not DRep status. It is the only occurrence of the status
+  enum in that file; `:47-49` untouched.
+- `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan.md:335`
+  — authorized attribution fix, `task-128` → `task-127` and nothing else on
+  the row; now agrees with the already-reconciled `:152` (F-1).
+
+**Invariant sweep.** (10) Byte-equality: the whole diff is two string VALUES;
+no bech32 helper, no signing path, no `vote.id` construction is in it. The
+literal is inbound-only — `source/renderer/app/api/api.ts:3054-3056` reads
+`get(active, 'status', null)` and passes it through verbatim to
+`delegationStakePoolStatus`; the only comparisons go through the constant
+(`Wallet.ts:244-245`, `WalletRow.tsx:191`). No outbound cardano-wallet request
+payload embeds a `DelegationStatus` value, so no wire bytes change.
+`grep -rn "delegating_and_voting" source/` returns exactly the two edited
+lines. (2) Sanitization floor: zero runtime code and zero
+logger/analytics/electron-store calls added; no `delegationStakePoolStatus`
+reference exists in `source/main` or `source/common`;
+tests/jest/security/governance-sanitization.spec.ts is unmodified and green
+23/23. (14) `DelegationStatus` (`types.ts:80-84`) remains the
+wallet-delegation union; nothing introduces or conflates DRep
+`active|inactive` status. Guide-inlined rule: the constant NAME
+`VOTING_AND_DELEGATING` is byte-unchanged at all three sites (`Wallet.ts:37`
+annotation, `:42` key, `:245` consumer), and `isDelegating` (`:244-245`) was
+correctly NOT edited — it consumes the constant and inherits the fix. No IPC
+or contract drift: `DelegationStatus` never crosses an IPC boundary, and
+`tests/delegation/e2e/steps/delegation-pending.ts:20` maps only
+delegated/undelegated. `storybook/stories/staking/DelegationCenter.stories.tsx`
+and `WalletRow.tsx` consume the constant and inherit the fix with no edit.
+
+**Wire-literal correctness.** The new value is byte-identical to the
+task-126 fixture at `tests/mocks/wallets/wallet-delegating-and-voting.json:25`
+(`"status": "delegating_and_voting"`), which is the only in-repo artifact
+claiming wire truth.
+
+**Verification commands run (results as observed).**
+
+1. `yarn compile` → exit 0 (precompile `typedef:sass`, then `tsc --noEmit`,
+   no diagnostics). The gitignored `.scss.d.ts` regeneration did not dirty the
+   tracked tree.
+2. `yarn lint` → exit 0, 5591 warnings, 0 errors — the documented pre-existing
+   baseline; the task introduces none. (`package.json:43` scopes lint to
+   source/storybook/utils, so the new spec under `tests/` is out of its
+   scope — same as the existing tests/jest/security spec.)
+3. `yarn test:jest tests/jest/api/walletDelegationStatuses.spec.ts
+   --runInBand` → exit 0, 1 suite / 2 tests passed. AC-3 satisfied.
+4. `yarn test:jest tests/jest/security/governance-sanitization.spec.ts
+   --runInBand` → exit 0, 23/23 passed — unchanged from baseline.
+5. `yarn test:jest --runInBand` (full tree) → exit 0; 80 suites passed, 1
+   skipped; 1030 tests passed, 12 skipped; 2 snapshots passed; 0 failures.
+6. `node_modules/.bin/prettier --check` on all five touched files → exit 0,
+   "All matched files use Prettier code style!".
+7. `grep -rn "voting_and_delegating" source tests storybook` → zero hits
+   (AC-4 satisfied). Repo-wide, the surviving hits are all `.agent/`
+   planning prose narrating the bug, including task-127's own tracker
+   description and acceptance criteria
+   (governance-drep-discovery-plan-tasks.json:837,846,849) — removing those
+   would destroy the task record.
+8. `yarn i18n:manage` → not run, deliberately: the task changes no copy and
+   adds no message ids.
+
+**Acceptance criteria.** AC-1 met (`types.ts:84`). AC-2 met (`Wallet.ts:42`,
+constant name preserved). AC-3 met (new pin spec, 2/2 green). AC-4 met — AC-4
+is scoped to "the renderer codebase", which is clean.
+
+**Findings (five nits, zero blockers).**
+
+1. The pin spec is self-referential with respect to the wire contract: it
+   hardcodes `'delegating_and_voting'` on both sides, so it proves
+   regression-resistance but not wire-truth. **Resolution:** accepted as-is;
+   the guide prescribed this exact content
+   (cv-1-implementation-guide.md:519-534). Anchoring the assertion to
+   `tests/mocks/wallets/wallet-delegating-and-voting.json` instead
+   (`tsconfig.json:38` sets `resolveJsonModule: true`) is recorded as an
+   optional strengthening for task-134.
+2. No test covers the behavioral consequence — `Wallet.isDelegating`
+   (`Wallet.ts:239-248`) returning true for a pool-and-DRep wallet.
+   **Resolution:** deferred by design; computeds are task-134's scope
+   (governance-drep-discovery-plan-tasks.json:970). This is the reason the
+   tracker status is `complete`, not `verified`.
+3. The wire value cannot be independently verified in this devcontainer — no
+   cardano-wallet swagger is vendored and there is no live wallet, and the
+   task-126 fixture was itself authored from the swagger shape rather than
+   captured live (cv-1-PRD.md:58). Fixture and code therefore agree by
+   construction. **Resolution:** flagged pre-merge — confirm against the
+   pinned cardano-wallet v2026-05-11 `ApiWalletDelegationStatus` enum in an
+   environment that has it. Not a blocker: the whole approved planning chain
+   (design :78/:136, PRD :79-80, guide :443-478, tracker :846-847) is
+   internally consistent on the value.
+4. `nix fmt` could not be run (no nix in this devcontainer);
+   `node_modules/.bin/prettier` 2.1.2 was substituted and is clean.
+   **Resolution:** flagged for a pre-merge `nix fmt` pass; recorded as F-5.
+5. Scribe steps were outstanding at review time (expected — review precedes
+   scribe). **Resolution:** closed by this entry plus the tracker update to
+   `status: complete`. Note the task prompt's anchor `:826-841` for the
+   task-127 object was imprecise; pre-scribe the object spanned
+   `:834-851` (id at `:835`, ACs at `:846-849`).
+
+**Comment convention.** The single comment
+(`tests/jest/api/walletDelegationStatuses.spec.ts:3-4`) is two plain lines
+stating the why; no task id, no review label, no ALL-CAPS, no change history.
+
+**No unnecessary complexity.** No new abstraction, helper, or rename — the
+smallest truthful change. No file was reformatted; no stray artifacts.
+
+Decision: approved
