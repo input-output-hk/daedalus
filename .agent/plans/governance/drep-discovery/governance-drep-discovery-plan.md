@@ -149,7 +149,7 @@ Artifact placement decision: this plan and its task tracker are canonical under 
 | Delegation boundary | No second delegation backend. Selection only supplies a DRep ID to existing software-wallet and hardware-wallet paths. |
 | Current-state boundary | No historical governance or stale anchor-content views in this release. |
 | Favorites scope | Per-device via Electron local store. Not per-wallet, not synced. Wallet restore on a new machine does not carry favorites. |
-| Wire status literal | Wire value is `delegating_and_voting`; the Daedalus `'voting_and_delegating'` literal is a bug fixed in cv-1 (task-128) (constant export name preserved). |
+| Wire status literal | Wire value is `delegating_and_voting`; the Daedalus `'voting_and_delegating'` literal is a bug fixed in cv-1 (task-127) (constant export name preserved). |
 | `ApiDRep` discrimination | Bech32 HRP of raw on-wire string: `"abstain"` / `"no_confidence"` sentinels; `drep1…` (CIP-129); `drep_vkh1…` / `drep_script1…` (CIP-105). |
 | Delegation effective semantics | Per CIP-1694, vote delegation has no per-action waiting period — the newest on-chain delegation IS the current delegation. The renderer uses `delegation.active.voting` as the authoritative current state. Historical vote-delegation browsing is out of scope for v1. |
 | Same-vote prevention | Client-side after canonical-form normalization; server `same_vote` error retained as authoritative safety net. |
