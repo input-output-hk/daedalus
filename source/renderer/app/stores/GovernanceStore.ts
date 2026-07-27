@@ -119,6 +119,13 @@ export default class GovernanceStore extends Store {
   /** Session randomization seed; replaced only by reshuffleCohort(). */
   @observable cohortSeed: number = generateCohortSeed();
 
+  /**
+   * Favorited DRep ids from the per-device Electron local store. Always
+   * replaced with a fresh Set instance on change - never mutated in place -
+   * so computeds, React dep arrays and observers see a new reference.
+   */
+  @observable favoriteDRepIds: Set<string> = new Set();
+
   // ---- Computed ----
 
   @computed get isLoading(): boolean {
@@ -317,10 +324,50 @@ export default class GovernanceStore extends Store {
     this.cohortSeed = generateCohortSeed();
   }
 
+  /**
+   * Loads persisted favorites. A failed or malformed read keeps the empty
+   * set silently: favorites are non-critical per-device state, and logging
+   * here is forbidden because the payload holds DRep ids.
+   */
+  @action
+  async loadFavorites(): Promise<void> {
+    try {
+      const stored = await this.api.localStorage.getDRepFavorites();
+      const ids = Array.isArray(stored)
+        ? stored.filter((id): id is string => typeof id === 'string')
+        : [];
+      runInAction(() => {
+        this.favoriteDRepIds = new Set(ids);
+      });
+    } catch (_error) {
+      // Intentionally silent - see the method comment.
+    }
+  }
+
+  /**
+   * Toggles one favorite and persists the whole set. A persistence failure
+   * keeps the in-memory state; the next successful write stores everything.
+   * Never logged - the payload holds DRep ids.
+   */
+  @action
+  toggleFavorite(drepId: string): void {
+    const next = new Set(this.favoriteDRepIds);
+    if (next.has(drepId)) {
+      next.delete(drepId);
+    } else {
+      next.add(drepId);
+    }
+    this.favoriteDRepIds = next;
+    this.api.localStorage.setDRepFavorites([...next]).catch(() => {
+      // Intentionally silent - see the method comment.
+    });
+  }
+
   // ---- Lifecycle ----
 
   setup(): void {
     super.setup();
+    this.loadFavorites();
   }
 
   // ---- Private Helpers ----

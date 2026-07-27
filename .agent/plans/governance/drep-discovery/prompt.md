@@ -159,17 +159,30 @@ step.
 
 ### Per-slice planning (once per slice)
 
-1. **Plan.** On entering a slice, read `.agent/readme.md`, `.agent/system/architecture.md`, the
-   relevant workflow docs, the plan sections and design docs the slice implements, the matching
-   research findings, and the live files. Write `<id>-PRD.md` (classifying every task's
-   interaction mode) and `<id>-implementation-guide.md` to the small-model bar, then append a
-   `Planner:` entry to `<id>-code-review.md`.
+1. **Plan.** On entering a slice, the planning inputs are `.agent/readme.md`,
+   `.agent/system/architecture.md`, the relevant workflow docs, the plan sections and design
+   docs the slice implements, the matching research findings, and the live files. The outputs
+   are `<id>-PRD.md` (classifying every task's interaction mode),
+   `<id>-implementation-guide.md` written to the small-model bar, and a `Planner:` entry
+   appended to `<id>-code-review.md`.
+   **Planner decomposition (default):** a single planner that both ingests the corpus and
+   authors the PRD + guide overruns its context even on a one-task slice — its discretionary
+   live-code reads and its own authored output scale with the work, so size estimates made
+   before launch systematically undershoot. First have a scout agent distill the corpus into
+   a **grounding brief** (a compact, line-anchored digest of the plan/design/research
+   sections and the verified live-code seams the slice touches), then run planning as two
+   agents at the deliverable seam: a **PRD/decisions author** (brief, tasks JSON, planning
+   rules, precedent PRD; resolves the slice decisions and writes the PRD) followed by a
+   **guide author** (the drafted PRD, precedent guide, plus only the live files it pins
+   anchors into; writes the guide and the `Planner:` entry). Feed precedent docs as structure
+   skeletons, not full reads, when matching structure/depth is the only need.
 2. **Critique (subagent — REQUIRED).** Dispatch a reviewer subagent for **one broad pass** over
    the PRD + guide: task/plan/design coverage, consistency with the tasks JSON + locked
    invariants, hidden manual checkpoints, missing tests/docs, and **whether the guide is concise
    and small-model-implementable**. It returns a consolidated blocker list +
    `Decision: approved | requires_changes`, appended as a `Critiquer:` entry. One critique pass
-   + at most one Planner fix pass, then build.
+   + at most one fix pass (a single agent addressing every blocker across both docs), then
+   build.
 
 ### Per-task build loop
 
@@ -180,9 +193,19 @@ step.
    measurement), **task-158** (event-driven standing guardrail), and the **release-end `!!!`
    copy review** (user-owned). Never relabel these autonomous. Everything else is `autonomous`
    unless slice planning surfaces a genuine blocking decision.
-4. **Implement.** Execute the approved guide via a subagent; keep each task's focused tests
-   with it. Run `yarn compile` + `yarn lint` for the touched surfaces, the task's focused Jest,
-   and `yarn i18n:manage` whenever copy changed.
+4. **Implement.** Execute the approved guide via subagents; keep each task's focused tests
+   with it. The gate before code review: `yarn compile` + `yarn lint` for the touched
+   surfaces, the task's focused Jest, and `yarn i18n:manage` whenever copy changed — all
+   green.
+   **Implementer decomposition (default):** the guide is self-contained by construction — an
+   implementer reads the guide and the files it edits, not the PRD or the planning corpus (put
+   any scope/non-goals the implementer needs into the guide itself). When the guide spans
+   multiple surfaces (storage, store, UI/routes, i18n, tests/stories), chain implementers over
+   contiguous guide step ranges — the guide's ordered steps are the sharding seams; each fresh
+   agent inherits the prior ranges' edits in the working tree and reads only its own step
+   range. The verification gate above runs once, in a dedicated verifier agent after the last
+   range — not inside an implementer (bulky output landing on an exhausted context) and not
+   the step-5 reviewer; failures route to a fixer agent, not back to a spent implementer.
 5. **Code review (subagent — REQUIRED).** Dispatch a reviewer subagent for one broad pass over
    the diff vs the approved guide (correctness, locked-invariant regressions, sanitization-floor
    regressions, IPC/contract drift, missing tests, doc drift, unnecessary complexity). It

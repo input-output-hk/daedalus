@@ -293,6 +293,12 @@ export default class LocalStorageApi {
   };
   unsetWalletTokenFavorites = async (): Promise<void> =>
     LocalStorageApi.unset(keys.TOKEN_FAVORITES);
+  getDRepFavorites = (): Promise<string[]> =>
+    LocalStorageApi.get(keys.DREP_FAVORITES, []);
+  setDRepFavorites = (favorites: string[]): Promise<void> =>
+    LocalStorageApi.set(keys.DREP_FAVORITES, favorites);
+  unsetDRepFavorites = (): Promise<void> =>
+    LocalStorageApi.unset(keys.DREP_FAVORITES);
   getAssetsLocalData = (): Promise<AssetLocalData> =>
     LocalStorageApi.get(keys.ASSET_DATA, []);
   unsetAssetsLocalData = (): Promise<void> =>

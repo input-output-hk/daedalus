@@ -12,12 +12,16 @@ const renderBanner = ({
   showSource,
   isFilteredView,
   displayedCount,
+  isFavoritesView,
+  favoritesCount,
 }: {
   isCohortActive?: boolean;
   locale?: string;
   showSource?: boolean;
   isFilteredView?: boolean;
   displayedCount?: number;
+  isFavoritesView?: boolean;
+  favoritesCount?: number;
 } = {}) => {
   const messages = locale === 'ja-JP' ? jaTranslations : translations;
   return render(
@@ -31,6 +35,8 @@ const renderBanner = ({
         showSource={showSource}
         isFilteredView={isFilteredView}
         displayedCount={displayedCount}
+        isFavoritesView={isFavoritesView}
+        favoritesCount={favoritesCount}
       />
     </IntlProvider>
   );
@@ -102,5 +108,24 @@ describe('DRepDirectoryBanner', () => {
     expect(
       screen.getByText(/Showing 1 DReps matching your filters/)
     ).toBeInTheDocument();
+  });
+
+  it('replaces the cohort and filtered lines with the favorites line in favorites mode', () => {
+    renderBanner({
+      isFavoritesView: true,
+      favoritesCount: 3,
+      isFilteredView: true,
+      displayedCount: 9,
+    });
+
+    expect(
+      screen.getByText(
+        /3 DReps you've favorited\. Favorites are stored on this device only\./
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/Default view shows up to 200/)
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/matching your filters/)).not.toBeInTheDocument();
   });
 });

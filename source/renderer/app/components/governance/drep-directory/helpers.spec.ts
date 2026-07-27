@@ -14,6 +14,7 @@ import {
   filterDReps,
   getDRepQueryKind,
   isDefaultFilterState,
+  isStaleFavorite,
   normalizeDRepQuery,
   resolveExactDRepMatch,
   searchDRepsByIdPrefix,
@@ -352,5 +353,14 @@ describe('sortDReps', () => {
       cip129At(1),
       cip129At(3),
     ]);
+  });
+});
+
+describe('isStaleFavorite', () => {
+  it('is false for every current on-chain status', () => {
+    expect(isStaleFavorite(buildEntry(1))).toBe(false);
+    expect(
+      isStaleFavorite(buildEntry(2, { drepActivity: 0, status: 'inactive' }))
+    ).toBe(false);
   });
 });

@@ -67,6 +67,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Exclude the 35 largest',
     description: 'Show-all filter that removes the top-35 by voting power',
   },
+  favorited: {
+    id: 'governance.drepDirectory.filter.favorited',
+    defaultMessage: '!!!Favorited',
+    description: 'Filter that shows only favorited DReps',
+  },
   sortLabel: {
     id: 'governance.drepDirectory.sort.label',
     defaultMessage: '!!!Sort',
@@ -189,6 +194,15 @@ function DRepDirectoryFilters({
           {intl.formatMessage(messages.expiryThresholdWindow)}
         </option>
       </select>
+      <Checkbox
+        className={styles.toggle}
+        label={intl.formatMessage(messages.favorited)}
+        checked={filters.favoritedOnly}
+        onChange={(checked: boolean) =>
+          onFiltersChange({ ...filters, favoritedOnly: checked })
+        }
+        skin={CheckboxSkin}
+      />
       {isShowAll && isRankingAvailable && (
         <Checkbox
           className={styles.toggle}

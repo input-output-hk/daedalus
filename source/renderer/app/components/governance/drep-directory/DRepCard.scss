@@ -45,3 +45,23 @@
   gap: 8px;
   justify-content: flex-end;
 }
+
+.favoriteToggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 4px;
+  color: var(--theme-text-secondary, #6b7384);
+
+  &[aria-pressed='true'] {
+    color: var(--theme-warning-color, #f2a218);
+  }
+}
+
+.staleCaption {
+  font-size: 12px;
+  color: var(--theme-text-secondary, #6b7384);
+  margin: 4px 0 0;
+}

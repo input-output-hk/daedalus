@@ -37,10 +37,28 @@ const messages = defineMessages({
     defaultMessage: '!!!Stake distribution unavailable this refresh.',
     description: 'Tooltip on the voting-power placeholder when stake failed',
   },
+  favoriteAdd: {
+    id: 'governance.drepDirectory.card.favorite.add',
+    defaultMessage: '!!!Add to favorites',
+    description: 'Accessible label of the favorite toggle when not favorited',
+  },
+  favoriteRemove: {
+    id: 'governance.drepDirectory.card.favorite.remove',
+    defaultMessage: '!!!Remove from favorites',
+    description: 'Accessible label of the favorite toggle when favorited',
+  },
+  staleCaption: {
+    id: 'governance.drepFavorites.staleCaption',
+    defaultMessage: '!!!This DRep is no longer in the default cohort.',
+    description: 'Inline caption under a stale favorited DRep',
+  },
 });
 
 interface Props {
   entry: AppDRepDirectoryEntry;
+  isFavorite: boolean;
+  onToggleFavorite: (drepId: string) => void;
+  isStaleFavorite?: boolean;
   onSelectForDelegation: (drepId: string) => void;
   onViewDetails: (drepId: string) => void;
   votingPowerState: VotingPowerEnrichState;
@@ -62,6 +80,9 @@ function formatVotingPower(value: BigNumber | null): string {
 
 function DRepCard({
   entry,
+  isFavorite,
+  onToggleFavorite,
+  isStaleFavorite = false,
   onSelectForDelegation,
   onViewDetails,
   votingPowerState,
@@ -81,10 +102,29 @@ function DRepCard({
   return (
     <div className={styles.card}>
       <div className={styles.topRow}>
+        <button
+          type="button"
+          className={styles.favoriteToggle}
+          aria-pressed={isFavorite}
+          aria-label={intl.formatMessage(
+            isFavorite ? messages.favoriteRemove : messages.favoriteAdd
+          )}
+          title={intl.formatMessage(
+            isFavorite ? messages.favoriteRemove : messages.favoriteAdd
+          )}
+          onClick={() => onToggleFavorite(entry.drepId)}
+        >
+          <span aria-hidden="true">{isFavorite ? '★' : '☆'}</span>
+        </button>
         <DRepStatusBadge status={entry.status} />
         <DRepCategoryBadge entry={entry} />
         <DRepIdDisplay drepId={entry.drepId} />
       </div>
+      {isStaleFavorite && (
+        <p className={styles.staleCaption}>
+          {intl.formatMessage(messages.staleCaption)}
+        </p>
+      )}
       <div className={styles.bottomRow}>
         <span className={styles.votingPowerLabel}>
           {intl.formatMessage(messages.votingPowerLabel)}:

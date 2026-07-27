@@ -82,6 +82,10 @@ interface Props {
   showAllList: AppDRepDirectoryEntry[];
   top35DRepIds: ReadonlySet<string>;
   favoriteDRepIds?: ReadonlySet<string>;
+  view?: 'directory' | 'favorites';
+  onToggleFavorite: (drepId: string) => void;
+  onBackToDirectory?: () => void;
+  isStaleFavoriteEntry?: (entry: AppDRepDirectoryEntry) => boolean;
   refreshState: GovernanceRefreshState;
   error: GovernanceStoreError | null;
   lastFetchedAt: number | null;
@@ -102,6 +106,10 @@ function DRepDirectory({
   showAllList,
   top35DRepIds,
   favoriteDRepIds = EMPTY_DREP_ID_SET,
+  view = 'directory',
+  onToggleFavorite,
+  onBackToDirectory,
+  isStaleFavoriteEntry,
   refreshState,
   error,
   lastFetchedAt,
@@ -128,6 +136,7 @@ function DRepDirectory({
     queryKind === 'exactValid' ||
     queryKind === 'invalidFullForm';
   const isRankingAvailable = votingPowerState === VotingPowerEnrichState.Loaded;
+  const isFavoritesView = view === 'favorites';
 
   // Search always covers the full membership so excluded and non-cohort
   // DReps stay reachable regardless of the current view.
@@ -165,18 +174,30 @@ function DRepDirectory({
     top35DRepIds,
   ]);
 
+  // The favorites view reuses the slice-6 favorited predicate over the full
+  // membership, so favorited entries outside the default cohort stay visible.
+  const favoritesEntries = useMemo(
+    () =>
+      filterDReps(
+        showAllList,
+        { ...DEFAULT_DREP_FILTER_STATE, favoritedOnly: true },
+        { favoriteDRepIds, top35DRepIds }
+      ),
+    [favoriteDRepIds, showAllList, top35DRepIds]
+  );
+
   // A checksum-valid full ID that resolves in the index bypasses the result
   // list and opens the detail view directly, once per distinct query.
   const lastOpenedQueryRef = useRef<string | null>(null);
   useEffect(() => {
-    if (queryKind !== 'exactValid') return;
+    if (isFavoritesView || queryKind !== 'exactValid') return;
     if (lastOpenedQueryRef.current === searchQuery) return;
     const match = resolveExactDRepMatch(searchQuery, drepIndex);
     if (match) {
       lastOpenedQueryRef.current = searchQuery;
       onViewDetails(match.drepId);
     }
-  }, [queryKind, searchQuery, drepIndex, onViewDetails]);
+  }, [isFavoritesView, queryKind, searchQuery, drepIndex, onViewDetails]);
 
   const isFilteredView =
     isSearchActive ||
@@ -258,6 +279,25 @@ function DRepDirectory({
         );
 
       default:
+        if (isFavoritesView) {
+          return favoritesEntries.length === 0 ? (
+            <DRepEmptyState
+              variant="noFavorites"
+              onBackToDirectory={onBackToDirectory}
+            />
+          ) : (
+            <DRepDirectoryList
+              entries={favoritesEntries}
+              favoriteDRepIds={favoriteDRepIds}
+              onToggleFavorite={onToggleFavorite}
+              isFavoritesView
+              isStaleFavoriteEntry={isStaleFavoriteEntry}
+              onSelectForDelegation={onSelectForDelegation}
+              onViewDetails={onViewDetails}
+              votingPowerState={votingPowerState}
+            />
+          );
+        }
         return (
           <>
             <div className={styles.controlsRow}>
@@ -318,6 +358,8 @@ function DRepDirectory({
             ) : (
               <DRepDirectoryList
                 entries={visibleEntries}
+                favoriteDRepIds={favoriteDRepIds}
+                onToggleFavorite={onToggleFavorite}
                 onSelectForDelegation={onSelectForDelegation}
                 onViewDetails={onViewDetails}
                 votingPowerState={votingPowerState}
@@ -338,6 +380,8 @@ function DRepDirectory({
         onReshuffle={onReshuffle}
         isFilteredView={isFilteredView}
         displayedCount={visibleEntries.length}
+        isFavoritesView={isFavoritesView}
+        favoritesCount={favoritesEntries.length}
       />
       {!isNodeInSync && (
         <div className={styles.syncingBanner} role="status">

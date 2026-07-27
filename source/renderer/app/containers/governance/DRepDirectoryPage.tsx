@@ -72,6 +72,14 @@ class DRepDirectoryPage extends React.Component<Props> {
     this.props.history.push(`${ROUTES.GOVERNANCE.DREPS}/${drepId}`, inherited);
   };
 
+  handleBackToDirectory = () => {
+    // Keep the inherited delegation-form return state across the tab switch.
+    this.props.history.push(
+      ROUTES.GOVERNANCE.DREPS,
+      pickDelegationFormReturnState(this.props.location.state)
+    );
+  };
+
   render() {
     const { stores } = this.props;
     const governanceStore: GovernanceStore | undefined = stores?.governance;
@@ -85,6 +93,14 @@ class DRepDirectoryPage extends React.Component<Props> {
         drepIndex={governanceStore.drepIndex}
         showAllList={governanceStore.showAllList}
         top35DRepIds={governanceStore.top35DRepIds}
+        favoriteDRepIds={governanceStore.favoriteDRepIds}
+        onToggleFavorite={(drepId) => governanceStore.toggleFavorite(drepId)}
+        view={
+          this.props.location.pathname.startsWith(ROUTES.GOVERNANCE.FAVORITES)
+            ? 'favorites'
+            : 'directory'
+        }
+        onBackToDirectory={this.handleBackToDirectory}
         refreshState={governanceStore.refreshState}
         error={governanceStore.error}
         lastFetchedAt={governanceStore.lastFetchedAt}

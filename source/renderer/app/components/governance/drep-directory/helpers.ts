@@ -275,3 +275,14 @@ export function sortDReps(
   });
   return sorted;
 }
+
+/**
+ * A favorited entry is stale once its status leaves the default-cohort
+ * universe. Only the deferred retired status qualifies and no live entry
+ * carries it yet; doNotList joins this check when anchor metadata lands.
+ */
+const STALE_FAVORITE_STATUSES: ReadonlySet<string> = new Set(['retired']);
+
+export function isStaleFavorite(entry: AppDRepDirectoryEntry): boolean {
+  return STALE_FAVORITE_STATUSES.has(entry.status);
+}

@@ -86,6 +86,13 @@ const renderComponent = ({
   showAllList = drepList,
   drepIndex = new Map(showAllList.map((e) => [e.drepId, e])),
   top35DRepIds = new Set<string>(),
+  favoriteDRepIds = new Set<string>(),
+  onToggleFavorite = jest.fn(),
+  view = 'directory' as const,
+  onBackToDirectory = jest.fn(),
+  isStaleFavoriteEntry = undefined as
+    | ((entry: AppDRepDirectoryEntry) => boolean)
+    | undefined,
   error = null,
   isNodeInSync = true,
   isCohortActive = false,
@@ -101,6 +108,11 @@ const renderComponent = ({
   showAllList?: AppDRepDirectoryEntry[];
   drepIndex?: Map<string, AppDRepDirectoryEntry>;
   top35DRepIds?: Set<string>;
+  favoriteDRepIds?: Set<string>;
+  onToggleFavorite?: jest.Mock;
+  view?: 'directory' | 'favorites';
+  onBackToDirectory?: jest.Mock;
+  isStaleFavoriteEntry?: (entry: AppDRepDirectoryEntry) => boolean;
   error?: { message: string; type: string; details?: string } | null;
   isNodeInSync?: boolean;
   isCohortActive?: boolean;
@@ -126,6 +138,11 @@ const renderComponent = ({
           showAllList={showAllList}
           drepIndex={drepIndex}
           top35DRepIds={top35DRepIds}
+          favoriteDRepIds={favoriteDRepIds}
+          onToggleFavorite={onToggleFavorite}
+          view={view}
+          onBackToDirectory={onBackToDirectory}
+          isStaleFavoriteEntry={isStaleFavoriteEntry}
           error={error}
           isNodeInSync={isNodeInSync}
           isCohortActive={isCohortActive}
@@ -686,5 +703,138 @@ describe('DRepDirectory', () => {
 
     expect(screen.getByPlaceholderText('!!!DRep IDで検索')).toBeInTheDocument();
     expect(screen.getByText('!!!すべてのDRepを表示')).toBeInTheDocument();
+  });
+
+  describe('favorites', () => {
+    // Mirrors DRepIdDisplay's first8…last6 truncation; the exact truncated
+    // string matches only the visible <code>, never the hidden tooltip copy.
+    const truncatedDrepId = (n: number): string => {
+      const id = realDrepId(n);
+      return `${id.slice(0, 8)}…${id.slice(-6)}`;
+    };
+
+    it('renders the favorite toggle unpressed and fires onToggleFavorite with the row id', () => {
+      const onToggleFavorite = jest.fn();
+      renderComponent({ drepList: [realEntry(1)], onToggleFavorite });
+
+      const toggle = screen.getByRole('button', { name: /Add to favorites/ });
+      expect(toggle).toHaveAttribute('aria-pressed', 'false');
+      fireEvent.click(toggle);
+      expect(onToggleFavorite).toHaveBeenCalledTimes(1);
+      expect(onToggleFavorite).toHaveBeenCalledWith(realDrepId(1));
+    });
+
+    it('shows the pressed state and remove label for favorited rows', () => {
+      renderComponent({
+        drepList: [realEntry(1)],
+        favoriteDRepIds: new Set([realDrepId(1)]),
+      });
+
+      const toggle = screen.getByRole('button', {
+        name: /Remove from favorites/,
+      });
+      expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    it('drives the favoritedOnly facet from the Favorited checkbox via the framework predicate', () => {
+      renderComponent({
+        drepList: [realEntry(1), realEntry(2)],
+        favoriteDRepIds: new Set([realDrepId(2)]),
+      });
+
+      expect(screen.getAllByText('!!!View details')).toHaveLength(2);
+      fireEvent.click(screen.getByText(/Favorited/));
+
+      expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+      expect(screen.getByText(truncatedDrepId(2))).toBeInTheDocument();
+      expect(screen.queryByText(truncatedDrepId(1))).not.toBeInTheDocument();
+    });
+
+    it('renders favorited entries outside the cohort in the favorites view', () => {
+      // Entry 2 is favorited but absent from the cohort list; the favorites
+      // view draws from the full membership, so it must still render.
+      renderComponent({
+        drepList: [realEntry(1)],
+        showAllList: [realEntry(1), realEntry(2)],
+        favoriteDRepIds: new Set([realDrepId(2)]),
+        view: 'favorites',
+      });
+
+      expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+      expect(screen.getByText(truncatedDrepId(2))).toBeInTheDocument();
+      expect(screen.queryByText(truncatedDrepId(1))).not.toBeInTheDocument();
+      expect(screen.getByText(/DReps you've favorited/)).toBeInTheDocument();
+    });
+
+    it('hides search and filter controls in the favorites view', () => {
+      renderComponent({
+        drepList: [realEntry(1)],
+        favoriteDRepIds: new Set([realDrepId(1)]),
+        view: 'favorites',
+      });
+
+      expect(
+        screen.queryByPlaceholderText(/Search by DRep ID/)
+      ).not.toBeInTheDocument();
+      expect(screen.queryByText(/Show all DReps/)).not.toBeInTheDocument();
+    });
+
+    it('shows the noFavorites empty state with a working back-to-directory action', () => {
+      const onBackToDirectory = jest.fn();
+      renderComponent({
+        drepList: [realEntry(1)],
+        view: 'favorites',
+        onBackToDirectory,
+      });
+
+      expect(screen.getByText(/No favorites yet/)).toBeInTheDocument();
+      // The banner's favorites line repeats the per-device sentence, so the
+      // body is matched through its unique leading phrase.
+      expect(
+        screen.getByText(
+          /appear here\. Favorites are stored on this device only\./
+        )
+      ).toBeInTheDocument();
+      fireEvent.click(screen.getByText(/Back to directory/));
+      expect(onBackToDirectory).toHaveBeenCalledTimes(1);
+    });
+
+    it('renders the stale caption only for entries the injected predicate marks stale', () => {
+      renderComponent({
+        drepList: [realEntry(1), realEntry(2)],
+        favoriteDRepIds: new Set([realDrepId(1), realDrepId(2)]),
+        view: 'favorites',
+        isStaleFavoriteEntry: (entry: AppDRepDirectoryEntry) =>
+          entry.drepId === realDrepId(2),
+      });
+
+      expect(
+        screen.getAllByText(/no longer in the default cohort/)
+      ).toHaveLength(1);
+    });
+
+    it('never renders the stale caption in the directory view', () => {
+      renderComponent({
+        drepList: [realEntry(1)],
+        favoriteDRepIds: new Set([realDrepId(1)]),
+        isStaleFavoriteEntry: () => true,
+      });
+
+      expect(
+        screen.queryByText(/no longer in the default cohort/)
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders the favorites empty-state copy in ja-JP', () => {
+      renderComponent({
+        drepList: [realEntry(1)],
+        view: 'favorites',
+        locale: 'ja-JP',
+      });
+
+      expect(
+        screen.getByText(/お気に入りはまだありません/)
+      ).toBeInTheDocument();
+    });
   });
 });

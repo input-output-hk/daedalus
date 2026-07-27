@@ -32,20 +32,44 @@ const messages = defineMessages({
     defaultMessage: '!!!Show all DReps',
     description: 'Toggle that switches from the default cohort to all DReps',
   },
+  noFavoritesTitle: {
+    id: 'governance.drepFavorites.empty.title',
+    defaultMessage: '!!!No favorites yet',
+    description: 'Title of the empty favorites view',
+  },
+  noFavoritesBody: {
+    id: 'governance.drepFavorites.empty.body',
+    defaultMessage:
+      '!!!DReps you favorite from the directory appear here. Favorites are stored on this device only.',
+    description:
+      'Body of the empty favorites view; owns the per-device expectation',
+  },
+  backToDirectory: {
+    id: 'governance.drepDirectory.backToDirectory',
+    defaultMessage: '!!!Back to directory',
+    description: 'CTA from the empty favorites view back to the directory',
+  },
 });
 
-// Only noSync and noResults ship for now; the designed selfnode variant
-// joins this union when its owning slice lands.
-export type DRepEmptyStateVariant = 'noSync' | 'noResults';
+// noSync, noResults and noFavorites ship for now; the designed selfnode
+// variant joins this union when its owning slice lands.
+export type DRepEmptyStateVariant = 'noSync' | 'noResults' | 'noFavorites';
 
 interface Props {
   variant: DRepEmptyStateVariant;
   onClearFilters?: () => void;
   onShowAll?: () => void;
+  onBackToDirectory?: () => void;
   intl: intlShape.isRequired;
 }
 
-function DRepEmptyState({ variant, onClearFilters, onShowAll, intl }: Props) {
+function DRepEmptyState({
+  variant,
+  onClearFilters,
+  onShowAll,
+  onBackToDirectory,
+  intl,
+}: Props) {
   if (variant === 'noResults') {
     return (
       <div className={styles.container} data-variant={variant}>
@@ -74,6 +98,26 @@ function DRepEmptyState({ variant, onClearFilters, onShowAll, intl }: Props) {
             }}
           />
         </p>
+      </div>
+    );
+  }
+
+  if (variant === 'noFavorites') {
+    return (
+      <div className={styles.container} data-variant={variant}>
+        <p className={styles.title}>
+          {intl.formatMessage(messages.noFavoritesTitle)}
+        </p>
+        <p className={styles.message}>
+          {intl.formatMessage(messages.noFavoritesBody)}
+        </p>
+        <Link
+          className={styles.actionLink}
+          label={intl.formatMessage(messages.backToDirectory)}
+          hasIconAfter={false}
+          onClick={onBackToDirectory}
+          skin={LinkSkin}
+        />
       </div>
     );
   }

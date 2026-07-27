@@ -46,6 +46,13 @@ const messages = defineMessages({
       '!!!Showing {n} DReps matching your filters. Default randomized order does not apply.',
     description: 'Banner line replacing the cohort claim while filtered',
   },
+  favorites: {
+    id: 'governance.drepFavorites.banner',
+    defaultMessage:
+      "!!!{n} DReps you've favorited. Favorites are stored on this device only.",
+    description:
+      'Banner line of the favorites view, replacing the cohort claim',
+  },
 });
 
 interface Props {
@@ -60,6 +67,10 @@ interface Props {
   // stories keep compiling unchanged.
   isFilteredView?: boolean;
   displayedCount?: number;
+  // Favorites-view mode; both default off so existing call sites and the
+  // banner stories keep compiling unchanged.
+  isFavoritesView?: boolean;
+  favoritesCount?: number;
   intl: intlShape.isRequired;
 }
 
@@ -72,6 +83,8 @@ function DRepDirectoryBanner({
   showSource = true,
   isFilteredView = false,
   displayedCount = 0,
+  isFavoritesView = false,
+  favoritesCount = 0,
   intl,
 }: Props) {
   const timeAgo = lastFetchedAt ? moment(lastFetchedAt).fromNow() : null;
@@ -94,7 +107,7 @@ function DRepDirectoryBanner({
           })}
         </p>
       )}
-      {isCohortActive && !isFilteredView && (
+      {isCohortActive && !isFilteredView && !isFavoritesView && (
         <div className={styles.cohortLine}>
           <span>{intl.formatMessage(messages.cohortBanner)}</span>
           <Link
@@ -106,14 +119,19 @@ function DRepDirectoryBanner({
           />
         </div>
       )}
-      {isCohortActive && !isFilteredView && showSource && (
+      {isCohortActive && !isFilteredView && !isFavoritesView && showSource && (
         <p className={styles.sourceLine}>
           {intl.formatMessage(messages.source)}
         </p>
       )}
-      {isFilteredView && (
+      {isFilteredView && !isFavoritesView && (
         <p className={styles.filteredLine}>
           {intl.formatMessage(messages.filtered, { n: displayedCount })}
+        </p>
+      )}
+      {isFavoritesView && (
+        <p className={styles.favoritesLine}>
+          {intl.formatMessage(messages.favorites, { n: favoritesCount })}
         </p>
       )}
     </div>

@@ -660,3 +660,145 @@ describe('GovernanceStore search and show-all seams', () => {
     expect([...after].sort()).toEqual([...before].sort());
   });
 });
+
+describe('GovernanceStore favorites', () => {
+  const FAVORITE_ID =
+    'drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k0001';
+  const OTHER_ID = 'drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k0002';
+
+  // One backing record shared by any number of store instances simulates the
+  // per-device electron-store surviving an app restart.
+  const buildBackedApi = (initial: unknown = []) => {
+    const backing = { record: initial };
+    const localStorage = {
+      getDRepFavorites: jest.fn(async () => backing.record),
+      setDRepFavorites: jest.fn(async (ids: string[]) => {
+        backing.record = ids;
+      }),
+    };
+    return { api: { localStorage }, backing, localStorage };
+  };
+
+  const buildStore = (api: unknown) =>
+    new GovernanceStore(api as any, {} as any, {} as any);
+
+  afterEach(() => {
+    (logger.debug as jest.Mock).mockClear();
+    (logger.info as jest.Mock).mockClear();
+    (logger.warn as jest.Mock).mockClear();
+    (logger.error as jest.Mock).mockClear();
+  });
+
+  it('loads persisted favorites into the observable set on setup', async () => {
+    const { api } = buildBackedApi([FAVORITE_ID]);
+    const store = buildStore(api);
+
+    store.setup();
+    await flushAsync();
+
+    expect(store.favoriteDRepIds.has(FAVORITE_ID)).toBe(true);
+    expect(store.favoriteDRepIds.size).toBe(1);
+  });
+
+  it('toggling adds then removes and persists the full array each time', async () => {
+    const { api, localStorage } = buildBackedApi();
+    const store = buildStore(api);
+    store.setup();
+    await flushAsync();
+
+    store.toggleFavorite(FAVORITE_ID);
+    expect(store.favoriteDRepIds.has(FAVORITE_ID)).toBe(true);
+    await flushAsync();
+    expect(localStorage.setDRepFavorites).toHaveBeenCalledWith([FAVORITE_ID]);
+
+    store.toggleFavorite(FAVORITE_ID);
+    expect(store.favoriteDRepIds.has(FAVORITE_ID)).toBe(false);
+    await flushAsync();
+    expect(localStorage.setDRepFavorites).toHaveBeenLastCalledWith([]);
+  });
+
+  it('replaces the set instance on toggle so observers see a new reference', async () => {
+    const { api } = buildBackedApi();
+    const store = buildStore(api);
+    store.setup();
+    await flushAsync();
+
+    const before = store.favoriteDRepIds;
+    store.toggleFavorite(FAVORITE_ID);
+
+    expect(store.favoriteDRepIds).not.toBe(before);
+  });
+
+  it('restores favorites in a fresh store from the same backing record (app restart)', async () => {
+    const { api } = buildBackedApi();
+    const first = buildStore(api);
+    first.setup();
+    await flushAsync();
+    first.toggleFavorite(FAVORITE_ID);
+    first.toggleFavorite(OTHER_ID);
+    await flushAsync();
+
+    const second = buildStore(api);
+    second.setup();
+    await flushAsync();
+
+    expect([...second.favoriteDRepIds].sort()).toEqual(
+      [FAVORITE_ID, OTHER_ID].sort()
+    );
+  });
+
+  it('degrades malformed records to the valid string subset', async () => {
+    const { api } = buildBackedApi([FAVORITE_ID, 42, null, { a: 1 }]);
+    const store = buildStore(api);
+
+    store.setup();
+    await flushAsync();
+
+    expect([...store.favoriteDRepIds]).toEqual([FAVORITE_ID]);
+  });
+
+  it('keeps an empty set when the read rejects, without logging', async () => {
+    const api = {
+      localStorage: {
+        getDRepFavorites: jest.fn(async () => {
+          throw new Error(`read failed for ${FAVORITE_ID}`);
+        }),
+        setDRepFavorites: jest.fn(),
+      },
+    };
+    const store = buildStore(api);
+
+    store.setup();
+    await flushAsync();
+
+    expect(store.favoriteDRepIds.size).toBe(0);
+    expect(logger.error).not.toHaveBeenCalled();
+    expect(logger.warn).not.toHaveBeenCalled();
+  });
+
+  it('keeps in-memory state when persistence fails and never logs the payload', async () => {
+    const api = {
+      localStorage: {
+        getDRepFavorites: jest.fn(async () => []),
+        setDRepFavorites: jest.fn(async () => {
+          throw new Error(`write failed for ${FAVORITE_ID}`);
+        }),
+      },
+    };
+    const store = buildStore(api);
+    store.setup();
+    await flushAsync();
+
+    store.toggleFavorite(FAVORITE_ID);
+    await flushAsync();
+
+    expect(store.favoriteDRepIds.has(FAVORITE_ID)).toBe(true);
+    const allLoggerCalls = JSON.stringify([
+      (logger.debug as jest.Mock).mock.calls,
+      (logger.info as jest.Mock).mock.calls,
+      (logger.warn as jest.Mock).mock.calls,
+      (logger.error as jest.Mock).mock.calls,
+    ]);
+    expect(allLoggerCalls).not.toContain(FAVORITE_ID);
+  });
+});

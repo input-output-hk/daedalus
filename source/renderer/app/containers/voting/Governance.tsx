@@ -14,6 +14,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Directory',
     description: 'Label for the DRep directory tab.',
   },
+  tabFavorites: {
+    id: 'governance.drepDirectory.tabs.favorites',
+    defaultMessage: '!!!Favorites',
+    description: 'Label for the DRep favorites tab.',
+  },
 });
 
 type Props = InjectedContainerProps & {
@@ -43,6 +48,10 @@ class Governance extends Component<Props> {
       {
         id: ROUTES.GOVERNANCE.DREPS,
         label: intl.formatMessage(messages.tabDirectory),
+      },
+      {
+        id: ROUTES.GOVERNANCE.FAVORITES,
+        label: intl.formatMessage(messages.tabFavorites),
       },
     ];
     const activeItem = navItems.find(

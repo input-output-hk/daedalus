@@ -2465,6 +2465,11 @@
         "defaultMessage": "!!!Directory",
         "description": "Label for the DRep directory tab.",
         "id": "governance.tabs.directory"
+      },
+      {
+        "defaultMessage": "!!!Favorites",
+        "description": "Label for the DRep favorites tab.",
+        "id": "governance.drepDirectory.tabs.favorites"
       }
     ],
     "path": "source/renderer/app/containers/voting/Governance.tsx"
@@ -2555,6 +2560,16 @@
         "defaultMessage": "!!!Clear filters",
         "description": "Action that resets search, filters and sort",
         "id": "governance.drepDirectory.empty.noResults.clearFilters"
+      },
+      {
+        "defaultMessage": "!!!No favorites yet",
+        "description": "Title of the empty favorites view",
+        "id": "governance.drepFavorites.empty.title"
+      },
+      {
+        "defaultMessage": "!!!DReps you favorite from the directory appear here. Favorites are stored on this device only.",
+        "description": "Body of the empty favorites view; owns the per-device expectation",
+        "id": "governance.drepFavorites.empty.body"
       }
     ],
     "path": "source/renderer/app/components/governance/_shared/DRepEmptyState.tsx"
@@ -2617,6 +2632,11 @@
         "id": "governance.drepDirectory.filter.excludeTop35"
       },
       {
+        "defaultMessage": "!!!Favorited",
+        "description": "Filter that shows only favorited DReps",
+        "id": "governance.drepDirectory.filter.favorited"
+      },
+      {
         "defaultMessage": "!!!Sort",
         "description": "Label of the show-all sort dropdown",
         "id": "governance.drepDirectory.sort.label"
@@ -2643,6 +2663,31 @@
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryFilters.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Back to directory",
+        "description": "Link from the DRep detail back to the directory",
+        "id": "governance.drepDirectory.backToDirectory"
+      },
+      {
+        "defaultMessage": "!!!DRep detail",
+        "description": "Title of the DRep detail page",
+        "id": "governance.drepDetail.title"
+      },
+      {
+        "defaultMessage": "!!!Loading DRep data…",
+        "description": "Loading state on the DRep detail page",
+        "id": "governance.drepDetail.loading"
+      },
+      {
+        "defaultMessage": "!!!This DRep was not found in the latest on-chain data.",
+        "description": "Inline error when the requested DRep is not in the index",
+        "id": "governance.drepDetail.notFound"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-detail/DRepDetail.tsx"
   },
   {
     "descriptors": [
@@ -2692,31 +2737,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!DRep detail",
-        "description": "Title of the DRep detail page",
-        "id": "governance.drepDetail.title"
-      },
-      {
-        "defaultMessage": "!!!Back to directory",
-        "description": "Link from the DRep detail back to the directory",
-        "id": "governance.drepDirectory.backToDirectory"
-      },
-      {
-        "defaultMessage": "!!!Loading DRep data…",
-        "description": "Loading state on the DRep detail page",
-        "id": "governance.drepDetail.loading"
-      },
-      {
-        "defaultMessage": "!!!This DRep was not found in the latest on-chain data.",
-        "description": "Inline error when the requested DRep is not in the index",
-        "id": "governance.drepDetail.notFound"
-      }
-    ],
-    "path": "source/renderer/app/components/governance/drep-detail/DRepDetail.tsx"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Select for delegation",
         "description": "Row-level CTA that hands the DRep ID to the delegation form",
         "id": "governance.drepDirectory.card.select"
@@ -2740,6 +2760,21 @@
         "defaultMessage": "!!!Stake distribution unavailable this refresh.",
         "description": "Tooltip on the voting-power placeholder when stake failed",
         "id": "governance.drepDirectory.votingPower.unavailableTooltip"
+      },
+      {
+        "defaultMessage": "!!!Add to favorites",
+        "description": "Accessible label of the favorite toggle when not favorited",
+        "id": "governance.drepDirectory.card.favorite.add"
+      },
+      {
+        "defaultMessage": "!!!Remove from favorites",
+        "description": "Accessible label of the favorite toggle when favorited",
+        "id": "governance.drepDirectory.card.favorite.remove"
+      },
+      {
+        "defaultMessage": "!!!This DRep is no longer in the default cohort.",
+        "description": "Inline caption under a stale favorited DRep",
+        "id": "governance.drepFavorites.staleCaption"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepCard.tsx"
@@ -2865,6 +2900,11 @@
         "defaultMessage": "!!!Showing {n} DReps matching your filters. Default randomized order does not apply.",
         "description": "Banner line replacing the cohort claim while filtered",
         "id": "governance.drepDirectory.cohortBanner.filtered"
+      },
+      {
+        "defaultMessage": "!!!{n} DReps you've favorited. Favorites are stored on this device only.",
+        "description": "Banner line of the favorites view, replacing the cohort claim",
+        "id": "governance.drepFavorites.banner"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryBanner.tsx"

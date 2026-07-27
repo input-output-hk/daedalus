@@ -116,6 +116,10 @@ const GOVERNANCE_NAV_ITEMS = [
     id: ROUTES.GOVERNANCE.DREPS,
     label: 'Directory',
   },
+  {
+    id: ROUTES.GOVERNANCE.FAVORITES,
+    label: 'Favorites',
+  },
 ];
 
 const GOVERNANCE_SIDEBAR_CATEGORIES: Array<SidebarCategoryInfo> = [
@@ -130,6 +134,14 @@ const EMPTY_SIDEBAR_MENUS: SidebarMenus = {
   wallets: null,
 };
 
+type FavoritesOptions = {
+  view?: 'directory' | 'favorites';
+  favoriteDRepIds?: Set<string>;
+  onToggleFavorite?: (drepId: string) => void;
+  onBackToDirectory?: () => void;
+  isStaleFavoriteEntry?: (entry: AppDRepDirectoryEntry) => boolean;
+};
+
 // Locale is intentionally NOT wired here: the global StoryWrapper decorator
 // provides the IntlProvider, so the English/Japanese toggle at the top of the
 // preview window drives every label rendered below.
@@ -138,13 +150,21 @@ const renderDirectory = (
   entries: AppDRepDirectoryEntry[],
   error: DirectoryError = null,
   syncState: DirectorySyncState = DEFAULT_SYNC_STATE,
-  isCohortActive = false
+  isCohortActive = false,
+  favorites: FavoritesOptions = {}
 ) => (
   <DRepDirectory
     drepList={entries}
     drepIndex={new Map(entries.map((e) => [e.drepId, e]))}
     showAllList={entries}
     top35DRepIds={new Set<string>()}
+    favoriteDRepIds={favorites.favoriteDRepIds ?? new Set<string>()}
+    onToggleFavorite={favorites.onToggleFavorite ?? action('onToggleFavorite')}
+    view={favorites.view ?? 'directory'}
+    onBackToDirectory={
+      favorites.onBackToDirectory ?? action('onBackToDirectory')
+    }
+    isStaleFavoriteEntry={favorites.isStaleFavoriteEntry}
     error={error}
     isCohortActive={isCohortActive}
     isNodeInSync={syncState.isNodeInSync}
@@ -164,10 +184,18 @@ const renderCentered = (
   entries: AppDRepDirectoryEntry[],
   error: DirectoryError = null,
   syncState: DirectorySyncState = DEFAULT_SYNC_STATE,
-  isCohortActive = false
+  isCohortActive = false,
+  favorites: FavoritesOptions = {}
 ) => (
   <div style={CENTERED_STYLE}>
-    {renderDirectory(refreshState, entries, error, syncState, isCohortActive)}
+    {renderDirectory(
+      refreshState,
+      entries,
+      error,
+      syncState,
+      isCohortActive,
+      favorites
+    )}
   </div>
 );
 
@@ -251,10 +279,15 @@ storiesOf('Governance / DRep Directory', module)
       {
         activeSidebarCategory: ROUTES.GOVERNANCE.ROOT,
         currentContentRoute: ROUTES.GOVERNANCE.DREPS,
+        favoriteDRepIds: [] as string[],
       },
       (store) => {
         const isGovernanceSection =
           store.state.currentContentRoute.indexOf(ROUTES.GOVERNANCE.ROOT) === 0;
+        const view =
+          store.state.currentContentRoute === ROUTES.GOVERNANCE.FAVORITES
+            ? ('favorites' as const)
+            : ('directory' as const);
         const { refreshState, entries, error } = resolveDirectoryState(
           select('Directory state', DIRECTORY_STATE_OPTIONS, 'loaded')
         );
@@ -297,9 +330,9 @@ storiesOf('Governance / DRep Directory', module)
                   <div style={FLOW_SECTION_STYLE}>
                     <Navigation
                       items={GOVERNANCE_NAV_ITEMS}
-                      activeItem={ROUTES.GOVERNANCE.DREPS}
+                      activeItem={store.state.currentContentRoute}
                       isActiveNavItem={(navItemId: string) =>
-                        navItemId === ROUTES.GOVERNANCE.DREPS
+                        navItemId === store.state.currentContentRoute
                       }
                       onNavItemClick={(navItemId: string) => {
                         action('onNavItemClick')(navItemId);
@@ -312,7 +345,26 @@ storiesOf('Governance / DRep Directory', module)
                       error,
                       DEFAULT_SYNC_STATE,
                       refreshState === GovernanceRefreshState.Loaded ||
-                        refreshState === GovernanceRefreshState.Refreshing
+                        refreshState === GovernanceRefreshState.Refreshing,
+                      {
+                        view,
+                        favoriteDRepIds: new Set(store.state.favoriteDRepIds),
+                        onToggleFavorite: (drepId: string) => {
+                          action('onToggleFavorite')(drepId);
+                          store.set({
+                            favoriteDRepIds:
+                              store.state.favoriteDRepIds.includes(drepId)
+                                ? store.state.favoriteDRepIds.filter(
+                                    (id) => id !== drepId
+                                  )
+                                : [...store.state.favoriteDRepIds, drepId],
+                          });
+                        },
+                        onBackToDirectory: () =>
+                          store.set({
+                            currentContentRoute: ROUTES.GOVERNANCE.DREPS,
+                          }),
+                      }
                     )}
                   </div>
                 ) : (
@@ -392,6 +444,8 @@ storiesOf('Governance / DRep Directory', module)
           votingPower: null,
         }))}
         top35DRepIds={new Set<string>()}
+        favoriteDRepIds={new Set<string>()}
+        onToggleFavorite={action('onToggleFavorite')}
         error={null}
         isCohortActive={false}
         isNodeInSync
@@ -414,4 +468,76 @@ storiesOf('Governance / DRep Directory', module)
       DEFAULT_SYNC_STATE,
       true
     )
-  );
+  )
+  .add(
+    'Favorite toggle',
+    withState({ favoriteDRepIds: [baseEntries[0].drepId] }, (store) => (
+      <div style={CENTERED_STYLE}>
+        {renderDirectory(
+          GovernanceRefreshState.Loaded,
+          baseEntries,
+          null,
+          DEFAULT_SYNC_STATE,
+          true,
+          {
+            favoriteDRepIds: new Set(store.state.favoriteDRepIds),
+            onToggleFavorite: (drepId: string) => {
+              action('onToggleFavorite')(drepId);
+              store.set({
+                favoriteDRepIds: store.state.favoriteDRepIds.includes(drepId)
+                  ? store.state.favoriteDRepIds.filter((id) => id !== drepId)
+                  : [...store.state.favoriteDRepIds, drepId],
+              });
+            },
+          }
+        )}
+      </div>
+    ))
+  )
+  .add('Favorites view', () => (
+    <div style={CENTERED_STYLE}>
+      {renderDirectory(
+        GovernanceRefreshState.Loaded,
+        baseEntries,
+        null,
+        DEFAULT_SYNC_STATE,
+        true,
+        {
+          view: 'favorites',
+          favoriteDRepIds: new Set(baseEntries.map((e) => e.drepId)),
+        }
+      )}
+    </div>
+  ))
+  .add('Favorites view — empty', () => (
+    <div style={CENTERED_STYLE}>
+      {renderDirectory(
+        GovernanceRefreshState.Loaded,
+        baseEntries,
+        null,
+        DEFAULT_SYNC_STATE,
+        true,
+        { view: 'favorites' }
+      )}
+    </div>
+  ))
+  // Synthetic staleness via the injected predicate: real Retired/doNotList
+  // signals do not exist yet, so the story simulates the favorites-page
+  // treatment (status badge + caption, never an auto-purge).
+  .add('Favorites view — stale favorite', () => (
+    <div style={CENTERED_STYLE}>
+      {renderDirectory(
+        GovernanceRefreshState.Loaded,
+        baseEntries,
+        null,
+        DEFAULT_SYNC_STATE,
+        true,
+        {
+          view: 'favorites',
+          favoriteDRepIds: new Set(baseEntries.map((e) => e.drepId)),
+          isStaleFavoriteEntry: (entry: AppDRepDirectoryEntry) =>
+            entry.drepId === baseEntries[1].drepId,
+        }
+      )}
+    </div>
+  ));

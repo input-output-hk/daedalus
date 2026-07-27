@@ -40,6 +40,7 @@ export const ROUTES = {
     ROOT: '/governance',
     DREPS: '/governance/dreps',
     DREP_DETAIL: '/governance/dreps/:drepId',
+    FAVORITES: '/governance/favorites',
   },
   SETTINGS: {
     ROOT: '/settings',

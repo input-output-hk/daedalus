@@ -238,6 +238,12 @@ export const Routes = withRouter(() => (
               component={DRepDirectoryPage}
             />
             <TrackedRoute
+              exact
+              pageTitle="DRep Favorites"
+              path={ROUTES.GOVERNANCE.FAVORITES}
+              component={DRepDirectoryPage}
+            />
+            <TrackedRoute
               pageTitle="DRep Detail"
               path={ROUTES.GOVERNANCE.DREP_DETAIL}
               component={DRepDetailPage}
