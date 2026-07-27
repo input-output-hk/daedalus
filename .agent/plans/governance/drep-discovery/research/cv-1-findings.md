@@ -115,3 +115,48 @@ source/storybook/utils, so new specs under `tests/` are outside lint's reach
 by convention (matching the existing `tests/jest/security` spec), and
 `npx jest` fails in this devcontainer with `npm error Invalid property
 "devEngines.node"` — invoke `node_modules/.bin/jest` directly instead.
+
+## F-6 — `WalletVotingTarget`'s `source` member is mandated by the design and the guide but named in no task-128 acceptance criterion (contract authoritative; criteria left as-is)
+
+Found during the task-128 build. The `drep` variant of `WalletVotingTarget`
+carries `source: 'verified' | 'unverified' | 'onchain'` — prescribed verbatim by
+`designs/current-vote-display-design.md:89` and reproduced in the guide's Step 2
+block at `cv-1-implementation-guide.md:617`. None of task-128's four acceptance
+criteria (`governance-drep-discovery-plan-tasks.json:881-884`) mentions it: AC-2
+constrains only the discriminator name and its three values, and AC-3/AC-4
+constrain only `DRepIdentity`. Read criteria-first, the member looks like scope
+creep; read contract-first, omitting it would silently drop the provenance
+channel that the later status/badge work depends on.
+
+**Resolution:** the design + guide are the build contract and the acceptance
+criteria are a floor, not a ceiling — the member is in scope and was included
+(live at `source/renderer/app/api/wallets/types.ts:90`). Adjudicated before
+review, so no lens flagged it. Recorded because the same criteria-vs-contract
+gap will recur wherever a design block is richer than the tracker's criteria;
+the criteria themselves were deliberately not rewritten (cv-1 planning is
+closed). Nothing in cv-1 yet *populates* `source` — that lands with the mapper
+(task-130) and, for the `'verified' | 'unverified'` distinction, with the cv-2
+status work.
+
+## F-7 — `source/common/types/governance.types.ts` is not erasable: it exports a runtime enum, so renderer type imports from it must use `import type`
+
+Found during task-128 review. The module is overwhelmingly type declarations,
+but `:105` is `export enum GovernanceQueryErrorType {` — a real runtime value.
+Both import forms are live in the repo against the same module:
+`source/renderer/app/components/governance/drep-directory/DRepDirectory.tsx:18`
+takes the enum as a plain value import, while every type-only consumer uses
+`import type` (e.g.
+`source/renderer/app/containers/voting/VotingGovernancePage.tsx:12`,
+`source/renderer/app/components/governance/_shared/DRepStatusBadge.tsx:4`,
+`source/main/utils/setupLogging.ts:21`). Because the module is not erasable, a
+plain `import { DRepIdentity } from '.../governance.types'` would create a real
+runtime module edge — in task-128's case from `source/renderer/app/api/wallets/types.ts`,
+which already sits in an import cycle with `source/renderer/app/domains/Wallet.ts`.
+
+**Resolution:** task-128 used `import type` (`types.ts:6`) and adds no runtime
+edge. The hazard is that dropping the `type` keyword is invisible in review —
+it compiles, lints clean, and only shows up as a cycle or bundle change. Every
+downstream task that pulls a type out of `governance.types.ts` (task-129's
+normalizer, task-130's mapper, task-131's domain widening) must keep the
+type-only form; `source/common/types/governance.types.ts` itself has zero
+imports of any kind, so the cycle risk is entirely on the importing side.

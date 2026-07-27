@@ -862,7 +862,15 @@
           "id": "task-128",
           "title": "Widen WalletDelegation and WalletNextDelegation with voting field",
           "description": "Add voting?: WalletVotingTarget (discriminated union with 'kind' tag) to WalletDelegation and WalletNextDelegation in source/renderer/app/api/wallets/types.ts. The DRep variant carries a DRepIdentity { raw, cip129?, cip105?, credentialHex?, credentialType: 'key' | 'script' }.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "Types-only widening of the single file source/renderer/app/api/wallets/types.ts (11 insertions, 0 deletions, no runtime code and no comments): type-only import of the canonical DRepIdentity at :6, the three-member WalletVotingTarget union discriminated on 'kind' at :86-93 (verbatim to designs/current-vote-display-design.md:80-91 including the guide/design-mandated source member, which no acceptance criterion names but which is in scope), and voting?: WalletVotingTarget added to both WalletDelegation (:117) and WalletNextDelegation (:123, before changes_at per guide Step 3), with DelegationStakePool (:106-109) correctly left unedited to inherit the widening; D-6 upheld - grep for a DRepIdentity declaration across source/ storybook/ tests/ returns exactly one hit, source/common/types/governance.types.ts:20, whose required raw (:22) and required credentialType: 'key' | 'script' (:30) satisfy AC-3/AC-4 purely by import. Green on node_modules/.bin/tsc --noEmit exit 0 with zero 'error TS' (authoritative gate), yarn compile exit 0, yarn lint exit 0 at the pre-existing 5591-warning / 0-error baseline with the changed file absent from lint output entirely, full Jest tree 80 suites / 1030 tests passed (1 suite + 12 tests skipped, 0 failures), the task-127 pin spec 2/2, the sanitization floor unchanged at 23/23, and prettier --check clean on the file both before and after the edit; code-review approved on pass 1 across four lenses with zero raw blockers raised. Complete, NOT verified - the diff adds no runtime behaviour to prove, the union is first exercised by the task-130 mapper, and the behavioural proof (parseVoting mapping, Wallet computeds, abstain/no_confidence payload-freedom beyond compile time) arrives with task-134.",
+          "evidence": [
+            "source/renderer/app/api/wallets/types.ts",
+            "source/common/types/governance.types.ts",
+            ".agent/plans/governance/drep-discovery/task-plans/cv-1-implementation-guide.md",
+            ".agent/plans/governance/drep-discovery/task-plans/cv-1-code-review.md"
+          ],
+          "updatedAt": "2026-07-27",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [

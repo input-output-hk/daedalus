@@ -3,6 +3,7 @@ import { WalletUnits } from '../../domains/Wallet';
 import type { ExportedByronWallet } from '../../types/walletExportTypes';
 import type { Currency, LocalizedCurrency } from '../../types/currencyTypes';
 import type { ApiTokens } from '../assets/types';
+import type { DRepIdentity } from '../../../../common/types/governance.types';
 
 export type Block = {
   slot_number: number;
@@ -82,6 +83,14 @@ export type DelegationStatus =
   | 'not_delegating'
   | 'voting'
   | 'delegating_and_voting';
+export type WalletVotingTarget =
+  | {
+      kind: 'drep';
+      drep: DRepIdentity;
+      source: 'verified' | 'unverified' | 'onchain';
+    }
+  | { kind: 'abstain' }
+  | { kind: 'no_confidence' };
 export type WalletSyncStateProgress = {
   quantity: number;
   unit: 'percentage';
@@ -105,11 +114,13 @@ export type WalletNextDelegationEpoch = {
 export type WalletDelegation = {
   status: DelegationStatus;
   target?: string;
+  voting?: WalletVotingTarget;
 };
 export type WalletPendingDelegations = Array<WalletNextDelegation>;
 export type WalletNextDelegation = {
   status: DelegationStatus;
   target?: string;
+  voting?: WalletVotingTarget;
   changes_at: WalletNextDelegationEpoch;
 };
 export type Histogram = Record<string, number>;

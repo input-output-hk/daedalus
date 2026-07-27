@@ -389,3 +389,231 @@ stating the why; no task id, no review label, no ALL-CAPS, no change history.
 smallest truthful change. No file was reformatted; no stray artifacts.
 
 Decision: approved
+
+---
+
+## Code Review: task-128 — iteration 1 (2026-07-27)
+
+**Scope reviewed.** Working tree vs guide section "task-128: Widen
+`WalletDelegation`/`WalletNextDelegation` with `voting` field"
+(cv-1-implementation-guide.md:565-694) + task-128 acceptance criteria in
+governance-drep-discovery-plan-tasks.json (pre-scribe `:872-877`).
+Working-tree state at review time: one tracked modification and nothing else —
+`git status --porcelain -uall` = ` M source/renderer/app/api/wallets/types.ts`,
+`git --no-pager diff --stat` = 1 file changed / 11 insertions / 0 deletions,
+HEAD unchanged at f948845a5. One review round; no iteration 2 was needed.
+
+**The diff.**
+
+- `source/renderer/app/api/wallets/types.ts:6` — new
+  `import type { DRepIdentity } from '../../../../common/types/governance.types';`,
+  placed directly after the `ApiTokens` import at `:5` (guide Step 1). Path
+  resolution was checked rather than assumed: from
+  `source/renderer/app/api/wallets`, `../../../../` walks
+  wallets → api → app → renderer → source, so the specifier targets
+  `source/common/types/governance.types.ts`. Same-depth precedent at
+  `source/renderer/app/containers/voting/VotingGovernancePage.tsx:12`.
+- `source/renderer/app/api/wallets/types.ts:86-93` — new `WalletVotingTarget`
+  union, placed immediately after the `DelegationStatus` union (`:81-85`) and
+  before `WalletSyncStateProgress` (`:94`) per guide Step 2. Body is verbatim
+  to designs/current-vote-display-design.md:80-91, modulo prettier's wrapping
+  of the multi-property `drep` member.
+- `source/renderer/app/api/wallets/types.ts:117` — `voting?: WalletVotingTarget;`
+  added to `WalletDelegation` (`:114-118`).
+- `source/renderer/app/api/wallets/types.ts:123` — the same field added to
+  `WalletNextDelegation` (`:120-125`), positioned *before* `changes_at`
+  exactly as the guide's Step 3 block shows.
+- Nothing else. Every one of the 11 inserted lines sits inside an
+  `import type` / `export type` declaration — no runtime value, no constant,
+  no comment. `DelegationStakePool` (`:106-109`) was correctly left unedited
+  and inherits the widening structurally.
+
+**Review lenses (four, one round).**
+
+1. *Guide-conformance / acceptance-criteria lens.* Confirmed all four ordered
+   guide steps applied in order with zero skips and zero reordering (Step 4 is
+   verification-only), and all four ACs met. Re-ran the authoritative gate
+   itself: `node_modules/.bin/tsc --noEmit` → exit 0, no output. Noted as
+   cosmetic-only that the design sketch (`current-vote-display-design.md:80-86`)
+   writes `DRepIdentity` as a local alias with `raw: string` while live code
+   imports the canonical `interface` where `raw: DRepId` and
+   `DRepId = string` — structurally identical, and D-6 is the correct
+   resolution.
+2. *Type-system lens.* Proved the discrimination empirically rather than by
+   reading: a scratch file outside the repo (`/tmp/narrowcheck`, since removed)
+   compiled under this repo's flag set and confirmed that
+   `if (v.kind === 'drep')` narrows so `v.drep.raw`, `v.drep.credentialType`
+   and `v.source` all resolve, and that a three-case `switch (v.kind)` with
+   `const never_: never = v` in the default branch compiles — i.e. the union is
+   exhaustively discriminated. Also confirmed no circular-import hazard
+   (`source/common/types/governance.types.ts` has zero imports of any kind) and
+   traced consumers: `WalletDelegation` has no external type-annotated
+   consumer; `WalletNextDelegation`'s only one is
+   `source/renderer/app/components/staking/delegation-center/WalletRow.tsx:9,182`,
+   which reads every field through lodash `get` and is structurally immune.
+   Independent gate re-run: `node_modules/.bin/tsc --noEmit` → exit 0,
+   `grep -c "error TS"` = 0.
+3. *Invariant / security lens.* Swept invariants 2, 5, 10 and 13 (below) and
+   re-executed the one gate this lens owns:
+   `yarn test:jest tests/jest/security/governance-sanitization.spec.ts
+   --runInBand` → exit 0, 1 suite / 23 tests passed, 1.664 s. Confirmed the
+   added lines contain zero logger/analytics/electron-store/IPC/persistence
+   tokens and that `grep -rn "WalletDelegation\|WalletNextDelegation"
+   source/common/ source/main/` returns zero hits, so the widened types are
+   named in no IPC contract and no main-process module (design:112-115).
+4. *Scope, style and simplicity lens.* Confirmed the tree holds exactly one
+   modified file with no stray or untracked artifacts, that all four hunks are
+   pure additions touching no pre-existing line's whitespace or quoting (so no
+   file carrying the repo's known prettier drift was reformatted), and that
+   declaration style matches the surrounding file — two-space indent, single
+   quotes, trailing semicolon, no blank line between adjacent top-level
+   `export type` declarations. `node_modules/.bin/prettier --check
+   source/renderer/app/api/wallets/types.ts` → exit 0, "All matched files use
+   Prettier code style!" (read-only check; no prettier write was run anywhere).
+
+**Blockers raised and adjudicated.** Zero raw blockers were raised by any of
+the four lenses, so there was nothing to refute adversarially and no confirmed
+blocker required a fix. The pre-adjudicated non-issues were correctly not
+re-litigated: the `source: 'verified' | 'unverified' | 'onchain'` member is
+guide- and design-mandated (guide:613-621, design:88-91) despite being named in
+no acceptance criterion and is in scope; the deliberate type-vs-wire looseness
+(guide:583-589) is task-130's problem, not cv-1's; and the singular
+`WalletNextDelegation` vs array-shaped fixtures (D-9) stays out of scope.
+
+**Invariant sweep.** (10) Byte-equality: nothing in the diff touches
+`source/common/types/governance.types.ts` — `raw` stays required at `:22` and
+`credentialType` required at `:30`, so the same-vote comparator cannot be
+handed an identity lacking the key/script discriminator, and the `drep`
+variant carries the full `DRepIdentity` rather than a bare id string. (13)
+Abstain / No Confidence remain form-only sentinels: `types.ts:92-93` are
+literally `| { kind: 'abstain' }` and `| { kind: 'no_confidence' };` —
+payload-free, one property each, so `voting.drep` is a compile error in those
+branches and the type system itself now prevents a sentinel from carrying a
+DRepIdentity into the directory. (5) Lovelace losslessness: no numeric
+lovelace field was added — the ten `WalletUnits.LOVELACE` hits in the file are
+all at pre-existing lines (20, 29, 73, 104, 129, 234, 238, 254, 258, 262), none
+of which this diff touches. (2) Sanitization floor: zero runtime code and zero
+logger/analytics/electron-store lines added; `git --no-pager diff --name-only
+-- tests/` is empty, so the floor suite is unmodified, and it was re-run green
+at 23/23. design:99 also holds — `grep -n "givenName\|anchorUrl\|lovelace"` on
+the changed file returns zero hits. Invariants 1, 3, 4, 6, 7, 8, 9, 11, 12 and
+14 are untouched: the task adds no data source, no IPC, no copy, no UI and no
+ordering.
+
+**Verification commands run (results as observed).**
+
+1. `git --no-pager diff --stat` → 1 file changed, 11 insertions, 0 deletions;
+   `git --no-pager diff --name-only` confirms
+   `source/renderer/app/api/wallets/types.ts` as the sole entry; HEAD still
+   f948845a5.
+2. `node_modules/.bin/tsc --noEmit` → exit 0; output file 0 lines,
+   `grep -c "error TS"` = 0. This is the authoritative TypeScript gate.
+3. `yarn compile` → exit 0, "Done in 16.51s." It did *not* hit the known Node
+   v24 flakiness this run, so no substitute was required, but the direct `tsc`
+   gate above was still run. The preceding `[GENERATED TYPES]` lines are the
+   benign `typed-scss-modules` pretask.
+4. `yarn lint` → exit 0; 5591 warnings, 0 errors (count of eslint `✖` error
+   markers = 0 across 7147 output lines) — the documented pre-existing
+   baseline. No new warning is attributable to the diff:
+   `grep -ac "api/wallets/types.ts"` and `grep -ac "wallets/types"` over the
+   captured output both return 0, i.e. the changed file never appears in lint
+   output at all. Sampled warnings all live in untouched files
+   (storybook/stories/nodes/errors/Errors.stories.tsx:14:3,
+   storybook/stories/nodes/status/Diagnostics.stories.tsx:93:6,
+   storybook/stories/wallets/transactions/Utxo.stories.tsx:58:34), none of
+   which appear in `git diff --name-only`.
+5. `yarn test:jest tests/jest --runInBand` → exit 0; 1 suite skipped, 5 passed,
+   5 of 6 total; 12 tests skipped, 102 passed, 114 total; 0 snapshots; 2.091 s.
+   The single skipped suite is
+   `tests/jest/governance/GovernanceCliArgvSmoke.spec.ts`, which self-skips by
+   design when cardano-cli is absent from PATH (spec `:28`,
+   `const describeWithCli = isCliOnPath ? describe : describe.skip;`) —
+   environmental and pre-existing.
+6. `yarn test:jest tests/jest/security/governance-sanitization.spec.ts
+   --runInBand` → exit 0; 1 suite / 23 tests passed, 1.392 s. Sanitization
+   floor unchanged from the slice-7 close baseline of 23/23.
+7. `yarn test:jest tests/jest/api/walletDelegationStatuses.spec.ts
+   --runInBand` → exit 0; 1 suite / 2 tests passed, 0.547 s. The task-127
+   wire-literal pin still holds after the widening.
+8. `yarn test:jest --runInBand` (bare, full repo scope — run because the guide
+   names no specific renderer suites) → exit 0; 1 suite skipped, 80 passed, 80
+   of 81 total; 12 tests skipped, 1030 passed, 1042 total; zero failures
+   repo-wide. This covers the delegation-type consumers, all passing:
+   `source/renderer/app/stores/VotingStore.spec.ts`,
+   `containers/voting/VotingGovernancePage.spec.tsx`,
+   `containers/governance/DRepDetailPage.spec.tsx`,
+   `components/governance/drep-directory/DRepDirectory.spec.tsx`,
+   `.../DRepDirectoryBanner.spec.tsx`,
+   `components/governance/_shared/DRepCategoryBadge.spec.tsx`. Same single
+   environmental skip as (5).
+9. `grep -rn "interface DRepIdentity\|type DRepIdentity" source/ storybook/
+   tests/` → exactly one hit,
+   `source/common/types/governance.types.ts:20:export interface DRepIdentity {`.
+   Decision D-6 (reuse, never redefine) upheld; widening the search to the
+   `type` alias form and to storybook/tests surfaces no shadow definition.
+10. `grep -rn "WalletVotingTarget" source/ storybook/ tests/` → 3 hits, all
+    inside the single changed file (`:86` definition, `:117`, `:123`) — the
+    type is newly introduced here and defined exactly once.
+11. Direct content read of `source/common/types/governance.types.ts:18-33` and
+    `source/renderer/app/api/wallets/types.ts:80-126` — the primary evidence
+    for all four AC verdicts below.
+12. `grep -n "givenName\|anchorUrl\|lovelace"
+    source/renderer/app/api/wallets/types.ts` → zero hits.
+13. `node_modules/.bin/prettier --check
+    source/renderer/app/api/wallets/types.ts` → exit 0, plus the same check on
+    the HEAD version via `--stdin-filepath` as a baseline control → exit 0. The
+    file was prettier-clean both before and after, so the additions introduced
+    no drift. Per F-5, `nix fmt` still cannot run in this devcontainer and
+    remains owed pre-merge; the prettier check does not discharge it.
+
+**Acceptance criteria.** AC-1 met — `voting?: WalletVotingTarget;` on both
+types, at `source/renderer/app/api/wallets/types.ts:117` (`WalletDelegation`)
+and `:123` (`WalletNextDelegation`), both optional, so no existing construction
+site can break (consistent with the zero-error `tsc`). AC-2 met —
+`types.ts:86-93` is a three-member union whose only common property is `kind`,
+with exactly the literals `'drep'`, `'abstain'`, `'no_confidence'` and no
+fourth member; exhaustive discrimination proven by the `never`-assignment
+compile in lens 2. AC-3 met by import, not redefinition — `types.ts:6` resolves
+to `source/common/types/governance.types.ts:20-31`, where `raw: DRepId;` (`:22`)
+is required and `cip129?` (`:24`), `cip105?` (`:26`), `credentialHex?` (`:28`)
+are optional. AC-4 met — `governance.types.ts:30` declares
+`credentialType: 'key' | 'script';` as required, reachable from the union
+because the `drep` variant carries the whole `DRepIdentity`.
+
+**Findings (three forward-looking notes, zero blockers).**
+
+1. `import type` at `types.ts:6` is load-bearing, not stylistic:
+   `source/common/types/governance.types.ts:105` exports a runtime
+   `export enum GovernanceQueryErrorType`, so the module is not purely
+   erasable and a plain value import would have created a real runtime module
+   edge from renderer wallet-types into common — on top of the pre-existing
+   `types.ts` ↔ `domains/Wallet.ts` cycle. **Resolution:** correct as written;
+   recorded so a future edit does not silently drop the `type` keyword.
+2. Because `strictNullChecks` is commented out at `tsconfig.json:81`, the `?`
+   on `voting` is not enforced at use sites — a consumer writing
+   `wallet.delegation.active.voting.kind` will compile cleanly and then throw
+   at runtime for the overwhelmingly common `not_delegating` wallet.
+   **Resolution:** nothing to change in a types-only diff; the guard must be
+   explicit runtime code. Flagged for the task-130/131 reviewer to look for.
+3. The widened types are transitively visible from a common logging type —
+   `AdaWallet.delegation.active: WalletDelegation` (`types.ts:44-47`) and
+   `BodyData.wallets?: AdaWallet | null | undefined`
+   (`source/common/types/logging.types.ts:52`, import at `:10-14`). This is
+   type-level only and changes nothing about what is actually logged, and the
+   runtime redactor already covers this exact path
+   (tests/jest/security/governance-sanitization.spec.ts:64, :96, :118, :124
+   cover `delegation.active.voting`, the `voting` key, and the `abstain` /
+   `no_confidence` sentinels). **Resolution:** no action here; carry into
+   task-130+ review that whatever `parseVoting` attaches must stay under a key
+   the redactor already covers.
+
+**Comment convention.** Zero comments were added anywhere in the diff, so the
+convention (no task ids, no review labels, no ALL-CAPS, no change history) is
+trivially satisfied.
+
+**No unnecessary complexity.** Three tiny additions — one import, one union,
+one optional field on each of two object types. No helper, no type guard, no
+constant, no re-export barrel; type-guard and parsing work correctly stays with
+task-129/130. No file was reformatted; no stray artifacts.
+
+Decision: approved
