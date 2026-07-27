@@ -203,6 +203,10 @@
           || baseName == "release"
           || baseName == ".git"
         ))
+      # Exclude editor/agent workspace markers (symlinks in project root that
+      # must never reach the app bundle — macOS Tahoe rejects bundles with
+      # symlinks pointing to non-existent targets):
+      && !(baseName == ".claude" || baseName == ".opencode")
       # Exclude specific files
       && !(baseName == ".envrc")
       # Exclude markdown docs but keep terms-of-use .md files (runtime assets loaded by webpack)
