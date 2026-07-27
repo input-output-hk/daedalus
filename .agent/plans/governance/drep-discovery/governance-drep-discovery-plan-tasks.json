@@ -888,7 +888,13 @@
           "id": "task-129",
           "title": "Implement normalizeDRepIdentity helper",
           "description": "Add a pure function source/renderer/app/utils/governance/normalizeDRepIdentity.ts that decodes the raw on-wire bech32 string via the existing bech32 helper (preserving HRP), classifies it as drep (CIP-129) / drep_vkh (CIP-105 key) / drep_script (CIP-105 script) / abstain / no_confidence, and fills the missing canonical form(s) so that downstream display + same-vote comparison are HRP-aware and credential-type-aware. Used by both the mapper and the same-vote comparator.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "New pure module source/renderer/app/utils/governance/normalizeDRepIdentity.ts decodes CIP-129 'drep1…' and CIP-105 'drep_vkh1…' / 'drep_script1…' ids through the already-declared bech32 2.0.0 (package.json:204, same import form as source/renderer/app/utils/crypto.ts:4), returns raw byte-untouched, derives the missing canonical form plus credentialHex and a required credentialType: 'key' | 'script', and returns null for unknown HRP, wrong payload length, unknown CIP-129 header byte, bad checksum and the 'abstain' / 'no_confidence' sentinels (which stay form-only and are classified by task-130's parseVoting, not here — see F-8); proved by tests/jest/governance/normalizeDRepIdentity.spec.ts at 8 of 8 tests green (module coverage 96.66% stmts / 94.11% branch / 100% funcs, sole uncovered line :48), yarn compile exit 0 in 18.86s over the whole tree so the new spec under tests/ typechecks too, yarn lint exit 0 at the pre-existing 5591-warning / 0-error baseline with the new files absent from lint output entirely, the sanitization floor tests/jest/security/governance-sanitization.spec.ts still 23 of 23, prettier 2.1.2 --check clean with no --write needed, an empty combined `git diff package.json yarn.lock` (0 bytes, no dependency added) and a working tree holding exactly the two new untracked paths and no tracked modification; code review approved on round 1 with zero blockers surviving adversarial refutation. Complete, NOT verified — the only proof is this module's own unit tests, and the behavioural proof of the normalizer in situ (mapper wiring, sentinel handling, sanitization-floor assertion over this module) arrives with task-130 and the task-134 suite.",
+          "evidence": [
+            "source/renderer/app/utils/governance/normalizeDRepIdentity.ts",
+            "tests/jest/governance/normalizeDRepIdentity.spec.ts"
+          ],
+          "updatedAt": "2026-07-27",
           "priority": "high",
           "estimatedHours": 6,
           "dependencies": [

@@ -617,3 +617,222 @@ constant, no re-export barrel; type-guard and parsing work correctly stays with
 task-129/130. No file was reformatted; no stray artifacts.
 
 Decision: approved
+
+---
+
+## Code Review: task-129 — iteration 1 (2026-07-27)
+
+**Scope reviewed.** Two new files against the guide section "task-129:
+`normalizeDRepIdentity` helper" (cv-1-implementation-guide.md:697-807 for the
+module, :818-923 for the spec) and task-129's seven acceptance criteria in
+governance-drep-discovery-plan-tasks.json (pre-scribe `:898-906`). This is a
+pure-create task: neither `source/renderer/app/utils/governance/` nor
+`tests/jest/governance/normalizeDRepIdentity.spec.ts` existed at HEAD.
+Working-tree state at review time: `git status --porcelain -uall` = exactly two
+untracked entries and nothing else — `?? source/renderer/app/utils/governance/
+normalizeDRepIdentity.ts` and `?? tests/jest/governance/
+normalizeDRepIdentity.spec.ts` — with `git diff --stat` empty, i.e. no
+pre-existing tracked file was touched. HEAD unchanged at 83edc15fa. One review
+round; no iteration 2 was needed.
+
+**What landed.**
+
+- `source/renderer/app/utils/governance/normalizeDRepIdentity.ts:1` — the
+  existing renderer `bech32` 2.0.0 dependency (package.json:204), imported in
+  exactly the form already used at `source/renderer/app/utils/crypto.ts:4`. No
+  `@cardano-sdk/core`, no main-process import, no new package.
+- `:2` — `import type { DRepIdentity } from '../../../../common/types/
+  governance.types';`. Type-only, per F-7.
+- `:4-9` — three module constants (`0x22` key header, `0x23` script header,
+  28-byte credential length) and a local `toHex` over `number[]`.
+- `:17-62` — the exported function. Single `try` around
+  `bech32.decode` + `bech32.fromWords` with a bare `catch { return null; }`
+  (`:24-26`); the HRP `drep` branch (`:27-45`) requires a 29-byte payload and a
+  known header byte, then derives the CIP-105 form; the
+  `drep_vkh` / `drep_script` branch (`:46-60`) requires 28 bytes and derives the
+  CIP-129 form by prepending the header; unknown HRP falls through to
+  `return null` at `:61`.
+- `tests/jest/governance/normalizeDRepIdentity.spec.ts:1-105` — eight `it()`
+  blocks over a checksum-verified vector set (`:7-21`) plus two in-test
+  synthesized vectors.
+- Nothing else. `git diff package.json yarn.lock` is 0 bytes.
+
+**Review method (three parallel lenses, one round).** Correctness /
+bech32 semantics; locked invariants and the sanitization floor; tests and
+guide-conformance. Every blocker a lens raised was then handed to two
+independent skeptics for refutation, and a blocker was only allowed to stand if
+it survived both.
+
+1. *Correctness lens.* Decoded all six literal vectors independently with the
+   repo's own bech32 2.0.0 rather than trusting the guide: `KEY_CIP129`
+   (spec `:7`) → prefix `drep`, 29 bytes, header `0x22`, credential matching
+   `KEY_CREDENTIAL_HEX`; `SCRIPT_CIP129` (`:12-13`) → header `0x23`;
+   both CIP-105 forms → 28 bytes matching the same credentials. Confirmed the
+   two branches are exact mirror images and that the derived-form encoding
+   cannot throw: the longest output is `drep_script` (11) + `1` + 45 words +
+   6 checksum = 63 chars, comfortably inside bech32's default 90-char limit, so
+   `bech32.encode` at `:41` and `:55` is total for any input that decoded.
+   Also confirmed the function is total for non-string input (`null`,
+   `undefined`, `42`, `{}`, `[]` all return `null`, because `bech32.decode`
+   throws inside the `try`) — relevant because DRep ids cross IPC even though
+   the signature is typed `string`.
+2. *Invariant / sanitization lens.* Invariant 1 (sanitization floor): `grep -n
+   "logger\.\|console\."` over the module returns nothing — there is no logging
+   on any path, including the failure paths, so no DRep id, sentinel literal or
+   bech32 string can reach a logger, analytics or electron-store payload from
+   here. Re-ran the floor suite this lens owns: `yarn test:jest
+   tests/jest/security/governance-sanitization.spec.ts --runInBand` → 1 suite /
+   23 tests passed. Invariant 2 (byte-equality): `raw` is returned by reference
+   at `:39` and `:54` with no `trim`, no `toLowerCase`, no normalization
+   anywhere in the file. Invariant 3 (form-only sentinels): `'abstain'` and
+   `'no_confidence'` are not bech32 and are rejected by the `catch` at `:24`,
+   asserted at spec `:86-87`; no sentinel branch was added here. Invariant 4
+   (reuse existing seams): only two imports, `bech32` and a type; `git diff
+   package.json` empty. Invariant 5 (key/script non-conflation):
+   `credentialType` is set on every success path (`:35`, `:43`, `:50`, `:58`)
+   and the derived `cip129` differs in the header byte, asserted at
+   spec `:73-81`.
+3. *Tests / guide-conformance lens.* `diff -u` of both new files against the
+   guide's code blocks (cv-1-implementation-guide.md:746-807 and :819-923) is
+   empty — byte-identical transcription, zero drift. Confirmed the spec's
+   rejection vector set is real rather than decorative: `''`, `'abstain'`,
+   `'no_confidence'`, `'not-a-bech32-string'`, a pool id (`:21`), the
+   deprecated 28-byte `drep1` form (`:19-20`) and a single-character checksum
+   corruption (`:91`) each hit a different rejection path. Also verified the
+   `import type` is genuinely elided: transpiling the module with `tsc` emits
+   JS whose only `require` is `'bech32'`, with zero reference to
+   `governance.types`.
+
+**Blockers raised and adjudicated.** Zero blockers survived refutation, and
+therefore zero changes were made during review — the files as reviewed are the
+files as written. What was raised and refuted:
+
+1. *"Line 48 is uncovered — the CIP-105 length-mismatch `return null` is never
+   executed."* Refuted on behaviour, not on argument: the branch was exercised
+   directly against the transpiled module —
+   `bech32.encode('drep_vkh', toWords(29 bytes))` → `null` and
+   `bech32.encode('drep_script', toWords(27 bytes))` → `null`. The mirror-image
+   CIP-129 length check at `:28-30` *is* covered, via
+   `DEPRECATED_DREP_28_BYTE`. AC-4 ("all three prefixes plus invalid input") is
+   satisfied without it, and adding a vector would break byte-exactness with
+   the approved guide. Recorded as F-10 rather than changed.
+2. *"Uppercase bech32 input breaks the round-trip invariant."* Real behaviour,
+   not a defect here. BIP-173 permits all-uppercase encodings and bech32 2.0.0
+   lower-cases the HRP internally, so
+   `normalizeDRepIdentity('DREP1Y2SM9S75UHM…')` succeeds and returns `raw` /
+   `cip129` uppercase while the derived `cip105` is lowercase. Refuted because
+   invariant 2 *forbids* case normalization — "fixing" it would violate a
+   locked invariant to satisfy a weaker one. Mixed case is correctly rejected
+   by the library. Carried forward as F-9 for task-130's comparator.
+3. *"The JSDoc at `:11-16` runs to four content lines, over the repo's 1-3 line
+   comment guidance."* Refuted: it is an exported-API contract doc stating the
+   invariant, not an inline logic comment; it carries no task ids, no review
+   labels, no ALL-CAPS markers and no change history; and it is the approved
+   guide's exact text.
+4. *"`credentialHex` is identical for a key and a script DRep sharing 28 bytes
+   — invariant 5 is violated."* Refuted by reading the assertion it points at:
+   spec `:77` asserts that equality *deliberately*, and non-conflation is
+   carried by `credentialType` (`:78-79`) and `cip129` (`:80`), which differ.
+   The real consequence is a downstream constraint, not a defect: any same-vote
+   comparator must key on `cip129` or on the (`credentialHex`,
+   `credentialType`) pair, never on `credentialHex` alone.
+5. *"The tracker says this function classifies `abstain` / `no_confidence`, but
+   it returns null for both."* Refuted as a code defect and re-classified as a
+   doc conflict: locked invariant 3 and the guide's resolved-judgment-calls
+   block (cv-1-implementation-guide.md:721-733, :926-928) both put the sentinel
+   branch in task-130's `parseVoting`. The tracker prose is the stale side.
+   Recorded as F-8 under the source-of-truth rule; no code change.
+6. *"AC-1 (purity, no side effects) is not actually asserted by any test."*
+   Partially conceded but refuted as a task-129 blocker: the property holds
+   structurally today (grep is clean), the guide deliberately places the logger
+   spy at task-130 (cv-1-implementation-guide.md:2041-2062, :2165), and the
+   floor suite `tests/jest/security/governance-sanitization.spec.ts` is
+   boundary-based by design (its imports at `:21-28` do not include this
+   module). Carried as F-10; a floor assertion covering this module should land
+   with task-130.
+
+**Verification commands run (results as observed).**
+
+1. `yarn compile` → exit 0, "Done in 18.86s.", zero TypeScript errors across
+   the whole tree — which matters here because tsconfig has no `include` and
+   excludes only `node_modules` (`tsconfig.json:103`), so the new spec under
+   `tests/` is typechecked too. The `typed-scss-modules` pretask ran cleanly
+   under Node v24.16.0, so the anticipated Node-v24 breakage did not occur and
+   the direct `node_modules/.bin/tsc --noEmit` fallback was never needed.
+2. `yarn test:jest tests/jest/governance/normalizeDRepIdentity.spec.ts
+   --runInBand` → 1 suite passed, 8 of 8 tests passed, 0 snapshots. Module
+   coverage 96.66% statements / 94.11% branch / 100% functions / 96.55% lines;
+   the sole uncovered line is `:48`.
+3. `yarn test:jest tests/jest/security/governance-sanitization.spec.ts
+   --runInBand` → 1 suite / 23 tests passed. The inherited sanitization floor
+   is intact under this change.
+4. `yarn lint` → exit 0; 5591 warnings, 0 errors — the documented pre-existing
+   baseline. A targeted re-run grepping the captured output for
+   `normalizeDRepIdentity|utils/governance|error` returned no matches (grep
+   exit 1), so the new module contributes zero diagnostics at any severity;
+   sampled warnings all live in untouched files
+   (source/renderer/app/themes/daedalus/index.ts:28,
+   source/renderer/app/utils/validations.ts:100, numerous
+   storybook/stories/*). The spec is outside lint's reach by convention
+   (`package.json:43` scopes lint to source/storybook/utils; `.eslintignore`
+   covers `tests/`), so it is gated by `tsc` alone.
+5. `node_modules/.bin/prettier --check` on the two new files → exit 0, "All
+   matched files use Prettier code style!" under prettier 2.1.2. No `--write`
+   was needed, so no file was rewritten and no pre-existing file carrying the
+   repo's known prettier drift was reformatted. Per F-5, `nix fmt` still cannot
+   run in this devcontainer and remains owed pre-merge; this check does not
+   discharge it.
+6. `git diff package.json` and `git diff yarn.lock` → both empty; the combined
+   `git diff package.json yarn.lock` is exactly 0 bytes. AC-7 met.
+7. `git status --porcelain --untracked-files=all` → exactly the two new
+   untracked paths, no modifications, no deletions; re-checked *after* all
+   suites ran to rule out coverage or test artifacts, with the same result.
+   `git diff --stat` empty. Zero scope violations.
+8. `diff -u` of both new files against the guide code blocks
+   (cv-1-implementation-guide.md:746-807, :819-923) → empty.
+9. Independent bech32 2.0.0 decode of all six literal vectors plus direct
+   execution of the `:48` branch and of the non-string input set, against the
+   transpiled module.
+
+**Acceptance criteria.** AC-1 met — no assignment outside function scope, no
+I/O, no logging, no mutation of the input (`grep` for `logger.`/`console.`
+returns nothing). AC-2 met — spec `:64-71` asserts
+`normalizeDRepIdentity(normalizeDRepIdentity(KEY_CIP129).cip105).cip129 ===
+KEY_CIP129` for both key and script. AC-3 met — `null` is returned on every
+rejection path and the function never throws, including for non-string input.
+AC-4 met — all three prefixes are covered (spec `:24-62`) plus a seven-entry
+invalid-input set (`:83-96`) and an unknown-header case (`:98-104`). AC-5 met —
+`bech32.decode` preserves the HRP and the code branches on
+`decoded.prefix` at `:27` and `:46`, so `drep`, `drep_vkh` and `drep_script`
+are distinguished even with identical 28-byte payloads. AC-6 met —
+`credentialType` is populated on all four success returns and the spec pins
+key ≠ script for shared credential bytes at `:73-81`. AC-7 met — bech32 2.0.0
+is reused from `dependencies` (package.json:204, not devDependencies, so it
+resolves in the renderer bundle at runtime and not only under jest), and both
+dependency-manifest diffs are empty.
+
+**Comment convention.** Two comments exist: the JSDoc contract block at
+module `:11-16` and the vector-provenance note at spec `:4-6`, plus the
+one-line deprecation note at spec `:18`. All state the invariant or the why;
+none carries a task id, review label, ALL-CAPS marker or change history.
+Adjudicated at blocker 3 above.
+
+**No unnecessary complexity.** One exported function, one 2-line local helper,
+three named constants, two symmetric branches and a single `try`. No class, no
+factory, no error type, no barrel re-export, no caching. The sentinel handling
+and the caller-side sanitized warning correctly stay with task-130.
+
+**Out-of-scope observations carried forward.** Pre-existing ad-hoc
+`DRepIdentity` construction survives at
+`source/renderer/app/containers/voting/VotingGovernancePage.tsx:75-83`, which
+infers `credentialType` from `chosenOption.startsWith('drep_script')` — a
+heuristic that labels a CIP-129 `drep1…` script DRep as `'key'`, exactly the
+conflation invariant 5 targets. A similar shortcut exists at
+`storybook/stories/voting/Governance.stories.tsx:58-61`. Both are untouched
+here (git status shows only the two new paths) and are the natural call sites
+to replace in task-130/131. Separately,
+`source/common/types/governance.types.ts:18` carries a task id inside a code
+comment, contrary to convention; `git log -S` confirms it was introduced in
+0f47402b6 (slice-1), not by this task, and it was correctly left alone.
+
+Decision: approved

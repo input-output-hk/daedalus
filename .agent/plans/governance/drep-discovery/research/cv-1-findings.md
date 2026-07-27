@@ -160,3 +160,86 @@ downstream task that pulls a type out of `governance.types.ts` (task-129's
 normalizer, task-130's mapper, task-131's domain widening) must keep the
 type-only form; `source/common/types/governance.types.ts` itself has zero
 imports of any kind, so the cycle risk is entirely on the importing side.
+
+## F-8 — task-129's tracker description says the normalizer classifies `abstain` / `no_confidence`; the shipped normalizer rejects them (live repo + guide authoritative; tracker prose stale)
+
+Found during the task-129 build and confirmed at review. The tracker's task-129
+`description` (`governance-drep-discovery-plan-tasks.json:890`) reads that the
+function "classifies it as drep (CIP-129) / drep_vkh (CIP-105 key) /
+drep_script (CIP-105 script) / abstain / no_confidence". The shipped function
+does not: `'abstain'` and `'no_confidence'` are not bech32, so they fail
+`bech32.decode` and return `null` via the bare `catch` at
+`source/renderer/app/utils/governance/normalizeDRepIdentity.ts:24-26` — pinned
+by the rejection vectors at `tests/jest/governance/normalizeDRepIdentity.spec.ts:86-87`.
+That is the intended behaviour, not an omission: the guide's resolved-judgment-calls
+block states the sentinels "are NOT DRep ids — the normalizer rejects them; the
+mapper (task-130) handles them BEFORE calling the normalizer"
+(`cv-1-implementation-guide.md:926-928`), which is invariant 13 (sentinels are
+form-only, never DRep directory entries).
+
+**Resolution:** the live repo and the guide govern; the tracker sentence is the
+stale side and was left unedited (task-129's scribe mandate confines JSON edits
+to that task's status fields). Read description-first, a future implementer
+would add a sentinel branch to the normalizer and quietly turn a form-only
+sentinel into something that can flow toward the DRep directory. The sentinel
+branch belongs in task-130's `parseVoting`, ahead of the normalizer call.
+Same criteria-vs-contract shape as F-6, but inverted: here the tracker prose is
+*wider* than the contract rather than narrower.
+
+## F-9 — bech32 accepts all-uppercase ids, so `raw`/`cip129` and the derived `cip105` can differ in case; the same-vote comparator must key on `credentialHex` + `credentialType`
+
+Found during task-129 review. BIP-173 permits all-uppercase bech32 and
+`bech32` 2.0.0 lower-cases the HRP internally, so
+`normalizeDRepIdentity('DREP1Y2SM9S75UHMQWXPF8F94CMT737G2RVKR6NJLVPCC9YAYKHQ23NMJY')`
+decodes successfully (prefix `drep`, 29 bytes, header `0x22`) rather than being
+rejected. Because invariant 10 requires `raw` to be returned byte-untouched —
+no trim, no lower-casing (`normalizeDRepIdentity.ts:39`, `:54`) — an uppercase
+input yields uppercase `raw`/`cip129` alongside a lowercase derived `cip105`.
+Consequence: `normalize(x.cip105).cip129 !== x.cip129` for uppercase input, so
+the CIP-129 → CIP-105 → CIP-129 round-trip is byte-exact only for lowercase
+input. Mixed case is correctly rejected by the library (verified:
+`'drep1y2SM9s75…'` → `null`).
+
+**Resolution:** not a defect and explicitly not to be "fixed" in the
+normalizer — case-folding `raw` would violate invariant 10 to satisfy a weaker
+one. The durable consequence is downstream: the task-130/131 same-vote
+comparator must compare on `credentialHex` + `credentialType` (`credentialHex`
+comes from `toHex` at `normalizeDRepIdentity.ts:8-9` and is always lowercase,
+hence case-stable) rather than on the bech32 strings, which can legitimately
+differ in case between two representations of one identity. Note
+`credentialHex` alone is insufficient — a key and a script DRep can share the
+same 28 bytes (asserted at `normalizeDRepIdentity.spec.ts:77`), which is why
+the pair is required. UNVERIFIED whether any upstream source actually emits
+uppercase: every observed cardano-wallet fixture and cardano-cli output is
+lowercase, so this is defensive rather than reactive.
+
+## F-10 — two residual test gaps on `normalizeDRepIdentity`, both deliberately deferred to task-130
+
+Found during task-129 review; both were raised as blockers and both were
+refuted for task-129, so they are recorded here rather than fixed.
+
+1. **Uncovered rejection branch.** The focused run reports 96.66% statements /
+   94.11% branch / 100% functions for the module, with exactly one uncovered
+   line: `normalizeDRepIdentity.ts:48`, the CIP-105 length-mismatch
+   `return null` (a `drep_vkh` / `drep_script` payload that is not 28 bytes).
+   The behaviour was verified directly against the transpiled module
+   (`bech32.encode('drep_vkh', toWords(29 bytes))` → `null`;
+   `bech32.encode('drep_script', toWords(27 bytes))` → `null`), and the
+   mirror-image CIP-129 length check at `:28-30` *is* covered via the
+   deprecated 28-byte `drep1` vector. AC-4 is met without it, and adding a
+   vector would break the spec's byte-exactness with the approved guide block
+   (`cv-1-implementation-guide.md:819-923`), which `diff -u` confirms is
+   currently exact.
+2. **The purity / no-logging floor is structural, not asserted.** Invariant 1
+   holds today — `grep -n "logger\.\|console\."` over the module returns
+   nothing — but no test would fail if a later edit added `logger.warn(raw)`
+   inside the function. The boundary-based floor suite
+   `tests/jest/security/governance-sanitization.spec.ts` would not catch it
+   either: it does not import this module (imports at `:21-28`).
+
+**Resolution:** deferred by design. The guide places the logger spy at task-130
+(`cv-1-implementation-guide.md:2041-2062`, `:2165`), where the caller emits the
+sanitized unknown-HRP warning; the floor assertion covering
+`normalizeDRepIdentity` itself should land in the same task, and the `:48`
+vector is a cheap add once the guide's byte-exactness constraint no longer
+applies.
