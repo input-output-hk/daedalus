@@ -215,7 +215,8 @@ in rec {
         inherit pkgs;
       }
       electronBin).overrideAttrs (drv: {
-      buildCommand = additionalLibs
+      buildCommand =
+        additionalLibs
         + (builtins.replaceStrings ["find '"] ["find -L '"] drv.buildCommand);
     });
 

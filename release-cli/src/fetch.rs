@@ -401,8 +401,14 @@ mod tests {
         let (gitrev, nar_hash) = parse_flake(
             "github:input-output-hk/daedalus/50706edb8f5a772bc961d0ff6bcc54b9e4f8403f?narHash=sha256-pLZ7mM65BevAulHq%2B43ecshkgHSarNvDUTeldp8KxjY%3D",
         );
-        assert_eq!(gitrev.as_deref(), Some("50706edb8f5a772bc961d0ff6bcc54b9e4f8403f"));
-        assert_eq!(nar_hash.as_deref(), Some("sha256-pLZ7mM65BevAulHq+43ecshkgHSarNvDUTeldp8KxjY="));
+        assert_eq!(
+            gitrev.as_deref(),
+            Some("50706edb8f5a772bc961d0ff6bcc54b9e4f8403f")
+        );
+        assert_eq!(
+            nar_hash.as_deref(),
+            Some("sha256-pLZ7mM65BevAulHq+43ecshkgHSarNvDUTeldp8KxjY=")
+        );
     }
 
     #[test]
@@ -410,7 +416,10 @@ mod tests {
         let (gitrev, nar_hash) = parse_flake(
             "git+https://github.com/input-output-hk/daedalus?ref=refs/heads/master&rev=32af7f154b8556dbf794eed2365661ef4ed2670d&submodules=1",
         );
-        assert_eq!(gitrev.as_deref(), Some("32af7f154b8556dbf794eed2365661ef4ed2670d"));
+        assert_eq!(
+            gitrev.as_deref(),
+            Some("32af7f154b8556dbf794eed2365661ef4ed2670d")
+        );
         assert_eq!(nar_hash, None);
     }
 }
