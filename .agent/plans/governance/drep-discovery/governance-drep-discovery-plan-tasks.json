@@ -811,7 +811,16 @@
           "id": "task-126",
           "title": "Commit cardano-wallet voting/delegating fixtures",
           "description": "Capture representative GET /v2/wallets/{id} JSON fixtures from the pinned cardano-wallet v2026-05-11 for: status=voting (with delegation.active.voting=drep1...), status=delegating_and_voting (with both target=pool and voting=drep_vkh1...), status=voting (with voting=abstain), and status=voting (with voting=no_confidence). Used by the mapper unit tests in this slice.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "All four voting/delegation fixtures authored byte-identical to the guide's verbatim blocks against the pinned cardano-wallet v2026-05-11 swagger shape (snake_case wire keys, delegation.next as array, synthetic repeated-digit ids, valid bech32 drep1/drep_vkh1/pool1 strings incl. the CIP-129 key vector), verified green on every guide Step 6 check plus the untouched 23/23 sanitization floor, and code-review approved on pass 1 with zero findings; complete, NOT verified — dedicated mapper-test proof arrives with task-134.",
+          "evidence": [
+            "tests/mocks/wallets/wallet-voting-drep.json",
+            "tests/mocks/wallets/wallet-delegating-and-voting.json",
+            "tests/mocks/wallets/wallet-voting-abstain.json",
+            "tests/mocks/wallets/wallet-voting-no-confidence.json",
+            ".agent/plans/governance/drep-discovery/task-plans/cv-1-implementation-guide.md"
+          ],
+          "updatedAt": "2026-07-27",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [],

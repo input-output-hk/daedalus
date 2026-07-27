@@ -185,3 +185,76 @@ Critiquer pass returned zero blockers; `cv-1-PRD.md` and
 `cv-1-implementation-guide.md` verified present and coherent (all ten task
 sections, matching AC counts and anchors) — PRD planning status flipped to
 `approved`; build phase may start.
+
+---
+
+## Code Review: task-126 — iteration 1 (2026-07-27)
+
+**Scope reviewed.** Working tree vs guide section "task-126: Commit
+cardano-wallet voting/delegating fixtures"
+(cv-1-implementation-guide.md:121-429) + Cross-Cutting notes (:52-119) +
+task-126 acceptance criteria in
+governance-drep-discovery-plan-tasks.json. Working-tree state at review time:
+`git status --porcelain -uall` shows exactly four untracked files under
+`tests/mocks/wallets/` and zero tracked modifications — no runtime, logging,
+analytics, or store code was touched anywhere in the tree.
+
+**Checks performed (all commands run from the worktree root).**
+
+1. **Guide conformance / doc drift.** Extracted the four ```json blocks from
+   the task-126 section and compared programmatically against the four files:
+   all four are BYTE-IDENTICAL to the guide (wallet-voting-drep.json,
+   wallet-delegating-and-voting.json, wallet-voting-abstain.json,
+   wallet-voting-no-confidence.json). No drift; nothing extra created
+   (directory contains exactly the four specified files).
+2. **ApiWallet-shape correctness.** Every field present is one the mapper
+   consumes: `id` (api.ts:3014), `address_pool_gap` (:3015), `name` (:3017),
+   `balance.available/total/reward` as `{ quantity, unit: "lovelace" }`
+   (:3028-3049), `assets.available/total` as arrays (:3065-3088),
+   `delegation.active.{status,target,voting}` (:3051-3056; `voting` consumed
+   once task-130 lands), `delegation.next` consumed via `last(next)`
+   (:3057-3059), `state` (:3021), `discovery` (:3023). Wire keys are
+   snake_case only; no Daedalus-injected `isLegacy`/`isHardwareWallet` (both
+   default to `false` in the destructure, api.ts:3022/:3024); `passphrase`
+   omitted per guide (read via `get(..., null)` at :3027). `delegation.next`
+   is an ARRAY in all four fixtures (D-9; the singular
+   `AdaWallet['delegation']['next']` at types.ts:44-45 is the documented
+   pre-existing mismatch, out of cv-1 scope). The pending-next entry carries
+   only `status`/`target`/`changes_at` per the wire shape — nothing
+   decorative.
+3. **Guide Step 6 verification loop** (id regex `^([0-9a-f])\1{39}$`, `next`
+   is array, required top-level keys, balance triple well-formed): `ok` for
+   all four files.
+4. **Bech32 checksum validity (D-8).** Decoded with the repo's `bech32`
+   package: `drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy` →
+   prefix `drep`, 29-byte payload, header byte `0x22`;
+   `drep_vkh15xev84897cr3s2f6fdwx6l50jzsm9s75uhmqwxpf8f94czu4a4l` → prefix
+   `drep_vkh`, 28 bytes, and its payload is byte-equal to the CIP-129
+   vector's payload minus the header (shared credential
+   `a1b2c3d4…293a4b5c`, matching the guide's credential-hex row);
+   `pool1qvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsx6m90l2` → prefix
+   `pool`, 28 bytes, all `0x03`. All checksums valid.
+5. **Synthetic wallet ids.** `1…1` / `2…2` / `3…3` / `4…4` × 40 hex — no real
+   ids.
+6. **Formatting.** `node_modules/.bin/prettier --check
+   "tests/mocks/wallets/*.json"` → "All matched files use Prettier code
+   style!". No pre-existing file was reformatted (tracked diff is empty).
+7. **Invariant sweep.** (2) Sanitization floor: fixtures contain DRep ids,
+   which is explicitly allowed; no logger/analytics/electron-store path was
+   touched (tracked tree clean), and the floor suite at
+   tests/jest/security/governance-sanitization.spec.ts is unmodified. (13)
+   `abstain`/`no_confidence` appear only as `delegation.active.voting` wire
+   sentinels, never as directory entries. (14) No component code exists yet,
+   so no badge could be rendered. (4)/(9)/(10)/(11): no code, signing-path,
+   or i18n surface touched — not applicable to this task.
+
+**Acceptance criteria.** AC-1 met (voting-DRep / delegating_and_voting /
+abstain / no_confidence all covered, with the CIP-129 form on the voting
+fixture and the CIP-105 `drep_vkh` form plus pool target and non-empty
+pending `next` on the dual fixture, per D-10). AC-2 met (shape conformance as
+in check 2). AC-3 met (minimal field set, synthetic ids). All five guide
+acceptance boxes verified.
+
+**Findings.** None. No blockers, no advisories.
+
+Decision: approved
