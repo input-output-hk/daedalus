@@ -15,7 +15,7 @@ export type DRepId = string;
 
 /**
  * Discriminated DRep identity with all known encodings.
- * Populated by normalizeDRepIdentity (cv-1, task-129).
+ * Populated by normalizeDRepIdentity.
  */
 export interface DRepIdentity {
   /** Original bech32 string from the CLI / wallet API. */

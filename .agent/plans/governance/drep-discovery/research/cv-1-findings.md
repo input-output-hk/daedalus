@@ -468,3 +468,56 @@ rather than bookkeeping here — a guard landing after the mints it is meant to
 protect protects nothing. The guard fires only where the en-US value is marked,
 so once the release-end review strips an en-US marker the assertion is simply
 vacuous for that key; no allow-list maintenance is created for that review.
+
+## F-15 — `filterLogData`'s key list is keyed to the wire shape, so the renderer-side `votingTarget` / `currentVote` names it does not know are unredacted; task-170 does not close this
+
+Found during the task-131 review's sanitization lens, raised as a candidate
+blocker and refuted 3-0 *as a task-131 defect* — kept here because the gap
+itself is real, unrecorded and outlives the task. `filterLogData`'s
+`sensitiveData` array (`source/common/utils/logging.ts:24-49`) gained its
+governance entries in slice-1 and they are all wire key names: `'drepId'`,
+`'dRepId'`, `'vote'`, `'voting'` (`:45-48`), with the adjacent comment naming
+exactly the wire paths they cover — `delegation.active.voting`,
+`delegation.next[*].voting`, `certificates[*].vote`. Since task-130/131 there
+is a second, renderer-side shape carrying the same secrets under different
+names: a `Wallet` instance holds an own enumerable `votingTarget` (the
+constructor is `Object.assign(this, data)`, `domains/Wallet.ts:175-177`, fed by
+`WalletProps.votingTarget` at `:130` and `api.ts:3153`) and exposes it as
+`currentVote`; inside the value the identity members are `drep`, `raw`,
+`cip129`, `cip105` and `credentialHex`. None of those six names is in the list,
+so `filterLogData({ wallet })`, `filterLogData({ votingTarget })` or
+`filterLogData({ currentVote })` returns the CIP-129/CIP-105 id — or an
+`abstain` / `no_confidence` sentinel — verbatim. The floor suite does not catch
+it either: every `filterLogData` redaction case is wire-keyed
+(`tests/jest/security/governance-sanitization.spec.ts:58-136`) and the file
+contains no `votingTarget` or `currentVote` occurrence at all.
+
+The gap is latent, not live, and that is precisely why it is worth recording.
+A repo-wide grep at this commit shows `currentVote` and `isVoting` have zero
+consumers outside their own definitions (`Wallet.ts:255`, `:260-261`) and
+`votingTarget` appears only in the mapper (`api.ts:3082`, `:3087`, `:3091`,
+`:3097`, `:3153`) and `Wallet.ts`, so nothing hands a domain `Wallet` to a
+logger today — the two sinks that take one were already walked in the task-130
+review and neither serializes the instance. The two computeds are prototype
+accessors, so they never appear in `Object.keys` and cannot leak through the
+redactor's own recursion; the exposure is the `votingTarget` own property plus
+any hand-written `{ currentVote }` payload. cv-2 is the first slice that gives
+`currentVote` a consumer, and therefore the first that can turn this from
+latent to live.
+
+**Resolution:** correctly not fixed in task-131. The exposure pre-dates that
+diff (the property was already on every instance at HEAD via `WalletProps` plus
+`Object.assign`, so the diff adds no redactor surface), the guide fences
+task-131 to two files (`cv-1-implementation-guide.md:1227-1232`), and closing
+it means touching `source/common/utils/logging.ts` plus the floor suite, which
+this task must leave green and unmodified. Nor does task-170 close it: F-11's
+fix wraps the `api.ts` wallet-list payloads, whose vote key is `voting` and is
+already in the list — it is the same secret reached by the other name. The
+durable action belongs with the cv-2 work that creates the first consumer, and
+there are two acceptable discharges: add `votingTarget` and `currentVote` to
+`sensitiveData` with a matching domain-shaped case in the floor suite, or hold
+the stricter line that a domain `Wallet` never enters a logger payload at all
+(which is what `designs/current-vote-display-design.md:114` already implies for
+storage) and assert *that* instead. Not tasked here — cv-1 planning is closed
+and no cv-1 row owns the domain-object shape; recorded so the reviewer of the
+first cv-2 store/component that reads `currentVote` has the anchor.

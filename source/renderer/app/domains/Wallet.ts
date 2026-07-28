@@ -163,6 +163,8 @@ export default class Wallet {
   @observable
   pendingDelegations: WalletPendingDelegations;
   @observable
+  votingTarget: WalletVotingTarget | null | undefined;
+  @observable
   discovery: Discovery;
   @observable
   hasPassword: boolean;
@@ -195,6 +197,7 @@ export default class Wallet {
         'lastDelegatedStakePoolId',
         'lastDelegationStakePoolStatus',
         'pendingDelegations',
+        'votingTarget',
         'discovery',
         'hasPassword',
         'walletNotConnected',
@@ -246,6 +249,16 @@ export default class Wallet {
       WalletDelegationStatuses.DELEGATING,
       WalletDelegationStatuses.VOTING_AND_DELEGATING,
     ].includes(statusToCheck);
+  }
+
+  @computed
+  get currentVote(): WalletVotingTarget | null {
+    return this.votingTarget ?? null;
+  }
+
+  @computed
+  get isVoting(): boolean {
+    return this.currentVote !== null;
   }
 
   @computed

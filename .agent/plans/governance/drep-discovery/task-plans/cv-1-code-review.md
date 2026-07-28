@@ -1232,3 +1232,211 @@ the substance is recorded now so the note is not read at face value in the
 meantime. Per the README's slice-level-docs convention this log is
 append-only, so that amendment must discharge it by appending too, never by
 editing `:737-739` in place.
+
+---
+
+## Code Review: task-131 — iteration 1 (2026-07-28)
+
+**Scope reviewed.** The working diff against the guide section "task-131:
+Wallet domain `votingTarget`/`currentVote`/`isVoting` incl. `update()` pick
+list" (cv-1-implementation-guide.md:1225-1415 — the two-file "Files touched"
+list at `:1227-1232`, the inline locked invariants at `:1244-1256`, the
+resolved-judgment-calls block at `:1258-1279`, Steps 1-4 with verbatim code
+blocks at `:1283-1365`, the Step 5 verify block at `:1370-1391` and the
+seven-item acceptance checklist at `:1393-1414`), the design contract
+(designs/current-vote-display-design.md:112 the "anything else" wire row,
+`:114` in-memory-only storage) and task-131's nine acceptance criteria in
+governance-drep-discovery-plan-tasks.json (pre-scribe `:957-967`). This is a
+modify-only task: two tracked files, `+14/-1`, no untracked path, empty
+`git diff package.json`, HEAD unchanged at 2ee5f74cf. One review round.
+
+**What landed.**
+
+- `source/renderer/app/domains/Wallet.ts:165-166` — the declared observable
+  `votingTarget: WalletVotingTarget | null | undefined;`, inserted between
+  `pendingDelegations` and `discovery` exactly as Step 1 prescribes. The
+  tri-state type is the guide's own resolved judgment call (`:1259-1266`),
+  matching the sibling optional-observable style at `:153-154`.
+- `:200` — `'votingTarget',` in the `update()` `pick(other, [...])` list,
+  directly after `'pendingDelegations',` and before `'discovery',`. This is
+  the D-7/R-2 trap the task exists to close: the list is explicit, so an
+  omission compiles clean and every 5-second poll refresh would silently keep
+  the stale vote target.
+- `:254-262` — the two computeds, between `isDelegating` and `isSequential`:
+  ```ts
+  @computed
+  get currentVote(): WalletVotingTarget | null {
+    return this.votingTarget ?? null;
+  }
+
+  @computed
+  get isVoting(): boolean {
+    return this.currentVote !== null;
+  }
+  ```
+- `source/common/types/governance.types.ts:18` — one line, Step 4:
+  ` * Populated by normalizeDRepIdentity (cv-1, task-129).` →
+  ` * Populated by normalizeDRepIdentity.` The sentence, the surrounding
+  block comment, the interface and every member doc comment are byte-identical.
+- Nothing else. No deleted line other than that comment text; `WalletProps`
+  (`:130`) and the type-only import (`:11`) were correctly NOT re-touched —
+  both already carried task-130's entries.
+
+**Review method (four concern areas in one round, adversarial refutation).**
+The round returned eight raw findings, all fresh. Every candidate blocker was
+handed to three independent skeptics and allowed to stand only if it survived;
+seven were refuted 3-0 and one was confirmed. The concern areas represented
+were guide fidelity and tracker bookkeeping; sanitization-floor and log-sink
+reachability of the new field name; MobX runtime semantics of `@observable`
+plus the pick list; and the temporal/edge-case semantics of the two computeds
+against the four delegation statuses.
+
+**Blockers raised and adjudicated.**
+
+1. *Confirmed — the tracker row.* The task-131 row in
+   governance-drep-discovery-plan-tasks.json was still `"status": "pending"`
+   with no `statusReason`, while AC-5 requires the unfiltered run's suite and
+   test counts to be reported there, and every sibling row (task-127 …
+   task-130) carries both fields. Discharged by this task's scribe pass rather
+   than by a code change: the row is now `complete` and its statusReason
+   carries the verbatim counts. No source file changed as a result.
+2. *Refuted 3-0 (raised twice, as two separate findings) — "AC-9's single
+   commit does not exist yet".* Circular with the review's own premise: the
+   subject is by definition the uncommitted diff, and this repo's per-task
+   commits bundle this very log (`git show --stat 1d33baa2c` and `40bcd990a`
+   each carry cv-1-code-review.md), so the commit is structurally downstream
+   of the review. AC-9's review-time-verifiable half is independently met —
+   the diff adds zero code comments, and the one comment it touches *removes*
+   a task id. The index is empty and exactly two paths are modified, so the
+   tree makes the atomic commit the default outcome, not the hard one.
+3. *Refuted 3-0 — unfiltered wallet payloads at `api.ts:379-383`/`:458-460`.*
+   Technically accurate but zero-delta: api.ts is byte-identical to HEAD, the
+   payload shape blames to 0b74fb818 (2021-04-15), and the fix is already
+   specified as task-170 (guide `:2714-2942`, including the missing
+   `getWallets` floor case). Already on record as F-11.
+4. *Refuted 3-0 as a task-131 defect — `votingTarget` is not in
+   `filterLogData`'s key list.* The exposure is pre-existing at HEAD: the
+   constructor is `Object.assign(this, data)` (`Wallet.ts:175-177`),
+   `WalletProps.votingTarget` landed at `:130` in task-130 and `api.ts:3153`
+   already passed the value in, so every `Wallet` instance already carried the
+   key before this diff; the two computeds are prototype accessors and never
+   appear in `Object.keys`, so the diff adds no redactor surface at all. The
+   underlying key-name gap is real and unrecorded, so it was kept — see F-15
+   below — rather than fixed here, where it would mean editing a third file
+   and the frozen floor suite.
+5. *Refuted 3-0 — `@observable` deep-converts, so `currentVote` returns an
+   observable wrapper rather than the identical object `parseVoting` built.*
+   Reproduced, but identical for the pre-existing sibling observables
+   (`pendingDelegations`, `syncState`) and for the instance itself — a
+   `Wallet` has never been structured-cloneable — so nothing here shifts.
+   Plain `@observable` is guide-verbatim inside a "do not revisit" block, and
+   `observable.ref` has zero precedent in the repo. Invariant 10 is unaffected
+   because the encodings are primitive strings: `cip129`, `cip105` and `raw`
+   compare byte-equal through the computed. The one useful residue — task-134
+   must assert with `toJS(...)`/`toEqual`, never `toBe` — is already written
+   into the approved guide at `:2080-2083`, so it needs no new record.
+6. *Refuted 3-0 — `isVoting` is false when `delegationStakePoolStatus` is
+   `'voting'` but the wire id fails to parse.* This is the specified contract,
+   not a defect: AC-2 defines `isVoting` as `currentVote !== null`, Step 3 is
+   implemented verbatim, and the design's §6.2 table
+   (current-vote-display-design.md:112) already rules that an unparseable
+   target is treated "as if `voting === undefined`". The `currentVote == null`
+   render is a designed first-class state (guide `:1445-1447`: the
+   reward-withdrawal warning plus CTA, never a hidden panel), and task-134's
+   approved spec asserts `isVoting === false` for exactly this case.
+7. *Refuted 3-0 — `isDelegating` counts pending delegations while `isVoting`
+   counts only the active target.* The asymmetry is real but pre-existing and
+   untouched: `isDelegating`'s `lastDelegationStakePoolStatus || …` precedence
+   at `Wallet.ts:245-247` is unmodified context. D-10 (guide `:1252-1255`)
+   explicitly forbids a `pendingVote` computed in v1, and the pending data
+   stays reachable on `pendingDelegations`, which sits directly above
+   `'votingTarget'` in the same pick list. No consumer pairs the two computeds
+   — none exists yet at all.
+
+**Acceptance criteria.** AC-1 met — `currentVote` (`:254-257`) returns the
+stored target or `null`; behavioural pin deferred to task-134. AC-2 met —
+`isVoting` (`:259-262`) is literally `this.currentVote !== null`; same
+deferral. AC-3 **not discharged by this diff, by design** — the guide
+(`:1273-1279`, restated at `:1400-1402`) formally assigns "all four delegation
+statuses plus pending" to the task-134 specs
+(`tests/jest/api/createWalletFromServerData.spec.ts` for the statuses and the
+`wallet-delegating-and-voting.json` pending fixture,
+`tests/jest/api/walletVotingComputeds.spec.ts` for the computeds and `update()`
+propagation), and both files were confirmed still absent. Writing them here
+would collide head-on with task-134 Step 2. AC-4 met — `'votingTarget'` at
+`:200`. AC-5 met — the gate was the unfiltered `node_modules/.bin/jest
+--runInBand`, and its counts are recorded in the statusReason. AC-6 met — all
+four excluded Wallet-importing specs plus the sanitization floor appear as
+`PASS` by name in that log. AC-7 confirmed **already met at HEAD** by commit
+2ee5f74cf and deliberately not re-edited: guide `:1376` (this task) and
+`:1800` (task-132) both read `node_modules/.bin/jest --runInBand   # whole
+tree: all 82 suites stay green`. AC-8 met — the parenthetical is gone, the
+sentence intact, and `grep -rn "task-1[0-9][0-9]" source tests storybook`
+returns zero hits. AC-9 met in substance — both files sit in one change set
+with an empty index, and the diff introduces no comment at all.
+
+**Comment convention.** Zero comments were added. The diff's only comment
+change is a deletion of a task id from an existing block comment; the
+remaining sentence states what populates the type, which is the invariant and
+not change history. Nothing carries a review label, an ALL-CAPS marker or a
+task reference.
+
+**No unnecessary complexity.** Thirteen added lines: one field, one string in
+an existing list, two computeds. No new file, no helper, no new export, no
+error type, no caching, no `observable.ref` one-off, no historical-vote field
+and no `pendingVote` computed (D-10). Scope fence clean in both directions —
+`api.ts` is byte-identical, and no spec file was created (task-134's boundary).
+
+**Verification commands run (results as observed).**
+
+1. `node_modules/.bin/tsc --noEmit` → exit 0, zero diagnostics. Used as the
+   authoritative gate over `yarn compile`, which prepends `typedef:sass` and
+   this task touches no scss.
+2. `node_modules/.bin/eslint` on the two changed files → exit 0; 20 problems,
+   0 errors, 20 warnings. Proven to be exactly the HEAD baseline by re-linting
+   the HEAD blobs through `--stdin --stdin-filename` (11 + 9 = 20, same rule
+   and line set). Every warning sits outside the edited hunks.
+3. `node_modules/.bin/jest --runInBand` — **unfiltered, no `tests/jest`
+   argument** (AC-5) → exit 0 in 46.841 s. Test Suites: 1 skipped, 81 passed,
+   81 of 82 total. Tests: 12 skipped, 1038 passed, 1050 total. Snapshots: 2
+   passed. `grep -n "^FAIL"` over the log → no matches. The single skipped
+   suite is the pre-existing `tests/jest/governance/GovernanceCliArgvSmoke.
+   spec.ts`; this diff modifies no test file.
+4. The five AC-6 specs confirmed `PASS` by name in that log —
+   `WalletSendForm.spec.tsx` (12.179 s),
+   `tests/jest/security/governance-sanitization.spec.ts`,
+   `VotingGovernancePage.spec.tsx`,
+   `VotingPowerDelegationConfirmationDialog.spec.tsx`, and
+   `tests/wallets/unit/wallet-utils.spec.ts`.
+5. `node_modules/.bin/jest --runInBand --coverage=false
+   tests/jest/security/governance-sanitization.spec.ts` → 1 suite passed,
+   23 of 23 tests. The inherited floor holds exactly; the diff adds no logger,
+   analytics or electron-store sink.
+6. `grep -n "votingTarget" source/renderer/app/domains/Wallet.ts` → exactly 4
+   hits (`:130` WalletProps, `:166` observable, `:200` pick list, `:256`
+   computed body), matching the guide's prediction at `:1372-1374`;
+   `grep -rn "task-1[0-9][0-9]" source tests storybook` → zero hits (AC-8);
+   `grep -rn "interface DRepIdentity" source | wc -l` → 1.
+7. `git diff --name-only` → the two files only, so invariant 4 holds:
+   `VotingPowerDelegation.tsx`, `VotingStore.ts` and `routes-config.ts` are
+   byte-identical. `git diff package.json` → empty.
+8. `node_modules/.bin/prettier --check` on both files → "All matched files use
+   Prettier code style!", exit 0, and the same check against the HEAD blobs is
+   equally clean — neither pre-existing nor introduced drift. `--write` was
+   never run.
+
+**Out-of-scope observations carried forward.** Newly recorded as F-15: the
+renderer-side key names `votingTarget` / `currentVote` are absent from
+`filterLogData`'s `sensitiveData` list (source/common/utils/logging.ts:24-48,
+which is keyed to the wire shape — `drepId`, `vote`, `voting`), and the floor
+suite's redaction cases are all wire-keyed too, so the domain shape is
+unguarded the moment cv-2 gives it a consumer. F-11 / task-170 remains open and
+does not close it: task-170 wraps wire payloads whose key is `voting`. Still
+carried from earlier entries: F-5 — `nix fmt` cannot run in this devcontainer,
+prettier is the substitute and the format pass is owed pre-merge. Finally, the
+`tests/jest` path filter that AC-7 removed from `:1376` and `:1800` survives at
+guide `:566`, `:693` and `:1191`; all three sit inside the already-complete
+task-127 / task-128 / task-130 sections, so no pending task can be misled by
+them and they were left alone (F-13 records the underlying 7-of-82 fact).
+
+Decision: approved
