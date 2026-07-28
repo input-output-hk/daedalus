@@ -1637,3 +1637,365 @@ renderer-side names stay unguarded until a consumer exists. This component
 adds no sink of any kind, so it neither advances nor worsens F-15.
 
 Decision: approved
+
+---
+
+## Code Review: task-133 — iteration 1 (2026-07-28)
+
+**Scope reviewed.** The working tree against the guide section "task-133:
+Storybook entry, 4 core knobs" (cv-1-implementation-guide.md:1833-2015 — the
+two-file "Files touched" list at `:1835-1838`, the Storybook-6.4 context block
+at `:1840-1848`, the record-only orphan-story note at `:1850-1856`, the four
+inline locked invariants at `:1858-1871`, the four resolved judgment calls at
+`:1873-1881`, Step 1's verbatim file body at `:1889-1966`, Step 2's single
+import line at `:1972-1979`, the Step 3 verify block at `:1981-2001` and the
+five-item acceptance checklist at `:2003-2013`), the knob table in
+designs/current-vote-display-ux.md:200-211, and task-133's two acceptance
+criteria in governance-drep-discovery-plan-tasks.json (pre-scribe
+`:1025-1028`). Two files and nothing else: one new untracked story of 78 lines
+and one added import line in a tracked file. `git diff --name-only` →
+`storybook/stories/index.ts` alone; HEAD unchanged at 23f443b76 on
+`wt/cv-1-task-133`. One review round.
+
+**What landed.**
+
+- `storybook/stories/governance/CurrentVoteSummary.stories.tsx` (new, 78
+  lines) — one `storiesOf('Governance / Current Vote Summary', module)` kind
+  with one story, `Core states`. `PANEL_STYLE` top-level const (`:9-13`);
+  the three checksum-verified vector consts (`:17-21`); the label→id map
+  `CURRENT_VOTE_OPTIONS` (`:23-28`) carrying exactly four entries; the
+  `resolveCurrentVote` switch (`:30-52`) whose `case 'noDelegation':` falls
+  through to `default:` returning `null`; decorators in house order —
+  `StoryProvider` wrapping `StoryDecorator` first (`:58-62`), `withKnobs`
+  second (`:63`); one `select('Current vote (mock)', CURRENT_VOTE_OPTIONS,
+  'noDelegation')` (`:65-69`); and a `<div style={PANEL_STYLE}>` wrapper
+  around `<CurrentVoteSummary key={option} currentVote={…} />` (`:71-76`).
+- `storybook/stories/index.ts:18` — `import
+  './governance/CurrentVoteSummary.stories';`, inserted directly after
+  `import './governance/DRepDirectory.stories';` (`:17`), inside the
+  `// Voting` group and ahead of `// Settings` (`:19`). The whole diff is that
+  one line. This is the load-bearing half: `storybook/main.ts:8` is `stories:
+  ['../storybook/stories/index.ts']`, so an unregistered story never renders.
+- Nothing else. No spec (task-134's boundary), no catalog edit (task-135's),
+  no `_utils/fixtures.ts` or `GovernanceWrapper.tsx` (cv-2 task-143/task-144),
+  no touch of `CurrentVoteSummary.tsx` or any file under `source/` or `tests/`
+  — `git status --porcelain source/ tests/` is empty.
+
+The story body was compared byte-for-byte against the guide's Step 1 block
+rather than by eye. The only delta in the whole file is the vector comment,
+covered under "Comment convention" below.
+
+**Review method (three lenses, adversarial refutation).** Three independent
+lenses were run over the diff: (1) guide and design fidelity plus contract
+conformance — the Step 1/Step 2 byte comparison, the ux §13 knob table, the
+`WalletVotingTarget` / `DRepIdentity` literal, the `injectIntl` prop surface
+and the decorator/`StoryDecorator` clone semantics; (2) locked invariants,
+the sanitization floor and the scope fence — boundary greps plus a programmatic
+bech32 decode and the floor suite; (3) simplicity, conventions and hygiene —
+import order, exemplar shape, comment rules, and whether any construct in the
+file earns its place. Every candidate any lens produced was then attacked on
+the reproduce / guide-authority / scope axes and allowed to stand only if it
+survived. **Zero blockers were confirmed, in one iteration**, and no change was
+made to either file as a result of the review.
+
+Per-lens decision. Fidelity — clean; the story is character-for-character the
+guide's Step 1 block apart from the comment noted below, the registration line
+is exactly where Step 2 puts it, and every knob label and id matches ux
+`:201-209` verbatim including the em dash. Invariants / floor / scope — clean;
+every boundary grep empty, both bech32 vectors decoded and proved byte-equal to
+their committed fixtures, floor suite 23 of 23. Simplicity and conventions —
+clean; nothing unused, and the three constructs that looked like candidates for
+removal are all sibling-exemplar or guide-mandated shape.
+
+**Candidates adjudicated (none survived as a blocker).**
+
+1. *Refuted — "the vector comment deviates from the guide's verbatim block."*
+   The guide's own text at `:1903` is `// Checksum-verified vectors from the
+   cv-1 fixture set.`, which embeds a plan id. The shipped comment
+   (`:15-16`) drops it and states the invariant instead. Following the guide
+   here would have violated the comment convention; the deviation is the
+   correct resolution, not drift.
+2. *Refuted — "`source: 'onchain'` is inert, so the `drepUnverified` knob is
+   wrong."* Accurate as an observation and wrong as a defect.
+   `CurrentVoteSummary.tsx:65` hardcodes `<DRepSourceLabel source="on-chain"
+   />` and never reads `currentVote.source`, but the field is mandatory on the
+   `kind: 'drep'` arm of `WalletVotingTarget`
+   (api/wallets/types.ts:86-93) so it cannot be dropped, and `'onchain'` is a
+   do-not-revisit ruling in the guide at `:1875-1877` as the only source value
+   the cv-1 pipeline emits. Kept, recorded below.
+3. *Refuted — "the knob label 'DRep — unverified anchor' promises an anchor
+   cv-1 does not render."* True of the render and irrelevant to the label: the
+   labels are ux §13 wording (`:201-209`), the knob VALUES are the ids the
+   acceptance criterion names, and the guide pins both at `:1873-1875`.
+   Inventing new copy here would drift from the AC's own vocabulary and from
+   the cv-2 story that converges on it.
+4. *Refuted — "the ALL-CAPS `NOT` in the locale comment (`:54-56`) breaches the
+   comment convention."* The three-line comment is house text, byte-identical
+   in `DRepCategoryBadge.stories.tsx:38-40` and `DRepDirectory.stories.tsx:
+   145-147` and reproduced word for word by the guide. Editing it in this one
+   file would fork the same sentence across three governance stories for no
+   gain. Its placement directly above `storiesOf` is also the better of the two
+   precedents.
+5. *Refuted — "`key={option}` is dead weight on a stateless component."*
+   Reproduced: `CurrentVoteSummary.tsx:19-100` has no state, no effect and no
+   ref, so React re-renders correctly on a prop change without a remount. But
+   the guide pre-resolved it at `:1877-1879` ("applied … even though the
+   component is stateless") inside a do-not-revisit block, and cv-2 task-144
+   builds the same remount idiom into the shared wrapper. Cost is one prop.
+6. *Refuted — "`CURRENT_VOTE_OPTIONS` + `resolveCurrentVote` could be one
+   `Record` lookup."* It would save about ten lines and lose two things: the
+   shape stops matching `DIRECTORY_STATE_OPTIONS` / `resolveDirectoryState`
+   (DRepDirectory.stories.tsx:214-262), which is the pattern the guide cites,
+   and the `default:` arm stops guaranteeing a rendered branch if a knob id
+   ever drifts — a bare lookup would hand `undefined` to a prop typed
+   `WalletVotingTarget | null`.
+7. *Refuted — "`StoryProvider` is unnecessary for a storeless component."*
+   True that `CurrentVoteSummary` consumes only `currentVote` plus injected
+   `intl`, but the closest exemplar wraps an equally storeless component in the
+   identical pair (`DRepCategoryBadge.stories.tsx:42-46`), and the same stack
+   appears in the one governance story that is actually registered
+   (`DRepDirectory.stories.tsx:264-272`), so it is runtime-proven rather than
+   copied from an orphan.
+8. *Refuted as a defect of this diff — "the 12 `voting.governance.currentVote.*`
+   keys are absent from both catalogs."* Confirmed absent (grep count 0 in
+   en-US.json and ja-JP.json against 12 in `CurrentVoteSummary.messages.ts`),
+   and that is the designed order: the catalogs are task-135's, which itself
+   waits on task-171. It is not a defect, but it does bear directly on AC-1 and
+   is recorded there and as F-19 rather than dismissed.
+9. *Refuted as attributable — `yarn storybook:build` exits 1.* The failure is
+   in the MANAGER compile, at `storybook/addons/DaedalusMenu/register.tsx:12`.
+   Structurally unreachable from either changed file: `main.ts:8` puts
+   `../storybook/stories/index.ts` under `stories:` (preview graph) while
+   `main.ts:13` puts `require.resolve('./addons/DaedalusMenu/register.tsx')`
+   under `addons:` (manager graph), and the `swc-loader` rule for `/\.tsx?$/`
+   is pushed inside `webpackFinal` (`main.ts:16-141`), which in Storybook 6.4
+   configures the preview only — so the manager webpack genuinely has no loader
+   for that file's JSX. Detail and the honesty qualifier are under verification
+   command 4.
+10. *Nit, not actionable — the `KEY_` prefix on `KEY_CIP129` / `KEY_CIP105` /
+    `KEY_CREDENTIAL_HEX` (`:17-21`) encodes `credentialType: 'key'` but scans
+    like "object key".* Guide-verbatim and byte-locked; renaming would break the
+    byte comparison for no reader benefit.
+
+**Acceptance criteria.** Neither is reported green, and the reasons differ.
+
+AC-1 — "Four core knob values (noDelegation | drepUnverified | abstain |
+noConfidence) render without console errors." **Partially demonstrated, not
+met.** The four values are present, distinct and correctly wired: `noDelegation`
+→ `null` → the warning + CTA branch (CurrentVoteSummary.tsx:20-47),
+`drepUnverified` → the `kind: 'drep'` branch (`:57-70`) rendering exactly one id
+row, `abstain` and `noConfidence` → the sentinel branch (`:74-98`) with no id.
+The render path is type-clean, lint-clean, prettier-clean, and both files
+transpile under the preview's real `swc-loader` options. What is NOT established
+is the "without console errors" half, for two independent reasons. (a) The 12
+message keys are absent from both catalogs, `StoryWrapper` passes `'en-US'` /
+`'ja-JP'` into `<IntlProvider>` without a `defaultLocale`, and react-intl 2.9.0
+routes every missing message through `console.error` in both locales — so the
+clause is unsatisfiable until task-135 lands, in en-US as well as ja-JP. New
+finding F-19 records the exact mechanism. (b) The build that would have
+exercised a mount aborted for the unrelated manager reason, so there is no
+runtime evidence at all. AC-1's console-error clause is **owed re-verification
+after task-135**, in a running Storybook.
+
+AC-2 — "Story renders in both en-US and ja-JP locales without overflow."
+**Not verifiable in this environment.** It is a visual criterion and this
+devcontainer has no browser; the automated floor the guide names at
+`:1991-1994` (`yarn storybook:build` compiling) was run and did not pass, for
+the pre-existing manager-side reason, so even the weak proxy is absent. The
+ja-JP half is additionally premature: until task-135 supplies real Japanese
+copy, ja-JP falls back to the `!!!`-marked English `defaultMessage`, so an
+overflow judgement made now would not be the one that matters. Owed: a manual
+pass in the main checkout driving the GLOBAL English/Japanese toggle across all
+four knob values.
+
+The guide's three extra acceptance boxes do hold, and were checked
+independently. No local `IntlProvider`, no per-locale variants and no
+`drepVerified` knob or fifth value — greps for `IntlProvider` and
+`drepVerified` return only the word inside the `:54-56` comment and the
+`drepUnverified` id at `:25` / `:32`. The story is registered
+(`index.ts:18`). tsc, lint and prettier are clean on the new file.
+
+**Status vocabulary.** `complete`, and never `verified`. The row ships no
+executing assertion of its own — Jest cannot see it at all (`jest.config.js:129`
+sets `roots: ['<rootDir>/tests','<rootDir>/source']`, so `storybook/` is outside
+the test tree) — and its two criteria are adjudicated here by static reading
+plus the compile/lint/transpile gate. `complete` matches the standing precedent
+for browser-unverifiable Storybook work in this tracker: task-116 recorded five
+stories as "tsc/eslint-verified only — no display in this devcontainer" and
+task-122 recorded an acceptance path deferred to a later owner, both under
+`complete`. The dedicated proof `verified` demands does not exist yet and must
+not be claimed.
+
+**Comment convention.** Two comments in the change set, both surviving the hard
+test. `:15-16` states provenance and the actual invariant — the vectors are
+byte-for-byte from the committed fixtures, and bech32 is case-insensitive so
+they must never be re-cased or re-derived — in two plain sentence-case lines.
+`:54-56` is the house locale comment, verbatim from two sibling stories. Neither
+carries a task id, a review label or change history; `grep -nE
+'task-[0-9]|cv-[0-9]|CAT-|CP-|ADR|DD-'` over the new file returns nothing.
+
+**No unnecessary complexity.** 78 lines plus one import. One story, one knob, no
+`withState`, no `action()` handler, no helper render function, no local
+fixture module, no barrel export. Every const is referenced. The
+`<div style={PANEL_STYLE}>` wrapper is load-bearing rather than decorative:
+`StoryDecorator.tsx:31-39` clones children and injects `propsForChildren`
+unless the child is a plain `div`, so keeping the div is what stops a stray
+prop reaching `CurrentVoteSummary` — it must not be flattened in a later
+cleanup. Scope fence clean in both directions: nothing under `source/` or
+`tests/` moved, and none of task-134 / task-135 / cv-2's files were created.
+
+**Verification commands run (results as observed).** Commands 1-3 and 4 were
+re-run by this scribe pass and reproduced identically; 5-8 are as observed by
+the verify pass.
+
+1. `yarn compile` → exit 0. The `precompile` hook (`yarn typedef:sass`)
+   regenerated the gitignored `*.scss.d.ts` set this fresh worktree lacked (316
+   files), then `tsc --noEmit` produced zero diagnostics. `node_modules/.bin/tsc
+   --noEmit` re-run directly → exit 0 in 19.186 s, no output. Consistent with
+   F-16: the typings are not a compile precondition, they were simply generated
+   by the hook.
+2. `node_modules/.bin/eslint` on the two changed files → exit 0 with completely
+   empty output: 0 errors AND 0 warnings from the new and changed files. Over
+   the wider `storybook/stories/governance/` directory the run reports
+   "2 problems (0 errors, 2 warnings)", both pre-existing `no-unused-vars` in
+   `DRepDirectory.stories.tsx` at `140:23` (`drepId`) and `142:27` (`entry`) —
+   delta against the baseline is exactly zero.
+3. `node_modules/.bin/prettier --check storybook/stories/governance/
+   CurrentVoteSummary.stories.tsx storybook/stories/index.ts` → "Checking
+   formatting..." / "All matched files use Prettier code style!", exit 0.
+   Explicit paths only; `--write` was never run and `yarn prettier` /
+   `yarn prettier:check` were never invoked.
+4. `yarn storybook:build` → **exit 1**, and the failure is not attributable to
+   this task. Verbatim from the log: `ERR! => Failed to build the manager` /
+   `ERR! Module parse failed: Unexpected token (12:18)` / `ERR! You may need an
+   appropriate loader to handle this file type, currently no loaders are
+   configured to process this file.` pointing at `render: () => <DaedalusMenu
+   api={api} />`, with the offending module named in the stats as
+   `storybook/addons/DaedalusMenu/register.tsx`. Four independent checks that
+   it cannot originate here: the manager and preview are disjoint webpack
+   graphs (`main.ts:8` vs `:13`) and the `/\.tsx?$/` swc rule is preview-only
+   (pushed inside `webpackFinal`); `git status --porcelain storybook/addons/`
+   is empty and `register.tsx` last changed in commit e39a29cf1; the diff is
+   the two in-scope files only; and `grep -c` for `CurrentVoteSummary`,
+   `stories/governance` and `stories/index` over the whole build log returns
+   **0**. The preview compile had reached 55% / 18,761 modules when the manager
+   aborted the run. **Honesty qualifier:** pre-existence is inferred from the
+   graph separation plus the clean diff, not measured — reverting the story was
+   forbidden and building at HEAD would have meant working outside the assigned
+   worktree. Net effect: the automated stand-in for the visual pass is
+   UNAVAILABLE, not green. `dist/storybook`, created by the aborted build, was
+   proven ignored rather than assumed (`git check-ignore -v dist/storybook` →
+   `.gitignore:57:dist`).
+5. Compensating signal in place of the missing build: both in-scope files were
+   transpiled through `@swc/core` with the exact `jsc` options `main.ts:72-94`
+   hands to `swc-loader` for the preview → `OK …/CurrentVoteSummary.stories.tsx
+   -> 2583 bytes`, `OK …/stories/index.ts -> 1390 bytes`, exit 0. That covers
+   parse and transform under the real preview loader; it does NOT cover module
+   resolution, scss loading or runtime render.
+6. `node_modules/.bin/jest tests/jest/security/governance-sanitization.spec.ts`
+   → "Test Suites: 1 passed, 1 total" / "Tests: 23 passed, 23 total" in 4.0 s.
+   The inherited floor holds exactly. The whole-tree run was not repeated: this
+   task adds no spec and `jest.config.js:129` puts `storybook/` outside `roots`,
+   so Jest cannot observe the diff.
+7. Bech32 verified positively rather than string-matched. Both vectors were
+   decoded with the repo's `bech32` package: `drep1y2sm9s75…23nmjy` → hrp
+   `drep`, payload `22` + the 28-byte credential; `drep_vkh15xev…zu4a4l` → hrp
+   `drep_vkh`, payload the same 28 bytes. So the two encode one credential,
+   `KEY_CREDENTIAL_HEX` equals it, and `credentialType: 'key'` agrees with the
+   CIP-129 header byte `0x22`. `Buffer.equals` against the fixtures confirms
+   byte-identity with `tests/mocks/wallets/wallet-voting-drep.json:26` (58/58)
+   and `tests/mocks/wallets/wallet-delegating-and-voting.json:27` (60/60), case
+   untouched; the credential hex is the repo-canonical value already committed
+   in `tests/jest/governance/normalizeDRepIdentity.spec.ts:11`. Invariant 10
+   holds and the identity literal is internally coherent rather than a mash-up.
+8. Boundary greps over the new file — all empty, which is the required result.
+   `console\.|logger|Logger|analytics|electron-store|electronStore|ipcRenderer|
+   localStorage` → no match (invariant 2). `drepVerified|givenName|anchorUrl|
+   http|badge|status` → only the `drepUnverified` id and the vector comment
+   (invariants 3, 8, 14). `defineMessages|defaultMessage|formatMessage|!!!` →
+   no match, so the story authors zero copy and cannot touch a preliminary
+   marker (invariant 11); `CurrentVoteSummary.messages.ts` still carries all 12
+   and is unmodified. `store|drepIndex|actions|api\.` → no match.
+   `git status --porcelain` before and after the full gate → exactly
+   ` M storybook/stories/index.ts` and `?? storybook/stories/governance/
+   CurrentVoteSummary.stories.tsx`, nothing staged, nothing else.
+
+**Out-of-scope observations carried forward.**
+
+- **The three orphan governance stories remain unregistered, deliberately.**
+  `DRepCategoryBadge.stories.tsx`, `DRepDetail.stories.tsx` and
+  `DRepDirectoryBanner.stories.tsx` exist under `storybook/stories/governance/`
+  but are absent from `storybook/stories/index.ts`, so they never render. This
+  is a pre-existing gap confirmed again at HEAD, explicitly out of cv-1 scope
+  per the guide's record-only note at `:1850-1856`, and the implementer
+  correctly did not silently register them. Recorded, not fixed. Note the
+  second-order effect this had on the review: `DRepCategoryBadge.stories.tsx`
+  is the PRIMARY style exemplar for this task and is itself unrendered, so the
+  decorator stack was additionally cross-checked against
+  `DRepDirectory.stories.tsx:264-272`, the one registered governance story.
+- **Newly recorded as F-19** — the react-intl 2.9.0 missing-message path is
+  `console.error`, not a warning, and it fires in en-US too because neither
+  `StoryWrapper` nor `App.tsx` sets `defaultLocale`. This is the mechanism
+  behind AC-1's undemonstrable clause and behind the task-171 → task-135 →
+  AC-1 re-verify chain; the guide describes the symptom in four places but
+  always as a "warning" and always framed around the Japanese toggle, which
+  understates it.
+- **Three guide-drift items, all cosmetic, none fixed** (cv-1 planning is
+  closed and this scribe's mandate is its own task). The knob-pattern citation
+  at `:1881` reads `:212-292`; the live `DRepDirectory.stories.tsx` block is
+  comment `:212-213`, `DIRECTORY_STATE_OPTIONS` `:214-220`,
+  `resolveDirectoryState` `:222-262`, decorators `:264-268`, the `select` call
+  `:292`. The prose at `:1969-1970` says the `drep` literal typechecks
+  structurally "no extra type import needed", while the same section's own code
+  block at `:1896` imports `type { WalletVotingTarget }` — the code block is
+  right, because `resolveCurrentVote` declares that return type; the prose
+  presumably meant the separate `DRepIdentity` import, which is indeed
+  unnecessary. And the Step 3 verify block at `:1981-2001` prescribes `yarn
+  storybook`, which no devcontainer run can honour.
+- Still carried and unmoved by this diff: **F-5** — `nix fmt` cannot run here,
+  explicit-path `node_modules/.bin/prettier` is the substitute and the format
+  pass is owed pre-merge; **F-15** — `filterLogData`'s key list is keyed to the
+  wire shape, untouched here because the story adds no sink of any kind;
+  **F-18** — design §9.1's `drep` paragraph is the combined cv-1+cv-2 card, and
+  the knob label's "unverified anchor" wording is the same seam seen from the
+  ux table rather than a second problem.
+
+Decision: approved
+
+---
+
+## Planner: task-133 — post-review verification addendum (2026-07-28)
+
+The review above recorded the `yarn storybook:build` failure as *inferred* to be
+pre-existing, because reverting the story to test it was out of bounds. That
+inference has since been replaced with a measurement, and the measurement also
+produced better evidence for AC-1 than the review had.
+
+**Measured.** A second worktree was checked out detached at `23f443b76` — the
+commit this task branched from — with no changes at all and `node_modules`
+symlinked. `yarn storybook:build` there exits 1 with the identical
+`=> Failed to build the manager` / `Module parse failed: Unexpected token (12:18)`
+at `storybook/addons/DaedalusMenu/register.tsx:12`. The break predates cv-1 and
+is unreachable from any story file; the cause is `storybook/main.ts` registering
+a `.tsx` addon into the manager graph at `:13` while the `swc-loader` rule at
+`:71` sits inside the preview-only `webpackFinal` hook opened at `:16`.
+
+**Better floor found.** `start-storybook` does not treat the manager error as
+fatal. At clean HEAD it reports `manager … compiled with 1 error` and still comes
+up with a successful `webpack built preview`. Re-run on this branch with the new
+story present, the preview compiled clean in 35.9 s with zero `ERROR in`,
+`Module not found` or `Failed to compile` lines. The preview graph is the one
+`stories/index.ts` feeds, so this confirms the story links into the real
+Storybook bundle — a stronger result than the `@swc/core` transpile the verifier
+had fallen back on.
+
+**Effect on the task-133 record.** No blocker, no code change. The tracker
+`statusReason` was corrected to drop its now-false "no runtime evidence exists"
+clause, and the mechanism plus its two spillovers — `yarn check:all` is red at
+HEAD for this reason alone, and Storybook rows in this plan should use a clean
+`yarn storybook` preview compile as their automated floor rather than
+`yarn storybook:build` — are recorded as F-20 in `research/cv-1-findings.md`.
+AC-2's owed item narrows to the human visual and overflow pass, which is not
+blocked by this gap. AC-1 is unchanged: still owed after task-135, per F-19.
+
+**Decision:** approved, unchanged.

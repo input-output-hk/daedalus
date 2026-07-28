@@ -648,3 +648,133 @@ task-136 — whose job *is* to add the `:185` / `:189` badge — would also pick
 `:191-193`, rendering an anchor-derived `givenName` before the hardened anchor
 pipeline exists, which is precisely the unverified-identity display that AC-3
 and the guide's no-anchor-display invariant forbid.
+
+## F-19 — react-intl's missing-message path is `console.error`, not a warning, and it fires in **en-US** as well as ja-JP because neither `StoryWrapper` nor `App.tsx` sets `defaultLocale` — so task-133's AC-1 is unsatisfiable until task-135 seeds the catalogs
+
+Found during the task-133 build. Four governing passages predict react-intl
+noise while the 12 `voting.governance.currentVote.*` keys are unseeded, and all
+four call it a *warning* and frame it around the Japanese toggle:
+`cv-1-implementation-guide.md:1998-2000` ("before task-135 lands, react-intl
+logs missing-message warnings … re-check after task-135 for real ja-JP copy and
+NO missing-message warnings"), `:2094` ("react-intl logs missing-message
+console noise until then; it does not fail the run"), `:2690` and `:3155`; the
+task-132 review restates it at `cv-1-code-review.md:1535`. Read at face value
+that says: en-US is quiet today, Japanese is noisy, and the noise is a warning.
+All three halves are wrong, and the first two are what make task-133's AC-1 —
+"Four core knob values … render **without console errors**"
+(`governance-drep-discovery-plan-tasks.json:1026`) — impossible to satisfy in
+en-US either.
+
+The mechanism, read out of the installed package (`react-intl` 2.9.0,
+`node_modules/react-intl/lib/index.js`). `formatMessage` looks the id up at
+`:813` (`var message = messages && messages[id];`). With no message it reaches
+`:837`:
+
+```js
+if (!defaultMessage || locale && locale.toLowerCase() !== defaultLocale.toLowerCase()) {
+  onError(createError('Missing message: "' + id + '" ...'));
+}
+```
+
+The comment above that guard says it exists to prevent console noise "when no
+`messages` are passed into the `<IntlProvider>` for the **default locale**". The
+guard is therefore satisfied — and the error emitted — whenever the active
+locale differs from `defaultLocale`, *even though a `defaultMessage` exists and
+is about to be used as the fallback*. `defaultLocale` is not passed anywhere in
+this repo, so it stays at the library default `'en'` (`:903`), while both
+providers pass a **region-tagged** locale: `StoryWrapper.tsx:70-76` spreads
+`{ locale, key: locale, messages: translations[locale] }` with `locale` drawn
+from `LOCALES` — `'en-US' | 'ja-JP'` (`source/common/types/locales.types.ts:1-8`)
+— and `App.tsx:76-82` does exactly the same in the production renderer.
+`'en-us' !== 'en'`, so the branch fires for **every** missing key in **both**
+locales. `onError` defaults to `defaultErrorHandler` (`:906`), which is
+`console.error` outside production (`:523-527`). So it is an error, not a
+warning, and en-US is not exempt.
+
+Measured for this task: 12 `voting.governance.currentVote.*` keys in
+`CurrentVoteSummary.messages.ts`, **0** in `source/renderer/app/i18n/locales/
+en-US.json` and **0** in `ja-JP.json`. Every one of the four knob values
+therefore emits `[React Intl] Missing message: "voting.governance.currentVote.…"
+for locale: "en-US", using default message as fallback.` through
+`console.error`, and the same again under `ja-JP`. Nothing in the story causes
+it and nothing in the story can suppress it.
+
+One nuance decides whether a future check sees the noise at all, and it is a
+trap for the re-verification: the whole path is `NODE_ENV`-gated twice. At
+`:818` `formatMessage` returns `message || defaultMessage || id` early whenever
+there are no interpolation values **and** `NODE_ENV === 'production'`, and even
+past that `defaultErrorHandler` is a no-op in production. `yarn storybook`
+(`start-storybook`, package.json:55) serves a development bundle and shows the
+errors; a production static bundle would show none. So AC-1 must be re-verified
+in the **dev** Storybook — checking it against a served `yarn storybook:build`
+output would report a false green. (Code-path reasoning plus the two script
+definitions; not measured end to end here, because `storybook:build` aborts on
+the unrelated manager-side loader gap recorded in the task-133 review.)
+
+**Resolution:** not a defect in task-133 and explicitly not fixable there. The
+three "fixes" available at story level are all wrong: seeding the keys is
+task-135's row, inlining literals breaks D-4 and invariant 11, and adding
+`defaultLocale` to `StoryWrapper` would silence the en-US half of a real
+signal — every genuinely missing en-US key across the whole app — while leaving
+ja-JP untouched, and belongs to nobody's current row. The dependency chain is
+already correct in the tracker and is the thing to follow: **task-171** (restore
+the `!!!` markers and add the guard, `dependencies: []`) → **task-135** (seed
+the 12 keys in both catalogs, `dependencies: ["task-132","task-171"]`) →
+task-133's AC-1 becomes checkable. Until then AC-1's console-error clause is
+recorded as owed in the task-133 row and must never be reported green. Two
+consequences for adjacent work. task-134's snapshot spec renders with `messages`
+from `en-US.json` and will emit the same `console.error` per key — the guide's
+`:2091-2094` note is right that the `!!!` `defaultMessage` fallback keeps the
+snapshots stable across the task boundary, but a spec that fails on console
+output would break on it. And after task-135 the correct assertion is
+zero missing-message output **in both locales**, not just Japanese.
+
+---
+
+## F-20 — `yarn storybook:build` has been red at HEAD since before cv-1 (the manager webpack has no JSX loader), but `yarn storybook` serves fine and its preview compile is the automated floor that actually works
+
+Measured, not inferred, while closing task-133. A second worktree was checked out
+detached at the pre-task commit `23f443b76` with no changes at all and
+`node_modules` symlinked from the main checkout; `yarn storybook:build` there
+exits 1 with the identical failure seen on the task branch —
+`=> Failed to build the manager`, `Module parse failed: Unexpected token (12:18)`,
+pointing at `storybook/addons/DaedalusMenu/register.tsx:12`
+(`render: () => <DaedalusMenu api={api} />`). The break predates every cv-1 row
+and is unreachable from any story file.
+
+The cause is a module-graph split in `storybook/main.ts`. `:8` puts
+`../storybook/stories/index.ts` under `stories:` (the **preview** graph) while
+`:13` puts `require.resolve('./addons/DaedalusMenu/register.tsx')` under
+`addons:` (the **manager** graph). The `swc-loader` rule for `/\.tsx?$/` is
+registered at `:71`, inside the `webpackFinal` hook opened at `:16` — and in
+Storybook 6.4 `webpackFinal` configures the preview only, never the manager. So
+the manager webpack genuinely has no loader for that addon's JSX.
+
+The two runners diverge on how fatal that is, and the difference decides which
+command is a usable gate:
+
+- `build-storybook` (`package.json:56`) treats the manager failure as fatal and
+  exits 1 **before** the preview result is reported — so it yields no evidence
+  about stories at all, pass or fail.
+- `start-storybook` (`package.json:55`) does not. Measured at clean `23f443b76`:
+  `manager (webpack 5.72.0) compiled with 1 error`, yet the server still came up
+  (`Storybook 6.4.22 for React started`, `Local: http://localhost:6006/`) and
+  `webpack built preview` succeeded. Re-run on the task branch with the new
+  story present, the preview built clean in 35.9 s with zero `ERROR in`,
+  `Module not found` or `Failed to compile` lines.
+
+**Resolution:** three consequences, none fixable inside cv-1. First, the
+automated floor nominated for Storybook rows in the cv-1 guide
+(`:1990-1993`) — `yarn storybook:build` compiling — cannot ever be green here;
+the substitute that carries real signal is a `yarn storybook` run whose preview
+compile is clean, because the preview graph is the one stories live in. Task-133
+was closed on that basis and its story is confirmed to link into the live
+preview bundle, not merely to transpile. Second, `yarn check:all`
+(`package.json:17`) chains `yarn storybook:build` last and is therefore red at
+HEAD for reasons unrelated to any governance work — do not read a `check:all`
+failure as a regression without first checking whether the only error is the
+manager one. Third, the owed AC-2 visual pass is **not** blocked by this: the
+dev server serves, so the en-US/ja-JP toggle pass can be performed in the main
+checkout as soon as a browser is available (after task-135, per F-19). Repairing
+the manager loader means moving the `.tsx` rule out of `webpackFinal` into
+`managerWebpack`, which is repo-infrastructure work outside this plan.

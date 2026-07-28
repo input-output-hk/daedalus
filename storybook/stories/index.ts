@@ -15,6 +15,7 @@ import './dapps/TransactionRequest.stories';
 import './voting/Voting.stories';
 import './voting/Governance.stories';
 import './governance/DRepDirectory.stories';
+import './governance/CurrentVoteSummary.stories';
 // Settings
 import './settings';
 // Assets
