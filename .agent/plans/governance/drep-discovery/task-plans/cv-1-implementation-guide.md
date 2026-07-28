@@ -2199,6 +2199,7 @@ describe('_createWalletFromServerData voting mapping', () => {
     );
     expect(wallet.delegatedStakePoolId).toBeNull();
     expect(toJS(wallet.votingTarget)).toEqual({ kind: 'abstain' });
+    expect(mockedWarn).not.toHaveBeenCalled();
   });
 
   it('maps the no_confidence sentinel with no pool id', () => {
@@ -2207,6 +2208,7 @@ describe('_createWalletFromServerData voting mapping', () => {
     );
     expect(wallet.delegatedStakePoolId).toBeNull();
     expect(toJS(wallet.votingTarget)).toEqual({ kind: 'no_confidence' });
+    expect(mockedWarn).not.toHaveBeenCalled();
   });
 
   it('keeps the pending next delegation intact alongside the vote target', () => {
@@ -2508,8 +2510,8 @@ is valid by construction and the input reaches the CIP-105 length guard
 return in the `drep_vkh` / `drep_script` branch) instead of the decode
 `catch`. That guard is the one branch task-129's eight cases leave uncovered.
 
-Together with the two `expect(mockedWarn).not.toHaveBeenCalled()` assertions
-in the Step-1 valid-DRep cases, this pins the normalizer's "never logs"
+Together with the four `expect(mockedWarn).not.toHaveBeenCalled()` assertions
+in the Step-1 accepted-target cases, this pins the normalizer's "never logs"
 contract on the ACCEPTED-id path, not only on the rejection paths the
 sanitized-warning cases already cover.
 
@@ -2543,8 +2545,10 @@ node_modules/.bin/prettier --check \
       `DREP_VOTE` with `source: 'onchain'` IS the drepUnverified state).
 - [ ] Sanitized-warning cases: HRP-only payload, fixed `'invalid'` token,
       raw string absent from every logged call (invariant 2).
-- [ ] The valid-DRep mapper cases assert `mockedWarn` was never called, so the
-      no-logging floor is pinned on the accepted-id path too (Step 1).
+- [ ] All four accepted-target mapper cases — voting-only DRep,
+      delegating_and_voting, abstain, no_confidence — assert `mockedWarn` was
+      never called, so the no-logging floor is pinned on the accepted-id path
+      too (AC-7 — Step 1).
 - [ ] `tests/jest/governance/normalizeDRepIdentity.spec.ts` is EXTENDED (nine
       cases) with the wrong-length CIP-105 vector, and a coverage run over
       `normalizeDRepIdentity.ts` reports no uncovered lines (Step 5).
