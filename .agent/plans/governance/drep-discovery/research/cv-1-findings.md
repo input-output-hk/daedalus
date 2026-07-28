@@ -1145,3 +1145,72 @@ row and need none. The deletion blind spot has no owner; if a later slice wants
 it, the cheap form is a key-set symmetry assertion added to the existing
 `preliminaryCopyMarkers` suite, not a new file. cv-2's task-146 inherits the
 mint procedure above verbatim.
+
+## F-26 — task-170 closes F-11 but leaves two Shelley-**typed** `api.ts` log sites unwrapped, and the guide's own audit grep structurally cannot see them: `importWalletFromKey` / `importWalletFromFile`
+
+**The gap.** task-170 wrapped six `AdaWallet`-shaped `logger.debug` success
+sites in `filterLogData` and deliberately left seven legacy/Byron sites alone
+(`LegacyAdaWallet` has no `delegation` field at all,
+`source/renderer/app/api/wallets/types.ts:57-71`, and `api.ts:915-920` injects
+`NOT_DELEGATING` locally, so no `voting` key is reachable there — a sound
+exclusion). Two further sites fall in neither bucket and were unclassified
+until the task-170 review: `api.ts:1995` `AdaApi::importWalletFromKey success`
+and `api.ts:2025` `AdaApi::importWalletFromFile success` both log
+`{ importedWallet }` raw, and in both cases the value is declared
+`const importedWallet: AdaWallet` (`:1991`, `:2019`). `AdaWallet.delegation.active`
+is a `WalletDelegation`, which carries `voting?: WalletVotingTarget`
+(`wallets/types.ts:117`, and `:123` on the `next` shape) since task-128. So by
+the type system these are Shelley call sites logging an unfiltered wallet
+payload, which is in direct tension with task-170's own inline invariant at
+`cv-1-implementation-guide.md:2740-2742`: "after this task no DRep id … reaches
+a logger payload from **any Shelley-wallet `api.ts` call site**."
+
+**Why the audit missed them, which is the reusable part.** The guide's Step 3
+audit grep filters on a pattern that matches only lines consisting exactly of
+`wallet,` or `wallets,`. `importedWallet,` cannot match it. That is precisely
+why the guide enumerates *thirteen* sites (6 wrapped + 7 legacy) and never
+mentions these two at all — the omission is mechanical, not a judgment call
+that was made and recorded. Any future sanitization audit of `api.ts` should
+key on the **declared type** of the logged value, not on the identifier
+spelling. A second trap from the same pass belongs with it: `api.ts:379`
+(`getWallets`) and `:1621` (`createHardwareWallet`) are multi-line calls, so
+they do **not** match a grep for `logger.debug('AdaApi::`; they surface only
+under a grep for `logger.debug(` at end of line. A reviewer running the
+scripted grep alone would wrongly conclude those two were never wrapped.
+
+**Why it was correctly left out of task-170 rather than fixed there.** The two
+sites are byte-identical at HEAD — `git show HEAD:source/renderer/app/api/api.ts`
+piped through `grep -n 'importedWallet,'` returns `2002` and `2032`, against
+`1996` and `2026` on the delivered tree, the 6-line shift being task-170's own
+contraction — so this is inherited state, not a regression the task introduced.
+The exposure is type-level rather than demonstrated: both paths call
+`importWalletAsKey` (`/api/internal/import-wallet`,
+`requests/importWalletAsKey.ts:16`) or `importWalletAsJSON`
+(`/api/backup/import`, `requests/importWalletAsJSON.ts:12`), which are Byron/V0
+import endpoints whose responses are not expected to carry a governance
+delegation, and neither is on the 5 s wallet-list poll that made F-11 urgent.
+Task-170's acceptance criteria are stated in terms of the enumerated
+wallet-list and wallet-detail sites, all of which are satisfied, so the review
+dropped this as a blocker 3-0 and recorded it here instead.
+
+**Resolution.** The fix, if anyone wants it, is two characters of surface: wrap
+both payloads in `filterLogData` exactly as the other six now are. It is
+cheap, strictly more redaction, and on a field with no diagnostic value —
+the same reasoning the guide used at `:2763-2765` for the `hwLocalData`
+consolidation. What it is *not* is a substitute for the two structurally
+different gaps that remain open and must not be conflated with it: **F-15**
+(the `sensitiveData` list is keyed to the **wire** shape, so a domain `Wallet`'s
+`votingTarget` / `currentVote` still serialize verbatim — owned by the first
+cv-2 consumer) and the `HardwareWalletsStore` `[HW-DEBUG]` raw `{ error }` sink
+(`slice-3-findings.md:71-74`), which is a substring-inside-`error.message`
+class that no key-based redactor can reach at all.
+
+**Tasked:** nobody, deliberately — cv-1 planning is closed and this is a
+type-level gap on two low-frequency Byron import paths, not a live leak.
+It belongs to whichever later row next touches `api.ts` logging, or to a
+standalone hardening row if the reviewer would rather schedule it than accept
+it. Whoever takes it should also add the corresponding
+`importWalletFromKey` / `importWalletFromFile` cases to
+`tests/jest/security/governance-sanitization.spec.ts`, since task-170's new
+case pins `getWallets` only — one of the six wrapped sites, which is what its
+AC-4 asked for and no more.

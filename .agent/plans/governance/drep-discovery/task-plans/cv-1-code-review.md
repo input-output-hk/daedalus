@@ -3075,3 +3075,387 @@ under the ~240-file pre-existing drift hazard. `yarn prettier` was never invoked
 **Blockers.** None.
 
 Decision: approved
+
+---
+
+## Code Review: task-170 — iteration 1 (2026-07-28)
+
+**Scope reviewed.** The uncommitted working tree against the guide section
+"task-170: Redact raw wallet payloads at the AdaApi wallet-list log sites"
+(cv-1-implementation-guide.md:2718-2945 — the two-entry "Files touched" list at
+`:2720-2724`, the Context block at `:2726-2737`, the four inline locked
+invariants at `:2739-2751`, the three resolved judgment calls at `:2753-2768`,
+Step 1's verbatim replacement block at `:2770-2790`, Step 2's verbatim block at
+`:2792-2806`, Step 3's audit grep and six-row table at `:2808-2836`, Step 4's
+two verbatim fences at `:2838-2909`, the Step 5 verify block at `:2911-2925`,
+and the six-item acceptance checklist at `:2927-2945`), and task-170's five
+acceptance criteria in governance-drep-discovery-plan-tasks.json. Two files
+modified in place, nothing created, nothing else touched. `git status --short`
+→ exactly two entries, both ` M`. HEAD is `d3729994a` on branch
+`wt/cv-1-build` (task-135 and task-171 already committed ahead of this row).
+One review round. The main checkout `/workspaces/daedalus` was never read,
+edited or run against.
+
+**What landed.** `git diff --stat` → 2 files, 62 insertions / 20 deletions
+(api.ts 32, the spec 50).
+
+- `source/renderer/app/api/api.ts` — six `logger.debug` argument sites and
+  nothing else. Read hunk by hunk against the guide: the Step 1 replacement is
+  character-identical to guide `:2784-2789`, including the multi-line call
+  formatting, and the Step 2 replacement is character-identical to guide
+  `:2804-2806`. The four further wraps follow the same single-line form. No
+  import was added — `filterLogData` was already imported at `api.ts:99`, as
+  guide `:2745-2747` requires. No request, no return value, no
+  `_createWalletFromServerData` call and no `map(legacyWallets, …)` line is
+  altered anywhere in the diff.
+- `tests/jest/security/governance-sanitization.spec.ts` — two module-scope
+  `jest.mock` blocks added beside the existing `delegateVotes` mock (`:17-31`)
+  and one new `it` inside the existing `describe('Governance sanitization —
+  call boundaries', …)`, placed immediately after the `delegateVotes` case it
+  is modelled on (`:254-288`). Both blocks reproduce the guide's Step 4 fences
+  verbatim, down to the `FIXTURE_DREP` literal, the `it()` string and the
+  `// eslint-disable-next-line global-require` directive (which mirrors the
+  identical directive already at `:234`).
+- Nothing else. No i18n catalog, no `translations/messages.json`, no doc, no
+  tracker, no story, no runtime module outside `api.ts`, no IPC contract, no
+  type declaration.
+
+**Review method (three lenses, adversarial refutation).** Three independent
+lenses were run over the diff: (1) guide and acceptance-criteria conformance —
+the five steps, the six-row table and the five tracker criteria; (2) locked
+invariants and the sanitization floor — whether any new leak path opens,
+whether the wrap is a behavioural change, and whether byte-equality survives;
+(3) tests, docs and complexity — whether the new case bites, whether the ACs
+imply a missing test, and whether anything is over-built. Every candidate was
+then re-checked against the actual tree on the reproduce / guide-authority /
+scope axes before being admitted. **Six candidates were raised across the three
+lenses; all six were dropped or downgraded on checking, one of them because it
+is factually wrong. Zero survived as a blocker, in one iteration**, and no file
+was changed as a result of the review.
+
+Per-lens decision. Guide/AC conformance — clean; every guide-supplied code
+block is byte-identical on disk. Invariants and floor — clean; the change is
+strictly more redaction on six existing lines and opens no new sink. Tests and
+complexity — clean; the new case demonstrably bites and the diff is the
+smallest truthful change.
+
+**AC-3 audit list (recorded here — this entry is the "task evidence" AC-3
+requires).** Fifteen whole-payload wallet `logger.*` sites exist in `api.ts`.
+Line numbers below are POST-change and were re-derived by this review with
+`grep -n "filterLogData({"`, `grep -n "logger.debug($"` and
+`grep -nE "^ +wallets?,$"`, not copied from the guide (guide anchors `:379`,
+`:458`, `:870`, `:1588`, `:1628`, `:2077` drifted by up to 6 lines because the
+file is now 8 lines shorter; the guide's own header rule at `:9-11` directs
+re-anchoring by content).
+
+Wrapped — six Shelley `AdaWallet` / `AdaWallets` payloads that can carry
+`delegation.active.voting` or `delegation.next[*].voting`:
+
+| Call site | Payload |
+| --- | --- |
+| `api.ts:379` `AdaApi::getWallets success` | `filterLogData({ wallets, legacyWallets, hwLocalData })` (`:381`) |
+| `api.ts:457` `AdaApi::getWallet success` | `filterLogData({ wallet })` |
+| `api.ts:867` `AdaApi::createWallet success` | `filterLogData({ wallet })` |
+| `api.ts:1583` `AdaApi::restoreWallet success` | `filterLogData({ wallet })` |
+| `api.ts:1621` `AdaApi::createHardwareWallet success` | `filterLogData({ wallet })` (`:1623`) |
+| `api.ts:2071` `AdaApi::updateWallet success` | `filterLogData({ wallet })` |
+
+Deliberately unwrapped — seven legacy/Byron sites, per the guide's resolved
+judgment call at `:2765-2768`: `:922` `createLegacyWallet`, `:1699`
+`restoreLegacyWallet`, `:1762` `restoreByronRandomWallet`, `:1816`
+`restoreByronIcarusWallet`, `:1870` `restoreByronTrezorWallet`, `:1924`
+`restoreByronLedgerWallet`, `:1970` `restoreExportedByronWallet`. The
+justification was re-verified rather than taken on trust: `LegacyAdaWallet`
+(`source/renderer/app/api/wallets/types.ts:57-71`) has **no `delegation` field
+at all**, and each of these sites logs `{ ...legacyWallet,
+...extraLegacyWalletProps }` where `extraLegacyWalletProps` injects
+`delegation: { active: { status: NOT_DELEGATING } }` locally around
+`api.ts:915-920` with no `voting` key. No vote target is reachable.
+
+Audited and left unwrapped, NOT in the guide's table — two sites the guide's
+Step 3 grep structurally cannot see, recorded here so the audit is complete
+rather than merely conformant: `api.ts:1995` `AdaApi::importWalletFromKey
+success` and `api.ts:2025` `AdaApi::importWalletFromFile success`, both logging
+`{ importedWallet }` where the local is declared `const importedWallet:
+AdaWallet` (`:1991`, `:2019`). See candidate 1 below for why these are out of
+scope for this row.
+
+**Candidates adjudicated (six raised, none survived as a blocker).**
+
+1. *Dropped as a task-170 blocker, recorded as a new out-of-scope finding —
+   "two Shelley-TYPED sites are still unwrapped, so the guide's own inline
+   invariant at `:2739-2742` ('no DRep id … reaches a logger payload from any
+   Shelley-wallet api.ts call site') is not fully achieved"* (raised
+   independently by all three lenses and by the verify pass).
+   `api.ts:1995` / `:2025` log `{ importedWallet }` unwrapped, and
+   `AdaWallet.delegation.active` is a `WalletDelegation` carrying
+   `voting?: WalletVotingTarget` (types.ts:44-47, `:113-118`), so statically
+   they fit AC-3's "can carry `delegation.*.voting`". Dropped for three
+   independently checked reasons. First, **pre-existing and byte-identical at
+   HEAD** — this review ran `git show HEAD:source/renderer/app/api/api.ts |
+   grep -n "importedWallet,"` and got `2002` and `2032`, the same unwrapped
+   form; task-170 neither introduced nor worsened it. Second, **the guide never
+   classified them and structurally could not**: Step 3's grep filter
+   (`:2810-2813`) is `grep -B1 "^[0-9]*-        wallets\?,$"`, which matches
+   only lines that are exactly `wallet,` or `wallets,`, so `importedWallet,`
+   can never appear — which is precisely why the guide counts "thirteen sites"
+   (6 + 7) and stops there. Third, **the runtime exposure is type-level, not
+   demonstrated**: `importWalletAsKey` POSTs `/api/internal/import-wallet`
+   (`source/renderer/app/api/wallets/requests/importWalletAsKey.ts:16`) and
+   `importWalletAsJSON` POSTs `/api/backup/import`
+   (`importWalletAsJSON.ts:12`) — both Byron/V0 legacy import endpoints, which
+   do not return a governance delegation — and neither is on a poll, unlike
+   `getWallets`. Recommended for `research/cv-1-findings.md` as **F-26**
+   (next free id; F-25 is the highest in that file today). This review did NOT
+   edit the findings file — its mandate is this diff and this entry.
+2. *Dropped as a defect, recorded as a stated limitation — "two of the four
+   new assertions are vacuous."* True and confirmed by reading the fixture:
+   `tests/mocks/wallets/wallet-voting-drep.json` carries `"voting":
+   "drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy"` under
+   `delegation.active` and contains no `abstain` and no `no_confidence`
+   substring anywhere, so `expect(payload).not.toContain('abstain')` and
+   `.not.toContain('no_confidence')` (spec `:286-287`) cannot fail for any
+   implementation. Only `not.toContain(FIXTURE_DREP)` bites — which the verify
+   pass's negative probe proved independently, failing exactly 1 of 24 with the
+   wrap reverted. Not a defect: both lines are copied verbatim from the guide's
+   Step 4 fence (`:2899-2901`) and AC-4 names both classes, so deviating would
+   cost guide fidelity for no coverage. The sentinel gap was closed by
+   inspection instead: `tests/mocks/wallets/wallet-voting-abstain.json` and
+   `wallet-voting-no-confidence.json` place their sentinel at the SAME
+   `delegation.active.voting` key that `filterLogData` strips, so the single
+   outer call covers all three shapes. Recorded here so nobody reads the case
+   as proving more than it does — it proves bech32 redaction, and the sentinel
+   classes rest on the `filterLogData` unit cases at
+   governance-sanitization.spec.ts:133-151.
+3. *Dropped — "no positive assertion, so a payload-to-`{}` regression would
+   pass" and "only 1 of the 6 wrapped sites is tested."* Both true as stated
+   and both in-spec. AC-4 asks for exactly one `getWallets` call-boundary case
+   worded purely as a negative, and gets it; the other five wraps are gated by
+   `tsc` plus this audit. The suggested hardening (one
+   `expect(payload).toContain('"hwLocalData"')` line, or an assertion on the
+   fixture wallet id) is cheap and would close AC-1's "hwLocalData is still
+   filtered" clause behind an assertion rather than by inspection, but it is a
+   deviation from a guide-verbatim block for a regression class nothing in cv-1
+   makes likely. Left as delivered; noted so the coverage claim is stated
+   accurately rather than as "six sites tested".
+4. *Dropped — "the new case leaks `global.daedalus` / `global.https` and never
+   restores the `rendererLogger.debug` stub."* Both facts confirmed:
+   `jest.config.js:17` sets `clearMocks: true` only, with `resetMocks` and
+   `restoreMocks` commented out, so `clearMocks` wipes recorded calls but
+   leaves the mock implementation in place; and the describe's cleanup is
+   `afterEach(() => jest.restoreAllMocks())` (spec `:219-221`), which does not
+   unset globals. Latent only, and identical to the pre-existing
+   `delegateVotes` case directly above it (spec `:223-227`), which leaks
+   `environment` and `https` the same way. Nothing later in the file reads
+   `global.daedalus`, the whole file is green at 24/24 and the whole tree is
+   green. Guide-verbatim; matching the file's convention beats inventing a
+   teardown here.
+5. *Refuted as factually wrong — "the `createHardwareWallet` wrap is at
+   `api.ts:1618`, not `:1621`"* (raised by the tests/docs lens as a correction
+   to the verify pass). The verify pass was right and the correction is wrong.
+   `grep -n "logger.debug($" source/renderer/app/api/api.ts` returns exactly
+   `379`, `767` (a commented-out line) and `1621`, and reading `:1615-1624`
+   shows `:1618` is the closing `}` of the `walletInitData` argument object,
+   `:1620` is `const wallet = { ...hardwareWallet, isHardwareWallet: true };`
+   and `:1621` is `logger.debug(`. The AC-3 table above uses `:1621`. Recorded
+   because a wrong anchor in the evidence would have propagated into every
+   later audit of this file.
+6. *Refuted — "wrapping the payload is a behavioural change."* Checked by
+   reading the implementation rather than assuming: `redact`
+   (source/common/utils/logging.ts:51-71) is purely constructive — it maps
+   arrays and rebuilds plain objects key by key with `Object.keys(…).reduce`,
+   and never writes to its input. So at all six sites the ORIGINAL object, not
+   the filtered copy, is what continues downstream: `wallets` is still the
+   array `.push()`ed and mapped at `api.ts:383-407`, and
+   `_createWalletFromServerData(wallet)` still receives the unfiltered payload
+   at `:458`, `:868`, `:1584`, `:1625`, `:2072`. The filtered value's only
+   consumer is `logger.debug`. Invariant 10 (byte-equality) is untouched.
+   One forward-looking caveat surfaced while checking and is recorded rather
+   than acted on: `redact` flattens any non-plain object (a `Date`, a class
+   instance, a `BigNumber`) to `{}`, because such a value has no own
+   enumerable keys. Nothing is flattened today — all six payloads are raw wire
+   JSON or plain spreads of it — but a future task wrapping a payload that
+   carries a domain object would silently empty it in the log.
+
+**Log-shape delta.** Measured against `AdaWallet` / `LegacyAdaWallet`
+(types.ts:32-71) and the `sensitiveData` list (logging.ts:24-49): the only
+collisions are `voting` (the intended redaction) and `passphrase`
+(`{ last_updated_at }`), which is the ONE deliberate non-governance omission
+the guide authorises at `:2759-2763`. Note it now applies to the
+`legacyWallets` array too, which the guide's wording covers. `votingKey`,
+`stakeKey`, `accountPublicKey`, `withdrawal` and the rest of the list do not
+appear in the wire wallet shape. `hwLocalData` filtering is unchanged: `redact`
+recurses uniformly, so the single outer call is exactly equivalent to the
+previous nested `hwLocalData: filterLogData(hwLocalData)`.
+
+**Acceptance criteria.** All five tracker criteria are met, AC-3 by virtue of
+this entry.
+
+AC-1 "`wallets` and `legacyWallets` … wrapped in `filterLogData`; `hwLocalData`
+filtering unchanged" — met; see the Step 1 hunk and the equivalence argument
+above. AC-2 "the `AdaApi::getWallet success` call site receives the same
+treatment" — met at `api.ts:457`. AC-3 "every remaining whole-payload
+`logger.*` call site … is audited; those that can are wrapped, and the audit
+list is recorded in the task evidence" — the code half was met on delivery
+(six wrapped, seven classified); the evidence half was NOT on disk when the
+review opened and is discharged by the fifteen-site audit list above, which
+also classifies the two `importedWallet` sites the guide's grep could not see.
+AC-4 "a `getWallets` call-boundary case driving a voting-wallet fixture …
+asserting no CIP-129/CIP-105 bech32 string and no `abstain` / `no_confidence`
+literal reaches the emitted logger payload" — met literally; see candidate 2
+for what the case does and does not prove. AC-5 "INHERITED sanitization floor:
+the full governance-sanitization suite is green with the new case;
+non-governance log shapes for the wallet-list flow are otherwise unchanged" —
+met; 24 of 24 green and the only extra shape delta is the authorised
+`passphrase` omission.
+
+The guide's own sixth acceptance box ("`tsc` clean; lint clean; the UNFILTERED
+jest run is green", `:2943-2945`) holds on all three counts. Its "82 suites"
+figure is the known staleness — the measured figure is 86 — and was not
+treated as a mismatch.
+
+**Invariant sweep.** Invariant 2 (sanitization floor) is strengthened, not
+merely preserved: `WalletDelegation` and `WalletNextDelegation`
+(types.ts:113-126) expose governance ONLY through the `voting` key, which
+`filterLogData` strips at any depth, and `source/renderer/app/api/utils/
+request.ts` contains no logger at all, so there is no lower HTTP layer logging
+the raw response body behind `api.ts`'s back. `delegation.active.status` may
+legitimately hold the string `"voting"`, but that is a status enum, not an
+identity. Invariant 10 (byte-equality) holds per candidate 6. Invariant 11 is
+untouched — no catalog is dirty in this diff. Invariants 1, 3, 4, 5, 6, 7, 8,
+9, 12, 13 and 14 are untouched: no IPC channel, no main-process file, no type
+declaration, no analytics call, no electron-store write, no new abstraction and
+no new import appears anywhere in the change set.
+
+**Comment convention.** The diff adds no explanatory code comment at all. The
+single added comment is `// eslint-disable-next-line global-require` (spec
+`:22`), matching the identical directive at `:234`. No task id, no review
+label, no ALL-CAPS marker, no change history.
+
+**No unnecessary complexity.** Six one-to-three-line call-site rewrites, two
+module-scope mocks (both load-bearing — without the `getLegacyWallets` stub the
+real request fires) and one test case. No helper, no abstraction, no option, no
+per-field redactor, no bespoke second sanitizer on a security seam — the shared
+`filterLogData` is reused exactly as the floor demands. This is the smallest
+truthful change.
+
+**Verification commands run (results as observed).** Gates 1-8 are as measured
+by the dedicated verify pass, which reported `passed: true` with no failures.
+This review independently re-ran the focused floor suite and re-derived every
+line anchor and every type/fixture claim on disk; every other command it ran
+was read-only.
+
+1. `yarn compile` → exit 0, `tsc --noEmit` clean, `Done in 18.77s` (verify
+   pass). The Node v24 fallback was not needed.
+2. `yarn lint` → exit 0 at exactly 5591 warnings, 0 errors — zero delta against
+   the 5591 baseline (verify pass). `api.ts` is under `source/` and therefore
+   covered; the spec is not, since lint's scope is `source storybook utils`
+   (package.json:43), so the new test file is gated by `tsc` alone and `tsc` is
+   green.
+3. `node_modules/.bin/jest tests/jest/security/governance-sanitization.spec.ts
+   --runInBand` → **re-run by this review**: "Test Suites: 1 passed, 1 total" /
+   "Tests: 24 passed, 24 total", 0 snapshots, exit 0 in 3.608 s. Baseline was
+   23; the delta is exactly the new case.
+4. Negative proof (verify pass). `api.ts:379-382` was Edited back to its HEAD
+   form and the focused spec exited 1 with
+   `Expected substring: not "drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy"`
+   at `governance-sanitization.spec.ts:284`, printing the raw payload with
+   `"delegation":{"active":{"status":"voting","voting":"drep1…"}}` intact —
+   **1 failed / 23 passed of 24**, so the probe was precisely targeted and no
+   pre-existing case is incidentally coupled to it. After the restoring Edit:
+   24 passed, exit 0, and `git diff --stat` byte-identical to the pre-probe
+   reading. `git restore` and `git stash` were never used.
+5. Log-site audit (verify pass, **fully re-derived by this review**) — six
+   wrapped, seven legacy unwrapped, two `importedWallet` sites classified. See
+   the AC-3 table above. Method note for whoever repeats it: `:379` and `:1621`
+   are multi-line calls and do NOT match `grep -n "logger.debug('AdaApi::"`;
+   they were found with `grep -n "logger.debug($"` and cross-checked with
+   `grep -n "filterLogData({"` (6 hits) and `grep -nE "^ +wallets?,$"` (7
+   hits). A reviewer running only the guide's scripted grep would wrongly
+   conclude two sites were missed.
+6. Whole tree, no path argument, `node_modules/.bin/jest --runInBand` (verify
+   pass) → "Test Suites: 1 skipped, 85 passed, 86 total" / "Tests: 12 skipped,
+   1061 passed, 1073 total" / "Snapshots: 6 passed", exit 0 in 29.252 s.
+   Against the post-task-171 baseline (86 / 1072 / 6) that is exactly +1 test
+   with the suite count and both skip counts unchanged.
+7. `yarn i18n:manage` (verify pass, run 3x) → exit 0 and CLEAN: zero added,
+   zero deleted, no Added/Deleted sections, only the expected "Untranslated
+   keys" `!!!` listings. `translations/messages.json` was rewritten on disk but
+   came out byte-identical to HEAD, so no revert was needed or taken. This is
+   task-135 discharging task-171's owed AC-4 first clause, now re-confirmed at
+   this row.
+8. `git status --short` → exactly two entries, ` M
+   source/renderer/app/api/api.ts` and ` M
+   tests/jest/security/governance-sanitization.spec.ts`. No untracked file, so
+   nothing is hidden from `git diff`. Nothing staged, nothing committed, the
+   tracker JSON untouched.
+9. `git diff --stat` → 2 files, 62 insertions, 20 deletions
+   (**re-measured by this review**). The tests/docs lens additionally reported
+   `git diff -w --stat` byte-identical to `git diff --stat` and `git diff
+   --check` silent — positive proof that no pre-existing file was
+   whitespace-reformatted.
+
+**Prettier.** No prettier command applies and none was run: this slice creates
+no file, and both touched paths are on the standing do-not-reformat list
+(`source/renderer/app/api/api.ts`, `tests/jest/security/
+governance-sanitization.spec.ts`) under the ~240-file pre-existing drift
+hazard. `yarn prettier`, `yarn prettier:check` and `yarn prettier:format` were
+never invoked. The guide says the same at `:2923-2925`.
+
+**Out-of-scope observations carried forward.**
+
+- **F-15 is NOT closed by this task, by design.** The renderer-side domain key
+  names `votingTarget` and `currentVote` remain absent from `filterLogData`'s
+  `sensitiveData` list (source/common/utils/logging.ts:24-49), which is keyed
+  to the WIRE shape — `drepId`, `dRepId`, `vote`, `voting`. Task-170 wraps wire
+  payloads whose key is `voting`; it adds no `sensitiveData` entry and the diff
+  correctly does not attempt one. The domain shape stays unguarded the moment
+  cv-2 gives it a consumer, exactly as recorded at `:1428-1435` of this file
+  and at research/cv-1-findings.md:472. No conflict, no regression.
+- **The `HardwareWalletsStore` raw `{ error }` sink is NOT closed by this task,
+  by design.** The `[HW-DEBUG]` calls log raw `{ error }`
+  (research/slice-3-findings.md:71-77, re-stated at cv-1-findings.md:316);
+  that is the message-SUBSTRING class — a DRep id embedded in an error string
+  — which `filterLogData` structurally cannot reach, since it deletes by key
+  name and never inspects string contents. The guide fences it out explicitly
+  at `:2749-2751`, and the tracker's task-170 description fences it out again.
+  Out of scope, still open.
+- **Recommended as F-26** — the two `importedWallet` sites of candidate 1.
+  Pre-existing, type-level, Byron import endpoints, not on a poll. For the
+  reviewer to accept or schedule; not a task-170 blocker.
+- Still carried from earlier entries: **F-5** — `nix fmt` cannot run in this
+  devcontainer.
+- **Guide/tracker anchor drift, recorded not fixed** (cv-1 planning is closed
+  and this row's mandate is its own diff): `api.ts` is now 8 lines shorter, so
+  the guide's Step 3 table (`:870`, `:1588`, `:1628`, `:2077`) and the
+  tracker's task-170 description (`:379-383`, `:458-460`) hold pre-change
+  anchors. The guide's own header rule at `:9-11` makes this expected rather
+  than a defect, so no doc edit is owed; the post-change anchors are in the
+  AC-3 table above. Separately, the guide's Step 3 grep is under-inclusive in
+  two independent ways (it cannot see multi-line calls, and its
+  `^[0-9]*-        wallets\?,$` filter cannot match `importedWallet,`), and its
+  "82 suites" references at `:2917` / `:2945` remain stale against the measured
+  86.
+
+**Owed obligations (not faked).**
+
+- **`nix fmt`** — impossible here, nix is not installed in this devcontainer.
+  No prettier substitute was applicable to this slice either, since it creates
+  no file and both touched files are on the never-reformat list. The `nix fmt`
+  pass remains an owed pre-merge obligation.
+- **Human visual pass in the running app** — no browser here. Nothing in this
+  row is visual (it changes log payloads only), so the exposure is limited to
+  confirming that developer log files still carry enough diagnostic context
+  after the `passphrase` omission. Recorded, not faked.
+- `yarn check:all` and `yarn storybook:build` were NOT run; both are red at
+  HEAD for the unrelated storybook manager-side JSX loader reason (F-20) and
+  are not valid gates.
+- The tracker row for task-170 is still `"status": "pending"` and needs
+  flipping at commit time. This review did not touch the tracker.
+- **Closing note for cv-1 close:** task-135 discharged task-171's owed AC-4
+  first clause and gate 7 above re-confirms `yarn i18n:manage` clean at this
+  row, so that carry-forward is settled and should not be repeated again.
+
+**Blockers.** None.
+
+Decision: approved

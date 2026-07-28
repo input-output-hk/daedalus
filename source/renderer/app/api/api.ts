@@ -376,11 +376,10 @@ export default class AdaApi {
         this.config
       );
       const hwLocalData = await getHardwareWalletsLocalData();
-      logger.debug('AdaApi::getWallets success', {
-        wallets,
-        legacyWallets,
-        hwLocalData: filterLogData(hwLocalData),
-      });
+      logger.debug(
+        'AdaApi::getWallets success',
+        filterLogData({ wallets, legacyWallets, hwLocalData })
+      );
       map(legacyWallets, (legacyAdaWallet) => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0,
@@ -455,9 +454,7 @@ export default class AdaApi {
         });
       }
 
-      logger.debug('AdaApi::getWallet success', {
-        wallet,
-      });
+      logger.debug('AdaApi::getWallet success', filterLogData({ wallet }));
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::getWallet error', {
@@ -867,9 +864,7 @@ export default class AdaApi {
       const wallet: AdaWallet = await createWallet(this.config, {
         walletInitData,
       });
-      logger.debug('AdaApi::createWallet success', {
-        wallet,
-      });
+      logger.debug('AdaApi::createWallet success', filterLogData({ wallet }));
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::createWallet error', {
@@ -1585,9 +1580,7 @@ export default class AdaApi {
       const wallet: AdaWallet = await restoreWallet(this.config, {
         walletInitData,
       });
-      logger.debug('AdaApi::restoreWallet success', {
-        wallet,
-      });
+      logger.debug('AdaApi::restoreWallet success', filterLogData({ wallet }));
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreWallet error', {
@@ -1625,9 +1618,10 @@ export default class AdaApi {
         }
       );
       const wallet = { ...hardwareWallet, isHardwareWallet: true };
-      logger.debug('AdaApi::createHardwareWallet success', {
-        wallet,
-      });
+      logger.debug(
+        'AdaApi::createHardwareWallet success',
+        filterLogData({ wallet })
+      );
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::createHardwareWallet error', {
@@ -2074,9 +2068,7 @@ export default class AdaApi {
         });
       }
 
-      logger.debug('AdaApi::updateWallet success', {
-        wallet,
-      });
+      logger.debug('AdaApi::updateWallet success', filterLogData({ wallet }));
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::updateWallet error', {

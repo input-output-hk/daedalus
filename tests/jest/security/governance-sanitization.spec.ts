@@ -14,6 +14,21 @@ jest.mock(
   })
 );
 
+jest.mock(
+  '../../../source/renderer/app/api/wallets/requests/getWallets',
+  () => ({
+    getWallets: jest.fn(async () => [
+      // eslint-disable-next-line global-require
+      require('../../mocks/wallets/wallet-voting-drep.json'),
+    ]),
+  })
+);
+
+jest.mock(
+  '../../../source/renderer/app/api/wallets/requests/getLegacyWallets',
+  () => ({ getLegacyWallets: jest.fn(async () => []) })
+);
+
 jest.mock('matomo-tracker', () =>
   jest.fn().mockImplementation(() => ({ track: jest.fn() }))
 );
@@ -234,6 +249,41 @@ describe('Governance sanitization — call boundaries', () => {
     expect(JSON.stringify(delegateVotesLog?.[1])).not.toContain(
       'test-passphrase'
     );
+  });
+
+  it('redacts the vote target from the AdaApi wallet-list poll log', async () => {
+    const FIXTURE_DREP =
+      'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
+    (global as any).environment = {
+      ...(global as any).environment,
+      isSelfnode: false,
+    };
+    (global as any).https = require('https');
+    (global as any).daedalus = {
+      api: {
+        localStorage: {
+          getHardwareWalletsLocalData: jest.fn(async () => ({})),
+        },
+      },
+    };
+
+    const loggerSpy = jest
+      .spyOn(rendererLogger, 'debug')
+      .mockImplementation(() => undefined);
+    // eslint-disable-next-line global-require
+    const AdaApi = require('../../../source/renderer/app/api/api').default;
+    const api = new AdaApi(false, {} as any);
+
+    await api.getWallets();
+
+    const getWalletsLog = loggerSpy.mock.calls.find(
+      ([message]) => message === 'AdaApi::getWallets success'
+    );
+    expect(getWalletsLog).toBeDefined();
+    const payload = JSON.stringify(getWalletsLog?.[1]);
+    expect(payload).not.toContain(FIXTURE_DREP);
+    expect(payload).not.toContain('abstain');
+    expect(payload).not.toContain('no_confidence');
   });
 
   it('sends only the sanitized drepOption analytics field for governance votes', async () => {
