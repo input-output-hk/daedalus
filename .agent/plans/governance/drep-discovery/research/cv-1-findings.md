@@ -778,3 +778,215 @@ dev server serves, so the en-US/ja-JP toggle pass can be performed in the main
 checkout as soon as a browser is available (after task-135, per F-19). Repairing
 the manager loader means moving the `.tsx` rule out of `webpackFinal` into
 `managerWebpack`, which is repo-infrastructure work outside this plan.
+
+---
+
+## F-21 — the guide's task-134 Step-1 block carries the never-logged assertion on only two of the four accepted-target cases tracker AC-7 names, and its prose and its own acceptance bullet repeat the narrow reading (tracker authoritative; code correct, guide stale in three places)
+
+Found during the task-134 build, and the only conflict in that build that
+changed what was typed.
+
+**What the tracker demands.** AC-7 of the task-134 row, verbatim at
+`governance-drep-discovery-plan-tasks.json:1061`: "The accepted-target mapper
+cases (voting-only DRep, delegating_and_voting, abstain, no_confidence) assert
+`expect(mockedWarn).not.toHaveBeenCalled()`, pinning the never-logs floor on
+the accepted-id path and not only on the rejection paths." Four cases, each
+named individually.
+
+**What the guide supplies.** The Step-1 code block
+(`cv-1-implementation-guide.md:2099-2279`) carries the assertion on two of
+them: `:2173` closes "maps a voting-only DRep wallet: votingTarget populated,
+pool id null" (`:2156`) and `:2193` closes "maps delegating_and_voting: pool
+target AND votingTarget populated" (`:2176`). The abstain case (`:2196-2202`)
+and the no_confidence case (`:2204-2210`) both end at their `toEqual` and never
+mention `mockedWarn`. The block's third occurrence, `:2230`, closes "yields
+votingTarget null for status voting without active.voting and never parses
+active.target" (`:2221`) — a case whose target is *rejected*, not accepted, so
+it is not one of AC-7's four.
+
+**Root cause, and it is exact.** Commit `2ee5f74cf` ("docs(gov): fold findings
+audit into tracker rows and plan docs", 2026-07-27) is the commit that wrote
+AC-7 into the tracker and the assertions into the guide, and its guide diff
+contains exactly two `+    expect(mockedWarn).not.toHaveBeenCalled();` hunks —
+one after the CIP-129 `source: 'onchain'` expectation, one after the
+delegating_and_voting one — where four were owed.
+`git show 2ee5f74cf^:…/cv-1-implementation-guide.md | grep -c
+"not.toHaveBeenCalled"` returns `1`, the pre-existing `:2230` line, so the
+commit took the guide from one occurrence to three and never to five. Two
+single-line hunks were dropped in the same edit that made them mandatory.
+
+**Two further places carry the narrow reading.** Beyond the code block, the
+guide prose at `:2511-2512` reads "Together with the two
+`expect(mockedWarn).not.toHaveBeenCalled()` assertions in the Step-1 valid-DRep
+cases", and the task-134 acceptance checklist at `:2546-2547` reads "The
+valid-DRep mapper cases assert `mockedWarn` was never called, so the no-logging
+floor is pinned on the accepted-id path too (Step 1)". Both sentences are true
+of two cases and silent about the two sentinels. A future reader working from
+the guide alone — transcribing the block, then ticking the guide's own
+checklist — under-implements AC-7 and is told by the document that the work is
+done. That is why this is worth a finding rather than a nit: the guide's
+checklist agrees with the guide's too-narrow block, so nothing inside the guide
+can catch the omission.
+
+**Resolution:** the tracker wins, per this file's standing resolution rule and
+F-1's precedent, and the build followed it. Both lines were added, so the
+assertion now sits at `tests/jest/api/createWalletFromServerData.spec.ts:70`,
+`:90`, `:99` and `:108` — AC-7's four accepted-target cases — plus `:129` for
+the rejected-target case the guide already had. It is a strengthening, not a
+behaviour change, and it cost nothing at the gate: the task-134 verifier
+measured `tests/jest/api` at 3 suites / 18 tests passed, exit 0, and code review
+approved with the delta recorded as guide drift, not code drift. The code is
+right; the guide is stale in three places, and this is the reproducible kind of
+staleness.
+
+**Tasked:** unowned. No pending row's acceptance criteria name these lines, and
+the task-134 row deliberately did not edit them — its `statusReason` records the
+drift and says the fix was "left for a later guide touch-up rather than edited
+from this row". A doc-repair pass owns three edits, all in
+`cv-1-implementation-guide.md`: append
+`expect(mockedWarn).not.toHaveBeenCalled();` to the abstain and no_confidence
+cases in the Step-1 block (`:2196-2210`); change "the two … assertions in the
+Step-1 valid-DRep cases" at `:2511-2512` to the four accepted-target cases; and
+rewrite the acceptance bullet at `:2546-2547` to AC-7's own wording. Until that
+lands, `governance-drep-discovery-plan-tasks.json:1061` is the only correct
+statement of AC-7 and the guide must not be read as an independent authority on
+it.
+
+## F-22 — the findings-audit review entry says the cv-1 PRD and guide "are not rewritten by this entry"; the commit carrying that entry rewrote the guide by 531 lines and the PRD by 109, and created task-134's Step 5 outright (record-only)
+
+**The claim.** `cv-1-code-review.md:1134` opens the entry
+"## Planner: 2026-07-27 — findings audit outcome (six new rows, nine
+amendments)", and at `:1141-1143` that entry states: "the cv-1 PRD and
+implementation guide are not rewritten by this entry — the guide lines that
+change are named inside the amendments' own acceptance criteria."
+
+**The diff.** The entry landed as commit `2ee5f74cf`, whose `git show --stat`
+reads in part `task-plans/cv-1-implementation-guide.md | 531 ++++`,
+`task-plans/cv-1-PRD.md | 109 ++++`, `task-plans/cv-1-code-review.md | 104 ++++`
+(the entry itself), `governance-drep-discovery-plan-tasks.json | 245 ++++`, and
+totals "18 files changed, 1289 insertions(+), 111 deletions(-)". The guide is
+the largest single edit in the commit that says the guide was not rewritten.
+
+**Why this is worth recording rather than shrugging at.** The rewrite is not
+cosmetic and it lands inside task-134. Before the commit the task-134 section
+began at `:1957` and ran four content steps, closing with `#### Step 5: Verify`
+at `:2420`. On disk today it begins at `:2017` and runs five content steps, with
+`#### Step 5: Extend the task-129 normalizer spec` at `:2488` and
+`#### Step 6: Verify` at `:2516`. That new Step 5 is the whole of AC-5 — the
+checksum-valid wrong-length `drep_vkh` vector that reaches the CIP-105 length
+guard and closes `normalizeDRepIdentity.ts`'s uncovered line 48 — and it exists
+only because of the entry that says nothing in the guide changed. A reviewer
+taking the sentence at face value would conclude the guide has no
+normalizer-extension step and that AC-5 is unguided, and would re-plan or defer
+work that is already written.
+
+**A second, quieter consequence: rotted line anchors.** The same commit's +109
+lines to the PRD moved risk R-4 from `cv-1-PRD.md:407` (verified by
+`git show 2ee5f74cf^:…/cv-1-PRD.md | grep -n "R-4 (low)"`) to `:462-466` on
+disk. F-13 cites the old anchor at `cv-1-findings.md:383` ("`cv-1-PRD.md:
+407-411`") and the task-134 tracker `statusReason` repeats it. The R-4 text is
+unchanged and still findable by `grep -n "R-4 (low)"`; only the numbers rotted.
+
+**Resolution:** record-only, and it resolves in the safe direction — the guide
+on disk is current and complete for task-134, which is why the build proceeded
+from it without harm. Two durable rules come out of it. First, a log entry's own
+statement of its blast radius is not evidence about the tree; `git show --stat`
+on the commit that carried the entry is, and it takes one command. Second, when
+a doc commit inserts lines, re-`grep` any anchor into that doc rather than
+trusting a citation written before the insert — every anchor in this findings
+file that predates `2ee5f74cf` and points into `cv-1-PRD.md` or
+`cv-1-implementation-guide.md` is suspect by construction, not by suspicion.
+
+**Tasked:** no owner and no row. The code-review log is append-only history, so
+the `:1141-1143` sentence stays as written and this finding is the correction of
+record. The stale `cv-1-PRD.md:407-411` anchor in F-13 (`:383`) is likewise left
+in place — findings are not rewritten — and reads as `:462-466` today.
+
+## F-23 — refreshed cv-1 whole-tree baseline (85 suites / 1071 tests / 6 snapshots) and PRD R-4 closed rather than flagged: `yarn compile` itself is green on Node v24.16.0 across five cv-1 rows, and its `precompile` hook already IS the documented fallback
+
+**The new baseline.** Measured by the task-134 verifier with the unfiltered
+runner F-13 mandates (`node_modules/.bin/jest --runInBand --coverage=false`, no
+path argument), verbatim:
+
+```
+Test Suites: 1 skipped, 84 passed, 84 of 85 total
+Tests:       12 skipped, 1059 passed, 1071 total
+Snapshots:   6 passed, 6 total
+```
+
+exit 0 in 42.02 s. This supersedes F-13's "82 suites and 1050 tests (1038
+passed, 12 skipped, 2 snapshots)" (`cv-1-findings.md:376-379`) as the figure
+every cv-1 row after task-134 must clear.
+
+**The delta reconciles to the last test, which is what makes it usable as a
+baseline rather than just a number.** +3 suites are exactly the three files
+task-134 created (`tests/jest/api/createWalletFromServerData.spec.ts`,
+`tests/jest/api/walletVotingComputeds.spec.ts`,
+`source/renderer/app/components/voting/voting-governance/
+CurrentVoteSummary.spec.tsx`). +21 tests are 9 + 7 + 4 + 1: nine mapper cases,
+seven Wallet-computed cases, four snapshot cases, and the ninth
+`normalizeDRepIdentity` case added in place to the task-129 spec. +4 snapshots
+are `CurrentVoteSummary`'s four. The skip count is unchanged at 12, so nothing
+was silently disabled to buy a green. One number differs from the pre-run
+arithmetic and it is an overshoot, never a shortfall: the run brief predicted
+eight mapper cases and +20 overall, while the guide's Step-1 block prescribes
+nine `it()` blocks (`cv-1-implementation-guide.md:2156`, `:2176`, `:2196`,
+`:2204`, `:2212`, `:2221`, `:2233`, `:2248`, `:2263`) and the delivered file
+carries those nine one-for-one.
+
+**Lint and the focused runs, for completeness.** `yarn lint` exit 0 at exactly
+5591 warnings — zero delta from the standing baseline, no warning attributable
+to any added file. Focused: `tests/jest/api` 3 suites / 18 tests;
+`tests/jest/governance/normalizeDRepIdentity.spec.ts` 1 suite / 9 tests, its
+coverage row now `100 | 100 | 100 | 100` with an **empty** "Uncovered Line #s"
+column where the baseline showed `48`; `CurrentVoteSummary.spec.tsx` 1 suite /
+4 tests / 4 snapshots; the sanitization floor
+`tests/jest/security/governance-sanitization.spec.ts` unchanged at 23 of 23.
+
+**R-4 is not merely stale; it is closeable.** `cv-1-PRD.md:462-466` (moved from
+`:407`, see F-22) still rates "Node v24 gate flakiness" an open low risk because
+"`yarn compile` has previously failed for environment reasons under Node
+v24.16.0", and the guide propagates that framing in a heading and a bullet
+(`cv-1-implementation-guide.md:91`, `:93-97`) plus ten byte-identical copies of
+the inline comment `yarn compile   # Node v24 fallback: node_modules/.bin/tsc
+--noEmit` (`:564`, `:690`, `:955`, `:1189`, `:1370`, `:1790`, `:1984`, `:2519`,
+`:2910`, `:3070`) and a reworded eleventh in the cross-cutting block (`:3111`).
+Two things now stand against it. First, evidence: the
+task-134 verifier ran `yarn compile` — the wrapper script, not the fallback —
+to exit 0 with zero diagnostics, "Done in 29.61s.", and a scan of every
+`statusReason` in the tracker finds `yarn compile exit 0` recorded for task-127,
+task-128, task-129, task-133 and task-134, with **no** cv-1 row recording a
+compile failure of any kind. F-13's two-task count (`:389-390`) understated it
+because it was measuring `node_modules/.bin/tsc --noEmit` directly rather than
+the script. Second, mechanism: the "fallback" and the gate are the same two
+commands in the same order. `package.json:46` defines
+`"precompile": "yarn typedef:sass"` and `:73` defines
+`"typedef:sass": "typed-scss-modules source/renderer/app"`, which yarn runs
+before `:45`'s `"compile": "tsc --noEmit"` — so `yarn compile` already performs
+"`node_modules/.bin/tsc --noEmit`, plus `typed-scss-modules`", the exact
+fallback PRD `:481-483` prescribes. The task-133 row states the same mechanism
+from observation: "the precompile typedef:sass hook regenerated the 316
+gitignored *.scss.d.ts this fresh worktree lacked, then tsc --noEmit reported
+zero diagnostics".
+
+**Resolution:** adopt 85 suites / 1071 tests / 6 snapshots (12 tests skipped,
+1 suite skipped) as the cv-1 baseline from task-135 onward, and report measured
+counts in each `statusReason` rather than re-quoting a constant — the constant
+is what went stale here in the first place. Treat R-4 as closed, not as a
+standing caveat: a row that hits a `yarn compile` failure should capture the
+error and open a fresh finding, exactly as F-13 already directed, but no row
+should pre-announce the fallback as expected. Keeping the fallback comment is
+harmless; keeping the *risk* open is not, because it invites a green
+`tsc --noEmit` to be reported in place of an unrun `yarn compile`, which is a
+weaker gate by one command (the scss typings regeneration).
+
+**Tasked:** unowned, like F-21's and F-22's doc repairs. The concrete edits are
+three: retire R-4 at `cv-1-PRD.md:462-466` (and the "Node v24 fallback per R-4"
+clause at `:481-483`); correct the three surviving "all 82 suites stay green"
+comments that sit in still-pending sections —
+`cv-1-implementation-guide.md:2913` (task-170), `:3077` (task-171) and `:3114`
+(Cross-Cutting Acceptance) — noting that the preamble figure at `:110` ("the
+unfiltered tree is 82 suites, `tests/jest` selects 7 of them") is a dated
+HEAD-of-cv-1 measurement and may stand as history; and leave `:1376` (task-131)
+and `:1800` (task-132) alone as the historical record of completed rows, per
+F-13's precedent for the filtered-recipe lines.

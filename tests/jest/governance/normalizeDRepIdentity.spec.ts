@@ -102,4 +102,12 @@ describe('normalizeDRepIdentity', () => {
     );
     expect(normalizeDRepIdentity(badHeader)).toBeNull();
   });
+
+  it('returns null for a drep_vkh payload of the wrong length', () => {
+    const wrongLength = bech32.encode(
+      'drep_vkh',
+      bech32.toWords(new Array(29).fill(7))
+    );
+    expect(normalizeDRepIdentity(wrongLength)).toBeNull();
+  });
 });

@@ -1,0 +1,176 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CurrentVoteSummary core states renders abstain with a caption and no DRep id (snapshot) 1`] = `
+<section
+  aria-label="!!!Current delegation"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    !!!Current delegation
+  </h3>
+  <div
+    class="statusRow"
+  >
+    <span
+      class="statusBadge"
+    >
+      <span
+        aria-hidden="true"
+        class="glyph"
+      >
+        ⊘
+      </span>
+      !!!Abstain
+    </span>
+  </div>
+  <p
+    class="caption"
+  >
+    !!!Your stake is recorded on chain as not participating in governance. Rewards can be withdrawn.
+  </p>
+</section>
+`;
+
+exports[`CurrentVoteSummary core states renders no confidence with a caption and no DRep id (snapshot) 1`] = `
+<section
+  aria-label="!!!Current delegation"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    !!!Current delegation
+  </h3>
+  <div
+    class="statusRow"
+  >
+    <span
+      class="statusBadge"
+    >
+      <span
+        aria-hidden="true"
+        class="glyph"
+      >
+        ✕
+      </span>
+      !!!No Confidence
+    </span>
+  </div>
+  <p
+    class="caption"
+  >
+    !!!Your stake counts as Yes on every motion of no-confidence. Rewards can be withdrawn.
+  </p>
+</section>
+`;
+
+exports[`CurrentVoteSummary core states renders the DRep id row with the on-chain label and no badge (snapshot) 1`] = `
+<section
+  aria-label="!!!Current delegation"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    !!!Current delegation
+  </h3>
+  <div
+    class="statusRow"
+  >
+    <span
+      class="statusBadge"
+    >
+      <span
+        aria-hidden="true"
+        class="glyph"
+      >
+        ●
+      </span>
+      !!!Delegated to DRep
+    </span>
+    <span
+      class="sourceLabel"
+    >
+      !!!On-chain
+    </span>
+  </div>
+  <div
+    class="idRow"
+  >
+    <span
+      class="container"
+    >
+      <span
+        class="root isShowingOnHover"
+      >
+        <div
+          class="bubble alignLeft nowrap root openUpward transparent"
+        >
+          <div
+            class="bubble"
+            data-bubble-container="true"
+          >
+            drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy
+          </div>
+          <span
+            data-bubble-arrow="true"
+          />
+        </div>
+        <code
+          aria-label="drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy"
+          class="id"
+        >
+          drep1y2s…23nmjy
+        </code>
+      </span>
+      <button
+        aria-label="!!!Copy DRep ID"
+        class="copyButton root root"
+        label="!!!Copy"
+      >
+        !!!Copy
+      </button>
+    </span>
+  </div>
+</section>
+`;
+
+exports[`CurrentVoteSummary core states renders the noDelegation warning, subline, and CTA (snapshot) 1`] = `
+<section
+  aria-label="!!!No governance delegation"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    !!!No governance delegation
+  </h3>
+  <p
+    class="warning"
+    role="alert"
+  >
+    <span
+      aria-hidden="true"
+      class="warningGlyph"
+    >
+      !
+    </span>
+    !!!Your staking rewards cannot be withdrawn until you delegate this wallet's voting power to a DRep, Abstain, or No Confidence.
+  </p>
+  <p
+    class="subline"
+  >
+    !!!Daedalus will not pick a DRep for you — choose how you want your voting power to participate in Cardano governance.
+  </p>
+  <div>
+    <button
+      class="cta root root"
+      label="!!!Choose a delegation"
+    >
+      !!!Choose a delegation
+    </button>
+  </div>
+</section>
+`;

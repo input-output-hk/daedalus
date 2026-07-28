@@ -1999,3 +1999,422 @@ AC-2's owed item narrows to the human visual and overflow pass, which is not
 blocked by this gap. AC-1 is unchanged: still owed after task-135, per F-19.
 
 **Decision:** approved, unchanged.
+
+---
+
+## Code Review: task-134 — iteration 1 (2026-07-28)
+
+**Scope reviewed.** The working tree against the guide section "task-134: Jest —
+mapper, Wallet computeds, and `CurrentVoteSummary` core snapshots"
+(cv-1-implementation-guide.md:2017-2552 — the four-file "Files created" list at
+`:2019-2025`, the "Files modified" entry at `:2027-2031`, the jest/`roots`
+context block at `:2033-2041`, the empirically verified import recipe at
+`:2043-2061`, the four inline locked invariants at `:2063-2077`, the four
+resolved judgment calls at `:2079-2095`, Step 1's verbatim file body at
+`:2103-2279`, Step 2's at `:2285-2367`, Step 3's at `:2378-2473`, the Step 4
+snapshot-review gate at `:2475-2486`, Step 5's one-case extension at
+`:2488-2514`, the Step 6 verify block at `:2516-2530` and the eight-item
+acceptance checklist at `:2532-2551`), and task-134's nine acceptance criteria
+in governance-drep-discovery-plan-tasks.json (`:1055-1063`). Four files created
+and one modified in place, and nothing else. HEAD unchanged at `051567976`
+(detached, the task-133 commit `feat(gov): task-133 add CurrentVoteSummary
+storybook entry`); `git status --porcelain` → exactly five entries, one ` M` and
+four `??`. One review round.
+
+**What landed.**
+
+- `tests/jest/api/createWalletFromServerData.spec.ts` (new, 177 lines) — nine
+  `it()` blocks in one `describe('_createWalletFromServerData voting
+  mapping')`. Two hoisted `jest.mock` calls, of `utils/logging` (`:9-16`) and of
+  `api/utils/request` (`:21-23`), which the guide's import recipe declares both
+  required (`:2046-2057`); `const mockedWarn = logger.warn as jest.Mock`
+  (`:25`); the four checksum-verified vector consts plus `POOL_ID` (`:28-33`);
+  `loadFixture` (`:35-40`) and `withDelegation` (`:42-46`); `beforeEach`
+  clearing the warn spy (`:49-51`). The five AC-1 mapping cases are the
+  voting-only DRep (`:53-71`), `delegating_and_voting` (`:73-91`), `abstain`
+  (`:93-100`), `no_confidence` (`:102-109`) and pending-`next` (`:111-118`); the
+  three degradation cases are target-never-parsed (`:120-130`), unknown HRP
+  (`:132-145`) and malformed value (`:147-160`); the ninth pins the untouched
+  `delegating` / `not_delegating` paths (`:162-176`).
+- `tests/jest/api/walletVotingComputeds.spec.ts` (new, 81 lines) — seven `it()`
+  blocks in `describe('Wallet.currentVote / Wallet.isVoting')`: the three
+  populated kinds (`:38-54`), explicit `null` and never-set (`:56-66`), and the
+  two `update()` propagation directions (`:68-80`), which the guide names as
+  "the executable form of the R-2 mitigation" (`:2369-2370`).
+- `source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.spec.tsx`
+  (new, 94 lines) — `renderSummary` (`:30-42`) wrapping the component in
+  react-polymorph `ThemeProvider` + `IntlProvider locale="en-US"` with the
+  en-US catalog, per the `VotingPowerDelegationConfirmationDialog.spec.tsx:30-55`
+  precedent the guide cites at `:2374-2376`; four `it()` blocks, one per core
+  state — `noDelegation` (`:47-53`), DRep (`:55-65`), `abstain` (`:67-79`),
+  `no_confidence` (`:81-93`) — each ending in
+  `expect(container.firstChild).toMatchSnapshot()`.
+- `source/renderer/app/components/voting/voting-governance/__snapshots__/CurrentVoteSummary.spec.tsx.snap`
+  (new, 176 lines, generated on the first run and committed as the guide
+  requires at `:2481-2486`) — four entries.
+- `tests/jest/governance/normalizeDRepIdentity.spec.ts` — EXTENDED in place, not
+  re-created. `git diff` on the file is a single `+8`-line hunk appended after
+  the eighth case and before the `describe`'s closing brace; the file goes from
+  eight cases to nine and no existing line moves. This satisfies the tracker's
+  own AC at `:1063`, which requires the spec be recorded as MODIFIED rather than
+  created.
+- Nothing else. No catalog edit (task-135's boundary), no touch of `api.ts`,
+  `Wallet.ts`, `wallets/types.ts`, `CurrentVoteSummary.tsx` or any fixture under
+  `tests/mocks/` — `git diff --name-only` names the normalizer spec alone.
+
+The three authored spec bodies were compared against the guide's Step 1 / Step 2
+/ Step 3 blocks rather than read for gist. Step 2 and Step 3 are byte-exact.
+Step 1 carries exactly two added lines, both deliberate and both covered under
+"The AC-7 deviation" below.
+
+**Review method (three lenses, adversarial refutation).** Three independent
+lenses were run over the diff: (1) guide and acceptance-criteria conformance —
+the Step 1/2/3 byte comparison, the five-case AC-1 enumeration at guide
+`:2087-2089`, the tracker's nine criteria at `:1055-1063`, and the Step 5
+extend-don't-recreate constraint; (2) locked invariants and the sanitization
+floor — the HRP-only payload and raw-string-absence assertions, byte-equality of
+the bech32 vectors, the snapshot's negative constraints (no status badge, no
+`givenName`, no anchor/view-details link) and the scope fence; (3) test quality
+and repo convention — assertion strength, matcher choice, fixture-vs-synthetic
+coverage, naming, and whether any construct earns its place. Every candidate any
+lens produced was then attacked on the reproduce / guide-authority / scope axes
+and allowed to stand only if it survived. **Twenty-four candidate observations
+were logged across the three lenses — nineteen distinct once the four raised by
+more than one lens are merged (the `nix fmt` obligation, the test-count
+arithmetic, the AC-7 deviation and the task-135 snapshot hand-off). Zero
+survived refutation as a blocker, in one iteration**, and no file was changed as
+a result of the review.
+
+Per-lens decision. Guide/AC conformance — clean; Steps 2 and 3 are
+character-for-character the guide's blocks, Step 1 differs by the two
+tracker-mandated assertions, and all nine tracker criteria are met. Invariants
+and floor — clean; the sanitized-warning payload is asserted shape-exact, the
+raw string is proven absent from the logged calls, the four snapshots carry no
+`Active|Inactive|Expiring` text and no `givenName`/anchor/href, and the
+task-111 floor suite is re-asserted at 23 of 23. Test quality and convention —
+clean; nine hardening ideas were generated and every one was judged optional,
+with the reasons recorded below rather than dropped.
+
+**Candidates adjudicated (none survived as a blocker).**
+
+1. *Refuted — "the two extra `expect(mockedWarn).not.toHaveBeenCalled()` lines
+   deviate from the guide's verbatim Step-1 block."* Reproduced: the guide's
+   `abstain` and `no_confidence` cases (`:2196-2210`) carry no such assertion,
+   while the shipped cases do (createWalletFromServerData.spec.ts:99 and `:108`).
+   The tracker outranks the guide here and names all four accepted-target cases
+   explicitly (`:1061`). The code is right and the guide is stale; see below.
+2. *Refuted — "the file ships nine tests where eight were predicted."* The
+   guide's Step-1 block prescribes exactly nine `it()` blocks
+   (`:2156-2277`) and the delivered file has those nine one-for-one and in the
+   guide's order, ending with `maps delegating and not_delegating
+   byte-identically to today` (`:162`). The prediction was arithmetic drift in
+   the verify brief. An overshoot of one, never a shortfall.
+3. *Refuted as a defect of this diff — "the four snapshots bake in the react-intl
+   `!!!` fallback."* Confirmed: the 12 `voting.governance.currentVote.*` keys are
+   absent from both catalogs, so every rendered string in the snapshot carries
+   the leading marker (e.g. `!!!Your stake counts as Yes on every motion of
+   no-confidence. Rewards can be withdrawn.` at
+   `__snapshots__/CurrentVoteSummary.spec.tsx.snap:64`). That is the guide's own
+   declared and accepted ordering (`:2090-2095`: the fallback is "byte-identical
+   to what task-135 seeds, so the snapshots and text assertions are stable across
+   the task boundary"). Not a defect; carried forward as a hand-off obligation.
+4. *Refuted — "the tracker's task-134 description names a `Wallet.pendingVote`
+   computed that no test covers."* The description does say it
+   (governance-drep-discovery-plan-tasks.json:1044), and it is settled
+   description drift: D-10 at cv-1-PRD.md:230-235 and the "Resolved (not open)"
+   entry at `:470-471` both rule it out, task-131 forbids the computed in v1, no
+   acceptance criterion requires it, and `grep pendingVote
+   source/renderer/app/domains/Wallet.ts` returns nothing. There is no computed
+   to test.
+5. *Refuted — "AC-2's assertion is satisfied by fixture shape, not by the mapper
+   branch."* Accurate and not a hole.
+   createWalletFromServerData.spec.ts:57 asserts `delegatedStakePoolId` is null
+   for the voting-only fixture, and `tests/mocks/wallets/wallet-voting-drep.json`
+   has no `target` key under `delegation.active` (`:24-27`), so the default arm
+   (`api.ts:3096`, `delegatedStakePoolId = target`) would also yield null. The
+   invariant IS pinned — by the synthetic case at spec `:120-130`, which injects
+   `{ status: 'voting', target: POOL_ID }` and still asserts null. Coverage is
+   real; only the test that owns it differs from the one the AC names.
+6. *Refuted — "no single case exercises `status: 'voting'` with BOTH `target` and
+   `voting` present."* True. The VOTING arm sets `delegatedStakePoolId = null`
+   unconditionally (`api.ts:3085-3088`), so spec `:120-130`
+   (target-ignored-without-voting) and spec `:53-71` (voting-parsed-without-
+   target) are jointly sufficient. A single collision case would be three lines
+   and is recorded as optional hardening, not as missing coverage.
+7. *Refuted — "the warning-payload assertions use `toEqual`, which tolerates
+   extra keys."* `toEqual` at spec `:143` and `:156` tolerates an extra key only
+   when its value is literally `undefined`; any DEFINED extra key — i.e. an
+   actual leak — still fails. The floor is not holed. `toStrictEqual` would pin
+   the shape harder and is recorded as optional.
+8. *Refuted — "the raw-id absence sweep covers `logger.warn` only."* Confirmed:
+   `JSON.stringify(mockedWarn.mock.calls)` at spec `:144` and `:157` scans the
+   warn spy alone, while `debug`/`info`/`error` are mocked (`:11-14`) and never
+   read. There is no gap today — `_createWalletFromServerData` contains no
+   logging call, and the sole logging site on this path is `parseVoting`'s
+   `logger.warn` (`api.ts:3025`). A sweep over the whole logger mock would be
+   future-proof; recorded as optional.
+9. *Refuted — "the malformed-value case omits `toHaveBeenCalledTimes(1)`."* Its
+   sibling HRP case carries it (spec `:140`) and the malformed case (`:147-160`)
+   does not, but it cannot silently pass: `const [, data] =
+   mockedWarn.mock.calls[0]` at `:155` throws if the warn never fired.
+10. *Refuted — "the DOM negative assertions match text nodes only, not
+    attributes."* True of `queryByText(/drep1|drep_vkh|drep_script/)` (spec
+    `:76`, `:90`) and of `queryByText(/Active|Inactive|Expiring/)` (`:62`).
+    Coverage is nonetheless complete because the committed snapshot pins full
+    markup including every `aria-label`, and the `abstain` / `no_confidence`
+    entries contain no `drep` substring in any position. The `Active|Inactive|
+    Expiring` regex is additionally meaningful on its own: a cv-2 status badge
+    would render as `!!!Active` and the regex matches on substring.
+11. *Refuted — "the DRep negative assertion is unfalsifiable."* Also true and
+    also cheap: the `abstain` and `no_confidence` members of
+    `WalletVotingTarget` (api/wallets/types.ts:92-93) carry no `drep` field, so
+    there is no id those two states could print. Insurance against a future
+    union change, not present-tense coverage.
+12. *Refuted — "`toJS(wallet.currentVote)).toEqual(DREP_TARGET)` compares an
+    object against itself."* walletVotingComputeds.spec.ts:38-41 does feed and
+    compare the same `DREP_TARGET` const, but mobx deep-enhances into a NEW
+    observable rather than mutating the source, so this is a genuine structural
+    comparison. An independently written expected literal — the form the mapper
+    spec uses at createWalletFromServerData.spec.ts:59-69 — would be a stronger
+    pin; recorded as optional.
+13. *Refuted — "the DRep test name says 'no badge' while the component renders
+    one."* The name at CurrentVoteSummary.spec.tsx:55 reads "…and no badge
+    (snapshot)", and `CurrentVoteSummary.tsx:59-64` does render `<span
+    className={styles.statusBadge}>` with the `●` glyph and the `!!!Delegated to
+    DRep` label, visible in the snapshot at `.snap:83-91`. The assertion the name
+    describes is `queryByText(/Active|Inactive|Expiring/)` — "no LIVE status
+    badge", the cv-2 task-136 element. The guide's Step-4 wording "NO badge
+    markup" (`:2483`) has the same looseness. Wording only; the intended
+    constraint is met and the `statusBadge` span is task-132's vote-kind
+    indicator, not the deferred status badge.
+14. *Refuted — "invariant 14's `givenName` and anchor clauses are pinned only by
+    the snapshot."* Correct, and the guide's own Step-3 block has the identical
+    gap, so it is not a deviation. A regression that started rendering
+    `drepViewDetails` or `drepAnchorMetadata` — both already declared in
+    `CurrentVoteSummary.messages.ts` and rendered by neither branch — would
+    surface as a snapshot diff, which fails the suite. The sibling
+    `VotingPowerDelegationConfirmationDialog.spec.tsx:84-96` chose an explicit
+    negative `queryByText` for this class of invariant; recorded as optional.
+15. *Refuted — "the DRep snapshot is brittle."* It embeds roughly 35 lines of
+    react-polymorph Tooltip and Button internals (`.snap:102-135`), including an
+    invalid `label="…"` DOM attribute on `<button>` (`.snap:131`). That is the
+    honest output of `container.firstChild` over the real tree and exactly what
+    Step 3 asks for; the cost is sensitivity to a react-polymorph bump rather
+    than to `CurrentVoteSummary` alone. Noted, not fixed.
+16. *Refuted — "`loadFixture`'s `path.join` + dynamic `require` defeats TS
+    checking of the JSON."* True (`:35-40`), and `resolveJsonModule` is
+    demonstrably on, since CurrentVoteSummary.spec.tsx:8 statically imports
+    `en-US.json`. Four static imports cast through `unknown` would be smaller.
+    The guide prescribes the `require` form verbatim (`:2138-2143`), so this is a
+    guide-level preference, not drift.
+17. *Refuted — "the comment at spec `:27` embeds a planning identifier."* It
+    reads `// Checksum-verified vector set shared with the cv-1 fixtures.`;
+    `cv-1` is a slice id rather than a task id, the guide prescribes the line
+    verbatim (`:2130`), the fixtures themselves already carry `cv1` in their
+    `name` values, and the sentence states a real invariant — these vectors must
+    stay byte-identical to the committed fixtures. Kept.
+18. *Nit, not actionable — the DRep snapshot carries the full raw id in three
+    positions, not one.* The guide's Step-4 phrasing (`:2484-2485`) speaks of the
+    visible text being truncated while the `aria-label` carries the full id; both
+    hold (`.snap:125` is `drep1y2s…23nmjy`, `.snap:122` the full id), but the
+    full id also appears as a text node inside the react-polymorph tooltip bubble
+    at `.snap:115`. `getByLabelText(KEY_CIP129)` still resolves uniquely, and no
+    listed constraint covers tooltip content. Flagged because a future
+    `getByText` assertion on that id would be ambiguous.
+19. *Nit, not actionable — `beforeEach` clears only `mockedWarn`* (spec
+    `:49-51`). Same mechanism as candidate 8 and the same conclusion: correct
+    today because `parseVoting` only ever calls `logger.warn`.
+
+**The AC-7 deviation, and why the code is right.** The only substantive delta
+between the shipped Step-1 file and the guide's block is two lines:
+`expect(mockedWarn).not.toHaveBeenCalled();` as the last statement of the
+`abstain` case (createWalletFromServerData.spec.ts:99) and of the
+`no_confidence` case (`:108`). The guide's block omits both (`:2196-2210`). The
+tracker requires both: acceptance criterion seven at
+governance-drep-discovery-plan-tasks.json:1061 reads "The accepted-target mapper
+cases (voting-only DRep, delegating_and_voting, abstain, no_confidence) assert
+`expect(mockedWarn).not.toHaveBeenCalled()`, pinning the never-logs floor on the
+accepted-id path and not only on the rejection paths" — four cases, not two. The
+tracker is authoritative and the implementers followed it; both assertions pass.
+Root cause is a partial edit: commit `2ee5f74cf` added exactly two of the four
+owed single-line hunks. Two places in the guide are now stale in consequence and
+were NOT edited by this review (cv-1 planning is closed and this task's mandate
+is its own diff): the Step-1 code block itself, and the prose at `:2511-2512`
+which still reads "Together with the two `expect(mockedWarn).not.toHaveBeenCalled()`
+assertions in the Step-1 valid-DRep cases" where there are now four. The
+acceptance bullet at `:2546-2547` carries the same narrower "valid-DRep mapper
+cases" wording. Guide drift only; it changes nothing in the diff.
+
+**Acceptance criteria.** All nine of the tracker's criteria (`:1055-1063`) are
+met, and eight of them by an executing assertion rather than by reading.
+
+AC-1 "All five mapping cases pass" — met. The five the guide enumerates at
+`:2087-2089` are present as distinct cases: drep voting-only (`:53-71`), abstain
+(`:93-100`), no_confidence (`:102-109`), delegating_and_voting (`:73-91`) and
+pending (`:111-118`, asserting `pendingDelegations` length 1 plus both `last*`
+fields). AC-2 "voting-only fixture asserts `delegatedStakePoolId === null`" —
+met at `:57`, with the caveat under candidate 5 that the synthetic case at
+`:120-130` is what makes the assertion load-bearing. AC-3 "Wallet computeds
+covered for every `WalletVotingTarget` kind plus null" — met by
+walletVotingComputeds.spec.ts, three kinds plus explicit-null plus never-set
+plus both `update()` directions, seven cases. AC-4 "core-state snapshots cover
+noDelegation / drepUnverified / abstain / noConfidence" — met; four snapshots
+written and committed, with `DREP_VOTE`'s `source: 'onchain'` being the
+drepUnverified state per the guide's own gloss at `:2543`. AC-5 — met and
+measured: the wrong-length `drep_vkh` case is appended at
+normalizeDRepIdentity.spec.ts:106-113 and the coverage run's "Uncovered Line
+#s" column for `normalizeDRepIdentity.ts` is now EMPTY, where the baseline
+showed `48` — the `bytes.length !== CREDENTIAL_BYTE_LENGTH` return inside the
+`drep_vkh` / `drep_script` branch (`normalizeDRepIdentity.ts:47-49`), which is
+exactly the guard the criterion names. AC-6 "the added vector is checksum-valid
+… a 29-byte payload under a CIP-105 HRP" — met by construction rather than by
+hand-authored string: `bech32.encode('drep_vkh', bech32.toWords(new
+Array(29).fill(7)))`, so the checksum is valid by construction and the input
+reaches the length guard instead of the decode `catch`; `grep -c "from
+'bech32'"` over the spec returns 1, so no duplicate import was introduced. AC-7
+— met, and it is the deviation discussed above; all four accepted-target cases
+carry the assertion (`:70`, `:90`, `:99`, `:108`). AC-8 "the existing eight
+cases and the sanitization floor stay green" — met: nine of nine and 23 of 23.
+AC-9 "the spec is recorded as MODIFIED rather than created" — met in both
+places: the guide's file list says so at `:2029-2031` and the diff is a pure
+append.
+
+The guide's own eighth acceptance box ("Floor suite green; whole-tree jest
+green; `tsc` clean", `:2551`) holds on all three counts.
+
+**Status vocabulary.** `verified` is defensible for this row, and it is the
+first cv-1 row for which it is. Every preceding row shipped `complete, NOT
+verified` with the same sentence — that the behavioural proof "arrives with
+task-134" (recorded verbatim in the `statusReason` of task-126, task-127,
+task-128, task-129 and task-130 in governance-drep-discovery-plan-tasks.json).
+This row IS that proof: it is all executing assertion, its own gate is
+mechanical, and the mapper, the normalizer's length guard, the Wallet computeds
+and the four component states are now pinned by tests that fail loudly. What it
+does not carry is any human-visual or running-app evidence, and it makes no such
+claim.
+
+**Comment convention.** Three comments in the change set, all surviving the hard
+test. createWalletFromServerData.spec.ts:7-8 and `:18-20` state why each
+`jest.mock` is structurally required (`global.electronLog` absent under jest;
+`request.ts` builds a `global.https.Agent` at module scope) — non-obvious
+mechanism, two and three plain lines. CurrentVoteSummary.spec.tsx:58 states the
+invariant behind the `getByLabelText` choice: "DRepIdDisplay truncates the
+visible text but exposes the full raw id." All three are guide-verbatim. None
+carries a task id, a review label, an ALL-CAPS banner or change history; `grep
+-nE 'task-[0-9]|CAT-|CP-|ADR|DD-'` over the three authored files returns
+nothing, and the single `cv-1` occurrence is candidate 17, kept deliberately.
+
+**No unnecessary complexity.** 352 authored lines across three specs plus a
+176-line generated snapshot and an eight-line append. No test helper beyond
+`loadFixture` / `withDelegation` / `makeWallet` / `renderSummary`, each used
+three or more times; no shared fixture module; no `beforeAll`; no snapshot of
+anything but `container.firstChild`. Every const is referenced. Scope fence
+clean in both directions: nothing under `source/renderer/app/api/`,
+`domains/`, `i18n/` or `tests/mocks/` moved, and none of task-135's or cv-2's
+files were created.
+
+**Verification commands run (results as observed).** All six command groups are
+as measured by the dedicated verify pass; this scribe re-read the files and the
+diff on disk and re-ran no command.
+
+1. `yarn compile` → exit 0, zero diagnostics, `Done in 29.61s.` The only output
+   ahead of `$ tsc --noEmit` is the `typed-scss-modules` `[GENERATED TYPES]`
+   lines from the `precompile` hook. This also closes R-4: cv-1-PRD.md:462-466
+   frames Node v24 `yarn compile` failure as a live risk and the guide repeats
+   the framing at `:93-97` and in the Step-6 comment at `:2519` ("Node v24
+   fallback"); the fallback was not needed here or in the preceding two rows, so
+   the risk can be closed rather than merely carried.
+2. `node_modules/.bin/jest tests/jest/api --runInBand` → "Test Suites: 3 passed,
+   3 total" / "Tests: 18 passed, 18 total", exit 0. Per-suite:
+   `createWalletFromServerData.spec.ts` 9, `walletVotingComputeds.spec.ts` 7,
+   and the pre-existing `walletDelegationStatuses.spec.ts` 2. `grep -c "  it("`
+   confirms 9 and 7 in the two new files.
+3. `node_modules/.bin/jest tests/jest/governance/normalizeDRepIdentity.spec.ts
+   --runInBand` → 1 suite / 9 tests passed, exit 0. The coverage row for
+   `normalizeDRepIdentity.ts` reads 100 / 100 / 100 / 100 with an EMPTY
+   "Uncovered Line #s" column; the baseline `48` is absent. This is the AC-5
+   headline and the one gate result that could not have been inferred from
+   reading.
+4. `node_modules/.bin/jest …/CurrentVoteSummary.spec.tsx --runInBand` → 1 suite
+   / 4 tests / "Snapshots: 4 passed, 4 total", exit 0. Component coverage in
+   that run: `CurrentVoteSummary.tsx` and `CurrentVoteSummary.messages.ts` both
+   100/100/100/100 with an empty uncovered column.
+5. `node_modules/.bin/jest tests/jest/security/governance-sanitization.spec.ts
+   --runInBand` → "Test Suites: 1 passed, 1 total" / "Tests: 23 passed, 23
+   total", exit 0. The task-111 floor is re-asserted exactly, with the new
+   mapper spec's own logger mock in the tree.
+6. Whole tree, no path argument, `--runInBand --coverage=false` → "Test Suites:
+   1 skipped, 84 passed, 84 of 85 total" / "Tests: 12 skipped, 1059 passed,
+   1071 total" / "Snapshots: 6 passed, 6 total", exit 0 in 42.02 s. Against the
+   82 suites / 1050 tests / 2 snapshots pre-task baseline that is +3 suites, +21
+   tests and +4 snapshots. The +21 (rather than +20) is candidate 2: the
+   guide-mandated ninth mapper case.
+7. `yarn lint` → exit 0 at "5591 warnings", `Done in 65.10s.` — delta against
+   the pre-existing 5591-warning / 0-error baseline is exactly zero, and no
+   warning in the output is attributable to any of the three added files.
+8. `node_modules/.bin/prettier --check` on the three created files → "All
+   matched files use Prettier code style!", exit 0. Explicit paths only;
+   `yarn prettier` was never invoked, per the standing ~240-file drift hazard.
+9. `git status --porcelain` → exactly five entries: ` M
+   tests/jest/governance/normalizeDRepIdentity.spec.ts` plus four `??` paths
+   (the two `tests/jest/api/` specs, the component spec, and the
+   `__snapshots__/` directory containing only
+   `CurrentVoteSummary.spec.tsx.snap`). No stray file, nothing staged, nothing
+   committed, and no `*.scss.d.ts` noise (gitignored, as expected).
+
+**Expected noise, recorded rather than counted as failure.** The two runs that
+mount the component print react-intl `console.error` missing-message lines, e.g.
+verbatim `[React Intl] Missing message:
+"voting.governance.currentVote.noConfidence.caption" for locale: "en-US", using
+default message as fallback`. Ten DISTINCT `voting.governance.currentVote.*` ids
+appear across the four rendered states; the other two of the twelve belong to
+states these snapshots do not render. Both runs still exit 0. This is F-19
+(research/cv-1-findings.md:652) reproducing exactly as predicted — the
+missing-message path is `console.error` and fires in en-US too — and it clears
+when task-135 seeds the catalogs.
+
+**Out-of-scope observations carried forward.**
+
+- **Hand-off obligation for task-135, declared and accepted in advance.** The
+  four committed snapshots capture the `!!!` `defaultMessage` fallback verbatim.
+  When task-135 seeds `en-US.json`, the values must be byte-identical to the
+  defaults in `CurrentVoteSummary.messages.ts` — including the leading `!!!` —
+  or all four snapshots break at that task. The guide pre-authorised exactly
+  this at `:2090-2095`. It is the intended invariant-11 canary, not a defect,
+  but whoever runs task-135 needs to know the snapshots are watching.
+- **Guide drift from CONFLICT-1, recorded not fixed** — the Step-1 block at
+  `:2196-2210`, the prose at `:2511-2512` and the acceptance bullet at
+  `:2546-2547` all still describe two `not.toHaveBeenCalled()` assertions where
+  the tracker requires and the code ships four. Detail under "The AC-7
+  deviation".
+- **Record-only correction to this file's own history.** The task-170 planning
+  entry at cv-1-code-review.md:1141-1143 states that "the cv-1 PRD and
+  implementation guide are not rewritten by this entry". `git show --stat
+  2ee5f74cf` reports `cv-1-implementation-guide.md` changed by 531 lines and
+  `cv-1-PRD.md` by 109. The guide WAS rewritten. This resolves in the safe
+  direction — the guide on disk is current and complete for task-134, which is
+  what this review read — so it is noted for the record and nothing follows from
+  it.
+- **R-4 can be closed.** cv-1-PRD.md:462-466 and the guide at `:93-97` and
+  `:2519` still treat `yarn compile` under Node v24.16.0 as a flakiness risk
+  with a `node_modules/.bin/tsc --noEmit` fallback. Measured green again here
+  (verification command 1), as in the two preceding rows. The fallback has never
+  been needed.
+- Still carried and unmoved by this diff: **F-5** — `nix fmt` cannot run in this
+  devcontainer, explicit-path `node_modules/.bin/prettier` was the substitute
+  and the format pass remains an owed pre-merge obligation; **F-19** — the
+  react-intl `console.error` mechanism above; **F-15** — `filterLogData`'s
+  `sensitiveData` list is keyed to the wire shape, untouched here because this
+  diff adds no sink, only spies on one.
+
+**Optional hardening, none of it required.** Recorded so the ideas are not lost:
+a `{ status: 'voting', target: POOL_ID, voting: KEY_CIP129 }` collision case
+(candidate 6); `toStrictEqual` on the two warning payloads (7); stringifying the
+whole logger mock rather than `warn` alone (8, 19); an independently written
+expected literal in the computeds spec (12); an explicit `queryByText` negative
+for `givenName` and the anchor, matching
+`VotingPowerDelegationConfirmationDialog.spec.tsx:84-96` (14).
+
+**Blockers.** None.
+
+Decision: approved
