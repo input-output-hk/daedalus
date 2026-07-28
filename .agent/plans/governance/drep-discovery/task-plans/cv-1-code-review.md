@@ -3459,3 +3459,222 @@ never invoked. The guide says the same at `:2923-2925`.
 **Blockers.** None.
 
 Decision: approved
+
+---
+
+## Planner: cv-1 slice close (2026-07-28)
+
+**Status: cv-1 is closed.** All twelve rows — task-126 … task-135 plus the two
+post-approval additions task-170 and task-171 — are `complete` in
+`governance-drep-discovery-plan-tasks.json`, each on its own commit, each
+code-reviewed in this log and **approved on iteration 1 with zero blockers**.
+No row required a second review round anywhere in the slice.
+
+**What shipped.** Commits in landing order: `35a8a57d0` task-126 (four authored
+cardano-wallet voting fixtures) → `f948845a5` task-127 (the latent
+`voting_and_delegating` → `delegating_and_voting` wire-literal fix, constant
+export name preserved) → `83edc15fa` task-128 (`voting?: WalletVotingTarget` on
+both delegation shapes) → `40bcd990a` task-129 (the pure `normalizeDRepIdentity`
+helper, no new dependency) → `1d33baa2c` task-130 (`delegation.active.voting`
+mapped through `_createWalletFromServerData` with a sanitized rejection warning)
+→ `2baed760c` task-131 (`Wallet.votingTarget` plus `currentVote` / `isVoting`,
+including the `update()` pick-list entry R-2 demanded) → `23f443b76` task-132
+(`CurrentVoteSummary`'s four CORE states and, note, `CurrentVoteSummary.messages.ts`
+itself) → `051567976` task-133 (the four-knob Storybook entry) → `d8f71319c`
+task-134 (mapper cases, Wallet computeds, four snapshots, sanitized-warning
+cases, the ninth normalizer vector) → `a3e352841` (a docs-only reconciliation of
+the guide's task-134 Step-1 block against AC-7) → `523141760` task-171 →
+`d3729994a` task-135 → `fb4f07f6c` task-170.
+
+**Gates at close, re-measured for this entry rather than copied.** The
+unfiltered `node_modules/.bin/jest --runInBand`, no path argument, at
+`fb4f07f6c`: **86 test suites (1 skipped, 85 passed), 1073 tests (12 skipped,
+1061 passed), 6 snapshots, exit 0** in 29.735 s. `jest --listTests` reports 86
+suites unfiltered against 10 under a `tests/jest` filter — the trap the guide
+warns about, now with current numbers. Per-row gates as recorded above:
+`yarn compile` exit 0 on Node v24.16.0 at every row with the fallback never
+needed (which is why F-23 closes PRD R-4 outright), `yarn lint` exit 0 at
+exactly 5591 warnings with zero delta at every row, `yarn i18n:manage` clean
+from task-135 onward, and the task-111 floor suite green at every row — 23 tests
+through task-135, 24 from task-170.
+
+**Ordering deviation from the guide.** The guide's own "Implementation Order"
+section (`cv-1-implementation-guide.md:18-61`) lists task-170 at item 10,
+task-171 at item 11 and task-135 at item 12, i.e. **170 → 171 → 135**. The
+orchestration executed **171 → 135 → 170**, following the tracker's JSON listing
+order. Both are valid topological orders of the same graph: task-171's
+`dependencies` is `[]`, task-135's is `["task-132", "task-171"]`, and task-170's
+is `["task-130", "task-109"]`, so task-170 is independent of the other two and
+may sit anywhere after task-130. The executed order also preserves the one
+constraint the guide argues for in prose — the marker guard must land *before*
+the copy mint, because "a guard landing after the mints protects nothing" — and
+it satisfies F-19, which makes task-133's AC-1 unsatisfiable until task-135
+seeds the catalogs. Recorded as a deviation for the record; it changed no task's
+content and cost nothing.
+
+**task-171's deferred AC-4 clause is DISCHARGED, and must not be carried
+forward.** task-171's AC-4 has two clauses. The second — `defaultMessages.json`
+and `translations/messages.json` unchanged by the restoration — was met and
+measured at that row. The first — `yarn i18n:manage` runs clean — was
+**unsatisfiable at task-171's position by the guide's own construction**: the
+twelve `voting.governance.currentVote.*` keys were already missing from all four
+catalogs at `a3e352841` (tasks 130-134 shipped the component without
+regenerating), while task-171's own inline invariant forbids it from editing the
+generated catalogs, and seeding those keys is verbatim the next row's stated
+deliverable. A spec self-contradiction, not an implementation defect. **task-135
+discharged it in full**: `yarn i18n:manage` exits 0 and is a genuine no-op —
+zero added, zero deleted, all four catalog sha256s byte-identical before and
+after, `git diff --stat` unchanged — and task-170's gate 7 re-ran it three times
+and re-confirmed the same. The canary task-171 asked for also held: the twelve
+freshly minted ja-JP values (real Japanese, not runner passthrough) all carry
+`!!!` and pass the guard. This carry-forward is settled and is struck here.
+
+**Cross-phase bookkeeping task-170 triggered.** Two slice-1 rows were updated as
+a direct consequence, and both changes are already in the tracker:
+
+- **task-109** ("Redact governance vote targets in filterLogData") is
+  **re-promoted from `complete` back to `verified`**. Its AC-2 was the criterion
+  that had forced the earlier demotion: `filterLogData` only redacts where a call
+  site invokes it, and `api.ts:379-383` logged the whole `wallets` /
+  `legacyWallets` arrays with only `hwLocalData` filtered — so on the 5000 ms
+  `WalletsStore` poll a raw DRep id reached the log file roughly every five
+  seconds for any wallet that had voted. task-170 closed exactly that gap at six
+  Shelley call sites and supplied the proof task-109 lacked, from a different
+  module at a call boundary that row never touched.
+- **task-111** (the sanitization spy suite) keeps `verified` with its recorded
+  caveat **cleared**. That caveat was that the suite's call-boundary cases covered
+  `delegateVotes` and the two hardware-wallet paths only, with no `getWallets`
+  case. task-170 AC-4 added it, taking the suite 23 → 24, and the case was proved
+  non-vacuous: reverting only the `getWallets` wrap failed exactly that one case
+  of 24 and named the fixture DRep id. task-111's reusable module-scope
+  `jest.mock` harness pattern held for a fourth time, which is AC-3's
+  reusability clause holding again.
+
+**auditSummary check — a verified no-op.** The tracker's fourteen phase objects
+were enumerated programmatically: **`slice-1` is the only phase carrying an
+`auditSummary` field**; `slice-2` … `slice-8`, `cv-1`, `cv-2`, `anchor-1`,
+`anchor-2`, `standing` and `ux-refinement` all carry exactly
+`id, name, description, riskLevel, tasks`. cv-1 therefore matches the convention
+of the other twelve phases and **no `auditSummary` was invented for it**. This
+was verified, not assumed, and the tracker JSON is untouched by this entry.
+
+**Guide drift reconciled at close.** Five factual corrections were applied to
+`cv-1-implementation-guide.md`, all plain restatements of measured fact, none
+touching a code block or an acceptance criterion's substance:
+
+1. The stale suite count. `all 82 suites stay green` in four verify blocks
+   (task-131, task-132, task-170, task-171) → `every suite stays green (86 at
+   cv-1 close)`; `the UNFILTERED 82-suite jest run` in three acceptance bullets →
+   `the UNFILTERED whole-tree jest run (86 suites at cv-1 close)`; and the
+   Cross-Cutting gate's `all 82 suites` → `all 86 suites at cv-1 close`.
+2. The whole-tree-gate trap note, which read "the unfiltered tree is 82 suites,
+   `tests/jest` selects 7 of them" — re-measured with `jest --listTests` to 86
+   and 10, with the authoring-time figure kept in parentheses.
+3. task-171's "Files touched" list, which omitted
+   `source/renderer/app/components/governance/drep-directory/DRepDirectory.spec.tsx`.
+   Added, with the one-line reason: three exact-text ja-JP `getByText`
+   assertions cannot match once the marker is restored, so the row's own
+   whole-tree gate is unreachable without them.
+4. task-171 Step 3's `git diff --stat  # ja-JP.json and the new spec only`,
+   which contradicted the delivered three-file diff. Corrected to name all three.
+5. task-171 Step 3's `yarn i18n:manage  # zero added, zero deleted keys`, which
+   is unreachable at that position. Annotated in place to state that the run is
+   *expected dirty* there, why (the twelve currentVote keys are missing at HEAD
+   and are task-135's deliverable), and where the clean run is actually gated.
+
+The task-134 drift a previous review recorded — the Step-1 block and its
+acceptance bullet describing two `not.toHaveBeenCalled()` assertions where four
+ship — was **already reconciled by commit `a3e352841`** and needed nothing here;
+that was verified against the commit diff rather than assumed.
+
+**Guide/tracker drift deliberately left, and owed.** Each of these needs a
+phase-owner judgment call, not a factual patch, so none was edited:
+
+- task-171's **acceptance bullet AC-4** still states the `i18n:manage`-clean
+  condition that its own ordering makes unreachable at that row. The wording
+  mirrors the tracker's acceptance criterion, which is authoritative; rewording
+  an approved criterion is not a scribe's call. The Step 3 annotation above now
+  explains it in place, and the discharge is recorded here and in the PRD.
+- The **task-135 tracker description** still says the row creates
+  `CurrentVoteSummary.messages.ts`; task-132 did, and both the guide and the
+  delivered diff are correct.
+- The guide's **task-170 Step 3 table anchors** are pre-change (`api.ts` is now
+  8 lines shorter), and its audit grep is under-inclusive in two independent
+  ways — it cannot see multi-line `logger.debug(` calls, and its
+  `^[0-9]*-        wallets\?,$` filter can never match `importedWallet,`. The
+  guide's own header rule directs re-anchoring by content, so this is expected
+  rather than defective; the post-change anchors are in the task-170 entry's AC-3
+  table above.
+
+**Owed at cv-1 close (the complete list, nothing faked green).**
+
+1. **One human browser session in the main checkout**, covering two open
+   acceptance halves and nothing else: **task-133 AC-1** — all four
+   `CurrentVoteSummary` knobs render in en-US AND ja-JP via the global locale
+   toggle with no console errors and no missing-message warnings; and **task-135
+   AC-2's overflow half** — the same four knobs with the locale switched to
+   Japanese, every string rendering fully with no clipping and the panel growing
+   naturally, `noDelegation.subline` at 58 characters being the likeliest
+   clipper. AC-2's marker half is met and machine-verified on all twelve ja-JP
+   values. Explicitly pre-authorised as a follow-up by the guide; there is no
+   browser in this devcontainer. No new task row is needed.
+2. **The `nix fmt` pre-merge pass (F-5).** `nix` is not installed here. The
+   substitute throughout was `node_modules/.bin/prettier --check` on explicit
+   paths and only on files this slice created — never `yarn prettier*`, and never
+   on a pre-existing file, under the standing ~240-file drift hazard.
+3. **The release-end `!!!` copy review**, user-owned by invariant 11 and never a
+   per-slice task. cv-1 enlarged its surface: the strip now touches twelve more
+   values, and each is pinned by a committed snapshot and by exact-text matchers,
+   so the strip is a code change rather than a copy edit.
+4. **The three guide/tracker prose items above**, left as judgment calls.
+5. **`yarn check:all` and `yarn storybook:build` remain unrun and are not valid
+   gates** — both are red at HEAD for the unrelated storybook manager-side JSX
+   loader reason (F-20). The working automated floor for Storybook rows is a
+   clean `yarn storybook` preview compile.
+
+**What cv-2 inherits.**
+
+- **Built and green to build on:** `Wallet.currentVote` / `isVoting`, the
+  `WalletVotingTarget` shape, `normalizeDRepIdentity` (with full branch
+  coverage), and `CurrentVoteSummary`'s four core states. The live status badge,
+  `VotingPowerDelegation` pre-fill and same-vote prevention are cv-2's, exactly
+  as scoped.
+- **F-15, which task-170 explicitly does not close.** `filterLogData`'s
+  `sensitiveData` list is keyed to the WIRE shape (`drepId`, `dRepId`, `vote`,
+  `voting`); the renderer-side domain names `votingTarget` and `currentVote` are
+  absent from it. task-170 wraps wire payloads whose key is `voting` and correctly
+  adds no `sensitiveData` entry. **The domain shape stays unguarded the moment
+  cv-2 gives it a consumer — the first such consumer owns closing it.**
+- **F-26**, recommended at task-170 and now recorded: `api.ts:1995`
+  `importWalletFromKey` and `:2025` `importWalletFromFile` log
+  `{ importedWallet }` unwrapped and are Shelley-`AdaWallet`-typed. Pre-existing
+  and byte-identical at HEAD, type-level rather than demonstrated (both POST
+  Byron/V0 legacy import endpoints, neither on a poll). For the reviewer to
+  accept or schedule.
+- **The `HardwareWalletsStore` `[HW-DEBUG]` raw `{ error }` sink** — the
+  message-SUBSTRING leak class a key-based redactor structurally cannot reach.
+  Still open, fenced out of task-170 by both the guide and the tracker.
+- **The i18n key-DELETION blind spot (F-25).** The `!!!` guard filters on
+  `key in ja`, react-intl falls back to the `defaultMessage`, and
+  `jest.config.js` has both `setupFiles` and `setupFilesAfterEnv` commented out,
+  so no console error becomes a failure. Self-healing across an `i18n:manage`
+  run but silent between them. Unowned; the cheap form is a key-set symmetry
+  assertion added to the existing `preliminaryCopyMarkers` suite, not a new file.
+- **The guard's deliberate asymmetry.** It never fires for a key minted with no
+  `!!!` in en-US at all. Low risk today because en-US markers derive from each
+  component's source `defaultMessage`, but task-146 and anchor-2 authors should
+  know the direction it does not cover.
+- **The copy-mint procedure task-135 established (F-25), to be repeated
+  verbatim by task-146:** define the messages in source first, let the runner
+  seed both catalogs, replace only the ja-JP *values* by hand, keep every `!!!`,
+  and never hand-edit an en-US value away from its `defaultMessage` while a
+  snapshot bakes the fallback in.
+
+**Scope of this entry.** Documentation only. It edited
+`cv-1-PRD.md` (Final Outcome filled, slice status flipped to closed) and
+`cv-1-implementation-guide.md` (the five factual reconciliations above), and
+appended this entry. No source file, no test, no story, no locale catalog and no
+tracker JSON was touched, and nothing was committed — commit is a separate
+owner's step. `/workspaces/daedalus` was never read, edited or run against.
+
+Decision: cv-1 closed.

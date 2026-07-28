@@ -106,9 +106,10 @@ deps task-109/task-110 are already verified):
   `tests/jest` to a whole-tree gate: because the script is bare `jest`, a
   trailing path is a `testPathPattern` regex, and jest's `roots` are BOTH
   `<rootDir>/tests` and `<rootDir>/source` (`jest.config.js:129`) with most
-  specs colocated under `source/`. Measured at HEAD with `jest --listTests`:
-  the unfiltered tree is 82 suites, `tests/jest` selects 7 of them. Only the
-  unfiltered run may be reported as "all suites green".
+  specs colocated under `source/`. Measured with `jest --listTests`: at cv-1
+  close the unfiltered tree is 86 suites and `tests/jest` selects 10 of them
+  (82 / 7 was the figure when this guide was authored). Only the unfiltered
+  run may be reported as "all suites green".
 - `yarn i18n:manage` (`package.json:54`) runs only after task-135 copy
   changes.
 
@@ -1373,7 +1374,7 @@ grep -n "votingTarget" source/renderer/app/domains/Wallet.ts
 # field, the 'votingTarget' pick-list entry, and `this.votingTarget` in
 # currentVote.
 grep -rn "task-1[0-9][0-9]" source tests storybook || echo "OK: no task ids in code"
-node_modules/.bin/jest --runInBand   # whole tree: all 82 suites stay green
+node_modules/.bin/jest --runInBand   # whole tree: all 86 suites stay green
 yarn lint
 ```
 
@@ -1408,8 +1409,8 @@ files) — match the surrounding style shown in the blocks above.
       `governance.types.ts:18` while the "Populated by normalizeDRepIdentity"
       sentence remains; `grep -rn "task-1[0-9][0-9]" source tests storybook`
       returns zero hits (Step 4).
-- [ ] `tsc` clean; the UNFILTERED 82-suite jest run is green and its counts
-      are recorded in the statusReason.
+- [ ] `tsc` clean; the UNFILTERED whole-tree jest run is green (86 suites
+      at cv-1 close) and its counts are recorded in the statusReason.
 
 ---
 
@@ -1797,7 +1798,7 @@ node_modules/.bin/prettier --check \
   source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.messages.ts \
   source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.scss \
   source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.tsx
-node_modules/.bin/jest --runInBand   # whole tree: all 82 suites stay green
+node_modules/.bin/jest --runInBand   # whole tree: all 86 suites stay green
 # Boundary greps — all must come back empty:
 grep -n "GovernanceStore\|drepIndex\|DRepStatusBadge\|givenName\|anchorUrl" \
   source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.tsx \
@@ -2914,7 +2915,7 @@ re-read the fixture: it must be the committed
 yarn compile   # Node v24 fallback: node_modules/.bin/tsc --noEmit
 yarn lint
 yarn test:jest tests/jest/security/governance-sanitization.spec.ts --runInBand
-node_modules/.bin/jest --runInBand   # whole tree: all 82 suites stay green
+node_modules/.bin/jest --runInBand   # whole tree: all 86 suites stay green
 grep -n "logger.debug('AdaApi::getWallets success'" -A3 source/renderer/app/api/api.ts
 grep -n "logger.debug('AdaApi::getWallet success'" source/renderer/app/api/api.ts
 ```
@@ -2940,7 +2941,8 @@ pre-existing) — match the surrounding style shown in the blocks above.
 - [ ] INHERITED sanitization floor: the full governance-sanitization suite is
       green with the new case, and no non-governance log shape for the
       wallet-list flow changes beyond the deliberate `passphrase` omission.
-- [ ] `tsc` clean; lint clean; the UNFILTERED 82-suite jest run is green.
+- [ ] `tsc` clean; lint clean; the UNFILTERED whole-tree jest run is green
+      (86 suites at cv-1 close).
 
 ---
 
@@ -2952,6 +2954,10 @@ pre-existing) — match the surrounding style shown in the blocks above.
   a leading `!!!`; nothing else changes)
 - `tests/jest/i18n/preliminaryCopyMarkers.spec.ts` (new — creates
   `tests/jest/i18n/`)
+- `source/renderer/app/components/governance/drep-directory/DRepDirectory.spec.tsx`
+  (edit — three exact-text ja-JP `getByText` assertions gain the same `!!!`
+  prefix; they cannot match once the marker is restored, so the whole-tree
+  gate below is unreachable without this)
 
 **Context.** Invariant 11 binds BOTH locales, and slice-1's ja-JP copy landed
 without the marker. Measured at HEAD by diffing the two catalogs: exactly 20
@@ -3073,12 +3079,14 @@ should see WHICH key reopened the gap.)
 ```bash
 yarn compile   # Node v24 fallback: node_modules/.bin/tsc --noEmit
 yarn test:jest tests/jest/i18n/preliminaryCopyMarkers.spec.ts --runInBand
-yarn i18n:manage        # zero added, zero deleted keys
-git diff --stat         # ja-JP.json and the new spec only
+yarn i18n:manage        # expected DIRTY here: the 12 voting.governance.currentVote.*
+                        # keys are already missing at HEAD and are task-135's
+                        # deliverable, so the clean run is gated there, not here
+git diff --stat         # ja-JP.json, the new spec, and DRepDirectory.spec.tsx only
 git diff --stat source/renderer/app/i18n/locales/defaultMessages.json translations/messages.json \
   || echo "OK: generated catalogs untouched"
 node_modules/.bin/prettier --check tests/jest/i18n/preliminaryCopyMarkers.spec.ts
-node_modules/.bin/jest --runInBand   # whole tree: all 82 suites stay green
+node_modules/.bin/jest --runInBand   # whole tree: all 86 suites stay green
 ```
 
 Then prove the guard bites rather than merely passing: temporarily strip the
@@ -3103,7 +3111,8 @@ and names that key, and put the marker back.
       only the ja-JP translation file is edited).
 - [ ] The task restores markers only and never strips one; removal stays the
       user-owned release-end copy review (AC-5).
-- [ ] `tsc` clean; the UNFILTERED 82-suite jest run is green.
+- [ ] `tsc` clean; the UNFILTERED whole-tree jest run is green (86 suites
+      at cv-1 close).
 
 ---
 
@@ -3115,7 +3124,7 @@ After all twelve tasks are complete, run from the worktree root:
 yarn compile          # Zero TS errors (Node v24 fallback: node_modules/.bin/tsc --noEmit)
 node_modules/.bin/typed-scss-modules source/renderer/app   # scss typings regenerate cleanly
 yarn lint             # Zero ESLint errors (covers source, storybook, utils)
-yarn test:jest        # Whole tree green: all 82 suites — tests/ plus colocated source specs
+yarn test:jest        # Whole tree green: all 86 suites — tests/ plus colocated source specs
 yarn test:jest tests/jest/security/governance-sanitization.spec.ts --runInBand   # floor re-asserted (invariant 2)
 yarn i18n:manage      # Clean re-run: no missing/deleted keys
 node_modules/.bin/prettier --check \

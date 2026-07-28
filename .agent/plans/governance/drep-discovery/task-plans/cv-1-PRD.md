@@ -1,6 +1,6 @@
 # CV-1 PRD: Current-Vote Plumbing + CurrentVoteSummary Core States
 
-> **Planning Status:** approved | **Date:** 2026-07-27 | **Parent Plan:** [governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md)
+> **Planning Status:** approved | **Slice Status:** closed 2026-07-28 (all 12 tasks complete — see Final Outcome) | **Date:** 2026-07-27 | **Parent Plan:** [governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md)
 > **Phase:** `cv-1` — "Current-vote 1 - Plumbing + CurrentVoteSummary core" (riskLevel: medium)
 > **Tasks:** task-126 … task-135, plus task-170 / task-171 added post-approval (12 tasks; cross-phase deps task-109 complete, task-110 verified)
 > **Findings:** [research/cv-1-findings.md](../research/cv-1-findings.md)
@@ -496,8 +496,146 @@ counts as Yes on every motion of no-confidence. Rewards can be withdrawn."
 
 ## Final Outcome
 
-_Placeholder — filled at slice close (task outcomes, review verdicts, deviations
-from this PRD, and the closing planner entry)._
+**Closed 2026-07-28.** All twelve cv-1 tasks are `complete` in
+`governance-drep-discovery-plan-tasks.json`, each with its own commit, each
+code-reviewed and **approved on iteration 1 with zero blockers** — no task
+needed a second review round anywhere in the slice.
+
+### What shipped, task by task
+
+| Task | Commit | Outcome |
+| --- | --- | --- |
+| task-126 | `35a8a57d0` | Four authored cardano-wallet voting fixtures committed (`tests/mocks/wallets/wallet-voting-*.json`). Approved. |
+| task-127 | `f948845a5` | Latent `'voting_and_delegating'` → `'delegating_and_voting'` wire-literal bug fixed, constant export name preserved, zero stale literals remain. Approved. |
+| task-128 | `83edc15fa` | `WalletDelegation` / `WalletNextDelegation` widened with `voting?: WalletVotingTarget`. Approved. |
+| task-129 | `40bcd990a` | Pure `normalizeDRepIdentity` bech32 helper (HRP- and credential-type-aware); no new dependency. Approved. |
+| task-130 | `1d33baa2c` | `delegation.active.voting` mapped through `_createWalletFromServerData` with a sanitized warning on rejection; ships no test of its own by design (pinned by task-134). Approved. |
+| task-131 | `2baed760c` | `Wallet.votingTarget` observable plus `currentVote` / `isVoting` computeds, with the `update()` pick-list entry that R-2 called for. Approved. |
+| task-132 | `23f443b76` | `CurrentVoteSummary` four CORE states only — `noDelegation` (CIP-1694 warning + CTA), DRep-ID-only, `abstain`, `no_confidence`. `CurrentVoteSummary.messages.ts` was created **here**, not at task-135. No badge, no store, no anchor coupling. Approved. |
+| task-133 | `051567976` | Storybook "Governance / Current Vote Summary → Core states" (4 knobs). Approved, plus a Planner verification addendum that replaced the inferred `yarn storybook:build` failure with a measurement: it is red at clean HEAD for an unrelated manager-side JSX loader gap (**F-20**), while `yarn storybook`'s preview compile is clean and is the real automated floor. |
+| task-134 | `d8f71319c` | Mapper cases, Wallet computeds, four `CurrentVoteSummary` snapshots, sanitized-warning cases, and the ninth `normalizeDRepIdentity` vector. A follow-up docs commit `a3e352841` reconciled the guide's Step-1 block and AC-7 wording (two → four `not.toHaveBeenCalled()` assertions). Approved. |
+| task-171 | `523141760` | Nineteen feature-introduced ja-JP values regained the leading `!!!`; `tests/jest/i18n/preliminaryCopyMarkers.spec.ts` added as the durable guard, proved to bite. Approved. |
+| task-135 | `d3729994a` | Twelve `voting.governance.currentVote.*` keys seeded into all four catalogs, ja-JP hand-authored, 24/24 values byte-equal to the guide. `yarn i18n:manage` clean from this row onward, proved by sha256 non-mutation. Approved. |
+| task-170 | `fb4f07f6c` | Six Shelley `AdaWallet` `logger.debug` success sites in `api.ts` wrapped in `filterLogData`; a `getWallets` call-boundary case added to the floor suite (23 → 24 tests) and proved non-vacuous by a revert probe. Approved. |
+
+### Gates at close (measured, not asserted)
+
+- Whole-tree `node_modules/.bin/jest --runInBand`, no path argument — **86 test
+  suites (1 skipped, 85 passed), 1073 tests (12 skipped, 1061 passed), 6
+  snapshots, exit 0**. Against the pre-slice baseline that is +1 suite (the new
+  i18n guard) and the slice's new cases. The guide's "82 suites" figure was
+  authored pre-slice and has been reconciled to 86 throughout.
+- `yarn compile` exit 0 on Node v24.16.0 at every row; **R-4 is closed rather
+  than merely mitigated** (F-23) — the fallback was never needed.
+- `yarn lint` exit 0 at exactly 5591 warnings, zero delta, at every row.
+- `yarn i18n:manage` clean from task-135 onward, re-confirmed at task-170.
+- `tests/jest/security/governance-sanitization.spec.ts` green at every row —
+  23 tests through task-135, 24 from task-170.
+
+### Deviations from this PRD and its guide
+
+- **Implementation order.** The guide's "Implementation Order" section lists
+  task-170 → task-171 → task-135; the tracker's own listing order and the
+  orchestration ran **task-171 → task-135 → task-170**. Both are valid
+  topological orders of the same dependency graph (task-170 depends only on
+  task-130 and task-109). Recorded deviation, no content change.
+- **task-171 touched a third file** — `DRepDirectory.spec.tsx` (3/3), whose
+  exact-text ja-JP `getByText` assertions cannot match once the marker is
+  restored. Necessary consequential fix; the guide's "Files touched" list has
+  been reconciled.
+- **task-171 AC-4's first clause** (`yarn i18n:manage` runs clean) was
+  unsatisfiable at that position by the guide's own ordering — the twelve
+  currentVote keys were already missing at HEAD and are task-135's deliverable.
+  **task-135 discharged it**, with sha256 non-mutation proof, and task-170 gate 7
+  re-confirmed it. It is settled, not carried forward.
+- **task-135 does not create `CurrentVoteSummary.messages.ts`** — task-132 did.
+  The tracker's task-135 description still says otherwise; the guide (the spec)
+  is correct in two places and the delivered diff follows the guide.
+- **No `pendingVote` computed** was added, per the resolved D-10 description
+  drift.
+
+### Cross-phase bookkeeping triggered by task-170
+
+- **task-109** (slice-1, "Redact governance vote targets in filterLogData") was
+  **re-promoted from `complete` back to `verified`**: its AC-2 gap — the raw
+  `wallets` / `legacyWallets` arrays reaching the log file on the 5 s
+  `WalletsStore` poll — is exactly what task-170 closed, with proof from a
+  different module at a call boundary task-109 never touched.
+- **task-111** (slice-1, the sanitization spy suite) had its recorded caveat
+  **cleared**: the suite's call-boundary cases previously covered `delegateVotes`
+  and the two hardware-wallet paths only; task-170 AC-4 added the missing
+  `getWallets` case, and task-111's reusable module-scope `jest.mock` harness
+  pattern held for a fourth time.
+
+### OWED at close (nothing here is faked green)
+
+1. **Human visual / overflow pass in a running app** — one browser session in the
+   main checkout, no row needed, owner is whoever runs the cv-1 visual pass.
+   There is no browser in this devcontainer. It covers two open acceptance
+   halves: **task-133 AC-1** (all four knobs render in en-US AND ja-JP via the
+   global locale toggle, no console errors, no missing-message warnings) and
+   **task-135 AC-2's overflow half** (`Governance / Current Vote Summary → Core
+   states`, locale switched to Japanese, all four knob values, every string
+   rendering fully with no clipping — `noDelegation.subline` at 58 characters is
+   the likeliest clipper). The marker half of AC-2 is met and machine-verified.
+2. **`nix fmt` pre-merge pass (F-5)** — `nix` is not installed in this
+   devcontainer. The substitute used throughout was
+   `node_modules/.bin/prettier --check` on explicit paths, and only on files this
+   slice created. Owed before merge.
+3. **Release-end `!!!` copy review** — user-owned by invariant 11 and never a
+   per-slice task. cv-1 enlarged its surface: the strip now touches 12 more
+   values than previously counted, and each is pinned by a committed snapshot and
+   by exact-text matchers, so the strip is a code change, not a copy edit.
+4. **Guide/tracker prose drift left unreconciled by design** — the task-135
+   tracker description still credits it with creating
+   `CurrentVoteSummary.messages.ts`; the task-171 acceptance bullet still states
+   an `i18n:manage`-clean condition its own ordering makes unreachable at that
+   row (discharged at task-135); the guide's task-170 Step 3 anchors are
+   pre-change (`api.ts` is 8 lines shorter) and its audit grep is under-inclusive
+   in two ways. Rewording an approved acceptance criterion is a phase-owner
+   judgment call, so these were recorded rather than edited.
+5. **`yarn check:all` and `yarn storybook:build` were never run as gates** — both
+   are red at HEAD for the unrelated storybook manager-side JSX loader reason
+   (F-20). Not valid cv-1 gates.
+6. **No `auditSummary`** was added to the cv-1 phase object: only `slice-1`
+   carries that field in this tracker, so cv-1 matches the convention of the ten
+   other phases. Verified, not assumed.
+
+### Residual gaps a later phase inherits
+
+- **F-15 — task-170 explicitly does NOT close it.** `filterLogData`'s
+  `sensitiveData` list is keyed to the WIRE shape (`drepId`, `dRepId`, `vote`,
+  `voting`). The renderer-side domain names `votingTarget` and `currentVote` are
+  absent from it, so the domain shape is unguarded the moment a consumer logs
+  one. **Owned by the first cv-2 consumer.**
+- **F-26 (new, recorded at task-170)** — `api.ts:1995` `importWalletFromKey` and
+  `:2025` `importWalletFromFile` log `{ importedWallet }` unwrapped and are
+  Shelley-`AdaWallet`-typed. Pre-existing and byte-identical at HEAD, type-level
+  rather than demonstrated (both POST Byron/V0 legacy import endpoints, neither
+  is on a poll), and structurally invisible to the guide's audit grep. For the
+  reviewer to accept or schedule.
+- **`HardwareWalletsStore`'s `[HW-DEBUG]` raw `{ error }` sink** — the
+  message-SUBSTRING leak class, which a key-based redactor structurally cannot
+  reach. Still open, fenced out of task-170 by both the guide and the tracker.
+- **i18n key-DELETION blind spot (F-25)** — the `!!!` guard filters on `key in
+  ja`, react-intl silently falls back to the `defaultMessage`, and
+  `jest.config.js` promotes no console error to a failure, so a locale-only
+  deletion ships silently between `i18n:manage` runs. Self-healing but unowned;
+  the cheap fix is a key-set symmetry assertion inside the existing
+  `preliminaryCopyMarkers` suite, not a new file.
+- **Guard asymmetry (task-171, by design)** — a key minted with no `!!!` in
+  en-US at all is never flagged. Low risk today because en-US markers derive from
+  each component's source `defaultMessage`. cv-2's task-146 and anchor-2's copy
+  authors should know the direction the guard does not cover.
+- **cv-2's copy mint procedure is now fixed by precedent** (F-25): define
+  messages in source first, let the runner seed both catalogs, replace only the
+  ja-JP *values* by hand, keep every `!!!`, and never hand-edit an en-US value
+  away from its `defaultMessage` while a snapshot bakes the fallback in.
+- **What cv-2 builds on:** `Wallet.currentVote` / `isVoting`, the
+  `WalletVotingTarget` shape, `normalizeDRepIdentity`, and `CurrentVoteSummary`'s
+  four core states — all landed and green. The live status badge,
+  `VotingPowerDelegation` pre-fill, and same-vote prevention remain cv-2, exactly
+  as scoped here.
 
 ## References
 
