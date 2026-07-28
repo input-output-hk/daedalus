@@ -27,7 +27,7 @@ describe('Windows mapped-drive chain storage', () => {
 
     (fs.readlink as jest.Mock).mockResolvedValue('Z:\\DaedalusChain\\chain');
 
-    ((fs.realpath as unknown) as jest.Mock).mockRejectedValue(
+    (fs.realpath as unknown as jest.Mock).mockRejectedValue(
       Object.assign(new Error('mapped drive temporarily unavailable'), {
         code: 'ENOENT',
       })
