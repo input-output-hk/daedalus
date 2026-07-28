@@ -521,3 +521,130 @@ the stricter line that a domain `Wallet` never enters a logger payload at all
 storage) and assert *that* instead. Not tasked here — cv-1 planning is closed
 and no cv-1 row owns the domain-object shape; recorded so the reviewer of the
 first cv-2 store/component that reads `currentVote` has the anchor.
+
+## F-16 — `typed-scss-modules` is not a precondition for `tsc --noEmit`: the ambient `declare module '*.scss'` already covers scss imports, and because it types them `any` a green compile proves nothing about class names
+
+Found during the task-132 build, the first cv-1 task to add a `.scss` module.
+Three governing docs state the generation step as a requirement:
+`cv-1-implementation-guide.md:98-100` ("New `.scss` modules (task-132) **need**
+generated type declarations: `node_modules/.bin/typed-scss-modules
+source/renderer/app`"), `cv-1-PRD.md:465` and `:482` (the R-4 /
+Definition-of-Done compile fallback is "`tsc --noEmit`, plus
+`typed-scss-modules` for new scss modules"), and `cv-1-code-review.md:85` (the
+verification contract names it "for the task-132 scss module"). F-13 above
+repeats it as part of how task-129 cleared the gate (`:386-390`).
+
+Measured on this build, in a fresh worktree with zero generated typings:
+`find source -name '*.scss.d.ts' | wc -l` → **0**, and `node_modules/.bin/tsc
+--noEmit` → **exit 0 with zero `error TS` lines**, with
+`CurrentVoteSummary.tsx:9` importing `./CurrentVoteSummary.scss`.
+`typed-scss-modules` was never run. The mechanism is the global wildcard at
+`declaration.d.ts:11-14` — `declare module '*.scss' { const content: any;
+export default content; }` — which the guide's own task-132 verify block
+already describes correctly at `:1791-1793`, contradicting its own `:98-100`.
+
+The durable consequence is the second half, not the first. Under the wildcard
+`styles` is `any`, so `styles.<anything>` typechecks: a green `tsc` is **not**
+evidence that the class names used in the `.tsx` exist in the `.scss`. Nothing
+else in the compile gate covers that either — `tsconfig.json` sets
+`"strict": false` and `"noImplicitAny": false`. Generating the typings (output
+gitignored, `.gitignore:141`) is what narrows `styles` to the real key union;
+that shadowing is the standard resolution rule (a relative import that resolves
+to a real `.d.ts` beats the ambient wildcard) but was NOT exercised in this
+build. The other guard is the test transform: `jest.config.js:203` maps
+`.scss` through `jest-css-modules-transform`, not `identity-obj-proxy`, so an
+unknown key evaluates to `undefined` and React drops the attribute — a stale
+class name should therefore surface as a missing `className` in task-134's
+snapshots (inferred from the transform choice; not measured here).
+
+**Resolution:** the live repo governs and the three "need"/"plus" recipes are
+overstated — a missing or failing `typed-scss-modules` run is not a gate
+failure and must not be recorded as a blocker, and a `tsc` error must be read
+before reaching for it. Run it when you want the class-name check (that is its
+only value here), not as a compile precondition. The docs are left unedited:
+cv-1 planning is closed and each scribe's mandate is confined to its own task.
+Carried forward unchanged from F-5: `nix fmt` still cannot run in this
+devcontainer, task-132 substituted `node_modules/.bin/prettier --check` on its
+three created files (clean), and the `nix fmt` pass remains owed pre-merge.
+
+## F-17 — `DRepSourceLabel` returns `null` for any `source` it lacks a message for, and under this repo's `noImplicitAny: false` widening its union without adding the message compiles clean — so reusing it for the current-vote labels fails as a silent blank
+
+Found during the task-132 build. The component is narrower than its name
+suggests:
+`source/renderer/app/components/governance/_shared/DRepSourceLabel.tsx:18`
+declares `export type DRepSourceLabelVariant = 'on-chain' |
+'on-chain-anchor-reference';` (the prop at `:21`), and `:31-32` is a plain
+object index followed by `const message = messageBySource[source]; if
+(!message) return null;`. An unsupported value renders **nothing** — no throw,
+no console warning, no failing assertion unless a test asserts the visible
+text. The guide already forbids widening the contract in cv-1
+(`cv-1-implementation-guide.md:1459-1463`, the D-4 "No English-literal
+fallback" invariant); what no doc records is *how* a widening would fail.
+
+Verified rather than assumed: with `tsconfig.json`'s `"noImplicitAny": false`,
+a reduced probe (union extended with a third member, `messageBySource` left at
+two entries, indexed the same way) produced **zero** diagnostics under
+`tsc --noEmit --strict false --noImplicitAny false`; the identical probe under
+`--noImplicitAny true` produced `error TS7053: Element implicitly has an 'any'
+type because expression of type 'Variant' can't be used to index type '{
+'on-chain': ...; 'on-chain-anchor-reference': ... }'`. So the compiler that
+would have caught the mistake is switched off tree-wide. A second reason not to
+widen it: its two message ids are directory/detail-namespaced
+(`governance.drepDirectory.source.onChain` at `:6`,
+`governance.drepDetail.sourceLabel.anchorReference` at `:11`), so voting-page
+copy routed through it would be filed under DRep-directory ids.
+
+**Resolution:** task-132's AC-6 anticipated exactly this and its conditional
+fires — `governance-drep-discovery-plan-tasks.json:1011` ("If DRepSourceLabel
+cannot localize the new abstain / noConfidence / delegatedToDRep labels with
+its existing prop contract, wrap it in a CurrentVoteSummary-local renderer that
+consumes react-intl directly. Do NOT silently fall back to English literals").
+The shipped component reuses `DRepSourceLabel` only where its contract already
+fits — `source="on-chain"` on the DRep state (`CurrentVoteSummary.tsx:65`,
+satisfying AC-1 at `:1006`) — and renders `delegatedToDRep` / `abstain` /
+`noConfidence` from its own message set (`:63`, `:88-90`). The durable rule for
+downstream work: `DRepSourceLabel` is a two-variant *provenance* label and
+nothing else. task-136's live status badge must not be routed through it
+either, and anyone who does extend `DRepSourceLabelVariant` must add the
+`messageBySource` entry in the same edit — the compiler will not remind them.
+
+## F-18 — design §9.1's `drep` rendering rule is the combined cv-1+cv-2 card: built from the design instead of the guide it pulls in `GovernanceStore.drepIndex`, `givenName` and anchor links that neither task-132 nor task-136 may render
+
+Found during the task-132 build while reconciling the component against its
+design section. `designs/current-vote-display-design.md:185` prescribes, in one
+undivided bullet, a "current delegation card with DRep name, source label,
+compact id display, the DRep's live active / inactive / expiring status badge …
+in-app details link, and anchor URL link", closing with "The status badge is
+**required**". `:189` sources that badge from
+`GovernanceStore.drepIndex[drepId]` and `:191-193` ("Anchor metadata display")
+adds the CIP-119 `body.givenName` and the `target="_blank"` anchor URL link.
+The only signal that this spans two slices is the pair of task tags in the
+heading at `:172` (`task-132`, `task-136`); `:185` carries no split, and `:189`
+/ `:191-193` carry no task tag at all. Only the props block at `:176-180` is
+task-132-accurate — it matches `CurrentVoteSummary.tsx:11-14` exactly.
+
+The guide inherits the ambiguity by reference: its task-132 Context cites
+"current-vote-display-design.md:170-187" and "four render rules (design
+:182-185)" (`cv-1-implementation-guide.md:1424-1427`) and then excludes most of
+what `:185` says, in its own invariants block — no live badge and nothing
+reading `GovernanceStore` / `drepIndex` / `DRepStatusBadge` (`:1439-1442`), and
+no `givenName`, no anchor URL, no view-details link (`:1466-1468`). The tracker
+is where the split is unambiguous: task-132 AC-3
+(`governance-drep-discovery-plan-tasks.json:1008`) puts `givenName` and the
+external anchor link behind anchor-1/anchor-2 and the in-app details link
+behind slice-4 (task-116), and AC-5 (`:1010`) defers the badge to task-136 —
+whose own criteria cover the drepIndex badge and its captions and say nothing
+about anchor metadata.
+
+**Resolution:** the guide and tracker govern for task-132 and the design is not
+edited (same handling as F-3). The shipped component is deliberately disjoint
+from the design's `drep` paragraph, which the build's boundary grep proves
+negatively: `GovernanceStore|drepIndex|DRepStatusBadge|givenName|anchorUrl|
+logger\.|console\.|analytics` over `CurrentVoteSummary.tsx` returns no match.
+Two directions of error this protects against, both live for the next person to
+open the file. Reading design-first, a reviewer flags the absent badge and name
+as omissions rather than as the deferrals they are. Building design-first,
+task-136 — whose job *is* to add the `:185` / `:189` badge — would also pick up
+`:191-193`, rendering an anchor-derived `givenName` before the hardened anchor
+pipeline exists, which is precisely the unverified-identity display that AC-3
+and the guide's no-anchor-display invariant forbid.

@@ -1440,3 +1440,200 @@ task-127 / task-128 / task-130 sections, so no pending task can be misled by
 them and they were left alone (F-13 records the underlying 7-of-82 fact).
 
 Decision: approved
+
+---
+
+## Code Review: task-132 — iteration 1 (2026-07-28)
+
+**Scope reviewed.** The working tree against the guide section "task-132:
+`CurrentVoteSummary` CORE states, no live badge"
+(cv-1-implementation-guide.md:1416-1829 — the three-file "Files created (all
+new)" list at `:1418-1422`, the context block at `:1424-1435`, the seven
+inline locked invariants at `:1437-1463`, the six resolved judgment calls at
+`:1465-1491`, Steps 1-3 with verbatim file bodies at `:1500-1574`,
+`:1590-1667` and `:1676-1779`, the Step 4 verify block at `:1789-1807` and
+the eight-item acceptance checklist at `:1814-1829`), the design contract
+(designs/current-vote-display-design.md:177-179 the pinned prop type,
+`:184-187` the four render rules, `:189` the no-cli / no-fallback-IPC rule)
+and task-132's six acceptance criteria in
+governance-drep-discovery-plan-tasks.json. This is a create-only task: three
+new untracked files, 251 lines, `git diff --name-only` empty, HEAD unchanged
+at 2baed760c on `wt/cv-1-task-132`. One review round.
+
+**What landed.** All three files are byte-identical to the guide's verbatim
+Step 1-3 blocks — established by extracting `:1501-1573`, `:1591-1666` and
+`:1677-1778` and comparing the exact bytes, not by eye.
+
+- `CurrentVoteSummary.messages.ts` (73 lines) — the full 12-key core
+  inventory under `voting.governance.currentVote.*`: 12 keys, 12 ids, 12
+  `!!!` prefixes (invariant 11), and zero id collisions anywhere else in
+  `source`, `storybook` or `tests`. Includes `drep.viewDetails` and
+  `drep.anchorMetadata`, defined but deliberately not rendered in cv-1.
+- `CurrentVoteSummary.scss` (76 lines) — 12 classes, every colour routed
+  through a `var(--theme-*)` / `var(--badge-*)` token. No fixed height and no
+  `text-overflow: ellipsis`, which is what keeps task-135's ja-JP overflow
+  review meaningful.
+- `CurrentVoteSummary.tsx` (102 lines) — function component with `injectIntl`
+  + `intlShape` typing per the `DRepIdDisplay` precedent; props exactly
+  `{ currentVote: WalletVotingTarget | null }` plus the injected `intl`.
+  Three returns: `currentVote == null` → title + `role="alert"`
+  reward-withdrawal warning + subline + CTA `Button`; `kind === 'drep'` →
+  header + "Delegated to DRep" badge + `<DRepSourceLabel source="on-chain" />`
+  + `<DRepIdDisplay drepId={currentVote.drep.raw} />`; sentinels → header +
+  glyph badge + caption, no id row.
+- Nothing else. No spec file (task-134's boundary), no story and no
+  `storybook/stories/index.ts` registration (task-133's), no catalog edit
+  (task-135's), and `VotingPowerDelegation.tsx` byte-identical — mounting is
+  cv-2/task-139.
+
+**Review method (four lenses, three-skeptic adversarial refutation).** Four
+independent lenses were run in parallel over the diff: guide fidelity; locked
+invariants plus the sanitization floor plus the scope fence; runtime/React
+correctness; and conventions/hygiene. Every raw finding any lens produced was
+then handed to three blind skeptics working distinct angles — reproduce,
+guide authority, scope — and a finding died once two or more refuted it.
+Nothing survived: zero confirmed blockers and zero confirmed nits, in one
+iteration.
+
+Per-lens outcome. Guide fidelity — clean; all three files byte-identical to
+the Step blocks and every acceptance box discharged. Invariants / floor /
+scope — clean; all three boundary greps empty and the floor suite green at 23
+of 23. Runtime and React correctness — clean; no candidate reproduced.
+Conventions and hygiene — clean; eslint and prettier both silent on the new
+files.
+
+**Candidate findings adjudicated (none survived).** The notable ones:
+
+1. *Refuted — "the DRep state under-renders against the design."* Design
+   `:185` specifies name, the live active/inactive/expiring badge, an in-app
+   details link and an anchor URL link for `kind === 'drep'`; the component
+   renders the id row only. Not a defect: §9.1's own heading is scoped
+   `(task-132, task-136)`, the guide's inline invariants at `:1439-1442` and
+   `:1460-1461` defer the badge to cv-2/task-136 and name/anchor to
+   anchor-1/anchor-2, and tracker AC-3 and AC-5 say the same inside the row
+   itself. The under-render is the specification.
+2. *Refuted — "no live badge should still mean a status caption."* Design
+   `:189`'s "Status unavailable" caption belongs to the badge feature; with
+   the badge deferred there is no unavailable state to caption. Producing one
+   would have required reading `GovernanceStore.drepIndex`, which invariant 14
+   forbids outright — the proposed fix was itself the violation.
+3. *Refuted — "the CTA `Button` carries no `onClick`."* Guide `:1481-1485` is
+   an explicit do-not-revisit ruling: props are pinned to `{ currentVote }` by
+   design `:177-179`, cv-2/task-139 mounts and wires the panel, and
+   `ButtonSkin` spreads only DOM-safe props onto a plain `<button>`, so the
+   absent handler is inert, not an error.
+4. *Refuted — "the sentinel branch is not exhaustive."* The final return
+   derives `isAbstain` from `kind === 'abstain'` and treats everything else as
+   `no_confidence`. `WalletVotingTarget` (api/wallets/types.ts:86-93) is a
+   closed three-member union whose `drep` arm already returned two branches
+   earlier, so the residue is exactly the two sentinels; `tsc` is the guard if
+   a fourth kind is ever minted, and the shape is guide-verbatim.
+5. *Refuted — "the twelve new ids are absent from en-US.json and ja-JP.json."*
+   Confirmed absent (grep: 0 hits in both), and that is the designed order:
+   guide `:1467-1473` places the messages module here and assigns catalog
+   population to task-135, and `:2091-2093` already warns task-134 to expect
+   react-intl missing-message output until then. No spec asserts catalog
+   coverage and the unfiltered suite is green.
+6. *Refuted — "raw glyph literals in JSX breach the no-English-literals
+   rule."* `!`, `●`, `⊘` and `✕` are `aria-hidden="true"` decorations paired
+   with localized text in every case (guide `:1489-1491`); D-4 governs label
+   copy, and every user-visible string in the file passes through
+   `intl.formatMessage`.
+7. *Refuted — "rendering `drep.raw` into the DOM widens the redaction
+   surface."* Rendering ids in the DOM is explicitly permitted by invariant 2
+   (`:1462-1463`); the component adds no logger, analytics or store sink — the
+   first boundary grep proves it — and the floor suite still passes 23 of 23.
+   The pre-existing `filterLogData` key-name gap is already on record as F-15
+   and is untouched here.
+
+**Acceptance criteria.** AC-1 met — `<DRepIdDisplay
+drepId={currentVote.drep.raw} />` and `<DRepSourceLabel source="on-chain" />`
+in the `drep` branch; `DRepSourceLabel` declares the optional `className` this
+call passes (`DRepSourceLabel.tsx:20-24`). AC-2 met — the `null` branch
+renders the reward-withdrawal warning, the no-auto-delegation subline and the
+CTA; the panel is never hidden and never collapsible (invariant 9). AC-3 met —
+the `drep` branch renders the id and nothing else: no `givenName`, no anchor
+URL, no view-details link, though both link keys exist in the messages module
+for task-135's catalog pass. AC-4 met — both sentinel states render a badge
+plus a caption with no id row (invariant 13). AC-5 met — no live badge
+anywhere; boundary grep 1 returns nothing. AC-6 met — the status labels render
+from the component-local `defineMessages` set, which is exactly the
+"CurrentVoteSummary-local renderer that consumes react-intl directly" branch
+the criterion authorizes: `DRepSourceLabelVariant` is only `'on-chain' |
+'on-chain-anchor-reference'` (`DRepSourceLabel.tsx:18`) and its prop contract
+was not widened. The guide's two extra boxes hold too — props are exactly
+`{ currentVote }` plus injected `intl` with no store, IPC or cli access, and
+tsc, lint and prettier are clean on all three new files.
+
+**Status vocabulary.** `complete`, and never `verified`: task-132 ships no
+test of its own by design — its specs are task-134 (guide `:2091-2093`) — so
+the dedicated proof beyond a task's own unit tests that `verified` demands
+does not exist yet and must not be claimed for this row.
+
+**Comment convention.** One comment in the whole change set,
+`CurrentVoteSummary.tsx:16-18`: three plain lines stating why the status
+labels bypass `DRepSourceLabel` (its variant union cannot express them). That
+is the D-4 invariant, not change history; no task id, no review label, no
+ALL-CAPS. It is guide-verbatim.
+
+**No unnecessary complexity.** 251 lines across three files, all of it
+required output. No helper module, no local `IntlProvider`, no barrel export,
+no memoization, no defensive `try`/`catch`, and no normalization at all —
+boundary grep 2 finds no `toLowerCase`, `toUpperCase`, `trim` or `normalize`,
+so the wire string reaches `DRepIdDisplay` untouched and byte-equality
+(invariant 10) survives the render path. Scope fence clean in both directions:
+no tracked file modified, and none of task-133 / 134 / 135 / 139's files
+created.
+
+**Verification commands run (results as observed).**
+
+1. `node_modules/.bin/tsc --noEmit` → exit 0; `error TS` line count 0. No
+   missing `*.scss.d.ts` failure occurred, so `typed-scss-modules` was not
+   needed and was not run — `import styles from './CurrentVoteSummary.scss'`
+   resolves through the global `declare module '*.scss'` exactly as the guide
+   predicts at `:1791-1794`.
+2. `node_modules/.bin/eslint` on `CurrentVoteSummary.tsx` and
+   `CurrentVoteSummary.messages.ts` → exit 0 with completely empty output: no
+   problem lines and no summary line, i.e. 0 errors and 0 warnings on the new
+   files, meeting the bar without needing a HEAD-baseline comparison.
+3. `node_modules/.bin/jest --runInBand` — **unfiltered, whole tree, no path
+   filter** → exit 0. Verbatim: "Test Suites: 1 skipped, 81 passed, 81 of 82
+   total" / "Tests:       12 skipped, 1038 passed, 1050 total" /
+   "Snapshots:   2 passed, 2 total" / "Time:        43.032 s" / "Ran all test
+   suites." Zero `FAIL` lines and zero `●` failure blocks across 1128 lines of
+   output. That is the stated baseline unchanged, which is the correct result
+   for a task that adds no test.
+4. `node_modules/.bin/jest tests/jest/security/governance-sanitization.spec.ts
+   --no-coverage --runInBand` → exit 0; "Test Suites: 1 passed, 1 total" /
+   "Tests:       23 passed, 23 total" / "Snapshots:   0 total". The inherited
+   23-of-23 floor holds exactly.
+5. `node_modules/.bin/prettier --check` on `CurrentVoteSummary.tsx`,
+   `CurrentVoteSummary.messages.ts` and `CurrentVoteSummary.scss` →
+   "Checking formatting..." / "All matched files use Prettier code style!",
+   exit 0. `--write` was not run, and `yarn prettier` was not run.
+6. Boundary greps — all three returned nothing (each exit 1), which is the
+   required result. (a) `GovernanceStore|drepIndex|DRepStatusBadge|givenName|
+   anchorUrl|logger\.|console\.|analytics` over the tsx → no store, badge,
+   name or anchor coupling and no logging or telemetry sink. (b)
+   `toLowerCase|toUpperCase|\.trim\(|normalize\(` over the tsx → no local
+   normalization. (c) `CurrentVoteSummary` over `VotingPowerDelegation.tsx` →
+   not wired, which is correct for cv-1.
+7. `git status --porcelain=v1 --untracked-files=all` → exactly three `??`
+   lines (`CurrentVoteSummary.messages.ts`, `.scss`, `.tsx`) and nothing else;
+   `git diff --name-only` → empty, so no tracked file moved. The `coverage/`
+   directory the full jest run produced was confirmed ignored rather than
+   assumed: `git check-ignore -v coverage` → `.gitignore:25:coverage
+   coverage`, exit 0. Not a breach. No file under the main checkout was
+   created, edited or deleted; every command ran against the isolated
+   worktree.
+
+**Out-of-scope observations carried forward.** Nothing new is recorded — no
+candidate survived refutation, so this entry mints no finding. Still carried
+from earlier entries and unmoved by this diff: F-5 — `nix fmt` cannot run in
+this devcontainer, the explicit-path `node_modules/.bin/prettier` is the
+substitute and the format pass remains owed pre-merge; and F-15 —
+`filterLogData`'s `sensitiveData` list is keyed to the wire shape, so the
+renderer-side names stay unguarded until a consumer exists. This component
+adds no sink of any kind, so it neither advances nor worsens F-15.
+
+Decision: approved

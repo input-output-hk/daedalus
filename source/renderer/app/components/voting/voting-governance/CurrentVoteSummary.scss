@@ -1,0 +1,76 @@
+.component {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 16px;
+  border: 1px solid var(--theme-separator, #e0e0e0);
+  border-radius: 4px;
+}
+
+.header {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--theme-text-primary);
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--theme-text-primary);
+}
+
+.glyph {
+  line-height: 1;
+}
+
+.sourceLabel {
+  font-size: 12px;
+  color: var(--theme-text-secondary, #6b7384);
+}
+
+.idRow {
+  display: flex;
+  align-items: center;
+}
+
+.caption {
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+  color: var(--theme-text-secondary, #6b7384);
+}
+
+.warning {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+  color: var(--badge-warning-fg, #b76e00);
+}
+
+.warningGlyph {
+  font-weight: 700;
+}
+
+.subline {
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+  color: var(--theme-text-secondary, #6b7384);
+}
+
+.cta {
+  margin-top: 4px;
+}
