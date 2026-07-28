@@ -264,9 +264,13 @@ branch at `VotingPowerDelegationConfirmationDialog.tsx:179-185`.*
 - "currentVoteOptions enumerates exactly five values: noDelegation | drepVerified | drepUnverified | abstain | noConfidence."
 - "Anchor fixtures use CIP-119 test vectors: SIPO mainnet, Cardano Academy preprod, canonical CIP-119 example with verified hash."
 
-*AC-4 is satisfied-in-part by D-7: provenance is named in the fixture module; the
-"verified hash" half has no mechanism in cv-2 (the fetch/hash-verify pipeline is
-anchor-1 task-149/task-150).*
+*AC-4 is satisfied-in-part by D-7 on **both** halves. Named provenance: only the
+`drepVerified` pair carries one of the three provenances the plan names — the
+Cardano Academy preprod key hash committed at
+`research/drep-state-preprod-epoch295-sample.json:2849` — while `drepUnverified`
+is the repo's own story vector, and cv-2 mints no new credential. "Verified
+hash": no mechanism exists in cv-2 (the fetch/hash-verify pipeline is anchor-1
+task-149/task-150) and both entries ship `anchor: null`.*
 
 ### task-144 — Add key-based remount in GovernanceWrapper (json :1361-1376)
 
@@ -557,7 +561,7 @@ transform: the submitted string is never touched.
 
 **The query must be `cip129`, not `raw`.** The helper canonicalizes only what
 `Cardano.DRepID.isValid` accepts — the `drep1…` and `drep_script1…` forms — and
-rejects everything else *before* canonicalizing: `helpers.ts:143` is
+rejects everything else *before* canonicalizing: `helpers.ts:144` is
 `if (!Cardano.DRepID.isValid(full)) return null;`. Measured in this worktree,
 `Cardano.DRepID.isValid('drep_vkh15xev84897cr3s2f6fdwx6l50jzsm9s75uhmqwxpf8f94czu4a4l')`
 returns `false`, so passing a CIP-105 `raw` returns `null` and reads as "no

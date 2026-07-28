@@ -74,7 +74,7 @@ submitted string is never touched, so invariant 10 (byte-equality) is unaffected
 This is PRD D-6.
 
 **The helper does not rescue a CIP-105 query.** Canonicalization is gated behind
-a validity check that CIP-105 fails: `helpers.ts:143` is
+a validity check that CIP-105 fails: `helpers.ts:144` is
 `if (!Cardano.DRepID.isValid(full)) return null;`, and measured in this worktree
 `Cardano.DRepID.isValid('drep_vkh15xev84897cr3s2f6fdwx6l50jzsm9s75uhmqwxpf8f94czu4a4l')`
 returns `false` while the `drep1…` form returns `true`. The helper therefore

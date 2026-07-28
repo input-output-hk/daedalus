@@ -2464,7 +2464,7 @@ before `const drepInputIsValid = …`), add:
 No `useMemo`. No store read. `resolveExactDRepMatch` trims and lower-cases the
 query, then canonicalizes it to CIP-129 before `.get()`
 (`source/renderer/app/components/governance/drep-directory/helpers.ts:139-153`).
-Canonicalization is gated on `Cardano.DRepID.isValid(full)` (`helpers.ts:143`),
+Canonicalization is gated on `Cardano.DRepID.isValid(full)` (`helpers.ts:144`),
 which accepts only the `drep1…` and `drep_script1…` forms — a `drep_vkh1…`
 string returns `null`. That is why the query is `cip129 ?? raw`.
 
@@ -3052,11 +3052,11 @@ heading, bold lead-ins, closing `Decision:` line):
 `cip129` half is case-unstable: BIP-173 permits an all-uppercase encoding,
 `normalizeDRepIdentity` returns `raw` / `cip129` byte-untouched
 (`normalizeDRepIdentity.ts:39-40`, `:56`), and the form gate
-`Cardano.DRepID.isValid` (`VotingPowerDelegation.tsx:133`) accepts it. The
-acceptable keys are the pair, or an explicitly case-insensitive `cip129`
-comparison — never a case-sensitive canonical-string one. The promise block's own
-self-reference reads `:737-739`; the sentence actually occupies `:736-738`
-(`:739` opens the next refutation item).
+`Cardano.DRepID.isValid` (`VotingPowerDelegation.tsx:133`) accepts it. The note's
+acceptable keys were the pair or an explicitly case-insensitive `cip129`
+comparison; cv-2 ships the pair and retires the alternative (task-140 AC-4). The
+promise block's own self-reference reads `:737-739`; the sentence actually
+occupies `:736-738` (`:739` opens the next refutation item).
 
 **What shipped.**
 `source/renderer/app/utils/governance/isSameVoteTarget.ts` compares
@@ -5317,7 +5317,7 @@ The CIP-105 case is the executable form of PRD D-6's query rule: the wallet's
 `drep.raw` is the CIP-105 encoding of the *same* credential while `drep.cip129`
 stays `VALID_DREP_ID`, so it passes only if the lookup queries
 `cip129 ?? raw`. A `raw`-keyed lookup returns `null`
-(`Cardano.DRepID.isValid` rejects `drep_vkh1…`, `helpers.ts:143`) and the case
+(`Cardano.DRepID.isValid` rejects `drep_vkh1…`, `helpers.ts:144`) and the case
 fails on the `!!!DRep status is loading.` caption. `DRepIdDisplay` truncates the
 id it renders but sets the full string as `aria-label`
 (`DRepIdDisplay.tsx:72-75`), so assert the byte-identical `raw` with
