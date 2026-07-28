@@ -1065,3 +1065,83 @@ variants at `:2943`, `:3106` and `:1411`. Two further task-171 lines join that
 list: the two-entry "Files touched" block at `:2949-2955`, which three files
 now contradict, and the Step 3 comment at `:3077` claiming the diff is
 "ja-JP.json and the new spec only".
+
+## F-25 — the task-135 mint closes F-24's dirty gate and F-19's missing-message errors by measurement, and leaves two things standing: a ja-JP overflow review nobody in this environment can run, and a key-DELETION blind spot that neither the runner nor the `!!!` guard sees
+
+**The gate is clean from this row onward, and the proof is a no-op, not an exit
+code.** `yarn i18n:manage` exits 0 on the delivered task-135 tree and reports
+zero added and zero deleted keys — its output carries no added/deleted/removed
+line at all, only the informational Untranslated-keys report the repo
+convention leaves in place. Because that command *writes*, exit 0 alone would
+not have settled it; the verifier sha256'd all four catalog files immediately
+before and after the run and they came back byte-identical, with
+`git diff --stat` unchanged afterwards. So F-24's central claim — "treat
+`yarn i18n:manage` as clean-able only from task-135 onward" — is now discharged
+rather than deferred, and with it task-171's AC-4 first clause. Two
+corroborating signals worth reusing. The twelve new ids appear **12x** in the
+en-US untranslated report (expected: they all carry `!!!`) and **0x** in the
+ja-JP report, i.e. the runner itself classifies every hand-written Japanese
+value as a genuine translation rather than a seed it should overwrite. And the
+"runs clean" condition can be checked *without* running the writer at all, by
+comparing the extracted descriptor-id count against each locale's key count —
+1611 vs 1611 vs 1611, 0 would-be-added and 0 would-be-deleted — which is
+exactly the state in which the runner is a no-op. Any later row holding
+uncommitted locale edits (F-24's asymmetric-revert hazard) should prefer that
+read-only check.
+
+**F-19's console.error storm is measurably gone, but only the half a jest run
+can see.** Measured directly while scribing this row:
+`node_modules/.bin/jest source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.spec.tsx --runInBand`
+exits 0 at 4 tests / 4 snapshots and
+`grep -ciE 'console.error|Missing message'` over its full output returns **0**,
+where the task-134 row recorded ten distinct
+`voting.governance.currentVote.*` ids erroring across the four rendered
+states. The spec feeds its `IntlProvider` from `en-US.json`
+(`CurrentVoteSummary.spec.tsx:8`, `:37`), so seeding the catalog removes the
+lookup miss at react-intl `index.js:813` before the `:837` guard is ever
+reached. What this does **not** close is task-133's AC-1, whose clause is about
+the **dev Storybook** in both locales; F-19's own trap still applies (the whole
+path is `NODE_ENV`-gated twice, so a production bundle would show a false
+green), and there is no browser here.
+
+**The seeding canary held, and it is the rule for the next copy mint.** All 12
+en-US values are byte-identical to their `defaultMessage` in
+`CurrentVoteSummary.messages.ts` — verified key by key with `===`,
+`Buffer.compare` and matching sha256, em dash and `U+2197` intact — so task-134's
+four committed snapshots did not move: 4 passed, zero written, zero updated,
+zero obsolete, and no `jest -u`. This is the procedure cv-2's task-146 must
+repeat: define the messages in source first, let the runner seed, replace only
+the ja-JP *values* by hand, keep every `!!!`, and never hand-edit an en-US value
+away from its `defaultMessage` while a snapshot bakes the fallback in.
+
+**The blind spot: nothing here catches an outright key deletion.**
+`tests/jest/i18n/preliminaryCopyMarkers.spec.ts` filters on `key in ja`, so a
+key deleted from ja-JP is skipped rather than flagged; a key deleted from en-US
+leaves `Object.keys(en)` and is likewise invisible. react-intl then falls back
+to the `defaultMessage` and only `console.error`s, and `jest.config.js` has both
+`setupFiles` and `setupFilesAfterEnv` commented out (`:135`, `:138`), so no
+hook turns that console output into a failure. The condition is self-healing —
+the next `yarn i18n:manage` re-adds any missing id — but between runs a
+locale-only regression ships silently. Deliberately not fixed at task-135: the
+guide specifies no presence test, and inventing one was out of that row's
+fence.
+
+**Resolution:** F-24's deferral and F-19's task-135 dependency are both closed;
+strike them from any carry-forward list rather than repeating them. What
+carries forward is narrower and should be stated as such: (a) guide Step 5, the
+ja-JP overflow review in `Governance / Current Vote Summary → Core states` with
+the global locale switched to Japanese across all four knob values, which
+`cv-1-implementation-guide.md:2694-2696` pre-authorises recording as a
+main-checkout follow-up when no browser is available — **task-135's AC-2 is
+therefore half-discharged, marker half green and overflow half owed**, with
+`noDelegation.subline` at 58 characters the most likely clipper; (b) the same
+browser pass is the only way to finish task-133's AC-1; and (c) the release-end
+`!!!` strip now touches 12 more values than F-24 counted, and each of them is
+pinned by a committed snapshot, so the strip stays a code change.
+
+**Tasked:** the overflow review and the AC-1 re-check are one browser session in
+the main checkout and belong to whoever runs the cv-1 visual pass — they have no
+row and need none. The deletion blind spot has no owner; if a later slice wants
+it, the cheap form is a key-set symmetry assertion added to the existing
+`preliminaryCopyMarkers` suite, not a new file. cv-2's task-146 inherits the
+mint procedure above verbatim.

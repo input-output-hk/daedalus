@@ -2736,3 +2736,342 @@ it ran was read-only.
 **Blockers.** None.
 
 Decision: approved
+
+---
+
+## Code Review: task-135 — iteration 1 (2026-07-28)
+
+**Scope reviewed.** The uncommitted working tree against the guide section
+"task-135: Add i18n keys for CurrentVoteSummary core states"
+(cv-1-implementation-guide.md:2559-2717 — the four-entry "Files touched" list at
+`:2560-2568`, the Context block at `:2570-2583`, the three inline locked
+invariants at `:2585-2598`, the resolved judgment calls at `:2600-2612`, Step 1's
+verbatim twelve-key en-US block at `:2624-2635`, Step 2's verbatim twelve-key
+ja-JP block at `:2644-2655`, the Step 3 clean-re-run gate at `:2661-2669`, the
+Step 4 verify block at `:2671-2683`, the Step 5 Storybook overflow pass at
+`:2685-2696`, and the six-item acceptance checklist at `:2698-2717`), and
+task-135's three acceptance criteria in
+governance-drep-discovery-plan-tasks.json (`:1116-1118`). Four files modified,
+none created, nothing else. HEAD is `523141760` (the task-171 commit) on branch
+`wt/cv-1-build`; `git status --short` → exactly four ` M` entries and zero
+untracked paths. One review round. The main checkout `/workspaces/daedalus` was
+never read, edited or run against.
+
+**What landed.** `git diff --numstat` is exactly four lines — 154 insertions, 0
+deletions, no mode change, no new or deleted file, `git diff --summary` empty:
+
+- `source/renderer/app/i18n/locales/en-US.json` (`12 0`) — the 12
+  `voting.governance.currentVote.*` keys, seeded by the runner from the
+  `defaultMessage` values.
+- `source/renderer/app/i18n/locales/ja-JP.json` (`12 0`) — the same 12 keys with
+  the hand-authored preliminary Japanese drafts.
+- `source/renderer/app/i18n/locales/defaultMessages.json` (`65 0`) — one
+  regenerated descriptor group for path
+  `source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.messages.ts`.
+- `translations/messages.json` (`65 0`) — the identical group from
+  `yarn i18n:extract`.
+
+Nothing else. No `.ts`/`.tsx`, no store, no IPC contract, no story, no doc and no
+tracker file is touched, which is correct: `CurrentVoteSummary.messages.ts` was
+created by task-132 (`23f443b76`) and this row only runs the catalog workflow.
+The two whitelist files are absent from `git status --short` and
+`whitelist_en-US.json` is still the 3-byte empty array the repo convention
+requires.
+
+**Copy verified byte-exact against the guide, not read for gist.** The 12 en-US
+lines were parsed programmatically out of cv-1-implementation-guide.md:2624-2635
+and the 12 ja-JP lines out of `:2644-2655`, JSON-unescaped, and compared by
+string equality against the parsed catalogs on disk: **24 of 24 MATCH, zero
+mismatches**. The two risky characters survive exactly — the U+2014 em dash in
+`noDelegation.subline` and the U+2197 arrow in `drep.anchorMetadata` — as does
+the ASCII apostrophe in `wallet's`. The namespace contains exactly 12 keys in
+each locale and no extras (`set(delivered) - set(guide)` is empty in both).
+Independently, all 12 en-US values are identical to the `defaultMessage` of their
+descriptor in the regenerated `defaultMessages.json`, and
+`defaultMessages.json == translations/messages.json` as whole parsed documents,
+with 0 duplicate ids across the entire file. `grep -c
+"voting.governance.currentVote"` is 12 in each of the four catalogs, and
+`CurrentVoteSummary.messages.ts` carries exactly 12 `id: '` entries.
+
+**Review method (three lenses, adversarial refutation).** Three independent
+lenses were run over the diff: (1) guide and acceptance-criteria conformance —
+the Step 1/Step 2 byte comparison, the Step 4 grep set, and the three tracker
+criteria at `:1116-1118`; (2) locked invariants and the sanitization floor —
+whether any of the 154 added lines can reach a logger, analytics or
+electron-store payload, and whether invariants 2, 9, 10, 11 and 13 hold; (3)
+tests, docs and unnecessary complexity — whether the inherited guards actually
+bite the new values or pass vacuously, and whether anything added earns its
+place. **All three lenses returned zero blockers.** Every candidate they raised
+was re-checked against the diff by this consolidation before being carried or
+dropped; five were dropped and are recorded below. **Zero survived as a blocker,
+in one iteration**, and no file was changed as a result of the review.
+
+Per-lens decision. Guide/AC conformance — clean; 24 of 24 catalog values are
+character-for-character the guide's blocks and the "Files touched" list matches
+the diff exactly with nothing extra. Invariants and floor — clean; the slice adds
+no executable code at all, and the task-111 floor suite re-runs at 23 of 23.
+Tests and complexity — clean; the task correctly adds no test of its own because
+two inherited guards demonstrably bite the seeded values.
+
+**Candidates adjudicated (five dropped, none survived as a blocker).**
+
+1. *Dropped — "the tracker row description is wrong: task-135 does not create
+   `CurrentVoteSummary.messages.ts`."* True as stated but not a defect in this
+   diff. governance-drep-discovery-plan-tasks.json:1106 still opens with "Create
+   CurrentVoteSummary.messages.ts with the CORE-state keys", while the module was
+   committed by task-132 at `23f443b76`. The guide — which is the SPEC — resolves
+   this in two places: its task-132 section states "The messages module is
+   created HERE, not in task-135" (`:1467`), and the task-135 Context block
+   states "The message DEFINITIONS already exist (`CurrentVoteSummary.messages.ts`,
+   task-132 Step 1) — this task runs the catalog workflow and lands the ja-JP
+   drafts" (`:2570-2572`). Implementation Order item 12 (`:57-61`) agrees. The
+   delivered diff follows the guide. The drift predates this diff; recorded, not
+   rewritten, and this review did not touch the tracker.
+2. *Dropped — "Step 1 says the run reports 12 added keys, but the delivered tree
+   shows a clean run with zero added."* Not a contradiction. Step 1 (`:2657-2659`)
+   describes the FIRST seeding run; Step 3 (`:2661-2669`) is the re-run that must
+   report zero added and zero deleted, and the delivered end state is the Step 3
+   state. Both are as specified.
+3. *Dropped — "neither guard detects outright DELETION of one of the 12 keys."*
+   Accurate and re-confirmed: react-intl falls back to the `defaultMessage` when a
+   message id is missing, `jest.config.js` has both `setupFiles` (`:135`) and
+   `setupFilesAfterEnv` (`:138`) commented out so no missing-message console error
+   is promoted to a failure, and the guard's `key in ja` filter
+   (preliminaryCopyMarkers.spec.ts:19) skips any key absent from ja-JP. Dropped
+   because the failure mode is self-healing — `yarn i18n:manage` re-seeds a
+   deleted key into both catalogs — and the guide calls for no presence test.
+   Adding one would be exactly the unnecessary machinery this phase's convention
+   polices.
+4. *Dropped — "the task-171 guard is asymmetric: a key marked `!!!` in ja-JP but
+   not in en-US passes silently."* True of the guard's shape
+   (preliminaryCopyMarkers.spec.ts:17-24), but that shape is task-171's design,
+   was approved on its own review (this log, the task-171 entry), and is out of
+   scope for a catalog-seeding row. Moot in practice here: all 12 of task-135's
+   keys are marked in BOTH locales.
+5. *Dropped — "react-intl's missing-message `console.error` is an id-echo
+   surface."* Checked and it runs the other way. `App.tsx:76-81` sets no `onError`
+   on `IntlProvider`, so before this slice the 12 ids were absent from both
+   catalogs and would be echoed to the console whenever `CurrentVoteSummary`
+   rendered; seeding both locales REMOVES that echo. It is a console path, not the
+   Daedalus logger or electron-store, so it was never an invariant-2 breach in
+   either direction — task-135 narrows it rather than widening it.
+
+**Locked invariants.** No invariant is touched by executable code, because the
+slice adds none. Checked positively rather than assumed:
+
+- **Invariant 11 (preliminary copy)** — all 24 new values carry the leading
+  `!!!`. `grep "voting.governance.currentVote" <locale> | grep -v ': "!!!'`
+  returns nothing for BOTH locales, and a parsed `startswith('!!!')` over the
+  namespace is True in both. Machine-enforced from here on by the task-171 guard.
+- **Invariant 2 (sanitization floor)** — none of the 154 added lines contains a
+  bech32 string, a DRep id, or the snake_case wire literals `abstain` /
+  `no_confidence`; the new ids are camelCase message ids
+  (`statusAbstain`, `noConfidence.caption`), never payload values. The only
+  runtime consumer of the seeded catalogs is react-intl via
+  `source/renderer/app/i18n/translations.ts` → `App.tsx:76`; every other importer
+  of `en-US.json`/`ja-JP.json` is a spec file. `tests/jest/security/
+  governance-sanitization.spec.ts` re-runs at 23 of 23, the documented floor.
+- **Invariant 10 (byte-equality)** — no identity string, CIP-129 or CIP-105 value
+  is introduced; the 12 en-US values are nonetheless identical to their extracted
+  `defaultMessage`, verified key by key with 0 mismatches.
+- **Invariants 9 and 13** — reinforced by the copy rather than threatened by it.
+  `noDelegation.warning` carries the CIP-1694 reward-withdrawal warning,
+  `noDelegation.cta` supplies the CTA, and `noDelegation.subline` states
+  "Daedalus will not pick a DRep for you" verbatim. The Abstain / No Confidence
+  keys are wallet-own delegation-status labels under `currentVote.*`, not DRep
+  directory entries.
+- **No cv-2 leakage** — the guide's exact Step 4 grep, `grep -n
+  "sameVoteHint\|currentVote.status\.\|previousVote\|newVote"`, run over BOTH
+  locale files (broader than the verifier's anchored variant, since it also
+  catches any bare `previousVote`/`newVote` token) returns no match. The reserved
+  `confirmationDialog.previousVote`/`.newVote` keys stay unextracted because no
+  `defineMessages` defines them.
+
+**Structural integrity of the catalogs.** Both locale files are still fully
+key-sorted after insertion (`list(keys) == sorted(keys)` for each), their key
+SETS are identical to each other at 1611 keys apiece, there are zero duplicate
+ids, and `git diff | grep '^-' | grep -v '^---'` is EMPTY across all four files —
+so no pre-existing entry was modified, reordered, reformatted or removed. `git
+diff --check` reports no whitespace errors and the `100755` modes on the two
+locale files are preserved. The 12 new keys land between
+`voting.governance.confirmationDialog.vote` and `voting.governance.delegateToDRep`
+exactly where the guide's resolved judgment call (`:2607-2612`) predicts — runner
+ordering, not hand placement.
+
+**Task-171's deferred AC-4 first clause is DISCHARGED here.** The task-171 entry
+in this log recorded AC-4's first clause as owed "until task-135 runs it and
+commits the 12 `voting.governance.currentVote.*` keys across all four catalogs".
+All four catalogs are now seeded and the clause closes at this row; it must NOT
+be carried forward to cv-1 close. Evidence, from the verify pass and corroborated
+non-destructively here:
+
+- `yarn i18n:manage` → exit 0 and CLEAN. Zero added keys, zero deleted keys — the
+  runner output contains no `added`/`deleted`/`removed` line at all (`grep -inE
+  'added|deleted|removed'` returns nothing), only the informational
+  Untranslated-keys report the repo convention leaves in place. Non-mutation was
+  proved by sha256-ing all four catalog files immediately before and after the
+  run: byte-identical, and `git diff --stat` afterwards is unchanged at
+  `154 insertions, 0 deletions`. The hand-authored Japanese values were NOT
+  rewritten.
+- Corroborating signal from the runner itself: the 12 currentVote keys appear 12x
+  in the en-US untranslated report (expected — they all carry the `!!!` marker)
+  and 0x in the ja-JP report, i.e. the runner classifies all 12 Japanese values as
+  genuine translations rather than seeds.
+- This review re-derived the same conclusion without running the writing command:
+  parsing all descriptor ids out of `defaultMessages.json` gives 1611 ids against
+  1611 keys in each locale, with **0 would-be-added and 0 would-be-deleted for
+  both en-US and ja-JP** — precisely the state in which the runner is a no-op.
+- The second AC-4 clause ("`defaultMessages.json` / `translations/messages.json`
+  unchanged by the RESTORATION") was already met at task-171 and is not
+  contradicted here: `git show --stat 523141760` shows task-171 touched
+  `ja-JP.json` alone among the catalogs, so the `+65/+65` now present in the two
+  generated files is task-135's own regeneration, not task-171 spill.
+
+**The task-171 guard stayed green through the ja-JP translation pass.**
+`tests/jest/i18n/preliminaryCopyMarkers.spec.ts` passes over the seeded tree —
+1 suite / 1 test, and re-run again by this review inside a 3-suite batch. The
+canary the task-171 entry asked for is therefore discharged: the 12 freshly
+landed ja-JP values pass the marker guard. Note the values are not the English
+placeholders task-171 anticipated — guide Step 2 replaced the seeds with real
+Japanese — and each was checked individually to start with `!!!`, contain
+Japanese script, and differ from its en-US counterpart, so none is a runner
+passthrough.
+
+**The inherited guards genuinely bite this slice.** Task-135 correctly adds no
+test of its own. The en-US half is bitten by
+`source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.spec.tsx`,
+which imports `en-US.json` directly (`:8`) into `<IntlProvider locale="en-US"
+messages={translations}>` (`:38`) and asserts exact literals — `'!!!No governance
+delegation'` (`:49`), `'!!!Choose a delegation'` (`:51`), `'!!!Delegated to DRep'`
+(`:57`), `'!!!Abstain'` (`:69`), `'!!!No Confidence'` (`:83`) — so from this
+commit onward those assertions read the CATALOG value rather than the
+`defaultMessage`, and any drift in a seeded en-US string fails the suite. The
+ja-JP half is bitten by the task-171 guard as described above.
+
+**Comment convention.** No comment was added anywhere in the change set — the
+diff is 154 JSON data lines. Nothing to check.
+
+**No unnecessary complexity.** Zero code, zero helpers, zero options, zero new
+abstractions, zero new spec files, zero config changes. This is the smallest
+truthful change Steps 1-3 permit. The `.spec.ts`/`.spec.tsx` naming rule does not
+apply because no spec is created. The two unrendered `drep.*` link labels were
+extracted as the guide's Context (`:2578-2583`) said they would be — expected,
+not scope creep.
+
+**Acceptance criteria.** Two of the tracker's three criteria (`:1116-1118`) are
+fully met; the third is met in one half and owed in the other by the
+environment's own limits, exactly as the guide pre-authorises.
+
+AC-1 "core keys present in en-US.json and ja-JP.json: headerCurrent,
+statusDelegatedToDRep, statusAbstain, statusNoConfidence, noDelegation
+title/warning/subline/cta, DRep link labels, abstain/noConfidence captions"
+(`:1116`) — met; all 12 named keys are present in both locales and byte-equal to
+the guide's blocks. AC-2 "preliminary ja-JP copy is reviewed for length / layout
+overflow while retaining the leading `!!!` marker" (`:1117`) — the marker half is
+met and machine-verified on all 12 ja-JP values; the overflow-review half is NOT
+discharged and is carried below as owed, per the guide's explicit instruction at
+`:2694-2696` ("If the devcontainer cannot open a browser, record this review as a
+main-checkout follow-up in the code-review log rather than skipping it"). AC-3
+"`yarn i18n:manage` runs clean" (`:1118`) — met and measured, with sha256
+non-mutation proof; see the AC-4 discharge section above.
+
+The guide's own six acceptance boxes (`:2698-2717`) hold, with the same single
+exception: the 12-key presence box, the clean-re-run box, the Step 4 cv-2/reserved
+grep box, the "no pre-existing catalog entry modified; whitelist files untouched"
+box and the "task-134 snapshots unchanged after catalog seeding" box are all met;
+the ja-JP box is met on `!!!` retention and owed on the overflow review.
+
+**Verification commands run (results as observed).** Gates 1-13 are as measured
+by the dedicated verify pass. This review independently re-derived the diff shape,
+the byte comparison against the guide, the catalog structural checks and the
+runner no-op proxy on disk, and re-ran the three invariant-relevant suites
+together; every other command it ran was read-only.
+
+1. `yarn compile` → exit 0, `tsc --noEmit` clean, `Done in 25.57s` (verify pass).
+   The Node v24 fallback was not needed.
+2. `yarn lint` → exit 0 at exactly 5591 warnings, 0 errors — zero delta against
+   the 5591 baseline (verify pass).
+3. `yarn i18n:manage` → exit 0 and CLEAN; zero added, zero deleted, all four
+   catalog sha256s byte-identical before and after (verify pass). See the AC-4
+   section.
+4. `node_modules/.bin/jest .../CurrentVoteSummary.spec.tsx --runInBand` → 1 suite
+   / 4 tests passed, **4 snapshots passed with zero written, zero updated, zero
+   obsolete** (verify pass). The seeding canary held: because the catalog values
+   are byte-identical to the `defaultMessage` fallbacks, the task-134 snapshots
+   did not move and no `jest -u` was run or needed.
+5. `node_modules/.bin/jest tests/jest/i18n/preliminaryCopyMarkers.spec.ts
+   --runInBand` → 1 suite / 1 test passed (verify pass).
+6. **Re-run by this review**, three suites in one batch —
+   `CurrentVoteSummary.spec.tsx` + `preliminaryCopyMarkers.spec.ts` +
+   `governance-sanitization.spec.ts` → "Test Suites: 3 passed, 3 total" /
+   "Tests: 28 passed, 28 total" (4 + 1 + 23) / "Snapshots: 4 passed, 4 total",
+   exit 0 in 2.224 s, zero snapshots written or obsolete. `git status --short`
+   immediately afterwards was unchanged, so the run mutated nothing.
+7. Whole tree, no path argument, `node_modules/.bin/jest --runInBand` → "Test
+   Suites: 1 skipped, 85 passed, 85 of 86 total" / "Tests: 12 skipped, 1060
+   passed, 1072 total" / "Snapshots: 6 passed, 6 total", exit 0 in 34.109 s
+   (verify pass) — identical to the post-task-171 baseline of 86 / 1072 / 6, i.e.
+   zero delta, as a catalog-only slice should be. (The guide's "82 suites" is
+   stale; the measured figure is 86.)
+8. `node_modules/.bin/jest tests/jest/security/governance-sanitization.spec.ts
+   --runInBand` → 23 of 23, the task-111 floor re-asserted exactly.
+9. **Re-derived by this review**: `git diff --numstat` → `65 0`, `12 0`, `12 0`,
+   `65 0`; `git diff --summary` empty; `git status --short` → four ` M` entries,
+   zero untracked; `git diff | grep '^-' | grep -v '^---'` empty across all four
+   files; `git diff --check` clean.
+10. **Re-derived by this review**: a parsed comparison of the delivered catalogs
+    against cv-1-implementation-guide.md:2624-2635 and `:2644-2655` → 24 of 24
+    match, 0 mismatches, 0 extra namespace keys; both locales fully key-sorted
+    with identical 1611-key sets; `defaultMessages.json ==
+    translations/messages.json`; 0 duplicate ids; the single descriptor group for
+    `CurrentVoteSummary.messages.ts` holds exactly 12 descriptors, all matching
+    en-US.
+11. **Re-derived by this review**: the runner no-op proxy — 1611 descriptor ids
+    against 1611 keys per locale, 0 would-be-added and 0 would-be-deleted in both,
+    corroborating gate 3 without re-running the writing command.
+12. `grep -n "sameVoteHint\|currentVote.status\.\|previousVote\|newVote"` over
+    both locale files → no match (**re-run by this review** in the guide's exact
+    unanchored form).
+13. `git status --short source/renderer/app/i18n/locales/whitelist_*.json` → empty;
+    `whitelist_en-US.json` still the 3-byte `[]`.
+
+**Prettier.** No prettier command was run and none applies. Task-135 creates no
+new file, and all four touched files are on the standing do-not-reformat list
+(`en-US.json`, `ja-JP.json`, `defaultMessages.json`, `translations/messages.json`)
+under the ~240-file pre-existing drift hazard. `yarn prettier` was never invoked.
+
+**Owed obligations (not faked).**
+
+- **Guide Step 5 — the ja-JP overflow review, owed as a main-checkout
+  follow-up.** `yarn storybook`, "Governance / Current Vote Summary → Core
+  states", global locale switched to Japanese, cycling all four knob values,
+  confirming every string renders fully (the `.scss` wraps — no ellipsis, no
+  clipped line), no missing-message console warnings remain, and the panel height
+  grows naturally. There is no browser in this devcontainer, so this half of AC-2
+  is NOT discharged and must not be reported green. The likeliest overflow
+  candidate is `noDelegation.subline` at 58 characters; `noDelegation.warning` and
+  the two captions are the next candidates. Explicitly pre-authorised at guide
+  `:2694-2696`.
+- **F-5 — `nix fmt` cannot run in this devcontainer**; the pass remains an owed
+  pre-merge obligation. No prettier substitute was applicable to this slice, since
+  it creates no file.
+- **Human visual/locale pass in the running app** — no browser here. The
+  release-end manual review that CLEARS the `!!!` markers stays user-owned per
+  invariant 11; nothing in this row anticipates it.
+- **Guide/tracker drift, recorded not fixed** (cv-1 planning is closed and this
+  row's mandate is its own diff): the task-135 tracker description at
+  governance-drep-discovery-plan-tasks.json:1106 still says the row creates
+  `CurrentVoteSummary.messages.ts`, which task-132 did — see candidate 1; and the
+  guide's "82 suites" references remain stale against the measured 86.
+- `yarn check:all` and `yarn storybook:build` were NOT run; both are red at HEAD
+  for the unrelated storybook manager-side JSX loader reason (F-20) and are not
+  valid gates.
+- The tracker row for task-135 is still `"status": "pending"`
+  (governance-drep-discovery-plan-tasks.json:1107) and needs flipping at commit
+  time. This review did not touch the tracker.
+- **Closing note for cv-1 close:** task-171's owed AC-4 first clause is discharged
+  by this row and should be struck from the carry-forward list, not repeated.
+
+**Blockers.** None.
+
+Decision: approved
