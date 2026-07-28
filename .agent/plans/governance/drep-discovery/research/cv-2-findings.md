@@ -842,6 +842,67 @@ calls and AC-5 record. No source or design file is edited.
 
 ---
 
+## F-15 — task-143 AC-4 is partial on **both** halves, but F-7 dispositions only the hash half; and no half of it is test-provable, because `jest.config.js`'s `roots` exclude `storybook/` entirely
+
+**Measured at build, not asserted.** The shipped module carries four bech32
+constants. `fixtures.ts:36-41` (`VERIFIED_CIP129` / `VERIFIED_CIP105` /
+`VERIFIED_CREDENTIAL_HEX`) encodes DRep key hash
+`e68fb144f40ed30764fba34ca21cdea2400b1b7f02cb27c04a515bdc`, which is committed at
+`research/drep-state-preprod-epoch295-sample.json:2849` — the Cardano Academy
+preprod DRep, one of the three provenances the plan names
+(`governance-drep-discovery-plan.md:103`,
+`designs/current-vote-display-design.md:227`). `fixtures.ts:43-48`
+(`UNVERIFIED_*`) is copied byte-for-byte from the repo's own committed story
+vector at `CurrentVoteSummary.stories.tsx:17-21`; it is neither the SIPO mainnet
+credential nor the canonical CIP-119 example, and cv-2 mints no credential to
+close the gap. Both pairs decode cleanly (CIP-129 header byte `0x22`, each CIP-105
+partner decoding to the same 28 credential bytes), so what the constants carry is
+**bech32 checksum provenance**, not CIP-119 test-vector provenance.
+
+**F-7 under-dispositions this.** F-7's prose already says the committed vectors
+are not the CIP-119 vectors AC-4 names (`:474`), but its Resolution's AC-4 clause
+(`:492-494`) and its Disposition (`:496-498`) defer only the "with verified hash"
+clause to `anchor-1`. The named-provenance clause is the *second* partial and is dispositioned
+nowhere in this note. The guide's AC-4 record
+(`cv-2-implementation-guide.md:679-696`) is explicit that both shortfalls must be
+recorded and that the shortfall must **not** be scoped to the hash half alone.
+The task-143 tracker row now records both; this finding is the note-level entry
+F-7 was missing.
+
+**Neither half is provable by an executing test — nor is any other cv-2 storybook
+task.** `jest.config.js:129` sets `roots: ['<rootDir>/tests', '<rootDir>/source']`,
+so a spec placed under `storybook/` never runs. AC-1 through AC-3 are therefore
+adjudicated structurally (the guide's Step 3 bech32 decode at `:581-638` and Step 5
+grep at `:652-665`) and by static reading, never by an assertion. The same
+constraint binds **task-144** and **task-145**, and the visual proof stays owed on
+both: the knob renders nowhere until task-145 wires it in, and this container has
+no browser (F-12).
+
+**What `anchor-1` inherits, concretely.** Both `makeDRepIndex` entries ship
+`anchor: null` (`fixtures.ts:154`, `:164`) — that null is the seam anchor-1 fills.
+And the verified fixture already has a **real** anchor committed against the very
+same key hash: `drep-state-preprod-epoch295-sample.json:2852-2855` holds
+`dataHash` `9e8cb2b0f4c2ddbd9dea316b44680d8a989743868aeb40c1e6959982452f38e1` and
+the `Cardano Academy.jsonld` URL. So task-149/task-150 do not need to mint a
+hash-verification vector; one is already in the repo, paired with the fixture that
+will consume it.
+
+**Resolution.** Recorded as **two** documented partials on one criterion, not one.
+The provenance half is closed only by committing a SIPO mainnet or canonical
+CIP-119 credential, which no slice has scheduled; the hash half is closed by
+anchor-1. Nothing in cv-2 may report AC-4 green, and a slice-close report that
+defers "the hash half" alone repeats the omission this finding exists to fix.
+
+**Disposition.** Provenance half — **open, unscheduled**; carry it into the
+anchor-2 planning input rather than letting it lapse. Hash half — **deferred to
+`anchor-1` (task-149, task-150)**, as F-7 already states. Coverage constraint —
+record-only, binding on task-144 and task-145.
+
+**Owner.** task-143 (recorded); the Planner at slice close (carry-forward);
+task-149/task-150 (hash half).
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)

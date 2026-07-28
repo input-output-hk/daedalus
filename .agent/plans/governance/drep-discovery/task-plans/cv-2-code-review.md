@@ -755,3 +755,278 @@ sites). This file is append-only, so `:322` and `:335` stand as written; `:703-7
 stand.
 
 Decision: anchor correction recorded.
+
+---
+
+## Code Review: task-143 — iteration 1 (2026-07-28)
+
+**Scope reviewed.** The uncommitted working tree against the guide section
+"Storybook current-vote fixtures (task-143)"
+(`cv-2-implementation-guide.md:241-700` — the files-created / files-touched list
+at `:245-251`, the Context block at `:253-355`, the seven locked invariants at
+`:357-378`, the six resolved judgment calls at `:380-398`, Step 1 at `:400-404`,
+Step 2's verbatim `ts` block at `:406-575`, Step 3's bech32 provenance check and
+its expected output at `:577-640`, Step 4 at `:642-655`, Step 5's structural grep
+at `:657-665`, and the four-item acceptance checklist at `:667-700`), plus
+task-143's four acceptance criteria in `governance-drep-discovery-plan-tasks.json`
+and the per-task Definition of Done at `cv-2-PRD.md:1619-1623`. HEAD is
+`427b9a487`; one review round; the main checkout `/workspaces/daedalus` was never
+read, edited or run against.
+
+**What landed.** `git status --porcelain -uall` → exactly one line,
+`?? storybook/stories/governance/_utils/fixtures.ts`. Zero modified files, zero
+staged files, so no pre-existing file was edited or reformatted and none of the
+three files the guide forbids touching (`CurrentVoteSummary.stories.tsx`,
+`Governance.stories.tsx`, `storybook/stories/index.ts`) is in the change set. The
+new module is 169 lines and byte-identical to the guide's Step 2 block (extracted
+and diffed: identical, 169 lines on both sides). The tasks tracker is **not** in
+the change set.
+
+**Review method (three lenses, adversarial refutation).** Three independent
+lenses ran over the diff: (1) guide and acceptance-criteria conformance, with the
+Step 3 and Step 5 proofs re-executed rather than trusted; (2) locked invariants
+and the sanitization floor; (3) tests, simplicity and drift. Every candidate was
+re-opened against the live worktree on the reproduce / guide-authority / scope
+axes before promotion. **Two candidates were raised across the three lenses; one
+survived, ranked below, and one was dropped.** Per-lens decision: conformance —
+`requires_changes` on the tracker row alone, code clean; invariants and floor —
+clean; tests, simplicity and drift — clean.
+
+**What came back clean, re-verified here.** The four bech32 constants decode
+exactly as guide `:626-633` predicts — both CIP-129 forms carry the `0x22`
+key-hash header and each CIP-105 partner decodes to its `credentialHex` — and
+`Cardano.DRepID.toCip129DRepID` returns both `drep1…` map keys unchanged, so the
+`makeDRepIndex` key form (`fixtures.ts:149`, `:159`) is the one
+`resolveExactDRepMatch` looks up (`helpers.ts:139-153`). The unverified trio at
+`fixtures.ts:43-48` matches the committed story vector at
+`CurrentVoteSummary.stories.tsx:17-21` byte-for-byte, and the verified credential
+is the Cardano Academy preprod key hash committed at
+`research/drep-state-preprod-epoch295-sample.json:2849`. Purity holds
+structurally: one `new Wallet(` at `:95`, six `export` lines at `:14`, `:21`,
+`:29`, `:66`, `:108`, `:143`, no `export default`, no `let`, no `.push(`, no
+`GOVERNANCE_WALLETS` (AC-1, AC-2). `currentVoteOptions` (`:21-27`) enumerates
+exactly the five ids AC-3 names. Invariants hold: `noDelegation` returns `null`
+with no fallback DRep (`:78-80`); `abstain` / `no_confidence` return sentinels and
+an empty index Map (`:143-169`); both index entries are `status: 'active'`, never
+the renderer-derived `'expiring'`; both ship `anchor: null`, the correct reading
+of D-7; no logger, analytics or electron-store sink exists in the module, so the
+sanitization floor cannot be moved. `WalletProps` accepts every key `buildWallet`
+passes, `delegatedStakePoolId` included (`Wallet.ts:113-134`). One comment,
+`:33-35`, three plain sentence-case lines stating provenance and the lower-case
+map-key invariant — no task id, no process label, no ALL-CAPS, no change history.
+The module contains no JSX, so no local `IntlProvider` and no per-locale variant
+question arises.
+
+### Blockers (ranked, most severe first)
+
+**CR-1 (major, tracker) — task-143's row is still `pending`, so AC-4's
+satisfied-in-part discharge is nowhere recorded.** The guide's own acceptance
+record for AC-4 (`cv-2-implementation-guide.md:679-700`) ends: "Record **both**
+shortfalls in the task's tracker `statusReason`; do not claim the criterion whole
+and do not scope the shortfall to the hash half alone." The per-task Definition
+of Done (`cv-2-PRD.md:1619-1623`) requires "tasks JSON synchronized (`status`,
+`statusReason`, `evidence`, `updatedAt`) · exactly one commit" — one commit per
+task, so the tracker edit has to be in the working tree before task-143 is
+committed, and no later cv-2 row owns it (task-148 is the `same_vote` store
+regression, not a closeout). Live, the task-143 object still reads
+`"status": "pending"` with no `statusReason`, no `evidence` and no `updatedAt`,
+and the tracker is absent from `git status --porcelain -uall`. The convention is
+per-task and rides the task's own commit: `2baed760c` ("feat(gov): task-131 add
+currentVote and isVoting to the Wallet domain model") and every governance commit
+back to `f948845a5` carry a `governance-drep-discovery-plan-tasks.json` hunk in
+the same commit. The shape to follow is task-133's row, which inserts
+`statusReason`, `evidence`, `updatedAt` between `status` and `priority`, with
+`evidence` an array of repo-relative paths, source files first then plan docs,
+and `updatedAt` as `2026-07-28`.
+*Fix:* set the row to `complete`, add `evidence` beginning with
+`storybook/stories/governance/_utils/fixtures.ts`, and write a `statusReason` that
+records both AC-4 shortfalls explicitly — (a) only the `drepVerified` pair carries
+a plan-named provenance (the Cardano Academy preprod key hash at
+`research/drep-state-preprod-epoch295-sample.json:2849`), while `drepUnverified`
+is the repo's own committed story vector from
+`CurrentVoteSummary.stories.tsx:17-21` and is neither the SIPO mainnet nor the
+canonical CIP-119 example; and (b) "verified hash" has no mechanism in cv-2 — no
+anchor fetch, no Blake2b-256 path, both index entries ship `anchor: null`. Neither
+pair may be described as a "CIP-119 test vector" (D-7, `cv-2-PRD.md:611-616`). Do
+not run prettier on the tracker — it is tool-managed JSON.
+
+### Dropped findings (raised by a lens, not promoted)
+
+1. *Dropped as re-litigation — "the knob labels `DRep — verified anchor` /
+   `DRep — unverified anchor` (`fixtures.ts:23-24`) name an anchor-verification
+   distinction cv-2 cannot render."* The observation is factually true, and the
+   lens that noticed it raised it only to decline it. D-7
+   (`cv-2-PRD.md:573-625`) resolves exactly this: all five ids ship, the two DRep
+   options are differentiated by the lifecycle state cv-2 *can* render
+   (`drepActivity: 30` vs `4`), and renaming would force a knob-id churn in
+   anchor-2. The labels are the guide's Step 2 verbatim text, they are
+   Storybook-knob-only and never shipped copy, and the module's comment states
+   nothing stronger than the true provenance. Re-opening a resolved judgment call
+   is out of scope for a code review of this diff.
+
+**Notes, not defects.** The file is still untracked, so the commit must
+`git add storybook/stories/governance/_utils/fixtures.ts` explicitly — a bare
+`git commit -a` misses it. No Jest spec is added, correctly: `jest.config.js:129`
+sets `roots: ['<rootDir>/tests', '<rootDir>/source']`, so a spec under
+`storybook/` would never execute; acceptance rests on the Step 3 and Step 5 proofs
+and on task-145's visual pass. `nix fmt` could not be run (nix is absent from this
+container); `node_modules/.bin/prettier --check` on the single newly created path
+is the recorded substitute, and the `nix fmt` pass stays an owed pre-merge
+obligation.
+
+**Verification gate.** Green, with nothing attributable to this task or to HEAD.
+Change set exactly the one new file; scss codegen correctly skipped (no `.scss` in
+the diff); `node_modules/.bin/tsc --noEmit` exit 0, and `--listFiles` confirms the
+new module is really in the program rather than silently excluded; `yarn lint`
+exit 0 at exactly the 5591-warning baseline, with zero warnings mentioning
+`fixtures.ts`; `node_modules/.bin/jest --testPathPattern='(governance|voting)'
+--no-coverage --runInBand` exit 0 — 17 passed / 1 skipped suites, 269 passed / 12
+skipped tests, 6 snapshots — identical to the wave baseline, the one skipped suite
+being the environment-gated `GovernanceCliArgvSmoke.spec.ts`. `prettier --check`
+clean on the newly created file; the four prettier-red-at-HEAD files were neither
+checked nor touched. i18n was not applicable and `yarn i18n:manage` was correctly
+never invoked, so no catalog needed restoring.
+
+**Decision: requires_changes** — one major finding, CR-1. The code deliverable is
+accepted as delivered; the tracker row must be synchronized before task-143 is
+committed.
+
+---
+
+## Code Review: task-143 — round 2 (2026-07-28)
+
+**Scope reviewed.** The uncommitted working tree after the CR-1 fix pass.
+`git status --porcelain -uall` now reads three lines — `?? storybook/stories/
+governance/_utils/fixtures.ts`, ` M governance-drep-discovery-plan-tasks.json`
+and ` M cv-2-code-review.md` — the code deliverable plus the two doc artifacts
+CR-1 asked for, and nothing else. HEAD is unchanged at `427b9a487`. Three
+independent lenses ran again (guide and acceptance conformance; locked
+invariants and the sanitization floor; tests, simplicity and drift); every
+candidate was re-opened against the live files here before promotion.
+
+**CR-1 is discharged.** The task-143 row is `complete`, with `statusReason`,
+`evidence` (six repo-relative paths, source file first) and
+`updatedAt: "2026-07-28"` inserted between `status` and `priority` — task-133's
+shape. AC-4 is recorded satisfied-in-part on **both** halves and names each
+shortfall: only the `drepVerified` pair carries a plan-named provenance, and
+"verified hash" has no mechanism in cv-2 (both entries ship `anchor: null`),
+which is what the guide's AC-4 record at `cv-2-implementation-guide.md:679-696`
+demands. The tracker still parses as JSON and was not run through prettier; the
+log append is 135 additions / 0 deletions, genuinely append-only.
+
+**Code deliverable: clean on all three lenses. Not one line of `fixtures.ts`
+changed this round.** Re-measured, not trusted: the module is byte-identical to
+the guide's Step 2 fenced block (fences `:407` / `:577`, content `:408-576`) —
+extracted and diffed, 169 lines on both sides. Step 3's decode reproduces the
+guide's expected output at `:617-620` line for line, both CIP-129 forms carry
+the `0x22` key-hash header, each CIP-105 partner decodes to its `credentialHex`,
+and `Cardano.DRepID.toCip129DRepID` returns both `drep1…` strings unchanged, so
+the `makeDRepIndex` keys (`fixtures.ts:149`, `:159`) are the exact form
+`resolveExactDRepMatch` looks up (`drep-directory/helpers.ts:139-153`). Step 5's
+grep still yields one `new Wallet(` (`:95`), six `export` lines, no `let`, no
+`.push(`, no `GOVERNANCE_WALLETS`, no `export default`. `WalletProps`
+(`Wallet.ts:113-134`) accepts every key `buildWallet` passes, `votingTarget`
+included (`:130`). `noDelegation` returns `null` with no fallback DRep
+(`:78-80`); abstain and no-confidence return form-only sentinels with an empty
+Map; both index entries are `status: 'active'` with `anchor: null` (`:152-154`,
+`:162-164`) and the renderer-derived `'expiring'` appears nowhere. A grep for
+`logger|console.|analytics|electron-store|localStorage|ipc` over the module
+exits 1 — no sink exists, so the sanitization floor cannot be moved from here.
+The lower-case map-key comment at `:33-35` is accurate rather than aspirational:
+`normalizeDRepQuery` lower-cases at `helpers.ts:29`.
+
+### Minor (non-blocking; absorb before the task-143 commit)
+
+**CR2-1 (minor, `cv-2-code-review.md`) — the iteration-1 "Scope reviewed"
+citation list mis-anchors twelve guide ranges.** The entry at `:761-892` is
+still uncommitted, so this is a pre-commit correction, not a rewrite of a
+committed entry. Measured heading map of the task-143 section, verified line by
+line: `:241` `## Storybook current-vote fixtures (task-143)`; `:245-251` files
+created / files touched; `:253` `#### Context`, running to `:353`; `:354`
+`#### Locked invariants…`, bullets `:356-376`; `:378` `#### Resolved judgment
+calls`, bullets `:380-394`; `:396` `#### Step 1` with its fence `:398-400`;
+`:402` `#### Step 2`, fence `:407` / `:577`; `:581` `#### Step 3`, ending `:638`;
+`:639` `#### Step 4`, ending `:650`; `:652` `#### Step 5`, its grep fence
+`:654-656`, ending `:665`; `:667` `#### Acceptance`, ending `:696`; `:700` is
+already `## Group 1 — task-136`. Against that map the appended ranges are:
+`:241-700` → `:241-696`; Context `:253-355` → `:253-353` (`:354` is the next
+heading); invariants `:357-378` → `:354-377` (`:357` starts mid-first-bullet,
+`:378` is the next heading); judgment calls `:380-398` → `:378-395` (`:398` is
+Step 1's bash fence); Step 1 `:400-404` → `:396-400` (`:400` is Step 1's closing
+fence, `:402-404` is Step 2's prose); Step 2 block `:406-575` → `:407-577`, or
+`:408-576` for content (`:406` is blank, `:575` is `  return index;`, two lines
+short of the block's end); Step 3 `:577-640` → `:581-638`; Step 4 `:642-655` →
+`:639-650` (`:642` is inside Step 4's bash block, `:655` is inside Step 5's);
+Step 5 `:657-665` → `:652-665` (the cited range starts *after* the grep it
+names); acceptance `:667-700` → `:667-696`. Two further slips outside that list:
+`:796` reads "decode exactly as guide `:626-633` predicts", but the sentence it
+paraphrases ("Both CIP-129 forms carry header byte `0x22` (key-hash) …") is
+`:623-625` — `:629-635` is the optional `@cardano-sdk/core` check; and CR-1 at
+`:824` cites the AC-4 record as `:679-700`, which should be `:679-696`. Only
+`:245-251` is exact. No instruction or quotation changes; the substance of the
+entry survives untouched. *Fix:* correct the ranges in place before the commit.
+Markdown only, no prettier run is owed.
+
+**CR2-2 (minor, `governance-drep-discovery-plan-tasks.json`) — two mis-anchored
+guide ranges in the new task-143 `statusReason`.** It reads "byte-identical to
+the guide's Step 2 verbatim block at `:406-575`" — the fences are `:407` and
+`:577`, content `:408-576`, so `:406` is the blank line before the fence and
+`:575` is `  return index;`, mid-`makeDRepIndex`. The byte-identity claim itself
+holds (extracted and diffed here: identical, 169 lines both sides); only the
+range is wrong. It also reads "`makeDRepIndex` ships here … by the guide's
+resolved judgment call at `:382-384`", but that bullet is `:380-382`; `:383-384`
+is the unrelated knob-label bullet ("Knob **label** is exactly `Current vote
+(mock)`; the default is `'noDelegation'`"). Every other citation in the same
+`statusReason` was checked here and is exact — `:245-251`, `:617-620`,
+`jest.config.js:129`, `drep-directory/helpers.ts:139-153`, `cv-2-PRD.md:1619-1623`,
+`governance-drep-discovery-plan.md:103`, `designs/current-vote-display-design.md:227`,
+`research/drep-state-preprod-epoch295-sample.json:2849`,
+`CurrentVoteSummary.stories.tsx:17-21`, and the `fixtures.ts` anchors `:14`,
+`:21-27`, `:29-30`, `:33-35`, `:36-41`, `:43-48`, `:66`, `:78-80`, `:95`,
+`:143`, `:149`, `:153-154`, `:159`, `:163-164` — so these two are outliers, not
+a house convention. Optional tightening in the same pass: the D-7 citation
+`cv-2-PRD.md:573-625` points one line before the heading and stops three lines
+short; D-7 is `:574-628`. *Fix:* hand-edit the two ranges. The tracker is
+tool-managed JSON — do not run prettier on it.
+
+### Merged and dropped
+
+1. *Merged.* Two lenses raised the same two tracker anchors independently
+   (`:406-575` and `:382-384`), one as a pair of one-token findings and one as a
+   single finding. They are one edit to one field and are consolidated as CR2-2,
+   keeping both lenses' measurements.
+2. *Nothing dropped as unfounded.* Every promoted range was re-opened here and
+   every one failed as reported; nothing survived that a lens had merely
+   asserted. The invariants-and-floor lens raised no finding at all, and its
+   clean result was re-derived rather than accepted (sink grep exit 1, case /
+   normalize grep exit 1, both `status: 'active'`, `DRepStatus` at
+   `source/common/types/governance.types.ts:34`).
+3. *Not promoted, recorded instead.* Neither survivor is a defect in
+   `fixtures.ts`; the code deliverable needs no edit this round, and re-opening
+   the knob-label question (dropped in iteration 1 as re-litigation of D-7)
+   remains out of scope.
+
+**Verification gate.** Green, with nothing attributable to this task or to HEAD.
+Change set exactly the three artifacts above; scss codegen correctly skipped (no
+`.scss` in the diff); `tsc --noEmit` exit 0 with `--listFiles` confirming the new
+module is in the program; `yarn lint` exit 0 at exactly the 5591-warning
+baseline, zero warnings naming `fixtures.ts`; `jest --testPathPattern='(governance|voting)'
+--no-coverage --runInBand` exit 0, 17 passed / 1 skipped suites and 269 passed /
+12 skipped tests, identical to the wave baseline, the one skip being the
+environment-gated `GovernanceCliArgvSmoke.spec.ts`; `prettier --check` clean on
+the single newly created path. The four files that are prettier-red at HEAD
+(`VotingPowerDelegation.tsx`, `VotingPowerDelegationConfirmationDialog.tsx`,
+`VotingGovernancePage.tsx`, `Governance.stories.tsx`) and the red
+`yarn check:all` are pre-existing at the slice baseline, were neither checked nor
+touched, and are notes rather than findings. `nix` is absent, so `nix fmt` stays
+an owed pre-merge obligation with `prettier --check` on the explicit new path as
+the recorded substitute. i18n was not applicable and `yarn i18n:manage` was
+never invoked, so no catalog needed restoring.
+
+**Decision: approved** — both survivors are minor citation-accuracy defects in
+the two doc artifacts; neither changes an instruction and neither touches
+`storybook/stories/governance/_utils/fixtures.ts`. A fix pass should absorb
+CR2-1 and CR2-2 before the single task-143 commit, which must
+`git add storybook/stories/governance/_utils/fixtures.ts` explicitly (the path is
+untracked, so `git commit -a` would miss it) under the subject
+`feat(gov): task-143 add governance storybook current-vote fixtures`.
