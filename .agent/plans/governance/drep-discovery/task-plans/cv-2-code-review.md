@@ -736,3 +736,22 @@ files, so no formatting run was owed.
 **Decision: approved** — all 8 blockers/majors (B-1 … B-8) discharged, 7 of 8 minors applied
 and the eighth correctly declined on verified evidence. Three minor residuals recorded above
 for the next doc touch; none gates the build phase.
+
+---
+
+## Planner: 2026-07-28 — `helpers.ts` anchor correction (residual 1)
+
+**Discharges** residual 1 at `:703-709`.
+
+**The slip.** The Critiquer entry above anchors the form gate at `helpers.ts:143`
+(`:322`, `:335`). Live, `:143` is `const { full } = normalizeDRepQuery(rawQuery);` and
+`:144` is the `if (!Cardano.DRepID.isValid(full)) return null;` gate the entry meant. The
+finding's substance and its prescription are unaffected; only the number is wrong.
+
+**What shipped.** Commit `b8a14e708` corrected the anchor to `helpers.ts:144` in
+`cv-2-PRD.md`, `research/cv-2-findings.md` and `cv-2-implementation-guide.md` (both
+sites). This file is append-only, so `:322` and `:335` stand as written; `:703-708` quote
+`:143` deliberately — the verifier describing the misattribution — and are correct as they
+stand.
+
+Decision: anchor correction recorded.
