@@ -277,10 +277,10 @@ describe('DRepDirectory', () => {
     renderComponent({ locale: 'ja-JP' });
 
     // Title and labels render in Japanese (text may have trailing colons)
-    expect(screen.getByText('DRepディレクトリ')).toBeInTheDocument();
+    expect(screen.getByText('!!!DRepディレクトリ')).toBeInTheDocument();
     expect(screen.getByText(/投票権/)).toBeInTheDocument();
-    expect(screen.getAllByText('アクティブ')[0]).toBeInTheDocument();
-    expect(screen.getByText('オンチェーン')).toBeInTheDocument();
+    expect(screen.getAllByText('!!!アクティブ')[0]).toBeInTheDocument();
+    expect(screen.getByText('!!!オンチェーン')).toBeInTheDocument();
   });
 
   it('renders a loading indicator when in Loading refresh state', () => {

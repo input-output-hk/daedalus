@@ -2418,3 +2418,321 @@ for `givenName` and the anchor, matching
 **Blockers.** None.
 
 Decision: approved
+
+---
+
+## Code Review: task-171 — iteration 1 (2026-07-28)
+
+**Scope reviewed.** The working tree against the guide section "task-171:
+Restore the ja-JP `!!!` markers and guard them"
+(cv-1-implementation-guide.md:2947-3106 — the two-entry "Files touched" list at
+`:2949-2954`, the twenty-key Context measurement at `:2956-2969`, the three
+inline locked invariants at `:2971-2981`, the three resolved judgment calls at
+`:2983-2994`, Step 1's nineteen-key list at `:2998-3027`, Step 2's verbatim
+spec body at `:3029-3069`, the Step 3 verify block plus its bite-test
+instruction at `:3071-3086`, and the six-item acceptance checklist at
+`:3088-3106`), and task-171's five acceptance criteria in
+governance-drep-discovery-plan-tasks.json (`:1087-1091`). One file created, two
+modified in place, and nothing else. HEAD unchanged at `a3e352841` on branch
+`wt/cv-1-build`; `git status --short` → exactly three entries, two ` M` and one
+`??` directory. One review round. The main checkout `/workspaces/daedalus` was
+never read, edited or run against.
+
+**What landed.**
+
+- `source/renderer/app/i18n/locales/ja-JP.json` — `git diff --numstat` reports
+  exactly `19 19`. Verified by parsing HEAD and the working copy as ordered
+  JSON rather than by reading the hunks: 1599 keys before and 1599 after, key
+  ORDER byte-identical, exactly 19 values changed, and every one of the 19
+  satisfies `cur[k] === '!!!' + head[k]` — a pure prefix with nothing else in
+  the string touched. The set of keys whose HEAD value started `!!!` and whose
+  new value does not is EMPTY, so nothing was stripped anywhere in the file.
+  The 19 changed keys are the guide's 19 exactly (`:3004-3024`): the
+  seventeen `governance.drepDirectory.*` keys, `governance.tabs.directory`
+  (`:369`) and `sidebar.categoryTooltip.governance` (`:633`). File mode
+  `100755` preserved and no whitespace-only hunk, so the tool-managed catalog
+  was not reformatted.
+- `tests/jest/i18n/preliminaryCopyMarkers.spec.ts` (new, 26 lines, creating
+  `tests/jest/i18n/`) — compared against the guide's Step 2 fence rather than
+  read for gist: the fence was extracted programmatically from
+  cv-1-implementation-guide.md:3038-3062 and is BYTE-EQUAL to the file on
+  disk, including the four-line comment wording, the
+  `REVIEWED_JA_JP_EXCEPTIONS` constant name, the `describe('preliminary copy
+  markers')` string and the `it()` string. Path, directory placement alongside
+  `tests/jest/{api,governance,security}`, and the no-config-change assumption
+  all match `:2985-2988`; jest picks it up through `roots`
+  (`jest.config.js:129`) with no edit.
+- `source/renderer/app/components/governance/drep-directory/DRepDirectory.spec.tsx`
+  — 3 added / 3 removed, NOT in the guide's "Files touched" list and discussed
+  under candidate 3 below. Three exact-text ja-JP assertions gain the prefix:
+  `'!!!DRepディレクトリ'` (`:280`), `'!!!アクティブ'` (`:282`) and
+  `'!!!オンチェーン'` (`:283`). The neighbouring `getByText(/投票権/)` at `:281`
+  is a regex and was correctly left alone.
+- Nothing else. `en-US.json`, `defaultMessages.json` and
+  `translations/messages.json` are untouched on the delivered tree, which is
+  the half of AC-4 this row owns and the explicit inline invariant at guide
+  `:2978-2981`.
+
+**Review method (three lenses, adversarial refutation).** Three independent
+lenses were run over the diff: (1) guide and acceptance-criteria conformance —
+the Step 1 nineteen-key enumeration, the Step 2 byte comparison, and the five
+tracker criteria at `:1087-1091`; (2) locked invariants and the sanitization
+floor — whether any marker was stripped or mutated, whether a localized label
+can bleed into a status or identity comparison, and whether a stale hardcoded
+Japanese literal survives anywhere in the tree; (3) tests, docs and complexity
+— whether the guard bites or passes vacuously, whether the allow-list is padded,
+and whether any construct earns its place. Every candidate was then attacked on
+the reproduce / guide-authority / scope axes. **Three of the candidates raised
+were dropped on checking and are recorded below with the reason. Zero survived
+as a blocker, in one iteration**, and no file was changed as a result of the
+review.
+
+Per-lens decision. Guide/AC conformance — clean; Step 2 is character-for-
+character the guide's block and Step 1 is the guide's exact nineteen keys.
+Invariants and floor — clean; invariant 11 is strengthened rather than
+weakened, and the task-111 floor suite re-runs at 23 of 23. Tests and
+complexity — clean; the guard demonstrably bites and the allow-list is exact
+rather than padded.
+
+**Candidates adjudicated (three dropped, none survived as a blocker).**
+
+1. *Dropped — "`yarn i18n:manage` is not clean, so AC-4 fails" (verify pass
+   gate 4).* Reproduced exactly as the verifier measured: the run exits 0 but
+   WRITES, reporting 12 added keys, all `voting.governance.currentVote.*`, and
+   mutating four tracked files (`defaultMessages.json` +65,
+   `translations/messages.json` +65, `en-US.json` +12, `ja-JP.json` +12).
+   Dropped as a task-171 blocker for two independently checked reasons. First,
+   it is pre-existing: `git show HEAD:<path> | grep -c
+   voting.governance.currentVote` returns **0 for all four catalogs** at
+   `a3e352841`, while `git ls-tree -r --name-only HEAD` confirms
+   `source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.messages.ts`
+   IS committed there — so tasks 130-134 shipped the component without
+   regenerating the catalogs and the same 12 additions appear on a pristine
+   HEAD checkout. Second, those 12 keys are verbatim the NEXT row's stated
+   deliverable: item 12 of the guide's Implementation Order
+   (cv-1-implementation-guide.md:57-61, whose section body opens at `:2559`)
+   defines task-135 as "`yarn i18n:manage` extracts the component's message
+   definitions into both catalogs, keeping the leading `!!!`", and
+   task-171's own inline invariant (`:2978-2981`) FORBIDS this row from editing
+   the two generated catalogs. AC-4's first clause is therefore unsatisfiable at
+   this position by the guide's own construction — a spec self-contradiction,
+   not an implementation defect. Carried forward as an owed obligation below,
+   not held against the commit.
+2. *Dropped — "the new spec's `key in ja` filter silently skips the 12
+   `voting.governance.currentVote.*` keys, so invariant 11 is unguarded for
+   exactly the slice that introduced them" (verify pass, observations).* The
+   premise does not hold. Measured on the delivered tree: en-US and ja-JP are
+   perfectly key-symmetric — 1599 keys each, **0 en-only and 0 ja-only** — so
+   `key in ja` is currently a no-op and masks nothing. And the currentVote keys
+   are absent from **en-US as well**, so `Object.keys(en)` never yields them and
+   the `key in ja` clause is never reached; tightening that filter would catch
+   nothing. The real reason they are unguarded is candidate 1 — task-135 has not
+   run. The gap closes on its own, because the i18n runner seeds a missing key
+   into BOTH catalogs simultaneously (the verifier's own gate-4 measurement
+   shows `en-US.json +12` AND `ja-JP.json +12`), so the 12 land inside the
+   guard's domain the moment task-135 commits. Also covered by the guide's
+   explicit do-not-revisit at `:2993-2994`.
+3. *Dropped as a defect, recorded as a deviation — "the diff touches a third
+   file the guide's 'Files touched' list omits."* True and confirmed:
+   `DRepDirectory.spec.tsx` changed 3/3, and the guide's Step 3 even asserts
+   `git diff --stat  # ja-JP.json and the new spec only` (`:3077`). It is
+   nonetheless the smallest truthful change and the guide's own final
+   acceptance (`:3106`, the unfiltered jest run green) is unreachable without
+   it: the three assertions are exact-text `getByText` matchers that cannot
+   match once the marker is restored. The edit also matches the file's own
+   established local convention rather than inventing one — the same spec
+   already hardcodes `'!!!DRep Directory'` (`:169`), `'!!!Active'` (`:171`),
+   `'!!!Page 1 of 2'` (`:267`), `{ name: '!!!Previous' }` (`:269`) and
+   `'!!!Loading DRep data…'` (`:292`) for en-US. Guide oversight, not
+   implementer overreach; recorded here so the file list reconciles.
+4. *Refuted — "the guard could pass vacuously."* Checked directly: the
+   asymmetric guard fires only when the en-US value starts `!!!`, so any of the
+   19 lacking the en-US marker would be silently unprotected. All nineteen
+   carry `!!!` in en-US. Reach is real rather than token: 129 en-US keys
+   currently start with `!!!`, 84 of them under `governance.*`. The guard was
+   additionally proved to bite two ways — the verify pass stripped the marker
+   from `governance.drepDirectory.title` with Edit and the focused spec exited
+   1 naming that exact key, then returned to green and to `19 19` on restore;
+   this review re-derived the same result non-destructively by running the
+   spec's predicate over both catalogs in memory (`[]` as delivered,
+   `['governance.drepDirectory.title']` with the marker removed from a copy).
+5. *Refuted — "the allow-list whitewashes a governance key."* The predicate was
+   re-run with the allow-list removed entirely and returns exactly one key,
+   `wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement`,
+   whose en-US value is literally `!!!ヶ月,か月` against a ja-JP `ヶ月,か月` — the
+   pre-existing month-unit oddity the guide names as the twentieth key
+   (`:2963-2969`). Exact, not padded, and not governance.
+6. *Refuted — "a stale hardcoded Japanese literal survives elsewhere in the
+   tree."* Every one of the 19 pre-change values was grepped fixed-string
+   across `source/`, `storybook/`, `tests/` and `translations/`. Four files
+   outside the catalogs matched and all four are coincidental substring hits on
+   generic vocabulary, not consumers of these message ids:
+   `source/main/locales/ja-JP.json` (`コピー`, the main-process Edit menu),
+   `source/renderer/app/config/newsfeed-files/news-automatic-update.dummy.json`
+   (`更新`, `ガバナンス`) and
+   `source/renderer/app/i18n/locales/terms-of-use/ja-JP.md` (`更新`).
+   `DRepDirectory.spec.tsx` is the only real consumer and it is already fixed
+   in this diff. No `.feature` file, no story and no runtime module hardcodes
+   any of them.
+7. *Refuted — "a prefixed label could perturb filter or identity semantics."*
+   `DRepDirectoryFilters.tsx:148-153` gives the status `<option>` elements
+   hardcoded literal values (`'all'` / `'active'` / `'inactive'`) with
+   `intl.formatMessage` supplying only the child text, so
+   `status.active`/`status.inactive` cannot reach a comparison.
+   `governance.drepDirectory.copyId` is a button label;
+   `_shared/DRepIdDisplay.tsx:58` copies `drepId` itself and its two
+   `logger.warn` payloads (`:52`, `:62`) carry only `drepIdLength` / `error`.
+   Invariants 10 and 14 are untouched.
+8. *Nit, not actionable — the spec's comment is four lines against the
+   convention's "1-3 plain lines"* (preliminaryCopyMarkers.spec.ts:4-7). It
+   states the invariant and the why, carries no task id, review label, ALL-CAPS
+   marker or change history, and is guide-verbatim. Left as is.
+9. *Recorded, not a defect — the guard is one-directional.* By design
+   (`:2989-2992`) it never fires for a key minted with NO `!!!` in en-US at all,
+   a case invariant 11 also binds. Risk is low today because en-US markers are
+   generated from each component's source `defaultMessage` and all 12
+   `CurrentVoteSummary` defaults carry the marker. Noted so cv-2 and anchor-2
+   authors know the direction the guard does not cover. The opposite asymmetry
+   — 11 pre-existing non-governance keys marked in ja-JP but not en-US, e.g.
+   `staking.stakePools.tableHeader.roi` — is the benign one and is ignored on
+   purpose.
+10. *Not re-litigated — the guide's "all 82 suites stay green" (`:3072`,
+    `:3106`).* Known-stale; the measured baseline is 85 at HEAD and 86 with
+    this slice's new suite. Doc hygiene for whoever closes cv-1, not a finding
+    against this diff.
+
+**Ordering note.** The guide's "Implementation Order" section
+(cv-1-implementation-guide.md:18-61) lists task-170 at item 10 (`:49-52`),
+task-171 at item 11 (`:53-56`) and task-135 at item 12 (`:57-61`) — 170 → 171 →
+135.
+The orchestration ran 171 → 135 → 170. Both are valid topological orders of the
+same graph: in governance-drep-discovery-plan-tasks.json task-171's
+`dependencies` is `[]`, task-135's is `["task-132", "task-171"]`, and
+task-170's is `["task-130", "task-109"]` — task-170 is independent of both
+others, so it may sit anywhere after task-130. The orchestrator's rule
+(dependency order first, then the tracker's own JSON listing order, which runs
+task-134, task-171, task-135, task-170) plus research finding F-19
+(research/cv-1-findings.md:652 — task-133's AC-1 stays unsatisfiable until
+task-135 seeds the catalogs) yields 171 → 135 → 170, and it puts the
+timing-critical guard first: task-171 is the only thing that stops task-135 from
+minting twelve fresh governance strings into ja-JP unmarked, which the guide
+itself argues at `:2967-2969` ("A guard landing after the mints protects
+nothing") and at item 11 of its own ordering. This is a recorded deviation from
+the guide's ordering, not a conflict, and it changes nothing in any task's
+content.
+
+**Acceptance criteria.** Four of the tracker's five criteria (`:1087-1091`) are
+fully met; the fifth is met in the half this row owns and is unsatisfiable in
+the other half by the guide's own ordering.
+
+AC-1 "all nineteen feature-introduced keys carry the leading `!!!`" (`:1087`) —
+met and machine-verified: 19 changed values, all pure prefixes, the changed-key
+set identical to the guide's list. AC-2 "a Jest guard asserts … with a
+documented allow-list containing only the one pre-existing non-feature
+exception" (`:1088`) — met; the guard is byte-equal to the guide's block and the
+allow-list was proved exact under candidate 5. AC-3 "the guard demonstrably
+fails when a newly marked en-US key has an unmarked ja-JP counterpart"
+(`:1089`) — met, and it is the one criterion that could not have been inferred
+from reading: the verify pass's five-step bite test made the focused spec exit 1
+and print `Received Array [ "governance.drepDirectory.title" ]` against
+`Expected Array []`, then returned it to green and the numstat to exactly
+`19 19`, all via Edit with `git restore` never used on ja-JP.json. AC-4 "`yarn
+i18n:manage` runs clean and `defaultMessages.json` / `translations/messages.json`
+are unchanged by the restoration" (`:1090`) — the second clause is met and
+measured (`git diff --stat` on both files is EMPTY on the delivered tree); the
+first clause is NOT met and cannot be at this row, per candidate 1. AC-5 "the
+task restores markers only and never strips one" (`:1091`) — met and
+machine-verified: the set of keys that lost a marker is empty, and no en-US
+value was touched at all.
+
+The guide's own sixth acceptance box ("`tsc` clean; the UNFILTERED jest run is
+green", `:3106`) holds on both counts.
+
+**Comment convention.** One comment in the change set, the four-line block at
+preliminaryCopyMarkers.spec.ts:4-7. `grep -nE 'task-[0-9]|CAT-|CP-|ADR|DD-'`
+over the created file returns nothing; no ALL-CAPS emphasis, no change history.
+See candidate 8 for the line-count nit.
+
+**No unnecessary complexity.** 26 authored lines plus 19 catalog value edits and
+3 consequential assertion updates. No helper, no abstraction, no option, no
+jest config change, no new fixture, and no second guard. The scope fence is
+clean in both directions: no runtime module, no IPC contract, no type, no
+logging/analytics/electron-store path and no story is touched, and none of
+task-135's or task-170's files were created.
+
+**Verification commands run (results as observed).** Gates 1-10 are as measured
+by the dedicated verify pass. This review independently re-ran the unfiltered
+jest gate and re-derived the catalog measurements on disk; every other command
+it ran was read-only.
+
+1. `yarn compile` → exit 0, `tsc --noEmit` clean, `Done in 25.22s` (verify
+   pass). The Node v24 fallback was again not needed.
+2. `yarn lint` → exit 0 at exactly 5591 warnings, 0 errors — zero delta against
+   the 5591 baseline, `Done in 45.97s` (verify pass). Note lint does not cover
+   `tests/`, so the new spec is gated by `tsc` alone, and `tsc` is green.
+3. `node_modules/.bin/jest tests/jest/i18n/preliminaryCopyMarkers.spec.ts
+   --runInBand` → 1 suite / 1 test passed, exit 0.
+4. `yarn i18n:manage` → exit 0 but NOT clean: 12 added keys, 0 deleted, four
+   tracked files mutated. This is the one red gate; see candidate 1. The verify
+   pass reverted the mutation surgically (`git restore` on the three files that
+   were clean at HEAD, plus an Edit removing only the 12 inserted lines from
+   ja-JP.json, since restoring that file would have destroyed the 19
+   restorations) and re-confirmed the tree.
+5. `git diff --stat -- source/renderer/app/i18n/locales/defaultMessages.json
+   translations/messages.json` → EMPTY on the delivered tree.
+6. `node_modules/.bin/prettier --check
+   tests/jest/i18n/preliminaryCopyMarkers.spec.ts` → "All matched files use
+   Prettier code style!", exit 0. Explicit path only; `yarn prettier` was never
+   invoked, per the standing ~240-file drift hazard, and no pre-existing file —
+   least of all a locale catalog — was passed to prettier.
+7. `git diff --numstat -- source/renderer/app/i18n/locales/ja-JP.json` → exactly
+   `19 19`.
+8. Whole tree, no path argument, `node_modules/.bin/jest --runInBand` →
+   **re-run by this review**: "Test Suites: 1 skipped, 85 passed, 85 of 86
+   total" / "Tests: 12 skipped, 1060 passed, 1072 total" / "Snapshots: 6
+   passed, 6 total", exit 0 in 31.06 s. Against the measured 85 suites / 1071
+   tests / 6 snapshots baseline at `a3e352841` that is exactly +1 suite and +1
+   test, with the skip counts unchanged. (The guide's "82 suites" is stale; see
+   candidate 10.)
+9. `node_modules/.bin/jest tests/jest/security/governance-sanitization.spec.ts
+   … --runInBand` → 23 of 23, the task-111 floor re-asserted exactly. The new
+   guard is not itself a leak surface: `expect(unmarked).toEqual([])` prints
+   KEY NAMES only, never catalog values, and none of the 19 changed values
+   contains a DRep id, a bech32 string or an `abstain`/`no_confidence` literal.
+10. `git status --short` → exactly three entries: ` M DRepDirectory.spec.tsx`,
+    ` M ja-JP.json`, `?? tests/jest/i18n/`. Nothing staged, nothing committed,
+    the tracker JSON untouched, and `/workspaces/daedalus` re-confirmed clean at
+    `a3e352841`.
+
+**Owed obligations (not faked).**
+
+- **AC-4's first clause, owed at cv-1 close.** `yarn i18n:manage` will stay
+  dirty until task-135 runs it and commits the 12
+  `voting.governance.currentVote.*` keys across all four catalogs. Owner is
+  whoever closes cv-1 if task-135 somehow does not absorb it. Immediately after
+  that commit the task-171 guard should be re-run, because the freshly
+  generated ja-JP values are English placeholders whose `!!!` must survive —
+  which is precisely the canary this row exists to be.
+- **Guide drift, recorded not fixed** (cv-1 planning is closed and this task's
+  mandate is its own diff): the "Files touched" list at `:2949-2954` omits
+  `DRepDirectory.spec.tsx`; the Step 3 comment at `:3077` claims "ja-JP.json
+  and the new spec only"; the Step 3 gate at `:3075` and the acceptance bullet
+  at `:3101-3103` state an `i18n:manage`-clean condition that this row's own
+  ordering makes unreachable; and `:3072` / `:3106` still say 82 suites where
+  the measured figure is 86.
+- **F-5 — `nix fmt` cannot run in this devcontainer**; explicit-path
+  `node_modules/.bin/prettier --check` on the single created file was the
+  substitute and the `nix fmt` pass remains an owed pre-merge obligation.
+- **Human visual/locale pass in the running app** — no browser here. The
+  release-end manual review that CLEARS these markers stays user-owned per
+  invariant 11 and README.md:16, `:18`, and nothing in this row anticipates it.
+- `yarn check:all` and `yarn storybook:build` were NOT run; both are red at HEAD
+  for the unrelated storybook manager-side JSX loader reason (F-20) and are not
+  valid gates.
+- The tracker row for task-171 is still `"status": "pending"`
+  (governance-drep-discovery-plan-tasks.json:1080) and needs flipping at commit
+  time. This review did not touch the tracker.
+
+**Blockers.** None.
+
+Decision: approved

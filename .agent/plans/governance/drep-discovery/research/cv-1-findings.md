@@ -990,3 +990,78 @@ unfiltered tree is 82 suites, `tests/jest` selects 7 of them") is a dated
 HEAD-of-cv-1 measurement and may stand as history; and leave `:1376` (task-131)
 and `:1800` (task-132) alone as the historical record of completed rows, per
 F-13's precedent for the filtered-recipe lines.
+
+## F-24 — `yarn i18n:manage` is already dirty at HEAD (twelve `voting.governance.currentVote.*` additions), so it is not a usable gate before task-135; reverting it is asymmetric; and the restored ja-JP `!!!` markers are now pinned by exact-text matchers, which turns the release-end strip into a code change
+
+**The gate is dirty on a pristine checkout, so a row that runs it cannot pass
+it.** Measured during task-171's verification: `yarn i18n:manage` exits 0 but
+reports twelve "Added keys", every one of them
+`voting.governance.currentVote.*`, and it *writes* four tracked files —
+`source/renderer/app/i18n/locales/defaultMessages.json` +65,
+`translations/messages.json` +65, `en-US.json` +12, `ja-JP.json` +12, zero
+deletions. Proved at HEAD rather than inferred:
+`git show HEAD:<path> | grep -c voting.governance.currentVote` returns `0` for
+all four catalogs at `a3e352841`, while `CurrentVoteSummary.messages.ts` **is**
+committed there (task-132). Tasks 130-134 shipped the component without ever
+regenerating the catalogs, so the same twelve additions appear on a clean HEAD
+checkout with no working-tree changes at all. This is the same hole F-19
+observes from the other end — react-intl's missing-message `console.error`
+firing in en-US as well as ja-JP — seen here as tool output instead of console
+noise. It is inherited debt and it is verbatim task-135's deliverable.
+
+The immediate casualty was task-171's AC-4. Its first clause
+("`yarn i18n:manage` runs clean", tracker AC-4 and
+`cv-1-implementation-guide.md:3101-3103`) is unsatisfiable at that position *by
+the guide's own construction*, because the same row's inline invariant at
+`:2979-2981` forbids it from editing the generated catalogs. It is recorded as
+deferred to task-135, not as passed. Its second clause — `defaultMessages.json`
+and `translations/messages.json` byte-unchanged by the restoration — was
+measured green (`git diff --stat` over both paths empty on the delivered tree).
+
+**Reverting the runner is not symmetric, and the obvious revert destroys
+work.** `git restore` is safe on `defaultMessages.json`, `en-US.json` and
+`translations/messages.json`, which are clean at HEAD. It is destructive on
+`ja-JP.json` for any slice whose own edits live in that file: task-171's
+verifier had to strip the twelve inserted lines with a targeted edit instead,
+because restoring the file would have wiped the nineteen marker restorations.
+Any later row that runs `i18n:manage` while holding uncommitted locale edits
+inherits the hazard.
+
+**The markers are now load-bearing in tests, in two places.**
+`DRepDirectory.spec.tsx`'s ja-JP locale case asserts three exact-text
+`getByText` matchers against catalog values, so restoring the markers forced
+them to `'!!!DRepディレクトリ'`, `'!!!アクティブ'` and `'!!!オンチェーン'` —
+the third file in task-171's diff, absent from the guide's two-entry "Files
+touched" list at `:2949-2955`. Task-134's four committed `CurrentVoteSummary`
+snapshots bake the `!!!`-marked English fallback in verbatim for the same
+reason. The consequence is that the release-end `!!!` review (`README.md:16`,
+`:18`) is no longer a copy-only operation: stripping a marker from any of the
+nineteen ja-JP values or the twelve `currentVote` values breaks a spec or a
+snapshot and has to be done as a code change with the test updates in the same
+commit.
+
+**Resolution:** treat `yarn i18n:manage` as clean-able only from task-135
+onward. Before that point a row that would run it should assert the narrower
+measurable it can actually satisfy — the generated catalogs byte-unchanged —
+and record the wider clause as deferred rather than reporting a red gate as a
+defect of the row that tripped it. Immediately after task-135 regenerates the
+catalogs, re-run `tests/jest/i18n/preliminaryCopyMarkers.spec.ts`: the freshly
+generated ja-JP values are English placeholders copied from each
+`defaultMessage`, so they arrive already carrying `!!!`, and the seeding must
+leave those markers standing rather than normalise them away. That re-run is
+the first real exercise of the guard against a live mint, which is the whole
+reason F-14 placed task-171 ahead of task-135.
+
+**Tasked:** the `i18n:manage` clause is task-135's, whose dependency on
+task-171 is already recorded in the tracker; the guard re-run belongs to the
+same row. The spec-and-snapshot coupling has no owner and needs no row while
+the markers are in place — it is a note for whoever runs the release-end
+review. One correction to F-23's unowned guide touch-up list while it is still
+open: the three "all 82 suites stay green" anchors it cites have each shifted
+by four lines since it was written (task-134's guide reconciliation in
+`a3e352841`), and now read `cv-1-implementation-guide.md:2917` (task-170),
+`:3081` (task-171) and `:3118` (Cross-Cutting), with the acceptance-bullet
+variants at `:2943`, `:3106` and `:1411`. Two further task-171 lines join that
+list: the two-entry "Files touched" block at `:2949-2955`, which three files
+now contradict, and the Step 3 comment at `:3077` claiming the diff is
+"ja-JP.json and the new spec only".
