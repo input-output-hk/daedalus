@@ -1324,6 +1324,87 @@ branch predicate); task-147 and any later component spec that asserts through
 
 ---
 
+## F-22 — task-141's pin makes the guide's own Step 1 premise grep self-hitting, and it is the third `describe` to land after the HW block, so task-147's "at the end, after the HW describe" placement instruction now names two different places; sweep basis moves to 295/307
+
+**The premise check inverts after the edit.** task-141 Step 1
+(`cv-2-implementation-guide.md:3561-3568`) says to run
+`grep -nE "previousVote|newVote|previousDRepId|historicalVote" source/renderer/app storybook -r`
+and, if it prints anything, "stop and report — the row's premise has changed." Run
+before the edit it was silent, which is what licensed the row. Run after the edit it
+returns exactly one line,
+`source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx:673`, which is
+the negative assertion's own forbidden-key list. The hit is the pin naming what it
+forbids, not a leak: the terms appear inside
+`['previousVote', 'newVote', 'previousDRepId', 'currentVote'].forEach(…)`, an array
+of string literals handed to `expect(props).not.toHaveProperty(key)`. Two details a
+re-runner needs. First, the fourth literal in the code is `currentVote`, **not** the
+`historicalVote` the Step 1 pattern lists — `historicalVote` appears in no source
+file at all (a repo-wide grep outside `.agent/` exits 1), so the grep's fourth
+alternative is and stays unmatched. Second, the
+correct post-task-141 form of the premise check is the same grep with the spec file
+excluded, or `grep` over the production tree only; `VotingGovernancePage.tsx` and
+every other production file remain silent.
+
+**The placement instruction task-147 inherits no longer resolves.** task-147 Step 2
+(`cv-2-implementation-guide.md:5188`) says: "Add at the **end** of
+`VotingGovernancePage.spec.tsx`, after the HW describe's closing `});`". Those were
+the same location when the guide was written. They are not now. The file's top-level
+blocks at this commit are `DRep selection handoff via location.state` (`:251`),
+`Hardware-wallet delegate flow via location.state handoff` (`:390`), `Delegation form
+pre-fill from the selected wallet` (`:479`, task-138), `Confirmation dialog identity
+derivation` (`:599`, task-173) and `Confirmation dialog prop contract` (`:637`,
+task-141). Three describes now sit between the HW block and the end of the file, so
+"after the HW describe" would insert at `:479` and split the later blocks apart.
+**Append at the end of the file** is the instruction that survives; the HW clause is
+a stale synonym and must be ignored. The same reading applies to task-148 if it
+appends to this file.
+
+**A guide `path:line` anchor drifted from work inside this slice.** F-6 concluded
+that the corpus's prose anchors had drifted while its `path:line` anchors had not,
+and F-19 narrowed the exception to the tracker JSON. This row adds a second, different
+exception: task-141's Context cites `VotingGovernancePage.tsx:85-111` for the ten-prop
+JSX (`:3534`) and Step 2's preamble cites `:85-111` again (`:3344`), but the live span
+is `:89-114` — `chosenOption` at `:90` through `selectedWallet` at `:114`. The four-line
+shift is task-173's own doing (the `normalizeDRepIdentity` import plus the retained
+sentinel guard), i.e. a guide anchor invalidated by an earlier row of the same slice,
+not by pre-slice drift. The prop list itself is unchanged, so the anchor is stale and
+not wrong. `VotingPowerDelegationConfirmationDialogProps` at
+`VotingPowerDelegationConfirmationDialog.tsx:54-70` is still exact: those ten props
+plus `intl`, which `injectIntl` supplies.
+
+**Sweep basis.** Measured in this recording pass,
+`jest --testPathPattern="(governance|voting)" --no-coverage --runInBand`:
+
+| | suites | tests | snapshots |
+| --- | --- | --- | --- |
+| F-20 basis as moved by task-173 | 18 passed + 1 skipped of 19 | 293 passed + 12 skipped of 305 | 9 |
+| live (task-141 close) | **18 passed + 1 skipped of 19** | **295 passed + 12 skipped of 307** | **9** |
+| delta | +0 | +2 | +0 |
+
+The whole delta is this row's two cases; no suite was added and no snapshot written.
+
+**Resolution.** From task-142 onward the slice-wide sweep basis is **295 / 12 / 307
+with 9 snapshots**, superseding F-20's 291 / 303 and task-173's 293 / 305. F-16's
+reading rule still governs every guide parenthetical. Step 1's grep for this row is
+**spent** — it must not be re-run as a gate after the edit without excluding the spec
+file. F-6's and F-19's Owner lines are **not** rewritten; this finding is the next link
+in that chain, and amending an earlier link would destroy the trail.
+
+**Disposition.** Record-only for the anchor and basis items. The task-147 placement
+ambiguity is **open and blocking on task-147's Step 2**: it must append at the end of
+the file, not after the HW describe. One forward note, out of task-141's row by AC-1's
+own scope and deliberately not widened here: the pin covers the dialog's **prop set**
+only, so a future history feature that reached the dialog through
+`selectedWallet.currentVote` rather than through a new prop would not trip it. That
+surface belongs to task-142 (dialog layout) and task-175 (dialog identity block).
+
+**Owner.** task-141 (recorded); task-147 and task-148 (append at end of file, ignore
+the HW clause; inherit the corrected Step 1 grep form); task-142 onward (sweep basis);
+the Planner at slice close (basis re-measure, and the guide anchor `:85-111` → `:89-114`
+if the guide is ever reconciled).
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)

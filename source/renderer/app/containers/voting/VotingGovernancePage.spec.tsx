@@ -633,3 +633,47 @@ describe('Confirmation dialog identity derivation', () => {
     );
   });
 });
+
+describe('Confirmation dialog prop contract', () => {
+  const EXPECTED_DIALOG_PROPS = [
+    'chosenOption',
+    'drepIdentity',
+    'fees',
+    'hwDeviceStatus',
+    'isTrezor',
+    'onClose',
+    'onExternalLinkClick',
+    'onSubmit',
+    'redirectToWallet',
+    'selectedWallet',
+  ];
+
+  beforeEach(() => {
+    mockDialogProps.length = 0;
+  });
+
+  afterEach(() => {
+    cleanup();
+    jest.restoreAllMocks();
+  });
+
+  it('hands the dialog exactly the current-target prop set', async () => {
+    await openConfirmation(VALID_DREP_ID);
+
+    const props = mockDialogProps[mockDialogProps.length - 1];
+    expect(Object.keys(props).sort()).toEqual(
+      [...EXPECTED_DIALOG_PROPS].sort()
+    );
+  });
+
+  it('passes no historical vote-target prop', async () => {
+    await openConfirmation(VALID_DREP_ID);
+
+    const props = mockDialogProps[mockDialogProps.length - 1];
+    ['previousVote', 'newVote', 'previousDRepId', 'currentVote'].forEach(
+      (key) => {
+        expect(props).not.toHaveProperty(key);
+      }
+    );
+  });
+});

@@ -3286,3 +3286,163 @@ row by content, never by the guide's pre-slice line numbers (F-19), and never ru
 prettier on the tracker JSON. One item travels forward as a note, not a debt: the
 legacy 28-byte `drep1…` id renders without its raw string until task-175's
 `isSentinelVote` predicate lands.
+
+---
+
+## Code Review: 2026-07-28 — task-141 round 1
+
+**Scope reviewed.** The uncommitted working tree for task-141, against its guide
+section `cv-2-implementation-guide.md:3521-3639` (Files-touched at `:3523-3527`,
+Context at `:3529-3545`, the single locked invariant at `:3547-3551`, the two
+resolved judgment calls at `:3553-3559`, Steps 1-3 at `:3561`, `:3570`, `:3620`, and
+the acceptance record at `:3631-3637`), the task-141 tracker row
+(`governance-drep-discovery-plan-tasks.json:1344-1360`, still `"status": "pending"`),
+and the PRD's row charter at `cv-2-PRD.md:156` plus its acceptance restatement at
+`:237-240`. HEAD is `2842d6fe9` (task-173 committed). Three independent lenses ran —
+correctness against the guide, locked invariants and the sanitization floor, and
+tests plus simplicity and drift — and **all three returned `approved` with zero
+blockers**. As in the task-173 round, that was not accepted on report: the byte
+comparison against the guide snippet, the prop-set derivation, the non-vacuity
+argument and both jest patterns were re-derived first-hand here. The main checkout
+`/workspaces/daedalus` was never read, edited or run against, and this round fixed
+no code.
+
+**What landed.** `git status --porcelain` → exactly one line,
+` M source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx`; nothing
+staged, nothing untracked. `git diff --stat` → `1 file changed, 44 insertions(+)`,
+**zero deletions**, so every pre-existing case in the file is provably untouched.
+`git diff --stat -- source/renderer/app/containers/voting/VotingGovernancePage.tsx`
+prints nothing, which Step 3 (`:3629`) explicitly requires of this verification row.
+The appended block is `describe('Confirmation dialog prop contract', …)` at
+spec `:637-679`, preceded by the separating blank line at `:636`. It is
+**byte-identical to the guide's Step 2 snippet**: `diff` of guide `:3575-3617`
+against spec `:637-679` returns nothing, 43 lines each.
+
+### Blockers
+
+**None.** No survivor at any severity. All three lenses filed zero, and
+adjudication promoted nothing they left unfiled.
+
+### Independent re-checks of the code deliverable (nothing new found)
+
+Re-derived here, not inherited. **The ten-key pin matches production one-for-one**:
+`VotingGovernancePage.tsx:89-114` renders `<VotingPowerDelegationConfirmationDialog>`
+with exactly `chosenOption` (`:90`), `drepIdentity` (`:91`), `fees` (`:92`),
+`hwDeviceStatus` (`:93`), `isTrezor` (`:94`), `onClose` (`:97`),
+`onExternalLinkClick` (`:98`), `onSubmit` (`:99`), `redirectToWallet` (`:106`) and
+`selectedWallet` (`:114`) — ten props, no more — and
+`VotingPowerDelegationConfirmationDialogProps` at
+`VotingPowerDelegationConfirmationDialog.tsx:54-70` declares those ten plus `intl`,
+which `injectIntl` supplies rather than the container, and **no** historical field.
+That is AC-1's first half, satisfied in full rather than in part. **Neither case is
+vacuous**: `openConfirmation` (spec `:235-249`) ends with
+`await screen.findByText('Confirm Transaction')`, so it throws rather than silently
+no-oping if the dialog never mounts; `mockDialogProps` is therefore guaranteed
+non-empty after the `beforeEach` reset at `:652`, and had it been empty
+`Object.keys(undefined)` would throw rather than pass. Exact-set `toEqual` against a
+ten-element array fails on any added, renamed or dropped prop, so the pin is
+genuinely fail-on-addition rather than tautological, and `[...EXPECTED_DIALOG_PROPS]`
+copies before the mutating `.sort()`, leaving the module-level array intact for the
+second case. **No historical prop exists to remove**: Step 1's premise re-verified
+live — `grep -rnE "previousVote|newVote|previousDRepId|historicalVote"
+source/renderer/app storybook` returns exactly one hit, spec `:673`, the pin's own
+forbidden-key list; zero production occurrences. **The sanitization floor is
+untouched**: the same `grep -nE "logger|Logger|analytics|electron-store|localStorage|console\."`
+over the container, its spec and the consuming dialog exits 1; the `VALID_DREP_ID`
+in the diff never leaves a Jest assertion, so the wire-keyed `filterLogData` gap is
+not exercised, and no i18n string, cohort/badge/status rule, BigNumber path or IPC
+channel is touched. **No second delegation backend** (inv 4): the pin introduces no
+`GovernanceStore` read and its exact-set equality makes any future store-backed
+comparison prop a test failure by construction. **Byte-equality (inv 10) still
+proven**: task-173's `:passes a null identity … still submits it byte-for-byte` and
+both flow cases named by AC-2 pass unchanged in the same run. **Comment convention
+clean**: the appended block contains **zero** comment lines, and both `it` names are
+behavioural — no task id, CAT/CP label, plan name, PR number or ALL-CAPS emphasis.
+**The pin will not go stale inside cv-2**: `grep -n "VotingGovernancePage.tsx"` over
+the guide beyond `:3900` exits 1, and task-175's Files-touched list (`:3807-3814`)
+covers only the dialog `.messages.ts` / `.tsx` / `.spec.tsx` trio, never the
+container, so nothing later in this slice alters the prop set the pin fixes.
+
+### Merged and dropped
+
+1. *Merged — three separate statements of "byte-for-byte the guide's Step 2 block".*
+   All three lenses asserted it; the strongest evidence is kept and strengthened by
+   re-running the comparison as a real `diff` here (guide `:3575-3617` vs spec
+   `:637-679`, 43 lines each, zero differences) rather than by reading.
+2. *Merged — three statements that the ten-key list matches production.* Kept with
+   the per-prop line anchors above; the lenses cited the JSX span variously as
+   `:88-113` and `:88-114`, and the guide's Context line cites `:85-111`. The true
+   span at this commit is `:89-114`. **Note, not a defect**: those are pre-slice /
+   pre-task-173 numbers drifting under committed edits, exactly the hazard F-19
+   records. Anchor by content in any later round.
+3. *Not promoted — "the second `it` is strictly implied by the first".* One lens
+   raised it and deliberately did not file it; adjudication agrees. An exact key-set
+   equality does already forbid the four keys, but AC-1 (`:3633-3634`) demands "the
+   ten-key pin **plus** the four negative-key assertions", and the block is a verbatim
+   guide snippet. Deleting the redundancy would deviate from the contract for no
+   test-power gain.
+4. *Not promoted — "the pin constrains only top-level dialog props, so it would not
+   catch the dialog reading history off `selectedWallet.currentVote`".* Correct as an
+   observation — that shape exists (spec `:105-113`) — but out of row: AC-1 scopes
+   this task to the **prop set**, and widening the pin into the wallet payload would
+   exceed the row and pre-empt task-142/task-175. Recorded as a forward note, not a
+   defect.
+5. *Not promoted — the duplicated `beforeEach`/`afterEach` pair across the two
+   adjacent `describe`s (spec `:605-612` and `:651-658`).* Hoisting them would rewrite
+   task-173's `describe`, which resolved judgment call 1 (`:3555-3557`) forbids
+   outright; the duplication is the contract's choice, not drift.
+6. *Not promoted — Step 1's grep no longer prints nothing.* After the edit it prints
+   spec `:673`. That is the pin naming what it forbids, not a leak; anyone re-running
+   the Step 1 command as a premise check post-edit must expect the one self-hit.
+7. *Not promoted — `[React Intl] Missing message: voting.governance.currentVote.status.unavailable`
+   on stderr during the spec run, from `CurrentVoteSummary.tsx:114`.* Pre-existing
+   and unrelated inside a fully green suite; catalog seeding is task-146's single
+   responsibility. Same disposition as the task-139, task-140 and task-173 rounds.
+8. *Not promoted — `yarn lint` at 5595 warnings against a "roughly 5591" baseline.*
+   Attributed by the gate against the HEAD blob of the one changed file via
+   `eslint --stdin --stdin-filename`: **9 problems (0 errors, 9 warnings) before and
+   the identical 9 after**, all at `:37-227`, far above the appended block at
+   `:637-679`. This task's delta is +0 warnings, +0 errors; the residual belongs to
+   the seven wave tasks already at HEAD. Warnings are not failures.
+9. *Note, not a debt of this task.* `GovernanceCliArgvSmoke.spec.ts` still self-skips
+   (no `cardano-cli` in this devcontainer) and the React legacy-lifecycle warnings
+   still print across renderer suites — both reproduced unchanged from baseline.
+
+**Gate result and its attribution.** The supplied gate reports **PASS with zero
+failures**, and its load-bearing measurements were re-run in this worktree rather
+than inherited: `node_modules/.bin/tsc --noEmit` exit 0;
+`jest --testPathPattern=VotingGovernancePage --no-coverage --runInBand` → 1 suite /
+**18 of 18** tests / 0 snapshots, exit 0, with both new cases green — "hands the
+dialog exactly the current-target prop set" and "passes no historical vote-target
+prop" — and AC-2's named backward-compatibility cases passing unedited in the same
+run: "propagates the selected DRep ID byte-for-byte: row select → confirmation →
+`delegateVotes` payload" plus all three under "Hardware-wallet delegate flow via
+location.state handoff". The wave pattern `"(governance|voting)"` → **18 passed + 1
+skipped of 19 suites, 295 passed + 12 skipped of 307 tests, 9 snapshots**, against
+the task-173 close basis of 293 / 12 / 305 — a delta of exactly the two cases added
+here, with the skip and snapshot counts unmoved and no `FAIL` line anywhere. Prettier
+was run **read-only**: `--check` on the one changed pre-existing file →
+"All matched files use Prettier code style!", exit 0, so the hand-appended block did
+not turn a green file red; no `--write` touched any file and the three
+baseline-red files were not opened. `typed-scss-modules` was correctly skipped (no
+`.scss` in the change set) and `yarn i18n:manage` correctly never invoked (no i18n
+path in `git diff --name-only`), so no catalog needed restoring; no `git stash`
+anywhere, and `yarn check:all` / `yarn storybook:build` were deliberately not run —
+both are red at HEAD for the unrelated manager-webpack JSX loader reason and neither
+is a valid gate. `nix` is absent, so `nix fmt` stays an owed pre-merge obligation and
+prettier-on-explicit-paths is the recorded substitute (F-12). This round moved
+neither HEAD nor the change set; no file was edited except this log.
+
+**Decision: approved** — zero blockers, zero majors, zero minors. task-141 closes
+with one subject-only commit,
+`test(gov): task-141 pin the confirmation dialog to current-target props`, carrying
+the single modified spec file, this log and the tracker row. The scribe pass owes
+that row (json `:1344-1360`) two things: both acceptance criteria recorded as
+satisfied **in full** — AC-1 by the ten-key pin plus the four negative assertions,
+AC-2 by the pre-existing software and hardware flow cases passing unchanged — and
+the `nix fmt` unavailability with prettier-on-explicit-paths substituted. Edit that
+row by content, never by the PRD's pre-slice `json :1287-1303` citation (F-19), and
+never run prettier on the tracker JSON. One item travels forward as a note, not a
+debt: the pin fixes the **top-level** prop set only, so a later slice that
+legitimately adds a dialog prop must update `EXPECTED_DIALOG_PROPS` deliberately —
+that failure is the pin working, not a regression.
