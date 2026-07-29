@@ -1,0 +1,159 @@
+# anchor-1 — Research findings
+
+> Durable findings from the anchor-1 slice. Facts only; every `path:line` below was
+> opened in the anchor-1 worktree at base `33c02840a` (branch `feat/drep-discovery`)
+> and verified there. Each finding carries **Resolution.** (what is true and what the
+> slice does about it), **Disposition.** (fixed now / rides with task-NNN / raised to
+> the user / record-only) and **Owner.** (who discharges it).
+
+---
+
+## F-1 (task-152) — The scheme audit that justified the HTTPS-only allow-list reaches only source-literal URL producers, so two runtime-sourced classes of URL sit outside it and now fail silently
+
+The guide's Step 1 audit is three greps over `source/`
+(`.agent/plans/governance/drep-discovery/task-plans/anchor-1-implementation-guide.md:536-539`),
+so its reach is URLs written as literals in the tree — not URLs that arrive as data
+at runtime. Within that reach the conclusion holds and was independently re-checked:
+the remaining `http://` literals under `source/` are not `openExternal` producers
+(local token-metadata servers, the dev-server `loadURL`, a synthetic analytics URL,
+story fixture data, and one cosmetic `label` in `About.tsx` whose `onClick` passes
+the `https://` form). Two classes are invisible to those greps, and after this
+change an `http:` value in either is rejected with no user-visible error:
+
+1. **Stake-pool homepage.** `source/renderer/app/components/staking/widgets/TooltipPool.tsx:512`
+   is `onClick={() => onOpenExternalLink(homepage)}`, and `homepage` is
+   operator-registered pool metadata with no scheme constraint anywhere on the path.
+2. **Newsfeed action URLs.** `source/renderer/app/stores/NewsFeedStore.ts:220-224`
+   destructures `newsItem.action` and calls `this.stores.app.openExternalLink(url, e)`
+   on the remote feed's `url` verbatim.
+
+How often either carries `http://` in production is **unmeasured** — there is no
+network in this environment to sample registered pool metadata or the live feed.
+
+**Resolution.** Widening the allow-list is not the remedy: the guide fixes it at
+exactly `https:` (`anchor-1-implementation-guide.md:506`) and locked invariant #3
+(`:75-81`) forbids thinning the floor, so the constant stays a single value
+(`source/main/ipc/open-external-url.ts:10`). The honest statement of the audit is
+"one real non-https producer **among source-literal producers**", and the task-152
+`statusReason` is worded that way rather than as an unqualified claim.
+**Disposition.** Raised to the user as a product decision — accept the silent
+failure, surface an error in the UI, or normalise the value at the producer. Out of
+scope for task-152, which is a main-process hardening task.
+**Owner.** User / product, before the pool-homepage or newsfeed surfaces are next
+touched.
+
+## F-2 (task-152) — `getNetworkExplorerUrl` was the one source-literal non-https producer, and forcing https there is safe as a code property but unproven as a reachable endpoint
+
+At HEAD the helper chose its scheme per network, emitting `http://` for every
+network outside `MAINNET | TESTNET | DEVELOPMENT` — which is `STAGING` and any
+unrecognised value. It now emits `https://${uri}` unconditionally
+(`source/renderer/app/utils/network.ts:36-39`). All four explorer URIs the sibling
+`getNetworkExplorerUri` returns are public hosts and none is `localhost`, so no
+local-development path is broken by the change. `tests/common/unit/networks.spec.ts`
+grew from 4 tests to 12, pinning an https prefix for `MAINNET`, `TESTNET`,
+`DEVELOPMENT`, `STAGING`, `'preprod'` and `'selfnode'`, plus the staging host in
+full and the `getNetworkExplorerUrlByType` path for a network outside the localised
+set. Re-measured here: 1 suite / 12 tests green.
+
+**Resolution.** Fixed in the same change as the guard, so no shipped source-literal
+caller produces a URL the guard would now reject.
+**Disposition.** OWED — that `explorer.staging.cardano.org` actually serves https is
+verified only as a code property (the scheme string emitted), never as a reachable
+endpoint, because there is no network here. The same is owed for
+`explorer.cardano.org` and `explorer.cardano-testnet.iohkdev.io`.
+**Owner.** Whoever runs a staging build before release.
+
+## F-3 (task-152) — `filterLogData` is renderer-only, so a new main-process logger sink is sanitized by hand and must be pinned by its own spec
+
+The cv-2 sanitization floor (`cv-2-findings.md:2069-2080`) proves key-name redaction
+through `filterLogData`, but that helper does not run on main-process logger calls:
+a grep for `filterLogData` across `source/main` returns a single hit, and it is a
+comment (`source/main/utils/setupLogging.ts:178-182`) explaining that one payload
+deliberately bypasses it, not a call site. task-152 adds a new main-process sink, so
+the floor binds it with no machinery to enforce it.
+
+**Resolution.** The sink ships a bare protocol token and nothing else —
+`logger.warn('Open external URL: rejected non-https scheme', { scheme })` at
+`source/main/ipc/open-external-url.ts:28-30` — and the spec pins the absence
+directly: `source/main/ipc/open-external-url.spec.ts:100-108` feeds
+`http://user:pw@internal.example/secret` and asserts the serialized `logger.warn`
+calls contain neither `internal.example` nor `secret`. Both floor anchors were
+re-run and are unchanged at 26 and 27 tests.
+**Disposition.** Record-only. Any future main-process logger sink in this slice needs
+the same hand-enforcement plus its own containment assertion; do not assume
+`filterLogData` covers it.
+**Owner.** Every subsequent anchor-1 task that logs from `source/main`.
+
+## F-4 (task-152, rides with task-151) — `setWindowOpenHandler` is a second, unguarded path into the OS shell that also logs the full URL
+
+`source/main/index.ts:276-286` calls `shell.openExternal(url)` at `:283` with no
+scheme check, and logs the whole URL first at `:279-281`
+(`logger.info('Prevented creation of new browser window', { url })`). It is correctly
+outside task-152's file scope, but task-151 Step 9 renders the anchor as
+`<a href target="_blank" rel="noopener noreferrer">`, so a modifier click, a middle
+click or any `window.open` bypasses the hardened IPC path entirely and writes the
+anchor URL into a main-process log — defeating both invariant #3 and the
+sanitization floor at once.
+
+**Resolution.** Not fixed here; task-152 changed no file under `source/main` other
+than the channel module and its spec.
+**Disposition.** A **task-151 blocker**: that task must either route the anchor click
+through `openExternalLink` or harden `setWindowOpenHandler` the same way.
+**Owner.** task-151.
+
+## F-5 (task-152) — The rejection is fire-and-forget, so a blocked URL surfaces as an unhandled promise rejection in the renderer console rather than a visible error
+
+`source/renderer/app/stores/AppStore.ts:80-83` is
+`openExternalLink(url, event) { if (event) event.preventDefault(); openExternalUrlChannel.send(url); }`
+— the promise `send()` returns is discarded. `handleOpenExternalUrl` now returns
+`Promise.reject(new Error('Rejected non-https external URL'))`
+(`source/main/ipc/open-external-url.ts:31`), so a blocked URL produces console noise
+in the renderer instead of user-facing feedback.
+
+**Resolution.** Implemented as specified (`anchor-1-implementation-guide.md:929-933`
+pre-declares this consequence). Console noise, not a crash, and after F-2's fix no
+source-literal caller produces a non-https URL.
+**Disposition.** Record-only, but it is the observable cost of the silent-rejection
+decision and it compounds F-1: the runtime-sourced producers there are exactly the
+callers a user would experience as "the link does nothing".
+**Owner.** Recorded for the user alongside F-1's product decision.
+
+## F-6 (task-152) — AC-3 is discharged negatively: this change renders no anchor link at all, and the anchor `<dd>` is still deliberately inert
+
+"Anchor URL rendering remains gated on this hardening landing" is a criterion the
+task passes by *not* rendering. `git status --short` lists no file under
+`source/renderer/app/components/governance/`, and
+`source/renderer/app/components/governance/drep-detail/DRepDetailAnchorSection.tsx:55-57`
+still emits `<dd className={styles.anchorValue}>{anchor.url}</dd>` beneath its
+"Deliberately inert text" comment. task-152 has `dependencies: []` and is first in
+the phase build order, so the guard is on disk before any anchor-render task starts.
+
+**Resolution.** Green as a negative criterion; the https-gated link itself is
+task-151 Step 9's deliverable, three commits later.
+**Disposition.** Rides with task-151 — the ownership move (the gate is task-151's,
+not task-152's) is recorded in the planning review at
+`.agent/plans/governance/drep-discovery/task-plans/anchor-1-code-review.md:204-215`.
+**Owner.** task-151.
+
+## F-7 (task-152) — The close-out bookkeeping was not discharged by the implementation or fix passes; the tracker half is closed by this record, the commit is not
+
+The implementation pass and the round-2 fix pass were both instructed not to commit
+and not to edit the tracker JSON, and both complied — so at verification time the
+row still read `"status": "pending"` with no `statusReason`, `evidence` or
+`updatedAt`, and `git log -1` was still `33c02840a docs(gov): add anchor-1 slice
+planning docs` with all four work files uncommitted. This is missing bookkeeping,
+not broken code: every Verify gate, including "nothing outside the intended files
+changed", passed on its literal wording.
+
+**Resolution.** This scribe pass flips the tracker row to `complete` with
+`statusReason`, `evidence` and `updatedAt: 2026-07-29`, in the sibling key order
+prescribed at `anchor-1-implementation-guide.md:845-861`.
+**Disposition.** OWED — the single close-out commit
+`fix(gov): task-152 restrict open-external-url to the https scheme`
+(`anchor-1-implementation-guide.md:869`) was still unmade when this file was written,
+and `nix fmt` cannot run in this devcontainer at all (`node_modules/.bin/prettier
+--write` over the four explicit paths is the substitute and is clean). Neither a
+browser click-through nor a ja-JP visual pass was possible either; neither is
+required by task-152, which changes no UI and no copy, but both are recorded as
+not-run rather than claimed.
+**Owner.** Whoever closes the task; the `nix fmt` obligation stays user-owned.

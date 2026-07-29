@@ -34,12 +34,8 @@ export const getNetworkExplorerUri = (network: string): string => {
   return MAINNET_EXPLORER_URL; // sets default to mainnet in case env.NETWORK is undefined
 };
 export const getNetworkExplorerUrl = (network: string): string => {
-  const protocol =
-    network === MAINNET || network === TESTNET || network === DEVELOPMENT
-      ? 'https://'
-      : 'http://';
   const uri = getNetworkExplorerUri(network);
-  return `${protocol}${uri}`;
+  return `https://${uri}`;
 };
 export const getNetworkExplorerUrlByType = (
   type: 'tx' | 'address',

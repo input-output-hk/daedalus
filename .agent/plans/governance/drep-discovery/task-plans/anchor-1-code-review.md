@@ -342,3 +342,213 @@ five `### task-NNN` sections at `:376`, `:935`, `:2118`, `:3017`, `:3940`.
    against a mocked `openExternalLink`; nothing here exercises the OS shell.
 6. Residual, unchanged: the three main-process whole-error sinks (D-6d); `explorer.staging.cardano.org` serving https;
    cv-2 F-15's provenance half and slice-6 F-6's unowned badges.
+
+---
+
+## Implementer: 2026-07-29 — task-152 close-out record and audit-scope correction
+
+Entry written by the review-fix pass for task-152, in response to round 2's B-1 and B-2. It carries the
+measured results, the corrected statement of what the Step 1 audit actually covers, the recorded
+consequences, and the OWED items. New role prefix: the log header at `anchor-1-code-review.md:3-4` names
+`Planner:`, `Critiquer:` and `Code Review:` entries only; relabel if the slice prefers one of those.
+
+**Code state — unchanged by this pass, and green.** Round 2 found the code half faithful to the guide, so
+nothing in `source/` or `tests/` was edited here. Re-measured in the worktree after the review:
+
+| Gate | Result |
+|---|---|
+| `jest --testPathPattern="source/main/ipc/open-external-url"` | 1 suite / 13 tests, green (guide:877-878 expects 13) |
+| `jest --testPathPattern="tests/common/unit/networks"` | 1 suite / 12 tests, green (4 at HEAD → 12, guide:880-881) |
+| `tsc --noEmit` | exit 0 |
+| `prettier --check` over the four changed paths | "All matched files use Prettier code style!" |
+| `yarn lint` | exit 0, **5599** warnings (0 errors) — up 8 from the ~5591 baseline (`guide:153`), the pre-declared cost of a new spec under `source/` (`guide:529`) |
+| `jest --testPathPattern="tests/jest/security/governance-sanitization"` | 1 suite / 26 tests, unchanged from baseline (`guide:902-903`) |
+| `jest --testPathPattern="containers/voting/VotingGovernancePage.spec"` | 1 suite / 27 tests, unchanged from baseline (`guide:904-905`) |
+
+`git status --porcelain` lists four source files, so Step 6 holds: no governance component is touched and no
+anchor URL is rendered as a link by this change.
+
+**Audit-scope correction (round 2 B-2).** Step 1's three commands (`guide:536-539`) are literal greps over
+`source/`, so their reach is source-literal URL producers, not URLs that arrive as data at runtime. Within
+that reach the audit's conclusion holds: `getNetworkExplorerUrl` (`source/renderer/app/utils/network.ts:36-39`
+after the fix) was the one real producer and is fixed in the same change. **Two runtime-sourced classes lie
+outside what those greps can see, and an `http:` value in either now fails silently under the guard:**
+
+1. **Stake-pool homepage.** `source/renderer/app/components/staking/widgets/TooltipPool.tsx:512` —
+   `onClick={() => onOpenExternalLink(homepage)}`, wired from
+   `source/renderer/app/containers/staking/StakePoolsListPage.tsx:90` and
+   `source/renderer/app/containers/staking/DelegationCenterPage.tsx:111`
+   (`onOpenExternalLink={app.openExternalLink}`). `homepage` is operator-registered pool metadata typed only
+   as `string` (`source/renderer/app/domains/StakePool.ts:17`,
+   `source/renderer/app/api/staking/types.ts:43`) — no scheme constraint anywhere on the path.
+2. **Newsfeed action URLs.** `source/renderer/app/stores/NewsFeedStore.ts:220-224` destructures
+   `newsItem.action` and calls `this.stores.app.openExternalLink(url, e)` on the remote feed's `url` verbatim;
+   the overlays that trigger it are `source/renderer/app/containers/news/NewsOverlayContainer.tsx:40` →
+   `source/renderer/app/components/news/IncidentOverlay.tsx:43` and
+   `source/renderer/app/components/news/AlertsOverlay.tsx:72`.
+
+How often either carries `http://` in production is **unmeasured** — there is no network in this environment
+to sample registered pool metadata or the live feed.
+
+**Widening the allow-list is not the remedy.** "The allow-list is exactly `https:` — nothing wider"
+(`guide:506`) and locked invariant #3 (`guide:76-81`) forbids thinning the floor. The pool-homepage case is a
+product decision — accept the silent failure, surface an error in the UI, or normalise the value at the
+producer — and is raised to the user rather than resolved inside task-152.
+
+**Recorded consequence (`guide:929-933`).** With the rejection kept fire-and-forget,
+`AppStore.openExternalLink` (`source/renderer/app/stores/AppStore.ts:80-83`) ignores the promise
+`send()` returns, so a blocked URL now produces an unhandled promise rejection in the renderer console
+instead of a visible error. Console noise, not a crash — and after the Step 2 fix no *source-literal* caller
+produces a non-https URL — but it is the observable cost of the silent-rejection decision.
+
+**Risk carried into task-151 (round 2 M-1).** `source/main/index.ts:276-286` is a second, unguarded path into
+the OS shell: `contents.setWindowOpenHandler` calls `shell.openExternal(url)` at `:283` with no scheme check
+and logs the full URL at `:279-281` (`logger.info('Prevented creation of new browser window', { url })`).
+It is correctly outside task-152's five-file scope, but task-151 Step 9 renders the anchor as
+`<a href target="_blank" rel="noopener noreferrer">`, so a modifier or middle click — or any `window.open` —
+bypasses the hardened IPC path and writes the anchor URL into a main-process log. Task-151 must either route
+that click through `openExternalLink` or harden the handler; against invariant #3 and the sanitization floor
+this is a task-151 blocker, not a nicety.
+
+**Noted, no change requested.** `source/main/ipc/open-external-url.spec.ts:5` is
+`import type {} from './open-external-url';`, a no-op — verbatim from the guide and harmless, since the module
+is really loaded through `jest.isolateModules` + `require`.
+
+**OWED — not provable here, never to be reported green.**
+1. `nix fmt` before merge. `nix` is absent in this devcontainer;
+   `node_modules/.bin/prettier --write` over the four explicit paths is the substitute and is clean. The
+   obligation stays open and user-owned.
+2. That `explorer.staging.cardano.org` actually serves https. No network here, so the Step 2 change is verified
+   as a code property (the scheme emitted) and not as a reachable endpoint. A runtime check on a staging build
+   is owed before release.
+
+**Step 8 is NOT discharged by this pass.** The tracker row is still `"status": "pending"`
+(`governance-drep-discovery-plan-tasks.json:1659`) and no commit exists; this fix pass was instructed not to
+commit and not to edit the tracker JSON, so both remain open for whoever closes the task. The `statusReason`
+must state the corrected audit scope above rather than an unqualified "the audit found exactly one real
+non-https producer"; `evidence` and `updatedAt` follow `guide:848-861`, and the commit subject is
+`fix(gov): task-152 restrict open-external-url to the https scheme` (`guide:869`).
+
+---
+
+## Code Review: task-152 — round 3 (2026-07-29)
+
+**Verdict: approved.** Three rounds over the uncommitted task-152 diff — four source/test files
+(`source/main/ipc/open-external-url.ts`, `source/main/ipc/open-external-url.spec.ts`,
+`source/renderer/app/utils/network.ts`, `tests/common/unit/networks.spec.ts`) plus this log — against
+`anchor-1-implementation-guide.md:1-934`. Round 3 was a single broad pass; the reviewer re-measured every
+gate itself rather than accepting the implementer's table.
+
+### Blockers
+
+**None in round 3.** No blocker survived to this round and none was raised in it.
+
+Earlier rounds, recorded for the transcript:
+
+- **Round 1.** Its findings are **not transcribed in this log** and are not reconstructed here. The only
+  entries preceding this one are `Planner:` (`:10`), two `Critiquer:` planning passes over the PRD + guide
+  (`:106`, `:200`) and the implementer close-out (`:348`); none of them is a round-1 code-review record.
+  Recorded as not-transcribed rather than invented.
+- **Round 2, B-1 — DISCHARGED.** Required a close-out record carrying the measured results, the recorded
+  consequences and the OWED list; the implementer wrote it at `:348-430`.
+- **Round 2, B-2 — DISCHARGED.** Required correcting the audit-scope claim. The Step 1 audit
+  (`guide:536-539`) is three greps over `source/`, so "exactly one real non-https producer" is true only of
+  source-literal producers. The correction is at `:371-391` and is now also carried in the task-152
+  `statusReason` and in `research/anchor-1-findings.md` F-1.
+- **Round 2, M-1 — CARRIED, not fixed.** `source/main/index.ts:276-286` is a second, unguarded
+  `shell.openExternal` path that logs the full URL at `:279-281`. Correctly outside task-152's scope; it
+  becomes a **task-151 blocker** once the anchor renders as `<a target="_blank">`. Recorded as F-4.
+
+### Minor
+
+- **Noted, no change requested.** `source/main/ipc/open-external-url.spec.ts:5` is
+  `import type {} from './open-external-url';`, a no-op — verbatim from the guide and harmless, since the
+  module is really loaded through `jest.isolateModules` + `require` in `loadModule` (`:33-40`).
+- **No new npm dependencies, no new abstractions, no dead code.** The two module-local exports
+  (`isAllowedExternalUrl`, `handleOpenExternalUrl`) exist so the spec can drive the handler directly, per
+  `guide:683-684`.
+- **No task ids, review labels, ALL-CAPS words or change history** in any comment or test name across the
+  four changed paths (verified by grep).
+
+### Independent re-checks
+
+Every number below was measured in the worktree, not asserted. The verifier and the reviewer measured
+independently and agreed; the first two rows were additionally re-run by this scribe pass.
+
+| Gate | Guide expectation | Measured |
+|---|---|---|
+| `jest --testPathPattern="source/main/ipc/open-external-url"` | 13 tests (`guide:877-878`) | 1 suite / **13 tests**, green |
+| `jest --testPathPattern="tests/common/unit/networks"` | 4 at HEAD → 12 (`guide:880-881`) | 1 suite / **12 tests**, green — Step 3 saved |
+| `tsc --noEmit` | exit 0 (`guide:883-884`) | exit 0 |
+| `yarn compile` | exit 0, ~22 s (`guide:886-887`) | exit 0, 18.9 s |
+| `yarn lint` | exit 0, 0 errors (`guide:889-891`) | exit 0, **5599 warnings / 0 errors** — up 8 from the ~5591 baseline (`guide:153`), the pre-declared cost of a new spec under `source/` (`guide:529`) |
+| `prettier --check` over the four changed paths | clean (`guide:893-898`) | "All matched files use Prettier code style!" |
+| `jest --testPathPattern="tests/jest/security/governance-sanitization"` | 26, unchanged (`guide:902-903`) | 1 suite / **26 tests**, unchanged |
+| `jest --testPathPattern="containers/voting/VotingGovernancePage.spec"` | 27, unchanged (`guide:904-905`) | 1 suite / **27 tests**, unchanged |
+| `git status --porcelain` | nothing outside the intended files (`guide:907-908`) | 3 modified + 1 untracked source/test files, plus plan docs |
+
+**Invariant #3 (`guide:75-81`) satisfied and not thinned.** The guard at
+`source/main/ipc/open-external-url.ts:27-32` runs before `shell.openExternal` is referenced at all (`:33`);
+the allow-list is the single constant `'https:'` (`:10`) with no `http:` / `mailto:` / `ipfs:` widening;
+unparseable input maps to `'unparseable'` (`:17`) and is therefore rejected. `it.each` at `spec:61-74` pins
+`javascript:`, `file:`, `data:`, `http:`, mixed-case `JavaScript:` and non-URL input, each with
+`expect(shell.openExternal).not.toHaveBeenCalled()`. The `registers the hardened handler on the channel`
+case (`spec:110-116`) proves the guarded function is the one wired to `onReceive`, so the guard is on the
+wire and not an unused export.
+
+**Sanitization floor holds on the new main-process sink.** The only logger call (`:28-30`) ships
+`{ scheme }` — a bare protocol token — never the URL, host, userinfo or error object; `spec:100-108` pins
+that `internal.example` and `secret` never appear in the warn payload. The reviewer re-ran the
+`filterLogData` check against `source/main` itself: the single grep hit is a comment at
+`source/main/utils/setupLogging.ts:178-182`, not a call site, so the "renderer-only" premise holds and
+hand-enforcement was the right discipline (recorded as F-3).
+
+**AC-3 holds negatively.** `git status --short` lists no file under
+`source/renderer/app/components/governance/`, and
+`.../governance/drep-detail/DRepDetailAnchorSection.tsx:55-57` still emits the inert
+`<dd>{anchor.url}</dd>`. No anchor link is rendered by this change (recorded as F-6).
+
+**Audit spot-check (informational).** The reviewer independently grepped `source/**/*.ts{,x}` for `http://`
+literals to test the guide's producer claim. It holds within grep reach: `main/config.ts:185` and
+`CardanoSelfnodeLauncher.ts:35` are local token-metadata server URLs, `main/windows/main.ts:84` is the
+dev-server `loadURL`, `MatomoClient.ts:65` is a synthetic analytics URL,
+`WalletTokenPicker.stories.tsx:27` is story fixture data, and `About.tsx:136` is a cosmetic
+`label="http://daedaluswallet.io"` whose `onClick` passes the `https://` form. Newsfeed URLs
+(`urlsConfig.ts`) are fetch targets, not `openExternal` targets.
+
+**Out of this diff's reach:** invariants #5, #7, #8 and #11 — no lovelace arithmetic, no cohort code, no
+badge code, no new i18n strings. `yarn i18n:manage` was correctly **not** run: no message catalog appears
+in the diff because this task changes no copy.
+
+### Merged and dropped
+
+- **Merged.** Round 2's B-2 and the reviewer's own round-3 audit spot-check reach the same conclusion from
+  opposite directions (one narrowing the claim, one testing it), and are recorded together as F-1 rather
+  than as two findings.
+- **Dropped.** The suggestion to widen the allow-list so the pool-homepage and newsfeed cases stop failing
+  silently. `guide:506` fixes it at exactly `https:` and invariant #3 is "never thinned"; the silent
+  failure is a product decision raised to the user (F-1), not a code change inside task-152.
+- **Dropped.** Converting `send` → `request` in `AppStore.openExternalLink` so the rejection becomes
+  visible. Explicitly resolved against at `guide:507-509` ("Do **not** touch `AppStore.ts`"); the
+  consequence is recorded instead (F-5).
+
+**Decision: approve.** No blockers; the code half is byte-faithful to guide Steps 2-6.
+
+### OWED — never reported green
+
+1. `nix fmt` before merge. `nix` is absent in this devcontainer, so it **cannot** run;
+   `node_modules/.bin/prettier --check` over the four explicit paths passed and is the substitute. The
+   obligation stays open and user-owned.
+2. That `explorer.staging.cardano.org` actually serves https — and likewise `explorer.cardano.org` and
+   `explorer.cardano-testnet.iohkdev.io`. There is no network here, so
+   `source/renderer/app/utils/network.ts:36-39` is verified only as a code property (the scheme string it
+   emits). A runtime reachability check on a staging build is owed before release.
+3. How often stake-pool homepage metadata and newsfeed action URLs carry `http://` in production —
+   unmeasurable without a network (F-1).
+4. No browser click-through and no ja-JP visual pass were possible. Neither is required by task-152, which
+   changes no UI and no copy, but both are recorded as not-run rather than claimed.
+5. The single close-out commit `fix(gov): task-152 restrict open-external-url to the https scheme`
+   (`guide:869`) was still unmade when this entry was written; `git log -1` was `33c02840a docs(gov): add
+   anchor-1 slice planning docs`. The tracker half of Step 8 is discharged by this pass — the task-152 row
+   at `governance-drep-discovery-plan-tasks.json:1656-1679` is now `"status": "complete"` with
+   `statusReason`, `evidence` and `updatedAt: 2026-07-29`.
