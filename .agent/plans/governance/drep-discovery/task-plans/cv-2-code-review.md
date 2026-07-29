@@ -4910,3 +4910,386 @@ not defects in the code. The deliverable — one store-level `same_vote` case wi
 sanitization pin and one render case proving the server copy still reaches the user from
 a state the client-side disable cannot mask, both append-only, both green, production
 source untouched — is correct as written. No round 2 is warranted.
+
+---
+
+## Planner: cv-2 slice close (2026-07-29)
+
+**Status: cv-2 is closed.** All fifteen rows — task-136 … task-148 plus the two
+post-approval additions task-173 and task-175 — are `complete` in
+`governance-drep-discovery-plan-tasks.json`. Enumerated programmatically at close
+rather than eyeballed: over the cv-2 phase, `sorted(set(t['status']))` returns
+exactly `['complete']`. Each row sits on its own subject-only commit and each was
+code-reviewed in this log. **No row is promoted to `verified`, and the word appears
+on no cv-2 row**; the reasoning is set out under *Final statuses* below.
+
+**What shipped, in build order.** `0fc92fcab` task-143 (the storybook current-vote
+fixtures and the pure wallet factory) → `4880c963d` task-136 (the live DRep status
+badge in `CurrentVoteSummary`, sourced from the directory `drepIndex`) →
+`31cadffd9` task-137 (the selected wallet derived from a `selectedWalletId` rather
+than a stored `Wallet` object) → `144c5153d` task-138 (the form pre-fill from the
+wallet's on-chain vote, behind a dirty gate) → `23e9899b0` task-139
+(`CurrentVoteSummary` mounted above the form) → `08eeb719a` task-140
+(`isSameVoteTarget`, the same-vote submit disable and its visible hint) →
+`2842d6fe9` task-173 (the confirmation dialog's identity derived through
+`normalizeDRepIdentity` instead of a `drep_script` prefix heuristic) → `8004affd9`
+task-141 (the dialog pinned to current-target props only) → `218f853f7` task-142
+(the dialog's fee, hardware and passphrase sections pinned) → `b699d176c` task-175
+(the pre-anchor §7 identity block) → `76cfabacc` task-144 (the option-keyed remount
+wrapper) → `b34a96848` task-145 (the `currentVote` knob wired into the stories) →
+`927978951` task-146 (the remaining enrichment i18n keys in both catalogs) →
+`e47de2cb8` task-147 (the current-vote flow, hardware-path and sanitization
+regressions) → `fb025e44e` task-148 (the `same_vote` server path through store and
+form). Planning landed earlier in `56ec98e44`, `b8a14e708` and `427b9a487`.
+
+**Build order is not tracker order, and the difference is not drift.** The tracker's
+cv-2 array lists `136, 137, 138, 139, 140, 173, 141, 142, 175, 143, 144, 145, 146,
+147, 148` — task-143 tenth. It was executed first because the two storybook rows
+consume its fixtures and because it touches no production file, so pulling it
+forward cost nothing and unblocked the story arm early. Both sequences are valid
+topological orders of the same graph. The PRD's Final Outcome table uses build order
+and states the choice under the table; this entry uses the same order.
+
+**The review record: 22 rounds over 15 tasks, plus three planning entries.** Nine
+rows were approved in round 1 with zero blockers and zero majors — task-140,
+task-173, task-141, task-142, task-144, task-145, task-146, task-147, task-148.
+Five took two rounds — task-143, task-136, task-137, task-139, task-175. One took
+three — task-138.
+
+**What the loop actually caught.** Four classes, and it is worth being precise about
+which of them mattered.
+
+1. **Process, not code — and it dominated.** Six findings are one defect repeated:
+   the task's tracker row was still `pending`, with no `statusReason`, no `evidence`
+   and no `updatedAt`, at the moment its deliverable was reviewed. CR-1 (task-143),
+   CR3-1 (task-136), CR137-1 (task-137), then CR138-1 → CR138R2-1 → CR138R3-1, the
+   same finding carried unresolved through all three of task-138's rounds. That is
+   four of the six multi-round rows, and in every one of them the code itself was
+   clean. The per-task Definition of Done (`cv-2-PRD.md:1619-1623`) requires the
+   tracker edit to be in the working tree *before* the commit; for four consecutive
+   rows it was not, and each time a review round was spent on bookkeeping rather
+   than on the deliverable. This is the clearest process lesson of the slice.
+2. **Two test-quality defects, both proved by measurement rather than argued.**
+   CR138R2-2 showed that task-138's dirty gate — the mechanism of its one
+   deliberately partial criterion — was defended by nothing: rewriting
+   `VotingPowerDelegation.tsx:180` to drop the `|| previous.drepInputState.dirty`
+   conjunct left the `voting-governance|VotingGovernancePage` sweep entirely green
+   at 3 suites / 36 tests / 7 snapshots. CR139-1 was filed as a blocker against the
+   *research note* rather than the code: F-18's headline claim — that
+   `resolveExactDRepMatch` returns `null` for every input under jsdom, so no
+   component spec could pin the `drepIndex` → badge chain — was refuted by a green
+   in-repo spec, and its prescription (`@jest-environment node` as the only route)
+   would have pushed task-147 away from component-level pins for the rest of the
+   slice. The corrected diagnosis was a realm split, re-probed with a throwaway spec
+   (`PROBE[unshimmed] … lookup=null` against `PROBE[shimmed] … lookup=HIT`), and the
+   shim it implied is what task-147 later shipped at
+   `VotingGovernancePage.spec.tsx:33-36`. That is precisely why the store-backed
+   `drepIndex` cases at `:775-814` exist at all. A blocker raised against a findings
+   note bought the slice its strongest executable pin.
+3. **One user-visible product defect.** CR175-1: for any `drep_script1…` id,
+   `normalizeDRepIdentity` returns `raw === cip105`, so the dialog printed one
+   string twice under two different labels — "!!!DRep ID: drep_script1…" immediately
+   followed by "!!!CIP-105 DRep ID: drep_script1…", with no CIP-129 line anywhere.
+   Reachability was measured in the worktree, not inferred. task-175 round 2 shipped
+   the fix, and the branch predicate now keys on the vote kind rather than on decode
+   success (`VotingPowerDelegationConfirmationDialog.tsx:118-120`).
+4. **Citation and anchor accuracy, repeatedly** — CR2-1, CR2-2, CR3-2, CR137-2,
+   CR138-2/-3/-4, CR138R3-2/-3/-4, CR139-3/-4, CR140-1, CR175-4. Individually
+   cosmetic. Collectively they are the reason this log and the tracker rows can be
+   used as evidence at all.
+
+**Planning was reviewed before any code was written, and it needed the review.** The
+required Critiquer pass (`:242`) returned `requires_changes` with 2 blockers, 6
+majors and 8 minors. Both blockers were real and both would have cost build time:
+B-1, that task-138's prescribed `rerenderWithStores` helper cannot run at all —
+mobx-react 6.3.1's development build throws by construction when the provided store
+set changes identity; and B-2, that the `drepIndex` lookup expression the PRD and
+the findings note both mandated as binding was measurably wrong, because
+`helpers.ts:143` validates before it canonicalizes. The fix pass (`:584`) discharged
+all eight blockers and majors and applied seven of the eight minors, and a residual
+Planner entry (`:742`) corrected the `helpers.ts` anchor afterwards.
+
+**Gates at close, re-measured for this entry rather than copied.** All run in this
+worktree at HEAD `fb025e44e`, with `git status --porcelain --untracked-files=all`
+returning zero lines:
+
+- `node_modules/.bin/tsc --noEmit` → **exit 0**, zero diagnostics.
+- The unfiltered `node_modules/.bin/jest --no-coverage --runInBand`, no path
+  argument → **exit 0**: **86 passed / 1 skipped of 87 suites, 1120 passed / 12
+  skipped of 1132 tests, 9 snapshots**, 27.896 s.
+- The slice sweep `--testPathPattern="governance|voting|Voting"` → 18 passed / 1
+  skipped of 19 suites, 325 passed / 12 skipped of 337 tests, 9 snapshots.
+- The two floor suites run together —
+  `tests/jest/security/governance-sanitization.spec.ts` and
+  `tests/jest/i18n/preliminaryCopyMarkers.spec.ts` → 2 suites, **30 tests, all
+  green** (26 + 4), 0 snapshots, 1.196 s.
+- `eslint --format=node_modules/eslint-formatter-pretty source storybook utils --ext
+  .ts,.tsx` → **exit 0, 5599 warnings, 0 errors**.
+- The single skipped suite is `tests/jest/governance/GovernanceCliArgvSmoke.spec.ts`,
+  which self-skips because `cardano-cli` is not on PATH in this devcontainer. By
+  design, not broken.
+
+**The inherited sanitization floor is green, and it has two anchors, not one.** This
+must not be compressed on repetition. Running only the floor suite
+(`governance-sanitization`, 26/26) does **not** touch the `drepIdentity` shape that
+task-173 and task-175 created; that half of S-9 is discharged at
+`source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx:852-877`. A
+reader who re-proves S-9 from the floor suite alone gets a false green. And that
+flow assertion is itself the empty-set tripwire recorded as F-28 and as task-147's
+AC-4 partial: the only logger importer in the rendered tree is
+`components/governance/_shared/DRepIdDisplay.tsx`, whose calls sit behind a copy
+click the test never performs, and every store is a `jest.fn` mock. It is a forward
+regression net and must never be cited as evidence of sanitization in action. The
+two facts travel together or neither is safe.
+
+**Final statuses — no promotions, and the decision was contested.** A promotion
+audit proposed five rows for `verified` (task-136, task-138, task-139, task-140,
+task-142). All five were rejected and every row keeps its existing statusReason,
+closing sentence "Complete, NOT verified" included and unedited. Reasons, in order
+of weight:
+
+- The status rule's own calibration is slice-1's task-109/110/111, and task-109's
+  re-promotion rested on a **measured bite probe** — reverting only the `getWallets`
+  wrap failed exactly that one case of 24. No cv-2 row has such a probe, and the
+  promotion audit concedes the point verbatim: its rows' "falsifiability rests on
+  the structural fact that `getByText` … throws when the node is absent … That is
+  weaker than the slice-1 precedent and should be closed before the word 'verified'
+  is written." That is a stop condition the audit set for itself and did not clear.
+- Clearing it was attempted at close and could not be done here: the probe edit to
+  `VotingPowerDelegation.tsx` was refused by the permission system, so no file was
+  written and no bite was measured.
+- task-136 AC-4 and task-139 AC-2 are on the owed list as unexecutable in this
+  environment (no browser). Marking those rows `verified` would contradict the same
+  document's owed section — the rule that nothing here is faked green.
+- cv-1, the immediately preceding sibling, closed all twelve of its rows at
+  `complete` with no promotions, in the same environment and with the same shape of
+  evidence.
+- task-142 fails on its own terms regardless: its commit `218f853f7` is test-only —
+  `git show --stat` lists the tracker, the findings note, this log and one spec
+  file, zero production files — so there is no implementation for an external suite
+  to regress.
+
+**The promotion docket is handed forward, not discarded.** Four rows (task-136,
+task-138, task-139, task-140) are promotion-ready and held at `complete` only for
+want of a measured non-vacuity probe. task-140 is the strongest and is the one row
+promotable on a probe alone; the other three each still carry a browser-blocked or
+self-pinned criterion. Nine rows are not promotable at any effort — task-137,
+task-141, task-142, task-143, task-144, task-145, task-146, task-173, task-175 —
+because nothing in `e47de2cb8` or `fb025e44e` discriminates them, and
+task-143/144/145 are structurally unreachable from Jest at all
+(`jest.config.js:129` roots are `tests/` and `source/` only, so no spec can reach
+`storybook/stories`). task-147 and task-148 cannot self-verify: they *are* the
+slice's in-slice verification rows. The full docket — the named assertion, its file
+and line, and the specific blocker per row — is written into the PRD's Final Outcome
+so the finding is not lost.
+
+**Owed at close, each with its owner.**
+
+- **A — browser-blocked, one root cause, discharge or re-record as a set.** Owner:
+  manual release verification, user-run; no cv-2 or anchor task owns it. (A1)
+  task-136 AC-4, the console-clean render of the `drepVerified` knob in en-US and
+  ja-JP — the catalog precondition is discharged by task-146, so the browser is the
+  sole remaining blocker. (A2) task-139 AC-2, visual confirmation of the mounted
+  panel; the mount itself is structurally verified, unconditional at
+  `VotingPowerDelegation.tsx:336-339`, sibling of `WalletsDropdown` and above the
+  `{selectedWallet && …}` gate at `:341`. (A3) task-144 AC-2's observed remount
+  (type an id, switch the knob, field blank), escalated past task-145 and kept
+  deliberately distinct from A4 — its original discharger, "task-145 Step 8", is
+  dead, because task-145's own row records that Step 8 could not run for want of a
+  browser. (A4) task-145 AC-4, five knob values by two locales, console errors plus
+  layout overflow. (A5) task-146 AC-3's second half, the ja-JP length and layout
+  review; the longest new string is `!!!Expiring in {n} epochs` /
+  `!!!あと{n}エポックで失効`. (A6) the Storybook slice gate in both locales, via the
+  global English/Japanese toggle.
+- **B — the four-row promotion docket** above. Owner: the verification pass, today
+  unassigned.
+- **C — three review minors shipping open in the tree, with no owner today.** All
+  three re-confirmed at HEAD in this pass. **CR146-1**:
+  `tests/jest/i18n/preliminaryCopyMarkers.spec.ts:14-15` states that only two
+  confirmation-dialog keys are preliminary and the rest of that namespace is
+  legitimately unmarked — false, since
+  `voting.governance.confirmationDialog.drepId` is `"!!!DRep ID"` in both catalogs
+  (`en-US.json:948`, `ja-JP.json:948`), making three of the namespace's ten keys
+  marked, and no assertion guards it. **CR146-2**: the same file's current-vote
+  namespace assertion (`:45-51`) filters by `CURRENT_VOTE_NAMESPACE` and asserts the
+  result is empty, so it goes vacuously green if the prefix constant is ever
+  mistyped. **CR147-1**: `VotingGovernancePage.spec.tsx:868` serialises with bare
+  `JSON.stringify` while the sibling suite ships `jsonStrWithErrors`
+  (`governance-sanitization.spec.ts:62-69`, used at `:511`) for exactly the
+  non-enumerable `Error.message` / `.stack` case, so a DRep id inside an error
+  message slips all seven `not.toContain` checks; the remedy is a one-token swap.
+  These are carried into the PRD's Final Outcome because they are lost at close
+  otherwise.
+- **D — two accepted and deliberately unfixed.** CR175-2, task-175's predicate flip
+  making `mapVoteToIntlMessage`'s default arm dead and the query at
+  `VotingPowerDelegationConfirmationDialog.spec.tsx:72-74` unreachable; and CR175-3,
+  `renderDialog`'s default identity shape at `:45` being unproducible by either live
+  producer.
+- **E — task-143 AC-4's two halves**, the named CIP-119 provenance for
+  `drepUnverified` and the Blake2b-256 verified hash. Owner: anchor-1 task-149 and
+  task-150, both pending; no mechanism exists before them. Both `makeDRepIndex`
+  entries ship `anchor: null`
+  (`storybook/stories/governance/_utils/fixtures.ts:143-168`), so the verified-hash
+  half is genuinely absent rather than merely untested.
+- **F — the release-end `!!!` copy review.** Owner: the user, non-cv-2. D-9 flags
+  `sameVoteHint`'s sentinel phrasing; the shipped ja-JP is the stronger
+  「すでに棄権に設定されています」 form, so only the en-US wording is weak.
+- **G — the `nix fmt` pre-merge pass.** Owner: the user. See the deviation record.
+- **H — local only.** `gh` and push credentials are absent; nothing was pushed.
+
+**Residual risks carried out of the slice.**
+
+1. **R-1, the givenName orphan — live, unmitigated, and measured rather than
+   predicted.** The anchor rows were read directly. task-151 (anchor-1, pending)
+   renders a verified `givenName` in the **DRep detail view**, and its AC-3 exposes
+   only verified metadata-completeness state for the slice-5 cohort rule — there is
+   no name field on the store index entry. task-154 and task-157 (anchor-2, pending)
+   both scope `givenName` to the **confirmation dialog**. So no anchor task owns
+   either a `CurrentVoteSummary` verified-name render or the unverified→verified
+   Storybook story, and no anchor task adds the store field they would need. Neither
+   of the two tracker edits D-5 names has been made. The anchor planning passes must
+   action exactly two things. **R1-a:** extend task-151 to add a name field to
+   `AppDRepDirectoryEntry` (`GovernanceStore.ts:20-31`) and its IPC counterpart
+   `DRepDirectoryEntry` (`source/common/types/governance.types.ts:51-62`), populated
+   from the verified CIP-119 payload — without it R1-b has no data source.
+   **R1-b:** extend task-154, or open a new anchor-2 row, to own the
+   `CurrentVoteSummary` verified-name render and the story covering the
+   unverified→verified transition — the two clauses D-5 struck from task-139 AC-3.
+   See F-2.
+2. **F-9 / S-9 / R-6 — `filterLogData` matches keys exactly**
+   (`source/common/utils/logging.ts:59`, `sensitiveData.includes(key)`) and its list
+   at `:24-49` guards none of `drepIdentity`, `currentVote`, `votingTarget`,
+   `chosenOption`, `raw`, `cip105`, `credentialHex`. cv-2 is safe only because it
+   added no sink. anchor-1 and anchor-2 add fetch and name-render paths, which is
+   where it stops being theoretical. The fallback is specified verbatim at
+   `research/cv-2-findings.md:617-620` — extend `sensitiveData` with all seven names
+   **and** add domain-shaped cases to the floor suite. A reviewer improvising a
+   two-key patch instead would leave the hole open.
+3. **The two-anchor sanitization gate**, above. Repeating either half alone
+   manufactures a false green.
+4. **A documentation contradiction inside the floor suite.** Its docblock
+   (`tests/jest/security/governance-sanitization.spec.ts:4-5`) claims no
+   abstain/no_confidence literal reaches any logger call or analytics payload, while
+   `:500-506` deliberately asserts `sendEvent(EventCategories.VOTING, 'Casted
+   governance vote', 'abstain')`. Recorded, not fixed: this close is documentation
+   only, and the narrowing — vote *kind* is a sanctioned analytics dimension, vote
+   *target* never is — belongs to whoever next edits that file.
+5. **Two live drifts in `designs/current-vote-display-design.md`** that cv-2 chose
+   not to fix: `:97` still offers the superseded case-insensitive `cip129`
+   comparison ahead of the clause retiring it, because that file's edit rule for
+   these rows is append-only (D-4, seam R-10); and the §6.1 note still says
+   `CurrentVoteSummary` reads reactively from the store via a `DRepIndexEntry` type
+   that does not exist in code — the C-2 drift D-6 superseded by shipping a prop
+   chain instead.
+6. **Three governance story files stay unregistered** in
+   `storybook/stories/index.ts:17-18` (D-12, F-8).
+7. **Guide anchor drift, recorded not fixed.** Four task-148 guide anchors have
+   drifted (`VotingPowerDelegation.tsx:89`→`:95`, `:84-92`→`:90-98`,
+   `:304-308`→`:401-405`, `en-US`/`ja-JP.json:973`→`:980`). Contrary to two lens
+   reports, `VotingStore.ts:74` and `:347` are correct. Fix when that guide section
+   is next edited; not part of this close.
+8. **Two `targetPath` deviations that are not drift.** task-147 and task-148 both
+   carry `"targetPath": "tests/jest/"` while part of their work lands under
+   `source/`. Both are guide-sanctioned (`cv-2-implementation-guide.md:5136-5141`
+   and `:5570`) and already recorded in their statusReasons.
+
+**Deliberately not done in cv-2 — scope, not debt.** No verified `givenName`
+anywhere and no CIP-119 parse (the pre-anchor §7 template only) · no anchor fetch,
+hash-verify, cache or external link (anchor-1 task-149 / task-150) · no
+`DRepStatusBadge` and no `DRepStatus` union widening, no Retired, no
+`DRepIdDisplay` dual-form mode · no Previous→New comparison rows, with
+`confirmationDialog.previousVote` / `.newVote` reserved and not wired · no Cucumber
+and no e2e · no epoch plumbing · no Storybook index registration (D-12).
+
+**The deviation record.**
+
+1. **`nix` is absent from this devcontainer, so the mandated pre-commit `nix fmt`
+   never ran — not on any of the fifteen commits.** `node_modules/.bin/prettier` on
+   explicitly listed paths was the substitute for the whole slice (F-12). **A
+   `nix fmt` pass before merge is an obligation the user owns**, and it is recorded
+   in the PRD's Final Outcome as an outstanding user action rather than as a
+   satisfied gate.
+2. **Prettier scope.** `--write` was run only on the four files cv-2 created —
+   `isSameVoteTarget.ts`, `isSameVoteTarget.spec.ts`,
+   `storybook/stories/governance/_utils/fixtures.ts` and
+   `_utils/GovernanceWrapper.tsx`. `yarn prettier` was never used; its script
+   carries a repo-wide `**/*.*` glob that would reformat roughly 238-240 unrelated
+   files. No tool-managed JSON was ever formatted — not the tracker, not
+   `en-US.json` or `ja-JP.json`, not `translations/messages.json`.
+   `source/renderer/app/containers/voting/Governance.tsx` was never included in any
+   invocation, because prettier 2.1.2 cannot parse its line-4 inline type import.
+3. **Baseline-red files: the measured count is four, not the three usually cited.**
+   `prettier --check` at HEAD, re-run in this pass, is red on
+   `VotingPowerDelegation.tsx`, `VotingPowerDelegationConfirmationDialog.tsx`,
+   `storybook/stories/voting/Governance.stories.tsx` **and**
+   `tests/jest/security/governance-sanitization.spec.ts`. All four are pre-existing
+   red, none was ever `--written`, and net new prettier violations for cv-2 are
+   zero. The fourth file's redness was proved wholly pre-existing at task-147 — the
+   double-parenthesised `MatomoTracker` cast, which moved only because 62 lines were
+   inserted above it (`:4688-4702` of this log). F-10 already records that the true
+   pre-existing dirty set is 238 files and that the short list is a sample, so a
+   fourth red file is what F-10 predicts rather than a new condition. Confirmed
+   green and left alone: `VotingGovernancePage.spec.tsx`, `VotingStore.spec.ts`,
+   `CurrentVoteSummary.tsx`, `preliminaryCopyMarkers.spec.ts`.
+4. **Other environment substitutions.** `gh` and push credentials are absent, so
+   nothing was pushed and all work is local. `yarn check:all` and
+   `yarn storybook:build` are red at HEAD for the unrelated storybook
+   manager-webpack JSX loader reason and were correctly never treated as cv-2 gates.
+   Storybook's whole visual pass is owed and was never a runnable gate; the
+   compile-level floor — `tsc`, `yarn lint`, the dev-server bundle — is what cv-2
+   could gate.
+5. **Two D-decisions that did not fully survive contact with the code.** D-10's aria
+   half: react-polymorph does forward `aria-*` and `aria-describedby` ships, but the
+   button keeps a real `disabled` prop because `aria-disabled` would leave `onClick`
+   live, so `designs/current-vote-display-ux.md:197`'s focusable-disabled half does
+   not ship. And D-3's tracker re-anchor of task-142 AC-3, which never landed.
+
+**Tracker bookkeeping at close — two documentation-level edits, no status changes.**
+
+- **TRK-1, recorded rather than fixed.** D-3 (`cv-2-PRD.md:396-401`) mandated that
+  task-142 AC-3's "HW status section (lines ~L118-L127)" citation be replaced with
+  the semantic criterion. It was not: the tracker AC-3 still reads exactly that
+  (`json :1389`, verified in this pass), and the re-anchor lives only in the
+  `statusReason` — which itself notes that the anchor "corresponds to
+  `VotingPowerDelegationConfirmationDialog.tsx` at no commit in this repo's
+  history". Two sibling ACs *were* amended in their build commits — task-139's AC-3
+  rewritten in `23e9899b0`, task-140's AC-7 anchor re-pointed `:95`→`:97` and live
+  at `json :1311` — so the inconsistency is real. The decision is deliberate:
+  amending an acceptance criterion inside a closeout commit is out of scope for a
+  documentation-only close, so it is recorded in the PRD's Deviations section as a
+  statusReason-only disposition.
+- **TRK-2, a stale claim corrected.** task-138's statusReason says CR138R3-4, the
+  mock-preamble comment correction, "is still UNAPPLIED in the working tree at the
+  time this row was written". It shipped inside task-138's own commit: `git show
+  144c5153d:source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx`
+  renders the corrected text, and it is live today at `:42` ("the wallet mock also
+  exposes onChange so a wallet selection can be driven"), with the shouted wording
+  gone. One sentence recording the discharge is appended to that statusReason; the
+  surrounding text is not rewritten.
+- **No `auditSummary` was invented.** The cv-2 phase object's keys are exactly
+  `id, name, description, riskLevel, tasks` — enumerated, not assumed. `slice-1` is
+  the only phase carrying an `auditSummary`; cv-1 added none, and
+  `cv-2-PRD.md:1703-1704` forbids inventing one.
+- **Cosmetics left alone, matching the cv-1 closeout `504b44c1a`:** all fifteen rows
+  keep `updatedAt` `"2026-07-28"` though fourteen of the fifteen commits are dated
+  2026-07-29, and `metadata.updated` stays `"2026-07-27"`.
+- The tracker is tool-managed JSON, and prettier was never run on it.
+
+**Definition of Done at slice level.** All fifteen tasks at `complete`, none
+deferred or blocked · PRD Final Outcome written · this code-review log preserved
+intact and appended to, never rewritten — 4912 lines and 22 `## Code Review`
+headings before this entry · the research note written and substantial
+(`research/cv-2-findings.md`, 2299 lines, F-1 … F-31 once its own closing section
+landed), so the "no new research"
+fallback does not apply · no `auditSummary` on this phase to refresh · the inherited
+sanitization-floor assertion green, with its second anchor named above.
+
+**Scope of this entry.** Documentation only, and appended rather than edited in
+place — nothing above this line was touched. It edits no source file, no test, no
+story, no locale catalog and no tracker JSON; the PRD Final Outcome and the two
+tracker edits are separate owners' work within this same closing pass. Nothing was
+committed here; the commit is a separate step. `/workspaces/daedalus` was never
+read, edited or run against — every command reported above was run in the isolated
+worktree at HEAD `fb025e44e`.
+
+Decision: cv-2 closed.

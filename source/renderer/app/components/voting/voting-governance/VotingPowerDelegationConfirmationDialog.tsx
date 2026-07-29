@@ -167,18 +167,19 @@ function VotingPowerDelegationConfirmationDialog({
                 {drepIdentity?.raw ?? chosenOption}
               </code>
             </p>
-            {drepIdentity?.cip105 && drepIdentity.cip105 !== drepIdentity.raw && (
-              <>
-                <p className={styles.paragraphTitle}>
-                  {intl.formatMessage(messages.drepIdCip105)}
-                </p>
-                <p className={styles.paragraphValue}>
-                  <code className={styles.drepIdValue}>
-                    {drepIdentity.cip105}
-                  </code>
-                </p>
-              </>
-            )}
+            {drepIdentity?.cip105 &&
+              drepIdentity.cip105 !== drepIdentity.raw && (
+                <>
+                  <p className={styles.paragraphTitle}>
+                    {intl.formatMessage(messages.drepIdCip105)}
+                  </p>
+                  <p className={styles.paragraphValue}>
+                    <code className={styles.drepIdValue}>
+                      {drepIdentity.cip105}
+                    </code>
+                  </p>
+                </>
+              )}
             {drepIdentity?.credentialHex && (
               <>
                 <p className={styles.paragraphTitle}>
