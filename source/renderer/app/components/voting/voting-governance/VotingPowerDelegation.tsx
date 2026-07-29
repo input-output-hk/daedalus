@@ -101,6 +101,41 @@ const initialState: State = {
   },
 };
 
+// Both the on-chain and the directory-supplied id are seeded verbatim: the
+// value must reach chosenOption and the delegateVotes dRepId byte-for-byte.
+function deriveFormSeed(
+  wallet: Wallet | null,
+  inheritedDRepId?: string
+): Pick<FormData, 'selectedVoteType' | 'drepInputState'> {
+  const currentVote = wallet?.currentVote ?? null;
+
+  if (currentVote?.kind === 'drep') {
+    return {
+      selectedVoteType: 'drep',
+      drepInputState: { dirty: true, value: currentVote.drep.raw },
+    };
+  }
+
+  if (currentVote) {
+    return {
+      selectedVoteType: currentVote.kind,
+      drepInputState: initialState.drepInputState,
+    };
+  }
+
+  if (inheritedDRepId) {
+    return {
+      selectedVoteType: 'drep',
+      drepInputState: { dirty: true, value: inheritedDRepId },
+    };
+  }
+
+  return {
+    selectedVoteType: initialState.selectedVoteType,
+    drepInputState: initialState.drepInputState,
+  };
+}
+
 function VotingPowerDelegation({
   getStakePoolById,
   initiateTransaction,
@@ -118,20 +153,47 @@ function VotingPowerDelegation({
     const initialWallet =
       (selectedWalletId && wallets.find((w) => w.id === selectedWalletId)) ||
       null;
+    const seed = deriveFormSeed(initialWallet, selectedDRepId);
     return {
       ...initialState,
       selectedWalletId: initialWallet?.id ?? null,
-      selectedVoteType: voteType || initialState.selectedVoteType,
-      // The directory-selected ID is used verbatim: it must reach chosenOption
-      // and the delegateVotes dRepId byte-for-byte (no trim, no re-encoding).
-      drepInputState: selectedDRepId
-        ? { dirty: true, value: selectedDRepId }
-        : initialState.drepInputState,
+      selectedVoteType: initialWallet?.currentVote
+        ? seed.selectedVoteType
+        : voteType || seed.selectedVoteType,
+      drepInputState: seed.drepInputState,
     };
   });
 
   const selectedWallet =
     wallets.find((w) => w.id === state.selectedWalletId) ?? null;
+
+  const currentVote = selectedWallet?.currentVote ?? null;
+  const currentVoteKind = currentVote?.kind ?? null;
+  const currentVoteDRepId =
+    currentVote?.kind === 'drep' ? currentVote.drep.raw : null;
+
+  // A wallet poll can deliver a new on-chain vote after mount; re-seed only
+  // while the DRep input is untouched so a typed DRep id is never overwritten.
+  useEffect(() => {
+    if (currentVoteKind === null) return;
+    setState((previous) => {
+      if (previous.status !== 'form' || previous.drepInputState.dirty) {
+        return previous;
+      }
+      const seed = deriveFormSeed(
+        selectedWallet,
+        initialFormState?.selectedDRepId
+      );
+      if (
+        previous.selectedVoteType === seed.selectedVoteType &&
+        previous.drepInputState.dirty === seed.drepInputState.dirty &&
+        previous.drepInputState.value === seed.drepInputState.value
+      ) {
+        return previous;
+      }
+      return { ...previous, ...seed };
+    });
+  }, [currentVoteKind, currentVoteDRepId]);
 
   const drepInputIsValid = Cardano.DRepID.isValid(state.drepInputState.value);
 
@@ -236,6 +298,7 @@ function VotingPowerDelegation({
               setState({
                 ...initialState,
                 selectedWalletId: nextWallet?.id ?? null,
+                ...deriveFormSeed(nextWallet, initialFormState?.selectedDRepId),
               });
             }}
             placeholder={intl.formatMessage(messages.selectWalletPlaceholder)}

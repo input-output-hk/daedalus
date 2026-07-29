@@ -946,6 +946,83 @@ at slice close.
 
 ---
 
+## F-17 — task-138 moved the sweep basis again, to 282/294 with 9 snapshots, by over-delivering two review-mandated cases; and the guide's locked `ItemsDropdown` mock makes any assertion about the *absence* of the DRep input vacuous, which is why branch 2 ships unpinned
+
+**Measured after task-138's round-3 fix pass**, HEAD `31cadffd9`, working tree
+carrying `VotingPowerDelegation.tsx`, `VotingGovernancePage.spec.tsx` and the
+review log. The sweep F-11 defines and F-16 re-based —
+`node_modules/.bin/jest --testPathPattern='(governance|Governance|voting|Voting|DRep)' --no-coverage --runInBand`
+— exits 0 at **17 passed / 1 skipped of 18 suites, 282 passed / 12 skipped of 294
+tests, 9 snapshots** (~6.4 s), against F-16's 276 / 12 / 288 and the same 9
+snapshots. The whole delta is one spec file and no snapshot:
+`VotingGovernancePage.spec.tsx` carries 8 `it(` blocks at HEAD
+(`git show HEAD:… | grep -c '  it('`) and 14 in the working copy — **+6 tests, +0
+snapshots**, exactly the sweep delta. The 12 skipped have not moved; still
+`tests/jest/governance/GovernanceCliArgvSmoke.spec.ts:28`.
+
+**The `+6` is `4 + 2`, and the `2` is over-delivery, not drift.** The guide's Step
+7 comment (`cv-2-implementation-guide.md:2232`) predicts "`VotingGovernancePage.spec.tsx`
+grows from 8 to 12 tests" and Step 6(c) prescribes four cases; both are correct
+for what the guide asked for. The two extra cases were *mandated by round 2 of
+this task's own code review* — CR138R2-2 and CR138R2-3
+(`cv-2-code-review.md:2073-2115`), landing as `'leaves a typed DRep id untouched
+when a refreshed snapshot carries a new vote'` (`:513-540`) and `'prefers the
+wallet current vote over the inherited vote type and DRep id on mount'`
+(`:542-559`). So `8 + 4 + 2 = 14`, the focused pattern
+`voting-governance|VotingGovernancePage` reads **3 suites / 38 tests / 7
+snapshots**, and the unfiltered suite moves `1072 → 1074`. This is **not** the
+F-16 failure mode — the guide's parenthetical is not stale arithmetic — so the
+guide edit is genuinely owed rather than a misread, and it is **deferred, not
+mandated inside task-138**: the per-task DoD allows one commit, and the cv-1
+precedent for reconciling a guide against what shipped is its own docs commit
+(`a3e352841`).
+
+**Vacuous-by-construction assertions in this spec file.** The DRep input renders
+only behind `{selectedWallet && state.selectedVoteType === 'drep' && (<Input`
+(`VotingPowerDelegation.tsx:326`), and the guide locks `ItemsDropdownMock` to
+`function ItemsDropdownMock(props: { value: string })`
+(`VotingGovernancePage.spec.tsx:57-61`) — no handler, and Step 5 names the
+`WalletsDropdown` mock as the **only** permitted change. A test therefore cannot
+drive the vote type at all. The consequence bit any assertion of the form
+"…and the DRep id is *not* displayed": in `'seeds the vote type and no DRep id
+from a sentinel on-chain vote'` (`:461-474`), once the first assertion has
+established that the dropdown reads `abstain`, the input is not in the DOM and
+`queryByDisplayValue(...)` at `:473` returns null on every outcome in which the
+first assertion passes. `deriveFormSeed`'s branch 2 (`:119-124`) really does blank
+`drepInputState` so a sentinel never enters the id field, and that behaviour is
+**untested**. The only permitted seam that observes it is indirect: seed the
+sentinel, then `rerenderWithWallets` the same wallet id carrying a `drep` vote and
+assert the id appears — red if branch 2 ever leaks a sentinel with `dirty: true`,
+because the `:180` guard would then suppress the re-seed. That is a partial pin
+only (a leak with `dirty: false` still re-seeds), which is why task-138 recorded
+the gap instead of taking it (CR138R3-2, `cv-2-code-review.md:2331-2356`).
+
+**Resolution.** From task-139 onward the comparison basis for the slice-wide sweep
+is **282 / 12 / 294 with 9 snapshots**, superseding F-16's 276 / 288; a row that
+diffs against F-16's numbers will re-attribute task-138's `+6` to itself and
+report a regression that does not exist. F-16's rule still governs the *reading*
+of every guide parenthetical — reconcile arithmetically against HEAD before
+calling it a defect — but this one reconciles to `12`, not `14`, and the residue
+is a real doc edit. Any cv-2 task that adds cases to
+`VotingGovernancePage.spec.tsx` (task-139 and task-140 both will) must assume it
+cannot select a vote type from a test, and must not write a negative assertion
+about the DRep input's contents believing it discriminates.
+
+**Disposition.** Sweep basis — record-only, binding on every remaining cv-2 row's
+verification step and re-measured at slice close, as F-11 and F-16 already direct.
+Guide reconciliation (Step 7's `8 to 12`, Step 6(c)'s case list, and the AC-3
+acceptance line at `:2257` naming only "Step 6 case 4" as the pin) — **deferred to
+the slice-close doc pass**, as its own commit. Branch 2's missing pin and the
+locked vote-type mock — **open**; closing it properly needs either a permitted
+handler on `ItemsDropdownMock`, which is a guide change, or the indirect
+re-seed case above, which pins only half.
+
+**Owner.** task-138 (recorded); task-139 and task-140 (both add cases to this
+file); the Planner at slice close (sweep basis re-measure and the guide
+reconciliation commit).
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)

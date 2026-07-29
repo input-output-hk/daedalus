@@ -1746,3 +1746,736 @@ whole, and CR137-2 remains dispositioned to stay as written. The Definition of
 Done is met except its last clause, which is the next action rather than a
 finding: one commit, subject-only, carrying all three working-tree paths, under
 `refactor(gov): task-137 hold selectedWalletId instead of the wallet object in VotingPowerDelegation`.
+
+---
+
+## Code Review: 2026-07-28 — task-138 round 1
+
+**Scope reviewed.** The uncommitted working tree against the guide section
+"task-138: Pre-fill `VotingPowerDelegation` from the current on-chain delegation"
+(`cv-2-implementation-guide.md:1751-2277`) — its locked invariants (`:1795-1814`),
+its seven resolved judgment calls (`:1816-1850`), its seven ordered steps
+(`:1852-2246`) and its acceptance record (`:2248-2274`); task-138's seven
+acceptance criteria in `governance-drep-discovery-plan-tasks.json:1223-…`; seam
+contract S-3 (`cv-2-PRD.md:918-946`), decision D-11 (`:740-750`), the slice
+disposition for task-138 AC-3 (`:1633`) and the per-task Definition of Done
+(`:1619-1623`). HEAD is `31cadffd9` (task-137). The main checkout
+`/workspaces/daedalus` was never read, edited or run against.
+
+**What landed.** `git status --porcelain` → exactly two paths, both named by the
+guide's Files-touched list (`:1753-1759`):
+`source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx`
+(75+) and `source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx`
+(128+), `192 insertions, 11 deletions`. No new file, no untracked artifact, no
+i18n catalog, no `translations/`, no `package.json`/`yarn.lock`, no prettier run —
+exactly the declared surface (`:1761`). **The tracker is absent from the change
+set**, which is CR138-1 below.
+
+**Review method (three lenses, adversarial refutation).** Three lenses ran over
+the diff — (1) correctness against the guide and the acceptance criteria; (2)
+locked invariants and the sanitization floor; (3) tests, simplicity and drift.
+**All three returned `approved`**, carrying four minors between them. Their
+results were not accepted on assertion: every load-bearing claim below was
+re-derived in this worktree, one lens minor was dropped to a recorded
+no-action disposition, one was re-scoped, and the defect none of the three
+promoted — the unsynchronized tracker row — is promoted here as CR138-1.
+
+**The code deliverable is accepted as delivered.** Re-derived here: all seven
+steps are applied as written. `deriveFormSeed` sits at module scope between
+`initialState` and the component (`VotingPowerDelegation.tsx:104-137`) with the
+four fallback branches in the guide's order — current `drep` vote, current
+sentinel, inherited directory id, blank — pure, unexported, no logging and no
+store access. The lazy initializer carries the currentVote-wins `voteType`
+precedence verbatim (`:150-165`), and the byte-equality comment moved onto the
+helper rather than being duplicated (the HEAD copy at the initializer, `git show
+HEAD:…:117-118`, is gone). `WalletsDropdown.onChange` spreads the seed **after**
+`...initialState` (`:296-303`), replacing HEAD's unconditional
+`setState({ ...initialState, selectedWalletId })` (`git show HEAD:…:234-240`). The
+re-seed effect (`:170-196`) keeps all four locked properties: the two-primitive
+dependency array `[currentVoteKind, currentVoteDRepId]`, the
+`currentVoteKind === null` short-circuit, the identity bail-out returning
+`previous` by reference, and the `status !== 'form'` guard; no `eslint-disable`
+was added and none was needed (`react-hooks` is not a configured plugin). The
+spec's `WalletsDropdown` mock gains only `onChange` plus text-free, name-free
+option buttons (`VotingGovernancePage.spec.tsx:34-54`) and the `ItemsDropdown`
+mock is untouched (`:56-60`); `renderFlow` hands the **same** `stores` object to
+`tree` on every render and mutates `stores.wallets.all` (`:162-209`), so
+`mobx-react`'s provided-store-set check cannot fire; the four prescribed cases are
+appended in their own trailing describe (`:439-509`). Invariants: no store
+crossover (`grep -n "GovernanceStore" source/renderer/app/stores/VotingStore.ts`
+returns nothing), no id mutation (no `toLowerCase|trim(|normalizeDRepIdentity` in
+the component), no logging sink (no `logger|analytics|console.|electron-store|
+localStorage`), no auto-delegation (branch 4, `:133-136`, returns the blank form),
+and no story drift owed — `grep -c currentVote
+storybook/stories/voting/Governance.stories.tsx` returns `0`, so the
+"prefilled from directory" story still describes true behaviour and the wrapper
+migration remains task-145's. The two added comments (`:104-105`, `:175-176`)
+state an invariant and a why in plain sentence case with no process artifact, and
+no test or describe name carries one.
+
+### Blockers (ranked, most severe first)
+
+**CR138-1 (major, `governance-drep-discovery-plan-tasks.json:1223`) — task-138's
+row is still `pending`, so AC-3's deliberate partiality is nowhere recorded.**
+Live, the row's keys are `id, title, description, status, priority,
+estimatedHours, dependencies, targetPath, acceptanceCriteria` — `"status":
+"pending"` with no `statusReason`, no `evidence`, no `updatedAt` — and the tracker
+is absent from `git status --porcelain`. The per-task Definition of Done
+(`cv-2-PRD.md:1619-1623`) requires "tasks JSON synchronized (`status`,
+`statusReason`, `evidence`, `updatedAt` as `YYYY-MM-DD`) · exactly one commit", so
+the tracker edit has to be in the working tree before task-138 is committed and no
+later cv-2 row owns it. This is the identical defect promoted as CR-1 for
+task-143, CR3-1 for task-136 and CR137-1 for task-137, and it bites harder here
+because task-138 is one of the thirteen scoped criteria: the slice DoD table
+(`cv-2-PRD.md:1633`) records task-138 AC-3 as **satisfied in part**, and the
+guide's acceptance record (`:2255-2261`) says in as many words "Record both in the
+task's `statusReason`". A row flipped to `complete` with no `statusReason` would
+claim, in the tracker's own words, that "the form re-seeds (or surfaces a 'data
+changed' indicator)" whole — when the re-seed fires only while
+`drepInputState.dirty === false` (`VotingPowerDelegation.tsx:180-182`) and the
+indicator alternative was deliberately not built (D-11, `cv-2-PRD.md:740-750`).
+*Fix:* set the row to `complete` and insert `statusReason`, `evidence` and
+`updatedAt: "2026-07-28"` between `status` and `priority` — the byte-identical key
+order the `task-136` and `task-137` rows already use — with `evidence` an array of
+repo-relative paths, source first
+(`source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx`,
+then `source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx`), plan
+docs last. Report AC-1, AC-2, AC-4, AC-5, AC-6 and AC-7 satisfied, and AC-3
+**satisfied in part**, naming the `dirty === false` gate, the not-built indicator,
+and the two consequences in CR138-2 and CR138-3 below. The tracker is tool-managed
+JSON — do not run prettier on it.
+
+### Minor (non-blocking; absorb before the task-138 commit)
+
+**CR138-2 (minor, `VotingPowerDelegation.tsx:175-176` versus `:315-321`) — the
+re-seed's comment claims a guarantee the effect does not give: a user-chosen vote
+type can be overwritten.** The effect's only user-protection gate is the DRep
+input's flag, `if (previous.status !== 'form' || previous.drepInputState.dirty) {
+return previous; }` (`:180-182`), but the comment above it reads "re-seed only
+while the DRep input is untouched **so user input is never overwritten**"
+(`:175-176`). The vote-type dropdown is user input that never sets that flag:
+`handleChange={(option) => setState({ ...state, selectedVoteType: option.value,
+status: 'form' })}` (`:315-321`) leaves `drepInputState` alone. Re-derived
+sequence: a wallet whose on-chain vote is `{ kind: 'abstain' }` seeds
+`selectedVoteType: 'abstain'` with `dirty: false` (branch 2, `:119-124`); the user
+moves the dropdown to `drep` without typing; a poll then changes the chain vote's
+`kind`, `currentVoteKind` changes, the effect re-runs, `dirty` is still `false`,
+and `return { ...previous, ...seed }` (`:194`) reverts the user's choice. D-11
+(`cv-2-PRD.md:740-750`) decides only the `drepInputState` case and the guide's
+judgment call (`:1821-1828`) reasons only about destroying typing mid-edit, so the
+vote-type consequence is unstated rather than sanctioned. *Fix:* do **not**
+restructure the effect — the guide locks its four properties (`:1980-1991`) and a
+fifth bail-out is a behavioural change no criterion asks for. Narrow the second
+clause of the comment so it names what it actually guards (the DRep input), and
+record the vote-type consequence in the CR138-1 `statusReason` alongside the
+partial-re-seed and no-indicator disclosures AC-3 already requires.
+
+**CR138-3 (minor, `VotingPowerDelegation.tsx:112-116` consumed at `:198` and
+`:362-365`) — a CIP-105 on-chain delegation now shows the DRep-input error on a
+form the user never touched.** Branch 1 seeds `drepInputState: { dirty: true,
+value: currentVote.drep.raw }`. `raw` is the wire string byte-untouched:
+`parseVoting` (`source/renderer/app/api/api.ts:3009-3022`) hands
+`delegation.active.voting` straight to `normalizeDRepIdentity`, whose CIP-105
+branch (`normalizeDRepIdentity.ts:46-59`, `prefix === 'drep_vkh' || prefix ===
+'drep_script'`) returns `{ raw, cip105: raw, … }`. The form gate is
+`Cardano.DRepID.isValid(state.drepInputState.value)` (`:198`), measured again in
+this worktree: `isValid('drep_vkh15xev84897cr3s2f6fdwx6l50jzsm9s75uhmqwxpf8f94czu4a4l')`
+→ `false`, `isValid('drep1ygqqq…7vlc9n')` → `true`. Because the seed also sets
+`dirty: true`, the error branch `state.drepInputState.dirty && !drepInputIsValid`
+(`:362-365`) fires unprompted and `formIsValid` (`:200-202`) disables submit. The
+path is new: at HEAD `dirty: true` could only come from
+`initialFormState.selectedDRepId` (`git show HEAD:…:126-129`), an id sourced from
+the CIP-129-keyed index. The PRD records the CIP-105 `raw` fact only against the
+**index lookup** (`cv-2-PRD.md:540-546`, `:566-567`; guide `:2384-2390`), never
+against the form gate. *Fix:* do **not** change the seed — re-encoding would
+violate invariant 10 and the guide's "Nothing else may be added to it" (`:1898`).
+Record the consequence in the CR138-1 `statusReason` and raise it to the slice
+owner so a later cv-2 or anchor task decides whether the CIP-105 form should pass
+the gate; if the wallet API is confirmed to emit CIP-129 only for
+`delegation.active.voting`, record that measurement in
+`research/cv-2-findings.md` and close the item there.
+
+**CR138-4 (minor, `VotingGovernancePage.spec.tsx:32-33`) — the mock's comment
+still calls it a pass-through.** It reads "the flow tests assert the values they
+RECEIVE, so plain pass-through mocks are enough". After Step 5 the
+`WalletsDropdown` mock renders one option button per wallet and all four new cases
+drive behaviour through its `onChange` (`:43-50`, `:444-509`), so the second
+clause is no longer true of it. The guide's Step 5 says "the comment above it is
+unchanged" (`:2010`), so this is inherited wording rather than an implementer
+error. *Fix:* adjust the second clause only — e.g. "…assert the values they
+receive and drive selection through the mock's `onChange`, so lightweight mocks
+are enough." The ALL-CAPS `RECEIVE` violates the comment convention but is
+pre-existing (`git show HEAD:…:32-33`); folding it in is optional and outside
+task-138's surface.
+
+### Merged and dropped
+
+1. *Merged, with the strongest evidence from two lenses.* CR138-2 comes from the
+   correctness lens (the abstain → dropdown-move → poll sequence) joined to the
+   invariants lens's reading of the gate; the comment-accuracy half is scored
+   against the slice's own comment convention rather than against the guide, since
+   the guide prescribes the wording verbatim.
+2. *Re-scoped, not dropped.* The invariants lens filed the CIP-105 case as a
+   "newly reachable state", explicitly not an invariant breach. Re-derived here it
+   is a user-visible consequence with a documentation fix, so it is promoted as
+   CR138-4's sibling CR138-3 at minor severity with the seed left untouched.
+3. *Recorded, no action — the redundant vote-type assertion in case 1.* The
+   tests lens is right that `expect(screen.getByTestId('vote-type-dropdown'))
+   .toHaveTextContent('drep')` cannot discriminate: `initialState.selectedVoteType`
+   is already `'drep'` (`VotingPowerDelegation.tsx:97`) and HEAD's `onChange`
+   spread `...initialState` (`git show HEAD:…:234-240`). The case's real pin is the
+   following `getByDisplayValue(VALID_DREP_ID)` line, which does fail on revert, and
+   case 2 supplies the discriminating sentinel assertion. The line is guide-verbatim
+   (`:2158`); deleting prescribed assertion text to no behavioural end is churn, so
+   it stays as written — the same disposition given CR137-2.
+4. *Recorded, no action — the inert second argument in the effect's
+   `deriveFormSeed(selectedWallet, initialFormState?.selectedDRepId)` (`:183-186`).*
+   Re-derived and correct: the effect returns at `:178` unless
+   `currentVoteKind !== null`, so inside the updater the wallet always has a
+   `currentVote` and branch 3 (`:126-131`) is unreachable from this call site. It is
+   guide-prescribed (`:1964-1967`) and keeps the three call sites uniform, and the
+   argument is live at the other two. Leave it.
+5. *Dropped — "the wallet's `currentVote` outranks a freshly directory-selected
+   DRep id".* Raised and self-declined by the correctness lens. The precedence is
+   contractual: S-3's chain order (`cv-2-PRD.md:918-946`) puts `currentVote` first,
+   and the guide dispositions the visible Storybook consequence as "correct
+   behaviour, not a defect — say so in the review notes rather than 'fixing' the
+   seed order" (`:4654-4664`). Said here.
+6. *Dropped as pre-existing — `prettier --check` red on
+   `VotingPowerDelegation.tsx`.* Baseline item 4; see the gate note below.
+
+**Verification gate.** Green, with the one red proven pre-existing. Carried from
+the gate agent and independently re-run in this consolidation against the current
+two-path tree: `node_modules/.bin/tsc --noEmit` → exit 0, zero diagnostics;
+`node_modules/.bin/jest --testPathPattern="voting-governance|VotingGovernancePage"
+--no-coverage --runInBand` → exit 0, **3 suites / 36 tests / 7 snapshots**, all
+green. From the gate agent: `jest --testPathPattern=governance-sanitization` → 24
+passed, the inherited floor at its stated number; the closing
+`node_modules/.bin/jest --runInBand` → 85 passed / 1 skipped of 86 suites, 1072
+passed / 12 skipped tests, zero FAIL lines; the wave sweep
+`--testPathPattern="(governance|voting)"` → 17 passed / 1 skipped suites, 280
+passed / 12 skipped, the one skipped suite being the environment-gated
+`GovernanceCliArgvSmoke.spec.ts`; `yarn lint` exit 0 with 5595 warnings and zero
+errors. `typed-scss-modules` correctly skipped (no `.scss` in the change set) and
+`yarn i18n:manage` correctly never invoked — the diff defines no message and
+`git status --porcelain source/renderer/app/i18n translations` is empty, so
+nothing needed restoring. **Attribution, three discrepancies all proven
+pre-existing or accounted for:** (a) the guide's "grows from 8 to 12 tests"
+(`:2232`) holds for this spec, and the suite total is 36 rather than 29 because
+task-136's `CurrentVoteSummary.spec.tsx` landed at `4880c963d` after the guide's
+counts were measured — the standing F-16 disposition, not a regression; (b) the
+`+4` lint delta was measured, not assumed — each file's HEAD content piped through
+`eslint --stdin --stdin-filename` gives 10 + 5 = 15 against 19 now, the four being
+three `@typescript-eslint/no-explicit-any` matching the file's existing `as any`
+fixture style and one `no-unused-vars` on the `walletId` parameter name in the
+guide's verbatim Step 5 type, all warnings; (c) `prettier --check` red on
+`VotingPowerDelegation.tsx` at exactly one line, `:86`
+(`(typeof messages)[keyof typeof messages]`), byte-identical when the HEAD copy is
+piped through the same `--stdin-filepath` command and outside every hunk, so
+task-138 added zero formatting debt — no `--write` was run and `yarn prettier` was
+never invoked. `VotingGovernancePage.spec.tsx` passes `prettier --check` cleanly.
+The focused run's `[React Intl] Missing message:
+"voting.governance.currentVote.status.expiring"` console noise comes from
+`CurrentVoteSummary.tsx:99,:111`, a file outside this change set, and closes with
+task-146's catalog run. `nix` is absent, so `nix fmt` stays an owed pre-merge
+obligation (F-12). `yarn check:all` and `yarn storybook:build` were deliberately
+not run: both are red at HEAD for the unrelated storybook manager-webpack JSX
+loader reason and neither is a valid gate.
+
+**Decision: requires_changes** — one major survivor, CR138-1, plus three minors to
+absorb in the same pass. The code deliverable itself is accepted as delivered:
+every guide step is applied verbatim, every locked invariant holds, and the four
+prescribed cases each fail for the right reason on revert. What is missing is the
+tracker synchronization the per-task Definition of Done requires **before** the
+single commit, and it is the same edit that carries CR138-2's and CR138-3's
+disclosures. Once the row is written — `complete`, with AC-3 recorded as satisfied
+in part — and the two comment clauses in CR138-2 and CR138-4 are narrowed, the
+task closes with one subject-only commit,
+`feat(gov): task-138 pre-fill the delegation form from the wallet current on-chain vote`.
+
+---
+
+## Code Review: 2026-07-28 — task-138 round 2
+
+**Scope reviewed.** The uncommitted working tree after the round-1 fix pass,
+against the guide section "task-138: Pre-fill `VotingPowerDelegation` from the
+current on-chain delegation" (`cv-2-implementation-guide.md:1751-2277`) — its
+locked invariants (`:1795-1814`), its seven resolved judgment calls
+(`:1816-1850`), its seven ordered steps (`:1852-2246`) and its acceptance record
+(`:2248-2274`) — task-138's seven acceptance criteria in
+`governance-drep-discovery-plan-tasks.json:1223-1234`, decision D-11
+(`cv-2-PRD.md:740-750`), the slice DoD row for task-138 AC-3 (`:1633`) and the
+per-task Definition of Done (`:1619-1623`). HEAD is `31cadffd9`. The main
+checkout `/workspaces/daedalus` was never read, edited or run against.
+
+**What landed.** `git status --porcelain` → three paths: the two source files the
+guide's task-138 section declares
+(`source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx`
+`69+/6-`, `source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx`
+`125+/6-`) plus this log (`246+/0-`, a pure append at `:1752`). No untracked
+file, no `.scss`, no catalog or `translations/` write, no `package.json` or
+`yarn.lock`. The tracker is **not** in the change set, which is this round's one
+major.
+
+**Round 1's two comment minors are closed, re-derived rather than accepted.**
+CR138-2: `VotingPowerDelegation.tsx:175-176` now reads "re-seed only while the
+DRep input is untouched so **a typed DRep id** is never overwritten" — a claim the
+`previous.drepInputState.dirty` clause at `:180-182` actually delivers, where the
+round-1 wording ("so user input is never overwritten") over-claimed against the
+vote-type dropdown handler at `:316-323`, which still never sets that flag.
+CR138-4: the spec's mock comment (`VotingGovernancePage.spec.tsx:31-33`) no longer
+calls the mock a "pass-through" and no longer carries the ALL-CAPS `RECEIVE`; it
+now names the `onChange` drive path. Both fixes are the wording change only — the
+effect's four locked properties (`cv-2-implementation-guide.md:1980-1991`) are
+untouched, as CR138-2 required. CR138-3 stays dispositioned as a disclosure, not a
+code change, and is folded into CR138R2-1's `statusReason` below.
+
+**The code deliverable is re-confirmed.** All seven steps are applied as written:
+`deriveFormSeed` at module scope between `initialState` and the component with
+the four branches in the prescribed order (`:104-137`, guide `:1856-1900`); the
+lazy initializer's currentVote-wins `voteType` precedence (`:150-165`, guide
+`:1904-1926`); `WalletsDropdown.onChange` spreading the seed after
+`...initialState` (`:296-303`); the re-seed effect keeping all four locked
+properties (`:177-196`); the Step 5 mock, the Step 6 fixtures, the
+`rerenderWithWallets` hook and the four cases (`:446`, `:459`, `:474`, `:489`)
+verbatim. Locked invariants re-measured here, not inherited: no `toLowerCase`,
+`trim(` or `normalizeDRepIdentity` in the component; no `logger`, `analytics`,
+`console.`, `electron-store` or `localStorage` sink anywhere in the diff; no
+`GovernanceStore` read added to `VotingStore.ts`; branch 4 (`:133-136`) keeps the
+no-vote-no-inheritance form blank, so no auto-delegation; branch 2 (`:119-124`)
+blanks `drepInputState`, so a sentinel never enters the id field.
+
+### Blockers (ranked, most severe first)
+
+**CR138R2-1 (major, `governance-drep-discovery-plan-tasks.json:1223-1234`) —
+task-138's row is still `pending`, so AC-3's deliberate partiality is nowhere
+recorded.** Carried from round 1 as CR138-1 and verified still open in this round
+rather than restated: the row's keys are still `id, title, description, status,
+priority, estimatedHours, dependencies, targetPath, acceptanceCriteria` with
+`"status": "pending"` (`:1226`) and no `statusReason`, no `evidence`, no
+`updatedAt`, and the tracker is absent from `git status --porcelain`. The sibling
+`task-137` row (`:1199-1210`) carries all four keys, so the convention is
+established and this row is the outlier. The gap is substantive, not clerical: the
+row's own AC-3 text (`:1229`) promises the form "re-seeds (or surfaces a 'data
+changed' indicator)", while the delivered effect returns `previous` whenever
+`previous.drepInputState.dirty` is true (`VotingPowerDelegation.tsx:180-182`) and
+no indicator exists (D-11, `cv-2-PRD.md:740-750`; guide `:1816-1820`). Flipping
+the row to `complete` with no `statusReason` would report a scoped criterion
+green, which the slice DoD table forbids in as many words (`cv-2-PRD.md:1633`),
+and the guide's acceptance record says "Record both in the task's `statusReason`"
+(`:2255-2261`). The per-task DoD (`cv-2-PRD.md:1619-1623`) requires the row
+synchronized **before** the single commit, and no later cv-2 row owns it.
+*Fix:* set the row to `complete` and insert `statusReason`, `evidence` and
+`"updatedAt": "2026-07-28"` between `status` and `priority`, matching the
+`task-136` / `task-137` key order. Report AC-1, AC-2, AC-4, AC-5, AC-6 and AC-7
+satisfied with path anchors, and AC-3 **satisfied in part**, naming (a) the
+`dirty === false` gate at `:180-182`, (b) the deliberately unbuilt "data changed"
+indicator, (c) CR138-2's consequence — the effect's only user-protection gate is
+the DRep input's dirty flag, so a vote type chosen through the dropdown handler at
+`:316-323` can be reverted by a later poll — and (d) CR138-3's consequence — branch
+1 seeds `dirty: true` with `currentVote.drep.raw`, so a CIP-105 on-chain id fails
+`Cardano.DRepID.isValid` (`:198`) and surfaces the input error on an untouched
+form. `evidence` source-first, plan docs last. The tracker is tool-managed JSON —
+do not run prettier on it.
+
+**CR138R2-2 (major, `VotingPowerDelegation.tsx:177-196`, unpinned by
+`VotingGovernancePage.spec.tsx:440-509`) — the dirty gate is the mechanism of
+task-138's one deliberately-partial criterion and no test defends it.** Measured
+in this worktree by mutation, not argued: rewriting `:180` from
+`if (previous.status !== 'form' || previous.drepInputState.dirty) {` to
+`if (previous.status !== 'form') {` leaves
+`jest --testPathPattern="voting-governance|VotingGovernancePage"` at **3 suites /
+36 tests / 7 snapshots, all green**. It cannot be otherwise with the four
+prescribed cases: case 1 (`:446`) and case 2 (`:459`) are already `dirty: true` or
+byte-identical after the click, so the identity bail-out at `:187-193` returns
+`previous` anyway; case 3 (`:474`) never enters the effect body because
+`softwareWallet` (`:66-70`) has no `currentVote` and `currentVoteKind === null`
+returns at `:178`; case 4 (`:489`) runs with `dirty: false`, where the clause is
+inert by construction. The guide locks the clause as load-bearing
+(`cv-2-implementation-guide.md:1980-1991`, "keep all four properties") and the
+slice DoD records AC-3 as satisfied in part precisely because of it
+(`cv-2-PRD.md:1633`) — so the one behaviour the slice is obliged to disclose is
+the one behaviour no test can catch a regression in. The guide's own coverage plan
+pins AC-3 by case 4 only (`:2257`), so this is test debt the guide did not
+foresee rather than a step skipped; it is promoted anyway because a fifth case is
+cheap, the harness already supports it, and the alternative is an unenforceable
+disclosure. *Fix:* add one case to the `Delegation form pre-fill from the selected
+wallet` describe — render with `{ wallets: [votingWallet] }`, click
+`wallets-dropdown-option-${VOTING_WALLET_ID}`, type over the seeded input with
+`fireEvent.change` (the harness already drives an input this way at `:331-333`),
+then `rerenderWithWallets` with a different on-chain `drep.raw`, and assert the
+typed value survives and the new id is absent. The mutation above then turns that
+case red. Do not restructure the effect.
+
+### Minor (non-blocking; absorb before the task-138 commit)
+
+**CR138R2-3 (minor, `VotingPowerDelegation.tsx:156-163` against
+`VotingGovernancePage.spec.tsx:218-361`) — the initializer's currentVote-wins
+precedence is untested.** Measured by the same method: replacing the Step 2 body
+`selectedVoteType: initialWallet?.currentVote ? seed.selectedVoteType : voteType
+|| seed.selectedVoteType, drepInputState: seed.drepInputState` with HEAD's
+`selectedVoteType: voteType || initialState.selectedVoteType, drepInputState:
+selectedDRepId ? { dirty: true, value: selectedDRepId } :
+initialState.drepInputState` also leaves the focused run at **3 / 36 / 7 green**.
+The reason is that `selectedWalletId` appears in the spec only as `WALLET_ID` or
+`HW_WALLET_ID` (`:222`, `:232`, `:245`, `:264`, `:285`, `:300`, `:314`, `:361`)
+and neither fixture (`:66-70`, `:74-78`) carries a `currentVote`, so
+`initialWallet?.currentVote` is falsy in every mount in the file and both branches
+of the ternary reduce to the same value. This is the precedence the guide argues
+about explicitly (`cv-2-implementation-guide.md:4654-4664` — the wallet's own
+`currentVote` sits ahead of the inherited directory id, and the Storybook
+consequence is "correct behaviour, not a defect"), so it is the branch most likely
+to be flipped later by someone reading that consequence as a bug. *Fix:* one
+mount-path case — `renderFlow` with
+`state: { selectedWalletId: VOTING_WALLET_ID, voteType: 'abstain' }` and
+`{ wallets: [votingWallet] }`, asserting the vote-type dropdown reads `drep` and
+`VALID_DREP_ID` is displayed. That case is red against the HEAD initializer
+(`'abstain'` and a blank input) and green against `:156-163`.
+
+### Merged and dropped
+
+1. *Merged — the unsynchronized tracker row.* Lens 1 raised it as `SPEC-2-1` and
+   lens 3 as `QUALITY-2-3`; they are the same defect at the same anchor and are
+   consolidated as CR138R2-1, keeping lens 1's fuller `statusReason` content
+   requirement (the four named disclosures) and lens 3's DoD citation.
+2. *Promoted after independent measurement, not on the lens's word —
+   CR138R2-2 and CR138R2-3.* Both lens-3 findings assert that a mutation leaves
+   the suite green. Neither was accepted as written: each mutation was applied to
+   the working copy in this worktree, the focused pattern re-run, and the file
+   restored byte-identically (`cmp` clean) before the entry was written. Both
+   claims held at 3 / 36 / 7. CR138R2-3 is kept at **minor** rather than lens 3's
+   own minor→ambiguous framing because it pins a mount-time precedence with no
+   user-visible partiality attached to it; CR138R2-2 is **major** because the
+   untested clause is the exact mechanism the slice DoD forces the team to
+   disclose.
+3. *Dropped — lens 2's `filterLogData` gap.* `source/common/utils/logging.ts:24-49`
+   redacts `drepId`, `dRepId`, `vote` and `voting` but not `votingTarget`,
+   `currentVote`, `drep` or `raw`. True, and correctly labelled a forward note by
+   the lens that raised it: task-138 adds no sink at all, so nothing in this diff
+   can reach that filter, and the renderer-domain `Wallet.currentVote` accessor
+   (`domains/Wallet.ts:254-257`) is not handed to a logger anywhere in the change
+   set. It is not a task-138 defect. Recorded here so task-147 (AC-5, the
+   sanitization sweep) picks it up rather than re-discovering it.
+4. *Not re-promoted — CR138-3, the CIP-105 form gate.* Round 1 dispositioned it as
+   a disclosure plus a slice-owner escalation, explicitly **not** a code change,
+   because re-encoding `raw` would breach the byte-equality invariant. Lens 2
+   independently re-derived it this round and reached the same conclusion ("real,
+   but not an invariant breach — the code correctly refuses to re-encode"). Its
+   owed action is a clause inside CR138R2-1's `statusReason`, so it is carried
+   there rather than re-listed as a finding.
+5. *Not a blocker — the pre-existing prettier redness.* `prettier 2.1.2 --check`
+   is red on `VotingPowerDelegation.tsx` at exactly `:86`
+   (`(typeof messages)[keyof typeof messages]`), a line outside every hunk; the
+   verification gate proved the delta byte-identical before and after task-138 by
+   piping both revisions through the same `--stdin-filepath`. Baseline item 4,
+   not a regression. `--write` was correctly never run on either file, and
+   `yarn prettier` was never invoked.
+6. *Not a blocker — the `[React Intl] Missing message` console noise.* The focused
+   run logs `voting.governance.currentVote.status.expiring` from
+   `CurrentVoteSummary.tsx:99` and `:111`. That file is untouched by this change
+   set, the ids were minted by task-136 at `4880c963d`, and task-146 owns the
+   `yarn i18n:manage` run that closes it. Tests pass through the `defaultMessage`
+   fallback.
+
+**Gate result and its attribution.** The verification pass returned **PASS with
+zero failures**: `tsc --noEmit` exit 0; `yarn lint` exit 0 at 5595 warnings /
+0 errors, the `+4` delta over the 5591 baseline measured per-file through
+`git show HEAD:<path> | eslint --stdin` and fully attributed to the spec file
+(3 `no-explicit-any` matching the file's existing `as any` fixture style, 1
+`no-unused-vars` on the `walletId` parameter name in the guide's verbatim Step 5
+code) with the production file unchanged at 10; the four prescribed Jest runs
+green, including the closing unfiltered `--runInBand` at 85 passed / 1 skipped of
+86 suites and 1072 passed / 12 skipped tests; the three invariant greps clean;
+`typed-scss-modules` correctly skipped with no `.scss` in the change set; and
+`yarn i18n:manage` correctly never run, verified by an empty
+`git status --porcelain source/renderer/app/i18n translations`. One attribution
+correction: the gate's `git status` snapshot reports two modified files and
+`128+` on the spec, whereas the tree reviewed here has three paths and `131`
+changed lines on that file — the gate ran **before** the round-1 fix pass landed
+the CR138-2 / CR138-4 comment narrowings and before this log was appended. The
+three-line delta is exactly those two comments. So the gate's substantive results
+were re-run against the reviewed tree rather than inherited: `tsc --noEmit` exit
+0, `jest --testPathPattern="voting-governance|VotingGovernancePage"` at 3 / 36 /
+7 green, `jest --testPathPattern=governance-sanitization` at 24 / 24 green. The
+mutation runs above left the tree byte-identical (`cmp` against a pre-mutation
+copy, clean) and moved neither HEAD nor the change set. `nix` is absent, so
+`nix fmt` stays an owed pre-merge obligation (F-12). `yarn check:all` and
+`yarn storybook:build` were deliberately not run: both are red at HEAD for the
+unrelated storybook manager-webpack JSX loader reason and neither is a valid gate.
+
+**Decision: requires_changes** — two major survivors, CR138R2-1 and CR138R2-2,
+plus one minor to absorb in the same pass. The production code is accepted as
+delivered for the second round running: every guide step is applied verbatim,
+every locked invariant re-measured holds, and round 1's two comment minors are
+genuinely closed. What is missing is the tracker synchronization the per-task
+Definition of Done requires **before** the single commit — which is also the only
+place CR138-2's and CR138-3's disclosures can land — and a regression pin on the
+one behaviour the slice is obliged to disclose as partial. Neither fix touches the
+effect or the seed. Once the row is written (`complete`, AC-3 satisfied in part)
+and the two spec cases are added, the task closes with one subject-only commit,
+`feat(gov): task-138 pre-fill the delegation form from the wallet current on-chain vote`.
+
+---
+
+## Code Review: 2026-07-28 — task-138 round 3
+
+**Scope reviewed.** The uncommitted working tree after the round-2 fix pass,
+against the guide section "task-138: Pre-fill `VotingPowerDelegation` from the
+current on-chain delegation" (`cv-2-implementation-guide.md:1751-2277`) — its
+locked invariants (`:1795-1814`), its seven resolved judgment calls
+(`:1816-1850`), its seven ordered steps (`:1852-2246`) and its acceptance record
+(`:2248-2274`) — task-138's seven acceptance criteria in
+`governance-drep-discovery-plan-tasks.json:1222-1243`, decision D-11
+(`cv-2-PRD.md:740-750`), the slice DoD row for task-138 AC-3 (`:1633`), the
+per-task Definition of Done (`:1619-1623`) and F-16
+(`research/cv-2-findings.md:906-947`). HEAD is `31cadffd9`. Three independent
+lenses were consolidated here — guide conformance, locked invariants and
+sanitization, and quality plus comment convention. The main checkout
+`/workspaces/daedalus` was never read, edited or run against, and this round
+fixed no code.
+
+**What landed.** `git status --porcelain` → the same three paths as round 2:
+`source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx`
+(`75+`), `source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx`
+(`181+`, up from round 2's `131` changed lines — the two review-mandated cases),
+and this log (`468+/0-`, a pure append). `git diff --stat` totals 3 files,
+`712` insertions, `12` deletions. No untracked file, no `.scss`, no
+`package.json` / `yarn.lock`, and `git status --porcelain source/renderer/app/i18n
+translations` is empty. The tracker is **not** in the change set, for the third
+round running.
+
+**Round 2's two test-debt findings are closed, and both pins discriminate.**
+Neither claim was accepted on a lens's word, and neither was re-mutated in this
+round — a mutate-and-restore cycle on an uncommitted tree buys nothing here
+because both cases are decidable by reading the shipped code:
+
+- CR138R2-2 is closed by `'leaves a typed DRep id untouched when a refreshed
+  snapshot carries a new vote'` (`VotingGovernancePage.spec.tsx:513-540`). The
+  click seeds `{ dirty: true, value: VALID_DREP_ID }` through branch 1
+  (`VotingPowerDelegation.tsx:112-117`), `fireEvent.change` overwrites the value
+  with `dirty: true`, and the re-render swaps `drep.raw` to `OTHER_DREP_ID`, so
+  `currentVoteDRepId` changes and the effect body runs. With `:180`'s
+  `|| previous.drepInputState.dirty` present the updater returns `previous` at
+  `:181`; with it removed the identity bail-out at `:187-193` cannot fire —
+  `previous.drepInputState.value` is the typed id and `seed.…value` is
+  `OTHER_DREP_ID` — so `{ ...previous, ...seed }` lands and
+  `getByDisplayValue(typedDRepId)` at `:538` goes red. The clause is now pinned.
+- CR138R2-3 is closed by `'prefers the wallet current vote over the inherited vote
+  type and DRep id on mount'` (`:542-559`). `location.state` carries
+  `voteType: 'abstain'` and `selectedDRepId: OTHER_DREP_ID` while the wallet
+  carries a `drep` current vote, so the ternary at `:160-162` is the only thing
+  separating the two outcomes: against HEAD's initializer the dropdown reads
+  `abstain` and the input holds `OTHER_DREP_ID` with `dirty: true`, and the mount
+  effect then bails at `:180`, leaving both assertions at `:557-558` red.
+
+**The code deliverable is re-confirmed for the third round.** All seven steps
+remain applied as written: `deriveFormSeed` at module scope with the four
+branches in order (`:106-137`; branch 1 `:112-117`, branch 2 `:119-124`, branch 3
+`:126-131`, branch 4 `:133-136`); the initializer's currentVote-wins precedence
+(`:150-165`); the seed spread **after** `...initialState` in
+`WalletsDropdown.onChange` (`:301`); the re-seed effect with all four locked
+properties intact (`:177-196`); the Step 5 mock, the Step 6 fixtures — which do
+reuse `VALID_DREP_ID` as Step 6(a) requires (`VotingGovernancePage.spec.tsx:84-100`)
+— and the `rerenderWithWallets` hook (`:206`). Locked invariants re-measured in
+this worktree, not inherited: `grep -n "GovernanceStore"
+source/renderer/app/stores/VotingStore.ts` → nothing; `grep -nE
+"toLowerCase|trim\(|normalizeDRepIdentity"` on the component → nothing; `grep -nE
+"logger|analytics|Analytics|console\.|electron-store|localStorage"` on the
+component → nothing. Branch 4 keeps the no-vote-no-inheritance form blank, so no
+auto-delegation, and `governance-sanitization` is 24/24 green.
+
+### Blockers (ranked, most severe first)
+
+**CR138R3-1 (major, `governance-drep-discovery-plan-tasks.json:1222-1243`) —
+task-138's row is still `pending`, so AC-3's deliberate partiality is recorded
+nowhere.** Carried unresolved from CR138-1 (round 1) and CR138R2-1 (round 2), and
+re-verified here rather than restated: the row's keys are still `id, title,
+description, status, priority, estimatedHours, dependencies, targetPath,
+acceptanceCriteria`, with `"status": "pending"` at `:1226` and no `statusReason`,
+no `evidence`, no `updatedAt`; `git status --porcelain` on that path returns
+nothing, so the file is not in the change set at all. The sibling `task-137` row
+(`:1199-1210`) carries all four keys in the order `status, statusReason,
+evidence, updatedAt, priority`, so the convention is established and this row is
+the outlier. The gap is substantive: the row's own AC-3 text promises the form
+"re-seeds (or surfaces a \"data changed\" indicator)" — **anchor corrected, that
+text is at `:1237`; rounds 1 and 2 both cited `:1229`, which is the `dependencies`
+key** — while the delivered effect returns `previous` whenever
+`previous.drepInputState.dirty` is true
+(`VotingPowerDelegation.tsx:180-182`) and no indicator exists (D-11,
+`cv-2-PRD.md:740-750`; guide `:1816-1820`). Flipping the row to `complete` with no
+`statusReason` would report a scoped criterion green, which the slice DoD forbids
+in as many words (`cv-2-PRD.md:1633`), and the guide's acceptance record says
+"Record both in the task's `statusReason`" (`:2255-2261`). The per-task DoD
+(`cv-2-PRD.md:1619-1623`) requires the row synchronized **before** the single
+commit, and no later cv-2 row owns it.
+*Fix:* set the row to `complete` and insert `statusReason`, `evidence` and
+`"updatedAt": "2026-07-28"` between `status` and `priority`, matching the
+`task-136` / `task-137` key order. Report AC-1, AC-2, AC-4, AC-5, AC-6 and AC-7
+satisfied with source-first path anchors, and AC-3 **satisfied in part**, naming
+(a) the `dirty === false` gate at `:180-182`; (b) the deliberately unbuilt "data
+changed" indicator; (c) CR138-2's consequence — the effect's only user-protection
+gate is the DRep input's dirty flag, so a vote type chosen through the
+`ItemsDropdown` handler at `:315-321`, which never sets that flag, can be reverted
+by a later poll; and (d) CR138-3's consequence — branch 1 seeds `dirty: true` with
+`currentVote.drep.raw`, so a CIP-105 on-chain id fails `Cardano.DRepID.isValid`
+(`:198`) and surfaces the input error on an untouched form, which is the
+byte-equality invariant working as specified rather than a defect. Two further
+clauses this round adds: the spec file ships **14** `it(` blocks against the
+guide's predicted 12 (CR138R3-3), and branch 2's blanking ships structurally
+unpinned (CR138R3-2). `evidence` source-first, plan docs last. The tracker is
+tool-managed JSON — do not run prettier on it, and use `2026-07-28` for
+`updatedAt` to match every sibling row in this slice.
+
+### Minor (non-blocking; absorb in the same fix pass)
+
+**CR138R3-2 (minor, `VotingGovernancePage.spec.tsx:461-474`) — the sentinel
+case's second assertion cannot fail, so branch 2's blanking ships unpinned.**
+`'seeds the vote type and no DRep id from a sentinel on-chain vote'` closes with
+`expect(screen.queryByDisplayValue(VALID_DREP_ID)).toBeNull();` (`:473`), but the
+DRep input is rendered only behind `{selectedWallet && state.selectedVoteType ===
+'drep' && (<Input` (`VotingPowerDelegation.tsx:326`). Once the first assertion has
+established that the dropdown reads `abstain`, `state.selectedVoteType !== 'drep'`,
+the input is not in the DOM, and any display-value query returns null — so the
+second assertion passes on every outcome in which the first one passes. Round 2
+recorded branch 2 (`:119-124`) as blanking `drepInputState` "so a sentinel never
+enters the id field" (`cv-2-code-review.md:2032-2035`); that claim is true of the
+code and untested by this case. Kept at **minor**, and the lens's first proposed
+fix — delete `:473` — is **not** adopted: the line is guide-verbatim (Step 6(c)
+case 2), and the guide also closes off the obvious pin by locking the
+`ItemsDropdown` mock ("This is the **only** permitted change to this mock; the
+`ItemsDropdown` mock (`:40-44`) is untouched"), so the vote type cannot be driven
+back to `drep` from a test.
+*Fix (either is acceptable):* record in CR138R3-1's `statusReason` that branch 2's
+blanking is structurally unpinned and why the mock constraint blocks a direct pin;
+or add one case that observes it through a permitted seam — select the abstain
+wallet, then `rerenderWithWallets` the same id carrying
+`{ kind: 'drep', drep: { raw: VALID_DREP_ID, credentialType: 'key' }, source:
+'onchain' }` and assert `VALID_DREP_ID` is displayed, which goes red if branch 2
+ever leaks a sentinel with `dirty: true`, because the `:180` guard would then
+suppress the re-seed. The second option is a partial pin only (a leak with
+`dirty: false` still re-seeds), which is why neither option is mandated.
+
+**CR138R3-3 (minor, `cv-2-implementation-guide.md:2232`, plus Step 6(c)'s case
+list and the acceptance record's AC-3 line at `:2257`) — the guide's verification
+expectation is stale by exactly +2 cases.** Step 7 predicts
+"`VotingGovernancePage.spec.tsx` grows from 8 to 12 tests" and Step 6(c)
+prescribes four cases; the delivered file carries 14 `it(` blocks against 8 at
+HEAD (`git show HEAD:… | grep -c "  it("` → 8; working copy → 14), and the focused
+pattern reports 38 tests where the stale gate reported 36. This is **not** an
+F-16-style misread — the guide's parenthetical is correct at HEAD and its `+4` is
+correct for the four prescribed cases; the `+2` is over-delivery mandated by
+CR138R2-2 and CR138R2-3 in this log (`:2073-2115`). Reconciled here, so the count
+is derivable from the log alone: `8 + 4 (guide) + 2 (round-2 review) = 14`, and
+the slice-wide full-suite figure moves `1072 → 1074` for the same reason.
+*Fix:* add the same arithmetic to CR138R3-1's `statusReason` so the row does not
+read as a regression against Step 7. Editing the guide itself (Step 7's comment to
+`grows from 8 to 14 tests`, Step 6(c)'s case list, and AC-3's "pinned by Step 6
+case 4" to name the dirty-gate case as the second pin) is **deferred, not
+mandated**: the per-task DoD allows task-138 exactly one commit, and the cv-1
+precedent for this kind of reconciliation is its own docs commit
+(`a3e352841`, "docs(gov): reconcile the cv-1 guide task-134 step-1 block with
+acceptance criterion AC-7"). Whoever runs the slice-close doc pass owns it.
+
+**CR138R3-4 (minor, `VotingGovernancePage.spec.tsx:32-34`) — the mock preamble
+claims an `onChange` drive path for both dropdowns, and only one has one.** The
+comment reads "The wallet and vote-type dropdowns are react-polymorph-heavy; the
+flow tests assert the values they receive and drive selection through the mock's
+onChange, so lightweight mocks are enough." Its subject is both mocks, but
+`ItemsDropdownMock` (`:57-61`) is `function ItemsDropdownMock(props: { value:
+string })` returning a single `div` — no handler at all, and the guide requires it
+stay that way. The wording is round 1's CR138-4 fix, which correctly removed the
+ALL-CAPS `RECEIVE` and the inaccurate "pass-through"; it over-corrected in the
+other direction, and the capability it claims for the vote-type mock is exactly
+the capability whose absence makes CR138R3-2 unfixable the obvious way.
+*Fix:* split the clause so each half maps onto what that mock actually does — the
+vote-type mock renders only the value the flow asserts, the wallet mock also
+exposes `onChange` so a selection can be driven. Three lines, sentence case,
+matched to the surrounding style by hand: this is a pre-existing file, so no
+`prettier --write`.
+
+### Merged and dropped
+
+1. *Merged — the unsynchronized tracker row.* Lens 1 raised it as `SPEC-3-1` and
+   lens 3 as `QUALITY-3-1`; same defect, same anchor, consolidated as CR138R3-1.
+   Lens 1's four-part `statusReason` content requirement and lens 3's DoD citation
+   are both kept, and two clauses are added from this round's minors.
+2. *Corrected inside CR138R3-1 — two anchors.* Lens 3 prescribed
+   `"updatedAt": "2026-07-29"`; every sibling row in this slice and both earlier
+   rounds use `2026-07-28`, which is the date this round is filed under, so the
+   fix text says `2026-07-28`. And the row's AC-3 string is at `:1237`, not the
+   `:1229` that lenses 1 and 3 both cite (inherited from round 2's entry); `:1229`
+   is the `dependencies` key. The finding is unaffected either way.
+3. *Narrowed rather than dropped — CR138R3-2 and CR138R3-3.* Both lens-3 fixes
+   were adopted only in their record-it form. Deleting the guide-verbatim
+   assertion at `:473` and editing a frozen guide section are each drift against
+   an approved contract, and neither is worth taking inside task-138's single
+   commit; the disclosure route discharges both, and the optional pins are
+   written down so a later pass can take them deliberately.
+4. *Nothing dropped outright, and no production-code finding was raised.* Lens 2
+   returned **approved** with zero blockers and its cleared items are recorded so
+   they are not re-litigated: the added `OTHER_DREP_ID` (`:65-66`) does not breach
+   Step 6(a)'s "do not mint a new id", which is scoped to the wallet fixtures and
+   they do reuse `VALID_DREP_ID` (`:84-100`); `deriveFormSeed` sharing
+   `initialState.drepInputState` by reference (`:122`, `:135`) is inert because
+   every `setState` builds a fresh object and the aliasing pre-existed at HEAD;
+   and the upstream sink at `api.ts:3016-3018` still logs a pattern-gated HRP
+   only.
+5. *Noted, not promoted — the unreachable third argument.* Inside the effect,
+   `deriveFormSeed(selectedWallet, initialFormState?.selectedDRepId)` (`:183-186`)
+   can never read `inheritedDRepId`: `currentVoteKind === null` returns at `:178`,
+   so the wallet always has a `currentVote` by the time the call is made and only
+   branches 1 and 2 are reachable. It is guide-verbatim (Step 4), harmless, and
+   removing it would be a gratuitous deviation from an approved step.
+6. *Not a blocker — the pre-existing prettier redness.* Re-measured in this round
+   on both revisions through the identical
+   `prettier --stdin-filepath <realpath>`: the working copy and the HEAD copy each
+   yield the **same** single delta, `:86`
+   `(typeof messages)[keyof typeof messages]` → `typeof messages[keyof typeof
+   messages]`, a line outside every hunk. The 75 added production lines contribute
+   zero new deltas, and the spec file passes `--check` outright. Baseline item 4;
+   `--write` was correctly never run and `yarn prettier` never invoked.
+7. *Not a blocker — the `[React Intl] Missing message` console noise.* The focused
+   run still logs `voting.governance.currentVote.status.expiring` from
+   `CurrentVoteSummary.tsx:99` and `:111`. That file is untouched by this change
+   set, the ids were minted by task-136 at `4880c963d`, and task-146 owns the
+   `yarn i18n:manage` run that closes it. Tests pass through the `defaultMessage`
+   fallback.
+
+**Gate result and its attribution.** The supplied verification gate reports
+**PASS with zero failures**, but it is **stale** against the reviewed tree in the
+same way round 2's was: it snapshots two modified files, `128+` on the spec and
+`36` tests, whereas this tree has three paths, `181+` on the spec and `38` tests —
+it ran before the round-2 fix pass landed CR138R2-2's and CR138R2-3's cases. Every
+substantive gate was therefore re-run here rather than inherited:
+`node_modules/.bin/tsc --noEmit` exit 0, zero diagnostics;
+`jest --testPathPattern="voting-governance|VotingGovernancePage" --no-coverage
+--runInBand` → **3 suites / 38 tests / 7 snapshots**, all green;
+`jest --testPathPattern=governance-sanitization` → **24/24** green; the unfiltered
+closing gate `jest --no-coverage --runInBand` → **85 passed / 1 skipped of 86
+suites, 1074 passed / 12 skipped of 1086 tests, 9 snapshots**, zero FAIL lines —
+`+2` tests over the gate's 1072/1084, attributable line-for-line to the two
+review-mandated cases and to nothing else. `yarn lint` exit 0 at **5595 warnings /
+0 errors**, identical to the number the gate measured and attributed, so the two
+new cases added no warning of their own. The three invariant greps are clean.
+`typed-scss-modules` was correctly skipped (no `.scss` in the change set) and
+`yarn i18n:manage` correctly never run, verified by an empty
+`git status --porcelain source/renderer/app/i18n translations`. The 12 skipped
+tests are still `GovernanceCliArgvSmoke.spec.ts:28`'s environment self-skip. This
+round moved neither HEAD nor the change set: no file was edited except this log.
+`nix` is absent, so `nix fmt` stays an owed pre-merge obligation (F-12).
+`yarn check:all` and `yarn storybook:build` were deliberately not run — both are
+red at HEAD for the unrelated storybook manager-webpack JSX loader reason and
+neither is a valid gate.
+
+**Decision: requires_changes** — one major survivor, CR138R3-1, plus three minors
+to absorb in the same pass. The production code is accepted as delivered for the
+third round running, and the round-2 test debt is genuinely closed with two cases
+that both discriminate their target branch. What remains is entirely
+documentation: the tracker row the per-task Definition of Done requires **before**
+the single commit, which is the only place AC-3's partiality, CR138-2's and
+CR138-3's consequences, the unpinned branch 2 and the `8 → 14` test-count
+reconciliation can land, plus one three-line comment correction in the spec. No
+fix touches `deriveFormSeed`, the initializer, the `onChange` seed or the effect.
+Once the row is written (`complete`, AC-3 satisfied in part) and CR138R3-4 is
+applied, the task closes with one subject-only commit,
+`feat(gov): task-138 pre-fill the delegation form from the wallet current on-chain vote`.

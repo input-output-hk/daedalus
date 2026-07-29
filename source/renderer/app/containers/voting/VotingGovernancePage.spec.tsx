@@ -29,11 +29,28 @@ import VotingGovernancePage from './VotingGovernancePage';
 import DRepDirectoryPage from '../governance/DRepDirectoryPage';
 import DRepDetailPage from '../governance/DRepDetailPage';
 
-// The wallet and vote-type dropdowns are react-polymorph-heavy; the flow tests
-// assert the values they RECEIVE, so plain pass-through mocks are enough.
+// The wallet and vote-type dropdowns are react-polymorph-heavy, so both are
+// mocked: the vote-type mock renders only the value the flow asserts, and the
+// wallet mock also exposes onChange so a wallet selection can be driven.
 jest.mock('../../components/widgets/forms/WalletsDropdown', () => {
-  return function WalletsDropdownMock(props: { value: string | null }) {
-    return <div data-testid="wallets-dropdown">{props.value || 'none'}</div>;
+  return function WalletsDropdownMock(props: {
+    onChange: (walletId: string) => void;
+    value: string | null;
+    wallets: Array<{ id: string }>;
+  }) {
+    return (
+      <div data-testid="wallets-dropdown">
+        {props.value || 'none'}
+        {props.wallets.map((wallet) => (
+          <button
+            data-testid={`wallets-dropdown-option-${wallet.id}`}
+            key={wallet.id}
+            onClick={() => props.onChange(wallet.id)}
+            type="button"
+          />
+        ))}
+      </div>
+    );
   };
 });
 
@@ -45,6 +62,8 @@ jest.mock('../../components/widgets/forms/ItemsDropdown', () => {
 
 const VALID_DREP_ID =
   'drep1ygqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq7vlc9n';
+const OTHER_DREP_ID =
+  'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
 const WALLET_ID = 'wallet-1';
 
 const softwareWallet = {
@@ -59,6 +78,26 @@ const hardwareWallet = {
   id: HW_WALLET_ID,
   name: 'HW Flow Wallet',
   isHardwareWallet: true,
+} as any;
+
+const VOTING_WALLET_ID = 'voting-wallet-1';
+
+const votingWallet = {
+  id: VOTING_WALLET_ID,
+  name: 'Voting Wallet',
+  isHardwareWallet: false,
+  currentVote: {
+    kind: 'drep',
+    drep: { raw: VALID_DREP_ID, credentialType: 'key' },
+    source: 'onchain',
+  },
+} as any;
+
+const abstainWallet = {
+  id: 'abstain-wallet-1',
+  name: 'Abstain Wallet',
+  isHardwareWallet: false,
+  currentVote: { kind: 'abstain' },
 } as any;
 
 const drepEntry = {
@@ -131,8 +170,8 @@ const renderFlow = (
   const pushSpy = jest.spyOn(history, 'push');
   const stores = buildStores(storeOverrides);
   const actions = { router: { goToRoute: { trigger: jest.fn() } } };
-  render(
-    <Provider stores={stores as any} actions={actions as any}>
+  const tree = (currentStores: ReturnType<typeof buildStores>) => (
+    <Provider stores={currentStores as any} actions={actions as any}>
       <ThemeProvider
         theme={daedalusTheme}
         skins={SimpleSkins}
@@ -159,7 +198,17 @@ const renderFlow = (
       </ThemeProvider>
     </Provider>
   );
-  return { actions, history, pushSpy, stores };
+  const { rerender } = render(tree(stores));
+  return {
+    actions,
+    history,
+    pushSpy,
+    rerenderWithWallets: (wallets: any[]) => {
+      stores.wallets.all = wallets;
+      rerender(tree(stores));
+    },
+    stores,
+  };
 };
 
 describe('DRep selection handoff via location.state', () => {
@@ -387,5 +436,125 @@ describe('Hardware-wallet delegate flow via location.state handoff', () => {
       HW_WALLET_ID
     );
     expect(screen.getByText('Enter passphrase if needed')).toBeInTheDocument();
+  });
+});
+
+describe('Delegation form pre-fill from the selected wallet', () => {
+  afterEach(() => {
+    cleanup();
+    jest.restoreAllMocks();
+  });
+
+  it('seeds the DRep input from the wallet current on-chain vote', () => {
+    renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+      wallets: [votingWallet],
+    });
+
+    fireEvent.click(
+      screen.getByTestId(`wallets-dropdown-option-${VOTING_WALLET_ID}`)
+    );
+
+    expect(screen.getByTestId('vote-type-dropdown')).toHaveTextContent('drep');
+    expect(screen.getByDisplayValue(VALID_DREP_ID)).toBeInTheDocument();
+  });
+
+  it('seeds the vote type and no DRep id from a sentinel on-chain vote', () => {
+    renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+      wallets: [abstainWallet],
+    });
+
+    fireEvent.click(
+      screen.getByTestId('wallets-dropdown-option-abstain-wallet-1')
+    );
+
+    expect(screen.getByTestId('vote-type-dropdown')).toHaveTextContent(
+      'abstain'
+    );
+    expect(screen.queryByDisplayValue(VALID_DREP_ID)).toBeNull();
+  });
+
+  it('keeps the inherited directory id byte-identical when the wallet is picked afterwards', () => {
+    renderFlow([
+      {
+        pathname: ROUTES.VOTING.GOVERNANCE,
+        state: { selectedDRepId: VALID_DREP_ID },
+      },
+    ]);
+
+    fireEvent.click(screen.getByTestId(`wallets-dropdown-option-${WALLET_ID}`));
+
+    const drepInput = screen.getByDisplayValue(VALID_DREP_ID);
+    expect(drepInput).toBeInTheDocument();
+    expect((drepInput as HTMLInputElement).value).toBe(VALID_DREP_ID);
+  });
+
+  it('re-seeds an untouched form when a refreshed snapshot carries a new vote', () => {
+    const { rerenderWithWallets } = renderFlow([
+      { pathname: ROUTES.VOTING.GOVERNANCE },
+    ]);
+
+    fireEvent.click(screen.getByTestId(`wallets-dropdown-option-${WALLET_ID}`));
+    expect(screen.queryByDisplayValue(VALID_DREP_ID)).toBeNull();
+
+    rerenderWithWallets([
+      {
+        ...softwareWallet,
+        currentVote: {
+          kind: 'drep',
+          drep: { raw: VALID_DREP_ID, credentialType: 'key' },
+          source: 'onchain',
+        },
+      },
+    ]);
+
+    expect(screen.getByDisplayValue(VALID_DREP_ID)).toBeInTheDocument();
+  });
+
+  it('leaves a typed DRep id untouched when a refreshed snapshot carries a new vote', () => {
+    const typedDRepId = 'drep1typedbytheuser';
+    const { rerenderWithWallets } = renderFlow(
+      [{ pathname: ROUTES.VOTING.GOVERNANCE }],
+      { wallets: [votingWallet] }
+    );
+
+    fireEvent.click(
+      screen.getByTestId(`wallets-dropdown-option-${VOTING_WALLET_ID}`)
+    );
+    fireEvent.change(screen.getByDisplayValue(VALID_DREP_ID), {
+      target: { value: typedDRepId },
+    });
+
+    rerenderWithWallets([
+      {
+        ...votingWallet,
+        currentVote: {
+          kind: 'drep',
+          drep: { raw: OTHER_DREP_ID, credentialType: 'key' },
+          source: 'onchain',
+        },
+      },
+    ]);
+
+    expect(screen.getByDisplayValue(typedDRepId)).toBeInTheDocument();
+    expect(screen.queryByDisplayValue(OTHER_DREP_ID)).toBeNull();
+  });
+
+  it('prefers the wallet current vote over the inherited vote type and DRep id on mount', () => {
+    renderFlow(
+      [
+        {
+          pathname: ROUTES.VOTING.GOVERNANCE,
+          state: {
+            selectedWalletId: VOTING_WALLET_ID,
+            voteType: 'abstain',
+            selectedDRepId: OTHER_DREP_ID,
+          },
+        },
+      ],
+      { wallets: [votingWallet] }
+    );
+
+    expect(screen.getByTestId('vote-type-dropdown')).toHaveTextContent('drep');
+    expect(screen.getByDisplayValue(VALID_DREP_ID)).toBeInTheDocument();
   });
 });
