@@ -3446,3 +3446,215 @@ never run prettier on the tracker JSON. One item travels forward as a note, not 
 debt: the pin fixes the **top-level** prop set only, so a later slice that
 legitimately adds a dialog prop must update `EXPECTED_DIALOG_PROPS` deliberately —
 that failure is the pin working, not a regression.
+
+---
+
+## Code Review: 2026-07-28 — task-142 round 1
+
+**Scope reviewed.** The uncommitted working tree for task-142, against its guide
+section `cv-2-implementation-guide.md:3641-3803` (Files-touched `:3643-3647` with the
+explicit **No production file changes** at `:3648`, Context `:3650-3692`, the three
+locked invariants at `:3694-3704`, the two resolved judgment calls at `:3706-3715`,
+Step 1 at `:3717`, Step 2 at `:3779` and the acceptance record at `:3791-3803`), the
+task-142 tracker row (`governance-drep-discovery-plan-tasks.json:1369`, still
+`"status": "pending"`), and the PRD's row charter at `cv-2-PRD.md:157` with its
+acceptance restatement at `:242` and the governing decision **D-3** at `:379`. HEAD is
+`8004affd9` (task-141 committed). Three independent lenses ran — correctness against
+the guide, locked invariants plus the sanitization floor, and tests/simplicity/drift
+— and **all three returned `approved`**; two filed zero findings and the third filed
+two at severity `minor`. Nothing was accepted on report: every promoted and every
+dropped claim below was re-derived first-hand in this worktree. The main checkout
+`/workspaces/daedalus` was never read, edited or run against, and this round fixed no
+code.
+
+**What landed.** `git status --porcelain` → exactly one line,
+` M source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.spec.tsx`;
+nothing staged, nothing untracked. `git diff --stat` → `1 file changed, 51 insertions(+)`,
+**zero deletions**, so all thirteen pre-existing cases in the file are provably
+untouched. `git diff --stat -- .../VotingPowerDelegationConfirmationDialog.tsx` prints
+nothing — exactly what Step 2 (`:3785`) and AC-3 demand of this verification row. The
+change is one import at spec `:14`
+(`import { messages } from './VotingPowerDelegationConfirmationDialog.messages';`,
+placed beside the component import at `:13` as instructed) plus one appended
+`describe('VotingPowerDelegationConfirmationDialog — fee, hardware and passphrase sections')`
+at spec `:172-220` carrying the guide's four `it` cases. It reproduces the Step 1
+snippet with **one deviation**: the 85- and 83-column
+`'Confirm the transaction using the "HW Test Wallet" device'` arguments (guide `:3739`,
+`:3750`) are hand-wrapped onto their own lines at spec `:188-190` and `:201-203`. That
+deviation is required rather than stylistic — see note 8.
+
+### Blockers
+
+**None.** No survivor at `blocker` or `major` severity. One `minor` survives, below.
+
+### Minor (non-blocking; may be absorbed before the task-142 commit)
+
+1. **The software-wallet case's negative assertion cannot fail for the right reason —
+   spec `:187-191`**, inside `renders the labelled passphrase input for a software
+   wallet`. Re-derived here end to end, and it is vacuous twice over. That `it` calls
+   `renderDialog()` with no overrides, so `hwDeviceStatus` is `HwDeviceStatuses.READY`
+   (spec `:44`) and `selectedWallet` is `softwareWallet` with `name: 'Test Wallet'`
+   (spec `:21`, `:50`). Under the one regression this line is meant to catch — the
+   `selectedWallet.isHardwareWallet ?` branch at
+   `VotingPowerDelegationConfirmationDialog.tsx:179-185` leaking into its HW arm —
+   `HardwareWalletStatus` would render with `walletName='Test Wallet'` and status
+   `READY`, which falls through the `walletName &&` status list at
+   `HardwareWalletStatus.tsx:297-303` to the `else` at `:317-319` and emits
+   `messages.ready` → `Device ready` (`en-US.json:1145`). The queried string is
+   produced only by `verifying_transaction`
+   (`HardwareWalletStatus.tsx:72-78`), and it interpolates `{walletName}`, which here
+   would be `Test Wallet`, never `HW Test Wallet`. `queryByText` therefore returns
+   `null` under both the correct and the regressed implementation. **The pin itself is
+   not weakened**: the two assertions immediately above at `:185-186`
+   (`getByText('Spending password')` and
+   `document.querySelector('input[type="password"]')`) both fail correctly if the
+   branch flips, and they carry the case's intent unaided. **Fix, if a fix pass runs**:
+   either delete `:187-191` outright, or make it discriminating against the string the
+   leak would actually emit —
+   `expect(screen.queryByText('Device ready')).not.toBeInTheDocument();` — which is
+   `null` today, non-null under the regression, and (unlike a `/device/i` regex)
+   immune to task-175's growth, whose only new copy is `CIP-105 DRep ID` and
+   `Signed payload` (guide `:3920`, `:3926`). Either edit is a **deliberate deviation
+   from a verbatim guide snippet** and must be recorded as one, because the defect
+   originates in the guide, not in the implementation.
+
+### Independent re-checks of the code deliverable (nothing new found)
+
+Re-derived here, not inherited. **The comparison-row assertions are live, not
+vacuous**: `VotingPowerDelegationConfirmationDialog.messages.ts:3-45` exports exactly
+`title`, `vote`, `drepId`, `fee`, `password`, `errorGeneric`, `buttonCancel`,
+`buttonConfirm` — eight keys, no more — so `expect(messages).not.toHaveProperty('previousVote')`
+and `…('newVote')` at spec `:217-218` assert against a real object with a real shape,
+and they **survive task-175**, whose Files-touched trio mints only `drepIdCip105` and
+`signedPayload` (guide `:3920`, `:3926`, PRD S-5). **Every asserted string is
+byte-exact against the catalog the spec loads** (`en-US.json` via spec `:8`):
+`Transaction fee` (`:950`), `Spending password` (`:951`), `Confirm Transaction`
+(`:952`); `formattedWalletAmount(new BigNumber('0.174257'))` → `0.174257 ADA`, and the
+fixture uses the lossless string constructor. **The locked invariant against snapshot
+and element-count assertions holds**: the appended block contains no `toMatchSnapshot`,
+no `getAllBy…().length` and no "exactly N" claim, so it survives the identity block
+task-175 is chartered to grow — the identity block being explicitly out of scope here
+per the guide `:3702-3704` and D-3. **The sanitization floor is untouched**:
+`grep -nE "logger|Logger|analytics|electron-store|localStorage|console\.|filterLogData"`
+over the spec exits 1; the added block introduces no logger, analytics or store call
+and no new renderer-domain object near one, and the HW render path it exercises was
+already exercised by the pre-existing row at spec `:123-124`. **No i18n surface is
+touched**: no descriptor is minted, no catalog value is edited, no `!!!` marker is
+added or stripped, and the `!!!`-marked `drepId` copy stays asserted with its marker
+by the pre-existing case. **Comment convention clean**: the diff adds **zero** comment
+lines, and none of the four `it` names carries a task id, CAT/CP label, plan name, PR
+number or ALL-CAPS emphasis. **Harness reuse honoured**: no second render harness was
+written — all four cases go through `renderDialog` (spec `:30-54`) — and `afterEach(cleanup)`
+matches the file's precedent in both pre-existing describes.
+
+### Merged and dropped
+
+1. *Merged — the vacuity of spec `:187-191`.* Filed by the tests/simplicity lens as
+   `QUALITY-1-1` (severity `minor`) and, independently, by the invariants lens as an
+   explicit non-blocking observation ("the real exclusivity pin is the password-input
+   assertion at `:186`"). Kept as the single minor above, carrying the first lens's
+   regression analysis as the evidence and the second's point about where the real pin
+   lives. Promoted rather than dropped because the assertion is genuinely dead code in
+   a test; held at `minor` because it hides no regression and its neighbours fail
+   correctly.
+2. *Dropped — `QUALITY-1-2`, "the HW case at spec `:194-207` is two-thirds redundant".*
+   The evidence is factually correct and was re-verified: the `it.each` row at spec
+   `:123-124` already pairs `VERIFYING_TRANSACTION` with the same string under the same
+   overrides (`:135`), and the case at `:148-155` already asserts
+   `document.querySelector('input[type="password"]')` is null under identical overrides
+   (`:149-152`, `:154`); only the `Spending password` absence at `:206` is new. Dropped
+   for three reasons. (a) The finding's own remedy reads "Optional … leaving it as-is
+   is defensible and needs no change", so it asserts no defect. (b) The case is
+   prescribed **verbatim** by the guide's Step 1 (`:3743-3756`); deleting a
+   contract-prescribed case to retire two duplicate assertions is a larger deviation
+   than the redundancy it removes. (c) The case's value is co-location — one render
+   proving the branch is exclusive (HW copy present, password control absent, password
+   label absent) is a stronger and more legible pin than the same three facts scattered
+   across two other describes that exist for other reasons. Redundant-but-correct
+   coverage is not a defect.
+3. *Merged — three separate statements that the production dialog is untouched.* All
+   three lenses asserted it; the strongest form is kept and re-run here as
+   `git diff --stat` on the `.tsx`, which prints nothing, alongside the zero-deletion
+   whole-tree stat. Together those two are the conclusive proof of AC-3's "untouched"
+   half.
+4. *Merged — three separate statements that the forward pins survive task-175.* Kept
+   once, re-derived against the guide's own descriptor table rather than against any
+   lens's paraphrase of it.
+5. *Not promoted — the correctness lens's "SATISFIED-IN-PART" framing of AC-3.* That is
+   not a defect in the diff. AC-3's `~L118-L127` citation matches this file at no
+   commit, the guide resolves it by re-anchoring to the semantic
+   `selectedWallet.isHardwareWallet ?` branch (`:3699-3701`, acceptance `:3799-3803`),
+   and the implementation pins exactly that. What remains is a **scribe-phase
+   obligation**, recorded as a handoff below, not a change request against this diff.
+6. *Not promoted — `yarn lint` at 5595 warnings against the "roughly 5591" baseline.*
+   Attributed by the gate and consistent with the diff: task-142's one changed file
+   reports `3 problems (0 errors, 3 warnings)`, all `@typescript-eslint/no-explicit-any`
+   on the pre-existing `as any` fixtures at `:23`, `:29`, `:92` — the same three that
+   sit at `:22`, `:28`, `:91` in the HEAD blob, shifted by exactly the one added import
+   line. This task's delta is **+0 warnings, +0 errors**; the +4 belongs to task-141,
+   already at HEAD. Warnings are not failures.
+7. *Not promoted — the `[React Intl] Missing message: voting.governance.currentVote.*`
+   warnings on stderr during the wider run.* Pre-existing baseline noise emitted from
+   **passing** suites; catalog seeding is task-146's single responsibility. Same
+   disposition as the task-139, task-140, task-173 and task-141 rounds. Likewise the
+   permanent self-skip of `tests/jest/governance/GovernanceCliArgvSmoke.spec.ts`
+   (no `cardano-cli` in this devcontainer).
+8. *Note — guide defect, worth recording before the next section is authored.* The
+   claim at guide `:3207-3208` that "the snippets below are already formatted to
+   prettier 2.1.2's 80-column output" is **false** for the task-142 snippet: guide
+   `:3739` is 85 columns and `:3750` is 83, both inside a `tsx` fence at an 80-column
+   print width. The implementer's hand-wrapping was therefore mandatory, not optional,
+   and it is correct — `prettier --check` on the changed spec returns "All matched
+   files use Prettier code style!", exit 0. The file is **not** in the baseline-red set
+   (`VotingPowerDelegation.tsx`, `VotingPowerDelegationConfirmationDialog.tsx`,
+   `VotingGovernancePage.tsx`, `Governance.stories.tsx`), and no `--write` was run
+   anywhere in this round.
+
+**Gate result and its attribution.** The supplied gate reports **PASS with zero
+failures across all six steps**, and the load-bearing measurements were separated here
+into re-run and inherited rather than blanket-accepted. **Re-run in this worktree:**
+`git status --porcelain` (one modified file, no untracked, nothing staged);
+`git diff --stat` (`1 file changed, 51 insertions(+)`, zero deletions) and the empty
+`git diff --stat` on the production `.tsx`;
+`jest --testPathPattern=VotingPowerDelegationConfirmationDialog --no-coverage --runInBand`
+→ **1 suite / 17 of 17 tests passed / 0 snapshots**, exit 0, with all four new cases
+green and named per the guide — "renders the fee row with the formatted amount",
+"renders the labelled passphrase input for a software wallet", "renders the device
+status instead of the passphrase input for a hardware wallet", "keeps the dialog chrome
+and introduces no comparison rows"; `prettier --check` **read-only** on the one changed
+file → clean, exit 0; and the sanitization grep over the spec → exit 1. **Inherited
+from the gate, not re-run here:** `tsc --noEmit` exit 0, `yarn lint` exit 0 at 5595
+warnings / 0 errors, and the wider `"(governance|voting)"` pattern at 18 passed + 1
+skipped of 19 suites / 299 passed + 12 skipped of 311 tests / 9 snapshots, zero
+failures — which reconciles exactly against the task-141 close basis (293/305) as
++2 committed task-141 and +4 task-142. `typed-scss-modules` was correctly skipped (no
+`.scss` in the change set, so a bare `tsc` suffices) and `yarn i18n:manage` correctly
+never invoked (no i18n path in the change set), so no catalog needed restoring; the
+tracker JSON, both locale catalogs and `translations/messages.json` are all confirmed
+untouched. No `git stash` anywhere, and `yarn check:all` / `yarn storybook:build` were
+deliberately not run — both are red at HEAD for the unrelated manager-webpack JSX
+loader reason and neither is a valid gate. `nix` is absent, so `nix fmt` remains an
+owed pre-merge obligation with prettier-on-explicit-paths as the recorded substitute
+(F-12). This round moved neither HEAD nor the change set; no file was edited except
+this log.
+
+**Decision: approved** — zero blockers, zero majors, one minor. task-142 may close as
+it stands; absorbing the minor at spec `:187-191` is optional and, if done, needs no
+new review round but does need the guide-deviation note. task-142 closes with one
+subject-only commit,
+`test(gov): task-142 pin the confirmation dialog fee, hardware and passphrase sections`
+(guide `:3200`), carrying the single modified spec file, this log and the tracker row.
+The scribe pass owes that row (`json :1369`, edited **by content** and never by the
+PRD's pre-slice `json :1304-1320` citation, F-19, and never formatted with prettier)
+three things: AC-1 and AC-2 recorded as satisfied in full — AC-1 by the fee, passphrase,
+HW and chrome cases with the identity block deliberately excluded per D-3, AC-2 by DOM
+absence plus the two descriptor-object assertions; **AC-3's re-anchoring recorded in
+`statusReason`** — that the "lines ~L118-L127" citation corresponds to
+`VotingPowerDelegationConfirmationDialog.tsx` at no commit in this repo's history, that
+the HW-status section is instead pinned semantically via the
+`selectedWallet.isHardwareWallet ?` branch at `:179-185`, and that the empty production
+diff proves the file untouched; and the `nix fmt` unavailability with
+prettier-on-explicit-paths substituted. One item travels forward as a note, not a debt:
+these pins are authored to survive task-175's identity-block growth, so if task-175
+turns any of the four cases red, that is the pin doing its job on an out-of-charter
+change, not a stale test.

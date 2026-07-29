@@ -11,6 +11,7 @@ import { daedalusTheme } from '../../../themes/daedalus';
 import { themeOverrides } from '../../../themes/overrides';
 import { HwDeviceStatuses } from '../../../domains/Wallet';
 import VotingPowerDelegationConfirmationDialog from './VotingPowerDelegationConfirmationDialog';
+import { messages } from './VotingPowerDelegationConfirmationDialog.messages';
 
 const VALID_DREP_ID =
   'drep1ygqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq7vlc9n';
@@ -165,5 +166,55 @@ describe('VotingPowerDelegationConfirmationDialog — hardware-wallet device sta
       selectedWallet: hardwareWallet,
     });
     expect(screen.getByRole('button', { name: 'Confirm' })).not.toBeDisabled();
+  });
+});
+
+describe('VotingPowerDelegationConfirmationDialog — fee, hardware and passphrase sections', () => {
+  afterEach(cleanup);
+
+  it('renders the fee row with the formatted amount', () => {
+    renderDialog();
+
+    expect(screen.getByText('Transaction fee')).toBeInTheDocument();
+    expect(screen.getByText('0.174257 ADA')).toBeInTheDocument();
+  });
+
+  it('renders the labelled passphrase input for a software wallet', () => {
+    renderDialog();
+
+    expect(screen.getByText('Spending password')).toBeInTheDocument();
+    expect(document.querySelector('input[type="password"]')).not.toBeNull();
+    expect(
+      screen.queryByText(
+        'Confirm the transaction using the "HW Test Wallet" device'
+      )
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the device status instead of the passphrase input for a hardware wallet', () => {
+    renderDialog({
+      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION,
+      selectedWallet: hardwareWallet,
+    });
+
+    expect(
+      screen.getByText(
+        'Confirm the transaction using the "HW Test Wallet" device'
+      )
+    ).toBeInTheDocument();
+    expect(document.querySelector('input[type="password"]')).toBeNull();
+    expect(screen.queryByText('Spending password')).not.toBeInTheDocument();
+  });
+
+  it('keeps the dialog chrome and introduces no comparison rows', () => {
+    renderDialog();
+
+    expect(screen.getByText('Confirm Transaction')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Confirm' })).toBeInTheDocument();
+    expect(screen.queryByText(/previous vote/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/new vote/i)).not.toBeInTheDocument();
+    expect(messages).not.toHaveProperty('previousVote');
+    expect(messages).not.toHaveProperty('newVote');
   });
 });

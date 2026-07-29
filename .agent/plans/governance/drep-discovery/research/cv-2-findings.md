@@ -1405,6 +1405,105 @@ if the guide is ever reconciled).
 
 ---
 
+## F-23 — Section 4's blanket promise that its snippets are already prettier-formatted is false, and the line it breaks on next is in task-175's snippet; plus one assertion task-142 ships knowingly vacuous. Sweep basis moves to 299/311
+
+**The formatting warranty does not hold.** `cv-2-implementation-guide.md:3205-3208`
+tells every Section 4 row to match the surrounding style by hand because
+`prettier --check` is already red at HEAD on three of the files it touches, and then
+warrants that "the snippets below are already formatted to prettier 2.1.2's 80-column
+output". Measured across every fenced `tsx` / `ts` block in Section 4 (`:3188-4216`),
+sixteen lines exceed 80 columns. Thirteen are false positives — import paths, `it(…)`
+and `describe(…)` name strings, and template literals, none of which prettier can
+break, so it prints them over-width and `--check` stays green. **The discriminator is
+whether prettier has a break point inside the line, not the raw width.** Three lines
+have one:
+
+| guide line | cols | what prettier does | owner |
+| --- | --- | --- | --- |
+| `:3739` | 85 | moves the `queryByText` string onto its own argument line | task-142 |
+| `:3750` | 83 | same, for `getByText` | task-142 |
+| `:4122` | 81 | splits `Cardano.DRepID.toCredential(Cardano.DRepID(cip129))` across three lines | **task-175** |
+
+task-142's two were hand-wrapped at
+`VotingPowerDelegationConfirmationDialog.spec.tsx:187-191` and `:200-204`, and
+`prettier --check` now reports the whole file clean at exit 0. task-175's was verified
+empirically rather than by eye: fed the `:4122` line at the six-space indent its
+`it.each` nesting actually produces (`:4113-4131`), prettier 2.1.2 emits
+
+```tsx
+      const { hash, type } = Cardano.DRepID.toCredential(
+        Cardano.DRepID(cip129)
+      );
+```
+
+**task-175 must apply that break by hand.** It appends to the same spec file, which is
+pre-existing and currently green, so `prettier --write` is unavailable to it by the
+slice's own formatting rule and `--check` is the only safe instrument. Pasting `:4122`
+verbatim turns a green file red.
+
+**One assertion is knowingly vacuous, and the pattern must not be copied.** The
+software-wallet case at `VotingPowerDelegationConfirmationDialog.spec.tsx:187-191`
+asserts the device-status copy is absent. It can never be present, for two independent
+reasons. `renderDialog` (`:30-54`) defaults `selectedWallet` to `softwareWallet`
+(`:19-23`), so the `selectedWallet.isHardwareWallet ?` branch at
+`VotingPowerDelegationConfirmationDialog.tsx:179-185` never mounts at all; and even
+if it did, the harness's default `HwDeviceStatuses.READY` resolves through
+`HardwareWalletStatus` to *Device ready* (`en-US.json:1145`), a different string from
+the one queried. Its two neighbours at `:185-186` fail correctly, so the *case* is
+sound and only the third expectation is dead. It ships as written because the guide
+prescribes it verbatim (`:3736-3742`) and it hides no regression. The rule for anyone
+extending this file: **a mirrored absence assertion is only load-bearing when the
+override actually flips the branch.** The hardware case at `:194-207` is the one that
+carries weight, and it earns it by overriding `selectedWallet` *and* `hwDeviceStatus`
+together — its `Spending password` absence at `:206` genuinely proves branch
+exclusivity.
+
+**F-22's forward note is now half-closed.** F-22 handed task-142 the question of a
+history feature that reached the dialog through `selectedWallet.currentVote` rather
+than through a new prop, which task-141's prop-set pin could not see. The chrome case's
+DOM-level `queryByText(/previous vote/i)` and `queryByText(/new vote/i)` at `:215-216`
+do see it, whatever the data source. What stays open is a comparison row carrying
+neither label; the descriptor half at `:217-218` is exact by contrast, because
+`VotingPowerDelegationConfirmationDialog.messages.ts` exports exactly eight descriptors
+— `title`, `vote`, `drepId`, `fee`, `password`, `errorGeneric`, `buttonCancel`,
+`buttonConfirm` — and task-175 adds only `drepIdCip105` and `signedPayload`
+(`cv-2-implementation-guide.md:3917-3928`), so neither forbidden key can appear by
+accident.
+
+**Sweep basis.** Measured in this recording pass,
+`jest --testPathPattern="(governance|voting)" --no-coverage --runInBand`:
+
+| | suites | tests | snapshots |
+| --- | --- | --- | --- |
+| F-22 basis at task-141 close | 18 passed + 1 skipped of 19 | 295 passed + 12 skipped of 307 | 9 |
+| live (task-142 close) | **18 passed + 1 skipped of 19** | **299 passed + 12 skipped of 311** | **9** |
+| delta | +0 | +4 | +0 |
+
+The whole delta is this row's four cases; no suite was added and no snapshot written.
+The focused run `--testPathPattern=VotingPowerDelegationConfirmationDialog` is 17 of 17
+in one suite, 13 pre-existing plus 4.
+
+**Resolution.** From task-175 onward the slice-wide sweep basis is **299 / 12 / 311
+with 9 snapshots**, superseding F-22's 295 / 307. Section 4's formatting warranty at
+`:3205-3208` is **not trustworthy as written** — measure the snippet before pasting and
+close every row with `prettier --check` (never `--write`) on the file it appended to.
+F-6's conclusion that the corpus's `path:line` anchors had not drifted is untouched by
+this finding; the defect here is a factual claim in guide prose, not an anchor. AC-3's
+bogus `~L118-L127` citation, which F-6 already recorded, is re-anchored in the task-142
+tracker row to the semantic `isHardwareWallet` branch as the guide's Acceptance block
+(`:3797-3801`) requires.
+
+**Disposition.** The `:4122` hand-wrap is **open and blocking on task-175's Step 3**.
+The vacuous assertion is **accepted and closed** — record-only, no change requested.
+The sweep basis and the F-22 half-closure are record-only.
+
+**Owner.** task-142 (recorded); task-175 (the `:4122` break, and the sweep basis);
+task-147 and task-148 (the same measure-before-pasting rule, since Section 4 is not the
+only place the guide makes that promise); the Planner at slice close (basis re-measure,
+and the `:3205-3208` warranty if the guide is ever reconciled).
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)
