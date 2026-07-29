@@ -1737,6 +1737,87 @@ observations, not one collapsed browser pass); any later row touching
 
 ---
 
+## F-27 — the i18n preliminary-copy guard now has one factually inverted comment and one assertion that passes on an empty set, both approved as minors with no fix pass behind them; and the key the comment misdescribes is the one key in the namespace that **no** assertion guards. Sweep basis unchanged at 309/321
+
+**Two review minors ship unabsorbed.** task-146's code review closed `approved`
+after one round with zero blockers and zero majors, but lens 3 filed two **minor**
+findings that survived adjudication, and the rubric that lets minors pass also meant
+no round 2 ran. The closing pass was a recording pass that writes no code, so both
+are still live in the working tree at the moment task-146 was marked `complete`.
+They are recorded here rather than in the tracker alone because task-147 edits the
+neighbouring test surface and slice close owns the release-end marker sweep.
+
+**CR146-1 — the comment inverts what the catalogs say.**
+`tests/jest/i18n/preliminaryCopyMarkers.spec.ts:14-15` reads "Only these two
+confirmation-dialog keys are preliminary; the rest of that namespace predates the
+feature and is legitimately unmarked." Enumerated over the post-task catalogs, the
+`voting.governance.confirmationDialog.` namespace holds **10** keys of which
+**three** carry a leading `!!!`: `drepId`, `drepIdCip105`, `signedPayload`. The
+comment is a correct reading of the guide's **pre-slice** measurement
+(`cv-2-implementation-guide.md:4822-4824`, "8 keys … only `:948` is marked — the
+other seven legitimately predate the feature") restated as a post-slice claim, and
+the restatement is false: `drepId` is preliminary too, at `en-US.json:948` and
+`ja-JP.json:948`, both `"!!!DRep ID"`. The guide's own Step 5 snippet
+(`:4959-4964`) ships the constant with **no comment at all**.
+
+**Why that particular key is the expensive one to misdescribe.** `drepId` is the
+only marked key in the file's blast radius that **nothing asserts**. The committed
+case (`:25-34`) flags en-marked/ja-unmarked pairs only, so it stays silent if the
+marker is stripped from *both* locales at once; the namespace case (`:45-52`) is
+scoped to `voting.governance.currentVote.` by a deliberate judgment call
+(`cv-2-implementation-guide.md:4872-4875`); and `drepId` is deliberately absent from
+`PRELIMINARY_CONFIRMATION_KEYS` (`:16-19`). So the comment is the only artefact in
+the repo pointing a maintainer at the locked invariant
+(`cv-2-implementation-guide.md:4860-4862`, "`…confirmationDialog.drepId` keeps its
+existing value"), and it points away from it. Secondarily, "predates the feature"
+narrates change history, which the comment conventions exclude.
+
+**CR146-2 — the namespace assertion is vacuously green on an empty match.**
+`:45-52` filters `Object.keys(en)` by `CURRENT_VOTE_NAMESPACE` and asserts the
+survivors are `[]`. Re-run first-hand with the prefix constant lower-cased to
+`voting.governance.currentvote.`, the filter matches **0** keys, `unmarked`
+evaluates to `[]`, and the case passes while protecting nothing. The real prefix
+matches **17** keys today. A non-empty length guard is the fix; because the guide's
+Step 5 snippet is verbatim and carries no such guard, whoever adds it should record
+it as deliberate hardening so a later reader does not score it as drift.
+
+**What is genuinely closed.** Neither minor has a runtime, catalog or gate effect,
+and the catalog work itself is clean: 17 `currentVote` and 10 `confirmationDialog`
+keys per locale, 1618 keys per locale with zero one-sided, all 14 new values
+byte-identical to the guide's quoted blocks (`:4905-4912`, `:4923-4930`), ICU
+argument names and branch keys identical across locales, `drepId` untouched (proved
+structurally by an insert-only `--numstat`), both catalogs still mode `100755`, and
+`yarn i18n:manage` idempotent on a second run. `tsc --noEmit` exit 0; `yarn lint`
+exit 0; the two guide-named Jest patterns green with **zero** snapshots written;
+slice sweep 18 passed + 1 skipped of 19 suites and 309 passed + 12 skipped of 321
+tests with 9 snapshots — the F-24 / F-25 / F-26 basis, unmoved.
+
+**The escalation stack gains a fourth item.** AC-3's second half — the ja-JP length
+and layout overflow review — needs a running Storybook with the global Japanese
+toggle, which this container cannot provide. The guide books it in advance
+(`:4881-4883`, `:5041-5043`), so it is an environment limit rather than a discovered
+gap, but it now rides to slice close alongside F-25's and F-26's three storybook
+observations. It is a **fourth distinct** observation against a distinct criterion:
+a slice-close report that collapses the ja-JP overflow pass into the storybook
+browser pass repeats exactly the omission F-25 exists to prevent. Note also that
+every cv-2 catalog value still carries `!!!`, so no copy in this slice is final —
+clearing the markers is a separate, user-owned release-end review.
+
+**Disposition.** Two open minors — **carried to the next row that opens this file,
+or to slice close, whichever comes first**; both are one-line edits and the spec is
+prettier-clean today, so hand-edit it and never run `--write` on it. AC-3's second
+half — **escalated to manual release verification at slice close**. The `drepId`
+coverage hole is **record-only** and binding on any future row that widens this
+guard: adding `drepId` to `PRELIMINARY_CONFIRMATION_KEYS` would close it, and the
+guide's scoping judgment call does not forbid that, it only forbids asserting the
+whole `confirmationDialog.` namespace.
+
+**Owner.** task-146 (recorded); task-147 or the Planner at slice close (absorb
+CR146-1 and CR146-2); the Planner at slice close (carry the ja-JP overflow pass as
+its own line item, and the `!!!` marker sweep as the user's release-end review).
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)

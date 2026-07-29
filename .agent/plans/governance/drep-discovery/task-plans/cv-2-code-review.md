@@ -4338,3 +4338,190 @@ partial while upholding their verdict — and the gate's prettier red was indepe
 reproduced as exactly two pre-existing hunks. Seven observations were declined with reasons
 above. The only open items are the AC-1 scoping note, the AC-4 / task-144 AC-2 OWED record
 and the commit, all close-out steps. No round 2 is warranted.
+
+---
+
+## Code Review: 2026-07-28 — task-146 round 1
+
+**Scope reviewed.** The uncommitted working tree for task-146 — five modified files,
+all insert-only — against its guide section `cv-2-implementation-guide.md:4775-5045`
+(files-touched and do-not-touch at `:4777-4787`, the descriptor table and pipeline
+context at `:4789-4851`, the five locked invariants at `:4853-4866`, the four
+resolved judgment calls at `:4868-4883`, Steps 1-7 at `:4884-5029`, the acceptance
+record at `:5031-5045`). HEAD is `b34a96848` (task-144 `76cfabacc` and task-145
+`b34a96848` committed since the wave baseline `b699d176c`, as expected); task-146
+itself is uncommitted, as instructed. Three independent lenses ran — correctness
+against the guide, locked invariants plus the sanitization floor, and tests plus
+simplicity and drift. Two returned `approved` with empty lists; the third returned
+`requires_changes` with two **minor** findings, both in the one hand-written comment
+block and its neighbouring constant. Both survived adjudication against the files.
+The main checkout `/workspaces/daedalus` was never read, edited or run against, and
+this round fixed no code.
+
+**What landed.** `git status --porcelain` → exactly 5 ` M` lines, zero untracked,
+zero staged, every path guide-named. `git diff --numstat` is **insert-only
+everywhere**: `defaultMessages.json` `35/0`, `en-US.json` `7/0`, `ja-JP.json` `7/0`,
+`tests/jest/i18n/preliminaryCopyMarkers.spec.ts` `34/0`, `translations/messages.json`
+`35/0`. Both locale catalogs keep mode `100755` (the diff headers carry a single
+unchanged `100755` and no mode-change line). No `*.messages.ts`, no whitelist, no
+production source file, no tracker JSON.
+
+### Blockers
+
+**None at blocker or major severity.** Two minors survive; both are one-line fixes
+inside `tests/jest/i18n/preliminaryCopyMarkers.spec.ts` and both are absorbable by
+the closing pass without a round 2.
+
+**CR146-1 (minor) — the hand-written comment above `PRELIMINARY_CONFIRMATION_KEYS`
+states something the catalogs contradict, and it points a future maintainer at a
+locked invariant.** `tests/jest/i18n/preliminaryCopyMarkers.spec.ts:14-15` reads
+"`// Only these two confirmation-dialog keys are preliminary; the rest of that`
+`// namespace predates the feature and is legitimately unmarked.`" That is false as
+written. Enumerated first-hand over the post-task catalogs, the
+`voting.governance.confirmationDialog.` namespace holds **10** keys of which **three**
+carry a leading `!!!` — `drepId`, `drepIdCip105`, `signedPayload` — so `drepId` is a
+third preliminary key, not part of "the rest … legitimately unmarked". It is present
+and byte-identical in both locales at `en-US.json:948` and `ja-JP.json:948`, both
+`"voting.governance.confirmationDialog.drepId": "!!!DRep ID"`. The guide states the
+same truth in the opposite direction at `cv-2-implementation-guide.md:4822-4824`:
+"`voting.governance.confirmationDialog.` has **8** keys (`en-US.json:946-953`); only
+`:948` … is marked — the other seven legitimately predate the feature", and the
+resolved judgment call at `:4872-4875` scopes the namespace assertion out for exactly
+that reason. Why it matters rather than being cosmetic: **no assertion in this file
+guards `drepId`.** The committed case at `:25-34` only flags en-marked/ja-unmarked, so
+it is silent if the marker is stripped from both locales; the namespace case at
+`:45-52` covers `voting.governance.currentVote.` only; and `drepId` is deliberately
+absent from `PRELIMINARY_CONFIRMATION_KEYS` (`:16-19`). The comment is therefore the
+only thing standing between a maintainer and the locked invariant at
+`cv-2-implementation-guide.md:4860-4862` ("`voting.governance.confirmationDialog.drepId`
+keeps its existing value"), and it points the wrong way. Secondarily, the clause
+"predates the feature" narrates change history rather than stating a constraint, and
+the guide's Step 5 snippet at `:4959-4964` ships this constant with **no comment at
+all**. *Fix:* delete the two comment lines, matching the guide's snippet; or restate
+the constraint without the false claim and without the history clause, e.g. "This
+namespace is pinned key by key rather than by prefix: most of its copy is already
+reviewed and carries no marker." Filed by the tests/simplicity lens as QUALITY-1-1;
+confirmed here by direct enumeration.
+
+**CR146-2 (minor) — the current-vote namespace assertion is vacuous if the prefix
+ever stops matching.** `tests/jest/i18n/preliminaryCopyMarkers.spec.ts:45-52` filters
+`Object.keys(en)` by `CURRENT_VOTE_NAMESPACE` (`:12`) and asserts the unmarked
+remainder is `[]`; nothing asserts the filtered set is non-empty. Reproduced
+first-hand rather than reasoned about: running the exact predicate against the real
+catalogs with the constant mutated to `'voting.governance.currentvote.'` matches **0**
+keys and the assertion evaluates to `[]` — green while protecting nothing. Today the
+real prefix matches **17** keys (measured), so a future namespace rename — precisely
+the change this guard exists to survive — silently disarms it, and the committed case
+above it reaches only the en-marked/ja-unmarked half. Recorded honestly: this is the
+guide's **verbatim** Step 5 snippet (`:4979-4987`), so applying the fix is a
+deliberate, semantics-preserving hardening beyond the spec, not the correction of a
+deviation; it must be labelled as such in the tracker `evidence` so a later reader
+does not file it as drift from the guide. *Fix:* bind the filtered list, assert
+`expect(currentVoteKeys.length).toBeGreaterThan(0);`, then run the existing marker
+filter over that binding. Leave the assertion text and the rest of the case unchanged.
+Filed by the tests/simplicity lens as QUALITY-1-2.
+
+### Independent re-checks (nothing new found)
+
+The two `approved` lenses were not accepted on report; their load-bearing claims were
+re-derived here. **Catalog content**: `git diff` on both locale files shows exactly
+7 added lines each, at the correct ASCII-sorted insertion points, with every value
+byte-matching the guide's quoted blocks at `:4905-4912` (en-US) and `:4923-4930`
+(ja-JP) — em dashes, the apostrophe in "This DRep's", the `{target, select, drep …
+abstain … no_confidence … other …}` branch keys and the trailing full-width `。` all
+intact. **Marker invariant**: all 7 new en-US and all 7 new ja-JP values carry the
+leading `!!!`, and a full-catalog sweep leaves exactly one en-marked/ja-unmarked key,
+the pre-existing allow-listed
+`wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement` (spec `:8-10`).
+**Parity**: 1618 keys per locale, zero one-sided. **`drepId` untouched**: confirmed
+at `en-US.json:948` / `ja-JP.json:948` above; the insert-only `numstat` independently
+proves no pre-existing value was altered in either catalog. **Counts**: 17
+`currentVote` and 10 `confirmationDialog` keys per locale, matching Step 6 exactly.
+**Suite**: `node_modules/.bin/jest --testPathPattern=preliminaryCopyMarkers
+--no-coverage --runInBand` re-run here → **1 suite / 4 tests passed, 0 snapshots,
+exit 0**, all four names green. **Non-vacuity of the two other new cases** was checked
+by the tests lens by mutation and is consistent with the file as read: stripping a
+marker from an en-US current-vote value surfaces
+`voting.governance.currentVote.status.inactive`, from a ja-JP value surfaces
+`voting.governance.currentVote.sameVoteHint`, and deleting a pinned confirmation key
+surfaces `voting.governance.confirmationDialog.signedPayload`. **Sanitization floor**:
+zero files under `stores/`, `api/` or `ipc/` are in the change set, the added lines
+contain no DRep id, no bech32/CIP-129/CIP-105 string and no long hex, and the
+`abstain` / `no_confidence` tokens appear only as ICU select branch keys in renderer
+display copy — never as a logged payload. `status.expiring` / `status.expiringBadge`
+live in the display-only `currentVote.status.*` namespace and add no canonical status
+beyond `active | inactive`.
+
+**Dropped findings.** No lens finding was rejected — the two `approved` lenses filed
+nothing, and both findings from the third survived. These are the observations raised
+in the lens summaries or the gate that were examined and **declined** as defects.
+(1) **AC-3 satisfied only in part** — declined: the guide pre-records it at
+`:5041-5043` as **NOT satisfied** and OWED, because the ja-JP length/overflow pass
+needs a running Storybook with the global Japanese toggle and there is no browser in
+this container. An environment limit the contract already books is not a code defect.
+(2) **The gate's non-failing observation that the comment block is
+"convention-compliant"** — declined as an incomplete check, and **overridden** by
+CR146-1: the gate tested the comment for task ids, plan names, ALL-CAPS and change
+history but did not test its factual claim against the catalogs, which contradict it.
+The verdict PASS is unaffected; this was never a gate condition. (3) **`yarn lint`
+reporting 5596 warnings against a ~5591 baseline** — declined as not this task's: the
+lint script globs `source storybook utils --ext .ts,.tsx`, so `tests/` is never linted
+and `.json` is outside `--ext`; linting the changed spec directly returns "File ignored
+by default", exit 0. The +5 traces to the two commits that landed after the baseline,
+3 of them from task-144's `storybook/stories/governance/_utils/GovernanceWrapper.tsx`.
+(4) **`yarn i18n:manage` emitting formatjs "Duplicate message id" warnings and a long
+untranslated-keys listing** — declined as pre-existing: this task modified no
+`*.messages.ts` (the change set is 5 files, none of them a descriptor), so no
+descriptor it owns can be a source, and the flagged namespaces — `assets.assetToken.*`,
+`staking.stakePools.tooltip.*`, `wallet.*`, `governance.drepDirectory.*` — are outside
+the two files this task's ids come from. (5) **`prettier --check` red on the three
+baseline files** — not applicable and correctly untouched: all five changed files are
+either tool-managed JSON or the pre-existing spec, and Step 6 (`:5020-5023`) forbids
+running prettier on any of them. No `prettier --write` was run by any party.
+
+**Gate result and its attribution.** The supplied gate reports **PASS with zero
+failures**, and that verdict is upheld. `tsc --noEmit` → exit 0. `yarn lint` → exit 0,
+zero errors, warning delta attributed above to task-144/145. Jest, using the two
+patterns Step 6 names verbatim: `preliminaryCopyMarkers` → 4/4 green (independently
+re-run here, same result); `voting-governance|VotingGovernancePage` → 3 suites / 56
+tests / 7 snapshots passed with **zero snapshots written**, which is the snapshot-
+stability check the guide asks for and which holds because every new en-US catalog
+value equals its descriptor's `defaultMessage` (`CurrentVoteSummary.messages.ts:74,80,87,93,99`;
+`VotingPowerDelegationConfirmationDialog.messages.ts:21,27`). The broad
+`(governance|voting)` pattern → 18 of 19 suites passed, 309 passed / 12 skipped,
+byte-identical to the wave baseline including the deliberate `GovernanceCliArgvSmoke`
+self-skip. `yarn i18n:manage` — kept here, because **task-146 is the one task in this
+slice that owns those writes** — ran clean and **fully idempotent**: all four
+tool-managed JSONs byte-identical by md5 after a second run, no "Added keys" /
+"Deleted keys" sections, `git diff --numstat` unchanged. That discharges AC-4
+(`:5044`). `typed-scss-modules` was correctly not required (no `.scss` in the
+change set). `yarn check:all` and `yarn storybook:build` were deliberately not run,
+both red at HEAD for the unrelated manager-webpack JSX-loader reason. No `git stash`,
+no commit, and no file edited except this log.
+
+**Handoffs for the closing pass (not review findings).** (a) Absorb **CR146-1** and
+**CR146-2** before the commit; both are single-line edits in
+`tests/jest/i18n/preliminaryCopyMarkers.spec.ts`, and the file is prettier-clean today
+(`prettier --check` on it → exit 0), so keep it that way by hand rather than running
+`--write` on anything. (b) Record **CR146-2's fix as a deliberate hardening beyond the
+guide's verbatim Step 5 snippet**, so it is not later mistaken for drift. (c) **AC-3's
+second half is OWED** and must never be asserted green at this commit — the ja-JP
+length / layout overflow pass needs a browser this container does not have; the
+`statusReason` must carry that reason. (d) `nix` is absent, so `nix fmt` remains the
+owed pre-merge obligation with prettier-on-explicit-paths as the recorded substitute.
+(e) The prescribed commit subject is `feat(gov): task-146 carry the current-vote
+enrichment copy into both catalogs` (`guide:5028`). (f) Neither the tracker row nor
+this log's AC evidence had been updated at review time; both are close-out steps.
+
+**Decision: approved** — no survivor reaches blocker or major severity. Two lenses
+returned `approved` with empty lists and the third returned `requires_changes` on two
+minors; adjudication confirmed both minors first-hand (the false comment by
+enumerating the `confirmationDialog` namespace and finding three marked keys, not two;
+the vacuity by running the mutated predicate and watching it pass green over zero
+keys) and promoted them as **minor and absorbable** rather than as a fix round, because
+neither affects runtime, catalog content or any gate, and each is a one-line edit
+inside a file the closing pass must open anyway. Five observations were declined with
+reasons above, including an override of the gate's "convention-compliant" reading of
+the comment block. The deliverable itself — 14 catalog values byte-matching the spec,
+insert-only, markers intact, 1618/1618 parity, `drepId` untouched, `i18n:manage`
+idempotent — is correct as written. No round 2 is warranted.

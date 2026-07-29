@@ -5685,6 +5685,31 @@
         "defaultMessage": "!!!Your stake counts as Yes on every motion of no-confidence. Rewards can be withdrawn.",
         "description": "Caption explaining the No Confidence delegation state",
         "id": "voting.governance.currentVote.noConfidence.caption"
+      },
+      {
+        "defaultMessage": "!!!Expiring in {n} epochs",
+        "description": "Badge label for a delegated DRep whose registration lapses within the remaining-epoch window",
+        "id": "voting.governance.currentVote.status.expiringBadge"
+      },
+      {
+        "defaultMessage": "!!!This DRep's voting power will lapse in {n} epochs — consider re-delegating.",
+        "description": "Caption shown when the delegated DRep registration lapses soon",
+        "id": "voting.governance.currentVote.status.expiring"
+      },
+      {
+        "defaultMessage": "!!!This DRep is currently inactive. Your voting power will not be counted until they vote again — consider re-delegating.",
+        "description": "Caption shown when the delegated DRep is inactive",
+        "id": "voting.governance.currentVote.status.inactive"
+      },
+      {
+        "defaultMessage": "!!!DRep status is loading.",
+        "description": "Neutral caption shown when the DRep directory has no record for the delegated DRep yet",
+        "id": "voting.governance.currentVote.status.unavailable"
+      },
+      {
+        "defaultMessage": "!!!This wallet already votes {target, select, drep {for this DRep} abstain {Abstain} no_confidence {No Confidence} other {the same way}}.",
+        "description": "Hint shown when the chosen delegation is identical to the wallet current on-chain delegation",
+        "id": "voting.governance.currentVote.sameVoteHint"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.messages.ts"
@@ -5785,6 +5810,16 @@
         "defaultMessage": "!!!DRep ID",
         "description": "Label above the DRep ID in the delegation confirmation dialog",
         "id": "voting.governance.confirmationDialog.drepId"
+      },
+      {
+        "defaultMessage": "!!!CIP-105 DRep ID",
+        "description": "Label above the CIP-105 DRep ID in the delegation confirmation dialog",
+        "id": "voting.governance.confirmationDialog.drepIdCip105"
+      },
+      {
+        "defaultMessage": "!!!Signed payload",
+        "description": "Label above the signed payload vote id in the delegation confirmation dialog",
+        "id": "voting.governance.confirmationDialog.signedPayload"
       },
       {
         "defaultMessage": "!!!Transaction fee",

@@ -9,6 +9,15 @@ const REVIEWED_JA_JP_EXCEPTIONS = [
   'wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement',
 ];
 
+const CURRENT_VOTE_NAMESPACE = 'voting.governance.currentVote.';
+
+// Only these two confirmation-dialog keys are preliminary; the rest of that
+// namespace predates the feature and is legitimately unmarked.
+const PRELIMINARY_CONFIRMATION_KEYS = [
+  'voting.governance.confirmationDialog.drepIdCip105',
+  'voting.governance.confirmationDialog.signedPayload',
+];
+
 const en: Record<string, string> = enUS;
 const ja: Record<string, string> = jaJP;
 
@@ -20,6 +29,31 @@ describe('preliminary copy markers', () => {
         en[key].startsWith('!!!') &&
         !ja[key].startsWith('!!!') &&
         !REVIEWED_JA_JP_EXCEPTIONS.includes(key)
+    );
+    expect(unmarked).toEqual([]);
+  });
+
+  it('defines every catalog key in both locales', () => {
+    const missingInJa = Object.keys(en).filter((key) => !(key in ja));
+    const missingInEn = Object.keys(ja).filter((key) => !(key in en));
+    expect({ missingInEn, missingInJa }).toEqual({
+      missingInEn: [],
+      missingInJa: [],
+    });
+  });
+
+  it('keeps the preliminary marker on every current-vote key in both locales', () => {
+    const unmarked = Object.keys(en)
+      .filter((key) => key.startsWith(CURRENT_VOTE_NAMESPACE))
+      .filter(
+        (key) => !en[key].startsWith('!!!') || !ja[key].startsWith('!!!')
+      );
+    expect(unmarked).toEqual([]);
+  });
+
+  it('keeps the preliminary marker on the new confirmation-dialog keys in both locales', () => {
+    const unmarked = PRELIMINARY_CONFIRMATION_KEYS.filter(
+      (key) => !en[key]?.startsWith('!!!') || !ja[key]?.startsWith('!!!')
     );
     expect(unmarked).toEqual([]);
   });
