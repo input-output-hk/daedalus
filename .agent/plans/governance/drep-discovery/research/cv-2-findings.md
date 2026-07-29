@@ -1023,6 +1023,187 @@ reconciliation commit).
 
 ---
 
+## F-18 — the jsdom/Node realm split makes `resolveExactDRepMatch` return `null` in an **unshimmed** component spec, so the mounted panel reads `unavailable` throughout `VotingGovernancePage.spec.tsx`; `DRepDirectory.spec.tsx` already defeats it with a three-line global shim, so the `drepIndex` → `drepEntry` → badge chain *is* pinnable in jsdom; task-139's mount is otherwise test-neutral (+0 tests, +0 snapshots)
+
+**Measured at task-139's build**, HEAD `144c5153d`, working tree carrying only
+`VotingPowerDelegation.tsx` and `VotingGovernancePage.tsx`. The slice-wide sweep
+F-17 re-based —
+`node_modules/.bin/jest --testPathPattern='(governance|Governance|voting|Voting|DRep)' --no-coverage --runInBand`
+— exits 0 at **17 passed / 1 skipped of 18 suites, 282 passed / 12 skipped of 294
+tests, 9 snapshots** (~6.5 s), **identical** to F-17's post-task-138 basis. The
+focused pattern `voting-governance|VotingGovernancePage` is 3 suites / 38 tests /
+7 snapshots, also unchanged, and `tsc --noEmit` exits 0. task-139 adds no spec
+file by design (`cv-2-implementation-guide.md:2398`), so the comparison basis for
+task-140 onward stays **282 / 12 / 294 with 9 snapshots**.
+
+**The one predicted regression did not occur.** The guide's by-eye check
+(`cv-2-implementation-guide.md:2578-2589`) expects the mounted panel to inject a
+`noDelegation` heading, a `role="alert"` paragraph and a `!!!Choose a delegation`
+button into `VotingGovernancePage.spec.tsx`'s DOM, with a risk of query
+ambiguity. All 14 cases pass unedited; no query was weakened and none needed
+re-pointing.
+
+**The panel's badge is dead on arrival in an unshimmed jsdom spec.**
+`jest.config.js:147` sets `testEnvironment: 'jest-environment-jsdom'` with no
+`projects` and no `testEnvironmentOptions` override, and `resolveExactDRepMatch`
+canonicalizes through `Cardano.DRepID.toCip129DRepID` inside a `try` whose
+`catch` returns `null` (`helpers.ts:146-151`). Under that environment the call
+**throws** — `radix2.encode input should be Uint8Array` — because `Buffer` and
+`Uint8Array` come from different realms and the SDK's bech32 encoder brand-checks
+its argument. `Cardano.DRepID.isValid` (`helpers.ts:144`) returns `true` first,
+so the failure is silent: the function returns `null` for a canonical CIP-129 id
+that **is** a key in the map. Reproduced in this worktree with a throwaway
+default-environment spec, deleted after the run:
+`toCip129DRepID(Cardano.DRepID(VALID_DREP_ID))` threw with that message and
+`resolveExactDRepMatch(VALID_DREP_ID, new Map([[VALID_DREP_ID, entry]]))`
+returned `null`. `helpers.spec.ts:1-6` carries `@jest-environment node` for the
+same reason, with the docblock "The node environment keeps Buffer in the same
+realm as Uint8Array, which the SDK's bech32 encoder brand-checks", which is why
+its positive cases (`helpers.spec.ts:188-195`) are green.
+
+**A component spec can still pin the positive chain, and the precedent is
+in-repo.** `DRepDirectory.spec.tsx` runs in the default jsdom environment — it
+carries no `@jest-environment` docblock, its first line is
+`import React from 'react';` — and repoints the suite's global at Node's realm at
+module scope (`:23-26`):
+
+```ts
+(global as { Uint8Array: unknown }).Uint8Array = Object.getPrototypeOf(
+  Buffer.prototype
+).constructor;
+```
+
+That is why its exact-match cases are green. `it('opens the detail view once for
+an exact CIP-129 match')` (`:528`) and `it('canonicalizes an exact CIP-105 match
+to the CIP-129 detail id')` (`:540`) each assert `onViewDetails` fired once with
+`realDrepId(1)`, and the only non-click call site is the `resolveExactDRepMatch`
+effect at `DRepDirectory.tsx:192-198` — so they pass only because the
+canonicalization succeeded and the canonical key hit the map. Verified by running
+the CIP-105 case alone: 1 passed, 46 skipped. Re-running the throwaway probe with
+that same shim at its module scope flipped both measurements —
+`toCip129DRepID` returned the input id unchanged and the lookup returned the
+entry. So `@jest-environment node` is **not** the only route; the constraint is
+"shim the realm or the lookup is silently `null`", not "no component spec can pin
+it".
+
+**The consequence is already observable in the container spec.** `buildStores`
+supplies `drepIndex: new Map([[VALID_DREP_ID, drepEntry]])`
+(`VotingGovernancePage.spec.tsx:128` — the guide's `:89` is pre-task-138
+numbering) with `drepActivity: 12` (`:105`) and `status: 'active'` (`:107`), and
+`votingWallet` delegates to that exact id (`:91`). With the panel mounted those
+renders should produce badge state `expiring` (`CurrentVoteSummary.tsx:19`,
+`:29-37`). They do not: the run logs
+`voting.governance.currentVote.status.unavailable` **7 times and
+`…status.expiring` / `…status.expiringBadge` zero times**, so
+`currentDRepEntry` (`VotingPowerDelegation.tsx:209-215`) is `null` on every
+render. `CurrentVoteSummary.spec.tsx` passes `drepEntry` in directly, runs no
+lookup, and does log the expiring ids — so the ids really are absent from
+`en-US.json` until task-146 and the two counts discriminate. The `7` is not a
+clean count of the trap: `:532` re-renders the wallet with
+`drep.raw = OTHER_DREP_ID`, which `buildStores`' one-entry index deliberately
+does not key, so at least one of the seven is a correct `unavailable` that the
+realm shim would not change.
+
+**task-173's stated pin needs the shim, not a re-plan.** The guide
+(`cv-2-implementation-guide.md:5307-5314`) calls its two badge assertions and its
+CIP-105 case "the slice's **only** executable pin on the `drepIndex` →
+`drepEntry` → badge chain" and justifies them on `buildStores` already supplying
+the index. Against `VotingGovernancePage.spec.tsx` as it stands every one of them
+reads `!!!DRep status is loading.` and fails, because that file carries no realm
+shim. The available fix is the three lines at `DRepDirectory.spec.tsx:23-26`, at
+that file's module scope. The alternatives are worse and are recorded only to
+close them off: `@jest-environment node` cannot host a
+`@testing-library/react` render, changing the canonicalization is a production
+edit no cv-2 row owns, and a `jest.mock` of the helpers module makes the
+assertion vacuous. None of this is task-139's to choose.
+
+**AC-3's struck clauses.** The findings-note half of task-139's recording
+obligation (`cv-2-implementation-guide.md:2610-2612`) was discharged at planning
+time by **F-2**, which names `GovernanceStore.ts:20-31` as the evidence and defers
+the `givenName` read and the unverified→verified story to `anchor-2`; nothing is
+restated here. The tracker half — the `acceptanceCriteria` string that opens
+"The `drep` state reads `givenName` from
+`GovernanceStore.drepIndex[drepId]?.givenName`" (currently
+`governance-drep-discovery-plan-tasks.json:1267`; the guide's `:1241` is
+pre-137/138 numbering) and the matching `statusReason` — was **not** made in the
+build and was completed in the task-139 review-fix pass.
+
+**Resolution.** Sweep basis unchanged at 282 / 12 / 294 with 9 snapshots. The
+jsdom realm trap is a **standing constraint on every cv-2 component spec that
+exercises the lookup**, not a task-139 defect: in a spec with no realm shim, any
+assertion that a badge, name or status reached the DOM *through*
+`resolveExactDRepMatch` is guaranteed to read `unavailable`, and an assertion
+that it reads `unavailable` is guaranteed to pass for the wrong reason. The
+standing rule for the rest of cv-2: a component spec that asserts anything on the
+far side of the lookup installs the `DRepDirectory.spec.tsx:23-26` shim at module
+scope first.
+
+**Disposition.** Sweep basis — record-only, binding on task-140 onward.
+jsdom realm trap — **open** on `VotingGovernancePage.spec.tsx` and blocking on
+task-173's Step 6 as written; it must be resolved there, not deferred, because
+the guide names those cases as the slice's only pin, and the remedy is three
+lines with in-repo precedent. AC-3 tracker edit — **discharged** in the task-139
+review-fix pass.
+
+**Owner.** task-139 (recorded); task-173 (installs the realm shim in
+`VotingGovernancePage.spec.tsx` before its badge cases can pass); task-147 (any
+end-to-end badge assertion inherits the same constraint).
+
+---
+
+## F-19 — the guide's three tracker-JSON line anchors are pre-slice numbering and drift further with every row that completes; task-140's Step 10 target is already 34 lines off, and F-6's "its `path:line` anchors have not" does not extend to the one anchored file cv-2 writes to as it goes
+
+F-6 measured the corpus's `path:line` anchors against **source** files and found
+them sound. `governance-drep-discovery-plan-tasks.json` is the exception it could
+not have caught: cv-2 writes to that file once per task, and every row that closes
+gains `statusReason`, `evidence` and `updatedAt`, so each completed task pushes
+every later anchor down. The guide states the pre-slice caveat for its source
+anchors (`cv-2-implementation-guide.md:2290-2291`, "Every line number below is the
+pre-slice (`504b44c1a`) number … **Re-anchor by the quoted content, never by the
+number.**"), but its three tracker anchors are given as bare line numbers with no
+such warning, and two of them are instructions to edit *one specific line*.
+
+Measured, the `504b44c1a` copy against the working tree at the close of task-139:
+
+| guide site | what it says | pre-slice | at `144c5153d` | live now | offset |
+| --- | --- | --- | --- | --- | --- |
+| `:2316`, `:2529` (task-139 Step 6) | `line 1241` — task-139's own AC-3 string | 1241 | 1267 | **1275** | +34 |
+| `:2641`, `:3110` (task-140 Step 10) | "**line 1263 only**" — task-140's own AC-7 | 1263 | 1297 | **1297** | +34 |
+| `:3112` (task-140 Step 10) | "Leave line 1283" — task-173's AC | 1283 | 1317 | **1317** | +34 |
+
+The trap is the middle column. An anchor moves **again** when the reader's own row
+closes: F-18 above pins task-139's AC-3 string at `:1267`, which was exact when it
+was written and went stale eight lines later in the same pass, the moment
+task-139's `statusReason` / `evidence` / `updatedAt` were written above it. Both
+numbers describe the same string; neither is wrong about the commit it was measured
+at. The file is 2046 lines at `504b44c1a` and 2087 now, and the `cv-2` phase object
+this file's own References section cites as `:1162-1457` is live at `:1162-1498`,
+by the same +41.
+
+Both live anchors resolve unambiguously by content: `:1297` is the task-140 AC-7
+string opening "The comparator sentence of
+`designs/current-vote-display-design.md:95`", and `:1317` is the task-173 AC string
+opening "The first sentence of `designs/current-vote-display-design.md:95`" — the
+same design-doc line under two different owners, which is why the guide already
+tells task-140 to re-read that line at edit time (`:3112`).
+
+**Resolution.** Re-anchor by the quoted content, never by the number — the guide's
+own source-file rule, which binds harder on the tracker because the slice itself is
+what moves it. The numbers above are recorded as a measurement, not as a correction
+to chase: task-140's row will push `:1317` down again before task-173 reads it, so
+neither F-18's `:1267`, nor the guide's anchors, nor this file's References line is
+rewritten here. A tracker edit that lands on the wrong line silently corrupts a
+sibling task's acceptance criteria and `node -e "JSON.parse(…)"` still passes, so
+after any tracker edit re-read the changed string and confirm it is the one the
+guide quotes.
+
+**Disposition.** Record-only, binding on task-140 onward.
+
+**Owner.** task-139 (recorded); task-140 (Step 10 touches two of the three
+anchors); task-173 and every later task that closes a row.
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)

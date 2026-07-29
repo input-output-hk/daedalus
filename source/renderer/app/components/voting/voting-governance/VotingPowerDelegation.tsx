@@ -19,6 +19,9 @@ import { Separator } from '../../widgets/separator/Separator';
 import { InitializeVPDelegationTxError } from '../../../stores/VotingStore';
 import { VoteType } from './types';
 import { sharedGovernanceMessages } from './shared-messages';
+import CurrentVoteSummary from './CurrentVoteSummary';
+import { resolveExactDRepMatch } from '../../governance/drep-directory/helpers';
+import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 
 type Props = {
   getStakePoolById: (...args: Array<any>) => any;
@@ -48,6 +51,7 @@ type Props = {
     selectedWalletId: string | null;
     voteType: VoteType;
   }) => void;
+  drepIndex?: ReadonlyMap<string, AppDRepDirectoryEntry>;
 };
 
 type FormData = {
@@ -101,6 +105,10 @@ const initialState: State = {
   },
 };
 
+// Shared at module scope so the default prop keeps its referential identity
+// across renders.
+const EMPTY_DREP_INDEX: ReadonlyMap<string, AppDRepDirectoryEntry> = new Map();
+
 // Both the on-chain and the directory-supplied id are seeded verbatim: the
 // value must reach chosenOption and the delegateVotes dRepId byte-for-byte.
 function deriveFormSeed(
@@ -138,6 +146,7 @@ function deriveFormSeed(
 
 function VotingPowerDelegation({
   getStakePoolById,
+  drepIndex = EMPTY_DREP_INDEX,
   initiateTransaction,
   initialFormState,
   intl,
@@ -194,6 +203,16 @@ function VotingPowerDelegation({
       return { ...previous, ...seed };
     });
   }, [currentVoteKind, currentVoteDRepId]);
+
+  // `raw` can be the `drep_vkh1...` encoding, which the lookup's ID-validity
+  // gate rejects, so the CIP-129 form is queried when present.
+  const currentDRepEntry =
+    currentVote?.kind === 'drep'
+      ? resolveExactDRepMatch<AppDRepDirectoryEntry>(
+          currentVote.drep.cip129 ?? currentVote.drep.raw,
+          drepIndex
+        )
+      : null;
 
   const drepInputIsValid = Cardano.DRepID.isValid(state.drepInputState.value);
 
@@ -305,6 +324,11 @@ function VotingPowerDelegation({
             value={selectedWallet?.id || null}
             getStakePoolById={getStakePoolById}
             disableSyncingWallets
+          />
+
+          <CurrentVoteSummary
+            currentVote={currentVote}
+            drepEntry={currentDRepEntry}
           />
 
           {selectedWallet && (

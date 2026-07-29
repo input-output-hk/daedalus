@@ -2479,3 +2479,446 @@ fix touches `deriveFormSeed`, the initializer, the `onChange` seed or the effect
 Once the row is written (`complete`, AC-3 satisfied in part) and CR138R3-4 is
 applied, the task closes with one subject-only commit,
 `feat(gov): task-138 pre-fill the delegation form from the wallet current on-chain vote`.
+
+---
+
+## Code Review: 2026-07-28 — task-139 round 1
+
+**Scope reviewed.** The uncommitted working tree against the guide section
+"task-139: Mount `CurrentVoteSummary` in the delegation form"
+(`cv-2-implementation-guide.md:2306-2617`) — its no-spec-file scope boundary
+(`:2398-2400`), its six build steps (`:2404-2555`), its Step 7 verification block
+(`:2557-2589`) and its acceptance record (`:2595-2617`) — task-139's three
+acceptance criteria in `governance-drep-discovery-plan-tasks.json:1252-1269`, the
+PRD's task-139 row (`cv-2-PRD.md:153`), the AC-3 split under D-5 (`:206-209`,
+`:450`), the two scoped-criterion rows for task-139 (`:1634-1635`) and the
+per-task Definition of Done (`:1619-1623`). HEAD is `144c5153d`. Three independent lenses were
+consolidated here — guide conformance and runtime correctness, locked invariants
+and the sanitization floor, and quality plus comment convention. The main
+checkout `/workspaces/daedalus` was never read, edited or run against, and this
+round fixed no code.
+
+**What landed.** `git diff --stat` → 3 files, `122` insertions, `2` deletions:
+`source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx`
+(`+24`), `source/renderer/app/containers/voting/VotingGovernancePage.tsx`
+(`+12/-2`) and `research/cv-2-findings.md` (`+88`, the new F-18). No untracked
+file, no `.scss`, no locale or catalog write, and the tracker JSON is **not** in
+the change set.
+
+**The code deliverable is clean, and all three lenses agree on that.** Steps 1-5
+are applied: the `CurrentVoteSummary` and `resolveExactDRepMatch` imports plus the
+`import type { AppDRepDirectoryEntry }` at `VotingPowerDelegation.tsx:22-24`; the
+optional `drepIndex` prop at `:54` with the module-scope `EMPTY_DREP_INDEX`
+default bound at `:149`, so no `new Map()` is minted per render; the lookup at
+`:209-215`; the unconditional mount at `:329-332`, a sibling of `WalletsDropdown`
+and **outside** the `{selectedWallet && (` gate at `:334`, so the `noDelegation`
+branch renders with no wallet selected; and the exploded stores destructure plus
+`drepIndex={governance.drepIndex}` in the container (`VotingGovernancePage.tsx:38-46`,
+`:73`). Step 3 is applied differently from the guide's literal snippet and is
+value-identical: it reuses task-138's `const currentVote = selectedWallet?.currentVote ?? null;`
+(`:179`) instead of re-deriving the expression, which also keeps the type aligned
+with `CurrentVoteSummary`'s `currentVote: WalletVotingTarget | null`. `submitButtonDisabled`
+(`:223`), `chosenOption`, the form-state shape and the seed chain are
+byte-identical to HEAD; `currentDRepEntry` is referenced exactly once, at `:331`,
+as a display prop, so nothing from the index reorders, filters or gates the form.
+Invariant 4 holds (`grep -n "GovernanceStore" source/renderer/app/stores/VotingStore.ts`
+→ nothing, and the index is prop-drilled, never injected); invariant 10 holds
+(`cip129 ?? raw` is a read-only lookup key, no `toLowerCase`/`trim`/`normalize`);
+the sanitization floor is untouched — the diff adds no `logger.`, `analytics`,
+`console.` or `electron-store` call, and the only sink the mount newly makes
+reachable is `DRepIdDisplay.tsx:53`/`:64`, which logs `drepIdLength` and never the
+bech32 string. No `reaction`, no `autorun`, no poll: reactivity comes from the
+`@observer` container plus `GovernanceStore`'s reassignment of `drepIndex`
+(`GovernanceStore.ts:254`, `:297`).
+
+**What fails this round is documentation the diff itself introduces, plus the
+tracker step the build skipped.**
+
+### Blockers (ranked, most severe first)
+
+**CR139-1 (blocker, `research/cv-2-findings.md:1026-1111`) — F-18's headline
+claim is refuted by a green in-repo jsdom spec, and the root cause, the
+prescription and the two downstream constraints built on it are all unproven.**
+F-18 asserts as measured fact that "`resolveExactDRepMatch` returns `null` for
+**every** input under the jsdom test environment, so no component spec can pin the
+`drepIndex` → `drepEntry` → badge chain" (`:1026`), that under jsdom
+`Cardano.DRepID.toCip129DRepID` "**throws** — `radix2.encode input should be
+Uint8Array`" (`:1046-1060`), and concludes "Treat the positive chain as pinnable
+only in a `@jest-environment node` spec" (`:1101`), with `task-173 (must re-plan
+its badge cases)` and `task-147` named as owners (`:1108-1111`). Measured
+here, first-hand: `source/renderer/app/components/governance/drep-directory/DRepDirectory.spec.tsx`
+carries **no** `@jest-environment` docblock — its first line is `import React from 'react';`
+— so `jest.config.js:147`'s `testEnvironment: 'jest-environment-jsdom'` applies,
+and `jest.config.js` defines no `projects` and no `testEnvironmentOptions` that
+could vary it. `node_modules/.bin/jest --testPathPattern="DRepDirectory.spec"
+--no-coverage --runInBand -t "canonicalizes an exact CIP-105 match"` → **1 passed**,
+46 skipped. That case (`:540`) types `realCip105Id(1)` and asserts
+`onViewDetails` was called once with `realDrepId(1)`; the only non-click call site
+is `DRepDirectory.tsx:192-198`, `const match = resolveExactDRepMatch(searchQuery, drepIndex);
+if (match) { … onViewDetails(match.drepId); }`. It can only pass if
+`toCip129DRepID` succeeded under jsdom **and** the canonicalized key hit the map —
+i.e. the exact positive chain F-18 declares impossible, already pinned by a
+component spec. `:528` (exact CIP-129) passes for the same reason. The
+symptom F-18 measured is real and reproduced here — the container suite logs
+`voting.governance.currentVote.status.unavailable` **7** times and
+`…status.expiring` **0** times — but the count is not a clean signal either: at
+least one of those renders is a *correct* `unavailable`, since
+`VotingGovernancePage.spec.tsx:532` re-renders with `drep.raw = OTHER_DREP_ID`,
+which is deliberately not a key in `buildStores`' one-entry index (`:128`). And
+the fixture id itself canonicalizes to itself — probed directly in this worktree,
+`Cardano.DRepID.toCip129DRepID(Cardano.DRepID('drep1ygqqq…7vlc9n'))` returns the
+same string with `isValid` true — so the encoder is not the discriminator the note
+says it is. The finding is filed as a blocker not because task-139's code is
+wrong, but because F-18 is written as a **standing constraint binding on task-173
+and task-147** (`:1096-1111`) that would strip the guide's self-declared "only
+executable pin on the `drepIndex` → `drepEntry` → badge chain"
+(`cv-2-implementation-guide.md:5307-5314`) on a diagnosis a passing spec
+contradicts.
+*Fix:* rewrite F-18 to claim only what was measured — in
+`VotingGovernancePage.spec.tsx` the lookup resolves `null` on the drep-branch
+renders that use `VALID_DREP_ID` (7 `unavailable`, 0 `expiring`, with the
+`OTHER_DREP_ID` re-render legitimately among them). Delete the "every input under
+the jsdom test environment" headline, the `radix2.encode` root-cause paragraph and
+the "pinnable only in a `@jest-environment node` spec" prescription; reconcile
+against `DRepDirectory.spec.tsx:528` and `:540` before recording any constraint,
+and state the cause as **unidentified**. Leave the disposition open and remove
+task-173 and task-147 as owners of a remedy that a green jsdom spec refutes; a
+narrower re-measurement is the right hand-off, not a re-plan.
+
+**CR139-2 (major, `governance-drep-discovery-plan-tasks.json:1252-1269`) — guide
+Step 6 was not performed, and the row is still `pending` with no `statusReason`.**
+Two halves of one edit, both verified as undone: (a) Step 6 (`:2526-2555`)
+instructs replacing task-139's third `acceptanceCriteria` string with "The panel
+updates reactively when `drepIndex` is populated or updated; no wallet re-poll is
+triggered." The old string — carrying the `givenName` read and the
+unverified→verified Storybook clause — is still in the file at `:1267`, and the
+acceptance record's own checkbox is written as "**AC-3 (as rewritten in Step 6)**"
+(`:2606`), so the criterion cannot be reported against until the rewrite lands.
+(b) The row's keys are `id, title, description, status, priority, estimatedHours,
+dependencies, targetPath, acceptanceCriteria` with `"status": "pending"` at
+`:1256` and no `statusReason`, no `evidence`, no `updatedAt`; the sibling
+`task-137` row (`:1199-1210`) carries all four in the order `status,
+statusReason, evidence, updatedAt, priority`, so the convention is established and
+this row is the outlier. The per-task Definition of Done (`cv-2-PRD.md:1619-1623`)
+requires the tracker synchronized **before** the single commit, and no later cv-2
+row owns either half. Raised by the correctness lens as a deliberately
+non-blocking hand-off; promoted here because the guide places the string rewrite
+inside task-139's ordered steps rather than in the Scribe step — the Scribe owns
+only the *reason* text — and because every prior round of this log has upheld the
+unsynchronized row as blocking (CR136-1, CR137-1, CR138-1, CR138R2-1, CR138R3-1).
+*Fix:* hand-edit the one `acceptanceCriteria` string per Step 6, preserving
+surrounding formatting, then set the row to `complete` and insert `statusReason`,
+`evidence` and `"updatedAt": "2026-07-28"` between `status` and `priority` in the
+`task-136`/`task-137` key order. Report AC-1 satisfied (unconditional mount at
+`VotingPowerDelegation.tsx:329-332`, outside the `selectedWallet` gate at `:334`),
+AC-2 **satisfied in part** with the Storybook visual recorded **OWED** to task-145
+(`cv-2-PRD.md:1634`; guide `:2601-2605`), and AC-3-as-rewritten satisfied via the
+`@observer` container plus the `drepIndex` reassignment. Record the struck clauses
+as deferred to `anchor-2`, naming `GovernanceStore.ts:20-31` as the evidence, per
+the acceptance record's fourth checkbox (`:2611-2613`). Note also that the guide's
+own `:1241` anchor for the string is stale — see CR139-3. This JSON is
+tool-managed: never run prettier on it.
+
+### Minor (non-blocking; absorb in the same fix pass)
+
+**CR139-3 (minor, `research/cv-2-findings.md:1088-1094`) — F-18's AC-3 paragraph
+cites a tracker line that is now a different key.** The note reads, at `:1093`,
+"the AC-3 string at `governance-drep-discovery-plan-tasks.json:1241`". Verified:
+`:1241` is
+`"targetPath": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx"`,
+and the `givenName` string is at `:1267`. The number is the guide's pre-137/138
+numbering copied without re-verification, which is the trap the guide itself warns
+about ("Re-anchor by the quoted content, never by the number",
+`cv-2-implementation-guide.md:2291-2292`). Co-located with CR139-1's rewrite, so
+it costs nothing to take in the same pass.
+*Fix:* cite the quoted string, or `:1267`, so the hand-off cannot land on the
+wrong row.
+
+**CR139-4 (minor, `VotingPowerDelegation.tsx:207-208`) — the comment names the
+wrong rejection mechanism.** It reads "The index is keyed by CIP-129, and a
+CIP-105 raw id fails the **checksum** validation the lookup gates on, so the
+CIP-129 form is queried when present." The gate is
+`if (!Cardano.DRepID.isValid(full)) return null;` (`helpers.ts:144`), and the doc
+comment on the very function the line calls says the opposite about checksums:
+"checksum-valid full IDs of **either** encoding are canonicalized to CIP-129 (the
+store's key form) before lookup" (`helpers.ts:134-137`). Probed here: the id the
+rule actually excludes is `drep_vkh1…`, and it fails on the HRP, not a bad
+checksum — `Cardano.DRepID.isValid('drep_vkh15xev84…u4a4l')` → `false`, while
+`Cardano.DRepID.isValid(Cardano.DRepID.cip105FromCredential(…))` → `true` for the
+`drep1…` form, which `helpers.spec.ts:192-194` pins as canonicalizing to the same
+entry. The quality lens filed this as **major** on the strength of that spec;
+recalibrated down here because the *encoding label* is guide-sanctioned — the
+guide itself calls `drep_vkh1…` a "CIP-105 `raw`" (`cv-2-implementation-guide.md:2385-2391`)
+and "the CIP-105 encoding" (`:5317`) — so the only unambiguous error is the
+mechanism word, and the code it explains is correct.
+*Fix:* replace "fails the checksum validation" with the real gate, e.g. "…and
+`raw` can be the `drep_vkh1…` encoding, which the lookup's ID-validity gate
+rejects, so the CIP-129 form is queried when present." — or drop the comment and
+let `cip129 ?? raw` stand.
+
+### Merged and dropped
+
+1. *Nothing dropped outright from a filed blocker — all three lens findings
+   survived adjudication,* though two were re-scoped. The correctness lens and the
+   invariants/sanitization lens both returned **approved** with zero blockers, and
+   their independent confirmations of the code deliverable are the reason no
+   production-code finding appears above.
+2. *Adjudicated between two lenses — the `:207-208` comment.* The invariants lens
+   explicitly **cleared** it ("the comment mirrors the guide's own sanctioned
+   wording"), the quality lens filed it as **major**. Both are partly right: the
+   guide does use "CIP-105" for `drep_vkh1…`, so that half of the clearance holds,
+   but no reading of "CIP-105" rescues "checksum" — `drep_vkh1…` has a valid
+   checksum and fails on the HRP. Kept, narrowed to the mechanism word, filed
+   minor (CR139-4).
+3. *Promoted, not dropped — guide Step 6.* The correctness lens filed it as a
+   "NON-BLOCKING HANDOFF … the tracker row is out of scope for this round". It is
+   in scope: Step 6 is one of task-139's six ordered build steps, its acceptance
+   checkbox is phrased "AC-3 (as rewritten in Step 6)", and the per-task DoD puts
+   the tracker before the commit. Promoted to CR139-2 and widened to the whole
+   row, consistent with every prior round of this log.
+4. *Not a blocker — the mount is inert under jsdom in the container spec.* Both
+   the gate and one lens escalated it. Confirmed as a symptom (7 `unavailable` /
+   0 `expiring`, reproduced here) and recorded as a **note**, not a defect of this
+   task: the guide states at `:2398-2400` that task-139 adds **no spec file** and
+   that its gate is "every existing suite stays green" plus the Step 7 greps, so a
+   missing pin is out of scope by contract. What *is* a defect this round is the
+   diagnosis written into F-18 — see CR139-1.
+5. *Not a blocker — the pre-existing prettier redness.* `VotingPowerDelegation.tsx`
+   yields the same single delta on the working copy and on the HEAD blob, at
+   `:90`'s `(typeof messages)[keyof typeof messages]`, a line outside every hunk;
+   `VotingGovernancePage.tsx` went from 10 deltas at HEAD to 0, because the
+   hand-written exploded destructure happens to match prettier 2.1.2's output.
+   Both files are pre-existing, `--write` was correctly never run and
+   `yarn prettier` never invoked. Baseline item 4.
+6. *Not a blocker — the `[React Intl] Missing message` console noise.* The
+   `voting.governance.currentVote.status.*` ids were minted by task-136 and the
+   catalogs are seeded by task-146; tests pass through the `defaultMessage`
+   fallback. The four `console.warn` records in `GovernanceQueryService.spec.ts`
+   are the documented era-fallback path.
+7. *Cleared and recorded so it is not re-litigated.* The invariants lens verified
+   that no `abstain` / `no_confidence` literal leaves `intl.formatMessage`
+   (`CurrentVoteSummary.tsx:139-141`), that the **full** `drepIndex` rather than
+   the default cohort is queried so a top-35 DRep still resolves, that `expiring`
+   stays renderer-derived (`CurrentVoteSummary.tsx:26-38`) and that no new copy
+   string was minted.
+
+**Gate result and its attribution.** The supplied verification gate reports
+**PASS with zero failures** and matches the reviewed tree exactly — 3 modified
+paths, `122`/`2`, HEAD `144c5153d` — so it was accepted, with the two load-bearing
+numbers re-measured here rather than inherited.
+`node_modules/.bin/jest --testPathPattern="VotingGovernancePage" --no-coverage
+--runInBand` reproduces **7** `status.unavailable` records and **0**
+`status.expiring`, and
+`--testPathPattern="DRepDirectory.spec" … -t "canonicalizes an exact CIP-105 match"`
+is **1 passed** — the two facts CR139-1 turns on. The gate's own greens stand:
+`tsc --noEmit` exit 0; `jest --testPathPattern="voting-governance|VotingGovernancePage"`
+→ 3 suites / 38 tests / 7 snapshots; `jest --testPathPattern=governance` → 15 of
+16 suites, 260 passed / 12 skipped; the wave pattern `"(governance|voting)"` →
+17 of 18 suites, 282 passed / 12 skipped / 9 snapshots, **numerically identical**
+to the wave baseline; `yarn lint` exit 0 at 5595 warnings / 0 errors, with both
+changed files proven warning-identical to their HEAD blobs through
+`eslint --stdin --stdin-filename`, so the delta is `+0`. `typed-scss-modules` was
+correctly skipped (no `.scss` in the change set) and `yarn i18n:manage` correctly
+never run, verified by a clean `git status` on `source/renderer/app/i18n` and
+`translations`. The 12 skipped tests are `GovernanceCliArgvSmoke.spec.ts`'s
+environment self-skip. All four Step 7 greps pass, including the
+`CurrentVoteSummary` one whose two hits are substring false positives
+(`injectIntl`, `import type`) — `grep -n mobx` on that file returns nothing. This
+round moved neither HEAD nor the change set: no file was edited except this log.
+`nix` is absent, so `nix fmt` stays an owed pre-merge obligation (F-12).
+`yarn check:all` and `yarn storybook:build` were deliberately not run — both are
+red at HEAD for the unrelated storybook manager-webpack JSX loader reason and
+neither is a valid gate.
+
+**Decision: requires_changes** — one blocker, CR139-1, one major, CR139-2, and two
+minors to absorb in the same pass. The production code is accepted as delivered
+and no fix below touches it beyond a two-line comment: the mount, the lookup, the
+prop plumbing and the untouched `submitButtonDisabled` / `chosenOption` / seed
+chain are confirmed by all three lenses and by a re-measured gate. What must
+change is what this task wrote *about* the repo — an F-18 whose universal claim a
+green jsdom spec refutes and whose prescription would cost task-173 its only badge
+pin — and the tracker step the build skipped, which is the only place AC-2's
+**OWED** Storybook check and AC-3's D-5 split can be recorded truthfully. Once
+CR139-1 and CR139-2 land and the two minors are absorbed, the task closes with one
+subject-only commit,
+`feat(gov): task-139 mount CurrentVoteSummary in the delegation form`.
+
+---
+
+## Code Review: 2026-07-28 — task-139 round 2
+
+**Scope reviewed.** The uncommitted working tree after round 1's fix pass, against
+the same contract as round 1 — the guide section
+`cv-2-implementation-guide.md:2306-2617` (no-spec-file scope at `:2398-2400`, six
+build steps at `:2404-2555`, Step 7 at `:2557-2589`, acceptance record at
+`:2595-2617`), task-139's tracker row, and the PRD's D-5 split and per-task DoD
+(`cv-2-PRD.md:1619-1623`, `:1634-1635`). HEAD is still `144c5153d`; no commit was
+made. Three independent lenses ran again — guide conformance and runtime
+correctness, locked invariants and the sanitization floor, and tests plus
+simplicity and drift — and **all three returned `approved` with zero blockers**.
+This round's work was therefore adjudicating the four round-1 findings against the
+files rather than triaging new ones; every discharge below was re-verified
+first-hand, not accepted on report. The main checkout `/workspaces/daedalus` was
+never read, edited or run against, and this round fixed no code.
+
+**What landed since round 1.** `git status --porcelain` → 5 modified, 0 untracked,
+0 staged. `git diff --numstat`:
+`governance-drep-discovery-plan-tasks.json` `10/2`,
+`research/cv-2-findings.md` `128/0`,
+`task-plans/cv-2-code-review.md` `263/0` (the round-1 entry, itself still
+uncommitted),
+`VotingPowerDelegation.tsx` `24/0`,
+`VotingGovernancePage.tsx` `10/2`. The production diff is unchanged from round 1
+apart from the two comment lines CR139-4 asked for; the tracker row and the F-18
+rewrite are the new material.
+
+### Blockers
+
+**None.** All four round-1 findings are discharged.
+
+**CR139-1 (was blocker) — discharged, and the diagnosis is now measured rather
+than asserted.** F-18 (`research/cv-2-findings.md:1026-1153`) no longer claims the
+lookup fails for *every* input under jsdom, and no longer prescribes
+`@jest-environment node` as the only route. Its new thesis is a realm split that
+an in-repo shim already defeats, and its four load-bearing anchors check out:
+`DRepDirectory.spec.tsx` carries no `@jest-environment` docblock (line 1 is
+`import React from 'react';`) and repoints the global at Node's realm at module
+scope with its own explanatory comment (`:21-26`); `helpers.spec.ts:1-6` carries
+`@jest-environment node` with the matching docblock; `VotingGovernancePage.spec.tsx`
+carries neither (`grep -n "Uint8Array\|jest-environment"` → empty). Round 1
+blocked because the previous diagnosis was contradicted by a green spec, so the
+replacement was re-probed here rather than inherited — a throwaway spec in the
+default jsdom environment, run and deleted, working tree confirmed back to the
+same 5 modified paths:
+
+```
+PROBE[unshimmed] isValid=true canonical=THREW: radix2.encode input should be Uint8Array lookup=null
+PROBE[shimmed]   isValid=true canonical=drep1ygqqq…7vlc9n                              lookup=HIT
+```
+
+Both probes queried `VALID_DREP_ID` against `new Map([[VALID_DREP_ID, entry]])`.
+That single run reconciles the two measurements round 1 could not: the encoder
+*does* round-trip the fixture id (which is why round 1's node-side probe saw it
+canonicalize to itself and why `DRepDirectory.spec.tsx:528`/`:540` are green), and
+it *does* throw inside `resolveExactDRepMatch`'s `try` (`helpers.ts:145-152`)
+under an unshimmed jsdom global — `Cardano.DRepID.isValid` returning `true` first
+is what makes the failure silent. F-18's task-173 hand-off is correspondingly
+narrowed from "must re-plan its badge cases" to "install the three-line shim", so
+the guide's self-declared "only executable pin on the `drepIndex` → `drepEntry` →
+badge chain" (`cv-2-implementation-guide.md:5307-5314`) survives.
+
+**CR139-2 (was major) — discharged.** Guide Step 6's tracker half is applied.
+The `acceptanceCriteria` third string is replaced **verbatim** with the guide's
+text and nothing else in that array moved
+(`governance-drep-discovery-plan-tasks.json`, hunk `@@ -1264,7 +1272,7 @@`; the
+removed `givenName` string was at `:1267`, confirming CR139-3's re-anchor). The
+row is now `"status": "complete"` with `statusReason`, `evidence` and
+`"updatedAt": "2026-07-28"` inserted between `status` and `priority`, matching the
+`task-136`/`task-137`/`task-138` key order. It reports AC-1 satisfied, AC-2
+**satisfied in part** with the Storybook visual **OWED** to task-145, and
+AC-3-as-rewritten satisfied structurally, and it records the struck clauses as
+deferred to `anchor-2` naming `GovernanceStore.ts:20-31` — the fourth acceptance
+checkbox (`cv-2-implementation-guide.md:2611-2613`). Its supporting citations were
+spot-checked rather than trusted: `givenName` really does appear exactly once
+across `source`, `storybook` and `tests`, at
+`VotingPowerDelegationConfirmationDialog.spec.tsx:89`, as a negative fixture. The
+file still parses (`node -e "require(…)"` → `JSON OK`) and prettier was not run on
+it.
+
+**CR139-3 (was minor) — discharged.** F-18 now cites
+`governance-drep-discovery-plan-tasks.json:1267` and flags the guide's `:1241` as
+pre-137/138 numbering; `:1241` is indeed the `targetPath` key.
+
+**CR139-4 (was minor) — discharged.** The comment at
+`VotingPowerDelegation.tsx:207-208` now reads "``raw`` can be the `drep_vkh1...`
+encoding, which the lookup's ID-validity gate rejects, so the CIP-129 form is
+queried when present." The mechanism word is correct — the gate is
+`Cardano.DRepID.isValid` (`helpers.ts:144`), not a checksum — and the comment is
+two plain sentence-case lines stating a constraint.
+
+### Independent re-checks of the code deliverable (nothing new found)
+
+Re-anchored against the current file rather than round 1's numbers: imports
+`:22-24` with `AppDRepDirectoryEntry` as `import type`; the optional prop `:54`;
+the module-scope `EMPTY_DREP_INDEX` `:110` bound in the destructure at `:149`; the
+lookup `:209-215`; the unconditional mount `:329-332`, a sibling of
+`WalletsDropdown` and outside the `{selectedWallet && (` gate at `:334`; the
+container destructure `:38-46` and `drepIndex={governance.drepIndex}` at `:73`.
+Two hazards were checked directly rather than reasoned about. The default
+parameter cannot be bypassed by a `null` prop: `GovernanceStore.ts:100` declares
+`@observable drepIndex: Map<string, AppDRepDirectoryEntry> = new Map()` and both
+refresh paths reassign a `new Map` (`:254`, `:297`), so the value is never
+`null`/`undefined` and `.get` cannot throw. `governance` is a registered store
+(`stores/index.ts:43`, `:68`, `:121`), so the prop is present in the app. Step 3's
+deviation from the guide's literal snippet stands as value-identical — it reuses
+task-138's `const currentVote = selectedWallet?.currentVote ?? null;` (`:177`),
+which also matches `CurrentVoteSummary`'s `currentVote: WalletVotingTarget | null`
+(`CurrentVoteSummary.tsx:14`). `DRepIdentity.cip129` is optional
+(`common/types/governance.types.ts:22-24`), so `cip129 ?? raw` yields a string.
+`submitButtonDisabled`, `chosenOption`, the form-state shape and the seed chain
+are outside every hunk; `currentDRepEntry` is read exactly once, at `:331`, as a
+display prop. `grep -rnE "task-1[0-9][0-9]|CR13[0-9]|CAT-|CP-[0-9]|AC-[0-9]"` over
+`source storybook tests` returns nothing.
+
+### Merged and dropped
+
+1. *Nothing dropped, because nothing was filed.* All three lenses returned
+   `approved` with zero blockers, and their three summaries agree on the same
+   facts: the six build steps are applied, the mount is unconditional, no store
+   read entered either component, and the two source comments are
+   convention-compliant. Their overlapping claims were merged into the re-check
+   paragraph above rather than restated three times.
+2. *Not promoted — the mount is inert under jsdom in `VotingGovernancePage.spec.tsx`.*
+   The gate escalated it again as a non-gate observation and F-18 now records it as
+   **open**. It is a **note**, not a task-139 defect, for the reason round 1 gave:
+   the guide assigns this task no spec file (`:2398-2400`) and gates it on "every
+   existing suite stays green". Carried forward, now with a confirmed cause:
+   **task-173 must install the `DRepDirectory.spec.tsx:21-26` shim at
+   `VotingGovernancePage.spec.tsx` module scope before its badge and CIP-105 cases
+   can pass**, and task-147 inherits the same constraint.
+3. *Not promoted — AC-2 stays partial.* The Storybook visual belongs to task-145
+   and no browser exists in this container; the guide records it **OWED**
+   (`:2601-2605`) and the tracker row now says so. An acknowledged scope boundary
+   is not a defect.
+4. *Not promoted — prettier redness on `VotingPowerDelegation.tsx`.* Pre-existing
+   at `:90`, outside every hunk, identical on the HEAD blob; `--write` was never
+   run on either pre-existing file. Baseline item 4.
+5. *Not promoted — `[React Intl] Missing message` noise for
+   `voting.governance.currentVote.status.*`.* Catalog seeding is task-146's;
+   the suites pass through the `defaultMessage` fallback.
+6. *Not a finding — a one-line numbering slip in the gate report.* It places the
+   second source comment at `:206-207`; it is at `:207-208`. No claim depends on
+   it.
+
+**Gate result and its attribution.** The supplied gate reports **PASS with zero
+failures** — `tsc --noEmit` exit 0; `jest --testPathPattern="voting-governance|VotingGovernancePage"`
+→ 3 suites / 38 tests / 7 snapshots; `--testPathPattern=governance` → 15 of 16
+suites, 260 passed / 12 skipped; the wave pattern `"(governance|voting)"` → 17 of
+18 suites, 282 passed / 12 skipped / 9 snapshots, numerically identical to the
+wave baseline; `yarn lint` exit 0 at 5595 warnings / 0 errors with both changed
+files proven warning-identical to their HEAD blobs; `typed-scss-modules` and
+`yarn i18n:manage` correctly not run; all four Step 7 greps green. Zero reds, so
+nothing needed attribution. One caveat recorded rather than inherited: the gate
+was measured against the **pre-scribe 3-file tree**, and the reviewed tree is 5
+files. The two things the scribe edits could have moved were re-measured here —
+the tracker JSON still parses, and
+`jest --testPathPattern="voting-governance|VotingGovernancePage" --no-coverage --runInBand`
+is again **3 suites / 38 tests / 7 snapshots, exit 0**. `tsc` and `yarn lint` are
+unaffected by definition: the delta is Markdown and a `.agent` JSON, and lint
+scans only `source`, `storybook` and `utils`. `nix` is absent, so `nix fmt` stays
+an owed pre-merge obligation (F-12). `yarn check:all` and `yarn storybook:build`
+were deliberately not run — both are red at HEAD for the unrelated storybook
+manager-webpack JSX loader reason and neither is a valid gate. This round moved
+neither HEAD nor the change set: no file was edited except this log, and the
+throwaway realm probe was deleted before this entry was written.
+
+**Decision: approved** — zero blockers, zero majors, zero minors outstanding. The
+production diff was accepted unchanged by both rounds; what round 1 blocked on was
+documentation about the repo, and both halves are now discharged with the
+diagnosis independently re-measured rather than restated. task-139 closes with one
+subject-only commit,
+`feat(gov): task-139 mount CurrentVoteSummary in the delegation form`, carrying
+the two source files, the tracker row, the findings note and this log. Two items
+travel forward as notes, not debts of this task: the jsdom realm shim that
+task-173 must install before its badge cases can pass, and AC-2's Storybook visual
+**OWED** to task-145.

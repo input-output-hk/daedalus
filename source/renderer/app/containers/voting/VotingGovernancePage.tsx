@@ -35,8 +35,15 @@ class VotingGovernancePage extends Component<Props> {
   };
 
   render() {
-    const { wallets, staking, app, voting, hardwareWallets, networkStatus } =
-      this.props.stores;
+    const {
+      wallets,
+      staking,
+      app,
+      voting,
+      hardwareWallets,
+      networkStatus,
+      governance,
+    } = this.props.stores;
     const { openExternalLink } = app;
     const { isSynced, syncPercentage } = networkStatus;
 
@@ -63,6 +70,7 @@ class VotingGovernancePage extends Component<Props> {
         wallets={wallets.all}
         stakePools={staking.stakePools}
         getStakePoolById={staking.getStakePoolById}
+        drepIndex={governance.drepIndex}
         renderConfirmationDialog={({
           chosenOption,
           fees,
