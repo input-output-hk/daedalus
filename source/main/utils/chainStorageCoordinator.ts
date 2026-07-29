@@ -171,6 +171,10 @@ class ChainStorageCoordinator {
     return this._mithrilBootstrapService.listSnapshots();
   }
 
+  abortSnapshotList(): void {
+    this._mithrilBootstrapService.abortSnapshotList();
+  }
+
   async startBootstrap(
     digest?: string,
     options?: {

@@ -306,6 +306,8 @@ export class MithrilController {
 
     if (decision !== 'decline') return;
 
+    chainStorageCoordinator.abortSnapshotList();
+
     if (this._bootstrapStatus.status === 'failed') {
       logger.info(
         '[MITHRIL] Keeping failed status active while decline recovery starts'

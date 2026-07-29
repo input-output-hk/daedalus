@@ -19,6 +19,7 @@ import type {
   RunCommandOptions,
 } from './mithrilCommandRunner';
 import { runCommand, runBinary } from './mithrilCommandRunner';
+import { killProcessTree } from './killProcessTree';
 import {
   MithrilBootstrapStageError,
   buildMithrilError,
@@ -58,6 +59,7 @@ export class MithrilBootstrapService {
   _status: MithrilBootstrapStatusUpdate = { ...DEFAULT_STATUS };
   _statusEmitter = new EventEmitter();
   _currentProcess: ChildProcess | null = null;
+  _snapshotListProcess: ChildProcess | null = null;
   _cardanoDbDownloadMode?: 'download' | 'snapshot';
   _lockFilePath: string;
   _workDir: string;
@@ -99,13 +101,38 @@ export class MithrilBootstrapService {
   }
 
   async listSnapshots(): Promise<Array<MithrilSnapshotItem>> {
-    const { stdout } = await this._runCommand(
-      ['cardano-db', 'snapshot', 'list', '--json'],
-      { requireKeys: false }
+    const workDir = this._activeWorkDir ?? this._workDir;
+    try {
+      const { stdout } = await runCommand(
+        ['cardano-db', 'snapshot', 'list', '--json'],
+        workDir,
+        { requireKeys: false },
+        {
+          onProcess: (child) => {
+            this._snapshotListProcess = child;
+            this._currentProcess = child;
+          },
+        }
+      );
+      const parsed = this._safeJsonParse(stdout);
+      if (!Array.isArray(parsed)) return [];
+      return parsed.map((item) => normalizeSnapshotItem(item));
+    } finally {
+      const prev = this._snapshotListProcess;
+      this._snapshotListProcess = null;
+      if (this._currentProcess === prev) {
+        this._currentProcess = null;
+      }
+    }
+  }
+
+  abortSnapshotList(): void {
+    if (!this._snapshotListProcess) return;
+    logger.info(
+      'MithrilBootstrapService: aborting in-flight snapshot list (user declined Mithril)'
     );
-    const parsed = this._safeJsonParse(stdout);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.map((item) => normalizeSnapshotItem(item));
+    killProcessTree(this._snapshotListProcess);
+    this._snapshotListProcess = null;
   }
 
   async showSnapshot(digest: string): Promise<MithrilSnapshotItem | null> {
