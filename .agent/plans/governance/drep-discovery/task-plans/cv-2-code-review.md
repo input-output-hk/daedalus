@@ -4047,3 +4047,149 @@ attribution was re-measured — and six observations were dropped with reasons a
 round-1 items that required a code change (CR175-1, CR175-4) are closed by executing
 assertions; the two remaining minors are `statusReason` records the closing pass absorbs.
 No round 3 is warranted.
+
+---
+
+## Code Review: 2026-07-28 — task-144 round 1
+
+**Scope reviewed.** The uncommitted working tree for task-144, against its guide
+section `cv-2-implementation-guide.md:4235-4362` (the shared task-144/task-145 preamble
+at `:4217-4231`, Files-created at `:4237-4242`, Context at `:4244-4272`, the four locked
+invariants at `:4274-4286`, the three resolved judgment calls at `:4288-4295`, Steps 1-2
+at `:4297` and `:4332`, and the acceptance record at `:4348-4362`), the task-144 tracker
+row (`governance-drep-discovery-plan-tasks.json`, still `"status": "pending"` with no
+`statusReason`), and the PRD's acceptance restatement at `cv-2-PRD.md:277-278`. HEAD is
+`b699d176c` (task-175 committed). Three independent lenses ran — correctness against the
+guide, locked invariants and the sanitization floor, and tests plus simplicity and drift
+— and **all three returned `approved` with zero blockers**. As in the task-141 and
+task-175 rounds, that was not accepted on report: the byte comparison against the guide
+snippet, the remount mechanism, the per-render regeneration hazard, and every gate were
+re-derived first-hand here. The main checkout `/workspaces/daedalus` was never read,
+edited or run against, and this round fixed no code.
+
+**What landed.** `git status --porcelain` → exactly one line,
+`?? storybook/stories/governance/_utils/GovernanceWrapper.tsx`; one new untracked file,
+**zero modified tracked files**, nothing staged. `git log --oneline -3` is unchanged from
+baseline, so nothing was committed. The file is **byte-identical to the guide's Step 1
+block**: a programmatic compare of guide `:4302-4329` against the 28-line file returns
+equal. `fixtures.ts` is untouched, honouring the Files-touched line at `:4241-4242`, and
+none of the three prettier-baseline-red paths — `VotingPowerDelegation.tsx`,
+`VotingPowerDelegationConfirmationDialog.tsx`, `storybook/stories/voting/Governance.stories.tsx`
+— nor the currently-green `containers/voting/VotingGovernancePage.tsx` appears in the
+change set.
+
+### Blockers
+
+**None.** No survivor at any severity. All three lenses filed zero, and adjudication
+promoted nothing they left unfiled.
+
+### Independent re-checks of the code deliverable (nothing new found)
+
+Re-derived here, not inherited. **The remount mechanism is real at the installed React,
+not assumed**: `react` and `react-dom` are both `16.14.0`, and
+`react-dom/cjs/react-dom.development.js:14281` gates the top-level unwrap on
+`newChild.key === null` — so a **keyed** top-level fragment is not unwrapped, falls to
+`reconcileSingleElement`, and a key mismatch deletes the existing child and builds a
+fresh fiber, taking the whole subtree with it. That is the entire mechanism the guide
+claims at `:4291-4293`, and it holds. **The per-render regeneration hazard was hunted,
+not waved past** — this is the one way the wrapper's design could have broken its
+consumer. Every hook in `VotingPowerDelegation.tsx` was enumerated: exactly two
+`useEffect`s, deps `[currentVoteKind, currentVoteDRepId]` (`:209`) and
+`[initiateTransaction, intl, state]` (`:282`), and **no** `useMemo` or `useCallback` at
+all. Neither dep array contains `wallets` or `drepIndex`, so the fresh object identities
+the wrapper mints on every render cannot loop an effect or reset form state. Two lenses
+reached that verdict by describing the second effect as depending "only on primitives" /
+on "a `state.status` guard"; that description is wrong — its deps include the `state`
+object and `intl` — but the conclusion survives on the stronger ground that neither
+fixture flows into it at all. **Wallet-id lookup survives non-remount re-renders**:
+`fixtures.ts` contains no `Math.random`, `Date.now`, `uuid` or `nanoid`, and the ids are
+hard-coded `'governance-wallet-1'`/`-2`/`-3` (`:111`, `:120`, `:129`), so
+`wallets.find((w) => w.id === state.selectedWalletId)` (`VotingPowerDelegation.tsx:181`)
+still resolves after a fixture rebuild. **All four locked invariants hold**: the key is
+the option id verbatim, `<React.Fragment key={option}>` at `:21` with no composite, index
+or hash, and `option` typed as the five-value `CurrentVoteOption` (`fixtures.ts:14`); the
+wrapper never reads the knob (`grep -c useCurrentVoteKnob` → 0, the hook staying at
+`fixtures.ts:29`); no provider of any kind is added (`grep -c IntlProvider` → 0), leaving
+`storybook/preview.tsx:8` the sole owner of the single `IntlProvider` and the EN/JA
+toggle, so convention 5 is honoured; and the factories are called inside the render
+return (`:23-24`) with no module variable, ref or state anywhere in the 28 lines.
+**Sanitization floor untouched**: the file contains no sink at all — no logger,
+analytics, `electron-store`, `localStorage` or `console` — and the CIP-129 fixtures reach
+only the render-prop callback, never a payload, so the wire-keyed `filterLogData` hazard
+cannot arise. No second delegation backend: the sole `GovernanceStore` reference is a
+type-only import (`:3`), erased at compile. **Comment convention clean**: the single
+comment at `:17-18` is two plain sentence-case lines stating the invariant and its reason,
+with no task id, CAT/CP label, plan name, PR number, ALL-CAPS emphasis or change history.
+
+### Findings considered and not promoted
+
+All three lenses filed empty blocker lists, so nothing was rejected; these are the
+observations raised in the lens summaries or the gate that were examined and **declined**
+as defects, each with its reason. (1) **Guide-vs-live line drift** — the Context block
+anchors the lazy initializer at `VotingPowerDelegation.tsx:115`, live it is `:163`.
+Declined: the guide itself instructs "re-anchor by the quoted content, not by the number"
+(`:4230-4231`), and its two quoted lines match verbatim at `:163-164`; the drift is
+task-139's `drepIndex` prop pushing the file down. Documentation-only, zero code impact.
+(2) **AC-2 only partly satisfied** — declined as a defect because the guide pre-records
+the split at `:4353-4362` and assigns the observed half to task-145 Step 8; demanding it
+here would contradict the contract. (3) **The `no-unused-vars` warning** on the `fixtures`
+parameter name — declined: `:4340-4344` predicts it and explicitly forbids both the rename
+and the `eslint-disable`. The implementer correctly left it. (4) **No test for task-144** —
+declined: Step 2 is format/typecheck/lint only and neither tracker acceptance criterion
+names a spec, so there is no missing or vacuous assertion to report. (5) **Nothing imports
+the wrapper yet** — `grep -rn "GovernanceWrapper"` over `.ts`/`.tsx` excluding
+`node_modules` returns exactly one hit, its own declaration at `:19`. Declined as a defect,
+kept as the carry-forward below. (6) **The tracker row is still `pending`/`statusReason`
+null** — declined as a blocker after checking the slice's own convention: every completed
+sibling's `statusReason` (task-141, task-142, task-143, task-175) describes "the appended
+round-1 review-log entry and this row" as already existing, so the row is authored at
+close-out *after* the review round, and its absence at review time is expected rather than
+a gap. It travels as a close-out obligation below. (7) **`passwordUpdateDate: new Date()`
+at `fixtures.ts:102`** mints a fresh object on every per-render factory call — declined:
+it feeds no dependency array, `storybook/preview.tsx:9-11` configures `timemachine` to a
+frozen date string so it is deterministic in Storybook regardless, and the file is
+task-143's, already committed and outside this change set.
+
+**Gate result and its attribution.** The supplied gate reports **PASS** with zero
+failures and nothing to attribute; that is confirmed, and every count below was re-measured
+here rather than inherited. `node_modules/.bin/prettier --check` on the one newly created
+path → exit 0, "All matched files use Prettier code style!" — and prettier was run on **no
+other path**, so none of the three baseline-red files was rewritten. `node_modules/.bin/tsc
+--noEmit` → exit 0, zero diagnostics, matching the slice baseline. `yarn lint` → **exit 0,
+5596 warnings, 0 errors**; `grep -cE "  error  "` over the full log → 0, and exactly one
+warning is attributable to the new file — `GovernanceWrapper.tsx:14:14  fixtures is defined
+but never used.  no-unused-vars` — the predicted-and-protected one from dropped finding 3.
+`jest --testPathPattern="(governance|voting)" --no-coverage --runInBand` → exit 0, **18
+passed + 1 skipped of 19 suites, 309 passed + 12 skipped of 321 tests, 9 snapshots**,
+byte-identical to the wave baseline including the lone environment-gated
+`GovernanceCliArgvSmoke` skip. No `.scss` is in the change set, so `typed-scss-modules` was
+correctly not required; `yarn i18n:manage` was correctly **not** run — this task changes no
+copy, and scoped status over `source/renderer/app/i18n` and `translations` returns 0 lines,
+so there is nothing to revert. `yarn check:all` and `yarn storybook:build` were deliberately
+not run, both red at HEAD for the unrelated manager-webpack JSX-loader reason. No
+`--write`, no `git stash`, no commit, and no file edited except this log. `nix` is absent,
+so `nix fmt` remains the owed pre-merge obligation with prettier-on-explicit-paths as the
+recorded substitute (F-12).
+
+**Handoffs for the closing pass (not review findings).** (a) The task-144 tracker row needs
+authoring by content and never formatted with prettier, and it must carry the wording the
+guide mandates at `:4358-4362`: **AC-2 recorded OWED in part** — the structural half proven
+here by file shape plus `tsc --noEmit`, the observed half (type a DRep id, switch the knob,
+confirm the field is blank) discharged by task-145's Step 8 visual pass, which this
+container cannot run for want of a browser. **AC-2 must never be asserted green at this
+commit.** (b) The prescribed commit subject is `feat(gov): task-144 add key-based
+GovernanceWrapper remount for storybook` (`guide:4346`). (c) Nothing imports the wrapper
+yet, so the green jest sweep proves **no regression, not new behaviour** — no test
+exercises this file, and its first exercise is task-145's rewiring of
+`storybook/stories/voting/Governance.stories.tsx`. (d) The guide's `:115` initializer
+anchor is stale at `:163`; a future editor should re-anchor by content per `:4230-4231`.
+
+**Decision: approved** — zero blockers at any severity. All three lenses returned
+`approved` with empty lists; the round re-derived the load-bearing claims first-hand rather
+than rubber-stamping — the file was byte-compared to the guide snippet, the keyed-fragment
+remount was traced into the installed `react-dom` reconciler rather than taken from the
+guide's assertion, the per-render regeneration hazard was tested against a full enumeration
+of the consumer's hooks (correcting two lenses' reasoning while upholding their verdict),
+fixture id stability was checked for nondeterminism, and all five gates were re-run — and
+seven observations were declined with reasons above. The only open items are the AC-2 OWED
+record and the commit, both close-out steps. No round 2 is warranted.

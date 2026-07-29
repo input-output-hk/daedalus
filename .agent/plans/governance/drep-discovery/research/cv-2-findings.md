@@ -1595,6 +1595,67 @@ task-154 in anchor-2 (the alias rule for `DRepIdDisplay`); the Planner at slice 
 
 ---
 
+## F-25 — task-144's AC-2 discharge pointer lands on a step the guide itself declares unexecutable, so the *observed* remount is owed past task-145 to manual verification; and the wrapper ships with no consumer and no reachable test, leaving cv-2's storybook arm entirely on static proof. Sweep basis unchanged at 309/321
+
+**The chain, read end to end.** The guide splits task-144's AC-2 at
+`cv-2-implementation-guide.md:4353-4362`: the structural half is carried by the
+file's shape plus `tsc`, and the observed half — type a DRep id, switch the knob,
+the field is blank again — is handed on at `:4361`, "record it **OWED** in the
+task's `statusReason` and discharge it with task-145's visual pass." That pass is
+task-145's Step 8 (`:4685`), and Step 8 closes at `:4739-4741` with "If no browser
+is available in this environment, record the console-error and ja-JP overflow pass
+as **OWED** … never assert it green"; task-145's own AC-4 (`:4760-4764`) is written
+in advance as "**not satisfiable in this container**: there is no browser". The
+discharge target is therefore itself owed, and **no cv-2 row observes the remount.**
+
+**Why it is lost if it is not written down.** task-145 will file an OWED of its
+own, but against a *different* criterion — console errors and ja-JP overflow, not
+the remount. A reader who follows task-144's row to "discharged by task-145", finds
+task-145 `complete`, and stops there ticks AC-2 with nothing having been observed.
+That is the failure shape F-15 exists to prevent, one row over.
+
+**What cv-2 can prove about the remount, traced rather than asserted.** `react` and
+`react-dom` are `16.14.0` (`package.json:259`, `:264`), and the reconciler unwraps a
+top-level fragment only when its key is null:
+`node_modules/react-dom/cjs/react-dom.development.js:14281` carries
+`newChild.key === null` inside the `isUnkeyedTopLevelFragment` conjunction, and
+`:14283-14284` replaces the child with its own children in that case alone. A
+*keyed* fragment survives as a single element, so a changed key deletes and remounts
+the subtree — the mechanism at `GovernanceWrapper.tsx:21` is real, not an article of
+faith. The corollary is the refactor hazard: drop the fragment or hoist the key onto
+the wrapper's own element and the remount degrades to an in-place update with no
+test to catch it. What it clears is the lazy `useState` initializer at
+`source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx:163`
+— the guide's `:115` is pre-slice numbering, task-139 having inserted the
+`drepIndex` prop (`:56`) and its `EMPTY_DREP_INDEX` default (`:153`) above it, which
+is the drift the guide's own preamble at `:4227-4231` tells the reader to expect.
+
+**Nothing consumes it and nothing can test it.** `grep -rn GovernanceWrapper` over
+`.ts` / `.tsx` outside `node_modules` returns exactly one hit — its own declaration
+at `GovernanceWrapper.tsx:19` — and `jest.config.js:129` roots the suite at
+`<rootDir>/tests` and `<rootDir>/source`, so a spec placed under `storybook/` would
+never execute (F-15's coverage constraint, recorded there as binding on this row).
+The slice sweep is unmoved at 18 passed / 1 skipped of 19 suites, 309 passed / 12
+skipped of 321, 9 snapshots — identical to F-24's task-175 basis — and it proves
+**no regression**, not new behaviour. The first code that exercises the wrapper is
+task-145's rewiring of `storybook/stories/voting/Governance.stories.tsx`.
+
+**Resolution.** task-144's AC-2 observed half is recorded OWED in its tracker row
+and **does not close at task-145**. It escalates, alongside task-145's AC-4, to the
+first environment with a browser — manual release verification at slice close. The
+two are distinct observations against distinct criteria, and a slice-close report
+that collapses them into a single browser pass repeats the omission.
+
+**Disposition.** Structural half — **closed at task-144**. Observed half —
+**escalated past task-145**, owned by no cv-2 row, to manual release verification.
+The reconciler mechanism and the no-consumer / no-reachable-test constraint are
+**record-only**, binding on task-145 as the first consumer.
+
+**Owner.** task-144 (recorded); task-145 (must not absorb AC-2 into its own AC-4
+OWED); the Planner at slice close (carry both observations forward).
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)
