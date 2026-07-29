@@ -552,3 +552,119 @@ in the diff because this task changes no copy.
    anchor-1 slice planning docs`. The tracker half of Step 8 is discharged by this pass — the task-152 row
    at `governance-drep-discovery-plan-tasks.json:1656-1679` is now `"status": "complete"` with
    `statusReason`, `evidence` and `updatedAt: 2026-07-29`.
+
+---
+
+## Code Review: task-152 — round 1 (2026-07-29)
+
+**Verdict: approved. No blockers.** Scope note, so the numbering is not misread: this is the
+**post-commit** review pass and its own orchestration numbered it round 1, but it is the *fourth*
+code review of task-152 recorded in this log — the three pre-commit rounds are at `:434-554`, over
+the then-uncommitted diff. This round reviewed commit `3a9b36daa` `fix(gov): task-152 restrict
+open-external-url to the https scheme` (single subject line, no body, no trailer) with
+`git status --short` empty. Seven paths in the diff: the four source/test files, the tracker row,
+and the two plan docs `research/anchor-1-findings.md` and `task-plans/anchor-1-code-review.md`.
+
+### Blockers
+
+**None raised in this round, and none survived from the earlier three.** Round 2's B-1 (close-out
+record) and B-2 (audit-scope correction) were discharged at `:348-430` and re-confirmed here; round
+3 raised none. Nothing was reopened.
+
+### Minor
+
+- **The `git status` file count deviates from the guide, and this is not a defect.** Guide Verify
+  run 8 reads `# 8. Nothing outside the five files changed.`
+  (`anchor-1-implementation-guide.md:907`); the commit touches seven. The extra two are this
+  slice's own plan docs, which Step 8 (`:845-861`) requires in prose but which run 8's count never
+  absorbed. No source file and no governance component outside the four named paths is in the diff.
+  Recorded as F-8.
+- **Tracker row conforms to the completed sibling.** Key order on the task-152 object is `id,
+  title, description, status, statusReason, evidence, updatedAt, priority, estimatedHours,
+  dependencies, targetPath, acceptanceCriteria` — identical to task-148 — and the file parses.
+- **Carried unchanged from round 3, no action requested.** `source/main/ipc/open-external-url.spec.ts:5`
+  is the no-op `import type {} from './open-external-url';`, verbatim from the guide; the module is
+  really loaded through `jest.isolateModules` + `require`.
+- **No new npm dependencies, no new abstractions, no dead code, and no task ids, review labels,
+  ALL-CAPS words or change history in any comment or test name** across the four changed paths.
+
+### Independent re-checks
+
+Every number measured in this worktree by the verifier; the first two rows were additionally re-run
+by this scribe pass and agreed exactly.
+
+| Gate | Guide expectation | Measured |
+|---|---|---|
+| `jest --testPathPattern="source/main/ipc/open-external-url"` | 13 tests (`guide:877-878`) | 1 suite / **13 tests**, green |
+| `jest --testPathPattern="tests/common/unit/networks"` | 4 at HEAD → 12 (`guide:880-881`) | 1 suite / **12 tests**, green |
+| `tsc --noEmit` | exit 0 (`guide:883-884`) | exit 0 |
+| `yarn compile` | exit 0, ~22 s (`guide:886-887`) | exit 0, 22.09 s |
+| `yarn lint` | exit 0, 0 errors (`guide:889-891`) | exit 0, **0 errors** |
+| `prettier --check` over the four changed paths | clean (`guide:893-898`) | clean on all four |
+| `jest --testPathPattern="tests/jest/security/governance-sanitization"` | 26, unchanged (`guide:902-903`) | 1 suite / **26 tests**, unchanged |
+| `jest --testPathPattern="containers/voting/VotingGovernancePage.spec"` | 27, unchanged (`guide:904-905`) | 1 suite / **27 tests**, unchanged |
+| `git status --porcelain` | nothing outside the intended files (`guide:907-908`) | **empty** — the work is committed |
+
+**Guide fidelity, step by step.** Step 2: `source/renderer/app/utils/network.ts:36-38` is the exact
+three-line body the guide prescribes, and `MAINNET`/`STAGING`/`TESTNET`/`DEVELOPMENT` all stay
+referenced elsewhere in the file, so the collapse left no dead import. Step 3:
+`tests/common/unit/networks.spec.ts:37-56` appended verbatim with the four pre-existing cases
+untouched. Steps 4 and 5: `open-external-url.ts` and its spec match the guide, including the
+deliberate `shell.openExternal(url) ? Promise.resolve() : Promise.reject()` on the allowed branch;
+prettier reflowed two `{ scheme }` object literals onto three lines, which is cosmetic.
+
+**Invariant #3 (`guide:75-81`) satisfied and not thinned.** The guard at
+`source/main/ipc/open-external-url.ts:27-32` runs before `shell.openExternal` is referenced at all
+(`:33`); the allow-list is the single constant `'https:'` (`:10`) with no `http:` / `mailto:` /
+`ipfs:` widening; unparseable input maps to `'unparseable'` (`:17`) and is therefore rejected.
+`spec:61-74` pins `javascript:`, `file:`, `data:`, `http:`, mixed-case `JavaScript:` and non-URL
+input, each asserting `shell.openExternal` was not called, and `spec:110-116` proves the guarded
+function is the one wired to `onReceive` — the guard is on the wire, not an unused export.
+
+**Sanitization floor holds on the new main-process sink.** `open-external-url.ts:28-30` logs
+`{ scheme }` — a bare protocol token — never the URL, host, userinfo or error object;
+`spec:100-108` pins that host and path never appear in the warn payload.
+
+**AC-3 holds negatively.** No file under `source/renderer/app/components/governance/` is in the
+diff, and `.../governance/drep-detail/DRepDetailAnchorSection.tsx:55-57` still emits the inert
+`<dd className={styles.anchorValue}>{anchor.url}</dd>` with no `<a>` or `href` anywhere in the file;
+its last touching commit is `34296ec16` (task-116). This commit renders no link.
+
+**Out of reach of this diff:** no i18n catalog appears in it, so `yarn i18n:manage` was correctly
+not required and was not run.
+
+### Merged and dropped
+
+- **Merged.** This round's guide-fidelity walk and the round-3 audit spot-check reach the same
+  conclusion about the source-literal producer claim and stay recorded together as F-1, not as a
+  second finding.
+- **Dropped.** Widening the allow-list so the pool-homepage and newsfeed cases stop failing
+  silently — `guide:506` fixes it at exactly `https:` and invariant #3 is never thinned; the silent
+  failure is a product decision raised to the user (F-1).
+- **Dropped.** Converting `send` → `request` in `AppStore.openExternalLink` to make the rejection
+  visible — resolved against at `guide:507-509` ("Do **not** touch `AppStore.ts`"); the consequence
+  is recorded instead (F-5).
+
+**Decision: approve.** Round 1 of the post-commit pass, no blockers, nothing carried forward into a
+further round.
+
+### OWED — never reported green
+
+1. `nix fmt` before merge. `nix` is absent in this devcontainer, so it **cannot** run;
+   `node_modules/.bin/prettier --write` over the four explicit paths is the substitute and
+   `--check` confirms it clean. The obligation stays open and user-owned.
+2. That `explorer.staging.cardano.org` — and likewise the preprod, selfnode and development
+   explorer hosts now forced to https by `source/renderer/app/utils/network.ts:36-38` — actually
+   serves https. No network here, so Step 2 is verified only as a code property (the scheme string
+   emitted), never as a reachable endpoint. A runtime check on a staging build is owed before release.
+3. How often stake-pool homepage metadata (`TooltipPool.tsx:512`) and newsfeed action URLs
+   (`NewsFeedStore.ts:220-224`) carry `http://` in production. Both arrive as runtime data outside
+   the audit's grep reach, an `http:` value in either is now rejected silently, and no test here
+   covers it. Raised as an open product decision (F-1), not resolved.
+4. The renderer-console behaviour of the fire-and-forget rejection. `AppStore.openExternalLink`
+   (`AppStore.ts:80-83`) ignores the promise `send()` returns, so a blocked URL produces an
+   unhandled promise rejection instead of a visible error. Recorded as F-5 and at `:398-402`, but
+   there is no browser here to observe the console, so the user-visible impact is unverified.
+5. No browser click-through and no ja-JP visual pass were possible — no network, no browser.
+   Neither is required by a task that changes no UI and no copy, and the exposure is low, but both
+   are recorded as unproven rather than green.

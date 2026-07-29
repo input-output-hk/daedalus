@@ -157,3 +157,33 @@ browser click-through nor a ja-JP visual pass was possible either; neither is
 required by task-152, which changes no UI and no copy, but both are recorded as
 not-run rather than claimed.
 **Owner.** Whoever closes the task; the `nix fmt` obligation stays user-owned.
+
+## F-8 (task-152) — The close-out commit landed and touches seven paths, not the five the guide's final Verify run names; the extra two are this slice's own plan docs
+
+F-7's open half is discharged: the work is committed as `3a9b36daa`
+`fix(gov): task-152 restrict open-external-url to the https scheme` — one Conventional
+Commits subject line, no body, no trailer, exactly the subject prescribed at
+`.agent/plans/governance/drep-discovery/task-plans/anchor-1-implementation-guide.md:869` —
+and `git status --porcelain` is empty against it.
+
+The guide's last check is `# 8. Nothing outside the five files changed.`
+(`anchor-1-implementation-guide.md:907`), where the five are the four source/test paths
+plus the tracker JSON. The commit carries **seven**: those five, plus
+`research/anchor-1-findings.md` and `task-plans/anchor-1-code-review.md`. Both are plan
+documentation under `.agent/`; no source file and no governance component outside the
+four named paths is in the diff, which is the property AC-3 and Step 6 actually depend
+on. The discrepancy is in the guide's arithmetic, not in the work: Step 8
+(`:845-861`) asks in prose for a `statusReason`, an `evidence` array citing plan docs
+and a close-out record, all of which necessarily add files, but the count in run 8 was
+never updated to match.
+
+No i18n catalog appears in the diff, so `yarn i18n:manage` was correctly not required
+and was not run — this task changes no copy.
+
+**Resolution.** Read run 8 as "no source file outside the four named paths", which is
+what it is protecting; the literal count of five is stale for any task whose Step 8
+also writes plan docs. Future anchor-slice guides should state the check as a
+source-tree property rather than a file count.
+**Disposition.** Record-only for task-152 — the commit is correct as landed and the
+tracker `evidence` array cites both new docs.
+**Owner.** Whoever authors the next anchor-slice implementation guide.
