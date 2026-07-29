@@ -4,19 +4,43 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DRepIdDisplay from '../../governance/_shared/DRepIdDisplay';
 import DRepSourceLabel from '../../governance/_shared/DRepSourceLabel';
+import DRepStatusBadge from '../../governance/_shared/DRepStatusBadge';
 import type { WalletVotingTarget } from '../../../api/wallets/types';
+import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 import { messages } from './CurrentVoteSummary.messages';
 import styles from './CurrentVoteSummary.scss';
 
 type Props = {
   currentVote: WalletVotingTarget | null;
+  drepEntry?: AppDRepDirectoryEntry | null;
   intl: intlShape.isRequired;
 };
 
-// Status labels render through the local message set because
-// DRepSourceLabel's variant union cannot express them; DRepSourceLabel is
-// reused only for the on-chain source label on the DRep state.
-function CurrentVoteSummary({ currentVote, intl }: Props) {
+const EXPIRING_MAX_REMAINING_EPOCHS = 12;
+
+type CurrentVoteBadgeState = 'unavailable' | 'inactive' | 'expiring' | 'active';
+
+// This panel shows the wallet's own delegation, which is not cohort-scoped, so
+// the expiring window is the full remaining-epoch threshold rather than the
+// narrower window the directory badge applies to cohort members.
+function deriveCurrentVoteBadgeState(
+  drepEntry: AppDRepDirectoryEntry | null | undefined
+): CurrentVoteBadgeState {
+  if (drepEntry == null) return 'unavailable';
+  if (drepEntry.status === 'inactive') return 'inactive';
+  if (
+    drepEntry.drepActivity != null &&
+    drepEntry.drepActivity <= EXPIRING_MAX_REMAINING_EPOCHS
+  ) {
+    return 'expiring';
+  }
+  return 'active';
+}
+
+// The vote-kind chip and the status captions render through the local message
+// set because DRepSourceLabel's variant union cannot express them;
+// DRepSourceLabel renders only the on-chain source label on the DRep state.
+function CurrentVoteSummary({ currentVote, drepEntry, intl }: Props) {
   if (currentVote == null) {
     return (
       <section
@@ -47,6 +71,7 @@ function CurrentVoteSummary({ currentVote, intl }: Props) {
   }
 
   if (currentVote.kind === 'drep') {
+    const badgeState = deriveCurrentVoteBadgeState(drepEntry);
     return (
       <section
         className={styles.component}
@@ -63,10 +88,36 @@ function CurrentVoteSummary({ currentVote, intl }: Props) {
             {intl.formatMessage(messages.statusDelegatedToDRep)}
           </span>
           <DRepSourceLabel source="on-chain" className={styles.sourceLabel} />
+          {(badgeState === 'active' || badgeState === 'inactive') && (
+            <DRepStatusBadge status={drepEntry.status} />
+          )}
+          {badgeState === 'expiring' && (
+            <span className={styles.expiringBadge}>
+              <span className={styles.glyph} aria-hidden="true">
+                ▲
+              </span>
+              {intl.formatMessage(messages.statusExpiringBadge, {
+                n: drepEntry.drepActivity,
+              })}
+            </span>
+          )}
         </div>
         <div className={styles.idRow}>
           <DRepIdDisplay drepId={currentVote.drep.raw} />
         </div>
+        {badgeState !== 'active' && (
+          <p className={styles.caption}>
+            {badgeState === 'expiring'
+              ? intl.formatMessage(messages.statusExpiring, {
+                  n: drepEntry.drepActivity,
+                })
+              : intl.formatMessage(
+                  badgeState === 'inactive'
+                    ? messages.statusInactive
+                    : messages.statusUnavailable
+                )}
+          </p>
+        )}
       </section>
     );
   }

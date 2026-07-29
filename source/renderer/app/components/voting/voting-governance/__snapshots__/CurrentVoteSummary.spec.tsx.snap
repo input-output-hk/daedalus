@@ -1,5 +1,267 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`CurrentVoteSummary DRep status badge renders the local expiring badge and caption inside the remaining-epoch window 1`] = `
+<section
+  aria-label="!!!Current delegation"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    !!!Current delegation
+  </h3>
+  <div
+    class="statusRow"
+  >
+    <span
+      class="statusBadge"
+    >
+      <span
+        aria-hidden="true"
+        class="glyph"
+      >
+        ●
+      </span>
+      !!!Delegated to DRep
+    </span>
+    <span
+      class="sourceLabel"
+    >
+      !!!On-chain
+    </span>
+    <span
+      class="expiringBadge"
+    >
+      <span
+        aria-hidden="true"
+        class="glyph"
+      >
+        ▲
+      </span>
+      !!!Expiring in 4 epochs
+    </span>
+  </div>
+  <div
+    class="idRow"
+  >
+    <span
+      class="container"
+    >
+      <span
+        class="root isShowingOnHover"
+      >
+        <div
+          class="bubble alignLeft nowrap root openUpward transparent"
+        >
+          <div
+            class="bubble"
+            data-bubble-container="true"
+          >
+            drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy
+          </div>
+          <span
+            data-bubble-arrow="true"
+          />
+        </div>
+        <code
+          aria-label="drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy"
+          class="id"
+        >
+          drep1y2s…23nmjy
+        </code>
+      </span>
+      <button
+        aria-label="!!!Copy DRep ID"
+        class="copyButton root root"
+        label="!!!Copy"
+      >
+        !!!Copy
+      </button>
+    </span>
+  </div>
+  <p
+    class="caption"
+  >
+    !!!This DRep's voting power will lapse in 4 epochs — consider re-delegating.
+  </p>
+</section>
+`;
+
+exports[`CurrentVoteSummary DRep status badge renders the shared active badge with no status caption 1`] = `
+<section
+  aria-label="!!!Current delegation"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    !!!Current delegation
+  </h3>
+  <div
+    class="statusRow"
+  >
+    <span
+      class="statusBadge"
+    >
+      <span
+        aria-hidden="true"
+        class="glyph"
+      >
+        ●
+      </span>
+      !!!Delegated to DRep
+    </span>
+    <span
+      class="sourceLabel"
+    >
+      !!!On-chain
+    </span>
+    <span
+      aria-label="!!!Active"
+      class="badge active"
+    >
+      <span
+        aria-hidden="true"
+        class="dot"
+      />
+      <span
+        class="label"
+      >
+        !!!Active
+      </span>
+    </span>
+  </div>
+  <div
+    class="idRow"
+  >
+    <span
+      class="container"
+    >
+      <span
+        class="root isShowingOnHover"
+      >
+        <div
+          class="bubble alignLeft nowrap root openUpward transparent"
+        >
+          <div
+            class="bubble"
+            data-bubble-container="true"
+          >
+            drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy
+          </div>
+          <span
+            data-bubble-arrow="true"
+          />
+        </div>
+        <code
+          aria-label="drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy"
+          class="id"
+        >
+          drep1y2s…23nmjy
+        </code>
+      </span>
+      <button
+        aria-label="!!!Copy DRep ID"
+        class="copyButton root root"
+        label="!!!Copy"
+      >
+        !!!Copy
+      </button>
+    </span>
+  </div>
+</section>
+`;
+
+exports[`CurrentVoteSummary DRep status badge renders the shared inactive badge and caption 1`] = `
+<section
+  aria-label="!!!Current delegation"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    !!!Current delegation
+  </h3>
+  <div
+    class="statusRow"
+  >
+    <span
+      class="statusBadge"
+    >
+      <span
+        aria-hidden="true"
+        class="glyph"
+      >
+        ●
+      </span>
+      !!!Delegated to DRep
+    </span>
+    <span
+      class="sourceLabel"
+    >
+      !!!On-chain
+    </span>
+    <span
+      aria-label="!!!Inactive"
+      class="badge inactive"
+    >
+      <span
+        aria-hidden="true"
+        class="dot"
+      />
+      <span
+        class="label"
+      >
+        !!!Inactive
+      </span>
+    </span>
+  </div>
+  <div
+    class="idRow"
+  >
+    <span
+      class="container"
+    >
+      <span
+        class="root isShowingOnHover"
+      >
+        <div
+          class="bubble alignLeft nowrap root openUpward transparent"
+        >
+          <div
+            class="bubble"
+            data-bubble-container="true"
+          >
+            drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy
+          </div>
+          <span
+            data-bubble-arrow="true"
+          />
+        </div>
+        <code
+          aria-label="drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy"
+          class="id"
+        >
+          drep1y2s…23nmjy
+        </code>
+      </span>
+      <button
+        aria-label="!!!Copy DRep ID"
+        class="copyButton root root"
+        label="!!!Copy"
+      >
+        !!!Copy
+      </button>
+    </span>
+  </div>
+  <p
+    class="caption"
+  >
+    !!!This DRep is currently inactive. Your voting power will not be counted until they vote again — consider re-delegating.
+  </p>
+</section>
+`;
+
 exports[`CurrentVoteSummary core states renders abstain with a caption and no DRep id (snapshot) 1`] = `
 <section
   aria-label="!!!Current delegation"
@@ -66,7 +328,7 @@ exports[`CurrentVoteSummary core states renders no confidence with a caption and
 </section>
 `;
 
-exports[`CurrentVoteSummary core states renders the DRep id row with the on-chain label and no badge (snapshot) 1`] = `
+exports[`CurrentVoteSummary core states renders the DRep id row with the on-chain label and the neutral status caption when no directory entry is supplied (snapshot) 1`] = `
 <section
   aria-label="!!!Current delegation"
   class="component"
@@ -134,6 +396,11 @@ exports[`CurrentVoteSummary core states renders the DRep id row with the on-chai
       </button>
     </span>
   </div>
+  <p
+    class="caption"
+  >
+    !!!DRep status is loading.
+  </p>
 </section>
 `;
 

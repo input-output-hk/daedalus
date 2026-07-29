@@ -1030,3 +1030,375 @@ CR2-1 and CR2-2 before the single task-143 commit, which must
 `git add storybook/stories/governance/_utils/fixtures.ts` explicitly (the path is
 untracked, so `git commit -a` would miss it) under the subject
 `feat(gov): task-143 add governance storybook current-vote fixtures`.
+
+---
+
+## Code Review: 2026-07-28 — task-136 round 1
+
+**Scope reviewed.** The uncommitted working tree against the guide section
+"Group 1 — task-136: live DRep status badge on `CurrentVoteSummary`"
+(`cv-2-implementation-guide.md:700-1434` — files-touched and must-not-touch at
+`:712-727`, Context at `:729-816`, locked invariants at `:817-848`, resolved
+judgment calls at `:850-883`, Steps 1-5 at `:885-1321`, Step 6's verification
+block at `:1322-1392`, the commit subject at `:1391`, and the acceptance record
+at `:1394-1434`), plus task-136's four acceptance criteria in
+`governance-drep-discovery-plan-tasks.json` and the per-task Definition of Done
+at `cv-2-PRD.md:1619-1623`. HEAD is `0fc92fcab` (task-143), one commit ahead of
+the wave baseline `427b9a487`, which is what the canonical build order predicts.
+The main checkout `/workspaces/daedalus` was never read, edited or run against.
+
+**What landed.** `git status --porcelain -uall` → exactly the six paths Step 6
+predicts and nothing else: `CurrentVoteSummary.messages.ts`,
+`CurrentVoteSummary.scss`, `CurrentVoteSummary.spec.tsx`,
+`CurrentVoteSummary.tsx`, `__snapshots__/CurrentVoteSummary.spec.tsx.snap` and
+`storybook/stories/governance/CurrentVoteSummary.stories.tsx` — 486 insertions,
+46 deletions. **The tasks tracker is not in the change set**, which is the one
+survivor ranked below.
+
+**Review method (three lenses, adversarial refutation).** Three independent
+lenses ran over the diff: (1) guide and acceptance-criteria conformance; (2)
+locked invariants and the sanitization floor; (3) tests, simplicity and drift.
+All three returned `approved`; one raised a single minor. Every candidate was
+re-opened against the live worktree here before promotion, and the consolidation
+also re-applied the per-task Definition of Done, which no lens was scoped to
+check. **Two findings are promoted, one raised by a lens and one derived from
+the DoD; two lens/gate observations were dropped as misreads or notes.**
+
+**What came back clean, re-verified here.** Steps 1-5 are the prescribed code:
+the four descriptors at `CurrentVoteSummary.messages.ts:73-97` carry the exact
+ids, the ICU argument named `n`, and the leading `!!!` on every
+`defaultMessage`; the `.expiringBadge` block at `CurrentVoteSummary.scss:33-44`
+is alphabetical as written; `CurrentVoteSummary.tsx` adds
+`EXPIRING_MAX_REMAINING_EPOCHS = 12` (`:19`), the unexported module-scope
+`deriveCurrentVoteBadgeState` (`:26-38`) and the badge/caption render
+(`:91-120`); the story (`CurrentVoteSummary.stories.tsx:8-9`, `:17-51`,
+`:63-80`) deletes the inline vectors and consumes task-143's
+`useCurrentVoteKnob` / `resolveCurrentVote`. Invariants hold: the only
+`GovernanceStore` reference is the `import type` at `:9` — no `@inject`, no
+`observer`, no `drepIndex` read — status enters solely through the `drepEntry`
+prop (`:15`); the shared badge receives only `drepEntry.status` (`:92`) so the
+`active | inactive` union is not widened; a null entry yields the neutral
+caption and never an Active fallback; the id row still renders
+`currentVote.drep.raw` verbatim (`:106`); the sentinel branch carries no badge;
+and no logger, analytics, electron-store, IPC or network sink appears in any
+added line. The "active + `drepActivity` 0 renders Expiring in 0 epochs" hazard
+was chased and is unreachable: `source/main/governance/GovernanceQueryService.ts:507-511`
+sets `inactive` whenever `expiry <= currentEpoch` and derives
+`drepActivity = Math.max(0, expiry - currentEpoch)`, so `active` implies `>= 1`.
+The snapshot file is regenerated, not hand-edited — 7 `exports[` keys for
+exactly the 7 snapshot-taking tests, the old "no badge" key pruned, no orphan.
+Exactly one comment was added across the production diff, the three-line one the
+guide sanctions at `CurrentVoteSummary.tsx:23-25`; no added line in source or in
+a test name cites a task id, a `CAT-`/`CP-` label, a plan name or ALL-CAPS. The
+story adds no `IntlProvider` and no per-locale variant, and keeps the
+`storiesOf` and `.add` ids unchanged.
+
+### Blockers (ranked, most severe first)
+
+**CR3-1 (major, `governance-drep-discovery-plan-tasks.json`) — task-136's row is
+still `pending`, so AC-4's satisfied-in-part discharge and AC-1's prop-chain
+scoping are nowhere recorded.** Live, the row reads `"status": "pending"` with
+no `statusReason`, no `evidence` and no `updatedAt`, and the tracker is absent
+from `git status --porcelain -uall`. The per-task Definition of Done
+(`cv-2-PRD.md:1619-1623`) requires "tasks JSON synchronized (`status`,
+`statusReason`, `evidence`, `updatedAt` as `YYYY-MM-DD`) · exactly one commit",
+so the tracker edit has to be in the working tree before task-136 is committed —
+no later cv-2 row owns it. The convention is per-task and rides the task's own
+commit: `0fc92fcab` (task-143), `d3729994a` (task-135) and `fb4f07f6c`
+(task-170) each carry a `governance-drep-discovery-plan-tasks.json` hunk in the
+same commit, and this is the identical defect promoted as CR-1 for task-143 one
+round ago. The guide's own AC-4 record (`cv-2-implementation-guide.md:1417-1426`)
+names what must be written: the knob itself is delivered through
+`useCurrentVoteKnob()`, but (a) there is no browser in this container, so
+"renders without console errors" cannot be observed here — OWED, never asserted
+green; and (b) until task-146 seeds both catalogs the four new ids legitimately
+log `[React Intl] Missing message`, so the console-clean observation can only be
+made after task-146 lands. AC-1's record (`:1396-1405`) is equally explicit that
+the "sourced from `drepIndex`" half is satisfied **through the prop chain** —
+task-139 resolves the entry — and the row must say so rather than claim the
+criterion whole.
+*Fix:* set the row to `complete` and insert `statusReason`, `evidence`,
+`updatedAt: "2026-07-28"` between `status` and `priority` (task-133's and
+task-143's shape), with `evidence` an array of repo-relative paths, source files
+first then plan docs, beginning with
+`source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.tsx`.
+Record AC-2 and AC-3 satisfied, AC-1 satisfied for the render half and
+satisfied-through-the-prop-chain for the source half, and AC-4 satisfied in part
+with both OWED clauses named. The tracker is tool-managed JSON — do not run
+prettier on it.
+
+### Minor (non-blocking; absorb before the task-136 commit)
+
+**CR3-2 (minor, `CurrentVoteSummary.tsx:40-42`) — the retained comment's first
+clause stopped being exhaustive the moment the shared badge landed.** It reads
+"Status labels render through the local message set because DRepSourceLabel's
+variant union cannot express them; DRepSourceLabel is reused only for the
+on-chain source label on the DRep state." That was true at HEAD, where every
+`status*` label lived in `CurrentVoteSummary.messages.ts`. This diff adds
+`<DRepStatusBadge status={drepEntry.status} />` at `:92`, whose labels come from
+the shared badge's own descriptors — `governance.drepDirectory.status.active` /
+`.inactive` at `DRepStatusBadge.tsx:8-17`, which the guide records as already
+shipping in both catalogs (`cv-2-implementation-guide.md:790-792`), so this task
+mints no key for them. A reader auditing key ownership from the comment would
+look for Active/Inactive in the local message file and not find them.
+*Fix, if taken:* narrow the subject rather than add a second sentence of "what",
+e.g. "The vote-kind chip and the status captions render through the local
+message set because DRepSourceLabel's variant union cannot express them." Guide
+Step 3c pins the comment's **position** ("leave that comment exactly where it
+is", `:990`), not its wording, so the edit must stay in place and change
+nothing else; declining it as guide-conformant is also defensible, in which case
+it should be absorbed at the next edit of this file.
+
+### Merged and dropped
+
+1. *Merged.* Only one finding was raised across the three lenses (the stale
+   comment at `:40-42`, from the tests/simplicity/drift lens). It is promoted as
+   CR3-2 with the shared badge's descriptor ids re-opened here and the guide's
+   Step 3c wording checked, so the "leave it alone" reading is recorded next to
+   the fix rather than left implicit. Nothing else needed merging — the
+   conformance lens and the invariants/floor lens both returned clean, and both
+   clean results were re-derived here (sink grep over the added lines exits 1;
+   the only `GovernanceStore` reference is the `import type`; `_shared/` and
+   `governance.types.ts` are absent from the diff).
+2. *Dropped as a misread — "the guide's Step 6 note `3 suites / 25 tests green
+   at HEAD` is stale arithmetic; the real number is 32."* Raised by the
+   conformance lens and echoed by the verification gate as a discrepancy worth
+   recording. Measured here: the parenthetical is explicitly scoped **at HEAD**,
+   and at HEAD it is exactly right. The pattern runs 32 tests now
+   (re-run here: 3 suites / 32 tests / 7 snapshots, exit 0), and
+   `CurrentVoteSummary.spec.tsx` went from 4 `it(` blocks at HEAD to 11, so the
+   HEAD total is `32 - 11 + 4 = 25`. Nothing in the guide is wrong; the number
+   simply is not a post-change expectation. No doc edit is owed.
+3. *Not promoted, recorded instead.* The guide's parenthetical "one rewritten
+   name is pruned, three are added" describes the **net** key delta correctly
+   (4 keys at HEAD → 7 now, `+3`); the literal breakdown is 1 pruned and 4
+   written, because the rewritten test name takes a snapshot under its new name.
+   The end-state figure the verifier actually gates on (7) is right. A one-token
+   doc nit with no reader action, not worth an edit to a committed guide.
+4. *Not promoted — AC-4's console-clean and ja-JP clauses, and AC-1's "sourced
+   from `drepIndex`" half.* Both are pre-recorded by the guide as not
+   dischargeable at this commit (`:1396-1405`, `:1417-1426`); demanding either
+   as a code defect would be demanding work the guide deliberately excluded and
+   task-139 / task-146 own. They convert into the CR3-1 `statusReason`
+   obligation instead.
+5. *No findings note is owed.* task-143 needed F-15 because its AC-4 partiality
+   was not dispositioned anywhere; task-136's is written out in the guide's own
+   acceptance record, and the `nix` absence is already F-12.
+
+**Verification gate.** Green on every prescribed gate, with the one red proven
+pre-existing. `tsc --noEmit` exit 0 (run both bare and with the 316 regenerated
+`*.scss.d.ts` present, so `styles.expiringBadge` type-checks under strict
+per-file scss typing too; all 316 are gitignored at `.gitignore:141`, none
+existed beforehand, and all were deleted afterwards). `yarn lint` exit 0 at
+exactly the 5591-warning baseline, zero errors.
+`jest --testPathPattern=CurrentVoteSummary --no-coverage --runInBand` → 1 suite,
+11 tests, 7 snapshots, no obsolete snapshots; the neighbour sweep
+`--testPathPattern="voting-governance|VotingGovernancePage"` → 3 suites / 32
+tests / 7 snapshots (reproduced during this consolidation); the wave sweep
+`--testPathPattern="(governance|voting)"` → 17 passed / 1 skipped suites and 276
+passed / 12 skipped tests, `+7` tests and `+3` snapshots against the baseline,
+both fully accounted for by this suite going 4 → 11 and 4 → 7, with the skip
+count unmoved at 12. `prettier --check` clean on the five source paths, with no
+`--write` run anywhere, so none of the four HEAD-red files was rewritten.
+`yarn i18n:manage` exit 0 and idempotent, adding exactly the four
+`voting.governance.currentVote.status.*` ids and nothing else; task-136 is not
+task-146, so all four written files were reverted with `git restore` and
+re-checksummed byte-identical. **Attribution of the one red:** `stylelint
+CurrentVoteSummary.scss` exits 2 with 12 `order/properties-alphabetical-order`
+errors, and the same 12 rule messages in the same order exit 2 against the HEAD
+copy of the file; the six errors above the insertion point are unmoved and the
+six below shift by exactly the 13 inserted lines. The count did not move, which
+is the invariant Step 6 states, and zero errors fall inside `:33-44`. It is
+pre-existing at HEAD, not attributable to this task. `nix` is absent, so
+`nix fmt` stays an owed pre-merge obligation with explicit-path `prettier` as
+the recorded substitute (F-12).
+
+**Decision: requires_changes** — the code deliverable is clean on all three
+lenses and needs no edit; the single major is the unsynchronized tracker row,
+which the Definition of Done requires in the working tree before the one
+task-136 commit. A fix pass should write CR3-1, optionally absorb CR3-2, and
+then commit all six code paths plus the tracker, this appended log entry and
+nothing else under the subject
+`feat(gov): task-136 render the live DRep status badge in the current-vote summary`.
+
+---
+
+## Code Review: 2026-07-28 — task-136 round 2
+
+**Scope reviewed.** The uncommitted working tree after the round-1 fix pass,
+against the same guide section "Group 1 — task-136: live DRep status badge on
+`CurrentVoteSummary`" (`cv-2-implementation-guide.md:700-1434`, acceptance record
+at `:1394-1434`), task-136's four acceptance criteria in
+`governance-drep-discovery-plan-tasks.json`, the per-task Definition of Done
+(`cv-2-PRD.md:1619-1623`) and the slice-level disposition of task-136 AC-4
+(`cv-2-PRD.md:1632`). The round's specific question is whether the two round-1
+findings — CR3-1 (major, unsynchronized tracker row) and CR3-2 (minor, stale
+comment subject) — are discharged without collateral drift. HEAD is unchanged at
+`0fc92fcab` (task-143); the main checkout `/workspaces/daedalus` was never read,
+edited or run against.
+
+**What landed.** `git status --porcelain` → eight paths: the six code paths from
+round 1, unchanged in count, plus the two the fix pass added —
+`governance-drep-discovery-plan-tasks.json` (`+12/-1`) and this log
+(`+190`, the round-1 entry). The six code paths are still
+`CurrentVoteSummary.messages.ts` (`+25`), `.scss` (`+13`), `.spec.tsx` (`+88/-6`),
+`.tsx` (`+55/-4`), `__snapshots__/CurrentVoteSummary.spec.tsx.snap` (`+268/-1`)
+and `storybook/stories/governance/CurrentVoteSummary.stories.tsx` (`+40/-38`).
+Nothing outside the eight, and no untracked file.
+
+**Review method (three lenses, adversarial refutation).** The same three lenses
+re-ran over the post-fix tree: (1) guide and acceptance-criteria conformance;
+(2) locked invariants and the sanitization floor; (3) tests, simplicity and
+drift. **All three returned `approved` with zero blockers.** One lens raised and
+self-dropped a re-open of CR3-2; that candidate was re-adjudicated here rather
+than accepted on the lens's word. Every material claim below was re-derived in
+this worktree.
+
+**CR3-1 (major) — discharged.** The tracker row now reads `"status": "complete"`
+with `statusReason`, `evidence` and `updatedAt` inserted between `status` and
+`priority`, which is exactly the committed shape: the key order
+`id,title,description,status,statusReason,evidence,updatedAt,priority,estimatedHours,dependencies,targetPath,acceptanceCriteria`
+is byte-identical to the `task-143` and `task-135` rows, `updatedAt` is
+`"2026-07-28"`, and the file still parses as JSON. `evidence` is seven
+repo-relative paths, source first and beginning with `CurrentVoteSummary.tsx`,
+plan docs last. The two scoping obligations round 1 named are both written: AC-1
+is recorded satisfied on the render half and **satisfied through the prop chain**
+on the `drepIndex` half, matching the guide at `:1396-1405`; AC-4 is recorded
+**satisfied in part** with both OWED clauses spelled out (no browser here; the
+four ids stay unseeded until task-146), matching the guide at `:1417-1426` and
+the PRD's slice-level row at `:1632`. The row closes "Complete, NOT verified",
+which is the honest reading. The row's own anchors were spot-checked and all
+land: `governance.types.ts:35` really is `export type DRepStatus = 'active' |
+'inactive';`; `DRepStatusBadge.tsx:8-17` really are the
+`governance.drepDirectory.status.active` / `.inactive` descriptors; those two ids
+really do already ship at `en-US.json:355-356` and `ja-JP.json:355-356`;
+`fixtures.ts:14-27` really does carry the five options including `drepVerified`;
+`declaration.d.ts:1` really is `declare module '*.scss';`. The numstat figures in
+the row (55/4, 88/6, 268/1, 25/0, 13/0, 40/38) match `git diff --numstat`
+exactly. The tracker was not run through prettier.
+
+**CR3-2 (minor) — discharged.** The comment at `CurrentVoteSummary.tsx:40-42`
+now reads "The vote-kind chip and the status captions render through the local
+message set because DRepSourceLabel's variant union cannot express them;
+DRepSourceLabel renders only the on-chain source label on the DRep state." — the
+narrowing round 1 prescribed, applied in place. Its position is unchanged
+(directly above the component function), which is what guide Step 3c pins
+(`:990`); the net comment count in the file is unchanged; no other line moved.
+
+**What came back clean, re-verified here.** Steps 1-5 are unchanged from round 1
+and still the prescribed code — the fix pass touched no verbatim guide block. The
+four descriptors at `CurrentVoteSummary.messages.ts:73-97` carry the exact ids,
+the ICU argument `n`, the leading `!!!` and the double-quoted `DRep's` string. The
+`.expiringBadge` block at `CurrentVoteSummary.scss:33-44` is the guide's block
+character-for-character, alphabetical, inserted immediately after `.statusBadge`
+and immediately before `.glyph`. `CurrentVoteSummary.stories.tsx:17-51` and
+`:63-80` match guide Steps 5c and 5d statement for statement, including the bare
+`key={option}`, the `'DRep status (mock)'` knob defaulting to `'none'`, and the
+locale comment kept verbatim at `:53-55` — no `IntlProvider`, no per-locale
+variant, no new story id. Invariants hold on re-derivation: `git diff --stat`
+over `source/renderer/app/components/governance/_shared`,
+`source/common/types/governance.types.ts` and `source/renderer/app/stores` is
+empty, so the shared badge and the closed `DRepStatus` union are unwidened and
+`expiring` exists only as the unexported local `CurrentVoteBadgeState` (`:21`);
+the sink grep (`logger|console.|analytics|electron-store|localStorage|ipcRenderer`)
+over every added line in `source/` and `storybook/` returns nothing; the id row
+still renders `currentVote.drep.raw` untouched (`:106`); a null entry
+short-circuits to `'unavailable'` (`:29`) with no default-to-Active branch. The
+`drepEntry.status` dereference at `:92` is guarded by the
+`active || inactive` test at `:91`, so it is never reached on a null entry. The
+one hazard worth chasing — `status: 'active'` with `drepActivity: 0` rendering
+"Expiring in 0 epochs" — is unreachable at the producer:
+`source/main/governance/GovernanceQueryService.ts:506-511` sets `inactive`
+whenever `expiry <= currentEpoch` and derives
+`drepActivity = Math.max(0, expiry - currentEpoch)`, so `'active'` implies `>= 1`,
+and `deriveCurrentVoteBadgeState` tests status (`:30`) before the epoch window
+(`:31-36`) regardless. The eleven tests all execute and none is vacuous — the
+negative queries have teeth because the same strings are asserted present in
+sibling cases (`!!!Expiring in 4 epochs` at `:122`, `!!!Active` at `:114`), and
+the `12 → expiring` / `13 → active` / `null → active` triple pins the threshold
+rather than restating it. The seven `exports[` keys match the seven
+snapshot-taking test names, with the HEAD "no badge" key pruned and no orphan. No
+added line in source or in a test name cites a task id, a `CAT-`/`CP-`/`AC-`
+label, a plan name or a `TODO`.
+
+### Blockers (ranked, most severe first)
+
+**None.** Both round-1 findings are discharged, all three lenses returned
+`approved` with no blockers, and no new candidate survived adjudication.
+
+### Merged and dropped
+
+1. *Merged.* Nothing needed merging — the three lenses raised no overlapping
+   finding, because they raised no finding. Their three clean results were not
+   accepted on assertion: the conformance claim was re-derived by diffing the
+   messages, scss and story blocks against guide Steps 1, 2 and 5c/5d; the
+   invariants claim by re-running the `_shared` / `governance.types.ts` /
+   `stores` diff, the sink grep and the `drep.raw` check; the tests claim by
+   re-running the suite and recounting the snapshot keys.
+2. *Dropped as churn — the tests/simplicity/drift lens re-opened
+   `CurrentVoteSummary.tsx:40-42`, arguing the narrowed subject "the vote-kind
+   chip and the status captions" omits the local `statusExpiringBadge` label at
+   `:99`.* The observation is factually correct: `:99` does render a local
+   descriptor that is neither the vote-kind chip nor a caption. It is still
+   dropped. The sentence claims no exhaustivity, nothing it states is false, and
+   the wording under attack is the exact remedy the previous round prescribed for
+   CR3-2 — re-opening it would spend a second round narrowing a comment that was
+   narrowed on this log's own instruction. The lens reached the same conclusion
+   independently and declined to promote it.
+3. *Re-dropped — "the guide's `3 suites / 25 tests green at HEAD` is stale."*
+   Round 1 already adjudicated this as a misread (item 2 of that round): the
+   parenthetical is explicitly scoped **at HEAD** and is exactly right there,
+   since this suite went 4 → 11 and `32 - 11 + 4 = 25`. The tracker's
+   `statusReason` now states it correctly, citing the guide's `:1333` and
+   attributing the `+7` to this suite's own new cases. No doc edit is owed and
+   none was made.
+4. *Not promoted — AC-4's console-clean and ja-JP clauses and AC-1's
+   `drepIndex` half.* Unchanged from round 1: both are pre-dispositioned as not
+   dischargeable at this commit (`cv-2-implementation-guide.md:1396-1405`,
+   `:1417-1426`; `cv-2-PRD.md:1632`) and are owned by task-139 and task-146.
+   Demanding either as a code defect would demand work the guide deliberately
+   excluded. They are discharged as `statusReason` prose, which is now written.
+5. *Note, not a finding.* The task-143 round-2 entry above cites `DRepStatus` at
+   `governance.types.ts:34`; the live declaration is `:35`. That entry is
+   committed and this log is append-only, so it stays as written; the task-136
+   tracker row cites `:35` correctly.
+
+**Verification gate.** Green on every prescribed gate, with the one red proven
+pre-existing and no gate attributable to this task. Re-run during this
+consolidation on the post-fix tree: `node_modules/.bin/tsc --noEmit` exit 0 with
+zero diagnostics; `node_modules/.bin/jest --testPathPattern=CurrentVoteSummary
+--no-coverage --runInBand` → 1 suite, 11 tests, 7 snapshots, all green, no
+obsolete snapshot; `node_modules/.bin/prettier --check` clean on all five source
+paths, with no `--write` run anywhere, so none of the four HEAD-red files
+(`VotingPowerDelegation.tsx`,
+`VotingPowerDelegationConfirmationDialog.tsx`, `VotingGovernancePage.tsx`,
+`Governance.stories.tsx`) was rewritten. Carried from the round's gate agent and
+unchanged by the fix pass, which touched no source file: `yarn lint` exit 0 at
+exactly the 5591-warning baseline with zero errors; the neighbour sweep
+`--testPathPattern="voting-governance|VotingGovernancePage"` → 3 suites / 32
+tests; the wave sweep `--testPathPattern="(governance|voting)"` → 17 passed / 1
+skipped suites and 276 passed / 12 skipped tests, `+7` tests and `+3` snapshots
+against the baseline and the skip count unmoved at 12; `yarn i18n:manage` exit 0,
+idempotent, adding exactly the four `voting.governance.currentVote.status.*` ids,
+after which all four files it writes were restored with `git restore` and
+re-checksummed byte-identical — task-146, not this task, owns those writes.
+**Attribution of the one red:** `stylelint CurrentVoteSummary.scss` exits 2 with
+12 `order/properties-alphabetical-order` errors, the same 12 rule messages in the
+same order as against the HEAD copy of the file, the six above the insertion
+point unmoved and the six below shifted by exactly the 13 inserted lines, with
+zero errors inside `:33-44`. The count did not move, which is the invariant Step
+6 states; it is pre-existing at HEAD and is a note, not a finding. `nix` is
+absent, so `nix fmt` stays an owed pre-merge obligation with explicit-path
+`prettier` as the recorded substitute (F-12). `yarn check:all` and
+`yarn storybook:build` were deliberately not run: both are red at HEAD for the
+unrelated storybook manager-webpack JSX loader reason and neither is a valid
+gate.
+
+**Decision: approved** — the code deliverable was clean in round 1 and is
+unchanged; the round-1 major (CR3-1) is discharged by a tracker row that matches
+the committed shape and records both scoped acceptance dispositions truthfully,
+and the round-1 minor (CR3-2) is discharged in place. The per-task Definition of
+Done is met except its last clause, which is the next action rather than a
+finding: one commit, subject-only, carrying all eight working-tree paths — the
+six code paths, `governance-drep-discovery-plan-tasks.json` and this log — under
+`feat(gov): task-136 render the live DRep status badge in the current-vote summary`.

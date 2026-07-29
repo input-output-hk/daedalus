@@ -10,6 +10,7 @@ import { daedalusTheme } from '../../../themes/daedalus';
 import { themeOverrides } from '../../../themes/overrides';
 import CurrentVoteSummary from './CurrentVoteSummary';
 import type { WalletVotingTarget } from '../../../api/wallets/types';
+import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 
 const KEY_CIP129 = 'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
 const KEY_CIP105 =
@@ -27,7 +28,18 @@ const DREP_VOTE: WalletVotingTarget = {
   source: 'onchain',
 };
 
-const renderSummary = (currentVote: WalletVotingTarget | null) =>
+const ACTIVE_ENTRY: AppDRepDirectoryEntry = {
+  drepId: KEY_CIP129,
+  votingPower: null,
+  status: 'active',
+  drepActivity: 30,
+  anchor: null,
+};
+
+const renderSummary = (
+  currentVote: WalletVotingTarget | null,
+  drepEntry?: AppDRepDirectoryEntry | null
+) =>
   render(
     <ThemeProvider
       theme={daedalusTheme}
@@ -36,7 +48,7 @@ const renderSummary = (currentVote: WalletVotingTarget | null) =>
       themeOverrides={themeOverrides}
     >
       <IntlProvider locale="en-US" messages={translations}>
-        <CurrentVoteSummary currentVote={currentVote} />
+        <CurrentVoteSummary currentVote={currentVote} drepEntry={drepEntry} />
       </IntlProvider>
     </ThemeProvider>
   );
@@ -52,15 +64,16 @@ describe('CurrentVoteSummary core states', () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it('renders the DRep id row with the on-chain label and no badge (snapshot)', () => {
+  it('renders the DRep id row with the on-chain label and the neutral status caption when no directory entry is supplied (snapshot)', () => {
     const { container } = renderSummary(DREP_VOTE);
     expect(screen.getByText('!!!Delegated to DRep')).toBeInTheDocument();
     // DRepIdDisplay truncates the visible text but exposes the full raw id.
     expect(screen.getByLabelText(KEY_CIP129)).toBeInTheDocument();
     expect(screen.getByText('!!!On-chain')).toBeInTheDocument();
-    expect(
-      screen.queryByText(/Active|Inactive|Expiring/)
-    ).not.toBeInTheDocument();
+    expect(screen.getByText('!!!DRep status is loading.')).toBeInTheDocument();
+    expect(screen.queryByText('!!!Active')).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Inactive')).not.toBeInTheDocument();
+    expect(screen.queryByText(/!!!Expiring in/)).not.toBeInTheDocument();
     expect(container.firstChild).toMatchSnapshot();
   });
 
@@ -90,5 +103,74 @@ describe('CurrentVoteSummary core states', () => {
       screen.queryByText(/drep1|drep_vkh|drep_script/)
     ).not.toBeInTheDocument();
     expect(container.firstChild).toMatchSnapshot();
+  });
+});
+
+describe('CurrentVoteSummary DRep status badge', () => {
+  afterEach(cleanup);
+
+  it('renders the shared active badge with no status caption', () => {
+    const { container } = renderSummary(DREP_VOTE, ACTIVE_ENTRY);
+    expect(screen.getByText('!!!Active')).toBeInTheDocument();
+    expect(
+      screen.queryByText(/lapse in|currently inactive|status is loading/)
+    ).not.toBeInTheDocument();
+    expect(container.firstChild).toMatchSnapshot();
+  });
+
+  it('renders the local expiring badge and caption inside the remaining-epoch window', () => {
+    const { container } = renderSummary(DREP_VOTE, {
+      ...ACTIVE_ENTRY,
+      drepActivity: 4,
+    });
+    expect(screen.getByText('!!!Expiring in 4 epochs')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "!!!This DRep's voting power will lapse in 4 epochs — consider re-delegating."
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText('!!!Active')).not.toBeInTheDocument();
+    expect(container.firstChild).toMatchSnapshot();
+  });
+
+  it('renders the shared inactive badge and caption', () => {
+    const { container } = renderSummary(DREP_VOTE, {
+      ...ACTIVE_ENTRY,
+      status: 'inactive',
+      drepActivity: 0,
+    });
+    expect(screen.getByText('!!!Inactive')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        '!!!This DRep is currently inactive. Your voting power will not be counted until they vote again — consider re-delegating.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/!!!Expiring in/)).not.toBeInTheDocument();
+    expect(container.firstChild).toMatchSnapshot();
+  });
+
+  it('treats the window boundary as expiring', () => {
+    renderSummary(DREP_VOTE, { ...ACTIVE_ENTRY, drepActivity: 12 });
+    expect(screen.getByText('!!!Expiring in 12 epochs')).toBeInTheDocument();
+  });
+
+  it('treats one epoch beyond the window as active', () => {
+    renderSummary(DREP_VOTE, { ...ACTIVE_ENTRY, drepActivity: 13 });
+    expect(screen.getByText('!!!Active')).toBeInTheDocument();
+    expect(screen.queryByText(/!!!Expiring in/)).not.toBeInTheDocument();
+  });
+
+  it('keeps the active badge when the remaining epochs are unknown', () => {
+    renderSummary(DREP_VOTE, { ...ACTIVE_ENTRY, drepActivity: null });
+    expect(screen.getByText('!!!Active')).toBeInTheDocument();
+    expect(screen.queryByText(/!!!Expiring in/)).not.toBeInTheDocument();
+  });
+
+  it('renders no status badge or caption for the abstain sentinel', () => {
+    renderSummary({ kind: 'abstain' }, ACTIVE_ENTRY);
+    expect(screen.queryByText('!!!Active')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/lapse in|currently inactive|status is loading/)
+    ).not.toBeInTheDocument();
   });
 });

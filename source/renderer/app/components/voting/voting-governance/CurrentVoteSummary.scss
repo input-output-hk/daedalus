@@ -30,6 +30,19 @@
   color: var(--theme-text-primary);
 }
 
+.expiringBadge {
+  align-items: center;
+  background: var(--badge-warning-bg, rgba(230, 162, 60, 0.12));
+  border-radius: 4px;
+  color: var(--badge-warning-fg, #b26a00);
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 6px;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
 .glyph {
   line-height: 1;
 }

@@ -70,4 +70,29 @@ export const messages = defineMessages({
       '!!!Your stake counts as Yes on every motion of no-confidence. Rewards can be withdrawn.',
     description: 'Caption explaining the No Confidence delegation state',
   },
+  statusExpiringBadge: {
+    id: 'voting.governance.currentVote.status.expiringBadge',
+    defaultMessage: '!!!Expiring in {n} epochs',
+    description:
+      'Badge label for a delegated DRep whose registration lapses within the remaining-epoch window',
+  },
+  statusExpiring: {
+    id: 'voting.governance.currentVote.status.expiring',
+    defaultMessage:
+      "!!!This DRep's voting power will lapse in {n} epochs — consider re-delegating.",
+    description:
+      'Caption shown when the delegated DRep registration lapses soon',
+  },
+  statusInactive: {
+    id: 'voting.governance.currentVote.status.inactive',
+    defaultMessage:
+      '!!!This DRep is currently inactive. Your voting power will not be counted until they vote again — consider re-delegating.',
+    description: 'Caption shown when the delegated DRep is inactive',
+  },
+  statusUnavailable: {
+    id: 'voting.governance.currentVote.status.unavailable',
+    defaultMessage: '!!!DRep status is loading.',
+    description:
+      'Neutral caption shown when the DRep directory has no record for the delegated DRep yet',
+  },
 });

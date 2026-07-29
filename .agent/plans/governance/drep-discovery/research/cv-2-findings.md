@@ -903,6 +903,49 @@ task-149/task-150 (hash half).
 
 ---
 
+## F-16 — task-136 moved the cv-2 Jest baseline off F-11's numbers; the slice sweep is now 276/288 with 9 snapshots, and the guide's Step 6 `25 tests green at HEAD` is HEAD-scoped arithmetic that three readers in a row took for a stale figure
+
+**Measured after task-136's fix pass**, HEAD `0fc92fcab`, working tree carrying
+only that task's six paths. The slice-wide sweep F-11 defines —
+`node_modules/.bin/jest --testPathPattern='(governance|Governance|voting|Voting|DRep)' --no-coverage --runInBand`
+— exits 0 at **17 passed / 1 skipped of 18 suites, 276 passed / 12 skipped of 288
+tests, 9 snapshots** (~6.4 s), against F-11's 269 / 12 / 281 and 6 snapshots for
+the identical command. The whole delta is task-136's own suite and nothing else:
+`CurrentVoteSummary.spec.tsx` carries 4 `it(` blocks at HEAD
+(`git show HEAD:… | grep -cE '^\s+it\('`) and 11 in the working copy, and its
+stored snapshot keys go 4 → 7 (`grep -c '^exports\['` on
+`__snapshots__/CurrentVoteSummary.spec.tsx.snap`) — **+7 tests, +3 snapshots**,
+exactly the sweep deltas. The 12 skipped have not moved; they are still
+`tests/jest/governance/GovernanceCliArgvSmoke.spec.ts:28`'s environment self-skip.
+
+**The neighbour sweep's `25` is right, and each reader who assumes otherwise costs
+a round.** The guide's Step 6 comment (`cv-2-implementation-guide.md:1333`) reads
+"neighbouring suites must be untouched (3 suites / 25 tests green at HEAD)".
+Measured after the change, `--testPathPattern="voting-governance|VotingGovernancePage"`
+is 3 suites / **32** tests / 7 snapshots, exit 0. The two reconcile exactly —
+`32 - 11 + 4 = 25` — because the parenthetical is scoped **at HEAD**, before this
+task's own spec grows. Three independent readers in task-136's build reported the
+25 as stale anyway; the review dropped it as a misread in round 1
+(`cv-2-code-review.md:1163-1171`) and re-dropped it in round 2 (`:1348-1354`). No
+doc edit is owed and none was made.
+
+**Resolution.** F-11 stays the baseline **at `504b44c1a`** and is not amended.
+From task-137 onward the comparison basis for the slice-wide sweep is
+**276 / 12 / 288 with 9 snapshots**; a row that diffs its own result against
+F-11's 269 / 281 / 6 will re-attribute task-136's `+7` and `+3` to itself and
+report a regression that does not exist. Every later count in a guide Step 6 is to
+be reconciled arithmetically against HEAD *before* it is called a guide defect —
+these parentheticals state the pre-change number by design.
+
+**Disposition.** Record-only; binding on every remaining cv-2 row's verification
+step, and re-measured at slice close into the PRD's "Gates at close" section, as
+F-11's disposition already directs.
+
+**Owner.** task-136 (recorded); every cv-2 row from task-137 onward; the Planner
+at slice close.
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)

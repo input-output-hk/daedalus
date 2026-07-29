@@ -5,6 +5,8 @@ import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import CurrentVoteSummary from '../../../source/renderer/app/components/voting/voting-governance/CurrentVoteSummary';
 import type { WalletVotingTarget } from '../../../source/renderer/app/api/wallets/types';
+import type { AppDRepDirectoryEntry } from '../../../source/renderer/app/stores/GovernanceStore';
+import { resolveCurrentVote, useCurrentVoteKnob } from './_utils/fixtures';
 
 const PANEL_STYLE = {
   margin: '0 auto',
@@ -12,43 +14,40 @@ const PANEL_STYLE = {
   padding: 24,
 };
 
-// Checksum-verified vectors copied byte-for-byte from the committed wallet
-// fixtures. Bech32 is case-insensitive, so never re-case or re-derive them.
-const KEY_CIP129 = 'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
-const KEY_CIP105 =
-  'drep_vkh15xev84897cr3s2f6fdwx6l50jzsm9s75uhmqwxpf8f94czu4a4l';
-const KEY_CREDENTIAL_HEX =
-  'a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c';
+type DRepStatusOption = 'none' | 'active' | 'expiring' | 'inactive';
 
-const CURRENT_VOTE_OPTIONS = {
-  'Not delegated (warning)': 'noDelegation',
-  'DRep — unverified anchor': 'drepUnverified',
-  Abstain: 'abstain',
-  'No Confidence': 'noConfidence',
+const DREP_STATUS_OPTIONS: Record<string, DRepStatusOption> = {
+  'No record yet': 'none',
+  Active: 'active',
+  'Expiring soon': 'expiring',
+  Inactive: 'inactive',
 };
 
-const resolveCurrentVote = (option: string): WalletVotingTarget | null => {
-  switch (option) {
-    case 'drepUnverified':
-      return {
-        kind: 'drep',
-        drep: {
-          raw: KEY_CIP129,
-          cip129: KEY_CIP129,
-          cip105: KEY_CIP105,
-          credentialHex: KEY_CREDENTIAL_HEX,
-          credentialType: 'key',
-        },
-        source: 'onchain',
-      };
-    case 'abstain':
-      return { kind: 'abstain' };
-    case 'noConfidence':
-      return { kind: 'no_confidence' };
-    case 'noDelegation':
-    default:
-      return null;
+const DREP_ACTIVITY_BY_STATUS: Record<DRepStatusOption, number | null> = {
+  none: null,
+  active: 30,
+  expiring: 4,
+  inactive: 0,
+};
+
+const resolveDRepEntry = (
+  statusOption: DRepStatusOption,
+  currentVote: WalletVotingTarget | null
+): AppDRepDirectoryEntry | null => {
+  if (
+    statusOption === 'none' ||
+    currentVote == null ||
+    currentVote.kind !== 'drep'
+  ) {
+    return null;
   }
+  return {
+    drepId: currentVote.drep.cip129 ?? currentVote.drep.raw,
+    votingPower: null,
+    status: statusOption === 'inactive' ? 'inactive' : 'active',
+    drepActivity: DREP_ACTIVITY_BY_STATUS[statusOption],
+    anchor: null,
+  };
 };
 
 // Locale is intentionally not wired here: the global StoryWrapper decorator
@@ -62,16 +61,19 @@ storiesOf('Governance / Current Vote Summary', module)
   ))
   .addDecorator(withKnobs)
   .add('Core states', () => {
-    const option = select(
-      'Current vote (mock)',
-      CURRENT_VOTE_OPTIONS,
-      'noDelegation'
+    const option = useCurrentVoteKnob();
+    const statusOption = select(
+      'DRep status (mock)',
+      DREP_STATUS_OPTIONS,
+      'none'
     );
+    const currentVote = resolveCurrentVote(option);
     return (
       <div style={PANEL_STYLE}>
         <CurrentVoteSummary
           key={option}
-          currentVote={resolveCurrentVote(option)}
+          currentVote={currentVote}
+          drepEntry={resolveDRepEntry(statusOption, currentVote)}
         />
       </div>
     );
