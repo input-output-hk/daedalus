@@ -5,6 +5,8 @@ import type { WalletVotingTarget } from '../../../source/renderer/app/api/wallet
 const KEY_CIP129 = 'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
 const KEY_CIP105 =
   'drep_vkh15xev84897cr3s2f6fdwx6l50jzsm9s75uhmqwxpf8f94czu4a4l';
+const KEY_CREDENTIAL_HEX =
+  'a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c';
 // These two carry the same 28 credential bytes under a 0x22 key header and a
 // 0x23 script header, so only credentialType separates them.
 const OTHER_KEY_CIP129 =
@@ -91,5 +93,41 @@ describe('isSameVoteTarget', () => {
     const before = JSON.stringify(currentVote);
     expect(isSameVoteTarget(KEY_CIP105, currentVote)).toBe(true);
     expect(JSON.stringify(currentVote)).toBe(before);
+  });
+});
+
+describe('isSameVoteTarget letter-case stability', () => {
+  const currentVote: WalletVotingTarget = {
+    kind: 'drep',
+    drep: {
+      raw: KEY_CIP129,
+      cip129: KEY_CIP129,
+      cip105: KEY_CIP105,
+      credentialHex: KEY_CREDENTIAL_HEX,
+      credentialType: 'key',
+    },
+    source: 'onchain',
+  };
+
+  it('matches an all-upper-case bech32 form of the current target', () => {
+    expect(isSameVoteTarget(KEY_CIP129.toUpperCase(), currentVote)).toBe(true);
+  });
+
+  it('matches when the stored credential hex is upper-case', () => {
+    expect(
+      isSameVoteTarget(KEY_CIP129, {
+        ...currentVote,
+        drep: {
+          ...currentVote.drep,
+          credentialHex: KEY_CREDENTIAL_HEX.toUpperCase(),
+        },
+      })
+    ).toBe(true);
+  });
+
+  it('rejects a mixed-case form, which is not a decodable identifier', () => {
+    expect(isSameVoteTarget(`D${KEY_CIP129.slice(1)}`, currentVote)).toBe(
+      false
+    );
   });
 });

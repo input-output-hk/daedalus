@@ -19,6 +19,7 @@ import translations from '../../i18n/locales/en-US.json';
 import { daedalusTheme } from '../../themes/daedalus';
 import { themeOverrides } from '../../themes/overrides';
 import { ROUTES } from '../../routes-config';
+import { logger } from '../../utils/logging';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import {
@@ -28,6 +29,13 @@ import {
 import VotingGovernancePage from './VotingGovernancePage';
 import DRepDirectoryPage from '../governance/DRepDirectoryPage';
 import DRepDetailPage from '../governance/DRepDetailPage';
+
+// jsdom's Uint8Array constructor lives in a different realm than Node's
+// Buffer, so the SDK's bech32 encoder rejects Buffer payloads; point the
+// suite's global at Node's realm (decode paths are unaffected).
+(global as { Uint8Array: unknown }).Uint8Array = Object.getPrototypeOf(
+  Buffer.prototype
+).constructor;
 
 // The wallet and vote-type dropdowns are react-polymorph-heavy, so both are
 // mocked: the vote-type mock renders only the value the flow asserts, and the
@@ -127,6 +135,31 @@ const drepEntry = {
   drepId: VALID_DREP_ID,
   status: 'active' as const,
   votingPower: new BigNumber('23137980123456'),
+};
+
+const VALID_DREP_ID_UPPERCASE =
+  'DREP1YGQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ7VLC9N';
+
+const currentVoteForValidDRep = {
+  kind: 'drep' as const,
+  drep: {
+    raw: VALID_DREP_ID,
+    cip129: VALID_DREP_ID,
+    cip105: 'drep_vkh1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq667pyd',
+    credentialHex: '00000000000000000000000000000000000000000000000000000000',
+    credentialType: 'key' as const,
+  },
+  source: 'onchain' as const,
+};
+
+const votingSoftwareWallet = {
+  ...softwareWallet,
+  currentVote: currentVoteForValidDRep,
+};
+
+const votingHardwareWallet = {
+  ...hardwareWallet,
+  currentVote: currentVoteForValidDRep,
 };
 
 type StoreOverrides = {
@@ -474,6 +507,56 @@ describe('Hardware-wallet delegate flow via location.state handoff', () => {
     );
     expect(screen.getByText('Enter passphrase if needed')).toBeInTheDocument();
   });
+
+  const deviceStates: Array<[HwDeviceStatus, RegExp]> = [
+    [
+      HwDeviceStatuses.CONNECTING_FAILED,
+      /Disconnect and reconnect your hardware wallet/,
+    ],
+    [HwDeviceStatuses.CONNECTING, /enter your PIN to unlock it/],
+    [
+      HwDeviceStatuses.LAUNCHING_CARDANO_APP,
+      /Launch Cardano application on your device/,
+    ],
+  ];
+
+  it('renders the current delegation with no device connected and blocks the same-vote submit', () => {
+    const { stores } = renderFlow(
+      [
+        {
+          pathname: ROUTES.VOTING.GOVERNANCE,
+          state: { selectedWalletId: HW_WALLET_ID, voteType: 'drep' },
+        },
+      ],
+      {
+        hwDeviceStatus: HwDeviceStatuses.CONNECTING_FAILED,
+        wallets: [votingHardwareWallet],
+      }
+    );
+
+    expect(screen.getByText('!!!Delegated to DRep')).toBeInTheDocument();
+    expect(
+      screen.getByText('!!!This wallet already votes for this DRep.')
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
+    expect(stores.voting.initializeVPDelegationTx).not.toHaveBeenCalled();
+  });
+
+  it.each(deviceStates)(
+    'surfaces the %s device state in the confirmation dialog and keeps Confirm disabled',
+    async (hwDeviceStatus, expectedCopy) => {
+      renderFlow([hwEntry], { hwDeviceStatus, wallets: [hardwareWallet] });
+
+      fireEvent.click(
+        screen.getByRole('button', { name: '!!!Select for delegation' })
+      );
+      fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+
+      await screen.findByText('Confirm Transaction');
+      expect(screen.getByText(expectedCopy)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Confirm' })).toBeDisabled();
+    }
+  );
 });
 
 describe('Delegation form pre-fill from the selected wallet', () => {
@@ -675,5 +758,120 @@ describe('Confirmation dialog prop contract', () => {
         expect(props).not.toHaveProperty(key);
       }
     );
+  });
+});
+
+describe('Current-vote enrichment in the delegation form', () => {
+  afterEach(() => {
+    cleanup();
+    jest.restoreAllMocks();
+  });
+
+  const formEntry = {
+    pathname: ROUTES.VOTING.GOVERNANCE,
+    state: { selectedWalletId: WALLET_ID, voteType: 'drep' },
+  };
+
+  it('shows the current delegation and disables submit while the form matches it', () => {
+    const { stores } = renderFlow([formEntry], {
+      wallets: [votingSoftwareWallet],
+    });
+
+    expect(screen.getByText('!!!Delegated to DRep')).toBeInTheDocument();
+    expect(screen.getByText('!!!Expiring in 12 epochs')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "!!!This DRep's voting power will lapse in 12 epochs — consider re-delegating."
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByDisplayValue(VALID_DREP_ID)).toBeInTheDocument();
+    expect(
+      screen.getByText('!!!This wallet already votes for this DRep.')
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
+    expect(stores.voting.initializeVPDelegationTx).not.toHaveBeenCalled();
+  });
+
+  it('resolves the directory entry for a CIP-105 delegation through its CIP-129 form', () => {
+    const CIP105_DREP_ID =
+      'drep_vkh1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq667pyd';
+
+    renderFlow([formEntry], {
+      wallets: [
+        {
+          ...softwareWallet,
+          currentVote: {
+            ...currentVoteForValidDRep,
+            drep: { ...currentVoteForValidDRep.drep, raw: CIP105_DREP_ID },
+          },
+        },
+      ],
+    });
+
+    expect(screen.getByText('!!!Expiring in 12 epochs')).toBeInTheDocument();
+    expect(screen.queryByText('!!!DRep status is loading.')).toBeNull();
+    expect(screen.getByLabelText(CIP105_DREP_ID)).toBeInTheDocument();
+  });
+
+  it('treats a target differing only in bech32 letter case as the current vote', () => {
+    renderFlow([formEntry], { wallets: [votingSoftwareWallet] });
+
+    fireEvent.change(screen.getByDisplayValue(VALID_DREP_ID), {
+      target: { value: VALID_DREP_ID_UPPERCASE },
+    });
+
+    expect(
+      screen.getByDisplayValue(VALID_DREP_ID_UPPERCASE)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('!!!This wallet already votes for this DRep.')
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
+  });
+
+  it('re-enables submit and opens the confirmation dialog when the target changes', async () => {
+    const { stores } = renderFlow([formEntry], {
+      wallets: [votingSoftwareWallet],
+    });
+
+    fireEvent.change(screen.getByDisplayValue(VALID_DREP_ID), {
+      target: { value: OTHER_DREP_ID },
+    });
+
+    const submit = screen.getByRole('button', { name: 'Submit' });
+    expect(submit).not.toBeDisabled();
+    fireEvent.click(submit);
+
+    await screen.findByText('Confirm Transaction');
+    expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
+      expect.objectContaining({ chosenOption: OTHER_DREP_ID })
+    );
+    expect(screen.getByText(OTHER_DREP_ID).textContent).toBe(OTHER_DREP_ID);
+  });
+
+  it('keeps the vote target out of renderer logger payloads across the flow', async () => {
+    const spies = [
+      jest.spyOn(logger, 'debug').mockImplementation(() => undefined),
+      jest.spyOn(logger, 'info').mockImplementation(() => undefined),
+      jest.spyOn(logger, 'warn').mockImplementation(() => undefined),
+      jest.spyOn(logger, 'error').mockImplementation(() => undefined),
+    ];
+
+    renderFlow([formEntry], { wallets: [votingSoftwareWallet] });
+
+    fireEvent.change(screen.getByDisplayValue(VALID_DREP_ID), {
+      target: { value: OTHER_DREP_ID },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    await screen.findByText('Confirm Transaction');
+
+    const logged = JSON.stringify(spies.map((spy) => spy.mock.calls));
+    expect(logged).not.toContain(VALID_DREP_ID);
+    expect(logged).not.toContain(VALID_DREP_ID_UPPERCASE);
+    expect(logged).not.toContain(OTHER_DREP_ID);
+    expect(logged).not.toContain('drep_vkh');
+    expect(logged).not.toContain('drep_script');
+    expect(logged).not.toContain('abstain');
+    expect(logged).not.toContain('no_confidence');
   });
 });

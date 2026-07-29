@@ -4525,3 +4525,205 @@ reasons above, including an override of the gate's "convention-compliant" readin
 the comment block. The deliverable itself — 14 catalog values byte-matching the spec,
 insert-only, markers intact, 1618/1618 parity, `drepId` untouched, `i18n:manage`
 idempotent — is correct as written. No round 2 is warranted.
+
+---
+
+## Code Review: 2026-07-28 — task-147 round 1
+
+**Scope reviewed.** The uncommitted working tree for task-147 — three modified spec
+files, all append-only — against its guide section
+`cv-2-implementation-guide.md:5048-5564` (files-touched and do-not-touch at
+`:5050-5062`, verified context and vectors at `:5064-5106`, the four locked invariants
+at `:5108-5120`, the four resolved judgment calls at `:5122-5143`, Steps 1-7 at
+`:5145-5543`, the acceptance record at `:5545-5564`). Three independent lenses ran —
+correctness against the guide, locked invariants plus the sanitization floor, and
+tests plus simplicity and drift. Two returned `approved` with empty lists; the third
+returned `requires_changes` with one major and one minor, both the same shape
+(negative logger assertions that pass trivially on today's code). Adjudicated
+first-hand against the files: the underlying measurement is correct, the severity
+reading is not. The main checkout `/workspaces/daedalus` was never read, edited or run
+against, and this round fixed no code.
+
+**What landed.** `git status --porcelain` → exactly 3 ` M` lines, zero untracked, zero
+staged, every path guide-named. `git diff --stat` is **insert-only everywhere**,
+`+298/-0`: `source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx`
+`+198`, `tests/jest/governance/isSameVoteTarget.spec.ts` `+38`,
+`tests/jest/security/governance-sanitization.spec.ts` `+62`. Zero production source,
+zero `.json`, zero `.scss`; no tracker, catalog or `translations/messages.json` write.
+Steps 2, 3, 4 and 5 are byte-identical to the guide's snippets and sit exactly where it
+places them. Step 1 is the guide's block minus `OTHER_DREP_ID`, correctly omitted
+because the constant already exists at `VotingGovernancePage.spec.tsx:94` with the same
+value. The one un-briefed addition — the global `Uint8Array` realm shim at
+`VotingGovernancePage.spec.tsx:33-37` — is load-bearing (the CIP-105 case reaches
+`Cardano.DRepID.toCip129DRepID` through `resolveExactDRepMatch`) and copies the
+established precedent at
+`source/renderer/app/components/governance/drep-directory/DRepDirectory.spec.tsx:21-26`
+verbatim rather than inventing a pattern.
+
+### Blockers
+
+**None at blocker or major severity.** One minor survives; it is a one-token change
+inside a file the closing pass opens anyway, and it does not block the commit.
+
+### Minor (non-blocking; absorbable before the task-147 commit)
+
+**CR147-1 (minor) — the flow-level logger tripwire serialises with bare
+`JSON.stringify`, which erases exactly the payload shape the one reachable logger site
+in that tree emits.** `VotingGovernancePage.spec.tsx:868` builds
+`const logged = JSON.stringify(spies.map((spy) => spy.mock.calls));` and then runs
+seven `not.toContain` checks over it (`:869-875`). Today `logged` is `[[],[],[],[]]` —
+verified: the only module in the rendered tree that imports the renderer logger is
+`source/renderer/app/components/governance/_shared/DRepIdDisplay.tsx:7` (a
+`grep -rl "utils/logging"` over `components/voting`, `components/governance` and
+`containers/voting|governance` returns that file and nothing else), and both of its
+calls sit inside `handleCopy` (`:52-54`, `:62-65`), which only fires on a copy-button
+click this test never performs; every store in the tree is a plain `jest.fn` mock
+(`buildStores`, `:171-215`), so `VotingStore.ts:354` / `:412` never execute. That
+emptiness is *not* the defect — the case is a forward regression net by design and it
+would genuinely fail the day a leak lands. The defect is that it would **not** fail for
+the single leak this tree can actually produce: `DRepIdDisplay.tsx:62-65` logs
+`{ error, drepIdLength }`, and `Error.message` / `.stack` are non-enumerable, so
+`JSON.stringify` renders that call as `{"error":{}}` and a DRep id carried in the error
+message slips straight past all seven checks. The slice already owns the fix and
+documents this exact hole one file over:
+`tests/jest/security/governance-sanitization.spec.ts:62-64` — "Error message/stack are
+non-enumerable and invisible to `JSON.stringify`; expand them so a DRep ID embedded in
+an error message cannot slip past the containment assertions below" — above
+`jsonStrWithErrors` (`:65-69`), which every sibling logger case uses (`:373`, `:410`,
+`:511`). *Fix:* replace the bare `JSON.stringify` at `:868` with a local Error-aware
+replacer mirroring `governance-sanitization.spec.ts:65-69`, leaving the seven
+assertions untouched. *Explicitly not the fix:* swapping the seven checks for
+`expect(spy).not.toHaveBeenCalled()` — see the dropped findings below. This is a
+**hardening beyond the guide's verbatim Step 2 snippet** (`:5279-5303`) and must be
+recorded as such in the task's `statusReason` so it is not later read as drift.
+
+### Independent re-checks of the deliverable (nothing new found)
+
+Ran, not trusted. `node_modules/.bin/jest --testPathPattern="(VotingGovernancePage|isSameVoteTarget|governance-sanitization)" --no-coverage --runInBand`
+→ **3 suites, 65 tests, all green, 0 snapshots**, reproducing the gate. Non-vacuity was
+checked on the assertions that could have been decorative and were not: the fixture
+`tests/mocks/wallets/wallet-voting-drep.json` really carries
+`drep1y2sm9s75…23nmjy` at `:26` under the guarded `delegation.active.voting` key
+(`source/common/utils/logging.ts:46-48`) and really carries `"cv1 fixture voting drep"`
+at `:4`, so the new `filterLogData` case (`governance-sanitization.spec.ts:218-225`)
+tests redaction rather than whole-object erasure. `VotingStore` contains exactly two
+`logger.*` sites, `:354` and `:412`, both inside HW branches, and **no** `logger.debug`
+anywhere — confirming the software tail of `delegateVotes` (`:421-443`) logs nothing at
+all. The comparator's three new vectors (`isSameVoteTarget.spec.ts:99-133`) reuse
+task-140's `KEY_CIP129` / `KEY_CIP105` and add only `KEY_CREDENTIAL_HEX`, as Step 4
+directs. Convention audit: two comments added, both stating a non-obvious constraint,
+sentence case, no ALL-CAPS, no change history; **zero** process artifacts (`task-N`,
+`CAT-x`, `CP-x`, `AC-x`, `D-1x`, `S-x`, `cv-2`, PR numbers) in any added comment or test
+name; no `.only` / `.skip` / `xit` / `xdescribe` / `.todo`; filenames stay
+`.spec.ts` / `.spec.tsx`. No `git stash` was used, no commit was made, and no file was
+edited except this log.
+
+### Merged and dropped
+
+The two `approved` lenses overlap almost entirely on the correctness and
+locked-invariant surface; their agreeing findings are folded into the re-check
+paragraph above rather than restated. Both independently examined the same two blocks
+the third lens flags and both classified them as the guide's intended design. Two
+findings were dropped.
+
+**Dropped — QUALITY-1-1 (claimed major), "the flow logger case cannot fail; replace the
+seven substring checks with `spies.forEach((spy) => expect(spy).not.toHaveBeenCalled())`."**
+Its measurement is correct and is preserved above as CR147-1's premise; its severity
+and its remedy are not. (a) "Incapable of failing" overstates: a substring check over
+`spy.mock.calls` fails the moment any future logger call in this tree carries the id,
+which is precisely the regression net Step 2 was written to install — the case is
+inert on today's code, not incapable. (b) The proposed replacement asserts a **broader
+and different** invariant — "no code path in this flow logs anything at all" — which
+the slice does not own and which a legitimate, fully sanitized `logger.debug` would
+break, turning a sanitization tripwire into a logging-policy tripwire. cv-2's floor is
+"no DRep id and no sentinel literal in a logger payload"
+(`cv-2-implementation-guide.md:5110-5113`), and the substring form states exactly that.
+(c) The assertions are the guide's verbatim Step 2 snippet (`:5279-5303`) and the guide
+names this case as AC-4's flow-side evidence (`:5557-5558`); a partial criterion the
+guide deliberately shaped is not a defect. What survives is only the serialiser
+weakness, promoted at CR147-1 — a strictly additive hardening that keeps the guide's
+assertions intact.
+
+**Dropped — QUALITY-1-2 (claimed minor), "drop `jsonStrWithErrors` and the two
+`not.toContain` lines at `governance-sanitization.spec.ts:511-516` and assert
+`expect(errorSpy).not.toHaveBeenCalled()` instead."** Same shape, and it fails for the
+same two reasons plus a third. The vacuity measurement is right — the case drives the
+software happy path (`isHardwareWallet: false`, `delegateVotes` resolving
+`Buffer.from('ok')`, `:481-490`), which reaches neither `VotingStore.ts:354` nor `:412`,
+and there is no `logger.debug` in the file, so both spy arrays are empty. But the
+remedy again swaps a sanitization invariant for a logging-policy one; the block is the
+guide's verbatim Step 5 snippet (`:5471-5519`); and unlike the flow case this one
+**already uses** `jsonStrWithErrors` (`:511-514`), so CR147-1's serialiser hole does not
+apply and there is no residue left to promote. The observation that the file's sibling
+cases guard with `expect(errorSpy).toHaveBeenCalled()` first (`:372-373`, `:409-410`) is
+accurate but proves the opposite of what was drawn from it: those two cases assert a
+*positive* leak-free logging path, this one asserts a *negative* one, and a guard is
+neither possible nor meaningful for a negative. The real store-boundary leak coverage
+lives at those sibling cases and is unaffected. Recorded as an observation, not a
+finding.
+
+Also considered and not promoted: the guide's AC-5 note that the literal `'abstain'`
+legitimately appears as the third analytics argument
+(`governance-sanitization.spec.ts:500-505`) is the recorded carve-out at
+`cv-2-PRD.md:1482-1484` and `:1642`, matching shipped `VotingStore._getVoteKind`
+(`VotingStore.ts:196-202`) — not a floor violation, and the guide forbids asserting its
+absence (`cv-2-implementation-guide.md:5124-5129`).
+
+**Gate result and its attribution.** The supplied gate reports **PASS** on all six
+briefed gates. `tsc --noEmit` → exit 0, matching the slice baseline. `yarn lint` → exit
+0, zero errors; the warning delta for this task is zero, since `tests/` is
+eslint-ignored and the only lintable changed file reports the same 9 warnings in the
+working tree and at HEAD. Jest, using the four patterns Step 6 names verbatim
+(`:5525-5528`): `VotingGovernancePage` 27/27, `isSameVoteTarget` 12/12,
+`governance-sanitization` **26**/26 — the exact figure the guide requires at `:5533` —
+and the broad `governance` pattern 16 suites plus the deliberate
+`GovernanceCliArgvSmoke` self-skip. The `(governance|voting)` wave pattern moves
+`+14 passed` with suites, skips and snapshots unchanged, and `9 + 3 + 2 = 14`
+reconciles exactly against the per-file HEAD counts, ruling out a silently deleted or
+disabled pre-existing case. `typed-scss-modules` was correctly not required (no `.scss`
+in the change set) and `yarn i18n:manage` correctly not run (no i18n copy in the diff;
+only task-146 may keep those writes). `yarn check:all` was deliberately not run — red at
+HEAD for the unrelated `storybook:build` manager-webpack reason.
+
+The gate's one red is **`prettier --check` on
+`tests/jest/security/governance-sanitization.spec.ts`, and it is pre-existing —
+confirmed here first-hand, not taken on report.** Read-only comparison both ways:
+`prettier <file> | diff <file> -` in the working tree yields exactly one hunk at
+`546c546`, `const tracker = (MatomoTracker as unknown as jest.Mock)…` versus prettier's
+preferred `((MatomoTracker as unknown) as jest.Mock)…`; the same file at HEAD, piped
+through `prettier --stdin-filepath`, yields exactly one hunk, byte-identical text, at
+`484c484`. Same single violation, same characters — the line moved `484 → 546` solely
+because task-147 inserted 62 lines above it. Net new prettier violations from this
+task: **zero**. This **extends the brief's baseline-red list**, which named only
+`VotingPowerDelegation.tsx`, `VotingPowerDelegationConfirmationDialog.tsx` and
+`storybook/stories/voting/Governance.stories.tsx`; that list is incomplete by this
+fourth file. `prettier --write` must **not** be run on it — the guide forbids it at
+`:5534-5537` and a rewrite would bury the real diff. The other two changed files were
+green at HEAD and are still green, so the hand-matched formatting held.
+
+**Handoffs for the closing pass (not review findings).** (a) Absorb **CR147-1** before
+the commit — one expression at `VotingGovernancePage.spec.tsx:868`, hand-edited, no
+`prettier --write` on any of the three files. (b) Three `statusReason` deviations are
+still unrecorded and are tracker-owner work: the flow-level logger assertions living in
+the colocated `VotingGovernancePage.spec.tsx` rather than under `tests/jest/` as the
+row's `targetPath` states (the guide's own instruction, `:5137-5140`); the AC-5 reading
+that `'abstain'` legitimately appears as the analytics vote-kind value (`:5559-5564`);
+and CR147-1's serialiser hardening as a deliberate step beyond the verbatim snippet.
+(c) The jsdom `Uint8Array` realm workaround deserves a line in
+`research/cv-2-findings.md` — any future jsdom spec that touches `drepIndex` will hit
+it. (d) `nix` is absent, so `nix fmt` remains the owed pre-merge obligation with
+prettier-on-explicit-paths as the recorded substitute. (e) The prescribed commit
+subject is `test(gov): task-147 pin the current-vote flow, HW device states, and the
+sanitization floor` (`guide:5542`).
+
+**Decision: approved** — no survivor reaches blocker or major severity. Two lenses
+returned `approved` with empty lists; the third returned `requires_changes` on one
+major and one minor, and adjudication against the files confirmed both measurements but
+rejected both remedies, which would have replaced a sanitization invariant the slice
+owns with a logging-policy invariant it does not, in code the guide prescribes verbatim.
+One narrower residue was promoted as **minor and absorbable** — the bare
+`JSON.stringify` at `:868` is blind to the one leak shape this tree can produce, and the
+slice already ships the replacer that closes it. The deliverable itself — five
+current-vote flow cases, the no-device HW case, the three-state `it.each`, three
+letter-case comparator vectors and two sanitization-floor additions, all append-only,
+all green, production source untouched — is correct as written. No round 2 is warranted.

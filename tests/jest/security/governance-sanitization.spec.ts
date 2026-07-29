@@ -41,6 +41,7 @@ import { EventCategories } from '../../../source/renderer/app/analytics';
 import MatomoTracker from 'matomo-tracker';
 import { maskAnalyticsRoute } from '../../../source/renderer/app/analytics/maskAnalyticsRoute';
 import { MatomoClient } from '../../../source/renderer/app/analytics/MatomoClient';
+import walletVotingDRepFixture from '../../mocks/wallets/wallet-voting-drep.json';
 
 // ---- Test vectors ----
 
@@ -212,6 +213,14 @@ describe('Governance sanitization — filterLogData', () => {
     expect(s).not.toContain(CIP105_KEY);
     expect(s).toContain('A');
     expect(s).toContain('B');
+  });
+
+  it('redacts the vote target from a full wallet-list wire payload', () => {
+    const result = jsonStr(filterLogData(walletVotingDRepFixture));
+    expect(result).not.toContain(
+      'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy'
+    );
+    expect(result).toContain('cv1 fixture voting drep');
   });
 });
 
@@ -452,6 +461,59 @@ describe('Governance sanitization — call boundaries', () => {
     } finally {
       jest.useRealTimers();
     }
+  });
+
+  it('reduces a sentinel delegation to the vote kind in the analytics payload', async () => {
+    const analytics = {
+      disableTracking: jest.fn(),
+      enableTracking: jest.fn(),
+      sendEvent: jest.fn(),
+      sendPageNavigationEvent: jest.fn(),
+    };
+    const errorSpy = jest
+      .spyOn(rendererLogger, 'error')
+      .mockImplementation(() => undefined);
+    const debugSpy = jest
+      .spyOn(rendererLogger, 'debug')
+      .mockImplementation(() => undefined);
+    const store = new VotingStore(
+      {
+        ada: {
+          delegateVotes: jest.fn(() => Promise.resolve(Buffer.from('ok'))),
+        },
+      } as any,
+      {} as any,
+      analytics as any
+    );
+
+    await store.delegateVotes({
+      chosenOption: 'abstain',
+      passphrase: 'test-passphrase',
+      wallet: {
+        amount: new BigNumber('123000000'),
+        id: 'wallet-1',
+        isHardwareWallet: false,
+      } as any,
+    });
+
+    // The third argument is the derived vote kind, not a delegation target.
+    expect(analytics.sendEvent).toHaveBeenCalledWith(
+      EventCategories.VOTING,
+      'Casted governance vote',
+      'abstain'
+    );
+    expect(analytics.sendEvent.mock.calls[0]).toHaveLength(3);
+    const analyticsPayload = jsonStr(analytics.sendEvent.mock.calls);
+    expect(analyticsPayload).not.toContain('drep1');
+    expect(analyticsPayload).not.toContain('drep_vkh');
+    expect(analyticsPayload).not.toContain('drep_script');
+
+    const logged = jsonStrWithErrors([
+      errorSpy.mock.calls,
+      debugSpy.mock.calls,
+    ]);
+    expect(logged).not.toContain('abstain');
+    expect(logged).not.toContain(CIP129_DREP);
   });
 });
 

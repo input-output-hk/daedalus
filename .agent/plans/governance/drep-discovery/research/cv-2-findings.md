@@ -1818,6 +1818,103 @@ its own line item, and the `!!!` marker sweep as the user's release-end review).
 
 ---
 
+## F-28 — cv-2's flow-level sanitization evidence is a tripwire over an **empty** set, and the one leak its own tree can produce is the one shape it cannot see; F-18's realm shim finally lands, seven build-order rows past where F-18 aimed it; and F-27's task-147 absorption pointer resolves to nothing. Sweep basis moves to 323/335
+
+**AC-4's flow half asserts against nothing.** task-147's Step 2 logger case
+(`source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx:852-877`)
+spies all four renderer `logger` levels, drives select → edit → submit → dialog,
+and runs seven `not.toContain` checks over the collected calls. Measured, not
+inferred: `grep -rl "utils/logging"` over `components/voting`,
+`components/governance`, `containers/voting` and `containers/governance` returns
+exactly two paths, the spec itself and
+`source/renderer/app/components/governance/_shared/DRepIdDisplay.tsx:7`. Both of
+that module's calls sit inside `handleCopy` (`:52-54`, `:62-65`), reachable only
+by a copy-button click this test never performs, and every store in the tree is a
+plain `jest.fn` mock, so `VotingStore.ts:354` / `:412` cannot fire either. The
+collected value is therefore `[[],[],[],[]]` and all seven checks pass over an
+empty string. This is **not** a defect — it is a forward regression net that fails
+the day a leak lands, and the guide ships it verbatim (`:5279-5303`) as AC-4's
+flow-side evidence (`:5557-5558`). It is recorded because the distinction is
+invisible from the tracker: cv-2's *executable* proof that the flow sanitizes is
+Step 5's store/analytics case against a real `VotingStore`
+(`tests/jest/security/governance-sanitization.spec.ts:466-514`), and the flow case
+is a guard, not an observation. A slice-close report that reads the green run as
+"the flow was watched and leaked nothing" overstates it.
+
+**And the guard is blind to the only leak its own tree can emit.** Review minor
+**CR147-1** ships **open** — the review closed `approved` with zero blockers and no
+fix pass ran before the closing pass, which writes no code.
+`VotingGovernancePage.spec.tsx:868` builds the haystack with bare
+`JSON.stringify`, while the one reachable site, `DRepIdDisplay.tsx:62-65`, logs
+`{ error, drepIdLength }`. `Error.message` and `.stack` are **non-enumerable**, so
+that call serialises as `{"error":{}}` and a DRep id carried inside an error
+message passes all seven checks untouched. The slice already owns the fix and
+documents this exact hole one file over: the comment plus `jsonStrWithErrors` at
+`tests/jest/security/governance-sanitization.spec.ts:62-69`, which every sibling
+logger case uses (`:373`, `:410`, `:511`). The remedy is a one-token substitution
+at `:868`; it is a **hardening beyond** the guide's verbatim snippet, so whoever
+applies it must say so or a later reader will score it as drift.
+
+**F-18's shim lands at the row F-18's Owner line predicted, not at the row its
+disposition did.** F-18 dispositioned the jsdom/Node realm trap **blocking on
+task-173** (`:1142-1146`), F-21 measured that row and found it not applicable —
+`normalizeDRepIdentity` decodes through the `bech32` package, never through the
+SDK's brand-checking encoder — and the shim was never installed. task-147 needs it
+for real: its CIP-105 case reaches `Cardano.DRepID.toCip129DRepID` through
+`resolveExactDRepMatch`, which without the shim throws inside its own `catch` and
+returns `null`, leaving the badge silently `unavailable`. The three lines now sit
+at `VotingGovernancePage.spec.tsx:33-38` and are **byte-identical** to the
+established shim at
+`source/renderer/app/components/governance/drep-directory/DRepDirectory.spec.tsx:21-26`,
+so precedent was copied rather than invented. F-18's *Owner* line — "task-147 (any
+end-to-end badge assertion inherits the same constraint)" (`:1148-1150`) — was the
+accurate pointer all along; its *Disposition* line was not. The durable rule for
+any future reader: **a jsdom spec that asserts on the far side of
+`resolveExactDRepMatch` needs this shim; one that only decodes through the
+`bech32` package does not.**
+
+**F-27's absorption pointer resolves to nothing.** F-27 named "task-147 or the
+Planner at slice close (absorb CR146-1 and CR146-2)" (`:1815-1817`). task-147's
+change set is three spec files and does **not** include
+`tests/jest/i18n/preliminaryCopyMarkers.spec.ts`, so neither minor was absorbed.
+Both escalate intact to the Planner at slice close, joined now by CR147-1. Three
+review minors are open across cv-2 with no fix pass behind any of them; the pattern
+is structural, not accidental — the rubric that lets a minor pass also means no
+round 2 runs, and every closing pass in this slice is a recording pass that writes
+no code.
+
+**Basis.** The slice sweep `--testPathPattern="(governance|voting)"` moves to **18
+passed / 1 skipped of 19 suites, 323 passed / 12 skipped of 335 tests, 9
+snapshots**, from the **309 / 321** basis F-24 through F-27 share. The `+14`
+reconciles exactly against the per-file HEAD counts — `VotingGovernancePage` 18 →
+27, `isSameVoteTarget` 9 → 12, `governance-sanitization` 24 → 26 — so no
+pre-existing test was deleted, renamed away or disabled, which is the real hazard
+on an append-only edit and is ruled out arithmetically rather than by eye. Skips
+stay 12 (all `tests/jest/governance/GovernanceCliArgvSmoke.spec.ts`, self-skipping
+because `cardano-cli` is off PATH), snapshots stay 9 with none written,
+`tsc --noEmit` exits 0 and `yarn lint` exits 0 at 5596 warnings with a task delta of
+zero (`tests` is eslint-ignored at `.eslintignore:8`; the one lintable changed file
+reports the same 9 warnings at HEAD and in the tree).
+`prettier --check` on `tests/jest/security/governance-sanitization.spec.ts` is exit
+1, **wholly pre-existing** — the same single hunk, the doubled `MatomoTracker`
+cast, at `HEAD:484` and worktree `:546`, the line moved only by the 62 inserted
+above it. That is a fourth file outside the three-file list the slice brief carries,
+exactly as F-10 predicts (238 dirty files; the short list is a sample), so it
+confirms F-10 rather than extending it.
+
+**Disposition.** CR147-1 — **open**, one-token fix, owner is whoever next opens
+`VotingGovernancePage.spec.tsx`. The empty-tripwire characterisation and the shim
+rule are **record-only**, binding on any future row that adds a jsdom governance
+spec or reads cv-2's sanitization evidence at slice close. F-18's disposition line
+is **superseded** by this entry; its Owner line stands.
+
+**Owner.** task-147 (recorded); the Planner at slice close (carry CR146-1, CR146-2
+and CR147-1 as three open minors, and do not read AC-4's green flow case as an
+observed no-leak); any later row adding a jsdom spec that asserts past
+`resolveExactDRepMatch`.
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)
