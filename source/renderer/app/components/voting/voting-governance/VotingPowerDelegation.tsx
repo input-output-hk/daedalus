@@ -51,7 +51,7 @@ type Props = {
 };
 
 type FormData = {
-  selectedWallet: Wallet;
+  selectedWalletId: string | null;
   selectedVoteType: VoteType;
   drepInputState: {
     dirty: boolean;
@@ -60,8 +60,8 @@ type FormData = {
   fees?: BigNumber;
 };
 
-type Form = Omit<FormData, 'selectedWallet'> & {
-  selectedWallet: Wallet | null;
+type Form = Omit<FormData, 'selectedWalletId'> & {
+  selectedWalletId: string | null;
   status: 'form';
 };
 
@@ -93,7 +93,7 @@ const mapOfTxErrorCodeToIntl: Record<
 
 const initialState: State = {
   status: 'form',
-  selectedWallet: null,
+  selectedWalletId: null,
   selectedVoteType: 'drep',
   drepInputState: {
     dirty: false,
@@ -115,12 +115,12 @@ function VotingPowerDelegation({
   const [state, setState] = useState<State>(() => {
     if (!initialFormState) return initialState;
     const { selectedWalletId, voteType, selectedDRepId } = initialFormState;
-    const selectedWallet =
+    const initialWallet =
       (selectedWalletId && wallets.find((w) => w.id === selectedWalletId)) ||
       null;
     return {
       ...initialState,
-      selectedWallet,
+      selectedWalletId: initialWallet?.id ?? null,
       selectedVoteType: voteType || initialState.selectedVoteType,
       // The directory-selected ID is used verbatim: it must reach chosenOption
       // and the delegateVotes dRepId byte-for-byte (no trim, no re-encoding).
@@ -130,10 +130,13 @@ function VotingPowerDelegation({
     };
   });
 
+  const selectedWallet =
+    wallets.find((w) => w.id === state.selectedWalletId) ?? null;
+
   const drepInputIsValid = Cardano.DRepID.isValid(state.drepInputState.value);
 
   const formIsValid =
-    !!state.selectedWallet &&
+    !!selectedWallet &&
     (state.selectedVoteType === 'drep' ? drepInputIsValid : true);
 
   const submitButtonDisabled =
@@ -171,7 +174,7 @@ function VotingPowerDelegation({
       });
       const result = await initiateTransaction({
         chosenOption,
-        wallet: state.selectedWallet,
+        wallet: selectedWallet,
       });
 
       if (result.success === true) {
@@ -229,19 +232,19 @@ function VotingPowerDelegation({
             numberOfStakePools={stakePools.length}
             wallets={wallets}
             onChange={(walletId: string) => {
-              const selectedWallet = wallets.find((w) => w.id === walletId);
+              const nextWallet = wallets.find((w) => w.id === walletId) ?? null;
               setState({
                 ...initialState,
-                selectedWallet,
+                selectedWalletId: nextWallet?.id ?? null,
               });
             }}
             placeholder={intl.formatMessage(messages.selectWalletPlaceholder)}
-            value={state.selectedWallet?.id || null}
+            value={selectedWallet?.id || null}
             getStakePoolById={getStakePoolById}
             disableSyncingWallets
           />
 
-          {state.selectedWallet && (
+          {selectedWallet && (
             <ItemsDropdown
               className={styles.voteTypeSelect}
               label={intl.formatMessage(messages.selectVotingTypeLabel)}
@@ -257,7 +260,7 @@ function VotingPowerDelegation({
             />
           )}
 
-          {state.selectedWallet && state.selectedVoteType === 'drep' && (
+          {selectedWallet && state.selectedVoteType === 'drep' && (
             <Input
               className={styles.drepInput}
               onChange={(value) => {
@@ -283,7 +286,7 @@ function VotingPowerDelegation({
                         hasIconAfter={false}
                         onClick={() =>
                           onBrowseDRepsClick({
-                            selectedWalletId: state.selectedWallet?.id ?? null,
+                            selectedWalletId: selectedWallet?.id ?? null,
                             voteType: state.selectedVoteType,
                           })
                         }
@@ -321,6 +324,7 @@ function VotingPowerDelegation({
         </BorderedBox>
       </div>
       {state.status === 'confirmation' &&
+        selectedWallet &&
         renderConfirmationDialog({
           chosenOption,
           fees: state.fees,
@@ -330,7 +334,7 @@ function VotingPowerDelegation({
               status: 'form',
             });
           },
-          selectedWallet: state.selectedWallet,
+          selectedWallet,
         })}
     </>
   );

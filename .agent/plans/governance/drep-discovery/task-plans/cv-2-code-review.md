@@ -1402,3 +1402,347 @@ Done is met except its last clause, which is the next action rather than a
 finding: one commit, subject-only, carrying all eight working-tree paths — the
 six code paths, `governance-drep-discovery-plan-tasks.json` and this log — under
 `feat(gov): task-136 render the live DRep status badge in the current-vote summary`.
+
+---
+
+## Code Review: 2026-07-28 — task-137 round 1
+
+**Scope reviewed.** The uncommitted working tree against the guide section
+"task-137: Replace the selected `Wallet` object state with `selectedWalletId`"
+(`cv-2-implementation-guide.md:1449-1747`), its locked invariants (`:1534-1545`),
+its four resolved judgment calls (`:1547-1566`), its six ordered steps
+(`:1570-1729`) and its acceptance record (`:1731-1745`); task-137's three
+acceptance criteria in `governance-drep-discovery-plan-tasks.json`; and the
+per-task Definition of Done (`cv-2-PRD.md:1619-1623`). HEAD is `4880c963d`
+(task-136). The main checkout `/workspaces/daedalus` was never read, edited or
+run against.
+
+**What landed.** `git status --porcelain -uall` → exactly one path:
+`source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx`,
+`19+/15-`. That is precisely the surface the guide declares — one edited file, no
+spec change, no new file, no i18n key, no prettier run (`:1451-1458`). No
+untracked file. **The tracker is absent from the change set**, which is CR137-1
+below.
+
+**Review method (three lenses, adversarial refutation).** Three lenses ran over
+the diff — (1) guide and acceptance-criteria conformance; (2) locked invariants
+and the sanitization floor; (3) tests, simplicity and drift. **All three returned
+`approved`**, two with zero findings and one with a single minor. Their clean
+results were not accepted on assertion: every load-bearing claim was re-derived
+in this worktree, and one defect none of the three raised was found during that
+re-derivation and is promoted as CR137-1.
+
+**The code deliverable is accepted as delivered.** Re-derived here: all six steps
+are applied as written — the Step 1 type block matches `:1574-1588`, `initialState`
+carries `selectedWalletId: null` (`:96`), the initializer's local is renamed
+`initialWallet` and stores `initialWallet?.id ?? null` (`:117-123`) with the
+byte-equality comment carried across verbatim (`:125-126`), the derived local sits
+at `:133-134` with no `useMemo`, no store read and no comment, and all eight sites
+are migrated (`:139`, `:177`, `:234-239`, `:242`, `:247`, `:263`, `:289`, `:337`).
+The Step 6 grep `state\.selectedWallet([^I]|$)` re-run here returns no output and
+exits 1, so AC-1 holds. The one sanctioned guard is present at the confirmation
+render (`:327`) and the deliberately-omitted `initiateTransaction` null guard is
+correctly absent — both pre-dispositioned at `:1549-1559`; the dialog's
+unconditional dereference is real and is in fact two sites, not one
+(`VotingPowerDelegationConfirmationDialog.tsx:143` and `:179`, where the record
+cites only `:179`), which strengthens rather than weakens the guard. The
+sanitization floor holds: the file references no `logger`, `analytics`,
+`electron-store`, `localStorage` or `console.` sink, and the only outbound payload
+touched (`:289`) keeps its shape and resolves to React Router `location.state`. No
+store read, no `@inject`, no `GovernanceStore`/`VotingStore` import was added — the
+`wallets` prop remains the only wallet source (`:1535-1539`). `chosenOption`
+(`:163-166`) and `drepInputState.value` are outside every hunk, so byte-equality is
+untouched. The diff adds no comment at all, so no task id or process artifact
+leaked into source.
+
+### Blockers (ranked, most severe first)
+
+**CR137-1 (major, `governance-drep-discovery-plan-tasks.json`) — task-137's row is
+still `pending`, so AC-2's deliberate deviation is nowhere recorded.** Live, the
+row's keys are `id, title, description, status, priority, estimatedHours,
+dependencies, targetPath, acceptanceCriteria` — `"status": "pending"` with no
+`statusReason`, no `evidence` and no `updatedAt` — and the tracker is absent from
+`git status --porcelain -uall`. The per-task Definition of Done
+(`cv-2-PRD.md:1619-1623`) requires "tasks JSON synchronized (`status`,
+`statusReason`, `evidence`, `updatedAt` as `YYYY-MM-DD`) · exactly one commit", so
+the tracker edit has to be in the working tree before task-137 is committed, and no
+later cv-2 row owns it. The convention is per-task and rides the task's own commit:
+`0fc92fcab` (task-143) and `d3729994a` (task-135) each carry a
+`governance-drep-discovery-plan-tasks.json` hunk in the same commit, and this is
+the identical defect promoted as CR-1 for task-143 and as CR3-1 for task-136 in the
+two rounds above. It matters here for a specific reason and not merely as
+bookkeeping: task-137's AC-2 reads "derived reactively from
+`stores.wallets.all.find()`", and the implementation deliberately does **not** do
+that — it runs `find()` over the `wallets` prop (`:133-134`), which the guide
+records as a deliberate deviation at `:1736-1741` because a store read inside a
+presentational component would break the container split and the no-second-backend
+invariant. A row set to `complete` with no `statusReason` would claim, in the
+tracker's own words, a `stores.wallets.all` read that is not in the code.
+*Fix:* set the row to `complete` and insert `statusReason`, `evidence` and
+`updatedAt: "2026-07-28"` between `status` and `priority` — the byte-identical key
+order already used by the `task-135` and `task-143` rows — with `evidence` an array
+of repo-relative paths, source first, beginning with
+`source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx`
+and plan docs last. Record AC-1 and AC-3 satisfied (citing the Step 6 grep and the
+type change), and AC-2 **satisfied with a recorded deviation**, naming the `wallets`
+prop, its container feed at `VotingGovernancePage.tsx:63` and the guide's
+`:1736-1741`, rather than claiming the criterion whole. The tracker is tool-managed
+JSON — do not run prettier on it.
+
+### Minor (non-blocking; absorb before the task-137 commit)
+
+**CR137-2 (minor, `VotingPowerDelegation.tsx:63-66`) — the `Form` alias now
+`Omit`s and reintroduces an identical field.** It reads
+`type Form = Omit<FormData, 'selectedWalletId'> & { selectedWalletId: string | null; status: 'form'; }`
+while `FormData:54` already declares `selectedWalletId: string | null`. At HEAD the
+`Omit` did real work — it widened `selectedWallet: Wallet` to `Wallet | null`
+(`git show HEAD:…:63-64`) — and Step 1 dissolved the widening by making the
+`FormData` field nullable, so the construct is now an identity operation. The file
+carries the simpler idiom for exactly this shape at `:73-75`
+(`type StateFormComplete = FormData & { … }`). Confirmed behaviour- and
+typecheck-neutral: `tsconfig.json:79` sets `"strict": false` with
+`strictNullChecks` commented out at `:81`, and `tsc --noEmit` exits 0.
+*Disposition: leave it as written.* The guide prescribes this text verbatim
+(`:1585-1588`), and the same identity-`Omit` idiom already pre-exists in this file
+at two other untouched sites — `:68` `Omit<FormData, 'status'>` where `FormData`
+declares no `status`, and `:77` `Omit<FormData, 'fee'>` where the field is `fees` —
+both present at HEAD. So task-137 did not introduce the pattern; it converted the
+one load-bearing `Omit` into a third vestige. Deviating byte-for-byte from a
+prescribed block to no behavioural end, in a file task-138 is about to edit, is
+churn. Recorded so task-138 and task-139 do not propagate the pattern, and so a
+later cleanup can collapse all three at once.
+
+### Merged and dropped
+
+1. *Merged.* Only one finding was raised across the three lenses — the identity
+   `Omit` at `:63-66`, from the tests/simplicity/drift lens, which raised it as
+   minor and self-declined it. It is promoted as CR137-2 with the two pre-existing
+   sibling vestiges at `:68` and `:77` re-derived here and the HEAD form of `:63-64`
+   checked, so the "the `Omit` used to do real work" reading is recorded next to
+   the finding rather than left implicit.
+2. *Not raised by any lens, promoted here — the unsynchronized tracker row.* All
+   three lenses scoped themselves to the single source file and none opened
+   `governance-drep-discovery-plan-tasks.json`. The per-task Definition of Done and
+   two prior rounds of this same log make it a review-time obligation, so it is
+   promoted as CR137-1 rather than deferred.
+3. *Dropped as a non-defect — the `useEffect` deps `[initiateTransaction, intl, state]`
+   (`:194`) do not list the derived `selectedWallet`.* Raised and self-dismissed by
+   two lenses; re-derived here and the dismissal is right. The effect returns
+   immediately unless `state.status === 'form-submitted'` (`:169`), so it does its
+   work in the render pass that set that status and closes over that pass's derived
+   wallet — strictly fresher than the `state.selectedWallet` it replaced, which was
+   captured at selection time. `chosenOption` (`:163-166`) is likewise absent from
+   the deps and was absent at HEAD too, so no new pattern is introduced. There is no
+   lint surface either: `react-hooks` is not among the configured plugins
+   (`.eslintrc:96`).
+4. *Not promoted — AC-2's literal `stores.wallets.all.find()` wording.* The
+   implementation reads the `wallets` prop instead, which is a deliberate deviation
+   the guide pre-dispositions at `:1736-1741` and the PRD echoes. Demanding a store
+   read would demand work the guide deliberately excluded and would break the
+   no-second-backend invariant (`:1535-1539`). It is not a code defect — but it is
+   exactly what CR137-1 requires the tracker `statusReason` to say, so it folds
+   into that finding rather than being dropped outright.
+5. *Not promoted — the absent null guard on the `initiateTransaction` call
+   (`:176-177`).* Pre-dispositioned "do not revisit" at `:1549-1554`: an early
+   return there would strand `status: 'form-submitted'` and permanently disable the
+   submit button, and `formIsValid` (`:139`) already reads the derived wallet.
+6. *Not promoted — `:289` sends `selectedWallet?.id ?? null`, so an id whose wallet
+   has left the snapshot degrades to `null` instead of being echoed back.* This is
+   the guide's mandated Step 5f text (`:1717-1718`) and matches what the dropdown
+   itself renders in that state (`:242`). Consistent, not a defect.
+7. *Re-dropped for the third time — "the guide's focused-run expectation
+   `3 suites / 25 tests / 4 snapshots` is stale."* Live is 32 tests / 7 snapshots.
+   Already adjudicated in the task-136 round-1 (item 2) and round-2 (item 3)
+   entries above. Recorded again as a gate note below, not as a finding.
+
+**Verification gate.** Green on every prescribed gate, with the one red proven
+pre-existing and nothing attributable to this task. Carried from the gate agent and
+spot-re-run during this consolidation: `node_modules/.bin/tsc --noEmit` exit 0 with
+zero diagnostics (`tsconfig.json` has no `include` key, so
+`storybook/stories/voting/Governance.stories.tsx` was typechecked against the new
+state shape too); `yarn lint` exit 0 at exactly the 5591-warning baseline with zero
+errors, so the `initialWallet`/`nextWallet` renames introduced no `no-shadow`
+warning; the guide's two Step 6 greps both behave as specified — `state.selectedWallet`
+returns no output and exits 1, and `selectedWalletId` returns 12 lines that are
+exactly the enumerated set, with `:43`, `:48`, `:117` and `:119` confirmed present at
+HEAD via `git show`; the focused run
+`--testPathPattern="voting-governance|VotingGovernancePage"` re-run here → 3 suites
+/ 32 tests / 7 snapshots, all green, 2.315 s; the unfiltered closing gate
+`jest --runInBand` → 85 passed / 1 skipped of 86 suites, 1068 passed / 12 skipped
+tests, zero FAIL lines, the one skipped suite being the environment-gated
+`GovernanceCliArgvSmoke.spec.ts`; the wave sweep `--testPathPattern="(governance|voting)"`
+→ 17 passed / 1 skipped suites, 276 passed / 12 skipped tests. `yarn i18n:manage`
+was correctly never invoked — the diff defines no message and edits no catalog — so
+no file needed restoring. `typed-scss-modules` was correctly skipped: no `.scss` in
+the change set. **Attribution of the two discrepancies, both proven pre-existing:**
+(a) the guide's `25 tests / 4 snapshots` predates the committed task-136
+(`4880c963d`), which added 94 lines to `CurrentVoteSummary.spec.tsx` and 269 to its
+snapshot file; `git show HEAD:…/__snapshots__/CurrentVoteSummary.spec.tsx.snap`
+already contains 7 `exports[` keys, and task-137's diff touches no spec or snapshot
+file, so it cannot move a test count — downstream verifiers should expect 32/7.
+(b) `prettier --check` is red on `VotingPowerDelegation.tsx`, at exactly one line,
+`:86` (`(typeof messages)[keyof typeof messages]`); piping the HEAD copy through the
+identical `--stdin-filepath` command yields the identical single-line delta, and
+`:86` lies outside every hunk (the first begins at `:51`). No `--write` was run
+anywhere, so none of the four HEAD-red files was rewritten and task-137 added zero
+formatting debt. `nix` is absent, so `nix fmt` stays an owed pre-merge obligation
+with explicit-path `prettier` as the recorded substitute. `yarn check:all` and
+`yarn storybook:build` were deliberately not run: both are red at HEAD for the
+unrelated storybook manager-webpack JSX loader reason and neither is a valid gate.
+
+**Decision: requires_changes** — one major finding, CR137-1. The code deliverable
+is accepted as delivered and needs no edit: all six guide steps are applied as
+written, all three acceptance criteria hold on the code, every gate is green, and
+the only code-level finding (CR137-2) is a guide-prescribed, typecheck-neutral
+vestige that is explicitly dispositioned to stay. What is missing is the tracker
+row, which must be synchronized — with AC-2's deviation recorded truthfully rather
+than claimed whole — before task-137 is committed, in the same single commit,
+subject-only, under
+`refactor(gov): task-137 hold selectedWalletId instead of the wallet object in VotingPowerDelegation`.
+
+---
+
+## Code Review: 2026-07-28 — task-137 round 2
+
+**Scope reviewed.** The uncommitted working tree after the round-1 fix pass,
+against the guide section "task-137: Replace the selected `Wallet` object state
+with `selectedWalletId`" (`cv-2-implementation-guide.md:1449-1747`) — its locked
+invariants (`:1532-1545`), its four resolved judgment calls (`:1547-1566`), its
+six ordered steps (`:1568-1729`) and its acceptance record (`:1731-1745`) —
+task-137's three acceptance criteria in
+`governance-drep-discovery-plan-tasks.json`, and the per-task Definition of Done
+(`cv-2-PRD.md:1619-1623`). HEAD is `4880c963d`. The main checkout
+`/workspaces/daedalus` was never read, edited or run against.
+
+**What landed.** `git status --porcelain` → three paths, which is the full
+per-task surface and not a scope creep: the one code file the guide declares
+(`source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx`,
+`19+/15-`, byte-identical to the round-1 state — the fix pass changed no line of
+it), plus the two round-1 remediation paths,
+`governance-drep-discovery-plan-tasks.json` (`8` lines) and this log (a pure
+append at `:1402`, `197+/0-`). `git diff --check` exit 0, `git diff --summary`
+empty. No untracked file, no catalog write, no `.scss`.
+
+**CR137-1 is closed.** Re-derived here rather than accepted on assertion. The
+task-137 row now reads `"status": "complete"` and carries `statusReason`,
+`evidence` and `"updatedAt": "2026-07-28"` inserted between `status` and
+`priority` — parsed programmatically, its key order is
+`id, title, description, status, statusReason, evidence, updatedAt, priority,
+estimatedHours, dependencies, targetPath, acceptanceCriteria`, byte-identical to
+the `task-135`, `task-143` and `task-136` rows. The file parses as JSON and the
+hunk is minimal, so the tool-managed formatting is untouched. Most importantly the
+`statusReason` records AC-2 as **satisfied with a recorded deviation** and names
+the `wallets` prop, its container feed at `VotingGovernancePage.tsx:63` and the
+guide's pre-disposition at `:1736-1741`, rather than claiming a
+`stores.wallets.all` read that is not in the code — which was the substantive half
+of CR137-1, not the bookkeeping half. `evidence` is source-first and lists only
+paths this task actually touched; it omits `research/cv-2-findings.md`, and that
+is correct, not an inconsistency with the `task-143` and `task-136` rows: those
+two commits appended real findings (`0fc92fcab` `+61`, `4880c963d` `+43`) whereas
+task-137 produced none — F-12 already owns the absent `nix` and F-16 already owns
+the 32/7 count basis.
+
+**The code deliverable is re-confirmed, not re-litigated.** Every prescribed block
+was diffed against the guide text again in this round: Step 1 against `:1574-1588`
+(live `:53-66`), Step 3 against `:1608-1626` (live `:115-131`, the byte-equality
+comment carried across verbatim at `:125-126`), Step 4 against `:1636-1639` (live
+`:133-134`, no `useMemo`, no store read, no comment), Step 5a-g against
+`:1650-1702` (live `:138-140`, `:175-178`, `:234-242`, `:247`, `:263`, `:289`,
+`:326-337`). All match. The two Step 6 greps re-run here:
+`state\.selectedWallet([^I]|$)` → no output, exit 1; `selectedWalletId` → exactly
+the 12 lines the guide enumerates at `:1717-1719`.
+
+### Blockers (ranked, most severe first)
+
+**None.** No finding from any of the three lenses survived adjudication, and none
+was promoted during the independent re-derivation.
+
+### Merged and dropped
+
+1. *Nothing to merge.* All three lenses — (1) correctness-versus-guide, (2) locked
+   invariants and the sanitization floor, (3) tests, simplicity and drift —
+   returned `approved` with **zero** blockers. There were no duplicate findings to
+   reconcile, so this round's work was refutation, not merging.
+2. *Dropped, already dispositioned — the identity `Omit` at `:63-66`.* Lens 3
+   raised it only as an explicit non-finding. It is CR137-2 from round 1 and its
+   disposition stands unchanged: the guide prescribes the text verbatim
+   (`:1585-1588`), the same idiom pre-exists untouched at `:68` and `:77` (both at
+   HEAD), and it is typecheck-neutral under `tsconfig.json:79` `"strict": false`.
+   Re-raising it in a file task-138 is about to edit would be churn. It stays a
+   carry-forward note for task-138 and task-139 — do not propagate the pattern —
+   and a later cleanup collapses all three sites at once.
+3. *Dropped — "task-137's AC-2 deviation is missing from the PRD's DoD exception
+   table" (`cv-2-PRD.md:1630-1644`).* Lens 3 raised and self-declined it; the
+   self-decline is right. That table sits under **"Per slice:"** (`:1625`), not
+   under the per-task Definition of Done (`:1619-1623`), and the PRD reserves
+   "Deviations from this PRD and its guide" (`:1736`) for the slice-close Final
+   Report. The deviation is already recorded in the two places a per-task reviewer
+   can check — the guide's own acceptance record (`:1736-1741`) and now the tracker
+   `statusReason`. Carried forward to task-148 as a fourteenth row for that table;
+   it is not a task-137 defect and editing the approved PRD mid-slice is not
+   task-137's to do.
+4. *Dropped — the `useEffect` deps `[initiateTransaction, intl, state]` (`:194`)
+   omit the derived `selectedWallet`.* Raised and self-dismissed by two lenses;
+   already adjudicated as a non-defect in round 1 (item 3) and re-derived once
+   more: the effect early-returns unless `state.status === 'form-submitted'`
+   (`:170`), so it runs in the commit of the render that set that status and closes
+   over that render's derived wallet — strictly fresher than the
+   `state.selectedWallet` it replaced. `chosenOption` (`:163-166`) is likewise
+   absent from the deps and was absent at HEAD.
+5. *Dropped — AC-2's literal `stores.wallets.all.find()` wording.* Demanding a
+   store read would demand work the guide deliberately excludes and would break the
+   no-second-backend invariant (`:1534-1539`). It folded into CR137-1's
+   `statusReason` requirement, which is now satisfied.
+6. *Re-dropped for the fourth time — "the guide's `3 suites / 25 tests / 4
+   snapshots` (`:1723`) is stale."* Recorded as a gate note below, never as a
+   finding. F-16 in `research/cv-2-findings.md` is the standing disposition.
+
+**Precision note, not a finding and needing no edit.** The tracker `statusReason`
+says four of the twelve `selectedWalletId` hits (`:43`, `:48`, `:117`, `:119`) are
+present at HEAD. `git show HEAD:…VotingPowerDelegation.tsx | grep -n` returns
+five: those four plus `:286`, the browse-DReps payload **key**, whose value
+expression (not its key) is what Step 5f changed. So the net-new count is seven
+lines plus one modified line rather than eight new lines. The claim as written is
+true of the four it names and the conclusion it supports — that no unexplained
+occurrence exists — is unaffected, since the 12 live lines are exactly the guide's
+enumerated set.
+
+**Verification gate.** Green, with the one red proven pre-existing. Carried from
+the gate agent and independently re-run in this consolidation against the current
+three-path tree: `node_modules/.bin/tsc --noEmit` → exit 0, zero diagnostics;
+`node_modules/.bin/jest --testPathPattern="voting-governance|VotingGovernancePage"
+--no-coverage --runInBand` → exit 0, **3 suites / 32 tests / 7 snapshots**, all
+green. From the gate agent, unchanged by the docs-only fix pass: `yarn lint` exit 0
+at exactly the **5591**-warning baseline with zero errors, so the
+`initialWallet`/`nextWallet` renames introduced no `no-shadow` warning;
+`jest --runInBand` → 85 passed / 1 skipped of 86 suites, 1068 passed / 12 skipped
+tests, zero FAIL lines, the one skipped suite being the environment-gated
+`GovernanceCliArgvSmoke.spec.ts`; the wave sweep
+`--testPathPattern="(governance|voting)"` → 17 passed / 1 skipped suites, 276
+passed / 12 skipped. `yarn i18n:manage` correctly never invoked — no message
+definition, no catalog edit, nothing to restore. `typed-scss-modules` correctly
+skipped — no `.scss` in the change set. **Attribution, both discrepancies proven
+pre-existing:** (a) the guide's `25 tests / 4 snapshots` (`:1723`) was measured at
+`504b44c1a`, before `0fc92fcab` and `4880c963d` landed; `git show
+HEAD:…/__snapshots__/CurrentVoteSummary.spec.tsx.snap` already carries 7 `exports[`
+keys and task-137's diff touches no spec or snapshot file, so 32/7 is the correct
+basis. (b) `prettier --check` red on `VotingPowerDelegation.tsx` at exactly one
+line, `:86`, identical when the HEAD copy is piped through the same
+`--stdin-filepath` command, and `:86` lies outside every hunk (the first begins at
+`:51`); no `--write` was run anywhere and `yarn prettier` was never invoked, so
+task-137 added zero formatting debt. **One stale gate statement, recorded so it is
+not read as drift:** the gate report asserts `git status --porcelain` returns
+"exactly one entry". That was true when it ran, before the round-1 fix pass added
+the tracker and this log; both are docs-only and cannot move a compile or a test,
+which the tsc and Jest re-runs above confirm. `nix` is absent, so `nix fmt` stays
+an owed pre-merge obligation (F-12). `yarn check:all` and `yarn storybook:build`
+were deliberately not run: both are red at HEAD for the unrelated storybook
+manager-webpack JSX loader reason and neither is a valid gate.
+
+**Decision: approved** — zero surviving blockers. The code deliverable is
+accepted as delivered, CR137-1 is closed with the tracker row synchronized in the
+sibling key order and AC-2's deviation recorded truthfully rather than claimed
+whole, and CR137-2 remains dispositioned to stay as written. The Definition of
+Done is met except its last clause, which is the next action rather than a
+finding: one commit, subject-only, carrying all three working-tree paths, under
+`refactor(gov): task-137 hold selectedWalletId instead of the wallet object in VotingPowerDelegation`.
