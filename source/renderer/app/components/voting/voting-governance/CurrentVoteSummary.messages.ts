@@ -95,4 +95,11 @@ export const messages = defineMessages({
     description:
       'Neutral caption shown when the DRep directory has no record for the delegated DRep yet',
   },
+  sameVoteHint: {
+    id: 'voting.governance.currentVote.sameVoteHint',
+    defaultMessage:
+      '!!!This wallet already votes {target, select, drep {for this DRep} abstain {Abstain} no_confidence {No Confidence} other {the same way}}.',
+    description:
+      'Hint shown when the chosen delegation is identical to the wallet current on-chain delegation',
+  },
 });

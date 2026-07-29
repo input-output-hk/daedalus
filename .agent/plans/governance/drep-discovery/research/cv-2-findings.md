@@ -1204,6 +1204,67 @@ anchors); task-173 and every later task that closes a row.
 
 ---
 
+## F-20 — task-140 moves the sweep basis to 291/303 with 9 snapshots through a standalone unit spec, not the component file; F-17's "task-139 and task-140 both add cases to `VotingGovernancePage.spec.tsx`" holds for neither, and its locked-mock caution re-homes untouched to the rows that actually edit that file
+
+F-17 set the comparison basis at **282 / 12 / 294 with 9 snapshots** and named
+task-139 and task-140 as "both add cases to this file", meaning
+`VotingGovernancePage.spec.tsx` (`:1000-1009`, `:1020-1022`). Measured at the close
+of task-140, neither row did. task-139's mount was test-neutral at +0 tests and +0
+snapshots (F-18's own headline), and task-140's +9 lands in a file that is not
+`VotingGovernancePage.spec.tsx` at all.
+
+Measured in the recording pass for task-140,
+`jest --testPathPattern="(governance|voting)" --no-coverage --runInBand`:
+
+| | suites | tests | snapshots |
+| --- | --- | --- | --- |
+| F-17 basis (task-138 close) | 17 passed + 1 skipped of 18 | 282 passed + 12 skipped of 294 | 9 |
+| live (task-140 close) | **18 passed + 1 skipped of 19** | **291 passed + 12 skipped of 303** | **9** |
+| delta | +1 | +9 | +0 |
+
+The whole delta is one new file, `tests/jest/governance/isSameVoteTarget.spec.ts`.
+The cause is the slice's file-ownership map, not an under-delivery: the guide
+assigns the rendered end-to-end disabled-submit flow to **task-147**, twice and
+explicitly — "task-140 owns the comparator's unit vectors only"
+(`cv-2-implementation-guide.md:2745-2747`) and again in the AC-1 and AC-4
+acceptance records (`:3164-3166`) — so task-140's entire proof surface is a
+pure-function unit spec and `VotingGovernancePage.spec.tsx` is byte-untouched by
+this row.
+
+Two consequences a later reader will otherwise misread:
+
+1. **F-17's second half never bound task-140.** Its caution — that the locked
+   `ItemsDropdown` mock means a test cannot select a vote type, so any negative
+   assertion about the DRep input's contents is vacuous — was addressed to the two
+   rows F-17 expected to edit that spec. It is still entirely unspent, and it
+   re-homes to the rows that do edit it: task-173 and task-141
+   (`cv-2-implementation-guide.md:3190-3191`), then task-147's end-to-end case.
+2. **The spec is invisible to source-scoped patterns.** It sits in
+   `tests/jest/governance/` beside `normalizeDRepIdentity.spec.ts` rather than
+   colocated with its util under `source/renderer/app/utils/governance/`. That is
+   the convention for this util directory rather than a deviation — the sibling
+   helper splits the same way — but it means `--testPathPattern="voting-governance"`
+   does not see the +9, and only the `governance`-scoped and slice-wide patterns do.
+
+**Resolution.** From task-141 onward the comparison basis for the slice-wide sweep
+is **291 / 12 / 303 with 9 snapshots**, superseding F-17's 282 / 12 / 294. F-16's
+reading rule still governs every guide parenthetical — reconcile arithmetically
+against HEAD before calling a number a defect. F-17's Owner line is **not**
+rewritten: F-16, F-17 and this finding are a chain of what was measured when, read
+forward, and amending an earlier link would destroy the audit trail the chain
+exists for. A reader who diffs `VotingGovernancePage.spec.tsx` looking for
+task-140's cases finds none; that is the design, not a gap.
+
+**Disposition.** Record-only; binding on every remaining cv-2 row's verification
+step and re-measured at slice close, as F-11, F-16 and F-17 already direct. F-17's
+locked-mock item stays **open** and is re-homed, not closed.
+
+**Owner.** task-140 (recorded); task-141 onward (basis); task-173, task-141 and
+task-147 (inherit F-17's locked-mock caution whole); the Planner at slice close
+(basis re-measure).
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)

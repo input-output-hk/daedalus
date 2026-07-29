@@ -20,7 +20,9 @@ import { InitializeVPDelegationTxError } from '../../../stores/VotingStore';
 import { VoteType } from './types';
 import { sharedGovernanceMessages } from './shared-messages';
 import CurrentVoteSummary from './CurrentVoteSummary';
+import { messages as currentVoteMessages } from './CurrentVoteSummary.messages';
 import { resolveExactDRepMatch } from '../../governance/drep-directory/helpers';
+import { isSameVoteTarget } from '../../../utils/governance/isSameVoteTarget';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 
 type Props = {
@@ -108,6 +110,8 @@ const initialState: State = {
 // Shared at module scope so the default prop keeps its referential identity
 // across renders.
 const EMPTY_DREP_INDEX: ReadonlyMap<string, AppDRepDirectoryEntry> = new Map();
+
+const SAME_VOTE_HINT_ID = 'votingPowerDelegationSameVoteHint';
 
 // Both the on-chain and the directory-supplied id are seeded verbatim: the
 // value must reach chosenOption and the delegateVotes dRepId byte-for-byte.
@@ -220,12 +224,6 @@ function VotingPowerDelegation({
     !!selectedWallet &&
     (state.selectedVoteType === 'drep' ? drepInputIsValid : true);
 
-  const submitButtonDisabled =
-    !formIsValid ||
-    state.status === 'form-submitted' ||
-    state.status === 'form-with-error' ||
-    state.status === 'form-initiating-tx';
-
   const voteTypes: { value: VoteType; label: string }[] = [
     {
       value: 'abstain',
@@ -245,6 +243,15 @@ function VotingPowerDelegation({
     state.selectedVoteType === 'drep'
       ? state.drepInputState.value
       : state.selectedVoteType;
+
+  const isSameAsCurrent = isSameVoteTarget(chosenOption, currentVote);
+
+  const submitButtonDisabled =
+    !formIsValid ||
+    isSameAsCurrent ||
+    state.status === 'form-submitted' ||
+    state.status === 'form-with-error' ||
+    state.status === 'form-initiating-tx';
 
   useEffect(() => {
     (async () => {
@@ -397,10 +404,19 @@ function VotingPowerDelegation({
             </p>
           )}
 
+          {isSameAsCurrent && (
+            <p className={styles.sameVoteHint} id={SAME_VOTE_HINT_ID}>
+              {intl.formatMessage(currentVoteMessages.sameVoteHint, {
+                target: state.selectedVoteType,
+              })}
+            </p>
+          )}
+
           <Button
             label={intl.formatMessage(messages.submitLabel)}
             className={styles.voteSubmit}
             disabled={submitButtonDisabled}
+            aria-describedby={isSameAsCurrent ? SAME_VOTE_HINT_ID : undefined}
             onClick={() => {
               setState({
                 ...state,

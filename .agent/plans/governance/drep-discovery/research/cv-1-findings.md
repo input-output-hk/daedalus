@@ -219,12 +219,12 @@ by the task-140 amendment: `isSameAsCurrent` compares on a case-stable key (the
 behaviour when `credentialHex` is absent is explicit, and the letter-case
 regression vector is placed on task-147. Worth recording with the marker: this
 finding prescribed the correct key at review time and two governing docs then
-drifted from it — `designs/current-vote-display-design.md:95` still offers
-"canonical CIP-129 string including the type-byte header" as an acceptable
-comparison key, and `task-plans/cv-1-code-review.md:736-738` still offers
-`cip129` alone. Both are corrected under the same amendment; the code-review
-file is append-only (`README.md:14`), so its correction is appended rather than
-edited in place.
+drifted from it. `designs/current-vote-display-design.md` was corrected by
+`2ee5f74cf` before cv-2 opened — the comparator sentence now sits at `:97` and
+rejects a case-sensitive canonical-CIP-129 comparison — while
+`task-plans/cv-1-code-review.md:736-738` still offered `cip129` alone and is
+discharged by an appended correction entry, since that file is append-only
+(`README.md:14`) and is never edited in place.
 
 ## F-10 — two residual test gaps on `normalizeDRepIdentity`, both deliberately deferred to task-130
 

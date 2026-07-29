@@ -3678,3 +3678,33 @@ tracker JSON was touched, and nothing was committed — commit is a separate
 owner's step. `/workspaces/daedalus` was never read, edited or run against.
 
 Decision: cv-1 closed.
+
+---
+
+## Planner: 2026-07-28 — comparator-note correction discharged (cv-2 task-140)
+
+**Discharges** the "Correction owed on the comparator note" promise at
+`:1224-1234`.
+
+**The note.** `:736-738` offers `cip129` or the (`credentialHex`,
+`credentialType`) pair as the same-vote key. Read as a plain string comparison the
+`cip129` half is case-unstable: BIP-173 permits an all-uppercase encoding,
+`normalizeDRepIdentity` returns `raw` / `cip129` byte-untouched
+(`normalizeDRepIdentity.ts:39-40`, `:56`), and the form gate
+`Cardano.DRepID.isValid` (`VotingPowerDelegation.tsx:221`) accepts it. The note's
+acceptable keys were the pair or an explicitly case-insensitive `cip129`
+comparison; cv-2 ships the pair and retires the alternative (task-140 AC-4). The
+promise block's own self-reference reads `:737-739`; the sentence actually
+occupies `:736-738` (`:739` opens the next refutation item).
+
+**What shipped.**
+`source/renderer/app/utils/governance/isSameVoteTarget.ts` compares
+`credentialHex` case-insensitively, requires `credentialType` equality, and
+returns `false` when either side lacks a `credentialHex`.
+`designs/current-vote-display-design.md:97` records the same choice, and F-9's
+"Tasked:" paragraph in `research/cv-1-findings.md` was corrected in place in the
+same commit.
+
+**Scope of this entry.** Documentation only, appended rather than edited in place.
+
+Decision: correction discharged.

@@ -80,3 +80,10 @@ span.link {
 .voteSubmit {
   width: 100%;
 }
+
+.sameVoteHint {
+  color: var(--theme-text-secondary, #6b7384);
+  font-size: 13px;
+  line-height: 1.4;
+  margin-top: 28px;
+}

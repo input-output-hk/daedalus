@@ -2922,3 +2922,184 @@ the two source files, the tracker row, the findings note and this log. Two items
 travel forward as notes, not debts of this task: the jsdom realm shim that
 task-173 must install before its badge cases can pass, and AC-2's Storybook visual
 **OWED** to task-145.
+
+---
+
+## Code Review: 2026-07-28 — task-140 round 1
+
+**Scope reviewed.** The uncommitted working tree for task-140, against its guide
+section `cv-2-implementation-guide.md:2619-3186` (file-ownership map at
+`:2621-2641`, the eleven build steps, the acceptance record at `:3146-3186`), the
+task-140 tracker row (`governance-drep-discovery-plan-tasks.json:1276-1299`), and
+the PRD's D-4 / R-10 append-only rule. HEAD is `23e9899b0` (task-139 committed);
+the wave baseline was recorded one commit earlier at `144c5153d`, and every
+comparison below accounts for that. Three independent lenses ran — guide
+conformance and runtime correctness, locked invariants and the sanitization floor,
+and tests plus simplicity and drift — and **all three returned `approved`**, two of
+them filing the same single minor. This round adjudicated those reports against
+the files rather than accepting them; every claim promoted or dropped below was
+re-verified first-hand. The main checkout `/workspaces/daedalus` was never read,
+edited or run against, and this round fixed no code.
+
+**What landed.** `git status --porcelain` → 6 modified, 2 untracked, 0 staged,
+exactly the implementers' hand-off. `git diff --stat`:
+`designs/current-vote-display-design.md` `1/1`,
+`research/cv-1-findings.md` `6/6`,
+`task-plans/cv-1-code-review.md` `30/0` (appended, nothing edited in place),
+`CurrentVoteSummary.messages.ts` `7/0`,
+`VotingPowerDelegation.scss` `7/0`,
+`VotingPowerDelegation.tsx` `22/6`; plus
+`source/renderer/app/utils/governance/isSameVoteTarget.ts` and
+`tests/jest/governance/isSameVoteTarget.spec.ts` as new files. The tracker JSON and
+all four i18n catalogs are clean — confirmed by an explicit
+`git status --porcelain` over `source/renderer/app/i18n/locales`,
+`translations/messages.json` and the tracker (empty output).
+
+### Blockers
+
+**None.** One minor survives, and it is documentation, not code.
+
+**CR140-1 (minor) — guide Step 10 is undone: task-140's own AC-7 still cites the
+wrong design-doc line.** Step 10 requires (`cv-2-implementation-guide.md:3108-3112`)
+that in `governance-drep-discovery-plan-tasks.json`, **task-140's own AC-7 string
+only**, `designs/current-vote-display-design.md:95` become
+`designs/current-vote-display-design.md:97`, leaving task-173's AC — which
+legitimately cites `:95` — alone. AC-7's own acceptance record repeats it: "the
+tracker's AC-7 anchor is re-pointed to `:97`" (`:3172-3175`). The live AC-7 still
+opens "The comparator sentence of designs/current-vote-display-design.md:95 no
+longer offers a canonical CIP-129 string as an acceptable comparison key…"
+(tracker `:1297`). The anchor is factually wrong and was verified against the
+design doc in this worktree: `:95` is the header-byte classification sentence
+(`credentialType` is derived during normalization… `0x22` → `'key'`, `0x23` →
+`'script'`), which is task-173's subject and is correctly cited by the other AC at
+`:1317`; the comparator sentence this task appended to is `:97` ("The same-vote
+comparator (`task-140`) must key on a case-stable form…"). The guide's stated
+anchors `1263` / `1283` are pre-137/138/139 numbering; the live targets are
+`1297` (to change) and `1317` (to leave). This is an AC **content** edit, not the
+`status` / `statusReason` / `evidence` / `updatedAt` row metadata the review brief
+defers, but it is a one-token change inside a row the closing scribe pass must
+open anyway, so it is filed **minor and absorbable** rather than sent back as a fix
+round. *Fix:* hand-edit line `1297` only, `:95` → `:97`; leave `1317` untouched;
+never run prettier on the tracker JSON. Both the correctness lens and the
+tests/drift lens filed this independently; the verification gate escalated it as
+its one outstanding non-gate item, noting the `[prod]` agent was out of surface and
+the `[test]` agent was forbidden the tracker — so it fell between the two owners
+rather than being skipped by either.
+
+### Independent re-checks of the code deliverable (nothing new found)
+
+Re-anchored against the current file, not the guide's pre-slice numbers. The
+comparator (`isSameVoteTarget.ts:9-33`) matches the sentinels **before** any
+bech32 decode (`:14-17`), so `abstain` / `no_confidence` are never treated as
+directory entries (invariant 13); returns `false` when either side lacks
+`credentialHex` (`:22-27`); compares the hex case-insensitively and requires
+`credentialType` equality (`:28-32`). It is pure — no `console.`, no `logger.`, no
+throw path, since `normalizeDRepIdentity` catches decode failures and returns
+`null` (`normalizeDRepIdentity.ts:20-26`) — so the sanitization floor is untouched
+(invariant 2). `toLowerCase()` is applied only to string copies inside the
+comparison; `raw` / `cip129` / `cip105` are never read, and `chosenOption`
+(`VotingPowerDelegation.tsx:245-248`) and the `delegateVotes` payload are outside
+every hunk, so byte-equality holds (invariants 5, 10). `submitButtonDisabled` is
+deleted from its old site and re-declared at `:249-255`, after `chosenOption` and
+above both effects — no TDZ. Step 4's divergence is a strict simplification the
+guide's own re-anchoring rule sanctions: it passes the existing `currentVote` local
+(`:183`, itself `selectedWallet?.currentVote ?? null`) rather than re-deriving the
+expression. The hint renders only under `isSameAsCurrent` with a stable id, and the
+button's `aria-describedby` is `undefined` when it is absent (`:407-419`). The SCSS
+block's four properties are alphabetical.
+
+Two hazards were measured rather than reasoned about. **The `== null` hex guards
+cannot mis-equate an empty string:** both success branches of
+`normalizeDRepIdentity` populate `credentialHex` from a 28-byte slice via `toHex`
+(`:38-44`, `:53-59`), so a success result always carries 56 hex characters and no
+producer can emit `''`. **The spec's `drepVote` helper is type-sound at this
+repo's settings:** `normalizeDRepIdentity` returns `DRepIdentity | null` and the
+helper assigns it to a non-optional `drep`, which is legal because
+`tsconfig.json` sets `"strict": false` with `strictNullChecks` commented out —
+`tsc --noEmit` re-run here, exit 0. All five spec fixtures were decoded rather than
+trusted: `KEY_CIP129` / `KEY_CIP105` genuinely share one credential hex,
+`OTHER_KEY_CIP129` / `SCRIPT_CIP129` genuinely share credential bytes and differ
+only in `credentialType`, and `UNDECODABLE_DREP` genuinely returns `null` — so no
+assertion passes for the wrong reason. `grep -rn` for `task-1[0-9][0-9]`, `CR14x`,
+`CAT-` and `AC-[0-9]` over `source storybook tests` returns nothing.
+
+### Merged and dropped
+
+1. *Merged.* Two lenses filed the same Step 10 finding (`SPEC-1-1`, `QUALITY-1-1`)
+   with identical live anchors; they are one item, **CR140-1**, keeping the
+   correctness lens's guide quotation and the drift lens's design-doc
+   disambiguation of `:95` vs `:97`.
+2. *Not promoted — AC-2 is partial by design.* The button keeps a real `disabled`
+   rather than the UX doc's focusable `aria-disabled="true"`, because dropping it
+   would re-enable submission and break AC-1. The guide records exactly this and
+   directs it to `statusReason` (`:3155-3161`). An acknowledged, guide-sanctioned
+   deviation is not a defect.
+3. *Not promoted — AC-7's first conjunct is partial by design.* The design doc's
+   `case-insensitive cip129` alternative is superseded by an appended clause rather
+   than deleted, because this file's edit rule for the row is append-only (D-4,
+   seam contract R-10); the guide states the outcome and orders it recorded
+   (`:3176-3186`). Verified: the `1/1` diff appends to `:97` and deletes nothing,
+   and `cv-1-code-review.md:736-738` is unedited with the discharge appended at
+   end of file.
+4. *Not promoted — the `credentialHex == null` guards would equate two empty
+   strings.* Raised by one lens as explicitly non-blocking and dropped here on
+   measurement: no producer can emit an empty hex (see the re-checks above), and
+   the block is the guide's verbatim text.
+5. *Not promoted — `[React Intl] Missing message: voting.governance.currentVote.sameVoteHint`.*
+   Descriptor-present / catalog-key-absent is by design until task-146 seeds the
+   catalogs; the `!!!`-prefixed default renders and no assertion depends on it.
+   Same disposition as the task-136 `status.*` misses.
+6. *Not promoted — `yarn lint` at 5595 warnings against a "roughly 5591" baseline.*
+   Proven pre-existing by the gate, which linted the HEAD blobs through
+   `eslint --stdin --stdin-filename`: `VotingPowerDelegation.tsx` is 10 problems at
+   HEAD and 10 with task-140 applied (one `@ts-ignore` warning merely shifted
+   `311` → `318`), the messages file is 0 → 0, and the new comparator is 0. The
+   residual `+4` is the legacy-decorator false positive in
+   `VotingGovernancePage.tsx`, identical at `144c5153d`. Warnings are not failures.
+7. *Not promoted — prettier redness on the pre-existing files.* Red at HEAD and
+   outside every hunk; `--write` was run only on the two newly created files, and
+   `--check` on exactly those two is green here. Baseline item.
+8. *Not a finding — the uppercase-input pre-check.* One lens decoded an
+   all-uppercase `KEY_CIP129` through the installed `bech32` and confirmed it
+   yields prefix `drep` and the same credential hex, so task-147's future
+   `toUpperCase()` vector is already satisfied by the shipped comparator. That is a
+   verification, not a defect, and AC-4 assigns the vector to task-147 anyway.
+9. *Note, not a debt of this task.* `GovernanceCliArgvSmoke.spec.ts` still
+   self-skips (no `cardano-cli`) and `GovernanceQueryService.spec.ts` still emits
+   four era-fallback `console.warn` lines inside a passing suite — both reproduced
+   unchanged from baseline.
+
+**Gate result and its attribution.** The supplied gate reports **PASS with zero
+failures**, and its load-bearing measurements were re-run here rather than
+inherited: `tsc --noEmit` exit 0; `jest --testPathPattern=isSameVoteTarget` → 1
+suite / **9 of 9** tests / 0 snapshots; `stylelint` on
+`VotingPowerDelegation.scss` exit 0; `prettier --check` on the two new files
+green. The gate additionally recorded
+`--testPathPattern="voting-governance|VotingGovernancePage"` → 3 suites / 38 tests
+/ 7 snapshots, `--testPathPattern=governance` → 269 passed + 12 skipped, and the
+wave pattern `"(governance|voting)"` → 291 passed + 12 skipped / 9 snapshots
+against a baseline of 282 passed + 12 skipped — a delta of exactly `+1` suite and
+`+9` tests, i.e. the new comparator spec alone. Zero reds, so nothing needed
+attribution. `typed-scss-modules` was correctly run for the changed `.scss` (its
+output is gitignored and left the tree unchanged), and `yarn i18n:manage` was run
+and then fully reverted with `git restore` on the four catalog paths — re-confirmed
+clean here. No `git stash` anywhere. `nix` is absent, so `nix fmt` stays an owed
+pre-merge obligation and prettier-on-explicit-paths is the recorded substitute.
+`yarn check:all` and `yarn storybook:build` were deliberately not run: both are red
+at HEAD for the unrelated manager-webpack JSX loader reason and neither is a valid
+gate. This round moved neither HEAD nor the change set; no file was edited except
+this log.
+
+**Decision: approved** — zero blockers, zero majors, one minor (CR140-1) carried
+into the closing pass rather than back into a fix round. task-140 closes with one
+subject-only commit,
+`feat(gov): task-140 disable submit when the chosen delegation matches the current one`,
+carrying the two new files, the four modified source and doc files, this log, and
+the tracker row. The scribe pass owes that row four things in a single edit: the
+CR140-1 anchor change at `:1297` (`:95` → `:97`), and three `statusReason`
+deviations — AC-2 partial (a real `disabled` kept over `aria-disabled` to preserve
+AC-1), AC-7's first conjunct satisfied by append rather than deletion (D-4 /
+R-10), and `nix fmt` unavailable with prettier-on-explicit-paths substituted. Two
+items travel forward as notes, not debts: the catalog seeding of
+`voting.governance.currentVote.sameVoteHint` **OWED** to task-146, and the
+uppercase-input regression vector **OWED** to task-147 by AC-4's own text.
