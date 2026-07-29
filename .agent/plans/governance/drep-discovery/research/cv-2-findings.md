@@ -1504,6 +1504,97 @@ and the `:3205-3208` warranty if the guide is ever reconciled).
 
 ---
 
+## F-24 — a `DRepIdentity` never holds four distinct strings: `normalizeDRepIdentity` aliases `raw` onto whichever form it was given, so the guide's Step 4 template renders the same bech32 twice for a CIP-105 input; plus the on-chain label's ja-JP copy is not what the guide's prose says. Sweep basis moves to 309/321
+
+**The aliasing is by construction, and it cuts both ways.**
+`source/renderer/app/utils/governance/normalizeDRepIdentity.ts` has two success
+branches. For a CIP-129 `drep1…` input it returns `raw` and `cip129: raw` (`:38-40`)
+and computes `cip105` freshly. For a `drep_vkh…` / `drep_script…` input it returns
+`raw` and `cip105: raw` (`:54`, `:56`) and computes `cip129` freshly. So of the four
+string fields, **exactly one is always an alias of `raw`**, and which one depends on
+the input encoding. Nothing in the type says so — every field is a non-optional
+`string` — and no producer can avoid it, since both live call sites go through this
+helper (`VotingGovernancePage.tsx:87`, `Governance.stories.tsx:59-62`).
+
+**What that did to the guide's template.** task-175's Step 4 block
+(`cv-2-implementation-guide.md:3961-4013`) is a *replace with exactly* block, and it
+gates the CIP-105 section on `drepIdentity?.cip105 &&` alone. Pasted verbatim, a DRep
+selected by its CIP-105 form renders its own bech32 string twice — once under
+*!!!DRep ID* and once under *!!!CIP-105 DRep ID* — which is not the §7 template and
+reads as two different ids to a user comparing against a device. Code review filed it
+as CR175-1 and the live guard at
+`VotingPowerDelegationConfirmationDialog.tsx:170` is one conjunct longer:
+
+```tsx
+{drepIdentity?.cip105 && drepIdentity.cip105 !== drepIdentity.raw && (
+```
+
+That inequality is the only deviation from the whole template — `diff -u` of the guide
+block against the live block (`tsx:157-209`) returns exactly that one hunk — and it is
+pinned in both directions by the case at
+`VotingPowerDelegationConfirmationDialog.spec.tsx:296-309`, whose
+`getAllByText(SCRIPT_CIP105)).toHaveLength(1)` would read `2` if the guard were
+reverted.
+
+**The rule anyone rendering a `DRepIdentity` inherits.** Any surface that shows more
+than one form must suppress the alias by value comparison, not by presence. That
+lands squarely on anchor-2: `DRepIdDisplay`'s dual-form mode (task-154's extension of
+this same block) will hit the identical case, and so will any future summary or detail
+view that prints CIP-129 and CIP-105 side by side. A `cip129 !== raw` guard is the
+mirror-image need for a CIP-105-primary layout.
+
+**A second, smaller doc error, at a line every later row reads.** The task-175 Context
+paragraph (`cv-2-implementation-guide.md:3854`) states that `DRepSourceLabel`'s
+`'on-chain'` copy is `!!!On-chain` "in both catalogs (`en-US.json:354`,
+`ja-JP.json:354`)". `en-US.json:354` is `"governance.drepDirectory.source.onChain":
+"!!!On-chain"`; `ja-JP.json:354` is `"governance.drepDirectory.source.onChain":
+"!!!オンチェーン"` — already translated, still `!!!`-marked as preliminary. No code or
+test impact today, because the dialog spec's `IntlProvider` loads `en-US.json` only
+(`spec.tsx:11`, `:42`), but the claim must not be reused as catalog truth by task-146
+or by any later row that asserts ja-JP copy.
+
+**Sweep basis.** Measured in this recording pass,
+`jest --testPathPattern="(governance|voting)" --no-coverage --runInBand`:
+
+| | suites | tests | snapshots |
+| --- | --- | --- | --- |
+| F-23 basis at task-142 close | 18 passed + 1 skipped of 19 | 299 passed + 12 skipped of 311 | 9 |
+| live (task-175 close) | **18 passed + 1 skipped of 19** | **309 passed + 12 skipped of 321** | **9** |
+| delta | +0 | +10 | +0 |
+
+The whole delta is this row's ten cases — four plain `it`s plus three `it.each`
+tables of two — in the existing dialog spec; no suite was added and no snapshot
+written. The focused run `--testPathPattern=VotingPowerDelegationConfirmationDialog`
+is **27 of 27** in one suite, 17 pre-existing plus 10. F-23's `:4122` hand-wrap item
+is **closed**: the break was applied at `spec.tsx:340-342` and `prettier --check`
+reports that file clean.
+
+**One interim state a reader will meet before task-146.** The two new descriptors
+exist with no catalog key, so the dialog suite logs `[React Intl] Missing message` for
+`voting.governance.confirmationDialog.drepIdCip105` and `.signedPayload` on every
+render. That is D-9's deliberate split (`cv-2-implementation-guide.md:188-200`), not a
+defect, and the assertions match the `!!!`-prefixed `defaultMessage` react-intl falls
+back to. They survive task-146 because the seeded values keep the `!!!` prefix
+(`cv-2-PRD.md:685-686`, invariant 11 at `:1510-1512`).
+
+**Resolution.** From task-175 onward the slice-wide sweep basis is **309 / 12 / 321
+with 9 snapshots**, superseding F-23's 299 / 311. The alias rule is authoritative over
+the guide's template: where a template gates a secondary form on presence alone, add
+the value comparison. The `ja-JP.json:354` copy is what the catalog says, not what the
+guide prose says.
+
+**Disposition.** The template guard is **reconciled in code and closed** for cv-2. The
+alias rule **rides with task-154** in anchor-2, where `DRepIdDisplay` gains its
+dual-form mode. The ja-JP copy correction is **record-only** for cv-2 — no cv-2 row
+asserts ja-JP dialog copy — and is a **read-before-trusting** note for task-146. The
+missing-message noise is **record-only until task-146**.
+
+**Owner.** task-175 (recorded); task-146 (the ja-JP claim, and the two catalog keys);
+task-154 in anchor-2 (the alias rule for `DRepIdDisplay`); the Planner at slice close
+(basis re-measure, and `:3854` if the guide is ever reconciled).
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)

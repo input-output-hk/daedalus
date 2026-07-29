@@ -3658,3 +3658,392 @@ prettier-on-explicit-paths substituted. One item travels forward as a note, not 
 these pins are authored to survive task-175's identity-block growth, so if task-175
 turns any of the four cases red, that is the pin doing its job on an out-of-charter
 change, not a stale test.
+
+---
+
+## Code Review: 2026-07-28 — task-175 round 1
+
+**Scope reviewed.** The uncommitted working tree for task-175, against its guide
+section `cv-2-implementation-guide.md:3805-4211` (Files-touched at `:3807-3814`,
+Context at `:3816-3846`, the locked-invariant block at `:3848-3880`, Steps 1-6, and
+the acceptance record at `:4199-4211`), the task-175 tracker row
+(`governance-drep-discovery-plan-tasks.json:1393`, still `"status": "pending"`,
+`"statusReason": null`), the PRD row charter at `cv-2-PRD.md:158` with its acceptance
+restatement at `:254-258`, the descriptor table at `:685-686`, and invariants 10 / 11
+/ 13 at `:1506-1516`. HEAD is `218f853f7` (task-142 committed). Three independent
+lenses ran — guide conformance and runtime correctness, locked invariants plus the
+sanitization floor, and tests plus simplicity and drift. Two returned `approved` with
+zero blockers; one returned `requires_changes` with a single major. Nothing was
+accepted on report: every promoted and dropped claim below was re-derived first-hand
+in this worktree, including two live probes. The main checkout `/workspaces/daedalus`
+was never read, edited or run against, and this round fixed no code.
+
+**What landed.** `git status --porcelain` → exactly 3 modified, 0 staged, 0 untracked,
+matching the guide's Files-touched list:
+`VotingPowerDelegationConfirmationDialog.messages.ts` (+12/-0),
+`VotingPowerDelegationConfirmationDialog.tsx` (+41/-2),
+`VotingPowerDelegationConfirmationDialog.spec.tsx` (+130/-0). The production hunk is
+byte-identical to the guide's Step 4 template (`:3956-4008`) — the `!isSentinelVote ?`
+predicate, `drepIdentity?.raw ?? chosenOption` in the primary `<code>`, the
+`drepIdentity?.cip105` and `drepIdentity?.credentialHex` conditional blocks, and
+`<DRepSourceLabel source="on-chain" />` gated on `drepIdentity` — and the sentinel
+else-branch is copied through unchanged. The two new descriptors carry the `!!!`
+markers the PRD table fixes (`messages.ts` diff: `drepIdCip105` → `!!!CIP-105 DRep ID`,
+`signedPayload` → `!!!Signed payload`), and both catalogs plus
+`translations/messages.json` and the tracker JSON are clean. Re-run here:
+`jest --testPathPattern=VotingPowerDelegationConfirmationDialog --no-coverage
+--runInBand` → **1 suite / 26 of 26 passed**, exit 0 — the 17 pre-existing cases
+(including task-142's four pins) plus the 9 new identity-block cases, none weakened.
+
+### Blockers
+
+**One major survives.** It is not an implementer deviation — the diff follows the
+guide's "replace with exactly" template character-for-character — it is a gap in the
+template itself, surfaced by an input the guide never contemplated.
+
+**CR175-1 (major) — a CIP-105 script id renders the same string twice under two
+different labels, and the guide's template cannot suppress it.** For any
+`drep_script1…` input, `normalizeDRepIdentity` returns `raw === cip105`
+(`normalizeDRepIdentity.ts:53-59`: `return { raw, cip129: bech32.encode('drep', …),
+cip105: raw, … }`). The dialog then prints that one string in the primary `<code>`
+(`VotingPowerDelegationConfirmationDialog.tsx:166-168`, `drepIdentity?.raw ??
+chosenOption`) and again in the unconditional secondary block
+(`:170-181`, guarded only by `drepIdentity?.cip105 &&`). The rendered DOM is
+"!!!DRep ID: drep_script1t39n…" immediately followed by "!!!CIP-105 DRep ID:
+drep_script1t39n…", with no CIP-129 line anywhere.
+
+*Reachability, measured in this worktree, not inferred.* `Cardano.DRepID.isValid(
+'drep_script1t39n52gcwur0texnc2c6p8uw04k9kj3e9qtsda0y60ptzae75nh')` → **`true`**
+(`drep_vkh1…` → `false`, so only the script form gets through). That predicate is the
+sole input gate: `VotingPowerDelegation.tsx:221` is `const drepInputIsValid =
+Cardano.DRepID.isValid(state.drepInputState.value);`, feeding `formIsValid` (`:223-225`)
+and `chosenOption` (`:242-245`). The plans already record the acceptance
+(`cv-2-PRD.md:562-563`, `cv-2-implementation-guide.md:2467-2468`). A throwaway jest
+probe under `source/renderer/app/utils/governance/` (created and deleted in the same
+command; `git status --porcelain` re-verified as the same 3-modified set afterwards)
+returned `{"rawEqCip105":true,"cip129":"drep1ydwykw3frpmsda0y60ptrgyl3e7kck628y5pwph4unfu9vg6sn5zd"}`
+— and that `cip129` is exactly the `SCRIPT_CIP129` vector the new spec already uses,
+so the form the template calls primary is derivable and simply never shown. The case
+is reachable twice over: by paste, and by task-138's re-seed, since
+`VotingPowerDelegation.tsx:185-186` seeds the input from `currentVote.drep.raw`, which
+`cv-2-PRD.md:543` states "is byte-untouched and may be CIP-105".
+
+*Why it survived adjudication as a defect rather than an accepted consequence.* No
+cv-2 or anchor-2 row owns it — the anchor-2 `DRepIdDisplay` dual-form row explicitly
+records that "the confirmation dialog keeps its own §7 identity block from task-175",
+and `cv-2-PRD.md:1374` repeats it. None of the nine new cases exercises a CIP-105
+input, so nothing catches it. And the guide itself already reasons about exactly this
+failure mode one screen earlier: its Step 6 gate note (`:4180-4183`) justifies the
+container cases by "which are different strings, so no ambiguous match appears" — the
+CIP-105-raw case is the one input where they are the *same* string, which will make a
+plain `getByText(<the id>)` throw on multiple matches for any later suite (task-147's
+CIP-105-raw flow case, `cv-2-PRD.md:1610`) that renders one through this dialog.
+
+*Fix (one guard, no new key).* Change the guard at
+`VotingPowerDelegationConfirmationDialog.tsx:170` from `{drepIdentity?.cip105 && (` to
+`{drepIdentity?.cip105 && drepIdentity.cip105 !== drepIdentity.raw && (`. That keeps
+the primary line as `drepIdentity?.raw ?? chosenOption`, so invariant 10 is untouched;
+fabricates nothing; and leaves all 26 current cases green, because both CIP-129
+vectors have `cip105 !== raw`. Add one case rendering the script CIP-105 id that
+asserts `screen.getAllByText(SCRIPT_CIP105)` has length 1 and that
+`'!!!CIP-105 DRep ID'` is absent, with the signed-payload line and the source label
+still present. Because this deviates from a "replace with exactly" template, record
+the deviation in the tracker `statusReason` alongside the AC-4 note.
+
+### Minors — absorbable in the same pass, none blocking
+
+**CR175-2 (minor) — the predicate flip makes `mapVoteToIntlMessage`'s `default` arm
+unreachable and empties a pre-existing assertion.** `default: return
+sharedGovernanceMessages.delegateToDRep;` (`VotingPowerDelegationConfirmationDialog.tsx:38-39`)
+has one call site, `:206`, which now sits inside the `: (` branch entered only when
+`isSentinelVote` is true (`:119-120`, `:157`), so `chosenOption` there is always
+`abstain` or `no_confidence`. The committed pin
+`expect(screen.queryByText('Delegate to DRep (default)')).not.toBeInTheDocument();`
+(spec `:69-71`) therefore asserts the absence of copy the component can no longer
+render under any input. The flip itself is correct and guide-mandated — `:3299-3302`
+assigns "the predicate fix" to task-175 precisely so a decoder-rejected id stops
+falling into the vote-label branch — so this is dead-code hygiene, not a regression.
+D-3 forbids weakening the 141/142 pins, so do not touch the case in this round.
+*Fix:* record it in `statusReason`; the clean follow-up is to narrow the parameter to
+`'abstain' | 'no_confidence'`, delete the default arm, and re-point spec `:69-71` at
+the live guard `expect(screen.queryByText('Vote')).not.toBeInTheDocument()`.
+
+**CR175-3 (minor) — the shared default fixture is now an unproducible identity
+shape.** `renderDialog` defaults to
+`drepIdentity={{ credentialType: 'key', raw: VALID_DREP_ID }}` (spec `:45`) — no
+`cip105`, no `credentialHex`. Both live producers go through `normalizeDRepIdentity`
+(`VotingGovernancePage.tsx:87`, `Governance.stories.tsx:59-62`), which populates all
+five fields on success (`normalizeDRepIdentity.ts:38-44`, `:53-59`). Before this diff
+the component read only `.raw`, so the partial shape was inert; now it suppresses
+three of the four template parts, so every case defaulting through it pins a DOM
+production cannot reach. Harmless today — those cases assert fee / HW / passphrase /
+chrome copy — but it edits task-141/142-owned pinned rows, which is out of task-175's
+charter. *Fix:* record the gap in `statusReason`; if a later row opens those cases,
+switch `:45` to `drepIdentity={normalizeDRepIdentity(VALID_DREP_ID)}`.
+
+**CR175-4 (minor) — AC-1's "in template order" clause is discharged by the template,
+not by jest.** Every assertion in the new describe is presence-or-absence
+(`screen.getByText` / `queryByText` / `.textContent`); none is positional, so swapping
+the `cip105` block (`tsx:170-181`) with the `credentialHex` block (`:182-193`) leaves
+all nine new cases green. This is knowingly allocated, not missed — the guide's own
+acceptance line assigns AC-1 to "Step 4 + the first spec case" (`:4199-4201`). *Fix:*
+either add one positional assertion to "renders all four parts for a key DRep" over
+the `.paragraphTitle` texts, or state in `statusReason` that the order clause is
+carried by the Step 4 template.
+
+### Dropped findings, and why
+
+1. *Not promoted — "the block never shows the CIP-129 form, so AC-1 is breached."*
+   Dropped as framed. For a CIP-105 input, **invariant 10 forces `raw` into the
+   primary slot** — `cv-2-PRD.md:1506-1509` and the guide's inline invariant block
+   (`:3849-3861`) both require the primary line to be byte-equal to `chosenOption` and
+   to the `delegateVotes` `dRepId`. Rendering `cip129` there would violate a locked
+   invariant to satisfy a template sentence. What survives is only the *redundant
+   duplicate*, promoted as CR175-1; the absent CIP-129 line is a consequence of the
+   invariant and is not to be "fixed".
+2. *Not promoted — the alternative fix of rendering `cip129` as a secondary line under
+   a third descriptor.* Dropped as a cross-task contract break. task-175's descriptor
+   count is fixed at two by `cv-2-PRD.md:685-686` and the guide's mint table
+   (`:4801-4802`), and task-146 is chartered to mint exactly "the seven remaining
+   enrichment keys". A third key authored here would silently invalidate task-146's
+   fixed list. CR175-1's guard change mints nothing.
+3. *Not promoted — the `prettier --check` warn on
+   `VotingPowerDelegationConfirmationDialog.tsx`.* Pre-existing at HEAD, proven by the
+   gate's in-repo probe (an out-of-repo `/tmp` copy reports a false clean because
+   `--find-config-path` resolves nothing there). The two offending hunks —
+   `(typeof messages)[keyof typeof messages]` at `:23-26` and the `useState<…>`
+   wrapping at `:83-89` — are identical in the HEAD blob and the working tree, and
+   task-175's added regions produce zero prettier diff. The file is in the documented
+   baseline-red set, and the guide forbids running prettier on it (`:3204-3209`). Note,
+   not blocker.
+4. *Not promoted — the `[React Intl] Missing message` lines for
+   `…confirmationDialog.drepIdCip105` and `…signedPayload` (18x each).* The expected
+   interim state under D-9 (`:188-200`): descriptor present, catalog key absent, so
+   react-intl falls back to the `!!!`-prefixed `defaultMessage`, which is what the
+   assertions match. Both keys are seeded by task-146 and the assertions stay valid
+   because both catalog values keep the `!!!` prefix. Same disposition as the 136 /
+   140 / 173 rounds. The noise carries message ids only — never a DRep id — so it is
+   not a sanitization leak either.
+5. *Not promoted — `yarn i18n:manage` not run.* Not a skipped gate. D-9 names
+   task-136, task-140 and task-175 as the three copy-minting rows that deliberately do
+   not run it, and closes "a verifier seeing no i18n run on 136 / 140 / 175 is looking
+   at this deviation, not a skipped gate." Running it here would have written a
+   competing catalog diff on files only task-146 may own.
+6. *Not promoted — the untouched tracker row and the missing commit.* Both are
+   closing-phase obligations, not defects in the diff; neither implementer was
+   permitted to do them. Carried as handoffs below.
+
+**Independent re-checks that found nothing new.** The sanitization floor holds: the
+diff adds only JSX plus one presentational import (`tsx:13`, `DRepSourceLabel`), and
+`grep -nE "logger|console\.|analytics"` over the dialog is empty — the Step 6 pass
+condition. `governance-sanitization` is green at 24 tests, exactly the count the guide
+demands (`:4180`). Byte-equality is intact end-to-end: `normalizeDRepIdentity.ts:39`
+sets `raw` to the untouched input, `VotingGovernancePage.tsx:84-87` derives the
+identity from `chosenOption` itself, and the payload hex matches what the hardware
+mappers send, now pinned by the two `Cardano.DRepID.toCredential` cases. Sentinels stay
+form-only: `isSentinelVote` (`tsx:119-120`) uses the same two literals as the container
+guard, and the two sentinel cases assert all four parts absent. Nothing is fabricated —
+the legacy-id case proves a `null` identity renders the primary line verbatim with no
+cip105, no payload and no source label, which also discharges the rendering half of
+task-173 AC-2. Comment convention is clean: three comments added (`tsx:117-118`,
+spec `:241-242`, `:310-312`), each 2-3 plain sentence-case lines stating a constraint,
+none in a test name, no process ids, no ALL-CAPS. No local `IntlProvider` was
+introduced; both Storybook call sites already derive identity through
+`normalizeDRepIdentity` (`Governance.stories.tsx:59-62`), so no story drifts, and no
+snapshot covers this dialog. `credentialHexOf` (spec `:243-249`) re-implements the
+decode deliberately as an independent oracle rather than calling the code under test.
+
+**Gate result and its attribution.** The supplied gate reports **PASS**, with one
+`prettier --check` warn it attributes `pre-existing` / `CONFIRMED` — see dropped
+finding 3; that attribution is accepted and is not a blocker for this task. **Re-run
+here:** `git status --porcelain` (3 modified, nothing staged or untracked, re-verified
+after both probes) and
+`jest --testPathPattern=VotingPowerDelegationConfirmationDialog --no-coverage
+--runInBand` → 1 suite / 26 of 26 passed, exit 0. **Probed here:**
+`Cardano.DRepID.isValid` on both CIP-105 forms, and `normalizeDRepIdentity` on the
+script CIP-105 vector — both throwaway files deleted in the same command that created
+them. **Inherited from the gate, not re-run:** `tsc --noEmit` exit 0; `yarn lint`
+exit 0 at 5595 warnings / 0 errors with +0 new errors and +0 new warning classes on
+the three changed files; `VotingGovernancePage` 18/18; `governance-sanitization`
+24/24; the wave `"(governance|voting)"` pattern at 18 passed + 1 skipped of 19 suites
+and 308 passed + 12 skipped of 320 tests, 9 snapshots, zero failures — reconciling
+against the wave baseline as +9 task-175 and +6 committed 141/142. The lone skipped
+suite is the documented `GovernanceCliArgvSmoke` self-skip (no `cardano-cli` in this
+devcontainer). No `.scss` module is in the change set, so `typed-scss-modules` was
+correctly not required; `yarn check:all` and `yarn storybook:build` were deliberately
+not run, both being red at HEAD for the unrelated manager-webpack JSX-loader reason.
+No `--write`, no `git stash`, no commit, and no file edited except this log. `nix` is
+absent, so `nix fmt` remains the owed pre-merge obligation with prettier-on-explicit-
+paths as the recorded substitute (F-12).
+
+**Handoffs for the closing pass (not review findings).** (a) The tracker row
+(`json :1393`, edited **by content**, never formatted with prettier) still needs
+`status`, `statusReason` and `evidence`: AC-4's catalog half recorded as carried by
+task-146 (guide `:4205-4211`), plus CR175-1's template deviation, CR175-2's now-dead
+default arm, CR175-3's fixture gap and CR175-4's order-clause allocation. (b) The
+prescribed commit subject is
+`feat(gov): task-175 render the pre-anchor confirmation identity block`
+(guide `:3202`). (c) One guide inaccuracy worth not carrying forward: the Context
+paragraph claims `DRepSourceLabel`'s on-chain copy is `!!!On-chain` in both catalogs
+at `en-US.json:354` / `ja-JP.json:354`; verified here, `ja-JP.json:354` is
+`"governance.drepDirectory.source.onChain": "!!!オンチェーン"`. No code or test
+impact — the spec's `IntlProvider` loads `en-US.json` only.
+
+**Decision: requires_changes** — one major (CR175-1) and three minors. The major is a
+one-guard production change plus one spec case, both inside files task-175 already
+owns; the three minors are `statusReason` records with optional follow-ups, and none
+of them justifies a round on its own. A round-2 review needs to re-verify only the
+changed guard, the new case, and that the dialog suite is green at 27.
+
+---
+
+## Code Review: 2026-07-28 — task-175 round 2
+
+**Scope reviewed.** The round-2 working tree for task-175 — the CR175-1 guard change and
+the CR175-4 order pin added on top of the round-1 tree — against the same contract:
+`cv-2-implementation-guide.md:3805-4213` (Files-touched `:3807-3814`, Step 4's
+"replace with exactly" template `:3960-4014`, Step 5's spec snippet `:4033-4158`, Step 6's
+gates `:4164-4193`, acceptance `:4195-4213`), the PRD descriptor table
+(`cv-2-PRD.md:685-686`) and invariants 10 / 11 / 13 (`:1506-1515`), and the round-1 entry
+above (`cv-2-code-review.md:3664-3896`). HEAD is `218f853f7`. Three independent lenses ran
+— guide conformance and runtime correctness, locked invariants plus the sanitization
+floor, and tests plus simplicity and drift — and **all three returned `approved` with
+empty blocker lists**. Nothing was accepted on report: every claim below was re-derived in
+this worktree. The main checkout `/workspaces/daedalus` was never read, edited or run
+against, and this round fixed no code.
+
+**What landed since round 1.** `git diff --numstat -- source/renderer/app` →
+`messages.ts` 12/0, `spec.tsx` 157/0, `VotingPowerDelegationConfirmationDialog.tsx` 39/2 —
+the same three files, still zero deletions in the spec, so no pre-existing case was
+touched. Round 2 moved exactly two things:
+
+1. **The CR175-1 guard.** `VotingPowerDelegationConfirmationDialog.tsx:170` is now
+   `{drepIdentity?.cip105 && drepIdentity.cip105 !== drepIdentity.raw && (`. Measured, not
+   read: `diff -u` of the guide's Step 4 template (`:3961-4013`) against the live block
+   (`tsx:157-209`) returns **exactly one hunk, that one line** — the primary `<code>`, the
+   `credentialHex` block, the `<DRepSourceLabel source="on-chain" />` gate and the sentinel
+   else-branch are byte-identical to the template. The guard is the round-1 fix text
+   verbatim, and it is the only sanctioned deviation from a "replace with exactly" block.
+2. **Two spec additions** (+27 lines): the CIP-105-raw case at `spec.tsx:296-309` and the
+   positional `templateOrder` assertion at `spec.tsx:271-281`.
+
+**Blockers: none.** No finding survived adjudication, and no lens proposed one.
+
+**Round-1 findings, dispositioned.**
+
+- **CR175-1 (major) — closed.** The duplicate-line defect is fixed at its root:
+  `normalizeDRepIdentity.ts:53-59` returns `raw` and `cip105` as the same string for a
+  CIP-105 input (`:54` `raw,`, `:56` `cip105: raw,`), so the added inequality half of the
+  guard is the precise suppressor. The new case is not vacuous in either direction —
+  `expect(screen.getAllByText(SCRIPT_CIP105)).toHaveLength(1)` (`spec:299`) would read 2
+  and `queryByText('!!!CIP-105 DRep ID')` (`:300`) would be present if the guard were
+  reverted, while `:301-308` still require the primary title, the signed-payload line and
+  the on-chain label, so it does not over-assert absence. Invariant 10 is untouched: the
+  primary slot is still `drepIdentity?.raw ?? chosenOption` (`tsx:166-168`); the change
+  only decides whether a redundant second line renders, and fabricates nothing.
+- **CR175-4 (minor) — closed, and the pin is real.** `spec:271-281` filters every `<p>`
+  textContent in DOM order against
+  `['!!!DRep ID', '!!!CIP-105 DRep ID', '!!!Signed payload', 'Transaction fee']` and
+  compares with `toEqual`, so swapping the `cip105` block (`tsx:170-181`) with the
+  `credentialHex` block (`:182-193`), or losing either, turns it red. `'Transaction fee'`
+  is the live catalog value (`en-US.json:950`), so the pin also fixes the identity block
+  ahead of the fee row. Forward-safe across task-146: the two new titles keep their `!!!`
+  markers, which `cv-2-PRD.md:685-686` and invariant 11 (`:1510-1512`) fix as the values
+  task-146 will seed.
+- **CR175-2 and CR175-3 (minors) — deliberately untouched, correctly.** The now-unreachable
+  `default:` arm of `mapVoteToIntlMessage` and the partial `drepIdentity` default fixture
+  at `spec:45` were adjudicated in round 1 as `statusReason` records whose code remedies
+  edit task-141/142-owned pinned rows; D-3 forbids weakening those pins in this row. They
+  carry to the closing pass unchanged and are **not** grounds for a round 3.
+
+**Dropped findings, and why.** No lens filed a blocker, so this round adjudicated the
+observations attached to their summaries and the round-1 carries:
+
+1. *Not promoted — the `<DRepSourceLabel>` paragraph's position is still unpinned* (raised
+   as a non-blocking observation by two lenses). Correct as a fact — the order pin covers
+   the three `.paragraphTitle` texts plus the fee sentinel, and the label paragraph
+   (`tsx:194-198`) carries no title, so it is filtered out. But this is the allocation
+   CR175-4's own fix text prescribed ("one positional assertion … over the
+   `.paragraphTitle` texts"), and AC-1 assigns the order clause to "Step 4 + the first spec
+   case" (`guide:4197-4199`). A `statusReason` scope sentence, not a defect.
+2. *Not promoted — the absent CIP-129 line for a CIP-105 input.* Re-affirmed from round 1.
+   Invariant 10 (`cv-2-PRD.md:1506-1509`) forces `raw` into the primary slot; rendering
+   `cip129` there would break a locked invariant to satisfy a template sentence, and a
+   third descriptor would invalidate task-146's fixed seven-key list. Not to be "fixed".
+3. *Not promoted — the `prettier --check` warn on
+   `VotingPowerDelegationConfirmationDialog.tsx`.* Re-proven here rather than inherited:
+   piping the working-tree file through `prettier` 2.1.2 and diffing against itself yields
+   exactly the two documented HEAD-drift hunks — `(typeof messages)[keyof typeof messages]`
+   at `:23-26` and the `useState<…>` wrapping at `:83-89` — and **nothing else**. The new
+   82-column guard line at `:170` is left untouched by prettier, so round 2 adds zero
+   format debt. No `--write` was run on any file, per `guide:4193`. Note, not blocker.
+4. *Not promoted — `yarn i18n:manage` not run, and the `[React Intl] Missing message` lines
+   for `…drepIdCip105` / `…signedPayload`.* Both are the D-9 interim state
+   (`guide:188-200`), identical to the 136 / 140 / 173 rounds. `git diff --stat --
+   source/renderer/app/i18n/locales translations` prints nothing and a grep for both key
+   names across `en-US.json`, `ja-JP.json` and `translations/messages.json` returns no
+   hits, so task-146 still owns the catalog half whole.
+5. *Not promoted — the untouched tracker row and the missing commit.* Closing-phase
+   obligations, not diff defects. Carried below.
+6. *Correction to a number in the round-1 entry, recorded rather than edited (this log is
+   append-only).* That entry reports the production file at `+41/-2`; the true figure is
+   `+39/-2`, and its own cited total of "181 insertions" only reconciles with 39
+   (12 + 130 + 39). Nothing behavioural depends on it; round 2's spec growth takes the
+   total to 208 insertions / 2 deletions.
+
+**Independent re-checks that found nothing new.** Sanitization floor holds:
+`grep -nE "logger|console\.|analytics|electron-store"` over the dialog, its messages file
+and `DRepSourceLabel.tsx` exits 1 with no output — the Step 6 pass condition — and the
+round-2 delta is JSX-only, adding no store write and no observable. Sentinels stay
+form-only: `isSentinelVote` (`tsx:119-120`) uses exactly the two `VoteType` literals, and
+both sentinel cases still assert all four parts absent. Comment convention is clean: round
+2 added **no** comment; the three from round 1 (`tsx:117-118`, `spec:241-242`, `:337-339`)
+are each 2-3 plain sentence-case lines stating a constraint, none in a test or describe
+name, no process ids, no ALL-CAPS. No local `IntlProvider` was introduced — both new
+additions run through the existing `renderDialog` harness. `credentialHexOf`
+(`spec:243-248`) remains an independent oracle rather than a re-import of the code under
+test.
+
+**Gate result and its attribution.** The supplied gate reports **PASS** with one
+`prettier --check` warn it attributes `pre-existing` / `CONFIRMED`; that attribution is
+accepted (dropped finding 3) and is not a blocker for this task. **Re-run here, not
+inherited:** `jest --testPathPattern=VotingPowerDelegationConfirmationDialog --no-coverage
+--runInBand` → 1 suite, **27 of 27 passed**, exit 0 — the 17 pre-existing cases including
+task-142's four, plus 10 identity-block cases; `jest
+--testPathPattern="(VotingGovernancePage|governance-sanitization)"` → 2 suites, **42 of 42
+passed**, exit 0, so AC-5's task-111 spy suite is green at its required 24 and the
+container's byte-equality cases still resolve unambiguously; `node_modules/.bin/tsc
+--noEmit` exit 0, zero diagnostics; `eslint` over the three changed files → **8 problems, 0
+errors, 8 warnings**, all on pre-existing regions (`spec:26`, `:32`, `:95`; `tsx:63-69`),
+so +0 errors and +0 new warning classes; the catalog and sanitization greps above; and the
+prettier stdout probe. **Inherited from the gate, not re-run:** the full `yarn lint` total
+(5595 warnings / 0 errors) and the wave `"(governance|voting)"` sweep at 18 passed + 1
+skipped of 19 suites, 308 passed + 12 skipped of 320 tests, 9 snapshots — the lone skip
+being the environment-gated `GovernanceCliArgvSmoke`. No `.scss` is in the change set, so
+`typed-scss-modules` was correctly not required; `yarn check:all` and `yarn
+storybook:build` were deliberately not run, both red at HEAD for the unrelated
+manager-webpack JSX-loader reason. No `--write`, no `git stash`, no commit, and no file
+edited except this log. `nix` is absent, so `nix fmt` remains the owed pre-merge obligation
+with prettier-on-explicit-paths as the recorded substitute (F-12).
+
+**Handoffs for the closing pass (not review findings).** (a) The tracker row
+(`governance-drep-discovery-plan-tasks.json:1393`) is still `"status": "pending"` /
+`"statusReason": null`; it needs, edited **by content** and never formatted with prettier:
+AC-4's catalog half recorded as carried by task-146 (`guide:4206-4211`), the CR175-1
+template deviation with its one-line diff-vs-template evidence, CR175-2's now-dead default
+arm, CR175-3's fixture gap, and CR175-4's scope note that the order pin covers the three
+`.paragraphTitle` texts and leaves the source-label paragraph's position to the template.
+(b) The prescribed commit subject is `feat(gov): task-175 render the pre-anchor
+confirmation identity block` (`guide:3202`). (c) The round-1 guide inaccuracy stands:
+`ja-JP.json:354` is `"governance.drepDirectory.source.onChain": "!!!オンチェーン"`, not
+`!!!On-chain`; no code or test impact.
+
+**Decision: approved** — zero blockers at any severity. All three lenses returned
+`approved` with empty lists; the round re-derived the load-bearing claims first-hand rather
+than rubber-stamping — the identity block was diffed line-by-line against the Step 4
+template, the order pin's falsifiability was traced through its `toEqual`, the CIP-105-raw
+case was checked against `normalizeDRepIdentity`'s actual return shape, and the prettier
+attribution was re-measured — and six observations were dropped with reasons above. Both
+round-1 items that required a code change (CR175-1, CR175-4) are closed by executing
+assertions; the two remaining minors are `statusReason` records the closing pass absorbs.
+No round 3 is warranted.

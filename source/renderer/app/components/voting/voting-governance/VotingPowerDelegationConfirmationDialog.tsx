@@ -10,6 +10,7 @@ import Wallet, {
   HwDeviceStatuses,
 } from '../../../domains/Wallet';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
+import DRepSourceLabel from '../../governance/_shared/DRepSourceLabel';
 import styles from './VotingPowerDelegationConfirmationDialog.scss';
 import { DelegateVotesError } from '../../../stores/VotingStore';
 import type { Intl, ReactIntlMessage } from '../../../types/i18nTypes';
@@ -113,6 +114,11 @@ function VotingPowerDelegationConfirmationDialog({
     })();
   }, [intl, onSubmit, redirectToWallet, state]);
 
+  // Keyed on the vote kind, not on a successful decode: an id the decoder
+  // rejects still renders verbatim rather than as a vote label.
+  const isSentinelVote =
+    chosenOption === 'abstain' || chosenOption === 'no_confidence';
+
   const confirmButtonLabel =
     state.status === 'awaiting' ? (
       intl.formatMessage(messages.buttonConfirm)
@@ -148,7 +154,7 @@ function VotingPowerDelegationConfirmationDialog({
       ]}
     >
       <div className={styles.content}>
-        {drepIdentity ? (
+        {!isSentinelVote ? (
           <>
             <p className={styles.paragraphTitle}>
               {intl.formatMessage(messages.drepId)}
@@ -157,8 +163,39 @@ function VotingPowerDelegationConfirmationDialog({
               {/* Rendered untouched: must stay byte-equal to chosenOption and
                   the delegateVotes dRepId. Name slot is reserved for anchor-2;
                   unverified names never render here. */}
-              <code className={styles.drepIdValue}>{drepIdentity.raw}</code>
+              <code className={styles.drepIdValue}>
+                {drepIdentity?.raw ?? chosenOption}
+              </code>
             </p>
+            {drepIdentity?.cip105 && drepIdentity.cip105 !== drepIdentity.raw && (
+              <>
+                <p className={styles.paragraphTitle}>
+                  {intl.formatMessage(messages.drepIdCip105)}
+                </p>
+                <p className={styles.paragraphValue}>
+                  <code className={styles.drepIdValue}>
+                    {drepIdentity.cip105}
+                  </code>
+                </p>
+              </>
+            )}
+            {drepIdentity?.credentialHex && (
+              <>
+                <p className={styles.paragraphTitle}>
+                  {intl.formatMessage(messages.signedPayload)}
+                </p>
+                <p className={styles.paragraphValue}>
+                  <code className={styles.drepIdValue}>
+                    {`{"vote":{"type":"drep","id":"${drepIdentity.credentialHex}"}}`}
+                  </code>
+                </p>
+              </>
+            )}
+            {drepIdentity && (
+              <p className={styles.paragraphValue}>
+                <DRepSourceLabel source="on-chain" />
+              </p>
+            )}
           </>
         ) : (
           <>

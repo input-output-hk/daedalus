@@ -6,12 +6,15 @@ import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import { cleanup, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { bech32 } from 'bech32';
+import { Cardano } from '@cardano-sdk/core';
 import translations from '../../../i18n/locales/en-US.json';
 import { daedalusTheme } from '../../../themes/daedalus';
 import { themeOverrides } from '../../../themes/overrides';
 import { HwDeviceStatuses } from '../../../domains/Wallet';
 import VotingPowerDelegationConfirmationDialog from './VotingPowerDelegationConfirmationDialog';
 import { messages } from './VotingPowerDelegationConfirmationDialog.messages';
+import { normalizeDRepIdentity } from '../../../utils/governance/normalizeDRepIdentity';
 
 const VALID_DREP_ID =
   'drep1ygqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq7vlc9n';
@@ -217,4 +220,158 @@ describe('VotingPowerDelegationConfirmationDialog — fee, hardware and passphra
     expect(messages).not.toHaveProperty('previousVote');
     expect(messages).not.toHaveProperty('newVote');
   });
+});
+
+describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
+  const KEY_CIP129 =
+    'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
+  const KEY_CIP105 =
+    'drep_vkh15xev84897cr3s2f6fdwx6l50jzsm9s75uhmqwxpf8f94czu4a4l';
+  const KEY_CREDENTIAL_HEX =
+    'a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c';
+  const SCRIPT_CIP129 =
+    'drep1ydwykw3frpmsda0y60ptrgyl3e7kck628y5pwph4unfu9vg6sn5zd';
+  const SCRIPT_CIP105 =
+    'drep_script1t39n52gcwur0texnc2c6p8uw04k9kj3e9qtsda0y60ptzae75nh';
+  const SCRIPT_CREDENTIAL_HEX =
+    '5c4b3a29187706f5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1';
+  const LEGACY_DREP_ID =
+    'drep1pu0z60zttf5h3puk5k6v85hp7q83utfufddxj7y8j6jmg4v077e';
+
+  // CIP-129 carries a one-byte credential-type header ahead of the credential;
+  // CIP-105 carries the bare credential.
+  const credentialHexOf = (id: string): string => {
+    const decoded = bech32.decode(id);
+    const bytes = bech32.fromWords(decoded.words);
+    const credential = decoded.prefix === 'drep' ? bytes.slice(1) : bytes;
+    return credential.map((b) => b.toString(16).padStart(2, '0')).join('');
+  };
+
+  const renderIdentity = (drepId: string) =>
+    renderDialog({
+      chosenOption: drepId,
+      drepIdentity: normalizeDRepIdentity(drepId),
+    });
+
+  afterEach(cleanup);
+
+  it('renders all four parts for a key DRep', () => {
+    renderIdentity(KEY_CIP129);
+
+    expect(screen.getByText('!!!DRep ID')).toBeInTheDocument();
+    expect(screen.getByText(KEY_CIP129).textContent).toBe(KEY_CIP129);
+    expect(screen.getByText('!!!CIP-105 DRep ID')).toBeInTheDocument();
+    expect(screen.getByText(KEY_CIP105).textContent).toBe(KEY_CIP105);
+    expect(screen.getByText('!!!Signed payload')).toBeInTheDocument();
+    expect(
+      screen.getByText(`{"vote":{"type":"drep","id":"${KEY_CREDENTIAL_HEX}"}}`)
+    ).toBeInTheDocument();
+    expect(screen.getByText('!!!On-chain')).toBeInTheDocument();
+
+    const templateOrder = [
+      '!!!DRep ID',
+      '!!!CIP-105 DRep ID',
+      '!!!Signed payload',
+      'Transaction fee',
+    ];
+    expect(
+      Array.from(document.querySelectorAll('p'))
+        .map((node) => node.textContent ?? '')
+        .filter((text) => templateOrder.includes(text))
+    ).toEqual(templateOrder);
+  });
+
+  it('renders the script CIP-105 form for a script DRep', () => {
+    renderIdentity(SCRIPT_CIP129);
+
+    expect(screen.getByText(SCRIPT_CIP129).textContent).toBe(SCRIPT_CIP129);
+    expect(screen.getByText(SCRIPT_CIP105).textContent).toBe(SCRIPT_CIP105);
+    expect(
+      screen.getByText(
+        `{"vote":{"type":"drep","id":"${SCRIPT_CREDENTIAL_HEX}"}}`
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('renders one bech32 line when the id is already the CIP-105 form', () => {
+    renderIdentity(SCRIPT_CIP105);
+
+    expect(screen.getAllByText(SCRIPT_CIP105)).toHaveLength(1);
+    expect(screen.queryByText('!!!CIP-105 DRep ID')).not.toBeInTheDocument();
+    expect(screen.getByText('!!!DRep ID')).toBeInTheDocument();
+    expect(screen.getByText('!!!Signed payload')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        `{"vote":{"type":"drep","id":"${SCRIPT_CREDENTIAL_HEX}"}}`
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByText('!!!On-chain')).toBeInTheDocument();
+  });
+
+  it.each([
+    [KEY_CIP129, KEY_CIP105],
+    [SCRIPT_CIP129, SCRIPT_CIP105],
+  ])(
+    'renders three representations of one credential for %s',
+    (cip129, cip105) => {
+      renderIdentity(cip129);
+
+      const payload = JSON.parse(screen.getByText(/"vote"/).textContent);
+      expect(payload.vote.type).toBe('drep');
+      expect(payload.vote.id).toHaveLength(56);
+      expect(credentialHexOf(screen.getByText(cip129).textContent)).toBe(
+        payload.vote.id
+      );
+      expect(credentialHexOf(screen.getByText(cip105).textContent)).toBe(
+        payload.vote.id
+      );
+    }
+  );
+
+  it.each([
+    [KEY_CIP129, KEY_CREDENTIAL_HEX, Cardano.CredentialType.KeyHash],
+    [SCRIPT_CIP129, SCRIPT_CREDENTIAL_HEX, Cardano.CredentialType.ScriptHash],
+  ])(
+    'renders the same credential hex the hardware path sends for %s',
+    (cip129, expectedHex, expectedType) => {
+      // Both hardware mappers hand the device this hash as keyHashHex /
+      // scriptHashHex, while the dialog shows bech32 — the two are only
+      // comparable through the credential.
+      const { hash, type } = Cardano.DRepID.toCredential(
+        Cardano.DRepID(cip129)
+      );
+      expect(hash).toBe(expectedHex);
+      expect(type).toBe(expectedType);
+
+      renderIdentity(cip129);
+      expect(
+        screen.getByText(`{"vote":{"type":"drep","id":"${expectedHex}"}}`)
+      ).toBeInTheDocument();
+    }
+  );
+
+  it('renders only the verbatim primary line when the decoder rejects the id', () => {
+    expect(normalizeDRepIdentity(LEGACY_DREP_ID)).toBeNull();
+    renderIdentity(LEGACY_DREP_ID);
+
+    expect(screen.getByText('!!!DRep ID')).toBeInTheDocument();
+    expect(screen.getByText(LEGACY_DREP_ID).textContent).toBe(LEGACY_DREP_ID);
+    expect(screen.queryByText('!!!CIP-105 DRep ID')).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Signed payload')).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!On-chain')).not.toBeInTheDocument();
+    expect(screen.queryByText('Vote')).not.toBeInTheDocument();
+  });
+
+  it.each(['abstain', 'no_confidence'])(
+    'renders no identity block for the %s sentinel',
+    (option) => {
+      renderDialog({ chosenOption: option, drepIdentity: null });
+
+      expect(screen.getByText('Vote')).toBeInTheDocument();
+      expect(screen.queryByText('!!!DRep ID')).not.toBeInTheDocument();
+      expect(screen.queryByText('!!!CIP-105 DRep ID')).not.toBeInTheDocument();
+      expect(screen.queryByText('!!!Signed payload')).not.toBeInTheDocument();
+      expect(screen.queryByText('!!!On-chain')).not.toBeInTheDocument();
+    }
+  );
 });
