@@ -4193,3 +4193,148 @@ of the consumer's hooks (correcting two lenses' reasoning while upholding their 
 fixture id stability was checked for nondeterminism, and all five gates were re-run — and
 seven observations were declined with reasons above. The only open items are the AC-2 OWED
 record and the commit, both close-out steps. No round 2 is warranted.
+
+---
+
+## Code Review: 2026-07-28 — task-145 round 1
+
+**Scope reviewed.** The uncommitted working tree for task-145 — one modified file,
+`storybook/stories/voting/Governance.stories.tsx` (72 insertions, 87 deletions) — against
+its guide section `cv-2-implementation-guide.md:4366-4750`: Files-touched and Do-not-touch
+at `:4368-4382`, the `drepIndex` precondition at `:4384-4388`, Context at `:4390-4448`, the
+seven locked invariants at `:4450-4468`, the resolved judgment calls at `:4470-4496`,
+Steps 1-7 at `:4498-4684`, Step 8 verification at `:4686-4736`, and the acceptance record
+at `:4738-4750`. HEAD is `76cfabacc` (task-144 committed since the wave baseline
+`b699d176c`, as expected). Three independent lenses ran — correctness against the guide,
+locked invariants plus the sanitization floor, and tests plus simplicity and drift — and
+**all three returned `approved` with zero blockers**. Consistent with the task-141,
+task-175 and task-144 rounds, that was not accepted on report: every load-bearing claim
+was re-derived first-hand, the gate's prettier attribution was independently reproduced,
+and the one hazard analysis no lens completed was finished here.
+
+**Surviving blockers: none.** No finding from any lens was promoted, and the adjudication
+pass raised none of its own.
+
+**What was re-derived rather than inherited.** (1) **Guide conformance, byte level.** All
+seven prescribed edits match the guide snippets as written: the `WalletSyncStateStatuses`
+removal and the `GovernanceWrapper` / `makeGovernanceWallets` / `useCurrentVoteKnob` /
+`CurrentVoteOption` import block (`:37-56`, guide Step 1 at `:4500-4520`); the
+`GOVERNANCE_WALLETS` deletion leaving **exactly one** blank line between
+`toStoryDRepIdentity` and `const voteOptions` — verified with `cat -A`, which shows a
+single bare `$` at the seam (guide Step 2 at `:4522-4527`); `renderGovernancePanel(option)`
+wrapping `<GovernanceWrapper>` with `drepIndex` first in the prop list (`:173-208`, Step 3);
+the knob read as the **first** statement of the `withState` callback at `:302`, threaded to
+`:362` (Step 4); both delegation stories rewritten to the prescribed shape (`:375-409`,
+Steps 5-6); and the two dialog stories migrated to
+`makeGovernanceWallets('noDelegation')[0]` / `[1]` at `:443` / `:478` (Step 7). (2) **Index
+mapping.** `[0]` is `isHardwareWallet: false` (`fixtures.ts:110-118`) and `[1]` is
+`isHardwareWallet: true` (`:119-127`), so the software and hardware dialog stories keep
+their respective confirmation paths — the substitution is not merely type-correct but
+semantically correct. (3) **AC-2 / AC-3.** `grep -n
+"GOVERNANCE_WALLETS\|generateWallet\|WalletSyncStateStatuses"` over the file returns
+nothing, **exit 1**; all four HEAD reuse sites are migrated and the module-level binding is
+gone. (4) **The retained `Wallet` import is still load-bearing** — used as a type at
+`:252` (`selectedWallet: Wallet`), so Step 1's partial import trim orphaned nothing.
+(5) **`useCurrentVoteKnob` is not a React hook** — `fixtures.ts:29-31` is a bare
+`return select('Current vote (mock)', currentVoteOptions, 'noDelegation');`. Calling it
+from two non-component arrow bodies and from the `withState` callback therefore raises no
+hook-ordering question, and `grep -rn "react-hooks" .eslintrc*` returns **nothing**, so the
+`rules-of-hooks` plugin is not even configured in this repo — there is no latent lint trap
+being deferred.
+
+**The per-render identity hazard, closed completely.** The single real behavioural change
+is that wallets are now minted fresh on every render instead of being read from a stable
+module-level array. Two lenses cleared this by checking **one** consumer effect each; that
+enumeration was incomplete, so all four state-holding sites were checked here. `VotingPowerDelegation`'s form state is a **mount-only lazy initializer** (`:163`), so a new
+`wallets` array identity cannot re-seed it. Its re-seed effect keys on **primitives** —
+`:209` is `}, [currentVoteKind, currentVoteDRepId]);`. Its **second** effect, which **no
+lens examined**, is `:282` `}, [initiateTransaction, intl, state]);` — `selectedWallet` is
+read in the body but is **not** a dependency, and the body early-returns unless
+`state.status === 'form-submitted'`, so the fresh object cannot drive it. (`initiateTransaction` is an unstable inline arrow in the story, but it was equally
+unstable at HEAD — pre-existing, not introduced here.) `VotingPowerDelegationConfirmationDialog`'s effect is `:115`
+`}, [intl, onSubmit, redirectToWallet, state]);` — again `selectedWallet.id` is read in the
+body only. No render loop is reachable from this change on any path.
+
+**Dropped findings.** No lens filed a blocker, so nothing was rejected; these are the
+observations raised in the lens summaries or the gate that were examined and **declined**
+as defects. (1) **AC-1 satisfied only in part** — declined: the guide pre-records the
+scoping at `:4740-4748`, assigning the `Current Vote Summary` knob to task-136
+(`CurrentVoteSummary.stories.tsx:64`) and placing the two dialog stories, `Unavailable
+while syncing` and the directory/detail/badge stories out of scope because they render no
+current-vote surface. Treating the partial coverage as a defect would contradict the
+contract. (2) **AC-4 unverifiable** — declined: it is the guide's own **OWED** entry at
+`:4728-4736`, which forbids asserting it green without a browser; an environment limit is
+not a code defect. (3) **`prettier --check` red** — declined as pre-existing, proven below.
+(4) **The dialog stories build three wallets to consume one** (`:443`, `:478`) — declined:
+this is Step 7's verbatim prescription at `:4676-4684`, the cost is two discarded objects
+in a story, and hoisting a shared constant would reintroduce exactly the module-level
+mutable wallet state invariant `:4456-4458` forbids. (5) **`Voting power delegation -
+prefilled from directory` demonstrates the directory hand-off only at the `noDelegation`
+default** — declined as designed, not defective: `deriveFormSeed` ranks the wallet's own
+`currentVote` ahead of the inherited `initialFormState.selectedDRepId`, and
+`governance-wallet-1` is the one wallet `makeGovernanceWallets` gives a knob-derived
+`votingTarget` (`fixtures.ts:117`), so at the other four values the story demonstrates
+current-vote precedence instead. The guide states this outcome and explicitly instructs
+recording it rather than "fixing" the seed order or re-pointing `selectedWalletId` at
+`governance-wallet-2` — which is `isHardwareWallet: true` and would swap the confirmation
+path (`:4650-4674`). (6) **No test added** — declined: `jest.config.js:129` sets
+`roots: ['<rootDir>/tests', '<rootDir>/source']`, so a spec under `storybook/` could never
+execute; Step 8 lists only grep/tsc/lint/prettier, and Jest coverage is task-147/148's row.
+(7) **Minor lens anchor slips**, corrected for the record, no code impact: lens 1 cited
+`fixtures.ts:58-60` for `useCurrentVoteKnob` (actually `:29-31`; `:58-64` is
+`UNVERIFIED_DREP`) and `:150,161` for the `drepIndex` keys (`:161` is `votingPower`; the
+keyed sets are `:149-150` and `:159-160`), and lens 3 cited the re-seed deps at `:209`
+while lens 1 cited `:208` — `:209` is correct.
+
+**Gate result and its attribution.** The supplied gate reports **PASS**; that verdict is
+upheld, and its single red sub-gate is confirmed **pre-existing**. `git status --porcelain`
+→ exactly one line, ` M storybook/stories/voting/Governance.stories.tsx`; no tracker JSON,
+no locale catalog, no `translations/messages.json`, no commit, and `storybook/stories/index.ts` untouched as `:4374-4378` requires. `node_modules/.bin/tsc
+--noEmit` → **exit 0**, zero diagnostics, matching the slice baseline; this also discharges
+the `drepIndex` precondition at `:4384-4388`, and the prop is real and optional —
+`VotingPowerDelegation.tsx:56` declares `drepIndex?: ReadonlyMap<string,
+AppDRepDirectoryEntry>`, defaulted at `:153` and consumed at `:217`, so the value is used,
+not merely accepted. `node_modules/.bin/eslint` on the file → **exit 0 with zero output**,
+confirming the two dropped imports stranded nothing; the full `yarn lint` 5596-warning
+count is not this task's — the one new warning belongs to task-144's committed
+`GovernanceWrapper.tsx:14`. `prettier --check` on the file → **exit 1, RED, and it must
+stay red** (`:4728-4736`): running `node_modules/.bin/prettier` to stdout and diffing
+yields **exactly two hunks and no third** — `initializeTxErrorOptions` reflowed at `:71`
+and `STAKE_POOLS_LIST`'s double assertion at `:91` — neither inside any block this task
+wrote, and `grep -c '^@@'` on that diff returns **2**. `prettier --write` was **not** run
+on this file or any other, so none of the three baseline-red paths was rewritten. No
+`.scss` is in the change set, so `typed-scss-modules` was correctly not required;
+`yarn i18n:manage` was correctly **not** run — this task adds and removes no message id,
+so none of the four tool-managed files needed writing or reverting. `yarn check:all` and
+`yarn storybook:build` were deliberately not run, both red at HEAD for the unrelated
+manager-webpack JSX-loader reason. No `git stash`, no commit, and no file edited except
+this log. `nix` is absent, so `nix fmt` remains the owed pre-merge obligation with
+prettier-on-explicit-paths as the recorded substitute (F-12).
+
+**Handoffs for the closing pass (not review findings).** (a) The task-145 tracker row must
+carry the **AC-1 scoping note** verbatim from `:4740-4748` — the knob lands on `Connected
+flow`, `Voting power delegation` and `Voting power delegation - prefilled from directory`
+only. (b) **AC-4 is OWED and must never be asserted green at this commit**: no browser
+exists in this container, so still unobserved are the five knob labels with the `Not
+delegated (warning)` default, the per-value badge and caption rendering, the remount proof
+(type a DRep id, switch the knob, confirm the field clears), the "no current-vote knob on
+the two dialog stories" check, the EN→JA toggle re-check, and the console-error/overflow
+pass. (c) This same visual pass is the **observed half of task-144's AC-2**, which task-144
+deferred here; whoever writes `statusReason` must record the OWED entry on **both** rows.
+(d) The prescribed commit subject is `feat(gov): task-145 wire the current-vote knob into
+the governance stories` (`guide:4738`). (e) Carry forward the per-knob-value behaviour of
+the prefilled-from-directory story (dropped finding 5) so a later reader does not re-file
+it.
+
+**Decision: approved** — zero blockers at any severity. All three lenses returned
+`approved` with empty lists, and the round re-derived the load-bearing claims first-hand
+rather than rubber-stamping: the file was compared against the guide snippets edit by edit,
+the deleted-block blank-line detail was checked with `cat -A`, the fixture index-to-hardware
+mapping was verified so the dialog substitution is semantically and not just type-correct,
+the `use*`-named helper was confirmed to be a plain `select()` with no `rules-of-hooks`
+plugin configured, the per-render identity hazard was closed against a **complete**
+enumeration of all four consumer state sites — finishing an analysis both lenses left
+partial while upholding their verdict — and the gate's prettier red was independently
+reproduced as exactly two pre-existing hunks. Seven observations were declined with reasons
+above. The only open items are the AC-1 scoping note, the AC-4 / task-144 AC-2 OWED record
+and the commit, all close-out steps. No round 2 is warranted.

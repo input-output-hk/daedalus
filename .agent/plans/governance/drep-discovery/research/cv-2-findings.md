@@ -1656,6 +1656,87 @@ OWED); the Planner at slice close (carry both observations forward).
 
 ---
 
+## F-26 — F-25's discharge target has now landed and discharged nothing: cv-2's storybook arm is complete in code with **zero** observed evidence. And the real reason per-render fixtures are safe is structural, not the effect-deps argument the reviews ran — with no lint rule anywhere protecting it. Sweep basis unchanged at 309/321
+
+**The chain closes empty.** F-25 (`:1598`) escalated task-144's AC-2 observed
+half — type a DRep id, switch the knob, the field is blank again — past task-145,
+on the grounds that task-145's own visual pass is declared unexecutable. task-145
+has now landed `complete`, and it executed no browser step: Step 8's manual
+Storybook block (`cv-2-implementation-guide.md:4718-4741`) needs `yarn storybook`
+and there is no browser in this container, which its AC-4 (`:4760-4764`) states in
+advance. **task-145 was the last cv-2 row that could have observed anything**, so
+the whole storybook arm — task-143's fixtures, task-144's wrapper, task-145's
+wiring — ships on `tsc`, `eslint` and `grep` alone. Enumerated, so the slice-close
+report cannot lose them: the five knob labels and the `Not delegated (warning)`
+default on `Connected flow` / `Voting power delegation` / `Voting power delegation
+- prefilled from directory`; the per-value badge and caption rendering; the remount
+proof; the *absence* of a knob on the two dialog stories; the English → Japanese
+re-check; console errors and layout overflow in either locale.
+
+**Why per-render fixtures are actually safe — the structural argument.** Both
+task-144's and task-145's reviews cleared the "wallets are minted fresh every
+render" change by enumerating `useEffect` dependency arrays. That is the weaker
+half. The load-bearing fact is that **`VotingPowerDelegation` never stores a wallet
+object at all**: its state holds `selectedWalletId: string | null`
+(`source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx:102`
+in `initialState`, `:172` when seeded from `initialFormState`) and the object is
+re-derived on every render at `:180-181`,
+`const selectedWallet = wallets.find((w) => w.id === state.selectedWalletId) ?? null;`.
+Id equality is the only equality in play, so a fresh `makeGovernanceWallets(option)`
+array cannot strand a stale reference no matter how often it is rebuilt. The
+dependency arrays are the corroborating half: the lazy `useState` initializer at
+`:163` reads `wallets` once at mount; the re-seed effect keys on primitives
+(`:209`, `[currentVoteKind, currentVoteDRepId]`); and the two sites that do touch
+the object touch it in the effect **body** only, never in the deps — `:282` is
+`[initiateTransaction, intl, state]` with `wallet: selectedWallet` at `:265`, and
+`VotingPowerDelegationConfirmationDialog.tsx:115` is
+`[intl, onSubmit, redirectToWallet, state]` with `selectedWallet.id` at `:105`.
+
+**Nothing mechanical protects any of it.** `eslint-plugin-react-hooks` 4.4.0 is
+**installed** (`package.json:139`) but is **not configured**: `.eslintrc:96` lists
+`["@typescript-eslint", "import", "promise", "react", "jest"]` and `grep -rn
+"react-hooks" .eslintrc*` returns nothing, so neither `rules-of-hooks` nor
+`exhaustive-deps` ever runs. Two consequences. Adding `selectedWallet` to the
+`:282` or `:115` dependency arrays — precisely the edit `exhaustive-deps` would
+demand if it were switched on, and the kind of edit an IDE quick-fix offers
+unprompted — re-arms per-render identity as an effect trigger, and no gate in this
+repo would report it. And `useCurrentVoteKnob`
+(`storybook/stories/governance/_utils/fixtures.ts:29-31`) is a plain
+`return select('Current vote (mock)', currentVoteOptions, 'noDelegation');`, not a
+React hook, despite the name; task-145 calls it from two non-component arrow bodies
+and from a `withState` callback and lint is silent either way. The `use` prefix
+here is the storybook-knobs idiom, not a claim about React, and no tool will tell a
+future reader which it is.
+
+**Basis unchanged.** The slice sweep is 18 passed / 1 skipped of 19 suites, 309
+passed / 12 skipped of 321, 9 snapshots — identical to F-24 and F-25. No spec
+ships and none could: `jest.config.js:129` roots the suite at `<rootDir>/tests` and
+`<rootDir>/source`, so a spec under `storybook/` never executes (F-15).
+`prettier --check` on `storybook/stories/voting/Governance.stories.tsx` stays exit
+1 with exactly the two hunks F-10 records — the `initializeTxErrorOptions` reflow
+and the `STAKE_POOLS_LIST` double assertion, both reproducible against the HEAD
+blob — and `--write` was not run on it.
+
+**Resolution.** cv-2's storybook arm is code-complete and observation-free. The
+structural safety of per-render fixtures rests on `VotingPowerDelegation` keying
+its state on an id string, not on any dependency array, and that invariant has no
+lint guard: turning `eslint-plugin-react-hooks` on, or hand-adding a
+`selectedWallet` dependency, are the two edits that would break it silently.
+
+**Disposition.** Observation gap — **escalated to manual release verification at
+slice close**, now carrying three items (task-145 AC-4, task-144 AC-2's observed
+half, and the fixture/wrapper surface having never rendered). The id-keyed state
+invariant and the unconfigured `react-hooks` plugin are **record-only**, binding on
+any future row that edits `VotingPowerDelegation`'s effects or the storybook
+fixtures.
+
+**Owner.** task-145 (recorded); the Planner at slice close (carry all three
+observations, not one collapsed browser pass); any later row touching
+`VotingPowerDelegation.tsx:180-181`, `:282` or
+`VotingPowerDelegationConfirmationDialog.tsx:115`.
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)

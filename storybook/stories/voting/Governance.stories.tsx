@@ -37,7 +37,6 @@ import {
 import Wallet, {
   HwDeviceStatus,
   HwDeviceStatuses,
-  WalletSyncStateStatuses,
 } from '../../../source/renderer/app/domains/Wallet';
 import type StakePool from '../../../source/renderer/app/domains/StakePool';
 import type { CatalystFund } from '../../../source/renderer/app/api/voting/types';
@@ -50,7 +49,12 @@ import type {
   DelegateVotesError,
   InitializeVPDelegationTxError,
 } from '../../../source/renderer/app/stores/VotingStore';
-import { generateWallet } from '../_support/utils';
+import GovernanceWrapper from '../governance/_utils/GovernanceWrapper';
+import {
+  makeGovernanceWallets,
+  useCurrentVoteKnob,
+} from '../governance/_utils/fixtures';
+import type { CurrentVoteOption } from '../governance/_utils/fixtures';
 import { normalizeDRepIdentity } from '../../../source/renderer/app/utils/governance/normalizeDRepIdentity';
 
 const VALID_DREP_ID =
@@ -60,42 +64,6 @@ const toStoryDRepIdentity = (option: string): DRepIdentity | null =>
   option === 'abstain' || option === 'no_confidence'
     ? null
     : normalizeDRepIdentity(option);
-
-const GOVERNANCE_WALLETS = [
-  generateWallet(
-    'Governance wallet',
-    '125000000000',
-    undefined,
-    0,
-    null,
-    true,
-    WalletSyncStateStatuses.READY,
-    false,
-    'governance-wallet-1'
-  ),
-  generateWallet(
-    'Ledger governance wallet',
-    '58000000000',
-    undefined,
-    0,
-    null,
-    false,
-    WalletSyncStateStatuses.READY,
-    true,
-    'governance-wallet-2'
-  ),
-  generateWallet(
-    'Syncing wallet',
-    '42000000000',
-    undefined,
-    0,
-    null,
-    true,
-    WalletSyncStateStatuses.SYNCING,
-    false,
-    'governance-wallet-3'
-  ),
-];
 
 const voteOptions = {
   'Delegate to DRep': VALID_DREP_ID,
@@ -202,7 +170,7 @@ const governanceStoryDecorator = (story: () => React.ReactNode) => (
   </StoryProvider>
 );
 
-const renderGovernancePanel = () => {
+const renderGovernancePanel = (option: CurrentVoteOption) => {
   const transactionFee = new BigNumber(
     number('Initialized transaction fee', 0.174257, {
       min: 0,
@@ -212,27 +180,32 @@ const renderGovernancePanel = () => {
   text('Valid DRep ID fixture', VALID_DREP_ID);
 
   return (
-    <VotingPowerDelegation
-      getStakePoolById={getStakePoolById}
-      initiateTransaction={async (params) => {
-        action('initiateTransaction')(params);
-        return boolean('Initialization succeeds', true)
-          ? { success: true, fees: transactionFee }
-          : {
-              success: false,
-              errorCode: select(
-                'Initialization error',
-                initializeTxErrorOptions,
-                'same_vote'
-              ),
-            };
-      }}
-      onBrowseDRepsClick={action('onBrowseDRepsClick')}
-      onExternalLinkClick={action('onExternalLinkClick')}
-      renderConfirmationDialog={renderGovernanceConfirmationDialog}
-      stakePools={STAKE_POOLS_LIST}
-      wallets={GOVERNANCE_WALLETS}
-    />
+    <GovernanceWrapper option={option}>
+      {({ wallets, drepIndex }) => (
+        <VotingPowerDelegation
+          drepIndex={drepIndex}
+          getStakePoolById={getStakePoolById}
+          initiateTransaction={async (params) => {
+            action('initiateTransaction')(params);
+            return boolean('Initialization succeeds', true)
+              ? { success: true, fees: transactionFee }
+              : {
+                  success: false,
+                  errorCode: select(
+                    'Initialization error',
+                    initializeTxErrorOptions,
+                    'same_vote'
+                  ),
+                };
+          }}
+          onBrowseDRepsClick={action('onBrowseDRepsClick')}
+          onExternalLinkClick={action('onExternalLinkClick')}
+          renderConfirmationDialog={renderGovernanceConfirmationDialog}
+          stakePools={STAKE_POOLS_LIST}
+          wallets={wallets}
+        />
+      )}
+    </GovernanceWrapper>
   );
 };
 
@@ -326,6 +299,7 @@ storiesOf('Voting / Governance', module)
         currentContentRoute: ROUTES.VOTING.GOVERNANCE,
       },
       (store) => {
+        const option = useCurrentVoteKnob();
         const isVotingSection =
           store.state.currentContentRoute.indexOf(ROUTES.VOTING.ROOT) === 0;
         const activeVotingItem = VOTING_NAV_ITEMS.find(
@@ -385,7 +359,7 @@ storiesOf('Voting / Governance', module)
                       }}
                     />
                     {store.state.activeVotingRoute === ROUTES.VOTING.GOVERNANCE
-                      ? renderGovernancePanel()
+                      ? renderGovernancePanel(option)
                       : renderCatalystPanel()}
                   </div>
                 ) : (
@@ -398,30 +372,41 @@ storiesOf('Voting / Governance', module)
       }
     )
   )
-  .add('Voting power delegation', () => (
-    <div style={CENTERED_STORY_STYLE}>{renderGovernancePanel()}</div>
-  ))
-  .add('Voting power delegation - prefilled from directory', () => (
-    <div style={CENTERED_STORY_STYLE}>
-      <VotingPowerDelegation
-        getStakePoolById={getStakePoolById}
-        initiateTransaction={async (params) => {
-          action('initiateTransaction')(params);
-          return { success: true, fees: new BigNumber('0.174257') };
-        }}
-        initialFormState={{
-          selectedDRepId: VALID_DREP_ID,
-          selectedWalletId: 'governance-wallet-1',
-          voteType: 'drep',
-        }}
-        onBrowseDRepsClick={action('onBrowseDRepsClick')}
-        onExternalLinkClick={action('onExternalLinkClick')}
-        renderConfirmationDialog={renderGovernanceConfirmationDialog}
-        stakePools={STAKE_POOLS_LIST}
-        wallets={GOVERNANCE_WALLETS}
-      />
-    </div>
-  ))
+  .add('Voting power delegation', () => {
+    const option = useCurrentVoteKnob();
+    return (
+      <div style={CENTERED_STORY_STYLE}>{renderGovernancePanel(option)}</div>
+    );
+  })
+  .add('Voting power delegation - prefilled from directory', () => {
+    const option = useCurrentVoteKnob();
+    return (
+      <div style={CENTERED_STORY_STYLE}>
+        <GovernanceWrapper option={option}>
+          {({ wallets, drepIndex }) => (
+            <VotingPowerDelegation
+              drepIndex={drepIndex}
+              getStakePoolById={getStakePoolById}
+              initiateTransaction={async (params) => {
+                action('initiateTransaction')(params);
+                return { success: true, fees: new BigNumber('0.174257') };
+              }}
+              initialFormState={{
+                selectedDRepId: VALID_DREP_ID,
+                selectedWalletId: 'governance-wallet-1',
+                voteType: 'drep',
+              }}
+              onBrowseDRepsClick={action('onBrowseDRepsClick')}
+              onExternalLinkClick={action('onExternalLinkClick')}
+              renderConfirmationDialog={renderGovernanceConfirmationDialog}
+              stakePools={STAKE_POOLS_LIST}
+              wallets={wallets}
+            />
+          )}
+        </GovernanceWrapper>
+      </div>
+    );
+  })
   .add('Confirmation dialog - software wallet', () => {
     const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
     return (
@@ -455,7 +440,7 @@ storiesOf('Voting / Governance', module)
                 };
           }}
           redirectToWallet={action('redirectToWallet')}
-          selectedWallet={GOVERNANCE_WALLETS[0]}
+          selectedWallet={makeGovernanceWallets('noDelegation')[0]}
         />
       </div>
     );
@@ -490,7 +475,7 @@ storiesOf('Voting / Governance', module)
             return { success: true };
           }}
           redirectToWallet={action('redirectToWallet')}
-          selectedWallet={GOVERNANCE_WALLETS[1]}
+          selectedWallet={makeGovernanceWallets('noDelegation')[1]}
         />
       </div>
     );
