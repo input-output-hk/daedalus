@@ -4727,3 +4727,186 @@ slice already ships the replacer that closes it. The deliverable itself — five
 current-vote flow cases, the no-device HW case, the three-state `it.each`, three
 letter-case comparator vectors and two sanitization-floor additions, all append-only,
 all green, production source untouched — is correct as written. No round 2 is warranted.
+
+---
+
+## Code Review: 2026-07-28 — task-148 round 1
+
+**Scope reviewed.** The uncommitted working tree for task-148 — a single modified spec
+file — against its guide section `cv-2-implementation-guide.md:5568-5843` (files-touched
+and the six do-not-touch `same_vote` sites at `:5570-5583`, verified context at
+`:5585-5624`, the four locked invariants at `:5626-5637`, the four resolved judgment
+calls at `:5639-5658`, Steps 1-5 at `:5660-5828`, the acceptance record at `:5830-5843`).
+Three independent lenses ran — correctness against the guide, locked invariants plus the
+sanitization floor, and tests plus simplicity and drift. **All three returned `approved`
+with empty blocker lists.** A unanimous clean round is the case most worth distrusting,
+so every load-bearing claim was re-derived here from the files rather than accepted on
+report, and one independent attempt was made to break the deliverable. Nothing survived.
+The main checkout `/workspaces/daedalus` was never read, edited or run against, and this
+round fixed no code.
+
+**What landed.** `git status --porcelain --untracked-files=all` → exactly one line,
+` M source/renderer/app/stores/VotingStore.spec.ts`; zero untracked, zero staged.
+`git diff --stat` → `1 file changed, 118 insertions(+), 1 deletion(-)`; the single
+deletion is the widened store import (`import VotingStore, { FundPhase }` →
+`{ FundPhase, expectedInitializeVPDelegationTxErrors }`), so the change is otherwise
+insert-only. Zero production source, zero `.json`, zero `.scss`, zero story, zero
+tracker or catalog write. HEAD is `e47de2cb8` (task-147, committed after the wave
+baseline at `927978951`); task-148 is deliberately uncommitted, Step 5 overridden by the
+brief. Steps 1-3 match the guide's snippets line for line with exactly one intentional
+divergence, addressed below.
+
+### Blockers
+
+**None — at any severity.** No blocker, no major, no minor. Nothing is deferred to a fix
+pass; the deliverable is commit-ready as written.
+
+### Independent re-checks of the deliverable (nothing new found)
+
+**Both acceptance criteria are proved, not asserted.** AC-2's chain was walked end to
+end: `expectedInitializeVPDelegationTxErrors` is exported and still contains
+`'same_vote'` at `VotingStore.ts:62` (constant at `:61-64`); `parseApiCode`
+(`VotingStore.ts:74-93`) returns the code only for an `ApiError` whose `code` is in that
+constant and otherwise collapses to `'generic'`, so `expect(result).toEqual({ success:
+false, errorCode: 'same_vote' })` (`spec:255`) is a real discrimination and not a
+restatement of the fixture; the catch at `VotingStore.ts:347` logs `{ errorCode }` and
+returns the same pair. AC-1's renderer half is pinned at `VotingPowerDelegation.tsx:95`
+(`same_vote: messages.initializeTxErrorSameVote`) through the exact en-US sentence at
+`en-US.json:980`, asserted verbatim at `spec:384-386`.
+
+**The non-tautology claim holds, and the mechanism is the one the guide names.** The
+fixture wallet carries `currentVote: null` (`spec:341`); the component reads it at
+`VotingPowerDelegation.tsx:183` (`const currentVote = selectedWallet?.currentVote ??
+null`), feeds it to `isSameVoteTarget` at `:247`, and `isSameVoteTarget.ts:13`
+(`if (currentVote == null) return false;`) forces `isSameAsCurrent` false, so task-140's
+gate at `:249-254` provably cannot be what disables the button. `expect(submit)
+.not.toBeDisabled()` (`spec:382`) is therefore falsifiable in both directions: it fails
+if the comparator ever starts returning true for an absent current vote, and it fails if
+`formIsValid` regresses. The positive direction of the same gate is separately pinned at
+`VotingGovernancePage.spec.tsx:523`, so the pair is complementary rather than duplicated.
+
+**The sanitization pin is non-vacuous and complete for the exercised path.** The only
+`logger.*` call sites in `VotingStore.ts` are `:354` and `:412`, both plain-object
+`{ errorCode }` payloads — so `expect(JSON.stringify(errorSpy.mock.calls)).not
+.toContain(CIP129_KEY)` (`spec:267`) covers every logger the path can reach, and the
+preceding `toHaveBeenCalledWith` (`spec:257-260`) proves the array is non-empty before
+the substring check runs. The re-spy idiom was verified against the installed source,
+not assumed: `jest-mock` 27.5.1 wraps only when `!this.isMockFunction(original)` and
+otherwise falls through to `return object[methodName]`
+(`node_modules/jest-mock/build/index.js:794-858`), so `errorSpy` is the mock the outer
+`beforeEach` installed, and `clearMocks: true` (`jest.config.js:17`) scopes the recorded
+calls to this one test.
+
+**Conventions and hygiene, checked directly.** `grep -nEi "task-[0-9]|CAT-[0-9]|CP-[0-9]
+|AC-[0-9]|PR #|S-[0-9]|D-[0-9]"` over the spec returns nothing — no process artifact in
+any comment or test name. Exactly one comment is added (`spec:264-265`): two lines,
+sentence case, stating the `jest.spyOn` constraint rather than the what, no ALL-CAPS, no
+change history. Both new cases read as intent in the runner output — "surfaces the
+same_vote server error without logging the vote target" and "renders the server
+same_vote copy when the wallet has no matching current vote". No `.only` / `.skip` /
+`xit` / `.todo`. Every added import is consumed and every prop passed is required by
+`Props` (`VotingPowerDelegation.tsx:28-57`); the `React.ComponentType<any>` cast is
+forced, since the default export is `injectIntl(observer(VotingPowerDelegation))`
+(`:446`) and `renderConfirmationDialog: () => null` is not assignable to
+`React.ReactElement`.
+
+**The one divergence from the guide is correct and was the right call.** Step 3 prints
+the cast as a one-liner, `VotingPowerDelegation as unknown as React.ComponentType<any>`;
+the implementer hand-wrote the parenthesized, wrapped form at `spec:332-334`. This is
+the same shape prettier 2.1.2 demands at the fourth baseline-red site recorded in the
+task-147 round (`((MatomoTracker as unknown) as jest.Mock)`). Verified here:
+`prettier --check source/renderer/app/stores/VotingStore.spec.ts` → exit 0, "All matched
+files use Prettier code style!" The guide's literal text would have turned a green file
+red. No `--write` was issued against any file in this round.
+
+### Findings considered and not promoted
+
+**The bare `JSON.stringify` at `spec:267` — not CR147-1 in miniature.** One lens raised
+and self-declined it; the decline is upheld on two independent grounds. (a) The
+serialiser hole CR147-1 identified is specific to an `Error` argument, whose message
+becomes `{}`; both reachable logger sites here pass plain objects (`VotingStore.ts:354`,
+`:412`), so there is no non-enumerable surface for a leak to hide behind. (b) Unlike
+CR147-1's case, where `logged` was `[[],[],[],[]]`, this array is provably non-empty.
+The obvious remedy — reuse `jsonStrWithErrors` — is also unavailable by design: it is a
+file-local helper at `tests/jest/security/governance-sanitization.spec.ts:65`, not
+exported, so adopting it would mean duplicating a replacer into a store spec to guard a
+payload shape that cannot conceal a leak. The assertion is additionally the guide's
+verbatim Step 2 text, so deviating would itself be the defect.
+
+**Guide anchor drift — recorded as documentation debt, and two of the reported five
+anchors are themselves misread.** Re-derived from the live files rather than from the
+lens reports. Genuinely drifted: the guide cites `VotingPowerDelegation.tsx:89` for the
+intl map entry (live `:95`), `:84-92` for the map (live `:90-99`), `:304-308` for the
+render site (live `:401-405`), and `en-US.json:973` / `ja-JP.json:973` for the copy key
+(live `:980` in both). **Not drifted, contrary to two lens reports and the gate:** the
+guide's `VotingStore.ts:347-360` is right at the head — `} catch (error) {` sits at
+`:347` (the reports' "live :344-360" points at `success: true,`), and the guide's
+`:74-95` for `parseApiCode` is right — `const parseApiCode` is at `:74` (the reports'
+"live :72-93" is two lines early). Every quoted code and copy string still matches byte
+for byte, so no behavioral adaptation was owed. The drift was introduced by tasks
+136-147 shifting lines beneath the guide; it is not this task's to fix, and it should be
+corrected whenever the guide is next edited.
+
+**Tracker `targetPath` versus the colocated spec.** The row records
+`"targetPath": "tests/jest/"` while the work lands in
+`source/renderer/app/stores/VotingStore.spec.ts`. The guide fixes the file explicitly
+("this file only", `:5570`), so this is guide-sanctioned and belongs in `statusReason`,
+not in a blocker list.
+
+**Three further observations raised in-round and not promoted.** (i)
+`expect(expectedInitializeVPDelegationTxErrors).toContain('same_vote')` (`spec:254`) is
+near-tautological read alone, but it is AC-2's explicit constant check and the next
+assertion carries the real proof; it is also verbatim Step 2. (ii) `afterEach(cleanup)`
+is redundant under `@testing-library/react` 12.1.2's automatic cleanup, but it is house
+style across ten-plus committed specs and is verbatim guide text. (iii) Importing a
+react-polymorph-heavy component into a store spec raises coupling, but the guide fixes
+the file, mocks both dropdowns to neutralise the widget graph, and there is committed
+precedent for a `.ts` spec rendering through `React.createElement`
+(`source/renderer/app/containers/status/DaedalusDiagnosticsDialog.spec.ts:129`, `:136`,
+`:149`) — which also settles the do-not-rename-to-`.tsx` judgment call.
+
+**Gate result and its attribution.** The supplied gate reports **PASS** on all six
+briefed gates, with zero failures and nothing to attribute; the material figures were
+re-run here first-hand rather than accepted. `jest --testPathPattern=VotingStore
+--no-coverage --runInBand` → exit 0, **17 passed / 17 total**, both new cases visible by
+name. `tsc --noEmit` → exit 0, matching the slice baseline. `eslint --format compact` on
+the changed file → **11 problems, 0 errors, 11 warnings**, all `@typescript-eslint/
+no-explicit-any`; eight are the file's pre-existing sites carried down by the 27 inserted
+lines, so task-148 adds exactly three, at `:247`, `:333` and `:345` — every one the
+`as any` fixture pattern the file already used, and every one required by a resolved
+judgment call (`ErrorType.code` is a closed `KnownErrorType` union that does not list
+`same_vote`). `prettier --check` on the changed file and on
+`source/renderer/app/containers/voting/VotingGovernancePage.tsx` → exit 0; both green,
+and the three baseline-red files were left untouched. `typed-scss-modules` correctly not
+required (no `.scss` in the change set) and `yarn i18n:manage` correctly not run (no copy
+in the diff — the render assertion consumes `en-US.json` read-only through an import;
+only task-146 may keep those writes). `yarn check:all` correctly not run, red at HEAD for
+the unrelated `storybook:build` reason. The gate's only inaccuracies are cosmetic and
+carry no consequence: the anchor line numbers corrected above, and its note about a
+"117 versus 118" insertion miscount — 118 is the live figure, confirmed here. Net new
+prettier violations: **zero**. Net new lint errors: **zero**. Net new failing tests:
+**zero**.
+
+**Handoffs for the closing pass (not review findings).** (a) Nothing to absorb — no
+minor survives, so the commit may be taken as the tree stands. The guide's prescribed
+subject is `test(gov): task-148 pin the same_vote server path behind the client-side
+disable` (`guide:5828`). (b) Two `statusReason` deviations are tracker-owner work: the
+spec living colocated under `source/` rather than the row's `tests/jest/` `targetPath`,
+and the render assertion staying in a `.ts` file via `React.createElement` because
+`tsconfig.json` has no `include` and TypeScript rejects JSX in `.ts`. (c) The guide's
+task-148 anchors need the corrections listed above the next time that section is edited.
+(d) `nix` is absent, so `nix fmt` remains the owed pre-merge obligation, with
+prettier-on-explicit-paths as the recorded substitute; no `--write` was issued in this
+round.
+
+**Decision: approved** — zero survivors at any severity. All three lenses returned
+`approved` with empty lists, and the unanimity was tested rather than trusted: every
+load-bearing claim was re-derived from the files, the focused suite and the three
+static gates were re-run independently, and one deliberate attempt to break the
+deliverable (the CR147-1 serialiser shape, the near-tautological constant check, the
+store-spec coupling, the redundant `cleanup`) produced nothing promotable. Two anchor
+claims in the incoming reports were corrected as misreadings in the reports themselves,
+not defects in the code. The deliverable — one store-level `same_vote` case with a
+sanitization pin and one render case proving the server copy still reaches the user from
+a state the client-side disable cannot mask, both append-only, both green, production
+source untouched — is correct as written. No round 2 is warranted.

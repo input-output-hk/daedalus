@@ -1915,6 +1915,110 @@ observed no-leak); any later row adding a jsdom spec that asserts past
 
 ---
 
+## F-29 — cv-2's lint number moves for the first time, because this is the first row whose spec is **not** eslint-ignored, and reading that `+3` as drift would be wrong; the guide's own cast snippet is prettier-unusable and would have turned a green file red; four task-148 guide anchors have drifted and two more were *reported* drifted that are not. Sweep basis moves to 325/337
+
+**The `tests` is eslint-ignored shortcut expires at this row.** F-26 and F-28
+both recorded a *zero* lint delta by the same argument — `tests` is ignored
+(`.eslintignore:8`), so a spec-only row cannot move the repo count. That argument
+is file-location-dependent, not row-type-dependent, and task-148's only changed
+file is `source/renderer/app/stores/VotingStore.spec.ts`, **under `source/`**, so
+it is linted like any production module. Measured, not inferred:
+`eslint --format compact` reports **11** problems (0 errors) in the tree against
+**8** for the `HEAD` blob piped through `--stdin-filename`, and `yarn lint` moves
+**5596 → 5599**, exit 0. All three new warnings are
+`@typescript-eslint/no-explicit-any` — `:247` (the `ApiError({ code: 'same_vote' }
+as any)` fixture, unavoidable because `ErrorType.code`
+(`source/renderer/app/domains/ApiError.ts:57`) is typed as the closed
+`KnownErrorType` union at `:8-50`, which does not contain `same_vote` at all),
+`:333` (`React.ComponentType<any>`) and `:345` (the wallet
+fixture) — and the file already carried eight of the same pattern. The durable
+rule: **a cv-2-style row moves the repo warning count iff its changed spec lives
+under `source/` or `storybook/`; `tests/jest/**` never does.** A slice-close
+reader comparing 5591 → 5596 → 5599 across the wave must attribute the last `+3`
+here and the earlier `+5` to the task-144 / task-145 *component* commits, not read
+either as unexplained drift.
+
+**The guide's cast snippet cannot be typed as written.** `cv-2-implementation-guide.md:5753`
+ships `const DelegationForm = VotingPowerDelegation as unknown as React.ComponentType<any>;`
+as one line. prettier 2.1.2 rewrites a double assertion into the parenthesized,
+wrapped form, so copying the guide verbatim would have made a **currently-clean**
+file fail `--check` — and per F-10 the slice's standing rule is that a red file
+must never be `--write`-repaired, which would have left the row with a
+self-inflicted violation and no sanctioned fix. What shipped
+(`VotingStore.spec.ts:332-334`) is the hand-written
+`const DelegationForm = (VotingPowerDelegation as unknown) as React.ComponentType<\n  any\n>;`,
+`--check` exit 0. This is the **second** measured instance of the same 2.1.2
+behaviour in cv-2 — F-28's pre-existing red at
+`tests/jest/security/governance-sanitization.spec.ts:546` is the identical doubled
+`MatomoTracker` cast — so it is a repo property, not a one-off: **every
+`X as unknown as Y` written by hand in this repo must be parenthesized and wrapped,
+and no guide snippet containing one can be trusted verbatim.**
+
+**Guide anchor drift, with two false positives corrected.** Genuinely drifted in
+the task-148 section: `VotingPowerDelegation.tsx:89 → :95` (the intl map entry),
+`:84-92 → :90-98` (the map declaration), `:304-308 → :401-405` (the render site),
+and `en-US.json` / `ja-JP.json` `:973 → :980`. **Not** drifted, contrary to two
+review lenses and the verification gate, which each reported them as such:
+`parseApiCode` is at `VotingStore.ts:74` and the `initializeVPDelegationTx` catch
+is at `:347`, exactly as the guide states (`:5576`, `:5577`). One further inline
+citation is loose rather than drifted: the resolved judgment call at `:5648-5651`
+cites `ApiError.ts:8-59` for the `KnownErrorType` union, which actually spans
+`:8-50`. Every quoted code
+and copy string still matches byte for byte, including the long English same-vote
+sentence the render test asserts verbatim, so **no** behavioural adaptation was
+required and the drift is documentation debt only. Recorded because a corrective
+edit to that guide section must not "fix" the two anchors that were already right.
+
+**One structural note, record-only.** A *store* spec now renders a *renderer*
+component and asserts on its DOM and its en-US copy. That coupling is
+guide-fixed (`:5570` names this file and `:5653-5656` forbids renaming it to
+`.tsx`, because `tsconfig.json` has no `include` so specs are typechecked and
+TypeScript rejects JSX in a `.ts` file), both dropdowns are mocked to render
+nothing, and the `React.createElement`-inside-a-`.ts`-spec pattern is committed
+precedent at `source/renderer/app/containers/status/DaedalusDiagnosticsDialog.spec.ts:129`, `:136`.
+It was raised and dropped in review. It is noted only so a future reader who finds
+a renderer-copy assertion in a store spec knows it was a deliberate,
+constraint-forced choice rather than a stray.
+
+**Basis.** The slice sweep `--testPathPattern="(governance|voting)"` moves to **18
+passed / 1 skipped of 19 suites, 325 passed / 12 skipped of 337 tests, 9
+snapshots**, from F-28's **323 / 335**. The `+2` is exactly this row's two cases
+(`grep -cE "^\s+(it|test)\(|it\.each"` on the spec: 6 at `HEAD`, 8 in the tree),
+and the single deleted line in a 118/1 diff is the widened import
+(`import VotingStore, { FundPhase } from './VotingStore';`), so nothing was
+deleted, renamed away or disabled. Skips stay 12 (all
+`tests/jest/governance/GovernanceCliArgvSmoke.spec.ts`, `cardano-cli` off PATH),
+snapshots stay 9 with none written, `tsc --noEmit` exits 0, and `prettier --check`
+is green on the changed file and on
+`source/renderer/app/containers/voting/VotingGovernancePage.tsx`, with the three
+F-10 files re-checking red and unmodified — net new violations zero.
+
+**The escalation chain terminates here.** task-148 is the **last** row in cv-2's
+canonical build order, its change set is one file, and it therefore absorbed none
+of CR146-1, CR146-2 or CR147-1 — it touches neither
+`tests/jest/i18n/preliminaryCopyMarkers.spec.ts` nor
+`VotingGovernancePage.spec.tsx`. F-27 and F-28 each pointed their minors at "the
+next row or the Planner"; there is no next row. All three are now unambiguously
+the Planner's at slice close. Its review was cv-2's **only** unanimously clean
+round — three lenses, empty lists, zero survivors at any severity, not one line of
+the deliverable changed — which makes the pattern F-28 named (a minor passes, so
+no round 2 runs, so no fix pass ever happens) structural rather than incidental.
+
+**Disposition.** The lint-attribution rule and the parenthesized-cast rule are
+**binding** on any future row that adds a spec under `source/` or hand-writes a
+double assertion. The anchor list is **documentation debt** against
+`cv-2-implementation-guide.md`'s task-148 section, to be applied only as corrected
+above. The store-spec/renderer-component coupling is **record-only**. CR146-1,
+CR146-2 and CR147-1 remain **open** with no downstream absorber.
+
+**Owner.** task-148 (recorded); the Planner at slice close (carry the three open
+minors, re-base the lint figure to 5599, and do not read cv-2's clean review
+rounds as evidence that its minors were resolved); whoever next edits the guide's
+task-148 section (apply the four real anchor corrections, leave `:74` and `:347`
+alone).
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)
