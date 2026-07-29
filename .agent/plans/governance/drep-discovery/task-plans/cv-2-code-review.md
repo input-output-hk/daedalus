@@ -3103,3 +3103,186 @@ R-10), and `nix fmt` unavailable with prettier-on-explicit-paths substituted. Tw
 items travel forward as notes, not debts: the catalog seeding of
 `voting.governance.currentVote.sameVoteHint` **OWED** to task-146, and the
 uppercase-input regression vector **OWED** to task-147 by AC-4's own text.
+
+---
+
+## Code Review: 2026-07-28 — task-173 round 1
+
+**Scope reviewed.** The uncommitted working tree for task-173, against its guide
+section `cv-2-implementation-guide.md:3212-3517` (Files-touched at `:3214-3219`,
+Context at `:3221-3271`, the three locked invariants at `:3273-3287`, the four
+resolved judgment calls at `:3289-3310`, Steps 1-6, and the acceptance record at
+`:3500-3517`), the task-173 tracker row (`governance-drep-discovery-plan-tasks.json:1315-1340`,
+still `"status": "pending"`), and the PRD's byte-equality and sanitization
+invariants. HEAD is `08eeb719a` (task-140 committed); the wave baseline was
+recorded at `144c5153d`, and tasks 139 and 140 have since landed, so every
+comparison below is decomposed against that. Three independent lenses ran — guide
+conformance and runtime correctness, locked invariants and the sanitization floor,
+and tests plus simplicity and drift — and **all three returned `approved` with zero
+blockers**. This round did not accept that on report: every load-bearing claim was
+re-derived first-hand against the files, the three bech32 vectors were decoded
+again here, and the container spec was re-run. The main checkout
+`/workspaces/daedalus` was never read, edited or run against, and this round fixed
+no code.
+
+**What landed.** `git status --porcelain --untracked-files=all` → 3 modified, 0
+untracked, 0 staged, exactly the guide's Files-touched list. `git diff --numstat`:
+`VotingGovernancePage.spec.tsx` `75/0` (**purely additive**, so the pre-existing
+byte-equality case and the hardware-wallet `describe` are provably untouched, as
+Step 5 requires), `VotingGovernancePage.tsx` `5/9`, `Governance.stories.tsx` `2/1`.
+`git diff --name-only -- .agent/` is empty: no tracker, catalog, design-doc or
+dialog-component edit. Step 1 lands the helper import at
+`VotingGovernancePage.tsx:12` with the `import type { DRepIdentity }` line kept at
+`:13`; Step 2 replaces the derivation at `:81-87`, character-for-character the
+guide's snippet, with the explicit
+`chosenOption === 'abstain' || chosenOption === 'no_confidence'` guard retained
+**ahead of** the decode; Step 3 rewrites `toStoryDRepIdentity` at
+`Governance.stories.tsx:59-62` behind the import at `:54`, helper name and its three
+call sites (`:283`, `:431`, `:469`) unchanged; Steps 4-5 add `mockDialogProps` at
+`VotingGovernancePage.spec.tsx:63`, the recorder `jest.mock` at `:65-83` immediately
+after the `ItemsDropdown` mock that ends at `:61`, `openConfirmation` at `:235-249`
+immediately after `renderFlow`, and the two cases at `:599-635`.
+
+### Blockers
+
+**None.** No survivor at any severity. All three lenses filed zero, and
+adjudication promoted nothing they left unfiled.
+
+### Independent re-checks of the code deliverable (nothing new found)
+
+Re-derived here, not inherited. **The two new cases are non-vacuous**: decoding the
+guide's vectors through the installed `bech32` in this worktree gives
+`drep1ydwykw3…` → prefix `drep`, 29 bytes, header `0x23`, and
+`drep1pu0z60z…` → prefix `drep`, **28** bytes, header `0x0f`. Under the deleted
+`startsWith('drep_script')` heuristic the first would have read `'key'` (the
+assertion demands `'script'`) and the second would have produced a non-null identity
+(the assertion demands `null`), so each case fails for the right reason.
+`normalizeDRepIdentity.ts:28-30` is what rejects the 28-byte payload and `:32-34`
+what gates the header. `VALID_DREP_ID` decodes to 29 bytes header `0x22` → `'key'`,
+so the Storybook swap is behaviour-identical to the literal it replaces and no story
+changes. **Byte-equality holds**: `chosenOption` reaches the decoder untouched — no
+`trim`, no `toLowerCase`, no re-encode (`VotingGovernancePage.tsx:87`) — the helper
+returns the same `raw` reference on both success branches
+(`normalizeDRepIdentity.ts:39`, `:56`), and the `voting.delegateVotes({ chosenOption, … })`
+payload at `VotingGovernancePage.tsx:97-104` is outside every hunk. **The
+sanitization floor is untouched**: `grep -nE "logger|Logger|console\.|analytics|sendEvent|localStorage"`
+over the container, the stories file and the consuming dialog exits 1, and the
+decoder's only failure path is a bare `catch { return null; }`
+(`normalizeDRepIdentity.ts:24-26`) — no message construction, no rethrow. The
+identity object is genuinely richer now (`cip129` / `cip105` / `credentialHex`,
+`:38-44` and `:53-59`), which would matter for a wire-keyed `filterLogData`, but its
+only consumers are the JSX prop at `VotingGovernancePage.tsx:91` and two read-only
+render sites at `VotingPowerDelegationConfirmationDialog.tsx:151` and `:160` — a
+whole-tree `grep -rn "drepIdentity"` over `source/` and `storybook/` returns exactly
+those plus the three story call sites. **The recorder drops nothing**: the mocked
+module's only runtime export is `default` at
+`VotingPowerDelegationConfirmationDialog.tsx:214` (the `:42` export is a type and is
+erased), so the `{ __esModule, default }` shape is complete, and the recorder wraps
+`actual.default` rather than stubbing it, leaving the DOM the other flow tests
+assert on identical. **Comment convention clean**: the two added comments
+(`VotingGovernancePage.tsx:81-83`, spec `:65-66`) are the guide's verbatim text,
+2-3 plain lines each, stating an invariant and a mock constraint; no task id, no
+change history, no ALL-CAPS, and no test name cites a process artifact.
+
+### Merged and dropped
+
+1. *Not promoted — the legacy 28-byte `drep1…` id now renders without its raw
+   string.* One lens noted this and deliberately did not file it; the note is
+   correct and this round sharpened it by opening the branch. With `drepIdentity`
+   `null`, the dialog takes the `:` branch at
+   `VotingPowerDelegationConfirmationDialog.tsx:163-172`, whose value is
+   `intl.formatMessage(mapVoteToIntlMessage(chosenOption))`; `mapVoteToIntlMessage`
+   (`:31-40`) has a `default` arm returning `sharedGovernanceMessages.delegateToDRep`,
+   so the rendered text is the generic "delegate to DRep" label — **not** an
+   `Abstain` / `No Confidence` mislabel and **not** a crash — and the raw id is
+   simply absent from that surface. The predicate fix is task-175's by name
+   (judgment call 1, `cv-2-implementation-guide.md:3886-3892`, which cites this exact
+   legacy form), and this task is forbidden the dialog file
+   (`:3302`). Guide-assigned deferral, not a defect of this row.
+2. *Not promoted — the second case's name says "still submits it byte-for-byte"
+   while it asserts `initializeVPDelegationTx`, not `delegateVotes`.* Filed as a
+   non-blocking observation by one lens; dropped as a finding on three grounds. The
+   name and both assertions are the guide's Step 5 text verbatim (`:3456-3463`);
+   `initializeVPDelegationTx` is a real submission seam, reaching the form as
+   `initiateTransaction` at `VotingGovernancePage.tsx:68` and fired by the Submit
+   click inside `openConfirmation`; and `delegateVotes` byte-equality is already
+   pinned by the untouched case at spec `:347-386`. Changing it would deviate from a
+   verbatim snippet to no test-power gain.
+3. *Not promoted — AC-2 is only half-satisfied at this commit.* By design, and
+   recorded as such before the build: judgment call 2 (`:3296-3302`) and the AC text
+   itself (`:3505-3509`) split it, leaving the rendering half to task-175 Step 3. The
+   half that is this task's — null identity plus byte-equal submission — is asserted.
+   A partial criterion the guide itself partitions is not a defect.
+4. *Not promoted — AC-5 unedited.* `current-vote-display-design.md:95` already
+   carries the header-byte rule ("`0x22` -> `'key'`, `0x23` -> `'script'`") and the
+   grep prints it; judgment call 1 (`:3291-3295`) says verify, do not edit, and
+   `git status --porcelain .agent/` is empty. Correct as built.
+5. *Not promoted — `[React Intl] Missing message: voting.governance.currentVote.status.{inactive,unavailable}`
+   in the spec run.* Pre-existing and unrelated: the ids are declared at
+   `CurrentVoteSummary.messages.ts:87` / `:93` and rendered from
+   `CurrentVoteSummary.tsx:114`, all files clean in the working tree, and catalog
+   seeding is task-146's single responsibility. Same disposition as the task-139 and
+   task-140 rounds.
+6. *Not promoted — prettier redness on `Governance.stories.tsx`.* Re-measured
+   non-destructively here by piping both the HEAD blob and the working copy through
+   `prettier --stdin-filepath` and diffing against their own sources: **22 drift
+   lines at HEAD, 22 in the working tree**, i.e. unchanged and entirely outside the
+   hunks. The other two changed files are 0/0 both ways, so the hand-formatting
+   matches prettier's output exactly and no whole-file reformat occurred. No
+   `--write` was run on any file, per the guide's "Do not run prettier on any file in
+   this task" (`:3498`) and F-10.
+7. *Not promoted — `yarn lint` at 5595 warnings against a "roughly 5591" baseline.*
+   Attributed by the gate file-by-file against the HEAD blobs via
+   `eslint --stdin --stdin-filename`: 5 vs 5, 9 vs 9, 0 vs 0 on the three changed
+   files. This task's delta is +0 warnings, +0 errors; the residual belongs to
+   committed `23e9899b0` / `08eeb719a`. Warnings are not failures.
+8. *Note, not a debt of this task.* `GovernanceCliArgvSmoke.spec.ts:28` still
+   self-skips (no `cardano-cli` in this devcontainer) and `GovernanceQueryService.spec.ts`
+   still emits era-fallback `console.warn` lines inside a passing suite — both
+   reproduced unchanged from baseline.
+9. *Superseded prediction, corrected here.* The task-139 round-2 close carried
+   forward "the jsdom realm shim that task-173 must install before its badge cases
+   can pass" (F-18). task-173 **as built ships no badge case**, and needs no shim:
+   `normalizeDRepIdentity` decodes through the `bech32` npm package, which returns a
+   plain `number[]` from `fromWords` (`normalizeDRepIdentity.ts:21-23`), not the
+   `@scure` `radix2` path that trips the Node/jsdom `Uint8Array` realm split. `grep -n
+   "Uint8Array"` over `VotingGovernancePage.spec.tsx` exits 1 and the suite is green
+   at 16/16, including the `'script'` classification. F-18 stays accurate about the
+   badge chain; its carry-forward to this row is discharged as not-applicable.
+
+**Gate result and its attribution.** The supplied gate reports **PASS with zero
+failures**, and its load-bearing measurements were re-run in this worktree rather
+than inherited: `node_modules/.bin/tsc --noEmit` exit 0;
+`jest --testPathPattern=VotingGovernancePage --no-coverage --runInBand` → 1 suite /
+**16 of 16** tests / 0 snapshots, exit 0, with both new cases named in the run and
+the pre-existing "propagates the selected DRep ID byte-for-byte: row select →
+confirmation → `delegateVotes` payload" plus all three hardware-wallet cases green
+unedited (AC-4); the three Step 6 greps behaving exactly as specified — the
+`startsWith('drep_script')` grep and the `logger|console\.|Logger` grep both exit 1
+(AC-1, AC-6), and the "leading header byte" grep prints
+`current-vote-display-design.md:95` against an unmodified file (AC-5). The gate
+additionally recorded `--testPathPattern=governance-sanitization` → 24 of 24 green
+(AC-6's task-111 spy suite) and the wave pattern `"(governance|voting)"` → 18 passed
++ 1 skipped of 19 suites, 293 passed + 12 skipped of 305 tests, 9 snapshots, against
+F-20's 291 / 12 / 303 basis — a delta of exactly the two cases added here, with the
+skip and snapshot counts unmoved. `typed-scss-modules` was correctly skipped (no
+`.scss` in the change set) and `yarn i18n:manage` correctly never invoked (no i18n
+path in the diff), so no catalog needed restoring; no `git stash` anywhere. `nix` is
+absent, so `nix fmt` stays an owed pre-merge obligation and prettier-on-explicit-paths
+is the recorded substitute (F-12). `yarn check:all` and `yarn storybook:build` were
+deliberately not run — both are red at HEAD for the unrelated manager-webpack JSX
+loader reason and neither is a valid gate. This round moved neither HEAD nor the
+change set; no file was edited except this log.
+
+**Decision: approved** — zero blockers, zero majors, zero minors. task-173 closes
+with one subject-only commit,
+`fix(gov): task-173 derive the confirmation dialog identity via normalizeDRepIdentity`,
+carrying the three modified files, this log and the tracker row. The scribe pass
+owes that row (`:1315`) two things the guide names explicitly: the AC-2 partial
+recorded in `statusReason` — "the dialog still renders the raw string verbatim" is
+discharged by task-175 Step 3, which owns the branch predicate (`:3505-3509`) — and
+the `nix fmt` unavailability with prettier-on-explicit-paths substituted. Edit that
+row by content, never by the guide's pre-slice line numbers (F-19), and never run
+prettier on the tracker JSON. One item travels forward as a note, not a debt: the
+legacy 28-byte `drep1…` id renders without its raw string until task-175's
+`isSentinelVote` predicate lands.

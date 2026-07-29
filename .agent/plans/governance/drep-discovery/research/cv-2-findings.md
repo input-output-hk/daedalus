@@ -1265,6 +1265,65 @@ task-147 (inherit F-17's locked-mock caution whole); the Planner at slice close
 
 ---
 
+## F-21 — F-18 declared its `Uint8Array` realm shim **blocking on task-173**, and at task-173's build it is not applicable: that row decodes through the `bech32` package, never through the SDK's realm-branded encoder; and AC-2's rendering half leaves a bounded interim gap in which a legacy 28-byte `drep1…` id renders the generic *Delegate to DRep* label instead of its own string
+
+**The shim was predicted, not needed.** F-18 dispositioned its jsdom realm trap
+**open** on `VotingGovernancePage.spec.tsx` and "blocking on task-173's Step 6 as
+written; it must be resolved there, not deferred" (`:1141-1146`), and its Owner
+line names task-173 as the row that "installs the realm shim … before its badge
+cases can pass" (`:1148-1150`). Measured at task-173's build, the row ships **no
+badge case** and never calls `resolveExactDRepMatch`. Both its cases assert the
+`drepIdentity` prop handed to the confirmation dialog
+(`VotingGovernancePage.spec.tsx:614-625`, `:627-634`), and that value comes from
+`normalizeDRepIdentity` (`VotingGovernancePage.tsx:87`), whose decode path is
+`bech32.decode` / `bech32.fromWords` from the `bech32` npm package
+(`normalizeDRepIdentity.ts:1`, `:21-23`), returning a plain `number[]`. Nothing on
+that path constructs or brand-checks a `Uint8Array`, so the realm split F-18
+measured through `Cardano.DRepID.toCip129DRepID` (`helpers.ts:145-152`) is not on
+it at all. `grep -n "Uint8Array"` over the spec exits 1 and the suite is 16 of 16
+green. F-18's thesis is unharmed — it was scoped to specs that assert on the far
+side of the lookup, and this row is not one.
+
+**The interim rendering gap is real and narrower than "sentinel labels".** The
+guide partitions AC-2 across two commits (`cv-2-implementation-guide.md:3268-3276`,
+`:3505-3509`): task-173 proves only that a `null` identity leaves the submitted
+string byte-equal, and task-175 Step 3 owns the dialog's branch predicate. What the
+guide does not state is what the dialog does in between, and it is not the sentinel
+label a reader infers from "would fall into the sentinel label branch". With
+`drepIdentity` `null` the dialog takes the `else` arm at
+`VotingPowerDelegationConfirmationDialog.tsx:163-172` and renders
+`mapVoteToIntlMessage(chosenOption)`, whose `default` case (`:31-40`) returns
+`sharedGovernanceMessages.delegateToDRep`. So the confirmation screen for such an
+id shows neither the id nor a wrong sentinel: a correct but generic *Delegate to
+DRep* label, with the id withheld and the submitted bytes unaffected. Reachability
+is narrow and was measured, not assumed: only the legacy 28-byte `drep1…` form
+reaches it, because `Cardano.DRepID.isValid` accepts it at the form gate
+(`VotingPowerDelegation.tsx:221`, live anchor — the guide's `:133` is pre-slice
+numbering, as its own re-anchoring rule at `:3192-3195` warns) while
+`normalizeDRepIdentity` rejects it on payload length
+(`normalizeDRepIdentity.ts:27-30`). The guide's checksum-verified vector
+`drep1pu0z60z…` decodes here to 28 bytes under the `drep` HRP.
+
+**Resolution.** F-18's blocking item is **not applicable to task-173**, and no
+shim was installed; the trap itself stands unchanged for any spec asserting past
+`resolveExactDRepMatch`. The AC-2 gap is bounded and deliberately timed: it opens
+at task-173's commit and closes at task-175 Step 3, whose judgment call 1 names the
+predicate fix (`cv-2-implementation-guide.md:3886-3892`). The two rows in between
+are test-only pins (`:3200-3201`), so nothing renders that branch differently in
+the window, and task-173 is forbidden the dialog file, so nothing is owed earlier.
+
+**Disposition.** Shim — **re-homed, not closed**. F-18's Owner line stays as
+written, because F-18 and this finding are a chain of what was predicted versus
+what was measured, and amending the earlier link would destroy that trail. Interim
+gap — **open until task-175**; AC-2's rendering half must not be reported green at
+slice close on task-173's evidence.
+
+**Owner.** task-173 (recorded); task-175 (closes AC-2's rendering half via the
+branch predicate); task-147 and any later component spec that asserts through
+`resolveExactDRepMatch` (inherit F-18's realm shim whole).
+
+---
+
 ## References
 
 - Tasks tracker: `.agent/plans/governance/drep-discovery/governance-drep-discovery-plan-tasks.json:1162-1457` (phase `cv-2`)

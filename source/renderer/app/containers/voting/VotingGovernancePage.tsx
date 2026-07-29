@@ -9,6 +9,7 @@ import { ROUTES } from '../../routes-config';
 import VotingUnavailable from '../../components/voting/VotingUnavailable';
 import type { VoteType } from '../../components/voting/voting-governance/types';
 import { pickDelegationFormNavigationState } from '../governance/delegationFormState';
+import { normalizeDRepIdentity } from '../../utils/governance/normalizeDRepIdentity';
 import type { DRepIdentity } from '../../../../common/types/governance.types';
 
 type Props = InjectedProps & RouteComponentProps;
@@ -77,18 +78,13 @@ class VotingGovernancePage extends Component<Props> {
           onClose,
           selectedWallet,
         }) => {
-          // Sentinels render as labels; a drep target renders its raw ID.
-          // credentialType is a syntactic classification only — the rendered
-          // and submitted string is chosenOption itself, untouched.
+          // Sentinels carry no identity; a drep target is decoded for display
+          // only — the rendered and submitted string stays chosenOption itself,
+          // untouched.
           const drepIdentity: DRepIdentity | null =
             chosenOption === 'abstain' || chosenOption === 'no_confidence'
               ? null
-              : {
-                  credentialType: chosenOption.startsWith('drep_script')
-                    ? 'script'
-                    : 'key',
-                  raw: chosenOption,
-                };
+              : normalizeDRepIdentity(chosenOption);
           return (
             <VotingPowerDelegationConfirmationDialog
               chosenOption={chosenOption}

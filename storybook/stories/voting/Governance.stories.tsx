@@ -51,6 +51,7 @@ import type {
   InitializeVPDelegationTxError,
 } from '../../../source/renderer/app/stores/VotingStore';
 import { generateWallet } from '../_support/utils';
+import { normalizeDRepIdentity } from '../../../source/renderer/app/utils/governance/normalizeDRepIdentity';
 
 const VALID_DREP_ID =
   'drep1ygqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq7vlc9n';
@@ -58,7 +59,7 @@ const VALID_DREP_ID =
 const toStoryDRepIdentity = (option: string): DRepIdentity | null =>
   option === 'abstain' || option === 'no_confidence'
     ? null
-    : { credentialType: 'key', raw: option };
+    : normalizeDRepIdentity(option);
 
 const GOVERNANCE_WALLETS = [
   generateWallet(

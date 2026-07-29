@@ -60,6 +60,27 @@ jest.mock('../../components/widgets/forms/ItemsDropdown', () => {
   };
 });
 
+const mockDialogProps: Array<Record<string, unknown>> = [];
+
+// The recorder wraps the real dialog, so the rendered DOM the other flow tests
+// assert on is unchanged; only the prop object is captured.
+jest.mock(
+  '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog',
+  () => {
+    const actual = jest.requireActual(
+      '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog'
+    );
+    const { createElement } = jest.requireActual('react');
+    return {
+      __esModule: true,
+      default: function DialogPropsRecorder(props: Record<string, unknown>) {
+        mockDialogProps.push(props);
+        return createElement(actual.default, props);
+      },
+    };
+  }
+);
+
 const VALID_DREP_ID =
   'drep1ygqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq7vlc9n';
 const OTHER_DREP_ID =
@@ -209,6 +230,22 @@ const renderFlow = (
     },
     stores,
   };
+};
+
+const openConfirmation = async (drepId: string) => {
+  const flow = renderFlow([
+    {
+      pathname: ROUTES.VOTING.GOVERNANCE,
+      state: {
+        selectedDRepId: drepId,
+        selectedWalletId: WALLET_ID,
+        voteType: 'drep',
+      },
+    },
+  ]);
+  fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+  await screen.findByText('Confirm Transaction');
+  return flow;
 };
 
 describe('DRep selection handoff via location.state', () => {
@@ -556,5 +593,43 @@ describe('Delegation form pre-fill from the selected wallet', () => {
 
     expect(screen.getByTestId('vote-type-dropdown')).toHaveTextContent('drep');
     expect(screen.getByDisplayValue(VALID_DREP_ID)).toBeInTheDocument();
+  });
+});
+
+describe('Confirmation dialog identity derivation', () => {
+  const SCRIPT_DREP_ID =
+    'drep1ydwykw3frpmsda0y60ptrgyl3e7kck628y5pwph4unfu9vg6sn5zd';
+  const LEGACY_DREP_ID =
+    'drep1pu0z60zttf5h3puk5k6v85hp7q83utfufddxj7y8j6jmg4v077e';
+
+  beforeEach(() => {
+    mockDialogProps.length = 0;
+  });
+
+  afterEach(() => {
+    cleanup();
+    jest.restoreAllMocks();
+  });
+
+  it('classifies a CIP-129 script DRep by its header byte', async () => {
+    await openConfirmation(SCRIPT_DREP_ID);
+
+    const props = mockDialogProps[mockDialogProps.length - 1];
+    expect(props.drepIdentity).toEqual(
+      expect.objectContaining({
+        credentialType: 'script',
+        raw: SCRIPT_DREP_ID,
+      })
+    );
+    expect(props.chosenOption).toBe(SCRIPT_DREP_ID);
+  });
+
+  it('passes a null identity for an id the decoder rejects and still submits it byte-for-byte', async () => {
+    const { stores } = await openConfirmation(LEGACY_DREP_ID);
+
+    expect(mockDialogProps[mockDialogProps.length - 1].drepIdentity).toBeNull();
+    expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
+      expect.objectContaining({ chosenOption: LEGACY_DREP_ID })
+    );
   });
 });
