@@ -38,6 +38,9 @@ const DEFAULT_OPTS = {
     /^\/tests($|\/)/,
     /^\/tests-report($|\/)/,
     /^\/translations($|\/)/,
+    /^\/\.agent($|\/)/,
+    /^\/\.claude($|\/)/,
+    /^\/\.opencode($|\/)/,
   ],
 };
 

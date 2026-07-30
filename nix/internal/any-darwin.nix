@@ -446,6 +446,9 @@ in rec {
             -exec rm -vf '{}' ';'
           find Resources/app/node_modules -type f '(' -name '*.o' -o -name '*.o.d' -o -name '*.target.mk' -o -name '*.Makefile' -o -name 'Makefile' -o -name 'config.gypi' ')' -exec rm -vf '{}' ';'
           sed -r 's#try: \[#\0 [process.env.DAEDALUS_INSTALL_DIRECTORY, "bindings"],#' -i Resources/app/node_modules/bindings/bindings.js
+          # Remove broken symlinks — macOS Tahoe (Darwin 25+) rejects app bundles
+          # that contain symlinks pointing to non-existent targets (amfid SIGKILL):
+          find . -type l ! -exec test -e '{}' ';' -print -delete
         )
 
         # XXX: For `nix run`, unfortunately, we cannot use symlinks, because then golang’s `os.Executable()`
