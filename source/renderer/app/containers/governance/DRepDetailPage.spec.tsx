@@ -37,6 +37,7 @@ const baseEntry: AppDRepDirectoryEntry = {
     url: 'https://governance-preview.example.org/dreps/1.json',
   },
   verifiedName: null,
+  doNotList: false,
   drepActivity: 34,
   drepId: DREP_ID,
   status: 'active',

@@ -109,7 +109,7 @@ The On-chain box lists exactly the fields `DRepDetailOnchainSection` renders: St
 
 Same card layout as Directory, but cohort banner replaced with: `"{n} DReps you've favorited. Favorites are stored on this device only."` Empty state: title + body copy + CTA back to Directory. No illustration ships — the earlier "prominent illustration" claim is resolved as dropped, not deferred.
 
-**Stale favorites.** If a favorited DRep becomes Retired or appears with `doNotList=true` after `anchor-2` lands, it remains in the favorites list with its current `Retired` or `Excluded from default cohort` status badge (shared tokens §1) and an inline caption: `governance.drepFavorites.staleCaption` → *"This DRep is no longer in the default cohort."* No automatic removal. The user unfavorites explicitly.
+**Stale favorites.** If a favorited DRep appears with `doNotList=true` after `anchor-2` lands, it remains in the favorites list with its current status badge and an inline caption: `governance.drepFavorites.staleCaption` → *"This DRep is no longer in the default cohort."* `DRepStatus` is the closed union `active | inactive`, so no `Retired` or `Excluded from default cohort` badge exists to show; the caption alone carries the signal. `Retired` stays deferred until a distinct unregistration signal exists. No automatic removal. The user unfavorites explicitly.
 
 ## Interaction Sequence (HW Wallet Happy Path)
 

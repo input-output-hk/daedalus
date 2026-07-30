@@ -109,6 +109,7 @@ const withAnchorEntry: AppDRepDirectoryEntry = {
     url: 'https://governance-preview.example.org/dreps/1.json',
   },
   verifiedName: null,
+  doNotList: false,
   drepActivity: 34,
   drepId: 'drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k4',
   status: 'active',

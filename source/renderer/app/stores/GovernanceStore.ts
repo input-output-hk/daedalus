@@ -34,6 +34,8 @@ export interface AppDRepDirectoryEntry {
   anchor: DRepAnchorPresence | null;
   /** Verified CIP-119 givenName, or null. Projection of anchorStateByDRepId. */
   verifiedName: string | null;
+  /** Verified CIP-119 doNotList. Projection of anchorStateByDRepId; false until the anchor is fetched. */
+  doNotList: boolean;
 }
 
 /**
@@ -212,7 +214,9 @@ export default class GovernanceStore extends Store {
    * next 200 eligible entries, then shuffle from the session seed. The
    * shuffle input is drepId-canonicalized so display order is a pure
    * function of (membership, seed) - stable across refreshes that change
-   * voting powers without changing membership.
+   * voting powers without changing membership. A verified doNotList entry
+   * is dropped from the eligible pool only - the top-35 slice is taken
+   * first so it stays identical to top35DRepIds.
    */
   @computed get defaultCohort(): AppDRepDirectoryEntry[] | null {
     if (!this.isCohortActive) return null;
@@ -222,6 +226,7 @@ export default class GovernanceStore extends Store {
       .filter(
         (entry) =>
           entry.status === 'active' &&
+          !entry.doNotList &&
           entry.drepActivity != null &&
           entry.drepActivity > COHORT_MIN_REMAINING_EPOCHS
       );
@@ -328,7 +333,7 @@ export default class GovernanceStore extends Store {
       const payload = await governanceDRepListChannel.request();
 
       runInAction(() => {
-        const entries = this._applyVerifiedNames(
+        const entries = this._applyVerifiedMetadata(
           this._rehydrateDReps(payload.dreps)
         );
         this.drepList = entries;
@@ -367,7 +372,7 @@ export default class GovernanceStore extends Store {
       const payload = await governanceDRepStakeChannel.request();
 
       runInAction(() => {
-        const entries = this._applyVerifiedNames(
+        const entries = this._applyVerifiedMetadata(
           this.drepList.map((entry) => {
             const stake = payload.stakeByDRepId[entry.drepId];
             return {
@@ -453,7 +458,7 @@ export default class GovernanceStore extends Store {
         drepId,
         next
       );
-      const entries = this._applyVerifiedNames(this.drepList);
+      const entries = this._applyVerifiedMetadata(this.drepList);
       this.drepList = entries;
       this.drepIndex = new Map(entries.map((e) => [e.drepId, e]));
     });
@@ -519,30 +524,38 @@ export default class GovernanceStore extends Store {
       drepActivity: entry.drepActivity,
       anchor: entry.anchor,
       verifiedName: entry.verifiedName,
+      // Not a wire field: doNotList is projected from verified anchor content.
+      doNotList: false,
     }));
   }
 
   /**
-   * Re-applies verified names onto a freshly rebuilt list. A name is dropped
-   * when the entry's on-chain anchor hash no longer matches the hash that was
-   * verified, so a re-registered anchor can never keep showing the old name.
+   * Re-applies verified anchor state onto a freshly rebuilt list. Both the
+   * name and the doNotList flag are dropped when the entry's on-chain anchor
+   * hash no longer matches the hash that was verified, so a re-registered
+   * anchor can never keep showing the old name nor keep the DRep out of the
+   * cohort.
    */
-  private _applyVerifiedNames(
+  private _applyVerifiedMetadata(
     entries: AppDRepDirectoryEntry[]
   ): AppDRepDirectoryEntry[] {
     if (this.anchorStateByDRepId.size === 0) return entries;
     return entries.map((entry) => {
       const state = this.anchorStateByDRepId.get(entry.drepId);
-      const verifiedName =
+      const verified =
         state != null &&
         state.state === 'verified' &&
         entry.anchor != null &&
         entry.anchor.hash === state.hash
-          ? state.content.givenName
+          ? state
           : null;
-      return verifiedName === entry.verifiedName
+      const verifiedName =
+        verified === null ? null : verified.content.givenName;
+      const doNotList = verified !== null && verified.content.doNotList;
+      return verifiedName === entry.verifiedName &&
+        doNotList === entry.doNotList
         ? entry
-        : { ...entry, verifiedName };
+        : { ...entry, verifiedName, doNotList };
     });
   }
 

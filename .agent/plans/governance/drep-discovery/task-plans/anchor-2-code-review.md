@@ -353,3 +353,90 @@ path is proven only against fixture bytes and a mocked transport.
 **Gate.** task-157 is closed. Next in the locked build order is task-153.
 
 ---
+
+## Code Review: task-153 — round 1 (2026-07-30)
+
+**Verdict: approved, zero blockers raised.** One round over the uncommitted task-153 diff — 14
+modified files, no new files — against `anchor-2-implementation-guide.md` Steps 0–13. The task was
+built in two implementer shards (Steps 0–6, Steps 7–12); both reported every step landed, no STOP
+condition fired, and neither formatted, staged, committed or wrote to the tracker.
+
+### Blockers
+
+**None.** The diff matches the guide's locked shape: `doNotList: boolean` projected onto
+`AppDRepDirectoryEntry`, `_applyVerifiedNames` renamed to `_applyVerifiedMetadata` carrying both
+fields with the identity short-circuit intact, a single `!entry.doNotList &&` clause added to
+`defaultCohort` after the top-exclusion slice, and `isStaleFavorite` returning
+`entry.doNotList || STALE_FAVORITE_STATUSES.has(entry.status)`. Every negative invariant holds and
+was re-checked by grep rather than taken on trust: `showAllList`, `drepIndex`, `top35DRepIds`,
+`displayedDRepList`, the search index and the comparators are untouched; `DRepStatus` is still the
+closed `'active' | 'inactive'` union; no favorite is purged on any path; `doNotList` reaches no
+logger, no analytics call and no electron-store write; and no wire field, parser rule or IPC change
+was added — the flag is consumed from the `VerifiedDRepAnchorContent` shape task-157 already
+widened.
+
+### Minor
+
+- **Design-doc conflict at `:112`, resolved by striking rather than by shipping.** The line promised
+  `Retired` and `Excluded from default cohort` status badges for stale favorites. Both are
+  unimplementable against the closed `DRepStatus` union, and AC-5 of the acceptance list bans adding
+  a member to it. `:112` was rewritten to say the caption alone carries the signal and that
+  `Retired` stays deferred until a distinct unregistration signal exists. The design-doc diff is
+  exactly one insertion and one deletion. Recorded as F-8 in `research/anchor-2-findings.md`.
+- **Guide-internal count error, record-only.** Step 6's heading says "14 construction sites" while
+  its own table enumerates 15. The implementer followed the table, which is the authority; the
+  typecheck is the real gate and it exits 0.
+- **A `grep -c "doNotList: false"` over the swept files returns 18, not 15.** Three of those
+  occurrences are pre-existing task-157 fixtures — `DRepDetailPage.spec.tsx:56` and
+  `DRepDetail.stories.tsx:75, :92` — not this task's. A future reader auditing the sweep by count
+  alone will mis-read it.
+- **The AC's own design-doc citations had drifted before this task started.** AC-9/AC-10 cite `:228`
+  and AC-11 cites `:109`; the live anchors are `:239` and `:110`. All three substantive requirements
+  were already satisfied, so they were verified by grep and left unedited rather than re-written.
+- **No task ids, review labels, ALL-CAPS emphasis or change history** in any comment or test name
+  across the changed paths. The rewritten `Favorites view — stale favorite` story drops the injected
+  `isStaleFavoriteEntry` and rides the real flag plus the existing global English/Japanese toggle; no
+  local `IntlProvider` and no per-locale variant was added.
+
+### Verifier's verdict
+
+**GREEN on the test, lint, typecheck, format and i18n gate — zero this-task failures and zero
+inherited failures surfaced — with one unmet guide requirement at the time it ran.**
+
+- **Every count matched the guide's predicted delta**, with each baseline re-measured after task-157
+  rather than read off the `55e8985bf` table: `helpers.spec` 25 → 26, `DRepDirectory.spec` 48 → 52
+  with the snapshot unchanged at 1, `DRepDirectoryPage.spec` 8 → 9, `GovernanceStore.spec` 51 → 56,
+  `governance-sanitization` 37 unchanged, `logDRepStateSnapshot` 5 unchanged, i18n copy markers 5
+  unchanged. `typed-scss-modules` then `tsc --noEmit` exits 0, which is the authority for the Step 6
+  fixture sweep. The unfiltered `node_modules/.bin/jest --runInBand` is 91 passed + 1 skipped of 92
+  suites and 1283 passed + 12 skipped of 1295 tests with 10 snapshots, the one skip being the
+  environment-gated `GovernanceCliArgvSmoke`. `yarn lint` exits 0 with 0 errors. `yarn i18n:manage`
+  exits 0 and wrote nothing — all four catalogs byte-identical by md5 — so no `git restore` was
+  needed. `yarn storybook` builds the preview clean.
+- **Inherited, not this task's.** `prettier --check` flags exactly
+  `tests/jest/governance/GovernanceStore.spec.ts`,
+  `storybook/stories/governance/DRepDirectory.stories.tsx` and
+  `storybook/stories/governance/_utils/fixtures.ts` — precisely the trio the guide names as carrying
+  pre-existing HEAD drift, and no others. The ten guide-listed paths are clean.
+- **The one unmet requirement, now discharged.** The verifier found
+  `governance-drep-discovery-plan-tasks.json` unmodified: neither the Step 13b task-122
+  re-verification row nor the Step 13c task-153 completion row had been written. The evidence Step
+  13a asks for was already green — the combined
+  `helpers.spec`/`DRepDirectory.spec`/`DRepDirectoryPage.spec` run at 3 suites / 87 tests / 1
+  snapshot, and `isStaleFavoriteEntry` absent from `DRepDirectoryPage.tsx` — so the gap was only that
+  the rows were unwritten. Both rows are written in this pass.
+
+### Owed at close
+
+The close-out commit `feat(gov): task-153 exclude doNotList DReps from the default cohort` is unmade.
+The Storybook visual pass over the rewritten stale-favorite story — exactly one of two cards
+captioned, then the ja-JP toggle — never ran: this devcontainer has no browser, and
+`yarn storybook:build` is red at HEAD for reasons unrelated to this branch. `nix fmt` cannot run here
+and stays a user-owned pre-merge obligation that will also settle the three drifted files. AC-1's
+stated limitation is carried, not closed: the anchor fetch is lazy and per-detail-visit, so an
+unvisited `doNotList: true` DRep stays in the default cohort and an unvisited `doNotList: true`
+favorite shows no caption — best-effort courtesy, not a privacy control (F-7).
+
+**Gate.** task-153 is closed. Next in the locked build order is task-174.
+
+---

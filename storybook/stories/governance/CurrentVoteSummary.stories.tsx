@@ -48,6 +48,7 @@ const resolveDRepEntry = (
     drepActivity: DREP_ACTIVITY_BY_STATUS[statusOption],
     anchor: null,
     verifiedName: null,
+    doNotList: false,
   };
 };
 

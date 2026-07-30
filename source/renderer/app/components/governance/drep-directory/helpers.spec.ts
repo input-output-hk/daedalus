@@ -56,6 +56,7 @@ const buildEntry = (
 ): AppDRepDirectoryEntry => ({
   anchor: null,
   verifiedName: null,
+  doNotList: false,
   drepActivity: 20,
   drepId: cip129At(n),
   status: 'active',
@@ -363,5 +364,12 @@ describe('isStaleFavorite', () => {
     expect(
       isStaleFavorite(buildEntry(2, { drepActivity: 0, status: 'inactive' }))
     ).toBe(false);
+  });
+
+  it('is true for a verified doNotList entry at either status', () => {
+    expect(isStaleFavorite(buildEntry(3, { doNotList: true }))).toBe(true);
+    expect(
+      isStaleFavorite(buildEntry(4, { doNotList: true, status: 'inactive' }))
+    ).toBe(true);
   });
 });

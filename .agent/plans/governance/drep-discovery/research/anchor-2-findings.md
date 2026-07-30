@@ -125,3 +125,59 @@ deferral be recorded) was already satisfied before this slice began.
 the design doc looking for a missing deferral at `:215`. **Owner.** Record-only.
 
 ---
+
+## F-7 (task-153) — `doNotList` cohort exclusion is best-effort, because the flag only exists for DReps whose anchor was fetched in the current session
+
+`doNotList` reaches `AppDRepDirectoryEntry` through the same lazy, per-detail-visit anchor fetch that
+populates `verifiedName` (`GovernanceStore.fetchAnchorContent`, triggered from `DRepDetailPage`), and
+`_rehydrateDReps` seeds it to `false` for every entry. Nothing fetches anchors in bulk, so at the
+moment the default cohort is computed the store knows the real flag only for DReps the user has
+already opened this session.
+
+**User-visible consequence.** A DRep that declares `doNotList: true` still appears in the default
+cohort until something in the session has fetched its anchor, and a favorited `doNotList: true` DRep
+that has never been opened renders no `governance.drepFavorites.staleCaption`. Open its detail view
+once and both correct themselves for the rest of the session. Exclusion is therefore a best-effort
+courtesy to the DRep's stated preference, **not a security or privacy control**, and nothing else in
+the app depends on it being complete.
+
+**Why bulk prefetch was rejected.** Closing the gap means an outbound HTTPS fetch to a third-party
+host for every registered DRep on every refresh, which is exactly the bulk cohort anchor-prefetch
+phase both design docs already defer beyond v1 (`shared-design-tokens.md:250`,
+`drep-discovery-design.md:247`) — the same deferral that keeps verified-`givenName` search out of
+v1. The alternative, gating cohort membership on an unresolved fetch, empties the cohort on a cold
+start. Both are worse than an incomplete flag.
+
+**Resolution.** Shipped as stated: the filter reads whatever the store knows, tests assert the
+behaviour through the real fetch path rather than by injecting store state to simulate global
+knowledge, and the limitation is written into task-153's tracker `statusReason` instead of being
+engineered around.
+
+**Disposition.** Record-only and a standing trap — a future reader "fixing" the partial exclusion by
+adding bulk anchor fetching reopens a deferred design decision and multiplies outbound requests per
+refresh. **Owner.** Closes only when a bulk cohort anchor-prefetch phase is planned on its own
+merits.
+
+---
+
+## F-8 (task-153) — The design doc promised stale-favorite status badges that the closed `DRepStatus` union cannot express
+
+`drep-discovery-design.md:112` stated that a stale favorite keeps its `Retired` or
+`Excluded from default cohort` status badge. `DRepStatus` is the closed union `'active' | 'inactive'`,
+and task-153's own acceptance list forbids adding a member to it, so neither badge can render. There
+is also no unregistration signal anywhere in the pipeline from which a `Retired` state could be
+derived.
+
+**Resolution.** `:112` was struck and rewritten rather than left as drift: the stale favorite keeps
+its real `active`/`inactive` badge, the `staleCaption` alone carries the not-in-cohort signal, and
+`Retired` is recorded as deferred until a distinct unregistration signal exists. The design-doc diff
+is exactly one insertion and one deletion. task-122's AC-5 badge clause is satisfied by that real
+badge, and its row now records the `doNotList` half as exercised with the `Retired` half still
+deferred under invariant #14.
+
+**Disposition.** Fixed now. Rides forward as the reason no `Retired` or `Excluded from default cohort`
+badge exists in this release; any future task that wants one owns the union widening and the
+unregistration signal together. **Owner.** Discharged in task-153; the `Retired` half stays with
+whichever phase delivers unregistration.
+
+---

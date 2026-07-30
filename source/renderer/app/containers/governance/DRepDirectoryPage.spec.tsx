@@ -29,29 +29,33 @@ import DRepDirectoryPage from './DRepDirectoryPage';
 const drepEntry = {
   anchor: null,
   verifiedName: null,
+  doNotList: false,
   drepActivity: 12,
   drepId: 'drep1yg7s8vuv87f8a8f5d0m9yk4p5xqw6r4s3t2u1v9w8x7y6z5a4b',
   status: 'active' as const,
   votingPower: new BigNumber('23137980123456'),
 };
 
-const buildGovernanceStore = () => ({
+const buildGovernanceStore = (
+  entry: typeof drepEntry = drepEntry,
+  favoriteDRepIds: Set<string> = new Set<string>()
+) => ({
   cohortContext: {
     medianVotingPower: null,
     memberIds: null,
     verifiedMetadataIds: new Set<string>(),
   },
-  displayedDRepList: [drepEntry],
-  drepIndex: new Map([[drepEntry.drepId, drepEntry]]),
-  drepList: [drepEntry],
+  displayedDRepList: [entry],
+  drepIndex: new Map([[entry.drepId, entry]]),
+  drepList: [entry],
   error: null,
-  favoriteDRepIds: new Set<string>(),
+  favoriteDRepIds,
   isCohortActive: true,
   lastFetchedAt: Date.now() - 60_000,
   refresh: jest.fn(),
   refreshState: GovernanceRefreshState.Loaded,
   reshuffleCohort: jest.fn(),
-  showAllList: [drepEntry],
+  showAllList: [entry],
   toggleFavorite: jest.fn(),
   top35DRepIds: new Set<string>(),
   votingPowerState: VotingPowerEnrichState.Loaded,
@@ -61,14 +65,18 @@ const renderPage = ({
   isNodeInSync = true,
   syncProgress = 100,
   initialRoute = ROUTES.GOVERNANCE.DREPS,
+  entry = drepEntry,
+  favoriteDRepIds = new Set<string>(),
 }: {
   isNodeInSync?: boolean;
   syncProgress?: number | null;
   initialRoute?: string;
+  entry?: typeof drepEntry;
+  favoriteDRepIds?: Set<string>;
 } = {}) => {
   // Observable so the container's reaction sees the flip like the real store.
   const networkStatus = observable({ isNodeInSync, syncProgress });
-  const governance = buildGovernanceStore();
+  const governance = buildGovernanceStore(entry, favoriteDRepIds);
   const history = createMemoryHistory({
     initialEntries: [initialRoute],
   });
@@ -177,5 +185,17 @@ describe('DRepDirectoryPage', () => {
     fireEvent.click(screen.getByText(/Back to directory/));
 
     expect(history.location.pathname).toBe(ROUTES.GOVERNANCE.DREPS);
+  });
+
+  it('captions a doNotList favorite on the favorites route with no predicate injected', () => {
+    renderPage({
+      initialRoute: ROUTES.GOVERNANCE.FAVORITES,
+      entry: { ...drepEntry, doNotList: true },
+      favoriteDRepIds: new Set([drepEntry.drepId]),
+    });
+
+    expect(
+      screen.getByText(/no longer in the default cohort/)
+    ).toBeInTheDocument();
   });
 });

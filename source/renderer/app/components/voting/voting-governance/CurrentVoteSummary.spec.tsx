@@ -35,6 +35,7 @@ const ACTIVE_ENTRY: AppDRepDirectoryEntry = {
   drepActivity: 30,
   anchor: null,
   verifiedName: null,
+  doNotList: false,
 };
 
 const renderSummary = (

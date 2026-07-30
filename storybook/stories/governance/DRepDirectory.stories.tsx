@@ -53,6 +53,7 @@ const baseEntries: AppDRepDirectoryEntry[] = [
       url: 'https://governance-preview.example.org/dreps/1.json',
     },
     verifiedName: null,
+    doNotList: false,
     drepActivity: 12,
     drepId: 'drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k4',
     status: 'active',
@@ -61,6 +62,7 @@ const baseEntries: AppDRepDirectoryEntry[] = [
   {
     anchor: null,
     verifiedName: null,
+    doNotList: true,
     drepActivity: 4,
     drepId: 'drep1xj23tk3y_qyv7c9m2z89w3t8mvk9e2uwc3q8u6j7r2x5y9w0p1',
     status: 'inactive',
@@ -79,6 +81,7 @@ const buildEntry = (suffix: number): AppDRepDirectoryEntry => ({
         }
       : null,
   verifiedName: null,
+  doNotList: false,
   drepActivity: (suffix % 20) + 1,
   drepId: `drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k${String(
     suffix
@@ -535,9 +538,8 @@ storiesOf('Governance / DRep Directory', module)
       )}
     </div>
   ))
-  // Synthetic staleness via the injected predicate: real Retired/doNotList
-  // signals do not exist yet, so the story simulates the favorites-page
-  // treatment (status badge + caption, never an auto-purge).
+  // The favorites treatment for a real verified doNotList entry: status badge
+  // plus inline caption, never an auto-purge.
   .add('Favorites view — stale favorite', () => (
     <div style={CENTERED_STYLE}>
       {renderDirectory(
@@ -549,8 +551,6 @@ storiesOf('Governance / DRep Directory', module)
         {
           view: 'favorites',
           favoriteDRepIds: new Set(baseEntries.map((e) => e.drepId)),
-          isStaleFavoriteEntry: (entry: AppDRepDirectoryEntry) =>
-            entry.drepId === baseEntries[1].drepId,
         }
       )}
     </div>

@@ -132,6 +132,7 @@ const abstainWallet = {
 const drepEntry = {
   anchor: null,
   verifiedName: null,
+  doNotList: false,
   drepActivity: 12,
   drepId: VALID_DREP_ID,
   status: 'active' as const,

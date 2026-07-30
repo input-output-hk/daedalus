@@ -1204,3 +1204,151 @@ describe('GovernanceStore anchor enrichment', () => {
     expect(logger.error).not.toHaveBeenCalled();
   });
 });
+
+describe('GovernanceStore doNotList cohort exclusion', () => {
+  const drepIdAt = (i: number) =>
+    `drep1dnl${String(i).padStart(4, '0')}aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`;
+
+  // Real preprod on-chain anchor pair from the epoch-295 drep-state sample.
+  const ANCHOR = {
+    hash: '9e8cb2b0f4c2ddbd9dea316b44680d8a989743868aeb40c1e6959982452f38e1',
+    url: 'https://raw.githubusercontent.com/cardano-foundation/cardano-academy/refs/heads/main/Cardano%20Academy.jsonld',
+  };
+  // Below the 35-entry top exclusion, so the entry is cohort-eligible before the fetch.
+  const OPTED_OUT = 37;
+
+  beforeEach(() => {
+    mockRequest.mockReset();
+    mockStakeRequest.mockReset();
+    mockAnchorRequest.mockReset();
+  });
+
+  const buildDrep = (
+    i: number,
+    overrides: Partial<DRepDirectoryEntry> = {}
+  ): DRepDirectoryEntry => ({
+    anchor: i === OPTED_OUT ? ANCHOR : null,
+    verifiedName: null,
+    drepActivity: 10,
+    drepId: drepIdAt(i),
+    status: 'active',
+    votingPower: null,
+    ...overrides,
+  });
+
+  const allDreps = (): DRepDirectoryEntry[] =>
+    Array.from({ length: 40 }, (_, i) => buildDrep(i));
+
+  const stakeFor = (count: number): Record<string, string> => {
+    const map: Record<string, string> = {};
+    for (let i = 0; i < count; i++) {
+      map[drepIdAt(i)] = String(1_000_000_000_000 - i * 1_000_000);
+    }
+    return map;
+  };
+
+  const loadStore = async (
+    dreps: DRepDirectoryEntry[] = allDreps()
+  ): Promise<GovernanceStore> => {
+    mockRequest.mockResolvedValue({
+      dreps,
+      epoch: 512,
+      fetchedAt: 1_750_000_000_000,
+    });
+    mockStakeRequest.mockResolvedValue({
+      fetchedAt: 1_750_000_000_500,
+      stakeByDRepId: stakeFor(dreps.length),
+    });
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    await store.fetchDRepList();
+    return store;
+  };
+
+  const optedOutResponse = () => ({
+    status: 'verified' as const,
+    content: { givenName: 'Opted Out DRep', doNotList: true },
+    host: 'raw.githubusercontent.com',
+    fetchedAt: 1_750_000_001_000,
+  });
+
+  it('drops a verified doNotList DRep from the default cohort and the cohort context', async () => {
+    const store = await loadStore();
+    expect(store.defaultCohort?.map((e) => e.drepId)).toContain(
+      drepIdAt(OPTED_OUT)
+    );
+
+    mockAnchorRequest.mockResolvedValue(optedOutResponse());
+    await store.fetchAnchorContent(drepIdAt(OPTED_OUT), ANCHOR);
+
+    expect(store.drepIndex.get(drepIdAt(OPTED_OUT))?.doNotList).toBe(true);
+    expect(store.defaultCohort?.map((e) => e.drepId)).not.toContain(
+      drepIdAt(OPTED_OUT)
+    );
+    expect(store.cohortContext.memberIds?.has(drepIdAt(OPTED_OUT))).toBe(false);
+  });
+
+  it('keeps a doNotList DRep in showAllList, drepList and drepIndex', async () => {
+    const store = await loadStore();
+    mockAnchorRequest.mockResolvedValue(optedOutResponse());
+    await store.fetchAnchorContent(drepIdAt(OPTED_OUT), ANCHOR);
+
+    expect(store.showAllList.map((e) => e.drepId)).toContain(
+      drepIdAt(OPTED_OUT)
+    );
+    expect(store.drepList.map((e) => e.drepId)).toContain(drepIdAt(OPTED_OUT));
+    expect(store.drepIndex.get(drepIdAt(OPTED_OUT))?.drepId).toBe(
+      drepIdAt(OPTED_OUT)
+    );
+    expect(store.showAllList).toHaveLength(40);
+  });
+
+  it('leaves every other entry cohort-eligible and shrinks the cohort by exactly one', async () => {
+    const store = await loadStore();
+    const before = store.defaultCohort?.length ?? 0;
+
+    mockAnchorRequest.mockResolvedValue(optedOutResponse());
+    await store.fetchAnchorContent(drepIdAt(OPTED_OUT), ANCHOR);
+
+    expect(store.defaultCohort).toHaveLength(before - 1);
+  });
+
+  it('returns a doNotList DRep to the cohort when the on-chain anchor hash changes', async () => {
+    const store = await loadStore();
+    mockAnchorRequest.mockResolvedValue(optedOutResponse());
+    await store.fetchAnchorContent(drepIdAt(OPTED_OUT), ANCHOR);
+    expect(store.defaultCohort?.map((e) => e.drepId)).not.toContain(
+      drepIdAt(OPTED_OUT)
+    );
+
+    const reRegistered = allDreps().map((entry) =>
+      entry.drepId === drepIdAt(OPTED_OUT)
+        ? { ...entry, anchor: { ...ANCHOR, hash: 'b'.repeat(64) } }
+        : entry
+    );
+    mockRequest.mockResolvedValue({
+      dreps: reRegistered,
+      epoch: 513,
+      fetchedAt: 1_750_000_002_000,
+    });
+    await store.fetchDRepList();
+
+    expect(store.drepIndex.get(drepIdAt(OPTED_OUT))?.doNotList).toBe(false);
+    expect(store.defaultCohort?.map((e) => e.drepId)).toContain(
+      drepIdAt(OPTED_OUT)
+    );
+  });
+
+  it('leaves the cohort untouched when the anchor verifies without doNotList', async () => {
+    const store = await loadStore();
+    mockAnchorRequest.mockResolvedValue({
+      ...optedOutResponse(),
+      content: { givenName: 'Listed DRep', doNotList: false },
+    });
+    await store.fetchAnchorContent(drepIdAt(OPTED_OUT), ANCHOR);
+
+    expect(store.drepIndex.get(drepIdAt(OPTED_OUT))?.doNotList).toBe(false);
+    expect(store.defaultCohort?.map((e) => e.drepId)).toContain(
+      drepIdAt(OPTED_OUT)
+    );
+  });
+});

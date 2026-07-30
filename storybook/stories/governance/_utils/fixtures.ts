@@ -157,6 +157,7 @@ export function makeDRepIndex(
         hash: '9e8cb2b0f4c2ddbd9dea316b44680d8a989743868aeb40c1e6959982452f38e1',
       },
       verifiedName: null,
+      doNotList: false,
     });
   }
 
@@ -168,6 +169,7 @@ export function makeDRepIndex(
       drepActivity: 4,
       anchor: null,
       verifiedName: null,
+      doNotList: false,
     });
   }
 

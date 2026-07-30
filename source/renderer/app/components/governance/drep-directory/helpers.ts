@@ -277,12 +277,12 @@ export function sortDReps(
 }
 
 /**
- * A favorited entry is stale once its status leaves the default-cohort
- * universe. Only the deferred retired status qualifies and no live entry
- * carries it yet; doNotList joins this check when anchor metadata lands.
+ * A favorited entry is stale once it leaves the default-cohort universe:
+ * a verified anchor asking not to be listed, or the still-deferred retired
+ * status that no live entry carries yet.
  */
 const STALE_FAVORITE_STATUSES: ReadonlySet<string> = new Set(['retired']);
 
 export function isStaleFavorite(entry: AppDRepDirectoryEntry): boolean {
-  return STALE_FAVORITE_STATUSES.has(entry.status);
+  return entry.doNotList || STALE_FAVORITE_STATUSES.has(entry.status);
 }

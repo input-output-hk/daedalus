@@ -30,6 +30,7 @@ const baseEntries: AppDRepDirectoryEntry[] = [
   {
     anchor: null,
     verifiedName: null,
+    doNotList: false,
     drepActivity: 12,
     drepId: 'drep1yg7s8vuv87f8a8f5d0m9yk4p5xqw6r4s3t2u1v9w8x7y6z5a4b',
     status: 'active',
@@ -40,6 +41,7 @@ const baseEntries: AppDRepDirectoryEntry[] = [
 const buildEntry = (suffix: number): AppDRepDirectoryEntry => ({
   anchor: null,
   verifiedName: null,
+  doNotList: false,
   drepActivity: (suffix % 20) + 1,
   drepId: `drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k${String(
     suffix
@@ -78,6 +80,7 @@ const realEntry = (
 ): AppDRepDirectoryEntry => ({
   anchor: null,
   verifiedName: null,
+  doNotList: false,
   drepActivity: 20,
   drepId: realDrepId(n),
   status: 'active',
@@ -637,6 +640,47 @@ describe('DRepDirectory', () => {
     expect(onViewDetails).toHaveBeenCalledWith(realDrepId(2));
   });
 
+  it('surfaces a doNotList entry through show-all', () => {
+    // The store drops the opted-out entry from the cohort but never from
+    // showAllList, so the escape hatch must still reach it.
+    const cohortEntry = realEntry(4);
+    const optedOutEntry = realEntry(5, { doNotList: true });
+    renderComponent({
+      drepList: [cohortEntry],
+      showAllList: [cohortEntry, optedOutEntry],
+    });
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+
+    fireEvent.click(screen.getByText('!!!Show all DReps'));
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(2);
+  });
+
+  it('opens a doNotList entry from an exact DRep ID with show-all off', () => {
+    const onViewDetails = jest.fn();
+    const cohortEntry = realEntry(4);
+    const optedOutEntry = realEntry(5, { doNotList: true });
+    renderComponent({
+      drepList: [cohortEntry],
+      showAllList: [cohortEntry, optedOutEntry],
+      onViewDetails,
+    });
+
+    const input = screen.getByPlaceholderText('!!!Search by DRep ID');
+    fireEvent.change(input, {
+      target: { value: realDrepId(5).slice(0, 'drep1'.length + 20) },
+    });
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(onViewDetails).not.toHaveBeenCalled();
+
+    fireEvent.change(input, { target: { value: realDrepId(5) } });
+
+    expect(onViewDetails).toHaveBeenCalledTimes(1);
+    expect(onViewDetails).toHaveBeenCalledWith(realDrepId(5));
+  });
+
   it('applies facet filters through the native selects', () => {
     renderComponent({
       drepList: [
@@ -847,6 +891,33 @@ describe('DRepDirectory', () => {
       expect(
         screen.queryByText(/no longer in the default cohort/)
       ).not.toBeInTheDocument();
+    });
+
+    it('captions a doNotList favorite through the real predicate and keeps its status badge', () => {
+      renderComponent({
+        drepList: [realEntry(1), realEntry(2, { doNotList: true })],
+        favoriteDRepIds: new Set([realDrepId(1), realDrepId(2)]),
+        view: 'favorites',
+      });
+
+      expect(
+        screen.getAllByText(/no longer in the default cohort/)
+      ).toHaveLength(1);
+      expect(screen.getAllByLabelText('!!!Active')).toHaveLength(2);
+      expect(screen.getAllByText('!!!View details')).toHaveLength(2);
+      expect(screen.getByText(truncatedDrepId(2))).toBeInTheDocument();
+    });
+
+    it('renders no caption for a doNotList favorite in the directory view', () => {
+      renderComponent({
+        drepList: [realEntry(2, { doNotList: true })],
+        favoriteDRepIds: new Set([realDrepId(2)]),
+      });
+
+      expect(
+        screen.queryByText(/no longer in the default cohort/)
+      ).not.toBeInTheDocument();
+      expect(screen.getByText('!!!View details')).toBeInTheDocument();
     });
 
     it('renders the favorites empty-state copy in ja-JP', () => {
