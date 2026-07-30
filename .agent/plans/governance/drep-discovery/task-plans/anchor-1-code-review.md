@@ -1004,3 +1004,201 @@ adjudication was needed.
 4. **The close-out commit is unmade.** `feat(gov): task-172 ground the DRep category badge in
    cohort membership` (`:4793`) — 25 modified files sit uncommitted on top of `351467833`.
    Recorded as F-20.
+
+---
+
+## Planner: anchor-1 slice close (2026-07-30)
+
+**Status: anchor-1 is closed.** All five rows — task-152, task-149, task-150, task-151 and
+task-172 — are `complete` in `governance-drep-discovery-plan-tasks.json`. Enumerated
+programmatically at close rather than eyeballed: the tracker was loaded and walked recursively,
+and each of the five rows returns `complete`. **No row is promoted to `verified`, and the word
+appears on no anchor-1 row.** Every scribe in the slice gave the same reason for withholding it,
+and it is the correct one: each row's whole evidence base is its own focused Jest runs plus one
+approved review round, with no dedicated verification task, no external regression suite that
+discriminates one row from another, and no manual release pass. There is no promotion docket to
+hand forward either, and that is the honest distinction from cv-2 — cv-2 held four rows one
+measured bite probe away from promotion, whereas here the blocker is that the guards are
+mock-bounded, and a probe against a mock would prove only that the mock is wired up.
+
+**What shipped, in build order.** `3a9b36daa` task-152 (the https-only `openExternal` guard, the
+`{ scheme }`-only rejection log, and the `getNetworkExplorerUrl` https fix with `networks.spec.ts`
+grown 4 → 12) → `71ad2b4a1` task-149 (the SSRF-guarded bounded fetch transport over builtin
+`https` + `dns`, plus the full D-6 sanitization discharge at twelve `sensitiveData` names and the
+first main-process logger spy case in this repo) → `aa77b475c` task-150 (Blake2b-256 verification
+gating `JSON.parse` and every cache write, the hash-keyed immutable on-disk cache with its
+`/^[0-9a-f]{64}$/` guard before any `path.join`, and the never-rejecting IPC channel) →
+`351467833` task-151 (`verifiedName` on both directory-entry interfaces, the store enrichment map
+and verified-only completeness computed, the `givenName` render with its three new source-label
+variants, and the D-5c https link gate) → `74bf92cdd` task-172 (the cohort context and BigNumber
+median, the classifier rewritten to the explicit two-argument signature with `anchor` and `status`
+dropped, the High value category, and the three orphaned story files finally registered). Slice
+planning landed earlier in `33c02840a`.
+
+**Build order is not tracker order, and the difference is one planned hoist.** The tracker's
+anchor-1 array lists `149, 150, 151, 152, 172`. Build order pulled task-152 to the front. The
+hoist breaks no edge — task-152 is the phase's only `"dependencies": []` row — and it is mandatory
+rather than cosmetic, because task-152 AC-3 gates anchor-URL rendering on the hardening landing,
+and a gate that lands after the thing it gates is not a gate. The PRD binds this at its *Canonical
+Build Order* section and the PRD's Final Outcome table uses the same order this entry does.
+
+**The review record: eight rounds over five tasks, six of them transcribed here.** task-152 took
+**four** — three pre-commit rounds plus a post-commit round that its own orchestration numbered
+round 1 — and the four remaining tasks were each approved in round 1 with zero findings at any
+severity and not one line changed in review. Final `openBlockers` was empty for all five. Neither of
+task-152's first two pre-commit rounds has a heading of its own: round 1's findings are recorded as
+**not transcribed** rather than reconstructed (`:448-451`), and round 2's three findings survive
+only inside the round-3 entry that adjudicates them. Ahead of all of it sat the required planning
+review, which is where this slice's review value actually concentrated.
+
+**What the loop actually caught, stated plainly.** Three things, and the distribution is lopsided.
+
+1. **The planning review caught the only design-level defects, before a line was written.** The
+   Critiquer pass returned four blockers, all real and all cheap at that point and expensive
+   later: an **orphaned deliverable** — the https-gated anchor link that task-152 and task-151 each
+   assigned to the other, so as specified nobody built it; an **incompletely-total transport
+   guard**, the ≤10 s budget starting only after DNS resolution, which would have left a slow
+   resolver outside the timeout; a **provably-wrong i18n gate number** in task-172; and a
+   **same-guide contradiction** deriving `verifiedMetadataIds` twice from two different sources.
+   The fix pass discharged all four. The first of those is the one worth remembering: an
+   ownership gap between two task specifications is invisible to both tasks' own reviews, because
+   each one passes its own criteria by not building the thing.
+2. **task-152's audit-scope overclaim.** Round 2's B-2 required correcting "the audit found exactly
+   one real non-https producer". The Step 1 audit is three greps over `source/`, so the claim is
+   true only of **source-literal** producers; stake-pool homepage metadata
+   (`TooltipPool.tsx:512`) and newsfeed action URLs (`NewsFeedStore.ts:220-224`) arrive as runtime
+   data outside any grep's reach and, after the guard, an `http:` value in either fails silently
+   with no user-visible error. The correction is at `:371-391`, carried into the row's
+   `statusReason` and into F-1, and the frequency in production is recorded as unmeasured rather
+   than assumed low. Round 2's B-1 (the missing close-out record) was the same shape of finding:
+   bookkeeping, not code.
+3. **One cross-task risk handed forward as a blocker, and only half-closed.** Round 2's M-1 named
+   `source/main/index.ts:276-286` as a second, unguarded path into the OS shell that also logs the
+   whole URL, and made it a task-151 blocker once the anchor renders as
+   `<a target="_blank">`. task-151 took F-4's first option and routed the click through
+   `openExternalLink` with `event.preventDefault()`, which hardens the left-click path. The
+   handler itself was not hardened and still calls `shell.openExternal(url)` with no scheme check
+   after logging `{ url }`, so a middle click — which does not fire React's `onClick` — would
+   still reach it. The scheme half of that exposure is moot on this surface, since the link only
+   renders for a URL that already parses as `https:`; the logging half is live, because the anchor
+   URL identifies the DRep whose detail page the user is viewing and `filterLogData` does not run
+   in main. Read from the code, not measured — there is no browser here. Carried into the PRD's
+   residual gaps.
+
+**Four consecutive round-1 approvals with zero findings deserve scepticism, not celebration.** The
+mitigating facts are on the record and are why the approvals are believable: each reviewer re-ran
+every gate itself rather than inheriting the verifier's table, and in each case the two independent
+passes agreed on every count, down to the exact test totals (39, then 9 / 13 / 2, then
+20 / 43 / 5 / 5, then 22 / 48 / 21 / 8 / 49). But the honest reading is still that the guides were
+unusually prescriptive and the reviews were checking fidelity to a prescription. They were not in a
+position to catch a wrong prescription — which is precisely what the planning review existed for,
+and did.
+
+**An orchestration bug is visible in this log, and it is not a code defect.** task-152 uniquely
+carries two commits — `3a9b36daa` for the code and `6d38d2bfb` for the bookkeeping — and its
+review headings sit out of order, with `round 3` at `:434` above `round 1` at `:558`. Both are
+residue of the same fault: a workflow-script argument was passed as a JSON string, failed an
+`Array.isArray` check, fell through to a fallback default naming task-152, and silently re-ran an
+already-committed task through the whole build loop. The re-run was idempotent for the code —
+nothing under `source/` or `tests/` changed — but it produced the extra bookkeeping commit and the
+reversed heading order. Anyone auditing task-152's paperwork should read it as one code change
+reviewed four times, not as two changes.
+
+**A date discrepancy, stated once so no later reader is misled.** Every `## Code Review:` heading
+in this log, the `Implementer:` record, and all five tracker `updatedAt` fields read
+**2026-07-29**, because the workflow script carried a hard-coded date constant. Four of the seven
+commits are actually dated **2026-07-30**, and 2026-07-30 is the true close date. The existing
+dated headings were deliberately **not** rewritten — this log is append-only — and the tracker
+cosmetics were left alone, matching the cv-1 and cv-2 closeouts.
+
+**Gates at close, measured at the final HEAD `74bf92cdd` for this close rather than carried
+forward from any task's own run.**
+
+- `node_modules/.bin/tsc --noEmit` → **exit 0**.
+- The **unfiltered** `node_modules/.bin/jest --no-coverage --runInBand`, no path argument →
+  **91 passed / 1 skipped of 92 suites; 1250 passed / 12 skipped of 1262 tests; 10 snapshots
+  passed**, zero failures. Against cv-2's close (86+1 of 87; 1120+12 of 1132; 9) that is +5 suites,
+  +130 tests, +1 snapshot, and the suite delta reconciles exactly to the five suites anchor-1
+  created. The one skipped suite is `tests/jest/governance/GovernanceCliArgvSmoke.spec.ts`,
+  self-skipping with `cardano-cli` off PATH — by design, as in every prior round.
+- **Both sanitization floor anchors together** → 2 suites, **62 tests passed** (35 in
+  `tests/jest/security/governance-sanitization.spec.ts`, 27 in `VotingGovernancePage.spec.tsx`).
+  anchor-1 raised the first from its 26-test baseline; the second is unmoved. cv-2 F-31 still
+  binds: citing either alone manufactures a false green.
+- `yarn lint` → **exit 0**.
+- i18n parity, checked directly against the JSON rather than through the tooling: **97**
+  `governance.*` keys in each of en-US and ja-JP, key-identical, symmetric difference empty in both
+  directions, every value `!!!`-marked.
+- The Definition-of-Done greps all return empty as required: `anchor != null|anchor !== null` in
+  `DRepCategoryBadge.tsx`, `DRepCategoryBadge|getDRepCategory` in `GovernanceStore.ts`,
+  `task-1[0-9][0-9]` across `source/ tests/ storybook/`, and `rejectUnauthorized` under
+  `source/main/governance/`.
+- The `anchor-1` phase object carries **no `auditSummary`** — its keys are exactly
+  `id, name, description, riskLevel, tasks`, and a recursive walk finds the field on `slice-1`
+  only. None was invented.
+- **D-4's correction is in place at `plan.md:320`**: the "Use the anchor-display feature flag for
+  staged verification control" bullet now records that no such flag is built, that the project has
+  no feature-flag mechanism, and that the control is structural instead — anchor content appears
+  only for a DRep whose fetched bytes hash-verified.
+- **`nix fmt` never ran, on any of the seven commits.** `nix` is absent here;
+  `node_modules/.bin/prettier --write` over explicit paths was the substitute for the whole slice.
+  A user-owned pre-merge obligation, recorded as an environment deviation and never as a satisfied
+  gate.
+
+**Owed at close, with owners. Nothing here is green.** The authority is the twenty `## F-n` entries
+in `research/anchor-1-findings.md`; the full list with reasons is in the PRD's Final Outcome. In
+priority order: **no live anchor fetch has ever run**, so every transport guard — TLS, redirects,
+timeouts, the size cap, the content-type allow-list, SSRF and DNS rebinding — is proven against
+mocked `https.request` and `dns.promises.lookup` alone, with TLS in particular proven only as the
+*absence* of a `rejectUnauthorized` token (owner: a networked build before release; F-10) · the
+real SIPO CIP-119 body bytes and the assertion that their Blake2b-256 digest equals the on-chain
+`dataHash`, task-151 AC-4's content half, where only a synthetic offline fixture is committed and
+the carry escalates to the Planner because no later anchor-1 task exists to hold it (F-13) · the
+Storybook visual and ja-JP overflow pass for all four badges at both call sites, now unblocked by
+task-172's registration but still needing a browser, with the named risk `!!!高価値` plus the `!!!`
+marker inside the fixed-width card top row (F-14, F-16) · a real browser click-through of the
+anchor link, whose https gate is proven only in jsdom against a mocked `openExternalLink` · theme
+confirmation for the `--badge-highlight-fg` / `--badge-highlight-bg` violet fallback, which the
+guide leaves to the design owner (F-19) · `nix fmt` before merge, user-owned · reachability of the
+now-forced-https explorer hosts, verified only as the scheme string emitted (F-2) · the two
+runtime-sourced non-https producer classes and how often they carry `http:`, both unmeasurable
+without a network, raised to the user as a product decision (F-1) · the renderer-console impact of
+the fire-and-forget rejection (F-5) · three main-process whole-error sinks left unhardened outside
+every anchor-1 diff, at `GovernanceQueryService.ts:523-526`, `governanceChannel.ts:58-60` and
+`:64` / `:77` (D-6d, C-7) · and two files carrying **pre-existing** prettier drift that was
+deliberately not absorbed into any commit — `source/main/governance/GovernanceQueryService.ts` and
+`storybook/stories/governance/DRepDirectory.stories.tsx`, earlier also
+`source/common/utils/logging.ts` and `tests/jest/security/governance-sanitization.spec.ts`. In
+every one of those cases the drifted regions reproduce identically from `git show HEAD:<file>` and
+sit outside the touching task's hunks, `--write` was withheld so no reformat churn entered any
+commit, and `nix fmt` settles them at merge. Nothing was pushed: `gh` and push credentials are
+absent.
+
+**Residual gaps handed to a later phase.** Two of these are real semantic consequences, not
+paperwork. **F-17:** the Primary badge and the "With metadata" filter now mean different things —
+the badge reads verified anchor *content* (`DRepCategoryBadge.tsx:80` via the store's
+`state === 'verified'` computed) while `filterDReps` still filters on on-chain anchor *presence*
+(`helpers.ts:198`, `:201`), so a DRep whose anchor exists but failed verification matches "With
+metadata" and renders *Non-metadata*. A recorded product decision, escalated: either the filter
+gains a verified-content mode with its own copy, or the divergence is accepted in the design doc.
+**F-18:** the binding priority order makes High value suppress the expiry hint for an in-cohort,
+verified, above-median DRep 7–12 epochs from expiry, because the Threshold branch is unreachable
+once High value holds; `shared-design-tokens.md:39` binds it and the classifier implements it
+verbatim, so any change is a §1a spec change first and a classifier row second, never a silent code
+fix. Alongside those: the `target="_blank"` logging bypass in item 3 above; cv-2's R1-a is
+discharged (task-151 added `verifiedName` to both interfaces) while **R1-b is not** — the
+`CurrentVoteSummary` verified-name render and its unverified→verified story are still owned by no
+task and anchor-2 planning must action them; the `unverified-anchor` source-label variant ships
+with no production emitter by design (C-13, R-9) and must not be deleted as dead code without a §2
+change; and R-1 stands untouched — hash verification proves authorship, not identity, which an
+impersonator satisfies exactly, so the copy discipline is the only mitigation there is.
+
+**Scope of this entry.** Documentation only, and appended rather than edited in place — nothing
+above this line was touched, no existing entry was reordered, and no dated heading was rewritten.
+It edits no source file, no test, no story, no locale catalog and no tracker JSON: every anchor-1
+row was already correct and complete. The PRD's Final Outcome is filled in the same closing pass
+and its `Planning Status:` advanced from `draft` to `approved`. Every command reported above was run
+in the isolated worktree at HEAD `74bf92cdd`; `/workspaces/daedalus` was never read, written or run
+against.
+
+Decision: anchor-1 closed.

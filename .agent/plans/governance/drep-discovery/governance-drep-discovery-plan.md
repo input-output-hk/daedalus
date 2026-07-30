@@ -317,7 +317,7 @@ Every slice is a thin, demoable, end-to-end capability:
 - Synced-node fixtures for `drep-state`, `drep-stake-distribution`, and `gov-state` must be captured from a synced node and committed under `tests/mocks/governance/` before `task-103` merges.
 - `cardano-launcher@0.20220119.0` `socketFile` support must be verified before `task-102` starts; if the pinned launcher cannot supply it, stop and reopen the socket-path ownership approach.
 - Keep slice-4 detail local-on-chain only; do not render anchor-derived metadata before fetch, verification, cache, parse, and source-labeling hardening land.
-- Use the anchor-display feature flag for staged verification control, not as a permanent production off-switch.
+- There is deliberately no anchor-display feature flag — the project has no feature-flag mechanism, and the staged verification control this line asked for is structural instead: anchor-derived content renders only for a DRep whose fetched bytes hash-verified, so no staging window exists in which a flag would be the only off switch.
 - Release DRep Discovery only when users can complete the full in-app discovery and delegation flow without external portals.
 - Treat the slice-1 sanitization floor (task-109, task-110, and task-111) as a hard prerequisite for any UI work that surfaces `delegation.active.voting`; no current-vote rendering ships until those land.
 

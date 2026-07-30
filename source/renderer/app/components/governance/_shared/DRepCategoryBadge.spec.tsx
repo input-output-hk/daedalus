@@ -129,8 +129,7 @@ describe('getDRepCategory', () => {
     const withOnchainAnchor = {
       ...baseEntry,
       anchor: {
-        hash:
-          '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
+        hash: '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
         url: 'https://governance-preview.example.org/dreps/1.json',
       },
     } as DRepCategorySource;

@@ -1,6 +1,6 @@
 # ANCHOR-1 PRD: Hardened Anchor Fetch + Verify + givenName Render
 
-> **Planning status:** `draft` | **Slice status:** not started (all 5 tasks `pending`) | **Date:** 2026-07-29 | **Parent plan:** [governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md)
+> **Planning Status:** approved | **Slice Status:** closed 2026-07-30 (all 5 tasks `complete` — see Final Outcome) | **Date:** 2026-07-29 | **Parent Plan:** [governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md)
 > **Phase:** `anchor-1` — "Anchor 1 - Hardened anchor fetch + verify + givenName render" (`riskLevel: high`; tasks JSON `:1586-1693`)
 > **Tasks:** 5 — task-149, task-150, task-151, task-152, task-172 (all `pending` at the planning anchor `bf112d9f8`)
 > **Preceding slice:** [cv-2-PRD.md](./cv-2-PRD.md) (closed 2026-07-29 at `fb025e44e`)
@@ -1574,35 +1574,406 @@ Conventional Commits, `<type>(gov): task-NNN <short imperative summary>`.
 
 ## Final Outcome
 
-**Planning-time stub.** _Filled at slice close._
+**Closed 2026-07-30 at `74bf92cdd`.** All five anchor-1 rows — task-152, task-149,
+task-150, task-151, task-172 — are `complete` in
+`governance-drep-discovery-plan-tasks.json`. The statuses were enumerated
+programmatically at close, by loading the tracker and walking it recursively for
+each row's `status`, rather than read off by eye: all five return `complete`.
+**No row was promoted to `verified`, and the word appears on no anchor-1 row** —
+the reasoning is under *Final status of every task*. The slice delivers the anchor
+path end to end: an https-only `openExternal` gate, an SSRF-guarded bounded fetch
+transport, Blake2b-256 verification with an immutable on-disk cache behind a
+never-rejecting IPC channel, the verified `givenName` render with its source
+labels, and a cohort-grounded `DRepCategoryBadge` carrying the High value
+category. **Every transport and verification guard in it is proven against mocked
+`https` and `dns` only — no live anchor fetch has ever run.** That is the first
+item on the OWED list below, and it is why nothing in this slice may be described
+as live-proven.
 
 ### What shipped, task by task
 
-_Filled at slice close._
+| Task | Commit | Outcome |
+| --- | --- | --- |
+| task-152 | `3a9b36daa`, plus the bookkeeping commit `6d38d2bfb` | `handleOpenExternalUrl` rejects every non-`https:` scheme before `shell.openExternal` is referenced at all, against the single constant `ALLOWED_EXTERNAL_URL_PROTOCOL = 'https:'` (`open-external-url.ts:10`, guard at `:27-33`); unparseable input maps to `'unparseable'` and is rejected with it, and the rejection log carries `{ scheme }` and nothing else. `getNetworkExplorerUrl` now emits `https://` unconditionally (`network.ts:36-38`), with `networks.spec.ts` grown 4 → 12 tests. New colocated spec, 13 tests, pinning `javascript:`, `file:`, `data:`, `http:`, mixed-case `JavaScript:` and non-URL input, plus proof that the guarded function is the one wired to `onReceive`. AC-3 holds negatively: no governance component is in the diff. Approved. |
+| task-149 | `71ad2b4a1` | `source/main/governance/AnchorFetchService.ts` — the never-throwing S-1 transport over builtin `https` + `dns`: SSRF prefix tables with unparseable input default-blocked, a pinned custom `lookup` preserving host and servername against DNS rebinding (`:217-229`), one shared 10 s budget across DNS and transfer (`:9`, `:297-308`), dual size guards (`:258`, `:267`), a content-type allow-list (`:245-249`), explicit 3xx rejection that never reads `location` (`:233-238`), and no `rejectUnauthorized` token anywhere. Also the full D-6 sanitization discharge: twelve `sensitiveData` additions, eight domain-shaped `filterLogData` cases including the exact-key-match negative, the first main-process logger spy case in this repo, and the floor-suite docblock renarrow. 39-test service suite; the security floor rose 26 → 35. Approved. |
+| task-150 | `aa77b475c` | `AnchorVerificationService.ts` (cache read → fetch → verify → cache write → parse, never throwing) and `anchorCache.ts`, with the Blake2b-256 digest gating `JSON.parse` and every cache write on both the fetch and cache-hit paths (`:66-95`), the `/^[0-9a-f]{64}$/` key guard running before any `path.join`, immutable `wx` writes with `EEXIST` treated as success, a FIFO bound and an in-flight dedup map. The S-4 IPC seam carries `DRepAnchorPresence` with no `drepId`, and the handler never rejects and logs enum values only. 24 new cases (9 cache + 13 verification + 2 handler) plus the four committed fixtures of D-11, whose digest reproduces from the committed bytes. Approved. |
+| task-151 | `351467833` | `verifiedName: string \| null` added to both `DRepDirectoryEntry` and `AppDRepDirectoryEntry`, written unconditionally `null` by main because the bulk query never fetches an anchor (`GovernanceQueryService.ts:518-526`). Store enrichment: `anchorStateByDRepId`, `fetchAnchorContent` with hash dedup and an IPC-rejection fallback, `clampVerifiedName`, `_applyVerifiedNames` with the hash-mismatch name drop re-applied at both list-rebuild sites, and the `verifiedMetadataIds` computed derived from `state === 'verified'` only. `DRepDetailAnchorContent` renders `givenName` only from a verified state; `DRepSourceLabel` gains exactly three new variants, leaving the four untooltipped On-chain spans byte-identical. The D-5c https link gate ships with both branches pinned. Eleven new i18n keys in both catalogs. Approved. |
+| task-172 | `74bf92cdd` | `DRepCohortContext` plus the cohort and median computeds in `GovernanceStore` (`:38-48`, `:227-252`), reusing task-151's `verifiedMetadataIds` with no second derivation; the classifier rewritten to the two-argument S-8 signature (`DRepCategoryBadge.tsx:75-98`) with `anchor` and `status` structurally absent from its source type, the binding priority High value > Threshold > Primary > Non-metadata, and High value impossible out of cohort. The `cohort` prop is threaded through all six hops including both `DRepDirectoryList` render sites. Two new and two reworded i18n keys, so the two out-of-cohort tooltips stop claiming Recommended-view membership. Registers the three orphaned governance story files (`storybook/stories/index.ts:19-21`) and adds the cohort knob. Approved. |
+
+**Ordering note (planned, not drift).** This table is in shipped build order —
+`152 → 149 → 150 → 151 → 172` — which is the order this PRD binds at
+*Canonical Build Order* above. It differs from the tracker's anchor-1 listing
+order (`149, 150, 151, 152, 172`) in exactly one respect: task-152 is hoisted to
+position 1. The hoist breaks no dependency edge (task-152 is the only row with an
+empty `dependencies` array) and is mandatory rather than cosmetic, because
+task-152 AC-3 gates anchor-URL rendering on the hardening landing and a gate that
+lands after the thing it gates is not a gate. Slice planning landed earlier, in
+`33c02840a`.
 
 ### Gates at close — measured, not asserted
 
-_Filled at slice close._
+Measured at the final HEAD `74bf92cdd` for this close, not carried forward from a
+per-task run.
+
+- `node_modules/.bin/tsc --noEmit` — **exit 0**.
+- The **unfiltered** `node_modules/.bin/jest --no-coverage --runInBand`, no path
+  argument — **91 passed, 1 skipped of 92 suites; 1250 passed, 12 skipped of 1262
+  tests; 10 snapshots passed.** Zero failures. Against cv-2's close (86 passed /
+  1 skipped of 87 suites; 1120 passed / 12 skipped of 1132 tests; 9 snapshots)
+  that is +5 suites, +130 tests, +1 snapshot, and the suite delta reconciles
+  exactly to the five suites anchor-1 created: `open-external-url.spec.ts`,
+  `AnchorFetchService.spec.ts`, `anchorCache.spec.ts`,
+  `AnchorVerificationService.spec.ts` and `governanceAnchorChannel.spec.ts`. The
+  one skipped suite is `tests/jest/governance/GovernanceCliArgvSmoke.spec.ts`,
+  which self-skips because `cardano-cli` is off PATH in this devcontainer — by
+  design, not broken.
+- **Both sanitization floor anchors, run together and cited together** as cv-2
+  F-31 requires — `tests/jest/security/governance-sanitization.spec.ts` and
+  `source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx` — **2
+  suites, 62 tests passed (35 + 27)**. anchor-1 raised the first anchor from its
+  26-test baseline to 35 through task-149's domain-shaped cases and its
+  main-process spy case. A sanitization claim citing only the security suite is
+  still incomplete and must still be rejected at review.
+- `yarn lint` — **exit 0.**
+- i18n catalogue parity, checked directly against the JSON rather than through the
+  tooling: en-US and ja-JP each carry **97** `governance.*` keys, the two key sets
+  are identical, the symmetric difference is empty in both directions, and every
+  `governance.*` value is `!!!`-marked.
+- Definition-of-Done greps, all returning empty as required:
+  `anchor != null|anchor !== null` in `DRepCategoryBadge.tsx`;
+  `DRepCategoryBadge|getDRepCategory` in `GovernanceStore.ts`;
+  `task-1[0-9][0-9]` across `source/ tests/ storybook/`; and
+  `rejectUnauthorized` under `source/main/governance/`.
+- The `anchor-1` phase object still carries **no `auditSummary`**. Enumerated at
+  close: its keys are exactly `id, name, description, riskLevel, tasks`, and a
+  recursive walk finds `auditSummary` on `slice-1` only.
+- D-4's one-line correction is in place at `plan.md:320` — the
+  "Use the anchor-display feature flag for staged verification control" bullet now
+  records that no such flag is built, that the project has no feature-flag
+  mechanism at all, and that the staged verification control is structural
+  instead: anchor-derived content renders only for a DRep whose fetched bytes
+  hash-verified.
+- **`nix fmt` never ran, on any of the seven commits.** `nix` is absent from this
+  devcontainer. It is an outstanding **user-owned pre-merge obligation**, not a
+  satisfied gate, and it is listed under OWED.
+- Not gates, and correctly never read as anchor-1 regressions: `yarn check:all`
+  and `yarn storybook:build`, both red at HEAD for the unrelated storybook
+  manager-webpack reason. `yarn storybook` plus a human eye is the real Storybook
+  floor and it could not run here.
 
 ### Final status of every task
 
-_Filled at slice close._
+**All five rows close at `complete`. None was promoted to `verified`, and the word
+appears on no anchor-1 row.** The status rule reserves `verified` for proof
+*beyond* a task's own tests, and no anchor-1 row has any: each row's entire
+evidence base is its own focused Jest runs plus one approved code-review round.
+There is no dedicated verification task in this phase, no targeted external
+regression suite that discriminates one row from another, and no manual release
+pass. Every scribe in the slice withheld the word for that same reason, and the
+five `statusReason` fields say so in their own words.
+
+Three further reasons hold independently:
+
+- The calibration for `verified` in this tracker is slice-1's task-109/110/111,
+  where re-promotion rested on a **measured bite probe** — reverting one
+  production hunk and confirming exactly one named case fails. No anchor-1 row has
+  such a probe, and none was attempted at close.
+- Four of the five rows carry an OWED criterion that this environment cannot
+  discharge at all: task-149's whole guard set is mock-proven, task-151 AC-4's
+  content half needs a network, task-172 AC-6's second half needs a browser, and
+  task-152's forced-https explorer hosts were never reached. Marking those rows
+  `verified` would contradict the OWED section of this same document.
+- Both preceding siblings closed the same way in the same environment: cv-1 closed
+  twelve rows and cv-2 fifteen, all at `complete`, with no promotions.
+
+No promotion docket is handed forward. Unlike cv-2, anchor-1 has no row that is
+one probe away — the mock-boundedness is the blocker, and a probe against a mock
+would prove only that the mock is wired up.
 
 ### Definition of Done exception table, as adjudicated at close
 
-_Filled at slice close._
+All **29** verbatim acceptance criteria (9 + 4 + 7 + 3 + 6, counted from the
+tracker at close) were exercised. The planning table above carried six scoped
+dispositions; at close the table has nine rows — the six carried, two of which are
+now recorded discharged, plus three the planning table did not carry, each already
+stated in the owning row's `statusReason` and none of them a discovery at close.
+
+| criterion | disposition at close | reason |
+|---|---|---|
+| task-149 AC-1 … AC-7 | satisfied against mocks; **must never be reported live-proven** | every guard — TLS default verification, 3xx rejection, the shared 10 s budget, both size caps, the content-type allow-list, the SSRF tables and the pinned-lookup rebinding defence — is proven only against `jest.mock`ed `https.request` and `dns.promises.lookup`. TLS in particular is proven solely as the *absence* of a `rejectUnauthorized` token; Node's certificate validation has never met a real chain here. A live fetch is **OWED** (R-2, F-10) |
+| task-151 AC-4 | satisfied in part | the mechanism half is met: the real preprod on-chain `(url, dataHash)` pair drives the store tests and the Storybook fixture, and task-150's committed synthetic vector drives the verify path. The content half is **OWED** — the real body bytes at `https://sipo.tokyo/drep/SIPO.jsonld` were never fetched and their Blake2b-256 digest never compared to the on-chain `dataHash` (D-11, F-13). The carry has no later anchor-1 task to land in and escalates to the Planner |
+| task-151 AC-5 | discharged before start | `drep-discovery-design.md:92`, `:106`; the AC's `:92` anchor drifted one line (D-7). No work was scheduled and none was done |
+| task-151 AC-6 | discharged before start | `drep-discovery-design.md:92`, `:106`; the AC's `:93` anchor is now the closing box border (D-7) |
+| task-151 AC-7 | discharged before start | `drep-discovery-design.md:106` plus `DRepDetailOnchainSection.tsx:94`, `:102`, `:114`, `:137` (D-7) |
+| task-172 AC-6 | satisfied in part | **the registration half is now discharged** — `storybook/stories/index.ts:19-21` imports `DRepCategoryBadge.stories`, `DRepDetail.stories` and `DRepDirectoryBanner.stories`, confirmed at close, which also closes F-14's blocker on task-151's story. The snapshot half is discharged (`DRepDirectory` 48 tests / 1 snapshot with the diff confined to the two reworded tooltip strings; `DRepDetailPage` 21 / 2). "Renders … in en-US and ja-JP without overflow" needs a browser — **OWED** (D-8, F-16) |
+| task-152 AC-1, AC-2 | satisfied, with the audit claim behind them narrowed at review | the guard and the `network.ts` fix both ship and are pinned. But the Step 1 audit is three greps over `source/`, so "exactly one real non-https producer" is true **only of source-literal producers**. Two runtime-sourced classes lie outside any grep and now fail silently if they carry `http:` — stake-pool homepage metadata (`TooltipPool.tsx:512`) and newsfeed action URLs (`NewsFeedStore.ts:220-224`). Raised to the user as a product decision, not resolved (F-1). Whether the now-forced-https explorer hosts actually serve https is verified only as a code property (F-2) |
+| task-152 AC-3 | discharged **negatively** | the criterion is passed by *not* rendering: no file under `source/renderer/app/components/governance/` is in task-152's diff, and the anchor `<dd>` was still deliberately inert at `3a9b36daa`. The https-gated link itself is task-151 Step 9's deliverable, three commits later (F-6) |
+| per-task "exactly one commit" | deviated for task-152 only | task-152 carries **two** commits, `3a9b36daa` (code) and `6d38d2bfb` (bookkeeping). The cause is an orchestration bug, not anything about the code — see *Deviations* below. The other four rows each carry exactly one subject-only commit |
+
+Every remaining slice-level Definition of Done item is discharged and measured in
+*Gates at close* above: `tsc`, `yarn lint`, the unfiltered Jest suite, both
+sanitization anchors cited together, catalogue parity and `!!!` marking, the four
+greps, the `plan.md:320` correction, and the absence of an `auditSummary`. The
+research note exists and is substantial — `research/anchor-1-findings.md`, 447
+lines, F-1 … F-20 — so the "no new research" fallback does not apply. This
+code-review log is preserved and appended to, never rewritten, and carries the
+`Planner:` open and close entries, two `Critiquer:` planning entries, an
+`Implementer:` close-out record and the per-task `Code Review:` entries. This
+Final Outcome is filled and the `Planning Status:` above is advanced from `draft`
+to `approved`.
+
+The one gate that was **superseded rather than run as written**: the guide
+prescribes a filtered
+`--testPathPattern='(governance|Governance|DRep|anchor|Anchor|open-external)'`
+sweep. That filtered sweep was run per task, most recently at task-172 (20 passed
+suites plus the self-skipping CLI smoke, 409 passed + 12 skipped tests, 10
+snapshots). At close it was replaced by the strictly stronger unfiltered run over
+the whole suite, reported above.
 
 ### Deviations from this PRD and its guide
 
-_Filled at slice close._
+**No planning decision was deviated from.** D-1 … D-12 all shipped as decided, and
+each was confirmed against the code at close: the two interfaces carry
+`verifiedName` (D-1); the per-DRep channel exists and its handler never rejects
+(D-2); the cache is an on-disk hash-keyed directory with the regex guard, `wx`
+writes and a FIFO bound, and no electron-store anywhere on the path (D-3); the
+`plan.md:320` correction is in place (D-4); task-152 kept the fire-and-forget
+contract and logs `{ scheme }` only (D-5); the sanitization fallback was
+discharged in full at twelve names rather than the seven cv-2 specified (D-6);
+AC-5/6/7 were left alone (D-7); all three story files are registered (D-8); the
+cohort context is one store-owned prop named `cohort` at every site (D-9); the
+median is pure BigNumber and "above" is strictly greater (D-10); the synthetic
+fixture is committed and clearly labelled with its digest generated from the
+committed bytes (D-11); every anchor error is an enum value (D-12). Nothing in the
+*Risks and Open Questions* section was resolved against its own recorded
+mitigation. In particular R-6 — the High value / Threshold tie-break suppressing
+the expiry hint — was implemented **as bound** by `shared-design-tokens.md:39`,
+which is what that risk instructs, and is carried out of the slice as a note to
+the design owner rather than as a code deviation.
+
+The deviations are environmental and procedural:
+
+- **`nix fmt` never ran, on any of the seven commits.** `nix` is absent from this
+  devcontainer. `node_modules/.bin/prettier --write` over explicitly listed paths
+  was the substitute for the whole slice. The real run is an obligation the
+  **user** owns; it is on the OWED list, not among the gates.
+- **Prettier scope, and two files deliberately left drifted.**
+  `source/main/governance/GovernanceQueryService.ts` and
+  `storybook/stories/governance/DRepDirectory.stories.tsx` fail
+  `prettier --check` at HEAD, as did `source/common/utils/logging.ts` and
+  `tests/jest/security/governance-sanitization.spec.ts` earlier in the slice. In
+  every case the drifted regions are the known prettier 2.1.2 oscillation shapes
+  and sit entirely outside the touching task's hunks — piping `git show HEAD:<file>`
+  through `prettier --stdin-filepath` reproduces the identical hunks. `--write`
+  was therefore **not** run on them, because doing so would fold unrelated
+  reformat churn into a `feat(gov)` commit, and no reformat churn entered any
+  commit. `nix fmt` settles them at merge. `yarn prettier` was never used — its
+  script carries a repo-wide `"**/*.*"` glob that rewrites roughly 238 unrelated
+  files — and no tool-managed JSON was ever formatted.
+- **task-152 carries two commits, and the cause is an orchestration bug.** A
+  workflow-script argument was passed as a JSON string, failed an `Array.isArray`
+  check, fell through to a fallback default naming task-152, and silently re-ran
+  an already-committed task through the whole build loop. The re-run was
+  idempotent for the code — nothing in `source/` or `tests/` changed — but it
+  produced the extra bookkeeping commit `6d38d2bfb` and the reversed review
+  heading order in the log. It is a process defect, not a code defect.
+- **Three commit subjects were reworded from the guide's proposed lines.** The
+  guide proposes `feat(gov): task-149 add the hardened anchor fetch service`,
+  `feat(gov): task-150 verify, cache and parse DRep anchor bytes` and
+  `feat(gov): task-172 ground the DRep category badge in cohort membership`; the
+  commits landed as `… add the ssrf-guarded https anchor fetch transport`,
+  `… add the drep anchor verification service, cache and ipc channel` and
+  `… classify drep badges by cohort membership and add the high value category`.
+  All three are single subject-only Conventional Commits lines with no body and no
+  trailer, so the binding rule holds; only the wording differs.
+- **Every dated record inside this slice reads 2026-07-29, and four of the seven
+  commits are dated 2026-07-30.** The workflow script carried a hard-coded date
+  constant, so all `## Code Review:` headings, the `Implementer:` record and all
+  five tracker `updatedAt` fields say 2026-07-29. The true close date is
+  **2026-07-30**. The discrepancy is recorded once here and once in the closing
+  `Planner:` entry; the existing dated headings were **not** rewritten, and the
+  tracker cosmetics were left alone, matching the cv-1 and cv-2 closeouts.
+- **The guide's Verify run 8 file count is stale.** It reads "Nothing outside the
+  five files changed", but any task whose Step 8 also writes plan docs necessarily
+  touches more — task-152's commit carries seven paths. Read the check as "no
+  source file outside the named paths", which is the property it protects. Future
+  anchor-slice guides should state it as a source-tree property rather than a count
+  (F-8).
+- **`gh` and push credentials are absent.** Nothing was pushed; all seven commits
+  are local.
+- **No `auditSummary` was invented** for the `anchor-1` phase, and none was added.
 
 ### OWED at close — nothing here is faked green
 
-_Filled at slice close._
+**A. No live anchor fetch has ever run. This is the most important item on the
+list.** The whole security value of the slice rests on guards that have never met
+a real network. Every SSRF, DNS-rebinding, TLS, redirect, timeout, size-cap and
+content-type assertion is proven against mocked `https.request` and
+`dns.promises.lookup` (`AnchorFetchService.spec.ts:24-33`, mocks bound at
+`:40-41`; the main-process floor case spies the same two modules). A mock that is
+wrong in the same direction as the code proves nothing. Before the transport floor
+may be called live-proven, a networked run must fetch at least one real anchor
+vector over https **and** observe the TLS failure path against a bad certificate.
+Owner: whoever runs a networked build before release (R-2, F-10).
+
+**B. The real SIPO CIP-119 vector** — task-151 AC-4's content half. The body bytes
+at `https://sipo.tokyo/drep/SIPO.jsonld` were never fetched and their Blake2b-256
+digest never compared to the on-chain `dataHash` at
+`research/drep-state-preprod-epoch295-sample.json:2853`. Only a clearly-labelled
+synthetic offline fixture is committed. Owner: whoever runs a networked build; the
+carry escalates to the Planner, since no later anchor-1 task exists to hold it
+(D-11, F-13).
+
+**C. The Storybook visual pass and the ja-JP overflow check**, all four category
+badges at both call sites, in en-US and ja-JP via the global locale toggle.
+Registration is done, so the story files are finally reachable, but there is no
+browser here, `storybook/` is outside the Jest roots (`jest.config.js:129`), and
+`yarn storybook:build` is red at HEAD for unrelated reasons and is not a
+substitute. Named risk: the ja-JP High value label is `!!!高価値`
+(`ja-JP.json:320`) and it renders inside the fixed-width card top row where the
+favourite toggle, status badge, category badge and DRep id share one flex row
+(`DRepCard.tsx:109-125`); the detail call site is `DRepDetail.tsx:114`. Owner:
+whoever runs the visual pass before release (F-14, F-16).
+
+**D. A real browser click-through of the anchor external link.** The https gate is
+proven only in jsdom against a mocked `openExternalLink`, never against the OS
+shell. Owner: manual release verification.
+
+**E. Theme-token confirmation** for the new `--badge-highlight-fg` /
+`--badge-highlight-bg` violet fallback `#7a5af8` / `rgba(122, 90, 248, 0.12)`
+(`DRepCategoryBadge.scss:26-27,30`). Design §1a specifies no colour for High
+value, no theme file defines either token yet, so every theme currently renders
+the fallback. Owner: the design owner; theme wiring goes to whoever rows it
+(F-19).
+
+**F. `nix fmt` before merge.** Cannot run here at all. Owner: the **user**. See
+the deviation record.
+
+**G. Reachability of the now-forced-https explorer hosts** —
+`explorer.staging.cardano.org`, `explorer.cardano.org` and
+`explorer.cardano-testnet.iohkdev.io`. `network.ts:36-38` is verified only as a
+code property, the scheme string it emits, never as a reachable endpoint. Owner:
+whoever runs a staging build before release (R-3, F-2).
+
+**H. The two runtime-sourced non-https producer classes** that the source-literal
+audit cannot see: stake-pool homepage metadata (`TooltipPool.tsx:512`, operator-
+registered and typed only as `string` with no scheme constraint on the path) and
+newsfeed action URLs (`NewsFeedStore.ts:220-224`, the remote feed's `url`
+verbatim). How often either carries `http://` in production is **unmeasured** —
+there is no network here to sample either. An `http:` value in either now fails
+silently. Owner: the **user** / product, as a decision between accepting the
+silent failure, surfacing an error, and normalising at the producer. Widening the
+allow-list is expressly not the remedy (F-1).
+
+**I. The renderer-console impact of the fire-and-forget rejection.**
+`AppStore.openExternalLink` (`:80-83`) discards the promise `send()` returns, so a
+blocked URL surfaces as an unhandled promise rejection rather than as visible
+feedback. Console noise, not a crash — but unobserved, because there is no browser
+here. Recorded alongside H, since the runtime-sourced producers there are exactly
+the callers a user would experience as "the link does nothing" (F-5).
+
+**J. Three main-process whole-error sinks stay unhardened**, all outside every
+anchor-1 diff and deliberately not retro-fixed (D-6d, C-7):
+`GovernanceQueryService.ts:523-526`, `governanceChannel.ts:58-60`, and `:64` /
+`:77`. F-3's rule stands and binds every future main-process governance sink:
+`filterLogData` is renderer-only, so a main-process sink is sanitized by hand and
+needs its own containment assertion. task-149's spy case is the first of its kind
+and the pattern to extend.
+
+**K. The two prettier-drifted files** named in the deviation record. Owner: the
+user's `nix fmt` pass.
+
+**L. Local only.** `gh` and push credentials are absent; nothing was pushed.
+
+**M. Carried in from earlier slices and still unowned:** cv-2 F-15's provenance
+half; slice-6 F-6's unowned "Expiring soon" and "Excluded from default cohort"
+badges (`research/slice-6-findings.md:90`); and cv-2 F-2's second action, the
+`CurrentVoteSummary` verified-name render and its unverified→verified story, which
+anchor-2 planning owns now that D-1 has supplied the data source.
+
+**Deliberately not done in anchor-1 — scope, not debt.** Do not book any of these
+as owed: no IPFS implementation (the slot is the interface; `ipfs:` returns
+`UnsupportedScheme`) · no `objectives` / `motivations` / `qualifications` /
+`references` / `paymentAddress` parse and no confirmation-dialog identity change
+(both anchor-2) · no name in any search, sort or filter path and no name on
+`DRepCard` · no bulk anchor prefetch · no retro-fix of the three pre-existing
+whole-error sinks · no widening of the `https:` allow-list.
 
 ### Residual gaps a later phase inherits
 
-_Filled at slice close._
+**1. The Primary badge and the "With metadata" filter now mean different things,
+and both ship.** The classifier's metadata input is `cohort.verifiedMetadataIds`
+(`DRepCategoryBadge.tsx:80`), fed from the store's verified-only computed
+(`GovernanceStore.ts:285-291`, `state === 'verified'`), and `anchor` is
+structurally absent from `DRepCategorySource`. But `filterDReps` still implements
+the user-facing "With / Without metadata" filter on on-chain anchor *presence*
+(`helpers.ts:198`, `:201`). A DRep whose anchor exists on-chain but failed
+Blake2b-256 verification therefore matches "With metadata" and renders
+*Non-metadata*. This is a recorded product decision, not a defect — the badge is
+the anti-misleading surface and had to move to verified content with the pipeline,
+while re-pointing the filter is a copy and semantics change needing its own row.
+Escalated: either the filter gains a verified-content mode with its own copy, or
+the divergence is accepted and written into the design doc (F-17).
+
+**2. High value suppresses the expiry hint for exactly the DReps where it matters
+most.** `shared-design-tokens.md:39` binds High Value > Threshold > Primary >
+Non-metadata and the classifier implements it verbatim (`:87-96`), pinned by the
+spec's case 5. Consequence: an in-cohort, verified, above-median DRep 7–12 epochs
+from expiry never shows "Approaching expiry — review before delegating", because
+the Threshold branch is unreachable once the High value condition holds. Any
+change is a §1a spec change first, then a classifier row — never a silent code fix
+(R-6, F-18).
+
+**3. The `target="_blank"` bypass on the anchor link is narrowed but not closed.**
+F-4 required task-151 either to route the anchor click through `openExternalLink`
+or to harden `setWindowOpenHandler`; it did the former, and the left-click path is
+hardened — the `onClick` calls `event.preventDefault()` before delegating
+(`DRepDetailAnchorSection.tsx:77-83`). What remains, read from the code and **not
+measured here for want of a browser**: `source/main/index.ts:276-286` still calls
+`shell.openExternal(url)` at `:283` with no scheme check and logs the whole URL
+first at `:279-281` (`logger.info('Prevented creation of new browser window', { url })`).
+A middle click does not fire React's `onClick`, so it would reach that handler.
+The scheme half of the exposure is moot on this surface, because the link renders
+only when the URL already parses as `https:`; the **logging** half is live, since
+the anchor URL identifies the DRep whose detail page the user is viewing and
+`filterLogData` does not run in main (F-3). Whoever next touches that handler
+should harden it and redact the URL.
+
+**4. cv-2's R1-a is discharged; R1-b is not.** task-151 added `verifiedName` to
+both `DRepDirectoryEntry` and `AppDRepDirectoryEntry`, so the data source cv-2's
+hand-off asked for now exists. The second half — a `CurrentVoteSummary`
+verified-name render and the Storybook story covering the unverified→verified
+transition — is still owned by no task. anchor-2 planning must action it, either
+by extending task-154 or by opening a new row.
+
+**5. The `unverified-anchor` source-label variant ships with no production
+emitter.** anchor-1's pipeline verifies in main before responding, so the renderer
+never receives fetched-but-unverified content. The variant and its copy were minted
+deliberately: design §2 is the contract and Storybook renders it (C-13, R-9, S-8).
+A reviewer should not hunt for the missing path, and it should not be deleted as
+dead code without a §2 change.
+
+**6. Hash verification proves authorship, not identity — and that is unchanged by
+anything in this slice.** A DRep can register an anchor whose `givenName` is any
+string it likes, and an impersonator satisfies hash verification exactly. The only
+mitigation is copy: the label and tooltip say what was actually proven
+("Fetched from {host}, hash-matched the on-chain anchor hash") and never "verified
+identity". Any later slice adding trust signals must re-read R-1 before writing a
+single string.
+
+**7. The two-anchor sanitization gate must keep travelling as a pair.** Running
+only `governance-sanitization` does not touch the `drepIdentity` shape cv-2
+created, which is pinned in `VotingGovernancePage.spec.tsx` instead. anchor-1
+raised the first anchor 26 → 35 and left the second at 27; a reader who re-proves
+the floor from either alone gets a false green (cv-2 F-31).
+
+**What the next slice builds on.** The https-only shell gate, the SSRF-guarded
+transport, the verify-cache-parse pipeline behind a never-rejecting channel, the
+`verifiedName` field on both directory-entry interfaces, the verified-only
+completeness computed, the cohort context and median, the four-category badge, and
+the three newly registered governance story files are all landed at `74bf92cdd`.
+anchor-2 inherits R1-b (item 4) and the anchor-2 halves of CIP-119 parsing as its
+first planning actions.
 
 ## References
 

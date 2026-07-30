@@ -71,10 +71,9 @@ function DRepSourceLabel({ source, host, className, intl }: Props) {
     'unverified-anchor': messages.unverified,
     'anchor-unavailable': messages.anchorUnavailable,
   };
-  const tooltipBySource: Partial<Record<
-    DRepSourceLabelVariant,
-    MessageDescriptor
-  >> = {
+  const tooltipBySource: Partial<
+    Record<DRepSourceLabelVariant, MessageDescriptor>
+  > = {
     'verified-off-chain': messages.verifiedTooltip,
     'unverified-anchor': messages.unverifiedTooltip,
     'anchor-unavailable': messages.anchorUnavailableTooltip,

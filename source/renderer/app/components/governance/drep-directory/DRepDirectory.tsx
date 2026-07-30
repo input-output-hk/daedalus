@@ -143,9 +143,10 @@ function DRepDirectory({
 
   // Search always covers the full membership so excluded and non-cohort
   // DReps stay reachable regardless of the current view.
-  const searchIndex = useMemo(() => buildDRepSearchIndex(showAllList), [
-    showAllList,
-  ]);
+  const searchIndex = useMemo(
+    () => buildDRepSearchIndex(showAllList),
+    [showAllList]
+  );
 
   const visibleEntries = useMemo(() => {
     let base: AppDRepDirectoryEntry[];

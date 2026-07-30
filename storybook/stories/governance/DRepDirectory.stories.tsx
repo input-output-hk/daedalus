@@ -365,13 +365,12 @@ storiesOf('Governance / DRep Directory', module)
                         onToggleFavorite: (drepId: string) => {
                           action('onToggleFavorite')(drepId);
                           store.set({
-                            favoriteDRepIds: store.state.favoriteDRepIds.includes(
-                              drepId
-                            )
-                              ? store.state.favoriteDRepIds.filter(
-                                  (id) => id !== drepId
-                                )
-                              : [...store.state.favoriteDRepIds, drepId],
+                            favoriteDRepIds:
+                              store.state.favoriteDRepIds.includes(drepId)
+                                ? store.state.favoriteDRepIds.filter(
+                                    (id) => id !== drepId
+                                  )
+                                : [...store.state.favoriteDRepIds, drepId],
                           });
                         },
                         onBackToDirectory: () =>

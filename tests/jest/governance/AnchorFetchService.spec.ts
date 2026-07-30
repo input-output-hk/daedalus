@@ -37,8 +37,8 @@ jest.mock('dns', () => {
   };
 });
 
-const mockRequest = (https.request as unknown) as jest.Mock;
-const mockLookup = (dns.promises.lookup as unknown) as jest.Mock;
+const mockRequest = https.request as unknown as jest.Mock;
+const mockLookup = dns.promises.lookup as unknown as jest.Mock;
 const ANCHOR_URL = 'https://anchor.example.org/profile.jsonld';
 
 class FakeResponse extends EventEmitter {
