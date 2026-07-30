@@ -29,6 +29,18 @@ export const messages = defineMessages({
     description:
       'Label above the signed payload vote id in the delegation confirmation dialog',
   },
+  verifiedName: {
+    id: 'voting.governance.confirmationDialog.verifiedName',
+    defaultMessage: '!!!Verified name',
+    description:
+      'Label above the verified off-chain DRep name in the delegation confirmation dialog',
+  },
+  verifiedNameSource: {
+    id: 'voting.governance.confirmationDialog.verifiedNameSource',
+    defaultMessage: '!!!Name:',
+    description:
+      'Prefix joining the on-chain source label to the verified-name source label',
+  },
   fee: {
     id: 'voting.governance.confirmationDialog.fee',
     defaultMessage: '!!!Transaction fee',

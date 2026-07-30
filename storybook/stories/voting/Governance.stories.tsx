@@ -71,6 +71,16 @@ const voteOptions = {
   'No confidence': 'no_confidence',
 };
 
+const toStoryVerifiedName = (option: string) =>
+  option === 'abstain' ||
+  option === 'no_confidence' ||
+  !boolean('Verified anchor name available', true)
+    ? null
+    : {
+        host: text('Verified name host', 'raw.githubusercontent.com'),
+        name: text('Verified name', 'Daedalus Test DRep'),
+      };
+
 const initializeTxErrorOptions: Record<string, InitializeVPDelegationTxError> =
   {
     Generic: 'generic',
@@ -284,6 +294,7 @@ const renderGovernanceConfirmationDialog = ({
     }}
     redirectToWallet={action('redirectToWallet')}
     selectedWallet={selectedWallet}
+    verifiedName={toStoryVerifiedName(chosenOption)}
   />
 );
 
@@ -441,6 +452,7 @@ storiesOf('Voting / Governance', module)
           }}
           redirectToWallet={action('redirectToWallet')}
           selectedWallet={makeGovernanceWallets('noDelegation')[0]}
+          verifiedName={toStoryVerifiedName(voteOption)}
         />
       </div>
     );
@@ -476,6 +488,7 @@ storiesOf('Voting / Governance', module)
           }}
           redirectToWallet={action('redirectToWallet')}
           selectedWallet={makeGovernanceWallets('noDelegation')[1]}
+          verifiedName={toStoryVerifiedName(voteOption)}
         />
       </div>
     );

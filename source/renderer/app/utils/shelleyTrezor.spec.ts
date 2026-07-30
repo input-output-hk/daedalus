@@ -99,4 +99,19 @@ describe('shelleyTrezor cast_vote certificate mapping', () => {
     } as CoinSelectionCertificate) as { dRep?: unknown };
     expect(result.dRep).toBeUndefined();
   });
+
+  it('derives the on-device credential from vote alone, ignoring display-only fields', () => {
+    const withDisplayFields = {
+      ...castVote(CIP129_KEY),
+      verifiedName: 'Daedalus Test DRep',
+    } as CoinSelectionCertificate;
+    const result = toTrezorCertificate(withDisplayFields) as {
+      dRep?: { type: number; keyHash?: string };
+    };
+
+    expect(result.dRep).toEqual({
+      type: PROTO.CardanoDRepType.KEY_HASH,
+      keyHash: decodedHash(CIP129_KEY),
+    });
+  });
 });

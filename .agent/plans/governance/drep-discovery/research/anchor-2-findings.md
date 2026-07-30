@@ -219,3 +219,65 @@ gap; the check is `grep` for the `Directory Identity: ID-Only in v1` section, no
 **Owner.** Record-only.
 
 ---
+
+## F-11 (task-154) — The guide's dialog test count counts declarations, while its own case body expands one of them into two runtime tests
+
+Step 7 predicts `27 → 32` for `VotingPowerDelegationConfirmationDialog.spec.tsx` and describes the
+addition as "+5 cases". Its skeleton lists case 5 as a single `it`, but the body text for that case
+mandates `it.each(['abstain', 'no_confidence'])`. Following the body — which is the operative
+instruction — produces 4 `it` plus 1 `it.each` of two entries, so declarations grow by exactly the
+promised 5 (19 → 24) while the runtime count grows by 6 (`27 → 33`).
+
+**Resolution.** 33 is correct and 32 is unreachable from the guide's own artifacts. The 27 baseline
+was re-confirmed against `git show HEAD:<path>`, the spec file being byte-identical at `55e8985bf`
+and at `589e95272`. The same split explains the full-run delta: 1299 → 1310 is 6+3+1+1 across the
+four edited specs, not 5+3+1+1.
+
+**Disposition.** Record-only, and the second instance of the pattern already recorded as F-9: this
+plan's per-step test arithmetic counts `it` declarations, not executed tests, wherever `it.each` is
+involved. A verifier comparing a green run against the prose will read the extra test as an overshoot.
+**Owner.** Record-only.
+
+---
+
+## F-12 (task-154) — The container spec harness had no channel for seeding `drepIndex`, and its confirmation helper cannot reach the sentinel vote types
+
+Step 8 instructs the implementer to seed `drepIndex` "through the governance store stub the harness
+builds". In the live `VotingGovernancePage.spec.tsx` no such channel existed: `drepIndex` was
+hard-coded inside `buildStores`, `StoreOverrides` had no field for it, and `openConfirmation` accepted
+only a drepId. `openConfirmation` additionally hard-codes `voteType: 'drep'`, so it cannot drive the
+abstain and no-confidence paths at all.
+
+**Resolution.** The harness was extended rather than duplicated: `StoreOverrides` gained
+`drepIndex?: Map<string, any>`, `buildStores` gained a `drepIndex` parameter defaulted to the Map it
+previously hard-coded, and `openConfirmation` gained an optional `storeOverrides` second argument
+defaulting to `{}` — so every pre-existing call site is unchanged and the 27 inherited tests keep
+their fixtures. The abstain case bypasses `openConfirmation` and calls `renderFlow` directly with
+`voteType: 'abstain'`, seeding `drepIndex` with a named entry under both `'abstain'` and the valid id
+so the null assertion is a real guard rather than an empty-map tautology.
+
+**Disposition.** Record-only, and load-bearing for anyone extending this spec: seeding the governance
+store now goes through `StoreOverrides`, and any sentinel-vote assertion must use `renderFlow`, not
+`openConfirmation`. **Owner.** Record-only; the harness change is in the task-154 diff.
+
+---
+
+## F-13 (task-154) — Hand-editing the generated catalogs to extractor-equivalent output is achievable, and the extractor run proves it
+
+F-4 recorded that sharding a build across implementers leaves `defaultMessages.json` and
+`translations/messages.json` un-regenerated, because every shard is individually barred from running
+the gate that writes them. task-154 took the other route: all four tool-managed files — both locale
+catalogs, `defaultMessages.json` and `translations/messages.json` — were hand-written to the output
+the extractor would produce, in source order for the generated pair and alphabetical order for the
+catalogs.
+
+**Resolution.** The hand-edit was exact. `yarn i18n:manage` was run afterwards, exited 0, and wrote
+nothing: md5 of all four files identical before and after, and `git status --porcelain` identical
+before and after. Nothing needed restoring, and the diff already carries what the extractor would
+have produced.
+
+**Disposition.** Record-only. The check that settles it is the md5-before/md5-after pair around a real
+extractor run, not an eyeball of the diff — a hand-edit that is merely plausible will be silently
+rewritten by the next person who runs the gate. **Owner.** Record-only.
+
+---

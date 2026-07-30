@@ -540,3 +540,96 @@ therefore landed as code but unverified visually.
 **Gate.** task-174 is closed. Next in the locked build order is task-154.
 
 ---
+
+## Code Review: task-154 — round 1 (2026-07-30)
+
+**Verdict: approved, zero blockers.** One round over the uncommitted task-154 diff — 13 modified
+files, no new file — against `anchor-2-implementation-guide.md` Steps 1–11. The task was built in two
+implementer shards (Steps 1–6, Steps 7–9); both reported every step landed, no STOP condition fired,
+and neither formatted, staged, committed or wrote to the tracker.
+
+### Blockers
+
+**None raised.** The round found nothing that had to be fixed before close.
+
+### Minor
+
+- **The guide's Step 7 test count contradicts its own case body.** Step 7 predicts `27 → 32` for
+  `VotingPowerDelegationConfirmationDialog.spec.tsx`. Its skeleton lists case 5 as a single `it`, but
+  the body text mandates `it.each(['abstain', 'no_confidence'])`, which expands to two runtime tests.
+  The implemented `+5` declarations (19 → 24) therefore measure `27 → 33`. The declaration count is
+  the guide's; the runtime count is not. Recorded as F-11 in `research/anchor-2-findings.md`.
+- **Step 8's seeding instruction had no live channel and one case cannot use the named helper.**
+  Step 8 says to seed `drepIndex` through the governance store stub, but `drepIndex` was hard-coded
+  inside `buildStores` and `openConfirmation` accepted only a drepId. The harness gained a
+  `drepIndex?: Map<string, any>` field on `StoreOverrides`, a defaulted `drepIndex` parameter on
+  `buildStores` carrying the previous default Map, and an optional `storeOverrides` second argument on
+  `openConfirmation` defaulting to `{}` — every existing call site unchanged. The abstain case calls
+  `renderFlow` directly, because `openConfirmation` hard-codes `voteType: 'drep'`. Recorded as F-12.
+- **The i18n catalogs were hand-edited and the hand-edit was later proved exact.** The implementer
+  shards are barred from running `yarn i18n:manage`, so all four tool-managed files were hand-written
+  to extractor-equivalent output. The verifier ran the extractor: exit 0, and it wrote nothing — md5
+  of `en-US.json`, `ja-JP.json`, `defaultMessages.json` and `translations/messages.json` identical
+  before and after, `git status --porcelain` identical before and after. Nothing needed restoring.
+  Recorded as F-13, and it closes the F-4 concern for this task rather than inheriting it.
+- **The must-not-touch invariants hold by absence from the diff.**
+  `VotingPowerDelegation.tsx`, `source/common/utils/logging.ts` and
+  `source/renderer/app/stores/VotingStore.ts` are unmodified, and the byte-equality of CIP-129,
+  CIP-105 and the signed payload `vote.id` across the name transition is asserted by a passing case in
+  the dialog spec rather than argued.
+- **The name is derived, never carried.** `resolveVerifiedName` in `VotingGovernancePage.tsx` returns
+  `null` unless the entry has both a `verifiedName` and an anchor URL, sentinel votes short-circuit
+  before the `governance.drepIndex` lookup, and `delegateVotes({ chosenOption, … })` is untouched. The
+  renamed dialog case `never renders a name carried on the identity object` keeps the old guard.
+- **No task ids, review labels, ALL-CAPS emphasis or change history** in any comment or test name
+  across the changed paths. No local `IntlProvider` and no per-locale story variant: the new
+  `Verified anchor name available` knob rides the global English/Japanese toggle through
+  `toStoryVerifiedName` at all three dialog call sites.
+- **`AppDRepDirectoryEntry` has gained `doNotList` since the guide's quote**, which changes nothing for
+  the helper; the spec's existing `drepEntry` already carries it and `anchoredEntry` spreads it.
+
+### Verifier's verdict
+
+**RED — one this-task failure, formatting only, against four inherited prettier-drift files; every
+typecheck, lint and test gate green with counts matching the guide.**
+
+- **This task's own.** `prettier --check` flags
+  `source/renderer/app/containers/voting/VotingGovernancePage.spec.tsx`. The failing hunk is this
+  task's `new Map([[VALID_DREP_ID, anchoredEntry('Daedalus Test DRep')]])` fixture in the
+  hash-guarded-name case, which prettier 2.1.2 wants across three lines; re-checking the formatted
+  output confirms the formatter is stable on it, so this is not the 2.1.2 oscillation. The `HEAD`
+  version of the same file is prettier-clean. Step 11's `prettier --write` was evidently not run over
+  this path.
+- **Inherited, not this task's.** `VotingPowerDelegationConfirmationDialog.tsx`,
+  `shelleyLedger.spec.ts`, `shelleyTrezor.spec.ts` and `storybook/stories/voting/Governance.stories.tsx`
+  drift at `HEAD` too. Proved by a two-tree comparison — `git show HEAD:<path>` versus the working
+  copy, both formatted with the repo `.prettierrc` — returning identical hunk counts (3/1/1/2) and
+  byte-identical added and removed line sets in both trees. This task's hunks add no new drift there.
+- **Counts.** `yarn compile` exit 0. `VotingPowerDelegationConfirmationDialog` 27 → **33** (the guide
+  says 32; see F-11), `containers/voting/VotingGovernancePage` 27 → 30, `utils/shelleyLedger` 7 → 8,
+  `utils/shelleyTrezor` 7 → 8, `i18n/preliminaryCopyMarkers` 5 unchanged. Both sanitization floor
+  anchors were run together and both are unchanged: `governance-sanitization` 39 in build order and
+  `logDRepStateSnapshot` 5. The unfiltered `node_modules/.bin/jest --runInBand` is 92 passed + 1
+  skipped of 93 suites and 1310 passed + 12 skipped of 1322 tests with 10 snapshots and zero
+  failures — `+11` over task-174's 1299/1311, exactly 6+3+1+1 from the four edited specs, with no
+  suite losing a test. `yarn lint` exits 0 with 0 errors at 5635 warnings. The guide's i18n parity
+  script prints its predicted `1651 1651 115 115 true` then `[]`.
+- **Never run.** `yarn storybook` — an interactive dev server with no browser here — so the visual
+  pass over the `Verified anchor name available` knob at all three dialog call sites and the ja-JP
+  overflow check stay owed. `yarn storybook:build` and `yarn check:all` were correctly not run: both
+  are red at `HEAD` for reasons unrelated to this branch.
+
+### Owed at close
+
+The close-out commit `feat(gov): task-154 render the verified drep name in the delegation confirmation`
+is unmade, with 13 modified files sitting at `HEAD` `589e95272`. The one this-task prettier hunk in
+`VotingGovernancePage.spec.tsx` is open and is why the tracker row reads `partial` rather than
+`complete`; the `nix fmt` pre-merge obligation, which cannot run in this devcontainer, will settle it
+along with the four inherited drift files. The Storybook visual and ja-JP overflow pass never ran.
+AC-2's confirmation half for **task-157** is discharged here, not there — task-157's row records the
+outbound side of that hand-off.
+
+**Gate.** task-154 is closed with one open formatting item. Next in the locked build order is
+task-155.
+
+---

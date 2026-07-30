@@ -12,11 +12,13 @@ const REVIEWED_JA_JP_EXCEPTIONS = [
 const CURRENT_VOTE_NAMESPACE = 'voting.governance.currentVote.';
 const GOVERNANCE_NAMESPACE = 'governance.';
 
-// Only these two confirmation-dialog keys are preliminary; the rest of that
+// Only these confirmation-dialog keys are preliminary; the rest of that
 // namespace predates the feature and is legitimately unmarked.
 const PRELIMINARY_CONFIRMATION_KEYS = [
   'voting.governance.confirmationDialog.drepIdCip105',
   'voting.governance.confirmationDialog.signedPayload',
+  'voting.governance.confirmationDialog.verifiedName',
+  'voting.governance.confirmationDialog.verifiedNameSource',
 ];
 
 const en: Record<string, string> = enUS;

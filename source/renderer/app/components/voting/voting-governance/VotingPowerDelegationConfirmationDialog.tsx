@@ -40,6 +40,16 @@ const mapVoteToIntlMessage = (vote: VoteType | string): ReactIntlMessage => {
   }
 };
 
+/**
+ * The verified name plus the host that served the hash-matched bytes. One
+ * object, not two props, so `filterLogData`'s existing `verifiedName` key
+ * redacts the host with it at any depth.
+ */
+export type VerifiedDRepNameSource = {
+  host: string;
+  name: string;
+};
+
 export type VotingPowerDelegationConfirmationDialogState =
   | {
       error?: DelegateVotesError;
@@ -68,6 +78,7 @@ type VotingPowerDelegationConfirmationDialogProps = {
   >;
   redirectToWallet: (walletId: string) => void;
   selectedWallet: Wallet;
+  verifiedName: VerifiedDRepNameSource | null;
 };
 
 function VotingPowerDelegationConfirmationDialog({
@@ -82,6 +93,7 @@ function VotingPowerDelegationConfirmationDialog({
   onSubmit,
   redirectToWallet,
   selectedWallet,
+  verifiedName,
 }: VotingPowerDelegationConfirmationDialogProps) {
   const [state, setState] =
     useState<VotingPowerDelegationConfirmationDialogState>({
@@ -156,13 +168,22 @@ function VotingPowerDelegationConfirmationDialog({
       <div className={styles.content}>
         {!isSentinelVote ? (
           <>
+            {verifiedName && (
+              <>
+                {/* Only the hash-guarded verified projection reaches here; an
+                    unverified anchor name never renders on a signing surface. */}
+                <p className={styles.paragraphTitle}>
+                  {intl.formatMessage(messages.verifiedName)}
+                </p>
+                <p className={styles.paragraphValue}>{verifiedName.name}</p>
+              </>
+            )}
             <p className={styles.paragraphTitle}>
               {intl.formatMessage(messages.drepId)}
             </p>
             <p className={styles.paragraphValue}>
-              {/* Rendered untouched: must stay byte-equal to chosenOption and
-                  the delegateVotes dRepId. Name slot is reserved for anchor-2;
-                  unverified names never render here. */}
+              {/* Rendered untouched: this string must stay byte-equal to
+                  chosenOption and the delegateVotes dRepId. */}
               <code className={styles.drepIdValue}>
                 {drepIdentity?.raw ?? chosenOption}
               </code>
@@ -192,9 +213,19 @@ function VotingPowerDelegationConfirmationDialog({
                 </p>
               </>
             )}
-            {drepIdentity && (
+            {(drepIdentity || verifiedName) && (
               <p className={styles.paragraphValue}>
                 <DRepSourceLabel source="on-chain" />
+                {verifiedName && (
+                  <>
+                    {' · '}
+                    {intl.formatMessage(messages.verifiedNameSource)}{' '}
+                    <DRepSourceLabel
+                      source="verified-off-chain"
+                      host={verifiedName.host}
+                    />
+                  </>
+                )}
               </p>
             )}
           </>

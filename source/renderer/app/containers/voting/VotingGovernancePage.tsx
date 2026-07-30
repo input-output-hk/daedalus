@@ -11,6 +11,22 @@ import type { VoteType } from '../../components/voting/voting-governance/types';
 import { pickDelegationFormNavigationState } from '../governance/delegationFormState';
 import { normalizeDRepIdentity } from '../../utils/governance/normalizeDRepIdentity';
 import type { DRepIdentity } from '../../../../common/types/governance.types';
+import type { AppDRepDirectoryEntry } from '../../stores/GovernanceStore';
+import type { VerifiedDRepNameSource } from '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog';
+
+// The verified-off-chain label names the host that served the bytes; redirects
+// are off, so the anchor URL's host is that host. A name whose host will not
+// parse is dropped rather than labelled with a blank source.
+const resolveVerifiedName = (
+  entry: AppDRepDirectoryEntry | undefined
+): VerifiedDRepNameSource | null => {
+  if (entry?.verifiedName == null || entry.anchor == null) return null;
+  try {
+    return { host: new URL(entry.anchor.url).host, name: entry.verifiedName };
+  } catch {
+    return null;
+  }
+};
 
 type Props = InjectedProps & RouteComponentProps;
 
@@ -81,10 +97,14 @@ class VotingGovernancePage extends Component<Props> {
           // Sentinels carry no identity; a drep target is decoded for display
           // only — the rendered and submitted string stays chosenOption itself,
           // untouched.
-          const drepIdentity: DRepIdentity | null =
-            chosenOption === 'abstain' || chosenOption === 'no_confidence'
-              ? null
-              : normalizeDRepIdentity(chosenOption);
+          const isSentinel =
+            chosenOption === 'abstain' || chosenOption === 'no_confidence';
+          const drepIdentity: DRepIdentity | null = isSentinel
+            ? null
+            : normalizeDRepIdentity(chosenOption);
+          const verifiedName = isSentinel
+            ? null
+            : resolveVerifiedName(governance.drepIndex.get(chosenOption));
           return (
             <VotingPowerDelegationConfirmationDialog
               chosenOption={chosenOption}
@@ -112,6 +132,7 @@ class VotingGovernancePage extends Component<Props> {
                 });
               }}
               selectedWallet={selectedWallet}
+              verifiedName={verifiedName}
             />
           );
         }}

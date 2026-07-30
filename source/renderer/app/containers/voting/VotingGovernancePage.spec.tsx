@@ -165,12 +165,14 @@ const votingHardwareWallet = {
 };
 
 type StoreOverrides = {
+  drepIndex?: Map<string, any>;
   hwDeviceStatus?: HwDeviceStatus;
   isTrezor?: boolean;
   wallets?: any[];
 };
 
 const buildStores = ({
+  drepIndex = new Map([[VALID_DREP_ID, drepEntry]]),
   hwDeviceStatus = HwDeviceStatuses.READY,
   isTrezor = false,
   wallets = [softwareWallet],
@@ -187,7 +189,7 @@ const buildStores = ({
       verifiedMetadataIds: new Set<string>(),
     },
     displayedDRepList: [drepEntry],
-    drepIndex: new Map([[VALID_DREP_ID, drepEntry]]),
+    drepIndex,
     drepList: [drepEntry],
     error: null,
     favoriteDRepIds: new Set<string>(),
@@ -274,17 +276,23 @@ const renderFlow = (
   };
 };
 
-const openConfirmation = async (drepId: string) => {
-  const flow = renderFlow([
-    {
-      pathname: ROUTES.VOTING.GOVERNANCE,
-      state: {
-        selectedDRepId: drepId,
-        selectedWalletId: WALLET_ID,
-        voteType: 'drep',
+const openConfirmation = async (
+  drepId: string,
+  storeOverrides: StoreOverrides = {}
+) => {
+  const flow = renderFlow(
+    [
+      {
+        pathname: ROUTES.VOTING.GOVERNANCE,
+        state: {
+          selectedDRepId: drepId,
+          selectedWalletId: WALLET_ID,
+          voteType: 'drep',
+        },
       },
-    },
-  ]);
+    ],
+    storeOverrides
+  );
   fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
   await screen.findByText('Confirm Transaction');
   return flow;
@@ -724,6 +732,63 @@ describe('Confirmation dialog identity derivation', () => {
       expect.objectContaining({ chosenOption: LEGACY_DREP_ID })
     );
   });
+
+  const anchoredEntry = (verifiedName: string | null) => ({
+    ...drepEntry,
+    anchor: {
+      url: 'https://raw.githubusercontent.com/example/drep.jsonld',
+      hash: 'f0e1d2c3b4a5968778695a4b3c2d1e0ff0e1d2c3b4a5968778695a4b3c2d1e0f',
+    },
+    verifiedName,
+  });
+
+  it('passes the hash-guarded verified name and its anchor host to the dialog', async () => {
+    const { stores } = await openConfirmation(VALID_DREP_ID, {
+      drepIndex: new Map([
+        [VALID_DREP_ID, anchoredEntry('Daedalus Test DRep')],
+      ]),
+    });
+
+    expect(mockDialogProps[mockDialogProps.length - 1].verifiedName).toEqual({
+      host: 'raw.githubusercontent.com',
+      name: 'Daedalus Test DRep',
+    });
+    expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
+      expect.objectContaining({ chosenOption: VALID_DREP_ID })
+    );
+  });
+
+  it('passes a null verified name when the entry carries none', async () => {
+    await openConfirmation(VALID_DREP_ID, {
+      drepIndex: new Map([[VALID_DREP_ID, anchoredEntry(null)]]),
+    });
+
+    expect(mockDialogProps[mockDialogProps.length - 1].verifiedName).toBeNull();
+  });
+
+  it('passes a null verified name for the abstain sentinel', async () => {
+    renderFlow(
+      [
+        {
+          pathname: ROUTES.VOTING.GOVERNANCE,
+          state: { selectedWalletId: WALLET_ID, voteType: 'abstain' },
+        },
+      ],
+      {
+        drepIndex: new Map([
+          ['abstain', anchoredEntry('Daedalus Test DRep')],
+          [VALID_DREP_ID, anchoredEntry('Daedalus Test DRep')],
+        ]),
+      }
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    await screen.findByText('Confirm Transaction');
+
+    const props = mockDialogProps[mockDialogProps.length - 1];
+    expect(props.chosenOption).toBe('abstain');
+    expect(props.verifiedName).toBeNull();
+    expect(props.drepIdentity).toBeNull();
+  });
 });
 
 describe('Confirmation dialog prop contract', () => {
@@ -738,6 +803,7 @@ describe('Confirmation dialog prop contract', () => {
     'onSubmit',
     'redirectToWallet',
     'selectedWallet',
+    'verifiedName',
   ];
 
   beforeEach(() => {

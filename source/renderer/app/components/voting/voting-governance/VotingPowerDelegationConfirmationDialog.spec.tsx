@@ -51,6 +51,7 @@ const renderDialog = (overrides: Record<string, unknown> = {}) =>
           onSubmit={jest.fn(async () => ({ success: true as const }))}
           redirectToWallet={jest.fn()}
           selectedWallet={softwareWallet}
+          verifiedName={null}
           {...overrides}
         />
       </IntlProvider>
@@ -86,7 +87,7 @@ describe('VotingPowerDelegationConfirmationDialog — DRep identity', () => {
     expect(screen.queryByText(VALID_DREP_ID)).not.toBeInTheDocument();
   });
 
-  it('never renders a name field, even if extra fields sneak into the identity', () => {
+  it('never renders a name carried on the identity object', () => {
     renderDialog({
       drepIdentity: {
         credentialType: 'key',
@@ -372,6 +373,100 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
       expect(screen.queryByText('!!!CIP-105 DRep ID')).not.toBeInTheDocument();
       expect(screen.queryByText('!!!Signed payload')).not.toBeInTheDocument();
       expect(screen.queryByText('!!!On-chain')).not.toBeInTheDocument();
+    }
+  );
+});
+
+describe('VotingPowerDelegationConfirmationDialog — verified name', () => {
+  const KEY_CIP129 =
+    'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
+  const KEY_CIP105 =
+    'drep_vkh15xev84897cr3s2f6fdwx6l50jzsm9s75uhmqwxpf8f94czu4a4l';
+  const KEY_CREDENTIAL_HEX =
+    'a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c';
+  const verified = {
+    host: 'raw.githubusercontent.com',
+    name: 'Daedalus Test DRep',
+  };
+
+  const renderVerified = (overrides: Record<string, unknown> = {}) =>
+    renderDialog({
+      chosenOption: KEY_CIP129,
+      drepIdentity: normalizeDRepIdentity(KEY_CIP129),
+      verifiedName: verified,
+      ...overrides,
+    });
+
+  afterEach(cleanup);
+
+  it('renders the verified name above the DRep ID', () => {
+    renderVerified();
+
+    expect(screen.getByText('!!!Verified name')).toBeInTheDocument();
+    expect(screen.getByText('Daedalus Test DRep')).toBeInTheDocument();
+
+    const order = [
+      '!!!Verified name',
+      '!!!DRep ID',
+      '!!!CIP-105 DRep ID',
+      '!!!Signed payload',
+    ];
+    expect(
+      Array.from(document.querySelectorAll('p'))
+        .map((node) => node.textContent ?? '')
+        .filter((text) => order.includes(text))
+    ).toEqual(order);
+  });
+
+  it('labels the verified name with both source labels and the host tooltip', () => {
+    renderVerified();
+
+    const label = screen.getByText('!!!Verified off-chain content');
+    expect(label.getAttribute('title')).toEqual(
+      expect.stringContaining('raw.githubusercontent.com')
+    );
+    // The source paragraph's own text node is " · !!!Name: ", which no exact
+    // text matcher reaches; only the spans hold single matchable text nodes.
+    const sourceLine = label.closest('p');
+    expect(sourceLine?.textContent).toContain('!!!On-chain');
+    expect(sourceLine?.textContent).toContain('!!!Name:');
+  });
+
+  it('keeps CIP-129, CIP-105 and the signed payload byte-equal when a name is added', () => {
+    renderVerified();
+
+    expect(screen.getByText(KEY_CIP129).textContent).toBe(KEY_CIP129);
+    expect(screen.getByText(KEY_CIP105).textContent).toBe(KEY_CIP105);
+    expect(
+      screen.getByText(`{"vote":{"type":"drep","id":"${KEY_CREDENTIAL_HEX}"}}`)
+    ).toBeInTheDocument();
+  });
+
+  it('renders no name and only the on-chain label when no verified metadata exists', () => {
+    renderVerified({ verifiedName: null });
+
+    expect(screen.queryByText('!!!Verified name')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('!!!Verified off-chain content')
+    ).not.toBeInTheDocument();
+    expect(screen.getByText('!!!On-chain')).toBeInTheDocument();
+  });
+
+  it.each(['abstain', 'no_confidence'])(
+    'renders no name for the %s sentinel',
+    (option) => {
+      renderVerified({
+        chosenOption: option,
+        drepIdentity: null,
+        verifiedName: verified,
+      });
+
+      expect(screen.queryByText('!!!Verified name')).not.toBeInTheDocument();
+      expect(screen.queryByText('Daedalus Test DRep')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText('!!!Verified off-chain content')
+      ).not.toBeInTheDocument();
+      expect(screen.getByText('Vote')).toBeInTheDocument();
     }
   );
 });

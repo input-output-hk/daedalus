@@ -84,4 +84,19 @@ describe('shelleyLedger cast_vote certificate mapping', () => {
     } as CoinSelectionCertificate);
     expect(result.params.dRep).toBeUndefined();
   });
+
+  it('derives the on-device credential from vote alone, ignoring display-only fields', () => {
+    const withDisplayFields = {
+      ...castVote(CIP129_KEY),
+      verifiedName: 'Daedalus Test DRep',
+    } as CoinSelectionCertificate;
+
+    expect(toLedgerCertificate(withDisplayFields).params.dRep).toEqual(
+      toLedgerCertificate(castVote(CIP129_KEY)).params.dRep
+    );
+    expect(toLedgerCertificate(withDisplayFields).params.dRep).toEqual({
+      type: DRepParamsType.KEY_HASH,
+      keyHashHex: decodedHash(CIP129_KEY),
+    });
+  });
 });
