@@ -88,6 +88,20 @@ export enum AnchorFetchErrorType {
   InvalidRequest = 'ANCHOR_INVALID_REQUEST',
 }
 
+/** CIP-119 fields extracted from anchor bytes that passed Blake2b-256 verification. */
+export interface VerifiedDRepAnchorContent {
+  givenName: string | null;
+}
+
+export type DRepAnchorResult =
+  | {
+      status: 'verified';
+      content: VerifiedDRepAnchorContent;
+      host: string;
+      fetchedAt: number;
+    }
+  | { status: 'unavailable'; reason: AnchorFetchErrorType };
+
 // ---- Wallet Governance Status ----
 
 export type GovernanceVoteKind = 'drep' | 'abstain' | 'no_confidence';

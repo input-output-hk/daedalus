@@ -257,3 +257,35 @@ scribe pass flips the task-149 tracker row to `complete` with `statusReason`,
 line, no body, no trailer, blocked only on the F-9 prettier scope decision.
 **Owner.** Whoever closes the task; F-8's lesson applies — the commit will also carry
 the tracker row and the two plan docs, which is correct and not a scope breach.
+
+## F-12 (task-150) — The close-out commit is again undischarged, but unlike task-149 it is not blocked on any prettier scope decision
+
+Same shape as F-7 and F-11: the implementation, verification and review passes were
+each instructed not to commit, and complied. At the time of this record
+`git status --porcelain` shows four modified files (`source/common/ipc/api.ts`,
+`source/common/types/governance.types.ts`, `source/main/ipc/index.ts`,
+`source/renderer/app/ipc/governanceChannel.ts`) and ten untracked — the two
+services (`source/main/governance/AnchorVerificationService.ts`,
+`source/main/governance/anchorCache.ts`), the IPC handler and its spec
+(`source/main/ipc/governanceAnchorChannel.ts`, `:spec.ts`), the two Jest suites
+(`tests/jest/governance/AnchorVerificationService.spec.ts`,
+`tests/jest/governance/anchorCache.spec.ts`) and the four fixture files under
+`tests/mocks/governance/` — against HEAD `71ad2b4a1`. The commit F-11 recorded as
+OWED has since landed as that HEAD, with a reworded subject
+(`feat(gov): task-149 add the ssrf-guarded https anchor fetch transport`) rather
+than the guide's proposed line at `anchor-1-implementation-guide.md:2024`. The F-9
+churn decision does not recur here: all eleven Verify step-7 paths (`:2965-2976`)
+pass `prettier --check` as they stand — neither of the two HEAD-drifted files is in
+the list — so `--write` would be a no-op, step 8's digest regeneration (`:2978`) is
+moot, and the committed fixture digest still reproduces (step 1 at `:2925-2930`
+prints nothing, re-run in this scribe pass).
+
+**Resolution.** Bookkeeping, not broken code: every task-150 Verify gate measured
+green (9 / 13 / 2 tests across the three new suites, 159 passed governance tests
+against the >=120 floor, 35 / 27 on both sanitization anchors, lint 0 errors at
+5615 warnings), and this scribe pass flips the tracker row to `complete`.
+**Disposition.** OWED — the single commit
+`feat(gov): task-150 verify, cache and parse DRep anchor bytes` (`:2986`), one
+subject line, no body, no trailer; per F-8's lesson it will also carry the tracker
+row and the two appended plan docs, which is correct and not a scope breach.
+**Owner.** Whoever closes the task; the `nix fmt` pre-merge pass stays user-owned.

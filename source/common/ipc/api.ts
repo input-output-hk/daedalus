@@ -85,6 +85,8 @@ import type {
 import type {
   DRepListQueryPayload,
   DRepStakeQueryPayload,
+  DRepAnchorPresence,
+  DRepAnchorResult,
 } from '../types/governance.types';
 
 /**
@@ -340,8 +342,7 @@ export type ExportWalletsMainResponse = {
  */
 export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
   'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
-export type GenerateWalletMigrationReportRendererRequest =
-  WalletMigrationReportData;
+export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
 export type GenerateWalletMigrationReportMainResponse = void;
 
 /**
@@ -390,8 +391,7 @@ export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
  */
 export const DELETE_DOWNLOADED_FILE = 'DELETE_DOWNLOADED_FILE';
 export type DeleteDownloadedFileRendererRequest = DeleteDownloadedFileRequest;
-export type DeleteDownloadedFileMainResponse =
-  DeleteDownloadedFileResponse | void;
+export type DeleteDownloadedFileMainResponse = DeleteDownloadedFileResponse | void;
 
 /**
  * Channel for initiating the download manager
@@ -404,16 +404,14 @@ export type DownloadLocalDataMainResponse = DownloadLocalDataResponse;
  * Channel for initiating the download manager
  */
 export const GET_DOWNLOADS_LOCAL_DATA = 'GET_DOWNLOADS_LOCAL_DATA';
-export type DownloadsLocalDataRendererRequest =
-  DownloadsLocalDataRequest | void;
+export type DownloadsLocalDataRendererRequest = DownloadsLocalDataRequest | void;
 export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
 
 /**
  * Channel for initiating the download manager
  */
 export const CLEAR_DOWNLOAD_LOCAL_DATA = 'CLEAR_DOWNLOAD_LOCAL_DATA';
-export type ClearDownloadLocalDataRendererRequest =
-  ClearDownloadLocalDataRequest;
+export type ClearDownloadLocalDataRendererRequest = ClearDownloadLocalDataRequest;
 export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
 
 /**
@@ -466,8 +464,7 @@ export type MithrilPartialSyncStartMainResponse = void;
 export const MITHRIL_PARTIAL_SYNC_STATUS_CHANNEL =
   'MITHRIL_PARTIAL_SYNC_STATUS_CHANNEL';
 export type MithrilPartialSyncStatusRendererRequest = void;
-export type MithrilPartialSyncStatusMainResponse =
-  MithrilPartialSyncStatusSnapshot;
+export type MithrilPartialSyncStatusMainResponse = MithrilPartialSyncStatusSnapshot;
 
 export const MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL =
   'MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL';
@@ -487,8 +484,7 @@ export type MithrilPartialSyncWipeAndFullSyncMainResponse = void;
 export const MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL =
   'MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL';
 export type MithrilPartialSyncAvailabilityRendererRequest = void;
-export type MithrilPartialSyncAvailabilityMainResponse =
-  MithrilPartialSyncAvailability;
+export type MithrilPartialSyncAvailabilityMainResponse = MithrilPartialSyncAvailability;
 
 export const MITHRIL_PARTIAL_SYNC_FINALIZE_CHANNEL =
   'MITHRIL_PARTIAL_SYNC_FINALIZE_CHANNEL';
@@ -517,8 +513,7 @@ export type ValidateChainStorageDirectoryMainResponse = ChainStorageValidation;
 export const PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL =
   'PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL';
 export type PrepareChainStorageLocationChangeRendererRequest = void;
-export type PrepareChainStorageLocationChangeMainResponse =
-  ChainStorageValidation | null;
+export type PrepareChainStorageLocationChangeMainResponse = ChainStorageValidation | null;
 
 /**
  * Channel for quitting Daedalus and installing update
@@ -588,16 +583,12 @@ export type GetBlockSyncProgressMainResponse = BlockSyncProgress;
 
 export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
   'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
-export type getHardwareWalletTransportRendererRequest =
-  HardwareWalletTransportDeviceRequest;
-export type getHardwareWalletTransportMainResponse =
-  HardwareWalletTransportDeviceResponse;
+export type getHardwareWalletTransportRendererRequest = HardwareWalletTransportDeviceRequest;
+export type getHardwareWalletTransportMainResponse = HardwareWalletTransportDeviceResponse;
 export const GET_EXTENDED_PUBLIC_KEY_CHANNEL =
   'GET_EXTENDED_PUBLIC_KEY_CHANNEL';
-export type getExtendedPublicKeyRendererRequest =
-  HardwareWalletExtendedPublicKeyRequest;
-export type getExtendedPublicKeyMainResponse =
-  HardwareWalletExtendedPublicKeyResponse;
+export type getExtendedPublicKeyRendererRequest = HardwareWalletExtendedPublicKeyRequest;
+export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyResponse;
 export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
 export type getCardanoAdaAppRendererRequest = {
   path: string | null | undefined;
@@ -606,8 +597,7 @@ export type getCardanoAdaAppRendererRequest = {
 export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
-export type getHardwareWalletConnectionMainRequest =
-  HardwareWalletConnectionRequest;
+export type getHardwareWalletConnectionMainRequest = HardwareWalletConnectionRequest;
 export type getHardwareWalletConnectionRendererResponse =
   | LedgerDevicePayload
   | TrezorDevicePayload
@@ -664,3 +654,7 @@ export type GovernanceDRepListMainResponse = DRepListQueryPayload;
 export const GOVERNANCE_DREP_STAKE_CHANNEL = 'GOVERNANCE_DREP_STAKE_CHANNEL';
 export type GovernanceDRepStakeRendererRequest = void;
 export type GovernanceDRepStakeMainResponse = DRepStakeQueryPayload;
+
+export const GOVERNANCE_DREP_ANCHOR_CHANNEL = 'GOVERNANCE_DREP_ANCHOR_CHANNEL';
+export type GovernanceDRepAnchorRendererRequest = DRepAnchorPresence;
+export type GovernanceDRepAnchorMainResponse = DRepAnchorResult;

@@ -2,12 +2,15 @@ import { RendererIpcChannel } from './lib/RendererIpcChannel';
 import {
   GOVERNANCE_DREP_LIST_CHANNEL,
   GOVERNANCE_DREP_STAKE_CHANNEL,
+  GOVERNANCE_DREP_ANCHOR_CHANNEL,
 } from '../../../common/ipc/api';
 import type {
   GovernanceDRepListMainResponse,
   GovernanceDRepListRendererRequest,
   GovernanceDRepStakeMainResponse,
   GovernanceDRepStakeRendererRequest,
+  GovernanceDRepAnchorMainResponse,
+  GovernanceDRepAnchorRendererRequest,
 } from '../../../common/ipc/api';
 
 export const governanceDRepListChannel: RendererIpcChannel<
@@ -19,3 +22,8 @@ export const governanceDRepStakeChannel: RendererIpcChannel<
   GovernanceDRepStakeMainResponse,
   GovernanceDRepStakeRendererRequest
 > = new RendererIpcChannel(GOVERNANCE_DREP_STAKE_CHANNEL);
+
+export const governanceDRepAnchorChannel: RendererIpcChannel<
+  GovernanceDRepAnchorMainResponse,
+  GovernanceDRepAnchorRendererRequest
+> = new RendererIpcChannel(GOVERNANCE_DREP_ANCHOR_CHANNEL);

@@ -766,3 +766,79 @@ adjudication was needed.
    unhardened at `GovernanceQueryService.ts:523-526` and `governanceChannel.ts:58-60`, `:64` /
    `:77`. F-3's rule stands — every new main-process sink needs hand-enforcement plus its own
    containment assertion, which this task's service is the first to carry.
+
+## Code Review: task-150 — round 1 (2026-07-29)
+
+**Verdict: approved. No blockers, one round.** The review ran over the uncommitted working tree at
+HEAD `71ad2b4a1` — four modified files (`source/common/ipc/api.ts`,
+`source/common/types/governance.types.ts`, `source/main/ipc/index.ts`,
+`source/renderer/app/ipc/governanceChannel.ts`) and ten untracked
+(`source/main/governance/AnchorVerificationService.ts`, `source/main/governance/anchorCache.ts`,
+`source/main/ipc/governanceAnchorChannel.ts` and its spec, the two Jest suites under
+`tests/jest/governance/`, and the four fixture files under `tests/mocks/governance/`). The diff
+lands the guide's verify-cache-parse pipeline faithfully: the Blake2b-256 digest gates
+`JSON.parse` and every cache write on both the fetch and cache-hit paths
+(`AnchorVerificationService.ts:66-95`); the hash-keyed cache validates `/^[0-9a-f]{64}$/` before
+any `path.join` and writes immutably with `wx`/`EEXIST` tolerance (`anchorCache.ts:19-62`); the
+S-4 IPC seam carries `DRepAnchorPresence` with no `drepId`, and the handler never rejects and logs
+enum values only; all 24 prescribed test cases (9 cache + 13 verification + 2 handler) exist with
+the load-bearing assertions intact (the `JSON.parse` spy, the `fs.writeFileSync` spy, tamper
+recovery, in-flight dedup, and the four-level logger sanitization sweep). Not one line changed in
+review.
+
+### Blockers
+
+**None raised.**
+
+### Minor
+
+**None raised.** The convention sweep found nothing to file: zero new dependencies, zero i18n
+strings, no comment or test-name convention violations, and no sensitive value reaching any
+main-process logger.
+
+### Independent re-checks
+
+The verifier ran all eight Verify steps of the guide (`anchor-1-implementation-guide.md:2920-2979`)
+and the reviewer independently re-ran the load-bearing gates rather than inheriting the numbers;
+the two passes agreed on every count.
+
+| Gate | Guide expectation | Measured (verifier; reviewer agreeing where re-run) |
+|---|---|---|
+| Fixture digest, step 1 (`:2925-2930`) | prints nothing | prints nothing — digest reproduces; reviewer additionally confirmed the fixture is prettier-stable, so the later format pass cannot drift it |
+| `yarn compile` (`:2933`) | exit 0 | exit 0; reviewer also ran `tsc --noEmit`, exit 0 |
+| `jest --testPathPattern="tests/jest/governance/anchorCache"` (`:2937`) | 1 suite / 9 tests | 1 suite / **9 tests**, green |
+| `jest --testPathPattern="tests/jest/governance/AnchorVerificationService"` (`:2939`) | 1 suite / 13 tests | 1 suite / **13 tests**, green |
+| `jest --testPathPattern="source/main/ipc/governanceAnchorChannel"` (`:2941`) | 1 suite / 2 tests | 1 suite / **2 tests**, green |
+| handler-registration grep (`:2945-2946`) | exactly two hits | exactly two — `source/main/ipc/index.ts:30` import, `:53` call |
+| `jest --testPathPattern="tests/jest/governance"` (`:2949-2952`) | >= 7 passed suites, >= 120 passing tests | **8 passed + 1 skipped suites; 159 passed + 12 skipped tests** |
+| `jest --testPathPattern="tests/jest/security/governance-sanitization"` — floor anchor 1 of 2 (`:2955-2956`) | 26 at HEAD, more once task-149's cases land | 1 suite / **35 tests**, green |
+| `jest --testPathPattern="containers/voting/VotingGovernancePage.spec"` — floor anchor 2 of 2 (`:2957-2958`) | 1 suite, all green | 1 suite / **27 tests**, green |
+| `yarn lint` (`:2960-2962`) | exit 0; ~5591 baseline moves | exit 0, **0 errors**, 5615 warnings — movement expected per the guide's own step-6 note |
+| step-7 format pass (`:2965-2976`) | `prettier --write` over the eleven paths | `prettier --check` clean on all eleven — run read-only as the substitute; `--write` would be a no-op, so step 8's hash regeneration (`:2978`) is moot |
+
+`yarn i18n:manage` was deliberately not run, per the guide's own instruction (`:2981`) — task-150
+mints no copy and the diff touches no catalog. The 1 skipped suite / 12 skipped tests is the
+environment-gated `GovernanceCliArgvSmoke.spec.ts` self-skipping with `cardano-cli` off PATH, as
+in every prior round.
+
+### Merged and dropped
+
+**Nothing to merge and nothing dropped** — no lens filed a finding at any severity, so no
+adjudication was needed.
+
+**Decision: approve.** One round, nothing carried forward.
+
+### OWED — never reported green
+
+1. **No live anchor fetch, ever** (guide OWED 1, `anchor-1-implementation-guide.md:3000-3001`) —
+   no network in this devcontainer; every path is proven only against a mocked `fetchAnchorBytes`.
+   F-10's caveat carries to this task's offline proofs exactly as predicted.
+2. **The real SIPO / Cardano Academy CIP-119 body bytes** (guide OWED 2, `:3002-3004`) — no
+   CIP-119 body is committed and the digest at `drep-state-preprod-epoch295-sample.json:2853`
+   cannot be reproduced offline; carried forward to task-151 AC-4.
+3. `nix fmt` before merge (guide OWED 3, `:3005-3006`) — `nix` is absent here and **cannot** run;
+   explicit-path prettier (verified clean via `--check`) is the substitute and the real `nix fmt`
+   run stays a user-owned pre-merge obligation.
+4. **The close-out commit is unmade.** `feat(gov): task-150 verify, cache and parse DRep anchor
+   bytes` (`:2986`) — four modified and ten untracked files sit uncommitted at HEAD `71ad2b4a1`.
+   Recorded as F-12; unlike task-149, no prettier scope decision blocks it.

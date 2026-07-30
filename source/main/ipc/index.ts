@@ -27,6 +27,7 @@ import { handleMithrilBootstrapRequests } from './mithrilBootstrapChannel';
 import { handleMithrilPartialSyncRequests } from './mithrilPartialSyncChannel';
 import { handleChainStorageRequests } from './chainStorageChannel';
 import { handleGovernanceRequests } from './governanceChannel';
+import { handleGovernanceAnchorRequests } from './governanceAnchorChannel';
 
 export default (window: BrowserWindow) => {
   compressLogsApi();
@@ -49,6 +50,7 @@ export default (window: BrowserWindow) => {
   handleMithrilPartialSyncRequests(window);
   handleChainStorageRequests();
   handleGovernanceRequests();
+  handleGovernanceAnchorRequests();
   // eslint-disable-next-line no-unused-expressions
   openExternalUrlChannel;
   // eslint-disable-next-line no-unused-expressions

@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "CIP119": "https://github.com/cardano-foundation/CIPs/blob/master/CIP-0119/README.md#",
+    "givenName": "CIP119:givenName",
+    "objectives": "CIP119:objectives",
+    "motivations": "CIP119:motivations",
+    "qualifications": "CIP119:qualifications"
+  },
+  "hashAlgorithm": "blake2b-256",
+  "body": {
+    "givenName": "Daedalus Test DRep",
+    "objectives": "Synthetic fixture objectives for offline anchor verification tests.",
+    "motivations": "Synthetic fixture motivations for offline anchor verification tests.",
+    "qualifications": "Synthetic fixture qualifications for offline anchor verification tests."
+  }
+}
