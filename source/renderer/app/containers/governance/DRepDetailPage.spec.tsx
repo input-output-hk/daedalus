@@ -27,6 +27,10 @@ import type { AppDRepDirectoryEntry } from '../../stores/GovernanceStore';
 import DRepDetailPage from './DRepDetailPage';
 
 const DREP_ID = 'drep1yg7s8vuv87f8a8f5d0m9yk4p5xqw6r4s3t2u1v9w8x7y6z5a4b';
+const DECODABLE_DREP_ID =
+  'drep1yg7svuv02gh9j2q574jv06l4xnzwyp63effljze28qe993caj8ras';
+const DECODABLE_CIP105 =
+  'drep_vkh185r8rr6j9evjs984vnr7haf5cn3qw5w220usk23cxffvw6msqtt';
 // The route literal lands with the route-wiring task; deriving the path from
 // the directory literal keeps this harness aligned with it.
 const DETAIL_PATH = `${ROUTES.GOVERNANCE.DREPS}/:drepId`;
@@ -90,12 +94,14 @@ const buildGovernanceStore = (overrides: Record<string, unknown> = {}) => ({
 
 const renderPage = ({
   governanceOverrides = {},
+  drepId = DREP_ID,
   isNodeInSync = true,
   locale = 'en-US',
   locationState,
   syncProgress = 100,
 }: {
   governanceOverrides?: Record<string, unknown>;
+  drepId?: string;
   isNodeInSync?: boolean;
   locale?: string;
   locationState?: Record<string, unknown>;
@@ -108,7 +114,7 @@ const renderPage = ({
   const history = createMemoryHistory({
     initialEntries: [
       {
-        pathname: `${ROUTES.GOVERNANCE.DREPS}/${DREP_ID}`,
+        pathname: `${ROUTES.GOVERNANCE.DREPS}/${drepId}`,
         state: locationState,
       },
     ],
@@ -296,13 +302,47 @@ describe('DRepDetailPage', () => {
     try {
       renderPage();
 
-      fireEvent.click(screen.getByRole('button', { name: '!!!Copy DRep ID' }));
+      fireEvent.click(
+        screen.getByRole('button', { name: '!!!Copy CIP-129 DRep ID' })
+      );
 
       expect(await screen.findByText('!!!DRep ID copied')).toBeInTheDocument();
       expect(writeText).toHaveBeenCalledWith(DREP_ID);
     } finally {
       delete (navigator as any).clipboard;
     }
+  });
+
+  it('renders both ID forms in full in the detail header', () => {
+    const decodableEntry = { ...baseEntry, drepId: DECODABLE_DREP_ID };
+    const { container } = renderPage({
+      drepId: DECODABLE_DREP_ID,
+      governanceOverrides: {
+        drepIndex: new Map([[DECODABLE_DREP_ID, decodableEntry]]),
+        drepList: [decodableEntry],
+      },
+    });
+
+    expect(container.querySelectorAll('code')[0]).toHaveTextContent(
+      DECODABLE_DREP_ID
+    );
+    expect(screen.getByText(DECODABLE_CIP105)).toBeInTheDocument();
+    expect(screen.getByText('!!!(CIP-105)')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: '!!!Copy CIP-105 DRep ID' })
+    ).toBeInTheDocument();
+  });
+
+  it('renders only the CIP-129 form when the id does not decode', () => {
+    renderPage();
+
+    expect(screen.queryByText('!!!(CIP-105)')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: '!!!Copy CIP-105 DRep ID' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: '!!!Copy CIP-129 DRep ID' })
+    ).toBeInTheDocument();
   });
 
   it('renders the detail field labels in ja-JP', () => {

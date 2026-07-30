@@ -331,6 +331,25 @@ describe('Governance sanitization — filterLogData', () => {
     const s = jsonStr(filterLogData(data));
     expect(s).toContain(CIP129_DREP);
   });
+
+  it('carries no bech32 string in the DRepIdDisplay clipboard-unavailable payload', () => {
+    const payload = { drepIdLength: CIP129_DREP.length };
+    const s = jsonStr(filterLogData(payload));
+    expect(s).not.toContain(CIP129_DREP);
+    expect(s).not.toContain(CIP105_KEY);
+    expect(s).not.toContain(CIP105_SCRIPT);
+  });
+
+  it('carries no bech32 string in the DRepIdDisplay copy-failure payload', () => {
+    const payload = {
+      error: new Error('clipboard write denied'),
+      drepIdLength: CIP105_KEY.length,
+    };
+    const s = jsonStrWithErrors(filterLogData(payload));
+    expect(s).not.toContain(CIP129_DREP);
+    expect(s).not.toContain(CIP105_KEY);
+    expect(s).not.toContain(CIP105_SCRIPT);
+  });
 });
 
 describe('Governance sanitization — call boundaries', () => {

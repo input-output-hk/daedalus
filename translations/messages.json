@@ -2725,6 +2725,31 @@
         "defaultMessage": "!!!DRep ID copied",
         "description": "Inline confirmation shown after copying a DRep ID",
         "id": "governance.drepDetail.copyIdToast"
+      },
+      {
+        "defaultMessage": "!!!(CIP-105)",
+        "description": "Caption in front of the CIP-105 form of a DRep ID",
+        "id": "governance.drepDirectory.cip105Caption"
+      },
+      {
+        "defaultMessage": "!!!Copy CIP-129 DRep ID",
+        "description": "Accessible label for the CIP-129 copy button",
+        "id": "governance.drepDirectory.copyIdCip129"
+      },
+      {
+        "defaultMessage": "!!!Copy CIP-105 DRep ID",
+        "description": "Accessible label for the CIP-105 copy button",
+        "id": "governance.drepDirectory.copyIdCip105"
+      },
+      {
+        "defaultMessage": "!!!CIP-129 DRep ID {value}",
+        "description": "Accessible label of the CIP-129 DRep ID value",
+        "id": "governance.drepDirectory.idAriaCip129"
+      },
+      {
+        "defaultMessage": "!!!CIP-105 DRep ID {value}",
+        "description": "Accessible label of the CIP-105 DRep ID value",
+        "id": "governance.drepDirectory.idAriaCip105"
       }
     ],
     "path": "source/renderer/app/components/governance/_shared/DRepIdDisplay.tsx"

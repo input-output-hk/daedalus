@@ -63,6 +63,7 @@ interface Props {
   isFavorite: boolean;
   onToggleFavorite: (drepId: string) => void;
   isStaleFavorite?: boolean;
+  isSearchResult?: boolean;
   onSelectForDelegation: (drepId: string) => void;
   onViewDetails: (drepId: string) => void;
   votingPowerState: VotingPowerEnrichState;
@@ -88,6 +89,7 @@ function DRepCard({
   isFavorite,
   onToggleFavorite,
   isStaleFavorite = false,
+  isSearchResult = false,
   onSelectForDelegation,
   onViewDetails,
   votingPowerState,
@@ -123,7 +125,10 @@ function DRepCard({
         </button>
         <DRepStatusBadge status={entry.status} />
         <DRepCategoryBadge entry={entry} cohort={cohort} />
-        <DRepIdDisplay drepId={entry.drepId} />
+        <DRepIdDisplay
+          drepId={entry.drepId}
+          variant={isSearchResult ? 'stacked' : 'single'}
+        />
       </div>
       {isStaleFavorite && (
         <p className={styles.staleCaption}>

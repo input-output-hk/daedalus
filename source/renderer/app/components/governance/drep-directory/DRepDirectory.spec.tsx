@@ -552,6 +552,48 @@ describe('DRepDirectory', () => {
     expect(onViewDetails).not.toHaveBeenCalled();
   });
 
+  it('stacks both ID forms on a search-result row', () => {
+    const { container } = renderComponent({
+      drepList: [realEntry(1), realEntry(2)],
+    });
+
+    fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID'), {
+      target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
+    });
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(container.querySelectorAll('code')).toHaveLength(2);
+    expect(screen.getByText('!!!(CIP-105)')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: '!!!Copy CIP-105 DRep ID' })
+    ).toBeInTheDocument();
+  });
+
+  it('keeps exactly one ID form on a cohort row', () => {
+    const { container } = renderComponent({ drepList: [realEntry(1)] });
+
+    expect(container.querySelectorAll('code')).toHaveLength(1);
+    expect(screen.queryByText('!!!(CIP-105)')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: '!!!Copy DRep ID' })
+    ).toBeInTheDocument();
+  });
+
+  it('hands the CIP-129 id to delegation from a search-result row', () => {
+    const onSelectForDelegation = jest.fn();
+    renderComponent({
+      drepList: [realEntry(1), realEntry(2)],
+      onSelectForDelegation,
+    });
+
+    fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID'), {
+      target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
+    });
+    fireEvent.click(screen.getByText('!!!Select for delegation'));
+
+    expect(onSelectForDelegation).toHaveBeenCalledWith(realDrepId(1));
+  });
+
   it('opens the detail view once for an exact CIP-129 match', () => {
     const onViewDetails = jest.fn();
     renderComponent({ drepList: [realEntry(1)], onViewDetails });

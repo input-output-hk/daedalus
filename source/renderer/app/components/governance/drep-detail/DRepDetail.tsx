@@ -110,7 +110,11 @@ function DRepDetail({
       {backLink}
       <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
       <div className={styles.header}>
-        <DRepIdDisplay drepId={entry.drepId} showCopiedConfirmation />
+        <DRepIdDisplay
+          drepId={entry.drepId}
+          variant="full"
+          showCopiedConfirmation
+        />
         <DRepCategoryBadge entry={entry} cohort={cohort} />
       </div>
       <DRepDetailOnchainSection

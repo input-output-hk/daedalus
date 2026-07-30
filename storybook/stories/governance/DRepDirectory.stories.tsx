@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import DRepDirectory from '../../../source/renderer/app/components/governance/drep-directory/DRepDirectory';
+import DRepDirectoryList from '../../../source/renderer/app/components/governance/drep-directory/DRepDirectoryList';
 import Navigation from '../../../source/renderer/app/components/navigation/Navigation';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
@@ -94,6 +95,17 @@ const paginatedEntries: AppDRepDirectoryEntry[] = Array.from(
   { length: 30 },
   (_, i) => buildEntry(i + 1)
 );
+
+const dualIdEntries: AppDRepDirectoryEntry[] = [
+  {
+    ...baseEntries[0],
+    drepId: 'drep1yg7svuv02gh9j2q574jv06l4xnzwyp63effljze28qe993caj8ras',
+  },
+  {
+    ...baseEntries[1],
+    drepId: 'drep1ygqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgweajrn',
+  },
+];
 
 const SOCKET_ERROR: DirectoryError = {
   message: 'Cardano node socket path is not available.',
@@ -553,5 +565,19 @@ storiesOf('Governance / DRep Directory', module)
           favoriteDRepIds: new Set(baseEntries.map((e) => e.drepId)),
         }
       )}
+    </div>
+  ))
+  .add('Search results — stacked dual ID', () => (
+    <div style={CENTERED_STYLE}>
+      <DRepDirectoryList
+        entries={dualIdEntries}
+        cohort={storyCohort}
+        favoriteDRepIds={new Set<string>()}
+        onToggleFavorite={action('onToggleFavorite')}
+        isSearchResult
+        onSelectForDelegation={action('onSelectForDelegation')}
+        onViewDetails={action('onViewDetails')}
+        votingPowerState={VotingPowerEnrichState.Loaded}
+      />
     </div>
   ));

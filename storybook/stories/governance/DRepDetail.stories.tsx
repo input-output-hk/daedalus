@@ -111,7 +111,7 @@ const withAnchorEntry: AppDRepDirectoryEntry = {
   verifiedName: null,
   doNotList: false,
   drepActivity: 34,
-  drepId: 'drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k4',
+  drepId: 'drep1yg7svuv02gh9j2q574jv06l4xnzwyp63effljze28qe993caj8ras',
   status: 'active',
   votingPower: new BigNumber('23137980123456'),
 };
@@ -119,7 +119,7 @@ const withAnchorEntry: AppDRepDirectoryEntry = {
 const withoutAnchorEntry: AppDRepDirectoryEntry = {
   ...withAnchorEntry,
   anchor: null,
-  drepId: 'drep1xj23tk3y_qyv7c9m2z89w3t8mvk9e2uwc3q8u6j7r2x5y9w0p1',
+  drepId: 'drep1ygpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsahpxyl',
 };
 
 const storyCohort: DRepCohortContext = {

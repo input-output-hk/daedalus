@@ -181,3 +181,41 @@ unregistration signal together. **Owner.** Discharged in task-153; the `Retired`
 whichever phase delivers unregistration.
 
 ---
+
+## F-9 (task-174) — The guide's Step 9 test count contradicts the spec block it supplies, and its Verify total contradicts its own per-suite deltas
+
+Step 9 says the new `DRepIdDisplay.spec.tsx` adds **+10 tests**. The verbatim spec block the same step
+supplies (`anchor-2-implementation-guide.md:4355-4503`) contains exactly **9** `it` blocks. The Verify
+block is separately inconsistent with itself: it states `125 -> 140` (+15) while its per-suite deltas
+sum to `+17`.
+
+**Resolution.** The supplied code is the authority; the prose count is not. Using the block verbatim
+gives 9 new tests, and the correct five-suite total is `125 -> 141` (9 + 3 + 2 + 2 + 0), which is what
+both the implementer and the verifier measured. Neither number in the guide is reachable from the
+guide's own artifacts.
+
+**Disposition.** Record-only, and a trap for anyone re-running the gate: a verifier trusting the prose
+would read the green `141` as a `+1` overshoot and the green 9-test suite as a missing test, and could
+manufacture a tenth. The measured counts in the task-174 tracker row are the reference.
+**Owner.** Record-only.
+
+---
+
+## F-10 (task-174) — AC-6's design-doc correction was already shipped, at a different line, before the task started
+
+task-174 AC-6 asks that `drep-discovery-design.md:240-241` be corrected because it calls the card
+identity *the dual-ID display*, contradicting shared tokens §4. That correction already exists at
+`:249-259`, under the heading `## Directory Identity: ID-Only in v1`, which states that card identity
+is the CIP-129-primary truncated ID with a single copy button and that the full dual CIP-129 + CIP-105
+rendering belongs to the detail view and the deduped search row. The AC's own `:240-241` citation is
+stale — the same citation drift already recorded for other ACs in F-6.
+
+**Resolution.** No design-doc edit was made and none was needed. The `git diff` on
+`designs/drep-discovery-design.md` is legitimately empty for this task, and an empty diff here is
+evidence of a discharged AC rather than of a skipped step.
+
+**Disposition.** Record-only. A reviewer auditing AC-6 by diff alone will read the empty diff as a
+gap; the check is `grep` for the `Directory Identity: ID-Only in v1` section, not `git diff`.
+**Owner.** Record-only.
+
+---

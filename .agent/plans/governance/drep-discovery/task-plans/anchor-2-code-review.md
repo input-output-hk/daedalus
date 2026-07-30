@@ -440,3 +440,103 @@ favorite shows no caption — best-effort courtesy, not a privacy control (F-7).
 **Gate.** task-153 is closed. Next in the locked build order is task-174.
 
 ---
+
+## Code Review: task-174 — round 2 (2026-07-30)
+
+**Verdict: approved, zero surviving blockers.** Two rounds over the uncommitted task-174 diff — 14
+modified files plus the new `source/renderer/app/components/governance/_shared/DRepIdDisplay.spec.tsx`
+— against `anchor-2-implementation-guide.md` Steps 1–13. The task was built in two implementer shards
+(Steps 1–8, Steps 9–13); both reported every step landed, no STOP condition fired, and neither
+formatted, staged, committed or wrote to the tracker.
+
+### Blockers
+
+**None survived to round 2.** Round 1's findings are not transcribed here; this entry records only
+what is provable from the worktree. One item the verifier proved open is provable and is closed in
+the tree:
+
+- **The un-regenerated message catalogs — DISCHARGED.** The verifier ran `yarn i18n:manage`, found it
+  wrote `source/renderer/app/i18n/locales/defaultMessages.json` and `translations/messages.json` at
+  +25 lines each — exactly the five new ids, zero deletions, zero unrelated churn — and restored both
+  with `git restore` per its verifier mandate. Both are now in the diff. They are guide §11 items 9
+  and 10, and every sibling commit in this slice carries the pair.
+
+### Minor
+
+- **The guide's test-count arithmetic is wrong; the live code wins.** Step 9 states `+10 tests` while
+  the spec block it supplies contains exactly **9** `it` blocks, and the Verify block states
+  `125 → 140` while its own per-suite deltas sum to `+17`. The implementer used the supplied code
+  verbatim; the measured `125 → 141` (9+3+2+2+0) is the arithmetically correct figure. Recorded as
+  F-9 in `research/anchor-2-findings.md`.
+- **AC-6 was already discharged before this task started, so the empty design-doc diff is correct.**
+  The AC asks that `drep-discovery-design.md:240-241` be corrected so the card claim matches shared
+  tokens §4. That correction already lives at `:249-259` under `## Directory Identity: ID-Only in v1`,
+  which states in terms that the card is the CIP-129-primary truncated ID and that the full dual
+  rendering belongs to the detail view and the deduped search row. The AC's own `:240-241` citation
+  is stale. No design-doc edit was made and none was needed. Recorded as F-10.
+- **Every guide line anchor was stale and every quoted seam was exact.** Re-located by quoted code:
+  the copy-button query in `DRepDetailPage.spec.tsx` is live at `:299` (guide says `:270`), the
+  directory list call site in `DRepDirectory.tsx` at `:363`, the `filters by prefix at 8 characters`
+  test ends at `DRepDirectory.spec.tsx:553` (guide says `:550`), the `filterLogData` describe closes
+  at `governance-sanitization.spec.ts:334` (guide says `:308`), and the two story fixtures sit at
+  `DRepDetail.stories.tsx:114` and `:122` (guide says `:68`/`:76`).
+- **The additive contract holds structurally.** `variant` defaults to `'single'`, so
+  `CurrentVoteSummary` and the non-search `DRepCard` keep today's rendering with no call-site change;
+  CIP-105 is derived only through `normalizeDRepIdentity` and omitted when the id does not decode,
+  never re-encoded by hand; `isSearchResult` is threaded to the directory list alone with the
+  favorites call site untouched; and the delegation handoff still passes `entry.drepId`.
+- **The sanitization floor is re-asserted, not assumed.** Both clipboard `logger.warn` payloads keep
+  their id-free shape — `{ drepIdLength }` on the unavailable branch, `{ error, drepIdLength }` on the
+  failure branch — with no bech32 string added for either form, pinned in the new component spec and
+  in two added `filterLogData` cases.
+- **No task ids, review labels, ALL-CAPS emphasis or change history** in any comment or test name
+  across the changed paths. No local `IntlProvider` and no per-locale story variant was added; the new
+  `Search results — stacked dual ID` story rides the existing global English/Japanese toggle, and
+  `Connected flow` is untouched.
+
+### Verifier's verdict
+
+**GREEN on every executable gate — zero this-task test, lint or typecheck failures — with three
+inherited format-drift files and one this-task cosmetic drift.**
+
+- **Counts.** `typed-scss-modules` then `tsc --noEmit` exit 0; `yarn compile` exit 0. The five-suite
+  focused pattern is 5 suites / 141 tests / 3 snapshots, from re-measured post-task-153 baselines:
+  `DRepIdDisplay.spec` 0 → 9, `DRepDirectory.spec` 52 → 55 with 1 snapshot unchanged,
+  `DRepDetailPage.spec` 31 → 33 with 2 snapshots unchanged, `governance-sanitization` 37 → 39,
+  i18n copy markers 5 → 5. The unfiltered `node_modules/.bin/jest --runInBand` is 92 passed + 1
+  skipped of 93 suites and 1299 passed + 12 skipped of 1311 tests with 10 snapshots and zero
+  failures, the one skip being the environment-gated `GovernanceCliArgvSmoke`. `yarn lint` exits 0
+  with 0 errors — the `error is defined but never used` lines are `no-unused-vars` **warnings** on a
+  variable named `error`. i18n parity prints `governance.*` 110 → 115 in both catalogs, whole-catalog
+  1644 → 1649, and `missingInJa` / `missingInEn` / `unmarked` all empty.
+- **Inherited, not this task's.** `prettier --check` flags
+  `source/renderer/app/components/governance/drep-directory/DRepDirectory.tsx`,
+  `tests/jest/security/governance-sanitization.spec.ts` and
+  `storybook/stories/governance/DRepDirectory.stories.tsx`. Each drift hunk was matched byte-identical
+  against its `HEAD` version and sits entirely outside this task's hunks — the `useMemo` search-index
+  block versus this task's one-line `isSearchResult={isSearchActive}` at `:363`, the
+  `(MatomoTracker as unknown as jest.Mock)` cast at `:674` versus a single `@@ -331,6 +331,25 @@` hunk,
+  and the `favoriteDRepIds:` ternary versus hunks at `:10`, `:99` and `:569`. Corroborated by two
+  files this task never touched (`stores/VotingStore.ts`, `_shared/DRepSourceLabel.tsx`) being equally
+  prettier-dirty in-repo at HEAD. Consistent with F-5: identical bytes check clean outside the repo
+  and dirty inside it, and the in-repo result is authoritative.
+- **This task's own, cosmetic.** `DRepIdDisplay.spec.tsx:18-19` splits a 77-character `const` across
+  two lines where prettier 2.1.2 wants one. Whitespace only, no behavioural impact, left for the
+  formatter.
+- **Never run.** `yarn storybook` — an interactive dev server with no browser here — so the visual
+  pass over the stacked search row and the full dual-ID detail rows, and the ja-JP card-overflow
+  watch AC-5 asks for, stay owed. `yarn storybook:build` and `yarn check:all` were correctly not run:
+  both are red at HEAD for reasons unrelated to this branch.
+
+### Owed at close
+
+The close-out commit `feat(gov): task-174 render the dual cip-129 and cip-105 drep id display` is
+unmade, with 14 modified files plus the untracked `DRepIdDisplay.spec.tsx` sitting at HEAD
+`25cf76ea7`. `nix fmt` cannot run in this devcontainer and stays a user-owned pre-merge obligation
+that will also settle all four prettier-flagged files. The Storybook visual and ja-JP overflow pass
+over both new story surfaces never ran. AC-6 required no work here (F-10); AC-5's story half is
+therefore landed as code but unverified visually.
+
+**Gate.** task-174 is closed. Next in the locked build order is task-154.
+
+---

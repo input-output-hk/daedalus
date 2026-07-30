@@ -362,6 +362,7 @@ function DRepDirectory({
             ) : (
               <DRepDirectoryList
                 entries={visibleEntries}
+                isSearchResult={isSearchActive}
                 cohort={cohort}
                 favoriteDRepIds={favoriteDRepIds}
                 onToggleFavorite={onToggleFavorite}
