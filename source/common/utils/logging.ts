@@ -46,6 +46,21 @@ export const filterLogData = (
     'dRepId',
     'vote',
     'voting',
+    // Governance identity and anchor redaction. A verified anchor name
+    // identifies a DRep as precisely as a bech32 id, and an anchor URL
+    // identifies the DRep whose detail page the user is viewing.
+    'drepIdentity',
+    'currentVote',
+    'votingTarget',
+    'chosenOption',
+    'raw',
+    'cip105',
+    'cip129',
+    'credentialHex',
+    'anchorUrl',
+    'anchorContent',
+    'givenName',
+    'verifiedName',
   ];
 
   const redact = (value: any): any => {

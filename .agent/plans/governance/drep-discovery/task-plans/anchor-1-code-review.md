@@ -668,3 +668,101 @@ further round.
 5. No browser click-through and no ja-JP visual pass were possible — no network, no browser.
    Neither is required by a task that changes no UI and no copy, and the exposure is low, but both
    are recorded as unproven rather than green.
+
+---
+
+## Code Review: task-149 — round 1 (2026-07-29)
+
+**Verdict: approved. No blockers, one round.** The review ran over the uncommitted working tree at
+HEAD `6d38d2bfb` — three modified files (`source/common/types/governance.types.ts`,
+`source/common/utils/logging.ts`, `tests/jest/security/governance-sanitization.spec.ts`) and two
+untracked (`source/main/governance/AnchorFetchService.ts`,
+`tests/jest/governance/AnchorFetchService.spec.ts`). The diff implements the approved guide
+(Steps 1–11 at `anchor-1-implementation-guide.md:1171-2005`) faithfully and completely; not one
+line changed in review.
+
+### Blockers
+
+**None raised.**
+
+### Minor
+
+**None raised.** The review's convention sweep found nothing to file: no `.skip` / `.only`, no task
+ids, review labels, ALL-CAPS words or change history in any comment or test name, comments limited
+to the guide-specified plain invariant/why lines, no new npm dependencies, and no dead code.
+
+### Independent re-checks
+
+The reviewer re-ran every verification command rather than inheriting the verifier's numbers, and
+the two passes agreed exactly. Guide expectations are the Verify block at
+`anchor-1-implementation-guide.md:2027-2069`.
+
+| Gate | Guide expectation | Measured (verifier and reviewer, agreeing) |
+|---|---|---|
+| `tsc --noEmit` | exit 0 | exit 0 |
+| `yarn compile` | exit 0, ~22s (`:2034`) | exit 0 |
+| `jest --testPathPattern="tests/jest/governance/AnchorFetchService"` | 1 suite / 39 tests (`:2039`) | 1 suite / **39 tests**, green |
+| `jest --testPathPattern="tests/jest/security/governance-sanitization"` | 26 → 35 tests (`:2044`) | 1 suite / **35 tests** (26 baseline + 9), green |
+| `jest --testPathPattern="containers/voting/VotingGovernancePage.spec"` — floor anchor 2 of 2, mandatory | 27 unchanged (`:2049`) | 1 suite / **27 tests**, unchanged |
+| `jest --testPathPattern="tests/jest"` full sweep | 12 suites (1 skipped), 206 total, 194 passed, 12 skipped (`:2054`) | **12 suites / 206 total / 194 passed / 12 skipped** — exact match |
+| `jest --testPathPattern="source/renderer/app/api"` | 6 unchanged (`:2056`) | 1 suite / **6 tests**, unchanged |
+| `yarn lint` | exit 0, ~5591 baseline warnings (`:2058`) | exit 0, **0 errors**, 5614 warnings — the +23 is the new source file, as the guide predicts |
+| structural grep (`JSON.parse\|fs\|blake\|axios\|rejectUnauthorized\|latest`) | no output (`:2066`) | no output |
+| builtin-import grep | exactly the two builtin imports (`:2068`) | exactly `https` and `dns` |
+
+Both sanitization floor anchors were run; the reviewer and verifier each note that citing the
+security suite alone would have been a false green. The 1 skipped suite / 12 skipped tests is
+`tests/jest/governance/GovernanceCliArgvSmoke.spec.ts` self-skipping with `cardano-cli` off PATH,
+per the guide's own note below the Verify block.
+
+**Guide fidelity, spot-checked against the live tree.** Step 1: the full 13-member
+`AnchorFetchErrorType` enum at `source/common/types/governance.types.ts:75-89` and nothing else —
+no IPC channel, no task-150 types (the enum-only split). Steps 2–6: never-throwing
+discriminated-union result; single `fail()` logging point emitting only `{ errorType }`
+(`AnchorFetchService.ts:160`) and a success line emitting only `{ byteLength }` (`:197-198`),
+satisfying invariant #12 / AC-9; SSRF prefix tables covering all AC-6 categories plus tunneling
+ranges with unparseable input default-blocked; pinned custom `lookup` with original
+host/servername (`:217-229`, AC-7); one shared 10s budget across DNS and transfer (`:9`,
+`:297-308`, AC-3); dual size guards (`:258`, `:267`, AC-4); content-type allow-list (`:245-249`,
+AC-5); explicit 3xx rejection that never reads `location` (`:233-238`, AC-2); no
+`rejectUnauthorized` token anywhere (AC-1); no `fs` / `JSON.parse` / hash import (AC-8); zero new
+npm dependencies. Step 7: `filterLogData`'s `sensitiveData` grows by exactly the twelve mandated
+names (`source/common/utils/logging.ts:52-63`). Step 8: the floor-suite docblock renarrowed
+(`tests/jest/security/governance-sanitization.spec.ts:1-11`). Step 9: eight domain-shaped
+`filterLogData` cases (`:235`, `:253`, `:264`, `:271`, `:278`, `:284`, `:290`) including the
+exact-key-match negative case (`:300`). Step 10: the first main-process spy case (`:641-654`)
+with its positive `ANCHOR_TLS_FAILED` assertion (`:744`).
+
+### Merged and dropped
+
+**Nothing to merge and nothing dropped** — no lens filed a finding at any severity, so no
+adjudication was needed.
+
+**Decision: approve.** One round, nothing carried forward.
+
+### OWED — never reported green
+
+1. **The Step 12 commit is unmade.** `feat(gov): task-149 add the hardened anchor fetch service`
+   (`anchor-1-implementation-guide.md:2024`) — all five work files sit uncommitted at HEAD
+   `6d38d2bfb`. Recorded as F-11.
+2. **The Step 12 `prettier --write` needs a scope decision before that commit.**
+   `source/common/utils/logging.ts` and `tests/jest/security/governance-sanitization.spec.ts` fail
+   `prettier --check` on proven pre-existing HEAD drift — `git show HEAD:<file>` piped through
+   `prettier --stdin-filepath` reproduces the identical hunks (the `Object.keys(value).reduce(`
+   reflow and the `(MatomoTracker as unknown) as jest.Mock` cast, the known 2.1.2 oscillation) —
+   so `--write` would commit unrelated churn. No line this task added is prettier-dirty; the other
+   three paths check clean. Recorded as F-9.
+3. `nix fmt` before merge — `nix` is absent here and **cannot** run; explicit-path prettier is the
+   substitute. User-owned obligation.
+4. **No live anchor fetch, ever.** Every guard (SSRF, DNS pinning, TLS, redirect, timeout, size
+   cap, content-type) is proven only against mocked `https.request` and `dns.promises.lookup`;
+   TLS default verification has never met a real certificate chain, and no SIPO or Cardano Academy
+   anchor vector has been fetched end to end. No network in this environment. Recorded as F-10.
+5. No browser click-through and no ja-JP visual pass — no browser and no network; not applicable
+   to a diff with no copy and no component, recorded so it is never implied green. No i18n catalog
+   is in the diff, so `yarn i18n:manage` was correctly not required and not run.
+6. **Residual, outside this task's diff** and carried from the guide's own OWED list, not
+   re-verified in this round: the three pre-existing main-process whole-error sinks stay
+   unhardened at `GovernanceQueryService.ts:523-526` and `governanceChannel.ts:58-60`, `:64` /
+   `:77`. F-3's rule stands — every new main-process sink needs hand-enforcement plus its own
+   containment assertion, which this task's service is the first to carry.

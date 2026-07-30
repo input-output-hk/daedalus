@@ -70,6 +70,24 @@ export interface DRepAnchorPresence {
   hash: string;
 }
 
+// ---- Anchor Fetch (transport outcomes) ----
+
+export enum AnchorFetchErrorType {
+  UnsupportedScheme = 'ANCHOR_UNSUPPORTED_SCHEME',
+  BlockedAddress = 'ANCHOR_BLOCKED_ADDRESS',
+  DnsFailed = 'ANCHOR_DNS_FAILED',
+  Redirected = 'ANCHOR_REDIRECTED',
+  HttpStatus = 'ANCHOR_HTTP_STATUS',
+  ContentType = 'ANCHOR_CONTENT_TYPE',
+  TooLarge = 'ANCHOR_TOO_LARGE',
+  Timeout = 'ANCHOR_TIMEOUT',
+  TlsFailed = 'ANCHOR_TLS_FAILED',
+  Network = 'ANCHOR_NETWORK',
+  HashMismatch = 'ANCHOR_HASH_MISMATCH',
+  ParseFailed = 'ANCHOR_PARSE_FAILED',
+  InvalidRequest = 'ANCHOR_INVALID_REQUEST',
+}
+
 // ---- Wallet Governance Status ----
 
 export type GovernanceVoteKind = 'drep' | 'abstain' | 'no_confidence';

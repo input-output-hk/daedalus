@@ -187,3 +187,73 @@ source-tree property rather than a file count.
 **Disposition.** Record-only for task-152 — the commit is correct as landed and the
 tracker `evidence` array cites both new docs.
 **Owner.** Whoever authors the next anchor-slice implementation guide.
+
+## F-9 (task-149) — Two of Step 12's five prettier paths are dirty at HEAD, so the mandated format-then-commit step forces a churn decision that no agent in this environment may take alone
+
+Every `path:line` in F-9 through F-11 was opened at HEAD `6d38d2bfb` with the task-149
+work uncommitted in the tree. Step 12 (`anchor-1-implementation-guide.md:2007-2026`)
+prescribes `prettier --write` over five explicit paths (`:2013-2018`) before the
+commit, but `prettier --check` over those five flags exactly two —
+`source/common/utils/logging.ts` and `tests/jest/security/governance-sanitization.spec.ts` —
+and both are proven pre-existing HEAD drift, not this task's lines: piping
+`git show HEAD:<file>` through `prettier --stdin-filepath <file>` reproduces the
+identical hunks, the `Object.keys(value).reduce(` reflow (HEAD `:57-67`, working tree
+`:72-82` after the fifteen inserted lines) and the
+`(MatomoTracker as unknown) as jest.Mock` double-paren cast (HEAD `:546`, working tree
+`:629`). The second is the known prettier 2.1.2 oscillation on that construct. The
+other three paths — `source/main/governance/AnchorFetchService.ts`,
+`source/common/types/governance.types.ts`, `tests/jest/governance/AnchorFetchService.spec.ts` —
+check clean, so no line task-149 added is prettier-dirty.
+
+**Resolution.** `--write` was NOT run on the two dirty files: doing so would fold
+unrelated reformat churn into a `feat(gov)` commit, and F-10 in `cv-2-findings.md`
+already records that the pre-existing dirty set at HEAD is repo-wide. The literal
+Step 12 command is therefore unexecutable as written without a scope decision.
+**Disposition.** Raised to the user with the commit itself (F-11): either absorb the
+two-hunk churn in the task commit, split it into its own formatting commit, or leave
+both files to the user-owned `nix fmt` pass at merge.
+**Owner.** Whoever makes the task-149 commit; the `nix fmt` obligation stays user-owned.
+
+## F-10 (task-149) — Every transport guard is proven only against mocked `https.request` and `dns.promises.lookup`; no live fetch, no real TLS chain and no real anchor vector has ever been exercised
+
+The service spec's own header states the method: deterministic `jest.mock` over
+`https` and `dns` (`tests/jest/governance/AnchorFetchService.spec.ts:24-33`, mocks
+bound at `:40-41`), and the main-process floor case in the security suite likewise
+spies the same two modules (`tests/jest/security/governance-sanitization.spec.ts:661-662`).
+Under that method the SSRF tables, the pinned-lookup rebinding defence
+(`source/main/governance/AnchorFetchService.ts:217-229`), the shared 10-second budget
+(`:9`, `:297-308`), the dual size guards (`:258`, `:267`), the content-type allow-list
+(`:245-249`) and the 3xx rejection (`:233-238`) are proven as code properties only.
+TLS default verification in particular is proven solely as the *absence* of any
+`rejectUnauthorized` token (guide check `:2064-2066` returns no output) — Node's
+actual certificate validation has never run against a real chain here, and no SIPO
+or Cardano Academy anchor has been fetched end to end, because this devcontainer has
+no network.
+
+**Resolution.** Not resolvable in this environment; recorded so the mocked greens are
+never re-told as live ones. Same class as F-2's unreachable-endpoint caveat.
+**Disposition.** OWED — a networked run (dev build or release verification) must fetch
+at least one real anchor vector over https and observe a TLS failure path against a
+bad certificate before the transport floor is called live-proven.
+**Owner.** Whoever runs a networked build before release; task-150/151 inherit the
+caveat for their own offline proofs.
+
+## F-11 (task-149) — The close-out commit was again not discharged by the implementation or review passes; the tracker half is closed by this record, the commit is not
+
+Same shape as F-7: the implementation, verification and review passes were each
+instructed not to commit, and complied. At the time of this record
+`git status --porcelain` shows three modified files
+(`source/common/types/governance.types.ts`, `source/common/utils/logging.ts`,
+`tests/jest/security/governance-sanitization.spec.ts`) and two untracked
+(`source/main/governance/AnchorFetchService.ts`,
+`tests/jest/governance/AnchorFetchService.spec.ts`) against HEAD `6d38d2bfb`. This
+scribe pass flips the task-149 tracker row to `complete` with `statusReason`,
+`evidence` and `updatedAt: 2026-07-29` in the sibling key order.
+
+**Resolution.** Bookkeeping, not broken code: every Verify gate at
+`anchor-1-implementation-guide.md:2027-2069` measured green (39 / 35 / 27 / 206).
+**Disposition.** OWED — the single commit
+`feat(gov): task-149 add the hardened anchor fetch service` (`:2024`), one subject
+line, no body, no trailer, blocked only on the F-9 prettier scope decision.
+**Owner.** Whoever closes the task; F-8's lesson applies — the commit will also carry
+the tracker row and the two plan docs, which is correct and not a scope breach.

@@ -1,8 +1,10 @@
 /**
  * Governance sanitization regression tests.
  *
- * Asserts that no DRep ID, abstain/no_confidence literal, or CIP-129/CIP-105
- * bech32 string reaches any logger call or analytics payload.
+ * Asserts that no DRep ID, CIP-129/CIP-105 bech32 string, anchor URL or verified
+ * anchor content reaches any logger call, and that no vote target reaches an
+ * analytics payload. The derived vote kind is a sanctioned analytics dimension;
+ * the vote target never is.
  *
  * This is the sanitization floor established in slice-1. Every later slice
  * inherits this invariant as a non-negotiable acceptance check.
@@ -42,6 +44,11 @@ import MatomoTracker from 'matomo-tracker';
 import { maskAnalyticsRoute } from '../../../source/renderer/app/analytics/maskAnalyticsRoute';
 import { MatomoClient } from '../../../source/renderer/app/analytics/MatomoClient';
 import walletVotingDRepFixture from '../../mocks/wallets/wallet-voting-drep.json';
+import https from 'https';
+import dns from 'dns';
+import { EventEmitter } from 'events';
+import { logger as mainLogger } from '../../../source/main/utils/logging';
+import { fetchAnchorBytes } from '../../../source/main/governance/AnchorFetchService';
 
 // ---- Test vectors ----
 
@@ -221,6 +228,82 @@ describe('Governance sanitization — filterLogData', () => {
       'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy'
     );
     expect(result).toContain('cv1 fixture voting drep');
+  });
+
+  // --- Governance identity and anchor redaction ---
+
+  it('removes a nested drepIdentity object entirely', () => {
+    const data = {
+      context: {
+        drepIdentity: {
+          raw: CIP129_DREP,
+          cip129: CIP129_DREP,
+          cip105: CIP105_KEY,
+          credentialHex: 'a1b2',
+        },
+      },
+    };
+    const s = jsonStr(filterLogData(data));
+    expect(s).not.toContain(CIP129_DREP);
+    expect(s).not.toContain(CIP105_KEY);
+    expect(s).not.toContain(CIP105_SCRIPT);
+    expect(s).not.toContain('a1b2');
+  });
+
+  it('removes the standalone raw, cip129, cip105 and credentialHex keys', () => {
+    const data = {
+      raw: CIP129_DREP,
+      cip129: CIP129_DREP,
+      cip105: CIP105_SCRIPT,
+      credentialHex: 'a1b2',
+    };
+    const result = filterLogData(data);
+    expect(Object.keys(result)).toHaveLength(0);
+  });
+
+  it('removes a currentVote object carrying a vote kind and a drep id', () => {
+    const data = { currentVote: { voteKind: 'abstain', drepId: CIP129_DREP } };
+    const s = jsonStr(filterLogData(data));
+    expect(s).not.toContain('abstain');
+    expect(s).not.toContain(CIP129_DREP);
+  });
+
+  it('removes votingTarget', () => {
+    const data = { votingTarget: CIP129_DREP };
+    const result = filterLogData(data);
+    expect(Object.keys(result)).toHaveLength(0);
+    expect(jsonStr(result)).not.toContain(CIP129_DREP);
+  });
+
+  it('removes chosenOption', () => {
+    const data = { chosenOption: 'no_confidence' };
+    const s = jsonStr(filterLogData(data));
+    expect(s).not.toContain('no_confidence');
+  });
+
+  it('removes anchorUrl', () => {
+    const data = { anchorUrl: 'https://anchor.example.org/profile.jsonld' };
+    const s = jsonStr(filterLogData(data));
+    expect(s).not.toContain('anchor.example.org');
+  });
+
+  it('removes givenName, verifiedName and a nested anchorContent object', () => {
+    const data = {
+      givenName: 'Sample DRep',
+      verifiedName: 'Sample DRep',
+      anchorContent: { givenName: 'Sample DRep' },
+    };
+    const s = jsonStr(filterLogData(data));
+    expect(s).not.toContain('Sample DRep');
+  });
+
+  it('retains a sensitive-looking value under a key that is not on the list', () => {
+    // sensitiveData.includes(key) at source/common/utils/logging.ts:74 is exact
+    // string equality, so the filter redacts by key name and never by value
+    // shape.
+    const data = { note: CIP129_DREP };
+    const s = jsonStr(filterLogData(data));
+    expect(s).toContain(CIP129_DREP);
   });
 });
 
@@ -552,5 +635,116 @@ describe('Governance sanitization — analytics URL masking', () => {
     } finally {
       window.location.hash = '';
     }
+  });
+});
+
+describe('Governance sanitization — main-process anchor fetch', () => {
+  const ANCHOR_URL = `https://anchor.example.org/${CIP129_DREP}.jsonld`;
+
+  class FakeRequest extends EventEmitter {
+    end = jest.fn();
+    destroy = jest.fn();
+  }
+  class FakeResponse extends EventEmitter {
+    statusCode = 200;
+    headers: Record<string, string> = { 'content-type': 'text/html' };
+    destroy = jest.fn();
+  }
+
+  it('keeps anchor URLs, hosts, DRep ids and raw errors out of anchor fetch logger payloads', async () => {
+    const spies = [
+      jest.spyOn(mainLogger, 'debug').mockImplementation(() => undefined),
+      jest.spyOn(mainLogger, 'info').mockImplementation(() => undefined),
+      jest.spyOn(mainLogger, 'warn').mockImplementation(() => undefined),
+      jest.spyOn(mainLogger, 'error').mockImplementation(() => undefined),
+    ];
+    const requestSpy = jest.spyOn(https, 'request');
+    const lookupSpy = jest.spyOn(dns.promises, 'lookup');
+    const SENTINEL = 'sentinel-error-detail';
+
+    // unsupported scheme, malformed input
+    await fetchAnchorBytes(`ipfs://${CIP129_DREP}`);
+    await fetchAnchorBytes('not a url');
+    await fetchAnchorBytes(`http://anchor.example.org/${CIP105_KEY}.jsonld`);
+
+    // dns failure carrying an error whose message names the host
+    lookupSpy.mockRejectedValue(
+      Object.assign(new Error(`${SENTINEL} anchor.example.org`), {
+        code: 'ENOTFOUND',
+      })
+    );
+    await fetchAnchorBytes(ANCHOR_URL);
+
+    // blocked address
+    lookupSpy.mockResolvedValue([
+      { address: '169.254.169.254', family: 4 },
+    ] as any);
+    await fetchAnchorBytes(ANCHOR_URL);
+
+    lookupSpy.mockResolvedValue([
+      { address: '93.184.216.34', family: 4 },
+    ] as any);
+
+    // transport error
+    const failingRequest = new FakeRequest();
+    requestSpy.mockImplementation(((): any => {
+      process.nextTick(() =>
+        failingRequest.emit(
+          'error',
+          Object.assign(new Error(`${SENTINEL} ${ANCHOR_URL}`), {
+            code: 'CERT_HAS_EXPIRED',
+          })
+        )
+      );
+      return failingRequest;
+    }) as any);
+    await fetchAnchorBytes(ANCHOR_URL);
+
+    // redirect, rejected content type, oversized body
+    const drive = (response: FakeResponse, after?: () => void) => {
+      const request = new FakeRequest();
+      requestSpy.mockImplementation(((_options: any, callback: any): any => {
+        process.nextTick(() => {
+          callback(response);
+          if (after) process.nextTick(after);
+        });
+        return request;
+      }) as any);
+    };
+
+    const redirect = new FakeResponse();
+    redirect.statusCode = 302;
+    redirect.headers = { location: `https://evil.example.net/${CIP129_DREP}` };
+    drive(redirect);
+    await fetchAnchorBytes(ANCHOR_URL);
+
+    const wrongType = new FakeResponse();
+    drive(wrongType);
+    await fetchAnchorBytes(ANCHOR_URL);
+
+    const oversized = new FakeResponse();
+    oversized.headers = {
+      'content-type': 'application/json',
+      'content-length': String(2 * 1024 * 1024),
+    };
+    drive(oversized);
+    await fetchAnchorBytes(ANCHOR_URL);
+
+    const logged = jsonStrWithErrors(spies.map((spy) => spy.mock.calls));
+    expect(logged).not.toContain(ANCHOR_URL);
+    expect(logged).not.toContain('anchor.example.org');
+    expect(logged).not.toContain('evil.example.net');
+    expect(logged).not.toContain('93.184.216.34');
+    expect(logged).not.toContain('169.254.169.254');
+    expect(logged).not.toContain(CIP129_DREP);
+    expect(logged).not.toContain(CIP105_KEY);
+    expect(logged).not.toContain('drep1');
+    expect(logged).not.toContain('drep_vkh');
+    expect(logged).not.toContain(SENTINEL);
+    expect(logged).toContain('ANCHOR_TLS_FAILED');
+
+    spies.forEach((spy) => spy.mockRestore());
+    requestSpy.mockRestore();
+    lookupSpy.mockRestore();
   });
 });

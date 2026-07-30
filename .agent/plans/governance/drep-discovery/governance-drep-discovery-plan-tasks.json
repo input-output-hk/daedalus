@@ -1593,7 +1593,19 @@
           "id": "task-149",
           "title": "Add hardened anchor fetch service",
           "description": "Implement an anchor fetch service in source/main/ with a transport-agnostic interface. HTTP/HTTPS transport is implemented; IPFS interface slot is reserved but not implemented. The service returns only bounded, unparsed raw bytes with size, timeout, SSRF, redirect, content-type, and TLS guards applied. It does not parse JSON or write cache entries. It is also the first main-process governance code to carry an explicit sanitization-floor assertion, because it adds failure paths to a seam whose existing sinks log whole error objects.",
-          "status": "pending",
+          "status": "complete",
+          "statusReason": "Complete rather than verified because every proof is the task's own focused runs: tsc --noEmit and yarn compile exit 0, the new AnchorFetchService spec 39/39, the security suite 35/35 (26 baseline + 9), BOTH sanitization floor anchors run with VotingGovernancePage unchanged at 27/27, the full tests/jest sweep 12 suites / 206 total (194 passed, 12 skipped) matching the guide's predicted counts exactly, yarn lint exit 0 with 0 errors at 5614 warnings (~5591 baseline; the +23 is the new source file, as the guide predicts), structural greps clean (no JSON.parse / fs / hash library / axios / rejectUnauthorized in the service; exactly the https and dns builtin imports), and code review approved after one round with zero blockers - while the OWED list stays open and is never reported green: the Step 12 commit (feat(gov): task-149 add the hardened anchor fetch service, anchor-1-implementation-guide.md:2024) is unmade with three modified and two untracked files at HEAD 6d38d2bfb, the Step 12 prettier --write over the five named paths needs a user decision because source/common/utils/logging.ts and tests/jest/security/governance-sanitization.spec.ts fail prettier --check on proven pre-existing HEAD drift (the 2.1.2 oscillation) rather than on any line this task added, nix fmt cannot run in this devcontainer and stays a user-owned pre-merge obligation, every transport guard (SSRF, DNS pinning, TLS, redirect, timeout, size cap, content-type) is proven only against mocked https.request and dns.promises.lookup with no live fetch and no real certificate chain ever exercised, and the three pre-existing main-process whole-error sinks at GovernanceQueryService.ts:523-526 and governanceChannel.ts:58-60,:64,:77 remain unhardened outside this diff.",
+          "evidence": [
+            "source/main/governance/AnchorFetchService.ts",
+            "source/common/types/governance.types.ts",
+            "source/common/utils/logging.ts",
+            "tests/jest/governance/AnchorFetchService.spec.ts",
+            "tests/jest/security/governance-sanitization.spec.ts",
+            ".agent/plans/governance/drep-discovery/task-plans/anchor-1-implementation-guide.md",
+            ".agent/plans/governance/drep-discovery/task-plans/anchor-1-code-review.md",
+            ".agent/plans/governance/drep-discovery/research/anchor-1-findings.md"
+          ],
+          "updatedAt": "2026-07-29",
           "priority": "high",
           "estimatedHours": 7.5,
           "dependencies": [
