@@ -93,6 +93,7 @@ class DRepDirectoryPage extends React.Component<Props> {
         drepIndex={governanceStore.drepIndex}
         showAllList={governanceStore.showAllList}
         top35DRepIds={governanceStore.top35DRepIds}
+        cohort={governanceStore.cohortContext}
         favoriteDRepIds={governanceStore.favoriteDRepIds}
         onToggleFavorite={(drepId) => governanceStore.toggleFavorite(drepId)}
         view={

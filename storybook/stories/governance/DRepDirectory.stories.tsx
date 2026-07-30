@@ -23,7 +23,10 @@ import {
   GovernanceRefreshState,
   VotingPowerEnrichState,
 } from '../../../source/renderer/app/stores/GovernanceStore';
-import type { AppDRepDirectoryEntry } from '../../../source/renderer/app/stores/GovernanceStore';
+import type {
+  AppDRepDirectoryEntry,
+  DRepCohortContext,
+} from '../../../source/renderer/app/stores/GovernanceStore';
 
 type DirectoryError = { message: string; type: string } | null;
 
@@ -35,6 +38,12 @@ type DirectorySyncState = {
 const DEFAULT_SYNC_STATE: DirectorySyncState = {
   isNodeInSync: true,
   syncProgress: 100,
+};
+
+const storyCohort: DRepCohortContext = {
+  medianVotingPower: null,
+  memberIds: null,
+  verifiedMetadataIds: new Set<string>(),
 };
 
 const baseEntries: AppDRepDirectoryEntry[] = [
@@ -170,6 +179,7 @@ const renderDirectory = (
     isStaleFavoriteEntry={favorites.isStaleFavoriteEntry}
     error={error}
     isCohortActive={isCohortActive}
+    cohort={storyCohort}
     isNodeInSync={syncState.isNodeInSync}
     lastFetchedAt={Date.now() - 3 * 60 * 1000}
     onRefresh={action('onRefresh')}
@@ -355,12 +365,13 @@ storiesOf('Governance / DRep Directory', module)
                         onToggleFavorite: (drepId: string) => {
                           action('onToggleFavorite')(drepId);
                           store.set({
-                            favoriteDRepIds:
-                              store.state.favoriteDRepIds.includes(drepId)
-                                ? store.state.favoriteDRepIds.filter(
-                                    (id) => id !== drepId
-                                  )
-                                : [...store.state.favoriteDRepIds, drepId],
+                            favoriteDRepIds: store.state.favoriteDRepIds.includes(
+                              drepId
+                            )
+                              ? store.state.favoriteDRepIds.filter(
+                                  (id) => id !== drepId
+                                )
+                              : [...store.state.favoriteDRepIds, drepId],
                           });
                         },
                         onBackToDirectory: () =>
@@ -451,6 +462,7 @@ storiesOf('Governance / DRep Directory', module)
         onToggleFavorite={action('onToggleFavorite')}
         error={null}
         isCohortActive={false}
+        cohort={storyCohort}
         isNodeInSync
         lastFetchedAt={Date.now() - 3 * 60 * 1000}
         onRefresh={action('onRefresh')}

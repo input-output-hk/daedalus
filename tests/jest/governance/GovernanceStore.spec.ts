@@ -4,6 +4,7 @@ import GovernanceStore, {
   GovernanceRefreshState,
   VotingPowerEnrichState,
 } from '../../../source/renderer/app/stores/GovernanceStore';
+import type { AnchorEnrichEntry } from '../../../source/renderer/app/stores/GovernanceStore';
 import { logger } from '../../../source/renderer/app/utils/logging';
 import {
   governanceDRepListChannel,
@@ -555,6 +556,141 @@ describe('GovernanceStore default cohort', () => {
     expect(store.defaultCohort!.map((e) => e.drepId)).not.toContain(
       drepIdAt(0)
     );
+  });
+});
+
+describe('GovernanceStore cohort context', () => {
+  beforeEach(() => {
+    mockRequest.mockReset();
+    mockStakeRequest.mockReset();
+  });
+
+  const drepIdAt = (i: number) =>
+    `drep1cohort${String(i).padStart(4, '0')}aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`;
+
+  const buildDrep = (
+    i: number,
+    overrides: Partial<DRepDirectoryEntry> = {}
+  ): DRepDirectoryEntry => ({
+    anchor: null,
+    verifiedName: null,
+    drepActivity: 10,
+    drepId: drepIdAt(i),
+    status: 'active',
+    votingPower: null,
+    ...overrides,
+  });
+
+  // Stake descending with index: entry 0 is the largest, so ranks equal ids.
+  const stakeFor = (count: number): Record<string, string> => {
+    const map: Record<string, string> = {};
+    for (let i = 0; i < count; i++) {
+      map[drepIdAt(i)] = String(1_000_000_000_000 - i * 1_000_000);
+    }
+    return map;
+  };
+
+  const loadStore = async (
+    dreps: DRepDirectoryEntry[],
+    stakeByDRepId: Record<string, string>
+  ): Promise<GovernanceStore> => {
+    mockRequest.mockResolvedValue({
+      dreps,
+      epoch: 512,
+      fetchedAt: 1_750_000_000_000,
+    });
+    mockStakeRequest.mockResolvedValue({
+      fetchedAt: 1_750_000_000_500,
+      stakeByDRepId,
+    });
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    await store.fetchDRepList();
+    return store;
+  };
+
+  const loadStoreWithFailedStake = async (): Promise<GovernanceStore> => {
+    mockRequest.mockResolvedValue({
+      dreps: [buildDrep(0)],
+      epoch: 512,
+      fetchedAt: 1_750_000_000_000,
+    });
+    mockStakeRequest.mockRejectedValue({
+      __governanceError: true,
+      type: 'QUERY_FAILED',
+      message: 'DRep stake query failed.',
+    });
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    await store.fetchDRepList();
+    return store;
+  };
+
+  it('takes the middle voting power as the median of an odd-sized cohort', async () => {
+    // 38 entries: the top 35 are excluded, leaving a cohort of three.
+    const dreps = Array.from({ length: 38 }, (_, i) => buildDrep(i));
+    const store = await loadStore(dreps, stakeFor(38));
+
+    expect(store.defaultCohort).toHaveLength(3);
+    expect(store.cohortMedianVotingPower!.isEqualTo('999964000000')).toBe(true);
+  });
+
+  it('averages the two middle voting powers for an even-sized cohort', async () => {
+    const dreps = Array.from({ length: 39 }, (_, i) => buildDrep(i));
+    const store = await loadStore(dreps, stakeFor(39));
+
+    expect(store.defaultCohort).toHaveLength(4);
+    expect(store.cohortMedianVotingPower!.isEqualTo('999963500000')).toBe(true);
+  });
+
+  it('reports no median while the cohort is inactive', async () => {
+    const store = await loadStoreWithFailedStake();
+
+    expect(store.isCohortActive).toBe(false);
+    expect(store.cohortMedianVotingPower).toBeNull();
+  });
+
+  it('excludes entries without voting power from the median sample', async () => {
+    // Entries 36 and 37 get no stake, so their voting power stays null and
+    // the median is the single powered cohort entry's value.
+    const dreps = Array.from({ length: 38 }, (_, i) => buildDrep(i));
+    const store = await loadStore(dreps, stakeFor(36));
+
+    expect(store.defaultCohort).toHaveLength(3);
+    expect(store.cohortMedianVotingPower!.isEqualTo('999965000000')).toBe(true);
+  });
+
+  it('reports null cohort members while the cohort is inactive', async () => {
+    const store = await loadStoreWithFailedStake();
+
+    expect(store.cohortContext.memberIds).toBeNull();
+    expect(store.cohortContext.medianVotingPower).toBeNull();
+  });
+
+  it('includes only verified anchor states in the cohort context', async () => {
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    runInAction(() => {
+      store.anchorStateByDRepId = new Map<string, AnchorEnrichEntry>([
+        [
+          drepIdAt(0),
+          {
+            state: 'verified',
+            hash: 'a'.repeat(64),
+            givenName: 'Ada',
+            host: 'governance-preview.example.org',
+          },
+        ],
+        [
+          drepIdAt(1),
+          {
+            state: 'unavailable',
+            hash: 'b'.repeat(64),
+            reason: AnchorFetchErrorType.HashMismatch,
+          },
+        ],
+        [drepIdAt(2), { state: 'loading', hash: 'c'.repeat(64) }],
+      ]);
+    });
+
+    expect([...store.cohortContext.verifiedMetadataIds]).toEqual([drepIdAt(0)]);
   });
 });
 

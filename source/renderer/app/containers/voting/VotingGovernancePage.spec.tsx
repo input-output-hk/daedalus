@@ -180,6 +180,11 @@ const buildStores = ({
   },
   governance: {
     anchorStateByDRepId: new Map(),
+    cohortContext: {
+      medianVotingPower: null,
+      memberIds: null,
+      verifiedMetadataIds: new Set<string>(),
+    },
     displayedDRepList: [drepEntry],
     drepIndex: new Map([[VALID_DREP_ID, drepEntry]]),
     drepList: [drepEntry],

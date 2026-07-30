@@ -43,6 +43,11 @@ const baseEntry: AppDRepDirectoryEntry = {
 
 const buildGovernanceStore = (overrides: Record<string, unknown> = {}) => ({
   anchorStateByDRepId: new Map(),
+  cohortContext: {
+    medianVotingPower: new BigNumber('99137980123456'),
+    memberIds: new Set([DREP_ID]),
+    verifiedMetadataIds: new Set([DREP_ID]),
+  },
   drepIndex: new Map([[DREP_ID, baseEntry]]),
   drepList: [baseEntry],
   error: null,
@@ -283,9 +288,25 @@ describe('DRepDetailPage', () => {
   it('renders the category badge in the detail header (snapshot)', () => {
     renderPage();
 
-    // baseEntry: anchor present, drepActivity 34 -> Primary.
+    // baseEntry: verified, in cohort, at or below the median -> Primary.
     expect(
       screen.getByText('!!!Primary').closest('span[title]')
+    ).toMatchSnapshot();
+  });
+
+  it('renders the high value badge when the entry is above the cohort median (snapshot)', () => {
+    renderPage({
+      governanceOverrides: {
+        cohortContext: {
+          medianVotingPower: new BigNumber('1000000'),
+          memberIds: new Set([DREP_ID]),
+          verifiedMetadataIds: new Set([DREP_ID]),
+        },
+      },
+    });
+
+    expect(
+      screen.getByText('!!!High value').closest('span[title]')
     ).toMatchSnapshot();
   });
 

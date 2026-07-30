@@ -35,6 +35,17 @@ export interface AppDRepDirectoryEntry {
   verifiedName: string | null;
 }
 
+/**
+ * Everything the category badge needs, derived once in the store. memberIds
+ * is null when no cohort exists - distinct from an empty cohort - so an
+ * out-of-cohort entry and a cohort-less directory classify identically.
+ */
+export interface DRepCohortContext {
+  memberIds: Set<string> | null;
+  verifiedMetadataIds: Set<string>;
+  medianVotingPower: BigNumber | null;
+}
+
 export type AnchorEnrichEntry =
   | { state: 'loading'; hash: string }
   | { state: 'verified'; hash: string; givenName: string | null; host: string }
@@ -211,6 +222,33 @@ export default class GovernanceStore extends Store {
     const selected = eligible.slice(0, COHORT_MAX_SIZE);
     const canonical = [...selected].sort(compareDRepIdAsc);
     return seededShuffle(canonical, this.cohortSeed);
+  }
+
+  /**
+   * Median voting power across the cohort only. Entries without a voting
+   * power are outside the sample and can never be above the median.
+   */
+  @computed get cohortMedianVotingPower(): BigNumber | null {
+    const cohort = this.defaultCohort;
+    if (cohort === null) return null;
+    const powers = cohort
+      .map((entry) => entry.votingPower)
+      .filter((power): power is BigNumber => power != null)
+      .sort((a, b) => a.comparedTo(b));
+    const size = powers.length;
+    if (size === 0) return null;
+    if (size % 2 === 1) return powers[(size - 1) / 2];
+    return powers[size / 2 - 1].plus(powers[size / 2]).dividedBy(2);
+  }
+
+  /** Explicit classifier input; the badge never re-derives cohort membership. */
+  @computed get cohortContext(): DRepCohortContext {
+    const cohort = this.defaultCohort;
+    return {
+      medianVotingPower: this.cohortMedianVotingPower,
+      memberIds: cohort === null ? null : new Set(cohort.map((e) => e.drepId)),
+      verifiedMetadataIds: this.verifiedMetadataIds,
+    };
   }
 
   /** What the directory renders: the cohort when active, else the full list. */

@@ -16,6 +16,7 @@ import {
   GovernanceRefreshState,
   VotingPowerEnrichState,
   AppDRepDirectoryEntry,
+  DRepCohortContext,
 } from '../../../stores/GovernanceStore';
 
 // jsdom's Uint8Array constructor lives in a different realm than Node's
@@ -99,6 +100,11 @@ const renderComponent = ({
   error = null,
   isNodeInSync = true,
   isCohortActive = false,
+  cohort = {
+    medianVotingPower: null,
+    memberIds: null,
+    verifiedMetadataIds: new Set<string>(),
+  } as DRepCohortContext,
   onReshuffle = jest.fn(),
   refreshState = GovernanceRefreshState.Loaded,
   locale = 'en-US',
@@ -119,6 +125,7 @@ const renderComponent = ({
   error?: { message: string; type: string; details?: string } | null;
   isNodeInSync?: boolean;
   isCohortActive?: boolean;
+  cohort?: DRepCohortContext;
   onReshuffle?: jest.Mock;
   refreshState?: GovernanceRefreshState;
   locale?: string;
@@ -149,6 +156,7 @@ const renderComponent = ({
           error={error}
           isNodeInSync={isNodeInSync}
           isCohortActive={isCohortActive}
+          cohort={cohort}
           onReshuffle={onReshuffle}
           lastFetchedAt={Date.now() - 60_000}
           onRefresh={jest.fn()}
@@ -493,11 +501,24 @@ describe('DRepDirectory', () => {
 
     // baseEntries[0]: drepActivity 12, anchor null -> Threshold window edge.
     expect(
-      screen.getAllByText(/^!!!(Primary|Threshold|Non-metadata)$/)
+      screen.getAllByText(/^!!!(High value|Primary|Threshold|Non-metadata)$/)
     ).toHaveLength(1);
     expect(
       screen.getByText('!!!Threshold').closest('span[title]')
     ).toMatchSnapshot();
+  });
+
+  it('renders the high value badge for an in-cohort verified entry above the median', () => {
+    renderComponent({
+      cohort: {
+        medianVotingPower: new BigNumber('1000000'),
+        memberIds: new Set([baseEntries[0].drepId]),
+        verifiedMetadataIds: new Set([baseEntries[0].drepId]),
+      },
+      drepList: [{ ...baseEntries[0], drepActivity: 20 }],
+    });
+
+    expect(screen.getByText('!!!High value')).toBeInTheDocument();
   });
 
   it('shows the min-length hint below 8 post-HRP characters and leaves the list unfiltered', () => {

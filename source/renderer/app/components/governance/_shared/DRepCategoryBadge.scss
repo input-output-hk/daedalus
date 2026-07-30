@@ -22,6 +22,15 @@
 }
 
 /* Category colors — reuses existing Daedalus theme variables via CSS custom properties */
+.highValue {
+  color: var(--badge-highlight-fg, #7a5af8);
+  background: var(--badge-highlight-bg, rgba(122, 90, 248, 0.12));
+
+  .dot {
+    background: var(--badge-highlight-fg, #7a5af8);
+  }
+}
+
 .primary {
   color: var(--badge-info-fg, #4a7bd4);
   background: var(--badge-info-bg, rgba(74, 123, 212, 0.1));

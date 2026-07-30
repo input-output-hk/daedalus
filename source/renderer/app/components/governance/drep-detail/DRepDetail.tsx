@@ -15,6 +15,7 @@ import {
 import type {
   AppDRepDirectoryEntry,
   AnchorEnrichEntry,
+  DRepCohortContext,
 } from '../../../stores/GovernanceStore';
 import styles from './DRepDetail.scss';
 
@@ -43,6 +44,7 @@ const messages = defineMessages({
 
 interface Props {
   entry: AppDRepDirectoryEntry | null;
+  cohort: DRepCohortContext;
   refreshState: GovernanceRefreshState;
   votingPowerState: VotingPowerEnrichState;
   anchorState: AnchorEnrichEntry | null;
@@ -54,6 +56,7 @@ interface Props {
 
 function DRepDetail({
   entry,
+  cohort,
   refreshState,
   votingPowerState,
   anchorState,
@@ -108,7 +111,7 @@ function DRepDetail({
       <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
       <div className={styles.header}>
         <DRepIdDisplay drepId={entry.drepId} showCopiedConfirmation />
-        <DRepCategoryBadge entry={entry} />
+        <DRepCategoryBadge entry={entry} cohort={cohort} />
       </div>
       <DRepDetailOnchainSection
         entry={entry}

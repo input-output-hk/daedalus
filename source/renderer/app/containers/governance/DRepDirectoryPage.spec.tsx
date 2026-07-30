@@ -36,6 +36,11 @@ const drepEntry = {
 };
 
 const buildGovernanceStore = () => ({
+  cohortContext: {
+    medianVotingPower: null,
+    memberIds: null,
+    verifiedMetadataIds: new Set<string>(),
+  },
   displayedDRepList: [drepEntry],
   drepIndex: new Map([[drepEntry.drepId, drepEntry]]),
   drepList: [drepEntry],

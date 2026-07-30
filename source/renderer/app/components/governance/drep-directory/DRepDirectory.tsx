@@ -14,6 +14,7 @@ import {
   VotingPowerEnrichState,
   AppDRepDirectoryEntry,
   GovernanceStoreError,
+  DRepCohortContext,
 } from '../../../stores/GovernanceStore';
 import { GovernanceQueryErrorType } from '../../../../../common/types/governance.types';
 import {
@@ -81,6 +82,7 @@ interface Props {
   drepIndex: ReadonlyMap<string, AppDRepDirectoryEntry>;
   showAllList: AppDRepDirectoryEntry[];
   top35DRepIds: ReadonlySet<string>;
+  cohort: DRepCohortContext;
   favoriteDRepIds?: ReadonlySet<string>;
   view?: 'directory' | 'favorites';
   onToggleFavorite: (drepId: string) => void;
@@ -105,6 +107,7 @@ function DRepDirectory({
   drepIndex,
   showAllList,
   top35DRepIds,
+  cohort,
   favoriteDRepIds = EMPTY_DREP_ID_SET,
   view = 'directory',
   onToggleFavorite,
@@ -140,10 +143,9 @@ function DRepDirectory({
 
   // Search always covers the full membership so excluded and non-cohort
   // DReps stay reachable regardless of the current view.
-  const searchIndex = useMemo(
-    () => buildDRepSearchIndex(showAllList),
-    [showAllList]
-  );
+  const searchIndex = useMemo(() => buildDRepSearchIndex(showAllList), [
+    showAllList,
+  ]);
 
   const visibleEntries = useMemo(() => {
     let base: AppDRepDirectoryEntry[];
@@ -288,6 +290,7 @@ function DRepDirectory({
           ) : (
             <DRepDirectoryList
               entries={favoritesEntries}
+              cohort={cohort}
               favoriteDRepIds={favoriteDRepIds}
               onToggleFavorite={onToggleFavorite}
               isFavoritesView
@@ -358,6 +361,7 @@ function DRepDirectory({
             ) : (
               <DRepDirectoryList
                 entries={visibleEntries}
+                cohort={cohort}
                 favoriteDRepIds={favoriteDRepIds}
                 onToggleFavorite={onToggleFavorite}
                 onSelectForDelegation={onSelectForDelegation}

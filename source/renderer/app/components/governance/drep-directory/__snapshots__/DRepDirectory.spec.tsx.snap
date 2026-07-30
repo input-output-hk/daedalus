@@ -2,9 +2,9 @@
 
 exports[`DRepDirectory renders exactly one category badge per card (snapshot) 1`] = `
 <span
-  aria-label="!!!Threshold. !!!Inside the default Recommended view but approaching expiry — review before delegating."
+  aria-label="!!!Threshold. !!!Approaching expiry — review before delegating."
   class="badge threshold"
-  title="!!!Inside the default Recommended view but approaching expiry — review before delegating."
+  title="!!!Approaching expiry — review before delegating."
 >
   <span
     aria-hidden="true"

@@ -111,6 +111,7 @@ class DRepDetailPage extends React.Component<Props> {
     return (
       <DRepDetail
         entry={governanceStore.drepIndex.get(drepId) ?? null}
+        cohort={governanceStore.cohortContext}
         refreshState={governanceStore.refreshState}
         votingPowerState={governanceStore.votingPowerState}
         anchorState={governanceStore.anchorStateByDRepId.get(drepId) ?? null}

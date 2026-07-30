@@ -4,7 +4,10 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DRepCard from './DRepCard';
 import { isStaleFavorite } from './helpers';
-import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
+import type {
+  AppDRepDirectoryEntry,
+  DRepCohortContext,
+} from '../../../stores/GovernanceStore';
 import { VotingPowerEnrichState } from '../../../stores/GovernanceStore';
 import styles from './DRepDirectoryList.scss';
 
@@ -30,6 +33,7 @@ const messages = defineMessages({
 
 interface Props {
   entries: AppDRepDirectoryEntry[];
+  cohort: DRepCohortContext;
   favoriteDRepIds: ReadonlySet<string>;
   onToggleFavorite: (drepId: string) => void;
   isFavoritesView?: boolean;
@@ -42,6 +46,7 @@ interface Props {
 
 function DRepDirectoryList({
   entries,
+  cohort,
   favoriteDRepIds,
   onToggleFavorite,
   isFavoritesView = false,
@@ -84,6 +89,7 @@ function DRepDirectoryList({
           <DRepCard
             key={entry.drepId}
             entry={entry}
+            cohort={cohort}
             isFavorite={favoriteDRepIds.has(entry.drepId)}
             onToggleFavorite={onToggleFavorite}
             isStaleFavorite={isFavoritesView && isStaleFavoriteEntry(entry)}

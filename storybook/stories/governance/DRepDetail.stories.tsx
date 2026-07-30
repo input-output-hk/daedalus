@@ -13,6 +13,7 @@ import {
 import type {
   AnchorEnrichEntry,
   AppDRepDirectoryEntry,
+  DRepCohortContext,
 } from '../../../source/renderer/app/stores/GovernanceStore';
 import { AnchorFetchErrorType } from '../../../source/common/types/governance.types';
 
@@ -75,6 +76,12 @@ const withoutAnchorEntry: AppDRepDirectoryEntry = {
   drepId: 'drep1xj23tk3y_qyv7c9m2z89w3t8mvk9e2uwc3q8u6j7r2x5y9w0p1',
 };
 
+const storyCohort: DRepCohortContext = {
+  medianVotingPower: new BigNumber('1000000'),
+  memberIds: new Set([withAnchorEntry.drepId]),
+  verifiedMetadataIds: new Set([withAnchorEntry.drepId]),
+};
+
 // Locale is intentionally NOT wired here: the global StoryWrapper decorator
 // provides the IntlProvider, so the English/Japanese toggle at the top of the
 // preview window drives every label rendered below.
@@ -87,6 +94,7 @@ const renderDetail = (
   <div style={CENTERED_STYLE}>
     <DRepDetail
       anchorState={anchorState}
+      cohort={storyCohort}
       entry={entry}
       onBackToDirectory={action('onBackToDirectory')}
       onOpenExternalLink={action('onOpenExternalLink')}

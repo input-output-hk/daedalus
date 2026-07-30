@@ -1,10 +1,24 @@
 import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import classNames from 'classnames';
-import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
+import type {
+  AppDRepDirectoryEntry,
+  DRepCohortContext,
+} from '../../../stores/GovernanceStore';
 import styles from './DRepCategoryBadge.scss';
 
 const messages = defineMessages({
+  highValue: {
+    id: 'governance.drepDirectory.category.highValue',
+    defaultMessage: '!!!High value',
+    description: 'Category badge for in-cohort DReps above the cohort median',
+  },
+  highValueTooltip: {
+    id: 'governance.drepDirectory.category.highValue.tooltip',
+    defaultMessage:
+      '!!!Inside the default Recommended view, with verified metadata and voting power above the cohort median.',
+    description: 'Tooltip explaining the High value category',
+  },
   primary: {
     id: 'governance.drepDirectory.category.primary',
     defaultMessage: '!!!Primary',
@@ -12,8 +26,7 @@ const messages = defineMessages({
   },
   primaryTooltip: {
     id: 'governance.drepDirectory.category.primary.tooltip',
-    defaultMessage:
-      '!!!Inside the default Recommended view with verified metadata.',
+    defaultMessage: '!!!Has verified off-chain metadata.',
     description: 'Tooltip explaining the Primary category',
   },
   threshold: {
@@ -23,8 +36,7 @@ const messages = defineMessages({
   },
   thresholdTooltip: {
     id: 'governance.drepDirectory.category.threshold.tooltip',
-    defaultMessage:
-      '!!!Inside the default Recommended view but approaching expiry — review before delegating.',
+    defaultMessage: '!!!Approaching expiry — review before delegating.',
     description: 'Tooltip explaining the Threshold category',
   },
   nonMetadata: {
@@ -40,24 +52,42 @@ const messages = defineMessages({
   },
 });
 
-export type DRepCategory = 'primary' | 'threshold' | 'nonMetadata';
+export type DRepCategory =
+  | 'highValue'
+  | 'threshold'
+  | 'primary'
+  | 'nonMetadata';
 
 export type DRepCategorySource = Pick<
   AppDRepDirectoryEntry,
-  'status' | 'drepActivity' | 'anchor'
+  'drepId' | 'votingPower' | 'drepActivity'
 >;
 
 const THRESHOLD_WINDOW_MIN = 7;
 const THRESHOLD_WINDOW_MAX = 12;
 
 /**
- * Category rules with binding priority Threshold > Primary > Non-metadata:
- * the 7-12 remaining-epoch window wins outright; otherwise on-chain anchor
- * presence is the interim metadata-completeness proxy until the verified
- * anchor pipeline exists. Informational only - never used to order or
- * filter the cohort.
+ * Priority is High value > Threshold > Primary > Non-metadata. Cohort
+ * membership and verified metadata are explicit inputs, never re-derived
+ * here, and High value cannot render outside the cohort where the median
+ * is undefined. Informational only - never read back by ordering,
+ * filtering or cohort code.
  */
-export function getDRepCategory(entry: DRepCategorySource): DRepCategory {
+export function getDRepCategory(
+  entry: DRepCategorySource,
+  cohort: DRepCohortContext
+): DRepCategory {
+  const inCohort = cohort.memberIds?.has(entry.drepId) ?? false;
+  const hasVerifiedMetadata = cohort.verifiedMetadataIds.has(entry.drepId);
+  const isAboveMedian =
+    inCohort &&
+    entry.votingPower != null &&
+    cohort.medianVotingPower != null &&
+    entry.votingPower.isGreaterThan(cohort.medianVotingPower);
+
+  if (inCohort && hasVerifiedMetadata && isAboveMedian) {
+    return 'highValue';
+  }
   if (
     entry.drepActivity != null &&
     entry.drepActivity >= THRESHOLD_WINDOW_MIN &&
@@ -65,25 +95,28 @@ export function getDRepCategory(entry: DRepCategorySource): DRepCategory {
   ) {
     return 'threshold';
   }
-  return entry.anchor != null ? 'primary' : 'nonMetadata';
+  return hasVerifiedMetadata ? 'primary' : 'nonMetadata';
 }
 
 interface Props {
   entry: DRepCategorySource;
+  cohort: DRepCohortContext;
   intl: intlShape.isRequired;
 }
 
-function DRepCategoryBadge({ entry, intl }: Props) {
-  const category = getDRepCategory(entry);
+function DRepCategoryBadge({ entry, cohort, intl }: Props) {
+  const category = getDRepCategory(entry, cohort);
   const labelByCategory: Record<DRepCategory, string> = {
+    highValue: intl.formatMessage(messages.highValue),
+    nonMetadata: intl.formatMessage(messages.nonMetadata),
     primary: intl.formatMessage(messages.primary),
     threshold: intl.formatMessage(messages.threshold),
-    nonMetadata: intl.formatMessage(messages.nonMetadata),
   };
   const tooltipByCategory: Record<DRepCategory, string> = {
+    highValue: intl.formatMessage(messages.highValueTooltip),
+    nonMetadata: intl.formatMessage(messages.nonMetadataTooltip),
     primary: intl.formatMessage(messages.primaryTooltip),
     threshold: intl.formatMessage(messages.thresholdTooltip),
-    nonMetadata: intl.formatMessage(messages.nonMetadataTooltip),
   };
 
   return (

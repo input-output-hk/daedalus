@@ -923,3 +923,84 @@ adjudication was needed.
 6. **The close-out commit is unmade.** `feat(gov): task-151 render the verified givenName and
    expose metadata completeness` (`:3921`) — 24 modified files plus the new untracked component
    sit uncommitted at HEAD `aa77b475c`. Recorded as F-15.
+
+## Code Review: task-172 — round 1 (2026-07-29)
+
+**Verdict: approved. No blockers, one round.** The review ran over the uncommitted working tree on
+top of HEAD `351467833` — 25 modified files, +640/−102, nothing untracked. The diff implements
+every in-scope guide step faithfully: `GovernanceStore` gains `DRepCohortContext` plus the two
+computeds exactly as specified (`GovernanceStore.ts:38-48`, `:227-252`), reusing task-151's
+`verifiedMetadataIds` computed (`:285`) with no second derivation; the classifier matches seam S-8
+(`DRepCategoryBadge.tsx:75-98`) — explicit cohort input, `anchor` and `status` dropped from the
+source type, priority High value > Threshold > Primary > Non-metadata, High value structurally
+impossible out of cohort; the cohort prop is threaded through all six hops including both
+`DRepDirectoryList` render sites (`DRepDirectory.tsx:293`, `:364`). i18n lands via
+`yarn i18n:manage` across all four tracked files, catalogs key-identical at 97/97 governance keys
+with every string `!!!`-prefixed, and the two out-of-cohort tooltips no longer claim
+Recommended-view membership. Invariant #8 is pinned twice (file-reading tests plus the grep),
+invariant #7 is never restated, the #5 median math is pure BigNumber, and the sanitization surface
+is untouched — zero main/common changes, no logger lines added. Storybook registers the three
+orphaned story files and adds the cohort knob with no local IntlProvider and no per-locale story
+variants. Snapshot diffs are exactly the permitted tooltip strings plus the one new High value
+key. Not one line changed in review.
+
+### Blockers
+
+**None raised.**
+
+### Minor
+
+**None raised.** The convention sweep found nothing to file: comments and test names carry no task
+ids, review labels, ALL-CAPS or change history; the one new comment block states the classifier's
+invariant in plain sentence case.
+
+### Independent re-checks
+
+The verifier ran all 11 steps of the guide's Verify block
+(`anchor-1-implementation-guide.md:4796-4889`) and every count matched the guide's expectation;
+the reviewer independently confirmed the load-bearing gates and the two passes agreed throughout.
+
+| Gate | Guide expectation | Measured |
+|---|---|---|
+| step 1 format pass (`:4801-4820`) | 18 explicit paths, exit 0 | `prettier --check` run read-only as the strictly-equivalent substitute (the tree already carries formatted files): "All matched files use Prettier code style!", exit 0 |
+| `tsc --noEmit` and `yarn compile` (`:4822-4824`) | exit 0 | both exit 0 |
+| classifier suite (`:4826-4828`) | 11 → 22 tests, 0 snapshots | 1 suite / **22 tests**, green |
+| `DRepDirectory.spec` (`:4830-4836`) | 47 → 48 tests, 1 snapshot, snap diff confined to the two tooltip strings | **48 tests / 1 snapshot**, diff confined to the two reworded tooltip strings in the single existing key |
+| `DRepDetailPage` (`:4838-4844`) | 20 → 21 tests, 1 → 2 snapshots | **21 tests / 2 snapshots**, green |
+| `DRepDirectoryPage` (`:4846-4848`) | 8 tests unchanged | **8 tests**, green |
+| `GovernanceStore.spec` (`:4849-4851`) | 43 → 49 tests | **49 tests**, green |
+| copy markers (`:4853-4855`) | 4 (or 5 after task-151) | **5 tests**, green |
+| catalog parity (`:4857-4863`) | `97 97 true` then `[]` | exactly **`97 97 true`** then **`[]`** |
+| invariant #8 grep (`:4865-4874`) | no output, exit 1 | no output, **exit 1** |
+| governance sweep (`:4876-4880`) | no regression; +19 tests, +1 snapshot over the pre-task basis | **20 passed suites + 1 self-skipping**, 409 passed + 12 skipped tests, **10 snapshots** (9 → 10); per-suite deltas reconcile to the promised +19 |
+| `yarn lint` (`:4882-4886`) | exit 0, 0 errors, upward warning drift | exit 0, **0 errors**, 5628 warnings (baseline ~5591) |
+| sanitization floor, both anchors | neither drops a test | `security/governance-sanitization` **35** passed, `containers/voting/VotingGovernancePage` **27** passed |
+| `yarn i18n:manage` | exit 0, no-op | exit 0, provably a no-op (i18n diff stats unchanged at 14/6/6/14) |
+
+Snapshot regeneration was verified with clean non-`-u` runs (0 snapshots written) since the tree
+already carries the regenerated snapshots — strictly equivalent to the guide's
+regenerate-then-rerun sequence.
+
+### Merged and dropped
+
+**Nothing to merge and nothing dropped** — no lens filed a finding at any severity, so no
+adjudication was needed.
+
+**Decision: approve.** One round, nothing carried forward into a fix pass.
+
+### OWED — never reported green
+
+1. **Storybook visual + ja-JP overflow pass** for all four category badges at both call sites
+   (AC-6 second half, `anchor-1-implementation-guide.md:4907-4911`) — needs `yarn storybook` and a
+   human eye; no browser here, `storybook/` is outside the Jest roots, and `yarn storybook:build`
+   is red at HEAD for unrelated reasons. Specific risk: `!!!高価値` plus the `!!!` marker inside
+   the fixed-width card top row (`DRepCard.tsx:109-125`). Recorded as F-16.
+2. **`nix fmt` before merge** — `nix` is absent in this devcontainer; explicit-path prettier
+   (verified via `--check`, all 18 paths clean) is the substitute, and the real run stays a
+   user-owned pre-merge obligation.
+3. **Theme-token confirmation** for the new `--badge-highlight-fg` / `--badge-highlight-bg` violet
+   fallback (`DRepCategoryBadge.scss:26-27`; guide note at
+   `anchor-1-implementation-guide.md:4924-4926`). Recorded as F-19.
+4. **The close-out commit is unmade.** `feat(gov): task-172 ground the DRep category badge in
+   cohort membership` (`:4793`) — 25 modified files sit uncommitted on top of `351467833`.
+   Recorded as F-20.

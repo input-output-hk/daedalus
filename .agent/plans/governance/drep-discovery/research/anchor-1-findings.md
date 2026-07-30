@@ -357,3 +357,91 @@ docs. The two drifted files may be committed as they stand — the user-owned `n
 pre-merge pass settles them — or normalized first by an explicit user decision, per
 F-9.
 **Owner.** Whoever closes the task; the `nix fmt` pre-merge pass stays user-owned.
+
+## F-16 (task-172, closes F-14's registration half) — The three orphaned story files are finally registered, but the visual and ja-JP overflow pass is still owed and now has a named risk: `!!!高価値` in the fixed-width card top row
+
+F-14's blocker is discharged: `storybook/stories/index.ts:19-21` now imports
+`DRepCategoryBadge.stories`, `DRepDetail.stories` and `DRepDirectoryBanner.stories`,
+and the cohort knob makes all four categories reachable from one control. What cannot
+be discharged here is the seeing: there is no browser in this devcontainer,
+`jest.config.js` roots exclude `storybook/` (only `tsc --noEmit` covers it, exit 0),
+and `yarn storybook:build` is red at HEAD for unrelated reasons and is not a
+substitute. The specific thing to look at when the pass finally runs: the ja-JP High
+value label is `!!!高価値` (`ja-JP.json:320`), and the badge renders inside the card
+top row where the favorite toggle, status badge, category badge and DRep id share one
+flex row (`DRepCard.tsx:109-125`); the detail call site is `DRepDetail.tsx:114`.
+
+**Resolution.** Registration resolved by this task exactly as F-14 predicted; the
+visual judgement is not resolvable in this environment.
+**Disposition.** OWED — `yarn storybook` plus a human eye, en-US and ja-JP, all four
+categories at both call sites (AC-6 second half, `anchor-1-implementation-guide.md:4907-4911`).
+**Owner.** Whoever runs the visual pass before release closes it.
+
+## F-17 (task-172) — The Primary badge and the "With metadata" filter now mean different things: verified anchor content versus on-chain anchor presence
+
+After this task the classifier's metadata input is `cohort.verifiedMetadataIds`
+(`DRepCategoryBadge.tsx:80`), fed exclusively from the store's verified-only computed
+(`GovernanceStore.ts:285-291`, `state === 'verified'`), and `anchor` is structurally
+absent from `DRepCategorySource` (`DRepCategoryBadge.tsx:60-63`). But `filterDReps`
+still implements the user-facing "With / Without metadata" filter on on-chain anchor
+presence (`helpers.ts:198` and `:201`). A DRep whose anchor exists on-chain but failed
+Blake2b-256 verification therefore matches "With metadata" and renders *Non-metadata*.
+The guide scopes this deliberately (AC-2 discharge and the design-owner note at
+`anchor-1-implementation-guide.md:4920-4923`): re-pointing the filter is a copy and
+semantics change that needs its own tracker row.
+
+**Resolution.** A recorded product decision, not a defect — the badge is the
+anti-misleading surface and had to move to verified content with the anchor pipeline;
+the filter's semantics were out of scope.
+**Disposition.** Escalate to the Planner: either the filter gains a verified-content
+mode with its own copy, or the divergence is accepted and documented in the design doc.
+**Owner.** Design owner decides; Planner rows the follow-up if wanted.
+
+## F-18 (task-172) — The binding priority order makes High value suppress the expiry hint for an in-cohort, verified, above-median DRep 7–12 epochs from expiry
+
+`shared-design-tokens.md:39` binds High Value > Threshold > Primary > Non-metadata,
+and the classifier implements it verbatim (`DRepCategoryBadge.tsx:87-96`); the spec's
+case 5 pins exactly this tie-break (`drepActivity: 10`, in cohort, verified, above
+median → `highValue`). Consequence: such a DRep never shows "Approaching expiry —
+review before delegating", because the Threshold branch is unreachable once the High
+value condition holds. That is what the binding rule says; the guide flags it as
+possibly not what UX wants (`anchor-1-implementation-guide.md:4917-4919`).
+
+**Resolution.** Implemented as bound — deviating in code was expressly forbidden.
+**Disposition.** Recorded for the design owner; any change is a §1a spec change
+first, then a classifier row, never a silent code fix.
+**Owner.** Design owner.
+
+## F-19 (task-172) — §1a specifies no colour for High value, so the violet fallback in the new `--badge-highlight-*` tokens awaits theme confirmation
+
+Step 3 introduces `--badge-highlight-fg` / `--badge-highlight-bg` with violet
+fallbacks `#7a5af8` / `rgba(122, 90, 248, 0.12)`
+(`DRepCategoryBadge.scss:26-27,30`), chosen to stay distinguishable from the green
+Active status badge that sits beside it in the same card row. No theme file defines
+either token yet, so every theme currently renders the fallback. The guide records
+this as an outstanding design-owner confirmation
+(`anchor-1-implementation-guide.md:4924-4926`).
+
+**Resolution.** Not resolvable here — token palettes are a design-owner call and
+theme wiring is its own change.
+**Disposition.** OWED — the design owner confirms or replaces the violet, and the
+tokens get real definitions in the theme files.
+**Owner.** Design owner; theme wiring goes to whoever rows it.
+
+## F-20 (task-172) — The close-out commit is again undischarged, and for the first time in the slice the format step is clean as it stands
+
+Same shape as F-7, F-11, F-12 and F-15: the implementation, verification and review
+passes were each instructed not to commit, and complied. At the time of this record
+`git status --porcelain` shows 25 modified files and nothing untracked on top of
+HEAD `351467833` (the F-15 commit has since landed as that HEAD). Unlike task-149 and
+task-151, no churn decision rides on this commit: `prettier --check` passes on all 18
+explicit paths in the guide's format step (`anchor-1-implementation-guide.md:4801-4820`),
+so F-9's oscillation files are simply not in this task's path list.
+
+**Resolution.** Bookkeeping only, not broken code: every Verify gate measured green
+(22 / 48 / 21 / 8 / 49 on the changed suites, 409 passed + 12 skipped on the sweep,
+35 + 27 on the floor anchors, `97 97 true` then `[]` on i18n parity, lint 0 errors).
+**Disposition.** OWED — the single commit `feat(gov): task-172 ground the DRep
+category badge in cohort membership` (`:4793`), one subject line, no body, no
+trailer; per F-8's lesson it also carries the tracker row and the appended plan docs.
+**Owner.** Whoever closes the task; the `nix fmt` pre-merge pass stays user-owned.

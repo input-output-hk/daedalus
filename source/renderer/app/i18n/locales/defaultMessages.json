@@ -2512,12 +2512,22 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!High value",
+        "description": "Category badge for in-cohort DReps above the cohort median",
+        "id": "governance.drepDirectory.category.highValue"
+      },
+      {
+        "defaultMessage": "!!!Inside the default Recommended view, with verified metadata and voting power above the cohort median.",
+        "description": "Tooltip explaining the High value category",
+        "id": "governance.drepDirectory.category.highValue.tooltip"
+      },
+      {
         "defaultMessage": "!!!Primary",
         "description": "Category badge for DReps with anchor metadata",
         "id": "governance.drepDirectory.category.primary"
       },
       {
-        "defaultMessage": "!!!Inside the default Recommended view with verified metadata.",
+        "defaultMessage": "!!!Has verified off-chain metadata.",
         "description": "Tooltip explaining the Primary category",
         "id": "governance.drepDirectory.category.primary.tooltip"
       },
@@ -2527,7 +2537,7 @@
         "id": "governance.drepDirectory.category.threshold"
       },
       {
-        "defaultMessage": "!!!Inside the default Recommended view but approaching expiry — review before delegating.",
+        "defaultMessage": "!!!Approaching expiry — review before delegating.",
         "description": "Tooltip explaining the Threshold category",
         "id": "governance.drepDirectory.category.threshold.tooltip"
       },

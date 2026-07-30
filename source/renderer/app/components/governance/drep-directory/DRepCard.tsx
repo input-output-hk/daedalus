@@ -7,7 +7,10 @@ import DRepStatusBadge from '../_shared/DRepStatusBadge';
 import DRepCategoryBadge from '../_shared/DRepCategoryBadge';
 import DRepIdDisplay from '../_shared/DRepIdDisplay';
 import DRepSourceLabel from '../_shared/DRepSourceLabel';
-import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
+import type {
+  AppDRepDirectoryEntry,
+  DRepCohortContext,
+} from '../../../stores/GovernanceStore';
 import { VotingPowerEnrichState } from '../../../stores/GovernanceStore';
 import styles from './DRepCard.scss';
 
@@ -56,6 +59,7 @@ const messages = defineMessages({
 
 interface Props {
   entry: AppDRepDirectoryEntry;
+  cohort: DRepCohortContext;
   isFavorite: boolean;
   onToggleFavorite: (drepId: string) => void;
   isStaleFavorite?: boolean;
@@ -80,6 +84,7 @@ function formatVotingPower(value: BigNumber | null): string {
 
 function DRepCard({
   entry,
+  cohort,
   isFavorite,
   onToggleFavorite,
   isStaleFavorite = false,
@@ -117,7 +122,7 @@ function DRepCard({
           <span aria-hidden="true">{isFavorite ? '★' : '☆'}</span>
         </button>
         <DRepStatusBadge status={entry.status} />
-        <DRepCategoryBadge entry={entry} />
+        <DRepCategoryBadge entry={entry} cohort={cohort} />
         <DRepIdDisplay drepId={entry.drepId} />
       </div>
       {isStaleFavorite && (

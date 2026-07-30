@@ -2,9 +2,9 @@
 
 exports[`DRepDetailPage renders the category badge in the detail header (snapshot) 1`] = `
 <span
-  aria-label="!!!Primary. !!!Inside the default Recommended view with verified metadata."
+  aria-label="!!!Primary. !!!Has verified off-chain metadata."
   class="badge primary"
-  title="!!!Inside the default Recommended view with verified metadata."
+  title="!!!Has verified off-chain metadata."
 >
   <span
     aria-hidden="true"
@@ -14,6 +14,24 @@ exports[`DRepDetailPage renders the category badge in the detail header (snapsho
     class="label"
   >
     !!!Primary
+  </span>
+</span>
+`;
+
+exports[`DRepDetailPage renders the high value badge when the entry is above the cohort median (snapshot) 1`] = `
+<span
+  aria-label="!!!High value. !!!Inside the default Recommended view, with verified metadata and voting power above the cohort median."
+  class="badge highValue"
+  title="!!!Inside the default Recommended view, with verified metadata and voting power above the cohort median."
+>
+  <span
+    aria-hidden="true"
+    class="dot"
+  />
+  <span
+    class="label"
+  >
+    !!!High value
   </span>
 </span>
 `;
