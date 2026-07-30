@@ -110,3 +110,46 @@
   font-weight: 600;
   color: var(--theme-color-error, #ea4c5b);
 }
+
+.subSectionTitle {
+  margin: 12px 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--theme-text-secondary, #6b7384);
+}
+
+.referenceList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  list-style: none;
+  word-break: break-all;
+}
+
+.referenceItem {
+  margin: 0;
+}
+
+.paymentAddressValue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 13px;
+  word-break: break-all;
+  color: var(--theme-text-primary);
+}
+
+.copyButton {
+  font-size: 12px;
+}
+
+.copiedConfirmation {
+  font-size: 12px;
+  color: var(--theme-text-secondary, #6b7384);
+}

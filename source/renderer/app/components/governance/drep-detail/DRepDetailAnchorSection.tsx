@@ -2,6 +2,7 @@ import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import DRepSourceLabel from '../_shared/DRepSourceLabel';
 import DRepDetailAnchorContent from './DRepDetailAnchorContent';
+import { isHttpsUrl } from '../../../utils/governance/isHttpsUrl';
 import type { DRepAnchorPresence } from '../../../../../common/types/governance.types';
 import type { AnchorEnrichEntry } from '../../../stores/GovernanceStore';
 import styles from './DRepDetail.scss';
@@ -41,16 +42,6 @@ interface Props {
   intl: intlShape.isRequired;
 }
 
-// The renderer offers the link only for schemes main will actually open, so a
-// non-https anchor stays inert text instead of a link that does nothing.
-const isHttpsAnchorUrl = (url: string): boolean => {
-  try {
-    return new URL(url).protocol === 'https:';
-  } catch {
-    return false;
-  }
-};
-
 function DRepDetailAnchorSection({
   anchor,
   anchorState,
@@ -73,7 +64,7 @@ function DRepDetailAnchorSection({
                 {intl.formatMessage(messages.urlLabel)}
               </dt>
               <dd className={styles.anchorValue}>
-                {isHttpsAnchorUrl(anchor.url) ? (
+                {isHttpsUrl(anchor.url) ? (
                   <a
                     href={anchor.url}
                     target="_blank"
@@ -108,7 +99,10 @@ function DRepDetailAnchorSection({
               </dd>
             </div>
           </dl>
-          <DRepDetailAnchorContent state={anchorState} />
+          <DRepDetailAnchorContent
+            state={anchorState}
+            onOpenExternalLink={onOpenExternalLink}
+          />
         </>
       ) : (
         <p className={styles.mutedValue}>{intl.formatMessage(messages.none)}</p>

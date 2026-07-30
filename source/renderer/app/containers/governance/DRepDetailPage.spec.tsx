@@ -14,6 +14,8 @@ import {
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { AnchorFetchErrorType } from '../../../../common/types/governance.types';
+import type { VerifiedDRepAnchorContent } from '../../../../common/types/governance.types';
+import { logger as rendererLogger } from '../../utils/logging';
 import translations from '../../i18n/locales/en-US.json';
 import jaTranslations from '../../i18n/locales/ja-JP.json';
 import { ROUTES } from '../../routes-config';
@@ -40,6 +42,32 @@ const baseEntry: AppDRepDirectoryEntry = {
   status: 'active',
   votingPower: new BigNumber('23137980123456'),
 };
+
+const verifiedContent = (
+  overrides: Partial<VerifiedDRepAnchorContent> = {}
+): VerifiedDRepAnchorContent => ({
+  givenName: 'Daedalus Test DRep',
+  objectives: null,
+  motivations: null,
+  qualifications: null,
+  references: [],
+  paymentAddress: null,
+  doNotList: false,
+  ...overrides,
+});
+
+const verifiedState = (overrides: Partial<VerifiedDRepAnchorContent> = {}) =>
+  new Map([
+    [
+      DREP_ID,
+      {
+        state: 'verified',
+        hash: baseEntry.anchor!.hash,
+        host: 'raw.githubusercontent.com',
+        content: verifiedContent(overrides),
+      },
+    ],
+  ]);
 
 const buildGovernanceStore = (overrides: Record<string, unknown> = {}) => ({
   anchorStateByDRepId: new Map(),
@@ -332,19 +360,7 @@ describe('DRepDetailPage', () => {
 
   it('renders the verified name with the verified off-chain label and host tooltip', () => {
     renderPage({
-      governanceOverrides: {
-        anchorStateByDRepId: new Map([
-          [
-            DREP_ID,
-            {
-              state: 'verified',
-              hash: baseEntry.anchor!.hash,
-              givenName: 'Daedalus Test DRep',
-              host: 'raw.githubusercontent.com',
-            },
-          ],
-        ]),
-      },
+      governanceOverrides: { anchorStateByDRepId: verifiedState() },
     });
 
     expect(screen.getByText('Daedalus Test DRep')).toBeInTheDocument();
@@ -406,19 +422,7 @@ describe('DRepDetailPage', () => {
   it('renders the verified block in ja-JP', () => {
     renderPage({
       locale: 'ja-JP',
-      governanceOverrides: {
-        anchorStateByDRepId: new Map([
-          [
-            DREP_ID,
-            {
-              state: 'verified',
-              hash: baseEntry.anchor!.hash,
-              givenName: 'Daedalus Test DRep',
-              host: 'raw.githubusercontent.com',
-            },
-          ],
-        ]),
-      },
+      governanceOverrides: { anchorStateByDRepId: verifiedState() },
     });
 
     expect(screen.getByText('Daedalus Test DRep')).toBeInTheDocument();
@@ -426,6 +430,253 @@ describe('DRepDetailPage', () => {
       screen.getByText('!!!検証済みオフチェーンコンテンツ')
     ).toBeInTheDocument();
     expect(screen.getByText('!!!オフチェーンプロフィール')).toBeInTheDocument();
+  });
+
+  it('renders every verified profile field with a verified off-chain label', () => {
+    renderPage({
+      governanceOverrides: {
+        anchorStateByDRepId: verifiedState({
+          objectives: 'Fixture objectives',
+          motivations: 'Fixture motivations',
+          qualifications: 'Fixture qualifications',
+        }),
+      },
+    });
+
+    expect(screen.getByText('!!!Objectives')).toBeInTheDocument();
+    expect(screen.getByText('Fixture objectives')).toBeInTheDocument();
+    expect(screen.getByText('!!!Motivations')).toBeInTheDocument();
+    expect(screen.getByText('Fixture motivations')).toBeInTheDocument();
+    expect(screen.getByText('!!!Qualifications')).toBeInTheDocument();
+    expect(screen.getByText('Fixture qualifications')).toBeInTheDocument();
+    expect(
+      screen.getAllByText('!!!Verified off-chain content').length
+    ).toBeGreaterThanOrEqual(4);
+  });
+
+  it('renders an identity reference under the claim caption and never as a plain link', () => {
+    renderPage({
+      governanceOverrides: {
+        anchorStateByDRepId: verifiedState({
+          references: [
+            {
+              type: 'link',
+              label: 'Blog',
+              uri: 'https://example.org/blog',
+            },
+            {
+              type: 'identity',
+              label: 'X profile',
+              uri: 'https://example.org/id',
+            },
+          ],
+        }),
+      },
+    });
+
+    const identityHeading = screen.getByText('!!!Claimed identities');
+    const linkHeading = screen.getByText('!!!Links');
+    expect(identityHeading).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        '!!!These identities are claimed by the DRep and are not verified by Daedalus. Open the link and confirm that this DRep ID is published there before you rely on it.'
+      )
+    ).toBeInTheDocument();
+
+    // The identity entry must sit after the caption, never inside the Links list.
+    const identityEntry = screen.getByText('X profile');
+    const blogEntry = screen.getByText('Blog');
+    expect(identityHeading.compareDocumentPosition(identityEntry)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING
+    );
+    expect(linkHeading.compareDocumentPosition(blogEntry)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING
+    );
+    expect(identityEntry.closest('ul')).not.toBe(blogEntry.closest('ul'));
+  });
+
+  it('buckets an unrecognised reference type under other references', () => {
+    renderPage({
+      governanceOverrides: {
+        anchorStateByDRepId: verifiedState({
+          references: [
+            { type: 'other', label: null, uri: 'https://example.org/misc' },
+          ],
+        }),
+      },
+    });
+
+    expect(screen.getByText('!!!Other references')).toBeInTheDocument();
+    expect(screen.getByText('https://example.org/misc')).toBeInTheDocument();
+    expect(screen.queryByText('!!!Claimed identities')).not.toBeInTheDocument();
+  });
+
+  it('opens an https reference uri through the external-link handler', () => {
+    const { app } = renderPage({
+      governanceOverrides: {
+        anchorStateByDRepId: verifiedState({
+          references: [
+            { type: 'link', label: 'Blog', uri: 'https://example.org/blog' },
+          ],
+        }),
+      },
+    });
+
+    const link = screen.getByText('Blog').closest('a');
+    expect(link).toHaveAttribute('href', 'https://example.org/blog');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+
+    fireEvent.click(link!);
+
+    expect(app.openExternalLink).toHaveBeenCalledWith(
+      'https://example.org/blog'
+    );
+  });
+
+  it('renders a non-https reference uri as inert text', () => {
+    const { app } = renderPage({
+      governanceOverrides: {
+        anchorStateByDRepId: verifiedState({
+          references: [
+            { type: 'link', label: null, uri: 'http://example.org/plain' },
+          ],
+        }),
+      },
+    });
+
+    const entry = screen.getByText('http://example.org/plain');
+    expect(entry.closest('a')).toBeNull();
+    expect(app.openExternalLink).not.toHaveBeenCalled();
+  });
+
+  it('renders the stated payment address read-only with a working copy button', async () => {
+    const address = 'addr1qxexamplepaymentaddressvalue';
+    const writeText = jest.fn(async () => undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    });
+    try {
+      renderPage({
+        governanceOverrides: {
+          anchorStateByDRepId: verifiedState({ paymentAddress: address }),
+        },
+      });
+
+      expect(screen.getByText('!!!Stated payment address')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          "!!!This address is the DRep's own claim. Delegating your voting power requires no payment to any address."
+        )
+      ).toBeInTheDocument();
+      expect(screen.getByText(address).tagName).toBe('SPAN');
+      expect(screen.queryByDisplayValue(address)).not.toBeInTheDocument();
+
+      fireEvent.click(
+        screen.getByRole('button', { name: '!!!Copy stated payment address' })
+      );
+
+      expect(writeText).toHaveBeenCalledWith(address);
+      expect(
+        await screen.findByText('!!!Payment address copied')
+      ).toBeInTheDocument();
+    } finally {
+      delete (navigator as any).clipboard;
+    }
+  });
+
+  it('reaches no logger on either payment-address copy path', async () => {
+    const address = 'addr1qxexamplepaymentaddressvalue';
+    const spies = (['debug', 'info', 'warn', 'error'] as const).map((level) =>
+      jest.spyOn(rendererLogger, level).mockImplementation(() => undefined)
+    );
+    const writeText = jest.fn(async () => undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    });
+    try {
+      renderPage({
+        governanceOverrides: {
+          anchorStateByDRepId: verifiedState({ paymentAddress: address }),
+        },
+      });
+      const copyButton = () =>
+        screen.getByRole('button', { name: '!!!Copy stated payment address' });
+
+      fireEvent.click(copyButton());
+      await screen.findByText('!!!Payment address copied');
+
+      // The unavailable branch must be as silent as the success branch: no
+      // length, no error code, nothing that could carry the address.
+      delete (navigator as any).clipboard;
+      fireEvent.click(copyButton());
+
+      spies.forEach((spy) => expect(spy).not.toHaveBeenCalled());
+    } finally {
+      delete (navigator as any).clipboard;
+      spies.forEach((spy) => spy.mockRestore());
+    }
+  });
+
+  it('renders the profile block when references and payment address are absent', () => {
+    renderPage({
+      governanceOverrides: {
+        anchorStateByDRepId: verifiedState({ objectives: 'Only objectives' }),
+      },
+    });
+
+    expect(screen.getByText('!!!Off-chain profile')).toBeInTheDocument();
+    expect(screen.getByText('Only objectives')).toBeInTheDocument();
+    expect(screen.queryByText('!!!References')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('!!!Stated payment address')
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the profile block with no name when the anchor carries only prose', () => {
+    renderPage({
+      governanceOverrides: {
+        anchorStateByDRepId: verifiedState({
+          givenName: null,
+          objectives: 'Objectives only',
+        }),
+      },
+    });
+
+    expect(screen.getByText('Objectives only')).toBeInTheDocument();
+    expect(screen.queryByText('!!!Name')).not.toBeInTheDocument();
+    // The name caption is name-specific copy and must not appear without a name.
+    expect(
+      screen.queryByText(
+        "!!!This name is the DRep's own claim, hash-matched to the anchor recorded on-chain. Daedalus does not verify identity."
+      )
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the new profile labels in ja-JP', () => {
+    renderPage({
+      locale: 'ja-JP',
+      governanceOverrides: {
+        anchorStateByDRepId: verifiedState({
+          objectives: 'Fixture objectives',
+          paymentAddress: 'addr1qxexamplepaymentaddressvalue',
+          references: [
+            {
+              type: 'identity',
+              label: 'X profile',
+              uri: 'https://example.org/id',
+            },
+          ],
+        }),
+      },
+    });
+
+    expect(screen.getByText('!!!目的')).toBeInTheDocument();
+    expect(
+      screen.getByText('!!!申告されたアイデンティティ')
+    ).toBeInTheDocument();
+    expect(screen.getByText('!!!申告された支払いアドレス')).toBeInTheDocument();
   });
 
   it('opens an https anchor url through the external-link handler', () => {

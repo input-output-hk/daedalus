@@ -61,6 +61,12 @@ export const filterLogData = (
     'anchorContent',
     'givenName',
     'verifiedName',
+    'objectives',
+    'motivations',
+    'qualifications',
+    'references',
+    'paymentAddress',
+    'doNotList',
   ];
 
   const redact = (value: any): any => {

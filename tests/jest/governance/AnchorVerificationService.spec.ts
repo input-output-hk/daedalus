@@ -84,7 +84,18 @@ describe('AnchorVerificationService', () => {
     });
     expect(result).toMatchObject({
       status: 'verified',
-      content: { givenName: 'Daedalus Test DRep' },
+      content: {
+        givenName: 'Daedalus Test DRep',
+        objectives:
+          'Synthetic fixture objectives for offline anchor verification tests.',
+        motivations:
+          'Synthetic fixture motivations for offline anchor verification tests.',
+        qualifications:
+          'Synthetic fixture qualifications for offline anchor verification tests.',
+        references: [],
+        paymentAddress: null,
+        doNotList: false,
+      },
       host: 'raw.githubusercontent.com',
     });
     expect(typeof (result as { fetchedAt?: unknown }).fetchedAt).toBe('number');
@@ -134,16 +145,155 @@ describe('AnchorVerificationService', () => {
     expect('content' in result).toBe(false);
   });
 
-  it('treats a body without a givenName as a parse failure', async () => {
+  it('verifies a body with no givenName and leaves every field at its empty value', async () => {
     const bytes = Buffer.from(JSON.stringify({ body: {} }));
     mockFetchAnchorBytes.mockResolvedValue(okResult(bytes));
     const result = await resolveVerifiedAnchor({
       url: ONCHAIN_URL,
       hash: anchorDigest(bytes),
     });
-    expect(result).toEqual({
-      status: 'unavailable',
-      reason: AnchorFetchErrorType.ParseFailed,
+    expect(result).toMatchObject({
+      status: 'verified',
+      content: {
+        givenName: null,
+        objectives: null,
+        motivations: null,
+        qualifications: null,
+        references: [],
+        paymentAddress: null,
+        doNotList: false,
+      },
+    });
+  });
+
+  it('keeps a doNotList opt-out from a body that carries no givenName', async () => {
+    const bytes = Buffer.from(JSON.stringify({ body: { doNotList: true } }));
+    mockFetchAnchorBytes.mockResolvedValue(okResult(bytes));
+    const result = await resolveVerifiedAnchor({
+      url: ONCHAIN_URL,
+      hash: anchorDigest(bytes),
+    });
+    expect(result).toMatchObject({
+      status: 'verified',
+      content: { doNotList: true },
+    });
+  });
+
+  it('still fails to parse a body that is missing, null or not an object', async () => {
+    for (const body of [undefined, null, [], 'text']) {
+      const bytes = Buffer.from(JSON.stringify({ body }));
+      mockFetchAnchorBytes.mockResolvedValue(okResult(bytes));
+      const result = await resolveVerifiedAnchor({
+        url: ONCHAIN_URL,
+        hash: anchorDigest(bytes),
+      });
+      expect(result).toEqual({
+        status: 'unavailable',
+        reason: AnchorFetchErrorType.ParseFailed,
+      });
+    }
+  });
+
+  it('splits references into link, identity and default buckets', async () => {
+    const bytes = Buffer.from(
+      JSON.stringify({
+        body: {
+          references: [
+            { '@type': 'Link', label: 'Blog', uri: 'https://example.org/blog' },
+            {
+              '@type': 'Identity',
+              label: 'Profile',
+              uri: 'https://example.org/id',
+            },
+            { '@type': 'CIP119:Identity', uri: 'https://example.org/id2' },
+            { '@type': 'Something', uri: 'https://example.org/other' },
+            { uri: 'https://example.org/untyped' },
+          ],
+        },
+      })
+    );
+    mockFetchAnchorBytes.mockResolvedValue(okResult(bytes));
+    const result = await resolveVerifiedAnchor({
+      url: ONCHAIN_URL,
+      hash: anchorDigest(bytes),
+    });
+    expect((result as any).content.references).toEqual([
+      { type: 'link', label: 'Blog', uri: 'https://example.org/blog' },
+      { type: 'identity', label: 'Profile', uri: 'https://example.org/id' },
+      { type: 'identity', label: null, uri: 'https://example.org/id2' },
+      { type: 'other', label: null, uri: 'https://example.org/other' },
+      { type: 'other', label: null, uri: 'https://example.org/untyped' },
+    ]);
+  });
+
+  it('drops reference entries with no uri and caps the list at twenty', async () => {
+    const many = Array.from({ length: 25 }, (_unused, index) => ({
+      '@type': 'Link',
+      uri: `https://example.org/${index}`,
+    }));
+    const bytes = Buffer.from(
+      JSON.stringify({ body: { references: [{ label: 'no uri' }, ...many] } })
+    );
+    mockFetchAnchorBytes.mockResolvedValue(okResult(bytes));
+    const result = await resolveVerifiedAnchor({
+      url: ONCHAIN_URL,
+      hash: anchorDigest(bytes),
+    });
+    expect((result as any).content.references).toHaveLength(20);
+  });
+
+  it('clamps long-form prose at one thousand characters, not at eighty', async () => {
+    const bytes = Buffer.from(
+      JSON.stringify({ body: { objectives: 'o'.repeat(5000) } })
+    );
+    mockFetchAnchorBytes.mockResolvedValue(okResult(bytes));
+    const result = await resolveVerifiedAnchor({
+      url: ONCHAIN_URL,
+      hash: anchorDigest(bytes),
+    });
+    expect((result as any).content.objectives).toHaveLength(1000);
+  });
+
+  it('clamps givenName at eighty characters', async () => {
+    const bytes = Buffer.from(
+      JSON.stringify({ body: { givenName: 'n'.repeat(500) } })
+    );
+    mockFetchAnchorBytes.mockResolvedValue(okResult(bytes));
+    const result = await resolveVerifiedAnchor({
+      url: ONCHAIN_URL,
+      hash: anchorDigest(bytes),
+    });
+    expect((result as any).content.givenName).toHaveLength(80);
+  });
+
+  it('drops an over-length payment address instead of truncating it', async () => {
+    const bytes = Buffer.from(
+      JSON.stringify({ body: { paymentAddress: `addr1${'q'.repeat(200)}` } })
+    );
+    mockFetchAnchorBytes.mockResolvedValue(okResult(bytes));
+    const result = await resolveVerifiedAnchor({
+      url: ONCHAIN_URL,
+      hash: anchorDigest(bytes),
+    });
+    expect((result as any).content.paymentAddress).toBeNull();
+  });
+
+  it('reads the JSON-LD @value wrapper form for strings and booleans', async () => {
+    const bytes = Buffer.from(
+      JSON.stringify({
+        body: {
+          givenName: { '@value': 'Wrapped Name' },
+          doNotList: { '@value': true },
+        },
+      })
+    );
+    mockFetchAnchorBytes.mockResolvedValue(okResult(bytes));
+    const result = await resolveVerifiedAnchor({
+      url: ONCHAIN_URL,
+      hash: anchorDigest(bytes),
+    });
+    expect(result).toMatchObject({
+      content: { givenName: 'Wrapped Name', doNotList: true },
     });
   });
 

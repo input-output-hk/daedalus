@@ -90,9 +90,27 @@ export enum AnchorFetchErrorType {
   InvalidRequest = 'ANCHOR_INVALID_REQUEST',
 }
 
+/** CIP-119 `references[].@type`, normalised to the buckets the detail view renders. */
+export type VerifiedDRepReferenceType = 'link' | 'identity' | 'other';
+
+export interface VerifiedDRepReference {
+  /** Normalised bucket; unrecognised and missing types collapse to 'other'. */
+  type: VerifiedDRepReferenceType;
+  /** Human-readable label from the anchor, or null when none was supplied. */
+  label: string | null;
+  uri: string;
+}
+
 /** CIP-119 fields extracted from anchor bytes that passed Blake2b-256 verification. */
 export interface VerifiedDRepAnchorContent {
   givenName: string | null;
+  objectives: string | null;
+  motivations: string | null;
+  qualifications: string | null;
+  references: VerifiedDRepReference[];
+  paymentAddress: string | null;
+  /** CIP-119 opt-out from listing. Absent means false; consumed by the cohort filter. */
+  doNotList: boolean;
 }
 
 export type DRepAnchorResult =

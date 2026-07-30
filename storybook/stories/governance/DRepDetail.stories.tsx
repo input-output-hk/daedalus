@@ -30,6 +30,7 @@ const STATUS_OPTIONS = {
 
 const ANCHOR_STATE_OPTIONS = {
   Verified: 'verified',
+  'Verified — prose only': 'verified-minimal',
   Unavailable: 'unavailable',
   'Not requested': 'none',
 };
@@ -44,8 +45,52 @@ const anchorStateFor = (
     return {
       state: 'verified',
       hash,
-      givenName: 'Daedalus Preview DRep',
       host: 'governance-preview.example.org',
+      content: {
+        givenName: 'Daedalus Preview DRep',
+        objectives:
+          'Advocate for treasury discipline and predictable protocol parameter changes.',
+        motivations:
+          'Long-term stake pool operator with an interest in governance participation.',
+        qualifications:
+          'Five years operating Cardano infrastructure; contributor to two CIPs.',
+        references: [
+          {
+            type: 'link',
+            label: 'Public blog',
+            uri: 'https://governance-preview.example.org/blog',
+          },
+          {
+            type: 'identity',
+            label: 'Social profile',
+            uri: 'https://governance-preview.example.org/profile',
+          },
+          {
+            type: 'other',
+            label: null,
+            uri: 'https://governance-preview.example.org/misc',
+          },
+        ],
+        paymentAddress: 'addr1qxpreviewstatedpaymentaddressvalue',
+        doNotList: false,
+      },
+    };
+  }
+  if (choice === 'verified-minimal') {
+    return {
+      state: 'verified',
+      hash,
+      host: 'governance-preview.example.org',
+      content: {
+        givenName: null,
+        objectives:
+          'Advocate for treasury discipline and predictable protocol parameter changes.',
+        motivations: null,
+        qualifications: null,
+        references: [],
+        paymentAddress: null,
+        doNotList: false,
+      },
     };
   }
   if (choice === 'unavailable') {

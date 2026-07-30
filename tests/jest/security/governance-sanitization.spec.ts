@@ -297,6 +297,32 @@ describe('Governance sanitization — filterLogData', () => {
     expect(s).not.toContain('Sample DRep');
   });
 
+  it('removes every CIP-119 profile field name added by the anchor pipeline', () => {
+    const data = {
+      objectives: 'Objectives prose',
+      motivations: 'Motivations prose',
+      qualifications: 'Qualifications prose',
+      references: [{ type: 'identity', uri: 'https://example.org/id' }],
+      paymentAddress: 'addr1qxexamplepaymentaddressvalue',
+      doNotList: true,
+    };
+
+    expect(filterLogData(data)).toEqual({});
+  });
+
+  it('removes CIP-119 profile fields nested under a verified anchor content object', () => {
+    const address = 'addr1qxexamplepaymentaddressvalue';
+    const data = {
+      anchorState: {
+        state: 'verified',
+        content: { paymentAddress: address, objectives: 'Objectives prose' },
+      },
+    };
+
+    expect(jsonStr(filterLogData(data))).not.toContain(address);
+    expect(jsonStr(filterLogData(data))).not.toContain('Objectives prose');
+  });
+
   it('retains a sensitive-looking value under a key that is not on the list', () => {
     // sensitiveData.includes(key) at source/common/utils/logging.ts:74 is exact
     // string equality, so the filter redacts by key name and never by value

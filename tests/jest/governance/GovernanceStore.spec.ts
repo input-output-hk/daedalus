@@ -15,6 +15,7 @@ import {
   GovernanceQueryErrorType,
   AnchorFetchErrorType,
   DRepDirectoryEntry,
+  VerifiedDRepAnchorContent,
 } from '../../../source/common/types/governance.types';
 
 // Mock the IPC channel so fetchDRepList never reaches Electron's ipcRenderer.
@@ -43,6 +44,19 @@ const mockAnchorRequest = governanceDRepAnchorChannel.request as jest.Mock;
 const flushAsync = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 const DREP_ID = 'drep1xj23tk3yqyv7cqv7jn9mkz6xq8c7e5m3s2w1v0p9n8m7l6k5j';
+
+const verifiedContent = (
+  overrides: Partial<VerifiedDRepAnchorContent> = {}
+): VerifiedDRepAnchorContent => ({
+  givenName: 'Cardano Academy',
+  objectives: null,
+  motivations: null,
+  qualifications: null,
+  references: [],
+  paymentAddress: null,
+  doNotList: false,
+  ...overrides,
+});
 
 const phase1Payload = () => ({
   dreps: [
@@ -674,8 +688,8 @@ describe('GovernanceStore cohort context', () => {
           {
             state: 'verified',
             hash: 'a'.repeat(64),
-            givenName: 'Ada',
             host: 'governance-preview.example.org',
+            content: verifiedContent({ givenName: 'Ada' }),
           },
         ],
         [
@@ -994,7 +1008,7 @@ describe('GovernanceStore anchor enrichment', () => {
 
   const verifiedResponse = (givenName: string | null = 'Cardano Academy') => ({
     status: 'verified' as const,
-    content: { givenName },
+    content: verifiedContent({ givenName }),
     host: 'raw.githubusercontent.com',
     fetchedAt: 1_750_000_001_000,
   });
@@ -1010,6 +1024,53 @@ describe('GovernanceStore anchor enrichment', () => {
       'Cardano Academy'
     );
     expect(store.drepList[0].verifiedName).toBe('Cardano Academy');
+    expect(store.verifiedMetadataIds.has(ANCHOR_DREP_ID)).toBe(true);
+  });
+
+  it('stores the whole verified payload on the anchor state', async () => {
+    const store = await loadStore();
+    mockAnchorRequest.mockResolvedValue({
+      status: 'verified' as const,
+      content: verifiedContent({
+        objectives: 'Objectives text',
+        paymentAddress: 'addr1qexamplepaymentaddress',
+        references: [
+          { type: 'identity', label: null, uri: 'https://example.org/id' },
+        ],
+        doNotList: true,
+      }),
+      host: 'raw.githubusercontent.com',
+      fetchedAt: 1_750_000_001_000,
+    });
+
+    await store.fetchAnchorContent(ANCHOR_DREP_ID, ANCHOR);
+
+    const state = store.anchorStateByDRepId.get(ANCHOR_DREP_ID);
+    expect(state).toMatchObject({
+      state: 'verified',
+      content: {
+        objectives: 'Objectives text',
+        paymentAddress: 'addr1qexamplepaymentaddress',
+        doNotList: true,
+      },
+    });
+  });
+
+  it('keeps verifiedName null when the anchor carries no givenName', async () => {
+    const store = await loadStore();
+    mockAnchorRequest.mockResolvedValue({
+      status: 'verified' as const,
+      content: verifiedContent({ givenName: null, objectives: 'Only prose' }),
+      host: 'raw.githubusercontent.com',
+      fetchedAt: 1_750_000_001_000,
+    });
+
+    await store.fetchAnchorContent(ANCHOR_DREP_ID, ANCHOR);
+
+    expect(store.drepIndex.get(ANCHOR_DREP_ID)?.verifiedName).toBeNull();
+    // A hash-matched parse is completed metadata whether or not it names the
+    // DRep; the cohort's completeness signal follows the digest, not one
+    // optional CIP-119 field.
     expect(store.verifiedMetadataIds.has(ANCHOR_DREP_ID)).toBe(true);
   });
 

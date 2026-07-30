@@ -2832,6 +2832,71 @@
         "id": "governance.drepDetail.anchorContent.givenName"
       },
       {
+        "defaultMessage": "!!!Objectives",
+        "description": "Label for the verified CIP-119 objectives field",
+        "id": "governance.drepDetail.anchorContent.objectives"
+      },
+      {
+        "defaultMessage": "!!!Motivations",
+        "description": "Label for the verified CIP-119 motivations field",
+        "id": "governance.drepDetail.anchorContent.motivations"
+      },
+      {
+        "defaultMessage": "!!!Qualifications",
+        "description": "Label for the verified CIP-119 qualifications field",
+        "id": "governance.drepDetail.anchorContent.qualifications"
+      },
+      {
+        "defaultMessage": "!!!References",
+        "description": "Heading of the verified CIP-119 references block",
+        "id": "governance.drepDetail.anchorContent.references.title"
+      },
+      {
+        "defaultMessage": "!!!Links",
+        "description": "Sub-heading for references typed as Link",
+        "id": "governance.drepDetail.anchorContent.references.links"
+      },
+      {
+        "defaultMessage": "!!!Claimed identities",
+        "description": "Sub-heading for references typed as Identity",
+        "id": "governance.drepDetail.anchorContent.references.identity"
+      },
+      {
+        "defaultMessage": "!!!These identities are claimed by the DRep and are not verified by Daedalus. Open the link and confirm that this DRep ID is published there before you rely on it.",
+        "description": "Caption stating that an Identity reference is a claim, not a verified identity",
+        "id": "governance.drepDetail.anchorContent.references.identityCaption"
+      },
+      {
+        "defaultMessage": "!!!Other references",
+        "description": "Sub-heading for references whose type is missing or unrecognised",
+        "id": "governance.drepDetail.anchorContent.references.other"
+      },
+      {
+        "defaultMessage": "!!!Stated payment address",
+        "description": "Label for the verified CIP-119 paymentAddress field",
+        "id": "governance.drepDetail.anchorContent.paymentAddress.label"
+      },
+      {
+        "defaultMessage": "!!!This address is the DRep's own claim. Delegating your voting power requires no payment to any address.",
+        "description": "Caption warning that no payment is required to delegate voting power",
+        "id": "governance.drepDetail.anchorContent.paymentAddress.caption"
+      },
+      {
+        "defaultMessage": "!!!Copy",
+        "description": "Copy button label for the stated payment address",
+        "id": "governance.drepDetail.anchorContent.paymentAddress.copyButton"
+      },
+      {
+        "defaultMessage": "!!!Copy stated payment address",
+        "description": "Accessible label for the payment address copy button",
+        "id": "governance.drepDetail.anchorContent.paymentAddress.copyLabel"
+      },
+      {
+        "defaultMessage": "!!!Payment address copied",
+        "description": "Inline confirmation shown after copying the payment address",
+        "id": "governance.drepDetail.anchorContent.paymentAddress.copiedToast"
+      },
+      {
         "defaultMessage": "!!!Checking the anchor…",
         "description": "Shown while the anchor is being fetched and verified",
         "id": "governance.drepDetail.anchorContent.loading"

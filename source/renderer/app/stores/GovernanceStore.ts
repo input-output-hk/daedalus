@@ -13,6 +13,7 @@ import {
   DRepDirectoryEntry,
   DRepAnchorPresence,
   DRepAnchorResult,
+  VerifiedDRepAnchorContent,
 } from '../../../common/types/governance.types';
 import { generateCohortSeed, seededShuffle } from '../utils/seededShuffle';
 
@@ -48,7 +49,12 @@ export interface DRepCohortContext {
 
 export type AnchorEnrichEntry =
   | { state: 'loading'; hash: string }
-  | { state: 'verified'; hash: string; givenName: string | null; host: string }
+  | {
+      state: 'verified';
+      hash: string;
+      host: string;
+      content: VerifiedDRepAnchorContent;
+    }
   | { state: 'unavailable'; hash: string; reason: AnchorFetchErrorType };
 
 export enum GovernanceRefreshState {
@@ -436,8 +442,11 @@ export default class GovernanceStore extends Store {
           ? {
               state: 'verified',
               hash: anchor.hash,
-              givenName: clampVerifiedName(result.content.givenName),
               host: result.host,
+              content: {
+                ...result.content,
+                givenName: clampVerifiedName(result.content.givenName),
+              },
             }
           : { state: 'unavailable', hash: anchor.hash, reason: result.reason };
       this.anchorStateByDRepId = new Map(this.anchorStateByDRepId).set(
@@ -529,7 +538,7 @@ export default class GovernanceStore extends Store {
         state.state === 'verified' &&
         entry.anchor != null &&
         entry.anchor.hash === state.hash
-          ? state.givenName
+          ? state.content.givenName
           : null;
       return verifiedName === entry.verifiedName
         ? entry
