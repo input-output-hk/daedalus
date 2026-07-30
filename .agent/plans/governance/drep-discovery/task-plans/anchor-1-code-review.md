@@ -842,3 +842,84 @@ adjudication was needed.
 4. **The close-out commit is unmade.** `feat(gov): task-150 verify, cache and parse DRep anchor
    bytes` (`:2986`) — four modified and ten untracked files sit uncommitted at HEAD `71ad2b4a1`.
    Recorded as F-12; unlike task-149, no prettier scope decision blocks it.
+
+## Code Review: task-151 — round 1 (2026-07-29)
+
+**Verdict: approved. No blockers, one round.** The review ran over the uncommitted working tree at
+HEAD `aa77b475c` — 24 modified files and one untracked
+(`source/renderer/app/components/governance/drep-detail/DRepDetailAnchorContent.tsx`). The diff
+implements every in-scope guide step (1–17) faithfully: the wire and app types gain a required
+`verifiedName: string | null`, written unconditionally `null` by main
+(`GovernanceQueryService.ts:518-526` — the bulk query never fetches an anchor); the store adds
+`AnchorEnrichEntry`, `@observable anchorStateByDRepId`, the `verifiedMetadataIds` computed derived
+from `state === 'verified'` only, `clampVerifiedName` (80-char cap), `fetchAnchorContent` with
+hash dedup and IPC-rejection fallback to `AnchorFetchErrorType.Network`, and `_applyVerifiedNames`
+with the hash-mismatch name drop, re-applied at both list-rebuild sites; `DRepSourceLabel` gains
+exactly the three new variants with tooltips only on those three, so the four untooltipped
+On-chain spans stay byte-identical; `DRepDetailAnchorContent` renders `givenName` only from a
+verified state with the verified-off-chain label, host tooltip and identity-claim caption; the
+D-5c https link gate renders an `<a target="_blank" rel="noopener noreferrer">` routed through
+`stores.app.openExternalLink` only for https URLs, with both branches pinned (cases 7 and 8) and
+the old inert-text gating comment deleted. No logger/analytics/electron-store call site exists on
+the anchor path (grepped the diff; pinned by the new no-logging store test); no renderer
+fetch/parse/hash; `verifiedName` has zero readers in cards, search or sort; zero new dependencies;
+the story uses the global StoryWrapper toggle with no local IntlProvider and
+`storybook/stories/index.ts` is untouched. Not one line changed in review.
+
+### Blockers
+
+**None raised.**
+
+### Minor
+
+**None raised.** The convention sweep found nothing to file: comments and test names carry no task
+ids, review labels, ALL-CAPS or change history; catalogs are 95/95 governance keys, key-identical,
+all `!!!`-prefixed, with `defaultMessages.json` and `translations/messages.json` updated in the
+same diff.
+
+### Independent re-checks
+
+The verifier ran the guide's Verify block (`anchor-1-implementation-guide.md:3850-3919`) and the
+reviewer independently re-ran the load-bearing gates; the two passes agreed on every count.
+
+| Gate | Guide expectation | Measured |
+|---|---|---|
+| `tsc --noEmit` and `yarn compile` (`:3855-3856`) | exit 0 | both exit 0 |
+| `jest --testPathPattern="containers/governance/DRepDetailPage"` (`:3861`) | 12 → 20 tests, 1 snapshot unchanged | 1 suite / **20 tests**, 1 snapshot, green |
+| `jest --testPathPattern="tests/jest/governance/GovernanceStore"` (`:3863`) | 35 → 43 tests | 1 suite / **43 tests**, green |
+| `jest --testPathPattern="tests/jest/i18n"` (`:3865`) | 4 → 5 tests | 1 suite / **5 tests**, green |
+| `jest --testPathPattern="tests/jest/governance/logDRepStateSnapshot"` (`:3867`) | 4 → 5 tests | 1 suite / **5 tests**, green |
+| must-not-move `(components/governance\|CurrentVoteSummary)` (`:3871`) | 5 suites / 101 tests / 8 snapshots, zero written | **5 / 101 / 8**, zero written |
+| must-not-move `GovernanceQueryService` (`:3873`) | 38 tests unchanged | 1 suite / **38 tests**, green |
+| `git diff --stat` on the CurrentVoteSummary snapshots dir (`:3875`) | no output | no output — byte-identical |
+| sanitization floor, both anchors (`:3880`) | 26 + 27 = 53 at HEAD; first number raised by task-149/150; neither drops a test | **35 + 27 = 62**, both green |
+| `yarn i18n:manage` + parity probe (`:3893`) | `95 95 True [] []` | exit 0, a no-op against the tree (identical diff stats before/after), probe prints exactly **`95 95 True [] []`**; all 11 new keys per catalog are `governance.drepDetail.*` |
+| `yarn lint` | exit 0, warnings only | exit 0, **0 errors** |
+| step-7 format pass (`:3877` ff.) | `prettier --write` over the touched paths | `prettier --check` run read-only as the substitute (the `--write` is the committer's step): 19/21 clean; the 2 flagged files (`GovernanceQueryService.ts` :65-66/:396-397, `DRepDirectory.stories.tsx` :358-363) reproduce identical drift at HEAD, entirely outside this task's hunks — pre-existing 2.1.2 oscillation, recorded as F-15 |
+
+### Merged and dropped
+
+**Nothing to merge and nothing dropped** — no lens filed a finding at any severity, so no
+adjudication was needed.
+
+**Decision: approve.** One round, nothing carried forward into a fix pass.
+
+### OWED — never reported green
+
+1. **`nix fmt` before merge** — `nix` is absent in this devcontainer; explicit-path prettier
+   (verified via `--check`) is the substitute, and the real run stays a user-owned pre-merge
+   obligation that also settles the two HEAD-drifted files above.
+2. **AC-4 content half** (`anchor-1-implementation-guide.md:3931`) — the real SIPO body bytes from
+   `https://sipo.tokyo/drep/SIPO.jsonld` were never fetched and their Blake2b-256 digest never
+   compared to the on-chain `dataHash`; only the committed mock vector and the real on-chain
+   `(url, hash)` pair are proven. Recorded as F-13.
+3. **Any live anchor fetch** — no network here; every path is proven against mocks (F-10's caveat
+   carries).
+4. **Storybook visual and ja-JP overflow pass** for the new anchor-state knob — no browser here,
+   and the story is unregistered until task-172 edits `storybook/stories/index.ts:16-18`. Recorded
+   as F-14.
+5. **A real browser click-through of the anchor link** — the https gate is proven only in jsdom
+   against a mocked `openExternalLink`, never against the OS shell (`:3938`).
+6. **The close-out commit is unmade.** `feat(gov): task-151 render the verified givenName and
+   expose metadata completeness` (`:3921`) — 24 modified files plus the new untracked component
+   sit uncommitted at HEAD `aa77b475c`. Recorded as F-15.

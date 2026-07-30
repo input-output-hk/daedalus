@@ -289,3 +289,71 @@ against the >=120 floor, 35 / 27 on both sanitization anchors, lint 0 errors at
 subject line, no body, no trailer; per F-8's lesson it will also carry the tracker
 row and the two appended plan docs, which is correct and not a scope breach.
 **Owner.** Whoever closes the task; the `nix fmt` pre-merge pass stays user-owned.
+
+## F-13 (task-151) — AC-4 closes mechanism-only: the real SIPO body bytes have never been fetched and their digest never checked against the on-chain dataHash, and the carry now leaves the slice
+
+The acceptance table splits AC-4 explicitly (`anchor-1-implementation-guide.md:3931`):
+the mechanism half is green — the real preprod on-chain pair
+(`dataHash: 9e8cb2b0f4c2...f38e1` at
+`research/drep-state-preprod-epoch295-sample.json:2853`, `url` at `:2854`) drives the
+store tests and the Storybook fixture, and task-150's committed mock vector drives the
+verify path — but the content half is OWED: nothing in the repo contains the real
+CIP-119 body bytes from `https://sipo.tokyo/drep/SIPO.jsonld`
+(`tests/mocks/governance/README.md:12` names both real vectors), so no offline run can
+prove their Blake2b-256 digest equals the on-chain hash. task-150's close-out recorded
+this as "carried forward to task-151 AC-4"; task-151 is now closing and the carry has
+no later anchor-1 task to land in.
+
+**Resolution.** Not resolvable in this environment — there is no network. Same class
+as F-2 and F-10: a mocked or committed-fixture green must never be re-told as a
+live-vector one.
+**Disposition.** OWED — a networked run must fetch at least one real CIP-119 body
+(SIPO mainnet or Cardano Academy preprod), hash it, and compare against the on-chain
+`dataHash` before AC-4 is called fully green.
+**Owner.** Whoever runs a networked build before release; the carry escalates to the
+Planner at slice close rather than to any remaining anchor-1 task.
+
+## F-14 (task-151) — The anchor-state story is authored but unrendered: DRepDetail.stories stays unregistered until task-172, so no visual or ja-JP overflow pass has run
+
+Step 17 adds the anchor-state knob to
+`storybook/stories/governance/DRepDetail.stories.tsx` but forbids touching the
+registry: "Do **not** edit `storybook/stories/index.ts`. Registering
+`DRepDetail.stories` is task-172's" (`anchor-1-implementation-guide.md:3848`). Live
+state confirms it: `storybook/stories/index.ts:16-18` imports only
+`Governance.stories`, `DRepDirectory.stories` and `CurrentVoteSummary.stories`, and no
+line imports `DRepDetail.stories`. There is also no browser in this devcontainer, so
+even a registered story could not be visually checked here.
+
+**Resolution.** By design, not an omission — the guide itself says "record it as an
+in-slice carry, not as done" (`:3848`).
+**Disposition.** OWED — the Storybook visual pass and the ja-JP overflow check for the
+verified-name block and the three new source-label variants run only after task-172
+registers the file, and in an environment with a browser.
+**Owner.** task-172 registers; whoever runs the visual pass afterwards closes it.
+
+## F-15 (task-151) — The close-out commit is again undischarged, and the Step-7 format pass re-opens F-9's churn decision on two files whose drift predates this task
+
+Same shape as F-7, F-11 and F-12: the implementation, verification and review passes
+were each instructed not to commit, and complied. At the time of this record
+`git status --porcelain` shows 24 modified files and one untracked
+(`source/renderer/app/components/governance/drep-detail/DRepDetailAnchorContent.tsx`)
+against HEAD `aa77b475c`. The F-12 commit has since landed as that HEAD. Unlike
+task-150 but like task-149, the guide's format step is not clean as it stands: two of
+the touched files fail `prettier --check` — `GovernanceQueryService.ts` at `:65-66`
+and `:396-397`, `DRepDirectory.stories.tsx` at `:358-363` — and every drifted region
+is the 2.1.2 oscillation shape sitting entirely outside this task's hunks (the GQS
+hunk is at `:518`, the stories hunks at `:46`, `:54`, `:72`), so it is pre-existing
+HEAD drift, not this task's formatting debt. Running the guide's
+`prettier --write` list (`anchor-1-implementation-guide.md:3877-3893` area, Step 7)
+would fold that pre-existing churn into the task commit.
+
+**Resolution.** Bookkeeping plus one scoped decision, not broken code: every Verify
+gate measured green (20 / 43 / 5 / 5 on the changed suites, 101 / 38 unmoved, 35 + 27
+on the floor anchors, 95 95 True [] [] on i18n parity, lint 0 errors).
+**Disposition.** OWED — the single commit `feat(gov): task-151 render the verified
+givenName and expose metadata completeness` (`:3921`), one subject line, no body, no
+trailer; per F-8's lesson it also carries the tracker row and the two appended plan
+docs. The two drifted files may be committed as they stand — the user-owned `nix fmt`
+pre-merge pass settles them — or normalized first by an explicit user decision, per
+F-9.
+**Owner.** Whoever closes the task; the `nix fmt` pre-merge pass stays user-owned.

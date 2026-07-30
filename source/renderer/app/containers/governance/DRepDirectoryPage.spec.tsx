@@ -28,6 +28,7 @@ import DRepDirectoryPage from './DRepDirectoryPage';
 
 const drepEntry = {
   anchor: null,
+  verifiedName: null,
   drepActivity: 12,
   drepId: 'drep1yg7s8vuv87f8a8f5d0m9yk4p5xqw6r4s3t2u1v9w8x7y6z5a4b',
   status: 'active' as const,

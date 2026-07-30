@@ -515,7 +515,16 @@ export class GovernanceQueryService {
 
         const anchor = this._parseAnchor(state, index);
 
-        return { drepId, votingPower, status, drepActivity, anchor };
+        // The bulk drep-state query never fetches an anchor; the verified name
+        // is filled in the renderer from the per-DRep anchor channel.
+        return {
+          drepId,
+          votingPower,
+          status,
+          drepActivity,
+          anchor,
+          verifiedName: null,
+        };
       } catch (err) {
         if (err instanceof GovernanceQueryError) {
           throw err;

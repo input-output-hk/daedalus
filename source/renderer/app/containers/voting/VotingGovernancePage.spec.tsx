@@ -131,6 +131,7 @@ const abstainWallet = {
 
 const drepEntry = {
   anchor: null,
+  verifiedName: null,
   drepActivity: 12,
   drepId: VALID_DREP_ID,
   status: 'active' as const,
@@ -178,11 +179,13 @@ const buildStores = ({
     openExternalLink: jest.fn(),
   },
   governance: {
+    anchorStateByDRepId: new Map(),
     displayedDRepList: [drepEntry],
     drepIndex: new Map([[VALID_DREP_ID, drepEntry]]),
     drepList: [drepEntry],
     error: null,
     favoriteDRepIds: new Set<string>(),
+    fetchAnchorContent: jest.fn(),
     isCohortActive: false,
     lastFetchedAt: Date.now() - 60_000,
     refresh: jest.fn(),

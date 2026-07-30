@@ -20,6 +20,7 @@ interface Props extends RouteComponentProps<{ drepId: string }> {
 @observer
 class DRepDetailPage extends React.Component<Props> {
   syncReactionDisposer: IReactionDisposer | null = null;
+  anchorReactionDisposer: IReactionDisposer | null = null;
 
   componentDidMount() {
     const { stores } = this.props;
@@ -48,12 +49,33 @@ class DRepDetailPage extends React.Component<Props> {
         }
       }
     );
+
+    // Deep links mount before the list resolves, so fireImmediately plus the
+    // reaction covers both arrival orders.
+    this.anchorReactionDisposer = reaction(
+      () =>
+        governanceStore.drepIndex.get(this.props.match.params.drepId)?.anchor ??
+        null,
+      (anchor) => {
+        if (anchor) {
+          governanceStore.fetchAnchorContent(
+            this.props.match.params.drepId,
+            anchor
+          );
+        }
+      },
+      { fireImmediately: true }
+    );
   }
 
   componentWillUnmount() {
     if (this.syncReactionDisposer) {
       this.syncReactionDisposer();
       this.syncReactionDisposer = null;
+    }
+    if (this.anchorReactionDisposer) {
+      this.anchorReactionDisposer();
+      this.anchorReactionDisposer = null;
     }
   }
 
@@ -91,6 +113,8 @@ class DRepDetailPage extends React.Component<Props> {
         entry={governanceStore.drepIndex.get(drepId) ?? null}
         refreshState={governanceStore.refreshState}
         votingPowerState={governanceStore.votingPowerState}
+        anchorState={governanceStore.anchorStateByDRepId.get(drepId) ?? null}
+        onOpenExternalLink={stores.app.openExternalLink}
         onSelectForDelegation={this.handleSelectForDelegation}
         onBackToDirectory={this.handleBackToDirectory}
       />

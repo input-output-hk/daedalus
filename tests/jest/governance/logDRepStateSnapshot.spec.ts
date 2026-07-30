@@ -42,6 +42,7 @@ const publicPayload: DRepListQueryPayload = {
         hash: 'a'.repeat(64),
         url: 'https://example.org/drep.jsonld',
       },
+      verifiedName: null,
       drepActivity: 12,
       drepId: 'drep1yg7s8vuv87f8a8f5d0m9yk4p5xqw6r4s3t2u1v9w8x7y6z5a4b',
       status: 'active',
@@ -82,6 +83,17 @@ describe('logDRepStateSnapshot', () => {
 
     const parsed = JSON.parse(fs.readFileSync(SNAPSHOT_PATH, 'utf-8'));
     expect(parsed.data.epoch).toBe(513);
+  });
+
+  it('writes a null verifiedName for every snapshot entry', () => {
+    logDRepStateSnapshot(publicPayload);
+
+    const parsed = JSON.parse(fs.readFileSync(SNAPSHOT_PATH, 'utf-8'));
+    // The snapshot bypasses filterLogData, so a verified name reaching this
+    // payload would be published; main keeps the wire field null.
+    parsed.data.dreps.forEach((entry: { verifiedName: unknown }) => {
+      expect(entry.verifiedName).toBeNull();
+    });
   });
 
   it('never contains user vote or delegation fields', () => {

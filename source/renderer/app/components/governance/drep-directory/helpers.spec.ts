@@ -55,6 +55,7 @@ const buildEntry = (
   overrides: Partial<AppDRepDirectoryEntry> = {}
 ): AppDRepDirectoryEntry => ({
   anchor: null,
+  verifiedName: null,
   drepActivity: 20,
   drepId: cip129At(n),
   status: 'active',

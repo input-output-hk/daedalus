@@ -1,7 +1,9 @@
 import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import DRepSourceLabel from '../_shared/DRepSourceLabel';
+import DRepDetailAnchorContent from './DRepDetailAnchorContent';
 import type { DRepAnchorPresence } from '../../../../../common/types/governance.types';
+import type { AnchorEnrichEntry } from '../../../stores/GovernanceStore';
 import styles from './DRepDetail.scss';
 
 const messages = defineMessages({
@@ -34,10 +36,27 @@ const messages = defineMessages({
 
 interface Props {
   anchor: DRepAnchorPresence | null;
+  anchorState: AnchorEnrichEntry | null;
+  onOpenExternalLink: (url: string) => void;
   intl: intlShape.isRequired;
 }
 
-function DRepDetailAnchorSection({ anchor, intl }: Props) {
+// The renderer offers the link only for schemes main will actually open, so a
+// non-https anchor stays inert text instead of a link that does nothing.
+const isHttpsAnchorUrl = (url: string): boolean => {
+  try {
+    return new URL(url).protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
+function DRepDetailAnchorSection({
+  anchor,
+  anchorState,
+  onOpenExternalLink,
+  intl,
+}: Props) {
   return (
     <section
       className={styles.section}
@@ -47,33 +66,50 @@ function DRepDetailAnchorSection({ anchor, intl }: Props) {
         {intl.formatMessage(messages.title)}
       </h2>
       {anchor ? (
-        <dl className={styles.fieldList}>
-          <div className={styles.fieldRow}>
-            <dt className={styles.fieldLabel}>
-              {intl.formatMessage(messages.urlLabel)}
-            </dt>
-            {/* Deliberately inert text: no anchor may be fetched, rendered as
-                a link, or opened before the hardened anchor pipeline lands. */}
-            <dd className={styles.anchorValue}>{anchor.url}</dd>
-          </div>
-          <div className={styles.fieldRow}>
-            <dt className={styles.fieldLabel}>
-              {intl.formatMessage(messages.hashLabel)}
-            </dt>
-            <dd className={styles.anchorValue}>{anchor.hash}</dd>
-          </div>
-          <div className={styles.fieldRow}>
-            <dt className={styles.fieldLabel}>
-              {intl.formatMessage(messages.sourceRowLabel)}
-            </dt>
-            <dd className={styles.fieldValue}>
-              <DRepSourceLabel
-                source="on-chain-anchor-reference"
-                className={styles.sourceLabel}
-              />
-            </dd>
-          </div>
-        </dl>
+        <>
+          <dl className={styles.fieldList}>
+            <div className={styles.fieldRow}>
+              <dt className={styles.fieldLabel}>
+                {intl.formatMessage(messages.urlLabel)}
+              </dt>
+              <dd className={styles.anchorValue}>
+                {isHttpsAnchorUrl(anchor.url) ? (
+                  <a
+                    href={anchor.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(event: React.MouseEvent<HTMLAnchorElement>) => {
+                      event.preventDefault();
+                      onOpenExternalLink(anchor.url);
+                    }}
+                  >
+                    {anchor.url}
+                  </a>
+                ) : (
+                  anchor.url
+                )}
+              </dd>
+            </div>
+            <div className={styles.fieldRow}>
+              <dt className={styles.fieldLabel}>
+                {intl.formatMessage(messages.hashLabel)}
+              </dt>
+              <dd className={styles.anchorValue}>{anchor.hash}</dd>
+            </div>
+            <div className={styles.fieldRow}>
+              <dt className={styles.fieldLabel}>
+                {intl.formatMessage(messages.sourceRowLabel)}
+              </dt>
+              <dd className={styles.fieldValue}>
+                <DRepSourceLabel
+                  source="on-chain-anchor-reference"
+                  className={styles.sourceLabel}
+                />
+              </dd>
+            </div>
+          </dl>
+          <DRepDetailAnchorContent state={anchorState} />
+        </>
       ) : (
         <p className={styles.mutedValue}>{intl.formatMessage(messages.none)}</p>
       )}

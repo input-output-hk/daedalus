@@ -2730,6 +2730,36 @@
         "defaultMessage": "!!!On-chain anchor reference",
         "description": "Source label for the raw anchor URL and hash pair recorded on-chain",
         "id": "governance.drepDetail.sourceLabel.anchorReference"
+      },
+      {
+        "defaultMessage": "!!!Verified off-chain content",
+        "description": "Source label for hash-verified anchor content",
+        "id": "governance.drepDetail.sourceLabel.verified"
+      },
+      {
+        "defaultMessage": "!!!Fetched from {host}, hash-matched the on-chain anchor hash.",
+        "description": "Tooltip for the verified off-chain content source label",
+        "id": "governance.drepDetail.sourceLabel.verified.tooltip"
+      },
+      {
+        "defaultMessage": "!!!Unverified anchor",
+        "description": "Source label for fetched but not yet hash-verified content",
+        "id": "governance.drepDetail.sourceLabel.unverified"
+      },
+      {
+        "defaultMessage": "!!!Anchor content fetched but not yet hash-verified. Treat as untrusted.",
+        "description": "Tooltip for the unverified anchor source label",
+        "id": "governance.drepDetail.sourceLabel.unverified.tooltip"
+      },
+      {
+        "defaultMessage": "!!!Anchor unavailable",
+        "description": "Source label when the anchor fetch or hash check failed",
+        "id": "governance.drepDetail.sourceLabel.anchorUnavailable"
+      },
+      {
+        "defaultMessage": "!!!The anchor URL could not be retrieved or did not match the on-chain hash. Off-chain profile is not shown.",
+        "description": "Tooltip for the anchor unavailable source label",
+        "id": "governance.drepDetail.sourceLabel.anchorUnavailable.tooltip"
       }
     ],
     "path": "source/renderer/app/components/governance/_shared/DRepSourceLabel.tsx"
@@ -2778,6 +2808,36 @@
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepCard.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Off-chain profile",
+        "description": "Heading of the verified anchor content block",
+        "id": "governance.drepDetail.anchorContent.title"
+      },
+      {
+        "defaultMessage": "!!!Name",
+        "description": "Label for the verified CIP-119 givenName field",
+        "id": "governance.drepDetail.anchorContent.givenName"
+      },
+      {
+        "defaultMessage": "!!!Checking the anchor…",
+        "description": "Shown while the anchor is being fetched and verified",
+        "id": "governance.drepDetail.anchorContent.loading"
+      },
+      {
+        "defaultMessage": "!!!The off-chain profile could not be verified. Only on-chain data is shown.",
+        "description": "Shown when the anchor fetch or hash verification failed",
+        "id": "governance.drepDetail.anchorContent.unavailable"
+      },
+      {
+        "defaultMessage": "!!!This name is the DRep's own claim, hash-matched to the anchor recorded on-chain. Daedalus does not verify identity.",
+        "description": "Caption stating that a verified name is not verified identity",
+        "id": "governance.drepDetail.anchorContent.caption"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-detail/DRepDetailAnchorContent.tsx"
   },
   {
     "descriptors": [

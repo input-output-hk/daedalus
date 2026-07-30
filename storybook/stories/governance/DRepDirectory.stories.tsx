@@ -43,6 +43,7 @@ const baseEntries: AppDRepDirectoryEntry[] = [
       hash: '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
       url: 'https://governance-preview.example.org/dreps/1.json',
     },
+    verifiedName: null,
     drepActivity: 12,
     drepId: 'drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k4',
     status: 'active',
@@ -50,6 +51,7 @@ const baseEntries: AppDRepDirectoryEntry[] = [
   },
   {
     anchor: null,
+    verifiedName: null,
     drepActivity: 4,
     drepId: 'drep1xj23tk3y_qyv7c9m2z89w3t8mvk9e2uwc3q8u6j7r2x5y9w0p1',
     status: 'inactive',
@@ -67,6 +69,7 @@ const buildEntry = (suffix: number): AppDRepDirectoryEntry => ({
           url: `https://governance-preview.example.org/dreps/${suffix}.json`,
         }
       : null,
+  verifiedName: null,
   drepActivity: (suffix % 20) + 1,
   drepId: `drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k${String(
     suffix

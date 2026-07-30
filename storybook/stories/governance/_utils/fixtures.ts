@@ -151,7 +151,14 @@ export function makeDRepIndex(
       votingPower: new BigNumber('4500000000000'),
       status: 'active',
       drepActivity: 30,
-      anchor: null,
+      // Real preprod on-chain anchor pair from the epoch-295 drep-state sample.
+      anchor: {
+        url:
+          'https://raw.githubusercontent.com/cardano-foundation/cardano-academy/refs/heads/main/Cardano%20Academy.jsonld',
+        hash:
+          '9e8cb2b0f4c2ddbd9dea316b44680d8a989743868aeb40c1e6959982452f38e1',
+      },
+      verifiedName: null,
     });
   }
 
@@ -162,6 +169,7 @@ export function makeDRepIndex(
       status: 'active',
       drepActivity: 4,
       anchor: null,
+      verifiedName: null,
     });
   }
 

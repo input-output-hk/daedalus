@@ -10,6 +10,7 @@ const REVIEWED_JA_JP_EXCEPTIONS = [
 ];
 
 const CURRENT_VOTE_NAMESPACE = 'voting.governance.currentVote.';
+const GOVERNANCE_NAMESPACE = 'governance.';
 
 // Only these two confirmation-dialog keys are preliminary; the rest of that
 // namespace predates the feature and is legitimately unmarked.
@@ -45,6 +46,15 @@ describe('preliminary copy markers', () => {
   it('keeps the preliminary marker on every current-vote key in both locales', () => {
     const unmarked = Object.keys(en)
       .filter((key) => key.startsWith(CURRENT_VOTE_NAMESPACE))
+      .filter(
+        (key) => !en[key].startsWith('!!!') || !ja[key].startsWith('!!!')
+      );
+    expect(unmarked).toEqual([]);
+  });
+
+  it('keeps the preliminary marker on every governance key in both locales', () => {
+    const unmarked = Object.keys(en)
+      .filter((key) => key.startsWith(GOVERNANCE_NAMESPACE))
       .filter(
         (key) => !en[key].startsWith('!!!') || !ja[key].startsWith('!!!')
       );

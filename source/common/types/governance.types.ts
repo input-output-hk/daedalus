@@ -59,6 +59,8 @@ export interface DRepDirectoryEntry {
   drepActivity: DrepActivity;
   /** Anchor presence (URL + hash) from on-chain data. No fetch performed in slice-1. */
   anchor: DRepAnchorPresence | null;
+  /** CIP-119 body.givenName, only ever set from Blake2b-256-verified anchor content. */
+  verifiedName: string | null;
 }
 
 // ---- Anchor Presence (on-chain reference only, NO fetch in slice-1) ----

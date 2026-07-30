@@ -47,6 +47,7 @@ const resolveDRepEntry = (
     status: statusOption === 'inactive' ? 'inactive' : 'active',
     drepActivity: DREP_ACTIVITY_BY_STATUS[statusOption],
     anchor: null,
+    verifiedName: null,
   };
 };
 

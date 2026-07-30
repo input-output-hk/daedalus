@@ -13,6 +13,7 @@ import {
   screen,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { AnchorFetchErrorType } from '../../../../common/types/governance.types';
 import translations from '../../i18n/locales/en-US.json';
 import jaTranslations from '../../i18n/locales/ja-JP.json';
 import { ROUTES } from '../../routes-config';
@@ -33,6 +34,7 @@ const baseEntry: AppDRepDirectoryEntry = {
     hash: '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
     url: 'https://governance-preview.example.org/dreps/1.json',
   },
+  verifiedName: null,
   drepActivity: 34,
   drepId: DREP_ID,
   status: 'active',
@@ -40,9 +42,11 @@ const baseEntry: AppDRepDirectoryEntry = {
 };
 
 const buildGovernanceStore = (overrides: Record<string, unknown> = {}) => ({
+  anchorStateByDRepId: new Map(),
   drepIndex: new Map([[DREP_ID, baseEntry]]),
   drepList: [baseEntry],
   error: null,
+  fetchAnchorContent: jest.fn(),
   lastFetchedAt: Date.now() - 60_000,
   refresh: jest.fn(),
   refreshState: GovernanceRefreshState.Loaded,
@@ -66,6 +70,7 @@ const renderPage = ({
   // Observable so the container's reaction sees the flip like the real store.
   const networkStatus = observable({ isNodeInSync, syncProgress });
   const governance = buildGovernanceStore(governanceOverrides);
+  const app = { openExternalLink: jest.fn() };
   const history = createMemoryHistory({
     initialEntries: [
       {
@@ -77,7 +82,7 @@ const renderPage = ({
   const pushSpy = jest.spyOn(history, 'push');
   const messages = locale === 'ja-JP' ? jaTranslations : translations;
   const view = render(
-    <Provider stores={{ governance, networkStatus } as any}>
+    <Provider stores={{ app, governance, networkStatus } as any}>
       <IntlProvider locale={locale} messages={messages}>
         <Router history={history}>
           <Route path={DETAIL_PATH} component={DRepDetailPage} />
@@ -85,7 +90,7 @@ const renderPage = ({
       </IntlProvider>
     </Provider>
   );
-  return { governance, history, networkStatus, pushSpy, ...view };
+  return { app, governance, history, networkStatus, pushSpy, ...view };
 };
 
 describe('DRepDetailPage', () => {
@@ -119,12 +124,6 @@ describe('DRepDetailPage', () => {
     expect(
       screen.getByText('!!!On-chain anchor reference')
     ).toBeInTheDocument();
-    // The anchor URL renders as inert text, never inside an anchor element.
-    expect(
-      screen
-        .getByText('https://governance-preview.example.org/dreps/1.json')
-        .closest('a')
-    ).toBeNull();
   });
 
   it('renders the anchor-absent message when no anchor is recorded', () => {
@@ -288,5 +287,158 @@ describe('DRepDetailPage', () => {
     expect(
       screen.getByText('!!!Primary').closest('span[title]')
     ).toMatchSnapshot();
+  });
+
+  it('requests the anchor content once on mount for an entry with an anchor', () => {
+    const { governance } = renderPage();
+
+    expect(governance.fetchAnchorContent).toHaveBeenCalledTimes(1);
+    expect(governance.fetchAnchorContent).toHaveBeenCalledWith(
+      DREP_ID,
+      baseEntry.anchor
+    );
+  });
+
+  it('requests no anchor content when the entry has no anchor', () => {
+    const { governance } = renderPage({
+      governanceOverrides: {
+        drepIndex: new Map([[DREP_ID, { ...baseEntry, anchor: null }]]),
+      },
+    });
+
+    expect(governance.fetchAnchorContent).not.toHaveBeenCalled();
+  });
+
+  it('renders the verified name with the verified off-chain label and host tooltip', () => {
+    renderPage({
+      governanceOverrides: {
+        anchorStateByDRepId: new Map([
+          [
+            DREP_ID,
+            {
+              state: 'verified',
+              hash: baseEntry.anchor!.hash,
+              givenName: 'Daedalus Test DRep',
+              host: 'raw.githubusercontent.com',
+            },
+          ],
+        ]),
+      },
+    });
+
+    expect(screen.getByText('Daedalus Test DRep')).toBeInTheDocument();
+    const label = screen.getByText('!!!Verified off-chain content');
+    expect(label).toBeInTheDocument();
+    expect(label.getAttribute('title')).toEqual(
+      expect.stringContaining('raw.githubusercontent.com')
+    );
+  });
+
+  it('keeps every on-chain row when the anchor is unavailable', () => {
+    renderPage({
+      governanceOverrides: {
+        anchorStateByDRepId: new Map([
+          [
+            DREP_ID,
+            {
+              state: 'unavailable',
+              hash: baseEntry.anchor!.hash,
+              reason: AnchorFetchErrorType.HttpStatus,
+            },
+          ],
+        ]),
+      },
+    });
+
+    expect(
+      screen.getByText(
+        '!!!The off-chain profile could not be verified. Only on-chain data is shown.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByText('!!!Status')).toBeInTheDocument();
+    expect(screen.getByText('!!!Expires in')).toBeInTheDocument();
+    expect(screen.getByText('!!!Voting power')).toBeInTheDocument();
+    expect(screen.getByText('!!!Current votes')).toBeInTheDocument();
+    expect(screen.getByText(baseEntry.anchor!.url)).toBeInTheDocument();
+    expect(screen.getByText(baseEntry.anchor!.hash)).toBeInTheDocument();
+    const referenceLabel = screen.getByText('!!!On-chain anchor reference');
+    expect(referenceLabel).toBeInTheDocument();
+    // The untooltipped variants must stay untooltipped, or the shared
+    // CurrentVoteSummary snapshot drifts with them.
+    expect(referenceLabel).not.toHaveAttribute('title');
+  });
+
+  it('renders the loading state without a name while the anchor is checked', () => {
+    renderPage({
+      governanceOverrides: {
+        anchorStateByDRepId: new Map([
+          [DREP_ID, { state: 'loading', hash: baseEntry.anchor!.hash }],
+        ]),
+      },
+    });
+
+    expect(screen.getByText('!!!Checking the anchor…')).toBeInTheDocument();
+    expect(screen.queryByText('!!!Off-chain profile')).not.toBeInTheDocument();
+    expect(screen.queryByText('Daedalus Test DRep')).not.toBeInTheDocument();
+  });
+
+  it('renders the verified block in ja-JP', () => {
+    renderPage({
+      locale: 'ja-JP',
+      governanceOverrides: {
+        anchorStateByDRepId: new Map([
+          [
+            DREP_ID,
+            {
+              state: 'verified',
+              hash: baseEntry.anchor!.hash,
+              givenName: 'Daedalus Test DRep',
+              host: 'raw.githubusercontent.com',
+            },
+          ],
+        ]),
+      },
+    });
+
+    expect(screen.getByText('Daedalus Test DRep')).toBeInTheDocument();
+    expect(
+      screen.getByText('!!!検証済みオフチェーンコンテンツ')
+    ).toBeInTheDocument();
+    expect(screen.getByText('!!!オフチェーンプロフィール')).toBeInTheDocument();
+  });
+
+  it('opens an https anchor url through the external-link handler', () => {
+    const { app } = renderPage();
+
+    const link = screen.getByText(baseEntry.anchor!.url).closest('a');
+    expect(link).not.toBeNull();
+    expect(link).toHaveAttribute('href', baseEntry.anchor!.url);
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+
+    const defaultNotPrevented = fireEvent.click(link!);
+
+    expect(defaultNotPrevented).toBe(false);
+    expect(app.openExternalLink).toHaveBeenCalledTimes(1);
+    expect(app.openExternalLink).toHaveBeenCalledWith(baseEntry.anchor!.url);
+  });
+
+  it('renders a non-https anchor url as inert text', () => {
+    const httpUrl = 'http://anchor.example.org/profile.jsonld';
+    const { app } = renderPage({
+      governanceOverrides: {
+        drepIndex: new Map([
+          [
+            DREP_ID,
+            { ...baseEntry, anchor: { ...baseEntry.anchor!, url: httpUrl } },
+          ],
+        ]),
+      },
+    });
+
+    const urlText = screen.getByText(httpUrl);
+    expect(urlText).toBeInTheDocument();
+    expect(urlText.closest('a')).toBeNull();
+    expect(app.openExternalLink).not.toHaveBeenCalled();
   });
 });

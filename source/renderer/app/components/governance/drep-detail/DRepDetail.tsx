@@ -12,7 +12,10 @@ import {
   GovernanceRefreshState,
   VotingPowerEnrichState,
 } from '../../../stores/GovernanceStore';
-import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
+import type {
+  AppDRepDirectoryEntry,
+  AnchorEnrichEntry,
+} from '../../../stores/GovernanceStore';
 import styles from './DRepDetail.scss';
 
 const messages = defineMessages({
@@ -42,6 +45,8 @@ interface Props {
   entry: AppDRepDirectoryEntry | null;
   refreshState: GovernanceRefreshState;
   votingPowerState: VotingPowerEnrichState;
+  anchorState: AnchorEnrichEntry | null;
+  onOpenExternalLink: (url: string) => void;
   onSelectForDelegation: (drepId: string) => void;
   onBackToDirectory: () => void;
   intl: intlShape.isRequired;
@@ -51,6 +56,8 @@ function DRepDetail({
   entry,
   refreshState,
   votingPowerState,
+  anchorState,
+  onOpenExternalLink,
   onSelectForDelegation,
   onBackToDirectory,
   intl,
@@ -107,7 +114,11 @@ function DRepDetail({
         entry={entry}
         votingPowerState={votingPowerState}
       />
-      <DRepDetailAnchorSection anchor={entry.anchor} />
+      <DRepDetailAnchorSection
+        anchor={entry.anchor}
+        anchorState={anchorState}
+        onOpenExternalLink={onOpenExternalLink}
+      />
       <DRepDetailActions
         drepId={entry.drepId}
         onSelectForDelegation={onSelectForDelegation}

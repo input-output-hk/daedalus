@@ -28,6 +28,7 @@ import {
 const baseEntries: AppDRepDirectoryEntry[] = [
   {
     anchor: null,
+    verifiedName: null,
     drepActivity: 12,
     drepId: 'drep1yg7s8vuv87f8a8f5d0m9yk4p5xqw6r4s3t2u1v9w8x7y6z5a4b',
     status: 'active',
@@ -37,6 +38,7 @@ const baseEntries: AppDRepDirectoryEntry[] = [
 
 const buildEntry = (suffix: number): AppDRepDirectoryEntry => ({
   anchor: null,
+  verifiedName: null,
   drepActivity: (suffix % 20) + 1,
   drepId: `drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k${String(
     suffix
@@ -74,6 +76,7 @@ const realEntry = (
   overrides: Partial<AppDRepDirectoryEntry> = {}
 ): AppDRepDirectoryEntry => ({
   anchor: null,
+  verifiedName: null,
   drepActivity: 20,
   drepId: realDrepId(n),
   status: 'active',

@@ -8,9 +8,11 @@ import { logger } from '../../../source/renderer/app/utils/logging';
 import {
   governanceDRepListChannel,
   governanceDRepStakeChannel,
+  governanceDRepAnchorChannel,
 } from '../../../source/renderer/app/ipc/governanceChannel';
 import {
   GovernanceQueryErrorType,
+  AnchorFetchErrorType,
   DRepDirectoryEntry,
 } from '../../../source/common/types/governance.types';
 
@@ -18,6 +20,7 @@ import {
 jest.mock('../../../source/renderer/app/ipc/governanceChannel', () => ({
   governanceDRepListChannel: { request: jest.fn() },
   governanceDRepStakeChannel: { request: jest.fn() },
+  governanceDRepAnchorChannel: { request: jest.fn() },
 }));
 
 // The real renderer logger writes through global.electronLog, which does not
@@ -33,6 +36,7 @@ jest.mock('../../../source/renderer/app/utils/logging', () => ({
 
 const mockRequest = governanceDRepListChannel.request as jest.Mock;
 const mockStakeRequest = governanceDRepStakeChannel.request as jest.Mock;
+const mockAnchorRequest = governanceDRepAnchorChannel.request as jest.Mock;
 
 /** Drain pending async continuations behind a macrotask boundary. */
 const flushAsync = () => new Promise((resolve) => setTimeout(resolve, 0));
@@ -43,6 +47,7 @@ const phase1Payload = () => ({
   dreps: [
     {
       anchor: null,
+      verifiedName: null,
       drepActivity: 8,
       drepId: DREP_ID,
       status: 'active' as const,
@@ -66,6 +71,7 @@ describe('GovernanceStore', () => {
     const rawEntries: DRepDirectoryEntry[] = [
       {
         anchor: null,
+        verifiedName: null,
         drepActivity: 8,
         drepId: 'drep1xj23tk3yqyv7cqv7jn9mkz6xq8c7e5m3s2w1v0p9n8m7l6k5j',
         status: 'active',
@@ -326,6 +332,7 @@ describe('GovernanceStore default cohort', () => {
     overrides: Partial<DRepDirectoryEntry> = {}
   ): DRepDirectoryEntry => ({
     anchor: null,
+    verifiedName: null,
     drepActivity: 10,
     drepId: drepIdAt(i),
     status: 'active',
@@ -565,6 +572,7 @@ describe('GovernanceStore search and show-all seams', () => {
     overrides: Partial<DRepDirectoryEntry> = {}
   ): DRepDirectoryEntry => ({
     anchor: null,
+    verifiedName: null,
     drepActivity: 10,
     drepId: drepIdAt(i),
     status: 'active',
@@ -800,5 +808,203 @@ describe('GovernanceStore favorites', () => {
       (logger.error as jest.Mock).mock.calls,
     ]);
     expect(allLoggerCalls).not.toContain(FAVORITE_ID);
+  });
+});
+
+describe('GovernanceStore anchor enrichment', () => {
+  const ANCHOR_DREP_ID =
+    'drep1anchor0000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+  // Real preprod on-chain anchor pair from the epoch-295 drep-state sample.
+  const ANCHOR = {
+    hash: '9e8cb2b0f4c2ddbd9dea316b44680d8a989743868aeb40c1e6959982452f38e1',
+    url:
+      'https://raw.githubusercontent.com/cardano-foundation/cardano-academy/refs/heads/main/Cardano%20Academy.jsonld',
+  };
+
+  beforeEach(() => {
+    mockRequest.mockReset();
+    mockStakeRequest.mockReset();
+    mockAnchorRequest.mockReset();
+    (logger.debug as jest.Mock).mockClear();
+    (logger.info as jest.Mock).mockClear();
+    (logger.warn as jest.Mock).mockClear();
+    (logger.error as jest.Mock).mockClear();
+  });
+
+  const listPayload = (anchor = ANCHOR) => ({
+    dreps: [
+      {
+        anchor,
+        verifiedName: null,
+        drepActivity: 8,
+        drepId: ANCHOR_DREP_ID,
+        status: 'active' as const,
+        votingPower: null,
+      },
+    ],
+    epoch: 512,
+    fetchedAt: 1_750_000_000_000,
+  });
+
+  const loadStore = async (anchor = ANCHOR): Promise<GovernanceStore> => {
+    mockRequest.mockResolvedValue(listPayload(anchor));
+    mockStakeRequest.mockResolvedValue({
+      fetchedAt: 1_750_000_000_500,
+      stakeByDRepId: {},
+    });
+    const store = new GovernanceStore({} as any, {} as any, {} as any);
+    await store.fetchDRepList();
+    return store;
+  };
+
+  const verifiedResponse = (givenName: string | null = 'Cardano Academy') => ({
+    status: 'verified' as const,
+    content: { givenName },
+    host: 'raw.githubusercontent.com',
+    fetchedAt: 1_750_000_001_000,
+  });
+
+  it('projects a verified givenName into drepList, drepIndex and verifiedMetadataIds', async () => {
+    const store = await loadStore();
+    mockAnchorRequest.mockResolvedValue(verifiedResponse());
+
+    await store.fetchAnchorContent(ANCHOR_DREP_ID, ANCHOR);
+
+    expect(mockAnchorRequest).toHaveBeenCalledWith(ANCHOR);
+    expect(store.drepIndex.get(ANCHOR_DREP_ID)?.verifiedName).toBe(
+      'Cardano Academy'
+    );
+    expect(store.drepList[0].verifiedName).toBe('Cardano Academy');
+    expect(store.verifiedMetadataIds.has(ANCHOR_DREP_ID)).toBe(true);
+  });
+
+  it('records an unavailable result without a name and outside verifiedMetadataIds', async () => {
+    const store = await loadStore();
+    mockAnchorRequest.mockResolvedValue({
+      status: 'unavailable',
+      reason: AnchorFetchErrorType.HashMismatch,
+    });
+
+    await store.fetchAnchorContent(ANCHOR_DREP_ID, ANCHOR);
+
+    expect(store.anchorStateByDRepId.get(ANCHOR_DREP_ID)).toEqual({
+      state: 'unavailable',
+      hash: ANCHOR.hash,
+      reason: AnchorFetchErrorType.HashMismatch,
+    });
+    expect(store.drepIndex.get(ANCHOR_DREP_ID)?.verifiedName).toBeNull();
+    expect(store.verifiedMetadataIds.has(ANCHOR_DREP_ID)).toBe(false);
+  });
+
+  it('deduplicates by hash and re-triggers only when the on-chain hash changes', async () => {
+    const store = await loadStore();
+    mockAnchorRequest.mockResolvedValue(verifiedResponse());
+
+    await store.fetchAnchorContent(ANCHOR_DREP_ID, ANCHOR);
+    await store.fetchAnchorContent(ANCHOR_DREP_ID, ANCHOR);
+
+    expect(mockAnchorRequest).toHaveBeenCalledTimes(1);
+
+    await store.fetchAnchorContent(ANCHOR_DREP_ID, {
+      ...ANCHOR,
+      hash: 'b'.repeat(64),
+    });
+
+    expect(mockAnchorRequest).toHaveBeenCalledTimes(2);
+  });
+
+  it('settles a rejected IPC request as unavailable with the network reason', async () => {
+    const store = await loadStore();
+    mockAnchorRequest.mockRejectedValue(new Error('ipc transport failed'));
+
+    await expect(
+      store.fetchAnchorContent(ANCHOR_DREP_ID, ANCHOR)
+    ).resolves.toBeUndefined();
+
+    expect(store.anchorStateByDRepId.get(ANCHOR_DREP_ID)).toEqual({
+      state: 'unavailable',
+      hash: ANCHOR.hash,
+      reason: AnchorFetchErrorType.Network,
+    });
+  });
+
+  it('keeps the projected name through list and voting-power rebuilds', async () => {
+    const store = await loadStore();
+    mockAnchorRequest.mockResolvedValue(verifiedResponse());
+    await store.fetchAnchorContent(ANCHOR_DREP_ID, ANCHOR);
+
+    let resolveStake: (value: unknown) => void = () => {};
+    mockStakeRequest.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveStake = resolve;
+        })
+    );
+    void store.refresh();
+    await flushAsync();
+
+    // Phase 1 rebuilt the list; the projection must already be re-applied.
+    expect(store.drepIndex.get(ANCHOR_DREP_ID)?.verifiedName).toBe(
+      'Cardano Academy'
+    );
+
+    resolveStake({ fetchedAt: 1_750_000_000_500, stakeByDRepId: {} });
+    await flushAsync();
+
+    expect(store.votingPowerState).toBe(VotingPowerEnrichState.Loaded);
+    expect(store.drepIndex.get(ANCHOR_DREP_ID)?.verifiedName).toBe(
+      'Cardano Academy'
+    );
+    expect(store.drepList[0].verifiedName).toBe('Cardano Academy');
+  });
+
+  it('drops the projected name when a refresh changes the on-chain anchor hash', async () => {
+    const store = await loadStore();
+    mockAnchorRequest.mockResolvedValue(verifiedResponse());
+    await store.fetchAnchorContent(ANCHOR_DREP_ID, ANCHOR);
+    expect(store.drepIndex.get(ANCHOR_DREP_ID)?.verifiedName).toBe(
+      'Cardano Academy'
+    );
+
+    mockRequest.mockResolvedValue(
+      listPayload({ ...ANCHOR, hash: 'c'.repeat(64) })
+    );
+    await store.refresh();
+
+    expect(store.drepIndex.get(ANCHOR_DREP_ID)?.verifiedName).toBeNull();
+  });
+
+  it('clamps an oversized givenName to eighty characters with a trailing ellipsis', async () => {
+    const store = await loadStore();
+    mockAnchorRequest.mockResolvedValue(verifiedResponse('n'.repeat(200)));
+
+    await store.fetchAnchorContent(ANCHOR_DREP_ID, ANCHOR);
+
+    const name = store.drepIndex.get(ANCHOR_DREP_ID)?.verifiedName;
+    expect(name).toHaveLength(80);
+    expect(name?.endsWith('…')).toBe(true);
+    expect(name?.startsWith('n'.repeat(79))).toBe(true);
+  });
+
+  it('logs nothing on the anchor path for verified or unavailable results', async () => {
+    const store = await loadStore();
+    (logger.error as jest.Mock).mockClear();
+
+    mockAnchorRequest.mockResolvedValueOnce(verifiedResponse());
+    await store.fetchAnchorContent(ANCHOR_DREP_ID, ANCHOR);
+
+    mockAnchorRequest.mockResolvedValueOnce({
+      status: 'unavailable',
+      reason: AnchorFetchErrorType.HashMismatch,
+    });
+    await store.fetchAnchorContent(ANCHOR_DREP_ID, {
+      ...ANCHOR,
+      hash: 'd'.repeat(64),
+    });
+
+    expect(logger.debug).not.toHaveBeenCalled();
+    expect(logger.info).not.toHaveBeenCalled();
+    expect(logger.warn).not.toHaveBeenCalled();
+    expect(logger.error).not.toHaveBeenCalled();
   });
 });

@@ -4,12 +4,15 @@ import Store from './lib/Store';
 import {
   governanceDRepListChannel,
   governanceDRepStakeChannel,
+  governanceDRepAnchorChannel,
 } from '../ipc/governanceChannel';
 import { logger } from '../utils/logging';
 import {
   GovernanceQueryErrorType,
+  AnchorFetchErrorType,
   DRepDirectoryEntry,
   DRepAnchorPresence,
+  DRepAnchorResult,
 } from '../../../common/types/governance.types';
 import { generateCohortSeed, seededShuffle } from '../utils/seededShuffle';
 
@@ -28,7 +31,14 @@ export interface AppDRepDirectoryEntry {
   drepActivity: DRepDirectoryEntry['drepActivity'];
   /** Anchor presence (URL + hash) from on-chain. No fetch performed in slice-1. */
   anchor: DRepAnchorPresence | null;
+  /** Verified CIP-119 givenName, or null. Projection of anchorStateByDRepId. */
+  verifiedName: string | null;
 }
+
+export type AnchorEnrichEntry =
+  | { state: 'loading'; hash: string }
+  | { state: 'verified'; hash: string; givenName: string | null; host: string }
+  | { state: 'unavailable'; hash: string; reason: AnchorFetchErrorType };
 
 export enum GovernanceRefreshState {
   Idle = 'idle',
@@ -60,6 +70,16 @@ export interface GovernanceStoreError {
 const COHORT_TOP_EXCLUSION = 35;
 const COHORT_MAX_SIZE = 200;
 const COHORT_MIN_REMAINING_EPOCHS = 6;
+
+/** CIP-119 caps givenName at 80 characters; nothing on the wire enforces it. */
+const MAX_VERIFIED_NAME_LENGTH = 80;
+
+function clampVerifiedName(name: string | null): string | null {
+  if (name == null) return null;
+  return name.length <= MAX_VERIFIED_NAME_LENGTH
+    ? name
+    : `${name.slice(0, MAX_VERIFIED_NAME_LENGTH - 1)}…`;
+}
 
 /**
  * Total, deterministic ranking: BigNumber voting power descending, null
@@ -125,6 +145,12 @@ export default class GovernanceStore extends Store {
    * so computeds, React dep arrays and observers see a new reference.
    */
   @observable favoriteDRepIds: Set<string> = new Set();
+
+  /**
+   * Per-DRep anchor verification state, keyed by DRep id. An absent key is
+   * idle. Replaced with a fresh Map instance on every change, like drepIndex.
+   */
+  @observable anchorStateByDRepId: Map<string, AnchorEnrichEntry> = new Map();
 
   // ---- Computed ----
 
@@ -217,6 +243,15 @@ export default class GovernanceStore extends Store {
     return seededShuffle(canonical, this.cohortSeed);
   }
 
+  /** DRep ids whose anchor passed Blake2b-256 verification and parsed. */
+  @computed get verifiedMetadataIds(): Set<string> {
+    const ids = new Set<string>();
+    this.anchorStateByDRepId.forEach((entry, drepId) => {
+      if (entry.state === 'verified') ids.add(drepId);
+    });
+    return ids;
+  }
+
   // ---- Actions ----
 
   /**
@@ -249,7 +284,9 @@ export default class GovernanceStore extends Store {
       const payload = await governanceDRepListChannel.request();
 
       runInAction(() => {
-        const entries = this._rehydrateDReps(payload.dreps);
+        const entries = this._applyVerifiedNames(
+          this._rehydrateDReps(payload.dreps)
+        );
         this.drepList = entries;
         this.drepIndex = new Map(entries.map((e) => [e.drepId, e]));
         this.refreshState = GovernanceRefreshState.Loaded;
@@ -286,13 +323,15 @@ export default class GovernanceStore extends Store {
       const payload = await governanceDRepStakeChannel.request();
 
       runInAction(() => {
-        const entries = this.drepList.map((entry) => {
-          const stake = payload.stakeByDRepId[entry.drepId];
-          return {
-            ...entry,
-            votingPower: stake ? new BigNumber(stake) : null,
-          };
-        });
+        const entries = this._applyVerifiedNames(
+          this.drepList.map((entry) => {
+            const stake = payload.stakeByDRepId[entry.drepId];
+            return {
+              ...entry,
+              votingPower: stake ? new BigNumber(stake) : null,
+            };
+          })
+        );
         this.drepList = entries;
         this.drepIndex = new Map(entries.map((e) => [e.drepId, e]));
         this.votingPowerState = VotingPowerEnrichState.Loaded;
@@ -322,6 +361,55 @@ export default class GovernanceStore extends Store {
   @action
   reshuffleCohort(): void {
     this.cohortSeed = generateCohortSeed();
+  }
+
+  /**
+   * Per-DRep, on-demand anchor verification. Nothing is logged on this path:
+   * the only payloads available here are a DRep id and an anchor host.
+   */
+  @action
+  async fetchAnchorContent(
+    drepId: string,
+    anchor: DRepAnchorPresence
+  ): Promise<void> {
+    const existing = this.anchorStateByDRepId.get(drepId);
+    if (existing && existing.hash === anchor.hash) return;
+
+    runInAction(() => {
+      this.anchorStateByDRepId = new Map(this.anchorStateByDRepId).set(drepId, {
+        state: 'loading',
+        hash: anchor.hash,
+      });
+    });
+
+    let result: DRepAnchorResult;
+    try {
+      result = await governanceDRepAnchorChannel.request(anchor);
+    } catch (_ipcError) {
+      result = {
+        status: 'unavailable',
+        reason: AnchorFetchErrorType.Network,
+      };
+    }
+
+    runInAction(() => {
+      const next: AnchorEnrichEntry =
+        result.status === 'verified'
+          ? {
+              state: 'verified',
+              hash: anchor.hash,
+              givenName: clampVerifiedName(result.content.givenName),
+              host: result.host,
+            }
+          : { state: 'unavailable', hash: anchor.hash, reason: result.reason };
+      this.anchorStateByDRepId = new Map(this.anchorStateByDRepId).set(
+        drepId,
+        next
+      );
+      const entries = this._applyVerifiedNames(this.drepList);
+      this.drepList = entries;
+      this.drepIndex = new Map(entries.map((e) => [e.drepId, e]));
+    });
   }
 
   /**
@@ -383,7 +471,32 @@ export default class GovernanceStore extends Store {
       status: entry.status,
       drepActivity: entry.drepActivity,
       anchor: entry.anchor,
+      verifiedName: entry.verifiedName,
     }));
+  }
+
+  /**
+   * Re-applies verified names onto a freshly rebuilt list. A name is dropped
+   * when the entry's on-chain anchor hash no longer matches the hash that was
+   * verified, so a re-registered anchor can never keep showing the old name.
+   */
+  private _applyVerifiedNames(
+    entries: AppDRepDirectoryEntry[]
+  ): AppDRepDirectoryEntry[] {
+    if (this.anchorStateByDRepId.size === 0) return entries;
+    return entries.map((entry) => {
+      const state = this.anchorStateByDRepId.get(entry.drepId);
+      const verifiedName =
+        state != null &&
+        state.state === 'verified' &&
+        entry.anchor != null &&
+        entry.anchor.hash === state.hash
+          ? state.givenName
+          : null;
+      return verifiedName === entry.verifiedName
+        ? entry
+        : { ...entry, verifiedName };
+    });
   }
 
   private _normalizeError(err: unknown): GovernanceStoreError {

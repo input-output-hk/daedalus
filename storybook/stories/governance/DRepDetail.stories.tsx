@@ -10,7 +10,11 @@ import {
   GovernanceRefreshState,
   VotingPowerEnrichState,
 } from '../../../source/renderer/app/stores/GovernanceStore';
-import type { AppDRepDirectoryEntry } from '../../../source/renderer/app/stores/GovernanceStore';
+import type {
+  AnchorEnrichEntry,
+  AppDRepDirectoryEntry,
+} from '../../../source/renderer/app/stores/GovernanceStore';
+import { AnchorFetchErrorType } from '../../../source/common/types/governance.types';
 
 const CENTERED_STYLE = {
   margin: '0 auto',
@@ -23,11 +27,42 @@ const STATUS_OPTIONS = {
   Inactive: 'inactive',
 };
 
+const ANCHOR_STATE_OPTIONS = {
+  Verified: 'verified',
+  Unavailable: 'unavailable',
+  'Not requested': 'none',
+};
+
+const anchorStateFor = (
+  choice: string,
+  entry: AppDRepDirectoryEntry
+): AnchorEnrichEntry | null => {
+  const hash = entry.anchor?.hash;
+  if (!hash) return null;
+  if (choice === 'verified') {
+    return {
+      state: 'verified',
+      hash,
+      givenName: 'Daedalus Preview DRep',
+      host: 'governance-preview.example.org',
+    };
+  }
+  if (choice === 'unavailable') {
+    return {
+      state: 'unavailable',
+      hash,
+      reason: AnchorFetchErrorType.HttpStatus,
+    };
+  }
+  return null;
+};
+
 const withAnchorEntry: AppDRepDirectoryEntry = {
   anchor: {
     hash: '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
     url: 'https://governance-preview.example.org/dreps/1.json',
   },
+  verifiedName: null,
   drepActivity: 34,
   drepId: 'drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k4',
   status: 'active',
@@ -46,12 +81,15 @@ const withoutAnchorEntry: AppDRepDirectoryEntry = {
 const renderDetail = (
   entry: AppDRepDirectoryEntry | null,
   refreshState: GovernanceRefreshState = GovernanceRefreshState.Loaded,
-  votingPowerState: VotingPowerEnrichState = VotingPowerEnrichState.Loaded
+  votingPowerState: VotingPowerEnrichState = VotingPowerEnrichState.Loaded,
+  anchorState: AnchorEnrichEntry | null = null
 ) => (
   <div style={CENTERED_STYLE}>
     <DRepDetail
+      anchorState={anchorState}
       entry={entry}
       onBackToDirectory={action('onBackToDirectory')}
+      onOpenExternalLink={action('onOpenExternalLink')}
       onSelectForDelegation={action('onSelectForDelegation')}
       refreshState={refreshState}
       votingPowerState={votingPowerState}
@@ -68,8 +106,8 @@ const drepStoryDecorator = (story: () => React.ReactNode) => (
 storiesOf('Governance / DRep Detail', module)
   .addDecorator(drepStoryDecorator)
   .addDecorator(withKnobs)
-  .add('Loaded — with anchor', () =>
-    renderDetail({
+  .add('Loaded — with anchor', () => {
+    const entry = {
       ...withAnchorEntry,
       drepActivity: number('Remaining epochs (drepActivity)', 34, {
         max: 60,
@@ -82,8 +120,17 @@ storiesOf('Governance / DRep Detail', module)
         STATUS_OPTIONS,
         'active'
       ) as AppDRepDirectoryEntry['status'],
-    })
-  )
+    };
+    return renderDetail(
+      entry,
+      GovernanceRefreshState.Loaded,
+      VotingPowerEnrichState.Loaded,
+      anchorStateFor(
+        select('Anchor state', ANCHOR_STATE_OPTIONS, 'verified'),
+        entry
+      )
+    );
+  })
   .add('Loaded — no anchor', () => renderDetail(withoutAnchorEntry))
   .add('Ranking unavailable', () =>
     renderDetail(
