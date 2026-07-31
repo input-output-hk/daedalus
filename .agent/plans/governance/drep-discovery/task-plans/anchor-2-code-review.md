@@ -633,3 +633,90 @@ outbound side of that hand-off.
 task-155.
 
 ---
+
+## Code Review: task-155 — round 1 (2026-07-31)
+
+**Verdict: approved, zero blockers.** One round over the uncommitted task-155 diff — 8 modified
+files, no new file — against `anchor-2-implementation-guide.md` Steps 1–4. The implementer reported
+every step landed, no STOP condition fired, and did not format, stage, commit or write to the
+tracker.
+
+### Blockers
+
+**None raised.** The round found nothing that had to be fixed before close.
+
+### Minor
+
+- **The task was an audit that found one gap.** Step 1's inventory returned 11 `DRepSourceLabel`
+  sites and exactly one unlabelled surface: `DRepDetailOnchainSection.tsx`. The six
+  `DRepDetailAnchorContent.tsx` sites (`:132`, `:211`, `:288`, `:304`, `:323`, `:341`) already carry
+  `verified-off-chain` or `anchor-unavailable`, `DRepDetailAnchorSection.tsx:95` carries
+  `on-chain-anchor-reference`, and `VotingPowerDelegationConfirmationDialog.tsx` carries both
+  `:218` `on-chain` and `:223` `verified-off-chain`. No owning-task defect to hand back.
+- **The must-not-change contracts hold by absence from the diff.** `DRepCard.tsx:149` is `on-chain`
+  only and renders no verified field, so task-165's ID-only card contract is intact;
+  `CurrentVoteSummary.tsx:90` renders no anchor-derived content and was deliberately left untouched.
+  No `DRepSourceLabelVariant` was added and no scss changed — `styles.sourceLabel` already exists at
+  `DRepDetail.scss:91`.
+- **The guide's Step 4a assertion throws, and the implementer was right to diverge.** Step 4a
+  specifies `getByText('!!!Source')`. `DRepDetailAnchorSection` already renders its own Source row
+  under `governance.drepDetail.anchor.source`, whose value is byte-identical to the new
+  `governance.drepDetail.onchain.source`, so any entry **with** an anchor now yields two matches.
+  `getAllByText('!!!Source')` with `toHaveLength(2)` is used in the labelling case and the extended
+  unavailable case; `getByText` survives only in the AC-4 no-anchor case, where the anchor section
+  renders its none message and there is one match. The guide's own "use `getAllByText`" warning
+  covered `'!!!On-chain'` and missed the identical `'!!!Source'` collision. Recorded as F-14 in
+  `research/anchor-2-findings.md`.
+- **The guide's Step 1 grep (b) is stale and returns nothing.** task-157 moved the accessors to
+  `state.content.*`, so the quoted pattern misses every site. The audit was re-run manually by both
+  the implementer and the verifier and reaches the same inventory. Recorded as F-15.
+- **The catalogs were hand-edited and the hand-edit was proved exact.** The implementer shard is
+  barred from running `yarn i18n:manage`, so all four tool-managed files were hand-written to
+  extractor-equivalent output, the descriptor inserted in declaration order and the catalog keys
+  alphabetically before `governance.drepDetail.onchain.title`. The verifier ran the extractor: exit
+  0, and it wrote nothing. This closes the F-4 concern for this task the way F-13 did for task-154.
+- **No task ids, review labels, ALL-CAPS emphasis or change history** in any comment or test name
+  across the changed paths. No local `IntlProvider` and no per-locale story variant — no story
+  changed at all.
+
+### Verifier's verdict
+
+**GREEN — zero this-task failures and zero inherited failures; every typecheck, lint, test and
+formatting gate clean, with counts matching the guide's deltas.**
+
+- **Counts.** `yarn compile` exit 0, and `typed-scss-modules source/renderer/app` then `tsc --noEmit`
+  exit 0. `DRepDetailPage` 33 → **35** with both snapshots unchanged, `DRepDirectory` 55 → **56**
+  with its 1 snapshot unchanged, `i18n/preliminaryCopyMarkers` **5** unchanged and unedited. Both
+  sanitization floor anchors were run and both are unchanged and unedited: `governance-sanitization`
+  **39** and `logDRepStateSnapshot` **5**. The unfiltered `node_modules/.bin/jest --runInBand` is 92
+  passed + 1 skipped of 93 suites and 1314 passed + 12 skipped of 1326 tests with 10 snapshots and
+  zero failures — `+4` over task-154's 1310/1322, exactly 2+1+1 from the three edited specs plus the
+  guide's own dialog-count drift, with no suite losing a test. The one skip is the
+  environment-gated `GovernanceCliArgvSmoke`.
+- **One stale guide absolute.** `VotingPowerDelegationConfirmationDialog` measures 33 → **34**; the
+  guide states "32 → 33". The `+1` delta is correct and the absolute is stale by one, inherited from
+  the F-11 declaration-versus-runtime gap task-154 already recorded. Not a defect in this diff.
+- **Lint and formatting.** `yarn lint` exits 0 with 0 errors at 5635 warnings; none of the three
+  warnings in touched files sits on an added line. `prettier --check` is **clean on all four changed
+  code files** — no this-task drift and, unusually for this slice, no inherited drift flagged either.
+- **i18n.** `governance.*` 115 → **116** and whole-catalog 1651 → **1652** in both catalogs, key sets
+  identical, zero unmarked `governance` keys. `yarn i18n:manage` exits 0 and wrote nothing: all four
+  files byte-identical before and after and `git status --porcelain` unchanged. Nothing was restored
+  and no `git stash` was used anywhere.
+- **Never run.** `yarn storybook` — an interactive dev server with no browser here — so the visual
+  pass over the new on-chain Source row and the ja-JP overflow check stay owed.
+  `yarn storybook:build` and `yarn check:all` were correctly not run: both are red at `HEAD` for
+  reasons unrelated to this branch.
+
+### Owed at close
+
+The close-out commit `feat(gov): task-155 apply source labeling to drep discovery content` is unmade,
+with 8 modified files sitting at `HEAD` `114a0ea69`. The guide's line anchors were cut at `55e8985bf`
+and have all shifted — its Step 5 tracker anchor `:1868-1885` points at the wrong row, which now
+opens at `:1934`. The Storybook visual and ja-JP overflow pass never ran. `nix fmt` cannot run in
+this devcontainer and stays a user-owned pre-merge obligation, though nothing in this diff is
+currently unformatted.
+
+**Gate.** task-155 is closed with no open code items. Next in the locked build order is task-156.
+
+---

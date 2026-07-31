@@ -281,3 +281,53 @@ extractor run, not an eyeball of the diff — a hand-edit that is merely plausib
 rewritten by the next person who runs the gate. **Owner.** Record-only.
 
 ---
+
+## F-14 (task-155) — Two source rows now render the identical `!!!Source` string, so the guide's `getByText` assertion throws on any anchored entry
+
+task-155 added `governance.drepDetail.onchain.source` to label the on-chain section. Its en-US value
+is `"!!!Source"` and its ja-JP value is `"!!!ソース"` — byte-identical to the values of
+`governance.drepDetail.anchor.source`, which `DRepDetailAnchorSection` has rendered since task-150
+(`en-US.json:286` and `:312`; `ja-JP.json:286` and `:312`). The two keys are deliberately distinct —
+they caption different sections and can diverge at the release-end copy review — but today they
+collide in the DOM.
+
+**Resolution.** Any DRep detail render for an entry **with** an anchor now yields **two** `!!!Source`
+matches, so the guide's Step 4a snippet `expect(screen.getByText('!!!Source')).toBeInTheDocument()`
+throws rather than passing. The spec uses `getAllByText('!!!Source')` with `toHaveLength(2)` in the
+labelling case and in the extended anchor-unavailable case, and keeps `getByText` only in the AC-4
+no-anchor case, where the anchor section renders its none message and there is exactly one match.
+The guide carries a "use `getAllByText`, never `getByText`" warning, but it is scoped to
+`'!!!On-chain'` and does not mention the `'!!!Source'` collision it created.
+
+**Disposition.** Record-only, and load-bearing for anyone extending the detail specs: the match count
+is a function of whether the fixture has an anchor, so a future reader who "simplifies" back to
+`getByText` will break the suite on the anchored fixtures only. If the release-end copy review makes
+the two captions diverge, the `toHaveLength(2)` assertions become single-match again and must be
+revisited together. **Owner.** Record-only.
+
+---
+
+## F-15 (task-155) — The audit grep that proves no anchor-derived content is unlabelled silently matches nothing, because the fields moved behind a destructure
+
+task-155 is a sweep whose whole evidentiary basis is Step 1's second grep — "every render that reads
+verified anchor content" — cross-checked against the render sites from the first grep. The pattern is
+`verifiedName\|state.givenName\|state\.objectives\|state\.motivations\|state\.qualifications\|state\.references\|state\.paymentAddress`.
+
+**Resolution.** It no longer finds the anchor fields. task-157 moved them under `content`, and
+`DRepDetailAnchorContent.tsx:219` destructures with `const { content, host } = state;`, so every
+render site reads `content.givenName`, `content.objectives`, `content.references` and so on. Measured
+in the worktree: the grep as written returns 33 lines, **all 33 of them `verifiedName` hits**, and the
+six anchor-field patterns together return **0**. The one surviving qualified access,
+`state.content.paymentAddress` at `:183`, is not matched either — the pattern allows a single
+character between `state` and the field, not `.content.`. The grep therefore returns a clean-looking
+result while proving nothing about the prose, reference and payment-address rows it exists to cover.
+The audit was re-run manually by both the implementer and the verifier against `content.*` and the
+inventory holds: 11 `DRepSourceLabel` sites, every anchor-derived render labelled, and
+`DRepDetailOnchainSection.tsx` the only gap.
+
+**Disposition.** Record-only, and a trap worth naming: a sweep task's grep returning no hits reads
+identically to a sweep task's grep returning no violations. Anyone re-running this audit in a later
+slice should first confirm the pattern still matches at least one known-good site before treating an
+empty result as a pass. **Owner.** Record-only; the guide is a frozen artefact and was not edited.
+
+---

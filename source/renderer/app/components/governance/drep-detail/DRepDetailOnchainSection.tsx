@@ -2,6 +2,7 @@ import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import DRepStatusBadge from '../_shared/DRepStatusBadge';
+import DRepSourceLabel from '../_shared/DRepSourceLabel';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 import { VotingPowerEnrichState } from '../../../stores/GovernanceStore';
 import styles from './DRepDetail.scss';
@@ -11,6 +12,11 @@ const messages = defineMessages({
     id: 'governance.drepDetail.onchain.title',
     defaultMessage: '!!!On-chain',
     description: 'Heading of the on-chain section on the DRep detail view',
+  },
+  sourceRowLabel: {
+    id: 'governance.drepDetail.onchain.source',
+    defaultMessage: '!!!Source',
+    description: 'Label for the on-chain section source-label row',
   },
   statusLabel: {
     id: 'governance.drepDetail.status',
@@ -140,6 +146,14 @@ function DRepDetailOnchainSection({ entry, votingPowerState, intl }: Props) {
           </dt>
           <dd className={styles.mutedValue}>
             {intl.formatMessage(messages.votePositionsUnavailable)}
+          </dd>
+        </div>
+        <div className={styles.fieldRow}>
+          <dt className={styles.fieldLabel}>
+            {intl.formatMessage(messages.sourceRowLabel)}
+          </dt>
+          <dd className={styles.fieldValue}>
+            <DRepSourceLabel source="on-chain" className={styles.sourceLabel} />
           </dd>
         </div>
       </dl>

@@ -186,6 +186,18 @@ describe('DRepDirectory', () => {
     expect(screen.getByText('!!!On-chain')).toBeInTheDocument();
   });
 
+  it('renders no verified off-chain content on directory cards', () => {
+    renderComponent({
+      drepList: [{ ...baseEntries[0], verifiedName: 'Daedalus Test DRep' }],
+    });
+
+    expect(screen.queryByText('Daedalus Test DRep')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('!!!Verified off-chain content')
+    ).not.toBeInTheDocument();
+    expect(screen.getAllByText('!!!On-chain').length).toBeGreaterThan(0);
+  });
+
   it('renders the empty state when no DReps are available', () => {
     renderComponent({ drepList: [] });
 

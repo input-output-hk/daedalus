@@ -309,6 +309,7 @@
   "governance.drepDetail.expiresInEpochs": "!!!{count}エポック",
   "governance.drepDetail.loading": "!!!DRepデータを読み込み中…",
   "governance.drepDetail.notFound": "!!!このDRepは最新のオンチェーンデータに見つかりませんでした。",
+  "governance.drepDetail.onchain.source": "!!!ソース",
   "governance.drepDetail.onchain.title": "!!!オンチェーン",
   "governance.drepDetail.sourceLabel.anchorReference": "!!!オンチェーンアンカー参照",
   "governance.drepDetail.sourceLabel.anchorUnavailable": "!!!アンカーを利用できません",

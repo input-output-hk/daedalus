@@ -2977,6 +2977,11 @@
         "id": "governance.drepDetail.onchain.title"
       },
       {
+        "defaultMessage": "!!!Source",
+        "description": "Label for the on-chain section source-label row",
+        "id": "governance.drepDetail.onchain.source"
+      },
+      {
         "defaultMessage": "!!!Status",
         "description": "Label for the DRep status field on the detail view",
         "id": "governance.drepDetail.status"

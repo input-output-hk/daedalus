@@ -309,6 +309,7 @@
   "governance.drepDetail.expiresInEpochs": "!!!{count} epochs",
   "governance.drepDetail.loading": "!!!Loading DRep data…",
   "governance.drepDetail.notFound": "!!!This DRep was not found in the latest on-chain data.",
+  "governance.drepDetail.onchain.source": "!!!Source",
   "governance.drepDetail.onchain.title": "!!!On-chain",
   "governance.drepDetail.sourceLabel.anchorReference": "!!!On-chain anchor reference",
   "governance.drepDetail.sourceLabel.anchorUnavailable": "!!!Anchor unavailable",

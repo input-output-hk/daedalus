@@ -154,6 +154,38 @@ describe('DRepDetailPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('labels the on-chain section with the on-chain source label', () => {
+    renderPage();
+
+    // Two matches by design: the section heading and the source-label pill.
+    const onChain = screen.getAllByText('!!!On-chain');
+    expect(onChain).toHaveLength(2);
+    expect(onChain.map((node) => node.tagName)).toEqual(['H2', 'SPAN']);
+    // The anchor section carries a Source row of its own whenever an anchor
+    // is recorded, so an anchored entry shows two.
+    expect(screen.getAllByText('!!!Source')).toHaveLength(2);
+    // The untooltipped variants must stay untooltipped, or the shared
+    // CurrentVoteSummary snapshot drifts with them.
+    expect(onChain[1]).not.toHaveAttribute('title');
+  });
+
+  it('keeps the on-chain section complete and labelled with no anchor data', () => {
+    renderPage({
+      governanceOverrides: {
+        drepIndex: new Map([[DREP_ID, { ...baseEntry, anchor: null }]]),
+        anchorStateByDRepId: new Map(),
+      },
+    });
+
+    expect(screen.getByText('!!!Status')).toBeInTheDocument();
+    expect(screen.getByText('!!!Expires in')).toBeInTheDocument();
+    expect(screen.getByText('!!!Voting power')).toBeInTheDocument();
+    expect(screen.getByText('!!!Current votes')).toBeInTheDocument();
+    expect(screen.getByText('!!!Source')).toBeInTheDocument();
+    expect(screen.getAllByText('!!!On-chain')).toHaveLength(2);
+    expect(screen.queryByText('!!!Verified off-chain content')).toBeNull();
+  });
+
   it('renders the anchor presence with the on-chain anchor reference label', () => {
     renderPage();
 
@@ -444,6 +476,9 @@ describe('DRepDetailPage', () => {
     // The untooltipped variants must stay untooltipped, or the shared
     // CurrentVoteSummary snapshot drifts with them.
     expect(referenceLabel).not.toHaveAttribute('title');
+    expect(screen.getAllByText('!!!Source')).toHaveLength(2);
+    expect(screen.getAllByText('!!!On-chain')).toHaveLength(2);
+    expect(screen.queryByText('!!!Verified off-chain content')).toBeNull();
   });
 
   it('renders the loading state without a name while the anchor is checked', () => {

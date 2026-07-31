@@ -432,6 +432,20 @@ describe('VotingPowerDelegationConfirmationDialog — verified name', () => {
     expect(sourceLine?.textContent).toContain('!!!Name:');
   });
 
+  it('never renders a verified name without both source labels', () => {
+    renderDialog({
+      chosenOption: KEY_CIP129,
+      drepIdentity: normalizeDRepIdentity(KEY_CIP129),
+      verifiedName: { host: 'example.org', name: 'Daedalus Test DRep' },
+    });
+
+    expect(screen.getByText('Daedalus Test DRep')).toBeInTheDocument();
+    expect(screen.getByText('!!!On-chain')).toBeInTheDocument();
+    expect(
+      screen.getByText('!!!Verified off-chain content')
+    ).toBeInTheDocument();
+  });
+
   it('keeps CIP-129, CIP-105 and the signed payload byte-equal when a name is added', () => {
     renderVerified();
 
