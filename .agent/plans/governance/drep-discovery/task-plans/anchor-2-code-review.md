@@ -818,3 +818,160 @@ directory and empty states never ran, and the release-end copy review is still a
 that must be cleared before the slice commits.
 
 ---
+
+## Planner: anchor-2 slice close (2026-07-31)
+
+**Status: anchor-2 is closed.** All six rows — task-157, task-153, task-174, task-154, task-155 and
+task-156 — are `complete` in `governance-drep-discovery-plan-tasks.json`, enumerated by loading the
+tracker and walking the phase rather than read off by eye. **No row is promoted to `verified`, and
+the word appears on no anchor-2 row.** The reason is the same one every scribe in the slice gave and
+it is the correct one: `verified` needs proof beyond a task's own unit tests — an in-slice
+verification task, a targeted regression suite that discriminates one row from another, or manual
+release verification — and this phase has none of the three. No promotion docket is handed forward.
+
+**What shipped, in build order.** `72c24da25` task-157 (the widened `VerifiedDRepAnchorContent` and
+`AnchorEnrichEntry`, `parseVerifiedContent` relaxed with the digest gate untouched, per-field CIP-119
+bounds at the parse boundary with `paymentAddress` rejected rather than clamped, the five remaining
+profile fields rendered behind `verified-off-chain` labels, the shared https predicate lifted into
+`source/renderer/app/utils/governance/isHttpsUrl.ts`, and `filterLogData` extended by six names) →
+`25cf76ea7` task-153 (`doNotList` on `AppDRepDirectoryEntry`, `_applyVerifiedNames` renamed
+`_applyVerifiedMetadata` so one hash-guarded pass drops both a stale name and a stale exclusion, one
+`!entry.doNotList &&` clause in `defaultCohort`, `isStaleFavorite` widened, and the impossible badge
+claim at `drep-discovery-design.md:112` struck) → `589e95272` task-174 (the opt-in `variant` on
+`DRepIdDisplay` defaulting to `'single'`, CIP-105 derived only through `normalizeDRepIdentity`, and
+one `isSearchResult` boolean threaded through the existing row path) → `26d315efa` task-154 (the
+verified name at the delegation confirmation, resolved from `entry.verifiedName` through
+`governance.drepIndex`, with byte-equality of CIP-129, CIP-105 and the signed `vote.id` asserted and
+new on-device cases in `shelleyLedger.spec.ts` / `shelleyTrezor.spec.ts`), followed by the tracker
+correction `114a0ea69` → `7bed85991` task-155 (the labelling audit: 11 `DRepSourceLabel` sites, one
+gap, closed by a single section-level `Source` row on `DRepDetailOnchainSection`) → `b99124416`
+task-156 (no product code; the five delegation-form and six directory seams confirmed by reading and
+pinned by three specs, plus the IA rationale as one design-doc paragraph).
+
+**The build order is not the tracker order, and it held.** The tracker lists `153, 174, 154, 155,
+156, 157`; the slice built `157 → 153 → 174 → 154 → 155 → 156`. The listing order encodes nothing —
+all twelve dependency entries across the six rows are cross-slice and were already `complete` — so
+the canonical order was derived from file-level coupling instead, and it held end to end: every
+`Code Review:` gate line names the next task in that sequence, and the six commits land in it. Two
+couplings justify it after the fact rather than only before. task-153 AC-1 is unsatisfiable until
+task-157 relaxes the `null` return for a `doNotList: true` document that omits `givenName`; and
+task-155, the labelling sweep, ran after all four surfaces it audits had changed, so it swept once
+rather than twice — F-15 shows how close that came to being invisible, since the guide's audit grep
+had already gone stale against task-157's `content.*` move and returned a clean-looking zero.
+
+**What changed during the build was the guide, not a decision.** D-1 … D-16 all shipped as decided;
+none was reversed and none was amended in substance. Three carry a qualification worth naming.
+**D-4** held — one section-level label, placed as a `Source` row in the `<dl>` — and created a
+collision it did not anticipate: `governance.drepDetail.onchain.source` and
+`governance.drepDetail.anchor.source` are distinct keys with byte-identical values in both locales,
+so an anchored detail render now yields two `!!!Source` matches and the guide's `getByText`
+assertion throws; the specs use `getAllByText` with `toHaveLength(2)` and keep `getByText` only for
+the no-anchor case (F-14). **D-9** held — the confirmation dialog reads the hash-guarded
+`entry.verifiedName` — but the container harness had no channel for seeding `drepIndex`, so
+`StoreOverrides` gained a `drepIndex?` field, `buildStores` a defaulted parameter and
+`openConfirmation` an optional second argument, every existing call site unchanged (F-12). **D-6**
+is right in substance and stale by two lines in one row: task-174 AC-6's superseding text sits at
+`drep-discovery-design.md:249-259`, not `:251-259`, and was already shipped before the task started,
+so the empty design-doc diff there is correct (F-10, same class as F-6). Everything else in the
+findings file is a guide-versus-repo divergence reconciled toward the live code: F-1 (a caption the
+guide defined but never rendered, while its own spec asserted the string was in the document), F-3
+(verbatim parser code using `continue`, which this repo's ESLint rejects as an error), F-9 and F-11
+(test-count arithmetic contradicting its own case bodies), F-16 (a seam quoted as a ternary that
+task-154 had already hoisted to a constant), and F-18 (a `--write` that predated the last edit).
+F-2 and F-7 are standing traps rather than divergences, and F-5 is the one to reuse: a prettier
+comparison run out of `/tmp` reports a false clean, because `.prettierrc` resolution is
+path-relative.
+
+**The review record: eight rounds over six tasks, and no blocker survived any final round.**
+task-157 and task-174 took two rounds each; task-153, task-154, task-155 and task-156 were approved
+in round 1 with zero blockers raised at any severity. The round-1 findings for task-157 and task-174
+are recorded as **not transcribed** rather than reconstructed, in both entries. Three defects from
+those untranscribed rounds are provable from the tree and all three are closed: task-157's three
+`no-continue` lint errors, which were the only errors in the entire `yarn lint` run, and the
+un-regenerated message catalogs on task-157 and again on task-174, which each verifier restored and
+which sit in the diffs at exactly the new keys with no unrelated churn. Two further gaps were closed
+inside a review pass rather than handed back — task-153's tracker rows, still unwritten when its
+verifier ran, and task-156's own prettier drift at `DRepDirectory.spec.tsx:1045`. Four round-1
+approvals in a row deserve the same scepticism anchor-1's close applied to its own: the mitigating
+fact is that each reviewer re-derived every baseline in the worktree rather than inheriting the
+verifier's table, and the real review value in this slice concentrated in the planning pass, where
+the Critiquer returned `requires_changes` with nine blockers (B1–B9), all resolved in one fix pass,
+all independently re-confirmed by a post-fix verifier that added two low-severity residuals of its
+own (B10, B11) before any code was written.
+
+**Two rows were recorded `partial` by a scribe and corrected afterwards, and the cause is
+orchestration order, not code.** task-154 and task-156 each ran their scribe pass **before** the
+committer, so each row cited its unmade commit plus one unformatted hunk as the gap — task-154's in
+`VotingGovernancePage.spec.tsx`, task-156's the chained `.filter(... some(...))` line at
+`DRepDirectory.spec.tsx:1045` recorded as F-18. The committer then formatted and committed in both
+cases; both files are prettier-clean at HEAD and both rows now read `complete`, task-154's in
+`114a0ea69` and task-156's in this closing pass. Anyone reading those two `Owed at close` blocks
+should read them as accurate at scribe time and superseded by the commit that followed, not as open
+items. Separately, task-154's scribe flagged four other files as prettier-dirty —
+`VotingPowerDelegationConfirmationDialog.tsx`, `shelleyLedger.spec.ts`, `shelleyTrezor.spec.ts` and
+`storybook/stories/voting/Governance.stories.tsx`. All four were independently confirmed already
+dirty at the base commit `55e8985bf`: inherited drift that `nix fmt` settles at merge, deliberately
+not absorbed into any anchor-2 commit so no reformat churn entered the diffs.
+
+**Gates at close, measured at the final HEAD `b99124416` rather than carried forward from any
+task's own run.**
+
+- `yarn compile` → **exit 0**.
+- `yarn lint` → **exit 0, zero errors, 5635 warnings** — the pre-existing repo baseline; no task in
+  this slice adds a warning or an error on an added line.
+- The **unfiltered** `node_modules/.bin/jest --runInBand`, no path argument → **92 passed + 1 skipped
+  of 93 suites; 1322 passed + 12 skipped of 1334 tests; 10 snapshots.** Zero failures. The one skip
+  is `tests/jest/governance/GovernanceCliArgvSmoke.spec.ts`, environment-gated on `cardano-cli`
+  being off PATH here.
+- Growth across the slice, each figure re-measured by the task's own verifier: 1250 passed at
+  anchor-1's close (`74bf92cdd`) → 1272 (task-157) → 1283 (task-153) → 1299 (task-174) → 1310
+  (task-154) → 1314 (task-155) → **1322** at close. The 92nd suite is `DRepIdDisplay.spec.tsx`; no
+  suite lost a test at any point.
+- Both sanitization floor anchors run and cited together at every task, as cv-2 F-31 requires:
+  `governance-sanitization` 35 → **39** across the slice, `logDRepStateSnapshot` **5** unchanged and
+  unedited throughout.
+- i18n parity read directly from the JSON: **116** `governance.*` keys in each of en-US and ja-JP
+  against 97 at the planning anchor, whole-catalog **1652** against 1631, key sets identical, every
+  new value `!!!`-marked. 21 keys added in build order (13 + 0 + 5 + 2 + 1 + 0); the 2 from task-154
+  are `voting.*`, which is why the `governance.*` count is unmoved across that commit.
+- `grep -rn "task-1[0-9][0-9]" source/ tests/ storybook/` → **0**, and `grep -ci "verified identity"`
+  over `en-US.json` → **0**, which is R-1's only real mitigation.
+- **`nix fmt` never ran, on any of the six commits.** `nix` is absent from this devcontainer;
+  `node_modules/.bin/prettier --write` over explicit changed paths was the substitute for the whole
+  slice. A user-owned pre-merge obligation, recorded as an environment deviation and never as a
+  satisfied gate.
+- Not gates, and correctly never read as anchor-2 regressions: `yarn check:all` and
+  `yarn storybook:build`, both red at HEAD for the pre-existing manager-webpack reason unrelated to
+  this branch.
+
+**Owed at close, with owners. Nothing here is green.** The authority is the eighteen `## F-n` entries
+in `research/anchor-2-findings.md` and the OWED section of the PRD, whose Final Outcome carries the
+full list. In priority order: **`nix fmt` before merge**, user-owned, which also settles the four
+inherited drift files · **the Storybook visual pass, including the ja-JP overflow checks on the new
+verified-name and dual-ID surfaces**, which never ran because there is no browser here and
+`yarn storybook:build` is red at HEAD for a pre-existing manager-webpack reason unrelated to this
+branch, leaving every story this slice added or rewrote landed as code and unverified visually (R-5)
+· **the release-end review that strips the preliminary `!!!` markers** from the new en-US and ja-JP
+strings, user-owned and out of scope for every per-slice task · **the `doNotList` cohort exclusion is
+best-effort, not guaranteed** — the per-DRep anchor fetch is lazy, so the flag is known only for
+DReps whose anchor was fetched in the current session, which makes it a courtesy filter honouring the
+DRep's stated preference and not a security or privacy control, and closing the gap means the bulk
+anchor prefetch both design docs defer beyond v1 (F-7) · **no task reached `verified`**, and
+promoting any of them needs dedicated proof beyond its own unit tests · **no live anchor fetch has
+ever run** (inherits anchor-1 F-10), so every parse path this slice widened and every per-field bound
+behind it are proven against fixture bytes and mocked `https` / `dns` alone, with the real SIPO
+CIP-119 body bytes and their Blake2b-256 digest check still unfetched (inherits anchor-1 F-13) · and
+**R-4 stands and is product-visible**: because `verifiedName` is populated only by a per-detail-visit
+fetch, the verified name reaches the confirmation step only for a DRep opened in the same session, so
+the after-anchor-2 confirmation template is the exception path in practice rather than the norm.
+
+**Scope of this entry.** Documentation only, and appended rather than edited in place — nothing above
+this line was touched, no existing entry was reordered and no dated heading was rewritten. It edits
+no source file, no test, no story, no locale catalog and no task `status`, `statusReason`, `evidence`
+or `updatedAt`. The two edits made alongside it are the PRD's Final Outcome, filled with its
+`Planning Status:` advanced from `in_review` to `approved`, and a value-only `auditSummary` added to
+the `anchor-2` phase object, matching the shape `slice-1` carries — the only other phase in the
+tracker that has one — and no commit was made. Every command reported above was run in the isolated
+worktree at HEAD `b99124416`; `/workspaces/daedalus` was never read, written or run against.
+
+Decision: anchor-2 closed. Next in the locked slice order is `slice-8`, which closes the feature.

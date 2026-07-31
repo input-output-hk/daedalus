@@ -1,6 +1,6 @@
 # ANCHOR-2 PRD: Anchor Enrichment Completion
 
-> **Planning Status:** `in_review` | **Slice Status:** open (all 6 tasks `pending`) | **Date:** 2026-07-30 | **Parent Plan:** [governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md)
+> **Planning Status:** `approved` | **Slice Status:** closed 2026-07-31 at `b99124416` (all 6 tasks `complete` — see Final Outcome) | **Date:** 2026-07-30 | **Parent Plan:** [governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md)
 > **Phase:** `anchor-2` — "Anchor 2 - Anchor enrichment completion" (`riskLevel: high`; tasks JSON `:1792-1927`)
 > **Tasks:** 6 — task-153, task-174, task-154, task-155, task-156, task-157 (all `pending` at the planning anchor `55e8985bf`)
 > **Preceding slice:** [anchor-1-PRD.md](./anchor-1-PRD.md) (closed 2026-07-30 at `55e8985bf`)
@@ -1069,7 +1069,237 @@ subject line, no body, no trailers):
 
 ## Final Outcome
 
-*(filled at slice close)*
+**Closed 2026-07-31 at `b99124416`.** All six anchor-2 rows — task-157, task-153,
+task-174, task-154, task-155, task-156 — are `complete` in
+`governance-drep-discovery-plan-tasks.json`. **No row was promoted to `verified`,
+and the word appears on no anchor-2 row.** `verified` in this tracker requires
+proof beyond a task's own unit tests — an in-slice verification task, a targeted
+regression suite that discriminates one row from another, or manual release
+verification — and anchor-2 has none of the three. Every scribe in the slice
+withheld the word for that reason and each `statusReason` says so in its own
+words.
+
+The slice spends the rest of the CIP-119 payload anchor-1 made available and then
+closes the provenance gap behind it: five more verified profile fields on the
+detail view, `doNotList` honoured in the default cohort, the dual
+CIP-129 / CIP-105 identity display, the verified name at the delegation
+confirmation step, one section-level source label on the last unlabelled surface,
+and `Abstain` / `No Confidence` pinned as form-only sentinels. Every parse path
+it widens is still proven against fixture bytes and a mocked transport: **no live
+anchor fetch has ever run** (inherited from anchor-1 F-10), so nothing here may be
+described as live-proven.
+
+### What shipped, task by task
+
+| Task | Commit | Outcome |
+| --- | --- | --- |
+| task-157 | `72c24da25` | `VerifiedDRepAnchorContent` and `AnchorEnrichEntry.verified` widened once (S-1) and `parseVerifiedContent` relaxed once (S-2), so a hash-matched body parses even without a `givenName` while the digest gate is untouched. Per-field CIP-119 bounds land at the parse boundary in main, with `paymentAddress` rejected rather than clamped (D-10). `DRepDetailAnchorContent` renders `objectives`, `motivations`, `qualifications`, `references` and `paymentAddress` behind `verified-off-chain` labels, with the payment-address caption stating the address is the DRep's own claim, and the renderer https gate lifted into `source/renderer/app/utils/governance/isHttpsUrl.ts` and imported in both places (D-13). `filterLogData` gains all six new names in one edit (S-3). 13 new keys in both catalogs. Nine jest gates, every count matching: AnchorVerificationService 13 → 21, GovernanceStore 49 → 51, DRepDetailPage 21 → 31, governance-sanitization 35 → 37. Approved in round 2. |
+| task-153 | `25cf76ea7` | `doNotList: boolean` projected onto `AppDRepDirectoryEntry`, `_applyVerifiedNames` renamed to `_applyVerifiedMetadata` so the hash-guarded pass that drops a stale name also drops a stale exclusion (D-11), one `!entry.doNotList &&` clause added to `defaultCohort` after the top-exclusion slice, and `isStaleFavorite` returning `entry.doNotList \|\| STALE_FAVORITE_STATUSES.has(entry.status)`. No wire field, parser rule, IPC change or `DRepStatus` member was added. The design doc's unimplementable badge claim at `drep-discovery-design.md:112` was struck and rewritten, one insertion and one deletion (D-7, F-8). helpers.spec 25 → 26, DRepDirectory 48 → 52, DRepDirectoryPage 8 → 9, GovernanceStore 51 → 56. Carries task-122's re-verification row (D-16). Approved in round 1, zero blockers. |
+| task-174 | `589e95272` | `DRepIdDisplay` gains an opt-in `variant` defaulting to `'single'`, so every existing call site is unchanged by construction; CIP-105 is derived only through `normalizeDRepIdentity` and omitted when the id does not decode, never re-encoded by hand (D-8, S-4). The stacked search-row form is selected by one `isSearchResult` boolean threaded `DRepDirectory` → `DRepDirectoryList` → `DRepCard` (D-12), with two `<code>` elements carrying distinct aria labels. Both clipboard `logger.warn` payloads keep their id-free shape. New `DRepIdDisplay.spec.tsx` 0 → 9, DRepDirectory 52 → 55, DRepDetailPage 31 → 33, governance-sanitization 37 → 39. 5 new keys. Approved in round 2. |
+| task-154 | `26d315efa`, plus the tracker correction `114a0ea69` | The delegation confirmation renders the verified name above the DRep ID with the composite on-chain / verified-off-chain label carrying the anchor host, resolved from `entry.verifiedName` through `governance.drepIndex` in `VotingGovernancePage.tsx` — the hash-guarded, sanitization-listed projection, not the detail view's per-visit fetch state (D-9, S-5). `resolveVerifiedName` returns `null` unless the entry has both a name and an anchor URL, and sentinel votes short-circuit before the lookup. Byte-equality across the name transition is asserted, not argued: CIP-129, CIP-105 and the signed payload `vote.id` in the dialog spec, plus new `shelleyLedger` and `shelleyTrezor` cases proving the on-device credential still derives from `vote.chosenOption`. Dialog 27 → 33 (F-11), VotingGovernancePage 27 → 30, shelleyLedger 7 → 8, shelleyTrezor 7 → 8. Discharges task-157 AC-2's confirmation half (D-14). Approved in round 1, zero blockers. |
+| task-155 | `7bed85991` | An audit that found exactly one gap. Step 1 inventoried 11 `DRepSourceLabel` sites; every anchor-derived render was already labelled and `DRepDetailOnchainSection` was the only unlabelled surface. It gains one section-level `Source` row at the end of its `<dl>`, mirroring `DRepDetailAnchorSection`, under the new `governance.drepDetail.onchain.source` key — one label, not a per-field sweep, and no new `DRepSourceLabelVariant` (D-4, S-6, S-7). `CurrentVoteSummary` was deliberately left untouched (D-3) and `DRepCard`'s ID-only card contract is intact. DRepDetailPage 33 → 35, DRepDirectory 55 → 56. 1 new key. Approved in round 1, zero blockers. |
+| task-156 | `b99124416` | No product code changed. All five delegation-form seams and all six directory seams were confirmed by reading — the closed `VoteType` union, the `VOTE_TYPES` allow-list, `chosenOption` resolving to the sentinel string, the sentinel short-circuit to `drepIdentity = null`, `isSentinelVote` gating the identity block; and `drepList` / `drepIndex` built only from ledger entries, `visibleEntries`' three branches, `searchDRepsByIdPrefix` returning `[]` off-prefix, `resolveExactDRepMatch` gated on `Cardano.DRepID.isValid`, and no `DRepEmptyState` default naming either sentinel. Three specs pin that end state and the IA rationale lands as one paragraph at `drep-discovery-design.md:208`, never as in-app copy (D-15). DRepDirectory 56 → 60, dialog 34 → 36, VotingGovernancePage 30 → 32. Zero i18n keys. Approved in round 1, zero blockers. |
+
+**Ordering note (planned, not drift).** The table is in shipped build order —
+`157 → 153 → 174 → 154 → 155 → 156` — which is what D-1 binds, and it held for all
+six: each `Code Review:` entry's closing gate line names the next task in that
+sequence and the commits land in it. It differs from the tracker's anchor-2
+listing order (`153, 174, 154, 155, 156, 157`), which encodes nothing — all twelve
+dependency entries across the six rows are cross-slice and were already
+`complete`. Slice planning landed before the base commit.
+
+### Gates at close — measured, not asserted
+
+Measured at the final HEAD `b99124416`, not carried forward from a per-task run.
+
+- `yarn compile` — **exit 0**.
+- `yarn lint` — **exit 0, zero errors, 5635 warnings.** The warning count is the
+  pre-existing repo baseline; no anchor-2 task adds a warning or an error on an
+  added line.
+- The **unfiltered** `node_modules/.bin/jest --runInBand`, no path argument —
+  **92 passed, 1 skipped of 93 suites; 1322 passed, 12 skipped of 1334 tests; 10
+  snapshots.** Zero failures. The one skipped suite is
+  `tests/jest/governance/GovernanceCliArgvSmoke.spec.ts`, which self-skips because
+  `cardano-cli` is off PATH in this devcontainer — environment-gated by design,
+  not broken.
+- Test growth across the slice, each figure re-measured by the task's own
+  verifier rather than inherited: 1250 passed at anchor-1's close (`74bf92cdd`) →
+  1272 after task-157 → 1283 after task-153 → 1299 after task-174 → 1310 after
+  task-154 → 1314 after task-155 → **1322** at close. One new suite,
+  `DRepIdDisplay.spec.tsx`, accounts for the 92nd; no suite lost a test at any
+  point.
+- Both sanitization floor anchors were run and cited together at every task, as
+  cv-2 F-31 requires: `tests/jest/security/governance-sanitization.spec.ts` rose
+  35 → 39 across the slice and the sibling `logDRepStateSnapshot` suite stayed at
+  5, unchanged and unedited.
+- i18n parity, checked directly against the JSON: en-US and ja-JP each carry
+  **116** `governance.*` keys against 97 at the planning anchor, whole-catalog
+  1631 → **1652** in both, the two key sets identical, and every new value
+  `!!!`-marked. 21 keys added across the slice in build order
+  (13 + 0 + 5 + 2 + 1 + 0), of which 19 are `governance.*` — task-154's two are
+  `voting.*` confirmation-dialog keys, which is why the `governance.*` count is
+  unmoved across that commit — and
+  `preliminaryCopyMarkers.spec.ts` stayed green including task-154's addition to
+  `PRELIMINARY_CONFIRMATION_KEYS`.
+- `grep -rn "task-1[0-9][0-9]" source/ tests/ storybook/` returns **0**, and no
+  comment or test name in any changed path carries a task id, a review label,
+  ALL-CAPS emphasis or change history.
+- No copy added in this slice says "verified identity" —
+  `grep -ci "verified identity"` over `en-US.json` returns 0, which is R-1's only
+  real mitigation.
+- Not gates, and correctly never read as anchor-2 regressions: `yarn check:all`
+  and `yarn storybook:build`, both red at HEAD for the pre-existing
+  manager-webpack reason unrelated to this branch.
+
+### Planning decisions at close
+
+**D-1 … D-16 all shipped as decided. None was reversed, and none was amended in
+substance.** Confirmed against the code at close: the build order held (D-1); no
+seam was widened twice and task-153 added nothing to the wire type, the parser or
+`AnchorEnrichEntry` (D-2, S-1 … S-7); `CurrentVoteSummary` is absent from every
+diff (D-3); the on-chain section carries exactly one label, as a `Source` row
+(D-4); `doNotList` was documented rather than engineered around (D-5); the five
+verify-and-record criteria were confirmed at their corrected anchors with no
+duplicate paragraph added (D-6); the impossible badge claim was struck and the
+`DRepStatus` union is still `'active' | 'inactive'` (D-7); the search row derives
+its own CIP-105 through `normalizeDRepIdentity` and `helpers.ts:77` was left alone
+(D-8); the detail view reads `content.givenName` and the confirmation dialog reads
+`entry.verifiedName` (D-9); `paymentAddress` is rejected, never truncated (D-10);
+the projection pass is renamed `_applyVerifiedMetadata` (D-11); one boolean, no
+second component (D-12); one shared https predicate, imported twice (D-13); the
+AC-2 hand-off is recorded in both rows (D-14); task-156 added zero i18n keys
+(D-15); and the tracker was edited value-only with no reformat (D-16).
+
+Three decisions survived with a mechanism extended or a citation corrected. None
+of the three changes what the decision decided.
+
+- **D-4 held, and created a collision it did not anticipate (F-14).**
+  `governance.drepDetail.onchain.source` and `governance.drepDetail.anchor.source`
+  are deliberately distinct keys whose values are byte-identical in both locales,
+  so any detail render for an entry **with** an anchor now yields two `!!!Source`
+  matches and the guide's `getByText` assertion throws. The specs use
+  `getAllByText('!!!Source')` with `toHaveLength(2)` on the anchored fixtures and
+  keep `getByText` only in the no-anchor case. If the release-end copy review makes
+  the two captions diverge, those assertions revert to single-match and must be
+  revisited together.
+- **D-9 held, and needed a test-harness channel that did not exist (F-12).**
+  `drepIndex` was hard-coded inside `buildStores` and `openConfirmation` accepted
+  only a drepId, so the container harness could not seed the projection D-9 binds
+  the dialog to. `StoreOverrides` gained a `drepIndex?` field, `buildStores` a
+  defaulted parameter carrying the previous default Map, and `openConfirmation` an
+  optional second argument defaulting to `{}` — every existing call site unchanged.
+  The abstain case calls `renderFlow` directly, because `openConfirmation`
+  hard-codes `voteType: 'drep'`.
+- **D-6's anchor table is right in substance and stale by two lines in one row
+  (F-10).** task-174 AC-6's superseding text was located at
+  `drep-discovery-design.md:249-259`, not the `:251-259` the table predicted, and
+  the correction was already shipped before the task started, so the empty
+  design-doc diff there is correct. The same citation drift class is recorded as
+  F-6.
+
+What did change during the build was the implementation guide, never a decision.
+Eighteen divergences were reconciled toward the live code and recorded as F-1 …
+F-18 in `research/anchor-2-findings.md`; the load-bearing ones are F-1 (the
+payment-address caption the guide defined but never rendered, resolved toward the
+behaviour the guide's own spec and `drep-discovery-design.md:226` both assert),
+F-3 (the guide's verbatim parser used `continue`, which this repo's ESLint rejects
+as an error), F-9 and F-11 (guide test-count arithmetic contradicting its own case
+bodies; the measured counts win), F-15 (the audit grep that proves the labelling
+sweep silently matches nothing, because task-157 moved the fields behind
+`content.*`), and F-16 (the sentinel short-circuit the guide quotes as a ternary is
+a hoisted constant post-task-154). F-2 records a deliberate asymmetry that a future
+reader must not "fix": the payment-address copy handler reaches no logger on either
+failure path, and two tests depend on it.
+
+Of the risks this PRD recorded, R-3 was realized exactly as designed and is now
+F-7; R-7's pinned decision holds — a hash-matched parse counts as completed
+metadata regardless of `givenName`, `verifiedMetadataIds` still keys on
+`state === 'verified'` alone; R-4 stands and is product-visible, in that the
+verified name reaches the confirmation step only for a DRep whose detail view was
+opened in the same session, so the after-anchor-2 confirmation template is the
+exception path in practice rather than the norm; and R-1, R-2, R-5 and R-8 are
+unchanged, R-5 blocked on having no browser here.
+
+### Review record
+
+Eight review rounds over six tasks. task-157 and task-174 took two each; task-153,
+task-154, task-155 and task-156 were each approved in round 1. **No blocker
+survived any task's final round, and four tasks raised none at any severity.** The
+round-1 findings for task-157 and task-174 are not transcribed in the log and were
+not reconstructed; the three defects provable from the tree are task-157's three
+`no-continue` lint errors, which were the only errors in the whole `yarn lint`
+run and are now zero, and the un-regenerated message catalogs on both tasks, which
+the verifiers restored and which now sit in the diffs at exactly the new keys with
+no unrelated churn. Two non-blocking gaps were closed inside a review pass rather
+than handed back: task-153's tracker rows, unwritten when the verifier ran, and
+task-156's own prettier drift at `DRepDirectory.spec.tsx:1045` (F-18), cleared by
+the committer.
+
+Ahead of all of it sat the required planning review, which is where this slice's
+review value concentrated: the Critiquer returned `requires_changes` with nine
+blockers (B1–B9), all resolved in one fix pass and all independently re-confirmed
+resolved by a dedicated post-fix verifier, which added two low-severity residuals
+of its own (B10, B11) — a build-order-blind test absolute and a re-location key
+task-157 makes stale — both applied before implementation began.
+
+**Two tracker rows were recorded `partial` by a scribe and corrected to `complete`
+afterwards.** task-154 and task-156 each ran their scribe pass before the
+committer, so each row cited the unmade commit plus one unformatted hunk as its
+gap. The committer then formatted and committed in both cases; both files are
+prettier-clean at HEAD and both rows now read `complete` — task-154's correction in
+`114a0ea69`, task-156's alongside this close-out. task-154's scribe additionally
+flagged four files as prettier-dirty
+(`VotingPowerDelegationConfirmationDialog.tsx`, `shelleyLedger.spec.ts`,
+`shelleyTrezor.spec.ts`, `storybook/stories/voting/Governance.stories.tsx`); all
+four were independently confirmed already dirty at the base commit `55e8985bf`, so
+they are inherited drift that `nix fmt` settles at merge, not this slice's.
+
+### Residual gaps and user-owned obligations — nothing here is green
+
+Restating the *OWED at slice close* list above, with what the slice measured
+against each. None of these may be reported as satisfied.
+
+1. **`nix fmt` never ran, on any of the six commits.** `nix` is absent from this
+   devcontainer; `node_modules/.bin/prettier --write` over explicitly listed
+   changed paths was the substitute for the whole slice. Running `nix fmt` before
+   merge is a **user-owned pre-merge obligation**, not a satisfied gate, and it
+   also settles the inherited drift named above.
+2. **The Storybook visual pass never ran, including the ja-JP overflow checks on
+   the new verified-name and dual-ID surfaces.** There is no browser here, and
+   `yarn storybook:build` is red at HEAD for a pre-existing manager-webpack reason
+   unrelated to this branch. Every story this slice added or rewrote — the stacked
+   dual-ID search row, the five new detail fields, the `Verified anchor name
+   available` dialog knob, the rewritten stale-favorite story — is landed as code
+   and unverified visually. R-5 is unresolved.
+3. **The release-end review that strips the preliminary `!!!` markers from the new
+   en-US and ja-JP strings is user-owned** and out of scope for every per-slice
+   task by invariant 11. All 21 new keys ship marked.
+4. **The `doNotList` cohort exclusion is best-effort, not guaranteed (F-7).** The
+   per-DRep anchor fetch is lazy and per-detail-visit, so the flag is known only
+   for DReps whose anchor was fetched in the current session: a `doNotList: true`
+   DRep stays in the default cohort until something in the session has opened it,
+   and an unvisited `doNotList: true` favorite shows no caption. It is a courtesy
+   filter honouring the DRep's stated preference, **not a security or privacy
+   control**, and nothing in the app depends on it being complete. Closing the gap
+   means bulk anchor prefetch, which both design docs defer beyond v1.
+5. **No task reached `verified`.** Promoting any of them needs dedicated proof
+   beyond its own unit tests — an in-slice verification task, a targeted
+   regression suite, or manual release verification. No promotion docket is handed
+   forward.
+6. **No live anchor fetch has ever run** (inherits anchor-1 F-10), so every parse
+   path this slice widened, every per-field bound and the whole transport guard set
+   behind them are proven against fixture bytes and mocked `https` / `dns` only.
+   The real SIPO CIP-119 body bytes and the check that their Blake2b-256 digest
+   equals the on-chain `dataHash` remain unfetched (inherits anchor-1 F-13).
+7. **`yarn check:all` is red at HEAD** for the same pre-existing Storybook reason,
+   so it was correctly never run as an anchor-2 gate and is not evidence either
+   way.
+
+Nothing was pushed: `gh` and push credentials are absent from this environment.
+The research note exists and is substantial — `research/anchor-2-findings.md`,
+399 lines, F-1 … F-18 — so the "no new research" fallback in the header does not
+apply. This Final Outcome is filled and the `Planning Status:` above is advanced
+from `in_review` to `approved`.
 
 ## References
 
