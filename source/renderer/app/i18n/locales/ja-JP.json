@@ -355,6 +355,7 @@
   "governance.drepDirectory.empty.noSync": "!!!ノードは同期中です。DRepデータはノードが最新ブロックに到達すると利用できるようになります。",
   "governance.drepDirectory.error": "!!!DRepデータを読み込めませんでした。",
   "governance.drepDirectory.error.rankingUnavailable": "!!!今回の更新では投票権データを利用できません。ランキングに基づくフィルターは無効になります。",
+  "governance.drepDirectory.error.refresh": "!!!DRepデータを更新できませんでした。{Retry}。{time}時点の最後に成功したスナップショットを表示しています。",
   "governance.drepDirectory.filter.active": "!!!ステータス",
   "governance.drepDirectory.filter.all": "!!!すべて",
   "governance.drepDirectory.filter.excludeTop35": "!!!最大35件を除外",

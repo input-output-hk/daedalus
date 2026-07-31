@@ -1,0 +1,79 @@
+.skeletonList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeletonCard {
+  background: var(--theme-card-bg, #ffffff);
+  border: 1px solid var(--theme-separator, #e0e0e0);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+}
+
+.topRow {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.bottomRow {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.block {
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+  background: var(--theme-separator, #e0e0e0);
+  border-radius: 4px;
+  display: inline-block;
+  height: 12px;
+}
+
+.badge {
+  width: 72px;
+}
+
+.id {
+  width: 260px;
+}
+
+.label {
+  width: 88px;
+}
+
+.value {
+  width: 120px;
+}
+
+.action {
+  height: 32px;
+  width: 128px;
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .block {
+    animation: none;
+  }
+}

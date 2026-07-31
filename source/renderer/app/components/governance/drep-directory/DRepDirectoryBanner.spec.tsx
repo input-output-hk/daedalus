@@ -8,6 +8,7 @@ import DRepDirectoryBanner from './DRepDirectoryBanner';
 
 const renderBanner = ({
   isCohortActive = true,
+  isRefreshing = false,
   locale = 'en-US',
   showSource,
   isFilteredView,
@@ -16,6 +17,7 @@ const renderBanner = ({
   favoritesCount,
 }: {
   isCohortActive?: boolean;
+  isRefreshing?: boolean;
   locale?: string;
   showSource?: boolean;
   isFilteredView?: boolean;
@@ -28,7 +30,7 @@ const renderBanner = ({
     <IntlProvider locale={locale} messages={messages}>
       <DRepDirectoryBanner
         isCohortActive={isCohortActive}
-        isRefreshing={false}
+        isRefreshing={isRefreshing}
         lastFetchedAt={Date.now() - 60_000}
         onRefresh={jest.fn()}
         onReshuffle={jest.fn()}
@@ -127,5 +129,19 @@ describe('DRepDirectoryBanner', () => {
       screen.queryByText(/Default view shows up to 200/)
     ).not.toBeInTheDocument();
     expect(screen.queryByText(/matching your filters/)).not.toBeInTheDocument();
+  });
+
+  it('renders the refreshing badge beside the last-updated timestamp', () => {
+    renderBanner({ isRefreshing: true });
+
+    expect(screen.getByText(/Last updated/)).toBeInTheDocument();
+    expect(screen.getByText('!!!Refreshing…')).toBeInTheDocument();
+  });
+
+  it('renders no refreshing badge while no refresh is in flight', () => {
+    renderBanner();
+
+    expect(screen.getByText(/Last updated/)).toBeInTheDocument();
+    expect(screen.queryByText('!!!Refreshing…')).not.toBeInTheDocument();
   });
 });

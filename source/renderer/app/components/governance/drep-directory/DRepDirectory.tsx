@@ -6,9 +6,9 @@ import DRepDirectoryList from './DRepDirectoryList';
 import DRepDirectoryBanner from './DRepDirectoryBanner';
 import DRepDirectorySearch from './DRepDirectorySearch';
 import DRepDirectoryFilters from './DRepDirectoryFilters';
+import DRepDirectorySkeleton from './DRepDirectorySkeleton';
 import DRepEmptyState from '../_shared/DRepEmptyState';
 import DRepErrorBanner from '../_shared/DRepErrorBanner';
-import LoadingSpinner from '../../widgets/LoadingSpinner';
 import {
   GovernanceRefreshState,
   VotingPowerEnrichState,
@@ -37,11 +37,6 @@ const messages = defineMessages({
     defaultMessage: '!!!DRep Directory',
     description: 'Title of the DRep directory page',
   },
-  loading: {
-    id: 'governance.drepDirectory.loading',
-    defaultMessage: '!!!Loading DRep data…',
-    description: 'Loading state message',
-  },
   empty: {
     id: 'governance.drepDirectory.empty',
     defaultMessage: '!!!No DReps found on-chain.',
@@ -56,11 +51,6 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.retry',
     defaultMessage: '!!!Retry',
     description: 'Retry button label',
-  },
-  refreshing: {
-    id: 'governance.drepDirectory.refreshing',
-    defaultMessage: '!!!Refreshing…',
-    description: 'Refreshing state badge label',
   },
   syncing: {
     id: 'governance.drepDirectory.syncing',
@@ -240,12 +230,7 @@ function DRepDirectory({
   const renderContent = () => {
     switch (true) {
       case refreshState === GovernanceRefreshState.Loading:
-        return (
-          <div className={styles.stateContainer}>
-            <LoadingSpinner />
-            <p>{intl.formatMessage(messages.loading)}</p>
-          </div>
-        );
+        return <DRepDirectorySkeleton />;
 
       case showNoSyncFallback:
         return <DRepEmptyState variant="noSync" />;
@@ -321,29 +306,13 @@ function DRepDirectory({
                 isSearchActive={isSearchActive}
               />
             </div>
-            {showErrorBanner && error && (
-              <div className={styles.errorBanner}>
-                <div>
-                  <p className={styles.errorMessage}>
-                    {intl.formatMessage(messages.error)}
-                  </p>
-                  <p className={styles.errorDetails}>{error.message}</p>
-                  {error.details && (
-                    <p className={styles.errorDetails}>{error.details}</p>
-                  )}
-                </div>
-                <Button
-                  label={intl.formatMessage(messages.retry)}
-                  onClick={onRefresh}
-                  skin={ButtonSkin}
-                />
-              </div>
-            )}
-            {refreshState === GovernanceRefreshState.Refreshing && (
-              <div className={styles.refreshingBadge}>
-                <LoadingSpinner />
-                {intl.formatMessage(messages.refreshing)}
-              </div>
+            {showErrorBanner && (
+              <DRepErrorBanner
+                variant="refreshFailed"
+                retryLabel={intl.formatMessage(messages.retry)}
+                onRetry={onRefresh}
+                lastFetchedAt={lastFetchedAt}
+              />
             )}
             {votingPowerState === VotingPowerEnrichState.Failed && (
               <DRepErrorBanner variant="rankingUnavailable" />

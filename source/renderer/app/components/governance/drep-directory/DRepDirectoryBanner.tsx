@@ -5,6 +5,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 import styles from './DRepDirectoryBanner.scss';
 
 const messages = defineMessages({
@@ -22,6 +23,11 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.lastUpdated',
     defaultMessage: '!!!Last updated {time}',
     description: 'Last updated timestamp label',
+  },
+  refreshing: {
+    id: 'governance.drepDirectory.refreshing',
+    defaultMessage: '!!!Refreshing…',
+    description: 'Accessible label of the refresh-in-flight badge',
   },
   cohortBanner: {
     id: 'governance.drepDirectory.cohortBanner',
@@ -101,11 +107,19 @@ function DRepDirectoryBanner({
         />
       </div>
       {lastFetchedAt && timeAgo !== null && (
-        <p className={styles.lastUpdated}>
+        // A refresh only reaches this component with retained data, so the
+        // timestamp the badge annotates is always present on that path.
+        <div className={styles.lastUpdated}>
           {intl.formatMessage(messages.lastUpdated, {
             time: timeAgo,
           })}
-        </p>
+          {isRefreshing && (
+            <span className={styles.refreshingBadge} role="status">
+              <LoadingSpinner />
+              {intl.formatMessage(messages.refreshing)}
+            </span>
+          )}
+        </div>
       )}
       {isCohortActive && !isFilteredView && !isFavoritesView && (
         <div className={styles.cohortLine}>

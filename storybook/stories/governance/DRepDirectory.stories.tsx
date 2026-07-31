@@ -118,6 +118,11 @@ const REFRESH_ERROR: DirectoryError = {
   type: 'QUERY_FAILED',
 };
 
+const TIMEOUT_ERROR: DirectoryError = {
+  message: 'DRep registration query timed out.',
+  type: 'TIMEOUT',
+};
+
 const CENTERED_STYLE = {
   margin: '0 auto',
   maxWidth: 960,
@@ -244,6 +249,7 @@ const DIRECTORY_STATE_OPTIONS = {
   Empty: 'empty',
   Loading: 'loading',
   Refreshing: 'refreshing',
+  'Refresh failed': 'refreshFailed',
   Error: 'error',
 };
 
@@ -272,6 +278,12 @@ const resolveDirectoryState = (
         refreshState: GovernanceRefreshState.Refreshing,
         entries: baseEntries,
         error: REFRESH_ERROR,
+      };
+    case 'refreshFailed':
+      return {
+        refreshState: GovernanceRefreshState.Loaded,
+        entries: baseEntries,
+        error: TIMEOUT_ERROR,
       };
     case 'error':
       return {
@@ -426,6 +438,15 @@ storiesOf('Governance / DRep Directory', module)
       GovernanceRefreshState.Refreshing,
       baseEntries,
       REFRESH_ERROR,
+      DEFAULT_SYNC_STATE,
+      true
+    )
+  )
+  .add('Refresh failed — retained snapshot', () =>
+    renderCentered(
+      GovernanceRefreshState.Loaded,
+      baseEntries,
+      TIMEOUT_ERROR,
       DEFAULT_SYNC_STATE,
       true
     )

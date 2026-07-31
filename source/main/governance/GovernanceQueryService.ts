@@ -224,6 +224,8 @@ export class GovernanceQueryService {
   private async _doFetchDRepRegistrations(): Promise<DRepListQueryPayload> {
     this._assertQueryable();
 
+    const startedAt = Date.now();
+
     try {
       const [drepStateStdout, tipStdout] = await Promise.all([
         this._runCliQueryWithEraFallback(
@@ -239,10 +241,13 @@ export class GovernanceQueryService {
       const currentEpoch = this._parseTipEpoch(tipStdout);
       const dreps = this._parseDRepState(drepStateStdout, currentEpoch);
 
+      const fetchedAt = Date.now();
+
       return {
         dreps,
-        fetchedAt: Date.now(),
+        fetchedAt,
         epoch: currentEpoch,
+        elapsedMs: fetchedAt - startedAt,
       };
     } catch (error) {
       if (error instanceof GovernanceQueryError) {
@@ -260,15 +265,19 @@ export class GovernanceQueryService {
   private async _doFetchDRepStake(): Promise<DRepStakeQueryPayload> {
     this._assertQueryable();
 
+    const startedAt = Date.now();
+
     try {
       const stakeStdout = await this._runCliQueryWithEraFallback(
         ['query', 'drep-stake-distribution', '--all-dreps', '--output-json'],
         GovernanceQueryService.STAKE_TIMEOUT_MS
       );
+      const fetchedAt = Date.now();
 
       return {
         stakeByDRepId: this._parseStakeDistribution(stakeStdout),
-        fetchedAt: Date.now(),
+        fetchedAt,
+        elapsedMs: fetchedAt - startedAt,
       };
     } catch (error) {
       if (error instanceof GovernanceQueryError) {

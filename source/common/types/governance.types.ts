@@ -143,6 +143,12 @@ export interface DRepListQueryPayload {
   fetchedAt: number;
   /** Current epoch number returned by `query tip`; nullable for compatibility. */
   epoch: number | null;
+  /**
+   * Milliseconds the phase-1 registration query took. Observational only: the
+   * CLI timeout in the main process stays the sole enforcement, and no consumer
+   * may schedule a timer from this value.
+   */
+  elapsedMs: number;
 }
 
 export interface DRepStakeQueryPayload {
@@ -150,6 +156,8 @@ export interface DRepStakeQueryPayload {
   stakeByDRepId: Record<DRepId, Lovelace>;
   /** Unix timestamp (ms) when the stake distribution was fetched. */
   fetchedAt: number;
+  /** Milliseconds the phase-2 stake query took. Observational only, like the phase-1 field. */
+  elapsedMs: number;
 }
 
 // ---- Error Types ----

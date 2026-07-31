@@ -56,3 +56,11 @@
   color: var(--theme-text-secondary, #6b7384);
   margin: 0;
 }
+
+.refreshingBadge {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+  margin-left: 8px;
+  vertical-align: middle;
+}

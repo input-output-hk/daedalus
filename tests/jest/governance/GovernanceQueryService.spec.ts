@@ -322,6 +322,20 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
       const cached = service.getLastSuccessfulData();
       expect(cached).toEqual(result);
     });
+
+    it('reports the measured registration duration as a plain millisecond number', async () => {
+      mockSpawn
+        .mockReturnValueOnce(createMockChildProcess(VALID_DREP_STATE_JSON))
+        .mockReturnValueOnce(createMockChildProcess(VALID_TIP_JSON));
+
+      const result = await service.fetchDRepRegistrations();
+
+      expect(typeof result.elapsedMs).toBe('number');
+      expect(result.elapsedMs).toBeGreaterThanOrEqual(0);
+      expect(result.elapsedMs).toBeLessThan(
+        (GovernanceQueryService as any).REGISTRATION_TIMEOUT_MS
+      );
+    });
   });
 
   // ---- parse failures ----
@@ -614,6 +628,17 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
       const result = await service.fetchDRepStake();
 
       expect(Object.keys(result.stakeByDRepId)).toHaveLength(2);
+    });
+
+    it('reports the measured stake duration as a plain millisecond number', async () => {
+      mockSpawn.mockReturnValueOnce(
+        createMockChildProcess(STAKE_DISTRIBUTION_FIXTURE)
+      );
+
+      const result = await service.fetchDRepStake();
+
+      expect(typeof result.elapsedMs).toBe('number');
+      expect(result.elapsedMs).toBeGreaterThanOrEqual(0);
     });
 
     it('parses the array-of-pairs container shape', async () => {

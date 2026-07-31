@@ -2705,6 +2705,11 @@
         "defaultMessage": "!!!Voting power data unavailable this refresh. Ranking-based filters disabled.",
         "description": "Non-blocking banner when the stake phase fails",
         "id": "governance.drepDirectory.error.rankingUnavailable"
+      },
+      {
+        "defaultMessage": "!!!Couldn't refresh DRep data. {Retry}. Showing last successful snapshot from {time}.",
+        "description": "Non-blocking banner when a refresh fails while a retained snapshot is on screen",
+        "id": "governance.drepDirectory.error.refresh"
       }
     ],
     "path": "source/renderer/app/components/governance/_shared/DRepErrorBanner.tsx"
@@ -3047,6 +3052,11 @@
         "id": "governance.drepDirectory.lastUpdated"
       },
       {
+        "defaultMessage": "!!!Refreshing…",
+        "description": "Accessible label of the refresh-in-flight badge",
+        "id": "governance.drepDirectory.refreshing"
+      },
+      {
         "defaultMessage": "!!!Default view shows up to 200 eligible DReps in randomized order, excluding the 35 largest by voting power.",
         "description": "Primary line explaining the randomized default cohort",
         "id": "governance.drepDirectory.cohortBanner"
@@ -3077,11 +3087,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Loading DRep data…",
-        "description": "Loading state message",
-        "id": "governance.drepDirectory.loading"
-      },
-      {
         "defaultMessage": "!!!No DReps found on-chain.",
         "description": "Empty directory state",
         "id": "governance.drepDirectory.empty"
@@ -3095,11 +3100,6 @@
         "defaultMessage": "!!!Retry",
         "description": "Retry button label",
         "id": "governance.drepDirectory.retry"
-      },
-      {
-        "defaultMessage": "!!!Refreshing…",
-        "description": "Refreshing state badge label",
-        "id": "governance.drepDirectory.refreshing"
       },
       {
         "defaultMessage": "!!!Your node is still syncing ({progress}%). The DRep list may be incomplete until sync completes.",
@@ -3153,6 +3153,16 @@
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectorySearch.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Loading DRep data…",
+        "description": "Accessible label of the first-load skeleton list",
+        "id": "governance.drepDirectory.loading"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectorySkeleton.tsx"
   },
   {
     "descriptors": [

@@ -1,0 +1,476 @@
+# slice-8 Code Review Log
+
+> Append-only transcript: `Planner:` entries (planning open/close), one `Critiquer:` entry
+> (required review pass over the PRD + guide), and per-task `Code Review:` entries.
+> Companion docs: [slice-8-PRD.md](./slice-8-PRD.md) ·
+> [slice-8-implementation-guide.md](./slice-8-implementation-guide.md)
+
+---
+
+## Planner: 2026-07-31 — slice-8 planning pass
+
+**Scope.** Three tasks — task-123, task-124, task-125 — all `pending` at
+`0cdcab581`. slice-8 is the **last slice of the DRep Discovery feature**; it closes
+Track D and the feature. task-123 ships the refresh-latency budget and the
+stale-while-refresh *visual* contract the design has specified since slice-1 but the
+code only half-implements. task-124 closes the last unreachable UI state, the selfnode
+CLI-unsupported empty state, which today leaks a raw main-process string to the user.
+task-125 is a release-verification gate that cannot be executed by any agent.
+
+**Interaction mode.** task-123 `autonomous` · task-124 `autonomous` ·
+**task-125 `manual_execution`** — a locked, user-owned stop condition. Its tracker row
+stays `pending` through slice close and no agent may promote it or infer its result.
+
+**Build order (binding): `123 → 124 → 125`.** slice-8 has **zero intra-slice dependency
+edges** — every dependency of every row (task-103, task-115, task-116, task-121,
+task-122) is already `complete` — so the JSON listing order encodes no ordering
+information. The order is forced by file-level coupling instead: both autonomous rows
+edit the same `switch (true)` in `DRepDirectory.renderContent()`
+(`DRepDirectory.tsx:240-282`) and both extend the same Storybook state knob
+(`DRepDirectory.stories.tsx:242-290`); task-123's edits are structural (one arm
+replaced, one banner block replaced, one badge relocated) and task-124's is a single
+inserted arm, so landing the structural edit first means the insertion goes into a
+settled file. task-123 also owns the slice's only widening of the IPC payload types,
+which task-124 must not re-open. task-125 is last because its checklist describes the
+end state of the directory.
+
+### User-ruled decisions carried into the plan (D-1 … D-5)
+
+- **D-1 — the selfnode badge is a new message id rendered as plain markup inside the
+  empty state; the `DRepStatus` union is not widened.** The design files a
+  "Selfnode / CLI unsupported" row in the *status-badge* table, but `DRepStatusBadge`
+  takes `status: DRepStatus` where `DRepStatus = 'active' | 'inactive'`
+  (`governance.types.ts:35`, `DRepStatusBadge.tsx:20-29`) is a closed union that the
+  locked status-grounding invariant forbids widening — selfnode is not an on-chain
+  status of any DRep. Resolution: mint
+  `governance.drepDirectory.status.selfnodeUnavailable`, render icon-plus-label markup
+  inside the `DRepEmptyState` `selfnode` variant, touch neither the union nor the badge
+  component, and reconcile the design doc with one clarifying sentence plus one
+  microcopy row. Same resolution class as anchor-2's D-7.
+- **D-2 — task-123 builds a real DRep-card skeleton list; the existing spinner is not
+  sufficient.** The design specifies a full skeleton list for the first-load phase; the
+  live render is a centred `LoadingSpinner` (`DRepDirectory.tsx:242-248`) and no
+  skeleton component exists anywhere under `components/governance/` (grep: zero hits).
+  The guide fixes the placeholder markup and pins the card count at **25**, mirroring
+  `CARDS_PER_PAGE` (`DRepDirectoryList.tsx:14`), so the first paint holds the height the
+  loaded page will occupy. **This exceeds the row's 4-hour estimate and that is
+  accepted** — the estimate is not amended, the design doc is not amended to describe a
+  spinner, and the work is not downgraded.
+- **D-3 — the main process stays the single timeout authority; `elapsedMs` is
+  observational.** `_runCliQuery`'s `setTimeout` (`GovernanceQueryService.ts:382-390`)
+  is the only timeout enforcement in the feature and is neither duplicated, moved,
+  wrapped nor re-derived. The new `elapsedMs` records how long a completed query took;
+  it feeds snapshot age and the deferred latency-measurement remainder, and drives only
+  the renderer's skeleton → stale-with-spinner visual progression. **The renderer must
+  not run a competing timeout timer.**
+- **D-4 — the 118 pre-existing stylelint errors are out of scope and recorded, not
+  fixed.** `yarn stylelint` is red at HEAD with 118 errors, every one
+  `order/properties-alphabetical-order` and every one in this feature's own governance
+  SCSS, including both files task-124 touches. slice-8 fixes none of them, adds no
+  cleanup task to the tracker, keeps the lines it touches clean, and records the debt in
+  `research/slice-8-findings.md` as a user-owned pre-merge item.
+- **D-5 — task-125 is not autonomously buildable; the row stays `pending`.** Its
+  acceptance needs a synced node, a packaged build (not the dev shell) and real-device
+  hardware-wallet confirmation. The only autonomous deliverable is a
+  release-verification **checklist document**; executing it is the user's, and it is
+  precisely the row that must not be self-certified.
+
+### Planner rulings added while writing the guide
+
+- **P-1 — locale sort correction (binding, corrects the PRD).** The PRD's i18n
+  inventory places `governance.drepDirectory.error.refresh` immediately after
+  `governance.drepDirectory.error`. That is wrong: both catalogs are strictly
+  `Array.prototype.sort()` ordered (verified — 1652 keys, 0 mismatches), and
+  `…error.rankingUnavailable` sorts **before** `…error.refresh` (`a` < `e` at the first
+  differing character). The guide pins the corrected position — immediately after
+  `…error.rankingUnavailable`, before `…filter.active` — and the correction is recorded
+  in the slice findings note. The other two keys' positions in the PRD were correct and
+  are re-verified: `empty.selfnode` after `empty.noSync`;
+  `status.selfnodeUnavailable` after `status.inactive`.
+- **P-2 — stylelint count moves 118 → 111, and that is expected, not a sweep.** The
+  PRD's definition of done asks for "exactly 118" at close. task-123 deletes two
+  selector blocks that its own edits make dead — `.errorBanner` and `.refreshingBadge`
+  in `DRepDirectory.scss` — and deleting a block deletes the errors it contained.
+  Measured: those two blocks hold **7** of that file's 19 errors, so the repo total is
+  **111** after task-123 and unchanged at 111 after task-124. No `--fix` is run and no
+  existing declaration is reordered; every declaration slice-8 adds is alphabetical, and
+  the new skeleton stylesheet is clean at birth (0 errors). Shipping dead CSS to keep a
+  count at 118 would be the worse outcome. The guide states the expected number so the
+  reviewer sees a recorded consequence rather than drift.
+- **P-3 — the relocated refreshing badge is a net coverage addition, not a move.** The
+  PRD's risk register assumes an existing assertion on the badge would migrate from
+  `DRepDirectory.spec.tsx` to `DRepDirectoryBanner.spec.tsx`. Verified: **no test
+  anywhere in the repo asserts `!!!Refreshing…`**, so nothing migrates and nothing is
+  lost; the guide adds two new assertions in the banner suite instead.
+- **P-4 — the single jest snapshot is out of the blast radius.**
+  `__snapshots__/DRepDirectory.spec.tsx.snap` contains only the category-badge `<span>`
+  (19 lines), so neither the skeleton, the banner replacement nor the badge relocation
+  can change it. The guide requires it to stay byte-identical and forbids `jest -u`.
+- **P-5 — `<p>` → `<div>` for the last-updated line.** `LoadingSpinner` renders a
+  `<div>`, which cannot legally nest inside the existing `<p className={styles.lastUpdated}>`.
+  The guide changes that one element to a `<div>` and adds a new alphabetical
+  `.refreshingBadge` block, rather than restructuring or reordering `.lastUpdated`,
+  which is one of the pre-existing stylelint offenders.
+- **P-6 — the selfnode arm fires on the error type alone**, independent of retained
+  data, so the "never a partial directory for selfnode" invariant holds even in the
+  otherwise-unreachable case where a previously loaded list is on screen. Correspondingly
+  `showNoSyncFallback` excludes selfnode on **every** refresh state, not only on its
+  `Failed` leg, closing the syncing-plus-selfnode intersection the PRD's risk register
+  flagged. A dedicated test pins that intersection.
+
+### Guide shape and shard plan
+
+The guide is written to be implementable end-to-end by a small model reading **only the
+guide** — no PRD, no design docs, no orchestrator context. Every step names an
+absolute-from-repo-root file, quotes the exact code being replaced with a verified line
+anchor, and gives the exact replacement; every locked invariant is reproduced inline
+rather than cross-referenced; every design string appears verbatim in both locales.
+Tracker updates, the formatter pass and the git commit are explicitly excluded from the
+numbered steps and confined to a trailing appendix, because later pipeline stages own
+them.
+
+Steps are numbered per task and cut on surface seams so the build pipeline can chain a
+fresh agent over each contiguous range:
+
+| task | commit type | shard | steps | surfaces |
+|---|---|---|---|---|
+| task-123 | `feat` | A | 1–3 | main process + IPC payload types + IPC contract comment |
+| task-123 | `feat` | B | 4–9 | skeleton component/SCSS, error-banner variant, directory + header wiring |
+| task-123 | `feat` | C | 10–11 | locale catalogs + Storybook state knob and story |
+| task-123 | `feat` | D | 12–15 | jest suites (query service, snapshot writer, directory, header) |
+| task-124 | `feat` | A | 1–3 | empty-state variant + SCSS + directory routing |
+| task-124 | `feat` | B | 4–5 | locale catalogs + Storybook state knob and story |
+| task-124 | `feat` | C | 6–10 | jest suites, design-doc reconciliations, slice findings note |
+
+### Measured baselines the guide pins
+
+Focused suites at HEAD `0cdcab581`, all green: **8 suites / 219 tests / 1 snapshot**
+(`GovernanceQueryService` 38 · `GovernanceStore` 56 · `logDRepStateSnapshot` 5 ·
+`governance-sanitization` 39 · `preliminaryCopyMarkers` 5 · `DRepDirectory` 60 +1 snap ·
+`DRepDirectoryBanner` 7 · `DRepDirectoryPage` 9). Expected at slice close: **231 tests**
+(task-123 +6, task-124 +6), 1 snapshot unchanged. `yarn compile`, `yarn lint` and
+`yarn storybook:build` are all **green at HEAD** and are run, not waived;
+`yarn stylelint` is red at HEAD with 118 pre-existing errors and is **not** a gate for
+this slice; `yarn check:all` is red transitively and is not used as the gate.
+
+### Owed at slice close — nothing here may be reported green
+
+`nix fmt` (absent in this container, user-owned pre-merge); the 118 pre-existing
+stylelint errors; the Storybook **visual** and ja-JP overflow passes for the skeleton,
+the refresh-failed banner and the selfnode empty state (no browser here —
+`storybook:build` compiling is not a visual pass); **task-125's release verification
+itself**; the release-end `!!!` copy review including the two ja-JP placeholders this
+slice adds; the deferred latency-measurement remainder that `elapsedMs` feeds but does
+not close; the pre-existing prettier drift on the five slice-8-adjacent governance
+files; and the first-load refresh-button-disabled design/code divergence, recorded and
+unfixed.
+
+---
+
+## Critiquer: 2026-07-31 — required review pass over the PRD + implementation guide
+
+**Verdict: `requires_changes`** — six findings, one of which makes a specified test fail
+as written. Nothing in the plan's shape, decisions or scope needs rework: coverage,
+D-1…D-5 fidelity, the locked invariants and the small-model implementability bar are all
+met. The findings are localized edits to the guide plus one sentence in the PRD.
+
+**What was re-verified against the worktree at `0cdcab581`** (not taken from the brief):
+every line anchor the guide pins (payload types `governance.types.ts:139-153`, IPC
+comment `api.ts:656-660`, `_doFetchDRepRegistrations` `:224-258` / `_doFetchDRepStake`
+`:260-284`, `DRepDirectory.tsx` message entries `:40-44`/`:60-64`, `renderContent`
+`:240-282`, the retained-data banner `:324-341`, the refreshing badge `:342-347`,
+`DRepDirectoryBanner.tsx:103-109`, `DRepEmptyState.tsx:54-56`/`:73-129`,
+`DRepErrorBanner.tsx:14-16`/`:24-26`/`:47-49`, `DRepDirectory.spec.tsx`
+`:251-270`/`:272-288`/`:313-320`/`:165`, `DRepDirectoryBanner.spec.tsx:9-43`,
+`DRepDirectoryPage.spec.tsx:39-103`, `logDRepStateSnapshot.spec.ts:38-54`,
+`GovernanceQueryService.spec.ts` `:174`/`:189`/`:316`/`:609-617`, the stories file's
+`SOCKET_ERROR` `:110-113` / `REFRESH_ERROR` `:115-119` / `DIRECTORY_STATE_OPTIONS`
+`:242-248` / discrete stories `:420-432` / the locale guard comment `:172-174`, both
+locale catalogs at `:352-358` and `:387-389`); the design copy quoted verbatim
+(shared-design-tokens `:16`, `:18`, `:93-106`, `:181`, `:184`, `:224`, and the §9
+`status.*` rows `:186-189` that Edit 2 groups into); the measured baselines (**8 suites /
+219 tests / 1 snapshot green**, exactly the guide's table; 66 `governance.drepDirectory.*`
+keys per catalog); the stylelint arithmetic (`DRepDirectory.scss` = 19 errors, of which
+**4 in `.errorBanner` + 3 in `.refreshingBadge` = the claimed 7**, so 118 → 111 is
+correct); and the two new files the guide dictates verbatim — the proposed
+`DRepDirectorySkeleton.scss` measures **0 stylelint errors** and both new files are
+already prettier-clean as written.
+
+### Blockers
+
+1. **[high] task-123 Step 14b — `screen.getByText(/a minute ago/)` matches two elements
+   and throws.** `DRepDirectory.tsx:381-391` renders `DRepDirectoryBanner` in *every*
+   state with `lastFetchedAt`, and `renderComponent` passes `lastFetchedAt={Date.now() -
+   60_000}` (`DRepDirectory.spec.tsx:165`), so the header line "!!!Last updated a minute
+   ago" is in the DOM alongside the new banner's `{time}` slot. Measured with a throwaway
+   harness on this worktree's react-intl 2.9.0 + RTL: `getAllByText(/a minute ago/)` →
+   **2**, `getAllByText(/Showing last successful snapshot from a minute ago/)` → **1**.
+   Replace the assertion with the unique fragment (or scope the query to the banner
+   element). Note the failure mode is not merely a throw: if the regex ever matched only
+   the header, the test would pass while proving nothing about the new banner.
+2. **[medium] task-123 has no step for AC-1's second half.** AC-1 is "Timing budget
+   documented in the IPC contract **and the shared design tokens reference**". Step 3
+   discharges the IPC half; the "§6 `:95-102` is already the budget table — confirm it,
+   add nothing" instruction lives only in **task-124's** Step 9, which the task-123
+   implementer never reads (the guide's own rule is one task at a time, guide-only). Add
+   a verify-and-record line to task-123 naming `designs/shared-design-tokens.md:95-102`
+   and the existing citation at `GovernanceQueryService.ts:52-56`, with an explicit "add
+   no second budget table".
+3. **[medium] The zero-renderer-timer gate cannot see the new files.**
+   `git diff -- source/renderer storybook | grep -nE '^\+.*(setTimeout|setInterval)'`
+   (task-123 matrix step 13, task-124 matrix step 12) diffs tracked content only, and
+   `DRepDirectorySkeleton.tsx` / `.scss` are untracked when the check runs — the one
+   grep-checkable property NFR-1 rests on silently skips the only new component. Use
+   `git add -A` then `git diff HEAD -- source/renderer storybook`, or add a direct
+   `grep -rn 'setTimeout\|setInterval' source/renderer/app/components/governance`.
+4. **[medium] The formatting rule is wrong in one fact and too narrow in effect.**
+   `.prettierignore` re-includes `!*.scss` under `source/`, so the parenthetical in
+   task-123's *Files this task edits* — "`.scss` is not in this repo's prettier scope" —
+   is false; the new stylesheet must be in the `--write` list (it happens to be clean as
+   written, so this is a rule error, not a diff). Separately, measured at HEAD: only
+   **5** of the 13 edited files carry pre-existing drift (`api.ts`,
+   `GovernanceQueryService.ts`, `DRepDirectory.tsx`, `DRepDirectory.stories.tsx`,
+   `GovernanceQueryService.spec.ts`); the other eight — `governance.types.ts`,
+   `DRepErrorBanner.tsx`, `DRepEmptyState.tsx`, `DRepDirectoryBanner.tsx`,
+   `DRepDirectory.spec.tsx`, `DRepDirectoryBanner.spec.tsx`, `DRepDirectoryPage.spec.tsx`,
+   `logDRepStateSnapshot.spec.ts` — are prettier-clean today, so "format only files you
+   newly create" lets hand-edits drift them with nothing to catch it. Name the clean
+   files as `--write` targets and keep the hand-match rule scoped to the five drifted
+   ones.
+5. **[minor] PRD D-3 / FR-1 assert a renderer behaviour the guide does not build.** D-3
+   says `elapsedMs` "drives the renderer's skeleton → stale-with-spinner visual
+   progression"; in the guide the renderer never reads the field at all (correctly — a
+   completed-query duration cannot drive an in-flight transition), and the progression is
+   driven entirely by `GovernanceRefreshState`. The guide is right; the PRD sentence will
+   otherwise be copied into a tracker `statusReason` as a claim that is not true of the
+   code. Add one clause to D-3/D-10: the field is snapshot-age and task-166 telemetry
+   only, and `GovernanceStore` deliberately does not observe it.
+6. **[low] Two mechanical nits in the guide.** task-123 Step 12a says the
+   `caches lastSuccessfulData after a successful fetch` test "ends `:327`" — it ends at
+   `:324` (the `describe` closes at `:325`); and task-124 Step 8a's code block uses a
+   bare `...` elision for the unchanged `buildGovernanceStore` body, which a weak model
+   can paste literally. Correct the anchor and replace the elision with an explicit
+   "keep the existing properties unchanged; add the third parameter and the trailing
+   spread".
+
+### Checked and clean (no action)
+
+- **D-1** — `DRepStatus` is not widened, `DRepStatusBadge` is neither imported nor
+  edited, the badge is plain icon-plus-label markup inside the `selfnode` empty state
+  under the newly minted `governance.drepDirectory.status.selfnodeUnavailable`, and both
+  doc reconciliations are one-line and land in task-124. **D-2** — a real 25-card
+  skeleton component with its own stylesheet, no downgrade to a spinner anywhere in the
+  guide, and the design doc is left describing the skeleton. **D-3/D-9** — no renderer
+  timer of any kind, `_runCliQuery`'s `setTimeout` and both budget constants untouched,
+  the budget-pinning test explicitly not edited, and the timeout leg tested from an
+  arriving `Timeout` error rather than a clock. **D-4** — no `--fix`, no reordering; the
+  118 → 111 movement is purely dead-block deletion and is measured, explained and
+  recorded. **D-5** — task-125 has no build steps, its row stays `pending`, and the guide
+  forbids simulating or inferring the result.
+- **Invariants.** Sanitization floor re-asserted in both task matrices, with the snapshot
+  writer's `filterLogData` bypass called out and `logDRepStateSnapshot.spec.ts` re-run and
+  extended; `elapsedMs` is a plain millisecond `number`, never a lovelace value or
+  decimal string; no probe query, no argv/network-flag change, and the selfnode no-spawn
+  property pinned main-side (`_assertQueryable()` throws before any `Promise.all`); the
+  selfnode arm fires on error type alone and is proved to replace the list area even with
+  a retained list; all three new keys land in both catalogs with `!!!`, byte-matching the
+  design copy and the components' `defaultMessage`s.
+- **Coverage/consistency spot-checks.** The locale-sort correction the guide makes
+  against the PRD is right (`…error.rankingUnavailable` < `…error.refresh`); the guide's
+  observation that no existing test asserts the refreshing badge is right, so R-3's
+  "assertion moves" becomes a net +2 addition; `renderComponent` already supports
+  `locale`, so the ja-JP selfnode test is executable; `renderPage` already returns
+  `unmount`; `DirectoryError`, `renderCentered`'s six-parameter signature and the story
+  knob all match the fixtures the guide writes; test-count arithmetic (219 → 225 → 231)
+  is internally consistent with every step.
+- **Concision.** ~2 330 lines for two buildable tasks is proportionate given the
+  guide-only mandate; the repeated per-task invariant blocks are required by that mandate,
+  not bloat.
+
+---
+
+## Planner (fix pass): 2026-07-31 — disposition of the critique blockers
+
+One pass over both planning documents; every blocker was re-measured against the
+worktree at `0cdcab581` before it was accepted. **All six are fixed; none rejected.**
+Step numbering is unchanged — task-123 keeps Steps 1–15, task-124 keeps Steps 1–10,
+task-125 keeps none — so the build shards are unaffected.
+
+- **C-1 (high) — fixed** (guide, task-123 Step 14b). The two-match assertion
+  `getByText(/a minute ago/)` is replaced with
+  `getByText(/Showing last successful snapshot from a minute ago/)`, and the note under
+  the snippet now names the collision: `DRepDirectoryBanner.tsx:103-109`'s
+  `!!!Last updated a minute ago` renders in the same state, so the bare fragment matches
+  two elements and `getByText` throws.
+- **C-2 (medium) — fixed** (guide, task-123 Step 3 + its verification checklist). Step 3
+  gained a closing "confirm the design-token half — no edit" block naming
+  `designs/shared-design-tokens.md:95-102` as the existing budget table and
+  `source/main/governance/GovernanceQueryService.ts:52-56` as the existing citation, with
+  an explicit "do not add a second budget table"; the same confirmation is now the first
+  bullet of task-123's confirm-by-inspection list. The criterion is discharged on both
+  halves inside task-123, without the implementer reading task-124.
+- **C-3 (medium) — fixed** (guide, both full matrices). The untracked-file blind spot is
+  closed by a recursive scan run alongside the diff grep:
+  `grep -rn 'setTimeout\|setInterval' source/renderer/app/components/governance source/renderer/app/containers/governance storybook/stories/governance`,
+  with the diff form changed to `git diff HEAD`. Measured at HEAD: the recursive scan
+  returns nothing, so it is a true zero-baseline check.
+- **C-4 (medium) — fixed** (guide Shared conventions > Formatting, both "Files this task
+  edits" blocks, and the PRD's Definition of Done item 7). Both defects confirmed by
+  measurement. (a) `.prettierignore` re-includes `!*.scss`: a deliberately misformatted
+  probe stylesheet under `source/renderer/app/components/governance/` was flagged by
+  `prettier --check`, so `.scss` is in scope and `DRepDirectorySkeleton.scss` is now in
+  the `--write` list. The same probe run on `.md` files under `.agent/` and `source/` was
+  **not** flagged — markdown is outside prettier's scope everywhere, so the guide's
+  instruction to prettier `slice-8-findings.md` was a silent no-op and has been removed.
+  (b) Re-measured drift over all 18 files the two tasks touch: exactly five are dirty at
+  HEAD (`source/common/ipc/api.ts`, `source/main/governance/GovernanceQueryService.ts`,
+  `DRepDirectory.tsx`, `storybook/stories/governance/DRepDirectory.stories.tsx`,
+  `tests/jest/governance/GovernanceQueryService.spec.ts`); the other thirteen are clean.
+  The rule is now "format what you create plus the edited files that are clean at HEAD",
+  with both lists spelled out by name per task.
+- **C-5 (minor) — fixed** (PRD, D-3 and D-10). The user-ruled D-3 text is left verbatim
+  and annotated with an "As applied" clause: the renderer deliberately does not observe
+  `elapsedMs` — a completed query's duration cannot drive an in-flight transition — so
+  `GovernanceStore` stores it nowhere and no component reads it; the
+  skeleton → stale-with-spinner progression is owned by `GovernanceRefreshState`, and
+  `elapsedMs` is snapshot-age plus deferred latency telemetry. D-10 carries the mirrored
+  clause. The ruling's operative half (no second clock in the renderer) is untouched.
+- **C-6 (low) — fixed** (guide, task-123 Step 12a and task-124 Step 8a). `:327` corrected
+  to `:324` with the enclosing `describe` close at `:325` named so the insertion point is
+  unambiguous; the bare `...` elision in `buildGovernanceStore` is replaced with an
+  explicit "keep every existing property byte-identical; the only edits are the new
+  parameter and the trailing spread", split into two quoted fragments so nothing can be
+  pasted literally. The optional rename was applied: `storeOverrides` →
+  `governanceOverrides` in all three call sites, matching
+  `DRepDetailPage.spec.tsx:96`, `:103`, `:112`.
+
+**Two collateral corrections made in the same pass** (not raised as blockers, but the
+documents contradicted each other): the PRD's Definition of Done item 10 and NFR-6 both
+required `yarn stylelint` to stay at **exactly 118**, while the guide correctly predicts
+**111** after the two dead selector blocks leave with the markup that used them. The PRD
+now states 111 with the arithmetic and re-asserts that no `--fix` ran and no declaration
+was reordered; D-13's closing sentence was aligned to match.
+
+**Planning status advanced `in_review` → `approved`.** No `source/` file was touched by
+this pass.
+
+---
+
+## Code Review (task-123, round 1): 2026-07-31
+
+Scope: the uncommitted working-tree diff at `wt-slice-8` (18 modified files + 2 new
+source files), reviewed against the task-123 section of
+`slice-8-implementation-guide.md` (guide lines 191-1558) and the tracker's three
+acceptance criteria. Doc/tracker/commit/prettier state is owned by later stages and
+was not reviewed.
+
+### Verdict
+
+**Approved. Zero blockers.**
+
+Every numbered implementation step (1-15) is present and matches the guide, in most
+places byte-for-byte. Nothing outside the guide's "Files this task edits" list was
+touched, and no design doc was edited (`git diff --stat -- .agent/.../designs/` is
+empty, as Step 3's second half requires).
+
+### Blockers
+
+None.
+
+### Verified independently (not taken from the verifier report)
+
+- **Steps 1-3.** `elapsedMs: number` added as a required field to both
+  `DRepListQueryPayload` and `DRepStakeQueryPayload`; measured in the main process
+  from a `startedAt` sample taken *after* `_assertQueryable()`, so a selfnode or
+  socket-unavailable throw performs no measurement. `fetchedAt` is hoisted to a
+  local in both `_do*` methods and reused for the subtraction, so `elapsedMs` and
+  `fetchedAt` cannot disagree. The IPC contract comment block carries the 10s/30s
+  budget and the "observational, no consumer may schedule a timer from it" clause.
+- **D-3 / no second timeout authority.** `git diff HEAD -- GovernanceQueryService.ts`
+  contains no change to `REGISTRATION_TIMEOUT_MS`, `STAKE_TIMEOUT_MS` or
+  `_runCliQuery`'s `setTimeout`; the only `TIMEOUT_MS` token in the diff is an
+  unchanged context line. `grep -rn 'setTimeout\|setInterval'` over
+  `source/renderer/app/components/governance`,
+  `source/renderer/app/containers/governance` and `storybook/stories/governance`
+  returns nothing, and `git diff HEAD -- source/renderer storybook | grep -E
+  '^\+.*(setTimeout|setInterval)'` returns nothing. Zero renderer timers.
+- **D-2 / real skeleton.** `DRepDirectorySkeleton.tsx` is a genuine 25-card card
+  skeleton (three placeholder rows per card), not a re-dressed spinner: no state, no
+  effect, no store, no observable, no timer. `LoadingSpinner` is gone from
+  `DRepDirectory.tsx` entirely (`grep -n LoadingSpinner` returns nothing).
+- **Sanitization floor.** `elapsedMs` is the only new field crossing the wire and it
+  is a plain millisecond integer — it names no DRep, carries no bech32 string and
+  encodes no vote. `tests/jest/security/governance-sanitization.spec.ts` is green at
+  its full 39 tests, and `logDRepStateSnapshot.spec.ts`'s
+  `never contains user vote or delegation fields` stays green unmodified, which is
+  the actual proof the payload did not widen into anything identifying.
+- **Lovelace losslessness.** `elapsedMs` is `number`, never a decimal string, never
+  conflated with `Lovelace`. `stakeByDRepId` is untouched.
+- **CLI discipline.** No new spawn, no probe/warm-up query, no argv change. The
+  measurement wraps the queries that already run.
+- **`DRepStatus` union.** Untouched; `DRepStatusBadge` is not in the diff.
+- **Copy (AC-2).** `en-US.json:358` is byte-identical to
+  `designs/shared-design-tokens.md:184` plus the `!!!` marker — verified with `od -c`
+  on the design line, including the straight apostrophe in `Couldn't`. ja-JP carries
+  the marker and both `{Retry}` / `{time}` placeholders, spelled identically.
+- **No duplicate message ids.** `governance.drepDirectory.loading`,
+  `.refreshing` and `.error.refresh` each resolve to exactly one `defineMessages`
+  declaration in `source/`; the first two were *moved* to their new owning
+  components rather than re-declared, which is tighter than the guide allowed.
+- **Comment convention.** Three new comments, all plain sentence case stating a
+  why/invariant (`governance.types.ts` `elapsedMs` JSDoc, the skeleton's card-count
+  rationale, the banner's retained-data note). No task id, no `CAT-*`/`CP-*`, no
+  plan name, no PR number, no change-history narration, no ALL-CAPS emphasis — in
+  source or in test names. The stale `// Only the rankingUnavailable variant ships
+  for now…` guard comment was correctly deleted rather than amended.
+- **Commands re-run in this worktree, not inherited:** `yarn compile` exit 0 (18.4s,
+  `git status` unchanged afterwards); `eslint --quiet` over the seven touched source
+  files exit 0; focused jest — `DRepDirectory.spec.tsx` + `DRepDirectoryBanner.spec.tsx`
+  = 70 passed / 1 snapshot passed, and `GovernanceQueryService` + `logDRepStateSnapshot`
+  + `governance-sanitization` + `preliminaryCopyMarkers` + `GovernanceStore` +
+  `DRepDirectoryPage` = 155 passed. Both totals reconcile exactly to the guide's
+  predicted per-suite deltas (40/6/39/5/56/9 and 61/9).
+
+### Minor (recorded, no change required)
+
+1. `DRepDirectory.spec.tsx` — the renamed test
+   `replaces the retained-data banner text with the snapshot-age copy` narrates the
+   change ("replaces") rather than stating the behaviour. It is verbatim from the
+   guide, so it is accepted as-is; a future pass could read
+   `renders the snapshot-age copy in the retained-data banner`.
+2. `DRepDirectorySkeleton`'s `count` prop has no caller — the guide justified it as a
+   story escape hatch, but no story uses it. Harmless unused surface.
+3. `DRepErrorBanner`'s `retryLabel` defaults to `''`, so a future caller that selects
+   `variant="refreshFailed"` without a label would render an empty link inside the
+   sentence. The single production caller passes it.
+4. AC-3's stale-with-spinner leg is asserted at the `DRepDirectoryBanner` level
+   (badge present / absent) but no `DRepDirectory`-level test pins that the list
+   stays rendered while `refreshState === Refreshing`. Behaviour is unchanged from
+   HEAD — `Refreshing` never had a `renderContent()` arm and still falls through to
+   the list — so this is a pre-existing gap, not a regression.
+5. `shared-design-tokens.md:106`'s "absolute ISO timestamp in tooltip" on the
+   Last-updated line remains unimplemented. Pre-existing; not one of the guide's
+   numbered steps.
+
+### Owed at close (for the scribe and the slice-close stage, not this diff)
+
+- **`yarn storybook:build` must not be reported green.** The guide's verification
+  matrix step 12 (guide `:1487-1489`) and the per-shard row (`:1430`) assert exit 0
+  on the strength of the grounding brief's §7/C-9(a) measurement; the verifier
+  measured it red (manager webpack has no JSX loader for
+  `storybook/addons/DaedalusMenu/register.tsx`). Independently confirmed here that
+  this cannot be task-123's doing: `git diff HEAD --name-only -- .storybook
+  storybook/addons package.json webpack.config.js '*.config.js'` is **empty**, so
+  every manager-compilation input is byte-identical to HEAD, and the only storybook
+  file this task touched (`storybook/stories/governance/DRepDirectory.stories.tsx`)
+  feeds the preview build. Whatever its exit code, the gate is unattributable to
+  this task — the tracker `statusReason` must not claim it green, and the guide row
+  should be corrected to a waiver.
+- **118 pre-existing `yarn stylelint` errors** (all `order/properties-alphabetical-order`,
+  all in this feature's own governance SCSS) stay out of scope per D-4 and belong in
+  the slice findings note as a user-owned pre-merge cleanup item. This diff adds
+  none: the new `DRepDirectorySkeleton.scss` is alphabetical throughout, both
+  appended blocks (`.retryLink`, `.refreshingBadge`) are alphabetical, and the only
+  SCSS removals are the two dead selector blocks Steps 8 and 9d mandate.
+- **`nix fmt`** remains unrunnable in this container; the pre-drifted files were
+  hand-matched as the guide requires.

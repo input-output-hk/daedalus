@@ -51,6 +51,7 @@ const publicPayload: DRepListQueryPayload = {
   ],
   epoch: 512,
   fetchedAt: 1_750_000_000_000,
+  elapsedMs: 1_234,
 };
 
 describe('logDRepStateSnapshot', () => {
@@ -71,6 +72,15 @@ describe('logDRepStateSnapshot', () => {
     expect(parsed.data.dreps).toHaveLength(1);
     expect(parsed.data.epoch).toBe(512);
     expect(parsed.msg).toBe('Updating DRep-state-snapshot.json file');
+  });
+
+  it('carries the query duration into the snapshot as a plain number', () => {
+    logDRepStateSnapshot(publicPayload);
+
+    const parsed = JSON.parse(fs.readFileSync(SNAPSHOT_PATH, 'utf-8'));
+
+    expect(typeof parsed.data.elapsedMs).toBe('number');
+    expect(parsed.data.elapsedMs).toBe(1_234);
   });
 
   it('overwrites the previous snapshot on each successful fetch', () => {

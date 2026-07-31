@@ -28,26 +28,6 @@
   max-width: 480px;
 }
 
-.errorBanner {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 16px;
-  border: 1px solid var(--theme-error-color, #d32f2f);
-  border-radius: 8px;
-  background: rgba(211, 47, 47, 0.06);
-}
-
-.refreshingBadge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--theme-text-secondary, #6b7384);
-  padding: 4px 0;
-}
-
 .syncingBanner {
   display: flex;
   align-items: flex-start;

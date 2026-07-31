@@ -355,6 +355,7 @@
   "governance.drepDirectory.empty.noSync": "!!!Your node is still syncing. DRep data becomes available once the node reaches the tip.",
   "governance.drepDirectory.error": "!!!Could not load DRep data.",
   "governance.drepDirectory.error.rankingUnavailable": "!!!Voting power data unavailable this refresh. Ranking-based filters disabled.",
+  "governance.drepDirectory.error.refresh": "!!!Couldn't refresh DRep data. {Retry}. Showing last successful snapshot from {time}.",
   "governance.drepDirectory.filter.active": "!!!Status",
   "governance.drepDirectory.filter.all": "!!!All",
   "governance.drepDirectory.filter.excludeTop35": "!!!Exclude the 35 largest",

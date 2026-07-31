@@ -248,7 +248,7 @@ describe('DRepDirectory', () => {
     ).toBeInTheDocument();
   });
 
-  it('keeps the retained list visible with a non-blocking error banner after refresh failure', () => {
+  it('replaces the retained-data banner text with the snapshot-age copy', () => {
     renderComponent({
       error: {
         message:
@@ -258,18 +258,18 @@ describe('DRepDirectory', () => {
       refreshState: GovernanceRefreshState.Loaded,
     });
 
+    expect(screen.getByText(/Couldn't refresh DRep data/)).toBeInTheDocument();
     expect(
-      screen.getByText('!!!Could not load DRep data.')
+      screen.getByText(/Showing last successful snapshot from a minute ago/)
     ).toBeInTheDocument();
+    expect(screen.getByText('!!!Retry')).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'Showing the last successful directory snapshot while refresh retries.'
-      )
-    ).toBeInTheDocument();
+      screen.queryByText('!!!Could not load DRep data.')
+    ).not.toBeInTheDocument();
     expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
   });
 
-  it('surfaces actionable error details in the non-blocking error banner', () => {
+  it('keeps raw query text out of the retained-snapshot banner', () => {
     renderComponent({
       error: {
         details: 'Missing: --mainnet | --testnet-magic NATURAL',
@@ -281,9 +281,30 @@ describe('DRepDirectory', () => {
     });
 
     expect(
-      screen.getByText('Missing: --mainnet | --testnet-magic NATURAL')
-    ).toBeInTheDocument();
-    // Retained list stays visible alongside the actionable banner.
+      screen.queryByText('Missing: --mainnet | --testnet-magic NATURAL')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        'Showing the last successful directory snapshot while refresh retries.'
+      )
+    ).not.toBeInTheDocument();
+    expect(screen.getByText(/Couldn't refresh DRep data/)).toBeInTheDocument();
+    expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
+  });
+
+  it('shows the retained-snapshot banner when the refresh times out', () => {
+    renderComponent({
+      error: {
+        message: 'DRep registration query timed out.',
+        type: 'TIMEOUT',
+      },
+      refreshState: GovernanceRefreshState.Loaded,
+    });
+
+    expect(screen.getByText(/Couldn't refresh DRep data/)).toBeInTheDocument();
+    expect(
+      screen.queryByText('DRep registration query timed out.')
+    ).not.toBeInTheDocument();
     expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
   });
 
@@ -310,13 +331,18 @@ describe('DRepDirectory', () => {
     expect(screen.getByText('!!!オンチェーン')).toBeInTheDocument();
   });
 
-  it('renders a loading indicator when in Loading refresh state', () => {
-    renderComponent({
+  it('renders the first-load skeleton list instead of a directory row', () => {
+    const { container } = renderComponent({
       drepList: [],
       refreshState: GovernanceRefreshState.Loading,
     });
 
-    expect(screen.getByText('!!!Loading DRep data…')).toBeInTheDocument();
+    expect(screen.getByLabelText('!!!Loading DRep data…')).toBeInTheDocument();
+    expect(container.querySelectorAll('.skeletonCard')).toHaveLength(25);
+    expect(screen.queryByText('!!!Voting power:')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('!!!No DReps found on-chain.')
+    ).not.toBeInTheDocument();
   });
 
   it('navigates to page 2 and shows disabled Next when on last page', () => {

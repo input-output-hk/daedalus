@@ -656,6 +656,14 @@ export type waitForLedgerDevicesResponse = LedgerDevicePayload;
 /**
  * ====================== GOVERNANCE IPC CHANNELS ======================
  * Channels for DRep Discovery and governance data queries.
+ *
+ * Refresh-latency budget (shared-design-tokens "Refresh State"): phase 1
+ * `drep-state --all-dreps` paints the list within 10s; phase 2
+ * `drep-stake-distribution --all-dreps` enriches voting power within 30s. Both
+ * budgets are enforced only by the main-process CLI timeouts in
+ * GovernanceQueryService. The `elapsedMs` field on each payload reports the
+ * measured duration of a completed query; it is observational and no consumer
+ * may schedule a timer from it.
  * =====================================================================
  */
 
