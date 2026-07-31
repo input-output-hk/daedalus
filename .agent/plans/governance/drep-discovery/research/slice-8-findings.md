@@ -32,37 +32,49 @@ declaration slice-8 added is alphabetical inside its block, so the new
 hold exactly their pre-slice error count. task-124 adds 0 and fixes 0; the total
 stays at 111.
 
-## F-2 (slice-8) — `yarn compile` is green without the workaround; `yarn storybook:build` is **red**, and the planning pass's green reading of it was the mismeasurement
+## F-2 (slice-8) — `yarn compile` is green without the workaround; `yarn storybook:build` is green in the checkout and red only in a symlinked-`node_modules` worktree
 
 Two gate premises were in dispute across the slice. Both are now settled by
-measurement at the slice-close HEAD `45efc1911`, and one of the two corrections
-runs opposite to the direction the planning pass recorded.
+measurement at the slice-close HEAD `2f2011edd`.
 
 **`yarn compile` — green, no workaround.** Exit 0 (18.4 s), its `precompile` hook
 regenerating the gitignored `*.scss.d.ts` and leaving `git status` clean. A
 preceding slice's tracker `statusReason` asserts it needs a `typed-scss-modules` +
 `tsc --noEmit` substitute. That does not hold here; the substitute is unnecessary.
 
-**`yarn storybook:build` — red, and it was red at the planning anchor too.**
-Exit 1. The failure is a manager-bundle `ModuleParseError`, *"Module parse failed:
-Unexpected token (12:18)"*, on `storybook/addons/DaedalusMenu/register.tsx` — the
-JSX at `render: () => <DaedalusMenu api={api} />`, i.e. the manager webpack config
-has no JSX loader for that file. It is **not** slice-8's doing:
-`git diff 0cdcab581..45efc1911 -- storybook/addons/` is empty and no slice-8 commit
-touches that directory, and both task verifiers independently reproduced the
-identical error on a pristine `0cdcab581` tree extracted to a separate directory
-with the same `node_modules` symlink. The planning pass's "exit 0, 84 s" reading
-was wrong, and the slice-8 PRD's Definition of Done item 8 ("green at HEAD — run
-it, do not waive it") is wrong with it; the corrected disposition is **waived,
-with the reason recorded**, exactly as the preceding slice had it.
+**`yarn storybook:build` — green in the working checkout; the red readings were a
+worktree artifact.** The same commit `2f2011edd` was measured twice:
+
+| Location | Result |
+| --- | --- |
+| `/workspaces/daedalus` (the real checkout) | **exit 0**, 73.4 s |
+| detached worktree with `node_modules` symlinked in | **exit 1**, `ModuleParseError` |
+
+The worktree failure is *"Module parse failed: Unexpected token (12:18)"* on
+`storybook/addons/DaedalusMenu/register.tsx` — the JSX at
+`render: () => <DaedalusMenu api={api} />`. Because the code is byte-identical
+between the two runs, the manager webpack's loader resolution is what differs: it
+does not resolve its loaders through a symlinked `node_modules`. The failure is a
+property of the **isolation setup**, not of the repository.
+
+This corrects the direction the slice's own verifiers recorded. Their reproductions
+were real, but every one of them ran inside a symlinked worktree, so the shared
+premise rather than the code produced the shared error; the planning pass's
+"exit 0, 84 s" reading was the accurate one, because it ran in the checkout. The
+slice-8 PRD's Definition of Done item 8 ("green at HEAD — run it, do not waive
+it") therefore stands as written, and the two task `statusReason` fields that
+recorded a waiver were corrected in the same commit as this note. Any earlier
+background job that recorded `yarn storybook:build` as red at HEAD should be
+re-read with this in mind — the reading is only valid from the checkout.
 
 **Consequence.** The three stories slice-8 adds — the refresh-latency knob states,
-the skeleton and the `Selfnode unavailable` story — have **no bundle-level check**
-in this environment. They are not unchecked at the type level: `tsconfig.json`
-declares no `include` and excludes only `node_modules`, so `yarn compile`
-typechecks `storybook/stories/governance/DRepDirectory.stories.tsx`, and
-`yarn lint` covers it. The **visual** pass remains owed regardless — a compiling
-bundle was never a visual pass.
+the skeleton and the `Selfnode unavailable` story — **are** covered by a
+bundle-level check, provided it is run from the checkout rather than a worktree.
+They are additionally typechecked: `tsconfig.json` declares no `include` and
+excludes only `node_modules`, so `yarn compile` covers
+`storybook/stories/governance/DRepDirectory.stories.tsx`, as does `yarn lint`. The
+**visual** pass remains owed regardless — a compiling bundle was never a visual
+pass.
 
 **No closed slice's tracker entry was edited.** A closed slice's `statusReason` is
 the record of what that slice measured at its own HEAD; rewriting it
@@ -241,6 +253,6 @@ every per-task figure quoted earlier in this note where they differ.
 | `yarn lint` | **exit 0** — 0 errors, 5635 warnings (the pre-existing repo-wide baseline) |
 | `yarn i18n:manage` | **exit 0**, byte-identical no-op; `git status` clean afterwards |
 | `yarn stylelint` | **exit 2 — 111 errors** across 13 governance SCSS files, all `order/properties-alphabetical-order`. See F-1: 118 at `0cdcab581`, 7 removed with two dead selector blocks, **0 added**. Out of scope by decision; user-owned pre-merge cleanup. |
-| `yarn storybook:build` | **exit 1** — pre-existing manager-bundle failure on `storybook/addons/DaedalusMenu/register.tsx`, untouched by slice-8. See F-2. Waived, not green. |
+| `yarn storybook:build` | **exit 0**, 73.4 s, run from the checkout. Exits 1 with a manager-bundle `ModuleParseError` when run from a worktree whose `node_modules` is a symlink — an isolation artifact, not a repo failure. See F-2. Green, not waived. |
 | `yarn check:all` | Red transitively, on the `prettier:check` and `stylelint` legs (F-9, F-10, F-1). Never run `yarn prettier` / `yarn prettier:check` to "fix" it. |
 | `nix fmt` | **Not run — unavailable.** See F-9. |

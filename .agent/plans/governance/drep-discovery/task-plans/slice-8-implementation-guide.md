@@ -150,7 +150,7 @@ sessions.
 | React / MobX / react-intl | 16.14.0 / 5.15.7 / **2.9.0** (`injectIntl`, `intlShape`, `FormattedMessage` — no hooks, no `FormattedRelativeTime`) |
 | `yarn compile` at HEAD | **exit 0**, 25.9 s. Its `precompile` hook runs `yarn typedef:sass`, regenerating the **gitignored** `*.scss.d.ts` (`.gitignore:141`). A new `.scss` file gets its `.d.ts` from this hook — do not hand-write one, do not commit one. |
 | `yarn lint` at HEAD | **exit 0**, ~54 s, 0 errors / ~5635 warnings. **Errors are the gate; warnings are not.** `react/no-array-index-key` is configured as `warn`. |
-| `yarn storybook:build` at HEAD | **RED — exit 1. Waived, with the reason recorded.** *(Corrected at slice close; this row previously read "exit 0, green — run it, do not waive it", which was a mismeasurement.)* The failure is a manager-bundle `ModuleParseError` on `storybook/addons/DaedalusMenu/register.tsx` — a directory slice-8 never touches — reproduced on a pristine `0cdcab581` tree. Story files still get `yarn compile` and `yarn lint` coverage; the **visual** pass is owed regardless. See `research/slice-8-findings.md` F-2. |
+| `yarn storybook:build` at HEAD | **GREEN — exit 0, 73.4 s. Run it, do not waive it — from the working checkout.** *(This row briefly read "RED, waived" at slice close; that was withdrawn at merge-back.)* Run from a worktree whose `node_modules` is a symlink it exits 1 with a manager-bundle `ModuleParseError` on `storybook/addons/DaedalusMenu/register.tsx`, because the manager webpack does not resolve its loaders through the symlink. Same commit, both results — the failure is an isolation artifact, not a repo condition. See `research/slice-8-findings.md` F-2. |
 | `yarn stylelint` at HEAD | **RED, 118 errors**, every one `order/properties-alphabetical-order`, every one in this feature's own governance SCSS. **Out of scope for slice-8** (see the per-task stylelint contract). |
 | `yarn check:all` | RED transitively (`prettier:check` + `stylelint`). **Not a gate for this slice.** |
 | `nix`, `gh`, `git push` | absent. Work stays local. |
@@ -2214,12 +2214,14 @@ entries, written as measured facts with no unrun command reported green:
    slice-8 added is alphabetical.
 2. **Corrected gate premises.** `yarn compile` is **green** at HEAD (exit 0,
    ~26 s) and needs no `typed-scss-modules` substitute, contradicting the text
-   carried in a preceding slice's tracker entry. `yarn storybook:build`,
-   however, is **red** (exit 1) — that preceding entry was right about it and
-   this guide's original "green, do not waive it" reading was the
-   mismeasurement; corrected at slice close, see `research/slice-8-findings.md`
-   F-2. **Do not edit that closed tracker entry** either way — a closed slice's
-   tracker text is a record of what that slice measured, and correcting it
+   carried in a preceding slice's tracker entry. `yarn storybook:build` is
+   **green too** (exit 0, 73.4 s) when run from the working checkout; it exits 1
+   only from a worktree with a symlinked `node_modules`, which is where the
+   preceding entry and this slice's own verifiers measured it. This guide's
+   original "green, do not waive it" reading was right; see
+   `research/slice-8-findings.md` F-2. **Do not edit that closed tracker entry**
+   either way — a closed slice's tracker text is a record of what that slice
+   measured, and correcting it
    retroactively destroys the audit trail. Corrections live here and in the
    findings note.
 3. **Unclosed design/code divergence, recorded not fixed:** the design says the

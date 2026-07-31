@@ -717,3 +717,38 @@ pass and the ja-JP overflow check have no environment here. The release-end `!!!
 and the task-166 latency remainder stay open by design. And **task-125's run itself** — a
 packaged build, a synced node, both wallet types and a real device, performed by a human — is
 the feature's terminal stop condition. The checklist is delivered; the run is the user's.
+
+---
+
+## Orchestrator: post-merge correction — the `yarn storybook:build` red was an isolation artifact
+
+Appended after slice close, at merge-back onto `feat/drep-discovery`. The transcript above is
+left intact; this entry corrects a factual claim it carries.
+
+Three entries above record `yarn storybook:build` as red at HEAD and direct that it be waived,
+and both task `statusReason` fields shipped with the same claim. It is wrong. The same commit
+`2f2011edd` was measured in two locations:
+
+| Location | Result |
+| --- | --- |
+| `/workspaces/daedalus` (the working checkout) | **exit 0**, 73.4 s |
+| detached worktree, `node_modules` symlinked in | **exit 1**, `ModuleParseError` at `storybook/addons/DaedalusMenu/register.tsx` (12:18) |
+
+The code is byte-identical between the runs, so the difference is that the manager webpack does
+not resolve its loaders through a symlinked `node_modules`. The failure is a property of the
+isolation setup this slice was built in, not of the repository.
+
+The reviewers and verifiers who called it red were not careless — each reproduced a real error,
+and they agreed with each other precisely because they all shared the faulty premise: every one
+of them ran inside the same symlinked worktree. Agreement between agents sharing an environment
+is not independent confirmation. The planning pass's dissenting "exit 0, 84 s" reading was the
+accurate one, because it alone ran in the checkout, and it was overruled for being outnumbered.
+
+Corrected in the same commit as this entry: the guide's verification-matrix row and its
+corrected-gate-premises note, the PRD's close-out gate table and its D-6 revision (which now
+records that the original Definition of Done item 8 stands), the `task-123` and `task-124`
+`statusReason` fields, and findings F-2 plus the findings gate table. No task status changed —
+both tasks remain `complete`, and the correction strengthens rather than weakens their evidence.
+
+Carry forward: a gate measured from an isolated worktree needs confirming in the checkout before
+it is recorded as a repo condition.

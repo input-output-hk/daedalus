@@ -1263,7 +1263,7 @@ the per-task figures where they differ. Full detail in
 | `yarn lint` | **exit 0** — 0 errors, 5635 warnings (pre-existing repo baseline) |
 | `yarn i18n:manage` | **exit 0**, byte-identical no-op, tree clean afterwards |
 | `yarn stylelint` | **exit 2 — 111 errors** across 13 governance SCSS files, all `order/properties-alphabetical-order`. 118 at the planning anchor; 7 disappeared with two dead selector blocks removed alongside the markup that used them; **0 added**. Out of scope by D-4. |
-| `yarn storybook:build` | **exit 1 — waived, not green.** See the D-6 revision below. |
+| `yarn storybook:build` | **exit 0**, 73.4 s, run from the working checkout at `2f2011edd`. Exits 1 only from a symlinked-`node_modules` worktree. See the D-6 note below. |
 | `yarn check:all` | Red transitively on the `prettier:check` and `stylelint` legs. |
 | `nix fmt` | **Not run — no `nix` in this container.** Owed. |
 
@@ -1280,20 +1280,24 @@ stylelint-clean at birth), D-14 (no mount guard; the no-spawn property pinned by
 test instead), D-15, D-16, D-17 (no `auditSummary` added to the phase object) and
 D-18.
 
-**Revised during implementation — one, and it is a correction of this PRD:**
+**Revised during implementation, then re-revised at merge-back — net effect: this
+PRD's original text stands:**
 
-- **Definition of Done item 8 and the C-6 premise it rests on were wrong.**
-  This PRD asserted `yarn storybook:build` is green at HEAD and must be run rather
-  than waived. Measured at close it **exits 1**, with a manager-bundle
-  `ModuleParseError` on `storybook/addons/DaedalusMenu/register.tsx` — a directory
-  slice-8 never touched (`git diff 0cdcab581..45efc1911 -- storybook/addons/` is
-  empty), reproduced by both task verifiers on a pristine `0cdcab581` tree. The
-  corrected disposition is **waived with the reason recorded**. Consequence, stated
-  plainly: the stories slice-8 adds have **no bundle-level check** in this
-  environment. They are not untyped — `tsconfig.json` has no `include` and excludes
-  only `node_modules`, so `yarn compile` typechecks the story file and `yarn lint`
-  covers it — but the visual pass was already owed and stays owed. Recorded as
-  finding F-2.
+- **Definition of Done item 8 and the C-6 premise it rests on were right after
+  all.** During implementation both task verifiers measured `yarn storybook:build`
+  as **exit 1** — a manager-bundle `ModuleParseError` on
+  `storybook/addons/DaedalusMenu/register.tsx`, a directory slice-8 never touched —
+  and this PRD was amended to waive the gate. That amendment has been withdrawn.
+  At merge-back the same commit was measured in both locations: **exit 0 (73.4 s)
+  from the working checkout**, exit 1 from a detached worktree with `node_modules`
+  symlinked in. The code is byte-identical across the two runs, so the manager
+  webpack's loader resolution through a symlinked `node_modules` is what fails —
+  an artifact of the isolation setup, not of the repository. Every in-slice
+  verifier measured from such a worktree, which is why they agreed with each other
+  and not with the planning pass. **Run the gate, do not waive it — from the
+  checkout.** The stories slice-8 adds therefore do carry a bundle-level check, on
+  top of the `yarn compile` typecheck and `yarn lint` coverage. The visual pass was
+  already owed and stays owed. Recorded as finding F-2.
 
 **Also worth carrying forward:** the i18n inventory in this PRD placed
 `governance.drepDirectory.error.refresh` between `…error` and
