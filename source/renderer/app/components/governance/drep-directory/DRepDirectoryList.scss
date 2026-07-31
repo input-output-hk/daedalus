@@ -11,14 +11,14 @@
 }
 
 .pagination {
-  display: flex;
   align-items: center;
-  justify-content: center;
+  display: flex;
   gap: 16px;
+  justify-content: center;
   padding: 8px 0;
 }
 
 .pageInfo {
-  font-size: 14px;
   color: var(--theme-text-secondary, #6b7384);
+  font-size: 14px;
 }

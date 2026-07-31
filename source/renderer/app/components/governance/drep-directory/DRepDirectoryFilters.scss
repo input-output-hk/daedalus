@@ -1,7 +1,7 @@
 .container {
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: 12px;
 }
 
@@ -10,15 +10,15 @@
 }
 
 .filterLabel {
-  font-size: 13px;
   color: var(--theme-text-secondary, #6b7384);
+  font-size: 13px;
 }
 
 .select {
+  background: var(--theme-input-bg, transparent);
+  border: 1px solid var(--theme-input-border, #c6cdd6);
+  border-radius: 4px;
+  color: inherit;
   font-size: 13px;
   padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--theme-input-border, #c6cdd6);
-  background: var(--theme-input-bg, transparent);
-  color: inherit;
 }

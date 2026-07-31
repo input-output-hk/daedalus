@@ -11,31 +11,31 @@
 }
 
 .title {
-  margin: 0;
+  color: var(--theme-text-primary);
   font-size: 20px;
   font-weight: 600;
-  color: var(--theme-text-primary);
+  margin: 0;
 }
 
 .header {
-  display: flex;
   align-items: center;
+  display: flex;
   gap: 12px;
 }
 
 .section {
-  padding: 16px;
   border: 1px solid var(--theme-separator, #e0e0e0);
   border-radius: 8px;
+  padding: 16px;
 }
 
 .sectionTitle {
-  margin: 0 0 12px;
+  color: var(--theme-text-secondary, #6b7384);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.04em;
+  margin: 0 0 12px;
   text-transform: uppercase;
-  color: var(--theme-text-secondary, #6b7384);
 }
 
 .fieldList {
@@ -46,27 +46,27 @@
 }
 
 .fieldRow {
-  display: flex;
   align-items: baseline;
+  display: flex;
   gap: 8px;
 }
 
 .fieldLabel {
-  min-width: 120px;
-  font-size: 14px;
   color: var(--theme-text-secondary, #6b7384);
+  font-size: 14px;
+  min-width: 120px;
 }
 
 .fieldValue {
-  margin: 0;
-  font-size: 14px;
   color: var(--theme-text-primary);
+  font-size: 14px;
+  margin: 0;
 }
 
 .mutedValue {
-  margin: 0;
-  font-size: 14px;
   color: var(--theme-text-tertiary, #8e939e);
+  font-size: 14px;
+  margin: 0;
 }
 
 .votingPowerAda {
@@ -75,22 +75,22 @@
 }
 
 .votingPowerLovelace {
+  color: var(--theme-text-secondary, #6b7384);
   display: block;
   font-size: 12px;
-  color: var(--theme-text-secondary, #6b7384);
 }
 
 .anchorValue {
-  margin: 0;
+  color: var(--theme-text-primary);
   font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
   font-size: 13px;
+  margin: 0;
   word-break: break-all;
-  color: var(--theme-text-primary);
 }
 
 .sourceLabel {
-  font-size: 12px;
   color: var(--theme-text-tertiary, #8e939e);
+  font-size: 12px;
 }
 
 .actions {
@@ -99,33 +99,33 @@
 }
 
 .stateContainer {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 12px;
   padding: 40px 0;
 }
 
 .errorMessage {
-  font-weight: 600;
   color: var(--theme-color-error, #ea4c5b);
+  font-weight: 600;
 }
 
 .subSectionTitle {
-  margin: 12px 0 6px;
+  color: var(--theme-text-secondary, #6b7384);
   font-size: 13px;
   font-weight: 600;
-  color: var(--theme-text-secondary, #6b7384);
+  margin: 12px 0 6px;
 }
 
 .referenceList {
   display: flex;
   flex-direction: column;
+  font-size: 14px;
   gap: 6px;
+  list-style: none;
   margin: 0;
   padding: 0;
-  font-size: 14px;
-  list-style: none;
   word-break: break-all;
 }
 
@@ -134,15 +134,15 @@
 }
 
 .paymentAddressValue {
+  align-items: baseline;
+  color: var(--theme-text-primary);
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px;
-  margin: 0;
   font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
   font-size: 13px;
+  gap: 8px;
+  margin: 0;
   word-break: break-all;
-  color: var(--theme-text-primary);
 }
 
 .copyButton {
@@ -150,6 +150,6 @@
 }
 
 .copiedConfirmation {
-  font-size: 12px;
   color: var(--theme-text-secondary, #6b7384);
+  font-size: 12px;
 }

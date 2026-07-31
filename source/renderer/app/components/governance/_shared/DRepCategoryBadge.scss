@@ -1,20 +1,20 @@
 .badge {
-  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  border-radius: 4px;
+  display: inline-flex;
   font-size: 14px;
+  font-weight: 500;
+  gap: 6px;
   line-height: 1;
   padding: 4px 8px;
-  border-radius: 4px;
-  font-weight: 500;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
   border-radius: 50%;
   display: inline-block;
   flex-shrink: 0;
+  height: 8px;
+  width: 8px;
 }
 
 .label {
@@ -23,8 +23,8 @@
 
 /* Category colors — reuses existing Daedalus theme variables via CSS custom properties */
 .highValue {
-  color: var(--badge-highlight-fg, #7a5af8);
   background: var(--badge-highlight-bg, rgba(122, 90, 248, 0.12));
+  color: var(--badge-highlight-fg, #7a5af8);
 
   .dot {
     background: var(--badge-highlight-fg, #7a5af8);
@@ -32,8 +32,8 @@
 }
 
 .primary {
-  color: var(--badge-info-fg, #4a7bd4);
   background: var(--badge-info-bg, rgba(74, 123, 212, 0.1));
+  color: var(--badge-info-fg, #4a7bd4);
 
   .dot {
     background: var(--badge-info-fg, #4a7bd4);
@@ -41,8 +41,8 @@
 }
 
 .threshold {
-  color: var(--badge-warning-fg, #b26a00);
   background: var(--badge-warning-bg, rgba(230, 162, 60, 0.12));
+  color: var(--badge-warning-fg, #b26a00);
 
   .dot {
     background: var(--badge-warning-fg, #b26a00);
@@ -50,8 +50,8 @@
 }
 
 .nonMetadata {
-  color: var(--badge-neutral-fg, #8e939e);
   background: var(--badge-neutral-bg, rgba(142, 147, 158, 0.1));
+  color: var(--badge-neutral-fg, #8e939e);
 
   .dot {
     background: var(--badge-neutral-fg, #8e939e);

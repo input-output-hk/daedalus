@@ -1,33 +1,33 @@
 .component {
+  border: 1px solid var(--theme-separator, #e0e0e0);
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 20px;
   padding: 16px;
-  border: 1px solid var(--theme-separator, #e0e0e0);
-  border-radius: 4px;
 }
 
 .header {
+  color: var(--theme-text-primary);
   font-size: 14px;
   font-weight: 600;
   margin: 0;
-  color: var(--theme-text-primary);
 }
 
 .statusRow {
-  display: flex;
   align-items: center;
+  display: flex;
   gap: 12px;
 }
 
 .statusBadge {
-  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  color: var(--theme-text-primary);
+  display: inline-flex;
   font-size: 14px;
   font-weight: 500;
-  color: var(--theme-text-primary);
+  gap: 6px;
 }
 
 .expiringBadge {
@@ -48,29 +48,29 @@
 }
 
 .sourceLabel {
-  font-size: 12px;
   color: var(--theme-text-secondary, #6b7384);
+  font-size: 12px;
 }
 
 .idRow {
-  display: flex;
   align-items: center;
+  display: flex;
 }
 
 .caption {
+  color: var(--theme-text-secondary, #6b7384);
   font-size: 13px;
   line-height: 1.4;
   margin: 0;
-  color: var(--theme-text-secondary, #6b7384);
 }
 
 .warning {
+  color: var(--badge-warning-fg, #b76e00);
   display: flex;
-  gap: 8px;
   font-size: 13px;
+  gap: 8px;
   line-height: 1.4;
   margin: 0;
-  color: var(--badge-warning-fg, #b76e00);
 }
 
 .warningGlyph {
@@ -78,10 +78,10 @@
 }
 
 .subline {
+  color: var(--theme-text-secondary, #6b7384);
   font-size: 13px;
   line-height: 1.4;
   margin: 0;
-  color: var(--theme-text-secondary, #6b7384);
 }
 
 .cta {

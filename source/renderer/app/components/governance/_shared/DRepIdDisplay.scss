@@ -1,23 +1,23 @@
 .container {
-  display: inline-flex;
   align-items: center;
+  display: inline-flex;
   gap: 4px;
 }
 
 .id {
-  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
-  font-size: 14px;
   color: var(--theme-text-primary);
   cursor: default;
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 14px;
 }
 
 .copyButton {
   background: none !important;
   border: none !important;
-  padding: 2px 6px !important;
-  font-size: 12px;
   cursor: pointer;
+  font-size: 12px;
   opacity: 0.6;
+  padding: 2px 6px !important;
   transition: opacity 0.15s;
 
   &:hover {
@@ -30,31 +30,31 @@
 }
 
 .copiedConfirmation {
-  font-size: 12px;
   color: var(--theme-text-secondary, #6b7384);
+  font-size: 12px;
 }
 
 .stack {
+  align-items: flex-start;
   display: inline-flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: 2px;
 }
 
 .formRow {
-  display: inline-flex;
   align-items: center;
+  display: inline-flex;
   gap: 4px;
 }
 
 .formCaption {
-  font-size: 12px;
   color: var(--theme-text-secondary, #6b7384);
+  font-size: 12px;
 }
 
 .idFull {
+  color: var(--theme-text-primary);
   font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
   font-size: 14px;
-  color: var(--theme-text-primary);
   word-break: break-all;
 }
