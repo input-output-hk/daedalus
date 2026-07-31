@@ -720,3 +720,101 @@ currently unformatted.
 **Gate.** task-155 is closed with no open code items. Next in the locked build order is task-156.
 
 ---
+
+## Code Review: task-156 — round 1 (2026-07-31)
+
+**Verdict: approved, zero blockers.** One round over the uncommitted task-156 diff — 4 modified
+files, no new file — against `anchor-2-implementation-guide.md` Steps 0–6. The task changed no
+product code: three of the four files are specs that pin existing behaviour, and the fourth is the
+design doc's IA-rationale paragraph. The implementer reported every step landed, no STOP condition
+fired, and did not format, stage, commit or write to the tracker.
+
+### Blockers
+
+**None raised.** The round found nothing that had to be fixed before close.
+
+### Minor
+
+- **The task was an audit, and the audit found nothing to change.** All five delegation-form seams
+  hold as documented — the closed `VoteType` union, the `VOTE_TYPES` allow-list that gates
+  `voteType` while `selectedDRepId` is picked separately as a string, `chosenOption` resolving to the
+  sentinel string whenever `selectedVoteType !== 'drep'`, the sentinel short-circuit to
+  `drepIdentity = null`, and `isSentinelVote` gating the whole identity block so the sentinel branch
+  renders only the vote label. All six directory seams hold too: `drepList` and `drepIndex` are built
+  only from ledger entries keyed by `drepId`, `visibleEntries` has exactly three branches and no
+  fourth source, `searchDRepsByIdPrefix` returns `[]` for any kind that is not `prefix` or
+  `exactValid` under `MIN_SEARCH_PREFIX_LENGTH = 8`, `resolveExactDRepMatch` is gated on
+  `Cardano.DRepID.isValid`, and none of the seven `DRepEmptyState` defaults names either sentinel.
+  No owning-task defect to hand back.
+- **The guide's `VotingGovernancePage` seam quote is stale, and the implementer was right to leave
+  the code alone.** The guide quotes `:81-87` as a direct ternary on `chosenOption`; live post-
+  task-154 code hoists `const isSentinel = chosenOption === 'abstain' || chosenOption ===
+  'no_confidence';` and gates both `drepIdentity` and the newer
+  `verifiedName = resolveVerifiedName(governance.drepIndex.get(chosenOption))` on it. Semantically
+  identical and the sentinel invariant holds. Recorded as F-16 in `research/anchor-2-findings.md`.
+- **Steps 4b and 5 each overlap a test the guide did not know existed.** task-154/155 already added a
+  sibling sentinel `it.each` in the dialog's verified-name describe, and
+  `VotingGovernancePage.spec.tsx` already carried `passes a null verified name for the abstain
+  sentinel`. The guide's blocks were inserted anyway, because they add the `no_confidence` arm, the
+  rendered vote-label assertion and byte-equality of the `chosenOption` handed to
+  `initializeVPDelegationTx` — none of which the pre-existing cases assert. Only the one case the
+  guide named as a replacement was replaced; nothing was deleted. Recorded as F-17.
+- **Step 4b's STOP premise was checked before the shape was assumed.** `grep -n verifiedName` on the
+  dialog returns the `VerifiedDRepNameSource = { host: string; name: string }` type and the
+  `verifiedName: VerifiedDRepNameSource | null` prop, so the hardened case passes the object shape
+  rather than a bare string.
+- **No copy changed and no catalog was touched.** The task adds zero i18n keys, the guide forbids
+  `yarn i18n:manage` for it, and the catalog sentinel-conflict one-liner returns `[]`. The design-doc
+  edit is the single new `Abstain` paragraph at `:208`; `grep -n Abstain` over that file returns
+  exactly two hits, the other being the pre-existing wireframe tally at `:92`.
+- **No task ids, review labels, ALL-CAPS emphasis or change history** in any comment or test name
+  across the changed paths. No story changed, so no local `IntlProvider` and no per-locale variant.
+
+### Verifier's verdict
+
+**RED — one this-task failure open at close, zero inherited failures.** Every jest, typecheck, lint,
+i18n and copy-conflict gate is green; the failure is formatting.
+
+- **Counts, all matching the guide's deltas.** `DRepDirectory` 56 → **60** (+4) with its 1 snapshot
+  unchanged, `VotingPowerDelegationConfirmationDialog` 34 → **36** (+2), `VotingGovernancePage`
+  30 → **32** (+2). Both sanitization floor anchors were run and both are unchanged and unedited:
+  `governance-sanitization` **39** and `logDRepStateSnapshot` **5**. The `(governance|voting)` sweep
+  is 23 passed + 1 skipped suites and 503 passed + 12 skipped of 515 tests with 10 snapshots, the one
+  skip being the environment-gated `GovernanceCliArgvSmoke`. The guide scopes this task's regression
+  gate to that sweep, so the unfiltered run was correctly not required. Baselines differ from the
+  guide's `55e8985bf` reference absolutes because the five prior anchor-2 commits landed; the deltas
+  are what match.
+- **Typecheck and lint.** `yarn compile` exit 0, and `typed-scss-modules source/renderer/app` then
+  `tsc --noEmit` exit 0. `yarn lint` exits 0 with **0 errors** at 5635 warnings; the guide's ~5591
+  reference is from `55e8985bf` and the delta is the five intervening commits. Scoped to the three
+  specs, eslint reports 15 warnings and 0 errors, every one of them outside this task's added ranges.
+  This task adds no warning and no error.
+- **The one failure: prettier drift inside this task's own hunk.**
+  `DRepDirectory.spec.tsx:1045` —
+  `.filter((key) => labels.some((label) => catalog[key].includes(label)));` — which prettier wants
+  broken over three lines. Proved to be this task's and not inherited: the HEAD blob piped through
+  `prettier --stdin-filepath` is byte-identical to itself, so the file was clean before this task,
+  and the offending line sits inside the added hunk `@@ -988,0 +990,94 @@`. Step 7a's
+  `prettier --write` was not re-run after the final edit. Re-confirmed at scribe time, still open.
+- **i18n.** `git status --porcelain source/renderer/app/i18n translations` prints nothing.
+  `yarn i18n:manage` was never run, so nothing was written and nothing needed restoring. No
+  `git stash` was used at any point in the task.
+- **Never run.** `yarn storybook:build` and `yarn check:all` — both red at `HEAD` for the
+  pre-existing manager-webpack reason, correctly not read as a regression. `yarn storybook` is an
+  interactive dev server with no browser here, so the visual and ja-JP overflow pass stays owed.
+
+### Owed at close
+
+The prettier reformat of `DRepDirectory.spec.tsx` is unmade, and with it the close-out commit
+`test(gov): task-156 assert abstain and no confidence stay form-only` — 4 modified files sit at
+`HEAD` `7bed85991`, and the tracker row is written by this scribe pass as the fifth. The row is
+`partial`, not `complete`, and names the drift as the gap. The guide's line anchors were cut at
+`55e8985bf` and have shifted throughout; Step 4b's target case was found at `:366-377`, not
+`:365-376`, and was re-located by quoted code. `nix fmt` cannot run in this devcontainer and stays a
+user-owned pre-merge obligation. The Storybook visual and ja-JP overflow pass over the end-state
+directory and empty states never ran, and the release-end copy review is still ahead.
+
+**Gate.** task-156 is closed on review with no open code items, but with one open formatting item
+that must be cleared before the slice commits.
+
+---

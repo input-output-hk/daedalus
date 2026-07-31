@@ -4,7 +4,13 @@ import { IntlProvider } from 'react-intl';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
-import { cleanup, render, screen } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { bech32 } from 'bech32';
 import { Cardano } from '@cardano-sdk/core';
@@ -364,15 +370,46 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
   });
 
   it.each(['abstain', 'no_confidence'])(
-    'renders no identity block for the %s sentinel',
+    'renders no identity block and no verified name for the %s sentinel',
     (option) => {
-      renderDialog({ chosenOption: option, drepIdentity: null });
+      renderDialog({
+        chosenOption: option,
+        drepIdentity: null,
+        verifiedName: { host: 'example.org', name: 'Verified Sentinel Name' },
+      });
 
       expect(screen.getByText('Vote')).toBeInTheDocument();
       expect(screen.queryByText('!!!DRep ID')).not.toBeInTheDocument();
       expect(screen.queryByText('!!!CIP-105 DRep ID')).not.toBeInTheDocument();
       expect(screen.queryByText('!!!Signed payload')).not.toBeInTheDocument();
       expect(screen.queryByText('!!!On-chain')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText('Verified Sentinel Name')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText('!!!Verified off-chain content')
+      ).not.toBeInTheDocument();
+    }
+  );
+
+  it.each([
+    ['abstain', 'Abstain'],
+    ['no_confidence', 'No Confidence'],
+  ])(
+    'confirms the %s sentinel through the existing form path',
+    async (option, label) => {
+      const onSubmit = jest.fn(async () => ({ success: true as const }));
+      renderDialog({ chosenOption: option, drepIdentity: null, onSubmit });
+
+      expect(screen.getByText(label)).toBeInTheDocument();
+
+      fireEvent.change(document.querySelector('input[type="password"]'), {
+        target: { value: 'test-passphrase' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+
+      await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+      expect(onSubmit).toHaveBeenCalledWith('test-passphrase');
     }
   );
 });

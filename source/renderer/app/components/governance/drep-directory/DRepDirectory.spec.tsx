@@ -18,6 +18,7 @@ import {
   AppDRepDirectoryEntry,
   DRepCohortContext,
 } from '../../../stores/GovernanceStore';
+import { logger } from '../../../utils/logging';
 
 // jsdom's Uint8Array constructor lives in a different realm than Node's
 // Buffer, so the SDK's bech32 encoder rejects Buffer payloads; point the
@@ -984,6 +985,102 @@ describe('DRepDirectory', () => {
       expect(
         screen.getByText(/お気に入りはまだありません/)
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('form-only vote sentinels', () => {
+    const SENTINEL_QUERIES = ['abstain', 'no_confidence'];
+    const SENTINEL_LABELS = ['Abstain', 'No Confidence'];
+
+    it('renders no row for either sentinel and never resolves one to a detail view', () => {
+      const onViewDetails = jest.fn();
+      const onSelectForDelegation = jest.fn();
+      renderComponent({
+        drepList: [realEntry(1), realEntry(2)],
+        onViewDetails,
+        onSelectForDelegation,
+      });
+
+      const input = screen.getByPlaceholderText('!!!Search by DRep ID');
+      SENTINEL_QUERIES.forEach((query) => {
+        fireEvent.change(input, { target: { value: query } });
+        SENTINEL_LABELS.forEach((label) => {
+          expect(screen.queryByText(label)).not.toBeInTheDocument();
+        });
+      });
+
+      expect(onViewDetails).not.toHaveBeenCalled();
+      expect(onSelectForDelegation).not.toHaveBeenCalled();
+    });
+
+    it('falls back to the no-results empty state whose copy names neither sentinel', () => {
+      renderComponent({ drepList: [realEntry(1)] });
+
+      fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID'), {
+        target: { value: 'no_confidence' },
+      });
+
+      const emptyState = document.querySelector('[data-variant="noResults"]');
+      expect(emptyState).not.toBeNull();
+      SENTINEL_LABELS.forEach((label) => {
+        expect(emptyState.textContent).not.toContain(label);
+      });
+      expect(screen.queryByText('!!!View details')).not.toBeInTheDocument();
+    });
+
+    it('keeps every directory and favorites string free of the sentinel labels in both locales', () => {
+      const catalogs: Record<string, string>[] = [translations, jaTranslations];
+      const namespaces = [
+        'governance.drepDirectory.',
+        'governance.drepFavorites.',
+      ];
+
+      catalogs.forEach((catalog) => {
+        const labels = [
+          catalog['voting.governance.abstain'],
+          catalog['voting.governance.noConfidence'],
+        ];
+        const conflicting = Object.keys(catalog)
+          .filter((key) => namespaces.some((ns) => key.startsWith(ns)))
+          .filter((key) =>
+            labels.some((label) => catalog[key].includes(label))
+          );
+        expect(conflicting).toEqual([]);
+      });
+    });
+
+    it('routes no sentinel literal into a logger sink while searching', () => {
+      const debugSpy = jest
+        .spyOn(logger, 'debug')
+        .mockImplementation(() => undefined);
+      const infoSpy = jest
+        .spyOn(logger, 'info')
+        .mockImplementation(() => undefined);
+      const warnSpy = jest
+        .spyOn(logger, 'warn')
+        .mockImplementation(() => undefined);
+      const errorSpy = jest
+        .spyOn(logger, 'error')
+        .mockImplementation(() => undefined);
+
+      renderComponent({ drepList: [realEntry(1)] });
+
+      const input = screen.getByPlaceholderText('!!!Search by DRep ID');
+      SENTINEL_QUERIES.forEach((query) => {
+        fireEvent.change(input, { target: { value: query } });
+      });
+
+      const logged = JSON.stringify([
+        debugSpy.mock.calls,
+        infoSpy.mock.calls,
+        warnSpy.mock.calls,
+        errorSpy.mock.calls,
+      ]);
+      SENTINEL_QUERIES.forEach((query) => {
+        expect(logged).not.toContain(query);
+      });
+
+      jest.restoreAllMocks();
     });
   });
 });

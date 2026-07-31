@@ -791,6 +791,48 @@ describe('Confirmation dialog identity derivation', () => {
   });
 });
 
+describe('Form-only vote sentinels reaching the confirmation dialog', () => {
+  const openSentinelConfirmation = async (voteType: string) => {
+    const flow = renderFlow([
+      {
+        pathname: ROUTES.VOTING.GOVERNANCE,
+        state: { selectedWalletId: WALLET_ID, voteType },
+      },
+    ]);
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    await screen.findByText('Confirm Transaction');
+    return flow;
+  };
+
+  beforeEach(() => {
+    mockDialogProps.length = 0;
+  });
+
+  afterEach(() => {
+    cleanup();
+    jest.restoreAllMocks();
+  });
+
+  it.each([
+    ['abstain', 'Abstain'],
+    ['no_confidence', 'No Confidence'],
+  ])(
+    'passes %s through as chosenOption with a null identity and no name',
+    async (voteType, label) => {
+      const { stores } = await openSentinelConfirmation(voteType);
+
+      const props = mockDialogProps[mockDialogProps.length - 1];
+      expect(props.chosenOption).toBe(voteType);
+      expect(props.drepIdentity).toBeNull();
+      expect(props.verifiedName ?? null).toBeNull();
+      expect(screen.getByText(label)).toBeInTheDocument();
+      expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
+        expect.objectContaining({ chosenOption: voteType })
+      );
+    }
+  );
+});
+
 describe('Confirmation dialog prop contract', () => {
   const EXPECTED_DIALOG_PROPS = [
     'chosenOption',

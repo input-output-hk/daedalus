@@ -205,6 +205,14 @@ Container components (MobX `@observer`) live under `containers/governance/` mirr
 | Favorites empty | `DRepFavoritesEmptyState` with CTA back to Directory |
 | DRep detail load failure | Inline error in main pane; "Back to directory" link |
 
+**`Abstain` and `No Confidence` are form-only.** Both are delegation-form sentinels, not DReps: they
+have no registration, no anchor, no voting power and no detail view, so they never appear as directory
+entries, search results, favorites or cohort members. They are chosen in the delegation form and
+carried through the existing path — `VotingPowerDelegation` sets `chosenOption` to the sentinel
+string, and the confirmation dialog renders a vote label with no identity block. Because they are not
+entries, the directory's empty state must never suggest the directory is the place to find them; its
+copy stays scoped to registered DReps and filters.
+
 ## Anchor Source-Labelling Treatment (anchor-1-ready)
 
 `DRepDetailAnchorSection` always rendered. In slice-4 it shows only:

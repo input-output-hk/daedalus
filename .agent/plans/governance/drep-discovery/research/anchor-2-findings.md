@@ -331,3 +331,69 @@ slice should first confirm the pattern still matches at least one known-good sit
 empty result as a pass. **Owner.** Record-only; the guide is a frozen artefact and was not edited.
 
 ---
+
+## F-16 (task-156) — The sentinel short-circuit the guide quotes as a ternary is now a hoisted constant that also gates the verified name
+
+task-156's whole premise is that `Abstain` and `No Confidence` never resolve to a DRep identity, and
+the guide pins that on `VotingGovernancePage.tsx:81-87`, quoted as a direct ternary on
+`chosenOption` producing `drepIdentity`.
+
+**Resolution.** The quoted shape no longer exists. task-154 hoisted the test into
+`const isSentinel = chosenOption === 'abstain' || chosenOption === 'no_confidence';` and now gates
+two things on it rather than one: `drepIdentity`, as before, and the newer
+`verifiedName = resolveVerifiedName(governance.drepIndex.get(chosenOption))`. The behaviour is
+identical — both stay `null` for either sentinel — and the second gate is strictly stronger, because
+without it a sentinel string would be used as a `drepIndex` key. Verified as-is; no edit was made.
+
+**Disposition.** Record-only, and the reason the seam must be re-located by quoted code rather than
+by line number: a reviewer who greps for the guide's ternary finds nothing and can wrongly conclude
+the invariant was dropped. Anyone adding a third anchor-derived field to the confirmation dialog must
+add it inside the `isSentinel` gate, not alongside it. **Owner.** Record-only.
+
+---
+
+## F-17 (task-156) — The guide's new sentinel cases overlap tests task-154 and task-155 already added, and the overlap is deliberate rather than redundant
+
+The guide was cut at `55e8985bf`, before the four anchor-2 commits that precede this task. Two of its
+blocks land on ground that is no longer empty: Step 4b's dialog case has a sibling sentinel `it.each`
+(`renders no name for the %s sentinel`) added in the verified-name describe, and Step 5's container
+block overlaps `passes a null verified name for the abstain sentinel` at
+`VotingGovernancePage.spec.tsx:769-791`.
+
+**Resolution.** Both guide blocks were inserted and nothing was deleted, because each adds assertions
+the pre-existing case does not make: the `no_confidence` arm, which the older container test omits
+entirely; the rendered vote-label assertion, which pins what the sentinel branch renders instead of
+an identity; and byte-equality of the `chosenOption` string handed to `initializeVPDelegationTx`,
+which is the only assertion that would catch a sentinel being rewritten on the way to the
+transaction. Only the one case the guide explicitly named as a replacement — the identity-block
+sentinel `it.each` — was replaced, by the `verifiedName`-hardened version. Step 4b's target sat at
+`:366-377`, not the guide's `:365-376`.
+
+**Disposition.** Record-only. The rule this slice has now hit three times: when a frozen guide's new
+test overlaps one a later-landed task already wrote, add rather than reconcile, and record why —
+deleting the older case to avoid apparent duplication silently drops whatever it uniquely pins.
+**Owner.** Record-only; the guide is a frozen artefact and was not edited.
+
+---
+
+## F-18 (task-156) — Prettier will not accept a two-level arrow chain on one line, and a `--write` that predates the last edit reads as clean
+
+task-156 closed with `prettier --check` red on
+`DRepDirectory.spec.tsx:1045`:
+`.filter((key) => labels.some((label) => catalog[key].includes(label)));`. The line is 79 columns and
+looks compliant; prettier 2.x nonetheless breaks a nested arrow callback across three lines.
+
+**Resolution.** The drift is this task's, not inherited, and the proof is worth reusing: piping the
+HEAD blob through `git show HEAD:<path> | prettier --stdin-filepath <path>` returns bytes identical
+to the blob, so the file was formatted before the task, and the offending line falls inside the added
+hunk `@@ -988,0 +990,94 @@`. The mechanical cause is ordering — `prettier --write` was run, then the
+block was edited again, and the check was never repeated. Note that the `--stdin-filepath` form is
+required for this comparison: F-5 already recorded that running the comparison out of `/tmp` reports
+a false clean because `.prettierrc` resolution is path-relative.
+
+**Disposition.** Open at close and named in the task-156 tracker row, which is `partial` for this
+reason. The fix is one `node_modules/.bin/prettier --write` over the three explicit spec paths —
+never `yarn prettier`, whose script embeds a repo-wide glob — and it must be the last action before
+the commit, after every content edit. **Owner.** Whoever makes the task-156 close-out commit.
+
+---
