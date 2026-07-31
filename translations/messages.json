@@ -2562,6 +2562,16 @@
         "id": "governance.drepDirectory.empty.noSync"
       },
       {
+        "defaultMessage": "!!!DRep directory data is unavailable on the selfnode cluster.",
+        "description": "Directory empty state on the selfnode cluster",
+        "id": "governance.drepDirectory.empty.selfnode"
+      },
+      {
+        "defaultMessage": "!!!DRep data unavailable on selfnode",
+        "description": "Directory-level unavailability badge rendered inside the selfnode empty state",
+        "id": "governance.drepDirectory.status.selfnodeUnavailable"
+      },
+      {
         "defaultMessage": "!!!No DReps match your filters. {ClearFilters} or {ShowAll}.",
         "description": "Empty state when search/filters match nothing",
         "id": "governance.drepDirectory.empty.noResults"

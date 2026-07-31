@@ -25,3 +25,20 @@
   font-weight: 600;
   margin: 0 0 4px;
 }
+
+.unavailableBadge {
+  align-items: center;
+  background: var(--badge-disabled-bg, rgba(107, 115, 132, 0.12));
+  border-radius: 4px;
+  color: var(--theme-text-secondary, #6b7384);
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 6px;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+.unavailableIcon {
+  flex-shrink: 0;
+}

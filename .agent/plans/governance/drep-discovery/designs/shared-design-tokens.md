@@ -17,7 +17,7 @@ These tokens are referenced across the DRep Discovery design. They are intention
 
 Contrast rule: every badge must meet **WCAG 2.1 AA 4.5:1** in both themes. Color must never be the sole indicator — pair every status with an icon **and** the textual label. Existing `_votingConfig.scss` already exposes the success/warning/neutral palette; reuse, don't redefine.
 
-**Status grounding and slice staging (canonical).** `Active`/`Inactive` are the two ledger-grounded stored states from `drep-state`: a DRep is `Inactive` once `currentEpoch >= expiry`, otherwise `Active`. `Expiring soon` is **derived** in the renderer from the remaining `drepActivity` (≤12 epochs) — it is a display overlay, not a stored status. `Retired` requires a distinct unregistration signal that `drep-state --include-stake` does not surface, so it is deferred past slice-1. **Slice-1 ships `Active`/`Inactive` only**; `Expiring soon` joins with the slice-5 `Threshold` category window, and `Retired` lands when its signal is available. Implementation note: the shipped slice-1 code currently labels the inactive condition `expired`; the canonical term is `inactive` and the rename is tracked as slice-1 final pass FP-9.
+**Status grounding and slice staging (canonical).** `Active`/`Inactive` are the two ledger-grounded stored states from `drep-state`: a DRep is `Inactive` once `currentEpoch >= expiry`, otherwise `Active`. `Expiring soon` is **derived** in the renderer from the remaining `drepActivity` (≤12 epochs) — it is a display overlay, not a stored status. `Retired` requires a distinct unregistration signal that `drep-state --include-stake` does not surface, so it is deferred past slice-1. **Slice-1 ships `Active`/`Inactive` only**; `Expiring soon` joins with the slice-5 `Threshold` category window, and `Retired` lands when its signal is available. Implementation note: the shipped slice-1 code currently labels the inactive condition `expired`; the canonical term is `inactive` and the rename is tracked as slice-1 final pass FP-9. The `Selfnode / CLI unsupported` row is a directory-level state indicator rendered as plain markup inside the `selfnode` empty state — it is not a `DRepStatus` member and not a `DRepStatusBadge` variant — and its label ships under `governance.drepDirectory.status.selfnodeUnavailable`.
 
 **Where the status badge is rendered.** The status badge appears on every DRep card in the directory, on the DRep detail view, and on the `CurrentVoteSummary` panel's `drep` state. Surfacing it on `CurrentVoteSummary` is binding: users must be able to tell at a glance whether the DRep they currently delegate to is still active or about to lapse.
 
@@ -187,6 +187,7 @@ All IDs below are shared so `yarn i18n:manage` produces a stable set. Status-bad
 | `governance.drepDirectory.status.inactive` | Inactive |
 | `governance.drepDirectory.status.expiring` | Expiring in {n} epochs |
 | `governance.drepDirectory.status.retired` | Retired |
+| `governance.drepDirectory.status.selfnodeUnavailable` | DRep data unavailable on selfnode |
 | `governance.drepDirectory.category.highValue` | High value |
 | `governance.drepDirectory.category.primary` | Primary |
 | `governance.drepDirectory.category.threshold` | Threshold |

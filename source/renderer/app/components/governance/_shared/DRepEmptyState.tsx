@@ -16,6 +16,18 @@ const messages = defineMessages({
       '!!!Your node is still syncing. DRep data becomes available once the node reaches the tip.',
     description: 'Directory fallback while the node has not reached the tip',
   },
+  selfnode: {
+    id: 'governance.drepDirectory.empty.selfnode',
+    defaultMessage:
+      '!!!DRep directory data is unavailable on the selfnode cluster.',
+    description: 'Directory empty state on the selfnode cluster',
+  },
+  selfnodeUnavailable: {
+    id: 'governance.drepDirectory.status.selfnodeUnavailable',
+    defaultMessage: '!!!DRep data unavailable on selfnode',
+    description:
+      'Directory-level unavailability badge rendered inside the selfnode empty state',
+  },
   noResults: {
     id: 'governance.drepDirectory.empty.noResults',
     defaultMessage:
@@ -51,9 +63,11 @@ const messages = defineMessages({
   },
 });
 
-// noSync, noResults and noFavorites ship for now; the designed selfnode
-// variant joins this union when its owning slice lands.
-export type DRepEmptyStateVariant = 'noSync' | 'noResults' | 'noFavorites';
+export type DRepEmptyStateVariant =
+  | 'noSync'
+  | 'noResults'
+  | 'noFavorites'
+  | 'selfnode';
 
 interface Props {
   variant: DRepEmptyStateVariant;
@@ -70,6 +84,36 @@ function DRepEmptyState({
   onBackToDirectory,
   intl,
 }: Props) {
+  if (variant === 'selfnode') {
+    return (
+      <div className={styles.container} data-variant={variant}>
+        <span className={styles.unavailableBadge}>
+          <svg
+            className={styles.unavailableIcon}
+            aria-hidden="true"
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M8 1.5 15 14H1L8 1.5z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+            <path d="M8 6v4" stroke="currentColor" strokeWidth="1.5" />
+            <circle cx="8" cy="12" r="0.9" fill="currentColor" />
+          </svg>
+          {intl.formatMessage(messages.selfnodeUnavailable)}
+        </span>
+        <p className={styles.message}>
+          {intl.formatMessage(messages.selfnode)}
+        </p>
+      </div>
+    );
+  }
+
   if (variant === 'noResults') {
     return (
       <div className={styles.container} data-variant={variant}>

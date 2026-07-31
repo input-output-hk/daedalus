@@ -464,6 +464,94 @@ describe('DRepDirectory', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('renders the selfnode empty state instead of the raw query error', () => {
+    renderComponent({
+      drepList: [],
+      error: {
+        message:
+          'DRep data is unavailable in selfnode mode. A synced node is required.',
+        type: 'SELFNODE_CLI_UNSUPPORTED',
+      },
+      refreshState: GovernanceRefreshState.Failed,
+    });
+
+    expect(
+      screen.getByText(
+        '!!!DRep directory data is unavailable on the selfnode cluster.'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('!!!DRep data unavailable on selfnode')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/unavailable in selfnode mode/)
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('!!!Could not load DRep data.')
+    ).not.toBeInTheDocument();
+  });
+
+  it('prefers the selfnode empty state over the noSync fallback while the node is syncing', () => {
+    renderComponent({
+      drepList: [],
+      error: {
+        message:
+          'DRep data is unavailable in selfnode mode. A synced node is required.',
+        type: 'SELFNODE_CLI_UNSUPPORTED',
+      },
+      isNodeInSync: false,
+      refreshState: GovernanceRefreshState.Failed,
+      syncProgress: 42,
+    });
+
+    expect(
+      screen.getByText(
+        '!!!DRep directory data is unavailable on the selfnode cluster.'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/DRep data becomes available once the node reaches/)
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders no directory row on the selfnode path even with a retained list', () => {
+    renderComponent({
+      error: {
+        message:
+          'DRep data is unavailable in selfnode mode. A synced node is required.',
+        type: 'SELFNODE_CLI_UNSUPPORTED',
+      },
+      refreshState: GovernanceRefreshState.Loaded,
+    });
+
+    expect(
+      screen.getByText(
+        '!!!DRep directory data is unavailable on the selfnode cluster.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText('!!!Voting power:')).not.toBeInTheDocument();
+  });
+
+  it('renders the selfnode empty state in ja-JP', () => {
+    renderComponent({
+      drepList: [],
+      error: {
+        message:
+          'DRep data is unavailable in selfnode mode. A synced node is required.',
+        type: 'SELFNODE_CLI_UNSUPPORTED',
+      },
+      locale: 'ja-JP',
+      refreshState: GovernanceRefreshState.Failed,
+    });
+
+    expect(
+      screen.getByText(
+        '!!!selfnodeクラスターではDRepディレクトリのデータを利用できません。'
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByText('!!!DRepデータ利用不可')).toBeInTheDocument();
+  });
+
   it('drives the — tooltip by enrich state and shows the rankingUnavailable banner on stake failure', () => {
     const { unmount } = renderComponent({
       drepList: [{ ...baseEntries[0], votingPower: null }],

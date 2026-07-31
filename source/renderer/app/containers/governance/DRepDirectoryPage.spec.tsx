@@ -38,7 +38,8 @@ const drepEntry = {
 
 const buildGovernanceStore = (
   entry: typeof drepEntry = drepEntry,
-  favoriteDRepIds: Set<string> = new Set<string>()
+  favoriteDRepIds: Set<string> = new Set<string>(),
+  governanceOverrides: Record<string, unknown> = {}
 ) => ({
   cohortContext: {
     medianVotingPower: null,
@@ -59,6 +60,7 @@ const buildGovernanceStore = (
   toggleFavorite: jest.fn(),
   top35DRepIds: new Set<string>(),
   votingPowerState: VotingPowerEnrichState.Loaded,
+  ...governanceOverrides,
 });
 
 const renderPage = ({
@@ -67,16 +69,22 @@ const renderPage = ({
   initialRoute = ROUTES.GOVERNANCE.DREPS,
   entry = drepEntry,
   favoriteDRepIds = new Set<string>(),
+  governanceOverrides = {},
 }: {
   isNodeInSync?: boolean;
   syncProgress?: number | null;
   initialRoute?: string;
   entry?: typeof drepEntry;
   favoriteDRepIds?: Set<string>;
+  governanceOverrides?: Record<string, unknown>;
 } = {}) => {
   // Observable so the container's reaction sees the flip like the real store.
   const networkStatus = observable({ isNodeInSync, syncProgress });
-  const governance = buildGovernanceStore(entry, favoriteDRepIds);
+  const governance = buildGovernanceStore(
+    entry,
+    favoriteDRepIds,
+    governanceOverrides
+  );
   const history = createMemoryHistory({
     initialEntries: [initialRoute],
   });
@@ -197,5 +205,41 @@ describe('DRepDirectoryPage', () => {
     expect(
       screen.getByText(/no longer in the default cohort/)
     ).toBeInTheDocument();
+  });
+
+  it('keeps the selfnode empty state across remounts', () => {
+    const selfnodeOverrides = {
+      displayedDRepList: [],
+      drepIndex: new Map(),
+      drepList: [],
+      error: {
+        message:
+          'DRep data is unavailable in selfnode mode. A synced node is required.',
+        type: 'SELFNODE_CLI_UNSUPPORTED',
+      },
+      isCohortActive: false,
+      refreshState: GovernanceRefreshState.Failed,
+      showAllList: [],
+    };
+
+    const first = renderPage({ governanceOverrides: selfnodeOverrides });
+
+    expect(
+      screen.getByText(
+        '!!!DRep directory data is unavailable on the selfnode cluster.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText('!!!Voting power:')).not.toBeInTheDocument();
+    expect(first.governance.refresh).toHaveBeenCalledTimes(1);
+    first.unmount();
+
+    const second = renderPage({ governanceOverrides: selfnodeOverrides });
+
+    expect(
+      screen.getByText(
+        '!!!DRep directory data is unavailable on the selfnode cluster.'
+      )
+    ).toBeInTheDocument();
+    expect(second.governance.refresh).toHaveBeenCalledTimes(1);
   });
 });

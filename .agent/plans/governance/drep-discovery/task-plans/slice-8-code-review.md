@@ -474,3 +474,154 @@ None.
   SCSS removals are the two dead selector blocks Steps 8 and 9d mandate.
 - **`nix fmt`** remains unrunnable in this container; the pre-drifted files were
   hand-matched as the guide requires.
+
+---
+
+## Code Review (task-124, round 1): 2026-07-31
+
+Scope: the uncommitted working-tree diff at `wt-slice-8` (12 modified files + 1 new
+research note) on top of the committed task-123 tip `50b23a5f0`, reviewed against the
+task-124 section of `slice-8-implementation-guide.md` (guide lines 1562-2342) and the
+tracker's two acceptance criteria. Tracker row, commit and prettier state are owned by
+later stages and were not reviewed.
+
+### Verdict
+
+**Approved. Zero blockers.**
+
+All ten numbered implementation steps are present and match the guide, most of them
+byte-for-byte. Nothing outside the guide's "Files this task edits" list was touched.
+
+### Blockers
+
+None.
+
+### Verified independently (not taken from the verifier report)
+
+- **D-1 held in full.** `git diff --stat` shows **no** file under `source/main/` or
+  `source/common/` in this task's diff. `DRepStatusBadge.tsx` and `.scss` are
+  untouched and never imported by the new code; `GovernanceQueryErrorType`
+  (`source/common/types/governance.types.ts:165-173`) gained no member; the
+  `DRepStatus` union is unchanged. The badge ships as plain markup — a
+  `<span className={styles.unavailableBadge}>` holding an `aria-hidden` warning
+  triangle plus the textual label — inside the new `selfnode` early return of
+  `DRepEmptyState`, exactly as the decision requires. Icon **and** text satisfy the
+  §1 contrast rule's "colour must never be the sole indicator".
+- **The task title's "IPC payload" is correctly a no-op.** The selfnode error already
+  crosses the wire end to end and I traced every hop: thrown once at
+  `GovernanceQueryService._assertQueryable()` (byte-identical to base — it is not in
+  the diff) → re-thrown as the marked plain object by `governanceChannel.ts` → read
+  back verbatim by `GovernanceStore._normalizeError()` (`:573-589`, `type` passed
+  through as a raw string) → compared in `DRepDirectory.tsx:221-222` against
+  `GovernanceQueryErrorType.SelfnodeCliUnsupported`, whose literal value is
+  `'SELFNODE_CLI_UNSUPPORTED'`. The string the tests and the Storybook fixture use is
+  that same literal, so the fixtures are not a fiction.
+- **Invariant "no partial directory for selfnode" is genuinely enforced, not just
+  asserted.** `isSelfnodeUnsupported` is derived from the error type alone
+  (`DRepDirectory.tsx:221-222`) and its `switch (true)` arm sits at `:243-244`, ahead
+  of both the `Failed` arm and the `default:` arm that owns the list. Because
+  task-123 moved `showErrorBanner` inside `default:` (`:317-324`), the selfnode path
+  now short-circuits before the refresh-failed banner too — a selfnode user cannot
+  see "Showing last successful snapshot from …" next to an empty state. The
+  `Loaded` + retained-list case (which the store really produces, since a failure
+  with retained data is demoted to `Loaded`) is the third component test, and it is a
+  true behavioural test: without the new arm that case falls to `default:` and renders
+  cards, so the `queryByText('!!!Voting power:')` assertion would fail.
+- **`showNoSyncFallback` rewrite is behaviour-preserving except where intended.** Old
+  predicate excluded selfnode only on its `Failed` leg; new predicate hoists
+  `!isSelfnodeUnsupported` out of the parenthesis so the `Loaded` leg is covered too.
+  For every non-selfnode error the truth table is unchanged. The syncing banner at
+  `:369-394` is outside `renderContent()` and is neither suppressed nor duplicated;
+  the second component test pins that the selfnode copy wins over the `noSync` copy
+  while `isNodeInSync` is false.
+- **No renderer timer added (D-3).** `grep -rn 'setTimeout\|setInterval'` over
+  `source/renderer/app/components/governance`,
+  `source/renderer/app/containers/governance` and `storybook/stories/governance`
+  returns nothing, and the diff adds no timer of any kind. The main process remains
+  the sole timeout authority.
+- **CLI discipline / no retry loop.** The `DRepDirectoryPage.tsx` container is *not*
+  in the diff — the guide's ruling that no mount guard be added was followed. The
+  cost of the per-mount `refresh()` is pinned main-side instead:
+  `tests/jest/governance/GovernanceQueryService.spec.ts` gains
+  `issues no CLI invocation across repeated selfnode refreshes`, and I confirmed the
+  suite's `beforeEach` runs `mockSpawn.mockReset()` (`:161-162`) so
+  `expect(mockSpawn).not.toHaveBeenCalled()` is a real assertion rather than a
+  survivor of an earlier test's state.
+- **Sanitization floor.** The selfnode path logs nothing new; no logger, analytics or
+  electron-store call appears in the diff. `tests/jest/security/governance-sanitization.spec.ts`
+  re-run green (39/39). No DRep id, no `abstain`/`no_confidence`, no bech32 string
+  appears in any string this task adds.
+- **i18n.** Both new ids are present in **both** catalogs with the leading `!!!`,
+  inserted at the correct `Array.prototype.sort()` positions
+  (`empty.noSync` < `empty.selfnode` < `error`; `status.inactive` <
+  `status.selfnodeUnavailable` < `syncing`). The en-US empty-state string is verbatim
+  from the design's §9 row `:181` and the ja-JP badge label `!!!DRepデータ利用不可` is
+  verbatim from the §1 table row `:16`. `defaultMessages.json` and
+  `translations/messages.json` carry the same two entries, i.e. `yarn i18n:manage`
+  output, not hand edits. Neither new id is defined anywhere else in `source/`, so
+  there is no duplicate-id collision.
+- **Design-doc reconciliations are exactly the two the guide allows.** The §1
+  "Selfnode / CLI unsupported" table row at `:16` still exists untouched; one
+  sentence was appended to the status-grounding paragraph at `:20`; one microcopy row
+  was added at `:190` inside the `status.*` group. No other doc changed
+  (`git diff --stat -- .agent/` lists only `shared-design-tokens.md`).
+- **Stylelint (measured, not a gate).** `node_modules/.bin/stylelint …/DRepEmptyState.scss`
+  reports exactly the 3 pre-existing `order/properties-alphabetical-order` errors at
+  `:4`, `:6`, `:14`. Both appended blocks (`.unavailableBadge`, `.unavailableIcon`)
+  are alphabetical and contribute zero. `--badge-disabled-bg` is undeclared in the
+  themes, but so are `--badge-success-bg` / `--badge-neutral-fg` in the shipped
+  `DRepStatusBadge.scss`; the `var(--token, fallback)` shape matches the existing
+  convention and the token name is the one §1 specifies.
+- **Comment convention.** The diff adds no comment to any source file except two
+  lines appended to the existing `showNoSyncFallback` rationale in
+  `DRepDirectory.tsx:226-227`. No task id, no `CAT-*`/`CP-*`, no plan name, no PR
+  number, no change-history narration and no ALL-CAPS emphasis in any added comment
+  or test name. The deleted two-line `DRepEmptyStateVariant` guard comment was
+  removed rather than amended, as the guide requires.
+- **Commands re-run here.** `yarn compile` exit 0 (18.5 s); focused Jest over
+  `DRepDirectory.spec.tsx` + `DRepDirectoryPage.spec.tsx` +
+  `GovernanceQueryService.spec.ts` + `preliminaryCopyMarkers.spec.ts` +
+  `governance-sanitization.spec.ts` → 5 suites / **160** tests / 1 snapshot passed,
+  exit 0 (65 + 10 + 41 + 5 + 39, matching the guide's predicted 65 / 41 / 10 and the
+  unchanged 5 / 39). `git status --short` unchanged by the runs — the regenerated
+  `*.scss.d.ts` are gitignored.
+
+### Minor (non-blocking, no change requested)
+
+1. `DRepDirectory.tsx:224-227` — the `showNoSyncFallback` rationale is now a
+   four-line comment block, one line over the convention's "1-3 plain lines". Both
+   sentences carry real why-information, the text is guide-mandated verbatim, and
+   nothing in it is banned narration. Left as is.
+2. `keeps the selfnode empty state across remounts` asserts one `refresh()` per mount
+   against two *different* store mocks, so it proves "a remount re-fires exactly one
+   refresh and re-renders the empty state" rather than any cross-mount retention. That
+   is the property the guide asks for and the no-CLI half is proved main-side; the
+   name is slightly more ambitious than the assertions.
+3. The selfnode empty state offers no retry affordance while `DRepDirectoryBanner`'s
+   Refresh button stays live, so a selfnode user can still click Refresh and get the
+   same state back. Correct per the guide (the guard throws before any spawn) and
+   deliberate — recorded only because it is the one interaction the empty state does
+   not explain.
+4. With `isNodeInSync === false` the syncing banner and the selfnode empty state show
+   together ("still syncing (n%)" above "unavailable on the selfnode cluster"). The
+   guide explicitly forbids suppressing the banner, so this is the intended rendering,
+   but it is the one place where two overlapping explanations appear at once.
+
+### Owed at close (for the scribe and the slice-close stage, not this diff)
+
+- **`yarn storybook:build` must not be reported green for this task either.** The
+  verifier measured it red and controlled for it by extracting a pristine
+  `0cdcab581` tree to `/home/node/.claude/jobs/3bad97d1/tmp/base-sb` with the same
+  `node_modules` symlink and reproducing the identical manager-bundle
+  `ModuleParseError` on `storybook/addons/DaedalusMenu/register.tsx`. Consistent with
+  the task-123 round-1 finding above. Consequence to state plainly in the tracker: the
+  new `Selfnode unavailable` story has **no bundle-level check** in this environment.
+  It is not unchecked at the type level, though — `tsconfig.json` has no `include`
+  and excludes only `node_modules`, so `yarn compile` typechecks
+  `storybook/stories/governance/DRepDirectory.stories.tsx`, and `yarn lint` covers it.
+- **The 118 → 111 pre-existing `yarn stylelint` errors** stay out of scope per D-4 and
+  belong in the slice findings note as a user-owned pre-merge cleanup item. task-124
+  adds 0 and fixes 0.
+- **`nix fmt`** remains unrunnable in this container; the three pre-drifted files this
+  task edits (`DRepDirectory.tsx`, `DRepDirectory.stories.tsx`,
+  `GovernanceQueryService.spec.ts`) were hand-matched as the guide requires.

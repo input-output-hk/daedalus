@@ -187,6 +187,19 @@ describe('GovernanceQueryService — slice-1 repair pass', () => {
         queryErrorType: GovernanceQueryErrorType.SocketUnavailable,
       });
     });
+
+    it('issues no CLI invocation across repeated selfnode refreshes', async () => {
+      service.setSelfnodeMode(true);
+
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
+        queryErrorType: GovernanceQueryErrorType.SelfnodeCliUnsupported,
+      });
+      await expect(service.fetchDRepRegistrations()).rejects.toMatchObject({
+        queryErrorType: GovernanceQueryErrorType.SelfnodeCliUnsupported,
+      });
+
+      expect(mockSpawn).not.toHaveBeenCalled();
+    });
   });
 
   // ---- successful tuple parsing ----

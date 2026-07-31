@@ -112,6 +112,12 @@ const SOCKET_ERROR: DirectoryError = {
   type: 'SOCKET_UNAVAILABLE',
 };
 
+const SELFNODE_ERROR: DirectoryError = {
+  message:
+    'DRep data is unavailable in selfnode mode. A synced node is required.',
+  type: 'SELFNODE_CLI_UNSUPPORTED',
+};
+
 const REFRESH_ERROR: DirectoryError = {
   message:
     'Showing the last successful directory snapshot while refresh retries.',
@@ -250,6 +256,7 @@ const DIRECTORY_STATE_OPTIONS = {
   Loading: 'loading',
   Refreshing: 'refreshing',
   'Refresh failed': 'refreshFailed',
+  'Selfnode unavailable': 'selfnode',
   Error: 'error',
 };
 
@@ -284,6 +291,12 @@ const resolveDirectoryState = (
         refreshState: GovernanceRefreshState.Loaded,
         entries: baseEntries,
         error: TIMEOUT_ERROR,
+      };
+    case 'selfnode':
+      return {
+        refreshState: GovernanceRefreshState.Failed,
+        entries: [],
+        error: SELFNODE_ERROR,
       };
     case 'error':
       return {
@@ -431,6 +444,9 @@ storiesOf('Governance / DRep Directory', module)
   .add('Empty', () => renderCentered(GovernanceRefreshState.Loaded, []))
   .add('Error', () =>
     renderCentered(GovernanceRefreshState.Failed, [], SOCKET_ERROR)
+  )
+  .add('Selfnode unavailable', () =>
+    renderCentered(GovernanceRefreshState.Failed, [], SELFNODE_ERROR)
   )
   .add('Loading', () => renderCentered(GovernanceRefreshState.Loading, []))
   .add('Refreshing', () =>

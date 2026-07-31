@@ -218,14 +218,19 @@ function DRepDirectory({
   const hasRetainedData = showAllList.length > 0;
   const showErrorBanner = error && hasRetainedData;
 
+  const isSelfnodeUnsupported =
+    error?.type === GovernanceQueryErrorType.SelfnodeCliUnsupported;
+
   // While syncing, an empty or unavailable directory is expected — fall back
   // to the noSync empty state instead of a bare error or "No DReps found".
+  // Selfnode is a node-capability failure rather than a sync gap, so it owns
+  // its own arm and is excluded here on every refresh state.
   const showNoSyncFallback =
     !isNodeInSync &&
     !hasRetainedData &&
+    !isSelfnodeUnsupported &&
     (refreshState === GovernanceRefreshState.Loaded ||
-      (refreshState === GovernanceRefreshState.Failed &&
-        error?.type !== GovernanceQueryErrorType.SelfnodeCliUnsupported));
+      refreshState === GovernanceRefreshState.Failed);
 
   const renderContent = () => {
     switch (true) {
@@ -234,6 +239,9 @@ function DRepDirectory({
 
       case showNoSyncFallback:
         return <DRepEmptyState variant="noSync" />;
+
+      case isSelfnodeUnsupported:
+        return <DRepEmptyState variant="selfnode" />;
 
       case refreshState === GovernanceRefreshState.Failed:
         return (
