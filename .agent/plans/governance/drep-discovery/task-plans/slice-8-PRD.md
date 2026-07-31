@@ -1,6 +1,6 @@
 # Slice-8 PRD: Refresh-latency, Selfnode & Release Verification
 
-> **Planning Status:** `approved` | **Slice Status:** open | **Date:** 2026-07-31 | **Parent Plan:** [governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md)
+> **Planning Status:** `approved` | **Slice Status:** closed (see [Final Outcome](#final-outcome)) | **Date:** 2026-07-31 | **Parent Plan:** [governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md)
 > **Phase:** `slice-8` — "Slice 8 - Refresh-latency, selfnode & release verification" (`riskLevel: medium`; tasks JSON `:747-805`)
 > **Tasks:** 3 — task-123, task-124, task-125 (all `pending` at the planning anchor `0cdcab581`)
 > **Preceding slice:** [anchor-2-PRD.md](./anchor-2-PRD.md) (closed 2026-07-31 at `b99124416`)
@@ -1220,39 +1220,138 @@ subject line, no body, no blank line, no trailers, **no `Co-Authored-By`**):
 
 ## Final Outcome
 
-> **Placeholder — to be filled at slice close.** Nothing below may be written
-> before the last slice-8 commit lands. When filled, this section must state: the
-> closing commit; each row's final tracker status **with task-125 explicitly
-> recorded as still `pending` and why** (D-5); a task-by-task table of what
-> shipped, with commit hashes and measured Jest deltas; the gates measured **at the
-> final HEAD**, not carried forward from per-task runs, including the unfiltered
-> `node_modules/.bin/jest --runInBand` totals and the unchanged 118-error
-> `yarn stylelint` count; which planning decisions held and which were revised
-> during implementation; the review record; and every residual from **OWED at slice
-> close** restated as still owed. If slice-8 produced no durable research beyond
-> the mandatory findings entries, say so explicitly rather than omitting the note.
-> **This is the feature's last slice — this section is the feature's closing
-> record.**
+slice-8 is closed. Two of its three rows are `complete`; the third is `pending` by
+design and is the feature's terminal, user-owned stop condition. **No slice-8 row is
+`verified`, and none should be** — the only evidence that could promote one is the
+release verification that task-125 describes and that no agent may run.
+
+Last code commit: `45efc1911` (task-124). The close-out commit carrying this
+section, the release-verification checklist, the findings note and the tracker rows
+sits directly on top of it. All work is local: this container has no `gh` and no push
+credentials.
+
+### Final tracker status
+
+| Row | Status | Why it stopped there |
+| --- | --- | --- |
+| task-123 | `complete` | Every acceptance criterion discharged, reviewed clean in round one. Not `verified`: all proof is the task's own focused test runs, and the independent evidence that would promote it is task-125's. |
+| task-124 | `complete` | Same. Both criteria discharged, reviewed clean in round one, no independent proof beyond its own suites. |
+| **task-125** | **`pending`** | **Correct and intended (D-5).** The row is locked `manual_execution` and is a stop condition: it needs a synced node, a packaged build, a real hardware wallet and a human. The autonomous deliverable — the checklist — is written and committed at [`../release-verification-checklist.md`](../release-verification-checklist.md). **Writing the checklist does not discharge the row.** Only the user, after a completed run of its §9 result table, may promote it. |
+
+The feature therefore closes with its own definition of "verified" unreached by any
+row. That is the designed outcome (R-6), not a defect.
 
 ### What shipped, task by task
 
-*(to be filled at slice close)*
+| Task | Commit | What shipped | Measured Jest deltas |
+| --- | --- | --- | --- |
+| task-123 — refresh-latency budget and stale-while-refresh contract | `50b23a5f0` `feat(gov): task-123 render the refresh latency and stale-while-refresh contract` | One new wire field: a plain-number `elapsedMs` on `DRepListQueryPayload` and `DRepStakeQueryPayload`, measured around work the service already does — no probe query, no new `spawn`, no argv change — and sampled after `_assertQueryable` so a selfnode throw measures nothing. AC-1 discharged in the governance IPC channel comment block in `source/common/ipc/api.ts` (10 s phase-1 / 30 s phase-2, `elapsedMs` observational only); the design tokens already carried the same budget, so no design doc was edited. AC-2: `DRepErrorBanner` gains a `refreshFailed` variant rendering the new `governance.drepDirectory.error.refresh` key byte-identically to the design tokens, replacing a hand-rolled banner that printed raw main-process error strings to the user; the first-load spinner is replaced by the new 25-card `DRepDirectorySkeleton`; the stale-while-refresh spinner badge moves beside the "Last updated" timestamp in `DRepDirectoryBanner`. | `GovernanceQueryService.spec.ts` 38→40 · `logDRepStateSnapshot.spec.ts` 5→6 · `DRepDirectory.spec.tsx` 60→61 (snapshot unchanged) · `DRepDirectoryBanner.spec.tsx` 7→9 |
+| task-124 — selfnode CLI-unsupported empty state | `45efc1911` `feat(gov): task-124 replace the selfnode query error with the unavailable empty state` | No wire change was needed despite the task title: `SelfnodeCliUnsupported` already existed, is thrown in exactly one place, crosses IPC as a plain object and survives `_normalizeError` — nothing under `source/main` or `source/common` was edited. `DRepEmptyStateVariant` gains `selfnode`; `DRepDirectory.renderContent()` gains a selfnode arm ahead of the `Failed` arm and ahead of the default arm that owns the list and the refresh-failed banner, so a selfnode user can never see a partial directory or a retained-snapshot banner. The unavailability indicator is plain markup (icon + textual label) inside the empty state, not a `DRepStatusBadge`. Two new copy keys in both catalogs with the `!!!` marker; two design-doc reconciliations. | `DRepDirectory.spec.tsx` 61→65 · `DRepDirectoryPage.spec.tsx` 9→10 · `GovernanceQueryService.spec.ts` 40→41 |
+| task-125 — release verification | *(this close-out commit; the row is unchanged at `pending`)* | `release-verification-checklist.md`: preconditions (packaged build, synced node, both wallet types, real device), four standing assertions including the no-external-portal charter check, the browse → evaluate → search/show-all → favorites → select → delegate legs with software **and** hardware passes, on-device byte-equality as the load-bearing check, the seven refresh-latency states with inducement recipes, the selfnode leg as a separate launch, a localization leg, and a result table the verifier fills in. | none — no code changed |
 
 ### Gates at close — measured, not asserted
 
-*(to be filled at slice close)*
+Re-measured in the slice worktree at `45efc1911` with a clean tree; these supersede
+the per-task figures where they differ. Full detail in
+[`../research/slice-8-findings.md`](../research/slice-8-findings.md) F-11.
+
+| Gate | Result |
+| --- | --- |
+| `node_modules/.bin/jest --runInBand` (unfiltered) | **exit 0** — 92 passed + 1 skipped of 93 suites; **1334 passed + 12 skipped of 1346 tests**; 10 snapshots; 39.4 s. The skipped suite is `GovernanceCliArgvSmoke.spec.ts`, self-skipping without `cardano-cli` on PATH. |
+| Focused slice-8 surface (7 suites incl. the sanitization floor and the copy-marker suite) | **exit 0** — 175 tests, 1 snapshot. This total reconciles exactly with the per-task deltas above (41 + 65 + 10 + 9 + 6 + 39 + 5 = 175), which is the independent check that no delta was mis-stated. |
+| `yarn compile` | **exit 0**, 18.4 s |
+| `yarn lint` | **exit 0** — 0 errors, 5635 warnings (pre-existing repo baseline) |
+| `yarn i18n:manage` | **exit 0**, byte-identical no-op, tree clean afterwards |
+| `yarn stylelint` | **exit 2 — 111 errors** across 13 governance SCSS files, all `order/properties-alphabetical-order`. 118 at the planning anchor; 7 disappeared with two dead selector blocks removed alongside the markup that used them; **0 added**. Out of scope by D-4. |
+| `yarn storybook:build` | **exit 1 — waived, not green.** See the D-6 revision below. |
+| `yarn check:all` | Red transitively on the `prettier:check` and `stylelint` legs. |
+| `nix fmt` | **Not run — no `nix` in this container.** Owed. |
 
 ### Planning decisions at close
 
-*(to be filled at slice close — which of D-1…D-18 held, which were revised, and why)*
+**Held as written:** D-1 (selfnode indicator as a new message id rendered as plain
+markup, `DRepStatus` not widened), D-2 (a real skeleton list, not a spinner — it
+overran the 4 h estimate as anticipated and was not downgraded), D-3 (main process
+the single timeout authority; `elapsedMs` observational; **zero** new renderer
+timers, grep-verified), D-4 (the stylelint debt recorded, not swept), D-5
+(task-125 stays `pending`), D-7, D-8, D-9, D-10, D-11, D-12, D-13 (the new
+`DRepDirectorySkeleton.scss` is the one governance stylesheet that is
+stylelint-clean at birth), D-14 (no mount guard; the no-spawn property pinned by a
+test instead), D-15, D-16, D-17 (no `auditSummary` added to the phase object) and
+D-18.
+
+**Revised during implementation — one, and it is a correction of this PRD:**
+
+- **Definition of Done item 8 and the C-6 premise it rests on were wrong.**
+  This PRD asserted `yarn storybook:build` is green at HEAD and must be run rather
+  than waived. Measured at close it **exits 1**, with a manager-bundle
+  `ModuleParseError` on `storybook/addons/DaedalusMenu/register.tsx` — a directory
+  slice-8 never touched (`git diff 0cdcab581..45efc1911 -- storybook/addons/` is
+  empty), reproduced by both task verifiers on a pristine `0cdcab581` tree. The
+  corrected disposition is **waived with the reason recorded**. Consequence, stated
+  plainly: the stories slice-8 adds have **no bundle-level check** in this
+  environment. They are not untyped — `tsconfig.json` has no `include` and excludes
+  only `node_modules`, so `yarn compile` typechecks the story file and `yarn lint`
+  covers it — but the visual pass was already owed and stays owed. Recorded as
+  finding F-2.
+
+**Also worth carrying forward:** the i18n inventory in this PRD placed
+`governance.drepDirectory.error.refresh` between `…error` and
+`…error.rankingUnavailable`. That is the wrong sort position (`a` < `e`), corrected
+during implementation and recorded as F-4. Insert catalog keys by running the sort,
+not by eyeballing the dotted segments.
 
 ### Review record
 
-*(to be filled at slice close)*
+Both buildable rows were reviewed and both were **approved in round one with zero
+blockers**; the minor observations are recorded in
+[`slice-8-code-review.md`](./slice-8-code-review.md) under
+`Code Review (task-123, round 1)` and `Code Review (task-124, round 1)`, together
+with the planning pass, the critique pass and the fix-pass disposition that preceded
+them. Carried-forward minors, none blocking: `DRepDirectorySkeleton`'s `count` prop
+has no caller yet; `DRepErrorBanner`'s `retryLabel` defaults to an empty string; no
+`DRepDirectory`-level test pins that the list stays rendered while `Refreshing` (a
+pre-existing gap — `Refreshing` never had a `renderContent` arm); the design tokens'
+absolute-ISO-timestamp tooltip on "Last updated" is still unimplemented; and with
+`isNodeInSync === false` the syncing banner and the selfnode empty state render
+together, which the design requires.
+
+### Research produced
+
+slice-8 produced durable research beyond the mandatory entries:
+[`../research/slice-8-findings.md`](../research/slice-8-findings.md), F-1 … F-11 —
+the stylelint accounting, the corrected gate premises, the recorded-not-fixed
+first-load refresh-button divergence, the catalog sort correction, the selfnode
+indicator rationale, the "retry loop that isn't one", the single-timeout-authority
+contract, the skeleton rationale, the `nix fmt` deviation, the prettier-drift
+inventory with its scratch-directory false-green trap, and the close-out gate table.
 
 ### Residual gaps and user-owned obligations — nothing here is green
 
-*(to be filled at slice close — restate every OWED item)*
+Every OWED item is restated as still owed. None was discharged.
+
+1. **`nix fmt`** — unavailable in this container; `prettier --write` on explicit
+   paths was the substitute and is not the mandated formatter. Pre-merge, user-owned
+   (F-9).
+2. **`yarn stylelint` — 111 errors**, all in this feature's own governance SCSS, all
+   `order/properties-alphabetical-order`, all pre-dating slice-8. Out of scope by
+   D-4; user-owned pre-merge cleanup. `yarn check:all` is red for this and for
+   `prettier:check` (F-1, F-11).
+3. **Pre-existing prettier drift on 12 governance files** — deliberately not
+   reformatted; five of them are slice-8 edit targets and were hand-matched. Carried
+   as part of the `nix fmt` obligation (F-10).
+4. **The Storybook visual pass and the ja-JP overflow check** for the skeleton, the
+   refresh-failed banner and the selfnode empty state — no browser here, and
+   `storybook:build` does not compile in this environment either (F-2).
+5. **task-125's release verification itself** — synced node, packaged build, real
+   hardware device, both wallet types, a human. The checklist is delivered; the run
+   is not. **The row stays `pending`.**
+6. **The release-end `!!!` copy review**, including the three preliminary keys this
+   slice adds — out of scope for every slice by the preliminary-copy invariant.
+7. **The task-166 latency-measurement remainder** — `elapsedMs` feeds it; slice-8
+   does not close it.
+8. **The first-load refresh-button divergence** — the design disables Refresh during
+   first load; the code disables it only while refreshing. Recorded, unfixed (F-3).
 
 ## References
 

@@ -32,21 +32,43 @@ declaration slice-8 added is alphabetical inside its block, so the new
 hold exactly their pre-slice error count. task-124 adds 0 and fixes 0; the total
 stays at 111.
 
-## F-2 (slice-8) — Two gate premises carried in a preceding slice's tracker text are wrong at this HEAD; the correction lives here, not in that closed entry
+## F-2 (slice-8) — `yarn compile` is green without the workaround; `yarn storybook:build` is **red**, and the planning pass's green reading of it was the mismeasurement
 
-The slice-8 planning pass re-measured the gates at HEAD `0cdcab581` with a clean
-tree: `yarn storybook:build` exits **0** (~84 s, output to `dist/storybook`) and
-`yarn compile` exits **0** (~26 s, its `precompile` hook regenerating the
-gitignored `*.scss.d.ts`). A preceding slice's tracker `statusReason` asserts
-that `storybook:build` is red for a manager-webpack JSX-loader reason and that
-`yarn compile` needs a `typed-scss-modules` + `tsc --noEmit` workaround; neither
-holds here. Consequences: slice-8 runs both gates rather than waiving them, and
-the `typed-scss-modules` fallback is unnecessary.
+Two gate premises were in dispute across the slice. Both are now settled by
+measurement at the slice-close HEAD `45efc1911`, and one of the two corrections
+runs opposite to the direction the planning pass recorded.
 
-**The closed tracker entry was deliberately not edited.** A closed slice's
-`statusReason` is the record of what that slice measured at its own HEAD;
-rewriting it retroactively would destroy the audit trail. Corrections to a closed
-measurement belong in the later slice's findings note.
+**`yarn compile` — green, no workaround.** Exit 0 (18.4 s), its `precompile` hook
+regenerating the gitignored `*.scss.d.ts` and leaving `git status` clean. A
+preceding slice's tracker `statusReason` asserts it needs a `typed-scss-modules` +
+`tsc --noEmit` substitute. That does not hold here; the substitute is unnecessary.
+
+**`yarn storybook:build` — red, and it was red at the planning anchor too.**
+Exit 1. The failure is a manager-bundle `ModuleParseError`, *"Module parse failed:
+Unexpected token (12:18)"*, on `storybook/addons/DaedalusMenu/register.tsx` — the
+JSX at `render: () => <DaedalusMenu api={api} />`, i.e. the manager webpack config
+has no JSX loader for that file. It is **not** slice-8's doing:
+`git diff 0cdcab581..45efc1911 -- storybook/addons/` is empty and no slice-8 commit
+touches that directory, and both task verifiers independently reproduced the
+identical error on a pristine `0cdcab581` tree extracted to a separate directory
+with the same `node_modules` symlink. The planning pass's "exit 0, 84 s" reading
+was wrong, and the slice-8 PRD's Definition of Done item 8 ("green at HEAD — run
+it, do not waive it") is wrong with it; the corrected disposition is **waived,
+with the reason recorded**, exactly as the preceding slice had it.
+
+**Consequence.** The three stories slice-8 adds — the refresh-latency knob states,
+the skeleton and the `Selfnode unavailable` story — have **no bundle-level check**
+in this environment. They are not unchecked at the type level: `tsconfig.json`
+declares no `include` and excludes only `node_modules`, so `yarn compile`
+typechecks `storybook/stories/governance/DRepDirectory.stories.tsx`, and
+`yarn lint` covers it. The **visual** pass remains owed regardless — a compiling
+bundle was never a visual pass.
+
+**No closed slice's tracker entry was edited.** A closed slice's `statusReason` is
+the record of what that slice measured at its own HEAD; rewriting it
+retroactively would destroy the audit trail. Corrections to a closed measurement
+belong here. The correction to slice-8's *own* planning text belongs here too,
+which is why it is stated as a correction rather than quietly applied.
 
 ## F-3 (slice-8) — Recorded, not fixed: the design disables the refresh button during first load; the code disables it only while refreshing
 
@@ -103,3 +125,122 @@ never called across repeated selfnode refreshes, and a container test asserts th
 empty state survives a remount with exactly one `refresh()` per mount. Adding a
 mount guard would have put node-capability knowledge in a container that should
 not carry it, and would have hidden the real guarantee behind a suppressed call.
+
+## F-7 (task-123) — The main process stays the single timeout authority; `elapsedMs` is observational and the renderer runs no timer at all
+
+The task text asks for "elapsed time and refresh state through the governance IPC
+payloads", which reads like a licence to schedule the ≤700 ms and 10 s thresholds
+in the renderer. It is not. `_runCliQuery`'s `setTimeout` in
+`GovernanceQueryService` is the **only** timeout enforcement in the feature:
+phase 1 rejects at `REGISTRATION_TIMEOUT_MS` (10 s) and phase 2 at
+`STAKE_TIMEOUT_MS` (30 s), so the renderer never observes an in-flight request
+older than the budget and a renderer clock could only race it — firing a banner
+with no error, or leaving an error with no banner, depending on IPC latency.
+
+The shipped resolution: the wire carries exactly one new field, a plain-number
+`elapsedMs` on `DRepListQueryPayload` and `DRepStakeQueryPayload`, sampled around
+work the service already performs (no probe query, no extra `spawn`, no argv
+change) and sampled **after** `_assertQueryable`, so a selfnode throw measures
+nothing. It is **purely observational** — it feeds the "last updated" reasoning
+and the still-open task-166 latency measurement. Refresh *state* stays
+renderer-owned in the existing `GovernanceRefreshState` machine; the skeleton is
+driven by `refreshState === Loading`, not by a clock. The property is
+grep-checkable and was checked: **zero** new `setTimeout` / `setInterval` in
+`components/governance`, `containers/governance` or `storybook/stories/governance`.
+
+`elapsedMs` is admissible under the sanitization floor for a stated reason, not by
+default: widening `DRepListQueryPayload` widens `Logs/pub/DRep-state-snapshot.json`,
+which deliberately bypasses `filterLogData`, and a millisecond integer names no
+DRep id, no bech32 string and no vote. **That reasoning does not generalize** — the
+next field added to this payload needs its own argument, and
+`logDRepStateSnapshot.spec.ts` must be re-run when one is.
+
+## F-8 (task-123) — The ≤700 ms first-load phase ships as a real skeleton list; the spinner was not sufficient
+
+Both the design tokens' refresh-state table and the discovery design's state table
+specify a **full skeleton list** for the initial load, and the code had been
+rendering a centred `LoadingSpinner` with "Loading DRep data…" since the state
+machine was built. The gap was closed rather than reconciled away: slice-8 adds
+`DRepDirectorySkeleton`, a pure presentational component rendering 25 placeholder
+cards — the directory's page size, so the first paint holds the height the loaded
+page will occupy and the list does not jump when real cards arrive.
+
+The component is deliberately inert: no state, no store, no timer, no data, one
+optional `count` prop, `role="status"` + `aria-busy` + the existing
+`governance.drepDirectory.loading` string as its accessible label (no new copy
+key). This knowingly exceeded task-123's 4 h estimate. Recording it because the
+cheap alternative — keeping the spinner and amending the design doc — is the
+tempting move for anyone revisiting this, and it was explicitly rejected: the
+skeleton is a first-paint layout-stability property, not decoration. Its
+stylesheet is also the one governance SCSS file that is stylelint-clean at birth
+(see F-1).
+
+## F-9 (slice-8) — `nix fmt` cannot run in this devcontainer; the substitute is `prettier --write` on explicit paths, and the real formatter remains owed
+
+The repository's mandated formatter is `nix fmt`. **There is no `nix` in this
+devcontainer**, so every slice-8 task substituted
+`node_modules/.bin/prettier --write <explicit changed paths>` — explicit paths
+only, never `yarn prettier`, whose script is
+`./node_modules/.bin/prettier "**/*.*"` and would reformat ~240 unrelated
+pre-drifted files in one commit. The tasks tracker JSON, the locale catalogs and
+`translations/messages.json` are tool-managed and were never prettier-formatted.
+Markdown under `.agent/` is outside prettier's scope entirely: the repo's
+`.prettierignore` ignores everything at the root and re-admits only `source/`,
+`features/`, `storybook/`, `hardware-wallet-tests/` and `tests/`, so a
+`prettier --write` on these plan docs matches zero files.
+
+**`nix fmt` is therefore a user-owned pre-merge obligation for this whole slice**,
+not a discharged gate. Nothing in slice-8 may be read as claiming the mandated
+formatter ran.
+
+## F-10 (slice-8) — Twelve governance files carry pre-existing prettier drift; slice-8 deliberately did not reformat them and added none
+
+`prettier --check` over the governance surfaces flags **12** files as already
+drifted at HEAD `0cdcab581`, before slice-8 touched anything:
+
+```
+source/renderer/app/components/governance/_shared/DRepCategoryBadge.spec.tsx
+source/renderer/app/components/governance/_shared/DRepIdDisplay.tsx
+source/renderer/app/components/governance/_shared/DRepSourceLabel.tsx
+source/renderer/app/components/governance/drep-directory/DRepDirectory.tsx
+source/main/governance/GovernanceQueryService.ts
+source/common/ipc/api.ts
+source/main/ipc/governanceChannel.ts
+tests/jest/governance/AnchorFetchService.spec.ts
+tests/jest/governance/GovernanceQueryService.spec.ts
+tests/jest/governance/GovernanceStore.spec.ts
+storybook/stories/governance/DRepDirectory.stories.tsx
+storybook/stories/governance/_utils/fixtures.ts
+```
+
+Re-measured at the slice-close HEAD `45efc1911`: the **same 12 files, no more** —
+slice-8 introduced no new drift. Five of them are files slice-8 edited
+(`api.ts`, `GovernanceQueryService.ts`, `DRepDirectory.tsx`,
+`DRepDirectory.stories.tsx`, `GovernanceQueryService.spec.ts`); each was
+hand-matched to the surrounding style and left otherwise untouched, because
+`--write`-ing them would have buried a 50-line task diff under hundreds of lines
+of unrelated reformatting.
+
+Two traps worth carrying forward. First, the root cause is that prettier 2.1.2
+does not stabilize on some constructs in this repo (~240 files carry the same
+drift), so "prettier disagrees with the file" here does not mean "the author was
+sloppy". Second, **checking formatting in a scratch directory gives a false
+green**: an `.editorconfig` in the repo alters the resolved options, so a drifted
+file copied elsewhere can pass. Verify with `--stdin-filepath` pointing at the
+real repo path, or run the check from the repo root.
+
+## F-11 (slice-8, close-out) — Gates at the slice-close HEAD, measured
+
+Measured in `wt-slice-8` at `45efc1911` with a clean working tree. These supersede
+every per-task figure quoted earlier in this note where they differ.
+
+| Gate | Result |
+| --- | --- |
+| `node_modules/.bin/jest --runInBand` | **exit 0** — 92 passed + 1 skipped of 93 suites; 1334 passed + 12 skipped of 1346 tests; 10 snapshots; 39.4 s. The skipped suite is `GovernanceCliArgvSmoke.spec.ts`, which self-skips without `cardano-cli` on PATH. |
+| `yarn compile` | **exit 0**, 18.4 s |
+| `yarn lint` | **exit 0** — 0 errors, 5635 warnings (the pre-existing repo-wide baseline) |
+| `yarn i18n:manage` | **exit 0**, byte-identical no-op; `git status` clean afterwards |
+| `yarn stylelint` | **exit 2 — 111 errors** across 13 governance SCSS files, all `order/properties-alphabetical-order`. See F-1: 118 at `0cdcab581`, 7 removed with two dead selector blocks, **0 added**. Out of scope by decision; user-owned pre-merge cleanup. |
+| `yarn storybook:build` | **exit 1** — pre-existing manager-bundle failure on `storybook/addons/DaedalusMenu/register.tsx`, untouched by slice-8. See F-2. Waived, not green. |
+| `yarn check:all` | Red transitively, on the `prettier:check` and `stylelint` legs (F-9, F-10, F-1). Never run `yarn prettier` / `yarn prettier:check` to "fix" it. |
+| `nix fmt` | **Not run — unavailable.** See F-9. |
