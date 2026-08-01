@@ -18,6 +18,7 @@ All agent documentation is centralized in the [`.agent/`](./.agent/) directory.
 - [Architecture](./.agent/system/architecture.md) — Electron/React architecture, IPC patterns
 - [API Endpoints](./.agent/system/api-endpoints.md) — cardano-wallet REST API
 - [State Management](./.agent/system/state-management.md) — MobX stores and patterns
+- [Watchdog](./.agent/system/watchdog.md) — Rust process supervisor: startup, IPC protocol, wallet restart, shutdown
 
 ### Workflows
 - [/build](./.agent/workflows/build.md) — Nix shells and Yarn builds
