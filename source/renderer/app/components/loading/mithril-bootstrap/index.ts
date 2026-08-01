@@ -1,1 +1,1 @@
-export { default as MithrilBootstrap } from './MithrilBootstrap';
+export { default as MithrilSyncOverlay } from './MithrilSyncOverlay';

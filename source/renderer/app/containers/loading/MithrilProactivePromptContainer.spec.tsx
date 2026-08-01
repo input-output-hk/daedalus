@@ -12,12 +12,23 @@ const KNOWN_EPOCHS_TEXT = 'Your node is about 3 epochs behind.';
 
 type StoreOverrides = {
   networkStatus?: Record<string, unknown>;
-  mithrilPartialSync?: Record<string, unknown>;
+  mithrilSync?: Record<string, unknown>;
 };
+
+const makeMithrilSyncDefaults = () => ({
+  status: 'idle',
+  isPartialSyncEnabled: true,
+  isSignificantlyBehind: true,
+  proactivePromptDismissedThisSession: false,
+  mithrilAttemptStartedThisSession: false,
+  certifiedEpoch: undefined,
+  startPartialSync: jest.fn(() => Promise.resolve()),
+  dismissProactivePrompt: jest.fn(),
+});
 
 const makeStores = ({
   networkStatus = {},
-  mithrilPartialSync = {},
+  mithrilSync = {},
 }: StoreOverrides = {}) => ({
   networkStatus: {
     // The shared fixture keeps tips finite (network 100, local 97 → 3 epochs) so computeBehindByEpochs returns 3. isSignificantlyBehind=true is the sole gate signal; the anti-flash tests verify isBehindnessKnown no longer gates independently.
@@ -27,19 +38,9 @@ const makeStores = ({
     isBehindnessKnown: true,
     ...networkStatus,
   },
-  mithrilPartialSync: {
-    status: 'idle',
-    isPartialSyncEnabled: true,
-    isSignificantlyBehind: true,
-    proactivePromptDismissedThisSession: false,
-    // re-pop guard + beacon anchor default to the
-    // "no attempt yet / no certified epoch" state so the networkTip cases above
-    // are unaffected.
-    mithrilAttemptStartedThisSession: false,
-    certifiedEpoch: undefined,
-    startPartialSync: jest.fn(() => Promise.resolve()),
-    dismissProactivePrompt: jest.fn(),
-    ...mithrilPartialSync,
+  mithrilSync: {
+    ...makeMithrilSyncDefaults(),
+    ...mithrilSync,
   },
 });
 
@@ -71,7 +72,7 @@ describe('MithrilProactivePromptContainer', () => {
 
   it('renders nothing while a Mithril sync is already in flight (status !== idle)', () => {
     const { container } = renderContainer({
-      mithrilPartialSync: { status: 'downloading' },
+      mithrilSync: { status: 'downloading' },
     });
 
     expect(screen.queryByText(KNOWN_EPOCHS_TEXT)).not.toBeInTheDocument();
@@ -80,7 +81,7 @@ describe('MithrilProactivePromptContainer', () => {
 
   it('renders nothing when partial sync is disabled (kill switch off)', () => {
     const { container } = renderContainer({
-      mithrilPartialSync: { isPartialSyncEnabled: false },
+      mithrilSync: { isPartialSyncEnabled: false },
     });
 
     expect(screen.queryByText(KNOWN_EPOCHS_TEXT)).not.toBeInTheDocument();
@@ -89,7 +90,7 @@ describe('MithrilProactivePromptContainer', () => {
 
   it('renders nothing when the node is not significantly behind', () => {
     const { container } = renderContainer({
-      mithrilPartialSync: { isSignificantlyBehind: false },
+      mithrilSync: { isSignificantlyBehind: false },
     });
 
     expect(screen.queryByText(KNOWN_EPOCHS_TEXT)).not.toBeInTheDocument();
@@ -124,7 +125,7 @@ describe('MithrilProactivePromptContainer', () => {
 
   it('renders nothing once a Mithril attempt has begun this session (re-pop guard)', () => {
     const { container } = renderContainer({
-      mithrilPartialSync: { mithrilAttemptStartedThisSession: true },
+      mithrilSync: { mithrilAttemptStartedThisSession: true },
     });
 
     expect(screen.queryByText(KNOWN_EPOCHS_TEXT)).not.toBeInTheDocument();
@@ -139,7 +140,7 @@ describe('MithrilProactivePromptContainer', () => {
         localTip: { epoch: 97 },
         isBehindnessKnown: false,
       },
-      mithrilPartialSync: { certifiedEpoch: 105 },
+      mithrilSync: { certifiedEpoch: 105 },
     });
 
     expect(
@@ -151,7 +152,7 @@ describe('MithrilProactivePromptContainer', () => {
     // networkTip 100 vs certifiedEpoch 105, local 97: the hybrid anchor prefers
     // the live networkTip -> 100 - 97 = 3, NOT the certified diff (105 - 97 = 8).
     renderContainer({
-      mithrilPartialSync: { certifiedEpoch: 105 },
+      mithrilSync: { certifiedEpoch: 105 },
     });
 
     expect(screen.getByText(KNOWN_EPOCHS_TEXT)).toBeInTheDocument();
@@ -176,7 +177,7 @@ describe('MithrilProactivePromptContainer', () => {
 
   it('renders nothing once the prompt has been dismissed for the session', () => {
     const { container } = renderContainer({
-      mithrilPartialSync: { proactivePromptDismissedThisSession: true },
+      mithrilSync: { proactivePromptDismissedThisSession: true },
     });
 
     expect(screen.queryByText(KNOWN_EPOCHS_TEXT)).not.toBeInTheDocument();

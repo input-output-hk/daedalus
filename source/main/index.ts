@@ -13,7 +13,6 @@ import {
   generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
-import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
@@ -287,7 +286,6 @@ const onAppReady = async () => {
   };
 
   mainErrorHandler(onMainError);
-  handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
   await handleCheckDiskSpace();
 
   mainWindow.on('close', handleWindowClose);

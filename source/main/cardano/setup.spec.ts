@@ -1,17 +1,5 @@
 const restartMock = jest.fn();
 const cardanoNodeConstructorMock = jest.fn();
-const mithrilControllerMock = {
-  isBootstrapNodeStartBlocked: jest.fn(() => false),
-  isPartialSyncNodeStartBlocked: jest.fn(() => false),
-  getBootstrapStatus: jest.fn(() => ({ status: 'idle' })),
-  getPartialSyncStatus: jest.fn(() => ({
-    status: 'idle',
-    allowedRecoveryActions: [],
-    transferProgress: {},
-    progressItems: [],
-    error: null,
-  })),
-};
 
 jest.mock('./CardanoNode', () => ({
   CardanoNode: jest.fn().mockImplementation((...args) => {
@@ -64,12 +52,9 @@ jest.mock('../ipc/cardano.ipc', () => {
     cardanoTlsConfigChannel: createChannel(),
     setCachedCardanoStatusChannel: createChannel(),
     exportWalletsChannel: createChannel(),
+    cardanoNodeStartupStatusChannel: createChannel(),
   };
 });
-
-jest.mock('../mithril/MithrilController', () => ({
-  getMithrilController: () => mithrilControllerMock,
-}));
 
 jest.mock('./utils', () => ({
   exportWallets: jest.fn(),
@@ -86,18 +71,6 @@ describe('setupCardanoNode', () => {
     jest.resetModules();
     jest.clearAllMocks();
     restartMock.mockResolvedValue(undefined);
-    mithrilControllerMock.isBootstrapNodeStartBlocked.mockReturnValue(false);
-    mithrilControllerMock.isPartialSyncNodeStartBlocked.mockReturnValue(false);
-    mithrilControllerMock.getBootstrapStatus.mockReturnValue({
-      status: 'idle',
-    });
-    mithrilControllerMock.getPartialSyncStatus.mockReturnValue({
-      status: 'idle',
-      allowedRecoveryActions: [],
-      transferProgress: {},
-      progressItems: [],
-      error: null,
-    });
     global.setTimeout = jest.fn() as unknown as typeof global.setTimeout;
   });
 
@@ -128,54 +101,7 @@ describe('setupCardanoNode', () => {
     return cardanoNodeConstructorMock.mock.calls[0][2];
   };
 
-  it('suppresses automatic restart while Mithril partial sync is active', () => {
-    mithrilControllerMock.isPartialSyncNodeStartBlocked.mockReturnValue(true);
-    mithrilControllerMock.getPartialSyncStatus.mockReturnValue({
-      status: 'downloading',
-      allowedRecoveryActions: [],
-      transferProgress: {},
-      progressItems: [],
-      error: null,
-    });
-
-    const transitions = setup();
-
-    transitions.onCrashed(23);
-
-    expect(global.setTimeout).not.toHaveBeenCalled();
-  });
-
-  it('suppresses automatic restart during installed-awaiting-node-start cutover', () => {
-    mithrilControllerMock.isPartialSyncNodeStartBlocked.mockReturnValue(true);
-    mithrilControllerMock.getPartialSyncStatus.mockReturnValue({
-      status: 'starting-node',
-      allowedRecoveryActions: ['wipe-and-full-sync'],
-      transferProgress: {},
-      progressItems: [],
-      error: null,
-    });
-
-    const transitions = setup();
-
-    transitions.onCrashed(31);
-
-    expect(global.setTimeout).not.toHaveBeenCalled();
-  });
-
-  it('preserves bootstrap restart suppression unchanged', () => {
-    mithrilControllerMock.isBootstrapNodeStartBlocked.mockReturnValue(true);
-    mithrilControllerMock.getBootstrapStatus.mockReturnValue({
-      status: 'verifying',
-    });
-
-    const transitions = setup();
-
-    transitions.onCrashed(17);
-
-    expect(global.setTimeout).not.toHaveBeenCalled();
-  });
-
-  it('still schedules restart when no Mithril operation is active', () => {
+  it('schedules restart when node crashes (watchdog handles mithril restart suppression)', () => {
     const transitions = setup();
 
     transitions.onCrashed(9);
@@ -183,6 +109,20 @@ describe('setupCardanoNode', () => {
     expect(global.setTimeout).toHaveBeenCalledTimes(1);
     expect((global.setTimeout as unknown as jest.Mock).mock.calls[0][1]).toBe(
       1000
+    );
+  });
+
+  it('uses a longer restart delay after the first retry', () => {
+    const transitions = setup();
+    const cardanoNode = (require('./CardanoNode').CardanoNode as jest.Mock).mock
+      .results[0].value;
+    cardanoNode.startupTries = 1;
+
+    transitions.onCrashed(9);
+
+    expect(global.setTimeout).toHaveBeenCalledTimes(1);
+    expect((global.setTimeout as unknown as jest.Mock).mock.calls[0][1]).toBe(
+      30000
     );
   });
 });

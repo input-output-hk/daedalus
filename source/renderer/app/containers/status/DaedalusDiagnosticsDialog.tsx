@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
-import { isMithrilBootstrapBlockingNodeStart } from '../../../../common/types/mithril-bootstrap.types';
-import { isMithrilPartialSyncOverlayStatus } from '../../../../common/types/mithril-partial-sync.types';
-import type { MithrilPartialSyncStatus } from '../../../../common/types/mithril-partial-sync.types';
+import {
+  isMithrilSyncBlockingNodeStart,
+  isMithrilSyncOverlayStatus,
+} from '../../../../common/types/mithril-sync.types';
+import type { MithrilSyncStatus } from '../../../../common/types/mithril-sync.types';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
@@ -13,11 +15,11 @@ import { formatUptime } from '../../utils/formatUptime';
 type Props = InjectedDialogContainerProps;
 
 export const shouldCloseDiagnosticsForPartialSyncOverlay = (
-  previousStatus: MithrilPartialSyncStatus,
-  nextStatus: MithrilPartialSyncStatus
+  previousStatus: MithrilSyncStatus,
+  nextStatus: MithrilSyncStatus
 ) =>
-  !isMithrilPartialSyncOverlayStatus(previousStatus) &&
-  isMithrilPartialSyncOverlayStatus(nextStatus);
+  !isMithrilSyncOverlayStatus(previousStatus) &&
+  isMithrilSyncOverlayStatus(nextStatus);
 
 @inject('stores', 'actions')
 @observer
@@ -38,8 +40,8 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
 
     if (
       shouldCloseDiagnosticsForPartialSyncOverlay(
-        prevProps.stores.mithrilPartialSync.status,
-        stores.mithrilPartialSync.status
+        prevProps.stores.mithrilSync.status,
+        stores.mithrilSync.status
       )
     ) {
       actions.app.closeDaedalusDiagnosticsDialog.trigger();
@@ -50,7 +52,7 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
     const { restartNode } = actions.networkStatus;
-    const { app, mithrilBootstrap, mithrilPartialSync, networkStatus } = stores;
+    const { app, mithrilSync, networkStatus } = stores;
     const { openExternalLink } = app;
     const {
       // Node state
@@ -148,23 +150,22 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
           isSystemTimeIgnored={isSystemTimeIgnored}
-          isMithrilPartialSyncWorking={mithrilPartialSync.isWorking}
-          isMithrilPartialSyncEnabled={mithrilPartialSync.isPartialSyncEnabled}
+          isMithrilPartialSyncWorking={mithrilSync.isWorking}
+          isMithrilPartialSyncEnabled={mithrilSync.isPartialSyncEnabled}
           isMithrilPartialSyncSignificantlyBehind={
-            mithrilPartialSync.isSignificantlyBehind
+            mithrilSync.isSignificantlyBehind
           }
-          isMithrilPartialSyncProbeFailed={mithrilPartialSync.isProbeFailed}
-          isMithrilPartialSyncAtOrPastSnapshot={
-            mithrilPartialSync.isAtOrPastSnapshot
+          isMithrilPartialSyncProbeFailed={mithrilSync.isProbeFailed}
+          isMithrilPartialSyncAtOrPastSnapshot={mithrilSync.isAtOrPastSnapshot}
+          isMithrilBootstrapActive={
+            mithrilSync.flowType === 'bootstrap' &&
+            isMithrilSyncBlockingNodeStart(mithrilSync.status)
           }
-          isMithrilBootstrapActive={isMithrilBootstrapBlockingNodeStart(
-            mithrilBootstrap.status
-          )}
-          onStartMithrilPartialSync={mithrilPartialSync.startPartialSync}
+          onStartMithrilPartialSync={mithrilSync.startPartialSync}
           nodeConnectionError={getNetworkInfoRequest.error}
           localTip={localTip}
           networkTip={networkTip}
-          certifiedEpoch={mithrilPartialSync.certifiedEpoch}
+          certifiedEpoch={mithrilSync.certifiedEpoch}
           isCheckingSystemTime={
             !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
           }

@@ -19,6 +19,13 @@ export type WatchdogOptions = {
   rtsFlags: Array<string>;
   nodeLogFile: string;
   walletLogFile: string;
+  mithrilBin?: string;
+  snapshotConverterBin?: string;
+  converterConfig?: string;
+  aggregatorUrl?: string;
+  genesisVkey?: string;
+  ancillaryVkey?: string;
+  mithrilBehindThreshold?: number;
 };
 
 export type WatchdogHandle = {
@@ -35,9 +42,21 @@ export type WatchdogHandle = {
   lastWalletExitSignal: string | null;
   nodeSocketWaitMs: number | null;
   walletReadyWaitMs: number | null;
+  nodeStartupPhase: string | null;
+  blockSyncProgress: {
+    replayedBlock: number;
+    validatingChunk: number;
+    pushingLedger: number;
+  };
+  mithrilPhase: string | null;
+  hasChain: boolean | null;
   stop(timeoutSeconds?: number): Promise<void>;
   kill(): void;
   send(msg: object): void;
+  startMithril(opts?: { force?: boolean; wipeChain?: boolean }): void;
+  cancelMithril(): void;
+  probeMithril(): void;
+  startNode(): void;
 };
 
 type WatchdogEvent =
@@ -62,8 +81,38 @@ type WatchdogEvent =
   | { event: 'wallet_unrecoverable'; attempt: number }
   | { event: 'node_shutdown_ms'; ms: number; force_killed: boolean }
   | { event: 'node_exited'; code: number | null; signal: string | null }
+  | {
+      event: 'node_block_sync_progress';
+      kind: 'replayedBlock' | 'validatingChunk' | 'pushingLedger';
+      progress: number;
+    }
+  | { event: 'node_startup_status'; phase: string }
   | { event: 'stopped' }
-  | { event: 'error'; message: string };
+  | { event: 'error'; message: string }
+  | { event: 'mithril_status'; phase: string }
+  | {
+      event: 'mithril_progress';
+      files_downloaded: number;
+      files_total: number;
+      bytes_downloaded: number;
+      bytes_total: number;
+      seconds_elapsed: number;
+      step_num: number;
+      total_steps: number;
+      phase: 'snapshot' | 'ledger';
+    }
+  | {
+      event: 'mithril_not_needed';
+      local_immutable_count: number;
+      latest_certified_immutable: number;
+    }
+  | {
+      event: 'mithril_significantly_behind';
+      local_immutable_count: number;
+      latest_certified_immutable: number;
+    }
+  | { event: 'mithril_error'; code: string; message: string }
+  | { event: 'chain_status'; has_chain: boolean };
 
 function getFreePort(): Promise<number> {
   return new Promise((resolve, reject) => {
@@ -165,7 +214,34 @@ export async function startWatchdog(
   onNodeExited: (code: number | null, signal: string | null) => void,
   onWalletExited: (code: number | null, signal: string | null) => void,
   onWalletRestarted?: () => void,
-  onWatchdogCrashed?: (code: number | null, signal: string | null) => void
+  onWatchdogCrashed?: (code: number | null, signal: string | null) => void,
+  onBlockSyncProgress?: (
+    kind: 'replayedBlock' | 'validatingChunk' | 'pushingLedger',
+    progress: number
+  ) => void,
+  onNodeStartupPhase?: (phase: string) => void,
+  onHandleCreated?: (handle: WatchdogHandle) => void,
+  onMithrilStatus?: (phase: string) => void,
+  onMithrilProgress?: (progress: {
+    filesDownloaded: number;
+    filesTotal: number;
+    bytesDownloaded: number;
+    bytesTotal: number;
+    secondsElapsed: number;
+    stepNum: number;
+    totalSteps: number;
+    phase: 'snapshot' | 'ledger';
+  }) => void,
+  onMithrilNotNeeded?: (
+    localImmutableCount: number,
+    latestCertifiedImmutable: number
+  ) => void,
+  onMithrilError?: (code: string, message: string) => void,
+  onChainStatus?: (hasChain: boolean) => void,
+  onMithrilSignificantlyBehind?: (
+    localImmutableCount: number,
+    latestCertifiedImmutable: number
+  ) => void
 ): Promise<WatchdogHandle> {
   const [nodePort, walletPort] = await Promise.all([
     getFreePort(),
@@ -191,6 +267,21 @@ export async function startWatchdog(
     },
     node_log_file: opts.nodeLogFile,
     wallet_log_file: opts.walletLogFile,
+    ...(opts.mithrilBin
+      ? {
+          mithril: {
+            mithril_bin: opts.mithrilBin,
+            snapshot_converter_bin: opts.snapshotConverterBin,
+            converter_config: opts.converterConfig,
+            aggregator_url: opts.aggregatorUrl,
+            genesis_vkey: opts.genesisVkey,
+            ancillary_vkey: opts.ancillaryVkey,
+            state_dir: opts.stateDir,
+            chain_path: require('path').join(opts.stateDir, 'chain'),
+            behind_threshold: opts.mithrilBehindThreshold,
+          },
+        }
+      : {}),
   };
 
   const proc = spawn(opts.watchdogBin, [], {
@@ -220,6 +311,14 @@ export async function startWatchdog(
     lastWalletExitSignal: null,
     nodeSocketWaitMs: null,
     walletReadyWaitMs: null,
+    nodeStartupPhase: null,
+    blockSyncProgress: {
+      replayedBlock: 0,
+      validatingChunk: 0,
+      pushingLedger: 0,
+    },
+    mithrilPhase: null,
+    hasChain: null,
     stop(timeoutSeconds = 30) {
       return new Promise((resolve) => {
         proc.stdin?.write(JSON.stringify({ cmd: 'stop' }) + '\n');
@@ -242,22 +341,43 @@ export async function startWatchdog(
     send(_msg: object) {
       // Fault injection not yet supported via watchdog IPC
     },
+    startMithril({ force = false, wipeChain = false } = {}) {
+      proc.stdin?.write(
+        JSON.stringify({
+          cmd: 'start_mithril',
+          ...(force ? { force: true } : {}),
+          ...(wipeChain ? { wipe_chain: true } : {}),
+        }) + '\n'
+      );
+    },
+    cancelMithril() {
+      proc.stdin?.write(JSON.stringify({ cmd: 'cancel_mithril' }) + '\n');
+    },
+    probeMithril() {
+      proc.stdin?.write(JSON.stringify({ cmd: 'probe_mithril' }) + '\n');
+    },
+    startNode() {
+      proc.stdin?.write(JSON.stringify({ cmd: 'start_node' }) + '\n');
+    },
   };
+
+  onHandleCreated?.(handle);
 
   return new Promise((resolve, reject) => {
     let resolved = false;
+    // Set when wallet_unrecoverable fires before the promise has settled.
+    // We defer the rejection to proc.on('exit') so the Rust supervisor can
+    // finish its node-shutdown sequence before we restart, avoiding a race
+    // on the chain database lock file.
+    let pendingRejectionMessage: string | null = null;
+    // Set when node_exited arrives so proc.on('exit') does not fire a second
+    // _handleCardanoNodeExit via onWatchdogCrashed — the node exit was already
+    // handled by onNodeExited and the watchdog exiting cleanly is expected.
+    let nodeExitedFired = false;
 
-    const startupTimeoutHandle = setTimeout(() => {
-      if (!resolved) {
-        resolved = true;
-        proc.kill('SIGKILL');
-        reject(
-          new Error(
-            'cardano-watchdog: timed out waiting for wallet to become ready'
-          )
-        );
-      }
-    }, 120_000);
+    // No TypeScript-side startup timeout: ledger replay from genesis can take
+    // many minutes. The Rust watchdog emits `error` for fatal failures and
+    // the proc.on('exit') handler below catches unexpected watchdog exits.
 
     const rl = require('readline').createInterface({ input: proc.stdout });
     rl.on('line', (line: string) => {
@@ -268,7 +388,12 @@ export async function startWatchdog(
         return;
       }
 
-      logger.info('watchdog event', { ev });
+      if (
+        ev.event !== 'node_block_sync_progress' &&
+        ev.event !== 'mithril_progress'
+      ) {
+        logger.info('watchdog event', { ev });
+      }
 
       switch (ev.event) {
         case 'watchdog_started':
@@ -287,7 +412,6 @@ export async function startWatchdog(
           handle.connected = true;
           if (!resolved) {
             resolved = true;
-            clearTimeout(startupTimeoutHandle);
             resolve(handle);
           } else {
             onWalletRestarted?.();
@@ -327,13 +451,9 @@ export async function startWatchdog(
             { attempt: ev.attempt }
           );
           if (!resolved) {
-            resolved = true;
-            clearTimeout(startupTimeoutHandle);
-            reject(
-              new Error(
-                `cardano-watchdog: wallet is unrecoverable after ${ev.attempt} attempt(s)`
-              )
-            );
+            // Defer rejection to proc.on('exit'): by then the Rust supervisor
+            // has completed its node shutdown and released the chain DB lock.
+            pendingRejectionMessage = `cardano-watchdog: wallet is unrecoverable after ${ev.attempt} attempt(s)`;
           }
           break;
         case 'node_shutdown_ms':
@@ -343,15 +463,58 @@ export async function startWatchdog(
           );
           break;
         case 'node_exited':
+          nodeExitedFired = true;
           onNodeExited(ev.code, ev.signal);
+          break;
+        case 'node_block_sync_progress':
+          handle.blockSyncProgress[ev.kind] = ev.progress;
+          onBlockSyncProgress?.(ev.kind, ev.progress);
+          break;
+        case 'node_startup_status':
+          handle.nodeStartupPhase = ev.phase;
+          onNodeStartupPhase?.(ev.phase);
           break;
         case 'error':
           logger.error('watchdog error', { message: ev.message });
           if (!resolved) {
             resolved = true;
-            clearTimeout(startupTimeoutHandle);
             reject(new Error(ev.message));
           }
+          break;
+        case 'mithril_status':
+          handle.mithrilPhase = ev.phase;
+          onMithrilStatus?.(ev.phase);
+          break;
+        case 'mithril_progress':
+          onMithrilProgress?.({
+            filesDownloaded: ev.files_downloaded,
+            filesTotal: ev.files_total,
+            bytesDownloaded: ev.bytes_downloaded,
+            bytesTotal: ev.bytes_total,
+            secondsElapsed: ev.seconds_elapsed,
+            stepNum: ev.step_num,
+            totalSteps: ev.total_steps,
+            phase: ev.phase,
+          });
+          break;
+        case 'mithril_not_needed':
+          onMithrilNotNeeded?.(
+            ev.local_immutable_count,
+            ev.latest_certified_immutable
+          );
+          break;
+        case 'mithril_significantly_behind':
+          onMithrilSignificantlyBehind?.(
+            ev.local_immutable_count,
+            ev.latest_certified_immutable
+          );
+          break;
+        case 'mithril_error':
+          onMithrilError?.(ev.code, ev.message);
+          break;
+        case 'chain_status':
+          handle.hasChain = ev.has_chain;
+          onChainStatus?.(ev.has_chain);
           break;
         default:
           break;
@@ -362,21 +525,22 @@ export async function startWatchdog(
       handle.connected = false;
       if (!resolved) {
         resolved = true;
-        clearTimeout(startupTimeoutHandle);
         reject(
           new Error(
-            `cardano-watchdog exited unexpectedly (code=${code}, signal=${signal})`
+            pendingRejectionMessage ??
+              `cardano-watchdog exited unexpectedly (code=${code}, signal=${signal})`
           )
         );
-      } else {
+      } else if (!nodeExitedFired) {
+        // Watchdog exited without a preceding node_exited event — unexpected crash.
         onWatchdogCrashed?.(code, signal);
       }
+      // else: node_exited already called onNodeExited; watchdog exiting is expected.
     });
 
     proc.on('error', (err) => {
       if (!resolved) {
         resolved = true;
-        clearTimeout(startupTimeoutHandle);
         reject(err);
       }
     });
