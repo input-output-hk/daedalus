@@ -158,6 +158,8 @@ export type CardanoStatus = {
   lastWalletExitSignal?: string | null;
   nodeSocketWaitMs?: number | null;
   walletReadyWaitMs?: number | null;
+  nodeStartupPhase?: NodeStartupPhase | null;
+  blockSyncProgress?: BlockSyncProgress;
 };
 export type NetworkMagicType = Array<number | null | undefined>;
 export const NetworkMagics: {
@@ -196,5 +198,16 @@ export enum BlockSyncType {
   replayedBlock = 'replayedBlock',
   validatingChunk = 'validatingChunk',
 }
+
+export type NodeStartupPhase =
+  | 'openingChainDb'
+  | 'openingImmutableDb'
+  | 'openedImmutableDb'
+  | 'openingVolatileDb'
+  | 'openedVolatileDb'
+  | 'openingLedgerDb'
+  | 'replayingLedger'
+  | 'openedLedgerDb'
+  | 'chainDbReady';
 
 export type BlockSyncProgress = Record<GetBlockSyncProgressType, number>;

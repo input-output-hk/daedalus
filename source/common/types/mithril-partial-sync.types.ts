@@ -60,6 +60,8 @@ export type MithrilPartialSyncError = {
 export type MithrilPartialSyncTransferProgress = {
   filesDownloaded?: number;
   filesTotal?: number;
+  snapshotBytesDownloaded?: number;
+  snapshotBytesTotal?: number;
   elapsedSeconds?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;

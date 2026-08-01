@@ -146,8 +146,8 @@ export const ALLOWED_LOGS = [
   'cardano-wallet.log',
   'node.log',
 ];
-export const ALLOWED_NODE_LOGS = new RegExp(/(node.log-)(\d{14}$)/);
-export const ALLOWED_WALLET_LOGS = new RegExp(/(cardano-wallet.log-)(\d{14}$)/);
+export const ALLOWED_NODE_LOGS = new RegExp(/^node\.log\.\d+$/);
+export const ALLOWED_WALLET_LOGS = new RegExp(/^cardano-wallet\.log\.\d+$/);
 export const ALLOWED_LAUNCHER_LOGS = new RegExp(/(launcher-)(\d{14}$)/);
 export const MAX_NODE_LOGS_ALLOWED = 3;
 export const MAX_WALLET_LOGS_ALLOWED = 3;

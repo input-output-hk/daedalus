@@ -33,7 +33,7 @@ jest.mock('./SystemTimeErrorPage', () => {
   };
 });
 
-const makeProps = (mithrilStatus = 'idle') => ({
+const makeProps = (mithrilStatus = 'idle', flowType = 'bootstrap') => ({
   stores: {
     app: {
       isSetupPage: false,
@@ -44,8 +44,10 @@ const makeProps = (mithrilStatus = 'idle') => ({
       isNodeStopping: false,
       isNodeStopped: true,
     },
-    mithrilBootstrap: {
+    mithrilSync: {
       status: mithrilStatus,
+      flowType: mithrilStatus === 'idle' ? null : flowType,
+      shouldShowOverlay: false,
     },
   },
   actions: null,

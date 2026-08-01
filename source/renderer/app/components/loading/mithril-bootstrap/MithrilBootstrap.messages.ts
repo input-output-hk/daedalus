@@ -242,14 +242,32 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     id: 'loading.mithrilBootstrap.progress.combinedLabel',
     defaultMessage: '!!!Snapshot Files and Ledger State',
     description:
-      'Label for the combined Mithril download progress bar that merges snapshot files and ledger state progress.',
+      'Label for the combined Mithril download progress bar that merges snapshot files and ledger state progress (bootstrap flow).',
   },
   progressCombinedDetail: {
     id: 'loading.mithrilBootstrap.progress.combinedDetail',
     defaultMessage:
       '!!!Snapshot files: {snapshotDownloaded} / {snapshotTotal} files | Ledger state: {fastSyncDownloaded} / {fastSyncTotal}',
     description:
-      'Detail line for the combined Mithril download progress bar showing snapshot and ledger state transfer totals.',
+      'Detail line for the combined Mithril download progress bar showing snapshot and ledger state transfer totals (bootstrap flow).',
+  },
+  progressSnapshotFilesLabel: {
+    id: 'loading.mithrilBootstrap.progress.snapshotFilesLabel',
+    defaultMessage: '!!!Snapshot Files',
+    description:
+      'Label for the snapshot-files progress bar shown during the partial-sync downloading phase.',
+  },
+  progressSnapshotFilesDetail: {
+    id: 'loading.mithrilBootstrap.progress.snapshotFilesDetail',
+    defaultMessage: '!!!{filesDownloaded} / {filesTotal} files',
+    description:
+      'Detail line for the snapshot-files progress bar showing files downloaded vs total.',
+  },
+  progressLedgerStateLabel: {
+    id: 'loading.mithrilBootstrap.progress.ledgerStateLabel',
+    defaultMessage: '!!!Ledger State',
+    description:
+      'Label for the ledger-state progress bar shown during the partial-sync verification phase.',
   },
   progressSnapshotSizeContext: {
     id: 'loading.mithrilBootstrap.progress.snapshotSizeContext',

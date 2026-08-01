@@ -72,6 +72,8 @@ export type MithrilBootstrapStatusUpdate = {
   snapshot?: MithrilSnapshotItem | null;
   filesDownloaded?: number;
   filesTotal?: number;
+  snapshotBytesDownloaded?: number;
+  snapshotBytesTotal?: number;
   elapsedSeconds?: number;
   error?: MithrilBootstrapError | null;
   ancillaryBytesDownloaded?: number;
