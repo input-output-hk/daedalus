@@ -1,0 +1,266 @@
+{
+  "metadata": {
+    "title": "Watchdog Architecture Tasks",
+    "created": "2026-07-30",
+    "updated": "2026-07-30",
+    "version": "1.0.0",
+    "totalTasks": 10,
+    "prdReference": ".agent/plans/watchdog/watchdog-prd.md",
+    "description": "Rearchitect Cardano backend process management: Rust watchdog owns process lifetimes, log rotation, and metric collection; Electron consumes structured IPC events.",
+    "sourceFiles": [
+      "watchdog/src/supervisor.rs",
+      "watchdog/src/protocol.rs",
+      "watchdog/Cargo.toml",
+      "source/main/cardano/CardanoWatchdog.ts",
+      "source/main/cardano/CardanoNode.ts",
+      "source/common/types/cardano-node.types.ts",
+      "source/renderer/app/stores/NetworkStatusStore.ts"
+    ],
+    "importantNote": "All tasks completed in a single session. This task graph is a retroactive record. Branch: sl/wallet-bump."
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Bug Fixes",
+      "description": "Fix correctness bugs in the existing watchdog integration before adding new capabilities.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Fix Windows Named Pipe paths",
+          "description": "Both buildNodeArgs (--socket-path) and buildWalletArgs (--node-socket) were passing file paths on Windows instead of the required \\\\.\\.\\pipe\\cardano-node.socket format. The watchdogConfig.node.socket_path field had the same bug.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 0.5,
+          "dependencies": [],
+          "targetPath": "source/main/cardano/CardanoWatchdog.ts",
+          "completedAt": "2026-07-30",
+          "actualHours": 0.5,
+          "completedNotes": "Added process.platform === 'win32' conditionals in buildNodeArgs, buildWalletArgs, and watchdogConfig.node.socket_path.",
+          "implementationNotes": [
+            "buildNodeArgs: args[1] ('--socket-path' value) → '\\\\.\\pipe\\cardano-node.socket' on win32, else 'cardano-node.socket' (relative, watchdog uses state_dir as cwd)",
+            "buildWalletArgs: socketPath const → win32 pipe path, else path.join(stateDir, 'cardano-node.socket')",
+            "watchdogConfig.node.socket_path → same win32 conditional"
+          ]
+        },
+        {
+          "id": "task-002",
+          "title": "Fix wallet_unrecoverable restart race",
+          "description": "wallet_unrecoverable immediately rejected the TypeScript startup promise, triggering CardanoNode.ts to restart the stack before the old watchdog had finished shutting down cardano-node. The new node could race the old one for the chain DB lock file.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1.0,
+          "dependencies": [],
+          "targetPath": "source/main/cardano/CardanoWatchdog.ts",
+          "completedAt": "2026-07-30",
+          "actualHours": 0.75,
+          "completedNotes": "Added pendingRejectionMessage variable. wallet_unrecoverable case sets it without rejecting. proc.on('exit') uses pendingRejectionMessage ?? default error string as the rejection reason.",
+          "implementationNotes": [
+            "Add: let pendingRejectionMessage: string | null = null; inside the Promise constructor",
+            "wallet_unrecoverable case: set pendingRejectionMessage, do NOT call reject()",
+            "proc.on('exit'): reject with pendingRejectionMessage ?? 'cardano-watchdog exited unexpectedly (code=..., signal=...)'"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Log Rotation",
+      "description": "Replace the broken TypeScript rfs streams and unbounded pipe_to_file with cross-platform log rotation implemented in Rust using the file-rotate crate.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-003",
+          "title": "Implement file-rotate log rotation in Rust",
+          "description": "Add file-rotate 0.8 as a Cargo dependency. Replace the tokio::fs::OpenOptions log-opening code in supervisor.rs with an open_log() helper that creates an Arc<Mutex<FileRotate<AppendCount>>>. Update pipe_to_log to write synchronously to the rotating log via the mutex.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2.0,
+          "dependencies": [],
+          "targetPaths": [
+            "watchdog/Cargo.toml",
+            "watchdog/Cargo.lock",
+            "watchdog/src/supervisor.rs"
+          ],
+          "completedAt": "2026-07-30",
+          "actualHours": 2.5,
+          "completedNotes": "Added file-rotate = '0.8' to Cargo.toml. Ran 'nix shell nixpkgs#cargo --command cargo update --manifest-path watchdog/Cargo.toml' to regenerate Cargo.lock with vendored deps. Implemented open_log() and RotatingLog type alias. pipe_to_log takes RotatingLog parameter; writes via log.lock().unwrap().write_all(). Both stdout and stderr for the same process share one Arc<Mutex<...>>.",
+          "implementationNotes": [
+            "type RotatingLog = Arc<Mutex<FileRotate<AppendCount>>>;",
+            "fn open_log(path: &str) -> RotatingLog: FileRotate::new(path, AppendCount::new(4), ContentLimit::Bytes(5*1024*1024), Compression::None, None)",
+            "async fn pipe_to_log(reader: impl AsyncRead + Unpin, log: RotatingLog, parse_sync_progress: bool)",
+            "Node stdout: pipe_to_log(..., Arc::clone(&node_log), true)",
+            "Node stderr: pipe_to_log(..., node_log, true) — note: moves the Arc, not clone",
+            "Wallet stdout: pipe_to_log(..., Arc::clone(&wallet_log), false)",
+            "Wallet stderr: pipe_to_log(..., wallet_log, false)",
+            "Remove AsyncWriteExt from tokio::io imports (clippy -D warnings will catch it)",
+            "Cargo.lock must be regenerated: nix shell nixpkgs#cargo --command cargo update"
+          ]
+        },
+        {
+          "id": "task-004",
+          "title": "Remove dead TypeScript log streams",
+          "description": "The mkLogFile / rfs stream creation in CardanoNode.ts was creating competing file handles that never received data in the watchdog path. Remove them from the non-selfnode code path.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-003"],
+          "targetPath": "source/main/cardano/CardanoNode.ts",
+          "completedAt": "2026-07-30",
+          "actualHours": 0.5,
+          "completedNotes": "Moved mkLogFile and rfs stream creation inside the if (isSelfnode) block so they only run for the selfnode path, which still uses the old TypeScript-managed log approach."
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Block Sync Progress",
+      "description": "Move block sync progress parsing from a fragile TypeScript log-tail pipeline into the Rust watchdog's live stream reader. Surface the data through the existing getCachedCardanoStatus poll path.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-005",
+          "title": "Parse block sync progress in Rust, emit IPC events",
+          "description": "Add try_parse_block_sync() to supervisor.rs that maps cardano-node log keywords to camelCase kind strings and extracts progress percentages from 'Progress: X%' substrings without the regex crate. Call it inside pipe_to_log when parse_sync_progress is true and emit NodeBlockSyncProgress events.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2.0,
+          "dependencies": ["task-003"],
+          "targetPaths": [
+            "watchdog/src/supervisor.rs",
+            "watchdog/src/protocol.rs"
+          ],
+          "completedAt": "2026-07-30",
+          "actualHours": 2.0,
+          "completedNotes": "Added NodeBlockSyncProgress { kind: String, progress: f64 } to protocol.rs Event enum. Implemented try_parse_block_sync() in supervisor.rs: checks str::contains for 'Replayed block', 'Validating chunk', 'Validated chunk', 'Pushing ledger state'; finds 'Progress:' prefix, strips trailing '%', parses f64. Emits event from pipe_to_log inside a tokio::spawn so the emit doesn't block the log writer.",
+          "implementationNotes": [
+            "fn try_parse_block_sync(line: &str) -> Option<(&'static str, f64)>",
+            "Kind mapping: 'Replayed block' → 'replayedBlock', 'Validating chunk'|'Validated chunk' → 'validatingChunk', 'Pushing ledger state' → 'pushingLedger'",
+            "Progress extraction: find 'Progress:' in line, take remainder, trim, strip trailing '%', parse as f64",
+            "Must not use regex crate; use str::contains and str::find",
+            "Emit Event::NodeBlockSyncProgress { kind: kind.to_string(), progress } via emit()",
+            "NodeBlockSyncProgress serializes to JSON as { 'event': 'node_block_sync_progress', 'kind': '...', 'progress': 0.01 }"
+          ]
+        },
+        {
+          "id": "task-006",
+          "title": "Add blockSyncProgress to WatchdogHandle and wire event handler",
+          "description": "Add blockSyncProgress field to WatchdogHandle type in CardanoWatchdog.ts. Initialize it with zeros. Handle node_block_sync_progress events from the readline loop by updating the field in-place.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1.0,
+          "dependencies": ["task-005"],
+          "targetPath": "source/main/cardano/CardanoWatchdog.ts",
+          "completedAt": "2026-07-30",
+          "actualHours": 0.75,
+          "completedNotes": "Added blockSyncProgress: { replayedBlock: number; validatingChunk: number; pushingLedger: number } to WatchdogHandle type. Initialized to all zeros in the handle object literal. Added node_block_sync_progress to the WatchdogEvent union type. Added case in readline switch: handle.blockSyncProgress[ev.kind] = ev.progress.",
+          "implementationNotes": [
+            "WatchdogHandle.blockSyncProgress must be non-optional to prevent Object.assign clobbering the MobX observable with undefined when _node is null",
+            "Initialize: blockSyncProgress: { replayedBlock: 0, validatingChunk: 0, pushingLedger: 0 }",
+            "Event union: | { event: 'node_block_sync_progress'; kind: 'replayedBlock' | 'validatingChunk' | 'pushingLedger'; progress: number }",
+            "Handler: case 'node_block_sync_progress': handle.blockSyncProgress[ev.kind] = ev.progress; break;"
+          ]
+        },
+        {
+          "id": "task-007",
+          "title": "Add blockSyncProgress to CardanoNode.status and shared types",
+          "description": "Add blockSyncProgress to CardanoStatus in cardano-node.types.ts. Add it to the CardanoNode.status getter with a zero-filled default so Object.assign never clobbers the renderer observable with undefined when _node is null.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-006"],
+          "targetPaths": [
+            "source/main/cardano/CardanoNode.ts",
+            "source/common/types/cardano-node.types.ts"
+          ],
+          "completedAt": "2026-07-30",
+          "actualHours": 0.5,
+          "completedNotes": "Added blockSyncProgress?: BlockSyncProgress to CardanoStatus. Added blockSyncProgress to status getter using get(this, '_node.blockSyncProgress', { replayedBlock: 0, validatingChunk: 0, pushingLedger: 0 }).",
+          "implementationNotes": [
+            "cardano-node.types.ts: blockSyncProgress?: BlockSyncProgress (BlockSyncProgress type was already defined from prior work)",
+            "CardanoNode.status getter: blockSyncProgress: get(this, '_node.blockSyncProgress', { replayedBlock: 0, validatingChunk: 0, pushingLedger: 0 })",
+            "The zero-filled default is critical: if it returns undefined, Object.assign(this, { blockSyncProgress: undefined }) will overwrite the MobX observable and suppress all future progress updates"
+          ]
+        },
+        {
+          "id": "task-008",
+          "title": "Wire blockSyncProgress through NetworkStatusStore poll path",
+          "description": "Add blockSyncProgress to the _extractNodeStatus destructure and return object in NetworkStatusStore.ts so it flows from the getCachedCardanoStatus poll to renderer observables.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-007"],
+          "targetPath": "source/renderer/app/stores/NetworkStatusStore.ts",
+          "completedAt": "2026-07-30",
+          "actualHours": 0.5,
+          "completedNotes": "Added blockSyncProgress to the destructure in _extractNodeStatus and to the returned status object. Removed the getBlockSyncProgressChannel.onReceive subscription and its handler method."
+        },
+        {
+          "id": "task-009",
+          "title": "Delete tail-based block sync pipeline",
+          "description": "Remove handleCheckBlockReplayProgress.ts, blockSyncProgressHelpers.ts and its spec, get-block-sync-progress.ts IPC handler, getBlockSyncChannel.ts renderer IPC client, and the handleCheckBlockReplayProgress call in source/main/index.ts.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 1.0,
+          "dependencies": ["task-008"],
+          "targetPaths": [
+            "source/main/utils/handleCheckBlockReplayProgress.ts",
+            "source/main/utils/blockSyncProgressHelpers.ts",
+            "source/main/utils/blockSyncProgressHelpers.spec.ts",
+            "source/main/ipc/get-block-sync-progress.ts",
+            "source/renderer/app/ipc/getBlockSyncChannel.ts",
+            "source/main/index.ts"
+          ],
+          "completedAt": "2026-07-30",
+          "actualHours": 0.75,
+          "completedNotes": "All five files deleted. handleCheckBlockReplayProgress import and call removed from index.ts. getBlockSyncProgressChannel import and onReceive call removed from NetworkStatusStore.ts."
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Config and Documentation",
+      "description": "Update filename regexes for the new rotation suffix format and document the complete architecture.",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-010",
+          "title": "Update log file regexes and document architecture",
+          "description": "Update ALLOWED_NODE_LOGS and ALLOWED_WALLET_LOGS regexes in config.ts to match the new file-rotate suffix format (node.log.1 etc). Create .agent/system/watchdog.md documenting the full architecture.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-003"],
+          "targetPaths": [
+            "source/main/config.ts",
+            ".agent/system/watchdog.md"
+          ],
+          "completedAt": "2026-07-30",
+          "actualHours": 1.5,
+          "completedNotes": "ALLOWED_NODE_LOGS updated to /^node\\.log\\.\\d+$/. ALLOWED_WALLET_LOGS updated to /^cardano-wallet\\.log\\.\\d+$/. watchdog.md created covering process tree, startup sequence, IPC protocol (full event table), log rotation policy, block sync progress parsing, graceful shutdown, data flow from watchdog to renderer, platform differences, and key source files."
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 4,
+    "totalTasks": 10,
+    "estimatedTotalHours": 11.0,
+    "criticalPath": ["task-001", "task-002", "task-003", "task-005", "task-006", "task-007", "task-008", "task-009"],
+    "keyFiles": [
+      "watchdog/src/supervisor.rs",
+      "watchdog/src/protocol.rs",
+      "source/main/cardano/CardanoWatchdog.ts",
+      "source/main/cardano/CardanoNode.ts",
+      "source/renderer/app/stores/NetworkStatusStore.ts"
+    ],
+    "riskAreas": [
+      "Cargo.lock vendored deps: adding file-rotate requires regenerating with 'nix shell nixpkgs#cargo --command cargo update' — not just editing Cargo.toml",
+      "Object.assign clobbers MobX observables with undefined: blockSyncProgress default in status getter must be a zero-filled object, not undefined",
+      "Deferred rejection timing: wallet_unrecoverable must NOT reject immediately; deferring to proc.on('exit') is load-bearing for chain DB lock safety",
+      "Windows Named Pipe format: both --socket-path and --node-socket require \\\\.\\.\\pipe\\NAME; file paths silently produce the wrong socket"
+    ],
+    "testingNotes": "Validated by: nix build .#checks.x86_64-linux.watchdog-clippy (Rust), treefmt (formatting), yarn compile (TypeScript). Manual QA required for block sync progress bar and Windows Named Pipe connectivity.",
+    "rollbackPlan": "Revert sl/wallet-bump branch. No data migration; log rotation suffix format is backward-compatible."
+  }
+}
