@@ -1,18 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { MithrilBootstrap } from '../../components/loading/mithril-bootstrap';
-
-const PROGRESS_VIEW_STATUSES = [
-  'preparing',
-  'downloading',
-  'verifying',
-  'unpacking',
-  'finalizing',
-  'converting',
-  'completed',
-  'starting-node',
-] as const;
+import MithrilSyncOverlay from '../../components/loading/mithril-bootstrap/MithrilSyncOverlay';
 
 type Props = InjectedProps;
 
@@ -32,15 +21,15 @@ class MithrilBootstrapPage extends Component<Props> {
   private _cachedSnapshotsRef: any = null;
 
   componentDidMount() {
-    const { mithrilBootstrap } = this.props.stores;
-    mithrilBootstrap.loadSnapshots();
-    mithrilBootstrap.syncStatus();
+    const { mithrilSync } = this.props.stores;
+    mithrilSync.loadSnapshots();
+    mithrilSync.syncStatus();
   }
 
   componentDidUpdate(prevProps: Props, prevState: { selectedDigest: string }) {
     if (
-      prevProps.stores.mithrilBootstrap.snapshots !==
-        this.props.stores.mithrilBootstrap.snapshots ||
+      prevProps.stores.mithrilSync.snapshots !==
+        this.props.stores.mithrilSync.snapshots ||
       prevState.selectedDigest !== this.state.selectedDigest
     ) {
       this.ensureValidSelection();
@@ -48,7 +37,7 @@ class MithrilBootstrapPage extends Component<Props> {
   }
 
   ensureValidSelection = () => {
-    const { snapshots } = this.props.stores.mithrilBootstrap;
+    const { snapshots } = this.props.stores.mithrilSync;
     const selectedDigest = this.state.selectedDigest || 'latest';
     if (selectedDigest === 'latest') return;
     const exists = snapshots.some(
@@ -66,11 +55,11 @@ class MithrilBootstrapPage extends Component<Props> {
   };
 
   handleAccept = async () => {
-    const { mithrilBootstrap } = this.props.stores;
+    const { mithrilSync } = this.props.stores;
     const selected = this.state.selectedDigest;
     try {
-      await mithrilBootstrap.setDecision('accept');
-      await mithrilBootstrap.startBootstrap(
+      await mithrilSync.setDecision('accept');
+      await mithrilSync.startBootstrap(
         selected && selected !== 'latest' ? selected : undefined,
         { wipeChain: false }
       );
@@ -80,13 +69,13 @@ class MithrilBootstrapPage extends Component<Props> {
   };
 
   handleDecline = async () => {
-    await this.props.stores.mithrilBootstrap.setDecision('decline');
+    await this.props.stores.mithrilSync.setDecision('decline');
   };
 
   handleWipeRetry = async () => {
     const selected = this.state.selectedDigest;
     try {
-      await this.props.stores.mithrilBootstrap.startBootstrap(
+      await this.props.stores.mithrilSync.startBootstrap(
         selected && selected !== 'latest' ? selected : undefined,
         { wipeChain: true }
       );
@@ -96,11 +85,11 @@ class MithrilBootstrapPage extends Component<Props> {
   };
 
   handleCancel = async () => {
-    await this.props.stores.mithrilBootstrap.cancelBootstrap();
+    await this.props.stores.mithrilSync.cancelBootstrap();
   };
 
   handleReturnToStorageLocation = async () => {
-    await this.props.stores.mithrilBootstrap.returnToStorageLocation();
+    await this.props.stores.mithrilSync.returnToStorageLocation();
   };
 
   handleOpenExternalLink = (url: string) => {
@@ -108,7 +97,7 @@ class MithrilBootstrapPage extends Component<Props> {
   };
 
   getLatestSnapshot = () => {
-    const { snapshots } = this.props.stores.mithrilBootstrap;
+    const { snapshots } = this.props.stores.mithrilSync;
     if (snapshots === this._cachedSnapshotsRef)
       return this._cachedLatestSnapshot;
     this._cachedSnapshotsRef = snapshots;
@@ -128,66 +117,66 @@ class MithrilBootstrapPage extends Component<Props> {
   };
 
   render() {
-    const { mithrilBootstrap } = this.props.stores;
+    const { mithrilSync } = this.props.stores;
     const latestSnapshot = this.getLatestSnapshot();
-    const isProgressVisible = PROGRESS_VIEW_STATUSES.includes(
-      mithrilBootstrap.status
-    );
     const selectedSnapshot =
       this.state.selectedDigest === 'latest'
         ? latestSnapshot
-        : mithrilBootstrap.snapshots.find(
+        : mithrilSync.snapshots.find(
             (snapshot) => snapshot.digest === this.state.selectedDigest
           );
-    const progressProps = isProgressVisible
-      ? {
-          filesDownloaded: mithrilBootstrap.filesDownloaded,
-          filesTotal: mithrilBootstrap.filesTotal,
-          snapshotSizeBytes: mithrilBootstrap.snapshot?.size,
-          ancillaryBytesDownloaded: mithrilBootstrap.ancillaryBytesDownloaded,
-          ancillaryBytesTotal: mithrilBootstrap.ancillaryBytesTotal,
-          ancillaryProgress: mithrilBootstrap.ancillaryProgress,
-          progressItems: mithrilBootstrap.progressItems,
-          bootstrapStartedAt: mithrilBootstrap.bootstrapStartedAt,
-        }
-      : {};
 
     return (
-      <MithrilBootstrap
-        status={mithrilBootstrap.status}
-        customChainPath={mithrilBootstrap.customChainPath}
-        defaultChainPath={mithrilBootstrap.defaultChainPath}
+      <MithrilSyncOverlay
+        status={mithrilSync.status}
+        flowType="bootstrap"
+        customChainPath={mithrilSync.customChainPath}
+        defaultChainPath={mithrilSync.defaultChainPath}
         defaultChainStorageValidation={
-          mithrilBootstrap.defaultChainStorageValidation
+          mithrilSync.defaultChainStorageValidation
         }
-        chainStorageValidation={mithrilBootstrap.chainStorageValidation}
-        pendingChainPath={mithrilBootstrap.pendingChainPath}
-        isRecoveryFallback={mithrilBootstrap.isRecoveryFallback}
+        chainStorageValidation={mithrilSync.chainStorageValidation}
+        pendingChainPath={mithrilSync.pendingChainPath}
+        isRecoveryFallback={mithrilSync.isRecoveryFallback}
         latestSnapshotSize={latestSnapshot?.size}
-        isChainStorageLoading={mithrilBootstrap.isChainStorageLoading}
-        isApplyingStorageLocation={mithrilBootstrap.isApplyingStorageLocation}
-        storageLocationConfirmed={mithrilBootstrap.storageLocationConfirmed}
-        snapshots={mithrilBootstrap.snapshots}
+        isChainStorageLoading={mithrilSync.isChainStorageLoading}
+        isApplyingStorageLocation={mithrilSync.isApplyingStorageLocation}
+        storageLocationConfirmed={mithrilSync.storageLocationConfirmed}
+        snapshots={mithrilSync.snapshots}
         selectedDigest={this.state.selectedDigest}
         selectedSnapshot={selectedSnapshot || null}
-        error={mithrilBootstrap.error}
-        isFetchingSnapshots={mithrilBootstrap.isFetchingSnapshots}
+        error={mithrilSync.error}
+        isFetchingSnapshots={mithrilSync.isFetchingSnapshots}
+        progressItems={mithrilSync.progressItems}
+        filesDownloaded={mithrilSync.filesDownloaded}
+        filesTotal={mithrilSync.filesTotal}
+        snapshotBytesDownloaded={mithrilSync.snapshotBytesDownloaded}
+        snapshotBytesTotal={mithrilSync.snapshotBytesTotal}
+        ancillaryBytesDownloaded={mithrilSync.ancillaryBytesDownloaded}
+        ancillaryBytesTotal={mithrilSync.ancillaryBytesTotal}
+        ancillaryProgress={mithrilSync.ancillaryProgress}
+        bootstrapStartedAt={mithrilSync.bootstrapStartedAt}
+        canRetry={false}
+        canRestartNormally={false}
+        canWipeAndFullSync={false}
         onOpenExternalLink={this.handleOpenExternalLink}
-        onSetChainStorageDirectory={mithrilBootstrap.setChainStorageDirectory}
-        onResetChainStorageDirectory={
-          mithrilBootstrap.resetChainStorageDirectory
-        }
+        onSetChainStorageDirectory={mithrilSync.setChainStorageDirectory}
+        onResetChainStorageDirectory={mithrilSync.resetChainStorageDirectory}
         onValidateChainStorageDirectory={
-          mithrilBootstrap.validateChainStorageDirectory
+          mithrilSync.validateChainStorageDirectory
         }
-        onConfirmStorageLocation={mithrilBootstrap.confirmStorageLocation}
+        onConfirmStorageLocation={mithrilSync.confirmStorageLocation}
         onReturnToStorageLocation={this.handleReturnToStorageLocation}
         onSelectSnapshot={this.handleSelectSnapshot}
         onAccept={this.handleAccept}
         onDecline={this.handleDecline}
         onWipeRetry={this.handleWipeRetry}
         onCancel={this.handleCancel}
-        {...progressProps}
+        onRetry={() => {}}
+        onRestartNormally={() => {}}
+        onWipeAndFullSync={() => {}}
+        onDismissCompleted={() => {}}
+        onQuit={() => this.props.actions.window.closeWindow.trigger()}
       />
     );
   }

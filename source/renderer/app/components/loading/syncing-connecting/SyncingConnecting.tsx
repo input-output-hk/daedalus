@@ -44,6 +44,7 @@ export type Props = {
   disableDownloadLogs: boolean;
   showNewsFeedIcon: boolean;
   isVerifyingBlockchain: boolean;
+  nodeStartupPhase?: string | null;
   onIssueClick: (...args: Array<any>) => any;
   onOpenExternalLink: (...args: Array<any>) => any;
   onDownloadLogs: (...args: Array<any>) => any;
@@ -169,6 +170,7 @@ class SyncingConnecting extends Component<Props, State> {
       onToggleNewsFeedIconClick,
       showNewsFeedIcon,
       isVerifyingBlockchain,
+      nodeStartupPhase,
       blockSyncProgress,
       isPartialSyncEnabled,
       onMithrilSync,
@@ -212,6 +214,7 @@ class SyncingConnecting extends Component<Props, State> {
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
           isVerifyingBlockchain={isVerifyingBlockchain}
+          nodeStartupPhase={nodeStartupPhase}
           blockSyncProgress={blockSyncProgress}
           isPartialSyncEnabled={isPartialSyncEnabled}
           onMithrilSync={onMithrilSync}

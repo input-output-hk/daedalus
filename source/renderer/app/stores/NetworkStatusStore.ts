@@ -16,6 +16,7 @@ import { isMithrilBehindnessKnown } from '../utils/mithrilBehindness';
 import {
   cardanoStateChangeChannel,
   cardanoTlsConfigChannel,
+  cardanoNodeStartupStatusChannel,
   getCachedCardanoStatusChannel,
   restartCardanoNodeChannel,
   setCachedCardanoStatusChannel,
@@ -25,10 +26,10 @@ import {
   CardanoNodeState,
   CardanoNodeStates,
   CardanoStatus,
+  NodeStartupPhase,
   TlsConfig,
 } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel';
-import { getBlockSyncProgressChannel } from '../ipc/getBlockSyncChannel';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type {
   FutureEpoch,
@@ -38,7 +39,6 @@ import type {
   NextEpoch,
   TipInfo,
 } from '../api/network/types';
-import type { GetBlockSyncProgressMainResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
@@ -183,6 +183,8 @@ export default class NetworkStatusStore extends Store {
   @observable
   alonzoActivationTime = '';
   @observable
+  nodeStartupPhase: NodeStartupPhase | null = null;
+  @observable
   blockSyncProgress: Record<BlockSyncType, number> = {
     [BlockSyncType.validatingChunk]: 0,
     [BlockSyncType.replayedBlock]: 0,
@@ -216,6 +218,8 @@ export default class NetworkStatusStore extends Store {
     cardanoTlsConfigChannel.onReceive(this._updateTlsConfig);
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
+    // Passively receive live startup phase / block sync progress during STARTING
+    cardanoNodeStartupStatusChannel.onReceive(this._updateNodeStartupStatus);
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([
       this._updateNetworkStatusWhenConnected,
@@ -235,9 +239,6 @@ export default class NetworkStatusStore extends Store {
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
-
-    // Blockchain verification checking
-    getBlockSyncProgressChannel.onReceive(this._onBlockSyncProgressUpdate);
   }
 
   _restartNode = async () => {
@@ -289,6 +290,7 @@ export default class NetworkStatusStore extends Store {
   };
   _updateNodeStatus = async () => {
     if (this.environment.isTest && !this.isConnected) return;
+    if (this.cardanoNodeState !== CardanoNodeStates.RUNNING) return;
 
     try {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -419,6 +421,20 @@ export default class NetworkStatusStore extends Store {
     });
     return Promise.resolve();
   };
+  @action _updateNodeStartupStatus = ({
+    nodeStartupPhase,
+    blockSyncProgress,
+  }: {
+    nodeStartupPhase: NodeStartupPhase | null;
+    blockSyncProgress: Record<BlockSyncType, number>;
+  }) => {
+    this.nodeStartupPhase = nodeStartupPhase;
+    this.blockSyncProgress = {
+      ...this.blockSyncProgress,
+      ...blockSyncProgress,
+    };
+    return Promise.resolve();
+  };
   _extractNodeStatus = (
     from: Record<string, any> & CardanoStatus
   ): CardanoStatus => {
@@ -439,6 +455,8 @@ export default class NetworkStatusStore extends Store {
       lastWalletExitSignal,
       nodeSocketWaitMs,
       walletReadyWaitMs,
+      nodeStartupPhase,
+      blockSyncProgress,
     } = from;
     return {
       isNodeResponding,
@@ -457,6 +475,8 @@ export default class NetworkStatusStore extends Store {
       lastWalletExitSignal,
       nodeSocketWaitMs,
       walletReadyWaitMs,
+      nodeStartupPhase,
+      blockSyncProgress,
     };
   };
 
@@ -838,12 +858,6 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
-  @action _onBlockSyncProgressUpdate = async (
-    blockSyncProgress: GetBlockSyncProgressMainResponse
-  ) => {
-    this.blockSyncProgress = blockSyncProgress;
-  };
-
   @action
   _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {
     this.stateDirectoryPath = stateDirectoryPath;
@@ -908,9 +922,11 @@ export default class NetworkStatusStore extends Store {
 
   @computed
   get isVerifyingBlockchain(): boolean {
+    const values = Object.values(this.blockSyncProgress);
     return (
       !this.isConnected &&
-      Object.values(this.blockSyncProgress).some((value) => value < 100)
+      values.some((value) => value > 0) &&
+      values.some((value) => value < 100)
     );
   }
 }

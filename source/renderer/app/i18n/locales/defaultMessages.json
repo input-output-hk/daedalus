@@ -2787,6 +2787,21 @@
         "id": "loading.mithrilBootstrap.progress.combinedDetail"
       },
       {
+        "defaultMessage": "!!!Snapshot Files",
+        "description": "Label for the snapshot-files progress bar shown during the partial-sync downloading phase.",
+        "id": "loading.mithrilBootstrap.progress.snapshotFilesLabel"
+      },
+      {
+        "defaultMessage": "!!!{filesDownloaded} / {filesTotal} files",
+        "description": "Detail line for the snapshot-files progress bar showing files downloaded vs total.",
+        "id": "loading.mithrilBootstrap.progress.snapshotFilesDetail"
+      },
+      {
+        "defaultMessage": "!!!Ledger State",
+        "description": "Label for the ledger-state progress bar shown during the partial-sync verification phase.",
+        "id": "loading.mithrilBootstrap.progress.ledgerStateLabel"
+      },
+      {
         "defaultMessage": "!!!≈ {totalSize} total",
         "description": "Static, real-size context appended to the Mithril download readout (derived from snapshot.size); not a moving bar.",
         "id": "loading.mithrilBootstrap.progress.snapshotSizeContext"
