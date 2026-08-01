@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 import { createWriteStream, readFileSync } from 'fs';
-import { exec, spawn } from 'child_process';
+import { exec } from 'child_process';
 import { CardanoNode } from './CardanoNode';
 import { exportWallets } from './utils';
 import {
@@ -30,8 +30,8 @@ import {
   cardanoTlsConfigChannel,
   setCachedCardanoStatusChannel,
   exportWalletsChannel,
+  cardanoNodeStartupStatusChannel,
 } from '../ipc/cardano.ipc';
-import { getMithrilController } from '../mithril/MithrilController';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 
 const restartCardanoNode = async (node: CardanoNode) => {
@@ -94,7 +94,6 @@ export const setupCardanoNode = (
     logger,
     {
       // Dependencies on node.js apis are passed as props to ease testing
-      spawn,
       exec,
       readFileSync,
       createWriteStream,
@@ -108,6 +107,16 @@ export const setupCardanoNode = (
           // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
           cardanoStateChangeChannel.send(state, mainWindow);
       },
+      broadcastNodeStartupStatus: () => {
+        if (!mainWindow.isDestroyed())
+          cardanoNodeStartupStatusChannel.send(
+            {
+              nodeStartupPhase: cardanoNode.status.nodeStartupPhase,
+              blockSyncProgress: cardanoNode.status.blockSyncProgress,
+            },
+            mainWindow.webContents
+          );
+      },
     },
     {
       // CardanoNode lifecycle hooks
@@ -118,28 +127,6 @@ export const setupCardanoNode = (
       onUpdating: () => {},
       onUpdated: () => {},
       onCrashed: (code) => {
-        const mithrilController = getMithrilController();
-        if (mithrilController.isBootstrapNodeStartBlocked()) {
-          logger.info(
-            'Cardano backend exited while Mithril bootstrap was active. Suppressing automatic restart.',
-            {
-              code,
-              mithrilStatus: mithrilController.getBootstrapStatus().status,
-            }
-          );
-          return;
-        }
-        if (mithrilController.isPartialSyncNodeStartBlocked()) {
-          logger.info(
-            'Cardano backend exited while Mithril partial sync was active. Suppressing automatic restart.',
-            {
-              code,
-              mithrilPartialSyncStatus:
-                mithrilController.getPartialSyncStatus().status,
-            }
-          );
-          return;
-        }
         const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 1000;
         logger.info(
           `CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms...`,

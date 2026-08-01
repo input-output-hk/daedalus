@@ -28,6 +28,11 @@ class LoadingPage extends Component<InjectedProps> {
     );
   }
 
+  get shouldShowMithrilOverlay() {
+    const { mithrilSync } = this.props.stores;
+    return !this.isSetupPage && mithrilSync.shouldShowOverlay;
+  }
+
   get isNotEnoughDiskSpace() {
     return this.networkStatus.isNotEnoughDiskSpace;
   }
@@ -39,12 +44,14 @@ class LoadingPage extends Component<InjectedProps> {
   }
 
   get isMithrilBootstrapDecision() {
-    const { mithrilBootstrap } = this.props.stores;
-    return mithrilBootstrap.status === 'decision';
+    const { mithrilSync } = this.props.stores;
+    return (
+      mithrilSync.flowType === 'bootstrap' && mithrilSync.status === 'decision'
+    );
   }
 
   get isMithrilBootstrapActive() {
-    const { mithrilBootstrap } = this.props.stores;
+    const { mithrilSync } = this.props.stores;
     const activeStatuses = [
       'preparing',
       'downloading',
@@ -57,7 +64,10 @@ class LoadingPage extends Component<InjectedProps> {
       'failed',
       'cancelled',
     ];
-    return activeStatuses.includes(mithrilBootstrap.status);
+    return (
+      mithrilSync.flowType === 'bootstrap' &&
+      activeStatuses.includes(mithrilSync.status)
+    );
   }
 
   get isSetupPage() {

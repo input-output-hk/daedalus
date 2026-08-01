@@ -46,7 +46,12 @@ export function resolveNetworkConfig(): MithrilNetworkConfig {
   return config;
 }
 
-export function fetchText(url: string): Promise<string> {
+const FETCH_TIMEOUT_MS = 10_000;
+
+export function fetchText(
+  url: string,
+  timeoutMs = FETCH_TIMEOUT_MS
+): Promise<string> {
   return new Promise((resolve, reject) => {
     const request = https.request(url, (response) => {
       const { statusCode } = response;
@@ -64,6 +69,14 @@ export function fetchText(url: string): Promise<string> {
     });
 
     request.on('error', reject);
+
+    const timer = setTimeout(() => {
+      request.destroy(
+        new Error(`fetchText timed out after ${timeoutMs}ms: ${url}`)
+      );
+    }, timeoutMs);
+
+    request.on('close', () => clearTimeout(timer));
     request.end();
   });
 }

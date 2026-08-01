@@ -7,9 +7,22 @@ import {
   BlockSyncType,
   CardanoNodeState,
   CardanoNodeStates,
+  NodeStartupPhase,
 } from '../../../../../common/types/cardano-node.types';
 import styles from './SyncingConnectingStatus.scss';
 import SyncingProgress from './SyncingProgress';
+
+const NODE_STARTUP_PHASE_LABELS: Record<NodeStartupPhase, string> = {
+  openingChainDb: 'Opening Chain DB',
+  openingImmutableDb: 'Opening Immutable DB',
+  openedImmutableDb: 'Immutable DB ready',
+  openingVolatileDb: 'Opening Volatile DB',
+  openedVolatileDb: 'Volatile DB ready',
+  openingLedgerDb: 'Opening Ledger DB',
+  replayingLedger: 'Replaying ledger from genesis',
+  openedLedgerDb: 'Ledger DB ready',
+  chainDbReady: 'Chain DB ready',
+};
 
 const messages = defineMessages({
   starting: {
@@ -100,6 +113,7 @@ interface Props {
   isNodeStopping: boolean;
   isNodeStopped: boolean;
   isVerifyingBlockchain: boolean;
+  nodeStartupPhase?: string | null;
   isPartialSyncEnabled?: boolean;
   onMithrilSync?: () => void;
 }
@@ -244,6 +258,7 @@ export default class SyncingConnectingStatus extends Component<Props, State> {
       hasLoadedCurrentLocale,
       blockSyncProgress,
       cardanoNodeState,
+      nodeStartupPhase,
       isPartialSyncEnabled,
       onMithrilSync,
     } = this.props;
@@ -253,7 +268,8 @@ export default class SyncingConnectingStatus extends Component<Props, State> {
       this._getConnectingMessage();
 
     if (
-      cardanoNodeState === CardanoNodeStates.RUNNING &&
+      (cardanoNodeState === CardanoNodeStates.RUNNING ||
+        cardanoNodeState === CardanoNodeStates.STARTING) &&
       isVerifyingBlockchain
     ) {
       return (
@@ -283,15 +299,25 @@ export default class SyncingConnectingStatus extends Component<Props, State> {
       showEllipsis ? styles.withoutAnimation : null,
     ]);
 
+    const startupPhaseLabel =
+      cardanoNodeState === CardanoNodeStates.STARTING && nodeStartupPhase
+        ? (NODE_STARTUP_PHASE_LABELS[nodeStartupPhase as NodeStartupPhase] ??
+          nodeStartupPhase)
+        : null;
+
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
           {intl.formatMessage(connectingMessage)}
         </h1>
         <div className={styles.description}>
-          {connectingDescription && (
-            // @ts-ignore
-            <FormattedHTMLMessage {...connectingDescription} />
+          {startupPhaseLabel ? (
+            <span>{startupPhaseLabel}</span>
+          ) : (
+            connectingDescription && (
+              // @ts-ignore
+              <FormattedHTMLMessage {...connectingDescription} />
+            )
           )}
         </div>
       </div>

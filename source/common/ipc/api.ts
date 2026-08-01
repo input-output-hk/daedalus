@@ -26,6 +26,7 @@ import type {
   CardanoNodeState,
   CardanoStatus,
   FaultInjectionIpcRequest,
+  NodeStartupPhase,
   TlsConfig,
 } from '../types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
@@ -75,13 +76,9 @@ import type {
   ChainStorageConfig,
   ChainStorageValidation,
   MithrilBootstrapDecision,
-  MithrilBootstrapStatusUpdate,
   MithrilSnapshotItem,
 } from '../types/mithril-bootstrap.types';
-import type {
-  MithrilPartialSyncStatusSnapshot,
-  MithrilPartialSyncAvailability,
-} from '../types/mithril-partial-sync.types';
+import type { MithrilSyncStatusUpdate } from '../types/mithril-sync.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -431,65 +428,39 @@ export type MithrilBootstrapDecisionRendererRequest = {
 };
 export type MithrilBootstrapDecisionMainResponse = void;
 
-export const MITHRIL_BOOTSTRAP_START_CHANNEL =
-  'MITHRIL_BOOTSTRAP_START_CHANNEL';
-export type MithrilBootstrapStartRendererRequest = {
-  digest?: string;
-  wipeChain?: boolean;
-};
-export type MithrilBootstrapStartMainResponse = void;
-
-export const MITHRIL_BOOTSTRAP_STATUS_CHANNEL =
-  'MITHRIL_BOOTSTRAP_STATUS_CHANNEL';
-export type MithrilBootstrapStatusRendererRequest = void;
-export type MithrilBootstrapStatusMainResponse = MithrilBootstrapStatusUpdate;
-
-export const MITHRIL_BOOTSTRAP_CANCEL_CHANNEL =
-  'MITHRIL_BOOTSTRAP_CANCEL_CHANNEL';
-export type MithrilBootstrapCancelRendererRequest = void;
-export type MithrilBootstrapCancelMainResponse = void;
-
 export const MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL =
   'MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL';
 export type MithrilBootstrapSnapshotsRendererRequest = void;
 export type MithrilBootstrapSnapshotsMainResponse = Array<MithrilSnapshotItem>;
 
-export const MITHRIL_PARTIAL_SYNC_START_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_START_CHANNEL';
-export type MithrilPartialSyncStartRendererRequest = void;
-export type MithrilPartialSyncStartMainResponse = void;
+/**
+ * ====================== MITHRIL UNIFIED SYNC IPC ==================
+ * Unified channel for both bootstrap and partial-sync flows.
+ * ==================================================================
+ */
+export const MITHRIL_SYNC_STATUS_CHANNEL = 'MITHRIL_SYNC_STATUS_CHANNEL';
+export type MithrilSyncStatusRendererRequest = void;
+export type MithrilSyncStatusMainResponse = MithrilSyncStatusUpdate;
 
-export const MITHRIL_PARTIAL_SYNC_STATUS_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_STATUS_CHANNEL';
-export type MithrilPartialSyncStatusRendererRequest = void;
-export type MithrilPartialSyncStatusMainResponse =
-  MithrilPartialSyncStatusSnapshot;
+export const MITHRIL_SYNC_CANCEL_CHANNEL = 'MITHRIL_SYNC_CANCEL_CHANNEL';
+export type MithrilSyncCancelRendererRequest = void;
+export type MithrilSyncCancelMainResponse = void;
 
-export const MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL';
-export type MithrilPartialSyncCancelRendererRequest = void;
-export type MithrilPartialSyncCancelMainResponse = void;
+export const MITHRIL_SYNC_START_CHANNEL = 'MITHRIL_SYNC_START_CHANNEL';
+export type MithrilSyncStartRendererRequest = { wipeChain: boolean };
+export type MithrilSyncStartMainResponse = void;
 
-export const MITHRIL_PARTIAL_SYNC_RESTART_NORMAL_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_RESTART_NORMAL_CHANNEL';
-export type MithrilPartialSyncRestartNormalRendererRequest = void;
-export type MithrilPartialSyncRestartNormalMainResponse = void;
+export const MITHRIL_SYNC_RESTART_NODE_CHANNEL =
+  'MITHRIL_SYNC_RESTART_NODE_CHANNEL';
+export type MithrilSyncRestartNodeRendererRequest = void;
+export type MithrilSyncRestartNodeMainResponse = void;
 
-export const MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL';
-export type MithrilPartialSyncWipeAndFullSyncRendererRequest = void;
-export type MithrilPartialSyncWipeAndFullSyncMainResponse = void;
-
-export const MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL';
-export type MithrilPartialSyncAvailabilityRendererRequest = void;
-export type MithrilPartialSyncAvailabilityMainResponse =
-  MithrilPartialSyncAvailability;
-
-export const MITHRIL_PARTIAL_SYNC_FINALIZE_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_FINALIZE_CHANNEL';
-export type MithrilPartialSyncFinalizeRendererRequest = void;
-export type MithrilPartialSyncFinalizeMainResponse = void;
+export const MITHRIL_AVAILABILITY_CHANNEL = 'MITHRIL_AVAILABILITY_CHANNEL';
+export type MithrilAvailabilityRendererRequest = void;
+export type MithrilAvailabilityMainResponse = {
+  isEnabled: boolean;
+  isSignificantlyBehind: boolean;
+};
 
 export const SET_CHAIN_STORAGE_DIRECTORY_CHANNEL =
   'SET_CHAIN_STORAGE_DIRECTORY_CHANNEL';
@@ -577,6 +548,21 @@ export const GET_BLOCK_SYNC_PROGRESS_CHANNEL = 'GetBlockSyncProgressChannel';
 export type GetBlockSyncProgressType = BlockSyncType;
 export type GetBlockSyncProgressRendererRequest = void;
 export type GetBlockSyncProgressMainResponse = BlockSyncProgress;
+
+/**
+ * Push channel from main → renderer for live node startup phase and block sync
+ * progress updates. Sent on every watchdog node_startup_status /
+ * block_sync_progress event so the renderer stays current during STARTING.
+ */
+export const CARDANO_NODE_STARTUP_STATUS_CHANNEL =
+  'CardanoNodeStartupStatusChannel';
+export type CardanoNodeStartupStatusMainPush = {
+  nodeStartupPhase: NodeStartupPhase | null;
+  blockSyncProgress: BlockSyncProgress;
+};
+export type CardanoNodeStartupStatusRendererRequest = void;
+export type CardanoNodeStartupStatusMainResponse =
+  CardanoNodeStartupStatusMainPush;
 
 /**
  * Channels for connecting / interacting with Hardware Wallet devices

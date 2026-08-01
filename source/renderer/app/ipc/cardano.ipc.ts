@@ -13,12 +13,14 @@ import {
   CARDANO_AWAIT_UPDATE_CHANNEL,
   SET_CACHED_CARDANO_STATUS_CHANNEL,
   EXPORT_WALLETS_CHANNEL,
+  CARDANO_NODE_STARTUP_STATUS_CHANNEL,
 } from '../../../common/ipc/api';
 import type {
   CardanoTlsConfigMainResponse,
   CardanoTlsConfigRendererRequest,
   ExportWalletsMainResponse,
   ExportWalletsRendererRequest,
+  CardanoNodeStartupStatusMainPush,
 } from '../../../common/ipc/api';
 // IpcChannel<Incoming, Outgoing>
 export const cardanoTlsConfigChannel: RendererIpcChannel<
@@ -49,3 +51,7 @@ export const exportWalletsChannel: RendererIpcChannel<
   ExportWalletsMainResponse,
   ExportWalletsRendererRequest
 > = new RendererIpcChannel(EXPORT_WALLETS_CHANNEL);
+export const cardanoNodeStartupStatusChannel: RendererIpcChannel<
+  CardanoNodeStartupStatusMainPush,
+  void
+> = new RendererIpcChannel(CARDANO_NODE_STARTUP_STATUS_CHANNEL);

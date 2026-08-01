@@ -24,8 +24,7 @@ import WalletSettingsStore from './WalletSettingsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletsStore from './WalletsStore';
 import WindowStore from './WindowStore';
-import MithrilBootstrapStore from './MithrilBootstrapStore';
-import MithrilPartialSyncStore from './MithrilPartialSyncStore';
+import MithrilSyncStore from './MithrilSyncStore';
 import { AnalyticsTracker } from '../analytics';
 import { Api } from '../api';
 import { ActionsMap } from '../actions';
@@ -37,8 +36,7 @@ export const storeClasses = {
   assets: AssetsStore,
   currency: CurrencyStore,
   hardwareWallets: HardwareWalletsStore,
-  mithrilBootstrap: MithrilBootstrapStore,
-  mithrilPartialSync: MithrilPartialSyncStore,
+  mithrilSync: MithrilSyncStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   profile: ProfileStore,
@@ -62,7 +60,7 @@ export type StoresMap = {
   currency: CurrencyStore;
   assets: AssetsStore;
   hardwareWallets: HardwareWalletsStore;
-  mithrilPartialSync: MithrilPartialSyncStore;
+  mithrilSync: MithrilSyncStore;
   networkStatus: NetworkStatusStore;
   newsFeed: NewsFeedStore;
   profile: ProfileStore;
@@ -78,7 +76,6 @@ export type StoresMap = {
   walletBackup: WalletBackupStore;
   walletMigration: WalletMigrationStore;
   walletSettings: WalletSettingsStore;
-  mithrilBootstrap: MithrilBootstrapStore;
   window: WindowStore;
 };
 let stores: StoresMap | null | undefined = null;
@@ -116,7 +113,7 @@ export const setUpStores = action(
       appUpdate: createStoreInstanceOf(AppUpdateStore),
       hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
       networkStatus: createStoreInstanceOf(NetworkStatusStore),
-      mithrilPartialSync: createStoreInstanceOf(MithrilPartialSyncStore),
+      mithrilSync: createStoreInstanceOf(MithrilSyncStore),
       newsFeed: createStoreInstanceOf(NewsFeedStore),
       profile: createStoreInstanceOf(ProfileStore),
       router,
@@ -131,7 +128,6 @@ export const setUpStores = action(
       walletBackup: createStoreInstanceOf(WalletBackupStore),
       walletMigration: createStoreInstanceOf(WalletMigrationStore),
       walletSettings: createStoreInstanceOf(WalletSettingsStore),
-      mithrilBootstrap: createStoreInstanceOf(MithrilBootstrapStore),
       window: createStoreInstanceOf(WindowStore),
     });
     // Configure and initialize all stores
