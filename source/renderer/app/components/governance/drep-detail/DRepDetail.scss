@@ -1,0 +1,188 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.backLink {
+  align-self: flex-start;
+  font-size: 14px;
+}
+
+.title {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 20px;
+  margin: 0;
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.section {
+  border: 1px solid var(--theme-gov-content-border-color);
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.sectionTitle {
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-semibold);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.fieldList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+
+.fieldRow {
+  align-items: baseline;
+  display: flex;
+  gap: 8px;
+}
+
+.fieldLabel {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+  min-width: 120px;
+}
+
+.fieldValue {
+  color: var(--theme-gov-font-color-accent);
+  font-size: 14px;
+  margin: 0;
+}
+
+.mutedValue {
+  color: var(--theme-gov-font-color-light);
+  font-size: 14px;
+  margin: 0;
+}
+
+.votingPowerAda {
+  color: var(--theme-gov-font-color-accent);
+  display: block;
+  font-family: var(--font-semibold);
+}
+
+.votingPowerLovelace {
+  color: var(--theme-gov-font-color-regular);
+  display: block;
+  font-size: 12px;
+}
+
+.anchorValue {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 13px;
+  margin: 0;
+  word-break: break-all;
+}
+
+.anchorLink {
+  color: var(--theme-link-main-color, var(--theme-gov-font-color-accent));
+}
+
+.sourceLabel {
+  color: var(--theme-gov-font-color-light);
+  font-size: 12px;
+}
+
+.actions {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+.favoriteToggle {
+  background: transparent;
+  border: none;
+  color: var(--theme-gov-font-color-light);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  padding: 2px 4px;
+
+  &[aria-pressed='true'] {
+    color: var(--theme-warning-color, #f2a218);
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.stateContainer {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 40px 0;
+}
+
+.errorMessage {
+  color: var(--theme-color-error);
+  font-family: var(--font-semibold);
+}
+
+.subSectionTitle {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 13px;
+  font-family: var(--font-semibold);
+  margin: 12px 0 6px;
+}
+
+.referenceList {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  word-break: break-all;
+}
+
+.referenceItem {
+  margin: 0;
+
+  a {
+    color: var(--theme-link-main-color, var(--theme-gov-font-color-accent));
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.paymentAddressValue {
+  align-items: baseline;
+  color: var(--theme-gov-font-color-accent);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 13px;
+  gap: 8px;
+  margin: 0;
+  word-break: break-all;
+}
+
+.copyButton {
+  font-size: 12px;
+}
+
+.copiedConfirmation {
+  color: var(--theme-gov-font-color-light);
+  font-size: 12px;
+}
