@@ -1,5 +1,25 @@
 # Changelog
 
+## 11.2.0
+
+### Fixes
+
+- Mithril: kill the snapshot-list process immediately when the user declines, instead of waiting for a DNS timeout (~30 s) that produced spurious errors in Tor/Whonix environments ([PR #3350](https://github.com/input-output-hk/daedalus/pull/3350)).
+
+- Windows: fixed chain-storage symlink and junction fallback for NAS/SMB mapped drives — removed the `path.isAbsolute()` guard that broke Windows paths on Linux, and added a `readlink` fallback so junctions that appear as symlinks via `lstat` recover when `realpath` fails with ENOENT ([PR #3348](https://github.com/input-output-hk/daedalus/pull/3348)).
+
+- Linux: fixed portable XKB and GBM library paths, resolving a segfault seen on some Linux distributions with 11.1.0.
+
+- Packaging: excluded `.claude`/`.opencode` symlinks and broken bundle symlinks from the installer ([PR #3349](https://github.com/input-output-hk/daedalus/pull/3349)).
+
+### Chores
+
+- Updated Mithril verification key URLs to the IntersectMBO repository ([PR #3341](https://github.com/input-output-hk/daedalus/pull/3341)).
+
+- Bump `cardano-wallet` to v2026-07-23. **This is a breaking change**: the wallet database is migrated on next usage of the spending password and cannot be rolled back to the previous wallet state.
+
+- Nix: split `relocatableElectron` into `electronBundleExe` + `relocatableElectron`.
+
 ## 11.1.0
 
 ### Features
