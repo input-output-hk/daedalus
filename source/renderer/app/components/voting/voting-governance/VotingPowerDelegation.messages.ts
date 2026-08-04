@@ -1,42 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 export const messages = defineMessages({
-  drepInputLabel: {
-    id: 'voting.governance.drepInputLabel',
-    defaultMessage:
-      '!!!Please type or paste a valid DRep ID here. Look up {drepDirectoryLink}',
-    description: 'Label for DRep input on the governance page',
-  },
-  drepInputLabelPreprod: {
-    id: 'voting.governance.drepInputLabelPreprod',
-    defaultMessage: '!!!Please type or paste a valid DRep ID here.',
-    description: 'Label for DRep input on the governance page for preprod',
-  },
-  drepInputLabelLinkText: {
-    id: 'voting.governance.drepInputLabelLinkText',
-    defaultMessage: '!!!DRep directory',
-    description: 'Label link text for DRep input on the governance page',
-  },
-  drepInputLabelLinkUrl: {
-    id: 'voting.governance.drepInputLabelLinkUrl',
-    defaultMessage: 'https://gov.tools/drep_directory',
-    description: 'Label link url for DRep input on the governance page',
-  },
-  drepInputLabelLinkUrlPreview: {
-    id: 'voting.governance.drepInputLabelLinkUrlPreview',
-    defaultMessage: 'https://preview.gov.tools/drep_directory',
-    description: 'Label link url for DRep input on the governance page',
-  },
-  drepInputError: {
-    id: 'voting.governance.drepInputError',
-    defaultMessage: '!!!Invalid DRep ID',
-    description: 'Error for DRep input on the governance page',
-  },
-  drepInputPlaceholder: {
-    id: 'voting.governance.drepInputPlaceholder',
-    defaultMessage: '!!!Paste DRep ID here …',
-    description: 'Placeholder for DRep input on the governance page',
-  },
   heading: {
     id: 'voting.governance.heading',
     defaultMessage: '!!!CARDANO VOTING POWER DELEGATION',
@@ -67,12 +31,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Select a wallet …',
     description: 'Placeholder for the wallet select on the governance page',
   },
-  selectVotingTypeLabel: {
-    id: 'voting.governance.selectVotingTypeLabel',
-    defaultMessage: '!!!Select voting registration type',
-    description:
-      'Label for the registration type select on the governance page',
-  },
   submitLabel: {
     id: 'voting.governance.submitLabel',
     defaultMessage: '!!!Submit',
@@ -92,5 +50,20 @@ export const messages = defineMessages({
     id: 'voting.governance.initializeTxError.notEnoughMoney',
     defaultMessage: '!!!Not enough funds',
     description: 'Governance voting error when wallet has not enough funds',
+  },
+  browseDRepsButton: {
+    id: 'voting.governance.browseDRepsButton',
+    defaultMessage: '!!!Browse DReps',
+    description: 'Button that opens the DRep directory to pick a DRep',
+  },
+  selectedDRepHeading: {
+    id: 'voting.governance.selectedDRepHeading',
+    defaultMessage: '!!!Delegate to',
+    description: 'Heading above the DRep card the user has selected to delegate to',
+  },
+  changeDRep: {
+    id: 'voting.governance.changeDRep',
+    defaultMessage: '!!!Change',
+    description: 'Link that reopens the DRep directory to pick a different DRep',
   },
 });

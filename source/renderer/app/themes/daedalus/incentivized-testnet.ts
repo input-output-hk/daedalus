@@ -949,6 +949,12 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-id-background-color': '#000000',
   },
   staking: {
+    '--theme-gov-content-background-color': '#1e1f31',
+    '--theme-gov-content-border-color': '#1e1f31',
+    '--theme-gov-font-color-accent': '#ffffff',
+    '--theme-gov-font-color-regular': '#ffffff',
+    '--theme-gov-font-color-light': '#ffffffb3',
+    '--theme-gov-font-color-lighter': 'rgba(255, 255, 255, 0.5)',
     '--theme-staking-content-background-color': '#1e1f31',
     '--theme-staking-content-border-color': '#1e1f31',
     '--theme-staking-font-color-accent': '#ffffff',

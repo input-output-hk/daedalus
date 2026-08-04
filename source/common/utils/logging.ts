@@ -1,4 +1,3 @@
-import omitDeep from 'omit-deep-lodash';
 import type {
   FormatMessageContextParams,
   ConstructMessageBodyParams,
@@ -39,8 +38,60 @@ export const filterLogData = (
     'chainCodeHex',
     'signedTransactionBlob',
     'withdrawal',
+    // Governance vote target redaction (slice-1 sanitization floor).
+    // omit-deep-lodash recurses by key name at any depth, so these
+    // cover delegation.active.voting, delegation.next[*].voting,
+    // certificates[*].vote, drepId anywhere, etc.
+    'drepId',
+    'dRepId',
+    'vote',
+    'voting',
+    // Governance identity and anchor redaction. A verified anchor name
+    // identifies a DRep as precisely as a bech32 id, and an anchor URL
+    // identifies the DRep whose detail page the user is viewing.
+    'drepIdentity',
+    'currentVote',
+    'votingTarget',
+    'chosenOption',
+    'raw',
+    'cip105',
+    'cip129',
+    'credentialHex',
+    'anchorUrl',
+    'anchorContent',
+    'givenName',
+    'verifiedName',
+    'objectives',
+    'motivations',
+    'qualifications',
+    'references',
+    'paymentAddress',
+    'doNotList',
   ];
-  return omitDeep(data, ...sensitiveData);
+
+  const redact = (value: any): any => {
+    if (Array.isArray(value)) {
+      return value.map(redact);
+    }
+
+    if (value && typeof value === 'object') {
+      return Object.keys(value).reduce(
+        (result, key) => {
+          if (sensitiveData.includes(key)) {
+            return result;
+          }
+
+          result[key] = redact(value[key]);
+          return result;
+        },
+        {} as Record<string, any>
+      );
+    }
+
+    return value;
+  };
+
+  return redact(data);
 };
 export const stringifyData = (data: any) => JSON.stringify(data, null, 2);
 export const stringifyError = (error: any) =>

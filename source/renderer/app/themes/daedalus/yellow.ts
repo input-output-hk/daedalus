@@ -945,6 +945,12 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },
   staking: {
+    '--theme-gov-content-background-color': '#ffffff',
+    '--theme-gov-content-border-color': '#e1dac6',
+    '--theme-gov-font-color-accent': '#2d2d2d',
+    '--theme-gov-font-color-regular': '#2d2d2d',
+    '--theme-gov-font-color-light': '#2d2d2db3',
+    '--theme-gov-font-color-lighter': 'rgba(45, 45, 45, 0.5)',
     '--theme-staking-content-background-color': '#ffffff',
     '--theme-staking-content-border-color': '#e1dac6',
     '--theme-staking-font-color-accent': '#2d2d2d',

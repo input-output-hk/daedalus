@@ -1,0 +1,82 @@
+.card {
+  background: var(--theme-gov-content-background-color);
+  border: 1px solid var(--theme-gov-content-border-color);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  transition: box-shadow 0.15s;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.topRow {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.drepName {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 16px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drepIdRow {
+  color: var(--theme-gov-font-color-light);
+  font-size: 12px;
+}
+
+.bottomRow {
+  align-items: baseline;
+  display: flex;
+  font-size: 14px;
+  gap: 6px;
+}
+
+.votingPowerLabel {
+  color: var(--theme-gov-font-color-regular);
+}
+
+.votingPowerValue {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+}
+
+.sourceLabel {
+  color: var(--theme-gov-font-color-lighter);
+  font-size: 12px;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.favoriteToggle {
+  background: transparent;
+  border: none;
+  color: var(--theme-gov-font-color-light);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 4px;
+
+  &[aria-pressed='true'] {
+    color: var(--theme-warning-color, #f2a218);
+  }
+}
+
+.staleCaption {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 12px;
+  margin: 4px 0 0;
+}

@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DRepDetailPage renders the category badge in the detail header (snapshot) 1`] = `
+<span
+  aria-label="!!!Non-metadata. !!!Eligible for delegation but has no verified off-chain metadata yet."
+  class="badge nonMetadata"
+  title="!!!Eligible for delegation but has no verified off-chain metadata yet."
+>
+  <span
+    aria-hidden="true"
+    class="dot"
+  />
+  <span
+    class="label"
+  >
+    !!!Non-metadata
+  </span>
+</span>
+`;

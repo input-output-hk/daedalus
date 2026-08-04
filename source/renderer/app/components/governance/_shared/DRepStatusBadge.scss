@@ -1,0 +1,41 @@
+.badge {
+  align-items: center;
+  border-radius: 4px;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 6px;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+.dot {
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  height: 8px;
+  width: 8px;
+}
+
+.label {
+  white-space: nowrap;
+}
+
+/* Status-specific colors — reuses existing Daedalus theme variables via CSS custom properties */
+.active {
+  background: var(--badge-success-bg, rgba(44, 187, 105, 0.1));
+  color: var(--badge-success-fg, #2cbb69);
+
+  .dot {
+    background: var(--badge-success-fg, #2cbb69);
+  }
+}
+
+.inactive {
+  background: var(--badge-neutral-bg, rgba(142, 147, 158, 0.1));
+  color: var(--badge-neutral-fg, #8e939e);
+
+  .dot {
+    background: var(--badge-neutral-fg, #8e939e);
+  }
+}

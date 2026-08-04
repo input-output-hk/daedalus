@@ -33,6 +33,7 @@ class Root extends Component<Props> {
     const { isVotingPage } = voting;
     const { isStakingPage, redeemStep } = staking;
     const { isProfilePage, isSettingsPage } = profile;
+    const { isGovernancePage } = stores.governance;
     const { displayAppUpdateOverlay } = appUpdate;
     const { hasLoadedWallets } = wallets;
     const {
@@ -47,7 +48,7 @@ class Root extends Component<Props> {
     const { isCurrentLocaleSet, areTermsOfUseAccepted } = profile;
     const isWalletImportDialogOpen = uiDialogs.isOpen(WalletImportFileDialog);
     const isPageThatDoesntNeedWallets =
-      (isStakingPage || isSettingsPage || isVotingPage) &&
+      (isStakingPage || isSettingsPage || isVotingPage || isGovernancePage) &&
       hasLoadedWallets &&
       isConnected;
     // In case node is in stopping sequence we must show the "Connecting" screen

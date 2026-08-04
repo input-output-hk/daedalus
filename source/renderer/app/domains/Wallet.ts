@@ -8,6 +8,7 @@ import type {
   WalletUnit,
   WalletPendingDelegations,
   Discovery,
+  WalletVotingTarget,
 } from '../api/wallets/types';
 import type { WalletTokens } from '../api/assets/types';
 
@@ -39,7 +40,7 @@ export const WalletDelegationStatuses: {
   DELEGATING: 'delegating',
   NOT_DELEGATING: 'not_delegating',
   VOTING: 'voting',
-  VOTING_AND_DELEGATING: 'voting_and_delegating',
+  VOTING_AND_DELEGATING: 'delegating_and_voting',
 };
 export type HwDeviceStatus =
   | 'connecting'
@@ -126,6 +127,7 @@ export type WalletProps = {
   lastDelegatedStakePoolId?: string | null | undefined;
   lastDelegationStakePoolStatus?: string | null | undefined;
   pendingDelegations?: WalletPendingDelegations;
+  votingTarget?: WalletVotingTarget | null;
   discovery: Discovery;
   hasPassword: boolean;
   walletNotConnected?: boolean;
@@ -161,6 +163,8 @@ export default class Wallet {
   @observable
   pendingDelegations: WalletPendingDelegations;
   @observable
+  votingTarget: WalletVotingTarget | null | undefined;
+  @observable
   discovery: Discovery;
   @observable
   hasPassword: boolean;
@@ -193,6 +197,7 @@ export default class Wallet {
         'lastDelegatedStakePoolId',
         'lastDelegationStakePoolStatus',
         'pendingDelegations',
+        'votingTarget',
         'discovery',
         'hasPassword',
         'walletNotConnected',
@@ -244,6 +249,16 @@ export default class Wallet {
       WalletDelegationStatuses.DELEGATING,
       WalletDelegationStatuses.VOTING_AND_DELEGATING,
     ].includes(statusToCheck);
+  }
+
+  @computed
+  get currentVote(): WalletVotingTarget | null {
+    return this.votingTarget ?? null;
+  }
+
+  @computed
+  get isVoting(): boolean {
+    return this.currentVote !== null;
   }
 
   @computed

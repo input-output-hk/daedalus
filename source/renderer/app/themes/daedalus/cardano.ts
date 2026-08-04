@@ -959,6 +959,12 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },
   staking: {
+    '--theme-gov-content-background-color': '#ffffff',
+    '--theme-gov-content-border-color': '#d2d3d3',
+    '--theme-gov-font-color-accent': '#5e6066',
+    '--theme-gov-font-color-regular': '#5e6066',
+    '--theme-gov-font-color-light': 'rgba(94, 96, 102, 0.7)',
+    '--theme-gov-font-color-lighter': 'rgba(94, 96, 102, 0.5)',
     '--theme-staking-content-background-color': '#ffffff',
     '--theme-staking-content-border-color': '#d2d3d3',
     '--theme-staking-font-color-accent': '#5e6066',

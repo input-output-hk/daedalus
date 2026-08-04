@@ -64,19 +64,58 @@ span.link {
 
 .generalError {
   @include error-message;
-}
-
-.voteTypeSelect,
-.drepInput,
-.generalError {
-  margin-top: 40px;
-}
-
-.generalError,
-.voteSubmit {
   margin-top: 28px;
 }
 
 .voteSubmit {
+  margin-top: 28px;
   width: 100%;
+}
+
+.sameVoteHint {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 13px;
+  line-height: 1.4;
+  margin-top: 28px;
+}
+
+.selectedDRepSection {
+  border: 1px solid var(--theme-gov-content-border-color);
+  border-radius: 4px;
+  margin-top: 20px;
+  padding: 16px;
+}
+
+.selectedDRepHeading {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 13px;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.selectedDRepName {
+  font-family: var(--font-semibold);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.selectedDRepMeta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.selectedDRepChangeRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.browseDRepsPrompt {
+  margin-top: 20px;
+  text-align: center;
 }

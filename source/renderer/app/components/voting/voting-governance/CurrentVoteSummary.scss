@@ -1,0 +1,89 @@
+.component {
+  border: 1px solid var(--theme-gov-content-border-color);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 16px;
+}
+
+.header {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 14px;
+  margin: 0;
+}
+
+.statusRow {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.statusBadge {
+  align-items: center;
+  color: var(--theme-gov-font-color-accent);
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 6px;
+}
+
+.expiringBadge {
+  align-items: center;
+  background: var(--badge-warning-bg, rgba(230, 162, 60, 0.12));
+  border-radius: 4px;
+  color: var(--badge-warning-fg, #b26a00);
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 6px;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+.glyph {
+  line-height: 1;
+}
+
+.sourceLabel {
+  color: var(--theme-gov-font-color-light);
+  font-size: 12px;
+}
+
+.idRow {
+  align-items: center;
+  display: flex;
+}
+
+.caption {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.warning {
+  color: var(--badge-warning-fg, #b76e00);
+  display: flex;
+  font-size: 13px;
+  gap: 8px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.warningGlyph {
+  font-weight: 700;
+}
+
+.subline {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.cta {
+  margin-top: 4px;
+}

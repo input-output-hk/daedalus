@@ -1,0 +1,66 @@
+.banner {
+  border-bottom: 1px solid var(--theme-gov-content-border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 16px;
+}
+
+.headerRow {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.title {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 24px;
+  margin: 0;
+}
+
+.lastUpdated {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 13px;
+  margin: 0;
+}
+
+.cohortLine {
+  align-items: baseline;
+  color: var(--theme-gov-font-color-regular);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 13px;
+  gap: 8px;
+}
+
+.reshuffleLink {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.sourceLine {
+  color: var(--theme-gov-font-color-light);
+  font-size: 12px;
+  margin: 0;
+}
+
+.filteredLine {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 13px;
+  margin: 0;
+}
+
+.favoritesLine {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 13px;
+  margin: 0;
+}
+
+.refreshingBadge {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
