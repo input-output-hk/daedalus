@@ -1,11 +1,7 @@
 import Store from 'electron-store';
-import { spawn, exec } from 'child_process';
-import type { ChildProcess } from 'child_process';
+import { exec } from 'child_process';
 import type { WriteStream } from 'fs';
-import type { Launcher } from 'cardano-launcher';
 import { get, toInteger } from 'lodash';
-import moment from 'moment';
-import rfs from 'rotating-file-stream';
 import { environment } from '../environment';
 import {
   deriveProcessNames,
@@ -24,16 +20,21 @@ import type {
   TlsConfig,
 } from '../../common/types/cardano-node.types';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
-import { CardanoWalletLauncher } from './CardanoWalletLauncher';
-import { CardanoSelfnodeLauncher } from './CardanoSelfnodeLauncher';
+import { startWatchdog } from './CardanoWatchdog';
+import type { WatchdogHandle, WatchdogOptions } from './CardanoWatchdog';
 import { launcherConfig } from '../config';
 import type { NodeConfig } from '../config';
 import type { Logger } from '../../common/types/logging.types';
 import { containsRTSFlags } from '../utils/containsRTSFlags';
+import {
+  resolveNetworkConfig,
+  resolveVerificationKeys,
+} from '../mithril/mithrilNetworkConfig';
+import { getMithrilController } from '../mithril/MithrilController';
+import { onWatchdogChainStatus } from '../ipc/mithrilBootstrapChannel';
 
 /* eslint-disable consistent-return */
 type Actions = {
-  spawn: typeof spawn;
   exec: typeof exec;
   readFileSync: (path: string) => Buffer;
   createWriteStream: (
@@ -42,6 +43,7 @@ type Actions = {
   ) => WriteStream;
   broadcastTlsConfig: (config: TlsConfig | null | undefined) => void;
   broadcastStateChange: (state: CardanoNodeState) => void;
+  broadcastNodeStartupStatus: () => void;
 };
 type StateTransitions = {
   onStarting: () => void;
@@ -114,7 +116,10 @@ export class CardanoNode {
    * The managed cardano-node child process
    * @private
    */
-  _node: Launcher | null | undefined;
+  _node: WatchdogHandle | null | undefined;
+  // Set as soon as the watchdog process starts, before wallet_ready resolves.
+  // Allows stop() to kill the watchdog during ledger replay (when _node is still null).
+  _pendingWatchdogHandle: WatchdogHandle | null = null;
 
   /**
    * The ipc channel used for broadcasting messages to the outside world
@@ -183,6 +188,24 @@ export class CardanoNode {
   _startupTries = 0;
 
   /**
+   * ChainDB startup phase received from the watchdog before wallet_ready fires.
+   * Updated via the onNodeStartupPhase callback so the loading screen can show
+   * which phase the node is in during the STARTING phase.
+   */
+  _nodeStartupPhase: string | null = null;
+
+  /**
+   * Block sync progress received from the watchdog before wallet_ready fires.
+   * Updated via the onBlockSyncProgress callback so the sync dialog can show
+   * replay/validation progress during the STARTING phase.
+   */
+  _blockSyncProgress: {
+    replayedBlock: number;
+    validatingChunk: number;
+    pushingLedger: number;
+  } = { replayedBlock: 0, validatingChunk: 0, pushingLedger: 0 };
+
+  /**
    * Flag which makes cardano node to exit Daedalus after stopping
    */
   _exitOnStop = false;
@@ -237,7 +260,26 @@ export class CardanoNode {
     return Object.assign({}, this._status, {
       cardanoNodePID: get(this, '_node.pid', 0),
       cardanoWalletPID: get(this, '_node.wpid', 0),
+      cardanoNodeStartedAt: get(this, '_node.nodeStartedAt', null),
+      cardanoWalletStartedAt: get(this, '_node.walletStartedAt', null),
+      cardanoWalletRestartCount: get(this, '_node.walletRestartCount', 0),
       isRTSFlagsModeEnabled: containsRTSFlags(this._config.rtsFlags),
+      watchdogPid: get(this, '_node.watchdogPid', 0) || undefined,
+      nodeForceKilled: get(this, '_node.nodeForceKilled', false),
+      lastWalletExitCode: get(this, '_node.lastWalletExitCode', null),
+      lastWalletExitSignal: get(this, '_node.lastWalletExitSignal', null),
+      nodeSocketWaitMs: get(this, '_node.nodeSocketWaitMs', null),
+      walletReadyWaitMs: get(this, '_node.walletReadyWaitMs', null),
+      nodeStartupPhase: get(
+        this,
+        '_node.nodeStartupPhase',
+        this._nodeStartupPhase
+      ),
+      blockSyncProgress: get(
+        this,
+        '_node.blockSyncProgress',
+        this._blockSyncProgress
+      ),
     });
   }
 
@@ -311,173 +353,145 @@ export class CardanoNode {
     );
 
     return new Promise(async (resolve, reject) => {
-      const mkLogFile = (baseName: string): WriteStream => {
-        return rfs(
-          (time) => {
-            // The module works by writing to the one file name before it is rotated out.
-            if (!time) return baseName;
-            const timestamp = moment.utc().format('YYYYMMDDHHmmss');
-            return `${baseName}-${timestamp}`;
-          },
-          {
-            size: '5M',
-            path: this._config.logFilePath,
-            maxFiles: 4,
-          }
-        );
-      };
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+      _log.info('Starting cardano-node via watchdog...');
 
-      const nodeLogFile = mkLogFile('node.log');
-      this._cardanoNodeLogFile = nodeLogFile;
-      const walletLogFile = mkLogFile('cardano-wallet.log');
-      this._cardanoWalletLogFile = walletLogFile;
+      _log.info(`Current working directory is: ${process.cwd()}`, {
+        cwd: process.cwd(),
+      });
 
-      if (isSelfnode) {
+      let mithrilOpts: Partial<WatchdogOptions> = {};
+      if (launcherConfig.mithrilPartialSyncEnabled) {
         try {
-          const mockTokenMetadataServerLogFile = mkLogFile(
-            'mock-token-metadata-server.log'
-          );
-          this._mockTokenMetadataServerLogFile = mockTokenMetadataServerLogFile;
-
-          const { selfnodeBin, mockTokenMetadataServerBin } = launcherConfig;
-          const { node, replyPort } = await CardanoSelfnodeLauncher({
-            selfnodeBin,
-            walletLogFile,
-            mockTokenMetadataServerBin,
-            mockTokenMetadataServerLogFile,
-            processName: CARDANO_PROCESS_NAME,
-            onStop: this._ensureProcessIsNotRunning,
-          });
-
-          _log.info(
-            `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
-            {
-              pid: node.pid,
-            }
-          );
-
-          // @ts-ignore ts-migrate(2740) FIXME: Type 'Selfnode' is missing the following propertie... Remove this comment to see the full error message
-          this._node = node;
-
-          this._handleCardanoNodeMessage({
-            ReplyPort: replyPort,
-          });
-
-          resolve();
-        } catch (error) {
+          const mithrilNetCfg = resolveNetworkConfig();
+          await resolveVerificationKeys(mithrilNetCfg);
+          const binDir = require('path').dirname(launcherConfig.nodeBin);
+          const binExt = process.platform === 'win32' ? '.exe' : '';
+          mithrilOpts = {
+            mithrilBin: require('path').join(binDir, `mithril-client${binExt}`),
+            snapshotConverterBin: require('path').join(
+              binDir,
+              `snapshot-converter${binExt}`
+            ),
+            converterConfig: launcherConfig.nodeConfig.network.configFile,
+            aggregatorUrl: mithrilNetCfg.aggregatorEndpoint,
+            genesisVkey: mithrilNetCfg.genesisKey,
+            ancillaryVkey: mithrilNetCfg.ancillaryKey,
+            mithrilBehindThreshold:
+              launcherConfig.mithrilPartialSyncThresholdImmutables,
+          };
+        } catch (e) {
           _log.error(
-            'CardanoNode#start: Unable to initialize cardano-launcher',
-            {
-              error,
-            }
-          );
-
-          const { code, signal } = error || {};
-          await this._handleCardanoNodeError(code, signal);
-          reject(
-            new Error(
-              'CardanoNode#start: Unable to initialize cardano-launcher'
-            )
-          );
-        }
-      } else {
-        try {
-          const node = await CardanoWalletLauncher({
-            ...this._config,
-            nodeImplementation,
-            nodeLogFile,
-            walletLogFile,
-          });
-          this._node = node;
-
-          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-          _log.info('Starting cardano-node now...');
-
-          _log.info(`Current working directory is: ${process.cwd()}`, {
-            cwd: process.cwd(),
-          });
-
-          // await promisedCondition(() => node.connected, startupTimeout);
-          node
-            .start()
-            .then((api) => {
-              const processes: {
-                wallet: ChildProcess;
-                node: ChildProcess;
-              } = {
-                wallet: node.walletService.getProcess(),
-                node: node.nodeService.getProcess(),
-              };
-              // Setup event handling
-              node.walletBackend.events.on('exit', (exitStatus) => {
-                _log.info('CardanoNode#exit', {
-                  exitStatus,
-                });
-
-                const { code, signal } = exitStatus.wallet;
-
-                this._handleCardanoNodeExit(code, signal);
-              });
-              // @ts-ignore ts-migrate(2339) FIXME: Property 'pid' does not exist on type 'Launcher'.
-              node.pid = processes.node.pid;
-              // @ts-ignore ts-migrate(2339) FIXME: Property 'wpid' does not exist on type 'Launcher'.
-              node.wpid = processes.wallet.pid;
-              // @ts-ignore ts-migrate(2339) FIXME: Property 'connected' does not exist on type 'Launc... Remove this comment to see the full error message
-              node.connected = true; // TODO: use processes.wallet.connected here
-
-              _log.info(
-                `CardanoNode#start: cardano-node child process spawned with PID ${processes.node.pid}`,
-                {
-                  pid: processes.node.pid,
-                }
-              );
-
-              _log.info(
-                `CardanoNode#start: cardano-wallet child process spawned with PID ${processes.wallet.pid}`,
-                {
-                  pid: processes.wallet.pid,
-                }
-              );
-
-              this._handleCardanoNodeMessage({
-                ReplyPort: api.requestParams.port,
-              });
-
-              resolve();
-            })
-            .catch(async (exitStatus) => {
-              _log.error(
-                'CardanoNode#start: Error while spawning cardano-node',
-                {
-                  exitStatus,
-                }
-              );
-
-              const { code, signal } = exitStatus.wallet || {};
-              await this._handleCardanoNodeError(code, signal);
-              reject(
-                new Error(
-                  'CardanoNode#start: Error while spawning cardano-node'
-                )
-              );
-            });
-        } catch (error) {
-          _log.error(
-            'CardanoNode#start: Unable to initialize cardano-launcher',
-            {
-              error,
-            }
-          );
-
-          const { code, signal } = error || {};
-          await this._handleCardanoNodeError(code, signal);
-          reject(
-            new Error(
-              'CardanoNode#start: Unable to initialize cardano-launcher'
-            )
+            'CardanoNode#start: failed to resolve Mithril network config, proceeding without Mithril',
+            { error: e }
           );
         }
       }
+
+      startWatchdog(
+        {
+          watchdogBin: launcherConfig.watchdogBin,
+          nodeBin: launcherConfig.nodeBin,
+          walletBin: launcherConfig.walletBin,
+          ...this._config,
+          nodeLogFile: require('path').join(
+            this._config.logFilePath,
+            'node.log'
+          ),
+          walletLogFile: require('path').join(
+            this._config.logFilePath,
+            'cardano-wallet.log'
+          ),
+          ...mithrilOpts,
+        },
+        (code, signal) => {
+          // cardano-node exited → treat as a node crash
+          _log.info('CardanoNode: node_exited from watchdog', {
+            code,
+            signal,
+          });
+          this._handleCardanoNodeExit(code, signal);
+        },
+        (code, signal) => {
+          // cardano-wallet exited → watchdog will restart it; just log
+          _log.info('CardanoNode: wallet crashed, watchdog restarting', {
+            code,
+            signal,
+          });
+        },
+        () => {
+          // cardano-wallet restarted and is ready again
+          _log.info(
+            'CardanoNode: wallet restarted and ready, re-broadcasting TLS config'
+          );
+          this.broadcastTlsConfig();
+        },
+        (code, signal) => {
+          _log.error('CardanoNode: watchdog process crashed', {
+            code,
+            signal,
+          });
+          this._handleCardanoNodeExit(code, signal);
+        },
+        (kind, progress) => {
+          this._blockSyncProgress[kind] = progress;
+          this._actions.broadcastNodeStartupStatus();
+        },
+        (phase) => {
+          this._nodeStartupPhase = phase;
+          this._actions.broadcastNodeStartupStatus();
+        },
+        (handle) => {
+          this._pendingWatchdogHandle = handle;
+          getMithrilController().setWatchdogHandle(handle);
+        },
+        (phase) => {
+          getMithrilController().onWatchdogMithrilStatus(phase);
+        },
+        (progress) => {
+          getMithrilController().onWatchdogMithrilProgress(progress);
+        },
+        () => {
+          getMithrilController().onWatchdogMithrilNotNeeded();
+        },
+        (code, message) => {
+          getMithrilController().onWatchdogMithrilError(code, message);
+        },
+        (hasChain) => {
+          onWatchdogChainStatus(hasChain);
+        },
+        (localCount, certified) => {
+          getMithrilController().onWatchdogMithrilSignificantlyBehind(
+            localCount,
+            certified
+          );
+        }
+      )
+        .then((handle) => {
+          this._pendingWatchdogHandle = null;
+          this._node = handle;
+
+          _log.info(
+            `CardanoNode#start: cardano-node spawned with PID ${handle.pid}`,
+            { pid: handle.pid }
+          );
+          _log.info(
+            `CardanoNode#start: cardano-wallet spawned with PID ${handle.wpid}`,
+            { pid: handle.wpid }
+          );
+
+          this._handleCardanoNodeMessage({ ReplyPort: handle.walletPort });
+          resolve();
+        })
+        .catch(async (error) => {
+          this._pendingWatchdogHandle = null;
+          _log.error('CardanoNode#start: watchdog failed to start', {
+            error,
+          });
+          const { code, signal } = error || {};
+          await this._handleCardanoNodeError(code, signal);
+          reject(new Error('CardanoNode#start: watchdog failed to start'));
+        });
     });
   };
 
@@ -491,7 +505,7 @@ export class CardanoNode {
   async stop(): Promise<void> {
     const { _node, _log, _config } = this;
 
-    if (await this._isDead()) {
+    if (this._isDead() && !this._pendingWatchdogHandle) {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       _log.info('CardanoNode#stop: process is not running anymore');
 
@@ -504,8 +518,14 @@ export class CardanoNode {
     try {
       this._changeToState(CardanoNodeStates.STOPPING);
 
-      if (_node) await _node.stop(_config.shutdownTimeout / 1000);
-      await this._waitForNodeProcessToExit(_config.shutdownTimeout);
+      if (_node) {
+        await _node.stop(_config.shutdownTimeout / 1000);
+      } else if (this._pendingWatchdogHandle) {
+        // Watchdog started but wallet_ready hasn't fired yet (e.g. during ledger replay).
+        const pendingHandle = this._pendingWatchdogHandle;
+        this._pendingWatchdogHandle = null;
+        await pendingHandle.stop(_config.shutdownTimeout / 1000);
+      }
       await this._storeProcessStates();
 
       this._changeToState(CardanoNodeStates.STOPPED);
@@ -535,7 +555,7 @@ export class CardanoNode {
   kill(): Promise<void> {
     const { _node, _log } = this;
     return new Promise(async (resolve, reject) => {
-      if (await this._isDead()) {
+      if (this._isDead()) {
         // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         _log.info('CardanoNode#kill: process is already dead');
 
@@ -548,7 +568,6 @@ export class CardanoNode {
 
         // @ts-ignore ts-migrate(2339) FIXME: Property 'kill' does not exist on type 'Launcher'.
         if (_node) _node.kill();
-        await this._waitForCardanoToExitOrKillIt();
         await this._storeProcessStates();
 
         this._changeToState(CardanoNodeStates.STOPPED);
@@ -591,8 +610,6 @@ export class CardanoNode {
       _log.info('CardanoNode#restart: restarting node with previous config', {
         isForced,
       });
-
-      await this._waitForCardanoToExitOrKillIt();
 
       if (this._exitOnStop) {
         _log.info('Daedalus:safeExit: exiting Daedalus with code 0', {
@@ -643,7 +660,6 @@ export class CardanoNode {
         () => this._state === CardanoNodeStates.UPDATED,
         _config.updateTimeout
       );
-      await this._waitForNodeProcessToExit(_config.updateTimeout);
     } catch (error) {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       _log.info('CardanoNode: did not apply update as expected, killing it...');
@@ -695,6 +711,7 @@ export class CardanoNode {
   exitOnStop = () => {
     this._exitOnStop = true;
   };
+
   // ================================= PRIVATE ===================================
 
   /**
@@ -775,6 +792,14 @@ export class CardanoNode {
   _handleCardanoNodeError = async (code: number, signal: string) => {
     const { _log, _config } = this;
 
+    // If stop() is driving a controlled shutdown, don't override STOPPED/STOPPING state.
+    if (
+      this._state === CardanoNodeStates.STOPPING ||
+      this._state === CardanoNodeStates.STOPPED
+    ) {
+      return;
+    }
+
     _log.error('CardanoNode: error', {
       code,
       signal,
@@ -800,9 +825,14 @@ export class CardanoNode {
   _handleCardanoNodeExit = async (code: number, signal: string) => {
     const { _log, _config, _node } = this;
 
+    const watchdogHandle = _node as WatchdogHandle | null | undefined;
     _log.info('CardanoNode exited', {
       code,
       signal,
+      watchdogPid: watchdogHandle?.watchdogPid ?? null,
+      nodeForceKilled: watchdogHandle?.nodeForceKilled ?? false,
+      lastWalletExitCode: watchdogHandle?.lastWalletExitCode ?? null,
+      lastWalletExitSignal: watchdogHandle?.lastWalletExitSignal ?? null,
     });
 
     // If stop() is driving a controlled shutdown, let it own the STOPPED sequence and return. Otherwise
@@ -818,31 +848,6 @@ export class CardanoNode {
     // We don't know yet what happened but we can be sure cardano-node is exiting
     if (this._state === CardanoNodeStates.RUNNING) {
       this._changeToState(CardanoNodeStates.EXITING);
-    }
-
-    try {
-      // Before proceeding with exit procedures, wait until the node is really dead.
-      await this._waitForNodeProcessToExit(_config.shutdownTimeout);
-    } catch (_) {
-      _log.error(
-        `CardanoNode: sent exit code ${code} but was still running after ${_config.shutdownTimeout}ms. Killing it now.`,
-        {
-          code,
-          shutdownTimeout: _config.shutdownTimeout,
-        }
-      );
-
-      try {
-        if (_node)
-          await this._ensureProcessIsNotRunning(
-            // @ts-ignore ts-migrate(2339) FIXME: Property 'pid' does not exist on type 'Launcher'.
-            _node.pid,
-            CARDANO_PROCESS_NAME
-          );
-      } catch (e) {
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-        _log.info('CardanoNode: did not exit correctly');
-      }
     }
 
     _log.info('CardanoNode: process really exited', {
@@ -873,7 +878,15 @@ export class CardanoNode {
     if (this._mockTokenMetadataServerLogFile)
       this._mockTokenMetadataServerLogFile.end();
     if (this._node) this._node = null;
+    this._pendingWatchdogHandle = null;
     this._tlsConfig = null;
+    this._nodeStartupPhase = null;
+    this._blockSyncProgress = {
+      replayedBlock: 0,
+      validatingChunk: 0,
+      pushingLedger: 0,
+    };
+    getMithrilController().setWatchdogHandle(null);
   };
 
   _changeToState(state: CardanoNodeState, ...args: Array<any>) {
@@ -928,12 +941,7 @@ export class CardanoNode {
   // @ts-ignore ts-migrate(2339) FIXME: Property 'connected' does not exist on type 'Launc... Remove this comment to see the full error message
   _isConnected = (): boolean => this._node != null && this._node.connected;
 
-  /**
-   * Checks if cardano-node child_process is not running anymore
-   * @returns {boolean}
-   */
-  _isDead = async (): Promise<boolean> =>
-    !this._isConnected() && this._isNodeProcessNotRunningAnymore();
+  _isDead = (): boolean => !this._isConnected();
 
   /**
    * Checks if current cardano-node child_process is "awake" (created, connected, stateful)
@@ -993,21 +1001,6 @@ export class CardanoNode {
       name,
       pid,
     });
-  };
-  _ensureCurrentCardanoNodeIsNotRunning = async (): Promise<void> => {
-    const { _log, _node } = this;
-
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    _log.info(
-      'CardanoNode: checking if current cardano-node process is still running'
-    );
-
-    if (_node == null) {
-      return Promise.resolve();
-    }
-
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'pid' does not exist on type 'Launcher'.
-    return this._ensureProcessIsNotRunning(_node.pid, CARDANO_PROCESS_NAME);
   };
   _ensurePreviousCardanoNodeIsNotRunning = async (): Promise<void> => {
     const { _log } = this;
@@ -1173,24 +1166,6 @@ export class CardanoNode {
         reject(error);
       }
     });
-  _isNodeProcessStillRunning = async (): Promise<boolean> =>
-    this._node != null &&
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'pid' does not exist on type 'Launcher'.
-    this._isProcessRunning(this._node.pid, CARDANO_PROCESS_NAME);
-  _isNodeProcessNotRunningAnymore = async () =>
-    (await this._isNodeProcessStillRunning()) === false;
-  _waitForNodeProcessToExit = async (timeout: number) =>
-    promisedCondition(this._isNodeProcessNotRunningAnymore, timeout);
-  _waitForCardanoToExitOrKillIt = async () => {
-    const { _config } = this;
-    if (await this._isNodeProcessNotRunningAnymore()) return Promise.resolve();
-
-    try {
-      await this._waitForNodeProcessToExit(_config.shutdownTimeout);
-    } catch (_) {
-      await this._ensureCurrentCardanoNodeIsNotRunning();
-    }
-  };
   _isUnrecoverable = (config: CardanoNodeConfig) =>
     this._startupTries >= config.startupMaxRetries;
 }

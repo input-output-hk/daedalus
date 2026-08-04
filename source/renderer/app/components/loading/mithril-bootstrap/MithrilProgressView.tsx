@@ -9,6 +9,7 @@ import type {
   MithrilProgressItem,
 } from '../../../../../common/types/mithril-bootstrap.types';
 import type { MithrilPartialSyncStatus } from '../../../../../common/types/mithril-partial-sync.types';
+import type { MithrilSyncStatus } from '../../../../../common/types/mithril-sync.types';
 import spinnerIcon from '../../../assets/images/spinner-universal.inline.svg';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';
@@ -17,11 +18,13 @@ import MithrilStepIndicator from './MithrilStepIndicator';
 import styles from './MithrilProgressView.scss';
 
 interface Props {
-  status: MithrilBootstrapStatus | MithrilPartialSyncStatus;
+  status: MithrilBootstrapStatus | MithrilPartialSyncStatus | MithrilSyncStatus;
   variant?: 'bootstrap' | 'partial-sync';
   progressItems?: MithrilProgressItem[];
   filesDownloaded?: number;
   filesTotal?: number;
+  snapshotBytesDownloaded?: number;
+  snapshotBytesTotal?: number;
   snapshotSizeBytes?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
@@ -39,11 +42,11 @@ interface Context {
 }
 
 const TERMINAL_STATUSES = new Set<
-  MithrilBootstrapStatus | MithrilPartialSyncStatus
+  MithrilBootstrapStatus | MithrilPartialSyncStatus | MithrilSyncStatus
 >(['failed', 'cancelled', 'completed']);
 
 const LONG_RUNNING_STATUSES = new Set<
-  MithrilBootstrapStatus | MithrilPartialSyncStatus
+  MithrilBootstrapStatus | MithrilPartialSyncStatus | MithrilSyncStatus
 >(['verifying', 'unpacking', 'converting', 'installing', 'finalizing']);
 
 const formatDuration = (value?: number) => {
@@ -103,6 +106,8 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     progressItems,
     filesDownloaded,
     filesTotal,
+    snapshotBytesDownloaded,
+    snapshotBytesTotal,
     snapshotSizeBytes,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
@@ -198,6 +203,8 @@ function MithrilProgressView(props: Props, { intl }: Context) {
             progressItems={progressItems}
             filesDownloaded={filesDownloaded}
             filesTotal={filesTotal}
+            snapshotBytesDownloaded={snapshotBytesDownloaded}
+            snapshotBytesTotal={snapshotBytesTotal}
             snapshotSizeBytes={snapshotSizeBytes}
             ancillaryBytesDownloaded={ancillaryBytesDownloaded}
             ancillaryBytesTotal={ancillaryBytesTotal}

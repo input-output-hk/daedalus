@@ -20,12 +20,10 @@ import {
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoNode } from '../cardano/CardanoNode';
 import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.types';
-import { isMithrilDecisionCancelledError } from '../mithril/mithrilDecision';
 import {
   chainStorageCoordinator,
   getChainStorageManager,
 } from './chainStorageCoordinator';
-import { MithrilPartialSyncNodeStartup } from '../mithril/mithrilPartialSyncNodeStartup';
 import { getMithrilController } from '../mithril/MithrilController';
 import { isMithrilPartialSyncSuppressingDiskSpaceCheck } from '../../common/types/mithril-partial-sync.types';
 
@@ -91,21 +89,6 @@ export const handleDiskSpace = (
   mainWindow: BrowserWindow,
   cardanoNode: CardanoNode
 ) => {
-  const MANAGED_CHAIN_LAYOUT_ERROR = 'MANAGED_CHAIN_LAYOUT_ERROR';
-  const markManagedChainLayoutError = (error: unknown): Error => {
-    const normalizedError =
-      error instanceof Error ? error : new Error(String(error));
-
-    Object.assign(normalizedError, {
-      code: MANAGED_CHAIN_LAYOUT_ERROR,
-    });
-
-    return normalizedError;
-  };
-  const isManagedChainLayoutError = (error: unknown): boolean =>
-    (error as NodeJS.ErrnoException | undefined)?.code ===
-    MANAGED_CHAIN_LAYOUT_ERROR;
-
   let diskSpaceCheckInterval;
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
 
@@ -121,39 +104,8 @@ export const handleDiskSpace = (
     resolve: (response: CheckDiskSpaceResponse) => void;
     reject: (error: unknown) => void;
   }> = [];
-  const mithrilLockFilePath = path.join(
-    stateDirectoryPath,
-    'Logs',
-    'mithril-bootstrap.lock'
-  );
-  const envWipeChain =
-    process.env.DAEDALUS_WIPE_CHAIN === 'true' ? true : undefined;
-  const argvWipeChain = process.argv.slice(1).includes('--wipe-chain')
-    ? true
-    : undefined;
-  const wipeChainFlag =
-    envWipeChain ?? argvWipeChain ?? launcherConfig.wipeChain ?? false;
   const chainStorageManager = getChainStorageManager();
-  const partialSyncNodeStartup = new MithrilPartialSyncNodeStartup({
-    mainWindow,
-    cardanoNode,
-    wipeChainAndSnapshots: (reason, nodeState) =>
-      chainStorageCoordinator.wipeChainAndSnapshots(reason, nodeState),
-    getGeneration: () => directoryChangeGeneration,
-    emitPartialSyncStatus: (status) =>
-      getMithrilController().broadcastPartialSyncStatus(status),
-    getPartialSyncStatus: () => getMithrilController().getPartialSyncStatus(),
-  });
   const mithrilController = getMithrilController();
-  mithrilController.configureStartupGate({
-    cardanoNode,
-    partialSyncNodeStartup,
-    wipeChainFlag,
-    mithrilLockFilePath,
-    markManagedChainLayoutError,
-    isManagedChainLayoutError,
-    getGeneration: () => directoryChangeGeneration,
-  });
 
   const runHandleCheckDiskSpace = async (
     hadNotEnoughSpaceLeft?: boolean,
@@ -179,21 +131,30 @@ export const handleDiskSpace = (
       return getStaleResponse();
     }
 
-    const startupLayoutResult =
-      await mithrilController.ensureMithrilStartupGate(currentGeneration);
-    if (
-      !startupLayoutResult ||
-      currentGeneration !== directoryChangeGeneration
-    ) {
-      return getStaleResponse();
+    // Resolve chain storage layout to determine disk check path
+    let diskCheckPath: string;
+    try {
+      const layoutResult =
+        await chainStorageCoordinator.ensureManagedChainLayout();
+      if (currentGeneration !== directoryChangeGeneration) {
+        return getStaleResponse();
+      }
+      diskCheckPath = layoutResult.managedChainPath;
+    } catch (error) {
+      logger.error('[DISK-SPACE-DEBUG] Failed to resolve chain layout', {
+        error,
+      });
+      if (currentGeneration !== directoryChangeGeneration) {
+        return getStaleResponse();
+      }
+      // Fall back to state directory path
+      diskCheckPath = stateDirectoryPath;
     }
-    const response = await getDiskCheckReport(
-      startupLayoutResult.managedChainPath
-    );
+
+    const response = await getDiskCheckReport(diskCheckPath);
     if (currentGeneration !== directoryChangeGeneration) {
       return getStaleResponse();
     }
-    mithrilController.syncPendingDecision();
 
     if (response.isError) {
       logger.info(
@@ -232,9 +193,6 @@ export const handleDiskSpace = (
           newDiskSpaceCheckIntervalLength !== diskSpaceCheckIntervalLength
         ) {
           // Interval change: transitioning from medium to long interval (or vice versa)
-          // This is a special case in which we adjust the disk space check polling interval:
-          // - more than 2x of available space than required: LONG interval
-          // - less than 2x of available space than required: MEDIUM interval
           setDiskSpaceIntervalChecking(newDiskSpaceCheckIntervalLength);
         }
       }
@@ -272,42 +230,11 @@ export const handleDiskSpace = (
 
         case CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME:
           try {
-            const startupResult =
-              await mithrilController.handleStoppedNodeStartup({
-                currentGeneration,
-                getStaleResponse,
-                response,
-              });
-            if (startupResult.handled) {
-              return startupResult.response;
-            }
-          } catch (error) {
-            logger.error('[MITHRIL] Failed to handle bootstrap decision', {
-              error,
+            await cardanoNode.start();
+          } catch (startError) {
+            logger.error('[DISK-SPACE-DEBUG] cardano-node start failed', {
+              error: startError,
             });
-            if (isManagedChainLayoutError(error)) {
-              throw error;
-            }
-
-            if (currentGeneration !== directoryChangeGeneration) {
-              return getStaleResponse();
-            }
-
-            try {
-              if (
-                await partialSyncNodeStartup.shouldSuppressStartupFallback()
-              ) {
-                return response;
-              }
-              await cardanoNode.start();
-            } catch (startError) {
-              logger.error(
-                '[MITHRIL] Fallback cardano-node start failed after bootstrap decision error',
-                {
-                  error: startError,
-                }
-              );
-            }
           }
           break;
 
@@ -337,9 +264,6 @@ export const handleDiskSpace = (
         default:
       }
     } catch (error) {
-      if (isManagedChainLayoutError(error)) {
-        throw error;
-      }
       logger.error('[DISK-SPACE-DEBUG] Unknown error', error);
       resetInterval(DISK_SPACE_CHECK_MEDIUM_INTERVAL);
     }
@@ -445,18 +369,9 @@ export const handleDiskSpace = (
 
   const resetOnDirectoryChange = () => {
     directoryChangeGeneration += 1;
-    mithrilController.resetStartupGateOnDirectoryChange();
     launchHandleCheckDiskSpace(false).catch((error) => {
-      if (isMithrilDecisionCancelledError(error)) {
-        logger.info(
-          '[MITHRIL] Immediate disk-space recheck cancelled after directory change',
-          null
-        );
-        return;
-      }
-
       logger.error(
-        '[MITHRIL] Immediate disk-space recheck after directory change failed',
+        '[DISK-SPACE] Immediate disk-space recheck after directory change failed',
         {
           error,
         }
@@ -491,15 +406,7 @@ export const handleDiskSpace = (
           hadNotEnoughSpaceLeft = response?.hadNotEnoughSpaceLeft;
         })
         .catch((error) => {
-          if (isMithrilDecisionCancelledError(error)) {
-            logger.info(
-              '[MITHRIL] Background disk-space poll cancelled after directory change',
-              null
-            );
-            return;
-          }
-
-          logger.error('[MITHRIL] Background disk-space poll failed', {
+          logger.error('[DISK-SPACE] Background disk-space poll failed', {
             error,
           });
         });

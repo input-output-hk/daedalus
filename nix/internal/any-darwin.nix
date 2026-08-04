@@ -237,6 +237,7 @@ in rec {
 
   bundle-cardano-launcher = mkBundle "cardano-launcher" (common.cardano-launcher + "/bin/cardano-launcher");
   bundle-cardano-node = mkBundle "cardano-node" (lib.getExe common.cardano-node);
+  bundle-cardano-watchdog = mkBundle "cardano-watchdog" (lib.getExe common.cardano-watchdog);
   bundle-cardano-cli = mkBundle "cardano-cli" (lib.getExe common.cardano-cli);
   bundle-cardano-address = mkBundle "cardano-address" (lib.getExe common.cardano-address);
   bundle-mithril-client = mkBundle "mithril-client" (common.mithril-client + "/bin/mithril-client");
@@ -372,6 +373,7 @@ in rec {
 
         cp -r ${bundle-cardano-launcher}/. "$dir"/ && chmod -R +w "$dir/"
         cp -r ${bundle-cardano-node}/. "$dir"/ && chmod -R +w "$dir/"
+        cp -r ${bundle-cardano-watchdog}/. "$dir"/ && chmod -R +w "$dir/"
         cp -r ${bundle-cardano-cli}/. "$dir"/ && chmod -R +w "$dir/"
         cp -r ${bundle-cardano-address}/. "$dir"/ && chmod -R +w "$dir/"
         cp -r ${bundle-cardano-wallet}/. "$dir"/ && chmod -R +w "$dir/"
