@@ -151,12 +151,12 @@ function DRepDirectory({
   const isRankingAvailable = true;
   const isFavoritesView = view === 'favorites';
 
-  // Trigger lazy load of the full list whenever show-all or search is active.
+  // Trigger lazy load of the full list for favorites view, show-all, or search.
   useEffect(() => {
-    if (isShowAll || isSearchActive) {
+    if (isFavoritesView || isShowAll || isSearchActive) {
       onLoadAllDReps();
     }
-  }, [isShowAll, isSearchActive, onLoadAllDReps]);
+  }, [isFavoritesView, isShowAll, isSearchActive, onLoadAllDReps]);
 
   const searchIndex = useMemo(() => buildDRepSearchIndex(allDReps), [allDReps]);
 
@@ -274,7 +274,8 @@ function DRepDirectory({
           </div>
         );
 
-      case suggestedDReps.length === 0 &&
+      case !isFavoritesView &&
+        suggestedDReps.length === 0 &&
         refreshState === GovernanceRefreshState.Loaded:
         return (
           <div className={styles.stateContainer}>
