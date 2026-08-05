@@ -694,7 +694,30 @@ async fn run_node_wallet(
                         emit(&Event::NodeShutdownMs { ms: unix_ms() - shutdown_start, force_killed });
                         return Ok(RunResult::StartMithril { force, wipe_chain });
                     }
-                    _ => {} // Unrelated command (e.g. ProbeMithril) — keep waiting for socket
+                    Cmd::ProbeMithril => {
+                        if let Some(mc) = config.mithril.clone() {
+                            tokio::spawn(async move {
+                                match mithril::probe(&mc).await {
+                                    Ok((local, certified)) => {
+                                        let local_count = local.unwrap_or(0);
+                                        if certified.saturating_sub(local_count) >= mc.behind_threshold {
+                                            emit(&Event::MithrilSignificantlyBehind {
+                                                local_immutable_count: local_count,
+                                                latest_certified_immutable: certified,
+                                            });
+                                        } else {
+                                            emit(&Event::MithrilNotNeeded {
+                                                local_immutable_count: local_count,
+                                                latest_certified_immutable: certified,
+                                            });
+                                        }
+                                    }
+                                    Err(e) => warn!("Mithril behind-ness probe failed: {e}"),
+                                }
+                            });
+                        }
+                    }
+                    _ => {} // stale command: ignore and keep waiting for socket
                 }
             }
         }
@@ -801,6 +824,29 @@ async fn run_node_wallet(
                                 wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
                             emit(&Event::NodeShutdownMs { ms: unix_ms() - shutdown_start, force_killed });
                             return Ok(RunResult::StartMithril { force, wipe_chain });
+                        }
+                        Cmd::ProbeMithril => {
+                            if let Some(mc) = config.mithril.clone() {
+                                tokio::spawn(async move {
+                                    match mithril::probe(&mc).await {
+                                        Ok((local, certified)) => {
+                                            let local_count = local.unwrap_or(0);
+                                            if certified.saturating_sub(local_count) >= mc.behind_threshold {
+                                                emit(&Event::MithrilSignificantlyBehind {
+                                                    local_immutable_count: local_count,
+                                                    latest_certified_immutable: certified,
+                                                });
+                                            } else {
+                                                emit(&Event::MithrilNotNeeded {
+                                                    local_immutable_count: local_count,
+                                                    latest_certified_immutable: certified,
+                                                });
+                                            }
+                                        }
+                                        Err(e) => warn!("Mithril behind-ness probe failed: {e}"),
+                                    }
+                                });
+                            }
                         }
                         _ => {} // stale command (e.g. CancelMithril): ignore and loop
                     }
