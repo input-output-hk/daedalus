@@ -83,7 +83,7 @@ impl Drop for TempDir {
 fn event_reader(stdout: std::process::ChildStdout) -> mpsc::Receiver<Value> {
     let (tx, rx) = mpsc::channel();
     std::thread::spawn(move || {
-        for line in BufReader::new(stdout).lines().flatten() {
+        for line in BufReader::new(stdout).lines().map_while(Result::ok) {
             if let Ok(v) = serde_json::from_str::<Value>(&line) {
                 if tx.send(v).is_err() {
                     break;
