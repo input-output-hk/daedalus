@@ -8,14 +8,10 @@ import StoryProvider from '../_support/StoryProvider';
 import DRepDetail from '../../../source/renderer/app/components/governance/drep-detail/DRepDetail';
 import {
   GovernanceRefreshState,
-  VotingPowerEnrichState,
 } from '../../../source/renderer/app/stores/GovernanceStore';
 import type {
-  AnchorEnrichEntry,
-  AppDRepDirectoryEntry,
-  DRepCohortContext,
+  AppDRepDetail,
 } from '../../../source/renderer/app/stores/GovernanceStore';
-import { AnchorFetchErrorType } from '../../../source/common/types/governance.types';
 
 const CENTERED_STYLE = {
   margin: '0 auto',
@@ -28,125 +24,67 @@ const STATUS_OPTIONS = {
   Inactive: 'inactive',
 };
 
-const ANCHOR_STATE_OPTIONS = {
-  Verified: 'verified',
-  'Verified — prose only': 'verified-minimal',
-  Unavailable: 'unavailable',
-  'Not requested': 'none',
-};
-
-const anchorStateFor = (
-  choice: string,
-  entry: AppDRepDirectoryEntry
-): AnchorEnrichEntry | null => {
-  const hash = entry.anchor?.hash;
-  if (!hash) return null;
-  if (choice === 'verified') {
-    return {
-      state: 'verified',
-      hash,
-      host: 'governance-preview.example.org',
-      content: {
-        givenName: 'Daedalus Preview DRep',
-        objectives:
-          'Advocate for treasury discipline and predictable protocol parameter changes.',
-        motivations:
-          'Long-term stake pool operator with an interest in governance participation.',
-        qualifications:
-          'Five years operating Cardano infrastructure; contributor to two CIPs.',
-        references: [
-          {
-            type: 'link',
-            label: 'Public blog',
-            uri: 'https://governance-preview.example.org/blog',
-          },
-          {
-            type: 'identity',
-            label: 'Social profile',
-            uri: 'https://governance-preview.example.org/profile',
-          },
-          {
-            type: 'other',
-            label: null,
-            uri: 'https://governance-preview.example.org/misc',
-          },
-        ],
-        paymentAddress: 'addr1qxpreviewstatedpaymentaddressvalue',
-        doNotList: false,
-      },
-    };
-  }
-  if (choice === 'verified-minimal') {
-    return {
-      state: 'verified',
-      hash,
-      host: 'governance-preview.example.org',
-      content: {
-        givenName: null,
-        objectives:
-          'Advocate for treasury discipline and predictable protocol parameter changes.',
-        motivations: null,
-        qualifications: null,
-        references: [],
-        paymentAddress: null,
-        doNotList: false,
-      },
-    };
-  }
-  if (choice === 'unavailable') {
-    return {
-      state: 'unavailable',
-      hash,
-      reason: AnchorFetchErrorType.HttpStatus,
-    };
-  }
-  return null;
-};
-
-const withAnchorEntry: AppDRepDirectoryEntry = {
+const withAnchorEntry: AppDRepDetail = {
   anchor: {
     hash: '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
     url: 'https://governance-preview.example.org/dreps/1.json',
   },
-  verifiedName: null,
+  verifiedName: 'Daedalus Preview DRep',
   doNotList: false,
   drepActivity: 34,
   drepId: 'drep1yg7svuv02gh9j2q574jv06l4xnzwyp63effljze28qe993caj8ras',
   status: 'active',
   votingPower: new BigNumber('23137980123456'),
+  metadata: {
+    objectives:
+      'Advocate for treasury discipline and predictable protocol parameter changes.',
+    motivations:
+      'Long-term stake pool operator with an interest in governance participation.',
+    qualifications:
+      'Five years operating Cardano infrastructure; contributor to two CIPs.',
+    references: [
+      {
+        type: 'link',
+        label: 'Public blog',
+        uri: 'https://governance-preview.example.org/blog',
+      },
+      {
+        type: 'identity',
+        label: 'Social profile',
+        uri: 'https://governance-preview.example.org/profile',
+      },
+      {
+        type: 'other',
+        label: null,
+        uri: 'https://governance-preview.example.org/misc',
+      },
+    ],
+    paymentAddress: 'addr1qxpreviewstatedpaymentaddressvalue',
+  },
 };
 
-const withoutAnchorEntry: AppDRepDirectoryEntry = {
+const withoutAnchorEntry: AppDRepDetail = {
   ...withAnchorEntry,
   anchor: null,
+  metadata: null,
   drepId: 'drep1ygpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsahpxyl',
-};
-
-const storyCohort: DRepCohortContext = {
-  medianVotingPower: new BigNumber('1000000'),
-  memberIds: new Set([withAnchorEntry.drepId]),
-  verifiedMetadataIds: new Set([withAnchorEntry.drepId]),
 };
 
 // Locale is intentionally NOT wired here: the global StoryWrapper decorator
 // provides the IntlProvider, so the English/Japanese toggle at the top of the
 // preview window drives every label rendered below.
 const renderDetail = (
-  entry: AppDRepDirectoryEntry | null,
-  refreshState: GovernanceRefreshState = GovernanceRefreshState.Loaded,
-  votingPowerState: VotingPowerEnrichState = VotingPowerEnrichState.Loaded,
-  anchorState: AnchorEnrichEntry | null = null
+  entry: AppDRepDetail | null,
+  refreshState: GovernanceRefreshState = GovernanceRefreshState.Loaded
 ) => (
   <div style={CENTERED_STYLE}>
     <DRepDetail
-      anchorState={anchorState}
-      cohort={storyCohort}
       entry={entry}
+      refreshState={refreshState}
       onBackToDirectory={action('onBackToDirectory')}
       onOpenExternalLink={action('onOpenExternalLink')}
       onSelectForDelegation={action('onSelectForDelegation')}
-      refreshState={refreshState}
-      votingPowerState={votingPowerState}
+      onToggleFavorite={action('onToggleFavorite')}
     />
   </div>
 );
@@ -161,7 +99,7 @@ storiesOf('Governance / DRep Detail', module)
   .addDecorator(drepStoryDecorator)
   .addDecorator(withKnobs)
   .add('Loaded — with anchor', () => {
-    const entry = {
+    const entry: AppDRepDetail = {
       ...withAnchorEntry,
       drepActivity: number('Remaining epochs (drepActivity)', 34, {
         max: 60,
@@ -173,25 +111,13 @@ storiesOf('Governance / DRep Detail', module)
         'Status',
         STATUS_OPTIONS,
         'active'
-      ) as AppDRepDirectoryEntry['status'],
+      ) as AppDRepDetail['status'],
     };
-    return renderDetail(
-      entry,
-      GovernanceRefreshState.Loaded,
-      VotingPowerEnrichState.Loaded,
-      anchorStateFor(
-        select('Anchor state', ANCHOR_STATE_OPTIONS, 'verified'),
-        entry
-      )
-    );
+    return renderDetail(entry);
   })
   .add('Loaded — no anchor', () => renderDetail(withoutAnchorEntry))
   .add('Ranking unavailable', () =>
-    renderDetail(
-      { ...withAnchorEntry, votingPower: null },
-      GovernanceRefreshState.Loaded,
-      VotingPowerEnrichState.Failed
-    )
+    renderDetail({ ...withAnchorEntry, votingPower: null })
   )
   .add('Loading', () => renderDetail(null, GovernanceRefreshState.Loading))
   .add('Not found', () => renderDetail(null, GovernanceRefreshState.Loaded));

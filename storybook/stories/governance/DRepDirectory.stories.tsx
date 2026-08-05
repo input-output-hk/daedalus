@@ -22,11 +22,9 @@ import { ROUTES } from '../../../source/renderer/app/routes-config';
 import { TESTNET } from '../../../source/common/types/environment.types';
 import {
   GovernanceRefreshState,
-  VotingPowerEnrichState,
 } from '../../../source/renderer/app/stores/GovernanceStore';
 import type {
   AppDRepDirectoryEntry,
-  DRepCohortContext,
 } from '../../../source/renderer/app/stores/GovernanceStore';
 
 type DirectoryError = { message: string; type: string } | null;
@@ -39,12 +37,6 @@ type DirectorySyncState = {
 const DEFAULT_SYNC_STATE: DirectorySyncState = {
   isNodeInSync: true,
   syncProgress: 100,
-};
-
-const storyCohort: DRepCohortContext = {
-  medianVotingPower: null,
-  memberIds: null,
-  verifiedMetadataIds: new Set<string>(),
 };
 
 const baseEntries: AppDRepDirectoryEntry[] = [
@@ -188,14 +180,12 @@ const renderDirectory = (
   entries: AppDRepDirectoryEntry[],
   error: DirectoryError = null,
   syncState: DirectorySyncState = DEFAULT_SYNC_STATE,
-  isCohortActive = false,
   favorites: FavoritesOptions = {}
 ) => (
   <DRepDirectory
-    drepList={entries}
-    drepIndex={new Map(entries.map((e) => [e.drepId, e]))}
-    showAllList={entries}
-    top35DRepIds={new Set<string>()}
+    suggestedDReps={entries}
+    allDReps={entries}
+    allDRepsRefreshState={GovernanceRefreshState.Idle}
     favoriteDRepIds={favorites.favoriteDRepIds ?? new Set<string>()}
     onToggleFavorite={favorites.onToggleFavorite ?? action('onToggleFavorite')}
     view={favorites.view ?? 'directory'}
@@ -204,17 +194,15 @@ const renderDirectory = (
     }
     isStaleFavoriteEntry={favorites.isStaleFavoriteEntry}
     error={error}
-    isCohortActive={isCohortActive}
-    cohort={storyCohort}
     isNodeInSync={syncState.isNodeInSync}
     lastFetchedAt={Date.now() - 3 * 60 * 1000}
     onRefresh={action('onRefresh')}
-    onReshuffle={action('onReshuffle')}
+    onReroll={action('onReroll')}
+    onLoadAllDReps={action('onLoadAllDReps')}
     onSelectForDelegation={action('onSelectForDelegation')}
     onViewDetails={action('onViewDetails')}
     refreshState={refreshState}
     syncProgress={syncState.syncProgress}
-    votingPowerState={VotingPowerEnrichState.Loaded}
   />
 );
 
@@ -223,18 +211,10 @@ const renderCentered = (
   entries: AppDRepDirectoryEntry[],
   error: DirectoryError = null,
   syncState: DirectorySyncState = DEFAULT_SYNC_STATE,
-  isCohortActive = false,
   favorites: FavoritesOptions = {}
 ) => (
   <div style={CENTERED_STYLE}>
-    {renderDirectory(
-      refreshState,
-      entries,
-      error,
-      syncState,
-      isCohortActive,
-      favorites
-    )}
+    {renderDirectory(refreshState, entries, error, syncState, favorites)}
   </div>
 );
 
@@ -397,8 +377,6 @@ storiesOf('Governance / DRep Directory', module)
                       entries,
                       error,
                       DEFAULT_SYNC_STATE,
-                      refreshState === GovernanceRefreshState.Loaded ||
-                        refreshState === GovernanceRefreshState.Refreshing,
                       {
                         view,
                         favoriteDRepIds: new Set(store.state.favoriteDRepIds),
@@ -433,13 +411,7 @@ storiesOf('Governance / DRep Directory', module)
     )
   )
   .add('Loaded', () =>
-    renderCentered(
-      GovernanceRefreshState.Loaded,
-      baseEntries,
-      null,
-      DEFAULT_SYNC_STATE,
-      true
-    )
+    renderCentered(GovernanceRefreshState.Loaded, baseEntries)
   )
   .add('Empty', () => renderCentered(GovernanceRefreshState.Loaded, []))
   .add('Error', () =>
@@ -450,22 +422,10 @@ storiesOf('Governance / DRep Directory', module)
   )
   .add('Loading', () => renderCentered(GovernanceRefreshState.Loading, []))
   .add('Refreshing', () =>
-    renderCentered(
-      GovernanceRefreshState.Refreshing,
-      baseEntries,
-      REFRESH_ERROR,
-      DEFAULT_SYNC_STATE,
-      true
-    )
+    renderCentered(GovernanceRefreshState.Refreshing, baseEntries, REFRESH_ERROR)
   )
   .add('Refresh failed — retained snapshot', () =>
-    renderCentered(
-      GovernanceRefreshState.Loaded,
-      baseEntries,
-      TIMEOUT_ERROR,
-      DEFAULT_SYNC_STATE,
-      true
-    )
+    renderCentered(GovernanceRefreshState.Loaded, baseEntries, TIMEOUT_ERROR)
   )
   .add('Node syncing', () =>
     renderCentered(
@@ -480,8 +440,7 @@ storiesOf('Governance / DRep Directory', module)
           range: true,
           step: 1,
         }),
-      },
-      true
+      }
     )
   )
   .add('Node syncing — empty fallback', () =>
@@ -495,45 +454,14 @@ storiesOf('Governance / DRep Directory', module)
       }),
     })
   )
-  .add('Ranking unavailable', () => (
-    <div style={CENTERED_STYLE}>
-      <DRepDirectory
-        drepList={baseEntries.map((entry) => ({ ...entry, votingPower: null }))}
-        drepIndex={
-          new Map(
-            baseEntries.map((e) => [e.drepId, { ...e, votingPower: null }])
-          )
-        }
-        showAllList={baseEntries.map((entry) => ({
-          ...entry,
-          votingPower: null,
-        }))}
-        top35DRepIds={new Set<string>()}
-        favoriteDRepIds={new Set<string>()}
-        onToggleFavorite={action('onToggleFavorite')}
-        error={null}
-        isCohortActive={false}
-        cohort={storyCohort}
-        isNodeInSync
-        lastFetchedAt={Date.now() - 3 * 60 * 1000}
-        onRefresh={action('onRefresh')}
-        onReshuffle={action('onReshuffle')}
-        onSelectForDelegation={action('onSelectForDelegation')}
-        onViewDetails={action('onViewDetails')}
-        refreshState={GovernanceRefreshState.Loaded}
-        syncProgress={100}
-        votingPowerState={VotingPowerEnrichState.Failed}
-      />
-    </div>
-  ))
-  .add('Pagination — 30 entries', () =>
+  .add('Ranking unavailable', () =>
     renderCentered(
       GovernanceRefreshState.Loaded,
-      paginatedEntries,
-      null,
-      DEFAULT_SYNC_STATE,
-      true
+      baseEntries.map((entry) => ({ ...entry, votingPower: null }))
     )
+  )
+  .add('Pagination — 30 entries', () =>
+    renderCentered(GovernanceRefreshState.Loaded, paginatedEntries)
   )
   .add(
     'Favorite toggle',
@@ -544,7 +472,6 @@ storiesOf('Governance / DRep Directory', module)
           baseEntries,
           null,
           DEFAULT_SYNC_STATE,
-          true,
           {
             favoriteDRepIds: new Set(store.state.favoriteDRepIds),
             onToggleFavorite: (drepId: string) => {
@@ -567,7 +494,6 @@ storiesOf('Governance / DRep Directory', module)
         baseEntries,
         null,
         DEFAULT_SYNC_STATE,
-        true,
         {
           view: 'favorites',
           favoriteDRepIds: new Set(baseEntries.map((e) => e.drepId)),
@@ -582,7 +508,6 @@ storiesOf('Governance / DRep Directory', module)
         baseEntries,
         null,
         DEFAULT_SYNC_STATE,
-        true,
         { view: 'favorites' }
       )}
     </div>
@@ -596,7 +521,6 @@ storiesOf('Governance / DRep Directory', module)
         baseEntries,
         null,
         DEFAULT_SYNC_STATE,
-        true,
         {
           view: 'favorites',
           favoriteDRepIds: new Set(baseEntries.map((e) => e.drepId)),
@@ -608,13 +532,11 @@ storiesOf('Governance / DRep Directory', module)
     <div style={CENTERED_STYLE}>
       <DRepDirectoryList
         entries={dualIdEntries}
-        cohort={storyCohort}
         favoriteDRepIds={new Set<string>()}
         onToggleFavorite={action('onToggleFavorite')}
         isSearchResult
         onSelectForDelegation={action('onSelectForDelegation')}
         onViewDetails={action('onViewDetails')}
-        votingPowerState={VotingPowerEnrichState.Loaded}
       />
     </div>
   ));

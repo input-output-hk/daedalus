@@ -59,7 +59,6 @@ const buildEntry = (
   doNotList: false,
   drepActivity: 20,
   drepId: cip129At(n),
-  metadata: null,
   status: 'active',
   votingPower: null,
   ...overrides,

@@ -257,6 +257,7 @@ describe('GovernanceStore full list', () => {
     anchor: null,
     name: 'Test DRep',
     do_not_list: false,
+    metadata: null,
     ...overrides,
   });
 
