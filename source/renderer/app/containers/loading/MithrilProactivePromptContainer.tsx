@@ -20,18 +20,15 @@ class MithrilProactivePromptContainer extends Component<Props> {
 
   render() {
     const { networkStatus, mithrilSync } = this.props.stores;
-    const { localTip, networkTip, isConnected } = networkStatus;
+    const { localTip, networkTip } = networkStatus;
     const { certifiedEpoch } = mithrilSync; // early-sync beacon anchor
 
-    // isSignificantlyBehind is the definitive backend signal (immutable-file gap ≥ threshold);
-    // it starts false and only becomes true after the probe confirms the gap, so it provides
-    // anti-flash protection on its own. The separate epoch-based gate was redundant and blocked
-    // the prompt when certifiedEpoch was absent or below localTip.epoch (semi-recent data).
+    const { isConnected } = networkStatus;
+
     const isGated =
       mithrilSync.status === 'idle' &&
-      mithrilSync.isPartialSyncEnabled &&
-      mithrilSync.isSignificantlyBehind && // backend offer signal (near-tip ⇒ false)
-      isConnected && // node loaded, past verifying
+      mithrilSync.isSignificantlyBehind && // watchdog probe signal; false until first event received
+      isConnected &&
       !mithrilSync.mithrilAttemptStartedThisSession && // re-pop guard
       !mithrilSync.proactivePromptDismissedThisSession;
 
