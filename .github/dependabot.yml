@@ -1,22 +1,71 @@
-# Basic set up for three package managers
+# Dependabot configuration.
+#
+# Policy, and the reasoning behind it:
+#
+#   * Version updates raise no pull requests. `open-pull-requests-limit: 0`
+#     disables them. Dependency bumps are folded into our own pull requests so
+#     they arrive with a reviewed change and a verified check run, neither of
+#     which Dependabot can produce. Use `yarn outdated` and `cargo outdated` to
+#     see the current backlog.
+#
+#   * Security updates are NOT subject to that limit. They are governed by the
+#     repository's "Dependabot security updates" setting rather than by this
+#     file. Dependabot alerts remain the intended signal.
+#
+#   * `cooldown` withholds a newly published version for a number of days, which
+#     is the defence against a compromised or malicious release being pulled in
+#     on the day it ships. It applies to version updates only; security updates
+#     deliberately bypass it, since delaying a fix for a known vulnerability
+#     would be the wrong trade. These values take effect as soon as
+#     `open-pull-requests-limit` is raised above zero.
+#
+#   * `target-branch` is deliberately absent. Pointing it at a non-default
+#     branch stops `assignees`, `labels` and `commit-message` applying to
+#     security updates, and we develop trunk-based against `master`.
 
 version: 2
-updates:
 
-  # Maintain dependencies for npm
+updates:
+  # --------------------------------------------------------------- JavaScript
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "friday"
       time: "06:00"
-    commit-message:
-      # Prefix all commit messages with "npm"
-      prefix: "npm"
-    labels:
-      - "npm"
-      - "dependencies"
-    assignees:
-      - "danielmain"
-    target-branch: "dependabot"
+    open-pull-requests-limit: 0
     versioning-strategy: increase-if-necessary
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-minor-days: 7
+      semver-patch-days: 7
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+    labels:
+      - "dependencies"
+      - "npm"
+    assignees:
+      - "crypto2099"
+
+  # --------------------------------------------------------- Rust: release-cli
+  - package-ecosystem: "cargo"
+    directory: "/release-cli"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "06:00"
+    open-pull-requests-limit: 0
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-minor-days: 7
+      semver-patch-days: 7
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - "dependencies"
+      - "rust"
+    assignees:
+      - "crypto2099"
