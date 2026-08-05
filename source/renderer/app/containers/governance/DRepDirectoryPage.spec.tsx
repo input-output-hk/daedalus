@@ -80,7 +80,15 @@ const renderPage = ({
     initialEntries: [initialRoute],
   });
   const view = render(
-    <Provider stores={{ governance, networkStatus, wallets: { all: [{ id: 'wallet-1' }] } } as any}>
+    <Provider
+      stores={
+        {
+          governance,
+          networkStatus,
+          wallets: { all: [{ id: 'wallet-1' }] },
+        } as any
+      }
+    >
       <ThemeProvider
         theme={daedalusTheme}
         skins={SimpleSkins}

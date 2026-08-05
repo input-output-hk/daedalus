@@ -74,8 +74,14 @@ function DRepDirectoryList({
   // Scroll list into view on page change and when entries are replaced (reroll).
   const didMount = useRef(false);
   useEffect(() => {
-    if (!didMount.current) { didMount.current = true; return; }
-    containerRef.current?.scrollIntoView?.({ block: 'start', behavior: 'smooth' });
+    if (!didMount.current) {
+      didMount.current = true;
+      return;
+    }
+    containerRef.current?.scrollIntoView?.({
+      block: 'start',
+      behavior: 'smooth',
+    });
   }, [safePage, entries]);
 
   const handlePrevious = () => {

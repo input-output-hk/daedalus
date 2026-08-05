@@ -59,11 +59,13 @@ export const messages = defineMessages({
   selectedDRepHeading: {
     id: 'voting.governance.selectedDRepHeading',
     defaultMessage: '!!!Delegate to',
-    description: 'Heading above the DRep card the user has selected to delegate to',
+    description:
+      'Heading above the DRep card the user has selected to delegate to',
   },
   changeDRep: {
     id: 'voting.governance.changeDRep',
     defaultMessage: '!!!Change',
-    description: 'Link that reopens the DRep directory to pick a different DRep',
+    description:
+      'Link that reopens the DRep directory to pick a different DRep',
   },
 });

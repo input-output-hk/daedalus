@@ -6,4 +6,8 @@ export const listSuggestedDReps = (
   count: number,
   config: RequestConfig
 ): Promise<ApiDRepInfo[]> =>
-  request({ method: 'GET', path: `/v2/dreps/suggested?count=${count}`, ...config });
+  request({
+    method: 'GET',
+    path: `/v2/dreps/suggested?count=${count}`,
+    ...config,
+  });

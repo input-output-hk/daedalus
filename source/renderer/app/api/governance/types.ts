@@ -1,5 +1,5 @@
 export interface ApiDRepMetaReference {
-  "@type"?: string;
+  '@type'?: string;
   label: string | null;
   uri: string;
 }

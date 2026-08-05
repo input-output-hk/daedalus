@@ -55,7 +55,10 @@ class DRepDetailPage extends React.Component<Props, State> {
     const { drepId } = this.props.match.params;
     try {
       const detail = await governanceStore.fetchDRep(drepId);
-      this.setState({ detail, detailRefreshState: GovernanceRefreshState.Loaded });
+      this.setState({
+        detail,
+        detailRefreshState: GovernanceRefreshState.Loaded,
+      });
     } catch {
       this.setState({ detailRefreshState: GovernanceRefreshState.Failed });
     }
@@ -70,7 +73,9 @@ class DRepDetailPage extends React.Component<Props, State> {
 
   handleSelectForDelegation = (drepId: string) => {
     const governanceStore = this.props.stores?.governance;
-    const inherited = pickDelegationFormReturnState(governanceStore?.delegationNavState);
+    const inherited = pickDelegationFormReturnState(
+      governanceStore?.delegationNavState
+    );
     const { detail } = this.state;
     governanceStore?.setDelegationNavState({
       ...inherited,
@@ -94,7 +99,8 @@ class DRepDetailPage extends React.Component<Props, State> {
 
     const canDelegate = (stores?.wallets?.all?.length ?? 0) > 0;
     const { detail } = this.state;
-    const isFavorite = detail != null && stores.governance.favoriteDRepIds.has(detail.drepId);
+    const isFavorite =
+      detail != null && stores.governance.favoriteDRepIds.has(detail.drepId);
 
     return (
       <DRepDetail

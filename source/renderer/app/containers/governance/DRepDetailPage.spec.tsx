@@ -18,7 +18,10 @@ import translations from '../../i18n/locales/en-US.json';
 import jaTranslations from '../../i18n/locales/ja-JP.json';
 import { ROUTES } from '../../routes-config';
 import { GovernanceRefreshState } from '../../stores/GovernanceStore';
-import type { AppDRepDirectoryEntry, AppDRepDetail } from '../../stores/GovernanceStore';
+import type {
+  AppDRepDirectoryEntry,
+  AppDRepDetail,
+} from '../../stores/GovernanceStore';
 import DRepDetailPage from './DRepDetailPage';
 
 const DREP_ID = 'drep1yg7s8vuv87f8a8f5d0m9yk4p5xqw6r4s3t2u1v9w8x7y6z5a4b';
@@ -113,7 +116,16 @@ const renderPage = async ({
   let view: ReturnType<typeof render>;
   await act(async () => {
     view = render(
-      <Provider stores={{ app, governance, networkStatus, wallets: { all: [{ id: 'wallet-1' }] } } as any}>
+      <Provider
+        stores={
+          {
+            app,
+            governance,
+            networkStatus,
+            wallets: { all: [{ id: 'wallet-1' }] },
+          } as any
+        }
+      >
         <IntlProvider locale={locale} messages={messages}>
           <Router history={history}>
             <Route path={DETAIL_PATH} component={DRepDetailPage} />
@@ -207,7 +219,9 @@ describe('DRepDetailPage', () => {
   it('shows — with the unavailable tooltip when stake enrichment failed', async () => {
     await renderPage({
       governanceOverrides: {
-        fetchDRep: jest.fn().mockResolvedValue({ ...baseDetail, votingPower: null }),
+        fetchDRep: jest
+          .fn()
+          .mockResolvedValue({ ...baseDetail, votingPower: null }),
       },
     });
 
@@ -224,14 +238,25 @@ describe('DRepDetailPage', () => {
     act(() => {
       view = render(
         <Provider
-          stores={{
-            app: { openExternalLink: jest.fn() },
-            governance: buildGovernanceStore({ fetchDRep: neverResolves }),
-            networkStatus: observable({ isNodeInSync: true, syncProgress: 100 }),
-          } as any}
+          stores={
+            {
+              app: { openExternalLink: jest.fn() },
+              governance: buildGovernanceStore({ fetchDRep: neverResolves }),
+              networkStatus: observable({
+                isNodeInSync: true,
+                syncProgress: 100,
+              }),
+            } as any
+          }
         >
           <IntlProvider locale="en-US" messages={translations}>
-            <Router history={createMemoryHistory({ initialEntries: [{ pathname: `${ROUTES.GOVERNANCE.DREPS}/${DREP_ID}` }] })}>
+            <Router
+              history={createMemoryHistory({
+                initialEntries: [
+                  { pathname: `${ROUTES.GOVERNANCE.DREPS}/${DREP_ID}` },
+                ],
+              })}
+            >
               <Route path={DETAIL_PATH} component={DRepDetailPage} />
             </Router>
           </IntlProvider>
@@ -793,7 +818,9 @@ describe('DRepDetailPage', () => {
       governanceOverrides: { favoriteDRepIds: new Set([DREP_ID]) },
     });
 
-    const toggle = screen.getByRole('button', { name: /Remove from favorites/ });
+    const toggle = screen.getByRole('button', {
+      name: /Remove from favorites/,
+    });
     expect(toggle).toHaveAttribute('aria-pressed', 'true');
     expect(toggle).toHaveTextContent('★');
   });

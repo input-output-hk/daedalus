@@ -30,7 +30,10 @@ const buildApiDRep = (
   credential: { type: 'key_hash', hash: '0'.repeat(56) },
   status: 'active',
   expiry_epoch: 522,
-  voting_power: { quantity: String(1_000_000_000_000 - i * 1_000_000), unit: 'lovelace' },
+  voting_power: {
+    quantity: String(1_000_000_000_000 - i * 1_000_000),
+    unit: 'lovelace',
+  },
   deposit: { quantity: 500_000_000, unit: 'lovelace' },
   anchor: null,
   name: 'Test DRep',
@@ -62,10 +65,7 @@ const makeStores = (epoch: number | null = CURRENT_EPOCH) => ({
   router: { location: { pathname: '/governance' } },
 });
 
-const makeStore = (
-  api = makeApi(),
-  epoch: number | null = CURRENT_EPOCH
-) => {
+const makeStore = (api = makeApi(), epoch: number | null = CURRENT_EPOCH) => {
   const store = new GovernanceStore(api as any, {} as any, {} as any);
   store.configure(makeStores(epoch) as any);
   return store;
@@ -85,7 +85,10 @@ const loadStore = async (
 const loadSuggestedStore = async (
   dreps: ApiDRepInfo[] = Array.from({ length: 20 }, (_, i) => buildApiDRep(i))
 ): Promise<GovernanceStore> => {
-  const api = makeApi(jest.fn().mockResolvedValue([]), jest.fn().mockResolvedValue(dreps));
+  const api = makeApi(
+    jest.fn().mockResolvedValue([]),
+    jest.fn().mockResolvedValue(dreps)
+  );
   const store = makeStore(api);
   await store.fetchSuggestedDReps();
   return store;
@@ -252,7 +255,10 @@ describe('GovernanceStore full list', () => {
     credential: { type: 'key_hash', hash: '0'.repeat(56) },
     status: 'active',
     expiry_epoch: 522,
-    voting_power: { quantity: String(1_000_000_000_000 - i * 1_000_000), unit: 'lovelace' },
+    voting_power: {
+      quantity: String(1_000_000_000_000 - i * 1_000_000),
+      unit: 'lovelace',
+    },
     deposit: { quantity: 500_000_000, unit: 'lovelace' },
     anchor: null,
     name: 'Test DRep',
@@ -262,10 +268,14 @@ describe('GovernanceStore full list', () => {
   });
 
   it('keeps all DReps in allDReps (including doNotList entries)', async () => {
-    const store = await loadStore(Array.from({ length: 40 }, (_, i) => buildApiDRep(i)));
+    const store = await loadStore(
+      Array.from({ length: 40 }, (_, i) => buildApiDRep(i))
+    );
     expect(store.allDReps).toHaveLength(40);
     for (let i = 0; i < 40; i++) {
-      expect(store.allDReps.find((e) => e.drepId === drepIdAt(i))).toBeDefined();
+      expect(
+        store.allDReps.find((e) => e.drepId === drepIdAt(i))
+      ).toBeDefined();
     }
   });
 
@@ -293,9 +303,7 @@ describe('GovernanceStore full list', () => {
     const store = makeStore(api);
     await store.fetchAllDReps();
 
-    expect(store.allDReps.map((e) => e.drepId)).toEqual(
-      dreps.map((d) => d.id)
-    );
+    expect(store.allDReps.map((e) => e.drepId)).toEqual(dreps.map((d) => d.id));
   });
 });
 
@@ -499,8 +507,10 @@ describe('GovernanceStore favorites', () => {
 // ---------------------------------------------------------------------------
 
 describe('GovernanceStore fetchDRep', () => {
-  const rawDRepAt = (i: number, overrides: Partial<ApiDRepInfo> = {}): ApiDRepInfo =>
-    buildApiDRep(i, overrides);
+  const rawDRepAt = (
+    i: number,
+    overrides: Partial<ApiDRepInfo> = {}
+  ): ApiDRepInfo => buildApiDRep(i, overrides);
 
   it('fetches and normalizes a DRep detail', async () => {
     const rawDRep = rawDRepAt(1, {

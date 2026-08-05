@@ -149,7 +149,8 @@ export function searchDRepsByName(
   const q = rawQuery.trim().toLowerCase();
   if (q.length < MIN_NAME_SEARCH_LENGTH) return [];
   return entries.filter(
-    (entry) => entry.verifiedName != null && entry.verifiedName.toLowerCase().includes(q)
+    (entry) =>
+      entry.verifiedName != null && entry.verifiedName.toLowerCase().includes(q)
   );
 }
 

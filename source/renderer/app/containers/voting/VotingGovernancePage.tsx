@@ -112,8 +112,7 @@ class VotingGovernancePage extends Component<Props> {
           // by the directory/detail pages; it is only valid for the DRep that
           // was just selected.
           const verifiedName =
-            isSentinel ||
-            chosenOption !== initialFormState?.selectedDRepId
+            isSentinel || chosenOption !== initialFormState?.selectedDRepId
               ? null
               : resolveVerifiedName(
                   initialFormState.selectedDRepVerifiedName,

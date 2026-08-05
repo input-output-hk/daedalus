@@ -261,18 +261,15 @@ const openConfirmation = async (
   storeOverrides: StoreOverrides = {},
   delegationNavStateExtras: Partial<DelegationNavState> = {}
 ) => {
-  const flow = renderFlow(
-    [{ pathname: ROUTES.VOTING.GOVERNANCE }],
-    {
-      ...storeOverrides,
-      delegationNavState: {
-        selectedDRepId: drepId,
-        selectedWalletId: WALLET_ID,
-        voteType: 'drep',
-        ...delegationNavStateExtras,
-      },
-    }
-  );
+  const flow = renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+    ...storeOverrides,
+    delegationNavState: {
+      selectedDRepId: drepId,
+      selectedWalletId: WALLET_ID,
+      voteType: 'drep',
+      ...delegationNavStateExtras,
+    },
+  });
   fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
   await screen.findByText('Confirm Transaction');
   return flow;
@@ -303,16 +300,13 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
   });
 
   it('list-row Select returns to the form and restores wallet, vote type, and DRep ID', () => {
-    renderFlow(
-      [{ pathname: ROUTES.GOVERNANCE.DREPS }],
-      {
-        delegationNavState: {
-          from: ROUTES.VOTING.GOVERNANCE,
-          selectedWalletId: WALLET_ID,
-          voteType: 'drep',
-        },
-      }
-    );
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
+      delegationNavState: {
+        from: ROUTES.VOTING.GOVERNANCE,
+        selectedWalletId: WALLET_ID,
+        voteType: 'drep',
+      },
+    });
 
     fireEvent.click(
       screen.getByRole('button', { name: '!!!Select for delegation' })
@@ -324,10 +318,9 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
   });
 
   it('two-hop Form → Directory → Detail → Form restores wallet + vote type and pre-fills the ID', async () => {
-    renderFlow(
-      [{ pathname: ROUTES.VOTING.GOVERNANCE }],
-      { delegationNavState: { selectedWalletId: WALLET_ID, voteType: 'drep' } }
-    );
+    renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+      delegationNavState: { selectedWalletId: WALLET_ID, voteType: 'drep' },
+    });
 
     fireEvent.click(screen.getByText('!!!Browse DReps'));
     fireEvent.click(screen.getByRole('button', { name: '!!!View details' }));
@@ -365,16 +358,13 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
   });
 
   it('propagates the selected DRep ID byte-for-byte: row select → confirmation → delegateVotes payload', async () => {
-    const { stores } = renderFlow(
-      [{ pathname: ROUTES.GOVERNANCE.DREPS }],
-      {
-        delegationNavState: {
-          from: ROUTES.VOTING.GOVERNANCE,
-          selectedWalletId: WALLET_ID,
-          voteType: 'drep',
-        },
-      }
-    );
+    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
+      delegationNavState: {
+        from: ROUTES.VOTING.GOVERNANCE,
+        selectedWalletId: WALLET_ID,
+        voteType: 'drep',
+      },
+    });
 
     fireEvent.click(
       screen.getByRole('button', { name: '!!!Select for delegation' })
@@ -383,7 +373,9 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
 
     await screen.findByText('Confirm Transaction');
     // The confirmation renders the selected ID itself, byte-equal.
-    expect(screen.getAllByText(VALID_DREP_ID)[0].textContent).toBe(VALID_DREP_ID);
+    expect(screen.getAllByText(VALID_DREP_ID)[0].textContent).toBe(
+      VALID_DREP_ID
+    );
 
     const passwordInput = document.querySelector('input[type="password"]');
     expect(passwordInput).not.toBeNull();
@@ -420,14 +412,11 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
   };
 
   it('propagates the selected DRep ID byte-for-byte into the HW signing payload (Ledger)', async () => {
-    const { stores } = renderFlow(
-      [{ pathname: ROUTES.GOVERNANCE.DREPS }],
-      {
-        hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED,
-        wallets: [hardwareWallet],
-        delegationNavState: hwNavState,
-      }
-    );
+    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
+      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED,
+      wallets: [hardwareWallet],
+      delegationNavState: hwNavState,
+    });
 
     fireEvent.click(
       screen.getByRole('button', { name: '!!!Select for delegation' })
@@ -435,7 +424,9 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     await screen.findByText('Confirm Transaction');
-    expect(screen.getAllByText(VALID_DREP_ID)[0].textContent).toBe(VALID_DREP_ID);
+    expect(screen.getAllByText(VALID_DREP_ID)[0].textContent).toBe(
+      VALID_DREP_ID
+    );
     // The HW confirmation collects no passphrase: signing happened on-device.
     expect(document.querySelector('input[type="password"]')).toBeNull();
     expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
@@ -463,14 +454,11 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
   });
 
   it('keeps Confirm disabled until the device reports signing success', async () => {
-    renderFlow(
-      [{ pathname: ROUTES.GOVERNANCE.DREPS }],
-      {
-        hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION,
-        wallets: [hardwareWallet],
-        delegationNavState: hwNavState,
-      }
-    );
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
+      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION,
+      wallets: [hardwareWallet],
+      delegationNavState: hwNavState,
+    });
 
     fireEvent.click(
       screen.getByRole('button', { name: '!!!Select for delegation' })
@@ -482,15 +470,12 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
   });
 
   it('applies the Trezor status treatment for Trezor devices', async () => {
-    const { stores } = renderFlow(
-      [{ pathname: ROUTES.GOVERNANCE.DREPS }],
-      {
-        hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION,
-        isTrezor: true,
-        wallets: [hardwareWallet],
-        delegationNavState: hwNavState,
-      }
-    );
+    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
+      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION,
+      isTrezor: true,
+      wallets: [hardwareWallet],
+      delegationNavState: hwNavState,
+    });
 
     fireEvent.click(
       screen.getByRole('button', { name: '!!!Select for delegation' })
@@ -517,18 +502,15 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
   ];
 
   it('renders the current delegation with no device connected and blocks the same-vote submit', () => {
-    const { stores } = renderFlow(
-      [{ pathname: ROUTES.VOTING.GOVERNANCE }],
-      {
-        hwDeviceStatus: HwDeviceStatuses.CONNECTING_FAILED,
-        wallets: [votingHardwareWallet],
-        delegationNavState: {
-          selectedWalletId: HW_WALLET_ID,
-          voteType: 'drep',
-          selectedDRepId: VALID_DREP_ID,
-        },
-      }
-    );
+    const { stores } = renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+      hwDeviceStatus: HwDeviceStatuses.CONNECTING_FAILED,
+      wallets: [votingHardwareWallet],
+      delegationNavState: {
+        selectedWalletId: HW_WALLET_ID,
+        voteType: 'drep',
+        selectedDRepId: VALID_DREP_ID,
+      },
+    });
 
     expect(screen.getByText('!!!Delegated to DRep')).toBeInTheDocument();
     expect(
@@ -541,10 +523,11 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
   it.each(deviceStates)(
     'surfaces the %s device state in the confirmation dialog and keeps Confirm disabled',
     async (hwDeviceStatus, expectedCopy) => {
-      renderFlow(
-        [{ pathname: ROUTES.GOVERNANCE.DREPS }],
-        { hwDeviceStatus, wallets: [hardwareWallet], delegationNavState: hwNavState }
-      );
+      renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
+        hwDeviceStatus,
+        wallets: [hardwareWallet],
+        delegationNavState: hwNavState,
+      });
 
       fireEvent.click(
         screen.getByRole('button', { name: '!!!Select for delegation' })
@@ -628,7 +611,6 @@ describe('Confirmation dialog identity derivation', () => {
 
     expect(mockDialogProps[mockDialogProps.length - 1].verifiedName).toBeNull();
   });
-
 });
 
 describe('Confirmation dialog prop contract', () => {
@@ -683,29 +665,25 @@ describe('Auto-favorite current delegation DRep', () => {
   });
 
   it('calls toggleFavorite with the delegated DRep id when a wallet with a DRep vote is selected', async () => {
-    const { stores } = renderFlow(
-      [{ pathname: ROUTES.VOTING.GOVERNANCE }],
-      { wallets: [votingSoftwareWallet] }
-    );
+    const { stores } = renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+      wallets: [votingSoftwareWallet],
+    });
 
-    fireEvent.click(
-      screen.getByTestId(`wallets-dropdown-option-${WALLET_ID}`)
-    );
+    fireEvent.click(screen.getByTestId(`wallets-dropdown-option-${WALLET_ID}`));
     await act(async () => {});
 
-    expect(stores.governance.toggleFavorite).toHaveBeenCalledWith(VALID_DREP_ID);
+    expect(stores.governance.toggleFavorite).toHaveBeenCalledWith(
+      VALID_DREP_ID
+    );
   });
 
   it('does not call toggleFavorite when the delegated DRep is already in favorites', async () => {
-    const { stores } = renderFlow(
-      [{ pathname: ROUTES.VOTING.GOVERNANCE }],
-      { wallets: [votingSoftwareWallet] }
-    );
+    const { stores } = renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+      wallets: [votingSoftwareWallet],
+    });
     stores.governance.favoriteDRepIds.add(VALID_DREP_ID);
 
-    fireEvent.click(
-      screen.getByTestId(`wallets-dropdown-option-${WALLET_ID}`)
-    );
+    fireEvent.click(screen.getByTestId(`wallets-dropdown-option-${WALLET_ID}`));
     await act(async () => {});
 
     expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
@@ -719,17 +697,14 @@ describe('Current-vote enrichment in the delegation form', () => {
   });
 
   it('shows the current delegation and disables submit while the form matches it', async () => {
-    const { stores } = renderFlow(
-      [{ pathname: ROUTES.VOTING.GOVERNANCE }],
-      {
-        wallets: [votingSoftwareWallet],
-        delegationNavState: {
-          selectedWalletId: WALLET_ID,
-          voteType: 'drep',
-          selectedDRepId: VALID_DREP_ID,
-        },
-      }
-    );
+    const { stores } = renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+      wallets: [votingSoftwareWallet],
+      delegationNavState: {
+        selectedWalletId: WALLET_ID,
+        voteType: 'drep',
+        selectedDRepId: VALID_DREP_ID,
+      },
+    });
     await act(async () => {});
 
     expect(screen.getByText('!!!Delegated to DRep')).toBeInTheDocument();
@@ -751,21 +726,18 @@ describe('Current-vote enrichment in the delegation form', () => {
     const CIP105_DREP_ID =
       'drep_vkh1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq667pyd';
 
-    renderFlow(
-      [{ pathname: ROUTES.VOTING.GOVERNANCE }],
-      {
-        wallets: [
-          {
-            ...softwareWallet,
-            currentVote: {
-              ...currentVoteForValidDRep,
-              drep: { ...currentVoteForValidDRep.drep, raw: CIP105_DREP_ID },
-            },
+    renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+      wallets: [
+        {
+          ...softwareWallet,
+          currentVote: {
+            ...currentVoteForValidDRep,
+            drep: { ...currentVoteForValidDRep.drep, raw: CIP105_DREP_ID },
           },
-        ],
-        delegationNavState: { selectedWalletId: WALLET_ID, voteType: 'drep' },
-      }
-    );
+        },
+      ],
+      delegationNavState: { selectedWalletId: WALLET_ID, voteType: 'drep' },
+    });
     await act(async () => {});
 
     expect(screen.getByText('!!!Expiring in 12 epochs')).toBeInTheDocument();
@@ -774,17 +746,14 @@ describe('Current-vote enrichment in the delegation form', () => {
   });
 
   it('treats a target differing only in bech32 letter case as the current vote', () => {
-    renderFlow(
-      [{ pathname: ROUTES.VOTING.GOVERNANCE }],
-      {
-        wallets: [votingSoftwareWallet],
-        delegationNavState: {
-          selectedWalletId: WALLET_ID,
-          voteType: 'drep',
-          selectedDRepId: VALID_DREP_ID_UPPERCASE,
-        },
-      }
-    );
+    renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+      wallets: [votingSoftwareWallet],
+      delegationNavState: {
+        selectedWalletId: WALLET_ID,
+        voteType: 'drep',
+        selectedDRepId: VALID_DREP_ID_UPPERCASE,
+      },
+    });
 
     expect(
       screen.getByText('!!!This wallet already votes for this DRep.')
@@ -793,17 +762,14 @@ describe('Current-vote enrichment in the delegation form', () => {
   });
 
   it('re-enables submit and opens the confirmation dialog when the target changes', async () => {
-    const { stores } = renderFlow(
-      [{ pathname: ROUTES.VOTING.GOVERNANCE }],
-      {
-        wallets: [votingSoftwareWallet],
-        delegationNavState: {
-          selectedWalletId: WALLET_ID,
-          voteType: 'drep',
-          selectedDRepId: OTHER_DREP_ID,
-        },
-      }
-    );
+    const { stores } = renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+      wallets: [votingSoftwareWallet],
+      delegationNavState: {
+        selectedWalletId: WALLET_ID,
+        voteType: 'drep',
+        selectedDRepId: OTHER_DREP_ID,
+      },
+    });
 
     const submit = screen.getByRole('button', { name: 'Submit' });
     expect(submit).not.toBeDisabled();
@@ -813,7 +779,9 @@ describe('Current-vote enrichment in the delegation form', () => {
     expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
       expect.objectContaining({ chosenOption: OTHER_DREP_ID })
     );
-    expect(screen.getAllByText(OTHER_DREP_ID)[0].textContent).toBe(OTHER_DREP_ID);
+    expect(screen.getAllByText(OTHER_DREP_ID)[0].textContent).toBe(
+      OTHER_DREP_ID
+    );
   });
 
   it('keeps the vote target out of renderer logger payloads across the flow', async () => {
@@ -824,17 +792,14 @@ describe('Current-vote enrichment in the delegation form', () => {
       jest.spyOn(logger, 'error').mockImplementation(() => undefined),
     ];
 
-    renderFlow(
-      [{ pathname: ROUTES.VOTING.GOVERNANCE }],
-      {
-        wallets: [votingSoftwareWallet],
-        delegationNavState: {
-          selectedWalletId: WALLET_ID,
-          voteType: 'drep',
-          selectedDRepId: OTHER_DREP_ID,
-        },
-      }
-    );
+    renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+      wallets: [votingSoftwareWallet],
+      delegationNavState: {
+        selectedWalletId: WALLET_ID,
+        voteType: 'drep',
+        selectedDRepId: OTHER_DREP_ID,
+      },
+    });
 
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
     await screen.findByText('Confirm Transaction');

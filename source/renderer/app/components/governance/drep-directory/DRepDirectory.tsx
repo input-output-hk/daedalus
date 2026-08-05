@@ -156,10 +156,7 @@ function DRepDirectory({
     }
   }, [isShowAll, isSearchActive, onLoadAllDReps]);
 
-  const searchIndex = useMemo(
-    () => buildDRepSearchIndex(allDReps),
-    [allDReps]
-  );
+  const searchIndex = useMemo(() => buildDRepSearchIndex(allDReps), [allDReps]);
 
   const allDRepsIndex = useMemo(
     () => new Map(allDReps.map((e) => [e.drepId, e])),
@@ -392,7 +389,9 @@ function DRepDirectory({
                   </div>
                   <div className={styles.sentinelCard}>
                     <p className={styles.sentinelCardTitle}>
-                      {intl.formatMessage(sharedGovernanceMessages.noConfidence)}
+                      {intl.formatMessage(
+                        sharedGovernanceMessages.noConfidence
+                      )}
                     </p>
                     <p className={styles.sentinelCardDescription}>
                       {intl.formatMessage(messages.noConfidenceDescription)}

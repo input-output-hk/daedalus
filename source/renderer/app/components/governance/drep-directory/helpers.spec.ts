@@ -294,7 +294,10 @@ describe('filterDReps', () => {
   it('detects the default filter state', () => {
     expect(isDefaultFilterState(DEFAULT_DREP_FILTER_STATE)).toBe(true);
     expect(
-      isDefaultFilterState({ ...DEFAULT_DREP_FILTER_STATE, favoritedOnly: true })
+      isDefaultFilterState({
+        ...DEFAULT_DREP_FILTER_STATE,
+        favoritedOnly: true,
+      })
     ).toBe(false);
   });
 });

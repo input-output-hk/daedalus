@@ -6,12 +6,8 @@ import BigNumber from 'bignumber.js';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import DRepDetail from '../../../source/renderer/app/components/governance/drep-detail/DRepDetail';
-import {
-  GovernanceRefreshState,
-} from '../../../source/renderer/app/stores/GovernanceStore';
-import type {
-  AppDRepDetail,
-} from '../../../source/renderer/app/stores/GovernanceStore';
+import { GovernanceRefreshState } from '../../../source/renderer/app/stores/GovernanceStore';
+import type { AppDRepDetail } from '../../../source/renderer/app/stores/GovernanceStore';
 
 const CENTERED_STYLE = {
   margin: '0 auto',

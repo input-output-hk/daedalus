@@ -48,7 +48,10 @@ function clampVerifiedName(name: string | null): string | null {
     : `${name.slice(0, MAX_VERIFIED_NAME_LENGTH - 1)}…`;
 }
 
-function normalizeEntry(item: any, currentEpoch: number | null): AppDRepDirectoryEntry {
+function normalizeEntry(
+  item: any,
+  currentEpoch: number | null
+): AppDRepDirectoryEntry {
   return {
     drepId: item.id,
     votingPower: item.voting_power
@@ -67,7 +70,10 @@ function normalizeEntry(item: any, currentEpoch: number | null): AppDRepDirector
   };
 }
 
-function normalizeDetail(item: any, currentEpoch: number | null): AppDRepDetail {
+function normalizeDetail(
+  item: any,
+  currentEpoch: number | null
+): AppDRepDetail {
   const base = normalizeEntry(item, currentEpoch);
   const m = item.metadata;
   return {
@@ -103,13 +109,15 @@ export interface DelegationNavState {
 export default class GovernanceStore extends Store {
   // Suggested DReps (from /dreps/suggested — primary display on page load)
   @observable suggestedDReps: AppDRepDirectoryEntry[] = [];
-  @observable refreshState: GovernanceRefreshState = GovernanceRefreshState.Idle;
+  @observable refreshState: GovernanceRefreshState =
+    GovernanceRefreshState.Idle;
   @observable error: GovernanceStoreError | null = null;
   @observable lastFetchedAt: number | null = null;
 
   // Full DRep list (from /dreps — lazy-loaded for show-all, search, favorites)
   @observable allDReps: AppDRepDirectoryEntry[] = [];
-  @observable allDRepsRefreshState: GovernanceRefreshState = GovernanceRefreshState.Idle;
+  @observable allDRepsRefreshState: GovernanceRefreshState =
+    GovernanceRefreshState.Idle;
   @observable allDRepsError: GovernanceStoreError | null = null;
 
   @observable favoriteDRepIds: Set<string> = new Set();
@@ -141,7 +149,9 @@ export default class GovernanceStore extends Store {
   }
 
   @computed get isGovernancePage(): boolean {
-    return this.stores.router.location.pathname.indexOf(ROUTES.GOVERNANCE.ROOT) === 0;
+    return (
+      this.stores.router.location.pathname.indexOf(ROUTES.GOVERNANCE.ROOT) === 0
+    );
   }
 
   @computed get isEmpty(): boolean {
@@ -215,7 +225,9 @@ export default class GovernanceStore extends Store {
       const currentEpoch = this.stores.networkStatus.localTip?.epoch ?? null;
 
       runInAction(() => {
-        this.allDReps = rawDReps.map((item) => normalizeEntry(item, currentEpoch));
+        this.allDReps = rawDReps.map((item) =>
+          normalizeEntry(item, currentEpoch)
+        );
         this.allDRepsRefreshState = GovernanceRefreshState.Loaded;
         this.allDRepsError = null;
       });
@@ -310,10 +322,8 @@ export default class GovernanceStore extends Store {
       const obj = err as Record<string, unknown>;
       return {
         type: typeof obj.type === 'string' ? obj.type : 'UNKNOWN',
-        message:
-          typeof obj.message === 'string' ? obj.message : String(err),
-        details:
-          typeof obj.details === 'string' ? obj.details : undefined,
+        message: typeof obj.message === 'string' ? obj.message : String(err),
+        details: typeof obj.details === 'string' ? obj.details : undefined,
       };
     }
     return { type: 'UNKNOWN', message: String(err) };

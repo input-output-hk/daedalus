@@ -58,7 +58,7 @@ const messages = defineMessages({
     description:
       'Caption stating that an Identity reference is a claim, not a verified identity',
   },
-paymentAddressLabel: {
+  paymentAddressLabel: {
     id: 'governance.drepDetail.anchorContent.paymentAddress.label',
     defaultMessage: '!!!Stated payment address',
     description: 'Label for the verified CIP-119 paymentAddress field',
@@ -197,7 +197,9 @@ function DRepDetailAnchorContent({
 
   const host = deriveHost(anchorUrl);
   const references = metadata?.references ?? [];
-  const linkReferences = references.filter((r) => r.type === 'link' || r.type === 'other');
+  const linkReferences = references.filter(
+    (r) => r.type === 'link' || r.type === 'other'
+  );
   const identityReferences = references.filter((r) => r.type === 'identity');
   const hasFieldRows =
     verifiedName != null ||

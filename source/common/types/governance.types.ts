@@ -133,4 +133,3 @@ export interface WalletGovernanceStatus {
   /** DRep ID, present only when voteKind === 'drep'. */
   drepId: DRepId | null;
 }
-

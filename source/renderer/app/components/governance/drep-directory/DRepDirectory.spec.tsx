@@ -174,7 +174,9 @@ describe('DRepDirectory', () => {
 
   it('renders the DRep name on directory cards and no off-chain source label', () => {
     renderComponent({
-      suggestedDReps: [{ ...baseEntries[0], verifiedName: 'Daedalus Test DRep' }],
+      suggestedDReps: [
+        { ...baseEntries[0], verifiedName: 'Daedalus Test DRep' },
+      ],
     });
 
     expect(screen.getByText('Daedalus Test DRep')).toBeInTheDocument();
@@ -583,9 +585,12 @@ describe('DRepDirectory', () => {
       suggestedDReps: [realEntry(1), realEntry(2)],
     });
 
-    fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID or name'), {
-      target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
-    });
+    fireEvent.change(
+      screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+      {
+        target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
+      }
+    );
 
     expect(screen.getAllByText('!!!View details')).toHaveLength(1);
     expect(container.querySelectorAll('code')).toHaveLength(2);
@@ -612,9 +617,12 @@ describe('DRepDirectory', () => {
       onSelectForDelegation,
     });
 
-    fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID or name'), {
-      target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
-    });
+    fireEvent.change(
+      screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+      {
+        target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
+      }
+    );
     fireEvent.click(screen.getByText('!!!Select for delegation'));
 
     expect(onSelectForDelegation).toHaveBeenCalledWith(realDrepId(1));
@@ -624,9 +632,12 @@ describe('DRepDirectory', () => {
     const onViewDetails = jest.fn();
     renderComponent({ suggestedDReps: [realEntry(1)], onViewDetails });
 
-    fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID or name'), {
-      target: { value: realDrepId(1) },
-    });
+    fireEvent.change(
+      screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+      {
+        target: { value: realDrepId(1) },
+      }
+    );
 
     expect(onViewDetails).toHaveBeenCalledTimes(1);
     expect(onViewDetails).toHaveBeenCalledWith(realDrepId(1));
@@ -636,9 +647,12 @@ describe('DRepDirectory', () => {
     const onViewDetails = jest.fn();
     renderComponent({ suggestedDReps: [realEntry(1)], onViewDetails });
 
-    fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID or name'), {
-      target: { value: realCip105Id(1) },
-    });
+    fireEvent.change(
+      screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+      {
+        target: { value: realCip105Id(1) },
+      }
+    );
 
     expect(onViewDetails).toHaveBeenCalledTimes(1);
     expect(onViewDetails).toHaveBeenCalledWith(realDrepId(1));
@@ -648,9 +662,12 @@ describe('DRepDirectory', () => {
     const onViewDetails = jest.fn();
     renderComponent({ suggestedDReps: [realEntry(1)], onViewDetails });
 
-    fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID or name'), {
-      target: { value: `drep1${'q'.repeat(51)}` },
-    });
+    fireEvent.change(
+      screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+      {
+        target: { value: `drep1${'q'.repeat(51)}` },
+      }
+    );
 
     expect(screen.getByText('!!!Invalid DRep ID')).toBeInTheDocument();
     expect(onViewDetails).not.toHaveBeenCalled();
@@ -920,9 +937,12 @@ describe('DRepDirectory', () => {
       renderComponent({ suggestedDReps: [realEntry(1)] });
 
       // 'no_confidence' (13 chars) triggers prefix search → hides sentinel section
-      fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID or name'), {
-        target: { value: 'no_confidence' },
-      });
+      fireEvent.change(
+        screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+        {
+          target: { value: 'no_confidence' },
+        }
+      );
 
       expect(screen.queryByText('Abstain')).not.toBeInTheDocument();
       expect(screen.queryByText('No Confidence')).not.toBeInTheDocument();
@@ -966,9 +986,12 @@ describe('DRepDirectory', () => {
       renderComponent({ suggestedDReps: [realEntry(1)] });
 
       // 'no_confidence' (13 chars) triggers search → no results for a DRep query
-      fireEvent.change(screen.getByPlaceholderText('!!!Search by DRep ID or name'), {
-        target: { value: 'no_confidence' },
-      });
+      fireEvent.change(
+        screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+        {
+          target: { value: 'no_confidence' },
+        }
+      );
 
       const emptyState = document.querySelector('[data-variant="noResults"]');
       expect(emptyState).not.toBeNull();

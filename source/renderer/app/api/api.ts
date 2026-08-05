@@ -2468,7 +2468,9 @@ export default class AdaApi {
     logger.debug('AdaApi::listSuggestedDReps called', { count });
     try {
       const dreps = await listSuggestedDReps(count, this.config);
-      logger.debug('AdaApi::listSuggestedDReps success', { count: dreps.length });
+      logger.debug('AdaApi::listSuggestedDReps success', {
+        count: dreps.length,
+      });
       return dreps;
     } catch (error) {
       logger.error('AdaApi::listSuggestedDReps error', { error });

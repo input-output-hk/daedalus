@@ -57,7 +57,9 @@ class DRepDirectoryPage extends React.Component<Props> {
 
   handleSelectForDelegation = (drepId: string) => {
     const governanceStore = this.props.stores?.governance;
-    const inherited = pickDelegationFormReturnState(governanceStore?.delegationNavState);
+    const inherited = pickDelegationFormReturnState(
+      governanceStore?.delegationNavState
+    );
     const entry =
       governanceStore?.suggestedDReps.find((e) => e.drepId === drepId) ??
       governanceStore?.allDReps.find((e) => e.drepId === drepId);

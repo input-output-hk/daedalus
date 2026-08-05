@@ -20,12 +20,8 @@ import {
 } from '../../../source/renderer/app/config/sidebarConfig';
 import { ROUTES } from '../../../source/renderer/app/routes-config';
 import { TESTNET } from '../../../source/common/types/environment.types';
-import {
-  GovernanceRefreshState,
-} from '../../../source/renderer/app/stores/GovernanceStore';
-import type {
-  AppDRepDirectoryEntry,
-} from '../../../source/renderer/app/stores/GovernanceStore';
+import { GovernanceRefreshState } from '../../../source/renderer/app/stores/GovernanceStore';
+import type { AppDRepDirectoryEntry } from '../../../source/renderer/app/stores/GovernanceStore';
 
 type DirectoryError = { message: string; type: string } | null;
 
@@ -422,26 +418,25 @@ storiesOf('Governance / DRep Directory', module)
   )
   .add('Loading', () => renderCentered(GovernanceRefreshState.Loading, []))
   .add('Refreshing', () =>
-    renderCentered(GovernanceRefreshState.Refreshing, baseEntries, REFRESH_ERROR)
+    renderCentered(
+      GovernanceRefreshState.Refreshing,
+      baseEntries,
+      REFRESH_ERROR
+    )
   )
   .add('Refresh failed — retained snapshot', () =>
     renderCentered(GovernanceRefreshState.Loaded, baseEntries, TIMEOUT_ERROR)
   )
   .add('Node syncing', () =>
-    renderCentered(
-      GovernanceRefreshState.Loaded,
-      baseEntries,
-      null,
-      {
-        isNodeInSync: false,
-        syncProgress: number('Sync progress (%)', 87, {
-          max: 100,
-          min: 0,
-          range: true,
-          step: 1,
-        }),
-      }
-    )
+    renderCentered(GovernanceRefreshState.Loaded, baseEntries, null, {
+      isNodeInSync: false,
+      syncProgress: number('Sync progress (%)', 87, {
+        max: 100,
+        min: 0,
+        range: true,
+        step: 1,
+      }),
+    })
   )
   .add('Node syncing — empty fallback', () =>
     renderCentered(GovernanceRefreshState.Loaded, [], null, {
