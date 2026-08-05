@@ -61,11 +61,11 @@ export class MithrilController {
     this._availabilitySender = sender;
   }
 
-  _sendAvailability(isSignificantlyBehind: boolean, isEnabled = true): void {
+  _sendAvailability(isSignificantlyBehind: boolean): void {
     if (!this._availabilitySender) return;
     Promise.resolve()
       .then(() =>
-        this._availabilitySender?.({ isEnabled, isSignificantlyBehind })
+        this._availabilitySender?.({ isEnabled: true, isSignificantlyBehind })
       )
       .catch((error) => {
         logger.warn('MithrilController: failed to send availability status', {

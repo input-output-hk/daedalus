@@ -50,8 +50,6 @@ export type Props = {
   onDownloadLogs: (...args: Array<any>) => any;
   onStatusIconClick: (...args: Array<any>) => any;
   onToggleNewsFeedIconClick: (...args: Array<any>) => any;
-  isPartialSyncEnabled?: boolean;
-  onMithrilSync?: () => void;
 };
 
 @observer
@@ -172,8 +170,6 @@ class SyncingConnecting extends Component<Props, State> {
       isVerifyingBlockchain,
       nodeStartupPhase,
       blockSyncProgress,
-      isPartialSyncEnabled,
-      onMithrilSync,
     } = this.props;
     const newsFeedIconStyles = classNames([
       isConnecting ? 'connectingScreen' : null,
@@ -216,8 +212,6 @@ class SyncingConnecting extends Component<Props, State> {
           isVerifyingBlockchain={isVerifyingBlockchain}
           nodeStartupPhase={nodeStartupPhase}
           blockSyncProgress={blockSyncProgress}
-          isPartialSyncEnabled={isPartialSyncEnabled}
-          onMithrilSync={onMithrilSync}
         />
         <StatusIcons
           onIconClick={onStatusIconClick}

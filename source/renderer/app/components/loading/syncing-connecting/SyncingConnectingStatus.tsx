@@ -1,8 +1,6 @@
 import classNames from 'classnames';
 import React, { Component } from 'react';
 import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import {
   BlockSyncType,
   CardanoNodeState,
@@ -95,12 +93,6 @@ const messages = defineMessages({
     defaultMessage: '!!!TLS certificate is not valid, please restart Daedalus.',
     description: 'The TLS cert is not valid and Daedalus should be restarted',
   },
-  mithrilSyncInterrupt: {
-    id: 'loading.screen.mithrilSyncInterrupt',
-    defaultMessage: '!!!Use Mithril Sync instead',
-    description:
-      'Button label shown during ledger replay to interrupt and switch to Mithril Sync',
-  },
 });
 
 interface Props {
@@ -114,62 +106,12 @@ interface Props {
   isNodeStopped: boolean;
   isVerifyingBlockchain: boolean;
   nodeStartupPhase?: string | null;
-  isPartialSyncEnabled?: boolean;
-  onMithrilSync?: () => void;
 }
 
-const MITHRIL_BUTTON_DEBOUNCE_MS = 2000;
-
-interface State {
-  showMithrilButton: boolean;
-}
-
-export default class SyncingConnectingStatus extends Component<Props, State> {
+export default class SyncingConnectingStatus extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  state: State = { showMithrilButton: false };
-  _mithrilButtonTimer: ReturnType<typeof setTimeout> | null = null;
-
-  _isMithrilButtonEligible(): boolean {
-    const { blockSyncProgress, isPartialSyncEnabled, onMithrilSync } =
-      this.props;
-    const replayProgress = blockSyncProgress[BlockSyncType.replayedBlock];
-    return (
-      !!isPartialSyncEnabled && replayProgress < 100 && onMithrilSync != null
-    );
-  }
-
-  componentDidUpdate(): void {
-    const eligible = this._isMithrilButtonEligible();
-    if (
-      eligible &&
-      !this._mithrilButtonTimer &&
-      !this.state.showMithrilButton
-    ) {
-      this._mithrilButtonTimer = setTimeout(() => {
-        this._mithrilButtonTimer = null;
-        if (this._isMithrilButtonEligible()) {
-          this.setState({ showMithrilButton: true });
-        }
-      }, MITHRIL_BUTTON_DEBOUNCE_MS);
-    } else if (!eligible) {
-      if (this._mithrilButtonTimer) {
-        clearTimeout(this._mithrilButtonTimer);
-        this._mithrilButtonTimer = null;
-      }
-      if (this.state.showMithrilButton) {
-        this.setState({ showMithrilButton: false });
-      }
-    }
-  }
-
-  componentWillUnmount(): void {
-    if (this._mithrilButtonTimer) {
-      clearTimeout(this._mithrilButtonTimer);
-    }
-  }
 
   _getConnectingMessage = (): {
     connectingMessage: string;
@@ -259,8 +201,6 @@ export default class SyncingConnectingStatus extends Component<Props, State> {
       blockSyncProgress,
       cardanoNodeState,
       nodeStartupPhase,
-      isPartialSyncEnabled,
-      onMithrilSync,
     } = this.props;
     if (!hasLoadedCurrentLocale) return null;
 
@@ -275,15 +215,6 @@ export default class SyncingConnectingStatus extends Component<Props, State> {
       return (
         <div className={styles.component}>
           <SyncingProgress {...blockSyncProgress} />
-          {this.state.showMithrilButton && onMithrilSync && (
-            <div className={styles.mithrilAction}>
-              <Button
-                label={intl.formatMessage(messages.mithrilSyncInterrupt)}
-                onClick={onMithrilSync}
-                skin={ButtonSkin}
-              />
-            </div>
-          )}
         </div>
       );
     }

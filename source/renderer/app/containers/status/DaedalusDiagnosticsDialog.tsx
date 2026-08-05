@@ -161,7 +161,10 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
             mithrilSync.flowType === 'bootstrap' &&
             isMithrilSyncBlockingNodeStart(mithrilSync.status)
           }
-          onStartMithrilPartialSync={mithrilSync.startPartialSync}
+          onStartMithrilPartialSync={async () => {
+            closeDaedalusDiagnosticsDialog.trigger();
+            await mithrilSync.startPartialSync();
+          }}
           nodeConnectionError={getNetworkInfoRequest.error}
           localTip={localTip}
           networkTip={networkTip}

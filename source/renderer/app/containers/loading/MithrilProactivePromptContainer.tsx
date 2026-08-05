@@ -25,8 +25,7 @@ class MithrilProactivePromptContainer extends Component<Props> {
 
     const isGated =
       mithrilSync.status === 'idle' &&
-      mithrilSync.isPartialSyncEnabled &&
-      mithrilSync.isSignificantlyBehind && // backend offer signal (near-tip ⇒ false); anti-flash on its own
+      mithrilSync.isSignificantlyBehind && // watchdog probe signal; false until first event received
       !mithrilSync.mithrilAttemptStartedThisSession && // re-pop guard
       !mithrilSync.proactivePromptDismissedThisSession;
 

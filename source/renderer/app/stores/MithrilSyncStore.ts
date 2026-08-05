@@ -253,6 +253,10 @@ export default class MithrilSyncStore extends Store {
       }
       if (this.status === 'idle') {
         this.startedAt = null;
+        // Re-arm the proactive prompt when returning to idle (e.g. after cancel
+        // + restart-normally). The user is back to chain sync; if a subsequent
+        // probe still shows significantly-behind, the prompt should re-appear.
+        this.mithrilAttemptStartedThisSession = false;
       }
       if (update.status !== 'completed') {
         this.isCompletedOverlayDismissed = false;
