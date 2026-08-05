@@ -178,7 +178,24 @@ export async function validateChainStorageDirectory(
       };
     }
 
-    await fs.access(resolvedValidationPath, fs.constants.W_OK);
+    try {
+      await fs.access(resolvedValidationPath, fs.constants.W_OK);
+    } catch (accessError) {
+      // Without this, EACCES falls through to the generic catch below and the
+      // user is told only "Unable to validate selected directory", when the
+      // actual problem — and the one the renderer already has copy for — is
+      // that the location cannot be written to.
+      const code = (accessError as NodeJS.ErrnoException)?.code;
+      if (code === 'EACCES' || code === 'EPERM' || code === 'EROFS') {
+        return {
+          ...defaultValidation,
+          resolvedPath: resolvedValidationPath,
+          reason: 'not-writable',
+          message: 'Selected directory is not writable.',
+        };
+      }
+      throw accessError;
+    }
 
     const managedChainPath = isDirectChainSelection
       ? resolvedPath
