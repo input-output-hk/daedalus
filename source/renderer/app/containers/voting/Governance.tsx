@@ -9,9 +9,14 @@ import MainLayout from '../MainLayout';
 import { ROUTES } from '../../routes-config';
 
 const messages = defineMessages({
+  tabDashboard: {
+    id: 'governance.tabs.dashboard',
+    defaultMessage: '!!!Governance Dashboard',
+    description: 'Label for the governance dashboard tab.',
+  },
   tabDirectory: {
     id: 'governance.tabs.directory',
-    defaultMessage: '!!!Directory',
+    defaultMessage: '!!!DRep Directory',
     description: 'Label for the DRep directory tab.',
   },
   tabFavorites: {
@@ -34,17 +39,28 @@ class Governance extends Component<Props> {
   };
 
   handleNavItemClick = (itemId: string) => {
-    // Guard against pushing the path we are already on — react-router's hash
-    // history emits "Hash history cannot PUSH the same path" otherwise.
     if (this.props.history.location.pathname !== itemId) {
       this.props.history.push(itemId);
     }
   };
 
   render() {
-    const { app } = this.props.stores;
+    const { app, wallets } = this.props.stores;
     const { intl } = this.props;
+
+    const anyWalletDelegating = (wallets?.all ?? []).some(
+      (w) => w.currentVote != null
+    );
+
     const navItems: Array<NavButtonProps> = [
+      ...(anyWalletDelegating
+        ? [
+            {
+              id: ROUTES.GOVERNANCE.DASHBOARD,
+              label: intl.formatMessage(messages.tabDashboard),
+            },
+          ]
+        : []),
       {
         id: ROUTES.GOVERNANCE.DREPS,
         label: intl.formatMessage(messages.tabDirectory),
@@ -54,10 +70,12 @@ class Governance extends Component<Props> {
         label: intl.formatMessage(messages.tabFavorites),
       },
     ];
+
     const activeItem = navItems.find(
       (item) =>
         app.currentRoute === item.id || app.currentRoute.startsWith(item.id)
     );
+
     return (
       <MainLayout>
         <Navigation

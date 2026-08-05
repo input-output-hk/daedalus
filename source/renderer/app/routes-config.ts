@@ -38,6 +38,7 @@ export const ROUTES = {
   },
   GOVERNANCE: {
     ROOT: '/governance',
+    DASHBOARD: '/governance/dashboard',
     DREPS: '/governance/dreps',
     DREP_DETAIL: '/governance/dreps/:drepId',
     FAVORITES: '/governance/favorites',
