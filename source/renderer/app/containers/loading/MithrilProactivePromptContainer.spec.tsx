@@ -79,15 +79,6 @@ describe('MithrilProactivePromptContainer', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders nothing when partial sync is disabled (kill switch off)', () => {
-    const { container } = renderContainer({
-      mithrilSync: { isPartialSyncEnabled: false },
-    });
-
-    expect(screen.queryByText(KNOWN_EPOCHS_TEXT)).not.toBeInTheDocument();
-    expect(container).toBeEmptyDOMElement();
-  });
-
   it('renders nothing when the node is not significantly behind', () => {
     const { container } = renderContainer({
       mithrilSync: { isSignificantlyBehind: false },
