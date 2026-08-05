@@ -11,6 +11,7 @@ import GovernanceStore, {
 import type { StoresMap } from '../../stores';
 import { ROUTES } from '../../routes-config';
 import { pickDelegationFormReturnState } from './delegationFormState';
+import { isSameVoteTarget } from '../../utils/governance/isSameVoteTarget';
 
 interface Props extends RouteComponentProps {
   stores?: StoresMap;
@@ -93,6 +94,17 @@ class DRepDirectoryPage extends React.Component<Props> {
 
     const canDelegate = (stores?.wallets?.all?.length ?? 0) > 0;
 
+    const selectedWalletId = governanceStore.delegationNavState?.selectedWalletId;
+    const selectedWallet = selectedWalletId
+      ? stores?.wallets?.all?.find((w) => w.id === selectedWalletId) ?? null
+      : null;
+    const currentVote = selectedWallet?.currentVote ?? null;
+    const isCurrentDelegation =
+      currentVote?.kind === 'drep'
+        ? (entry: { drepId: string }) =>
+            isSameVoteTarget(entry.drepId, currentVote)
+        : undefined;
+
     return (
       <DRepDirectory
         suggestedDReps={governanceStore.suggestedDReps}
@@ -114,6 +126,7 @@ class DRepDirectoryPage extends React.Component<Props> {
         onRefresh={() => governanceStore.refresh()}
         onReroll={() => governanceStore.fetchSuggestedDReps()}
         onLoadAllDReps={() => governanceStore.loadAllDReps()}
+        isCurrentDelegation={isCurrentDelegation}
         canDelegate={canDelegate}
         onSelectForDelegation={this.handleSelectForDelegation}
         onViewDetails={this.handleViewDetails}

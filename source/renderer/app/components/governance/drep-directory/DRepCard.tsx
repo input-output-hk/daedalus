@@ -51,6 +51,11 @@ const messages = defineMessages({
     defaultMessage: '!!!This DRep is not actively accepting delegation.',
     description: 'Inline caption under a stale favorited DRep',
   },
+  currentDelegation: {
+    id: 'governance.drepDirectory.card.currentDelegation',
+    defaultMessage: '!!!Currently delegating',
+    description: 'Badge shown on the card the user is currently delegated to',
+  },
 });
 
 interface Props {
@@ -58,6 +63,7 @@ interface Props {
   isFavorite: boolean;
   onToggleFavorite: (drepId: string) => void;
   isStaleFavorite?: boolean;
+  isCurrentDelegation?: boolean;
   isSearchResult?: boolean;
   canDelegate?: boolean;
   onSelectForDelegation: (drepId: string) => void;
@@ -83,6 +89,7 @@ function DRepCard({
   isFavorite,
   onToggleFavorite,
   isStaleFavorite = false,
+  isCurrentDelegation = false,
   isSearchResult = false,
   canDelegate = true,
   onSelectForDelegation,
@@ -128,6 +135,11 @@ function DRepCard({
           {intl.formatMessage(messages.staleCaption)}
         </p>
       )}
+      {isCurrentDelegation && (
+        <p className={styles.currentDelegationCaption}>
+          {intl.formatMessage(messages.currentDelegation)}
+        </p>
+      )}
       <div className={styles.bottomRow}>
         <span className={styles.votingPowerLabel}>
           {intl.formatMessage(messages.votingPowerLabel)}:
@@ -147,7 +159,7 @@ function DRepCard({
           onClick={() => onViewDetails(entry.drepId)}
           skin={ButtonSkin}
         />
-        {canDelegate && (
+        {canDelegate && !isCurrentDelegation && (
           <Button
             label={intl.formatMessage(messages.select)}
             onClick={() => onSelectForDelegation(entry.drepId)}

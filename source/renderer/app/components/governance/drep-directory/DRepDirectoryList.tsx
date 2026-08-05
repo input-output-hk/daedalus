@@ -33,6 +33,7 @@ interface Props {
   onToggleFavorite: (drepId: string) => void;
   isFavoritesView?: boolean;
   isStaleFavoriteEntry?: (entry: AppDRepDirectoryEntry) => boolean;
+  isCurrentDelegation?: (entry: AppDRepDirectoryEntry) => boolean;
   isSearchResult?: boolean;
   canDelegate?: boolean;
   onSelectForDelegation: (drepId: string) => void;
@@ -46,6 +47,7 @@ function DRepDirectoryList({
   onToggleFavorite,
   isFavoritesView = false,
   isStaleFavoriteEntry = isStaleFavorite,
+  isCurrentDelegation,
   isSearchResult = false,
   canDelegate = true,
   onSelectForDelegation,
@@ -102,6 +104,7 @@ function DRepDirectoryList({
             isFavorite={favoriteDRepIds.has(entry.drepId)}
             onToggleFavorite={onToggleFavorite}
             isStaleFavorite={isFavoritesView && isStaleFavoriteEntry(entry)}
+            isCurrentDelegation={isCurrentDelegation?.(entry)}
             isSearchResult={isSearchResult}
             canDelegate={canDelegate}
             onSelectForDelegation={onSelectForDelegation}
