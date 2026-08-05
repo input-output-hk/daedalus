@@ -521,6 +521,70 @@ fn stdin_eof_stops_watchdog() {
     let _ = child.wait();
 }
 
+/// Poll try_wait() until the child exits; panic after the deadline.
+fn wait_for_exit(child: &mut Child, deadline: Duration) {
+    let start = std::time::Instant::now();
+    loop {
+        if child.try_wait().unwrap().is_some() {
+            return;
+        }
+        assert!(start.elapsed() < deadline, "timeout waiting for exit");
+        std::thread::sleep(Duration::from_millis(50));
+    }
+}
+
+/// A closed stdout (crashed parent) must not abort the watchdog: the EPIPE'd
+/// event is dropped, and the stdin EOF that follows still runs the orderly
+/// shutdown, so the wallet is stopped rather than orphaned.
+#[test]
+fn stdout_close_does_not_orphan_children() {
+    let dir = TempDir::new("epipe");
+    dir.populate_chain();
+    let (cfg, wallet_port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+
+    let mut child = Command::new(WATCHDOG)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()
+        .expect("spawn watchdog");
+    let mut stdin = child.stdin.take().unwrap();
+    let stdout = child.stdout.take().unwrap();
+    writeln!(stdin, "{}", serde_json::to_string(&cfg).unwrap()).unwrap();
+    stdin.flush().unwrap();
+
+    // Read events inline (not via event_reader) so this test owns stdout and
+    // can close it deterministically.
+    let mut reader = BufReader::new(stdout);
+    loop {
+        let mut line = String::new();
+        assert!(reader.read_line(&mut line).unwrap() > 0, "unexpected EOF");
+        if line.contains("wallet_ready") {
+            break;
+        }
+    }
+    drop(reader); // close the parent's read end of the watchdog's stdout
+
+    // Trigger an event emission: the probe result's write hits EPIPE.
+    send(&mut stdin, json!({"cmd": "probe_mithril"}));
+    std::thread::sleep(Duration::from_millis(500));
+    assert!(
+        child.try_wait().unwrap().is_none(),
+        "watchdog must survive a broken stdout pipe"
+    );
+    assert!(
+        std::net::TcpStream::connect(("127.0.0.1", wallet_port)).is_ok(),
+        "wallet should still be running"
+    );
+
+    drop(stdin); // EOF → implicit stop → orderly shutdown
+    wait_for_exit(&mut child, Duration::from_secs(15));
+    assert!(
+        std::net::TcpStream::connect(("127.0.0.1", wallet_port)).is_err(),
+        "wallet must not outlive the watchdog"
+    );
+}
+
 // ── Tests: startup log parsing ────────────────────────────────────────────────
 
 /// Node stdout emits startup log lines → watchdog parses and re-emits as
