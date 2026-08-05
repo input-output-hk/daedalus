@@ -124,7 +124,7 @@ impl Watchdog {
 
         let (tx, rx) = mpsc::channel();
         std::thread::spawn(move || {
-            for line in BufReader::new(stdout).lines().flatten() {
+            for line in BufReader::new(stdout).lines().map_while(Result::ok) {
                 if line.is_empty() {
                     continue;
                 }

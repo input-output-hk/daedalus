@@ -18,15 +18,21 @@
 
     craneLib = (inputs.crane.mkLib pkgs).overrideToolchain toolchain;
 
-    cargoLockExists = builtins.pathExists ./../watchdog/Cargo.lock;
-
-    watchdogBuild = lib.optionalAttrs cargoLockExists (let
+    # `watchdog/Cargo.lock` is tracked in git and must be present. Guarding with
+    # `lib.optionalAttrs` instead would make a missing lockfile evaluate to an
+    # empty attrset, silently dropping the package and both Rust checks from the
+    # flake: CI would stay green with the watchdog neither built nor tested.
+    watchdogBuild = assert lib.assertMsg (builtins.pathExists ./../watchdog/Cargo.lock)
+    "watchdog/Cargo.lock is missing; it is tracked in git and is required to build and test the watchdog."; (let
       src = lib.fileset.toSource {
         root = ./../watchdog;
         fileset = lib.fileset.unions [
           ./../watchdog/Cargo.toml
           ./../watchdog/Cargo.lock
           ./../watchdog/src
+          # Required by `watchdog-test`, and by `watchdog-clippy`, which lints
+          # `--all-targets` and therefore needs the integration tests in scope.
+          ./../watchdog/tests
         ];
       };
       commonArgs = {
@@ -51,6 +57,11 @@
         // {
           inherit cargoArtifacts;
           cargoClippyExtraArgs = "--all-targets -- --deny warnings";
+        });
+
+      checks.watchdog-test = craneLib.cargoTest (commonArgs
+        // {
+          inherit cargoArtifacts;
         });
     });
   in

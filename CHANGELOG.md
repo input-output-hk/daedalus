@@ -1,5 +1,11 @@
 # Changelog
 
+## 11.2.1
+
+### Chores
+
+- Added the watchdog Rust test suite to the Nix check set. Its 94 tests, including 25 integration tests covering node and wallet process lifecycle, previously ran nowhere in CI; only clippy did. The crane source filter now includes `watchdog/tests`, which `watchdog-clippy` also needed in order to lint `--all-targets` as it is configured to ([PR #3357](https://github.com/input-output-hk/daedalus/pull/3357)).
+
 ## 11.2.0
 
 ### Fixes
