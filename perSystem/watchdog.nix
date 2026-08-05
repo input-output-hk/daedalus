@@ -27,6 +27,9 @@
           ./../watchdog/Cargo.toml
           ./../watchdog/Cargo.lock
           ./../watchdog/src
+          # Required by `watchdog-test`, and by `watchdog-clippy`, which lints
+          # `--all-targets` and therefore needs the integration tests in scope.
+          ./../watchdog/tests
         ];
       };
       commonArgs = {
@@ -51,6 +54,11 @@
         // {
           inherit cargoArtifacts;
           cargoClippyExtraArgs = "--all-targets -- --deny warnings";
+        });
+
+      checks.watchdog-test = craneLib.cargoTest (commonArgs
+        // {
+          inherit cargoArtifacts;
         });
     });
   in
