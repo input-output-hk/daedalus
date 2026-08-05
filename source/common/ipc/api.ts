@@ -20,15 +20,6 @@ import type { GenerateAddressPDFParams } from '../types/address-pdf-request.type
 import type { GenerateVotingPDFParams } from '../types/voting-pdf-request.types';
 import type { GenerateCsvParams } from '../types/csv-request.types';
 import type { GenerateQRCodeParams } from '../types/save-qrCode.types';
-import type {
-  BlockSyncProgress,
-  BlockSyncType,
-  CardanoNodeState,
-  CardanoStatus,
-  FaultInjectionIpcRequest,
-  NodeStartupPhase,
-  TlsConfig,
-} from '../types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
@@ -72,13 +63,6 @@ import type {
   TrezorDeviceErrorPayload,
   TrezorDevicePayload,
 } from '../types/hardware-wallets.types';
-import type {
-  ChainStorageConfig,
-  ChainStorageValidation,
-  MithrilBootstrapDecision,
-  MithrilSnapshotItem,
-} from '../types/mithril-bootstrap.types';
-import type { MithrilSyncStatusUpdate } from '../types/mithril-sync.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -251,74 +235,10 @@ export type GenerateQRCodeRendererRequest = GenerateQRCodeParams;
 export type GenerateQRCodeMainResponse = void;
 
 /**
- * ====================== CARDANO IPC CHANNELS ======================
- * This is the ipc-api contract between main & renderer process
- * to communicate with the cardano-node manager code.
- * ==================================================================
- */
-
-/**
- * Channel to indicate that cardano-node will exit for updating
- */
-export const CARDANO_AWAIT_UPDATE_CHANNEL = 'CARDANO_AWAIT_UPDATE_CHANNEL';
-export type CardanoAwaitUpdateRendererRequest = void;
-export type CardanoAwaitUpdateMainResponse = void;
-
-/**
- * Channel where main process tells the renderer about cardano-node state updates
- */
-export const CARDANO_STATE_CHANNEL = 'CARDANO_STATE_CHANNEL';
-export type CardanoStateRendererRequest = void;
-export type CardanoStateRendererResponse = CardanoNodeState;
-
-/**
- * Channel to exchange tls config between main and renderer process
- */
-export const CARDANO_TLS_CONFIG_CHANNEL = 'CARDANO_TLS_CONFIG_CHANNEL';
-export type CardanoTlsConfigRendererRequest = void;
-export type CardanoTlsConfigMainResponse = TlsConfig | null | undefined;
-
-/**
- * Channel where renderer can request a cardano-node restart
- */
-export const CARDANO_RESTART_CHANNEL = 'CARDANO_RESTART_CHANNEL';
-export type CardanoRestartRendererRequest = void;
-export type CardanoRestartMainResponse = void;
-
-/**
- * Channel where render process can toggle cardano-node fault injections
- */
-export const CARDANO_FAULT_INJECTION_CHANNEL =
-  'CARDANO_FAULT_INJECTION_CHANNEL';
-export type CardanoFaultInjectionRendererRequest = FaultInjectionIpcRequest;
-export type CardanoFaultInjectionMainResponse = void;
-
-/**
- * Channel where renderer can ask for the last cached cardano-node status
- */
-export const GET_CACHED_CARDANO_STATUS_CHANNEL =
-  'GET_CACHED_CARDANO_STATUS_CHANNEL';
-export type GetCachedCardanoStatusRendererRequest = void;
-export type GetCachedCardanoStatusMainResponse =
-  | CardanoStatus
-  | null
-  | undefined;
-
-/**
- * Channel where renderer and main process can exchange cardano-node status info
- */
-export const SET_CACHED_CARDANO_STATUS_CHANNEL =
-  'SET_CACHED_CARDANO_STATUS_CHANNEL';
-export type SetCachedCardanoStatusRendererRequest =
-  | CardanoStatus
-  | null
-  | undefined;
-export type SetCachedCardanoStatusMainResponse = void;
-
-/**
  * Channel where renderer can ask main process to export wallets
  */
 export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
+
 export type ExportWalletsRendererRequest = {
   exportSourcePath: string;
   locale: string;
@@ -416,76 +336,6 @@ export const CHECK_FILE_EXISTS = 'CHECK_FILE_EXISTS';
 export type CheckFileExistsRendererRequest = CheckFileExistsRequest;
 export type CheckFileExistsMainResponse = boolean;
 
-/**
- * ====================== MITHRIL BOOTSTRAP IPC =====================
- * Channels for Mithril snapshot bootstrapping flow.
- * ==================================================================
- */
-export const MITHRIL_BOOTSTRAP_DECISION_CHANNEL =
-  'MITHRIL_BOOTSTRAP_DECISION_CHANNEL';
-export type MithrilBootstrapDecisionRendererRequest = {
-  decision: MithrilBootstrapDecision;
-};
-export type MithrilBootstrapDecisionMainResponse = void;
-
-export const MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL =
-  'MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL';
-export type MithrilBootstrapSnapshotsRendererRequest = void;
-export type MithrilBootstrapSnapshotsMainResponse = Array<MithrilSnapshotItem>;
-
-/**
- * ====================== MITHRIL UNIFIED SYNC IPC ==================
- * Unified channel for both bootstrap and partial-sync flows.
- * ==================================================================
- */
-export const MITHRIL_SYNC_STATUS_CHANNEL = 'MITHRIL_SYNC_STATUS_CHANNEL';
-export type MithrilSyncStatusRendererRequest = void;
-export type MithrilSyncStatusMainResponse = MithrilSyncStatusUpdate;
-
-export const MITHRIL_SYNC_CANCEL_CHANNEL = 'MITHRIL_SYNC_CANCEL_CHANNEL';
-export type MithrilSyncCancelRendererRequest = void;
-export type MithrilSyncCancelMainResponse = void;
-
-export const MITHRIL_SYNC_START_CHANNEL = 'MITHRIL_SYNC_START_CHANNEL';
-export type MithrilSyncStartRendererRequest = { wipeChain: boolean };
-export type MithrilSyncStartMainResponse = void;
-
-export const MITHRIL_SYNC_RESTART_NODE_CHANNEL =
-  'MITHRIL_SYNC_RESTART_NODE_CHANNEL';
-export type MithrilSyncRestartNodeRendererRequest = void;
-export type MithrilSyncRestartNodeMainResponse = void;
-
-export const MITHRIL_AVAILABILITY_CHANNEL = 'MITHRIL_AVAILABILITY_CHANNEL';
-export type MithrilAvailabilityRendererRequest = void;
-export type MithrilAvailabilityMainResponse = {
-  isEnabled: boolean;
-  isSignificantlyBehind: boolean;
-};
-
-export const SET_CHAIN_STORAGE_DIRECTORY_CHANNEL =
-  'SET_CHAIN_STORAGE_DIRECTORY_CHANNEL';
-export type SetChainStorageDirectoryRendererRequest = {
-  path: string | null;
-};
-export type SetChainStorageDirectoryMainResponse = ChainStorageValidation;
-
-export const GET_CHAIN_STORAGE_DIRECTORY_CHANNEL =
-  'GET_CHAIN_STORAGE_DIRECTORY_CHANNEL';
-export type GetChainStorageDirectoryRendererRequest = void;
-export type GetChainStorageDirectoryMainResponse = ChainStorageConfig;
-
-export const VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL =
-  'VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL';
-export type ValidateChainStorageDirectoryRendererRequest = {
-  path: string | null;
-};
-export type ValidateChainStorageDirectoryMainResponse = ChainStorageValidation;
-
-export const PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL =
-  'PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL';
-export type PrepareChainStorageLocationChangeRendererRequest = void;
-export type PrepareChainStorageLocationChangeMainResponse =
-  ChainStorageValidation | null;
 
 /**
  * Channel for quitting Daedalus and installing update
@@ -540,29 +390,6 @@ export type showAddressRendererRequestType = {
 export const INTROSPECT_ADDRESS_CHANNEL = 'INTROSPECT_ADDRESS_CHANNEL';
 export type IntrospectAddressRendererRequest = IntrospectAddressRequest;
 export type IntrospectAddressMainResponse = IntrospectAddressResponse;
-
-/**
- * Channel for checking block replay progress
- */
-export const GET_BLOCK_SYNC_PROGRESS_CHANNEL = 'GetBlockSyncProgressChannel';
-export type GetBlockSyncProgressType = BlockSyncType;
-export type GetBlockSyncProgressRendererRequest = void;
-export type GetBlockSyncProgressMainResponse = BlockSyncProgress;
-
-/**
- * Push channel from main → renderer for live node startup phase and block sync
- * progress updates. Sent on every watchdog node_startup_status /
- * block_sync_progress event so the renderer stays current during STARTING.
- */
-export const CARDANO_NODE_STARTUP_STATUS_CHANNEL =
-  'CardanoNodeStartupStatusChannel';
-export type CardanoNodeStartupStatusMainPush = {
-  nodeStartupPhase: NodeStartupPhase | null;
-  blockSyncProgress: BlockSyncProgress;
-};
-export type CardanoNodeStartupStatusRendererRequest = void;
-export type CardanoNodeStartupStatusMainResponse =
-  CardanoNodeStartupStatusMainPush;
 
 /**
  * Channels for connecting / interacting with Hardware Wallet devices

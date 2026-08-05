@@ -24,7 +24,6 @@ import WalletSettingsStore from './WalletSettingsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletsStore from './WalletsStore';
 import WindowStore from './WindowStore';
-import MithrilSyncStore from './MithrilSyncStore';
 import { AnalyticsTracker } from '../analytics';
 import { Api } from '../api';
 import { ActionsMap } from '../actions';
@@ -36,7 +35,6 @@ export const storeClasses = {
   assets: AssetsStore,
   currency: CurrencyStore,
   hardwareWallets: HardwareWalletsStore,
-  mithrilSync: MithrilSyncStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   profile: ProfileStore,
@@ -60,7 +58,6 @@ export type StoresMap = {
   currency: CurrencyStore;
   assets: AssetsStore;
   hardwareWallets: HardwareWalletsStore;
-  mithrilSync: MithrilSyncStore;
   networkStatus: NetworkStatusStore;
   newsFeed: NewsFeedStore;
   profile: ProfileStore;
@@ -113,7 +110,6 @@ export const setUpStores = action(
       appUpdate: createStoreInstanceOf(AppUpdateStore),
       hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
       networkStatus: createStoreInstanceOf(NetworkStatusStore),
-      mithrilSync: createStoreInstanceOf(MithrilSyncStore),
       newsFeed: createStoreInstanceOf(NewsFeedStore),
       profile: createStoreInstanceOf(ProfileStore),
       router,

@@ -17,7 +17,6 @@ import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
-import { computeBehindByEpochs } from '../../utils/mithrilBehindness';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
@@ -26,7 +25,6 @@ import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 import type { TipInfo } from '../../api/network/types';
 import { ErrorType } from '../../domains/ApiError';
 import DiagnosticsTimeStatusRow from './DiagnosticsTimeStatusRow';
-import MithrilPartialSyncSection from './MithrilPartialSyncSection';
 
 export const messages = defineMessages({
   systemInfo: {
@@ -451,14 +449,6 @@ type Props = {
   isForceCheckingSystemTime: boolean;
   localTip: TipInfo | null | undefined;
   networkTip: TipInfo | null | undefined;
-  certifiedEpoch?: number | null;
-  isMithrilPartialSyncWorking: boolean;
-  isMithrilPartialSyncEnabled: boolean;
-  isMithrilPartialSyncSignificantlyBehind: boolean;
-  isMithrilPartialSyncProbeFailed: boolean;
-  isMithrilPartialSyncAtOrPastSnapshot: boolean;
-  isMithrilBootstrapActive: boolean;
-  onStartMithrilPartialSync: (...args: Array<any>) => any;
   onOpenStateDirectory: (...args: Array<any>) => any;
   onOpenExternalLink: (...args: Array<any>) => any;
   onRestartNode: { trigger: (...args: Array<any>) => any };
@@ -566,13 +556,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isSystemTimeIgnored,
       localTip,
       networkTip,
-      certifiedEpoch,
-      isMithrilPartialSyncWorking,
-      isMithrilPartialSyncEnabled,
-      isMithrilPartialSyncSignificantlyBehind,
-      isMithrilPartialSyncProbeFailed,
-      isMithrilPartialSyncAtOrPastSnapshot,
-      isMithrilBootstrapActive,
       onOpenStateDirectory,
       onClose,
       onCopyStateDirectoryPath,
@@ -622,16 +605,9 @@ class DaedalusDiagnostics extends Component<Props, State> {
       messages.unknownDiskSpaceSupportUrl
     );
     const formattedSyncPercentage = formattedNumber(syncPercentage, 2);
-    const behindByEpochs = computeBehindByEpochs(
-      localTip,
-      networkTip,
-      certifiedEpoch
-    );
     const cardanoNetworkValue = intl.formatMessage(
       globalMessages[`network_${cardanoNetwork}`]
     );
-    const isMithrilActionBlocked =
-      isMithrilPartialSyncWorking || isMithrilBootstrapActive;
     const { getSectionRow, getRow } = this;
 
     return (
@@ -784,22 +760,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('connected', isConnected)}
               {getRow('synced', isSynced)}
               {getRow('syncPercentage', `${formattedSyncPercentage}%`)}
-              {isMithrilPartialSyncEnabled && (
-                <MithrilPartialSyncSection
-                  isActionBlocked={isMithrilActionBlocked}
-                  isMithrilPartialSyncWorking={isMithrilPartialSyncWorking}
-                  isSignificantlyBehind={
-                    isMithrilPartialSyncSignificantlyBehind
-                  }
-                  isProbeFailed={isMithrilPartialSyncProbeFailed}
-                  isAtOrPastSnapshot={isMithrilPartialSyncAtOrPastSnapshot}
-                  behindByEpochs={behindByEpochs}
-                  onRestoreFocus={this.restoreDialogCloseOnEscKey}
-                  onStartMithrilPartialSync={
-                    this.props.onStartMithrilPartialSync
-                  }
-                />
-              )}
+
               {getRow(
                 'lastNetworkBlock',
                 <Fragment>

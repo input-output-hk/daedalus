@@ -111,7 +111,6 @@ export default class TransactionsStore extends Store {
     transactionActions.filterTransactions.listen(this._updateFilterOptions);
     // transactionActions.loadMoreTransactions.listen(this._increaseSearchLimit);
     transactionActions.requestCSVFile.listen(this._requestCSVFile);
-    networkStatusActions.restartNode.listen(this._clearFilterOptions);
     this.registerReactions([this._ensureFilterOptionsForActiveWallet]);
   }
 

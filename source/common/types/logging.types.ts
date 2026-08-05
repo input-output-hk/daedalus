@@ -1,4 +1,3 @@
-import type { CardanoNodeState, CardanoStatus } from './cardano-node.types';
 import type { SystemInfo } from '../../renderer/app/types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../renderer/app/types/coreSystemInfoTypes';
 import type { WalletImportStatus } from '../../renderer/app/types/walletExportTypes';
@@ -54,8 +53,7 @@ type BodyData = {
   hwLocalData?: HardwareWalletLocalData | null | undefined;
   stakePools?: AdaApiStakePool[] | null | undefined;
   code?: string;
-  state?: CardanoNodeState;
-  status?: CardanoStatus;
+
   name?: string;
   processName?: string;
   wallet?: Process;
@@ -109,7 +107,6 @@ export type LogSystemInfoParams = {
 export type StateSnapshotLogParams = {
   systemInfo: SystemInfo;
   coreInfo: CoreSystemInfo;
-  cardanoNodeState: CardanoNodeState;
   currentLocale: string;
   isConnected: boolean;
   isDev: boolean;

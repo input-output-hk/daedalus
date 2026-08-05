@@ -1,6 +1,6 @@
 import { action, computed, observable, runInAction } from 'mobx';
 import moment from 'moment';
-import { get, includes, isEqual } from 'lodash';
+import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -12,23 +12,6 @@ import {
 } from '../config/timingConfig';
 import { INITIAL_DESIRED_POOLS_NUMBER } from '../config/stakingConfig';
 import { logger } from '../utils/logging';
-import { isMithrilBehindnessKnown } from '../utils/mithrilBehindness';
-import {
-  cardanoStateChangeChannel,
-  cardanoTlsConfigChannel,
-  cardanoNodeStartupStatusChannel,
-  getCachedCardanoStatusChannel,
-  restartCardanoNodeChannel,
-  setCachedCardanoStatusChannel,
-} from '../ipc/cardano.ipc';
-import {
-  BlockSyncType,
-  CardanoNodeState,
-  CardanoNodeStates,
-  CardanoStatus,
-  NodeStartupPhase,
-  TlsConfig,
-} from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type {
@@ -51,18 +34,6 @@ const NETWORK_STATUS = {
   SYNCING: 1,
   RUNNING: 2,
 };
-const NODE_STOPPING_STATES = [
-  CardanoNodeStates.EXITING,
-  CardanoNodeStates.STOPPING,
-  CardanoNodeStates.UPDATING,
-];
-const NODE_STOPPED_STATES = [
-  CardanoNodeStates.CRASHED,
-  CardanoNodeStates.ERRORED,
-  CardanoNodeStates.STOPPED,
-  CardanoNodeStates.UPDATED,
-  CardanoNodeStates.UNRECOVERABLE,
-];
 // END CONSTANTS ----------------------------
 const { isFlight } = global;
 export default class NetworkStatusStore extends Store {
@@ -76,25 +47,7 @@ export default class NetworkStatusStore extends Store {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   _networkParametersPollingInterval: IntervalID | null | undefined = null;
   // Initialize store observables
-  // Internal Node states
-  @observable
-  tlsConfig: TlsConfig | null | undefined = null;
-  @observable
-  cardanoNodeState: CardanoNodeState = 'unknown';
-  @observable
-  cardanoNodePID = 0;
-  @observable
-  cardanoWalletPID = 0;
   @observable isRTSFlagsModeEnabled = false;
-  @observable cardanoNodeStartedAt: number | null = null;
-  @observable cardanoWalletStartedAt: number | null = null;
-  @observable cardanoWalletRestartCount = 0;
-  @observable watchdogPid: number | undefined = undefined;
-  @observable nodeForceKilled = false;
-  @observable lastWalletExitCode: number | null = null;
-  @observable lastWalletExitSignal: string | null = null;
-  @observable nodeSocketWaitMs: number | null = null;
-  @observable walletReadyWaitMs: number | null = null;
   @observable
   isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
 
@@ -103,12 +56,6 @@ export default class NetworkStatusStore extends Store {
 
   @observable
   isNodeInSync = false; // Is 'true' if syncing & local/network blocks diff within limit
-
-  @observable
-  isNodeStopping = false; // Is 'true' if node is in `NODE_STOPPING_STATES` states
-
-  @observable
-  isNodeStopped = false; // Is 'true' if node is in `NODE_STOPPED_STATES` states
 
   @observable
   isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
@@ -183,14 +130,6 @@ export default class NetworkStatusStore extends Store {
   @observable
   alonzoActivationTime = '';
   @observable
-  nodeStartupPhase: NodeStartupPhase | null = null;
-  @observable
-  blockSyncProgress: Record<BlockSyncType, number> = {
-    [BlockSyncType.validatingChunk]: 0,
-    [BlockSyncType.replayedBlock]: 0,
-    [BlockSyncType.pushingLedger]: 0,
-  };
-  @observable
   epochLength: number | null | undefined = null; // unit: 1 slot
 
   @observable
@@ -200,31 +139,16 @@ export default class NetworkStatusStore extends Store {
   setup() {
     // ========== IPC CHANNELS =========== //
     const { networkStatus: networkStatusActions } = this.actions;
-    networkStatusActions.restartNode.listen(this._restartNode);
     networkStatusActions.toggleSplash.listen(this._toggleSplash);
     networkStatusActions.forceCheckNetworkClock.listen(
       this._forceCheckNetworkClock
     );
     networkStatusActions.toggleRTSFlagsMode.listen(this._toggleRTSFlagsMode);
 
-    // Request node state
-    this._requestCardanoState();
-
-    // Request cached node status for fast bootstrapping of frontend
-    this._requestCardanoStatus();
-
-    // Passively receive broadcasted tls config changes (which can happen without requesting it)
-    // E.g if the cardano-node restarted for some reason
-    cardanoTlsConfigChannel.onReceive(this._updateTlsConfig);
-    // Passively receive state changes of the cardano-node
-    cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
-    // Passively receive live startup phase / block sync progress during STARTING
-    cardanoNodeStartupStatusChannel.onReceive(this._updateNodeStartupStatus);
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([
       this._updateNetworkStatusWhenConnected,
       this._updateNetworkStatusWhenDisconnected,
-      this._updateNodeStatus,
     ]);
 
     // Setup polling interval
@@ -240,21 +164,6 @@ export default class NetworkStatusStore extends Store {
 
     this._getStateDirectoryPath();
   }
-
-  _restartNode = async () => {
-    this._resetSystemTime();
-
-    try {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
-      await restartCardanoNodeChannel.send();
-    } catch (error) {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.error('NetworkStatusStore: Restart of cardano-node failed', {
-        error,
-      });
-    }
-  };
 
   teardown() {
     super.teardown();
@@ -288,22 +197,6 @@ export default class NetworkStatusStore extends Store {
       this.actions.walletMigration.startMigration.trigger();
     }
   };
-  _updateNodeStatus = async () => {
-    if (this.environment.isTest && !this.isConnected) return;
-    if (this.cardanoNodeState !== CardanoNodeStates.RUNNING) return;
-
-    try {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.info('NetworkStatusStore: Updating node status');
-      await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
-    } catch (error) {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.error('NetworkStatusStore: Error while updating node status', {
-        error,
-      });
-    }
-  };
-
   // =============== PRIVATE ===============
   _getStartupTimeDelta() {
     return Date.now() - this._startTime;
@@ -319,167 +212,6 @@ export default class NetworkStatusStore extends Store {
       await getStateDirectoryPathChannel.request()
     );
   };
-  _requestCardanoState = async () => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info('NetworkStatusStore: requesting node state');
-    const state = await cardanoStateChangeChannel.request();
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info(`NetworkStatusStore: handling node state <${state}>`, {
-      state,
-    });
-    await this._handleCardanoNodeStateChange(state);
-  };
-  _requestCardanoStatus = async () => {
-    try {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.info('NetworkStatusStore: requesting node status');
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
-      const status = await getCachedCardanoStatusChannel.request();
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.info('NetworkStatusStore: received cached node status', {
-        status,
-      });
-      if (status)
-        runInAction('assigning node status', () => Object.assign(this, status));
-    } catch (error) {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.error('NetworkStatusStore: error while requesting node state', {
-        error,
-      });
-    }
-  };
-  _requestTlsConfig = async () => {
-    try {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.info(
-        'NetworkStatusStore: requesting tls config from main process'
-      );
-      const tlsConfig = await cardanoTlsConfigChannel.request();
-      await this._updateTlsConfig(tlsConfig);
-    } catch (error) {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.error('NetworkStatusStore: error while requesting tls config', {
-        error,
-      });
-    }
-  };
-  // @ts-ignore
-  _updateTlsConfig = (config: TlsConfig | null | undefined): Promise<void> => {
-    if (config == null) return Promise.resolve();
-    // Always refresh status on any TLS config broadcast — covers wallet restarts
-    // where the config doesn't change but walletStartedAt/restartCount have.
-    this._requestCardanoStatus();
-    if (isEqual(config, this.tlsConfig)) return Promise.resolve();
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info('NetworkStatusStore: received tls config from main process');
-    this.api.ada.setRequestConfig(config);
-    runInAction('updating tlsConfig', () => {
-      this.tlsConfig = config;
-    });
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
-    this.actions.networkStatus.tlsConfigIsReady.trigger();
-    return Promise.resolve();
-  };
-  _handleCardanoNodeStateChange = async (state: CardanoNodeState) => {
-    if (state === this.cardanoNodeState) return Promise.resolve();
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`, {
-      state,
-    });
-    const wasConnected = this.isConnected;
-
-    switch (state) {
-      case CardanoNodeStates.STARTING:
-        break;
-
-      case CardanoNodeStates.RUNNING:
-        await this._requestTlsConfig();
-        await this._requestCardanoStatus();
-        break;
-
-      case CardanoNodeStates.STOPPING:
-      case CardanoNodeStates.EXITING:
-      case CardanoNodeStates.UPDATING:
-        runInAction('updating tlsConfig', () => {
-          this.tlsConfig = null;
-        });
-
-        this._setDisconnected(wasConnected);
-
-        this.stores.app._closeActiveDialog();
-
-        break;
-
-      default:
-        this._setDisconnected(wasConnected);
-    }
-
-    runInAction('setting cardanoNodeState', () => {
-      this.cardanoNodeState = state;
-      this.isNodeStopping = includes(NODE_STOPPING_STATES, state);
-      this.isNodeStopped = includes(NODE_STOPPED_STATES, state);
-    });
-    return Promise.resolve();
-  };
-  @action _updateNodeStartupStatus = ({
-    nodeStartupPhase,
-    blockSyncProgress,
-  }: {
-    nodeStartupPhase: NodeStartupPhase | null;
-    blockSyncProgress: Record<BlockSyncType, number>;
-  }) => {
-    this.nodeStartupPhase = nodeStartupPhase;
-    this.blockSyncProgress = {
-      ...this.blockSyncProgress,
-      ...blockSyncProgress,
-    };
-    return Promise.resolve();
-  };
-  _extractNodeStatus = (
-    from: Record<string, any> & CardanoStatus
-  ): CardanoStatus => {
-    const {
-      isNodeResponding,
-      isNodeSyncing,
-      isNodeInSync,
-      hasBeenConnected,
-      cardanoNodePID,
-      cardanoWalletPID,
-      isRTSFlagsModeEnabled,
-      cardanoNodeStartedAt,
-      cardanoWalletStartedAt,
-      cardanoWalletRestartCount,
-      watchdogPid,
-      nodeForceKilled,
-      lastWalletExitCode,
-      lastWalletExitSignal,
-      nodeSocketWaitMs,
-      walletReadyWaitMs,
-      nodeStartupPhase,
-      blockSyncProgress,
-    } = from;
-    return {
-      isNodeResponding,
-      isNodeSyncing,
-      isNodeInSync,
-      hasBeenConnected,
-      cardanoNodePID,
-      cardanoWalletPID,
-      isRTSFlagsModeEnabled,
-      cardanoNodeStartedAt,
-      cardanoWalletStartedAt,
-      cardanoWalletRestartCount,
-      watchdogPid,
-      nodeForceKilled,
-      lastWalletExitCode,
-      lastWalletExitSignal,
-      nodeSocketWaitMs,
-      walletReadyWaitMs,
-      nodeStartupPhase,
-      blockSyncProgress,
-    };
-  };
-
   // DEFINE ACTIONS
   @action _toggleRTSFlagsMode = async () => {
     this.analytics.sendEvent(
@@ -592,24 +324,12 @@ export default class NetworkStatusStore extends Store {
   };
   @action
   _updateNetworkStatus = async () => {
-    // In case we haven't received TLS config we shouldn't trigger any API calls
-    if (!this.tlsConfig) return;
     // Record connection status before running network status call
     const wasConnected = this.isConnected;
 
     try {
       const networkStatus: GetNetworkInfoResponse =
         await this.getNetworkInfoRequest.execute().promise;
-
-      // In case we no longer have TLS config we ignore all API call responses
-      // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
-      if (!this.tlsConfig) {
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-        logger.debug(
-          'NetworkStatusStore: Ignoring NetworkStatusRequest result during Cardano shutdown sequence...'
-        );
-        return;
-      }
 
       const { syncProgress, localTip, networkTip, nextEpoch } = networkStatus;
       let futureEpoch = null;
@@ -914,19 +634,4 @@ export default class NetworkStatusStore extends Store {
     );
   }
 
-  @computed
-  get isBehindnessKnown(): boolean {
-    // Reactive availability signal for the proactive prompt: true once both tips have finite epochs, so consumers re-render when the network tip arrives. Not a threshold; backend isSignificantlyBehind owns the offer.
-    return isMithrilBehindnessKnown(this.localTip, this.networkTip);
-  }
-
-  @computed
-  get isVerifyingBlockchain(): boolean {
-    const values = Object.values(this.blockSyncProgress);
-    return (
-      !this.isConnected &&
-      values.some((value) => value > 0) &&
-      values.some((value) => value < 100)
-    );
-  }
 }
