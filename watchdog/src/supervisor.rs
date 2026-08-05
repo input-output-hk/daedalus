@@ -21,6 +21,7 @@ use nix::{
     unistd::Pid,
 };
 
+use crate::chain_validation;
 use crate::config::WatchdogConfig;
 use crate::mithril;
 use crate::protocol::{Command as Cmd, Event, emit};
@@ -52,6 +53,33 @@ fn extract_exit(status: Option<std::process::ExitStatus>) -> ExitInfo {
         }
     }
     (s.code(), None)
+}
+
+// Spawns a chain-directory validation task. Non-blocking: emits ChainDirValidation
+// when done. Can be called from any command-receive arm without stalling the loop.
+fn spawn_validate_chain_dir(
+    state_dir: String,
+    path: String,
+    default_chain_path: String,
+    required_space_bytes: u64,
+) {
+    tokio::spawn(async move {
+        let result = chain_validation::validate_chain_storage_directory(
+            std::path::Path::new(&path),
+            std::path::Path::new(&state_dir),
+            std::path::Path::new(&default_chain_path),
+            required_space_bytes,
+        )
+        .await;
+        emit(&Event::ChainDirValidation {
+            is_valid: result.is_valid,
+            path: result.path.map(|p| p.to_string_lossy().into_owned()),
+            resolved_path: result.resolved_path.map(|p| p.to_string_lossy().into_owned()),
+            reason: result.reason.map(|s| s.to_owned()),
+            available_space_bytes: result.available_space_bytes,
+            required_space_bytes: result.required_space_bytes,
+        });
+    });
 }
 
 // Helper: emit an Error event.
@@ -457,6 +485,9 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
                     emit(&Event::Stopped);
                     return Ok(());
                 }
+                Some(Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes }) => {
+                    spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
+                }
                 _ => {}
             }
         }
@@ -509,6 +540,9 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
                                         emit(&Event::Stopped);
                                         return Ok(());
                                     }
+                                    Some(Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes }) => {
+                                        spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
+                                    }
                                     _ => {}
                                 }
                             }
@@ -541,6 +575,9 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
                                     Some(Cmd::Stop) | None => {
                                         emit(&Event::Stopped);
                                         return Ok(());
+                                    }
+                                    Some(Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes }) => {
+                                        spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
                                     }
                                     _ => {} // StartNode is intentionally ignored here
                                 }
@@ -717,6 +754,9 @@ async fn run_node_wallet(
                             });
                         }
                     }
+                    Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes } => {
+                        spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
+                    }
                     _ => {} // stale command: ignore and keep waiting for socket
                 }
             }
@@ -848,6 +888,9 @@ async fn run_node_wallet(
                                 });
                             }
                         }
+                        Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes } => {
+                            spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
+                        }
                         _ => {} // stale command (e.g. CancelMithril): ignore and loop
                     }
                 }
@@ -935,6 +978,9 @@ async fn run_node_wallet(
                                     }
                                 });
                             }
+                        }
+                        Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes } => {
+                            spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
                         }
                         _ => {} // stale command: ignore and loop
                     }

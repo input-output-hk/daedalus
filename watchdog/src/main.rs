@@ -1,3 +1,4 @@
+mod chain_validation;
 mod config;
 mod mithril;
 mod protocol;

@@ -4,7 +4,6 @@ import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
 import { logger } from './logging';
-import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
@@ -15,7 +14,6 @@ interface Data {
 }
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
-  cardanoNode: CardanoNode | null | undefined,
   locale: string,
   { isNavigationEnabled, walletSettingsState }: Data
 ) => {
@@ -58,7 +56,6 @@ export const buildAppMenus = async (
   const restartWithBlankScreenFix = async () => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Restarting in BlankScreenFix...');
-    if (cardanoNode) await cardanoNode.stop();
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Exiting Daedalus with code 21', {
       code: 21,
@@ -71,7 +68,6 @@ export const buildAppMenus = async (
   const restartWithoutBlankScreenFix = async () => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Restarting without BlankScreenFix...');
-    if (cardanoNode) await cardanoNode.stop();
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Exiting Daedalus with code 22', {
       code: 22,

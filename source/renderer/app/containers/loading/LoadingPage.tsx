@@ -4,7 +4,6 @@ import CenteredLayout from '../../components/layout/CenteredLayout';
 import NoDiskSpaceErrorPage from './NoDiskSpaceErrorPage';
 import SystemTimeErrorPage from './SystemTimeErrorPage';
 import SyncingConnectingPage from './SyncingConnectingPage';
-import MithrilBootstrapPage from './MithrilBootstrapPage';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
@@ -21,57 +20,13 @@ class LoadingPage extends Component<InjectedProps> {
     return null;
   }
 
-  get shouldShowMithrilBootstrap() {
-    return (
-      !this.isSetupPage &&
-      (this.isMithrilBootstrapDecision || this.isMithrilBootstrapActive)
-    );
-  }
-
-  get shouldShowMithrilOverlay() {
-    const { mithrilSync } = this.props.stores;
-    return !this.isSetupPage && mithrilSync.shouldShowOverlay;
-  }
-
   get isNotEnoughDiskSpace() {
     return this.networkStatus.isNotEnoughDiskSpace;
   }
 
   get isSystemTimeError() {
-    const { isSystemTimeCorrect, isNodeStopping, isNodeStopped } =
-      this.networkStatus;
-    return !isSystemTimeCorrect && !isNodeStopping && !isNodeStopped;
-  }
-
-  get isMithrilBootstrapDecision() {
-    const { mithrilSync } = this.props.stores;
-    return (
-      mithrilSync.flowType === 'bootstrap' && mithrilSync.status === 'decision'
-    );
-  }
-
-  get isMithrilBootstrapActive() {
-    const { mithrilSync } = this.props.stores;
-    const activeStatuses = [
-      'preparing',
-      'downloading',
-      'verifying',
-      'unpacking',
-      'finalizing',
-      'converting',
-      'completed',
-      'starting-node',
-      'failed',
-      'cancelled',
-    ];
-    return (
-      mithrilSync.flowType === 'bootstrap' &&
-      activeStatuses.includes(mithrilSync.status)
-    );
-  }
-
-  get isSetupPage() {
-    return this.props.stores.app.isSetupPage;
+    const { isSystemTimeCorrect } = this.networkStatus;
+    return !isSystemTimeCorrect;
   }
 
   get networkStatus() {
@@ -79,14 +34,6 @@ class LoadingPage extends Component<InjectedProps> {
   }
 
   render() {
-    if (this.shouldShowMithrilBootstrap) {
-      return (
-        <CenteredLayout>
-          <MithrilBootstrapPage />
-        </CenteredLayout>
-      );
-    }
-
     return (
       <CenteredLayout>
         <SyncingConnectingPage />

@@ -21,6 +21,12 @@ pub enum Command {
     /// Run the behind-ness probe without starting a download. Emits
     /// `MithrilSignificantlyBehind` or `MithrilNotNeeded` with the result.
     ProbeMithril,
+    /// Validate a candidate chain-storage directory. Emits `ChainDirValidation`.
+    ValidateChainDir {
+        path: String,
+        default_chain_path: String,
+        required_space_bytes: u64,
+    },
 }
 
 #[derive(Debug, Serialize)]
@@ -116,6 +122,20 @@ pub enum Event {
     /// for a `start_node` or `start_mithril` command before doing anything.
     ChainStatus {
         has_chain: bool,
+    },
+    /// Result of a `validate_chain_dir` command.
+    ChainDirValidation {
+        is_valid: bool,
+        /// Path to store in settings. Absent means reset to the managed default.
+        #[serde(skip_serializing_if = "Option::is_none")]
+        path: Option<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        resolved_path: Option<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        reason: Option<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        available_space_bytes: Option<u64>,
+        required_space_bytes: u64,
     },
 }
 

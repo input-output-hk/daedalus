@@ -85,7 +85,6 @@ import { getSmashSettings } from './staking/requests/getSmashSettings';
 import { checkSmashServerHealth } from './staking/requests/checkSmashServerHealth';
 import { updateSmashSettings } from './staking/requests/updateSmashSettings';
 // Utility functions
-import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
 import { getLegacyWalletId, utcStringToDate } from './utils';
 import { logger } from '../utils/logging';
@@ -215,7 +214,6 @@ import type {
   DelegateVotesParams,
 } from './voting/types';
 import type { StakePoolProps } from '../domains/StakePool';
-import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 import { TlsCertificateNotValidError } from './nodes/errors';
 import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
@@ -2990,9 +2988,6 @@ export default class AdaApi {
         .where('code', 'transaction_is_too_big')
         .result();
     }
-  };
-  setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
-    await cardanoFaultInjectionChannel.send(fault);
   };
   // No implementation here but can be overwritten
   setLocalTimeDifference: (...args: Array<any>) => any;

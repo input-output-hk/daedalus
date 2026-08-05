@@ -18,23 +18,18 @@ import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
 import {
-  launcherConfig,
   pubLogsFolderPath,
   RTS_FLAGS,
   stateDirectoryPath,
 } from './config';
-import { setupCardanoNode } from './cardano/setup';
-import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
 import { detectSystemLocale } from './utils/detectSystemLocale';
-import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel';
 import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from './ipc/getSystemLocaleChannel';
-import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type {
   GenerateWalletMigrationReportRendererRequest,
   SetStateSnapshotLogMainResponse,
@@ -54,14 +49,9 @@ import {
 import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
 import { parseDeviceScaleFactor } from './utils/parseDeviceScaleFactor';
-import { setMithrilBootstrapNodeStateProvider } from './ipc/mithrilBootstrapChannel';
-import { configureMithrilPartialSyncRuntime } from './ipc/mithrilPartialSyncChannel';
-import { getMithrilController } from './mithril/MithrilController';
-
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
-let cardanoNode: CardanoNode;
 const {
   isDev,
   isTest,
@@ -104,50 +94,16 @@ EventEmitter.defaultMaxListeners = 100; // Default: 10
 const safeExit = async () => {
   pauseActiveDownloads();
 
-  // Reap any live Mithril partial-sync child before the exit branches: safeExit only stops cardanoNode,
-  //  so a quit mid-download would otherwise orphan the detached mithril-client past process.exit().
-  //  Best-effort and fully try/caught, so it can't block exit.
-  getMithrilController().reapPartialSyncOnShutdown();
-
   const exitCode =
     (mainWindow as any).daedalusExitCode !== undefined
       ? (mainWindow as any).daedalusExitCode
       : 0;
 
-  if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info(`Daedalus:safeExit: exiting Daedalus with code ${exitCode}`, {
-      code: exitCode,
-    });
-    return safeExitWithCode(exitCode);
-  }
-
-  if (cardanoNode.state === CardanoNodeStates.STOPPING) {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info('Daedalus:safeExit: waiting for cardano-node to stop...');
-    cardanoNode.exitOnStop();
-    return;
-  }
-
-  try {
-    const pid = cardanoNode.pid || 'null';
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, {
-      pid,
-    });
-    await cardanoNode.stop();
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info(`Daedalus:safeExit: exiting Daedalus with code ${exitCode}`, {
-      code: exitCode,
-    });
-    safeExitWithCode(exitCode);
-  } catch (error) {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.error('Daedalus:safeExit: cardano-node did not exit correctly', {
-      error,
-    });
-    safeExitWithCode(exitCode);
-  }
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+  logger.info(`Daedalus:safeExit: exiting Daedalus with code ${exitCode}`, {
+    code: exitCode,
+  });
+  return safeExitWithCode(exitCode);
 };
 
 const handleWindowClose = async (event?: Event | null) => {
@@ -207,7 +163,6 @@ const onAppReady = async () => {
   logger.info('GPU hardware acceleration', {
     disabled: app.commandLine.hasSwitch('disable-gpu'),
   });
-  ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('Setting up Main Window...');
@@ -219,14 +174,8 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
   const currentRtsFlags = getRtsFlagsSettings(network) || [];
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-  logger.info(
-    `Setting up Cardano Node... with flags: ${JSON.stringify(currentRtsFlags)}`
-  );
-  cardanoNode = setupCardanoNode(launcherConfig, mainWindow, currentRtsFlags);
-  setMithrilBootstrapNodeStateProvider(() => cardanoNode.state);
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-  buildAppMenus(mainWindow, cardanoNode, userLocale, {
+  buildAppMenus(mainWindow,userLocale, {
     isNavigationEnabled: false,
     walletSettingsState: WalletSettingsStateEnum.hidden,
   });
@@ -235,7 +184,7 @@ const onAppReady = async () => {
       new Promise((resolve) => {
         const locale = getLocale(network);
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-        buildAppMenus(mainWindow, cardanoNode, locale, {
+        buildAppMenus(mainWindow,locale, {
           isNavigationEnabled,
           walletSettingsState,
         });
@@ -268,15 +217,7 @@ const onAppReady = async () => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     return handleWindowClose();
   });
-  const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
-  configureMithrilPartialSyncRuntime({
-    stopNode: async () => {
-      await cardanoNode.stop();
-    },
-    restartStartupFlow: async () => {
-      await handleCheckDiskSpace(false);
-    },
-  });
+  const handleCheckDiskSpace = handleDiskSpace(mainWindow);
 
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {

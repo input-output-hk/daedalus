@@ -4,7 +4,6 @@ export type NotificationId =
   | 'copyWalletPublicKey'
   | 'copyICOPublicKey'
   | 'copyAddress'
-  | 'copyStateDirectoryPath'
   | 'downloadAddressPDFSuccess'
   | 'downloadLogsProgress'
   | 'downloadLogsSuccess'

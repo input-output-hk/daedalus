@@ -4,7 +4,7 @@ import { orderBy } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
-import { exportWalletsChannel } from '../ipc/cardano.ipc';
+import { exportWalletsChannel } from '../ipc/exportWalletsChannel';
 import { showOpenDialogChannel } from '../ipc/show-file-dialog-channels';
 import { generateWalletMigrationReportChannel } from '../ipc/generateWalletMigrationReportChannel';
 import { logger } from '../utils/logging';
