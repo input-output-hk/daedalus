@@ -23,9 +23,12 @@ class MithrilProactivePromptContainer extends Component<Props> {
     const { localTip, networkTip } = networkStatus;
     const { certifiedEpoch } = mithrilSync; // early-sync beacon anchor
 
+    const { isConnected } = networkStatus;
+
     const isGated =
       mithrilSync.status === 'idle' &&
       mithrilSync.isSignificantlyBehind && // watchdog probe signal; false until first event received
+      isConnected &&
       !mithrilSync.mithrilAttemptStartedThisSession && // re-pop guard
       !mithrilSync.proactivePromptDismissedThisSession;
 
