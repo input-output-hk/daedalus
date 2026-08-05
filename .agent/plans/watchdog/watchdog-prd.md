@@ -276,7 +276,7 @@ The Mithril implementation was an ~800-line TypeScript state machine (`MithrilPa
 - The watchdog receives a `start_mithril` command on stdin; it decides internally whether Mithril is behind enough to be worthwhile.
 - All Mithril progress events use the same stdout JSON-lines channel as node/wallet events.
 - The marker file (`mithril-partial-sync.lock`) is read and written by Rust only; TypeScript no longer touches it.
-- Cancellation is via `{"cmd":"cancel_mithril"}` on stdin; the watchdog sends SIGTERM to the mithril-client process group.
+- Cancellation is via `{"cmd":"cancel_mithril"}` on stdin; the watchdog sends SIGKILL directly to the mithril-client or snapshot-converter process. Graceful termination is not needed — these processes hold no locks that require orderly release, and the staging directory is cleaned up by the watchdog regardless.
 - Network config (aggregator URL, verification key) is passed in the initial startup config JSON, not fetched at runtime by TypeScript.
 - The `snapshot-converter` binary path is passed in the watchdog startup config alongside `mithril_bin`; it does not emit structured progress and the watchdog emits a flat `converting` phase with no sub-progress.
 - The behind-ness probe runs in Rust via a `mithril-client` JSON query; threshold default is 20 immutable chunk numbers, watchdog-config-only (not user-configurable).
@@ -290,12 +290,13 @@ The Mithril implementation was an ~800-line TypeScript state machine (`MithrilPa
 #### Functional Requirements
 
 - [x] Watchdog accepts `{"cmd":"start_mithril"}` on stdin and begins the Mithril sync lifecycle.
-- [x] Watchdog accepts `{"cmd":"cancel_mithril"}` on stdin and terminates the in-flight mithril-client or snapshot-converter.
+- [x] Watchdog accepts `{"cmd":"cancel_mithril"}` on stdin and SIGKILLs the in-flight mithril-client or snapshot-converter, then cleans up the staging directory.
+- [x] Watchdog accepts `{"cmd":"probe_mithril"}` on stdin at any point while node/wallet are running (or during socket-wait); runs the behind-ness probe asynchronously and emits `mithril_significantly_behind` or `mithril_not_needed` with the result. Probe errors are logged as warnings and no event is emitted.
 - [x] Watchdog performs a behind-ness probe: runs `mithril-client cardano-db snapshot show latest --json`, compares `beacon.immutable_file_number` to highest local immutable chunk index. If not behind by ≥ threshold, emits `mithril_not_needed` and stops.
 - [x] Watchdog runs `mithril-client cardano-db download latest ...` with `--origin-tag DAEDALUS`, `--include-ancillary`, `AGGREGATOR_ENDPOINT` / `GENESIS_VERIFICATION_KEY` / `ANCILLARY_VERIFICATION_KEY` env vars from config.
 - [x] When local chain data exists, watchdog passes `--start <local+1> --end <certified> --allow-override`; when at or ahead of certified tip, passes `--start <certified> --end <certified> --allow-override` (ledger-state-only download); on fresh bootstrap, passes no range flags.
 - [x] Watchdog streams mithril-client stdout/stderr JSON lines and emits `mithril_progress` events, rate-limited to 500 ms.
-- [x] Watchdog emits `mithril_status` phase events for: `preparing`, `downloading`, `verifying`, `converting`, `installing`, `finalizing`.
+- [x] Watchdog emits `mithril_status` phase events for: `preparing`, `downloading`, `verifying`, `converting`, `installing`, `finalizing`, `completed`.
 - [x] The `downloading` status is deferred until the first progress event with `files_total > 0`; prior events use the current tracked status.
 - [x] Watchdog manages staging directory at `<stateDir>/mithril-partial-sync/download/` — creates, validates, and removes on error or cancellation.
 - [x] Watchdog writes and reads marker file at `<stateDir>/Logs/mithril-partial-sync.lock`.
@@ -303,7 +304,7 @@ The Mithril implementation was an ~800-line TypeScript state machine (`MithrilPa
 - [x] For partial sync: watchdog moves new immutable files into existing chain directory and replaces ledger/lsm directories.
 - [x] After install, watchdog emits `mithril_status { phase: "finalizing" }` and starts cardano-node and cardano-wallet via its normal supervisor flow.
 - [x] Watchdog emits `mithril_error` with an error code and message on any failure.
-- [x] TypeScript receives `mithril_status`, `mithril_progress`, `mithril_not_needed`, and `mithril_error` events and forwards them to the renderer via the existing partial sync IPC channel.
+- [x] TypeScript receives `mithril_status`, `mithril_progress`, `mithril_not_needed`, `mithril_significantly_behind`, and `mithril_error` events and forwards them to the renderer via the existing partial sync IPC channel.
 
 #### Non-Functional Requirements
 
@@ -343,10 +344,15 @@ MithrilConfig {
 | Event | Key fields |
 |-------|-----------|
 | `chain_status` | `has_chain: bool` — emitted on startup; if `false`, watchdog waits for `start_node` or `start_mithril` |
-| `mithril_status` | `phase: string` |
+| `mithril_status` | `phase: string` — one of `preparing`, `downloading`, `verifying`, `converting`, `installing`, `finalizing`, `completed` |
 | `mithril_progress` | `files_downloaded`, `files_total`, `bytes_downloaded`, `bytes_total`, `seconds_elapsed`, `step_num`, `total_steps` |
-| `mithril_not_needed` | `local_immutable_count`, `latest_certified_immutable` |
+| `mithril_not_needed` | `local_immutable_count`, `latest_certified_immutable` — probe result when gap < threshold |
+| `mithril_significantly_behind` | `local_immutable_count`, `latest_certified_immutable` — probe result when gap ≥ threshold |
 | `mithril_error` | `code: string`, `message: string` |
+
+The `completed` phase is emitted by the supervisor (not `mithril.rs`) once the wallet's HTTP API is ready after a Mithril-boosted startup, signalling to the UI that the full stack is live.
+
+The `mithril_significantly_behind` and `mithril_not_needed` events are emitted both by the proactive `start_mithril` behind-ness check (where `mithril_not_needed` ends the pipeline) and in response to `probe_mithril` (where neither event triggers any action — the UI decides what to show).
 
 #### IPC Protocol — New Commands (watchdog stdin)
 
@@ -354,14 +360,15 @@ MithrilConfig {
 |---------|--------|
 | `{"cmd":"start_node"}` | Start cardano-node/wallet without Mithril (used after user declines bootstrap) |
 | `{"cmd":"start_mithril", "force": bool}` | Begin Mithril lifecycle; `force: true` skips behind-ness check |
-| `{"cmd":"cancel_mithril"}` | Terminate in-flight mithril-client or snapshot-converter |
+| `{"cmd":"cancel_mithril"}` | SIGKILL the in-flight mithril-client or snapshot-converter and clean up staging |
+| `{"cmd":"probe_mithril"}` | Run behind-ness probe asynchronously; emits `mithril_significantly_behind` or `mithril_not_needed`; accepted during socket-wait and while node/wallet are running |
 
 #### TypeScript Changes
 
 **`source/main/cardano/CardanoWatchdog.ts`**:
 - Extend `WatchdogHandle` with `hasChain: boolean | null`, `startNode()`, `startMithril()`, `cancelMithril()`.
 - Add `onChainStatus?` callback parameter to `startWatchdog()`.
-- Handle `chain_status`, `mithril_status`, `mithril_progress`, `mithril_not_needed`, `mithril_error` events in the readline switch.
+- Handle `chain_status`, `mithril_status`, `mithril_progress`, `mithril_not_needed`, `mithril_significantly_behind`, `mithril_error` events in the readline switch.
 
 **`source/main/ipc/mithrilBootstrapChannel.ts`** (new, for bootstrap flow):
 - Handles the chain_status → decision dialog → start/decline/cancel flow for first-time bootstrap.

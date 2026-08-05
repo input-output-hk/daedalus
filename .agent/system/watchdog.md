@@ -118,9 +118,15 @@ Communication is newline-delimited JSON on stdin/stdout of the watchdog process.
 | JSON | Meaning |
 |------|---------|
 | `{"cmd":"stop"}` | Initiate graceful shutdown |
+| `{"cmd":"start_node"}` | Start cardano-node/wallet without Mithril (after user declines bootstrap) |
+| `{"cmd":"start_mithril", "force": bool}` | Begin Mithril lifecycle; `force: true` skips behind-ness check |
+| `{"cmd":"cancel_mithril"}` | SIGKILL the in-flight mithril-client or snapshot-converter; clean up staging |
+| `{"cmd":"probe_mithril"}` | Run behind-ness probe asynchronously; emits `mithril_significantly_behind` or `mithril_not_needed` |
 | stdin EOF | Treated as `stop` |
 
 `handle.stop()` in `CardanoWatchdog.ts` writes the stop command and then calls `proc.stdin?.end()` to close stdin so the Rust async reader sees EOF and unblocks.
+
+`probe_mithril` is accepted during socket-wait and while node/wallet are running. Probe errors are swallowed as warnings — no event is emitted on failure.
 
 ### Watchdog → Daedalus (stdout)
 
@@ -129,6 +135,7 @@ All events have an `"event"` discriminant field (snake_case):
 | Event | Payload | Meaning |
 |-------|---------|---------|
 | `watchdog_started` | `pid` | Watchdog process is running |
+| `chain_status` | `has_chain: bool` | Emitted on startup; if `false`, watchdog waits for `start_node` or `start_mithril` |
 | `node_started` | `pid`, `started_at_unix_ms` | cardano-node spawned |
 | `node_socket_ready` | `waited_ms` | Node socket appeared (Unix); wallet is about to start |
 | `wallet_started` | `pid`, `started_at_unix_ms` | cardano-wallet spawned |
@@ -140,6 +147,11 @@ All events have an `"event"` discriminant field (snake_case):
 | `node_shutdown_ms` | `ms`, `force_killed` | Time taken from shutdown-pipe close to node exit |
 | `node_exited` | `code`, `signal` | cardano-node exited |
 | `node_block_sync_progress` | `kind`, `progress` | Block replay / ledger validation progress (see below) |
+| `mithril_status` | `phase: string` | Mithril lifecycle phase: `preparing`, `downloading`, `verifying`, `converting`, `installing`, `finalizing`, `completed` |
+| `mithril_progress` | `files_downloaded`, `files_total`, `bytes_downloaded`, `bytes_total`, `seconds_elapsed`, `step_num`, `total_steps` | Download progress; rate-limited to one event per 500 ms |
+| `mithril_not_needed` | `local_immutable_count`, `latest_certified_immutable` | Behind-ness probe result: gap < threshold |
+| `mithril_significantly_behind` | `local_immutable_count`, `latest_certified_immutable` | Behind-ness probe result: gap ≥ threshold |
+| `mithril_error` | `code: string`, `message: string` | Fatal Mithril error |
 | `stopped` | — | Watchdog is done; process is about to exit |
 | `error` | `message` | Fatal error during startup |
 
@@ -259,16 +271,63 @@ The rejection is **deferred to process exit** (not fired immediately on `wallet_
 
 ---
 
+## Mithril sync
+
+The watchdog owns the entire Mithril snapshot sync lifecycle. TypeScript only triggers it and displays events.
+
+### Startup flow
+
+On startup the watchdog emits `chain_status` before doing anything else. If `has_chain` is `false`, the supervisor waits for a `start_node` or `start_mithril` command instead of immediately spawning node/wallet. This gives the UI time to show the bootstrap decision dialog.
+
+### Behind-ness probe
+
+The probe runs `mithril-client cardano-db snapshot show latest --json` and compares the `beacon.immutable_file_number` field against the highest numeric prefix found among files in the chain's `immutable/` directory. The comparison is done in Rust; no TypeScript touches the result.
+
+The probe is triggered two ways:
+1. **Implicitly** by `start_mithril` — if the gap is below `behind_threshold` (default 20 chunks), the pipeline stops and emits `mithril_not_needed`.
+2. **Explicitly** by `probe_mithril` — the probe runs asynchronously; result is `mithril_significantly_behind` (gap ≥ threshold) or `mithril_not_needed` (gap < threshold). Probe errors are logged as warnings and no event is emitted.
+
+### Mithril status phases
+
+| Phase | When |
+|-------|------|
+| `preparing` | Probe passed; staging directory being set up |
+| `downloading` | First `mithril-client` progress event with `files_total > 0` received |
+| `verifying` | Ledger step of the download (no `files_total`) |
+| `converting` | `snapshot-converter` is running |
+| `installing` | Staged files being moved into the chain directory |
+| `finalizing` | Install complete; node/wallet about to start |
+| `completed` | Wallet API is ready after Mithril-boosted startup |
+
+### Cancellation
+
+`cancel_mithril` sends SIGKILL directly to the in-flight `mithril-client` or `snapshot-converter` process. Graceful termination is not needed — these processes hold no locks requiring orderly release, and the watchdog cleans up the staging directory regardless of how they exit.
+
+### Install modes
+
+- **Bootstrap** (no local chain): removes old chain directory, renames staged `db/` to chain path.
+- **Partial sync** (local chain exists, gap ≥ 1): moves new immutable files into existing chain directory; replaces `ledger/` and `lsm/` directories.
+- **Ledger-only** (local chain at or ahead of certified tip): passes `--start <certified> --end <certified>`; only ledger state is downloaded; existing immutables are untouched.
+
+### TypeScript relay
+
+`CardanoWatchdog.ts` handles all Mithril events in its readline switch and calls callbacks on `WatchdogHandle`. `MithrilController.ts` is a pure event relay — it routes callbacks to either the bootstrap IPC channel or the partial sync IPC channel depending on startup mode. All Mithril orchestration (process management, staging, marker file) lives in Rust.
+
+---
+
 ## Key source files
 
 | File | Purpose |
 |------|---------|
 | `watchdog/src/main.rs` | Entry point: reads config from first stdin line, spawns command reader task, calls `supervisor::run()` |
-| `watchdog/src/supervisor.rs` | All supervisor logic: spawn, monitor, restart, shutdown, log rotation, block sync parsing |
+| `watchdog/src/supervisor.rs` | All supervisor logic: spawn, monitor, restart, shutdown, log rotation, block sync parsing, Mithril command routing |
+| `watchdog/src/mithril.rs` | Full Mithril lifecycle: probe, download, install, cancellation |
 | `watchdog/src/protocol.rs` | `Event` and `Command` serde types; `emit()` helper |
-| `watchdog/src/config.rs` | `WatchdogConfig` / `NodeConfig` / `WalletConfig` serde types |
+| `watchdog/src/config.rs` | `WatchdogConfig` / `NodeConfig` / `WalletConfig` / `MithrilConfig` serde types |
 | `source/main/cardano/CardanoWatchdog.ts` | TypeScript wrapper: builds args, spawns watchdog, parses events, exposes `WatchdogHandle` |
 | `source/main/cardano/CardanoNode.ts` | State machine that owns `WatchdogHandle`; surfaces status via IPC |
+| `source/main/mithril/MithrilController.ts` | Pure event relay: routes watchdog Mithril callbacks to renderer IPC channels |
+| `source/main/ipc/mithrilBootstrapChannel.ts` | Bootstrap decision flow IPC channel |
 | `source/common/types/cardano-node.types.ts` | `CardanoStatus` and `BlockSyncProgress` types (shared between main and renderer) |
 | `source/renderer/app/stores/NetworkStatusStore.ts` | Polls `getCachedCardanoStatus` and stores results as MobX observables |
 | `source/renderer/app/components/status/DaedalusDiagnostics.tsx` | Renders watchdog/node/wallet diagnostics rows |
