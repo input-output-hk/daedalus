@@ -37,6 +37,7 @@
       i18n = mkJsCheck "daedalus-i18n" "yarn i18n:manage";
       storybook = mkJsCheck "daedalus-storybook-build" "yarn storybook:build";
       jest = mkJsCheck "daedalus-jest" "yarn test:jest --maxWorkers=4";
+      cucumber-unit = mkJsCheck "daedalus-cucumber-unit" "yarn test:unit";
       shellcheck = pkgs.callPackage ../tests/shellcheck.nix {src = inputs.self;};
     };
   };
