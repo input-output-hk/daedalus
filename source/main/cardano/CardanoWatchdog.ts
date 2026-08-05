@@ -297,6 +297,24 @@ export async function startWatchdog(
   // Write config as first stdin line
   proc.stdin?.write(JSON.stringify(watchdogConfig) + '\n');
 
+  // Last-resort cleanup used when the watchdog itself is about to be
+  // SIGKILLed: a SIGKILLed watchdog cannot stop its children, and macOS has
+  // no kernel-level tether (Linux uses PDEATHSIG, Windows a job object), so
+  // kill the node/wallet PIDs it reported before killing it. Otherwise an
+  // orphaned cardano-wallet keeps the wallet DB open and a second instance
+  // would run against the same database on the next start.
+  const killTrackedChildren = () => {
+    for (const pid of [handle.wpid, handle.pid]) {
+      if (pid > 0) {
+        try {
+          process.kill(pid, 'SIGKILL');
+        } catch {
+          // ESRCH — already gone
+        }
+      }
+    }
+  };
+
   const handle: WatchdogHandle = {
     pid: 0,
     wpid: 0,
@@ -326,6 +344,7 @@ export async function startWatchdog(
         // and the Tokio runtime can finish its shutdown instead of hanging.
         proc.stdin?.end();
         const t = setTimeout(() => {
+          killTrackedChildren();
           proc.kill('SIGKILL');
           resolve();
         }, timeoutSeconds * 1000);
@@ -336,6 +355,7 @@ export async function startWatchdog(
       });
     },
     kill() {
+      killTrackedChildren();
       proc.kill('SIGKILL');
     },
     send(_msg: object) {

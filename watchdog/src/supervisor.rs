@@ -61,6 +61,79 @@ fn emit_error(msg: &str) {
     });
 }
 
+// Ensure a child process cannot outlive the watchdog itself. kill_on_drop
+// only covers an orderly runtime teardown; if the watchdog is SIGKILLed the
+// children would otherwise keep running (an orphaned cardano-wallet holds the
+// wallet DB open, and the next Daedalus start would spawn a second wallet
+// against the same database).
+//
+// Linux: PR_SET_PDEATHSIG delivers SIGKILL to the child when the spawning
+// thread dies. Tokio worker threads live for the lifetime of the runtime, so
+// in practice this fires on watchdog death. The getppid() check closes the
+// race where the watchdog dies between fork and prctl.
+//
+// Windows: children inherit the watchdog's job object, created in
+// init_job_object() with JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE — nothing to do
+// per child.
+//
+// macOS has no PDEATHSIG equivalent; there the TypeScript driver kills the
+// child PIDs it has been told about before force-killing the watchdog.
+pub(crate) fn tether_to_watchdog(cmd: &mut Command) {
+    #[cfg(target_os = "linux")]
+    {
+        let watchdog_pid = std::process::id() as libc::pid_t;
+        unsafe {
+            cmd.pre_exec(move || {
+                if libc::prctl(libc::PR_SET_PDEATHSIG, libc::SIGKILL) != 0 {
+                    return Err(std::io::Error::last_os_error());
+                }
+                if libc::getppid() != watchdog_pid {
+                    return Err(std::io::Error::other("watchdog died before spawn"));
+                }
+                Ok(())
+            });
+        }
+    }
+    #[cfg(not(target_os = "linux"))]
+    let _ = cmd;
+}
+
+// Put the watchdog into a kill-on-close job object so every child it spawns
+// dies with it, even on TerminateProcess. Called once at startup; the job
+// handle is intentionally leaked — the OS closes it when the watchdog dies,
+// which is exactly the trigger we want.
+#[cfg(windows)]
+pub(crate) fn init_job_object() {
+    use windows_sys::Win32::System::JobObjects::{
+        AssignProcessToJobObject, CreateJobObjectW, JOBOBJECT_EXTENDED_LIMIT_INFORMATION,
+        JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE, JobObjectExtendedLimitInformation,
+        SetInformationJobObject,
+    };
+    use windows_sys::Win32::System::Threading::GetCurrentProcess;
+    unsafe {
+        let job = CreateJobObjectW(std::ptr::null(), std::ptr::null());
+        if job.is_null() {
+            warn!("CreateJobObjectW failed; children may outlive the watchdog");
+            return;
+        }
+        let mut info: JOBOBJECT_EXTENDED_LIMIT_INFORMATION = std::mem::zeroed();
+        info.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+        if SetInformationJobObject(
+            job,
+            JobObjectExtendedLimitInformation,
+            &info as *const _ as *const _,
+            std::mem::size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32,
+        ) == 0
+        {
+            warn!("SetInformationJobObject failed; children may outlive the watchdog");
+            return;
+        }
+        if AssignProcessToJobObject(job, GetCurrentProcess()) == 0 {
+            warn!("AssignProcessToJobObject failed; children may outlive the watchdog");
+        }
+    }
+}
+
 // Sends a graceful-stop signal to a running child.
 // Unix: SIGTERM. Windows: CTRL_BREAK_EVENT (requires CREATE_NEW_PROCESS_GROUP at spawn time).
 fn graceful_stop(child: &Child) {
@@ -602,6 +675,7 @@ async fn run_node_wallet(
     }
 
     shutdown_pipe.setup_node_cmd(&mut node_cmd);
+    tether_to_watchdog(&mut node_cmd);
 
     let node_started_at = unix_ms();
     let mut node_proc = node_cmd.spawn()?;
@@ -752,6 +826,8 @@ async fn run_node_wallet(
             const CREATE_NEW_PROCESS_GROUP: u32 = 0x0000_0200;
             wallet_cmd.creation_flags(CREATE_NEW_PROCESS_GROUP);
         }
+
+        tether_to_watchdog(&mut wallet_cmd);
 
         let wallet_started_at = unix_ms();
         let mut wallet = match wallet_cmd.spawn() {

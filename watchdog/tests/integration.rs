@@ -533,6 +533,37 @@ fn wait_for_exit(child: &mut Child, deadline: Duration) {
     }
 }
 
+/// A SIGKILLed watchdog cannot run any shutdown path; the PDEATHSIG tether
+/// set at spawn time must reap the wallet (and node) anyway.
+#[cfg(target_os = "linux")]
+#[test]
+fn sigkill_watchdog_kills_children() {
+    let dir = TempDir::new("sigkill");
+    dir.populate_chain();
+    let (cfg, wallet_port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    assert!(std::net::TcpStream::connect(("127.0.0.1", wallet_port)).is_ok());
+
+    child.kill().unwrap(); // SIGKILL — no Drop handlers, no Stop path
+    let _ = child.wait();
+    drop(stdin);
+
+    // PDEATHSIG delivery is immediate; poll briefly to absorb scheduler lag.
+    let start = std::time::Instant::now();
+    loop {
+        if std::net::TcpStream::connect(("127.0.0.1", wallet_port)).is_err() {
+            break;
+        }
+        assert!(
+            start.elapsed() < Duration::from_secs(5),
+            "wallet survived watchdog SIGKILL"
+        );
+        std::thread::sleep(Duration::from_millis(50));
+    }
+}
+
 /// A closed stdout (crashed parent) must not abort the watchdog: the EPIPE'd
 /// event is dropped, and the stdin EOF that follows still runs the orderly
 /// shutdown, so the wallet is stopped rather than orphaned.
