@@ -262,7 +262,7 @@ function VotingPowerDelegation({
             />
           )}
 
-          {selectedDRepId ? (
+          {selectedDRepId && (
             <div className={styles.selectedDRepSection}>
               <p className={styles.selectedDRepHeading}>
                 {intl.formatMessage(messages.selectedDRepHeading)}
@@ -284,14 +284,15 @@ function VotingPowerDelegation({
                 />
               </div>
             </div>
-          ) : selectedWallet ? (
+          )}
+          {!selectedDRepId && selectedWallet && (
             <div className={styles.browseDRepsPrompt}>
               <Button
                 label={intl.formatMessage(messages.browseDRepsButton)}
                 onClick={browseDReps}
               />
             </div>
-          ) : null}
+          )}
 
           {selectedWallet && (
             <>
