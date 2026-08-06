@@ -121,15 +121,25 @@ pub enum Event {
 
 pub fn emit(event: &Event) {
     use std::io::{ErrorKind, Write};
+    use std::sync::atomic::{AtomicBool, Ordering};
+
+    // Sticky flag set once the parent has closed our stdout. From then on
+    // events are silently dropped. We must NOT process::exit() here: that
+    // would skip Drop handlers (kill_on_drop on node/wallet/mithril children)
+    // and orphan them. A dead parent also closes our stdin, and the stdin
+    // reader in main.rs turns EOF into Command::Stop — the orderly path that
+    // stops the wallet and node before the runtime is torn down.
+    static STDOUT_GONE: AtomicBool = AtomicBool::new(false);
+    if STDOUT_GONE.load(Ordering::Relaxed) {
+        return;
+    }
     if let Ok(line) = serde_json::to_string(event) {
         let stdout = std::io::stdout();
         let mut lock = stdout.lock();
         let write_err = writeln!(lock, "{line}").and_then(|_| lock.flush()).err();
         if let Some(e) = write_err {
             if e.kind() == ErrorKind::BrokenPipe {
-                // Parent process closed our stdout — exit cleanly rather than
-                // running indefinitely as an orphan holding child processes open.
-                std::process::exit(0);
+                STDOUT_GONE.store(true, Ordering::Relaxed);
             }
         }
     }

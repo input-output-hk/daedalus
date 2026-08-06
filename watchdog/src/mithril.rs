@@ -10,6 +10,7 @@ use tracing::{info, warn};
 
 use crate::config::MithrilConfig;
 use crate::protocol::{Command as Cmd, Event, emit};
+use crate::supervisor::tether_to_watchdog;
 
 const PROGRESS_THROTTLE_MS: u128 = 500;
 // Duration the cutover gate holds open for an in-flight cancel after the
@@ -90,19 +91,19 @@ async fn highest_local_immutable(chain_path: &str) -> Option<u64> {
 }
 
 pub(crate) async fn probe(cfg: &MithrilConfig) -> Result<(Option<u64>, u64)> {
-    let output = Command::new(&cfg.mithril_bin)
-        .args([
-            "--origin-tag",
-            "DAEDALUS",
-            "--json",
-            "cardano-db",
-            "snapshot",
-            "show",
-            "latest",
-        ])
-        .env("AGGREGATOR_ENDPOINT", &cfg.aggregator_url)
-        .output()
-        .await?;
+    let mut cmd = Command::new(&cfg.mithril_bin);
+    cmd.args([
+        "--origin-tag",
+        "DAEDALUS",
+        "--json",
+        "cardano-db",
+        "snapshot",
+        "show",
+        "latest",
+    ])
+    .env("AGGREGATOR_ENDPOINT", &cfg.aggregator_url);
+    tether_to_watchdog(&mut cmd);
+    let output = cmd.output().await?;
     if !output.status.success() {
         anyhow::bail!(
             "mithril-client snapshot show failed: {}",
@@ -164,6 +165,7 @@ async fn run_download(
     cmd.stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
         .kill_on_drop(true);
+    tether_to_watchdog(&mut cmd);
 
     let mut proc = match cmd.spawn() {
         Ok(p) => p,
@@ -437,7 +439,8 @@ async fn run_converter(
 
     let _ = tokio::fs::remove_dir_all(&output_lsm_database).await;
 
-    let mut proc = match Command::new(&cfg.snapshot_converter_bin)
+    let mut converter_cmd = Command::new(&cfg.snapshot_converter_bin);
+    converter_cmd
         .arg("--input-mem")
         .arg(&temp_input)
         .arg("--output-lsm-snapshot")
@@ -447,9 +450,9 @@ async fn run_converter(
         .arg("--config")
         .arg(&cfg.converter_config)
         .stderr(std::process::Stdio::null())
-        .kill_on_drop(true)
-        .spawn()
-    {
+        .kill_on_drop(true);
+    tether_to_watchdog(&mut converter_cmd);
+    let mut proc = match converter_cmd.spawn() {
         Ok(p) => p,
         Err(e) => return ProcResult::Failed(e.to_string()),
     };

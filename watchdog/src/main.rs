@@ -20,6 +20,10 @@ async fn main() -> Result<()> {
         .with_target(false)
         .init();
 
+    // Kill-on-close job object: children must not survive watchdog death.
+    #[cfg(windows)]
+    supervisor::init_job_object();
+
     let stdin = tokio::io::stdin();
     let mut lines = BufReader::new(stdin.take(MAX_STDIN_BYTES)).lines();
 
