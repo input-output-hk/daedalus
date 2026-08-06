@@ -494,6 +494,19 @@ pub async fn run_pipeline(
     force: bool,
     wipe_chain: bool,
 ) -> PipelineResult {
+    // The pipeline downloads with --include-ancillary (the converter needs the
+    // ledger state it brings), and mithril-client refuses that flag without an
+    // ANCILLARY_VERIFICATION_KEY — or, on older versions, skips signature
+    // verification of the ancillary data. Fail fast, before any chain wipe,
+    // instead of failing mid-download or downloading unverified data.
+    if cfg.ancillary_vkey.is_none() {
+        emit(&Event::MithrilError {
+            code: "ANCILLARY_VKEY_MISSING".to_string(),
+            message: "Mithril is configured without an ancillary verification key".to_string(),
+        });
+        return PipelineResult::Cancelled;
+    }
+
     // If wipe_chain is requested, delete the existing chain directory so the
     // download is treated as a full bootstrap rather than an incremental sync.
     if wipe_chain {

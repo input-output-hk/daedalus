@@ -225,6 +225,7 @@ impl<'a> Cfg<'a> {
                 "converter_config": "/dev/null",
                 "aggregator_url": "http://localhost:0",
                 "genesis_vkey": "test",
+                "ancillary_vkey": "test",
                 "state_dir": state,
                 "chain_path": self.dir.path().join("chain").to_str().unwrap(),
                 "behind_threshold": 20
@@ -752,6 +753,41 @@ fn node_crash_after_wallet_ready() {
     .unwrap();
 
     expect(&rx, "node_exited");
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Mithril configured without an ancillary verification key → the pipeline
+/// refuses to start (before any chain wipe) instead of downloading unverified
+/// ancillary data or failing mid-download.
+#[test]
+fn mithril_without_ancillary_key_fails_fast() {
+    let dir = TempDir::new("no-ancillary-key");
+    dir.populate_chain();
+    let (mut cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    cfg["mithril"]
+        .as_object_mut()
+        .unwrap()
+        .remove("ancillary_vkey");
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "force": true, "wipe_chain": true}),
+    );
+
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "ANCILLARY_VKEY_MISSING");
+    assert!(
+        dir.path().join("chain").exists(),
+        "guard must fire before the chain wipe"
+    );
+
+    // Pipeline returned Cancelled → node/wallet restart normally.
+    expect(&rx, "wallet_ready");
+    stop(&mut stdin);
     expect(&rx, "stopped");
     drop(stdin);
     let _ = child.wait();
