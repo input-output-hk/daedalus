@@ -54,15 +54,15 @@
     "cardano-wallet": {
       "flake": false,
       "locked": {
-        "lastModified": 1785872636,
-        "narHash": "sha256-qZO6JtJcIf8CiAiJnmANAabmWQ3O8RXBT5fETlqXhtM=",
-        "owner": "disassembler",
+        "lastModified": 1785929578,
+        "narHash": "sha256-fLoGC5KSmm0WmpFWrKHginSM6/sRsLD7q0pyDaGBSTk=",
+        "owner": "se7en-labs-inc",
         "repo": "cardano-wallet",
-        "rev": "0a3780fc864a31896a308ab0ac2dd455606b53ac",
+        "rev": "b929934a5498074998a77d70f4b872123acb2d5a",
         "type": "github"
       },
       "original": {
-        "owner": "disassembler",
+        "owner": "se7en-labs-inc",
         "ref": "010-drep-list-endpoint",
         "repo": "cardano-wallet",
         "type": "github"
