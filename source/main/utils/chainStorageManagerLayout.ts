@@ -276,7 +276,23 @@ export async function migrateLegacyCustomLayout(
     });
     journal.state = 'rollback';
     journal.updatedAt = toIsoString();
-    await ctx._writeMigrationJournal(journal);
+    // Recording the rollback state is best effort. Whatever broke the migration
+    // may equally break this write — a full disk is the obvious case, since the
+    // migration moves the whole chain directory — and previously that second
+    // failure propagated before the rollback ran, leaving chain data half moved
+    // and replacing the original error with the journal one. The rollback is
+    // what protects the user's data, so it must not be gated behind bookkeeping.
+    try {
+      await ctx._writeMigrationJournal(journal);
+    } catch (journalError) {
+      logger.error(
+        'ChainStorageManager: could not record rollback state, rolling back anyway',
+        {
+          journalError,
+          migrationJournalPath: ctx._migrationJournalPath,
+        }
+      );
+    }
     await ctx._rollbackMigrationJournal(journal);
     throw error;
   }
