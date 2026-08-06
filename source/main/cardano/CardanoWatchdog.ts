@@ -114,6 +114,14 @@ type WatchdogEvent =
   | { event: 'mithril_error'; code: string; message: string }
   | { event: 'chain_status'; has_chain: boolean };
 
+// Windows named pipes are machine-global, so the name must be scoped by
+// cluster: with a fixed name, concurrently running Daedalus installs
+// (e.g. Mainnet and Preprod) would collide on pipe creation, or a wallet
+// would connect to the other install's node on the wrong network.
+function windowsPipeName(cluster: string): string {
+  return `\\\\.\\pipe\\daedalus-${cluster}-cardano-node.socket`;
+}
+
 function getFreePort(): Promise<number> {
   return new Promise((resolve, reject) => {
     const srv = net.createServer();
@@ -134,7 +142,7 @@ function buildNodeArgs(opts: WatchdogOptions, nodePort: number): string[] {
     'run',
     '--socket-path',
     process.platform === 'win32'
-      ? '\\\\.\\pipe\\cardano-node.socket'
+      ? windowsPipeName(opts.cluster)
       : 'cardano-node.socket',
     '--topology',
     topologyFile,
@@ -168,7 +176,7 @@ function buildWalletArgs(opts: WatchdogOptions, walletPort: number): string[] {
   } = opts;
   const socketPath =
     process.platform === 'win32'
-      ? '\\\\.\\pipe\\cardano-node.socket'
+      ? windowsPipeName(opts.cluster)
       : path.join(stateDir, 'cardano-node.socket');
   const walletDb = path.join(stateDir, 'wallets');
   const syncToleranceSecs = parseInt(syncTolerance.replace('s', ''), 10);
@@ -255,7 +263,7 @@ export async function startWatchdog(
       state_dir: opts.stateDir,
       socket_path:
         process.platform === 'win32'
-          ? '\\\\.\\pipe\\cardano-node.socket'
+          ? windowsPipeName(opts.cluster)
           : path.join(opts.stateDir, 'cardano-node.socket'),
     },
     wallet: {
