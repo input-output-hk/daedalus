@@ -4,7 +4,7 @@ import { intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SVGInline from 'react-svg-inline';
-import type { ChainStorageValidation } from '../../../../common/types/mithril-bootstrap.types';
+import type { ChainStorageValidation } from '../../../../common/types/watchdog.types';
 import type { FileDialogRequestParams } from '../../../../common/types/file-dialog.types';
 import type { Intl } from '../../types/i18nTypes';
 import penIcon from '../../assets/images/pen.inline.svg';
@@ -21,7 +21,7 @@ import {
   createDefaultValidation,
   getManagedChainDisplayPath,
 } from './chainStorageUtils';
-import { MITHRIL_CHAIN_STORAGE_HEADING_ID } from '../loading/mithril-bootstrap/accessibilityIds';
+import { MITHRIL_CHAIN_STORAGE_HEADING_ID } from '../loading/mithril/accessibilityIds';
 
 interface Props {
   customChainPath?: string | null;

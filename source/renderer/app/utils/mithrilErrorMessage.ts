@@ -2,7 +2,7 @@ import type { Intl } from '../types/i18nTypes';
 import {
   partialSyncStartFailureMessage,
   resolvePartialSyncErrorCopyByCode,
-} from '../components/loading/mithril-bootstrap/partialSyncErrorCopy';
+} from '../components/loading/mithril/partialSyncErrorCopy';
 
 // Single extraction point for messages carried by unknown thrown values, so
 // the Mithril start-failure surfaces cannot drift apart again. Returns null

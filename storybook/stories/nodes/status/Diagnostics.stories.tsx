@@ -63,13 +63,6 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
     slot: 46789,
     absoluteSlotNumber: 15134567,
   },
-  isMithrilPartialSyncWorking: false,
-  isMithrilPartialSyncEnabled: true,
-  isMithrilPartialSyncSignificantlyBehind: true,
-  isMithrilPartialSyncProbeFailed: false,
-  isMithrilPartialSyncAtOrPastSnapshot: false,
-  isMithrilBootstrapActive: false,
-  onStartMithrilPartialSync: action('onStartMithrilPartialSync'),
   onOpenStateDirectory: action('onOpenStateDirectory'),
   onOpenExternalLink: action('onOpenExternalLink'),
   onRestartNode: {
@@ -134,14 +127,10 @@ storiesOf('Nodes / Diagnostic', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Partial Sync CTA Ready', () => <DaedalusDiagnostics {...baseProps} />)
   .add('Partial Sync CTA Blocked', () => (
-    <DaedalusDiagnostics {...baseProps} isMithrilBootstrapActive />
+    <DaedalusDiagnostics {...baseProps} />
   ))
   .add('Partial Sync At Or Past Snapshot', () => (
-    <DaedalusDiagnostics
-      {...baseProps}
-      isMithrilPartialSyncSignificantlyBehind={false}
-      isMithrilPartialSyncAtOrPastSnapshot
-    />
+    <DaedalusDiagnostics {...baseProps} />
   ))
   .add('Partial Sync Confirmation', () => (
     <AutoOpenedPartialSyncConfirmation />

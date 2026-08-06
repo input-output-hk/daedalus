@@ -2,12 +2,12 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
-import type { MithrilProgressItem } from '../../../../source/common/types/mithril-bootstrap.types';
+import type { MithrilProgressItem } from '../../../../source/common/types/watchdog.types';
 import type {
   MithrilPartialSyncError,
   MithrilPartialSyncStatus,
-} from '../../../../source/common/types/mithril-partial-sync.types';
-import MithrilSyncOverlay from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilSyncOverlay';
+} from '../../../../source/common/types/watchdog.types';
+import MithrilSyncOverlay from '../../../../source/renderer/app/components/loading/mithril/MithrilSyncOverlay';
 import StoryDecorator from '../../_support/StoryDecorator';
 import LoadingOverlayStoryFrame from '../_support/LoadingOverlayStoryFrame';
 import {

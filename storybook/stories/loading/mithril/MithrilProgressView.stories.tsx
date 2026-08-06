@@ -1,8 +1,8 @@
 import React from 'react';
 import { withKnobs } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
-import type { MithrilBootstrapStatus } from '../../../../source/common/types/mithril-bootstrap.types';
-import MithrilProgressView from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilProgressView';
+import type { MithrilBootstrapStatus } from '../../../../source/common/types/watchdog.types';
+import MithrilProgressView from '../../../../source/renderer/app/components/loading/mithril/MithrilProgressView';
 import StoryDecorator from '../../_support/StoryDecorator';
 import LoadingOverlayStoryFrame from '../_support/LoadingOverlayStoryFrame';
 import { loadingNumberKnob, loadingRadiosKnob } from '../_support/loadingKnobs';

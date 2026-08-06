@@ -6,12 +6,10 @@ import ReportIssue from './ReportIssue';
 import LogosDisplay from './LogosDisplay';
 import SyncingConnectingBackground from './SyncingConnectingBackground';
 import SyncingConnectingStatus from './SyncingConnectingStatus';
-import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
+import { CardanoNodeStates } from '../../../../../common/types/watchdog.types';
 import styles from './SyncingConnecting.scss';
-import type {
-  CardanoNodeState,
-  BlockSyncType,
-} from '../../../../../common/types/cardano-node.types';
+import type { BlockSyncType } from '../../../../../common/types/cardano-node.types';
+import type { CardanoNodeState } from '../../../../../common/types/watchdog.types';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../../config/timingConfig';
 import NewsFeedIcon from '../../widgets/NewsFeedIcon';
 

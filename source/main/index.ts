@@ -1,5 +1,6 @@
 import os from 'os';
 import path from 'path';
+import net from 'net';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import type { Event } from 'electron';
 import EventEmitter from 'events';
@@ -21,7 +22,9 @@ import {
   pubLogsFolderPath,
   RTS_FLAGS,
   stateDirectoryPath,
+  launcherConfig,
 } from './config';
+import { backendLifecycle } from './BackendLifecycle';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
@@ -112,6 +115,81 @@ const handleWindowClose = async (event?: Event | null) => {
   event?.preventDefault();
   await safeExit();
 };
+
+function getFreePort(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const srv = net.createServer();
+    srv.listen(0, '127.0.0.1', () => {
+      const port = (srv.address() as net.AddressInfo).port;
+      srv.close(() => resolve(port));
+    });
+    srv.on('error', reject);
+  });
+}
+
+function buildNodeArgs(
+  stateDir: string,
+  nodePort: number,
+  nodeConfig: import('./config').NodeConfig
+): string[] {
+  const { configFile, topologyFile } = nodeConfig.network;
+  const args = [
+    'run',
+    '--socket-path',
+    process.platform === 'win32'
+      ? '\\\\.\\pipe\\cardano-node.socket'
+      : 'cardano-node.socket',
+    '--topology', topologyFile,
+    '--database-path', 'chain',
+    '--port', String(nodePort),
+    '--config', configFile,
+  ];
+  if (nodeConfig.signingKey) args.push('--signing-key', nodeConfig.signingKey);
+  if (nodeConfig.delegationCertificate) args.push('--delegation-certificate', nodeConfig.delegationCertificate);
+  args.push('+RTS', '-N', '-RTS');
+  return args;
+}
+
+function buildWalletArgs(
+  stateDir: string,
+  walletPort: number,
+  tlsPath: string,
+  syncTolerance: string,
+  isStaging: boolean,
+  metadataUrl: string | undefined,
+  nodeConfig: import('./config').NodeConfig
+): string[] {
+  const socketPath =
+    process.platform === 'win32'
+      ? '\\\\.\\pipe\\cardano-node.socket'
+      : path.join(stateDir, 'cardano-node.socket');
+  const walletDb = path.join(stateDir, 'wallets');
+  const syncToleranceSecs = parseInt(syncTolerance.replace('s', ''), 10);
+  const configDir = path.dirname(nodeConfig.network.configFile);
+
+  const args = [
+    'serve', '+RTS', '-N', '-RTS',
+    '--port', String(walletPort),
+    '--database', walletDb,
+    '--tls-ca-cert', path.join(tlsPath, 'server/ca.crt'),
+    '--tls-sv-cert', path.join(tlsPath, 'server/server.crt'),
+    '--tls-sv-key', path.join(tlsPath, 'server/server.key'),
+    '--node-socket', socketPath,
+  ];
+
+  if (isStaging) {
+    args.push('--mainnet');
+  } else {
+    args.push('--testnet', path.join(configDir, 'genesis-byron.json'));
+  }
+
+  if (!Number.isNaN(syncToleranceSecs)) {
+    args.push('--sync-tolerance', `${syncToleranceSecs}s`);
+  }
+
+  args.push('--token-metadata-server', metadataUrl ?? 'https://tokens.cardano.org');
+  return args;
+}
 
 const onAppReady = async () => {
   setupLogging();
@@ -229,6 +307,50 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
+  // Start watchdog
+  backendLifecycle.setWindowProvider(() => mainWindow);
+  const {
+    watchdogBin, nodeBin, walletBin, logsPrefix,
+    nodeConfig, tlsPath, syncTolerance, isStaging, metadataUrl,
+    mithrilBin, snapshotConverterBin, mithrilConverterConfig,
+    mithrilAggregatorUrl, mithrilGenesisVkey, mithrilAncillaryVkey,
+  } = launcherConfig;
+  const socketPath = process.platform === 'win32'
+    ? '\\\\.\\pipe\\cardano-node.socket'
+    : path.join(stateDirectoryPath, 'cardano-node.socket');
+  const defaultChainPath = path.join(stateDirectoryPath, 'chain');
+  // Load persisted custom chain path from electron-store
+  const customChainPath = (requestElectronStore({
+    type: 'get',
+    key: 'CUSTOM-CHAIN-PATH',
+  }) as string | undefined) ?? null;
+  const effectiveChainPath = customChainPath
+    ? path.join(customChainPath, 'chain')
+    : defaultChainPath;
+  const [nodePort, walletPort] = await Promise.all([getFreePort(), getFreePort()]);
+  const nodeArgs = buildNodeArgs(stateDirectoryPath, nodePort, nodeConfig);
+  const walletArgs = buildWalletArgs(stateDirectoryPath, walletPort, tlsPath, syncTolerance, isStaging, metadataUrl, nodeConfig);
+  backendLifecycle.setTlsPath(tlsPath);
+  backendLifecycle.setChainPaths(defaultChainPath, customChainPath);
+  backendLifecycle.start(watchdogBin, {
+    node: { exe: nodeBin, args: nodeArgs, state_dir: stateDirectoryPath, socket_path: socketPath },
+    wallet: { exe: walletBin, args: walletArgs, state_dir: stateDirectoryPath, api_port: walletPort },
+    node_log_file: path.join(logsPrefix, 'node.log'),
+    wallet_log_file: path.join(logsPrefix, 'cardano-wallet.log'),
+    ...(mithrilBin && mithrilAggregatorUrl && mithrilGenesisVkey ? {
+      mithril: {
+        mithril_bin: mithrilBin,
+        snapshot_converter_bin: snapshotConverterBin ?? '',
+        converter_config: mithrilConverterConfig ?? '',
+        aggregator_url: mithrilAggregatorUrl,
+        genesis_vkey: mithrilGenesisVkey,
+        ancillary_vkey: mithrilAncillaryVkey,
+        state_dir: stateDirectoryPath,
+        chain_path: effectiveChainPath,
+      },
+    } : {}),
+  });
+
   mainWindow.on('close', handleWindowClose);
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
@@ -250,6 +372,7 @@ const onAppReady = async () => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
     event.preventDefault(); // prevent Daedalus from quitting immediately
+    await backendLifecycle.stop();
 
     if (isSelfnode) {
       if (keepLocalClusterRunning || isTest) {

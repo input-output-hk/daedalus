@@ -1,7 +1,7 @@
 import React from 'react';
 import { withKnobs } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
-import MithrilErrorView from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilErrorView';
+import MithrilErrorView from '../../../../source/renderer/app/components/loading/mithril/MithrilErrorView';
 import StoryDecorator from '../../_support/StoryDecorator';
 import LoadingOverlayStoryFrame from '../_support/LoadingOverlayStoryFrame';
 import { loadingSelectKnob, loadingTextKnob } from '../_support/loadingKnobs';

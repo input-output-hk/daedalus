@@ -4,7 +4,8 @@ import SVGInline from 'react-svg-inline';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import styles from './StatusIcons.scss';
-import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
+import { CardanoNodeStates } from '../../../../../common/types/watchdog.types';
+import type { CardanoNodeState } from '../../../../../common/types/watchdog.types';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/node-st... Remove this comment to see the full error message
 import nodeStateIcon from '../../../assets/images/node-state-icon.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/is-node... Remove this comment to see the full error message
@@ -14,7 +15,6 @@ import isNodeRespondingIcon from '../../../assets/images/is-node-responding-icon
 import isNodeTimeCorrectIcon from '../../../assets/images/is-node-time-correct-icon.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/is-node... Remove this comment to see the full error message
 import isNodeSyncingIcon from '../../../assets/images/is-node-syncing-icon.inline.svg';
-import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
 
 const messages = defineMessages({
   nodeIsRunning: {

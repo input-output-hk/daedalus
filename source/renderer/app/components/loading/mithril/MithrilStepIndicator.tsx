@@ -8,14 +8,14 @@ import closeCrossIcon from '../../../assets/images/close-cross.inline.svg';
 import type {
   MithrilBootstrapStatus,
   MithrilProgressItem,
-} from '../../../../../common/types/mithril-bootstrap.types';
-import type { MithrilPartialSyncStatus } from '../../../../../common/types/mithril-partial-sync.types';
-import { isMithrilPartialSyncRestoreCompleteStatus } from '../../../../../common/types/mithril-partial-sync.types';
-import { isMithrilBootstrapRestoreCompleteStatus as isRestoreCompleteStatus } from '../../../../../common/types/mithril-bootstrap.types';
+  MithrilPartialSyncStatus,
+  MithrilSyncStatus,
+} from '../../../../../common/types/watchdog.types';
 import {
+  isMithrilPartialSyncRestoreCompleteStatus,
+  isMithrilBootstrapRestoreCompleteStatus as isRestoreCompleteStatus,
   isMithrilSyncRestoreCompleteStatus,
-  type MithrilSyncStatus,
-} from '../../../../../common/types/mithril-sync.types';
+} from '../../../../../common/types/watchdog.types';
 import InlineProgressBar from './InlineProgressBar';
 import messages from './MithrilBootstrap.messages';
 import { formatTransferSize } from './snapshotFormatting';

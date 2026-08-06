@@ -40,19 +40,45 @@ if (!isStartedByLauncher) {
   }
 }
 
+export type NodeConfig = {
+  configurationDir: string;
+  delegationCertificate?: string;
+  kind: 'byron' | 'shelley';
+  network: {
+    configFile: string;
+    genesisFile: string;
+    topologyFile: string;
+  };
+  signingKey?: string;
+};
+
 /**
  * The shape of the config params, usually provided to the cardano-node launcher
  */
 export type LauncherConfig = {
   stateDir: string;
+  nodeConfig: NodeConfig;
+  tlsPath: string;
   logsPrefix: string;
   cluster: string;
+  syncTolerance: string;
   legacyStateDir: string;
+  legacySecretKey: string;
+  legacyWalletDB: string;
   isFlight: boolean;
   isStaging: boolean;
   smashUrl?: string;
+  metadataUrl?: string;
   updateRunnerBin: string;
   watchdogBin: string;
+  nodeBin: string;
+  walletBin: string;
+  mithrilBin?: string;
+  snapshotConverterBin?: string;
+  mithrilConverterConfig?: string;
+  mithrilAggregatorUrl?: string;
+  mithrilGenesisVkey?: string;
+  mithrilAncillaryVkey?: string;
 };
 type WindowOptionsType = {
   show: boolean;

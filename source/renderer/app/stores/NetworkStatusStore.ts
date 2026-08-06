@@ -324,6 +324,9 @@ export default class NetworkStatusStore extends Store {
   };
   @action
   _updateNetworkStatus = async () => {
+    // Wallet is not yet ready — skip to avoid flooding the console with errors.
+    if (this.stores.backend.walletPort === null) return;
+
     // Record connection status before running network status call
     const wasConnected = this.isConnected;
 

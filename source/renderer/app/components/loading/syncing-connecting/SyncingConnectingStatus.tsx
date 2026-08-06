@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import {
   BlockSyncType,
-  CardanoNodeState,
-  CardanoNodeStates,
   NodeStartupPhase,
 } from '../../../../../common/types/cardano-node.types';
+import type { CardanoNodeState } from '../../../../../common/types/watchdog.types';
+import { CardanoNodeStates } from '../../../../../common/types/watchdog.types';
 import styles from './SyncingConnectingStatus.scss';
 import SyncingProgress from './SyncingProgress';
 
