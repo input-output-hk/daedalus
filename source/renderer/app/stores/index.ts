@@ -5,6 +5,7 @@ import { RouterStore } from 'mobx-react-router';
 import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
+import BackendStore from './BackendStore';
 import AppUpdateStore from './AppUpdateStore';
 import AssetsStore from './AssetsStore';
 import CurrencyStore from './CurrencyStore';
@@ -31,6 +32,7 @@ import { ActionsMap } from '../actions';
 export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
+  backend: BackendStore,
   appUpdate: AppUpdateStore,
   assets: AssetsStore,
   currency: CurrencyStore,
@@ -54,6 +56,7 @@ export const storeClasses = {
 export type StoresMap = {
   addresses: AddressesStore;
   app: AppStore;
+  backend: BackendStore;
   appUpdate: AppUpdateStore;
   currency: CurrencyStore;
   assets: AssetsStore;
@@ -105,6 +108,7 @@ export const setUpStores = action(
     stores = observable({
       addresses: createStoreInstanceOf(AddressesStore),
       app: createStoreInstanceOf(AppStore),
+      backend: createStoreInstanceOf(BackendStore),
       assets: createStoreInstanceOf(AssetsStore),
       currency: createStoreInstanceOf(CurrencyStore),
       appUpdate: createStoreInstanceOf(AppUpdateStore),

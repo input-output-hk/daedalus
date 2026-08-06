@@ -2,7 +2,7 @@ import React from 'react';
 import { intlShape } from 'react-intl';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
-import type { MithrilSnapshotItem } from '../../../../../common/types/mithril-bootstrap.types';
+import type { MithrilSnapshotItem } from '../../../../../common/types/watchdog.types';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';
 import { MITHRIL_SNAPSHOT_SELECTOR_HEADING_ID } from './accessibilityIds';

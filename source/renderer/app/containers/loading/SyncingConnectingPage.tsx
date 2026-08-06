@@ -15,10 +15,9 @@ class LoadingSyncingConnectingPage extends Component<Props> {
   };
 
   render() {
-    const { newsFeed, appUpdate, networkStatus, profile, app } =
+    const { newsFeed, appUpdate, networkStatus, profile, app, backend } =
       this.props.stores;
     const {
-      cardanoNodeState,
       isNodeResponding,
       isNodeSyncing,
       isNodeTimeCorrect,
@@ -27,14 +26,20 @@ class LoadingSyncingConnectingPage extends Component<Props> {
       isSyncProgressStalling,
       hasBeenConnected,
       getNetworkClockRequest,
-      isNodeStopping,
-      isNodeStopped,
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
-      isVerifyingBlockchain,
+    } = networkStatus;
+    const {
+      loadingPhase,
       nodeStartupPhase,
       blockSyncProgress,
-    } = networkStatus;
+    } = backend;
+    // Map loadingPhase to the cardanoNodeState shape the component expects
+    const cardanoNodeState = loadingPhase;
+    const isNodeStopping = false;
+    const isNodeStopped = false;
+    // Node is verifying blockchain when it has started but wallet isn't ready yet
+    const isVerifyingBlockchain = loadingPhase === 'node-starting' && nodeStartupPhase !== null;
     const { displayAppUpdateNewsItem } = appUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = profile;
     const { toggleNewsFeed } = this.props.actions.app;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { intlShape } from 'react-intl';
-import type { MithrilSnapshotItem } from '../../../../../common/types/mithril-bootstrap.types';
+import type { MithrilSnapshotItem } from '../../../../../common/types/watchdog.types';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';
 import { MITHRIL_SNAPSHOT_DETAILS_HEADING_ID } from './accessibilityIds';

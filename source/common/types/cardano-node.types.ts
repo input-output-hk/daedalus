@@ -75,3 +75,7 @@ export type NodeStartupPhase =
   | 'replayingLedger'
   | 'openedLedgerDb'
   | 'chainDbReady';
+
+// Compat re-exports — components importing these from cardano-node.types still compile.
+export type { CardanoNodeState } from './watchdog.types';
+export { CardanoNodeStates } from './watchdog.types';

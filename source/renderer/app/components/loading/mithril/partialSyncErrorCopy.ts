@@ -5,7 +5,7 @@ import type {
   MithrilPartialSyncErrorCode,
   MithrilPartialSyncErrorStage,
   MithrilPartialSyncStatus,
-} from '../../../../../common/types/mithril-partial-sync.types';
+} from '../../../../../common/types/watchdog.types';
 
 export type PartialSyncErrorCopy = {
   title: MessageDescriptor;

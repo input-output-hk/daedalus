@@ -4,6 +4,8 @@ import CenteredLayout from '../../components/layout/CenteredLayout';
 import NoDiskSpaceErrorPage from './NoDiskSpaceErrorPage';
 import SystemTimeErrorPage from './SystemTimeErrorPage';
 import SyncingConnectingPage from './SyncingConnectingPage';
+import MithrilSyncContainer from './MithrilSyncContainer';
+import ChainStorageContainer from './ChainStorageContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
@@ -34,6 +36,25 @@ class LoadingPage extends Component<InjectedProps> {
   }
 
   render() {
+    const { backend } = this.props.stores;
+    const { loadingPhase } = backend;
+
+    if (loadingPhase === 'chain-storage-setup') {
+      return (
+        <CenteredLayout>
+          <ChainStorageContainer />
+        </CenteredLayout>
+      );
+    }
+
+    if (loadingPhase === 'bootstrap-decision' || loadingPhase === 'mithril-syncing') {
+      return (
+        <CenteredLayout>
+          <MithrilSyncContainer />
+        </CenteredLayout>
+      );
+    }
+
     return (
       <CenteredLayout>
         <SyncingConnectingPage />

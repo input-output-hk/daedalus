@@ -459,3 +459,58 @@ export const DEVICE_NOT_CONNECTED = 'DEVICE_NOT_CONNECTED';
 export const WAIT_FOR_LEDGER_DEVICES = 'WAIT_FOR_LEDGER_DEVICES';
 export type waitForLedgerDevicesRequest = void;
 export type waitForLedgerDevicesResponse = LedgerDevicePayload;
+
+// ========== WATCHDOG IPC CHANNELS ==========
+
+// Poll: renderer requests current WatchdogState snapshot (every 2s)
+export const GET_CACHED_BACKEND_STATUS_CHANNEL = 'GET_CACHED_BACKEND_STATUS_CHANNEL';
+export type GetCachedBackendStatusRendererRequest = void;
+// Import WatchdogState from watchdog.types — but since api.ts uses inline types,
+// define the response type as a re-export of WatchdogState:
+export type { WatchdogState } from '../types/watchdog.types';
+export type GetCachedBackendStatusMainResponse = import('../types/watchdog.types').WatchdogState;
+
+// Command: renderer sends MithrilCommand to main (forwarded to watchdog)
+export const MITHRIL_COMMAND_CHANNEL = 'MITHRIL_COMMAND_CHANNEL';
+export type MithrilCommandRendererRequest = import('../types/watchdog.types').MithrilCommand;
+export type MithrilCommandMainResponse = void;
+
+// Push: main → renderer mithril_progress events
+export const MITHRIL_PROGRESS_CHANNEL = 'MITHRIL_PROGRESS_CHANNEL';
+export type MithrilProgressMainRequest = import('../types/watchdog.types').MithrilProgress;
+export type MithrilProgressRendererResponse = void;
+
+// Push: main → renderer mithril_status events
+export const MITHRIL_STATUS_CHANNEL = 'MITHRIL_STATUS_CHANNEL';
+export type MithrilStatusMainRequest = { phase: string };
+export type MithrilStatusRendererResponse = void;
+
+// Push (once): main → renderer when wallet port is known
+export const WALLET_PORT_CHANNEL = 'WALLET_PORT_CHANNEL';
+export type WalletPortMainRequest = {
+  port: number;
+  ca: number[];
+  cert: number[];
+  key: number[];
+};
+export type WalletPortRendererResponse = void;
+
+// Push: main → renderer node_startup_status events
+export const NODE_STARTUP_STATUS_CHANNEL = 'NODE_STARTUP_STATUS_CHANNEL';
+export type NodeStartupStatusMainRequest = { phase: string };
+export type NodeStartupStatusRendererResponse = void;
+
+// Push: main → renderer node_block_sync_progress events
+export const NODE_BLOCK_SYNC_PROGRESS_CHANNEL = 'NODE_BLOCK_SYNC_PROGRESS_CHANNEL';
+export type NodeBlockSyncProgressMainRequest = { kind: string; progress: number };
+export type NodeBlockSyncProgressRendererResponse = void;
+
+// Chain storage: renderer asks main to validate a candidate path
+export const VALIDATE_CHAIN_STORAGE_CHANNEL = 'VALIDATE_CHAIN_STORAGE_CHANNEL';
+export type ValidateChainStorageRendererRequest = { path: string };
+export type ValidateChainStorageMainResponse = import('../types/watchdog.types').ChainStorageValidation;
+
+// Chain storage: renderer asks main to apply a new chain path and restart watchdog
+export const CONFIRM_CHAIN_STORAGE_CHANNEL = 'CONFIRM_CHAIN_STORAGE_CHANNEL';
+export type ConfirmChainStorageRendererRequest = { customPath: string | null };
+export type ConfirmChainStorageMainResponse = void;

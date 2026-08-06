@@ -8,8 +8,8 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import type {
   MithrilBootstrapError,
   MithrilBootstrapErrorStage,
-} from '../../../../../common/types/mithril-bootstrap.types';
-import type { MithrilPartialSyncError } from '../../../../../common/types/mithril-partial-sync.types';
+  MithrilPartialSyncError,
+} from '../../../../../common/types/watchdog.types';
 import { CollapsibleSection } from '../../widgets/collapsible-section/CollapsibleSection';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { withKnobs } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
-import type { MithrilBootstrapStatus } from '../../../../source/common/types/mithril-bootstrap.types';
+import type { MithrilBootstrapStatus } from '../../../../source/common/types/watchdog.types';
 import StoryDecorator from '../../_support/StoryDecorator';
 import { ManagedMithrilBootstrap } from '../_support/mithrilHarness';
 import {

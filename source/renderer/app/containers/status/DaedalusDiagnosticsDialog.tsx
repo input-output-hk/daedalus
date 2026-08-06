@@ -23,16 +23,13 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
-    const { app, networkStatus } = stores;
+    const { app, networkStatus, backend } = stores;
     const { openExternalLink } = app;
     const {
-      // Node state
-      cardanoNodeState,
       isNodeResponding,
       isNodeSyncing,
       isNodeInSync,
       isNodeTimeCorrect,
-      // Application state
       isConnected,
       isSynced,
       syncPercentage,
@@ -45,20 +42,22 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
       networkTip,
       localTip,
       environment,
-      tlsConfig,
-      cardanoNodePID,
-      cardanoWalletPID,
-      cardanoNodeStartedAt,
-      cardanoWalletStartedAt,
-      cardanoWalletRestartCount,
+      stateDirectoryPath,
+      getNetworkClockRequest,
+    } = networkStatus;
+    const {
+      nodePid: cardanoNodePID,
+      walletPid: cardanoWalletPID,
       watchdogPid,
+      nodeStartedAt: cardanoNodeStartedAt,
+      walletStartedAt: cardanoWalletStartedAt,
+      walletRestartCount: cardanoWalletRestartCount,
+      walletPort,
       nodeForceKilled,
       lastWalletExitCode,
       nodeSocketWaitMs,
       walletReadyWaitMs,
-      stateDirectoryPath,
-      getNetworkClockRequest,
-    } = networkStatus;
+    } = backend;
     const systemInfo = buildSystemInfo(environment, networkStatus);
     const {
       network,
@@ -84,7 +83,7 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
       cardanoWalletPID,
       cardanoWalletUptime: formatUptime(cardanoWalletStartedAt),
       cardanoWalletRestartCount,
-      cardanoWalletApiPort: tlsConfig ? tlsConfig.port : 0,
+      cardanoWalletApiPort: walletPort ?? 0,
       cardanoNetwork: network,
       watchdogPid,
       nodeForceKilled,
@@ -104,7 +103,7 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
         <DaedalusDiagnostics
           systemInfo={systemInfo}
           coreInfo={coreInfo}
-          cardanoNodeState={cardanoNodeState}
+          cardanoNodeState={backend.loadingPhase}
           // @ts-ignore ts-migrate(2322) FIXME: Type '{ systemInfo: SystemInfo; coreInfo: { daedal... Remove this comment to see the full error message
           isDev={environment.isDev}
           isMainnet={environment.isMainnet}

@@ -40,9 +40,8 @@ class App extends Component<{
 
   render() {
     const { stores, actions, history } = this.props;
-    const { app, networkStatus } = stores;
+    const { app } = stores;
     const { isActiveDialog, isSetupPage } = app;
-    const { isNodeStopping, isNodeStopped } = networkStatus;
     const locale = stores.profile.currentLocale;
     const { currentTheme } = stores.profile;
 
@@ -50,9 +49,7 @@ class App extends Component<{
 
     const { ABOUT, DAEDALUS_DIAGNOSTICS, TOGGLE_RTS_FLAGS_MODE } = DIALOGS;
     const canShowNews =
-      !isSetupPage && // Active page is not "Language Selection" or "Terms of Use"
-      !isNodeStopping && // Daedalus is not shutting down
-      !isNodeStopped;
+      !isSetupPage; // Active page is not "Language Selection" or "Terms of Use"
 
     // Daedalus is not shutting down
     if (document.documentElement) {

@@ -7,9 +7,9 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import type {
   MithrilBootstrapStatus,
   MithrilProgressItem,
-} from '../../../../../common/types/mithril-bootstrap.types';
-import type { MithrilPartialSyncStatus } from '../../../../../common/types/mithril-partial-sync.types';
-import type { MithrilSyncStatus } from '../../../../../common/types/mithril-sync.types';
+  MithrilPartialSyncStatus,
+  MithrilSyncStatus,
+} from '../../../../../common/types/watchdog.types';
 import spinnerIcon from '../../../assets/images/spinner-universal.inline.svg';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';
