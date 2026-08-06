@@ -129,6 +129,35 @@ onWindows('Windows reparse point handling', () => {
     });
   });
 
+  // Chain storage on a network drive is a supported advanced setup, but the
+  // application cannot set it up itself: a junction cannot target a mapped
+  // drive, and creating a true symbolic link needs
+  // SeCreateSymbolicLinkPrivilege, which Daedalus does not have and should not
+  // request. The documented answer is for the user to create the link out of
+  // band with `mklink /D`, elevated.
+  //
+  // The network target cannot be automated here without a share, but the link
+  // *type* can: what follows is exactly the link `mklink /D` produces, and the
+  // resolvers must follow it the same way they follow a junction. That is the
+  // half of the supported setup this suite can actually verify.
+  describe('user-created symbolic link', () => {
+    it('resolves a real symbolic link, not only a junction', async () => {
+      const target = path.join(tmpRoot, 'elsewhere', 'chain');
+      fs.ensureDirSync(target);
+      const stateDir = path.join(tmpRoot, 'state');
+      fs.ensureDirSync(stateDir);
+      const chainPath = path.join(stateDir, CHAIN_DIRECTORY_NAME);
+
+      // 'dir' rather than 'junction': this is what mklink /D creates, and it
+      // is the link type a user following the advanced setup will have.
+      fs.symlinkSync(target, chainPath, 'dir');
+
+      const resolved = await resolveMithrilWorkDir(stateDir);
+
+      expect(fs.realpathSync(resolved)).toBe(fs.realpathSync(target));
+    });
+  });
+
   describe('resolveMithrilWorkDir', () => {
     it('returns the junction target rather than the entry point', async () => {
       const target = path.join(tmpRoot, 'elsewhere', 'chain');
