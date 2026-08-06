@@ -68,7 +68,11 @@
           devshell = lib.genAttrs supportedSystems (system: self.devShells.${system}.default);
           # Exposing these DLLs for easier development/debugging on Windows:
           nativeModules.x86_64-windows = self.internal.x86_64-windows.nativeModulesZip;
-          checks.x86_64-linux = self.checks.x86_64-linux;
+          # Every system's checks, not only x86_64-linux. Pinned to one system,
+          # a derivation added to `checks.aarch64-darwin` was a flake output
+          # Hydra never evaluated and `required` never collected — present
+          # locally, absent from CI, and silently so.
+          checks = lib.genAttrs supportedSystems (system: self.checks.${system});
           required = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
             name = "github-required";
             meta.description = "All jobs required to pass CI";
