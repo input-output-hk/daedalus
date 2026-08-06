@@ -586,6 +586,30 @@ fn malformed_stdin_ignored() {
     let _ = child.wait();
 }
 
+/// A line exceeding the per-line bound is discarded — not treated as EOF —
+/// and later commands still work. (The bound is per line: a lifetime cap
+/// would eventually shut a long session down mid-flight.)
+#[test]
+fn oversized_stdin_line_discarded() {
+    let dir = TempDir::new("oversized");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+
+    // 5 MB without a newline — larger than the 4 MB per-line bound.
+    let junk = vec![b'x'; 5 * 1024 * 1024];
+    stdin.write_all(&junk).unwrap();
+    stdin.write_all(b"\n").unwrap();
+    stdin.flush().unwrap();
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 /// watchdog_started carries the actual watchdog PID.
 #[test]
 fn watchdog_started_pid() {
