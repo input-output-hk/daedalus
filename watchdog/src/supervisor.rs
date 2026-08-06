@@ -860,6 +860,11 @@ async fn run_node_wallet(
         });
         info!("wallet API ready on port {port}");
 
+        // The wallet recovered — max_restart_attempts caps *consecutive*
+        // failed start cycles, so a rare-but-recurring crash (e.g. once a
+        // day) must not accumulate into WalletUnrecoverable.
+        attempt = 0;
+
         // After Mithril install, finalize on first wallet_ready
         if after_mithril && !wallet_ready_fired {
             wallet_ready_fired = true;

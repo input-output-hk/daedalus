@@ -1,4 +1,5 @@
 import {
+  isMithrilPartialSyncSuppressingDiskSpaceCheck,
   makeIdlePartialSyncStatus,
   type MithrilPartialSyncStatusSnapshot,
   type MithrilPartialSyncFailureAction,
@@ -10,6 +11,17 @@ import type { WatchdogHandle } from '../cardano/CardanoWatchdog';
 type StatusSender<T> = (status: T) => Promise<void>;
 
 const PROBE_INTERVAL_MS = 30_000;
+
+// Watchdog mithril phases during which chain data is actively being
+// downloaded or installed ('completed'/'cancelled' are terminal).
+const ACTIVE_MITHRIL_PHASES = new Set([
+  'preparing',
+  'downloading',
+  'verifying',
+  'converting',
+  'installing',
+  'finalizing',
+]);
 
 export class MithrilController {
   _partialSyncStatus: MithrilPartialSyncStatusSnapshot =
@@ -146,6 +158,30 @@ export class MithrilController {
 
   getPartialSyncStatus(): MithrilPartialSyncStatusSnapshot {
     return this._partialSyncStatus;
+  }
+
+  // Whether the disk-space checker must not stop cardano-node right now.
+  // The partial-sync status list alone is not enough: a bootstrap
+  // (startMithril with wipeChain) deliberately resets partial-sync status
+  // to idle while tens of GB download through the watchdog, and while the
+  // watchdog holds an empty chain awaiting the user's genesis-vs-Mithril
+  // decision, cardanoNode.stop() would tear the watchdog down and strand
+  // both flows.
+  isDiskSpaceCheckSuppressed(): boolean {
+    if (this._bootstrapMode) return true;
+    const handle = this._watchdogHandle;
+    if (handle) {
+      if (handle.hasChain === false) return true;
+      if (
+        handle.mithrilPhase !== null &&
+        ACTIVE_MITHRIL_PHASES.has(handle.mithrilPhase)
+      ) {
+        return true;
+      }
+    }
+    return isMithrilPartialSyncSuppressingDiskSpaceCheck(
+      this._partialSyncStatus.status
+    );
   }
 
   async broadcastPartialSyncStatus(

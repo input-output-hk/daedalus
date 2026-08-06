@@ -25,7 +25,6 @@ import {
   getChainStorageManager,
 } from './chainStorageCoordinator';
 import { getMithrilController } from '../mithril/MithrilController';
-import { isMithrilPartialSyncSuppressingDiskSpaceCheck } from '../../common/types/mithril-partial-sync.types';
 
 const getDiskCheckReport = async (
   targetPath: string,
@@ -126,8 +125,7 @@ export const handleDiskSpace = (
       isError: false,
     });
 
-    const partialSyncStatus = mithrilController.getPartialSyncStatus().status;
-    if (isMithrilPartialSyncSuppressingDiskSpaceCheck(partialSyncStatus)) {
+    if (mithrilController.isDiskSpaceCheckSuppressed()) {
       return getStaleResponse();
     }
 

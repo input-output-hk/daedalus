@@ -225,6 +225,7 @@ impl<'a> Cfg<'a> {
                 "converter_config": "/dev/null",
                 "aggregator_url": "http://localhost:0",
                 "genesis_vkey": "test",
+                "ancillary_vkey": "test",
                 "state_dir": state,
                 "chain_path": self.dir.path().join("chain").to_str().unwrap(),
                 "behind_threshold": 20
@@ -585,6 +586,30 @@ fn malformed_stdin_ignored() {
     let _ = child.wait();
 }
 
+/// A line exceeding the per-line bound is discarded — not treated as EOF —
+/// and later commands still work. (The bound is per line: a lifetime cap
+/// would eventually shut a long session down mid-flight.)
+#[test]
+fn oversized_stdin_line_discarded() {
+    let dir = TempDir::new("oversized");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+
+    // 5 MB without a newline — larger than the 4 MB per-line bound.
+    let junk = vec![b'x'; 5 * 1024 * 1024];
+    stdin.write_all(&junk).unwrap();
+    stdin.write_all(b"\n").unwrap();
+    stdin.flush().unwrap();
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 /// watchdog_started carries the actual watchdog PID.
 #[test]
 fn watchdog_started_pid() {
@@ -752,6 +777,81 @@ fn node_crash_after_wallet_ready() {
     .unwrap();
 
     expect(&rx, "node_exited");
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Mithril configured without an ancillary verification key → the pipeline
+/// refuses to start (before any chain wipe) instead of downloading unverified
+/// ancillary data or failing mid-download.
+#[test]
+fn mithril_without_ancillary_key_fails_fast() {
+    let dir = TempDir::new("no-ancillary-key");
+    dir.populate_chain();
+    let (mut cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    cfg["mithril"]
+        .as_object_mut()
+        .unwrap()
+        .remove("ancillary_vkey");
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "force": true, "wipe_chain": true}),
+    );
+
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "ANCILLARY_VKEY_MISSING");
+    assert!(
+        dir.path().join("chain").exists(),
+        "guard must fire before the chain wipe"
+    );
+
+    // Pipeline returned Cancelled → node/wallet restart normally.
+    expect(&rx, "wallet_ready");
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// The restart-attempt counter resets once the wallet reaches ready, so
+/// non-consecutive crashes never accumulate into wallet_unrecoverable.
+#[test]
+fn wallet_restart_counter_resets_on_ready() {
+    let dir = TempDir::new("restart-counter-reset");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .max_restarts(2)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    let kill_wallet = |rx: &mpsc::Receiver<Value>| {
+        let wallet_ev = expect(rx, "wallet_started");
+        let wallet_pid = wallet_ev["pid"].as_u64().unwrap() as i32;
+        expect(rx, "wallet_ready");
+        nix::sys::signal::kill(
+            nix::unistd::Pid::from_raw(wallet_pid),
+            nix::sys::signal::Signal::SIGKILL,
+        )
+        .unwrap();
+    };
+
+    // Three ready→crash cycles with max_restart_attempts = 2: if the counter
+    // accumulated across recoveries, the third crash would be unrecoverable.
+    for _ in 0..3 {
+        kill_wallet(&rx);
+        let restarting = expect(&rx, "wallet_restarting");
+        assert_eq!(
+            restarting["attempt"], 1,
+            "counter must reset after each successful wallet_ready"
+        );
+    }
+
+    expect(&rx, "wallet_ready");
+    stop(&mut stdin);
     expect(&rx, "stopped");
     drop(stdin);
     let _ = child.wait();
