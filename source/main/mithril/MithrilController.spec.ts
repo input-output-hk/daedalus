@@ -66,6 +66,64 @@ describe('MithrilController', () => {
     });
   });
 
+  describe('isDiskSpaceCheckSuppressed', () => {
+    it('is not suppressed when idle with no watchdog handle', () => {
+      const controller = createController();
+
+      expect(controller.isDiskSpaceCheckSuppressed()).toBe(false);
+    });
+
+    it('is suppressed while a bootstrap (wipeChain) is in progress even though partial-sync status is idle', () => {
+      const controller = createController();
+      controller._watchdogHandle = { startMithril: jest.fn() } as any;
+
+      controller.startMithril({ wipeChain: true });
+
+      expect(controller.getPartialSyncStatus().status).toBe('idle');
+      expect(controller.isDiskSpaceCheckSuppressed()).toBe(true);
+    });
+
+    it('is suppressed while the watchdog holds an empty chain awaiting the user decision', () => {
+      const controller = createController();
+      controller._watchdogHandle = {
+        hasChain: false,
+        mithrilPhase: null,
+      } as any;
+
+      expect(controller.isDiskSpaceCheckSuppressed()).toBe(true);
+    });
+
+    it('is suppressed during an active watchdog mithril phase', () => {
+      const controller = createController();
+      controller._watchdogHandle = {
+        hasChain: true,
+        mithrilPhase: 'downloading',
+      } as any;
+
+      expect(controller.isDiskSpaceCheckSuppressed()).toBe(true);
+    });
+
+    it('is not suppressed once the watchdog mithril phase is terminal', () => {
+      const controller = createController();
+      controller._watchdogHandle = {
+        hasChain: true,
+        mithrilPhase: 'completed',
+      } as any;
+
+      expect(controller.isDiskSpaceCheckSuppressed()).toBe(false);
+    });
+
+    it('is suppressed for the partial-sync statuses on the suppression list', async () => {
+      const controller = createController();
+
+      await controller.broadcastPartialSyncStatus(
+        createStatusSnapshot('downloading')
+      );
+
+      expect(controller.isDiskSpaceCheckSuppressed()).toBe(true);
+    });
+  });
+
   describe('broadcastPartialSyncStatus', () => {
     it('updates internal status and calls the sender', async () => {
       const controller = createController();
