@@ -757,6 +757,46 @@ fn node_crash_after_wallet_ready() {
     let _ = child.wait();
 }
 
+/// The restart-attempt counter resets once the wallet reaches ready, so
+/// non-consecutive crashes never accumulate into wallet_unrecoverable.
+#[test]
+fn wallet_restart_counter_resets_on_ready() {
+    let dir = TempDir::new("restart-counter-reset");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .max_restarts(2)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    let kill_wallet = |rx: &mpsc::Receiver<Value>| {
+        let wallet_ev = expect(rx, "wallet_started");
+        let wallet_pid = wallet_ev["pid"].as_u64().unwrap() as i32;
+        expect(rx, "wallet_ready");
+        nix::sys::signal::kill(
+            nix::unistd::Pid::from_raw(wallet_pid),
+            nix::sys::signal::Signal::SIGKILL,
+        )
+        .unwrap();
+    };
+
+    // Three ready→crash cycles with max_restart_attempts = 2: if the counter
+    // accumulated across recoveries, the third crash would be unrecoverable.
+    for _ in 0..3 {
+        kill_wallet(&rx);
+        let restarting = expect(&rx, "wallet_restarting");
+        assert_eq!(
+            restarting["attempt"], 1,
+            "counter must reset after each successful wallet_ready"
+        );
+    }
+
+    expect(&rx, "wallet_ready");
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 // ── T8: Mithril download failure ─────────────────────────────────────────────
 
 /// Mithril download fails → PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED → re-prompt.
