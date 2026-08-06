@@ -364,9 +364,12 @@ async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) 
                 .map_err(|e| anyhow::anyhow!("install staged db to symlink target: {e}"))?;
         } else {
             let _ = tokio::fs::remove_dir_all(chain_path).await;
-            tokio::fs::rename(staging_db, chain_path)
+            // move_dir, not rename: staging and chain can live on different
+            // filesystems (EXDEV), and the old chain is already gone at this
+            // point — a bare rename failure would leave no chain at all.
+            move_dir(staging_db, chain_path)
                 .await
-                .map_err(|e| anyhow::anyhow!("rename staged db to chain path: {e}"))?;
+                .map_err(|e| anyhow::anyhow!("install staged db to chain path: {e}"))?;
         }
         return Ok(());
     }
