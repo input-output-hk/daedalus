@@ -133,12 +133,12 @@ const currentVoteForValidDRep = {
 
 const votingSoftwareWallet = {
   ...softwareWallet,
-  currentVote: currentVoteForValidDRep,
+  currentDRep: currentVoteForValidDRep,
 };
 
 const votingHardwareWallet = {
   ...hardwareWallet,
-  currentVote: currentVoteForValidDRep,
+  currentDRep: currentVoteForValidDRep,
 };
 
 type StoreOverrides = {
@@ -730,7 +730,7 @@ describe('Current-vote enrichment in the delegation form', () => {
       wallets: [
         {
           ...softwareWallet,
-          currentVote: {
+          currentDRep: {
             ...currentVoteForValidDRep,
             drep: { ...currentVoteForValidDRep.drep, raw: CIP105_DREP_ID },
           },

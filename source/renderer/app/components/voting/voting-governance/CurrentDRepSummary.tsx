@@ -3,13 +3,13 @@ import { injectIntl, intlShape } from 'react-intl';
 import DRepIdDisplay from '../../governance/_shared/DRepIdDisplay';
 import DRepSourceLabel from '../../governance/_shared/DRepSourceLabel';
 import DRepStatusBadge from '../../governance/_shared/DRepStatusBadge';
-import type { WalletVotingTarget } from '../../../api/wallets/types';
+import type { DRepDelegation } from '../../../api/wallets/types';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
-import { messages } from './CurrentVoteSummary.messages';
+import { messages } from './CurrentDRepSummary.messages';
 import styles from './CurrentVoteSummary.scss';
 
 type Props = {
-  currentVote: WalletVotingTarget | null;
+  currentDRep: DRepDelegation | null;
   drepEntry?: AppDRepDirectoryEntry | null;
   intl: intlShape.isRequired;
 };
@@ -38,12 +38,12 @@ function deriveCurrentVoteBadgeState(
 // The vote-kind chip and the status captions render through the local message
 // set because DRepSourceLabel's variant union cannot express them;
 // DRepSourceLabel renders only the on-chain source label on the DRep state.
-function CurrentVoteSummary({ currentVote, drepEntry, intl }: Props) {
-  if (currentVote == null) {
+function CurrentDRepSummary({ currentDRep, drepEntry, intl }: Props) {
+  if (currentDRep == null) {
     return null;
   }
 
-  if (currentVote.kind === 'drep') {
+  if (currentDRep.kind === 'drep') {
     const badgeState = deriveCurrentVoteBadgeState(drepEntry);
     return (
       <section
@@ -76,7 +76,7 @@ function CurrentVoteSummary({ currentVote, drepEntry, intl }: Props) {
           )}
         </div>
         <div className={styles.idRow}>
-          <DRepIdDisplay drepId={currentVote.drep.raw} />
+          <DRepIdDisplay drepId={currentDRep.drep.raw} />
         </div>
         {badgeState !== 'active' && (
           <p className={styles.caption}>
@@ -95,7 +95,7 @@ function CurrentVoteSummary({ currentVote, drepEntry, intl }: Props) {
     );
   }
 
-  const isAbstain = currentVote.kind === 'abstain';
+  const isAbstain = currentDRep.kind === 'abstain';
   return (
     <section
       className={styles.component}
@@ -123,4 +123,4 @@ function CurrentVoteSummary({ currentVote, drepEntry, intl }: Props) {
   );
 }
 
-export default injectIntl(CurrentVoteSummary);
+export default injectIntl(CurrentDRepSummary);

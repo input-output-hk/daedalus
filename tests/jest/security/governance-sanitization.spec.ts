@@ -261,8 +261,8 @@ describe('Governance sanitization — filterLogData', () => {
     expect(Object.keys(result)).toHaveLength(0);
   });
 
-  it('removes a currentVote object carrying a vote kind and a drep id', () => {
-    const data = { currentVote: { voteKind: 'abstain', drepId: CIP129_DREP } };
+  it('removes a currentDRep object carrying a vote kind and a drep id', () => {
+    const data = { currentDRep: { voteKind: 'abstain', drepId: CIP129_DREP } };
     const s = jsonStr(filterLogData(data));
     expect(s).not.toContain('abstain');
     expect(s).not.toContain(CIP129_DREP);

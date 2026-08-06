@@ -6,7 +6,7 @@ import Wallet, {
 import { LOVELACES_PER_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import type {
   WalletSyncState,
-  WalletVotingTarget,
+  DRepDelegation,
 } from '../../../../source/renderer/app/api/wallets/types';
 import type { DRepIdentity } from '../../../../source/common/types/governance.types';
 import type { AppDRepDirectoryEntry } from '../../../../source/renderer/app/stores/GovernanceStore';
@@ -65,7 +65,7 @@ const UNVERIFIED_DREP: DRepIdentity = {
 
 export function resolveCurrentVote(
   option: CurrentVoteOption
-): WalletVotingTarget | null {
+): DRepDelegation | null {
   switch (option) {
     case 'drepVerified':
       return { kind: 'drep', drep: VERIFIED_DREP, source: 'onchain' };
@@ -88,7 +88,7 @@ type WalletSeed = {
   hasPassword: boolean;
   isHardwareWallet: boolean;
   syncState: WalletSyncState;
-  votingTarget: WalletVotingTarget | null;
+  votingTarget: DRepDelegation | null;
 };
 
 const buildWallet = ({ lovelace, ...rest }: WalletSeed): Wallet =>

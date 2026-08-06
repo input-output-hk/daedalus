@@ -83,7 +83,7 @@ export type DelegationStatus =
   | 'not_delegating'
   | 'voting'
   | 'delegating_and_voting';
-export type WalletVotingTarget =
+export type DRepDelegation =
   | {
       kind: 'drep';
       drep: DRepIdentity;
@@ -114,13 +114,13 @@ export type WalletNextDelegationEpoch = {
 export type WalletDelegation = {
   status: DelegationStatus;
   target?: string;
-  voting?: WalletVotingTarget;
+  voting?: DRepDelegation;
 };
 export type WalletPendingDelegations = Array<WalletNextDelegation>;
 export type WalletNextDelegation = {
   status: DelegationStatus;
   target?: string;
-  voting?: WalletVotingTarget;
+  voting?: DRepDelegation;
   changes_at: WalletNextDelegationEpoch;
 };
 export type Histogram = Record<string, number>;

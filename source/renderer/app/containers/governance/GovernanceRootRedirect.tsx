@@ -13,7 +13,7 @@ interface Props {
 class GovernanceRootRedirect extends React.Component<Props> {
   render() {
     const wallets = this.props.stores?.wallets?.all ?? [];
-    const anyDelegating = wallets.some((w) => w.currentVote != null);
+    const anyDelegating = wallets.some((w) => w.currentDRep != null);
     return (
       <Redirect
         to={

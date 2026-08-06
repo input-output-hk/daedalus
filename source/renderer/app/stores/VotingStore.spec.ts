@@ -337,7 +337,7 @@ describe('same-vote server error in the delegation form', () => {
 
   it('renders the server same_vote copy when the wallet has no matching current vote', async () => {
     const wallet = {
-      currentVote: null,
+      currentDRep: null,
       id: 'sw-wallet-2',
       isHardwareWallet: false,
       name: 'Form Wallet',

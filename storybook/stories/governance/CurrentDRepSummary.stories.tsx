@@ -3,8 +3,8 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, select } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
-import CurrentVoteSummary from '../../../source/renderer/app/components/voting/voting-governance/CurrentVoteSummary';
-import type { WalletVotingTarget } from '../../../source/renderer/app/api/wallets/types';
+import CurrentDRepSummary from '../../../source/renderer/app/components/voting/voting-governance/CurrentDRepSummary';
+import type { DRepDelegation } from '../../../source/renderer/app/api/wallets/types';
 import type { AppDRepDirectoryEntry } from '../../../source/renderer/app/stores/GovernanceStore';
 import { resolveCurrentVote, useCurrentVoteKnob } from './_utils/fixtures';
 
@@ -32,17 +32,17 @@ const DREP_ACTIVITY_BY_STATUS: Record<DRepStatusOption, number | null> = {
 
 const resolveDRepEntry = (
   statusOption: DRepStatusOption,
-  currentVote: WalletVotingTarget | null
+  currentDRep: DRepDelegation | null
 ): AppDRepDirectoryEntry | null => {
   if (
     statusOption === 'none' ||
-    currentVote == null ||
-    currentVote.kind !== 'drep'
+    currentDRep == null ||
+    currentDRep.kind !== 'drep'
   ) {
     return null;
   }
   return {
-    drepId: currentVote.drep.cip129 ?? currentVote.drep.raw,
+    drepId: currentDRep.drep.cip129 ?? currentDRep.drep.raw,
     votingPower: null,
     status: statusOption === 'inactive' ? 'inactive' : 'active',
     drepActivity: DREP_ACTIVITY_BY_STATUS[statusOption],
@@ -55,7 +55,7 @@ const resolveDRepEntry = (
 // Locale is intentionally not wired here: the global StoryWrapper decorator
 // provides the IntlProvider, so the English/Japanese toggle at the top of the
 // preview window drives every label rendered below.
-storiesOf('Governance / Current Vote Summary', module)
+storiesOf('Governance / Current DRep Summary', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>
@@ -69,13 +69,13 @@ storiesOf('Governance / Current Vote Summary', module)
       DREP_STATUS_OPTIONS,
       'none'
     );
-    const currentVote = resolveCurrentVote(option);
+    const currentDRep = resolveCurrentVote(option);
     return (
       <div style={PANEL_STYLE}>
-        <CurrentVoteSummary
+        <CurrentDRepSummary
           key={option}
-          currentVote={currentVote}
-          drepEntry={resolveDRepEntry(statusOption, currentVote)}
+          currentDRep={currentDRep}
+          drepEntry={resolveDRepEntry(statusOption, currentDRep)}
         />
       </div>
     );

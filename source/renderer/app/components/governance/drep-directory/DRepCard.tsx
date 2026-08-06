@@ -63,7 +63,7 @@ interface Props {
   isFavorite: boolean;
   onToggleFavorite: (drepId: string) => void;
   isStaleFavorite?: boolean;
-  isCurrentDelegation?: boolean;
+  isCurrentDRep?: boolean;
   isSearchResult?: boolean;
   canDelegate?: boolean;
   onSelectForDelegation: (drepId: string) => void;
@@ -89,7 +89,7 @@ function DRepCard({
   isFavorite,
   onToggleFavorite,
   isStaleFavorite = false,
-  isCurrentDelegation = false,
+  isCurrentDRep = false,
   isSearchResult = false,
   canDelegate = true,
   onSelectForDelegation,
@@ -135,7 +135,7 @@ function DRepCard({
           {intl.formatMessage(messages.staleCaption)}
         </p>
       )}
-      {isCurrentDelegation && (
+      {isCurrentDRep && (
         <p className={styles.currentDelegationCaption}>
           {intl.formatMessage(messages.currentDelegation)}
         </p>
@@ -159,7 +159,7 @@ function DRepCard({
           onClick={() => onViewDetails(entry.drepId)}
           skin={ButtonSkin}
         />
-        {canDelegate && !isCurrentDelegation && (
+        {canDelegate && !isCurrentDRep && (
           <Button
             label={intl.formatMessage(messages.select)}
             onClick={() => onSelectForDelegation(entry.drepId)}

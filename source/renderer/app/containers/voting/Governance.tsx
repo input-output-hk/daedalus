@@ -49,7 +49,7 @@ class Governance extends Component<Props> {
     const { intl } = this.props;
 
     const anyWalletDelegating = (wallets?.all ?? []).some(
-      (w) => w.currentVote != null
+      (w) => w.currentDRep != null
     );
 
     const navItems: Array<NavButtonProps> = [

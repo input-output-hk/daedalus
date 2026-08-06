@@ -14,9 +14,9 @@ import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import { Separator } from '../../widgets/separator/Separator';
 import { InitializeVPDelegationTxError } from '../../../stores/VotingStore';
-import CurrentVoteSummary from './CurrentVoteSummary';
-import { messages as currentVoteMessages } from './CurrentVoteSummary.messages';
-import { isSameVoteTarget } from '../../../utils/governance/isSameVoteTarget';
+import CurrentDRepSummary from './CurrentDRepSummary';
+import { messages as currentDRepMessages } from './CurrentDRepSummary.messages';
+import { isSameDRep } from '../../../utils/governance/isSameDRep';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 import DRepIdDisplay from '../../governance/_shared/DRepIdDisplay';
 import DRepStatusBadge from '../../governance/_shared/DRepStatusBadge';
@@ -104,40 +104,40 @@ function VotingPowerDelegation({
   const selectedWallet =
     wallets.find((w) => w.id === state.selectedWalletId) ?? null;
 
-  const currentVote = selectedWallet?.currentVote ?? null;
-  const currentVoteDRepId =
-    currentVote?.kind === 'drep' ? currentVote.drep.raw : null;
+  const currentDRep = selectedWallet?.currentDRep ?? null;
+  const currentDRepId =
+    currentDRep?.kind === 'drep' ? currentDRep.drep.raw : null;
 
   // Auto-favorite the current delegation DRep when a wallet is selected, so
   // DReps delegated to before the auto-favorite feature was introduced get
   // added to favorites without needing to re-select them.
   useEffect(() => {
-    if (currentVote?.kind !== 'drep' || !onEnsureFavorited) return;
-    onEnsureFavorited(currentVote.drep.cip129 ?? currentVote.drep.raw);
-  }, [currentVoteDRepId, onEnsureFavorited]);
+    if (currentDRep?.kind !== 'drep' || !onEnsureFavorited) return;
+    onEnsureFavorited(currentDRep.drep.cip129 ?? currentDRep.drep.raw);
+  }, [currentDRepId, onEnsureFavorited]);
 
-  const [currentVoteDRepEntry, setCurrentVoteDRepEntry] =
+  const [currentDRepEntry, setCurrentDRepEntry] =
     useState<AppDRepDirectoryEntry | null>(null);
 
   useEffect(() => {
-    if (currentVote?.kind !== 'drep' || !onFetchDRep) {
-      setCurrentVoteDRepEntry(null);
+    if (currentDRep?.kind !== 'drep' || !onFetchDRep) {
+      setCurrentDRepEntry(null);
       return undefined;
     }
-    const drepIdToFetch = currentVote.drep.cip129 ?? currentVote.drep.raw;
+    const drepIdToFetch = currentDRep.drep.cip129 ?? currentDRep.drep.raw;
     let cancelled = false;
     onFetchDRep(drepIdToFetch).then(
       (entry) => {
-        if (!cancelled) setCurrentVoteDRepEntry(entry);
+        if (!cancelled) setCurrentDRepEntry(entry);
       },
       () => {
-        if (!cancelled) setCurrentVoteDRepEntry(null);
+        if (!cancelled) setCurrentDRepEntry(null);
       }
     );
     return () => {
       cancelled = true;
     };
-  }, [currentVoteDRepId, onFetchDRep]);
+  }, [currentDRepId, onFetchDRep]);
 
   const [selectedDRepEntry, setSelectedDRepEntry] =
     useState<AppDRepDirectoryEntry | null>(null);
@@ -162,7 +162,7 @@ function VotingPowerDelegation({
   }, [selectedDRepId, onFetchDRep]);
 
   const isSameAsCurrent =
-    !!selectedDRepId && isSameVoteTarget(selectedDRepId, currentVote);
+    !!selectedDRepId && isSameDRep(selectedDRepId, currentDRep);
 
   const formIsValid = !!selectedWallet && !!selectedDRepId;
 
@@ -256,9 +256,9 @@ function VotingPowerDelegation({
           />
 
           {selectedWallet && (
-            <CurrentVoteSummary
-              currentVote={currentVote}
-              drepEntry={currentVoteDRepEntry}
+            <CurrentDRepSummary
+              currentDRep={currentDRep}
+              drepEntry={currentDRepEntry}
             />
           )}
 
@@ -306,7 +306,7 @@ function VotingPowerDelegation({
 
               {isSameAsCurrent && (
                 <p className={styles.sameVoteHint} id={SAME_VOTE_HINT_ID}>
-                  {intl.formatMessage(currentVoteMessages.sameVoteHint, {
+                  {intl.formatMessage(currentDRepMessages.sameVoteHint, {
                     target: 'drep',
                   })}
                 </p>

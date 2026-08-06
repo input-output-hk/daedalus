@@ -28,11 +28,11 @@ class GovernanceDashboardPage extends React.Component<Props> {
     const wallets = this.props.stores?.wallets?.all ?? [];
 
     const delegatingWallets: WalletDelegationSummary[] = wallets
-      .filter((w) => w.currentVote != null)
+      .filter((w) => w.currentDRep != null)
       .map((w) => ({
         walletId: w.id,
         walletName: w.name,
-        currentVote: w.currentVote!,
+        currentDRep: w.currentDRep!,
       }));
 
     return (

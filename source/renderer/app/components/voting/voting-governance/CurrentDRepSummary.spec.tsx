@@ -8,15 +8,15 @@ import '@testing-library/jest-dom';
 import translations from '../../../i18n/locales/en-US.json';
 import { daedalusTheme } from '../../../themes/daedalus';
 import { themeOverrides } from '../../../themes/overrides';
-import CurrentVoteSummary from './CurrentVoteSummary';
-import type { WalletVotingTarget } from '../../../api/wallets/types';
+import CurrentDRepSummary from './CurrentDRepSummary';
+import type { DRepDelegation } from '../../../api/wallets/types';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 
 const KEY_CIP129 = 'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
 const KEY_CIP105 =
   'drep_vkh15xev84897cr3s2f6fdwx6l50jzsm9s75uhmqwxpf8f94czu4a4l';
 
-const DREP_VOTE: WalletVotingTarget = {
+const DREP_VOTE: DRepDelegation = {
   kind: 'drep',
   drep: {
     raw: KEY_CIP129,
@@ -39,7 +39,7 @@ const ACTIVE_ENTRY: AppDRepDirectoryEntry = {
 };
 
 const renderSummary = (
-  currentVote: WalletVotingTarget | null,
+  currentDRep: DRepDelegation | null,
   drepEntry?: AppDRepDirectoryEntry | null
 ) =>
   render(
@@ -50,12 +50,12 @@ const renderSummary = (
       themeOverrides={themeOverrides}
     >
       <IntlProvider locale="en-US" messages={translations}>
-        <CurrentVoteSummary currentVote={currentVote} drepEntry={drepEntry} />
+        <CurrentDRepSummary currentDRep={currentDRep} drepEntry={drepEntry} />
       </IntlProvider>
     </ThemeProvider>
   );
 
-describe('CurrentVoteSummary core states', () => {
+describe('CurrentDRepSummary core states', () => {
   afterEach(cleanup);
 
   it('renders nothing when there is no current vote', () => {
@@ -105,7 +105,7 @@ describe('CurrentVoteSummary core states', () => {
   });
 });
 
-describe('CurrentVoteSummary DRep status badge', () => {
+describe('CurrentDRepSummary DRep status badge', () => {
   afterEach(cleanup);
 
   it('renders the shared active badge with no status caption', () => {

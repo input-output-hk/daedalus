@@ -1,4 +1,4 @@
-import type { WalletVotingTarget } from '../../api/wallets/types';
+import type { DRepDelegation } from '../../api/wallets/types';
 import { normalizeDRepIdentity } from './normalizeDRepIdentity';
 
 /**
@@ -6,28 +6,28 @@ import { normalizeDRepIdentity } from './normalizeDRepIdentity';
  * pair: bech32 letter case is not meaningful, and an absent credentialHex never
  * establishes equality because credentialType alone cannot identify a credential.
  */
-export function isSameVoteTarget(
+export function isSameDRep(
   chosenOption: string,
-  currentVote: WalletVotingTarget | null
+  currentDRep: DRepDelegation | null
 ): boolean {
-  if (currentVote == null) return false;
-  if (chosenOption === 'abstain') return currentVote.kind === 'abstain';
+  if (currentDRep == null) return false;
+  if (chosenOption === 'abstain') return currentDRep.kind === 'abstain';
   if (chosenOption === 'no_confidence') {
-    return currentVote.kind === 'no_confidence';
+    return currentDRep.kind === 'no_confidence';
   }
-  if (currentVote.kind !== 'drep') return false;
+  if (currentDRep.kind !== 'drep') return false;
 
   const selected = normalizeDRepIdentity(chosenOption);
   if (selected == null) return false;
   if (
     selected.credentialHex == null ||
-    currentVote.drep.credentialHex == null
+    currentDRep.drep.credentialHex == null
   ) {
     return false;
   }
   return (
     selected.credentialHex.toLowerCase() ===
-      currentVote.drep.credentialHex.toLowerCase() &&
-    selected.credentialType === currentVote.drep.credentialType
+      currentDRep.drep.credentialHex.toLowerCase() &&
+    selected.credentialType === currentDRep.drep.credentialType
   );
 }

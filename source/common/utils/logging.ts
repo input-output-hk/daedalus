@@ -50,7 +50,7 @@ export const filterLogData = (
     // identifies a DRep as precisely as a bech32 id, and an anchor URL
     // identifies the DRep whose detail page the user is viewing.
     'drepIdentity',
-    'currentVote',
+    'currentDRep',
     'votingTarget',
     'chosenOption',
     'raw',

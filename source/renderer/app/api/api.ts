@@ -164,7 +164,7 @@ import {
 import {
   AdaWallet,
   AdaWallets,
-  WalletVotingTarget,
+  DRepDelegation,
   CreateHardwareWalletRequest,
   LegacyAdaWallet,
   LegacyAdaWallets,
@@ -3046,7 +3046,7 @@ const LOGGABLE_HRP_PATTERN = /^[a-z_]{1,16}$/;
 // Wire values for delegation.active.voting: 'abstain', 'no_confidence', or a
 // bech32 DRep id. Unknown shapes degrade to null; the warning may carry a
 // bounded HRP token only — never the raw id (sanitization floor).
-const parseVoting = (voting: unknown): WalletVotingTarget | null => {
+const parseVoting = (voting: unknown): DRepDelegation | null => {
   if (voting == null || typeof voting !== 'string') return null;
   if (voting === 'abstain') return { kind: 'abstain' };
   if (voting === 'no_confidence') return { kind: 'no_confidence' };
@@ -3111,7 +3111,7 @@ export const _createWalletFromServerData = action(
     // A voting-only status never carries a stake-pool target; active.target
     // must never be surfaced as a pool id in that state.
     let delegatedStakePoolId: string | null = null;
-    let votingTarget: WalletVotingTarget | null = null;
+    let votingTarget: DRepDelegation | null = null;
     if (!isLegacy) {
       switch (status) {
         case WalletDelegationStatuses.VOTING:

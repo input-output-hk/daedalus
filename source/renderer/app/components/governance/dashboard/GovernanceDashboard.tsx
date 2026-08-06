@@ -2,8 +2,8 @@ import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import CurrentVoteSummary from '../../voting/voting-governance/CurrentVoteSummary';
-import type { WalletVotingTarget } from '../../../api/wallets/types';
+import CurrentDRepSummary from '../../voting/voting-governance/CurrentDRepSummary';
+import type { DRepDelegation } from '../../../api/wallets/types';
 import styles from './GovernanceDashboard.scss';
 
 const messages = defineMessages({
@@ -33,7 +33,7 @@ const messages = defineMessages({
 export type WalletDelegationSummary = {
   walletId: string;
   walletName: string;
-  currentVote: WalletVotingTarget;
+  currentDRep: DRepDelegation;
 };
 
 type Props = {
@@ -55,14 +55,14 @@ function GovernanceDashboard({
         {intl.formatMessage(messages.pageTitle)}
       </h2>
       <div className={styles.walletList}>
-        {wallets.map(({ walletId, walletName, currentVote }) => {
+        {wallets.map(({ walletId, walletName, currentDRep }) => {
           const isSentinel =
-            currentVote.kind === 'abstain' ||
-            currentVote.kind === 'no_confidence';
+            currentDRep.kind === 'abstain' ||
+            currentDRep.kind === 'no_confidence';
           return (
             <div key={walletId} className={styles.walletSection}>
               <h3 className={styles.walletName}>{walletName}</h3>
-              <CurrentVoteSummary currentVote={currentVote} />
+              <CurrentDRepSummary currentDRep={currentDRep} />
               {isSentinel && (
                 <p className={styles.chooseDRepPrompt}>
                   {intl.formatMessage(messages.chooseDRepPrompt)}{' '}
