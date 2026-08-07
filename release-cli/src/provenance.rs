@@ -12,11 +12,15 @@
 
 use crate::installers::InstallerDir;
 use anyhow::{Context, Result};
+use reqwest::Client;
 use std::collections::BTreeMap;
 
 /// Target systems that appear as the trailing component of an installer name.
 /// Listed because they contain a `-` themselves, so the name cannot simply be
 /// split on that character.
+///
+/// Kept in step with the systems the installers are built for; the name is
+/// assembled in `nix/internal/any-darwin.nix:26`.
 const KNOWN_SYSTEMS: [&str; 4] = [
     "x86_64-linux",
     "x86_64-darwin",
@@ -52,17 +56,116 @@ pub fn rev_from_filename(filename: &str) -> Option<&str> {
     Some(rev)
 }
 
-/// True when `full` and `short` name the same commit.
+/// Shortest abbreviation accepted when comparing two revisions.
 ///
-/// `meta.json` carries the full 40-character revision while a filename carries
-/// the first nine, so one is compared as a prefix of the other.
+/// Installer names carry nine characters. Anything shorter is not a revision
+/// this tool produced, and treating it as a prefix would make the comparison
+/// far weaker than it looks — `same_commit("a", …)` should not be true.
+const MIN_REV_LEN: usize = 7;
+
+/// True when two revisions name the same commit.
+///
+/// The GitHub API and `meta.json` carry the full 40 characters while a
+/// filename carries the first nine, so the shorter is compared as a prefix of
+/// the longer. Abbreviations below `MIN_REV_LEN` never match.
 fn same_commit(left: &str, right: &str) -> bool {
     let (shorter, longer) = if left.len() <= right.len() {
         (left, right)
     } else {
         (right, left)
     };
-    !shorter.is_empty() && longer.starts_with(shorter)
+    shorter.len() >= MIN_REV_LEN && longer.starts_with(shorter)
+}
+
+/// Resolve a release tag to the commit it names, via the GitHub REST API.
+///
+/// `drt` runs where there is no git: the `ops` shell provides the binary and
+/// gnupg and nothing else, and the tool otherwise reaches the network only
+/// over HTTPS. So the tag is resolved the same way everything else is
+/// fetched.
+///
+/// An annotated tag resolves to a tag object rather than a commit, which then
+/// has to be peeled. `GITHUB_TOKEN` is used when present — a public repository
+/// needs no credentials, but the unauthenticated limit is 60 requests an hour
+/// and shared by IP.
+pub async fn resolve_tag_commit(client: &Client, repo: &str, tag: &str) -> Result<String> {
+    // Note the ref is given without the `refs/` prefix: the endpoint is
+    // `git/ref/tags/<tag>`, and `git/ref/refs/tags/<tag>` returns 404.
+    let object = fetch_git_object(
+        client,
+        &format!("https://api.github.com/repos/{repo}/git/ref/tags/{tag}"),
+    )
+    .await
+    .with_context(|| format!("resolving tag {tag} in {repo}"))?
+    .ok_or_else(|| {
+        anyhow::anyhow!(
+            "tag {tag} does not exist in {repo}. Publishing asserts that this \
+             version corresponds to a commit; without the tag there is nothing \
+             to check that against. Create the tag, or pass --skip-tag-check if \
+             it is deliberately absent."
+        )
+    })?;
+
+    match object.kind.as_str() {
+        // Lightweight tag: already the commit.
+        "commit" => Ok(object.sha),
+        // Annotated tag: peel it to the commit it points at.
+        "tag" => {
+            let peeled = fetch_git_object(
+                client,
+                &format!(
+                    "https://api.github.com/repos/{repo}/git/tags/{}",
+                    object.sha
+                ),
+            )
+            .await
+            .with_context(|| format!("peeling annotated tag {tag} in {repo}"))?
+            .ok_or_else(|| anyhow::anyhow!("tag object {} vanished while peeling", object.sha))?;
+            Ok(peeled.sha)
+        }
+        other => anyhow::bail!("tag {tag} in {repo} points at a {other}, not a commit"),
+    }
+}
+
+/// The `object` field shared by the ref and tag endpoints.
+struct GitObject {
+    sha: String,
+    kind: String,
+}
+
+/// `None` when the resource does not exist; `Err` for anything else.
+async fn fetch_git_object(client: &Client, url: &str) -> Result<Option<GitObject>> {
+    let response = client
+        .get(url)
+        .header("Accept", "application/vnd.github+json")
+        .send()
+        .await?;
+
+    if response.status() == reqwest::StatusCode::NOT_FOUND {
+        return Ok(None);
+    }
+    let status = response.status();
+    if !status.is_success() {
+        let body = response.text().await.unwrap_or_default();
+        anyhow::bail!("GET {url} returned {status}: {}", body.trim());
+    }
+
+    let body: serde_json::Value = response.json().await?;
+    let object = body
+        .get("object")
+        .ok_or_else(|| anyhow::anyhow!("GET {url} returned no 'object' field"))?;
+    Ok(Some(GitObject {
+        sha: object
+            .get("sha")
+            .and_then(|v| v.as_str())
+            .ok_or_else(|| anyhow::anyhow!("GET {url} returned no object.sha"))?
+            .to_string(),
+        kind: object
+            .get("type")
+            .and_then(|v| v.as_str())
+            .ok_or_else(|| anyhow::anyhow!("GET {url} returned no object.type"))?
+            .to_string(),
+    }))
 }
 
 /// Verify that everything about to be uploaded was built from one commit, and
@@ -238,5 +341,13 @@ mod tests {
             "8f9737937"
         ));
         assert!(!same_commit("", "8f9737937"));
+        // Abbreviations too short to be one of ours never match, however
+        // tempting a prefix they make.
+        assert!(!same_commit("8", "8f9737937"));
+        assert!(!same_commit("8f973", "8f9737937"));
+        assert!(same_commit(
+            "8f97379",
+            "8f9737937d346e847c9c29c965fba7aa44136612"
+        ));
     }
 }

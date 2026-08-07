@@ -50,18 +50,15 @@ pub enum Commands {
         #[arg(long)]
         skip_version_json: bool,
 
-        /// Repository to resolve the release tag against, for checking that the
-        /// installers were built from the commit the tag names.
-        #[arg(long, default_value = "https://github.com/input-output-hk/daedalus")]
-        repo_url: String,
+        /// Repository, as owner/name, whose tags name the release commits.
+        /// Resolved over the GitHub API; GITHUB_TOKEN is used when set.
+        #[arg(long, default_value = "input-output-hk/daedalus")]
+        repo: String,
 
-        /// Skip resolving the release tag and comparing it against the commit
-        /// the installers were built from.
+        /// Do not resolve the release tag; check only that the installers are
+        /// internally consistent.
         ///
-        /// The installers are still checked for internal consistency. Use only
-        /// when the tag legitimately does not exist yet — a release whose tag
-        /// names a different commit than its artifacts is the failure this
-        /// check exists to prevent.
+        /// Useful when the tag has not been pushed yet.
         #[arg(long)]
         skip_tag_check: bool,
     },

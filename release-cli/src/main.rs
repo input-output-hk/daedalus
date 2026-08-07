@@ -71,7 +71,7 @@ async fn main() -> Result<()> {
             dry_run,
             test,
             skip_version_json,
-            repo_url,
+            repo,
             skip_tag_check,
         } => {
             cmd_release(ReleaseOptions {
@@ -82,7 +82,7 @@ async fn main() -> Result<()> {
                 dry_run,
                 test,
                 skip_version_json,
-                repo_url: &repo_url,
+                repo: &repo,
                 skip_tag_check,
             })
             .await
@@ -367,57 +367,22 @@ async fn cmd_sign(
     Ok(())
 }
 
-/// Resolve a release tag to the commit it names, via `git ls-remote`.
-///
-/// `refs/tags/<tag>^{}` asks for the dereferenced target, so an annotated tag
-/// yields the commit it points at rather than the tag object. Both forms are
-/// requested because a lightweight tag has no dereferenced form.
-///
-/// Failure to resolve is an error rather than a warning: a release whose tag
-/// cannot be found is exactly the case worth stopping on.
-fn resolve_tag_commit(repo_url: &str, tag: &str) -> Result<String> {
-    let output = std::process::Command::new("git")
-        .args([
-            "ls-remote",
-            repo_url,
-            &format!("refs/tags/{tag}"),
-            &format!("refs/tags/{tag}^{{}}"),
-        ])
-        .output()
-        .with_context(|| format!("running git ls-remote against {repo_url}"))?;
-
-    if !output.status.success() {
-        anyhow::bail!(
-            "git ls-remote {repo_url} refs/tags/{tag} failed: {}",
-            String::from_utf8_lossy(&output.stderr).trim()
-        );
-    }
-
-    let stdout = String::from_utf8_lossy(&output.stdout);
-    let mut object = None;
-    for line in stdout.lines() {
-        let Some((sha, name)) = line
-            .split_whitespace()
-            .next()
-            .zip(line.split_whitespace().nth(1))
-        else {
-            continue;
-        };
-        // The dereferenced entry wins when both are present.
-        if name.ends_with("^{}") {
-            return Ok(sha.to_string());
+/// HTTP client for the GitHub API, carrying GITHUB_TOKEN when one is set.
+fn github_client() -> Result<reqwest::Client> {
+    let mut headers = reqwest::header::HeaderMap::new();
+    if let Ok(token) = std::env::var("GITHUB_TOKEN") {
+        if !token.is_empty() {
+            let mut value = reqwest::header::HeaderValue::from_str(&format!("Bearer {token}"))
+                .context("GITHUB_TOKEN is not a valid header value")?;
+            value.set_sensitive(true);
+            headers.insert(reqwest::header::AUTHORIZATION, value);
         }
-        object = Some(sha.to_string());
     }
-
-    object.ok_or_else(|| {
-        anyhow::anyhow!(
-            "tag {tag} does not exist in {repo_url}. A release is a claim that \
-             this version corresponds to a commit; without the tag there is \
-             nothing to check it against. Create the tag, or pass \
-             --skip-tag-check if it is deliberately absent."
-        )
-    })
+    reqwest::Client::builder()
+        .user_agent("drt/0.1")
+        .default_headers(headers)
+        .build()
+        .context("building the GitHub API client")
 }
 
 /// Everything `cmd_release` needs, grouped so the signature stays readable as
@@ -430,7 +395,7 @@ struct ReleaseOptions<'a> {
     dry_run: bool,
     test: bool,
     skip_version_json: bool,
-    repo_url: &'a str,
+    repo: &'a str,
     skip_tag_check: bool,
 }
 
@@ -443,7 +408,7 @@ async fn cmd_release(opts: ReleaseOptions<'_>) -> Result<()> {
         dry_run,
         test,
         skip_version_json,
-        repo_url,
+        repo,
         skip_tag_check,
     } = opts;
     let installer_dir = installers::InstallerDir::load(installers_dir)?;
@@ -468,7 +433,8 @@ async fn cmd_release(opts: ReleaseOptions<'_>) -> Result<()> {
         println!("  tag check skipped (--skip-tag-check)");
         None
     } else {
-        Some(resolve_tag_commit(repo_url, &installer_dir.version)?)
+        let client = github_client()?;
+        Some(provenance::resolve_tag_commit(&client, repo, &installer_dir.version).await?)
     };
     provenance::verify(&installer_dir, tag_rev.as_deref())?;
     println!();
