@@ -68,12 +68,12 @@ describe('_createWalletFromServerData voting mapping', () => {
     expect(mockedWarn).not.toHaveBeenCalled();
   });
 
-  it('maps delegating_and_voting: pool target AND votingTarget populated', () => {
+  it('maps voting_and_delegating: pool target AND votingTarget populated', () => {
     const wallet = _createWalletFromServerData(
       loadFixture('wallet-delegating-and-voting.json')
     );
     expect(wallet.delegatedStakePoolId).toBe(POOL_ID);
-    expect(wallet.delegationStakePoolStatus).toBe('delegating_and_voting');
+    expect(wallet.delegationStakePoolStatus).toBe('voting_and_delegating');
     expect(toJS(wallet.votingTarget)).toEqual({
       kind: 'drep',
       drep: {

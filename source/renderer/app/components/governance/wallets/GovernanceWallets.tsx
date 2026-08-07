@@ -72,6 +72,89 @@ type Props = {
   intl: intlShape.isRequired;
 };
 
+function renderWalletContent(
+  wallet: WalletDelegationSummary,
+  favoriteDRepIds: Set<string>,
+  onToggleFavorite: (drepId: string) => void,
+  onChangeDelegation: (walletId: string) => void,
+  onChooseDRep: () => void,
+  onViewDetails: (drepId: string, walletId: string) => void,
+  intl: any
+) {
+  const { walletId, currentDRep, drepEntry } = wallet;
+
+  if (currentDRep == null) {
+    return (
+      <div className={styles.noDelegationCta}>
+        <p className={styles.noDelegationHeading}>
+          {intl.formatMessage(messages.noDelegationHeading)}
+        </p>
+        <p className={styles.noDelegationBody}>
+          {intl.formatMessage(messages.noDelegationBody)}
+        </p>
+        <Button
+          label={intl.formatMessage(messages.noDelegationButton)}
+          onClick={onChooseDRep}
+          skin={ButtonSkin}
+        />
+      </div>
+    );
+  }
+
+  if (currentDRep.kind === 'drep') {
+    if (drepEntry == null) {
+      return <DRepDirectorySkeleton count={1} />;
+    }
+    return (
+      <>
+        <DRepCard
+          entry={drepEntry}
+          isFavorite={favoriteDRepIds.has(drepEntry.drepId)}
+          onToggleFavorite={onToggleFavorite}
+          isCurrentDRep
+          onViewDetails={(drepId) => onViewDetails(drepId, walletId)}
+          onSelectForDelegation={() => onChangeDelegation(walletId)}
+        />
+        <div className={styles.actions}>
+          <Button
+            label={intl.formatMessage(messages.changeDelegation)}
+            onClick={() => onChangeDelegation(walletId)}
+            skin={ButtonSkin}
+          />
+        </div>
+      </>
+    );
+  }
+
+  const isSentinel =
+    currentDRep.kind === 'abstain' || currentDRep.kind === 'no_confidence';
+  return (
+    <>
+      <CurrentDRepSummary currentDRep={currentDRep} />
+      {isSentinel && (
+        <p className={styles.chooseDRepPrompt}>
+          {intl.formatMessage(messages.chooseDRepPrompt)}{' '}
+          <button
+            type="button"
+            className={styles.chooseDRepLink}
+            onClick={onChooseDRep}
+          >
+            {intl.formatMessage(messages.chooseDRepLink)}
+          </button>
+          .
+        </p>
+      )}
+      <div className={styles.actions}>
+        <Button
+          label={intl.formatMessage(messages.changeDelegation)}
+          onClick={() => onChangeDelegation(walletId)}
+          skin={ButtonSkin}
+        />
+      </div>
+    </>
+  );
+}
+
 function GovernanceWallets({
   wallets,
   favoriteDRepIds,
@@ -92,80 +175,20 @@ function GovernanceWallets({
         </p>
       ) : (
         <div className={styles.walletList}>
-          {wallets.map(({ walletId, walletName, currentDRep, drepEntry }) => {
-            const isSentinel =
-              currentDRep != null &&
-              (currentDRep.kind === 'abstain' ||
-                currentDRep.kind === 'no_confidence');
-            const isDRep = currentDRep?.kind === 'drep';
-
-            return (
-              <div key={walletId} className={styles.walletSection}>
-                <h3 className={styles.walletName}>{walletName}</h3>
-                {currentDRep == null ? (
-                  <div className={styles.noDelegationCta}>
-                    <p className={styles.noDelegationHeading}>
-                      {intl.formatMessage(messages.noDelegationHeading)}
-                    </p>
-                    <p className={styles.noDelegationBody}>
-                      {intl.formatMessage(messages.noDelegationBody)}
-                    </p>
-                    <Button
-                      label={intl.formatMessage(messages.noDelegationButton)}
-                      onClick={onChooseDRep}
-                      skin={ButtonSkin}
-                    />
-                  </div>
-                ) : isDRep && drepEntry == null ? (
-                  <DRepDirectorySkeleton count={1} />
-                ) : isDRep && drepEntry != null ? (
-                  <>
-                    <DRepCard
-                      entry={drepEntry}
-                      isFavorite={favoriteDRepIds.has(drepEntry.drepId)}
-                      onToggleFavorite={onToggleFavorite}
-                      isCurrentDRep
-                      onViewDetails={(drepId) =>
-                        onViewDetails(drepId, walletId)
-                      }
-                      onSelectForDelegation={() => onChangeDelegation(walletId)}
-                    />
-                    <div className={styles.actions}>
-                      <Button
-                        label={intl.formatMessage(messages.changeDelegation)}
-                        onClick={() => onChangeDelegation(walletId)}
-                        skin={ButtonSkin}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <CurrentDRepSummary currentDRep={currentDRep} />
-                    {isSentinel && (
-                      <p className={styles.chooseDRepPrompt}>
-                        {intl.formatMessage(messages.chooseDRepPrompt)}{' '}
-                        <button
-                          type="button"
-                          className={styles.chooseDRepLink}
-                          onClick={onChooseDRep}
-                        >
-                          {intl.formatMessage(messages.chooseDRepLink)}
-                        </button>
-                        .
-                      </p>
-                    )}
-                    <div className={styles.actions}>
-                      <Button
-                        label={intl.formatMessage(messages.changeDelegation)}
-                        onClick={() => onChangeDelegation(walletId)}
-                        skin={ButtonSkin}
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-            );
-          })}
+          {wallets.map((wallet) => (
+            <div key={wallet.walletId} className={styles.walletSection}>
+              <h3 className={styles.walletName}>{wallet.walletName}</h3>
+              {renderWalletContent(
+                wallet,
+                favoriteDRepIds,
+                onToggleFavorite,
+                onChangeDelegation,
+                onChooseDRep,
+                onViewDetails,
+                intl
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>

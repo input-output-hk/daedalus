@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CurrentVoteSummary DRep status badge renders the local expiring badge and caption inside the remaining-epoch window 1`] = `
+exports[`CurrentDRepSummary DRep status badge renders the local expiring badge and caption inside the remaining-epoch window 1`] = `
 <section
   aria-label="!!!Current delegation"
   class="component"
@@ -87,7 +87,7 @@ exports[`CurrentVoteSummary DRep status badge renders the local expiring badge a
 </section>
 `;
 
-exports[`CurrentVoteSummary DRep status badge renders the shared active badge with no status caption 1`] = `
+exports[`CurrentDRepSummary DRep status badge renders the shared active badge with no status caption 1`] = `
 <section
   aria-label="!!!Current delegation"
   class="component"
@@ -172,7 +172,7 @@ exports[`CurrentVoteSummary DRep status badge renders the shared active badge wi
 </section>
 `;
 
-exports[`CurrentVoteSummary DRep status badge renders the shared inactive badge and caption 1`] = `
+exports[`CurrentDRepSummary DRep status badge renders the shared inactive badge and caption 1`] = `
 <section
   aria-label="!!!Current delegation"
   class="component"
@@ -262,7 +262,7 @@ exports[`CurrentVoteSummary DRep status badge renders the shared inactive badge 
 </section>
 `;
 
-exports[`CurrentVoteSummary core states renders abstain with a caption and no DRep id (snapshot) 1`] = `
+exports[`CurrentDRepSummary core states renders abstain with a caption and no DRep id (snapshot) 1`] = `
 <section
   aria-label="!!!Current delegation"
   class="component"
@@ -295,7 +295,7 @@ exports[`CurrentVoteSummary core states renders abstain with a caption and no DR
 </section>
 `;
 
-exports[`CurrentVoteSummary core states renders no confidence with a caption and no DRep id (snapshot) 1`] = `
+exports[`CurrentDRepSummary core states renders no confidence with a caption and no DRep id (snapshot) 1`] = `
 <section
   aria-label="!!!Current delegation"
   class="component"
@@ -328,7 +328,7 @@ exports[`CurrentVoteSummary core states renders no confidence with a caption and
 </section>
 `;
 
-exports[`CurrentVoteSummary core states renders the DRep id row with the on-chain label and the neutral status caption when no directory entry is supplied (snapshot) 1`] = `
+exports[`CurrentDRepSummary core states renders the DRep id row with the on-chain label and the neutral status caption when no directory entry is supplied (snapshot) 1`] = `
 <section
   aria-label="!!!Current delegation"
   class="component"
@@ -403,4 +403,3 @@ exports[`CurrentVoteSummary core states renders the DRep id row with the on-chai
   </p>
 </section>
 `;
-

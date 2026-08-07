@@ -22,7 +22,7 @@
   },
   "delegation": {
     "active": {
-      "status": "delegating_and_voting",
+      "status": "voting_and_delegating",
       "target": "pool1qvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsx6m90l2",
       "voting": "drep_vkh15xev84897cr3s2f6fdwx6l50jzsm9s75uhmqwxpf8f94czu4a4l"
     },
