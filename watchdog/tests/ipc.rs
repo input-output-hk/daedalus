@@ -110,17 +110,22 @@ impl Watchdog {
     }
 
     fn start(config: &str) -> Self {
+        let parsed: Value = serde_json::from_str(config).expect("valid config JSON");
+        let state_dir = parsed["node"]["state_dir"].as_str().expect("node.state_dir");
+        let config_path = std::path::Path::new(state_dir).join("watchdog-config.json");
+        std::fs::write(&config_path, config).expect("write watchdog-config.json");
+
         let mut child = Command::new(env!("CARGO_BIN_EXE_cardano-watchdog"))
+            .arg("--config")
+            .arg(&config_path)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::null())
             .spawn()
             .expect("spawn cardano-watchdog");
 
-        let mut stdin_pipe = child.stdin.take().unwrap();
+        let stdin_pipe = child.stdin.take().unwrap();
         let stdout = child.stdout.take().unwrap();
-
-        writeln!(stdin_pipe, "{}", config).unwrap();
 
         let (tx, rx) = mpsc::channel();
         std::thread::spawn(move || {
