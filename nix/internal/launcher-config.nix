@@ -9,6 +9,7 @@
   configOverride ? null,
   genesisOverride ? null,
   cardano-playground,
+  mithril,
   system,
   jq,
 }:
@@ -305,6 +306,24 @@ let
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
     watchdogBin = mkBinPath "cardano-watchdog";
+    mithrilBin = mkBinPath "mithril-client";
+    snapshotConverterBin = mkBinPath "snapshot-converter";
+    mithrilNetworkCfgs = let
+      readVkey = networkDir: name:
+        lib.removeSuffix "\n" (builtins.readFile
+          (mithril + "/mithril-infra/configuration/${networkDir}/${name}.vkey"));
+      mkNetworkCfg = networkDir: aggregatorUrl: {
+        inherit aggregatorUrl;
+        genesisVkey = readVkey networkDir "genesis";
+        ancillaryVkey = readVkey networkDir "ancillary";
+      };
+    in rec {
+      mainnet = mkNetworkCfg "release-mainnet"
+        "https://aggregator.release-mainnet.api.mithril.network/aggregator";
+      mainnet_flight = mainnet;
+      preprod = mkNetworkCfg "release-preprod"
+        "https://aggregator.release-preprod.api.mithril.network/aggregator";
+    };
     nodeConfig = let
       nodeConfigAttrs =
         if (configOverride == null)
@@ -430,6 +449,13 @@ let
       })
       // (lib.optionalAttrs (__hasAttr network smashServers) {
         smashUrl = smashServers.${network};
+      })
+      // (lib.optionalAttrs (mithrilNetworkCfgs ? ${network}) {
+        inherit mithrilBin snapshotConverterBin;
+        mithrilAggregatorUrl = mithrilNetworkCfgs.${network}.aggregatorUrl;
+        mithrilGenesisVkey = mithrilNetworkCfgs.${network}.genesisVkey;
+        mithrilAncillaryVkey = mithrilNetworkCfgs.${network}.ancillaryVkey;
+        mithrilConverterConfig = mkConfigPath nodeConfigFiles "config.yaml";
       });
 
     installerConfig = {

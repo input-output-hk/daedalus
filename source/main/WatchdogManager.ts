@@ -65,6 +65,12 @@ export interface WatchdogState {
   mithrilPhase: string | null;
   mithrilProgress: MithrilProgress | null;
 
+  // Mithril probe result: set when node is significantly behind the certified tip
+  mithrilSignificantlyBehind: {
+    localImmutableCount: number;
+    latestCertifiedImmutable: number;
+  } | null;
+
   // Error
   lastError: string | null;
   walletUnrecoverable: boolean;
@@ -110,6 +116,7 @@ class WatchdogManager {
       blockSyncProgress: { replayedBlock: 0, validatingChunk: 0, pushingLedger: 0 },
       mithrilPhase: null,
       mithrilProgress: null,
+      mithrilSignificantlyBehind: null,
       lastError: null,
       walletUnrecoverable: false,
       nodeSocketWaitMs: null,
@@ -298,6 +305,13 @@ class WatchdogManager {
       case 'wallet_unrecoverable':
         s.walletUnrecoverable = true;
         this._pendingRejection = 'wallet_unrecoverable';
+        break;
+
+      case 'mithril_significantly_behind':
+        s.mithrilSignificantlyBehind = {
+          localImmutableCount: event.local_immutable_count as number,
+          latestCertifiedImmutable: event.latest_certified_immutable as number,
+        };
         break;
 
       case 'mithril_status':

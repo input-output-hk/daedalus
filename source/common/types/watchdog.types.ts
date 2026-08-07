@@ -19,6 +19,11 @@ export interface WatchdogState {
   nodeForceKilled: boolean;
   lastWalletExitCode: number | null;
   lastWalletExitSignal: string | null;
+  // Set once when probe fires and node is significantly behind certified tip
+  mithrilSignificantlyBehind: {
+    localImmutableCount: number;
+    latestCertifiedImmutable: number;
+  } | null;
   // Chain storage paths (Daedalus config, not watchdog state)
   defaultChainPath: string | null;
   customChainPath: string | null;

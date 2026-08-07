@@ -177,6 +177,7 @@
       inherit (pkgs) runCommand lib jq;
       system = pkgs.stdenv.hostPlatform.system;
       inherit (inputs) cardano-playground;
+      mithril = inputs.mithril;
       network = cluster;
       os =
         {

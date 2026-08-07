@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import SyncingConnecting from '../../components/loading/syncing-connecting/SyncingConnecting';
+import SyncingConnectingMithrilPrompt from '../../components/loading/syncing-connecting/SyncingConnectingMithrilPrompt';
+import { computeBehindByEpochs } from '../../utils/mithrilBehindness';
 import { generateSupportRequestLink } from '../../../../common/utils/reporting';
 
 type Props = InjectedProps;
@@ -33,6 +35,9 @@ class LoadingSyncingConnectingPage extends Component<Props> {
       loadingPhase,
       nodeStartupPhase,
       blockSyncProgress,
+      mithrilSignificantlyBehind,
+      startMithrilForce,
+      dismissMithrilPrompt,
     } = backend;
     // Map loadingPhase to the cardanoNodeState shape the component expects
     const cardanoNodeState = loadingPhase;
@@ -45,7 +50,23 @@ class LoadingSyncingConnectingPage extends Component<Props> {
     const { toggleNewsFeed } = this.props.actions.app;
     const { unread } = newsFeed.newsFeedData;
     const hasNotification = unread.length > 0;
+    const showMithrilPrompt =
+      loadingPhase === 'node-starting' && mithrilSignificantlyBehind !== null;
+    const behindByEpochs = mithrilSignificantlyBehind
+      ? computeBehindByEpochs(
+          mithrilSignificantlyBehind.localImmutableCount,
+          mithrilSignificantlyBehind.latestCertifiedImmutable
+        )
+      : undefined;
     return (
+      <>
+      {showMithrilPrompt && (
+        <SyncingConnectingMithrilPrompt
+          behindByEpochs={behindByEpochs}
+          onStart={async () => { startMithrilForce(); }}
+          onDismiss={dismissMithrilPrompt}
+        />
+      )}
       <SyncingConnecting
         cardanoNodeState={cardanoNodeState}
         hasBeenConnected={hasBeenConnected}
@@ -80,6 +101,7 @@ class LoadingSyncingConnectingPage extends Component<Props> {
         nodeStartupPhase={nodeStartupPhase}
         blockSyncProgress={blockSyncProgress}
       />
+      </>
     );
   }
 
