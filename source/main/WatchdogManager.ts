@@ -1,5 +1,7 @@
 import { spawn, ChildProcess } from 'child_process';
 import { createInterface } from 'readline';
+import { writeFileSync } from 'fs';
+import path from 'path';
 import { logger } from './utils/logging';
 
 // ---------------------------------------------------------------------------
@@ -140,16 +142,17 @@ class WatchdogManager {
       this._walletReadyReject = reject;
     });
 
-    const proc = spawn(exePath, [], {
+    const configPath = path.join(config.node.state_dir, 'watchdog-config.json');
+    const configJson = JSON.stringify(config, null, 2);
+    writeFileSync(configPath, configJson, 'utf8');
+    logger.info('WatchdogManager: wrote config', { configPath, config });
+
+    const proc = spawn(exePath, ['--config', configPath], {
       stdio: ['pipe', 'pipe', 'pipe'],
     });
     this.proc = proc;
 
     logger.info('WatchdogManager: spawned watchdog', { pid: proc.pid, exe: exePath });
-
-    // Write config as first stdin line
-    const configLine = JSON.stringify(config) + '\n';
-    proc.stdin!.write(configLine);
 
     // Read stdout line-by-line
     const rl = createInterface({ input: proc.stdout!, crlfDelay: Infinity });
@@ -235,7 +238,7 @@ class WatchdogManager {
 
   private handleEvent(event: Record<string, unknown>): void {
     const eventType = event.event as string | undefined;
-    if (eventType !== 'node_block_sync_progress') {
+    if (eventType !== 'node_block_sync_progress' && eventType !== 'mithril_progress') {
       logger.info('WatchdogManager event:', { ...event });
     }
 

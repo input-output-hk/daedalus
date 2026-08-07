@@ -109,11 +109,12 @@ const safeExit = async () => {
   return safeExitWithCode(exitCode);
 };
 
-const handleWindowClose = async (event?: Event | null) => {
+const handleWindowClose = (event?: Event | null) => {
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
+  // Prevent immediate close — let before-quit handle the watchdog shutdown first.
   event?.preventDefault();
-  await safeExit();
+  app.quit();
 };
 
 function getFreePort(): Promise<number> {
