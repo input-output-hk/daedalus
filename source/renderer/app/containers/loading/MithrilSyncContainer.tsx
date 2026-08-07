@@ -51,7 +51,9 @@ class MithrilSyncContainer extends Component<InjectedProps> {
       return (
         <div className={styles.card}>
           <MithrilErrorView
-            error={lastError ? { code: 'mithril_error', message: lastError } : null}
+            error={
+              lastError ? { code: 'mithril_error', message: lastError } : null
+            }
             onOpenExternalLink={(url) => app.openExternalLink(url)}
             actions={[
               {
@@ -76,10 +78,18 @@ class MithrilSyncContainer extends Component<InjectedProps> {
           status={mithrilPhase ?? 'preparing'}
           filesDownloaded={mithrilProgress?.filesDownloaded}
           filesTotal={mithrilProgress?.filesTotal}
-          snapshotBytesDownloaded={isLedgerPhase ? undefined : mithrilProgress?.bytesDownloaded}
-          snapshotBytesTotal={isLedgerPhase ? undefined : mithrilProgress?.bytesTotal}
-          ancillaryBytesDownloaded={isLedgerPhase ? mithrilProgress?.bytesDownloaded : undefined}
-          ancillaryBytesTotal={isLedgerPhase ? mithrilProgress?.bytesTotal : undefined}
+          snapshotBytesDownloaded={
+            isLedgerPhase ? undefined : mithrilProgress?.bytesDownloaded
+          }
+          snapshotBytesTotal={
+            isLedgerPhase ? undefined : mithrilProgress?.bytesTotal
+          }
+          ancillaryBytesDownloaded={
+            isLedgerPhase ? mithrilProgress?.bytesDownloaded : undefined
+          }
+          ancillaryBytesTotal={
+            isLedgerPhase ? mithrilProgress?.bytesTotal : undefined
+          }
           bootstrapStartedAt={this._mithrilStartedAt}
           showDownloadProgressBar
           onAction={() => backend.cancelMithril()}

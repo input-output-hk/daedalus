@@ -17,8 +17,14 @@ class LoadingSyncingConnectingPage extends Component<Props> {
   };
 
   render() {
-    const { newsFeed, appUpdate, networkStatus, profile, app, backend } =
-      this.props.stores;
+    const {
+      newsFeed,
+      appUpdate,
+      networkStatus,
+      profile,
+      app,
+      backend,
+    } = this.props.stores;
     const {
       isNodeResponding,
       isNodeSyncing,
@@ -45,15 +51,18 @@ class LoadingSyncingConnectingPage extends Component<Props> {
     const isNodeStopping = false;
     const isNodeStopped = false;
     // Node is verifying blockchain when it has started but wallet isn't ready yet
-    const isVerifyingBlockchain = loadingPhase === 'node-starting' && nodeStartupPhase !== null;
+    const isVerifyingBlockchain =
+      loadingPhase === 'node-starting' && nodeStartupPhase !== null;
     const { displayAppUpdateNewsItem } = appUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = profile;
     const { toggleNewsFeed } = this.props.actions.app;
     const { unread } = newsFeed.newsFeedData;
     const hasNotification = unread.length > 0;
     const isInLongReplay =
-      (blockSyncProgress.replayedBlock > 0 && blockSyncProgress.replayedBlock < 99) ||
-      (blockSyncProgress.validatingChunk > 0 && blockSyncProgress.validatingChunk < 99);
+      (blockSyncProgress.replayedBlock > 0 &&
+        blockSyncProgress.replayedBlock < 99) ||
+      (blockSyncProgress.validatingChunk > 0 &&
+        blockSyncProgress.validatingChunk < 99);
     const showMithrilPrompt =
       loadingPhase === 'node-starting' &&
       !mithrilPromptDismissed &&
@@ -66,47 +75,49 @@ class LoadingSyncingConnectingPage extends Component<Props> {
       : undefined;
     return (
       <>
-      {showMithrilPrompt && (
-        <SyncingConnectingMithrilPrompt
-          behindByEpochs={behindByEpochs}
-          onStart={async () => { startMithrilForce(); }}
-          onDismiss={dismissMithrilPrompt}
+        {showMithrilPrompt && (
+          <SyncingConnectingMithrilPrompt
+            behindByEpochs={behindByEpochs}
+            onStart={async () => {
+              startMithrilForce();
+            }}
+            onDismiss={dismissMithrilPrompt}
+          />
+        )}
+        <SyncingConnecting
+          cardanoNodeState={cardanoNodeState}
+          hasBeenConnected={hasBeenConnected}
+          isConnected={isConnected}
+          isSynced={isSynced}
+          isConnecting={!isConnected}
+          isSyncing={isConnected && !isSynced}
+          isSyncProgressStalling={isSyncProgressStalling}
+          isNodeStopping={isNodeStopping}
+          isNodeStopped={isNodeStopped}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+          isNotEnoughDiskSpace={isNotEnoughDiskSpace}
+          isTlsCertInvalid={isTlsCertInvalid}
+          hasNotification={hasNotification}
+          hasUpdate={displayAppUpdateNewsItem}
+          hasLoadedCurrentLocale={hasLoadedCurrentLocale}
+          hasLoadedCurrentTheme={hasLoadedCurrentTheme}
+          isCheckingSystemTime={
+            !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
+          }
+          isNodeResponding={isNodeResponding}
+          isNodeSyncing={isNodeSyncing}
+          isNodeTimeCorrect={isNodeTimeCorrect}
+          onIssueClick={this.handleIssueClick}
+          onOpenExternalLink={this.handleOpenExternalLink}
+          onStatusIconClick={this.openDaedalusDiagnosticsDialog}
+          onDownloadLogs={this.handleDownloadLogs}
+          onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
+          disableDownloadLogs={app.isDownloadNotificationVisible}
+          showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
+          isVerifyingBlockchain={isVerifyingBlockchain}
+          nodeStartupPhase={nodeStartupPhase}
+          blockSyncProgress={blockSyncProgress}
         />
-      )}
-      <SyncingConnecting
-        cardanoNodeState={cardanoNodeState}
-        hasBeenConnected={hasBeenConnected}
-        isConnected={isConnected}
-        isSynced={isSynced}
-        isConnecting={!isConnected}
-        isSyncing={isConnected && !isSynced}
-        isSyncProgressStalling={isSyncProgressStalling}
-        isNodeStopping={isNodeStopping}
-        isNodeStopped={isNodeStopped}
-        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-        isNotEnoughDiskSpace={isNotEnoughDiskSpace}
-        isTlsCertInvalid={isTlsCertInvalid}
-        hasNotification={hasNotification}
-        hasUpdate={displayAppUpdateNewsItem}
-        hasLoadedCurrentLocale={hasLoadedCurrentLocale}
-        hasLoadedCurrentTheme={hasLoadedCurrentTheme}
-        isCheckingSystemTime={
-          !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
-        }
-        isNodeResponding={isNodeResponding}
-        isNodeSyncing={isNodeSyncing}
-        isNodeTimeCorrect={isNodeTimeCorrect}
-        onIssueClick={this.handleIssueClick}
-        onOpenExternalLink={this.handleOpenExternalLink}
-        onStatusIconClick={this.openDaedalusDiagnosticsDialog}
-        onDownloadLogs={this.handleDownloadLogs}
-        onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
-        disableDownloadLogs={app.isDownloadNotificationVisible}
-        showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
-        isVerifyingBlockchain={isVerifyingBlockchain}
-        nodeStartupPhase={nodeStartupPhase}
-        blockSyncProgress={blockSyncProgress}
-      />
       </>
     );
   }

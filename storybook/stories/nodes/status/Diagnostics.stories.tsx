@@ -126,9 +126,7 @@ function AutoOpenedPartialSyncConfirmation() {
 storiesOf('Nodes / Diagnostic', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Partial Sync CTA Ready', () => <DaedalusDiagnostics {...baseProps} />)
-  .add('Partial Sync CTA Blocked', () => (
-    <DaedalusDiagnostics {...baseProps} />
-  ))
+  .add('Partial Sync CTA Blocked', () => <DaedalusDiagnostics {...baseProps} />)
   .add('Partial Sync At Or Past Snapshot', () => (
     <DaedalusDiagnostics {...baseProps} />
   ))

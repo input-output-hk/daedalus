@@ -48,8 +48,7 @@ class App extends Component<{
     const themeVars = require(`./themes/daedalus/${currentTheme}.ts`).default;
 
     const { ABOUT, DAEDALUS_DIAGNOSTICS, TOGGLE_RTS_FLAGS_MODE } = DIALOGS;
-    const canShowNews =
-      !isSetupPage; // Active page is not "Language Selection" or "Terms of Use"
+    const canShowNews = !isSetupPage; // Active page is not "Language Selection" or "Terms of Use"
 
     // Daedalus is not shutting down
     if (document.documentElement) {

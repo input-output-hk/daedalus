@@ -16,7 +16,10 @@ interface Context {
   intl: Intl;
 }
 
-function MithrilDecisionView({ onAccept, onDecline }: Props, { intl }: Context) {
+function MithrilDecisionView(
+  { onAccept, onDecline }: Props,
+  { intl }: Context
+) {
   return (
     <div className={styles.root}>
       <div className={styles.header}>

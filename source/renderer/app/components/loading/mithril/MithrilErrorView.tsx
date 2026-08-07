@@ -42,9 +42,10 @@ type ErrorCopy = {
   hint?: keyof typeof messages;
 };
 
-const ERROR_COPY_BY_STAGE: Partial<
-  Record<MithrilBootstrapErrorStage, ErrorCopy>
-> = {
+const ERROR_COPY_BY_STAGE: Partial<Record<
+  MithrilBootstrapErrorStage,
+  ErrorCopy
+>> = {
   download: {
     title: 'errorDownloadTitle',
     hint: 'errorDownloadHint',

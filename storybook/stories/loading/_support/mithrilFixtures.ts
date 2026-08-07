@@ -168,9 +168,10 @@ const BOOTSTRAP_ITEM_SEQUENCE = [
 // Canonical mid-status frames: how far through the sequence each status has
 // progressed when a tester lands on it (downloading sits on the snapshot
 // transfer, verifying on the long database check).
-const BOOTSTRAP_STATUS_REACHED_ID: Partial<
-  Record<MithrilBootstrapStatus, string>
-> = {
+const BOOTSTRAP_STATUS_REACHED_ID: Partial<Record<
+  MithrilBootstrapStatus,
+  string
+>> = {
   preparing: 'preparing',
   downloading: 'step-3',
   verifying: 'step-5',

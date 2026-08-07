@@ -41,7 +41,9 @@ interface ManagedMithrilDecisionViewProps {
   includeReturnToStorageAction?: boolean;
 }
 
-export function ManagedMithrilDecisionView(_props: ManagedMithrilDecisionViewProps) {
+export function ManagedMithrilDecisionView(
+  _props: ManagedMithrilDecisionViewProps
+) {
   return (
     <MithrilDecisionView
       onAccept={() => bootstrapActions.onAccept()}
@@ -65,8 +67,7 @@ export function ManagedChainStorageLocationPicker({
   customChainPath = null,
   defaultChainPath,
   validationPreset,
-  defaultChainStorageValidation:
-    managedDefaultValidation = defaultChainStorageValidation,
+  defaultChainStorageValidation: managedDefaultValidation = defaultChainStorageValidation,
   estimatedRequiredSpaceBytes,
   availableSpaceBytes,
   isRecoveryFallback,
@@ -182,8 +183,7 @@ export function ManagedMithrilBootstrap({
   initialStorageLocationConfirmed = true,
   customChainPath = null,
   defaultChainPath,
-  defaultChainStorageValidation:
-    defaultValidation = defaultChainStorageValidation,
+  defaultChainStorageValidation: defaultValidation = defaultChainStorageValidation,
   latestSnapshotSize,
   isFetchingSnapshots,
   validationPreset,

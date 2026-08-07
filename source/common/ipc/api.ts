@@ -253,8 +253,7 @@ export type ExportWalletsMainResponse = {
  */
 export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
   'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
-export type GenerateWalletMigrationReportRendererRequest =
-  WalletMigrationReportData;
+export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
 export type GenerateWalletMigrationReportMainResponse = void;
 
 /**
@@ -303,8 +302,7 @@ export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
  */
 export const DELETE_DOWNLOADED_FILE = 'DELETE_DOWNLOADED_FILE';
 export type DeleteDownloadedFileRendererRequest = DeleteDownloadedFileRequest;
-export type DeleteDownloadedFileMainResponse =
-  DeleteDownloadedFileResponse | void;
+export type DeleteDownloadedFileMainResponse = DeleteDownloadedFileResponse | void;
 
 /**
  * Channel for initiating the download manager
@@ -317,16 +315,14 @@ export type DownloadLocalDataMainResponse = DownloadLocalDataResponse;
  * Channel for initiating the download manager
  */
 export const GET_DOWNLOADS_LOCAL_DATA = 'GET_DOWNLOADS_LOCAL_DATA';
-export type DownloadsLocalDataRendererRequest =
-  DownloadsLocalDataRequest | void;
+export type DownloadsLocalDataRendererRequest = DownloadsLocalDataRequest | void;
 export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
 
 /**
  * Channel for initiating the download manager
  */
 export const CLEAR_DOWNLOAD_LOCAL_DATA = 'CLEAR_DOWNLOAD_LOCAL_DATA';
-export type ClearDownloadLocalDataRendererRequest =
-  ClearDownloadLocalDataRequest;
+export type ClearDownloadLocalDataRendererRequest = ClearDownloadLocalDataRequest;
 export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
 
 /**
@@ -335,7 +331,6 @@ export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
 export const CHECK_FILE_EXISTS = 'CHECK_FILE_EXISTS';
 export type CheckFileExistsRendererRequest = CheckFileExistsRequest;
 export type CheckFileExistsMainResponse = boolean;
-
 
 /**
  * Channel for quitting Daedalus and installing update
@@ -397,16 +392,12 @@ export type IntrospectAddressMainResponse = IntrospectAddressResponse;
 
 export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
   'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
-export type getHardwareWalletTransportRendererRequest =
-  HardwareWalletTransportDeviceRequest;
-export type getHardwareWalletTransportMainResponse =
-  HardwareWalletTransportDeviceResponse;
+export type getHardwareWalletTransportRendererRequest = HardwareWalletTransportDeviceRequest;
+export type getHardwareWalletTransportMainResponse = HardwareWalletTransportDeviceResponse;
 export const GET_EXTENDED_PUBLIC_KEY_CHANNEL =
   'GET_EXTENDED_PUBLIC_KEY_CHANNEL';
-export type getExtendedPublicKeyRendererRequest =
-  HardwareWalletExtendedPublicKeyRequest;
-export type getExtendedPublicKeyMainResponse =
-  HardwareWalletExtendedPublicKeyResponse;
+export type getExtendedPublicKeyRendererRequest = HardwareWalletExtendedPublicKeyRequest;
+export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyResponse;
 export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
 export type getCardanoAdaAppRendererRequest = {
   path: string | null | undefined;
@@ -415,8 +406,7 @@ export type getCardanoAdaAppRendererRequest = {
 export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
-export type getHardwareWalletConnectionMainRequest =
-  HardwareWalletConnectionRequest;
+export type getHardwareWalletConnectionMainRequest = HardwareWalletConnectionRequest;
 export type getHardwareWalletConnectionRendererResponse =
   | LedgerDevicePayload
   | TrezorDevicePayload
@@ -463,7 +453,8 @@ export type waitForLedgerDevicesResponse = LedgerDevicePayload;
 // ========== WATCHDOG IPC CHANNELS ==========
 
 // Poll: renderer requests current WatchdogState snapshot (every 2s)
-export const GET_CACHED_BACKEND_STATUS_CHANNEL = 'GET_CACHED_BACKEND_STATUS_CHANNEL';
+export const GET_CACHED_BACKEND_STATUS_CHANNEL =
+  'GET_CACHED_BACKEND_STATUS_CHANNEL';
 export type GetCachedBackendStatusRendererRequest = void;
 // Import WatchdogState from watchdog.types — but since api.ts uses inline types,
 // define the response type as a re-export of WatchdogState:
@@ -501,8 +492,12 @@ export type NodeStartupStatusMainRequest = { phase: string };
 export type NodeStartupStatusRendererResponse = void;
 
 // Push: main → renderer node_block_sync_progress events
-export const NODE_BLOCK_SYNC_PROGRESS_CHANNEL = 'NODE_BLOCK_SYNC_PROGRESS_CHANNEL';
-export type NodeBlockSyncProgressMainRequest = { kind: string; progress: number };
+export const NODE_BLOCK_SYNC_PROGRESS_CHANNEL =
+  'NODE_BLOCK_SYNC_PROGRESS_CHANNEL';
+export type NodeBlockSyncProgressMainRequest = {
+  kind: string;
+  progress: number;
+};
 export type NodeBlockSyncProgressRendererResponse = void;
 
 // Chain storage: renderer asks main to validate a candidate path

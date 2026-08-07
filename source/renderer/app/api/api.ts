@@ -786,8 +786,7 @@ export default class AdaApi {
       logger.debug('AdaApi::getAssets success', {
         assets: response,
       });
-      const assetsLocalData =
-        await global.daedalus.api.localStorage.getAssetsLocalData();
+      const assetsLocalData = await global.daedalus.api.localStorage.getAssetsLocalData();
       logger.debug('AdaApi::getAssetsLocalData success', {
         assetsLocalData,
       });
@@ -1057,11 +1056,13 @@ export default class AdaApi {
         })
         .where('code', 'transaction_is_too_big');
 
-      const { requiresAdaToRemainToSupportNativeTokens, adaToProceed } =
-        doesWalletRequireAdaToRemainToSupportTokens(
-          error,
-          hasAssetsRemainingAfterTransaction
-        );
+      const {
+        requiresAdaToRemainToSupportNativeTokens,
+        adaToProceed,
+      } = doesWalletRequireAdaToRemainToSupportTokens(
+        error,
+        hasAssetsRemainingAfterTransaction
+      );
       if (requiresAdaToRemainToSupportNativeTokens) {
         apiError.set('cannotLeaveWalletEmpty', true, {
           adaAmount: adaToProceed,
@@ -1682,8 +1683,9 @@ export default class AdaApi {
   getCurrencyList = async (): Promise<GetCurrencyListResponse> => {
     try {
       const apiResponse = await getCurrencyList();
-      const response: GetCurrencyListResponse =
-        currencyConfig.responses.list(apiResponse);
+      const response: GetCurrencyListResponse = currencyConfig.responses.list(
+        apiResponse
+      );
       logger.debug('AdaApi::getCurrencyList success', {
         response,
       });
@@ -1700,8 +1702,9 @@ export default class AdaApi {
   ): Promise<GetCurrencyRateResponse> => {
     try {
       const apiResponse = await getCurrencyRate(currency);
-      const response: GetCurrencyRateResponse =
-        currencyConfig.responses.rate(apiResponse);
+      const response: GetCurrencyRateResponse = currencyConfig.responses.rate(
+        apiResponse
+      );
       logger.debug('AdaApi::getCurrencyRate success', {
         response,
       });
@@ -2207,8 +2210,9 @@ export default class AdaApi {
     logger.debug('AdaApi::getSmashSettings called');
 
     try {
-      const { pool_metadata_source: poolMetadataSource } =
-        await getSmashSettings(this.config);
+      const {
+        pool_metadata_source: poolMetadataSource,
+      } = await getSmashSettings(this.config);
       logger.debug('AdaApi::getSmashSettings success', {
         poolMetadataSource,
       });
@@ -2232,8 +2236,12 @@ export default class AdaApi {
         return true;
       }
 
-      const { health }: CheckSmashServerHealthApiResponse =
-        await checkSmashServerHealth(this.config, url);
+      const {
+        health,
+      }: CheckSmashServerHealthApiResponse = await checkSmashServerHealth(
+        this.config,
+        url
+      );
       const isValid = health === SMASH_SERVER_STATUSES.AVAILABLE;
       logger.debug('AdaApi::checkSmashServerIsValid success', {
         isValid,
@@ -2256,8 +2264,9 @@ export default class AdaApi {
     });
 
     try {
-      const isSmashServerValid =
-        await this.checkSmashServerIsValid(poolMetadataSource);
+      const isSmashServerValid = await this.checkSmashServerIsValid(
+        poolMetadataSource
+      );
 
       if (!isSmashServerValid) {
         const error: ErrorType = {
@@ -2445,10 +2454,12 @@ export default class AdaApi {
     });
 
     try {
-      const response: TransferFundsCalculateFeeApiResponse =
-        await transferFundsCalculateFee(this.config, {
+      const response: TransferFundsCalculateFeeApiResponse = await transferFundsCalculateFee(
+        this.config,
+        {
           sourceWalletId,
-        });
+        }
+      );
       logger.debug('AdaApi::transferFundsCalculateFee success', {
         response,
       });
@@ -2650,8 +2661,9 @@ export default class AdaApi {
     logger.debug('AdaApi::getNetworkParameters called');
 
     try {
-      const networkParameters: GetNetworkParametersApiResponse =
-        await getNetworkParameters(this.config);
+      const networkParameters: GetNetworkParametersApiResponse = await getNetworkParameters(
+        this.config
+      );
       logger.debug('AdaApi::getNetworkParameters success', {
         networkParameters,
       });

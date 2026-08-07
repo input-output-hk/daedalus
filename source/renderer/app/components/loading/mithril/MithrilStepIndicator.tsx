@@ -47,12 +47,10 @@ interface Context {
 
 const STEPS: ReadonlyArray<StepId> = ['preparing', 'downloading', 'finalizing'];
 
-const STATUS_TO_STEP: Partial<
-  Record<
-    MithrilBootstrapStatus | MithrilPartialSyncStatus | MithrilSyncStatus,
-    StepId
-  >
-> = {
+const STATUS_TO_STEP: Partial<Record<
+  MithrilBootstrapStatus | MithrilPartialSyncStatus | MithrilSyncStatus,
+  StepId
+>> = {
   'stopping-node': 'preparing',
   preparing: 'preparing',
   downloading: 'downloading',
@@ -696,7 +694,10 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
                       const hasBytes =
                         snapshotBytesTotal != null && snapshotBytesTotal > 0;
                       const bytesStr = hasBytes
-                        ? `${formatTransferSize(snapshotBytesDownloaded ?? 0) ?? '—'} / ${formatTransferSize(snapshotBytesTotal) ?? '—'}`
+                        ? `${
+                            formatTransferSize(snapshotBytesDownloaded ?? 0) ??
+                            '—'
+                          } / ${formatTransferSize(snapshotBytesTotal) ?? '—'}`
                         : null;
                       const filesDetail = hasFiles
                         ? intl.formatMessage(
@@ -710,7 +711,7 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
                       const details =
                         filesDetail && bytesStr
                           ? `${filesDetail} · ${bytesStr}`
-                          : (filesDetail ?? bytesStr ?? undefined);
+                          : filesDetail ?? bytesStr ?? undefined;
                       const sizeContextText =
                         snapshotSizeBytes != null
                           ? intl.formatMessage(

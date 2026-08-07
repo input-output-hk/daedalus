@@ -56,17 +56,36 @@ export default (window: BrowserWindow) => {
   // Watchdog IPC
   handleChainStorageRequests();
   getCachedBackendStatusChannel.onRequest(() =>
-    Promise.resolve(backendLifecycle.getState() ?? {
-      watchdogPid: 0, nodePid: 0, walletPid: 0,
-      nodeStartedAt: null, walletStartedAt: null, walletRestartCount: 0, walletPort: null,
-      hasChain: null, nodeStartupPhase: null,
-      blockSyncProgress: { replayedBlock: 0, validatingChunk: 0, pushingLedger: 0 },
-      mithrilPhase: null, mithrilProgress: null, mithrilSignificantlyBehind: null,
-      lastError: null, walletUnrecoverable: false,
-      nodeSocketWaitMs: null, walletReadyWaitMs: null, nodeForceKilled: false,
-      lastWalletExitCode: null, lastWalletExitSignal: null,
-      defaultChainPath: null, customChainPath: null,
-    })
+    Promise.resolve(
+      backendLifecycle.getState() ?? {
+        watchdogPid: 0,
+        nodePid: 0,
+        walletPid: 0,
+        nodeStartedAt: null,
+        walletStartedAt: null,
+        walletRestartCount: 0,
+        walletPort: null,
+        hasChain: null,
+        nodeStartupPhase: null,
+        blockSyncProgress: {
+          replayedBlock: 0,
+          validatingChunk: 0,
+          pushingLedger: 0,
+        },
+        mithrilPhase: null,
+        mithrilProgress: null,
+        mithrilSignificantlyBehind: null,
+        lastError: null,
+        walletUnrecoverable: false,
+        nodeSocketWaitMs: null,
+        walletReadyWaitMs: null,
+        nodeForceKilled: false,
+        lastWalletExitCode: null,
+        lastWalletExitSignal: null,
+        defaultChainPath: null,
+        customChainPath: null,
+      }
+    )
   );
   mithrilCommandChannel.onReceive((cmd) => {
     backendLifecycle.sendMithrilCommand(cmd);
