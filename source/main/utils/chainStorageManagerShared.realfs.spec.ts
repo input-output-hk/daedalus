@@ -28,9 +28,30 @@ jest.mock('./logging', () => ({
  * build sandbox, which makes a genuine cross-device move testable without any
  * privileges or mounting.
  */
+/** Existing drive roots, as candidate homes for a different volume. */
+const windowsDriveRoots = (): Array<string> =>
+  'CDEFGHIJKLMNOPQRSTUVWXYZ'
+    .split('')
+    .map((letter) => `${letter}:\\`)
+    .filter((root) => {
+      try {
+        return fs.statSync(root).isDirectory();
+      } catch {
+        return false;
+      }
+    });
+
 const findCrossDeviceRoot = (reference: string): string | null => {
   const referenceDev = fs.statSync(reference).dev;
-  for (const candidate of ['/dev/shm', os.tmpdir(), '/var/tmp']) {
+  // Windows has no /dev/shm, but it does have drive letters, and a rename
+  // across volumes raises EXDEV there too — so the branch is reachable on both
+  // platforms, just via different roots.
+  const candidates =
+    process.platform === 'win32'
+      ? [os.tmpdir(), ...windowsDriveRoots()]
+      : ['/dev/shm', os.tmpdir(), '/var/tmp'];
+
+  for (const candidate of candidates) {
     try {
       if (fs.statSync(candidate).dev !== referenceDev) {
         // Confirm it is writable before claiming it, not just present.
