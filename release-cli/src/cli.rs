@@ -49,6 +49,18 @@ pub enum Commands {
         /// Useful for staging binaries before making them the latest version.
         #[arg(long)]
         skip_version_json: bool,
+
+        /// Repository, as owner/name, whose tags name the release commits.
+        /// Resolved over the GitHub API; GITHUB_TOKEN is used when set.
+        #[arg(long, default_value = "input-output-hk/daedalus")]
+        repo: String,
+
+        /// Do not resolve the release tag; check only that the installers are
+        /// internally consistent.
+        ///
+        /// Useful when the tag has not been pushed yet.
+        #[arg(long)]
+        skip_tag_check: bool,
     },
 
     /// Code-sign macOS (.pkg) and/or Windows (.exe) installers via SSH

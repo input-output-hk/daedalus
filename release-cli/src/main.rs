@@ -3,12 +3,13 @@ mod fetch;
 mod hash;
 mod installers;
 mod newsfeed_cmd;
+mod provenance;
 mod s3;
 mod serve;
 mod sign;
 mod version_json;
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::Parser;
 use cli::{Cli, Commands, NewsfeedCommands};
 use std::collections::HashMap;
@@ -70,16 +71,20 @@ async fn main() -> Result<()> {
             dry_run,
             test,
             skip_version_json,
+            repo,
+            skip_tag_check,
         } => {
-            cmd_release(
-                &installers_dir,
-                &bucket,
-                &bucket_url,
+            cmd_release(ReleaseOptions {
+                installers_dir: &installers_dir,
+                bucket: &bucket,
+                bucket_url: &bucket_url,
                 release_notes,
                 dry_run,
                 test,
                 skip_version_json,
-            )
+                repo: &repo,
+                skip_tag_check,
+            })
             .await
         }
 
@@ -362,15 +367,50 @@ async fn cmd_sign(
     Ok(())
 }
 
-async fn cmd_release(
-    installers_dir: &std::path::Path,
-    bucket: &str,
-    bucket_url: &str,
+/// HTTP client for the GitHub API, carrying GITHUB_TOKEN when one is set.
+fn github_client() -> Result<reqwest::Client> {
+    let mut headers = reqwest::header::HeaderMap::new();
+    if let Ok(token) = std::env::var("GITHUB_TOKEN") {
+        if !token.is_empty() {
+            let mut value = reqwest::header::HeaderValue::from_str(&format!("Bearer {token}"))
+                .context("GITHUB_TOKEN is not a valid header value")?;
+            value.set_sensitive(true);
+            headers.insert(reqwest::header::AUTHORIZATION, value);
+        }
+    }
+    reqwest::Client::builder()
+        .user_agent("drt/0.1")
+        .default_headers(headers)
+        .build()
+        .context("building the GitHub API client")
+}
+
+/// Everything `cmd_release` needs, grouped so the signature stays readable as
+/// options accumulate.
+struct ReleaseOptions<'a> {
+    installers_dir: &'a std::path::Path,
+    bucket: &'a str,
+    bucket_url: &'a str,
     release_notes: Option<String>,
     dry_run: bool,
     test: bool,
     skip_version_json: bool,
-) -> Result<()> {
+    repo: &'a str,
+    skip_tag_check: bool,
+}
+
+async fn cmd_release(opts: ReleaseOptions<'_>) -> Result<()> {
+    let ReleaseOptions {
+        installers_dir,
+        bucket,
+        bucket_url,
+        release_notes,
+        dry_run,
+        test,
+        skip_version_json,
+        repo,
+        skip_tag_check,
+    } = opts;
     let installer_dir = installers::InstallerDir::load(installers_dir)?;
 
     println!("Version  : {}", installer_dir.version);
@@ -383,6 +423,20 @@ async fn cmd_release(
     for inst in &installer_dir.installers {
         println!("  {} [{}]", inst.filename, inst.platform.display_name());
     }
+    println!();
+
+    // ── 0. Provenance ────────────────────────────────────────────────────────
+    // Before anything is hashed, signed or uploaded: do these artifacts come
+    // from one commit, and is it the commit the release tag names?
+    println!("=== Checking provenance ===");
+    let tag_rev = if skip_tag_check {
+        println!("  tag check skipped (--skip-tag-check)");
+        None
+    } else {
+        let client = github_client()?;
+        Some(provenance::resolve_tag_commit(&client, repo, &installer_dir.version).await?)
+    };
+    provenance::verify(&installer_dir, tag_rev.as_deref())?;
     println!();
 
     // ── 1. Hash ──────────────────────────────────────────────────────────────
