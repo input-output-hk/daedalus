@@ -9,7 +9,7 @@ use tokio::sync::mpsc;
 use tracing::{info, warn};
 
 use crate::config::MithrilConfig;
-use crate::protocol::{Command as Cmd, Event, emit};
+use crate::protocol::{emit, Command as Cmd, Event};
 
 const PROGRESS_THROTTLE_MS: u128 = 500;
 // Duration the cutover gate holds open for an in-flight cancel after the

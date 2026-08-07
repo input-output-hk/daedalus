@@ -11,7 +11,7 @@
 // use raw fd 3 for the shutdown pipe, so the tests are Unix-only.
 #![cfg(unix)]
 
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use std::io::{BufRead, BufReader, Write};
 use std::net::TcpListener;
 use std::path::{Path, PathBuf};
@@ -236,7 +236,9 @@ impl<'a> Cfg<'a> {
 }
 
 fn spawn_watchdog(config: &Value) -> (Child, ChildStdin, mpsc::Receiver<Value>) {
-    let state_dir = config["node"]["state_dir"].as_str().expect("node.state_dir");
+    let state_dir = config["node"]["state_dir"]
+        .as_str()
+        .expect("node.state_dir");
     let config_path = std::path::Path::new(state_dir).join("watchdog-config.json");
     std::fs::write(&config_path, serde_json::to_string_pretty(config).unwrap()).unwrap();
 
