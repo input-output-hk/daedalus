@@ -91,8 +91,10 @@ describe('createSymlink', () => {
       Object.assign(new Error('no such file or directory'), { code: 'ENOENT' })
     );
 
+    // The remainder of the message differs by platform — Windows names the
+    // manual mklink remedy — so assert only the part that does not.
     await expect(createSymlink('/mnt/gone', '/state/chain')).rejects.toThrow(
-      'does not resolve to a directory'
+      'Unable to link chain storage to'
     );
     expect(fs.remove).toHaveBeenCalledWith('/state/chain');
   });
@@ -104,7 +106,7 @@ describe('createSymlink', () => {
     });
 
     await expect(createSymlink('/mnt/a-file', '/state/chain')).rejects.toThrow(
-      'does not resolve to a directory'
+      'Unable to link chain storage to'
     );
     expect(fs.remove).toHaveBeenCalledWith('/state/chain');
   });
