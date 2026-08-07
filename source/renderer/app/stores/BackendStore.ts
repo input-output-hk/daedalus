@@ -201,6 +201,11 @@ export default class BackendStore extends Store {
 
   // =============== COMPUTED ===============
   @computed
+  get mithrilPromptDismissed(): boolean {
+    return this._mithrilPromptDismissed;
+  }
+
+  @computed
   get loadingPhase(): LoadingPhase {
     // Unrecoverable error takes top priority
     if (this.walletUnrecoverable) {

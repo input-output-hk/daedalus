@@ -36,6 +36,7 @@ class LoadingSyncingConnectingPage extends Component<Props> {
       nodeStartupPhase,
       blockSyncProgress,
       mithrilSignificantlyBehind,
+      mithrilPromptDismissed,
       startMithrilForce,
       dismissMithrilPrompt,
     } = backend;
@@ -50,8 +51,13 @@ class LoadingSyncingConnectingPage extends Component<Props> {
     const { toggleNewsFeed } = this.props.actions.app;
     const { unread } = newsFeed.newsFeedData;
     const hasNotification = unread.length > 0;
+    const isInLongReplay =
+      (blockSyncProgress.replayedBlock > 0 && blockSyncProgress.replayedBlock < 99) ||
+      (blockSyncProgress.validatingChunk > 0 && blockSyncProgress.validatingChunk < 99);
     const showMithrilPrompt =
-      loadingPhase === 'node-starting' && mithrilSignificantlyBehind !== null;
+      loadingPhase === 'node-starting' &&
+      !mithrilPromptDismissed &&
+      (mithrilSignificantlyBehind !== null || isInLongReplay);
     const behindByEpochs = mithrilSignificantlyBehind
       ? computeBehindByEpochs(
           mithrilSignificantlyBehind.localImmutableCount,

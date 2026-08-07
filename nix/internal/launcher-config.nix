@@ -323,6 +323,8 @@ let
       mainnet_flight = mainnet;
       preprod = mkNetworkCfg "release-preprod"
         "https://aggregator.release-preprod.api.mithril.network/aggregator";
+      preview = mkNetworkCfg "pre-release-preview"
+        "https://aggregator.pre-release-preview.api.mithril.network/aggregator";
     };
     nodeConfig = let
       nodeConfigAttrs =
