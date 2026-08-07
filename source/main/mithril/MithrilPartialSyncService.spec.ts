@@ -554,11 +554,11 @@ describe('MithrilPartialSyncService', () => {
     expect(ensureDirMock).toHaveBeenCalledWith(
       atResolvedPath('/mnt/custom-storage/mithril-partial-sync/download')
     );
+    // Both sides describe the same parent directory, so both are resolved:
+    // staging is placed beside the managed chain, not inside it.
     expect(
-      require('path').dirname(
-        atResolvedPath('/mnt/custom-storage/mithril-partial-sync')
-      )
-    ).toBe(require('path').dirname(atPath('/mnt/custom-storage/chain')));
+      path.dirname(atResolvedPath('/mnt/custom-storage/mithril-partial-sync'))
+    ).toBe(path.dirname(atResolvedPath('/mnt/custom-storage/chain')));
   });
 
   it('rejects staging paths that resolve inside the managed chain subtree', async () => {
