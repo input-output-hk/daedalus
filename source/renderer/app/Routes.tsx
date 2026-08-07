@@ -41,7 +41,7 @@ import VotingGovernancePage from './containers/voting/VotingGovernancePage';
 import Governance from './containers/voting/Governance';
 import DRepDirectoryPage from './containers/governance/DRepDirectoryPage';
 import DRepDetailPage from './containers/governance/DRepDetailPage';
-import GovernanceDashboardPage from './containers/governance/GovernanceDashboardPage';
+import GovernanceWalletsPage from './containers/governance/GovernanceWalletsPage';
 import GovernanceRootRedirect from './containers/governance/GovernanceRootRedirect';
 
 export const Routes = withRouter(() => (
@@ -235,9 +235,9 @@ export const Routes = withRouter(() => (
             />
             <TrackedRoute
               exact
-              pageTitle="Governance Dashboard"
+              pageTitle="Governance Wallets"
               path={ROUTES.GOVERNANCE.DASHBOARD}
-              component={GovernanceDashboardPage}
+              component={GovernanceWalletsPage}
             />
             <TrackedRoute
               exact

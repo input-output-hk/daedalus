@@ -3135,6 +3135,16 @@ export const _createWalletFromServerData = action(
     const lastPendingStakePool = next ? last(next) : null;
     const lastTarget = get(lastPendingStakePool, 'target', null);
     const lastStatus = get(lastPendingStakePool, 'status', null);
+    // If a pending voting delegation exists (epoch not yet activated), prefer it
+    // over the active one so the user sees their most-recently chosen DRep.
+    if (!isLegacy && lastPendingStakePool) {
+      const pendingVoting = parseVoting(
+        get(lastPendingStakePool, 'voting', null)
+      );
+      if (pendingVoting !== null) {
+        votingTarget = pendingVoting;
+      }
+    }
     const lastDelegatedStakePoolId = isLegacy ? null : lastTarget;
     const lastDelegationStakePoolStatus = isLegacy ? null : lastStatus;
     // Mapping asset items from server data

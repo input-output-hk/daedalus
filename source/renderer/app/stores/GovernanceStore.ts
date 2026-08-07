@@ -122,6 +122,11 @@ export default class GovernanceStore extends Store {
 
   @observable favoriteDRepIds: Set<string> = new Set();
 
+  // Per-DRep cache for individually fetched entries (keyed by CIP-129 drepId).
+  // Populated by ensureDRep; avoids re-fetching when navigating back to the
+  // Wallets page after the suggested/all lists have not yet loaded.
+  @observable fetchedDReps: Map<string, AppDRepDirectoryEntry> = new Map();
+
   // Navigation handoff for the DRep selection flow (directory ↔ governance form).
   // Hash history v4 drops location.state on every push, so this observable is
   // the single transport for the round-trip delegation form state.
@@ -257,6 +262,28 @@ export default class GovernanceStore extends Store {
     return normalizeDetail(rawDRep, currentEpoch);
   }
 
+  lookupDRep(drepId: string): AppDRepDirectoryEntry | null {
+    return (
+      this.suggestedDReps.find((e) => e.drepId === drepId) ??
+      this.allDReps.find((e) => e.drepId === drepId) ??
+      this.fetchedDReps.get(drepId) ??
+      null
+    );
+  }
+
+  @action
+  async ensureDRep(drepId: string): Promise<void> {
+    if (this.lookupDRep(drepId) !== null) return;
+    try {
+      const entry = await this.fetchDRep(drepId);
+      runInAction(() => {
+        this.fetchedDReps.set(drepId, entry);
+      });
+    } catch {
+      // Non-critical; the "loading" caption degrades gracefully.
+    }
+  }
+
   @action
   refresh(): Promise<void> {
     return this.fetchSuggestedDReps();
@@ -293,6 +320,7 @@ export default class GovernanceStore extends Store {
   private _clearGovernanceState(): void {
     this.suggestedDReps = [];
     this.allDReps = [];
+    this.fetchedDReps = new Map();
     this.refreshState = GovernanceRefreshState.Idle;
     this.allDRepsRefreshState = GovernanceRefreshState.Idle;
     this.error = null;

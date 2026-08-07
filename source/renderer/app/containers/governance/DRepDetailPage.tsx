@@ -12,6 +12,7 @@ import type { AppDRepDetail } from '../../stores/GovernanceStore';
 import type { StoresMap } from '../../stores';
 import { ROUTES } from '../../routes-config';
 import { pickDelegationFormReturnState } from './delegationFormState';
+import { isSameDRep } from '../../utils/governance/isSameDRep';
 
 interface Props extends RouteComponentProps<{ drepId: string }> {
   stores?: StoresMap;
@@ -102,6 +103,16 @@ class DRepDetailPage extends React.Component<Props, State> {
     const isFavorite =
       detail != null && stores.governance.favoriteDRepIds.has(detail.drepId);
 
+    const selectedWalletId =
+      stores.governance.delegationNavState?.selectedWalletId;
+    const selectedWallet = selectedWalletId
+      ? (stores.wallets?.all?.find((w) => w.id === selectedWalletId) ?? null)
+      : null;
+    const isCurrentDRep =
+      detail != null && selectedWallet?.currentDRep != null
+        ? isSameDRep(detail.drepId, selectedWallet.currentDRep)
+        : false;
+
     return (
       <DRepDetail
         entry={detail}
@@ -109,6 +120,7 @@ class DRepDetailPage extends React.Component<Props, State> {
         onOpenExternalLink={stores.app.openExternalLink}
         canDelegate={canDelegate}
         isFavorite={isFavorite}
+        isCurrentDRep={isCurrentDRep}
         onSelectForDelegation={this.handleSelectForDelegation}
         onToggleFavorite={(drepId) => stores.governance.toggleFavorite(drepId)}
         onBackToDirectory={this.handleBackToDirectory}

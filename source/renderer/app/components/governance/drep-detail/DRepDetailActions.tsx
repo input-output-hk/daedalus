@@ -25,6 +25,7 @@ const messages = defineMessages({
 interface Props {
   drepId: string;
   isFavorite: boolean;
+  isCurrentDRep?: boolean;
   onSelectForDelegation: (drepId: string) => void;
   onToggleFavorite: (drepId: string) => void;
   intl: intlShape.isRequired;
@@ -33,17 +34,20 @@ interface Props {
 function DRepDetailActions({
   drepId,
   isFavorite,
+  isCurrentDRep = false,
   onSelectForDelegation,
   onToggleFavorite,
   intl,
 }: Props) {
   return (
     <div className={styles.actions}>
-      <Button
-        label={intl.formatMessage(messages.select)}
-        onClick={() => onSelectForDelegation(drepId)}
-        skin={ButtonSkin}
-      />
+      {!isCurrentDRep && (
+        <Button
+          label={intl.formatMessage(messages.select)}
+          onClick={() => onSelectForDelegation(drepId)}
+          skin={ButtonSkin}
+        />
+      )}
       <button
         type="button"
         className={styles.favoriteToggle}

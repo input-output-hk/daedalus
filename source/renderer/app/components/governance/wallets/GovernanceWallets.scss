@@ -60,3 +60,30 @@
   gap: 12px;
   margin-top: 4px;
 }
+
+.emptyState {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.noDelegationCta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.noDelegationHeading {
+  color: var(--theme-gov-font-color-heading);
+  font-family: var(--font-semibold);
+  font-size: 14px;
+  margin: 0;
+}
+
+.noDelegationBody {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+}

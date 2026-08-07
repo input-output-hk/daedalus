@@ -82,7 +82,7 @@ export type DelegationStatus =
   | 'delegating'
   | 'not_delegating'
   | 'voting'
-  | 'delegating_and_voting';
+  | 'voting_and_delegating';
 export type DRepDelegation =
   | {
       kind: 'drep';

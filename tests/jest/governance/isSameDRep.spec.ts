@@ -35,9 +35,7 @@ describe('isSameDRep', () => {
     expect(isSameDRep('abstain', { kind: 'abstain' })).toBe(true);
     expect(isSameDRep('abstain', { kind: 'no_confidence' })).toBe(false);
     expect(isSameDRep('abstain', drepVote(KEY_CIP129))).toBe(false);
-    expect(isSameDRep('no_confidence', { kind: 'no_confidence' })).toBe(
-      true
-    );
+    expect(isSameDRep('no_confidence', { kind: 'no_confidence' })).toBe(true);
     expect(isSameDRep('no_confidence', { kind: 'abstain' })).toBe(false);
   });
 
@@ -53,18 +51,12 @@ describe('isSameDRep', () => {
   });
 
   it('is false for a different DRep', () => {
-    expect(isSameDRep(OTHER_KEY_CIP129, drepVote(KEY_CIP129))).toBe(
-      false
-    );
+    expect(isSameDRep(OTHER_KEY_CIP129, drepVote(KEY_CIP129))).toBe(false);
   });
 
   it('never equates a key DRep and a script DRep sharing credential bytes', () => {
-    expect(isSameDRep(OTHER_KEY_CIP129, drepVote(SCRIPT_CIP129))).toBe(
-      false
-    );
-    expect(isSameDRep(SCRIPT_CIP129, drepVote(OTHER_KEY_CIP129))).toBe(
-      false
-    );
+    expect(isSameDRep(OTHER_KEY_CIP129, drepVote(SCRIPT_CIP129))).toBe(false);
+    expect(isSameDRep(SCRIPT_CIP129, drepVote(OTHER_KEY_CIP129))).toBe(false);
     expect(isSameDRep(SCRIPT_CIP129, drepVote(SCRIPT_CIP129))).toBe(true);
   });
 
@@ -80,12 +72,8 @@ describe('isSameDRep', () => {
 
   it('is false, and does not throw, when the choice cannot be decoded', () => {
     expect(isSameDRep('', drepVote(KEY_CIP129))).toBe(false);
-    expect(isSameDRep(UNDECODABLE_DREP, drepVote(KEY_CIP129))).toBe(
-      false
-    );
-    expect(isSameDRep('not-a-bech32-string', drepVote(KEY_CIP129))).toBe(
-      false
-    );
+    expect(isSameDRep(UNDECODABLE_DREP, drepVote(KEY_CIP129))).toBe(false);
+    expect(isSameDRep('not-a-bech32-string', drepVote(KEY_CIP129))).toBe(false);
   });
 
   it('leaves the compared identity untouched', () => {
@@ -126,8 +114,6 @@ describe('isSameDRep letter-case stability', () => {
   });
 
   it('rejects a mixed-case form, which is not a decodable identifier', () => {
-    expect(isSameDRep(`D${KEY_CIP129.slice(1)}`, currentDRep)).toBe(
-      false
-    );
+    expect(isSameDRep(`D${KEY_CIP129.slice(1)}`, currentDRep)).toBe(false);
   });
 });

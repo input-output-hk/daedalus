@@ -7,12 +7,13 @@ import type { NavButtonProps } from '../../components/navigation/Navigation';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import MainLayout from '../MainLayout';
 import { ROUTES } from '../../routes-config';
+import styles from './Governance.scss';
 
 const messages = defineMessages({
   tabDashboard: {
     id: 'governance.tabs.dashboard',
-    defaultMessage: '!!!Governance Dashboard',
-    description: 'Label for the governance dashboard tab.',
+    defaultMessage: '!!!Wallets',
+    description: 'Label for the governance wallets tab.',
   },
   tabDirectory: {
     id: 'governance.tabs.directory',
@@ -45,22 +46,14 @@ class Governance extends Component<Props> {
   };
 
   render() {
-    const { app, wallets } = this.props.stores;
+    const { app } = this.props.stores;
     const { intl } = this.props;
 
-    const anyWalletDelegating = (wallets?.all ?? []).some(
-      (w) => w.currentDRep != null
-    );
-
     const navItems: Array<NavButtonProps> = [
-      ...(anyWalletDelegating
-        ? [
-            {
-              id: ROUTES.GOVERNANCE.DASHBOARD,
-              label: intl.formatMessage(messages.tabDashboard),
-            },
-          ]
-        : []),
+      {
+        id: ROUTES.GOVERNANCE.DASHBOARD,
+        label: intl.formatMessage(messages.tabDashboard),
+      },
       {
         id: ROUTES.GOVERNANCE.DREPS,
         label: intl.formatMessage(messages.tabDirectory),
@@ -78,12 +71,17 @@ class Governance extends Component<Props> {
 
     return (
       <MainLayout>
-        <Navigation
-          items={navItems}
-          activeItem={activeItem?.id}
-          onNavItemClick={this.handleNavItemClick}
-        />
-        {this.props.children}
+        <div className={styles.component}>
+          <div className={styles.navigation}>
+            <Navigation
+              items={navItems}
+              activeItem={activeItem?.id}
+              isActiveNavItem={(id: string) => id === activeItem?.id}
+              onNavItemClick={this.handleNavItemClick}
+            />
+          </div>
+          <div className={styles.page}>{this.props.children}</div>
+        </div>
       </MainLayout>
     );
   }

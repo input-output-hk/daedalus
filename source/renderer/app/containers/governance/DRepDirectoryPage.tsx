@@ -94,15 +94,15 @@ class DRepDirectoryPage extends React.Component<Props> {
 
     const canDelegate = (stores?.wallets?.all?.length ?? 0) > 0;
 
-    const selectedWalletId = governanceStore.delegationNavState?.selectedWalletId;
+    const selectedWalletId =
+      governanceStore.delegationNavState?.selectedWalletId;
     const selectedWallet = selectedWalletId
-      ? stores?.wallets?.all?.find((w) => w.id === selectedWalletId) ?? null
+      ? (stores?.wallets?.all?.find((w) => w.id === selectedWalletId) ?? null)
       : null;
     const currentDRep = selectedWallet?.currentDRep ?? null;
     const isCurrentDRep =
       currentDRep?.kind === 'drep'
-        ? (entry: { drepId: string }) =>
-            isSameDRep(entry.drepId, currentDRep)
+        ? (entry: { drepId: string }) => isSameDRep(entry.drepId, currentDRep)
         : undefined;
 
     return (

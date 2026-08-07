@@ -41,6 +41,7 @@ interface Props {
   onOpenExternalLink: (url: string) => void;
   canDelegate?: boolean;
   isFavorite?: boolean;
+  isCurrentDRep?: boolean;
   onSelectForDelegation: (drepId: string) => void;
   onToggleFavorite: (drepId: string) => void;
   onBackToDirectory: () => void;
@@ -53,6 +54,7 @@ function DRepDetail({
   onOpenExternalLink,
   canDelegate = true,
   isFavorite = false,
+  isCurrentDRep = false,
   onSelectForDelegation,
   onToggleFavorite,
   onBackToDirectory,
@@ -121,6 +123,7 @@ function DRepDetail({
         <DRepDetailActions
           drepId={entry.drepId}
           isFavorite={isFavorite}
+          isCurrentDRep={isCurrentDRep}
           onSelectForDelegation={onSelectForDelegation}
           onToggleFavorite={onToggleFavorite}
         />

@@ -40,7 +40,7 @@ export const WalletDelegationStatuses: {
   DELEGATING: 'delegating',
   NOT_DELEGATING: 'not_delegating',
   VOTING: 'voting',
-  VOTING_AND_DELEGATING: 'delegating_and_voting',
+  VOTING_AND_DELEGATING: 'voting_and_delegating',
 };
 export type HwDeviceStatus =
   | 'connecting'
