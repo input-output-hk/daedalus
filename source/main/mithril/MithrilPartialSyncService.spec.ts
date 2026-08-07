@@ -300,15 +300,18 @@ describe('MithrilPartialSyncService', () => {
 
     expect(
       service._chainStorageManager.installValidatedPartialSyncSnapshot
-    ).toHaveBeenCalledWith(atPath('/tmp/mithril-partial-sync/download/db'), {
-      expectedTopLevelEntries: [
-        'clean',
-        'immutable',
-        'ledger',
-        'lsm',
-        'protocolMagicId',
-      ],
-    });
+    ).toHaveBeenCalledWith(
+      atResolvedPath('/tmp/mithril-partial-sync/download/db'),
+      {
+        expectedTopLevelEntries: [
+          'clean',
+          'immutable',
+          'ledger',
+          'lsm',
+          'protocolMagicId',
+        ],
+      }
+    );
     expect(writeMithrilPartialSyncMarkerMock).toHaveBeenCalledTimes(2);
     expect(service.status).toEqual(
       expect.objectContaining({
@@ -525,16 +528,10 @@ describe('MithrilPartialSyncService', () => {
       if (targetPath.endsWith(atPath('/chain/immutable'))) {
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
       }
-      if (
-        targetPath ===
-        atPath('/mnt/custom-storage/mithril-partial-sync/download/db/ledger')
-      ) {
+      if (targetPath.endsWith(atPath('/download/db/ledger'))) {
         return [{ name: '12345', isDirectory: () => true }];
       }
-      if (
-        targetPath ===
-        atPath('/mnt/custom-storage/mithril-partial-sync/download/db')
-      ) {
+      if (targetPath.endsWith(atPath('/download/db'))) {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
 
