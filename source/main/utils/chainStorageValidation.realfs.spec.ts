@@ -64,6 +64,12 @@ const expectWritesDenied = (dir: string) => {
 //
 // The real-reparse-point behaviour that *is* settled has its own suite in
 // chainStorageWindows.realfs.spec.ts.
+// `checkDiskSpace` shells out on Windows, and a cold PowerShell start costs
+// seconds, so every assertion reaching it needs more than Jest's default five.
+// Slow rather than broken — but worth knowing that a user-facing validation
+// path pays that cost on every call.
+const DISK_SPACE_TIMEOUT_MS = 30_000;
+
 const describeOnPosix = process.platform === 'win32' ? describe.skip : describe;
 
 describe('validateChainStorageDirectory against a real filesystem', () => {
@@ -95,6 +101,26 @@ describe('validateChainStorageDirectory against a real filesystem', () => {
   // Gated at the describe level rather than by aliasing `it`: the lint rule
   // that keeps `expect` inside a test block only recognises the standard
   // names, and a gate it cannot see would be worse than none.
+  it(
+    'resolves a symlinked target directory to its real path',
+    async () => {
+      const target = path.join(tmpRoot, 'real-target');
+      const link = path.join(tmpRoot, 'link-to-target');
+      fs.mkdirSync(target);
+      fs.symlinkSync(target, link, 'dir');
+
+      const result = await validateChainStorageDirectory(
+        link,
+        stateDir,
+        makeGetDefaultConfig(path.join(stateDir, 'chain')),
+        REQUIRED_SPACE
+      );
+
+      expect(result.resolvedPath).toBe(fs.realpathSync(target));
+    },
+    DISK_SPACE_TIMEOUT_MS
+  );
+
   describeOnPosix('on a POSIX filesystem', () => {
     it('reports a read-only directory as not-writable rather than unknown', async () => {
       const target = path.join(tmpRoot, 'read-only');
@@ -111,22 +137,6 @@ describe('validateChainStorageDirectory against a real filesystem', () => {
 
       expect(result.isValid).toBe(false);
       expect(result.reason).toBe('not-writable');
-    });
-
-    it('resolves a symlinked target directory to its real path', async () => {
-      const target = path.join(tmpRoot, 'real-target');
-      const link = path.join(tmpRoot, 'link-to-target');
-      fs.mkdirSync(target);
-      fs.symlinkSync(target, link, 'dir');
-
-      const result = await validateChainStorageDirectory(
-        link,
-        stateDir,
-        makeGetDefaultConfig(path.join(stateDir, 'chain')),
-        REQUIRED_SPACE
-      );
-
-      expect(result.resolvedPath).toBe(fs.realpathSync(target));
     });
 
     it('reports a dangling symlink as path-not-found', async () => {
