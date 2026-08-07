@@ -187,6 +187,10 @@ const onAppReady = async () => {
     systemLocale,
     userLocale,
   });
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+  logger.info('GPU hardware acceleration', {
+    disabled: app.commandLine.hasSwitch('disable-gpu'),
+  });
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.

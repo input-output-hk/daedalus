@@ -696,6 +696,54 @@ describe('ChainStorageManager', () => {
     );
   });
 
+  it('_migrateLegacyCustomLayout rolls back even when the journal cannot record it', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    const migrationFailure = new Error('move failed partway');
+
+    jest
+      .spyOn(manager, '_preflightLegacyMigration')
+      .mockResolvedValue(undefined);
+    // Whatever broke the migration can equally break the journal write: a full
+    // disk fails both. Recording the rollback must not gate the rollback.
+    jest
+      .spyOn(manager, '_writeMigrationJournal')
+      .mockImplementation(async (journal) => {
+        if (journal.state === 'rollback') {
+          throw Object.assign(new Error('no space left on device'), {
+            code: 'ENOSPC',
+          });
+        }
+      });
+    jest.spyOn(manager, '_movePath').mockRejectedValue(migrationFailure);
+    jest.spyOn(manager, '_createSymlink').mockResolvedValue(undefined);
+    jest.spyOn(manager, '_pathExistsViaLstat').mockResolvedValue(false);
+    const rollback = jest
+      .spyOn(manager, '_rollbackMigrationJournal')
+      .mockResolvedValue(undefined);
+
+    await expect(
+      manager._migrateLegacyCustomLayout({
+        kind: 'legacy-custom-root',
+        customPath: '/mnt/custom-parent',
+        resolvedCustomPath: '/mnt/custom-parent',
+        managedChainPath: '/mnt/custom-parent/chain',
+        resolvedManagedChainPath: undefined,
+        currentChainSource: '/mnt/custom-parent',
+        entryPointState: {
+          type: 'symlink',
+          resolvedPath: '/mnt/custom-parent',
+        },
+        managedChainExists: false,
+        managedChainIsDirectory: false,
+        managedLegacyEntries: ['immutable'],
+        ignoredLegacyEntries: [],
+      })
+      // The original failure must survive, not be replaced by the journal error.
+    ).rejects.toBe(migrationFailure);
+
+    expect(rollback).toHaveBeenCalledTimes(1);
+  });
+
   it('_recoverInterruptedMigration cleans up a completed cutover on restart', async () => {
     const manager = new ChainStorageManager('/tmp/state');
 
