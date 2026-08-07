@@ -215,7 +215,7 @@ describe('runCommand', () => {
     await runCommand(['snapshot', 'list'], 'C:\\workdir', {});
 
     expect(spawn).toHaveBeenCalledWith(
-      'C:\\Program Files\\Daedalus/mithril-client.exe',
+      path.join('C:\\Program Files\\Daedalus', 'mithril-client.exe'),
       ['--origin-tag', 'DAEDALUS', 'snapshot', 'list'],
       expect.objectContaining({
         cwd: 'C:\\workdir',

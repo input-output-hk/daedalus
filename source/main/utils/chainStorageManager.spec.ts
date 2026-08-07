@@ -51,10 +51,9 @@ const STATE_CHAIN = path.join(STATE_DIR, 'chain');
 const CUSTOM_PARENT = path.resolve('/mnt/custom-parent');
 const CUSTOM_CHAIN = path.join(CUSTOM_PARENT, 'chain');
 const TMP_CUSTOM_CHAIN = path.join(path.resolve('/tmp/custom-parent'), 'chain');
-const ACTUAL_PARENT_CHAIN = path.join(
-  path.resolve('/mnt/actual-parent'),
-  'chain'
-);
+const ACTUAL_PARENT = path.resolve('/mnt/actual-parent');
+const ACTUAL_PARENT_CHAIN = path.join(ACTUAL_PARENT, 'chain');
+const STAGED_DB = path.resolve('/tmp/staged/db');
 
 describe('ChainStorageManager', () => {
   const createConfig = (customPath: string | null) => ({
@@ -310,7 +309,7 @@ describe('ChainStorageManager', () => {
 
     expect(result).toEqual(
       expect.objectContaining({
-        customPath: '/mnt/actual-parent',
+        customPath: ACTUAL_PARENT,
         defaultPath: STATE_CHAIN,
         isRecoveryFallback: true,
       })
@@ -566,7 +565,7 @@ describe('ChainStorageManager', () => {
     const manager = new ChainStorageManager('/tmp/state');
     jest
       .spyOn(manager, '_resolveExistingDirectory')
-      .mockResolvedValue('/mnt/actual-parent');
+      .mockResolvedValue(ACTUAL_PARENT);
     jest.spyOn(manager, '_safeLstat').mockResolvedValue({
       isDirectory: () => true,
     } as fs.Stats);
@@ -587,7 +586,7 @@ describe('ChainStorageManager', () => {
     expect(result).toMatchObject({
       kind: 'managed-custom-root',
       customPath: '/mnt/alias-parent',
-      resolvedCustomPath: '/mnt/actual-parent',
+      resolvedCustomPath: ACTUAL_PARENT,
       managedChainPath: ACTUAL_PARENT_CHAIN,
       resolvedManagedChainPath: ACTUAL_PARENT_CHAIN,
       currentChainSource: ACTUAL_PARENT_CHAIN,
@@ -928,11 +927,11 @@ describe('ChainStorageManager', () => {
     jest
       .spyOn(manager, '_safeReadDir')
       .mockImplementation(async (targetPath: string) => {
-        if (targetPath === '/tmp/staged/db') {
+        if (targetPath === STAGED_DB) {
           return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
         }
 
-        if (targetPath === '/tmp/staged/db/immutable') {
+        if (targetPath === path.join(STAGED_DB, 'immutable')) {
           return ['26108.chunk', '26108.primary', '26108.secondary'];
         }
 
@@ -945,7 +944,7 @@ describe('ChainStorageManager', () => {
       .spyOn(manager, '_movePath')
       .mockResolvedValue(undefined);
 
-    await manager.installValidatedPartialSyncSnapshot('/tmp/staged/db', {
+    await manager.installValidatedPartialSyncSnapshot(STAGED_DB, {
       expectedTopLevelEntries: [
         'clean',
         'immutable',
@@ -961,23 +960,23 @@ describe('ChainStorageManager', () => {
     expect(moveSpy).toHaveBeenCalledTimes(7);
     expect(moveSpy).toHaveBeenNthCalledWith(
       1,
-      '/tmp/staged/db/clean',
+      path.join(STAGED_DB, 'clean'),
       path.join(CUSTOM_CHAIN, 'clean')
     );
     expect(moveSpy).toHaveBeenCalledWith(
-      '/tmp/staged/db/immutable/26108.chunk',
+      path.join(STAGED_DB, 'immutable', '26108.chunk'),
       path.join(CUSTOM_CHAIN, 'immutable', '26108.chunk')
     );
     expect(moveSpy).toHaveBeenCalledWith(
-      '/tmp/staged/db/immutable/26108.primary',
+      path.join(STAGED_DB, 'immutable', '26108.primary'),
       path.join(CUSTOM_CHAIN, 'immutable', '26108.primary')
     );
     expect(moveSpy).toHaveBeenCalledWith(
-      '/tmp/staged/db/immutable/26108.secondary',
+      path.join(STAGED_DB, 'immutable', '26108.secondary'),
       path.join(CUSTOM_CHAIN, 'immutable', '26108.secondary')
     );
-    expect(fs.remove).toHaveBeenCalledWith('/tmp/staged/db/immutable');
-    expect(fs.remove).toHaveBeenCalledWith('/tmp/staged/db');
+    expect(fs.remove).toHaveBeenCalledWith(path.join(STAGED_DB, 'immutable'));
+    expect(fs.remove).toHaveBeenCalledWith(STAGED_DB);
   });
 
   it('installValidatedPartialSyncSnapshot preserves existing immutable history while merging staged immutable entries', async () => {
@@ -993,11 +992,11 @@ describe('ChainStorageManager', () => {
     jest
       .spyOn(manager, '_safeReadDir')
       .mockImplementation(async (targetPath: string) => {
-        if (targetPath === '/tmp/staged/db') {
+        if (targetPath === STAGED_DB) {
           return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
         }
 
-        if (targetPath === '/tmp/staged/db/immutable') {
+        if (targetPath === path.join(STAGED_DB, 'immutable')) {
           return ['26108.chunk', '26108.primary', '26108.secondary'];
         }
 
@@ -1010,7 +1009,7 @@ describe('ChainStorageManager', () => {
       .spyOn(manager, '_movePath')
       .mockResolvedValue(undefined);
 
-    await manager.installValidatedPartialSyncSnapshot('/tmp/staged/db', {
+    await manager.installValidatedPartialSyncSnapshot(STAGED_DB, {
       expectedTopLevelEntries: [
         'clean',
         'immutable',
@@ -1027,19 +1026,19 @@ describe('ChainStorageManager', () => {
       path.join(CUSTOM_CHAIN, 'immutable')
     );
     expect(moveSpy).toHaveBeenCalledWith(
-      '/tmp/staged/db/immutable/26108.chunk',
+      path.join(STAGED_DB, 'immutable', '26108.chunk'),
       path.join(CUSTOM_CHAIN, 'immutable', '26108.chunk')
     );
     expect(moveSpy).toHaveBeenCalledWith(
-      '/tmp/staged/db/immutable/26108.primary',
+      path.join(STAGED_DB, 'immutable', '26108.primary'),
       path.join(CUSTOM_CHAIN, 'immutable', '26108.primary')
     );
     expect(moveSpy).toHaveBeenCalledWith(
-      '/tmp/staged/db/immutable/26108.secondary',
+      path.join(STAGED_DB, 'immutable', '26108.secondary'),
       path.join(CUSTOM_CHAIN, 'immutable', '26108.secondary')
     );
-    expect(fs.remove).toHaveBeenCalledWith('/tmp/staged/db/immutable');
-    expect(fs.remove).toHaveBeenCalledWith('/tmp/staged/db');
+    expect(fs.remove).toHaveBeenCalledWith(path.join(STAGED_DB, 'immutable'));
+    expect(fs.remove).toHaveBeenCalledWith(STAGED_DB);
   });
 
   it('installValidatedPartialSyncSnapshot rejects unexpected staged entries before live cutover', async () => {
@@ -1067,7 +1066,7 @@ describe('ChainStorageManager', () => {
       .mockResolvedValue(undefined);
 
     await expect(
-      manager.installValidatedPartialSyncSnapshot('/tmp/staged/db', {
+      manager.installValidatedPartialSyncSnapshot(STAGED_DB, {
         expectedTopLevelEntries: [
           'clean',
           'immutable',
