@@ -136,11 +136,15 @@ declare -A have_lib=()
 for elf in "${elf_files[@]}"; do
   have_lib["$(basename "$elf")"]=1
 done
-# Symlinked sonames are real resolution targets too.
+# Symlinked sonames are real resolution targets too — but only when the link
+# resolves. `! -xtype l` excludes dangling ones: indexing those would let a
+# broken link satisfy a DT_NEEDED entry, so this assertion would report a
+# library as present precisely when it is not, and assertion 2 would be the
+# only thing left catching it.
 while IFS= read -r link; do
   [ -n "$link" ] || continue
   have_lib["$(basename "$link")"]=1
-done < <(find "$BUNDLE" -type l)
+done < <(find "$BUNDLE" -type l ! -xtype l)
 
 unresolved=0
 for elf in "${elf_files[@]}"; do

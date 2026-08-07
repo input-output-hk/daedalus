@@ -119,7 +119,22 @@ cc -o "$WORK/broken-closure/lib/electron/dynamic" "$WORK/tiny.c"
 expect_fail "rejects an unresolvable DT_NEEDED" \
   "$WORK/broken-closure" "which is not in the bundle"
 
-# 4. The checker must refuse to report success when a tool it depends on is
+# 4. A dangling symlink must not satisfy a DT_NEEDED entry. Indexing broken
+#    links as available libraries would make assertion 3 report a library as
+#    present exactly when it is missing, leaving assertion 2 as the only thing
+#    catching it — two assertions masking each other is worse than one.
+make_fixture "$WORK/dangling-satisfies-needed"
+cc -o "$WORK/dangling-satisfies-needed/lib/electron/dynamic" "$WORK/tiny.c"
+while IFS= read -r needed; do
+  [ -n "$needed" ] || continue
+  ln -s "/nonexistent/$needed" \
+    "$WORK/dangling-satisfies-needed/lib/electron/lib/$needed"
+done < <(readelf -d "$WORK/dangling-satisfies-needed/lib/electron/dynamic" \
+  2>/dev/null | sed -n 's/.*(NEEDED).*\[\(.*\)\]/\1/p')
+expect_fail "does not let a dangling symlink satisfy a DT_NEEDED entry" \
+  "$WORK/dangling-satisfies-needed" "which is not in the bundle"
+
+# 5. The checker must refuse to report success when a tool it depends on is
 #    absent, rather than skipping every file it was meant to inspect.
 mkdir -p "$WORK/empty-path"
 if PATH="$WORK/empty-path" "$BASH_ABS" "$CHECKER" "$WORK/good" >"$WORK/out" 2>&1; then
