@@ -65,6 +65,12 @@ jest.mock('./killProcessTree', () => ({
 const atPath = (posixPath: string): string =>
   posixPath.split('/').join(path.sep);
 
+// Some of these paths reach the assertion through `path.resolve`, which on
+// Windows also qualifies them with the current drive. `atResolvedPath` mirrors
+// that; `atPath` alone is right for the ones the code only joins.
+const atResolvedPath = (posixPath: string): string =>
+  path.resolve(atPath(posixPath));
+
 const createContext = (): PartialSyncPreflightContext => ({
   layoutResult: {
     managedChainPath: atPath('/tmp/chain'),
@@ -280,7 +286,7 @@ describe('MithrilPartialSyncService', () => {
         'download',
         'latest',
         '--download-dir',
-        atPath('/tmp/mithril-partial-sync/download'),
+        atResolvedPath('/tmp/mithril-partial-sync/download'),
         '--start',
         '12',
         '--end',
@@ -289,7 +295,7 @@ describe('MithrilPartialSyncService', () => {
         '--allow-override',
       ],
       expect.any(Object),
-      atPath('/tmp/mithril-partial-sync/download')
+      atResolvedPath('/tmp/mithril-partial-sync/download')
     );
 
     expect(
@@ -314,10 +320,10 @@ describe('MithrilPartialSyncService', () => {
     );
 
     expect(removeMock).toHaveBeenCalledWith(
-      atPath('/tmp/mithril-partial-sync')
+      atResolvedPath('/tmp/mithril-partial-sync')
     );
     expect(ensureDirMock).toHaveBeenCalledWith(
-      atPath('/tmp/mithril-partial-sync/download')
+      atResolvedPath('/tmp/mithril-partial-sync/download')
     );
   });
 
@@ -480,7 +486,7 @@ describe('MithrilPartialSyncService', () => {
         'download',
         'latest',
         '--download-dir',
-        atPath('/tmp/mithril-partial-sync/download'),
+        atResolvedPath('/tmp/mithril-partial-sync/download'),
         '--start',
         '25',
         '--end',
@@ -489,7 +495,7 @@ describe('MithrilPartialSyncService', () => {
         '--allow-override',
       ],
       expect.any(Object),
-      atPath('/tmp/mithril-partial-sync/download')
+      atResolvedPath('/tmp/mithril-partial-sync/download')
     );
   });
 
@@ -546,14 +552,14 @@ describe('MithrilPartialSyncService', () => {
     ).resolves.toBeUndefined();
 
     expect(removeMock).toHaveBeenCalledWith(
-      atPath('/mnt/custom-storage/mithril-partial-sync')
+      atResolvedPath('/mnt/custom-storage/mithril-partial-sync')
     );
     expect(ensureDirMock).toHaveBeenCalledWith(
-      atPath('/mnt/custom-storage/mithril-partial-sync/download')
+      atResolvedPath('/mnt/custom-storage/mithril-partial-sync/download')
     );
     expect(
       require('path').dirname(
-        atPath('/mnt/custom-storage/mithril-partial-sync')
+        atResolvedPath('/mnt/custom-storage/mithril-partial-sync')
       )
     ).toBe(require('path').dirname(atPath('/mnt/custom-storage/chain')));
   });
