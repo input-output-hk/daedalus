@@ -69,9 +69,6 @@ export async function CardanoWalletLauncher(
       network: {
         configFile: configPath,
       },
-      // Set an explicit socket file path so the launcher creates a known socket.
-      // DRep Discovery CLI queries read this path via CARDANO_NODE_SOCKET_PATH.
-      socketFile: path.join(stateDir, 'cardano-node.socket'),
     },
     syncToleranceSeconds,
     childProcessLogWriteStreams: {
