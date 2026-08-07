@@ -233,9 +233,7 @@ describe('ChainStorageLocationPicker', () => {
     fireEvent.click(screen.getByRole('button', { name: /reset to default/i }));
 
     expect(onResetChainStorageDirectory).not.toHaveBeenCalled();
-    expect(
-      screen.getByDisplayValue(displayPath('/tmp/state'))
-    ).toBeInTheDocument();
+    expect(screen.getByDisplayValue('/tmp/state/chain')).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: /reset to default/i })
     ).not.toBeInTheDocument();

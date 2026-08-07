@@ -321,7 +321,7 @@ describe('ChainStorageManager', () => {
     const manager = new ChainStorageManager('/tmp/state');
     jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
       type: 'symlink',
-      resolvedPath: '/mnt/live-parent/chain',
+      resolvedPath: path.join(path.resolve('/mnt/live-parent'), 'chain'),
     });
 
     const result = await manager.getConfig();
@@ -911,7 +911,7 @@ describe('ChainStorageManager', () => {
     expect(fs.remove).toHaveBeenCalledWith(
       path.join(CUSTOM_CHAIN, 'immutable')
     );
-    expect(fs.remove).not.toHaveBeenCalledWith('/mnt/custom-parent/chain/db');
+    expect(fs.remove).not.toHaveBeenCalledWith(path.join(CUSTOM_CHAIN, 'db'));
     expect(fs.remove).not.toHaveBeenCalledWith(CUSTOM_CHAIN);
   });
 
@@ -962,7 +962,7 @@ describe('ChainStorageManager', () => {
     expect(moveSpy).toHaveBeenNthCalledWith(
       1,
       '/tmp/staged/db/clean',
-      '/mnt/custom-parent/chain/clean'
+      path.join(CUSTOM_CHAIN, 'clean')
     );
     expect(moveSpy).toHaveBeenCalledWith(
       '/tmp/staged/db/immutable/26108.chunk',

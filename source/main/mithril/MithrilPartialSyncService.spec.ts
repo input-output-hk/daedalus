@@ -254,15 +254,19 @@ describe('MithrilPartialSyncService', () => {
       exitCode: 0,
     });
     readdirMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath === atPath('/tmp/chain/immutable')) {
+      if (targetPath.endsWith(atPath('/tmp/chain/immutable'))) {
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
       }
       if (
-        targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+        targetPath.endsWith(
+          atPath('/tmp/mithril-partial-sync/download/db/ledger')
+        )
       ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
-      if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
+      if (
+        targetPath.endsWith(atPath('/tmp/mithril-partial-sync/download/db'))
+      ) {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
 
@@ -452,15 +456,19 @@ describe('MithrilPartialSyncService', () => {
       exitCode: 0,
     });
     readdirMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath === atPath('/tmp/chain/immutable')) {
+      if (targetPath.endsWith(atPath('/tmp/chain/immutable'))) {
         return ['00025.chunk'];
       }
       if (
-        targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+        targetPath.endsWith(
+          atPath('/tmp/mithril-partial-sync/download/db/ledger')
+        )
       ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
-      if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
+      if (
+        targetPath.endsWith(atPath('/tmp/mithril-partial-sync/download/db'))
+      ) {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
 
@@ -512,7 +520,7 @@ describe('MithrilPartialSyncService', () => {
       exitCode: 0,
     });
     readdirMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath === atPath('/mnt/custom-storage/chain/immutable')) {
+      if (targetPath.endsWith(atPath('/mnt/custom-storage/chain/immutable'))) {
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
       }
       if (
@@ -621,15 +629,19 @@ describe('MithrilPartialSyncService', () => {
       exitCode: 0,
     });
     readdirMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath === atPath('/tmp/chain/immutable')) {
+      if (targetPath.endsWith(atPath('/tmp/chain/immutable'))) {
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
       }
       if (
-        targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+        targetPath.endsWith(
+          atPath('/tmp/mithril-partial-sync/download/db/ledger')
+        )
       ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
-      if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
+      if (
+        targetPath.endsWith(atPath('/tmp/mithril-partial-sync/download/db'))
+      ) {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
 
@@ -807,15 +819,19 @@ describe('MithrilPartialSyncService', () => {
       exitCode: 0,
     });
     readdirMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath === atPath('/tmp/chain/immutable')) {
+      if (targetPath.endsWith(atPath('/tmp/chain/immutable'))) {
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
       }
       if (
-        targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+        targetPath.endsWith(
+          atPath('/tmp/mithril-partial-sync/download/db/ledger')
+        )
       ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
-      if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
+      if (
+        targetPath.endsWith(atPath('/tmp/mithril-partial-sync/download/db'))
+      ) {
         return [
           'clean',
           'immutable',
@@ -1377,15 +1393,19 @@ describe('MithrilPartialSyncService', () => {
         .spyOn(service, '_runBinary')
         .mockResolvedValue({ stdout: '', stderr: '', exitCode: 0 });
       readdirMock.mockImplementation(async (targetPath: string) => {
-        if (targetPath === atPath('/tmp/chain/immutable')) {
+        if (targetPath.endsWith(atPath('/tmp/chain/immutable'))) {
           return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
         }
         if (
-          targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+          targetPath.endsWith(
+            atPath('/tmp/mithril-partial-sync/download/db/ledger')
+          )
         ) {
           return [{ name: '12345', isDirectory: () => true }];
         }
-        if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
+        if (
+          targetPath.endsWith(atPath('/tmp/mithril-partial-sync/download/db'))
+        ) {
           return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
         }
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
@@ -1857,15 +1877,19 @@ describe('MithrilPartialSyncService', () => {
         exitCode: 0,
       });
       readdirMock.mockImplementation(async (targetPath: string) => {
-        if (targetPath === atPath('/tmp/chain/immutable')) {
+        if (targetPath.endsWith(atPath('/tmp/chain/immutable'))) {
           return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
         }
         if (
-          targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+          targetPath.endsWith(
+            atPath('/tmp/mithril-partial-sync/download/db/ledger')
+          )
         ) {
           return [{ name: '12345', isDirectory: () => true }];
         }
-        if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
+        if (
+          targetPath.endsWith(atPath('/tmp/mithril-partial-sync/download/db'))
+        ) {
           return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
         }
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
@@ -2242,15 +2266,19 @@ describe('MithrilPartialSyncService', () => {
         exitCode: 0,
       });
       readdirMock.mockImplementation(async (targetPath: string) => {
-        if (targetPath === atPath('/tmp/chain/immutable')) {
+        if (targetPath.endsWith(atPath('/tmp/chain/immutable'))) {
           return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
         }
         if (
-          targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+          targetPath.endsWith(
+            atPath('/tmp/mithril-partial-sync/download/db/ledger')
+          )
         ) {
           return [{ name: '12345', isDirectory: () => true }];
         }
-        if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
+        if (
+          targetPath.endsWith(atPath('/tmp/mithril-partial-sync/download/db'))
+        ) {
           return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
         }
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];

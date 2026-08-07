@@ -151,7 +151,7 @@ describe('runCommand', () => {
   it('uses the installed binary path when DAEDALUS_INSTALL_DIRECTORY is set', async () => {
     const { spawn } = require('child_process');
 
-    process.env.DAEDALUS_INSTALL_DIRECTORY = '/opt/daedalus';
+    process.env.DAEDALUS_INSTALL_DIRECTORY = atPath('/opt/daedalus');
 
     const childEmitter = createChildProcess();
     spawn.mockImplementation(() => {
@@ -164,7 +164,7 @@ describe('runCommand', () => {
     await runCommand(['snapshot', 'list'], atPath('/tmp/workdir'), {});
 
     expect(spawn).toHaveBeenCalledWith(
-      '/opt/daedalus/mithril-client',
+      atPath('/opt/daedalus/mithril-client'),
       ['--origin-tag', 'DAEDALUS', 'snapshot', 'list'],
       expect.objectContaining({
         cwd: atPath('/tmp/workdir'),
@@ -426,7 +426,7 @@ describe('runBinary', () => {
   it('uses the installed binary path when DAEDALUS_INSTALL_DIRECTORY is set', async () => {
     const { spawn } = require('child_process');
 
-    process.env.DAEDALUS_INSTALL_DIRECTORY = '/opt/daedalus';
+    process.env.DAEDALUS_INSTALL_DIRECTORY = atPath('/opt/daedalus');
 
     const childEmitter = createChildProcess();
     spawn.mockImplementation(() => {
@@ -443,7 +443,7 @@ describe('runBinary', () => {
     );
 
     expect(spawn).toHaveBeenCalledWith(
-      '/opt/daedalus/snapshot-converter',
+      atPath('/opt/daedalus/snapshot-converter'),
       expect.any(Array),
       expect.any(Object)
     );
