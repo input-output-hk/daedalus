@@ -5,12 +5,14 @@ import WatchdogManager from './WatchdogManager';
 import type { WatchdogConfig, WatchdogState as InternalWatchdogState } from './WatchdogManager';
 import type { WatchdogState } from '../common/types/watchdog.types';
 import {
-  MITHRIL_PROGRESS_CHANNEL,
-  MITHRIL_STATUS_CHANNEL,
-  WALLET_PORT_CHANNEL,
-  NODE_STARTUP_STATUS_CHANNEL,
-  NODE_BLOCK_SYNC_PROGRESS_CHANNEL,
-} from '../common/ipc/api';
+  mithrilProgressChannel,
+  mithrilStatusChannel,
+  walletPortChannel,
+} from './ipc/mithrilPushChannel';
+import {
+  nodeStartupStatusChannel,
+  nodeBlockSyncProgressChannel,
+} from './ipc/nodePushChannel';
 import type { MithrilProgress } from '../common/types/watchdog.types';
 
 export type { WatchdogConfig };
@@ -81,16 +83,16 @@ class BackendLifecycle {
           totalSteps: event.total_steps as number,
           phase: event.phase as MithrilProgress['phase'],
         };
-        win.webContents.send(MITHRIL_PROGRESS_CHANNEL, progress);
+        mithrilProgressChannel.send(progress, win.webContents);
       } else if (eventType === 'mithril_status') {
-        win.webContents.send(MITHRIL_STATUS_CHANNEL, event);
+        mithrilStatusChannel.send(event as any, win.webContents);
       } else if (eventType === 'node_startup_status') {
-        win.webContents.send(NODE_STARTUP_STATUS_CHANNEL, { phase: event.phase });
+        nodeStartupStatusChannel.send({ phase: event.phase as string }, win.webContents);
       } else if (eventType === 'node_block_sync_progress') {
-        win.webContents.send(NODE_BLOCK_SYNC_PROGRESS_CHANNEL, {
-          kind: event.kind,
-          progress: event.progress,
-        });
+        nodeBlockSyncProgressChannel.send({
+          kind: event.kind as string,
+          progress: event.progress as number,
+        }, win.webContents);
       }
     });
 
@@ -107,14 +109,14 @@ class BackendLifecycle {
       if (this._tlsPath) {
         try {
           const path = require('path') as typeof import('path');
-          ca = Array.from(readFileSync(path.join(this._tlsPath, 'server/ca.crt')));
-          cert = Array.from(readFileSync(path.join(this._tlsPath, 'server/server.crt')));
-          key = Array.from(readFileSync(path.join(this._tlsPath, 'server/server.key')));
+          ca = Array.from(readFileSync(path.join(this._tlsPath, 'client/ca.crt')));
+          cert = Array.from(readFileSync(path.join(this._tlsPath, 'client/client.pem')));
+          key = Array.from(readFileSync(path.join(this._tlsPath, 'client/client.key')));
         } catch (e) {
           logger.error('BackendLifecycle: failed to read TLS certs', { error: e });
         }
       }
-      win.webContents.send(WALLET_PORT_CHANNEL, { port, ca, cert, key });
+      walletPortChannel.send({ port, ca, cert, key }, win.webContents);
     }).catch((reason) => {
       logger.error('BackendLifecycle: startup failed, scheduling restart', { reason });
       setTimeout(() => {

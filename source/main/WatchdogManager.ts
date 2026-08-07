@@ -93,7 +93,7 @@ class WatchdogManager {
   // wallet-ready promise plumbing
   private _walletReadyResolve: ((port: number) => void) | null = null;
   private _walletReadyReject: ((reason: string) => void) | null = null;
-  walletReadyPromise: Promise<number> = Promise.reject('not started');
+  walletReadyPromise: Promise<number> = new Promise(() => {});
   private _pendingRejection: string | null = null;
 
   private static makeInitialState(): WatchdogState {
