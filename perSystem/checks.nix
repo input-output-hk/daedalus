@@ -32,14 +32,18 @@
       };
   in {
     checks =
-      # Everything that executes the code under test runs on every system we
-      # ship. The suites are full of platform branches — path separators, case
+      # The suites that execute the code under test run natively on each OS we
+      # ship. They are full of platform branches — path separators, case
       # sensitivity, symlink and junction handling — and on a single platform
-      # those branches are exercised by overriding `process.platform` in-process,
-      # which asserts what the code does when told it is elsewhere rather than
-      # what it does when it is. Running the same suites natively turns each of
-      # those overrides into a real assertion at no authoring cost.
-      {
+      # those branches are only exercised by overriding `process.platform`
+      # in-process, which asserts what the code does when told it is elsewhere
+      # rather than what it does when it is.
+      #
+      # Per OS, not per system: x86_64-darwin and aarch64-darwin share a kernel
+      # and a filesystem, and nothing in these suites is architecture
+      # dependent, so the second darwin run costs builder time for signal that
+      # is already covered.
+      lib.optionalAttrs (system != "x86_64-darwin") {
         jest = mkJsCheck "daedalus-jest" "yarn test:jest --maxWorkers=4";
         cucumber-unit = mkJsCheck "daedalus-cucumber-unit" "yarn test:unit";
       }

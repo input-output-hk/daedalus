@@ -73,18 +73,24 @@
           # Hydra never evaluated and `required` never collected — present
           # locally, absent from CI, and silently so.
           checks = lib.genAttrs supportedSystems (system: self.checks.${system});
+          # Only x86_64-linux gates a merge. The darwin checks are built and
+          # reported on every commit, so a failure is visible on the pull
+          # request, but a scarce or flaky mac builder does not hold up work —
+          # the same posture the darwin installers already have.
           required = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
             name = "github-required";
             meta.description = "All jobs required to pass CI";
             constituents =
-              lib.collect lib.isDerivation self.hydraJobs.checks;
+              lib.collect lib.isDerivation self.hydraJobs.checks.x86_64-linux;
           };
           nonrequired = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
             name = "github-nonrequired";
             meta.description = "Jobs built by Hydra but not required to pass CI";
             constituents =
               lib.collect lib.isDerivation self.hydraJobs.installer
-              ++ lib.collect lib.isDerivation self.hydraJobs.devshell;
+              ++ lib.collect lib.isDerivation self.hydraJobs.devshell
+              ++ lib.collect lib.isDerivation
+              (removeAttrs self.hydraJobs.checks ["x86_64-linux"]);
           };
         };
       };
