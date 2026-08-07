@@ -1,3 +1,4 @@
+import path from 'path';
 import fs from 'fs-extra';
 import type { PartialSyncPreflightContext } from '../utils/chainStorageCoordinator';
 import { MithrilPartialSyncService } from './MithrilPartialSyncService';
@@ -55,12 +56,21 @@ jest.mock('./killProcessTree', () => ({
   killProcessTree: jest.fn(),
 }));
 
+// These paths are compared against values the code under test builds with
+// `path.join`, which is backslash-separated on Windows. `atPath` builds them
+// the same way, so the assertions stay about the path rather than the
+// platform. The literals inside the `jest.mock` factories above are inputs
+// rather than expectations, and are left alone — those factories are hoisted
+// above this declaration.
+const atPath = (posixPath: string): string =>
+  posixPath.split('/').join(path.sep);
+
 const createContext = (): PartialSyncPreflightContext => ({
   layoutResult: {
-    managedChainPath: '/tmp/chain',
+    managedChainPath: atPath('/tmp/chain'),
     isRecoveryFallback: false,
   },
-  mithrilWorkDir: '/tmp/mithril-workdir',
+  mithrilWorkDir: atPath('/tmp/mithril-workdir'),
 });
 
 const createLatestSnapshot = (
@@ -123,10 +133,10 @@ describe('MithrilPartialSyncService', () => {
     // readdir-driven local read.
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
     statMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath.endsWith('/clean')) {
+      if (path.basename(targetPath) === 'clean') {
         return mockFileStats();
       }
-      if (targetPath.endsWith('/protocolMagicId')) {
+      if (path.basename(targetPath) === 'protocolMagicId') {
         return mockFileStats();
       }
 
@@ -244,13 +254,15 @@ describe('MithrilPartialSyncService', () => {
       exitCode: 0,
     });
     readdirMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath === '/tmp/chain/immutable') {
+      if (targetPath === atPath('/tmp/chain/immutable')) {
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
       }
-      if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
+      if (
+        targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+      ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
-      if (targetPath === '/tmp/mithril-partial-sync/download/db') {
+      if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
 
@@ -266,7 +278,7 @@ describe('MithrilPartialSyncService', () => {
         'download',
         'latest',
         '--download-dir',
-        '/tmp/mithril-partial-sync/download',
+        atPath('/tmp/mithril-partial-sync/download'),
         '--start',
         '12',
         '--end',
@@ -275,12 +287,12 @@ describe('MithrilPartialSyncService', () => {
         '--allow-override',
       ],
       expect.any(Object),
-      '/tmp/mithril-partial-sync/download'
+      atPath('/tmp/mithril-partial-sync/download')
     );
 
     expect(
       service._chainStorageManager.installValidatedPartialSyncSnapshot
-    ).toHaveBeenCalledWith('/tmp/mithril-partial-sync/download/db', {
+    ).toHaveBeenCalledWith(atPath('/tmp/mithril-partial-sync/download/db'), {
       expectedTopLevelEntries: [
         'clean',
         'immutable',
@@ -294,14 +306,16 @@ describe('MithrilPartialSyncService', () => {
       expect.objectContaining({
         status: 'finalizing',
         allowedRecoveryActions: ['wipe-and-full-sync'],
-        logPath: '/tmp/daedalus-state/Logs/mithril-partial-sync.log',
+        logPath: atPath('/tmp/daedalus-state/Logs/mithril-partial-sync.log'),
         error: null,
       })
     );
 
-    expect(removeMock).toHaveBeenCalledWith('/tmp/mithril-partial-sync');
+    expect(removeMock).toHaveBeenCalledWith(
+      atPath('/tmp/mithril-partial-sync')
+    );
     expect(ensureDirMock).toHaveBeenCalledWith(
-      '/tmp/mithril-partial-sync/download'
+      atPath('/tmp/mithril-partial-sync/download')
     );
   });
 
@@ -331,11 +345,11 @@ describe('MithrilPartialSyncService', () => {
     const service = new MithrilPartialSyncService();
 
     statMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath.endsWith('/immutable')) {
+      if (path.basename(targetPath) === 'immutable') {
         throw new Error('missing immutable');
       }
 
-      if (targetPath.endsWith('/protocolMagicId')) {
+      if (path.basename(targetPath) === 'protocolMagicId') {
         return mockFileStats();
       }
 
@@ -369,7 +383,7 @@ describe('MithrilPartialSyncService', () => {
     const service = new MithrilPartialSyncService();
 
     accessMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath.endsWith('/immutable')) {
+      if (path.basename(targetPath) === 'immutable') {
         throw new Error('permission denied');
       }
     });
@@ -387,7 +401,7 @@ describe('MithrilPartialSyncService', () => {
     const service = new MithrilPartialSyncService();
 
     accessMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath.endsWith('/protocolMagicId')) {
+      if (path.basename(targetPath) === 'protocolMagicId') {
         throw new Error('permission denied');
       }
     });
@@ -438,13 +452,15 @@ describe('MithrilPartialSyncService', () => {
       exitCode: 0,
     });
     readdirMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath === '/tmp/chain/immutable') {
+      if (targetPath === atPath('/tmp/chain/immutable')) {
         return ['00025.chunk'];
       }
-      if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
+      if (
+        targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+      ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
-      if (targetPath === '/tmp/mithril-partial-sync/download/db') {
+      if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
 
@@ -460,7 +476,7 @@ describe('MithrilPartialSyncService', () => {
         'download',
         'latest',
         '--download-dir',
-        '/tmp/mithril-partial-sync/download',
+        atPath('/tmp/mithril-partial-sync/download'),
         '--start',
         '25',
         '--end',
@@ -469,7 +485,7 @@ describe('MithrilPartialSyncService', () => {
         '--allow-override',
       ],
       expect.any(Object),
-      '/tmp/mithril-partial-sync/download'
+      atPath('/tmp/mithril-partial-sync/download')
     );
   });
 
@@ -496,17 +512,18 @@ describe('MithrilPartialSyncService', () => {
       exitCode: 0,
     });
     readdirMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath === '/mnt/custom-storage/chain/immutable') {
+      if (targetPath === atPath('/mnt/custom-storage/chain/immutable')) {
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
       }
       if (
         targetPath ===
-        '/mnt/custom-storage/mithril-partial-sync/download/db/ledger'
+        atPath('/mnt/custom-storage/mithril-partial-sync/download/db/ledger')
       ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
       if (
-        targetPath === '/mnt/custom-storage/mithril-partial-sync/download/db'
+        targetPath ===
+        atPath('/mnt/custom-storage/mithril-partial-sync/download/db')
       ) {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
@@ -517,22 +534,24 @@ describe('MithrilPartialSyncService', () => {
     await expect(
       service.start({
         layoutResult: {
-          managedChainPath: '/mnt/custom-storage/chain',
+          managedChainPath: atPath('/mnt/custom-storage/chain'),
           isRecoveryFallback: false,
         },
-        mithrilWorkDir: '/mnt/custom-storage/chain',
+        mithrilWorkDir: atPath('/mnt/custom-storage/chain'),
       })
     ).resolves.toBeUndefined();
 
     expect(removeMock).toHaveBeenCalledWith(
-      '/mnt/custom-storage/mithril-partial-sync'
+      atPath('/mnt/custom-storage/mithril-partial-sync')
     );
     expect(ensureDirMock).toHaveBeenCalledWith(
-      '/mnt/custom-storage/mithril-partial-sync/download'
+      atPath('/mnt/custom-storage/mithril-partial-sync/download')
     );
     expect(
-      require('path').dirname('/mnt/custom-storage/mithril-partial-sync')
-    ).toBe(require('path').dirname('/mnt/custom-storage/chain'));
+      require('path').dirname(
+        atPath('/mnt/custom-storage/mithril-partial-sync')
+      )
+    ).toBe(require('path').dirname(atPath('/mnt/custom-storage/chain')));
   });
 
   it('rejects staging paths that resolve inside the managed chain subtree', async () => {
@@ -602,13 +621,15 @@ describe('MithrilPartialSyncService', () => {
       exitCode: 0,
     });
     readdirMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath === '/tmp/chain/immutable') {
+      if (targetPath === atPath('/tmp/chain/immutable')) {
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
       }
-      if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
+      if (
+        targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+      ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
-      if (targetPath === '/tmp/mithril-partial-sync/download/db') {
+      if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
         return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
       }
 
@@ -740,14 +761,14 @@ describe('MithrilPartialSyncService', () => {
         };
       });
     statMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath.endsWith('/clean')) {
+      if (path.basename(targetPath) === 'clean') {
         return mockFileStats();
       }
-      if (targetPath.endsWith('/ledger')) {
+      if (path.basename(targetPath) === 'ledger') {
         throw new Error('missing ledger');
       }
 
-      if (targetPath.endsWith('/protocolMagicId')) {
+      if (path.basename(targetPath) === 'protocolMagicId') {
         return mockFileStats();
       }
 
@@ -786,13 +807,15 @@ describe('MithrilPartialSyncService', () => {
       exitCode: 0,
     });
     readdirMock.mockImplementation(async (targetPath: string) => {
-      if (targetPath === '/tmp/chain/immutable') {
+      if (targetPath === atPath('/tmp/chain/immutable')) {
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
       }
-      if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
+      if (
+        targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+      ) {
         return [{ name: '12345', isDirectory: () => true }];
       }
-      if (targetPath === '/tmp/mithril-partial-sync/download/db') {
+      if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
         return [
           'clean',
           'immutable',
@@ -825,8 +848,9 @@ describe('MithrilPartialSyncService', () => {
   it('rejects cancellation once live cutover has started', async () => {
     const service = new MithrilPartialSyncService();
 
-    service._activeWorkDir =
-      '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._activeWorkDir = atPath(
+      '/tmp/daedalus-state/mithril-partial-sync/download'
+    );
     service._status = {
       status: 'installing',
       allowedRecoveryActions: [],
@@ -871,8 +895,9 @@ describe('MithrilPartialSyncService', () => {
   it('does not emit a status when post-cutover cancel hard-rejects', async () => {
     const service = new MithrilPartialSyncService();
 
-    service._activeWorkDir =
-      '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._activeWorkDir = atPath(
+      '/tmp/daedalus-state/mithril-partial-sync/download'
+    );
     service._status = {
       status: 'installing',
       allowedRecoveryActions: [],
@@ -893,10 +918,12 @@ describe('MithrilPartialSyncService', () => {
   it('emits cancelling and defers cleanup until finalizeCancel when cancellation succeeds before cutover', async () => {
     const service = new MithrilPartialSyncService();
 
-    service._activeWorkDir =
-      '/tmp/daedalus-state/mithril-partial-sync/download';
-    service._stagedDbPath =
-      '/tmp/daedalus-state/mithril-partial-sync/download/db';
+    service._activeWorkDir = atPath(
+      '/tmp/daedalus-state/mithril-partial-sync/download'
+    );
+    service._stagedDbPath = atPath(
+      '/tmp/daedalus-state/mithril-partial-sync/download/db'
+    );
     service._status = {
       status: 'downloading',
       allowedRecoveryActions: [],
@@ -928,7 +955,7 @@ describe('MithrilPartialSyncService', () => {
     await expect(service.finalizeCancel()).resolves.toBeUndefined();
 
     expect(removeMock).toHaveBeenCalledWith(
-      '/tmp/daedalus-state/mithril-partial-sync'
+      atPath('/tmp/daedalus-state/mithril-partial-sync')
     );
     expect(clearMithrilPartialSyncMarkerMock).toHaveBeenCalledTimes(1);
     expect(service.status).toEqual(
@@ -942,8 +969,9 @@ describe('MithrilPartialSyncService', () => {
   it('lands on cancelled with retry and restart-normal when finalizeCancel cleanup fails', async () => {
     const service = new MithrilPartialSyncService();
 
-    service._activeWorkDir =
-      '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._activeWorkDir = atPath(
+      '/tmp/daedalus-state/mithril-partial-sync/download'
+    );
     service._status = {
       status: 'downloading',
       allowedRecoveryActions: [],
@@ -976,8 +1004,9 @@ describe('MithrilPartialSyncService', () => {
   it('emits a non-retryable failed state from abandonCancel without cleanup', async () => {
     const service = new MithrilPartialSyncService();
 
-    service._activeWorkDir =
-      '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._activeWorkDir = atPath(
+      '/tmp/daedalus-state/mithril-partial-sync/download'
+    );
     service._status = {
       status: 'cancelling',
       allowedRecoveryActions: [],
@@ -1003,8 +1032,9 @@ describe('MithrilPartialSyncService', () => {
     const service = new MithrilPartialSyncService();
 
     const fakeChild = { pid: 999, kill: jest.fn() } as any;
-    service._activeWorkDir =
-      '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._activeWorkDir = atPath(
+      '/tmp/daedalus-state/mithril-partial-sync/download'
+    );
     service._currentProcess = fakeChild;
     service._status = {
       status: 'downloading',
@@ -1033,8 +1063,9 @@ describe('MithrilPartialSyncService', () => {
     const service = new MithrilPartialSyncService();
 
     // An active work dir is required here: an empty slot AND empty workDir would short-circuit on the no-active-sync early return.
-    service._activeWorkDir =
-      '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._activeWorkDir = atPath(
+      '/tmp/daedalus-state/mithril-partial-sync/download'
+    );
     service._currentProcess = null;
     service._status = {
       status: 'downloading',
@@ -1094,10 +1125,12 @@ describe('MithrilPartialSyncService', () => {
     const { info: infoLog } = require('../utils/logging').logger;
     const service = new MithrilPartialSyncService();
 
-    service._activeWorkDir =
-      '/tmp/daedalus-state/mithril-partial-sync/download';
-    service._stagedDbPath =
-      '/tmp/daedalus-state/mithril-partial-sync/download/db';
+    service._activeWorkDir = atPath(
+      '/tmp/daedalus-state/mithril-partial-sync/download'
+    );
+    service._stagedDbPath = atPath(
+      '/tmp/daedalus-state/mithril-partial-sync/download/db'
+    );
     service._status = {
       status: 'downloading',
       allowedRecoveryActions: [],
@@ -1123,8 +1156,9 @@ describe('MithrilPartialSyncService', () => {
     const { warn: warnLog } = require('../utils/logging').logger;
     const service = new MithrilPartialSyncService();
 
-    service._activeWorkDir =
-      '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._activeWorkDir = atPath(
+      '/tmp/daedalus-state/mithril-partial-sync/download'
+    );
     service._status = {
       status: 'downloading',
       allowedRecoveryActions: [],
@@ -1147,8 +1181,9 @@ describe('MithrilPartialSyncService', () => {
     const { warn: warnLog } = require('../utils/logging').logger;
     const service = new MithrilPartialSyncService();
 
-    service._activeWorkDir =
-      '/tmp/daedalus-state/mithril-partial-sync/download';
+    service._activeWorkDir = atPath(
+      '/tmp/daedalus-state/mithril-partial-sync/download'
+    );
     service._status = {
       status: 'cancelling',
       allowedRecoveryActions: [],
@@ -1182,7 +1217,7 @@ describe('MithrilPartialSyncService', () => {
     await expect(service.restartNormal()).resolves.toBeUndefined();
 
     expect(removeMock).toHaveBeenCalledWith(
-      '/tmp/daedalus-state/mithril-partial-sync'
+      atPath('/tmp/daedalus-state/mithril-partial-sync')
     );
     expect(service.status).toEqual({
       status: 'idle',
@@ -1211,7 +1246,7 @@ describe('MithrilPartialSyncService', () => {
     await expect(service.wipeAndFullSync()).resolves.toBeUndefined();
 
     expect(removeMock).toHaveBeenCalledWith(
-      '/tmp/daedalus-state/mithril-partial-sync'
+      atPath('/tmp/daedalus-state/mithril-partial-sync')
     );
     expect(clearMithrilPartialSyncMarkerMock).not.toHaveBeenCalled();
 
@@ -1264,7 +1299,7 @@ describe('MithrilPartialSyncService', () => {
       );
       await expect(service.wipeAndFullSync()).resolves.toBeUndefined();
       expect(removeMock).toHaveBeenCalledWith(
-        '/tmp/daedalus-state/mithril-partial-sync'
+        atPath('/tmp/daedalus-state/mithril-partial-sync')
       );
     });
 
@@ -1342,13 +1377,15 @@ describe('MithrilPartialSyncService', () => {
         .spyOn(service, '_runBinary')
         .mockResolvedValue({ stdout: '', stderr: '', exitCode: 0 });
       readdirMock.mockImplementation(async (targetPath: string) => {
-        if (targetPath === '/tmp/chain/immutable') {
+        if (targetPath === atPath('/tmp/chain/immutable')) {
           return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
         }
-        if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
+        if (
+          targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+        ) {
           return [{ name: '12345', isDirectory: () => true }];
         }
-        if (targetPath === '/tmp/mithril-partial-sync/download/db') {
+        if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
           return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
         }
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
@@ -1608,7 +1645,7 @@ describe('MithrilPartialSyncService', () => {
 
       jest
         .spyOn(service._chainStorageManager, 'getManagedChainPath')
-        .mockResolvedValue('/tmp/chain');
+        .mockResolvedValue(atPath('/tmp/chain'));
       readdirMock.mockResolvedValue(['00005.chunk', 'not-an-immutable-entry']);
       await expect(service.getPartialSyncBehindness()).resolves.toEqual({
         isSignificantlyBehind: true,
@@ -1634,8 +1671,9 @@ describe('MithrilPartialSyncService', () => {
 
       expect(service._currentProcess).toBe(downloadChild);
 
-      service._activeWorkDir =
-        '/tmp/daedalus-state/mithril-partial-sync/download';
+      service._activeWorkDir = atPath(
+        '/tmp/daedalus-state/mithril-partial-sync/download'
+      );
       service._status = {
         status: 'downloading',
         allowedRecoveryActions: [],
@@ -1819,13 +1857,15 @@ describe('MithrilPartialSyncService', () => {
         exitCode: 0,
       });
       readdirMock.mockImplementation(async (targetPath: string) => {
-        if (targetPath === '/tmp/chain/immutable') {
+        if (targetPath === atPath('/tmp/chain/immutable')) {
           return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
         }
-        if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
+        if (
+          targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+        ) {
           return [{ name: '12345', isDirectory: () => true }];
         }
-        if (targetPath === '/tmp/mithril-partial-sync/download/db') {
+        if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
           return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
         }
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
@@ -1934,7 +1974,7 @@ describe('MithrilPartialSyncService', () => {
           stage: 'preparing',
         })
       );
-      expect(sizeSpy).toHaveBeenCalledWith('/tmp/chain');
+      expect(sizeSpy).toHaveBeenCalledWith(atPath('/tmp/chain'));
       expect(service.status.error.message).toContain('Mithril Sync');
       expect(service.status.error.message).not.toMatch(/partial sync/i);
     });
@@ -1990,7 +2030,7 @@ describe('MithrilPartialSyncService', () => {
       );
       expect(require('../utils/logging').logger.warn).toHaveBeenCalledWith(
         expect.stringContaining('could not measure the local chain size'),
-        expect.objectContaining({ managedChainPath: '/tmp/chain' })
+        expect.objectContaining({ managedChainPath: atPath('/tmp/chain') })
       );
     });
 
@@ -2099,7 +2139,7 @@ describe('MithrilPartialSyncService', () => {
       ).resolves.toBeUndefined();
 
       expect(removeMock).toHaveBeenCalledWith(
-        '/tmp/daedalus-state/mithril-partial-sync'
+        atPath('/tmp/daedalus-state/mithril-partial-sync')
       );
     });
 
@@ -2202,13 +2242,15 @@ describe('MithrilPartialSyncService', () => {
         exitCode: 0,
       });
       readdirMock.mockImplementation(async (targetPath: string) => {
-        if (targetPath === '/tmp/chain/immutable') {
+        if (targetPath === atPath('/tmp/chain/immutable')) {
           return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
         }
-        if (targetPath === '/tmp/mithril-partial-sync/download/db/ledger') {
+        if (
+          targetPath === atPath('/tmp/mithril-partial-sync/download/db/ledger')
+        ) {
           return [{ name: '12345', isDirectory: () => true }];
         }
-        if (targetPath === '/tmp/mithril-partial-sync/download/db') {
+        if (targetPath === atPath('/tmp/mithril-partial-sync/download/db')) {
           return ['clean', 'immutable', 'ledger', 'lsm', 'protocolMagicId'];
         }
         return ['00010.chunk', '00011.primary', 'not-an-immutable-entry'];
@@ -2225,14 +2267,14 @@ describe('MithrilPartialSyncService', () => {
 
       expect(cutoverCall).toBeDefined();
       expect(cutoverCall[1]).toMatchObject({
-        managedChainPath: '/tmp/chain',
-        stagingRootPath: '/tmp/mithril-partial-sync',
+        managedChainPath: atPath('/tmp/chain'),
+        stagingRootPath: atPath('/tmp/mithril-partial-sync'),
       });
 
       expect(awaitingCall).toBeDefined();
       expect(awaitingCall[1]).toMatchObject({
-        managedChainPath: '/tmp/chain',
-        stagingRootPath: '/tmp/mithril-partial-sync',
+        managedChainPath: atPath('/tmp/chain'),
+        stagingRootPath: atPath('/tmp/mithril-partial-sync'),
       });
     });
   });
@@ -2245,7 +2287,7 @@ describe('MithrilPartialSyncService', () => {
     ) => {
       jest
         .spyOn(service._chainStorageManager, 'getManagedChainPath')
-        .mockResolvedValue('/tmp/chain');
+        .mockResolvedValue(atPath('/tmp/chain'));
       readdirMock.mockResolvedValue([
         `${String(localImmutableNumber).padStart(5, '0')}.chunk`,
         'not-an-immutable-entry',

@@ -1,3 +1,4 @@
+import path from 'path';
 import { EventEmitter } from 'events';
 import {
   openLogStream,
@@ -44,6 +45,12 @@ jest.mock('child_process', () => ({
   spawn: jest.fn(),
 }));
 
+// These paths are compared against values the code under test builds with
+// `path.join`, which is backslash-separated on Windows. `atPath` builds them
+// the same way, so the assertions stay about the path rather than the platform.
+const atPath = (posixPath: string): string =>
+  posixPath.split('/').join(path.sep);
+
 const createChildProcess = () => {
   const childEmitter = new EventEmitter() as any;
   childEmitter.stdout = new EventEmitter();
@@ -57,7 +64,7 @@ describe('openLogStream', () => {
     const fs = require('fs-extra');
     openLogStream();
     expect(fs.createWriteStream).toHaveBeenCalledWith(
-      '/tmp/daedalus-state/Logs/mithril-bootstrap.log',
+      atPath('/tmp/daedalus-state/Logs/mithril-bootstrap.log'),
       {
         flags: 'a',
       }
@@ -68,7 +75,7 @@ describe('openLogStream', () => {
     const fs = require('fs-extra');
     openLogStream('mithril-partial-sync.log');
     expect(fs.createWriteStream).toHaveBeenCalledWith(
-      '/tmp/daedalus-state/Logs/mithril-partial-sync.log',
+      atPath('/tmp/daedalus-state/Logs/mithril-partial-sync.log'),
       {
         flags: 'a',
       }
@@ -126,7 +133,7 @@ describe('runCommand', () => {
 
     const result = await runCommand(
       ['cardano-db', 'snapshot', 'list'],
-      '/tmp/workdir',
+      atPath('/tmp/workdir'),
       {}
     );
 
@@ -134,7 +141,7 @@ describe('runCommand', () => {
       'mithril-client',
       ['--origin-tag', 'DAEDALUS', 'cardano-db', 'snapshot', 'list'],
       expect.objectContaining({
-        cwd: '/tmp/workdir',
+        cwd: atPath('/tmp/workdir'),
       })
     );
     expect(result.stdout).toBe('output-data');
@@ -154,13 +161,13 @@ describe('runCommand', () => {
       return childEmitter;
     });
 
-    await runCommand(['snapshot', 'list'], '/tmp/workdir', {});
+    await runCommand(['snapshot', 'list'], atPath('/tmp/workdir'), {});
 
     expect(spawn).toHaveBeenCalledWith(
       '/opt/daedalus/mithril-client',
       ['--origin-tag', 'DAEDALUS', 'snapshot', 'list'],
       expect.objectContaining({
-        cwd: '/tmp/workdir',
+        cwd: atPath('/tmp/workdir'),
       })
     );
   });
@@ -227,13 +234,16 @@ describe('runCommand', () => {
       return childEmitter;
     });
 
-    await runCommand(['cardano-db', 'snapshot', 'list'], '/tmp/workdir');
+    await runCommand(
+      ['cardano-db', 'snapshot', 'list'],
+      atPath('/tmp/workdir')
+    );
 
     expect(spawn).toHaveBeenCalledWith(
       'mithril-client',
       ['--origin-tag', 'DAEDALUS', 'cardano-db', 'snapshot', 'list'],
       expect.objectContaining({
-        cwd: '/tmp/workdir',
+        cwd: atPath('/tmp/workdir'),
       })
     );
   });
@@ -251,7 +261,7 @@ describe('runCommand', () => {
     });
 
     await expect(
-      runCommand(['bad-command'], '/tmp/workdir', {})
+      runCommand(['bad-command'], atPath('/tmp/workdir'), {})
     ).rejects.toThrow('spawn ENOENT');
   });
 
@@ -268,7 +278,7 @@ describe('runCommand', () => {
     });
 
     const onProcess = jest.fn();
-    await runCommand(['list'], '/tmp/workdir', {}, { onProcess });
+    await runCommand(['list'], atPath('/tmp/workdir'), {}, { onProcess });
 
     expect(onProcess).toHaveBeenCalledWith(childEmitter);
     expect(onProcess).toHaveBeenCalledWith(null);
@@ -293,7 +303,11 @@ describe('runCommand', () => {
       return childEmitter;
     });
 
-    const result = await runCommand(['snapshot', 'list'], '/tmp/workdir', {});
+    const result = await runCommand(
+      ['snapshot', 'list'],
+      atPath('/tmp/workdir'),
+      {}
+    );
 
     expect(childEmitter.listenerCount('exit')).toBeGreaterThan(0);
 
@@ -325,7 +339,7 @@ describe('runCommand', () => {
       return childEmitter;
     });
 
-    await runCommand(['snapshot', 'list'], '/tmp/workdir', {});
+    await runCommand(['snapshot', 'list'], atPath('/tmp/workdir'), {});
 
     expect(spawn).toHaveBeenCalledWith(
       'mithril-client',
@@ -394,7 +408,7 @@ describe('runBinary', () => {
         '--output-lsm-snapshot',
         '/db/tmp/snapshots/12345_lsm',
       ],
-      '/tmp/workdir'
+      atPath('/tmp/workdir')
     );
 
     expect(spawn).toHaveBeenCalledWith(
@@ -405,7 +419,7 @@ describe('runBinary', () => {
         '--output-lsm-snapshot',
         '/db/tmp/snapshots/12345_lsm',
       ],
-      expect.objectContaining({ cwd: '/tmp/workdir' })
+      expect.objectContaining({ cwd: atPath('/tmp/workdir') })
     );
   });
 
@@ -425,7 +439,7 @@ describe('runBinary', () => {
     await runBinary(
       'snapshot-converter',
       ['--input-mem', '/db'],
-      '/tmp/workdir'
+      atPath('/tmp/workdir')
     );
 
     expect(spawn).toHaveBeenCalledWith(
@@ -470,7 +484,11 @@ describe('runBinary', () => {
       return childEmitter;
     });
 
-    const result = await runBinary('snapshot-converter', [], '/tmp/workdir');
+    const result = await runBinary(
+      'snapshot-converter',
+      [],
+      atPath('/tmp/workdir')
+    );
 
     expect(result.stdout).toBe('converted');
     expect(result.exitCode).toBe(0);
@@ -495,7 +513,11 @@ describe('runBinary', () => {
       return childEmitter;
     });
 
-    const result = await runBinary('snapshot-converter', [], '/tmp/workdir');
+    const result = await runBinary(
+      'snapshot-converter',
+      [],
+      atPath('/tmp/workdir')
+    );
 
     expect(childEmitter.listenerCount('exit')).toBeGreaterThan(0);
 
@@ -527,7 +549,7 @@ describe('runBinary', () => {
       return childEmitter;
     });
 
-    await runBinary('snapshot-converter', [], '/tmp/workdir');
+    await runBinary('snapshot-converter', [], atPath('/tmp/workdir'));
 
     expect(spawn).toHaveBeenCalledWith(
       'snapshot-converter',
