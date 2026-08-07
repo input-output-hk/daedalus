@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DRepDirectory renders exactly one category badge per card (snapshot) 1`] = `
+<span
+  aria-label="!!!Threshold. !!!Approaching expiry — review before delegating."
+  class="badge threshold"
+  title="!!!Approaching expiry — review before delegating."
+>
+  <span
+    aria-hidden="true"
+    class="dot"
+  />
+  <span
+    class="label"
+  >
+    !!!Threshold
+  </span>
+</span>
+`;

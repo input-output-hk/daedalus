@@ -1312,9 +1312,9 @@
         "id": "sidebar.categoryTooltip.settings"
       },
       {
-        "defaultMessage": "!!!Voting",
-        "description": "Text for the tooltip of voting category",
-        "id": "sidebar.categoryTooltip.voting"
+        "defaultMessage": "!!!Governance",
+        "description": "Text for the tooltip of governance category",
+        "id": "sidebar.categoryTooltip.governance"
       }
     ],
     "path": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts"
@@ -2462,6 +2462,21 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Directory",
+        "description": "Label for the DRep directory tab.",
+        "id": "governance.tabs.directory"
+      },
+      {
+        "defaultMessage": "!!!Favorites",
+        "description": "Label for the DRep favorites tab.",
+        "id": "governance.drepDirectory.tabs.favorites"
+      }
+    ],
+    "path": "source/renderer/app/containers/voting/Governance.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Catalyst Voting",
         "description": "Label for the catalyst voting tab.",
         "id": "voting.tabs.catalyst"
@@ -2493,6 +2508,671 @@
       }
     ],
     "path": "source/renderer/app/containers/wallet/WalletSummaryPage.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!High value",
+        "description": "Category badge for in-cohort DReps above the cohort median",
+        "id": "governance.drepDirectory.category.highValue"
+      },
+      {
+        "defaultMessage": "!!!Inside the default Recommended view, with verified metadata and voting power above the cohort median.",
+        "description": "Tooltip explaining the High value category",
+        "id": "governance.drepDirectory.category.highValue.tooltip"
+      },
+      {
+        "defaultMessage": "!!!Primary",
+        "description": "Category badge for DReps with anchor metadata",
+        "id": "governance.drepDirectory.category.primary"
+      },
+      {
+        "defaultMessage": "!!!Has verified off-chain metadata.",
+        "description": "Tooltip explaining the Primary category",
+        "id": "governance.drepDirectory.category.primary.tooltip"
+      },
+      {
+        "defaultMessage": "!!!Threshold",
+        "description": "Category badge for DReps in the 7-12 epoch expiry window",
+        "id": "governance.drepDirectory.category.threshold"
+      },
+      {
+        "defaultMessage": "!!!Approaching expiry — review before delegating.",
+        "description": "Tooltip explaining the Threshold category",
+        "id": "governance.drepDirectory.category.threshold.tooltip"
+      },
+      {
+        "defaultMessage": "!!!Non-metadata",
+        "description": "Category badge for DReps without anchor metadata",
+        "id": "governance.drepDirectory.category.nonMetadata"
+      },
+      {
+        "defaultMessage": "!!!Eligible for delegation but has no verified off-chain metadata yet.",
+        "description": "Tooltip explaining the Non-metadata category",
+        "id": "governance.drepDirectory.category.nonMetadata.tooltip"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/DRepCategoryBadge.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Your node is still syncing. DRep data becomes available once the node reaches the tip.",
+        "description": "Directory fallback while the node has not reached the tip",
+        "id": "governance.drepDirectory.empty.noSync"
+      },
+      {
+        "defaultMessage": "!!!DRep directory data is unavailable on the selfnode cluster.",
+        "description": "Directory empty state on the selfnode cluster",
+        "id": "governance.drepDirectory.empty.selfnode"
+      },
+      {
+        "defaultMessage": "!!!DRep data unavailable on selfnode",
+        "description": "Directory-level unavailability badge rendered inside the selfnode empty state",
+        "id": "governance.drepDirectory.status.selfnodeUnavailable"
+      },
+      {
+        "defaultMessage": "!!!No DReps match your filters. {ClearFilters} or {ShowAll}.",
+        "description": "Empty state when search/filters match nothing",
+        "id": "governance.drepDirectory.empty.noResults"
+      },
+      {
+        "defaultMessage": "!!!Clear filters",
+        "description": "Action that resets search, filters and sort",
+        "id": "governance.drepDirectory.empty.noResults.clearFilters"
+      },
+      {
+        "defaultMessage": "!!!No favorites yet",
+        "description": "Title of the empty favorites view",
+        "id": "governance.drepFavorites.empty.title"
+      },
+      {
+        "defaultMessage": "!!!DReps you favorite from the directory appear here. Favorites are stored on this device only.",
+        "description": "Body of the empty favorites view; owns the per-device expectation",
+        "id": "governance.drepFavorites.empty.body"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/DRepEmptyState.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Show all DReps",
+        "description": "Toggle that switches from the default cohort to all DReps",
+        "id": "governance.drepDirectory.cohortBanner.showAll"
+      },
+      {
+        "defaultMessage": "!!!Active",
+        "description": "Active status label",
+        "id": "governance.drepDirectory.status.active"
+      },
+      {
+        "defaultMessage": "!!!Inactive",
+        "description": "Inactive status label",
+        "id": "governance.drepDirectory.status.inactive"
+      },
+      {
+        "defaultMessage": "!!!Status",
+        "description": "Label of the status filter",
+        "id": "governance.drepDirectory.filter.active"
+      },
+      {
+        "defaultMessage": "!!!Metadata",
+        "description": "Label of the metadata filter",
+        "id": "governance.drepDirectory.filter.metadata"
+      },
+      {
+        "defaultMessage": "!!!Expiry",
+        "description": "Label of the expiry-threshold filter",
+        "id": "governance.drepDirectory.filter.expiry"
+      },
+      {
+        "defaultMessage": "!!!All",
+        "description": "Neutral option of every filter dropdown",
+        "id": "governance.drepDirectory.filter.all"
+      },
+      {
+        "defaultMessage": "!!!With metadata",
+        "description": "Metadata filter option: anchor present",
+        "id": "governance.drepDirectory.filter.metadata.with"
+      },
+      {
+        "defaultMessage": "!!!Without metadata",
+        "description": "Metadata filter option: no anchor",
+        "id": "governance.drepDirectory.filter.metadata.without"
+      },
+      {
+        "defaultMessage": "!!!Expiring in 7–12 epochs",
+        "description": "Expiry filter option: the threshold window",
+        "id": "governance.drepDirectory.filter.expiry.thresholdWindow"
+      },
+      {
+        "defaultMessage": "!!!Exclude the 35 largest",
+        "description": "Show-all filter that removes the top-35 by voting power",
+        "id": "governance.drepDirectory.filter.excludeTop35"
+      },
+      {
+        "defaultMessage": "!!!Favorited",
+        "description": "Filter that shows only favorited DReps",
+        "id": "governance.drepDirectory.filter.favorited"
+      },
+      {
+        "defaultMessage": "!!!Sort",
+        "description": "Label of the show-all sort dropdown",
+        "id": "governance.drepDirectory.sort.label"
+      },
+      {
+        "defaultMessage": "!!!Randomized (default)",
+        "description": "Default seeded-random sort option",
+        "id": "governance.drepDirectory.sort.randomized"
+      },
+      {
+        "defaultMessage": "!!!Voting power (high to low)",
+        "description": "Voting power descending sort option",
+        "id": "governance.drepDirectory.sort.votingPowerDesc"
+      },
+      {
+        "defaultMessage": "!!!Voting power (low to high)",
+        "description": "Voting power ascending sort option",
+        "id": "governance.drepDirectory.sort.votingPowerAsc"
+      },
+      {
+        "defaultMessage": "!!!Expiry (soonest first)",
+        "description": "Soonest-expiry-first sort option",
+        "id": "governance.drepDirectory.sort.expiryAsc"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryFilters.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Back to directory",
+        "description": "Link from the DRep detail back to the directory",
+        "id": "governance.drepDirectory.backToDirectory"
+      },
+      {
+        "defaultMessage": "!!!DRep detail",
+        "description": "Title of the DRep detail page",
+        "id": "governance.drepDetail.title"
+      },
+      {
+        "defaultMessage": "!!!Loading DRep data…",
+        "description": "Loading state on the DRep detail page",
+        "id": "governance.drepDetail.loading"
+      },
+      {
+        "defaultMessage": "!!!This DRep was not found in the latest on-chain data.",
+        "description": "Inline error when the requested DRep is not in the index",
+        "id": "governance.drepDetail.notFound"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-detail/DRepDetail.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Voting power data unavailable this refresh. Ranking-based filters disabled.",
+        "description": "Non-blocking banner when the stake phase fails",
+        "id": "governance.drepDirectory.error.rankingUnavailable"
+      },
+      {
+        "defaultMessage": "!!!Couldn't refresh DRep data. {Retry}. Showing last successful snapshot from {time}.",
+        "description": "Non-blocking banner when a refresh fails while a retained snapshot is on screen",
+        "id": "governance.drepDirectory.error.refresh"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/DRepErrorBanner.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Copy",
+        "description": "Copy button label for a DRep ID",
+        "id": "governance.drepDirectory.copyButton"
+      },
+      {
+        "defaultMessage": "!!!Copy DRep ID",
+        "description": "Accessible label for the DRep ID copy button",
+        "id": "governance.drepDirectory.copyId"
+      },
+      {
+        "defaultMessage": "!!!DRep ID copied",
+        "description": "Inline confirmation shown after copying a DRep ID",
+        "id": "governance.drepDetail.copyIdToast"
+      },
+      {
+        "defaultMessage": "!!!(CIP-105)",
+        "description": "Caption in front of the CIP-105 form of a DRep ID",
+        "id": "governance.drepDirectory.cip105Caption"
+      },
+      {
+        "defaultMessage": "!!!Copy CIP-129 DRep ID",
+        "description": "Accessible label for the CIP-129 copy button",
+        "id": "governance.drepDirectory.copyIdCip129"
+      },
+      {
+        "defaultMessage": "!!!Copy CIP-105 DRep ID",
+        "description": "Accessible label for the CIP-105 copy button",
+        "id": "governance.drepDirectory.copyIdCip105"
+      },
+      {
+        "defaultMessage": "!!!CIP-129 DRep ID {value}",
+        "description": "Accessible label of the CIP-129 DRep ID value",
+        "id": "governance.drepDirectory.idAriaCip129"
+      },
+      {
+        "defaultMessage": "!!!CIP-105 DRep ID {value}",
+        "description": "Accessible label of the CIP-105 DRep ID value",
+        "id": "governance.drepDirectory.idAriaCip105"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/DRepIdDisplay.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!On-chain",
+        "description": "Source label for on-chain DRep data",
+        "id": "governance.drepDirectory.source.onChain"
+      },
+      {
+        "defaultMessage": "!!!On-chain anchor reference",
+        "description": "Source label for the raw anchor URL and hash pair recorded on-chain",
+        "id": "governance.drepDetail.sourceLabel.anchorReference"
+      },
+      {
+        "defaultMessage": "!!!Verified off-chain content",
+        "description": "Source label for hash-verified anchor content",
+        "id": "governance.drepDetail.sourceLabel.verified"
+      },
+      {
+        "defaultMessage": "!!!Fetched from {host}, hash-matched the on-chain anchor hash.",
+        "description": "Tooltip for the verified off-chain content source label",
+        "id": "governance.drepDetail.sourceLabel.verified.tooltip"
+      },
+      {
+        "defaultMessage": "!!!Unverified anchor",
+        "description": "Source label for fetched but not yet hash-verified content",
+        "id": "governance.drepDetail.sourceLabel.unverified"
+      },
+      {
+        "defaultMessage": "!!!Anchor content fetched but not yet hash-verified. Treat as untrusted.",
+        "description": "Tooltip for the unverified anchor source label",
+        "id": "governance.drepDetail.sourceLabel.unverified.tooltip"
+      },
+      {
+        "defaultMessage": "!!!Anchor unavailable",
+        "description": "Source label when the anchor fetch or hash check failed",
+        "id": "governance.drepDetail.sourceLabel.anchorUnavailable"
+      },
+      {
+        "defaultMessage": "!!!The anchor URL could not be retrieved or did not match the on-chain hash. Off-chain profile is not shown.",
+        "description": "Tooltip for the anchor unavailable source label",
+        "id": "governance.drepDetail.sourceLabel.anchorUnavailable.tooltip"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/DRepSourceLabel.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Select for delegation",
+        "description": "Row-level CTA that hands the DRep ID to the delegation form",
+        "id": "governance.drepDirectory.card.select"
+      },
+      {
+        "defaultMessage": "!!!Voting power",
+        "description": "Label for the voting power column in DRep directory",
+        "id": "governance.drepDirectory.votingPower"
+      },
+      {
+        "defaultMessage": "!!!View details",
+        "description": "Card CTA that opens the DRep detail view",
+        "id": "governance.drepDirectory.card.viewDetails"
+      },
+      {
+        "defaultMessage": "!!!Loading voting power…",
+        "description": "Tooltip on the voting-power placeholder during enrichment",
+        "id": "governance.drepDirectory.votingPower.loadingTooltip"
+      },
+      {
+        "defaultMessage": "!!!Stake distribution unavailable this refresh.",
+        "description": "Tooltip on the voting-power placeholder when stake failed",
+        "id": "governance.drepDirectory.votingPower.unavailableTooltip"
+      },
+      {
+        "defaultMessage": "!!!Add to favorites",
+        "description": "Accessible label of the favorite toggle when not favorited",
+        "id": "governance.drepDirectory.card.favorite.add"
+      },
+      {
+        "defaultMessage": "!!!Remove from favorites",
+        "description": "Accessible label of the favorite toggle when favorited",
+        "id": "governance.drepDirectory.card.favorite.remove"
+      },
+      {
+        "defaultMessage": "!!!This DRep is no longer in the default cohort.",
+        "description": "Inline caption under a stale favorited DRep",
+        "id": "governance.drepFavorites.staleCaption"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepCard.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Off-chain profile",
+        "description": "Heading of the verified anchor content block",
+        "id": "governance.drepDetail.anchorContent.title"
+      },
+      {
+        "defaultMessage": "!!!Name",
+        "description": "Label for the verified CIP-119 givenName field",
+        "id": "governance.drepDetail.anchorContent.givenName"
+      },
+      {
+        "defaultMessage": "!!!Objectives",
+        "description": "Label for the verified CIP-119 objectives field",
+        "id": "governance.drepDetail.anchorContent.objectives"
+      },
+      {
+        "defaultMessage": "!!!Motivations",
+        "description": "Label for the verified CIP-119 motivations field",
+        "id": "governance.drepDetail.anchorContent.motivations"
+      },
+      {
+        "defaultMessage": "!!!Qualifications",
+        "description": "Label for the verified CIP-119 qualifications field",
+        "id": "governance.drepDetail.anchorContent.qualifications"
+      },
+      {
+        "defaultMessage": "!!!References",
+        "description": "Heading of the verified CIP-119 references block",
+        "id": "governance.drepDetail.anchorContent.references.title"
+      },
+      {
+        "defaultMessage": "!!!Links",
+        "description": "Sub-heading for references typed as Link",
+        "id": "governance.drepDetail.anchorContent.references.links"
+      },
+      {
+        "defaultMessage": "!!!Claimed identities",
+        "description": "Sub-heading for references typed as Identity",
+        "id": "governance.drepDetail.anchorContent.references.identity"
+      },
+      {
+        "defaultMessage": "!!!These identities are claimed by the DRep and are not verified by Daedalus. Open the link and confirm that this DRep ID is published there before you rely on it.",
+        "description": "Caption stating that an Identity reference is a claim, not a verified identity",
+        "id": "governance.drepDetail.anchorContent.references.identityCaption"
+      },
+      {
+        "defaultMessage": "!!!Other references",
+        "description": "Sub-heading for references whose type is missing or unrecognised",
+        "id": "governance.drepDetail.anchorContent.references.other"
+      },
+      {
+        "defaultMessage": "!!!Stated payment address",
+        "description": "Label for the verified CIP-119 paymentAddress field",
+        "id": "governance.drepDetail.anchorContent.paymentAddress.label"
+      },
+      {
+        "defaultMessage": "!!!This address is the DRep's own claim. Delegating your voting power requires no payment to any address.",
+        "description": "Caption warning that no payment is required to delegate voting power",
+        "id": "governance.drepDetail.anchorContent.paymentAddress.caption"
+      },
+      {
+        "defaultMessage": "!!!Copy",
+        "description": "Copy button label for the stated payment address",
+        "id": "governance.drepDetail.anchorContent.paymentAddress.copyButton"
+      },
+      {
+        "defaultMessage": "!!!Copy stated payment address",
+        "description": "Accessible label for the payment address copy button",
+        "id": "governance.drepDetail.anchorContent.paymentAddress.copyLabel"
+      },
+      {
+        "defaultMessage": "!!!Payment address copied",
+        "description": "Inline confirmation shown after copying the payment address",
+        "id": "governance.drepDetail.anchorContent.paymentAddress.copiedToast"
+      },
+      {
+        "defaultMessage": "!!!Checking the anchor…",
+        "description": "Shown while the anchor is being fetched and verified",
+        "id": "governance.drepDetail.anchorContent.loading"
+      },
+      {
+        "defaultMessage": "!!!The off-chain profile could not be verified. Only on-chain data is shown.",
+        "description": "Shown when the anchor fetch or hash verification failed",
+        "id": "governance.drepDetail.anchorContent.unavailable"
+      },
+      {
+        "defaultMessage": "!!!This name is the DRep's own claim, hash-matched to the anchor recorded on-chain. Daedalus does not verify identity.",
+        "description": "Caption stating that a verified name is not verified identity",
+        "id": "governance.drepDetail.anchorContent.caption"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-detail/DRepDetailAnchorContent.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Anchor",
+        "description": "Heading of the anchor section on the DRep detail view",
+        "id": "governance.drepDetail.anchor.title"
+      },
+      {
+        "defaultMessage": "!!!Anchor URL",
+        "description": "Label for the on-chain anchor URL field",
+        "id": "governance.drepDetail.anchor.url"
+      },
+      {
+        "defaultMessage": "!!!Anchor hash",
+        "description": "Label for the on-chain anchor hash field",
+        "id": "governance.drepDetail.anchor.hash"
+      },
+      {
+        "defaultMessage": "!!!Source",
+        "description": "Label for the anchor source-label row",
+        "id": "governance.drepDetail.anchor.source"
+      },
+      {
+        "defaultMessage": "!!!No anchor is recorded on-chain for this DRep.",
+        "description": "Shown when the DRep registered without an anchor",
+        "id": "governance.drepDetail.anchor.none"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-detail/DRepDetailAnchorSection.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!On-chain",
+        "description": "Heading of the on-chain section on the DRep detail view",
+        "id": "governance.drepDetail.onchain.title"
+      },
+      {
+        "defaultMessage": "!!!Source",
+        "description": "Label for the on-chain section source-label row",
+        "id": "governance.drepDetail.onchain.source"
+      },
+      {
+        "defaultMessage": "!!!Status",
+        "description": "Label for the DRep status field on the detail view",
+        "id": "governance.drepDetail.status"
+      },
+      {
+        "defaultMessage": "!!!Expires in",
+        "description": "Label for the remaining-epochs field on the detail view",
+        "id": "governance.drepDetail.expiresIn"
+      },
+      {
+        "defaultMessage": "!!!{count} epochs",
+        "description": "Remaining epochs until the DRep expires",
+        "id": "governance.drepDetail.expiresInEpochs"
+      },
+      {
+        "defaultMessage": "!!!Voting power",
+        "description": "Label for the voting power field on the detail view",
+        "id": "governance.drepDetail.votingPower"
+      },
+      {
+        "defaultMessage": "!!!({amount} lovelace)",
+        "description": "Secondary raw-lovelace line under the ADA voting power",
+        "id": "governance.drepDetail.votingPowerLovelace"
+      },
+      {
+        "defaultMessage": "!!!Loading voting power…",
+        "description": "Tooltip on the voting-power placeholder during enrichment",
+        "id": "governance.drepDetail.votingPower.loadingTooltip"
+      },
+      {
+        "defaultMessage": "!!!Stake distribution unavailable this refresh.",
+        "description": "Tooltip on the voting-power placeholder when stake failed",
+        "id": "governance.drepDetail.votingPower.unavailableTooltip"
+      },
+      {
+        "defaultMessage": "!!!Current votes",
+        "description": "Label for the current-epoch vote positions field",
+        "id": "governance.drepDetail.votePositions"
+      },
+      {
+        "defaultMessage": "!!!Vote positions are not available in this version.",
+        "description": "Graceful value when vote positions cannot be shown",
+        "id": "governance.drepDetail.votePositions.unavailable"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-detail/DRepDetailOnchainSection.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!DRep Directory",
+        "description": "Title banner for DRep directory",
+        "id": "governance.drepDirectory.title"
+      },
+      {
+        "defaultMessage": "!!!Refresh",
+        "description": "Refresh button label",
+        "id": "governance.drepDirectory.refresh"
+      },
+      {
+        "defaultMessage": "!!!Last updated {time}",
+        "description": "Last updated timestamp label",
+        "id": "governance.drepDirectory.lastUpdated"
+      },
+      {
+        "defaultMessage": "!!!Refreshing…",
+        "description": "Accessible label of the refresh-in-flight badge",
+        "id": "governance.drepDirectory.refreshing"
+      },
+      {
+        "defaultMessage": "!!!Default view shows up to 200 eligible DReps in randomized order, excluding the 35 largest by voting power.",
+        "description": "Primary line explaining the randomized default cohort",
+        "id": "governance.drepDirectory.cohortBanner"
+      },
+      {
+        "defaultMessage": "!!!Reshuffle order",
+        "description": "Control that reseeds the randomized cohort order",
+        "id": "governance.drepDirectory.cohortBanner.reshuffle"
+      },
+      {
+        "defaultMessage": "!!!Cohort sizing follows the Beyond MVG (BMVG) Simplified one-click-delegation analysis.",
+        "description": "Secondary line crediting the BMVG cohort-sizing analysis",
+        "id": "governance.drepDirectory.cohortBanner.source"
+      },
+      {
+        "defaultMessage": "!!!Showing {n} DReps matching your filters. Default randomized order does not apply.",
+        "description": "Banner line replacing the cohort claim while filtered",
+        "id": "governance.drepDirectory.cohortBanner.filtered"
+      },
+      {
+        "defaultMessage": "!!!{n} DReps you've favorited. Favorites are stored on this device only.",
+        "description": "Banner line of the favorites view, replacing the cohort claim",
+        "id": "governance.drepFavorites.banner"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryBanner.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!No DReps found on-chain.",
+        "description": "Empty directory state",
+        "id": "governance.drepDirectory.empty"
+      },
+      {
+        "defaultMessage": "!!!Could not load DRep data.",
+        "description": "Error state message",
+        "id": "governance.drepDirectory.error"
+      },
+      {
+        "defaultMessage": "!!!Retry",
+        "description": "Retry button label",
+        "id": "governance.drepDirectory.retry"
+      },
+      {
+        "defaultMessage": "!!!Your node is still syncing ({progress}%). The DRep list may be incomplete until sync completes.",
+        "description": "Persistent soft-warning banner while the node is syncing",
+        "id": "governance.drepDirectory.syncing"
+      },
+      {
+        "defaultMessage": "!!!Sorted by voting power. Default randomized order is designed to reduce popularity bias — consider returning to default for unbiased browsing.",
+        "description": "Disclosure shown while voting-power-descending sort is active",
+        "id": "governance.drepDirectory.showAll.sortBiasWarning"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectory.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Previous",
+        "description": "Previous page button label",
+        "id": "governance.drepDirectory.pagination.previous"
+      },
+      {
+        "defaultMessage": "!!!Next",
+        "description": "Next page button label",
+        "id": "governance.drepDirectory.pagination.next"
+      },
+      {
+        "defaultMessage": "!!!Page {current} of {total}",
+        "description": "Current page info",
+        "id": "governance.drepDirectory.pagination.pageInfo"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryList.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Search by DRep ID",
+        "description": "Placeholder of the DRep ID search input",
+        "id": "governance.drepDirectory.searchPlaceholder"
+      },
+      {
+        "defaultMessage": "!!!Enter at least 8 characters to search by ID",
+        "description": "Hint shown while the search query is below the minimum",
+        "id": "governance.drepDirectory.search.minLengthHint"
+      },
+      {
+        "defaultMessage": "!!!Invalid DRep ID",
+        "description": "Error shown for a full-length DRep ID that fails validation",
+        "id": "governance.drepDirectory.search.invalidId"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectorySearch.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Loading DRep data…",
+        "description": "Accessible label of the first-load skeleton list",
+        "id": "governance.drepDirectory.loading"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectorySkeleton.tsx"
   },
   {
     "descriptors": [
@@ -5132,29 +5812,104 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please type or paste a valid DRep ID here. Look up {drepDirectoryLink}",
+        "defaultMessage": "!!!Current delegation",
+        "description": "Header of the current-vote summary panel",
+        "id": "voting.governance.currentVote.headerCurrent"
+      },
+      {
+        "defaultMessage": "!!!Delegated to DRep",
+        "description": "Status label when the wallet delegates its voting power to a DRep",
+        "id": "voting.governance.currentVote.statusDelegatedToDRep"
+      },
+      {
+        "defaultMessage": "!!!Abstain",
+        "description": "Status label when the wallet voting power is set to Abstain",
+        "id": "voting.governance.currentVote.statusAbstain"
+      },
+      {
+        "defaultMessage": "!!!No Confidence",
+        "description": "Status label when the wallet voting power is set to No Confidence",
+        "id": "voting.governance.currentVote.statusNoConfidence"
+      },
+      {
+        "defaultMessage": "!!!No governance delegation",
+        "description": "Panel title when the wallet has no governance delegation",
+        "id": "voting.governance.currentVote.noDelegation.title"
+      },
+      {
+        "defaultMessage": "!!!Your staking rewards cannot be withdrawn until you delegate this wallet's voting power to a DRep, Abstain, or No Confidence.",
+        "description": "Reward-withdrawal warning shown when the wallet has no governance delegation",
+        "id": "voting.governance.currentVote.noDelegation.warning"
+      },
+      {
+        "defaultMessage": "!!!Daedalus will not pick a DRep for you — choose how you want your voting power to participate in Cardano governance.",
+        "description": "Subline stating Daedalus never auto-delegates voting power",
+        "id": "voting.governance.currentVote.noDelegation.subline"
+      },
+      {
+        "defaultMessage": "!!!Choose a delegation",
+        "description": "Call-to-action to choose a governance delegation",
+        "id": "voting.governance.currentVote.noDelegation.cta"
+      },
+      {
+        "defaultMessage": "!!!View details",
+        "description": "In-app link label to the delegated DRep detail view (rendered in a later slice)",
+        "id": "voting.governance.currentVote.drep.viewDetails"
+      },
+      {
+        "defaultMessage": "!!!Anchor metadata ↗",
+        "description": "External link label to the delegated DRep anchor metadata (rendered in a later slice)",
+        "id": "voting.governance.currentVote.drep.anchorMetadata"
+      },
+      {
+        "defaultMessage": "!!!Your stake is recorded on chain as not participating in governance. Rewards can be withdrawn.",
+        "description": "Caption explaining the Abstain delegation state",
+        "id": "voting.governance.currentVote.abstain.caption"
+      },
+      {
+        "defaultMessage": "!!!Your stake counts as Yes on every motion of no-confidence. Rewards can be withdrawn.",
+        "description": "Caption explaining the No Confidence delegation state",
+        "id": "voting.governance.currentVote.noConfidence.caption"
+      },
+      {
+        "defaultMessage": "!!!Expiring in {n} epochs",
+        "description": "Badge label for a delegated DRep whose registration lapses within the remaining-epoch window",
+        "id": "voting.governance.currentVote.status.expiringBadge"
+      },
+      {
+        "defaultMessage": "!!!This DRep's voting power will lapse in {n} epochs — consider re-delegating.",
+        "description": "Caption shown when the delegated DRep registration lapses soon",
+        "id": "voting.governance.currentVote.status.expiring"
+      },
+      {
+        "defaultMessage": "!!!This DRep is currently inactive. Your voting power will not be counted until they vote again — consider re-delegating.",
+        "description": "Caption shown when the delegated DRep is inactive",
+        "id": "voting.governance.currentVote.status.inactive"
+      },
+      {
+        "defaultMessage": "!!!DRep status is loading.",
+        "description": "Neutral caption shown when the DRep directory has no record for the delegated DRep yet",
+        "id": "voting.governance.currentVote.status.unavailable"
+      },
+      {
+        "defaultMessage": "!!!This wallet already votes {target, select, drep {for this DRep} abstain {Abstain} no_confidence {No Confidence} other {the same way}}.",
+        "description": "Hint shown when the chosen delegation is identical to the wallet current on-chain delegation",
+        "id": "voting.governance.currentVote.sameVoteHint"
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-governance/CurrentVoteSummary.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Please type or paste a valid DRep ID here, or {browseDRepsLink}.",
         "description": "Label for DRep input on the governance page",
         "id": "voting.governance.drepInputLabel"
       },
       {
-        "defaultMessage": "!!!Please type or paste a valid DRep ID here.",
-        "description": "Label for DRep input on the governance page for preprod",
-        "id": "voting.governance.drepInputLabelPreprod"
-      },
-      {
-        "defaultMessage": "!!!DRep directory",
-        "description": "Label link text for DRep input on the governance page",
-        "id": "voting.governance.drepInputLabelLinkText"
-      },
-      {
-        "defaultMessage": "https://gov.tools/drep_directory",
-        "description": "Label link url for DRep input on the governance page",
-        "id": "voting.governance.drepInputLabelLinkUrl"
-      },
-      {
-        "defaultMessage": "https://preview.gov.tools/drep_directory",
-        "description": "Label link url for DRep input on the governance page",
-        "id": "voting.governance.drepInputLabelLinkUrlPreview"
+        "defaultMessage": "!!!Browse DReps",
+        "description": "In-app link next to the DRep ID input that opens the DRep directory",
+        "id": "voting.governance.browseDRepsLink"
       },
       {
         "defaultMessage": "!!!Invalid DRep ID",
@@ -5235,6 +5990,31 @@
         "defaultMessage": "!!!Vote",
         "description": "Vote title",
         "id": "voting.governance.confirmationDialog.vote"
+      },
+      {
+        "defaultMessage": "!!!DRep ID",
+        "description": "Label above the DRep ID in the delegation confirmation dialog",
+        "id": "voting.governance.confirmationDialog.drepId"
+      },
+      {
+        "defaultMessage": "!!!CIP-105 DRep ID",
+        "description": "Label above the CIP-105 DRep ID in the delegation confirmation dialog",
+        "id": "voting.governance.confirmationDialog.drepIdCip105"
+      },
+      {
+        "defaultMessage": "!!!Signed payload",
+        "description": "Label above the signed payload vote id in the delegation confirmation dialog",
+        "id": "voting.governance.confirmationDialog.signedPayload"
+      },
+      {
+        "defaultMessage": "!!!Verified name",
+        "description": "Label above the verified off-chain DRep name in the delegation confirmation dialog",
+        "id": "voting.governance.confirmationDialog.verifiedName"
+      },
+      {
+        "defaultMessage": "!!!Name:",
+        "description": "Prefix joining the on-chain source label to the verified-name source label",
+        "id": "voting.governance.confirmationDialog.verifiedNameSource"
       },
       {
         "defaultMessage": "!!!Transaction fee",

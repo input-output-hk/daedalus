@@ -1,0 +1,34 @@
+{
+  "id": "3333333333333333333333333333333333333333",
+  "address_pool_gap": 20,
+  "name": "cv1 fixture voting abstain",
+  "balance": {
+    "available": {
+      "quantity": 5000000000,
+      "unit": "lovelace"
+    },
+    "total": {
+      "quantity": 5000000000,
+      "unit": "lovelace"
+    },
+    "reward": {
+      "quantity": 0,
+      "unit": "lovelace"
+    }
+  },
+  "assets": {
+    "available": [],
+    "total": []
+  },
+  "delegation": {
+    "active": {
+      "status": "voting",
+      "voting": "abstain"
+    },
+    "next": []
+  },
+  "state": {
+    "status": "ready"
+  },
+  "discovery": "sequential"
+}

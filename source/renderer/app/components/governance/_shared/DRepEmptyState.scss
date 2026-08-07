@@ -1,0 +1,45 @@
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  padding: 48px 0;
+  text-align: center;
+}
+
+.title {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 16px;
+  margin: 0 0 4px;
+}
+
+.message {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 480px;
+}
+
+.actionLink {
+  font-size: inherit;
+  white-space: nowrap;
+}
+
+.unavailableBadge {
+  align-items: center;
+  background: var(--badge-disabled-bg, rgba(107, 115, 132, 0.12));
+  border-radius: 4px;
+  color: var(--theme-gov-font-color-regular);
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 6px;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+.unavailableIcon {
+  flex-shrink: 0;
+}

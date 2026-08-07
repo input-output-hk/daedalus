@@ -1,0 +1,18 @@
+.component {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.navigation {
+  flex-shrink: 0;
+  height: 50px;
+}
+
+.page {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: overlay;
+  position: relative;
+}

@@ -6,6 +6,7 @@ import {
   DEV_MODE_SITE_MAP_ID,
   NETWORK_TO_ANALYTICS_SITE_ID_MAP,
 } from '../config/analyticsConfig';
+import { maskAnalyticsRoute } from './maskAnalyticsRoute';
 import { getCustomDimensions } from './getCustomDimensions';
 import AdaApi from '../api/api';
 
@@ -59,7 +60,11 @@ export class MatomoClient implements AnalyticsClient {
   };
 
   private getAnalyticsURL() {
-    return `http://daedalus/${window.location.hash.replace('#/', '')}`;
+    // Sanitization floor: the DRep id in the detail route must never reach
+    // an analytics payload.
+    return `http://daedalus/${maskAnalyticsRoute(
+      window.location.hash.replace('#/', '')
+    )}`;
   }
 
   private getMatomoSiteId(environment: Environment) {

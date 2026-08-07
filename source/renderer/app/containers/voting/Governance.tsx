@@ -1,0 +1,90 @@
+import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
+import { defineMessages, intlShape, injectIntl } from 'react-intl';
+import { withRouter, type RouteComponentProps } from 'react-router-dom';
+import Navigation from '../../components/navigation/Navigation';
+import type { NavButtonProps } from '../../components/navigation/Navigation';
+import type { InjectedContainerProps } from '../../types/injectedPropsType';
+import MainLayout from '../MainLayout';
+import { ROUTES } from '../../routes-config';
+import styles from './Governance.scss';
+
+const messages = defineMessages({
+  tabDashboard: {
+    id: 'governance.tabs.dashboard',
+    defaultMessage: '!!!Wallets',
+    description: 'Label for the governance wallets tab.',
+  },
+  tabDirectory: {
+    id: 'governance.tabs.directory',
+    defaultMessage: '!!!DRep Directory',
+    description: 'Label for the DRep directory tab.',
+  },
+  tabFavorites: {
+    id: 'governance.drepDirectory.tabs.favorites',
+    defaultMessage: '!!!Favorites',
+    description: 'Label for the DRep favorites tab.',
+  },
+});
+
+type Props = InjectedContainerProps & {
+  intl: intlShape.isRequired;
+} & RouteComponentProps;
+
+@inject('stores', 'actions')
+@observer
+class Governance extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
+
+  handleNavItemClick = (itemId: string) => {
+    if (this.props.history.location.pathname !== itemId) {
+      this.props.history.push(itemId);
+    }
+  };
+
+  render() {
+    const { app } = this.props.stores;
+    const { intl } = this.props;
+
+    const navItems: Array<NavButtonProps> = [
+      {
+        id: ROUTES.GOVERNANCE.DASHBOARD,
+        label: intl.formatMessage(messages.tabDashboard),
+      },
+      {
+        id: ROUTES.GOVERNANCE.DREPS,
+        label: intl.formatMessage(messages.tabDirectory),
+      },
+      {
+        id: ROUTES.GOVERNANCE.FAVORITES,
+        label: intl.formatMessage(messages.tabFavorites),
+      },
+    ];
+
+    const activeItem = navItems.find(
+      (item) =>
+        app.currentRoute === item.id || app.currentRoute.startsWith(item.id)
+    );
+
+    return (
+      <MainLayout>
+        <div className={styles.component}>
+          <div className={styles.navigation}>
+            <Navigation
+              items={navItems}
+              activeItem={activeItem?.id}
+              isActiveNavItem={(id: string) => id === activeItem?.id}
+              onNavItemClick={this.handleNavItemClick}
+            />
+          </div>
+          <div className={styles.page}>{this.props.children}</div>
+        </div>
+      </MainLayout>
+    );
+  }
+}
+
+export default withRouter(injectIntl(Governance));

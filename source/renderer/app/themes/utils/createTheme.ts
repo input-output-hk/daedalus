@@ -1256,6 +1256,14 @@ export const createDaedalusComponentsTheme = (
         'transparent',
       '--theme-staking-progress-label-light': `${text.secondary}`,
     },
+    governance: {
+      '--theme-gov-content-background-color': `${background.primary.lightest}`,
+      '--theme-gov-content-border-color': `${border}`,
+      '--theme-gov-font-color-accent': `${focus}`,
+      '--theme-gov-font-color-regular': `${text.primary}`,
+      '--theme-gov-font-color-light': `${chroma(text.primary).alpha(0.7)}`,
+      '--theme-gov-font-color-lighter': `${chroma(text.primary).alpha(0.5)}`,
+    },
     staking: {
       '--theme-staking-content-background-color': `${background.primary.lightest}`,
       '--theme-staking-content-border-color': `${border}`,

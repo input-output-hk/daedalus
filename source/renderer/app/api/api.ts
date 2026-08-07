@@ -84,6 +84,11 @@ import { quitStakePool } from './staking/requests/quitStakePool';
 import { getSmashSettings } from './staking/requests/getSmashSettings';
 import { checkSmashServerHealth } from './staking/requests/checkSmashServerHealth';
 import { updateSmashSettings } from './staking/requests/updateSmashSettings';
+// Governance requests
+import { listDReps } from './governance/requests/listDReps';
+import { listSuggestedDReps } from './governance/requests/listSuggestedDReps';
+import { getDRep } from './governance/requests/getDRep';
+import type { ApiDRepInfo } from './governance/types';
 // Utility functions
 import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
@@ -97,6 +102,7 @@ import {
   generateAdditionalMnemonics,
 } from './utils/mnemonics';
 import { filterLogData } from '../../../common/utils/logging';
+import { normalizeDRepIdentity } from '../utils/governance/normalizeDRepIdentity';
 import { derivationPathToAddressPath } from '../utils/hardwareWalletUtils';
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
@@ -158,6 +164,7 @@ import {
 import {
   AdaWallet,
   AdaWallets,
+  DRepDelegation,
   CreateHardwareWalletRequest,
   LegacyAdaWallet,
   LegacyAdaWallets,
@@ -374,11 +381,10 @@ export default class AdaApi {
         this.config
       );
       const hwLocalData = await getHardwareWalletsLocalData();
-      logger.debug('AdaApi::getWallets success', {
-        wallets,
-        legacyWallets,
-        hwLocalData: filterLogData(hwLocalData),
-      });
+      logger.debug(
+        'AdaApi::getWallets success',
+        filterLogData({ wallets, legacyWallets, hwLocalData })
+      );
       map(legacyWallets, (legacyAdaWallet) => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0,
@@ -453,9 +459,7 @@ export default class AdaApi {
         });
       }
 
-      logger.debug('AdaApi::getWallet success', {
-        wallet,
-      });
+      logger.debug('AdaApi::getWallet success', filterLogData({ wallet }));
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::getWallet error', {
@@ -865,9 +869,7 @@ export default class AdaApi {
       const wallet: AdaWallet = await createWallet(this.config, {
         walletInitData,
       });
-      logger.debug('AdaApi::createWallet success', {
-        wallet,
-      });
+      logger.debug('AdaApi::createWallet success', filterLogData({ wallet }));
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::createWallet error', {
@@ -1583,9 +1585,7 @@ export default class AdaApi {
       const wallet: AdaWallet = await restoreWallet(this.config, {
         walletInitData,
       });
-      logger.debug('AdaApi::restoreWallet success', {
-        wallet,
-      });
+      logger.debug('AdaApi::restoreWallet success', filterLogData({ wallet }));
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreWallet error', {
@@ -1623,9 +1623,10 @@ export default class AdaApi {
         }
       );
       const wallet = { ...hardwareWallet, isHardwareWallet: true };
-      logger.debug('AdaApi::createHardwareWallet success', {
-        wallet,
-      });
+      logger.debug(
+        'AdaApi::createHardwareWallet success',
+        filterLogData({ wallet })
+      );
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::createHardwareWallet error', {
@@ -2072,9 +2073,7 @@ export default class AdaApi {
         });
       }
 
-      logger.debug('AdaApi::updateWallet success', {
-        wallet,
-      });
+      logger.debug('AdaApi::updateWallet success', filterLogData({ wallet }));
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::updateWallet error', {
@@ -2452,6 +2451,41 @@ export default class AdaApi {
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
         .result();
+    }
+  };
+  listDReps = async (): Promise<ApiDRepInfo[]> => {
+    logger.debug('AdaApi::listDReps called');
+    try {
+      const dreps = await listDReps(this.config);
+      logger.debug('AdaApi::listDReps success', { count: dreps.length });
+      return dreps;
+    } catch (error) {
+      logger.error('AdaApi::listDReps error', { error });
+      throw error;
+    }
+  };
+  listSuggestedDReps = async (count = 20): Promise<ApiDRepInfo[]> => {
+    logger.debug('AdaApi::listSuggestedDReps called', { count });
+    try {
+      const dreps = await listSuggestedDReps(count, this.config);
+      logger.debug('AdaApi::listSuggestedDReps success', {
+        count: dreps.length,
+      });
+      return dreps;
+    } catch (error) {
+      logger.error('AdaApi::listSuggestedDReps error', { error });
+      throw error;
+    }
+  };
+  getDRep = async (drepId: string): Promise<ApiDRepInfo> => {
+    logger.debug('AdaApi::getDRep called');
+    try {
+      const drep = await getDRep(drepId, this.config);
+      logger.debug('AdaApi::getDRep success');
+      return drep;
+    } catch (error) {
+      logger.error('AdaApi::getDRep error', { error });
+      throw error;
     }
   };
   getStakePools = async (stake = 0): Promise<Array<StakePool>> => {
@@ -3007,7 +3041,28 @@ export default class AdaApi {
   };
 } // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
 
-const _createWalletFromServerData = action(
+const LOGGABLE_HRP_PATTERN = /^[a-z_]{1,16}$/;
+
+// Wire values for delegation.active.voting: 'abstain', 'no_confidence', or a
+// bech32 DRep id. Unknown shapes degrade to null; the warning may carry a
+// bounded HRP token only — never the raw id (sanitization floor).
+const parseVoting = (voting: unknown): DRepDelegation | null => {
+  if (voting == null || typeof voting !== 'string') return null;
+  if (voting === 'abstain') return { kind: 'abstain' };
+  if (voting === 'no_confidence') return { kind: 'no_confidence' };
+  const drep = normalizeDRepIdentity(voting);
+  if (drep === null) {
+    const separatorIndex = voting.lastIndexOf('1');
+    const hrp = separatorIndex > 0 ? voting.slice(0, separatorIndex) : '';
+    logger.warn('AdaApi::parseVoting unrecognized voting target', {
+      hrp: LOGGABLE_HRP_PATTERN.test(hrp) ? hrp : 'invalid',
+    });
+    return null;
+  }
+  return { kind: 'drep', drep, source: 'onchain' };
+};
+
+export const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
   (wallet: AdaWallet) => {
     const {
@@ -3052,13 +3107,44 @@ const _createWalletFromServerData = action(
     const active = get(delegation, 'active', null);
     const target = get(active, 'target', null);
     const status = get(active, 'status', null);
-    const delegatedStakePoolId = isLegacy ? null : target;
     const delegationStakePoolStatus = isLegacy ? null : status;
+    // A voting-only status never carries a stake-pool target; active.target
+    // must never be surfaced as a pool id in that state.
+    let delegatedStakePoolId: string | null = null;
+    let votingTarget: DRepDelegation | null = null;
+    if (!isLegacy) {
+      switch (status) {
+        case WalletDelegationStatuses.VOTING:
+          delegatedStakePoolId = null;
+          votingTarget = parseVoting(get(active, 'voting', null));
+          break;
+        case WalletDelegationStatuses.VOTING_AND_DELEGATING:
+          delegatedStakePoolId = target;
+          votingTarget = parseVoting(get(active, 'voting', null));
+          break;
+        case WalletDelegationStatuses.DELEGATING:
+        case WalletDelegationStatuses.NOT_DELEGATING:
+        default:
+          delegatedStakePoolId = target;
+          votingTarget = null;
+          break;
+      }
+    }
     // Last
     const next = get(delegation, 'next', null);
     const lastPendingStakePool = next ? last(next) : null;
     const lastTarget = get(lastPendingStakePool, 'target', null);
     const lastStatus = get(lastPendingStakePool, 'status', null);
+    // If a pending voting delegation exists (epoch not yet activated), prefer it
+    // over the active one so the user sees their most-recently chosen DRep.
+    if (!isLegacy && lastPendingStakePool) {
+      const pendingVoting = parseVoting(
+        get(lastPendingStakePool, 'voting', null)
+      );
+      if (pendingVoting !== null) {
+        votingTarget = pendingVoting;
+      }
+    }
     const lastDelegatedStakePoolId = isLegacy ? null : lastTarget;
     const lastDelegationStakePoolStatus = isLegacy ? null : lastStatus;
     // Mapping asset items from server data
@@ -3106,6 +3192,7 @@ const _createWalletFromServerData = action(
       lastDelegatedStakePoolId,
       lastDelegationStakePoolStatus,
       pendingDelegations: next,
+      votingTarget,
       discovery,
     });
   }

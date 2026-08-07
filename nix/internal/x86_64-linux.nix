@@ -274,6 +274,14 @@ in rec {
         BUNDLE_DIR="$(dirname "$LIB_DIR")"
         export XKB_CONFIG_ROOT="$BUNDLE_DIR/share/X11/xkb"
         export GBM_BACKENDS_PATH="$LIB_DIR/electron/lib"
+        # DAEDALUS_DISABLE_GPU=1 disables Chromium hardware GPU acceleration.
+        # Use this if the GPU process crashes on your hardware (e.g. AMD GPUs
+        # affected by the nix-bundle-exe amdgpu.ids path erasure bug).
+        # LIBGL_ALWAYS_SOFTWARE=1 is insufficient — Chromium uses EGL directly
+        # and still loads libdrm_amdgpu before any GL software override takes effect.
+        if [ -n "''${DAEDALUS_DISABLE_GPU}" ]; then
+          set -- "--disable-gpu" "$@"
+        fi
         # Run electron directly (interpreter is embedded via patchelf above):
         exec "$LIB_DIR"/electron/electron "$@"
       ''} $out/bin/electron

@@ -8,6 +8,7 @@ import type {
   WalletUnit,
   WalletPendingDelegations,
   Discovery,
+  DRepDelegation,
 } from '../api/wallets/types';
 import type { WalletTokens } from '../api/assets/types';
 
@@ -126,6 +127,7 @@ export type WalletProps = {
   lastDelegatedStakePoolId?: string | null | undefined;
   lastDelegationStakePoolStatus?: string | null | undefined;
   pendingDelegations?: WalletPendingDelegations;
+  votingTarget?: DRepDelegation | null;
   discovery: Discovery;
   hasPassword: boolean;
   walletNotConnected?: boolean;
@@ -161,6 +163,8 @@ export default class Wallet {
   @observable
   pendingDelegations: WalletPendingDelegations;
   @observable
+  votingTarget: DRepDelegation | null | undefined;
+  @observable
   discovery: Discovery;
   @observable
   hasPassword: boolean;
@@ -193,6 +197,7 @@ export default class Wallet {
         'lastDelegatedStakePoolId',
         'lastDelegationStakePoolStatus',
         'pendingDelegations',
+        'votingTarget',
         'discovery',
         'hasPassword',
         'walletNotConnected',
@@ -244,6 +249,16 @@ export default class Wallet {
       WalletDelegationStatuses.DELEGATING,
       WalletDelegationStatuses.VOTING_AND_DELEGATING,
     ].includes(statusToCheck);
+  }
+
+  @computed
+  get currentDRep(): DRepDelegation | null {
+    return this.votingTarget ?? null;
+  }
+
+  @computed
+  get isVoting(): boolean {
+    return this.currentDRep !== null;
   }
 
   @computed

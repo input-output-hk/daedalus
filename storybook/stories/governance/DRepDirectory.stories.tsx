@@ -1,0 +1,537 @@
+import React from 'react';
+import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
+import { withState } from '@dump247/storybook-state';
+import { withKnobs, select, number } from '@storybook/addon-knobs';
+import BigNumber from 'bignumber.js';
+import StoryDecorator from '../_support/StoryDecorator';
+import StoryProvider from '../_support/StoryProvider';
+import DRepDirectory from '../../../source/renderer/app/components/governance/drep-directory/DRepDirectory';
+import DRepDirectoryList from '../../../source/renderer/app/components/governance/drep-directory/DRepDirectoryList';
+import Navigation from '../../../source/renderer/app/components/navigation/Navigation';
+import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
+import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
+import TopBar from '../../../source/renderer/app/components/layout/TopBar';
+import BorderedBox from '../../../source/renderer/app/components/widgets/BorderedBox';
+import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/types';
+import {
+  CATEGORIES_BY_NAME,
+  SidebarCategoryInfo,
+} from '../../../source/renderer/app/config/sidebarConfig';
+import { ROUTES } from '../../../source/renderer/app/routes-config';
+import { TESTNET } from '../../../source/common/types/environment.types';
+import { GovernanceRefreshState } from '../../../source/renderer/app/stores/GovernanceStore';
+import type { AppDRepDirectoryEntry } from '../../../source/renderer/app/stores/GovernanceStore';
+
+type DirectoryError = { message: string; type: string } | null;
+
+type DirectorySyncState = {
+  isNodeInSync: boolean;
+  syncProgress: number | null;
+};
+
+const DEFAULT_SYNC_STATE: DirectorySyncState = {
+  isNodeInSync: true,
+  syncProgress: 100,
+};
+
+const baseEntries: AppDRepDirectoryEntry[] = [
+  {
+    anchor: {
+      hash: '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
+      url: 'https://governance-preview.example.org/dreps/1.json',
+    },
+    verifiedName: null,
+    doNotList: false,
+    drepActivity: 12,
+    drepId: 'drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k4',
+    status: 'active',
+    votingPower: new BigNumber('23137980123456'),
+  },
+  {
+    anchor: null,
+    verifiedName: null,
+    doNotList: true,
+    drepActivity: 4,
+    drepId: 'drep1xj23tk3y_qyv7c9m2z89w3t8mvk9e2uwc3q8u6j7r2x5y9w0p1',
+    status: 'inactive',
+    votingPower: new BigNumber('940000000'),
+  },
+];
+
+const buildEntry = (suffix: number): AppDRepDirectoryEntry => ({
+  anchor:
+    suffix % 3 === 0
+      ? {
+          hash: `6a5e200d2f3a10202020202020202020202020202020202020202020202020${String(
+            suffix
+          ).padStart(2, '0')}`,
+          url: `https://governance-preview.example.org/dreps/${suffix}.json`,
+        }
+      : null,
+  verifiedName: null,
+  doNotList: false,
+  drepActivity: (suffix % 20) + 1,
+  drepId: `drep1yg7s8vuv_8ff8a9y6z0m8p4kw7q9s8n3d7m9p2l0v8k6m6m2k${String(
+    suffix
+  ).padStart(4, '0')}`,
+  status: (['active', 'inactive'] as const)[suffix % 2],
+  votingPower: new BigNumber(`${23137980123456 + suffix * 1000}`),
+});
+
+const paginatedEntries: AppDRepDirectoryEntry[] = Array.from(
+  { length: 30 },
+  (_, i) => buildEntry(i + 1)
+);
+
+const dualIdEntries: AppDRepDirectoryEntry[] = [
+  {
+    ...baseEntries[0],
+    drepId: 'drep1yg7svuv02gh9j2q574jv06l4xnzwyp63effljze28qe993caj8ras',
+  },
+  {
+    ...baseEntries[1],
+    drepId: 'drep1ygqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgweajrn',
+  },
+];
+
+const SOCKET_ERROR: DirectoryError = {
+  message: 'Cardano node socket path is not available.',
+  type: 'SOCKET_UNAVAILABLE',
+};
+
+const SELFNODE_ERROR: DirectoryError = {
+  message:
+    'DRep data is unavailable in selfnode mode. A synced node is required.',
+  type: 'SELFNODE_CLI_UNSUPPORTED',
+};
+
+const REFRESH_ERROR: DirectoryError = {
+  message:
+    'Showing the last successful directory snapshot while refresh retries.',
+  type: 'QUERY_FAILED',
+};
+
+const TIMEOUT_ERROR: DirectoryError = {
+  message: 'DRep registration query timed out.',
+  type: 'TIMEOUT',
+};
+
+const CENTERED_STYLE = {
+  margin: '0 auto',
+  maxWidth: 960,
+  padding: 24,
+};
+
+const CONNECTED_FLOW_STYLE = {
+  height: 780,
+};
+
+const FLOW_CONTENT_STYLE = {
+  padding: 32,
+};
+
+const FLOW_SECTION_STYLE = {
+  display: 'flex',
+  flexDirection: 'column' as const,
+  gap: 24,
+};
+
+const GOVERNANCE_NAV_ITEMS = [
+  {
+    id: ROUTES.GOVERNANCE.DREPS,
+    label: 'Directory',
+  },
+  {
+    id: ROUTES.GOVERNANCE.FAVORITES,
+    label: 'Favorites',
+  },
+];
+
+const GOVERNANCE_SIDEBAR_CATEGORIES: Array<SidebarCategoryInfo> = [
+  CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.STAKING,
+  CATEGORIES_BY_NAME.GOVERNANCE,
+  CATEGORIES_BY_NAME.SETTINGS,
+  CATEGORIES_BY_NAME.NETWORK_INFO,
+];
+
+const EMPTY_SIDEBAR_MENUS: SidebarMenus = {
+  wallets: null,
+};
+
+type FavoritesOptions = {
+  view?: 'directory' | 'favorites';
+  favoriteDRepIds?: Set<string>;
+  onToggleFavorite?: (drepId: string) => void;
+  onBackToDirectory?: () => void;
+  isStaleFavoriteEntry?: (entry: AppDRepDirectoryEntry) => boolean;
+};
+
+// Locale is intentionally NOT wired here: the global StoryWrapper decorator
+// provides the IntlProvider, so the English/Japanese toggle at the top of the
+// preview window drives every label rendered below.
+const renderDirectory = (
+  refreshState: GovernanceRefreshState,
+  entries: AppDRepDirectoryEntry[],
+  error: DirectoryError = null,
+  syncState: DirectorySyncState = DEFAULT_SYNC_STATE,
+  favorites: FavoritesOptions = {}
+) => (
+  <DRepDirectory
+    suggestedDReps={entries}
+    allDReps={entries}
+    allDRepsRefreshState={GovernanceRefreshState.Idle}
+    favoriteDRepIds={favorites.favoriteDRepIds ?? new Set<string>()}
+    onToggleFavorite={favorites.onToggleFavorite ?? action('onToggleFavorite')}
+    view={favorites.view ?? 'directory'}
+    onBackToDirectory={
+      favorites.onBackToDirectory ?? action('onBackToDirectory')
+    }
+    isStaleFavoriteEntry={favorites.isStaleFavoriteEntry}
+    error={error}
+    isNodeInSync={syncState.isNodeInSync}
+    lastFetchedAt={Date.now() - 3 * 60 * 1000}
+    onRefresh={action('onRefresh')}
+    onReroll={action('onReroll')}
+    onLoadAllDReps={action('onLoadAllDReps')}
+    onSelectForDelegation={action('onSelectForDelegation')}
+    onViewDetails={action('onViewDetails')}
+    refreshState={refreshState}
+    syncProgress={syncState.syncProgress}
+  />
+);
+
+const renderCentered = (
+  refreshState: GovernanceRefreshState,
+  entries: AppDRepDirectoryEntry[],
+  error: DirectoryError = null,
+  syncState: DirectorySyncState = DEFAULT_SYNC_STATE,
+  favorites: FavoritesOptions = {}
+) => (
+  <div style={CENTERED_STYLE}>
+    {renderDirectory(refreshState, entries, error, syncState, favorites)}
+  </div>
+);
+
+const renderNonGovernancePlaceholder = (activeSidebarCategory: string) => (
+  <BorderedBox>
+    <h1 style={{ marginTop: 0 }}>Navigation Context</h1>
+    <p style={{ marginBottom: 0 }}>
+      Active sidebar route: {activeSidebarCategory}. Use the Governance icon to
+      jump back into the connected DRep directory flow.
+    </p>
+  </BorderedBox>
+);
+
+// Maps a single knob value to the (refreshState, entries, error) triad so the
+// connected flow can exercise every directory state without separate stories.
+const DIRECTORY_STATE_OPTIONS = {
+  Loaded: 'loaded',
+  Empty: 'empty',
+  Loading: 'loading',
+  Refreshing: 'refreshing',
+  'Refresh failed': 'refreshFailed',
+  'Selfnode unavailable': 'selfnode',
+  Error: 'error',
+};
+
+const resolveDirectoryState = (
+  stateKey: string
+): {
+  refreshState: GovernanceRefreshState;
+  entries: AppDRepDirectoryEntry[];
+  error: DirectoryError;
+} => {
+  switch (stateKey) {
+    case 'empty':
+      return {
+        refreshState: GovernanceRefreshState.Loaded,
+        entries: [],
+        error: null,
+      };
+    case 'loading':
+      return {
+        refreshState: GovernanceRefreshState.Loading,
+        entries: [],
+        error: null,
+      };
+    case 'refreshing':
+      return {
+        refreshState: GovernanceRefreshState.Refreshing,
+        entries: baseEntries,
+        error: REFRESH_ERROR,
+      };
+    case 'refreshFailed':
+      return {
+        refreshState: GovernanceRefreshState.Loaded,
+        entries: baseEntries,
+        error: TIMEOUT_ERROR,
+      };
+    case 'selfnode':
+      return {
+        refreshState: GovernanceRefreshState.Failed,
+        entries: [],
+        error: SELFNODE_ERROR,
+      };
+    case 'error':
+      return {
+        refreshState: GovernanceRefreshState.Failed,
+        entries: [],
+        error: SOCKET_ERROR,
+      };
+    case 'loaded':
+    default:
+      return {
+        refreshState: GovernanceRefreshState.Loaded,
+        entries: paginatedEntries,
+        error: null,
+      };
+  }
+};
+
+const drepStoryDecorator = (story: () => React.ReactNode) => (
+  <StoryProvider>
+    <StoryDecorator>{story()}</StoryDecorator>
+  </StoryProvider>
+);
+
+storiesOf('Governance / DRep Directory', module)
+  .addDecorator(drepStoryDecorator)
+  .addDecorator(withKnobs)
+  // Full-app integrated flow: sidebar (Governance category active) + top bar +
+  // the Governance "Directory" tab wrapping the live directory states. Mirrors
+  // the "Voting / Governance > Connected flow" exemplar.
+  .add(
+    'Connected flow',
+    withState(
+      {
+        activeSidebarCategory: ROUTES.GOVERNANCE.ROOT,
+        currentContentRoute: ROUTES.GOVERNANCE.DREPS,
+        favoriteDRepIds: [] as string[],
+      },
+      (store) => {
+        const isGovernanceSection =
+          store.state.currentContentRoute.indexOf(ROUTES.GOVERNANCE.ROOT) === 0;
+        const view =
+          store.state.currentContentRoute === ROUTES.GOVERNANCE.FAVORITES
+            ? ('favorites' as const)
+            : ('directory' as const);
+        const { refreshState, entries, error } = resolveDirectoryState(
+          select('Directory state', DIRECTORY_STATE_OPTIONS, 'loaded')
+        );
+
+        return (
+          <div style={CONNECTED_FLOW_STYLE}>
+            <SidebarLayout
+              sidebar={
+                <Sidebar
+                  menus={EMPTY_SIDEBAR_MENUS}
+                  categories={GOVERNANCE_SIDEBAR_CATEGORIES}
+                  activeSidebarCategory={store.state.activeSidebarCategory}
+                  isShowingSubMenus={false}
+                  pathname={store.state.currentContentRoute}
+                  network={TESTNET}
+                  onActivateCategory={(category) => {
+                    action('onActivateCategory')(category);
+
+                    if (category === ROUTES.GOVERNANCE.ROOT) {
+                      store.set({
+                        activeSidebarCategory: ROUTES.GOVERNANCE.ROOT,
+                        currentContentRoute: ROUTES.GOVERNANCE.DREPS,
+                      });
+                      return;
+                    }
+
+                    store.set({
+                      activeSidebarCategory: category,
+                      currentContentRoute: category,
+                    });
+                  }}
+                  onAddWallet={action('onAddWallet')}
+                  isShelleyActivated
+                />
+              }
+              topbar={<TopBar isShelleyActivated />}
+            >
+              <div style={FLOW_CONTENT_STYLE}>
+                {isGovernanceSection ? (
+                  <div style={FLOW_SECTION_STYLE}>
+                    <Navigation
+                      items={GOVERNANCE_NAV_ITEMS}
+                      activeItem={store.state.currentContentRoute}
+                      isActiveNavItem={(navItemId: string) =>
+                        navItemId === store.state.currentContentRoute
+                      }
+                      onNavItemClick={(navItemId: string) => {
+                        action('onNavItemClick')(navItemId);
+                        store.set({ currentContentRoute: navItemId });
+                      }}
+                    />
+                    {renderDirectory(
+                      refreshState,
+                      entries,
+                      error,
+                      DEFAULT_SYNC_STATE,
+                      {
+                        view,
+                        favoriteDRepIds: new Set(store.state.favoriteDRepIds),
+                        onToggleFavorite: (drepId: string) => {
+                          action('onToggleFavorite')(drepId);
+                          store.set({
+                            favoriteDRepIds:
+                              store.state.favoriteDRepIds.includes(drepId)
+                                ? store.state.favoriteDRepIds.filter(
+                                    (id) => id !== drepId
+                                  )
+                                : [...store.state.favoriteDRepIds, drepId],
+                          });
+                        },
+                        onBackToDirectory: () =>
+                          store.set({
+                            currentContentRoute: ROUTES.GOVERNANCE.DREPS,
+                          }),
+                      }
+                    )}
+                  </div>
+                ) : (
+                  renderNonGovernancePlaceholder(
+                    store.state.activeSidebarCategory
+                  )
+                )}
+              </div>
+            </SidebarLayout>
+          </div>
+        );
+      }
+    )
+  )
+  .add('Loaded', () =>
+    renderCentered(GovernanceRefreshState.Loaded, baseEntries)
+  )
+  .add('Empty', () => renderCentered(GovernanceRefreshState.Loaded, []))
+  .add('Error', () =>
+    renderCentered(GovernanceRefreshState.Failed, [], SOCKET_ERROR)
+  )
+  .add('Selfnode unavailable', () =>
+    renderCentered(GovernanceRefreshState.Failed, [], SELFNODE_ERROR)
+  )
+  .add('Loading', () => renderCentered(GovernanceRefreshState.Loading, []))
+  .add('Refreshing', () =>
+    renderCentered(
+      GovernanceRefreshState.Refreshing,
+      baseEntries,
+      REFRESH_ERROR
+    )
+  )
+  .add('Refresh failed — retained snapshot', () =>
+    renderCentered(GovernanceRefreshState.Loaded, baseEntries, TIMEOUT_ERROR)
+  )
+  .add('Node syncing', () =>
+    renderCentered(GovernanceRefreshState.Loaded, baseEntries, null, {
+      isNodeInSync: false,
+      syncProgress: number('Sync progress (%)', 87, {
+        max: 100,
+        min: 0,
+        range: true,
+        step: 1,
+      }),
+    })
+  )
+  .add('Node syncing — empty fallback', () =>
+    renderCentered(GovernanceRefreshState.Loaded, [], null, {
+      isNodeInSync: false,
+      syncProgress: number('Sync progress (%)', 87, {
+        max: 100,
+        min: 0,
+        range: true,
+        step: 1,
+      }),
+    })
+  )
+  .add('Ranking unavailable', () =>
+    renderCentered(
+      GovernanceRefreshState.Loaded,
+      baseEntries.map((entry) => ({ ...entry, votingPower: null }))
+    )
+  )
+  .add('Pagination — 30 entries', () =>
+    renderCentered(GovernanceRefreshState.Loaded, paginatedEntries)
+  )
+  .add(
+    'Favorite toggle',
+    withState({ favoriteDRepIds: [baseEntries[0].drepId] }, (store) => (
+      <div style={CENTERED_STYLE}>
+        {renderDirectory(
+          GovernanceRefreshState.Loaded,
+          baseEntries,
+          null,
+          DEFAULT_SYNC_STATE,
+          {
+            favoriteDRepIds: new Set(store.state.favoriteDRepIds),
+            onToggleFavorite: (drepId: string) => {
+              action('onToggleFavorite')(drepId);
+              store.set({
+                favoriteDRepIds: store.state.favoriteDRepIds.includes(drepId)
+                  ? store.state.favoriteDRepIds.filter((id) => id !== drepId)
+                  : [...store.state.favoriteDRepIds, drepId],
+              });
+            },
+          }
+        )}
+      </div>
+    ))
+  )
+  .add('Favorites view', () => (
+    <div style={CENTERED_STYLE}>
+      {renderDirectory(
+        GovernanceRefreshState.Loaded,
+        baseEntries,
+        null,
+        DEFAULT_SYNC_STATE,
+        {
+          view: 'favorites',
+          favoriteDRepIds: new Set(baseEntries.map((e) => e.drepId)),
+        }
+      )}
+    </div>
+  ))
+  .add('Favorites view — empty', () => (
+    <div style={CENTERED_STYLE}>
+      {renderDirectory(
+        GovernanceRefreshState.Loaded,
+        baseEntries,
+        null,
+        DEFAULT_SYNC_STATE,
+        { view: 'favorites' }
+      )}
+    </div>
+  ))
+  // The favorites treatment for a real verified doNotList entry: status badge
+  // plus inline caption, never an auto-purge.
+  .add('Favorites view — stale favorite', () => (
+    <div style={CENTERED_STYLE}>
+      {renderDirectory(
+        GovernanceRefreshState.Loaded,
+        baseEntries,
+        null,
+        DEFAULT_SYNC_STATE,
+        {
+          view: 'favorites',
+          favoriteDRepIds: new Set(baseEntries.map((e) => e.drepId)),
+        }
+      )}
+    </div>
+  ))
+  .add('Search results — stacked dual ID', () => (
+    <div style={CENTERED_STYLE}>
+      <DRepDirectoryList
+        entries={dualIdEntries}
+        favoriteDRepIds={new Set<string>()}
+        onToggleFavorite={action('onToggleFavorite')}
+        isSearchResult
+        onSelectForDelegation={action('onSelectForDelegation')}
+        onViewDetails={action('onViewDetails')}
+      />
+    </div>
+  ));

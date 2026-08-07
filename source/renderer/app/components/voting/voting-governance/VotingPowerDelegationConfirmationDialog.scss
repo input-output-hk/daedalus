@@ -19,3 +19,9 @@
   margin-top: 24px;
   @include error-message;
 }
+
+.drepIdValue {
+  font-family: monospace;
+  font-size: 14px;
+  word-break: break-all;
+}

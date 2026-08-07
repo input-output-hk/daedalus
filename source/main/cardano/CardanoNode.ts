@@ -2,7 +2,7 @@ import Store from 'electron-store';
 import { spawn, exec } from 'child_process';
 import type { ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
-import type { Launcher } from 'cardano-launcher';
+import type { Launcher, NodeStartService } from 'cardano-launcher';
 import { get, toInteger } from 'lodash';
 import moment from 'moment';
 import rfs from 'rotating-file-stream';
@@ -198,6 +198,13 @@ export class CardanoNode {
   _injectedFaults: Array<FaultInjection> = [];
 
   /**
+   * The filesystem path to the cardano-node Unix socket.
+   * Populated after node.start() resolves. null before start.
+   * @private
+   */
+  _nodeSocketPath: string | null = null;
+
+  /**
    * Cardano Node config getter
    * @returns {CardanoNodeImplementations}
    */
@@ -239,6 +246,15 @@ export class CardanoNode {
       cardanoWalletPID: get(this, '_node.wpid', 0),
       isRTSFlagsModeEnabled: containsRTSFlags(this._config.rtsFlags),
     });
+  }
+
+  /**
+   * Getter for the resolved cardano-node socket path.
+   * Returns null before node.start() resolves.
+   * @returns {string | null}
+   */
+  get nodeSocketPath(): string | null {
+    return this._nodeSocketPath;
   }
 
   /**
@@ -408,6 +424,13 @@ export class CardanoNode {
                 wallet: node.walletService.getProcess(),
                 node: node.nodeService.getProcess(),
               };
+
+              const nodeConfig =
+                node.nodeService.getConfig() as NodeStartService | null;
+              this._nodeSocketPath = nodeConfig?.socketPath ?? null;
+              _log.info('CardanoNode#start: captured node socket path', {
+                nodeSocketPath: this._nodeSocketPath,
+              });
               // Setup event handling
               node.walletBackend.events.on('exit', (exitStatus) => {
                 _log.info('CardanoNode#exit', {
@@ -873,6 +896,7 @@ export class CardanoNode {
     if (this._mockTokenMetadataServerLogFile)
       this._mockTokenMetadataServerLogFile.end();
     if (this._node) this._node = null;
+    this._nodeSocketPath = null;
     this._tlsConfig = null;
   };
 

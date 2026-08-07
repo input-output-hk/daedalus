@@ -16,9 +16,9 @@ export const messages = defineMessages({
     defaultMessage: '!!!Settings',
     description: 'Text for the tooltip of settings category',
   },
-  voting: {
-    id: 'sidebar.categoryTooltip.voting',
-    defaultMessage: '!!!Voting',
-    description: 'Text for the tooltip of voting category',
+  governance: {
+    id: 'sidebar.categoryTooltip.governance',
+    defaultMessage: '!!!Governance',
+    description: 'Text for the tooltip of governance category',
   },
 });

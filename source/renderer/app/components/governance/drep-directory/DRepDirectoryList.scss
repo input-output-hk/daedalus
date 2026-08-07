@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pagination {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.pageInfo {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+}

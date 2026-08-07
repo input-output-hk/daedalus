@@ -36,6 +36,13 @@ export const ROUTES = {
     REGISTRATION: '/voting/registration',
     GOVERNANCE: '/voting/governance',
   },
+  GOVERNANCE: {
+    ROOT: '/governance',
+    DASHBOARD: '/governance/dashboard',
+    DREPS: '/governance/dreps',
+    DREP_DETAIL: '/governance/dreps/:drepId',
+    FAVORITES: '/governance/favorites',
+  },
   SETTINGS: {
     ROOT: '/settings',
     WALLETS: '/settings/wallets',

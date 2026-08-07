@@ -1,0 +1,174 @@
+import React from 'react';
+import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import BigNumber from 'bignumber.js';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import DRepStatusBadge from '../_shared/DRepStatusBadge';
+import DRepCategoryBadge from '../_shared/DRepCategoryBadge';
+import DRepIdDisplay from '../_shared/DRepIdDisplay';
+import DRepSourceLabel from '../_shared/DRepSourceLabel';
+import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
+import styles from './DRepCard.scss';
+
+const messages = defineMessages({
+  votingPowerLabel: {
+    id: 'governance.drepDirectory.votingPower',
+    defaultMessage: '!!!Voting power',
+    description: 'Label for the voting power column in DRep directory',
+  },
+  select: {
+    id: 'governance.drepDirectory.card.select',
+    defaultMessage: '!!!Select for delegation',
+    description: 'Row-level CTA that hands the DRep ID to the delegation form',
+  },
+  viewDetails: {
+    id: 'governance.drepDirectory.card.viewDetails',
+    defaultMessage: '!!!View details',
+    description: 'Card CTA that opens the DRep detail view',
+  },
+  votingPowerLoadingTooltip: {
+    id: 'governance.drepDirectory.votingPower.loadingTooltip',
+    defaultMessage: '!!!Loading voting power…',
+    description: 'Tooltip on the voting-power placeholder during enrichment',
+  },
+  votingPowerUnavailableTooltip: {
+    id: 'governance.drepDirectory.votingPower.unavailableTooltip',
+    defaultMessage: '!!!Stake distribution unavailable this refresh.',
+    description: 'Tooltip on the voting-power placeholder when stake failed',
+  },
+  favoriteAdd: {
+    id: 'governance.drepDirectory.card.favorite.add',
+    defaultMessage: '!!!Add to favorites',
+    description: 'Accessible label of the favorite toggle when not favorited',
+  },
+  favoriteRemove: {
+    id: 'governance.drepDirectory.card.favorite.remove',
+    defaultMessage: '!!!Remove from favorites',
+    description: 'Accessible label of the favorite toggle when favorited',
+  },
+  staleCaption: {
+    id: 'governance.drepFavorites.staleCaption',
+    defaultMessage: '!!!This DRep is not actively accepting delegation.',
+    description: 'Inline caption under a stale favorited DRep',
+  },
+  currentDelegation: {
+    id: 'governance.drepDirectory.card.currentDelegation',
+    defaultMessage: '!!!Currently delegating',
+    description: 'Badge shown on the card the user is currently delegated to',
+  },
+});
+
+interface Props {
+  entry: AppDRepDirectoryEntry;
+  isFavorite: boolean;
+  onToggleFavorite: (drepId: string) => void;
+  isStaleFavorite?: boolean;
+  isCurrentDRep?: boolean;
+  isSearchResult?: boolean;
+  canDelegate?: boolean;
+  onSelectForDelegation: (drepId: string) => void;
+  onViewDetails: (drepId: string) => void;
+  intl: intlShape.isRequired;
+}
+
+function formatVotingPower(value: BigNumber | null): string {
+  if (!value) return '—';
+  // Human-rounded ADA with ₳ glyph
+  const ada = value.div(1_000_000);
+  if (ada.isGreaterThanOrEqualTo(1_000_000)) {
+    return `₳ ${ada.div(1_000_000).toFormat(1)}M`;
+  }
+  if (ada.isGreaterThanOrEqualTo(1_000)) {
+    return `₳ ${ada.div(1_000).toFormat(1)}K`;
+  }
+  return `₳ ${ada.toFormat(0)}`;
+}
+
+function DRepCard({
+  entry,
+  isFavorite,
+  onToggleFavorite,
+  isStaleFavorite = false,
+  isCurrentDRep = false,
+  isSearchResult = false,
+  canDelegate = true,
+  onSelectForDelegation,
+  onViewDetails,
+  intl,
+}: Props) {
+  const votingPowerTooltip =
+    entry.votingPower === null
+      ? intl.formatMessage(messages.votingPowerUnavailableTooltip)
+      : undefined;
+
+  return (
+    <div className={styles.card}>
+      <div className={styles.topRow}>
+        <button
+          type="button"
+          className={styles.favoriteToggle}
+          aria-pressed={isFavorite}
+          aria-label={intl.formatMessage(
+            isFavorite ? messages.favoriteRemove : messages.favoriteAdd
+          )}
+          title={intl.formatMessage(
+            isFavorite ? messages.favoriteRemove : messages.favoriteAdd
+          )}
+          onClick={() => onToggleFavorite(entry.drepId)}
+        >
+          <span aria-hidden="true">{isFavorite ? '★' : '☆'}</span>
+        </button>
+        <DRepStatusBadge status={entry.status} />
+        <DRepCategoryBadge entry={entry} />
+      </div>
+      {entry.verifiedName && (
+        <p className={styles.drepName}>{entry.verifiedName}</p>
+      )}
+      <div className={styles.drepIdRow}>
+        <DRepIdDisplay
+          drepId={entry.drepId}
+          variant={isSearchResult ? 'stacked' : 'single'}
+        />
+      </div>
+      {isStaleFavorite && (
+        <p className={styles.staleCaption}>
+          {intl.formatMessage(messages.staleCaption)}
+        </p>
+      )}
+      {isCurrentDRep && (
+        <p className={styles.currentDelegationCaption}>
+          {intl.formatMessage(messages.currentDelegation)}
+        </p>
+      )}
+      <div className={styles.bottomRow}>
+        <span className={styles.votingPowerLabel}>
+          {intl.formatMessage(messages.votingPowerLabel)}:
+        </span>
+        <span
+          className={styles.votingPowerValue}
+          title={votingPowerTooltip}
+          aria-label={votingPowerTooltip}
+        >
+          {formatVotingPower(entry.votingPower)}
+        </span>
+        <DRepSourceLabel className={styles.sourceLabel} source="on-chain" />
+      </div>
+      <div className={styles.actionsRow}>
+        <Button
+          label={intl.formatMessage(messages.viewDetails)}
+          onClick={() => onViewDetails(entry.drepId)}
+          skin={ButtonSkin}
+        />
+        {canDelegate && !isCurrentDRep && (
+          <Button
+            label={intl.formatMessage(messages.select)}
+            onClick={() => onSelectForDelegation(entry.drepId)}
+            skin={ButtonSkin}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default injectIntl(DRepCard);
