@@ -81,9 +81,8 @@ export const handleDiskSpace = (mainWindow: BrowserWindow) => {
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL;
 
   let isNotEnoughDiskSpace = false;
-  let activeDiskSpaceCheckPromise: Promise<
-    CheckDiskSpaceResponse
-  > | null = null;
+  let activeDiskSpaceCheckPromise: Promise<CheckDiskSpaceResponse> | null =
+    null;
   let pendingDiskSpaceCheckArgs: {
     hadNotEnoughSpaceLeft?: boolean;
     forceDiskSpaceRequired?: number;
@@ -220,8 +219,8 @@ export const handleDiskSpace = (mainWindow: BrowserWindow) => {
         pendingDiskSpaceCheckArgs.hadNotEnoughSpaceLeft === false ||
         nextArgs.hadNotEnoughSpaceLeft === false
           ? false
-          : nextArgs.hadNotEnoughSpaceLeft ??
-            pendingDiskSpaceCheckArgs.hadNotEnoughSpaceLeft,
+          : (nextArgs.hadNotEnoughSpaceLeft ??
+            pendingDiskSpaceCheckArgs.hadNotEnoughSpaceLeft),
       forceDiskSpaceRequired:
         nextArgs.forceDiskSpaceRequired ??
         pendingDiskSpaceCheckArgs.forceDiskSpaceRequired,

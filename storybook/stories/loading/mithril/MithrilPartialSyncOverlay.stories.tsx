@@ -30,7 +30,7 @@ const PARTIAL_SYNC_STAGES = [
   'finalizing',
 ] as const;
 
-type PartialSyncStage = typeof PARTIAL_SYNC_STAGES[number];
+type PartialSyncStage = (typeof PARTIAL_SYNC_STAGES)[number];
 
 const getStageItems = (
   reachedStage: PartialSyncStage,
@@ -233,19 +233,17 @@ const interactiveStatusOptions: Record<string, MithrilPartialSyncStatus> = {
   Cancelled: 'cancelled',
 };
 
-const interactiveErrorPresets: Record<
-  string,
-  MithrilPartialSyncError | null
-> = {
-  none: null,
-  cancelled: cancelledError,
-  'restart-allowed': restartAllowedError,
-  'wipe-only': wipeOnlyError,
-  downloading: downloadingError,
-  converting: convertingError,
-  installing: installingError,
-  finalizing: finalizingError,
-};
+const interactiveErrorPresets: Record<string, MithrilPartialSyncError | null> =
+  {
+    none: null,
+    cancelled: cancelledError,
+    'restart-allowed': restartAllowedError,
+    'wipe-only': wipeOnlyError,
+    downloading: downloadingError,
+    converting: convertingError,
+    installing: installingError,
+    finalizing: finalizingError,
+  };
 
 const interactiveErrorOptions = {
   None: 'none',

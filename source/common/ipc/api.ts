@@ -253,7 +253,8 @@ export type ExportWalletsMainResponse = {
  */
 export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
   'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
-export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
+export type GenerateWalletMigrationReportRendererRequest =
+  WalletMigrationReportData;
 export type GenerateWalletMigrationReportMainResponse = void;
 
 /**
@@ -302,7 +303,8 @@ export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
  */
 export const DELETE_DOWNLOADED_FILE = 'DELETE_DOWNLOADED_FILE';
 export type DeleteDownloadedFileRendererRequest = DeleteDownloadedFileRequest;
-export type DeleteDownloadedFileMainResponse = DeleteDownloadedFileResponse | void;
+export type DeleteDownloadedFileMainResponse =
+  DeleteDownloadedFileResponse | void;
 
 /**
  * Channel for initiating the download manager
@@ -315,14 +317,16 @@ export type DownloadLocalDataMainResponse = DownloadLocalDataResponse;
  * Channel for initiating the download manager
  */
 export const GET_DOWNLOADS_LOCAL_DATA = 'GET_DOWNLOADS_LOCAL_DATA';
-export type DownloadsLocalDataRendererRequest = DownloadsLocalDataRequest | void;
+export type DownloadsLocalDataRendererRequest =
+  DownloadsLocalDataRequest | void;
 export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
 
 /**
  * Channel for initiating the download manager
  */
 export const CLEAR_DOWNLOAD_LOCAL_DATA = 'CLEAR_DOWNLOAD_LOCAL_DATA';
-export type ClearDownloadLocalDataRendererRequest = ClearDownloadLocalDataRequest;
+export type ClearDownloadLocalDataRendererRequest =
+  ClearDownloadLocalDataRequest;
 export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
 
 /**
@@ -392,12 +396,16 @@ export type IntrospectAddressMainResponse = IntrospectAddressResponse;
 
 export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
   'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
-export type getHardwareWalletTransportRendererRequest = HardwareWalletTransportDeviceRequest;
-export type getHardwareWalletTransportMainResponse = HardwareWalletTransportDeviceResponse;
+export type getHardwareWalletTransportRendererRequest =
+  HardwareWalletTransportDeviceRequest;
+export type getHardwareWalletTransportMainResponse =
+  HardwareWalletTransportDeviceResponse;
 export const GET_EXTENDED_PUBLIC_KEY_CHANNEL =
   'GET_EXTENDED_PUBLIC_KEY_CHANNEL';
-export type getExtendedPublicKeyRendererRequest = HardwareWalletExtendedPublicKeyRequest;
-export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyResponse;
+export type getExtendedPublicKeyRendererRequest =
+  HardwareWalletExtendedPublicKeyRequest;
+export type getExtendedPublicKeyMainResponse =
+  HardwareWalletExtendedPublicKeyResponse;
 export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
 export type getCardanoAdaAppRendererRequest = {
   path: string | null | undefined;
@@ -406,7 +414,8 @@ export type getCardanoAdaAppRendererRequest = {
 export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
-export type getHardwareWalletConnectionMainRequest = HardwareWalletConnectionRequest;
+export type getHardwareWalletConnectionMainRequest =
+  HardwareWalletConnectionRequest;
 export type getHardwareWalletConnectionRendererResponse =
   | LedgerDevicePayload
   | TrezorDevicePayload
@@ -459,16 +468,19 @@ export type GetCachedBackendStatusRendererRequest = void;
 // Import WatchdogState from watchdog.types — but since api.ts uses inline types,
 // define the response type as a re-export of WatchdogState:
 export type { WatchdogState } from '../types/watchdog.types';
-export type GetCachedBackendStatusMainResponse = import('../types/watchdog.types').WatchdogState;
+export type GetCachedBackendStatusMainResponse =
+  import('../types/watchdog.types').WatchdogState;
 
 // Command: renderer sends MithrilCommand to main (forwarded to watchdog)
 export const MITHRIL_COMMAND_CHANNEL = 'MITHRIL_COMMAND_CHANNEL';
-export type MithrilCommandRendererRequest = import('../types/watchdog.types').MithrilCommand;
+export type MithrilCommandRendererRequest =
+  import('../types/watchdog.types').MithrilCommand;
 export type MithrilCommandMainResponse = void;
 
 // Push: main → renderer mithril_progress events
 export const MITHRIL_PROGRESS_CHANNEL = 'MITHRIL_PROGRESS_CHANNEL';
-export type MithrilProgressMainRequest = import('../types/watchdog.types').MithrilProgress;
+export type MithrilProgressMainRequest =
+  import('../types/watchdog.types').MithrilProgress;
 export type MithrilProgressRendererResponse = void;
 
 // Push: main → renderer mithril_status events
@@ -503,7 +515,8 @@ export type NodeBlockSyncProgressRendererResponse = void;
 // Chain storage: renderer asks main to validate a candidate path
 export const VALIDATE_CHAIN_STORAGE_CHANNEL = 'VALIDATE_CHAIN_STORAGE_CHANNEL';
 export type ValidateChainStorageRendererRequest = { path: string };
-export type ValidateChainStorageMainResponse = import('../types/watchdog.types').ChainStorageValidation;
+export type ValidateChainStorageMainResponse =
+  import('../types/watchdog.types').ChainStorageValidation;
 
 // Chain storage: renderer asks main to apply a new chain path and restart watchdog
 export const CONFIRM_CHAIN_STORAGE_CHANNEL = 'CONFIRM_CHAIN_STORAGE_CHANNEL';

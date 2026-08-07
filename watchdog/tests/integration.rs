@@ -11,7 +11,7 @@
 // use raw fd 3 for the shutdown pipe, so the tests are Unix-only.
 #![cfg(unix)]
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::io::{BufRead, BufReader, Write};
 use std::net::TcpListener;
 use std::path::{Path, PathBuf};

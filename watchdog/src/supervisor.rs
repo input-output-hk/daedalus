@@ -12,7 +12,7 @@ use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::net::TcpStream;
 use tokio::process::{Child, Command};
 use tokio::sync::{mpsc, oneshot, watch};
-use tokio::time::{sleep, timeout, Duration};
+use tokio::time::{Duration, sleep, timeout};
 use tracing::{info, warn};
 
 #[cfg(unix)]
@@ -23,7 +23,7 @@ use nix::{
 
 use crate::config::WatchdogConfig;
 use crate::mithril;
-use crate::protocol::{emit, Command as Cmd, Event};
+use crate::protocol::{Command as Cmd, Event, emit};
 
 type ExitInfo = (Option<i32>, Option<String>);
 
@@ -71,7 +71,7 @@ fn graceful_stop(child: &Child) {
     }
     #[cfg(windows)]
     unsafe {
-        use windows_sys::Win32::System::Console::{GenerateConsoleCtrlEvent, CTRL_BREAK_EVENT};
+        use windows_sys::Win32::System::Console::{CTRL_BREAK_EVENT, GenerateConsoleCtrlEvent};
         GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
     }
 }
@@ -291,7 +291,7 @@ impl ShutdownPipe {
     #[cfg(windows)]
     fn new() -> Result<Self> {
         use windows_sys::Win32::Foundation::{
-            SetHandleInformation, HANDLE, HANDLE_FLAG_INHERIT, INVALID_HANDLE_VALUE,
+            HANDLE, HANDLE_FLAG_INHERIT, INVALID_HANDLE_VALUE, SetHandleInformation,
         };
         use windows_sys::Win32::Security::SECURITY_ATTRIBUTES;
         use windows_sys::Win32::System::Pipes::CreatePipe;

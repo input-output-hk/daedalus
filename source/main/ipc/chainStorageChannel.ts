@@ -92,11 +92,8 @@ function validatePath(
   }
 
   const chainSubdir = path.join(resolved, 'chain');
-  const chainSubdirectoryStatus: ChainStorageValidation['chainSubdirectoryStatus'] = fs.existsSync(
-    chainSubdir
-  )
-    ? 'existing-directory'
-    : 'will-create';
+  const chainSubdirectoryStatus: ChainStorageValidation['chainSubdirectoryStatus'] =
+    fs.existsSync(chainSubdir) ? 'existing-directory' : 'will-create';
 
   const availableSpaceBytes = getAvailableSpaceBytes(writeCheckTarget);
 
