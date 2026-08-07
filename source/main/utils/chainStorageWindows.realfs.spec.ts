@@ -38,6 +38,24 @@ const onWindows = process.platform === 'win32' ? describe : describe.skip;
 
 const CHAIN_DIRECTORY_NAME = 'chain';
 
+// `existsSync` follows the link, so it is false for a link that exists but
+// does not resolve — which is the state under test.
+const isLink = (linkPath: string): boolean => {
+  try {
+    return fs.lstatSync(linkPath).isSymbolicLink();
+  } catch {
+    return false;
+  }
+};
+
+const resolvesToDirectory = (linkPath: string): boolean => {
+  try {
+    return fs.statSync(fs.realpathSync(linkPath)).isDirectory();
+  } catch {
+    return false;
+  }
+};
+
 onWindows('Windows reparse point handling', () => {
   let tmpRoot: string;
 
@@ -226,6 +244,75 @@ onWindows('Windows reparse point handling', () => {
         expect(fs.existsSync(resolved)).toBe(true);
       } finally {
         execFileSync('subst', [`${letter}:`, '/D']);
+      }
+    });
+  });
+
+  // A drive letter backed by a *share* behaves differently from one backed by
+  // a local directory, which is why the `subst` case above is not a substitute
+  // for this one. `subst` produces a volume-relative path a junction can
+  // record; a mapped network drive is a per-session object-manager entry, so
+  // the junction is accepted and then does not work — reported from the field
+  // as chain storage selected on a NAS-mapped drive that was "created but
+  // corrupt".
+  //
+  // No external NAS is needed: Windows can share a local directory with itself
+  // and map it back over the loopback, which exercises the real network
+  // redirector.
+  describe('mapped network drive', () => {
+    const SHARE_NAME = 'DaedalusChainTest';
+
+    const findFreeDriveLetter = (): string | null => {
+      for (const letter of 'NMLKJ'.split('')) {
+        if (!fs.existsSync(`${letter}:\\`)) return letter;
+      }
+      return null;
+    };
+
+    it('never leaves a corrupt link when the target is a mapped network drive', async () => {
+      const letter = findFreeDriveLetter();
+      expect(letter).not.toBeNull();
+
+      const backing = path.join(tmpRoot, 'share-backing');
+      fs.ensureDirSync(path.join(backing, 'chain'));
+
+      let shared = false;
+      let mapped = false;
+      try {
+        execFileSync('net', [
+          'share',
+          `${SHARE_NAME}=${backing}`,
+          '/GRANT:Everyone,FULL',
+        ]);
+        shared = true;
+        execFileSync('net', [
+          'use',
+          `${letter}:`,
+          `\\\\localhost\\${SHARE_NAME}`,
+        ]);
+        mapped = true;
+
+        const stateDir = path.join(tmpRoot, 'state');
+        fs.ensureDirSync(stateDir);
+        const chainPath = path.join(stateDir, CHAIN_DIRECTORY_NAME);
+        const target = `${letter}:\\chain`;
+
+        // Succeeding with a working link and failing outright are both
+        // acceptable. Leaving a link that exists but does not resolve is not:
+        // that is the defect exactly — success reported, storage broken.
+        await createSymlink(target, chainPath).catch(() => undefined);
+
+        const linkExists = fs.existsSync(chainPath) || isLink(chainPath);
+        const linkWorks = resolvesToDirectory(chainPath);
+
+        expect(linkExists && !linkWorks).toBe(false);
+      } finally {
+        if (mapped) {
+          execFileSync('net', ['use', `${letter}:`, '/DELETE', '/Y']);
+        }
+        if (shared) {
+          execFileSync('net', ['share', SHARE_NAME, '/DELETE']);
+        }
       }
     });
   });

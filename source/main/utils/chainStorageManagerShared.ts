@@ -397,14 +397,65 @@ export async function replaceCustomChainEntryPoint(
   await ctx._createSymlink(targetPath, ctx._chainPath);
 }
 
+/**
+ * True when `linkPath` resolves through to a real directory.
+ *
+ * Used to check a link we just created, rather than to classify the target
+ * beforehand: the ways a link can be accepted and still be unusable are
+ * filesystem-specific and open-ended, but they all fail this.
+ */
+async function linkResolvesToDirectory(linkPath: string): Promise<boolean> {
+  try {
+    const resolvedPath = await fs.realpath(linkPath);
+    return (await fs.stat(resolvedPath)).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
 export async function createSymlink(
   targetPath: string,
   symlinkPath: string
 ): Promise<void> {
-  await fs.symlink(
-    targetPath,
-    symlinkPath,
-    process.platform === 'win32' ? 'junction' : 'dir'
+  const isWindows = process.platform === 'win32';
+
+  await fs.symlink(targetPath, symlinkPath, isWindows ? 'junction' : 'dir');
+
+  if (!isWindows) return;
+
+  // Windows accepts a junction pointing at a network-backed target — a UNC
+  // path, or a drive letter mapped to a share — and returns success, but the
+  // link does not work. A junction records a volume-relative path, and a
+  // mapped drive letter is a per-session object-manager entry rather than a
+  // volume, so the reparse point either cannot be traversed at all or stops
+  // resolving in the next session. What the user sees is storage that was
+  // accepted and then fails later with an unrelated-looking error.
+  if (await linkResolvesToDirectory(symlinkPath)) return;
+
+  // Leave nothing half-created behind.
+  await fs.remove(symlinkPath).catch(() => {});
+
+  // A true symbolic link does work against a network target, so try it: a user
+  // with Developer Mode enabled, or running elevated, has
+  // SeCreateSymbolicLinkPrivilege and the setup simply succeeds. Without the
+  // privilege this throws, which is why it cannot be the default.
+  try {
+    await fs.symlink(targetPath, symlinkPath, 'dir');
+    if (await linkResolvesToDirectory(symlinkPath)) return;
+    await fs.remove(symlinkPath).catch(() => {});
+  } catch (error) {
+    logger.info(
+      'ChainStorageManager: symbolic link fallback unavailable for a network target',
+      { error, targetPath }
+    );
+  }
+
+  throw new Error(
+    `Unable to link chain storage to "${targetPath}". A junction cannot ` +
+      'address a network location, and creating a symbolic link requires ' +
+      'elevated privileges. Create the link manually with ' +
+      `"mklink /D <chain path> ${targetPath}" from an elevated prompt, or ` +
+      'choose a local directory.'
   );
 }
 
