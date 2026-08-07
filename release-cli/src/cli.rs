@@ -49,6 +49,21 @@ pub enum Commands {
         /// Useful for staging binaries before making them the latest version.
         #[arg(long)]
         skip_version_json: bool,
+
+        /// Repository to resolve the release tag against, for checking that the
+        /// installers were built from the commit the tag names.
+        #[arg(long, default_value = "https://github.com/input-output-hk/daedalus")]
+        repo_url: String,
+
+        /// Skip resolving the release tag and comparing it against the commit
+        /// the installers were built from.
+        ///
+        /// The installers are still checked for internal consistency. Use only
+        /// when the tag legitimately does not exist yet — a release whose tag
+        /// names a different commit than its artifacts is the failure this
+        /// check exists to prevent.
+        #[arg(long)]
+        skip_tag_check: bool,
     },
 
     /// Code-sign macOS (.pkg) and/or Windows (.exe) installers via SSH

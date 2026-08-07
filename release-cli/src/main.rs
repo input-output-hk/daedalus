@@ -3,12 +3,13 @@ mod fetch;
 mod hash;
 mod installers;
 mod newsfeed_cmd;
+mod provenance;
 mod s3;
 mod serve;
 mod sign;
 mod version_json;
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::Parser;
 use cli::{Cli, Commands, NewsfeedCommands};
 use std::collections::HashMap;
@@ -70,16 +71,20 @@ async fn main() -> Result<()> {
             dry_run,
             test,
             skip_version_json,
+            repo_url,
+            skip_tag_check,
         } => {
-            cmd_release(
-                &installers_dir,
-                &bucket,
-                &bucket_url,
+            cmd_release(ReleaseOptions {
+                installers_dir: &installers_dir,
+                bucket: &bucket,
+                bucket_url: &bucket_url,
                 release_notes,
                 dry_run,
                 test,
                 skip_version_json,
-            )
+                repo_url: &repo_url,
+                skip_tag_check,
+            })
             .await
         }
 
@@ -362,15 +367,85 @@ async fn cmd_sign(
     Ok(())
 }
 
-async fn cmd_release(
-    installers_dir: &std::path::Path,
-    bucket: &str,
-    bucket_url: &str,
+/// Resolve a release tag to the commit it names, via `git ls-remote`.
+///
+/// `refs/tags/<tag>^{}` asks for the dereferenced target, so an annotated tag
+/// yields the commit it points at rather than the tag object. Both forms are
+/// requested because a lightweight tag has no dereferenced form.
+///
+/// Failure to resolve is an error rather than a warning: a release whose tag
+/// cannot be found is exactly the case worth stopping on.
+fn resolve_tag_commit(repo_url: &str, tag: &str) -> Result<String> {
+    let output = std::process::Command::new("git")
+        .args([
+            "ls-remote",
+            repo_url,
+            &format!("refs/tags/{tag}"),
+            &format!("refs/tags/{tag}^{{}}"),
+        ])
+        .output()
+        .with_context(|| format!("running git ls-remote against {repo_url}"))?;
+
+    if !output.status.success() {
+        anyhow::bail!(
+            "git ls-remote {repo_url} refs/tags/{tag} failed: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        );
+    }
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let mut object = None;
+    for line in stdout.lines() {
+        let Some((sha, name)) = line
+            .split_whitespace()
+            .next()
+            .zip(line.split_whitespace().nth(1))
+        else {
+            continue;
+        };
+        // The dereferenced entry wins when both are present.
+        if name.ends_with("^{}") {
+            return Ok(sha.to_string());
+        }
+        object = Some(sha.to_string());
+    }
+
+    object.ok_or_else(|| {
+        anyhow::anyhow!(
+            "tag {tag} does not exist in {repo_url}. A release is a claim that \
+             this version corresponds to a commit; without the tag there is \
+             nothing to check it against. Create the tag, or pass \
+             --skip-tag-check if it is deliberately absent."
+        )
+    })
+}
+
+/// Everything `cmd_release` needs, grouped so the signature stays readable as
+/// options accumulate.
+struct ReleaseOptions<'a> {
+    installers_dir: &'a std::path::Path,
+    bucket: &'a str,
+    bucket_url: &'a str,
     release_notes: Option<String>,
     dry_run: bool,
     test: bool,
     skip_version_json: bool,
-) -> Result<()> {
+    repo_url: &'a str,
+    skip_tag_check: bool,
+}
+
+async fn cmd_release(opts: ReleaseOptions<'_>) -> Result<()> {
+    let ReleaseOptions {
+        installers_dir,
+        bucket,
+        bucket_url,
+        release_notes,
+        dry_run,
+        test,
+        skip_version_json,
+        repo_url,
+        skip_tag_check,
+    } = opts;
     let installer_dir = installers::InstallerDir::load(installers_dir)?;
 
     println!("Version  : {}", installer_dir.version);
@@ -383,6 +458,19 @@ async fn cmd_release(
     for inst in &installer_dir.installers {
         println!("  {} [{}]", inst.filename, inst.platform.display_name());
     }
+    println!();
+
+    // ── 0. Provenance ────────────────────────────────────────────────────────
+    // Before anything is hashed, signed or uploaded: do these artifacts come
+    // from one commit, and is it the commit the release tag names?
+    println!("=== Checking provenance ===");
+    let tag_rev = if skip_tag_check {
+        println!("  tag check skipped (--skip-tag-check)");
+        None
+    } else {
+        Some(resolve_tag_commit(repo_url, &installer_dir.version)?)
+    };
+    provenance::verify(&installer_dir, tag_rev.as_deref())?;
     println!();
 
     // ── 1. Hash ──────────────────────────────────────────────────────────────
