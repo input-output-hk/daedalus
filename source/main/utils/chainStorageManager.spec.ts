@@ -52,6 +52,15 @@ describe('ChainStorageManager', () => {
     jest.clearAllMocks();
     const checkDiskSpace = require('check-disk-space');
     checkDiskSpace.mockResolvedValue({ free: 4096 });
+
+    // createSymlink verifies that the link it just created resolves through to
+    // a directory, so the default here has to be a link that works. Tests that
+    // care override these; the `...Once` rejections elsewhere still take
+    // precedence for the call they target and then fall back to this.
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
+      async (targetPath: string) => targetPath
+    );
+    (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
   });
 
   it('setDirectory returns validation response when invalid', async () => {
