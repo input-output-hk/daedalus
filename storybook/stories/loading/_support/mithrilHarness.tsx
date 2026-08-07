@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type {
   ChainStorageValidation,
   MithrilBootstrapError,
   MithrilBootstrapStatus,
   MithrilProgressItem,
   MithrilSnapshotItem,
-} from '../../../../source/common/types/mithril-bootstrap.types';
+} from '../../../../source/common/types/watchdog.types';
 import ChainStorageLocationPicker from '../../../../source/renderer/app/components/chain-storage/ChainStorageLocationPicker';
-import MithrilSyncOverlay from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilSyncOverlay';
-import MithrilDecisionView from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilDecisionView';
+import MithrilSyncOverlay from '../../../../source/renderer/app/components/loading/mithril/MithrilSyncOverlay';
+import MithrilDecisionView from '../../../../source/renderer/app/components/loading/mithril/MithrilDecisionView';
 import {
   bootstrapActions,
   defaultChainStorageValidation,
@@ -41,44 +41,9 @@ interface ManagedMithrilDecisionViewProps {
   includeReturnToStorageAction?: boolean;
 }
 
-export function ManagedMithrilDecisionView({
-  snapshots,
-  selectedDigest = null,
-  isFetchingSnapshots,
-  customChainPath,
-  defaultChainPath,
-  includeReturnToStorageAction = true,
-}: ManagedMithrilDecisionViewProps) {
-  const [currentDigest, setCurrentDigest] = useState<string | null>(
-    selectedDigest
-  );
-
-  useEffect(() => {
-    setCurrentDigest(selectedDigest);
-  }, [selectedDigest, snapshots]);
-
-  const selectedSnapshot = useMemo(
-    () => resolveSelectedSnapshot(snapshots, currentDigest),
-    [currentDigest, snapshots]
-  );
-
+export function ManagedMithrilDecisionView(_props: ManagedMithrilDecisionViewProps) {
   return (
     <MithrilDecisionView
-      snapshots={snapshots}
-      selectedDigest={currentDigest}
-      selectedSnapshot={selectedSnapshot}
-      isFetchingSnapshots={isFetchingSnapshots}
-      customChainPath={customChainPath}
-      defaultChainPath={defaultChainPath}
-      onSelectSnapshot={(value) => {
-        bootstrapActions.onSelectSnapshot(value);
-        setCurrentDigest(value);
-      }}
-      onReturnToStorageLocation={
-        includeReturnToStorageAction
-          ? () => bootstrapActions.onReturnToStorageLocation()
-          : undefined
-      }
       onAccept={() => bootstrapActions.onAccept()}
       onDecline={() => bootstrapActions.onDecline()}
     />

@@ -25,7 +25,7 @@ class BackendLifecycle {
   private manager: WatchdogManager | null = null;
   private getWindow: () => BrowserWindow | null = () => null;
   private eventHandlers: EventHandler[] = [];
-  private _exePath: string = '';
+  private _exePath = '';
   private _config: WatchdogConfig | null = null;
   private _defaultChainPath: string | null = null;
   private _customChainPath: string | null = null;

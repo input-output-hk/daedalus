@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.scss';
+import styles from '../../../../source/renderer/app/components/loading/mithril/MithrilBootstrap.scss';
 
 type Props = {
   children: React.ReactNode;
