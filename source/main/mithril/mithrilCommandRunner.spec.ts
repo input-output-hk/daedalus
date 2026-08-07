@@ -1,5 +1,6 @@
 import path from 'path';
 import { EventEmitter } from 'events';
+import { atPath } from '../utils/pathAssertions';
 import {
   openLogStream,
   attachLogStream,
@@ -44,12 +45,6 @@ jest.mock('../environment', () => ({
 jest.mock('child_process', () => ({
   spawn: jest.fn(),
 }));
-
-// These paths are compared against values the code under test builds with
-// `path.join`, which is backslash-separated on Windows. `atPath` builds them
-// the same way, so the assertions stay about the path rather than the platform.
-const atPath = (posixPath: string): string =>
-  posixPath.split('/').join(path.sep);
 
 const createChildProcess = () => {
   const childEmitter = new EventEmitter() as any;

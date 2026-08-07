@@ -1,4 +1,5 @@
 import path from 'path';
+import { atPath } from '../utils/pathAssertions';
 import { parseMithrilProgressUpdate } from './mithrilProgress';
 import { MithrilBootstrapService } from './MithrilBootstrapService';
 
@@ -26,12 +27,6 @@ jest.mock('../utils/logging', () => ({
     info: jest.fn(),
   },
 }));
-
-// These paths are compared against values the code under test builds with
-// `path.join`, which is backslash-separated on Windows. `atPath` builds them
-// the same way, so the assertions stay about the path rather than the platform.
-const atPath = (posixPath: string): string =>
-  posixPath.split('/').join(path.sep);
 
 describe('MithrilBootstrapService parsing', () => {
   it('preserves raw file progress counters', () => {

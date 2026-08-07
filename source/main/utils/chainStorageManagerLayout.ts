@@ -202,7 +202,7 @@ export async function migrateLegacyCustomLayout(
 ): Promise<void> {
   const legacyRootPath =
     layout.resolvedCustomPath || path.resolve(layout.customPath || '');
-  const managedChainPath = layout.managedChainPath;
+  const { managedChainPath } = layout;
 
   await ctx._preflightLegacyMigration({
     legacyRootPath,

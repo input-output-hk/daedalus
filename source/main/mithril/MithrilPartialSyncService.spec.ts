@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
+import { atPath, atResolvedPath } from '../utils/pathAssertions';
 import type { PartialSyncPreflightContext } from '../utils/chainStorageCoordinator';
 import { MithrilPartialSyncService } from './MithrilPartialSyncService';
 import type { MithrilPartialSyncStatusSnapshot } from '../../common/types/mithril-partial-sync.types';
@@ -55,21 +56,6 @@ jest.mock('./mithrilCommandRunner', () => ({
 jest.mock('./killProcessTree', () => ({
   killProcessTree: jest.fn(),
 }));
-
-// These paths are compared against values the code under test builds with
-// `path.join`, which is backslash-separated on Windows. `atPath` builds them
-// the same way, so the assertions stay about the path rather than the
-// platform. The literals inside the `jest.mock` factories above are inputs
-// rather than expectations, and are left alone — those factories are hoisted
-// above this declaration.
-const atPath = (posixPath: string): string =>
-  posixPath.split('/').join(path.sep);
-
-// Some of these paths reach the assertion through `path.resolve`, which on
-// Windows also qualifies them with the current drive. `atResolvedPath` mirrors
-// that; `atPath` alone is right for the ones the code only joins.
-const atResolvedPath = (posixPath: string): string =>
-  path.resolve(atPath(posixPath));
 
 const createContext = (): PartialSyncPreflightContext => ({
   layoutResult: {

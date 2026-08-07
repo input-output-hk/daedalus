@@ -36,6 +36,19 @@ jest.mock('./logging', () => ({
 
 const onWindows = process.platform === 'win32' ? describe : describe.skip;
 
+/**
+ * A drive letter not currently in use, chosen from `candidates`.
+ *
+ * Callers pass disjoint candidate sets so two tests cannot select the same
+ * letter and interfere with each other.
+ */
+const findFreeDriveLetter = (candidates: string): string | null => {
+  for (const letter of candidates.split('')) {
+    if (!fs.existsSync(`${letter}:\\`)) return letter;
+  }
+  return null;
+};
+
 const CHAIN_DIRECTORY_NAME = 'chain';
 
 // `existsSync` follows the link, so it is false for a link that exists but
@@ -216,15 +229,8 @@ onWindows('Windows reparse point handling', () => {
   // drive-letter path with no network involved — the closest reproduction of
   // the reported mapped-drive case that needs no share.
   describe('drive letters', () => {
-    const findFreeDriveLetter = (): string | null => {
-      for (const letter of 'YXWVUT'.split('')) {
-        if (!fs.existsSync(`${letter}:\\`)) return letter;
-      }
-      return null;
-    };
-
     it('resolves a junction whose target is a subst drive letter', async () => {
-      const letter = findFreeDriveLetter();
+      const letter = findFreeDriveLetter('YXWVUT');
       // Asserted rather than skipped: a silent skip here would report coverage
       // of the drive-letter case that does not exist.
       expect(letter).not.toBeNull();
@@ -262,15 +268,8 @@ onWindows('Windows reparse point handling', () => {
   describe('mapped network drive', () => {
     const SHARE_NAME = 'DaedalusChainTest';
 
-    const findFreeDriveLetter = (): string | null => {
-      for (const letter of 'NMLKJ'.split('')) {
-        if (!fs.existsSync(`${letter}:\\`)) return letter;
-      }
-      return null;
-    };
-
     it('never leaves a corrupt link when the target is a mapped network drive', async () => {
-      const letter = findFreeDriveLetter();
+      const letter = findFreeDriveLetter('NMLKJ');
       expect(letter).not.toBeNull();
 
       const backing = path.join(tmpRoot, 'share-backing');
