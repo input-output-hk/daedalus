@@ -115,7 +115,11 @@ class WatchdogManager {
       walletPort: null,
       hasChain: null,
       nodeStartupPhase: null,
-      blockSyncProgress: { replayedBlock: 0, validatingChunk: 0, pushingLedger: 0 },
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
       mithrilPhase: null,
       mithrilProgress: null,
       mithrilSignificantlyBehind: null,
@@ -152,7 +156,10 @@ class WatchdogManager {
     });
     this.proc = proc;
 
-    logger.info('WatchdogManager: spawned watchdog', { pid: proc.pid, exe: exePath });
+    logger.info('WatchdogManager: spawned watchdog', {
+      pid: proc.pid,
+      exe: exePath,
+    });
 
     // Read stdout line-by-line
     const rl = createInterface({ input: proc.stdout!, crlfDelay: Infinity });
@@ -191,7 +198,10 @@ class WatchdogManager {
 
   sendCommand(cmd: object): void {
     if (!this.proc?.stdin?.writable) {
-      logger.warn('WatchdogManager: sendCommand called but stdin not writable', { cmd });
+      logger.warn(
+        'WatchdogManager: sendCommand called but stdin not writable',
+        { cmd }
+      );
       return;
     }
     this.proc.stdin.write(JSON.stringify(cmd) + '\n');
@@ -238,7 +248,10 @@ class WatchdogManager {
 
   private handleEvent(event: Record<string, unknown>): void {
     const eventType = event.event as string | undefined;
-    if (eventType !== 'node_block_sync_progress' && eventType !== 'mithril_progress') {
+    if (
+      eventType !== 'node_block_sync_progress' &&
+      eventType !== 'mithril_progress'
+    ) {
       logger.info('WatchdogManager event:', { ...event });
     }
 

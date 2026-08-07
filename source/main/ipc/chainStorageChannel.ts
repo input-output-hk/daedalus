@@ -60,7 +60,11 @@ function validatePath(
     try {
       const parentStat = fs.statSync(parent);
       if (!parentStat.isDirectory()) {
-        return { isValid: false, path: candidatePath, reason: 'path-not-found' };
+        return {
+          isValid: false,
+          path: candidatePath,
+          reason: 'path-not-found',
+        };
       }
     } catch {
       return { isValid: false, path: candidatePath, reason: 'path-not-found' };
@@ -78,7 +82,9 @@ function validatePath(
   }
 
   // Check writability of the target (or its parent if it doesn't exist)
-  const writeCheckTarget = fs.existsSync(resolved) ? resolved : path.dirname(resolved);
+  const writeCheckTarget = fs.existsSync(resolved)
+    ? resolved
+    : path.dirname(resolved);
   try {
     fs.accessSync(writeCheckTarget, fs.constants.W_OK);
   } catch {
@@ -110,7 +116,11 @@ export function handleChainStorageRequests(): void {
     logger.info('chainStorage: confirming path', { customPath });
 
     if (customPath != null) {
-      requestElectronStore({ type: types.SET, key: keys.CUSTOM_CHAIN_PATH, data: customPath });
+      requestElectronStore({
+        type: types.SET,
+        key: keys.CUSTOM_CHAIN_PATH,
+        data: customPath,
+      });
     } else {
       requestElectronStore({ type: types.DELETE, key: keys.CUSTOM_CHAIN_PATH });
     }

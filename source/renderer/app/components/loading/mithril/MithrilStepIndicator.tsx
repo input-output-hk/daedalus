@@ -696,7 +696,10 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
                       const hasBytes =
                         snapshotBytesTotal != null && snapshotBytesTotal > 0;
                       const bytesStr = hasBytes
-                        ? `${formatTransferSize(snapshotBytesDownloaded ?? 0) ?? '—'} / ${formatTransferSize(snapshotBytesTotal) ?? '—'}`
+                        ? `${
+                            formatTransferSize(snapshotBytesDownloaded ?? 0) ??
+                            '—'
+                          } / ${formatTransferSize(snapshotBytesTotal) ?? '—'}`
                         : null;
                       const filesDetail = hasFiles
                         ? intl.formatMessage(

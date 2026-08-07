@@ -318,12 +318,15 @@ let
         ancillaryVkey = readVkey networkDir "ancillary";
       };
     in rec {
-      mainnet = mkNetworkCfg "release-mainnet"
+      mainnet =
+        mkNetworkCfg "release-mainnet"
         "https://aggregator.release-mainnet.api.mithril.network/aggregator";
       mainnet_flight = mainnet;
-      preprod = mkNetworkCfg "release-preprod"
+      preprod =
+        mkNetworkCfg "release-preprod"
         "https://aggregator.release-preprod.api.mithril.network/aggregator";
-      preview = mkNetworkCfg "pre-release-preview"
+      preview =
+        mkNetworkCfg "pre-release-preview"
         "https://aggregator.pre-release-preview.api.mithril.network/aggregator";
     };
     nodeConfig = let

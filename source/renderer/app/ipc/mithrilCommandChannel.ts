@@ -1,7 +1,5 @@
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
-import {
-  MITHRIL_COMMAND_CHANNEL,
-} from '../../../common/ipc/api';
+import { MITHRIL_COMMAND_CHANNEL } from '../../../common/ipc/api';
 import type {
   MithrilCommandRendererRequest,
   MithrilCommandMainResponse,

@@ -236,7 +236,9 @@ impl<'a> Cfg<'a> {
 }
 
 fn spawn_watchdog(config: &Value) -> (Child, ChildStdin, mpsc::Receiver<Value>) {
-    let state_dir = config["node"]["state_dir"].as_str().expect("node.state_dir");
+    let state_dir = config["node"]["state_dir"]
+        .as_str()
+        .expect("node.state_dir");
     let config_path = std::path::Path::new(state_dir).join("watchdog-config.json");
     std::fs::write(&config_path, serde_json::to_string_pretty(config).unwrap()).unwrap();
 

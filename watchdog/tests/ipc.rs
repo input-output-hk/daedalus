@@ -111,7 +111,9 @@ impl Watchdog {
 
     fn start(config: &str) -> Self {
         let parsed: Value = serde_json::from_str(config).expect("valid config JSON");
-        let state_dir = parsed["node"]["state_dir"].as_str().expect("node.state_dir");
+        let state_dir = parsed["node"]["state_dir"]
+            .as_str()
+            .expect("node.state_dir");
         let config_path = std::path::Path::new(state_dir).join("watchdog-config.json");
         std::fs::write(&config_path, config).expect("write watchdog-config.json");
 

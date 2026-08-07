@@ -9,7 +9,11 @@ export interface WatchdogState {
   walletPort: number | null;
   hasChain: boolean | null;
   nodeStartupPhase: string | null;
-  blockSyncProgress: { replayedBlock: number; validatingChunk: number; pushingLedger: number; };
+  blockSyncProgress: {
+    replayedBlock: number;
+    validatingChunk: number;
+    pushingLedger: number;
+  };
   mithrilPhase: string | null;
   mithrilProgress: MithrilProgress | null;
   lastError: string | null;
@@ -127,9 +131,13 @@ export interface MithrilSnapshotItem {
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MithrilBootstrapStatusUpdate = any;
-export const isMithrilPartialSyncRestoreCompleteStatus = (_s: string): boolean => false;
-export const isMithrilBootstrapRestoreCompleteStatus = (_s: string): boolean => false;
-export const isMithrilSyncRestoreCompleteStatus = (_s: string): boolean => false;
+export const isMithrilPartialSyncRestoreCompleteStatus = (
+  _s: string
+): boolean => false;
+export const isMithrilBootstrapRestoreCompleteStatus = (_s: string): boolean =>
+  false;
+export const isMithrilSyncRestoreCompleteStatus = (_s: string): boolean =>
+  false;
 
 // Partial sync error types (used by partialSyncErrorCopy.ts)
 export type MithrilPartialSyncErrorCode =

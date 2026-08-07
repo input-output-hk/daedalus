@@ -220,7 +220,9 @@ export default class BackendStore extends Store {
       this.hasChain === false &&
       (this.mithrilPhase === null || this.mithrilPhase === 'cancelled')
     ) {
-      return this.chainPathConfirmed ? 'bootstrap-decision' : 'chain-storage-setup';
+      return this.chainPathConfirmed
+        ? 'bootstrap-decision'
+        : 'chain-storage-setup';
     }
     // Mithril sync is in progress (phase non-null, not yet completed or cancelled)
     if (
@@ -284,13 +286,17 @@ export default class BackendStore extends Store {
   };
 
   @action
-  resetChainStorageDirectory = async (): Promise<ChainStorageValidation | null> => {
-    await confirmChainStorageChannel.send({ customPath: null });
-    runInAction('set chainPathConfirmed after resetChainStorageDirectory', () => {
-      this.chainPathConfirmed = true;
-    });
-    return null;
-  };
+  resetChainStorageDirectory =
+    async (): Promise<ChainStorageValidation | null> => {
+      await confirmChainStorageChannel.send({ customPath: null });
+      runInAction(
+        'set chainPathConfirmed after resetChainStorageDirectory',
+        () => {
+          this.chainPathConfirmed = true;
+        }
+      );
+      return null;
+    };
 
   @action
   confirmStorageLocation = () => {

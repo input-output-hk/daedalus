@@ -140,13 +140,18 @@ function buildNodeArgs(
     process.platform === 'win32'
       ? '\\\\.\\pipe\\cardano-node.socket'
       : 'cardano-node.socket',
-    '--topology', topologyFile,
-    '--database-path', 'chain',
-    '--port', String(nodePort),
-    '--config', configFile,
+    '--topology',
+    topologyFile,
+    '--database-path',
+    'chain',
+    '--port',
+    String(nodePort),
+    '--config',
+    configFile,
   ];
   if (nodeConfig.signingKey) args.push('--signing-key', nodeConfig.signingKey);
-  if (nodeConfig.delegationCertificate) args.push('--delegation-certificate', nodeConfig.delegationCertificate);
+  if (nodeConfig.delegationCertificate)
+    args.push('--delegation-certificate', nodeConfig.delegationCertificate);
   args.push('+RTS', '-N', '-RTS');
   return args;
 }
@@ -169,13 +174,22 @@ function buildWalletArgs(
   const configDir = path.dirname(nodeConfig.network.configFile);
 
   const args = [
-    'serve', '+RTS', '-N', '-RTS',
-    '--port', String(walletPort),
-    '--database', walletDb,
-    '--tls-ca-cert', path.join(tlsPath, 'server/ca.crt'),
-    '--tls-sv-cert', path.join(tlsPath, 'server/server.crt'),
-    '--tls-sv-key', path.join(tlsPath, 'server/server.key'),
-    '--node-socket', socketPath,
+    'serve',
+    '+RTS',
+    '-N',
+    '-RTS',
+    '--port',
+    String(walletPort),
+    '--database',
+    walletDb,
+    '--tls-ca-cert',
+    path.join(tlsPath, 'server/ca.crt'),
+    '--tls-sv-cert',
+    path.join(tlsPath, 'server/server.crt'),
+    '--tls-sv-key',
+    path.join(tlsPath, 'server/server.key'),
+    '--node-socket',
+    socketPath,
   ];
 
   if (isStaging) {
@@ -188,7 +202,10 @@ function buildWalletArgs(
     args.push('--sync-tolerance', `${syncToleranceSecs}s`);
   }
 
-  args.push('--token-metadata-server', metadataUrl ?? 'https://tokens.cardano.org');
+  args.push(
+    '--token-metadata-server',
+    metadataUrl ?? 'https://tokens.cardano.org'
+  );
   return args;
 }
 
@@ -254,7 +271,7 @@ const onAppReady = async () => {
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
   const currentRtsFlags = getRtsFlagsSettings(network) || [];
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-  buildAppMenus(mainWindow,userLocale, {
+  buildAppMenus(mainWindow, userLocale, {
     isNavigationEnabled: false,
     walletSettingsState: WalletSettingsStateEnum.hidden,
   });
@@ -263,7 +280,7 @@ const onAppReady = async () => {
       new Promise((resolve) => {
         const locale = getLocale(network);
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-        buildAppMenus(mainWindow,locale, {
+        buildAppMenus(mainWindow, locale, {
           isNavigationEnabled,
           walletSettingsState,
         });
@@ -294,7 +311,7 @@ const onAppReady = async () => {
     const flagsToSet = containsRTSFlags(currentRtsFlags) ? [] : RTS_FLAGS;
     storeRtsFlagsSettings(environment.network, flagsToSet);
     // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
-    return handleWindowClose();
+    return Promise.resolve(handleWindowClose());
   });
   const handleCheckDiskSpace = handleDiskSpace(mainWindow);
 
@@ -311,45 +328,81 @@ const onAppReady = async () => {
   // Start watchdog
   backendLifecycle.setWindowProvider(() => mainWindow);
   const {
-    watchdogBin, nodeBin, walletBin, logsPrefix,
-    nodeConfig, tlsPath, syncTolerance, isStaging, metadataUrl,
-    mithrilBin, snapshotConverterBin, mithrilConverterConfig,
-    mithrilAggregatorUrl, mithrilGenesisVkey, mithrilAncillaryVkey,
+    watchdogBin,
+    nodeBin,
+    walletBin,
+    logsPrefix,
+    nodeConfig,
+    tlsPath,
+    syncTolerance,
+    isStaging,
+    metadataUrl,
+    mithrilBin,
+    snapshotConverterBin,
+    mithrilConverterConfig,
+    mithrilAggregatorUrl,
+    mithrilGenesisVkey,
+    mithrilAncillaryVkey,
   } = launcherConfig;
-  const socketPath = process.platform === 'win32'
-    ? '\\\\.\\pipe\\cardano-node.socket'
-    : path.join(stateDirectoryPath, 'cardano-node.socket');
+  const socketPath =
+    process.platform === 'win32'
+      ? '\\\\.\\pipe\\cardano-node.socket'
+      : path.join(stateDirectoryPath, 'cardano-node.socket');
   const defaultChainPath = path.join(stateDirectoryPath, 'chain');
   // Load persisted custom chain path from electron-store
-  const customChainPath = (requestElectronStore({
-    type: 'get',
-    key: 'CUSTOM-CHAIN-PATH',
-  }) as string | undefined) ?? null;
+  const customChainPath =
+    (requestElectronStore({
+      type: 'get',
+      key: 'CUSTOM-CHAIN-PATH',
+    }) as string | undefined) ?? null;
   const effectiveChainPath = customChainPath
     ? path.join(customChainPath, 'chain')
     : defaultChainPath;
-  const [nodePort, walletPort] = await Promise.all([getFreePort(), getFreePort()]);
+  const [nodePort, walletPort] = await Promise.all([
+    getFreePort(),
+    getFreePort(),
+  ]);
   const nodeArgs = buildNodeArgs(stateDirectoryPath, nodePort, nodeConfig);
-  const walletArgs = buildWalletArgs(stateDirectoryPath, walletPort, tlsPath, syncTolerance, isStaging, metadataUrl, nodeConfig);
+  const walletArgs = buildWalletArgs(
+    stateDirectoryPath,
+    walletPort,
+    tlsPath,
+    syncTolerance,
+    isStaging,
+    metadataUrl,
+    nodeConfig
+  );
   backendLifecycle.setTlsPath(tlsPath);
   backendLifecycle.setChainPaths(defaultChainPath, customChainPath);
   backendLifecycle.start(watchdogBin, {
-    node: { exe: nodeBin, args: nodeArgs, state_dir: stateDirectoryPath, socket_path: socketPath },
-    wallet: { exe: walletBin, args: walletArgs, state_dir: stateDirectoryPath, api_port: walletPort },
+    node: {
+      exe: nodeBin,
+      args: nodeArgs,
+      state_dir: stateDirectoryPath,
+      socket_path: socketPath,
+    },
+    wallet: {
+      exe: walletBin,
+      args: walletArgs,
+      state_dir: stateDirectoryPath,
+      api_port: walletPort,
+    },
     node_log_file: path.join(logsPrefix, 'node.log'),
     wallet_log_file: path.join(logsPrefix, 'cardano-wallet.log'),
-    ...(mithrilBin && mithrilAggregatorUrl && mithrilGenesisVkey ? {
-      mithril: {
-        mithril_bin: mithrilBin,
-        snapshot_converter_bin: snapshotConverterBin ?? '',
-        converter_config: mithrilConverterConfig ?? '',
-        aggregator_url: mithrilAggregatorUrl,
-        genesis_vkey: mithrilGenesisVkey,
-        ancillary_vkey: mithrilAncillaryVkey,
-        state_dir: stateDirectoryPath,
-        chain_path: effectiveChainPath,
-      },
-    } : {}),
+    ...(mithrilBin && mithrilAggregatorUrl && mithrilGenesisVkey
+      ? {
+          mithril: {
+            mithril_bin: mithrilBin,
+            snapshot_converter_bin: snapshotConverterBin ?? '',
+            converter_config: mithrilConverterConfig ?? '',
+            aggregator_url: mithrilAggregatorUrl,
+            genesis_vkey: mithrilGenesisVkey,
+            ancillary_vkey: mithrilAncillaryVkey,
+            state_dir: stateDirectoryPath,
+            chain_path: effectiveChainPath,
+          },
+        }
+      : {}),
   });
 
   mainWindow.on('close', handleWindowClose);

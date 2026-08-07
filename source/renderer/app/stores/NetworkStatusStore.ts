@@ -636,5 +636,4 @@ export default class NetworkStatusStore extends Store {
       get(networkTip, 'slot', null) !== null
     );
   }
-
 }

@@ -2,8 +2,14 @@ import { readFileSync } from 'fs';
 import { BrowserWindow } from 'electron';
 import { logger } from './utils/logging';
 import WatchdogManager from './WatchdogManager';
-import type { WatchdogConfig, WatchdogState as InternalWatchdogState } from './WatchdogManager';
-import type { WatchdogState } from '../common/types/watchdog.types';
+import type {
+  WatchdogConfig,
+  WatchdogState as InternalWatchdogState,
+} from './WatchdogManager';
+import type {
+  MithrilProgress,
+  WatchdogState,
+} from '../common/types/watchdog.types';
 import {
   mithrilProgressChannel,
   mithrilStatusChannel,
@@ -13,7 +19,6 @@ import {
   nodeStartupStatusChannel,
   nodeBlockSyncProgressChannel,
 } from './ipc/nodePushChannel';
-import type { MithrilProgress } from '../common/types/watchdog.types';
 
 export type { WatchdogConfig };
 
@@ -25,7 +30,7 @@ class BackendLifecycle {
   private manager: WatchdogManager | null = null;
   private getWindow: () => BrowserWindow | null = () => null;
   private eventHandlers: EventHandler[] = [];
-  private _exePath: string = '';
+  private _exePath = '';
   private _config: WatchdogConfig | null = null;
   private _defaultChainPath: string | null = null;
   private _customChainPath: string | null = null;
@@ -39,7 +44,10 @@ class BackendLifecycle {
     this.getWindow = getWindow;
   }
 
-  setChainPaths(defaultChainPath: string | null, customChainPath: string | null): void {
+  setChainPaths(
+    defaultChainPath: string | null,
+    customChainPath: string | null
+  ): void {
     this._defaultChainPath = defaultChainPath;
     this._customChainPath = customChainPath;
   }
@@ -87,42 +95,60 @@ class BackendLifecycle {
       } else if (eventType === 'mithril_status') {
         mithrilStatusChannel.send(event as any, win.webContents);
       } else if (eventType === 'node_startup_status') {
-        nodeStartupStatusChannel.send({ phase: event.phase as string }, win.webContents);
+        nodeStartupStatusChannel.send(
+          { phase: event.phase as string },
+          win.webContents
+        );
       } else if (eventType === 'node_block_sync_progress') {
-        nodeBlockSyncProgressChannel.send({
-          kind: event.kind as string,
-          progress: event.progress as number,
-        }, win.webContents);
+        nodeBlockSyncProgressChannel.send(
+          {
+            kind: event.kind as string,
+            progress: event.progress as number,
+          },
+          win.webContents
+        );
       }
     });
 
     manager.start(exePath, config);
 
     // Handle wallet-ready promise internally without blocking the caller
-    manager.walletReadyPromise.then((port) => {
-      logger.info('BackendLifecycle: wallet ready', { port });
-      const win = this.getWindow();
-      if (!win) return;
-      let ca: number[] = [];
-      let cert: number[] = [];
-      let key: number[] = [];
-      if (this._tlsPath) {
-        try {
-          const path = require('path') as typeof import('path');
-          ca = Array.from(readFileSync(path.join(this._tlsPath, 'client/ca.crt')));
-          cert = Array.from(readFileSync(path.join(this._tlsPath, 'client/client.pem')));
-          key = Array.from(readFileSync(path.join(this._tlsPath, 'client/client.key')));
-        } catch (e) {
-          logger.error('BackendLifecycle: failed to read TLS certs', { error: e });
+    manager.walletReadyPromise
+      .then((port) => {
+        logger.info('BackendLifecycle: wallet ready', { port });
+        const win = this.getWindow();
+        if (!win) return;
+        let ca: number[] = [];
+        let cert: number[] = [];
+        let key: number[] = [];
+        if (this._tlsPath) {
+          try {
+            const path = require('path') as typeof import('path');
+            ca = Array.from(
+              readFileSync(path.join(this._tlsPath, 'client/ca.crt'))
+            );
+            cert = Array.from(
+              readFileSync(path.join(this._tlsPath, 'client/client.pem'))
+            );
+            key = Array.from(
+              readFileSync(path.join(this._tlsPath, 'client/client.key'))
+            );
+          } catch (e) {
+            logger.error('BackendLifecycle: failed to read TLS certs', {
+              error: e,
+            });
+          }
         }
-      }
-      walletPortChannel.send({ port, ca, cert, key }, win.webContents);
-    }).catch((reason) => {
-      logger.error('BackendLifecycle: startup failed, scheduling restart', { reason });
-      setTimeout(() => {
-        this.start(exePath, config);
-      }, RESTART_DELAY_MS);
-    });
+        walletPortChannel.send({ port, ca, cert, key }, win.webContents);
+      })
+      .catch((reason) => {
+        logger.error('BackendLifecycle: startup failed, scheduling restart', {
+          reason,
+        });
+        setTimeout(() => {
+          this.start(exePath, config);
+        }, RESTART_DELAY_MS);
+      });
   }
 
   // ---------------------------------------------------------------------------
@@ -145,7 +171,10 @@ class BackendLifecycle {
     const newConfig: WatchdogConfig = {
       ...this._config,
       mithril: this._config.mithril
-        ? { ...this._config.mithril, chain_path: effectivePath ?? this._config.mithril.chain_path }
+        ? {
+            ...this._config.mithril,
+            chain_path: effectivePath ?? this._config.mithril.chain_path,
+          }
         : undefined,
     };
 
