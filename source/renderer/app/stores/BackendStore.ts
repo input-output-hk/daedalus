@@ -108,7 +108,7 @@ export default class BackendStore extends Store {
   @action
   _pollBackendStatus = async () => {
     try {
-      const state = await getCachedBackendStatusChannel.send();
+      const state = await getCachedBackendStatusChannel.request();
       if (!state) return;
       runInAction('update WatchdogState from poll', () => {
         this.watchdogPid = state.watchdogPid;
