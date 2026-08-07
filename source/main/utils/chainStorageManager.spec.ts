@@ -54,6 +54,7 @@ const TMP_CUSTOM_CHAIN = path.join(path.resolve('/tmp/custom-parent'), 'chain');
 const ACTUAL_PARENT = path.resolve('/mnt/actual-parent');
 const ACTUAL_PARENT_CHAIN = path.join(ACTUAL_PARENT, 'chain');
 const STAGED_DB = path.resolve('/tmp/staged/db');
+const LIVE_PARENT = path.resolve('/mnt/live-parent');
 
 describe('ChainStorageManager', () => {
   const createConfig = (customPath: string | null) => ({
@@ -320,14 +321,14 @@ describe('ChainStorageManager', () => {
     const manager = new ChainStorageManager('/tmp/state');
     jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
       type: 'symlink',
-      resolvedPath: path.join(path.resolve('/mnt/live-parent'), 'chain'),
+      resolvedPath: path.join(LIVE_PARENT, 'chain'),
     });
 
     const result = await manager.getConfig();
 
     expect(result).toEqual(
       expect.objectContaining({
-        customPath: '/mnt/live-parent',
+        customPath: LIVE_PARENT,
       })
     );
   });
