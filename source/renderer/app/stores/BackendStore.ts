@@ -58,6 +58,7 @@ export default class BackendStore extends Store {
     localImmutableCount: number;
     latestCertifiedImmutable: number;
   } | null = null;
+  @observable _mithrilPromptDismissed = false;
   @observable _probeHasFired = false;
   // Chain storage paths (from BackendLifecycle, included in state poll)
   @observable defaultChainPath: string | null = null;
@@ -130,6 +131,9 @@ export default class BackendStore extends Store {
         this.nodeForceKilled = state.nodeForceKilled;
         this.lastWalletExitCode = state.lastWalletExitCode;
         this.lastWalletExitSignal = state.lastWalletExitSignal;
+        if (!this._mithrilPromptDismissed) {
+          this.mithrilSignificantlyBehind = state.mithrilSignificantlyBehind;
+        }
         this.defaultChainPath = state.defaultChainPath;
         this.customChainPath = state.customChainPath;
       });
@@ -196,6 +200,11 @@ export default class BackendStore extends Store {
   };
 
   // =============== COMPUTED ===============
+  @computed
+  get mithrilPromptDismissed(): boolean {
+    return this._mithrilPromptDismissed;
+  }
+
   @computed
   get loadingPhase(): LoadingPhase {
     // Unrecoverable error takes top priority
@@ -287,6 +296,14 @@ export default class BackendStore extends Store {
   confirmStorageLocation = () => {
     runInAction('set chainPathConfirmed', () => {
       this.chainPathConfirmed = true;
+    });
+  };
+
+  @action
+  dismissMithrilPrompt = () => {
+    runInAction('dismiss mithril prompt', () => {
+      this._mithrilPromptDismissed = true;
+      this.mithrilSignificantlyBehind = null;
     });
   };
 }
