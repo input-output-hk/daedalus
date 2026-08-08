@@ -16,7 +16,17 @@ import {
   STAGING,
   TESTNET,
   DEVELOPMENT,
+  PREPROD,
+  PREVIEW,
 } from '../../../common/types/environment.types';
+
+// Networks served by the current explorer.cardano.org layout, which expects
+// `{root}/{network}/{tx|address}/{identifier}`.
+const EXPLORER_NETWORK_PATHS: Record<string, string> = {
+  [MAINNET]: 'mainnet',
+  [PREPROD]: 'preprod',
+  [PREVIEW]: 'preview',
+};
 
 export const getNetworkExplorerUri = (network: string): string => {
   if (network === MAINNET) {
@@ -34,11 +44,11 @@ export const getNetworkExplorerUri = (network: string): string => {
   return MAINNET_EXPLORER_URL; // sets default to mainnet in case env.NETWORK is undefined
 };
 export const getNetworkExplorerUrl = (network: string): string => {
-  const protocol =
-    network === MAINNET || network === TESTNET || network === DEVELOPMENT
-      ? 'https://'
-      : 'http://';
   const uri = getNetworkExplorerUri(network);
+  // Only the staging explorer is served over plain HTTP. Every other network
+  // resolves to a host that is HTTPS-only, including the mainnet explorer used
+  // as the fallback for unrecognised networks.
+  const protocol = uri === STAGING_EXPLORER_URL ? 'http://' : 'https://';
   return `${protocol}${uri}`;
 };
 export const getNetworkExplorerUrlByType = (
@@ -47,29 +57,24 @@ export const getNetworkExplorerUrlByType = (
   network: string,
   currentLocale: string
 ): string => {
-  let queryStringPrefix = '';
-  let localePrefix = '';
-  let typeValue = type;
+  const baseUrl = getNetworkExplorerUrl(network);
 
-  if (network === MAINNET || network === TESTNET) {
-    localePrefix = `/${currentLocale.substr(0, 2)}`;
-
-    if (type === 'address') {
-      queryStringPrefix = '?address=';
-      // @ts-ignore ts-migrate(2322) FIXME: Type '"address.html"' is not assignable to type '"... Remove this comment to see the full error message
-      typeValue = 'address.html';
-    }
-
-    if (type === 'tx') {
-      queryStringPrefix = '?id=';
-      // @ts-ignore ts-migrate(2322) FIXME: Type '"transaction"' is not assignable to type '"t... Remove this comment to see the full error message
-      typeValue = 'transaction';
-    }
+  // Legacy explorer host, still using locale-prefixed paths and query strings.
+  if (network === TESTNET) {
+    const localePrefix = `/${currentLocale.substr(0, 2)}`;
+    const typeValue = type === 'address' ? 'address.html' : 'transaction';
+    const queryStringPrefix = type === 'address' ? '?address=' : '?id=';
+    return `${baseUrl}${localePrefix}/${typeValue}${queryStringPrefix}${param}`;
   }
 
-  return `${getNetworkExplorerUrl(
-    network
-  )}${localePrefix}/${typeValue}${queryStringPrefix}${param}`;
+  if (network === STAGING) {
+    return `${baseUrl}/${type}/${param}`;
+  }
+
+  // Unknown networks fall back to the mainnet explorer host, so they also need
+  // a network discriminator in the path.
+  const networkPath = EXPLORER_NETWORK_PATHS[network] || 'mainnet';
+  return `${baseUrl}/${networkPath}/${type}/${param}`;
 };
 export const getNewsURL = (network: string): string => {
   // sets default to mainnet in case env.NETWORK is undefined
