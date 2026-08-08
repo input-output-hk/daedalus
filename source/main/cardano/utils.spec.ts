@@ -1,6 +1,12 @@
+import path from 'path';
 import fs from 'fs-extra';
 import { spawnSync } from 'child_process';
 import { createSelfnodeConfig } from './utils';
+
+// The selfnode state paths are built with `path.join` in the code under test,
+// so the expectations are built the same way rather than as POSIX literals.
+const SELFNODE_STATE = '/tmp/selfnode/state';
+const stateFile = (name: string) => path.join(SELFNODE_STATE, name);
 
 const chainStorageManagerMock = {
   unlinkChainEntryPoint: jest.fn(),
@@ -85,10 +91,10 @@ describe('cardano utils', () => {
     ).toBeLessThan(
       chainStorageManagerMock.resetToDefault.mock.invocationCallOrder[0]
     );
-    expect(fs.remove).toHaveBeenCalledWith('/tmp/selfnode/state/wallets');
+    expect(fs.remove).toHaveBeenCalledWith(stateFile('wallets'));
     expect(result).toEqual({
-      configPath: '/tmp/selfnode/state/config.yaml',
-      genesisPath: '/tmp/selfnode/state/genesis.json',
+      configPath: stateFile('config.yaml'),
+      genesisPath: stateFile('genesis.json'),
       genesisHash: 'mock-genesis-hash',
     });
   });
@@ -112,6 +118,6 @@ describe('cardano utils', () => {
       chainStorageManagerMock.unlinkChainEntryPoint
     ).not.toHaveBeenCalled();
     expect(chainStorageManagerMock.resetToDefault).not.toHaveBeenCalled();
-    expect(fs.remove).not.toHaveBeenCalledWith('/tmp/selfnode/state/wallets');
+    expect(fs.remove).not.toHaveBeenCalledWith(stateFile('wallets'));
   });
 });

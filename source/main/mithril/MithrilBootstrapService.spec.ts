@@ -1,3 +1,5 @@
+import path from 'path';
+import { atPath } from '../utils/pathAssertions';
 import { parseMithrilProgressUpdate } from './mithrilProgress';
 import { MithrilBootstrapService } from './MithrilBootstrapService';
 
@@ -109,7 +111,7 @@ describe('MithrilBootstrapService parsing', () => {
 
 describe('MithrilBootstrapService progress and error stages', () => {
   it('propagates raw file counters in download status updates', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const originalUpdateStatus = service._updateStatus.bind(service);
     const statusSpy = jest
       .spyOn(service, '_updateStatus')
@@ -141,7 +143,7 @@ describe('MithrilBootstrapService progress and error stages', () => {
   });
 
   it('keeps download stage when startBootstrap reports failure', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const originalUpdateStatus = service._updateStatus.bind(service);
     const statusSpy = jest
       .spyOn(service, '_updateStatus')
@@ -168,14 +170,14 @@ describe('MithrilBootstrapService progress and error stages', () => {
         error: expect.objectContaining({
           stage: 'download',
           code: 'ERR',
-          logPath: '/tmp/daedalus-state/Logs/mithril-bootstrap.log',
+          logPath: atPath('/tmp/daedalus-state/Logs/mithril-bootstrap.log'),
         }),
       })
     );
   });
 
   it('collapses post-download work into finalizing after download completes', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const originalUpdateStatus = service._updateStatus.bind(service);
     const statusSpy = jest
       .spyOn(service, '_updateStatus')
@@ -192,7 +194,9 @@ describe('MithrilBootstrapService progress and error stages', () => {
       });
     });
     jest.spyOn(service, '_convertSnapshot').mockResolvedValue(undefined);
-    jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest
+      .spyOn(service, '_resolveDbDirectory')
+      .mockResolvedValue(atPath('/tmp/db'));
     jest.spyOn(service, '_installSnapshot').mockResolvedValue(undefined);
     jest
       .spyOn(service, '_cleanupSnapshotArtifacts')
@@ -232,7 +236,7 @@ describe('MithrilBootstrapService progress and error stages', () => {
   });
 
   it('tracks total elapsed time through post-download local processing', () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     service._bootstrapStartedAt = Date.now() - 4500;
 
     service._updateStatus({
@@ -244,9 +248,11 @@ describe('MithrilBootstrapService progress and error stages', () => {
   });
 
   it('annotates conversion failures with convert stage', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const fse = require('fs-extra');
-    jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest
+      .spyOn(service, '_resolveDbDirectory')
+      .mockResolvedValue(atPath('/tmp/db'));
     jest
       .spyOn(fse, 'readdir')
       .mockResolvedValue([{ name: '12345', isDirectory: () => true }]);
@@ -272,9 +278,11 @@ describe('MithrilBootstrapService progress and error stages', () => {
   });
 
   it('calls snapshot-converter with paths derived from the most recent ledger slot', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const fse = require('fs-extra');
-    jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest
+      .spyOn(service, '_resolveDbDirectory')
+      .mockResolvedValue(atPath('/tmp/db'));
     jest.spyOn(fse, 'readdir').mockResolvedValue([
       { name: '10000', isDirectory: () => true },
       { name: '99999', isDirectory: () => true },
@@ -292,11 +300,11 @@ describe('MithrilBootstrapService progress and error stages', () => {
       'snapshot-converter',
       expect.arrayContaining([
         '--input-mem',
-        '/tmp/db/99999',
+        atPath('/tmp/db/99999'),
         '--output-lsm-snapshot',
-        '/tmp/db/ledger/99999',
+        atPath('/tmp/db/ledger/99999'),
         '--output-lsm-database',
-        '/tmp/db/lsm',
+        atPath('/tmp/db/lsm'),
         '--config',
         '/config/config.yaml',
       ])
@@ -304,9 +312,11 @@ describe('MithrilBootstrapService progress and error stages', () => {
   });
 
   it('throws a convert-stage error when no ledger slots are found', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const fse = require('fs-extra');
-    jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest
+      .spyOn(service, '_resolveDbDirectory')
+      .mockResolvedValue(atPath('/tmp/db'));
     jest
       .spyOn(fse, 'readdir')
       .mockResolvedValue([{ name: 'not-a-slot', isDirectory: () => true }]);
@@ -325,33 +335,33 @@ describe('MithrilBootstrapService progress and error stages', () => {
   });
 
   it('keeps fallback stage for generic errors', () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
 
     expect(service._buildError(new Error('generic failure'), 'verify')).toEqual(
       expect.objectContaining({
         message: 'generic failure',
         stage: 'verify',
-        logPath: '/tmp/daedalus-state/Logs/mithril-bootstrap.log',
+        logPath: atPath('/tmp/daedalus-state/Logs/mithril-bootstrap.log'),
       })
     );
   });
 
   it('preserves explicit stage when normalizing stage errors', () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const stageError = service._createStageError('download', 'failed', 'E1');
 
     expect(service._buildError(stageError, 'verify')).toEqual({
       message: 'failed',
       code: 'E1',
       stage: 'download',
-      logPath: '/tmp/daedalus-state/Logs/mithril-bootstrap.log',
+      logPath: atPath('/tmp/daedalus-state/Logs/mithril-bootstrap.log'),
     });
   });
 });
 
 describe('MithrilBootstrapService hardening fixes', () => {
   it('ignores cancel requests when no bootstrap is active', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const cleanupSpy = jest.spyOn(service, '_cleanupSnapshotArtifacts');
     const clearLockSpy = jest.spyOn(service, 'clearLockFile');
 
@@ -364,7 +374,7 @@ describe('MithrilBootstrapService hardening fixes', () => {
 
   // Gap 1: cancel must not fall through to failed
   it('status stays cancelled after process is killed — never transitions to failed', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
 
     jest.spyOn(service, '_createLockFile').mockResolvedValue(undefined);
     jest.spyOn(service, 'showSnapshot').mockResolvedValue(null);
@@ -386,7 +396,7 @@ describe('MithrilBootstrapService hardening fixes', () => {
   });
 
   it('ignores buffered progress updates that arrive after cancel', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const statusUpdates: Array<string> = [];
 
     const originalUpdate = service._updateStatus.bind(service);
@@ -431,7 +441,7 @@ describe('MithrilBootstrapService hardening fixes', () => {
 
   // Gap 2: step-only updates preserve last-known file counts
   it('step-only progress updates preserve last-known filesDownloaded/filesTotal', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
 
     jest
       .spyOn(service, '_cleanupSnapshotArtifacts')
@@ -489,7 +499,7 @@ describe('MithrilBootstrapService hardening fixes', () => {
 
   // Gap 3a: ancillary metrics cleared when leaving downloading phase
   it('ancillary metrics are cleared when transitioning to unpacking', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const statusUpdates: Array<Partial<typeof service._status>> = [];
 
     const originalUpdate = service._updateStatus.bind(service);
@@ -504,7 +514,9 @@ describe('MithrilBootstrapService hardening fixes', () => {
       .spyOn(service, '_cleanupSnapshotArtifacts')
       .mockResolvedValue(undefined);
     jest.spyOn(service, 'clearLockFile').mockResolvedValue(undefined);
-    jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest
+      .spyOn(service, '_resolveDbDirectory')
+      .mockResolvedValue(atPath('/tmp/db'));
     jest.spyOn(service, '_convertSnapshot').mockResolvedValue(undefined);
     jest.spyOn(service, '_installSnapshot').mockResolvedValue(undefined);
 
@@ -527,7 +539,7 @@ describe('MithrilBootstrapService hardening fixes', () => {
 
   // Gap 3b: ancillary metrics cleared when starting a new bootstrap run after failure
   it('ancillary metrics are cleared in preparing status when retrying after failed', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const preparingUpdates: Array<any> = [];
 
     const originalUpdate = service._updateStatus.bind(service);
@@ -568,7 +580,7 @@ describe('MithrilBootstrapService hardening fixes', () => {
 
   // Gap 4: early process crash before any step leaves a downloadng progress item with error state
   it('progress has a downloading item with error state if process crashes before any steps', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
 
     jest.spyOn(service, '_createLockFile').mockResolvedValue(undefined);
     jest.spyOn(service, 'showSnapshot').mockResolvedValue(null);
@@ -596,7 +608,7 @@ describe('MithrilBootstrapService hardening fixes', () => {
   });
 
   it('clears ancillary metrics on download failure', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     let failedStatus: any = null;
 
     const originalUpdate = service._updateStatus.bind(service);
@@ -634,7 +646,7 @@ describe('MithrilBootstrapService hardening fixes', () => {
 
 describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
   it('synthesizes both bars to 100% and emits verifying when step 4 arrives', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const statusUpdates: Array<any> = [];
     const originalUpdate = service._updateStatus.bind(service);
     jest.spyOn(service, '_updateStatus').mockImplementation((update) => {
@@ -674,7 +686,7 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
   });
 
   it('subsequent steps 5-7 emit verifying status', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const statusUpdates: Array<any> = [];
     const originalUpdate = service._updateStatus.bind(service);
     jest.spyOn(service, '_updateStatus').mockImplementation((update) => {
@@ -723,7 +735,7 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
   });
 
   it('drops late Files and Ancillary updates after step 4', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const statusUpdates: Array<any> = [];
     const originalUpdate = service._updateStatus.bind(service);
     jest.spyOn(service, '_updateStatus').mockImplementation((update) => {
@@ -767,7 +779,7 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
   });
 
   it('synthesis fires only once per download', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const statusUpdates: Array<any> = [];
     const originalUpdate = service._updateStatus.bind(service);
     jest.spyOn(service, '_updateStatus').mockImplementation((update) => {
@@ -812,7 +824,7 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
   });
 
   it('step progress items still appear in the waterfall for steps 4-7', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
 
     jest
       .spyOn(service, '_cleanupSnapshotArtifacts')
@@ -852,7 +864,7 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
   });
 
   it('verification-stage errors carry verify stage', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
 
     jest
       .spyOn(service, '_cleanupSnapshotArtifacts')
@@ -884,7 +896,7 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
   });
 
   it('download-stage errors still carry download stage when failing before step 4', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
 
     jest
       .spyOn(service, '_cleanupSnapshotArtifacts')
@@ -916,7 +928,7 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
   });
 
   it('extracts the real stderr summary for download failures with JSON preamble', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
 
     jest
       .spyOn(service, '_cleanupSnapshotArtifacts')
@@ -962,7 +974,7 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
   });
 
   it('_verifyingSynthesized resets on each bootstrap run', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
 
     jest.spyOn(service, '_createLockFile').mockResolvedValue(undefined);
     jest.spyOn(service, 'showSnapshot').mockResolvedValue(null);
@@ -970,7 +982,9 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
       .spyOn(service, '_cleanupSnapshotArtifacts')
       .mockResolvedValue(undefined);
     jest.spyOn(service, 'clearLockFile').mockResolvedValue(undefined);
-    jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest
+      .spyOn(service, '_resolveDbDirectory')
+      .mockResolvedValue(atPath('/tmp/db'));
     jest.spyOn(service, '_convertSnapshot').mockResolvedValue(undefined);
     jest.spyOn(service, '_installSnapshot').mockResolvedValue(undefined);
     jest.spyOn(service, '_downloadSnapshot').mockResolvedValue(undefined);
@@ -984,12 +998,12 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
   });
 
   it('inferErrorStageFromStatus maps verifying to verify', () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     expect(service._inferErrorStageFromStatus('verifying')).toBe('verify');
   });
 
   it('startBootstrap error during verification carries verify stage', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     let failedUpdate: any = null;
     const originalUpdate = service._updateStatus.bind(service);
     jest.spyOn(service, '_updateStatus').mockImplementation((update) => {
@@ -1026,7 +1040,7 @@ describe('MithrilBootstrapService verification transition (T2/T3/T3b)', () => {
   });
 
   it('step 4 before any Files or Ancillary totals emits verifying without crashing', async () => {
-    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const service = new MithrilBootstrapService(atPath('/tmp/mithril-test'));
     const statusUpdates: Array<any> = [];
     const originalUpdate = service._updateStatus.bind(service);
     jest.spyOn(service, '_updateStatus').mockImplementation((update) => {

@@ -1,3 +1,4 @@
+import path from 'path';
 import React from 'react';
 import { IntlProvider } from 'react-intl';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
@@ -38,6 +39,13 @@ jest.mock('./MithrilSnapshotDetails', () => {
   };
 });
 
+// `getManagedChainDisplayPath` joins with `path.join`. In the renderer bundle
+// that is path-browserify and always yields '/', but Jest resolves Node's real
+// `path`, which uses the platform separator. Build the expectation the same way
+// so the assertion is about the util's contract rather than the separator the
+// test environment happens to supply.
+const displayPath = (parent: string): string => path.join(parent, 'chain');
+
 describe('MithrilBootstrap', () => {
   const snapshots: Array<MithrilSnapshotItem> = [
     {
@@ -59,7 +67,7 @@ describe('MithrilBootstrap', () => {
           defaultChainStorageValidation={{
             isValid: true,
             path: null,
-            resolvedPath: '/tmp/state/chain',
+            resolvedPath: displayPath('/tmp/state'),
           }}
           chainStorageValidation={{
             isValid: true,
@@ -123,7 +131,9 @@ describe('MithrilBootstrap', () => {
     expect(
       screen.getByRole('region', { name: /snapshot details/i })
     ).toBeInTheDocument();
-    expect(screen.getByText('/mnt/current-chain/chain')).toBeInTheDocument();
+    expect(
+      screen.getByText(displayPath('/mnt/current-chain'))
+    ).toBeInTheDocument();
   });
 
   it('shows the storage picker when storage location is not confirmed', () => {
@@ -167,7 +177,9 @@ describe('MithrilBootstrap', () => {
     expect(
       screen.getByRole('button', { name: /blockchain sync from genesis/i })
     ).toBeDisabled();
-    expect(screen.getByText('/mnt/current-chain/chain')).toBeInTheDocument();
+    expect(
+      screen.getByText(displayPath('/mnt/current-chain'))
+    ).toBeInTheDocument();
     expect(screen.queryByText(/change location/i)).not.toBeInTheDocument();
   });
 
@@ -178,7 +190,7 @@ describe('MithrilBootstrap', () => {
       chainStorageValidation: {
         isValid: true,
         path: null,
-        resolvedPath: '/tmp/state/chain',
+        resolvedPath: displayPath('/tmp/state'),
       },
       isRecoveryFallback: true,
     });

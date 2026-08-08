@@ -1,4 +1,6 @@
+import path from 'path';
 import { EventEmitter } from 'events';
+import { atPath } from '../utils/pathAssertions';
 import {
   openLogStream,
   attachLogStream,
@@ -57,7 +59,7 @@ describe('openLogStream', () => {
     const fs = require('fs-extra');
     openLogStream();
     expect(fs.createWriteStream).toHaveBeenCalledWith(
-      '/tmp/daedalus-state/Logs/mithril-bootstrap.log',
+      atPath('/tmp/daedalus-state/Logs/mithril-bootstrap.log'),
       {
         flags: 'a',
       }
@@ -68,7 +70,7 @@ describe('openLogStream', () => {
     const fs = require('fs-extra');
     openLogStream('mithril-partial-sync.log');
     expect(fs.createWriteStream).toHaveBeenCalledWith(
-      '/tmp/daedalus-state/Logs/mithril-partial-sync.log',
+      atPath('/tmp/daedalus-state/Logs/mithril-partial-sync.log'),
       {
         flags: 'a',
       }
@@ -126,7 +128,7 @@ describe('runCommand', () => {
 
     const result = await runCommand(
       ['cardano-db', 'snapshot', 'list'],
-      '/tmp/workdir',
+      atPath('/tmp/workdir'),
       {}
     );
 
@@ -134,7 +136,7 @@ describe('runCommand', () => {
       'mithril-client',
       ['--origin-tag', 'DAEDALUS', 'cardano-db', 'snapshot', 'list'],
       expect.objectContaining({
-        cwd: '/tmp/workdir',
+        cwd: atPath('/tmp/workdir'),
       })
     );
     expect(result.stdout).toBe('output-data');
@@ -144,7 +146,7 @@ describe('runCommand', () => {
   it('uses the installed binary path when DAEDALUS_INSTALL_DIRECTORY is set', async () => {
     const { spawn } = require('child_process');
 
-    process.env.DAEDALUS_INSTALL_DIRECTORY = '/opt/daedalus';
+    process.env.DAEDALUS_INSTALL_DIRECTORY = atPath('/opt/daedalus');
 
     const childEmitter = createChildProcess();
     spawn.mockImplementation(() => {
@@ -154,13 +156,13 @@ describe('runCommand', () => {
       return childEmitter;
     });
 
-    await runCommand(['snapshot', 'list'], '/tmp/workdir', {});
+    await runCommand(['snapshot', 'list'], atPath('/tmp/workdir'), {});
 
     expect(spawn).toHaveBeenCalledWith(
-      '/opt/daedalus/mithril-client',
+      atPath('/opt/daedalus/mithril-client'),
       ['--origin-tag', 'DAEDALUS', 'snapshot', 'list'],
       expect.objectContaining({
-        cwd: '/tmp/workdir',
+        cwd: atPath('/tmp/workdir'),
       })
     );
   });
@@ -208,7 +210,7 @@ describe('runCommand', () => {
     await runCommand(['snapshot', 'list'], 'C:\\workdir', {});
 
     expect(spawn).toHaveBeenCalledWith(
-      'C:\\Program Files\\Daedalus/mithril-client.exe',
+      path.join('C:\\Program Files\\Daedalus', 'mithril-client.exe'),
       ['--origin-tag', 'DAEDALUS', 'snapshot', 'list'],
       expect.objectContaining({
         cwd: 'C:\\workdir',
@@ -227,13 +229,16 @@ describe('runCommand', () => {
       return childEmitter;
     });
 
-    await runCommand(['cardano-db', 'snapshot', 'list'], '/tmp/workdir');
+    await runCommand(
+      ['cardano-db', 'snapshot', 'list'],
+      atPath('/tmp/workdir')
+    );
 
     expect(spawn).toHaveBeenCalledWith(
       'mithril-client',
       ['--origin-tag', 'DAEDALUS', 'cardano-db', 'snapshot', 'list'],
       expect.objectContaining({
-        cwd: '/tmp/workdir',
+        cwd: atPath('/tmp/workdir'),
       })
     );
   });
@@ -251,7 +256,7 @@ describe('runCommand', () => {
     });
 
     await expect(
-      runCommand(['bad-command'], '/tmp/workdir', {})
+      runCommand(['bad-command'], atPath('/tmp/workdir'), {})
     ).rejects.toThrow('spawn ENOENT');
   });
 
@@ -268,7 +273,7 @@ describe('runCommand', () => {
     });
 
     const onProcess = jest.fn();
-    await runCommand(['list'], '/tmp/workdir', {}, { onProcess });
+    await runCommand(['list'], atPath('/tmp/workdir'), {}, { onProcess });
 
     expect(onProcess).toHaveBeenCalledWith(childEmitter);
     expect(onProcess).toHaveBeenCalledWith(null);
@@ -293,7 +298,11 @@ describe('runCommand', () => {
       return childEmitter;
     });
 
-    const result = await runCommand(['snapshot', 'list'], '/tmp/workdir', {});
+    const result = await runCommand(
+      ['snapshot', 'list'],
+      atPath('/tmp/workdir'),
+      {}
+    );
 
     expect(childEmitter.listenerCount('exit')).toBeGreaterThan(0);
 
@@ -325,7 +334,7 @@ describe('runCommand', () => {
       return childEmitter;
     });
 
-    await runCommand(['snapshot', 'list'], '/tmp/workdir', {});
+    await runCommand(['snapshot', 'list'], atPath('/tmp/workdir'), {});
 
     expect(spawn).toHaveBeenCalledWith(
       'mithril-client',
@@ -394,7 +403,7 @@ describe('runBinary', () => {
         '--output-lsm-snapshot',
         '/db/tmp/snapshots/12345_lsm',
       ],
-      '/tmp/workdir'
+      atPath('/tmp/workdir')
     );
 
     expect(spawn).toHaveBeenCalledWith(
@@ -405,14 +414,14 @@ describe('runBinary', () => {
         '--output-lsm-snapshot',
         '/db/tmp/snapshots/12345_lsm',
       ],
-      expect.objectContaining({ cwd: '/tmp/workdir' })
+      expect.objectContaining({ cwd: atPath('/tmp/workdir') })
     );
   });
 
   it('uses the installed binary path when DAEDALUS_INSTALL_DIRECTORY is set', async () => {
     const { spawn } = require('child_process');
 
-    process.env.DAEDALUS_INSTALL_DIRECTORY = '/opt/daedalus';
+    process.env.DAEDALUS_INSTALL_DIRECTORY = atPath('/opt/daedalus');
 
     const childEmitter = createChildProcess();
     spawn.mockImplementation(() => {
@@ -425,11 +434,11 @@ describe('runBinary', () => {
     await runBinary(
       'snapshot-converter',
       ['--input-mem', '/db'],
-      '/tmp/workdir'
+      atPath('/tmp/workdir')
     );
 
     expect(spawn).toHaveBeenCalledWith(
-      '/opt/daedalus/snapshot-converter',
+      atPath('/opt/daedalus/snapshot-converter'),
       expect.any(Array),
       expect.any(Object)
     );
@@ -470,7 +479,11 @@ describe('runBinary', () => {
       return childEmitter;
     });
 
-    const result = await runBinary('snapshot-converter', [], '/tmp/workdir');
+    const result = await runBinary(
+      'snapshot-converter',
+      [],
+      atPath('/tmp/workdir')
+    );
 
     expect(result.stdout).toBe('converted');
     expect(result.exitCode).toBe(0);
@@ -495,7 +508,11 @@ describe('runBinary', () => {
       return childEmitter;
     });
 
-    const result = await runBinary('snapshot-converter', [], '/tmp/workdir');
+    const result = await runBinary(
+      'snapshot-converter',
+      [],
+      atPath('/tmp/workdir')
+    );
 
     expect(childEmitter.listenerCount('exit')).toBeGreaterThan(0);
 
@@ -527,7 +544,7 @@ describe('runBinary', () => {
       return childEmitter;
     });
 
-    await runBinary('snapshot-converter', [], '/tmp/workdir');
+    await runBinary('snapshot-converter', [], atPath('/tmp/workdir'));
 
     expect(spawn).toHaveBeenCalledWith(
       'snapshot-converter',

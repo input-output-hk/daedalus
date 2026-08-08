@@ -1,3 +1,4 @@
+import path from 'path';
 import React from 'react';
 import { IntlProvider } from 'react-intl';
 import {
@@ -20,11 +21,18 @@ jest.mock('../../ipc/show-file-dialog-channels', () => ({
   },
 }));
 
+// `getManagedChainDisplayPath` joins with `path.join`. In the renderer bundle
+// that is path-browserify and always yields '/', but Jest resolves Node's real
+// `path`, which uses the platform separator. Build the expectation the same way
+// so the assertion is about the util's contract rather than the separator the
+// test environment happens to supply.
+const displayPath = (parent: string): string => path.join(parent, 'chain');
+
 describe('ChainStorageLocationPicker', () => {
   const defaultValidation: ChainStorageValidation = {
     isValid: true,
     path: null,
-    resolvedPath: '/tmp/state/chain',
+    resolvedPath: displayPath('/tmp/state'),
     availableSpaceBytes: 5000,
     requiredSpaceBytes: 1024,
   };
@@ -73,7 +81,7 @@ describe('ChainStorageLocationPicker', () => {
         name: /select blockchain data location/i,
       })
     ).toBeInTheDocument();
-    expect(input).toHaveDisplayValue('/mnt/current-chain/chain');
+    expect(input).toHaveDisplayValue(displayPath('/mnt/current-chain'));
     expect(
       screen.getByText(/the latest available snapshot is about 2 kB/i)
     ).toBeInTheDocument();
@@ -147,7 +155,7 @@ describe('ChainStorageLocationPicker', () => {
 
     expect(onSetChainStorageDirectory).not.toHaveBeenCalled();
     expect(
-      screen.getByDisplayValue('/mnt/new-chain/chain')
+      screen.getByDisplayValue(displayPath('/mnt/new-chain'))
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /continue/i }));
@@ -195,7 +203,9 @@ describe('ChainStorageLocationPicker', () => {
       );
     });
 
-    expect(screen.getByDisplayValue('/mnt/external/chain')).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue(displayPath('/mnt/external'))
+    ).toBeInTheDocument();
     expect(
       screen.getByText(
         /existing blockchain data found\. proceeding will reuse this data\./i
@@ -339,7 +349,7 @@ describe('ChainStorageLocationPicker', () => {
     });
 
     expect(
-      screen.getByDisplayValue('/mnt/invalid-chain/chain')
+      screen.getByDisplayValue(displayPath('/mnt/invalid-chain'))
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled();
   });
@@ -545,7 +555,7 @@ describe('ChainStorageLocationPicker', () => {
     });
 
     expect(
-      screen.getByDisplayValue('/mnt/my-storage/chain')
+      screen.getByDisplayValue(displayPath('/mnt/my-storage'))
     ).toBeInTheDocument();
   });
 });

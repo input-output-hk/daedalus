@@ -1,0 +1,51 @@
+# Windows is the one platform the Nix check set cannot reach. There is no
+# Windows Nix builder here — the Windows installer is cross-built from Linux
+# with wine — so the suites that run on x86_64-linux and both darwins through
+# `checks.<system>` have no equivalent path onto Windows.
+#
+# This is reporting-only by design. It is not in the branch protection contexts,
+# so a red run does not block a merge; the value is seeing what Windows actually
+# does with the reparse-point code, which no amount of overriding
+# `process.platform` on another platform can tell us.
+
+name: Windows tests
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: windows-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  jest:
+    name: Jest on Windows
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Matches nodejs_24 from nix/internal/common.nix, so the Windows run is
+      # on the same major version as every other platform.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+
+      # --ignore-scripts for the same reason the Nix build uses it
+      # (nix/internal/x86_64-linux.nix): the install scripts build native
+      # modules and download binaries. No spec imports node-hid or usb, so
+      # nothing under test needs them, and building them here would make the
+      # run depend on a working MSVC toolchain for no gain.
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --ignore-scripts
+
+      # Coverage is on by default and roughly doubles the runtime without
+      # adding signal here — the question is which assertions hold on Windows,
+      # not which lines they touch.
+      - name: Run Jest
+        run: yarn test:jest --coverage=false --ci

@@ -1,3 +1,4 @@
+import path from 'path';
 import fs from 'fs-extra';
 import {
   resolveStateDirectoryPath,
@@ -19,6 +20,12 @@ jest.mock('./logging', () => ({
   },
 }));
 
+// Derived rather than written as literals: the resolver returns
+// `path.resolve(...)`, which on Windows is both backslash-separated and
+// qualified with the current drive.
+const STATE_DIR = '/tmp/state';
+const STATE_CHAIN = path.resolve(path.join(STATE_DIR, 'chain'));
+
 describe('resolveStateDirectoryPath', () => {
   beforeEach(() => jest.clearAllMocks());
 
@@ -36,7 +43,10 @@ describe('resolveStateDirectoryPath', () => {
 
     const result = await resolveStateDirectoryPath('/tmp/state');
 
-    expect(result).toEqual({ exists: false, resolvedPath: '/tmp/state' });
+    expect(result).toEqual({
+      exists: false,
+      resolvedPath: path.resolve(STATE_DIR),
+    });
     expect(fs.realpath).not.toHaveBeenCalled();
   });
 });
@@ -63,10 +73,15 @@ describe('resolveMithrilWorkDir', () => {
       isSymbolicLink: () => false,
       isDirectory: () => true,
     });
+    // On Windows the directory branch probes for a junction first. A plain
+    // directory is not a reparse point, so readlink raises EINVAL there.
+    (fs.readlink as unknown as jest.Mock).mockRejectedValue(
+      Object.assign(new Error('not a link'), { code: 'EINVAL' })
+    );
 
     const result = await resolveMithrilWorkDir('/tmp/state');
 
-    expect(result).toBe('/tmp/state/chain');
+    expect(result).toBe(STATE_CHAIN);
   });
 
   it('returns entry-point chain path when chain entry point is missing', async () => {
@@ -76,7 +91,7 @@ describe('resolveMithrilWorkDir', () => {
 
     const result = await resolveMithrilWorkDir('/tmp/state');
 
-    expect(result).toBe('/tmp/state/chain');
+    expect(result).toBe(STATE_CHAIN);
   });
 
   it('resolves junction target on win32 when directory entry is a junction', async () => {
@@ -122,7 +137,7 @@ describe('resolveMithrilWorkDir', () => {
 
     const result = await resolveMithrilWorkDir('/tmp/state');
 
-    expect(result).toBe('/tmp/state/chain');
+    expect(result).toBe(STATE_CHAIN);
 
     Object.defineProperty(process, 'platform', {
       value: originalPlatform,

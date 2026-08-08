@@ -46,11 +46,20 @@ describe('ensureDirectoryExists', () => {
 
   // A state or logs directory may be symlinked to another disk; lstat would
   // report the link itself and wrongly exit the whole app.
+  //
+  // The link type follows the platform for the same reason the product does
+  // (chainStorageManagerShared.ts createSymlink): on Windows a 'dir' symlink
+  // needs SeCreateSymbolicLinkPrivilege, whereas a junction needs none, so
+  // testing with 'dir' here would assert against a link Daedalus never makes.
   it('accepts a symlink pointing at a directory', () => {
     const target = path.join(tmpRoot, 'target');
     const link = path.join(tmpRoot, 'link');
     fs.mkdirSync(target);
-    fs.symlinkSync(target, link, 'dir');
+    fs.symlinkSync(
+      target,
+      link,
+      process.platform === 'win32' ? 'junction' : 'dir'
+    );
 
     expect(() => ensureDirectoryExists(link)).not.toThrow();
     expect(exitSpy).not.toHaveBeenCalled();
