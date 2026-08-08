@@ -294,7 +294,7 @@ const onAppReady = async () => {
     const flagsToSet = containsRTSFlags(currentRtsFlags) ? [] : RTS_FLAGS;
     storeRtsFlagsSettings(environment.network, flagsToSet);
     // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
-    return handleWindowClose();
+    return Promise.resolve(handleWindowClose());
   });
   const handleCheckDiskSpace = handleDiskSpace(mainWindow);
 

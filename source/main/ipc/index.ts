@@ -27,6 +27,7 @@ import { openExternalUrlChannel } from './open-external-url';
 import { openLocalDirectoryChannel } from './open-local-directory';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { createChannels } from './createHardwareWalletIPCChannels';
+
 export default (window: BrowserWindow) => {
   compressLogsApi();
   downloadLogsApi();

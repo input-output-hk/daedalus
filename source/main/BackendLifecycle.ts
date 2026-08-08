@@ -6,7 +6,10 @@ import type {
   WatchdogConfig,
   WatchdogState as InternalWatchdogState,
 } from './WatchdogManager';
-import type { WatchdogState } from '../common/types/watchdog.types';
+import type {
+  MithrilProgress,
+  WatchdogState,
+} from '../common/types/watchdog.types';
 import {
   mithrilProgressChannel,
   mithrilStatusChannel,
@@ -16,7 +19,6 @@ import {
   nodeStartupStatusChannel,
   nodeBlockSyncProgressChannel,
 } from './ipc/nodePushChannel';
-import type { MithrilProgress } from '../common/types/watchdog.types';
 
 export type { WatchdogConfig };
 
