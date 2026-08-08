@@ -3,7 +3,6 @@ import { app, dialog } from 'electron';
 import { environment } from './environment';
 import { readLauncherConfig } from './utils/config';
 import { getBuildLabel } from '../common/utils/environmentCheckers';
-import type { CardanoNodeImplementations } from '../common/types/cardano-node.types';
 
 const {
   isTest,
@@ -48,11 +47,9 @@ export type NodeConfig = {
   network: {
     configFile: string;
     genesisFile: string;
-    genesisHash: string;
     topologyFile: string;
   };
   signingKey?: string;
-  rtsOpts?: Array<string>;
 };
 
 /**
@@ -60,27 +57,28 @@ export type NodeConfig = {
  */
 export type LauncherConfig = {
   stateDir: string;
-  nodeImplementation: CardanoNodeImplementations;
   nodeConfig: NodeConfig;
   tlsPath: string;
   logsPrefix: string;
   cluster: string;
-  configPath: string;
   syncTolerance: string;
-  cliBin: string;
   legacyStateDir: string;
   legacySecretKey: string;
   legacyWalletDB: string;
   isFlight: boolean;
   isStaging: boolean;
-  wipeChain?: boolean;
-  mithrilPartialSyncEnabled?: boolean;
-  mithrilPartialSyncThresholdImmutables?: number;
   smashUrl?: string;
   metadataUrl?: string;
   updateRunnerBin: string;
-  selfnodeBin: string;
-  mockTokenMetadataServerBin: string;
+  watchdogBin: string;
+  nodeBin: string;
+  walletBin: string;
+  mithrilBin?: string;
+  snapshotConverterBin?: string;
+  mithrilConverterConfig?: string;
+  mithrilAggregatorUrl?: string;
+  mithrilGenesisVkey?: string;
+  mithrilAncillaryVkey?: string;
 };
 type WindowOptionsType = {
   show: boolean;
@@ -116,7 +114,6 @@ export const launcherConfig: LauncherConfig =
   readLauncherConfig(LAUNCHER_CONFIG);
 export const {
   cluster,
-  nodeImplementation,
   stateDir,
   legacyStateDir,
   logsPrefix,
@@ -143,21 +140,12 @@ export const ALLOWED_LOGS = [
   'cardano-wallet.log',
   'node.log',
 ];
-export const ALLOWED_NODE_LOGS = new RegExp(/(node.log-)(\d{14}$)/);
-export const ALLOWED_WALLET_LOGS = new RegExp(/(cardano-wallet.log-)(\d{14}$)/);
+export const ALLOWED_NODE_LOGS = new RegExp(/^node\.log\.\d+$/);
+export const ALLOWED_WALLET_LOGS = new RegExp(/^cardano-wallet\.log\.\d+$/);
 export const ALLOWED_LAUNCHER_LOGS = new RegExp(/(launcher-)(\d{14}$)/);
 export const MAX_NODE_LOGS_ALLOWED = 3;
 export const MAX_WALLET_LOGS_ALLOWED = 3;
 export const MAX_LAUNCHER_LOGS_ALLOWED = 3;
-// CardanoNode config
-export const NODE_STARTUP_TIMEOUT = 5000;
-export const NODE_STARTUP_MAX_RETRIES = 5;
-export const NODE_SHUTDOWN_TIMEOUT = isTest ? 5000 : 5 * 60 * 1000; // 5 minutes | unit: milliseconds
-
-export const NODE_KILL_TIMEOUT = isTest ? 5000 : 5 * 60 * 1000; // 5 minutes | unit: milliseconds
-
-export const NODE_UPDATE_TIMEOUT = isTest ? 10000 : 5 * 60 * 1000; // 5 minutes | unit: milliseconds
-
 export const DISK_SPACE_REQUIRED = 4 * 1073741274; // 4 GB | unit: bytes
 
 export const DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE = 10; // 10% of the available disk space

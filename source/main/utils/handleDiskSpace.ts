@@ -15,19 +15,8 @@ import {
   DISK_SPACE_CHECK_TIMEOUT,
   DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE,
   stateDirectoryPath,
-  launcherConfig,
 } from '../config';
-import { CardanoNodeStates } from '../../common/types/cardano-node.types';
-import { CardanoNode } from '../cardano/CardanoNode';
 import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.types';
-import { isMithrilDecisionCancelledError } from '../mithril/mithrilDecision';
-import {
-  chainStorageCoordinator,
-  getChainStorageManager,
-} from './chainStorageCoordinator';
-import { MithrilPartialSyncNodeStartup } from '../mithril/mithrilPartialSyncNodeStartup';
-import { getMithrilController } from '../mithril/MithrilController';
-import { isMithrilPartialSyncSuppressingDiskSpaceCheck } from '../../common/types/mithril-partial-sync.types';
 
 const getDiskCheckReport = async (
   targetPath: string,
@@ -87,30 +76,11 @@ const getDiskCheckReport = async (
   return Promise.race([diskCheckPromise, timeoutPromise]);
 };
 
-export const handleDiskSpace = (
-  mainWindow: BrowserWindow,
-  cardanoNode: CardanoNode
-) => {
-  const MANAGED_CHAIN_LAYOUT_ERROR = 'MANAGED_CHAIN_LAYOUT_ERROR';
-  const markManagedChainLayoutError = (error: unknown): Error => {
-    const normalizedError =
-      error instanceof Error ? error : new Error(String(error));
-
-    Object.assign(normalizedError, {
-      code: MANAGED_CHAIN_LAYOUT_ERROR,
-    });
-
-    return normalizedError;
-  };
-  const isManagedChainLayoutError = (error: unknown): boolean =>
-    (error as NodeJS.ErrnoException | undefined)?.code ===
-    MANAGED_CHAIN_LAYOUT_ERROR;
-
+export const handleDiskSpace = (mainWindow: BrowserWindow) => {
   let diskSpaceCheckInterval;
-  let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
+  let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL;
 
-  let isNotEnoughDiskSpace = false; // Default check state
-  let directoryChangeGeneration = 0;
+  let isNotEnoughDiskSpace = false;
   let activeDiskSpaceCheckPromise: Promise<CheckDiskSpaceResponse> | null =
     null;
   let pendingDiskSpaceCheckArgs: {
@@ -121,79 +91,17 @@ export const handleDiskSpace = (
     resolve: (response: CheckDiskSpaceResponse) => void;
     reject: (error: unknown) => void;
   }> = [];
-  const mithrilLockFilePath = path.join(
-    stateDirectoryPath,
-    'Logs',
-    'mithril-bootstrap.lock'
-  );
-  const envWipeChain =
-    process.env.DAEDALUS_WIPE_CHAIN === 'true' ? true : undefined;
-  const argvWipeChain = process.argv.slice(1).includes('--wipe-chain')
-    ? true
-    : undefined;
-  const wipeChainFlag =
-    envWipeChain ?? argvWipeChain ?? launcherConfig.wipeChain ?? false;
-  const chainStorageManager = getChainStorageManager();
-  const partialSyncNodeStartup = new MithrilPartialSyncNodeStartup({
-    mainWindow,
-    cardanoNode,
-    wipeChainAndSnapshots: (reason, nodeState) =>
-      chainStorageCoordinator.wipeChainAndSnapshots(reason, nodeState),
-    getGeneration: () => directoryChangeGeneration,
-    emitPartialSyncStatus: (status) =>
-      getMithrilController().broadcastPartialSyncStatus(status),
-    getPartialSyncStatus: () => getMithrilController().getPartialSyncStatus(),
-  });
-  const mithrilController = getMithrilController();
-  mithrilController.configureStartupGate({
-    cardanoNode,
-    partialSyncNodeStartup,
-    wipeChainFlag,
-    mithrilLockFilePath,
-    markManagedChainLayoutError,
-    isManagedChainLayoutError,
-    getGeneration: () => directoryChangeGeneration,
-  });
+
+  const diskCheckPath = path.join(stateDirectoryPath, 'chain');
 
   const runHandleCheckDiskSpace = async (
     hadNotEnoughSpaceLeft?: boolean,
     forceDiskSpaceRequired?: number
   ): Promise<CheckDiskSpaceResponse> => {
     const hadNotEnoughSpaceFlag = hadNotEnoughSpaceLeft ?? false;
-    const currentGeneration = directoryChangeGeneration;
     const diskSpaceRequired = forceDiskSpaceRequired || DISK_SPACE_REQUIRED;
-    const getStaleResponse = (): CheckDiskSpaceResponse => ({
-      isNotEnoughDiskSpace,
-      diskSpaceRequired: '',
-      diskSpaceMissing: '',
-      diskSpaceRecommended: '',
-      diskSpaceAvailable: '',
-      hadNotEnoughSpaceLeft: hadNotEnoughSpaceFlag,
-      diskSpaceAvailableRaw: 0,
-      diskTotalSpaceRaw: 0,
-      isError: false,
-    });
 
-    const partialSyncStatus = mithrilController.getPartialSyncStatus().status;
-    if (isMithrilPartialSyncSuppressingDiskSpaceCheck(partialSyncStatus)) {
-      return getStaleResponse();
-    }
-
-    const startupLayoutResult =
-      await mithrilController.ensureMithrilStartupGate(currentGeneration);
-    if (
-      !startupLayoutResult ||
-      currentGeneration !== directoryChangeGeneration
-    ) {
-      return getStaleResponse();
-    }
-    const response = await getDiskCheckReport(
-      startupLayoutResult.managedChainPath
-    );
-    if (currentGeneration !== directoryChangeGeneration) {
-      return getStaleResponse();
-    }
-    mithrilController.syncPendingDecision();
+    const response = await getDiskCheckReport(diskCheckPath);
 
     if (response.isError) {
       logger.info(
@@ -214,7 +122,6 @@ export const handleDiskSpace = (
 
       if (response.diskSpaceAvailableRaw <= diskSpaceRequiredMargin) {
         if (!isNotEnoughDiskSpace) {
-          // State change: transitioning from enough to not-enough disk space
           setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_SHORT_INTERVAL);
           isNotEnoughDiskSpace = true;
         }
@@ -225,16 +132,11 @@ export const handleDiskSpace = (
             : DISK_SPACE_CHECK_MEDIUM_INTERVAL;
 
         if (isNotEnoughDiskSpace) {
-          // State change: transitioning from not-enough to enough disk space
           setDiskSpaceIntervalChecking(newDiskSpaceCheckIntervalLength);
           isNotEnoughDiskSpace = false;
         } else if (
           newDiskSpaceCheckIntervalLength !== diskSpaceCheckIntervalLength
         ) {
-          // Interval change: transitioning from medium to long interval (or vice versa)
-          // This is a special case in which we adjust the disk space check polling interval:
-          // - more than 2x of available space than required: LONG interval
-          // - less than 2x of available space than required: MEDIUM interval
           setDiskSpaceIntervalChecking(newDiskSpaceCheckIntervalLength);
         }
       }
@@ -244,104 +146,6 @@ export const handleDiskSpace = (
       response.diskSpaceMissing = prettysize(diskSpaceMissing);
       response.diskSpaceRecommended = prettysize(diskSpaceRecommended);
       response.hadNotEnoughSpaceLeft = hadNotEnoughSpaceFlag;
-    }
-
-    const NO_SPACE_AND_CARDANO_NODE_CAN_BE_STOPPED =
-      isNotEnoughDiskSpace &&
-      cardanoNode.state !== CardanoNodeStates.STOPPING &&
-      cardanoNode.state !== CardanoNodeStates.STOPPED;
-    const CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME =
-      !isNotEnoughDiskSpace && cardanoNode.state === CardanoNodeStates.STOPPED;
-    const CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE =
-      !isNotEnoughDiskSpace &&
-      cardanoNode.state !== CardanoNodeStates.STOPPED &&
-      cardanoNode.state !== CardanoNodeStates.STOPPING &&
-      hadNotEnoughSpaceFlag;
-
-    try {
-      switch (true) {
-        case NO_SPACE_AND_CARDANO_NODE_CAN_BE_STOPPED:
-          try {
-            logger.info('[DISK-SPACE-DEBUG] Stopping cardano node', null);
-            await cardanoNode.stop();
-          } catch (error) {
-            logger.error('[DISK-SPACE-DEBUG] Cannot stop cardano node', error);
-          }
-
-          break;
-
-        case CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME:
-          try {
-            const startupResult =
-              await mithrilController.handleStoppedNodeStartup({
-                currentGeneration,
-                getStaleResponse,
-                response,
-              });
-            if (startupResult.handled) {
-              return startupResult.response;
-            }
-          } catch (error) {
-            logger.error('[MITHRIL] Failed to handle bootstrap decision', {
-              error,
-            });
-            if (isManagedChainLayoutError(error)) {
-              throw error;
-            }
-
-            if (currentGeneration !== directoryChangeGeneration) {
-              return getStaleResponse();
-            }
-
-            try {
-              if (
-                await partialSyncNodeStartup.shouldSuppressStartupFallback()
-              ) {
-                return response;
-              }
-              await cardanoNode.start();
-            } catch (startError) {
-              logger.error(
-                '[MITHRIL] Fallback cardano-node start failed after bootstrap decision error',
-                {
-                  error: startError,
-                }
-              );
-            }
-          }
-          break;
-
-        case CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE:
-          try {
-            logger.info(
-              '[DISK-SPACE-DEBUG] restart cardano node after freeing up disk space',
-              null
-            );
-            if (cardanoNode._startupTries > 0) await cardanoNode.restart();
-            else {
-              await cardanoNode.start();
-              if (currentGeneration !== directoryChangeGeneration) {
-                return getStaleResponse();
-              }
-            }
-            response.hadNotEnoughSpaceLeft = false;
-          } catch (error) {
-            logger.error(
-              '[DISK-SPACE-DEBUG] Daedalus tried to restart, but failed',
-              error
-            );
-          }
-
-          break;
-
-        default:
-      }
-    } catch (error) {
-      if (isManagedChainLayoutError(error)) {
-        throw error;
-      }
-      logger.error('[DISK-SPACE-DEBUG] Unknown error', error);
-      resetInterval(DISK_SPACE_CHECK_MEDIUM_INTERVAL);
     }
 
     await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
@@ -443,40 +247,15 @@ export const handleDiskSpace = (
     });
   };
 
-  const resetOnDirectoryChange = () => {
-    directoryChangeGeneration += 1;
-    mithrilController.resetStartupGateOnDirectoryChange();
-    launchHandleCheckDiskSpace(false).catch((error) => {
-      if (isMithrilDecisionCancelledError(error)) {
-        logger.info(
-          '[MITHRIL] Immediate disk-space recheck cancelled after directory change',
-          null
-        );
-        return;
-      }
-
-      logger.error(
-        '[MITHRIL] Immediate disk-space recheck after directory change failed',
-        {
-          error,
-        }
-      );
-    });
-  };
-
   const handleCheckDiskSpace = (
     hadNotEnoughSpaceLeft?: boolean,
     forceDiskSpaceRequired?: number
   ): Promise<CheckDiskSpaceResponse> =>
     launchHandleCheckDiskSpace(hadNotEnoughSpaceLeft, forceDiskSpaceRequired);
 
-  chainStorageCoordinator.onDirectoryChanged(resetOnDirectoryChange);
-
   const resetInterval = (interval: number) => {
-    // Remove diskSpaceCheckInterval if set
     if (diskSpaceCheckInterval) {
       clearInterval(diskSpaceCheckInterval);
-      // Reset to default check interval
       diskSpaceCheckIntervalLength = interval;
     }
   };
@@ -491,15 +270,7 @@ export const handleDiskSpace = (
           hadNotEnoughSpaceLeft = response?.hadNotEnoughSpaceLeft;
         })
         .catch((error) => {
-          if (isMithrilDecisionCancelledError(error)) {
-            logger.info(
-              '[MITHRIL] Background disk-space poll cancelled after directory change',
-              null
-            );
-            return;
-          }
-
-          logger.error('[MITHRIL] Background disk-space poll failed', {
+          logger.error('[DISK-SPACE] Background disk-space poll failed', {
             error,
           });
         });
@@ -507,11 +278,9 @@ export const handleDiskSpace = (
     diskSpaceCheckIntervalLength = interval;
   };
 
-  // Start default interval
   setDiskSpaceIntervalChecking(diskSpaceCheckIntervalLength);
   getDiskSpaceStatusChannel.onReceive(async () => {
-    const diskSpacePath = await chainStorageManager.resolveDiskSpaceCheckPath();
-    const diskReport = await getDiskCheckReport(diskSpacePath);
+    const diskReport = await getDiskCheckReport(diskCheckPath);
     await getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
     return diskReport;
   });

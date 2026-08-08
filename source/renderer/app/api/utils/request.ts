@@ -199,15 +199,29 @@ function typedRequest<Response>(
             if (parsedBody.code && parsedBody.message) {
               reject(parsedBody);
             } else {
-              reject(new Error('Unknown API response'));
+              const unknownErr: any = new Error(
+                `Unknown API response (${statusCode}): ${body}`
+              );
+              unknownErr.statusCode = statusCode;
+              unknownErr.responseBody = parsedBody;
+              reject(unknownErr);
             }
           } else {
             // Error response without a stream or body
-            reject(new Error('Unknown API response'));
+            const emptyErr: any = new Error(
+              `Unknown API response (${statusCode}): empty body`
+            );
+            emptyErr.statusCode = statusCode;
+            reject(emptyErr);
           }
-        } catch (error) {
+        } catch (parseError) {
           // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
-          reject(new Error(error));
+          const err: any = new Error(
+            `Failed to parse API response (${response.statusCode}): ${parseError.message} — raw body: ${body}`
+          );
+          err.statusCode = response.statusCode;
+          err.parseError = parseError.message;
+          reject(err);
         }
       });
     });

@@ -13,8 +13,6 @@ import translations from './i18n/translations';
 import { logger } from './utils/logging';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
-import MithrilPartialSyncOverlay from './components/loading/mithril-bootstrap/MithrilPartialSyncOverlay';
-import MithrilProactivePromptContainer from './containers/loading/MithrilProactivePromptContainer';
 import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDialog';
 import NotificationsContainer from './containers/notifications/NotificationsContainer';
 import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
@@ -42,19 +40,15 @@ class App extends Component<{
 
   render() {
     const { stores, actions, history } = this.props;
-    const { app, mithrilPartialSync, networkStatus } = stores;
+    const { app } = stores;
     const { isActiveDialog, isSetupPage } = app;
-    const { isNodeStopping, isNodeStopped } = networkStatus;
     const locale = stores.profile.currentLocale;
     const { currentTheme } = stores.profile;
 
     const themeVars = require(`./themes/daedalus/${currentTheme}.ts`).default;
 
     const { ABOUT, DAEDALUS_DIAGNOSTICS, TOGGLE_RTS_FLAGS_MODE } = DIALOGS;
-    const canShowNews =
-      !isSetupPage && // Active page is not "Language Selection" or "Terms of Use"
-      !isNodeStopping && // Daedalus is not shutting down
-      !isNodeStopped;
+    const canShowNews = !isSetupPage; // Active page is not "Language Selection" or "Terms of Use"
 
     // Daedalus is not shutting down
     if (document.documentElement) {
@@ -96,47 +90,6 @@ class App extends Component<{
                     <ToggleRTSFlagsDialogContainer key="toggleRTSFlagsDialog" />
                   ),
                 ]}
-                {mithrilPartialSync.shouldShowOverlay && (
-                  <MithrilPartialSyncOverlay
-                    status={mithrilPartialSync.status}
-                    progressItems={mithrilPartialSync.progressItems}
-                    startedAt={mithrilPartialSync.startedAt}
-                    transferProgress={{
-                      filesDownloaded: mithrilPartialSync.filesDownloaded,
-                      filesTotal: mithrilPartialSync.filesTotal,
-                      ancillaryBytesDownloaded:
-                        mithrilPartialSync.ancillaryBytesDownloaded,
-                      ancillaryBytesTotal:
-                        mithrilPartialSync.ancillaryBytesTotal,
-                    }}
-                    error={mithrilPartialSync.error}
-                    canRetry={mithrilPartialSync.canRetry}
-                    canRestartNormally={mithrilPartialSync.canRestartNormally}
-                    canWipeAndFullSync={mithrilPartialSync.canWipeAndFullSync}
-                    onCancel={mithrilPartialSync.cancelPartialSync}
-                    onRetry={() => {
-                      // Retry has no confirmation surface to show a rejection;
-                      // the resynced backend status drives the error view.
-                      mithrilPartialSync.startPartialSync().catch((error) => {
-                        logger.warn(
-                          'App: Mithril partial sync retry rejected',
-                          {
-                            error,
-                          }
-                        );
-                      });
-                    }}
-                    onRestartNormally={mithrilPartialSync.restartNormally}
-                    onWipeAndFullSync={mithrilPartialSync.wipeAndFullSync}
-                    onDismissCompleted={
-                      mithrilPartialSync.dismissCompletedOverlay
-                    }
-                    onQuit={() => actions.window.closeWindow.trigger()}
-                    onOpenExternalLink={app.openExternalLink}
-                  />
-                )}
-                {/* Mounted app-level so it survives the loading -> Wallet Summary route change; self-gates to idle so it never co-renders with the overlay above. */}
-                <MithrilProactivePromptContainer />
                 <RTSFlagsRecommendationOverlayContainer />
                 <NotificationsContainer />
                 {canShowNews && [

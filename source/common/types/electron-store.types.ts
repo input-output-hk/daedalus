@@ -28,7 +28,8 @@ export type StorageKey =
   | 'WALLETS'
   | 'ANALYTICS-ACCEPTANCE'
   | 'USER-ID'
-  | 'WINDOW-BOUNDS';
+  | 'WINDOW-BOUNDS'
+  | 'CUSTOM-CHAIN-PATH';
 export type StoreMessage = {
   type: StorageType;
   key: StorageKey;

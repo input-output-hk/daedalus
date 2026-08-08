@@ -1,22 +1,13 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
-import { isMithrilBootstrapBlockingNodeStart } from '../../../../common/types/mithril-bootstrap.types';
-import { isMithrilPartialSyncOverlayStatus } from '../../../../common/types/mithril-partial-sync.types';
-import type { MithrilPartialSyncStatus } from '../../../../common/types/mithril-partial-sync.types';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 import { buildSystemInfo } from '../../utils/buildSystemInfo';
+import { formatUptime } from '../../utils/formatUptime';
 
 type Props = InjectedDialogContainerProps;
-
-export const shouldCloseDiagnosticsForPartialSyncOverlay = (
-  previousStatus: MithrilPartialSyncStatus,
-  nextStatus: MithrilPartialSyncStatus
-) =>
-  !isMithrilPartialSyncOverlayStatus(previousStatus) &&
-  isMithrilPartialSyncOverlayStatus(nextStatus);
 
 @inject('stores', 'actions')
 @observer
@@ -29,36 +20,16 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
   };
   handleForceCheckNetworkClock = () =>
     this.props.actions.networkStatus.forceCheckNetworkClock.trigger();
-  handleCopyStateDirectoryPath = () =>
-    this.props.actions.networkStatus.copyStateDirectoryPath.trigger();
-
-  componentDidUpdate(prevProps: Props) {
-    const { actions, stores } = this.props;
-
-    if (
-      shouldCloseDiagnosticsForPartialSyncOverlay(
-        prevProps.stores.mithrilPartialSync.status,
-        stores.mithrilPartialSync.status
-      )
-    ) {
-      actions.app.closeDaedalusDiagnosticsDialog.trigger();
-    }
-  }
-
   render() {
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
-    const { restartNode } = actions.networkStatus;
-    const { app, mithrilBootstrap, mithrilPartialSync, networkStatus } = stores;
+    const { app, networkStatus, backend } = stores;
     const { openExternalLink } = app;
     const {
-      // Node state
-      cardanoNodeState,
       isNodeResponding,
       isNodeSyncing,
       isNodeInSync,
       isNodeTimeCorrect,
-      // Application state
       isConnected,
       isSynced,
       syncPercentage,
@@ -71,12 +42,22 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
       networkTip,
       localTip,
       environment,
-      tlsConfig,
-      cardanoNodePID,
-      cardanoWalletPID,
       stateDirectoryPath,
       getNetworkClockRequest,
     } = networkStatus;
+    const {
+      nodePid: cardanoNodePID,
+      walletPid: cardanoWalletPID,
+      watchdogPid,
+      nodeStartedAt: cardanoNodeStartedAt,
+      walletStartedAt: cardanoWalletStartedAt,
+      walletRestartCount: cardanoWalletRestartCount,
+      walletPort,
+      nodeForceKilled,
+      lastWalletExitCode,
+      nodeSocketWaitMs,
+      walletReadyWaitMs,
+    } = backend;
     const systemInfo = buildSystemInfo(environment, networkStatus);
     const {
       network,
@@ -97,10 +78,18 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
       isBlankScreenFixActive,
       cardanoNodeVersion: nodeVersion,
       cardanoNodePID,
+      cardanoNodeUptime: formatUptime(cardanoNodeStartedAt),
       cardanoWalletVersion: apiVersion,
       cardanoWalletPID,
-      cardanoWalletApiPort: tlsConfig ? tlsConfig.port : 0,
+      cardanoWalletUptime: formatUptime(cardanoWalletStartedAt),
+      cardanoWalletRestartCount,
+      cardanoWalletApiPort: walletPort ?? 0,
       cardanoNetwork: network,
+      watchdogPid,
+      nodeForceKilled,
+      lastWalletExitCode,
+      nodeSocketWaitMs,
+      walletReadyWaitMs,
     };
     return (
       <ReactModal
@@ -114,7 +103,7 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
         <DaedalusDiagnostics
           systemInfo={systemInfo}
           coreInfo={coreInfo}
-          cardanoNodeState={cardanoNodeState}
+          cardanoNodeState={backend.loadingPhase}
           // @ts-ignore ts-migrate(2322) FIXME: Type '{ systemInfo: SystemInfo; coreInfo: { daedal... Remove this comment to see the full error message
           isDev={environment.isDev}
           isMainnet={environment.isMainnet}
@@ -131,23 +120,9 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
           isSystemTimeIgnored={isSystemTimeIgnored}
-          isMithrilPartialSyncWorking={mithrilPartialSync.isWorking}
-          isMithrilPartialSyncEnabled={mithrilPartialSync.isPartialSyncEnabled}
-          isMithrilPartialSyncSignificantlyBehind={
-            mithrilPartialSync.isSignificantlyBehind
-          }
-          isMithrilPartialSyncProbeFailed={mithrilPartialSync.isProbeFailed}
-          isMithrilPartialSyncAtOrPastSnapshot={
-            mithrilPartialSync.isAtOrPastSnapshot
-          }
-          isMithrilBootstrapActive={isMithrilBootstrapBlockingNodeStart(
-            mithrilBootstrap.status
-          )}
-          onStartMithrilPartialSync={mithrilPartialSync.startPartialSync}
           nodeConnectionError={getNetworkInfoRequest.error}
           localTip={localTip}
           networkTip={networkTip}
-          certifiedEpoch={mithrilPartialSync.certifiedEpoch}
           isCheckingSystemTime={
             !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
           }
@@ -158,9 +133,7 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           )}
           onOpenStateDirectory={openStateDirectory}
           onOpenExternalLink={openExternalLink}
-          onRestartNode={restartNode}
           onClose={closeDaedalusDiagnosticsDialog.trigger}
-          onCopyStateDirectoryPath={this.handleCopyStateDirectoryPath}
           onForceCheckNetworkClock={this.handleForceCheckNetworkClock}
         />
       </ReactModal>

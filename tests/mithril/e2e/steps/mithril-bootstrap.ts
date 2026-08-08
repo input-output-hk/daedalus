@@ -10,7 +10,7 @@ import type {
   MithrilBootstrapStatusUpdate,
   MithrilProgressItem,
   MithrilSnapshotItem,
-} from '../../../../source/common/types/mithril-bootstrap.types';
+} from '../../../../source/common/types/watchdog.types';
 import { DEFAULT_TIMEOUT } from '../../../common/e2e/steps/config';
 
 const DEFAULT_CHAIN_PATH = '/tmp/daedalus/mithril-default-chain';

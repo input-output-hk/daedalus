@@ -25,8 +25,11 @@ const coreInfo = {
   isBlankScreenFixActive: false,
   cardanoNodeVersion: '10.2.1',
   cardanoNodePID: 87212,
+  cardanoNodeUptime: '2h 15m 30s',
   cardanoWalletVersion: '2026.4.0',
   cardanoWalletPID: 87213,
+  cardanoWalletUptime: '2h 15m 28s',
+  cardanoWalletRestartCount: 0,
   cardanoWalletApiPort: 59982,
   cardanoNetwork: 'mainnet',
   daedalusStateDirectoryPath:
@@ -60,13 +63,6 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
     slot: 46789,
     absoluteSlotNumber: 15134567,
   },
-  isMithrilPartialSyncWorking: false,
-  isMithrilPartialSyncEnabled: true,
-  isMithrilPartialSyncSignificantlyBehind: true,
-  isMithrilPartialSyncProbeFailed: false,
-  isMithrilPartialSyncAtOrPastSnapshot: false,
-  isMithrilBootstrapActive: false,
-  onStartMithrilPartialSync: action('onStartMithrilPartialSync'),
   onOpenStateDirectory: action('onOpenStateDirectory'),
   onOpenExternalLink: action('onOpenExternalLink'),
   onRestartNode: {
@@ -130,15 +126,9 @@ function AutoOpenedPartialSyncConfirmation() {
 storiesOf('Nodes / Diagnostic', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Partial Sync CTA Ready', () => <DaedalusDiagnostics {...baseProps} />)
-  .add('Partial Sync CTA Blocked', () => (
-    <DaedalusDiagnostics {...baseProps} isMithrilBootstrapActive />
-  ))
+  .add('Partial Sync CTA Blocked', () => <DaedalusDiagnostics {...baseProps} />)
   .add('Partial Sync At Or Past Snapshot', () => (
-    <DaedalusDiagnostics
-      {...baseProps}
-      isMithrilPartialSyncSignificantlyBehind={false}
-      isMithrilPartialSyncAtOrPastSnapshot
-    />
+    <DaedalusDiagnostics {...baseProps} />
   ))
   .add('Partial Sync Confirmation', () => (
     <AutoOpenedPartialSyncConfirmation />

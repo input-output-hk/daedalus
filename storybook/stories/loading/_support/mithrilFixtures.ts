@@ -7,7 +7,7 @@ import type {
   MithrilBootstrapStatus,
   MithrilProgressItem,
   MithrilSnapshotItem,
-} from '../../../../source/common/types/mithril-bootstrap.types';
+} from '../../../../source/common/types/watchdog.types';
 
 export const defaultChainPath = '/home/ada/.local/share/Daedalus/mainnet/chain';
 export const customChainPath = '/mnt/fast-ssd/daedalus-chain';

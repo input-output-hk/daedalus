@@ -86,12 +86,6 @@ const messages = defineMessages({
     description:
       'Notification for the wallet address PDF download success in the Wallet Receive page.',
   },
-  copyStateDirectoryPath: {
-    id: 'notification.copyStateDirectoryPath',
-    defaultMessage: '!!!Daedalus state directory copied to clipboard',
-    description:
-      'Notification for the state directory copy success in the Diagnostics page.',
-  },
 });
 
 @inject('stores', 'actions')
@@ -156,11 +150,6 @@ class NotificationsContainer extends Component<InjectedProps> {
       id: 'downloadQRCodeImageSuccess',
       actionToListenAndOpen: this.props.actions.wallets.saveQRCodeImageSuccess,
       actionToListenAndClose: this.props.actions.wallets.saveQRCodeImage,
-    },
-    {
-      id: 'copyStateDirectoryPath',
-      actionToListenAndOpen:
-        this.props.actions.networkStatus.copyStateDirectoryPath,
     },
     {
       id: 'copyAssetParam',

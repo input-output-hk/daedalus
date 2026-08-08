@@ -321,8 +321,6 @@ export default class WalletsStore extends Store {
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishWalletBackup);
     app.initAppEnvironment.listen(() => {});
-    networkStatus.restartNode.listen(this._updateGeneratingCertificateError);
-    networkStatus.restartNode.listen(this._updateGeneratingRewardsCsvError);
     walletsActions.transferFundsNextStep.listen(this._transferFundsNextStep);
     walletsActions.transferFundsPrevStep.listen(this._transferFundsPrevStep);
     walletsActions.transferFunds.listen(this._transferFunds);

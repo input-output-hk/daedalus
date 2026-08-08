@@ -1,6 +1,6 @@
 import path from 'path';
 import prettysize from 'prettysize';
-import type { ChainStorageValidation } from '../../../../common/types/mithril-bootstrap.types';
+import type { ChainStorageValidation } from '../../../../common/types/watchdog.types';
 import type { Intl } from '../../types/i18nTypes';
 import messages from './ChainStorage.messages';
 

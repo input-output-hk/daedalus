@@ -5,6 +5,7 @@ import { RouterStore } from 'mobx-react-router';
 import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
+import BackendStore from './BackendStore';
 import AppUpdateStore from './AppUpdateStore';
 import AssetsStore from './AssetsStore';
 import CurrencyStore from './CurrencyStore';
@@ -24,8 +25,6 @@ import WalletSettingsStore from './WalletSettingsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletsStore from './WalletsStore';
 import WindowStore from './WindowStore';
-import MithrilBootstrapStore from './MithrilBootstrapStore';
-import MithrilPartialSyncStore from './MithrilPartialSyncStore';
 import { AnalyticsTracker } from '../analytics';
 import { Api } from '../api';
 import { ActionsMap } from '../actions';
@@ -33,12 +32,11 @@ import { ActionsMap } from '../actions';
 export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
+  backend: BackendStore,
   appUpdate: AppUpdateStore,
   assets: AssetsStore,
   currency: CurrencyStore,
   hardwareWallets: HardwareWalletsStore,
-  mithrilBootstrap: MithrilBootstrapStore,
-  mithrilPartialSync: MithrilPartialSyncStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   profile: ProfileStore,
@@ -58,11 +56,11 @@ export const storeClasses = {
 export type StoresMap = {
   addresses: AddressesStore;
   app: AppStore;
+  backend: BackendStore;
   appUpdate: AppUpdateStore;
   currency: CurrencyStore;
   assets: AssetsStore;
   hardwareWallets: HardwareWalletsStore;
-  mithrilPartialSync: MithrilPartialSyncStore;
   networkStatus: NetworkStatusStore;
   newsFeed: NewsFeedStore;
   profile: ProfileStore;
@@ -78,7 +76,6 @@ export type StoresMap = {
   walletBackup: WalletBackupStore;
   walletMigration: WalletMigrationStore;
   walletSettings: WalletSettingsStore;
-  mithrilBootstrap: MithrilBootstrapStore;
   window: WindowStore;
 };
 let stores: StoresMap | null | undefined = null;
@@ -111,12 +108,12 @@ export const setUpStores = action(
     stores = observable({
       addresses: createStoreInstanceOf(AddressesStore),
       app: createStoreInstanceOf(AppStore),
+      backend: createStoreInstanceOf(BackendStore),
       assets: createStoreInstanceOf(AssetsStore),
       currency: createStoreInstanceOf(CurrencyStore),
       appUpdate: createStoreInstanceOf(AppUpdateStore),
       hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
       networkStatus: createStoreInstanceOf(NetworkStatusStore),
-      mithrilPartialSync: createStoreInstanceOf(MithrilPartialSyncStore),
       newsFeed: createStoreInstanceOf(NewsFeedStore),
       profile: createStoreInstanceOf(ProfileStore),
       router,
@@ -131,7 +128,6 @@ export const setUpStores = action(
       walletBackup: createStoreInstanceOf(WalletBackupStore),
       walletMigration: createStoreInstanceOf(WalletMigrationStore),
       walletSettings: createStoreInstanceOf(WalletSettingsStore),
-      mithrilBootstrap: createStoreInstanceOf(MithrilBootstrapStore),
       window: createStoreInstanceOf(WindowStore),
     });
     // Configure and initialize all stores

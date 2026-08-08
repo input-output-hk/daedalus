@@ -17,7 +17,6 @@ import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
-import { computeBehindByEpochs } from '../../utils/mithrilBehindness';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
@@ -26,7 +25,6 @@ import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 import type { TipInfo } from '../../api/network/types';
 import { ErrorType } from '../../domains/ApiError';
 import DiagnosticsTimeStatusRow from './DiagnosticsTimeStatusRow';
-import MithrilPartialSyncSection from './MithrilPartialSyncSection';
 
 export const messages = defineMessages({
   systemInfo: {
@@ -146,6 +144,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!Cardano node process ID',
     description: 'Cardano node process ID',
   },
+  cardanoNodeUptime: {
+    id: 'daedalus.diagnostics.dialog.cardanoNodeUptime',
+    defaultMessage: '!!!Cardano node uptime',
+    description: 'How long cardano-node has been running',
+  },
   cardanoNodeApiPort: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeApiPort',
     defaultMessage: '!!!Cardano node port',
@@ -155,6 +158,45 @@ export const messages = defineMessages({
     id: 'daedalus.diagnostics.dialog.cardanoWalletPID',
     defaultMessage: '!!!Cardano wallet process ID',
     description: 'Cardano wallet process ID',
+  },
+  cardanoWalletUptime: {
+    id: 'daedalus.diagnostics.dialog.cardanoWalletUptime',
+    defaultMessage: '!!!Cardano wallet uptime',
+    description: 'How long cardano-wallet has been running since last start',
+  },
+  cardanoWalletRestartCount: {
+    id: 'daedalus.diagnostics.dialog.cardanoWalletRestartCount',
+    defaultMessage: '!!!Cardano wallet restarts',
+    description:
+      'Number of times cardano-wallet has been restarted by the watchdog',
+  },
+  watchdogPid: {
+    id: 'daedalus.diagnostics.dialog.watchdogPid',
+    defaultMessage: '!!!Watchdog process ID',
+    description: 'PID of the cardano-watchdog supervisor process',
+  },
+  nodeForceKilled: {
+    id: 'daedalus.diagnostics.dialog.nodeForceKilled',
+    defaultMessage: '!!!Node force-killed',
+    description:
+      'Whether the watchdog had to SIGKILL cardano-node during shutdown',
+  },
+  cardanoWalletLastExitCode: {
+    id: 'daedalus.diagnostics.dialog.cardanoWalletLastExitCode',
+    defaultMessage: '!!!Wallet last exit code',
+    description:
+      'Exit code from the most recent cardano-wallet crash before watchdog restart',
+  },
+  nodeSocketWaitMs: {
+    id: 'daedalus.diagnostics.dialog.nodeSocketWaitMs',
+    defaultMessage: '!!!Node socket wait',
+    description:
+      'Time the watchdog waited for the cardano-node socket to appear',
+  },
+  walletReadyWaitMs: {
+    id: 'daedalus.diagnostics.dialog.walletReadyWaitMs',
+    defaultMessage: '!!!Wallet ready wait',
+    description: 'Time the watchdog waited for cardano-wallet to become ready',
   },
   cardanoWalletVersion: {
     id: 'daedalus.diagnostics.dialog.cardanoWalletVersion',
@@ -407,14 +449,6 @@ type Props = {
   isForceCheckingSystemTime: boolean;
   localTip: TipInfo | null | undefined;
   networkTip: TipInfo | null | undefined;
-  certifiedEpoch?: number | null;
-  isMithrilPartialSyncWorking: boolean;
-  isMithrilPartialSyncEnabled: boolean;
-  isMithrilPartialSyncSignificantlyBehind: boolean;
-  isMithrilPartialSyncProbeFailed: boolean;
-  isMithrilPartialSyncAtOrPastSnapshot: boolean;
-  isMithrilBootstrapActive: boolean;
-  onStartMithrilPartialSync: (...args: Array<any>) => any;
   onOpenStateDirectory: (...args: Array<any>) => any;
   onOpenExternalLink: (...args: Array<any>) => any;
   onRestartNode: { trigger: (...args: Array<any>) => any };
@@ -522,13 +556,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isSystemTimeIgnored,
       localTip,
       networkTip,
-      certifiedEpoch,
-      isMithrilPartialSyncWorking,
-      isMithrilPartialSyncEnabled,
-      isMithrilPartialSyncSignificantlyBehind,
-      isMithrilPartialSyncProbeFailed,
-      isMithrilPartialSyncAtOrPastSnapshot,
-      isMithrilBootstrapActive,
       onOpenStateDirectory,
       onClose,
       onCopyStateDirectoryPath,
@@ -557,11 +584,19 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isBlankScreenFixActive,
       cardanoNodeVersion,
       cardanoNodePID,
+      cardanoNodeUptime,
       cardanoWalletVersion,
       cardanoWalletPID,
+      cardanoWalletUptime,
+      cardanoWalletRestartCount,
       cardanoWalletApiPort,
       cardanoNetwork,
       daedalusStateDirectoryPath,
+      watchdogPid,
+      nodeForceKilled,
+      lastWalletExitCode,
+      nodeSocketWaitMs,
+      walletReadyWaitMs,
     } = coreInfo;
     const { isNodeRestarting } = this.state;
     const connectionError = get(nodeConnectionError, 'values', '{}');
@@ -570,16 +605,9 @@ class DaedalusDiagnostics extends Component<Props, State> {
       messages.unknownDiskSpaceSupportUrl
     );
     const formattedSyncPercentage = formattedNumber(syncPercentage, 2);
-    const behindByEpochs = computeBehindByEpochs(
-      localTip,
-      networkTip,
-      certifiedEpoch
-    );
     const cardanoNetworkValue = intl.formatMessage(
       globalMessages[`network_${cardanoNetwork}`]
     );
-    const isMithrilActionBlocked =
-      isMithrilPartialSyncWorking || isMithrilBootstrapActive;
     const { getSectionRow, getRow } = this;
 
     return (
@@ -689,10 +717,25 @@ class DaedalusDiagnostics extends Component<Props, State> {
               )}
               {getRow('cardanoNodeVersion', cardanoNodeVersion)}
               {getRow('cardanoNodePID', cardanoNodePID || '-')}
+              {getRow('cardanoNodeUptime', cardanoNodeUptime)}
               {/* getRow('cardanoNodeApiPort', '-') */}
               {getRow('cardanoWalletVersion', cardanoWalletVersion)}
               {getRow('cardanoWalletPID', cardanoWalletPID || '-')}
+              {getRow('cardanoWalletUptime', cardanoWalletUptime)}
               {getRow('cardanoWalletApiPort', cardanoWalletApiPort || '-')}
+              {getRow('cardanoWalletRestartCount', cardanoWalletRestartCount)}
+              {watchdogPid != null &&
+                watchdogPid > 0 &&
+                getRow('watchdogPid', watchdogPid)}
+              {nodeForceKilled != null &&
+                getRow('nodeForceKilled', nodeForceKilled)}
+              {cardanoWalletRestartCount > 0 &&
+                lastWalletExitCode != null &&
+                getRow('cardanoWalletLastExitCode', String(lastWalletExitCode))}
+              {nodeSocketWaitMs != null &&
+                getRow('nodeSocketWaitMs', `${nodeSocketWaitMs}ms`)}
+              {walletReadyWaitMs != null &&
+                getRow('walletReadyWaitMs', `${walletReadyWaitMs}ms`)}
             </div>
             {isConnected && nodeConnectionError ? (
               <div>
@@ -717,22 +760,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('connected', isConnected)}
               {getRow('synced', isSynced)}
               {getRow('syncPercentage', `${formattedSyncPercentage}%`)}
-              {isMithrilPartialSyncEnabled && (
-                <MithrilPartialSyncSection
-                  isActionBlocked={isMithrilActionBlocked}
-                  isMithrilPartialSyncWorking={isMithrilPartialSyncWorking}
-                  isSignificantlyBehind={
-                    isMithrilPartialSyncSignificantlyBehind
-                  }
-                  isProbeFailed={isMithrilPartialSyncProbeFailed}
-                  isAtOrPastSnapshot={isMithrilPartialSyncAtOrPastSnapshot}
-                  behindByEpochs={behindByEpochs}
-                  onRestoreFocus={this.restoreDialogCloseOnEscKey}
-                  onStartMithrilPartialSync={
-                    this.props.onStartMithrilPartialSync
-                  }
-                />
-              )}
+
               {getRow(
                 'lastNetworkBlock',
                 <Fragment>

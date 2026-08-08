@@ -1,0 +1,402 @@
+{
+  "metadata": {
+    "title": "Mithril Sync in Rust Watchdog Tasks",
+    "created": "2026-07-31",
+    "updated": "2026-07-31",
+    "version": "1.0.0",
+    "totalTasks": 19,
+    "prdReference": ".agent/plans/mithril-watchdog/mithril-watchdog-prd.md",
+    "description": "Move the entire Mithril snapshot sync lifecycle from TypeScript into the Rust watchdog binary",
+    "sourceFiles": [
+      "source/main/mithril/MithrilPartialSyncService.ts",
+      "source/main/mithril/MithrilController.ts",
+      "source/main/ipc/mithrilPartialSyncChannel.ts",
+      "source/main/cardano/CardanoWatchdog.ts",
+      "source/main/cardano/CardanoNode.ts",
+      "watchdog/src/supervisor.rs",
+      "watchdog/src/protocol.rs",
+      "watchdog/src/config.rs"
+    ],
+    "importantNote": "Resolve the open questions in the PRD (snapshot-converter path, converter progress format) before starting Phase 1."
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Rust Mithril State Machine",
+      "description": "Implement the full Mithril lifecycle in Rust: config, behind-ness probe, download, staging, marker file, converter, node/wallet start",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Add MithrilConfig to WatchdogConfig",
+          "description": "Add an optional `mithril: Option<MithrilConfig>` field to the top-level WatchdogConfig struct. MithrilConfig holds: mithril_bin (PathBuf), aggregator_url (String), genesis_vkey (String), ancillary_vkey (Option<String>), behind_threshold (u64, default 20).",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 1.0,
+          "dependencies": [],
+          "targetPath": "watchdog/src/config.rs",
+          "implementationNotes": [
+            "Add `MithrilConfig` struct with serde Deserialize, derive Debug and Clone.",
+            "Add `#[serde(default)] mithril: Option<MithrilConfig>` to WatchdogConfig.",
+            "Add `fn default_behind_threshold() -> u64 { 20 }` and annotate field."
+          ]
+        },
+        {
+          "id": "task-002",
+          "title": "Add Mithril event variants to protocol.rs",
+          "description": "Add MithrilStatus, MithrilProgress, MithrilNotNeeded, MithrilError variants to the Event enum in protocol.rs. These are emitted by the watchdog stdout and parsed by CardanoWatchdog.ts.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 1.0,
+          "dependencies": ["task-001"],
+          "targetPath": "watchdog/src/protocol.rs",
+          "implementationNotes": [
+            "MithrilStatus { phase: String }",
+            "MithrilProgress { files_downloaded: u64, files_total: u64, bytes_downloaded: u64, bytes_total: u64, seconds_elapsed: f64, step_num: u32, total_steps: u32 }",
+            "MithrilNotNeeded { local_immutable_count: u64, latest_certified_immutable: u64 }",
+            "MithrilError { code: String, message: String }",
+            "Use #[serde(tag = \"event\", rename_all = \"snake_case\")] consistent with existing variants."
+          ]
+        },
+        {
+          "id": "task-003",
+          "title": "Write watchdog/src/mithril.rs — behind-ness probe",
+          "description": "Implement the behind-ness probe: spawn mithril-client with `cardano-db snapshot show latest --json`, parse beacon.immutable_file_number, count local immutable files in <chainPath>/immutable/, compare against threshold.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 3.0,
+          "dependencies": ["task-001", "task-002"],
+          "targetPath": "watchdog/src/mithril.rs",
+          "implementationNotes": [
+            "Use `tokio::process::Command` to spawn mithril-client.",
+            "Set AGGREGATOR_ENDPOINT env var from config.aggregator_url.",
+            "Parse stdout as JSON: `beacon.immutable_file_number` field.",
+            "Count files in chain_path/immutable/ with extension `.chunk` (or count all files, matching TS behavior).",
+            "Return `BehindnessResult::NotNeeded { local, certified }` or `BehindnessResult::Needed { local, certified }`.",
+            "If NotNeeded, emit MithrilNotNeeded event and return."
+          ]
+        },
+        {
+          "id": "task-004",
+          "title": "Write mithril.rs — download phase with progress streaming",
+          "description": "Spawn mithril-client cardano-db download with correct args and env vars. Stream stdout JSON lines, parse progress objects, emit MithrilProgress events rate-limited to 500 ms. Emit MithrilStatus phase changes.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 4.0,
+          "dependencies": ["task-003"],
+          "targetPath": "watchdog/src/mithril.rs",
+          "implementationNotes": [
+            "CLI: `mithril-client --origin-tag DAEDALUS --json cardano-db download latest --download-dir <staging> --include-ancillary`",
+            "Env: AGGREGATOR_ENDPOINT, GENESIS_VERIFICATION_KEY, ANCILLARY_VERIFICATION_KEY (if present).",
+            "Parse JSON lines from stdout: fields files_downloaded, files_total, bytes_downloaded, bytes_total, seconds_elapsed, step_num, total_steps.",
+            "Rate-limit MithrilProgress emissions: track last_emitted_at (Instant), skip if < 500 ms since last.",
+            "Always emit the final progress line when mithril-client exits.",
+            "Emit MithrilStatus { phase: 'downloading' } before spawn, 'verifying' when step_num crosses the verifying threshold.",
+            "On non-zero exit code, emit MithrilError and return Err."
+          ]
+        },
+        {
+          "id": "task-005",
+          "title": "Write mithril.rs — staging directory management",
+          "description": "Create staging directory before download, validate after download (check for clean, immutable/, ledger/, protocolMagicId files), clean up on error.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2.0,
+          "dependencies": ["task-004"],
+          "targetPath": "watchdog/src/mithril.rs",
+          "implementationNotes": [
+            "Staging path: parent of chain_path / 'mithril-partial-sync' / 'download' / 'db'",
+            "Create staging dir with tokio::fs::create_dir_all.",
+            "Post-download validation: check `clean` file exists, `immutable/` dir exists, `ledger/` dir exists, `protocolMagicId` file exists.",
+            "On validation failure: emit MithrilError, clean staging dir, return Err.",
+            "Expose cleanup fn called on cancellation too."
+          ]
+        },
+        {
+          "id": "task-006",
+          "title": "Write mithril.rs — marker file management",
+          "description": "Read existing marker file on startup (resume logic). Write cutover-in-progress before rename, installed-awaiting-node-start after rename, node-start-verified after wallet_ready.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2.0,
+          "dependencies": ["task-005"],
+          "targetPath": "watchdog/src/mithril.rs",
+          "implementationNotes": [
+            "Marker path: state_dir / 'Logs' / 'mithril-partial-sync.lock'",
+            "JSON format: { \"state\": \"cutover-in-progress\" | \"installed-awaiting-node-start\" | \"node-start-verified\" }",
+            "On watchdog startup (before start_mithril command), read marker: if installed-awaiting-node-start, skip to node/wallet start; if cutover-in-progress, clean staging and set phase to idle.",
+            "Write cutover-in-progress before atomic rename (tokio::fs::rename).",
+            "Write installed-awaiting-node-start after rename succeeds.",
+            "Signal to supervisor to start node/wallet; after wallet_ready fires, write node-start-verified and emit MithrilStatus completed."
+          ]
+        },
+        {
+          "id": "task-007",
+          "title": "Write mithril.rs — snapshot-converter orchestration",
+          "description": "After mithril-client exits successfully and staging is validated, spawn snapshot-converter, wait for exit, emit converting/installing phase events.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2.0,
+          "dependencies": ["task-005"],
+          "targetPath": "watchdog/src/mithril.rs",
+          "implementationNotes": [
+            "CLI (from TS source): snapshot-converter --input-mem <staging/ledger/<slot>> --output-lsm-snapshot <staging/ledger/<slot>> --output-lsm-database <chain_path>/lsm --config <configFile>",
+            "Emit MithrilStatus { phase: 'converting' } before spawn.",
+            "Pipe stderr to watchdog logger (same pattern as node/wallet stderr logging).",
+            "On non-zero exit: emit MithrilError, clean staging, return Err.",
+            "Emit MithrilStatus { phase: 'installing' } after converter exits, before atomic rename."
+          ]
+        },
+        {
+          "id": "task-008",
+          "title": "Wire cancellation in mithril.rs",
+          "description": "Implement cancel_mithril command handling: send SIGTERM to the in-flight mithril-client or snapshot-converter process group, clean staging, emit cancelled status.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2.0,
+          "dependencies": ["task-004", "task-007"],
+          "targetPath": "watchdog/src/mithril.rs",
+          "implementationNotes": [
+            "Use a tokio::sync::oneshot or watch channel to signal cancellation.",
+            "In download and converter loops, select! on the cancel channel.",
+            "On cancellation: kill child process (child.kill()), clean staging dir, emit MithrilStatus { phase: 'cancelled' }.",
+            "On Windows: use TerminateProcess rather than SIGTERM."
+          ]
+        },
+        {
+          "id": "task-009",
+          "title": "Wire start_mithril / cancel_mithril commands in supervisor.rs",
+          "description": "Parse start_mithril and cancel_mithril commands from stdin in the supervisor's command loop. Spawn the Mithril task as a Tokio task and route MithrilEvent to the stdout event sender.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 3.0,
+          "dependencies": ["task-002", "task-008"],
+          "targetPath": "watchdog/src/supervisor.rs",
+          "implementationNotes": [
+            "Add Cmd::StartMithril and Cmd::CancelMithril to the command enum (or match on string).",
+            "Spawn tokio::task::spawn for the Mithril lifecycle, passing a cancel_tx sender.",
+            "Route MithrilEvent variants to the Event enum and write to stdout (same as existing node events).",
+            "After Mithril installing completes, invoke existing node/wallet supervisor startup sequence.",
+            "After wallet_ready in the Mithril flow, write node-start-verified marker and emit MithrilStatus completed.",
+            "On watchdog startup, check for installed-awaiting-node-start marker and skip directly to node/wallet start."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "TypeScript Relay Layer",
+      "description": "Extend CardanoWatchdog.ts types and callbacks, implement IPC channel consolidation, simplify MithrilController and CardanoNode",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-010",
+          "title": "Extend CardanoWatchdog.ts — types, callbacks, handle methods",
+          "description": "Add Mithril fields to WatchdogOptions and WatchdogHandle. Add onMithrilStatus, onMithrilProgress, onMithrilNotNeeded, onMithrilError callbacks to startWatchdog(). Add startMithril() and cancelMithril() methods to WatchdogHandle. Handle new events in readline switch.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 3.0,
+          "dependencies": ["task-002"],
+          "targetPath": "source/main/cardano/CardanoWatchdog.ts",
+          "implementationNotes": [
+            "WatchdogOptions: add mithrilBin, aggregatorUrl, genesisVkey, ancillaryVkey (optional), mithrilBehindThreshold (optional, number).",
+            "WatchdogHandle: add mithrilPhase: string | null, mithrilProgress: MithrilProgressPayload | null.",
+            "Add startMithril(): void — writes {cmd:'start_mithril'} to stdin.",
+            "Add cancelMithril(): void — writes {cmd:'cancel_mithril'} to stdin.",
+            "Handle mithril_status, mithril_progress, mithril_not_needed, mithril_error in readline switch block.",
+            "Pass Mithril config fields into watchdogConfig JSON sent on stdin."
+          ]
+        },
+        {
+          "id": "task-011",
+          "title": "Write mithrilWatchdogChannel.ts — consolidated IPC channels",
+          "description": "Create source/main/ipc/mithrilWatchdogChannel.ts with three channels: mithrilEventChannel (push), mithrilStartChannel (trigger), mithrilCancelChannel (trigger). Register handlers in main/index.ts.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2.0,
+          "dependencies": ["task-010"],
+          "targetPath": "source/main/ipc/mithrilWatchdogChannel.ts",
+          "implementationNotes": [
+            "Follow the same pattern as other IPC channels in source/main/ipc/.",
+            "mithrilEventChannel: main pushes to renderer; payload is { type: string, payload: object }.",
+            "mithrilStartChannel: renderer sends empty trigger; main calls handle.startMithril().",
+            "mithrilCancelChannel: renderer sends empty trigger; main calls handle.cancelMithril().",
+            "Add channel definitions to source/common/ipc/api.ts."
+          ]
+        },
+        {
+          "id": "task-012",
+          "title": "Simplify MithrilController.ts to event relay",
+          "description": "Remove all orchestration, subprocess management, and state machine logic from MithrilController.ts. Keep only the bridge from CardanoNode Mithril callbacks to the mithrilEventChannel push.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2.0,
+          "dependencies": ["task-011"],
+          "targetPath": "source/main/mithril/MithrilController.ts",
+          "implementationNotes": [
+            "MithrilController becomes a class with onMithrilStatus(), onMithrilProgress(), onMithrilNotNeeded(), onMithrilError() methods that push to mithrilEventChannel.",
+            "Remove all references to MithrilPartialSyncService, mithrilCommandRunner, etc.",
+            "Remove isPartialSyncNodeStartBlocked() and all state tracking.",
+            "Remove startPartialSync(), cancelPartialSync() public methods (these now come from the IPC channels)."
+          ]
+        },
+        {
+          "id": "task-013",
+          "title": "Remove Mithril startup coupling from CardanoNode.ts",
+          "description": "Remove MithrilPartialSyncNodeStartup wiring, _pendingWatchdogHandle workaround (no longer needed), and Mithril-related callbacks from the node startup flow.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2.0,
+          "dependencies": ["task-012"],
+          "targetPath": "source/main/cardano/CardanoNode.ts",
+          "implementationNotes": [
+            "Remove _pendingWatchdogHandle field and all references — the hang bug is gone because the watchdog handles node/wallet start internally after Mithril.",
+            "Remove onHandleCreated callback from startWatchdog() call (or keep if still needed for other reasons).",
+            "Remove MithrilPartialSyncNodeStartup import and usage.",
+            "Pass MithrilController Mithril event callbacks through to startWatchdog() call."
+          ]
+        },
+        {
+          "id": "task-014",
+          "title": "Remove Mithril guards from handleDiskSpace.ts",
+          "description": "Remove mithrilController.isPartialSyncNodeStartBlocked() check and the shouldSuppressStartupFallback() check from the fallback node start path in handleDiskSpace.ts.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-013"],
+          "targetPath": "source/main/utils/handleDiskSpace.ts",
+          "implementationNotes": [
+            "Remove the two Mithril guard checks added during the finalizing-hang fix.",
+            "These guards are no longer needed because the watchdog now owns node/wallet start after Mithril."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Renderer Store Rewrite",
+      "description": "Rewrite MithrilPartialSyncStore to subscribe to watchdog push channel; update containers",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-015",
+          "title": "Rewrite MithrilPartialSyncStore.ts",
+          "description": "Replace the polling/status-fetching store with a simple push subscriber. Subscribe to mithrilEventChannel, expose phase, progress, and error state. Implement startMithrilSync() and cancelMithrilSync() actions.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 3.0,
+          "dependencies": ["task-011"],
+          "targetPath": "source/renderer/app/stores/MithrilPartialSyncStore.ts",
+          "implementationNotes": [
+            "Remove all polling actions and API call logic.",
+            "Subscribe to mithrilEventChannel in setup().",
+            "Observable fields: phase (string | null), progress (MithrilProgress | null), error (string | null), isPartialSyncEnabled (boolean — set by config, not watchdog).",
+            "startMithrilSync(): send mithrilStartChannel trigger.",
+            "cancelMithrilSync(): send mithrilCancelChannel trigger.",
+            "Keep any availability check logic that is decided at config time (not runtime watchdog state)."
+          ]
+        },
+        {
+          "id": "task-016",
+          "title": "Update SyncingConnectingPage and related containers",
+          "description": "Update container props and store action references if MithrilPartialSyncStore interface changed. Verify UI phase states still map correctly to display components.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-015"],
+          "targetPaths": [
+            "source/renderer/app/containers/loading/SyncingConnectingPage.tsx",
+            "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.tsx"
+          ],
+          "implementationNotes": [
+            "Check that all store fields consumed by containers still exist under the same names or update the container.",
+            "Verify that onMithrilSync prop still wires correctly to store action.",
+            "No UI changes expected; this is a plumbing update only."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Cleanup and Verification",
+      "description": "Delete obsolete TypeScript files, update IPC API, run type checks and clippy, update documentation",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-017",
+          "title": "Delete obsolete TypeScript Mithril files",
+          "description": "Delete the 9+ TypeScript files that are replaced by the Rust implementation.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-012", "task-014", "task-015"],
+          "targetPaths": [
+            "source/main/mithril/MithrilPartialSyncService.ts",
+            "source/main/mithril/mithrilCommandRunner.ts",
+            "source/main/mithril/mithrilSnapshotConverter.ts",
+            "source/main/mithril/mithrilPartialSyncStaging.ts",
+            "source/main/mithril/mithrilPartialSyncMarker.ts",
+            "source/main/mithril/mithrilNetworkConfig.ts",
+            "source/main/mithril/MithrilPartialSyncNodeStartup.ts",
+            "source/main/mithril/mithrilSnapshotMetadata.ts",
+            "source/main/ipc/mithrilPartialSyncChannel.ts",
+            "source/renderer/app/ipc/mithrilPartialSyncChannel.ts"
+          ]
+        },
+        {
+          "id": "task-018",
+          "title": "Run clippy, tsc, and update common/ipc/api.ts",
+          "description": "Verify no type errors or dead code. Update source/common/ipc/api.ts to remove old channel definitions and add new ones.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 1.0,
+          "dependencies": ["task-017"],
+          "targetPath": "source/common/ipc/api.ts",
+          "implementationNotes": [
+            "Run: npx tsc --noEmit --skipLibCheck",
+            "Run: nix build .#checks.x86_64-linux.watchdog-clippy",
+            "Fix any remaining type errors from deleted files."
+          ]
+        },
+        {
+          "id": "task-019",
+          "title": "Update watchdog.md documentation with Mithril IPC events",
+          "description": "Add Mithril events (mithril_status, mithril_progress, mithril_not_needed, mithril_error) and commands (start_mithril, cancel_mithril) to .agent/system/watchdog.md.",
+          "status": "pending",
+          "priority": "low",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-018"],
+          "targetPath": ".agent/system/watchdog.md"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 4,
+    "totalTasks": 19,
+    "estimatedTotalHours": 37.5,
+    "criticalPath": [
+      "task-001", "task-002", "task-003", "task-004", "task-005",
+      "task-006", "task-007", "task-008", "task-009",
+      "task-010", "task-011", "task-012", "task-013",
+      "task-015", "task-017", "task-018"
+    ],
+    "keyFiles": [
+      "watchdog/src/mithril.rs",
+      "watchdog/src/supervisor.rs",
+      "watchdog/src/protocol.rs",
+      "source/main/cardano/CardanoWatchdog.ts",
+      "source/main/mithril/MithrilController.ts",
+      "source/renderer/app/stores/MithrilPartialSyncStore.ts"
+    ],
+    "riskAreas": [
+      "snapshot-converter argument format and exit behavior — verify from binary help output before implementing task-007",
+      "Windows process group cancellation — SIGTERM semantics differ; may need TerminateProcess in task-008",
+      "Staging directory path on Windows — path separator and drive letter handling in task-005",
+      "Rate-limiting progress events — too aggressive slows UI; too loose floods IPC; 500 ms is a starting point",
+      "Marker file resume on installed-awaiting-node-start — must not re-download if watchdog is restarted mid-session"
+    ],
+    "testingNotes": "Manual QA covers the full lifecycle including cancel, not-needed, and resume from marker. No unit tests for Rust Mithril module initially; integration test via actual mithril-client binary.",
+    "rollbackPlan": "Revert the branch. Old TypeScript files are in git history. Marker file format is unchanged between old and new implementations."
+  }
+}
