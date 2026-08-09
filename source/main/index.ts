@@ -54,6 +54,7 @@ import {
 } from './utils/rtsFlagsSettings';
 import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
+import { parseDeviceScaleFactor } from './utils/parseDeviceScaleFactor';
 import { setMithrilBootstrapNodeStateProvider } from './ipc/mithrilBootstrapChannel';
 import { configureMithrilPartialSyncRuntime } from './ipc/mithrilPartialSyncChannel';
 import { getMithrilController } from './mithril/MithrilController';
@@ -83,15 +84,14 @@ if (isBlankScreenFixActive) {
 
 // Chromium sizes windows in device-independent pixels, so the minimum content
 // size set in `createMainWindow` is multiplied by the device scale factor that
-// Chromium detects (from `Xft.dpi` on X11, or the compositor on Wayland). On a
-// HiDPI display that can make the window too large to fit the screen at all.
-// `DAEDALUS_DEVICE_SCALE_FACTOR` overrides the detected value — note it is
-// absolute, not a multiplier, so e.g. `1.5` on a display Chromium reports as
-// `2.0` scales the UI down. It has to be applied before the app is ready, like
+// Chromium detects. On a HiDPI display that can make the window too large to
+// fit the screen at all. This has to be applied before the app is ready, like
 // `disableHardwareAcceleration` above.
-const deviceScaleFactor = Number(process.env.DAEDALUS_DEVICE_SCALE_FACTOR);
+const deviceScaleFactor = parseDeviceScaleFactor(
+  process.env.DAEDALUS_DEVICE_SCALE_FACTOR
+);
 
-if (deviceScaleFactor > 0 && Number.isFinite(deviceScaleFactor)) {
+if (deviceScaleFactor !== null) {
   app.commandLine.appendSwitch(
     'force-device-scale-factor',
     String(deviceScaleFactor)
