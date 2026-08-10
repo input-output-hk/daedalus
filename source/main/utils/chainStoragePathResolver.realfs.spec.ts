@@ -57,6 +57,41 @@ describe('resolveMithrilWorkDir against a real filesystem', () => {
     await expect(resolveMithrilWorkDir(stateDir)).resolves.toBe(target);
   });
 
+  // A user who moves the chain directory twice leaves a link pointing at a link.
+  // `realpath` walks the whole chain, so the resolver should report the directory
+  // at the end of it rather than the intermediate link.
+  it('resolves a chain of symlinks to the directory at the end of it', async () => {
+    const target = path.join(tmpRoot, 'final-target');
+    const intermediate = path.join(tmpRoot, 'intermediate-link');
+    fs.mkdirSync(target);
+    fs.symlinkSync(target, intermediate, 'dir');
+    fs.symlinkSync(intermediate, chainPath, 'dir');
+
+    await expect(resolveMithrilWorkDir(stateDir)).resolves.toBe(target);
+  });
+
+  // Two links pointing at each other. `realpath` raises ELOOP, so the resolver
+  // takes the same fallback a dangling link takes and returns the raw target.
+  // The point of the assertion is that it returns an absolute path instead of
+  // throwing: the result is handed to MithrilBootstrapService.setWorkDir(),
+  // which has no defence against either.
+  it('returns an absolute path when the entry point is part of a symlink loop', async () => {
+    const partner = path.join(tmpRoot, 'loop-partner');
+    fs.symlinkSync(partner, chainPath, 'dir');
+    fs.symlinkSync(chainPath, partner, 'dir');
+
+    // Precondition, not decoration: if the loop resolved, the fallback under
+    // test would never run and the assertions below would pass vacuously. The
+    // errno is ELOOP on POSIX and unmeasured on Windows, so only the failure
+    // itself is asserted here.
+    expect(() => fs.realpathSync(chainPath)).toThrow();
+
+    const result = await resolveMithrilWorkDir(stateDir);
+
+    expect(path.isAbsolute(result)).toBe(true);
+    expect(result).toBe(partner);
+  });
+
   // The regression this file exists for. When `realpath` fails — a dangling
   // link locally, or a mapped network drive on Windows — the resolver falls back
   // to `readlink`, which returns the target exactly as it was recorded. For a
