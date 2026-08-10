@@ -167,6 +167,30 @@ describe('validateChainStorageDirectory', () => {
     );
   });
 
+  // A path that loops back on itself names no directory either, so it gets the
+  // same message rather than the generic one.
+  it('returns path-not-found when the target path loops back on itself', async () => {
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+    (fs.realpath as unknown as jest.Mock).mockRejectedValue(
+      Object.assign(new Error('ELOOP: too many symbolic links encountered'), {
+        code: 'ELOOP',
+      })
+    );
+
+    const result = await validateChainStorageDirectory(
+      '/mnt/loop',
+      STATE_DIR,
+      makeGetDefaultConfig()
+    );
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        isValid: false,
+        reason: 'path-not-found',
+      })
+    );
+  });
+
   // A resolution failure that is not a missing path must not be relabelled.
   // EACCES on an ancestor means the location may well exist, and reporting it
   // as not found would send the user looking for the wrong problem.

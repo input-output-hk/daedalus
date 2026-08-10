@@ -120,7 +120,12 @@ export async function validateChainStorageDirectory(
       // and only the resolution fails. Without this the error falls through to
       // the generic catch and the user is told "Unable to validate selected
       // directory" for a condition that has its own message.
-      if (isPathNotFoundError(error)) {
+      //
+      // ELOOP joins the two missing-path codes. A path that loops back on
+      // itself names no directory either, and the user needs to hear the same
+      // thing about it.
+      const code = (error as NodeJS.ErrnoException)?.code;
+      if (isPathNotFoundError(error) || code === 'ELOOP') {
         return {
           ...defaultValidation,
           reason: 'path-not-found',
