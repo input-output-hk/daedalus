@@ -641,6 +641,132 @@ api.cip142.getNetworkMagic(): Promise<number>;
 - Keep base `getNetworkId()` unchanged.
 - Label CIP-142 Proposed in plan, UI/developer documentation, and capability policy.
 
+## Hostile Renderer Threat Model And Architecture ADR
+
+### ADR-001: Separate The Hostile Guest From The Privileged Wallet Renderer
+
+- Status: Accepted
+- Scope: Embedded dApp browser and CIP-30 connector.
+
+**Context.** A catalogued dApp is remote, hostile content. The current main
+renderer is Node-enabled, not context-isolated, and uses a privileged preload;
+it is therefore explicitly legacy privileged UI, not a possible dApp host.
+
+**Decision.** Each dApp runs only in a separately managed sandboxed
+`BrowserWindow`, with a fresh random nonpersistent session and a dedicated
+least-authority preload. The Electron main process is the authoritative
+capability broker: it owns guest lifecycle, canonical origin and top-frame
+identity, document generation, route lease, wallet/network selection,
+connection and request IDs, immutable request bytes, grants, approval
+correlation, and result validation. Trusted Daedalus UI presents consent and
+review only; it cannot replace broker-owned request bytes. Existing privileged
+IPC remains unavailable to the guest and must authenticate the exact trusted
+main `WebContents` and main frame before any production guest is enabled.
+
+**Rejected alternatives.** Do not host remote content in the trusted renderer,
+an iframe, or a `<webview>`; reuse the privileged preload or generic IPC; let
+the renderer own authority or grant persistence; reuse a guest session; or
+provide an external-browser connector. Each either joins hostile content to
+privileged authority or removes a main-process enforcement point.
+
+**Consequences.** Guest lifecycle and policy are fail-closed. A dApp/origin
+switch recreates the guest. Grants persist only approved connection/read scopes
+and bind exact origin, wallet, network genesis, and scopes; signing and staged
+witnesses remain memory-only. The current baseline is not the accepted target:
+all target components and production guest launch remain disabled until the
+listed implementation and release gates have evidence.
+
+### Protected Assets And Attacker Model
+
+Protected assets include funds and signing authority; exact transaction,
+message, submission, and witness bytes; addresses, UTxOs, balances, public
+keys and xpubs; wallet/network identity and grants; passphrases; mutual-TLS
+material; filesystem, shell, logging, update, store, hardware, and other
+privileged IPC authority; catalog/policy integrity; and privacy-sensitive
+origins and wallet associations.
+
+The attacker controls a dApp's top-level document, scripts, workers,
+subframes, navigation, malformed and concurrent requests, resource hosts,
+storage attempts, redirects, and DNS/network behavior. The attacker may fully
+compromise the guest renderer, including a catalogued dApp. Main, trusted local
+UI, cardano-wallet, cardano-node, OS, and device firmware are distinct trusted
+dependencies, not assumed to be infallible; their failures are constrained by
+the gates and capability checks below.
+
+### Boundary And Authority Invariants
+
+| Boundary | Authority and validation | Fail-closed outcome |
+|---|---|---|
+| Network/DNS to guest session | Main/session policy enforces HTTPS/WSS on each actual connection destination. Initial navigation, redirects, subresources, WSS, DNS changes/rebinding, and IPv4, IPv6, and IPv4-mapped IPv6 forms are covered. DNS preflight alone is insufficient. | Deny the destination; production Diagnostics stays disabled if its initial destination cannot be connection-bound. |
+| Hostile top frame, subframes/workers, preload, and guest WebContents | Only the exact guest top frame, canonical origin, document generation, and fresh session may invoke the dedicated gateway. | Reject; revoke capability before teardown or stale-result release. |
+| Guest gateway to main and trusted IPC | Guest uses a dedicated schema-validated broker. Existing IPC accepts only the exact trusted main WebContents and main frame. | Reject without privileged side effect. |
+| Main to trusted UI/executor | Main-issued request ID selects immutable broker-owned arguments; trusted UI returns decision plus identity only. | Reject mismatched, expired, or lifecycle-cancelled approval. |
+| Trusted executor to cardano-wallet | Trusted executor uses mutually authenticated TLS only with the local wallet backend. cardano-wallet is authoritative for wallet UTxOs, ownership, and pending-submission state; main validates broker-bound result identity. | Reject backend, context, or result mismatch without guest release. |
+| cardano-wallet to cardano-node/network | cardano-wallet and node provide the reviewed ledger context and normal submission outcome; main never treats renderer summaries as authoritative. | Treat unavailable or inconsistent context and rejected submission as typed failure. |
+| Hardware service to physical device | The device signs only capability-supported broker-owned requests. Main verifies returned body hash, public key, witness, or COSE signature before release. | Fail closed for unsupported fields, device errors, or invalid returned material. |
+| Persistent and ephemeral state | Main-owned grants/collateral are atomic persistent records; capabilities, approvals, signing state, and staged witnesses are memory-only; guest storage is nonpersistent. | Treat corruption or mismatch as revoked; clear guest state on teardown. |
+| Logs, analytics, crash reporting, package sandbox | Sensitive wallet, transaction, signature, origin, and full Diagnostics URL data is excluded; packaged OS sandbox is a release gate. | Do not log sensitive values; disable guest launch if containment proof is absent. |
+
+Authority always binds the exact guest WebContents and top frame, canonical
+origin, document generation, fresh session, route-selected eligible Shelley
+wallet, monotonic route epoch, network ID/magic/genesis, negotiated extensions,
+scopes, and main-issued connection/request IDs. Invalid wallet routes never
+fall back. Navigation, reload, route/wallet/network change, guest failure or
+close, trusted renderer reload, and revocation invalidate authority before
+result release. An already authorized submission is the narrow exception: it
+continues against the fixed wallet/network, but no stale guest receives a
+result.
+
+WebRTC/data channels, STUN/TURN, WebTransport, QUIC, and every other
+non-proxied or unaudited transport remain disabled. A compatibility exception
+requires a concrete need, equivalent connection-level enforcement, and security
+review.
+
+### Consent, Exact Bytes, And Availability
+
+Main stores immutable validated request bytes. Trusted UI receives
+broker-authoritative review data keyed by the request ID and cannot substitute
+bytes. Connection and elevated disclosure use trusted consent; every signing,
+data-signing, and submission call needs fresh consent, and signing never waives
+submission consent.
+
+VKey witnesses cryptographically sign exact body bytes, but review binds more:
+the exact body, existing witnesses, outer `isValid`, auxiliary data, script data
+and redeemers, datums, native/Plutus/reference scripts, authenticated resolved
+context snapshot or digest, complete decoded semantic effects, and all checked
+commitments. Missing, unknown, unsupported, mismatched, or changed material
+fails closed. Submission consent separately binds the complete final immutable
+envelope after witness assembly, including its body, final witness set,
+`isValid`, auxiliary data, script data, datums, and scripts; nothing is added or
+substituted after approval.
+
+Requests above 64 KiB CBOR, CIP-103 batches above 50 items, pages above 100
+entries, and consent inactive for five minutes reject with the frozen typed
+error before side effects. Within-limit crashes, slowness, queue pressure, or
+ordinary rejection are robustness defects. Any authority confusion, privileged
+access, sensitive-data leak, review/byte mismatch, unverified signer result,
+private-network or transport bypass, or unsandboxed production guest is a
+release-blocking confidentiality/integrity defect.
+
+### Threat Traceability And Release Gates
+
+Task-001 establishes this model, not the downstream proof. Phase-0 evidence
+owners are `task-003` for the reviewed cardano-wallet contract, consistency,
+migration/rollback, and pin gate; `task-004` for exact-CBOR/body/output and
+supported-era evidence; `task-005` for packaged Linux sandbox strategy and
+proof; and `task-006` for Ledger/Trezor library, model, firmware,
+message-signing, and returned-hash matrices. Phases 1 through 9 implement and
+validate privileged IPC, session/network policy, exact semantic review,
+backend/pending-submission behavior, device capability, packaged hostile tests,
+internal/external review, and controlled rollout.
+
+Production launch remains disabled until sender/main-frame authentication,
+trusted navigation lock, packaged sandbox proof, connection-bound HTTPS/WSS
+egress, complete ledger review, exact-byte signer/result validation,
+pending-submission fault testing, privacy inspection, physical hardware
+certification, internal review, external audit, Electron/Chromium review, and
+release-candidate change control are complete.
+
 ## Technical Design
 
 ### Trust Boundaries

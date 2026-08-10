@@ -567,6 +567,38 @@ dist/
 
 ---
 
+## Planned dApp Browser Security Boundary
+
+The embedded dApp browser is planned, not implemented. The current main window
+is a privileged legacy renderer (`nodeIntegration: true`, no context isolation)
+and must never host remote content or be reused as its preload/IPC surface.
+
+The accepted target, defined normatively in the [dApp browser threat model and
+ADR](../plans/dapp-browser-cip30/dapp-browser-cip30-prd.md#hostile-renderer-threat-model-and-architecture-adr), is:
+
+```text
+Hostile remote dApp
+  -> dedicated least-authority guest preload
+  -> main-owned, sender/frame/origin/session/route authenticated broker
+  -> trusted Daedalus consent and execution UI
+  -> cardano-wallet or capability-checked hardware service
+  -> cardano-node
+```
+
+- Each guest uses a separately managed sandboxed `BrowserWindow` and fresh,
+  random, nonpersistent session; a dApp/origin switch destroys and recreates it.
+- Main owns guest lifecycle, canonical origin, top-frame/document identity,
+  route/wallet/network authority, immutable bytes, grants, approvals, and
+  result validation. The trusted renderer presents broker-authoritative data
+  but cannot replace it.
+- Existing privileged IPC must authenticate the exact trusted main WebContents
+  and main frame. A guest receives only a dedicated scoped gateway, never raw
+  Electron/Node APIs or existing IPC.
+- Guest HTTPS/WSS policy is connection-destination-bound, including redirects,
+  subresources, WSS, rebinding, and IPv4/IPv6 forms. Bypass transports remain
+  disabled. Production launch is fail-closed until packaged sandbox and all
+  other PRD release gates have evidence.
+
 ## Security Considerations
 
 1. **Sensitive Data**: Recovery phrases never stored unencrypted
