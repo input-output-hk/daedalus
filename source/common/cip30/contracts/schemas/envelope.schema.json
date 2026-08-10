@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://daedaluswallet.io/schemas/cip30/envelope.json",
+  "definitions": {
+    "fulfilled": {
+      "type": "object",
+      "required": ["status", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "const": "fulfilled" },
+        "value": {}
+      }
+    },
+    "rejection": {
+      "type": "object",
+      "required": ["type", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "api-error",
+            "paginate-error",
+            "tx-sign-error",
+            "data-sign-error",
+            "tx-send-error",
+            "cip103-submit-error"
+          ]
+        },
+        "value": {}
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "api-error" } } },
+          "then": {
+            "properties": {
+              "value": {
+                "$ref": "https://daedaluswallet.io/schemas/cip30/errors.json#/definitions/apiError"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "paginate-error" } }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "$ref": "https://daedaluswallet.io/schemas/cip30/errors.json#/definitions/paginateError"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "tx-sign-error" } }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "$ref": "https://daedaluswallet.io/schemas/cip30/errors.json#/definitions/txSignError"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "data-sign-error" } }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "$ref": "https://daedaluswallet.io/schemas/cip30/errors.json#/definitions/dataSignError"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "tx-send-error" } }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "$ref": "https://daedaluswallet.io/schemas/cip30/errors.json#/definitions/txSendError"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "cip103-submit-error" } }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "$ref": "https://daedaluswallet.io/schemas/cip30/errors.json#/definitions/cip103SubmitError"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "rejected": {
+      "type": "object",
+      "required": ["status", "rejection"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "const": "rejected" },
+        "rejection": { "$ref": "#/definitions/rejection" }
+      }
+    },
+    "resultEnvelope": {
+      "oneOf": [
+        { "$ref": "#/definitions/fulfilled" },
+        { "$ref": "#/definitions/rejected" }
+      ]
+    }
+  }
+}
