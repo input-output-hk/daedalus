@@ -5,7 +5,7 @@
       "description": "Selects or resumes the next task using the task graph and repo state.",
       "mode": "subagent",
       //      "model": "opencode-go/minimax-m2.7",
-            "model": "github-copilot/gpt-5.4-mini",
+            "model": "openai/gpt-5.4-mini-fast",
       //      "model": "zai-coding-plan/glm-5-turbo",
 //      "model": "openai/gpt-5.4-mini-fast",
       "variant": "low",
@@ -22,10 +22,11 @@
       //      "model": "opencode-go/minimax-m2.7",
       //      "model": "github-copilot/claude-opus-4.6",
       //      "model": "github-copilot/gpt-5.5",
-            "model": "github-copilot/gpt-5.4",
+      //      "model": "github-copilot/gpt-5.4",
       //      "model": "opencode-go/glm-5.1",
       //      "model": "zai-coding-plan/glm-5.1",
-//      "model": "openai/gpt-5.4",
+      //      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.6-sol-fast",
       "variant": "medium"
     },
     "Critiquer": {
@@ -33,10 +34,11 @@
       "mode": "subagent",
       //      "model": "opencode-go/minimax-m2.7",
       //      "model": "github-copilot/gpt-5.5",
-            "model": "github-copilot/gpt-5.4",
+      //      "model": "github-copilot/gpt-5.4",
       //      "model": "opencode-go/glm-5.1",
       //      "model": "zai-coding-plan/glm-5.1",
-//      "model": "openai/gpt-5.4",
+      //      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.6-sol-fast",
       "variant": "medium"
     },
     "Reviewer": {
@@ -45,10 +47,11 @@
       //      "model": "opencode-go/minimax-m2.7",
       //      "model": "github-copilot/claude-sonnet-4.6",
       //      "model": "github-copilot/gpt-5.5",
-            "model": "github-copilot/gpt-5.4",
+      //      "model": "github-copilot/gpt-5.4",
       //      "model": "opencode-go/glm-5.1",
       //      "model": "zai-coding-plan/glm-5.1",
 //      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.6-sol-fast",
       "variant": "medium"
     }
   },
