@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://daedaluswallet.io/schemas/cip30/common.json",
+  "definitions": {
+    "hexBytes": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{2})*$"
+    },
+    "nonEmptyHexBytes": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{2})+$"
+    },
+    "hash32": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "publicKey32": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "drepId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{56}$"
+    },
+    "addressInput": {
+      "oneOf": [
+        { "$ref": "#/definitions/nonEmptyHexBytes" },
+        {
+          "type": "string",
+          "pattern": "^(addr|addr_test|stake|stake_test)1[02-9ac-hj-np-z]+$"
+        }
+      ]
+    },
+    "addressResult": {
+      "$ref": "#/definitions/nonEmptyHexBytes"
+    },
+    "addressResults": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/addressResult" }
+    },
+    "utxoResults": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "array",
+          "items": { "$ref": "#/definitions/nonEmptyHexBytes" }
+        }
+      ]
+    },
+    "witnessSets": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": { "$ref": "#/definitions/nonEmptyHexBytes" }
+    },
+    "hashes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": { "$ref": "#/definitions/hash32" }
+    },
+    "publicKeys": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/publicKey32" }
+    },
+    "extension": {
+      "type": "object",
+      "required": ["cip"],
+      "additionalProperties": false,
+      "properties": {
+        "cip": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "extensions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/extension" }
+    },
+    "enableOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "extensions": { "$ref": "#/definitions/extensions" }
+      }
+    },
+    "paginate": {
+      "type": "object",
+      "required": ["page", "limit"],
+      "additionalProperties": false,
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      }
+    },
+    "getCollateralParams": {
+      "type": "object",
+      "required": ["amount"],
+      "additionalProperties": false,
+      "properties": {
+        "amount": { "$ref": "#/definitions/nonEmptyHexBytes" }
+      }
+    },
+    "transactionSignatureRequest": {
+      "type": "object",
+      "required": ["cbor"],
+      "additionalProperties": false,
+      "properties": {
+        "cbor": { "$ref": "#/definitions/nonEmptyHexBytes" },
+        "partialSign": { "type": "boolean", "default": false }
+      }
+    },
+    "transactionSignatureRequests": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": { "$ref": "#/definitions/transactionSignatureRequest" }
+    },
+    "transactions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": { "$ref": "#/definitions/nonEmptyHexBytes" }
+    },
+    "dataSignature": {
+      "type": "object",
+      "required": ["signature", "key"],
+      "additionalProperties": false,
+      "properties": {
+        "signature": { "$ref": "#/definitions/nonEmptyHexBytes" },
+        "key": { "$ref": "#/definitions/nonEmptyHexBytes" }
+      }
+    },
+    "networkId": {
+      "type": "integer",
+      "enum": [0, 1]
+    },
+    "networkMagic": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

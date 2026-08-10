@@ -1,0 +1,62 @@
+{
+  "transactions": {
+    "first": "84a0a0f5f6",
+    "second": "84a0a0f4f6",
+    "duplicateIdentity": ["84a0a0f5f6", "84a0a0f5f6"]
+  },
+  "dependencyCases": [
+    {
+      "name": "same-request-parent",
+      "consumerIndex": 1,
+      "producerIndex": 0,
+      "disposition": "resolve-current-request"
+    },
+    {
+      "name": "reference-input",
+      "consumerIndex": 1,
+      "producerIndex": 0,
+      "disposition": "resolve-without-spend-edge"
+    },
+    {
+      "name": "forward-reference",
+      "consumerIndex": 0,
+      "producerIndex": 1,
+      "disposition": "reject-unresolved"
+    },
+    {
+      "name": "self-reference",
+      "consumerIndex": 0,
+      "producerIndex": 0,
+      "disposition": "reject-unresolved"
+    },
+    {
+      "name": "unresolved-reference",
+      "consumerIndex": 1,
+      "producerIndex": null,
+      "disposition": "reject-unresolved"
+    },
+    {
+      "name": "conflicting-spend",
+      "consumerIndexes": [0, 1],
+      "disposition": "preserve-order-and-flag-conflict"
+    }
+  ],
+  "signing": {
+    "allSuccessWitnesses": ["a0", "a0"],
+    "firstFailure": {
+      "error": { "code": 1, "info": "Transaction at index 1 failed" },
+      "releasedWitnesses": null
+    }
+  },
+  "submission": {
+    "allSuccessHashes": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "preAttemptRefusal": { "code": 1, "info": "Refused" },
+    "mixedPostAttemptRejection": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      { "code": 2, "info": "Failed" }
+    ]
+  }
+}
