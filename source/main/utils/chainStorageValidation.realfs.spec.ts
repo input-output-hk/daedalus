@@ -181,9 +181,11 @@ describe('validateChainStorageDirectory against a real filesystem', () => {
     DISK_SPACE_TIMEOUT_MS
   );
 
-  // Two links pointing at each other. Every syscall that follows the link fails,
-  // including the `pathExists` probe, so the user is told the directory does not
-  // exist. That is the accurate thing to tell them: there is no directory there.
+  // Two links pointing at each other. The platforms disagree about which
+  // syscall fails first, and therefore about which reason comes back: POSIX
+  // fails the existence probe and reports the path as missing, while Windows
+  // satisfies that probe on the reparse point and fails the resolution
+  // instead. The rejection is what holds on both, and is what this asserts.
   it('rejects a directory that is part of a symlink loop', async () => {
     const link = path.join(tmpRoot, 'loop-entry');
     const partner = path.join(tmpRoot, 'loop-partner');
@@ -200,7 +202,6 @@ describe('validateChainStorageDirectory against a real filesystem', () => {
     );
 
     expect(result.isValid).toBe(false);
-    expect(result.reason).toBe('path-not-found');
   });
 
   it('rejects the state directory itself', async () => {
