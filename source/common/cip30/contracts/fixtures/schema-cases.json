@@ -1,0 +1,215 @@
+{
+  "cases": [
+    {
+      "schema": "common.json#/definitions/extension",
+      "valid": true,
+      "value": { "cip": 95 }
+    },
+    {
+      "schema": "common.json#/definitions/extension",
+      "valid": false,
+      "value": { "cip": 95, "extra": true }
+    },
+    {
+      "schema": "common.json#/definitions/paginate",
+      "valid": true,
+      "value": { "page": 0, "limit": 100 }
+    },
+    {
+      "schema": "common.json#/definitions/paginate",
+      "valid": false,
+      "value": { "page": 0, "limit": 101 }
+    },
+    {
+      "schema": "common.json#/definitions/addressInput",
+      "valid": true,
+      "value": "6127e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43"
+    },
+    {
+      "schema": "common.json#/definitions/addressInput",
+      "valid": false,
+      "value": "0x6127e3"
+    },
+    {
+      "schema": "common.json#/definitions/transactionSignatureRequests",
+      "valid": true,
+      "value": [{ "cbor": "a0" }]
+    },
+    {
+      "schema": "common.json#/definitions/transactionSignatureRequests",
+      "valid": false,
+      "value": []
+    },
+    {
+      "schema": "common.json#/definitions/networkMagic",
+      "valid": true,
+      "value": 4294967295
+    },
+    {
+      "schema": "common.json#/definitions/networkMagic",
+      "valid": false,
+      "value": 4294967296
+    },
+    {
+      "schema": "errors.json#/definitions/apiError",
+      "valid": true,
+      "value": { "code": -1, "info": "Invalid request" }
+    },
+    {
+      "schema": "errors.json#/definitions/txSignError",
+      "valid": true,
+      "value": { "code": 3, "info": "Deprecated certificate" }
+    },
+    {
+      "schema": "errors.json#/definitions/dataSignError",
+      "valid": false,
+      "value": { "code": 4, "info": "Unknown" }
+    },
+    {
+      "schema": "envelope.json#/definitions/resultEnvelope",
+      "valid": true,
+      "value": { "status": "fulfilled", "value": "a0" }
+    },
+    {
+      "schema": "envelope.json#/definitions/resultEnvelope",
+      "valid": true,
+      "value": {
+        "status": "rejected",
+        "rejection": {
+          "type": "api-error",
+          "value": { "code": -3, "info": "Refused" }
+        }
+      }
+    },
+    {
+      "schema": "envelope.json#/definitions/resultEnvelope",
+      "valid": true,
+      "value": {
+        "status": "rejected",
+        "rejection": {
+          "type": "cip103-submit-error",
+          "value": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            { "code": 2, "info": "Failed" }
+          ]
+        }
+      }
+    },
+    {
+      "schema": "envelope.json#/definitions/resultEnvelope",
+      "valid": false,
+      "value": {
+        "status": "rejected",
+        "rejection": {
+          "type": "api-error",
+          "value": { "code": 99, "info": "Unknown" }
+        }
+      }
+    }
+  ],
+  "javascriptOnlyCases": [
+    { "name": "optional-explicit-undefined", "expected": "same-as-omitted" },
+    {
+      "name": "required-explicit-undefined",
+      "expected": "APIError.InvalidRequest"
+    },
+    {
+      "name": "extra-trailing-undefined",
+      "expected": "APIError.InvalidRequest"
+    },
+    { "name": "nan", "expected": "APIError.InvalidRequest" },
+    { "name": "positive-infinity", "expected": "APIError.InvalidRequest" },
+    { "name": "function", "expected": "APIError.InvalidRequest" },
+    { "name": "symbol", "expected": "APIError.InvalidRequest" },
+    { "name": "bigint-number-argument", "expected": "APIError.InvalidRequest" },
+    {
+      "name": "inherited-enumerable-field",
+      "expected": "APIError.InvalidRequest"
+    },
+    { "name": "accessor-field", "expected": "APIError.InvalidRequest" }
+  ],
+  "expectedRejections": {
+    "provider.isEnabled": ["apiError"],
+    "provider.enable": ["apiError"],
+    "api.getExtensions": ["apiError"],
+    "api.getNetworkId": ["apiError"],
+    "api.getUtxos": ["apiError", "paginateError"],
+    "api.getCollateral": ["apiError"],
+    "api.getBalance": ["apiError"],
+    "api.getUsedAddresses": ["apiError", "paginateError"],
+    "api.getUnusedAddresses": ["apiError"],
+    "api.getChangeAddress": ["apiError"],
+    "api.getRewardAddresses": ["apiError"],
+    "api.signTx": ["apiError", "txSignError"],
+    "api.signData": ["apiError", "dataSignError"],
+    "api.submitTx": ["apiError", "txSendError"],
+    "api.cip95.getPubDRepKey": ["apiError"],
+    "api.cip95.getRegisteredPubStakeKeys": ["apiError"],
+    "api.cip95.getUnregisteredPubStakeKeys": ["apiError"],
+    "api.cip95.signData": ["apiError", "dataSignError"],
+    "api.cip103.signTxs": ["apiError", "txSignError"],
+    "api.cip103.submitTxs": ["apiError", "txSendError", "cip103SubmitError"],
+    "api.cip104.getAccountPub": ["apiError"],
+    "api.cip142.getNetworkMagic": ["apiError"]
+  },
+  "expectedConsentExpiry": {
+    "connectionOrDisclosure": { "error": "APIError", "code": -3 },
+    "signTxOrSignTxs": { "error": "TxSignError", "code": 2 },
+    "signData": { "error": "DataSignError", "code": 3 },
+    "submitTxOrSubmitTxs": { "error": "TxSendError", "code": 1 },
+    "submitTxsBeforeAttempt": "No mixed result array is produced."
+  },
+  "sizeLimitedPaths": [
+    "api.signTx",
+    "api.signData",
+    "api.submitTx",
+    "api.cip95.signData",
+    "api.cip103.signTxs",
+    "api.cip103.submitTxs"
+  ],
+  "envelopes": [
+    { "status": "fulfilled", "value": "a0" },
+    {
+      "status": "rejected",
+      "rejection": {
+        "type": "api-error",
+        "value": { "code": -1, "info": "Invalid request" }
+      }
+    },
+    {
+      "status": "rejected",
+      "rejection": { "type": "paginate-error", "value": { "maxSize": 12 } }
+    },
+    {
+      "status": "rejected",
+      "rejection": {
+        "type": "tx-sign-error",
+        "value": { "code": 3, "info": "Deprecated certificate" }
+      }
+    },
+    {
+      "status": "rejected",
+      "rejection": {
+        "type": "data-sign-error",
+        "value": { "code": 2, "info": "Address is script-controlled" }
+      }
+    },
+    {
+      "status": "rejected",
+      "rejection": {
+        "type": "tx-send-error",
+        "value": { "code": 1, "info": "Refused" }
+      }
+    },
+    {
+      "status": "rejected",
+      "rejection": {
+        "type": "cip103-submit-error",
+        "value": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          { "code": 2, "info": "Failed" }
+        ]
+      }
+    }
+  ]
+}

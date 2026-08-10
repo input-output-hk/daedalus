@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://daedaluswallet.io/schemas/cip30/errors.json",
+  "definitions": {
+    "apiError": {
+      "type": "object",
+      "required": ["code", "info"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "enum": [-1, -2, -3, -4] },
+        "info": { "type": "string" }
+      }
+    },
+    "paginateError": {
+      "type": "object",
+      "required": ["maxSize"],
+      "additionalProperties": false,
+      "properties": {
+        "maxSize": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "txSignError": {
+      "type": "object",
+      "required": ["code", "info"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "enum": [1, 2, 3] },
+        "info": { "type": "string" }
+      }
+    },
+    "dataSignError": {
+      "type": "object",
+      "required": ["code", "info"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "enum": [1, 2, 3] },
+        "info": { "type": "string" }
+      }
+    },
+    "txSendError": {
+      "type": "object",
+      "required": ["code", "info"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "enum": [1, 2] },
+        "info": { "type": "string" }
+      }
+    },
+    "cip103SubmitError": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          { "$ref": "#/definitions/txSendError" }
+        ]
+      }
+    }
+  }
+}

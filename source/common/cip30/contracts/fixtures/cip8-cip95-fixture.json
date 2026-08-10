@@ -1,0 +1,36 @@
+{
+  "name": "deterministic-ed25519-drep-normalization",
+  "nonSecretSeed": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+  "publicKey": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+  "drepId": "27e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43",
+  "matchingEnterpriseAddress": "6127e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43",
+  "matchingEnterpriseAddressBech32": "addr1vyn78rgwr835xn3nl0gqr5l7qj6mwemrlz9v6cj7p4msksc89qqvj",
+  "normalizedProtectedAddress": "27e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43",
+  "protectedHeader": "a201276761646472657373581c27e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43",
+  "payload": "deadbeef",
+  "sigStructure": "846a5369676e6174757265315829a201276761646472657373581c27e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b434044deadbeef",
+  "signature": "c6c205a573ff8f27396224da95aae5b375e38eed189cab16c74ce47cff87436cdc81ff0ad29876b2bf6f2ebf51615e3e520fa594ae46fbc5d317ed9eab8e8203",
+  "coseSign1": "845829a201276761646472657373581c27e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43a266686173686564f46776657273696f6e0144deadbeef5840c6c205a573ff8f27396224da95aae5b375e38eed189cab16c74ce47cff87436cdc81ff0ad29876b2bf6f2ebf51615e3e520fa594ae46fbc5d317ed9eab8e8203",
+  "coseKey": "a401010327200621582003a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+  "diagnostics": {
+    "protectedHeader": "{1: -8, \"address\": h'27e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43'}",
+    "sigStructure": "[\"Signature1\", h'a201276761646472657373581c27e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43', h'', h'deadbeef']"
+  },
+  "negativeCases": {
+    "oddLengthHex": "abc",
+    "prefixedHex": "0xdeadbeef",
+    "malformedHex": "zz",
+    "malformedCbor": "ff",
+    "taggedCoseSign1": "d2845829a201276761646472657373581c27e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43a266686173686564f46776657273696f6e0144deadbeef5840c6c205a573ff8f27396224da95aae5b375e38eed189cab16c74ce47cff87436cdc81ff0ad29876b2bf6f2ebf51615e3e520fa594ae46fbc5d317ed9eab8e8203",
+    "changedPayload": "845829a201276761646472657373581c27e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43a266686173686564f46776657273696f6e0144deadbeee5840c6c205a573ff8f27396224da95aae5b375e38eed189cab16c74ce47cff87436cdc81ff0ad29876b2bf6f2ebf51615e3e520fa594ae46fbc5d317ed9eab8e8203",
+    "legacyMissingVersionVerificationOnly": "845829a201276761646472657373581c27e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43a166686173686564f444deadbeef5840c6c205a573ff8f27396224da95aae5b375e38eed189cab16c74ce47cff87436cdc81ff0ad29876b2bf6f2ebf51615e3e520fa594ae46fbc5d317ed9eab8e8203"
+  },
+  "interoperability": {
+    "implementation": "input-output-hk/cardano-js-sdk",
+    "revision": "0c0e700237ca524d8bd73054e3518fb182d09e46",
+    "source": "packages/key-management/src/cip8/cip30signData.ts",
+    "test": "packages/key-management/test/cip8/cip30signData.test.ts",
+    "observed": "A type-6 enterprise key address whose payment hash equals the DRep key hash selects DREP_KEY_DERIVATION_PATH.",
+    "difference": "The SDK preserves the complete type-6 address in COSE headers. Daedalus follows its locked PRD and normalizes matching type-6 and raw DRep-ID inputs to the same raw 28-byte header."
+  }
+}
