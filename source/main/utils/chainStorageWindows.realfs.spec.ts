@@ -357,68 +357,56 @@ onWindows('Windows reparse point handling', () => {
     });
   });
 
-  // Path syntax with no POSIX equivalent, all of it reachable by a user who
-  // types a location rather than browsing to one.
-  describe('path syntax the platform treats specially', () => {
-    // CON, PRN, NUL and AUX name devices in every directory, so a directory
-    // cannot be created with one of those names anywhere. The path can still be
-    // typed. What matters is that it comes back rejected with a reason the
-    // renderer has copy for, rather than through the generic catch: either the
-    // location does not exist, or it exists and is not a directory. Which of
-    // the two depends on how the device answers the probe, and both are honest.
+  // Names the Win32 API restricts, and Node does not.
+  //
+  // Both groups below were written expecting the documented Win32 behaviour,
+  // and both were wrong in the same direction, which is why they are worth
+  // keeping: `fs` reaches the filesystem through libuv, which addresses paths
+  // in their extended-length form. That form skips the Win32 parsing rules, so
+  // reserved device names are ordinary directory names and trailing dots and
+  // spaces survive. What Daedalus asks for is what it gets, and the hazard runs
+  // the other way from the one anticipated: it can create a directory that
+  // Win32 tooling addressing the same path cannot open.
+  describe('names the Win32 API restricts', () => {
+    // CON, PRN, NUL and AUX name devices to the Win32 API and cannot be used
+    // for a directory through it. Through `fs` they can.
     it.each(['CON', 'PRN', 'NUL', 'AUX'])(
-      'rejects a path named %s with a specific reason',
-      async (reservedName) => {
-        const stateDir = path.join(tmpRoot, 'state');
-        fs.ensureDirSync(stateDir);
+      'creates and resolves a directory named %s',
+      (reservedName) => {
         const reservedPath = path.join(tmpRoot, reservedName);
 
-        // Precondition: the platform genuinely refuses the name. If a future
-        // Windows accepts it, this test is no longer about what it claims and
-        // should fail rather than quietly pass.
-        expect(() => fs.mkdirSync(reservedPath)).toThrow();
+        fs.mkdirSync(reservedPath);
 
-        const result = await validateChainStorageDirectory(
-          reservedPath,
-          stateDir,
-          makeGetDefaultConfig(path.join(stateDir, CHAIN_DIRECTORY_NAME)),
-          0
-        );
+        expect(fs.statSync(reservedPath).isDirectory()).toBe(true);
 
-        expect(result.isValid).toBe(false);
-        expect(result.reason).not.toBe('unknown');
-      },
-      DISK_SPACE_TIMEOUT_MS
+        // The invariant that matters downstream. Every resolved path here ends
+        // up in a stored setting or on a subprocess command line, and an
+        // extended-length path in either place would not survive the round
+        // trip. libuv uses that form internally; it must not come back out.
+        const resolved = fs.realpathSync(reservedPath);
+        expect(resolved.startsWith('\\\\?\\')).toBe(false);
+        expect(resolved).toBe(reservedPath);
+      }
     );
 
-    // Windows strips a trailing dot or space when it creates the directory, so
-    // the name the user gave and the name on disk differ. Everything downstream
-    // compares paths, so the question is whether validation hands back the name
-    // that exists or the name that was typed.
+    // The Win32 API strips a trailing dot or space from a name. Node does not,
+    // so the directory on disk keeps the name exactly as given.
     it.each([
       ['space', 'trailing-space '],
       ['dot', 'trailing-dot.'],
-    ])(
-      'resolves a directory created with a trailing %s to the name on disk',
-      async (_label, spelledName) => {
-        const spelledPath = path.join(tmpRoot, spelledName);
-        fs.ensureDirSync(spelledPath);
+    ])('keeps a trailing %s in the name on disk', (_label, spelledName) => {
+      const spelledPath = path.join(tmpRoot, spelledName);
+      const strippedPath = path.join(tmpRoot, spelledName.slice(0, -1));
 
-        const strippedPath = path.join(tmpRoot, spelledName.slice(0, -1));
+      fs.ensureDirSync(spelledPath);
 
-        // Precondition: the platform really did strip it. Without this the
-        // assertions below would hold trivially on a filesystem that keeps the
-        // name intact.
-        expect(fs.existsSync(strippedPath)).toBe(true);
-        expect(fs.realpathSync(spelledPath)).toBe(strippedPath);
+      expect(fs.existsSync(spelledPath)).toBe(true);
+      expect(fs.existsSync(strippedPath)).toBe(false);
 
-        // The comparison the product uses does not strip, so the two spellings
-        // are not the same path to it, while they are the same directory to the
-        // filesystem. Recorded rather than worked around: it only matters once
-        // a stored custom path is compared against a resolved one.
-        expect(isSamePath(spelledPath, strippedPath)).toBe(false);
-      }
-    );
+      const resolved = fs.realpathSync(spelledPath);
+      expect(resolved.startsWith('\\\\?\\')).toBe(false);
+      expect(resolved).toBe(spelledPath);
+    });
 
     // Whether a path past the classic limit can be created depends on whether
     // long path support is enabled on the machine, and both answers are
