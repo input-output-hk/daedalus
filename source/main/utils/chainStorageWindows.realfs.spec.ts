@@ -19,7 +19,11 @@ import path from 'path';
 import { execFileSync } from 'child_process';
 import { resolveMithrilWorkDir } from './chainStoragePathResolver';
 import { createSymlink } from './chainStorageManagerShared';
-import { isSamePath, isSubPath } from './chainStorageValidation';
+import {
+  isSamePath,
+  isSubPath,
+  validateChainStorageDirectory,
+} from './chainStorageValidation';
 
 jest.mock('../config', () => ({
   DISK_SPACE_REQUIRED: 0,
@@ -50,6 +54,21 @@ const findFreeDriveLetter = (candidates: string): string | null => {
 };
 
 const CHAIN_DIRECTORY_NAME = 'chain';
+
+// `checkDiskSpace` spawns a subprocess on Windows and a cold start costs
+// seconds, so any case that reaches it needs more than Jest's default five.
+const DISK_SPACE_TIMEOUT_MS = 30_000;
+
+// The classic Windows limit. A path longer than this needs the `\\?\` prefix,
+// or long path support enabled, or it does not work.
+const MAX_PATH = 260;
+
+const makeGetDefaultConfig = (defaultPath: string) =>
+  jest.fn().mockResolvedValue({
+    defaultPath,
+    availableSpaceBytes: Number.MAX_SAFE_INTEGER,
+    requiredSpaceBytes: 0,
+  });
 
 // `existsSync` follows the link, so it is false for a link that exists but
 // does not resolve — which is the state under test.
@@ -336,5 +355,115 @@ onWindows('Windows reparse point handling', () => {
         false
       );
     });
+  });
+
+  // Path syntax with no POSIX equivalent, all of it reachable by a user who
+  // types a location rather than browsing to one.
+  describe('path syntax the platform treats specially', () => {
+    // CON, PRN, NUL and AUX name devices in every directory, so a directory
+    // cannot be created with one of those names anywhere. The path can still be
+    // typed. What matters is that it comes back rejected with a reason the
+    // renderer has copy for, rather than through the generic catch: either the
+    // location does not exist, or it exists and is not a directory. Which of
+    // the two depends on how the device answers the probe, and both are honest.
+    it.each(['CON', 'PRN', 'NUL', 'AUX'])(
+      'rejects a path named %s with a specific reason',
+      async (reservedName) => {
+        const stateDir = path.join(tmpRoot, 'state');
+        fs.ensureDirSync(stateDir);
+        const reservedPath = path.join(tmpRoot, reservedName);
+
+        // Precondition: the platform genuinely refuses the name. If a future
+        // Windows accepts it, this test is no longer about what it claims and
+        // should fail rather than quietly pass.
+        expect(() => fs.mkdirSync(reservedPath)).toThrow();
+
+        const result = await validateChainStorageDirectory(
+          reservedPath,
+          stateDir,
+          makeGetDefaultConfig(path.join(stateDir, CHAIN_DIRECTORY_NAME)),
+          0
+        );
+
+        expect(result.isValid).toBe(false);
+        expect(result.reason).not.toBe('unknown');
+      },
+      DISK_SPACE_TIMEOUT_MS
+    );
+
+    // Windows strips a trailing dot or space when it creates the directory, so
+    // the name the user gave and the name on disk differ. Everything downstream
+    // compares paths, so the question is whether validation hands back the name
+    // that exists or the name that was typed.
+    it.each([
+      ['space', 'trailing-space '],
+      ['dot', 'trailing-dot.'],
+    ])(
+      'resolves a directory created with a trailing %s to the name on disk',
+      async (_label, spelledName) => {
+        const spelledPath = path.join(tmpRoot, spelledName);
+        fs.ensureDirSync(spelledPath);
+
+        const strippedPath = path.join(tmpRoot, spelledName.slice(0, -1));
+
+        // Precondition: the platform really did strip it. Without this the
+        // assertions below would hold trivially on a filesystem that keeps the
+        // name intact.
+        expect(fs.existsSync(strippedPath)).toBe(true);
+        expect(fs.realpathSync(spelledPath)).toBe(strippedPath);
+
+        // The comparison the product uses does not strip, so the two spellings
+        // are not the same path to it, while they are the same directory to the
+        // filesystem. Recorded rather than worked around: it only matters once
+        // a stored custom path is compared against a resolved one.
+        expect(isSamePath(spelledPath, strippedPath)).toBe(false);
+      }
+    );
+
+    // Whether a path past the classic limit can be created depends on whether
+    // long path support is enabled on the machine, and both answers are
+    // legitimate. So the assertion ties the verdict to the observable fact
+    // rather than to a guess about the runner: validation accepts the location
+    // exactly when the directory is there, and never falls through to the
+    // generic reason either way.
+    it(
+      'agrees with the filesystem about a path beyond MAX_PATH',
+      async () => {
+        const stateDir = path.join(tmpRoot, 'state');
+        fs.ensureDirSync(stateDir);
+
+        const segment = 'x'.repeat(40);
+        const segmentCount =
+          Math.ceil((MAX_PATH - tmpRoot.length) / (segment.length + 1)) + 2;
+        const longPath = path.join(
+          tmpRoot,
+          ...Array(segmentCount).fill(segment)
+        );
+        expect(longPath.length).toBeGreaterThan(MAX_PATH);
+
+        try {
+          fs.ensureDirSync(longPath);
+        } catch {
+          // Long paths are not available here. That is one of the two outcomes
+          // under test, not a failure to set the fixture up.
+        }
+        const exists = fs.existsSync(longPath);
+
+        // Pure string work, so it holds at any length and on either outcome.
+        // The nesting checks depend on it and run on whatever the user picked.
+        expect(isSubPath(tmpRoot, longPath)).toBe(true);
+
+        const result = await validateChainStorageDirectory(
+          longPath,
+          stateDir,
+          makeGetDefaultConfig(path.join(stateDir, CHAIN_DIRECTORY_NAME)),
+          0
+        );
+
+        expect(result.isValid).toBe(exists);
+        expect(result.reason).not.toBe('unknown');
+      },
+      DISK_SPACE_TIMEOUT_MS
+    );
   });
 });
