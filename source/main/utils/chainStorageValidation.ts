@@ -20,6 +20,59 @@ type GetDefaultConfig = () => Promise<
 >;
 
 /**
+ * How long the free-space probe is given before validation continues without it.
+ *
+ * `checkDiskSpace` spawns a subprocess on Windows and a cold start there costs
+ * seconds. This runs while the user waits on the directory picker, so it is held
+ * to a shorter allowance than the background poll in handleDiskSpace, which has
+ * nobody waiting on it.
+ */
+const DISK_SPACE_PROBE_TIMEOUT = 5 * 1000;
+
+/**
+ * Reads free space at `targetPath`, or resolves null when it cannot be read in
+ * time.
+ *
+ * A probe that is slow, hung or failing says nothing about whether the directory
+ * the user picked is usable, so it must not decide the outcome. handleDiskSpace
+ * already takes this position for the periodic check: an unreadable probe is
+ * logged and cardano-node is started anyway.
+ */
+const readFreeSpace = async (
+  targetPath: string,
+  timeout: number
+): Promise<number | null> => {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+
+  try {
+    return await Promise.race([
+      checkDiskSpace(targetPath)
+        .then(({ free }) => free)
+        .catch((error) => {
+          logger.warn('ChainStorageManager: free space probe failed', {
+            error,
+            targetPath,
+          });
+          return null;
+        }),
+      new Promise<null>((resolve) => {
+        timer = setTimeout(() => {
+          logger.warn('ChainStorageManager: free space probe timed out', {
+            targetPath,
+            timeout,
+          });
+          resolve(null);
+        }, timeout);
+      }),
+    ]);
+  } finally {
+    // Without this the timer holds the event loop open for its full duration
+    // after the probe has already answered.
+    if (timer) clearTimeout(timer);
+  }
+};
+
+/**
  * Returns true when `child` is equal to or nested under `parent`.
  */
 export function isSubPath(parent: string, child: string): boolean {
@@ -63,12 +116,14 @@ export function isSamePath(a: string, b: string): boolean {
  * @param stateDir      The Daedalus state directory path
  * @param getDefaultConfig  Resolves default storage metadata
  * @param requiredSpace Minimum free-space threshold in bytes
+ * @param diskSpaceTimeout How long to wait for the free-space probe, in ms
  */
 export async function validateChainStorageDirectory(
   targetDir: string | null,
   stateDir: string,
   getDefaultConfig: GetDefaultConfig,
-  requiredSpace: number = DISK_SPACE_REQUIRED
+  requiredSpace: number = DISK_SPACE_REQUIRED,
+  diskSpaceTimeout: number = DISK_SPACE_PROBE_TIMEOUT
 ): Promise<ChainStorageValidation> {
   const chainPath = path.join(stateDir, CHAIN_DIRECTORY_NAME);
   const normalizedPath =
@@ -261,8 +316,12 @@ export async function validateChainStorageDirectory(
       }
     }
 
-    const { free } = await checkDiskSpace(resolvedValidationPath);
-    if (free < requiredSpace) {
+    const free = await readFreeSpace(resolvedValidationPath, diskSpaceTimeout);
+
+    // Only a figure that was actually read can reject the directory. When the
+    // probe does not answer, the selection is accepted without a free-space
+    // figure rather than blocked on a reading nobody has.
+    if (free != null && free < requiredSpace) {
       return {
         ...defaultValidation,
         resolvedPath: resolvedValidationPath,
@@ -278,7 +337,7 @@ export async function validateChainStorageDirectory(
       isValid: true,
       path: validationPath,
       resolvedPath: resolvedValidationPath,
-      availableSpaceBytes: free,
+      availableSpaceBytes: free ?? undefined,
       requiredSpaceBytes: requiredSpace,
       chainSubdirectoryStatus,
     };
