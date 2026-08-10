@@ -56,11 +56,11 @@ const expectWritesDenied = (dir: string) => {
 //
 // The real-reparse-point behaviour that is settled has its own suite in
 // chainStorageWindows.realfs.spec.ts.
-//
 // `checkDiskSpace` shells out on Windows, and a cold subprocess start costs
-// seconds, so every assertion reaching it needs more than Jest's default five.
-// Slow rather than broken, but worth knowing that a user-facing validation path
-// pays that cost on every call.
+// seconds. The probe is bounded now, so a case that reaches it takes at most
+// that bound plus the filesystem work, but the bound is itself longer than
+// Jest's default five seconds. Every case that reaches the probe therefore
+// carries this allowance.
 const DISK_SPACE_TIMEOUT_MS = 30_000;
 
 const describeOnPosix = process.platform === 'win32' ? describe.skip : describe;
@@ -169,18 +169,22 @@ describe('validateChainStorageDirectory against a real filesystem', () => {
     expect(result.isValid).toBe(false);
   });
 
-  it('accepts a directory whose path contains spaces and non-ASCII characters', async () => {
-    const target = path.join(tmpRoot, 'Ünïcödé 目録 dir');
-    fs.mkdirSync(target);
+  it(
+    'accepts a directory whose path contains spaces and non-ASCII characters',
+    async () => {
+      const target = path.join(tmpRoot, 'Ünïcödé 目録 dir');
+      fs.mkdirSync(target);
 
-    const result = await validateChainStorageDirectory(
-      target,
-      stateDir,
-      makeGetDefaultConfig(path.join(stateDir, 'chain')),
-      REQUIRED_SPACE
-    );
+      const result = await validateChainStorageDirectory(
+        target,
+        stateDir,
+        makeGetDefaultConfig(path.join(stateDir, 'chain')),
+        REQUIRED_SPACE
+      );
 
-    expect(result.reason).toBeUndefined();
-    expect(result.isValid).toBe(true);
-  });
+      expect(result.reason).toBeUndefined();
+      expect(result.isValid).toBe(true);
+    },
+    DISK_SPACE_TIMEOUT_MS
+  );
 });
