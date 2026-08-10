@@ -140,6 +140,56 @@ describe('validateChainStorageDirectory', () => {
     );
   });
 
+  // The state a real POSIX filesystem will not produce: the existence probe
+  // succeeds and the resolution then fails. It is what Windows does with a
+  // reparse point whose target has been removed, and without handling it the
+  // error reaches the generic catch and the reason degrades to 'unknown'.
+  it('returns path-not-found when the target exists but cannot be resolved', async () => {
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+    (fs.realpath as unknown as jest.Mock).mockRejectedValue(
+      Object.assign(new Error('ENOENT: no such file or directory'), {
+        code: 'ENOENT',
+      })
+    );
+
+    const result = await validateChainStorageDirectory(
+      '/mnt/dangling',
+      STATE_DIR,
+      makeGetDefaultConfig()
+    );
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        isValid: false,
+        path: '/mnt/dangling',
+        reason: 'path-not-found',
+      })
+    );
+  });
+
+  // A resolution failure that is not a missing path must not be relabelled.
+  // EACCES on an ancestor means the location may well exist, and reporting it
+  // as not found would send the user looking for the wrong problem.
+  it('does not report an unreadable path as path-not-found', async () => {
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+    (fs.realpath as unknown as jest.Mock).mockRejectedValue(
+      Object.assign(new Error('EACCES: permission denied'), { code: 'EACCES' })
+    );
+
+    const result = await validateChainStorageDirectory(
+      '/mnt/unreadable',
+      STATE_DIR,
+      makeGetDefaultConfig()
+    );
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        isValid: false,
+        reason: 'unknown',
+      })
+    );
+  });
+
   it('returns not-writable when the target path is not a directory', async () => {
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
     (fs.realpath as unknown as jest.Mock).mockResolvedValue('/mnt/file.txt');
