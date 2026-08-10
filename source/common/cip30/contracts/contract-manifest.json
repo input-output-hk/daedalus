@@ -1,0 +1,460 @@
+{
+  "version": 1,
+  "schemaDraft": "http://json-schema.org/draft-07/schema#",
+  "providerPath": "window.cardano.daedalus",
+  "providerProperties": [
+    {
+      "path": "apiVersion",
+      "kind": "value",
+      "schema": { "const": "1" }
+    },
+    {
+      "path": "name",
+      "kind": "value",
+      "schemaRef": "common.json#/definitions/nonEmptyString"
+    },
+    {
+      "path": "icon",
+      "kind": "value",
+      "schemaRef": "common.json#/definitions/nonEmptyString"
+    },
+    {
+      "path": "supportedExtensions",
+      "kind": "value",
+      "schemaRef": "common.json#/definitions/extensions"
+    }
+  ],
+  "extensions": {
+    "registryOrder": [95, 103, 104, 142],
+    "descriptors": [
+      {
+        "cip": 95,
+        "status": "active",
+        "namespace": "cip95",
+        "overrides": ["api.signTx"],
+        "dependencies": [],
+        "incompatibleWith": []
+      },
+      {
+        "cip": 103,
+        "status": "active",
+        "namespace": "cip103",
+        "overrides": [],
+        "dependencies": [],
+        "incompatibleWith": [],
+        "composition": "Delegates each item to the effective base signer without reordering."
+      },
+      {
+        "cip": 104,
+        "status": "proposed-disabled",
+        "namespace": "cip104",
+        "overrides": [],
+        "dependencies": [],
+        "incompatibleWith": [],
+        "reason": "Positive cbor<Bip32PublicKey> encoding remains gated by task-404."
+      },
+      {
+        "cip": 142,
+        "status": "proposed-policy-gated",
+        "namespace": "cip142",
+        "overrides": [],
+        "dependencies": [],
+        "incompatibleWith": []
+      }
+    ],
+    "negotiation": {
+      "malformedRequest": "Reject the complete enable call with APIError.InvalidRequest.",
+      "unknownOrUnavailable": "Omit without failing enable.",
+      "duplicates": "Collapse by CIP number.",
+      "ordering": "Filter and return in registryOrder, never request order.",
+      "dependencies": "Omit a candidate whose declared dependency is unavailable.",
+      "conflicts": "The first candidate in registryOrder wins.",
+      "policyDisabledMetadata": "Omit from supportedExtensions, getExtensions, and namespace properties.",
+      "repeatedEnable": "A successful call replaces the live enabled set, returns a fresh API object, and revokes the old API capability.",
+      "namespaceAbsence": "An unnegotiated namespace is not an own property and property access yields undefined.",
+      "getExtensions": "Authoritative snapshot of the latest successful enabled set."
+    },
+    "explicitlyAbsent": [8, 106, 141]
+  },
+  "limits": {
+    "decodedBytesPerTransactionOrPayload": {
+      "maximum": 65536,
+      "measurement": "Decoded bytes of each complete transaction CBOR argument or exact signData payload, not hex characters or a transaction-body span.",
+      "batchAggregateMaximum": null,
+      "error": "APIError.InvalidRequest"
+    },
+    "cip103Items": {
+      "minimum": 1,
+      "maximum": 50,
+      "error": "APIError.InvalidRequest"
+    },
+    "pagination": {
+      "pageMinimum": 0,
+      "limitMinimum": 1,
+      "limitMaximum": 100,
+      "numbers": "finite safe integers",
+      "policyError": "APIError.InvalidRequest",
+      "outOfRangeError": "PaginateError"
+    },
+    "consentInactivityMilliseconds": 300000,
+    "networkMagic": {
+      "minimum": 0,
+      "maximum": 4294967295,
+      "numbers": "finite integers"
+    },
+    "validationOrder": [
+      "Authenticate exact guest WebContents, top frame, origin, document generation, and route lease.",
+      "Validate invocation shape, hex, CBOR, decoded size, capability, and route state.",
+      "Only then permit backend access, consent, signing, or submission side effects."
+    ]
+  },
+  "resultEnvelope": {
+    "schemaRef": "envelope.json#/definitions/resultEnvelope",
+    "fulfilled": { "status": "fulfilled", "fields": ["status", "value"] },
+    "rejected": {
+      "status": "rejected",
+      "fields": ["status", "rejection"],
+      "rejectionFields": ["type", "value"],
+      "types": [
+        "api-error",
+        "paginate-error",
+        "tx-sign-error",
+        "data-sign-error",
+        "tx-send-error",
+        "cip103-submit-error"
+      ]
+    },
+    "publicBehavior": "The preload rejects with rejection.value directly; it never exposes the envelope or a generic Error.",
+    "dataOnly": "Scalars, arrays, and plain own enumerable data records only; no Error, custom prototype, accessor, function, symbol, Date, Map, or Set."
+  },
+  "rejectionSchemas": {
+    "apiError": "errors.json#/definitions/apiError",
+    "paginateError": "errors.json#/definitions/paginateError",
+    "txSignError": "errors.json#/definitions/txSignError",
+    "dataSignError": "errors.json#/definitions/dataSignError",
+    "txSendError": "errors.json#/definitions/txSendError",
+    "cip103SubmitError": "errors.json#/definitions/cip103SubmitError"
+  },
+  "consentExpiry": {
+    "connectionOrDisclosure": { "error": "APIError", "code": -3 },
+    "signTxOrSignTxs": { "error": "TxSignError", "code": 2 },
+    "signData": { "error": "DataSignError", "code": 3 },
+    "submitTxOrSubmitTxs": { "error": "TxSendError", "code": 1 },
+    "submitTxsBeforeAttempt": "No mixed result array is produced."
+  },
+  "methods": [
+    {
+      "path": "provider.isEnabled",
+      "minArgs": 0,
+      "maxArgs": 0,
+      "args": [],
+      "successSchema": { "type": "boolean" },
+      "rejections": ["apiError"]
+    },
+    {
+      "path": "provider.enable",
+      "minArgs": 0,
+      "maxArgs": 1,
+      "args": [
+        {
+          "name": "options",
+          "required": false,
+          "undefinedMeansOmitted": true,
+          "default": {},
+          "schemaRef": "common.json#/definitions/enableOptions"
+        }
+      ],
+      "successSchema": { "type": "object" },
+      "rejections": ["apiError"]
+    },
+    {
+      "path": "api.getExtensions",
+      "minArgs": 0,
+      "maxArgs": 0,
+      "args": [],
+      "successSchemaRef": "common.json#/definitions/extensions",
+      "rejections": ["apiError"]
+    },
+    {
+      "path": "api.getNetworkId",
+      "minArgs": 0,
+      "maxArgs": 0,
+      "args": [],
+      "successSchemaRef": "common.json#/definitions/networkId",
+      "rejections": ["apiError"]
+    },
+    {
+      "path": "api.getUtxos",
+      "minArgs": 0,
+      "maxArgs": 2,
+      "args": [
+        {
+          "name": "amount",
+          "required": false,
+          "undefinedMeansOmitted": true,
+          "default": "omitted",
+          "schemaRef": "common.json#/definitions/nonEmptyHexBytes"
+        },
+        {
+          "name": "paginate",
+          "required": false,
+          "undefinedMeansOmitted": true,
+          "default": "omitted",
+          "schemaRef": "common.json#/definitions/paginate"
+        }
+      ],
+      "successSchemaRef": "common.json#/definitions/utxoResults",
+      "rejections": ["apiError", "paginateError"]
+    },
+    {
+      "path": "api.getCollateral",
+      "minArgs": 1,
+      "maxArgs": 1,
+      "args": [
+        {
+          "name": "params",
+          "required": true,
+          "undefinedMeansOmitted": false,
+          "schemaRef": "common.json#/definitions/getCollateralParams"
+        }
+      ],
+      "successSchemaRef": "common.json#/definitions/utxoResults",
+      "rejections": ["apiError"],
+      "semantics": "Pure-ADA current candidates or null; side-effect-free; no Daedalus 5 ADA request cap."
+    },
+    {
+      "path": "api.getBalance",
+      "minArgs": 0,
+      "maxArgs": 0,
+      "args": [],
+      "successSchemaRef": "common.json#/definitions/nonEmptyHexBytes",
+      "rejections": ["apiError"]
+    },
+    {
+      "path": "api.getUsedAddresses",
+      "minArgs": 0,
+      "maxArgs": 1,
+      "args": [
+        {
+          "name": "paginate",
+          "required": false,
+          "undefinedMeansOmitted": true,
+          "default": "omitted",
+          "schemaRef": "common.json#/definitions/paginate"
+        }
+      ],
+      "successSchemaRef": "common.json#/definitions/addressResults",
+      "rejections": ["apiError", "paginateError"]
+    },
+    {
+      "path": "api.getUnusedAddresses",
+      "minArgs": 0,
+      "maxArgs": 0,
+      "args": [],
+      "successSchemaRef": "common.json#/definitions/addressResults",
+      "rejections": ["apiError"]
+    },
+    {
+      "path": "api.getChangeAddress",
+      "minArgs": 0,
+      "maxArgs": 0,
+      "args": [],
+      "successSchemaRef": "common.json#/definitions/addressResult",
+      "rejections": ["apiError"]
+    },
+    {
+      "path": "api.getRewardAddresses",
+      "minArgs": 0,
+      "maxArgs": 0,
+      "args": [],
+      "successSchemaRef": "common.json#/definitions/addressResults",
+      "rejections": ["apiError"]
+    },
+    {
+      "path": "api.signTx",
+      "minArgs": 1,
+      "maxArgs": 2,
+      "args": [
+        {
+          "name": "tx",
+          "required": true,
+          "undefinedMeansOmitted": false,
+          "schemaRef": "common.json#/definitions/nonEmptyHexBytes",
+          "decodedByteMaximum": 65536
+        },
+        {
+          "name": "partialSign",
+          "required": false,
+          "undefinedMeansOmitted": true,
+          "default": false,
+          "schema": { "type": "boolean" }
+        }
+      ],
+      "successSchemaRef": "common.json#/definitions/nonEmptyHexBytes",
+      "rejections": ["apiError", "txSignError"],
+      "partialSignNoApplicableKey": "Resolve with canonical empty witness-set CBOR a0."
+    },
+    {
+      "path": "api.signData",
+      "minArgs": 2,
+      "maxArgs": 2,
+      "args": [
+        {
+          "name": "addr",
+          "required": true,
+          "undefinedMeansOmitted": false,
+          "schemaRef": "common.json#/definitions/addressInput"
+        },
+        {
+          "name": "payload",
+          "required": true,
+          "undefinedMeansOmitted": false,
+          "schemaRef": "common.json#/definitions/hexBytes",
+          "decodedByteMaximum": 65536
+        }
+      ],
+      "successSchemaRef": "common.json#/definitions/dataSignature",
+      "rejections": ["apiError", "dataSignError"]
+    },
+    {
+      "path": "api.submitTx",
+      "minArgs": 1,
+      "maxArgs": 1,
+      "args": [
+        {
+          "name": "tx",
+          "required": true,
+          "undefinedMeansOmitted": false,
+          "schemaRef": "common.json#/definitions/nonEmptyHexBytes",
+          "decodedByteMaximum": 65536
+        }
+      ],
+      "successSchemaRef": "common.json#/definitions/hash32",
+      "rejections": ["apiError", "txSendError"]
+    },
+    {
+      "path": "api.cip95.getPubDRepKey",
+      "extension": 95,
+      "minArgs": 0,
+      "maxArgs": 0,
+      "args": [],
+      "successSchemaRef": "common.json#/definitions/publicKey32",
+      "rejections": ["apiError"]
+    },
+    {
+      "path": "api.cip95.getRegisteredPubStakeKeys",
+      "extension": 95,
+      "minArgs": 0,
+      "maxArgs": 0,
+      "args": [],
+      "successSchemaRef": "common.json#/definitions/publicKeys",
+      "rejections": ["apiError"]
+    },
+    {
+      "path": "api.cip95.getUnregisteredPubStakeKeys",
+      "extension": 95,
+      "minArgs": 0,
+      "maxArgs": 0,
+      "args": [],
+      "successSchemaRef": "common.json#/definitions/publicKeys",
+      "rejections": ["apiError"]
+    },
+    {
+      "path": "api.cip95.signData",
+      "extension": 95,
+      "minArgs": 2,
+      "maxArgs": 2,
+      "args": [
+        {
+          "name": "addr",
+          "required": true,
+          "undefinedMeansOmitted": false,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "https://daedaluswallet.io/schemas/cip30/common.json#/definitions/addressInput"
+              },
+              {
+                "$ref": "https://daedaluswallet.io/schemas/cip30/common.json#/definitions/drepId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payload",
+          "required": true,
+          "undefinedMeansOmitted": false,
+          "schemaRef": "common.json#/definitions/hexBytes",
+          "decodedByteMaximum": 65536
+        }
+      ],
+      "successSchemaRef": "common.json#/definitions/dataSignature",
+      "rejections": ["apiError", "dataSignError"]
+    },
+    {
+      "path": "api.cip103.signTxs",
+      "extension": 103,
+      "minArgs": 1,
+      "maxArgs": 1,
+      "args": [
+        {
+          "name": "txs",
+          "required": true,
+          "undefinedMeansOmitted": false,
+          "schemaRef": "common.json#/definitions/transactionSignatureRequests",
+          "decodedByteMaximumPerItem": 65536,
+          "itemDefaults": { "partialSign": false }
+        }
+      ],
+      "successSchemaRef": "common.json#/definitions/witnessSets",
+      "rejections": ["apiError", "txSignError"],
+      "failureInfo": "Transaction at index <n> failed, where n is the first failing zero-based decimal index. No witness array is released."
+    },
+    {
+      "path": "api.cip103.submitTxs",
+      "extension": 103,
+      "minArgs": 1,
+      "maxArgs": 1,
+      "args": [
+        {
+          "name": "txs",
+          "required": true,
+          "undefinedMeansOmitted": false,
+          "schemaRef": "common.json#/definitions/transactions",
+          "decodedByteMaximumPerItem": 65536
+        }
+      ],
+      "successSchemaRef": "common.json#/definitions/hashes",
+      "rejections": ["apiError", "txSendError", "cip103SubmitError"],
+      "attemptSemantics": "After authorization, attempt every item in caller order. Any failure rejects directly with an aligned mixed array."
+    },
+    {
+      "path": "api.cip104.getAccountPub",
+      "extension": 104,
+      "availability": "disabled-until-task-404",
+      "minArgs": 0,
+      "maxArgs": 0,
+      "args": [],
+      "successSchemaRef": "common.json#/definitions/nonEmptyHexBytes",
+      "rejections": ["apiError"],
+      "unresolved": "Exact cbor<Bip32PublicKey> positive encoding."
+    },
+    {
+      "path": "api.cip142.getNetworkMagic",
+      "extension": 142,
+      "availability": "policy-gated",
+      "minArgs": 0,
+      "maxArgs": 0,
+      "args": [],
+      "successSchemaRef": "common.json#/definitions/networkMagic",
+      "rejections": ["apiError"]
+    }
+  ],
+  "invocationRules": {
+    "extraArguments": "Any argument beyond maxArgs, including trailing undefined, rejects with APIError.InvalidRequest.",
+    "requiredArguments": "Omission or explicit undefined rejects with APIError.InvalidRequest.",
+    "optionalArguments": "Omission and explicit undefined are equivalent only when undefinedMeansOmitted is true.",
+    "objects": "Only declared own fields are accepted; inherited enumerable fields and accessors reject.",
+    "unsupportedValues": "Functions, symbols, bigint where a JavaScript number is required, NaN, and infinities reject with APIError.InvalidRequest."
+  }
+}

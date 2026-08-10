@@ -155,6 +155,18 @@ This work matters because a connector that is merely functional but not byte-exa
 
 CIP documents are living standards; the plan does not pin document revisions. Instead, task 002 freezes golden fixtures and contract excerpts for every implemented wire contract, and conformance tasks validate against current ecosystem behavior (Lace, Yoroi, Cardano JS SDK, and Eternl/Typhon/Lucid-compatible clients where available). Any upstream behavioral delta discovered during conformance work is documented and resolved, or the affected capability remains disabled.
 
+Task-002 freezes the phase-0 inputs consumed by later production validation:
+
+| Artifact | Role |
+|---|---|
+| `source/common/cip30/contracts/contract-manifest.json` | Provider properties, JavaScript invocation rules, all public method paths, negotiation, errors, limits, consent expiry, and the internal result envelope |
+| `source/common/cip30/contracts/schemas/` | JSON Schema draft-07 definitions for JSON-representable public values, errors, and clone-safe results |
+| `source/common/cip30/contracts/fixtures/` | Provenance-backed CBOR, COSE, address, error, negotiation, limit, and gated-extension vectors |
+| `source/common/cip30/contracts/contractFixtures.spec.ts` | Schema, coverage, exact-byte, signature, Bech32, limit, and structured-clone evidence |
+| `research/02-cip30-wire-contract-evidence.md` | Source revisions, conflict resolutions, ecosystem comparison, reproduction commands, and residual gates |
+
+These are contract inputs, not production validators or dispatch code. Task-300 must implement strict shared runtime validators and prove equivalence without silently changing the frozen behavior. CIP-104 remains omitted until task-404 proves one exact positive encoding.
+
 ### Collateral Comparisons
 
 - Lace collateral flow: https://github.com/input-output-hk/lace/tree/main/packages/module/cardano-collateral-flow

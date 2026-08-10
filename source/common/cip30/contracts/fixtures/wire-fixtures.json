@@ -1,0 +1,225 @@
+{
+  "coin": {
+    "positive": ["00", "17", "1818", "1bffffffffffffffff"],
+    "negative": ["20", "c249010000000000000000", "f93c00", "00ff", "1800"]
+  },
+  "baseApi": {
+    "minimalValue": "00",
+    "transactionInput": "825820000000000000000000000000000000000000000000000000000000000000000000",
+    "transactionOutput": "82581d6127e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b4300",
+    "transactionUnspentOutput": "8282582000000000000000000000000000000000000000000000000000000000000000000082581d6127e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b4300",
+    "getUtxos": {
+      "covered": [
+        "8282582000000000000000000000000000000000000000000000000000000000000000000082581d6127e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b4300"
+      ],
+      "insufficient": null
+    },
+    "getCollateral": {
+      "covered": [
+        "8282582000000000000000000000000000000000000000000000000000000000000000000082581d6127e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b4300"
+      ],
+      "insufficient": null,
+      "sideEffect": "none",
+      "daedalusAdaCap": null
+    }
+  },
+  "emptyWitnessSet": "a0",
+  "addresses": [
+    {
+      "name": "mainnet-base-key-key",
+      "type": 0,
+      "networkId": 1,
+      "hrp": "addr",
+      "classification": "owned-payment",
+      "raw": "0127e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b4300112233445566778899aabbccddeeff00112233445566778899aabb",
+      "bech32": "addr1qyn78rgwr835xn3nl0gqr5l7qj6mwemrlz9v6cj7p4mskscqzy3rx3z4vemc3xd2h0xdmmhlqqgjyv6y24n80zye42ashypcu4"
+    },
+    {
+      "name": "testnet-base-key-script",
+      "type": 2,
+      "networkId": 0,
+      "hrp": "addr_test",
+      "classification": "owned-payment",
+      "raw": "2027e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b4300112233445566778899aabbccddeeff00112233445566778899aabb",
+      "bech32": "addr_test1yqn78rgwr835xn3nl0gqr5l7qj6mwemrlz9v6cj7p4mskscqzy3rx3z4vemc3xd2h0xdmmhlqqgjyv6y24n80zye42as2v889t"
+    },
+    {
+      "name": "testnet-pointer-key",
+      "type": 4,
+      "networkId": 0,
+      "hrp": "addr_test",
+      "classification": "unowned-payment-proof-generation",
+      "raw": "4027e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43000000",
+      "bech32": "addr_test1gqn78rgwr835xn3nl0gqr5l7qj6mwemrlz9v6cj7p4mskscqqqqq6mjgaq"
+    },
+    {
+      "name": "mainnet-enterprise-matching-drep",
+      "type": 6,
+      "networkId": 1,
+      "hrp": "addr",
+      "classification": "matching-drep-normalized-to-raw-hash",
+      "expectedOutcome": "drep-success",
+      "protectedAddress": "27e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43",
+      "raw": "6127e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43",
+      "bech32": "addr1vyn78rgwr835xn3nl0gqr5l7qj6mwemrlz9v6cj7p4msksc89qqvj"
+    },
+    {
+      "name": "mainnet-enterprise-nonmatching-drep",
+      "type": 6,
+      "networkId": 1,
+      "hrp": "addr",
+      "classification": "owned-payment",
+      "expectedOutcome": "payment-success",
+      "protectedAddress": "6100112233445566778899aabbccddeeff00112233445566778899aabb",
+      "raw": "6100112233445566778899aabbccddeeff00112233445566778899aabb",
+      "bech32": "addr1vyqpzg3ng32kvaugnx4thnxaamlsqyfzxdz92enh3zv64wc8k3l5s"
+    },
+    {
+      "name": "mainnet-enterprise-unowned-payment",
+      "type": 6,
+      "networkId": 1,
+      "hrp": "addr",
+      "classification": "unowned-payment-proof-generation",
+      "expectedOutcome": "DataSignError.ProofGeneration",
+      "raw": "61ffeeddccbbaa99887766554433221100ffeeddccbbaa9988776655",
+      "bech32": "addr1v8l7ahwvhw4fnzrhve25gvezzyq0lmkaeja64xvgwan92wygune"
+    },
+    {
+      "name": "mainnet-reward-key",
+      "type": 14,
+      "networkId": 1,
+      "hrp": "stake",
+      "classification": "owned-stake",
+      "raw": "e100112233445566778899aabbccddeeff00112233445566778899aabb",
+      "bech32": "stake1uyqpzg3ng32kvaugnx4thnxaamlsqyfzxdz92enh3zv64wcmu3egz"
+    },
+    {
+      "name": "testnet-reward-key",
+      "type": 14,
+      "networkId": 0,
+      "hrp": "stake_test",
+      "classification": "owned-stake",
+      "raw": "e000112233445566778899aabbccddeeff00112233445566778899aabb",
+      "bech32": "stake_test1uqqpzg3ng32kvaugnx4thnxaamlsqyfzxdz92enh3zv64wcukmmvl"
+    },
+    {
+      "name": "mainnet-base-script-key",
+      "type": 1,
+      "networkId": 1,
+      "hrp": "addr",
+      "classification": "address-not-pk",
+      "expectedOutcome": "DataSignError.AddressNotPK",
+      "raw": "1127e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b4300112233445566778899aabbccddeeff00112233445566778899aabb",
+      "bech32": "addr1zyn78rgwr835xn3nl0gqr5l7qj6mwemrlz9v6cj7p4mskscqzy3rx3z4vemc3xd2h0xdmmhlqqgjyv6y24n80zye42asctcrzp"
+    },
+    {
+      "name": "testnet-base-script-script",
+      "type": 3,
+      "networkId": 0,
+      "hrp": "addr_test",
+      "classification": "address-not-pk",
+      "expectedOutcome": "DataSignError.AddressNotPK",
+      "raw": "3027e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b4300112233445566778899aabbccddeeff00112233445566778899aabb",
+      "bech32": "addr_test1xqn78rgwr835xn3nl0gqr5l7qj6mwemrlz9v6cj7p4mskscqzy3rx3z4vemc3xd2h0xdmmhlqqgjyv6y24n80zye42as9r7uml"
+    },
+    {
+      "name": "testnet-pointer-script",
+      "type": 5,
+      "networkId": 0,
+      "hrp": "addr_test",
+      "classification": "address-not-pk",
+      "expectedOutcome": "DataSignError.AddressNotPK",
+      "raw": "5027e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43000000",
+      "bech32": "addr_test12qn78rgwr835xn3nl0gqr5l7qj6mwemrlz9v6cj7p4mskscqqqqqhqvngl"
+    },
+    {
+      "name": "mainnet-enterprise-script",
+      "type": 7,
+      "networkId": 1,
+      "hrp": "addr",
+      "classification": "address-not-pk",
+      "expectedOutcome": "DataSignError.AddressNotPK",
+      "raw": "7127e38d0e19e3434e33fbd001d3fe04b5b76763f88acd625e0d770b43",
+      "bech32": "addr1wyn78rgwr835xn3nl0gqr5l7qj6mwemrlz9v6cj7p4mskscwduqmj"
+    },
+    {
+      "name": "testnet-reward-script",
+      "type": 15,
+      "networkId": 0,
+      "hrp": "stake_test",
+      "classification": "address-not-pk",
+      "expectedOutcome": "DataSignError.AddressNotPK",
+      "raw": "f000112233445566778899aabbccddeeff00112233445566778899aabb",
+      "bech32": "stake_test17qqpzg3ng32kvaugnx4thnxaamlsqyfzxdz92enh3zv64wc478mml"
+    }
+  ],
+  "addressNegatives": [
+    {
+      "name": "prefixed-hex",
+      "value": "0x6127e3",
+      "error": "APIError.InvalidRequest"
+    },
+    {
+      "name": "wrong-hrp",
+      "value": "stake1vyn78rgwr835xn3nl0gqr5l7qj6mwemrlz9v6cj7p4mskscpakxvq",
+      "error": "APIError.InvalidRequest"
+    },
+    {
+      "name": "wrong-route-network",
+      "value": "addr_test1vyn78rgwr835xn3nl0gqr5l7qj6mwemrlz9v6cj7p4msksculydrs",
+      "error": "APIError.InvalidRequest"
+    },
+    {
+      "name": "malformed-shelley-length",
+      "value": "61aa",
+      "error": "APIError.InvalidRequest"
+    },
+    {
+      "name": "byron-address-bytes",
+      "value": "82d818582183581c00000000000000000000000000000000000000000000000000000000a0001a00000000",
+      "error": "APIError.InvalidRequest"
+    },
+    {
+      "name": "future-address-type",
+      "value": "8000112233445566778899aabbccddeeff00112233445566778899aabb",
+      "error": "APIError.InvalidRequest"
+    }
+  ],
+  "networkMagic": {
+    "mainnet": 764824073,
+    "preprod": 1,
+    "preview": 2,
+    "custom": 42,
+    "minimum": 0,
+    "maximum": 4294967295
+  },
+  "limits": {
+    "decodedBytesAccepted": 65536,
+    "decodedBytesRejected": 65537,
+    "batchAccepted": 50,
+    "batchRejected": 51,
+    "pageLimitAccepted": 100,
+    "pageLimitRejected": 101,
+    "consentInactivityMilliseconds": 300000
+  },
+  "negotiation": [
+    {
+      "name": "unknown-omitted",
+      "requested": [95, 9999],
+      "available": [95, 103],
+      "enabled": [95]
+    },
+    {
+      "name": "duplicate-and-request-order",
+      "requested": [103, 95, 103],
+      "available": [95, 103],
+      "enabled": [95, 103]
+    },
+    {
+      "name": "proposed-disabled-omitted",
+      "requested": [104, 142],
+      "available": [],
+      "enabled": []
+    }
+  ]
+}
