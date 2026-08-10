@@ -1,0 +1,2061 @@
+{
+  "metadata": {
+    "title": "Embedded dApp Browser And CIP-30 Wallet Connector Tasks",
+    "created": "2026-08-07",
+    "updated": "2026-08-08",
+    "version": "1.4.0",
+    "totalTasks": 81,
+    "prdReference": ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
+      "description": "Security- and standards-gated implementation graph for a wallet-scoped sandboxed dApp browser with CIP-30, CIP-8, CIP-95, CIP-103, gated CIP-104/CIP-142, software/hardware signing, ordered batch signing and submission, and soft collateral management.",
+    "sourceFiles": [
+      ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
+      ".agent/system/architecture.md",
+      ".agent/workflows/frontend.md",
+      ".agent/workflows/ipc.md",
+      ".agent/workflows/test.md",
+      "source/main/index.ts",
+      "source/main/windows/main.ts",
+      "source/main/preload.ts",
+      "source/common/ipc/api.ts",
+      "source/common/ipc/lib/IpcChannel.ts",
+      "source/main/ipc/getHardwareWalletChannel.ts",
+      "source/renderer/app/stores/WalletsStore.ts",
+      "source/renderer/app/stores/HardwareWalletsStore.ts",
+      "source/renderer/app/api/api.ts",
+      "source/renderer/app/utils/dataSerialization.ts",
+      "../cardano-wallet/flake.nix",
+      "../cardano-wallet/specifications/api/swagger.yaml",
+      "flake.nix",
+      "flake.lock",
+      "nix/internal/x86_64-linux.nix",
+      "package.json"
+    ],
+    "importantNote": "No production dApp guest may be enabled until privileged IPC sender authentication, packaged Chromium sandbox proof, full-ledger transaction context, exact byte-bound review/signing, physical hardware certification, and internal/external security reviews are complete. CIP-106 and CIP-141 are explicitly out of scope."
+  },
+  "phases": [
+    {
+      "id": "phase-0",
+      "name": "Contracts, Threat Model, And Validation Spikes",
+      "description": "Lock normative contracts and resolve the highest-risk backend, parser, sandbox, hardware, and proposed-extension unknowns before implementation depends on them.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Write the hostile-renderer threat model and architecture ADR",
+          "description": "Document trust boundaries, protected assets, attacker capabilities, route/origin/session invariants, approval-byte binding, the documented product limits, and release gates for the guest browser and connector.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 12,
+          "dependencies": [],
+          "targetPaths": [
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
+            ".agent/system/architecture.md"
+          ],
+          "implementationNotes": [
+            "Treat remote content as hostile even when catalogued.",
+            "Document the product limits (request CBOR size, CIP-103 batch size, page size, consent inactivity timeout) and treat within-limit availability as ordinary robustness, without weakening confidentiality or integrity controls.",
+            "Define the existing trusted renderer as privileged legacy debt, not a guest host."
+          ],
+          "acceptance": [
+            "The threat model names every process, frame, IPC, backend, device, persistence, and network boundary.",
+            "The threat model documents product limits and distinguishes ordinary availability exposure from release-blocking integrity/confidentiality risks.",
+            "The ADR locks the separate BrowserWindow and main-owned broker architecture."
+          ],
+          "securityNotes": [
+            "This task blocks every guest or connector implementation task."
+          ]
+        },
+        {
+          "id": "task-002",
+          "title": "Freeze CIP-30 and extension wire contracts",
+          "description": "Define exact provider, base API, CIP-8, CIP-95, CIP-103, CIP-104, and CIP-142 schemas, negotiation behavior, namespace composition, typed errors, and internal Electron result envelopes.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 12,
+          "dependencies": ["task-001"],
+          "targetPaths": [
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
+            "source/common/cip30/"
+          ],
+          "implementationNotes": [
+            "Use namespaced CIP-95 getters matching Lace, Yoroi, and Cardano JS SDK despite the CIP text typo.",
+            "Keep CIP-8 out of extension negotiation.",
+            "Freeze the contract excerpts and golden fixtures used by implementation; wire contracts are pinned by fixtures, not by CIP document revisions.",
+            "Freeze the documented product limits (64 KiB request CBOR, 50-item CIP-103 batch, 100-entry page size, five-minute consent inactivity timeout) and their typed errors.",
+            "Produce CIP-8 body headers with both hashed:false and the required version:1.",
+            "Model CIP-103 mixed submission failure as a locally reconstructed rejected array.",
+            "Freeze partialSign=true with no applicable wallet key as a canonical empty witness-set success.",
+            "Freeze deprecated getCollateral as side-effect-free, nullable when current candidates are insufficient, and without a Daedalus-defined 5 ADA request maximum; document that this follows its nullable API type and ecosystem behavior where the deprecated prose conflicts.",
+            "Freeze CIP-95 DRep signData to accept the raw 28-byte DRep ID and a matching type-6 enterprise key address, while producing the raw 28-byte DRep key hash in the protected address header.",
+            "Record CIP-106 and CIP-141 as absent, not placeholder APIs."
+          ],
+          "testCases": [
+            "Unknown extension request is omitted without enable failure",
+            "Unnegotiated namespace is absent",
+            "CIP-103 mixed array survives the internal IPC envelope",
+            "CIP-95 base signTx override composes deterministically",
+            "partialSign=true with no owned key returns a canonical empty witness set",
+            "getCollateral returns null without preparing collateral when current candidates are insufficient",
+            "CIP-95 DRep signData accepts raw key-hash and matching type-6 address forms and produces the same raw-hash COSE header"
+          ],
+          "acceptance": [
+            "Every public argument, return value, and rejection has a runtime schema.",
+            "The error matrix includes CIP-95 DeprecatedCertificate and CIP-103 rejection semantics.",
+            "PaginateError and Bech32-or-hex Address input semantics are explicit.",
+            "Deprecated getCollateral's null/no-side-effect/no-5-ADA-cap decision and its rationale are explicit.",
+            "CIP-95 DRep input normalization and protected-header bytes are locked by an interoperability vector.",
+            "Golden extracts and fixtures are recorded for every implemented standard.",
+            "No open API-shape decision remains except the explicitly gated CIP-104 encoding."
+          ]
+        },
+        {
+          "id": "task-003",
+          "title": "Validate the cardano-wallet backend contract",
+          "description": "Design and validate in the sibling ../cardano-wallet checkout the full transaction-context, full UTxO, witness-only batch signing, CIP-8/CIP-95, and wallet-scoped pending-submission APIs consumed by the Daedalus pin.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 16,
+          "dependencies": ["task-001", "task-002"],
+          "targetPaths": [
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
+            "../cardano-wallet/",
+            "flake.nix",
+            "flake.lock"
+          ],
+          "implementationNotes": [
+            "Confirm how one coherent chain point includes full requested foreign inputs, wallet ownership, volatile delta, backend pending-submission state, and earlier outputs within the current batch request.",
+            "Do not rely on the lossy persisted wallet TxOut.",
+            "Version and capability-negotiate the new backend surface.",
+            "Resolve software partialSign completeness using pinned ledger rules.",
+            "Record the sibling repository branch/PR, reviewer, migration plan, and exact commit eligible for the Daedalus pin.",
+            "Upstream acceptance into cardano-wallet is the default path for every new API; any long-lived fork divergence requires explicit sign-off recorded in this task.",
+            "Reuse-first rule: the existing transactions-sign endpoint plus main-process witness-set diffing (task-306) is the baseline for witness-only responses; a new backend signing endpoint requires written justification."
+          ],
+          "acceptance": [
+            "The API contract names exact request/response semantics and consistency guarantees.",
+            "The ../cardano-wallet work owner and reviewer agree on how current-batch parent outputs and ownership are validated.",
+            "No renderer-supplied path or TxOut summary is authoritative.",
+            "The delivery artifact identifies the sibling repository branch/PR, reviewed commit, schema migration and rollback compatibility, and Daedalus pin update gate.",
+            "Each new backend API records upstream maintainer engagement and its acceptance path before phase 2 implementation begins.",
+            "The reuse-first evaluation of transactions-sign plus main-side witness diffing is documented; any new witness-signing endpoint carries written justification."
+          ]
+        },
+        {
+          "id": "task-004",
+          "title": "Validate exact-CBOR and era coverage",
+          "description": "Spike raw transaction-body/output span extraction and semantic decoding against target-era fixtures, evaluate the pinned Cardano SDK, and decide whether a dependency upgrade is required.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 16,
+          "dependencies": ["task-002"],
+          "targetPaths": [
+            "source/common/cardano/",
+            "package.json"
+          ],
+          "implementationNotes": [
+            "Prove exact body hashing without semantic reserialization.",
+            "Include witness set, outer isValid, auxiliary data, output spans, tagged sets, duplicate keys, and trailing bytes.",
+            "Cover all supported Conway fields and investigate Dijkstra readiness.",
+            "Upgrade @cardano-sdk/core only when fixtures show a concrete gap."
+          ],
+          "acceptance": [
+            "Golden fixtures prove exact raw-body and output-byte extraction.",
+            "The supported-era field matrix is explicit.",
+            "Unsupported or unknown fields have a fail-closed path.",
+            "The dependency decision is recorded with evidence."
+          ]
+        },
+        {
+          "id": "task-005",
+          "title": "Validate Linux Chromium sandbox packaging",
+          "description": "Determine and prove the supported Linux user-namespace or SUID-helper strategy for the self-extracting package and development environment without process-wide sandbox disablement.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 16,
+          "dependencies": ["task-001"],
+          "targetPaths": [
+            "nix/internal/x86_64-linux.nix",
+            "nix/internal/linux-self-extracting-archive.sh",
+            "source/main/webpack.config.js",
+            "README.md"
+          ],
+          "implementationNotes": [
+            "Test supported distributions with and without unprivileged user namespaces.",
+            "Do not accept process.sandboxed as the only proof.",
+            "Define fail-closed dApp feature behavior when users deliberately launch Daedalus without sandboxing."
+          ],
+          "acceptance": [
+            "The spike proves one viable packaged strategy and identifies the exact sandboxed renderer process under test.",
+            "The spike documents the concrete development/package flag changes owned by task-103.",
+            "Unsupported hosts disable dApp launch without silently weakening containment."
+          ],
+          "securityNotes": [
+            "No remote guest work may ship until this gate passes."
+          ]
+        },
+        {
+          "id": "task-006",
+          "title": "Freeze Ledger and Trezor capability matrices",
+          "description": "Certify installed and candidate Ledger/Trezor library, device-app, firmware, transaction-field, CIP-8, CIP-95, cancellation, and returned-hash behavior before adapters are implemented.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 16,
+          "dependencies": ["task-002"],
+          "targetPaths": [
+            "package.json",
+            "source/common/types/hardware-wallets.types.ts",
+            "hardware-wallet-tests/"
+          ],
+          "implementationNotes": [
+            "Evaluate Ledger JS 8.x because 7.1.4 rejects Cardano app major 8.",
+            "Cover Ledger proposal/voting limits and Trezor governance omissions.",
+            "Cover Model T, Safe/Core models, Trezor One, and supported Cardano app versions.",
+            "Record base-address versus DRep key-hash message modes."
+          ],
+          "acceptance": [
+            "Every supported/unsupported transaction field has a device/library result.",
+            "The Ledger dependency decision is evidence-backed.",
+            "Firmware/app gates and typed failure mappings are fixed.",
+            "Physical device fixtures exist for later certification."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-1",
+      "name": "Electron And IPC Security Foundation",
+      "description": "Create the auditable hostile-renderer boundary and remove guest reachability to existing privileged capabilities before exposing wallet data.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-100",
+          "title": "Harden trusted-window navigation and external URLs",
+          "description": "Install trusted main navigation/popup policy before load, remove unsafe automatic popup-to-shell behavior, and require parsed approved HTTPS URLs for external opening.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 12,
+          "dependencies": ["task-001"],
+          "targetPaths": [
+            "source/main/index.ts",
+            "source/main/windows/main.ts",
+            "source/main/ipc/open-external-url.ts",
+            "source/main/ipc/open-local-directory.ts"
+          ],
+          "acceptance": [
+            "Trusted renderer cannot navigate to remote content.",
+            "Popup handling is registered before any WebContents and never opens guest URLs automatically.",
+            "Non-HTTPS and malformed external URLs are rejected with awaited failures.",
+            "Import-time IPC listener side effects are removed."
+          ],
+          "securityNotes": [
+            "This protects the existing Node-enabled trusted renderer from remote navigation."
+          ]
+        },
+        {
+          "id": "task-101",
+          "title": "Add trusted renderer sender and frame authentication",
+          "description": "Refactor the core IPC wrappers so handlers retain Electron events, authenticate the exact trusted main WebContents/main frame, correlate responses, and register listeners before sending.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-001"],
+          "targetPaths": [
+            "source/common/ipc/lib/IpcChannel.ts",
+            "source/main/ipc/lib/MainIpcChannel.ts",
+            "source/main/ipc/lib/MainIpcConversation.ts",
+            "source/renderer/app/ipc/lib/"
+          ],
+          "implementationNotes": [
+            "Preserve compatibility only where concrete current callers require it.",
+            "Send responses to the authenticated caller, never a global renderer target.",
+            "Eliminate shared uncorrelated response-channel races."
+          ],
+          "acceptance": [
+            "Wrong WebContents, subframe, destroyed frame, and wrong trusted origin are rejected.",
+            "Concurrent requests cannot receive each other's responses.",
+            "All wrapper tests cover sender and response authentication."
+          ]
+        },
+        {
+          "id": "task-102",
+          "title": "Audit and migrate every privileged IPC handler",
+          "description": "Inventory all global privileged handlers and move them onto authenticated trusted-frame registration, including filesystem, store, TLS, logs, updates, window controls, and hardware channels.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-101"],
+          "targetPaths": [
+            "source/main/index.ts",
+            "source/main/windows/",
+            "source/main/cardano/",
+            "source/main/ipc/",
+            "source/common/ipc/api.ts",
+            "source/renderer/app/ipc/"
+          ],
+          "implementationNotes": [
+            "Create a machine-checkable inventory of channel authority across all source/main listeners, not only source/main/ipc.",
+            "Do not leave top-level listeners outside authenticated initialization.",
+            "Test known channel names from a hostile fixture."
+          ],
+          "acceptance": [
+            "Every privileged channel has an explicit trusted sender/frame policy.",
+            "No guest can invoke electron-store, TLS, shell, filesystem, update, logging, or hardware operations.",
+            "The IPC architecture documentation is updated."
+          ]
+        },
+        {
+          "id": "task-103",
+          "title": "Remove default sandbox-disabling launch flags",
+          "description": "Implement the validated Linux packaging strategy, remove default sandbox-disabling flags, and add a runtime dApp availability check for sandbox-disabling switches/environment.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-005"],
+          "targetPaths": [
+            "source/main/webpack.config.js",
+            "nix/internal/x86_64-linux.nix",
+            "nix/internal/linux-self-extracting-archive.sh",
+            "source/main/index.ts",
+            "README.md"
+          ],
+          "acceptance": [
+            "Default development and packaged launch omit --no-sandbox.",
+            "The dApp feature fails closed under sandbox-disabling CLI/environment configuration.",
+            "Supported Linux package smoke tests start both trusted and sandboxed renderers.",
+            "Existing wallet startup fallback behavior is documented for unsupported hosts."
+          ]
+        },
+        {
+          "id": "task-104",
+          "title": "Build the dedicated dApp preload and gateway contracts",
+          "description": "Create a self-contained sandbox-compatible preload exposing only the fixed Daedalus provider gateway and no raw Electron/Node objects.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 16,
+          "dependencies": ["task-002", "task-103"],
+          "targetPaths": [
+            "source/main/preloads/dapp.ts",
+            "source/main/webpack.config.js",
+            "source/common/ipc/dapp.ts",
+            "declaration.d.ts"
+          ],
+          "implementationNotes": [
+            "Bundle as a dedicated preload entry without split chunks.",
+            "Use one validated gateway method internally and reconstruct public namespaces locally.",
+            "Never expose ipcRenderer, events, channel names, paths, config, logging, or HTTP."
+          ],
+          "acceptance": [
+            "Preload exports exactly window.cardano.daedalus.",
+            "Provider is available before page scripts.",
+            "Static and runtime tests prove no privileged global leakage.",
+            "Public typed rejections are reconstructed from internal result envelopes."
+          ]
+        },
+        {
+          "id": "task-105",
+          "title": "Implement DappSessionPolicy and DappBrowserManager",
+          "description": "Create the nonpersistent session, permission/network/navigation policy, guest BrowserWindow lifecycle, cleanup, crash behavior, and local catalog-title handling behind a disabled feature flag.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-100", "task-102", "task-103", "task-104"],
+          "targetPaths": [
+            "source/main/dapp/DappSessionPolicy.ts",
+            "source/main/dapp/DappBrowserManager.ts",
+            "source/main/dapp/urlPolicy.ts",
+            "source/main/dapp/dappCatalog.ts"
+          ],
+          "acceptance": [
+            "Every launch uses a random nonpersistent session and exact secure webPreferences.",
+            "Permissions, devices, downloads, popups, auth, certificates, and cross-origin navigation are denied.",
+            "WebRTC/data channels, STUN/TURN, WebTransport, QUIC, and non-proxied network transports are unavailable by default.",
+            "Guest remains hidden until initial origin verification succeeds.",
+            "Close/navigation/crash revokes authority before teardown and clears session state."
+          ],
+          "securityNotes": [
+            "No wallet method is enabled in this task."
+          ]
+        },
+        {
+          "id": "task-106",
+          "title": "Add route lease, trusted browser controls, and launcher switches",
+          "description": "Bind guest lifecycle to a main-owned monotonic `/wallets/:id/dapps` route lease, authenticate trusted open/close commands, and implement independently enforceable launcher-configuration switches for global launch, preferred catalog, Diagnostics, CIP-104, and CIP-142.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 16,
+          "dependencies": ["task-101", "task-105"],
+          "targetPaths": [
+            "source/main/dapp/DappRouteLease.ts",
+            "source/main/ipc/dappBrowser.ts",
+            "source/main/index.ts",
+            "source/main/config.ts",
+            "nix/internal/launcher-config.nix"
+          ],
+          "acceptance": [
+            "Main derives and increments routeEpoch on trusted route changes.",
+            "Only the exact trusted main frame can open/close a guest.",
+            "Wallet/network/route mismatch closes the guest and rejects stale calls, but does not stop a submission already authorized by the user.",
+            "Global disable rejects every new launch without deleting recovery data.",
+            "Preferred-catalog and Diagnostics switches independently reject only their respective launch modes.",
+            "Revisioned CIP-104/CIP-142 launcher values are exposed through a main-owned policy service for the later registry/capability integration.",
+            "All switch defaults and activation values are main-owned, fail closed, packaged with the release, and available to release-equivalent tests before audit.",
+            "Changing a switch uses the normal reviewed package/configuration release process; no remote runtime-policy service is introduced."
+          ]
+        },
+        {
+          "id": "task-106-a",
+          "title": "Implement connection-bound guest egress policy",
+          "description": "Enforce catalog and Diagnostics HTTPS/WSS destination policy across the initial top-level load, IP literals, IPv4/IPv6 DNS answers, redirects, DNS changes/rebinding, and actual connection destinations; prefer Chromium built-in Private Network Access enforcement and add a guest-specific resolver/proxy only for demonstrated gaps; keep all bypass transports disabled.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-105"],
+          "targetPaths": [
+            "source/main/dapp/DappSessionPolicy.ts",
+            "source/main/dapp/urlPolicy.ts",
+            "source/main/dapp/DappEgressPolicy.ts",
+            "tests/security/dapp-guest/"
+          ],
+          "implementationNotes": [
+            "Time-box the opening spike: evaluate Chromium Private Network Access plus session-level request interception first; a custom resolver/proxy is justified only by recorded evidence that built-ins cannot bind policy to the connection destination.",
+            "Block loopback, private, link-local, multicast, reserved, and IPv4-mapped IPv6 destinations for public-origin guest traffic.",
+            "A DNS precheck without binding the validated address to the connection is insufficient.",
+            "Apply the same policy to the initial top-level HTTPS load, subresources, WSS, redirects, and DNS answer changes.",
+            "Disable WebRTC/data channels, STUN/TURN, WebTransport, QUIC, and other non-proxied traffic unless a future evidence-backed compatibility exception supplies equivalent enforcement and security review.",
+            "If Electron cannot provide connection-level proof for the initial Diagnostics URL, keep Diagnostics launch disabled; an unprovable optional destination remains blocked."
+          ],
+          "testCases": [
+            "Public hostname resolving directly to private IPv4 and IPv6",
+            "DNS rebinding from public to private answer",
+            "Redirect to private/link-local destination",
+            "WSS connection to private destination",
+            "IPv4-mapped IPv6 bypass attempt",
+            "WebRTC/STUN/TURN/WebTransport/QUIC APIs are unavailable"
+          ],
+          "acceptance": [
+            "Allowed hostname decisions are tied to the actual connection destination.",
+            "The initial Diagnostics connection is destination-bound or the launch is rejected.",
+            "Every forbidden IPv4/IPv6 destination class is covered by adversarial tests.",
+            "Catalog allowlists do not override the private-network prohibition.",
+            "The implementation has no DNS time-of-check/time-of-use bypass.",
+            "No enabled guest transport bypasses the audited HTTPS/WSS path."
+          ],
+          "securityNotes": [
+            "This task is required before arbitrary Diagnostics traffic can be audited or enabled."
+          ]
+        },
+        {
+          "id": "task-107",
+          "title": "Add packaged hostile-renderer security harness",
+          "description": "Create a packaged Electron fixture that attempts navigation, iframe IPC, popup, download, permissions, device access, storage persistence, DevTools, certificate bypass, and invocation of known privileged channels.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-102", "task-106"],
+          "targetPaths": [
+            "tests/security/dapp-guest/",
+            "source/main/dapp/",
+            "nix/internal/"
+          ],
+          "testCases": [
+            "Wrong sender and subframe IPC",
+            "Same-origin reload and cross-origin redirect during approval",
+            "Popup and download attempts",
+            "Permission, HID, USB, serial, WebAuthn, and certificate attempts",
+            "WebRTC data-channel, STUN/TURN, WebTransport, QUIC, and non-proxied transport attempts",
+            "Reopen proves absent cookies, local storage, cache, and service workers",
+            "Linux process shows active OS sandbox"
+          ],
+          "acceptance": [
+            "All hostile fixture attempts fail without privileged side effects.",
+            "Packaged launcher-switch variants independently reject the intended guest/capability classes.",
+            "Packaged Linux evidence proves OS sandboxing.",
+            "The harness runs in release-equivalent configuration, not only mocked Electron."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "cardano-wallet Backend Foundations",
+      "description": "Add coherent ledger context, exact UTxO data, witness-only signing, governance keys, CIP-8, and atomic wallet-scoped pending submission.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-200",
+          "title": "Add backend capability version and API contracts",
+          "description": "Introduce versioned cardano-wallet API types and capability probing for dApp context, witness signing, CIP-8/CIP-95, and pending submission.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 16,
+          "dependencies": ["task-003"],
+          "targetPaths": [
+            "../cardano-wallet/lib/api/src/Cardano/Wallet/Api.hs",
+            "../cardano-wallet/lib/api/src/Cardano/Wallet/Api/Types.hs",
+            "../cardano-wallet/specifications/api/swagger.yaml"
+          ],
+          "acceptance": [
+            "Older bundled backends fail the feature closed through capability negotiation.",
+            "Swagger and Haskell types agree on exact encodings and errors.",
+            "The contract remains additive for existing Daedalus callers.",
+            "Every new persisted backend record has a versioned atomic migration and an explicit supported pin-rollback compatibility statement."
+          ]
+        },
+        {
+          "id": "task-201",
+          "title": "Implement full-ledger UTxO and transaction-context resolution",
+          "description": "Return exact TxIn/full TxOut/transaction-unspent-output CBOR for wallet UTxOs and every requested normal, collateral, and reference input at a coherent chain point.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-200"],
+          "targetPaths": [
+            "../cardano-wallet/lib/network-layer/src/Cardano/Wallet/Network/LocalStateQuery/UTxO.hs",
+            "../cardano-wallet/lib/network-layer/src/Cardano/Wallet/Network.hs",
+            "../cardano-wallet/lib/wallet/src/Cardano/Wallet.hs",
+            "../cardano-wallet/lib/api/src/Cardano/Wallet/Api/Http/Shelley/Server.hs"
+          ],
+          "implementationNotes": [
+            "Query full ledger outputs instead of serializing lossy wallet TxOut values.",
+            "Include volatile delta, local pending overlay, era/protocol/network identity, and protocol parameters.",
+            "Resolve foreign/script inputs needed for complete review."
+          ],
+          "acceptance": [
+            "Every returned UTxO matches canonical ledger CBOR.",
+            "Datum, inline datum, reference script, multi-assets, and address are preserved.",
+            "Context names one coherent chain point and validates consistency when the review snapshot is captured; later chain changes do not invalidate approval.",
+            "Golden tests cover current supported eras."
+          ]
+        },
+        {
+          "id": "task-202",
+          "title": "Add ownership, path, required-witness, and batch-overlay analysis",
+          "description": "Compute wallet ownership and derivation evidence for all relevant credentials and derive earlier outputs within the current batch from exact preceding bodies without trusting caller paths.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-201"],
+          "targetPaths": [
+            "../cardano-wallet/lib/wallet/src/Cardano/Wallet.hs",
+            "../cardano-wallet/lib/wallet/src/Cardano/Wallet/Shelley/Transaction.hs",
+            "../cardano-wallet/lib/address-derivation-discovery/"
+          ],
+          "acceptance": [
+            "Normal inputs, collateral, withdrawals, certificates, required signers, native scripts, and policy keys use trusted ownership evidence.",
+            "Reference inputs request no spending witness.",
+            "Earlier output hashes/indexes/bytes are independently derived and verified.",
+            "The response identifies complete required wallet key proofs under ledger rules."
+          ]
+        },
+        {
+          "id": "task-203",
+          "title": "Implement witness-only single and batch software signing",
+          "description": "Deliver exact-body witness-only signing with partialSign semantics, current-batch parent context, all-or-nothing batch response, body-hash proof, and local signature verification, implementing only the backend surface justified by task-003's reuse-first evaluation; reusing transactions-sign with main-process witness diffing is a valid task outcome.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-202"],
+          "targetPaths": [
+            "../cardano-wallet/lib/api/src/Cardano/Wallet/Api.hs",
+            "../cardano-wallet/lib/api/src/Cardano/Wallet/Api/Http/Shelley/Server.hs",
+            "../cardano-wallet/lib/wallet/src/Cardano/Wallet.hs",
+            "../cardano-wallet/lib/wallet/src/Cardano/Wallet/Shelley/Transaction.hs"
+          ],
+          "acceptance": [
+            "Response contains only newly generated VKey witness-set CBOR and expected body hash.",
+            "Body bytes and body hash are unchanged.",
+            "partialSign=false rejects incomplete required key/native-script proof.",
+            "partialSign=true with no applicable owned key returns a canonical empty witness set rather than ProofGeneration.",
+            "Batch returns no result when any item fails.",
+            "Collateral-only and explicit-required-signer tests pass."
+          ]
+        },
+        {
+          "id": "task-204",
+          "title": "Implement software CIP-8 payment and stake signing",
+          "description": "Add credential-owned CIP-30 signData using exact un-hashed CIP-8 COSE structures for payment and stake addresses.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 24,
+          "dependencies": ["task-202"],
+          "targetPaths": [
+            "../cardano-wallet/lib/api/src/Cardano/Wallet/Api.hs",
+            "../cardano-wallet/lib/api/src/Cardano/Wallet/Api/Http/Shelley/Server.hs",
+            "../cardano-wallet/lib/wallet/src/Cardano/Wallet/"
+          ],
+          "acceptance": [
+            "Base/enterprise/pointer select payment key and reward selects stake key.",
+            "Script and unowned P2PK credentials map to the correct DataSignError.",
+            "Returned COSE verifies against exact address/payload/public key.",
+            "The Catalyst metadata-signing endpoint is not reused."
+          ]
+        },
+        {
+          "id": "task-205",
+          "title": "Add CIP-105 DRep derivation and CIP-95 key state",
+          "description": "Introduce explicit role-3/index-0 DRep derivation, public stake/DRep key retrieval, ledger/pending stake registration classification, and DRep CIP-8 signing.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-202", "task-204"],
+          "targetPaths": [
+            "../cardano-wallet/lib/address-derivation-discovery/",
+            "../cardano-wallet/lib/wallet/src/Cardano/Wallet.hs",
+            "../cardano-wallet/lib/api/src/Cardano/Wallet/Api/Http/Shelley/Server.hs"
+          ],
+          "implementationNotes": [
+            "Do not overload the generic Role enum where role 3 has shared-wallet meaning.",
+            "Derive public children from stored account xpub without passphrase/device.",
+            "Treat unknown registration as unregistered."
+          ],
+          "acceptance": [
+            "Raw 32-byte stake and DRep public keys match independent CIP-105 vectors.",
+            "Pending registration/deregistration classification is correct.",
+            "DRep signData accepts the raw 28-byte DRep ID and a matching type-6 enterprise key address, and verifies the same raw-hash COSE credential.",
+            "No private key is exposed."
+          ]
+        },
+        {
+          "id": "task-206",
+          "title": "Complete Conway and CIP-95 software witness coverage",
+          "description": "Recognize all supported Conway body/certificate fields and add DRep certificate/vote witness production while rejecting deprecated or unsupported credential classes correctly.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-202", "task-205"],
+          "targetPaths": [
+            "../cardano-wallet/lib/wallet/src/Cardano/Wallet/Shelley/Transaction.hs",
+            "../cardano-wallet/lib/wallet/src/Cardano/Wallet/Shelley/Transaction/Unsigned.hs",
+            "../cardano-wallet/lib/primitive/"
+          ],
+          "acceptance": [
+            "Fields 0 through 22 are recognized for review/signability decisions.",
+            "DRep registration, deregistration, update, and voting key witnesses are supported for software wallets.",
+            "Committee and pool keys are not produced under CIP-95.",
+            "Genesis/MIR certificates return DeprecatedCertificate."
+          ]
+        },
+        {
+          "id": "task-208",
+          "title": "Make wallet-scoped submission pending-state atomic",
+          "description": "Persist authorized external transaction submission and normal/collateral input pending state before or atomically with broadcast, including crash recovery and transaction-status reconciliation.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-200", "task-201"],
+          "targetPaths": [
+            "../cardano-wallet/lib/wallet/src/Cardano/Wallet.hs",
+            "../cardano-wallet/lib/wallet/src/Cardano/Wallet/DB/Store/Submissions/",
+            "../cardano-wallet/lib/api/src/Cardano/Wallet/Api/Http/Shelley/Server.hs"
+          ],
+          "acceptance": [
+            "DApp and hardware submission no longer depend on untracked proxy behavior.",
+            "Crash-before/after-broadcast windows retain a recoverable pending record.",
+            "Normal and collateral inputs are visible to subsequent selection/context.",
+            "Wallet-scoped pending-submission state is the sole durable submission recovery record; Daedalus keeps no separate journal.",
+            "Re-submitting an exact already-pending transaction is idempotent and returns its existing hash.",
+            "Exact replay and rollback reconciliation are tested.",
+            "Database upgrade and supported rollback fixtures preserve pending evidence atomically."
+          ]
+        },
+        {
+          "id": "task-209",
+          "title": "Wire Daedalus API clients and update the backend pin",
+          "description": "Add typed Daedalus wrappers for context, UTxOs, witness signing, CIP-8/CIP-95, and wallet-scoped submit; fix octet-stream typing; then pin the reviewed backend revision.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-203", "task-204", "task-205", "task-206", "task-208"],
+          "targetPaths": [
+            "source/renderer/app/api/api.ts",
+            "source/renderer/app/api/transactions/",
+            "source/renderer/app/api/wallets/",
+            "source/renderer/app/api/utils/request.ts",
+            "flake.nix",
+            "flake.lock"
+          ],
+          "acceptance": [
+            "All new backend responses receive runtime/type validation.",
+            "Octet-stream body and Content-Length use one exact byte contract.",
+            "Daedalus refuses feature activation against an older capability version.",
+            "The pin references the exact reviewed commit delivered from ../cardano-wallet and the Swagger contract passes integration tests.",
+            "Backend database migration and supported pin-rollback compatibility evidence is recorded before the pin changes."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Shared Cardano And Extension Engine",
+      "description": "Build exact byte parsing, semantic transaction review data, schemas, extension negotiation, witness/COSE verification, and batch conflict detection.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-300",
+          "title": "Add CIP-30 wire types, errors, schemas, and IPC envelopes",
+          "description": "Implement strict runtime schemas and shared TypeScript contracts for base methods, extensions, public errors, trusted approvals, and Electron-safe result envelopes.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-002"],
+          "targetPaths": [
+            "source/common/cip30/wire.ts",
+            "source/common/cip30/errors.ts",
+            "source/common/cip30/schemas/",
+            "source/common/ipc/dapp.ts"
+          ],
+          "acceptance": [
+            "Unknown properties and method IDs are rejected before authority/backend access.",
+            "All responses are validated before crossing IPC.",
+            "Public CIP errors and mixed arrays survive local preload reconstruction.",
+            "Schemas enforce the documented product request-size/count limits with APIError.InvalidRequest before any authority/backend access."
+          ]
+        },
+        {
+          "id": "task-301",
+          "title": "Implement extension registry, negotiation, and capability predicates",
+          "description": "Create schema-first descriptors for base, CIP-95, CIP-103, CIP-104, and CIP-142 with dependency validation, base overrides, scopes, policy gates, and wallet/backend/device capability checks.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-106", "task-300"],
+          "targetPaths": [
+            "source/main/cip30/ExtensionRegistry.ts",
+            "source/main/cip30/Negotiator.ts",
+            "source/main/cip30/CapabilityService.ts",
+            "source/main/cip30/extensions/"
+          ],
+          "acceptance": [
+            "Startup rejects duplicate methods, dependency cycles, missing schemas, and undeclared overrides.",
+            "Known, supported, and enabled states remain distinct.",
+            "CIP-95 signTx override composes with CIP-103.",
+            "CIP-106/CIP-141 are absent and Proposed gates are enforced.",
+            "Main-owned CIP-104/CIP-142 launcher-configuration switches are evaluated during negotiation and invocation; disabled extensions are refused and omitted from the enable handshake."
+          ]
+        },
+        {
+          "id": "task-302",
+          "title": "Implement exact transaction CBOR span extraction",
+          "description": "Build the low-level cursor that validates the transaction envelope and retains exact body, witness, isValid, auxiliary-data, and output spans without reserialization.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-004"],
+          "targetPaths": [
+            "source/common/cardano/cborSlices.ts",
+            "source/common/cardano/transactionEnvelope.ts"
+          ],
+          "testCases": [
+            "Definite and supported tagged-set encodings",
+            "Duplicate map keys",
+            "Trailing bytes",
+            "Malformed arrays/maps",
+            "Exact output slice boundaries",
+            "Outer isValid and auxiliary data extraction"
+          ],
+          "acceptance": [
+            "Tx ID is Blake2b-256 of the exact incoming body span.",
+            "No body/output identity depends on semantic re-encoding.",
+            "Malformed and ambiguous encodings fail closed.",
+            "Property/fuzz test hooks are available."
+          ]
+        },
+        {
+          "id": "task-303",
+          "title": "Build the complete semantic transaction model",
+          "description": "Decode every supported current-era field into a normalized review/device model, verify exact body-to-witness/auxiliary commitments, and fail closed on unknown, unsupported, or unbound semantics.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 48,
+          "dependencies": ["task-201", "task-302"],
+          "targetPaths": [
+            "source/common/cardano/transaction.ts",
+            "source/common/cardano/transactionEffects.ts",
+            "source/common/cardano/transactionCommitments.ts",
+            "source/common/cardano/governance.ts",
+            "source/common/cardano/collateral.ts"
+          ],
+          "acceptance": [
+            "Model covers inputs/outputs/assets/fees/mint/certificates/withdrawals/scripts/datums/redeemers/governance/collateral/auxiliary data.",
+            "Exact auxiliary data matches auxiliary_data_hash, including required presence/absence rules.",
+            "Exact redeemers/datums and pinned language views reproduce script_data_hash whenever present.",
+            "Supplied native, Plutus, reference scripts, and resolved datums match every body/input credential, policy, script, or datum hash they claim to satisfy.",
+            "CIP-95 fields 0 through 22 are recognized.",
+            "Review completeness is machine-checkable.",
+            "Unsupported hardware representation is distinct from unsupported semantic decoding."
+          ]
+        },
+        {
+          "id": "task-304",
+          "title": "Reconcile semantic model with trusted backend context",
+          "description": "Join exact decoded inputs and credentials to backend-resolved TxOut, datum/script material, ownership, derivation, protocol, registration, pending, and chain-point data with a context digest, then verify every body commitment against that trusted context.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-202", "task-209", "task-303"],
+          "targetPaths": [
+            "source/common/cardano/transactionContext.ts",
+            "source/main/cardano/DappTransactionContextService.ts"
+          ],
+          "acceptance": [
+            "Every normal/collateral/reference input has exact resolved context.",
+            "Every supplied or resolved datum/script used for review or signability matches its expected hash/credential and exact transaction commitment.",
+            "Existing witnesses used for completeness or submission review verify against the exact body hash and are identified as pre-existing.",
+            "Wallet ownership and paths come only from trusted backend evidence.",
+            "Later chain advancement, rollback, or input consumption does not trigger re-review; signing remains bound to the approved snapshot and node submission may fail normally.",
+            "Network/genesis and route wallet mismatches fail closed."
+          ]
+        },
+        {
+          "id": "task-305",
+          "title": "Implement CIP-30 value, address, UTxO, pagination, and collateral serialization",
+          "description": "Build exact base read-method serializers and deterministic amount/pagination/collateral selection over backend snapshots.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 24,
+          "dependencies": ["task-201", "task-302"],
+          "targetPaths": [
+            "source/common/cardano/cip30Serialization.ts",
+            "source/common/cardano/collateralSelection.ts"
+          ],
+          "acceptance": [
+            "Returned addresses are raw-byte hex and UTxOs are exact pair CBOR.",
+            "Address-taking methods accept valid Bech32 and raw-byte hex forms and reject malformed inputs.",
+            "Balance equals all controlled UTxOs including preferred collateral.",
+            "getUtxos amount selection and null semantics are correct.",
+            "Deprecated getCollateral returns existing pure-ADA candidates totaling at least the valid Coin, or null without side effects when insufficient, and imposes no Daedalus-defined 5 ADA request maximum.",
+            "Malformed getCollateral CBOR/Coin rejects with APIError.InvalidRequest and developer documentation labels the method deprecated.",
+            "Pagination ordering and PaginateError behavior match CIP-30 without introducing a policy item cap."
+          ]
+        },
+        {
+          "id": "task-306",
+          "title": "Implement witness-set extraction, verification, and merge primitives",
+          "description": "Decode witness sets, calculate newly generated VKey deltas, deduplicate, verify signer key hashes/signatures, and preserve exact body identity.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-203", "task-302"],
+          "targetPaths": [
+            "source/common/cardano/witnessSet.ts",
+            "source/common/cardano/signatureVerification.ts"
+          ],
+          "acceptance": [
+            "Only newly generated VKeys are emitted to CIP-30 callers.",
+            "Existing scripts/datums/redeemers/bootstraps/VKeys are not misreported.",
+            "Every signature verifies over the exact body hash.",
+            "Body bytes remain unchanged after a test merge."
+          ]
+        },
+        {
+          "id": "task-307",
+          "title": "Implement exact CIP-8 COSE serialization and verification",
+          "description": "Produce and verify the frozen CIP-30/CIP-95 COSE_Sign1 and COSE_Key profile for payment, stake, and DRep credentials.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-204", "task-302"],
+          "targetPaths": [
+            "source/common/cardano/cip8.ts",
+            "source/common/cardano/cose.ts"
+          ],
+          "acceptance": [
+            "Exact protected/unprotected headers, empty AAD, attached raw payload, and key labels match golden vectors.",
+            "Producer omits kid consistently and includes the CIP-8-required unprotected version:1 header.",
+            "Verifier behavior for legacy nonconforming output without version is documented and tested separately from produced output.",
+            "Address/DRep credential hash and signature are independently verified, including equivalent raw DRep ID and matching type-6 address inputs.",
+            "Malformed/odd/prefixed hex fails before hardware/backend calls."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Browser, Grants, Read API, And Collateral UX",
+      "description": "Deliver the wallet-scoped browser shell, correlated consent foundation, catalog, connection grants, base read methods, extension getters, diagnostics launch, settings, and collateral readiness behind the disabled release flag.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-400",
+          "title": "Add wallet-scoped dApp and connection-settings routes",
+          "description": "Add `/wallets/:id/dapps`, wallet navigation, legacy exclusion, settings route, and invalid-route behavior without first-wallet fallback.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 24,
+          "dependencies": ["task-106"],
+          "targetPaths": [
+            "source/renderer/app/routes-config.ts",
+            "source/renderer/app/Routes.tsx",
+            "source/renderer/app/components/wallet/navigation/WalletNavigation.tsx",
+            "source/renderer/app/config/walletNavigationConfig.ts",
+            "source/renderer/app/stores/WalletsStore.ts"
+          ],
+          "acceptance": [
+            "Route identity selects the active wallet and never silently retargets.",
+            "Byron/restoring/nonresponding/deleted wallet states block launch.",
+            "Navigating away revokes the main route lease and closes the guest.",
+            "Navigation tests cover direct invalid hashes and wallet switches."
+          ]
+        },
+        {
+          "id": "task-401",
+          "title": "Implement main-owned grants, capabilities, and session stores",
+          "description": "Add atomic grant persistence, in-memory capability state, extension/read scopes, corruption handling, and lifecycle revocation bound to exact origin/wallet/genesis plus the catalog entry or Diagnostics launch kind.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-106", "task-301"],
+          "targetPaths": [
+            "source/main/cip30/GrantRepository.ts",
+            "source/main/cip30/SessionStore.ts",
+            "source/common/types/dapp.types.ts"
+          ],
+          "acceptance": [
+            "Guest/renderer cannot write authoritative grants directly.",
+            "Origin uses canonical scheme/ASCII host/effective port and network uses genesis identity.",
+            "Catalog grants bind the catalog entry and invalidate when it is removed or changed; emergency invalidation uses launcher switches or a schema-version bump.",
+            "Wallet deletion, catalog entry removal, forget, and scope expansion invalidate correctly.",
+            "CIP-104/CIP-142 launcher-configuration values are applied on startup; disabled namespaces are omitted from the enable handshake.",
+            "Persistent grants never provide reusable signing/submission authority."
+          ]
+        },
+        {
+          "id": "task-401-a",
+          "title": "Implement the main-owned consent coordinator and global renderer queue",
+          "description": "Create immutable pending request records, main-issued IDs, trusted app-global approval presentation, consent inactivity timeout, lifecycle cancellation, and guest hide/focus/restore behavior before connection or key-disclosure consent is exposed.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-300", "task-401"],
+          "targetPaths": [
+            "source/main/cip30/ConsentCoordinator.ts",
+            "source/renderer/app/stores/Cip30ConsentStore.ts",
+            "source/renderer/app/App.tsx",
+            "source/renderer/app/components/dapp-consent/",
+            "source/renderer/app/i18n/"
+          ],
+          "acceptance": [
+            "Connection/read and elevated key-disclosure decisions use the correlated main-owned coordinator before any grant is created or expanded.",
+            "Approval response cannot replace broker-owned bytes or method arguments.",
+            "Concurrent requests queue without a Daedalus concurrency rejection.",
+            "The five-minute consent inactivity timeout auto-rejects with the canonical declined/refused error; navigation/close/account/node lifecycle cancels work that has not crossed submission authorization, while an authorized submission continues without stale result delivery.",
+            "Late, duplicate, replayed, or stale decisions/results are ignored.",
+            "Keyboard focus returns to the originating trusted control after approve, reject, and cancellation."
+          ]
+        },
+        {
+          "id": "task-402",
+          "title": "Implement the broker, preload provider, and base read API",
+          "description": "Connect the authenticated guest gateway to the registry and trusted wallet executor for provider metadata, enable/isEnabled, extension negotiation, network, address, balance, UTxO, and collateral methods.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-107", "task-209", "task-300", "task-301", "task-305", "task-401-a"],
+          "targetPaths": [
+            "source/main/cip30/Cip30Broker.ts",
+            "source/main/cip30/Dispatcher.ts",
+            "source/main/preloads/dapp.ts",
+            "source/renderer/app/services/Cip30WalletService.ts"
+          ],
+          "acceptance": [
+            "Every call validates sender/frame/origin/generation/route lease/capability before data access.",
+            "enable and every grant creation/expansion use task-401-a's correlated consent path; no phase-local dialog path exists.",
+            "Read results match exact CIP-30 encodings and typed errors.",
+            "Unknown/unnegotiated methods cannot dispatch.",
+            "Node connection/sync and account-change gates are correct."
+          ]
+        },
+        {
+          "id": "task-403",
+          "title": "Implement CIP-95 public-key getters and elevated grants",
+          "description": "Expose namespaced DRep/registered/unregistered stake public-key getters with elevated governance disclosure consent and registration-state validation.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 24,
+          "dependencies": ["task-205", "task-301", "task-401-a", "task-402"],
+          "targetPaths": [
+            "source/main/cip30/extensions/cip95.ts",
+            "source/renderer/app/components/dapp-consent/",
+            "source/common/cip30/schemas/cip95.ts"
+          ],
+          "acceptance": [
+            "Methods appear only when CIP-95 is negotiated.",
+            "Returned values are exact raw 32-byte hex keys.",
+            "The consent explains governance correlation and is separately revocable.",
+            "Pending/unknown registration state follows CIP-95 semantics."
+          ]
+        },
+        {
+          "id": "task-404",
+          "title": "Resolve and implement CIP-104 interoperability",
+          "description": "Attempt to confirm exact account-xpub CBOR against an implementor. On success, freeze a golden vector and implement elevated disclosure; otherwise record a tested disabled/omitted terminal outcome that does not block unrelated connector capabilities.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 24,
+          "dependencies": ["task-002", "task-209", "task-301", "task-401-a", "task-402"],
+          "targetPaths": [
+            "source/main/cip30/extensions/cip104.ts",
+            "source/common/cip30/schemas/cip104.ts",
+            "source/renderer/app/components/dapp-consent/"
+          ],
+          "acceptance": [
+            "The task records exactly one terminal decision: enabled with one interoperable 64-byte account-xpub CBOR golden vector, or disabled with evidence that no exact encoding was proven.",
+            "The enabled outcome uses task-401-a for elevated disclosure consent; the disabled outcome exposes no namespace, method, prompt, or supported-extension claim.",
+            "CIP-104 remains omitted when the gate or selected wallet predicate fails.",
+            "When enabled, consent explains permanent address-history correlation; the disabled outcome presents no runtime disclosure UI.",
+            "No xpub enters logs, telemetry, or persistent response caches."
+          ],
+          "securityNotes": [
+            "Disclosure cannot be revoked after a hostile dApp copies the key; the UI must state this."
+          ]
+        },
+        {
+          "id": "task-405",
+          "title": "Implement gated CIP-142 network magic",
+          "description": "Expose negotiated `api.cip142.getNetworkMagic()` from trusted network configuration with Proposed status/policy gating.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 8,
+          "dependencies": ["task-301", "task-402"],
+          "targetPaths": [
+            "source/main/cip30/extensions/cip142.ts",
+            "source/common/cip30/schemas/cip142.ts"
+          ],
+          "acceptance": [
+            "Mainnet/preprod/preview/custom fixtures return configured plain-number magic.",
+            "Base getNetworkId remains unchanged.",
+            "Namespace is absent unless negotiated and policy-enabled.",
+            "The audited CIP-142 launcher switch controls whether a new enable handshake includes the namespace."
+          ]
+        },
+        {
+          "id": "task-406",
+          "title": "Build trusted catalog page and DappStore",
+          "description": "Add the bundled catalog, trusted cards/disclaimer, browser open/close state, active-wallet/network readiness, and no-page-derived branding.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 32,
+          "dependencies": ["task-400", "task-402"],
+          "targetPaths": [
+            "source/common/config/dappCatalog.ts",
+            "source/renderer/app/stores/DappStore.ts",
+            "source/renderer/app/containers/dapp/",
+            "source/renderer/app/components/dapp/"
+          ],
+          "acceptance": [
+            "Main resolves opaque catalog IDs and exact network URLs.",
+            "Trusted UI uses only local names/icons/descriptions.",
+            "Preferred disclaimer is visible and localized.",
+            "Removing or changing a catalog entry invalidates its grants.",
+            "The preferred-catalog launcher switch independently hides/rejects catalog launch without enabling Diagnostics."
+          ]
+        },
+        {
+          "id": "task-407",
+          "title": "Add diagnostics arbitrary HTTPS launch",
+          "description": "Extend Daedalus Diagnostics with validated arbitrary URL launch, untrusted labeling, origin normalization, and production/development scheme policy.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 16,
+          "dependencies": ["task-105", "task-106", "task-106-a", "task-400", "task-406"],
+          "targetPaths": [
+            "source/renderer/app/components/status/DaedalusDiagnostics.tsx",
+            "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.tsx",
+            "source/main/dapp/urlPolicy.ts"
+          ],
+          "acceptance": [
+            "Production accepts HTTPS only and rejects credentials/opaque/non-web schemes.",
+            "Development HTTP is limited to explicit loopback policy.",
+            "Full URL is not persisted in route, grants, logs, or analytics.",
+            "Diagnostics selects an eligible wallet, stores a one-use in-memory launch, navigates to that wallet's dApp route, and launches only after the exact route lease commits.",
+            "Route/wallet mismatch consumes or cancels the pending launch; Diagnostics never bypasses wallet-scoped authority.",
+            "Diagnostics origin receives the same connector/grant/approval rules.",
+            "The Diagnostics launcher switch independently rejects launch without disabling curated catalog launch.",
+            "The initial destination is connection-bound by task-106-a or launch fails closed."
+          ]
+        },
+        {
+          "id": "task-408",
+          "title": "Build dApp connection settings and revocation",
+          "description": "Add settings to inspect base and elevated grants, forget connections, revoke individual scopes, purge deleted wallets, and repair corrupted grant state.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 24,
+          "dependencies": ["task-401", "task-406"],
+          "targetPaths": [
+            "source/renderer/app/containers/settings/categories/",
+            "source/renderer/app/components/settings/categories/",
+            "source/renderer/app/stores/DappStore.ts",
+            "source/renderer/app/stores/WalletsStore.ts"
+          ],
+          "acceptance": [
+            "Users can distinguish close, disconnect, and forget behavior.",
+            "CIP-95/CIP-104 scopes are visible and separately revocable.",
+            "Revocation immediately closes/restricts live sessions.",
+            "Wallet deletion and startup pruning remove stale grants."
+          ]
+        },
+        {
+          "id": "task-409",
+          "title": "Build collateral preference and preparation UX",
+          "description": "Add wallet-scoped collateral readiness states, candidate adoption, explicit preparation, preference clearing, and ordinary-spend review indicators.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 32,
+          "dependencies": ["task-209", "task-400", "task-406"],
+          "targetPaths": [
+            "source/renderer/app/stores/CollateralStore.ts",
+            "source/renderer/app/components/dapp/collateral/",
+            "source/renderer/app/components/wallet/",
+            "source/common/types/collateral.types.ts"
+          ],
+          "acceptance": [
+            "Checking/ready/not-ready/preparing/in-use/will-be-spent/charged/stale states are represented.",
+            "CollateralStore is a projection of the main-owned preference record and derives readiness from cardano-wallet UTxO, history, and pending state at read time; it never persists a second writable preference.",
+            "Copy calls collateral preferred, not locked, and explains the 5 ADA convention.",
+            "Preparation never signs/submits without normal user confirmation.",
+            "Clearing a preference requires no chain transaction."
+          ]
+        },
+        {
+          "id": "task-410",
+          "title": "Verify read-only browser, grants, extensions, and collateral UX",
+          "description": "Add Jest, Storybook, Cucumber, i18n, route, and backend-contract coverage for the phase-4 browser/read capability while production signing remains disabled.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 32,
+          "dependencies": ["task-403", "task-404", "task-405", "task-406", "task-407", "task-408", "task-409"],
+          "targetPaths": [
+            "tests/dapps/",
+            "storybook/stories/dapps/",
+            "source/renderer/app/i18n/",
+            "translations/"
+          ],
+          "acceptance": [
+            "Base and extension read methods pass conformance fixtures.",
+            "CIP-104 tests pass for either the interoperable enabled outcome or the explicit namespace-omitted disabled outcome.",
+            "Deprecated getCollateral null/error/no-side-effect behavior and developer deprecation labeling are covered.",
+            "Catalog/diagnostics/grant/revocation/collateral states have Storybook and Jest coverage.",
+            "Cucumber covers active-wallet route binding and persisted grant reuse.",
+            "en-US and ja-JP copy is product-quality with no generated placeholders."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "name": "Software Signing, Submission, And Trusted Review",
+      "description": "Reuse the correlated app-global consent foundation for complete transaction/message/submission review, software base/CIP-95 signing, native-send coordination, and collateral-aware execution.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-501",
+          "title": "Build complete transaction and submission review",
+          "description": "Replace the static dApp request UI with byte-bound review for every supported field, exact context, unsupported-field refusal, collateral maximum risk, and separate exact-envelope submission confirmation.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-303", "task-304", "task-401-a"],
+          "targetPaths": [
+            "source/renderer/app/components/dapp/Cip30TransactionApproval.tsx",
+            "source/renderer/app/containers/dapp/DappApprovalContainer.tsx",
+            "source/renderer/app/components/dapp/DappTransactionRequest.tsx"
+          ],
+          "acceptance": [
+            "UI renders complete payments/assets/fees/mint/scripts/governance/collateral/metadata/certificates/withdrawals effects.",
+            "Unknown/incomplete semantics cannot be approved.",
+            "No review is approvable until auxiliary-data, script-data, datum/script, and existing-witness commitments have been verified against the exact body/context.",
+            "Signing review shows maximum collateral because isValid is not signed.",
+            "Submission review binds exact outer isValid, witnesses, auxiliary data, and body."
+          ]
+        },
+        {
+          "id": "task-502",
+          "title": "Implement signData consent and software execution",
+          "description": "Wire base CIP-30 payment/stake signData through exact payload review, backend software signing, shared COSE construction/verification, and typed errors.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-204", "task-209", "task-307", "task-401-a", "task-402"],
+          "targetPaths": [
+            "source/main/cip30/extensions/base.ts",
+            "source/renderer/app/components/dapp-consent/DappDataSignApproval.tsx",
+            "source/renderer/app/services/Cip30WalletService.ts"
+          ],
+          "acceptance": [
+            "Every call receives fresh consent with exact hex and safe preview.",
+            "Script/unowned/user-declined errors map correctly.",
+            "Returned COSE is locally verified before guest release.",
+            "No payload hashing fallback exists."
+          ]
+        },
+        {
+          "id": "task-503",
+          "title": "Implement base software signTx witness flow",
+          "description": "Connect exact context/review to witness-only backend signing, password handling, partialSign proof analysis, witness verification, and public response release.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-203", "task-209", "task-304", "task-306", "task-401-a", "task-402", "task-501"],
+          "targetPaths": [
+            "source/main/cip30/extensions/base.ts",
+            "source/renderer/app/services/Cip30WalletService.ts",
+            "source/renderer/app/stores/WalletsStore.ts"
+          ],
+          "acceptance": [
+            "Exact reviewed bytes are the bytes sent to the backend.",
+            "Body hash and every new VKey witness verify before release.",
+            "partialSign true/false and wrong-password behavior map correctly, including an empty successful witness set when partial mode has no owned key.",
+            "No existing witness/script/data is returned as newly generated."
+          ]
+        },
+        {
+          "id": "task-504",
+          "title": "Implement software CIP-95 signTx and DRep signData",
+          "description": "Add negotiated CIP-95 governance transaction semantics, DRep message signing, elevated scope checks, DRep witness verification, and DeprecatedCertificate behavior.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-205", "task-206", "task-209", "task-307", "task-401-a", "task-403", "task-501"],
+          "targetPaths": [
+            "source/main/cip30/extensions/cip95.ts",
+            "source/renderer/app/services/Cip30WalletService.ts",
+            "source/renderer/app/components/dapp-consent/"
+          ],
+          "acceptance": [
+            "DRep certificate/vote effects and key identity render in trusted review.",
+            "Raw DRep ID and matching type-6 address inputs produce the same exact DRep COSE credential/signature.",
+            "Unnegotiated CIP-95 calls are absent/refused appropriately.",
+            "Deprecated and unsupported key classes return canonical errors."
+          ]
+        },
+        {
+          "id": "task-505",
+          "title": "Implement separately reviewed wallet-scoped submitTx",
+          "description": "Add exact full-envelope submission review, authorized execution, wallet-scoped backend submit, returned-hash verification, and lifecycle behavior after the point of no return.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-208", "task-209", "task-401-a", "task-402", "task-501"],
+          "targetPaths": [
+            "source/main/cip30/extensions/base.ts",
+            "source/renderer/app/services/Cip30WalletService.ts",
+            "source/renderer/app/api/transactions/",
+            "source/renderer/app/stores/TransactionsStore.ts"
+          ],
+          "acceptance": [
+            "Every submit call receives separate trusted confirmation.",
+            "Submitted bytes exactly match approved full transaction envelope.",
+            "Returned hash equals local transaction ID.",
+            "DApp submissions and native sends serialize per-wallet through a shared in-process lock held for the selection-sign-submit sequence.",
+            "Guest closure or route revocation after authorization suppresses result delivery but does not stop, undo, or repeat submission."
+          ]
+        },
+        {
+          "id": "task-507",
+          "title": "Integrate collateral preparation, review, and spend-warning execution",
+          "description": "Connect collateral preference state to transaction review, software setup signing, ordinary-spend warnings, pending use, CIP-40 validation, charge/replacement, and user-visible recovery.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-209", "task-304", "task-409", "task-501", "task-503", "task-505"],
+          "targetPaths": [
+            "source/renderer/app/stores/CollateralStore.ts",
+            "source/renderer/app/stores/WalletsStore.ts",
+            "source/main/cip30/CollateralService.ts",
+            "source/main/cip30/CollateralPreferenceStore.ts",
+            "source/common/cardano/collateral.ts"
+          ],
+          "acceptance": [
+            "Preparation self-transfer is explicit and tracked through confirmation.",
+            "CollateralService owns the persisted preference record in main and derives readiness/charged/stale states from cardano-wallet UTxO, history, and pending state; normal coin selection is unchanged.",
+            "Review states when an ordinary or dApp transaction would spend the preference; spending remains permitted and reconciliation follows.",
+            "Foreign collateral return or missing token return fails closed.",
+            "Valid/invalid/rollback outcomes reconcile preference correctly."
+          ]
+        },
+        {
+          "id": "task-508",
+          "title": "Verify software connector conformance and user journeys",
+          "description": "Add software-wallet conformance, approval, signData, signTx, submit, CIP-95, collateral, Cucumber, Storybook, i18n, and privacy coverage.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-502", "task-503", "task-504", "task-505", "task-507"],
+          "targetPaths": [
+            "tests/dapps/",
+            "source/main/cip30/*.spec.ts",
+            "source/renderer/app/components/dapp/**/*.spec.tsx",
+            "storybook/stories/dapps/"
+          ],
+          "acceptance": [
+            "CIP-30/CIP-8/CIP-95 software success and every canonical error path are covered.",
+            "Cucumber closes connect -> read -> sign -> submit and collateral preparation journeys.",
+            "Backend pending-submission fault tests cover every single-submit side-effect boundary.",
+            "No sensitive data appears in logs, analytics, snapshots, or error text."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-6",
+      "name": "Ledger And Trezor Exact Signing",
+      "description": "Extract hardware transport authority, add exact arbitrary-CBOR and CIP-8 adapters, validate device-returned hashes/witnesses, and certify supported models/firmware.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-600",
+          "title": "Upgrade Ledger library and extract HardwareWalletService",
+          "description": "Apply the validated Ledger dependency decision and move transport/device lifecycle from closure-heavy IPC into a main-owned service shared by existing UI and connector flows.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-006", "task-107"],
+          "targetPaths": [
+            "package.json",
+            "yarn.lock",
+            "source/main/hardware/HardwareWalletService.ts",
+            "source/main/ipc/getHardwareWalletChannel.ts"
+          ],
+          "acceptance": [
+            "Existing hardware wallet UI flows delegate to the service without regression.",
+            "Ledger v7/v8 compatibility follows the certified matrix.",
+            "Transport state and cancellation are explicit/testable.",
+            "No guest can call the service outside broker authority."
+          ]
+        },
+        {
+          "id": "task-601",
+          "title": "Build vendor-neutral hardware transaction and path model",
+          "description": "Map trusted transaction/context data into a vendor-neutral exact signing model with expected paths, key hashes, signing mode, original witness set, and body identity.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-304", "task-306", "task-600"],
+          "targetPaths": [
+            "source/common/types/hardware-wallets.types.ts",
+            "source/renderer/app/utils/hardwareWalletTransaction.ts",
+            "source/renderer/app/utils/hardwareWalletWitnessSet.ts"
+          ],
+          "acceptance": [
+            "Paths derive from trusted context and encoded credential/address equality.",
+            "Reference inputs never request witnesses.",
+            "partialSign=true with no applicable owned hardware path produces a canonical empty witness set without device interaction.",
+            "Expected missing/extra witness sets are explicit.",
+            "No current coin-selection reconstruction type is authoritative."
+          ]
+        },
+        {
+          "id": "task-602",
+          "title": "Implement exact Ledger transaction adapter",
+          "description": "Map every certified Ledger field from the vendor-neutral model, preserve encoding/tag choices, verify returned body hash/witnesses, and fail closed for unsupported proposals/voting shapes.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-601"],
+          "targetPaths": [
+            "source/renderer/app/utils/shelleyLedger.ts",
+            "source/main/hardware/HardwareWalletService.ts",
+            "source/common/types/hardware-wallets.types.ts"
+          ],
+          "acceptance": [
+            "Device transaction hash equals exact incoming body hash.",
+            "All certified ordinary/Plutus/Conway/CIP-95 fields map exactly.",
+            "Proposal and unsupported voting requests fail before signing.",
+            "Returned key hashes and signatures verify and contain no extras."
+          ]
+        },
+        {
+          "id": "task-603",
+          "title": "Implement exact Trezor transaction adapter",
+          "description": "Map every Trezor-representable field, verify returned hash/witnesses, and fail closed for unsupported governance/certificate/proposal/treasury/donation fields.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-601"],
+          "targetPaths": [
+            "source/renderer/app/utils/shelleyTrezor.ts",
+            "source/main/hardware/HardwareWalletService.ts",
+            "source/common/types/hardware-wallets.types.ts"
+          ],
+          "acceptance": [
+            "Device hash equals exact incoming body hash.",
+            "Supported ordinary/Plutus/Conway fields map exactly.",
+            "Unsupported DRep/proposal/voting/treasury/donation requests fail before signing.",
+            "Returned public keys/signatures verify and bootstrap witnesses are rejected for Shelley scope."
+          ]
+        },
+        {
+          "id": "task-604",
+          "title": "Implement Ledger and Trezor base/DRep CIP-8 signing",
+          "description": "Add payment/stake/DRep message signing, firmware/app gating, path/address mode selection, vendor response normalization, and shared COSE verification.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-307", "task-504", "task-600"],
+          "targetPaths": [
+            "source/main/hardware/HardwareWalletService.ts",
+            "source/common/types/hardware-wallets.types.ts",
+            "source/renderer/app/utils/hardwareWalletMessage.ts"
+          ],
+          "acceptance": [
+            "Ledger address and DRep key-hash modes use exact requested paths/credentials for both accepted DRep input forms.",
+            "Trezor Model T/Safe/Core gates and Trezor One rejection are correct.",
+            "No silent payload hashing occurs and vendor protocol limits map to ProofGeneration.",
+            "Daedalus-built COSE verifies before release."
+          ]
+        },
+        {
+          "id": "task-605",
+          "title": "Add hardware cancellation and late-result suppression",
+          "description": "Normalize host/device rejection, transport loss, Trezor cancel, Ledger transport close, operation generations, and stale-result suppression across transaction and message signing.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-602", "task-603", "task-604"],
+          "targetPaths": [
+            "source/main/hardware/HardwareWalletService.ts",
+            "source/main/ipc/getHardwareWalletChannel.ts",
+            "source/common/types/hardware-wallets.types.ts"
+          ],
+          "acceptance": [
+            "Explicit device refusal maps to UserDeclined.",
+            "Transport/app/version/capability failures map to ProofGeneration/Internal as defined.",
+            "Cancelled or stale operations never release late witnesses/COSE.",
+            "Hardware signing never resumes automatically after restart."
+          ]
+        },
+        {
+          "id": "task-606",
+          "title": "Integrate hardware with consent, submission, and collateral flows",
+          "description": "Connect exact hardware signing to trusted review, wallet-scoped submit, per-wallet send-lock coordination, collateral preparation, and preferred-collateral effects.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-505", "task-507", "task-605"],
+          "targetPaths": [
+            "source/renderer/app/stores/HardwareWalletsStore.ts",
+            "source/renderer/app/services/Cip30WalletService.ts",
+            "source/main/hardware/HardwareWalletService.ts"
+          ],
+          "acceptance": [
+            "Hardware wallet never falls back to software signing.",
+            "Host review bytes/body hash match the device request.",
+            "Collateral preparation uses ordinary exact hardware signing.",
+            "Submission enters wallet pending state and transaction history reconciliation."
+          ]
+        },
+        {
+          "id": "task-607",
+          "title": "Complete mocked and physical hardware certification",
+          "description": "Run field-by-field mocked tests and physical model/firmware certification for exact transactions, CIP-8, CIP-95, collateral, cancellation, and typed failures.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 48,
+          "dependencies": ["task-606"],
+          "targetPaths": [
+            "hardware-wallet-tests/",
+            "tests/dapps/hardware/",
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md"
+          ],
+          "acceptance": [
+            "Physical matrix records every supported model/app/firmware combination.",
+            "Every supported field signs with exact hash equality.",
+            "Every unsupported field fails before confirmation without omission.",
+            "Base and DRep message vectors verify on all supported devices."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-7",
+      "name": "CIP-103 Batch Engine",
+      "description": "Implement ordered dependency/conflict processing within each request, one-review signing, staged software/hardware witnesses, attempt-all behavior, idempotent retry through cardano-wallet pending state, and normative mixed rejection.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-700",
+          "title": "Define CIP-103 domain, state machine, and preflight",
+          "description": "Add batch request/result/error/state contracts and complete prevalidation of exact CBOR, network, era, outer envelope, partialSign, and body identity before side effects.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-304"],
+          "targetPaths": [
+            "source/common/types/cip103.types.ts",
+            "source/common/cip30/schemas/cip103.ts",
+            "source/renderer/app/domains/Cip103Batch.ts"
+          ],
+          "acceptance": [
+            "Malformed outer requests fail before any signing/submission side effect.",
+            "Every item preserves full-CBOR digest/body hash/index.",
+            "Duplicate items are signed independently; no request aliasing or deduplication is performed.",
+            "First-failing index formatting is stable."
+          ]
+        },
+        {
+          "id": "task-701",
+          "title": "Implement immutable batch context and input resolution",
+          "description": "Capture one coherent node/wallet context, derive earlier outputs within the current batch, merge cardano-wallet pending-submission state, and resolve every normal/collateral/reference input while preserving order.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-202", "task-208", "task-700"],
+          "targetPaths": [
+            "source/main/cip103/Cip103ContextService.ts",
+            "source/common/cardano/transactionOverlay.ts",
+            "source/renderer/app/utils/cip103Transactions.ts"
+          ],
+          "acceptance": [
+            "Node, current-batch parent, and backend pending-submission sources are byte-consistent.",
+            "Self/forward/unresolved inputs reject the entire sign call even under partialSign.",
+            "Reference dependencies and collateral semantics are distinct.",
+            "Later chain advancement, rollback, or input consumption does not trigger re-review; later submission may fail normally."
+          ]
+        },
+        {
+          "id": "task-702",
+          "title": "Implement sequential-overlay conflict detection and per-item effects",
+          "description": "Resolve items in caller order against the coherent context plus earlier items' outputs and spent set, flag an item that spends an input already claimed by an earlier item, and compute per-item wallet effects including valid/invalid outcomes.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 16,
+          "dependencies": ["task-701"],
+          "targetPaths": [
+            "source/common/cardano/transactionOverlay.ts",
+            "source/renderer/app/utils/cip103Transactions.ts"
+          ],
+          "acceptance": [
+            "An item spending an input already claimed by an earlier item is flagged with the earlier item's index.",
+            "Flagged conflicting items remain signable with informed user consent; attempt-all submission produces the normative mixed result.",
+            "Reference inputs create dependencies but no spending claims.",
+            "Collateral-return and invalid-transaction output rules match ledger fixtures.",
+            "Per-item effects are produced; effects of conflicting items are never aggregated into one total."
+          ]
+        },
+        {
+          "id": "task-703",
+          "title": "Build ordered conflict-flagged batch review",
+          "description": "Add one trusted sign review and one separate submit review showing item order, per-item effects, body hashes, current-batch dependencies, conflict flags, collateral, backend pending submissions, and device progression.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-501", "task-702"],
+          "targetPaths": [
+            "source/renderer/app/components/dapp/DappBatchReviewDialog.tsx",
+            "source/renderer/app/stores/Cip103Store.ts",
+            "source/renderer/app/containers/dapp/",
+            "source/renderer/app/i18n/",
+            "translations/"
+          ],
+          "acceptance": [
+            "Item N of M and dependency/conflict flags are clear.",
+            "Per-item effects replace misleading global totals.",
+            "Maximum collateral risk is visible for signed bodies.",
+            "Unsupported item fails before host/device confirmation.",
+            "Batch sign/submit/device/recovery copy is polished in en-US and ja-JP and passes all supported themes.",
+            "Keyboard and screen-reader focus/order remain usable while the guest is hidden."
+          ]
+        },
+        {
+          "id": "task-704",
+          "title": "Implement all-or-nothing software batch signing",
+          "description": "Use backend batch signing and in-memory staging to return aligned witness sets only when every item succeeds under base/CIP-95 semantics.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-203", "task-503", "task-701", "task-703"],
+          "targetPaths": [
+            "source/main/cip30/extensions/cip103.ts",
+            "source/renderer/app/stores/Cip103Store.ts",
+            "source/renderer/app/services/Cip30WalletService.ts"
+          ],
+          "acceptance": [
+            "One password review/execution context signs the ordered set.",
+            "Every body hash and witness verifies before staging completion.",
+            "Any failure releases zero witness sets.",
+            "CIP-95 witnesses and DeprecatedCertificate errors compose correctly."
+          ]
+        },
+        {
+          "id": "task-705",
+          "title": "Implement staged sequential hardware batch signing",
+          "description": "Queue exact Ledger/Trezor requests in order, allow per-transaction device confirmation, stage verified results, cancel safely, and release only on total success.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-606", "task-701", "task-703"],
+          "targetPaths": [
+            "source/main/cip30/extensions/cip103.ts",
+            "source/main/hardware/HardwareWalletService.ts",
+            "source/renderer/app/stores/Cip103Store.ts"
+          ],
+          "acceptance": [
+            "Device confirmations follow caller order.",
+            "A partial-sign item with no applicable owned hardware path stages a canonical empty witness set without a device confirmation.",
+            "Cancellation stops the queue and suppresses late results.",
+            "No staged witness is persisted or guest-released on failure.",
+            "Physical tests cover rejection at every batch position."
+          ]
+        },
+        {
+          "id": "task-707",
+          "title": "Implement attempt-all submitTxs and mixed-array rejection",
+          "description": "Submit every item in caller order despite failures through wallet-scoped submission, verify each result, support idempotent retry through cardano-wallet pending state, and reconstruct the normative rejected mixed array in the guest preload.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-208", "task-505", "task-703"],
+          "targetPaths": [
+            "source/main/cip30/extensions/cip103.ts",
+            "source/main/preloads/dapp.ts"
+          ],
+          "acceptance": [
+            "All-success resolves aligned hashes.",
+            "Any failure rejects directly with aligned hash/TxSendError entries.",
+            "No Error wrapper or resolved settled helper appears publicly.",
+            "Every item is attempted in caller order even if the guest closes, navigates, or loses its route lease after authorization.",
+            "An app exit mid-call leaves un-attempted items unsubmitted; cardano-wallet pending state reconciles and an exact retry returns existing hashes.",
+            "Signing-only state remains memory-only; no Daedalus-side durable submission journal exists."
+          ]
+        },
+        {
+          "id": "task-708",
+          "title": "Complete CIP-103 conformance, fault, and E2E coverage",
+          "description": "Test software/hardware linear chains, conflicts, partialSign, cancellation, attempt-all submission, mixed rejection, idempotent retry, pending-state reconciliation, rollback, and boundary enforcement at the documented product limits.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-704", "task-705", "task-707"],
+          "targetPaths": [
+            "tests/dapps/cip103/",
+            "source/main/cip103/*.spec.ts",
+            "source/renderer/app/stores/Cip103Store.spec.ts",
+            "storybook/stories/dapps/",
+            "source/renderer/app/i18n/",
+            "translations/"
+          ],
+          "acceptance": [
+            "Normative CIP-103 success and rejection shapes pass client fixtures.",
+            "Fault injection covers every submission boundary, including process exit between items.",
+            "A child transaction resolves an earlier output in the same request.",
+            "Cucumber covers software and mocked Ledger/Trezor batches.",
+            "Storybook/Jest cover en-US/ja-JP, themes, focus restoration, device progress, recovery, and mixed-error states.",
+            "Requests beyond the documented product limits reject with typed errors before side effects."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-8",
+      "name": "Hardening, Interoperability, And Security Audit",
+      "description": "Complete parser fuzzing, extension interoperability, packaged adversarial testing, privacy review, physical certification, internal review, external audit, and release dependency gates.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-800",
+          "title": "Run differential ledger tests and parser fuzzing",
+          "description": "Compare exact parsing/effects/witness/collateral/graph behavior with pinned ledger implementations and fuzz malformed/ambiguous CBOR and COSE inputs.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-303", "task-304", "task-306", "task-307"],
+          "targetPaths": [
+            "tests/cardano/differential/",
+            "tests/cardano/fuzz/",
+            "source/common/cardano/"
+          ],
+          "acceptance": [
+            "Supported ledger fixtures produce identical body hashes and effects.",
+            "Duplicate keys, invalid tags, deep/malformed data, and trailing bytes cannot create review/sign mismatches.",
+            "Mutated auxiliary data, redeemers, datums, scripts, reference scripts, language views, and existing witnesses cannot pass a mismatched body commitment.",
+            "CIP-8 and witness verification reject every mutated vector.",
+            "All discovered parser bugs receive regression fixtures."
+          ]
+        },
+        {
+          "id": "task-801",
+          "title": "Run CIP extension conformance and wallet interoperability",
+          "description": "Validate base CIP-30, CIP-8, CIP-95, CIP-103, gated CIP-104, and CIP-142 against authoritative/client fixtures and available Lace/Yoroi/Eternl/Typhon/Lucid behavior.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-403", "task-404", "task-405", "task-410", "task-508", "task-708"],
+          "targetPaths": [
+            "tests/dapps/conformance/",
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md"
+          ],
+          "acceptance": [
+            "Public method names, encodings, and errors match authoritative/current ecosystem behavior.",
+            "Results are tied to golden fixtures and current ecosystem behavior; any upstream delta is documented.",
+            "CIP-104 remains disabled if exact interoperability is not achieved.",
+            "CIP-95 namespace and CIP-103 mixed rejection pass real client adapters.",
+            "Proposed status is visible in release documentation."
+          ]
+        },
+        {
+          "id": "task-802",
+          "title": "Complete packaged Electron adversarial testing",
+          "description": "Run hostile pages and lifecycle races against release-equivalent Windows, macOS, and Linux builds, including privileged IPC probes and sandbox/storage proof.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-107", "task-407", "task-508", "task-607", "task-708"],
+          "targetPaths": [
+            "tests/security/dapp-guest/",
+            "installers/",
+            "nix/"
+          ],
+          "acceptance": [
+            "Guest cannot escape frame/origin/session/permission/IPC policy on any supported platform.",
+            "WebRTC/data channels, STUN/TURN, WebTransport, QUIC, and non-proxied transport probes cannot create guest network traffic.",
+            "HTTPS/WSS destination-binding, DNS rebinding, redirect, IPv4-mapped IPv6, and private/link-local destination probes fail closed for Diagnostics launches.",
+            "Global, preferred-catalog, Diagnostics, CIP-104, and CIP-142 packaged switch variants enforce independent launch/negotiation behavior.",
+            "Approval-navigation-close-crash races produce no wallet side effect before submission authorization; an authorized submission continues without releasing a result to a stale guest.",
+            "Reopen proves nonpersistent site state.",
+            "Linux evidence proves active Chromium OS sandbox."
+          ]
+        },
+        {
+          "id": "task-803",
+          "title": "Audit logs, analytics, grants, and local privacy",
+          "description": "Inspect and test every log/error/analytics/persistence path, distinguishing permitted authoritative wallet recovery data from forbidden observability leakage.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-404", "task-407", "task-408", "task-502", "task-504", "task-505", "task-607", "task-708"],
+          "targetPaths": [
+            "source/common/utils/logging.ts",
+            "source/main/cip30/",
+            "source/main/cip103/",
+            "tests/jest/security/"
+          ],
+          "acceptance": [
+            "Automated spies find no forbidden values in logs/analytics/errors.",
+            "Grant repository files have restrictive permissions and documented retention.",
+            "Authoritative wallet history, pending-submission stores, and collateral state may retain data Daedalus/cardano-wallet persist today; no additional Daedalus-side transaction persistence is introduced.",
+            "A full Diagnostics URL is never persisted anywhere; only the canonical origin may persist in the authoritative grant repository; nothing Diagnostics-related enters logs, analytics, errors, crash reports, or non-authoritative caches.",
+            "Corruption/recovery messages disclose no sensitive payload."
+          ]
+        },
+        {
+          "id": "task-805",
+          "title": "Perform internal security and transaction-integrity review",
+          "description": "Review the complete implementation, threat-model coverage, exact-byte proofs, backend consistency, hardware adapters, grants, collateral, submission recovery, tests, and release gates; remediate findings.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 48,
+          "dependencies": ["task-607", "task-800", "task-801", "task-802", "task-803"],
+          "targetPaths": [
+            "source/main/dapp/",
+            "source/main/cip30/",
+            "source/main/cip103/",
+            "source/common/cardano/",
+            "source/main/hardware/",
+            "../cardano-wallet/",
+            ".agent/plans/dapp-browser-cip30/"
+          ],
+          "acceptance": [
+            "No unresolved critical/high internal finding remains.",
+            "Every threat-model invariant has code and test evidence.",
+            "Product-limit and lifecycle behavior is not misclassified as a signing/security guarantee.",
+            "PRD/tasks record material deviations and remediations."
+          ]
+        },
+        {
+          "id": "task-806",
+          "title": "Complete independent external audit and remediation",
+          "description": "Commission external review of Electron containment, IPC authority, Cardano parsing/signing, CIP behavior, hardware adapters, persistence/recovery, collateral, and privacy; fix and retest findings.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 80,
+          "dependencies": ["task-805"],
+          "targetPaths": [
+            ".agent/plans/dapp-browser-cip30/",
+            "source/",
+            "tests/",
+            "../cardano-wallet/"
+          ],
+          "acceptance": [
+            "Audit scope explicitly includes hostile guest to privileged IPC and approval-byte binding.",
+            "Audit scope includes the exact ../cardano-wallet commit selected by the Daedalus pin and its persistence migrations.",
+            "No unresolved critical/high external finding remains.",
+            "Every remediation has focused regression coverage.",
+            "A final audit statement records residual accepted risks.",
+            "The audit statement identifies the exact source commit, dependency locks, backend pins, package hashes, catalog contents, and test evidence reviewed."
+          ]
+        },
+        {
+          "id": "task-807",
+          "title": "Run final dependency, CVE, pin, and release gate",
+          "description": "Review Electron/Chromium, Ledger, Trezor, Cardano SDK, cardano-wallet/node pins, supported eras, package outputs, and audit evidence immediately before rollout approval, and record the release-candidate baseline.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 16,
+          "dependencies": ["task-806"],
+          "targetPaths": [
+            "package.json",
+            "yarn.lock",
+            "flake.nix",
+            "flake.lock",
+            ".agent/plans/dapp-browser-cip30/"
+          ],
+          "acceptance": [
+            "No unaddressed critical security update affects hostile rendering or signing dependencies.",
+            "Pinned backend supports the exact advertised capability version.",
+            "Supported-era and hardware claims match tested artifacts.",
+            "Any material fix, dependency/pin update, package change, or policy-boundary change required by this gate reruns affected certification and task-805/task-806 review scopes before this task can complete.",
+            "Release checklist links all internal/external audit and packaged-test evidence.",
+            "The release-candidate baseline is recorded: source commit, lockfiles, backend pins, package hashes, catalog contents, and every reviewed packaged launcher-configuration variant for global/catalog/Diagnostics/CIP-104/CIP-142 activation; rollout tasks consume this recorded baseline rather than an arbitrary later build."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-9",
+      "name": "Staged Rollout And Operations",
+      "description": "Finalize kill switches/catalog governance, run internal/testnet/partner pilots, release curated mainnet support, then enable arbitrary diagnostics launch and monitor privacy-safe outcomes.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-900",
+          "title": "Finalize kill switches, catalog governance, and recovery runbook",
+          "description": "Finalize the operational runbook and ownership for the already audited global launch, proposed extensions, diagnostics, catalog updates, guest teardown, pending-submission reconciliation, backend rollback, and emergency grant invalidation without changing the recorded release-candidate baseline.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-807"],
+          "targetPaths": [
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
+            ".agent/ops/"
+          ],
+          "acceptance": [
+            "Operators can disable launch without deleting recovery evidence.",
+            "Catalog approval/update/emergency-removal ownership is explicit.",
+            "Global, preferred-catalog, Diagnostics, and proposed-extension launcher switches are independent and their packaged release behavior is documented.",
+            "Runbook covers sandbox failure, backend incompatibility, device regression, and ambiguous submission state.",
+            "This task makes no source, package, catalog, resource-policy, or activation-value change outside the recorded baseline."
+          ]
+        },
+        {
+          "id": "task-901",
+          "title": "Run internal builds and curated testnet pilot",
+          "description": "Enable the feature for internal users and selected preprod/preview catalog entries, collect compatibility evidence, and validate kill-switch/recovery operation.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-900"],
+          "targetPaths": [
+            "source/common/config/dappCatalog.ts",
+            ".agent/plans/dapp-browser-cip30/"
+          ],
+          "acceptance": [
+            "Software and supported hardware complete end-to-end testnet flows.",
+            "CIP-95/103/142 behavior matches pilot dApps.",
+            "CIP-104 remains gated unless its interoperability evidence is complete.",
+            "Kill switch and pending-submission reconciliation are exercised, not just inspected.",
+            "Any material pilot fix is classified against the recorded baseline and cannot bypass affected retesting/re-review."
+          ]
+        },
+        {
+          "id": "task-902",
+          "title": "Run dApp and hardware partner interoperability pilot",
+          "description": "Validate preferred dApps, CIP clients, Ledger/Trezor support, origin/resource policies, collateral behavior, and extension negotiation with selected external partners.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 32,
+          "dependencies": ["task-901"],
+          "targetPaths": [
+            "source/common/config/dappCatalog.ts",
+            "hardware-wallet-tests/",
+            "tests/dapps/conformance/"
+          ],
+          "acceptance": [
+            "Each preferred dApp has a documented network/resource/API compatibility result.",
+            "Hardware unsupported-field behavior is communicated and fail-closed.",
+            "Collateral preparation/spend warnings work with representative dApps.",
+            "No catalog entry requires relaxing the global security boundary.",
+            "Catalog origin/resource/policy changes are tracked as baseline deltas."
+          ]
+        },
+        {
+          "id": "task-903",
+          "title": "Complete preprod and preview release QA",
+          "description": "Run full release-equivalent software/hardware/security/recovery/localization QA on preprod and preview before mainnet catalog enablement.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 40,
+          "dependencies": ["task-902"],
+          "targetPaths": [
+            "tests/dapps/",
+            "hardware-wallet-tests/",
+            ".agent/plans/dapp-browser-cip30/"
+          ],
+          "acceptance": [
+            "All required quality commands and packaged security tests pass.",
+            "en-US/ja-JP and themes pass manual review.",
+            "Submission-reconciliation/collateral/route/account/network recovery paths are exercised.",
+            "Release signoff records platform, wallet, device, extension, and dApp matrices.",
+            "Every material code/dependency/package/policy change discovered during QA is recorded for task-903-a revalidation."
+          ]
+        },
+        {
+          "id": "task-903-a",
+          "title": "Revalidate post-pilot changes against the recorded baseline",
+          "description": "Compare the preprod/preview release candidate and all pilot fixes against task-807's recorded release-candidate baseline, rerun affected test and security-review scopes for every material delta, and freeze the final catalog plus exact curated-mainnet and Diagnostics-enabled package/configuration variants before deployment.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-903"],
+          "targetPaths": [
+            ".agent/plans/dapp-browser-cip30/",
+            "source/",
+            "tests/",
+            "package.json",
+            "yarn.lock",
+            "flake.nix",
+            "flake.lock",
+            "nix/internal/launcher-config.nix"
+          ],
+          "implementationNotes": [
+            "Classify every delta as documentation/evidence-only or material code/dependency/package/protocol/security-policy change.",
+            "Material deltas rerun affected conformance, packaged Electron, privacy, hardware, and security-review work.",
+            "Do not approve mainnet merely because pilot behavior improved after an unaudited fix."
+          ],
+          "acceptance": [
+            "The final mainnet candidate matches the recorded baseline or has complete revalidation evidence for every material delta.",
+            "No unresolved critical/high finding or unreviewed dependency/pin change remains.",
+            "The final candidate source commit, package hashes, catalog contents, and exact packaged launcher configurations for tasks 904/905 are recorded.",
+            "Task-904 is blocked until this change-control gate passes."
+          ]
+        },
+        {
+          "id": "task-904",
+          "title": "Enable the curated mainnet catalog",
+          "description": "Deploy through the normal release process the exact task-903-a-reviewed curated-mainnet package/configuration that enables connector-reviewed, compatibility-tested preferred entries while Diagnostics arbitrary launch remains disabled.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-903-a"],
+          "targetPaths": [
+            ".agent/plans/dapp-browser-cip30/",
+            ".vscode/docs/"
+          ],
+          "acceptance": [
+            "Only entries whose Daedalus connector/policy integration passed compatibility and security-boundary review are enabled; this does not claim the dApp itself was audited or endorsed.",
+            "Preferred-not-endorsed copy is visible.",
+            "Privacy-safe result-category monitoring and support paths are ready.",
+            "Emergency entry/global disable has been rehearsed.",
+            "Deployment source commit, package hash, catalog/resource policy, and launcher configuration exactly match task-903-a; any difference blocks deployment and reopens change control."
+          ]
+        },
+        {
+          "id": "task-905",
+          "title": "Enable diagnostics launch and complete post-release review",
+          "description": "After curated mainnet stability, deploy through the normal release process the exact task-903-a-reviewed Diagnostics-enabled package/configuration, monitor privacy-safe outcomes, review accepted availability behavior, and update planning evidence.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 32,
+          "dependencies": ["task-407", "task-410", "task-904"],
+          "targetPaths": [
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-tasks.json",
+            ".vscode/docs/"
+          ],
+          "acceptance": [
+            "Diagnostics uses the same audited broker/grant/approval boundary as catalogued entries.",
+            "No arbitrary origin enters telemetry or logs.",
+            "Post-release review records compatibility, security, recovery, and accepted availability observations.",
+            "PRD status and task completion reflect actual rollout evidence.",
+            "Deployment uses the exact task-903-a Diagnostics-enabled package hash and launcher configuration; any difference blocks activation and reopens task-903-a change control."
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 10,
+    "totalTasks": 81,
+    "estimatedTotalHours": 2348,
+    "criticalPath": [
+      "task-001",
+      "task-002",
+      "task-003",
+      "task-200",
+      "task-201",
+      "task-202",
+      "task-204",
+      "task-205",
+      "task-206",
+      "task-209",
+      "task-402",
+      "task-403",
+      "task-504",
+      "task-604",
+      "task-605",
+      "task-606",
+      "task-705",
+      "task-708",
+      "task-802",
+      "task-805",
+      "task-806",
+      "task-807",
+      "task-900",
+      "task-901",
+      "task-902",
+      "task-903",
+      "task-903-a",
+      "task-904",
+      "task-905"
+    ],
+    "keyFiles": [
+      ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
+      "source/main/dapp/DappBrowserManager.ts",
+      "source/main/dapp/DappSessionPolicy.ts",
+      "source/main/cip30/Cip30Broker.ts",
+      "source/main/cip30/ExtensionRegistry.ts",
+      "source/main/preloads/dapp.ts",
+      "source/common/cip30/wire.ts",
+      "source/common/cardano/transaction.ts",
+      "source/common/cardano/cip8.ts",
+      "source/renderer/app/stores/DappStore.ts",
+      "source/renderer/app/stores/Cip30ConsentStore.ts",
+      "source/renderer/app/stores/Cip103Store.ts",
+      "source/renderer/app/services/Cip30WalletService.ts",
+      "source/main/hardware/HardwareWalletService.ts",
+      "source/renderer/app/utils/hardwareWalletTransaction.ts",
+      "source/common/config/dappCatalog.ts",
+      "source/main/windows/main.ts",
+      "source/common/ipc/lib/IpcChannel.ts",
+      "nix/internal/x86_64-linux.nix",
+      "../cardano-wallet/lib/api/src/Cardano/Wallet/Api.hs",
+      "../cardano-wallet/lib/wallet/src/Cardano/Wallet.hs",
+      "flake.nix",
+      "flake.lock"
+    ],
+    "riskAreas": [
+      "Hostile renderer access to existing privileged IPC",
+      "Linux packaged Chromium sandbox viability",
+      "Connection-bound HTTPS/WSS egress and disabled non-proxied Chromium transports",
+      "Exact CBOR body/output byte preservation and semantic completeness",
+      "cardano-wallet full-ledger context and witness-only batch API changes",
+      "CIP-95 derivation/registration/signing correctness",
+      "CIP-104 encoding ambiguity and irreversible privacy impact",
+      "Ledger/Trezor current-era field asymmetry",
+      "CIP-103 ordered batch semantics and conflict detection",
+      "Collateral valid/invalid/CIP-40 behavior",
+      "Existing trusted renderer privilege"
+    ],
+    "testingNotes": "Every capability phase includes unit/integration/Storybook/Cucumber coverage where applicable. Final gates require differential ledger tests, parser/COSE fuzzing, body-commitment mutation tests, release-equivalent hostile Electron and transport-disable tests, physical Ledger/Trezor certification, CIP interoperability, privacy inspection, internal security review, and independent external audit.",
+    "rollbackPlan": "Disable new guest launch through launcher configuration, destroy live guests and capabilities, rely on cardano-wallet pending-submission state for submission reconciliation, keep collateral reconciliation active, invalidate grants through catalog entry removal, schema-version bump, or user revocation, and never fall back to unsandboxed guest launch, legacy IPC, incomplete review, proxy submission, or reconstructed hardware transaction bodies.",
+    "securityNotes": [
+      "Remote content remains hostile even when catalogued.",
+      "No production launch before privileged IPC authentication and packaged sandbox proof.",
+      "Guest networking is restricted to destination-bound HTTPS/WSS; WebRTC/STUN/TURN/WebTransport/QUIC and other bypass transports remain disabled.",
+      "Signing and submission always require fresh trusted consent.",
+      "Main process retains authoritative request bytes and validates all signer results.",
+      "Documented product limits (request CBOR size, CIP-103 batch size, page size, consent inactivity timeout) reject with typed errors before side effects.",
+      "CIP-106 and CIP-141 are absent from the runtime provider."
+    ]
+  }
+}
