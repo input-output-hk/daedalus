@@ -331,6 +331,7 @@ Every active plan should include a `*-tasks.json` file next to its PRD. This fil
 
 | Domain | Plan | Status | Date |
 |--------|------|--------|------|
+| dApps | [Embedded dApp Browser And CIP-30 Wallet Connector](dapp-browser-cip30/dapp-browser-cip30-prd.md) | Draft | 2026-08-08 |
 | Mithril | [Mithril Snapshot Bootstrapping](mithril/bootstrap-cardano-node.md) | In Progress | 2026-02-16 |
 | Mithril | [Mithril Snapshot UX Refinement](mithril/mithril-snapshot-ux.md) | In Progress | 2026-03-24 |
 | Mithril | [Chain Storage PR Review Fixes](mithril/chain-storage-pr-review-fixes.md) | Reference | Unknown |
