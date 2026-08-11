@@ -1,0 +1,1741 @@
+{
+  "schemaVersion": 1,
+  "eras": {
+    "conway": {
+      "sourceSha256": "ab2325fea52b97ab7792ccf9fefcc6dafb543e0bc795e9b761d3f2989b223271",
+      "definitions": {
+        "block": "block =\n  [ header\n  , transaction_bodies       : [* transaction_body]\n  , transaction_witness_sets : [* transaction_witness_set]\n  , auxiliary_data_set       : {* transaction_index => auxiliary_data}\n  , invalid_transactions     : [* transaction_index]\n  ]",
+        "transaction": "transaction =\n  [transaction_body, transaction_witness_set, bool, auxiliary_data/ nil]",
+        "kes_signature": "kes_signature = bytes .size 448\n\n; 0: Plutus v1\n; 1: Plutus v2\n; 2: Plutus v3",
+        "language": "language = 0 .. 2",
+        "potential_languages": "potential_languages = 0 .. 255",
+        "signkey_kes": "signkey_kes = bytes .size 64",
+        "certificate": "certificate =\n  [  account_registration_cert\n  // account_unregistration_cert\n  // delegation_to_stake_pool_cert\n  // pool_registration_cert\n  // pool_retirement_cert\n  // account_registration_deposit_cert\n  // account_unregistration_deposit_cert\n  // delegation_to_drep_cert\n  // delegation_to_stake_pool_and_drep_cert\n  // account_registration_delegation_to_stake_pool_cert\n  // account_registration_delegation_to_drep_cert\n  // account_registration_delegation_to_stake_pool_and_drep_cert\n  // committee_authorization_cert\n  // committee_resignation_cert\n  // drep_registration_cert\n  // drep_unregistration_cert\n  // drep_update_cert\n  ]",
+        "policy_id": "policy_id = script_hash",
+        "asset_name": "asset_name = bytes .size (0 .. 32)",
+        "redeemer": "redeemer =\n  [ tag      : redeemer_tag\n  , index    : uint .size 4\n  , data     : plutus_data\n  , ex_units : ex_units\n  ]",
+        "header": "header = [header_body, body_signature : kes_signature]",
+        "header_body": "header_body =\n  [ block_number      : block_number\n  , slot              : slot\n  , prev_hash         : hash32/ nil\n  , issuer_vkey       : vkey\n  , vrf_vkey          : vrf_vkey\n  , vrf_result        : vrf_cert\n  , block_body_size   : uint .size 4\n  , block_body_hash   : hash32       ; merkle triple root\n  , operational_cert\n  , protocol_version\n  ]",
+        "block_number": "block_number = uint .size 8",
+        "slot": "slot = uint .size 8",
+        "hash32": "hash32 = bytes .size 32",
+        "vkey": "vkey = bytes .size 32",
+        "vrf_vkey": "vrf_vkey = bytes .size 32",
+        "vrf_cert": "vrf_cert = [bytes, bytes .size 80]",
+        "operational_cert": "operational_cert =\n  [ hot_vkey        : kes_vkey\n  , sequence_number : sequence_number\n  , kes_period      : kes_period\n  , sigma           : signature\n  ]",
+        "kes_vkey": "kes_vkey = bytes .size 32",
+        "sequence_number": "sequence_number = uint .size 8",
+        "kes_period": "kes_period = uint .size 8",
+        "signature": "signature = bytes .size 64",
+        "protocol_version": "protocol_version = [major_protocol_version, uint]",
+        "major_protocol_version": "major_protocol_version = 0 .. 12",
+        "transaction_body": "transaction_body =\n  {   0  : set<transaction_input>\n  ,   1  : [* transaction_output]\n  ,   2  : coin                             ; fee\n  , ? 3  : slot                             ; time to live\n  , ? 4  : certificates\n  , ? 5  : withdrawals\n  , ? 7  : auxiliary_data_hash\n  , ? 8  : slot                             ; validity interval start\n  , ? 9  : mint\n  , ? 11 : script_data_hash\n  , ? 13 : nonempty_set<transaction_input> ; collateral\n  , ? 14 : required_signers\n  , ? 15 : network_id\n  , ? 16 : transaction_output               ; collateral return\n  , ? 17 : coin                             ; total collateral\n  , ? 18 : nonempty_set<transaction_input> ; reference inputs\n  , ? 19 : voting_procedures\n  , ? 20 : proposal_procedures\n  , ? 21 : coin                             ; current treasury value\n  , ? 22 : positive_coin                    ; donation\n  }",
+        "set<a0>": "set<a0> = #6.258([* a0])/ [* a0]",
+        "transaction_input": "transaction_input = [transaction_id : transaction_id, index : uint .size 2]",
+        "transaction_id": "transaction_id = hash32\n\n; Both of the Alonzo and Babbage style TxOut formats are equally valid\n; and can be used interchangeably",
+        "transaction_output": "transaction_output = alonzo_transaction_output/ babbage_transaction_output",
+        "alonzo_transaction_output": "alonzo_transaction_output = [address, amount : value, ? datum_hash : hash32]\n\n; address format:\n;   [ 8 bit header | payload ];\n;\n; shelley payment addresses:\n;      bit 7: 0\n;      bit 6: base/other\n;      bit 5: pointer/enterprise [for base: stake cred is keyhash/scripthash]\n;      bit 4: payment cred is keyhash/scripthash\n;   bits 3-0: network id\n;\n; reward addresses:\n;   bits 7-5: 111\n;      bit 4: credential is keyhash/scripthash\n;   bits 3-0: network id\n;\n; byron addresses:\n;   bits 7-4: 1000\n;\n;      0000: base address: keyhash28,keyhash28\n;      0001: base address: scripthash28,keyhash28\n;      0010: base address: keyhash28,scripthash28\n;      0011: base address: scripthash28,scripthash28\n;      0100: pointer address: keyhash28, 3 variable length uint\n;      0101: pointer address: scripthash28, 3 variable length uint\n;      0110: enterprise address: keyhash28\n;      0111: enterprise address: scripthash28\n;      1000: byron address\n;      1110: account address: keyhash28\n;      1111: account address: scripthash28\n; 1001-1101: future formats",
+        "address": "address = bytes",
+        "value": "value = coin/ [coin, multiasset<positive_coin>]",
+        "coin": "coin = uint",
+        "multiasset<a0>": "multiasset<a0> = {* policy_id => {+ asset_name => a0}}\n\n; To compute a script hash, note that you must prepend\n; a tag to the bytes of the script before hashing.\n; The tag is determined by the language.\n; The tags are:\n;   \"\\x00\" for multisig/native scripts\n;   \"\\x01\" for Plutus V1 scripts\n;   \"\\x02\" for Plutus V2 scripts\n;   \"\\x03\" for Plutus V3 scripts\n;   \"\\x04\" for Plutus V4 scripts",
+        "script_hash": "script_hash = hash28",
+        "hash28": "hash28 = bytes .size 28",
+        "positive_coin": "positive_coin = 1 .. max_word64",
+        "max_word64": "max_word64 = 18446744073709551615",
+        "babbage_transaction_output": "babbage_transaction_output =\n  {   0 : address\n  ,   1 : value\n  , ? 2 : datum_option ; new\n  , ? 3 : script_ref   ; new\n  }",
+        "datum_option": "datum_option = [0, hash32// 1, data]",
+        "data": "data = #6.24(bytes .cbor plutus_data)",
+        "plutus_data": "plutus_data =\n  constr<plutus_data\n  >\n  / {* plutus_data => plutus_data}\n  / [* plutus_data]\n  / big_int\n  / bounded_bytes",
+        "constr<a0>": "constr<a0\n> =\n  #6.121([* a0])\n  / #6.122([* a0])\n  / #6.123([* a0])\n  / #6.124([* a0])\n  / #6.125([* a0])\n  / #6.126([* a0])\n  / #6.127([* a0])\n  / #6.102([uint, [* a0]])",
+        "big_int": "big_int = int/ big_uint/ big_nint",
+        "big_uint": "big_uint = #6.2(bounded_bytes)\n\n; The real bounded_bytes does not have this limit. it instead has\n; a different limit which cannot be expressed in CDDL.\n;\n; The limit is as follows:\n;  - bytes with a definite-length encoding are limited to size 0..64\n;  - for bytes with an indefinite-length CBOR encoding, each chunk is\n;    limited to size 0..64\n;  ( reminder: in CBOR, the indefinite-length encoding of\n;  bytestrings consists of a token #2.31 followed by a sequence\n;  of definite-length encoded bytestrings and a stop code )",
+        "bounded_bytes": "bounded_bytes = bytes .size (0 .. 64)",
+        "big_nint": "big_nint = #6.3(bounded_bytes)",
+        "script_ref": "script_ref = #6.24(bytes .cbor script)\n\n; Conway supports four script types:\n;   0: Native scripts (timelock) - unchanged from Allegra\n;   1: Plutus V1 scripts\n;   2: Plutus V2 scripts\n;   3: Plutus V3 scripts",
+        "script": "script =\n  [  0, native_script\n  // 1, plutus_v1_script\n  // 2, plutus_v2_script\n  // 3, plutus_v3_script\n  ]\n\n\n; Allegra introduces timelock support for native scripts.\n;\n; Timelock validity intervals are half-open intervals [a, b).\n;   script_invalid_before: specifies the left (included) endpoint a.\n;   script_invalid_hereafter: specifies the right (excluded) endpoint b.\n;\n; Note: Allegra switched to int64 for script_n_of_k thresholds.",
+        "native_script": "native_script =\n  [  script_pubkey\n  // script_all\n  // script_any\n  // script_n_of_k\n  // script_invalid_before\n  // script_invalid_hereafter\n  ]",
+        "script_pubkey": "script_pubkey = (0, addr_keyhash)",
+        "addr_keyhash": "addr_keyhash = hash28",
+        "script_all": "script_all = (1, [* native_script])",
+        "script_any": "script_any = (2, [* native_script])",
+        "script_n_of_k": "script_n_of_k = (3, n : int64, [* native_script])",
+        "int64": "int64 = min_int64 .. max_int64",
+        "min_int64": "min_int64 = -9223372036854775808",
+        "max_int64": "max_int64 = 9223372036854775807\n\n; Timelock validity intervals are half-open intervals [a, b).\n; This field specifies the left (included) endpoint a.",
+        "script_invalid_before": "script_invalid_before = (4, slot)\n\n; Timelock validity intervals are half-open intervals [a, b).\n; This field specifies the right (excluded) endpoint b.",
+        "script_invalid_hereafter": "script_invalid_hereafter = (5, slot)\n\n; Alonzo introduces Plutus smart contracts.\n; Plutus V1 scripts are opaque bytestrings.",
+        "plutus_v1_script": "plutus_v1_script = distinct_bytes\n\n; A type for distinct values.\n; The type parameter must support .size, for example: bytes or uint",
+        "distinct_bytes": "distinct_bytes =\n  bytes .size 8\n  / bytes .size 16\n  / bytes .size 20\n  / bytes .size 24\n  / bytes .size 30\n  / bytes .size 32\n\n; Babbage introduces Plutus V2 with improved cost model\n; and additional builtins.",
+        "plutus_v2_script": "plutus_v2_script = distinct_bytes\n\n; Conway introduces Plutus V3 with support for new governance features.\n;\n; Note: distinct VBytes ensures uniqueness in test generation.\n; The cddl tool we use for roundtrip testing doesn't generate\n; distinct collections, so we use sized variants to ensure uniqueness.",
+        "plutus_v3_script": "plutus_v3_script = distinct_bytes",
+        "certificates": "certificates = nonempty_oset<certificate>",
+        "nonempty_oset<a0>": "nonempty_oset<a0> = #6.258([+ a0])/ [+ a0]\n\n; This certificate will be deprecated in a future era",
+        "account_registration_cert": "account_registration_cert = (0, stake_credential)",
+        "stake_credential": "stake_credential = credential",
+        "credential": "credential = [0, addr_keyhash// 1, script_hash]\n\n; This certificate will be deprecated in a future era",
+        "account_unregistration_cert": "account_unregistration_cert = (1, stake_credential)",
+        "delegation_to_stake_pool_cert": "delegation_to_stake_pool_cert = (2, stake_credential, pool_keyhash)",
+        "pool_keyhash": "pool_keyhash = hash28",
+        "pool_registration_cert": "pool_registration_cert = (3, pool_params)\n\n; Pool parameters for stake pool registration",
+        "pool_params": "pool_params =\n  ( operator       : pool_keyhash\n  , vrf_keyhash    : vrf_keyhash\n  , pledge         : coin\n  , cost           : coin\n  , margin         : unit_interval\n  , reward_account : reward_account\n  , pool_owners    : set<addr_keyhash>\n  , relays         : [* relay]\n  , pool_metadata  : pool_metadata/ nil\n  )",
+        "vrf_keyhash": "vrf_keyhash = hash32\n\n; A unit interval is a number in the range between 0 and 1, which\n; means there are two extra constraints:\n;   1. numerator <= denominator\n;   2. denominator > 0\n;\n; The relation between numerator and denominator can be\n; expressed in CDDL, but we have a limitation currently\n; (see: https://github.com/input-output-hk/cuddle/issues/30)\n; which poses a problem for testing. We need to be able to\n; generate random valid data for testing implementation of\n; our encoders/decoders. Which means we cannot use the actual\n; definition here and we hard code the value to 1/2",
+        "unit_interval": "unit_interval = #6.30([uint, uint])",
+        "reward_account": "reward_account = bytes",
+        "relay": "relay = [single_host_addr// single_host_name// multi_host_name]",
+        "single_host_addr": "single_host_addr = (0, port/ nil, ipv4/ nil, ipv6/ nil)",
+        "port": "port = uint .le 65535",
+        "ipv4": "ipv4 = bytes .size 4",
+        "ipv6": "ipv6 = bytes .size 16\n\n; dns_name: An A or AAAA DNS record",
+        "single_host_name": "single_host_name = (1, port/ nil, dns_name)",
+        "dns_name": "dns_name = text .size (0 .. 128)\n\n; dns_name: An SRV DNS record",
+        "multi_host_name": "multi_host_name = (2, dns_name)",
+        "pool_metadata": "pool_metadata = [url, bytes]",
+        "url": "url = text .size (0 .. 128)",
+        "pool_retirement_cert": "pool_retirement_cert = (4, pool_keyhash, epoch)",
+        "epoch": "epoch = uint .size 8",
+        "account_registration_deposit_cert": "account_registration_deposit_cert = (7, stake_credential, coin)",
+        "account_unregistration_deposit_cert": "account_unregistration_deposit_cert = (8, stake_credential, coin)",
+        "delegation_to_drep_cert": "delegation_to_drep_cert = (9, stake_credential, drep)",
+        "drep": "drep = [0, addr_keyhash// 1, script_hash// 2// 3]",
+        "delegation_to_stake_pool_and_drep_cert": "delegation_to_stake_pool_and_drep_cert =\n  (10, stake_credential, pool_keyhash, drep)",
+        "account_registration_delegation_to_stake_pool_cert": "account_registration_delegation_to_stake_pool_cert =\n  (11, stake_credential, pool_keyhash, coin)",
+        "account_registration_delegation_to_drep_cert": "account_registration_delegation_to_drep_cert =\n  (12, stake_credential, drep, coin)",
+        "account_registration_delegation_to_stake_pool_and_drep_cert": "account_registration_delegation_to_stake_pool_and_drep_cert =\n  (13, stake_credential, pool_keyhash, drep, coin)",
+        "committee_authorization_cert": "committee_authorization_cert =\n  (14, committee_cold_credential, committee_hot_credential)",
+        "committee_cold_credential": "committee_cold_credential = credential",
+        "committee_hot_credential": "committee_hot_credential = credential",
+        "committee_resignation_cert": "committee_resignation_cert = (15, committee_cold_credential, anchor/ nil)",
+        "anchor": "anchor = [anchor_url : url, anchor_data_hash : hash32]",
+        "drep_registration_cert": "drep_registration_cert = (16, drep_credential, coin, anchor/ nil)",
+        "drep_credential": "drep_credential = credential",
+        "drep_unregistration_cert": "drep_unregistration_cert = (17, drep_credential, coin)",
+        "drep_update_cert": "drep_update_cert = (18, drep_credential, anchor/ nil)",
+        "withdrawals": "withdrawals = {+ reward_account => coin}",
+        "auxiliary_data_hash": "auxiliary_data_hash = hash32",
+        "mint": "mint = {+ policy_id => {+ asset_name => nonzero_int64}}",
+        "nonzero_int64": "nonzero_int64 = negative_int64/ positive_int64",
+        "negative_int64": "negative_int64 = min_int64 .. -1",
+        "positive_int64": "positive_int64 = 1 .. max_int64\n\n; This is a hash of data which may affect evaluation of a script.\n; This data consists of:\n;   - The redeemers from the transaction_witness_set (the value of field 5).\n;   - The datums from the transaction_witness_set (the value of field 4).\n;   - The value in the cost_models map corresponding to the script's language\n;     (in field 18 of protocol_param_update.)\n; (In the future it may contain additional protocol parameters.)\n;\n; Since this data does not exist in contiguous form inside a transaction, it needs\n; to be independently constructed by each recipient.\n;\n; The bytestring which is hashed is the concatenation of three things:\n;   redeemers || datums || language views\n; The redeemers are exactly the data present in the transaction witness set.\n; Similarly for the datums, if present. If no datums are provided, the middle\n; field is omitted (i.e. it is the empty/null bytestring).\n;\n; language views CDDL:\n; { * language => script_integrity_data }\n;\n; This must be encoded canonically, using the same scheme as in\n; RFC7049 section 3.9:\n;  - Maps, strings, and bytestrings must use a definite-length encoding\n;  - Integers must be as small as possible.\n;  - The expressions for map length, string length, and bytestring length\n;    must be as short as possible.\n;  - The keys in the map must be sorted as follows:\n;     -  If two keys have different lengths, the shorter one sorts earlier.\n;     -  If two keys have the same length, the one with the lower value\n;        in (byte-wise) lexical order sorts earlier.\n;\n; For PlutusV1 (language id 0), the language view is the following:\n;   - the value of cost_models map at key 0 (in other words, the script_integrity_data)\n;     is encoded as an indefinite length list and the result is encoded as a bytestring.\n;     (our apologies)\n;     For example, the script_integrity_data corresponding to the all zero costmodel for V1\n;     would be encoded as (in hex):\n;     58a89f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ff\n;   - the language ID tag is also encoded twice. first as a uint then as\n;     a bytestring. (our apologies)\n;     Concretely, this means that the language version for V1 is encoded as\n;     4100 in hex.\n; For PlutusV2 (language id 1), the language view is the following:\n;   - the value of cost_models map at key 1 is encoded as an definite length list.\n;     For example, the script_integrity_data corresponding to the all zero costmodel for V2\n;     would be encoded as (in hex):\n;     98af0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\n;   - the language ID tag is encoded as expected.\n;     Concretely, this means that the language version for V2 is encoded as\n;     01 in hex.\n; For PlutusV3 (language id 2), the language view is the following:\n;   - the value of cost_models map at key 2 is encoded as a definite length list.\n;\n; Note that each Plutus language represented inside a transaction must have\n; a cost model in the cost_models protocol parameter in order to execute,\n; regardless of what the script integrity data is.\n;\n; Finally, note that in the case that a transaction includes datums but does not\n; include the redeemers field, the script data format becomes (in hex):\n; [ A0 | datums | A0 ]\n; corresponding to a CBOR empty map and an empty map for language view.\n; This empty redeeemer case has changed from the previous eras, since default\n; representation for redeemers has been changed to a map. Also whenever redeemers are\n; supplied either as a map or as an array they must contain at least one element,\n; therefore there is no way to override this behavior by providing a custom\n; representation for empty redeemers.",
+        "script_data_hash": "script_data_hash = hash32",
+        "nonempty_set<a0>": "nonempty_set<a0> = #6.258([+ a0])/ [+ a0]",
+        "required_signers": "required_signers = nonempty_set<addr_keyhash>",
+        "network_id": "network_id = 0/ 1",
+        "voting_procedures": "voting_procedures = {+ voter => {+ gov_action_id => voting_procedure}}",
+        "voter": "voter =\n  [  0, addr_keyhash\n  // 1, script_hash\n  // 2, addr_keyhash\n  // 3, script_hash\n  // 4, addr_keyhash\n  ]",
+        "gov_action_id": "gov_action_id =\n  [transaction_id : transaction_id, gov_action_index : uint .size 2]",
+        "voting_procedure": "voting_procedure = [vote, anchor/ nil]",
+        "vote": "vote = 0 .. 2",
+        "proposal_procedures": "proposal_procedures = nonempty_oset<proposal_procedure>",
+        "proposal_procedure": "proposal_procedure = [deposit : coin, reward_account, gov_action, anchor]",
+        "gov_action": "gov_action =\n  [  parameter_change_action\n  // hard_fork_initiation_action\n  // treasury_withdrawals_action\n  // no_confidence\n  // update_committee\n  // new_constitution\n  // info_action\n  ]",
+        "parameter_change_action": "parameter_change_action =\n  (0, gov_action_id/ nil, protocol_param_update, guardrails_script_hash/ nil)",
+        "protocol_param_update": "protocol_param_update =\n  { ? 0  : coin                   ; minfeeA\n  , ? 1  : coin                   ; minfeeB\n  , ? 2  : uint .size 4           ; max block body size\n  , ? 3  : uint .size 4           ; max transaction size\n  , ? 4  : uint .size 2           ; max block header size\n  , ? 5  : coin                   ; key deposit\n  , ? 6  : coin                   ; pool deposit\n  , ? 7  : epoch_interval         ; maximum epoch\n  , ? 8  : uint .size 2           ; n_opt: desired number of stake pools\n  , ? 9  : nonnegative_interval   ; pool pledge influence\n  , ? 10 : unit_interval          ; expansion rate\n  , ? 11 : unit_interval          ; treasury growth rate\n  , ? 16 : coin                   ; min pool cost\n  , ? 17 : coin                   ; ada per utxo byte\n  , ? 18 : cost_models            ; cost models for script languages\n  , ? 19 : ex_unit_prices         ; execution costs\n  , ? 20 : ex_units               ; max tx ex units\n  , ? 21 : ex_units               ; max block ex units\n  , ? 22 : uint .size 4           ; max value size\n  , ? 23 : uint .size 2           ; collateral percentage\n  , ? 24 : uint .size 2           ; max collateral inputs\n  , ? 25 : pool_voting_thresholds ; pool voting thresholds\n  , ? 26 : drep_voting_thresholds ; drep voting thresholds\n  , ? 27 : uint .size 2           ; min committee size\n  , ? 28 : epoch_interval         ; committee term limit\n  , ? 29 : epoch_interval         ; goveranance action validity period\n  , ? 30 : coin                   ; governance action deposit\n  , ? 31 : coin                   ; drep deposit\n  , ? 32 : epoch_interval         ; drep inactivity period\n  , ? 33 : nonnegative_interval   ; minfee refscriptcoinsperbyte\n  }",
+        "epoch_interval": "epoch_interval = uint .size 4",
+        "nonnegative_interval": "nonnegative_interval = #6.30([uint, positive_int])",
+        "positive_int": "positive_int = 1 .. max_word64\n\n; The format for cost_models is flexible enough to allow adding\n; Plutus built-ins and language versions in the future.\n;\n; Plutus v1: only 166 integers are used, but more are accepted (and ignored)\n; Plutus v2: only 175 integers are used, but more are accepted (and ignored)\n; Plutus v3: only 223 integers are used, but more are accepted (and ignored)\n;\n; Any 8-bit unsigned number can be used as a key.",
+        "cost_models": "cost_models =\n  {? 0 : [* int64], ? 1 : [* int64], ? 2 : [* int64], * 3 .. 255 => [* int64]}",
+        "ex_unit_prices": "ex_unit_prices =\n  [mem_price : nonnegative_interval, step_price : nonnegative_interval]",
+        "ex_units": "ex_units = [mem : uint, steps : uint]",
+        "pool_voting_thresholds": "pool_voting_thresholds =\n  [ unit_interval ; motion no confidence\n  , unit_interval ; committee normal\n  , unit_interval ; committee no confidence\n  , unit_interval ; hard fork initiation\n  , unit_interval ; security relevant parameter voting threshold\n  ]",
+        "drep_voting_thresholds": "drep_voting_thresholds =\n  [ unit_interval ; motion no confidence\n  , unit_interval ; committee normal\n  , unit_interval ; committee no confidence\n  , unit_interval ; update constitution\n  , unit_interval ; hard fork initiation\n  , unit_interval ; PP network group\n  , unit_interval ; PP economic group\n  , unit_interval ; PP technical group\n  , unit_interval ; PP governance group\n  , unit_interval ; treasury withdrawal\n  ]",
+        "guardrails_script_hash": "guardrails_script_hash = script_hash",
+        "hard_fork_initiation_action": "hard_fork_initiation_action = (1, gov_action_id/ nil, protocol_version)",
+        "treasury_withdrawals_action": "treasury_withdrawals_action =\n  (2, {* reward_account => coin}, guardrails_script_hash/ nil)",
+        "no_confidence": "no_confidence = (3, gov_action_id/ nil)",
+        "update_committee": "update_committee =\n  ( 4\n  , gov_action_id/ nil\n  , set<committee_cold_credential>\n  , {* committee_cold_credential => epoch}\n  , unit_interval\n  )",
+        "new_constitution": "new_constitution = (5, gov_action_id/ nil, constitution)",
+        "constitution": "constitution = [anchor, guardrails_script_hash/ nil]",
+        "info_action": "info_action = 6",
+        "transaction_witness_set": "transaction_witness_set =\n  { ? 0 : nonempty_set<vkeywitness>\n  , ? 1 : nonempty_set<native_script>\n  , ? 2 : nonempty_set<bootstrap_witness>\n  , ? 3 : nonempty_set<plutus_v1_script>\n  , ? 4 : nonempty_set<plutus_data>\n  , ? 5 : redeemers\n  , ? 6 : nonempty_set<plutus_v2_script>\n  , ? 7 : nonempty_set<plutus_v3_script>\n  }",
+        "vkeywitness": "vkeywitness = [vkey, signature]",
+        "bootstrap_witness": "bootstrap_witness =\n  [ public_key : vkey\n  , signature  : signature\n  , chain_code : bytes .size 32\n  , attributes : bytes\n  ]\n\n\n; Flat Array support is included for backwards compatibility and\n; will be removed in the next era. It is recommended for tools to\n; adopt using a Map instead of Array going forward.",
+        "redeemers": "redeemers =\n  [ + redeemer\n  ]\n  / { + [tag : redeemer_tag, index : uint .size 4] => [ data     : plutus_data\n                                                      , ex_units : ex_units\n                                                      ]\n\n\n  }\n\n; 0: spend\n; 1: mint\n; 2: cert\n; 3: reward\n; 4: voting\n; 5: proposing",
+        "redeemer_tag": "redeemer_tag = 0 .. 5",
+        "transaction_index": "transaction_index = uint .size 2\n\n; auxiliary_data supports three serialization formats:\n;   1. metadata (raw) - Supported since Shelley\n;   2. auxiliary_data_array - Array format, introduced in Allegra\n;   3. auxiliary_data_map - Tagged map format, introduced in Alonzo\n;      Conway adds plutus_v3_script support at index 4",
+        "auxiliary_data": "auxiliary_data = metadata/ auxiliary_data_array/ auxiliary_data_map",
+        "metadata": "metadata = {* metadatum_label => metadatum}",
+        "metadatum_label": "metadatum_label = uint .size 8",
+        "metadatum": "metadatum =\n  {* metadatum => metadatum}\n  / [* metadatum]\n  / int\n  / bytes .size (0 .. 64)\n  / text .size (0 .. 64)",
+        "auxiliary_data_array": "auxiliary_data_array =\n  [transaction_metadata : metadata, auxiliary_scripts : auxiliary_scripts]",
+        "auxiliary_scripts": "auxiliary_scripts = [* native_script]",
+        "auxiliary_data_map": "auxiliary_data_map =\n  #6.259(\n    { ? 0 : metadata\n    , ? 1 : [* native_script]\n    , ? 2 : [* plutus_v1_script]\n    , ? 3 : [* plutus_v2_script]\n    , ? 4 : [* plutus_v3_script]\n    }\n\n  )"
+      },
+      "discriminants": {
+        "certificates": [
+          {
+            "name": "account_registration_cert",
+            "tag": 0
+          },
+          {
+            "name": "account_unregistration_cert",
+            "tag": 1
+          },
+          {
+            "name": "delegation_to_stake_pool_cert",
+            "tag": 2
+          },
+          {
+            "name": "pool_registration_cert",
+            "tag": 3
+          },
+          {
+            "name": "pool_retirement_cert",
+            "tag": 4
+          },
+          {
+            "name": "account_registration_deposit_cert",
+            "tag": 7
+          },
+          {
+            "name": "account_unregistration_deposit_cert",
+            "tag": 8
+          },
+          {
+            "name": "delegation_to_drep_cert",
+            "tag": 9
+          },
+          {
+            "name": "delegation_to_stake_pool_and_drep_cert",
+            "tag": 10
+          },
+          {
+            "name": "account_registration_delegation_to_stake_pool_cert",
+            "tag": 11
+          },
+          {
+            "name": "account_registration_delegation_to_drep_cert",
+            "tag": 12
+          },
+          {
+            "name": "account_registration_delegation_to_stake_pool_and_drep_cert",
+            "tag": 13
+          },
+          {
+            "name": "committee_authorization_cert",
+            "tag": 14
+          },
+          {
+            "name": "committee_resignation_cert",
+            "tag": 15
+          },
+          {
+            "name": "drep_registration_cert",
+            "tag": 16
+          },
+          {
+            "name": "drep_unregistration_cert",
+            "tag": 17
+          },
+          {
+            "name": "drep_update_cert",
+            "tag": 18
+          }
+        ],
+        "governanceActions": [
+          {
+            "name": "parameter_change_action",
+            "tag": 0
+          },
+          {
+            "name": "hard_fork_initiation_action",
+            "tag": 1
+          },
+          {
+            "name": "treasury_withdrawals_action",
+            "tag": 2
+          },
+          {
+            "name": "no_confidence",
+            "tag": 3
+          },
+          {
+            "name": "update_committee",
+            "tag": 4
+          },
+          {
+            "name": "new_constitution",
+            "tag": 5
+          },
+          {
+            "name": "info_action",
+            "tag": 6
+          }
+        ],
+        "nativeScripts": [
+          {
+            "name": "script_pubkey",
+            "tag": 0
+          },
+          {
+            "name": "script_all",
+            "tag": 1
+          },
+          {
+            "name": "script_any",
+            "tag": 2
+          },
+          {
+            "name": "script_n_of_k",
+            "tag": 3
+          },
+          {
+            "name": "script_invalid_before",
+            "tag": 4
+          },
+          {
+            "name": "script_invalid_hereafter",
+            "tag": 5
+          }
+        ]
+      },
+      "maps": {
+        "transactionBody": [
+          {
+            "key": 0,
+            "required": true,
+            "type": "set<transaction_input>",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 1,
+            "required": true,
+            "type": "[* transaction_output]",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 2,
+            "required": true,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "fee"
+          },
+          {
+            "key": 3,
+            "required": false,
+            "type": "slot",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "time to live"
+          },
+          {
+            "key": 4,
+            "required": false,
+            "type": "certificates",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 5,
+            "required": false,
+            "type": "withdrawals",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 7,
+            "required": false,
+            "type": "auxiliary_data_hash",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 8,
+            "required": false,
+            "type": "slot",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "validity interval start"
+          },
+          {
+            "key": 9,
+            "required": false,
+            "type": "mint",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 11,
+            "required": false,
+            "type": "script_data_hash",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 13,
+            "required": false,
+            "type": "nonempty_set<transaction_input>",
+            "cardinality": "nonempty",
+            "comment": "collateral"
+          },
+          {
+            "key": 14,
+            "required": false,
+            "type": "required_signers",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 15,
+            "required": false,
+            "type": "network_id",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 16,
+            "required": false,
+            "type": "transaction_output",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "collateral return"
+          },
+          {
+            "key": 17,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "total collateral"
+          },
+          {
+            "key": 18,
+            "required": false,
+            "type": "nonempty_set<transaction_input>",
+            "cardinality": "nonempty",
+            "comment": "reference inputs"
+          },
+          {
+            "key": 19,
+            "required": false,
+            "type": "voting_procedures",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 20,
+            "required": false,
+            "type": "proposal_procedures",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 21,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "current treasury value"
+          },
+          {
+            "key": 22,
+            "required": false,
+            "type": "positive_coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "donation"
+          }
+        ],
+        "babbageOutput": [
+          {
+            "key": 0,
+            "required": true,
+            "type": "address",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 1,
+            "required": true,
+            "type": "value",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 2,
+            "required": false,
+            "type": "datum_option",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "new"
+          },
+          {
+            "key": 3,
+            "required": false,
+            "type": "script_ref",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "new"
+          }
+        ],
+        "witnessSet": [
+          {
+            "key": 0,
+            "required": false,
+            "type": "nonempty_set<vkeywitness>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 1,
+            "required": false,
+            "type": "nonempty_set<native_script>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 2,
+            "required": false,
+            "type": "nonempty_set<bootstrap_witness>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 3,
+            "required": false,
+            "type": "nonempty_set<plutus_v1_script>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 4,
+            "required": false,
+            "type": "nonempty_set<plutus_data>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 5,
+            "required": false,
+            "type": "redeemers",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 6,
+            "required": false,
+            "type": "nonempty_set<plutus_v2_script>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 7,
+            "required": false,
+            "type": "nonempty_set<plutus_v3_script>",
+            "cardinality": "nonempty",
+            "comment": null
+          }
+        ],
+        "auxiliaryDataMap": [
+          {
+            "key": 0,
+            "required": false,
+            "type": "metadata",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 1,
+            "required": false,
+            "type": "[* native_script]",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 2,
+            "required": false,
+            "type": "[* plutus_v1_script]",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 3,
+            "required": false,
+            "type": "[* plutus_v2_script]",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 4,
+            "required": false,
+            "type": "[* plutus_v3_script]",
+            "cardinality": "zero-or-more",
+            "comment": null
+          }
+        ],
+        "protocolParameterUpdate": [
+          {
+            "key": 0,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "minfeeA"
+          },
+          {
+            "key": 1,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "minfeeB"
+          },
+          {
+            "key": 2,
+            "required": false,
+            "type": "uint .size 4",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max block body size"
+          },
+          {
+            "key": 3,
+            "required": false,
+            "type": "uint .size 4",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max transaction size"
+          },
+          {
+            "key": 4,
+            "required": false,
+            "type": "uint .size 2",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max block header size"
+          },
+          {
+            "key": 5,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "key deposit"
+          },
+          {
+            "key": 6,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "pool deposit"
+          },
+          {
+            "key": 7,
+            "required": false,
+            "type": "epoch_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "maximum epoch"
+          },
+          {
+            "key": 8,
+            "required": false,
+            "type": "uint .size 2",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "n_opt: desired number of stake pools"
+          },
+          {
+            "key": 9,
+            "required": false,
+            "type": "nonnegative_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "pool pledge influence"
+          },
+          {
+            "key": 10,
+            "required": false,
+            "type": "unit_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "expansion rate"
+          },
+          {
+            "key": 11,
+            "required": false,
+            "type": "unit_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "treasury growth rate"
+          },
+          {
+            "key": 16,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "min pool cost"
+          },
+          {
+            "key": 17,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "ada per utxo byte"
+          },
+          {
+            "key": 18,
+            "required": false,
+            "type": "cost_models",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "cost models for script languages"
+          },
+          {
+            "key": 19,
+            "required": false,
+            "type": "ex_unit_prices",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "execution costs"
+          },
+          {
+            "key": 20,
+            "required": false,
+            "type": "ex_units",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max tx ex units"
+          },
+          {
+            "key": 21,
+            "required": false,
+            "type": "ex_units",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max block ex units"
+          },
+          {
+            "key": 22,
+            "required": false,
+            "type": "uint .size 4",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max value size"
+          },
+          {
+            "key": 23,
+            "required": false,
+            "type": "uint .size 2",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "collateral percentage"
+          },
+          {
+            "key": 24,
+            "required": false,
+            "type": "uint .size 2",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max collateral inputs"
+          },
+          {
+            "key": 25,
+            "required": false,
+            "type": "pool_voting_thresholds",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "pool voting thresholds"
+          },
+          {
+            "key": 26,
+            "required": false,
+            "type": "drep_voting_thresholds",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "drep voting thresholds"
+          },
+          {
+            "key": 27,
+            "required": false,
+            "type": "uint .size 2",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "min committee size"
+          },
+          {
+            "key": 28,
+            "required": false,
+            "type": "epoch_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "committee term limit"
+          },
+          {
+            "key": 29,
+            "required": false,
+            "type": "epoch_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "goveranance action validity period"
+          },
+          {
+            "key": 30,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "governance action deposit"
+          },
+          {
+            "key": 31,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "drep deposit"
+          },
+          {
+            "key": 32,
+            "required": false,
+            "type": "epoch_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "drep inactivity period"
+          },
+          {
+            "key": 33,
+            "required": false,
+            "type": "nonnegative_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "minfee refscriptcoinsperbyte"
+          }
+        ]
+      }
+    },
+    "dijkstra": {
+      "sourceSha256": "0b7062eab1011c80dae7e0849f1414ec79183405473ffccb96c34d545bea2ee1",
+      "definitions": {
+        "block": "block =\n  [ header\n  , transaction_bodies       : [* transaction_body]\n  , transaction_witness_sets : [* transaction_witness_set]\n  , auxiliary_data_set       : {* transaction_index => auxiliary_data}\n  , invalid_transactions     : [* transaction_index]\n  ]",
+        "transaction": "transaction =\n  [  transaction_body, transaction_witness_set, true, auxiliary_data/ nil\n  // transaction_body, transaction_witness_set, auxiliary_data/ nil\n  ]",
+        "kes_signature": "kes_signature = bytes .size 448\n\n; 0: Plutus v1\n; 1: Plutus v2\n; 2: Plutus v3\n; 3: Plutus v4 (NEW)",
+        "language": "language = 0 .. 3",
+        "potential_languages": "potential_languages = 0 .. 255",
+        "signkey_kes": "signkey_kes = bytes .size 64",
+        "certificate": "certificate =\n  [  delegation_to_stake_pool_cert\n  // pool_registration_cert\n  // pool_retirement_cert\n  // account_registration_deposit_cert\n  // account_unregistration_deposit_cert\n  // delegation_to_drep_cert\n  // delegation_to_stake_pool_and_drep_cert\n  // account_registration_delegation_to_stake_pool_cert\n  // account_registration_delegation_to_drep_cert\n  // account_registration_delegation_to_stake_pool_and_drep_cert\n  // committee_authorization_cert\n  // committee_resignation_cert\n  // drep_registration_cert\n  // drep_unregistration_cert\n  // drep_update_cert\n  ]",
+        "header": "header = [header_body, body_signature : kes_signature]",
+        "header_body": "header_body =\n  [ block_number      : block_number\n  , slot              : slot\n  , prev_hash         : hash32/ nil\n  , issuer_vkey       : vkey\n  , vrf_vkey          : vrf_vkey\n  , vrf_result        : vrf_cert\n  , block_body_size   : uint .size 4\n  , block_body_hash   : hash32       ; merkle triple root\n  , operational_cert\n  , protocol_version\n  ]",
+        "block_number": "block_number = uint .size 8",
+        "slot": "slot = uint .size 8",
+        "hash32": "hash32 = bytes .size 32",
+        "vkey": "vkey = bytes .size 32",
+        "vrf_vkey": "vrf_vkey = bytes .size 32",
+        "vrf_cert": "vrf_cert = [bytes, bytes .size 80]",
+        "operational_cert": "operational_cert =\n  [ hot_vkey        : kes_vkey\n  , sequence_number : sequence_number\n  , kes_period      : kes_period\n  , sigma           : signature\n  ]",
+        "kes_vkey": "kes_vkey = bytes .size 32",
+        "sequence_number": "sequence_number = uint .size 8",
+        "kes_period": "kes_period = uint .size 8",
+        "signature": "signature = bytes .size 64",
+        "protocol_version": "protocol_version = [major_protocol_version, uint .size 4]",
+        "major_protocol_version": "major_protocol_version = 0 .. 13",
+        "transaction_body": "transaction_body =\n  {   0  : set<transaction_input>\n  ,   1  : [* transaction_output]\n  ,   2  : coin                             ; fee\n  , ? 3  : slot                             ; time to live\n  , ? 4  : certificates\n  , ? 5  : withdrawals\n  , ? 7  : auxiliary_data_hash\n  , ? 8  : slot                             ; validity interval start\n  , ? 9  : mint\n  , ? 11 : script_data_hash\n  , ? 13 : nonempty_set<transaction_input> ; collateral\n  , ? 14 : guards                           ; guards (replaces required_signers)\n  , ? 15 : network_id\n  , ? 16 : transaction_output               ; collateral return\n  , ? 17 : coin                             ; total collateral\n  , ? 18 : nonempty_set<transaction_input> ; reference inputs\n  , ? 19 : voting_procedures\n  , ? 20 : proposal_procedures\n  , ? 21 : coin                             ; current treasury value\n  , ? 22 : positive_coin                    ; donation\n  , ? 23 : sub_transactions                 ; sub-transactions (NEW)\n  , ? 25 : direct_deposits                  ; direct deposits\n  , ? 26 : account_balance_intervals        ; account balance intervals\n  }",
+        "set<a0>": "set<a0> = #6.258([* a0])/ [* a0]",
+        "transaction_input": "transaction_input = [transaction_id : transaction_id, index : uint .size 2]",
+        "transaction_id": "transaction_id = hash32\n\n; Both of the Alonzo and Babbage style TxOut formats are equally valid\n; and can be used interchangeably",
+        "transaction_output": "transaction_output = alonzo_transaction_output/ babbage_transaction_output",
+        "alonzo_transaction_output": "alonzo_transaction_output = [address, amount : value, ? datum_hash : hash32]\n\n; address format:\n;   [ 8 bit header | payload ];\n;\n; shelley payment addresses:\n;      bit 7: 0\n;      bit 6: base/other\n;      bit 5: pointer/enterprise [for base: stake cred is keyhash/scripthash]\n;      bit 4: payment cred is keyhash/scripthash\n;   bits 3-0: network id\n;\n; reward addresses:\n;   bits 7-5: 111\n;      bit 4: credential is keyhash/scripthash\n;   bits 3-0: network id\n;\n; byron addresses:\n;   bits 7-4: 1000\n;\n;      0000: base address: keyhash28,keyhash28\n;      0001: base address: scripthash28,keyhash28\n;      0010: base address: keyhash28,scripthash28\n;      0011: base address: scripthash28,scripthash28\n;      0100: pointer address: keyhash28, 3 variable length uint\n;      0101: pointer address: scripthash28, 3 variable length uint\n;      0110: enterprise address: keyhash28\n;      0111: enterprise address: scripthash28\n;      1000: byron address\n;      1110: account address: keyhash28\n;      1111: account address: scripthash28\n; 1001-1101: future formats",
+        "address": "address = bytes",
+        "value": "value = coin/ [coin, multiasset<positive_coin>]",
+        "coin": "coin = uint",
+        "multiasset<a0>": "multiasset<a0> = {+ policy_id => {+ asset_name => a0}}",
+        "policy_id": "policy_id = script_hash\n\n; To compute a script hash, note that you must prepend\n; a tag to the bytes of the script before hashing.\n; The tag is determined by the language.\n; The tags are:\n;   \"\\x00\" for multisig/native scripts\n;   \"\\x01\" for Plutus V1 scripts\n;   \"\\x02\" for Plutus V2 scripts\n;   \"\\x03\" for Plutus V3 scripts\n;   \"\\x04\" for Plutus V4 scripts",
+        "script_hash": "script_hash = hash28",
+        "hash28": "hash28 = bytes .size 28",
+        "asset_name": "asset_name = bytes .size (0 .. 32)",
+        "positive_coin": "positive_coin = 1 .. max_word64",
+        "max_word64": "max_word64 = 18446744073709551615",
+        "babbage_transaction_output": "babbage_transaction_output =\n  {   0 : address\n  ,   1 : value\n  , ? 2 : datum_option ; new\n  , ? 3 : script_ref   ; new\n  }",
+        "datum_option": "datum_option = [0, hash32// 1, data]",
+        "data": "data = #6.24(bytes .cbor plutus_data)",
+        "plutus_data": "plutus_data =\n  constr<plutus_data\n  >\n  / {* plutus_data => plutus_data}\n  / [* plutus_data]\n  / big_int\n  / bounded_bytes",
+        "constr<a0>": "constr<a0\n> =\n  #6.121([* a0])\n  / #6.122([* a0])\n  / #6.123([* a0])\n  / #6.124([* a0])\n  / #6.125([* a0])\n  / #6.126([* a0])\n  / #6.127([* a0])\n  / #6.102([uint, [* a0]])",
+        "big_int": "big_int = int/ big_uint/ big_nint",
+        "big_uint": "big_uint = #6.2(bounded_bytes)\n\n; The real bounded_bytes does not have this limit. it instead has\n; a different limit which cannot be expressed in CDDL.\n;\n; The limit is as follows:\n;  - bytes with a definite-length encoding are limited to size 0..64\n;  - for bytes with an indefinite-length CBOR encoding, each chunk is\n;    limited to size 0..64\n;  ( reminder: in CBOR, the indefinite-length encoding of\n;  bytestrings consists of a token #2.31 followed by a sequence\n;  of definite-length encoded bytestrings and a stop code )",
+        "bounded_bytes": "bounded_bytes = bytes .size (0 .. 64)",
+        "big_nint": "big_nint = #6.3(bounded_bytes)",
+        "script_ref": "script_ref = #6.24(bytes .cbor script)\n\n; Dijkstra supports five script types:\n;   0: Native scripts with guard support (7 variants)\n;   1: Plutus V1 scripts\n;   2: Plutus V2 scripts\n;   3: Plutus V3 scripts\n;   4: Plutus V4 scripts (NEW)",
+        "script": "script =\n  [  0, native_script\n  // 1, plutus_v1_script\n  // 2, plutus_v2_script\n  // 3, plutus_v3_script\n  // 4, plutus_v4_script\n  ]\n\n\n; Dijkstra native scripts extend Allegra's 6-variant format\n; with a 7th variant for guard scripts.",
+        "native_script": "native_script =\n  [  script_pubkey\n  // script_all\n  // script_any\n  // script_n_of_k\n  // script_invalid_before\n  // script_invalid_hereafter\n  // script_require_guard\n  ]",
+        "script_pubkey": "script_pubkey = (0, addr_keyhash)",
+        "addr_keyhash": "addr_keyhash = hash28",
+        "script_all": "script_all = (1, [* native_script])",
+        "script_any": "script_any = (2, [* native_script])",
+        "script_n_of_k": "script_n_of_k = (3, n : int64, [* native_script])",
+        "int64": "int64 = min_int64 .. max_int64",
+        "min_int64": "min_int64 = -9223372036854775808",
+        "max_int64": "max_int64 = 9223372036854775807\n\n; Timelock validity intervals are half-open intervals [a, b).\n; This field specifies the left (included) endpoint a.",
+        "script_invalid_before": "script_invalid_before = (4, slot)\n\n; Timelock validity intervals are half-open intervals [a, b).\n; This field specifies the right (excluded) endpoint b.",
+        "script_invalid_hereafter": "script_invalid_hereafter = (5, slot)\n\n; Dijkstra adds guard scripts for enhanced security.\n; A guard script requires a credential to authorize execution.",
+        "script_require_guard": "script_require_guard = (6, credential)",
+        "credential": "credential = [0, addr_keyhash// 1, script_hash]\n\n; Alonzo introduces Plutus smart contracts.\n; Plutus V1 scripts are opaque bytestrings.",
+        "plutus_v1_script": "plutus_v1_script = distinct_bytes\n\n; A type for distinct values.\n; The type parameter must support .size, for example: bytes or uint",
+        "distinct_bytes": "distinct_bytes =\n  bytes .size 8\n  / bytes .size 16\n  / bytes .size 20\n  / bytes .size 24\n  / bytes .size 30\n  / bytes .size 32\n\n; Babbage introduces Plutus V2 with improved cost model\n; and additional builtins.",
+        "plutus_v2_script": "plutus_v2_script = distinct_bytes\n\n; Conway introduces Plutus V3 with support for new governance features.\n;\n; Note: distinct VBytes ensures uniqueness in test generation.\n; The cddl tool we use for roundtrip testing doesn't generate\n; distinct collections, so we use sized variants to ensure uniqueness.",
+        "plutus_v3_script": "plutus_v3_script = distinct_bytes\n\n; Dijkstra introduces Plutus V4.\n;\n; Note: distinct VBytes ensures uniqueness in test generation.",
+        "plutus_v4_script": "plutus_v4_script = distinct_bytes",
+        "certificates": "certificates = nonempty_oset<certificate>",
+        "nonempty_oset<a0>": "nonempty_oset<a0> = #6.258([+ a0])/ [+ a0]",
+        "delegation_to_stake_pool_cert": "delegation_to_stake_pool_cert = (2, stake_credential, pool_keyhash)",
+        "stake_credential": "stake_credential = credential",
+        "pool_keyhash": "pool_keyhash = hash28",
+        "pool_registration_cert": "pool_registration_cert = (3, pool_params)\n\n; Pool parameters for stake pool registration",
+        "pool_params": "pool_params =\n  ( operator       : pool_keyhash\n  , vrf_keyhash    : vrf_keyhash\n  , pledge         : coin\n  , cost           : coin\n  , margin         : unit_interval\n  , reward_account : reward_account\n  , pool_owners    : set<addr_keyhash>\n  , relays         : [* relay]\n  , pool_metadata  : pool_metadata/ nil\n  )",
+        "vrf_keyhash": "vrf_keyhash = hash32\n\n; A unit interval is a number in the range between 0 and 1, which\n; means there are two extra constraints:\n;   1. numerator <= denominator\n;   2. denominator > 0\n;\n; The relation between numerator and denominator can be\n; expressed in CDDL, but we have a limitation currently\n; (see: https://github.com/input-output-hk/cuddle/issues/30)\n; which poses a problem for testing. We need to be able to\n; generate random valid data for testing implementation of\n; our encoders/decoders. Which means we cannot use the actual\n; definition here and we hard code the value to 1/2",
+        "unit_interval": "unit_interval = #6.30([uint, uint])",
+        "reward_account": "reward_account = bytes",
+        "relay": "relay = [single_host_addr// single_host_name// multi_host_name]",
+        "single_host_addr": "single_host_addr = (0, port/ nil, ipv4/ nil, ipv6/ nil)",
+        "port": "port = uint .le 65535",
+        "ipv4": "ipv4 = bytes .size 4",
+        "ipv6": "ipv6 = bytes .size 16\n\n; dns_name: An A or AAAA DNS record",
+        "single_host_name": "single_host_name = (1, port/ nil, dns_name)",
+        "dns_name": "dns_name = text .size (0 .. 128)\n\n; dns_name: An SRV DNS record",
+        "multi_host_name": "multi_host_name = (2, dns_name)",
+        "pool_metadata": "pool_metadata = [url, bytes]",
+        "url": "url = text .size (0 .. 128)",
+        "pool_retirement_cert": "pool_retirement_cert = (4, pool_keyhash, epoch)",
+        "epoch": "epoch = uint .size 8",
+        "account_registration_deposit_cert": "account_registration_deposit_cert = (7, stake_credential, coin)",
+        "account_unregistration_deposit_cert": "account_unregistration_deposit_cert = (8, stake_credential, coin)",
+        "delegation_to_drep_cert": "delegation_to_drep_cert = (9, stake_credential, drep)",
+        "drep": "drep = [0, addr_keyhash// 1, script_hash// 2// 3]",
+        "delegation_to_stake_pool_and_drep_cert": "delegation_to_stake_pool_and_drep_cert =\n  (10, stake_credential, pool_keyhash, drep)",
+        "account_registration_delegation_to_stake_pool_cert": "account_registration_delegation_to_stake_pool_cert =\n  (11, stake_credential, pool_keyhash, coin)",
+        "account_registration_delegation_to_drep_cert": "account_registration_delegation_to_drep_cert =\n  (12, stake_credential, drep, coin)",
+        "account_registration_delegation_to_stake_pool_and_drep_cert": "account_registration_delegation_to_stake_pool_and_drep_cert =\n  (13, stake_credential, pool_keyhash, drep, coin)",
+        "committee_authorization_cert": "committee_authorization_cert =\n  (14, committee_cold_credential, committee_hot_credential)",
+        "committee_cold_credential": "committee_cold_credential = credential",
+        "committee_hot_credential": "committee_hot_credential = credential",
+        "committee_resignation_cert": "committee_resignation_cert = (15, committee_cold_credential, anchor/ nil)",
+        "anchor": "anchor = [anchor_url : url, anchor_data_hash : hash32]",
+        "drep_registration_cert": "drep_registration_cert = (16, drep_credential, coin, anchor/ nil)",
+        "drep_credential": "drep_credential = credential",
+        "drep_unregistration_cert": "drep_unregistration_cert = (17, drep_credential, coin)",
+        "drep_update_cert": "drep_update_cert = (18, drep_credential, anchor/ nil)",
+        "withdrawals": "withdrawals = {+ reward_account => coin}",
+        "auxiliary_data_hash": "auxiliary_data_hash = hash32",
+        "mint": "mint = {+ policy_id => {+ asset_name => nonzero_int64}}",
+        "nonzero_int64": "nonzero_int64 = negative_int64/ positive_int64",
+        "negative_int64": "negative_int64 = min_int64 .. -1",
+        "positive_int64": "positive_int64 = 1 .. max_int64\n\n; This is a hash of data which may affect evaluation of a script.\n; This data consists of:\n;   - The redeemers from the transaction_witness_set (the value of field 5).\n;   - The datums from the transaction_witness_set (the value of field 4).\n;   - The value in the cost_models map corresponding to the script's language\n;     (in field 18 of protocol_param_update.)\n; (In the future it may contain additional protocol parameters.)\n;\n; Since this data does not exist in contiguous form inside a transaction, it needs\n; to be independently constructed by each recipient.\n;\n; The bytestring which is hashed is the concatenation of three things:\n;   redeemers || datums || language views\n; The redeemers are exactly the data present in the transaction witness set.\n; Similarly for the datums, if present. If no datums are provided, the middle\n; field is omitted (i.e. it is the empty/null bytestring).\n;\n; language views CDDL:\n; { * language => script_integrity_data }\n;\n; This must be encoded canonically, using the same scheme as in\n; RFC7049 section 3.9:\n;  - Maps, strings, and bytestrings must use a definite-length encoding\n;  - Integers must be as small as possible.\n;  - The expressions for map length, string length, and bytestring length\n;    must be as short as possible.\n;  - The keys in the map must be sorted as follows:\n;     -  If two keys have different lengths, the shorter one sorts earlier.\n;     -  If two keys have the same length, the one with the lower value\n;        in (byte-wise) lexical order sorts earlier.\n;\n; For PlutusV1 (language id 0), the language view is the following:\n;   - the value of cost_models map at key 0 (in other words, the script_integrity_data)\n;     is encoded as an indefinite length list and the result is encoded as a bytestring.\n;     (our apologies)\n;     For example, the script_integrity_data corresponding to the all zero costmodel for V1\n;     would be encoded as (in hex):\n;     58a89f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ff\n;   - the language ID tag is also encoded twice. first as a uint then as\n;     a bytestring. (our apologies)\n;     Concretely, this means that the language version for V1 is encoded as\n;     4100 in hex.\n; For PlutusV2 (language id 1), the language view is the following:\n;   - the value of cost_models map at key 1 is encoded as an definite length list.\n;     For example, the script_integrity_data corresponding to the all zero costmodel for V2\n;     would be encoded as (in hex):\n;     98af0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\n;   - the language ID tag is encoded as expected.\n;     Concretely, this means that the language version for V2 is encoded as\n;     01 in hex.\n; For PlutusV3 (language id 2), the language view is the following:\n;   - the value of cost_models map at key 2 is encoded as a definite length list.\n;\n; Note that each Plutus language represented inside a transaction must have\n; a cost model in the cost_models protocol parameter in order to execute,\n; regardless of what the script integrity data is.\n;\n; Finally, note that in the case that a transaction includes datums but does not\n; include the redeemers field, the script data format becomes (in hex):\n; [ A0 | datums | A0 ]\n; corresponding to a CBOR empty map and an empty map for language view.\n; This empty redeeemer case has changed from the previous eras, since default\n; representation for redeemers has been changed to a map. Also whenever redeemers are\n; supplied either as a map or as an array they must contain at least one element,\n; therefore there is no way to override this behavior by providing a custom\n; representation for empty redeemers.",
+        "script_data_hash": "script_data_hash = hash32",
+        "nonempty_set<a0>": "nonempty_set<a0> = #6.258([+ a0])/ [+ a0]",
+        "guards": "guards = nonempty_set<addr_keyhash>/ nonempty_oset<credential>",
+        "network_id": "network_id = 0/ 1",
+        "voting_procedures": "voting_procedures = {+ voter => {+ gov_action_id => voting_procedure}}",
+        "voter": "voter =\n  [  0, addr_keyhash\n  // 1, script_hash\n  // 2, addr_keyhash\n  // 3, script_hash\n  // 4, addr_keyhash\n  ]",
+        "gov_action_id": "gov_action_id =\n  [transaction_id : transaction_id, gov_action_index : uint .size 2]",
+        "voting_procedure": "voting_procedure = [vote, anchor/ nil]",
+        "vote": "vote = 0 .. 2",
+        "proposal_procedures": "proposal_procedures = nonempty_oset<proposal_procedure>",
+        "proposal_procedure": "proposal_procedure = [deposit : coin, reward_account, gov_action, anchor]",
+        "gov_action": "gov_action =\n  [  parameter_change_action\n  // hard_fork_initiation_action\n  // treasury_withdrawals_action\n  // no_confidence\n  // update_committee\n  // new_constitution\n  // info_action\n  ]",
+        "parameter_change_action": "parameter_change_action =\n  (0, gov_action_id/ nil, protocol_param_update, guardrails_script_hash/ nil)",
+        "protocol_param_update": "protocol_param_update =\n  { ? 0  : coin                   ; minfeeA\n  , ? 1  : coin                   ; minfeeB\n  , ? 2  : uint .size 4           ; max block body size\n  , ? 3  : uint .size 4           ; max transaction size\n  , ? 4  : uint .size 2           ; max block header size\n  , ? 5  : coin                   ; key deposit\n  , ? 6  : coin                   ; pool deposit\n  , ? 7  : epoch_interval         ; maximum epoch\n  , ? 8  : uint .size 2           ; n_opt: desired number of stake pools\n  , ? 9  : nonnegative_interval   ; pool pledge influence\n  , ? 10 : unit_interval          ; expansion rate\n  , ? 11 : unit_interval          ; treasury growth rate\n  , ? 16 : coin                   ; min pool cost\n  , ? 17 : coin                   ; ada per utxo byte\n  , ? 18 : cost_models            ; cost models for script languages\n  , ? 19 : ex_unit_prices         ; execution costs\n  , ? 20 : ex_units               ; max tx ex units\n  , ? 21 : ex_units               ; max block ex units\n  , ? 22 : uint .size 4           ; max value size\n  , ? 23 : uint .size 2           ; collateral percentage\n  , ? 24 : uint .size 2           ; max collateral inputs\n  , ? 25 : pool_voting_thresholds ; pool voting thresholds\n  , ? 26 : drep_voting_thresholds ; drep voting thresholds\n  , ? 27 : uint .size 2           ; min committee size\n  , ? 28 : epoch_interval         ; committee term limit\n  , ? 29 : epoch_interval         ; goveranance action validity period\n  , ? 30 : coin                   ; governance action deposit\n  , ? 31 : coin                   ; drep deposit\n  , ? 32 : epoch_interval         ; drep inactivity period\n  , ? 33 : nonnegative_interval   ; minfee refScript coins per byte\n  , ? 34 : uint .size 4           ; max refScript size per block\n  , ? 35 : uint .size 4           ; max refScript size per tx\n  , ? 36 : positive_word32        ; refScript cost stride\n  , ? 37 : positive_interval      ; refScript cost multiplier\n  }",
+        "epoch_interval": "epoch_interval = uint .size 4",
+        "nonnegative_interval": "nonnegative_interval = #6.30([uint, positive_int])",
+        "positive_int": "positive_int = 1 .. max_word64\n\n; The format for cost_models is flexible enough to allow adding\n; Plutus built-ins and language versions in the future.\n;\n; Plutus v1: only 166 integers are used, but more are accepted (and ignored)\n; Plutus v2: only 175 integers are used, but more are accepted (and ignored)\n; Plutus v3: only 223 integers are used, but more are accepted (and ignored)\n; Plutus v4: TBD integers are used (NEW)\n;\n; Any 8-bit unsigned number can be used as a key.",
+        "cost_models": "cost_models =\n  { ? 0        : [* int64]\n  , ? 1        : [* int64]\n  , ? 2        : [* int64]\n  , ? 3        : [* int64]\n  , * 4 .. 255 => [* int64]\n  }",
+        "ex_unit_prices": "ex_unit_prices =\n  [mem_price : nonnegative_interval, step_price : nonnegative_interval]",
+        "ex_units": "ex_units = [mem : uint, steps : uint]",
+        "pool_voting_thresholds": "pool_voting_thresholds =\n  [ unit_interval ; motion no confidence\n  , unit_interval ; committee normal\n  , unit_interval ; committee no confidence\n  , unit_interval ; hard fork initiation\n  , unit_interval ; security relevant parameter voting threshold\n  ]",
+        "drep_voting_thresholds": "drep_voting_thresholds =\n  [ unit_interval ; motion no confidence\n  , unit_interval ; committee normal\n  , unit_interval ; committee no confidence\n  , unit_interval ; update constitution\n  , unit_interval ; hard fork initiation\n  , unit_interval ; PP network group\n  , unit_interval ; PP economic group\n  , unit_interval ; PP technical group\n  , unit_interval ; PP governance group\n  , unit_interval ; treasury withdrawal\n  ]",
+        "positive_word32": "positive_word32 = 1 .. max_word32",
+        "max_word32": "max_word32 = 4294967295",
+        "positive_interval": "positive_interval = #6.30([positive_int, positive_int])",
+        "guardrails_script_hash": "guardrails_script_hash = script_hash",
+        "hard_fork_initiation_action": "hard_fork_initiation_action = (1, gov_action_id/ nil, protocol_version)",
+        "treasury_withdrawals_action": "treasury_withdrawals_action =\n  (2, {* reward_account => coin}, guardrails_script_hash/ nil)",
+        "no_confidence": "no_confidence = (3, gov_action_id/ nil)",
+        "update_committee": "update_committee =\n  ( 4\n  , gov_action_id/ nil\n  , set<committee_cold_credential>\n  , {* committee_cold_credential => epoch}\n  , unit_interval\n  )",
+        "new_constitution": "new_constitution = (5, gov_action_id/ nil, constitution)",
+        "constitution": "constitution = [anchor, guardrails_script_hash/ nil]",
+        "info_action": "info_action = 6",
+        "sub_transactions": "sub_transactions = nonempty_oset<sub_transaction>",
+        "sub_transaction": "sub_transaction =\n  [sub_transaction_body, transaction_witness_set, auxiliary_data/ nil]",
+        "sub_transaction_body": "sub_transaction_body =\n  {   0  : set<transaction_input>\n  ,   1  : [* transaction_output]\n  , ? 3  : slot\n  , ? 4  : certificates\n  , ? 5  : withdrawals\n  , ? 7  : auxiliary_data_hash\n  , ? 8  : slot\n  , ? 9  : mint\n  , ? 11 : script_data_hash\n  , ? 14 : guards\n  , ? 15 : network_id\n  , ? 18 : nonempty_set<transaction_input>\n  , ? 19 : voting_procedures\n  , ? 20 : proposal_procedures\n  , ? 21 : coin\n  , ? 22 : positive_coin\n  , ? 24 : required_top_level_guards\n  , ? 25 : direct_deposits\n  , ? 26 : account_balance_intervals\n  }",
+        "required_top_level_guards": "required_top_level_guards = {+ credential => plutus_data/ nil}",
+        "direct_deposits": "direct_deposits = {+ reward_account => coin}",
+        "account_balance_intervals": "account_balance_intervals = {+ credential => account_balance_interval}",
+        "account_balance_interval": "account_balance_interval =\n  [  inclusive_lower_bound : coin, exclusive_upper_bound : coin/ nil\n  // inclusive_lower_bound : coin/ nil, exclusive_upper_bound : coin\n  ]",
+        "transaction_witness_set": "transaction_witness_set =\n  { ? 0 : nonempty_set<vkeywitness>\n  , ? 1 : nonempty_set<native_script>\n  , ? 2 : nonempty_set<bootstrap_witness>\n  , ? 3 : nonempty_set<plutus_v1_script>\n  , ? 4 : nonempty_set<plutus_data>\n  , ? 5 : redeemers\n  , ? 6 : nonempty_set<plutus_v2_script>\n  , ? 7 : nonempty_set<plutus_v3_script>\n  }",
+        "vkeywitness": "vkeywitness = [vkey, signature]",
+        "bootstrap_witness": "bootstrap_witness =\n  [ public_key : vkey\n  , signature  : signature\n  , chain_code : bytes .size 32\n  , attributes : bytes\n  ]\n\n\n; Dijkstra uses map format only for redeemers.\n; The flat array format has been removed.",
+        "redeemers": "redeemers =\n  { + [tag : redeemer_tag, index : uint .size 4] => [ data     : plutus_data\n                                                    , ex_units : ex_units\n                                                    ]\n\n\n  }",
+        "redeemer_tag": "redeemer_tag =\n  0 ; spend\n  / 1 ; mint\n  / 2 ; cert\n  / 3 ; reward\n  / 4 ; voting\n  / 5 ; proposing\n  / 6 ; guarding\n\n; auxiliary_data supports three serialization formats:\n;   1. metadata (raw) - Supported since Shelley\n;   2. auxiliary_data_array - Array format, introduced in Allegra\n;   3. auxiliary_data_map - Tagged map format, introduced in Alonzo\n;      Dijkstra adds plutus_v4_script support at index 5",
+        "auxiliary_data": "auxiliary_data = metadata/ auxiliary_data_array/ auxiliary_data_map",
+        "metadata": "metadata = {* metadatum_label => metadatum}",
+        "metadatum_label": "metadatum_label = uint .size 8",
+        "metadatum": "metadatum =\n  {* metadatum => metadatum}\n  / [* metadatum]\n  / int\n  / bytes .size (0 .. 64)\n  / text .size (0 .. 64)",
+        "auxiliary_data_array": "auxiliary_data_array =\n  [transaction_metadata : metadata, auxiliary_scripts : auxiliary_scripts]",
+        "auxiliary_scripts": "auxiliary_scripts = [* native_script]",
+        "auxiliary_data_map": "auxiliary_data_map =\n  #6.259(\n    { ? 0 : metadata\n    , ? 1 : [* native_script]\n    , ? 2 : [* plutus_v1_script]\n    , ? 3 : [* plutus_v2_script]\n    , ? 4 : [* plutus_v3_script]\n    , ? 5 : [* plutus_v4_script]\n    }\n\n  )",
+        "transaction_index": "transaction_index = uint .size 2"
+      },
+      "discriminants": {
+        "certificates": [
+          {
+            "name": "delegation_to_stake_pool_cert",
+            "tag": 2
+          },
+          {
+            "name": "pool_registration_cert",
+            "tag": 3
+          },
+          {
+            "name": "pool_retirement_cert",
+            "tag": 4
+          },
+          {
+            "name": "account_registration_deposit_cert",
+            "tag": 7
+          },
+          {
+            "name": "account_unregistration_deposit_cert",
+            "tag": 8
+          },
+          {
+            "name": "delegation_to_drep_cert",
+            "tag": 9
+          },
+          {
+            "name": "delegation_to_stake_pool_and_drep_cert",
+            "tag": 10
+          },
+          {
+            "name": "account_registration_delegation_to_stake_pool_cert",
+            "tag": 11
+          },
+          {
+            "name": "account_registration_delegation_to_drep_cert",
+            "tag": 12
+          },
+          {
+            "name": "account_registration_delegation_to_stake_pool_and_drep_cert",
+            "tag": 13
+          },
+          {
+            "name": "committee_authorization_cert",
+            "tag": 14
+          },
+          {
+            "name": "committee_resignation_cert",
+            "tag": 15
+          },
+          {
+            "name": "drep_registration_cert",
+            "tag": 16
+          },
+          {
+            "name": "drep_unregistration_cert",
+            "tag": 17
+          },
+          {
+            "name": "drep_update_cert",
+            "tag": 18
+          }
+        ],
+        "governanceActions": [
+          {
+            "name": "parameter_change_action",
+            "tag": 0
+          },
+          {
+            "name": "hard_fork_initiation_action",
+            "tag": 1
+          },
+          {
+            "name": "treasury_withdrawals_action",
+            "tag": 2
+          },
+          {
+            "name": "no_confidence",
+            "tag": 3
+          },
+          {
+            "name": "update_committee",
+            "tag": 4
+          },
+          {
+            "name": "new_constitution",
+            "tag": 5
+          },
+          {
+            "name": "info_action",
+            "tag": 6
+          }
+        ],
+        "nativeScripts": [
+          {
+            "name": "script_pubkey",
+            "tag": 0
+          },
+          {
+            "name": "script_all",
+            "tag": 1
+          },
+          {
+            "name": "script_any",
+            "tag": 2
+          },
+          {
+            "name": "script_n_of_k",
+            "tag": 3
+          },
+          {
+            "name": "script_invalid_before",
+            "tag": 4
+          },
+          {
+            "name": "script_invalid_hereafter",
+            "tag": 5
+          },
+          {
+            "name": "script_require_guard",
+            "tag": 6
+          }
+        ]
+      },
+      "maps": {
+        "transactionBody": [
+          {
+            "key": 0,
+            "required": true,
+            "type": "set<transaction_input>",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 1,
+            "required": true,
+            "type": "[* transaction_output]",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 2,
+            "required": true,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "fee"
+          },
+          {
+            "key": 3,
+            "required": false,
+            "type": "slot",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "time to live"
+          },
+          {
+            "key": 4,
+            "required": false,
+            "type": "certificates",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 5,
+            "required": false,
+            "type": "withdrawals",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 7,
+            "required": false,
+            "type": "auxiliary_data_hash",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 8,
+            "required": false,
+            "type": "slot",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "validity interval start"
+          },
+          {
+            "key": 9,
+            "required": false,
+            "type": "mint",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 11,
+            "required": false,
+            "type": "script_data_hash",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 13,
+            "required": false,
+            "type": "nonempty_set<transaction_input>",
+            "cardinality": "nonempty",
+            "comment": "collateral"
+          },
+          {
+            "key": 14,
+            "required": false,
+            "type": "guards",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "guards (replaces required_signers)"
+          },
+          {
+            "key": 15,
+            "required": false,
+            "type": "network_id",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 16,
+            "required": false,
+            "type": "transaction_output",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "collateral return"
+          },
+          {
+            "key": 17,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "total collateral"
+          },
+          {
+            "key": 18,
+            "required": false,
+            "type": "nonempty_set<transaction_input>",
+            "cardinality": "nonempty",
+            "comment": "reference inputs"
+          },
+          {
+            "key": 19,
+            "required": false,
+            "type": "voting_procedures",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 20,
+            "required": false,
+            "type": "proposal_procedures",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 21,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "current treasury value"
+          },
+          {
+            "key": 22,
+            "required": false,
+            "type": "positive_coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "donation"
+          },
+          {
+            "key": 23,
+            "required": false,
+            "type": "sub_transactions",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "sub-transactions (NEW)"
+          },
+          {
+            "key": 25,
+            "required": false,
+            "type": "direct_deposits",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "direct deposits"
+          },
+          {
+            "key": 26,
+            "required": false,
+            "type": "account_balance_intervals",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "account balance intervals"
+          }
+        ],
+        "babbageOutput": [
+          {
+            "key": 0,
+            "required": true,
+            "type": "address",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 1,
+            "required": true,
+            "type": "value",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 2,
+            "required": false,
+            "type": "datum_option",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "new"
+          },
+          {
+            "key": 3,
+            "required": false,
+            "type": "script_ref",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "new"
+          }
+        ],
+        "witnessSet": [
+          {
+            "key": 0,
+            "required": false,
+            "type": "nonempty_set<vkeywitness>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 1,
+            "required": false,
+            "type": "nonempty_set<native_script>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 2,
+            "required": false,
+            "type": "nonempty_set<bootstrap_witness>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 3,
+            "required": false,
+            "type": "nonempty_set<plutus_v1_script>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 4,
+            "required": false,
+            "type": "nonempty_set<plutus_data>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 5,
+            "required": false,
+            "type": "redeemers",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 6,
+            "required": false,
+            "type": "nonempty_set<plutus_v2_script>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 7,
+            "required": false,
+            "type": "nonempty_set<plutus_v3_script>",
+            "cardinality": "nonempty",
+            "comment": null
+          }
+        ],
+        "auxiliaryDataMap": [
+          {
+            "key": 0,
+            "required": false,
+            "type": "metadata",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 1,
+            "required": false,
+            "type": "[* native_script]",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 2,
+            "required": false,
+            "type": "[* plutus_v1_script]",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 3,
+            "required": false,
+            "type": "[* plutus_v2_script]",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 4,
+            "required": false,
+            "type": "[* plutus_v3_script]",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 5,
+            "required": false,
+            "type": "[* plutus_v4_script]",
+            "cardinality": "zero-or-more",
+            "comment": null
+          }
+        ],
+        "protocolParameterUpdate": [
+          {
+            "key": 0,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "minfeeA"
+          },
+          {
+            "key": 1,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "minfeeB"
+          },
+          {
+            "key": 2,
+            "required": false,
+            "type": "uint .size 4",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max block body size"
+          },
+          {
+            "key": 3,
+            "required": false,
+            "type": "uint .size 4",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max transaction size"
+          },
+          {
+            "key": 4,
+            "required": false,
+            "type": "uint .size 2",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max block header size"
+          },
+          {
+            "key": 5,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "key deposit"
+          },
+          {
+            "key": 6,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "pool deposit"
+          },
+          {
+            "key": 7,
+            "required": false,
+            "type": "epoch_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "maximum epoch"
+          },
+          {
+            "key": 8,
+            "required": false,
+            "type": "uint .size 2",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "n_opt: desired number of stake pools"
+          },
+          {
+            "key": 9,
+            "required": false,
+            "type": "nonnegative_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "pool pledge influence"
+          },
+          {
+            "key": 10,
+            "required": false,
+            "type": "unit_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "expansion rate"
+          },
+          {
+            "key": 11,
+            "required": false,
+            "type": "unit_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "treasury growth rate"
+          },
+          {
+            "key": 16,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "min pool cost"
+          },
+          {
+            "key": 17,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "ada per utxo byte"
+          },
+          {
+            "key": 18,
+            "required": false,
+            "type": "cost_models",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "cost models for script languages"
+          },
+          {
+            "key": 19,
+            "required": false,
+            "type": "ex_unit_prices",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "execution costs"
+          },
+          {
+            "key": 20,
+            "required": false,
+            "type": "ex_units",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max tx ex units"
+          },
+          {
+            "key": 21,
+            "required": false,
+            "type": "ex_units",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max block ex units"
+          },
+          {
+            "key": 22,
+            "required": false,
+            "type": "uint .size 4",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max value size"
+          },
+          {
+            "key": 23,
+            "required": false,
+            "type": "uint .size 2",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "collateral percentage"
+          },
+          {
+            "key": 24,
+            "required": false,
+            "type": "uint .size 2",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max collateral inputs"
+          },
+          {
+            "key": 25,
+            "required": false,
+            "type": "pool_voting_thresholds",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "pool voting thresholds"
+          },
+          {
+            "key": 26,
+            "required": false,
+            "type": "drep_voting_thresholds",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "drep voting thresholds"
+          },
+          {
+            "key": 27,
+            "required": false,
+            "type": "uint .size 2",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "min committee size"
+          },
+          {
+            "key": 28,
+            "required": false,
+            "type": "epoch_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "committee term limit"
+          },
+          {
+            "key": 29,
+            "required": false,
+            "type": "epoch_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "goveranance action validity period"
+          },
+          {
+            "key": 30,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "governance action deposit"
+          },
+          {
+            "key": 31,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "drep deposit"
+          },
+          {
+            "key": 32,
+            "required": false,
+            "type": "epoch_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "drep inactivity period"
+          },
+          {
+            "key": 33,
+            "required": false,
+            "type": "nonnegative_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "minfee refScript coins per byte"
+          },
+          {
+            "key": 34,
+            "required": false,
+            "type": "uint .size 4",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max refScript size per block"
+          },
+          {
+            "key": 35,
+            "required": false,
+            "type": "uint .size 4",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "max refScript size per tx"
+          },
+          {
+            "key": 36,
+            "required": false,
+            "type": "positive_word32",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "refScript cost stride"
+          },
+          {
+            "key": 37,
+            "required": false,
+            "type": "positive_interval",
+            "cardinality": "scalar-or-declared-union",
+            "comment": "refScript cost multiplier"
+          }
+        ],
+        "subTransactionBody": [
+          {
+            "key": 0,
+            "required": true,
+            "type": "set<transaction_input>",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 1,
+            "required": true,
+            "type": "[* transaction_output]",
+            "cardinality": "zero-or-more",
+            "comment": null
+          },
+          {
+            "key": 3,
+            "required": false,
+            "type": "slot",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 4,
+            "required": false,
+            "type": "certificates",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 5,
+            "required": false,
+            "type": "withdrawals",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 7,
+            "required": false,
+            "type": "auxiliary_data_hash",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 8,
+            "required": false,
+            "type": "slot",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 9,
+            "required": false,
+            "type": "mint",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 11,
+            "required": false,
+            "type": "script_data_hash",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 14,
+            "required": false,
+            "type": "guards",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 15,
+            "required": false,
+            "type": "network_id",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 18,
+            "required": false,
+            "type": "nonempty_set<transaction_input>",
+            "cardinality": "nonempty",
+            "comment": null
+          },
+          {
+            "key": 19,
+            "required": false,
+            "type": "voting_procedures",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 20,
+            "required": false,
+            "type": "proposal_procedures",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 21,
+            "required": false,
+            "type": "coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 22,
+            "required": false,
+            "type": "positive_coin",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 24,
+            "required": false,
+            "type": "required_top_level_guards",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 25,
+            "required": false,
+            "type": "direct_deposits",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          },
+          {
+            "key": 26,
+            "required": false,
+            "type": "account_balance_intervals",
+            "cardinality": "scalar-or-declared-union",
+            "comment": null
+          }
+        ]
+      }
+    }
+  }
+}

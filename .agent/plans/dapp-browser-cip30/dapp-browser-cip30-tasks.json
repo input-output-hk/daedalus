@@ -151,13 +151,16 @@
           "id": "task-004",
           "title": "Validate exact-CBOR and era coverage",
           "description": "Spike raw transaction-body/output span extraction and semantic decoding against target-era fixtures, evaluate the pinned Cardano SDK, and decide whether a dependency upgrade is required.",
-          "status": "pending",
+          "status": "completed",
+          "completedAt": "2026-08-11",
+          "completedNotes": "Approved pinned-ledger exact-CBOR inventory, provenance-backed envelope/body/output span fixtures, frozen Conway wire-policy evidence, reproducible installed/candidate SDK comparison, retention of @cardano-sdk/core 0.41.4 as non-authoritative, conditional Conway fixture/inventory readiness, and Dijkstra unsupported/readiness-blocked disposition.",
           "priority": "critical",
           "estimatedHours": 16,
           "dependencies": ["task-002"],
           "targetPaths": [
             "source/common/cardano/",
-            "package.json"
+            ".agent/plans/dapp-browser-cip30/research/04-exact-cbor-era-coverage.md",
+            ".agent/plans/dapp-browser-cip30/task-plans/task-004.md"
           ],
           "implementationNotes": [
             "Prove exact body hashing without semantic reserialization.",

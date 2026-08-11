@@ -1,0 +1,17 @@
+{
+  "id": "conway-untagged-body-sets",
+  "description": "Pinned Conway regression with source-permitted tag 258 removed from normal and collateral body input sets and accepted by cardano-cli 11.0.0.0 debug transaction view.",
+  "cborHex": "84a70082825820745f04573e7429be1404f9b936d208b81159f3fc4b30037b9d630187eec1875600825820745f04573e7429be1404f9b936d208b81159f3fc4b30037b9d630187eec18756020d81825820745f04573e7429be1404f9b936d208b81159f3fc4b30037b9d630187eec1875601018282581d60fdfaa5251e9ed2186a52eeea05ac1d39834eeef09b3e41dc151577a01a001e848082581d60fe920c980dbc1113a01db0156955479f3b91f6fb6a51bdc0c383c1b91a3b586de61082581d60fe920c980dbc1113a01db0156955479f3b91f6fb6a51bdc0c383c1b91a001a65b0111a00041ed0021a0002bf350b5820878c73eb6ec7171b23396f71d7e5adee98b3f72cfc1c0662453ea724a4e27ad5a303d9010281581e581c0100003322323222235004007123500235300300149849848004800504d9010281d8799f182aff0581840000d8799f182aff820000f4f6",
+  "provenance": {
+    "repository": "https://github.com/IntersectMBO/cardano-ledger",
+    "tag": "cardano-ledger-conway-1.22.1.0",
+    "commit": "226b002d5b5e83e24355f8a28ab214f3259eabda",
+    "sourcePath": "eras/conway/impl/cddl/data/conway.cddl",
+    "sourceBlob": "d19cc469c510ccc27ac64735e5102a2611244566",
+    "sourceSha256": "ab2325fea52b97ab7792ccf9fefcc6dafb543e0bc795e9b761d3f2989b223271",
+    "sourceLines": "112-138",
+    "extraction": "Start from conway-regression-collateral and remove the first two d90102 tag encodings, which wrap body keys 0 and 13. Validate the complete result with cardano-cli debug transaction view --tx-file using cardano-cli 11.0.0.0 revision 01a89dad991e5a19990150b4e1de348a1481a37a.",
+    "fixtureSha256": "2639e22337e0169171caf2a0fa7f34c4d28680eb17e745e1c5f2cfafd75fc6f5",
+    "ledgerTxId": "3c88918d4ae72f0c5f2321a553b260b1b77a62949ea43763188148f0a20d61d0"
+  }
+}

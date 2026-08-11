@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "tool": {
+    "name": "cbor-diag-cli",
+    "version": "0.1.8",
+    "command": "node -e \"const f=require(process.argv[1]);process.stdout.write(Buffer.from(f.cborHex,'hex'))\" <fixture.json> | cbor-diag --to annotated"
+  },
+  "fixtures": [
+    {
+      "id": "conway-regression-collateral",
+      "annotatedOutputSha256": "8b67c4685b480e7769b02d683b02fecdabc8849112517007afc97ee15c6bad6a",
+      "ranges": {
+        "body": [1, 281],
+        "witnessSet": [281, 344],
+        "isValid": [344, 345],
+        "auxiliaryData": [345, 346],
+        "outputs": [
+          [122, 159],
+          [159, 196]
+        ],
+        "collateralReturn": [197, 234]
+      }
+    },
+    {
+      "id": "alonzo-ledger-golden-auxiliary-data",
+      "annotatedOutputSha256": "818c7de6646abb9ec2ef777b218351ae146b9adeee04b41b4f167e512284bc15",
+      "ranges": {
+        "body": [1, 686],
+        "witnessSet": [686, 820],
+        "isValid": [820, 821],
+        "auxiliaryData": [821, 865],
+        "outputs": [[80, 223]],
+        "collateralReturn": null
+      }
+    },
+    {
+      "id": "conway-babbage-map-outputs",
+      "annotatedOutputSha256": "9159a49a2ef8e3029a8c4f75d96184ca13b1b2bebb0a06ddb144fc29ae64f486",
+      "ranges": {
+        "body": [1, 287],
+        "witnessSet": [287, 350],
+        "isValid": [350, 351],
+        "auxiliaryData": [351, 352],
+        "outputs": [
+          [122, 161],
+          [161, 200]
+        ],
+        "collateralReturn": [201, 240]
+      }
+    },
+    {
+      "id": "conway-untagged-body-sets",
+      "annotatedOutputSha256": "b9fe26c0e62e3446d5d50c2cedeb6228c7b79e8f5289671546219008766ef30a",
+      "ranges": {
+        "body": [1, 275],
+        "witnessSet": [275, 338],
+        "isValid": [338, 339],
+        "auxiliaryData": [339, 340],
+        "outputs": [
+          [116, 153],
+          [153, 190]
+        ],
+        "collateralReturn": [191, 228]
+      }
+    }
+  ]
+}
