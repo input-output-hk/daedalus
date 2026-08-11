@@ -799,6 +799,18 @@ tasks produce candidate cardano-wallet commits and migration/rollback evidence;
 task-209 may update the Daedalus pin only after authorized sibling review and
 Daedalus integration against the candidate revision.
 
+### Exact-CBOR Validation
+
+Task-004's approved validation evidence is recorded in
+[`research/04-exact-cbor-era-coverage.md`](research/04-exact-cbor-era-coverage.md),
+with the machine-readable pinned-ledger inventory, exact-span fixtures, frozen
+wire-policy cases, and reproducible SDK comparison under
+`source/common/cardano/fixtures/exact-cbor/`. The dependency decision retains
+`@cardano-sdk/core@0.41.4` as a non-authoritative helper. Conway has conditional
+fixture/inventory readiness only; Dijkstra remains
+`unsupported/readiness-blocked`. Backend implementation, production parsing,
+and product support remain owned by downstream tasks.
+
 ## Technical Design
 
 ### Trust Boundaries

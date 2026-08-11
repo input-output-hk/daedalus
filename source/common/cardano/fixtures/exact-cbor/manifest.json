@@ -1,0 +1,652 @@
+{
+  "schemaVersion": 1,
+  "sources": {
+    "conway": {
+      "package": "cardano-ledger-conway-1.22.1.0",
+      "repository": "https://github.com/IntersectMBO/cardano-ledger",
+      "tag": "cardano-ledger-conway-1.22.1.0",
+      "commit": "226b002d5b5e83e24355f8a28ab214f3259eabda",
+      "cddlPath": "eras/conway/impl/cddl/data/conway.cddl",
+      "cddlBlob": "d19cc469c510ccc27ac64735e5102a2611244566",
+      "cddlSha256": "ab2325fea52b97ab7792ccf9fefcc6dafb543e0bc795e9b761d3f2989b223271"
+    },
+    "dijkstra": {
+      "package": "cardano-ledger-dijkstra-0.2.0.1",
+      "repository": "https://github.com/IntersectMBO/cardano-ledger",
+      "tag": "cardano-ledger-dijkstra-0.2.0.1",
+      "commit": "94e9618c91a16ec08db477632a158b630722089b",
+      "cddlPath": "eras/dijkstra/impl/cddl/data/dijkstra.cddl",
+      "cddlBlob": "1b41a0f312f033fd9967812192c945950144dbde",
+      "cddlSha256": "0b7062eab1011c80dae7e0849f1414ec79183405473ffccb96c34d545bea2ee1"
+    }
+  },
+  "sourceInventoryFile": "source-inventory.json",
+  "spanAnnotationsFile": "span-annotations.json",
+  "wirePolicy": [
+    {
+      "family": "root-envelope",
+      "decision": "accept",
+      "forms": ["definite-4-item", "well-formed-indefinite-4-item"],
+      "reject": ["trailing-data", "wrong-arity", "wrong-type", "illegal-break"]
+    },
+    {
+      "family": "containers-and-strings",
+      "decision": "source-intersection",
+      "forms": [
+        "definite",
+        "well-formed-indefinite-where-ledger-decoder-admits"
+      ],
+      "reject": [
+        "truncated",
+        "wrong-chunk-type",
+        "invalid-cardinality",
+        "unsupported-indefinite-location"
+      ]
+    },
+    {
+      "family": "integer-and-length-width",
+      "decision": "source-intersection",
+      "forms": ["minimal", "non-minimal-where-ledger-decoder-admits"],
+      "reject": [
+        "reserved-additional-information",
+        "overflow",
+        "wrong-sign",
+        "wrong-range",
+        "canonical-only-location-non-minimal"
+      ]
+    },
+    {
+      "family": "map-order",
+      "decision": "accept-and-preserve",
+      "forms": ["any-source-permitted-order"],
+      "reject": []
+    },
+    {
+      "family": "map-key-duplicates",
+      "decision": "reject-structural",
+      "forms": [],
+      "reject": ["byte-identical-key", "decoded-scalar-key-duplicate"]
+    },
+    {
+      "family": "semantic-duplicates",
+      "decision": "defer-semantic-uniqueness-to-task-303",
+      "forms": ["targeted-evidence-only"],
+      "reject": []
+    },
+    {
+      "family": "set-tag-258",
+      "decision": "accept-and-preserve-at-cddl-set-locations",
+      "forms": ["single-tag-258", "untagged"],
+      "reject": [
+        "nested-tag-258",
+        "wrong-location",
+        "wrong-tag",
+        "empty-nonempty-set"
+      ]
+    },
+    {
+      "family": "embedded-cbor-tag-24",
+      "decision": "accept-at-cddl-data-and-script-ref-locations",
+      "forms": ["one-complete-embedded-item"],
+      "reject": [
+        "wrong-location",
+        "embedded-trailing-data",
+        "malformed-embedded-item"
+      ]
+    },
+    {
+      "family": "other-tags",
+      "decision": "accept-only-at-cddl-declared-locations",
+      "forms": ["2", "3", "30", "102", "121-127", "1280-1400", "259"],
+      "reject": ["unknown-tag", "wrong-location", "unsupported-nesting"]
+    },
+    {
+      "family": "legacy-conway-forms",
+      "decision": "accept-and-preserve",
+      "forms": [
+        "alonzo-array-output",
+        "babbage-map-output",
+        "flat-array-redeemers",
+        "map-redeemers",
+        "raw-metadata",
+        "allegra-auxiliary-array",
+        "tag-259-auxiliary-map"
+      ],
+      "reject": []
+    }
+  ],
+  "inventory": {
+    "conway": {
+      "envelope": ["body", "witness-set", "is-valid", "auxiliary-data-or-null"],
+      "bodyKeys": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "reservedBodyKeys": [6, 10, 12],
+      "witnessKeys": [0, 1, 2, 3, 4, 5, 6, 7],
+      "outputForms": ["alonzo-array", "babbage-map"],
+      "certificateTags": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "redeemerTags": [0, 1, 2, 3, 4, 5],
+      "governanceActionTags": [0, 1, 2, 3, 4, 5, 6],
+      "plutusLanguages": [1, 2, 3],
+      "setForms": ["tag-258", "untagged"],
+      "redeemerForms": ["flat-array", "map"],
+      "auxiliaryDataForms": ["raw-metadata", "allegra-array", "tag-259-map"]
+    },
+    "dijkstraDeltas": {
+      "envelopes": ["3-item", "mempool-4-item-with-true-only"],
+      "changedBodyKeys": [14],
+      "addedBodyKeys": [23, 25, 26],
+      "subTransactionBodyKeys": [
+        0,
+        1,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        14,
+        15,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24,
+        25,
+        26
+      ],
+      "subTransactionAddedBodyKeys": [24, 25, 26],
+      "removedConwayCertificateTags": [0, 1],
+      "addedRedeemerTags": [6],
+      "redeemerForms": ["map-only"],
+      "addedPlutusLanguages": [4],
+      "addedNativeScriptTags": [6],
+      "addedAuxiliaryDataKeys": [5],
+      "protocolVersion": "major 0..13 with uint .size 4 minor",
+      "addedProtocolParameterKeys": [34, 35, 36, 37]
+    }
+  },
+  "protocolContextRules": [
+    {
+      "family": "minimum-fee",
+      "context": ["minFeeA", "minFeeB", "exact-transaction-size"],
+      "owners": ["task-303", "task-304", "task-800"]
+    },
+    {
+      "family": "maximum-sizes",
+      "context": ["max-transaction-size", "max-value-size"],
+      "owners": ["task-302", "task-303", "task-304", "task-800"]
+    },
+    {
+      "family": "minimum-utxo",
+      "context": ["coins-per-utxo-byte", "exact-output-size"],
+      "owners": ["task-303", "task-304", "task-800"]
+    },
+    {
+      "family": "collateral",
+      "context": [
+        "collateral-percentage",
+        "max-collateral-inputs",
+        "fee",
+        "total-collateral",
+        "collateral-return"
+      ],
+      "owners": ["task-303", "task-304", "task-800"]
+    },
+    {
+      "family": "execution",
+      "context": [
+        "execution-prices",
+        "max-transaction-execution-units",
+        "max-block-execution-units"
+      ],
+      "owners": ["task-303", "task-304", "task-800"]
+    },
+    {
+      "family": "cost-models-language-views",
+      "context": ["complete-cost-model-map", "era-specific-language-view"],
+      "owners": ["task-303", "task-304", "task-800"]
+    },
+    {
+      "family": "reference-scripts",
+      "context": [
+        "reference-script-fee",
+        "reference-script-limits",
+        "exact-script-bytes"
+      ],
+      "owners": ["task-303", "task-304", "task-800"]
+    },
+    {
+      "family": "deposits",
+      "context": [
+        "stake-key-deposit",
+        "pool-deposit",
+        "drep-deposit",
+        "governance-action-deposit",
+        "minimum-pool-cost"
+      ],
+      "owners": ["task-303", "task-304", "task-800"]
+    },
+    {
+      "family": "governance",
+      "context": [
+        "voting-thresholds",
+        "committee-size-and-term",
+        "action-validity",
+        "drep-inactivity",
+        "treasury-state"
+      ],
+      "owners": ["task-303", "task-304", "task-800"]
+    },
+    {
+      "family": "protocol-version",
+      "context": ["current-major-minor", "proposed-hard-fork-version"],
+      "owners": ["task-301", "task-303", "task-304"]
+    },
+    {
+      "family": "dijkstra-additions",
+      "context": [
+        "plutus-v4-cost-model",
+        "reference-script-size-limits",
+        "reference-script-cost-stride",
+        "reference-script-cost-multiplier"
+      ],
+      "owners": ["future-dijkstra-tracker", "task-800"]
+    }
+  ],
+  "contextAuthority": "Full era-specific protocol parameters captured by cardano-wallet node LSQ at the exact W chain point from the W/G/P protocol. No renderer summary, random golden, current-tip-after-review value, or planning-time live fetch is authoritative.",
+  "eraStatus": [
+    {
+      "era": "conway",
+      "wireFixtureRecognized": true,
+      "sdkRepresented": "evaluated-by-sdk-results",
+      "backendPlanned": true,
+      "backendImplemented": false,
+      "productionParserImplemented": false,
+      "productSupported": false,
+      "conclusion": "conditional-readiness"
+    },
+    {
+      "era": "dijkstra",
+      "wireFixtureRecognized": false,
+      "sdkRepresented": "informational-only",
+      "backendPlanned": false,
+      "backendImplemented": false,
+      "productionParserImplemented": false,
+      "productSupported": false,
+      "conclusion": "unsupported-readiness-blocked"
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "conway-regression-collateral",
+      "file": "conway-regression.json",
+      "expected": {
+        "byteLength": 346,
+        "body": { "start": 1, "end": 281 },
+        "witnessSet": { "start": 281, "end": 344 },
+        "isValid": { "start": 344, "end": 345 },
+        "auxiliaryData": { "start": 345, "end": 346 },
+        "outputs": [
+          { "start": 122, "end": 159 },
+          { "start": 159, "end": 196 }
+        ],
+        "collateralReturn": { "start": 197, "end": 234 },
+        "bodyHashBlake2b256": "b327eaa52a6cce81b367951a19a7fb72807419461606ddf6c7e09ab7c7b3d327"
+      }
+    },
+    {
+      "id": "alonzo-ledger-golden-auxiliary-data",
+      "file": "alonzo-golden.json",
+      "expected": {
+        "byteLength": 865,
+        "body": { "start": 1, "end": 686 },
+        "witnessSet": { "start": 686, "end": 820 },
+        "isValid": { "start": 820, "end": 821 },
+        "auxiliaryData": { "start": 821, "end": 865 },
+        "outputs": [{ "start": 80, "end": 223 }],
+        "collateralReturn": null,
+        "bodyHashBlake2b256": "ad8033bc3f0da247fb074361ad195cafd5b8bda105319325450f19d06723200a"
+      }
+    },
+    {
+      "id": "conway-babbage-map-outputs",
+      "file": "conway-babbage-outputs.json",
+      "expected": {
+        "byteLength": 352,
+        "body": { "start": 1, "end": 287 },
+        "witnessSet": { "start": 287, "end": 350 },
+        "isValid": { "start": 350, "end": 351 },
+        "auxiliaryData": { "start": 351, "end": 352 },
+        "outputs": [
+          { "start": 122, "end": 161 },
+          { "start": 161, "end": 200 }
+        ],
+        "collateralReturn": { "start": 201, "end": 240 },
+        "bodyHashBlake2b256": "c0627e2dc7eb49f3272cb8e362431273b8e7a9b31c39348e1ba2fc3a41e2bcb4"
+      }
+    },
+    {
+      "id": "conway-untagged-body-sets",
+      "file": "conway-untagged-sets.json",
+      "expected": {
+        "byteLength": 340,
+        "body": { "start": 1, "end": 275 },
+        "witnessSet": { "start": 275, "end": 338 },
+        "isValid": { "start": 338, "end": 339 },
+        "auxiliaryData": { "start": 339, "end": 340 },
+        "outputs": [
+          { "start": 116, "end": 153 },
+          { "start": 153, "end": 190 }
+        ],
+        "collateralReturn": { "start": 191, "end": 228 },
+        "bodyHashBlake2b256": "3c88918d4ae72f0c5f2321a553b260b1b77a62949ea43763188148f0a20d61d0"
+      }
+    }
+  ],
+  "sdkCases": [
+    {
+      "id": "ledger-conway-positive",
+      "fixtureId": "conway-regression-collateral",
+      "mutation": "none",
+      "strictExpected": "accept"
+    },
+    {
+      "id": "ledger-alonzo-historical-span-only",
+      "fixtureId": "alonzo-ledger-golden-auxiliary-data",
+      "mutation": "none",
+      "strictExpected": "reject"
+    },
+    {
+      "id": "trailing-root-byte",
+      "fixtureId": "conway-regression-collateral",
+      "mutation": "append-zero",
+      "strictExpected": "reject"
+    },
+    {
+      "id": "duplicate-fee-scalar-key",
+      "fixtureId": "conway-regression-collateral",
+      "mutation": "insert-duplicate-fee",
+      "strictExpected": "reject"
+    },
+    {
+      "id": "unknown-body-key",
+      "fixtureId": "conway-regression-collateral",
+      "mutation": "insert-unknown-body-key",
+      "strictExpected": "reject"
+    },
+    {
+      "id": "wrong-input-set-tag",
+      "fixtureId": "conway-regression-collateral",
+      "mutation": "replace-first-set-tag",
+      "strictExpected": "reject"
+    },
+    {
+      "id": "indefinite-root-envelope",
+      "fixtureId": "conway-regression-collateral",
+      "mutation": "indefinite-root",
+      "strictExpected": "accept"
+    },
+    {
+      "id": "babbage-map-outputs",
+      "fixtureId": "conway-babbage-map-outputs",
+      "mutation": "none",
+      "strictExpected": "accept"
+    },
+    {
+      "id": "untagged-body-sets",
+      "fixtureId": "conway-untagged-body-sets",
+      "mutation": "none",
+      "strictExpected": "accept"
+    }
+  ],
+  "policyCases": [
+    {
+      "id": "definite-array",
+      "cborHex": "8100",
+      "validator": "complete-item",
+      "expected": "accept"
+    },
+    {
+      "id": "indefinite-array",
+      "cborHex": "9f00ff",
+      "validator": "complete-item",
+      "expected": "accept"
+    },
+    {
+      "id": "invalid-nested-indefinite-byte-string",
+      "cborHex": "5f5f4101ffff",
+      "validator": "complete-item",
+      "expected": "reject"
+    },
+    {
+      "id": "non-minimal-zero",
+      "cborHex": "1800",
+      "validator": "complete-item",
+      "expected": "accept"
+    },
+    {
+      "id": "non-minimal-array-length",
+      "cborHex": "980100",
+      "validator": "complete-item",
+      "expected": "accept"
+    },
+    {
+      "id": "reordered-map",
+      "cborHex": "a202000100",
+      "validator": "complete-item",
+      "expected": "accept"
+    },
+    {
+      "id": "exact-duplicate-map-key",
+      "cborHex": "a201000101",
+      "validator": "complete-item",
+      "expected": "reject"
+    },
+    {
+      "id": "byte-distinct-semantic-map-key",
+      "cborHex": "a28100019f00ff02",
+      "validator": "complete-item",
+      "expected": "defer-semantic-uniqueness"
+    },
+    {
+      "id": "tagged-set",
+      "cborHex": "d901028100",
+      "validator": "nonempty-set",
+      "expected": "accept"
+    },
+    {
+      "id": "untagged-set",
+      "cborHex": "8100",
+      "validator": "set",
+      "expected": "accept"
+    },
+    {
+      "id": "empty-nonempty-set",
+      "cborHex": "d9010280",
+      "validator": "nonempty-set",
+      "expected": "reject"
+    },
+    {
+      "id": "empty-collateral-input-set-location",
+      "cborHex": "84a3018002000d80a0f5f6",
+      "validator": "conway-envelope",
+      "expected": "reject"
+    },
+    {
+      "id": "empty-reference-input-set-location",
+      "cborHex": "84a3018002001280a0f5f6",
+      "validator": "conway-envelope",
+      "expected": "reject"
+    },
+    {
+      "id": "tag24-complete-embedded-item",
+      "cborHex": "d8184180",
+      "validator": "embedded-cbor",
+      "expected": "accept"
+    },
+    {
+      "id": "tag24-embedded-trailing-item",
+      "cborHex": "d818428000",
+      "validator": "embedded-cbor",
+      "expected": "reject"
+    },
+    {
+      "id": "tag24-inline-datum-location",
+      "cborHex": "a300400100028201d8184180",
+      "validator": "transaction-output",
+      "expected": "accept"
+    },
+    {
+      "id": "tag24-output-address-location",
+      "cborHex": "a200d81841000100",
+      "validator": "transaction-output",
+      "expected": "reject"
+    },
+    {
+      "id": "tag24-inline-datum-embedded-trailing-item",
+      "cborHex": "a300400100028201d818428000",
+      "validator": "transaction-output",
+      "expected": "reject"
+    },
+    {
+      "id": "tag24-script-reference-location",
+      "cborHex": "a30040010003d8184180",
+      "validator": "transaction-output",
+      "expected": "accept"
+    },
+    {
+      "id": "tag24-script-reference-embedded-trailing-item",
+      "cborHex": "a30040010003d818428000",
+      "validator": "transaction-output",
+      "expected": "reject"
+    },
+    {
+      "id": "rational-tag30",
+      "cborHex": "d81e820102",
+      "validator": "rational",
+      "expected": "accept"
+    },
+    {
+      "id": "rational-tag30-wrong-shape",
+      "cborHex": "d81e00",
+      "validator": "rational",
+      "expected": "reject"
+    },
+    {
+      "id": "rational-tag30-output-value-location",
+      "cborHex": "a2004001d81e820102",
+      "validator": "transaction-output",
+      "expected": "reject"
+    },
+    {
+      "id": "auxiliary-tag259",
+      "cborHex": "d90103a0",
+      "validator": "auxiliary",
+      "expected": "accept"
+    },
+    {
+      "id": "flat-array-redeemers",
+      "cborHex": "8184000000820000",
+      "validator": "redeemers",
+      "expected": "accept"
+    },
+    {
+      "id": "map-redeemers",
+      "cborHex": "a18200008200820000",
+      "validator": "redeemers",
+      "expected": "accept"
+    },
+    {
+      "id": "raw-metadata-auxiliary-data",
+      "cborHex": "a0",
+      "validator": "auxiliary-data",
+      "expected": "accept"
+    },
+    {
+      "id": "allegra-array-auxiliary-data",
+      "cborHex": "82a080",
+      "validator": "auxiliary-data",
+      "expected": "accept"
+    },
+    {
+      "id": "unknown-tag",
+      "cborHex": "d903e800",
+      "validator": "known-tag",
+      "expected": "reject"
+    }
+  ],
+  "sdkResults": [
+    {
+      "version": "0.41.4",
+      "file": "sdk-0.41.4-results.json",
+      "strictRejectsAcceptedBySdk": 2
+    },
+    {
+      "version": "0.47.0",
+      "file": "sdk-0.47.0-results.json",
+      "strictRejectsAcceptedBySdk": 4
+    }
+  ],
+  "dependencyDecision": {
+    "installed": {
+      "version": "0.41.4",
+      "gitHead": "0d9fa5f83b6e9cf34412eaf94cc1e4541f3b0159",
+      "tarball": "https://registry.yarnpkg.com/@cardano-sdk/core/-/core-0.41.4.tgz",
+      "shasum": "5f38368aed8c27295f8f634e1fbe413a5c09633e",
+      "integrity": "sha512-fr2P8ZHPPhN7eL8AGvGFUfyDTr0K5Efd6UbH3Xim9NcsjebK8+sprBXCtupf5YiBSwfkpqO815ijKtJKZ7rY/w=="
+    },
+    "candidate": {
+      "version": "0.47.0",
+      "gitHead": "8fb86af308d2045d71b0c18d78abaf0336902983",
+      "tarball": "https://registry.npmjs.org/@cardano-sdk/core/-/core-0.47.0.tgz",
+      "shasum": "795716681420d08e939567bf635df06fd0c8da3b",
+      "integrity": "sha512-UANc6oY8Emjf5ID+Qk6XKxujPfrdxu0rDNDNy+jYJGMYh/kyUrLzOK8Ge4ydblqKQwohRXmMKagFusad3yHoDg==",
+      "nodeEngine": ">=22",
+      "packageLockFile": "sdk-0.47.0-package-lock.json",
+      "packageLockSha256": "4856d1faeb85ff6e6cb90df2a100003bb0017e1f175f7ebd77498f0a4365e9d4"
+    },
+    "decision": "retain-0.41.4-as-non-authoritative-helper",
+    "rationale": "Both versions represent the required Conway span fixture and neither can enforce the strict wire boundary. Candidate 0.47.0 closes no task-303 semantic representation gap demonstrated by this corpus and accepts more strict-reject cases, so availability alone cannot justify dependency and consumer churn.",
+    "updateGate": "Update only for a named required task-303 semantic representation gap closed without source/API consumer migration and with compile, focused consumer, Node 22, TypeScript 4.9, CommonJS, Webpack, Electron, and exact-lock compatibility."
+  }
+}

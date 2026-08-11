@@ -1,0 +1,16 @@
+{
+  "id": "conway-regression-collateral",
+  "description": "Ledger-decoded Conway transaction with tagged input sets, two outputs, collateral return, witness data, isValid=false, and null auxiliary data.",
+  "cborHex": "84a700d9010282825820745f04573e7429be1404f9b936d208b81159f3fc4b30037b9d630187eec1875600825820745f04573e7429be1404f9b936d208b81159f3fc4b30037b9d630187eec18756020dd9010281825820745f04573e7429be1404f9b936d208b81159f3fc4b30037b9d630187eec1875601018282581d60fdfaa5251e9ed2186a52eeea05ac1d39834eeef09b3e41dc151577a01a001e848082581d60fe920c980dbc1113a01db0156955479f3b91f6fb6a51bdc0c383c1b91a3b586de61082581d60fe920c980dbc1113a01db0156955479f3b91f6fb6a51bdc0c383c1b91a001a65b0111a00041ed0021a0002bf350b5820878c73eb6ec7171b23396f71d7e5adee98b3f72cfc1c0662453ea724a4e27ad5a303d9010281581e581c0100003322323222235004007123500235300300149849848004800504d9010281d8799f182aff0581840000d8799f182aff820000f4f6",
+  "provenance": {
+    "repository": "https://github.com/IntersectMBO/cardano-ledger",
+    "tag": "cardano-ledger-conway-1.22.1.0",
+    "commit": "226b002d5b5e83e24355f8a28ab214f3259eabda",
+    "sourcePath": "eras/conway/impl/testlib/Test/Cardano/Ledger/Conway/Binary/Regression.hs",
+    "sourceBlob": "c97a9aab069d86a6581449b4ed155e3270e3fddc",
+    "sourceSha256": "42755d7dd3a0776de01c64cf5b31283585e4d118fb14ffc4fc775a90d9e385f9",
+    "sourceLines": "49-59",
+    "extraction": "Concatenate the hexadecimal string literals in the first mconcat passed to decodeFullAnnotatorFromHexText for the Unwitnessed Tx regression.",
+    "fixtureSha256": "8d9a7b2cbe0dd59171e558fdb135484c65d574f4414cb0d6ad80d1d4dfc78dbd"
+  }
+}
