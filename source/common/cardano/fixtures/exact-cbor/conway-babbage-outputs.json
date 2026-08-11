@@ -1,0 +1,17 @@
+{
+  "id": "conway-babbage-map-outputs",
+  "description": "Pinned Conway regression with its two ordinary outputs and collateral return deterministically rewritten to the CDDL-equivalent Babbage map form and accepted by cardano-cli 11.0.0.0 debug transaction view.",
+  "cborHex": "84a700d9010282825820745f04573e7429be1404f9b936d208b81159f3fc4b30037b9d630187eec1875600825820745f04573e7429be1404f9b936d208b81159f3fc4b30037b9d630187eec18756020dd9010281825820745f04573e7429be1404f9b936d208b81159f3fc4b30037b9d630187eec18756010182a200581d60fdfaa5251e9ed2186a52eeea05ac1d39834eeef09b3e41dc151577a0011a001e8480a200581d60fe920c980dbc1113a01db0156955479f3b91f6fb6a51bdc0c383c1b9011a3b586de610a200581d60fe920c980dbc1113a01db0156955479f3b91f6fb6a51bdc0c383c1b9011a001a65b0111a00041ed0021a0002bf350b5820878c73eb6ec7171b23396f71d7e5adee98b3f72cfc1c0662453ea724a4e27ad5a303d9010281581e581c0100003322323222235004007123500235300300149849848004800504d9010281d8799f182aff0581840000d8799f182aff820000f4f6",
+  "provenance": {
+    "repository": "https://github.com/IntersectMBO/cardano-ledger",
+    "tag": "cardano-ledger-conway-1.22.1.0",
+    "commit": "226b002d5b5e83e24355f8a28ab214f3259eabda",
+    "sourcePath": "eras/conway/impl/testlib/Test/Cardano/Ledger/Conway/Binary/Regression.hs",
+    "sourceBlob": "c97a9aab069d86a6581449b4ed155e3270e3fddc",
+    "sourceSha256": "42755d7dd3a0776de01c64cf5b31283585e4d118fb14ffc4fc775a90d9e385f9",
+    "sourceLines": "49-59",
+    "extraction": "Start from conway-regression-collateral and replace each [address, value] output with {0: address, 1: value}, preserving every original address and value byte. Validate the complete result with cardano-cli debug transaction view --tx-file using cardano-cli 11.0.0.0 revision 01a89dad991e5a19990150b4e1de348a1481a37a.",
+    "fixtureSha256": "0458cf9c97bccea540df7df606106b2b6bd3eda4b8dbb9685c42ac34a82cad56",
+    "ledgerTxId": "c0627e2dc7eb49f3272cb8e362431273b8e7a9b31c39348e1ba2fc3a41e2bcb4"
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "runtime": {
+    "node": "v24.16.0"
+  },
+  "sdk": {
+    "name": "@cardano-sdk/core",
+    "version": "0.41.4",
+    "gitHead": "0d9fa5f83b6e9cf34412eaf94cc1e4541f3b0159",
+    "tarball": "https://registry.yarnpkg.com/@cardano-sdk/core/-/core-0.41.4.tgz",
+    "shasum": "5f38368aed8c27295f8f634e1fbe413a5c09633e",
+    "integrity": "sha512-fr2P8ZHPPhN7eL8AGvGFUfyDTr0K5Efd6UbH3Xim9NcsjebK8+sprBXCtupf5YiBSwfkpqO815ijKtJKZ7rY/w==",
+    "dependencyLockSha256": null,
+    "moduleRoot": "worktree-node-modules"
+  },
+  "cases": [
+    {
+      "id": "babbage-map-outputs",
+      "strictExpected": "accept",
+      "measuredFullConsumption": true,
+      "parse": "accepted",
+      "preservedExact": true,
+      "toCbor": "exact",
+      "toCore": "accepted",
+      "representedFields": [
+        "collateralReturn",
+        "collaterals",
+        "fee",
+        "inputs",
+        "outputs",
+        "scriptIntegrityHash",
+        "totalCollateral"
+      ],
+      "errorClass": null
+    },
+    {
+      "id": "duplicate-fee-scalar-key",
+      "strictExpected": "reject",
+      "measuredFullConsumption": true,
+      "parse": "accepted",
+      "preservedExact": true,
+      "toCbor": "exact",
+      "toCore": "accepted",
+      "representedFields": [
+        "collateralReturn",
+        "collaterals",
+        "fee",
+        "inputs",
+        "outputs",
+        "scriptIntegrityHash",
+        "totalCollateral"
+      ],
+      "errorClass": null
+    },
+    {
+      "id": "indefinite-root-envelope",
+      "strictExpected": "accept",
+      "measuredFullConsumption": true,
+      "parse": "rejected",
+      "preservedExact": null,
+      "toCbor": null,
+      "toCore": null,
+      "representedFields": [],
+      "errorClass": "CborInvalidOperationException"
+    },
+    {
+      "id": "ledger-alonzo-historical-span-only",
+      "strictExpected": "reject",
+      "measuredFullConsumption": true,
+      "parse": "rejected",
+      "preservedExact": null,
+      "toCbor": null,
+      "toCore": null,
+      "representedFields": [],
+      "errorClass": "InvalidStringError"
+    },
+    {
+      "id": "ledger-conway-positive",
+      "strictExpected": "accept",
+      "measuredFullConsumption": true,
+      "parse": "accepted",
+      "preservedExact": true,
+      "toCbor": "exact",
+      "toCore": "accepted",
+      "representedFields": [
+        "collateralReturn",
+        "collaterals",
+        "fee",
+        "inputs",
+        "outputs",
+        "scriptIntegrityHash",
+        "totalCollateral"
+      ],
+      "errorClass": null
+    },
+    {
+      "id": "trailing-root-byte",
+      "strictExpected": "reject",
+      "measuredFullConsumption": false,
+      "parse": "accepted",
+      "preservedExact": true,
+      "toCbor": "exact",
+      "toCore": "accepted",
+      "representedFields": [
+        "collateralReturn",
+        "collaterals",
+        "fee",
+        "inputs",
+        "outputs",
+        "scriptIntegrityHash",
+        "totalCollateral"
+      ],
+      "errorClass": null
+    },
+    {
+      "id": "unknown-body-key",
+      "strictExpected": "reject",
+      "measuredFullConsumption": true,
+      "parse": "rejected",
+      "preservedExact": null,
+      "toCbor": null,
+      "toCore": null,
+      "representedFields": [],
+      "errorClass": "CborInvalidOperationException"
+    },
+    {
+      "id": "untagged-body-sets",
+      "strictExpected": "accept",
+      "measuredFullConsumption": true,
+      "parse": "accepted",
+      "preservedExact": true,
+      "toCbor": "exact",
+      "toCore": "accepted",
+      "representedFields": [
+        "collateralReturn",
+        "collaterals",
+        "fee",
+        "inputs",
+        "outputs",
+        "scriptIntegrityHash",
+        "totalCollateral"
+      ],
+      "errorClass": null
+    },
+    {
+      "id": "wrong-input-set-tag",
+      "strictExpected": "reject",
+      "measuredFullConsumption": true,
+      "parse": "rejected",
+      "preservedExact": null,
+      "toCbor": null,
+      "toCore": null,
+      "representedFields": [],
+      "errorClass": "CborInvalidOperationException"
+    }
+  ],
+  "summary": {
+    "accepted": 5,
+    "rejected": 4,
+    "strictRejectsAcceptedBySdk": 2
+  }
+}
