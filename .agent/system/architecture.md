@@ -598,6 +598,10 @@ Hostile remote dApp
   subresources, WSS, rebinding, and IPv4/IPv6 forms. Bypass transports remain
   disabled. Production launch is fail-closed until packaged sandbox and all
   other PRD release gates have evidence.
+- Linux shipping for this feature is system **`.deb` and `.rpm`** packages with
+  privileged postinst for Chromium OS sandbox (SUID helper and/or userns plus
+  AppArmor). Portable `.bin`, AppImage, Flatpak, and Snap are rejected; see
+  [research/06-linux-system-package-decision.md](../plans/dapp-browser-cip30/research/06-linux-system-package-decision.md).
 
 ## Security Considerations
 

@@ -24,7 +24,7 @@ The current Electron main renderer cannot host hostile content safely:
 - `source/main/preload.ts` exposes raw IPC, Node HTTP(S), paths, configuration, and logging capabilities.
 - Existing IPC wrappers discard sender information and generally do not authenticate the calling renderer or frame.
 - Popup and external-URL handling is not sufficient for a hostile renderer.
-- Linux development and packaging currently use process-wide sandbox-disabling flags.
+- Linux development and packaging currently use process-wide sandbox-disabling flags, and the historical portable self-extracting `.bin` installer cannot establish Chromium OS sandbox privileges required for hostile guests.
 
 The existing wallet and transaction APIs are also incomplete for CIP-30:
 
@@ -71,6 +71,7 @@ This work matters because a connector that is merely functional but not byte-exa
 - No guarantee of equal transaction-feature support across software, Ledger, and Trezor wallets.
 - No migration of the existing trusted main renderer to a fully sandboxed/context-isolated architecture as part of the minimum connector release, although its navigation and IPC boundaries must be hardened.
 - No persistence or later-call resolution of signed-but-unsubmitted transaction outputs. CIP-103 dependencies are resolved within the current request or from cardano-wallet's normal pending-submission state.
+- No Linux portable self-extracting `.bin`, AppImage, Flatpak, Snap, or other non-`.deb`/`.rpm` Linux product package for dApp-capable or general Linux shipping once the system-package migration lands.
 
 ## Inputs And Source Material
 
@@ -119,7 +120,8 @@ This work matters because a connector that is merely functional but not byte-exa
 - `source/common/config/electron-store.config.ts`
 - `source/common/types/electron-store.types.ts`
 - `nix/internal/x86_64-linux.nix`
-- `nix/internal/linux-self-extracting-archive.sh`
+- `nix/internal/linux-self-extracting-archive.sh` (legacy portable path; rejected for shipping)
+- Linux `.deb` / `.rpm` packaging outputs and postinst scripts (to be added)
 - `flake.nix`
 - `flake.lock`
 - `package.json`
@@ -187,6 +189,7 @@ These are contract inputs, not production validators or dispatch code. Task-300 
 - Current global IPC does not provide the sender/frame authentication required for a hostile renderer.
 - The existing popup handler opens requested URLs externally without a sufficient scheme/origin policy.
 - Linux development and packaging pass `--disable-setuid-sandbox --no-sandbox`.
+- Linux currently ships a home-directory self-extracting `.bin`; that model is product-rejected for ongoing shipping in favor of system `.deb` and `.rpm` packages (research `06`).
 
 ### Renderer
 
@@ -232,6 +235,7 @@ These are contract inputs, not production validators or dispatch code. Task-300 
 - Development may permit HTTP loopback only through an explicit development policy.
 - Guest networking is limited to policy-controlled HTTPS/WSS. WebRTC, STUN/TURN, WebTransport, QUIC, and other non-proxied transports are disabled unless a later compatibility review identifies a concrete required dApp and proves equivalent destination enforcement before enabling that transport.
 - No external-browser connector or inbound connector is implemented.
+- Linux product packages are system **`.deb`** and **`.rpm`** only, installing under a fixed `/opt/...` path with privileged postinst capable of SUID `chrome-sandbox` and/or AppArmor `userns` profiles. Portable self-extracting `.bin`, AppImage, Flatpak, Snap, and other Linux channels are rejected (research [06-linux-system-package-decision.md](./research/06-linux-system-package-decision.md)).
 - Shelley software, Ledger, and Trezor wallets are in scope; Byron is excluded.
 - Persistent grants cover connection/read scopes only.
 - Every `signTx`, `signTxs`, `signData`, CIP-95 `signData`, `submitTx`, and `submitTxs` call requires trusted consent.
@@ -765,10 +769,13 @@ release-blocking confidentiality/integrity defect.
 Task-001 establishes this model, not the downstream proof. Phase-0 evidence
 owners are `task-003` for the reviewed cardano-wallet contract, consistency,
 migration/rollback, and pin gate; `task-004` for exact-CBOR/body/output and
-supported-era evidence; `task-005` for packaged Linux sandbox strategy and
-proof; and `task-006` for Ledger/Trezor library, model, firmware,
-message-signing, and returned-hash matrices. Phases 1 through 9 implement and
-validate privileged IPC, session/network policy, exact semantic review,
+supported-era evidence; `task-005` for packaged Linux `.deb`/`.rpm` sandbox
+strategy and proof (portable `.bin` rejected; research 06); and `task-006` for
+Ledger/Trezor library, model, firmware, message-signing, and returned-hash
+matrices. Phase 1 packaging follow-through is `task-108` (`.deb`), `task-109`
+(`.rpm`), `task-110` (`.bin` retirement and auto-update migration), and
+`task-103` (flag removal and canary). Phases 1 through 9 implement and validate
+privileged IPC, session/network policy, exact semantic review,
 backend/pending-submission behavior, device capability, packaged hostile tests,
 internal/external review, and controlled rollout.
 
@@ -904,14 +911,20 @@ Session requirements:
 - Production guest DevTools remain disabled.
 - Development DevTools require a non-production build policy and cannot be page-requested.
 
-### Linux Sandbox
+### Linux Sandbox And Packaging
 
-- Remove default `--no-sandbox` and `--disable-setuid-sandbox` launch configuration from development and packaging.
+- **Accepted strategy (2026-08-12):** ship Linux exclusively as system **`.deb`** and **`.rpm`** packages. Evidence and ownership: [research/06-linux-system-package-decision.md](./research/06-linux-system-package-decision.md). Portable feasibility negative evidence: [research/05-linux-chromium-sandbox-packaging.md](./research/05-linux-chromium-sandbox-packaging.md).
+- **Rejected for Linux shipping:** portable self-extracting `.bin` to `$HOME/.daedalus/<cluster>`, AppImage, Flatpak, Snap, and other non-deb/rpm channels.
+- Install to a fixed path under `/opt/` so postinst can establish Chromium sandbox prerequisites:
+  - root-owned `chrome-sandbox` mode `4755` when unprivileged user namespaces are unavailable;
+  - unprivileged user namespaces when the host supports them;
+  - AppArmor profile with `userns,` for the fixed Electron binary path on Ubuntu 24.04+ and other AppArmor hosts that restrict unprivileged userns (install only when `apparmor_parser` accepts the profile ABI).
+- Remove default `--no-sandbox` and `--disable-setuid-sandbox` launch configuration from development and packaged `.deb`/`.rpm` launchers.
 - Detect `--no-sandbox`, sandbox-disabling environment variables, and unsupported packaging at runtime.
 - Keep Daedalus wallet functionality available where practical, but hide and reject dApp guest launch when OS sandbox proof is unavailable.
-- Select and document a supported Linux namespace or SUID-helper strategy.
-- The self-extracting home-directory installer cannot assume a root-owned mode-4755 helper.
-- Packaged tests must verify active seccomp/no-new-privileges or equivalent OS containment, not only `process.sandboxed`.
+- Never auto-retry with `--no-sandbox` and never weaken containment for remote content.
+- Packaged tests must verify active seccomp/no-new-privileges or equivalent OS containment on the exact guest renderer PID, not only `process.sandboxed`.
+- Retire the portable `.bin` producer, home-extract installer, and `.bin`-oriented Linux auto-update path; migrate existing home installs to system packages without deleting wallet data under `XDG_DATA_HOME/Daedalus`.
 
 ### Existing IPC Hardening
 
@@ -1491,8 +1504,9 @@ Forbidden from observability and non-authoritative storage:
 
 - Sibling `../cardano-wallet`: API, wallet core, Shelley transaction, derivation/discovery, network layer, local-state-query, pending-submission, and SQLite state modules.
 - `flake.nix`, `flake.lock`: pin the reviewed backend revision.
-- `nix/internal/x86_64-linux.nix`: sandbox-safe launcher.
-- `nix/internal/linux-self-extracting-archive.sh`: only if packaging strategy requires helper changes.
+- `nix/internal/x86_64-linux.nix`: sandbox-safe `.deb`/`.rpm` launchers and package outputs.
+- Linux `.deb` and `.rpm` packaging (postinst SUID helper, AppArmor profile, desktop entries, update path).
+- Retire `nix/internal/linux-self-extracting-archive.sh` and portable `.bin` shipping once task-110 migration completes.
 - Windows packaging source-map/output cleanup for the added preload where applicable.
 
 ## Implementation Strategy
@@ -1509,7 +1523,7 @@ Forbidden from observability and non-authoritative storage:
 
 ### Phase 1: Electron And IPC Security Foundation
 
-- Remove default Linux sandbox-disabling launch flags and prove a supported sandbox strategy.
+- Prove and implement Linux `.deb`/`.rpm` packaging with Chromium OS sandbox (SUID and/or userns + AppArmor), remove default sandbox-disabling launch flags, and retire the portable `.bin`.
 - Lock trusted main navigation and popup/external URL handling.
 - Sender/frame-scope all privileged IPC.
 - Build the dedicated guest preload and guest manager only after privileged IPC migration, behind a disabled feature flag, with non-HTTPS/WSS transport stacks disabled.
@@ -1639,7 +1653,7 @@ Forbidden from observability and non-authoritative storage:
 - Existing privileged IPC cannot be invoked by guest.
 - Generic external URLs cannot reach shell without trusted HTTPS approval.
 - Guest cannot access Node, raw IPC, TLS configuration, filesystem, electron-store, or hardware channels.
-- Linux packaged process proves OS sandboxing.
+- Installed Linux `.deb` and `.rpm` packages prove OS sandboxing on the exact guest renderer.
 
 ### Renderer/Jest/Storybook
 
@@ -1703,7 +1717,7 @@ Release remains blocked until:
 
 1. Existing privileged IPC is sender/frame authenticated.
 2. Trusted main navigation is locked.
-3. Guest is proven OS-sandboxed in packaged Linux output.
+3. Guest is proven OS-sandboxed in packaged Linux `.deb` and `.rpm` output.
 4. Initial and subsequent HTTPS/WSS destinations are connection-bound, and all unaudited bypass transports remain disabled.
 5. Full transaction context and exact semantic review are available.
 6. Unknown/unsupported transaction fields and mismatched body-to-witness/auxiliary commitments fail closed.
@@ -1756,7 +1770,8 @@ All migrations must be versioned, atomic, and fail closed. Wallet funds remain g
 | Remote content reaches existing privileged IPC | Authenticate every existing handler and keep guest on a separate scoped gateway. |
 | Public dApp hostname resolves or rebinds to a private destination | Enforce IP-literal and connection-bound DNS destination policy for initial and subsequent HTTPS/WSS connections; disable Diagnostics launch if its initial destination cannot be proven. |
 | Guest bypasses HTTPS/WSS policy through another Chromium transport | Disable WebRTC/data channels, STUN/TURN, WebTransport, QUIC, and non-proxied transports; any future compatibility exception requires evidence and equivalent enforcement. |
-| Linux guest is only renderer-sandboxed, not OS-sandboxed | Remove global flags, prove packaged sandboxing, fail feature closed otherwise. |
+| Linux guest is only renderer-sandboxed, not OS-sandboxed | Ship `.deb`/`.rpm` with SUID/AppArmor/userns, remove global flags, prove packaged sandboxing, fail feature closed otherwise. |
+| Portable `.bin` cannot privilege chrome-sandbox | Rejected: system packages only (research 06). |
 | Approval summary differs from signed bytes | Main retains immutable bytes; shared exact parser; signer hash and result verification. |
 | DApp changes outer `isValid` after signing | Show maximum collateral risk at signing; separately review exact submission envelope. |
 | cardano-wallet UTxO loses datum/reference script | Query full ledger outputs at a coherent chain point. |
@@ -1788,7 +1803,7 @@ All migrations must be versioned, atomic, and fail closed. Wallet funds remain g
 
 ## Evidence Gates And Open Questions
 
-- Prove the Linux user-namespace/SUID sandbox strategy across supported distributions and installer forms.
+- Prove the Linux `.deb`/`.rpm` SUID and/or user-namespace plus AppArmor sandbox strategy across the supported distribution matrix; portable `.bin` is rejected.
 - Prove the connection-level enforcement mechanism, built-in or custom, used to prevent private-network access and DNS rebinding for public HTTPS/WSS guest traffic.
 - Determine whether `@cardano-sdk/core@0.41.4` fully decodes all target-era fields; upgrade only if fixture evidence requires it.
 - Confirm exact raw-body and output-span handling for every accepted transaction encoding.

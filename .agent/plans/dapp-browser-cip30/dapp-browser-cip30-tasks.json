@@ -2,9 +2,9 @@
   "metadata": {
     "title": "Embedded dApp Browser And CIP-30 Wallet Connector Tasks",
     "created": "2026-08-07",
-    "updated": "2026-08-11",
-    "version": "1.5.0",
-    "totalTasks": 81,
+    "updated": "2026-08-12",
+    "version": "1.6.0",
+    "totalTasks": 84,
     "prdReference": ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
       "description": "Security- and standards-gated implementation graph for a wallet-scoped sandboxed dApp browser with CIP-30, CIP-8, CIP-95, CIP-103, gated CIP-104/CIP-142, software/hardware signing, ordered batch signing and submission, and soft collateral management.",
     "sourceFiles": [
@@ -177,30 +177,39 @@
         },
         {
           "id": "task-005",
-          "title": "Validate Linux Chromium sandbox packaging",
-          "description": "Determine and prove the supported Linux user-namespace or SUID-helper strategy for the self-extracting package and development environment without process-wide sandbox disablement.",
+          "title": "Validate Linux Chromium sandbox packaging for .deb/.rpm",
+          "description": "Freeze and prove the accepted Linux system-package strategy (.deb and .rpm under /opt with SUID chrome-sandbox and/or userns plus AppArmor) without process-wide sandbox disablement. Portable .bin is product-rejected.",
           "status": "pending",
           "priority": "critical",
-          "estimatedHours": 16,
+          "estimatedHours": 20,
           "dependencies": ["task-001"],
           "targetPaths": [
             "nix/internal/x86_64-linux.nix",
-            "nix/internal/linux-self-extracting-archive.sh",
             "source/main/webpack.config.js",
+            "scripts/linux-chromium-sandbox-probe/",
+            ".agent/plans/dapp-browser-cip30/research/05-linux-chromium-sandbox-packaging.md",
+            ".agent/plans/dapp-browser-cip30/research/06-linux-system-package-decision.md",
             "README.md"
           ],
           "implementationNotes": [
-            "Test supported distributions with and without unprivileged user namespaces.",
+            "Product decision 2026-08-12: ship .deb and .rpm only; reject portable .bin, AppImage, Flatpak, and Snap (research 06).",
+            "Retain research 05 portable SIGILL run as negative evidence only; do not certify portable packaging.",
+            "Adapt the exact-renderer /proc probe to validate root-owned mode-4755 chrome-sandbox when userns are unavailable, and userns containment when available.",
+            "Test supported Debian/Ubuntu-class and Fedora/RHEL-class hosts, including Ubuntu 24.04 AppArmor userns restriction.",
             "Do not accept process.sandboxed as the only proof.",
-            "Define fail-closed dApp feature behavior when users deliberately launch Daedalus without sandboxing."
+            "Define fail-closed dApp feature behavior when users deliberately launch Daedalus without sandboxing.",
+            "Document concrete development and package flag changes plus postinst contracts owned by task-103, task-108, and task-109."
           ],
           "acceptance": [
-            "The spike proves one viable packaged strategy and identifies the exact sandboxed renderer process under test.",
-            "The spike documents the concrete development/package flag changes owned by task-103.",
-            "Unsupported hosts disable dApp launch without silently weakening containment."
+            "The accepted .deb/.rpm strategy is frozen in research 06 and the PRD Linux sandbox section.",
+            "The spike proves viable OS sandboxing on installed .deb and .rpm artifacts and identifies the exact sandboxed renderer process under test via webContents.getOSProcessId() and same-PID /proc evidence.",
+            "The spike documents task-103 flag removal, canary, and fail-closed behavior plus task-108/109 postinst SUID/AppArmor contracts.",
+            "Unsupported hosts and sandbox-disabling launches disable dApp launch without silently weakening containment.",
+            "Portable .bin, AppImage, Flatpak, and Snap are explicitly out of scope for Linux shipping."
           ],
           "securityNotes": [
-            "No remote guest work may ship until this gate passes."
+            "No remote guest work may ship until this gate passes on system packages.",
+            "Never auto-retry with --no-sandbox."
           ]
         },
         {
@@ -316,23 +325,122 @@
         {
           "id": "task-103",
           "title": "Remove default sandbox-disabling launch flags",
-          "description": "Implement the validated Linux packaging strategy, remove default sandbox-disabling flags, and add a runtime dApp availability check for sandbox-disabling switches/environment.",
+          "description": "Against the accepted .deb/.rpm Linux packages, remove default sandbox-disabling flags and add a runtime dApp availability check (argv/environment rejection plus pre-remote-content local sandbox canary).",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 24,
-          "dependencies": ["task-005"],
+          "dependencies": ["task-005", "task-108"],
           "targetPaths": [
             "source/main/webpack.config.js",
             "nix/internal/x86_64-linux.nix",
-            "nix/internal/linux-self-extracting-archive.sh",
             "source/main/index.ts",
             "README.md"
           ],
+          "implementationNotes": [
+            "Consume task-005 evidence and task-108/109 package layout; do not reintroduce portable .bin assumptions.",
+            "Run a hidden local-only canary before any remote guest URL; same-PID /proc assertions; destroy canary after success or failure.",
+            "Never retry unsandboxed; explicit dApp-disabled wallet modes only where documented."
+          ],
           "acceptance": [
-            "Default development and packaged launch omit --no-sandbox.",
-            "The dApp feature fails closed under sandbox-disabling CLI/environment configuration.",
+            "Default development and packaged .deb/.rpm launch omit --no-sandbox and --disable-setuid-sandbox.",
+            "The dApp feature fails closed under sandbox-disabling CLI/environment configuration or canary failure.",
             "Supported Linux package smoke tests start both trusted and sandboxed renderers.",
-            "Existing wallet startup fallback behavior is documented for unsupported hosts."
+            "Unsupported-host and dApp-disabled wallet behavior is documented."
+          ]
+        },
+        {
+          "id": "task-108",
+          "title": "Implement Linux .deb system package with sandbox postinst",
+          "description": "Produce a root-installable .deb that installs Daedalus under a fixed /opt path, configures chrome-sandbox SUID and/or AppArmor userns profile in postinst, and launches without sandbox-disabling flags.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-005"],
+          "targetPaths": [
+            "nix/internal/x86_64-linux.nix",
+            "nix/internal/",
+            "flake.nix",
+            "README.md"
+          ],
+          "implementationNotes": [
+            "Follow electron-builder-style postinst: SUID chrome-sandbox when userns unavailable; AppArmor profile for Ubuntu 24.04+ when apparmor_parser accepts the profile ABI.",
+            "Fixed install path under /opt; desktop entry and wrapper must not pass --no-sandbox.",
+            "Do not ship AppImage, Flatpak, Snap, or portable .bin from this task.",
+            "Wallet data remains under XDG_DATA_HOME/Daedalus; package must not delete user wallet state on install/upgrade.",
+            "Nix must expose a reproducible installer-mainnet (and cluster) .deb output."
+          ],
+          "acceptance": [
+            "nix build produces an installable .deb for supported clusters.",
+            "postinst establishes the reviewed sandbox helper and/or AppArmor profile contract.",
+            "Installed launcher omits sandbox-disabling switches.",
+            "Package-equivalent sandbox probe can target the installed .deb tree.",
+            "README and release docs describe .deb install, not portable .bin."
+          ],
+          "securityNotes": [
+            "Privileged postinst is required for SUID/AppArmor; review postinst scripts for least privilege and no network fetch."
+          ]
+        },
+        {
+          "id": "task-109",
+          "title": "Implement Linux .rpm system package with sandbox postinst",
+          "description": "Produce a root-installable .rpm equivalent to the .deb layout with postinst SUID chrome-sandbox and SELinux-safe sandbox startup on Fedora/RHEL-class hosts.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-005", "task-108"],
+          "targetPaths": [
+            "nix/internal/x86_64-linux.nix",
+            "nix/internal/",
+            "flake.nix",
+            "README.md"
+          ],
+          "implementationNotes": [
+            "Share /opt layout and launcher contracts with task-108 where practical.",
+            "Handle RPM %post SUID helper; document any SELinux file contexts required for sandbox.",
+            "Do not ship AppImage, Flatpak, Snap, or portable .bin."
+          ],
+          "acceptance": [
+            "nix build produces an installable .rpm for supported clusters.",
+            "%post establishes the reviewed sandbox helper contract.",
+            "Installed launcher omits sandbox-disabling switches.",
+            "Sandbox probe can target the installed .rpm tree on a Fedora/RHEL-class host."
+          ],
+          "securityNotes": [
+            "Same fail-closed dApp rules as .deb; no unsandboxed fallback."
+          ]
+        },
+        {
+          "id": "task-110",
+          "title": "Retire portable .bin and migrate Linux auto-update",
+          "description": "Stop producing and advertising the Linux self-extracting .bin, redesign Linux auto-update for .deb/.rpm, and document migration from $HOME/.daedalus installs without destroying wallet data.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 32,
+          "dependencies": ["task-108", "task-109"],
+          "targetPaths": [
+            "nix/internal/x86_64-linux.nix",
+            "nix/internal/linux-self-extracting-archive.sh",
+            "nix/internal/common.nix",
+            "README.md",
+            ".agent/workflows/build.md",
+            ".agent/workflows/nix.md"
+          ],
+          "implementationNotes": [
+            "Current Linux auto-update assumes self-extract replace under $HOME and launcher restart; that path is incompatible with system packages.",
+            "Preserve XDG_DATA_HOME/Daedalus wallet/state directories across migration.",
+            "Define behavior for users still on legacy .bin until they install .deb/.rpm.",
+            "Update CI/Hydra installer outputs and workflow docs; remove AppImage wording if still present.",
+            "Portable .bin, AppImage, Flatpak, and Snap remain rejected product channels."
+          ],
+          "acceptance": [
+            "Release Linux artifacts are .deb and .rpm only.",
+            "Self-extracting .bin is no longer a supported shipping output for new releases.",
+            "Auto-update or documented upgrade path works for system packages without requiring home extract.",
+            "Migration guide covers legacy $HOME/.daedalus users and does not delete wallet data.",
+            "Build/Nix/agent docs match the new packaging model."
+          ],
+          "securityNotes": [
+            "Do not leave a supported path that reintroduces unsandboxed portable Electron for production dApps."
           ]
         },
         {
@@ -461,7 +569,7 @@
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 24,
-          "dependencies": ["task-102", "task-106"],
+          "dependencies": ["task-102", "task-106", "task-103", "task-108"],
           "targetPaths": [
             "tests/security/dapp-guest/",
             "source/main/dapp/",
@@ -474,13 +582,16 @@
             "Permission, HID, USB, serial, WebAuthn, and certificate attempts",
             "WebRTC data-channel, STUN/TURN, WebTransport, QUIC, and non-proxied transport attempts",
             "Reopen proves absent cookies, local storage, cache, and service workers",
-            "Linux process shows active OS sandbox"
+            "Linux .deb/.rpm process shows active OS sandbox on exact renderer PID"
           ],
           "acceptance": [
             "All hostile fixture attempts fail without privileged side effects.",
             "Packaged launcher-switch variants independently reject the intended guest/capability classes.",
-            "Packaged Linux evidence proves OS sandboxing.",
+            "Packaged Linux .deb/.rpm evidence proves OS sandboxing on the exact guest renderer.",
             "The harness runs in release-equivalent configuration, not only mocked Electron."
+          ],
+          "implementationNotes": [
+            "Linux harness targets installed system packages from task-108/109, not the rejected portable .bin."
           ]
         }
       ]
@@ -2051,7 +2162,7 @@
     ],
     "riskAreas": [
       "Hostile renderer access to existing privileged IPC",
-      "Linux packaged Chromium sandbox viability",
+      "Linux .deb/.rpm Chromium OS sandbox viability and portable .bin retirement",
       "Connection-bound HTTPS/WSS egress and disabled non-proxied Chromium transports",
       "Exact CBOR body/output byte preservation and semantic completeness",
       "cardano-wallet full-ledger context and witness-only batch API changes",
