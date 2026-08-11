@@ -779,6 +779,26 @@ pending-submission fault testing, privacy inspection, physical hardware
 certification, internal review, external audit, Electron/Chromium review, and
 release-candidate change control are complete.
 
+### Backend Contract Validation
+
+Task-003's proposed cardano-wallet delivery contract is recorded in
+[`research/03-cardano-wallet-backend-contract.md`](research/03-cardano-wallet-backend-contract.md).
+It fixes strict capability negotiation, the exact-point `W/G/P` context capture
+protocol, stateless context binding, reuse-first V1/V2 signing evidence,
+backend-produced CIP-8/CIP-95 COSE, write-ahead wallet submission, error/privacy
+boundaries, and the task-200-through-task-209 evidence assignment. The contract
+is not a shipped API. For task-003, the user directed the Orchestrator on
+2026-08-11 to assume cardano-wallet implementation signoff and proceed; external
+owner/reviewer identities and a durable URL were not supplied and are not
+fabricated. This task-003 planning assumption does not replace concrete
+implementation, upstream review, migration/rollback, integration, or pin
+evidence required from tasks 200-209.
+
+Task-003 changes no sibling source and is therefore validation-only. Phase-2
+tasks produce candidate cardano-wallet commits and migration/rollback evidence;
+task-209 may update the Daedalus pin only after authorized sibling review and
+Daedalus integration against the candidate revision.
+
 ## Technical Design
 
 ### Trust Boundaries
@@ -1047,7 +1067,8 @@ Because VKey witnesses sign only the transaction body and not outer `isValid`, s
 
 ### Backend Transaction Context
 
-Add a versioned cardano-wallet operation that atomically returns:
+Add a versioned cardano-wallet operation that returns one coherently captured
+context:
 
 - Chain point, volatile delta, era, protocol version, network identity, and protocol parameters.
 - Exact TxOut CBOR for every normal, collateral, and reference input.
@@ -1061,31 +1082,36 @@ Add a versioned cardano-wallet operation that atomically returns:
 
 The backend, not the renderer, derives earlier outputs and ownership. Renderer-supplied paths are never authoritative.
 
+The capture protocol is not globally atomic across wallet DB and node LSQ. It
+reads wallet point `W`, wallet generation `G`, and pending generation `P`,
+queries node state exactly at `W`, then confirms unchanged `W/G/P`; it retries
+the complete capture at most three times and otherwise fails closed without a
+partial response. Exact provenance, digest/token encoding, restart behavior,
+and downstream tests are frozen in the task-003 backend contract.
+
 The UTxO endpoint or replacement context API must query full ledger outputs through local-state query because wallet `TxOut` persistence is lossy. All cardano-wallet implementation paths in this plan refer to the sibling `../cardano-wallet` working tree and must land there before Daedalus updates its reviewed pin. Upstream acceptance into cardano-wallet is the default path for every new API; any long-lived fork divergence requires explicit sign-off recorded in the backend contract validation task.
 
 ### Software Signing
 
 The existing `transactions-sign` endpoint combined with main-process witness-set diffing is the baseline for witness-only responses; a new backend signing endpoint requires written justification from the backend contract validation task.
 
-Add witness-only single and batch software signing:
-
-```ts
-type BackendSignRequest = {
-  transaction: string;
-  partialSign: boolean;
-};
-
-type BackendSignResult = {
-  bodyHash: string;
-  witnessSet: string;
-};
-```
+The backend request binds exact transaction bytes, reviewed context token and
+digest, ordered current-request parents, request index, and `partialSign`. Reuse
+of `transactions-sign` may return its existing full modified transaction only
+after both V1 and V2 paths prove that the body, envelope, and every pre-existing
+witness class are unchanged except for valid newly added VKeys. Daedalus then
+performs task-306 exact-envelope validation and witness differencing. A distinct
+backend witness-only result is permitted only when task-003's path-specific
+reuse evidence justifies the smaller replacement endpoint. In either case the
+value released to CIP-30 is a verified VKey-only witness set.
 
 - Backend verifies the reviewed context digest, exact body bytes, and wallet ownership evidence before signing, but it does not refresh chain state or require the original chain point to remain current.
 - If chain state advances, rolls back, or spends an input after review, signing may still complete and later node submission may fail normally.
 - Single signing may be implemented through the batch primitive with one item.
-- Batch endpoint performs all-or-nothing response release.
-- Existing witnesses are preserved internally but excluded from the newly generated response.
+- Batch orchestration may call the reviewed single backend seam sequentially,
+  but Daedalus releases no witness result unless every item succeeds.
+- Existing witnesses are preserved in any full-transaction backend result and
+  excluded by Daedalus from the newly generated VKey-only result.
 - Returned VKey witnesses are verified and deduplicated.
 - `partialSign=false` evaluates complete required key/native-script satisfaction after applying all producible wallet witnesses.
 - `partialSign=true` returns all newly producible owned VKeys, including a canonical empty witness set when the wallet controls no applicable key; missing non-wallet proofs do not cause `ProofGeneration` in partial mode.
@@ -1117,7 +1143,10 @@ type BackendSignResult = {
 
 - Use wallet-scoped transaction submission for dApp and hardware transactions.
 - Correct the current octet-stream request type/content-length ambiguity by accepting an explicit CBOR-hex string or exact byte buffer contract.
-- Atomically add normal and collateral inputs to pending context before or with broadcast so a crash cannot lose the lock.
+- Commit the wallet-scoped `authorized` record and normal/collateral pending
+  claims in one database transaction before any node call, then commit the
+  `broadcasting` generation before broadcast. Reconcile every crash boundary
+  through the task-003 write-ahead state machine.
 - Verify the returned hash equals the locally calculated transaction ID.
 - Re-submitting an exact already-pending transaction is idempotent and returns its existing hash.
 - Treat submission as a point of no return once the user gives explicit confirmation.
@@ -1478,7 +1507,9 @@ Forbidden from observability and non-authoritative storage:
 
 - Add full-ledger transaction context and full UTxO CBOR.
 - Add wallet ownership/path and current protocol/governance state.
-- Add witness-only single/batch signing with current-request parent context.
+- Add verified VKey-only Daedalus single/batch results with current-request
+  parent context, using validated full-transaction differencing or a justified
+  backend witness-only replacement.
 - Add exact CIP-8 software signing.
 - Add CIP-105 DRep derivation and stake-key registration classification.
 - Add wallet-scoped pending submission.
