@@ -2,8 +2,8 @@
   "metadata": {
     "title": "Embedded dApp Browser And CIP-30 Wallet Connector Tasks",
     "created": "2026-08-07",
-    "updated": "2026-08-10",
-    "version": "1.4.0",
+    "updated": "2026-08-11",
+    "version": "1.5.0",
     "totalTasks": 81,
     "prdReference": ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
       "description": "Security- and standards-gated implementation graph for a wallet-scoped sandboxed dApp browser with CIP-30, CIP-8, CIP-95, CIP-103, gated CIP-104/CIP-142, software/hardware signing, ordered batch signing and submission, and soft collateral management.",
@@ -115,33 +115,36 @@
         {
           "id": "task-003",
           "title": "Validate the cardano-wallet backend contract",
-          "description": "Design and validate in the sibling ../cardano-wallet checkout the full transaction-context, full UTxO, witness-only batch signing, CIP-8/CIP-95, and wallet-scoped pending-submission APIs consumed by the Daedalus pin.",
-          "status": "pending",
+          "description": "Validate and freeze the accepted task-003 design for exact cardano-wallet capability, coherent context, signing, CIP-8/CIP-95, durable submission, migration/rollback, and phase-2 evidence without implementing or pinning the backend in this phase-0 task.",
+          "status": "completed",
+          "completedAt": "2026-08-11",
+          "completedNotes": "Approved validation-only cardano-wallet backend contract with pin-versus-sibling evidence, exact capability/context/signing/COSE/write-ahead submission/error/privacy contracts, reproducible Blake2b/token fixtures, and downstream implementation/test ownership. The user directed task-003 to proceed under an assumed implementation signoff without supplied external identities or URL; tasks 200-209 still require concrete sibling commits, authorized review, migration/rollback, integration, and exact pin evidence.",
           "priority": "critical",
           "estimatedHours": 16,
           "dependencies": ["task-001", "task-002"],
           "targetPaths": [
             ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
-            "../cardano-wallet/",
-            "flake.nix",
-            "flake.lock"
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-tasks.json",
+            ".agent/plans/dapp-browser-cip30/research/03-cardano-wallet-backend-contract.md",
+            ".agent/plans/dapp-browser-cip30/task-plans/task-003.md"
           ],
           "implementationNotes": [
-            "Confirm how one coherent chain point includes full requested foreign inputs, wallet ownership, volatile delta, backend pending-submission state, and earlier outputs within the current batch request.",
-            "Do not rely on the lossy persisted wallet TxOut.",
-            "Version and capability-negotiate the new backend surface.",
-            "Resolve software partialSign completeness using pinned ledger rules.",
-            "Record the sibling repository branch/PR, reviewer, migration plan, and exact commit eligible for the Daedalus pin.",
-            "Upstream acceptance into cardano-wallet is the default path for every new API; any long-lived fork divergence requires explicit sign-off recorded in this task.",
-            "Reuse-first rule: the existing transactions-sign endpoint plus main-process witness-set diffing (task-306) is the baseline for witness-only responses; a new backend signing endpoint requires written justification."
+            "Validate the exact Daedalus pin separately from sibling HEAD and record every existing seam and gap; never infer bundled behavior from newer sibling code.",
+            "Freeze strict capability negotiation and a bounded W/G/P exact-point capture protocol that recovers full ledger outputs and never trusts renderer paths, ownership, reduced TxOut values, protocol summaries, or parent-output summaries.",
+            "Require decisive RootKeyAccessV1/V2 envelope and witness differential evidence before reusing transactions-sign with task-306 main-side VKey differencing; any replacement endpoint requires path-specific written necessity.",
+            "Select backend production of complete frozen CIP-8/CIP-95 COSE with independent Daedalus verification.",
+            "Freeze one cardano-wallet write-ahead submission state machine with exact replay, crash recovery, normal/collateral pending accounting, and no Daedalus or batch journal.",
+            "Assign every implementation and test guarantee to tasks 200-206, 208, 209, 304, 306, and 307 and named sibling/Daedalus test layers; no task-207 exists.",
+            "Record either named owner/reviewer/durable substantive acceptance or the explicit user-directed task-003 signoff assumption without inventing missing metadata; tasks 200-209 still require concrete owner, review, migration/rollback, integration, and upstream delivery evidence.",
+            "Task-003 is validation-only and changes no sibling source or pin. Tasks 200-209 remain subject to candidate commits, sibling review, migration/rollback and Daedalus integration before task-209 updates the exact pin."
           ],
           "acceptance": [
-            "The API contract names exact request/response semantics and consistency guarantees.",
-            "The ../cardano-wallet work owner and reviewer agree on how current-batch parent outputs and ownership are validated.",
-            "No renderer-supplied path or TxOut summary is authoritative.",
-            "The delivery artifact identifies the sibling repository branch/PR, reviewed commit, schema migration and rollback compatibility, and Daedalus pin update gate.",
-            "Each new backend API records upstream maintainer engagement and its acceptance path before phase 2 implementation begins.",
-            "The reuse-first evaluation of transactions-sign plus main-side witness diffing is documented; any new witness-signing endpoint carries written justification."
+            "The research artifact records pinned and sibling evidence plus exact capability, W/G/P context/provenance/binding, V1/V2 signing, complete COSE, durable submission, error/privacy, migration/rollback, and delivery contracts.",
+            "No renderer-supplied path, ownership flag, TxOut summary, protocol context, or current-batch parent summary is authoritative, and lossy wallet TxOut persistence is never exact output evidence.",
+            "The requirement-to-test matrix assigns every guarantee to tasks 200-206, 208, 209, 304, 306, and 307 and named test layers, explicitly noting the absence of task-207.",
+            "A named cardano-wallet work owner and authorized upstream reviewer substantively accept the contract, full evidence matrix, and phase-2 upstream path through a durable review record, or an explicit user-directed signoff assumption is recorded without fabricating missing external metadata and without weakening tasks 200-209 evidence gates.",
+            "The validation artifact distinguishes the accepted design review from future pin-eligible implementation commits and retains candidate-commit, review, migration/rollback, integration-before-pin, and task-209 pin gates.",
+            "Task-003 changes no sibling source, migration, or pin; manual acceptance or an explicit user-directed signoff assumption and implementation review evidence are incorporated before completion."
           ]
         },
         {
@@ -482,7 +485,7 @@
     {
       "id": "phase-2",
       "name": "cardano-wallet Backend Foundations",
-      "description": "Add coherent ledger context, exact UTxO data, witness-only signing, governance keys, CIP-8, and atomic wallet-scoped pending submission.",
+      "description": "Add coherent ledger context, exact UTxO data, verified signing results, governance keys, CIP-8, and write-ahead wallet-scoped pending submission.",
       "riskLevel": "high",
       "tasks": [
         {
@@ -502,7 +505,8 @@
             "Older bundled backends fail the feature closed through capability negotiation.",
             "Swagger and Haskell types agree on exact encodings and errors.",
             "The contract remains additive for existing Daedalus callers.",
-            "Every new persisted backend record has a versioned atomic migration and an explicit supported pin-rollback compatibility statement."
+            "Every new persisted backend record has a versioned atomic migration and an explicit supported pin-rollback compatibility statement.",
+            "Exact backend HTTP statuses/tags and fixed public info values match task-003, and API tests prove sensitive values are absent from error bodies."
           ]
         },
         {
@@ -566,7 +570,7 @@
             "../cardano-wallet/lib/wallet/src/Cardano/Wallet/Shelley/Transaction.hs"
           ],
           "acceptance": [
-            "Response contains only newly generated VKey witness-set CBOR and expected body hash.",
+            "A justified replacement endpoint returns only newly generated VKey witness-set CBOR and expected body hash; reuse of transactions-sign may return a full transaction only when V1/V2 differential evidence proves all task-003 invariants and task-306 derives the VKey-only Daedalus result.",
             "Body bytes and body hash are unchanged.",
             "partialSign=false rejects incomplete required key/native-script proof.",
             "partialSign=true with no applicable owned key returns a canonical empty witness set rather than ProofGeneration.",
@@ -642,7 +646,7 @@
         {
           "id": "task-208",
           "title": "Make wallet-scoped submission pending-state atomic",
-          "description": "Persist authorized external transaction submission and normal/collateral input pending state before or atomically with broadcast, including crash recovery and transaction-status reconciliation.",
+          "description": "Persist authorized external transaction submission and normal/collateral input pending state before any node call, then persist each broadcast generation, including crash recovery and transaction-status reconciliation.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 32,
@@ -659,7 +663,8 @@
             "Wallet-scoped pending-submission state is the sole durable submission recovery record; Daedalus keeps no separate journal.",
             "Re-submitting an exact already-pending transaction is idempotent and returns its existing hash.",
             "Exact replay and rollback reconciliation are tested.",
-            "Database upgrade and supported rollback fixtures preserve pending evidence atomically."
+            "Database upgrade and supported rollback fixtures preserve pending evidence atomically.",
+            "Tip-before/chain-observation/mempool-observation/tip-after reconciliation, persisted retry generations, no automatic startup submission of authorized records, expiry, and transaction-log redaction match the task-003 state machine."
           ]
         },
         {
@@ -683,7 +688,8 @@
             "Octet-stream body and Content-Length use one exact byte contract.",
             "Daedalus refuses feature activation against an older capability version.",
             "The pin references the exact reviewed commit delivered from ../cardano-wallet and the Swagger contract passes integration tests.",
-            "Backend database migration and supported pin-rollback compatibility evidence is recorded before the pin changes."
+            "Backend database migration and supported pin-rollback compatibility evidence is recorded before the pin changes.",
+            "Daedalus validates exact backend error/info mappings and proves sensitive values are absent from HTTP bodies, traces, metrics, and logs."
           ]
         }
       ]
@@ -807,7 +813,8 @@
             "Existing witnesses used for completeness or submission review verify against the exact body hash and are identified as pre-existing.",
             "Wallet ownership and paths come only from trusted backend evidence.",
             "Later chain advancement, rollback, or input consumption does not trigger re-review; signing remains bound to the approved snapshot and node submission may fail normally.",
-            "Network/genesis and route wallet mismatches fail closed."
+            "Network/genesis and route wallet mismatches fail closed.",
+            "Every task-003 context record and token field is independently encoded and verified; malformed lengths, unknown tags, duplicate records, field mutations, stale generations, and digest mismatches fail before review."
           ]
         },
         {
@@ -848,7 +855,8 @@
             "Only newly generated VKeys are emitted to CIP-30 callers.",
             "Existing scripts/datums/redeemers/bootstraps/VKeys are not misreported.",
             "Every signature verifies over the exact body hash.",
-            "Body bytes remain unchanged after a test merge."
+            "Body bytes remain unchanged after a test merge.",
+            "When the backend reuses transactions-sign, the complete returned envelope and every immutable witness class are compared before deriving the exact VKey difference."
           ]
         },
         {
@@ -868,7 +876,8 @@
             "Producer omits kid consistently and includes the CIP-8-required unprotected version:1 header.",
             "Verifier behavior for legacy nonconforming output without version is documented and tested separately from produced output.",
             "Address/DRep credential hash and signature are independently verified, including equivalent raw DRep ID and matching type-6 address inputs.",
-            "Malformed/odd/prefixed hex fails before hardware/backend calls."
+            "Malformed/odd/prefixed hex fails before hardware/backend calls.",
+            "Backend-produced COSE bytes are independently decoded and checked against exact headers, payload, key association, normalization, and Ed25519 task-002 goldens."
           ]
         }
       ]
