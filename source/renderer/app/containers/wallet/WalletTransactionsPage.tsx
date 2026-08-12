@@ -43,7 +43,7 @@ class WalletTransactionsPage extends Component<Props> {
     const { getAsset } = assets;
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
-      getNetworkExplorerUrlByType(type, param, network, currentLocale);
+      getNetworkExplorerUrlByType(type, param, network);
 
     const hasMoreToLoad = () =>
       searchLimit !== null &&

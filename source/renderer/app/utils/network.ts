@@ -1,7 +1,5 @@
 import {
   MAINNET_EXPLORER_URL,
-  STAGING_EXPLORER_URL,
-  TESTNET_EXPLORER_URL,
   MAINNET_NEWS_URL,
   TESTNET_NEWS_URL,
   STAGING_NEWS_URL,
@@ -20,62 +18,34 @@ import {
   PREVIEW,
 } from '../../../common/types/environment.types';
 
-// Networks served by the current explorer.cardano.org layout, which expects
+// Networks served by explorer.cardano.org, which expects
 // `{root}/{network}/{tx|address}/{identifier}`.
+// Networks that are not listed here (staging, development, selfnode, the
+// retired testnet, or an undefined `env.NETWORK`) have no explorer of their
+// own and fall back to mainnet.
 const EXPLORER_NETWORK_PATHS: Record<string, string> = {
   [MAINNET]: 'mainnet',
   [PREPROD]: 'preprod',
   [PREVIEW]: 'preview',
 };
+export const DEFAULT_EXPLORER_NETWORK_PATH = EXPLORER_NETWORK_PATHS[MAINNET];
 
-export const getNetworkExplorerUri = (network: string): string => {
-  if (network === MAINNET) {
-    return MAINNET_EXPLORER_URL;
-  }
-
-  if (network === STAGING) {
-    return STAGING_EXPLORER_URL;
-  }
-
-  if (network === TESTNET) {
-    return TESTNET_EXPLORER_URL;
-  }
-
-  return MAINNET_EXPLORER_URL; // sets default to mainnet in case env.NETWORK is undefined
-};
-export const getNetworkExplorerUrl = (network: string): string => {
-  const uri = getNetworkExplorerUri(network);
-  // Only the staging explorer is served over plain HTTP. Every other network
-  // resolves to a host that is HTTPS-only, including the mainnet explorer used
-  // as the fallback for unrecognised networks.
-  const protocol = uri === STAGING_EXPLORER_URL ? 'http://' : 'https://';
-  return `${protocol}${uri}`;
-};
+// Every network is served by the same explorer host: the legacy per-network
+// explorers (explorer.cardano-testnet.iohkdev.io and
+// explorer.staging.cardano.org) no longer resolve.
+export const getNetworkExplorerUri = (): string => MAINNET_EXPLORER_URL;
+export const getNetworkExplorerUrl = (): string =>
+  `https://${getNetworkExplorerUri()}`;
+export const getNetworkExplorerPath = (network?: string): string =>
+  EXPLORER_NETWORK_PATHS[network] || DEFAULT_EXPLORER_NETWORK_PATH;
 export const getNetworkExplorerUrlByType = (
   type: 'tx' | 'address',
   param: string,
-  network: string,
-  currentLocale: string
-): string => {
-  const baseUrl = getNetworkExplorerUrl(network);
-
-  // Legacy explorer host, still using locale-prefixed paths and query strings.
-  if (network === TESTNET) {
-    const localePrefix = `/${currentLocale.substr(0, 2)}`;
-    const typeValue = type === 'address' ? 'address.html' : 'transaction';
-    const queryStringPrefix = type === 'address' ? '?address=' : '?id=';
-    return `${baseUrl}${localePrefix}/${typeValue}${queryStringPrefix}${param}`;
-  }
-
-  if (network === STAGING) {
-    return `${baseUrl}/${type}/${param}`;
-  }
-
-  // Unknown networks fall back to the mainnet explorer host, so they also need
-  // a network discriminator in the path.
-  const networkPath = EXPLORER_NETWORK_PATHS[network] || 'mainnet';
-  return `${baseUrl}/${networkPath}/${type}/${param}`;
-};
+  network?: string
+): string =>
+  `${getNetworkExplorerUrl()}/${getNetworkExplorerPath(
+    network
+  )}/${type}/${param}`;
 export const getNewsURL = (network: string): string => {
   // sets default to mainnet in case env.NETWORK is undefined
   let newsUrl = MAINNET_NEWS_URL;

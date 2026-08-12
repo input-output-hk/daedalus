@@ -142,7 +142,7 @@ class InstructionsDialog extends Component<Props> {
     ];
 
     const openNetworkExplorer = () =>
-      onOpenExternalLink(getNetworkExplorerUrl(network));
+      onOpenExternalLink(getNetworkExplorerUrl());
 
     const cardanoExplorerLink = (
       <Link

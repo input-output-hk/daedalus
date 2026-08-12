@@ -1,8 +1,6 @@
 import coingeckoConfig from './currencyConfig.coingecko';
 
 export const MAINNET_EXPLORER_URL = 'explorer.cardano.org';
-export const STAGING_EXPLORER_URL = 'explorer.staging.cardano.org';
-export const TESTNET_EXPLORER_URL = 'explorer.cardano-testnet.iohkdev.io';
 
 // Build-time configurable newsfeed URLs. Override NEWS_URL / NEWS_HASH_URL at
 // build time (via webpack EnvironmentPlugin defaults in webpack.config.js) to
@@ -55,8 +53,6 @@ export const STAGING_NEWS_HASH_URL = NEWS_HASH_HOSTNAME;
 export const CATALYST_API_URL = 'core.projectcatalyst.io';
 export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_EXPLORER_URL,
-  STAGING_EXPLORER_URL,
-  TESTNET_EXPLORER_URL,
   NEWS_HOSTNAME,
   NEWS_HASH_HOSTNAME,
   coingeckoConfig.hostname,
