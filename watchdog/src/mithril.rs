@@ -717,3 +717,179 @@ pub async fn run_pipeline(
 
     PipelineResult::Installed
 }
+
+// ── Tests ─────────────────────────────────────────────────────────────────────
+
+#[cfg(test)]
+mod tests {
+    // Real NTFS junction tests.
+    //
+    // The parallel TypeScript suite (chainStorageWindows.realfs.spec.ts) covers
+    // the lstat premise and the TypeScript-side junction handling.  These tests
+    // cover install_staged, which is the Rust-side junction handler: when
+    // chain_path is a junction the function must install into the junction
+    // *target* rather than replacing the junction entry point itself.
+    //
+    // Junctions are created with `mklink /J` (no elevation required) rather
+    // than std::os::windows::fs::symlink_dir (requires Developer Mode or UAC).
+    #[cfg(windows)]
+    mod junction_install {
+        use super::super::install_staged;
+        use std::fs;
+        use std::path::Path;
+
+        fn temp_dir(label: &str) -> std::path::PathBuf {
+            let p = std::env::temp_dir().join(format!(
+                "wdg-jn-{}-{}-{}",
+                label,
+                std::process::id(),
+                std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .unwrap()
+                    .subsec_nanos()
+            ));
+            fs::create_dir_all(&p).unwrap();
+            p
+        }
+
+        fn make_junction(link: &Path, target: &Path) {
+            let status = std::process::Command::new("cmd")
+                .args([
+                    "/c",
+                    "mklink",
+                    "/J",
+                    link.to_str().unwrap(),
+                    target.to_str().unwrap(),
+                ])
+                .status()
+                .expect("mklink /J: failed to spawn cmd");
+            assert!(
+                status.success(),
+                "mklink /J failed for {link:?} → {target:?}"
+            );
+        }
+
+        fn make_staging(root: &Path) -> std::path::PathBuf {
+            let staging = root.join("staging");
+            fs::create_dir_all(&staging).unwrap();
+            fs::write(staging.join("probe.txt"), b"staged").unwrap();
+            staging
+        }
+
+        // install_staged with a junction chain_path must install into the
+        // junction *target* and leave the junction entry point intact.
+        #[tokio::test]
+        async fn installs_into_junction_target_preserving_entry_point() {
+            let root = temp_dir("basic");
+            let target = root.join("target");
+            fs::create_dir_all(&target).unwrap();
+            let chain_path = root.join("chain");
+            make_junction(&chain_path, &target);
+
+            let staging = make_staging(&root);
+            install_staged(&staging, &chain_path, false).await.unwrap();
+
+            // Junction entry point still reports as a symlink
+            let meta = fs::symlink_metadata(&chain_path).unwrap();
+            assert!(
+                meta.file_type().is_symlink(),
+                "chain entry point should remain a junction after install"
+            );
+
+            // Staged content is readable through the junction
+            let via_link = fs::read_to_string(chain_path.join("probe.txt")).unwrap();
+            assert_eq!(via_link, "staged");
+
+            // Staged content is present in the real target
+            let in_target = fs::read_to_string(target.join("probe.txt")).unwrap();
+            assert_eq!(in_target, "staged");
+        }
+
+        // install_staged with a plain directory must rename staging → chain_path
+        // directly without creating a junction.
+        #[tokio::test]
+        async fn plain_directory_install_replaces_contents() {
+            let root = temp_dir("plain");
+            let chain_path = root.join("chain");
+            fs::create_dir_all(&chain_path).unwrap();
+            fs::write(chain_path.join("old.txt"), b"old").unwrap();
+
+            let staging = make_staging(&root);
+            install_staged(&staging, &chain_path, false).await.unwrap();
+
+            // chain_path must not have become a junction
+            let meta = fs::symlink_metadata(&chain_path).unwrap();
+            assert!(!meta.file_type().is_symlink());
+
+            // New content present, old content gone
+            assert_eq!(
+                fs::read_to_string(chain_path.join("probe.txt")).unwrap(),
+                "staged"
+            );
+            assert!(!chain_path.join("old.txt").exists());
+        }
+
+        // A dangling junction (target deleted after the junction was created)
+        // must not silently produce a corrupt state.  install_staged reads the
+        // raw link target, and move_dir creates the target directory if missing,
+        // so the install must succeed by recreating the target.
+        #[tokio::test]
+        async fn dangling_junction_installs_by_recreating_target() {
+            let root = temp_dir("dangling");
+            let target = root.join("doomed");
+            fs::create_dir_all(&target).unwrap();
+            let chain_path = root.join("chain");
+            make_junction(&chain_path, &target);
+
+            // Delete the target to make a dangling junction
+            fs::remove_dir_all(&target).unwrap();
+            assert!(
+                !target.exists(),
+                "target must not exist before install_staged"
+            );
+
+            let staging = make_staging(&root);
+            install_staged(&staging, &chain_path, false)
+                .await
+                .expect("install_staged should succeed by recreating junction target");
+
+            // Junction still points to the (now recreated) target
+            assert!(
+                chain_path.join("probe.txt").exists(),
+                "probe file must be reachable through the junction after install"
+            );
+        }
+
+        // install_staged uses read_link to get the raw target, then resolves
+        // relative targets against chain_path's parent.  Verify the relative
+        // branch by creating a junction whose target path, as returned by
+        // read_link, will be absolute (the common Windows case) so the absolute
+        // branch is exercised; the relative branch is covered by the code path
+        // but cannot be triggered by mklink /J in practice.
+        //
+        // This test is therefore a belt-and-suspenders check that the absolute
+        // branch handles a junction whose target is in a sibling directory.
+        #[tokio::test]
+        async fn junction_with_sibling_target_installs_correctly() {
+            let root = temp_dir("sibling");
+            let target = root.join("sibling-target").join("chain");
+            fs::create_dir_all(&target).unwrap();
+            let state_dir = root.join("state");
+            fs::create_dir_all(&state_dir).unwrap();
+            let chain_path = state_dir.join("chain");
+            make_junction(&chain_path, &target);
+
+            let staging = make_staging(&state_dir);
+            install_staged(&staging, &chain_path, false).await.unwrap();
+
+            assert_eq!(
+                fs::read_to_string(chain_path.join("probe.txt")).unwrap(),
+                "staged"
+            );
+            assert_eq!(
+                fs::read_to_string(target.join("probe.txt")).unwrap(),
+                "staged"
+            );
+        }
+    }
+}
