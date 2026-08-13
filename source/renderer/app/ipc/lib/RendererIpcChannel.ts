@@ -11,6 +11,12 @@ export class RendererIpcChannel<Incoming, Outgoing> extends IpcChannel<
   Incoming,
   Outgoing
 > {
+  constructor(channelName: string) {
+    super(channelName, {
+      authorizeResponse: (event) => event.sender === global.ipcRenderer,
+    });
+  }
+
   async send(
     message: Outgoing,
     sender: IpcSender = global.ipcRenderer,

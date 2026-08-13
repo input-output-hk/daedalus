@@ -25,6 +25,8 @@ import { handleMithrilBootstrapRequests } from './mithrilBootstrapChannel';
 import { handleMithrilPartialSyncRequests } from './mithrilPartialSyncChannel';
 import { handleChainStorageRequests } from './chainStorageChannel';
 
+const hardwareWalletChannels = createChannels(MainIpcChannel);
+
 export default (window: BrowserWindow) => {
   compressLogsApi();
   downloadLogsApi();
@@ -48,5 +50,5 @@ export default (window: BrowserWindow) => {
   downloadManagerChannel(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
-  handleHardwareWalletRequests(window, createChannels(MainIpcChannel));
+  handleHardwareWalletRequests(window, hardwareWalletChannels);
 };

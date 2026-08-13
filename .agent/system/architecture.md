@@ -575,8 +575,10 @@ and must never host remote content or be reused as its preload/IPC surface.
 Its live policy permits only the canonical local main document, denies all
 subframe navigation and popups, filters policy-aborted load recovery, and opens
 only parsed credential-free HTTPS external links with awaited, privacy-safe
-failure handling. Exact trusted sender/main-frame IPC authentication remains
-pending and production guest launch remains disabled.
+failure handling. Wrapper-backed IPC now authenticates the exact active trusted
+main WebContents, main frame, canonical document, and origin, with correlated
+caller-targeted responses and lifecycle cancellation. Direct raw listeners
+remain pending the task-102 audit, and production guest launch remains disabled.
 
 The accepted target, defined normatively in the [dApp browser threat model and
 ADR](../plans/dapp-browser-cip30/dapp-browser-cip30-prd.md#hostile-renderer-threat-model-and-architecture-adr), is:

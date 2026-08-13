@@ -1,118 +1,155 @@
 import { isString } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import type {
+  IpcAuthorization,
+  IpcChannelSecurity,
+  IpcEvent,
+  IpcReceiver,
+  IpcSender,
+} from './IpcChannel';
 
-export type IpcSender = {
-  send: (channel: string, conversationId: string, ...args: Array<any>) => void;
-};
-export type IpcEvent = {
-  sender: IpcSender;
-};
-export type IpcReceiver = {
-  on: (
-    channel: string,
-    arg1: (
-      event: IpcEvent,
-      conversationId: string,
-      ...args: Array<any>
-    ) => Promise<any> | void
-  ) => void;
-  removeListener: (
-    channel: string,
-    listener: (...args: Array<any>) => void
-  ) => void;
+export type { IpcEvent, IpcReceiver, IpcSender } from './IpcChannel';
+
+type ConversationEnvelope<T> = {
+  conversationId: string;
+  isResponse: boolean;
+  isOk?: boolean;
+  message: T;
 };
 
-/**
- * Provides a coherent, typed api for working with electron
- * ipc messages over named channels. Where possible it uses
- * promises to reduce the necessary boilerplate for request
- * and response cycles.
- */
+const isEnvelope = (value: any): value is ConversationEnvelope<any> =>
+  value !== null &&
+  typeof value === 'object' &&
+  typeof value.conversationId === 'string' &&
+  value.conversationId.length > 0 &&
+  typeof value.isResponse === 'boolean' &&
+  Object.prototype.hasOwnProperty.call(value, 'message');
+
 export class IpcConversation<Incoming, Outgoing> {
-  /**
-   * Each ipc channel should be a singleton (based on the channelName)
-   * Here we track the created instances.
-   */
   static _instances = {};
-
-  /**
-   * The channel name
-   * @private
-   */
   _channelName: string;
+  _security: IpcChannelSecurity;
+  _registration?: {
+    receiver: IpcReceiver;
+    listener: (...args: Array<any>) => void;
+  };
 
-  constructor(channelName: string) {
+  constructor(channelName: string, security: IpcChannelSecurity = {}) {
     if (!isString(channelName) || channelName === '') {
       throw new Error(`Invalid channel name ${channelName} provided`);
     }
-
-    // Enforce the singleton pattern based on the channel name
     const existingChannel = IpcConversation._instances[channelName];
-
-    if (existingChannel) {
+    if (existingChannel)
       throw new Error(`IPC channel "${channelName}" already exists.`);
-    }
-
     IpcConversation._instances[channelName] = this;
     this._channelName = channelName;
+    this._security = security;
   }
 
-  /**
-   * Sends a request over ipc to the receiver and waits for the next response on the
-   * same channel. It returns a promise which is resolved or rejected with the response
-   * depending on the `isOk` flag set by the respondent.
-   */
-  async request(
+  request(
     message: Outgoing,
     sender: IpcSender,
     receiver: IpcReceiver
   ): Promise<Incoming> {
     return new Promise((resolve, reject) => {
       const conversationId = uuidv4();
-
-      const handler = (
-        event,
-        messageId: string,
-        isOk: boolean,
-        response: Incoming
-      ) => {
-        // Only handle messages with matching conversation id!
-        if (messageId !== conversationId) return;
-
-        // Simulate promise rejection over IPC (since it's not possible to throw over IPC)
-        if (isOk) {
-          resolve(response);
-        } else {
-          reject(response);
-        }
-
-        // Cleanup the lister once the request cycle is finished
-        receiver.removeListener(this._channelName, handler);
+      let settled = false;
+      let unsubscribe = () => {};
+      const settle = (isOk: boolean, response: Incoming) => {
+        if (settled) return;
+        settled = true;
+        receiver.removeListener(this._channelName, listener);
+        unsubscribe();
+        if (isOk) resolve(response);
+        else reject(response);
       };
-
-      receiver.on(this._channelName, handler);
-      sender.send(this._channelName, conversationId, message);
+      const listener = (
+        event: IpcEvent,
+        envelope: ConversationEnvelope<Incoming>
+      ) => {
+        if (
+          !isEnvelope(envelope) ||
+          !envelope.isResponse ||
+          envelope.conversationId !== conversationId ||
+          typeof envelope.isOk !== 'boolean' ||
+          (this._security.authorizeResponse &&
+            !this._security.authorizeResponse(event))
+        )
+          return;
+        settle(envelope.isOk, envelope.message);
+      };
+      receiver.on(this._channelName, listener);
+      unsubscribe =
+        this._security.onOutgoingInvalidated?.(() =>
+          settle(false, new Error('IPC request cancelled') as Incoming)
+        ) || unsubscribe;
+      if (settled) return;
+      try {
+        sender.send(this._channelName, {
+          conversationId,
+          isResponse: false,
+          message,
+        });
+      } catch (error) {
+        settle(false, error as Incoming);
+      }
     });
   }
 
-  /**
-   * Sets up a permanent handler for receiving and responding to requests
-   * from the other side.
-   */
   onRequest(
-    handler: (arg0: Incoming) => Promise<Outgoing>,
+    handler: (message: Incoming, event?: IpcEvent) => Promise<Outgoing>,
     receiver: IpcReceiver
   ): void {
-    receiver.on(
-      this._channelName,
-      async (event: IpcEvent, conversationId: string, message: Incoming) => {
-        try {
-          const response = await handler(message);
-          event.sender.send(this._channelName, conversationId, true, response);
-        } catch (error) {
-          event.sender.send(this._channelName, conversationId, false, error);
-        }
+    if (this._registration)
+      this._registration.receiver.removeListener(
+        this._channelName,
+        this._registration.listener
+      );
+    const listener = async (
+      event: IpcEvent,
+      envelope: ConversationEnvelope<Incoming>
+    ) => {
+      if (!isEnvelope(envelope) || envelope.isResponse) return;
+      const authorization: IpcAuthorization | null = this._security.authorize
+        ? this._security.authorize(event)
+        : { isCurrent: () => true };
+      if (!authorization) return;
+      let finished = false;
+      const unsubscribe =
+        authorization.onInvalidated?.(() => {
+          if (finished || !event.reply) return;
+          finished = true;
+          try {
+            event.reply(this._channelName, {
+              conversationId: envelope.conversationId,
+              isResponse: true,
+              isOk: false,
+              message: new Error('IPC request cancelled'),
+            });
+          } catch (_error) {
+            // The caller frame may already be detached; cleanup still completes.
+          }
+        }) || (() => {});
+      const reply = (isOk: boolean, message: unknown) => {
+        if (finished || !authorization.isCurrent()) return;
+        finished = true;
+        unsubscribe();
+        const response = {
+          conversationId: envelope.conversationId,
+          isResponse: true,
+          isOk,
+          message,
+        };
+        if (event.reply) event.reply(this._channelName, response);
+        else event.sender.send(this._channelName, response);
+      };
+      try {
+        reply(true, await handler(envelope.message, event));
+      } catch (error) {
+        reply(false, error);
       }
-    );
+    };
+    receiver.on(this._channelName, listener);
+    this._registration = { receiver, listener };
   }
 }
