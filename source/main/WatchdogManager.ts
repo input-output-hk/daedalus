@@ -18,8 +18,7 @@ export interface WatchdogConfig {
     restart_delay_ms?: number;
     max_restart_attempts?: number;
   };
-  node_log_file: string;
-  wallet_log_file: string;
+  pub_logs_dir: string;
   mithril?: {
     mithril_bin: string;
     snapshot_converter_bin: string;

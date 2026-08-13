@@ -516,6 +516,10 @@ pub async fn run_pipeline(
                 })
                 .unwrap_or(false);
         if !chain_is_safe {
+            warn!(
+                "mithril: chain_path '{}' is not inside state_dir '{}'",
+                cfg.chain_path, cfg.state_dir
+            );
             emit(&Event::MithrilError {
                 code: "INVALID_CHAIN_PATH".to_string(),
                 message: format!(
@@ -528,6 +532,7 @@ pub async fn run_pipeline(
         let _ = tokio::fs::remove_dir_all(&chain_path).await;
     }
 
+    info!("mithril: preparing");
     emit(&Event::MithrilStatus {
         phase: "preparing".to_string(),
     });
@@ -536,7 +541,7 @@ pub async fn run_pipeline(
     let (local_highest, certified) = match probe(cfg).await {
         Ok(r) => r,
         Err(e) => {
-            warn!("Mithril behind-ness probe failed: {e}");
+            warn!("mithril probe failed: {e}");
             emit(&Event::MithrilError {
                 code: "PROBE_FAILED".to_string(),
                 message: e.to_string(),
@@ -577,6 +582,7 @@ pub async fn run_pipeline(
     let staging_db = download_dir.join("db");
     let _ = tokio::fs::remove_dir_all(&staging_root).await;
     if let Err(e) = tokio::fs::create_dir_all(&download_dir).await {
+        warn!("mithril: failed to create staging directory: {e}");
         emit(&Event::MithrilError {
             code: "STAGING_FAILED".to_string(),
             message: e.to_string(),
@@ -589,6 +595,7 @@ pub async fn run_pipeline(
         ProcResult::Success => {}
         ProcResult::Failed(msg) => {
             let _ = tokio::fs::remove_dir_all(&staging_root).await;
+            warn!("mithril download failed: {msg}");
             emit(&Event::MithrilError {
                 code: "PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED".to_string(),
                 message: msg,
@@ -597,6 +604,7 @@ pub async fn run_pipeline(
         }
         ProcResult::Cancelled => {
             let _ = tokio::fs::remove_dir_all(&staging_root).await;
+            info!("mithril: cancelled by user");
             emit(&Event::MithrilStatus {
                 phase: "cancelled".to_string(),
             });
@@ -611,6 +619,7 @@ pub async fn run_pipeline(
     // 4. Validate
     if let Err(e) = validate_staged(&staging_db).await {
         let _ = tokio::fs::remove_dir_all(&staging_root).await;
+        warn!("mithril staged db invalid: {e}");
         emit(&Event::MithrilError {
             code: "PARTIAL_SYNC_STAGED_DB_INVALID".to_string(),
             message: e.to_string(),
@@ -619,6 +628,7 @@ pub async fn run_pipeline(
     }
 
     // 5. Convert
+    info!("mithril: converting");
     emit(&Event::MithrilStatus {
         phase: "converting".to_string(),
     });
@@ -626,6 +636,7 @@ pub async fn run_pipeline(
         ProcResult::Success => {}
         ProcResult::Failed(msg) => {
             let _ = tokio::fs::remove_dir_all(&staging_root).await;
+            warn!("mithril conversion failed: {msg}");
             emit(&Event::MithrilError {
                 code: "PARTIAL_SYNC_CONVERSION_FAILED".to_string(),
                 message: msg,
@@ -634,6 +645,7 @@ pub async fn run_pipeline(
         }
         ProcResult::Cancelled => {
             let _ = tokio::fs::remove_dir_all(&staging_root).await;
+            info!("mithril: cancelled by user (post-convert)");
             emit(&Event::MithrilStatus {
                 phase: "cancelled".to_string(),
             });
@@ -664,6 +676,7 @@ pub async fn run_pipeline(
         let _ = tokio::fs::remove_dir_all(&staging_root).await;
         return match abort {
             ProcResult::Cancelled => {
+                info!("mithril: cancelled by user (cutover gate)");
                 emit(&Event::MithrilStatus {
                     phase: "cancelled".to_string(),
                 });
@@ -675,6 +688,7 @@ pub async fn run_pipeline(
     }
 
     // 6. Install
+    info!("mithril: installing");
     emit(&Event::MithrilStatus {
         phase: "installing".to_string(),
     });
@@ -682,6 +696,7 @@ pub async fn run_pipeline(
     // Write cutover-in-progress marker before rename
     if let Err(e) = write_marker(&cfg.state_dir, "cutover-in-progress").await {
         let _ = tokio::fs::remove_dir_all(&staging_root).await;
+        warn!("mithril: failed to write cutover-in-progress marker: {e}");
         emit(&Event::MithrilError {
             code: "MARKER_FAILED".to_string(),
             message: e.to_string(),
@@ -696,6 +711,7 @@ pub async fn run_pipeline(
         // partially modified. Retain staging material for potential recovery;
         // return Failed so the supervisor does not restart the node against
         // a partially installed chain.
+        warn!("mithril install failed (chain may be partially modified): {e}");
         emit(&Event::MithrilError {
             code: "INSTALL_FAILED".to_string(),
             message: e.to_string(),
@@ -711,6 +727,7 @@ pub async fn run_pipeline(
         warn!("Failed to write installed-awaiting-node-start marker: {e}");
     }
 
+    info!("mithril: installed successfully");
     emit(&Event::MithrilStatus {
         phase: "finalizing".to_string(),
     });

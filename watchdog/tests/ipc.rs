@@ -52,13 +52,7 @@ impl Drop for TempDir {
     }
 }
 
-fn config_json(
-    socket_path: &str,
-    state_dir: &str,
-    wallet_port: u16,
-    node_log: &str,
-    wallet_log: &str,
-) -> String {
+fn config_json(socket_path: &str, state_dir: &str, wallet_port: u16, pub_logs_dir: &str) -> String {
     serde_json::json!({
         "node": {
             "exe":         env!("CARGO_BIN_EXE_mock-node"),
@@ -73,8 +67,7 @@ fn config_json(
             "api_port":         wallet_port,
             "restart_delay_ms": 100
         },
-        "node_log_file":   node_log,
-        "wallet_log_file": wallet_log
+        "pub_logs_dir": pub_logs_dir
     })
     .to_string()
 }
@@ -177,8 +170,7 @@ fn lifecycle_stop() {
         socket.to_str().unwrap(),
         dir.path().to_str().unwrap(),
         port,
-        dir.path().join("node.log").to_str().unwrap(),
-        dir.path().join("wallet.log").to_str().unwrap(),
+        dir.path().to_str().unwrap(),
     ));
 
     // Drain preamble events added since this test was written.
@@ -215,8 +207,7 @@ fn wallet_restarts_on_crash() {
         socket.to_str().unwrap(),
         dir.path().to_str().unwrap(),
         port,
-        dir.path().join("node.log").to_str().unwrap(),
-        dir.path().join("wallet.log").to_str().unwrap(),
+        dir.path().to_str().unwrap(),
     ));
 
     // Drain preamble events.

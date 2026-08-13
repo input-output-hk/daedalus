@@ -11,7 +11,7 @@
 // use raw fd 3 for the shutdown pipe, so the tests are Unix-only.
 #![cfg(unix)]
 
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use std::io::{BufRead, BufReader, Write};
 use std::net::TcpListener;
 use std::path::{Path, PathBuf};
@@ -212,8 +212,7 @@ impl<'a> Cfg<'a> {
                 "restart_delay_ms": self.restart_delay_ms,
                 "max_restart_attempts": self.max_restarts
             },
-            "node_log_file": logs.join("node.log").to_str().unwrap(),
-            "wallet_log_file": logs.join("wallet.log").to_str().unwrap()
+            "pub_logs_dir": logs.to_str().unwrap()
         });
 
         if self.with_mithril {

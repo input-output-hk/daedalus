@@ -4,8 +4,7 @@ use serde::Deserialize;
 pub struct WatchdogConfig {
     pub node: NodeConfig,
     pub wallet: WalletConfig,
-    pub node_log_file: String,
-    pub wallet_log_file: String,
+    pub pub_logs_dir: String,
     pub mithril: Option<MithrilConfig>,
 }
 
@@ -66,7 +65,7 @@ mod tests {
             r#"{{
                 "node": {{"exe":"n","args":[],"state_dir":"/","socket_path":"/s"}},
                 "wallet": {{"exe":"w","args":[],"state_dir":"/","api_port":8090{}}},
-                "node_log_file":"/n.log","wallet_log_file":"/w.log"
+                "pub_logs_dir":"/logs"
             }}"#,
             extra_wallet
         )
@@ -79,7 +78,7 @@ mod tests {
                      "state_dir":"/state/node","socket_path":"/state/node/node.socket"},
             "wallet": {"exe":"/bin/cardano-wallet","args":["serve"],
                        "state_dir":"/state/wallet","api_port":8090,"restart_delay_ms":2000},
-            "node_log_file":"/logs/node.log","wallet_log_file":"/logs/wallet.log"
+            "pub_logs_dir":"/logs"
         }"#;
         let c: WatchdogConfig = serde_json::from_str(json).unwrap();
         assert_eq!(c.node.exe, "/bin/cardano-node");
@@ -87,6 +86,7 @@ mod tests {
         assert_eq!(c.node.socket_path, "/state/node/node.socket");
         assert_eq!(c.wallet.api_port, 8090);
         assert_eq!(c.wallet.restart_delay_ms, 2000);
+        assert_eq!(c.pub_logs_dir, "/logs");
     }
 
     #[test]
@@ -118,7 +118,7 @@ mod tests {
     #[test]
     fn missing_node_field_fails() {
         let json = r#"{"wallet":{"exe":"w","args":[],"state_dir":"/","api_port":8090},
-                       "node_log_file":"/n.log","wallet_log_file":"/w.log"}"#;
+                       "pub_logs_dir":"/logs"}"#;
         assert!(serde_json::from_str::<WatchdogConfig>(json).is_err());
     }
 
@@ -127,7 +127,7 @@ mod tests {
         let json = r#"{
             "node":{"exe":"n","args":[],"state_dir":"/"},
             "wallet":{"exe":"w","args":[],"state_dir":"/","api_port":8090},
-            "node_log_file":"/n.log","wallet_log_file":"/w.log"
+            "pub_logs_dir":"/logs"
         }"#;
         assert!(serde_json::from_str::<WatchdogConfig>(json).is_err());
     }
@@ -140,7 +140,7 @@ mod tests {
             let json = format!(
                 r#"{{"node":{{"exe":"n","args":[],"state_dir":"/","socket_path":"/s"}},
                     "wallet":{{"exe":"w","args":[],"state_dir":"/","api_port":{port}}},
-                    "node_log_file":"/n.log","wallet_log_file":"/w.log"}}"#
+                    "pub_logs_dir":"/logs"}}"#
             );
             let c: WatchdogConfig = serde_json::from_str(&json)
                 .unwrap_or_else(|e| panic!("failed for port {port}: {e}"));
@@ -172,7 +172,7 @@ mod tests {
     fn numeric_field_rejects_string_value() {
         let bad = r#"{"node":{"exe":"n","args":[],"state_dir":"/","socket_path":"/s"},
                       "wallet":{"exe":"w","args":[],"state_dir":"/","api_port":"not-a-number"},
-                      "node_log_file":"/n.log","wallet_log_file":"/w.log"}"#;
+                      "pub_logs_dir":"/logs"}"#;
         assert!(
             serde_json::from_str::<WatchdogConfig>(bad).is_err(),
             "expected parse error for string api_port"
@@ -183,7 +183,7 @@ mod tests {
     fn extra_unknown_fields_are_ignored() {
         let json = r#"{"node":{"exe":"n","args":[],"state_dir":"/","socket_path":"/s","unknown_node_field":42},
                        "wallet":{"exe":"w","args":[],"state_dir":"/","api_port":8090,"future_field":"ignored"},
-                       "node_log_file":"/n.log","wallet_log_file":"/w.log","top_level_extra":true}"#;
+                       "pub_logs_dir":"/logs","top_level_extra":true}"#;
         // serde uses deny_unknown_fields only if explicitly annotated; default is to ignore.
         let result = serde_json::from_str::<WatchdogConfig>(json);
         // Document the actual behaviour: unknown fields are currently accepted.
@@ -206,7 +206,7 @@ mod tests {
             let json = format!(
                 r#"{{"node":{{"exe":"n","args":{args_json},"state_dir":"/","socket_path":"/s"}},
                     "wallet":{{"exe":"w","args":{args_json},"state_dir":"/","api_port":8090}},
-                    "node_log_file":"/n.log","wallet_log_file":"/w.log"}}"#
+                    "pub_logs_dir":"/logs"}}"#
             );
             let c: WatchdogConfig = serde_json::from_str(&json).unwrap();
             assert_eq!(c.node.args, args);

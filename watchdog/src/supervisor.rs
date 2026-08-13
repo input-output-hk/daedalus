@@ -84,6 +84,7 @@ fn spawn_validate_chain_dir(
 
 // Helper: emit an Error event.
 fn emit_error(msg: &str) {
+    warn!("{msg}");
     emit(&Event::Error {
         message: msg.to_string(),
     });
@@ -135,6 +136,7 @@ async fn wait_for_node_exit(
     .await
     .is_err()
     {
+        warn!("cardano-node did not exit within 30s; force-killing");
         emit(&Event::NodeForceKilled);
         if let Some(tx) = kill_tx.take() {
             let _ = tx.send(());
@@ -231,6 +233,7 @@ async fn pipe_to_log(
                         });
                     }
                     if let Some(phase) = try_parse_startup_status(&line) {
+                        info!("node startup phase: {phase}");
                         emit(&Event::NodeStartupStatus {
                             phase: phase.to_string(),
                         });
@@ -418,9 +421,9 @@ async fn chain_has_data(state_dir: &str) -> bool {
 }
 
 pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Result<()> {
-    emit(&Event::WatchdogStarted {
-        pid: std::process::id(),
-    });
+    let watchdog_pid = std::process::id();
+    info!("watchdog started (PID {watchdog_pid})");
+    emit(&Event::WatchdogStarted { pid: watchdog_pid });
 
     // Check for Mithril resume state
     let mut after_mithril = if let Some(ref mc) = config.mithril {
@@ -450,6 +453,7 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
 
     // Emit chain status and, if empty, wait for the user to choose genesis vs Mithril.
     let has_chain = chain_has_data(&config.node.state_dir).await || after_mithril;
+    info!("chain status: has_chain={has_chain}");
     emit(&Event::ChainStatus { has_chain });
 
     if !has_chain {
@@ -602,7 +606,7 @@ async fn run_node_wallet(
     cmd_rx: &mut mpsc::Receiver<Cmd>,
     after_mithril: bool,
 ) -> Result<RunResult> {
-    let node_log = open_log(&config.node_log_file);
+    let node_log = open_log(&format!("{}/node.log", config.pub_logs_dir));
 
     let mut shutdown_pipe = match ShutdownPipe::new() {
         Ok(p) => p,
@@ -694,10 +698,14 @@ async fn run_node_wallet(
     // seen-version to the current channel version, so changed() would never
     // fire.  borrow_and_update() marks whatever is there now as seen AND
     // returns the value, eliminating the race window.
-    if let Some(info) = node_rx_socket.borrow_and_update().clone() {
+    if let Some(exit) = node_rx_socket.borrow_and_update().clone() {
+        warn!(
+            "cardano-node exited before socket was ready (code={:?}, signal={:?})",
+            exit.0, exit.1
+        );
         emit(&Event::NodeExited {
-            code: info.0,
-            signal: info.1,
+            code: exit.0,
+            signal: exit.1,
         });
         return Ok(RunResult::Stopped);
     }
@@ -711,8 +719,9 @@ async fn run_node_wallet(
                 break 'socket_wait;
             }
             _ = node_rx_socket.changed() => {
-                let info = node_rx_socket.borrow().clone().unwrap_or((None, None));
-                emit(&Event::NodeExited { code: info.0, signal: info.1 });
+                let exit = node_rx_socket.borrow().clone().unwrap_or((None, None));
+                warn!("cardano-node exited before socket was ready (code={:?}, signal={:?})", exit.0, exit.1);
+                emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                 return Ok(RunResult::Stopped);
             }
             Some(cmd) = cmd_rx.recv() => {
@@ -721,14 +730,18 @@ async fn run_node_wallet(
                         let shutdown_start = unix_ms();
                         shutdown_pipe.close_write();
                         let force_killed = wait_for_node_exit(&node_rx_socket, &mut node_kill_tx).await;
-                        emit(&Event::NodeShutdownMs { ms: unix_ms() - shutdown_start, force_killed });
+                        let shutdown_ms = unix_ms() - shutdown_start;
+                        info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
+                        emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
                         return Ok(RunResult::Stopped);
                     }
                     Cmd::StartMithril { force, wipe_chain } => {
                         let shutdown_start = unix_ms();
                         shutdown_pipe.close_write();
                         let force_killed = wait_for_node_exit(&node_rx_socket, &mut node_kill_tx).await;
-                        emit(&Event::NodeShutdownMs { ms: unix_ms() - shutdown_start, force_killed });
+                        let shutdown_ms = unix_ms() - shutdown_start;
+                        info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
+                        emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
                         return Ok(RunResult::StartMithril { force, wipe_chain });
                     }
                     Cmd::ProbeMithril => {
@@ -766,7 +779,7 @@ async fn run_node_wallet(
 
     // Wallet supervisor loop
     let wallet_cfg = config.wallet.clone();
-    let wallet_log_path = config.wallet_log_file.clone();
+    let wallet_log_path = format!("{}/cardano-wallet.log", config.pub_logs_dir);
     let mut attempt = 0u32;
     let mut node_rx = node_rx;
     let mut wallet_ready_fired = false;
@@ -830,21 +843,24 @@ async fn run_node_wallet(
             tokio::select! {
                 _ = wait_for_port(port) => break 'phase1,
                 status = wallet.wait() => {
-                    let info = extract_exit(status.ok());
-                    warn!("wallet exited before ready ({info:?})");
-                    emit(&Event::WalletExited { code: info.0, signal: info.1.clone(), phase: "pre_ready".to_string() });
+                    let exit = extract_exit(status.ok());
+                    warn!("wallet exited before ready (code={:?}, signal={:?})", exit.0, exit.1);
+                    emit(&Event::WalletExited { code: exit.0, signal: exit.1.clone(), phase: "pre_ready".to_string() });
                     attempt += 1;
                     if attempt >= wallet_cfg.max_restart_attempts {
+                        warn!("wallet unrecoverable after {attempt} restart attempts");
                         emit(&Event::WalletUnrecoverable { attempt });
                         break 'supervisor;
                     }
-                    emit(&Event::WalletRestarting { attempt, last_exit_code: info.0, last_exit_signal: info.1 });
+                    info!("wallet restarting (attempt {attempt})");
+                    emit(&Event::WalletRestarting { attempt, last_exit_code: exit.0, last_exit_signal: exit.1 });
                     sleep(Duration::from_millis(wallet_cfg.restart_delay_ms)).await;
                     continue 'supervisor;
                 }
                 _ = node_rx.changed() => {
-                    let info = node_rx.borrow().clone().unwrap_or((None, None));
-                    emit(&Event::NodeExited { code: info.0, signal: info.1 });
+                    let exit = node_rx.borrow().clone().unwrap_or((None, None));
+                    warn!("cardano-node exited during wallet startup (code={:?}, signal={:?})", exit.0, exit.1);
+                    emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                     stop_child(&mut wallet, 10).await;
                     break 'supervisor;
                 }
@@ -862,7 +878,9 @@ async fn run_node_wallet(
                             let node_rx_shutdown = node_rx.clone();
                             let force_killed =
                                 wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
-                            emit(&Event::NodeShutdownMs { ms: unix_ms() - shutdown_start, force_killed });
+                            let shutdown_ms = unix_ms() - shutdown_start;
+                            info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
+                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
                             return Ok(RunResult::StartMithril { force, wipe_chain });
                         }
                         Cmd::ProbeMithril => {
@@ -922,21 +940,24 @@ async fn run_node_wallet(
         loop {
             tokio::select! {
                 status = wallet.wait() => {
-                    let info = extract_exit(status.ok());
-                    warn!("wallet exited ({info:?})");
-                    emit(&Event::WalletExited { code: info.0, signal: info.1.clone(), phase: "post_ready".to_string() });
+                    let exit = extract_exit(status.ok());
+                    warn!("wallet exited (code={:?}, signal={:?})", exit.0, exit.1);
+                    emit(&Event::WalletExited { code: exit.0, signal: exit.1.clone(), phase: "post_ready".to_string() });
                     attempt += 1;
                     if attempt >= wallet_cfg.max_restart_attempts {
+                        warn!("wallet unrecoverable after {attempt} restart attempts");
                         emit(&Event::WalletUnrecoverable { attempt });
                         break 'supervisor;
                     }
-                    emit(&Event::WalletRestarting { attempt, last_exit_code: info.0, last_exit_signal: info.1 });
+                    info!("wallet restarting (attempt {attempt})");
+                    emit(&Event::WalletRestarting { attempt, last_exit_code: exit.0, last_exit_signal: exit.1 });
                     sleep(Duration::from_millis(wallet_cfg.restart_delay_ms)).await;
                     continue 'supervisor;
                 }
                 _ = node_rx.changed() => {
-                    let info = node_rx.borrow().clone().unwrap_or((None, None));
-                    emit(&Event::NodeExited { code: info.0, signal: info.1 });
+                    let exit = node_rx.borrow().clone().unwrap_or((None, None));
+                    warn!("cardano-node exited (code={:?}, signal={:?})", exit.0, exit.1);
+                    emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                     stop_child(&mut wallet, 10).await;
                     break 'supervisor;
                 }
@@ -953,7 +974,9 @@ async fn run_node_wallet(
                             let node_rx_shutdown = node_rx.clone();
                             let force_killed =
                                 wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
-                            emit(&Event::NodeShutdownMs { ms: unix_ms() - shutdown_start, force_killed });
+                            let shutdown_ms = unix_ms() - shutdown_start;
+                            info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
+                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
                             return Ok(RunResult::StartMithril { force, wipe_chain });
                         }
                         Cmd::ProbeMithril => {
@@ -999,8 +1022,10 @@ async fn run_node_wallet(
     let node_rx_shutdown = node_rx.clone();
     let force_killed = wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
 
+    let shutdown_ms = unix_ms() - shutdown_start;
+    info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
     emit(&Event::NodeShutdownMs {
-        ms: unix_ms() - shutdown_start,
+        ms: shutdown_ms,
         force_killed,
     });
 

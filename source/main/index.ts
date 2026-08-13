@@ -331,7 +331,6 @@ const onAppReady = async () => {
     watchdogBin,
     nodeBin,
     walletBin,
-    logsPrefix,
     nodeConfig,
     tlsPath,
     syncTolerance,
@@ -387,8 +386,7 @@ const onAppReady = async () => {
       state_dir: stateDirectoryPath,
       api_port: walletPort,
     },
-    node_log_file: path.join(logsPrefix, 'node.log'),
-    wallet_log_file: path.join(logsPrefix, 'cardano-wallet.log'),
+    pub_logs_dir: pubLogsFolderPath,
     ...(mithrilBin && mithrilAggregatorUrl && mithrilGenesisVkey
       ? {
           mithril: {

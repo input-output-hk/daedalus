@@ -6,8 +6,14 @@ mod supervisor;
 
 use anyhow::Result;
 use clap::Parser;
+use file_rotate::compression::Compression;
+use file_rotate::suffix::AppendCount;
+use file_rotate::{ContentLimit, FileRotate};
+use std::sync::Mutex;
 use tokio::io::{AsyncBufReadExt, AsyncReadExt, BufReader};
 use tokio::sync::mpsc;
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
 
 #[derive(Parser)]
 #[command(about = "Process supervisor for cardano-node and cardano-wallet")]
@@ -23,12 +29,6 @@ const MAX_STDIN_BYTES: u64 = 4 * 1024 * 1024; // 4 MB
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    tracing_subscriber::fmt()
-        .with_writer(std::io::stderr)
-        .without_time()
-        .with_target(false)
-        .init();
-
     let args = Args::parse();
 
     let config_text = tokio::fs::read_to_string(&args.config)
@@ -37,6 +37,35 @@ async fn main() -> Result<()> {
 
     let config: config::WatchdogConfig =
         serde_json::from_str(&config_text).map_err(|e| anyhow::anyhow!("Invalid config: {e}"))?;
+
+    // Stderr layer — always on, useful for interactive debugging.
+    let stderr_layer = tracing_subscriber::fmt::layer()
+        .with_writer(std::io::stderr)
+        .with_target(false);
+
+    // File layer — only when watchdog_log_file is configured.  Uses the same
+    // file-rotate setup as the node/wallet logs so the file stays bounded.
+    // ANSI colour codes are stripped so the file is plain text.
+    let watchdog_log_path = format!("{}/watchdog.log", config.pub_logs_dir);
+    let file_layer = {
+        let file = Mutex::new(FileRotate::new(
+            &watchdog_log_path,
+            AppendCount::new(4),
+            ContentLimit::Bytes(10 * 1024 * 1024),
+            Compression::None,
+            #[cfg(unix)]
+            None,
+        ));
+        tracing_subscriber::fmt::layer()
+            .with_writer(file)
+            .with_ansi(false)
+            .with_target(false)
+    };
+
+    tracing_subscriber::registry()
+        .with(stderr_layer)
+        .with(file_layer)
+        .init();
 
     let (cmd_tx, cmd_rx) = mpsc::channel::<protocol::Command>(8);
 
