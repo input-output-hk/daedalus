@@ -1,7 +1,7 @@
 import os from 'os';
 import path from 'path';
 import net from 'net';
-import { app, dialog, BrowserWindow, screen, shell } from 'electron';
+import { app, dialog, BrowserWindow, screen } from 'electron';
 import type { Event } from 'electron';
 import EventEmitter from 'events';
 import { WalletSettingsStateEnum } from '../common/ipc/api';
@@ -52,6 +52,8 @@ import {
 import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
 import { parseDeviceScaleFactor } from './utils/parseDeviceScaleFactor';
+import { registerShellIpc } from './ipc/registerShellIpc';
+import { installGlobalPopupPolicy } from './windows/navigationPolicy';
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
@@ -93,6 +95,9 @@ if (deviceScaleFactor !== null) {
 // Increase maximum event listeners to avoid IPC channel stalling
 // (1/2) this line increases the limit for the main process
 EventEmitter.defaultMaxListeners = 100; // Default: 10
+
+installGlobalPopupPolicy(app);
+registerShellIpc();
 
 const safeExit = async () => {
   pauseActiveDownloads();
@@ -420,21 +425,6 @@ const onAppReady = async () => {
   });
 
   mainWindow.on('close', handleWindowClose);
-  // Security feature: Prevent creation of new browser windows
-  // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
-  app.on('web-contents-created', (_, contents) => {
-    contents.setWindowOpenHandler((details) => {
-      const { url } = details;
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.info('Prevented creation of new browser window', {
-        url,
-      });
-      // Open these links with the default browser
-      shell.openExternal(url);
-      // Prevent creation of new BrowserWindows via links / window.open
-      return { action: 'deny' };
-    });
-  });
   // Wait for controlled cardano-node shutdown before quitting the app
   app.on('before-quit', async (event) => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
