@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Embedded dApp Browser And CIP-30 Wallet Connector Tasks",
     "created": "2026-08-07",
-    "updated": "2026-08-12",
+    "updated": "2026-08-13",
     "version": "1.6.0",
     "totalTasks": 84,
     "prdReference": ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
@@ -250,7 +250,9 @@
           "id": "task-100",
           "title": "Harden trusted-window navigation and external URLs",
           "description": "Install trusted main navigation/popup policy before load, remove unsafe automatic popup-to-shell behavior, and require parsed approved HTTPS URLs for external opening.",
-          "status": "pending",
+          "status": "completed",
+          "completedAt": "2026-08-13",
+          "completionNotes": "Locked the privileged trusted window to its canonical local document, denied redirects, subframes, and popups, filtered policy-aborted recovery, made shell IPC registration explicit and process-scoped, and restricted external opening to awaited credential-free HTTPS with privacy-safe failures. Verified by focused Jest, TypeScript, production main build, and a bounded Electron 41 runtime fixture.",
           "priority": "critical",
           "estimatedHours": 12,
           "dependencies": ["task-001"],
@@ -261,9 +263,9 @@
             "source/main/ipc/open-local-directory.ts"
           ],
           "acceptance": [
-            "Trusted renderer cannot navigate to remote content.",
+            "Trusted renderer cannot navigate its main document or subframes to remote content; redirects and policy-aborted recovery also fail closed.",
             "Popup handling is registered before any WebContents and never opens guest URLs automatically.",
-            "Non-HTTPS and malformed external URLs are rejected with awaited failures.",
+            "Non-HTTPS, malformed, credential-bearing, and non-string external URLs are rejected with awaited privacy-safe failures.",
             "Import-time IPC listener side effects are removed."
           ],
           "securityNotes": [
