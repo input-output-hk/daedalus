@@ -28,6 +28,8 @@ import { createChannels } from './createHardwareWalletIPCChannels';
 import { handleGovernanceAnchorRequests } from './governanceAnchorChannel';
 import { handleExportWalletsRequests } from './exportWalletsChannel';
 
+const hardwareWalletChannels = createChannels(MainIpcChannel);
+
 export default (window: BrowserWindow) => {
   compressLogsApi();
   downloadLogsApi();
@@ -50,7 +52,7 @@ export default (window: BrowserWindow) => {
   downloadManagerChannel(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
-  handleHardwareWalletRequests(window, createChannels(MainIpcChannel));
+  handleHardwareWalletRequests(window, hardwareWalletChannels);
 
   // Watchdog IPC
   handleChainStorageRequests();

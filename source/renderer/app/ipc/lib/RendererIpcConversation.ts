@@ -9,8 +9,14 @@ import { IpcConversation } from '../../../../common/ipc/lib/IpcConversation';
  */
 export class RendererIpcConversation<
   Incoming,
-  Outgoing,
+  Outgoing
 > extends IpcConversation<Incoming, Outgoing> {
+  constructor(channelName: string) {
+    super(channelName, {
+      authorizeResponse: (event) => event.sender === global.ipcRenderer,
+    });
+  }
+
   async send(
     message: Outgoing,
     sender: IpcSender = global.ipcRenderer,
