@@ -8,6 +8,12 @@ import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
 import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
 import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
+import {
+  bindWindowRecovery,
+  getTrustedRendererUrl,
+  installFailedLoadRecovery,
+  loadTrustedRenderer,
+} from './navigationPolicy';
 
 const rendererErrorHandler = new RendererErrorHandler();
 const { isDev, isTest, isLinux, isBlankScreenFixActive, network } = environment;
@@ -65,7 +71,11 @@ export const createMainWindow = (
 
   // Construct new BrowserWindow
   const window = new BrowserWindow(windowOptions);
-  rendererErrorHandler.setup(window, createMainWindow);
+  const trustedRendererUrl = getTrustedRendererUrl(isDev, __dirname);
+  rendererErrorHandler.setup(
+    window,
+    bindWindowRecovery(createMainWindow, locale, getSavedWindowBounds)
+  );
   const { minWindowsWidth, minWindowsHeight } = getContentMinimumSize(window);
   window.setMinimumSize(minWindowsWidth, minWindowsHeight);
   // Initialize our ipc api methods that can be called by the render processes
@@ -80,11 +90,7 @@ export const createMainWindow = (
     if (event.sender !== window.webContents) return;
     window.close();
   });
-  if (isDev) {
-    window.loadURL(`http://127.0.0.1:8080`);
-  } else {
-    window.loadURL(`file://${__dirname}/../renderer/index.html`);
-  }
+  loadTrustedRenderer(window, trustedRendererUrl);
   window.on('page-title-updated', (event) => {
     event.preventDefault();
   });
@@ -165,9 +171,9 @@ export const createMainWindow = (
       app.quit();
     }
   });
-  window.webContents.on('did-fail-load', (err) => {
-    rendererErrorHandler.onError('did-fail-load', err);
-  });
+  installFailedLoadRecovery(window.webContents, (event) =>
+    rendererErrorHandler.onError('did-fail-load', event)
+  );
   // 'crashed' was renamed to 'render-process-gone' in Electron 23+
   window.webContents.on('render-process-gone', (_event, details) => {
     rendererErrorHandler.onError('render-process-gone', details);

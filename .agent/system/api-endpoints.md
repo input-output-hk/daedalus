@@ -450,9 +450,17 @@ Daedalus uses type-safe IPC channels for main/renderer communication. All channe
 | `GET_DESKTOP_DIRECTORY_PATH_CHANNEL` | Renderer → Main | Get desktop path     |
 | `GET_SYSTEM_LOCALE_CHANNEL`          | Renderer → Main | Get system locale    |
 | `GET_GPU_STATUS_CHANNEL`             | Renderer → Main | Get GPU status       |
-| `OPEN_EXTERNAL_URL_CHANNEL`          | Renderer → Main | Open URL in browser  |
+| `OPEN_EXTERNAL_URL_CHANNEL`          | Renderer → Main | Open parsed credential-free HTTPS URL in browser; canonicalize and await privacy-safe shell result |
 | `OPEN_LOCAL_DIRECTORY_CHANNEL`       | Renderer → Main | Open in file manager |
 | `INTROSPECT_ADDRESS_CHANNEL`         | Renderer → Main | Analyze address      |
+
+`OPEN_EXTERNAL_URL_CHANNEL` validates the runtime value as a string, rejects
+malformed, non-HTTPS, hostless, or credential-bearing URLs before side effects,
+and passes only the canonical serialization to `shell.openExternal`. Validation
+and shell failures use fixed errors that omit the submitted URL and OS error.
+The existing fire-and-forget store caller consumes rejection; awaited channel
+callers retain the rejecting response contract. The external-URL and
+local-directory listeners are registered explicitly once at process startup.
 
 ### UI Control Channels
 

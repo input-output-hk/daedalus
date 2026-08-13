@@ -19,8 +19,6 @@ import { handleRewardsCsvRequests } from './generateCsvChannel';
 import { handleFileDialogRequests } from './show-file-dialog-channels';
 import { handleAddressIntrospectionRequests } from './introspect-address';
 import { handleManageAppUpdateRequests } from './manageAppUpdateChannel';
-import { openExternalUrlChannel } from './open-external-url';
-import { openLocalDirectoryChannel } from './open-local-directory';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { createChannels } from './createHardwareWalletIPCChannels';
 import { handleMithrilBootstrapRequests } from './mithrilBootstrapChannel';
@@ -47,10 +45,6 @@ export default (window: BrowserWindow) => {
   handleMithrilBootstrapRequests(window);
   handleMithrilPartialSyncRequests(window);
   handleChainStorageRequests();
-  // eslint-disable-next-line no-unused-expressions
-  openExternalUrlChannel;
-  // eslint-disable-next-line no-unused-expressions
-  openLocalDirectoryChannel;
   downloadManagerChannel(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();

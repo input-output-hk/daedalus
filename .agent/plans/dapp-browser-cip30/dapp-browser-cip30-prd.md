@@ -187,7 +187,7 @@ These are contract inputs, not production validators or dispatch code. Task-300 
 - `webviewTag` is already disabled.
 - There is no guest `BrowserWindow`, `WebContentsView`, `<webview>`, dApp preload, isolated session, permission policy, or dApp broker.
 - Current global IPC does not provide the sender/frame authentication required for a hostile renderer.
-- The existing popup handler opens requested URLs externally without a sufficient scheme/origin policy.
+- The global popup handler now denies requests without shell side effects; trusted UI external-link requests accept only parsed credential-free HTTPS URLs with awaited privacy-safe failures.
 - Linux development and packaging pass `--disable-setuid-sandbox --no-sandbox`.
 - Linux currently ships a home-directory self-extracting `.bin`; that model is product-rejected for ongoing shipping in favor of system `.deb` and `.rpm` packages (research `06`).
 
@@ -930,12 +930,15 @@ Session requirements:
 
 Before guest creation:
 
+- The trusted main window now loads one canonical local document, rejects
+  untrusted main-frame navigation and redirects, denies every subframe and
+  popup, and keeps policy-aborted loads out of renderer recovery.
+- Renderer-requested external opening now accepts only parsed, credential-free
+  HTTPS URLs, awaits the shell operation, and returns privacy-safe failures.
 - Refactor privileged handlers to retain and authenticate the Electron event.
 - Require exact trusted main `WebContents` and main frame for existing renderer channels.
-- Lock trusted main navigation to the local production URL or development origin.
-- Move import-time side-effect listeners into explicit initialization.
+- Move remaining import-time side-effect listeners into explicit initialization.
 - Fix uncorrelated shared response channels and response-listener ordering races.
-- Harden external URL opening to parsed HTTPS URLs and awaited failures.
 - Do not use legacy `IpcChannel` or `IpcConversation` as the guest protocol.
 
 Guest broker uses a dedicated scoped gateway with main-issued request IDs and runtime-validated discriminated method schemas. No raw method lookup, fallback dispatch, or generic privileged IPC object is exposed.
