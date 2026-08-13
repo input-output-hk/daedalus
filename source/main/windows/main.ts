@@ -14,6 +14,7 @@ import {
   installFailedLoadRecovery,
   loadTrustedRenderer,
 } from './navigationPolicy';
+import { bindTrustedRenderer } from '../ipc/lib/trustedRendererIpcAuthority';
 
 const rendererErrorHandler = new RendererErrorHandler();
 const { isDev, isTest, isLinux, isBlankScreenFixActive, network } = environment;
@@ -72,6 +73,7 @@ export const createMainWindow = (
   // Construct new BrowserWindow
   const window = new BrowserWindow(windowOptions);
   const trustedRendererUrl = getTrustedRendererUrl(isDev, __dirname);
+  bindTrustedRenderer(window, trustedRendererUrl);
   rendererErrorHandler.setup(
     window,
     bindWindowRecovery(createMainWindow, locale, getSavedWindowBounds)

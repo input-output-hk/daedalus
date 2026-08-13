@@ -15,6 +15,19 @@ Daedalus communicates with two types of APIs:
 | **cardano-wallet REST API**   | Wallet operations, blockchain queries  | `localhost:8090` |
 | **Electron IPC Channels**     | Main/renderer process communication    | In-process       |
 
+### IPC Transport Security
+
+Wrapper-backed channels preserve application payload types while using a private
+per-request correlation envelope. Response listeners are installed before send,
+filtered by request ID, and removed on settlement or trusted-document lifecycle
+invalidation. Main handlers run only for the exact active trusted main
+`WebContents`, main frame, canonical document, and origin, and respond through
+the originating frame via `event.reply`.
+
+This contract covers `MainIpcChannel` and `MainIpcConversation`. Direct raw
+Electron listeners are not implicitly protected and remain subject to the
+task-102 inventory and migration before any hostile guest can be enabled.
+
 ---
 
 ## cardano-wallet REST API
