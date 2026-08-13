@@ -27,6 +27,8 @@ import { MainIpcChannel } from './lib/MainIpcChannel';
 import { createChannels } from './createHardwareWalletIPCChannels';
 import { handleGovernanceAnchorRequests } from './governanceAnchorChannel';
 
+const hardwareWalletChannels = createChannels(MainIpcChannel);
+
 export default (window: BrowserWindow) => {
   compressLogsApi();
   downloadLogsApi();
@@ -48,7 +50,7 @@ export default (window: BrowserWindow) => {
   downloadManagerChannel(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
-  handleHardwareWalletRequests(window, createChannels(MainIpcChannel));
+  handleHardwareWalletRequests(window, hardwareWalletChannels);
 
   // Watchdog IPC
   handleChainStorageRequests();

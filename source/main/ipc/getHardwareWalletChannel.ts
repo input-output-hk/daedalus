@@ -32,6 +32,7 @@ import {
 } from '../../common/types/hardware-wallets.types';
 
 import { HardwareWalletChannels } from './createHardwareWalletIPCChannels';
+import { createCurrentWindowSender } from './lib/currentWindowSender';
 import { Device } from './hardwareWallets/ledger/deviceDetection/types';
 import { DeviceDetectionPayload } from './hardwareWallets/ledger/deviceDetection/deviceDetection';
 import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
@@ -48,21 +49,17 @@ export const ledgerStatus: ledgerStatusType = {
   Listener: null,
 };
 let devicesMemo = {};
+const hardwareWalletWindow = createCurrentWindowSender();
 
 class EventObserver {
-  mainWindow: IpcSender;
   getHardwareWalletConnectionChannel: HardwareWalletChannels['getHardwareWalletConnectionChannel'];
 
   constructor({
-    mainWindow,
     getHardwareWalletConnectionChannel,
   }: {
-    mainWindow: IpcSender;
     getHardwareWalletConnectionChannel: HardwareWalletChannels['getHardwareWalletConnectionChannel'];
   }) {
-    this.mainWindow = mainWindow;
-    this.getHardwareWalletConnectionChannel =
-      getHardwareWalletConnectionChannel;
+    this.getHardwareWalletConnectionChannel = getHardwareWalletConnectionChannel;
   }
 
   next = async (event: DeviceDetectionPayload) => {
@@ -108,7 +105,7 @@ class EventObserver {
               };
               this.getHardwareWalletConnectionChannel.send(
                 walletData,
-                this.mainWindow
+                hardwareWalletWindow.sender
               );
             } catch (error) {
               logger.error('[HW-DEBUG] CONSTRUCTOR error', {
@@ -134,7 +131,7 @@ class EventObserver {
               path: device.path,
               product: device.product,
             },
-            this.mainWindow
+            hardwareWalletWindow.sender
           );
         }
 
@@ -175,6 +172,7 @@ export const handleHardwareWalletRequests = async (
     waitForLedgerDevicesToConnectChannel,
   }: HardwareWalletChannels
 ) => {
+  hardwareWalletWindow.bind(mainWindow);
   let deviceConnection = null;
   let observer;
 
@@ -222,8 +220,7 @@ export const handleHardwareWalletRequests = async (
               payload: event.payload,
             },
           },
-          // @ts-ignore
-          mainWindow
+          hardwareWalletWindow.sender
         );
       }
     });
@@ -255,8 +252,7 @@ export const handleHardwareWalletRequests = async (
             path: event.payload.path,
             eventType: event.type,
           },
-          // @ts-ignore
-          mainWindow
+          hardwareWalletWindow.sender
         );
       }
     });
@@ -438,7 +434,6 @@ export const handleHardwareWalletRequests = async (
   handleInitLedgerConnectChannel.onRequest(async () => {
     logger.info('[HW-DEBUG] INIT LEDGER');
     observer = new EventObserver({
-      mainWindow: mainWindow as unknown as IpcSender,
       getHardwareWalletConnectionChannel,
     });
 
@@ -770,11 +765,12 @@ export const handleHardwareWalletRequests = async (
           logger.info(
             '[TREZOR-CONNECT] Calling TrezorConnect.cardanoGetPublicKey()'
           );
-          const extendedPublicKeyResponse =
-            await TrezorConnect.cardanoGetPublicKey({
+          const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
+            {
               path: `m/${path}`,
               showOnTrezor: true,
-            });
+            }
+          );
 
           if (!extendedPublicKeyResponse.success) {
             throw extendedPublicKeyResponse.payload;
