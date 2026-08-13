@@ -42,7 +42,7 @@ class LoadingSyncingConnectingPage extends Component<Props> {
     } = backend;
     // Map loadingPhase to the cardanoNodeState shape the component expects
     const cardanoNodeState = loadingPhase;
-    const isNodeStopping = false;
+    const isNodeStopping = backend.isStopping;
     const isNodeStopped = false;
     // Node is verifying blockchain when it has started but wallet isn't ready yet
     const isVerifyingBlockchain =
@@ -58,9 +58,9 @@ class LoadingSyncingConnectingPage extends Component<Props> {
       (blockSyncProgress.validatingChunk > 0 &&
         blockSyncProgress.validatingChunk < 99);
     const showMithrilPrompt =
-      loadingPhase === 'node-starting' &&
       !mithrilPromptDismissed &&
-      (mithrilSignificantlyBehind !== null || isInLongReplay);
+      (mithrilSignificantlyBehind !== null ||
+        (loadingPhase === 'node-starting' && isInLongReplay));
     const behindByEpochs = mithrilSignificantlyBehind
       ? computeBehindByEpochs(
           mithrilSignificantlyBehind.localImmutableCount,
@@ -98,7 +98,9 @@ class LoadingSyncingConnectingPage extends Component<Props> {
           isCheckingSystemTime={
             !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
           }
-          isNodeResponding={isNodeResponding}
+          isNodeResponding={
+            isNodeResponding || loadingPhase === 'node-starting'
+          }
           isNodeSyncing={isNodeSyncing}
           isNodeTimeCorrect={isNodeTimeCorrect}
           onIssueClick={this.handleIssueClick}

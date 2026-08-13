@@ -37,6 +37,10 @@ name = "mock-snapshot-converter"
 path = "src/bin/mock_snapshot_converter.rs"
 
 [[bin]]
+name = "mock-node-crash-once"
+path = "src/bin/mock_node_crash_once.rs"
+
+[[bin]]
 name = "mock-node-startup-log"
 path = "src/bin/mock_node_startup_log.rs"
 

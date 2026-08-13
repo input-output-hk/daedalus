@@ -16,6 +16,20 @@ pub struct NodeConfig {
     pub state_dir: String,
     /// Absolute path to the node socket file; watchdog waits for this before starting wallet.
     pub socket_path: String,
+    /// Milliseconds to wait before restarting after an unexpected node exit.
+    #[serde(default = "default_node_crash_restart_delay_ms")]
+    pub crash_restart_delay_ms: u64,
+    /// Maximum number of unexpected node exits before giving up.
+    #[serde(default = "default_node_max_crash_attempts")]
+    pub max_crash_attempts: u32,
+}
+
+fn default_node_crash_restart_delay_ms() -> u64 {
+    5_000
+}
+
+fn default_node_max_crash_attempts() -> u32 {
+    10
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -87,6 +101,31 @@ mod tests {
         assert_eq!(c.wallet.api_port, 8090);
         assert_eq!(c.wallet.restart_delay_ms, 2000);
         assert_eq!(c.pub_logs_dir, "/logs");
+    }
+
+    #[test]
+    fn node_crash_restart_delay_defaults_to_5000ms() {
+        let c: WatchdogConfig = serde_json::from_str(&minimal_json("")).unwrap();
+        assert_eq!(c.node.crash_restart_delay_ms, 5_000);
+    }
+
+    #[test]
+    fn node_max_crash_attempts_defaults_to_10() {
+        let c: WatchdogConfig = serde_json::from_str(&minimal_json("")).unwrap();
+        assert_eq!(c.node.max_crash_attempts, 10);
+    }
+
+    #[test]
+    fn explicit_node_crash_config_overrides_defaults() {
+        let json = r#"{
+            "node": {"exe":"n","args":[],"state_dir":"/","socket_path":"/s",
+                     "crash_restart_delay_ms":100,"max_crash_attempts":3},
+            "wallet": {"exe":"w","args":[],"state_dir":"/","api_port":8090},
+            "pub_logs_dir":"/logs"
+        }"#;
+        let c: WatchdogConfig = serde_json::from_str(json).unwrap();
+        assert_eq!(c.node.crash_restart_delay_ms, 100);
+        assert_eq!(c.node.max_crash_attempts, 3);
     }
 
     #[test]

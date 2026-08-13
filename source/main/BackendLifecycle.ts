@@ -18,6 +18,7 @@ import {
 import {
   nodeStartupStatusChannel,
   nodeBlockSyncProgressChannel,
+  watchdogStoppedChannel,
 } from './ipc/nodePushChannel';
 
 export type { WatchdogConfig };
@@ -107,6 +108,8 @@ class BackendLifecycle {
           },
           win.webContents
         );
+      } else if (eventType === 'stopped') {
+        watchdogStoppedChannel.send(undefined, win.webContents);
       }
     });
 

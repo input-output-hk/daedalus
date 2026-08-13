@@ -10,6 +10,7 @@ import {
 import {
   nodeStartupStatusChannel,
   nodeBlockSyncProgressChannel,
+  watchdogStoppedChannel,
 } from '../ipc/nodePushChannel';
 import {
   validateChainStorageChannel,
@@ -60,6 +61,7 @@ export default class BackendStore extends Store {
   } | null = null;
   @observable _mithrilPromptDismissed = false;
   @observable _probeHasFired = false;
+  @observable isStopping = false;
   // Chain storage paths (from BackendLifecycle, included in state poll)
   @observable defaultChainPath: string | null = null;
   @observable customChainPath: string | null = null;
@@ -80,6 +82,7 @@ export default class BackendStore extends Store {
     walletPortChannel.onReceive(this._onWalletPort);
     nodeStartupStatusChannel.onReceive(this._onNodeStartupStatus);
     nodeBlockSyncProgressChannel.onReceive(this._onNodeBlockSyncProgress);
+    watchdogStoppedChannel.onReceive(this._onWatchdogStopped);
 
     // ========== MOBX REACTIONS =========== //
     // Fire probeMithril() exactly once when nodeStartedAt transitions from null to non-null.
@@ -196,6 +199,13 @@ export default class BackendStore extends Store {
       } else if (kind === 'pushingLedger') {
         this.blockSyncProgress.pushingLedger = progress;
       }
+    });
+  };
+
+  @action
+  _onWatchdogStopped = async (): Promise<void> => {
+    runInAction('set isStopping on watchdog stopped', () => {
+      this.isStopping = true;
     });
   };
 

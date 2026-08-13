@@ -30,6 +30,7 @@ type ExitInfo = (Option<i32>, Option<String>);
 
 enum RunResult {
     Stopped,
+    NodeCrashed,
     StartMithril { force: bool, wipe_chain: bool },
 }
 
@@ -497,12 +498,25 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
         }
     }
 
+    let mut node_crash_count = 0u32;
     loop {
         let result = run_node_wallet(&config, &mut cmd_rx, after_mithril).await?;
         after_mithril = false;
 
         match result {
             RunResult::Stopped => break,
+            RunResult::NodeCrashed => {
+                node_crash_count += 1;
+                if node_crash_count >= config.node.max_crash_attempts {
+                    emit_error(&format!(
+                        "cardano-node unrecoverable after {node_crash_count} crashes"
+                    ));
+                    break;
+                }
+                info!("cardano-node crashed, restarting (attempt {node_crash_count})");
+                sleep(Duration::from_millis(config.node.crash_restart_delay_ms)).await;
+                // continue loop to restart node+wallet
+            }
             RunResult::StartMithril { force, wipe_chain } => {
                 if let Some(ref mc) = config.mithril {
                     use mithril::PipelineResult;
@@ -707,7 +721,7 @@ async fn run_node_wallet(
             code: exit.0,
             signal: exit.1,
         });
-        return Ok(RunResult::Stopped);
+        return Ok(RunResult::NodeCrashed);
     }
 
     // Loop so unrelated commands (e.g. ProbeMithril) are discarded rather than
@@ -722,7 +736,7 @@ async fn run_node_wallet(
                 let exit = node_rx_socket.borrow().clone().unwrap_or((None, None));
                 warn!("cardano-node exited before socket was ready (code={:?}, signal={:?})", exit.0, exit.1);
                 emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
-                return Ok(RunResult::Stopped);
+                return Ok(RunResult::NodeCrashed);
             }
             Some(cmd) = cmd_rx.recv() => {
                 match cmd {
@@ -862,7 +876,7 @@ async fn run_node_wallet(
                     warn!("cardano-node exited during wallet startup (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                     stop_child(&mut wallet, 10).await;
-                    break 'supervisor;
+                    return Ok(RunResult::NodeCrashed);
                 }
                 Some(cmd) = cmd_rx.recv() => {
                     match cmd {
@@ -959,7 +973,7 @@ async fn run_node_wallet(
                     warn!("cardano-node exited (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                     stop_child(&mut wallet, 10).await;
-                    break 'supervisor;
+                    return Ok(RunResult::NodeCrashed);
                 }
                 Some(cmd) = cmd_rx.recv() => {
                     match cmd {

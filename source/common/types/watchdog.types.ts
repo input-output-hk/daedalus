@@ -92,6 +92,7 @@ export const CardanoNodeStates = {
   CRASHED: 'error',
   ERRORED: 'error',
   UNRECOVERABLE: 'error',
+  READY: 'ready',
 } as const;
 
 // ChainStorageValidation — result of validating a user-chosen chain storage path

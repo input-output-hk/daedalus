@@ -512,6 +512,11 @@ export type NodeBlockSyncProgressMainRequest = {
 };
 export type NodeBlockSyncProgressRendererResponse = void;
 
+// Push: main → renderer when watchdog emits stopped (clean shutdown)
+export const WATCHDOG_STOPPED_CHANNEL = 'WATCHDOG_STOPPED_CHANNEL';
+export type WatchdogStoppedMainRequest = void;
+export type WatchdogStoppedRendererResponse = void;
+
 // Chain storage: renderer asks main to validate a candidate path
 export const VALIDATE_CHAIN_STORAGE_CHANNEL = 'VALIDATE_CHAIN_STORAGE_CHANNEL';
 export type ValidateChainStorageRendererRequest = { path: string };

@@ -465,6 +465,7 @@ const FINAL_CARDANO_NODE_STATES = [
   CardanoNodeStates.CRASHED,
   CardanoNodeStates.ERRORED,
   CardanoNodeStates.UNRECOVERABLE,
+  CardanoNodeStates.READY,
 ];
 
 @observer

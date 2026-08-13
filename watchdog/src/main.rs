@@ -53,7 +53,6 @@ async fn main() -> Result<()> {
             AppendCount::new(4),
             ContentLimit::Bytes(10 * 1024 * 1024),
             Compression::None,
-            #[cfg(unix)]
             None,
         ));
         tracing_subscriber::fmt::layer()
