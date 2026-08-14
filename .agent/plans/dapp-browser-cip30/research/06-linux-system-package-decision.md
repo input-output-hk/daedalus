@@ -1,12 +1,16 @@
 # Linux System Package Decision (.deb / .rpm)
 
-Status: **accepted product/release decision** (2026-08-12). Normative packaging
-and sandbox requirements are mirrored in
+Status: **accepted package contract and support matrix**. The package strategy
+was accepted on 2026-08-12; matrix revision `task-005-a-matrix-2026-08-14` was
+approved by the user acting as release/product authority on 2026-08-14, with
+this repository record serving as the durable approval record. No separate
+reviewer was required by that authority. Normative packaging and sandbox requirements are mirrored in
 [dapp-browser-cip30-prd.md](../dapp-browser-cip30-prd.md) and
 [dapp-browser-cip30-tasks.json](../dapp-browser-cip30-tasks.json). Historical
 task-005 preserves the cancelled portable spike. Task-005-a freezes the package
 and validation contract; task-005-b remains incomplete until packaged
-`.deb`/`.rpm` sandbox proof exists. This note freezes strategy only.
+`.deb`/`.rpm` sandbox proof exists. This note freezes the strategy and contract,
+not package implementation or certification.
 
 ## Decision
 
@@ -15,7 +19,7 @@ Daedalus on Linux ships **system packages only**:
 | Format | Role |
 |--------|------|
 | **`.deb`** | Primary package for Debian/Ubuntu-class desktops |
-| **`.rpm`** | Primary package for Fedora/RHEL/openSUSE-class desktops |
+| **`.rpm`** | Package for the approved Fedora 43 row in this revision |
 
 Install layout uses **`/opt/daedalus/<cluster>`**, where `<cluster>` is the
 build-time installer cluster slug, not `$HOME/.daedalus/<cluster>`.
@@ -25,17 +29,70 @@ model used by Electron desktop apps (electron-builder pattern):
 
 1. Install Electron and `chrome-sandbox` under the fixed
    `/opt/daedalus/<cluster>` tree as root.
-2. **SUID helper** when unprivileged user namespaces are unavailable:
-   root-owned `chrome-sandbox` mode `4755`.
-3. **User namespaces** when the host supports them; helper may remain non-SUID.
-4. **AppArmor profile** on Ubuntu 24.04+ (and other AppArmor hosts that restrict
-   unprivileged userns): package ships a profile with `userns,` for the fixed
-   Electron binary path and loads it in `postinst` when `apparmor_parser`
-   accepts the profile ABI.
-5. Launchers **must not** pass `--no-sandbox` or `--disable-setuid-sandbox`.
-6. Runtime dApp availability remains fail-closed when sandbox-disabling
+2. Support two independently provable routes: a root-owned mode-`4755` SUID
+   helper when user namespaces are unavailable, or user namespaces with a
+   root-owned mode-`0755` non-SUID helper. Either route may satisfy a supported
+   row when its exact-renderer evidence passes. A package must not weaken one
+   route or retry unsandboxed when the other fails.
+3. Ubuntu rows require a package-owned AppArmor profile with `userns,` attached
+   to the exact Electron binary. Fedora 43 requires package-owned SELinux policy
+   and exact Electron/helper file contexts. Debian rows require neither policy
+   asset unless a later reviewed matrix revision and certification add it.
+4. Launchers **must not** pass `--no-sandbox` or `--disable-setuid-sandbox`.
+5. Runtime dApp availability remains fail-closed when sandbox-disabling
    argv/environment is present or the task-103 local sandbox canary fails.
-7. Never auto-retry unsandboxed and never weaken containment for remote content.
+6. Never auto-retry unsandboxed and never weaken containment for remote content.
+
+## Authoritative Support Matrix
+
+Revision: `task-005-a-matrix-2026-08-14`.
+
+All rows are x86_64. Version-series rows include vendor point/security updates;
+material kernel, Electron/Chromium, or host-policy changes trigger revalidation.
+
+| Distribution/version | Package | Accepted sandbox routes | Required host-policy integration |
+|---|---|---|---|
+| Ubuntu 22.04.x LTS | `.deb` | independently proven SUID or userns | AppArmor profile attached to exact Electron path |
+| Ubuntu 24.04.x LTS | `.deb` | independently proven SUID or userns | AppArmor profile attached to exact Electron path |
+| Ubuntu 26.04.x LTS | `.deb` | independently proven SUID or userns | AppArmor profile attached to exact Electron path |
+| Debian 12.x | `.deb` | independently proven SUID or userns | none by default |
+| Debian 13.x | `.deb` | independently proven SUID or userns | none by default |
+| Fedora 43 | `.rpm` | independently proven SUID or userns | SELinux process and exact-file contexts |
+
+No Ubuntu interim release is in this revision. Product intent is to support
+vendor-supported interim releases, but each exact interim version must first be
+added by a reviewed matrix revision and pass installed-artifact certification.
+Fedora 42 and openSUSE Leap 15.6 are excluded because their vendor maintenance
+ends before this certification baseline. Every other omitted or EOL row is
+unsupported for dApp launch: installation may remain available in wallet-only
+mode, but no remote guest may launch and no unapproved host-policy change is
+applied. A listed row whose selected route cannot establish the frozen package
+invariants fails package configuration rather than weakening containment.
+
+## Frozen Package Contract
+
+- Install root: `/opt/daedalus/<cluster>`.
+- Launcher: `/opt/daedalus/<cluster>/bin/daedalus`.
+- Frontend: `/opt/daedalus/<cluster>/libexec/daedalus-frontend`.
+- Electron wrapper: `/opt/daedalus/<cluster>/libexec/electron`.
+- Resolved Electron: `/opt/daedalus/<cluster>/libexec/bundle-electron/lib/electron/electron`.
+- Helper: `/opt/daedalus/<cluster>/libexec/bundle-electron/lib/electron/chrome-sandbox`.
+- Identity manifest: `/opt/daedalus/<cluster>/share/daedalus-sandbox-identity.json`.
+- AppArmor asset: `/etc/apparmor.d/opt.daedalus.<cluster>.electron`.
+- SELinux asset: `/usr/share/selinux/packages/daedalus-<cluster>.cil`; task-109 records the reviewed module and exact process/file labels in the identity manifest.
+- Package directories and executable files are root-owned mode `0755`; policy
+  assets are root-owned mode `0644`; the regular non-symlink helper is root-owned
+  mode `4755` for SUID evidence or `0755` for userns-only evidence.
+- The root-owned mode-`0644` identity manifest pins matrix revision, cluster,
+  exact package-file hashes, policy kind, task-108-reviewed AppArmor parser
+  version, and task-108/109-reviewed exact policy labels/contexts/module. The probe compares live files and independently
+  observed process/file policy state to this manifest; the contract does not
+  invent generic SELinux type names.
+- Maintainer scripts are idempotent, perform no network fetch, never inspect or
+  mutate `XDG_DATA_HOME/Daedalus`, and never disable AppArmor/SELinux, alter
+  global userns policy, add permissive domains, or retry Electron unsandboxed.
+- Every desktop, launcher, wrapper, restart, and post-update path is free of
+  `--no-sandbox`, `--disable-setuid-sandbox`, and equivalent bypasses.
 
 ## Explicit rejections
 
@@ -80,26 +137,12 @@ Rationale for rejecting the portable `.bin`:
 |------|--------|
 | Preserve portable negative evidence and rejected-strategy outcome | task-005 (cancelled) |
 | Freeze deb/rpm sandbox strategy, authoritative matrix, postinst contract, and probe adaptation | task-005-a |
-| Implement `.deb` package, postinst SUID/AppArmor, Nix outputs | task-108 |
+| Implement `.deb` package, approved SUID or userns route, mandatory Ubuntu AppArmor, identity manifest, and Nix outputs | task-108 |
 | Implement `.rpm` package and postinst equivalents | task-109 |
 | Certify installed `.deb` and `.rpm` artifacts across the authoritative matrix | task-005-b |
 | Retire `.bin` shipping, migrate Linux auto-update and docs | task-110 |
 | Remove remaining development/legacy sandbox-disabling defaults, add runtime canary, fail-closed dApps | task-103 (depends on task-005-b certification) |
 | Real guest and release-candidate packaged proof | task-107, task-802, task-807, task-903-a |
-
-## Supported matrix (minimum product intent)
-
-Exact distro/version rows remain release-owner authoritative, but the packaging
-decision implies at least:
-
-- One Debian/Ubuntu-class host for `.deb` (include Ubuntu 24.04 AppArmor userns).
-- One Fedora/RHEL-class host for `.rpm`.
-- One negative host where sandbox prerequisites fail → dApps fail closed, no
-  unsandboxed retry; wallet may remain available only via documented
-  dApp-disabled modes if any.
-
-No unnamed distribution is claimed supported until its package row has probe
-evidence.
 
 ## Auto-update and migration
 
