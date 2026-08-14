@@ -1,12 +1,14 @@
 'use strict';
 
 const assert = require('assert');
+const childProcess = require('child_process');
 const crypto = require('crypto');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
+const MATRIX_REVISION = 'task-005-a-matrix-2026-08-14';
 const STDERR_LIMIT_BYTES = 8192;
 const PROBE_TIMEOUT_MS = 15000;
 const CLEANUP_TIMEOUT_MS = 2000;
@@ -17,6 +19,49 @@ const ROOT_TOKENS = [
   ['home', '<HOME>'],
 ];
 const NAMESPACE_NAMES = ['user', 'pid', 'mnt'];
+const SANDBOX_CLASSES = new Set([
+  'userns-only',
+  'suid-only',
+  'combined-unattributed',
+]);
+const SUPPORT_MATRIX = {
+  'ubuntu-22.04': {
+    packageFamily: 'deb',
+    policy: 'apparmor',
+    distributionId: 'ubuntu',
+    versionPattern: /^22\.04(?:\.\d+)?$/,
+  },
+  'ubuntu-24.04': {
+    packageFamily: 'deb',
+    policy: 'apparmor',
+    distributionId: 'ubuntu',
+    versionPattern: /^24\.04(?:\.\d+)?$/,
+  },
+  'ubuntu-26.04': {
+    packageFamily: 'deb',
+    policy: 'apparmor',
+    distributionId: 'ubuntu',
+    versionPattern: /^26\.04(?:\.\d+)?$/,
+  },
+  'debian-12': {
+    packageFamily: 'deb',
+    policy: 'none',
+    distributionId: 'debian',
+    versionPattern: /^12(?:\.\d+)?$/,
+  },
+  'debian-13': {
+    packageFamily: 'deb',
+    policy: 'none',
+    distributionId: 'debian',
+    versionPattern: /^13(?:\.\d+)?$/,
+  },
+  'fedora-43': {
+    packageFamily: 'rpm',
+    policy: 'selinux',
+    distributionId: 'fedora',
+    versionPattern: /^43$/,
+  },
+};
 const FORBIDDEN_SWITCHES = [
   '--disable-gpu-sandbox',
   '--disable-sandbox',
@@ -29,6 +74,7 @@ const FORBIDDEN_SWITCHES = [
 const STDERR_CATEGORIES = [
   ['namespace-denied', /namespace|userns|operation not permitted/i],
   ['apparmor-denied', /apparmor.*(?:denied|reject)|audit.*denied/i],
+  ['selinux-denied', /selinux|avc:.*denied/i],
   ['evidence-invalid', /evidence-invalid|assertion|invalid/i],
   ['sandbox-init-failed', /sandbox.*(?:fail|fatal)|zygote.*(?:fail|fatal)/i],
   ['timeout', /timed? out|sandbox-probe-failed:timeout/i],
@@ -41,7 +87,27 @@ function debug(stage) {
   }
 }
 
-function writeFailure(error) {
+function createEvidenceEnvelope(values = {}) {
+  return {
+    schemaVersion: SCHEMA_VERSION,
+    result: null,
+    matrix: null,
+    host: null,
+    versions: null,
+    paths: null,
+    files: null,
+    directories: null,
+    policy: null,
+    main: null,
+    renderer: null,
+    assertions: null,
+    failure: null,
+    diagnostics: null,
+    ...values,
+  };
+}
+
+function createFailureEvidence(error, context = null, partial = {}) {
   const safeCode = /^[a-z0-9:-]+$/.test(String(error && error.message))
     ? error.message
     : 'unclassified';
@@ -49,7 +115,27 @@ function writeFailure(error) {
     error && error.name === 'AssertionError'
       ? 'evidence-invalid'
       : categorizeStderr(safeCode, 1);
-  process.stderr.write(`sandbox-probe-failed:${category}:${safeCode}\n`);
+  return createEvidenceEnvelope({
+    ...partial,
+    result: 'fail',
+    matrix: context,
+    failure: { category, code: safeCode },
+    diagnostics: {
+      sanitized: true,
+      rawHostDataExported: false,
+      stderrSummaryRequired: true,
+    },
+  });
+}
+
+function writeFailure(error, context) {
+  const evidence = createFailureEvidence(error, context);
+  process.stdout.write(
+    `${JSON.stringify(evidence, null, 2)}\n`
+  );
+  process.stderr.write(
+    `sandbox-probe-failed:${evidence.failure.category}:${evidence.failure.code}\n`
+  );
 }
 
 function escapeRegExp(value) {
@@ -87,6 +173,33 @@ function withTimeout(promise, timeoutMs) {
     timeout = setTimeout(() => reject(new Error('timeout')), timeoutMs);
   });
   return Promise.race([promise, deadline]).finally(() => clearTimeout(timeout));
+}
+
+async function performCleanup(probeSession, profileRoot, dependencies = {}) {
+  const remove = dependencies.remove || fs.promises.rm;
+  const failures = [];
+  if (probeSession) {
+    try {
+      const results = await withTimeout(
+        Promise.allSettled([
+          probeSession.clearStorageData(),
+          probeSession.clearCache(),
+        ]),
+        CLEANUP_TIMEOUT_MS
+      );
+      if (results.some((result) => result.status === 'rejected')) {
+        failures.push('session-cleanup-failed');
+      }
+    } catch (_error) {
+      failures.push('session-cleanup-failed');
+    }
+  }
+  try {
+    await withTimeout(remove(profileRoot, { recursive: true, force: true }), CLEANUP_TIMEOUT_MS);
+  } catch (_error) {
+    failures.push('profile-cleanup-failed');
+  }
+  return failures.length > 0 ? new Error(failures.join(':')) : null;
 }
 
 function sha256(data) {
@@ -246,7 +359,10 @@ function assertNoSensitiveContent(value, privacy) {
 
 function normalizeArgv(argv, privacy) {
   return argv.map((argument) => {
-    const normalized = sanitizeText(argument, privacy);
+    const normalized = sanitizeText(argument, privacy).replace(
+      /(--[a-z0-9-]*pid[a-z0-9-]*=)\d+/gi,
+      '$1<PID>'
+    );
     assertNoSensitiveContent(normalized, privacy);
     return normalized;
   });
@@ -260,7 +376,7 @@ function categorizeStderr(stderr, exitCode) {
 
 function relevantStderr(rawText) {
   const relevantLine =
-    /sandbox-probe-|\bFATAL\b|apparmor|userns|namespace|sandbox.*(?:fail|fatal)|zygote.*(?:fail|fatal)/i;
+    /sandbox-probe-|\bFATAL\b|apparmor|selinux|avc:|userns|namespace|sandbox.*(?:fail|fatal)|zygote.*(?:fail|fatal)/i;
   const lines = rawText.split('\n').filter((line) => relevantLine.test(line));
   if (lines.length > 0) return `${lines.join('\n')}\n`;
   return rawText.trim() === '' ? '' : '<NON_PROBE_STDERR_REDACTED>\n';
@@ -301,6 +417,24 @@ function parseStatus(statusText) {
   return result;
 }
 
+function readSecurityLabel(procRoot) {
+  try {
+    return fs.readFileSync(`${procRoot}/attr/current`, 'utf8').trim();
+  } catch (error) {
+    if (error && (error.code === 'ENOENT' || error.code === 'EINVAL')) return null;
+    throw error;
+  }
+}
+
+function parseProcessStartTime(statText) {
+  const commandEnd = statText.lastIndexOf(')');
+  assert(commandEnd !== -1, 'proc-stat-command');
+  const fields = statText.slice(commandEnd + 2).trim().split(/\s+/);
+  const startTime = fields[19];
+  assert(/^\d+$/.test(startTime || ''), 'proc-stat-start-time');
+  return startTime;
+}
+
 function readProcEvidence(pid, privacy) {
   const procRoot = `/proc/${pid}`;
   const rawArgv = fs
@@ -326,7 +460,48 @@ function readProcEvidence(pid, privacy) {
     namespaces,
     uidMap,
     gidMap,
+    securityLabel: readSecurityLabel(procRoot),
+    startTime: parseProcessStartTime(fs.readFileSync(`${procRoot}/stat`, 'utf8')),
   };
+}
+
+function assertRendererInstance(initialEvidence, finalEvidence) {
+  assert.strictEqual(finalEvidence.status.Pid, initialEvidence.status.Pid, 'renderer-pid-reused');
+  assert.strictEqual(
+    finalEvidence.startTime,
+    initialEvidence.startTime,
+    'renderer-instance-replaced'
+  );
+}
+
+async function assertRendererAfterLifecycleYield(
+  initialEvidence,
+  rendererPid,
+  webContents,
+  isRendererGone,
+  dependencies = {}
+) {
+  const yieldToEvents =
+    dependencies.yieldToEvents || (() => new Promise((resolve) => setImmediate(resolve)));
+  const readEvidence =
+    dependencies.readEvidence ||
+    (() => ({
+      status: parseStatus(fs.readFileSync(`/proc/${rendererPid}/status`, 'utf8')),
+      startTime: parseProcessStartTime(
+        fs.readFileSync(`/proc/${rendererPid}/stat`, 'utf8')
+      ),
+    }));
+  await yieldToEvents();
+  assert(!isRendererGone(), 'renderer-exited-during-collection');
+  assert(!webContents.isDestroyed(), 'renderer-destroyed-after-collection');
+  assert.strictEqual(
+    webContents.getOSProcessId(),
+    rendererPid,
+    'renderer-pid-changed-after-collection'
+  );
+  const finalEvidence = readEvidence();
+  assert.strictEqual(Number(finalEvidence.status.Pid), rendererPid, 'renderer-proc-pid-changed');
+  assertRendererInstance(initialEvidence, finalEvidence);
 }
 
 function hasForbiddenSwitch(argv) {
@@ -337,7 +512,79 @@ function hasForbiddenSwitch(argv) {
   );
 }
 
-function assertRendererEvidence(mainEvidence, rendererEvidence) {
+function mapClassification(value) {
+  const identity = value
+    .split('\n')
+    .filter(Boolean)
+    .every((line) => {
+      const [inside, outside] = line.trim().split(/\s+/).map(Number);
+      return Number.isSafeInteger(inside) && inside === outside;
+    });
+  return identity ? 'identity' : 'remapped';
+}
+
+function normalizeProcessEvidence(
+  evidence,
+  mainEvidence,
+  pidToken,
+  privacy,
+  includeSecurityLabel = false
+) {
+  const securityLabel = includeSecurityLabel && evidence.securityLabel
+    ? sanitizeText(evidence.securityLabel, privacy)
+    : null;
+  if (securityLabel) assertNoSensitiveContent(securityLabel, privacy);
+  return {
+    pid: pidToken,
+    pidRelationships: {
+      pidMatchesObserved: true,
+      parentIsMain:
+        Boolean(evidence.status.PPid) && evidence.status.PPid === mainEvidence.status.Pid,
+    },
+    argv: evidence.argv,
+    status: {
+      NoNewPrivs: evidence.status.NoNewPrivs,
+      Seccomp: evidence.status.Seccomp,
+      Seccomp_filters: evidence.status.Seccomp_filters,
+      CapEff: evidence.status.CapEff,
+    },
+    namespaces: Object.fromEntries(
+      NAMESPACE_NAMES.map((name) => [
+        name,
+        { sameAsMain: evidence.namespaces[name] === mainEvidence.namespaces[name] },
+      ])
+    ),
+    maps: {
+      uid: {
+        sameAsMain: evidence.uidMap === mainEvidence.uidMap,
+        classification: mapClassification(evidence.uidMap),
+      },
+      gid: {
+        sameAsMain: evidence.gidMap === mainEvidence.gidMap,
+        classification: mapClassification(evidence.gidMap),
+      },
+    },
+    securityLabel,
+  };
+}
+
+function normalizedPath(filePath, privacy) {
+  if (filePath.startsWith('/etc/apparmor.d/')) return '<APPARMOR_PROFILE>';
+  if (filePath.startsWith('/usr/share/selinux/packages/')) return '<SELINUX_POLICY>';
+  const value = sanitizeText(filePath, privacy);
+  assertNoSensitiveContent(value, privacy);
+  return value;
+}
+
+function normalizedHostEnvironment(host) {
+  const kernel = os.release();
+  assert(/^[A-Za-z0-9._+-]+$/.test(kernel), 'kernel-release');
+  const sessionType = (process.env.XDG_SESSION_TYPE || 'unknown').toLowerCase();
+  assert(new Set(['x11', 'wayland', 'tty', 'unknown']).has(sessionType), 'session-type');
+  return { ...host, kernel, sessionType };
+}
+
+function assertRendererEvidence(mainEvidence, rendererEvidence, sandboxClass) {
   const chromiumProcessType = rendererEvidence.argv.find((argument) =>
     argument.startsWith('--type=')
   );
@@ -369,23 +616,418 @@ function assertRendererEvidence(mainEvidence, rendererEvidence) {
     mainEvidence.namespaces.mnt,
     'shared-mount-namespace'
   );
-  assert.notStrictEqual(
-    rendererEvidence.namespaces.user,
-    mainEvidence.namespaces.user,
-    'shared-user-namespace'
-  );
-  assert.notStrictEqual(rendererEvidence.uidMap, mainEvidence.uidMap, 'shared-uid-map');
-  assert.notStrictEqual(rendererEvidence.gidMap, mainEvidence.gidMap, 'shared-gid-map');
+  if (sandboxClass !== 'suid-only') {
+    assert.notStrictEqual(
+      rendererEvidence.namespaces.user,
+      mainEvidence.namespaces.user,
+      'shared-user-namespace'
+    );
+    assert.notStrictEqual(rendererEvidence.uidMap, mainEvidence.uidMap, 'shared-uid-map');
+    assert.notStrictEqual(rendererEvidence.gidMap, mainEvidence.gidMap, 'shared-gid-map');
+  }
 }
 
 function fileMetadata(filePath) {
-  const stats = fs.statSync(filePath);
+  const lstat = fs.lstatSync(filePath);
+  assert(lstat.isFile(), 'expected-regular-file');
+  assert(!lstat.isSymbolicLink(), 'unexpected-symlink');
   return {
     sha256: hashFile(filePath),
-    mode: (stats.mode & 0o7777).toString(8).padStart(4, '0'),
-    uid: stats.uid,
-    gid: stats.gid,
+    mode: (lstat.mode & 0o7777).toString(8).padStart(4, '0'),
+    uid: lstat.uid,
+    gid: lstat.gid,
+    regularFile: true,
+    symlink: false,
   };
+}
+
+function assertRootFile(filePath, expectedMode) {
+  const metadata = fileMetadata(filePath);
+  assertFileContract(metadata, expectedMode);
+  return metadata;
+}
+
+function assertFileContract(metadata, expectedMode) {
+  assert.strictEqual(metadata.uid, 0, 'file-owner');
+  assert.strictEqual(metadata.gid, 0, 'file-group');
+  assert.strictEqual(metadata.mode, expectedMode, 'file-mode');
+}
+
+function assertRootDirectory(directoryPath) {
+  const stats = fs.lstatSync(directoryPath);
+  assert(stats.isDirectory() && !stats.isSymbolicLink(), 'expected-directory');
+  assert.strictEqual(stats.uid, 0, 'directory-owner');
+  assert.strictEqual(stats.gid, 0, 'directory-group');
+  assert.strictEqual(
+    (stats.mode & 0o7777).toString(8).padStart(4, '0'),
+    '0755',
+    'directory-mode'
+  );
+  return { mode: '0755', owner: 'root', group: 'root' };
+}
+
+function publicFileMetadata(metadata) {
+  return {
+    sha256: metadata.sha256,
+    mode: metadata.mode,
+    owner: metadata.uid === 0 ? 'root' : 'non-root',
+    group: metadata.gid === 0 ? 'root' : 'non-root',
+    regularFile: metadata.regularFile,
+    symlink: metadata.symlink,
+  };
+}
+
+function assertIdentityHash(expected, metadata, name) {
+  assert(expected && /^[a-f0-9]{64}$/.test(expected.sha256), `identity-${name}-hash`);
+  assert.strictEqual(metadata.sha256, expected.sha256, `identity-${name}-mismatch`);
+}
+
+function runHostCommand(command, args) {
+  const result = childProcess.spawnSync(command, args, {
+    encoding: 'utf8',
+    timeout: 5000,
+    env: { PATH: '/usr/sbin:/usr/bin:/sbin:/bin' },
+  });
+  return {
+    status: result.status,
+    stdout: result.stdout || '',
+    stderr: result.stderr || '',
+    error: result.error,
+  };
+}
+
+function requiredEnvironment(name) {
+  const value = process.env[name];
+  if (!value) throw new Error(`missing-${name.toLowerCase().replaceAll('_', '-')}`);
+  return value;
+}
+
+function readContractSelection(installRoot) {
+  const matrixRow = requiredEnvironment('DAEDALUS_PROBE_MATRIX_ROW');
+  const matrixRevision = requiredEnvironment('DAEDALUS_PROBE_MATRIX_REVISION');
+  const sandboxClass = requiredEnvironment('DAEDALUS_PROBE_SANDBOX_CLASS');
+  const cluster = requiredEnvironment('DAEDALUS_PROBE_CLUSTER');
+  const row = SUPPORT_MATRIX[matrixRow];
+  if (matrixRevision !== MATRIX_REVISION) throw new Error('unsupported-matrix-revision');
+  if (!row) throw new Error('unsupported-matrix-row');
+  if (!SANDBOX_CLASSES.has(sandboxClass)) throw new Error('unsupported-sandbox-class');
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(cluster)) throw new Error('invalid-cluster');
+  assert.strictEqual(
+    installRoot,
+    `/opt/daedalus/${cluster}`,
+    'unexpected-install-root'
+  );
+  return {
+    matrixRow,
+    matrixRevision,
+    sandboxClass,
+    cluster,
+    ...row,
+  };
+}
+
+function parseOsRelease(value) {
+  const fields = {};
+  for (const line of value.split('\n')) {
+    const match = line.match(/^([A-Z_]+)=(.*)$/);
+    if (!match) continue;
+    let fieldValue = match[2];
+    if (
+      (fieldValue.startsWith('"') && fieldValue.endsWith('"')) ||
+      (fieldValue.startsWith("'") && fieldValue.endsWith("'"))
+    ) {
+      fieldValue = fieldValue.slice(1, -1);
+    }
+    fields[match[1]] = fieldValue;
+  }
+  return { id: fields.ID, versionId: fields.VERSION_ID };
+}
+
+function assertHostContract(contract, host) {
+  assert.strictEqual(process.arch, 'x64', 'x86-64-required');
+  assert.strictEqual(host.id, contract.distributionId, 'matrix-distribution-mismatch');
+  assert(contract.versionPattern.test(host.versionId || ''), 'matrix-version-mismatch');
+}
+
+function readHostContract(contract) {
+  const host = parseOsRelease(fs.readFileSync('/etc/os-release', 'utf8'));
+  assertHostContract(contract, host);
+  return { distributionId: host.id, versionId: host.versionId, architecture: 'x86_64' };
+}
+
+function exactPackagePaths(installRoot, cluster, policy) {
+  const paths = {
+    launcher: path.join(installRoot, 'bin', 'daedalus'),
+    frontend: path.join(installRoot, 'libexec', 'daedalus-frontend'),
+    wrapper: path.join(installRoot, 'libexec', 'electron'),
+    electron: path.join(
+      installRoot,
+      'libexec',
+      'bundle-electron',
+      'lib',
+      'electron',
+      'electron'
+    ),
+    chromeSandbox: path.join(
+      installRoot,
+      'libexec',
+      'bundle-electron',
+      'lib',
+      'electron',
+      'chrome-sandbox'
+    ),
+    identityManifest: path.join(
+      installRoot,
+      'share',
+      'daedalus-sandbox-identity.json'
+    ),
+  };
+  if (policy === 'apparmor') {
+    paths.policyAsset = `/etc/apparmor.d/opt.daedalus.${cluster}.electron`;
+  } else if (policy === 'selinux') {
+    paths.policyAsset = `/usr/share/selinux/packages/daedalus-${cluster}.cil`;
+  }
+  return paths;
+}
+
+function loadIdentityManifest(manifestPath, contract) {
+  assertRootFile(manifestPath, '0644');
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  assertIdentityManifest(manifest, contract);
+  return manifest;
+}
+
+function assertIdentityManifest(manifest, contract) {
+  assert.strictEqual(manifest.schemaVersion, 1, 'identity-schema-version');
+  assert.strictEqual(manifest.matrixRevision, MATRIX_REVISION, 'identity-matrix-revision');
+  assert.strictEqual(manifest.cluster, contract.cluster, 'identity-cluster');
+  assert.strictEqual(manifest.policy && manifest.policy.kind, contract.policy, 'identity-policy');
+  assert(manifest.files && typeof manifest.files === 'object', 'identity-files');
+}
+
+function verifyPackageFiles(
+  paths,
+  manifest,
+  sandboxClass,
+  metadataReader = assertRootFile,
+  directoryReader = assertRootDirectory
+) {
+  const modes = {
+    launcher: '0755',
+    frontend: '0755',
+    wrapper: '0755',
+    electron: '0755',
+    chromeSandbox: sandboxClass === 'userns-only' ? '0755' : '4755',
+    policyAsset: '0644',
+  };
+  const result = {};
+  for (const [name, filePath] of Object.entries(paths)) {
+    if (name === 'identityManifest' || (name === 'policyAsset' && !filePath)) continue;
+    const metadata = metadataReader(filePath, modes[name]);
+    const expected = manifest.files[name];
+    assertIdentityHash(expected, metadata, name);
+    result[name] = publicFileMetadata(metadata);
+  }
+  result.identityManifest = publicFileMetadata(
+    metadataReader(paths.identityManifest, '0644')
+  );
+  const directories = {};
+  for (const directoryPath of new Set([
+    path.dirname(path.dirname(paths.launcher)),
+    path.dirname(paths.launcher),
+    path.dirname(paths.frontend),
+    path.dirname(path.dirname(paths.electron)),
+    path.dirname(path.dirname(path.dirname(paths.electron))),
+    path.dirname(path.dirname(path.dirname(path.dirname(paths.electron)))),
+    path.dirname(paths.electron),
+    path.dirname(paths.identityManifest),
+  ])) {
+    directories[directoryPath] = directoryReader(directoryPath);
+  }
+  return { files: result, directories };
+}
+
+function expectedPolicy(contract, executablePath) {
+  if (contract.policy === 'apparmor') {
+    return {
+      kind: 'apparmor',
+      assetPath: `/etc/apparmor.d/opt.daedalus.${contract.cluster}.electron`,
+      processLabel: executablePath,
+    };
+  }
+  if (contract.policy === 'selinux') {
+    return {
+      kind: 'selinux',
+      assetPath: `/usr/share/selinux/packages/daedalus-${contract.cluster}.cil`,
+    };
+  }
+  return { kind: 'none' };
+}
+
+function assertHelperForClass(helperMetadata, sandboxClass) {
+  assert.strictEqual(helperMetadata.uid, 0, 'helper-owner');
+  assert.strictEqual(helperMetadata.gid, 0, 'helper-group');
+  const expectedMode = sandboxClass === 'userns-only' ? '0755' : '4755';
+  assert.strictEqual(helperMetadata.mode, expectedMode, 'helper-mode');
+}
+
+function assertPolicyLabel(expectedLabel, rendererLabel, kind) {
+  assert(rendererLabel, 'missing-renderer-security-label');
+  const observed =
+    kind === 'apparmor' ? rendererLabel.replace(/\s+\(enforce\)$/, '') : rendererLabel;
+  assert.strictEqual(observed, expectedLabel, `${kind}-label-mismatch`);
+}
+
+function assertSafePolicyValue(value) {
+  assert(typeof value === 'string' && /^[A-Za-z0-9_.:/()-]+$/.test(value), 'policy-value');
+}
+
+function assertPolicyHostEvidence(expected, host) {
+  if (expected.kind === 'apparmor') {
+    assert.strictEqual(host.state, 'enforce', 'apparmor-not-enforcing');
+    assert(host.parserVersion, 'missing-apparmor-parser-version');
+    if (expected.parserVersion) {
+      assert.strictEqual(host.parserVersion, expected.parserVersion, 'apparmor-parser-abi');
+    }
+  } else if (expected.kind === 'selinux') {
+    assert.strictEqual(host.state, 'enforcing', 'selinux-not-enforcing');
+    assert.strictEqual(
+      host.electronFileContext,
+      expected.electronFileContext,
+      'selinux-electron-context-mismatch'
+    );
+    assert.strictEqual(
+      host.helperFileContext,
+      expected.helperFileContext,
+      'selinux-helper-context-mismatch'
+    );
+    assert.strictEqual(host.moduleLoaded, true, 'selinux-module-missing');
+  }
+}
+
+function observeUsernsAvailability(run = runHostCommand) {
+  const result = run('unshare', ['-Ur', 'true']);
+  if (result.error && result.error.code === 'ETIMEDOUT') throw new Error('userns-check-timeout');
+  if (result.error && result.error.code === 'ENOENT') throw new Error('userns-check-unavailable');
+  return { available: result.status === 0, check: 'unshare-Ur' };
+}
+
+function assertSandboxClassPrerequisites(sandboxClass, userns) {
+  if (sandboxClass === 'suid-only') {
+    assert.strictEqual(userns.available, false, 'userns-must-be-unavailable');
+  } else {
+    assert.strictEqual(userns.available, true, 'userns-required');
+  }
+}
+
+function hasApprovedSandboxRoute({ suid, userns }) {
+  return suid === true || userns === true;
+}
+
+function readSelinuxContext(filePath) {
+  const result = runHostCommand('stat', ['--format=%C', filePath]);
+  assert.strictEqual(result.status, 0, 'selinux-context-read');
+  const value = result.stdout.trim();
+  assertSafePolicyValue(value);
+  return value;
+}
+
+function collectPolicyEvidence(
+  contract,
+  paths,
+  manifest,
+  rendererEvidence,
+  dependencies = {}
+) {
+  const readFileSync = dependencies.readFileSync || fs.readFileSync;
+  const run = dependencies.run || runHostCommand;
+  const readContext = dependencies.readContext || readSelinuxContext;
+  const expected = expectedPolicy(contract, paths.electron);
+  if (expected.kind === 'none') return { kind: 'none', required: false };
+  const identity = manifest.policy;
+  assert(identity && identity.kind === expected.kind, 'identity-policy-kind');
+  assertSafePolicyValue(identity.processLabel);
+  assertPolicyLabel(identity.processLabel, rendererEvidence.securityLabel, expected.kind);
+
+  if (expected.kind === 'apparmor') {
+    assert.strictEqual(identity.processLabel, paths.electron, 'apparmor-attachment-path');
+    assertSafePolicyValue(identity.parserVersion);
+    const enabled = readFileSync('/sys/module/apparmor/parameters/enabled', 'utf8').trim();
+    assert(/^Y$/i.test(enabled), 'apparmor-disabled');
+    const profiles = readFileSync('/sys/kernel/security/apparmor/profiles', 'utf8');
+    assert(
+      profiles.split('\n').some((line) => line === `${identity.processLabel} (enforce)`),
+      'apparmor-profile-not-enforcing'
+    );
+    const parser = run('apparmor_parser', ['--version']);
+    assert.strictEqual(parser.status, 0, 'apparmor-parser-unavailable');
+    const parserMatch = `${parser.stdout}\n${parser.stderr}`.match(/version\s+([0-9.]+)/i);
+    assert(parserMatch, 'apparmor-parser-version');
+    assert.strictEqual(parserMatch[1], identity.parserVersion, 'apparmor-parser-abi');
+    const parserAcceptance = run('apparmor_parser', [
+      '--skip-kernel-load',
+      paths.policyAsset,
+    ]);
+    assert.strictEqual(parserAcceptance.status, 0, 'apparmor-profile-parse');
+    return {
+      kind: 'apparmor',
+      required: true,
+      state: 'enforce',
+      parserVersion: parserMatch[1],
+      profileIdentity: identity.processLabel,
+      rendererLabelMatches: true,
+      profileLoaded: true,
+      profileHashBound: true,
+      profileParserAccepted: true,
+    };
+  }
+
+  for (const name of [
+    'processLabel',
+    'electronFileContext',
+    'helperFileContext',
+    'module',
+  ]) {
+    assertSafePolicyValue(identity[name]);
+  }
+  const enforce = run('getenforce', []);
+  assert.strictEqual(enforce.status, 0, 'selinux-state-read');
+  assert.strictEqual(enforce.stdout.trim(), 'Enforcing', 'selinux-not-enforcing');
+  const modules = run('semodule', ['-l']);
+  assert.strictEqual(modules.status, 0, 'selinux-module-read');
+  const host = {
+    state: 'enforcing',
+    electronFileContext: readContext(paths.electron),
+    helperFileContext: readContext(paths.chromeSandbox),
+    moduleLoaded: modules.stdout
+      .split('\n')
+      .some((line) => line.trim().split(/\s+/)[0] === identity.module),
+  };
+  assertPolicyHostEvidence({ kind: 'selinux', ...identity }, host);
+  return {
+    kind: 'selinux',
+    required: true,
+    state: host.state,
+    processLabel: identity.processLabel,
+    electronFileContext: identity.electronFileContext,
+    helperFileContext: identity.helperFileContext,
+    module: identity.module,
+    rendererLabelMatches: true,
+    electronFileContextMatches: true,
+    helperFileContextMatches: true,
+    moduleLoaded: true,
+  };
+}
+
+function normalizePolicyEvidence(policy, privacy) {
+  if (policy.kind === 'apparmor') {
+    return {
+      ...policy,
+      profileIdentity: normalizedPath(policy.profileIdentity, privacy),
+    };
+  }
+  assertNoSensitiveContent(JSON.stringify(policy), privacy);
+  return policy;
 }
 
 async function waitForRenderer(window, timeoutMs) {
@@ -413,6 +1055,11 @@ async function runElectronProbe() {
   debug('electron-loaded');
   const executablePath = canonicalPath(process.execPath);
   const installRoot = canonicalPath(inferInstallRoot(executablePath));
+  const contract = readContractSelection(installRoot);
+  const host = normalizedHostEnvironment(readHostContract(contract));
+  const packagePaths = exactPackagePaths(installRoot, contract.cluster, contract.policy);
+  assert.strictEqual(executablePath, packagePaths.electron, 'unexpected-electron-path');
+  const identityManifest = loadIdentityManifest(packagePaths.identityManifest, contract);
   const probeRoot = canonicalPath(__dirname);
   const home = canonicalPath(os.homedir());
   const profileRoot = createProfileRoot();
@@ -429,6 +1076,11 @@ async function runElectronProbe() {
   let window;
   let probeSession;
   let failure;
+  let completedEvidence;
+  let rendererGone = false;
+  const rendererGoneHandler = () => {
+    rendererGone = true;
+  };
   const keepAliveDuringCleanup = () => undefined;
   app.on('window-all-closed', keepAliveDuringCleanup);
   const deadline = setTimeout(() => {
@@ -438,11 +1090,8 @@ async function runElectronProbe() {
     } catch (_error) {
       // The process exits fail-closed below even if Electron cleanup is unavailable.
     }
-    try {
-      fs.rmSync(profileRoot, { recursive: true, force: true });
-    } catch (_error) {
-      // The disposable operator profile remains host-local if forced cleanup fails.
-    }
+    // Do not start unbounded synchronous cleanup after the hard deadline.
+    // The disposable profile remains host-local for operator cleanup.
     app.exit(1);
   }, PROBE_TIMEOUT_MS);
   try {
@@ -466,6 +1115,7 @@ async function runElectronProbe() {
         webviewTag: false,
       },
     });
+    window.webContents.on('render-process-gone', rendererGoneHandler);
     debug('window-created');
 
     const rendererReady = waitForRenderer(window, PROBE_TIMEOUT_MS);
@@ -481,6 +1131,8 @@ async function runElectronProbe() {
     assert(Number.isSafeInteger(rendererPid) && rendererPid > 1, 'invalid-renderer-pid');
     const mainEvidence = readProcEvidence(process.pid, privacy);
     const rendererEvidence = readProcEvidence(rendererPid, privacy);
+    assert.strictEqual(Number(mainEvidence.status.Pid), process.pid, 'main-proc-pid');
+    assert.strictEqual(Number(rendererEvidence.status.Pid), rendererPid, 'renderer-proc-pid');
     if (process.env.DAEDALUS_PROBE_DEBUG === '1') {
       const typeArguments = rendererEvidence.argv.filter((argument) =>
         argument.startsWith('--type')
@@ -489,70 +1141,154 @@ async function runElectronProbe() {
         `sandbox-probe-renderer-type:${JSON.stringify(typeArguments)}\n`
       );
     }
-    assertRendererEvidence(mainEvidence, rendererEvidence);
+    assertRendererEvidence(mainEvidence, rendererEvidence, contract.sandboxClass);
     debug('renderer-verified');
 
-    const helperPath = path.join(path.dirname(executablePath), 'chrome-sandbox');
-    const wrapperPath = path.join(roots.installRoot, 'libexec', 'electron');
-    const helperMetadata = fileMetadata(helperPath);
-    const usableSetuidHelper =
-      helperMetadata.uid === 0 && (Number.parseInt(helperMetadata.mode, 8) & 0o4000) !== 0;
-    assert(!usableSetuidHelper, 'unexpected-usable-setuid-helper');
-    const evidence = {
-      schemaVersion: SCHEMA_VERSION,
+    const userns = observeUsernsAvailability();
+    assertSandboxClassPrerequisites(contract.sandboxClass, userns);
+    const packageIdentity = verifyPackageFiles(
+      packagePaths,
+      identityManifest,
+      contract.sandboxClass
+    );
+    assert(
+      hasApprovedSandboxRoute({
+        suid: packageIdentity.files.chromeSandbox.mode === '4755',
+        userns: userns.available,
+      }),
+      'no-approved-sandbox-route'
+    );
+    assertHelperForClass(
+      {
+        uid: packageIdentity.files.chromeSandbox.owner === 'root' ? 0 : -1,
+        gid: packageIdentity.files.chromeSandbox.group === 'root' ? 0 : -1,
+        mode: packageIdentity.files.chromeSandbox.mode,
+      },
+      contract.sandboxClass
+    );
+    const policy = collectPolicyEvidence(
+      contract,
+      packagePaths,
+      identityManifest,
+      rendererEvidence
+    );
+    assert(!rendererGone, 'renderer-exited-during-collection');
+    assert(!window.webContents.isDestroyed(), 'renderer-destroyed-during-collection');
+    assert.strictEqual(
+      window.webContents.getOSProcessId(),
+      rendererPid,
+      'renderer-pid-changed'
+    );
+    await assertRendererAfterLifecycleYield(
+      rendererEvidence,
+      rendererPid,
+      window.webContents,
+      () => rendererGone
+    );
+    const normalizedMain = normalizeProcessEvidence(
+      mainEvidence,
+      mainEvidence,
+      '<MAIN_PID>',
+      privacy
+    );
+    const normalizedRenderer = normalizeProcessEvidence(
+      rendererEvidence,
+      mainEvidence,
+      '<RENDERER_PID>',
+      privacy,
+      contract.policy !== 'none'
+    );
+    const paths = Object.fromEntries(
+      Object.entries(packagePaths).map(([name, filePath]) => [
+        name,
+        normalizedPath(filePath, privacy),
+      ])
+    );
+    completedEvidence = createEvidenceEnvelope({
       result: 'pass',
+      matrix: {
+        revision: contract.matrixRevision,
+        row: contract.matrixRow,
+        packageFamily: contract.packageFamily,
+        sandboxClass: contract.sandboxClass,
+        policy: contract.policy,
+        userns,
+      },
+      host,
       versions: {
         electron: process.versions.electron,
         chrome: process.versions.chrome,
-        kernel: os.release(),
       },
+      paths,
       files: {
-        electron: fileMetadata(executablePath),
-        chromeSandbox: helperMetadata,
-        wrapper: fileMetadata(wrapperPath),
-        probe: fileMetadata(__filename),
+        ...packageIdentity.files,
+        probe: publicFileMetadata(fileMetadata(__filename)),
       },
-      main: mainEvidence,
-      renderer: rendererEvidence,
+      directories: Object.entries(packageIdentity.directories).map(
+        ([directoryPath, metadata]) => ({
+          path: normalizedPath(directoryPath, privacy),
+          ...metadata,
+        })
+      ),
+      policy: normalizePolicyEvidence(policy, privacy),
+      main: normalizedMain,
+      renderer: normalizedRenderer,
       assertions: {
         noSandboxBypass: true,
         exactRendererPid: true,
+        rendererInstanceStable: true,
         chromiumProcessTypeRecorded: true,
         noNewPrivs: true,
         seccomp: true,
         zeroEffectiveCapabilities: true,
-        separateUserPidMountNamespaces: true,
-        separateUserAndGroupMaps: true,
-        noUsableSetuidHelper: true,
+        separatePidMountNamespaces: true,
+        separateUserNamespace: contract.sandboxClass !== 'suid-only',
+        separateUserAndGroupMaps: contract.sandboxClass !== 'suid-only',
+        helperContract: true,
+        policyContract: true,
       },
-    };
-    process.stdout.write(`${JSON.stringify(evidence, null, 2)}\n`);
+      failure: null,
+      diagnostics: {
+        sanitized: true,
+        rawHostDataExported: false,
+        stderrSummaryRequired: true,
+      },
+    });
   } catch (error) {
     failure = error;
-    writeFailure(error);
     process.exitCode = 1;
   } finally {
+    if (window && !window.isDestroyed()) {
+      window.webContents.removeListener('render-process-gone', rendererGoneHandler);
+    }
     try {
       if (window && !window.isDestroyed()) window.destroy();
     } catch (_error) {
       // Continue bounded cleanup and quit.
     }
-    if (probeSession) {
-      await withTimeout(
-        Promise.allSettled([
-          probeSession.clearStorageData(),
-          probeSession.clearCache(),
-        ]),
-        CLEANUP_TIMEOUT_MS
-      ).catch(() => undefined);
-    }
-    try {
-      fs.rmSync(profileRoot, { recursive: true, force: true });
-    } finally {
-      clearTimeout(deadline);
-    }
+    const cleanupFailure = await performCleanup(probeSession, profileRoot);
+    if (!failure && cleanupFailure) failure = cleanupFailure;
   }
   app.removeListener('window-all-closed', keepAliveDuringCleanup);
+  clearTimeout(deadline);
+  const matrixContext = {
+    revision: contract.matrixRevision,
+    row: contract.matrixRow,
+    packageFamily: contract.packageFamily,
+    sandboxClass: contract.sandboxClass,
+    policy: contract.policy,
+  };
+  const finalEvidence = failure
+    ? createFailureEvidence(failure, matrixContext, completedEvidence || {})
+    : completedEvidence;
+  assert(finalEvidence, 'missing-final-evidence');
+  assertNoSensitiveContent(JSON.stringify(finalEvidence), privacy);
+  process.stdout.write(`${JSON.stringify(finalEvidence, null, 2)}\n`);
+  if (failure) {
+    process.stderr.write(
+      `sandbox-probe-failed:${finalEvidence.failure.category}:${finalEvidence.failure.code}\n`
+    );
+  }
   app.exit(failure ? 1 : 0);
 }
 
@@ -573,6 +1309,7 @@ function rootsFromEnvironment() {
 function runStderrSanitizer(args) {
   const inputIndex = args.indexOf('--input');
   const exitCodeIndex = args.indexOf('--exit-code');
+  const probeIndex = args.indexOf('--probe-json');
   if (inputIndex === -1 || !args[inputIndex + 1]) throw new Error('missing-input');
   if (exitCodeIndex === -1 || !args[exitCodeIndex + 1]) {
     throw new Error('missing-exit-code');
@@ -581,7 +1318,43 @@ function runStderrSanitizer(args) {
   const privacy = privacyContext(roots);
   const rawBytes = fs.readFileSync(args[inputIndex + 1]);
   const summary = summarizeStderr(rawBytes, Number(args[exitCodeIndex + 1]), privacy);
-  process.stdout.write(`${JSON.stringify(summary, null, 2)}\n`);
+  let probeEvidence = createFailureEvidence(new Error('missing-probe-evidence'));
+  if (probeIndex !== -1 && args[probeIndex + 1] && fs.existsSync(args[probeIndex + 1])) {
+    probeEvidence = parseProbeEvidence(fs.readFileSync(args[probeIndex + 1], 'utf8'));
+  }
+  const evidence = mergeDiagnostics(probeEvidence, summary);
+  assertNoSensitiveContent(JSON.stringify(evidence), privacy);
+  process.stdout.write(`${JSON.stringify(evidence, null, 2)}\n`);
+}
+
+function parseProbeEvidence(value) {
+  try {
+    if (!value.trim()) throw new Error('empty');
+    const evidence = JSON.parse(value);
+    assert.strictEqual(evidence.schemaVersion, SCHEMA_VERSION, 'probe-schema-version');
+    return evidence;
+  } catch (_error) {
+    return createFailureEvidence(new Error('missing-probe-evidence'));
+  }
+}
+
+function mergeDiagnostics(probeEvidence, summary) {
+  const failed = summary.exitCode !== 0 || probeEvidence.result === 'fail';
+  return createEvidenceEnvelope({
+    ...probeEvidence,
+    result: failed ? 'fail' : 'pass',
+    failure:
+      probeEvidence.failure ||
+      (failed
+        ? { category: summary.category, code: `process-exit:${summary.exitCode}` }
+        : null),
+    diagnostics: {
+      ...summary,
+      sanitized: true,
+      rawHostDataExported: false,
+      stderrSummaryRequired: false,
+    },
+  });
 }
 
 async function runSelfTest() {
@@ -603,6 +1376,7 @@ async function runSelfTest() {
       `--user-data-dir=${roots.profileRoot}`,
       roots.probeRoot,
       '--type=renderer',
+      '--crashpad-handler-pid=4242',
     ],
     privacy
   );
@@ -611,6 +1385,7 @@ async function runSelfTest() {
     '--user-data-dir=<PROFILE_ROOT>',
     '<PROBE_ROOT>',
     '--type=renderer',
+    '--crashpad-handler-pid=<PID>',
   ]);
 
   const stderr = Buffer.from(
@@ -637,6 +1412,563 @@ async function runSelfTest() {
   );
   assert.strictEqual(categorizeStderr('Failed to move to new namespace', 1), 'namespace-denied');
   assert(hasForbiddenSwitch(['--no-sandbox']));
+
+  const mainEvidence = {
+    argv: ['<INSTALL_ROOT>/libexec/electron'],
+    status: {},
+    namespaces: { user: 'user:[1]', pid: 'pid:[1]', mnt: 'mnt:[1]' },
+    uidMap: '0 0 4294967295',
+    gidMap: '0 0 4294967295',
+    securityLabel: 'unconfined',
+  };
+  const rendererEvidence = {
+    argv: ['--type=renderer'],
+    status: {
+      NoNewPrivs: '1',
+      Seccomp: '2',
+      Seccomp_filters: '1',
+      CapEff: '0000000000000000',
+    },
+    namespaces: { user: 'user:[2]', pid: 'pid:[2]', mnt: 'mnt:[2]' },
+    uidMap: '0 1000 1',
+    gidMap: '0 1000 1',
+    securityLabel: '/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/electron (enforce)',
+  };
+  assertRendererEvidence(mainEvidence, rendererEvidence, 'userns-only');
+  assertRendererEvidence(mainEvidence, rendererEvidence, 'combined-unattributed');
+  assert.strictEqual(
+    parseProcessStartTime(
+      '42 (electron renderer) S 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 12345 20'
+    ),
+    '12345'
+  );
+  assertRendererInstance(
+    { status: { Pid: '42' }, startTime: '12345' },
+    { status: { Pid: '42' }, startTime: '12345' }
+  );
+  assert.throws(
+    () =>
+      assertRendererInstance(
+        { status: { Pid: '42' }, startTime: '12345' },
+        { status: { Pid: '42' }, startTime: '12346' }
+      ),
+    /renderer-instance-replaced/
+  );
+  const fixtureWebContents = {
+    isDestroyed: () => false,
+    getOSProcessId: () => 42,
+  };
+  await assertRendererAfterLifecycleYield(
+    { status: { Pid: '42' }, startTime: '12345' },
+    42,
+    fixtureWebContents,
+    () => false,
+    {
+      yieldToEvents: async () => undefined,
+      readEvidence: () => ({ status: { Pid: '42' }, startTime: '12345' }),
+    }
+  );
+  await assert.rejects(
+    assertRendererAfterLifecycleYield(
+      { status: { Pid: '42' }, startTime: '12345' },
+      42,
+      fixtureWebContents,
+      () => false,
+      {
+        yieldToEvents: async () => undefined,
+        readEvidence: () => ({ status: { Pid: '42' }, startTime: '12346' }),
+      }
+    ),
+    /renderer-instance-replaced/
+  );
+  assertRendererEvidence(
+    mainEvidence,
+    {
+      ...rendererEvidence,
+      namespaces: { ...rendererEvidence.namespaces, user: mainEvidence.namespaces.user },
+      uidMap: mainEvidence.uidMap,
+      gidMap: mainEvidence.gidMap,
+    },
+    'suid-only'
+  );
+  assert.throws(
+    () =>
+      assertRendererEvidence(
+        mainEvidence,
+        {
+          ...rendererEvidence,
+          namespaces: { ...rendererEvidence.namespaces, user: mainEvidence.namespaces.user },
+        },
+        'userns-only'
+      ),
+    /shared-user-namespace/
+  );
+
+  assertHelperForClass({ uid: 0, gid: 0, mode: '4755' }, 'suid-only');
+  assertHelperForClass({ uid: 0, gid: 0, mode: '4755' }, 'combined-unattributed');
+  assertHelperForClass({ uid: 0, gid: 0, mode: '0755' }, 'userns-only');
+  assert.throws(
+    () => assertHelperForClass({ uid: 1000, gid: 1000, mode: '4755' }, 'suid-only'),
+    /helper-owner/
+  );
+  assert.throws(
+    () => assertHelperForClass({ uid: 0, gid: 0, mode: '0755' }, 'suid-only'),
+    /helper-mode/
+  );
+  assertFileContract({ uid: 0, gid: 0, mode: '0755' }, '0755');
+  assert.throws(
+    () => assertFileContract({ uid: 1, gid: 0, mode: '0755' }, '0755'),
+    /file-owner/
+  );
+  assert.throws(
+    () => assertFileContract({ uid: 0, gid: 1, mode: '0755' }, '0755'),
+    /file-group/
+  );
+  assert.throws(
+    () => assertFileContract({ uid: 0, gid: 0, mode: '0775' }, '0755'),
+    /file-mode/
+  );
+  assertIdentityHash(
+    { sha256: 'a'.repeat(64) },
+    { sha256: 'a'.repeat(64) },
+    'electron'
+  );
+  assert.throws(
+    () =>
+      assertIdentityHash(
+        { sha256: 'a'.repeat(64) },
+        { sha256: 'b'.repeat(64) },
+        'electron'
+      ),
+    /identity-electron-mismatch/
+  );
+
+  const normalizedRenderer = normalizeProcessEvidence(
+    rendererEvidence,
+    mainEvidence,
+    '<RENDERER_PID>',
+    privacy
+  );
+  const normalizedJson = JSON.stringify(normalizedRenderer);
+  assert(!normalizedJson.includes('user:[2]'));
+  assert(!normalizedJson.includes('0 1000 1'));
+  assert.strictEqual(normalizedRenderer.pid, '<RENDERER_PID>');
+  assert.strictEqual(normalizedRenderer.namespaces.user.sameAsMain, false);
+  assert.strictEqual(normalizedRenderer.maps.uid.classification, 'remapped');
+  const publicMetadata = publicFileMetadata({
+    sha256: 'a'.repeat(64),
+    mode: '0755',
+    uid: 0,
+    gid: 0,
+    regularFile: true,
+    symlink: false,
+  });
+  assert.deepStrictEqual(publicMetadata.owner, 'root');
+  assert(!Object.hasOwn(publicMetadata, 'uid'));
+  const finalEvidenceFixture = {
+    schemaVersion: SCHEMA_VERSION,
+    result: 'pass',
+    paths: {
+      electron: '<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/electron',
+      policyAsset: '<APPARMOR_PROFILE>',
+    },
+    renderer: normalizedRenderer,
+    files: { electron: publicMetadata },
+    diagnostics: summarizeStderr(
+      Buffer.from(`AVC denied path=${roots.home}/private user=alice host=build-host`),
+      1,
+      privacy
+    ),
+  };
+  assertNoSensitiveContent(JSON.stringify(finalEvidenceFixture), privacy);
+  const privateFailure = createFailureEvidence(new Error('/home/alice/private'));
+  assert.strictEqual(privateFailure.schemaVersion, SCHEMA_VERSION);
+  assert.strictEqual(privateFailure.result, 'fail');
+  assert.deepStrictEqual(privateFailure.failure, {
+    category: 'other',
+    code: 'unclassified',
+  });
+  assert.strictEqual(privateFailure.diagnostics.stderrSummaryRequired, true);
+
+  const appArmor = expectedPolicy(
+    { policy: 'apparmor', cluster: 'mainnet' },
+    '/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/electron'
+  );
+  assertPolicyLabel(appArmor.processLabel, rendererEvidence.securityLabel, 'apparmor');
+  assert.throws(
+    () => assertPolicyLabel(appArmor.processLabel, 'unconfined', 'apparmor'),
+    /apparmor-label-mismatch/
+  );
+  assertPolicyHostEvidence(
+    { ...appArmor, parserVersion: '4.0' },
+    { state: 'enforce', parserVersion: '4.0' }
+  );
+  assert.throws(
+    () =>
+      assertPolicyHostEvidence(
+        { ...appArmor, parserVersion: '4.0' },
+        { state: 'complain', parserVersion: '4.0' }
+      ),
+    /apparmor-not-enforcing/
+  );
+  const selinux = expectedPolicy(
+    { policy: 'selinux', cluster: 'mainnet' },
+    '/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/electron'
+  );
+  const selinuxIdentity = {
+    ...selinux,
+    processLabel: 'system_u:system_r:reviewed_daedalus_t:s0',
+    electronFileContext: 'system_u:object_r:reviewed_electron_exec_t:s0',
+    helperFileContext: 'system_u:object_r:reviewed_sandbox_exec_t:s0',
+    module: 'reviewed_daedalus',
+  };
+  assertPolicyLabel(
+    selinuxIdentity.processLabel,
+    'system_u:system_r:reviewed_daedalus_t:s0',
+    'selinux'
+  );
+  assertPolicyHostEvidence(selinuxIdentity, {
+    state: 'enforcing',
+    electronFileContext: selinuxIdentity.electronFileContext,
+    helperFileContext: selinuxIdentity.helperFileContext,
+    moduleLoaded: true,
+  });
+  assert.throws(
+    () =>
+      assertPolicyLabel(
+        selinuxIdentity.processLabel,
+        'system_u:system_r:unconfined_t:s0',
+        'selinux'
+      ),
+    /selinux-label-mismatch/
+  );
+  assert.throws(
+    () =>
+      assertPolicyHostEvidence(selinuxIdentity, {
+        state: 'enforcing',
+        electronFileContext: 'system_u:object_r:bin_t:s0',
+        helperFileContext: 'system_u:object_r:bin_t:s0',
+        moduleLoaded: true,
+      }),
+    /selinux-electron-context-mismatch/
+  );
+
+  assert.deepStrictEqual(Object.keys(SUPPORT_MATRIX), [
+    'ubuntu-22.04',
+    'ubuntu-24.04',
+    'ubuntu-26.04',
+    'debian-12',
+    'debian-13',
+    'fedora-43',
+  ]);
+  assert.strictEqual(SUPPORT_MATRIX['ubuntu-24.04'].policy, 'apparmor');
+  assert.strictEqual(SUPPORT_MATRIX['debian-13'].policy, 'none');
+  assert.strictEqual(SUPPORT_MATRIX['fedora-43'].policy, 'selinux');
+  assert.strictEqual(SUPPORT_MATRIX['fedora-42'], undefined);
+  assert.strictEqual(SUPPORT_MATRIX['opensuse-leap-15.6'], undefined);
+  assert.strictEqual(MATRIX_REVISION, 'task-005-a-matrix-2026-08-14');
+  const matrixVersionFixtures = {
+    'ubuntu-22.04': ['22.04', '22.04.5', '24.04'],
+    'ubuntu-24.04': ['24.04', '24.04.3', '25.10'],
+    'ubuntu-26.04': ['26.04', '26.04.1', '26.10'],
+    'debian-12': ['12', '12.11', '13'],
+    'debian-13': ['13', '13.1', '12'],
+    'fedora-43': ['43', '43', '42'],
+  };
+  for (const [rowName, [base, point, rejected]] of Object.entries(
+    matrixVersionFixtures
+  )) {
+    const row = SUPPORT_MATRIX[rowName];
+    assert(row.versionPattern.test(base));
+    assert(row.versionPattern.test(point));
+    assert(!row.versionPattern.test(rejected));
+  }
+
+  const contractEnvironment = {
+    DAEDALUS_PROBE_MATRIX_ROW: 'ubuntu-24.04',
+    DAEDALUS_PROBE_MATRIX_REVISION: MATRIX_REVISION,
+    DAEDALUS_PROBE_SANDBOX_CLASS: 'userns-only',
+    DAEDALUS_PROBE_CLUSTER: 'mainnet',
+  };
+  const originalEnvironment = Object.fromEntries(
+    Object.keys(contractEnvironment).map((name) => [name, process.env[name]])
+  );
+  try {
+    Object.assign(process.env, contractEnvironment);
+    assert.deepStrictEqual(readContractSelection('/opt/daedalus/mainnet'), {
+      matrixRow: 'ubuntu-24.04',
+      matrixRevision: MATRIX_REVISION,
+      sandboxClass: 'userns-only',
+      cluster: 'mainnet',
+      packageFamily: 'deb',
+      policy: 'apparmor',
+      distributionId: 'ubuntu',
+      versionPattern: /^24\.04(?:\.\d+)?$/,
+    });
+    const parsedHost = parseOsRelease('ID=ubuntu\nVERSION_ID="24.04"\nHOME_URL="https://example.invalid"\n');
+    assert.deepStrictEqual(parsedHost, { id: 'ubuntu', versionId: '24.04' });
+    assertHostContract(readContractSelection('/opt/daedalus/mainnet'), parsedHost);
+    assert.throws(
+      () =>
+        assertHostContract(readContractSelection('/opt/daedalus/mainnet'), {
+          id: 'ubuntu',
+          versionId: '25.10',
+        }),
+      /matrix-version-mismatch/
+    );
+    process.env.DAEDALUS_PROBE_MATRIX_ROW = 'ubuntu-25.10';
+    assert.throws(
+      () => readContractSelection('/opt/daedalus/mainnet'),
+      /unsupported-matrix-row/
+    );
+    process.env.DAEDALUS_PROBE_MATRIX_ROW = 'ubuntu-24.04';
+    process.env.DAEDALUS_PROBE_MATRIX_REVISION = 'stale';
+    assert.throws(
+      () => readContractSelection('/opt/daedalus/mainnet'),
+      /unsupported-matrix-revision/
+    );
+    process.env.DAEDALUS_PROBE_MATRIX_REVISION = MATRIX_REVISION;
+    process.env.DAEDALUS_PROBE_SANDBOX_CLASS = 'suid-only';
+    assert.strictEqual(
+      readContractSelection('/opt/daedalus/mainnet').sandboxClass,
+      'suid-only'
+    );
+  } finally {
+    for (const [name, value] of Object.entries(originalEnvironment)) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+  }
+
+  const fixtureContract = {
+    matrixRevision: MATRIX_REVISION,
+    cluster: 'mainnet',
+    policy: 'apparmor',
+  };
+  const fixturePaths = exactPackagePaths(
+    '/opt/daedalus/mainnet',
+    'mainnet',
+    'apparmor'
+  );
+  const fixtureManifest = {
+    schemaVersion: 1,
+    matrixRevision: MATRIX_REVISION,
+    cluster: 'mainnet',
+    policy: {
+      kind: 'apparmor',
+      processLabel: fixturePaths.electron,
+      parserVersion: '4.0',
+    },
+    files: Object.fromEntries(
+      ['launcher', 'frontend', 'wrapper', 'electron', 'chromeSandbox', 'policyAsset'].map(
+        (name) => [name, { sha256: 'a'.repeat(64) }]
+      )
+    ),
+  };
+  assertIdentityManifest(fixtureManifest, fixtureContract);
+  assert.throws(
+    () => assertIdentityManifest({ ...fixtureManifest, cluster: 'preview' }, fixtureContract),
+    /identity-cluster/
+  );
+  const observedFixtureModes = {};
+  const verifiedPackage = verifyPackageFiles(
+    fixturePaths,
+    fixtureManifest,
+    'userns-only',
+    (filePath, expectedMode) => {
+      observedFixtureModes[filePath] = expectedMode;
+      return {
+        sha256: 'a'.repeat(64),
+        mode: expectedMode,
+        uid: 0,
+        gid: 0,
+        regularFile: true,
+        symlink: false,
+      };
+    },
+    () => ({ mode: '0755', owner: 'root', group: 'root' })
+  );
+  assert.strictEqual(verifiedPackage.files.chromeSandbox.mode, '0755');
+  assert.strictEqual(verifiedPackage.files.policyAsset.sha256, 'a'.repeat(64));
+  assert(Object.keys(verifiedPackage.directories).length >= 6);
+  assert.strictEqual(observedFixtureModes[fixturePaths.launcher], '0755');
+  assert.strictEqual(observedFixtureModes[fixturePaths.frontend], '0755');
+  assert.strictEqual(observedFixtureModes[fixturePaths.wrapper], '0755');
+  assert.strictEqual(observedFixtureModes[fixturePaths.electron], '0755');
+  assert.strictEqual(observedFixtureModes[fixturePaths.chromeSandbox], '0755');
+  assert.strictEqual(observedFixtureModes[fixturePaths.policyAsset], '0644');
+  assert.strictEqual(observedFixtureModes[fixturePaths.identityManifest], '0644');
+
+  const appArmorEvidence = collectPolicyEvidence(
+    { policy: 'apparmor', cluster: 'mainnet' },
+    fixturePaths,
+    fixtureManifest,
+    { securityLabel: `${fixturePaths.electron} (enforce)` },
+    {
+      readFileSync: (filePath) =>
+        filePath.endsWith('/enabled')
+          ? 'Y\n'
+          : `${fixturePaths.electron} (enforce)\n`,
+      run: () => ({ status: 0, stdout: 'AppArmor parser version 4.0', stderr: '' }),
+    }
+  );
+  assert.strictEqual(appArmorEvidence.profileHashBound, true);
+  assert.throws(
+    () =>
+      collectPolicyEvidence(
+        { policy: 'apparmor', cluster: 'mainnet' },
+        fixturePaths,
+        fixtureManifest,
+        { securityLabel: `${fixturePaths.electron} (enforce)` },
+        {
+          readFileSync: (filePath) =>
+            filePath.endsWith('/enabled')
+              ? 'Y\n'
+              : `${fixturePaths.electron} (enforce)\n`,
+          run: () => ({ status: 0, stdout: 'AppArmor parser version 3.0', stderr: '' }),
+        }
+      ),
+    /apparmor-parser-abi/
+  );
+
+  const selinuxPaths = exactPackagePaths(
+    '/opt/daedalus/mainnet',
+    'mainnet',
+    'selinux'
+  );
+  const selinuxManifest = {
+    ...fixtureManifest,
+    policy: {
+      kind: 'selinux',
+      processLabel: 'system_u:system_r:reviewed_daedalus_t:s0',
+      electronFileContext: 'system_u:object_r:reviewed_electron_exec_t:s0',
+      helperFileContext: 'system_u:object_r:reviewed_sandbox_exec_t:s0',
+      module: 'reviewed_daedalus',
+    },
+  };
+  const selinuxEvidence = collectPolicyEvidence(
+    { policy: 'selinux', cluster: 'mainnet' },
+    selinuxPaths,
+    selinuxManifest,
+    { securityLabel: selinuxManifest.policy.processLabel },
+    {
+      run: (command) =>
+        command === 'getenforce'
+          ? { status: 0, stdout: 'Enforcing\n', stderr: '' }
+          : { status: 0, stdout: 'reviewed_daedalus 1.0\n', stderr: '' },
+      readContext: (filePath) =>
+        filePath === selinuxPaths.electron
+          ? selinuxManifest.policy.electronFileContext
+          : selinuxManifest.policy.helperFileContext,
+    }
+  );
+  assert.strictEqual(selinuxEvidence.module, 'reviewed_daedalus');
+
+  assert.deepStrictEqual(
+    observeUsernsAvailability(() => ({ status: 0, stdout: '', stderr: '' })),
+    { available: true, check: 'unshare-Ur' }
+  );
+  assert.deepStrictEqual(
+    observeUsernsAvailability(() => ({ status: 1, stdout: '', stderr: '' })),
+    { available: false, check: 'unshare-Ur' }
+  );
+  assertSandboxClassPrerequisites('userns-only', { available: true });
+  assertSandboxClassPrerequisites('suid-only', { available: false });
+  assert.throws(
+    () => assertSandboxClassPrerequisites('combined-unattributed', { available: false }),
+    /userns-required/
+  );
+  assert.strictEqual(hasApprovedSandboxRoute({ suid: true, userns: false }), true);
+  assert.strictEqual(hasApprovedSandboxRoute({ suid: false, userns: true }), true);
+  assert.strictEqual(hasApprovedSandboxRoute({ suid: false, userns: false }), false);
+
+  const longSummary = summarizeStderr(
+    Buffer.from(`FATAL sandbox ${'x'.repeat(STDERR_LIMIT_BYTES + 100)}`),
+    1,
+    privacy
+  );
+  assert.strictEqual(longSummary.truncated, true);
+
+  const cleanupFailure = await performCleanup(null, '/tmp/fixture', {
+    remove: async () => {
+      throw new Error('fixture-remove-failure');
+    },
+  });
+  assert.strictEqual(cleanupFailure.message, 'profile-cleanup-failed');
+  let profileRemovalAttempted = false;
+  const sessionCleanupFailure = await performCleanup(
+    {
+      clearStorageData: async () => {
+        throw new Error('fixture-storage-failure');
+      },
+      clearCache: async () => undefined,
+    },
+    '/tmp/fixture',
+    {
+      remove: async () => {
+        profileRemovalAttempted = true;
+      },
+    }
+  );
+  assert.strictEqual(sessionCleanupFailure.message, 'session-cleanup-failed');
+  assert.strictEqual(profileRemovalAttempted, true);
+  const combinedCleanupFailure = await performCleanup(
+    {
+      clearStorageData: async () => {
+        throw new Error('fixture-storage-failure');
+      },
+      clearCache: async () => undefined,
+    },
+    '/tmp/fixture',
+    {
+      remove: async () => {
+        throw new Error('fixture-remove-failure');
+      },
+    }
+  );
+  assert.strictEqual(
+    combinedCleanupFailure.message,
+    'session-cleanup-failed:profile-cleanup-failed'
+  );
+  const unifiedFailure = createFailureEvidence(
+    cleanupFailure,
+    { revision: MATRIX_REVISION, row: 'ubuntu-24.04' },
+    createEvidenceEnvelope({ result: 'pass', host: { distributionId: 'ubuntu' } })
+  );
+  assert.strictEqual(unifiedFailure.result, 'fail');
+  assert.strictEqual(unifiedFailure.host.distributionId, 'ubuntu');
+  assert.strictEqual(unifiedFailure.failure.code, 'profile-cleanup-failed');
+  const mergedEvidence = mergeDiagnostics(
+    createEvidenceEnvelope({ result: 'pass', matrix: { revision: MATRIX_REVISION } }),
+    summarizeStderr(Buffer.alloc(0), 0, privacy)
+  );
+  assert.strictEqual(mergedEvidence.result, 'pass');
+  assert.strictEqual(mergedEvidence.diagnostics.stderrSummaryRequired, false);
+  assert.strictEqual(mergedEvidence.matrix.revision, MATRIX_REVISION);
+  for (const malformedProbe of ['', '{"schemaVersion":2', '{"schemaVersion":1}']) {
+    const malformedEvidence = mergeDiagnostics(
+      parseProbeEvidence(malformedProbe),
+      summarizeStderr(Buffer.from('FATAL sandbox failed'), 132, privacy)
+    );
+    assert.strictEqual(malformedEvidence.result, 'fail');
+    assert.strictEqual(malformedEvidence.failure.code, 'missing-probe-evidence');
+    assert.strictEqual(malformedEvidence.diagnostics.exitCode, 132);
+    assert.strictEqual(malformedEvidence.diagnostics.byteCount > 0, true);
+    assert.strictEqual(malformedEvidence.diagnostics.stderrSummaryRequired, false);
+  }
+
+  const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'daedalus-probe-fixture-'));
+  try {
+    const regularPath = path.join(fixtureRoot, 'regular');
+    const symlinkPath = path.join(fixtureRoot, 'symlink');
+    fs.writeFileSync(regularPath, 'fixture', { mode: 0o755 });
+    fs.symlinkSync(regularPath, symlinkPath);
+    assert.strictEqual(fileMetadata(regularPath).regularFile, true);
+    assert.throws(() => fileMetadata(symlinkPath), /expected-regular-file/);
+  } finally {
+    fs.rmSync(fixtureRoot, { recursive: true, force: true });
+  }
+
   await assert.rejects(
     withTimeout(new Promise(() => undefined), 5),
     /timeout/

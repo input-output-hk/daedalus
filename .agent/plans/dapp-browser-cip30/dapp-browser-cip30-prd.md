@@ -235,7 +235,7 @@ These are contract inputs, not production validators or dispatch code. Task-300 
 - Development may permit HTTP loopback only through an explicit development policy.
 - Guest networking is limited to policy-controlled HTTPS/WSS. WebRTC, STUN/TURN, WebTransport, QUIC, and other non-proxied transports are disabled unless a later compatibility review identifies a concrete required dApp and proves equivalent destination enforcement before enabling that transport.
 - No external-browser connector or inbound connector is implemented.
-- Linux product packages are system **`.deb`** and **`.rpm`** only, installing under `/opt/daedalus/<cluster>` with privileged postinst capable of SUID `chrome-sandbox` and/or AppArmor `userns` profiles. Portable self-extracting `.bin`, AppImage, Flatpak, Snap, and other Linux channels are rejected (research [06-linux-system-package-decision.md](./research/06-linux-system-package-decision.md)).
+- Linux product packages are system **`.deb`** and **`.rpm`** only, installing under `/opt/daedalus/<cluster>` with independently proven SUID or userns Chromium containment, AppArmor on approved Ubuntu rows, and SELinux on Fedora 43. Portable self-extracting `.bin`, AppImage, Flatpak, Snap, and other Linux channels are rejected (research [06-linux-system-package-decision.md](./research/06-linux-system-package-decision.md)).
 - Shelley software, Ledger, and Trezor wallets are in scope; Byron is excluded.
 - Persistent grants cover connection/read scopes only.
 - Every `signTx`, `signTxs`, `signData`, CIP-95 `signData`, `submitTx`, and `submitTxs` call requires trusted consent.
@@ -918,9 +918,13 @@ Session requirements:
 - **Rejected for Linux shipping:** portable self-extracting `.bin` to `$HOME/.daedalus/<cluster>`, AppImage, Flatpak, Snap, and other non-deb/rpm channels.
 - Install each cluster to `/opt/daedalus/<cluster>`, where `<cluster>` is the build-time installer cluster slug, so postinst can establish Chromium sandbox prerequisites and AppArmor can bind the exact Electron executable path:
   - root-owned `chrome-sandbox` mode `4755` when unprivileged user namespaces are unavailable;
-  - unprivileged user namespaces when the host supports them;
-  - AppArmor profile with `userns,` for the fixed Electron binary path on Ubuntu 24.04+ and other AppArmor hosts that restrict unprivileged userns (install only when `apparmor_parser` accepts the profile ABI).
-- Remove default `--no-sandbox` and `--disable-setuid-sandbox` launch configuration from development and packaged `.deb`/`.rpm` launchers.
+  - unprivileged user namespaces with a root-owned mode-`0755` non-SUID helper when that independently proven route is used;
+  - AppArmor profile with `userns,` for the fixed Electron binary path on every supported Ubuntu row;
+  - SELinux process and exact Electron/helper file contexts on Fedora 43.
+- Authoritative x86_64 matrix revision `task-005-a-matrix-2026-08-14` supports Ubuntu 22.04.x, 24.04.x, and 26.04.x LTS; Debian 12.x and 13.x; and Fedora 43. No Ubuntu interim row is currently enabled; each future interim release requires a reviewed matrix revision and installed-artifact certification. Fedora 42, openSUSE Leap 15.6, EOL rows, and every other omitted row are dApp-disabled.
+- A supported row may pass through either independently proven SUID or userns containment. Ubuntu requires AppArmor, Fedora 43 requires SELinux, and Debian requires no package policy asset by default. A listed-row setup failure refuses package configuration; omitted rows may install wallet-only without remote guest launch or unapproved host-policy changes.
+- Tasks 108/109 ship a root-owned identity manifest at `/opt/daedalus/<cluster>/share/daedalus-sandbox-identity.json`; the probe binds exact package hashes and task-reviewed policy identity to live exact-path files and independently observed renderer/host policy evidence.
+- Tasks 108/109 produce flag-free `.deb`/`.rpm` launchers. Task-103 later removes remaining development/legacy `--no-sandbox` and `--disable-setuid-sandbox` defaults and enforces runtime rejection/canary behavior.
 - Detect `--no-sandbox`, sandbox-disabling environment variables, and unsupported packaging at runtime.
 - Keep Daedalus wallet functionality available where practical, but hide and reject dApp guest launch when OS sandbox proof is unavailable.
 - Never auto-retry with `--no-sandbox` and never weaken containment for remote content.
@@ -1511,7 +1515,7 @@ Forbidden from observability and non-authoritative storage:
 - Sibling `../cardano-wallet`: API, wallet core, Shelley transaction, derivation/discovery, network layer, local-state-query, pending-submission, and SQLite state modules.
 - `flake.nix`, `flake.lock`: pin the reviewed backend revision.
 - `nix/internal/x86_64-linux.nix`: sandbox-safe `.deb`/`.rpm` launchers and package outputs.
-- Linux `.deb` and `.rpm` packaging (postinst SUID helper, AppArmor profile, desktop entries, update path).
+- Linux `.deb` and `.rpm` packaging (independently proven SUID or userns route, mandatory Ubuntu AppArmor/Fedora 43 SELinux, identity manifest, desktop entries, update path).
 - Retire `nix/internal/linux-self-extracting-archive.sh` and portable `.bin` shipping once task-110 migration completes.
 - Windows packaging source-map/output cleanup for the added preload where applicable.
 
@@ -1529,7 +1533,7 @@ Forbidden from observability and non-authoritative storage:
 
 ### Phase 1: Electron And IPC Security Foundation
 
-- Prove and implement Linux `.deb`/`.rpm` packaging with Chromium OS sandbox (SUID and/or userns + AppArmor), remove default sandbox-disabling launch flags, and retire the portable `.bin`.
+- Prove and implement Linux `.deb`/`.rpm` packaging with independently proven SUID or userns Chromium containment, AppArmor on Ubuntu, and SELinux on Fedora 43; remove default sandbox-disabling launch flags and retire the portable `.bin`.
 - Lock trusted main navigation and popup/external URL handling.
 - Sender/frame-scope all privileged IPC.
 - Build the dedicated guest preload and guest manager only after privileged IPC migration, behind a disabled feature flag, with non-HTTPS/WSS transport stacks disabled.
@@ -1776,7 +1780,7 @@ All migrations must be versioned, atomic, and fail closed. Wallet funds remain g
 | Remote content reaches existing privileged IPC | Authenticate every existing handler and keep guest on a separate scoped gateway. |
 | Public dApp hostname resolves or rebinds to a private destination | Enforce IP-literal and connection-bound DNS destination policy for initial and subsequent HTTPS/WSS connections; disable Diagnostics launch if its initial destination cannot be proven. |
 | Guest bypasses HTTPS/WSS policy through another Chromium transport | Disable WebRTC/data channels, STUN/TURN, WebTransport, QUIC, and non-proxied transports; any future compatibility exception requires evidence and equivalent enforcement. |
-| Linux guest is only renderer-sandboxed, not OS-sandboxed | Ship `.deb`/`.rpm` with SUID/AppArmor/userns, remove global flags, prove packaged sandboxing, fail feature closed otherwise. |
+| Linux guest is only renderer-sandboxed, not OS-sandboxed | Ship `.deb`/`.rpm` with independently proven SUID or userns containment plus required Ubuntu AppArmor/Fedora SELinux policy, remove global flags, prove packaged sandboxing, and fail the feature closed otherwise. |
 | Portable `.bin` cannot privilege chrome-sandbox | Rejected: system packages only (research 06). |
 | Approval summary differs from signed bytes | Main retains immutable bytes; shared exact parser; signer hash and result verification. |
 | DApp changes outer `isValid` after signing | Show maximum collateral risk at signing; separately review exact submission envelope. |

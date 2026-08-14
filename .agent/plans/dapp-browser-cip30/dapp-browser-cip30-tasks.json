@@ -3,7 +3,7 @@
     "title": "Embedded dApp Browser And CIP-30 Wallet Connector Tasks",
     "created": "2026-08-07",
     "updated": "2026-08-14",
-    "version": "1.7.0",
+    "version": "1.7.1",
     "totalTasks": 86,
     "prdReference": ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
       "description": "Security- and standards-gated implementation graph for a wallet-scoped sandboxed dApp browser with CIP-30, CIP-8, CIP-95, CIP-103, gated CIP-104/CIP-142, software/hardware signing, ordered batch signing and submission, and soft collateral management.",
@@ -212,7 +212,9 @@
           "id": "task-005-a",
           "title": "Freeze Linux .deb/.rpm sandbox packaging contract",
           "description": "Freeze the accepted system-package contract at /opt/daedalus/<cluster>, the authoritative support matrix, SUID/userns/AppArmor/SELinux post-install behavior, exact-renderer probe contract, and fail-closed behavior before package implementation.",
-          "status": "pending",
+          "status": "completed",
+          "completedAt": "2026-08-14",
+          "completedNotes": "Approved matrix revision task-005-a-matrix-2026-08-14 freezes six x86_64 rows, either-route SUID/userns containment, mandatory Ubuntu AppArmor/Fedora 43 SELinux, exact /opt paths, identity-manifest-bound package/policy evidence, privacy-safe exact-renderer probe schema v2, fail-closed omitted hosts, and downstream task ownership. Installed package certification remains task-005-b.",
           "priority": "critical",
           "estimatedHours": 8,
           "dependencies": ["task-001"],
@@ -224,7 +226,9 @@
           ],
           "implementationNotes": [
             "Use /opt/daedalus/<cluster> where <cluster> is the build-time installer cluster slug; Electron and chrome-sandbox live under that exact tree and AppArmor profiles bind its exact executable path.",
-            "Obtain the release-owner-authoritative Debian/Ubuntu and RPM-family distribution/version matrix; an owner and future date are handoff evidence only, not completion evidence.",
+            "Matrix revision task-005-a-matrix-2026-08-14 supports x86_64 Ubuntu 22.04.x/24.04.x/26.04.x, Debian 12.x/13.x, and Fedora 43; future Ubuntu interim releases require explicit revision and certification, while omitted/EOL rows are wallet-only and dApp-disabled.",
+            "Every supported row may use either independently proven root-owned mode-4755 SUID or mode-0755 userns containment; Ubuntu requires AppArmor, Fedora 43 requires SELinux, and Debian has no package policy asset by default.",
+            "Tasks 108/109 ship a root-owned mode-0644 identity manifest under /opt/daedalus/<cluster>/share that binds package hashes and reviewed exact policy identity for probe comparison.",
             "Adapt the exact-renderer /proc probe contract for root-owned mode-4755 chrome-sandbox and user-namespace paths without accepting process.sandboxed alone.",
             "Freeze task-108/109 flag-free package launchers and post-install contracts; task-103 owns only remaining development/legacy bypass removal plus runtime rejection and canary behavior."
           ],
@@ -232,7 +236,7 @@
             "The .deb/.rpm strategy and exact /opt/daedalus/<cluster> layout are frozen in research 06 and the PRD.",
             "The actual release-owner-authoritative support matrix and revision are recorded without claiming unnamed distributions.",
             "The exact-renderer probe/evidence contract covers approved SUID-helper and user-namespace paths with deterministic privacy controls.",
-            "Task-108/109 post-install SUID/AppArmor/SELinux and flag-free launcher contracts are concrete and internally consistent.",
+            "Task-108/109 post-install either-route SUID/userns, mandatory Ubuntu AppArmor/Fedora 43 SELinux, identity-manifest, and flag-free launcher contracts are concrete and internally consistent.",
             "Unsupported-host and sandbox-disabling behavior remains fail closed with no automatic unsandboxed retry."
           ],
           "securityNotes": [
@@ -383,7 +387,7 @@
         {
           "id": "task-108",
           "title": "Implement Linux .deb system package with sandbox postinst",
-          "description": "Produce a root-installable .deb that installs Daedalus under a fixed /opt path, configures chrome-sandbox SUID and/or AppArmor userns profile in postinst, and launches without sandbox-disabling flags.",
+          "description": "Produce a root-installable .deb that installs Daedalus under the fixed /opt layout, configures an approved SUID or userns route plus mandatory exact-path AppArmor on every supported Ubuntu row, and launches without sandbox-disabling flags.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 32,
@@ -395,7 +399,7 @@
             "README.md"
           ],
           "implementationNotes": [
-            "Follow electron-builder-style postinst: SUID chrome-sandbox when userns unavailable; AppArmor profile for Ubuntu 24.04+ when apparmor_parser accepts the profile ABI.",
+            "Follow the frozen contract on every approved Ubuntu row: either independently proven SUID or userns containment, exact-path AppArmor enforcement, and a root-owned identity manifest binding package hashes and reviewed policy identity.",
             "Fixed install path under /opt; desktop entry and wrapper must not pass --no-sandbox.",
             "Do not ship AppImage, Flatpak, Snap, or portable .bin from this task.",
             "Wallet data remains under XDG_DATA_HOME/Daedalus; package must not delete user wallet state on install/upgrade.",
@@ -403,19 +407,19 @@
           ],
           "acceptance": [
             "nix build produces an installable .deb for supported clusters.",
-            "postinst establishes the reviewed sandbox helper and/or AppArmor profile contract.",
+            "postinst establishes an approved sandbox helper route and the mandatory reviewed AppArmor profile contract on every supported Ubuntu row.",
             "Installed launcher omits sandbox-disabling switches.",
             "Package-equivalent sandbox probe can target the installed .deb tree.",
             "README and release docs describe .deb install, not portable .bin."
           ],
           "securityNotes": [
-            "Privileged postinst is required for SUID/AppArmor; review postinst scripts for least privilege and no network fetch."
+            "Privileged postinst is required for the approved SUID or userns setup plus mandatory Ubuntu AppArmor and the identity manifest; review it for least privilege and no network fetch."
           ]
         },
         {
           "id": "task-109",
           "title": "Implement Linux .rpm system package with sandbox postinst",
-          "description": "Produce a root-installable .rpm equivalent to the .deb layout with postinst SUID chrome-sandbox and SELinux-safe sandbox startup on Fedora/RHEL-class hosts.",
+          "description": "Produce a root-installable .rpm equivalent to the .deb layout with SUID or userns Chromium containment and SELinux-safe startup on the approved Fedora 43 row.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 24,
@@ -428,14 +432,14 @@
           ],
           "implementationNotes": [
             "Share /opt layout and launcher contracts with task-108 where practical.",
-            "Handle RPM %post SUID helper; document any SELinux file contexts required for sandbox.",
+            "Handle the reviewed SUID/userns route, exact Fedora 43 SELinux process and Electron/helper file contexts, module identity, and root-owned identity manifest in %post.",
             "Do not ship AppImage, Flatpak, Snap, or portable .bin."
           ],
           "acceptance": [
             "nix build produces an installable .rpm for supported clusters.",
             "%post establishes the reviewed sandbox helper contract.",
             "Installed launcher omits sandbox-disabling switches.",
-            "Sandbox probe can target the installed .rpm tree on a Fedora/RHEL-class host."
+            "Sandbox probe can target the installed .rpm tree on Fedora 43."
           ],
           "securityNotes": [
             "Same fail-closed dApp rules as .deb; no unsandboxed fallback."
