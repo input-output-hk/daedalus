@@ -13,8 +13,8 @@ Production dApp launch remains disabled.
 
 - Task-005 status: `cancelled`; its negative portable evidence is retained and
   the product strategy moved to system packages.
-- Task-005-a status: `pending`; its contract scope remains incomplete until the
-  actual authoritative support matrix and system-package probe contract are frozen.
+- Task-005-a is `completed`: matrix revision `task-005-a-matrix-2026-08-14`,
+  package/evidence contract, schema-v2 probe, and implementation review are approved.
 - Task-005-b status: `pending`; certification requires `.deb`/`.rpm` packaged
   sandbox proof after tasks 108 and 109 produce installed artifacts.
 - Product decision (2026-08-12): ship Linux as `.deb` and `.rpm` only; reject
@@ -37,8 +37,9 @@ root-owned mode-`4755` helper; Ubuntu 24.04 AppArmor userns policy is
 path-sensitive; the portable proof variant failed sandbox bootstrap.
 
 **Accepted strategy:** privileged system packages (`.deb` and `.rpm`) installing
-to `/opt/daedalus/<cluster>` with postinst SUID `chrome-sandbox` and/or AppArmor
-`userns` profile, no process-wide sandbox disablement, fail-closed dApp canary.
+to `/opt/daedalus/<cluster>` with independently proven SUID or userns
+containment, mandatory AppArmor on supported Ubuntu rows, mandatory SELinux on
+Fedora 43, no process-wide sandbox disablement, and a fail-closed dApp canary.
 Full decision text, rejections, ownership, and migration notes:
 [06-linux-system-package-decision.md](./06-linux-system-package-decision.md).
 
@@ -115,7 +116,7 @@ remote content, persistent session, or application code. Main identifies the
 exact renderer through `webContents.getOSProcessId()` and reads that PID's
 allowlisted Linux `/proc` evidence.
 
-A positive result requires all of the following from the same renderer PID:
+A positive result always requires all of the following from the same renderer PID:
 
 - the PID comes from Electron's documented `webContents.getOSProcessId()` API;
 - command line records Chromium's process type and no known sandbox bypass. On
@@ -126,10 +127,23 @@ A positive result requires all of the following from the same renderer PID:
 - `NoNewPrivs: 1`;
 - `Seccomp: 2` and a positive `Seccomp_filters` count when the kernel exposes it;
 - zero `CapEff`;
-- user, PID, and mount namespaces differ from the Electron main process;
-- user/group namespace maps differ from the Electron main process;
+- PID and mount namespaces differ from the Electron main process;
 - installed Electron, wrapper, helper, and probe hashes and modes are recorded.
-- the installed helper is not both root-owned and setuid.
+
+The selected evidence route adds mechanism-specific requirements:
+
+- `userns-only`: independently available userns; distinct renderer user
+  namespace and UID/GID maps; exact regular non-symlink helper `0:0` mode `0755`;
+- `suid-only`: independently unavailable userns; exact regular non-symlink
+  helper `0:0` mode `4755`; no distinct user namespace/map assertion;
+- `combined-unattributed`: userns available and helper `0:0` mode `4755`, but no
+  claim about which route Chromium selected without a separate isolation run.
+
+Ubuntu rows also require the exact renderer process AppArmor label and package
+profile hash. Fedora 43 requires the exact renderer SELinux label, package policy
+hash, and exact Electron/helper file contexts. Debian rows require no package
+policy asset in the current matrix. A policy loaded for another process or file
+metadata without exact renderer correlation cannot pass.
 
 The probe refuses `ELECTRON_DISABLE_SANDBOX`, refuses an Electron executable
 outside an installed `libexec` tree, emits deterministic JSON, removes its
@@ -148,9 +162,11 @@ Debug mode emits only fixed stage names and the filtered Chromium process-type
 argument; it emits no path or arbitrary application data.
 
 The historical `noUsableSetuidHelper` assertion applied only to the rejected
-portable candidate. For `.deb`/`.rpm` proof, the probe must validate the approved
-root-owned helper contract when userns are unavailable (mode `4755`, root-owned)
-and must record helper identity when userns are used without SUID.
+portable candidate. Schema version 2 instead requires an approved matrix row,
+matrix revision, cluster, mechanism class, and independently observed userns
+state. It independently matches `ID` and `VERSION_ID` from `/etc/os-release`
+against the selected row, rejects omitted rows, and validates the corresponding
+helper contract without exporting unrelated OS-release fields or URLs.
 
 Run the dependency-free redaction golden test before host execution:
 
@@ -161,7 +177,8 @@ node --check scripts/linux-chromium-sandbox-probe/main.cjs
 
 ## Evidence Privacy
 
-Raw argv, command lines, environment, paths, and stderr remain in a mode-`0700`
+Raw argv, command lines, environment, paths, numeric PIDs, namespace inode IDs,
+UID/GID maps, process labels, policy/audit output, and stderr remain in a mode-`0700`
 directory on the disposable host and must not be committed or transferred. The
 exported records use the following deterministic substitutions, longest root
 first:
@@ -173,14 +190,22 @@ first:
 | Temporary Electron profile | `<PROFILE_ROOT>` |
 | Disposable home | `<HOME>` |
 
-Argv remains an ordered JSON string array. Stderr export contains only exit
+Export uses `<MAIN_PID>` and `<RENDERER_PID>`, namespace `sameAsMain` booleans,
+and map `identity`/`remapped` classifications rather than raw identifiers. It
+contains only the approved matrix row/revision, package family, mechanism class,
+allowlisted distro/version/kernel/session fields, exact-renderer normalized
+policy label, exact-file normalized contexts, package/profile hashes, and fixed
+assertion results. Successes and failures use schema version 2; failures include
+only fixed category/code plus the selected approved matrix context when it was
+validated. Argv remains an ordered JSON string array. Stderr export contains only exit
 code, byte count, SHA-256 of raw bytes, one fixed category, a sanitized UTF-8
 excerpt of at most 8192 bytes, and a truncation marker when applicable. The
 sanitizer applies component-boundary root replacement longest-first; removes
 all URI schemes; removes usernames and hostnames case-insensitively; removes
 sensitive environment-derived values and assignment values; replaces remaining
 absolute paths across punctuation delimiters; and rejects export if prohibited
-content remains. It retains only fixed probe/fatal/sandbox/AppArmor/userns lines
+content remains. Policy labels and audit excerpts receive the same sanitizer and
+residual-leak rejection. It retains only fixed probe/fatal/sandbox/AppArmor/userns/SELinux lines
 from stderr and substitutes `<NON_PROBE_STDERR_REDACTED>` when raw stderr has no
 relevant line. Raw-byte count and hash still preserve correlation. Golden tests
 cover braces/brackets, `file://`, mixed-case identity data, values outside an
@@ -189,22 +214,18 @@ Do not include a token reverse map in returned evidence.
 
 ## Required Inputs
 
-Packaging decision is complete (`system_package` via `.deb`/`.rpm`; see research
-`06`). Before task-005-a contract completion, release/product engineering must
-provide the actual matrix in item 1; an owner and future delivery date records
-an in-progress handoff only. Before task-005-b certification, release/product engineering
-must provide items 2 through 5:
-provide:
+Packaging decision and matrix revision `task-005-a-matrix-2026-08-14` are
+complete; see research `06`. Before task-005-b certification, release/product
+engineering must provide:
 
-1. The authoritative supported x86_64 Linux distribution/version matrix and
-   reviewed revision for `.deb` and `.rpm` rows.
-2. One disposable default-policy host for every enabled matrix row.
-3. A snapshotted disposable host where the selected sandbox prerequisite can
+1. One disposable default-policy host for every enabled matrix row.
+2. Snapshotted disposable hosts where each accepted sandbox route or required
+   AppArmor/SELinux policy class can
    safely be denied, including rollback access.
-4. Exact `.deb` and `.rpm` proof artifacts from task-108/109 (or package-
+3. Exact `.deb` and `.rpm` proof artifacts from task-108/109 (or package-
    equivalent proof builds). The portable `.bin` proof artifact below is
    diagnostic only and is not a release candidate.
-5. A host-local Node.js runtime for the sanitizer (evidence tool only).
+4. A host-local Node.js runtime for the sanitizer (evidence tool only).
 
 No wallet profile, credentials, funds, Cardano network, hardware wallet, dApp,
 or remote URL is needed. Prefer disposable VMs; do not install proof packages
@@ -239,31 +260,24 @@ same source is unnecessary unless the packaging strategy or probe changes;
 neither its successful construction nor its fail-closed startup is release
 certification.
 
-## Positive Host Procedure
+## Installed System-Package Certification Handoff
 
-This procedure is retained for reproduction of the current portable-package
-candidate. Planner must revise installation, helper, and identity checks if
-`system_package` is selected; it is not valid to reuse portable assumptions for
-a privileged package.
+Task-005-b repeats this procedure for all six matrix rows. It uses exact installed
+task-108/109 artifacts and never substitutes the historical portable package,
+Nix-store Electron, or `node_modules` Electron.
 
-Repeat for every release-owner-confirmed matrix row. Use the same artifact hash
-for all rows unless a product-owned reason requires separate artifacts.
-
-1. Create a disposable user or VM snapshot and a fresh `HOME`. Confirm no real
-   `$HOME/.daedalus/<cluster>` data is present.
-2. Record only distribution ID/version, kernel release, desktop/session type,
-   and relevant namespace/AppArmor settings. Do not record hostname, username,
-   full home path, URLs from `/etc/os-release`, or unrelated process state.
-3. Install the self-extracting artifact under the disposable `HOME`.
-4. Set `INSTALL_ROOT` to the resulting `$HOME/.daedalus/<cluster>` and
-   `PROBE_ROOT` to the checked-in probe directory. Create a host-local mode-0700
-   evidence directory outside the installed wallet profile.
-5. Confirm the launch environment does not define `ELECTRON_DISABLE_SANDBOX`
-   and the wrapper does not add any forbidden switch.
-6. Choose a nonexistent `PROFILE_ROOT` below `RAW_EVIDENCE`. Run the exact
-   installed wrapper with an external pre-script deadline, preserving raw stderr
-   only on the host. `DAEDALUS_PROBE_DEBUG=1` emits fixed milestones useful when
-   native startup permits the script to load:
+1. Install the package in a disposable snapshotted VM with a fresh `HOME`.
+2. Record only allowlisted distro/version, kernel release, session type, and
+   matrix-required userns/AppArmor/SELinux fields in raw host-local evidence.
+3. Set `INSTALL_ROOT=/opt/daedalus/<cluster>`, create a mode-0700 raw evidence
+   directory outside wallet state, and verify exact package paths, ownership,
+   modes, identity-manifest-bound hashes, policy assets, and flag-free launchers.
+4. Select `userns-only`, `suid-only`, or `combined-unattributed` from observed
+   prerequisites. A supported row may pass through either independently proven
+   route. Combined evidence cannot claim route attribution without isolation.
+5. Choose a nonexistent `PROFILE_ROOT` below `RAW_EVIDENCE`. Run the exact
+   installed Electron wrapper with the frozen matrix inputs and an external
+   deadline; preserve raw stderr only on the host:
 
 ```bash
 set +e
@@ -271,13 +285,17 @@ timeout --signal=TERM --kill-after=5s 30s \
   env -u ELECTRON_DISABLE_SANDBOX \
     DAEDALUS_PROBE_DEBUG=1 \
     DAEDALUS_PROBE_PROFILE_ROOT="$PROFILE_ROOT" \
+    DAEDALUS_PROBE_MATRIX_REVISION="task-005-a-matrix-2026-08-14" \
+    DAEDALUS_PROBE_MATRIX_ROW="<ROW>" \
+    DAEDALUS_PROBE_SANDBOX_CLASS="<CLASS>" \
+    DAEDALUS_PROBE_CLUSTER="<cluster>" \
     "$INSTALL_ROOT/libexec/electron" "$PROBE_ROOT/main.cjs" \
     >"$RAW_EVIDENCE/probe.json" 2>"$RAW_EVIDENCE/stderr.raw"
 PROBE_EXIT=$?
 set -e
 ```
 
-7. Sanitize stderr on that same host using the same `PROFILE_ROOT` value. The
+6. Sanitize stderr on that same host using the same `PROFILE_ROOT` value. The
    probe refuses to reuse an existing profile path and removes the newly created
    directory during normal cleanup.
 
@@ -288,16 +306,22 @@ DAEDALUS_PROBE_PROFILE_ROOT="$PROFILE_ROOT" \
 DAEDALUS_PROBE_HOME="$HOME" \
 node "$PROBE_ROOT/main.cjs" sanitize-stderr \
   --input "$RAW_EVIDENCE/stderr.raw" --exit-code "$PROBE_EXIT" \
-  >"$RAW_EVIDENCE/stderr-summary.json"
+  --probe-json "$RAW_EVIDENCE/probe.json" \
+  >"$RAW_EVIDENCE/final-evidence.json"
 ```
 
-8. Validate both JSON documents and inspect them for raw roots, usernames, URLs,
-   hostnames, environment values, and unrelated process data before transfer.
-9. Return only normalized JSON, stderr summary, artifact/source/proof-patch
-   hashes, normalized host-policy fields, installed helper ownership/mode, and
-   the expected/actual result. Keep raw evidence host-local and restricted.
-10. At least one passing run must use the desktop-installed home-directory path,
-    not a Nix store path or unpackaged Electron.
+7. The probe independently runs `unshare -Ur true`; reads exact renderer labels;
+   checks AppArmor enablement, loaded enforcing profile, manifest-reviewed parser
+   version, and non-loading parse acceptance of the exact hashed profile; or
+   checks SELinux enforcing state, installed reviewed module, and exact-file
+   contexts against the root-owned identity manifest. Debian supplies no policy
+   asset. Validate all exported JSON for residual paths, identities, raw
+   PIDs/namespaces/maps, URLs, environment values, and unrelated process data
+   before transfer.
+8. Treat `probe.json` as host-local intermediate data. Return only the merged
+   schema-v2 `final-evidence.json`, artifact/source/lock/package hashes,
+   installed runtime/helper/policy identities, exact-file contexts, bypass
+   checks, and expected/actual result. Keep raw evidence host-local.
 
 Expected positive result: exit `0`, result `pass`, all exact-renderer assertions
 true, and no sandbox-disabling argument or environment state.
@@ -306,32 +330,27 @@ An external `timeout` exit (`124` or forced-kill equivalent), native signal
 exit, missing probe JSON, or sanitized `<NON_PROBE_STDERR_REDACTED>` result is a
 fail-closed diagnostic outcome, not positive proof.
 
-## Restricted-Userns Procedure
-
-This procedure is provisional until the packaging decision and matrix are
-approved. A system-managed helper strategy may require a different negative
-case while preserving fail-closed/no-retry behavior.
+## Denied-Prerequisite Procedures
 
 Run only in a disposable snapshotted VM. Release engineering must choose and
 record the supported distribution's documented policy mechanism; do not apply
 generic sysctl advice to a primary workstation.
 
-1. Record the original namespace/AppArmor policy and snapshot identifier.
-2. Deny unprivileged user namespaces through that distribution's supported
-   policy. Independently confirm denial with `unshare -Ur true` or the
-   distribution-approved equivalent.
-3. Run the same default proof artifact and command without a sandbox bypass.
-4. Require nonzero startup/probe failure. Inspect process/launcher evidence to
-   confirm there was no retry with `--no-sandbox`, no host-policy alteration,
-   and no successful renderer result.
-5. Sanitize evidence on-host using the same fixed schema.
-6. Restore the original policy and independently verify restoration, or revert
-   the VM snapshot.
+1. Record original helper/userns/AppArmor/SELinux policy and snapshot identity.
+2. For every accepted route or required policy class, deny that prerequisite
+   using the distribution-supported mechanism and independently confirm denial.
+3. When the other approved route remains available, require that route to pass
+   exact-renderer checks without fallback flags. When all approved routes or a
+   mandatory policy are denied, require dApp/package refusal as specified.
+4. Confirm there is no `--no-sandbox` retry, host-policy weakening, unrelated
+   policy mutation, or successful renderer result through an unapproved route.
+5. Sanitize evidence on-host, restore policy and helper state, and independently
+   verify restoration or revert the VM snapshot.
 
-Expected negative result: a categorized namespace/AppArmor/sandbox startup
-failure, no passing probe JSON, and no unsandboxed retry. A failure is the safe
-unsupported-host outcome, not proof that ordinary wallet fallback is already
-implemented.
+Expected all-routes-denied result: categorized refusal, no passing probe JSON,
+no unsandboxed retry, and successful rollback. An omitted matrix row may install
+wallet-only but remains dApp-disabled; a listed row whose package invariants
+cannot be established fails package configuration.
 
 ## Evidence Record
 
@@ -345,8 +364,8 @@ The release owner should return one row per run:
 | Package identity | Cluster, installer SHA-256, `flake.lock` SHA-256 |
 | Runtime identity | Electron/Chromium versions and installed file hashes |
 | Host identity | Distribution ID/version, kernel, session type only |
-| Host policy | Relevant normalized userns/AppArmor values |
-| Helper | Numeric owner/group and mode |
+| Host policy | Relevant normalized userns/AppArmor/SELinux values and exact-renderer/file matches |
+| Helper | Root/non-root owner/group classification, mode, and manifest-bound hash |
 | Probe result | Exit code and normalized probe JSON or absence reason |
 | Stderr | Sanitized summary only |
 | Bypass check | No forbidden argv/environment/retry |

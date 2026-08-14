@@ -606,8 +606,12 @@ Hostile remote dApp
   disabled. Production launch is fail-closed until packaged sandbox and all
   other PRD release gates have evidence.
 - Linux shipping for this feature is system **`.deb` and `.rpm`** packages with
-  privileged postinst for Chromium OS sandbox (SUID helper and/or userns plus
-  AppArmor). Portable `.bin`, AppImage, Flatpak, and Snap are rejected; see
+  privileged postinst for independently proven SUID or userns Chromium
+  containment, AppArmor on approved Ubuntu rows, and SELinux on Fedora 43.
+  Matrix revision `task-005-a-matrix-2026-08-14` covers x86_64 Ubuntu 22.04.x,
+  24.04.x, and 26.04.x; Debian 12.x and 13.x; and Fedora 43. Omitted rows are
+  wallet-only and dApp-disabled until a reviewed revision and certification.
+  Portable `.bin`, AppImage, Flatpak, and Snap are rejected; see
   [research/06-linux-system-package-decision.md](../plans/dapp-browser-cip30/research/06-linux-system-package-decision.md).
 
 ## Security Considerations
