@@ -13,7 +13,7 @@ Status: supporting evidence for task-001. Normative decisions remain in the
 | Task-101 Electron 41 runtime evidence | Packaged `file:` main frames report `WebFrameMain.origin === "file://"`; development HTTP frames report their serialized HTTP origin. | Trusted authority binds exact WebContents/frame/canonical URL and uses `file://` only for the exact packaged file document. Wrapper-backed channels are hardened; task-102 still owns raw-listener migration. |
 | `source/main/index.ts` | The global popup handler is registered after `createMainWindow()` creates the window and initiates `loadURL`, following startup work; it forwards requested URLs to `shell.openExternal`. The source does not prove page-load completion before registration. | Task-100 must install safe trusted navigation/popup policy before any WebContents. |
 | `source/main/ipc/open-external-url.ts` | Renderer input is passed to `shell.openExternal` without parsed HTTPS policy. | Task-100 must validate and await external URL handling. |
-| `source/main/webpack.config.js` and `nix/internal/x86_64-linux.nix` | Development and packaged Linux launch paths include `--disable-setuid-sandbox --no-sandbox`. Historical portable `.bin` cannot privilege `chrome-sandbox`. | Product decision: ship `.deb`/`.rpm` only (research 06). Task-005/108/109/103 must prove and enable OS sandboxing before guest launch. |
+| `source/main/webpack.config.js` and `nix/internal/x86_64-linux.nix` | Development and packaged Linux launch paths include `--disable-setuid-sandbox --no-sandbox`. Historical portable `.bin` cannot privilege `chrome-sandbox`. | Product decision: ship `.deb`/`.rpm` only (research 06). Historical task-005 preserves the cancelled portable spike; task-005-a freezes the contract, tasks 108/109 build flag-free packages, task-005-b certifies them, and task-103 removes remaining bypasses and enables fail-closed runtime checks. |
 | `source/main/dapp/` and guest preload paths | No dApp guest, nonpersistent session, route lease, or main-process broker exists. | These are accepted targets, not present safeguards. |
 
 ## Threat To Evidence Owner
@@ -22,7 +22,7 @@ Status: supporting evidence for task-001. Normative decisions remain in the
 |---|---|---|
 | Full ledger context, backend consistency, pending submission | task-003 | Phase 2 backend work and Phase 3 context/reconciliation. |
 | Exact body/output preservation and supported semantic decoding | task-004 | Phase 3 cursor, semantic model, and witness verification. |
-| Packaged Chromium OS sandbox (Linux `.deb`/`.rpm`) | task-005 (strategy/proof), research 06 (decision) | Phase 1 tasks 108-110 (packages/migration), task-103 (flags/canary), then packaged hostile-renderer proof. |
+| Packaged Chromium OS sandbox (Linux `.deb`/`.rpm`) | task-005-a (contract/matrix), research 06 (decision); task-005 is cancelled portable evidence | Phase 1 tasks 108/109 (flag-free packages), task-005-b (installed-artifact certification), task-110 (migration), task-103 (remaining flags/runtime canary), then packaged hostile-renderer proof. |
 | Hardware fields, CIP-8, returned hashes, models, and firmware | task-006 | Phase 6 adapters and Phase 8 physical certification. |
 | Trusted navigation and privileged IPC authority | task-001 model | Phase 1 tasks 100-102. |
 | Guest lifecycle, permissions, transport, and connection-bound egress | task-001 model | Phase 1 tasks 104-107, especially 106-a. |

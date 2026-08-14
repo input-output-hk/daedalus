@@ -4,13 +4,19 @@ Status: **portable strategy rejected.** This note retains negative evidence from
 the home-directory self-extracting `.bin` spike. The accepted Linux product
 strategy is **system `.deb` and `.rpm` packages**; see
 [06-linux-system-package-decision.md](./06-linux-system-package-decision.md).
-Task-005 acceptance still requires positive exact-renderer OS sandbox proof on
-installed `.deb`/`.rpm` artifacts. Production dApp launch remains disabled.
+Historical task-005 owns this cancelled portable spike. Task-005-a owns the
+system-package, matrix, probe, and fail-closed contracts. Task-005-b requires
+positive exact-renderer OS sandbox proof on installed `.deb`/`.rpm` artifacts.
+Production dApp launch remains disabled.
 
 ## Current Task State
 
-- Task status: `in_progress`; task-005 acceptance is not met until `.deb`/`.rpm`
-  packaged sandbox proof exists.
+- Task-005 status: `cancelled`; its negative portable evidence is retained and
+  the product strategy moved to system packages.
+- Task-005-a status: `pending`; its contract scope remains incomplete until the
+  actual authoritative support matrix and system-package probe contract are frozen.
+- Task-005-b status: `pending`; certification requires `.deb`/`.rpm` packaged
+  sandbox proof after tasks 108 and 109 produce installed artifacts.
 - Product decision (2026-08-12): ship Linux as `.deb` and `.rpm` only; reject
   portable `.bin`, AppImage, Flatpak, Snap, and other Linux channels. Durable
   record: research `06`.
@@ -31,7 +37,7 @@ root-owned mode-`4755` helper; Ubuntu 24.04 AppArmor userns policy is
 path-sensitive; the portable proof variant failed sandbox bootstrap.
 
 **Accepted strategy:** privileged system packages (`.deb` and `.rpm`) installing
-to a fixed `/opt/...` path with postinst SUID `chrome-sandbox` and/or AppArmor
+to `/opt/daedalus/<cluster>` with postinst SUID `chrome-sandbox` and/or AppArmor
 `userns` profile, no process-wide sandbox disablement, fail-closed dApp canary.
 Full decision text, rejections, ownership, and migration notes:
 [06-linux-system-package-decision.md](./06-linux-system-package-decision.md).
@@ -39,11 +45,13 @@ Full decision text, rejections, ownership, and migration notes:
 Automatically adding `--no-sandbox`, retrying unsandboxed, changing host policy
 from the app, or weakening renderer assertions remains forbidden.
 
-Task-103 owns removal of the two current launch bypasses and the
-pre-remote-content runtime canary against the system package. Task-108/109 own
-`.deb`/`.rpm` implementation; task-110 owns `.bin` retirement and auto-update
-migration. Task-107, task-802, task-807, and task-903-a own later real-guest and
-release-candidate proof.
+Task-005-a freezes the package and evidence contracts. Task-108/109 own
+`.deb`/`.rpm` implementation; task-005-b owns installed-artifact certification;
+those package tasks must produce launchers without sandbox-disabling switches.
+Task-103 then owns remaining development/legacy bypass removal, runtime
+argv/environment rejection, and the pre-remote-content canary. Task-110 owns `.bin` retirement and
+auto-update migration. Task-107, task-802, task-807, and task-903-a own later
+real-guest and release-candidate proof.
 
 ## Verified Baseline
 
@@ -182,12 +190,14 @@ Do not include a token reverse map in returned evidence.
 ## Required Inputs
 
 Packaging decision is complete (`system_package` via `.deb`/`.rpm`; see research
-`06`). Before task-005 completion, release/product engineering must still
+`06`). Before task-005-a contract completion, release/product engineering must
+provide the actual matrix in item 1; an owner and future delivery date records
+an in-progress handoff only. Before task-005-b certification, release/product engineering
+must provide items 2 through 5:
 provide:
 
-1. The authoritative supported x86_64 Linux distribution/version matrix for
-   `.deb` and `.rpm` rows, or the accountable owner and date by which it will be
-   supplied.
+1. The authoritative supported x86_64 Linux distribution/version matrix and
+   reviewed revision for `.deb` and `.rpm` rows.
 2. One disposable default-policy host for every enabled matrix row.
 3. A snapshotted disposable host where the selected sandbox prerequisite can
    safely be denied, including rollback access.
@@ -383,7 +393,7 @@ The optional first milestone occurs only after `require("electron")`, so its
 absence must not be used to claim that no JavaScript ran or that every future
 in-process canary is impossible. Further root-cause work plus the
 packaging/deployment model or supported Linux dApp scope must be resolved before
-task-005 can be replanned and completed. Windows and macOS use different
+the contract and certification tasks can be completed. Windows and macOS use different
 Chromium OS sandbox mechanisms and remain later packaged-artifact validation
 scopes; this Linux result does not invalidate those platforms.
 
@@ -392,16 +402,18 @@ scopes; this Linux result does not invalidate those platforms.
 **Resolved (2026-08-12):** Linux ships `.deb` and `.rpm` only; portable `.bin`,
 AppImage, Flatpak, and Snap are rejected. See research `06`.
 
-Still required before task-005 can complete:
+Still required before the split contract and certification gates can complete:
 
-1. Planner revision of the canonical task-005 plan for the system-package
-   strategy (probe helper assertions, install procedure, matrix).
-2. Authoritative `.deb`/`.rpm` distribution/version matrix.
-3. Passing packaged exact-renderer results on installed `.deb` and `.rpm`
+1. Task-005-a freezes the system-package probe helper assertions, install
+   procedure, postinst contracts, and authoritative `.deb`/`.rpm`
+   distribution/version matrix.
+2. Tasks 108 and 109 produce installable `.deb` and `.rpm` artifacts against
+   that contract.
+3. Task-005-b records passing packaged exact-renderer results on installed `.deb` and `.rpm`
    artifacts for every supported row, plus snapshotted restricted-sandbox
    failure/no-retry runs and rollback evidence.
-4. Implementation review after that evidence. Tracker completion and final task
-   commit remain blocked until then.
+4. Task-005-b implementation review approves that evidence before task-103 or
+   any production guest enablement work proceeds.
 
 The local-only `--no-sandbox` control must not be repeated as ordinary
 verification, shipped, or cited as containment. Its sole accepted finding for
@@ -414,7 +426,9 @@ This contract preserves fail-closed boundaries and assumes the accepted
 `.deb`/`.rpm` install model. Before any remote dApp URL is created or loaded on
 Linux, task-103 must at minimum:
 
-1. Remove both bypass switches from development and packaged launch paths.
+1. Remove both bypass switches from remaining development and legacy portable
+   launch paths. Tasks 108 and 109 own flag-free `.deb` and `.rpm` launchers
+   before task-005-b certification.
 2. Reject sandbox-disabling argv or environment state.
 3. Run a hidden local-only canary once per app process with the probe's critical
    preferences, no preload/IPC, a random nonpersistent session, and bundled
