@@ -137,7 +137,7 @@ No code, package manifest, test source, or review-log change is planned.
 
 7. Tie threats to verification and release gates.
    - Map each threat class first to its phase-0 evidence owner, then through the existing phase-1 through phase-9 task families and PRD security-review gates rather than inventing implementation in task-001.
-   - Include phase-0 owner/evidence rows for `task-003` (reviewed cardano-wallet backend contract, consistency guarantees, owner/reviewer, migration/rollback and pin gate), `task-004` (exact-CBOR/body/output extraction and supported-era evidence), `task-005` (packaged Linux Chromium sandbox strategy and proof), and `task-006` (Ledger/Trezor library, model, firmware, field, message-signing, and returned-hash capability matrices). Mark these as later evidence gates, not task-001 evidence.
+   - Include phase-0 owner/evidence rows for `task-003` (reviewed cardano-wallet backend contract, consistency guarantees, owner/reviewer, migration/rollback and pin gate), `task-004` (exact-CBOR/body/output extraction and supported-era evidence), `task-005-a` (Linux package contract/matrix), `task-005-b` (installed-package Chromium sandbox proof), and `task-006` (Ledger/Trezor library, model, firmware, field, message-signing, and returned-hash capability matrices). Historical `task-005` now preserves the cancelled portable spike. Mark these as later evidence gates, not task-001 evidence.
    - Require privileged IPC sender/main-frame authentication, trusted navigation lock, packaged OS sandbox proof, connection-bound HTTPS/WSS egress with bypass transports disabled, full-ledger semantic review, exact-byte signer/result verification, pending-submission fault tests, privacy inspection, physical hardware certification, internal review, external audit, current Electron/Chromium review, and release-candidate change control.
    - State that production guest launch remains disabled until every applicable gate has evidence.
 
@@ -159,7 +159,7 @@ No code, package manifest, test source, or review-log change is planned.
 - The four documented product limits and before-side-effect rejection posture are explicit, and within-limit ordinary availability exposure is distinguished from release-blocking confidentiality/integrity failures.
 - The trusted Node-enabled renderer is documented as privileged legacy debt that never hosts remote content; planned controls are not misrepresented as live.
 - Security release gates and later evidence owners are traceable, and production guest launch remains blocked until their evidence exists.
-- Threat traceability names the phase-0 evidence owners for backend consistency (`task-003`), exact-CBOR/era coverage (`task-004`), packaged Linux sandboxing (`task-005`), and hardware capability matrices (`task-006`), then maps controls through phases 1-9 without claiming those artifacts as task-001 evidence.
+- Threat traceability names the phase-0 evidence owners for backend consistency (`task-003`), exact-CBOR/era coverage (`task-004`), the Linux package contract (`task-005-a`), installed-package sandbox certification (`task-005-b`), and hardware capability matrices (`task-006`), then maps controls through phases 1-9 without claiming those artifacts as task-001 evidence. Historical `task-005` remains cancelled portable evidence.
 - `.agent/system/architecture.md`, the PRD, supporting research, and task tracking agree without weakening any frozen decision.
 
 ## Verification Plan

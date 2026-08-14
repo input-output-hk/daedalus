@@ -2,9 +2,9 @@
   "metadata": {
     "title": "Embedded dApp Browser And CIP-30 Wallet Connector Tasks",
     "created": "2026-08-07",
-    "updated": "2026-08-13",
-    "version": "1.6.0",
-    "totalTasks": 84,
+    "updated": "2026-08-14",
+    "version": "1.7.0",
+    "totalTasks": 86,
     "prdReference": ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
       "description": "Security- and standards-gated implementation graph for a wallet-scoped sandboxed dApp browser with CIP-30, CIP-8, CIP-95, CIP-103, gated CIP-104/CIP-142, software/hardware signing, ordered batch signing and submission, and soft collateral management.",
     "sourceFiles": [
@@ -177,39 +177,67 @@
         },
         {
           "id": "task-005",
-          "title": "Validate Linux Chromium sandbox packaging for .deb/.rpm",
-          "description": "Freeze and prove the accepted Linux system-package strategy (.deb and .rpm under /opt with SUID chrome-sandbox and/or userns plus AppArmor) without process-wide sandbox disablement. Portable .bin is product-rejected.",
-          "status": "pending",
+          "title": "Investigate portable Linux Chromium sandbox feasibility",
+          "description": "Historical phase-0 spike for the former portable self-extracting .bin model. The spike failed closed on Ubuntu 24.04 and the product rejected portable Linux shipping in favor of system .deb and .rpm packages.",
+          "status": "cancelled",
+          "cancelledAt": "2026-08-14",
+          "cancellationNotes": "Superseded by the accepted .deb/.rpm system-package decision. Negative portable evidence remains in research 05; fresh package-contract and installed-artifact work moved to task-005-a and task-005-b so historical approved review logs are not repurposed.",
           "priority": "critical",
           "estimatedHours": 20,
           "dependencies": ["task-001"],
           "targetPaths": [
-            "nix/internal/x86_64-linux.nix",
-            "source/main/webpack.config.js",
             "scripts/linux-chromium-sandbox-probe/",
             ".agent/plans/dapp-browser-cip30/research/05-linux-chromium-sandbox-packaging.md",
             ".agent/plans/dapp-browser-cip30/research/06-linux-system-package-decision.md",
-            "README.md"
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md"
           ],
           "implementationNotes": [
-            "Product decision 2026-08-12: ship .deb and .rpm only; reject portable .bin, AppImage, Flatpak, and Snap (research 06).",
-            "Retain research 05 portable SIGILL run as negative evidence only; do not certify portable packaging.",
-            "Adapt the exact-renderer /proc probe to validate root-owned mode-4755 chrome-sandbox when userns are unavailable, and userns containment when available.",
-            "Test supported Debian/Ubuntu-class and Fedora/RHEL-class hosts, including Ubuntu 24.04 AppArmor userns restriction.",
-            "Do not accept process.sandboxed as the only proof.",
-            "Define fail-closed dApp feature behavior when users deliberately launch Daedalus without sandboxing.",
-            "Document concrete development and package flag changes plus postinst contracts owned by task-103, task-108, and task-109."
+            "Retain the package-equivalent Ubuntu 24.04 SIGILL result and local-only diagnostic control as negative evidence only.",
+            "Do not certify portable packaging or infer that system packages work from this result.",
+            "Product decision 2026-08-12 rejected portable .bin, AppImage, Flatpak, and Snap in favor of .deb and .rpm system packages (research 06).",
+            "Task-005-a owns the fresh system-package contract and task-005-b owns installed-artifact certification."
           ],
           "acceptance": [
-            "The accepted .deb/.rpm strategy is frozen in research 06 and the PRD Linux sandbox section.",
-            "The spike proves viable OS sandboxing on installed .deb and .rpm artifacts and identifies the exact sandboxed renderer process under test via webContents.getOSProcessId() and same-PID /proc evidence.",
-            "The spike documents task-103 flag removal, canary, and fail-closed behavior plus task-108/109 postinst SUID/AppArmor contracts.",
-            "Unsupported hosts and sandbox-disabling launches disable dApp launch without silently weakening containment.",
-            "Portable .bin, AppImage, Flatpak, and Snap are explicitly out of scope for Linux shipping."
+            "The bounded local probe and privacy-safe evidence schema preserve the portable experiment reproducibly.",
+            "The Ubuntu 24.04 package-equivalent result is recorded as fail-closed negative evidence without claiming exact-renderer sandbox proof.",
+            "The product/release decision rejecting portable Linux formats and selecting .deb/.rpm is recorded durably.",
+            "No production bypass removal, package implementation, remote guest, or dApp enablement was introduced."
           ],
           "securityNotes": [
-            "No remote guest work may ship until this gate passes on system packages.",
+            "Cancellation does not waive packaged sandbox proof; task-005-b owns that gate for system packages.",
             "Never auto-retry with --no-sandbox."
+          ]
+        },
+        {
+          "id": "task-005-a",
+          "title": "Freeze Linux .deb/.rpm sandbox packaging contract",
+          "description": "Freeze the accepted system-package contract at /opt/daedalus/<cluster>, the authoritative support matrix, SUID/userns/AppArmor/SELinux post-install behavior, exact-renderer probe contract, and fail-closed behavior before package implementation.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 8,
+          "dependencies": ["task-001"],
+          "targetPaths": [
+            "scripts/linux-chromium-sandbox-probe/",
+            ".agent/plans/dapp-browser-cip30/research/05-linux-chromium-sandbox-packaging.md",
+            ".agent/plans/dapp-browser-cip30/research/06-linux-system-package-decision.md",
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md"
+          ],
+          "implementationNotes": [
+            "Use /opt/daedalus/<cluster> where <cluster> is the build-time installer cluster slug; Electron and chrome-sandbox live under that exact tree and AppArmor profiles bind its exact executable path.",
+            "Obtain the release-owner-authoritative Debian/Ubuntu and RPM-family distribution/version matrix; an owner and future date are handoff evidence only, not completion evidence.",
+            "Adapt the exact-renderer /proc probe contract for root-owned mode-4755 chrome-sandbox and user-namespace paths without accepting process.sandboxed alone.",
+            "Freeze task-108/109 flag-free package launchers and post-install contracts; task-103 owns only remaining development/legacy bypass removal plus runtime rejection and canary behavior."
+          ],
+          "acceptance": [
+            "The .deb/.rpm strategy and exact /opt/daedalus/<cluster> layout are frozen in research 06 and the PRD.",
+            "The actual release-owner-authoritative support matrix and revision are recorded without claiming unnamed distributions.",
+            "The exact-renderer probe/evidence contract covers approved SUID-helper and user-namespace paths with deterministic privacy controls.",
+            "Task-108/109 post-install SUID/AppArmor/SELinux and flag-free launcher contracts are concrete and internally consistent.",
+            "Unsupported-host and sandbox-disabling behavior remains fail closed with no automatic unsandboxed retry."
+          ],
+          "securityNotes": [
+            "This contract does not certify artifacts or enable production guests.",
+            "No package task may weaken containment to satisfy a matrix row."
           ]
         },
         {
@@ -328,12 +356,12 @@
         },
         {
           "id": "task-103",
-          "title": "Remove default sandbox-disabling launch flags",
-          "description": "Against the accepted .deb/.rpm Linux packages, remove default sandbox-disabling flags and add a runtime dApp availability check (argv/environment rejection plus pre-remote-content local sandbox canary).",
+          "title": "Add runtime sandbox enforcement and remove remaining bypasses",
+          "description": "After .deb/.rpm certification, remove remaining development or legacy sandbox-disabling defaults and add runtime dApp availability enforcement through argv/environment rejection and a pre-remote-content local sandbox canary.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 24,
-          "dependencies": ["task-005", "task-108"],
+          "dependencies": ["task-005-b"],
           "targetPaths": [
             "source/main/webpack.config.js",
             "nix/internal/x86_64-linux.nix",
@@ -341,12 +369,12 @@
             "README.md"
           ],
           "implementationNotes": [
-            "Consume task-005 evidence and task-108/109 package layout; do not reintroduce portable .bin assumptions.",
+            "Consume task-005-b certification evidence and the task-108/109 package layout; do not reintroduce portable .bin assumptions.",
             "Run a hidden local-only canary before any remote guest URL; same-PID /proc assertions; destroy canary after success or failure.",
             "Never retry unsandboxed; explicit dApp-disabled wallet modes only where documented."
           ],
           "acceptance": [
-            "Default development and packaged .deb/.rpm launch omit --no-sandbox and --disable-setuid-sandbox.",
+            "Default development and every remaining legacy launch path omit --no-sandbox and --disable-setuid-sandbox; certified package launchers remain flag-free.",
             "The dApp feature fails closed under sandbox-disabling CLI/environment configuration or canary failure.",
             "Supported Linux package smoke tests start both trusted and sandboxed renderers.",
             "Unsupported-host and dApp-disabled wallet behavior is documented."
@@ -359,7 +387,7 @@
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 32,
-          "dependencies": ["task-005"],
+          "dependencies": ["task-005-a"],
           "targetPaths": [
             "nix/internal/x86_64-linux.nix",
             "nix/internal/",
@@ -391,7 +419,7 @@
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 24,
-          "dependencies": ["task-005", "task-108"],
+          "dependencies": ["task-005-a", "task-108"],
           "targetPaths": [
             "nix/internal/x86_64-linux.nix",
             "nix/internal/",
@@ -411,6 +439,38 @@
           ],
           "securityNotes": [
             "Same fail-closed dApp rules as .deb; no unsandboxed fallback."
+          ]
+        },
+        {
+          "id": "task-005-b",
+          "title": "Certify installed Linux .deb/.rpm Chromium sandboxing",
+          "description": "Run the task-005-a exact-renderer probe contract against installed task-108 .deb and task-109 .rpm artifacts across the authoritative support matrix and restricted-sandbox negative cases before runtime dApp enablement work. Historical task-005 remains portable probe provenance only.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 16,
+          "dependencies": ["task-108", "task-109"],
+          "targetPaths": [
+            "scripts/linux-chromium-sandbox-probe/",
+            ".agent/plans/dapp-browser-cip30/research/05-linux-chromium-sandbox-packaging.md",
+            ".agent/plans/dapp-browser-cip30/research/06-linux-system-package-decision.md"
+          ],
+          "implementationNotes": [
+            "Use the exact installed package executables, wrappers, helper ownership/modes, and immutable artifact hashes; development or Nix-store launches are not package evidence.",
+            "Identify the renderer with webContents.getOSProcessId() and validate same-PID /proc no-new-privileges, seccomp, capabilities, and namespace evidence.",
+            "Exercise every release-owner-authoritative .deb and .rpm matrix row plus a snapshotted restricted-sandbox case with rollback evidence.",
+            "Retain raw paths, argv, environment, and stderr only on disposable hosts; export the frozen normalized evidence schema.",
+            "Never retry with --no-sandbox and do not enable production guest launch."
+          ],
+          "acceptance": [
+            "Installed .deb and .rpm artifacts pass the frozen exact-renderer OS sandbox probe on every authoritative supported matrix row.",
+            "Artifact, source, runtime, wrapper, helper, host-policy, and normalized evidence identities are recorded reproducibly and without sensitive host data.",
+            "The restricted-sandbox case fails closed without an unsandboxed retry or host-policy mutation and records successful rollback.",
+            "SUID-helper, user-namespace, AppArmor, and SELinux behavior matches the task-005-a and task-108/109 contracts.",
+            "Production guest launch remains disabled and task-103 consumes this certification as its prerequisite."
+          ],
+          "securityNotes": [
+            "Certification requires operator-owned disposable hosts and exact installed artifacts; absent rows block completion.",
+            "Passing package evidence does not replace task-103 runtime canary or later real-guest release gates."
           ]
         },
         {
@@ -2106,8 +2166,8 @@
   ],
   "summary": {
     "totalPhases": 10,
-    "totalTasks": 81,
-    "estimatedTotalHours": 2348,
+    "totalTasks": 86,
+    "estimatedTotalHours": 2464,
     "criticalPath": [
       "task-001",
       "task-002",
