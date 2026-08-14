@@ -3,9 +3,10 @@
 Status: **accepted product/release decision** (2026-08-12). Normative packaging
 and sandbox requirements are mirrored in
 [dapp-browser-cip30-prd.md](../dapp-browser-cip30-prd.md) and
-[dapp-browser-cip30-tasks.json](../dapp-browser-cip30-tasks.json). Task-005 remains
-incomplete until packaged `.deb`/`.rpm` sandbox proof exists; this note freezes
-strategy only.
+[dapp-browser-cip30-tasks.json](../dapp-browser-cip30-tasks.json). Historical
+task-005 preserves the cancelled portable spike. Task-005-a freezes the package
+and validation contract; task-005-b remains incomplete until packaged
+`.deb`/`.rpm` sandbox proof exists. This note freezes strategy only.
 
 ## Decision
 
@@ -16,13 +17,14 @@ Daedalus on Linux ships **system packages only**:
 | **`.deb`** | Primary package for Debian/Ubuntu-class desktops |
 | **`.rpm`** | Primary package for Fedora/RHEL/openSUSE-class desktops |
 
-Install layout uses a **fixed privileged path** under `/opt/` (exact product name
-frozen by packaging implementation tasks), not `$HOME/.daedalus/<cluster>`.
+Install layout uses **`/opt/daedalus/<cluster>`**, where `<cluster>` is the
+build-time installer cluster slug, not `$HOME/.daedalus/<cluster>`.
 
 Chromium OS sandboxing for production guests relies on the privileged install
 model used by Electron desktop apps (electron-builder pattern):
 
-1. Install Electron and `chrome-sandbox` under the fixed `/opt/...` tree as root.
+1. Install Electron and `chrome-sandbox` under the fixed
+   `/opt/daedalus/<cluster>` tree as root.
 2. **SUID helper** when unprivileged user namespaces are unavailable:
    root-owned `chrome-sandbox` mode `4755`.
 3. **User namespaces** when the host supports them; helper may remain non-SUID.
@@ -76,11 +78,13 @@ Rationale for rejecting the portable `.bin`:
 
 | Work | Owner |
 |------|--------|
-| Freeze deb/rpm sandbox strategy, matrix, postinst contract, probe adaptation | task-005 (validation; still open until proof) |
+| Preserve portable negative evidence and rejected-strategy outcome | task-005 (cancelled) |
+| Freeze deb/rpm sandbox strategy, authoritative matrix, postinst contract, and probe adaptation | task-005-a |
 | Implement `.deb` package, postinst SUID/AppArmor, Nix outputs | task-108 |
 | Implement `.rpm` package and postinst equivalents | task-109 |
+| Certify installed `.deb` and `.rpm` artifacts across the authoritative matrix | task-005-b |
 | Retire `.bin` shipping, migrate Linux auto-update and docs | task-110 |
-| Remove sandbox-disabling flags, runtime canary, fail-closed dApps | task-103 (depends on task-005 and packaging) |
+| Remove remaining development/legacy sandbox-disabling defaults, add runtime canary, fail-closed dApps | task-103 (depends on task-005-b certification) |
 | Real guest and release-candidate packaged proof | task-107, task-802, task-807, task-903-a |
 
 ## Supported matrix (minimum product intent)

@@ -235,7 +235,7 @@ These are contract inputs, not production validators or dispatch code. Task-300 
 - Development may permit HTTP loopback only through an explicit development policy.
 - Guest networking is limited to policy-controlled HTTPS/WSS. WebRTC, STUN/TURN, WebTransport, QUIC, and other non-proxied transports are disabled unless a later compatibility review identifies a concrete required dApp and proves equivalent destination enforcement before enabling that transport.
 - No external-browser connector or inbound connector is implemented.
-- Linux product packages are system **`.deb`** and **`.rpm`** only, installing under a fixed `/opt/...` path with privileged postinst capable of SUID `chrome-sandbox` and/or AppArmor `userns` profiles. Portable self-extracting `.bin`, AppImage, Flatpak, Snap, and other Linux channels are rejected (research [06-linux-system-package-decision.md](./research/06-linux-system-package-decision.md)).
+- Linux product packages are system **`.deb`** and **`.rpm`** only, installing under `/opt/daedalus/<cluster>` with privileged postinst capable of SUID `chrome-sandbox` and/or AppArmor `userns` profiles. Portable self-extracting `.bin`, AppImage, Flatpak, Snap, and other Linux channels are rejected (research [06-linux-system-package-decision.md](./research/06-linux-system-package-decision.md)).
 - Shelley software, Ledger, and Trezor wallets are in scope; Byron is excluded.
 - Persistent grants cover connection/read scopes only.
 - Every `signTx`, `signTxs`, `signData`, CIP-95 `signData`, `submitTx`, and `submitTxs` call requires trusted consent.
@@ -769,12 +769,13 @@ release-blocking confidentiality/integrity defect.
 Task-001 establishes this model, not the downstream proof. Phase-0 evidence
 owners are `task-003` for the reviewed cardano-wallet contract, consistency,
 migration/rollback, and pin gate; `task-004` for exact-CBOR/body/output and
-supported-era evidence; `task-005` for packaged Linux `.deb`/`.rpm` sandbox
-strategy and proof (portable `.bin` rejected; research 06); and `task-006` for
+supported-era evidence; `task-005-a` for the Linux `.deb`/`.rpm` sandbox contract
+and authoritative support matrix (portable `.bin` rejected; research 06); and `task-006` for
 Ledger/Trezor library, model, firmware, message-signing, and returned-hash
 matrices. Phase 1 packaging follow-through is `task-108` (`.deb`), `task-109`
-(`.rpm`), `task-110` (`.bin` retirement and auto-update migration), and
-`task-103` (flag removal and canary). Phases 1 through 9 implement and validate
+(`.rpm`), `task-005-b` (installed-artifact certification), `task-110` (`.bin`
+retirement and auto-update migration), and `task-103` (flag removal and canary).
+Phases 1 through 9 implement and validate
 privileged IPC, session/network policy, exact semantic review,
 backend/pending-submission behavior, device capability, packaged hostile tests,
 internal/external review, and controlled rollout.
@@ -915,7 +916,7 @@ Session requirements:
 
 - **Accepted strategy (2026-08-12):** ship Linux exclusively as system **`.deb`** and **`.rpm`** packages. Evidence and ownership: [research/06-linux-system-package-decision.md](./research/06-linux-system-package-decision.md). Portable feasibility negative evidence: [research/05-linux-chromium-sandbox-packaging.md](./research/05-linux-chromium-sandbox-packaging.md).
 - **Rejected for Linux shipping:** portable self-extracting `.bin` to `$HOME/.daedalus/<cluster>`, AppImage, Flatpak, Snap, and other non-deb/rpm channels.
-- Install to a fixed path under `/opt/` so postinst can establish Chromium sandbox prerequisites:
+- Install each cluster to `/opt/daedalus/<cluster>`, where `<cluster>` is the build-time installer cluster slug, so postinst can establish Chromium sandbox prerequisites and AppArmor can bind the exact Electron executable path:
   - root-owned `chrome-sandbox` mode `4755` when unprivileged user namespaces are unavailable;
   - unprivileged user namespaces when the host supports them;
   - AppArmor profile with `userns,` for the fixed Electron binary path on Ubuntu 24.04+ and other AppArmor hosts that restrict unprivileged userns (install only when `apparmor_parser` accepts the profile ABI).
@@ -924,6 +925,7 @@ Session requirements:
 - Keep Daedalus wallet functionality available where practical, but hide and reject dApp guest launch when OS sandbox proof is unavailable.
 - Never auto-retry with `--no-sandbox` and never weaken containment for remote content.
 - Packaged tests must verify active seccomp/no-new-privileges or equivalent OS containment on the exact guest renderer PID, not only `process.sandboxed`.
+- Task ordering is contract-first and evidence-driven: historical `task-005` retains the cancelled portable spike; `task-005-a` freezes the system-package, probe, matrix, and fail-closed contracts; `task-108` and `task-109` produce flag-free `.deb` and `.rpm` launchers; `task-005-b` certifies both installed artifacts; and only then may `task-103` remove remaining development/legacy bypasses and add runtime enforcement and the canary.
 - Retire the portable `.bin` producer, home-extract installer, and `.bin`-oriented Linux auto-update path; migrate existing home installs to system packages without deleting wallet data under `XDG_DATA_HOME/Daedalus`.
 
 ### Existing IPC Hardening
@@ -1807,7 +1809,7 @@ All migrations must be versioned, atomic, and fail closed. Wallet funds remain g
 
 ## Evidence Gates And Open Questions
 
-- Prove the Linux `.deb`/`.rpm` SUID and/or user-namespace plus AppArmor sandbox strategy across the supported distribution matrix; portable `.bin` is rejected.
+- Freeze the Linux package and support-matrix contract in task-005-a, then prove the `.deb`/`.rpm` SUID and/or user-namespace plus AppArmor/SELinux sandbox strategy across that matrix in task-005-b; historical task-005 retains the cancelled portable spike and portable `.bin` remains rejected.
 - Prove the connection-level enforcement mechanism, built-in or custom, used to prevent private-network access and DNS rebinding for public HTTPS/WSS guest traffic.
 - Determine whether `@cardano-sdk/core@0.41.4` fully decodes all target-era fields; upgrade only if fixture evidence requires it.
 - Confirm exact raw-body and output-span handling for every accepted transaction encoding.

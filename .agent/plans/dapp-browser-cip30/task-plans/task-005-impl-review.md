@@ -165,3 +165,148 @@ User interaction required: no for recording the decision; yes for subsequent mat
 Outcome: Decision recorded across research, PRD, tasks, and architecture. task-005 remains in_progress without packaged sandbox certification. Production guest launch remains disabled.
 
 
+Code Review: Iteration 3
+Timestamp: 2026-08-14T18:32:02Z
+
+Outcome: The user-confirmed contract/package/certification split is directionally correct, but the live documentation is not yet internally executable. Graph accounting is repaired and the graph is acyclic, yet the critical path is invalid, package-versus-runtime ownership remains contradictory, the manual matrix checkpoint can be bypassed, and the revised canonical plan has no valid route back to formal approval. The post-Implementation-3 graph repair was reviewed as subsequent live work; it must not be retroactively attributed to Implementation iteration 3 or inserted into historical entries.
+
+Blocking findings:
+1. `.agent/plans/dapp-browser-cip30/dapp-browser-cip30-tasks.json:2143-2151` declares an impossible critical path. `task-005` does not depend on `task-003`, and `task-200` does not depend on `task-103`. The list serializes parallel branches and reports 1,028 hours rather than a valid dependency chain. Recompute it from the repaired DAG; the current longest dependency path is 920 hours and begins `task-001 -> task-005 -> task-108 -> task-109 -> task-005-b -> task-103 -> task-104`.
+2. Package flag-removal ownership remains circular in substance despite the acyclic graph. Tasks 108 and 109 require installed launchers without sandbox-disabling switches, which task-005-b needs for certification. Task-103 nevertheless claims it removes the packaged `.deb`/`.rpm` flags only after certification, while research 05 assigns it removal of both current bypasses. Freeze the distinction explicitly: package tasks must produce flag-free package launchers before certification; task-103 may remove only genuinely remaining development/legacy bypasses and add runtime rejection/canary behavior.
+3. The task-005 layout contract is not actually frozen. The canonical plan requires one shared concrete `/opt` layout before tasks 108/109, but research 06 defers the exact product path to the package implementation tasks and all governing documents still use `/opt/...`. This leaves both package tasks to choose a supposedly prerequisite contract. Assign and record the exact shared path in task-005.
+4. The manual completion gate is contradictory. Research 05 says item 1 is required before task-005 completion but permits either the authoritative matrix or merely an owner and future date. The canonical plan and tracker require the matrix itself. An owner/date is valid handoff evidence, not completion evidence; task-005 must remain pending until the authoritative rows and revision are recorded.
+5. The revised canonical plan has no valid approval transition. It marks the system-package plan `draft` while build status remains `in_progress`, states that fresh Critiquer approval is required, and also acknowledges that the append-only planning log ended with an approved iteration 2. The workflow permits no further planning entry after that approval and forbids implementation of a draft plan. Establish a truthful user-authorized approval/replanning mechanism without rewriting the historical log, then synchronize planning/build/tracker status.
+6. A stale non-log ownership claim remains in `task-plans/task-001.md`, where task-005 still owns packaged Linux strategy and proof. The PRD and task graph now assign proof to task-005-b. Preserve append-only review history, but annotate or update this canonical task document so current ownership searches do not return contradictory guidance.
+7. The graph-repair changes occurred after `Implementation: Iteration 3`, so that entry truthfully could not list them. However, approving Code Review iteration 3 would close the build loop with no Implementation transcript covering the reviewed repair. After this required-changes decision, `Implementation: Iteration 4` must identify the user-confirmed post-iteration-3 graph repair and its final fixes. Do not edit or backfill Implementation iteration 3.
+
+Non-blocking observations:
+- The live graph has 85 unique tasks, no missing dependencies, and no cycles.
+- Metadata, summary count, and calculated count all equal 85; summary and calculated effort both equal 2,456 hours. This also corrects the pre-existing stale summary of 81 tasks and 2,348 hours.
+- The requested ordering edges are present: task-005 precedes 108/109, task-005-b depends on both packages, task-103 depends on certification, and task-110 depends on both package tasks.
+- No task-005-b plan or review-log files were created, and both existing task-005 review logs remain untouched.
+- The PRD, architecture, research 01/05/06, and canonical plan preserve the `.deb`/`.rpm` decision, reject portable channels, retain later real-guest/release-candidate gates, and keep production guest launch disabled.
+- No production source, package implementation, launcher, dependency, renderer, IPC, wallet, or backend file changed.
+- JSON parsing, focused Prettier, and `git diff --check` pass.
+
+Approval bar:
+- Replace the declared critical path with a valid dependency path.
+- Resolve package-launcher versus task-103 flag-removal ownership consistently across the tracker, PRD, research, and canonical plan.
+- Freeze the exact shared `/opt` layout in task-005 rather than deferring it to tasks 108/109.
+- Require the actual authoritative matrix for task-005 completion; treat owner/date information only as an in-progress handoff.
+- Provide a valid, append-only route to approval for the superseding system-package plan and synchronize lifecycle statuses.
+- Remove or clearly supersede current stale task-005 proof ownership outside historical review logs.
+- Record the post-Implementation-3 graph repair and resulting fixes in the next valid Implementation iteration without rewriting history.
+
+Decision: requires_changes
+
+Implementation: Iteration 4
+Timestamp: 2026-08-14T18:37:45Z
+
+Changes made:
+- Recorded the user-confirmed graph repair without rewriting historical entries. Preserved task-005 as the cancelled portable feasibility spike, added fresh task-005-a contract ownership, retained task-005-b installed-artifact certification, and ordered tasks 108/109 and 103 around those gates.
+- Resolved planning-log reuse by giving task-005-a a fresh future planning sequence while keeping task-005 linked to its approved historical portable plan and cancelled outcome.
+- Froze `/opt/daedalus/<cluster>` as the shared system-package layout and required the actual release-owner-authoritative matrix and revision for task-005-a completion.
+- Assigned flag-free package launchers to tasks 108/109; task-103 now owns only remaining development/legacy bypass removal, runtime argv/environment rejection, and the pre-remote-content canary after task-005-b certification.
+- Updated PRD, research 01/05/06, task-001 ownership text, task-005 canonical outcome, graph counts/hours, and the dependency-valid critical path.
+
+Files touched:
+- `.agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md`
+- `.agent/plans/dapp-browser-cip30/dapp-browser-cip30-tasks.json`
+- `.agent/plans/dapp-browser-cip30/research/01-hostile-renderer-threat-model-traceability.md`
+- `.agent/plans/dapp-browser-cip30/research/05-linux-chromium-sandbox-packaging.md`
+- `.agent/plans/dapp-browser-cip30/research/06-linux-system-package-decision.md`
+- `.agent/plans/dapp-browser-cip30/task-plans/task-001.md`
+- `.agent/plans/dapp-browser-cip30/task-plans/task-005.md`
+- `.agent/plans/dapp-browser-cip30/task-plans/task-005-impl-review.md`
+
+Verification run:
+- JSON parsing passed.
+- Custom graph validation passed with 86 unique tasks, 2,464 estimated hours, no missing dependencies, no cycles, and the exact dependency-valid 912-hour longest path recorded as `summary.criticalPath`.
+- Focused Prettier passed for all changed JSON and Markdown files.
+- `git diff --check` passed.
+- Search audit found no stale non-log `/opt/...` layout or current task-005 contract/proof ownership; historical append-only review statements remain unchanged.
+
+Deviations from approved plan:
+- The accepted system-package decision cancelled the historical portable objective. New task IDs are used for system-package contract and certification so the closed task-005 planning transcript is not repurposed or extended through an invalid transition.
+- No production runtime, package, launcher, dependency, renderer, IPC, wallet, or backend implementation changed.
+
+User interaction required: no for this graph repair and historical task cancellation. Task-005-a will require the actual authoritative distribution/version matrix when selected; an owner and future date will not satisfy its completion gate.
+
+Outcome: The graph and governing documents now provide an acyclic, reviewable contract -> package implementation -> installed-artifact certification -> runtime enforcement sequence. Historical task-005 is truthfully cancelled, successor tasks remain pending, and production guest launch remains disabled.
+
+Code Review: Iteration 4
+Timestamp: 2026-08-14T18:40:06Z
+
+Outcome: Iteration 4 resolves the graph, lifecycle, layout, matrix, accounting, and transcript blockers from iteration 3. Historical task-005 is now truthfully cancelled and task-005-a has a fresh planning route. Two current references still assign system-package responsibilities to cancelled task-005 or task-103 packaged-launcher scope, so focused approval is not yet possible.
+
+Blocking findings:
+1. `dapp-browser-cip30-tasks.json` still says task-005-b runs the task-005 probe and validates behavior against the task-005 contract. Historical task-005 is cancelled; the current system-package probe and sandbox contract belong to task-005-a. These references must name task-005-a while retaining task-005 only as historical probe provenance.
+2. `research/05-linux-chromium-sandbox-packaging.md` still gives task-103 responsibility to remove bypasses from development and packaged launch paths. That conflicts with the repaired ownership where tasks 108/109 must create flag-free package launchers before task-005-b certification. Restrict the current provisional task-103 contract to remaining development and legacy portable paths; tasks 108/109 own system-package launcher flags.
+
+Non-blocking observations:
+- Task-005 is cancelled, records the portable SIGILL result only as negative evidence, and does not claim certification.
+- Pending task-005-a owns the fresh system-package contract and will receive new task-plan and review-log files only when selected.
+- No premature task-005-a or task-005-b plan/review-log files exist.
+- `/opt/daedalus/<cluster>` is consistently frozen, and task-005-a requires the actual authoritative matrix and reviewed revision.
+- Tasks 108/109 require flag-free launchers, task-005-b owns certification, and task-103 otherwise owns remaining bypass removal plus runtime enforcement.
+- The graph has 86 unique tasks, no unresolved dependencies or cycles, consistent 2,464-hour accounting, and a dependency-valid unique 912-hour critical path.
+- Append-only history is preserved, Implementation iteration 4 covers the repair, production guest launch remains disabled, and no production implementation changed.
+- JSON validation, focused Prettier, and `git diff --check` pass.
+
+Approval bar:
+- Replace the two current task-005 contract references in task-005-b with task-005-a.
+- Limit research 05 current task-103 contract to remaining development/legacy bypasses, preserving tasks 108/109 ownership of flag-free system-package launchers.
+- Preserve every other iteration-4 correction unchanged.
+
+Decision: requires_changes
+
+Implementation: Iteration 5
+Timestamp: 2026-08-14T18:40:57Z
+
+Changes made:
+- Replaced task-005-b current contract/probe references with task-005-a while preserving historical task-005 as portable probe provenance only.
+- Restricted the research 05 task-103 contract to remaining development and legacy portable bypasses and explicitly preserved tasks 108/109 ownership of flag-free `.deb`/`.rpm` launchers before certification.
+
+Files touched:
+- `.agent/plans/dapp-browser-cip30/dapp-browser-cip30-tasks.json`
+- `.agent/plans/dapp-browser-cip30/research/05-linux-chromium-sandbox-packaging.md`
+- `.agent/plans/dapp-browser-cip30/task-plans/task-005-impl-review.md`
+
+Verification run:
+- Focused Prettier passed for all changed JSON and Markdown files.
+- Graph validation still passes with 86 unique tasks, 2,464 estimated hours, no missing dependencies, no cycles, and the dependency-valid 912-hour critical path.
+- Focused stale-reference search now finds only truthful historical task-005 baseline text and append-only review history.
+- `git diff --check` passed.
+
+Deviations from approved plan:
+- None beyond the already recorded user-approved graph split and cancelled portable objective.
+
+User interaction required: no.
+
+Outcome: Both iteration-4 ownership blockers are resolved without changing any other graph, package, runtime, or security behavior. The implementation is ready for the final iteration-5 review.
+
+Code Review: Iteration 5
+Timestamp: 2026-08-14T18:42:13Z
+
+Outcome: Both iteration-4 blockers are resolved without regression. The implementation satisfies the focused approval bar.
+
+Blocking findings:
+- None.
+
+Non-blocking observations:
+- Task-005-b now consumes the task-005-a exact-renderer probe contract and names historical task-005 only as portable probe provenance.
+- Research 05 limits task-103 to remaining development and legacy portable bypasses.
+- Tasks 108/109 explicitly own flag-free `.deb` and `.rpm` launchers before task-005-b certification.
+- Package ordering remains task-005-a -> tasks 108/109 -> task-005-b -> task-103, with task-110 following both package tasks.
+- The graph remains acyclic with 86 unique tasks, no missing dependencies, and consistent totals of 2,464 hours.
+- The declared 912-hour critical path remains dependency-valid and matches the calculated longest path.
+- Historical planning and implementation entries remain append-only; Implementation iteration 5 records only the focused fixes.
+- No premature task-005-a or task-005-b plan files exist.
+- Production guest launch remains disabled.
+- `git diff --check` passes.
+
+Approval bar:
+- Met. Both stated ownership corrections are present, and all iteration-4 corrections remain intact.
+
+Decision: approved
+
