@@ -247,27 +247,30 @@
         {
           "id": "task-006",
           "title": "Freeze Ledger and Trezor capability matrices",
-          "description": "Certify installed and candidate Ledger/Trezor library, device-app, firmware, transaction-field, CIP-8, CIP-95, cancellation, and returned-hash behavior before adapters are implemented.",
-          "status": "pending",
+          "description": "Freeze immutable installed/candidate Ledger and Trezor static capability, exact-body rejection, CIP-8/CIP-95, typed-error, evidence-schema, and downstream ownership contracts without claiming physical certification or product enablement.",
+          "status": "completed",
+          "completedAt": "2026-08-16",
+          "completedNotes": "Approved matrix revision task-006-matrix-2026-08-14 freezes immutable Ledger 7.1.4, recommended Ledger 8.0.0, and Trezor Connect 9.7.2 static identities; source-derived field/model/request/response inventories; unconditional transaction exact-body pre-device rejection; concrete and promotable task-607 message/error/limit cases; tasks 602/603 static-source ownership; privacy-safe evidence; and disabled physical, adapter, and product dimensions. Ledger 8 application remains task-600 and physical certification remains task-607.",
           "priority": "critical",
           "estimatedHours": 16,
           "dependencies": ["task-002"],
           "targetPaths": [
-            "package.json",
-            "source/common/types/hardware-wallets.types.ts",
-            "hardware-wallet-tests/"
+            "source/common/hardware/fixtures/capability-matrix/",
+            "source/common/hardware/hardwareCapabilityMatrix.spec.ts",
+            "hardware-wallet-tests/capability-matrix/",
+            ".agent/plans/dapp-browser-cip30/research/07-hardware-wallet-capability-contract.md"
           ],
           "implementationNotes": [
-            "Evaluate Ledger JS 8.x because 7.1.4 rejects Cardano app major 8.",
-            "Cover Ledger proposal/voting limits and Trezor governance omissions.",
-            "Cover Model T, Safe/Core models, Trezor One, and supported Cardano app versions.",
-            "Record base-address versus DRep key-hash message modes."
+            "Evaluate exact Ledger JS 8.0.0 because 7.1.4 rejects Cardano app major 8; task-600 owns any production pin change.",
+            "Default every exact-CBOR representation to pre-device rejection until a downstream adapter proves reconstructed body-hash equality.",
+            "Keep model/app/firmware, display, cancellation and returned-proof dimensions physically unverified until task-607.",
+            "Record payment/stake address and direct/matching-type-6 DRep key-hash message modes; never pass vendor COSE through."
           ],
           "acceptance": [
-            "Every supported/unsupported transaction field has a device/library result.",
-            "The Ledger dependency decision is evidence-backed.",
-            "Firmware/app gates and typed failure mappings are fixed.",
-            "Physical device fixtures exist for later certification."
+            "Every task-004 field and exact representation family has a static library result plus deterministic hash-match or pre-device-reject disposition.",
+            "The exact Ledger dependency recommendation and complete candidate lock are evidence-backed without changing production dependencies.",
+            "Product-limit versus hardware-limit errors, cancellation/proof failures, Trezor COSE reconstruction, and privacy-safe evidence are fixed.",
+            "Task-607 case/schema artifacts exist, while physical certification and product enablement remain unset."
           ]
         }
       ]
@@ -1495,7 +1498,7 @@
     {
       "id": "phase-6",
       "name": "Ledger And Trezor Exact Signing",
-      "description": "Extract hardware transport authority, add exact arbitrary-CBOR and CIP-8 adapters, validate device-returned hashes/witnesses, and certify supported models/firmware.",
+      "description": "Consume the frozen task-006 static matrix, extract hardware transport authority, add exact arbitrary-CBOR and CIP-8 adapters behind disabled gates, validate returned proofs, then let task-607 alone record physical model/app/firmware results.",
       "riskLevel": "high",
       "tasks": [
         {
@@ -1514,7 +1517,7 @@
           ],
           "acceptance": [
             "Existing hardware wallet UI flows delegate to the service without regression.",
-            "Ledger v7/v8 compatibility follows the certified matrix.",
+            "The exact task-006 Ledger recommendation and lock identity are applied without claiming app/model certification.",
             "Transport state and cancellation are explicit/testable.",
             "No guest can call the service outside broker authority."
           ]
@@ -1522,7 +1525,7 @@
         {
           "id": "task-601",
           "title": "Build vendor-neutral hardware transaction and path model",
-          "description": "Map trusted transaction/context data into a vendor-neutral exact signing model with expected paths, key hashes, signing mode, original witness set, and body identity.",
+          "description": "Map trusted transaction/context data into a vendor-neutral exact signing model that consumes task-006 representability/rejection rows with expected paths, key hashes, signing mode, original witness set, and body identity without enabling a device row.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 32,
@@ -1543,7 +1546,7 @@
         {
           "id": "task-602",
           "title": "Implement exact Ledger transaction adapter",
-          "description": "Map every certified Ledger field from the vendor-neutral model, preserve encoding/tag choices, verify returned body hash/witnesses, and fail closed for unsupported proposals/voting shapes.",
+          "description": "Map task-006 statically representable Ledger fields from the vendor-neutral model, preserve exact encoding/hash gates, verify returned body hash/witnesses, and fail closed without physical promotion.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 40,
@@ -1555,7 +1558,8 @@
           ],
           "acceptance": [
             "Device transaction hash equals exact incoming body hash.",
-            "All certified ordinary/Plutus/Conway/CIP-95 fields map exactly.",
+            "All statically representable ordinary/Plutus/Conway/CIP-95 rows map exactly while physical certification remains unset.",
+            "Ledger static-source-assertion cases from task-006 are revalidated against the locked source inventory before adapter promotion.",
             "Proposal and unsupported voting requests fail before signing.",
             "Returned key hashes and signatures verify and contain no extras."
           ]
@@ -1563,7 +1567,7 @@
         {
           "id": "task-603",
           "title": "Implement exact Trezor transaction adapter",
-          "description": "Map every Trezor-representable field, verify returned hash/witnesses, and fail closed for unsupported governance/certificate/proposal/treasury/donation fields.",
+          "description": "Map every task-006 statically representable Trezor field, verify returned hash/witnesses, and fail closed for unsupported governance/certificate/proposal/treasury/donation fields without physical promotion.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 40,
@@ -1576,6 +1580,7 @@
           "acceptance": [
             "Device hash equals exact incoming body hash.",
             "Supported ordinary/Plutus/Conway fields map exactly.",
+            "Trezor static-source-assertion cases from task-006 are revalidated against the locked source inventory before adapter promotion.",
             "Unsupported DRep/proposal/voting/treasury/donation requests fail before signing.",
             "Returned public keys/signatures verify and bootstrap witnesses are rejected for Shelley scope."
           ]
@@ -1583,7 +1588,7 @@
         {
           "id": "task-604",
           "title": "Implement Ledger and Trezor base/DRep CIP-8 signing",
-          "description": "Add payment/stake/DRep message signing, firmware/app gating, path/address mode selection, vendor response normalization, and shared COSE verification.",
+          "description": "Add payment/stake/DRep message signing from task-006 static rows, path/address selection, raw vendor-result validation, local COSE reconstruction, and disabled firmware/model gates pending task-607.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 32,
@@ -1595,15 +1600,15 @@
           ],
           "acceptance": [
             "Ledger address and DRep key-hash modes use exact requested paths/credentials for both accepted DRep input forms.",
-            "Trezor Model T/Safe/Core gates and Trezor One rejection are correct.",
-            "No silent payload hashing occurs and vendor protocol limits map to ProofGeneration.",
-            "Daedalus-built COSE verifies before release."
+            "Exact Trezor internal-model/firmware predicates remain disabled until task-607 records reviewed physical evidence.",
+            "No silent payload hashing occurs; requests above 65,536 bytes map to InvalidRequest while smaller hardware limits map to operation-specific ProofGeneration.",
+            "Daedalus-built COSE verifies before release and vendor COSE never passes through."
           ]
         },
         {
           "id": "task-605",
           "title": "Add hardware cancellation and late-result suppression",
-          "description": "Normalize host/device rejection, transport loss, Trezor cancel, Ledger transport close, operation generations, and stale-result suppression across transaction and message signing.",
+          "description": "Implement the exact task-006 host/device rejection, transport-loss, cancellation, operation-generation and stale-result predicates across transaction and message signing without changing their public error mappings or physical state.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 24,
@@ -1615,7 +1620,7 @@
           ],
           "acceptance": [
             "Explicit device refusal maps to UserDeclined.",
-            "Transport/app/version/capability failures map to ProofGeneration/Internal as defined.",
+            "Each task-006 transport/app/version/capability predicate maps to its one operation-specific ProofGeneration or Internal error without reinterpretation.",
             "Cancelled or stale operations never release late witnesses/COSE.",
             "Hardware signing never resumes automatically after restart."
           ]
@@ -1623,7 +1628,7 @@
         {
           "id": "task-606",
           "title": "Integrate hardware with consent, submission, and collateral flows",
-          "description": "Connect exact hardware signing to trusted review, wallet-scoped submit, per-wallet send-lock coordination, collateral preparation, and preferred-collateral effects.",
+          "description": "Connect exact hardware signing to trusted review, wallet-scoped submit, per-wallet send-lock coordination, collateral preparation, and preferred-collateral effects while all task-006 hardware product gates remain disabled pending task-607.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 32,
@@ -1643,7 +1648,7 @@
         {
           "id": "task-607",
           "title": "Complete mocked and physical hardware certification",
-          "description": "Run field-by-field mocked tests and physical model/firmware certification for exact transactions, CIP-8, CIP-95, collateral, cancellation, and typed failures.",
+          "description": "Run every task-607-owned executable or promotable task-006 case against the exact production dependency lock and adapter commit, then record reviewer-approved mocked and physical model/app/firmware results without setting product enablement; tasks 602/603 own nonphysical static-source assertions.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 48,
@@ -1654,10 +1659,10 @@
             ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md"
           ],
           "acceptance": [
-            "Physical matrix records every supported model/app/firmware combination.",
-            "Every supported field signs with exact hash equality.",
-            "Every unsupported field fails before confirmation without omission.",
-            "Base and DRep message vectors verify on all supported devices."
+            "Evidence records matrix revision, case IDs, production lock/config digests, adapter commit, exact model/app-or-firmware row, opaque operator/reviewer IDs, and reviewer disposition.",
+            "Every promoted transaction row returns the exact immutable body hash; every unsupported representation fails before confirmation without omission.",
+            "Payment, stake, direct-DRep and matching-type-6-DRep vectors prove frozen encoding, identity, public-key association and signature verification without vendor COSE pass-through.",
+            "Negative, refusal, disconnect, cancellation, transport-close and stale/late-result cases use the privacy-safe schema; task-607 sets physical results only and later release policy owns product enablement."
           ]
         }
       ]

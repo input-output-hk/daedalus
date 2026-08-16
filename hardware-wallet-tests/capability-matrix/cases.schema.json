@@ -1,0 +1,688 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "matrixRevision", "cases"],
+  "properties": {
+    "schemaVersion": { "const": 4 },
+    "matrixRevision": { "const": "task-006-matrix-2026-08-14" },
+    "cases": {
+      "type": "array",
+      "minItems": 100,
+      "items": { "$ref": "#/definitions/case" }
+    }
+  },
+  "definitions": {
+    "digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "stringSet": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "version": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "integer", "minimum": 0, "maximum": 65535 }
+    },
+    "artifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "vendor",
+        "package",
+        "version",
+        "integrity",
+        "lockSha256",
+        "runtimeGraphSha256",
+        "configIdentitySha256"
+      ],
+      "properties": {
+        "id": {
+          "enum": [
+            "ledger-7.1.4",
+            "ledger-8.0.0-candidate",
+            "trezor-connect-9.7.2"
+          ]
+        },
+        "vendor": { "enum": ["ledger", "trezor"] },
+        "package": {
+          "enum": [
+            "@cardano-foundation/ledgerjs-hw-app-cardano",
+            "@trezor/connect"
+          ]
+        },
+        "version": { "enum": ["7.1.4", "8.0.0", "9.7.2"] },
+        "integrity": {
+          "type": "string",
+          "pattern": "^sha512-[A-Za-z0-9+/]+={0,2}$"
+        },
+        "lockSha256": { "$ref": "#/definitions/digest" },
+        "runtimeGraphSha256": { "$ref": "#/definitions/nullableDigest" },
+        "configIdentitySha256": { "$ref": "#/definitions/nullableDigest" }
+      }
+    },
+    "modelBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "versionKind",
+        "certificationVersion",
+        "support",
+        "state"
+      ],
+      "properties": {
+        "model": {
+          "enum": [
+            "ledger-nano-s",
+            "ledger-nano-s-plus",
+            "ledger-nano-x",
+            "trezor-t1b1",
+            "trezor-t2t1",
+            "trezor-t2b1",
+            "trezor-t3b1",
+            "trezor-t3t1",
+            "trezor-t3w1"
+          ]
+        },
+        "versionKind": { "enum": ["ledger-cardano-app", "trezor-firmware"] },
+        "certificationVersion": {
+          "oneOf": [{ "$ref": "#/definitions/version" }, { "type": "null" }]
+        },
+        "support": {
+          "enum": ["representable", "not_representable", "unresolved"]
+        },
+        "state": { "$ref": "#/definitions/operationState" }
+      }
+    },
+    "operationState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "libraryRepresentability",
+        "deterministicProbe",
+        "emulatorEvidence",
+        "physicalCertification",
+        "adapterImplementation",
+        "productEnablement",
+        "productUsable"
+      ],
+      "properties": {
+        "libraryRepresentability": {
+          "enum": ["representable", "not_representable", "unresolved"]
+        },
+        "deterministicProbe": {
+          "enum": ["pass", "fail", "not_applicable", "not_run"]
+        },
+        "emulatorEvidence": {
+          "enum": ["pass", "fail", "unavailable", "not_run"]
+        },
+        "physicalCertification": { "enum": ["pass", "fail", "not_run"] },
+        "adapterImplementation": {
+          "enum": ["pass", "fail", "not_implemented"]
+        },
+        "productEnablement": { "enum": ["enabled", "disabled"] },
+        "productUsable": { "type": "boolean" }
+      }
+    },
+    "selectedInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "sha256"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "transaction-cbor",
+            "drep-key-hash",
+            "enterprise-address",
+            "base-address",
+            "reward-address",
+            "message-request",
+            "source-assertion",
+            "synthetic-golden"
+          ]
+        },
+        "sha256": { "$ref": "#/definitions/digest" }
+      }
+    },
+    "nullableDigest": {
+      "oneOf": [{ "$ref": "#/definitions/digest" }, { "type": "null" }]
+    },
+    "inputRecipe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "decodedByteLength", "inputSha256", "recipeSha256"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "deterministic-harness-input",
+            "physical-message-request",
+            "static-source-assertion",
+            "synthetic-golden",
+            "transaction-cbor",
+            "authoritative-transaction-fixture",
+            "repeated-byte-pattern"
+          ]
+        },
+        "canonicalJson": { "type": "string", "minLength": 2 },
+        "cborHex": { "type": "string", "pattern": "^(?:[0-9a-f]{2})+$" },
+        "fixturePath": {
+          "const": "hardware-wallet-tests/capability-matrix/input-recipes.json"
+        },
+        "fixtureSha256": { "$ref": "#/definitions/digest" },
+        "fixtureEntry": {
+          "enum": ["valid-conway-65536-bytes", "valid-conway-65537-bytes"]
+        },
+        "assertion": { "type": "object" },
+        "structuralValidation": { "type": "object" },
+        "boundOutputsExcludedFromInputDigest": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "patternHex": { "const": "a5" },
+        "repetitions": { "type": "integer", "minimum": 1, "maximum": 65537 },
+        "decodedByteLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "inputSha256": { "$ref": "#/definitions/digest" },
+        "recipeSha256": { "$ref": "#/definitions/digest" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "deterministic-harness-input",
+                  "physical-message-request",
+                  "static-source-assertion",
+                  "synthetic-golden"
+                ]
+              }
+            }
+          },
+          "then": { "required": ["canonicalJson"] }
+        },
+        {
+          "if": {
+            "properties": { "kind": { "const": "repeated-byte-pattern" } }
+          },
+          "then": { "required": ["patternHex", "repetitions"] }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "transaction-cbor" } } },
+          "then": {
+            "required": ["cborHex", "assertion", "structuralValidation"]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": { "const": "authoritative-transaction-fixture" }
+            }
+          },
+          "then": {
+            "required": [
+              "fixturePath",
+              "fixtureSha256",
+              "fixtureEntry",
+              "assertion",
+              "structuralValidation"
+            ]
+          }
+        }
+      ]
+    },
+    "fixtureBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixtureId",
+        "path",
+        "fileSha256",
+        "selectedInput",
+        "payloadSha256",
+        "identitySha256",
+        "publicKeySha256",
+        "signatureSha256",
+        "provenanceFixtureSha256"
+      ],
+      "properties": {
+        "fixtureId": {
+          "enum": [
+            "task-004:conway-regression-collateral",
+            "task-002:deterministic-ed25519-drep-normalization",
+            "task-002-wire:mainnet-base-key-key",
+            "task-002-wire:mainnet-reward-key"
+          ]
+        },
+        "path": {
+          "enum": [
+            "source/common/cardano/fixtures/exact-cbor/conway-regression.json",
+            "source/common/cip30/contracts/fixtures/cip8-cip95-fixture.json",
+            "source/common/cip30/contracts/fixtures/wire-fixtures.json"
+          ]
+        },
+        "fileSha256": { "$ref": "#/definitions/digest" },
+        "selectedInput": { "$ref": "#/definitions/selectedInput" },
+        "payloadSha256": { "$ref": "#/definitions/nullableDigest" },
+        "identitySha256": { "$ref": "#/definitions/nullableDigest" },
+        "publicKeySha256": { "$ref": "#/definitions/nullableDigest" },
+        "signatureSha256": { "$ref": "#/definitions/nullableDigest" },
+        "provenanceFixtureSha256": { "$ref": "#/definitions/nullableDigest" }
+      }
+    },
+    "requestFields": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "optional", "forbidden"],
+      "properties": {
+        "required": { "$ref": "#/definitions/stringSet" },
+        "optional": { "$ref": "#/definitions/stringSet" },
+        "forbidden": { "$ref": "#/definitions/stringSet" }
+      }
+    },
+    "signingBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requestBranch",
+        "signingMode",
+        "displayMode",
+        "executionLayer",
+        "requestFields"
+      ],
+      "properties": {
+        "requestBranch": { "enum": ["transaction", "address", "key-hash"] },
+        "signingMode": { "enum": ["exact-body-reject", "unhashed-message"] },
+        "displayMode": {
+          "enum": ["device-confirmation-required", "none-pre-device-rejection"]
+        },
+        "executionLayer": {
+          "enum": [
+            "pre-device-validator",
+            "adapter-mock",
+            "physical-device",
+            "source-probe",
+            "synthetic-verifier"
+          ]
+        },
+        "requestFields": { "$ref": "#/definitions/requestFields" }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "body-field",
+            "certificate",
+            "exact-body-family",
+            "nested-constraint",
+            "message-mode",
+            "synthetic-golden",
+            "model-version",
+            "error",
+            "limit"
+          ]
+        },
+        "name": { "type": "string", "minLength": 1 },
+        "key": { "type": "integer", "minimum": 0 },
+        "tag": { "type": "integer", "minimum": 0 },
+        "alternative": {
+          "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }]
+        },
+        "minimum": {
+          "oneOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }]
+        },
+        "maximum": {
+          "oneOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }]
+        },
+        "ordering": {
+          "oneOf": [
+            { "enum": ["canonical-policy-id", "canonical-asset-name"] },
+            { "type": "null" }
+          ]
+        },
+        "support": {
+          "enum": ["representable", "not_representable", "unresolved"]
+        },
+        "predicate": { "type": "string", "minLength": 1 }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome", "errorCode", "preDevice"],
+      "properties": {
+        "outcome": {
+          "enum": [
+            "pass",
+            "pre-device-reject",
+            "user-declined",
+            "proof-generation",
+            "invalid-request",
+            "internal-error",
+            "discarded-late-result",
+            "static-source-assertion"
+          ]
+        },
+        "errorCode": {
+          "enum": [
+            "none",
+            "APIError.InvalidRequest",
+            "APIError.InternalError",
+            "TxSignError.ProofGeneration",
+            "TxSignError.UserDeclined",
+            "DataSignError.ProofGeneration",
+            "DataSignError.UserDeclined",
+            "discard-no-second-settlement"
+          ]
+        },
+        "preDevice": { "type": "boolean" }
+      }
+    },
+    "witnessProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "minimum", "keyAssociation"],
+      "properties": {
+        "required": { "$ref": "#/definitions/stringSet" },
+        "optional": { "$ref": "#/definitions/stringSet" },
+        "minimum": { "type": "integer", "minimum": 1 },
+        "keyAssociation": { "type": "string", "minLength": 1 }
+      }
+    },
+    "auxiliaryProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nullable", "requiredWhenPresent"],
+      "properties": {
+        "nullable": { "const": true },
+        "requiredWhenPresent": { "$ref": "#/definitions/stringSet" },
+        "optionalWhenPresent": { "$ref": "#/definitions/stringSet" }
+      }
+    },
+    "transactionVendorResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "witness", "auxiliarySupplement"],
+      "properties": {
+        "required": { "$ref": "#/definitions/stringSet" },
+        "optional": { "$ref": "#/definitions/stringSet" },
+        "witness": { "$ref": "#/definitions/witnessProof" },
+        "auxiliarySupplement": { "$ref": "#/definitions/auxiliaryProof" }
+      }
+    },
+    "messageVendorResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "keyAssociation",
+        "signature",
+        "localCoseRequired"
+      ],
+      "properties": {
+        "required": { "$ref": "#/definitions/stringSet" },
+        "keyAssociation": { "type": "string", "minLength": 1 },
+        "signature": { "const": "ed25519" },
+        "localCoseRequired": { "const": true },
+        "vendorCoseAccepted": { "const": false }
+      }
+    },
+    "proofField": {
+      "enum": [
+        "bodyHashVerified",
+        "identityVerified",
+        "publicKeyAssociated",
+        "signatureVerified",
+        "localCoseVerified",
+        "vendorCosePassedThrough",
+        "returnedBodyHashDigest",
+        "returnedPublicKeyDigest",
+        "returnedSignatureDigest",
+        "witnessCount"
+      ]
+    },
+    "proofBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vendorResponse", "required", "forbidden"],
+      "properties": {
+        "vendorResponse": {
+          "oneOf": [
+            { "$ref": "#/definitions/transactionVendorResponse" },
+            { "$ref": "#/definitions/messageVendorResponse" }
+          ]
+        },
+        "required": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/proofField" }
+        },
+        "forbidden": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/proofField" }
+        }
+      }
+    },
+    "certificationTarget": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "outcome",
+            "errorCode",
+            "physicalExecution",
+            "inputRecipeSha256",
+            "prerequisiteState",
+            "prerequisiteStateSha256",
+            "requiredProof",
+            "forbiddenProof"
+          ],
+          "properties": {
+            "outcome": { "const": "pass" },
+            "errorCode": { "const": "none" },
+            "physicalExecution": { "const": true },
+            "inputRecipeSha256": { "$ref": "#/definitions/digest" },
+            "prerequisiteState": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "libraryRepresentability",
+                "deterministicProbe",
+                "emulatorEvidence",
+                "adapterImplementation",
+                "physicalCertification",
+                "productEnablement",
+                "reviewerDisposition"
+              ],
+              "properties": {
+                "libraryRepresentability": { "const": "representable" },
+                "deterministicProbe": { "const": "pass" },
+                "emulatorEvidence": {
+                  "enum": ["pass", "unavailable", "not_run"]
+                },
+                "adapterImplementation": { "const": "pass" },
+                "physicalCertification": {
+                  "const": "pass-from-this-reviewed-case"
+                },
+                "productEnablement": {
+                  "const": "disabled-until-later-release-policy"
+                },
+                "reviewerDisposition": { "const": "approved" }
+              }
+            },
+            "prerequisiteStateSha256": { "$ref": "#/definitions/digest" },
+            "requiredProof": {
+              "type": "array",
+              "minItems": 6,
+              "uniqueItems": true,
+              "items": { "$ref": "#/definitions/proofField" }
+            },
+            "forbiddenProof": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": { "$ref": "#/definitions/proofField" }
+            }
+          }
+        }
+      ]
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matrixRevision",
+        "capabilityRowId",
+        "artifactBinding",
+        "operation",
+        "category",
+        "subject",
+        "modelBinding",
+        "fixtureBinding",
+        "inputRecipe",
+        "signingBinding",
+        "expected",
+        "proofBinding",
+        "physicalExecution",
+        "certificationTarget",
+        "evidenceOwner"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9.-]+$" },
+        "matrixRevision": { "const": "task-006-matrix-2026-08-14" },
+        "capabilityRowId": { "type": "string", "minLength": 3 },
+        "artifactBinding": { "$ref": "#/definitions/artifactBinding" },
+        "operation": { "enum": ["signTx", "signData"] },
+        "category": {
+          "enum": [
+            "body-field",
+            "certificate",
+            "exact-body-family",
+            "nested-constraint",
+            "message-mode",
+            "synthetic-golden",
+            "model-version",
+            "error",
+            "limit"
+          ]
+        },
+        "subject": { "$ref": "#/definitions/subject" },
+        "modelBinding": { "$ref": "#/definitions/modelBinding" },
+        "fixtureBinding": { "$ref": "#/definitions/fixtureBinding" },
+        "inputRecipe": { "$ref": "#/definitions/inputRecipe" },
+        "signingBinding": { "$ref": "#/definitions/signingBinding" },
+        "expected": { "$ref": "#/definitions/expected" },
+        "proofBinding": { "$ref": "#/definitions/proofBinding" },
+        "physicalExecution": { "type": "boolean" },
+        "certificationTarget": { "$ref": "#/definitions/certificationTarget" },
+        "evidenceOwner": { "enum": ["task-602", "task-603", "task-607"] }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "operation": { "const": "signTx" } },
+            "required": ["operation"]
+          },
+          "then": {
+            "properties": {
+              "fixtureBinding": {
+                "properties": {
+                  "fixtureId": {
+                    "const": "task-004:conway-regression-collateral"
+                  },
+                  "payloadSha256": { "type": "null" },
+                  "identitySha256": { "type": "null" },
+                  "publicKeySha256": { "type": "null" },
+                  "signatureSha256": { "type": "null" }
+                }
+              },
+              "signingBinding": {
+                "properties": {
+                  "requestBranch": { "const": "transaction" },
+                  "signingMode": { "const": "exact-body-reject" }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "fixtureBinding": {
+                "properties": {
+                  "fixtureId": {
+                    "enum": [
+                      "task-002:deterministic-ed25519-drep-normalization",
+                      "task-002-wire:mainnet-base-key-key",
+                      "task-002-wire:mainnet-reward-key"
+                    ]
+                  },
+                  "payloadSha256": { "$ref": "#/definitions/digest" },
+                  "identitySha256": { "$ref": "#/definitions/nullableDigest" },
+                  "publicKeySha256": { "$ref": "#/definitions/nullableDigest" },
+                  "signatureSha256": { "$ref": "#/definitions/nullableDigest" },
+                  "provenanceFixtureSha256": { "type": "null" }
+                }
+              },
+              "signingBinding": {
+                "properties": { "signingMode": { "const": "unhashed-message" } }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "artifactBinding": {
+                "properties": { "id": { "const": "trezor-connect-9.7.2" } }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "artifactBinding": {
+                "properties": {
+                  "vendor": { "const": "trezor" },
+                  "package": { "const": "@trezor/connect" },
+                  "version": { "const": "9.7.2" }
+                }
+              },
+              "modelBinding": {
+                "properties": { "versionKind": { "const": "trezor-firmware" } }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "artifactBinding": {
+                "properties": {
+                  "vendor": { "const": "ledger" },
+                  "package": {
+                    "const": "@cardano-foundation/ledgerjs-hw-app-cardano"
+                  }
+                }
+              },
+              "modelBinding": {
+                "properties": {
+                  "versionKind": { "const": "ledger-cardano-app" }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
