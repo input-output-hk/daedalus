@@ -8,9 +8,14 @@ This workflow guides development and testing of hardware wallet integration in D
 
 ## Overview
 
-Daedalus supports two hardware wallet types:
+Daedalus currently supports two hardware wallet families:
 - **Ledger** (Nano S, Nano X, Nano S Plus)
-- **Trezor** (Model T, Model One, Safe 3)
+- **Trezor** (the live shared model currently distinguishes Model One and Model T)
+
+Safe/Core devices are planned dApp-connector certification targets, not current
+support claims. The static capability contract is frozen in
+`source/common/hardware/fixtures/capability-matrix/`; physical model, app and
+firmware evidence remains task-607 work.
 
 Hardware wallets provide secure transaction signing where private keys never leave the device.
 
@@ -149,24 +154,14 @@ deviceTracker.ts  // Tracks connected devices
 
 ### Trezor Connect
 
-Trezor uses `@trezor/connect` which handles:
-- Device communication
-- Popup for user confirmation
-- Multi-device support
+Trezor uses `@trezor/connect` for device communication and multi-device support.
+Daedalus initializes it with `popup: false` and renders device interaction UI
+itself.
 
 ### Setup
 
-```typescript
-// source/main/trezor/connection.ts
-import TrezorConnect from '@trezor/connect';
-
-TrezorConnect.init({
-  manifest: {
-    email: 'support@iohk.io',
-    appUrl: 'https://daedaluswallet.io',
-  },
-});
-```
+See `source/main/trezor/connection.ts` for the live initialization contract. Do
+not duplicate its manifest or transport options in workflow examples.
 
 ### Signing Flow
 
@@ -174,7 +169,7 @@ TrezorConnect.init({
 2. **Store prepares transaction** with inputs/outputs
 3. **IPC sends to main process** via `SIGN_TRANSACTION_TREZOR_CHANNEL`
 4. **TrezorConnect.cardanoSignTransaction()** called
-5. **Trezor popup appears** for user confirmation
+5. **Daedalus device-interaction UI appears** (`popup: false`)
 6. **User confirms on device** (touchscreen/buttons)
 7. **Signed transaction returned** to renderer
 8. **Transaction submitted** to cardano-wallet
@@ -207,21 +202,15 @@ const mockSignedTx = {
 yarn test:hardware-wallets
 ```
 
-Runs `hardware-wallet-tests/index.ts` for interactive testing.
+Runs `hardware-wallet-tests/index.ts`, a legacy interactive Ledger
+connection/public-key/disconnect diagnostic. It is not a Trezor, transaction,
+CIP-8, cancellation or physical-certification suite.
 
 ### Debugging
 
-Enable verbose logging:
-
-```typescript
-// In main process
-import { logger } from '../utils/logging';
-
-logger.info('Hardware wallet operation', {
-  channel: 'SIGN_TRANSACTION_LEDGER_CHANNEL',
-  devicePath: transport.devicePath,
-});
-```
+Diagnostics may log a fixed operation/status enum, but must not log USB paths,
+serials, labels, addresses, xpubs, raw requests/responses or arbitrary vendor
+errors. Keep physical evidence in the normalized task-607 schema.
 
 ---
 
@@ -330,6 +319,7 @@ verifyAddress(params: VerifyAddressParams): Promise<void>
 
 1. **Private keys never leave device** - All signing on hardware
 2. **Address verification** - Always verify receive addresses on device
-3. **Transaction display** - User sees transaction details on device screen
+3. **Transaction display** - Current wallet flows require device confirmation;
+   exact dApp field/display coverage is not certified until task-607
 4. **Physical confirmation** - Requires button press on device
 5. **PIN protection** - Device locks after incorrect PINs

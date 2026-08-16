@@ -172,11 +172,20 @@ tests/
 yarn test:hardware-wallets
 ```
 
-This runs hardware wallet integration tests in `hardware-wallet-tests/`.
+This runs the legacy interactive Ledger diagnostic in
+`hardware-wallet-tests/index.ts`. It currently checks connection, public-key and
+disconnect behavior only; it does not test Trezor, exact transactions, CIP-8,
+cancellation or the task-607 physical certification matrix.
 
 **Requirements:**
-- Connected Ledger or Trezor device
-- Cardano app installed on device
+- Connected Ledger device
+- Cardano app installed on the Ledger device
+
+Static capability-contract validation requires no device:
+
+```bash
+yarn test:jest source/common/hardware/hardwareCapabilityMatrix.spec.ts --runInBand --coverage=false
+```
 
 ---
 

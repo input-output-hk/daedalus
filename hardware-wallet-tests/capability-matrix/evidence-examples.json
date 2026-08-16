@@ -1,0 +1,171 @@
+{
+  "valid": {
+    "matrixRevision": "task-006-matrix-2026-08-14",
+    "caseId": "ledger-8-library-nano-s-app7-signdata-message-mode-drep-direct",
+    "capabilityRowId": "ledger-8-library-nano-s-app7",
+    "artifactId": "ledger-8.0.0-candidate",
+    "artifactDigest": "76a2dc5d058d920f4b31562097880ddcbbcb59cf598b69b5a076ce85dd6c0706",
+    "productionLockDigest": "20494ce8d821e7bb2d84a6a7516601d9063898415ae06aebd95a313566c2a75a",
+    "configDigest": "4f39bf86506272ece945f473a66babb8e97178ec743309793838da56ffab28fe",
+    "runtimeGraphSha256": null,
+    "configIdentitySha256": null,
+    "library": {
+      "name": "@cardano-foundation/ledgerjs-hw-app-cardano",
+      "version": "8.0.0",
+      "integrity": "sha512-hyWBk4HQApPdIvidQOExOP+GxD36WDsgzCz1PAFeJ4heL/b5Bmplyyg03/lA95NDNjjpqgDzN2rJyBHYpqgfmQ==",
+      "lockDigest": "20494ce8d821e7bb2d84a6a7516601d9063898415ae06aebd95a313566c2a75a"
+    },
+    "adapterCommit": "0000000000000000000000000000000000000000",
+    "vendor": "ledger",
+    "model": "ledger-nano-s",
+    "versionKind": "ledger-cardano-app",
+    "version": [7, 1, 0],
+    "transport": "hid",
+    "operation": "signData",
+    "inputDigest": "b067897d5dbdf9dde44fc9dfc34a0f3f10d4b399738648a2ee5c57975b7c6c62",
+    "inputRecipeSha256": "0a8946b8c2bccaa89af9cfd222c95beab9522efa934fcbe4c933cb54183c65a5",
+    "outcome": "pre-device-reject",
+    "errorCode": "DataSignError.ProofGeneration",
+    "prerequisiteAttestation": null,
+    "proof": {
+      "bodyHashVerified": false,
+      "identityVerified": false,
+      "publicKeyAssociated": false,
+      "signatureVerified": false,
+      "localCoseVerified": false,
+      "vendorCosePassedThrough": false,
+      "returnedBodyHashDigest": null,
+      "returnedPublicKeyDigest": null,
+      "returnedSignatureDigest": null,
+      "witnessCount": 0
+    },
+    "operatorId": "operator-generated",
+    "reviewerId": "reviewer-generated",
+    "reviewDisposition": "approved",
+    "executedAt": "2026-08-14T12:00:00Z"
+  },
+  "promotedValid": {
+    "matrixRevision": "task-006-matrix-2026-08-14",
+    "caseId": "ledger-8-library-nano-s-app7-signdata-message-mode-drep-direct",
+    "capabilityRowId": "ledger-8-library-nano-s-app7",
+    "artifactId": "ledger-8.0.0-candidate",
+    "artifactDigest": "76a2dc5d058d920f4b31562097880ddcbbcb59cf598b69b5a076ce85dd6c0706",
+    "productionLockDigest": "20494ce8d821e7bb2d84a6a7516601d9063898415ae06aebd95a313566c2a75a",
+    "configDigest": "4f39bf86506272ece945f473a66babb8e97178ec743309793838da56ffab28fe",
+    "runtimeGraphSha256": null,
+    "configIdentitySha256": null,
+    "library": {
+      "name": "@cardano-foundation/ledgerjs-hw-app-cardano",
+      "version": "8.0.0",
+      "integrity": "sha512-hyWBk4HQApPdIvidQOExOP+GxD36WDsgzCz1PAFeJ4heL/b5Bmplyyg03/lA95NDNjjpqgDzN2rJyBHYpqgfmQ==",
+      "lockDigest": "20494ce8d821e7bb2d84a6a7516601d9063898415ae06aebd95a313566c2a75a"
+    },
+    "adapterCommit": "1111111111111111111111111111111111111111",
+    "vendor": "ledger",
+    "model": "ledger-nano-s",
+    "versionKind": "ledger-cardano-app",
+    "version": [7, 1, 0],
+    "transport": "hid",
+    "operation": "signData",
+    "inputDigest": "b067897d5dbdf9dde44fc9dfc34a0f3f10d4b399738648a2ee5c57975b7c6c62",
+    "inputRecipeSha256": "0a8946b8c2bccaa89af9cfd222c95beab9522efa934fcbe4c933cb54183c65a5",
+    "outcome": "pass",
+    "errorCode": "none",
+    "prerequisiteAttestation": {
+      "libraryRepresentability": "representable",
+      "deterministicProbe": "pass",
+      "emulatorEvidence": "not_run",
+      "adapterImplementation": "pass",
+      "physicalCertification": "pass",
+      "productEnablement": "disabled",
+      "reviewerApproved": true,
+      "prerequisiteStateSha256": "dc587bd42dc287b91a70e88785211e5f2add7d421aba9acfcb6e32e96f8fb099"
+    },
+    "proof": {
+      "bodyHashVerified": false,
+      "identityVerified": true,
+      "publicKeyAssociated": true,
+      "signatureVerified": true,
+      "localCoseVerified": true,
+      "vendorCosePassedThrough": false,
+      "returnedBodyHashDigest": null,
+      "returnedPublicKeyDigest": "f8f6fc742802a3e897f7a0a31fdb87a44aa37209b159506edba65487e7379d50",
+      "returnedSignatureDigest": "3cf7b20dcc337e1454927c7983c50baf58ceb66207575d973960bd3cc354fe9f",
+      "witnessCount": 0
+    },
+    "operatorId": "operator-generated",
+    "reviewerId": "reviewer-generated",
+    "reviewDisposition": "approved",
+    "executedAt": "2026-08-14T12:00:00Z"
+  },
+  "invalid": [
+    { "name": "wrong-vendor", "property": "vendor", "value": "trezor" },
+    { "name": "wrong-operation", "property": "operation", "value": "signTx" },
+    {
+      "name": "wrong-artifact",
+      "property": "artifactId",
+      "value": "ledger-7.1.4"
+    },
+    { "name": "wrong-model", "property": "model", "value": "trezor-t2t1" },
+    { "name": "wrong-version", "property": "version", "value": [99, 0, 0] },
+    {
+      "name": "wrong-model-row",
+      "property": "capabilityRowId",
+      "value": "not-the-bound-row"
+    },
+    {
+      "name": "reviewer-rejected-evidence",
+      "property": "reviewDisposition",
+      "value": "rejected"
+    },
+    { "name": "wrong-error", "property": "errorCode", "value": "none" },
+    { "name": "unknown-case", "property": "caseId", "value": "unfrozen-case" },
+    {
+      "name": "positive-proof-on-pre-device-rejection",
+      "property": "signatureVerified",
+      "value": true,
+      "target": "proof"
+    },
+    {
+      "name": "returned-digest-on-pre-device-rejection",
+      "property": "returnedSignatureDigest",
+      "value": "30a6224c9730d88744944e78d1afc43165a4d56b79bb799211e16d01692903c6",
+      "target": "proof"
+    },
+    {
+      "name": "witness-on-pre-device-rejection",
+      "property": "witnessCount",
+      "value": 1,
+      "target": "proof"
+    },
+    {
+      "name": "vendor-cose-proof",
+      "property": "vendorCosePassedThrough",
+      "value": true,
+      "target": "proof"
+    }
+  ],
+  "promotedInvalid": [
+    {
+      "name": "zero-adapter-commit",
+      "property": "adapterCommit",
+      "value": "0000000000000000000000000000000000000000"
+    },
+    {
+      "name": "missing-prerequisites",
+      "property": "prerequisiteAttestation",
+      "value": null
+    },
+    {
+      "name": "reviewer-rejected-promotion",
+      "property": "reviewDisposition",
+      "value": "rejected"
+    },
+    {
+      "name": "missing-promoted-proof",
+      "property": "signatureVerified",
+      "value": false,
+      "target": "proof"
+    }
+  ]
+}
