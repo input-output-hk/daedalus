@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 1,
+  "label": "installed-trezor-connect-9.7.2",
+  "vendor": "trezor",
+  "package": {
+    "name": "@trezor/connect",
+    "version": "9.7.2",
+    "nodeEngine": null
+  },
+  "identity": {
+    "version": "9.7.2",
+    "resolved": "https://registry.yarnpkg.com/@trezor/connect/-/connect-9.7.2.tgz#bb6e06f1a28bac41266ef936fea38f653122afa3",
+    "sha1": "bb6e06f1a28bac41266ef936fea38f653122afa3",
+    "integrity": "sha512-Sn6F4mNH+yi2vAHy29kwhs50bRLn92drg3znm3pkY+8yEBxI4MmuP8sKYjdgUEJnQflWh80KlcvEDeVa4olVRA==",
+    "tarballSha256": null,
+    "lockType": "yarn-v1",
+    "lockPath": "yarn.lock",
+    "lockSha256": "a5779e15e5f867bf8ecc51e51cedb4be7672d103b89f9c8e59a9d4af9466ac02",
+    "lockVerification": {
+      "version": "match",
+      "integrity": "yarn-cache-metadata-and-installed-tree-bound-before-load"
+    },
+    "installedPackageTree": {
+      "algorithm": "sha256(path\\0content-sha256\\n)",
+      "fileCount": 867,
+      "sha256": "3aa70b3452786d2e4fab6e10999c9c6320f2524d4e21ca06661560a0f2b40f31"
+    }
+  },
+  "evidence": {
+    "publicEntry": "lib/index.js",
+    "typesEntry": "lib/types/api/cardano/index.d.ts",
+    "publicExports": {
+      "status": "blocked-native-runtime",
+      "errorName": "Error"
+    },
+    "sourceFiles": [
+      {
+        "path": "package.json",
+        "sha256": "8fa0d0204e8a5fc6bcc6cc48d5cd6f262d4148dba05a0cc70adce2838aae984b"
+      },
+      {
+        "path": "lib/types/api/cardano/index.d.ts",
+        "sha256": "55e8defd8fb22316eea2d39434db8aecd84f3627ff26421012d9f079efe0ccb1"
+      },
+      {
+        "path": "lib/types/api/cardano/index.js",
+        "sha256": "61546455c06a17f3018553ddbc561117d5471bcdcdbf1ee58f8e13e7c522ab46"
+      },
+      {
+        "path": "lib/data/config.js",
+        "sha256": "4b3928e6c268bc36b637b5b33004001b9521cdbcfbe2b802f8c0d6a4783ac0cd"
+      },
+      {
+        "path": "lib/core/AbstractMethod.js",
+        "sha256": "b6008a21fa2636230cf9cd70f1e19464ed0f18bcdb388c23efe3d182ef3c59ad"
+      },
+      {
+        "path": "lib/api/common/paramsValidator.js",
+        "sha256": "e00c4b1bdf1052c8e8c9eab0b88cad23c6bb947eb22b8e26b886bc21b9c00c64"
+      },
+      {
+        "path": "lib/data/coinInfo.js",
+        "sha256": "01c46c160986b99b1f5bb468aac4d4fea0619335c4742e0bd22d4b03d168b809"
+      },
+      {
+        "path": "lib/constants/index.js",
+        "sha256": "6291dfa837da2490c95c751c1df024f9598fc29171386a441265759e75bdbbc7"
+      },
+      {
+        "path": "lib/api/cardano/api/cardanoSignMessage.js",
+        "sha256": "31cab0e937ddd8be883707450d9ade1a9b5be8abb9be7799d2f63e64ffd89418"
+      },
+      {
+        "path": "lib/api/cardano/api/cardanoSignTransaction.js",
+        "sha256": "ec33db6ee4540c44c3aa50cafd363b0606059dd719d6f6dc7f849ee3f3b14946"
+      },
+      {
+        "path": "lib/api/cardano/cardanoAddressParameters.js",
+        "sha256": "da2b379a6d0a658520d88baba1a62db36750dd0989ca77216de785bff0f209a1"
+      },
+      {
+        "path": "lib/api/cardano/cardanoCertificate.js",
+        "sha256": "9eae8c1f97cbd5fff4b5498acc84f239d15789d5c0d725731916bb4a077101c6"
+      },
+      {
+        "path": "lib/api/cardano/cardanoOutputs.js",
+        "sha256": "3dbc29d54ad78436916c65fd5f98e5d63f108b38d37751652fa6d4332e1a8585"
+      },
+      {
+        "path": "lib/api/cardano/cardanoTokenBundle.js",
+        "sha256": "6485d88e1988c3780bc7a77918072204d44ec15f5576507b3a9f9993d4dbae5b"
+      },
+      {
+        "path": "lib/api/cardano/cardanoWitnesses.js",
+        "sha256": "9bb897cdc76ac4118aa4f6c3daae99dfe432d5d875870d59cebd83b42b0b2d54"
+      }
+    ],
+    "normalizedContract": {
+      "modelOperationGates": [
+        {
+          "model": "trezor-t1b1",
+          "signTx": { "support": "not_representable", "minimumVersion": null },
+          "signData": { "support": "not_representable", "minimumVersion": null }
+        },
+        {
+          "model": "trezor-t2t1",
+          "signTx": { "support": "representable", "minimumVersion": [2, 6, 0] },
+          "signData": {
+            "support": "representable",
+            "minimumVersion": [2, 9, 1]
+          }
+        },
+        {
+          "model": "trezor-t2b1",
+          "signTx": { "support": "representable", "minimumVersion": [2, 6, 1] },
+          "signData": {
+            "support": "representable",
+            "minimumVersion": [2, 9, 1]
+          }
+        },
+        {
+          "model": "trezor-t3b1",
+          "signTx": { "support": "representable", "minimumVersion": [2, 8, 1] },
+          "signData": {
+            "support": "representable",
+            "minimumVersion": [2, 9, 1]
+          }
+        },
+        {
+          "model": "trezor-t3t1",
+          "signTx": { "support": "representable", "minimumVersion": [2, 7, 1] },
+          "signData": {
+            "support": "representable",
+            "minimumVersion": [2, 9, 1]
+          }
+        },
+        {
+          "model": "trezor-t3w1",
+          "signTx": { "support": "representable", "minimumVersion": [2, 7, 1] },
+          "signData": { "support": "unresolved", "minimumVersion": null }
+        }
+      ],
+      "nestedInventory": {
+        "constraints": [
+          {
+            "id": "output-format",
+            "alternatives": ["legacy-array", "babbage-map"]
+          },
+          {
+            "id": "output-destination",
+            "alternatives": ["device-owned-address-parameters", "raw-address"]
+          },
+          {
+            "id": "address",
+            "alternatives": [
+              "payment-path",
+              "staking-path",
+              "staking-key-hash",
+              "certificate-pointer",
+              "payment-script-hash",
+              "staking-script-hash"
+            ]
+          },
+          { "id": "datum", "alternatives": ["absent", "hash", "inline"] },
+          { "id": "reference-script", "alternatives": ["absent", "present"] },
+          {
+            "id": "token-policy",
+            "minimum": 0,
+            "maximum": 4294967295,
+            "ordering": "canonical-policy-id"
+          },
+          {
+            "id": "tokens-per-policy",
+            "minimum": 0,
+            "maximum": 4294967295,
+            "ordering": "canonical-asset-name"
+          },
+          {
+            "id": "withdrawal",
+            "alternatives": ["path", "script-hash", "key-hash"]
+          },
+          { "id": "required-signer", "alternatives": ["path", "key-hash"] },
+          {
+            "id": "certificate",
+            "alternatives": [
+              "stake-registration",
+              "stake-deregistration",
+              "stake-delegation",
+              "pool-registration",
+              "stake-registration-conway",
+              "stake-deregistration-conway",
+              "vote-delegation"
+            ]
+          },
+          {
+            "id": "drep",
+            "alternatives": [
+              "key-hash",
+              "script-hash",
+              "abstain",
+              "no-confidence"
+            ]
+          },
+          {
+            "id": "pool-owner",
+            "alternatives": ["staking-key-path", "staking-key-hash"],
+            "minimum": 0,
+            "maximum": 4294967295
+          },
+          {
+            "id": "pool-relay",
+            "alternatives": [
+              "single-host-ip",
+              "single-host-name",
+              "multi-host"
+            ],
+            "minimum": 0,
+            "maximum": 4294967295
+          },
+          {
+            "id": "cip36-vote-key",
+            "alternatives": ["vote-public-key", "delegations"]
+          },
+          {
+            "id": "cip36-payment",
+            "alternatives": ["payment-address-parameters", "payment-address"]
+          }
+        ]
+      },
+      "messageRequest": {
+        "required": ["path", "payload"],
+        "optional": [
+          "addressParameters",
+          "derivationType",
+          "networkId",
+          "preferHexDisplay",
+          "protocolMagic"
+        ],
+        "branches": []
+      },
+      "transactionProof": {
+        "required": ["hash", "witnesses"],
+        "optional": ["auxiliaryDataSupplement"],
+        "witness": {
+          "required": ["pubKey", "signature", "type"],
+          "optional": ["chainCode"],
+          "minimum": 1,
+          "keyAssociation": "witness-request-path-public-key"
+        },
+        "auxiliarySupplement": {
+          "nullable": true,
+          "requiredWhenPresent": ["auxiliaryDataHash", "type"],
+          "optionalWhenPresent": ["cVoteRegistrationSignature"]
+        }
+      },
+      "messageProof": {
+        "required": [
+          "coseKey",
+          "coseSignature",
+          "headers",
+          "payload",
+          "pubKey",
+          "signature"
+        ],
+        "keyAssociation": "path-public-key-protected-address",
+        "signature": "ed25519",
+        "localCoseRequired": true,
+        "vendorCoseAccepted": false
+      }
+    },
+    "inventory": {
+      "transactionFields": [
+        "additionalWitnessRequests",
+        "auxiliaryData",
+        "certificates",
+        "chunkify",
+        "collateralInputs",
+        "collateralReturn",
+        "derivationType",
+        "fee",
+        "includeNetworkId",
+        "inputs",
+        "mint",
+        "networkId",
+        "outputs",
+        "protocolMagic",
+        "referenceInputs",
+        "requiredSigners",
+        "scriptDataHash",
+        "signingMode",
+        "tagCborSets",
+        "totalCollateral",
+        "ttl",
+        "validityIntervalStart",
+        "withdrawals"
+      ],
+      "certificateTags": [0, 1, 2, 3, 7, 8, 9],
+      "messageFields": [
+        "addressParameters",
+        "derivationType",
+        "networkId",
+        "path",
+        "payload",
+        "preferHexDisplay",
+        "protocolMagic"
+      ],
+      "signedTransactionFields": [
+        "auxiliaryDataSupplement",
+        "hash",
+        "witnesses"
+      ],
+      "signedMessageFields": [
+        "coseKey",
+        "coseSignature",
+        "headers",
+        "payload",
+        "pubKey",
+        "signature"
+      ],
+      "outputAlternatives": ["legacy-array", "babbage-map"],
+      "credentialAlternatives": ["path", "key-hash", "script-hash"],
+      "voterAlternatives": []
+    },
+    "capabilities": {
+      "signTransaction": true,
+      "signMessage": true,
+      "returnedTransactionHash": true,
+      "alonzoOutput": true,
+      "babbageOutput": true,
+      "referenceScript": true,
+      "collateralReturn": true,
+      "totalCollateral": true,
+      "referenceInputs": true,
+      "votingProcedures": false,
+      "proposalProcedures": false,
+      "treasury": false,
+      "donation": false,
+      "vendorCoseReturned": true,
+      "rawMessagePayloadReturned": true,
+      "rawMessagePublicKeyReturned": true,
+      "rawMessageSignatureReturned": true,
+      "messageMethodLoads": true,
+      "returnedHeadersIncludeVersion": true,
+      "encodedCoseUnprotectedMapIncludesVersion": false
+    }
+  }
+}

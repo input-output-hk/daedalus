@@ -1,0 +1,1506 @@
+{
+  "schemaVersion": 1,
+  "revision": "task-006-matrix-2026-08-14",
+  "scope": "static-contract-only",
+  "normativeReferences": {
+    "cip30": "source/common/cip30/contracts/contract-manifest.json",
+    "cip8Cip95": "source/common/cip30/contracts/fixtures/cip8-cip95-fixture.json",
+    "exactCbor": "source/common/cardano/fixtures/exact-cbor/manifest.json",
+    "wireFixtures": "source/common/cip30/contracts/fixtures/wire-fixtures.json"
+  },
+  "fixtureBindings": {
+    "signData": {
+      "id": "task-002-deterministic-ed25519-drep-normalization",
+      "path": "source/common/cip30/contracts/fixtures/cip8-cip95-fixture.json",
+      "sha256": "e5a1e69b229e3f6e10874238772e8aea219e29f397fb1d6cbf6ead7d33704541"
+    },
+    "signDataAddresses": {
+      "id": "task-002-wire-addresses",
+      "path": "source/common/cip30/contracts/fixtures/wire-fixtures.json",
+      "sha256": "b8c8b6a098150a7770391ace43f15021f9ddb23a4055d55455876758f51150aa"
+    },
+    "signTx": {
+      "id": "task-004-conway-regression",
+      "path": "source/common/cardano/fixtures/exact-cbor/conway-regression.json",
+      "sha256": "b22ea8452baca7bc7adacf12a8e6728cf571cc5cc35249e283db160c36b48f18"
+    }
+  },
+  "dimensions": {
+    "libraryRepresentability": [
+      "representable",
+      "not_representable",
+      "unresolved"
+    ],
+    "deterministicProbe": ["pass", "fail", "not_applicable", "not_run"],
+    "emulatorEvidence": ["pass", "fail", "unavailable", "not_run"],
+    "physicalCertification": ["pass", "fail", "not_run"],
+    "adapterImplementation": ["pass", "fail", "not_implemented"],
+    "productEnablement": ["enabled", "disabled"]
+  },
+  "task006RequiredState": {
+    "emulatorEvidence": "not_run",
+    "physicalCertification": "not_run",
+    "adapterImplementation": "not_implemented",
+    "productEnablement": "disabled"
+  },
+  "artifacts": [
+    {
+      "id": "ledger-7.1.4",
+      "vendor": "ledger",
+      "package": "@cardano-foundation/ledgerjs-hw-app-cardano",
+      "version": "7.1.4",
+      "sha1": "e3e484edf950a871d3d3c87750077565162eee9f",
+      "integrity": "sha512-bkZ78H0m6E22Fe4nN+K0HY0O2lrPk9Pjs/gv0U5xvJyrMqwmR4wm9h8QXd/AwJ084KIhfpCSGDCQ0CN/K++vNw==",
+      "lockSha256": "a5779e15e5f867bf8ecc51e51cedb4be7672d103b89f9c8e59a9d4af9466ac02",
+      "probe": "ledger-7.1.4-library-results.json"
+    },
+    {
+      "id": "ledger-8.0.0-candidate",
+      "vendor": "ledger",
+      "package": "@cardano-foundation/ledgerjs-hw-app-cardano",
+      "version": "8.0.0",
+      "sha1": "7f6b1dcfcc5b397156507b0c82d25d7595687a68",
+      "integrity": "sha512-hyWBk4HQApPdIvidQOExOP+GxD36WDsgzCz1PAFeJ4heL/b5Bmplyyg03/lA95NDNjjpqgDzN2rJyBHYpqgfmQ==",
+      "tarballSha256": "76a2dc5d058d920f4b31562097880ddcbbcb59cf598b69b5a076ce85dd6c0706",
+      "lockSha256": "20494ce8d821e7bb2d84a6a7516601d9063898415ae06aebd95a313566c2a75a",
+      "probe": "ledger-8.0.0-library-results.json"
+    },
+    {
+      "id": "trezor-connect-9.7.2",
+      "vendor": "trezor",
+      "package": "@trezor/connect",
+      "version": "9.7.2",
+      "sha1": "bb6e06f1a28bac41266ef936fea38f653122afa3",
+      "integrity": "sha512-Sn6F4mNH+yi2vAHy29kwhs50bRLn92drg3znm3pkY+8yEBxI4MmuP8sKYjdgUEJnQflWh80KlcvEDeVa4olVRA==",
+      "lockSha256": "a5779e15e5f867bf8ecc51e51cedb4be7672d103b89f9c8e59a9d4af9466ac02",
+      "runtimeIdentity": "trezor-9.7.2-runtime-identity.json",
+      "probe": "trezor-9.7.2-library-results.json"
+    }
+  ],
+  "runtimeProvenance": {
+    "artifactId": "trezor-connect-9.7.2",
+    "runtimeGraphSha256": "128bf570f72998c57e13c850f9e2e08683155c999f8b9bdba5ebd0e0af78558f",
+    "configIdentitySha256": "fee4c314dbfcf63b54c22d2285e2a6e6f2f96e53a3aae8ea007b0ccc9443426a"
+  },
+  "dependencyDecision": {
+    "decision": "recommend-ledger-8.0.0-for-task-600",
+    "reason": "The lock-verified isolated candidate loads the public API, every Daedalus deep import, and the app-v7/app-v8 validator paths. The current TypeScript program fails only at exactly three removed utils.hex_to_buf call sites, which are the bounded task-600 migration. Main and renderer webpack builds pass with an in-memory candidate alias and no production dependency replacement. Physical evidence remains not_run, so exact-body hash gates and task-607 certification are still mandatory.",
+    "productionDependencyChanged": false,
+    "owner": "task-600",
+    "consumerResult": "ledger-8.0.0-consumer-results.json",
+    "requiredMigrations": [
+      "Replace the three removed Ledger utils.hex_to_buf call sites with strict validated Buffer conversion."
+    ]
+  },
+  "exactBodyFamilies": [
+    "root-envelope",
+    "containers-and-strings",
+    "integer-and-length-width",
+    "map-order",
+    "map-key-duplicates",
+    "semantic-duplicates",
+    "set-tag-258",
+    "embedded-cbor-tag-24",
+    "other-tags",
+    "legacy-conway-forms",
+    "auxiliary-data-hash",
+    "nested-semantic-order-and-cardinality"
+  ],
+  "exactBodyDispositions": [
+    {
+      "vendor": "ledger",
+      "operation": "signTx",
+      "artifactIds": ["ledger-7.1.4", "ledger-8.0.0-candidate"],
+      "families": {
+        "root-envelope": "reject_pre_device",
+        "containers-and-strings": "reject_pre_device",
+        "integer-and-length-width": "reject_pre_device",
+        "map-order": "reject_pre_device",
+        "map-key-duplicates": "reject_pre_device",
+        "semantic-duplicates": "reject_pre_device",
+        "set-tag-258": "reject_pre_device",
+        "embedded-cbor-tag-24": "reject_pre_device",
+        "other-tags": "reject_pre_device",
+        "legacy-conway-forms": "reject_pre_device",
+        "auxiliary-data-hash": "reject_pre_device",
+        "nested-semantic-order-and-cardinality": "reject_pre_device"
+      },
+      "physicalReturnedHashRequired": false
+    },
+    {
+      "vendor": "trezor",
+      "operation": "signTx",
+      "artifactIds": ["trezor-connect-9.7.2"],
+      "families": {
+        "root-envelope": "reject_pre_device",
+        "containers-and-strings": "reject_pre_device",
+        "integer-and-length-width": "reject_pre_device",
+        "map-order": "reject_pre_device",
+        "map-key-duplicates": "reject_pre_device",
+        "semantic-duplicates": "reject_pre_device",
+        "set-tag-258": "reject_pre_device",
+        "embedded-cbor-tag-24": "reject_pre_device",
+        "other-tags": "reject_pre_device",
+        "legacy-conway-forms": "reject_pre_device",
+        "auxiliary-data-hash": "reject_pre_device",
+        "nested-semantic-order-and-cardinality": "reject_pre_device"
+      },
+      "physicalReturnedHashRequired": false
+    }
+  ],
+  "conwayInventory": {
+    "bodyKeys": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22
+    ],
+    "certificateTags": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ],
+    "dijkstra": "unsupported"
+  },
+  "bodyFieldMap": [
+    { "key": 0, "name": "inputs", "vendorAliases": ["inputs"] },
+    { "key": 1, "name": "outputs", "vendorAliases": ["outputs"] },
+    { "key": 2, "name": "fee", "vendorAliases": ["fee"] },
+    { "key": 3, "name": "ttl", "vendorAliases": ["ttl"] },
+    { "key": 4, "name": "certificates", "vendorAliases": ["certificates"] },
+    { "key": 5, "name": "withdrawals", "vendorAliases": ["withdrawals"] },
+    {
+      "key": 7,
+      "name": "auxiliaryDataHash",
+      "vendorAliases": ["auxiliaryData"]
+    },
+    {
+      "key": 8,
+      "name": "validityIntervalStart",
+      "vendorAliases": ["validityIntervalStart"]
+    },
+    { "key": 9, "name": "mint", "vendorAliases": ["mint"] },
+    {
+      "key": 11,
+      "name": "scriptDataHash",
+      "vendorAliases": ["scriptDataHashHex", "scriptDataHash"]
+    },
+    {
+      "key": 13,
+      "name": "collateralInputs",
+      "vendorAliases": ["collateralInputs"]
+    },
+    {
+      "key": 14,
+      "name": "requiredSigners",
+      "vendorAliases": ["requiredSigners"]
+    },
+    {
+      "key": 15,
+      "name": "networkId",
+      "vendorAliases": ["includeNetworkId", "networkId"]
+    },
+    {
+      "key": 16,
+      "name": "collateralReturn",
+      "vendorAliases": ["collateralOutput", "collateralReturn"]
+    },
+    {
+      "key": 17,
+      "name": "totalCollateral",
+      "vendorAliases": ["totalCollateral"]
+    },
+    {
+      "key": 18,
+      "name": "referenceInputs",
+      "vendorAliases": ["referenceInputs"]
+    },
+    {
+      "key": 19,
+      "name": "votingProcedures",
+      "vendorAliases": ["votingProcedures"]
+    },
+    {
+      "key": 20,
+      "name": "proposalProcedures",
+      "vendorAliases": ["proposalProcedures"]
+    },
+    { "key": 21, "name": "treasury", "vendorAliases": ["treasury"] },
+    { "key": 22, "name": "donation", "vendorAliases": ["donation"] }
+  ],
+  "staticFieldCoverage": [
+    {
+      "artifactId": "ledger-7.1.4",
+      "representableBodyKeys": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        21,
+        22
+      ],
+      "notRepresentableBodyKeys": [20],
+      "representableCertificateTags": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        7,
+        8,
+        9,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "notRepresentableCertificateTags": [10, 11, 12, 13],
+      "limits": ["body-key-19-one-voter", "body-key-19-one-vote-per-voter"],
+      "outputAlternatives": ["TxOutputAlonzo", "TxOutputBabbage"],
+      "credentialAlternatives": [0, 1, 2],
+      "voterAlternatives": [0, 1, 2, 3, 4, 100, 102, 104],
+      "nestedInventory": {
+        "constraints": [
+          {
+            "id": "output-format",
+            "alternatives": ["alonzo-array", "babbage-map"]
+          },
+          {
+            "id": "output-destination",
+            "alternatives": ["raw-address", "device-owned"]
+          },
+          { "id": "datum", "alternatives": ["absent", "hash", "inline"] },
+          { "id": "reference-script", "alternatives": ["absent", "present"] },
+          {
+            "id": "token-policy",
+            "minimum": 0,
+            "maximum": 1000,
+            "ordering": "canonical-policy-id"
+          },
+          {
+            "id": "tokens-per-policy",
+            "minimum": 1,
+            "maximum": 1000,
+            "ordering": "canonical-asset-name"
+          },
+          {
+            "id": "drep",
+            "alternatives": [
+              "path",
+              "key-hash",
+              "script-hash",
+              "abstain",
+              "no-confidence"
+            ]
+          },
+          { "id": "required-signer", "alternatives": ["path", "key-hash"] },
+          {
+            "id": "voter",
+            "alternatives": [
+              "committee-key-hash",
+              "committee-key-path",
+              "committee-script-hash",
+              "drep-key-hash",
+              "drep-key-path",
+              "drep-script-hash",
+              "stake-pool-key-hash",
+              "stake-pool-key-path"
+            ]
+          },
+          { "id": "voters", "minimum": 0, "maximum": 1 },
+          { "id": "votes-per-voter", "minimum": 1, "maximum": 1 },
+          {
+            "id": "pool-owner",
+            "alternatives": ["device-owned", "third-party"],
+            "minimum": 0,
+            "maximum": 1000
+          },
+          {
+            "id": "pool-relay",
+            "alternatives": [
+              "single-host-ip",
+              "single-host-name",
+              "multi-host"
+            ],
+            "minimum": 0,
+            "maximum": 1000
+          }
+        ]
+      },
+      "messageRequest": {
+        "required": [
+          "messageHex",
+          "signingPath",
+          "hashPayload",
+          "addressFieldType"
+        ],
+        "optional": ["preferHexDisplay"],
+        "branches": [
+          {
+            "id": "address",
+            "required": ["address", "network"],
+            "forbidden": []
+          },
+          {
+            "id": "key-hash",
+            "required": [],
+            "forbidden": ["address", "network"]
+          }
+        ]
+      },
+      "transactionProof": {
+        "required": ["txHashHex", "witnesses", "auxiliaryDataSupplement"],
+        "witness": {
+          "required": ["path", "witnessSignatureHex"],
+          "minimum": 1,
+          "keyAssociation": "path-public-key"
+        },
+        "auxiliarySupplement": {
+          "nullable": true,
+          "requiredWhenPresent": [
+            "type",
+            "auxiliaryDataHashHex",
+            "cip36VoteRegistrationSignatureHex"
+          ]
+        }
+      },
+      "messageProof": {
+        "required": ["signatureHex", "signingPublicKeyHex", "addressFieldHex"],
+        "keyAssociation": "signing-path-public-key-address-field",
+        "signature": "ed25519",
+        "localCoseRequired": true
+      }
+    },
+    {
+      "artifactId": "ledger-8.0.0-candidate",
+      "representableBodyKeys": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        21,
+        22
+      ],
+      "notRepresentableBodyKeys": [20],
+      "representableCertificateTags": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "notRepresentableCertificateTags": [],
+      "limits": [],
+      "outputAlternatives": ["TxOutputAlonzo", "TxOutputBabbage"],
+      "credentialAlternatives": [0, 1, 2],
+      "voterAlternatives": [0, 1, 2, 3, 4, 100, 102, 104],
+      "nestedInventory": {
+        "constraints": [
+          {
+            "id": "output-format",
+            "alternatives": ["alonzo-array", "babbage-map"]
+          },
+          {
+            "id": "output-destination",
+            "alternatives": ["raw-address", "device-owned"]
+          },
+          { "id": "datum", "alternatives": ["absent", "hash", "inline"] },
+          { "id": "reference-script", "alternatives": ["absent", "present"] },
+          {
+            "id": "token-policy",
+            "minimum": 0,
+            "maximum": 1000,
+            "ordering": "canonical-policy-id"
+          },
+          {
+            "id": "tokens-per-policy",
+            "minimum": 1,
+            "maximum": 1000,
+            "ordering": "canonical-asset-name"
+          },
+          {
+            "id": "drep",
+            "alternatives": [
+              "path",
+              "key-hash",
+              "script-hash",
+              "abstain",
+              "no-confidence"
+            ]
+          },
+          { "id": "required-signer", "alternatives": ["path", "key-hash"] },
+          {
+            "id": "voter",
+            "alternatives": [
+              "committee-key-hash",
+              "committee-key-path",
+              "committee-script-hash",
+              "drep-key-hash",
+              "drep-key-path",
+              "drep-script-hash",
+              "stake-pool-key-hash",
+              "stake-pool-key-path"
+            ]
+          },
+          { "id": "voters", "minimum": 0, "maximum": 1, "appMajors": [7] },
+          {
+            "id": "votes-per-voter",
+            "minimum": 1,
+            "maximum": 1,
+            "appMajors": [7]
+          },
+          {
+            "id": "voters",
+            "minimum": 0,
+            "maximum": 4294967295,
+            "appMajors": [8]
+          },
+          {
+            "id": "votes-per-voter",
+            "minimum": 1,
+            "maximum": 4294967295,
+            "appMajors": [8]
+          },
+          {
+            "id": "pool-owner",
+            "alternatives": ["device-owned", "third-party"],
+            "minimum": 0,
+            "maximum": 1000
+          },
+          {
+            "id": "pool-relay",
+            "alternatives": [
+              "single-host-ip",
+              "single-host-name",
+              "multi-host"
+            ],
+            "minimum": 0,
+            "maximum": 1000
+          }
+        ]
+      },
+      "messageRequest": {
+        "required": [
+          "messageHex",
+          "signingPath",
+          "hashPayload",
+          "addressFieldType"
+        ],
+        "optional": ["preferHexDisplay"],
+        "branches": [
+          {
+            "id": "address",
+            "required": ["address", "network"],
+            "forbidden": []
+          },
+          {
+            "id": "key-hash",
+            "required": [],
+            "forbidden": ["address", "network"]
+          }
+        ]
+      },
+      "transactionProof": {
+        "required": ["txHashHex", "witnesses", "auxiliaryDataSupplement"],
+        "witness": {
+          "required": ["path", "witnessSignatureHex"],
+          "minimum": 1,
+          "keyAssociation": "path-public-key"
+        },
+        "auxiliarySupplement": {
+          "nullable": true,
+          "requiredWhenPresent": [
+            "type",
+            "auxiliaryDataHashHex",
+            "cip36VoteRegistrationSignatureHex"
+          ]
+        }
+      },
+      "messageProof": {
+        "required": ["signatureHex", "signingPublicKeyHex", "addressFieldHex"],
+        "keyAssociation": "signing-path-public-key-address-field",
+        "signature": "ed25519",
+        "localCoseRequired": true
+      }
+    },
+    {
+      "artifactId": "trezor-connect-9.7.2",
+      "representableBodyKeys": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "notRepresentableBodyKeys": [19, 20, 21, 22],
+      "representableCertificateTags": [0, 1, 2, 3, 7, 8, 9],
+      "notRepresentableCertificateTags": [
+        4,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "limits": [
+        "no-pool-retirement",
+        "no-combined-delegation",
+        "no-committee-or-drep-certificates"
+      ],
+      "outputAlternatives": ["legacy-array", "babbage-map"],
+      "credentialAlternatives": ["path", "key-hash", "script-hash"],
+      "voterAlternatives": [],
+      "nestedInventory": {
+        "constraints": [
+          {
+            "id": "output-format",
+            "alternatives": ["legacy-array", "babbage-map"]
+          },
+          {
+            "id": "output-destination",
+            "alternatives": ["raw-address", "device-owned-address-parameters"]
+          },
+          {
+            "id": "address",
+            "alternatives": [
+              "payment-path",
+              "staking-path",
+              "staking-key-hash",
+              "certificate-pointer",
+              "payment-script-hash",
+              "staking-script-hash"
+            ]
+          },
+          { "id": "datum", "alternatives": ["absent", "hash", "inline"] },
+          { "id": "reference-script", "alternatives": ["absent", "present"] },
+          {
+            "id": "token-policy",
+            "minimum": 0,
+            "maximum": 4294967295,
+            "ordering": "canonical-policy-id"
+          },
+          {
+            "id": "tokens-per-policy",
+            "minimum": 0,
+            "maximum": 4294967295,
+            "ordering": "canonical-asset-name"
+          },
+          {
+            "id": "withdrawal",
+            "alternatives": ["path", "key-hash", "script-hash"]
+          },
+          { "id": "required-signer", "alternatives": ["path", "key-hash"] },
+          {
+            "id": "certificate",
+            "alternatives": [
+              "stake-registration",
+              "stake-deregistration",
+              "stake-delegation",
+              "pool-registration",
+              "stake-registration-conway",
+              "stake-deregistration-conway",
+              "vote-delegation"
+            ]
+          },
+          {
+            "id": "drep",
+            "alternatives": [
+              "key-hash",
+              "script-hash",
+              "abstain",
+              "no-confidence"
+            ]
+          },
+          {
+            "id": "pool-owner",
+            "alternatives": ["staking-key-path", "staking-key-hash"],
+            "minimum": 0,
+            "maximum": 4294967295
+          },
+          {
+            "id": "pool-relay",
+            "alternatives": [
+              "single-host-ip",
+              "single-host-name",
+              "multi-host"
+            ],
+            "minimum": 0,
+            "maximum": 4294967295
+          },
+          {
+            "id": "cip36-vote-key",
+            "alternatives": ["vote-public-key", "delegations"]
+          },
+          {
+            "id": "cip36-payment",
+            "alternatives": ["payment-address-parameters", "payment-address"]
+          }
+        ]
+      },
+      "messageRequest": {
+        "required": ["path", "payload"],
+        "optional": [
+          "preferHexDisplay",
+          "networkId",
+          "protocolMagic",
+          "addressParameters",
+          "derivationType"
+        ],
+        "branches": []
+      },
+      "transactionProof": {
+        "required": ["hash", "witnesses"],
+        "optional": ["auxiliaryDataSupplement"],
+        "witness": {
+          "required": ["type", "pubKey", "signature"],
+          "optional": ["chainCode"],
+          "minimum": 1,
+          "keyAssociation": "witness-request-path-public-key"
+        },
+        "auxiliarySupplement": {
+          "nullable": true,
+          "requiredWhenPresent": ["type", "auxiliaryDataHash"],
+          "optionalWhenPresent": ["cVoteRegistrationSignature"]
+        }
+      },
+      "messageProof": {
+        "required": [
+          "headers",
+          "payload",
+          "signature",
+          "pubKey",
+          "coseSignature",
+          "coseKey"
+        ],
+        "keyAssociation": "path-public-key-protected-address",
+        "signature": "ed25519",
+        "localCoseRequired": true,
+        "vendorCoseAccepted": false
+      }
+    }
+  ],
+  "modelRows": [
+    {
+      "id": "ledger-nano-s-app7",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "ledger",
+      "artifactId": "ledger-7.1.4",
+      "model": "ledger-nano-s",
+      "versionKind": "ledger-cardano-app",
+      "versionMajor": 7,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [7, 0, 0] },
+        "signData": { "minimumVersion": [7, 1, 0] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "ledger-nano-s-plus-app7",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "ledger",
+      "artifactId": "ledger-7.1.4",
+      "model": "ledger-nano-s-plus",
+      "versionKind": "ledger-cardano-app",
+      "versionMajor": 7,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [7, 0, 0] },
+        "signData": { "minimumVersion": [7, 1, 0] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "ledger-nano-x-app7",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "ledger",
+      "artifactId": "ledger-7.1.4",
+      "model": "ledger-nano-x",
+      "versionKind": "ledger-cardano-app",
+      "versionMajor": 7,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [7, 0, 0] },
+        "signData": { "minimumVersion": [7, 1, 0] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "ledger-8-library-nano-s-app7",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "ledger",
+      "artifactId": "ledger-8.0.0-candidate",
+      "model": "ledger-nano-s",
+      "versionKind": "ledger-cardano-app",
+      "versionMajor": 7,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [7, 0, 0] },
+        "signData": { "minimumVersion": [7, 1, 0] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "ledger-8-library-nano-s-plus-app7",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "ledger",
+      "artifactId": "ledger-8.0.0-candidate",
+      "model": "ledger-nano-s-plus",
+      "versionKind": "ledger-cardano-app",
+      "versionMajor": 7,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [7, 0, 0] },
+        "signData": { "minimumVersion": [7, 1, 0] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "ledger-8-library-nano-x-app7",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "ledger",
+      "artifactId": "ledger-8.0.0-candidate",
+      "model": "ledger-nano-x",
+      "versionKind": "ledger-cardano-app",
+      "versionMajor": 7,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [7, 0, 0] },
+        "signData": { "minimumVersion": [7, 1, 0] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "ledger-nano-s-app8",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "ledger",
+      "artifactId": "ledger-8.0.0-candidate",
+      "model": "ledger-nano-s",
+      "versionKind": "ledger-cardano-app",
+      "versionMajor": 8,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [8, 0, 0] },
+        "signData": { "minimumVersion": [8, 0, 0] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "ledger-nano-s-plus-app8",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "ledger",
+      "artifactId": "ledger-8.0.0-candidate",
+      "model": "ledger-nano-s-plus",
+      "versionKind": "ledger-cardano-app",
+      "versionMajor": 8,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [8, 0, 0] },
+        "signData": { "minimumVersion": [8, 0, 0] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "ledger-nano-x-app8",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "ledger",
+      "artifactId": "ledger-8.0.0-candidate",
+      "model": "ledger-nano-x",
+      "versionKind": "ledger-cardano-app",
+      "versionMajor": 8,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [8, 0, 0] },
+        "signData": { "minimumVersion": [8, 0, 0] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "trezor-t1b1",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_applicable",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "not_applicable",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "trezor",
+      "artifactId": "trezor-connect-9.7.2",
+      "model": "trezor-t1b1",
+      "versionKind": "trezor-firmware",
+      "versionMajor": 1,
+      "operationSupport": {
+        "signTx": "not_representable",
+        "signData": "not_representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": null },
+        "signData": { "minimumVersion": null }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "trezor-t2t1",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "trezor",
+      "artifactId": "trezor-connect-9.7.2",
+      "model": "trezor-t2t1",
+      "versionKind": "trezor-firmware",
+      "versionMajor": 2,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [2, 6, 0] },
+        "signData": { "minimumVersion": [2, 9, 1] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "trezor-t2b1",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "trezor",
+      "artifactId": "trezor-connect-9.7.2",
+      "model": "trezor-t2b1",
+      "versionKind": "trezor-firmware",
+      "versionMajor": 2,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [2, 6, 1] },
+        "signData": { "minimumVersion": [2, 9, 1] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "trezor-t3b1",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "trezor",
+      "artifactId": "trezor-connect-9.7.2",
+      "model": "trezor-t3b1",
+      "versionKind": "trezor-firmware",
+      "versionMajor": 2,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [2, 8, 1] },
+        "signData": { "minimumVersion": [2, 9, 1] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "trezor-t3t1",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "pass",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "trezor",
+      "artifactId": "trezor-connect-9.7.2",
+      "model": "trezor-t3t1",
+      "versionKind": "trezor-firmware",
+      "versionMajor": 2,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "representable"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [2, 7, 1] },
+        "signData": { "minimumVersion": [2, 9, 1] }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    },
+    {
+      "id": "trezor-t3w1",
+      "operationDimensions": {
+        "signTx": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        },
+        "signData": {
+          "deterministicProbe": "not_run",
+          "emulatorEvidence": "not_run",
+          "physicalCertification": "not_run",
+          "adapterImplementation": "not_implemented",
+          "productEnablement": "disabled"
+        }
+      },
+      "vendor": "trezor",
+      "artifactId": "trezor-connect-9.7.2",
+      "model": "trezor-t3w1",
+      "versionKind": "trezor-firmware",
+      "versionMajor": 2,
+      "operationSupport": {
+        "signTx": "representable",
+        "signData": "unresolved"
+      },
+      "operationGates": {
+        "signTx": { "minimumVersion": [2, 7, 1] },
+        "signData": { "minimumVersion": null }
+      },
+      "physicalCertification": "not_run",
+      "productEnablement": "disabled"
+    }
+  ],
+  "messageRows": [
+    {
+      "id": "payment-address",
+      "source": "wire-address",
+      "addressName": "mainnet-base-key-key",
+      "requestBranch": "address"
+    },
+    {
+      "id": "stake-address",
+      "source": "wire-address",
+      "addressName": "mainnet-reward-key",
+      "requestBranch": "address"
+    },
+    {
+      "id": "drep-direct",
+      "source": "cip8-cip95",
+      "requestBranch": "key-hash",
+      "inputField": "drepId",
+      "identityField": "drepId"
+    },
+    {
+      "id": "drep-type6",
+      "source": "cip8-cip95",
+      "requestBranch": "address",
+      "inputField": "matchingEnterpriseAddress",
+      "identityField": "drepId"
+    }
+  ],
+  "trezorCoseRule": {
+    "artifactId": "trezor-connect-9.7.2",
+    "returnedHeadersIncludeVersion": true,
+    "encodedVendorCoseUnprotectedMapIncludesVersion": false,
+    "publicDisposition": "reject-vendor-cose-and-reconstruct-locally-from-validated-raw-material",
+    "syntheticFixtureEquality": "required-only-with-exact-task-002-key-payload-identity-and-signature",
+    "physicalConformance": "encoding-payload-identity-public-key-and-signature-verification-without-cross-key-byte-equality"
+  },
+  "stateInvariants": [
+    "not_representable-or-unresolved-cannot-have-probe-certification-adapter-or-product-pass",
+    "probe-fail-cannot-have-certification-adapter-or-product-pass",
+    "physical-pass-requires-exact-artifact-model-version-cases-operator-and-reviewer",
+    "adapter-pass-requires-representability-and-probe-pass",
+    "product-enabled-requires-all-prior-dimensions-pass"
+  ],
+  "staticRows": [
+    {
+      "id": "ledger-7-transaction",
+      "artifactId": "ledger-7.1.4",
+      "operation": "signTx",
+      "libraryRepresentability": "representable",
+      "deterministicProbe": "not_run",
+      "emulatorEvidence": "not_run",
+      "physicalCertification": "not_run",
+      "adapterImplementation": "not_implemented",
+      "productEnablement": "disabled",
+      "limits": ["one-voter", "one-vote-per-voter", "no-proposal-procedures"]
+    },
+    {
+      "id": "ledger-8-transaction",
+      "artifactId": "ledger-8.0.0-candidate",
+      "operation": "signTx",
+      "libraryRepresentability": "representable",
+      "deterministicProbe": "not_run",
+      "emulatorEvidence": "not_run",
+      "physicalCertification": "not_run",
+      "adapterImplementation": "not_implemented",
+      "productEnablement": "disabled",
+      "limits": ["no-proposal-procedures"]
+    },
+    {
+      "id": "trezor-transaction",
+      "artifactId": "trezor-connect-9.7.2",
+      "operation": "signTx",
+      "libraryRepresentability": "representable",
+      "deterministicProbe": "not_run",
+      "emulatorEvidence": "not_run",
+      "physicalCertification": "not_run",
+      "adapterImplementation": "not_implemented",
+      "productEnablement": "disabled",
+      "limits": [
+        "no-governance-voting",
+        "no-proposal-procedures",
+        "no-treasury",
+        "no-donation"
+      ]
+    },
+    {
+      "id": "ledger-7-message",
+      "artifactId": "ledger-7.1.4",
+      "operation": "signData",
+      "libraryRepresentability": "representable",
+      "deterministicProbe": "pass",
+      "emulatorEvidence": "not_run",
+      "physicalCertification": "not_run",
+      "adapterImplementation": "not_implemented",
+      "productEnablement": "disabled",
+      "modes": ["payment-address", "stake-address", "drep-key-hash"]
+    },
+    {
+      "id": "ledger-8-message",
+      "artifactId": "ledger-8.0.0-candidate",
+      "operation": "signData",
+      "libraryRepresentability": "representable",
+      "deterministicProbe": "pass",
+      "emulatorEvidence": "not_run",
+      "physicalCertification": "not_run",
+      "adapterImplementation": "not_implemented",
+      "productEnablement": "disabled",
+      "modes": ["payment-address", "stake-address", "drep-key-hash"]
+    },
+    {
+      "id": "trezor-message",
+      "artifactId": "trezor-connect-9.7.2",
+      "operation": "signData",
+      "libraryRepresentability": "representable",
+      "deterministicProbe": "pass",
+      "emulatorEvidence": "not_run",
+      "physicalCertification": "not_run",
+      "adapterImplementation": "not_implemented",
+      "productEnablement": "disabled",
+      "modes": ["payment-address", "stake-address", "drep-key-hash"],
+      "vendorCosePassThrough": false
+    }
+  ],
+  "errorContract": [
+    {
+      "predicate": "malformed-public-shape-hex-or-cbor",
+      "signTx": "APIError.InvalidRequest",
+      "signData": "APIError.InvalidRequest"
+    },
+    {
+      "predicate": "invalid-address-or-drep-syntax",
+      "signTx": "APIError.InvalidRequest",
+      "signData": "APIError.InvalidRequest"
+    },
+    {
+      "predicate": "decoded-request-above-65536",
+      "signTx": "APIError.InvalidRequest",
+      "signData": "APIError.InvalidRequest"
+    },
+    {
+      "predicate": "within-product-limit-but-over-hardware-limit",
+      "signTx": "TxSignError.ProofGeneration",
+      "signData": "DataSignError.ProofGeneration"
+    },
+    {
+      "predicate": "unsupported-field-encoding-or-cardinality",
+      "signTx": "TxSignError.ProofGeneration",
+      "signData": "DataSignError.ProofGeneration"
+    },
+    {
+      "predicate": "incompatible-model-app-or-firmware",
+      "signTx": "TxSignError.ProofGeneration",
+      "signData": "DataSignError.ProofGeneration"
+    },
+    {
+      "predicate": "wrong-app-unavailable-path-or-hash-reconstruction-failure",
+      "signTx": "TxSignError.ProofGeneration",
+      "signData": "DataSignError.ProofGeneration"
+    },
+    {
+      "predicate": "missing-extra-or-invalid-returned-proof",
+      "signTx": "TxSignError.ProofGeneration",
+      "signData": "DataSignError.ProofGeneration"
+    },
+    {
+      "predicate": "explicit-device-refusal",
+      "signTx": "TxSignError.UserDeclined",
+      "signData": "DataSignError.UserDeclined"
+    },
+    {
+      "predicate": "host-cancellation-before-completion",
+      "signTx": "TxSignError.UserDeclined",
+      "signData": "DataSignError.UserDeclined"
+    },
+    {
+      "predicate": "vendor-cancellation-caused-by-host-request",
+      "signTx": "TxSignError.UserDeclined",
+      "signData": "DataSignError.UserDeclined"
+    },
+    {
+      "predicate": "vendor-cancellation-unrelated-to-host-cancellation-or-explicit-refusal",
+      "signTx": "TxSignError.ProofGeneration",
+      "signData": "DataSignError.ProofGeneration"
+    },
+    {
+      "predicate": "spontaneous-disconnect-transport-close-app-close-or-lock",
+      "signTx": "TxSignError.ProofGeneration",
+      "signData": "DataSignError.ProofGeneration"
+    },
+    {
+      "predicate": "unclassifiable-malformed-response-unexpected-exception-or-active-protocol-corruption",
+      "signTx": "APIError.InternalError",
+      "signData": "APIError.InternalError"
+    },
+    {
+      "predicate": "generation-stale-before-settlement",
+      "signTx": "APIError.InternalError",
+      "signData": "APIError.InternalError"
+    },
+    {
+      "predicate": "late-completion-after-terminal-settlement",
+      "signTx": "discard-no-second-settlement",
+      "signData": "discard-no-second-settlement"
+    }
+  ],
+  "requestLimits": {
+    "decodedBytesMaximum": 65536,
+    "acceptedBoundary": 65536,
+    "firstRejectedBoundary": 65537,
+    "productLimitError": "APIError.InvalidRequest",
+    "smallerHardwareLimitErrors": {
+      "signTx": "TxSignError.ProofGeneration",
+      "signData": "DataSignError.ProofGeneration"
+    }
+  },
+  "downstreamOwnership": {
+    "staticContractConsumers": [
+      "task-600",
+      "task-601",
+      "task-602",
+      "task-603",
+      "task-604",
+      "task-605",
+      "task-606"
+    ],
+    "physicalCertificationOwner": "task-607",
+    "productEnablementOwner": "later-release-policy"
+  }
+}
