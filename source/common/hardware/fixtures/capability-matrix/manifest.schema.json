@@ -1,0 +1,718 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "revision",
+    "scope",
+    "normativeReferences",
+    "fixtureBindings",
+    "dimensions",
+    "task006RequiredState",
+    "artifacts",
+    "runtimeProvenance",
+    "dependencyDecision",
+    "exactBodyFamilies",
+    "exactBodyDispositions",
+    "conwayInventory",
+    "bodyFieldMap",
+    "staticFieldCoverage",
+    "modelRows",
+    "messageRows",
+    "trezorCoseRule",
+    "stateInvariants",
+    "staticRows",
+    "errorContract",
+    "requestLimits",
+    "downstreamOwnership"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "revision": { "const": "task-006-matrix-2026-08-14" },
+    "scope": { "const": "static-contract-only" },
+    "normativeReferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cip30", "cip8Cip95", "exactCbor", "wireFixtures"],
+      "properties": {
+        "cip30": { "$ref": "#/definitions/path" },
+        "cip8Cip95": { "$ref": "#/definitions/path" },
+        "exactCbor": { "$ref": "#/definitions/path" },
+        "wireFixtures": { "$ref": "#/definitions/path" }
+      }
+    },
+    "fixtureBindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signData", "signDataAddresses", "signTx"],
+      "properties": {
+        "signData": { "$ref": "#/definitions/fixture" },
+        "signDataAddresses": { "$ref": "#/definitions/fixture" },
+        "signTx": { "$ref": "#/definitions/fixture" }
+      }
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "libraryRepresentability",
+        "deterministicProbe",
+        "emulatorEvidence",
+        "physicalCertification",
+        "adapterImplementation",
+        "productEnablement"
+      ],
+      "properties": {
+        "libraryRepresentability": {
+          "const": ["representable", "not_representable", "unresolved"]
+        },
+        "deterministicProbe": {
+          "const": ["pass", "fail", "not_applicable", "not_run"]
+        },
+        "emulatorEvidence": {
+          "const": ["pass", "fail", "unavailable", "not_run"]
+        },
+        "physicalCertification": { "const": ["pass", "fail", "not_run"] },
+        "adapterImplementation": {
+          "const": ["pass", "fail", "not_implemented"]
+        },
+        "productEnablement": { "const": ["enabled", "disabled"] }
+      }
+    },
+    "task006RequiredState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "emulatorEvidence",
+        "physicalCertification",
+        "adapterImplementation",
+        "productEnablement"
+      ],
+      "properties": {
+        "emulatorEvidence": { "const": "not_run" },
+        "physicalCertification": { "const": "not_run" },
+        "adapterImplementation": { "const": "not_implemented" },
+        "productEnablement": { "const": "disabled" }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "$ref": "#/definitions/artifact" }
+    },
+    "runtimeProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "runtimeGraphSha256", "configIdentitySha256"],
+      "properties": {
+        "artifactId": { "const": "trezor-connect-9.7.2" },
+        "runtimeGraphSha256": { "$ref": "#/definitions/digest" },
+        "configIdentitySha256": { "$ref": "#/definitions/digest" }
+      }
+    },
+    "dependencyDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "reason",
+        "productionDependencyChanged",
+        "owner",
+        "consumerResult",
+        "requiredMigrations"
+      ],
+      "properties": {
+        "decision": { "$ref": "#/definitions/nonEmpty" },
+        "reason": { "$ref": "#/definitions/nonEmpty" },
+        "productionDependencyChanged": { "const": false },
+        "owner": { "const": "task-600" },
+        "consumerResult": { "$ref": "#/definitions/path" },
+        "requiredMigrations": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/nonEmpty" }
+        }
+      }
+    },
+    "exactBodyFamilies": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/nonEmpty" }
+    },
+    "exactBodyDispositions": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "$ref": "#/definitions/disposition" }
+    },
+    "conwayInventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bodyKeys", "certificateTags", "dijkstra"],
+      "properties": {
+        "bodyKeys": { "$ref": "#/definitions/integerSet" },
+        "certificateTags": { "$ref": "#/definitions/integerSet" },
+        "dijkstra": { "const": "unsupported" }
+      }
+    },
+    "bodyFieldMap": {
+      "type": "array",
+      "minItems": 20,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "name", "vendorAliases"],
+        "properties": {
+          "key": { "type": "integer", "minimum": 0, "maximum": 22 },
+          "name": { "$ref": "#/definitions/nonEmpty" },
+          "vendorAliases": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/definitions/nonEmpty" }
+          }
+        }
+      }
+    },
+    "staticFieldCoverage": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "$ref": "#/definitions/coverage" }
+    },
+    "modelRows": {
+      "type": "array",
+      "minItems": 15,
+      "items": { "$ref": "#/definitions/modelRow" }
+    },
+    "messageRows": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "source", "requestBranch"],
+        "properties": {
+          "id": {
+            "enum": [
+              "payment-address",
+              "stake-address",
+              "drep-direct",
+              "drep-type6"
+            ]
+          },
+          "source": { "enum": ["wire-address", "cip8-cip95"] },
+          "requestBranch": { "enum": ["address", "key-hash"] },
+          "inputField": { "enum": ["drepId", "matchingEnterpriseAddress"] },
+          "identityField": { "const": "drepId" },
+          "addressName": {
+            "enum": ["mainnet-base-key-key", "mainnet-reward-key"]
+          }
+        }
+      }
+    },
+    "trezorCoseRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "returnedHeadersIncludeVersion",
+        "encodedVendorCoseUnprotectedMapIncludesVersion",
+        "publicDisposition",
+        "syntheticFixtureEquality",
+        "physicalConformance"
+      ],
+      "properties": {
+        "artifactId": { "const": "trezor-connect-9.7.2" },
+        "returnedHeadersIncludeVersion": { "const": true },
+        "encodedVendorCoseUnprotectedMapIncludesVersion": { "const": false },
+        "publicDisposition": {
+          "const": "reject-vendor-cose-and-reconstruct-locally-from-validated-raw-material"
+        },
+        "syntheticFixtureEquality": { "$ref": "#/definitions/nonEmpty" },
+        "physicalConformance": { "$ref": "#/definitions/nonEmpty" }
+      }
+    },
+    "stateInvariants": {
+      "type": "array",
+      "minItems": 5,
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/nonEmpty" }
+    },
+    "staticRows": {
+      "type": "array",
+      "minItems": 6,
+      "items": { "$ref": "#/definitions/staticRow" }
+    },
+    "errorContract": {
+      "type": "array",
+      "minItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["predicate", "signTx", "signData"],
+        "properties": {
+          "predicate": { "$ref": "#/definitions/nonEmpty" },
+          "signTx": { "$ref": "#/definitions/nonEmpty" },
+          "signData": { "$ref": "#/definitions/nonEmpty" }
+        }
+      }
+    },
+    "requestLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decodedBytesMaximum",
+        "acceptedBoundary",
+        "firstRejectedBoundary",
+        "productLimitError",
+        "smallerHardwareLimitErrors"
+      ],
+      "properties": {
+        "decodedBytesMaximum": { "const": 65536 },
+        "acceptedBoundary": { "const": 65536 },
+        "firstRejectedBoundary": { "const": 65537 },
+        "productLimitError": { "const": "APIError.InvalidRequest" },
+        "smallerHardwareLimitErrors": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["signTx", "signData"],
+          "properties": {
+            "signTx": { "const": "TxSignError.ProofGeneration" },
+            "signData": { "const": "DataSignError.ProofGeneration" }
+          }
+        }
+      }
+    },
+    "downstreamOwnership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "staticContractConsumers",
+        "physicalCertificationOwner",
+        "productEnablementOwner"
+      ],
+      "properties": {
+        "staticContractConsumers": {
+          "const": [
+            "task-600",
+            "task-601",
+            "task-602",
+            "task-603",
+            "task-604",
+            "task-605",
+            "task-606"
+          ]
+        },
+        "physicalCertificationOwner": { "const": "task-607" },
+        "productEnablementOwner": { "const": "later-release-policy" }
+      }
+    }
+  },
+  "definitions": {
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "path": { "type": "string", "pattern": "^[a-zA-Z0-9@._/-]+$" },
+    "digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "version": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "integer", "minimum": 0, "maximum": 65535 }
+    },
+    "integerSet": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "integer", "minimum": 0 }
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "sha256"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^task-00[24]-[a-z0-9-]+$" },
+        "path": { "$ref": "#/definitions/path" },
+        "sha256": { "$ref": "#/definitions/digest" }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "vendor",
+        "package",
+        "version",
+        "sha1",
+        "integrity",
+        "lockSha256",
+        "probe"
+      ],
+      "properties": {
+        "id": {
+          "enum": [
+            "ledger-7.1.4",
+            "ledger-8.0.0-candidate",
+            "trezor-connect-9.7.2"
+          ]
+        },
+        "vendor": { "enum": ["ledger", "trezor"] },
+        "package": { "$ref": "#/definitions/nonEmpty" },
+        "version": { "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "gitHead": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "sha1": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "integrity": {
+          "type": "string",
+          "pattern": "^sha512-[A-Za-z0-9+/]+={0,2}$"
+        },
+        "tarballSha256": { "$ref": "#/definitions/digest" },
+        "lockSha256": { "$ref": "#/definitions/digest" },
+        "runtimeIdentity": { "$ref": "#/definitions/path" },
+        "probe": { "$ref": "#/definitions/path" }
+      }
+    },
+    "disposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "vendor",
+        "operation",
+        "artifactIds",
+        "families",
+        "physicalReturnedHashRequired"
+      ],
+      "properties": {
+        "vendor": { "enum": ["ledger", "trezor"] },
+        "operation": { "const": "signTx" },
+        "artifactIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "ledger-7.1.4",
+              "ledger-8.0.0-candidate",
+              "trezor-connect-9.7.2"
+            ]
+          }
+        },
+        "families": {
+          "type": "object",
+          "minProperties": 12,
+          "maxProperties": 12,
+          "additionalProperties": { "const": "reject_pre_device" }
+        },
+        "physicalReturnedHashRequired": { "const": false }
+      }
+    },
+    "nestedInventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["constraints"],
+      "properties": {
+        "constraints": {
+          "type": "array",
+          "minItems": 12,
+          "items": { "$ref": "#/definitions/nestedConstraint" }
+        }
+      }
+    },
+    "nestedConstraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "$ref": "#/definitions/nonEmpty" },
+        "alternatives": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/nonEmpty" }
+        },
+        "minimum": { "type": "integer", "minimum": 0 },
+        "maximum": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+        "ordering": { "enum": ["canonical-policy-id", "canonical-asset-name"] },
+        "appMajors": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": [7, 8] }
+        }
+      },
+      "anyOf": [
+        { "required": ["alternatives"] },
+        { "required": ["minimum", "maximum"] }
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "representableBodyKeys",
+        "notRepresentableBodyKeys",
+        "representableCertificateTags",
+        "notRepresentableCertificateTags",
+        "limits",
+        "outputAlternatives",
+        "credentialAlternatives",
+        "voterAlternatives",
+        "nestedInventory",
+        "messageRequest",
+        "transactionProof",
+        "messageProof"
+      ],
+      "properties": {
+        "artifactId": {
+          "enum": [
+            "ledger-7.1.4",
+            "ledger-8.0.0-candidate",
+            "trezor-connect-9.7.2"
+          ]
+        },
+        "representableBodyKeys": { "$ref": "#/definitions/integerSet" },
+        "notRepresentableBodyKeys": { "$ref": "#/definitions/integerSet" },
+        "representableCertificateTags": { "$ref": "#/definitions/integerSet" },
+        "notRepresentableCertificateTags": {
+          "$ref": "#/definitions/integerSet"
+        },
+        "limits": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/nonEmpty" }
+        },
+        "outputAlternatives": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true
+        },
+        "credentialAlternatives": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true
+        },
+        "voterAlternatives": { "type": "array", "uniqueItems": true },
+        "nestedInventory": { "$ref": "#/definitions/nestedInventory" },
+        "messageRequest": { "$ref": "#/definitions/messageRequest" },
+        "transactionProof": { "$ref": "#/definitions/transactionProof" },
+        "messageProof": { "$ref": "#/definitions/messageProof" }
+      }
+    },
+    "stringSet": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/nonEmpty" }
+    },
+    "messageRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "optional", "branches"],
+      "properties": {
+        "required": { "$ref": "#/definitions/stringSet" },
+        "optional": { "$ref": "#/definitions/stringSet" },
+        "branches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "required", "forbidden"],
+            "properties": {
+              "id": { "enum": ["address", "key-hash"] },
+              "required": { "$ref": "#/definitions/stringSet" },
+              "forbidden": { "$ref": "#/definitions/stringSet" }
+            }
+          }
+        }
+      }
+    },
+    "witnessProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "minimum", "keyAssociation"],
+      "properties": {
+        "required": { "$ref": "#/definitions/stringSet" },
+        "optional": { "$ref": "#/definitions/stringSet" },
+        "minimum": { "type": "integer", "minimum": 1 },
+        "keyAssociation": { "$ref": "#/definitions/nonEmpty" }
+      }
+    },
+    "auxiliaryProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nullable", "requiredWhenPresent"],
+      "properties": {
+        "nullable": { "const": true },
+        "requiredWhenPresent": { "$ref": "#/definitions/stringSet" },
+        "optionalWhenPresent": { "$ref": "#/definitions/stringSet" }
+      }
+    },
+    "transactionProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "witness", "auxiliarySupplement"],
+      "properties": {
+        "required": { "$ref": "#/definitions/stringSet" },
+        "optional": { "$ref": "#/definitions/stringSet" },
+        "witness": { "$ref": "#/definitions/witnessProof" },
+        "auxiliarySupplement": { "$ref": "#/definitions/auxiliaryProof" }
+      }
+    },
+    "messageProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "keyAssociation",
+        "signature",
+        "localCoseRequired"
+      ],
+      "properties": {
+        "required": { "$ref": "#/definitions/stringSet" },
+        "keyAssociation": { "$ref": "#/definitions/nonEmpty" },
+        "signature": { "const": "ed25519" },
+        "localCoseRequired": { "const": true },
+        "vendorCoseAccepted": { "const": false }
+      }
+    },
+    "operationSupport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signTx", "signData"],
+      "properties": {
+        "signTx": {
+          "enum": ["representable", "not_representable", "unresolved"]
+        },
+        "signData": {
+          "enum": ["representable", "not_representable", "unresolved"]
+        }
+      }
+    },
+    "operationDimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signTx", "signData"],
+      "properties": {
+        "signTx": { "$ref": "#/definitions/modelOperationDimensions" },
+        "signData": { "$ref": "#/definitions/modelOperationDimensions" }
+      }
+    },
+    "modelOperationDimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deterministicProbe",
+        "emulatorEvidence",
+        "physicalCertification",
+        "adapterImplementation",
+        "productEnablement"
+      ],
+      "properties": {
+        "deterministicProbe": {
+          "enum": ["pass", "fail", "not_applicable", "not_run"]
+        },
+        "emulatorEvidence": { "const": "not_run" },
+        "physicalCertification": { "const": "not_run" },
+        "adapterImplementation": { "const": "not_implemented" },
+        "productEnablement": { "const": "disabled" }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimumVersion"],
+      "properties": {
+        "minimumVersion": {
+          "oneOf": [{ "$ref": "#/definitions/version" }, { "type": "null" }]
+        }
+      }
+    },
+    "modelRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "operationDimensions",
+        "vendor",
+        "artifactId",
+        "model",
+        "versionKind",
+        "versionMajor",
+        "operationSupport",
+        "operationGates",
+        "physicalCertification",
+        "productEnablement"
+      ],
+      "properties": {
+        "id": { "$ref": "#/definitions/nonEmpty" },
+        "operationDimensions": { "$ref": "#/definitions/operationDimensions" },
+        "vendor": { "enum": ["ledger", "trezor"] },
+        "artifactId": {
+          "enum": [
+            "ledger-7.1.4",
+            "ledger-8.0.0-candidate",
+            "trezor-connect-9.7.2"
+          ]
+        },
+        "model": { "$ref": "#/definitions/nonEmpty" },
+        "versionKind": { "enum": ["ledger-cardano-app", "trezor-firmware"] },
+        "versionMajor": { "type": "integer", "enum": [1, 2, 7, 8] },
+        "operationSupport": { "$ref": "#/definitions/operationSupport" },
+        "operationGates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["signTx", "signData"],
+          "properties": {
+            "signTx": { "$ref": "#/definitions/gate" },
+            "signData": { "$ref": "#/definitions/gate" }
+          }
+        },
+        "physicalCertification": { "const": "not_run" },
+        "productEnablement": { "const": "disabled" }
+      }
+    },
+    "staticRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "artifactId",
+        "operation",
+        "libraryRepresentability",
+        "deterministicProbe",
+        "emulatorEvidence",
+        "physicalCertification",
+        "adapterImplementation",
+        "productEnablement"
+      ],
+      "properties": {
+        "id": { "$ref": "#/definitions/nonEmpty" },
+        "artifactId": {
+          "enum": [
+            "ledger-7.1.4",
+            "ledger-8.0.0-candidate",
+            "trezor-connect-9.7.2"
+          ]
+        },
+        "operation": { "enum": ["signTx", "signData"] },
+        "libraryRepresentability": {
+          "enum": ["representable", "not_representable", "unresolved"]
+        },
+        "deterministicProbe": {
+          "enum": ["pass", "fail", "not_applicable", "not_run"]
+        },
+        "emulatorEvidence": { "const": "not_run" },
+        "physicalCertification": { "const": "not_run" },
+        "adapterImplementation": { "const": "not_implemented" },
+        "productEnablement": { "const": "disabled" },
+        "limits": { "type": "array", "uniqueItems": true },
+        "modes": { "type": "array", "uniqueItems": true },
+        "vendorCosePassThrough": { "const": false }
+      }
+    }
+  }
+}

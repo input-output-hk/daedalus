@@ -169,6 +169,14 @@ Task-002 freezes the phase-0 inputs consumed by later production validation:
 
 These are contract inputs, not production validators or dispatch code. Task-300 must implement strict shared runtime validators and prove equivalence without silently changing the frozen behavior. CIP-104 remains omitted until task-404 proves one exact positive encoding.
 
+Task-006 freezes a separate static hardware capability contract at
+`source/common/hardware/fixtures/capability-matrix/` with supporting evidence in
+`research/07-hardware-wallet-capability-contract.md`. It recommends exact Ledger
+JS 8.0.0 to task-600 but does not change the production pin. Static
+representability never certifies a model/app/firmware row or enables a method;
+tasks 600-606 remain product-disabled and task-607 alone records reviewed
+physical results against exact production artifacts and adapter commits.
+
 ### Collateral Comparisons
 
 - Lace collateral flow: https://github.com/input-output-hk/lace/tree/main/packages/module/cardano-collateral-flow
@@ -1206,7 +1214,9 @@ For each transaction:
 
 Ledger requirements:
 
-- Upgrade/validate Ledger JS 8.x for Cardano app v8 compatibility.
+- Task-006 recommends exact Ledger JS 8.0.0 for task-600 based on immutable
+  static evidence; task-600 owns the production update and task-607 owns physical
+  app-v7/v8 certification.
 - Preserve support for app v7 where certified.
 - Support input/output datum/reference scripts, mint, script-data hash, collateral, required signers, network ID, reference inputs, supported certificates, DRep certificates, supported voting, treasury, and donation.
 - Reject proposal procedures and unsupported multi-voter/multi-vote structures.
@@ -1217,12 +1227,20 @@ Trezor requirements:
 
 - Support fields represented by Trezor Connect 9.7.2.
 - Reject unsupported DRep certificates, governance voting procedures, proposals, treasury, donation, committee/DRep certificates, and other absent protocol fields.
-- Support Model T and compatible Safe/Core devices for CIP-8 on firmware meeting the configured gate.
+- Target Model T and individually identified Safe/Core models for CIP-8 only
+  where the task-006 static row is representable and task-607 certifies the exact
+  model/internal-model/firmware artifact. No family-wide compatibility inference
+  is allowed.
 - Reject Trezor One for `signData`.
 - Supply address parameters for base `signData` and verify full-address/credential equality.
 - Validate payload hex before vendor calls.
 
-No feature-parity claim is made. Device capability rejection maps to `ProofGeneration`.
+No feature-parity claim is made. Device capability rejection maps to the frozen
+operation-specific `ProofGeneration`. Requests above the 65,536-byte product
+limit instead fail as `APIError.InvalidRequest`; a smaller intrinsic hardware
+limit applies only to otherwise valid requests. Trezor vendor COSE is never
+passed through: Daedalus validates raw returned material and reconstructs the
+task-002 COSE locally.
 
 ### CIP-103 Batch Engine
 
@@ -1581,7 +1599,7 @@ Forbidden from observability and non-authoritative storage:
 
 ### Phase 6: Hardware Signing
 
-- Upgrade and certify Ledger JS where required.
+- Apply the frozen static Ledger JS recommendation; task-607 performs physical model/app/firmware certification.
 - Extract hardware service and add vendor-neutral arbitrary-CBOR adapters.
 - Add exact transaction hash/witness verification.
 - Add base and DRep CIP-8 hardware signing.
