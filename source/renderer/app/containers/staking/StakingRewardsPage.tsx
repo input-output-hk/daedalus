@@ -4,7 +4,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import { StakingRewards } from '../../components/staking/rewards/StakingRewards';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { ellipsis } from '../../utils/strings';
-import { getNetworkExplorerUrl } from '../../utils/network';
+import { getNetworkExplorerUrlByType } from '../../utils/network';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -36,9 +36,11 @@ class StakingRewardsPage extends Component<Props> {
     const {
       environment: { network },
     } = app;
-    const cardanoExplorerLink = `${getNetworkExplorerUrl(
+    const cardanoExplorerLink = getNetworkExplorerUrlByType(
+      'address',
+      rewardsAddress,
       network
-    )}/address/${rewardsAddress}`;
+    );
     this.props.stores.app.openExternalLink(cardanoExplorerLink);
   };
   handleCopyAddress = (copiedAddress: string) => {

@@ -7,7 +7,7 @@ import SVGInline from 'react-svg-inline';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import Dialog from '../../widgets/Dialog';
-import { getNetworkExplorerUrl } from '../../../utils/network';
+import { getNetworkExplorerUrlByType } from '../../../utils/network';
 import styles from './CompletionDialog.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
@@ -120,9 +120,11 @@ class CompletionDialog extends Component<Props, State> {
         onClick: onClose,
       },
     ];
-    const cardanoExplorerLink = `${getNetworkExplorerUrl(
+    const cardanoExplorerLink = getNetworkExplorerUrlByType(
+      'address',
+      walletCertificateAddress,
       network
-    )}/address/${walletCertificateAddress}`;
+    );
     // Get QRCode color value from active theme's CSS variable
     const qrCodeBackgroundColor = document.documentElement
       ? document.documentElement.style.getPropertyValue(

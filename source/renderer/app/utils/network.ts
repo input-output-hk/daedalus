@@ -1,7 +1,5 @@
 import {
   MAINNET_EXPLORER_URL,
-  STAGING_EXPLORER_URL,
-  TESTNET_EXPLORER_URL,
   MAINNET_NEWS_URL,
   TESTNET_NEWS_URL,
   STAGING_NEWS_URL,
@@ -16,61 +14,38 @@ import {
   STAGING,
   TESTNET,
   DEVELOPMENT,
+  PREPROD,
+  PREVIEW,
 } from '../../../common/types/environment.types';
 
-export const getNetworkExplorerUri = (network: string): string => {
-  if (network === MAINNET) {
-    return MAINNET_EXPLORER_URL;
-  }
-
-  if (network === STAGING) {
-    return STAGING_EXPLORER_URL;
-  }
-
-  if (network === TESTNET) {
-    return TESTNET_EXPLORER_URL;
-  }
-
-  return MAINNET_EXPLORER_URL; // sets default to mainnet in case env.NETWORK is undefined
+// Networks served by explorer.cardano.org, which expects
+// `{root}/{network}/{tx|address}/{identifier}`.
+// Networks that are not listed here (staging, development, selfnode, the
+// retired testnet, or an undefined `env.NETWORK`) have no explorer of their
+// own and fall back to mainnet.
+const EXPLORER_NETWORK_PATHS: Record<string, string> = {
+  [MAINNET]: 'mainnet',
+  [PREPROD]: 'preprod',
+  [PREVIEW]: 'preview',
 };
-export const getNetworkExplorerUrl = (network: string): string => {
-  const protocol =
-    network === MAINNET || network === TESTNET || network === DEVELOPMENT
-      ? 'https://'
-      : 'http://';
-  const uri = getNetworkExplorerUri(network);
-  return `${protocol}${uri}`;
-};
+export const DEFAULT_EXPLORER_NETWORK_PATH = EXPLORER_NETWORK_PATHS[MAINNET];
+
+// Every network is served by the same explorer host: the legacy per-network
+// explorers (explorer.cardano-testnet.iohkdev.io and
+// explorer.staging.cardano.org) no longer resolve.
+export const getNetworkExplorerUri = (): string => MAINNET_EXPLORER_URL;
+export const getNetworkExplorerUrl = (): string =>
+  `https://${getNetworkExplorerUri()}`;
+export const getNetworkExplorerPath = (network?: string): string =>
+  EXPLORER_NETWORK_PATHS[network] || DEFAULT_EXPLORER_NETWORK_PATH;
 export const getNetworkExplorerUrlByType = (
   type: 'tx' | 'address',
   param: string,
-  network: string,
-  currentLocale: string
-): string => {
-  let queryStringPrefix = '';
-  let localePrefix = '';
-  let typeValue = type;
-
-  if (network === MAINNET || network === TESTNET) {
-    localePrefix = `/${currentLocale.substr(0, 2)}`;
-
-    if (type === 'address') {
-      queryStringPrefix = '?address=';
-      // @ts-ignore ts-migrate(2322) FIXME: Type '"address.html"' is not assignable to type '"... Remove this comment to see the full error message
-      typeValue = 'address.html';
-    }
-
-    if (type === 'tx') {
-      queryStringPrefix = '?id=';
-      // @ts-ignore ts-migrate(2322) FIXME: Type '"transaction"' is not assignable to type '"t... Remove this comment to see the full error message
-      typeValue = 'transaction';
-    }
-  }
-
-  return `${getNetworkExplorerUrl(
+  network?: string
+): string =>
+  `${getNetworkExplorerUrl()}/${getNetworkExplorerPath(
     network
-  )}${localePrefix}/${typeValue}${queryStringPrefix}${param}`;
-};
+  )}/${type}/${param}`;
 export const getNewsURL = (network: string): string => {
   // sets default to mainnet in case env.NETWORK is undefined
   let newsUrl = MAINNET_NEWS_URL;

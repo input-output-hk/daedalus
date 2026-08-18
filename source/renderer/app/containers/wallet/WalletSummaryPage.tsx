@@ -131,7 +131,7 @@ class WalletSummaryPage extends Component<Props> {
     const onViewAllButtonClick = () => this.handleViewAllButtonClick(wallet.id);
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
-      getNetworkExplorerUrlByType(type, param, network, currentLocale);
+      getNetworkExplorerUrlByType(type, param, network);
 
     if (
       recentTransactionsRequest.isExecutingFirstTime ||
