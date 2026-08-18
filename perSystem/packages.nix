@@ -14,7 +14,8 @@
         then "-${targetSystem}"
         else "";
     in
-      (lib.listToAttrs (lib.concatMap (cluster: [
+      (lib.listToAttrs (lib.concatMap (cluster:
+        [
           {
             name = "daedalus-${cluster}${suffix}";
             value = internal.package.${cluster};
@@ -23,6 +24,14 @@
             name = "installer-${cluster}${suffix}";
             value = internal.unsignedInstaller.${cluster};
           }
+        ]
+        ++ lib.optionals (targetSystem == "x86_64-linux") [
+          {
+            name = "deb-installer-${cluster}${suffix}";
+            value = internal.debInstaller.${cluster};
+          }
+        ]
+        ++ [
           {
             name = "makeSignedInstaller-${cluster}${suffix}";
             value = internal.makeSignedInstaller.${cluster};
@@ -32,7 +41,7 @@
             value = internal.common.daedalus-bridge.${cluster};
           }
         ])
-        inputs.self.internal.installerClusters))
+      inputs.self.internal.installerClusters))
       // {
         "buildkitePipeline${suffix}" = import ../nix/internal/buildkite-pipeline.nix {
           inherit inputs;

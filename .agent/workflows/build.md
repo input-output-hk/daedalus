@@ -242,10 +242,14 @@ Creates `.dmg` installer.
 
 ```bash
 # In Nix shell
-yarn package
+nix build -L .#deb-installer-mainnet
 ```
 
-Creates `.AppImage` and other Linux packages.
+Creates the root-installable system `.deb` under `result/`. Cluster variants
+use `deb-installer-preprod`, `deb-installer-preview`, and
+`deb-installer-selfnode`. The legacy `installer-*` `.bin` output remains only
+for task-110 migration compatibility and is not dApp-capable. AppImage, Flatpak,
+and Snap are not supported Linux product formats.
 
 ---
 

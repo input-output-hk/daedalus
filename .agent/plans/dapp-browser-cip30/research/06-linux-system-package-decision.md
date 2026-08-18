@@ -1,8 +1,11 @@
 # Linux System Package Decision (.deb / .rpm)
 
-Status: **accepted package contract and support matrix**. The package strategy
-was accepted on 2026-08-12; matrix revision `task-005-a-matrix-2026-08-14` was
-approved by the user acting as release/product authority on 2026-08-14, with
+Status: **accepted package contract and successor support matrix**. The package strategy
+was accepted on 2026-08-12; original matrix revision `task-005-a-matrix-2026-08-14` was
+approved by the user acting as release/product authority on 2026-08-14. Successor
+revision `task-108-matrix-2026-08-18` was approved on 2026-08-18 after
+authoritative Ubuntu policy documentation invalidated the original Ubuntu 22.04
+and exact parser-version assumptions, with
 this repository record serving as the durable approval record. No separate
 reviewer was required by that authority. Normative packaging and sandbox requirements are mirrored in
 [dapp-browser-cip30-prd.md](../dapp-browser-cip30-prd.md) and
@@ -34,8 +37,9 @@ model used by Electron desktop apps (electron-builder pattern):
    root-owned mode-`0755` non-SUID helper. Either route may satisfy a supported
    row when its exact-renderer evidence passes. A package must not weaken one
    route or retry unsandboxed when the other fails.
-3. Ubuntu rows require a package-owned AppArmor profile with `userns,` attached
-   to the exact Electron binary. Fedora 43 requires package-owned SELinux policy
+3. Supported Ubuntu 24.04.x/26.04.x rows require a package-owned exact-path
+   AppArmor `flags=(default_allow)` profile with `userns,`, selected by reviewed
+   semantic ABI/features rather than exact parser patch-version equality. Fedora 43 requires package-owned SELinux policy
    and exact Electron/helper file contexts. Debian rows require neither policy
    asset unless a later reviewed matrix revision and certification add it.
 4. Launchers **must not** pass `--no-sandbox` or `--disable-setuid-sandbox`.
@@ -45,14 +49,15 @@ model used by Electron desktop apps (electron-builder pattern):
 
 ## Authoritative Support Matrix
 
-Revision: `task-005-a-matrix-2026-08-14`.
+Revision: `task-108-matrix-2026-08-18`, superseding only the contradicted Ubuntu
+predicates in `task-005-a-matrix-2026-08-14`.
 
 All rows are x86_64. Version-series rows include vendor point/security updates;
 material kernel, Electron/Chromium, or host-policy changes trigger revalidation.
 
 | Distribution/version | Package | Accepted sandbox routes | Required host-policy integration |
 |---|---|---|---|
-| Ubuntu 22.04.x LTS | `.deb` | independently proven SUID or userns | AppArmor profile attached to exact Electron path |
+| Ubuntu 22.04.x LTS | `.deb` | wallet-only pending separate proof | no Daedalus AppArmor policy; helper remains `0755` |
 | Ubuntu 24.04.x LTS | `.deb` | independently proven SUID or userns | AppArmor profile attached to exact Electron path |
 | Ubuntu 26.04.x LTS | `.deb` | independently proven SUID or userns | AppArmor profile attached to exact Electron path |
 | Debian 12.x | `.deb` | independently proven SUID or userns | none by default |
@@ -83,11 +88,13 @@ invariants fails package configuration rather than weakening containment.
 - Package directories and executable files are root-owned mode `0755`; policy
   assets are root-owned mode `0644`; the regular non-symlink helper is root-owned
   mode `4755` for SUID evidence or `0755` for userns-only evidence.
-- The root-owned mode-`0644` identity manifest pins matrix revision, cluster,
-  exact package-file hashes, policy kind, task-108-reviewed AppArmor parser
-  version, and task-108/109-reviewed exact policy labels/contexts/module. The probe compares live files and independently
-  observed process/file policy state to this manifest; the contract does not
-  invent generic SELinux type names.
+- The root-owned mode-`0644` identity manifest pins matrix revision, exact row,
+  support state/reason, cluster, exact package-file hashes, helper expectation,
+  policy kind, task-108-reviewed AppArmor semantic ABI/features, and
+  task-108/109-reviewed exact policy labels/contexts/module. The probe records
+  the observed parser version separately and compares live files plus
+  independently observed process/file policy state to this manifest; the
+  contract does not invent generic SELinux type names.
 - Maintainer scripts are idempotent, perform no network fetch, never inspect or
   mutate `XDG_DATA_HOME/Daedalus`, and never disable AppArmor/SELinux, alter
   global userns policy, add permissive domains, or retry Electron unsandboxed.
@@ -115,6 +122,10 @@ Rationale for rejecting the portable `.bin`:
 - Package-equivalent portable proof without `--no-sandbox` failed sandbox
   bootstrap (`SIGILL`) on Ubuntu 24.04; see
   [05-linux-chromium-sandbox-packaging.md](./05-linux-chromium-sandbox-packaging.md).
+- Task-108 later identified the fixed Electron build's required
+  `CHROME_DEVEL_SANDBOX` contract and bound it to the exact root-owned helper in
+  the system-package launcher. This preserves the portable negative evidence;
+  it does not make a user-owned helper or portable package acceptable.
 - ADR-001 requires OS-sandboxed hostile guests; portable packaging cannot meet
   that gate without host policy the installer cannot apply.
 
@@ -143,6 +154,7 @@ Rationale for rejecting the portable `.bin`:
 | Retire `.bin` shipping, migrate Linux auto-update and docs | task-110 |
 | Remove remaining development/legacy sandbox-disabling defaults, add runtime canary, fail-closed dApps | task-103 (depends on task-005-b certification) |
 | Real guest and release-candidate packaged proof | task-107, task-802, task-807, task-903-a |
+| Deferred task-108 package lifecycle rows and destructive/reboot fixtures after full PRD implementation | task-807 release-candidate gate; manual evidence remains required |
 
 ## Auto-update and migration
 

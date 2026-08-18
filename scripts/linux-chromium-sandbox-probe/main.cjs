@@ -8,7 +8,9 @@ const os = require('os');
 const path = require('path');
 
 const SCHEMA_VERSION = 2;
-const MATRIX_REVISION = 'task-005-a-matrix-2026-08-14';
+const IDENTITY_SCHEMA_VERSION = 2;
+const MATRIX_REVISION = 'task-108-matrix-2026-08-18';
+const APPARMOR_LOADED_PROFILE_SUFFIX = ' (unconfined)';
 const STDERR_LIMIT_BYTES = 8192;
 const PROBE_TIMEOUT_MS = 15000;
 const CLEANUP_TIMEOUT_MS = 2000;
@@ -27,37 +29,57 @@ const SANDBOX_CLASSES = new Set([
 const SUPPORT_MATRIX = {
   'ubuntu-22.04': {
     packageFamily: 'deb',
-    policy: 'apparmor',
+    policy: 'none',
+    supportState: 'wallet-only',
+    reason: 'apparmor-policy-proof-pending',
+    helperMode: '0755',
     distributionId: 'ubuntu',
     versionPattern: /^22\.04(?:\.\d+)?$/,
   },
   'ubuntu-24.04': {
     packageFamily: 'deb',
     policy: 'apparmor',
+    supportState: 'supported',
+    reason: 'supported',
+    helperMode: '4755',
+    apparmorSemanticIdentity: 'default-allow-userns-ubuntu-24.04',
     distributionId: 'ubuntu',
     versionPattern: /^24\.04(?:\.\d+)?$/,
   },
   'ubuntu-26.04': {
     packageFamily: 'deb',
     policy: 'apparmor',
+    supportState: 'supported',
+    reason: 'supported',
+    helperMode: '4755',
+    apparmorSemanticIdentity: 'default-allow-userns-ubuntu-26.04',
     distributionId: 'ubuntu',
     versionPattern: /^26\.04(?:\.\d+)?$/,
   },
   'debian-12': {
     packageFamily: 'deb',
     policy: 'none',
+    supportState: 'supported',
+    reason: 'supported',
+    helperMode: '4755',
     distributionId: 'debian',
     versionPattern: /^12(?:\.\d+)?$/,
   },
   'debian-13': {
     packageFamily: 'deb',
     policy: 'none',
+    supportState: 'supported',
+    reason: 'supported',
+    helperMode: '4755',
     distributionId: 'debian',
     versionPattern: /^13(?:\.\d+)?$/,
   },
   'fedora-43': {
     packageFamily: 'rpm',
     policy: 'selinux',
+    supportState: 'supported',
+    reason: 'supported',
+    helperMode: '4755',
     distributionId: 'fedora',
     versionPattern: /^43$/,
   },
@@ -710,6 +732,7 @@ function readContractSelection(installRoot) {
   const row = SUPPORT_MATRIX[matrixRow];
   if (matrixRevision !== MATRIX_REVISION) throw new Error('unsupported-matrix-revision');
   if (!row) throw new Error('unsupported-matrix-row');
+  if (row.supportState !== 'supported') throw new Error(`wallet-only-matrix-row:${row.reason}`);
   if (!SANDBOX_CLASSES.has(sandboxClass)) throw new Error('unsupported-sandbox-class');
   if (!/^[a-z0-9][a-z0-9-]*$/.test(cluster)) throw new Error('invalid-cluster');
   assert.strictEqual(
@@ -798,10 +821,36 @@ function loadIdentityManifest(manifestPath, contract) {
 }
 
 function assertIdentityManifest(manifest, contract) {
-  assert.strictEqual(manifest.schemaVersion, 1, 'identity-schema-version');
+  assert.strictEqual(manifest.schemaVersion, IDENTITY_SCHEMA_VERSION, 'identity-schema-version');
+  assert.strictEqual(manifest.packageFamily, contract.packageFamily, 'identity-package-family');
   assert.strictEqual(manifest.matrixRevision, MATRIX_REVISION, 'identity-matrix-revision');
+  assert.strictEqual(manifest.matrixRow, contract.matrixRow, 'identity-matrix-row');
+  assert.strictEqual(manifest.supportState, contract.supportState, 'identity-support-state');
+  assert.strictEqual(manifest.reason, contract.reason, 'identity-support-reason');
+  assert.strictEqual(
+    manifest.distribution && manifest.distribution.id,
+    contract.distributionId,
+    'identity-distribution'
+  );
+  assert(
+    contract.versionPattern.test(manifest.distribution.versionId || ''),
+    'identity-distribution-version'
+  );
   assert.strictEqual(manifest.cluster, contract.cluster, 'identity-cluster');
   assert.strictEqual(manifest.policy && manifest.policy.kind, contract.policy, 'identity-policy');
+  assert.strictEqual(manifest.helper && manifest.helper.mode, contract.helperMode, 'identity-helper-mode');
+  if (contract.policy === 'apparmor') {
+    assert.strictEqual(
+      manifest.policy.semanticIdentity,
+      contract.apparmorSemanticIdentity,
+      'identity-apparmor-semantics'
+    );
+    assert.strictEqual(
+      manifest.policy.loadedProfileSuffix,
+      APPARMOR_LOADED_PROFILE_SUFFIX,
+      'identity-apparmor-loaded-profile-suffix'
+    );
+  }
   assert(manifest.files && typeof manifest.files === 'object', 'identity-files');
 }
 
@@ -817,7 +866,7 @@ function verifyPackageFiles(
     frontend: '0755',
     wrapper: '0755',
     electron: '0755',
-    chromeSandbox: sandboxClass === 'userns-only' ? '0755' : '4755',
+    chromeSandbox: manifest.helper.mode,
     policyAsset: '0644',
   };
   const result = {};
@@ -853,6 +902,7 @@ function expectedPolicy(contract, executablePath) {
       kind: 'apparmor',
       assetPath: `/etc/apparmor.d/opt.daedalus.${contract.cluster}.electron`,
       processLabel: executablePath,
+      semanticIdentity: contract.apparmorSemanticIdentity,
     };
   }
   if (contract.policy === 'selinux') {
@@ -873,9 +923,7 @@ function assertHelperForClass(helperMetadata, sandboxClass) {
 
 function assertPolicyLabel(expectedLabel, rendererLabel, kind) {
   assert(rendererLabel, 'missing-renderer-security-label');
-  const observed =
-    kind === 'apparmor' ? rendererLabel.replace(/\s+\(enforce\)$/, '') : rendererLabel;
-  assert.strictEqual(observed, expectedLabel, `${kind}-label-mismatch`);
+  assert.strictEqual(rendererLabel, expectedLabel, `${kind}-label-mismatch`);
 }
 
 function assertSafePolicyValue(value) {
@@ -884,11 +932,8 @@ function assertSafePolicyValue(value) {
 
 function assertPolicyHostEvidence(expected, host) {
   if (expected.kind === 'apparmor') {
-    assert.strictEqual(host.state, 'enforce', 'apparmor-not-enforcing');
+    assert.strictEqual(host.semanticCompatible, true, 'apparmor-semantic-incompatible');
     assert(host.parserVersion, 'missing-apparmor-parser-version');
-    if (expected.parserVersion) {
-      assert.strictEqual(host.parserVersion, expected.parserVersion, 'apparmor-parser-abi');
-    }
   } else if (expected.kind === 'selinux') {
     assert.strictEqual(host.state, 'enforcing', 'selinux-not-enforcing');
     assert.strictEqual(
@@ -947,23 +992,33 @@ function collectPolicyEvidence(
   const identity = manifest.policy;
   assert(identity && identity.kind === expected.kind, 'identity-policy-kind');
   assertSafePolicyValue(identity.processLabel);
-  assertPolicyLabel(identity.processLabel, rendererEvidence.securityLabel, expected.kind);
+  const expectedRendererLabel =
+    expected.kind === 'apparmor'
+      ? `${identity.processLabel}${identity.loadedProfileSuffix}`
+      : identity.processLabel;
+  assertPolicyLabel(expectedRendererLabel, rendererEvidence.securityLabel, expected.kind);
 
   if (expected.kind === 'apparmor') {
     assert.strictEqual(identity.processLabel, paths.electron, 'apparmor-attachment-path');
-    assertSafePolicyValue(identity.parserVersion);
+    assert.strictEqual(identity.requiredAbi, '4.0', 'apparmor-required-abi');
+    assert.deepStrictEqual(identity.requiredFlags, ['default_allow'], 'apparmor-required-flags');
+    assert.deepStrictEqual(identity.requiredRules, ['userns'], 'apparmor-required-rules');
+    assert.strictEqual(identity.semanticIdentity, contract.apparmorSemanticIdentity, 'apparmor-semantic-identity');
     const enabled = readFileSync('/sys/module/apparmor/parameters/enabled', 'utf8').trim();
     assert(/^Y$/i.test(enabled), 'apparmor-disabled');
     const profiles = readFileSync('/sys/kernel/security/apparmor/profiles', 'utf8');
     assert(
-      profiles.split('\n').some((line) => line === `${identity.processLabel} (enforce)`),
-      'apparmor-profile-not-enforcing'
+      profiles.split('\n').some((line) => line === expectedRendererLabel),
+      'apparmor-profile-not-loaded'
     );
     const parser = run('apparmor_parser', ['--version']);
     assert.strictEqual(parser.status, 0, 'apparmor-parser-unavailable');
     const parserMatch = `${parser.stdout}\n${parser.stderr}`.match(/version\s+([0-9.]+)/i);
     assert(parserMatch, 'apparmor-parser-version');
-    assert.strictEqual(parserMatch[1], identity.parserVersion, 'apparmor-parser-abi');
+    const profileSource = readFileSync(paths.policyAsset, 'utf8');
+    assert(/abi\s+<abi\/4\.0>/.test(profileSource), 'apparmor-profile-abi');
+    assert(/flags=\(default_allow\)/.test(profileSource), 'apparmor-profile-default-allow');
+    assert(/\buserns\s*,/.test(profileSource), 'apparmor-profile-userns');
     const parserAcceptance = run('apparmor_parser', [
       '--skip-kernel-load',
       paths.policyAsset,
@@ -972,7 +1027,8 @@ function collectPolicyEvidence(
     return {
       kind: 'apparmor',
       required: true,
-      state: 'enforce',
+      semanticCompatible: true,
+      semanticIdentity: identity.semanticIdentity,
       parserVersion: parserMatch[1],
       profileIdentity: identity.processLabel,
       rendererLabelMatches: true,
@@ -1432,7 +1488,8 @@ async function runSelfTest() {
     namespaces: { user: 'user:[2]', pid: 'pid:[2]', mnt: 'mnt:[2]' },
     uidMap: '0 1000 1',
     gidMap: '0 1000 1',
-    securityLabel: '/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/electron (enforce)',
+    securityLabel:
+      '/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/electron (unconfined)',
   };
   assertRendererEvidence(mainEvidence, rendererEvidence, 'userns-only');
   assertRendererEvidence(mainEvidence, rendererEvidence, 'combined-unattributed');
@@ -1591,25 +1648,33 @@ async function runSelfTest() {
   assert.strictEqual(privateFailure.diagnostics.stderrSummaryRequired, true);
 
   const appArmor = expectedPolicy(
-    { policy: 'apparmor', cluster: 'mainnet' },
+    {
+      policy: 'apparmor',
+      cluster: 'mainnet',
+      apparmorSemanticIdentity: 'default-allow-userns-ubuntu-24.04',
+    },
     '/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/electron'
   );
-  assertPolicyLabel(appArmor.processLabel, rendererEvidence.securityLabel, 'apparmor');
+  assertPolicyLabel(
+    `${appArmor.processLabel}${APPARMOR_LOADED_PROFILE_SUFFIX}`,
+    rendererEvidence.securityLabel,
+    'apparmor'
+  );
   assert.throws(
     () => assertPolicyLabel(appArmor.processLabel, 'unconfined', 'apparmor'),
     /apparmor-label-mismatch/
   );
   assertPolicyHostEvidence(
-    { ...appArmor, parserVersion: '4.0' },
-    { state: 'enforce', parserVersion: '4.0' }
+    appArmor,
+    { semanticCompatible: true, parserVersion: '4.0.2' }
   );
   assert.throws(
     () =>
       assertPolicyHostEvidence(
-        { ...appArmor, parserVersion: '4.0' },
-        { state: 'complain', parserVersion: '4.0' }
+        appArmor,
+        { semanticCompatible: false, parserVersion: '4.0.2' }
       ),
-    /apparmor-not-enforcing/
+    /apparmor-semantic-incompatible/
   );
   const selinux = expectedPolicy(
     { policy: 'selinux', cluster: 'mainnet' },
@@ -1662,11 +1727,15 @@ async function runSelfTest() {
     'fedora-43',
   ]);
   assert.strictEqual(SUPPORT_MATRIX['ubuntu-24.04'].policy, 'apparmor');
+  assert.strictEqual(SUPPORT_MATRIX['ubuntu-22.04'].supportState, 'wallet-only');
+  assert.strictEqual(SUPPORT_MATRIX['ubuntu-22.04'].policy, 'none');
+  assert.strictEqual(SUPPORT_MATRIX['ubuntu-22.04'].helperMode, '0755');
+  assert.strictEqual(SUPPORT_MATRIX['ubuntu-24.04'].supportState, 'supported');
   assert.strictEqual(SUPPORT_MATRIX['debian-13'].policy, 'none');
   assert.strictEqual(SUPPORT_MATRIX['fedora-43'].policy, 'selinux');
   assert.strictEqual(SUPPORT_MATRIX['fedora-42'], undefined);
   assert.strictEqual(SUPPORT_MATRIX['opensuse-leap-15.6'], undefined);
-  assert.strictEqual(MATRIX_REVISION, 'task-005-a-matrix-2026-08-14');
+  assert.strictEqual(MATRIX_REVISION, 'task-108-matrix-2026-08-18');
   const matrixVersionFixtures = {
     'ubuntu-22.04': ['22.04', '22.04.5', '24.04'],
     'ubuntu-24.04': ['24.04', '24.04.3', '25.10'],
@@ -1702,6 +1771,10 @@ async function runSelfTest() {
       cluster: 'mainnet',
       packageFamily: 'deb',
       policy: 'apparmor',
+      supportState: 'supported',
+      reason: 'supported',
+      helperMode: '4755',
+      apparmorSemanticIdentity: 'default-allow-userns-ubuntu-24.04',
       distributionId: 'ubuntu',
       versionPattern: /^24\.04(?:\.\d+)?$/,
     });
@@ -1733,6 +1806,11 @@ async function runSelfTest() {
       readContractSelection('/opt/daedalus/mainnet').sandboxClass,
       'suid-only'
     );
+    process.env.DAEDALUS_PROBE_MATRIX_ROW = 'ubuntu-22.04';
+    assert.throws(
+      () => readContractSelection('/opt/daedalus/mainnet'),
+      /wallet-only-matrix-row:apparmor-policy-proof-pending/
+    );
   } finally {
     for (const [name, value] of Object.entries(originalEnvironment)) {
       if (value === undefined) delete process.env[name];
@@ -1742,8 +1820,16 @@ async function runSelfTest() {
 
   const fixtureContract = {
     matrixRevision: MATRIX_REVISION,
+    matrixRow: 'ubuntu-24.04',
     cluster: 'mainnet',
+    packageFamily: 'deb',
+    supportState: 'supported',
+    reason: 'supported',
+    helperMode: '4755',
     policy: 'apparmor',
+    apparmorSemanticIdentity: 'default-allow-userns-ubuntu-24.04',
+    distributionId: 'ubuntu',
+    versionPattern: /^24\.04(?:\.\d+)?$/,
   };
   const fixturePaths = exactPackagePaths(
     '/opt/daedalus/mainnet',
@@ -1751,13 +1837,23 @@ async function runSelfTest() {
     'apparmor'
   );
   const fixtureManifest = {
-    schemaVersion: 1,
+    schemaVersion: IDENTITY_SCHEMA_VERSION,
+    packageFamily: 'deb',
     matrixRevision: MATRIX_REVISION,
+    matrixRow: 'ubuntu-24.04',
+    distribution: { id: 'ubuntu', versionId: '24.04' },
+    supportState: 'supported',
+    reason: 'supported',
     cluster: 'mainnet',
+    helper: { mode: '4755', sha256: 'a'.repeat(64) },
     policy: {
       kind: 'apparmor',
       processLabel: fixturePaths.electron,
-      parserVersion: '4.0',
+      semanticIdentity: 'default-allow-userns-ubuntu-24.04',
+      loadedProfileSuffix: APPARMOR_LOADED_PROFILE_SUFFIX,
+      requiredAbi: '4.0',
+      requiredFlags: ['default_allow'],
+      requiredRules: ['userns'],
     },
     files: Object.fromEntries(
       ['launcher', 'frontend', 'wrapper', 'electron', 'chromeSandbox', 'policyAsset'].map(
@@ -1767,6 +1863,17 @@ async function runSelfTest() {
   };
   assertIdentityManifest(fixtureManifest, fixtureContract);
   assert.throws(
+    () =>
+      assertIdentityManifest(
+        {
+          ...fixtureManifest,
+          policy: { ...fixtureManifest.policy, loadedProfileSuffix: ' (enforce)' },
+        },
+        fixtureContract
+      ),
+    /identity-apparmor-loaded-profile-suffix/
+  );
+  assert.throws(
     () => assertIdentityManifest({ ...fixtureManifest, cluster: 'preview' }, fixtureContract),
     /identity-cluster/
   );
@@ -1774,7 +1881,7 @@ async function runSelfTest() {
   const verifiedPackage = verifyPackageFiles(
     fixturePaths,
     fixtureManifest,
-    'userns-only',
+    'combined-unattributed',
     (filePath, expectedMode) => {
       observedFixtureModes[filePath] = expectedMode;
       return {
@@ -1788,27 +1895,29 @@ async function runSelfTest() {
     },
     () => ({ mode: '0755', owner: 'root', group: 'root' })
   );
-  assert.strictEqual(verifiedPackage.files.chromeSandbox.mode, '0755');
+  assert.strictEqual(verifiedPackage.files.chromeSandbox.mode, '4755');
   assert.strictEqual(verifiedPackage.files.policyAsset.sha256, 'a'.repeat(64));
   assert(Object.keys(verifiedPackage.directories).length >= 6);
   assert.strictEqual(observedFixtureModes[fixturePaths.launcher], '0755');
   assert.strictEqual(observedFixtureModes[fixturePaths.frontend], '0755');
   assert.strictEqual(observedFixtureModes[fixturePaths.wrapper], '0755');
   assert.strictEqual(observedFixtureModes[fixturePaths.electron], '0755');
-  assert.strictEqual(observedFixtureModes[fixturePaths.chromeSandbox], '0755');
+  assert.strictEqual(observedFixtureModes[fixturePaths.chromeSandbox], '4755');
   assert.strictEqual(observedFixtureModes[fixturePaths.policyAsset], '0644');
   assert.strictEqual(observedFixtureModes[fixturePaths.identityManifest], '0644');
 
   const appArmorEvidence = collectPolicyEvidence(
-    { policy: 'apparmor', cluster: 'mainnet' },
+    fixtureContract,
     fixturePaths,
     fixtureManifest,
-    { securityLabel: `${fixturePaths.electron} (enforce)` },
+    { securityLabel: `${fixturePaths.electron}${APPARMOR_LOADED_PROFILE_SUFFIX}` },
     {
-      readFileSync: (filePath) =>
-        filePath.endsWith('/enabled')
-          ? 'Y\n'
-          : `${fixturePaths.electron} (enforce)\n`,
+      readFileSync: (filePath) => {
+        if (filePath.endsWith('/enabled')) return 'Y\n';
+        if (filePath === fixturePaths.policyAsset)
+          return `abi <abi/4.0>,\nprofile ${fixturePaths.electron} flags=(default_allow) { userns, }\n`;
+        return `${fixturePaths.electron}${APPARMOR_LOADED_PROFILE_SUFFIX}\n`;
+      },
       run: () => ({ status: 0, stdout: 'AppArmor parser version 4.0', stderr: '' }),
     }
   );
@@ -1816,19 +1925,21 @@ async function runSelfTest() {
   assert.throws(
     () =>
       collectPolicyEvidence(
-        { policy: 'apparmor', cluster: 'mainnet' },
+        fixtureContract,
         fixturePaths,
         fixtureManifest,
-        { securityLabel: `${fixturePaths.electron} (enforce)` },
+        { securityLabel: `${fixturePaths.electron}${APPARMOR_LOADED_PROFILE_SUFFIX}` },
         {
-          readFileSync: (filePath) =>
-            filePath.endsWith('/enabled')
-              ? 'Y\n'
-              : `${fixturePaths.electron} (enforce)\n`,
+          readFileSync: (filePath) => {
+            if (filePath.endsWith('/enabled')) return 'Y\n';
+            if (filePath === fixturePaths.policyAsset)
+              return `abi <abi/4.0>,\nprofile ${fixturePaths.electron} { userns, }\n`;
+            return `${fixturePaths.electron}${APPARMOR_LOADED_PROFILE_SUFFIX}\n`;
+          },
           run: () => ({ status: 0, stdout: 'AppArmor parser version 3.0', stderr: '' }),
         }
       ),
-    /apparmor-parser-abi/
+    /apparmor-profile-default-allow/
   );
 
   const selinuxPaths = exactPackagePaths(
