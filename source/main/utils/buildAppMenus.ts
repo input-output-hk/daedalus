@@ -8,6 +8,10 @@ import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
+import {
+  consumeIpcResponse,
+  currentWindowSender,
+} from '../ipc/lib/currentWindowSender';
 
 interface Data {
   isNavigationEnabled: boolean;
@@ -30,29 +34,30 @@ export const buildAppMenus = async (
 
   const translations = require(`../locales/${locale}`);
 
+  const showUiPart = (part: string) =>
+    consumeIpcResponse(
+      showUiPartChannel.send(part, currentWindowSender.sender),
+      'SHOW_UI_PART_CHANNEL'
+    );
+
   const openAboutDialog = () => {
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
-    if (mainWindow) showUiPartChannel.send(ABOUT, mainWindow);
+    showUiPart(ABOUT);
   };
 
   const openDaedalusDiagnosticsDialog = () => {
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
-    if (mainWindow) showUiPartChannel.send(DAEDALUS_DIAGNOSTICS, mainWindow);
+    showUiPart(DAEDALUS_DIAGNOSTICS);
   };
 
   const openItnRewardsRedemptionDialog = () => {
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
-    if (mainWindow) showUiPartChannel.send(ITN_REWARDS_REDEMPTION, mainWindow);
+    showUiPart(ITN_REWARDS_REDEMPTION);
   };
 
   const openSettingsPage = () => {
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
-    if (mainWindow) showUiPartChannel.send(SETTINGS, mainWindow);
+    showUiPart(SETTINGS);
   };
 
   const openWalletSettingsPage = () => {
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
-    if (mainWindow) showUiPartChannel.send(WALLET_SETTINGS, mainWindow);
+    showUiPart(WALLET_SETTINGS);
   };
 
   const restartWithBlankScreenFix = async () => {
@@ -116,8 +121,7 @@ export const buildAppMenus = async (
   };
 
   const openToggleRTSFlagsModeDialog = () => {
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
-    if (mainWindow) showUiPartChannel.send(TOGGLE_RTS_FLAGS_MODE, mainWindow);
+    showUiPart(TOGGLE_RTS_FLAGS_MODE);
   };
 
   const menuActions = {

@@ -26,6 +26,10 @@ import type {
   MithrilPartialSyncFinalizeMainResponse,
 } from '../../common/ipc/api';
 import { getMithrilController } from '../mithril/MithrilController';
+import {
+  awaitIpcResponse,
+  currentWindowSender,
+} from './lib/currentWindowSender';
 
 const mithrilPartialSyncStartChannel: MainIpcChannel<
   MithrilPartialSyncStartRendererRequest,
@@ -71,10 +75,12 @@ export const configureMithrilPartialSyncRuntime = (dependencies: {
   getMithrilController().configurePartialSyncRuntime(dependencies);
 };
 
-export const handleMithrilPartialSyncRequests = (window: BrowserWindow) => {
+export const handleMithrilPartialSyncRequests = (_window: BrowserWindow) => {
   const controller = getMithrilController();
   controller.setPartialSyncStatusSender(async (status) => {
-    await mithrilPartialSyncStatusChannel.send(status, window.webContents);
+    await awaitIpcResponse(
+      mithrilPartialSyncStatusChannel.send(status, currentWindowSender.sender)
+    );
   });
 
   controller.initialize();

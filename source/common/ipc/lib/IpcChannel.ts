@@ -17,6 +17,15 @@ export type IpcReceiver = {
   ) => void;
 };
 
+export const IPC_REQUEST_CANCELLED_MESSAGE = 'IPC request cancelled';
+
+export class IpcRequestCancelledError extends Error {
+  constructor() {
+    super(IPC_REQUEST_CANCELLED_MESSAGE);
+    this.name = 'IpcRequestCancelledError';
+  }
+}
+
 type RequestEnvelope<T> = { requestId: string; message: T };
 type ResponseEnvelope<T> = {
   requestId: string;
@@ -150,7 +159,7 @@ export class IpcChannel<Incoming, Outgoing>
       receiver.on(this._responseChannel, listener);
       unsubscribe =
         this._security.onOutgoingInvalidated?.(() =>
-          settle(false, new Error('IPC request cancelled') as Incoming)
+          settle(false, new IpcRequestCancelledError() as Incoming)
         ) || unsubscribe;
       if (settled) return;
       try {
@@ -203,7 +212,7 @@ export class IpcChannel<Incoming, Outgoing>
             event.reply(this._responseChannel, {
               requestId: envelope.requestId,
               isOk: false,
-              response: new Error('IPC request cancelled'),
+              response: new IpcRequestCancelledError(),
             });
           } catch (_error) {
             // The caller frame may already be detached; cleanup still completes.

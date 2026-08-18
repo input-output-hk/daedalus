@@ -86,7 +86,7 @@ describe('mithrilBootstrapChannel', () => {
 
     expect(mockChannels[2].send).toHaveBeenCalledWith(
       { status: 'downloading', snapshot: null, error: null },
-      secondWindow.webContents
+      expect.objectContaining({ send: expect.any(Function) })
     );
   });
 

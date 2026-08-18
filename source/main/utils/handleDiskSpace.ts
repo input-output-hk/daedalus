@@ -28,6 +28,10 @@ import {
 import { MithrilPartialSyncNodeStartup } from '../mithril/mithrilPartialSyncNodeStartup';
 import { getMithrilController } from '../mithril/MithrilController';
 import { isMithrilPartialSyncSuppressingDiskSpaceCheck } from '../../common/types/mithril-partial-sync.types';
+import {
+  awaitIpcResponse,
+  currentWindowSender,
+} from '../ipc/lib/currentWindowSender';
 
 const getDiskCheckReport = async (
   targetPath: string,
@@ -111,8 +115,9 @@ export const handleDiskSpace = (
 
   let isNotEnoughDiskSpace = false; // Default check state
   let directoryChangeGeneration = 0;
-  let activeDiskSpaceCheckPromise: Promise<CheckDiskSpaceResponse> | null =
-    null;
+  let activeDiskSpaceCheckPromise: Promise<
+    CheckDiskSpaceResponse
+  > | null = null;
   let pendingDiskSpaceCheckArgs: {
     hadNotEnoughSpaceLeft?: boolean;
     forceDiskSpaceRequired?: number;
@@ -179,8 +184,9 @@ export const handleDiskSpace = (
       return getStaleResponse();
     }
 
-    const startupLayoutResult =
-      await mithrilController.ensureMithrilStartupGate(currentGeneration);
+    const startupLayoutResult = await mithrilController.ensureMithrilStartupGate(
+      currentGeneration
+    );
     if (
       !startupLayoutResult ||
       currentGeneration !== directoryChangeGeneration
@@ -272,12 +278,13 @@ export const handleDiskSpace = (
 
         case CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME:
           try {
-            const startupResult =
-              await mithrilController.handleStoppedNodeStartup({
+            const startupResult = await mithrilController.handleStoppedNodeStartup(
+              {
                 currentGeneration,
                 getStaleResponse,
                 response,
-              });
+              }
+            );
             if (startupResult.handled) {
               return startupResult.response;
             }
@@ -344,7 +351,9 @@ export const handleDiskSpace = (
       resetInterval(DISK_SPACE_CHECK_MEDIUM_INTERVAL);
     }
 
-    await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
+    await awaitIpcResponse(
+      getDiskSpaceStatusChannel.send(response, currentWindowSender.sender)
+    );
     return response;
   };
 
@@ -415,8 +424,8 @@ export const handleDiskSpace = (
         pendingDiskSpaceCheckArgs.hadNotEnoughSpaceLeft === false ||
         nextArgs.hadNotEnoughSpaceLeft === false
           ? false
-          : (nextArgs.hadNotEnoughSpaceLeft ??
-            pendingDiskSpaceCheckArgs.hadNotEnoughSpaceLeft),
+          : nextArgs.hadNotEnoughSpaceLeft ??
+            pendingDiskSpaceCheckArgs.hadNotEnoughSpaceLeft,
       forceDiskSpaceRequired:
         nextArgs.forceDiskSpaceRequired ??
         pendingDiskSpaceCheckArgs.forceDiskSpaceRequired,
@@ -512,7 +521,9 @@ export const handleDiskSpace = (
   getDiskSpaceStatusChannel.onReceive(async () => {
     const diskSpacePath = await chainStorageManager.resolveDiskSpaceCheckPath();
     const diskReport = await getDiskCheckReport(diskSpacePath);
-    await getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
+    await awaitIpcResponse(
+      getDiskSpaceStatusChannel.send(diskReport, currentWindowSender.sender)
+    );
     return diskReport;
   });
   return handleCheckDiskSpace;

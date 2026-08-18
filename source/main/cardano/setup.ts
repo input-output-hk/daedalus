@@ -31,6 +31,10 @@ import {
   setCachedCardanoStatusChannel,
   exportWalletsChannel,
 } from '../ipc/cardano.ipc';
+import {
+  consumeIpcResponse,
+  currentWindowSender,
+} from '../ipc/lib/currentWindowSender';
 import { getMithrilController } from '../mithril/MithrilController';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 
@@ -99,14 +103,16 @@ export const setupCardanoNode = (
       readFileSync,
       createWriteStream,
       broadcastTlsConfig: (tlsConfig: TlsConfig | null | undefined) => {
-        if (!mainWindow.isDestroyed())
-          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
-          cardanoTlsConfigChannel.send(tlsConfig, mainWindow);
+        consumeIpcResponse(
+          cardanoTlsConfigChannel.send(tlsConfig, currentWindowSender.sender),
+          'CARDANO_TLS_CONFIG_CHANNEL'
+        );
       },
       broadcastStateChange: (state: CardanoNodeState) => {
-        if (!mainWindow.isDestroyed())
-          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
-          cardanoStateChangeChannel.send(state, mainWindow);
+        consumeIpcResponse(
+          cardanoStateChangeChannel.send(state, currentWindowSender.sender),
+          'CARDANO_STATE_CHANNEL'
+        );
       },
     },
     {
@@ -134,8 +140,8 @@ export const setupCardanoNode = (
             'Cardano backend exited while Mithril partial sync was active. Suppressing automatic restart.',
             {
               code,
-              mithrilPartialSyncStatus:
-                mithrilController.getPartialSyncStatus().status,
+              mithrilPartialSyncStatus: mithrilController.getPartialSyncStatus()
+                .status,
             }
           );
           return;

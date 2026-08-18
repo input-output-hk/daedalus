@@ -9,6 +9,10 @@ import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 import { buildKnownIssueFixesSubmenu } from './submenuBuilders';
 import { WalletSettingsStateEnum } from '../../common/ipc/api';
+import {
+  consumeIpcResponse,
+  currentWindowSender,
+} from '../ipc/lib/currentWindowSender';
 
 const id = 'menu';
 export const winLinuxMenu = (
@@ -212,8 +216,13 @@ export const winLinuxMenu = (
         label: translation('helpSupport.downloadLogs'),
 
         click() {
-          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
-          showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
+          consumeIpcResponse(
+            showUiPartChannel.send(
+              NOTIFICATIONS.DOWNLOAD_LOGS,
+              currentWindowSender.sender
+            ),
+            'SHOW_UI_PART_CHANNEL'
+          );
         },
       },
       {

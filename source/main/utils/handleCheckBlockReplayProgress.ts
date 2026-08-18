@@ -5,12 +5,15 @@ import path from 'path';
 import { Tail } from 'tail';
 import { getBlockSyncProgressChannel } from '../ipc/get-block-sync-progress';
 import {
+  consumeIpcResponse,
+  currentWindowSender,
+} from '../ipc/lib/currentWindowSender';
+import {
   BlockSyncProgress,
   BlockSyncType,
 } from '../../common/types/cardano-node.types';
 import { isItFreshLog } from './blockSyncProgressHelpers';
 import { environment } from '../environment';
-import { logger } from './logging';
 
 const blockKeyword = 'Replayed block';
 const validatingChunkKeyword = 'Validating chunk';
@@ -47,7 +50,7 @@ function getProgressType(line: string): BlockSyncType | null {
 
 const applicationStartDate = moment.utc();
 
-const createHandleNewLogLine = (mainWindow: BrowserWindow) => {
+const createHandleNewLogLine = () => {
   const progressReport: BlockSyncProgress = {
     [BlockSyncType.validatingChunk]: 0,
     [BlockSyncType.replayedBlock]: 0,
@@ -72,7 +75,13 @@ const createHandleNewLogLine = (mainWindow: BrowserWindow) => {
 
     if (progressReport[type] !== progress) {
       progressReport[type] = progress;
-      getBlockSyncProgressChannel.send(progressReport, mainWindow.webContents);
+      consumeIpcResponse(
+        getBlockSyncProgressChannel.send(
+          progressReport,
+          currentWindowSender.sender
+        ),
+        'GetBlockSyncProgressChannel'
+      );
     }
   };
 };
@@ -93,7 +102,7 @@ const watchLogFile = ({
     fromBeginning: true,
   });
 
-  const handleNewLogLine = createHandleNewLogLine(mainWindow);
+  const handleNewLogLine = createHandleNewLogLine();
   tail.on('line', handleNewLogLine);
 };
 

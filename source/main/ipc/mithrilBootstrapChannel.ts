@@ -22,6 +22,10 @@ import type {
 import type { CardanoNodeState } from '../../common/types/cardano-node.types';
 import { logger } from '../utils/logging';
 import { getMithrilController } from '../mithril/MithrilController';
+import {
+  awaitIpcResponse,
+  currentWindowSender,
+} from './lib/currentWindowSender';
 
 const mithrilBootstrapDecisionChannel: MainIpcChannel<
   MithrilBootstrapDecisionRendererRequest,
@@ -54,12 +58,14 @@ export const setMithrilBootstrapNodeStateProvider = (
 
 let mithrilBootstrapRequestsInitialized = false;
 
-export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
+export const handleMithrilBootstrapRequests = (_window: BrowserWindow) => {
   // Rebind the status sender to the latest window each call, so status targets the current webContents
   //  after window recreation.
   const controller = getMithrilController();
   controller.setBootstrapStatusSender(async (status) => {
-    await mithrilBootstrapStatusChannel.send(status, window.webContents);
+    await awaitIpcResponse(
+      mithrilBootstrapStatusChannel.send(status, currentWindowSender.sender)
+    );
   });
 
   controller.initialize();

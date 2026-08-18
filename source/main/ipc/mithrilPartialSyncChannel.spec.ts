@@ -97,7 +97,7 @@ describe('mithrilPartialSyncChannel', () => {
 
     expect(mockChannels[1].send).toHaveBeenCalledWith(
       { ...idleStatus, status: 'downloading' },
-      secondWindow.webContents
+      expect.objectContaining({ send: expect.any(Function) })
     );
   });
 
@@ -190,17 +190,17 @@ describe('mithrilPartialSyncChannel', () => {
       isEnabled: false,
       isSignificantlyBehind: false,
     });
-    await expect(mockChannels[5].onRequest.mock.calls[0][0]()).resolves.toEqual(
-      { isEnabled: false, isSignificantlyBehind: false }
-    );
+    await expect(
+      mockChannels[5].onRequest.mock.calls[0][0]()
+    ).resolves.toEqual({ isEnabled: false, isSignificantlyBehind: false });
 
     mithrilControllerMock.getPartialSyncAvailability.mockReturnValue({
       isEnabled: true,
       isSignificantlyBehind: false,
     });
-    await expect(mockChannels[5].onRequest.mock.calls[0][0]()).resolves.toEqual(
-      { isEnabled: true, isSignificantlyBehind: false }
-    );
+    await expect(
+      mockChannels[5].onRequest.mock.calls[0][0]()
+    ).resolves.toEqual({ isEnabled: true, isSignificantlyBehind: false });
   });
 
   it('forwards certifiedEpoch on the availability payload', async () => {
