@@ -5,4 +5,6 @@ export default class NetworkStatusActions {
   toggleSplash: Action<any> = new Action();
   forceCheckNetworkClock: Action<any> = new Action();
   toggleRTSFlagsMode: Action<any> = new Action();
+  restartNode: Action<void> = new Action();
+  restartWallet: Action<void> = new Action();
 }

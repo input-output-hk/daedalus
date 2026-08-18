@@ -31,6 +31,7 @@ type ExitInfo = (Option<i32>, Option<String>);
 enum RunResult {
     Stopped,
     NodeCrashed,
+    RestartRequested,
     StartMithril { force: bool, wipe_chain: bool },
 }
 
@@ -517,6 +518,11 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
                 sleep(Duration::from_millis(config.node.crash_restart_delay_ms)).await;
                 // continue loop to restart node+wallet
             }
+            RunResult::RestartRequested => {
+                info!("user-initiated node restart");
+                node_crash_count = 0;
+                // continue loop immediately — no delay, no crash-count increment
+            }
             RunResult::StartMithril { force, wipe_chain } => {
                 if let Some(ref mc) = config.mithril {
                     use mithril::PipelineResult;
@@ -784,6 +790,16 @@ async fn run_node_wallet(
                     Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes } => {
                         spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
                     }
+                    Cmd::RestartNode => {
+                        let shutdown_start = unix_ms();
+                        shutdown_pipe.close_write();
+                        let force_killed =
+                            wait_for_node_exit(&node_rx_socket, &mut node_kill_tx).await;
+                        let shutdown_ms = unix_ms() - shutdown_start;
+                        info!("user-initiated node restart, shut down in {shutdown_ms}ms (force_killed={force_killed})");
+                        emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                        return Ok(RunResult::RestartRequested);
+                    }
                     _ => {} // stale command: ignore and keep waiting for socket
                 }
             }
@@ -923,6 +939,29 @@ async fn run_node_wallet(
                         Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes } => {
                             spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
                         }
+                        Cmd::RestartNode => {
+                            stop_child(&mut wallet, 10).await;
+                            let shutdown_start = unix_ms();
+                            shutdown_pipe.close_write();
+                            let node_rx_shutdown = node_rx.clone();
+                            let force_killed =
+                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
+                            let shutdown_ms = unix_ms() - shutdown_start;
+                            info!("user-initiated node restart, shut down in {shutdown_ms}ms (force_killed={force_killed})");
+                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            return Ok(RunResult::RestartRequested);
+                        }
+                        Cmd::RestartWallet => {
+                            info!("user-initiated wallet restart");
+                            stop_child(&mut wallet, 10).await;
+                            attempt += 1;
+                            emit(&Event::WalletRestarting {
+                                attempt,
+                                last_exit_code: None,
+                                last_exit_signal: None,
+                            });
+                            continue 'supervisor;
+                        }
                         _ => {} // stale command (e.g. CancelMithril): ignore and loop
                     }
                 }
@@ -1018,6 +1057,29 @@ async fn run_node_wallet(
                         }
                         Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes } => {
                             spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
+                        }
+                        Cmd::RestartNode => {
+                            stop_child(&mut wallet, 10).await;
+                            let shutdown_start = unix_ms();
+                            shutdown_pipe.close_write();
+                            let node_rx_shutdown = node_rx.clone();
+                            let force_killed =
+                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
+                            let shutdown_ms = unix_ms() - shutdown_start;
+                            info!("user-initiated node restart, shut down in {shutdown_ms}ms (force_killed={force_killed})");
+                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            return Ok(RunResult::RestartRequested);
+                        }
+                        Cmd::RestartWallet => {
+                            info!("user-initiated wallet restart");
+                            stop_child(&mut wallet, 10).await;
+                            attempt += 1;
+                            emit(&Event::WalletRestarting {
+                                attempt,
+                                last_exit_code: None,
+                                last_exit_signal: None,
+                            });
+                            continue 'supervisor;
                         }
                         _ => {} // stale command: ignore and loop
                     }

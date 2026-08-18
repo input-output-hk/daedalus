@@ -273,15 +273,25 @@ export const messages = defineMessages({
     defaultMessage: '!!!CARDANO NODE STATUS',
     description: 'CARDANO NODE STATUS',
   },
+  cardanoNode: {
+    id: 'daedalus.diagnostics.dialog.cardanoNode',
+    defaultMessage: '!!!Cardano node',
+    description: 'Cardano node label',
+  },
+  cardanoWallet: {
+    id: 'daedalus.diagnostics.dialog.cardanoWallet',
+    defaultMessage: '!!!Cardano wallet',
+    description: 'Cardano wallet label',
+  },
   cardanoNodeStatusRestarting: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeStatusRestarting',
-    defaultMessage: '!!!Restarting Cardano node...',
-    description: 'Restarting Cardano node...',
+    defaultMessage: '!!!Restarting {subject}...',
+    description: 'Restarting a cardano process',
   },
   cardanoNodeStatusRestart: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeStatusRestart',
-    defaultMessage: '!!!Restart Cardano node',
-    description: 'Restart Cardano node',
+    defaultMessage: '!!!Restart {subject}',
+    description: 'Restart a cardano process',
   },
   cardanoNodeState: {
     id: 'daedalus.diagnostics.dialog.cardanoNodeState',
@@ -452,12 +462,14 @@ type Props = {
   onOpenStateDirectory: (...args: Array<any>) => any;
   onOpenExternalLink: (...args: Array<any>) => any;
   onRestartNode: { trigger: (...args: Array<any>) => any };
+  onRestartWallet: { trigger: (...args: Array<any>) => any };
   onClose: (...args: Array<any>) => any;
   onCopyStateDirectoryPath: (...args: Array<any>) => any;
   onForceCheckNetworkClock: (...args: Array<any>) => any;
 };
 type State = {
   isNodeRestarting: boolean;
+  isWalletRestarting: boolean;
 };
 const FINAL_CARDANO_NODE_STATES = [
   CardanoNodeStates.RUNNING,
@@ -478,6 +490,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
     super(props);
     this.state = {
       isNodeRestarting: false,
+      isWalletRestarting: false,
     };
   }
 
@@ -485,13 +498,28 @@ class DaedalusDiagnostics extends Component<Props, State> {
     const { cardanoNodeState: prevCardanoNodeState } = prevProps;
     const { cardanoNodeState } = this.props;
 
+    // Reset node-restarting spinner once the node socket is ready and the phase
+    // is back to a final state. Waiting for 'ready' (not just PID change) means
+    // the spinner stays up through socket-wait and wallet startup after restart.
+    const prevNodePID = prevProps.coreInfo.cardanoNodePID;
+    const nextNodePID = this.props.coreInfo.cardanoNodePID;
+    const nodeBackUp =
+      nextNodePID !== 0 &&
+      nextNodePID !== prevNodePID &&
+      cardanoNodeState === CardanoNodeStates.READY;
     if (
-      cardanoNodeState !== prevCardanoNodeState &&
-      includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)
+      (cardanoNodeState !== prevCardanoNodeState &&
+        includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)) ||
+      nodeBackUp
     ) {
-      this.setState({
-        isNodeRestarting: false,
-      }); // eslint-disable-line
+      this.setState({ isNodeRestarting: false }); // eslint-disable-line
+    }
+
+    // Reset wallet-restarting spinner when the wallet PID changes.
+    const prevWalletPID = prevProps.coreInfo.cardanoWalletPID;
+    const nextWalletPID = this.props.coreInfo.cardanoWalletPID;
+    if (nextWalletPID !== 0 && nextWalletPID !== prevWalletPID) {
+      this.setState({ isWalletRestarting: false }); // eslint-disable-line
     }
   }
 
@@ -599,7 +627,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
       nodeSocketWaitMs,
       walletReadyWaitMs,
     } = coreInfo;
-    const { isNodeRestarting } = this.state;
+    const { isNodeRestarting, isWalletRestarting } = this.state;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError as ErrorType;
     const unknownDiskSpaceSupportUrl = intl.formatMessage(
@@ -834,17 +862,44 @@ class DaedalusDiagnostics extends Component<Props, State> {
             <div>
               {getSectionRow(
                 'cardanoNodeStatus',
-                <button
-                  className={styles.cardanoNodeStatusBtn}
-                  onClick={() => this.restartNode()}
-                  disabled={
-                    !includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)
-                  }
-                >
-                  {isNodeRestarting
-                    ? intl.formatMessage(messages.cardanoNodeStatusRestarting)
-                    : intl.formatMessage(messages.cardanoNodeStatusRestart)}
-                </button>
+                <span style={{ display: 'flex', float: 'right', gap: '8px' }}>
+                  <button
+                    className={styles.cardanoNodeStatusBtn}
+                    style={{ float: 'none' }}
+                    onClick={() => this.restartNode()}
+                    disabled={
+                      !includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)
+                    }
+                  >
+                    {isNodeRestarting
+                      ? intl.formatMessage(
+                          messages.cardanoNodeStatusRestarting,
+                          {
+                            subject: intl.formatMessage(messages.cardanoNode),
+                          }
+                        )
+                      : intl.formatMessage(messages.cardanoNodeStatusRestart, {
+                          subject: intl.formatMessage(messages.cardanoNode),
+                        })}
+                  </button>
+                  <button
+                    className={styles.cardanoNodeStatusBtn}
+                    style={{ float: 'none' }}
+                    onClick={() => this.restartWallet()}
+                    disabled={cardanoNodeState !== CardanoNodeStates.READY}
+                  >
+                    {isWalletRestarting
+                      ? intl.formatMessage(
+                          messages.cardanoNodeStatusRestarting,
+                          {
+                            subject: intl.formatMessage(messages.cardanoWallet),
+                          }
+                        )
+                      : intl.formatMessage(messages.cardanoNodeStatusRestart, {
+                          subject: intl.formatMessage(messages.cardanoWallet),
+                        })}
+                  </button>
+                </span>
               )}
               {getRow(
                 'cardanoNodeState',
@@ -938,6 +993,14 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isNodeRestarting: true,
     });
     this.props.onRestartNode.trigger();
+    this.restoreDialogCloseOnEscKey();
+  };
+
+  restartWallet = () => {
+    this.setState({
+      isWalletRestarting: true,
+    });
+    this.props.onRestartWallet.trigger();
     this.restoreDialogCloseOnEscKey();
   };
 }

@@ -27,6 +27,12 @@ pub enum Command {
         default_chain_path: String,
         required_space_bytes: u64,
     },
+    /// Gracefully stop the node (and wallet) then restart both. Does not
+    /// increment the crash counter.
+    RestartNode,
+    /// Kill and restart cardano-wallet without touching cardano-node. Resets
+    /// the wallet restart-attempt counter so the limit is not consumed.
+    RestartWallet,
 }
 
 #[derive(Debug, Serialize)]
@@ -494,6 +500,18 @@ mod tests {
     fn probe_mithril_command() {
         let cmd: Command = serde_json::from_str(r#"{"cmd":"probe_mithril"}"#).unwrap();
         assert!(matches!(cmd, Command::ProbeMithril));
+    }
+
+    #[test]
+    fn restart_node_command() {
+        let cmd: Command = serde_json::from_str(r#"{"cmd":"restart_node"}"#).unwrap();
+        assert!(matches!(cmd, Command::RestartNode));
+    }
+
+    #[test]
+    fn restart_wallet_command() {
+        let cmd: Command = serde_json::from_str(r#"{"cmd":"restart_wallet"}"#).unwrap();
+        assert!(matches!(cmd, Command::RestartWallet));
     }
 
     #[test]

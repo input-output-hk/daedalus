@@ -135,6 +135,8 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           onOpenExternalLink={openExternalLink}
           onClose={closeDaedalusDiagnosticsDialog.trigger}
           onForceCheckNetworkClock={this.handleForceCheckNetworkClock}
+          onRestartNode={actions.networkStatus.restartNode}
+          onRestartWallet={actions.networkStatus.restartWallet}
         />
       </ReactModal>
     );

@@ -1727,18 +1727,28 @@
         "id": "daedalus.diagnostics.dialog.checkingNodeTime"
       },
       {
+        "defaultMessage": "!!!Cardano node",
+        "description": "Cardano node label",
+        "id": "daedalus.diagnostics.dialog.cardanoNode"
+      },
+      {
+        "defaultMessage": "!!!Cardano wallet",
+        "description": "Cardano wallet label",
+        "id": "daedalus.diagnostics.dialog.cardanoWallet"
+      },
+      {
         "defaultMessage": "!!!CARDANO NODE STATUS",
         "description": "CARDANO NODE STATUS",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatus"
       },
       {
-        "defaultMessage": "!!!Restarting Cardano node...",
-        "description": "Restarting Cardano node...",
+        "defaultMessage": "!!!Restarting {subject}...",
+        "description": "Restarting a cardano process",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestarting"
       },
       {
-        "defaultMessage": "!!!Restart Cardano node",
-        "description": "Restart Cardano node",
+        "defaultMessage": "!!!Restart {subject}",
+        "description": "Restart a cardano process",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestart"
       },
       {

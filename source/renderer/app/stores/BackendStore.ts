@@ -84,6 +84,10 @@ export default class BackendStore extends Store {
     nodeBlockSyncProgressChannel.onReceive(this._onNodeBlockSyncProgress);
     watchdogStoppedChannel.onReceive(this._onWatchdogStopped);
 
+    // ========== ACTION LISTENERS =========== //
+    this.actions.networkStatus.restartNode.listen(this._restartNode);
+    this.actions.networkStatus.restartWallet.listen(this._restartWallet);
+
     // ========== MOBX REACTIONS =========== //
     // Fire probeMithril() exactly once when nodeStartedAt transitions from null to non-null.
     const disposeProbeReaction = reaction(
@@ -274,6 +278,14 @@ export default class BackendStore extends Store {
   @action
   probeMithril = () => {
     mithrilCommandChannel.send({ cmd: 'probe_mithril' });
+  };
+
+  _restartNode = () => {
+    mithrilCommandChannel.send({ cmd: 'restart_node' });
+  };
+
+  _restartWallet = () => {
+    mithrilCommandChannel.send({ cmd: 'restart_wallet' });
   };
 
   // =============== CHAIN STORAGE ACTIONS ===============
