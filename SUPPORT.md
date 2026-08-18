@@ -6,13 +6,13 @@ SE7EN Labs provides support for Daedalus users through the official Daedalus cus
 
 If you need help using Daedalus, troubleshooting a problem or investigating unexpected wallet behavior, please use the official Daedalus customer support platform.
 
-Daedalus Ariadne Support
+Ariadne - Daedalus Support
 
 The customer support platform is the preferred channel for individual support cases. It allows support staff to investigate an issue without requiring users to publish potentially sensitive diagnostic information in a public GitHub issue.
 
 Never provide a wallet recovery phrase, seed phrase, private key, spending password or other wallet secret to SE7EN Labs support, GitHub contributors or anyone claiming to provide Daedalus support.
 
-Customer support cases will receive a first substantive human response within 5 business days. Automated acknowledgements and automated assistance do not satisfy this response target.
+Customer support cases will receive a first substantive human response within 5 business days. Automated acknowledgements, AI responses and other automated messages do not satisfy the human response target.
 
 ## GitHub Issues
 
@@ -20,7 +20,7 @@ GitHub Issues are intended for public software development and engineering work.
 
 GitHub should not be used as a substitute for individual customer support.
 
-Before opening an issue, please search existing issues to determine whether the problem has already been reported.
+Before opening an issue, please [search existing Daedalus issues](https://github.com/se7en-labs-inc/daedalus/issues) to determine whether the problem has already been reported.
 
 Public GitHub issues will receive a first maintainer response within 2 business days and will be triaged within 5 business days.
 
@@ -40,8 +40,8 @@ Resolution time depends on the nature of the issue, investigation requirements, 
 
 ## Service Level Targets
 
-The complete service level policy, including definitions and response targets, is available in [Service Level Targets](docs/SERVICE_LEVELS.md).
+The complete service level policy, including definitions and response targets, is available in [Service Level Targets](https://github.com/se7en-labs-inc/daedalus/blob/master/docs/SERVICE_LEVELS.md).
 
 ## Contributing
 
-If you are interested in contributing code, documentation, testing or other improvements to Daedalus, please see [CONTRIBUTING.md](CONTRIBUTING.md).
+If you are interested in contributing code, documentation, testing or other improvements to Daedalus, please see [CONTRIBUTING.md](https://github.com/se7en-labs-inc/daedalus/blob/master/CONTRIBUTING.md).
