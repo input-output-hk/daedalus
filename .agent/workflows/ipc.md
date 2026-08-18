@@ -214,16 +214,13 @@ conversation.onRequest(async (request) => {
 conversation.send(mainRequest);
 ```
 
-### Broadcast (Main → All Renderers)
+### Main → Trusted Renderer Notification
 
 ```typescript
-// Main process
-import { BrowserWindow } from 'electron';
-
-const windows = BrowserWindow.getAllWindows();
-windows.forEach((window) => {
-  window.webContents.send(CHANNEL_NAME, data);
-});
+consumeIpcResponse(
+  channel.send(data, currentWindowSender.sender),
+  CHANNEL_NAME
+);
 ```
 
 ---
@@ -300,9 +297,18 @@ lookup or `event.sender.send`; the wrappers use `event.reply` so responses retur
 to the originating frame.
 
 Wrapper requests are correlated and register their response listener before
-sending. Do not bypass these guarantees with a shared uncorrelated response
-listener. Raw `ipcMain` listeners require an explicit equivalent authority check;
-task-102 owns the complete privileged-listener migration.
+sending. Every production channel must remain in
+`source/main/ipc/privilegedIpcManifest.ts`. Do not bypass these guarantees with a
+raw `ipcMain`, scoped/frame/service-worker IPC, WebContents IPC event,
+`MessagePortMain`, direct renderer `send`/`invoke`/`postMessage`, shared
+uncorrelated response listener, or aliased equivalent. The symbol-aware audit
+uses empty production bypass allowlists.
+
+Every main-originated wrapper promise must be explicitly awaited or consumed.
+Long-lived producers resolve `currentWindowSender.sender` at send time, and
+expected navigation/destruction/replacement cancellation is settled without
+sensitive error logging. Never select a target with
+`BrowserWindow.getAllWindows()` or redirect a privileged response globally.
 
 ### Error Handling
 

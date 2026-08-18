@@ -24,9 +24,13 @@ invalidation. Main handlers run only for the exact active trusted main
 `WebContents`, main frame, canonical document, and origin, and respond through
 the originating frame via `event.reply`.
 
-This contract covers `MainIpcChannel` and `MainIpcConversation`. Direct raw
-Electron listeners are not implicitly protected and remain subject to the
-task-102 inventory and migration before any hostile guest can be enabled.
+`source/main/ipc/privilegedIpcManifest.ts` accounts for all 77 production
+`MainIpcChannel` and `MainIpcConversation` contracts, their constructor,
+registration and caller owners, direction, capability, settlement policy, and
+exact-frame authority. A TypeScript-checker audit rejects raw Electron ingress,
+direct renderer bypasses, unmanifested wrapper construction, and unowned
+main-originated response promises. Test-only fixture transport is outside the
+exact production roots and cannot authorize a production exception.
 
 ---
 
@@ -482,6 +486,8 @@ local-directory listeners are registered explicitly once at process startup.
 | `SHOW_UI_PART_CHANNEL`     | Main → Renderer | Show UI element     |
 | `TOGGLE_UI_PART_CHANNEL`   | Main → Renderer | Toggle UI element   |
 | `REBUILD_APP_MENU_CHANNEL` | Renderer → Main | Rebuild native menu |
+| `close-window`             | Renderer → Main | Close trusted window after correlated response |
+| `resize-window`            | Renderer → Main | Resize current trusted window |
 
 ---
 

@@ -1,5 +1,5 @@
 import path from 'path';
-import { app, BrowserWindow, ipcMain, Menu, Rectangle } from 'electron';
+import { app, BrowserWindow, Menu, Rectangle } from 'electron';
 import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
@@ -82,16 +82,6 @@ export const createMainWindow = (
   window.setMinimumSize(minWindowsWidth, minWindowsHeight);
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi(window);
-  // Provide render process with an api to resize the main window
-  ipcMain.on('resize-window', (event, { width, height, animate }) => {
-    if (event.sender !== window.webContents) return;
-    window.setSize(width, height, animate);
-  });
-  // Provide render process with an api to close the main window
-  ipcMain.on('close-window', (event) => {
-    if (event.sender !== window.webContents) return;
-    window.close();
-  });
   loadTrustedRenderer(window, trustedRendererUrl);
   window.on('page-title-updated', (event) => {
     event.preventDefault();
