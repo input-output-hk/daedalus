@@ -285,6 +285,60 @@ describe('validateChainStorageDirectory', () => {
     );
   });
 
+  // The probe spawns a subprocess on Windows and can take seconds, or hang.
+  // Blocking the picker on it would make an unreadable disk indistinguishable
+  // from an unusable directory, so the selection is accepted without a figure.
+  it('accepts the directory when the free space probe does not answer in time', async () => {
+    const checkDiskSpace = require('check-disk-space');
+    checkDiskSpace.mockReturnValue(new Promise(() => {}));
+    (fs.pathExists as jest.Mock)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(false);
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
+      async (p: string) => p
+    );
+    (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
+    (fs.access as jest.Mock).mockResolvedValue(undefined);
+
+    const result = await validateChainStorageDirectory(
+      '/mnt/external',
+      STATE_DIR,
+      makeGetDefaultConfig(),
+      REQUIRED_SPACE,
+      10
+    );
+
+    expect(result.isValid).toBe(true);
+    expect(result.reason).toBeUndefined();
+    expect(result.availableSpaceBytes).toBeUndefined();
+  });
+
+  it('accepts the directory when the free space probe fails', async () => {
+    const checkDiskSpace = require('check-disk-space');
+    checkDiskSpace.mockRejectedValue(new Error('no such utility'));
+    (fs.pathExists as jest.Mock)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(false);
+    (fs.realpath as unknown as jest.Mock).mockImplementation(
+      async (p: string) => p
+    );
+    (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
+    (fs.access as jest.Mock).mockResolvedValue(undefined);
+
+    const result = await validateChainStorageDirectory(
+      '/mnt/external',
+      STATE_DIR,
+      makeGetDefaultConfig(),
+      REQUIRED_SPACE
+    );
+
+    expect(result.isValid).toBe(true);
+    expect(result.reason).toBeUndefined();
+    expect(result.availableSpaceBytes).toBeUndefined();
+  });
+
   it('returns valid when all checks pass', async () => {
     const checkDiskSpace = require('check-disk-space');
     checkDiskSpace.mockResolvedValue({ free: 4096 });
