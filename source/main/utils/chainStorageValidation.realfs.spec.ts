@@ -155,6 +155,128 @@ describe('validateChainStorageDirectory against a real filesystem', () => {
     expect(result.reason).toBe('path-not-found');
   });
 
+  it(
+    'resolves a chain of symlinks to the directory at the end of it',
+    async () => {
+      const target = path.join(tmpRoot, 'final-target');
+      const intermediate = path.join(tmpRoot, 'intermediate-link');
+      fs.mkdirSync(target);
+      fs.symlinkSync(target, intermediate, 'dir');
+      const link = path.join(tmpRoot, 'link-to-link');
+      fs.symlinkSync(intermediate, link, 'dir');
+
+      const result = await validateChainStorageDirectory(
+        link,
+        stateDir,
+        makeGetDefaultConfig(path.join(stateDir, 'chain')),
+        REQUIRED_SPACE
+      );
+
+      expect(result.isValid).toBe(true);
+      expect(result.resolvedPath).toBe(fs.realpathSync(target));
+    },
+    DISK_SPACE_TIMEOUT_MS
+  );
+
+  // Two links pointing at each other. The platforms disagree about which
+  // syscall fails first, and therefore about which reason comes back: POSIX
+  // fails the existence probe and reports the path as missing, while Windows
+  // satisfies that probe on the reparse point and fails the resolution
+  // instead. The rejection is what holds on both, and is what this asserts.
+  it('rejects a directory that is part of a symlink loop', async () => {
+    const link = path.join(tmpRoot, 'loop-entry');
+    const partner = path.join(tmpRoot, 'loop-partner');
+    fs.symlinkSync(partner, link, 'dir');
+    fs.symlinkSync(link, partner, 'dir');
+
+    expect(() => fs.realpathSync(link)).toThrow();
+
+    const result = await validateChainStorageDirectory(
+      link,
+      stateDir,
+      makeGetDefaultConfig(path.join(stateDir, 'chain')),
+      REQUIRED_SPACE
+    );
+
+    expect(result.isValid).toBe(false);
+  });
+
+  it('rejects the state directory itself', async () => {
+    const result = await validateChainStorageDirectory(
+      stateDir,
+      stateDir,
+      makeGetDefaultConfig(path.join(stateDir, 'chain')),
+      REQUIRED_SPACE
+    );
+
+    expect(result.isValid).toBe(false);
+    expect(result.reason).toBe('inside-state-dir');
+  });
+
+  // The nesting check runs on the resolved path, so a link that lives outside
+  // the state directory but points inside it has to be rejected on where it
+  // lands rather than on where it sits. A mocked filesystem cannot express the
+  // difference, because the mock decides both.
+  it('rejects a symlink that resolves to a location inside the state directory', async () => {
+    const insideState = path.join(stateDir, 'nested-target');
+    const link = path.join(tmpRoot, 'link-into-state');
+    fs.mkdirSync(insideState);
+    fs.symlinkSync(insideState, link, 'dir');
+
+    const result = await validateChainStorageDirectory(
+      link,
+      stateDir,
+      makeGetDefaultConfig(path.join(stateDir, 'chain')),
+      REQUIRED_SPACE
+    );
+
+    expect(result.isValid).toBe(false);
+    expect(result.reason).toBe('inside-state-dir');
+  });
+
+  // Selecting the managed chain directory is how a user asks to go back to the
+  // default location, so it is accepted with a null path rather than rejected
+  // as being inside the state directory.
+  it('treats the managed chain directory as a reset to the default location', async () => {
+    const chainPath = path.join(stateDir, 'chain');
+    fs.mkdirSync(chainPath);
+    const defaultPath = fs.realpathSync(chainPath);
+
+    const result = await validateChainStorageDirectory(
+      chainPath,
+      stateDir,
+      makeGetDefaultConfig(defaultPath),
+      REQUIRED_SPACE
+    );
+
+    expect(result.isValid).toBe(true);
+    expect(result.path).toBeNull();
+    expect(result.resolvedPath).toBe(defaultPath);
+  });
+
+  // Same outcome by a different route: the selected path is somewhere else
+  // entirely, and only resolving it shows that it lands on the managed chain
+  // directory. This is the branch that compares resolved paths rather than
+  // literal ones.
+  it('treats a symlink that resolves to the managed chain directory as a reset', async () => {
+    const chainPath = path.join(stateDir, 'chain');
+    fs.mkdirSync(chainPath);
+    const defaultPath = fs.realpathSync(chainPath);
+    const alias = path.join(tmpRoot, 'alias-to-chain');
+    fs.symlinkSync(chainPath, alias, 'dir');
+
+    const result = await validateChainStorageDirectory(
+      alias,
+      stateDir,
+      makeGetDefaultConfig(defaultPath),
+      REQUIRED_SPACE
+    );
+
+    expect(result.isValid).toBe(true);
+    expect(result.path).toBeNull();
+    expect(result.resolvedPath).toBe(defaultPath);
+  });
+
   it('reports a file selected as the target with path-is-file semantics', async () => {
     const target = path.join(tmpRoot, 'a-file');
     fs.writeFileSync(target, 'not a directory');
