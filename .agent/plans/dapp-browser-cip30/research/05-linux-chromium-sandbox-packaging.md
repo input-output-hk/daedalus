@@ -13,8 +13,10 @@ Production dApp launch remains disabled.
 
 - Task-005 status: `cancelled`; its negative portable evidence is retained and
   the product strategy moved to system packages.
-- Task-005-a is `completed`: matrix revision `task-005-a-matrix-2026-08-14`,
-  package/evidence contract, schema-v2 probe, and implementation review are approved.
+- Task-005-a is `completed`; task-108 successor revision
+  `task-108-matrix-2026-08-18` supersedes its contradicted Ubuntu predicates.
+  Ubuntu 22.04.x is wallet-only pending separate proof; Ubuntu 24.04.x/26.04.x
+  use row-specific semantic AppArmor checks rather than parser patch equality.
 - Task-005-b status: `pending`; certification requires `.deb`/`.rpm` packaged
   sandbox proof after tasks 108 and 109 produce installed artifacts.
 - Product decision (2026-08-12): ship Linux as `.deb` and `.rpm` only; reject
@@ -24,7 +26,8 @@ Production dApp launch remains disabled.
   start Chromium sandbox bootstrap (`SIGILL`). A local-only unsandboxed control
   isolated failure to sandbox startup. That evidence **supports rejecting
   portable packaging**; it is not proof that system packages work until retested.
-- Production status: both production Linux launch sites still contain sandbox
+- Production status: task-108's `.deb` launch surfaces are flag-free. Legacy
+  portable and development Linux launch sites still contain downstream-owned
   bypasses; remote dApp launch remains disabled on every platform.
 - Cross-platform boundary: this note covers Linux only. Windows and macOS remain
   tasks 802 and 807.
@@ -214,7 +217,7 @@ Do not include a token reverse map in returned evidence.
 
 ## Required Inputs
 
-Packaging decision and matrix revision `task-005-a-matrix-2026-08-14` are
+Packaging decision and successor matrix revision `task-108-matrix-2026-08-18` are
 complete; see research `06`. Before task-005-b certification, release/product
 engineering must provide:
 
@@ -262,7 +265,9 @@ certification.
 
 ## Installed System-Package Certification Handoff
 
-Task-005-b repeats this procedure for all six matrix rows. It uses exact installed
+Task-005-b repeats this procedure for the supported Ubuntu 24.04.x/26.04.x,
+Debian 12.x/13.x, and Fedora 43 rows. Ubuntu 22.04.x receives a separate
+wallet-only package lifecycle check. It uses exact installed
 task-108/109 artifacts and never substitutes the historical portable package,
 Nix-store Electron, or `node_modules` Electron.
 
@@ -285,7 +290,7 @@ timeout --signal=TERM --kill-after=5s 30s \
   env -u ELECTRON_DISABLE_SANDBOX \
     DAEDALUS_PROBE_DEBUG=1 \
     DAEDALUS_PROBE_PROFILE_ROOT="$PROFILE_ROOT" \
-    DAEDALUS_PROBE_MATRIX_REVISION="task-005-a-matrix-2026-08-14" \
+    DAEDALUS_PROBE_MATRIX_REVISION="task-108-matrix-2026-08-18" \
     DAEDALUS_PROBE_MATRIX_ROW="<ROW>" \
     DAEDALUS_PROBE_SANDBOX_CLASS="<CLASS>" \
     DAEDALUS_PROBE_CLUSTER="<cluster>" \
@@ -415,6 +420,14 @@ packaging/deployment model or supported Linux dApp scope must be resolved before
 the contract and certification tasks can be completed. Windows and macOS use different
 Chromium OS sandbox mechanisms and remain later packaged-artifact validation
 scopes; this Linux result does not invalidate those platforms.
+
+Task-108 later root-caused this historical portable result without rewriting it:
+the pinned Electron startup path intentionally traps with `ud2` when
+`CHROME_DEVEL_SANDBOX` is absent. The root-managed `.deb` launcher now exports
+that variable as the exact package-owned mode-`4755` helper path. A bounded
+same-binary diagnostic with that value reached Electron/JavaScript startup
+without `SIGILL`; this is package startup evidence, not task-005-b renderer
+certification and not permission to add a sandbox bypass to the portable path.
 
 ## Unresolved Decisions And Evidence
 

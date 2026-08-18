@@ -38,6 +38,7 @@ if (!isStartedByLauncher) {
     throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
   }
 }
+
 type WindowOptionsType = {
   show: boolean;
   width: number;
