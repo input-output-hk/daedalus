@@ -58,7 +58,7 @@ export type NodeConfig = {
 /**
  * The shape of the config params, usually provided to the cardano-node launcher
  */
-export type LauncherConfig = {
+type LauncherConfigBase = {
   stateDir: string;
   nodeImplementation: CardanoNodeImplementations;
   nodeConfig: NodeConfig;
@@ -78,10 +78,22 @@ export type LauncherConfig = {
   mithrilPartialSyncThresholdImmutables?: number;
   smashUrl?: string;
   metadataUrl?: string;
-  updateRunnerBin: string;
   selfnodeBin: string;
   mockTokenMetadataServerBin: string;
 };
+
+type PortableApplicationUpdateConfig = {
+  applicationUpdateMode?: 'portable';
+  updateRunnerBin: string;
+};
+
+type DisabledApplicationUpdateConfig = {
+  applicationUpdateMode: 'system-package-disabled';
+  updateRunnerBin?: never;
+};
+
+export type LauncherConfig = LauncherConfigBase &
+  (PortableApplicationUpdateConfig | DisabledApplicationUpdateConfig);
 type WindowOptionsType = {
   show: boolean;
   width: number;
@@ -112,8 +124,9 @@ export const windowOptions: WindowOptionsType = {
   },
   useContentSize: true,
 };
-export const launcherConfig: LauncherConfig =
-  readLauncherConfig(LAUNCHER_CONFIG);
+export const launcherConfig: LauncherConfig = readLauncherConfig(
+  LAUNCHER_CONFIG
+);
 export const {
   cluster,
   nodeImplementation,

@@ -77,6 +77,15 @@ in
 
         echo "Built: $(readlink "$result")"
 
+        ${lib.optionalString (targetSystem == "x86_64-linux") ''
+          debResult="$tmpdir"/csl-daedalus-deb
+          (
+            set -x
+            nix build --no-accept-flake-config -L --out-link "$debResult" .#packages.${buildSystem}.deb-installer-${cluster}
+          ) 2>&1 | cat
+          echo "Built .deb: $(readlink "$debResult")"
+        ''}
+
         if [ -n "''${BUILDKITE_JOB_ID:-}" ]; then
           ${
           if targetSystem == "x86_64-darwin" || targetSystem == "aarch64-darwin"

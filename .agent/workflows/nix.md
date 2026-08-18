@@ -269,7 +269,14 @@ softwareupdate --install-rosetta
 ```bash
 # Ensure user is in correct groups
 sudo usermod -aG nix-users $USER
+
+# Build the system package
+nix build -L .#deb-installer-mainnet
 ```
+
+The `.deb` installs under `/opt/daedalus/<cluster>`. Privileged lifecycle and
+AppArmor validation must run only on approved disposable hosts; a successful
+Nix build is not installed-sandbox certification.
 
 ### Windows (WSL2)
 

@@ -18,6 +18,16 @@ in rec {
 
   unsignedInstaller = selfExtractingArchive;
 
+  debInstaller = genClusters (cluster:
+    import ./linux-deb.nix {
+      inherit pkgs lib cluster;
+      bundle = newBundle.${cluster};
+      icon = common.launcherConfigs.${cluster}.installerConfig.iconPath.base + "/512x512.png";
+      version = originalPackageJson.version;
+      inherit (sourceLib) buildCounter buildRev buildRevShort;
+      sourceDateEpoch = inputs.self.lastModified or sourceLib.daedalusEpoch;
+    });
+
   makeSignedInstaller = genClusters (cluster:
     pkgs.writeShellScriptBin "make-signed-installer-stub" ''
       echo "We don't sign native code for '${targetSystem}', please, use unsigned 'nix build .#installer-${cluster}'"

@@ -3,7 +3,7 @@
     "title": "Embedded dApp Browser And CIP-30 Wallet Connector Tasks",
     "created": "2026-08-07",
     "updated": "2026-08-18",
-    "version": "1.7.2",
+    "version": "1.7.3",
     "totalTasks": 86,
     "prdReference": ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
       "description": "Security- and standards-gated implementation graph for a wallet-scoped sandboxed dApp browser with CIP-30, CIP-8, CIP-95, CIP-103, gated CIP-104/CIP-142, software/hardware signing, ordered batch signing and submission, and soft collateral management.",
@@ -214,7 +214,7 @@
           "description": "Freeze the accepted system-package contract at /opt/daedalus/<cluster>, the authoritative support matrix, SUID/userns/AppArmor/SELinux post-install behavior, exact-renderer probe contract, and fail-closed behavior before package implementation.",
           "status": "completed",
           "completedAt": "2026-08-14",
-          "completedNotes": "Approved matrix revision task-005-a-matrix-2026-08-14 freezes six x86_64 rows, either-route SUID/userns containment, mandatory Ubuntu AppArmor/Fedora 43 SELinux, exact /opt paths, identity-manifest-bound package/policy evidence, privacy-safe exact-renderer probe schema v2, fail-closed omitted hosts, and downstream task ownership. Installed package certification remains task-005-b.",
+          "completedNotes": "Approved matrix revision task-005-a-matrix-2026-08-14 froze the original six x86_64 rows. User-approved successor task-108-matrix-2026-08-18 supersedes only contradicted Ubuntu predicates: Ubuntu 22.04.x is wallet-only pending proof and Ubuntu 24.04.x/26.04.x use semantic AppArmor compatibility rather than parser patch equality. Exact /opt paths, privacy-safe probe schema v2, fail-closed omitted hosts, and downstream ownership remain. Installed package certification remains task-005-b.",
           "priority": "critical",
           "estimatedHours": 8,
           "dependencies": ["task-001"],
@@ -226,7 +226,7 @@
           ],
           "implementationNotes": [
             "Use /opt/daedalus/<cluster> where <cluster> is the build-time installer cluster slug; Electron and chrome-sandbox live under that exact tree and AppArmor profiles bind its exact executable path.",
-            "Matrix revision task-005-a-matrix-2026-08-14 supports x86_64 Ubuntu 22.04.x/24.04.x/26.04.x, Debian 12.x/13.x, and Fedora 43; future Ubuntu interim releases require explicit revision and certification, while omitted/EOL rows are wallet-only and dApp-disabled.",
+            "Successor matrix task-108-matrix-2026-08-18 supports x86_64 Ubuntu 24.04.x/26.04.x, Debian 12.x/13.x, and Fedora 43; Ubuntu 22.04.x and omitted/EOL rows are wallet-only pending explicit revision and certification.",
             "Every supported row may use either independently proven root-owned mode-4755 SUID or mode-0755 userns containment; Ubuntu requires AppArmor, Fedora 43 requires SELinux, and Debian has no package policy asset by default.",
             "Tasks 108/109 ship a root-owned mode-0644 identity manifest under /opt/daedalus/<cluster>/share that binds package hashes and reviewed exact policy identity for probe comparison.",
             "Adapt the exact-renderer /proc probe contract for root-owned mode-4755 chrome-sandbox and user-namespace paths without accepting process.sandboxed alone.",
@@ -392,8 +392,8 @@
         {
           "id": "task-108",
           "title": "Implement Linux .deb system package with sandbox postinst",
-          "description": "Produce a root-installable .deb that installs Daedalus under the fixed /opt layout, configures an approved SUID or userns route plus mandatory exact-path AppArmor on every supported Ubuntu row, and launches without sandbox-disabling flags.",
-          "status": "pending",
+          "description": "Produce a root-installable .deb that installs Daedalus under the fixed /opt layout, configures fail-closed SUID helper state plus row-specific exact-path AppArmor on supported Ubuntu 24.04.x/26.04.x, preserves Ubuntu 22.04.x as wallet-only pending proof, and launches without sandbox-disabling flags.",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 32,
           "dependencies": ["task-005-a"],
@@ -404,11 +404,11 @@
             "README.md"
           ],
           "implementationNotes": [
-            "Follow the frozen contract on every approved Ubuntu row: either independently proven SUID or userns containment, exact-path AppArmor enforcement, and a root-owned identity manifest binding package hashes and reviewed policy identity.",
+            "Follow successor matrix task-108-matrix-2026-08-18: Ubuntu 24.04.x/26.04.x use exact-path default-allow userns AppArmor semantics; Ubuntu 22.04.x is wallet-only pending separate proof; the root-owned identity manifest binds row, support state, package hashes, helper expectation, and reviewed policy identity.",
             "Fixed install path under /opt; desktop entry and wrapper must not pass --no-sandbox.",
             "Do not ship AppImage, Flatpak, Snap, or portable .bin from this task.",
             "Wallet data remains under XDG_DATA_HOME/Daedalus; package must not delete user wallet state on install/upgrade.",
-            "Nix must expose a reproducible installer-mainnet (and cluster) .deb output."
+            "Nix exposes additive reproducible deb-installer-mainnet (and cluster) outputs while legacy installer-* remains unchanged until task-110."
           ],
           "acceptance": [
             "nix build produces an installable .deb for supported clusters.",
@@ -419,7 +419,8 @@
           ],
           "securityNotes": [
             "Privileged postinst is required for the approved SUID or userns setup plus mandatory Ubuntu AppArmor and the identity manifest; review it for least privilege and no network fetch."
-          ]
+          ],
+          "completedNotes": "Accepted complete on 2026-08-18. Additive reproducible .deb outputs, absolute flag-free launcher with exact CHROME_DEVEL_SANDBOX binding, system-package updater refusal, transactional maintainer scripts, AppArmor identity, CI wiring, and executable rollback contracts are implemented. Ubuntu 24.04 live install/startup/AppArmor/no-bypass/removal-refusal/purge/wallet-preservation evidence passed. By explicit user decision, remaining Ubuntu 22.04/26.04, Debian 12/13, omitted-distribution, reboot, and destructive upgrade/failure package-lifecycle fixtures are untested and deferred to mandatory task-807 release-candidate manual validation after the full PRD implementation is assembled. Task-005-b exact-renderer certification remains required."
         },
         {
           "id": "task-109",
@@ -2006,6 +2007,7 @@
             "No unaddressed critical security update affects hostile rendering or signing dependencies.",
             "Pinned backend supports the exact advertised capability version.",
             "Supported-era and hardware claims match tested artifacts.",
+            "Deferred task-108 package-lifecycle validation is executed manually against the final release-candidate .deb after the full PRD implementation is assembled, including Ubuntu 22.04/26.04, Debian 12/13, an omitted distribution, reboot, and destructive upgrade/failure fixtures; absent evidence remains a release blocker rather than an inferred pass.",
             "Any material fix, dependency/pin update, package change, or policy-boundary change required by this gate reruns affected certification and task-805/task-806 review scopes before this task can complete.",
             "Release checklist links all internal/external audit and packaged-test evidence.",
             "The release-candidate baseline is recorded: source commit, lockfiles, backend pins, package hashes, catalog contents, and every reviewed packaged launcher-configuration variant for global/catalog/Diagnostics/CIP-104/CIP-142 activation; rollout tasks consume this recorded baseline rather than an arbitrary later build."

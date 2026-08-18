@@ -110,11 +110,9 @@ If you get SSL error when running `nix develop` (SSL peer certificate or SSH rem
 
 **Notes:**
 
-If you get a chrome sandbox error when running Daedalus, you can disable the sandbox by setting the environment variable.
-
-```bash
-$ export ELECTRON_DISABLE_SANDBOX=true
-```
+Do not work around Chromium sandbox failures with `ELECTRON_DISABLE_SANDBOX` or
+`--no-sandbox`. These switches disable a required security boundary. Use a
+supported system package or diagnose the development host instead.
 
 ##### Selfnode
 
@@ -318,13 +316,26 @@ Platform-specific build commands facilitate building Daedalus installers the way
 
 These commands require [Nix](https://nixos.org/nix/), optionally configured with the IOHK binary cache (recommended, see above).
 
-### Linux/macOS
+### Linux
 
 Run this from a Linux machine:
 
-    nix build -L .#installer-mainnet
+    nix build -L .#deb-installer-mainnet
 
-The result can be found at `result/daedalus-*.bin`.
+The result contains `daedalus-*.deb`. Install only on a disposable or approved
+host while the supported-row lifecycle matrix is being validated. The package
+uses `/opt/daedalus/mainnet`, configures sandbox state from privileged Debian
+maintainer scripts, and never enables the dApp guest by itself.
+
+`nix build -L .#installer-mainnet` still produces the legacy portable `.bin`
+for migration compatibility until task-110. It is not a supported dApp-capable
+Linux artifact.
+
+### macOS
+
+Run this from a macOS machine:
+
+    nix build -L .#installer-mainnet
 
 ### Windows
 
