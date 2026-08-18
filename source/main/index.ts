@@ -54,6 +54,7 @@ import {
 } from './utils/rtsFlagsSettings';
 import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
+import { parseDeviceScaleFactor } from './utils/parseDeviceScaleFactor';
 import { setMithrilBootstrapNodeStateProvider } from './ipc/mithrilBootstrapChannel';
 import { configureMithrilPartialSyncRuntime } from './ipc/mithrilPartialSyncChannel';
 import { getMithrilController } from './mithril/MithrilController';
@@ -79,6 +80,22 @@ if (isBlankScreenFixActive) {
   // Run "console.log(JSON.stringify(daedalus.stores.app.gpuStatus, null, 2))"
   // in DevTools JavaScript console to see if the flag is active
   app.disableHardwareAcceleration();
+}
+
+// Chromium sizes windows in device-independent pixels, so the minimum content
+// size set in `createMainWindow` is multiplied by the device scale factor that
+// Chromium detects. On a HiDPI display that can make the window too large to
+// fit the screen at all. This has to be applied before the app is ready, like
+// `disableHardwareAcceleration` above.
+const deviceScaleFactor = parseDeviceScaleFactor(
+  process.env.DAEDALUS_DEVICE_SCALE_FACTOR
+);
+
+if (deviceScaleFactor !== null) {
+  app.commandLine.appendSwitch(
+    'force-device-scale-factor',
+    String(deviceScaleFactor)
+  );
 }
 
 // Increase maximum event listeners to avoid IPC channel stalling

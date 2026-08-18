@@ -386,7 +386,11 @@ in rec {
             exit 0
           fi
 
-          exec electron --disable-setuid-sandbox --no-sandbox "$ENTRYPOINT_DIR"/libexec/daedalus-js "$@"
+          # Escape hatch for Linux-only Chromium switches that have no cross-platform
+          # equivalent, e.g. `DAEDALUS_ELECTRON_FLAGS=--ozone-platform=wayland`. Left
+          # unquoted on purpose, so that several flags can be passed at once.
+          # shellcheck disable=SC2086
+          exec electron ''${DAEDALUS_ELECTRON_FLAGS-} --disable-setuid-sandbox --no-sandbox "$ENTRYPOINT_DIR"/libexec/daedalus-js "$@"
         ''} $out/libexec/daedalus-frontend
 
         cp ${pkgs.writeText "update-runner" ''
