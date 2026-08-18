@@ -19,7 +19,11 @@ import path from 'path';
 import { execFileSync } from 'child_process';
 import { resolveMithrilWorkDir } from './chainStoragePathResolver';
 import { createSymlink } from './chainStorageManagerShared';
-import { isSamePath, isSubPath } from './chainStorageValidation';
+import {
+  isSamePath,
+  isSubPath,
+  validateChainStorageDirectory,
+} from './chainStorageValidation';
 
 jest.mock('../config', () => ({
   DISK_SPACE_REQUIRED: 0,
@@ -50,6 +54,21 @@ const findFreeDriveLetter = (candidates: string): string | null => {
 };
 
 const CHAIN_DIRECTORY_NAME = 'chain';
+
+// `checkDiskSpace` spawns a subprocess on Windows and a cold start costs
+// seconds, so any case that reaches it needs more than Jest's default five.
+const DISK_SPACE_TIMEOUT_MS = 30_000;
+
+// The classic Windows limit. A path longer than this needs the `\\?\` prefix,
+// or long path support enabled, or it does not work.
+const MAX_PATH = 260;
+
+const makeGetDefaultConfig = (defaultPath: string) =>
+  jest.fn().mockResolvedValue({
+    defaultPath,
+    availableSpaceBytes: Number.MAX_SAFE_INTEGER,
+    requiredSpaceBytes: 0,
+  });
 
 // `existsSync` follows the link, so it is false for a link that exists but
 // does not resolve — which is the state under test.
@@ -336,5 +355,103 @@ onWindows('Windows reparse point handling', () => {
         false
       );
     });
+  });
+
+  // Names the Win32 API restricts, and Node does not.
+  //
+  // Both groups below were written expecting the documented Win32 behaviour,
+  // and both were wrong in the same direction, which is why they are worth
+  // keeping: `fs` reaches the filesystem through libuv, which addresses paths
+  // in their extended-length form. That form skips the Win32 parsing rules, so
+  // reserved device names are ordinary directory names and trailing dots and
+  // spaces survive. What Daedalus asks for is what it gets, and the hazard runs
+  // the other way from the one anticipated: it can create a directory that
+  // Win32 tooling addressing the same path cannot open.
+  describe('names the Win32 API restricts', () => {
+    // CON, PRN, NUL and AUX name devices to the Win32 API and cannot be used
+    // for a directory through it. Through `fs` they can.
+    it.each(['CON', 'PRN', 'NUL', 'AUX'])(
+      'creates and resolves a directory named %s',
+      (reservedName) => {
+        const reservedPath = path.join(tmpRoot, reservedName);
+
+        fs.mkdirSync(reservedPath);
+
+        expect(fs.statSync(reservedPath).isDirectory()).toBe(true);
+
+        // The invariant that matters downstream. Every resolved path here ends
+        // up in a stored setting or on a subprocess command line, and an
+        // extended-length path in either place would not survive the round
+        // trip. libuv uses that form internally; it must not come back out.
+        const resolved = fs.realpathSync(reservedPath);
+        expect(resolved.startsWith('\\\\?\\')).toBe(false);
+        expect(resolved).toBe(reservedPath);
+      }
+    );
+
+    // The Win32 API strips a trailing dot or space from a name. Node does not,
+    // so the directory on disk keeps the name exactly as given.
+    it.each([
+      ['space', 'trailing-space '],
+      ['dot', 'trailing-dot.'],
+    ])('keeps a trailing %s in the name on disk', (_label, spelledName) => {
+      const spelledPath = path.join(tmpRoot, spelledName);
+      const strippedPath = path.join(tmpRoot, spelledName.slice(0, -1));
+
+      fs.ensureDirSync(spelledPath);
+
+      expect(fs.existsSync(spelledPath)).toBe(true);
+      expect(fs.existsSync(strippedPath)).toBe(false);
+
+      const resolved = fs.realpathSync(spelledPath);
+      expect(resolved.startsWith('\\\\?\\')).toBe(false);
+      expect(resolved).toBe(spelledPath);
+    });
+
+    // Whether a path past the classic limit can be created depends on whether
+    // long path support is enabled on the machine, and both answers are
+    // legitimate. So the assertion ties the verdict to the observable fact
+    // rather than to a guess about the runner: validation accepts the location
+    // exactly when the directory is there, and never falls through to the
+    // generic reason either way.
+    it(
+      'agrees with the filesystem about a path beyond MAX_PATH',
+      async () => {
+        const stateDir = path.join(tmpRoot, 'state');
+        fs.ensureDirSync(stateDir);
+
+        const segment = 'x'.repeat(40);
+        const segmentCount =
+          Math.ceil((MAX_PATH - tmpRoot.length) / (segment.length + 1)) + 2;
+        const longPath = path.join(
+          tmpRoot,
+          ...Array(segmentCount).fill(segment)
+        );
+        expect(longPath.length).toBeGreaterThan(MAX_PATH);
+
+        try {
+          fs.ensureDirSync(longPath);
+        } catch {
+          // Long paths are not available here. That is one of the two outcomes
+          // under test, not a failure to set the fixture up.
+        }
+        const exists = fs.existsSync(longPath);
+
+        // Pure string work, so it holds at any length and on either outcome.
+        // The nesting checks depend on it and run on whatever the user picked.
+        expect(isSubPath(tmpRoot, longPath)).toBe(true);
+
+        const result = await validateChainStorageDirectory(
+          longPath,
+          stateDir,
+          makeGetDefaultConfig(path.join(stateDir, CHAIN_DIRECTORY_NAME)),
+          0
+        );
+
+        expect(result.isValid).toBe(exists);
+        expect(result.reason).not.toBe('unknown');
+      },
+      DISK_SPACE_TIMEOUT_MS
+    );
   });
 });
