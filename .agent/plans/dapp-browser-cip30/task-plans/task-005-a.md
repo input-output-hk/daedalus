@@ -36,6 +36,12 @@ No package installation or host-policy test result is required to approve this p
 
 ### Approved Matrix Revision
 
+> Historical contract note: `task-108-matrix-2026-08-18` supersedes only the
+> original Ubuntu predicates below. Ubuntu 22.04.x is now wallet-only pending
+> separate proof; supported Ubuntu 24.04.x/26.04.x use reviewed semantic
+> AppArmor compatibility instead of exact parser patch-version equality. The
+> original table remains here as the task-005-a approval record.
+
 | Distribution/version | Package | Accepted routes | Required policy |
 |---|---|---|---|
 | Ubuntu 22.04.x LTS | `.deb` | independently proven SUID or userns | AppArmor |

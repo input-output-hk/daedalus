@@ -88,7 +88,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     return true;
   };
 
-  const installUpdate = async (filePath) => {
+  const installUpdate = async (filePath, updateRunnerBin: string) => {
     return new Promise((resolve, reject) => {
       const { name: functionPrefix } = installUpdate;
       response(null, functionPrefix, 'installation begin.');
@@ -197,6 +197,14 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ filePath, hash: expectedHash ... Remove this comment to see the full error message
   manageAppUpdateChannel.onRequest(async ({ filePath, hash: expectedHash }) => {
     const functionPrefix = 'onRequest';
+    if (launcherConfig.applicationUpdateMode === 'system-package-disabled') {
+      return response(
+        false,
+        functionPrefix,
+        'Portable application updates are disabled for system packages.',
+        { info: { reason: 'system-package-update-disabled' } }
+      );
+    }
     const fileExists = fs.existsSync(filePath);
     if (!fileExists)
       return response(false, functionPrefix, 'Installer not found:', {
@@ -207,7 +215,8 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     const installerHash = checkInstallerHash(filePath, expectedHash);
     if (!installerHash) return response(false, functionPrefix);
     // For linux we execute the installer file
-    if (environment.isLinux) return installUpdate(filePath);
+    if (environment.isLinux)
+      return installUpdate(filePath, launcherConfig.updateRunnerBin);
     // On Windows and macOS the installer replaces cardano-node and
     // cardano-wallet, so the watchdog starts it once it has stopped both,
     // while Daedalus quits.
