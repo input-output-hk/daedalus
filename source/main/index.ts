@@ -233,7 +233,7 @@ const onAppReady = async () => {
     });
     return Promise.resolve();
   });
-  const handleCheckDiskSpace = handleDiskSpace(mainWindow);
+  const handleCheckDiskSpace = handleDiskSpace();
 
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {

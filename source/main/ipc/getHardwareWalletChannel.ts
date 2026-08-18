@@ -23,7 +23,6 @@ import {
   deviceDetection,
   waitForDevice,
 } from './hardwareWallets/ledger/deviceDetection';
-import { IpcSender } from '../../common/ipc/lib/IpcChannel';
 import { logger } from '../utils/logging';
 import {
   HardwareWalletTransportDeviceRequest,
@@ -32,7 +31,10 @@ import {
 } from '../../common/types/hardware-wallets.types';
 
 import { HardwareWalletChannels } from './createHardwareWalletIPCChannels';
-import { createCurrentWindowSender } from './lib/currentWindowSender';
+import {
+  consumeIpcResponse,
+  currentWindowSender,
+} from './lib/currentWindowSender';
 import { Device } from './hardwareWallets/ledger/deviceDetection/types';
 import { DeviceDetectionPayload } from './hardwareWallets/ledger/deviceDetection/deviceDetection';
 import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
@@ -49,7 +51,6 @@ export const ledgerStatus: ledgerStatusType = {
   Listener: null,
 };
 let devicesMemo = {};
-const hardwareWalletWindow = createCurrentWindowSender();
 
 class EventObserver {
   getHardwareWalletConnectionChannel: HardwareWalletChannels['getHardwareWalletConnectionChannel'];
@@ -103,9 +104,12 @@ class EventObserver {
                 transport,
                 AdaConnection,
               };
-              this.getHardwareWalletConnectionChannel.send(
-                walletData,
-                hardwareWalletWindow.sender
+              consumeIpcResponse(
+                this.getHardwareWalletConnectionChannel.send(
+                  walletData,
+                  currentWindowSender.sender
+                ),
+                'GET_HARDWARE_WALLET_CONNECTION_CHANNEL'
               );
             } catch (error) {
               logger.error('[HW-DEBUG] CONSTRUCTOR error', {
@@ -118,20 +122,23 @@ class EventObserver {
           logger.info('[HW-DEBUG] CONSTRUCTOR REMOVE');
           devicesMemo = omit(devicesMemo, [device.path]);
 
-          this.getHardwareWalletConnectionChannel.send(
-            {
-              disconnected: true,
-              deviceType: 'ledger',
-              deviceId: null,
-              // Available only when Cardano APP opened
-              deviceModel: deviceModel.id,
-              // e.g. nanoS
-              deviceName: deviceModel.productName,
-              // e.g. Test Name
-              path: device.path,
-              product: device.product,
-            },
-            hardwareWalletWindow.sender
+          consumeIpcResponse(
+            this.getHardwareWalletConnectionChannel.send(
+              {
+                disconnected: true,
+                deviceType: 'ledger',
+                deviceId: null,
+                // Available only when Cardano APP opened
+                deviceModel: deviceModel.id,
+                // e.g. nanoS
+                deviceName: deviceModel.productName,
+                // e.g. Test Name
+                path: device.path,
+                product: device.product,
+              },
+              currentWindowSender.sender
+            ),
+            'GET_HARDWARE_WALLET_CONNECTION_CHANNEL'
           );
         }
 
@@ -172,7 +179,6 @@ export const handleHardwareWalletRequests = async (
     waitForLedgerDevicesToConnectChannel,
   }: HardwareWalletChannels
 ) => {
-  hardwareWalletWindow.bind(mainWindow);
   let deviceConnection = null;
   let observer;
 
@@ -213,14 +219,17 @@ export const handleHardwareWalletRequests = async (
         );
 
         // Send Transport error to Renderer
-        getHardwareWalletConnectionChannel.send(
-          {
-            deviceType: 'trezor',
-            error: {
-              payload: event.payload,
+        consumeIpcResponse(
+          getHardwareWalletConnectionChannel.send(
+            {
+              deviceType: 'trezor',
+              error: {
+                payload: event.payload,
+              },
             },
-          },
-          hardwareWalletWindow.sender
+            currentWindowSender.sender
+          ),
+          'GET_HARDWARE_WALLET_CONNECTION_CHANNEL'
         );
       }
     });
@@ -239,20 +248,23 @@ export const handleHardwareWalletRequests = async (
       }
 
       if (connectionChanged && isAcquired) {
-        getHardwareWalletConnectionChannel.send(
-          {
-            disconnected: event.type === DEVICE.DISCONNECT,
-            deviceType: 'trezor',
-            deviceId: event.payload.id,
-            // 123456ABCDEF
-            deviceModel: event.payload.features.model,
-            // e.g. T
-            deviceName: event.payload.label,
-            // e.g. Test Name
-            path: event.payload.path,
-            eventType: event.type,
-          },
-          hardwareWalletWindow.sender
+        consumeIpcResponse(
+          getHardwareWalletConnectionChannel.send(
+            {
+              disconnected: event.type === DEVICE.DISCONNECT,
+              deviceType: 'trezor',
+              deviceId: event.payload.id,
+              // 123456ABCDEF
+              deviceModel: event.payload.features.model,
+              // e.g. T
+              deviceName: event.payload.label,
+              // e.g. Test Name
+              path: event.payload.path,
+              eventType: event.type,
+            },
+            currentWindowSender.sender
+          ),
+          'GET_HARDWARE_WALLET_CONNECTION_CHANNEL'
         );
       }
     });

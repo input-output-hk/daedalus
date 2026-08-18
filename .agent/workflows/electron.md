@@ -290,8 +290,9 @@ const mainWindow = new BrowserWindow({
   height: 870,
   webPreferences: {
     preload: path.join(__dirname, 'preload.js'),
-    contextIsolation: true,
-    nodeIntegration: false,
+    // Legacy trusted renderer only. Never use these settings for remote content.
+    contextIsolation: false,
+    nodeIntegration: true,
   },
 });
 ```
@@ -305,15 +306,19 @@ Window position and size are saved and restored:
 
 ## Preload Script
 
-`source/main/preload.ts` exposes limited APIs to renderer:
+`source/main/preload.ts` exposes broad trusted-only globals, including raw
+`ipcRenderer`, Node HTTP(S), paths, configuration, OS data, and logging. This is
+legacy trusted-main infrastructure, not a least-authority preload:
 
 ```typescript
-contextBridge.exposeInMainWorld('daedalus', {
-  // Exposed API
-});
+global.ipcRenderer = require('electron').ipcRenderer;
 ```
 
-**Security note:** Keep exposed API minimal. Use IPC for all main process access.
+**Security note:** Never load remote content in this window or reuse this preload
+for a guest. New remote-content windows require a separate sandboxed,
+context-isolated, Node-disabled preload. Production privileged main ingress must
+use the authenticated wrappers and remain represented by
+`source/main/ipc/privilegedIpcManifest.ts`; raw Electron listeners are forbidden.
 
 ---
 

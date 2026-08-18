@@ -43,12 +43,12 @@ import type {
   CheckFileExistsMainResponse,
   CheckFileExistsRendererRequest,
 } from '../../common/ipc/api';
+import { currentWindowSender } from './lib/currentWindowSender';
 
 localStorage.setAllPaused();
 
 const requestDownload = async (
-  downloadRequestPayload: DownloadRendererRequest,
-  window: BrowserWindow
+  downloadRequestPayload: DownloadRendererRequest
 ): Promise<any> => {
   const {
     fileUrl,
@@ -86,7 +86,7 @@ const requestDownload = async (
 
   const eventActions = await getEventActions(
     info,
-    window,
+    currentWindowSender.sender,
     requestDownloadChannel
   );
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ fileName: string; method?: "GE... Remove this comment to see the full error message
@@ -131,8 +131,7 @@ const requestDownload = async (
 };
 
 const requestResumeDownload = async (
-  resumeDownloadRequestPayload: ResumeDownloadRendererRequest,
-  window: BrowserWindow
+  resumeDownloadRequestPayload: ResumeDownloadRendererRequest
 ): Promise<any> => {
   const downloadLocalData = await getDownloadLocalData(
     resumeDownloadRequestPayload
@@ -178,12 +177,14 @@ const requestResumeDownload = async (
   }
 
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ override: boolean; id: string;... Remove this comment to see the full error message
-  return requestDownload({ ...requestDownloadPayload, override: true }, window);
+  return requestDownload({ ...requestDownloadPayload, override: true });
 };
 
 const deleteDownloadedFile = async ({
   id,
-}: DeleteDownloadedFileRendererRequest): Promise<DeleteDownloadedFileMainResponse> => {
+}: DeleteDownloadedFileRendererRequest): Promise<
+  DeleteDownloadedFileMainResponse
+> => {
   const downloadLocalData = await getDownloadLocalData({
     id,
   });
@@ -199,21 +200,26 @@ const deleteDownloadedFile = async ({
 const getDownloadLocalData = async ({
   fileName,
   id = fileName,
-}: DownloadLocalDataRendererRequest): Promise<DownloadLocalDataMainResponse> => {
+}: DownloadLocalDataRendererRequest): Promise<
+  DownloadLocalDataMainResponse
+> => {
   if (!id) throw new Error('Requires `id` or `fileName`');
   const downloadId: string = getIdFromFileName(String(id));
   return localStorage.get(downloadId);
 };
 
-const getDownloadsLocalData =
-  async (): Promise<DownloadsLocalDataMainResponse> => {
-    return localStorage.getAll() as Promise<DownloadsLocalDataMainResponse>;
-  };
+const getDownloadsLocalData = async (): Promise<
+  DownloadsLocalDataMainResponse
+> => {
+  return localStorage.getAll() as Promise<DownloadsLocalDataMainResponse>;
+};
 
 const clearDownloadLocalData = async ({
   fileName,
   id = fileName,
-}: ClearDownloadLocalDataRendererRequest): Promise<ClearDownloadLocalDataMainResponse> => {
+}: ClearDownloadLocalDataRendererRequest): Promise<
+  ClearDownloadLocalDataMainResponse
+> => {
   if (!id) throw new Error('Requires `id` or `fileName`');
   const downloadId: string = getIdFromFileName(String(id));
   return localStorage.unset(downloadId);
@@ -236,11 +242,15 @@ const checkFileExists = async ({
 };
 
 const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcChannel<DownloadRendererRequest, DownloadMainResponse> =
-  new MainIpcChannel(REQUEST_DOWNLOAD);
+MainIpcChannel<
+  DownloadRendererRequest,
+  DownloadMainResponse
+> = new MainIpcChannel(REQUEST_DOWNLOAD);
 const requestResumeDownloadChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcChannel<ResumeDownloadRendererRequest, ResumeDownloadMainResponse> =
-  new MainIpcChannel(RESUME_DOWNLOAD);
+MainIpcChannel<
+  ResumeDownloadRendererRequest,
+  ResumeDownloadMainResponse
+> = new MainIpcChannel(RESUME_DOWNLOAD);
 const deleteDownloadedFileChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   DeleteDownloadedFileRendererRequest,
@@ -262,16 +272,18 @@ MainIpcChannel<
   ClearDownloadLocalDataMainResponse
 > = new MainIpcChannel(CLEAR_DOWNLOAD_LOCAL_DATA);
 const checkFileExistsChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcChannel<CheckFileExistsRendererRequest, CheckFileExistsMainResponse> =
-  new MainIpcChannel(CHECK_FILE_EXISTS);
-export const downloadManagerChannel = (window: BrowserWindow) => {
+MainIpcChannel<
+  CheckFileExistsRendererRequest,
+  CheckFileExistsMainResponse
+> = new MainIpcChannel(CHECK_FILE_EXISTS);
+export const downloadManagerChannel = (_window: BrowserWindow) => {
   requestDownloadChannel.onRequest(
     (downloadRequestPayload: DownloadRendererRequest) =>
-      requestDownload(downloadRequestPayload, window)
+      requestDownload(downloadRequestPayload)
   );
   requestResumeDownloadChannel.onRequest(
     (resumeDownloadRequestPayload: ResumeDownloadRendererRequest) =>
-      requestResumeDownload(resumeDownloadRequestPayload, window)
+      requestResumeDownload(resumeDownloadRequestPayload)
   );
   deleteDownloadedFileChannel.onRequest(deleteDownloadedFile);
   getDownloadLocalDataChannel.onRequest(getDownloadLocalData);
