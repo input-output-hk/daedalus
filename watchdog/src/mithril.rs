@@ -10,6 +10,7 @@ use tracing::{info, warn};
 
 use crate::config::MithrilConfig;
 use crate::protocol::{Command as Cmd, Event, emit};
+use crate::supervisor::tether_to_watchdog;
 
 const PROGRESS_THROTTLE_MS: u128 = 500;
 // Duration the cutover gate holds open for an in-flight cancel after the
@@ -90,19 +91,19 @@ async fn highest_local_immutable(chain_path: &str) -> Option<u64> {
 }
 
 pub(crate) async fn probe(cfg: &MithrilConfig) -> Result<(Option<u64>, u64)> {
-    let output = Command::new(&cfg.mithril_bin)
-        .args([
-            "--origin-tag",
-            "DAEDALUS",
-            "--json",
-            "cardano-db",
-            "snapshot",
-            "show",
-            "latest",
-        ])
-        .env("AGGREGATOR_ENDPOINT", &cfg.aggregator_url)
-        .output()
-        .await?;
+    let mut cmd = Command::new(&cfg.mithril_bin);
+    cmd.args([
+        "--origin-tag",
+        "DAEDALUS",
+        "--json",
+        "cardano-db",
+        "snapshot",
+        "show",
+        "latest",
+    ])
+    .env("AGGREGATOR_ENDPOINT", &cfg.aggregator_url);
+    tether_to_watchdog(&mut cmd);
+    let output = cmd.output().await?;
     if !output.status.success() {
         anyhow::bail!(
             "mithril-client snapshot show failed: {}",
@@ -164,6 +165,7 @@ async fn run_download(
     cmd.stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
         .kill_on_drop(true);
+    tether_to_watchdog(&mut cmd);
 
     let mut proc = match cmd.spawn() {
         Ok(p) => p,
@@ -364,9 +366,12 @@ async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) 
                 .map_err(|e| anyhow::anyhow!("install staged db to symlink target: {e}"))?;
         } else {
             let _ = tokio::fs::remove_dir_all(chain_path).await;
-            tokio::fs::rename(staging_db, chain_path)
+            // move_dir, not rename: staging and chain can live on different
+            // filesystems (EXDEV), and the old chain is already gone at this
+            // point — a bare rename failure would leave no chain at all.
+            move_dir(staging_db, chain_path)
                 .await
-                .map_err(|e| anyhow::anyhow!("rename staged db to chain path: {e}"))?;
+                .map_err(|e| anyhow::anyhow!("install staged db to chain path: {e}"))?;
         }
         return Ok(());
     }
@@ -437,7 +442,8 @@ async fn run_converter(
 
     let _ = tokio::fs::remove_dir_all(&output_lsm_database).await;
 
-    let mut proc = match Command::new(&cfg.snapshot_converter_bin)
+    let mut converter_cmd = Command::new(&cfg.snapshot_converter_bin);
+    converter_cmd
         .arg("--input-mem")
         .arg(&temp_input)
         .arg("--output-lsm-snapshot")
@@ -447,9 +453,9 @@ async fn run_converter(
         .arg("--config")
         .arg(&cfg.converter_config)
         .stderr(std::process::Stdio::null())
-        .kill_on_drop(true)
-        .spawn()
-    {
+        .kill_on_drop(true);
+    tether_to_watchdog(&mut converter_cmd);
+    let mut proc = match converter_cmd.spawn() {
         Ok(p) => p,
         Err(e) => return ProcResult::Failed(e.to_string()),
     };
@@ -491,6 +497,19 @@ pub async fn run_pipeline(
     force: bool,
     wipe_chain: bool,
 ) -> PipelineResult {
+    // The pipeline downloads with --include-ancillary (the converter needs the
+    // ledger state it brings), and mithril-client refuses that flag without an
+    // ANCILLARY_VERIFICATION_KEY — or, on older versions, skips signature
+    // verification of the ancillary data. Fail fast, before any chain wipe,
+    // instead of failing mid-download or downloading unverified data.
+    if cfg.ancillary_vkey.is_none() {
+        emit(&Event::MithrilError {
+            code: "ANCILLARY_VKEY_MISSING".to_string(),
+            message: "Mithril is configured without an ancillary verification key".to_string(),
+        });
+        return PipelineResult::Cancelled;
+    }
+
     // If wipe_chain is requested, delete the existing chain directory so the
     // download is treated as a full bootstrap rather than an incremental sync.
     if wipe_chain {

@@ -92,6 +92,79 @@ fn emit_error(msg: &str) {
     });
 }
 
+// Ensure a child process cannot outlive the watchdog itself. kill_on_drop
+// only covers an orderly runtime teardown; if the watchdog is SIGKILLed the
+// children would otherwise keep running (an orphaned cardano-wallet holds the
+// wallet DB open, and the next Daedalus start would spawn a second wallet
+// against the same database).
+//
+// Linux: PR_SET_PDEATHSIG delivers SIGKILL to the child when the spawning
+// thread dies. Tokio worker threads live for the lifetime of the runtime, so
+// in practice this fires on watchdog death. The getppid() check closes the
+// race where the watchdog dies between fork and prctl.
+//
+// Windows: children inherit the watchdog's job object, created in
+// init_job_object() with JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE — nothing to do
+// per child.
+//
+// macOS has no PDEATHSIG equivalent; there the TypeScript driver kills the
+// child PIDs it has been told about before force-killing the watchdog.
+pub(crate) fn tether_to_watchdog(cmd: &mut Command) {
+    #[cfg(target_os = "linux")]
+    {
+        let watchdog_pid = std::process::id() as libc::pid_t;
+        unsafe {
+            cmd.pre_exec(move || {
+                if libc::prctl(libc::PR_SET_PDEATHSIG, libc::SIGKILL) != 0 {
+                    return Err(std::io::Error::last_os_error());
+                }
+                if libc::getppid() != watchdog_pid {
+                    return Err(std::io::Error::other("watchdog died before spawn"));
+                }
+                Ok(())
+            });
+        }
+    }
+    #[cfg(not(target_os = "linux"))]
+    let _ = cmd;
+}
+
+// Put the watchdog into a kill-on-close job object so every child it spawns
+// dies with it, even on TerminateProcess. Called once at startup; the job
+// handle is intentionally leaked — the OS closes it when the watchdog dies,
+// which is exactly the trigger we want.
+#[cfg(windows)]
+pub(crate) fn init_job_object() {
+    use windows_sys::Win32::System::JobObjects::{
+        AssignProcessToJobObject, CreateJobObjectW, JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE,
+        JOBOBJECT_EXTENDED_LIMIT_INFORMATION, JobObjectExtendedLimitInformation,
+        SetInformationJobObject,
+    };
+    use windows_sys::Win32::System::Threading::GetCurrentProcess;
+    unsafe {
+        let job = CreateJobObjectW(std::ptr::null(), std::ptr::null());
+        if job.is_null() {
+            warn!("CreateJobObjectW failed; children may outlive the watchdog");
+            return;
+        }
+        let mut info: JOBOBJECT_EXTENDED_LIMIT_INFORMATION = std::mem::zeroed();
+        info.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+        if SetInformationJobObject(
+            job,
+            JobObjectExtendedLimitInformation,
+            &info as *const _ as *const _,
+            std::mem::size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32,
+        ) == 0
+        {
+            warn!("SetInformationJobObject failed; children may outlive the watchdog");
+            return;
+        }
+        if AssignProcessToJobObject(job, GetCurrentProcess()) == 0 {
+            warn!("AssignProcessToJobObject failed; children may outlive the watchdog");
+        }
+    }
+}
+
 // Sends a graceful-stop signal to a running child.
 // Unix: SIGTERM. Windows: CTRL_BREAK_EVENT (requires CREATE_NEW_PROCESS_GROUP at spawn time).
 fn graceful_stop(child: &Child) {
@@ -501,7 +574,7 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
 
     let mut node_crash_count = 0u32;
     loop {
-        let result = run_node_wallet(&config, &mut cmd_rx, after_mithril).await?;
+        let result = run_node_wallet(&config, &mut cmd_rx, after_mithril, &mut node_crash_count).await?;
         after_mithril = false;
 
         match result {
@@ -625,6 +698,7 @@ async fn run_node_wallet(
     config: &WatchdogConfig,
     cmd_rx: &mut mpsc::Receiver<Cmd>,
     after_mithril: bool,
+    node_crash_count: &mut u32,
 ) -> Result<RunResult> {
     let node_log = open_log(&format!("{}/node.log", config.pub_logs_dir));
 
@@ -663,6 +737,7 @@ async fn run_node_wallet(
     }
 
     shutdown_pipe.setup_node_cmd(&mut node_cmd);
+    tether_to_watchdog(&mut node_cmd);
 
     let node_started_at = unix_ms();
     let mut node_proc = node_cmd.spawn()?;
@@ -675,6 +750,19 @@ async fn run_node_wallet(
         started_at_unix_ms: node_started_at,
     });
     info!("cardano-node started (PID {node_pid})");
+
+    // Dismiss the Mithril overlay now that the node is running so the user
+    // sees normal sync/replay progress screens instead of the Mithril UI.
+    if after_mithril {
+        if let Some(ref mc) = config.mithril {
+            if let Err(e) = mithril::write_marker(&mc.state_dir, "node-start-verified").await {
+                warn!("Failed to write node-start-verified marker: {e}");
+            }
+        }
+        emit(&Event::MithrilStatus {
+            phase: "completed".to_string(),
+        });
+    }
 
     // Forward node logs
     tokio::spawn(pipe_to_log(
@@ -747,6 +835,7 @@ async fn run_node_wallet(
             Some(cmd) = cmd_rx.recv() => {
                 match cmd {
                     Cmd::Stop => {
+                        info!("stopping node (shutdown requested)");
                         let shutdown_start = unix_ms();
                         shutdown_pipe.close_write();
                         let force_killed = wait_for_node_exit(&node_rx_socket, &mut node_kill_tx).await;
@@ -756,6 +845,7 @@ async fn run_node_wallet(
                         return Ok(RunResult::Stopped);
                     }
                     Cmd::StartMithril { force, wipe_chain } => {
+                        info!("stopping node (mithril requested)");
                         let shutdown_start = unix_ms();
                         shutdown_pipe.close_write();
                         let force_killed = wait_for_node_exit(&node_rx_socket, &mut node_kill_tx).await;
@@ -806,13 +896,14 @@ async fn run_node_wallet(
         }
     }
     info!("node socket ready");
+    // Node recovered — cap consecutive failures, not lifetime crashes.
+    *node_crash_count = 0;
 
     // Wallet supervisor loop
     let wallet_cfg = config.wallet.clone();
     let wallet_log_path = format!("{}/cardano-wallet.log", config.pub_logs_dir);
     let mut attempt = 0u32;
     let mut node_rx = node_rx;
-    let mut wallet_ready_fired = false;
 
     'supervisor: loop {
         if node_rx.borrow().is_some() {
@@ -835,6 +926,8 @@ async fn run_node_wallet(
             const CREATE_NEW_PROCESS_GROUP: u32 = 0x0000_0200;
             wallet_cmd.creation_flags(CREATE_NEW_PROCESS_GROUP);
         }
+
+        tether_to_watchdog(&mut wallet_cmd);
 
         let wallet_started_at = unix_ms();
         let mut wallet = match wallet_cmd.spawn() {
@@ -891,18 +984,21 @@ async fn run_node_wallet(
                     let exit = node_rx.borrow().clone().unwrap_or((None, None));
                     warn!("cardano-node exited during wallet startup (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
+                    info!("stopping wallet (node exited)");
                     stop_child(&mut wallet, 10).await;
                     return Ok(RunResult::NodeCrashed);
                 }
                 Some(cmd) = cmd_rx.recv() => {
                     match cmd {
                         Cmd::Stop => {
+                            info!("stopping wallet (shutdown requested)");
                             stop_child(&mut wallet, 10).await;
                             break 'supervisor;
                         }
                         Cmd::StartMithril { force, wipe_chain } => {
-                            // Stop wallet first, then node
+                            info!("stopping wallet (mithril requested)");
                             stop_child(&mut wallet, 10).await;
+                            info!("stopping node (mithril requested)");
                             let shutdown_start = unix_ms();
                             shutdown_pipe.close_write();
                             let node_rx_shutdown = node_rx.clone();
@@ -940,14 +1036,16 @@ async fn run_node_wallet(
                             spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
                         }
                         Cmd::RestartNode => {
+                            info!("stopping wallet (node restart requested)");
                             stop_child(&mut wallet, 10).await;
+                            info!("stopping node (node restart requested)");
                             let shutdown_start = unix_ms();
                             shutdown_pipe.close_write();
                             let node_rx_shutdown = node_rx.clone();
                             let force_killed =
                                 wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
                             let shutdown_ms = unix_ms() - shutdown_start;
-                            info!("user-initiated node restart, shut down in {shutdown_ms}ms (force_killed={force_killed})");
+                            info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
                             emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
                             return Ok(RunResult::RestartRequested);
                         }
@@ -974,18 +1072,10 @@ async fn run_node_wallet(
         });
         info!("wallet API ready on port {port}");
 
-        // After Mithril install, finalize on first wallet_ready
-        if after_mithril && !wallet_ready_fired {
-            wallet_ready_fired = true;
-            if let Some(ref mc) = config.mithril {
-                if let Err(e) = mithril::write_marker(&mc.state_dir, "node-start-verified").await {
-                    warn!("Failed to write node-start-verified marker: {e}");
-                }
-            }
-            emit(&Event::MithrilStatus {
-                phase: "completed".to_string(),
-            });
-        }
+        // The wallet recovered — max_restart_attempts caps *consecutive*
+        // failed start cycles, so a rare-but-recurring crash (e.g. once a
+        // day) must not accumulate into WalletUnrecoverable.
+        attempt = 0;
 
         // Phase 2: wallet is ready — wait for exit, node death, or stop.
         // Loop so that stale commands are ignored instead of falling through
@@ -1011,17 +1101,21 @@ async fn run_node_wallet(
                     let exit = node_rx.borrow().clone().unwrap_or((None, None));
                     warn!("cardano-node exited (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
+                    info!("stopping wallet (node exited)");
                     stop_child(&mut wallet, 10).await;
                     return Ok(RunResult::NodeCrashed);
                 }
                 Some(cmd) = cmd_rx.recv() => {
                     match cmd {
                         Cmd::Stop => {
+                            info!("stopping wallet (shutdown requested)");
                             stop_child(&mut wallet, 10).await;
                             break 'supervisor;
                         }
                         Cmd::StartMithril { force, wipe_chain } => {
+                            info!("stopping wallet (mithril requested)");
                             stop_child(&mut wallet, 10).await;
+                            info!("stopping node (mithril requested)");
                             let shutdown_start = unix_ms();
                             shutdown_pipe.close_write();
                             let node_rx_shutdown = node_rx.clone();
@@ -1059,14 +1153,16 @@ async fn run_node_wallet(
                             spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
                         }
                         Cmd::RestartNode => {
+                            info!("stopping wallet (node restart requested)");
                             stop_child(&mut wallet, 10).await;
+                            info!("stopping node (node restart requested)");
                             let shutdown_start = unix_ms();
                             shutdown_pipe.close_write();
                             let node_rx_shutdown = node_rx.clone();
                             let force_killed =
                                 wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
                             let shutdown_ms = unix_ms() - shutdown_start;
-                            info!("user-initiated node restart, shut down in {shutdown_ms}ms (force_killed={force_killed})");
+                            info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
                             emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
                             return Ok(RunResult::RestartRequested);
                         }
@@ -1089,7 +1185,7 @@ async fn run_node_wallet(
     }
 
     // Signal cardano-node to shut down by closing the write end of the pipe (sends EOF)
-    info!("closing node shutdown pipe");
+    info!("stopping node (shutdown requested)");
 
     let shutdown_start = unix_ms();
     shutdown_pipe.close_write();

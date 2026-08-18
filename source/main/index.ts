@@ -128,17 +128,26 @@ function getFreePort(): Promise<number> {
   });
 }
 
+// Windows named pipes are machine-global, so the name must be scoped by
+// cluster: with a fixed name, concurrently running Daedalus installs
+// (e.g. Mainnet and Preprod) would collide on pipe creation, or a wallet
+// would connect to the other install's node on the wrong network.
+function windowsPipeName(cluster: string): string {
+  return `\\\\.\\pipe\\daedalus-${cluster}-cardano-node.socket`;
+}
+
 function buildNodeArgs(
   stateDir: string,
   nodePort: number,
-  nodeConfig: import('./config').NodeConfig
+  nodeConfig: import('./config').NodeConfig,
+  cluster: string
 ): string[] {
   const { configFile, topologyFile } = nodeConfig.network;
   const args = [
     'run',
     '--socket-path',
     process.platform === 'win32'
-      ? '\\\\.\\pipe\\cardano-node.socket'
+      ? windowsPipeName(cluster)
       : 'cardano-node.socket',
     '--topology',
     topologyFile,
@@ -163,11 +172,12 @@ function buildWalletArgs(
   syncTolerance: string,
   isStaging: boolean,
   metadataUrl: string | undefined,
-  nodeConfig: import('./config').NodeConfig
+  nodeConfig: import('./config').NodeConfig,
+  cluster: string
 ): string[] {
   const socketPath =
     process.platform === 'win32'
-      ? '\\\\.\\pipe\\cardano-node.socket'
+      ? windowsPipeName(cluster)
       : path.join(stateDir, 'cardano-node.socket');
   const walletDb = path.join(stateDir, 'wallets');
   const syncToleranceSecs = parseInt(syncTolerance.replace('s', ''), 10);
@@ -345,7 +355,7 @@ const onAppReady = async () => {
   } = launcherConfig;
   const socketPath =
     process.platform === 'win32'
-      ? '\\\\.\\pipe\\cardano-node.socket'
+      ? windowsPipeName(network)
       : path.join(stateDirectoryPath, 'cardano-node.socket');
   const defaultChainPath = path.join(stateDirectoryPath, 'chain');
   // Load persisted custom chain path from electron-store
@@ -361,7 +371,7 @@ const onAppReady = async () => {
     getFreePort(),
     getFreePort(),
   ]);
-  const nodeArgs = buildNodeArgs(stateDirectoryPath, nodePort, nodeConfig);
+  const nodeArgs = buildNodeArgs(stateDirectoryPath, nodePort, nodeConfig, network);
   const walletArgs = buildWalletArgs(
     stateDirectoryPath,
     walletPort,
@@ -369,7 +379,8 @@ const onAppReady = async () => {
     syncTolerance,
     isStaging,
     metadataUrl,
-    nodeConfig
+    nodeConfig,
+    network
   );
   backendLifecycle.setTlsPath(tlsPath);
   backendLifecycle.setChainPaths(defaultChainPath, customChainPath);

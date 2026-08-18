@@ -237,6 +237,7 @@ impl<'a> Cfg<'a> {
                 "converter_config": "/dev/null",
                 "aggregator_url": "http://localhost:0",
                 "genesis_vkey": "test",
+                "ancillary_vkey": "test",
                 "state_dir": state,
                 "chain_path": self.dir.path().join("chain").to_str().unwrap(),
                 "behind_threshold": 20
@@ -546,6 +547,105 @@ fn stdin_eof_stops_watchdog() {
     let _ = child.wait();
 }
 
+/// Poll try_wait() until the child exits; panic after the deadline.
+fn wait_for_exit(child: &mut Child, deadline: Duration) {
+    let start = std::time::Instant::now();
+    loop {
+        if child.try_wait().unwrap().is_some() {
+            return;
+        }
+        assert!(start.elapsed() < deadline, "timeout waiting for exit");
+        std::thread::sleep(Duration::from_millis(50));
+    }
+}
+
+/// A SIGKILLed watchdog cannot run any shutdown path; the PDEATHSIG tether
+/// set at spawn time must reap the wallet (and node) anyway.
+#[cfg(target_os = "linux")]
+#[test]
+fn sigkill_watchdog_kills_children() {
+    let dir = TempDir::new("sigkill");
+    dir.populate_chain();
+    let (cfg, wallet_port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    assert!(std::net::TcpStream::connect(("127.0.0.1", wallet_port)).is_ok());
+
+    child.kill().unwrap(); // SIGKILL — no Drop handlers, no Stop path
+    let _ = child.wait();
+    drop(stdin);
+
+    // PDEATHSIG delivery is immediate; poll briefly to absorb scheduler lag.
+    let start = std::time::Instant::now();
+    loop {
+        if std::net::TcpStream::connect(("127.0.0.1", wallet_port)).is_err() {
+            break;
+        }
+        assert!(
+            start.elapsed() < Duration::from_secs(5),
+            "wallet survived watchdog SIGKILL"
+        );
+        std::thread::sleep(Duration::from_millis(50));
+    }
+}
+
+/// A closed stdout (crashed parent) must not abort the watchdog: the EPIPE'd
+/// event is dropped, and the stdin EOF that follows still runs the orderly
+/// shutdown, so the wallet is stopped rather than orphaned.
+#[test]
+fn stdout_close_does_not_orphan_children() {
+    let dir = TempDir::new("epipe");
+    dir.populate_chain();
+    let (cfg, wallet_port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+
+    let state_dir = cfg["node"]["state_dir"].as_str().expect("node.state_dir");
+    let config_path = std::path::Path::new(state_dir).join("watchdog-config.json");
+    std::fs::write(&config_path, serde_json::to_string_pretty(&cfg).unwrap()).unwrap();
+
+    let mut child = Command::new(WATCHDOG)
+        .arg("--config")
+        .arg(&config_path)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()
+        .expect("spawn watchdog");
+    let mut stdin = child.stdin.take().unwrap();
+    let stdout = child.stdout.take().unwrap();
+
+    // Read events inline (not via event_reader) so this test owns stdout and
+    // can close it deterministically.
+    let mut reader = BufReader::new(stdout);
+    loop {
+        let mut line = String::new();
+        assert!(reader.read_line(&mut line).unwrap() > 0, "unexpected EOF");
+        if line.contains("wallet_ready") {
+            break;
+        }
+    }
+    drop(reader); // close the parent's read end of the watchdog's stdout
+
+    // Trigger an event emission: the probe result's write hits EPIPE.
+    send(&mut stdin, json!({"cmd": "probe_mithril"}));
+    std::thread::sleep(Duration::from_millis(500));
+    assert!(
+        child.try_wait().unwrap().is_none(),
+        "watchdog must survive a broken stdout pipe"
+    );
+    assert!(
+        std::net::TcpStream::connect(("127.0.0.1", wallet_port)).is_ok(),
+        "wallet should still be running"
+    );
+
+    drop(stdin); // EOF → implicit stop → orderly shutdown
+    wait_for_exit(&mut child, Duration::from_secs(15));
+    assert!(
+        std::net::TcpStream::connect(("127.0.0.1", wallet_port)).is_err(),
+        "wallet must not outlive the watchdog"
+    );
+}
+
 // ── Tests: startup log parsing ────────────────────────────────────────────────
 
 /// Node stdout emits startup log lines → watchdog parses and re-emits as
@@ -605,6 +705,30 @@ fn malformed_stdin_ignored() {
     writeln!(stdin, r#"{{"cmd":"unknown_future_command"}}"#).unwrap();
     stop(&mut stdin);
 
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A line exceeding the per-line bound is discarded — not treated as EOF —
+/// and later commands still work. (The bound is per line: a lifetime cap
+/// would eventually shut a long session down mid-flight.)
+#[test]
+fn oversized_stdin_line_discarded() {
+    let dir = TempDir::new("oversized");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+
+    // 5 MB without a newline — larger than the 4 MB per-line bound.
+    let junk = vec![b'x'; 5 * 1024 * 1024];
+    stdin.write_all(&junk).unwrap();
+    stdin.write_all(b"\n").unwrap();
+    stdin.flush().unwrap();
+
+    stop(&mut stdin);
     expect(&rx, "stopped");
     drop(stdin);
     let _ = child.wait();
@@ -776,6 +900,81 @@ fn node_crash_after_wallet_ready() {
     expect(&rx, "wallet_started");
     expect(&rx, "wallet_ready");
 
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Mithril configured without an ancillary verification key → the pipeline
+/// refuses to start (before any chain wipe) instead of downloading unverified
+/// ancillary data or failing mid-download.
+#[test]
+fn mithril_without_ancillary_key_fails_fast() {
+    let dir = TempDir::new("no-ancillary-key");
+    dir.populate_chain();
+    let (mut cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    cfg["mithril"]
+        .as_object_mut()
+        .unwrap()
+        .remove("ancillary_vkey");
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "force": true, "wipe_chain": true}),
+    );
+
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "ANCILLARY_VKEY_MISSING");
+    assert!(
+        dir.path().join("chain").exists(),
+        "guard must fire before the chain wipe"
+    );
+
+    // Pipeline returned Cancelled → node/wallet restart normally.
+    expect(&rx, "wallet_ready");
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// The restart-attempt counter resets once the wallet reaches ready, so
+/// non-consecutive crashes never accumulate into wallet_unrecoverable.
+#[test]
+fn wallet_restart_counter_resets_on_ready() {
+    let dir = TempDir::new("restart-counter-reset");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .max_restarts(2)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    let kill_wallet = |rx: &mpsc::Receiver<Value>| {
+        let wallet_ev = expect(rx, "wallet_started");
+        let wallet_pid = wallet_ev["pid"].as_u64().unwrap() as i32;
+        expect(rx, "wallet_ready");
+        nix::sys::signal::kill(
+            nix::unistd::Pid::from_raw(wallet_pid),
+            nix::sys::signal::Signal::SIGKILL,
+        )
+        .unwrap();
+    };
+
+    // Three ready→crash cycles with max_restart_attempts = 2: if the counter
+    // accumulated across recoveries, the third crash would be unrecoverable.
+    for _ in 0..3 {
+        kill_wallet(&rx);
+        let restarting = expect(&rx, "wallet_restarting");
+        assert_eq!(
+            restarting["attempt"], 1,
+            "counter must reset after each successful wallet_ready"
+        );
+    }
+
+    expect(&rx, "wallet_ready");
     stop(&mut stdin);
     expect(&rx, "stopped");
     drop(stdin);
