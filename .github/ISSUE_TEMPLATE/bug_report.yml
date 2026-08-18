@@ -1,0 +1,122 @@
+name: Bug Report
+description: Report a reproducible problem with Daedalus
+title: "[BUG] "
+labels:
+  - needs triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report a Daedalus issue.
+
+        GitHub Issues are intended for reproducible software defects and public engineering work.
+
+        If you need individual help using Daedalus or troubleshooting a wallet problem, please review the [Daedalus support guidance](https://github.com/se7en-labs-inc/daedalus/blob/master/SUPPORT.md).
+
+        Never include a wallet recovery phrase, seed phrase, private key, spending password or other wallet secret in a GitHub issue.
+
+  - type: input
+    id: daedalus-version
+    attributes:
+      label: Daedalus version
+      description: Enter the Daedalus version where you observed the problem.
+      placeholder: "Example: 11.2.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Operating system
+      description: Select the operating system where the issue occurs.
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: operating-system-version
+    attributes:
+      label: Operating system version
+      description: Provide the operating system version or distribution when known.
+      placeholder: "Example: Windows 11 24H2 or Ubuntu 24.04"
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Problem description
+      description: Describe what happened and why you believe the behavior is incorrect.
+      placeholder: Describe the problem clearly and concisely.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Provide the steps needed to reproduce the problem.
+      placeholder: |
+        1. Open Daedalus
+        2. Navigate to ...
+        3. Select ...
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: Describe what you expected Daedalus to do.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: Describe what Daedalus did instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: |
+        Add any other information that may help maintainers reproduce or understand the issue.
+
+        Do not include wallet secrets, personal information or sensitive diagnostic information.
+
+        Diagnostic archives and logs may contain information that should not be published publicly. If diagnostic material is required for an individual support investigation, use the designated customer support process instead.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: existing-issues
+    attributes:
+      label: Existing issues
+      options:
+        - label: I searched the existing Daedalus issues and did not find an issue describing the same problem.
+          required: true
+
+  - type: checkboxes
+    id: sensitive-information
+    attributes:
+      label: Sensitive information
+      options:
+        - label: I have not included a recovery phrase, seed phrase, private key, spending password or other wallet secret in this report.
+          required: true
+
+  - type: checkboxes
+    id: public-report
+    attributes:
+      label: Public report
+      options:
+        - label: I understand that this issue and anything I submit here will be publicly visible.
+          required: true
