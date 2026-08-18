@@ -392,13 +392,23 @@ async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) 
     let _ = tokio::fs::remove_dir_all(&dst_ledger).await;
     move_dir(&src_ledger, &dst_ledger).await?;
 
-    // Replace lsm database if the converter produced one.
+    // Always remove the old lsm — it belongs to the old ledger and is
+    // stale the moment we install a new one.  Install the new lsm if the
+    // converter produced one; a missing lsm is safer than a mismatched one.
+    let dst_lsm = chain_path.join("lsm");
+    let _ = tokio::fs::remove_dir_all(&dst_lsm).await;
     let src_lsm = staging_db.join("lsm");
     if tokio::fs::metadata(&src_lsm).await.is_ok() {
-        let dst_lsm = chain_path.join("lsm");
-        let _ = tokio::fs::remove_dir_all(&dst_lsm).await;
         move_dir(&src_lsm, &dst_lsm).await?;
     }
+
+    // Install the clean sentinel so cardano-node skips chunk validation on
+    // next startup. Without this, node treats the partial-sync state as an
+    // unclean shutdown and re-validates every immutable chunk.
+    let src_clean = staging_db.join("clean");
+    let dst_clean = chain_path.join("clean");
+    let _ = tokio::fs::remove_file(&dst_clean).await;
+    move_file(&src_clean, &dst_clean).await?;
 
     Ok(())
 }
