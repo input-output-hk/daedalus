@@ -49,25 +49,18 @@ const expectWritesDenied = (dir: string) => {
   expect(() => fs.accessSync(dir, fs.constants.W_OK)).toThrow();
 };
 
-// Three assertions below do not hold on Windows, for reasons that are about
-// the platform rather than the fixture. They are gated rather than adapted,
-// because two of them look like real defects and adapting the test would hide
-// the question rather than answer it:
+// One assertion below does not hold on Windows, and the reason is the platform
+// rather than the fixture: POSIX mode bits do not deny writes there, so the
+// read-only case cannot be set up at all without an ACL (`icacls /deny`). It is
+// gated rather than adapted.
 //
-//   * POSIX mode bits do not deny writes on Windows, so the read-only case
-//     needs an ACL (`icacls /deny`) to set up at all.
-//   * A dangling symlink is reported as `unknown` on Windows rather than
-//     `path-not-found` — the same shape as the `EACCES` mislabelling this file
-//     was written to catch, and unexplained as yet.
-//   * Resolving a symlinked target times out. `checkDiskSpace` shells out on
-//     Windows, and the tool it reaches for is not present on current images.
-//
-// The real-reparse-point behaviour that *is* settled has its own suite in
+// The real-reparse-point behaviour that is settled has its own suite in
 // chainStorageWindows.realfs.spec.ts.
-// `checkDiskSpace` shells out on Windows, and a cold PowerShell start costs
+//
+// `checkDiskSpace` shells out on Windows, and a cold subprocess start costs
 // seconds, so every assertion reaching it needs more than Jest's default five.
-// Slow rather than broken — but worth knowing that a user-facing validation
-// path pays that cost on every call.
+// Slow rather than broken, but worth knowing that a user-facing validation path
+// pays that cost on every call.
 const DISK_SPACE_TIMEOUT_MS = 30_000;
 
 const describeOnPosix = process.platform === 'win32' ? describe.skip : describe;
@@ -138,24 +131,28 @@ describe('validateChainStorageDirectory against a real filesystem', () => {
       expect(result.isValid).toBe(false);
       expect(result.reason).toBe('not-writable');
     });
+  });
 
-    it('reports a dangling symlink as path-not-found', async () => {
-      const missingTarget = path.join(tmpRoot, 'target-that-was-deleted');
-      const link = path.join(tmpRoot, 'dangling');
-      fs.mkdirSync(missingTarget);
-      fs.symlinkSync(missingTarget, link, 'dir');
-      fs.rmSync(missingTarget, { recursive: true });
+  // The two platforms fail this at different syscalls: on POSIX the existence
+  // probe follows the link and reports nothing there, while on Windows the
+  // reparse point satisfies the probe and the resolution fails instead. The
+  // user is told the same thing either way, which is what this asserts.
+  it('reports a link whose target is gone as path-not-found', async () => {
+    const missingTarget = path.join(tmpRoot, 'target-that-was-deleted');
+    const link = path.join(tmpRoot, 'dangling');
+    fs.mkdirSync(missingTarget);
+    fs.symlinkSync(missingTarget, link, 'dir');
+    fs.rmSync(missingTarget, { recursive: true });
 
-      const result = await validateChainStorageDirectory(
-        link,
-        stateDir,
-        makeGetDefaultConfig(path.join(stateDir, 'chain')),
-        REQUIRED_SPACE
-      );
+    const result = await validateChainStorageDirectory(
+      link,
+      stateDir,
+      makeGetDefaultConfig(path.join(stateDir, 'chain')),
+      REQUIRED_SPACE
+    );
 
-      expect(result.isValid).toBe(false);
-      expect(result.reason).toBe('path-not-found');
-    });
+    expect(result.isValid).toBe(false);
+    expect(result.reason).toBe('path-not-found');
   });
 
   it('reports a file selected as the target with path-is-file semantics', async () => {

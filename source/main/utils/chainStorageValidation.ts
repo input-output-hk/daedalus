@@ -7,7 +7,10 @@ import {
   ChainStorageValidation,
 } from '../../common/types/mithril-bootstrap.types';
 import { logger } from './logging';
-import { CHAIN_DIRECTORY_NAME } from './chainStorageManagerShared';
+import {
+  CHAIN_DIRECTORY_NAME,
+  isPathNotFoundError,
+} from './chainStorageManagerShared';
 
 type GetDefaultConfig = () => Promise<
   Pick<
@@ -107,7 +110,31 @@ export async function validateChainStorageDirectory(
       };
     }
 
-    const resolvedPath = await fs.realpath(normalizedPath);
+    let resolvedPath: string;
+    try {
+      resolvedPath = await fs.realpath(normalizedPath);
+    } catch (error) {
+      // A link whose target no longer exists reaches this line on Windows. The
+      // `pathExists` probe above follows the link on POSIX and has already
+      // returned, but on Windows the reparse point itself satisfies the probe
+      // and only the resolution fails. Without this the error falls through to
+      // the generic catch and the user is told "Unable to validate selected
+      // directory" for a condition that has its own message.
+      //
+      // ELOOP joins the two missing-path codes. A path that loops back on
+      // itself names no directory either, and the user needs to hear the same
+      // thing about it.
+      const code = (error as NodeJS.ErrnoException)?.code;
+      if (isPathNotFoundError(error) || code === 'ELOOP') {
+        return {
+          ...defaultValidation,
+          reason: 'path-not-found',
+          message: 'Selected directory does not exist.',
+        };
+      }
+      throw error;
+    }
+
     const targetStats = await fs.stat(resolvedPath);
     if (!targetStats.isDirectory()) {
       return {
