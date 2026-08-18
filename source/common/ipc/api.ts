@@ -94,6 +94,17 @@ export const GET_GPU_STATUS_CHANNEL = 'GET_GPU_STATUS_CHANNEL';
 export type GetGPUStatusRendererRequest = void;
 export type GetGPUStatusMainResponse = GpuStatus;
 
+export const CLOSE_WINDOW_CHANNEL = 'close-window';
+export type CloseWindowRendererRequest = void;
+export type CloseWindowMainResponse = void;
+export const RESIZE_WINDOW_CHANNEL = 'resize-window';
+export type ResizeWindowRendererRequest = {
+  width: number;
+  height: number;
+  animate: boolean;
+};
+export type ResizeWindowMainResponse = void;
+
 /**
  * Channel for showing ui parts specified via constants
  */
@@ -257,8 +268,7 @@ export type ExportWalletsMainResponse = {
  */
 export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
   'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
-export type GenerateWalletMigrationReportRendererRequest =
-  WalletMigrationReportData;
+export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
 export type GenerateWalletMigrationReportMainResponse = void;
 
 /**
@@ -307,8 +317,7 @@ export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
  */
 export const DELETE_DOWNLOADED_FILE = 'DELETE_DOWNLOADED_FILE';
 export type DeleteDownloadedFileRendererRequest = DeleteDownloadedFileRequest;
-export type DeleteDownloadedFileMainResponse =
-  DeleteDownloadedFileResponse | void;
+export type DeleteDownloadedFileMainResponse = DeleteDownloadedFileResponse | void;
 
 /**
  * Channel for initiating the download manager
@@ -321,16 +330,14 @@ export type DownloadLocalDataMainResponse = DownloadLocalDataResponse;
  * Channel for initiating the download manager
  */
 export const GET_DOWNLOADS_LOCAL_DATA = 'GET_DOWNLOADS_LOCAL_DATA';
-export type DownloadsLocalDataRendererRequest =
-  DownloadsLocalDataRequest | void;
+export type DownloadsLocalDataRendererRequest = DownloadsLocalDataRequest | void;
 export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
 
 /**
  * Channel for initiating the download manager
  */
 export const CLEAR_DOWNLOAD_LOCAL_DATA = 'CLEAR_DOWNLOAD_LOCAL_DATA';
-export type ClearDownloadLocalDataRendererRequest =
-  ClearDownloadLocalDataRequest;
+export type ClearDownloadLocalDataRendererRequest = ClearDownloadLocalDataRequest;
 export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
 
 /**
@@ -341,6 +348,7 @@ export type CheckFileExistsRendererRequest = CheckFileExistsRequest;
 export type CheckFileExistsMainResponse = boolean;
 
 /**
+
  * Channel for quitting Daedalus and installing update
  */
 export const MANAGE_APP_UPDATE = 'MANAGE_APP_UPDATE';
@@ -400,16 +408,12 @@ export type IntrospectAddressMainResponse = IntrospectAddressResponse;
 
 export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
   'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
-export type getHardwareWalletTransportRendererRequest =
-  HardwareWalletTransportDeviceRequest;
-export type getHardwareWalletTransportMainResponse =
-  HardwareWalletTransportDeviceResponse;
+export type getHardwareWalletTransportRendererRequest = HardwareWalletTransportDeviceRequest;
+export type getHardwareWalletTransportMainResponse = HardwareWalletTransportDeviceResponse;
 export const GET_EXTENDED_PUBLIC_KEY_CHANNEL =
   'GET_EXTENDED_PUBLIC_KEY_CHANNEL';
-export type getExtendedPublicKeyRendererRequest =
-  HardwareWalletExtendedPublicKeyRequest;
-export type getExtendedPublicKeyMainResponse =
-  HardwareWalletExtendedPublicKeyResponse;
+export type getExtendedPublicKeyRendererRequest = HardwareWalletExtendedPublicKeyRequest;
+export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyResponse;
 export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
 export type getCardanoAdaAppRendererRequest = {
   path: string | null | undefined;
@@ -418,8 +422,7 @@ export type getCardanoAdaAppRendererRequest = {
 export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
-export type getHardwareWalletConnectionMainRequest =
-  HardwareWalletConnectionRequest;
+export type getHardwareWalletConnectionMainRequest = HardwareWalletConnectionRequest;
 export type getHardwareWalletConnectionRendererResponse =
   | LedgerDevicePayload
   | TrezorDevicePayload

@@ -22,7 +22,7 @@ The current Electron main renderer cannot host hostile content safely:
 
 - `source/main/windows/main.ts` enables Node integration and disables context isolation.
 - `source/main/preload.ts` exposes raw IPC, Node HTTP(S), paths, configuration, and logging capabilities.
-- Wrapper-backed IPC now retains Electron events, correlates responses, and authenticates the active trusted main WebContents/frame/document. Direct raw listeners still require the task-102 audit and migration.
+- All 77 production privileged IPC channels are recorded in a machine-checkable manifest and use wrappers that retain Electron events, correlate responses, and authenticate the active trusted main WebContents/frame/document. The former raw close/resize listeners have been removed.
 - Popup and external-URL handling is not sufficient for a hostile renderer.
 - Linux development and packaging currently use process-wide sandbox-disabling flags, and the historical portable self-extracting `.bin` installer cannot establish Chromium OS sandbox privileges required for hostile guests.
 
@@ -194,7 +194,7 @@ physical results against exact production artifacts and adapter commits.
 - The existing preload is privileged and cannot be reused by remote content.
 - `webviewTag` is already disabled.
 - There is no guest `BrowserWindow`, `WebContentsView`, `<webview>`, dApp preload, isolated session, permission policy, or dApp broker.
-- Wrapper-backed IPC authenticates the active trusted main WebContents/frame/document and correlates caller-targeted responses. Direct raw listeners remain unaudited pending task-102, so production guest launch remains disabled.
+- A checked 77-channel manifest accounts for all production privileged IPC. Every channel uses exact trusted main WebContents/frame/document authentication and correlated caller-targeted responses; raw close/resize listeners and direct renderer callers have been migrated. Production guest launch remains disabled by the independent sandbox, guest, ledger, signing, hardware, and review gates.
 - The global popup handler now denies requests without shell side effects; trusted UI external-link requests accept only parsed credential-free HTTPS URLs with awaited privacy-safe failures.
 - Linux development and packaging pass `--disable-setuid-sandbox --no-sandbox`.
 - Linux currently ships a home-directory self-extracting `.bin`; that model is product-rejected for ongoing shipping in favor of system `.deb` and `.rpm` packages (research `06`).
@@ -951,9 +951,11 @@ Before guest creation:
   HTTPS URLs, awaits the shell operation, and returns privacy-safe failures.
 - Wrapper-backed handlers retain the Electron event and require the exact active trusted main `WebContents`, main frame, canonical document, and origin before business logic runs.
 - Trusted authority is inactive during initial load/navigation, reactivates only for the completed canonical main document, and cancels stale pending wrapper requests.
-- Move remaining import-time side-effect listeners into explicit initialization.
+- Production privileged handlers use explicit authenticated wrapper initialization; the source audit rejects raw Electron ingress and direct renderer bypasses.
 - Wrapper requests use private request IDs, install response listeners before send, clean them up on settlement/cancellation, and reply to the authenticated caller frame.
-- Task-102 still owns the exhaustive direct-listener inventory and migration; completing wrapper hardening alone does not make a guest safe.
+- `source/main/ipc/privilegedIpcManifest.ts` records all 77 logical channels, owners, directions, capabilities, settlement policy, and exact-frame authority. Its checker covers global/scoped/frame/service-worker IPC, WebContents IPC events, renderer `postMessage`, MessagePort transfer/listeners, aliases, destructuring, binding, and wrapper promise ownership.
+- Main-originated wrapper calls explicitly await or consume lifecycle cancellation and resolve their target through the rebound current trusted-window sender. No raw production receiver or direct renderer caller is allowlisted.
+- This closes the privileged-listener audit only. It does not make the broad trusted preload suitable for hostile content or satisfy any separate guest/sandbox/release gate.
 - Do not use legacy `IpcChannel` or `IpcConversation` as the guest protocol.
 
 Guest broker uses a dedicated scoped gateway with main-issued request IDs and runtime-validated discriminated method schemas. No raw method lookup, fallback dispatch, or generic privileged IPC object is exposed.

@@ -10,7 +10,7 @@ Status: supporting evidence for task-001. Normative decisions remain in the
 | `source/main/windows/main.ts` | The main renderer enables Node integration, disables context isolation, and loads `preload.js`. | It is privileged legacy UI and cannot host remote content. |
 | `source/main/preload.ts` | The preload exposes raw `ipcRenderer`, HTTP(S), environment/configuration values, paths, OS data, and logging globals. | It must never be reused by a dApp guest. |
 | `source/common/ipc/lib/IpcChannel.ts` and `IpcConversation.ts` | Handlers receive decoded messages, not sufficient Electron sender/frame identity; `IpcChannel` uses a shared response channel and attaches its listener after sending. | Legacy IPC is unsuitable for a hostile guest and requires task-101/102 hardening. |
-| Task-101 Electron 41 runtime evidence | Packaged `file:` main frames report `WebFrameMain.origin === "file://"`; development HTTP frames report their serialized HTTP origin. | Trusted authority binds exact WebContents/frame/canonical URL and uses `file://` only for the exact packaged file document. Wrapper-backed channels are hardened; task-102 still owns raw-listener migration. |
+| Task-101/102 Electron 41 runtime evidence | Packaged `file:` main frames report `WebFrameMain.origin === "file://"`; development HTTP frames report their serialized HTTP origin. Task-102 probes all 77 manifest channels from untrusted window, wrong-document, subframe, and stale-lifecycle contexts. | Trusted authority binds exact WebContents/frame/canonical URL and uses `file://` only for the exact packaged file document. Hostile probes produce zero sentinel effects; this is focused local IPC evidence, not packaged guest sandbox proof. |
 | `source/main/index.ts` | The global popup handler is registered after `createMainWindow()` creates the window and initiates `loadURL`, following startup work; it forwards requested URLs to `shell.openExternal`. The source does not prove page-load completion before registration. | Task-100 must install safe trusted navigation/popup policy before any WebContents. |
 | `source/main/ipc/open-external-url.ts` | Renderer input is passed to `shell.openExternal` without parsed HTTPS policy. | Task-100 must validate and await external URL handling. |
 | `source/main/webpack.config.js` and `nix/internal/x86_64-linux.nix` | Development and packaged Linux launch paths include `--disable-setuid-sandbox --no-sandbox`. Historical portable `.bin` cannot privilege `chrome-sandbox`. | Product decision: ship `.deb`/`.rpm` only (research 06). Historical task-005 preserves the cancelled portable spike; task-005-a freezes the contract, tasks 108/109 build flag-free packages, task-005-b certifies them, and task-103 removes remaining bypasses and enables fail-closed runtime checks. |
@@ -44,3 +44,30 @@ Status: supporting evidence for task-001. Normative decisions remain in the
 - No runtime changes or test fixtures were added by task-001. Packaged sandbox,
   hardware, external audit, and configured-network evidence remain explicitly
   unperformed downstream gates.
+
+## Task-102 Privileged IPC Audit Evidence
+
+- `source/main/ipc/privilegedIpcManifest.ts` records 77 production logical
+  channels with constructor, registration and caller ownership, direction,
+  capability, settlement policy, and `exact-active-trusted-main-frame`
+  authority. Production raw-receiver and direct-caller bypass allowlists are
+  empty.
+- The former duplicate `resize-window` and raw `close-window` listeners were
+  replaced atomically with typed authenticated wrappers. Re-registration
+  targets the latest trusted window, and close is scheduled only after its
+  correlated response can settle.
+- The TypeScript-checker audit covers Electron 41 global/scoped/frame/service
+  worker ingress, EventEmitter-equivalent registration, WebContents IPC events,
+  renderer `postMessage`, `MessagePortMain`, aliases, destructuring and binding.
+  It also compares every main wrapper construction to the manifest and rejects
+  bare main-originated wrapper promises.
+- All live main-originated notifications now use explicit awaited or
+  fire-and-forget settlement. Long-lived Cardano, menus, downloads, app update,
+  block/disk, Mithril and hardware producers resolve one rebound current-window
+  sender, so lifecycle cancellation cannot leak an unhandled rejection or send
+  to a stale/alternate window.
+- The bounded Electron 41 fixture passed for all 77 channels with trusted
+  positive controls and untrusted-window, wrong-document, subframe,
+  stale-lifecycle and spoofed-response probes, with zero hostile effects. The
+  broad legacy main preload remains trusted-only and production guest launch
+  remains disabled by every independent PRD gate.

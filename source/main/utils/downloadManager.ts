@@ -1,6 +1,6 @@
 import { app } from 'electron';
 import fs from 'fs';
-import type { BrowserWindow } from 'electron';
+import type { IpcSender } from '../../common/ipc/lib/IpcChannel';
 import { MainIpcChannel } from '../ipc/lib/MainIpcChannel';
 import { logger } from './logging';
 import {
@@ -26,6 +26,7 @@ import type {
   DownloadDataUpdate,
 } from '../../common/types/downloadManager.types';
 import { stateDirectoryPath } from '../config';
+import { consumeIpcResponse } from '../ipc/lib/currentWindowSender';
 
 export const downloads = {};
 export const getIdFromFileName = (fileName: string): string =>
@@ -77,7 +78,7 @@ const getPath = (
 
 export const getEventActions = async (
   info: DownloadInfo,
-  window: BrowserWindow,
+  sender: IpcSender,
   requestDownloadChannel: MainIpcChannel<
     DownloadRendererRequest,
     DownloadMainResponse
@@ -94,13 +95,16 @@ export const getEventActions = async (
     logger.info('DownloadManager:startEvent.');
     const eventType = types.START;
     const data = DOWNLOAD_DATA_DEFAULT;
-    requestDownloadChannel.send(
-      {
-        eventType,
-        info,
-        data,
-      },
-      window.webContents
+    consumeIpcResponse(
+      requestDownloadChannel.send(
+        {
+          eventType,
+          info,
+          data,
+        },
+        sender
+      ),
+      'REQUEST_DOWNLOAD'
     );
   };
 
@@ -120,13 +124,16 @@ export const getEventActions = async (
       state: states.DOWNLOADING,
     };
     const data = await localStorage.setData(rawData, downloadId);
-    requestDownloadChannel.send(
-      {
-        eventType: types.DOWNLOAD,
-        info,
-        data,
-      },
-      window.webContents
+    consumeIpcResponse(
+      requestDownloadChannel.send(
+        {
+          eventType: types.DOWNLOAD,
+          info,
+          data,
+        },
+        sender
+      ),
+      'REQUEST_DOWNLOAD'
     );
   };
 
@@ -147,13 +154,16 @@ export const getEventActions = async (
       state: states.DOWNLOADING,
     };
     const formattedData = await localStorage.setData(rawData, downloadId);
-    requestDownloadChannel.send(
-      {
-        eventType: types.PROGRESS,
-        info,
-        data: formattedData,
-      },
-      window.webContents
+    consumeIpcResponse(
+      requestDownloadChannel.send(
+        {
+          eventType: types.PROGRESS,
+          info,
+          data: formattedData,
+        },
+        sender
+      ),
+      'REQUEST_DOWNLOAD'
     );
 
     if (progress === 100) {
@@ -190,13 +200,16 @@ export const getEventActions = async (
     const formattedData = await localStorage.setData(rawData, downloadId);
     const { temporaryPath, newPath } = getPath(info);
     fs.renameSync(temporaryPath, newPath);
-    requestDownloadChannel.send(
-      {
-        eventType: types.END,
-        info,
-        data: formattedData,
-      },
-      window.webContents
+    consumeIpcResponse(
+      requestDownloadChannel.send(
+        {
+          eventType: types.END,
+          info,
+          data: formattedData,
+        },
+        sender
+      ),
+      'REQUEST_DOWNLOAD'
     );
     const { persistLocalData } = info.options;
     if (!persistLocalData) await localStorage.unset(downloadId);
@@ -209,13 +222,16 @@ export const getEventActions = async (
       state: states.PAUSED,
     };
     const formattedData = await localStorage.setData(newState, downloadId);
-    requestDownloadChannel.send(
-      {
-        eventType: types.PAUSE,
-        info,
-        data: formattedData,
-      },
-      window.webContents
+    consumeIpcResponse(
+      requestDownloadChannel.send(
+        {
+          eventType: types.PAUSE,
+          info,
+          data: formattedData,
+        },
+        sender
+      ),
+      'REQUEST_DOWNLOAD'
     );
   };
 
@@ -230,14 +246,17 @@ export const getEventActions = async (
       state: states.FAILED,
     };
     const formattedData = await localStorage.setData(rawData, downloadId);
-    requestDownloadChannel.send(
-      {
-        eventType: types.ERROR,
-        info,
-        data: formattedData,
-        error: message,
-      },
-      window.webContents
+    consumeIpcResponse(
+      requestDownloadChannel.send(
+        {
+          eventType: types.ERROR,
+          info,
+          data: formattedData,
+          error: message,
+        },
+        sender
+      ),
+      'REQUEST_DOWNLOAD'
     );
   };
 

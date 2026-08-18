@@ -7,7 +7,6 @@ import { backendLifecycle } from '../BackendLifecycle';
 import downloadLogsApi from './download-logs';
 import { handleElectronStoreChannel } from './electronStoreConversation';
 import getLogsApi from './get-logs';
-import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
 import { downloadManagerChannel } from './downloadManagerChannel';
@@ -26,14 +25,17 @@ import { handleManageAppUpdateRequests } from './manageAppUpdateChannel';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { createChannels } from './createHardwareWalletIPCChannels';
 import { handleGovernanceAnchorRequests } from './governanceAnchorChannel';
+import { handleWindowControlRequests } from './windowControlChannels';
+import { currentWindowSender } from './lib/currentWindowSender';
 
 const hardwareWalletChannels = createChannels(MainIpcChannel);
 
 export default (window: BrowserWindow) => {
+  currentWindowSender.bind(window);
   compressLogsApi();
   downloadLogsApi();
   getLogsApi();
-  resizeWindowApi(window);
+  handleWindowControlRequests(window);
   loadAsset();
   getGpuStatus();
   handleBugReportRequests();

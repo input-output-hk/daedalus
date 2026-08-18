@@ -1,5 +1,4 @@
 import { readFileSync } from 'fs';
-import { BrowserWindow } from 'electron';
 import { logger } from './utils/logging';
 import WatchdogManager from './WatchdogManager';
 import type {
@@ -10,6 +9,7 @@ import type {
   MithrilProgress,
   WatchdogState,
 } from '../common/types/watchdog.types';
+import type { MithrilStatusMainRequest } from '../common/ipc/api';
 import {
   mithrilProgressChannel,
   mithrilStatusChannel,
@@ -20,6 +20,10 @@ import {
   nodeBlockSyncProgressChannel,
   watchdogStoppedChannel,
 } from './ipc/nodePushChannel';
+import {
+  consumeIpcResponse,
+  currentWindowSender,
+} from './ipc/lib/currentWindowSender';
 
 export type { WatchdogConfig };
 
@@ -29,7 +33,6 @@ type EventHandler = (event: Record<string, unknown>) => void;
 
 class BackendLifecycle {
   private manager: WatchdogManager | null = null;
-  private getWindow: () => BrowserWindow | null = () => null;
   private eventHandlers: EventHandler[] = [];
   private _exePath = '';
   private _config: WatchdogConfig | null = null;
@@ -41,9 +44,6 @@ class BackendLifecycle {
   // Setup
   // ---------------------------------------------------------------------------
 
-  setWindowProvider(getWindow: () => BrowserWindow | null): void {
-    this.getWindow = getWindow;
-  }
 
   setChainPaths(
     defaultChainPath: string | null,
@@ -76,10 +76,8 @@ class BackendLifecycle {
       manager.onEvent(handler);
     }
 
-    // Push mithril events to the renderer window
+    // Push backend events to the trusted renderer window.
     manager.onEvent((event) => {
-      const win = this.getWindow();
-      if (!win) return;
       const eventType = event.event as string | undefined;
       if (eventType === 'mithril_progress') {
         const progress: MithrilProgress = {
@@ -92,24 +90,45 @@ class BackendLifecycle {
           totalSteps: event.total_steps as number,
           phase: event.phase as MithrilProgress['phase'],
         };
-        mithrilProgressChannel.send(progress, win.webContents);
+        consumeIpcResponse(
+          mithrilProgressChannel.send(progress, currentWindowSender.sender),
+          'MITHRIL_PROGRESS_CHANNEL'
+        );
       } else if (eventType === 'mithril_status') {
-        mithrilStatusChannel.send(event as any, win.webContents);
+        consumeIpcResponse(
+          mithrilStatusChannel.send(
+            event as unknown as MithrilStatusMainRequest,
+            currentWindowSender.sender
+          ),
+          'MITHRIL_STATUS_CHANNEL'
+        );
       } else if (eventType === 'node_startup_status') {
-        nodeStartupStatusChannel.send(
-          { phase: event.phase as string },
-          win.webContents
+        consumeIpcResponse(
+          nodeStartupStatusChannel.send(
+            { phase: event.phase as string },
+            currentWindowSender.sender
+          ),
+          'NODE_STARTUP_STATUS_CHANNEL'
         );
       } else if (eventType === 'node_block_sync_progress') {
-        nodeBlockSyncProgressChannel.send(
-          {
-            kind: event.kind as string,
-            progress: event.progress as number,
-          },
-          win.webContents
+        consumeIpcResponse(
+          nodeBlockSyncProgressChannel.send(
+            {
+              kind: event.kind as string,
+              progress: event.progress as number,
+            },
+            currentWindowSender.sender
+          ),
+          'NODE_BLOCK_SYNC_PROGRESS_CHANNEL'
         );
       } else if (eventType === 'stopped') {
-        watchdogStoppedChannel.send(undefined, win.webContents);
+        consumeIpcResponse(
+          watchdogStoppedChannel.send(
+            undefined,
+            currentWindowSender.sender
+          ),
+          'WATCHDOG_STOPPED_CHANNEL'
+        );
       }
     });
 
@@ -119,8 +138,6 @@ class BackendLifecycle {
     manager.walletReadyPromise
       .then((port) => {
         logger.info('BackendLifecycle: wallet ready', { port });
-        const win = this.getWindow();
-        if (!win) return;
         let ca: number[] = [];
         let cert: number[] = [];
         let key: number[] = [];
@@ -142,7 +159,13 @@ class BackendLifecycle {
             });
           }
         }
-        walletPortChannel.send({ port, ca, cert, key }, win.webContents);
+        consumeIpcResponse(
+          walletPortChannel.send(
+            { port, ca, cert, key },
+            currentWindowSender.sender
+          ),
+          'WALLET_PORT_CHANNEL'
+        );
       })
       .catch((reason) => {
         logger.error('BackendLifecycle: startup failed, scheduling restart', {

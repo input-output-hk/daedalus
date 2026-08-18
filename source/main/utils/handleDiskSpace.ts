@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { BrowserWindow } from 'electron';
 import checkDiskSpace from 'check-disk-space';
 import prettysize from 'prettysize';
 import { getDiskSpaceStatusChannel } from '../ipc/get-disk-space-status';
@@ -17,6 +16,10 @@ import {
   stateDirectoryPath,
 } from '../config';
 import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.types';
+import {
+  awaitIpcResponse,
+  currentWindowSender,
+} from '../ipc/lib/currentWindowSender';
 
 const getDiskCheckReport = async (
   targetPath: string,
@@ -76,7 +79,7 @@ const getDiskCheckReport = async (
   return Promise.race([diskCheckPromise, timeoutPromise]);
 };
 
-export const handleDiskSpace = (mainWindow: BrowserWindow) => {
+export const handleDiskSpace = () => {
   let diskSpaceCheckInterval;
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL;
 
@@ -148,7 +151,9 @@ export const handleDiskSpace = (mainWindow: BrowserWindow) => {
       response.hadNotEnoughSpaceLeft = hadNotEnoughSpaceFlag;
     }
 
-    await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
+    await awaitIpcResponse(
+      getDiskSpaceStatusChannel.send(response, currentWindowSender.sender)
+    );
     return response;
   };
 
@@ -219,8 +224,8 @@ export const handleDiskSpace = (mainWindow: BrowserWindow) => {
         pendingDiskSpaceCheckArgs.hadNotEnoughSpaceLeft === false ||
         nextArgs.hadNotEnoughSpaceLeft === false
           ? false
-          : (nextArgs.hadNotEnoughSpaceLeft ??
-            pendingDiskSpaceCheckArgs.hadNotEnoughSpaceLeft),
+          : nextArgs.hadNotEnoughSpaceLeft ??
+            pendingDiskSpaceCheckArgs.hadNotEnoughSpaceLeft,
       forceDiskSpaceRequired:
         nextArgs.forceDiskSpaceRequired ??
         pendingDiskSpaceCheckArgs.forceDiskSpaceRequired,
@@ -281,7 +286,9 @@ export const handleDiskSpace = (mainWindow: BrowserWindow) => {
   setDiskSpaceIntervalChecking(diskSpaceCheckIntervalLength);
   getDiskSpaceStatusChannel.onReceive(async () => {
     const diskReport = await getDiskCheckReport(diskCheckPath);
-    await getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
+    await awaitIpcResponse(
+      getDiskSpaceStatusChannel.send(diskReport, currentWindowSender.sender)
+    );
     return diskReport;
   });
   return handleCheckDiskSpace;

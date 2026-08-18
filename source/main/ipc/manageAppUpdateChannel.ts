@@ -13,9 +13,15 @@ import { UPDATE_INSTALLATION_STATUSES as statuses } from '../../common/config/ap
 import { environment } from '../environment';
 import { logger } from '../utils/logging';
 import { launcherConfig } from '../config';
+import {
+  consumeIpcResponse,
+  currentWindowSender,
+} from './lib/currentWindowSender';
 // IpcChannel<Incoming, Outgoing>
-const manageAppUpdateChannel: MainIpcChannel<Request, Response> =
-  new MainIpcChannel(MANAGE_APP_UPDATE);
+const manageAppUpdateChannel: MainIpcChannel<
+  Request,
+  Response
+> = new MainIpcChannel(MANAGE_APP_UPDATE);
 const logPrefix = 'appUpdateInstall';
 
 const getMessage = (functionPrefix: string, message?: string): string => {
@@ -39,14 +45,17 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     log(getMessage(functionPrefix, message));
     const data = { ..._data, message };
-    manageAppUpdateChannel.send(
-      {
-        status,
-        // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ status: UpdateInstallationStat... Remove this comment to see the full error message
-        message,
-        data,
-      },
-      window.webContents
+    consumeIpcResponse(
+      manageAppUpdateChannel.send(
+        {
+          status,
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ status: UpdateInstallationStat... Remove this comment to see the full error message
+          message,
+          data,
+        },
+        currentWindowSender.sender
+      ),
+      MANAGE_APP_UPDATE
     );
     return {
       status,

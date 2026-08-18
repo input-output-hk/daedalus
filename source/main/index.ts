@@ -328,7 +328,7 @@ const onAppReady = async () => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     return Promise.resolve(handleWindowClose());
   });
-  const handleCheckDiskSpace = handleDiskSpace(mainWindow);
+  const handleCheckDiskSpace = handleDiskSpace();
 
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
@@ -340,8 +340,6 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
-  // Start watchdog
-  backendLifecycle.setWindowProvider(() => mainWindow);
   const {
     watchdogBin,
     nodeBin,
