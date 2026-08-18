@@ -24,11 +24,11 @@ GitHub issues will be triaged within 5 business days.
 
 Triage means that the issue has been reviewed sufficiently to determine its current disposition and apply the appropriate classification, labels or routing.
 
-Detailed triage standards, including labeling and assignment practices, are maintained separately as part of the Daedalus contribution and issue management process.
+Detailed triage standards including labeling and assignment practices are documented in [Issue Triage](https://github.com/se7en-labs-inc/daedalus/blob/master/docs/ISSUE_TRIAGE.md).
 
 ## Resolution
 
-SE7EN Labs does not establish a fixed resolution target for support cases or GitHub issues.
+SE7EN Labs does not establish a fixed resolution target for customer support cases or GitHub issues.
 
 Resolution time depends on the nature of the issue, investigation requirements, technical complexity, upstream dependencies and release scheduling. Some fixes may also require inclusion in a future Daedalus release.
 
@@ -39,3 +39,9 @@ A business day is a normal SE7EN Labs working day excluding weekends and company
 ## Service Target Review
 
 These service targets may be reviewed and adjusted as support volume, staffing, product scope and operational requirements change.
+
+## Related Documentation
+
+For information about obtaining Daedalus support, see [SUPPORT.md](https://github.com/se7en-labs-inc/daedalus/blob/master/SUPPORT.md).
+
+For information about contributing to Daedalus, see [CONTRIBUTING.md](https://github.com/se7en-labs-inc/daedalus/blob/master/CONTRIBUTING.md).
