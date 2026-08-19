@@ -680,7 +680,9 @@
           "id": "task-200",
           "title": "Add backend capability version and API contracts",
           "description": "Introduce versioned cardano-wallet API types and capability probing for dApp context, witness signing, CIP-8/CIP-95, and pending submission.",
-          "status": "pending",
+          "status": "completed",
+          "completedAt": "2026-08-19",
+          "completionNotes": "Added local cardano-wallet foundation commit b2d20f4385bfcb92454b4dec91f954a0babd13ac with strict versioned capability and error contracts, an unavailable bare-404 route, Conway-only construction, deterministic Dijkstra refusal, Swagger/client/link coverage, and no persistence or migration changes. Clean Cabal tests, OpenAPI/format checks, and exact Daedalus bridge/mainnet builds passed. The endpoint remains unavailable and non-pin-eligible; task-209 owns the consolidated task-200-through-task-208 upstream PR/review, real aggregate HTTP/mTLS validation, activation, consumer checks, and pinning.",
           "priority": "critical",
           "estimatedHours": 16,
           "dependencies": ["task-003"],
@@ -872,10 +874,12 @@
             "flake.lock"
           ],
           "acceptance": [
+            "One consolidated upstream pull request and authorized review covers the complete local task-200-through-task-208 cardano-wallet range before activation or pinning.",
             "All new backend responses receive runtime/type validation.",
             "Octet-stream body and Content-Length use one exact byte contract.",
             "Daedalus refuses feature activation against an older capability version.",
             "The pin references the exact reviewed commit delivered from ../cardano-wallet and the Swagger contract passes integration tests.",
+            "Real aggregate local HTTP/mTLS validation passes against the complete reviewed backend range before and after the exact pin update.",
             "Backend database migration and supported pin-rollback compatibility evidence is recorded before the pin changes.",
             "Daedalus validates exact backend error/info mappings and proves sensitive values are absent from HTTP bodies, traces, metrics, and logs."
           ]
