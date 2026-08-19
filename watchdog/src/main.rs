@@ -79,6 +79,13 @@ where
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // SIGPIPE default action (terminate) races with emit()'s EPIPE handler on
+    // macOS. Ignore it so write() returns EPIPE instead, which emit() catches.
+    #[cfg(unix)]
+    unsafe {
+        libc::signal(libc::SIGPIPE, libc::SIG_IGN);
+    }
+
     let args = Args::parse();
 
     // Kill-on-close job object: children must not survive watchdog death.
