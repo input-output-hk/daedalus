@@ -807,13 +807,16 @@ is not a shipped API. For task-003, the user directed the Orchestrator on
 2026-08-11 to assume cardano-wallet implementation signoff and proceed; external
 owner/reviewer identities and a durable URL were not supplied and are not
 fabricated. This task-003 planning assumption does not replace concrete
-implementation, upstream review, migration/rollback, integration, or pin
-evidence required from tasks 200-209.
+implementation, migration/rollback, integration, or pin evidence required from
+tasks 200-209, nor the consolidated upstream review required in task-209.
 
-Task-003 changes no sibling source and is therefore validation-only. Phase-2
-tasks produce candidate cardano-wallet commits and migration/rollback evidence;
-task-209 may update the Daedalus pin only after authorized sibling review and
-Daedalus integration against the candidate revision.
+Task-003 changes no sibling source and is therefore validation-only. Tasks
+200-208 accumulate reviewable local cardano-wallet commits and
+migration/rollback evidence without opening incomplete per-task upstream pull
+requests. Task-209 opens one consolidated pull request for the complete range
+and may activate the aggregate capability response or update the Daedalus pin
+only after authorized sibling review and Daedalus integration against that exact
+revision.
 
 ### Exact-CBOR Validation
 
@@ -1135,7 +1138,7 @@ the complete capture at most three times and otherwise fails closed without a
 partial response. Exact provenance, digest/token encoding, restart behavior,
 and downstream tests are frozen in the task-003 backend contract.
 
-The UTxO endpoint or replacement context API must query full ledger outputs through local-state query because wallet `TxOut` persistence is lossy. All cardano-wallet implementation paths in this plan refer to the sibling `../cardano-wallet` working tree and must land there before Daedalus updates its reviewed pin. Upstream acceptance into cardano-wallet is the default path for every new API; any long-lived fork divergence requires explicit sign-off recorded in the backend contract validation task.
+The UTxO endpoint or replacement context API must query full ledger outputs through local-state query because wallet `TxOut` persistence is lossy. All cardano-wallet implementation paths in this plan refer to the sibling `../cardano-wallet` working tree and must land there before Daedalus updates its reviewed pin. Tasks 200-208 accumulate as a local reviewable series; task-209 submits the complete API range for consolidated upstream acceptance before activation and pinning. Any long-lived fork divergence requires explicit sign-off recorded in the backend contract validation task.
 
 ### Software Signing
 
@@ -1570,7 +1573,7 @@ Forbidden from observability and non-authoritative storage:
 - Add exact CIP-8 software signing.
 - Add CIP-105 DRep derivation and stake-key registration classification.
 - Add wallet-scoped pending submission.
-- Land and review those changes in `../cardano-wallet`, then update the Daedalus backend pin only after backend integration and migration/rollback tests pass.
+- Accumulate tasks 200-208 as reviewable local commits in `../cardano-wallet`, then use task-209 for one consolidated upstream review, backend integration, migration/rollback tests, aggregate activation, and the exact Daedalus pin update.
 
 ### Phase 3: Shared Cardano And Extension Engine
 
@@ -1838,7 +1841,7 @@ All migrations must be versioned, atomic, and fail closed. Wallet funds remain g
 - Prove the connection-level enforcement mechanism, built-in or custom, used to prevent private-network access and DNS rebinding for public HTTPS/WSS guest traffic.
 - Determine whether `@cardano-sdk/core@0.41.4` fully decodes all target-era fields; upgrade only if fixture evidence requires it.
 - Confirm exact raw-body and output-span handling for every accepted transaction encoding.
-- Record upstream maintainer engagement for each new cardano-wallet API; upstream acceptance is the default path.
+- Record consolidated upstream maintainer review of the complete task-200-through-task-208 cardano-wallet API range in task-209; upstream acceptance remains the default path before activation and pinning.
 - Confirm volatile-ledger and local-pending snapshot consistency at one chain point.
 - Resolve CIP-104 `Bip32PublicKey` encoding through upstream clarification and interoperability fixtures.
 - Validate Ledger JS 8.x transaction and message behavior before changing the pin.

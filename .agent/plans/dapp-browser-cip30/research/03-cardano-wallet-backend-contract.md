@@ -17,7 +17,8 @@ currently shipped API.
 | ----------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | Daedalus packaged input | `cardano-foundation/cardano-wallet/v2026-07-23`                         | Release input in `flake.nix`.                                                                    |
 | Daedalus locked source  | `724be55dc66cf67bc4427e8f1a9657a9d1d33d71`                              | Exact `flake.lock` revision; authoritative for bundled behavior.                                 |
-| Sibling review checkout | branch `amw/cip30`, revision `d3d170d02df9e39be04d85f3ce09fca98c9c5380` | Aligned with `upstream/master` when validated on 2026-08-11; implementation starting point only. |
+| Initial sibling review checkout | branch `amw/cip30`, revision `d3d170d02df9e39be04d85f3ce09fca98c9c5380` | Aligned with `upstream/master` when validated on 2026-08-11; historical implementation starting point only. |
+| Task-200 local foundation | branch `amw/cip30`, revision `b2d20f4385bfcb92454b4dec91f954a0babd13ac` | Rebased onto upstream `6761259ee91b138921231ce7fd1198679abfcc82`; unavailable and non-pin-eligible until the consolidated task-209 gate. |
 
 The complete pin-to-sibling range changes 175 files. Most are CI, release,
 delta-library publication, and unrelated feature work, but the range also
@@ -53,7 +54,7 @@ git -C ../cardano-wallet rev-parse HEAD upstream/master
 | Proxy submit           | `/proxy/transactions` broadcasts through `submitExternalTx`; Swagger explicitly assigns retries to the caller and no wallet submission state is written.                                                                  | Never use it for the dApp path.                                                                                                                                 |
 | Submission store       | Existing store retains sealed transactions and supports status/rollback operations.                                                                                                                                       | Reuse if task-208 proves it can represent every required state and identity without schema change.                                                              |
 | Migration              | New-style migration creates a versioned backup before a forward step.                                                                                                                                                     | Backup is not proof an old binary can open the new DB. Prove old-pin open compatibility or require backup restoration.                                          |
-| Upstream delivery      | `CONTRIBUTING.md` says the project is maintenance-only, while external features and PRs remain welcome subject to thorough review.                                                                                        | The user-authorized assumption satisfies task-003 only; every phase-2 candidate still requires a named owner, authorized upstream review, and durable evidence. |
+| Upstream delivery      | `CONTRIBUTING.md` says the project is maintenance-only, while external features and PRs remain welcome subject to thorough review.                                                                                        | Tasks 200-208 accumulate as reviewable local commits. Task-209 owns one consolidated upstream PR, named authorized review, durable evidence, activation, and pinning for the complete range. |
 | Daedalus octet stream  | `request.ts` accepts a hex string, sets length to half its characters, and writes with `hex` encoding.                                                                                                                    | Task-209 replaces this with one runtime-validated exact-byte representation.                                                                                    |
 
 ## Capability Contract
@@ -387,7 +388,7 @@ a static redacted category.
 
 | Task       | Required test/evidence layers                                                                                                                                                                                                                                                                                                                                                            |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `task-200` | `lib/api` schema units, Swagger/golden consistency, and API integration for strict capability success, malformed/duplicate/partial/old/build/network cases plus exact HTTP/tag/info mapping and response-body redaction.                                                                                                                                                                 |
+| `task-200` | `lib/api` schema units, Swagger/golden consistency, strict malformed/duplicate/partial/old/build/network cases, exact HTTP/tag/info mapping and response-body redaction, exact bare-`err404` handler proof, compiled unavailable-route integration scenario, and exact candidate package identity. Live success is deferred to task-209. |
 | `task-201` | Network LSQ units and local-cluster integration for exact-point capture, three-attempt races, rollback/pruning, full-output pin/sibling goldens, datum/reference-script fidelity, era failure, digest fixtures, and token restart invalidation.                                                                                                                                          |
 | `task-202` | Wallet unit/property and discovery tests for `G/P`, ownership, source precedence, and adversarial earlier/pending/self/forward/duplicate/conflicting dependencies.                                                                                                                                                                                                                       |
 | `task-203` | `Cardano.Wallet.Shelley.TransactionSpec`, `TransactionLedgerSpec`, API integration, and V1/V2 differential fixtures for every immutable envelope/witness class, VKey-only delta, current-batch context, partial modes, collateral, and required signers.                                                                                                                                 |
@@ -395,7 +396,7 @@ a static redacted category.
 | `task-205` | Derivation/discovery units and wallet/API integration for role-3 DRep, public keys, pending registration, type-6 normalization, and DRep COSE.                                                                                                                                                                                                                                           |
 | `task-206` | Wallet transaction-ledger differential coverage for Conway fields, DRep certificates/votes, deprecated certificates, completeness, and unsupported credentials.                                                                                                                                                                                                                          |
 | `task-208` | Submission model/property, `DB.Store.Submissions`, SQLite, API/local-cluster fault injection around every durable/broadcast transition, same-node reconciliation snapshots, bounded retry generations, concurrency, unknown outcome, confirmation/expiry/rollback, CIP-103 order, pinned-schema migration, backup restore, old-pin open-or-restore proof, and transaction-log redaction. |
-| `task-209` | Daedalus runtime/API validation and Jest for exact octet streams, exact error/info mapping, capability downgrade/malformed behavior, and no sensitive HTTP body/trace/metric/log values; candidate-backend Nix smoke; migration/rollback evidence review; integration before pin and rerun after exact pin update.                                                                       |
+| `task-209` | One consolidated upstream PR/review for the complete task-200-through-task-208 range; Daedalus runtime/API validation and Jest for exact octet streams, exact error/info mapping, capability downgrade/malformed behavior, and no sensitive HTTP body/trace/metric/log values; real aggregate HTTP/mTLS and candidate-backend Nix smoke; migration/rollback evidence review; activation and integration before pin; rerun after exact pin update. |
 | `task-304` | Independently encode every context record and recompute digest/token-bound identity from backend fixtures; mutate every field; reject unknown tags, duplicate records, malformed lengths, network/wallet mismatch, and stale process generations before review.                                                                                                                          |
 | `task-306` | Independently compare full signing envelopes, immutable witness classes, exact body, and VKey set difference; verify every new key/signature and reject all non-VKey mutation.                                                                                                                                                                                                           |
 | `task-307` | Independently decode and verify backend-produced COSE bytes, headers, payload, key association, normalization, and Ed25519 signature against task-002 goldens.                                                                                                                                                                                                                           |
@@ -409,12 +410,31 @@ review evidence.
 
 Task-003 is a validation-only exception to candidate-commit sequencing because
 it changes no sibling source. Phase-2 tasks start from an upstream-aligned
-sibling branch and produce reviewable implementation commits/PRs. For every
-candidate: self-review and sibling tests, commit, authorized upstream review,
-migration/restore or rollback evidence, and Daedalus integration occur before
-the tracked pin changes. Review fixes are follow-up commits, not amendments, and
-repeat affected gates. Only task-209 may update `flake.nix`/`flake.lock` to the
-exact reviewed revision and rerun integration.
+sibling branch. Tasks 200-208 produce self-reviewed, tested local implementation
+commits without opening incomplete per-task upstream pull requests. Task-209
+submits the complete range in one consolidated upstream PR, records named
+authorized review and durable evidence, applies review fixes as follow-up commits
+rather than amendments, runs full-range migration/restore or rollback evidence
+and Daedalus integration, activates the complete capability response, and alone
+updates `flake.nix`/`flake.lock` to the exact reviewed revision before rerunning
+post-pin integration.
+
+## Task-200 Implementation Evidence
+
+Task-200 completed the intentionally unavailable local foundation at
+`b2d20f4385bfcb92454b4dec91f954a0babd13ac`, rebased onto upstream
+`6761259ee91b138921231ce7fd1198679abfcc82`. It adds the strict capability and
+fixed-error contracts, clients, links, Swagger, golden coverage, a Conway-only
+constructor, deterministic Dijkstra refusal, and an unconditional bare-`err404`
+handler with no activation input. It adds no persisted state or migration.
+
+Clean Cabal API/application/unit/integration builds, 28 focused dApp tests, 200
+capability roundtrip/schema checks, error-to-Swagger coverage, OpenAPI and
+formatting checks, and exact-revision Daedalus bridge/mainnet builds passed. The
+local-cluster scenario compiles, but real HTTP/mTLS execution was blocked by a
+missing sibling-flake Nix store source and is not claimed. Task-209 must run that
+evidence against the complete range before activation and pinning. The local
+foundation remains unavailable, unpinned, and not submitted upstream by design.
 
 ## Local Validation Evidence
 
@@ -484,9 +504,10 @@ artifacts required from tasks 200-209.
 | Evidence-matrix decision               | Assumed accepted by user direction for task-003 continuation       |
 | Conditions/reassignments               | None supplied                                                      |
 
-The review must explicitly decide: capability schema/check timing; `W/G/P`
+The consolidated task-209 review must explicitly decide: capability schema/check timing; `W/G/P`
 capture and provenance; digest/token lifetime; V1/V2 signing reuse; complete
 backend-produced COSE; submission transitions/replay; migration/rollback;
 error/privacy boundaries; task/test assignment; API compatibility; and intended
-upstream implementation PR sequence. Tasks 200-209 must replace this planning
-assumption with their required concrete implementation and review evidence.
+upstream implementation PR sequence. Tasks 200-208 provide local implementation
+and internal review evidence; task-209 replaces this planning assumption with
+the concrete consolidated upstream review and delivery evidence.
