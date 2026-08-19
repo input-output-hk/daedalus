@@ -68,6 +68,9 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
   onRestartNode: {
     trigger: action('onRestartNode.trigger'),
   },
+  onRestartWallet: {
+    trigger: action('onRestartWallet.trigger'),
+  },
   onClose: action('onClose'),
   onCopyStateDirectoryPath: action('onCopyStateDirectoryPath'),
   onForceCheckNetworkClock: action('onForceCheckNetworkClock'),

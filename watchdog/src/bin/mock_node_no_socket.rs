@@ -13,7 +13,8 @@ fn main() {
     }
     #[cfg(not(unix))]
     {
-        // On non-Unix, just sleep until killed.
-        std::thread::sleep(std::time::Duration::from_secs(300));
+        use std::io::Read;
+        let mut buf = [0u8; 64];
+        while std::io::stdin().read(&mut buf).unwrap_or(0) > 0 {}
     }
 }

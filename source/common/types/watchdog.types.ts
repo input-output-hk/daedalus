@@ -62,7 +62,9 @@ export type MithrilCommand =
   | { cmd: 'start_mithril'; wipe_chain: true }
   | { cmd: 'start_node' }
   | { cmd: 'cancel_mithril' }
-  | { cmd: 'probe_mithril' };
+  | { cmd: 'probe_mithril' }
+  | { cmd: 'restart_node' }
+  | { cmd: 'restart_wallet' };
 
 // MithrilPhase — string discriminant from mithril_status events
 export type MithrilPhase =

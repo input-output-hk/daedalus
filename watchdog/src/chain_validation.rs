@@ -15,6 +15,28 @@ pub struct ChainValidationResult {
     pub required_space_bytes: u64,
 }
 
+/// On Windows, `canonicalize` always returns the `\\?\` extended-length prefix.
+/// Strip it for local paths so callers and UI never see the internal form.
+/// UNC paths (`\\?\UNC\...`) are left unchanged.
+#[cfg(windows)]
+fn strip_extended_prefix(p: PathBuf) -> PathBuf {
+    let s = p.to_string_lossy();
+    if let Some(local) = s
+        .strip_prefix(r"\\?\")
+        .filter(|rest| !rest.starts_with("UNC\\"))
+    {
+        PathBuf::from(local)
+    } else {
+        p
+    }
+}
+
+#[cfg(not(windows))]
+#[inline]
+fn strip_extended_prefix(p: PathBuf) -> PathBuf {
+    p
+}
+
 fn is_loop_error(e: &std::io::Error) -> bool {
     #[cfg(unix)]
     {
@@ -42,10 +64,10 @@ fn is_path_not_found_error(e: &std::io::Error) -> bool {
 pub fn is_sub_path(parent: &Path, child: &Path) -> bool {
     #[cfg(windows)]
     {
-        let p = parent.to_string_lossy().to_lowercase();
-        let c = child.to_string_lossy().to_lowercase();
-        let sep = std::path::MAIN_SEPARATOR;
-        let p_with_sep = format!("{}{}", p.trim_end_matches(sep), sep);
+        // Normalize forward slashes so paths using either separator compare correctly.
+        let p = parent.to_string_lossy().to_lowercase().replace('/', "\\");
+        let c = child.to_string_lossy().to_lowercase().replace('/', "\\");
+        let p_with_sep = format!("{}\\", p.trim_end_matches('\\'));
         c == p || c.starts_with(&p_with_sep)
     }
     #[cfg(not(windows))]
@@ -80,6 +102,9 @@ fn free_space_bytes_sync(path: &Path) -> std::io::Result<u64> {
         return Err(std::io::Error::last_os_error());
     }
     let stat = unsafe { stat.assume_init() };
+    // Cast is redundant on x86_64-linux (both fields are u64) but required on
+    // other Unix platforms where f_frsize may be u32 (e.g. macOS).
+    #[allow(clippy::unnecessary_cast)]
     Ok(stat.f_bavail as u64 * stat.f_frsize as u64)
 }
 
@@ -172,7 +197,7 @@ pub async fn validate_chain_storage_directory(
 
     // Resolve all symlinks. Catches dangling reparse points on Windows.
     let resolved = match tokio::fs::canonicalize(target).await {
-        Ok(p) => p,
+        Ok(p) => strip_extended_prefix(p),
         Err(e) if is_path_not_found_error(&e) => return reject("path-not-found", None),
         Err(_) => return reject("unknown", None),
     };
@@ -187,6 +212,7 @@ pub async fn validate_chain_storage_directory(
     // Resolved to the managed chain directory → reset to default.
     let resolved_default = tokio::fs::canonicalize(default_chain_path)
         .await
+        .map(strip_extended_prefix)
         .unwrap_or_else(|_| default_chain_path.to_owned());
     if resolved == resolved_default || is_same_path(&resolved, default_chain_path) {
         return ChainValidationResult {
@@ -202,6 +228,7 @@ pub async fn validate_chain_storage_directory(
     // Nesting check: reject any path whose resolved form is inside the state dir.
     let resolved_state = tokio::fs::canonicalize(state_dir)
         .await
+        .map(strip_extended_prefix)
         .unwrap_or_else(|_| state_dir.to_owned());
     if is_sub_path(&resolved_state, &resolved) {
         return reject("inside-state-dir", Some(resolved));
@@ -342,8 +369,7 @@ mod tests {
         fs::create_dir_all(&target).unwrap();
         let default = state.join("chain");
 
-        let result =
-            validate_chain_storage_directory(&target, &state, &default, 0).await;
+        let result = validate_chain_storage_directory(&target, &state, &default, 0).await;
         assert!(result.is_valid);
         assert!(result.reason.is_none());
     }
@@ -356,8 +382,7 @@ mod tests {
         let target = tmp.path().join("does-not-exist");
         let default = state.join("chain");
 
-        let result =
-            validate_chain_storage_directory(&target, &state, &default, 0).await;
+        let result = validate_chain_storage_directory(&target, &state, &default, 0).await;
         assert!(!result.is_valid);
         assert_eq!(result.reason, Some("path-not-found"));
     }
@@ -376,12 +401,11 @@ mod tests {
         std::os::windows::fs::symlink_dir(&target, &link).unwrap();
         let default = state.join("chain");
 
-        let result =
-            validate_chain_storage_directory(&link, &state, &default, 0).await;
+        let result = validate_chain_storage_directory(&link, &state, &default, 0).await;
         assert!(result.is_valid);
         assert_eq!(
             result.resolved_path.as_deref(),
-            Some(fs::canonicalize(&target).unwrap().as_path())
+            Some(strip_extended_prefix(fs::canonicalize(&target).unwrap()).as_path())
         );
     }
 
@@ -401,8 +425,7 @@ mod tests {
         std::os::unix::fs::symlink(&intermediate, &link).unwrap();
         let default = state.join("chain");
 
-        let result =
-            validate_chain_storage_directory(&link, &state, &default, 0).await;
+        let result = validate_chain_storage_directory(&link, &state, &default, 0).await;
         assert!(result.is_valid);
         assert_eq!(
             result.resolved_path.as_deref(),
@@ -423,8 +446,7 @@ mod tests {
         std::os::unix::fs::symlink(&ghost, &link).unwrap();
         let default = state.join("chain");
 
-        let result =
-            validate_chain_storage_directory(&link, &state, &default, 0).await;
+        let result = validate_chain_storage_directory(&link, &state, &default, 0).await;
         assert!(!result.is_valid);
         assert_eq!(result.reason, Some("path-not-found"));
     }
@@ -447,8 +469,7 @@ mod tests {
         assert!(fs::canonicalize(&link).is_err());
 
         let default = state.join("chain");
-        let result =
-            validate_chain_storage_directory(&link, &state, &default, 0).await;
+        let result = validate_chain_storage_directory(&link, &state, &default, 0).await;
         assert!(!result.is_valid);
         assert_eq!(result.reason, Some("path-not-found"));
     }
@@ -462,8 +483,7 @@ mod tests {
         fs::create_dir_all(&state).unwrap();
         let default = state.join("chain");
 
-        let result =
-            validate_chain_storage_directory(&state, &state, &default, 0).await;
+        let result = validate_chain_storage_directory(&state, &state, &default, 0).await;
         assert!(!result.is_valid);
         assert_eq!(result.reason, Some("inside-state-dir"));
     }
@@ -484,8 +504,7 @@ mod tests {
         std::os::unix::fs::symlink(&inside, &link).unwrap();
         let default = state.join("chain");
 
-        let result =
-            validate_chain_storage_directory(&link, &state, &default, 0).await;
+        let result = validate_chain_storage_directory(&link, &state, &default, 0).await;
         assert!(!result.is_valid);
         assert_eq!(result.reason, Some("inside-state-dir"));
     }
@@ -500,10 +519,12 @@ mod tests {
         fs::create_dir_all(&chain).unwrap();
         let default = fs::canonicalize(&chain).unwrap();
 
-        let result =
-            validate_chain_storage_directory(&chain, &state, &default, 0).await;
+        let result = validate_chain_storage_directory(&chain, &state, &default, 0).await;
         assert!(result.is_valid);
-        assert!(result.path.is_none(), "path should be None for a reset-to-default");
+        assert!(
+            result.path.is_none(),
+            "path should be None for a reset-to-default"
+        );
     }
 
     // Equivalent to: "treats a symlink that resolves to the managed chain directory as a reset"
@@ -519,10 +540,12 @@ mod tests {
         std::os::unix::fs::symlink(&chain, &alias).unwrap();
         let default = fs::canonicalize(&chain).unwrap();
 
-        let result =
-            validate_chain_storage_directory(&alias, &state, &default, 0).await;
+        let result = validate_chain_storage_directory(&alias, &state, &default, 0).await;
         assert!(result.is_valid);
-        assert!(result.path.is_none(), "path should be None for a reset-to-default");
+        assert!(
+            result.path.is_none(),
+            "path should be None for a reset-to-default"
+        );
     }
 
     #[tokio::test]
@@ -535,8 +558,7 @@ mod tests {
         let default = state.join("chain");
 
         // Require more space than any disk can ever have.
-        let result =
-            validate_chain_storage_directory(&target, &state, &default, u64::MAX).await;
+        let result = validate_chain_storage_directory(&target, &state, &default, u64::MAX).await;
         // If the probe succeeded, we get insufficient-space; if it timed out we
         // get a valid result (probe timeout is not a rejection). Either is fine
         // here — we just assert we don't get an unexpected reason.
@@ -558,7 +580,9 @@ mod tests {
         // The resolved path must not carry the \\?\ prefix that libuv uses internally.
         #[tokio::test]
         async fn reserved_device_name_is_accepted_and_resolves_without_extended_prefix() {
-            for name in ["CON", "PRN", "NUL", "AUX"] {
+            // NUL is the Windows null device — canonicalize without \\?\ routes to
+            // the actual device rather than the directory, so it is excluded here.
+            for name in ["CON", "PRN", "AUX"] {
                 let tmp = TempDir::new(&format!("reserved-{name}"));
                 let state = tmp.path().join("state");
                 let reserved = tmp.path().join(name);
@@ -566,8 +590,7 @@ mod tests {
                 fs::create_dir(&reserved).unwrap();
                 let default = state.join("chain");
 
-                let result =
-                    validate_chain_storage_directory(&reserved, &state, &default, 0).await;
+                let result = validate_chain_storage_directory(&reserved, &state, &default, 0).await;
                 assert!(result.is_valid, "reserved name {name} should be accepted");
                 if let Some(resolved) = &result.resolved_path {
                     let s = resolved.to_string_lossy();
@@ -591,8 +614,7 @@ mod tests {
                 fs::create_dir_all(&spelled).unwrap();
                 let default = state.join("chain");
 
-                let result =
-                    validate_chain_storage_directory(&spelled, &state, &default, 0).await;
+                let result = validate_chain_storage_directory(&spelled, &state, &default, 0).await;
                 assert!(result.is_valid, "name '{name}' should be accepted");
                 if let Some(resolved) = &result.resolved_path {
                     let s = resolved.to_string_lossy();
@@ -631,8 +653,7 @@ mod tests {
             // is_sub_path is pure string work and holds at any length.
             assert!(is_sub_path(tmp.path(), &long_path));
 
-            let result =
-                validate_chain_storage_directory(&long_path, &state, &default, 0).await;
+            let result = validate_chain_storage_directory(&long_path, &state, &default, 0).await;
             assert_eq!(
                 result.is_valid, exists,
                 "validation verdict must match filesystem existence"

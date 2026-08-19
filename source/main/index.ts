@@ -371,7 +371,12 @@ const onAppReady = async () => {
     getFreePort(),
     getFreePort(),
   ]);
-  const nodeArgs = buildNodeArgs(stateDirectoryPath, nodePort, nodeConfig, network);
+  const nodeArgs = buildNodeArgs(
+    stateDirectoryPath,
+    nodePort,
+    nodeConfig,
+    network
+  );
   const walletArgs = buildWalletArgs(
     stateDirectoryPath,
     walletPort,

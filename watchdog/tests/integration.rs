@@ -363,10 +363,12 @@ fn empty_chain_mithril_bootstrap() {
 
     // Node and wallet restart after install.
     expect(&rx, "node_started");
+    // completed fires right after node_started (before wallet is up) so the
+    // renderer can leave the Mithril overlay and show normal sync progress.
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
     expect(&rx, "node_socket_ready");
     expect(&rx, "wallet_started");
     expect(&rx, "wallet_ready");
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
 
     stop(&mut stdin);
     expect(&rx, "stopped");
@@ -437,10 +439,10 @@ fn partial_sync_while_running() {
 
     // Comes back up.
     expect(&rx, "node_started");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
     expect(&rx, "node_socket_ready");
     expect(&rx, "wallet_started");
     expect(&rx, "wallet_ready");
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
 
     stop(&mut stdin);
     expect(&rx, "stopped");
@@ -860,8 +862,8 @@ fn wipe_chain_full_bootstrap() {
     expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
 
     expect(&rx, "node_started");
-    expect(&rx, "wallet_ready");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    expect(&rx, "wallet_ready");
 
     assert!(
         chain_path.exists(),

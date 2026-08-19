@@ -6,8 +6,6 @@
 // Usage: mock-node-startup-log <socket_path>
 //   (same positional-arg convention as mock-node)
 
-use std::io::Read;
-
 fn main() {
     let socket_path = std::env::args().nth(1).expect("socket path required");
 
@@ -36,11 +34,16 @@ fn main() {
     // Block on shutdown pipe (fd 3) until the watchdog closes the write end.
     #[cfg(unix)]
     {
+        use std::io::Read;
         use std::os::unix::io::FromRawFd;
         let mut pipe = unsafe { std::fs::File::from_raw_fd(3) };
         let mut buf = [0u8; 64];
         while pipe.read(&mut buf).unwrap_or(0) > 0 {}
     }
     #[cfg(not(unix))]
-    std::thread::sleep(std::time::Duration::from_secs(9999));
+    {
+        use std::io::Read;
+        let mut buf = [0u8; 64];
+        while std::io::stdin().read(&mut buf).unwrap_or(0) > 0 {}
+    }
 }

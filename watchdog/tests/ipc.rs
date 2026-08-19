@@ -2,6 +2,7 @@
 //
 // Each test spawns the real watchdog binary with mock node/wallet helpers,
 // exchanges JSON events over stdout, and sends commands over stdin.
+//
 
 use std::io::{BufRead, BufReader, Write};
 use std::net::TcpListener;
@@ -196,6 +197,7 @@ fn lifecycle_stop() {
 }
 
 /// Crash the wallet process after it becomes ready; watchdog should restart it.
+#[cfg(unix)]
 #[test]
 fn wallet_restarts_on_crash() {
     let dir = TempDir::new("restart");

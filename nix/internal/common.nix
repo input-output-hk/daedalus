@@ -282,6 +282,7 @@
           || baseName == "dist"
           || baseName == "release"
           || baseName == ".git"
+          || baseName == "watchdog"
         ))
       # Exclude editor/agent workspace markers (symlinks in project root that
       # must never reach the app bundle — macOS Tahoe rejects bundles with

@@ -2,9 +2,6 @@
 // then behaves like mock-node (creates socket, waits for EOF on fd 3) on every
 // subsequent invocation.  State is tracked via a sentinel file written next to
 // the socket path.
-use std::io::Read;
-use std::os::unix::io::FromRawFd;
-
 fn main() {
     let socket_path = std::env::args().nth(1).expect("socket path required");
     let sentinel = format!("{socket_path}.crash_once_done");
@@ -15,9 +12,20 @@ fn main() {
             let _ = std::fs::create_dir_all(parent);
         }
         std::fs::File::create(&socket_path).expect("create socket file");
-        let mut pipe = unsafe { std::fs::File::from_raw_fd(3) };
-        let mut buf = [0u8; 64];
-        while pipe.read(&mut buf).unwrap_or(0) > 0 {}
+        #[cfg(unix)]
+        {
+            use std::io::Read;
+            use std::os::unix::io::FromRawFd;
+            let mut pipe = unsafe { std::fs::File::from_raw_fd(3) };
+            let mut buf = [0u8; 64];
+            while pipe.read(&mut buf).unwrap_or(0) > 0 {}
+        }
+        #[cfg(not(unix))]
+        {
+            use std::io::Read;
+            let mut buf = [0u8; 64];
+            while std::io::stdin().read(&mut buf).unwrap_or(0) > 0 {}
+        }
     } else {
         // First invocation: write sentinel then exit 1.
         std::fs::write(&sentinel, b"").expect("write sentinel");

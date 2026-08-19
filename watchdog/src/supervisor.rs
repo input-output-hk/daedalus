@@ -76,7 +76,9 @@ fn spawn_validate_chain_dir(
         emit(&Event::ChainDirValidation {
             is_valid: result.is_valid,
             path: result.path.map(|p| p.to_string_lossy().into_owned()),
-            resolved_path: result.resolved_path.map(|p| p.to_string_lossy().into_owned()),
+            resolved_path: result
+                .resolved_path
+                .map(|p| p.to_string_lossy().into_owned()),
             reason: result.reason.map(|s| s.to_owned()),
             available_space_bytes: result.available_space_bytes,
             required_space_bytes: result.required_space_bytes,
@@ -564,8 +566,17 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
                     emit(&Event::Stopped);
                     return Ok(());
                 }
-                Some(Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes }) => {
-                    spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
+                Some(Cmd::ValidateChainDir {
+                    path,
+                    default_chain_path,
+                    required_space_bytes,
+                }) => {
+                    spawn_validate_chain_dir(
+                        config.node.state_dir.clone(),
+                        path,
+                        default_chain_path,
+                        required_space_bytes,
+                    );
                 }
                 _ => {}
             }
@@ -574,7 +585,8 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
 
     let mut node_crash_count = 0u32;
     loop {
-        let result = run_node_wallet(&config, &mut cmd_rx, after_mithril, &mut node_crash_count).await?;
+        let result =
+            run_node_wallet(&config, &mut cmd_rx, after_mithril, &mut node_crash_count).await?;
         after_mithril = false;
 
         match result {
@@ -637,8 +649,17 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
                                         emit(&Event::Stopped);
                                         return Ok(());
                                     }
-                                    Some(Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes }) => {
-                                        spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
+                                    Some(Cmd::ValidateChainDir {
+                                        path,
+                                        default_chain_path,
+                                        required_space_bytes,
+                                    }) => {
+                                        spawn_validate_chain_dir(
+                                            config.node.state_dir.clone(),
+                                            path,
+                                            default_chain_path,
+                                            required_space_bytes,
+                                        );
                                     }
                                     _ => {}
                                 }
@@ -673,8 +694,17 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
                                         emit(&Event::Stopped);
                                         return Ok(());
                                     }
-                                    Some(Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes }) => {
-                                        spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
+                                    Some(Cmd::ValidateChainDir {
+                                        path,
+                                        default_chain_path,
+                                        required_space_bytes,
+                                    }) => {
+                                        spawn_validate_chain_dir(
+                                            config.node.state_dir.clone(),
+                                            path,
+                                            default_chain_path,
+                                            required_space_bytes,
+                                        );
                                     }
                                     _ => {} // StartNode is intentionally ignored here
                                 }
