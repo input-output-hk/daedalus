@@ -44,7 +44,7 @@
   "menu.helpSupport.safetyTips": "Safety Tips ↗",
   "menu.helpSupport.safetyTipsUrl": "https://iohk.zendesk.com/hc/en-us/articles/360015295134",
   "menu.helpSupport.supportRequest": "Support Request ↗",
-  "menu.helpSupport.supportRequestUrl": "https://iohk.zendesk.com/hc/en-us/requests/new/",
+  "menu.helpSupport.supportRequestUrl": "https://daedalus-staging.support.se7enlabs.com/",
   "menu.view": "View",
   "menu.view.reload": "Reload",
   "menu.view.toggleDeveloperTools": "Toggle Developer Tools",
