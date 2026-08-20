@@ -6,6 +6,17 @@ fn main() {
     if let Some(parent) = std::path::Path::new(&socket_path).parent() {
         let _ = std::fs::create_dir_all(parent);
     }
+    // Emit the full startup phase sequence so the state machine reaches chainDbReady.
+    use std::io::Write as _;
+    println!("StartedOpeningDB");
+    println!("StartedOpeningImmutableDB");
+    println!("OpenedImmutableDB");
+    println!("StartedOpeningVolatileDB");
+    println!("OpenedVolatileDB");
+    println!("StartedOpeningLgrDB");
+    println!("OpenedLgrDB");
+    println!("OpenedDB");
+    std::io::stdout().flush().unwrap();
     std::fs::File::create(&socket_path).expect("create socket file");
 
     #[cfg(unix)]

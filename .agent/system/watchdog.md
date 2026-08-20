@@ -65,15 +65,63 @@ If the promise rejects (startup timeout, `wallet_unrecoverable`, fatal error), `
 
 ---
 
+## Supervisor state machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> ChainStatus : watchdog starts
+
+    ChainStatus --> WaitingForCommand : has_chain = false
+    ChainStatus --> NodeStarting : has_chain = true
+
+    WaitingForCommand --> MithrilSync : start_mithril cmd
+    WaitingForCommand --> NodeStarting : start_node cmd
+
+    MithrilSync --> NodeStarting : completed / cancelled
+
+    state NodeStarting {
+        [*] --> OpeningChainDb : openingChainDb
+        OpeningChainDb --> OpeningImmutableDb : openingImmutableDb
+        OpeningImmutableDb --> OpenedImmutableDb : openedImmutableDb
+        OpenedImmutableDb --> OpeningVolatileDb : openingVolatileDb
+        OpeningVolatileDb --> OpenedVolatileDb : openedVolatileDb
+        OpenedVolatileDb --> OpeningLedgerDb : openingLedgerDb
+        OpeningLedgerDb --> ReplayingLedger : replayingLedger (if replay needed)
+        OpeningLedgerDb --> OpenedLedgerDb : openedLedgerDb (no replay)
+        ReplayingLedger --> OpenedLedgerDb : openedLedgerDb
+        OpenedLedgerDb --> [*] : chainDbReady
+    }
+
+    NodeStarting --> MithrilSync : start_mithril cmd (replay too slow)
+    NodeStarting --> WalletStarting : chainDbReady
+
+    state WalletStarting {
+        [*] --> AwaitingPort : wallet spawned
+        AwaitingPort --> [*] : port open (wallet_ready)
+        AwaitingPort --> AwaitingPort : wallet crashed (restart with delay)
+        AwaitingPort --> [*] : max_restart_attempts (wallet_unrecoverable)
+    }
+
+    WalletStarting --> Ready : wallet_ready
+
+    Ready --> [*] : stop cmd / node exit / wallet_unrecoverable
+    NodeStarting --> [*] : stop cmd / node exit
+    WaitingForCommand --> [*] : stop cmd
+```
+
+`chainDbReady` is the authoritative gate on **all platforms** before wallet startup begins. The watchdog parses cardano-node's log output (stdout/stderr) in `pipe_to_log` and feeds startup phases into a channel consumed by the `'node_starting` loop. The state machine transitions through each sub-state in order; unexpected transitions are logged as warnings. `replayingLedger` is optional — it is skipped when the node has a recent ledger snapshot and no replay is needed.
+
+> **Why not the socket file?** On Windows, cardano-node communicates via a Named Pipe which does not appear as a filesystem entry, so a socket-file poll would return immediately regardless of startup progress. Using `chainDbReady` from the log parser gives a single consistent signal on both platforms.
+
+---
+
 ## What the watchdog monitors and restarts
 
 ### cardano-node
 
 The watchdog **does not restart** cardano-node. It monitors it with a watch channel; if node exits at any point, the watchdog stops the wallet, emits `node_exited`, and shuts down. Node exit is treated as unrecoverable — Daedalus will restart the whole stack via `CardanoNode.ts`.
 
-The watchdog also waits for the node socket to appear before starting the wallet:
-- **Unix**: polls `Path::exists()` every 500 ms (up to 120 s).
-- **Windows**: returns immediately — cardano-node uses a Named Pipe (`\\.\pipe\cardano-node.socket`) which does not appear as a filesystem entry; cardano-wallet retries the connection internally.
+The watchdog waits for `chainDbReady` from the node log parser before starting the wallet (see state machine above).
 
 ### cardano-wallet
 
@@ -137,7 +185,7 @@ All events have an `"event"` discriminant field (snake_case):
 | `watchdog_started` | `pid` | Watchdog process is running |
 | `chain_status` | `has_chain: bool` | Emitted on startup; if `false`, watchdog waits for `start_node` or `start_mithril` |
 | `node_started` | `pid`, `started_at_unix_ms` | cardano-node spawned |
-| `node_socket_ready` | `waited_ms` | Node socket appeared (Unix); wallet is about to start |
+| `node_socket_ready` | `waited_ms` | `chainDbReady` received from node log parser; wallet is about to start |
 | `wallet_started` | `pid`, `started_at_unix_ms` | cardano-wallet spawned |
 | `wallet_ready` | `port`, `waited_ms` | Wallet API is accepting connections → promise resolves |
 | `wallet_exited` | `code`, `signal`, `phase` | Wallet process exited (`phase`: `pre_ready` or `post_ready`) |
@@ -261,7 +309,7 @@ The rejection is **deferred to process exit** (not fired immediately on `wallet_
 
 | Concern | Unix | Windows |
 |---------|------|---------|
-| Node socket wait | Poll `Path::exists()` every 500 ms | Immediate return; wallet retries |
+| Node startup gate | `chainDbReady` from log parser | `chainDbReady` from log parser (Named Pipe not a filesystem entry) |
 | Node socket path | `<state_dir>/cardano-node.socket` | `\\.\pipe\cardano-node.socket` |
 | Stale socket cleanup | `tokio::fs::remove_file` at startup | No-op (Named Pipes are not files) |
 | Graceful node stop | Close fd → EOF on fd 3 | Close HANDLE → EOF on fd 0 (stdin) |

@@ -236,6 +236,21 @@ fn open_log(path: &str) -> RotatingLog {
     )))
 }
 
+// Node startup sub-states, in order of expected progression.
+// chainDbReady is the terminal state that gates wallet startup.
+#[derive(Debug)]
+enum NodeStartupState {
+    Init,
+    OpeningChainDb,
+    OpeningImmutableDb,
+    OpenedImmutableDb,
+    OpeningVolatileDb,
+    OpenedVolatileDb,
+    OpeningLedgerDb,
+    ReplayingLedger,
+    OpenedLedgerDb,
+}
+
 /// Parse the ChainDB startup phase from a cardano-node log line.
 /// Returns a camelCase phase key matching the TypeScript `NodeStartupPhase` type.
 fn try_parse_startup_status(line: &str) -> Option<&'static str> {
@@ -294,6 +309,7 @@ async fn pipe_to_log(
     reader: impl tokio::io::AsyncRead + Unpin + Send + 'static,
     log: RotatingLog,
     parse_sync_progress: bool,
+    startup_tx: Option<mpsc::UnboundedSender<&'static str>>,
 ) {
     let mut buf = BufReader::new(reader);
     let mut line = String::new();
@@ -314,6 +330,9 @@ async fn pipe_to_log(
                         emit(&Event::NodeStartupStatus {
                             phase: phase.to_string(),
                         });
+                        if let Some(ref tx) = startup_tx {
+                            let _ = tx.send(phase);
+                        }
                     }
                 }
                 if let Ok(mut w) = log.lock() {
@@ -321,24 +340,6 @@ async fn pipe_to_log(
                 }
             }
         }
-    }
-}
-
-async fn wait_for_socket(path: &Path) {
-    // On Windows, cardano-node communicates via a Named Pipe which does not
-    // appear as a regular file. Return immediately; cardano-wallet retries
-    // the Named Pipe connection on its own.
-    #[cfg(windows)]
-    {
-        let _ = path;
-        return;
-    }
-    #[cfg(not(windows))]
-    loop {
-        if path.exists() {
-            return;
-        }
-        sleep(Duration::from_millis(500)).await;
     }
 }
 
@@ -740,8 +741,7 @@ async fn run_node_wallet(
         }
     };
 
-    // Remove any stale socket file left by a previous run so wait_for_socket
-    // doesn't fire immediately on a dead path. (Unix only; Windows uses Named Pipes.)
+    // Remove any stale socket file left by a previous run. (Unix only; Windows uses Named Pipes.)
     #[cfg(not(windows))]
     if let Err(e) = tokio::fs::remove_file(&config.node.socket_path).await {
         if e.kind() != std::io::ErrorKind::NotFound {
@@ -794,16 +794,22 @@ async fn run_node_wallet(
         });
     }
 
+    // Startup phase channel: pipe_to_log feeds phases here so the node_starting
+    // loop can gate wallet startup on chainDbReady.
+    let (startup_tx, mut startup_rx) = mpsc::unbounded_channel::<&'static str>();
+
     // Forward node logs
     tokio::spawn(pipe_to_log(
         node_proc.stdout.take().unwrap(),
         Arc::clone(&node_log),
         true,
+        Some(startup_tx.clone()),
     ));
     tokio::spawn(pipe_to_log(
         node_proc.stderr.take().unwrap(),
         node_log,
         true,
+        Some(startup_tx),
     ));
 
     // Watch node for exit. The kill channel lets us force-kill via start_kill()
@@ -824,9 +830,8 @@ async fn run_node_wallet(
         }
     });
 
-    // Wait for node socket, observing early node exit and stop commands
-    let socket_path = Path::new(&config.node.socket_path);
-    info!("waiting for node socket: {}", socket_path.display());
+    // Wait for chainDbReady, observing early node exit and stop commands
+    info!("waiting for chainDbReady: {}", config.node.socket_path);
     let mut node_rx_socket = node_rx.clone();
 
     let socket_wait_start = unix_ms();
@@ -848,13 +853,39 @@ async fn run_node_wallet(
         return Ok(RunResult::NodeCrashed);
     }
 
-    // Loop so unrelated commands (e.g. ProbeMithril) are discarded rather than
-    // mistakenly triggering NodeSocketReady or other unintended side-effects.
-    'socket_wait: loop {
+    // State machine: NodeStarting → (chainDbReady) → WalletStarting
+    //
+    // chainDbReady is the authoritative gate on all platforms. The log parser
+    // in pipe_to_log feeds startup phases into startup_rx; when chainDbReady
+    // arrives the node is considered ready and wallet startup begins.
+    //
+    // On Linux the socket file also appears around this time, but we do not
+    // use it as the gate — parsing the log phase gives a single consistent
+    // signal across platforms.
+    let mut startup_state = NodeStartupState::Init;
+
+    'node_starting: loop {
         tokio::select! {
-            _ = wait_for_socket(socket_path) => {
-                emit(&Event::NodeSocketReady { waited_ms: unix_ms() - socket_wait_start });
-                break 'socket_wait;
+            Some(phase) = startup_rx.recv() => {
+                startup_state = match (&startup_state, phase) {
+                    (NodeStartupState::Init,             "openingChainDb")    => NodeStartupState::OpeningChainDb,
+                    (NodeStartupState::OpeningChainDb,   "openingImmutableDb") => NodeStartupState::OpeningImmutableDb,
+                    (NodeStartupState::OpeningImmutableDb, "openedImmutableDb") => NodeStartupState::OpenedImmutableDb,
+                    (NodeStartupState::OpenedImmutableDb, "openingVolatileDb") => NodeStartupState::OpeningVolatileDb,
+                    (NodeStartupState::OpeningVolatileDb, "openedVolatileDb") => NodeStartupState::OpenedVolatileDb,
+                    (NodeStartupState::OpenedVolatileDb, "openingLedgerDb")   => NodeStartupState::OpeningLedgerDb,
+                    (NodeStartupState::OpeningLedgerDb,  "replayingLedger")   => NodeStartupState::ReplayingLedger,
+                    // openedLedgerDb can follow either OpeningLedgerDb (no replay) or ReplayingLedger
+                    (NodeStartupState::OpeningLedgerDb | NodeStartupState::ReplayingLedger, "openedLedgerDb") => NodeStartupState::OpenedLedgerDb,
+                    (NodeStartupState::OpenedLedgerDb,   "chainDbReady") => {
+                        emit(&Event::NodeSocketReady { waited_ms: unix_ms() - socket_wait_start });
+                        break 'node_starting;
+                    }
+                    (state, phase) => {
+                        warn!("unexpected startup phase '{phase}' in state {state:?}; ignoring");
+                        startup_state
+                    }
+                };
             }
             _ = node_rx_socket.changed() => {
                 let exit = node_rx_socket.borrow().clone().unwrap_or((None, None));
@@ -907,8 +938,17 @@ async fn run_node_wallet(
                             });
                         }
                     }
-                    Cmd::ValidateChainDir { path, default_chain_path, required_space_bytes } => {
-                        spawn_validate_chain_dir(config.node.state_dir.clone(), path, default_chain_path, required_space_bytes);
+                    Cmd::ValidateChainDir {
+                        path,
+                        default_chain_path,
+                        required_space_bytes,
+                    } => {
+                        spawn_validate_chain_dir(
+                            config.node.state_dir.clone(),
+                            path,
+                            default_chain_path,
+                            required_space_bytes,
+                        );
                     }
                     Cmd::RestartNode => {
                         let shutdown_start = unix_ms();
@@ -920,7 +960,7 @@ async fn run_node_wallet(
                         emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
                         return Ok(RunResult::RestartRequested);
                     }
-                    _ => {} // stale command: ignore and keep waiting for socket
+                    _ => {} // stale command: ignore and keep waiting
                 }
             }
         }
@@ -978,11 +1018,13 @@ async fn run_node_wallet(
             wallet.stdout.take().unwrap(),
             Arc::clone(&wallet_log),
             false,
+            None,
         ));
         tokio::spawn(pipe_to_log(
             wallet.stderr.take().unwrap(),
             wallet_log,
             false,
+            None,
         ));
 
         let port = wallet_cfg.api_port;
