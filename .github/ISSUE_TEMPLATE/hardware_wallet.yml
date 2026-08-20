@@ -1,0 +1,132 @@
+name: Hardware Wallet Problem
+description: Report a problem using a Ledger or Trezor device with Daedalus
+title: "[HW] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for problems connecting, pairing, or signing with a hardware wallet.
+
+        A hardware wallet problem depends on four versions that move independently: Daedalus, the device firmware, the Cardano app on the device, and the operating system. All four are asked for below, because a report missing any of them usually cannot be reproduced.
+
+        If you need individual help rather than to report a defect, please review the [Daedalus support guidance](https://github.com/input-output-hk/daedalus/blob/master/SUPPORT.md).
+
+        Never include a wallet recovery phrase, seed phrase, private key, spending password or other wallet secret in a GitHub issue. A hardware wallet will never ask you to type its recovery phrase into a computer.
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: |
+        In Daedalus, open `Help` > `Daedalus Diagnostics`, copy the diagnostic information using the copy control, and paste it here.
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device
+      options:
+        - Ledger Nano S
+        - Ledger Nano S Plus
+        - Ledger Nano X
+        - Trezor Model One
+        - Trezor Model T
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: device-firmware
+    attributes:
+      label: Device firmware version
+      description: Shown in the device settings, or in Ledger Live or Trezor Suite.
+      placeholder: "Example: 2.2.3"
+    validations:
+      required: true
+
+  - type: input
+    id: cardano-app-version
+    attributes:
+      label: Cardano app version (Ledger only)
+      description: The version of the Cardano application installed on the device, shown in Ledger Live under the installed apps. Trezor devices have no separate Cardano app, so leave this blank.
+      placeholder: "Example: 7.1.2"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: operation
+    attributes:
+      label: What were you doing
+      options:
+        - Pairing or adding the hardware wallet to Daedalus
+        - Daedalus does not detect the device at all
+        - Verifying an address on the device
+        - Signing a transaction
+        - Delegating or withdrawing rewards
+        - Voting or governance action
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: connection
+    attributes:
+      label: How is the device connected
+      options:
+        - USB directly to the computer
+        - USB through a hub, dock or adapter
+        - Bluetooth
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe what happened, including any message shown by Daedalus and anything shown on the device screen.
+
+        Device screen text matters. It is often the only indication of why the device rejected an operation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Connect the device and unlock it
+        2. Open the Cardano app on the device
+        3. In Daedalus, go to ...
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: other-software
+    attributes:
+      label: Does the device work elsewhere
+      description: Whether the device is recognised by its own vendor software helps separate a Daedalus problem from a device or operating system one.
+      options:
+        - "Yes, Ledger Live or Trezor Suite recognises it"
+        - "No, the vendor software does not recognise it either"
+        - I have not tried
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the existing Daedalus issues and did not find one describing the same problem.
+          required: true
+        - label: I have not included a recovery phrase, seed phrase, private key, spending password or other wallet secret.
+          required: true
+        - label: I understand that this issue and anything I submit here will be publicly visible.
+          required: true
