@@ -1575,6 +1575,13 @@ Forbidden from observability and non-authoritative storage:
 - Add wallet-scoped pending submission.
 - Accumulate tasks 200-208 as reviewable local commits in `../cardano-wallet`, then use task-209 for one consolidated upstream review, backend integration, migration/rollback tests, aggregate activation, and the exact Daedalus pin update.
 
+Task-201 has a final local review candidate at `cardano-wallet`
+`3ca15553f96587f1f96688185165b2ede00e30b0` with published decoder
+`44e0a32300ec6d6d03b7578b97b8374820802ba1`. Focused HTTP/mTLS success and
+controlled acquisition failure, live datum/inline-datum/reference-script fidelity, rollback compatibility, cross-language fixtures,
+and temporary Daedalus builds pass. Capability publication and the tracked pin
+remain unchanged; task-209 still owns consolidated review, activation, and pinning.
+
 ### Phase 3: Shared Cardano And Extension Engine
 
 - Build exact CBOR span extraction and semantic transaction model.

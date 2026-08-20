@@ -16,8 +16,9 @@ machine-readable input for tasks 302 and 303; it is not a production parser.
 - Daedalus retains `@cardano-sdk/core@0.41.4` as a non-authoritative semantic helper.
   Candidate `0.47.0` closes no demonstrated task-303 representation gap and accepts
   more strict-reject probes, so `package.json` and `yarn.lock` remain unchanged.
-- Conway is conditionally ready only at the fixture/inventory layer. No backend,
-  production parser, or product support is implemented by this task.
+- Conway remains conditionally ready at the product layer. Task-201 now has a
+  review-candidate backend and cross-language context fixture, but no production
+  Daedalus parser, capability activation, tracked backend pin, or product support.
 - Dijkstra is `unsupported/readiness-blocked`. Pinned package evidence materially
   changes the envelope, body, native scripts, redeemers, Plutus language, and
   protocol parameters while cardano-wallet retains unsupported/TODO paths.
@@ -159,7 +160,7 @@ unknown-field handling, tags, and duplicates remain task-302/task-303 work.
 
 | Era      | Wire fixture                  | SDK representation           | Backend planned      | Backend implemented | Production parser | Product support | Task-004 conclusion           |
 | -------- | ----------------------------- | ---------------------------- | -------------------- | ------------------- | ----------------- | --------------- | ----------------------------- |
-| Conway   | recognized                    | required fixture represented | yes                  | no                  | no                | no              | conditional readiness         |
+| Conway   | recognized                    | required fixture represented | yes                  | task-201 candidate  | no                | no              | conditional readiness         |
 | Dijkstra | not recognized for production | informational only           | no complete contract | no                  | no                | no              | unsupported/readiness-blocked |
 
 The pinned Dijkstra CDDL has a normal three-item envelope and a four-item mempool
@@ -171,6 +172,12 @@ map redeemers remain; the protocol minor becomes `uint .size 4`; and protocol-up
 keys 34-37 add reference-script limits and cost controls. The sibling wallet still
 contains unsupported Dijkstra era API comments, transaction generator/signing pending
 tests, and native-script/mint conversion TODO failures.
+
+Task-201 adds `backend-context-v1.json`, sourced from `cardano-wallet`
+`3ca15553f96587f1f96688185165b2ede00e30b0` and decoder
+`44e0a32300ec6d6d03b7578b97b8374820802ba1`. It links the existing pinned Conway
+full-output fixture and independently reproduces records, digest, and token. This
+does not change Dijkstra status or satisfy the production parser/activation gates.
 
 Dijkstra promotion requires an explicit tracker/PRD update plus pinned final sources,
 backend tasks 200/201/206/209, parser task 302, complete semantic task 303, context
