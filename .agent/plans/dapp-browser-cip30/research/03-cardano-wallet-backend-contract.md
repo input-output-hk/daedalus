@@ -13,12 +13,12 @@ currently shipped API.
 
 ## Baselines
 
-| Baseline                | Revision                                                                | Meaning                                                                                          |
-| ----------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Daedalus packaged input | `cardano-foundation/cardano-wallet/v2026-07-23`                         | Release input in `flake.nix`.                                                                    |
-| Daedalus locked source  | `724be55dc66cf67bc4427e8f1a9657a9d1d33d71`                              | Exact `flake.lock` revision; authoritative for bundled behavior.                                 |
-| Initial sibling review checkout | branch `amw/cip30`, revision `d3d170d02df9e39be04d85f3ce09fca98c9c5380` | Aligned with `upstream/master` when validated on 2026-08-11; historical implementation starting point only. |
-| Task-200 local foundation | branch `amw/cip30`, revision `b2d20f4385bfcb92454b4dec91f954a0babd13ac` | Rebased onto upstream `6761259ee91b138921231ce7fd1198679abfcc82`; unavailable and non-pin-eligible until the consolidated task-209 gate. |
+| Baseline                        | Revision                                                                | Meaning                                                                                                                                  |
+| ------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Daedalus packaged input         | `cardano-foundation/cardano-wallet/v2026-07-23`                         | Release input in `flake.nix`.                                                                                                            |
+| Daedalus locked source          | `724be55dc66cf67bc4427e8f1a9657a9d1d33d71`                              | Exact `flake.lock` revision; authoritative for bundled behavior.                                                                         |
+| Initial sibling review checkout | branch `amw/cip30`, revision `d3d170d02df9e39be04d85f3ce09fca98c9c5380` | Aligned with `upstream/master` when validated on 2026-08-11; historical implementation starting point only.                              |
+| Task-200 local foundation       | branch `amw/cip30`, revision `b2d20f4385bfcb92454b4dec91f954a0babd13ac` | Rebased onto upstream `6761259ee91b138921231ce7fd1198679abfcc82`; unavailable and non-pin-eligible until the consolidated task-209 gate. |
 
 The complete pin-to-sibling range changes 175 files. Most are CI, release,
 delta-library publication, and unrelated feature work, but the range also
@@ -41,21 +41,21 @@ git -C ../cardano-wallet rev-parse HEAD upstream/master
 
 ## Existing-Seam Matrix
 
-| Requirement            | Pinned and sibling evidence                                                                                                                                                                                               | Decision                                                                                                                                                        |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Capability negotiation | No dApp capability endpoint exists.                                                                                                                                                                                       | Add strict `GET /v2/dapp-capabilities`; never infer support from a version string or endpoint probing.                                                          |
-| Wallet UTxO snapshot   | `ApiWalletUtxoSnapshotEntry` contains only ADA and assets; `getWalletUtxoSnapshot` returns token bundles.                                                                                                                 | It is not a CIP-30 UTxO or review context.                                                                                                                      |
-| Stored full output     | Primitive `TxOut` stores only address and token bundle.                                                                                                                                                                   | Never use it as exact output evidence; obtain full ledger/sealed bytes.                                                                                         |
-| Full input lookup      | `getUTxOByTxIn` returns ledger `UTxO` only for Conway and Dijkstra; older eras return `InNonRecentEra`.                                                                                                                   | Advertise exact era coverage and fail closed; task-004 controls Daedalus's supported-era intersection.                                                          |
-| Coherent wallet state  | `readWallet` reads checkpoint, metadata/delegation, and pending transactions in one wallet DB action, but node LSQ is separate.                                                                                           | Use the `W/G/P` capture protocol below; do not claim global atomicity.                                                                                          |
-| Software signing       | `/wallets/{walletId}/transactions-sign` returns a modified full transaction and preserves existing witnesses by contract. V1 uses `addVkWitnesses`; V2 reseals recent-era transactions and unions address/VKey witnesses. | Reuse only if path-specific differential tests prove exact envelope invariants and reviewed-context input can be added safely.                                  |
-| Data signing           | Existing metadata signing is Catalyst-oriented.                                                                                                                                                                           | Do not reuse it for CIP-8. Backend produces the complete frozen CIP-8/CIP-95 COSE result.                                                                       |
-| Wallet submit          | `/wallets/{walletId}/transactions-submit` rejects foreign transactions. `submitTx` broadcasts before adding submission state.                                                                                             | Extend the wallet-scoped path with the write-ahead state machine below.                                                                                         |
-| Proxy submit           | `/proxy/transactions` broadcasts through `submitExternalTx`; Swagger explicitly assigns retries to the caller and no wallet submission state is written.                                                                  | Never use it for the dApp path.                                                                                                                                 |
-| Submission store       | Existing store retains sealed transactions and supports status/rollback operations.                                                                                                                                       | Reuse if task-208 proves it can represent every required state and identity without schema change.                                                              |
-| Migration              | New-style migration creates a versioned backup before a forward step.                                                                                                                                                     | Backup is not proof an old binary can open the new DB. Prove old-pin open compatibility or require backup restoration.                                          |
+| Requirement            | Pinned and sibling evidence                                                                                                                                                                                               | Decision                                                                                                                                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Capability negotiation | No dApp capability endpoint exists.                                                                                                                                                                                       | Add strict `GET /v2/dapp-capabilities`; never infer support from a version string or endpoint probing.                                                                                       |
+| Wallet UTxO snapshot   | `ApiWalletUtxoSnapshotEntry` contains only ADA and assets; `getWalletUtxoSnapshot` returns token bundles.                                                                                                                 | It is not a CIP-30 UTxO or review context.                                                                                                                                                   |
+| Stored full output     | Primitive `TxOut` stores only address and token bundle.                                                                                                                                                                   | Never use it as exact output evidence; obtain full ledger/sealed bytes.                                                                                                                      |
+| Full input lookup      | `getUTxOByTxIn` returns ledger `UTxO` only for Conway and Dijkstra; older eras return `InNonRecentEra`.                                                                                                                   | Advertise exact era coverage and fail closed; task-004 controls Daedalus's supported-era intersection.                                                                                       |
+| Coherent wallet state  | `readWallet` reads checkpoint, metadata/delegation, and pending transactions in one wallet DB action, but node LSQ is separate.                                                                                           | Use the `W/G/P` capture protocol below; do not claim global atomicity.                                                                                                                       |
+| Software signing       | `/wallets/{walletId}/transactions-sign` returns a modified full transaction and preserves existing witnesses by contract. V1 uses `addVkWitnesses`; V2 reseals recent-era transactions and unions address/VKey witnesses. | Reuse only if path-specific differential tests prove exact envelope invariants and reviewed-context input can be added safely.                                                               |
+| Data signing           | Existing metadata signing is Catalyst-oriented.                                                                                                                                                                           | Do not reuse it for CIP-8. Backend produces the complete frozen CIP-8/CIP-95 COSE result.                                                                                                    |
+| Wallet submit          | `/wallets/{walletId}/transactions-submit` rejects foreign transactions. `submitTx` broadcasts before adding submission state.                                                                                             | Extend the wallet-scoped path with the write-ahead state machine below.                                                                                                                      |
+| Proxy submit           | `/proxy/transactions` broadcasts through `submitExternalTx`; Swagger explicitly assigns retries to the caller and no wallet submission state is written.                                                                  | Never use it for the dApp path.                                                                                                                                                              |
+| Submission store       | Existing store retains sealed transactions and supports status/rollback operations.                                                                                                                                       | Reuse if task-208 proves it can represent every required state and identity without schema change.                                                                                           |
+| Migration              | New-style migration creates a versioned backup before a forward step.                                                                                                                                                     | Backup is not proof an old binary can open the new DB. Prove old-pin open compatibility or require backup restoration.                                                                       |
 | Upstream delivery      | `CONTRIBUTING.md` says the project is maintenance-only, while external features and PRs remain welcome subject to thorough review.                                                                                        | Tasks 200-208 accumulate as reviewable local commits. Task-209 owns one consolidated upstream PR, named authorized review, durable evidence, activation, and pinning for the complete range. |
-| Daedalus octet stream  | `request.ts` accepts a hex string, sets length to half its characters, and writes with `hex` encoding.                                                                                                                    | Task-209 replaces this with one runtime-validated exact-byte representation.                                                                                    |
+| Daedalus octet stream  | `request.ts` accepts a hex string, sets length to half its characters, and writes with `hex` encoding.                                                                                                                    | Task-209 replaces this with one runtime-validated exact-byte representation.                                                                                                                 |
 
 ## Capability Contract
 
@@ -128,6 +128,61 @@ wallet. The request carries expected genesis/network identity and ordered exact
 transaction CBOR. It may identify requested outpoints, but never supplies
 authoritative paths, ownership flags, reduced outputs, protocol summaries, or
 parent-output summaries.
+
+### Task-201 Revision-1 Freeze
+
+Task-201 adds only `POST /v2/wallets/{walletId}/transaction-context`. Its closed
+request contains `revision: 1`, expected `{network_id, network_magic, genesis_hash}`, and `1..50` ordered lowercase-hex Conway transactions of
+`1..65536` bytes each. It contains no caller-supplied input or role lists. The
+backend fully decodes each transaction and derives normal body-key `0`,
+collateral body-key `13`, and reference body-key `18` inputs. Unknown fields,
+malformed or non-Conway bytes, network mismatch, and normal/collateral overlap
+within one body are `dapp_invalid_request`.
+
+The closed response and exact JSON representations are frozen in the approved
+canonical plan at
+[`task-plans/task-201.md`](../task-plans/task-201.md#frozen-revision-1-http-schema).
+Its set equations are normative: `C = dom(checkpoint UTxO)`, `N` and `K` are
+normal and collateral inputs of the exact current legacy `InSubmission` set,
+`A = C - (N union K)`, `S = C - A`, `Q` is every transaction-derived requested
+input, and `O = A union Q`. This deliberately preserves live `availableUTxO`
+semantics: `spent_wallet_inputs = S`, `produced_wallet_outputs = []`, and one
+output plus one `0x01` record exists for each member of `O`. Pending-produced
+outputs remain bound by their exact transaction and `0x07` record and produce a
+`0x01` record only when independently included in `Q`.
+
+Task-201 maps current legacy `InSubmission` records to pending state `4`
+(`outcome-unknown`) because the store cannot prove a narrower broadcast state.
+Other current or future states are not guessed. Missing or malformed exact
+sealed bytes fail `dapp_context_unavailable` when they affect the context.
+
+For pending outputs, record `0x01` binds the original output span as
+`exact_ledger_txout_cbor`; node outputs use pinned-ledger canonical bytes.
+Canonical response output and CIP-30 pair bytes are emitted separately.
+Authoritative-source equality is byte equality, so semantically equal but
+differently encoded pending and node outputs conflict. Protocol parameters are
+the complete pinned Conway ledger serialization queried in the same LSQ
+acquisition at `W`.
+
+The response keeps `volatile_delta` distinct from the context records. It is a
+deterministic projection containing `W` and the sorted canonical input CBOR for
+outputs with node provenance, not another node query. Process-memory `G/P`
+clocks are serialized with each wallet database through one per-wallet gate;
+successful SQL mutation commits and the corresponding checked increment happen
+before releasing that gate. SQL rollback does not increment. Restart resets
+the clocks only together with the random process generation and HMAC key, so no
+old token authenticates. Persisting clocks or context would require replanning
+and a migration.
+
+Every deliverable response on the exact route normalizes to the fixed dApp
+errors: malformed transport/application input `400 dapp_invalid_request`,
+unequal authoritative bytes `400 dapp_context_conflict`, wallet/network change
+`409 dapp_account_changed`, unavailable coherent context `503 dapp_context_unavailable`, and unmapped invariant/persistence/crypto failure
+`500 dapp_internal_error`. Bodies, traces, metrics, and logs expose no wallet,
+transaction, output, protocol, digest, token, key, path, TLS, or database data.
+The task-200 capability endpoint remains an ordinary `404`; task-209 retains
+activation, consolidated upstream review, aggregate integration, migration
+review, and pin ownership.
 
 ### Capture Protocol
 
@@ -386,20 +441,20 @@ a static redacted category.
 
 ## Requirement-To-Evidence Assignment
 
-| Task       | Required test/evidence layers                                                                                                                                                                                                                                                                                                                                                            |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `task-200` | `lib/api` schema units, Swagger/golden consistency, strict malformed/duplicate/partial/old/build/network cases, exact HTTP/tag/info mapping and response-body redaction, exact bare-`err404` handler proof, compiled unavailable-route integration scenario, and exact candidate package identity. Live success is deferred to task-209. |
-| `task-201` | Network LSQ units and local-cluster integration for exact-point capture, three-attempt races, rollback/pruning, full-output pin/sibling goldens, datum/reference-script fidelity, era failure, digest fixtures, and token restart invalidation.                                                                                                                                          |
-| `task-202` | Wallet unit/property and discovery tests for `G/P`, ownership, source precedence, and adversarial earlier/pending/self/forward/duplicate/conflicting dependencies.                                                                                                                                                                                                                       |
-| `task-203` | `Cardano.Wallet.Shelley.TransactionSpec`, `TransactionLedgerSpec`, API integration, and V1/V2 differential fixtures for every immutable envelope/witness class, VKey-only delta, current-batch context, partial modes, collateral, and required signers.                                                                                                                                 |
-| `task-204` | Wallet/API unit and integration goldens for complete payment/stake COSE, exact headers/payload/key/signature, wrong passphrase, script, and unowned credentials.                                                                                                                                                                                                                         |
-| `task-205` | Derivation/discovery units and wallet/API integration for role-3 DRep, public keys, pending registration, type-6 normalization, and DRep COSE.                                                                                                                                                                                                                                           |
-| `task-206` | Wallet transaction-ledger differential coverage for Conway fields, DRep certificates/votes, deprecated certificates, completeness, and unsupported credentials.                                                                                                                                                                                                                          |
-| `task-208` | Submission model/property, `DB.Store.Submissions`, SQLite, API/local-cluster fault injection around every durable/broadcast transition, same-node reconciliation snapshots, bounded retry generations, concurrency, unknown outcome, confirmation/expiry/rollback, CIP-103 order, pinned-schema migration, backup restore, old-pin open-or-restore proof, and transaction-log redaction. |
+| Task       | Required test/evidence layers                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `task-200` | `lib/api` schema units, Swagger/golden consistency, strict malformed/duplicate/partial/old/build/network cases, exact HTTP/tag/info mapping and response-body redaction, exact bare-`err404` handler proof, compiled unavailable-route integration scenario, and exact candidate package identity. Live success is deferred to task-209.                                                                                                          |
+| `task-201` | Network LSQ units and local-cluster integration for exact-point capture, three-attempt races, rollback/pruning, full-output pin/sibling goldens, datum/reference-script fidelity, era failure, digest fixtures, and token restart invalidation.                                                                                                                                                                                                   |
+| `task-202` | Wallet unit/property and discovery tests for `G/P`, ownership, source precedence, and adversarial earlier/pending/self/forward/duplicate/conflicting dependencies.                                                                                                                                                                                                                                                                                |
+| `task-203` | `Cardano.Wallet.Shelley.TransactionSpec`, `TransactionLedgerSpec`, API integration, and V1/V2 differential fixtures for every immutable envelope/witness class, VKey-only delta, current-batch context, partial modes, collateral, and required signers.                                                                                                                                                                                          |
+| `task-204` | Wallet/API unit and integration goldens for complete payment/stake COSE, exact headers/payload/key/signature, wrong passphrase, script, and unowned credentials.                                                                                                                                                                                                                                                                                  |
+| `task-205` | Derivation/discovery units and wallet/API integration for role-3 DRep, public keys, pending registration, type-6 normalization, and DRep COSE.                                                                                                                                                                                                                                                                                                    |
+| `task-206` | Wallet transaction-ledger differential coverage for Conway fields, DRep certificates/votes, deprecated certificates, completeness, and unsupported credentials.                                                                                                                                                                                                                                                                                   |
+| `task-208` | Submission model/property, `DB.Store.Submissions`, SQLite, API/local-cluster fault injection around every durable/broadcast transition, same-node reconciliation snapshots, bounded retry generations, concurrency, unknown outcome, confirmation/expiry/rollback, CIP-103 order, pinned-schema migration, backup restore, old-pin open-or-restore proof, and transaction-log redaction.                                                          |
 | `task-209` | One consolidated upstream PR/review for the complete task-200-through-task-208 range; Daedalus runtime/API validation and Jest for exact octet streams, exact error/info mapping, capability downgrade/malformed behavior, and no sensitive HTTP body/trace/metric/log values; real aggregate HTTP/mTLS and candidate-backend Nix smoke; migration/rollback evidence review; activation and integration before pin; rerun after exact pin update. |
-| `task-304` | Independently encode every context record and recompute digest/token-bound identity from backend fixtures; mutate every field; reject unknown tags, duplicate records, malformed lengths, network/wallet mismatch, and stale process generations before review.                                                                                                                          |
-| `task-306` | Independently compare full signing envelopes, immutable witness classes, exact body, and VKey set difference; verify every new key/signature and reject all non-VKey mutation.                                                                                                                                                                                                           |
-| `task-307` | Independently decode and verify backend-produced COSE bytes, headers, payload, key association, normalization, and Ed25519 signature against task-002 goldens.                                                                                                                                                                                                                           |
+| `task-304` | Independently encode every context record and recompute digest/token-bound identity from backend fixtures; mutate every field; reject unknown tags, duplicate records, malformed lengths, network/wallet mismatch, and stale process generations before review.                                                                                                                                                                                   |
+| `task-306` | Independently compare full signing envelopes, immutable witness classes, exact body, and VKey set difference; verify every new key/signature and reject all non-VKey mutation.                                                                                                                                                                                                                                                                    |
+| `task-307` | Independently decode and verify backend-produced COSE bytes, headers, payload, key association, normalization, and Ed25519 signature against task-002 goldens.                                                                                                                                                                                                                                                                                    |
 
 There is no task-207 in the task graph. Every reassignment must update the
 tracker. The user-authorized assumption accepts this task-003 assignment only;
@@ -435,6 +490,74 @@ local-cluster scenario compiles, but real HTTP/mTLS execution was blocked by a
 missing sibling-flake Nix store source and is not claimed. Task-209 must run that
 evidence against the complete range before activation and pinning. The local
 foundation remains unavailable, unpinned, and not submitted upstream by design.
+
+## Task-201 Candidate Evidence
+
+The final internal-review candidates are
+`cardano-ledger-read` range
+`54f91a71874c50c14260de4eab6b2c2123e7d391..44e0a32300ec6d6d03b7578b97b8374820802ba1`
+and `cardano-wallet` range
+`b2d20f4385bfcb92454b4dec91f954a0babd13ac..3ca15553f96587f1f96688185165b2ede00e30b0`.
+The decoder retains
+complete Conway ordinary-output source spans and validates each against the
+ledger-decoded value. The wallet candidate adds the Shelley-only context route,
+exact-point composite LSQ, gated process-memory generations/incarnations,
+pending/node byte conflict handling, canonical records/digest/token, closed
+Swagger/client/link types, exhaustive raw-route normalization, and request,
+response, and wallet-path log suppression. Each exact-point attempt uses an
+isolated node connection with structured 30-second cancellation, so stalled
+context work cannot block the persistent rewards/volatile LSQ queue. It adds no
+SQL schema or persisted context state and does not activate the capability
+route.
+
+Local exact-checkout verification passed 51 decoder examples, 4 context
+encoding/token examples, 10 logging examples, and 18 focused malformed-route,
+fixed-error, and Swagger-path examples, plus 10 network-layer examples including
+deterministic timeout/client cleanup. Five focused DBFactory examples prove exact
+generation classes, idempotent tombstoning, recreation, and stale-incarnation
+rejection; two resolver examples prove three-attempt query and capture/confirm
+exhaustion. The API and application libraries built; the repository Swagger
+validator, Fourmolu, Word64 boundary probe, and `git diff --check` passed.
+The final review follow-up adds executable snapshot-equation, derived-role,
+provenance, source/canonical, conflict, and missing-source checks.
+
+Decoder commit `44e0a32300ec6d6d03b7578b97b8374820802ba1` is published on the
+`riverArk/cardano-ledger-read` fork and submitted upstream as PR 20. A fresh
+Cabal build directory cloned that public source and built the decoder, API, and
+application; focused context and network tests passed from the fresh directory.
+The Nix fixed-output hash was regenerated and accepted. Disabling determinate
+Nix lazy trees for these commands repaired the missing `/nix/store/*-source`
+evaluation failure without a repository change. The final candidate passed the
+registered Conway scenario through both plain HTTP and mutually authenticated
+TLS. Each run returned a typed nonempty success response, then hid the relay
+socket while preserving existing wallet connections and observed the bounded,
+fixed `503 dapp_context_unavailable` response after three isolated acquisition
+attempts. The final runs additionally submitted and confirmed three foreign
+Conway outputs carrying a datum hash, inline datum, and reference script,
+resolved them as normal, collateral, and reference inputs, and matched each
+returned source-output CBOR byte-for-byte. The mTLS run used full server validation and a client certificate;
+wrong-CA and IP-name failures remain covered by the eight focused TLS examples.
+
+A byte-copied current-schema wallet was opened by the candidate, read through
+the wallet checkpoint and submission paths, and passed a tagged pending mutation.
+Before/after SQLite schema dumps had identical SHA-256
+`52d6d54033de3ce30c53dd05bc407fd6643ff9b4599004f4b2bf6e1a9de3fdfb`.
+Daedalus's tracked old pin `724be55dc66cf67bc4427e8f1a9657a9d1d33d71`
+then reopened the exact resulting bytes and passed checkpoint and submission
+reads. No task-201 schema, migration, or persisted context field exists.
+
+`source/common/cardano/fixtures/exact-cbor/backend-context-v1.json` freezes the
+Haskell `0x01`, `0x03`, and `0x07` records, true Blake2b-256 digest, and HMAC token
+at fixture SHA-256
+`017c9b99beb791fd7a73b2bcdf53403ceeead9b6c7255d54dac27ac684bf6d35`.
+The focused TypeScript test independently regenerates every length prefix,
+record, sorted digest preimage, token payload, and MAC with Node/`blakejs`; it
+passes together with the existing task-002 and task-004 suites, 57 tests total.
+Temporary `git+file` input override builds of `.#daedalus-bridge-mainnet` and
+`.#daedalus-mainnet` passed and identified wallet revision
+`3ca15553f96587f1f96688185165b2ede00e30b0`; tracked pins remained unchanged.
+Task-201 passed final combined internal review and remains intentionally unadvertised
+and unpinned; task-209 owns activation and the tracked pin update.
 
 ## Local Validation Evidence
 

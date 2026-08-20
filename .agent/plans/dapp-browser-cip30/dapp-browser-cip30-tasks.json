@@ -703,7 +703,7 @@
           "id": "task-201",
           "title": "Implement full-ledger UTxO and transaction-context resolution",
           "description": "Return exact TxIn/full TxOut/transaction-unspent-output CBOR for wallet UTxOs and every requested normal, collateral, and reference input at a coherent chain point.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 40,
           "dependencies": ["task-200"],
@@ -716,7 +716,8 @@
           "implementationNotes": [
             "Query full ledger outputs instead of serializing lossy wallet TxOut values.",
             "Include volatile delta, local pending overlay, era/protocol/network identity, and protocol parameters.",
-            "Resolve foreign/script inputs needed for complete review."
+            "Resolve foreign/script inputs needed for complete review.",
+            "Completed after Iteration 7 final combined approval: published fork cardano-ledger-read 44e0a32300ec6d6d03b7578b97b8374820802ba1 and cardano-wallet 3ca15553f96587f1f96688185165b2ede00e30b0. Clean Cabal/Nix builds, plain HTTP and authenticated mTLS success plus controlled fixed-503 acquisition failure, live datum/inline-datum/reference-script fidelity, old-pin reopen/schema compatibility, and independent Daedalus record/digest/token fixtures pass. Capability publication and the tracked pin remain unchanged for task-209."
           ],
           "acceptance": [
             "Every returned UTxO matches canonical ledger CBOR.",
