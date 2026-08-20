@@ -194,34 +194,24 @@ async fn stop_child(child: &mut Child, secs: u64) {
     }
 }
 
-// Wait up to 30s for the node-watcher channel to signal exit; force-kill on timeout.
-// `kill_tx` is the oneshot sender that tells the watcher task to call start_kill().
-// Returns true if the node had to be force-killed.
+// Wait for the node-watcher channel to signal exit.
+// Returns false; node always exits gracefully after the shutdown pipe closes.
 async fn wait_for_node_exit(
     node_rx: &watch::Receiver<Option<ExitInfo>>,
-    kill_tx: &mut Option<oneshot::Sender<()>>,
+    _kill_tx: &mut Option<oneshot::Sender<()>>,
 ) -> bool {
+    // Wait indefinitely for the node to exit gracefully. Force-killing leaves
+    // the chain DB dirty and forces a full immutable-chunk validation on next
+    // start (which can take many minutes). The shutdown-pipe EOF is sufficient
+    // signal; the node will always exit eventually.
     let mut rx = node_rx.clone();
-    if timeout(Duration::from_secs(30), async {
-        loop {
-            if rx.borrow().is_some() {
-                break;
-            }
-            let _ = rx.changed().await;
+    loop {
+        if rx.borrow().is_some() {
+            break;
         }
-    })
-    .await
-    .is_err()
-    {
-        warn!("cardano-node did not exit within 30s; force-killing");
-        emit(&Event::NodeForceKilled);
-        if let Some(tx) = kill_tx.take() {
-            let _ = tx.send(());
-        }
-        true
-    } else {
-        false
+        let _ = rx.changed().await;
     }
+    false
 }
 
 type RotatingLog = Arc<Mutex<FileRotate<AppendCount>>>;

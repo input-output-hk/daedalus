@@ -268,6 +268,18 @@ class WatchdogManager {
       case 'node_started':
         s.nodePid = event.pid as number;
         s.nodeStartedAt = event.started_at_unix_ms as number;
+        // Reset wallet and startup state so the renderer goes back to
+        // 'node-starting' while the restarted node works through its
+        // startup sequence before the wallet comes up again.
+        s.walletPort = null;
+        s.walletPid = 0;
+        s.walletStartedAt = null;
+        s.nodeStartupPhase = null;
+        s.blockSyncProgress = {
+          replayedBlock: 0,
+          validatingChunk: 0,
+          pushingLedger: 0,
+        };
         break;
 
       case 'node_socket_ready':

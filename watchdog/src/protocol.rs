@@ -48,7 +48,6 @@ pub enum Event {
     NodeSocketReady {
         waited_ms: u64,
     },
-    NodeForceKilled,
     NodeShutdownMs {
         ms: u64,
         force_killed: bool,
@@ -202,12 +201,6 @@ mod tests {
         let j = to_json(&Event::NodeSocketReady { waited_ms: 3500 });
         assert_eq!(j["event"], "node_socket_ready");
         assert_eq!(j["waited_ms"], 3500);
-    }
-
-    #[test]
-    fn node_force_killed() {
-        let j = to_json(&Event::NodeForceKilled);
-        assert_eq!(j["event"], "node_force_killed");
     }
 
     #[test]
