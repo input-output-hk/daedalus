@@ -68,22 +68,9 @@ still broken.
 
 ### Running tests for development
 1. Mark the test or scenario you are working with @watch annotation
-2. Make sure you are in the nix console (`yarn nix:dev`)
+2. Make sure you are in the nix shell (`yarn nix:selfnode`)
 3. Make sure your state is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ Selfnode/`)
 4. Run tests with `yarn test:e2e:watch:once`
-
-### Run all tests
-
-```bash
-$ yarn test
-```
-
-### Running Byron specific tests
-1. Make sure you are in the nix console (`yarn nix:dev`)
-2. Make sure your state is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ Selfnode/`)
-3. Run tests with `yarn test:e2e:byron`
-
-Once tests are complete you will get a summary of passed/failed tests in the Terminal window.
 
 ### Run all tests
 
