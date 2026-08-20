@@ -1,0 +1,66 @@
+{
+  "revision": 1,
+  "source": {
+    "repository": "https://github.com/cardano-foundation/cardano-wallet",
+    "candidateCommit": "3ca15553f96587f1f96688185165b2ede00e30b0",
+    "sourcePath": "lib/api/test/dapp-context-test.hs",
+    "decoderRepository": "https://github.com/riverArk/cardano-ledger-read",
+    "decoderCommit": "44e0a32300ec6d6d03b7578b97b8374820802ba1"
+  },
+  "ledgerOutputCoverage": {
+    "file": "conway-babbage-outputs.json",
+    "fixtureSha256": "0458cf9c97bccea540df7df606106b2b6bd3eda4b8dbb9685c42ac34a82cad56"
+  },
+  "records": {
+    "fullOutput": {
+      "transactionId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "index": 0,
+      "provenanceBits": 4,
+      "roleBits": 1,
+      "walletMember": true,
+      "pendingState": 0,
+      "exactLedgerTxOutCbor": "82011a000f4240",
+      "encoded": "0100000033aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000040101000000000782011a000f4240"
+    },
+    "protocol": {
+      "networkId": 0,
+      "networkMagic": 42,
+      "protocolMajor": 9,
+      "protocolMinor": 0,
+      "protocolParametersCbor": "a0",
+      "encoded": "030000001c00000006636f6e776179000000002a000000090000000000000001a0"
+    },
+    "pending": {
+      "transactionId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "exactSealedTransaction": "84a0a0f5f6",
+      "normalInputs": [
+        {
+          "transactionId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "index": 1
+        }
+      ],
+      "collateralInputs": [],
+      "expirySlot": "42",
+      "encoded": "0700000063bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb040000000584a0a0f5f60000000100000024aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa000000010000000001000000000000002a"
+    }
+  },
+  "digest": {
+    "walletId": "wallet-test",
+    "genesisHash": "0101010101010101010101010101010101010101010101010101010101010101",
+    "chainPoint": {
+      "slot": "42",
+      "blockHash": "0202020202020202020202020202020202020202020202020202020202020202"
+    },
+    "walletGeneration": "7",
+    "pendingGeneration": "9",
+    "transactions": ["84a0a0f5f6"],
+    "records": ["fullOutput", "protocol", "pending"],
+    "encoded": "94b23b3e24ca884648ef7b7c10b0a5d030d92005789fe9a5ebf16b407072d21c"
+  },
+  "token": {
+    "key": "5555555555555555555555555555555555555555555555555555555555555555",
+    "processGeneration": "44444444444444444444444444444444",
+    "capabilityRevision": 1,
+    "encoded": "0144444444444444444444444444444444000000010000000b77616c6c65742d74657374010101010101010101010101010101010101010101010101010101010101010194b23b3e24ca884648ef7b7c10b0a5d030d92005789fe9a5ebf16b407072d21cc4e3ce8fa5525dc003484834593821de77deeae83be2e221b55d7aaa6be5a457"
+  }
+}
