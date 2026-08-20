@@ -264,16 +264,11 @@ This runs:
 2. `yarn test:unit` - Unit tests
 3. `yarn test:e2e:fail-fast` - E2E tests (stops on first failure)
 
-### Pre-commit Checks
+### Before pushing
 
-The pre-commit hook runs:
-```bash
-pretty-quick --staged
-```
+There are no git hooks in this repository, so nothing runs automatically on
+commit or push. Run the checks yourself:
 
-### Pre-push Checks
-
-The pre-push hook runs:
 ```bash
 yarn check:all
 ```
