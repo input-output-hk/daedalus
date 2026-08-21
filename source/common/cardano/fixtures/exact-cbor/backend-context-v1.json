@@ -2,7 +2,7 @@
   "revision": 1,
   "source": {
     "repository": "https://github.com/cardano-foundation/cardano-wallet",
-    "candidateCommit": "3ca15553f96587f1f96688185165b2ede00e30b0",
+    "candidateCommit": "e60b8a66cad9121e54656c76e03a3785099b9215",
     "sourcePath": "lib/api/test/dapp-context-test.hs",
     "decoderRepository": "https://github.com/riverArk/cardano-ledger-read",
     "decoderCommit": "44e0a32300ec6d6d03b7578b97b8374820802ba1"
@@ -13,14 +13,14 @@
   },
   "records": {
     "fullOutput": {
-      "transactionId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "transactionId": "35eb18701459203ce42156af66c76e3f00b9e2a1b9d48192fbbf0d233a652c9f",
       "index": 0,
-      "provenanceBits": 4,
+      "provenanceBits": 5,
       "roleBits": 1,
       "walletMember": true,
       "pendingState": 0,
-      "exactLedgerTxOutCbor": "82011a000f4240",
-      "encoded": "0100000033aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000040101000000000782011a000f4240"
+      "exactLedgerTxOutCbor": "82581d60aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1a000f4240",
+      "encoded": "010000005135eb18701459203ce42156af66c76e3f00b9e2a1b9d48192fbbf0d233a652c9f00000000050101000000002582581d60aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1a000f4240"
     },
     "protocol": {
       "networkId": 0,
@@ -42,7 +42,62 @@
       "collateralInputs": [],
       "expirySlot": "42",
       "encoded": "0700000063bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb040000000584a0a0f5f60000000100000024aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa000000010000000001000000000000002a"
+    },
+    "ownership": {
+      "credentialKind": 1,
+      "credential": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "ownership": 1,
+      "derivationPath": [2147485500, 2147485463, 2147483648, 0, 0],
+      "proofBits": 1,
+      "encoded": "020000003e010000001caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa01000000058000073c8000071780000000000000000000000000000001"
+    },
+    "requiredProof": {
+      "transactionIndex": 1,
+      "proofKind": 1,
+      "credentialKind": 1,
+      "credential": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "required": true,
+      "encoded": "06000000270000000101010000001caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa01"
     }
+  },
+  "validityBoundary": {
+    "accepted": "84a30081825820111111111111111111111111111111111111111111111111111111111111111100018182581d60aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1a000f42400200a0f5f6",
+    "rejected": "84a30081825820111111111111111111111111111111111111111111111111111111111111111100018182581d60aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1a000f42400200a0f4f6"
+  },
+  "batchOverlay": {
+    "dependencies": [
+      {
+        "transactionIndex": 1,
+        "inputRole": "normal",
+        "outpoint": {
+          "transactionId": "35eb18701459203ce42156af66c76e3f00b9e2a1b9d48192fbbf0d233a652c9f",
+          "index": 0
+        },
+        "source": "earlier",
+        "sourceTransactionIndex": 0
+      },
+      {
+        "transactionIndex": 2,
+        "inputRole": "collateral",
+        "outpoint": {
+          "transactionId": "35eb18701459203ce42156af66c76e3f00b9e2a1b9d48192fbbf0d233a652c9f",
+          "index": 0
+        },
+        "source": "earlier",
+        "sourceTransactionIndex": 0
+      }
+    ],
+    "conflicts": [
+      {
+        "transactionIndex": 2,
+        "inputRole": "collateral",
+        "outpoint": {
+          "transactionId": "35eb18701459203ce42156af66c76e3f00b9e2a1b9d48192fbbf0d233a652c9f",
+          "index": 0
+        },
+        "earlierTransactionIndex": 1
+      }
+    ]
   },
   "digest": {
     "walletId": "wallet-test",
@@ -53,14 +108,24 @@
     },
     "walletGeneration": "7",
     "pendingGeneration": "9",
-    "transactions": ["84a0a0f5f6"],
-    "records": ["fullOutput", "protocol", "pending"],
-    "encoded": "94b23b3e24ca884648ef7b7c10b0a5d030d92005789fe9a5ebf16b407072d21c"
+    "transactions": [
+      "84a30081825820111111111111111111111111111111111111111111111111111111111111111100018182581d60aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1a000f42400200a0f5f6",
+      "84a3008182582035eb18701459203ce42156af66c76e3f00b9e2a1b9d48192fbbf0d233a652c9f00018182581d60aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1a000dbba0021a000186a0a0f5f6",
+      "84a40081825820222222222222222222222222222222222222222222222222222222222222222200018182581d60aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1a000c3500021a00030d400d8182582035eb18701459203ce42156af66c76e3f00b9e2a1b9d48192fbbf0d233a652c9f00a0f5f6"
+    ],
+    "records": [
+      "fullOutput",
+      "ownership",
+      "protocol",
+      "requiredProof",
+      "pending"
+    ],
+    "encoded": "6e87935bf459d9d6a33dd0df3ad8a1178ffe380bdc33fdbc8bb78d865d082446"
   },
   "token": {
     "key": "5555555555555555555555555555555555555555555555555555555555555555",
     "processGeneration": "44444444444444444444444444444444",
     "capabilityRevision": 1,
-    "encoded": "0144444444444444444444444444444444000000010000000b77616c6c65742d74657374010101010101010101010101010101010101010101010101010101010101010194b23b3e24ca884648ef7b7c10b0a5d030d92005789fe9a5ebf16b407072d21cc4e3ce8fa5525dc003484834593821de77deeae83be2e221b55d7aaa6be5a457"
+    "encoded": "0144444444444444444444444444444444000000010000000b77616c6c65742d7465737401010101010101010101010101010101010101010101010101010101010101016e87935bf459d9d6a33dd0df3ad8a1178ffe380bdc33fdbc8bb78d865d082446e019bfde0ef59a5a9861653b0ae9658e8e3ba6528436f05a59ede65791e21bc5"
   }
 }

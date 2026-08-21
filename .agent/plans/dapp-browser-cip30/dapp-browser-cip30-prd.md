@@ -1582,6 +1582,20 @@ controlled acquisition failure, live datum/inline-datum/reference-script fidelit
 and temporary Daedalus builds pass. Capability publication and the tracked pin
 remain unchanged; task-209 still owns consolidated review, activation, and pinning.
 
+Task-202 has a final reviewed local candidate at `cardano-wallet`
+`e60b8a66cad9121e54656c76e03a3785099b9215`. It adds backend-owned payment/stake/
+policy paths, transaction-scoped required-proof inventory with existing-VKey and
+native/mint necessity, reference-input script authority, and exact sequential
+dependency/conflict analysis for valid Conway requests. Focused proof/error/privacy/
+Swagger checks, authenticated mTLS ownership/proof/reference-policy/VKey/overlay/
+rejection coverage, old-pin no-schema evidence,
+cross-language fixture SHA-256
+`2e13fc87934f7bd4cb66b7ba025387283562ad1bec7ce64f048d0d88e3ffb6f4` pass. Temporary
+Daedalus bridge/mainnet builds passed for the preceding candidate; exact follow-up
+reruns are blocked by a missing Nix-store package index. The capability and tracked pin remain
+unchanged; this is not production activation, and task-209 retains consolidated
+upstream review and pin ownership.
+
 ### Phase 3: Shared Cardano And Extension Engine
 
 - Build exact CBOR span extraction and semantic transaction model.

@@ -559,6 +559,45 @@ Temporary `git+file` input override builds of `.#daedalus-bridge-mainnet` and
 Task-201 passed final combined internal review and remains intentionally unadvertised
 and unpinned; task-209 owns activation and the tracked pin update.
 
+## Task-202 Candidate Evidence
+
+The final reviewed task-202 range is
+`3ca15553f96587f1f96688185165b2ede00e30b0..e60b8a66cad9121e54656c76e03a3785099b9215`.
+It extends the dormant Shelley context route with backend-derived payment, stake,
+and policy ownership; verified CIP-1852/CIP-1855 paths; transaction-scoped proof
+obligations and producible public candidates; valid-existing-VKey satisfaction;
+native-script and mint-policy necessity, including scripts resolved from authoritative
+reference inputs; canonical `0x02`/`0x06` records; and
+request-aware earlier/pending/node dependency and conflict validation. It rejects
+`isValid=false`, bootstrap, unsupported pool/governance/voter/proposal, and missing
+selected-script cases rather than emitting partial evidence. Plutus policy script
+hashes remain distinct from owned policy key leaves, reference-only ownership never
+becomes a producible proof, and no private discovery result is persisted.
+
+Focused verification passed 13 proof/contract examples, 21 route/error/retry
+examples, the logging privacy check, API build, semantic Swagger validation, and
+whitespace checks. The registered Conway scenario passed over authenticated mTLS
+against the exact candidate and exercised owned payment and policy paths, required
+normal/collateral/policy proofs, reference-script minting, valid and wrong-body VKey
+handling, an exact earlier dependency, a later collateral conflict, false-validity
+rejection, and the bounded fixed `503` acquisition failure. The task-202 range
+touches no DB, migration, or schema path; the preserved task-201 candidate and
+old-pin roundtrip databases remain byte-identical with schema SHA-256
+`52d6d54033de3ce30c53dd05bc407fd6643ff9b4599004f4b2bf6e1a9de3fdfb`, integrity
+`ok`, and user version `0`.
+
+`source/common/cardano/fixtures/exact-cbor/backend-context-v1.json` now has SHA-256
+`2e13fc87934f7bd4cb66b7ba025387283562ad1bec7ce64f048d0d88e3ffb6f4`.
+The Haskell golden binds three exact Conway transaction envelopes and canonical
+records to the expected digest and token. The TypeScript fixture independently
+derives transaction IDs, source output bytes, earlier dependencies, conflicts,
+digest, and token while encoding and linking the required-proof record. Temporary
+`.#daedalus-bridge-mainnet` and `.#daedalus-mainnet` builds passed for the preceding
+candidate; exact follow-up reruns are environment-blocked by a missing Nix-store
+package index. Capability publication, the tracked Daedalus
+pin, signing, governance expansion, and final upstream review remain owned by
+tasks 203, 205/206, and 209.
+
 ## Local Validation Evidence
 
 Agent-executable validation on 2026-08-11 produced:

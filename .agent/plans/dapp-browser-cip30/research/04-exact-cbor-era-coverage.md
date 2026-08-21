@@ -173,11 +173,14 @@ keys 34-37 add reference-script limits and cost controls. The sibling wallet sti
 contains unsupported Dijkstra era API comments, transaction generator/signing pending
 tests, and native-script/mint conversion TODO failures.
 
-Task-201 adds `backend-context-v1.json`, sourced from `cardano-wallet`
-`3ca15553f96587f1f96688185165b2ede00e30b0` and decoder
+Tasks 201 and 202 extend `backend-context-v1.json`, now sourced from `cardano-wallet`
+`e60b8a66cad9121e54656c76e03a3785099b9215` and decoder
 `44e0a32300ec6d6d03b7578b97b8374820802ba1`. It links the existing pinned Conway
-full-output fixture and independently reproduces records, digest, and token. This
-does not change Dijkstra status or satisfy the production parser/activation gates.
+full-output fixture and independently reproduces exact transaction IDs/output bytes,
+ownership and required-proof records, batch dependencies/conflicts, digest, and
+token. Its SHA-256 is
+`2e13fc87934f7bd4cb66b7ba025387283562ad1bec7ce64f048d0d88e3ffb6f4`.
+This does not change Dijkstra status or satisfy the production parser/activation gates.
 
 Dijkstra promotion requires an explicit tracker/PRD update plus pinned final sources,
 backend tasks 200/201/206/209, parser task 302, complete semantic task 303, context

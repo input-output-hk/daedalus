@@ -730,7 +730,7 @@
           "id": "task-202",
           "title": "Add ownership, path, required-witness, and batch-overlay analysis",
           "description": "Compute wallet ownership and derivation evidence for all relevant credentials and derive earlier outputs within the current batch from exact preceding bodies without trusting caller paths.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 40,
           "dependencies": ["task-201"],
@@ -738,6 +738,9 @@
             "../cardano-wallet/lib/wallet/src/Cardano/Wallet.hs",
             "../cardano-wallet/lib/wallet/src/Cardano/Wallet/Shelley/Transaction.hs",
             "../cardano-wallet/lib/address-derivation-discovery/"
+          ],
+          "implementationNotes": [
+            "Completed after resumed-cycle Iteration 3 approval. Final reviewed local range 3ca15553f96587f1f96688185165b2ede00e30b0..e60b8a66cad9121e54656c76e03a3785099b9215 adds trusted ownership/path evidence, transaction-scoped required-proof inventory, native/mint and existing-VKey necessity, reference-input script authority, and exact sequential overlay validation. Focused contract/error/privacy/Swagger checks, authenticated mTLS ownership/proof/reference-policy/VKey/overlay/fixed-failure coverage, unchanged-schema old-pin evidence, and fixture SHA-256 2e13fc87934f7bd4cb66b7ba025387283562ad1bec7ce64f048d0d88e3ffb6f4 pass. Temporary Daedalus builds passed for the preceding candidate; exact follow-up reruns are blocked by a missing Nix-store package index. Capability publication and the tracked pin remain unchanged for task-209."
           ],
           "acceptance": [
             "Normal inputs, collateral, withdrawals, certificates, required signers, native scripts, and policy keys use trusted ownership evidence.",
