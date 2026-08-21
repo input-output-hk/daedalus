@@ -85,15 +85,25 @@ body:
       required: true
 
   - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: |
+        In Daedalus, open `Help` > `Daedalus Diagnostics`, copy the diagnostic information using the copy control, and paste it here.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
     id: additional-context
     attributes:
       label: Additional context
       description: |
         Add any other information that may help maintainers reproduce or understand the issue.
 
-        Do not include wallet secrets, personal information or sensitive diagnostic information.
+        Do not include wallet secrets or personal information.
 
-        Diagnostic archives and logs may contain information that should not be published publicly. If diagnostic material is required for an individual support investigation, use the designated customer support process instead.
+        Do not attach a log archive here. Logs can contain information that should not be published. If logs are needed, they will be requested through the customer support process.
     validations:
       required: false
 
