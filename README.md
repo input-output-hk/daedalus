@@ -11,7 +11,7 @@ Daedalus - Cryptocurrency Wallet
 
 ## Support
 
-For help using Daedalus or troubleshooting an individual wallet issue, see the [Daedalus Support](https://github.com/se7en-labs-inc/daedalus/blob/master/SUPPORT.md) guide.
+For help using Daedalus or troubleshooting an individual wallet issue, see the [Daedalus Support](SUPPORT.md) guide.
 
 Service response and GitHub issue triage targets are documented in [Service Level Targets](https://github.com/se7en-labs-inc/daedalus/blob/master/docs/SERVICE_LEVELS.md).
 
