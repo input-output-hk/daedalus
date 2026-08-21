@@ -11,7 +11,7 @@ body:
 
         GitHub Issues are intended for reproducible software defects and public engineering work.
 
-        If you need individual help using Daedalus or troubleshooting a wallet problem, please review the [Daedalus support guidance](https://github.com/se7en-labs-inc/daedalus/blob/master/SUPPORT.md).
+        If you need individual help using Daedalus or troubleshooting a wallet problem, please review the [Daedalus support guidance](https://github.com/input-output-hk/daedalus/blob/master/SUPPORT.md).
 
         Never include a wallet recovery phrase, seed phrase, private key, spending password or other wallet secret in a GitHub issue.
 
