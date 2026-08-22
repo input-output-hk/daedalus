@@ -84,17 +84,21 @@ invariants fails package configuration rather than weakening containment.
 - Helper: `/opt/daedalus/<cluster>/libexec/bundle-electron/lib/electron/chrome-sandbox`.
 - Identity manifest: `/opt/daedalus/<cluster>/share/daedalus-sandbox-identity.json`.
 - AppArmor asset: `/etc/apparmor.d/opt.daedalus.<cluster>.electron`.
-- SELinux asset: `/usr/share/selinux/packages/daedalus-<cluster>.cil`; task-109 records the reviewed module and exact process/file labels in the identity manifest.
+- SELinux asset: `/usr/share/selinux/packages/daedalus-<cluster>.cil`. Task-109
+  installs it at cluster-specific priority 200. The module is deliberately
+  label-only: exact Electron uses Fedora `bin_t`; exact `chrome-sandbox` uses
+  Fedora `chrome_sandbox_exec_t`, whose stock targeted-policy transition enters
+  `chrome_sandbox_t` when the SUID route is selected. The module grants no
+  Daedalus permission and defines no permissive or broad application domain.
 - Package directories and executable files are root-owned mode `0755`; policy
   assets are root-owned mode `0644`; the regular non-symlink helper is root-owned
   mode `4755` for SUID evidence or `0755` for userns-only evidence.
 - The root-owned mode-`0644` identity manifest pins matrix revision, exact row,
   support state/reason, cluster, exact package-file hashes, helper expectation,
-  policy kind, task-108-reviewed AppArmor semantic ABI/features, and
-  task-108/109-reviewed exact policy labels/contexts/module. The probe records
-  the observed parser version separately and compares live files plus
-  independently observed process/file policy state to this manifest; the
-  contract does not invent generic SELinux type names.
+  policy kind, reviewed exact process/file contexts, stock Fedora Chrome policy
+  identity, and package/source identity. The probe records live parser/policy
+  state separately and compares live files plus independently observed
+  process/file policy state to this manifest.
 - Maintainer scripts are idempotent, perform no network fetch, never inspect or
   mutate `XDG_DATA_HOME/Daedalus`, and never disable AppArmor/SELinux, alter
   global userns policy, add permissive domains, or retry Electron unsandboxed.

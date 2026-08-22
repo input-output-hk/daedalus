@@ -2,8 +2,8 @@
   "metadata": {
     "title": "Embedded dApp Browser And CIP-30 Wallet Connector Tasks",
     "created": "2026-08-07",
-    "updated": "2026-08-18",
-    "version": "1.7.3",
+    "updated": "2026-08-22",
+    "version": "1.7.4",
     "totalTasks": 86,
     "prdReference": ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
       "description": "Security- and standards-gated implementation graph for a wallet-scoped sandboxed dApp browser with CIP-30, CIP-8, CIP-95, CIP-103, gated CIP-104/CIP-142, software/hardware signing, ordered batch signing and submission, and soft collateral management.",
@@ -426,7 +426,7 @@
           "id": "task-109",
           "title": "Implement Linux .rpm system package with sandbox postinst",
           "description": "Produce a root-installable .rpm equivalent to the .deb layout with SUID or userns Chromium containment and SELinux-safe startup on the approved Fedora 43 row.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 24,
           "dependencies": ["task-005-a", "task-108"],
@@ -439,7 +439,8 @@
           "implementationNotes": [
             "Share /opt layout and launcher contracts with task-108 where practical.",
             "Handle the reviewed SUID/userns route, exact Fedora 43 SELinux process and Electron/helper file contexts, module identity, and root-owned identity manifest in %post.",
-            "Do not ship AppImage, Flatpak, Snap, or portable .bin."
+            "Do not ship AppImage, Flatpak, Snap, or portable .bin.",
+            "The failed dedicated-domain checkpoint was superseded by a label-only module using Fedora's stock Chrome sandbox policy; exact installed Fedora 43 userns/seccomp renderer evidence passed."
           ],
           "acceptance": [
             "nix build produces an installable .rpm for supported clusters.",
@@ -449,7 +450,9 @@
           ],
           "securityNotes": [
             "Same fail-closed dApp rules as .deb; no unsandboxed fallback."
-          ]
+          ],
+          "completedAt": "2026-08-22",
+          "completedNotes": "Added reproducible rpm-installer outputs for all four clusters, native RPM install/upgrade/erase scriptlets, fixed /opt layout, root-owned mode-4755 helper, flag-free YAML-compatible launchers, cluster-specific priority-200 label-only SELinux integration using Fedora's stock Chrome sandbox policy, identity manifests, Hydra/Buildkite wiring, and a focused package contract check. The exact installed mainnet candidate on ephemeral Fedora 43 enforcing SELinux launched successfully and passed the exact-renderer probe with NoNewPrivs=1, seccomp mode 2 and an active filter, zero effective capabilities, separate PID/user namespaces and UID/GID maps, exact package/context checks, no bypass argv, and no Electron AVC. Final cleanup removed the superseded private prototype output and source files while retaining their hashes and failed evidence in research 09. Task-005-b remains the matrix-wide installed-artifact certification gate; later package-byte changes require revalidation."
         },
         {
           "id": "task-005-b",
@@ -2016,6 +2019,7 @@
             "Pinned backend supports the exact advertised capability version.",
             "Supported-era and hardware claims match tested artifacts.",
             "Deferred task-108 package-lifecycle validation is executed manually against the final release-candidate .deb after the full PRD implementation is assembled, including Ubuntu 22.04/26.04, Debian 12/13, an omitted distribution, reboot, and destructive upgrade/failure fixtures; absent evidence remains a release blocker rather than an inferred pass.",
+            "If task-109 eventually supports Fedora, its exact final release-candidate RPM repeats native lifecycle, SELinux, bounded-startup, reboot, failure/recovery, and erase validation on Fedora 43; absent evidence remains a release blocker.",
             "Any material fix, dependency/pin update, package change, or policy-boundary change required by this gate reruns affected certification and task-805/task-806 review scopes before this task can complete.",
             "Release checklist links all internal/external audit and packaged-test evidence.",
             "The release-candidate baseline is recorded: source commit, lockfiles, backend pins, package hashes, catalog contents, and every reviewed packaged launcher-configuration variant for global/catalog/Diagnostics/CIP-104/CIP-142 activation; rollout tasks consume this recorded baseline rather than an arbitrary later build."
