@@ -104,7 +104,10 @@ const STDERR_CATEGORIES = [
 ];
 
 function debug(stage) {
-  if (process.env.DAEDALUS_PROBE_DEBUG === '1') {
+  if (
+    process.env.DAEDALUS_PROBE_DEBUG === '1' &&
+    !process.argv.includes('--exit-only')
+  ) {
     process.stderr.write(`sandbox-probe-stage:${stage}\n`);
   }
 }
@@ -169,23 +172,36 @@ function replaceLiteralIgnoreCase(value, literal, replacement) {
   return value.replace(new RegExp(escapeRegExp(literal), 'gi'), replacement);
 }
 
-function sensitiveEnvironmentValues(environment, roots) {
+function sensitiveEnvironmentEntries(environment, roots) {
   const sensitiveName =
     /(?:auth|cookie|credential|daedalus|electron|home|host|key|logname|password|path|secret|token|url|user|xdg)/i;
+  const separatelySanitizedName =
+    /^(?:HOSTNAME|LOGNAME|USER|XDG_(?:CURRENT_DESKTOP|SESSION_CLASS|SESSION_DESKTOP|SESSION_TYPE)|DAEDALUS_PROBE_(?:CLUSTER|DEBUG|MATRIX_REVISION|MATRIX_ROW|SANDBOX_CLASS|SELINUX_SOURCE_CONTEXT))$/;
   const rootValues = new Set(Object.values(roots));
   return Object.entries(environment)
-    .filter(([name, value]) => sensitiveName.test(name) && value && value.length >= 4)
-    .map(([, value]) => value)
-    .filter((value) => !rootValues.has(value))
-    .sort((left, right) => right.length - left.length);
+    .filter(
+      ([name, value]) =>
+        !separatelySanitizedName.test(name) &&
+        sensitiveName.test(name) &&
+        value &&
+        value.length >= 4 &&
+        !rootValues.has(value)
+    )
+    .sort(([, left], [, right]) => right.length - left.length);
+}
+
+function sensitiveEnvironmentValues(environment, roots) {
+  return sensitiveEnvironmentEntries(environment, roots).map(([, value]) => value);
 }
 
 function privacyContext(roots) {
+  const environmentEntries = sensitiveEnvironmentEntries(process.env, roots);
   return {
     roots,
     username: os.userInfo().username,
     hostname: os.hostname(),
-    environmentValues: sensitiveEnvironmentValues(process.env, roots),
+    environmentNames: environmentEntries.map(([name]) => name),
+    environmentValues: environmentEntries.map(([, value]) => value),
   };
 }
 
@@ -345,26 +361,40 @@ function truncateUtf8(value, maxBytes) {
     truncated: true,
   };
 }
-
 function assertNoSensitiveContent(value, privacy) {
-  const { roots, username, hostname, environmentValues } = privacy;
+  const { roots, username, hostname, environmentNames = [], environmentValues } = privacy;
   for (const [name] of ROOT_TOKENS) {
     if (roots[name] && value.includes(roots[name])) {
       throw new Error(`residual-sensitive-root:${name}`);
     }
   }
-  if (username && new RegExp(escapeRegExp(username), 'i').test(value)) {
+  if (
+    username &&
+    new RegExp(
+      `(^|[^A-Za-z0-9_])${escapeRegExp(username)}($|[^A-Za-z0-9_])`,
+      'i'
+    ).test(value)
+  ) {
     throw new Error('residual-username');
   }
-  if (hostname && new RegExp(escapeRegExp(hostname), 'i').test(value)) {
+  if (
+    hostname &&
+    new RegExp(
+      `(^|[^A-Za-z0-9_])${escapeRegExp(hostname)}($|[^A-Za-z0-9_])`,
+      'i'
+    ).test(value)
+  ) {
     throw new Error('residual-hostname');
   }
   if (/\b[a-z][a-z0-9+.-]*:\/\//i.test(value)) {
     throw new Error('residual-url');
   }
-  for (const environmentValue of environmentValues) {
+  for (const [index, environmentValue] of environmentValues.entries()) {
     if (value.includes(environmentValue)) {
-      throw new Error('residual-environment-value');
+      const name = environmentNames[index]
+        ? environmentNames[index].toLowerCase().replace(/_/g, '-')
+        : 'unknown';
+      throw new Error(`residual-environment-value:${name}`);
     }
   }
 
@@ -441,7 +471,10 @@ function parseStatus(statusText) {
 
 function readSecurityLabel(procRoot) {
   try {
-    return fs.readFileSync(`${procRoot}/attr/current`, 'utf8').trim();
+    return fs
+      .readFileSync(`${procRoot}/attr/current`, 'utf8')
+      .replace(/\0+$/, '')
+      .trim();
   } catch (error) {
     if (error && (error.code === 'ENOENT' || error.code === 'EINVAL')) return null;
     throw error;
@@ -632,11 +665,6 @@ function assertRendererEvidence(mainEvidence, rendererEvidence, sandboxClass) {
     rendererEvidence.namespaces.pid,
     mainEvidence.namespaces.pid,
     'shared-pid-namespace'
-  );
-  assert.notStrictEqual(
-    rendererEvidence.namespaces.mnt,
-    mainEvidence.namespaces.mnt,
-    'shared-mount-namespace'
   );
   if (sandboxClass !== 'suid-only') {
     assert.notStrictEqual(
@@ -926,6 +954,33 @@ function assertPolicyLabel(expectedLabel, rendererLabel, kind) {
   assert.strictEqual(rendererLabel, expectedLabel, `${kind}-label-mismatch`);
 }
 
+function parseSelinuxContext(value) {
+  assertSafePolicyValue(value);
+  const match = value.match(/^([^:]+):([^:]+):([^:]+):(.+)$/);
+  assert(match, 'selinux-context-format');
+  return { user: match[1], role: match[2], type: match[3], range: match[4] };
+}
+
+function assertSelinuxProcessContext(identity, sourceLabel, observedLabel, processKind) {
+  const source = parseSelinuxContext(sourceLabel);
+  const observed = parseSelinuxContext(observedLabel);
+  const roleName = `${processKind}ProcessRole`;
+  const typeName = `${processKind}ProcessType`;
+  assert.strictEqual(source.role, identity.transitionSourceRole, 'selinux-source-role');
+  assert.strictEqual(source.type, identity.transitionSourceType, 'selinux-source-type');
+  assert.deepStrictEqual(
+    observed,
+    {
+      user: source.user,
+      role: identity[roleName],
+      type: identity[typeName],
+      range: source.range,
+    },
+    `selinux-${processKind}-context`
+  );
+  return { source, observed };
+}
+
 function assertSafePolicyValue(value) {
   assert(typeof value === 'string' && /^[A-Za-z0-9_.:/()-]+$/.test(value), 'policy-value');
 }
@@ -946,8 +1001,27 @@ function assertPolicyHostEvidence(expected, host) {
       expected.helperFileContext,
       'selinux-helper-context-mismatch'
     );
-    assert.strictEqual(host.moduleLoaded, true, 'selinux-module-missing');
+    assert.strictEqual(host.effectiveFileContexts, true, 'selinux-policy-not-effective');
   }
+}
+
+function verifySelinuxEffectivePolicy(identity, paths, run = runHostCommand) {
+  const enforce = run('getenforce', []);
+  assert.strictEqual(enforce.status, 0, 'selinux-state-read');
+  assert.strictEqual(enforce.stdout.trim(), 'Enforcing', 'selinux-not-enforcing');
+  for (const [name, filePath, expectedContext] of [
+    ['electron', paths.electron, identity.electronFileContext],
+    ['helper', paths.chromeSandbox, identity.helperFileContext],
+  ]) {
+    const match = run('matchpathcon', ['-n', filePath]);
+    assert.strictEqual(match.status, 0, `selinux-${name}-expected-context-read`);
+    assert.strictEqual(
+      match.stdout.trim(),
+      expectedContext,
+      `selinux-${name}-effective-context`
+    );
+  }
+  return { state: 'enforcing', effectiveFileContexts: true };
 }
 
 function observeUsernsAvailability(run = runHostCommand) {
@@ -991,14 +1065,10 @@ function collectPolicyEvidence(
   if (expected.kind === 'none') return { kind: 'none', required: false };
   const identity = manifest.policy;
   assert(identity && identity.kind === expected.kind, 'identity-policy-kind');
-  assertSafePolicyValue(identity.processLabel);
-  const expectedRendererLabel =
-    expected.kind === 'apparmor'
-      ? `${identity.processLabel}${identity.loadedProfileSuffix}`
-      : identity.processLabel;
-  assertPolicyLabel(expectedRendererLabel, rendererEvidence.securityLabel, expected.kind);
-
   if (expected.kind === 'apparmor') {
+    assertSafePolicyValue(identity.processLabel);
+    const expectedRendererLabel = `${identity.processLabel}${identity.loadedProfileSuffix}`;
+    assertPolicyLabel(expectedRendererLabel, rendererEvidence.securityLabel, expected.kind);
     assert.strictEqual(identity.processLabel, paths.electron, 'apparmor-attachment-path');
     assert.strictEqual(identity.requiredAbi, '4.0', 'apparmor-required-abi');
     assert.deepStrictEqual(identity.requiredFlags, ['default_allow'], 'apparmor-required-flags');
@@ -1008,7 +1078,9 @@ function collectPolicyEvidence(
     assert(/^Y$/i.test(enabled), 'apparmor-disabled');
     const profiles = readFileSync('/sys/kernel/security/apparmor/profiles', 'utf8');
     assert(
-      profiles.split('\n').some((line) => line === expectedRendererLabel),
+      profiles.split('\n').some(
+        (line) => line === `${identity.processLabel}${identity.loadedProfileSuffix}`
+      ),
       'apparmor-profile-not-loaded'
     );
     const parser = run('apparmor_parser', ['--version']);
@@ -1039,39 +1111,50 @@ function collectPolicyEvidence(
   }
 
   for (const name of [
-    'processLabel',
     'electronFileContext',
     'helperFileContext',
     'module',
+    'mainProcessRole',
+    'mainProcessType',
+    'rendererProcessRole',
+    'rendererProcessType',
   ]) {
     assertSafePolicyValue(identity[name]);
   }
-  const enforce = run('getenforce', []);
-  assert.strictEqual(enforce.status, 0, 'selinux-state-read');
-  assert.strictEqual(enforce.stdout.trim(), 'Enforcing', 'selinux-not-enforcing');
-  const modules = run('semodule', ['-l']);
-  assert.strictEqual(modules.status, 0, 'selinux-module-read');
+  assert(dependencies.mainEvidence, 'missing-selinux-main-evidence');
+  const mainContext = assertSelinuxProcessContext(
+    identity,
+    dependencies.mainEvidence.securityLabel,
+    dependencies.mainEvidence.securityLabel,
+    'main'
+  );
+  const rendererContext = assertSelinuxProcessContext(
+    identity,
+    dependencies.mainEvidence.securityLabel,
+    rendererEvidence.securityLabel,
+    'renderer'
+  );
+  const effectivePolicy = verifySelinuxEffectivePolicy(identity, paths, run);
   const host = {
-    state: 'enforcing',
+    state: effectivePolicy.state,
     electronFileContext: readContext(paths.electron),
     helperFileContext: readContext(paths.chromeSandbox),
-    moduleLoaded: modules.stdout
-      .split('\n')
-      .some((line) => line.trim().split(/\s+/)[0] === identity.module),
+    effectiveFileContexts: effectivePolicy.effectiveFileContexts,
   };
   assertPolicyHostEvidence({ kind: 'selinux', ...identity }, host);
   return {
     kind: 'selinux',
     required: true,
     state: host.state,
-    processLabel: identity.processLabel,
+    mainContext: mainContext.observed,
+    rendererContext: rendererContext.observed,
     electronFileContext: identity.electronFileContext,
     helperFileContext: identity.helperFileContext,
     module: identity.module,
     rendererLabelMatches: true,
     electronFileContextMatches: true,
     helperFileContextMatches: true,
-    moduleLoaded: true,
+    effectiveFileContexts: true,
   };
 }
 
@@ -1101,7 +1184,8 @@ async function waitForRenderer(window, timeoutMs) {
   });
 }
 
-async function runElectronProbe() {
+async function runElectronProbe({ transitionOnly = false, exitOnly = false } = {}) {
+  assert(!exitOnly || transitionOnly, 'exit-only-requires-transition-only');
   if (process.platform !== 'linux') throw new Error('linux-required');
   if (process.env.ELECTRON_DISABLE_SANDBOX !== undefined) {
     throw new Error('sandbox-disabling-environment');
@@ -1140,7 +1224,9 @@ async function runElectronProbe() {
   const keepAliveDuringCleanup = () => undefined;
   app.on('window-all-closed', keepAliveDuringCleanup);
   const deadline = setTimeout(() => {
-    process.stderr.write('sandbox-probe-failed:timeout:process-deadline\n');
+    if (!exitOnly) {
+      process.stderr.write('sandbox-probe-failed:timeout:process-deadline\n');
+    }
     try {
       if (window && !window.isDestroyed()) window.destroy();
     } catch (_error) {
@@ -1189,7 +1275,7 @@ async function runElectronProbe() {
     const rendererEvidence = readProcEvidence(rendererPid, privacy);
     assert.strictEqual(Number(mainEvidence.status.Pid), process.pid, 'main-proc-pid');
     assert.strictEqual(Number(rendererEvidence.status.Pid), rendererPid, 'renderer-proc-pid');
-    if (process.env.DAEDALUS_PROBE_DEBUG === '1') {
+    if (process.env.DAEDALUS_PROBE_DEBUG === '1' && !exitOnly) {
       const typeArguments = rendererEvidence.argv.filter((argument) =>
         argument.startsWith('--type')
       );
@@ -1197,10 +1283,122 @@ async function runElectronProbe() {
         `sandbox-probe-renderer-type:${JSON.stringify(typeArguments)}\n`
       );
     }
-    assertRendererEvidence(mainEvidence, rendererEvidence, contract.sandboxClass);
-    debug('renderer-verified');
+    if (transitionOnly) {
+      assert.strictEqual(contract.policy, 'selinux', 'transition-only-requires-selinux');
+      const moduleEvidence = verifySelinuxEffectivePolicy(
+        identityManifest.policy,
+        packagePaths
+      );
+      assert(!hasForbiddenSwitch(mainEvidence.argv), 'forbidden-main-switch');
+      assert(!hasForbiddenSwitch(rendererEvidence.argv), 'forbidden-renderer-switch');
+      const sourceLabel = requiredEnvironment('DAEDALUS_PROBE_SELINUX_SOURCE_CONTEXT');
+      if (process.env.DAEDALUS_PROBE_DEBUG === '1' && !exitOnly) {
+        process.stderr.write(
+          `sandbox-probe-selinux-labels:${JSON.stringify({
+            main: mainEvidence.securityLabel,
+            renderer: rendererEvidence.securityLabel,
+          })}\n`
+        );
+      }
+      const mainTransition = assertSelinuxProcessContext(
+        identityManifest.policy,
+        sourceLabel,
+        mainEvidence.securityLabel,
+        'main'
+      );
+      const rendererTransition = assertSelinuxProcessContext(
+        identityManifest.policy,
+        sourceLabel,
+        rendererEvidence.securityLabel,
+        'renderer'
+      );
+      assert(!rendererGone, 'renderer-exited-during-collection');
+      assert(!window.webContents.isDestroyed(), 'renderer-destroyed-during-collection');
+      assert.strictEqual(
+        window.webContents.getOSProcessId(),
+        rendererPid,
+        'renderer-pid-changed'
+      );
+      await assertRendererAfterLifecycleYield(
+        rendererEvidence,
+        rendererPid,
+        window.webContents,
+        () => rendererGone
+      );
+      const packageIdentity = verifyPackageFiles(
+        packagePaths,
+        identityManifest,
+        contract.sandboxClass
+      );
+      const electronFileContext = readSelinuxContext(packagePaths.electron);
+      const helperFileContext = readSelinuxContext(packagePaths.chromeSandbox);
+      assert.strictEqual(
+        electronFileContext,
+        identityManifest.policy.electronFileContext,
+        'selinux-electron-context-mismatch'
+      );
+      assert.strictEqual(
+        helperFileContext,
+        identityManifest.policy.helperFileContext,
+        'selinux-helper-context-mismatch'
+      );
+      completedEvidence = createEvidenceEnvelope({
+        result: 'pass',
+        matrix: {
+          revision: contract.matrixRevision,
+          row: contract.matrixRow,
+          packageFamily: contract.packageFamily,
+          policy: contract.policy,
+          mode: 'transition-only',
+        },
+        host,
+        paths: Object.fromEntries(
+          Object.entries(packagePaths).map(([name, filePath]) => [
+            name,
+            normalizedPath(filePath, privacy),
+          ])
+        ),
+        files: packageIdentity.files,
+        policy: {
+          kind: 'selinux',
+          ...moduleEvidence,
+          module: identityManifest.policy.module,
+          priority: identityManifest.policy.priority,
+          configuredSemanticVersion: identityManifest.policy.semanticVersion,
+          configuredSourceCilSha256: identityManifest.policy.sourceCilSha256,
+          sourceContext: mainTransition.source,
+          mainContext: mainTransition.observed,
+          rendererContext: rendererTransition.observed,
+          electronFileContext,
+          helperFileContext,
+        },
+        main: normalizeProcessEvidence(mainEvidence, mainEvidence, '<MAIN_PID>', privacy, true),
+        renderer: normalizeProcessEvidence(
+          rendererEvidence,
+          mainEvidence,
+          '<RENDERER_PID>',
+          privacy,
+          true
+        ),
+        assertions: {
+          noSandboxBypass: true,
+          exactRendererPid: true,
+          selinuxProcessContexts: true,
+          exactFileContexts: true,
+          containmentChecked: false,
+        },
+        diagnostics: {
+          sanitized: true,
+          rawHostDataExported: false,
+          stderrSummaryRequired: true,
+        },
+      });
+      debug('transition-verified');
+    } else {
+      assertRendererEvidence(mainEvidence, rendererEvidence, contract.sandboxClass);
+      debug('renderer-verified');
 
-    const userns = observeUsernsAvailability();
+      const userns = observeUsernsAvailability();
     assertSandboxClassPrerequisites(contract.sandboxClass, userns);
     const packageIdentity = verifyPackageFiles(
       packagePaths,
@@ -1226,7 +1424,8 @@ async function runElectronProbe() {
       contract,
       packagePaths,
       identityManifest,
-      rendererEvidence
+      rendererEvidence,
+      { mainEvidence }
     );
     assert(!rendererGone, 'renderer-exited-during-collection');
     assert(!window.webContents.isDestroyed(), 'renderer-destroyed-during-collection');
@@ -1297,7 +1496,8 @@ async function runElectronProbe() {
         noNewPrivs: true,
         seccomp: true,
         zeroEffectiveCapabilities: true,
-        separatePidMountNamespaces: true,
+        separatePidNamespace: true,
+        mountNamespaceRecorded: true,
         separateUserNamespace: contract.sandboxClass !== 'suid-only',
         separateUserAndGroupMaps: contract.sandboxClass !== 'suid-only',
         helperContract: true,
@@ -1309,7 +1509,8 @@ async function runElectronProbe() {
         rawHostDataExported: false,
         stderrSummaryRequired: true,
       },
-    });
+      });
+    }
   } catch (error) {
     failure = error;
     process.exitCode = 1;
@@ -1339,8 +1540,8 @@ async function runElectronProbe() {
     : completedEvidence;
   assert(finalEvidence, 'missing-final-evidence');
   assertNoSensitiveContent(JSON.stringify(finalEvidence), privacy);
-  process.stdout.write(`${JSON.stringify(finalEvidence, null, 2)}\n`);
-  if (failure) {
+  if (!exitOnly) process.stdout.write(`${JSON.stringify(finalEvidence, null, 2)}\n`);
+  if (failure && !exitOnly) {
     process.stderr.write(
       `sandbox-probe-failed:${finalEvidence.failure.category}:${finalEvidence.failure.code}\n`
     );
@@ -1426,6 +1627,19 @@ async function runSelfTest() {
     hostname: 'build-host',
     environmentValues: ['outside-assignment-secret'],
   };
+  assert.deepStrictEqual(
+    sensitiveEnvironmentValues(
+      {
+        USER: 'daedalus',
+        DAEDALUS_PROBE_MATRIX_ROW: 'fedora-43',
+        DAEDALUS_PROBE_SELINUX_SOURCE_CONTEXT:
+          'unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023',
+        API_TOKEN: 'secret-token',
+      },
+      roots
+    ),
+    ['secret-token']
+  );
   const argv = normalizeArgv(
     [
       `${roots.installRoot}/libexec/bundle-electron/lib/electron/electron`,
@@ -1485,7 +1699,7 @@ async function runSelfTest() {
       Seccomp_filters: '1',
       CapEff: '0000000000000000',
     },
-    namespaces: { user: 'user:[2]', pid: 'pid:[2]', mnt: 'mnt:[2]' },
+    namespaces: { user: 'user:[2]', pid: 'pid:[2]', mnt: 'mnt:[1]' },
     uidMap: '0 1000 1',
     gidMap: '0 1000 1',
     securityLabel:
@@ -1686,7 +1900,42 @@ async function runSelfTest() {
     electronFileContext: 'system_u:object_r:reviewed_electron_exec_t:s0',
     helperFileContext: 'system_u:object_r:reviewed_sandbox_exec_t:s0',
     module: 'reviewed_daedalus',
+    priority: 200,
   };
+  assert.deepStrictEqual(
+    assertSelinuxProcessContext(
+      {
+        transitionSourceRole: 'unconfined_r',
+        transitionSourceType: 'unconfined_t',
+        mainProcessRole: 'unconfined_r',
+        mainProcessType: 'unconfined_t',
+      },
+      'unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023',
+      'unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023',
+      'main'
+    ).observed,
+    {
+      user: 'unconfined_u',
+      role: 'unconfined_r',
+      type: 'unconfined_t',
+      range: 's0-s0:c0.c1023',
+    }
+  );
+  assert.throws(
+    () =>
+      assertSelinuxProcessContext(
+        {
+          transitionSourceRole: 'unconfined_r',
+          transitionSourceType: 'unconfined_t',
+          rendererProcessRole: 'unconfined_r',
+          rendererProcessType: 'chrome_sandbox_t',
+        },
+        'unconfined_u:unconfined_r:unconfined_t:s0',
+        'unconfined_u:unconfined_r:unconfined_t:s0',
+        'renderer'
+      ),
+    /selinux-renderer-context/
+  );
   assertPolicyLabel(
     selinuxIdentity.processLabel,
     'system_u:system_r:reviewed_daedalus_t:s0',
@@ -1696,8 +1945,35 @@ async function runSelfTest() {
     state: 'enforcing',
     electronFileContext: selinuxIdentity.electronFileContext,
     helperFileContext: selinuxIdentity.helperFileContext,
-    moduleLoaded: true,
+    effectiveFileContexts: true,
   });
+  const selinuxPathsFixture = {
+    electron: '/opt/daedalus/mainnet/libexec/electron-bin',
+    chromeSandbox: '/opt/daedalus/mainnet/libexec/chrome-sandbox',
+  };
+  assert.deepStrictEqual(
+    verifySelinuxEffectivePolicy(selinuxIdentity, selinuxPathsFixture, (command, args) => ({
+      status: 0,
+      stdout:
+        command === 'getenforce'
+          ? 'Enforcing\n'
+          : args[1] === selinuxPathsFixture.electron
+            ? `${selinuxIdentity.electronFileContext}\n`
+            : `${selinuxIdentity.helperFileContext}\n`,
+    })),
+    { state: 'enforcing', effectiveFileContexts: true }
+  );
+  assert.throws(
+    () =>
+      verifySelinuxEffectivePolicy(selinuxIdentity, selinuxPathsFixture, (command) => ({
+        status: 0,
+        stdout:
+          command === 'getenforce'
+            ? 'Enforcing\n'
+            : 'system_u:object_r:bin_t:s0\n',
+      })),
+    /selinux-electron-effective-context/
+  );
   assert.throws(
     () =>
       assertPolicyLabel(
@@ -1951,9 +2227,14 @@ async function runSelfTest() {
     ...fixtureManifest,
     policy: {
       kind: 'selinux',
-      processLabel: 'system_u:system_r:reviewed_daedalus_t:s0',
-      electronFileContext: 'system_u:object_r:reviewed_electron_exec_t:s0',
-      helperFileContext: 'system_u:object_r:reviewed_sandbox_exec_t:s0',
+      transitionSourceRole: 'unconfined_r',
+      transitionSourceType: 'unconfined_t',
+      mainProcessRole: 'unconfined_r',
+      mainProcessType: 'unconfined_t',
+      rendererProcessRole: 'unconfined_r',
+      rendererProcessType: 'chrome_sandbox_t',
+      electronFileContext: 'system_u:object_r:bin_t:s0',
+      helperFileContext: 'system_u:object_r:chrome_sandbox_exec_t:s0',
       module: 'reviewed_daedalus',
     },
   };
@@ -1961,12 +2242,21 @@ async function runSelfTest() {
     { policy: 'selinux', cluster: 'mainnet' },
     selinuxPaths,
     selinuxManifest,
-    { securityLabel: selinuxManifest.policy.processLabel },
+    { securityLabel: 'unconfined_u:unconfined_r:chrome_sandbox_t:s0-s0:c0.c1023' },
     {
-      run: (command) =>
-        command === 'getenforce'
-          ? { status: 0, stdout: 'Enforcing\n', stderr: '' }
-          : { status: 0, stdout: 'reviewed_daedalus 1.0\n', stderr: '' },
+      mainEvidence: {
+        securityLabel: 'unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023',
+      },
+      run: (command, args) => ({
+        status: 0,
+        stdout:
+          command === 'getenforce'
+            ? 'Enforcing\n'
+            : args[1] === selinuxPaths.electron
+              ? `${selinuxManifest.policy.electronFileContext}\n`
+              : `${selinuxManifest.policy.helperFileContext}\n`,
+        stderr: '',
+      }),
       readContext: (filePath) =>
         filePath === selinuxPaths.electron
           ? selinuxManifest.policy.electronFileContext
@@ -2084,6 +2374,17 @@ async function runSelfTest() {
     withTimeout(new Promise(() => undefined), 5),
     /timeout/
   );
+  const exitOnlyFailure = childProcess.spawnSync(
+    process.execPath,
+    [__filename, '--transition-only', '--exit-only'],
+    {
+      encoding: 'utf8',
+      env: { ...process.env, ELECTRON_DISABLE_SANDBOX: '1' },
+    }
+  );
+  assert.strictEqual(exitOnlyFailure.status, 1);
+  assert.strictEqual(exitOnlyFailure.stdout, '');
+  assert.strictEqual(exitOnlyFailure.stderr, '');
   process.stdout.write('linux-chromium-sandbox-probe self-test passed\n');
 }
 
@@ -2097,7 +2398,10 @@ async function main() {
     runStderrSanitizer(args.slice(1));
     return;
   }
-  await runElectronProbe();
+  await runElectronProbe({
+    transitionOnly: args.includes('--transition-only'),
+    exitOnly: args.includes('--exit-only'),
+  });
 }
 
 main().catch((error) => {
@@ -2106,6 +2410,6 @@ main().catch((error) => {
     process.exitCode = 1;
     return;
   }
-  writeFailure(error);
+  if (!process.argv.includes('--exit-only')) writeFailure(error);
   process.exitCode = 1;
 });

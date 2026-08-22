@@ -84,6 +84,12 @@ in
             nix build --no-accept-flake-config -L --out-link "$debResult" .#packages.${buildSystem}.deb-installer-${cluster}
           ) 2>&1 | cat
           echo "Built .deb: $(readlink "$debResult")"
+          rpmResult="$tmpdir"/csl-daedalus-rpm
+          (
+            set -x
+            nix build --no-accept-flake-config -L --out-link "$rpmResult" .#packages.${buildSystem}.rpm-installer-${cluster}
+          ) 2>&1 | cat
+          echo "Built .rpm: $(readlink "$rpmResult")"
         ''}
 
         if [ -n "''${BUILDKITE_JOB_ID:-}" ]; then

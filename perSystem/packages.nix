@@ -30,6 +30,10 @@
             name = "deb-installer-${cluster}${suffix}";
             value = internal.debInstaller.${cluster};
           }
+          {
+            name = "rpm-installer-${cluster}${suffix}";
+            value = internal.rpmInstaller.${cluster};
+          }
         ]
         ++ [
           {

@@ -212,6 +212,78 @@
         grep -F -- "-R $profile_path" "$parser_log"
           touch "$out"
       '';
+
+    linuxRpmPackageContract =
+      pkgs.runCommand "linux-rpm-package-contract" {
+        nativeBuildInputs = [pkgs.jq pkgs.libarchive nodejs pkgs.patchelf pkgs.rpm pkgs.yq-go];
+      } ''
+        set -eu
+        rpm=$(printf '%s\n' ${internal.rpmInstaller.mainnet}/*.rpm)
+        mkdir extracted
+        (
+          cd extracted
+          bsdtar --no-same-permissions -xf "$rpm"
+        )
+
+        root=extracted/opt/daedalus/mainnet
+        helper="$root/libexec/bundle-electron/lib/electron/chrome-sandbox"
+        electron="$root/libexec/bundle-electron/lib/electron/electron"
+        manifest="$root/share/daedalus-sandbox-identity.json"
+        policy=extracted/usr/share/selinux/packages/daedalus-mainnet.cil
+        scripts=$PWD/scripts
+        rpm -qp --scripts "$rpm" >"$scripts"
+
+        test "$(rpm -qp --qf '%{NAME}\n%{ARCH}\n' "$rpm")" = $'daedalus-mainnet\nx86_64'
+        test -x "$root/bin/daedalus"
+        test -x "$root/libexec/daedalus-frontend"
+        test -x "$root/libexec/electron"
+        test ! -e "$root/libexec/update-runner"
+        test -f "$helper" -a ! -L "$helper"
+        rpm -qp --qf '[%{FILENAMES} %{FILEMODES:perms}\n]' "$rpm" >rpm-file-modes
+        grep -F '/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/chrome-sandbox -rwsr-xr-x' rpm-file-modes
+        test "$(patchelf --print-interpreter "$electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
+        test "$(yq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
+        test "$(yq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
+        NODE_PATH=${node_modules}/node_modules node -e \
+          "require('yamljs').parse(require('fs').readFileSync(process.argv[1], 'utf8'))" \
+          "$root/config/launcher-config.yaml"
+        jq -e '
+          .packageFamily == "rpm"
+          and .matrixRow == "fedora-43"
+          and .supportState == "supported"
+          and .helper.mode == "4755"
+          and .policy.module == "daedalus_mainnet"
+          and .policy.mainProcessType == "unconfined_t"
+          and .policy.rendererProcessType == "unconfined_t"
+          and .policy.electronFileContext == "system_u:object_r:bin_t:s0"
+          and .policy.helperFileContext == "system_u:object_r:chrome_sandbox_exec_t:s0"
+        ' "$manifest" >/dev/null
+
+        grep -F 'chrome_sandbox_exec_t' "$policy"
+        for forbidden in '(allow ' '(dontaudit ' '(typepermissive ' unconfined_domain_type; do
+          if grep -F "$forbidden" "$policy"; then
+            echo "forbidden SELinux policy construct: $forbidden" >&2
+            exit 1
+          fi
+        done
+        grep -F 'unconfined_chrome_sandbox_transition' "$scripts"
+        grep -F 'getenforce' "$scripts"
+        grep -F 'semodule -X 200' "$scripts"
+        grep -F 'restorecon' "$scripts"
+        grep -F 'chrome_sandbox_exec_t' "$scripts"
+        grep -F 'Exec=/opt/daedalus/mainnet/bin/daedalus' \
+          extracted/usr/share/applications/Daedalus-mainnet.desktop
+        grep -F "export CHROME_DEVEL_SANDBOX='/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/chrome-sandbox'" \
+          "$root/bin/daedalus"
+        if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX' \
+          "$root/bin/daedalus" "$root/libexec/daedalus-frontend" \
+          "$root/libexec/electron" "$scripts"; then
+          echo 'sandbox bypass found in RPM launch or lifecycle surface' >&2
+          exit 1
+        fi
+
+        touch "$out"
+      '';
   in {
     checks =
       # The suites that execute the code under test run natively on each OS we
@@ -260,6 +332,7 @@
         storybook = mkJsCheck "daedalus-storybook-build" "yarn storybook:build";
         shellcheck = pkgs.callPackage ../tests/shellcheck.nix {src = inputs.self;};
         linux-deb-package-contract = linuxDebPackageContract;
+        linux-rpm-package-contract = linuxRpmPackageContract;
       };
   };
 }

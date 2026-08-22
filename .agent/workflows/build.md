@@ -243,13 +243,16 @@ Creates `.dmg` installer.
 ```bash
 # In Nix shell
 nix build -L .#deb-installer-mainnet
+nix build -L .#rpm-installer-mainnet
 ```
 
-Creates the root-installable system `.deb` under `result/`. Cluster variants
-use `deb-installer-preprod`, `deb-installer-preview`, and
-`deb-installer-selfnode`. The legacy `installer-*` `.bin` output remains only
-for task-110 migration compatibility and is not dApp-capable. AppImage, Flatpak,
-and Snap are not supported Linux product formats.
+Creates the root-installable system `.deb` and `.rpm` outputs under `result/`.
+Cluster variants use the corresponding `deb-installer-*` or `rpm-installer-*`
+name. The RPM is supported on Fedora 43 and requires enforcing SELinux plus the
+package's exact-path integration with Fedora's Chrome sandbox policy. The
+legacy `installer-*` `.bin` output remains only for task-110 migration
+compatibility and is not dApp-capable. AppImage, Flatpak, and Snap are not
+supported Linux product formats.
 
 ---
 

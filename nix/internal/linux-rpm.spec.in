@@ -1,0 +1,89 @@
+%global _buildhost daedalus.invalid
+%global _build_id_links none
+%global _binary_payload w9.xzdio
+Name: @PACKAGE_NAME@
+Version: @VERSION@
+Release: @RELEASE@
+Summary: Daedalus full-node cryptocurrency wallet (@CLUSTER@)
+License: Apache-2.0
+URL: https://daedaluswallet.io/
+BuildArch: x86_64
+AutoReqProv: no
+Requires(pre): coreutils
+Requires(pre): grep
+Requires(pre): policycoreutils
+Requires(post): coreutils
+Requires(post): grep
+Requires(post): policycoreutils
+Requires(post): selinux-policy-targeted
+Requires(preun): coreutils
+Requires(preun): grep
+Requires(preun): policycoreutils
+Requires(preun): sed
+
+%description
+Root-managed Daedalus system package with fail-closed Chromium sandbox setup.
+
+%install
+mkdir -p %{buildroot}
+cp -a "@PAYLOAD@"/. %{buildroot}/
+
+%pre
+set -eu
+marker='/var/lib/daedalus-package/@CLUSTER@/rpm-policy-owner'
+if /usr/sbin/semodule -lfull | /usr/bin/grep -Eq '^[[:space:]]*[0-9]+[[:space:]]+@MODULE_NAME@([[:space:]]|$)'; then
+  [ -f "$marker" ]
+  /usr/sbin/semodule -lfull | /usr/bin/grep -Eq '^[[:space:]]*200[[:space:]]+@MODULE_NAME@([[:space:]]|$)'
+else
+  [ ! -e "$marker" ]
+fi
+
+%post
+set -eu
+. /etc/os-release
+[ "$ID" = fedora ]
+[ "$VERSION_ID" = 43 ]
+[ "$(/usr/sbin/getenforce)" = Enforcing ]
+/usr/sbin/getsebool unconfined_chrome_sandbox_transition | /usr/bin/grep -Eq -- '--> on$'
+/usr/bin/test -e /sys/fs/selinux/class/process
+
+module_tmp=$(/usr/bin/mktemp -d)
+trap '/usr/bin/rm -rf "$module_tmp"' EXIT
+/usr/bin/cp '@POLICY_PATH@' "$module_tmp/@MODULE_NAME@.cil"
+/usr/sbin/semodule -X 200 -i "$module_tmp/@MODULE_NAME@.cil"
+/usr/sbin/restorecon '@ELECTRON_PATH@' '@HELPER_PATH@'
+/usr/bin/chown root:root '@HELPER_PATH@'
+/usr/bin/chmod 4755 '@HELPER_PATH@'
+
+[ "$(/usr/bin/stat -c %C '@ELECTRON_PATH@')" = 'system_u:object_r:bin_t:s0' ]
+[ "$(/usr/bin/stat -c %C '@HELPER_PATH@')" = 'system_u:object_r:chrome_sandbox_exec_t:s0' ]
+[ "$(/usr/bin/stat -c %U:%G:%a '@HELPER_PATH@')" = 'root:root:4755' ]
+/usr/sbin/semodule -lfull | /usr/bin/grep -Eq '^[[:space:]]*200[[:space:]]+@MODULE_NAME@([[:space:]]|$)'
+
+/usr/bin/install -d -m 0700 '/var/lib/daedalus-package/@CLUSTER@'
+/usr/bin/printf '%s\n%s\n' '@PACKAGE_ID@' '@POLICY_SHA@' > '/var/lib/daedalus-package/@CLUSTER@/rpm-policy-owner'
+/usr/bin/chmod 0600 '/var/lib/daedalus-package/@CLUSTER@/rpm-policy-owner'
+
+%preun
+set -eu
+if [ "$1" -eq 0 ]; then
+  marker='/var/lib/daedalus-package/@CLUSTER@/rpm-policy-owner'
+  [ -f "$marker" ]
+  [ "$(/usr/bin/sed -n '1p' "$marker")" = '@PACKAGE_ID@' ]
+  [ "$(/usr/bin/sed -n '2p' "$marker")" = '@POLICY_SHA@' ]
+  [ "$(/usr/bin/stat -c %C '@ELECTRON_PATH@')" = 'system_u:object_r:bin_t:s0' ]
+  [ "$(/usr/bin/stat -c %C '@HELPER_PATH@')" = 'system_u:object_r:chrome_sandbox_exec_t:s0' ]
+  /usr/sbin/semodule -lfull | /usr/bin/grep -Eq '^[[:space:]]*200[[:space:]]+@MODULE_NAME@([[:space:]]|$)'
+  /usr/sbin/semodule -X 200 -r '@MODULE_NAME@'
+  /usr/bin/rm -f "$marker"
+  /usr/bin/rmdir '/var/lib/daedalus-package/@CLUSTER@' 2>/dev/null || :
+fi
+
+%files
+%defattr(-,root,root,-)
+/opt/daedalus/@CLUSTER@
+/usr/bin/daedalus-@CLUSTER@
+/usr/share/applications/Daedalus-@CLUSTER@.desktop
+/usr/share/icons/hicolor/512x512/apps/daedalus-@CLUSTER@.png
+@POLICY_PATH@
+%attr(4755,root,root) @HELPER_PATH@

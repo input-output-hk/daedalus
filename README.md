@@ -318,14 +318,18 @@ These commands require [Nix](https://nixos.org/nix/), optionally configured with
 
 ### Linux
 
-Run this from a Linux machine:
+Run either system-package build from a Linux machine:
 
     nix build -L .#deb-installer-mainnet
+    nix build -L .#rpm-installer-mainnet
 
-The result contains `daedalus-*.deb`. Install only on a disposable or approved
-host while the supported-row lifecycle matrix is being validated. The package
-uses `/opt/daedalus/mainnet`, configures sandbox state from privileged Debian
-maintainer scripts, and never enables the dApp guest by itself.
+The results contain `daedalus-*.deb` and `daedalus-*.rpm`. Cluster variants
+replace `mainnet` with `preprod`, `preview`, or `selfnode`. Both formats install
+under `/opt/daedalus/<cluster>`, launch without Chromium sandbox bypass flags,
+and never enable the dApp guest by themselves. The RPM supports the approved
+Fedora 43 row: its scriptlets require enforcing SELinux, install exact
+Electron/helper file contexts, and fail closed if the host Chrome sandbox
+policy is unavailable.
 
 `nix build -L .#installer-mainnet` still produces the legacy portable `.bin`
 for migration compatibility until task-110. It is not a supported dApp-capable

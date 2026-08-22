@@ -608,15 +608,19 @@ Hostile remote dApp
   disabled. Production launch is fail-closed until packaged sandbox and all
   other PRD release gates have evidence.
 - Linux shipping for this feature is system **`.deb` and `.rpm`** packages with
-  privileged postinst for independently proven SUID or userns Chromium
+  privileged lifecycle setup for independently proven SUID or userns Chromium
   containment, AppArmor on approved Ubuntu rows, and SELinux on Fedora 43.
   Successor matrix revision `task-108-matrix-2026-08-18` covers x86_64 Ubuntu
   24.04.x and 26.04.x with row-specific semantic AppArmor policy, Debian 12.x
   and 13.x without a package policy asset, and Fedora 43 under the task-109
-  SELinux contract. Ubuntu 22.04.x is explicitly wallet-only pending separate
-  AppArmor proof. Omitted rows are wallet-only and dApp-disabled until a
-  reviewed revision and certification.
-  Portable `.bin`, AppImage, Flatpak, and Snap are rejected; see
+  contract. The RPM's priority-200, cluster-specific module adds no permissions:
+  it binds the exact Electron path to `bin_t` and the exact SUID helper path to
+  Fedora's reviewed `chrome_sandbox_exec_t`/`chrome_sandbox_t` policy. Installed
+  Fedora 43 evidence separately proves the exact Chromium renderer has
+  no-new-privileges, seccomp-BPF, zero effective capabilities, and separate PID
+  and user namespaces. Ubuntu 22.04.x is wallet-only pending separate AppArmor
+  proof. Omitted rows remain wallet-only and dApp-disabled until reviewed and
+  certified. Portable `.bin`, AppImage, Flatpak, and Snap are rejected; see
   [research/06-linux-system-package-decision.md](../plans/dapp-browser-cip30/research/06-linux-system-package-decision.md).
 
 ## Security Considerations

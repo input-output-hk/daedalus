@@ -121,7 +121,7 @@ This work matters because a connector that is merely functional but not byte-exa
 - `source/common/types/electron-store.types.ts`
 - `nix/internal/x86_64-linux.nix`
 - `nix/internal/linux-self-extracting-archive.sh` (legacy portable path; rejected for shipping)
-- Linux `.deb` / `.rpm` packaging outputs and postinst scripts (to be added)
+- Linux `.deb` / `.rpm` packaging outputs and privileged lifecycle scripts
 - `flake.nix`
 - `flake.lock`
 - `package.json`
@@ -931,7 +931,7 @@ Session requirements:
   - root-owned `chrome-sandbox` mode `4755` when unprivileged user namespaces are unavailable;
   - unprivileged user namespaces with a root-owned mode-`0755` non-SUID helper when that independently proven route is used;
   - AppArmor profile with `userns,` for the fixed Electron binary path on every supported Ubuntu row;
-  - SELinux process and exact Electron/helper file contexts on Fedora 43.
+  - package-owned exact Electron/helper file contexts on Fedora 43; Electron remains in the standard desktop domain, while the SUID helper uses Fedora's reviewed `chrome_sandbox_exec_t`/`chrome_sandbox_t` policy.
 - Authoritative successor x86_64 matrix revision `task-108-matrix-2026-08-18` supports Ubuntu 24.04.x and 26.04.x LTS with row-specific semantic AppArmor checks, Debian 12.x and 13.x without a package policy asset, and Fedora 43 under the task-109 SELinux contract. Ubuntu 22.04.x is wallet-only pending separate AppArmor proof. No Ubuntu interim row is currently enabled; each future row requires a reviewed matrix revision and installed-artifact certification. Fedora 42, openSUSE Leap 15.6, EOL rows, and every other omitted row are dApp-disabled.
 - A supported row may pass through either independently proven SUID or userns containment. Ubuntu requires AppArmor, Fedora 43 requires SELinux, and Debian requires no package policy asset by default. A listed-row setup failure refuses package configuration; omitted rows may install wallet-only without remote guest launch or unapproved host-policy changes.
 - Tasks 108/109 ship a root-owned identity manifest at `/opt/daedalus/<cluster>/share/daedalus-sandbox-identity.json`; the probe binds exact package hashes and task-reviewed policy identity to live exact-path files and independently observed renderer/host policy evidence.
@@ -942,6 +942,8 @@ Session requirements:
 - Packaged tests must verify active seccomp/no-new-privileges or equivalent OS containment on the exact guest renderer PID, not only `process.sandboxed`.
 - Task ordering is contract-first and evidence-driven: historical `task-005` retains the cancelled portable spike; `task-005-a` freezes the system-package, probe, matrix, and fail-closed contracts; `task-108` and `task-109` produce flag-free `.deb` and `.rpm` launchers; `task-005-b` certifies both installed artifacts; and only then may `task-103` remove remaining development/legacy bypasses and add runtime enforcement and the canary.
 - **Deferred package-lifecycle validation decision (2026-08-18):** task-108 is accepted as implementation-complete with automated package checks and live Ubuntu 24.04 install, AppArmor, startup, no-bypass, removal-refusal, rollback, purge, and wallet-preservation evidence. Its unexecuted Ubuntu 22.04/26.04, Debian 12/13, omitted-distribution, reboot, and destructive upgrade/failure fixtures remain mandatory manual release-candidate validation after the full PRD implementation is assembled. This deferral records missing evidence rather than treating those rows as passed, and it does not waive task-005-b exact-renderer certification or any later packaged release gate.
+- **Task-109 Fedora evidence (2026-08-22):** additive `rpm-installer-{mainnet,preprod,preview,selfnode}` outputs, native RPM install/upgrade/erase scriptlets, the fixed `/opt` layout, root-owned mode-`4755` helper, flag-free YAML-compatible launcher configuration, cluster-specific priority-200 label-only SELinux integration, identity manifest, Hydra/Buildkite wiring, and focused package checks are implemented. An exact installed mainnet candidate on ephemeral Fedora 43 enforcing SELinux launched through the package entry point and passed the exact-renderer probe: no-new-privileges `1`, seccomp mode `2` with a loaded filter, zero effective capabilities, separate PID/user namespaces and UID/GID maps, exact renderer PID stability, exact package hashes/modes, effective exact file contexts, and no sandbox-bypass argv. No Electron AVC was observed. Task-005-b still owns matrix-wide installed-artifact certification; later package-byte changes require revalidation.
+- Task-109 final cleanup removes the private Phase-A prototype derivation and CIL from live package outputs; research 09 retains their immutable hashes and failed-checkpoint provenance.
 - Retire the portable `.bin` producer, home-extract installer, and `.bin`-oriented Linux auto-update path; migrate existing home installs to system packages without deleting wallet data under `XDG_DATA_HOME/Daedalus`.
 
 ### Existing IPC Hardening

@@ -1,0 +1,7 @@
+; Daedalus Fedora policy integration intentionally adds no permissions.
+; Electron remains in Fedora's default desktop domain. The SUID helper uses
+; Fedora's reviewed chrome_sandbox_exec_t entrypoint and chrome_sandbox_t
+; domain, which are supplied by selinux-policy-targeted.
+
+(filecon "@ELECTRON_PATH@" file (system_u object_r bin_t ((s0) (s0))))
+(filecon "@HELPER_PATH@" file (system_u object_r chrome_sandbox_exec_t ((s0) (s0))))
