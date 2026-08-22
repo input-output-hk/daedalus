@@ -9,6 +9,18 @@
 
 Daedalus - Cryptocurrency Wallet
 
+## Support
+
+For help using Daedalus or troubleshooting an individual wallet issue, see the [Daedalus Support](SUPPORT.md) guide.
+
+Service response and GitHub issue triage targets are documented in [Service Level Targets](https://github.com/se7en-labs-inc/daedalus/blob/master/docs/SERVICE_LEVELS.md).
+
+## Contributing
+
+Community contributions to Daedalus are welcome. For information about reporting issues, working on issues, testing changes and submitting pull requests, see [CONTRIBUTING.md](https://github.com/se7en-labs-inc/daedalus/blob/master/CONTRIBUTING.md).
+
+GitHub issue labeling, assignment and Good First Issue standards are documented in [Issue Triage](https://github.com/se7en-labs-inc/daedalus/blob/master/docs/ISSUE_TRIAGE.md).
+
 ## Setup development environment
 
 ### Linux/macOS
