@@ -1,0 +1,223 @@
+@import '../governanceConfig';
+
+.container {
+  @extend %regularText;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 20px;
+  margin: 20px 0 20px 20px;
+}
+
+.stateContainer {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  padding: 48px 0;
+  text-align: center;
+}
+
+.errorMessage {
+  color: var(--theme-color-error);
+  font-family: var(--font-semibold);
+  font-size: 14px;
+}
+
+.errorDetails {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+  max-width: 480px;
+}
+
+.syncingBanner {
+  align-items: flex-start;
+  background: var(--theme-gov-badge-warning-background);
+  border-radius: 4px;
+  color: var(--theme-gov-badge-warning-color);
+  display: flex;
+  font-size: 14px;
+  gap: 8px;
+  line-height: 1.4;
+  padding: 12px 16px;
+}
+
+.syncingIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.controlsRow {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.sortBiasWarning,
+.relaxedNotice {
+  background: var(--theme-gov-badge-warning-background);
+  border-radius: 4px;
+  color: var(--theme-gov-badge-warning-color);
+  font-size: 14px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+}
+
+.cohortControls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+// A disclosure rather than a button: it reveals what is already deciding the
+// list below it, so it sits in the page's own voice instead of competing with
+// the two filled buttons in the footer.
+.criteriaToggle {
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  color: var(--theme-gov-font-color-accent);
+  cursor: pointer;
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.38;
+  padding: 0;
+  text-decoration: underline;
+
+  &:focus-visible {
+    outline: 1px solid var(--theme-gov-font-color-accent);
+    outline-offset: 2px;
+  }
+}
+
+.rerollFooter {
+  display: flex;
+  gap: 12px;
+}
+
+.suggestedFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.orChoosePredefined {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+  margin: 0;
+}
+
+.sentinelCards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+// These two are off-ramps, not the recommended path, so they hold a fixed
+// card width instead of growing to fill the row. Letting them stretch made
+// the least considered choice the largest thing on the screen.
+.sentinelCard {
+  @extend %contentBorderAndBackground;
+  display: flex;
+  flex: 0 1 320px;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  transition: box-shadow 0.15s;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  // Deliberately smaller than the 36px action buttons on a DRep card: picking
+  // Abstain or No Confidence should not be the easiest click on the page.
+  button {
+    align-self: flex-start;
+    font-size: 14px;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 16px;
+    width: auto;
+  }
+}
+
+.sentinelCardTitle {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 16px;
+  margin: 0;
+}
+
+.sentinelCardDescription {
+  color: var(--theme-gov-font-color-regular);
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.pinnedFavorites {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.searchRow {
+  align-items: flex-start;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+// Mirrors the stake pools view buttons: one bordered box holding the icons,
+// sitting alongside the search field rather than in the filter row.
+.viewButtons {
+  @extend %contentBorderAndBackground;
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: 15px;
+  height: 50px;
+  padding: 0 20px;
+
+  button {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    display: flex;
+    padding: 0;
+
+    svg {
+      height: 16px;
+      width: 16px;
+    }
+
+    path,
+    rect {
+      fill: var(--theme-gov-font-color-lighter);
+    }
+  }
+}
+
+.selected {
+  path,
+  rect {
+    fill: var(--theme-gov-font-color-accent) !important;
+  }
+}
+
+// Both list labels use one muted regular weight, the treatment the stake pools
+// screen gives its two list headings.
+.listTitle,
+.pinnedFavoritesTitle {
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.38;
+  margin: 0;
+  opacity: 0.5;
+}

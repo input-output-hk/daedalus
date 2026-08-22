@@ -4,6 +4,7 @@ import log from 'electron-log-daedalus';
 import rimraf from 'rimraf';
 import ensureDirectoryExists from './ensureDirectoryExists';
 import { pubLogsFolderPath, appLogsFolderPath } from '../config';
+import { environment } from '../environment';
 import {
   constructMessageBody,
   formatMessage,

@@ -47,7 +47,7 @@ Delegation status values in `delegation.active.status` include:
 - `delegating`
 - `not_delegating`
 - `voting`
-- `voting_and_delegating`
+- `delegating_and_voting`
 
 **Response:**
 ```json

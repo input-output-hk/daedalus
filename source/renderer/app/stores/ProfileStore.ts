@@ -6,6 +6,12 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
+import { DEFAULT_LIST_VIEW_MODE } from '../types/listViewTypes';
+import type {
+  ListViewMode,
+  ListViewPreferences,
+  ListViewScreen,
+} from '../types/listViewTypes';
 import LocalizableError from '../i18n/LocalizableError';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
@@ -128,6 +134,15 @@ export default class ProfileStore extends Store {
   setThemeRequest: Request<string> = new Request(
     this.api.localStorage.setUserTheme
   );
+  /**
+   * Whether a list screen shows cards or a table, keyed by screen.
+   *
+   * Held here rather than in each screen's own store because the DRep
+   * directory and the stake pools list offer the same choice, and two copies
+   * of the same preference drift apart.
+   */
+  @observable
+  listViewPreferences: ListViewPreferences = {};
   @observable
   error: LocalizableError | null | undefined = null;
   @observable
@@ -167,6 +182,7 @@ export default class ProfileStore extends Store {
       this._acknowledgeRTSFlagsModeRecommendation
     );
     this.actions.app.initAppEnvironment.listen(() => {});
+    this._loadListViewPreferences();
     this.registerReactions([
       this._updateBigNumberFormat,
       this._redirectToInitialSettingsIfNoLocaleSet,
@@ -372,6 +388,30 @@ export default class ProfileStore extends Store {
       param
     );
   };
+  getListViewMode(screen: ListViewScreen): ListViewMode {
+    return this.listViewPreferences[screen] ?? DEFAULT_LIST_VIEW_MODE;
+  }
+
+  @action
+  async setListViewMode(
+    screen: ListViewScreen,
+    mode: ListViewMode
+  ): Promise<void> {
+    const next = { ...this.listViewPreferences, [screen]: mode };
+    runInAction(() => {
+      this.listViewPreferences = next;
+    });
+    await this.api.localStorage.setListViewPreferences(next);
+  }
+
+  @action
+  async _loadListViewPreferences(): Promise<void> {
+    const stored = await this.api.localStorage.getListViewPreferences();
+    runInAction(() => {
+      this.listViewPreferences = stored ?? {};
+    });
+  }
+
   _updateTheme = async ({ theme }: { theme: string }) => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setThemeRequest.execute(theme);

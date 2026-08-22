@@ -1,5 +1,16 @@
 # Governance — Current Vote Display Design
 
+> **Placement decision, 2026-08-21 (PR #3355 review item 5).** A DRep's voting
+> history renders as a collapsible table **below** the profile information on the
+> detail view, collapsed by default, with the collapsed state stating how many
+> votes are available. It does not go in the upper context box: a vote list grows
+> without bound as proposals accumulate, and that box is sized for a fixed
+> summary.
+>
+> Note that no voting-history list exists in the code yet. `CurrentDRepSummary`
+> summarises the DRep a wallet currently delegates to and shows no votes, so
+> there was nothing to move; this records where it goes when it is built.
+
 **Status:** draft, merged into Governance DRep Discovery `cv-1` / `cv-2`
 **Plan:** [../governance-drep-discovery-plan.md](../governance-drep-discovery-plan.md) (`cv-1` / `cv-2`)
 **Tasks:** [../governance-drep-discovery-plan-tasks.json](../governance-drep-discovery-plan-tasks.json) (`task-126`..`task-148`, plus slice-1 sanitization floor `task-109`..`task-111`)

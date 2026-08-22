@@ -1,0 +1,641 @@
+{
+  "metadata": {
+    "title": "DRep Discovery PR #3355 Review Feedback Tasks",
+    "created": "2026-08-20",
+    "updated": "2026-08-21",
+    "version": "1.0",
+    "totalTasks": 23,
+    "prdReference": ".agent/plans/governance/drep-discovery/drep-discovery-pr-feedback.md",
+    "description": "Triage and remediation of the ten review items raised on PR #3355 plus one inline review comment, against branch feat/drep-discovery. Ordered correctness first: the delegation-state mapping defects and the startup crash precede the directory and detail-view polish, because two of them can misrepresent a user's stake delegation. Five items are blocked on product decisions recorded in the companion plan and are marked as such in their descriptions.",
+    "sourceFiles": [
+      ".agent/plans/governance/drep-discovery/drep-discovery-pr-feedback.md",
+      ".agent/plans/governance/drep-discovery/api.md",
+      ".agent/plans/governance/drep-discovery/store.md",
+      ".agent/plans/governance/drep-discovery/designs/shared-design-tokens.md",
+      "source/renderer/app/stores/GovernanceStore.ts",
+      "source/renderer/app/api/api.ts",
+      "source/renderer/app/api/governance/requests/getDRepSummary.ts",
+      "source/renderer/app/components/governance/drep-directory/",
+      "source/renderer/app/components/governance/drep-detail/",
+      "source/renderer/app/components/wallet/transactions/Transaction.tsx"
+    ],
+    "importantNote": "Do not close item 9 on the basis of a corrected UI. The pending-delegation mapping defect in api.ts explains the wrong display, but it does not establish that the submitted certificate preserved stake delegation on-chain. fb-104 answers that from the ledger first, and its answer decides whether the remaining work is presentational or a transaction-construction defect."
+  },
+  "phases": [
+    {
+      "id": "fix-a",
+      "name": "Fix A - Startup crash, delegation state, transaction labeling",
+      "description": "Defects that misreport wallet state or throw at startup. Everything here is reachable without the directory UI and is testable with Jest fixtures.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "fb-101",
+          "title": "Guard isGovernancePage against a null router location",
+          "description": "The computed reads this.stores.router.location.pathname with no null check at GovernanceStore.ts:165, and setup() registers a reaction on it at GovernanceStore.ts:365 that evaluates before the router holds a location. This throws an uncaught MobX reaction error on the startup screen.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1,
+          "origin": [
+            "item-11-inline-review-comment"
+          ],
+          "dependencies": [],
+          "targetPath": "source/renderer/app/stores/GovernanceStore.ts",
+          "acceptanceCriteria": [
+            "isGovernancePage returns false when router.location is null or undefined rather than throwing.",
+            "The setup() reaction no longer raises an uncaught exception during app startup.",
+            "Jest regression test in tests/jest/governance/GovernanceStore.spec.ts drives the store with a null location, then a governance location, then a non-governance location, and asserts _clearGovernanceState fires only on the last transition.",
+            "No console error remains on the startup screen in a dev run."
+          ],
+          "completedAt": "2026-08-20T21:35:00Z",
+          "notes": "Completed 2026-08-20. Guarded the computed with optional chaining and a null check. Two regression tests in tests/jest/governance/GovernanceStore.spec.ts: one asserts the computed reads null as off-page, one captures MobX reaction errors via onReactionError. The obvious `expect(() => setup()).not.toThrow()` assertion was discarded because MobX routes reaction exceptions to its own handler, so it passed against the broken code. Both new tests fail pre-fix and pass post-fix."
+        },
+        {
+          "id": "fb-102",
+          "title": "Stop a voting-only pending entry from clearing lastDelegatedStakePoolId",
+          "description": "api.ts:3125 refuses to read a pool target out of a voting-only active status and says so in a comment. The pending branch applies no equivalent guard: lastDelegatedStakePoolId is assigned from last(next).target unconditionally at api.ts:3161, so a pending vote delegation with no target nulls the pool the user is delegated to. This is the probable cause of review items 8 and 9.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "origin": [
+            "item-8",
+            "item-9"
+          ],
+          "dependencies": [],
+          "targetPath": "source/renderer/app/api/api.ts",
+          "acceptanceCriteria": [
+            "The pending-delegation branch applies the same status guard as the active branch: a voting-only entry never contributes a stake pool id.",
+            "A next array whose final entry is voting-only leaves lastDelegatedStakePoolId at the pool id carried by the delegating entry.",
+            "lastDelegationStakePoolStatus stays consistent with the entry that supplied the pool id.",
+            "The guard is expressed once and shared between the active and pending branches rather than duplicated."
+          ],
+          "completedAt": "2026-08-20T21:35:00Z",
+          "notes": "Completed 2026-08-20. Extracted carriesStakeTarget and carriesVoting predicates, now shared by the active and pending branches, replacing the active-branch switch with no behaviour change. The pending branch no longer takes a stake-pool target from a voting-only entry. Root cause was wider than the plan recorded: Wallet.isDelegating at domains/Wallet.ts:246 prefers lastDelegationStakePoolStatus over the active status, so a voting-only pending entry made a pool-delegated wallet report as not delegating, which is the reported symptom in items 8 and 9."
+        },
+        {
+          "id": "fb-103",
+          "title": "Select the correct pending delegation when next holds several entries",
+          "description": "last(next) reads only the final element. When a pending SPO delegation and a pending vote delegation coexist, one silently wins and the other is dropped from the UI. Decide the selection rule (most likely: the latest entry per concern, keyed on changes_at, resolved separately for stake and voting) and implement it.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "origin": [
+            "item-8"
+          ],
+          "dependencies": [
+            "fb-102"
+          ],
+          "targetPath": "source/renderer/app/api/api.ts",
+          "acceptanceCriteria": [
+            "Stake-pool and voting targets are resolved independently from the next array, each taking the latest applicable entry by changes_at.",
+            "A wallet with both a pending pool change and a pending DRep change surfaces both.",
+            "Selection is deterministic when two entries share a changes_at epoch, and the tie-break is documented in a comment.",
+            "Existing behaviour for a single-entry next array is unchanged, proven by the pre-existing assertion at tests/jest/api/createWalletFromServerData.spec.ts:109."
+          ],
+          "completedAt": "2026-08-20T21:35:00Z",
+          "notes": "Completed 2026-08-20. Replaced last(next) with findLatestPendingDelegation, which ranks entries by changes_at.epoch_number and resolves stake and voting independently. Undated entries rank below every dated entry and ties resolve to the later array position, documented in the helper comment."
+        },
+        {
+          "id": "fb-104",
+          "title": "Establish on-chain whether a DRep-only certificate preserves stake delegation",
+          "description": "Review item 9 reports a pool-delegated wallet reading as undelegated after a DRep-only delegation. Confirm from the ledger, using the explorer links in the comment, whether the submitted certificate kept the stake delegation. The delegation path is PUT /v2/dreps/{dRepId}/wallets/{walletId} in source/renderer/app/api/voting/requests/delegateVotes.ts. Blocks the closure of item 9 either way.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "origin": [
+            "item-9"
+          ],
+          "dependencies": [],
+          "targetPath": "source/renderer/app/api/voting/requests/delegateVotes.ts",
+          "acceptanceCriteria": [
+            "The two transactions linked in the review comment are inspected on preprod and their certificate contents recorded.",
+            "A written answer states whether stake delegation survived the vote-delegation certificate.",
+            "If stake delegation was preserved, item 9 is closed by fb-102 and fb-103 and this is recorded as a display-only defect.",
+            "If stake delegation was dropped, a new high-priority task is raised for certificate construction and the release risk is escalated before any UX work proceeds."
+          ],
+          "completedAt": "2026-08-20T23:05:00Z",
+          "notes": "Completed 2026-08-20. Both transactions inspected on preprod via Koios. 3876d07d\u2026 (epoch 305) carried three certificates: stake_registration, pool_delegation to pool1yqkkm7f\u2026, and vote_delegation to drep_always_abstain. 470c10c5\u2026 (epoch 306) carried exactly one certificate, vote_delegation to drep1yfa29m0p\u2026, and no pool_delegation. Confirmed positively rather than by inference: the stake account stake_test1uqnz5jt\u2026qffkam6 currently reports delegated_pool pool1yqkkm7f\u2026 and delegated_drep drep1yfa29m0p\u2026 simultaneously, so the pool delegation from epoch 305 survived the epoch-306 vote delegation and no stake delegation was lost on-chain. Item 9 is therefore a display defect, closed by fb-102, fb-103 and fb-107, not a transaction-construction defect. No release risk and no follow-up task raised. This also confirms item 7: the epoch-305 transaction carries both a pool_delegation and a vote_delegation, and api.ts flags any cast_vote certificate as a VOTE transaction, which is why it was titled as a pure voting power delegation."
+        },
+        {
+          "id": "fb-105",
+          "title": "Extend delegation mapping fixtures and tests to the untested pending shapes",
+          "description": "The only existing test that exercises the next array uses a single-element array with status delegating and a real pool target. No fixture covers a voting-only pending entry or a multi-entry next array, which is why items 8 and 9 reached review.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "origin": [
+            "item-8",
+            "item-9"
+          ],
+          "dependencies": [
+            "fb-102",
+            "fb-103"
+          ],
+          "targetPath": "tests/jest/api/createWalletFromServerData.spec.ts",
+          "acceptanceCriteria": [
+            "New fixtures under tests/mocks/wallets/ cover a voting-only pending entry, a pending pool change plus a pending vote change, and a pending vote change over an active pool delegation.",
+            "Tests assert both delegatedStakePoolId and lastDelegatedStakePoolId for each shape.",
+            "A regression test reproduces the item 8 sequence: SPO certificate submitted in the previous epoch, wallet must not read as undelegated.",
+            "Tests fail against the pre-fix mapping and pass after it."
+          ],
+          "completedAt": "2026-08-20T21:35:00Z",
+          "notes": "Completed 2026-08-20. Six tests added to tests/jest/api/createWalletFromServerData.spec.ts covering a voting-only pending entry over an active pool delegation, a pending pool change with a pending vote change, epoch ordering against array order, a pending not_delegating entry, a vote entry following a pool change, and an empty next array. Four fail against the pre-fix mapping. Used the existing withDelegation helper rather than new fixture files, matching how the spec already covers delegation shapes. Assertions include wallet.isDelegating, the user-visible symptom, not only the mapped fields."
+        },
+        {
+          "id": "fb-106",
+          "title": "Correct the governance transaction title in the transaction list",
+          "description": "Decision 5 settled 2026-08-20: rename to a single label covering every governance transaction. Transaction.tsx:532 renders wallet.transaction.voted, currently 'Voting Power Delegation', for every TransactionTypes.VOTE entry, and api.ts:3321 assigns that type when any certificate is cast_vote. A certificate delegating stake to an SPO and voting power to the auto-abstain DRep therefore reads as a pure vote delegation. The accepted tradeoff is that a pure vote delegation and a combined certificate now read identically in the list; the expanded row still shows the certificates.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "origin": [
+            "item-7"
+          ],
+          "dependencies": [],
+          "targetPath": "source/renderer/app/components/wallet/transactions/Transaction.tsx",
+          "acceptanceCriteria": [
+            "wallet.transaction.voted reads 'Delegation Transaction' in en-US, with the ja-JP message updated in the same change.",
+            "The label is accurate for a vote-only certificate, a combined stake-and-vote certificate, and the auto-abstain case.",
+            "translations/messages.json is regenerated via yarn i18n:manage.",
+            "Storybook covers the transaction row for each governance certificate shape."
+          ],
+          "completedAt": "2026-08-20T23:05:00Z",
+          "notes": "Completed 2026-08-20. wallet.transaction.voted now reads 'Delegation Transaction' in en-US and \u59d4\u4efb\u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3 in ja-JP, with the message description rewritten to say the certificate may carry stake, voting power or both. translations/messages.json regenerated with yarn i18n:manage; the locale files changed by exactly one line each."
+        },
+        {
+          "id": "fb-107",
+          "title": "Correct the Delegation Center's pending-epoch pool lookup",
+          "description": "Found during fb-103. WalletRow.getPendingDelegatedStakePoolId finds the first pending entry matching an epoch and returns null when that entry's status is not `delegating`. When a combined certificate appends a stake entry and a vote entry at the same epoch, the lookup can resolve to the vote entry and report no pool for that epoch. The api.ts fix does not reach this path because the component reads the raw pendingDelegations array.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "origin": [
+            "item-8",
+            "triage"
+          ],
+          "dependencies": [
+            "fb-103"
+          ],
+          "targetPath": "source/renderer/app/components/staking/delegation-center/WalletRow.tsx",
+          "acceptanceCriteria": [
+            "The lookup selects the pending entry that carries stake information for the epoch, ignoring voting-only entries, consistent with the predicates introduced in api.ts.",
+            "A wallet with a stake entry and a vote entry at the same epoch shows the pool for that epoch.",
+            "Component coverage exercises both entry orderings within the array, since the backend ordering is not guaranteed.",
+            "Existing WalletRow snapshots are regenerated deliberately."
+          ],
+          "completedAt": "2026-08-20T23:05:00Z",
+          "notes": "Completed 2026-08-20. The lookup was extracted from WalletRow into a pure helper, getPendingStakePoolIdForEpoch in components/staking/delegation-center/pendingDelegation.ts, covered by seven tests in tests/jest/staking/pendingDelegation.spec.ts, three of which fail against the old logic. A second defect was found alongside the filed one: the old code accepted only the delegating status, so a pending voting_and_delegating entry, which does carry a pool target, also reported no pool. The predicates carriesStakeTarget and carriesVoting moved to domains/Wallet.ts beside the status enum and are now shared by the wallet mapper and the delegation centre, so the two cannot disagree."
+        },
+        {
+          "id": "fb-108",
+          "title": "Reconcile network.ts with the explorer constants removed on master",
+          "description": "Found during triage. The feature commit rewrote source/renderer/app/utils/network.ts and tests/common/unit/networks.spec.ts, reintroducing imports of STAGING_EXPLORER_URL and TESTNET_EXPLORER_URL, which master removed in a96050ef3 when it dropped the dead testnet and staging explorers. urlsConfig.ts was not touched by the feature commit, so the constants no longer exist. yarn compile fails with two TS2724 errors and four tests in networks.spec.ts fail, all independent of the governance work. This blocks the verification phase.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "origin": [
+            "triage"
+          ],
+          "dependencies": [],
+          "targetPath": "source/renderer/app/utils/network.ts",
+          "acceptanceCriteria": [
+            "network.ts and networks.spec.ts reflect master's explorer set rather than the removed testnet and staging entries.",
+            "yarn compile reports no errors from these files.",
+            "tests/common/unit/networks.spec.ts passes.",
+            "The reconciliation preserves the governance-related changes the feature commit made to the same files, if any."
+          ],
+          "completedAt": "2026-08-20T23:05:00Z",
+          "notes": "Completed 2026-08-20. source/renderer/app/utils/network.ts and tests/common/unit/networks.spec.ts restored from origin/master. The branch versions were a straight revert to the pre-8f82292e7 explorer implementation, with per-network hosts and a locale argument, while every caller on the branch already used master's three-argument signature. Confirmed the branch versions carried nothing governance-related. yarn compile is clean and the four failing tests in networks.spec.ts pass."
+        },
+        {
+          "id": "fb-109",
+          "title": "Reconcile the Mithril snapshot conversion with the node's configured ledger backend",
+          "description": "Found on 2026-08-20 while preparing a preprod environment, and outside the scope of PR #3355; it belongs to the Mithril workstream but is recorded here because it blocks the verification phase. MithrilBootstrapService.ts:776 converts every downloaded snapshot to LSM unconditionally via convertSnapshotDbToLsm, and nothing under source/main reads or sets the ledger backend. The node config the launcher points at, /nix/store/ns85l2li\u2026-node-cfg-files/config.yaml from the pinned cardano-playground input, sets LedgerDB.Backend to V2InMemory. cardano-node 11.0.1 rejects the converted snapshot with 'InitFailureRead (ReadMetadataError \u2026 MetadataBackendMismatch) Snapshot was created for a different backend' and then replays from genesis, logging the rejection at Error level but continuing to start. Reproduced directly: converting the same snapshot to utxohd-mem instead made the node open it and resume from slot 131518448. The user-visible effect is that a Mithril bootstrap appears to succeed and then syncs from genesis anyway.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 4,
+          "origin": [
+            "triage"
+          ],
+          "dependencies": [],
+          "targetPath": "source/main/mithril/mithrilSnapshotConverter.ts",
+          "acceptanceCriteria": [
+            "The conversion target is derived from the node configuration's LedgerDB.Backend rather than hard-coded to LSM.",
+            "A snapshot converted under the pinned preprod config is accepted by the node, evidenced by ReplayFromSnapshot rather than ReplayFromGenesis in the node log.",
+            "A backend the converter cannot produce fails loudly during bootstrap instead of leaving the node to replay from genesis.",
+            "Whether mainnet's pinned config specifies the same backend is checked, since only the preprod config was available here.",
+            "mithrilSnapshotConverter.spec.ts covers backend selection, and the staging allowlist in mithrilPartialSyncStaging.ts is revisited if 'lsm' is no longer always produced."
+          ],
+          "completedAt": "2026-08-20T23:05:00Z",
+          "notes": "Completed 2026-08-20. Conversion is now chosen from the node configuration's LedgerDB.Backend rather than hard-coded to LSM. A node configured for the in-memory backend skips conversion entirely, since Mithril already publishes in-memory snapshots; an LSM backend converts as before; anything else fails as a convert-stage error rather than installing a snapshot the node will discard. New reader in source/main/mithril/ledgerBackend.ts with 14 tests, verified against both real configs, plus two new MithrilBootstrapService tests for the skip and fail-loud paths. Two judgment calls to review with the Mithril workstream: an unreadable or backend-less configuration now fails the bootstrap rather than proceeding, on the grounds that a silently discarded snapshot costs the user the whole download and then a full replay; and the YAML value is located by scanning the LedgerDB block rather than parsed, because the main process has no YAML parser and adding a dependency was not mine to decide."
+        }
+      ]
+    },
+    {
+      "id": "fix-b",
+      "name": "Fix B - DRep summary endpoint and the high voting power badge",
+      "description": "Review items 6 and 10 are the same defect from two ends. The summary request targets an endpoint the API reference does not document, so the totals never load and the badge that depends on them can never render.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "fb-201",
+          "title": "Establish the real source for DRep stake totals",
+          "description": "Superseded in part by evidence gathered 2026-08-20. The cardano-wallet revision this branch pins in flake.nix, cardano-foundation/cardano-wallet at 26c79b4194c71167f28281237541203feaa28b40, does define GET /dreps/summary in its swagger specification, alongside /dreps, /dreps/suggested, /dreps/{drepId} and /dreps/{drepId}/wallets/{walletId}. The ApiDRepSummary schema matches what GovernanceStore.fetchDRepSummary reads. The client request is therefore correct and the reported bech32 error indicates the running wallet predates the route. Remaining work is to confirm which wallet build the reporter was running and to correct api.md, which documents only three of the five routes.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "origin": [
+            "item-6",
+            "item-10"
+          ],
+          "dependencies": [],
+          "targetPath": ".agent/plans/governance/drep-discovery/api.md",
+          "acceptanceCriteria": [
+            "The wallet binary actually serving the failing request is identified by version.",
+            "A running wallet built from the pinned revision is queried for /v2/dreps/summary and the response recorded.",
+            "api.md lists all five DRep routes the pinned specification defines, not three.",
+            "If the reporter's wallet predates the route, the finding is recorded as an environment mismatch rather than a client defect.",
+            "Whether total_drep_stake includes always_abstain and always_no_confidence is established and recorded, since fb-204's threshold depends on it."
+          ],
+          "completedAt": "2026-08-20T22:20:00Z",
+          "notes": "Completed 2026-08-20. The pinned wallet revision 26c79b41 defines all five DRep routes including /dreps/summary, confirmed both in its swagger specification and by the ApiDRepSummary and DRepSummary symbols present in the built binary and absent from the v2026-07-23 build master pins. Note that both builds report the same version string 'v2026-07-23' and differ only by git revision, which is almost certainly how the reported error arose. The denominator question is answered exactly: a local preprod wallet returns total_drep_stake 511,304,929,746,789 lovelace and total_drep_count 280, which match Koios preprod's sum over real DReps to the lovelace and its registered DRep count exactly. always_abstain (422,670,965,669,387) and always_no_confidence (336,240,991,975) are excluded from both figures. total_drep_stake is therefore directly usable as the denominator with no adjustment. api.md still needs updating from three routes to five."
+        },
+        {
+          "id": "fb-202",
+          "title": "Confirm the summary request against the pinned wallet, or degrade it explicitly",
+          "description": "Apply the outcome of fb-201. If the pinned wallet serves the route, no client change is needed and the work is limited to ensuring the bridge in use matches the pin. If a supported wallet version can lack the route, the client must degrade without erroring on every refresh.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "origin": [
+            "item-10"
+          ],
+          "dependencies": [
+            "fb-201"
+          ],
+          "targetPath": "source/renderer/app/api/governance/requests/getDRepSummary.ts",
+          "acceptanceCriteria": [
+            "No bad_request bech32 error appears in the console on directory load or refresh.",
+            "If the totals are unavailable in this wallet version, the dependent UI degrades explicitly rather than the request failing on every refresh.",
+            "Jest coverage asserts the request path and the failure handling.",
+            "api.md and store.md reflect the final behaviour."
+          ],
+          "completedAt": "2026-08-20T23:05:00Z",
+          "notes": "Completed 2026-08-20. No client change was needed: a local wallet built from the pinned revision answered GET /v2/dreps/summary with a 200 and the expected payload. api.md now documents all five DRep routes rather than three, records that both wallet builds report version v2026-07-23 and differ only by git revision, and states that total_drep_stake excludes the predefined abstain and no-confidence targets."
+        },
+        {
+          "id": "fb-203",
+          "title": "Surface summary fetch failure in store state instead of swallowing it",
+          "description": "fetchDRepSummary catches, logs and returns at GovernanceStore.ts:232, with a comment saying the badge is silently omitted. A permanently failing dependency should be visible in store state so that a missing badge is distinguishable from a badge that decided not to render.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "origin": [
+            "item-10"
+          ],
+          "dependencies": [
+            "fb-202"
+          ],
+          "targetPath": "source/renderer/app/stores/GovernanceStore.ts",
+          "acceptanceCriteria": [
+            "Summary availability is represented in store state, distinct from the directory refresh state.",
+            "The directory still renders fully when the summary is unavailable, matching the current non-critical intent.",
+            "Jest coverage asserts the observable transition on failure.",
+            "store.md documents the new observable."
+          ],
+          "completedAt": "2026-08-20T23:05:00Z",
+          "notes": "Completed 2026-08-20. Added the drepSummaryState observable and the isDRepSummaryAvailable computed, so a permanently failing summary is distinguishable from one never requested. The directory still loads normally when the summary fails, asserted by test. Four tests added to tests/jest/governance/GovernanceStore.spec.ts covering success, failure, directory independence, and clearing on navigation away. store.md documents both drepSummary and drepSummaryState, neither of which had been recorded before."
+        },
+        {
+          "id": "fb-204",
+          "title": "Add the high voting power warning badge at the Target15 threshold",
+          "description": "Decision 4 settled 2026-08-20 from measured mainnet data rather than intuition. Koios reports 1,062 registered DReps holding 5.257B ADA between them, with always_abstain holding a further 9.750B and always_no_confidence 0.170B. CR10, the share held by the top ten, measures 51.1% against the real-DRep denominator, consistent with the 47.8% quoted by the Target15 campaign, whose goal is to bring CR10 to 15% by keeping each top-ten DRep at or below roughly 87M ADA, about 1.5% of voting power. The threshold is therefore 1.5% of voting power held by real DReps. The denominator excludes always_abstain and always_no_confidence: including them inflates it by about 2.9x, moves the 1.5% cutoff from roughly 79M to 228M ADA, and would flag only 5 DReps instead of 16, missing 8 of the 13 the campaign targets.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 4,
+          "origin": [
+            "item-6"
+          ],
+          "dependencies": [
+            "fb-202",
+            "fb-203"
+          ],
+          "targetPath": "source/renderer/app/components/governance/_shared/",
+          "acceptanceCriteria": [
+            "Every DRep's share of voting power is displayed as neutral information on the card and detail view, independent of any warning.",
+            "The warning fires at or above 1.5% of voting power held by real DReps, expressed as a named documented constant.",
+            "No denominator adjustment is applied: total_drep_stake was verified on 2026-08-20 to exclude always_abstain and always_no_confidence, matching Koios to the lovelace on preprod.",
+            "The tooltip states the rule, the DRep's ADA amount and its percentage, so the figure informs below the threshold as well as above it.",
+            "The threshold's origin is documented in shared-design-tokens.md, including that it derives from the Target15 CR10 goal rather than being an invented number.",
+            "Placement respects the badge structure settled in fb-304.",
+            "Storybook covers a DRep above the threshold, one just below it, and the case where totals are unavailable.",
+            "Colour is never the sole indicator and contrast meets WCAG 2.1 AA in both themes.",
+            "The share and its warning are the only voting-power signals on a card, since High value is retired in fb-304."
+          ],
+          "completedAt": "2026-08-21T07:00:00Z",
+          "notes": "Completed 2026-08-21. Every DRep states its share of delegated voting power on the card and the detail view, with the absolute amount in the tooltip; the warning treatment applies at 1.5%. A share too small to display rounds to 'under 0.01%' rather than to zero, since a DRep holding voting power does not hold none of it. The directory fixtures had to be rebuilt as part of this: they never passed the totals, so no share could be computed, and every entry carried the same voting power to within a rounding error."
+        }
+      ]
+    },
+    {
+      "id": "ux-directory",
+      "name": "UX - DRep directory",
+      "description": "Review items 1, 2 and 3. Storybook-first work; the governance fixtures already exist under storybook/stories/governance/_utils/fixtures.ts and need no running node.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "fb-301",
+          "title": "Add a filter that hides DReps approaching expiry",
+          "description": "Decision settled 2026-08-20, and the premise changed on inspection. No expiry filter exists in this branch or at the pre-force-push tip d77311a54: DRepFilterState carries only status and metadata (helpers.ts:179-190). Rather than removing a control that is not there, the idea is inverted into one with a delegation use: hide DReps approaching expiry instead of selecting for them. The threshold is six epochs, the number the status badge already uses, so the interface carries one definition of approaching expiry rather than three. Twelve epochs was rejected as far too broad: dRepActivity is 20 epochs on both mainnet and preprod and an epoch is 432,000 slots at one second, so twelve epochs remaining is 60 of a DRep's 100 days. Because the default cohort floor is already above six epochs, this filter is a no-op on the default view by construction and does its work in show-all, search and the pinned favourites group.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "origin": [
+            "item-1"
+          ],
+          "dependencies": [],
+          "targetPath": "source/renderer/app/components/governance/drep-directory/DRepDirectoryFilters.tsx",
+          "acceptanceCriteria": [
+            "A filter hides DReps with six or fewer epochs remaining; the existing status and metadata filters are unchanged.",
+            "The threshold is the same constant the status badge uses, not a second definition of approaching expiry.",
+            "The filter is understood to be inert on the default view, since the cohort floor already excludes those entries, and its copy does not imply otherwise.",
+            "The control follows the existing DRepDirectoryFilters select pattern rather than introducing a new control type.",
+            "helpers.ts, its filter predicate and helpers.spec.ts are updated together.",
+            "en-US and ja-JP copy land together.",
+            "Storybook covers the filter active with results, active with no results, and inactive."
+          ],
+          "completedAt": "2026-08-21T07:00:00Z",
+          "notes": "Completed 2026-08-21. Inverted into a filter that hides DReps lapsing within six epochs, the same threshold the status badge uses. Entries whose remaining epochs are unknown are kept rather than hidden. Inert on the default view by design, since the cohort floor already excludes them."
+        },
+        {
+          "id": "fb-302",
+          "title": "Pin favourites above the suggested cohort",
+          "description": "Decision settled 2026-08-20. Review item 2: the default view samples 20 DReps at random, so the favourites toggle usually matches nothing and reaching a favourite also requires Show All. Favourites are fetched by id and rendered as their own group above the randomized cohort, so they are visible without any mode switch and the cohort's randomization is untouched.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 4,
+          "origin": [
+            "item-2"
+          ],
+          "dependencies": [],
+          "targetPath": "source/renderer/app/components/governance/drep-directory/",
+          "acceptanceCriteria": [
+            "Favourites render in their own group above the suggested cohort, visible without toggling Show All or Favourited.",
+            "Favourites are fetched or merged by id rather than filtered out of the random sample, and do not displace suggested entries.",
+            "The favourites group is absent entirely when the user has none, consistent with the empty-section rule in fb-401.",
+            "A favourite that is retired or excluded from the cohort still shows its status badge and stale caption, per drep-discovery-design.md line 111.",
+            "The group header states how many favourites there are.",
+            "Storybook covers no favourites, favourites inside the sample, and favourites outside it.",
+            "auto-favorite.md is updated to match."
+          ],
+          "completedAt": "2026-08-21T07:00:00Z",
+          "notes": "Completed 2026-08-21. Favourites resolve by id through GovernanceStore.favoriteEntries and ensureFavorites rather than by filtering the random sample, and render pinned above the cohort with a count. Not duplicated when already in the cohort, absent when empty, and omitted from the favourites view, search and show-all. auto-favorite.md updated."
+        },
+        {
+          "id": "fb-303",
+          "title": "Add selectable card and table views to the directory",
+          "description": "Decision settled 2026-08-20: user-selectable card and table views, with the choice persisted. Daedalus already ships this pattern on Stake Pools: StakePoolsSearchListViewButton for the control, StakePoolsTable with StakePoolsTableHeader, StakePoolsTableHeaderCell and useCreateColumns for the table, built on react-table's useTable and useFlexLayout with react-virtualized, inside a BorderedBox. The DRep directory mirrors those components rather than introducing new ones. Stake Pools holds isListView as component state and does not persist it (StakePools.tsx:108); persistence is being added to both screens, see fb-306.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 10,
+          "origin": [
+            "item-3"
+          ],
+          "dependencies": [],
+          "targetPath": "source/renderer/app/components/governance/drep-directory/",
+          "acceptanceCriteria": [
+            "Card and table views are both available from a control that matches the Stake Pools toggle rather than a new control.",
+            "The table reuses the Stake Pools table components and their react-table and react-virtualized setup rather than a bespoke table.",
+            "The choice persists across restarts, and the default view is cards, matching the Stake Pools default.",
+            "The table carries a Metadata column whose header supplies the meaning for the compact verified indicator.",
+            "Neither view drops a field the design docs treat as binding, including the status badge and the source labels from shared-design-tokens.md section 2.",
+            "Keyboard navigation, focus order and screen-reader output are verified in both views, per the accessibility floor in shared-design-tokens.md section 10.",
+            "Storybook covers loaded, loading, empty and error states in both views.",
+            "Existing DRepDirectory snapshots are regenerated deliberately, not accepted blindly."
+          ],
+          "completedAt": "2026-08-21T08:30:00Z",
+          "notes": "Completed 2026-08-21. The table reuses the list's existing pagination rather than adding a second one, so both views share every filter, sort and search decision above them, and it carries the same signals a card does. The stake pools table components were not reused: they are built around StakePool's own sortable properties and default orderings. The choice persists and is seeded from the shared preference, but each component still holds local state so it works standalone in Storybook and in tests."
+        },
+        {
+          "id": "fb-304",
+          "title": "Split the metadata and expiry signals into separate badges",
+          "description": "Decision 3 settled 2026-08-20: split the two axes rather than renaming. Review item 3 read Threshold and Primary as cancelling each other out, and the cause is structural: metadata verification is binary while expiry is a scale, and the four-value category enum forces both into one slot under a priority rule that makes Threshold outrank Primary. Metadata verification becomes a boolean, rendered as a labelled badge on the card and a compact checkmark column in the table view from fb-303. Expiry moves to the status badge, which already owns the 'Expiring in {n} epochs' state below six epochs and is extended to the six-to-twelve window. This reopens an enum that shared-design-tokens.md section 1a describes as fixed for Phase 1. High value is retired rather than renamed: its rule is voting power above the cohort median, which the Target15 threshold in fb-204 now treats as the property to move away from, so keeping it would have one badge commending the same quantity another warns about. Voting power is communicated once, by the share figure and its warning. Copy leads with inactivity rather than expiry, because dRepActivity counts down from 20 and resets whenever the DRep votes: a low figure means silence, and the lapse is its consequence. The exact elapsed count is deliberately not shown. Rendering 'hasn't voted in N epochs' needs the dRepActivity protocol parameter, which the pinned wallet does not serve: ApiDRepInfo carries only id, credential, status, expiry_epoch, voting_power, deposit and anchor, and drep_activity appears nowhere in its specification. Hardcoding 20 would state a specific claim about a named DRep that a governance action could silently falsify, so the badge says the DRep has not voted recently and puts the computable figures on the lapse line.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 5,
+          "origin": [
+            "item-3"
+          ],
+          "dependencies": [
+            "fb-303"
+          ],
+          "targetPath": "source/renderer/app/components/governance/_shared/DRepCategoryBadge.tsx",
+          "acceptanceCriteria": [
+            "A DRep with verified metadata that is also approaching expiry shows both signals at once, which the current enum cannot express.",
+            "The category enum no longer carries High value, and shared-design-tokens.md section 1a records why it was retired rather than leaving it undocumented.",
+            "The category badge no longer encodes expiry; the status badge covers both the six-epoch and six-to-twelve-epoch windows.",
+            "The table's metadata column header supplies the meaning for the checkmark, so the icon is never the sole indicator, per the contrast rule in shared-design-tokens.md section 1.",
+            "Screen-reader output names the metadata state explicitly in both views.",
+            "shared-design-tokens.md sections 1 and 1a are rewritten in the same change, including what becomes of High value and its cohort-median rule.",
+            "en-US and ja-JP copy land together.",
+            "DRepCategoryBadge.spec.tsx is updated for the reduced enum and the removed priority tie-breaks.",
+            "The badge leads with inactivity and states the lapse in both epochs and days.",
+            "The days figure is derived from NetworkStatusStore.epochLength and slotLength, which already exist, rather than a hardcoded epoch duration.",
+            "No elapsed-epochs count is rendered anywhere, since the parameter it needs is not available from the wallet."
+          ],
+          "completedAt": "2026-08-20T23:30:00Z",
+          "notes": "Completed 2026-08-20. Metadata verification became a boolean badge and expiry moved to its own badge, so a verified DRep approaching expiry now shows both facts. The threshold moved from the seven-to-twelve window to six epochs. High value needed no retiring: it was never built, only specified. The inline Threshold badge, which carried hardcoded English in its title and accessible label, is gone. Copy leads with inactivity and omits the elapsed count, which would need a protocol parameter the wallet does not serve."
+        },
+        {
+          "id": "fb-305",
+          "title": "Localize the hardcoded approaching-expiry strings on DRepCard",
+          "description": "Found during triage rather than raised in review. DRepCard.tsx:145-146 passes literal English into title and aria-label for the approaching-expiry indicator, so it neither translates nor matches the message-id convention the rest of the feature follows.",
+          "status": "completed",
+          "priority": "low",
+          "estimatedHours": 1,
+          "origin": [
+            "triage"
+          ],
+          "dependencies": [],
+          "targetPath": "source/renderer/app/components/governance/drep-directory/DRepCard.tsx",
+          "acceptanceCriteria": [
+            "Both strings move to react-intl messages under the governance.drepDirectory namespace.",
+            "en-US and ja-JP copy land together and translations/messages.json is regenerated.",
+            "tests/jest/i18n/preliminaryCopyMarkers.spec.ts still passes.",
+            "A repository-wide check confirms no other hardcoded user-facing strings remain in the governance components."
+          ],
+          "completedAt": "2026-08-21T07:00:00Z",
+          "notes": "Completed 2026-08-21. The hardcoded strings on DRepCard were removed as part of fb-304, and a sweep for literal titles, aria-labels, placeholders and JSX text across the governance components and containers found none remaining."
+        },
+        {
+          "id": "fb-306",
+          "title": "Persist the Stake Pools view choice alongside the DRep directory's",
+          "description": "Decision settled 2026-08-20 and deliberately outside the scope of PR #3355. Stake Pools holds isListView as component state defaulting to cards and does not persist it (StakePools.tsx:108). The DRep directory is gaining a persisted view choice in fb-303, and rather than let two sibling screens behave differently, persistence is retrofitted onto Stake Pools as well. This changes a shipped screen and needs its own regression pass.",
+          "status": "completed",
+          "priority": "low",
+          "estimatedHours": 3,
+          "origin": [
+            "triage"
+          ],
+          "dependencies": [
+            "fb-303"
+          ],
+          "targetPath": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
+          "acceptanceCriteria": [
+            "The Stake Pools view choice persists across restarts using the same mechanism as the DRep directory's.",
+            "The default remains cards, so an existing user sees no change until they toggle.",
+            "Both screens read and write their preference through one shared path rather than two similar implementations.",
+            "Stake Pools regression coverage is run, including its existing snapshots, since this touches a screen outside this PR.",
+            "The change is called out separately in review, being unrelated to DRep discovery."
+          ],
+          "completedAt": "2026-08-21T08:30:00Z",
+          "notes": "Completed 2026-08-21. One preference keyed by screen, held with the other user preferences in ProfileStore. Stake pools has three view states rather than two, so the retrofit persists grid and list and deliberately leaves the rewards grid alone, being a sub-mode of the grid rather than a third choice. The default is unchanged, so an existing user sees nothing different until they toggle."
+        },
+        {
+          "id": "fb-307",
+          "title": "Connect the governance styles to the app's design system",
+          "description": "Raised in review on 2026-08-21: the governance screens did not look like the rest of the wallet. Four separate causes, all fixed. The badge colours referenced --badge-* variables that no theme defined, so sixteen hardcoded values always won and no badge could follow a theme. Typography was private to governance, with a governanceConfig.scss holding one comment and nobody importing it, 64 local font-size declarations and a 13px step that appears nowhere else in Daedalus. The pages sat in a centred 900px column while every other screen fills its pane. The same surface treatment was hand-rolled in six places, one at a radius used nowhere else.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 8,
+          "completedAt": "2026-08-21T07:00:00Z",
+          "origin": [
+            "review-2026-08-21"
+          ],
+          "dependencies": [],
+          "targetPath": "source/renderer/app/components/governance/",
+          "acceptanceCriteria": [
+            "Badge colours come from theme tokens defined in every theme, with no fallbacks, verified at WCAG AA 4.5:1 across all thirty-six badge and theme combinations.",
+            "Typography extends shared placeholders mirroring _stakingConfig.scss, on the app's own type scale.",
+            "The pages use the app's fill-the-pane layout rather than a centred column.",
+            "Surfaces share one placeholder and one corner radius.",
+            "No hardcoded colour and no undefined custom property remains in the governance styles."
+          ],
+          "notes": "Completed 2026-08-21 across four commits, one per layer. Three defects in the theme tooling surfaced on the way and are recorded in the plan: themes:update writes .js files the app does not read, themes:check:createTheme has a stale path, and the checker exits zero regardless of findings, which is why every governance variable had been reported missing without anyone noticing."
+        }
+      ]
+    },
+    {
+      "id": "ux-detail",
+      "name": "UX - DRep detail view",
+      "description": "Review items 4 and 5. Both are presentational and testable in Storybook against existing fixtures.",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "fb-401",
+          "title": "Hide metadata sections the DRep did not provide",
+          "description": "Review item 4: sections such as References and Links render empty when the DRep's metadata omits them. Empty sections should be hidden rather than shown as blank.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "origin": [
+            "item-4"
+          ],
+          "dependencies": [],
+          "targetPath": "source/renderer/app/components/governance/drep-detail/",
+          "acceptanceCriteria": [
+            "A section with no content is not rendered, including its heading and its source label.",
+            "The distinction between absent metadata and unverified metadata is preserved: an unavailable anchor still reports itself per shared-design-tokens.md section 2 rather than silently vanishing.",
+            "A DRep with no off-chain metadata at all still renders a coherent detail view.",
+            "Storybook covers full metadata, partial metadata, and no metadata."
+          ],
+          "completedAt": "2026-08-21T07:00:00Z",
+          "notes": "Completed 2026-08-21. The rendering was already conditional but tested for null, while the wallet passes empty strings through. Blank CIP-119 values now normalise to absent where the metadata is mapped, and are trimmed; references with no uri are dropped and a blank label no longer discards its reference. Storybook covers partial metadata and an anchor with no readable content."
+        },
+        {
+          "id": "fb-402",
+          "title": "Move Current Votes into a collapsible table below the profile",
+          "description": "Review item 5: the Current Votes panel sits in the upper context box and will outgrow it as proposals accumulate. The request is a separate table below the profile information, collapsed by default. designs/current-vote-display-design.md and current-vote-display-ux.md carry the original design and must be reconciled with this change.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 6,
+          "origin": [
+            "item-5"
+          ],
+          "dependencies": [],
+          "targetPath": "source/renderer/app/components/governance/drep-detail/",
+          "acceptanceCriteria": [
+            "Voting history renders as a table below the profile information, collapsed by default and expandable on request.",
+            "The collapsed state communicates how many votes are available without expanding.",
+            "The design documents under designs/ are updated in the same change, since this supersedes their stated placement.",
+            "The status badge requirement on the CurrentVoteSummary panel from shared-design-tokens.md section 1 is preserved or its removal is recorded as a deliberate change.",
+            "Storybook covers zero votes, a handful, and a volume large enough to prove the table scrolls rather than stretching the page.",
+            "Keyboard access to the expand control meets the accessibility floor."
+          ],
+          "completedAt": "2026-08-21T08:30:00Z",
+          "notes": "Closed 2026-08-21 as not buildable as scoped, with the decision recorded instead. There is no voting-history list anywhere in the branch, or at the pre-rewrite tip: CurrentDRepSummary summarises the DRep a wallet currently delegates to and renders no votes, so there was nothing to move out of the context box. designs/current-vote-display-design.md now records that the history goes below the profile as a collapsible table, collapsed by default and stating its count, so it is built that way when the cv-2 enrichment lands. One real defect surfaced alongside it: CurrentDRepSummary still used a twelve-epoch expiry window of its own, the window review item 1 rejected. It now uses the shared six-epoch threshold, so all three sites agree."
+        }
+      ]
+    },
+    {
+      "id": "verify",
+      "name": "Verification",
+      "description": "Cross-cutting checks once the phases above land. No local chain data is present, so the runtime checks need a Mithril bootstrap or selfnode first.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "fb-501",
+          "title": "Full regression and preprod smoke over the feedback set",
+          "description": "Confirm every review item is closed against a running wallet rather than against fixtures alone, and that the branch is clean by the project's own gates.",
+          "status": "ongoing",
+          "priority": "high",
+          "estimatedHours": 4,
+          "origin": [
+            "item-1",
+            "item-2",
+            "item-3",
+            "item-4",
+            "item-5",
+            "item-6",
+            "item-7",
+            "item-8",
+            "item-9",
+            "item-10",
+            "item-11-inline-review-comment"
+          ],
+          "dependencies": [
+            "fb-101",
+            "fb-105",
+            "fb-106",
+            "fb-202",
+            "fb-204",
+            "fb-301",
+            "fb-302",
+            "fb-303",
+            "fb-304",
+            "fb-401",
+            "fb-402",
+            "fb-107",
+            "fb-108",
+            "fb-109",
+            "fb-306"
+          ],
+          "targetPath": "tests/",
+          "acceptanceCriteria": [
+            "yarn check:all, yarn test:jest and yarn test:unit pass on the branch.",
+            "A preprod run produces no governance-related console errors across directory load, refresh, detail view and delegation.",
+            "Each of the eleven review items is walked through by hand and recorded as closed, deferred with a reason, or reopened.",
+            "The delegation scenarios from items 8 and 9 are re-run end to end and confirmed against a block explorer, not only in the UI.",
+            "The feature reference docs under .agent/plans/governance/drep-discovery/ match the shipped behaviour."
+          ],
+          "notes": "Partly done 2026-08-21, and what remains needs a person at the running app. Passing: yarn compile clean, yarn jest at 1399 passing across 106 suites, yarn test:unit at 32 scenarios and 102 steps, and yarn lint with zero errors (the one error in the project's lint run was an eslint-disable for a rule this project does not configure, introduced and then removed during this work). Formatting: eight files this branch touches are not clean under the pinned prettier 2.1.2, seven of which were already not clean before any of this work, because the tree was formatted by a newer prettier than the one the repository pins; that mismatch is worth resolving separately rather than reformatting files nobody touched. The governance API surface was exercised against a node and the branch's own wallet on preprod: /v2/dreps/summary, /v2/dreps/suggested, /v2/dreps and /v2/dreps/{drepId} all answered 200, with the summary payload matching what the store reads, so the reported bech32 error does not occur against this build. Items 8 and 9 were confirmed on-chain earlier. Still outstanding: a preprod session through the UI confirming no governance console errors across directory load, refresh, detail and delegation, and the two delegation flows re-run end to end."
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 5,
+    "totalTasks": 23,
+    "criticalPath": [
+      "fb-104",
+      "fb-102",
+      "fb-103",
+      "fb-105",
+      "fb-107",
+      "fb-108",
+      "fb-109",
+      "fb-202",
+      "fb-204",
+      "fb-501"
+    ]
+  }
+}

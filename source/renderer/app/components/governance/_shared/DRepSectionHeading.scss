@@ -1,0 +1,25 @@
+@import '../governanceConfig';
+
+.heading {
+  @extend %accentSemiboldText;
+  align-items: center;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  margin: 0 0 12px;
+}
+
+.info {
+  cursor: help;
+  display: inline-flex;
+  line-height: 1;
+
+  svg {
+    height: 14px;
+    width: 14px;
+  }
+
+  path {
+    fill: var(--theme-gov-font-color-lighter);
+  }
+}

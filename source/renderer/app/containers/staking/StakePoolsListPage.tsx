@@ -103,6 +103,10 @@ class StakePoolsListPage extends Component<Props> {
           smashServerUrl={smashServerUrl}
           onSmashSettingsClick={this.handleSmashSettingsClick}
           maxDelegationFunds={maxDelegationFunds}
+          listViewMode={profile?.getListViewMode?.('stakePools')}
+          onListViewModeChange={(mode) =>
+            profile?.setListViewMode?.('stakePools', mode)
+          }
         />
         {isRanking && <StakePoolsRankingLoader />}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (

@@ -1,0 +1,34 @@
+// Chrome shared by every icon-only control in governance. An icon button
+// carries no background of its own: the glyph and its accessible name do the
+// work, and the surrounding content keeps its weight.
+.iconButton {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  line-height: 1;
+  padding: 0 4px;
+
+  svg {
+    height: 14px;
+    width: 14px;
+  }
+
+  path {
+    fill: var(--theme-gov-font-color-light);
+  }
+
+  &:hover path {
+    fill: var(--theme-gov-font-color-accent);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+
+  &:disabled path,
+  &:disabled:hover path {
+    fill: var(--theme-gov-font-color-lighter);
+  }
+}

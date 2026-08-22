@@ -1,0 +1,5 @@
+# Fixture files used as raw bytes in hash-sensitive tests must not undergo
+# line-ending conversion on Windows checkouts.
+tests/mocks/governance/anchor-cip119-sample.json binary
+tests/mocks/governance/anchor-cip119-sample.hash binary
+tests/mocks/governance/anchor-malformed.txt       binary

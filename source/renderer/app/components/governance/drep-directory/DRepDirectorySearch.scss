@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.input {
+  // Fills the row rather than sitting short of the view toggle beside it.
+  width: 100%;
+}
+
+.hint {
+  color: var(--theme-gov-font-color-light);
+  font-size: 12px;
+  margin: 0;
+}
+
+.error {
+  color: var(--theme-color-error);
+  font-size: 12px;
+  margin: 0;
+}

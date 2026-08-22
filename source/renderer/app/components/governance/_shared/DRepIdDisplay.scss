@@ -1,0 +1,72 @@
+.container {
+  align-items: center;
+  display: inline-flex;
+  gap: 4px;
+}
+
+.id {
+  color: var(--theme-gov-font-color-regular);
+  cursor: default;
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 14px;
+}
+
+.copyButton {
+  background: none !important;
+  border: none !important;
+  color: var(--theme-gov-font-color-light);
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0.6;
+  padding: 2px 6px !important;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.copiedConfirmation {
+  color: var(--theme-gov-font-color-light);
+  font-size: 12px;
+}
+
+.stack {
+  align-items: flex-start;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.formRow {
+  align-items: center;
+  display: inline-flex;
+  gap: 4px;
+}
+
+.formCaption {
+  color: var(--theme-gov-font-color-light);
+  font-size: 12px;
+}
+
+.idFull {
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 14px;
+  // An id broken across lines is hard to read and hard to compare by eye. It
+  // stays on one line and scrolls if the pane is too narrow for it.
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.cip105Toggle {
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  color: var(--theme-gov-font-color-light);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0;
+  text-decoration: underline;
+}

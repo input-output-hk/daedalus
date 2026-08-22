@@ -1,0 +1,42 @@
+[
+  [
+    { "keyHash": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4" },
+    {
+      "anchor": {
+        "dataHash": "6a5e200d2f3a1020202020202020202020202020202020202020202020202020",
+        "url": "https://governance-preview.example.org/dreps/ledger-policy-lab.json"
+      },
+      "deposit": 500000000,
+      "expiry": 535,
+      "stake": "23137980123456"
+    }
+  ],
+  [
+    { "keyHash": "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5" },
+    {
+      "anchor": null,
+      "deposit": 500000000,
+      "expiry": 508,
+      "stake": "9007199254740993"
+    }
+  ],
+  [
+    { "scriptHash": "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5" },
+    {
+      "anchor": {
+        "dataHash": "7b6f311e3g4b2131313131313131313131313131313131313131313131313131",
+        "url": "https://governance-preview.example.org/dreps/script-based.json"
+      },
+      "deposit": 500000000,
+      "expiry": 520
+    }
+  ],
+  [
+    { "keyHash": "d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1" },
+    {
+      "anchor": null,
+      "deposit": 500000000,
+      "expiry": 498
+    }
+  ]
+]

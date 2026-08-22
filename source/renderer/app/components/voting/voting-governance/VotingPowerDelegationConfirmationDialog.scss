@@ -19,3 +19,21 @@
   margin-top: 24px;
   @include error-message;
 }
+
+.drepIdValue {
+  font-family: monospace;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+// The disclosure for the deprecated ID form. A link rather than a button in
+// appearance: it reveals text already on the page's terms, it does not act.
+.cip105Toggle {
+  background: none;
+  border: 0;
+  color: var(--theme-link-main-color);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0;
+  text-align: left;
+}

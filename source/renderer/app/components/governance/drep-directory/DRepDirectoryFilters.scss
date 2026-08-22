@@ -1,0 +1,91 @@
+@import '../governanceConfig';
+
+// The row above this one is a 50px bordered field and a 50px bordered box of
+// toggle buttons. This row was four bare selects and a checkbox sitting loose
+// on the page background, roughly half that height, which is why it read as
+// unfinished rather than as part of the same screen.
+//
+// It is now one bordered strip at the app's control height, divided into
+// segments. The dividers carry meaning: each segment is one independent facet
+// of the query, and the pool toggle leads because widening the pool governs
+// every facet beside it. On a narrow pane the strip scrolls within itself, the
+// way the DRep table already does, rather than wrapping into fragments of a
+// box that no longer reads as one.
+.container {
+  @extend %contentBorderAndBackground;
+  align-items: stretch;
+  display: flex;
+  max-width: 100%;
+  min-height: 46px;
+  overflow-x: auto;
+}
+
+.facet {
+  align-items: flex-start;
+  border-right: 1px solid var(--theme-gov-content-border-color);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 2px;
+  justify-content: center;
+  padding: 4px 12px;
+
+  &:last-child {
+    border-right: 0;
+  }
+}
+
+.facetLabel {
+  @extend %captionText;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.facetControl {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+  position: relative;
+}
+
+// The native control keeps its keyboard and screen-reader behaviour; only the
+// operating system's chrome is taken off, so the four read as one instrument.
+.select {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--theme-gov-font-color-accent);
+  cursor: pointer;
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.2;
+  padding: 0 18px 0 0;
+
+  &:focus-visible {
+    outline: 1px solid var(--theme-gov-font-color-accent);
+    outline-offset: 2px;
+  }
+}
+
+.chevron {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid var(--theme-gov-font-color-lighter);
+  pointer-events: none;
+  position: absolute;
+  right: 2px;
+  top: calc(50% - 2px);
+}
+
+// NormalSwitch is built for a settings row: a 10px margin for its surroundings
+// and a label at the app's body size. Inside a segment the segment's own
+// padding does the first job, and the label has to sit at the same size as
+// every other value in the strip or the toggle's segment shouts over them.
+.showAllSwitch {
+  margin: 0;
+
+  label {
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+  }
+}

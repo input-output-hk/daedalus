@@ -192,6 +192,14 @@ export default class VotingStore extends Store {
   _closeConfirmationDialog = () => {
     this.isConfirmationDialogOpen = false;
   };
+  /** Maps a chosenOption (bech32 DRep ID or sentinel) to its vote kind for analytics. */
+  private _getVoteKind(
+    chosenOption: string
+  ): 'drep' | 'abstain' | 'no_confidence' {
+    if (chosenOption === 'abstain') return 'abstain';
+    if (chosenOption === 'no_confidence') return 'no_confidence';
+    return 'drep';
+  }
   @action
   _setSelectedWalletId = (walletId: string) => {
     this.selectedWalletId = walletId;
@@ -337,15 +345,21 @@ export default class VotingStore extends Store {
         fees: coinSelection.fee,
       };
     } catch (error) {
+      const errorCode = parseApiCode(
+        expectedInitializeVPDelegationTxErrors,
+        error
+      );
+      // Device and API error messages can embed the vote target; log only the
+      // derived code so no DRep id or sentinel ever reaches the log file.
       logger.error(
         'VotingStore: error while initializing VP delegation TX with HW',
         {
-          error,
+          errorCode,
         }
       );
       return {
         success: false,
-        errorCode: parseApiCode(expectedInitializeVPDelegationTxErrors, error),
+        errorCode,
       };
     }
   };
@@ -359,7 +373,6 @@ export default class VotingStore extends Store {
     passphrase: string;
     wallet: Wallet;
   }) => {
-    // TODO: handle HW case
     if (wallet.isHardwareWallet) {
       try {
         await this.stores.hardwareWallets._sendMoney({
@@ -386,18 +399,19 @@ export default class VotingStore extends Store {
         this.analytics.sendEvent(
           EventCategories.VOTING,
           'Casted governance vote',
-          chosenOption, // 'abstain' | 'no_confidence' | 'drep'
-          wallet.amount.toNumber() // ADA amount as float with 6 decimal precision
+          this._getVoteKind(chosenOption) // 'drep' | 'abstain' | 'no_confidence'
         );
 
         return {
           success: true,
         };
-      } catch (error) {
-        logger.error('VotingStore: error while delegating vote with HW', {
-          error,
-        });
+      } catch {
         const errorCode: GenericErrorCode = 'generic';
+        // Device and API error messages can embed the vote target; log only the
+        // derived code so no DRep id or sentinel ever reaches the log file.
+        logger.error('VotingStore: error while delegating vote with HW', {
+          errorCode,
+        });
         return {
           success: false,
           errorCode,
@@ -416,8 +430,7 @@ export default class VotingStore extends Store {
       this.analytics.sendEvent(
         EventCategories.VOTING,
         'Casted governance vote',
-        chosenOption, // 'abstain' | 'no_confidence' | 'drep'
-        wallet.amount.toNumber() // ADA amount as float with 6 decimal precision
+        this._getVoteKind(chosenOption) // 'drep' | 'abstain' | 'no_confidence'
       );
 
       return {

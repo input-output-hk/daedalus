@@ -207,6 +207,39 @@ const mockWallet = generateWallet({
 });
 ```
 
+**Draw populations from a shared generator, never from a hand-written list.**
+
+A story that names its own handful of entries shows a kinder chain than the one
+users have. Governance stories used to do this: two DReps where mainnet has a
+thousand, everyone active where mainnet is 37% active, every name short ASCII
+where 4% carry CJK, katakana, the ada sign or flag emoji. A screen reviewed
+against that has only been reviewed against a happy path.
+
+Each domain keeps one generator, seeded so a story renders the same data on
+every reload and a screenshot means something, with proportions taken from
+measurement rather than guessed. Governance's is
+`storybook/stories/governance/_utils/drepPopulation.ts`, whose figures come from
+sampling 1,000 mainnet DReps through Koios.
+
+```typescript
+import { makeDRepPopulation, drawCohortFrom } from './_utils/drepPopulation';
+
+const POPULATION = makeDRepPopulation(400, { seed: 11 });
+const COHORT = drawCohortFrom(POPULATION);
+```
+
+**Derive what the app derives.** Where production code selects, sorts or filters
+a list, the story calls that same exported function rather than reproducing its
+result by hand. `drawCohortFrom` above runs the shipping cohort selection, so a
+story's cohort is a cohort the app could actually produce, and changing the
+selection changes every story that shows one. A hand-picked list silently stops
+matching the code the moment the code moves.
+
+**Include the awkward cases in the generator, not in one story.** Long and
+non-Latin names, missing optional fields, values at both ends of a threshold:
+if the generator produces them in realistic proportions, every story that uses
+it exercises truncation, wrapping and fallback for free.
+
 ### 3. Document Props
 
 ```typescript

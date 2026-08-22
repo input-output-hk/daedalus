@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { toJS } from '../../../../common/utils/helper';
 import { electronStoreConversation } from '../../ipc/electronStoreConversation';
 import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
+import type { ListViewPreferences } from '../../types/listViewTypes';
 import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 import {
   STORAGE_KEYS as keys,
@@ -293,6 +294,18 @@ export default class LocalStorageApi {
   };
   unsetWalletTokenFavorites = async (): Promise<void> =>
     LocalStorageApi.unset(keys.TOKEN_FAVORITES);
+  getDRepFavorites = (): Promise<string[]> =>
+    LocalStorageApi.get(keys.DREP_FAVORITES, []);
+  setDRepFavorites = (favorites: string[]): Promise<void> =>
+    LocalStorageApi.set(keys.DREP_FAVORITES, favorites);
+  unsetDRepFavorites = (): Promise<void> =>
+    LocalStorageApi.unset(keys.DREP_FAVORITES);
+  getListViewPreferences = (): Promise<ListViewPreferences> =>
+    LocalStorageApi.get(keys.LIST_VIEW_PREFERENCES, {});
+  setListViewPreferences = (preferences: ListViewPreferences): Promise<void> =>
+    LocalStorageApi.set(keys.LIST_VIEW_PREFERENCES, preferences);
+  unsetListViewPreferences = (): Promise<void> =>
+    LocalStorageApi.unset(keys.LIST_VIEW_PREFERENCES);
   getAssetsLocalData = (): Promise<AssetLocalData> =>
     LocalStorageApi.get(keys.ASSET_DATA, []);
   unsetAssetsLocalData = (): Promise<void> =>

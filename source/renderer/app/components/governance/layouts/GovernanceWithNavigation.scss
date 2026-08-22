@@ -1,0 +1,30 @@
+.component {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+$governance-navigation-z-index: 25;
+
+.navigation {
+  flex-shrink: 0;
+  height: 50px;
+  position: relative;
+  z-index: $governance-navigation-z-index;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 50px);
+  overflow-x: hidden;
+  overflow-y: overlay;
+  padding-right: 20px;
+  position: relative;
+
+  &::-webkit-scrollbar-thumb {
+    &:vertical {
+      min-height: 60px !important;
+    }
+  }
+}

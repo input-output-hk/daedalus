@@ -19,7 +19,7 @@ import {
 } from '../../../common/types/environment.types';
 
 // Networks served by explorer.cardano.org, which expects
-// `{root}/{network}/{tx|address}/{identifier}`.
+// `{root}/{network}/{tx|address|drep}/{identifier}`.
 // Networks that are not listed here (staging, development, selfnode, the
 // retired testnet, or an undefined `env.NETWORK`) have no explorer of their
 // own and fall back to mainnet.
@@ -38,8 +38,11 @@ export const getNetworkExplorerUrl = (): string =>
   `https://${getNetworkExplorerUri()}`;
 export const getNetworkExplorerPath = (network?: string): string =>
   EXPLORER_NETWORK_PATHS[network] || DEFAULT_EXPLORER_NETWORK_PATH;
+// `drep` is how a user reaches a DRep's voting record: the wallet API serves
+// registration and stake but nothing about how a DRep has actually voted, so
+// the explorer is the only route to it from here.
 export const getNetworkExplorerUrlByType = (
-  type: 'tx' | 'address',
+  type: 'tx' | 'address' | 'drep',
   param: string,
   network?: string
 ): string =>

@@ -1,0 +1,42 @@
+@import '../governanceConfig';
+
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  padding: 48px 0;
+  text-align: center;
+}
+
+.title {
+  @extend %accentSemiboldText;
+  margin: 0 0 4px;
+}
+
+.message {
+  @extend %secondaryText;
+  max-width: 480px;
+}
+
+.actionLink {
+  font-size: inherit;
+  white-space: nowrap;
+}
+
+.unavailableBadge {
+  @extend %secondaryText;
+  align-items: center;
+  background: var(--theme-gov-badge-neutral-background);
+  border-radius: 4px;
+  color: var(--theme-gov-badge-neutral-color);
+  display: inline-flex;
+  gap: 6px;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+.unavailableIcon {
+  flex-shrink: 0;
+}

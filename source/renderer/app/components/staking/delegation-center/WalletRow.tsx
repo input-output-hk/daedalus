@@ -5,9 +5,9 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import Wallet, { WalletDelegationStatuses } from '../../../domains/Wallet';
-import type { WalletNextDelegation } from '../../../api/wallets/types';
+import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
+import { getPendingStakePoolIdForEpoch } from './pendingDelegation';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/ada-sym... Remove this comment to see the full error message
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
@@ -169,33 +169,12 @@ class WalletRow extends Component<Props, WalletRowState> {
   getPendingDelegatedStakePoolId = (
     epochNumber: number,
     fallbackStakePoolId: string | null | undefined
-  ): string | null | undefined => {
-    const {
-      wallet: { pendingDelegations },
-    } = this.props;
-
-    if (!pendingDelegations || !pendingDelegations.length) {
-      return fallbackStakePoolId;
-    }
-
-    const foundDelegation = pendingDelegations.find(
-      (delegation: WalletNextDelegation) =>
-        get(delegation, ['changes_at', 'epoch_number'], 0) === epochNumber
+  ): string | null | undefined =>
+    getPendingStakePoolIdForEpoch(
+      this.props.wallet.pendingDelegations,
+      epochNumber,
+      fallbackStakePoolId
     );
-
-    if (!foundDelegation) {
-      return fallbackStakePoolId;
-    }
-
-    const isDelegating =
-      get(foundDelegation, 'status') === WalletDelegationStatuses.DELEGATING;
-
-    if (!isDelegating) {
-      return null;
-    }
-
-    return get(foundDelegation, 'target', null);
-  };
 
   render() {
     const { intl } = this.context;

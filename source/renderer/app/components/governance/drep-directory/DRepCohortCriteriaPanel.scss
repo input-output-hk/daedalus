@@ -1,0 +1,94 @@
+@import '../governanceConfig';
+
+// The criteria that decide what gets suggested, not the filters that narrow
+// what is already on screen. They are two different questions, so this is a
+// panel of its own rather than more segments in the filter strip: a reader
+// switching a toggle here changes the pool the twenty are drawn from, and the
+// wording above the controls has to be able to say so.
+.container {
+  @extend %contentBorderAndBackground;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+}
+
+.intro {
+  @extend %captionText;
+  margin: 0;
+}
+
+.toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+
+// NormalSwitch carries a 10px margin for a settings row and a label at the
+// app's body size. Here the panel's own gap does the spacing, and the label
+// sits at the same size as the values beside it.
+.toggle {
+  margin: 0;
+
+  label {
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+  }
+}
+
+.facets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+
+.facet {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  justify-content: center;
+}
+
+.facetLabel {
+  @extend %captionText;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.facetControl {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+  position: relative;
+}
+
+// The native control keeps its keyboard and screen-reader behaviour; only the
+// operating system's chrome is taken off, so it reads as part of the panel.
+.select {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--theme-gov-font-color-accent);
+  cursor: pointer;
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.2;
+  padding: 0 18px 0 0;
+
+  &:focus-visible {
+    outline: 1px solid var(--theme-gov-font-color-accent);
+    outline-offset: 2px;
+  }
+}
+
+.chevron {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid var(--theme-gov-font-color-lighter);
+  pointer-events: none;
+  position: absolute;
+  right: 2px;
+  top: calc(50% - 2px);
+}
