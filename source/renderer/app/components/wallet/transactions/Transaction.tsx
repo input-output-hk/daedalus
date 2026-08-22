@@ -98,8 +98,9 @@ const messages = defineMessages({
   },
   voted: {
     id: 'wallet.transaction.voted',
-    defaultMessage: '!!!Voting Power Delegation',
-    description: 'Title for governance voting transactions.',
+    defaultMessage: '!!!Delegation Transaction',
+    description:
+      'Title for delegation transactions. The certificate may delegate stake, voting power, or both, so the title does not name either one.',
   },
   fromAddress: {
     id: 'wallet.transaction.address.from',

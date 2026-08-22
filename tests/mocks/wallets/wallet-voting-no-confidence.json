@@ -1,0 +1,34 @@
+{
+  "id": "4444444444444444444444444444444444444444",
+  "address_pool_gap": 20,
+  "name": "cv1 fixture voting no confidence",
+  "balance": {
+    "available": {
+      "quantity": 5000000000,
+      "unit": "lovelace"
+    },
+    "total": {
+      "quantity": 5000000000,
+      "unit": "lovelace"
+    },
+    "reward": {
+      "quantity": 0,
+      "unit": "lovelace"
+    }
+  },
+  "assets": {
+    "available": [],
+    "total": []
+  },
+  "delegation": {
+    "active": {
+      "status": "voting",
+      "voting": "no_confidence"
+    },
+    "next": []
+  },
+  "state": {
+    "status": "ready"
+  },
+  "discovery": "sequential"
+}

@@ -1,0 +1,389 @@
+@import '../governanceConfig';
+
+.container {
+  @extend %regularText;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  margin: 20px 0 20px 20px;
+}
+
+.backLink {
+  align-self: flex-start;
+  font-size: 14px;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.drepName {
+  @extend %accentSemiboldText;
+  font-size: 20px;
+  margin: 0;
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.section {
+  @extend %contentBorderAndBackground;
+  padding: 16px;
+}
+
+.sectionTitle {
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-semibold);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.fieldList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+// The on-chain section's rows, where a short value sits beside its label.
+.fieldRow {
+  align-items: baseline;
+  display: flex;
+  gap: 8px;
+}
+
+// A prose field stacks instead. Its heading is a peer of References and the
+// payment address, and its value runs to 3,374 characters at the longest on
+// mainnet, which no label column can sit beside.
+.proseField {
+  display: block;
+}
+
+.fieldLabel {
+  color: var(--theme-gov-font-color-regular);
+  flex-shrink: 0;
+  font-size: 14px;
+  min-width: 120px;
+}
+
+// CIP-119 prose fields run long: the longest objectives, motivations and
+// qualifications on mainnet reach roughly 3,400 characters, and a third of
+// them are non-Latin. min-width lets a flex child wrap at all, and
+// overflow-wrap catches an unbroken token that no wrap point can split.
+.fieldValue {
+  color: var(--theme-gov-font-color-accent);
+  font-size: 14px;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.mutedValue {
+  color: var(--theme-gov-font-color-light);
+  font-size: 14px;
+  margin: 0;
+}
+
+.votingPowerAda {
+  color: var(--theme-gov-font-color-accent);
+  display: block;
+  font-family: var(--font-semibold);
+}
+
+.votingPowerLovelace {
+  color: var(--theme-gov-font-color-regular);
+  display: block;
+  font-size: 12px;
+}
+
+.anchorValue {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  // A 64-character hash at the body size does not fit the box. It is read by
+  // comparison rather than by reading, so it is sized to fit on one line and
+  // scrolls only if the pane is narrower than that.
+  font-size: 12px;
+  margin: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.anchorLink {
+  color: var(--theme-link-main-color);
+}
+
+.sourceLabel {
+  color: var(--theme-gov-font-color-light);
+  font-size: 12px;
+}
+
+.actions {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+.favoriteToggle {
+  background: transparent;
+  border: none;
+  color: var(--theme-gov-font-color-light);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  padding: 2px 4px;
+
+  &[aria-pressed='true'] {
+    color: var(--theme-gov-badge-warning-color);
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.stateContainer {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 40px 0;
+}
+
+.errorMessage {
+  color: var(--theme-color-error);
+  font-family: var(--font-semibold);
+}
+
+// Three levels of heading live inside the off-chain section, and they used to
+// share one class: the block heading, the groups within it and the groups
+// within those all rendered at 14px semibold in the same colour. Nesting that
+// is real in the markup was invisible on screen, so References and Payment
+// address read as siblings of the block they sit inside rather than as its
+// contents. The section heading above them all is 16px accent, so these three
+// step down from there.
+.blockTitle {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 15px;
+  margin: 20px 0 10px;
+}
+
+.subSectionTitle {
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-semibold);
+  font-size: 13px;
+  margin: 14px 0 6px;
+  padding-left: 12px;
+}
+
+.subSubSectionTitle {
+  color: var(--theme-gov-font-color-light);
+  font-family: var(--font-regular);
+  font-size: 12px;
+  margin: 10px 0 4px;
+  padding-left: 24px;
+}
+
+// Contents sit under the heading they belong to rather than starting again at
+// the block's own margin.
+.nestedGroup {
+  padding-left: 12px;
+}
+
+.referenceList {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 24px;
+  word-break: break-all;
+}
+
+.referenceItem {
+  margin: 0;
+
+  a {
+    color: var(--theme-link-main-color);
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.paymentAddressValue {
+  align-items: baseline;
+  color: var(--theme-gov-font-color-accent);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 14px;
+  gap: 8px;
+  margin: 0;
+  padding-left: 12px;
+  word-break: break-all;
+}
+
+.copyButton {
+  font-size: 12px;
+}
+
+.copiedConfirmation {
+  color: var(--theme-gov-font-color-light);
+  font-size: 12px;
+}
+
+.favoriteIcon {
+  // Large enough to read as the control's subject rather than as punctuation
+  // beside its label.
+  font-size: 22px;
+  line-height: 1;
+}
+
+.favoriteLabel {
+  white-space: nowrap;
+}
+
+.actions button {
+  height: 36px;
+  line-height: 36px;
+  padding: 0 20px;
+  white-space: nowrap;
+  width: auto;
+}
+
+.explorerLink {
+  align-self: flex-start;
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+.unverifiedNotice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.unverifiedBadge {
+  align-items: center;
+  align-self: flex-start;
+  background: var(--theme-gov-badge-warning-background);
+  border-radius: 4px;
+  color: var(--theme-gov-badge-warning-color);
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 6px;
+  line-height: 1;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.unverifiedExplanation {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+// A document that verified and held nothing is not a warning. It is worth
+// saying, but it is not the DRep's fault and nothing is being withheld.
+.emptyBadge {
+  align-items: center;
+  align-self: flex-start;
+  background: var(--theme-gov-badge-neutral-background);
+  border-radius: 4px;
+  color: var(--theme-gov-badge-neutral-color);
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.wrongNetworkWarning {
+  color: var(--theme-gov-badge-danger-color);
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0 0 4px;
+  padding-left: 12px;
+}
+
+// A CIP-119 prose field's value. Full width under its own heading rather than
+// beside a label column: the longest on mainnet runs to 3,374 characters, and
+// overflow-wrap catches an unbroken token no wrap point can split.
+.proseValue {
+  color: var(--theme-gov-font-color-accent);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: anywhere;
+  padding-left: 12px;
+}
+
+// The non-canonical block, set apart from the one above it. A rule rather than
+// a panel: it is the DRep's own material, so it should not look like a feature
+// of the wallet.
+.additionalBlock {
+  border-top: 1px solid var(--theme-gov-content-border-color);
+  margin-top: 20px;
+}
+
+// The author's key, verbatim. Monospace because the app uses it for strings it
+// did not write, so the key does not pass for one of our labels. Read at the
+// same size and colour as a canonical heading all the same: the block being
+// subordinate is carried by its boundary and its caption, and is not a reason
+// to make a DRep's own words hard to read.
+.additionalKey {
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 13px;
+  font-weight: 600;
+  margin: 14px 0 6px;
+  overflow-wrap: anywhere;
+  padding-left: 12px;
+}
+
+.additionalValue {
+  color: var(--theme-gov-font-color-accent);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: anywhere;
+  padding-left: 12px;
+}
+
+// One field the DRep invented, at whatever depth it sits.
+.additionalField {
+  display: block;
+}
+
+// Nested structure, indented so containment is visible without a border for
+// every level. List markers are kept: they are what says "these are several of
+// the same thing" rather than one value that happens to wrap.
+.additionalList {
+  list-style: disc;
+  margin: 0;
+  padding: 0 0 0 28px;
+}
+
+.additionalListItem {
+  color: var(--theme-gov-font-color-light);
+  margin: 2px 0;
+}

@@ -25,6 +25,7 @@ import WalletSettingsStore from './WalletSettingsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletsStore from './WalletsStore';
 import WindowStore from './WindowStore';
+import GovernanceStore from './GovernanceStore';
 import { AnalyticsTracker } from '../analytics';
 import { Api } from '../api';
 import { ActionsMap } from '../actions';
@@ -37,6 +38,7 @@ export const storeClasses = {
   assets: AssetsStore,
   currency: CurrencyStore,
   hardwareWallets: HardwareWalletsStore,
+  governance: GovernanceStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   profile: ProfileStore,
@@ -61,6 +63,7 @@ export type StoresMap = {
   currency: CurrencyStore;
   assets: AssetsStore;
   hardwareWallets: HardwareWalletsStore;
+  governance: GovernanceStore;
   networkStatus: NetworkStatusStore;
   newsFeed: NewsFeedStore;
   profile: ProfileStore;
@@ -113,6 +116,7 @@ export const setUpStores = action(
       currency: createStoreInstanceOf(CurrencyStore),
       appUpdate: createStoreInstanceOf(AppUpdateStore),
       hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
+      governance: createStoreInstanceOf(GovernanceStore),
       networkStatus: createStoreInstanceOf(NetworkStatusStore),
       newsFeed: createStoreInstanceOf(NewsFeedStore),
       profile: createStoreInstanceOf(ProfileStore),

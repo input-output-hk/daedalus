@@ -8,6 +8,7 @@ import type {
   WalletUnit,
   WalletPendingDelegations,
   Discovery,
+  DRepDelegation,
 } from '../api/wallets/types';
 import type { WalletTokens } from '../api/assets/types';
 
@@ -41,6 +42,19 @@ export const WalletDelegationStatuses: {
   VOTING: 'voting',
   VOTING_AND_DELEGATING: 'voting_and_delegating',
 };
+
+// Which concerns a delegation entry speaks to. `voting` is the only status that
+// carries no stake-pool target, and `delegating` / `not_delegating` are the
+// only ones that carry no DRep. An unrecognized status is treated as
+// stake-only, matching the behaviour that predates governance delegation.
+// Shared by the wallet mapper and the delegation centre so the two cannot
+// disagree about what a pending entry means.
+export const carriesStakeTarget = (status: unknown): boolean =>
+  status !== WalletDelegationStatuses.VOTING;
+
+export const carriesVoting = (status: unknown): boolean =>
+  status === WalletDelegationStatuses.VOTING ||
+  status === WalletDelegationStatuses.VOTING_AND_DELEGATING;
 export type HwDeviceStatus =
   | 'connecting'
   | 'connecting_failed'
@@ -126,6 +140,7 @@ export type WalletProps = {
   lastDelegatedStakePoolId?: string | null | undefined;
   lastDelegationStakePoolStatus?: string | null | undefined;
   pendingDelegations?: WalletPendingDelegations;
+  votingTarget?: DRepDelegation | null;
   discovery: Discovery;
   hasPassword: boolean;
   walletNotConnected?: boolean;
@@ -161,6 +176,8 @@ export default class Wallet {
   @observable
   pendingDelegations: WalletPendingDelegations;
   @observable
+  votingTarget: DRepDelegation | null | undefined;
+  @observable
   discovery: Discovery;
   @observable
   hasPassword: boolean;
@@ -193,6 +210,7 @@ export default class Wallet {
         'lastDelegatedStakePoolId',
         'lastDelegationStakePoolStatus',
         'pendingDelegations',
+        'votingTarget',
         'discovery',
         'hasPassword',
         'walletNotConnected',
@@ -244,6 +262,16 @@ export default class Wallet {
       WalletDelegationStatuses.DELEGATING,
       WalletDelegationStatuses.VOTING_AND_DELEGATING,
     ].includes(statusToCheck);
+  }
+
+  @computed
+  get currentDRep(): DRepDelegation | null {
+    return this.votingTarget ?? null;
+  }
+
+  @computed
+  get isVoting(): boolean {
+    return this.currentDRep !== null;
   }
 
   @computed

@@ -18,6 +18,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { VoteType } from './types';
 import { sharedGovernanceMessages } from './shared-messages';
 import { messages as apiErrorMessage } from '../../../api/errors';
+import type { DRepIdentity } from '../../../../../common/types/governance.types';
 
 const mapOfTxErrorCodeToIntl: Record<
   DelegateVotesError,
@@ -38,6 +39,16 @@ const mapVoteToIntlMessage = (vote: VoteType | string): ReactIntlMessage => {
   }
 };
 
+/**
+ * The verified name plus the host that served the hash-matched bytes. One
+ * object, not two props, so `filterLogData`'s existing `verifiedName` key
+ * redacts the host with it at any depth.
+ */
+export type VerifiedDRepNameSource = {
+  host: string;
+  name: string;
+};
+
 export type VotingPowerDelegationConfirmationDialogState =
   | {
       error?: DelegateVotesError;
@@ -52,6 +63,7 @@ export type VotingPowerDelegationConfirmationDialogState =
 
 type VotingPowerDelegationConfirmationDialogProps = {
   chosenOption: string;
+  drepIdentity: DRepIdentity | null;
   fees: BigNumber;
   hwDeviceStatus: HwDeviceStatus;
   intl: Intl;
@@ -65,10 +77,12 @@ type VotingPowerDelegationConfirmationDialogProps = {
   >;
   redirectToWallet: (walletId: string) => void;
   selectedWallet: Wallet;
+  verifiedName: VerifiedDRepNameSource | null;
 };
 
 function VotingPowerDelegationConfirmationDialog({
   chosenOption,
+  drepIdentity,
   fees,
   hwDeviceStatus,
   intl,
@@ -78,12 +92,14 @@ function VotingPowerDelegationConfirmationDialog({
   onSubmit,
   redirectToWallet,
   selectedWallet,
+  verifiedName,
 }: VotingPowerDelegationConfirmationDialogProps) {
   const [state, setState] =
     useState<VotingPowerDelegationConfirmationDialogState>({
       passphrase: '',
       status: 'awaiting',
     });
+  const [isCip105Shown, setIsCip105Shown] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -109,6 +125,11 @@ function VotingPowerDelegationConfirmationDialog({
       });
     })();
   }, [intl, onSubmit, redirectToWallet, state]);
+
+  // Keyed on the vote kind, not on a successful decode: an id the decoder
+  // rejects still renders verbatim rather than as a vote label.
+  const isSentinelVote =
+    chosenOption === 'abstain' || chosenOption === 'no_confidence';
 
   const confirmButtonLabel =
     state.status === 'awaiting' ? (
@@ -145,12 +166,82 @@ function VotingPowerDelegationConfirmationDialog({
       ]}
     >
       <div className={styles.content}>
-        <p className={styles.paragraphTitle}>
-          {intl.formatMessage(messages.vote)}
-        </p>
-        <p className={styles.paragraphValue}>
-          {intl.formatMessage(mapVoteToIntlMessage(chosenOption))}
-        </p>
+        {!isSentinelVote ? (
+          <>
+            {verifiedName && (
+              <>
+                {/* Only the hash-guarded verified projection reaches here; an
+                    unverified anchor name never renders on a signing surface. */}
+                <p className={styles.paragraphTitle}>
+                  {intl.formatMessage(messages.verifiedName)}
+                </p>
+                <p className={styles.paragraphValue}>{verifiedName.name}</p>
+              </>
+            )}
+            <p className={styles.paragraphTitle}>
+              {intl.formatMessage(messages.drepId)}
+            </p>
+            <p className={styles.paragraphValue}>
+              {/* Rendered untouched: this string must stay byte-equal to
+                  chosenOption and the delegateVotes dRepId. */}
+              <code className={styles.drepIdValue}>
+                {drepIdentity?.raw ?? chosenOption}
+              </code>
+            </p>
+            {/* CIP-105 is deprecated, so it is offered rather than shown, as
+                it is everywhere else. The CIP-129 form above stays rendered
+                untouched: this dialog is where a reader checks what they are
+                about to sign. */}
+            {drepIdentity?.cip105 &&
+              drepIdentity.cip105 !== drepIdentity.raw && (
+                <>
+                  <button
+                    type="button"
+                    className={styles.cip105Toggle}
+                    aria-expanded={isCip105Shown}
+                    onClick={() => setIsCip105Shown(!isCip105Shown)}
+                  >
+                    {intl.formatMessage(
+                      isCip105Shown ? messages.hideCip105 : messages.showCip105
+                    )}
+                  </button>
+                  {isCip105Shown && (
+                    <>
+                      <p className={styles.paragraphTitle}>
+                        {intl.formatMessage(messages.drepIdCip105)}
+                      </p>
+                      <p className={styles.paragraphValue}>
+                        <code className={styles.drepIdValue}>
+                          {drepIdentity.cip105}
+                        </code>
+                      </p>
+                    </>
+                  )}
+                </>
+              )}
+            {drepIdentity?.credentialHex && (
+              <>
+                <p className={styles.paragraphTitle}>
+                  {intl.formatMessage(messages.signedPayload)}
+                </p>
+                <p className={styles.paragraphValue}>
+                  <code className={styles.drepIdValue}>
+                    {`{"vote":{"type":"drep","id":"${drepIdentity.credentialHex}"}}`}
+                  </code>
+                </p>
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <p className={styles.paragraphTitle}>
+              {intl.formatMessage(messages.vote)}
+            </p>
+            <p className={styles.paragraphValue}>
+              {intl.formatMessage(mapVoteToIntlMessage(chosenOption))}
+            </p>
+          </>
+        )}
 
         <p className={styles.paragraphTitle}>
           {intl.formatMessage(messages.fee)}

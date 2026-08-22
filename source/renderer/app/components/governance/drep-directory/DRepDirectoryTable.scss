@@ -1,0 +1,109 @@
+@import '../governanceConfig';
+
+// A table has a minimum sensible width; when the pane is narrower than that it
+// scrolls inside its own container rather than pushing past the page edge.
+.scrollContainer {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+// Built from roles rather than table elements, because the rows are windowed
+// and a real tbody cannot be. The column widths therefore live here, shared by
+// the header and every row, instead of being negotiated by the browser.
+.table {
+  @extend %contentBorderAndBackground;
+  @extend %secondaryText;
+  min-width: 720px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.headerRow {
+  border-bottom: 1px solid var(--theme-gov-content-border-color);
+  display: flex;
+}
+
+.headerCell {
+  @extend %captionText;
+  padding: 12px 16px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.row {
+  align-items: center;
+  border-bottom: 1px solid var(--theme-gov-content-border-color);
+  box-sizing: border-box;
+  display: flex;
+  height: 100%;
+}
+
+.cell {
+  box-sizing: border-box;
+  padding: 12px 16px;
+}
+
+.actionsCell {
+  box-sizing: border-box;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 12px 16px;
+}
+
+.colFavorite {
+  flex: 0 0 56px;
+}
+
+.colName {
+  flex: 3.6 1 0;
+  min-width: 0;
+}
+
+.colStatus {
+  flex: 2.4 1 0;
+  min-width: 0;
+}
+
+.colVotingPower {
+  flex: 2 1 0;
+  min-width: 0;
+}
+
+.colActions {
+  flex: 2 1 0;
+  min-width: 0;
+}
+
+.name {
+  color: var(--theme-gov-font-color-accent);
+  display: block;
+  font-family: var(--font-semibold);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.votingPower {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.favoriteToggle {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+}
+
+.actionsCell button {
+  font-size: 13px;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 14px;
+  white-space: nowrap;
+  width: auto;
+}

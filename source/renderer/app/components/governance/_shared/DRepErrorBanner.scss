@@ -1,0 +1,27 @@
+@import '../governanceConfig';
+
+.banner {
+  @extend %secondaryText;
+  align-items: flex-start;
+  background: var(--theme-gov-badge-warning-background);
+  // 4px is the radius every other surface in the app uses.
+  border-radius: 4px;
+  color: var(--theme-gov-badge-warning-color);
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.message {
+  max-width: 640px;
+}
+
+.retryLink {
+  font-size: inherit;
+  white-space: nowrap;
+}

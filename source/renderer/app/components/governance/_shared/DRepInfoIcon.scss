@@ -1,0 +1,24 @@
+.info {
+  background: none;
+  border: 0;
+  cursor: help;
+  display: inline-flex;
+  line-height: 1;
+  padding: 0;
+  vertical-align: middle;
+
+  svg {
+    height: 14px;
+    width: 14px;
+  }
+
+  path {
+    fill: var(--theme-gov-font-color-lighter);
+  }
+}
+
+// A concentration warning is not a neutral aside, so it does not wear the
+// neutral colour. Same shape, same size, same behaviour.
+.warning path {
+  fill: var(--theme-gov-badge-danger-color);
+}

@@ -1,0 +1,44 @@
+{
+  "id": "2222222222222222222222222222222222222222",
+  "address_pool_gap": 20,
+  "name": "cv1 fixture delegating and voting",
+  "balance": {
+    "available": {
+      "quantity": 25000000000,
+      "unit": "lovelace"
+    },
+    "total": {
+      "quantity": 25000000000,
+      "unit": "lovelace"
+    },
+    "reward": {
+      "quantity": 1500000,
+      "unit": "lovelace"
+    }
+  },
+  "assets": {
+    "available": [],
+    "total": []
+  },
+  "delegation": {
+    "active": {
+      "status": "voting_and_delegating",
+      "target": "pool1qvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsx6m90l2",
+      "voting": "drep_vkh15xev84897cr3s2f6fdwx6l50jzsm9s75uhmqwxpf8f94czu4a4l"
+    },
+    "next": [
+      {
+        "status": "delegating",
+        "target": "pool1qvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsx6m90l2",
+        "changes_at": {
+          "epoch_number": 412,
+          "epoch_start_time": "2026-08-10T21:44:51Z"
+        }
+      }
+    ]
+  },
+  "state": {
+    "status": "ready"
+  },
+  "discovery": "sequential"
+}

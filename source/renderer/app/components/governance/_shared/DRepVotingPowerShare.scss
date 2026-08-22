@@ -1,0 +1,47 @@
+// Two forms of the same figure. The chip is for a card or a table cell, where
+// the share sits beside an ADA amount and needs a container of its own to be
+// read as a separate fact. The row form is for a labelled row, where the label
+// is already that container.
+//
+// The fill lives with the chip rather than with the colour classes, so the row
+// form does not inherit a background it has no use for. Colour is the one
+// thing both forms share: it is how the concentration warning reads at a
+// glance, and the row's label does not say that.
+.share {
+  align-items: center;
+  border-radius: 4px;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 6px;
+  line-height: 1;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.plain {
+  align-items: baseline;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.share.normal {
+  background: var(--theme-gov-badge-neutral-background);
+}
+
+.share.high {
+  background: var(--theme-gov-badge-danger-background);
+}
+
+.normal {
+  color: var(--theme-gov-badge-neutral-color);
+}
+
+.high {
+  color: var(--theme-gov-badge-danger-color);
+}
+
+// In a row the figure reads as page text unless something is wrong with it.
+.plain.normal {
+  color: var(--theme-gov-font-color-accent);
+}
