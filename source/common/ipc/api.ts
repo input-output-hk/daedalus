@@ -20,14 +20,6 @@ import type { GenerateAddressPDFParams } from '../types/address-pdf-request.type
 import type { GenerateVotingPDFParams } from '../types/voting-pdf-request.types';
 import type { GenerateCsvParams } from '../types/csv-request.types';
 import type { GenerateQRCodeParams } from '../types/save-qrCode.types';
-import type {
-  BlockSyncProgress,
-  BlockSyncType,
-  CardanoNodeState,
-  CardanoStatus,
-  FaultInjectionIpcRequest,
-  TlsConfig,
-} from '../types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
@@ -71,17 +63,6 @@ import type {
   TrezorDeviceErrorPayload,
   TrezorDevicePayload,
 } from '../types/hardware-wallets.types';
-import type {
-  ChainStorageConfig,
-  ChainStorageValidation,
-  MithrilBootstrapDecision,
-  MithrilBootstrapStatusUpdate,
-  MithrilSnapshotItem,
-} from '../types/mithril-bootstrap.types';
-import type {
-  MithrilPartialSyncStatusSnapshot,
-  MithrilPartialSyncAvailability,
-} from '../types/mithril-partial-sync.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -254,74 +235,10 @@ export type GenerateQRCodeRendererRequest = GenerateQRCodeParams;
 export type GenerateQRCodeMainResponse = void;
 
 /**
- * ====================== CARDANO IPC CHANNELS ======================
- * This is the ipc-api contract between main & renderer process
- * to communicate with the cardano-node manager code.
- * ==================================================================
- */
-
-/**
- * Channel to indicate that cardano-node will exit for updating
- */
-export const CARDANO_AWAIT_UPDATE_CHANNEL = 'CARDANO_AWAIT_UPDATE_CHANNEL';
-export type CardanoAwaitUpdateRendererRequest = void;
-export type CardanoAwaitUpdateMainResponse = void;
-
-/**
- * Channel where main process tells the renderer about cardano-node state updates
- */
-export const CARDANO_STATE_CHANNEL = 'CARDANO_STATE_CHANNEL';
-export type CardanoStateRendererRequest = void;
-export type CardanoStateRendererResponse = CardanoNodeState;
-
-/**
- * Channel to exchange tls config between main and renderer process
- */
-export const CARDANO_TLS_CONFIG_CHANNEL = 'CARDANO_TLS_CONFIG_CHANNEL';
-export type CardanoTlsConfigRendererRequest = void;
-export type CardanoTlsConfigMainResponse = TlsConfig | null | undefined;
-
-/**
- * Channel where renderer can request a cardano-node restart
- */
-export const CARDANO_RESTART_CHANNEL = 'CARDANO_RESTART_CHANNEL';
-export type CardanoRestartRendererRequest = void;
-export type CardanoRestartMainResponse = void;
-
-/**
- * Channel where render process can toggle cardano-node fault injections
- */
-export const CARDANO_FAULT_INJECTION_CHANNEL =
-  'CARDANO_FAULT_INJECTION_CHANNEL';
-export type CardanoFaultInjectionRendererRequest = FaultInjectionIpcRequest;
-export type CardanoFaultInjectionMainResponse = void;
-
-/**
- * Channel where renderer can ask for the last cached cardano-node status
- */
-export const GET_CACHED_CARDANO_STATUS_CHANNEL =
-  'GET_CACHED_CARDANO_STATUS_CHANNEL';
-export type GetCachedCardanoStatusRendererRequest = void;
-export type GetCachedCardanoStatusMainResponse =
-  | CardanoStatus
-  | null
-  | undefined;
-
-/**
- * Channel where renderer and main process can exchange cardano-node status info
- */
-export const SET_CACHED_CARDANO_STATUS_CHANNEL =
-  'SET_CACHED_CARDANO_STATUS_CHANNEL';
-export type SetCachedCardanoStatusRendererRequest =
-  | CardanoStatus
-  | null
-  | undefined;
-export type SetCachedCardanoStatusMainResponse = void;
-
-/**
  * Channel where renderer can ask main process to export wallets
  */
 export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
+
 export type ExportWalletsRendererRequest = {
   exportSourcePath: string;
   locale: string;
@@ -420,103 +337,6 @@ export type CheckFileExistsRendererRequest = CheckFileExistsRequest;
 export type CheckFileExistsMainResponse = boolean;
 
 /**
- * ====================== MITHRIL BOOTSTRAP IPC =====================
- * Channels for Mithril snapshot bootstrapping flow.
- * ==================================================================
- */
-export const MITHRIL_BOOTSTRAP_DECISION_CHANNEL =
-  'MITHRIL_BOOTSTRAP_DECISION_CHANNEL';
-export type MithrilBootstrapDecisionRendererRequest = {
-  decision: MithrilBootstrapDecision;
-};
-export type MithrilBootstrapDecisionMainResponse = void;
-
-export const MITHRIL_BOOTSTRAP_START_CHANNEL =
-  'MITHRIL_BOOTSTRAP_START_CHANNEL';
-export type MithrilBootstrapStartRendererRequest = {
-  digest?: string;
-  wipeChain?: boolean;
-};
-export type MithrilBootstrapStartMainResponse = void;
-
-export const MITHRIL_BOOTSTRAP_STATUS_CHANNEL =
-  'MITHRIL_BOOTSTRAP_STATUS_CHANNEL';
-export type MithrilBootstrapStatusRendererRequest = void;
-export type MithrilBootstrapStatusMainResponse = MithrilBootstrapStatusUpdate;
-
-export const MITHRIL_BOOTSTRAP_CANCEL_CHANNEL =
-  'MITHRIL_BOOTSTRAP_CANCEL_CHANNEL';
-export type MithrilBootstrapCancelRendererRequest = void;
-export type MithrilBootstrapCancelMainResponse = void;
-
-export const MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL =
-  'MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL';
-export type MithrilBootstrapSnapshotsRendererRequest = void;
-export type MithrilBootstrapSnapshotsMainResponse = Array<MithrilSnapshotItem>;
-
-export const MITHRIL_PARTIAL_SYNC_START_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_START_CHANNEL';
-export type MithrilPartialSyncStartRendererRequest = void;
-export type MithrilPartialSyncStartMainResponse = void;
-
-export const MITHRIL_PARTIAL_SYNC_STATUS_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_STATUS_CHANNEL';
-export type MithrilPartialSyncStatusRendererRequest = void;
-export type MithrilPartialSyncStatusMainResponse =
-  MithrilPartialSyncStatusSnapshot;
-
-export const MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_CANCEL_CHANNEL';
-export type MithrilPartialSyncCancelRendererRequest = void;
-export type MithrilPartialSyncCancelMainResponse = void;
-
-export const MITHRIL_PARTIAL_SYNC_RESTART_NORMAL_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_RESTART_NORMAL_CHANNEL';
-export type MithrilPartialSyncRestartNormalRendererRequest = void;
-export type MithrilPartialSyncRestartNormalMainResponse = void;
-
-export const MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_WIPE_AND_FULL_SYNC_CHANNEL';
-export type MithrilPartialSyncWipeAndFullSyncRendererRequest = void;
-export type MithrilPartialSyncWipeAndFullSyncMainResponse = void;
-
-export const MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_AVAILABILITY_CHANNEL';
-export type MithrilPartialSyncAvailabilityRendererRequest = void;
-export type MithrilPartialSyncAvailabilityMainResponse =
-  MithrilPartialSyncAvailability;
-
-export const MITHRIL_PARTIAL_SYNC_FINALIZE_CHANNEL =
-  'MITHRIL_PARTIAL_SYNC_FINALIZE_CHANNEL';
-export type MithrilPartialSyncFinalizeRendererRequest = void;
-export type MithrilPartialSyncFinalizeMainResponse = void;
-
-export const SET_CHAIN_STORAGE_DIRECTORY_CHANNEL =
-  'SET_CHAIN_STORAGE_DIRECTORY_CHANNEL';
-export type SetChainStorageDirectoryRendererRequest = {
-  path: string | null;
-};
-export type SetChainStorageDirectoryMainResponse = ChainStorageValidation;
-
-export const GET_CHAIN_STORAGE_DIRECTORY_CHANNEL =
-  'GET_CHAIN_STORAGE_DIRECTORY_CHANNEL';
-export type GetChainStorageDirectoryRendererRequest = void;
-export type GetChainStorageDirectoryMainResponse = ChainStorageConfig;
-
-export const VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL =
-  'VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL';
-export type ValidateChainStorageDirectoryRendererRequest = {
-  path: string | null;
-};
-export type ValidateChainStorageDirectoryMainResponse = ChainStorageValidation;
-
-export const PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL =
-  'PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL';
-export type PrepareChainStorageLocationChangeRendererRequest = void;
-export type PrepareChainStorageLocationChangeMainResponse =
-  ChainStorageValidation | null;
-
-/**
  * Channel for quitting Daedalus and installing update
  */
 export const MANAGE_APP_UPDATE = 'MANAGE_APP_UPDATE';
@@ -569,14 +389,6 @@ export type showAddressRendererRequestType = {
 export const INTROSPECT_ADDRESS_CHANNEL = 'INTROSPECT_ADDRESS_CHANNEL';
 export type IntrospectAddressRendererRequest = IntrospectAddressRequest;
 export type IntrospectAddressMainResponse = IntrospectAddressResponse;
-
-/**
- * Channel for checking block replay progress
- */
-export const GET_BLOCK_SYNC_PROGRESS_CHANNEL = 'GetBlockSyncProgressChannel';
-export type GetBlockSyncProgressType = BlockSyncType;
-export type GetBlockSyncProgressRendererRequest = void;
-export type GetBlockSyncProgressMainResponse = BlockSyncProgress;
 
 /**
  * Channels for connecting / interacting with Hardware Wallet devices
@@ -646,3 +458,72 @@ export const DEVICE_NOT_CONNECTED = 'DEVICE_NOT_CONNECTED';
 export const WAIT_FOR_LEDGER_DEVICES = 'WAIT_FOR_LEDGER_DEVICES';
 export type waitForLedgerDevicesRequest = void;
 export type waitForLedgerDevicesResponse = LedgerDevicePayload;
+
+// ========== WATCHDOG IPC CHANNELS ==========
+
+// Poll: renderer requests current WatchdogState snapshot (every 2s)
+export const GET_CACHED_BACKEND_STATUS_CHANNEL =
+  'GET_CACHED_BACKEND_STATUS_CHANNEL';
+export type GetCachedBackendStatusRendererRequest = void;
+// Import WatchdogState from watchdog.types — but since api.ts uses inline types,
+// define the response type as a re-export of WatchdogState:
+export type { WatchdogState } from '../types/watchdog.types';
+export type GetCachedBackendStatusMainResponse =
+  import('../types/watchdog.types').WatchdogState;
+
+// Command: renderer sends MithrilCommand to main (forwarded to watchdog)
+export const MITHRIL_COMMAND_CHANNEL = 'MITHRIL_COMMAND_CHANNEL';
+export type MithrilCommandRendererRequest =
+  import('../types/watchdog.types').MithrilCommand;
+export type MithrilCommandMainResponse = void;
+
+// Push: main → renderer mithril_progress events
+export const MITHRIL_PROGRESS_CHANNEL = 'MITHRIL_PROGRESS_CHANNEL';
+export type MithrilProgressMainRequest =
+  import('../types/watchdog.types').MithrilProgress;
+export type MithrilProgressRendererResponse = void;
+
+// Push: main → renderer mithril_status events
+export const MITHRIL_STATUS_CHANNEL = 'MITHRIL_STATUS_CHANNEL';
+export type MithrilStatusMainRequest = { phase: string };
+export type MithrilStatusRendererResponse = void;
+
+// Push (once): main → renderer when wallet port is known
+export const WALLET_PORT_CHANNEL = 'WALLET_PORT_CHANNEL';
+export type WalletPortMainRequest = {
+  port: number;
+  ca: number[];
+  cert: number[];
+  key: number[];
+};
+export type WalletPortRendererResponse = void;
+
+// Push: main → renderer node_startup_status events
+export const NODE_STARTUP_STATUS_CHANNEL = 'NODE_STARTUP_STATUS_CHANNEL';
+export type NodeStartupStatusMainRequest = { phase: string };
+export type NodeStartupStatusRendererResponse = void;
+
+// Push: main → renderer node_block_sync_progress events
+export const NODE_BLOCK_SYNC_PROGRESS_CHANNEL =
+  'NODE_BLOCK_SYNC_PROGRESS_CHANNEL';
+export type NodeBlockSyncProgressMainRequest = {
+  kind: string;
+  progress: number;
+};
+export type NodeBlockSyncProgressRendererResponse = void;
+
+// Push: main → renderer when watchdog emits stopped (clean shutdown)
+export const WATCHDOG_STOPPED_CHANNEL = 'WATCHDOG_STOPPED_CHANNEL';
+export type WatchdogStoppedMainRequest = void;
+export type WatchdogStoppedRendererResponse = void;
+
+// Chain storage: renderer asks main to validate a candidate path
+export const VALIDATE_CHAIN_STORAGE_CHANNEL = 'VALIDATE_CHAIN_STORAGE_CHANNEL';
+export type ValidateChainStorageRendererRequest = { path: string };
+export type ValidateChainStorageMainResponse =
+  import('../types/watchdog.types').ChainStorageValidation;
+
+// Chain storage: renderer asks main to apply a new chain path and restart watchdog
+export const CONFIRM_CHAIN_STORAGE_CHANNEL = 'CONFIRM_CHAIN_STORAGE_CHANNEL';
+export type ConfirmChainStorageRendererRequest = { customPath: string | null };
+export type ConfirmChainStorageMainResponse = void;

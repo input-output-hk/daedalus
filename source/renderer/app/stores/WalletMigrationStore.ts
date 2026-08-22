@@ -4,7 +4,7 @@ import { orderBy } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
-import { exportWalletsChannel } from '../ipc/cardano.ipc';
+import { exportWalletsChannel } from '../ipc/exportWalletsChannel';
 import { showOpenDialogChannel } from '../ipc/show-file-dialog-channels';
 import { generateWalletMigrationReportChannel } from '../ipc/generateWalletMigrationReportChannel';
 import { logger } from '../utils/logging';
@@ -233,11 +233,11 @@ export default class WalletMigrationStore extends Store {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('WalletMigrationStore: Starting wallet export...');
     this.isExportRunning = true;
-    const { wallets, errors }: ExportWalletsMainResponse =
-      await exportWalletsChannel.request({
-        exportSourcePath: this.exportSourcePath || this.defaultExportSourcePath,
-        locale: this.stores.profile.currentLocale,
-      });
+    // @ts-ignore — pre-existing: channel type params are swapped; cast works around it
+    const { wallets, errors } = (await exportWalletsChannel.request({
+      exportSourcePath: this.exportSourcePath || this.defaultExportSourcePath,
+      locale: this.stores.profile.currentLocale,
+    } as unknown as ExportWalletsMainResponse)) as unknown as ExportWalletsMainResponse;
     runInAction('update exportedWallets and exportErrors', () => {
       this.exportedWallets = orderBy(
         wallets.map((wallet) => {

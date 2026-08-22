@@ -2,12 +2,12 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
-import type { MithrilProgressItem } from '../../../../source/common/types/mithril-bootstrap.types';
 import type {
   MithrilPartialSyncError,
   MithrilPartialSyncStatus,
-} from '../../../../source/common/types/mithril-partial-sync.types';
-import MithrilPartialSyncOverlay from '../../../../source/renderer/app/components/loading/mithril-bootstrap/MithrilPartialSyncOverlay';
+  MithrilProgressItem,
+} from '../../../../source/common/types/watchdog.types';
+import MithrilSyncOverlay from '../../../../source/renderer/app/components/loading/mithril/MithrilSyncOverlay';
 import StoryDecorator from '../../_support/StoryDecorator';
 import LoadingOverlayStoryFrame from '../_support/LoadingOverlayStoryFrame';
 import {
@@ -176,10 +176,11 @@ function MithrilPartialSyncOverlayStory(props: StoryProps) {
   const error = props.error || null;
 
   return (
-    <MithrilPartialSyncOverlay
+    <MithrilSyncOverlay
       {...baseProps}
+      flowType="partial-sync"
       status={props.status}
-      error={error}
+      error={error as any}
       canRetry={props.canRetry || false}
       canRestartNormally={props.canRestartNormally || false}
       canWipeAndFullSync={props.canWipeAndFullSync || false}
@@ -198,20 +199,20 @@ function MithrilPartialSyncOverlayStory(props: StoryProps) {
         ) *
           1000
       }
-      transferProgress={{
-        filesDownloaded: loadingNumberKnob(
-          'filesDownloaded',
-          props.filesDownloaded ?? baseProps.filesDownloaded
-        ),
-        filesTotal: loadingNumberKnob(
-          'filesTotal',
-          props.filesTotal ?? baseProps.filesTotal
-        ),
-        ancillaryBytesDownloaded: props.ancillaryComplete
+      filesDownloaded={loadingNumberKnob(
+        'filesDownloaded',
+        props.filesDownloaded ?? baseProps.filesDownloaded
+      )}
+      filesTotal={loadingNumberKnob(
+        'filesTotal',
+        props.filesTotal ?? baseProps.filesTotal
+      )}
+      ancillaryBytesDownloaded={
+        props.ancillaryComplete
           ? ancillaryBytesTotal
-          : baseProps.ancillaryBytesDownloaded,
-        ancillaryBytesTotal,
-      }}
+          : baseProps.ancillaryBytesDownloaded
+      }
+      ancillaryBytesTotal={ancillaryBytesTotal}
       progressItems={getProgressItemsForStory(props.status, error)}
     />
   );

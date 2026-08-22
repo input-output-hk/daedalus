@@ -32,6 +32,11 @@
         "id": "global.errors.invalidMnemonic"
       },
       {
+        "defaultMessage": "!!!The wallet service encountered an internal error. Please check your wallet logs and restart Daedalus.",
+        "description": "Error shown when cardano-wallet returns an unhandled internal error (HTTP 500).",
+        "id": "api.errors.WalletInternalError"
+      },
+      {
         "defaultMessage": "!!!Not enough money to make this transaction.",
         "description": "\"Not enough money to make this transaction.\" error message.",
         "id": "api.errors.NotEnoughMoneyToSendError"
@@ -1602,6 +1607,11 @@
         "id": "daedalus.diagnostics.dialog.cardanoNodePID"
       },
       {
+        "defaultMessage": "!!!Cardano node uptime",
+        "description": "How long cardano-node has been running",
+        "id": "daedalus.diagnostics.dialog.cardanoNodeUptime"
+      },
+      {
         "defaultMessage": "!!!Cardano node port",
         "description": "Cardano node port",
         "id": "daedalus.diagnostics.dialog.cardanoNodeApiPort"
@@ -1610,6 +1620,41 @@
         "defaultMessage": "!!!Cardano wallet process ID",
         "description": "Cardano wallet process ID",
         "id": "daedalus.diagnostics.dialog.cardanoWalletPID"
+      },
+      {
+        "defaultMessage": "!!!Cardano wallet uptime",
+        "description": "How long cardano-wallet has been running since last start",
+        "id": "daedalus.diagnostics.dialog.cardanoWalletUptime"
+      },
+      {
+        "defaultMessage": "!!!Cardano wallet restarts",
+        "description": "Number of times cardano-wallet has been restarted by the watchdog",
+        "id": "daedalus.diagnostics.dialog.cardanoWalletRestartCount"
+      },
+      {
+        "defaultMessage": "!!!Watchdog process ID",
+        "description": "PID of the cardano-watchdog supervisor process",
+        "id": "daedalus.diagnostics.dialog.watchdogPid"
+      },
+      {
+        "defaultMessage": "!!!Node force-killed",
+        "description": "Whether the watchdog had to SIGKILL cardano-node during shutdown",
+        "id": "daedalus.diagnostics.dialog.nodeForceKilled"
+      },
+      {
+        "defaultMessage": "!!!Wallet last exit code",
+        "description": "Exit code from the most recent cardano-wallet crash before watchdog restart",
+        "id": "daedalus.diagnostics.dialog.cardanoWalletLastExitCode"
+      },
+      {
+        "defaultMessage": "!!!Node socket wait",
+        "description": "Time the watchdog waited for the cardano-node socket to appear",
+        "id": "daedalus.diagnostics.dialog.nodeSocketWaitMs"
+      },
+      {
+        "defaultMessage": "!!!Wallet ready wait",
+        "description": "Time the watchdog waited for cardano-wallet to become ready",
+        "id": "daedalus.diagnostics.dialog.walletReadyWaitMs"
       },
       {
         "defaultMessage": "!!!Cardano wallet version",
@@ -1687,13 +1732,23 @@
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatus"
       },
       {
-        "defaultMessage": "!!!Restarting Cardano node...",
-        "description": "Restarting Cardano node...",
+        "defaultMessage": "!!!Cardano node",
+        "description": "Cardano node label",
+        "id": "daedalus.diagnostics.dialog.cardanoNode"
+      },
+      {
+        "defaultMessage": "!!!Cardano wallet",
+        "description": "Cardano wallet label",
+        "id": "daedalus.diagnostics.dialog.cardanoWallet"
+      },
+      {
+        "defaultMessage": "!!!Restarting {subject}...",
+        "description": "Restarting a cardano process",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestarting"
       },
       {
-        "defaultMessage": "!!!Restart Cardano node",
-        "description": "Restart Cardano node",
+        "defaultMessage": "!!!Restart {subject}",
+        "description": "Restart a cardano process",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestart"
       },
       {
@@ -2430,11 +2485,6 @@
         "defaultMessage": "!!!Address: <strong>{walletAddress}</strong> QR code image successfully downloaded",
         "description": "Notification for the wallet address PDF download success in the Wallet Receive page.",
         "id": "notification.downloadQRCodeImageSuccess"
-      },
-      {
-        "defaultMessage": "!!!Daedalus state directory copied to clipboard",
-        "description": "Notification for the state directory copy success in the Diagnostics page.",
-        "id": "notification.copyStateDirectoryPath"
       }
     ],
     "path": "source/renderer/app/containers/notifications/NotificationsContainer.tsx"
@@ -2778,13 +2828,28 @@
       },
       {
         "defaultMessage": "!!!Snapshot Files and Ledger State",
-        "description": "Label for the combined Mithril download progress bar that merges snapshot files and ledger state progress.",
+        "description": "Label for the combined Mithril download progress bar that merges snapshot files and ledger state progress (bootstrap flow).",
         "id": "loading.mithrilBootstrap.progress.combinedLabel"
       },
       {
         "defaultMessage": "!!!Snapshot files: {snapshotDownloaded} / {snapshotTotal} files | Ledger state: {fastSyncDownloaded} / {fastSyncTotal}",
-        "description": "Detail line for the combined Mithril download progress bar showing snapshot and ledger state transfer totals.",
+        "description": "Detail line for the combined Mithril download progress bar showing snapshot and ledger state transfer totals (bootstrap flow).",
         "id": "loading.mithrilBootstrap.progress.combinedDetail"
+      },
+      {
+        "defaultMessage": "!!!Snapshot Files",
+        "description": "Label for the snapshot-files progress bar shown during the partial-sync downloading phase.",
+        "id": "loading.mithrilBootstrap.progress.snapshotFilesLabel"
+      },
+      {
+        "defaultMessage": "!!!{filesDownloaded} / {filesTotal} files",
+        "description": "Detail line for the snapshot-files progress bar showing files downloaded vs total.",
+        "id": "loading.mithrilBootstrap.progress.snapshotFilesDetail"
+      },
+      {
+        "defaultMessage": "!!!Ledger State",
+        "description": "Label for the ledger-state progress bar shown during the partial-sync verification phase.",
+        "id": "loading.mithrilBootstrap.progress.ledgerStateLabel"
       },
       {
         "defaultMessage": "!!!≈ {totalSize} total",
@@ -3007,7 +3072,7 @@
         "id": "loading.mithrilPartialSync.error.startFailure"
       }
     ],
-    "path": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages.ts"
+    "path": "source/renderer/app/components/loading/mithril/MithrilBootstrap.messages.ts"
   },
   {
     "descriptors": [
@@ -3305,11 +3370,6 @@
         "defaultMessage": "!!!TLS certificate is not valid, please restart Daedalus.",
         "description": "The TLS cert is not valid and Daedalus should be restarted",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError"
-      },
-      {
-        "defaultMessage": "!!!Use Mithril Sync instead",
-        "description": "Button label shown during ledger replay to interrupt and switch to Mithril Sync",
-        "id": "loading.screen.mithrilSyncInterrupt"
       }
     ],
     "path": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.tsx"

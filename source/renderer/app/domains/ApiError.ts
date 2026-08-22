@@ -47,7 +47,8 @@ type KnownErrorType =
   | 'address_already_exists'
   | 'utxo_too_small'
   | 'invalid_smash_server'
-  | 'cannot_cover_fee';
+  | 'cannot_cover_fee'
+  | 'wallet_internal_error';
 
 type LoggingType = {
   msg?: string;

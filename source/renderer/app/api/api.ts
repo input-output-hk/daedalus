@@ -85,7 +85,6 @@ import { getSmashSettings } from './staking/requests/getSmashSettings';
 import { checkSmashServerHealth } from './staking/requests/checkSmashServerHealth';
 import { updateSmashSettings } from './staking/requests/updateSmashSettings';
 // Utility functions
-import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
 import { getLegacyWalletId, utcStringToDate } from './utils';
 import { logger } from '../utils/logging';
@@ -215,7 +214,6 @@ import type {
   DelegateVotesParams,
 } from './voting/types';
 import type { StakePoolProps } from '../domains/StakePool';
-import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 import { TlsCertificateNotValidError } from './nodes/errors';
 import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
@@ -1017,10 +1015,34 @@ export default class AdaApi {
       return _createTransactionFromServerData(response);
     } catch (error) {
       logger.error('AdaApi::createTransaction error', {
-        error,
+        error:
+          error instanceof Error
+            ? {
+                message: error.message,
+                stack: error.stack,
+                // @ts-ignore
+                statusCode: error.statusCode,
+                // @ts-ignore
+                responseBody: error.responseBody,
+                // @ts-ignore
+                code: error.code,
+              }
+            : error,
       });
 
-      const apiError = new ApiError(error)
+      const rawError =
+        error instanceof Error
+          ? {
+              code:
+                typeof (error as any).statusCode === 'number' &&
+                (error as any).statusCode >= 500
+                  ? ('wallet_internal_error' as const)
+                  : ('network_unreachable' as const),
+              message: error.message,
+            }
+          : error;
+
+      const apiError = new ApiError(rawError)
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
@@ -1103,9 +1125,32 @@ export default class AdaApi {
         return _createTransactionFromServerData(response);
       } catch (error) {
         logger.error('AdaApi::createTransaction error', {
-          error,
+          error:
+            error instanceof Error
+              ? {
+                  message: error.message,
+                  stack: error.stack,
+                  // @ts-ignore
+                  statusCode: error.statusCode,
+                  // @ts-ignore
+                  responseBody: error.responseBody,
+                  // @ts-ignore
+                  code: error.code,
+                }
+              : error,
         });
-        throw new ApiError(error)
+        const rawError =
+          error instanceof Error
+            ? {
+                code:
+                  typeof (error as any).statusCode === 'number' &&
+                  (error as any).statusCode >= 500
+                    ? ('wallet_internal_error' as const)
+                    : ('network_unreachable' as const),
+                message: error.message,
+              }
+            : error;
+        throw new ApiError(rawError)
           .set('wrongEncryptionPassphrase')
           .where('code', 'bad_request')
           .inc('message', 'passphrase is too short')
@@ -2943,9 +2988,6 @@ export default class AdaApi {
         .where('code', 'transaction_is_too_big')
         .result();
     }
-  };
-  setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
-    await cardanoFaultInjectionChannel.send(fault);
   };
   // No implementation here but can be overwritten
   setLocalTimeDifference: (...args: Array<any>) => any;

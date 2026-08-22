@@ -1,66 +1,53 @@
 import { MainIpcChannel } from './lib/MainIpcChannel';
+import { backendLifecycle } from '../BackendLifecycle';
+import { requestElectronStore } from './electronStoreConversation';
+import { logger } from '../utils/logging';
+import { stateDirectoryPath } from '../config';
 import {
-  SET_CHAIN_STORAGE_DIRECTORY_CHANNEL,
-  GET_CHAIN_STORAGE_DIRECTORY_CHANNEL,
-  VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL,
-  PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL,
+  STORAGE_KEYS as keys,
+  STORAGE_TYPES as types,
+} from '../../common/config/electron-store.config';
+import {
+  VALIDATE_CHAIN_STORAGE_CHANNEL,
+  CONFIRM_CHAIN_STORAGE_CHANNEL,
 } from '../../common/ipc/api';
 import type {
-  SetChainStorageDirectoryRendererRequest,
-  SetChainStorageDirectoryMainResponse,
-  GetChainStorageDirectoryRendererRequest,
-  GetChainStorageDirectoryMainResponse,
-  ValidateChainStorageDirectoryRendererRequest,
-  ValidateChainStorageDirectoryMainResponse,
-  PrepareChainStorageLocationChangeRendererRequest,
-  PrepareChainStorageLocationChangeMainResponse,
+  ValidateChainStorageRendererRequest,
+  ValidateChainStorageMainResponse,
+  ConfirmChainStorageRendererRequest,
+  ConfirmChainStorageMainResponse,
 } from '../../common/ipc/api';
-import { chainStorageCoordinator } from '../utils/chainStorageCoordinator';
-import { getMithrilBootstrapNodeState } from './mithrilBootstrapChannel';
+import { validatePath } from '../utils/chainStorageValidate';
 
-const setChainStorageDirectoryChannel: MainIpcChannel<
-  SetChainStorageDirectoryRendererRequest,
-  SetChainStorageDirectoryMainResponse
-> = new MainIpcChannel(SET_CHAIN_STORAGE_DIRECTORY_CHANNEL);
+const validateChannel = new MainIpcChannel<
+  ValidateChainStorageRendererRequest,
+  ValidateChainStorageMainResponse
+>(VALIDATE_CHAIN_STORAGE_CHANNEL);
 
-const getChainStorageDirectoryChannel: MainIpcChannel<
-  GetChainStorageDirectoryRendererRequest,
-  GetChainStorageDirectoryMainResponse
-> = new MainIpcChannel(GET_CHAIN_STORAGE_DIRECTORY_CHANNEL);
+const confirmChannel = new MainIpcChannel<
+  ConfirmChainStorageRendererRequest,
+  ConfirmChainStorageMainResponse
+>(CONFIRM_CHAIN_STORAGE_CHANNEL);
 
-const validateChainStorageDirectoryChannel: MainIpcChannel<
-  ValidateChainStorageDirectoryRendererRequest,
-  ValidateChainStorageDirectoryMainResponse
-> = new MainIpcChannel(VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL);
-
-const prepareChainStorageLocationChangeChannel: MainIpcChannel<
-  PrepareChainStorageLocationChangeRendererRequest,
-  PrepareChainStorageLocationChangeMainResponse
-> = new MainIpcChannel(PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL);
-
-let chainStorageRequestsInitialized = false;
-
-export const handleChainStorageRequests = () => {
-  if (chainStorageRequestsInitialized) return;
-  chainStorageRequestsInitialized = true;
-  setChainStorageDirectoryChannel.onRequest(async ({ path }) => {
-    return chainStorageCoordinator.setDirectory(
-      path,
-      getMithrilBootstrapNodeState()
-    );
+export function handleChainStorageRequests(): void {
+  validateChannel.onRequest(async ({ path: candidatePath }) => {
+    logger.info('chainStorage: validating path', { path: candidatePath });
+    return validatePath(candidatePath, stateDirectoryPath);
   });
 
-  getChainStorageDirectoryChannel.onRequest(async () =>
-    chainStorageCoordinator.getConfig()
-  );
+  confirmChannel.onRequest(async ({ customPath }) => {
+    logger.info('chainStorage: confirming path', { customPath });
 
-  validateChainStorageDirectoryChannel.onRequest(async ({ path }) =>
-    chainStorageCoordinator.validate(path)
-  );
+    if (customPath != null) {
+      requestElectronStore({
+        type: types.SET,
+        key: keys.CUSTOM_CHAIN_PATH,
+        data: customPath,
+      });
+    } else {
+      requestElectronStore({ type: types.DELETE, key: keys.CUSTOM_CHAIN_PATH });
+    }
 
-  prepareChainStorageLocationChangeChannel.onRequest(async () =>
-    chainStorageCoordinator.prepareForLocationChange(
-      getMithrilBootstrapNodeState()
-    )
-  );
-};
+    await backendLifecycle.setCustomChainPath(customPath);
+  });
+}

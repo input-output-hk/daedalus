@@ -1,5 +1,9 @@
 import { BrowserWindow } from 'electron';
 import compressLogsApi from './compress-logs';
+import { getCachedBackendStatusChannel } from './backendStatusChannel';
+import { mithrilCommandChannel } from './mithrilCommandChannel';
+import { handleChainStorageRequests } from './chainStorageChannel';
+import { backendLifecycle } from '../BackendLifecycle';
 import downloadLogsApi from './download-logs';
 import { handleElectronStoreChannel } from './electronStoreConversation';
 import getLogsApi from './get-logs';
@@ -23,9 +27,6 @@ import { openExternalUrlChannel } from './open-external-url';
 import { openLocalDirectoryChannel } from './open-local-directory';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { createChannels } from './createHardwareWalletIPCChannels';
-import { handleMithrilBootstrapRequests } from './mithrilBootstrapChannel';
-import { handleMithrilPartialSyncRequests } from './mithrilPartialSyncChannel';
-import { handleChainStorageRequests } from './chainStorageChannel';
 
 export default (window: BrowserWindow) => {
   compressLogsApi();
@@ -44,9 +45,6 @@ export default (window: BrowserWindow) => {
   handleFileDialogRequests(window);
   handleAddressIntrospectionRequests();
   handleManageAppUpdateRequests(window);
-  handleMithrilBootstrapRequests(window);
-  handleMithrilPartialSyncRequests(window);
-  handleChainStorageRequests();
   // eslint-disable-next-line no-unused-expressions
   openExternalUrlChannel;
   // eslint-disable-next-line no-unused-expressions
@@ -55,4 +53,43 @@ export default (window: BrowserWindow) => {
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
   handleHardwareWalletRequests(window, createChannels(MainIpcChannel));
+
+  // Watchdog IPC
+  handleChainStorageRequests();
+  getCachedBackendStatusChannel.onRequest(() =>
+    Promise.resolve(
+      backendLifecycle.getState() ?? {
+        watchdogPid: 0,
+        nodePid: 0,
+        walletPid: 0,
+        nodeStartedAt: null,
+        walletStartedAt: null,
+        walletRestartCount: 0,
+        walletPort: null,
+        hasChain: null,
+        nodeStartupPhase: null,
+        blockSyncProgress: {
+          replayedBlock: 0,
+          validatingChunk: 0,
+          pushingLedger: 0,
+        },
+        mithrilPhase: null,
+        mithrilProgress: null,
+        mithrilSignificantlyBehind: null,
+        lastError: null,
+        walletUnrecoverable: false,
+        nodeSocketWaitMs: null,
+        walletReadyWaitMs: null,
+        nodeForceKilled: false,
+        lastWalletExitCode: null,
+        lastWalletExitSignal: null,
+        defaultChainPath: null,
+        customChainPath: null,
+      }
+    )
+  );
+  mithrilCommandChannel.onReceive((cmd) => {
+    backendLifecycle.sendMithrilCommand(cmd);
+    return Promise.resolve();
+  });
 };

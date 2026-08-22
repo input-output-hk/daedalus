@@ -41,6 +41,7 @@ import {
   TIME_OPTIONS,
 } from '../config/profileConfig';
 import { buildSystemInfo } from '../utils/buildSystemInfo';
+import { formatUptime } from '../utils/formatUptime';
 import { AnalyticsAcceptanceStatus, EventCategories } from '../analytics/types';
 
 export default class ProfileStore extends Store {
@@ -610,13 +611,9 @@ export default class ProfileStore extends Store {
     try {
       logger.info('ProfileStore: Requesting state snapshot log file creation');
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
-      const { networkStatus } = this.stores;
+      const { networkStatus, backend } = this.stores;
       const {
-        cardanoNodePID,
-        cardanoWalletPID,
-        tlsConfig,
         stateDirectoryPath,
-        cardanoNodeState,
         isConnected,
         isNodeInSync,
         isNodeResponding,
@@ -626,6 +623,15 @@ export default class ProfileStore extends Store {
         localTip,
         networkTip,
       } = networkStatus;
+      const {
+        nodePid: cardanoNodePID,
+        walletPid: cardanoWalletPID,
+        nodeStartedAt: cardanoNodeStartedAt,
+        walletStartedAt: cardanoWalletStartedAt,
+        walletRestartCount: cardanoWalletRestartCount,
+        walletPort,
+        loadingPhase: cardanoNodeState,
+      } = backend;
       const {
         build,
         network,
@@ -649,16 +655,18 @@ export default class ProfileStore extends Store {
         isBlankScreenFixActive,
         cardanoNodeVersion: nodeVersion,
         cardanoNodePID,
+        cardanoNodeUptime: formatUptime(cardanoNodeStartedAt),
         cardanoWalletVersion: apiVersion,
         cardanoWalletPID,
-        cardanoWalletApiPort: tlsConfig ? tlsConfig.port : 0,
+        cardanoWalletUptime: formatUptime(cardanoWalletStartedAt),
+        cardanoWalletRestartCount,
+        cardanoWalletApiPort: walletPort ?? 0,
         cardanoNetwork: network,
         daedalusStateDirectoryPath: stateDirectoryPath,
       };
       const stateSnapshotData: StateSnapshotLogParams = {
         systemInfo,
         coreInfo,
-        cardanoNodeState,
         currentLocale: this.currentLocale,
         isConnected,
         isDev,

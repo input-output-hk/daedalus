@@ -1,5 +1,6 @@
 import os from 'os';
 import path from 'path';
+import net from 'net';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import type { Event } from 'electron';
 import EventEmitter from 'events';
@@ -13,29 +14,25 @@ import {
   generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
-import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
 import {
-  launcherConfig,
   pubLogsFolderPath,
   RTS_FLAGS,
   stateDirectoryPath,
+  launcherConfig,
 } from './config';
-import { setupCardanoNode } from './cardano/setup';
-import { CardanoNode } from './cardano/CardanoNode';
+import { backendLifecycle } from './BackendLifecycle';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
 import { detectSystemLocale } from './utils/detectSystemLocale';
-import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel';
 import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from './ipc/getSystemLocaleChannel';
-import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type {
   GenerateWalletMigrationReportRendererRequest,
   SetStateSnapshotLogMainResponse,
@@ -55,14 +52,9 @@ import {
 import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
 import { parseDeviceScaleFactor } from './utils/parseDeviceScaleFactor';
-import { setMithrilBootstrapNodeStateProvider } from './ipc/mithrilBootstrapChannel';
-import { configureMithrilPartialSyncRuntime } from './ipc/mithrilPartialSyncChannel';
-import { getMithrilController } from './mithril/MithrilController';
-
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
-let cardanoNode: CardanoNode;
 const {
   isDev,
   isTest,
@@ -105,58 +97,127 @@ EventEmitter.defaultMaxListeners = 100; // Default: 10
 const safeExit = async () => {
   pauseActiveDownloads();
 
-  // Reap any live Mithril partial-sync child before the exit branches: safeExit only stops cardanoNode,
-  //  so a quit mid-download would otherwise orphan the detached mithril-client past process.exit().
-  //  Best-effort and fully try/caught, so it can't block exit.
-  getMithrilController().reapPartialSyncOnShutdown();
-
   const exitCode =
     (mainWindow as any).daedalusExitCode !== undefined
       ? (mainWindow as any).daedalusExitCode
       : 0;
 
-  if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info(`Daedalus:safeExit: exiting Daedalus with code ${exitCode}`, {
-      code: exitCode,
-    });
-    return safeExitWithCode(exitCode);
-  }
-
-  if (cardanoNode.state === CardanoNodeStates.STOPPING) {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info('Daedalus:safeExit: waiting for cardano-node to stop...');
-    cardanoNode.exitOnStop();
-    return;
-  }
-
-  try {
-    const pid = cardanoNode.pid || 'null';
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, {
-      pid,
-    });
-    await cardanoNode.stop();
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info(`Daedalus:safeExit: exiting Daedalus with code ${exitCode}`, {
-      code: exitCode,
-    });
-    safeExitWithCode(exitCode);
-  } catch (error) {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.error('Daedalus:safeExit: cardano-node did not exit correctly', {
-      error,
-    });
-    safeExitWithCode(exitCode);
-  }
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+  logger.info(`Daedalus:safeExit: exiting Daedalus with code ${exitCode}`, {
+    code: exitCode,
+  });
+  return safeExitWithCode(exitCode);
 };
 
-const handleWindowClose = async (event?: Event | null) => {
+const handleWindowClose = (event?: Event | null) => {
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
+  // Prevent immediate close — let before-quit handle the watchdog shutdown first.
   event?.preventDefault();
-  await safeExit();
+  app.quit();
 };
+
+function getFreePort(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const srv = net.createServer();
+    srv.listen(0, '127.0.0.1', () => {
+      const port = (srv.address() as net.AddressInfo).port;
+      srv.close(() => resolve(port));
+    });
+    srv.on('error', reject);
+  });
+}
+
+// Windows named pipes are machine-global, so the name must be scoped by
+// cluster: with a fixed name, concurrently running Daedalus installs
+// (e.g. Mainnet and Preprod) would collide on pipe creation, or a wallet
+// would connect to the other install's node on the wrong network.
+function windowsPipeName(cluster: string): string {
+  return `\\\\.\\pipe\\daedalus-${cluster}-cardano-node.socket`;
+}
+
+function buildNodeArgs(
+  stateDir: string,
+  nodePort: number,
+  nodeConfig: import('./config').NodeConfig,
+  cluster: string
+): string[] {
+  const { configFile, topologyFile } = nodeConfig.network;
+  const args = [
+    'run',
+    '--socket-path',
+    process.platform === 'win32'
+      ? windowsPipeName(cluster)
+      : 'cardano-node.socket',
+    '--topology',
+    topologyFile,
+    '--database-path',
+    'chain',
+    '--port',
+    String(nodePort),
+    '--config',
+    configFile,
+  ];
+  if (nodeConfig.signingKey) args.push('--signing-key', nodeConfig.signingKey);
+  if (nodeConfig.delegationCertificate)
+    args.push('--delegation-certificate', nodeConfig.delegationCertificate);
+  args.push('+RTS', '-N', '-RTS');
+  return args;
+}
+
+function buildWalletArgs(
+  stateDir: string,
+  walletPort: number,
+  tlsPath: string,
+  syncTolerance: string,
+  isStaging: boolean,
+  metadataUrl: string | undefined,
+  nodeConfig: import('./config').NodeConfig,
+  cluster: string
+): string[] {
+  const socketPath =
+    process.platform === 'win32'
+      ? windowsPipeName(cluster)
+      : path.join(stateDir, 'cardano-node.socket');
+  const walletDb = path.join(stateDir, 'wallets');
+  const syncToleranceSecs = parseInt(syncTolerance.replace('s', ''), 10);
+  const configDir = path.dirname(nodeConfig.network.configFile);
+
+  const args = [
+    'serve',
+    '+RTS',
+    '-N',
+    '-RTS',
+    '--port',
+    String(walletPort),
+    '--database',
+    walletDb,
+    '--tls-ca-cert',
+    path.join(tlsPath, 'server/ca.crt'),
+    '--tls-sv-cert',
+    path.join(tlsPath, 'server/server.crt'),
+    '--tls-sv-key',
+    path.join(tlsPath, 'server/server.key'),
+    '--node-socket',
+    socketPath,
+  ];
+
+  if (isStaging) {
+    args.push('--mainnet');
+  } else {
+    args.push('--testnet', path.join(configDir, 'genesis-byron.json'));
+  }
+
+  if (!Number.isNaN(syncToleranceSecs)) {
+    args.push('--sync-tolerance', `${syncToleranceSecs}s`);
+  }
+
+  args.push(
+    '--token-metadata-server',
+    metadataUrl ?? 'https://tokens.cardano.org'
+  );
+  return args;
+}
 
 const onAppReady = async () => {
   setupLogging();
@@ -208,7 +269,6 @@ const onAppReady = async () => {
   logger.info('GPU hardware acceleration', {
     disabled: app.commandLine.hasSwitch('disable-gpu'),
   });
-  ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('Setting up Main Window...');
@@ -220,14 +280,8 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
   const currentRtsFlags = getRtsFlagsSettings(network) || [];
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-  logger.info(
-    `Setting up Cardano Node... with flags: ${JSON.stringify(currentRtsFlags)}`
-  );
-  cardanoNode = setupCardanoNode(launcherConfig, mainWindow, currentRtsFlags);
-  setMithrilBootstrapNodeStateProvider(() => cardanoNode.state);
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-  buildAppMenus(mainWindow, cardanoNode, userLocale, {
+  buildAppMenus(mainWindow, userLocale, {
     isNavigationEnabled: false,
     walletSettingsState: WalletSettingsStateEnum.hidden,
   });
@@ -236,7 +290,7 @@ const onAppReady = async () => {
       new Promise((resolve) => {
         const locale = getLocale(network);
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-        buildAppMenus(mainWindow, cardanoNode, locale, {
+        buildAppMenus(mainWindow, locale, {
           isNavigationEnabled,
           walletSettingsState,
         });
@@ -267,17 +321,9 @@ const onAppReady = async () => {
     const flagsToSet = containsRTSFlags(currentRtsFlags) ? [] : RTS_FLAGS;
     storeRtsFlagsSettings(environment.network, flagsToSet);
     // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
-    return handleWindowClose();
+    return Promise.resolve(handleWindowClose());
   });
-  const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
-  configureMithrilPartialSyncRuntime({
-    stopNode: async () => {
-      await cardanoNode.stop();
-    },
-    restartStartupFlow: async () => {
-      await handleCheckDiskSpace(false);
-    },
-  });
+  const handleCheckDiskSpace = handleDiskSpace(mainWindow);
 
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
@@ -287,8 +333,91 @@ const onAppReady = async () => {
   };
 
   mainErrorHandler(onMainError);
-  handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
   await handleCheckDiskSpace();
+
+  // Start watchdog
+  backendLifecycle.setWindowProvider(() => mainWindow);
+  const {
+    watchdogBin,
+    nodeBin,
+    walletBin,
+    nodeConfig,
+    tlsPath,
+    syncTolerance,
+    isStaging,
+    metadataUrl,
+    mithrilBin,
+    snapshotConverterBin,
+    mithrilConverterConfig,
+    mithrilAggregatorUrl,
+    mithrilGenesisVkey,
+    mithrilAncillaryVkey,
+  } = launcherConfig;
+  const socketPath =
+    process.platform === 'win32'
+      ? windowsPipeName(network)
+      : path.join(stateDirectoryPath, 'cardano-node.socket');
+  const defaultChainPath = path.join(stateDirectoryPath, 'chain');
+  // Load persisted custom chain path from electron-store
+  const customChainPath =
+    (requestElectronStore({
+      type: 'get',
+      key: 'CUSTOM-CHAIN-PATH',
+    }) as string | undefined) ?? null;
+  const effectiveChainPath = customChainPath
+    ? path.join(customChainPath, 'chain')
+    : defaultChainPath;
+  const [nodePort, walletPort] = await Promise.all([
+    getFreePort(),
+    getFreePort(),
+  ]);
+  const nodeArgs = buildNodeArgs(
+    stateDirectoryPath,
+    nodePort,
+    nodeConfig,
+    network
+  );
+  const walletArgs = buildWalletArgs(
+    stateDirectoryPath,
+    walletPort,
+    tlsPath,
+    syncTolerance,
+    isStaging,
+    metadataUrl,
+    nodeConfig,
+    network
+  );
+  backendLifecycle.setTlsPath(tlsPath);
+  backendLifecycle.setChainPaths(defaultChainPath, customChainPath);
+  backendLifecycle.start(watchdogBin, {
+    node: {
+      exe: nodeBin,
+      args: nodeArgs,
+      state_dir: stateDirectoryPath,
+      socket_path: socketPath,
+    },
+    wallet: {
+      exe: walletBin,
+      args: walletArgs,
+      state_dir: stateDirectoryPath,
+      api_port: walletPort,
+    },
+    pub_logs_dir: pubLogsFolderPath,
+    ...(mithrilBin && mithrilAggregatorUrl && mithrilGenesisVkey
+      ? {
+          mithril: {
+            mithril_bin: mithrilBin,
+            snapshot_converter_bin: snapshotConverterBin ?? '',
+            converter_config: mithrilConverterConfig ?? '',
+            aggregator_url: mithrilAggregatorUrl,
+            genesis_vkey: mithrilGenesisVkey,
+            ancillary_vkey: mithrilAncillaryVkey,
+            state_dir: stateDirectoryPath,
+            chain_path: effectiveChainPath,
+          },
+        }
+      : {}),
+  });
 
   mainWindow.on('close', handleWindowClose);
   // Security feature: Prevent creation of new browser windows
@@ -311,6 +440,7 @@ const onAppReady = async () => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
     event.preventDefault(); // prevent Daedalus from quitting immediately
+    await backendLifecycle.stop();
 
     if (isSelfnode) {
       if (keepLocalClusterRunning || isTest) {

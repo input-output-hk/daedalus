@@ -1,0 +1,1402 @@
+// Integration tests for cardano-watchdog.
+//
+// Each test spawns the compiled watchdog binary with mock node/wallet/mithril
+// binaries and validates the JSON-line event protocol over stdin/stdout.
+//
+// Run with:
+//   cargo test --test integration
+//
+// These are intentionally excluded from the nix build because they spawn real
+// OS processes and require a pre-built watchdog binary.  The mock binaries
+// use raw fd 3 for the shutdown pipe, so the tests are Unix-only.
+#![cfg(unix)]
+
+use serde_json::{Value, json};
+use std::io::{BufRead, BufReader, Write};
+use std::net::TcpListener;
+use std::path::{Path, PathBuf};
+use std::process::{Child, ChildStdin, Command, Stdio};
+use std::sync::mpsc;
+use std::time::Duration;
+
+// ── Binary paths ──────────────────────────────────────────────────────────────
+
+const WATCHDOG: &str = env!("CARGO_BIN_EXE_cardano-watchdog");
+const MOCK_NODE: &str = env!("CARGO_BIN_EXE_mock-node");
+const MOCK_NODE_CRASH: &str = env!("CARGO_BIN_EXE_mock-node-crash");
+const MOCK_NODE_NO_SOCKET: &str = env!("CARGO_BIN_EXE_mock-node-no-socket");
+const MOCK_NODE_STARTUP_LOG: &str = env!("CARGO_BIN_EXE_mock-node-startup-log");
+const MOCK_WALLET: &str = env!("CARGO_BIN_EXE_mock-wallet");
+const MOCK_WALLET_CRASH: &str = env!("CARGO_BIN_EXE_mock-wallet-crash");
+const MOCK_MITHRIL: &str = env!("CARGO_BIN_EXE_mock-mithril-client");
+const MOCK_MITHRIL_FAIL: &str = env!("CARGO_BIN_EXE_mock-mithril-client-fail");
+const MOCK_CONVERTER: &str = env!("CARGO_BIN_EXE_mock-snapshot-converter");
+const MOCK_CONVERTER_FAIL: &str = env!("CARGO_BIN_EXE_mock-snapshot-converter-fail");
+const MOCK_CONVERTER_SLOW: &str = env!("CARGO_BIN_EXE_mock-snapshot-converter-slow");
+const MOCK_CONVERTER_SENTINEL: &str = env!("CARGO_BIN_EXE_mock-snapshot-converter-sentinel");
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
+
+fn free_port() -> u16 {
+    TcpListener::bind("127.0.0.1:0")
+        .unwrap()
+        .local_addr()
+        .unwrap()
+        .port()
+}
+
+struct TempDir(PathBuf);
+
+impl TempDir {
+    fn new(label: &str) -> Self {
+        let path = std::env::temp_dir().join(format!(
+            "wdg-test-{}-{}-{}",
+            label,
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .subsec_nanos()
+        ));
+        std::fs::create_dir_all(&path).unwrap();
+        TempDir(path)
+    }
+
+    fn path(&self) -> &Path {
+        &self.0
+    }
+
+    /// Create `<state_dir>/chain/` with a sentinel file so chain_has_data() → true.
+    fn populate_chain(&self) {
+        let chain = self.0.join("chain");
+        std::fs::create_dir_all(&chain).unwrap();
+        std::fs::write(chain.join(".sentinel"), b"exists").unwrap();
+    }
+}
+
+impl Drop for TempDir {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.0);
+    }
+}
+
+fn event_reader(stdout: std::process::ChildStdout) -> mpsc::Receiver<Value> {
+    let (tx, rx) = mpsc::channel();
+    std::thread::spawn(move || {
+        for line in BufReader::new(stdout).lines().map_while(Result::ok) {
+            if let Ok(v) = serde_json::from_str::<Value>(&line) {
+                if tx.send(v).is_err() {
+                    break;
+                }
+            }
+        }
+    });
+    rx
+}
+
+/// Drain events until one with `event == name` arrives; panic after 15 s.
+fn expect(rx: &mpsc::Receiver<Value>, name: &str) -> Value {
+    loop {
+        let v = rx
+            .recv_timeout(Duration::from_secs(15))
+            .unwrap_or_else(|_| panic!("timeout waiting for '{name}'"));
+        if v["event"] == name {
+            return v;
+        }
+    }
+}
+
+/// Like `expect` but also applies a predicate.
+fn expect_with(rx: &mpsc::Receiver<Value>, name: &str, pred: impl Fn(&Value) -> bool) -> Value {
+    loop {
+        let v = rx
+            .recv_timeout(Duration::from_secs(15))
+            .unwrap_or_else(|_| panic!("timeout waiting for '{name}' matching predicate"));
+        if v["event"] == name && pred(&v) {
+            return v;
+        }
+    }
+}
+
+/// Send a JSON command line to the watchdog's stdin.
+fn send(stdin: &mut ChildStdin, cmd: Value) {
+    writeln!(stdin, "{}", serde_json::to_string(&cmd).unwrap()).unwrap();
+    stdin.flush().unwrap();
+}
+
+fn stop(stdin: &mut ChildStdin) {
+    send(stdin, json!({"cmd": "stop"}));
+}
+
+// ── Config builder ────────────────────────────────────────────────────────────
+
+const MOCK_NODE_CRASH_ONCE: &str = env!("CARGO_BIN_EXE_mock-node-crash-once");
+
+struct Cfg<'a> {
+    dir: &'a TempDir,
+    node_exe: &'a str,
+    wallet_exe: &'a str,
+    node_args: Vec<String>,
+    wallet_args: Vec<String>,
+    wallet_port: u16,
+    socket_path: PathBuf,
+    max_restarts: u32,
+    restart_delay_ms: u64,
+    node_max_crash_attempts: u32,
+    node_crash_restart_delay_ms: u64,
+    with_mithril: bool,
+    mithril_bin: Option<&'a str>,
+    converter_bin: Option<&'a str>,
+}
+
+impl<'a> Cfg<'a> {
+    fn new(dir: &'a TempDir, node_exe: &'a str, wallet_exe: &'a str) -> Self {
+        let socket_path = dir.path().join("node.socket");
+        let wallet_port = free_port();
+        Cfg {
+            dir,
+            node_exe,
+            wallet_exe,
+            node_args: vec![socket_path.to_str().unwrap().to_string()],
+            wallet_args: vec![wallet_port.to_string()],
+            wallet_port,
+            socket_path,
+            max_restarts: 10,
+            restart_delay_ms: 50,
+            node_max_crash_attempts: 10,
+            node_crash_restart_delay_ms: 0,
+            with_mithril: false,
+            mithril_bin: None,
+            converter_bin: None,
+        }
+    }
+
+    fn max_restarts(mut self, n: u32) -> Self {
+        self.max_restarts = n;
+        self
+    }
+
+    fn restart_delay(mut self, ms: u64) -> Self {
+        self.restart_delay_ms = ms;
+        self
+    }
+
+    fn node_max_crash_attempts(mut self, n: u32) -> Self {
+        self.node_max_crash_attempts = n;
+        self
+    }
+
+    fn mithril(mut self) -> Self {
+        self.with_mithril = true;
+        self
+    }
+
+    fn mithril_bin(mut self, bin: &'a str) -> Self {
+        self.with_mithril = true;
+        self.mithril_bin = Some(bin);
+        self
+    }
+
+    fn converter_bin(mut self, bin: &'a str) -> Self {
+        self.with_mithril = true;
+        self.converter_bin = Some(bin);
+        self
+    }
+
+    fn build(self) -> (Value, u16) {
+        let state = self.dir.path().to_str().unwrap();
+        let logs = self.dir.path().join("logs");
+        std::fs::create_dir_all(&logs).unwrap();
+
+        let mut cfg = json!({
+            "node": {
+                "exe": self.node_exe,
+                "args": self.node_args,
+                "state_dir": state,
+                "socket_path": self.socket_path.to_str().unwrap(),
+                "max_crash_attempts": self.node_max_crash_attempts,
+                "crash_restart_delay_ms": self.node_crash_restart_delay_ms
+            },
+            "wallet": {
+                "exe": self.wallet_exe,
+                "args": self.wallet_args,
+                "state_dir": state,
+                "api_port": self.wallet_port,
+                "restart_delay_ms": self.restart_delay_ms,
+                "max_restart_attempts": self.max_restarts
+            },
+            "pub_logs_dir": logs.to_str().unwrap()
+        });
+
+        if self.with_mithril {
+            let mithril_bin = self.mithril_bin.unwrap_or(MOCK_MITHRIL);
+            let converter_bin = self.converter_bin.unwrap_or(MOCK_CONVERTER);
+            cfg["mithril"] = json!({
+                "mithril_bin": mithril_bin,
+                "snapshot_converter_bin": converter_bin,
+                "converter_config": "/dev/null",
+                "aggregator_url": "http://localhost:0",
+                "genesis_vkey": "test",
+                "ancillary_vkey": "test",
+                "state_dir": state,
+                "chain_path": self.dir.path().join("chain").to_str().unwrap(),
+                "behind_threshold": 20
+            });
+        }
+
+        (cfg, self.wallet_port)
+    }
+}
+
+fn spawn_watchdog(config: &Value) -> (Child, ChildStdin, mpsc::Receiver<Value>) {
+    let state_dir = config["node"]["state_dir"]
+        .as_str()
+        .expect("node.state_dir");
+    let config_path = std::path::Path::new(state_dir).join("watchdog-config.json");
+    std::fs::write(&config_path, serde_json::to_string_pretty(config).unwrap()).unwrap();
+
+    let mut child = Command::new(WATCHDOG)
+        .arg("--config")
+        .arg(&config_path)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()
+        .expect("spawn watchdog");
+
+    let stdin = child.stdin.take().unwrap();
+    let stdout = child.stdout.take().unwrap();
+    let rx = event_reader(stdout);
+
+    (child, stdin, rx)
+}
+
+// ── Tests: chain-state gating ─────────────────────────────────────────────────
+
+/// Empty chain → chain_status{has_chain:false} → start_node → full startup.
+#[test]
+fn empty_chain_start_node() {
+    let dir = TempDir::new("empty-start-node");
+    // Do NOT populate chain → has_chain=false.
+    let (cfg, port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+
+    let cs = expect(&rx, "chain_status");
+    assert_eq!(cs["has_chain"], false);
+
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    expect(&rx, "node_started");
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    let ready = expect(&rx, "wallet_ready");
+    assert_eq!(ready["port"], port);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Populated chain → chain_status{has_chain:true} → node starts immediately.
+#[test]
+fn existing_chain_starts_immediately() {
+    let dir = TempDir::new("existing-chain");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+
+    let cs = expect(&rx, "chain_status");
+    assert_eq!(cs["has_chain"], true);
+
+    // No start_node needed — watchdog proceeds on its own.
+    expect(&rx, "node_started");
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Stop while waiting for chain decision (before any start_node / start_mithril).
+#[test]
+fn stop_during_chain_decision() {
+    let dir = TempDir::new("stop-during-decision");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── Tests: Mithril bootstrap ──────────────────────────────────────────────────
+
+/// Empty chain + Mithril → user picks mithril → full pipeline → node+wallet restart.
+#[test]
+fn empty_chain_mithril_bootstrap() {
+    let dir = TempDir::new("mithril-bootstrap");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
+    expect(&rx, "mithril_progress"); // at least one progress event
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "converting");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "installing");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+
+    // Node and wallet restart after install.
+    expect(&rx, "node_started");
+    // completed fires right after node_started (before wallet is up) so the
+    // renderer can leave the Mithril overlay and show normal sync progress.
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Cancel Mithril mid-download → re-prompts with chain_status{false} → user picks genesis.
+#[test]
+fn cancel_mithril_then_start_node() {
+    let dir = TempDir::new("cancel-mithril");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+
+    // Cancel before download completes.
+    send(&mut stdin, json!({"cmd": "cancel_mithril"}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "cancelled");
+
+    // Chain is still empty → watchdog re-prompts.
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    expect(&rx, "node_started");
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── Tests: partial sync while running ────────────────────────────────────────
+
+/// Running system → start_mithril(force) → node/wallet stop → pipeline → restart.
+#[test]
+fn partial_sync_while_running() {
+    let dir = TempDir::new("partial-sync");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+    expect(&rx, "node_started");
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+
+    // User triggers partial sync.
+    send(&mut stdin, json!({"cmd": "start_mithril", "force": true}));
+
+    // Wallet stops, then node shuts down gracefully.
+    expect(&rx, "node_shutdown_ms");
+
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
+    expect(&rx, "mithril_progress");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "installing");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+
+    // Comes back up.
+    expect(&rx, "node_started");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── Tests: wallet supervision ────────────────────────────────────────────────
+
+/// Wallet crashes on every attempt → circuit breaker fires after max_restarts.
+#[test]
+fn wallet_circuit_breaker() {
+    let dir = TempDir::new("circuit");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET_CRASH)
+        .max_restarts(3)
+        .restart_delay(0)
+        .build();
+    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "node_socket_ready");
+
+    for i in 0..3u32 {
+        expect(&rx, "wallet_started");
+        let exited = expect(&rx, "wallet_exited");
+        assert_eq!(exited["phase"], "pre_ready", "cycle {i}: wrong phase");
+        assert_eq!(exited["code"], 1, "cycle {i}: wrong code");
+    }
+
+    let unrec = expect(&rx, "wallet_unrecoverable");
+    assert_eq!(unrec["attempt"], 3);
+
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── Tests: node failures ──────────────────────────────────────────────────────
+
+/// Node crashes before socket repeatedly → watchdog restarts until max_crash_attempts, then stops.
+#[test]
+fn node_crash_before_socket() {
+    let dir = TempDir::new("node-crash");
+    dir.populate_chain();
+    // Use max_crash_attempts=2 so the test finishes quickly without hitting the default 10.
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE_CRASH, MOCK_WALLET)
+        .node_max_crash_attempts(2)
+        .build();
+    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+
+    // Two crash attempts before giving up.
+    for _ in 0..2 {
+        expect(&rx, "node_started");
+        let exited = expect(&rx, "node_exited");
+        assert_eq!(exited["code"], 1);
+    }
+
+    // After max_crash_attempts the watchdog emits an error and stops.
+    expect(&rx, "error");
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Stop sent while waiting for socket → clean shutdown with node_shutdown_ms.
+#[test]
+fn stop_during_socket_wait() {
+    let dir = TempDir::new("stop-socket-wait");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE_NO_SOCKET, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+    expect(&rx, "node_started");
+
+    // Give watchdog a moment to enter the socket-wait select.
+    std::thread::sleep(Duration::from_millis(50));
+
+    stop(&mut stdin);
+    expect(&rx, "node_shutdown_ms");
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── Tests: stdin EOF ──────────────────────────────────────────────────────────
+
+/// Dropping stdin (EOF) is treated as an implicit stop.
+#[test]
+fn stdin_eof_stops_watchdog() {
+    let dir = TempDir::new("eof");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    drop(stdin); // EOF → implicit stop
+
+    expect(&rx, "stopped");
+    let _ = child.wait();
+}
+
+/// Poll try_wait() until the child exits; panic after the deadline.
+fn wait_for_exit(child: &mut Child, deadline: Duration) {
+    let start = std::time::Instant::now();
+    loop {
+        if child.try_wait().unwrap().is_some() {
+            return;
+        }
+        assert!(start.elapsed() < deadline, "timeout waiting for exit");
+        std::thread::sleep(Duration::from_millis(50));
+    }
+}
+
+/// A SIGKILLed watchdog cannot run any shutdown path; the PDEATHSIG tether
+/// set at spawn time must reap the wallet (and node) anyway.
+#[cfg(target_os = "linux")]
+#[test]
+fn sigkill_watchdog_kills_children() {
+    let dir = TempDir::new("sigkill");
+    dir.populate_chain();
+    let (cfg, wallet_port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    assert!(std::net::TcpStream::connect(("127.0.0.1", wallet_port)).is_ok());
+
+    child.kill().unwrap(); // SIGKILL — no Drop handlers, no Stop path
+    let _ = child.wait();
+    drop(stdin);
+
+    // PDEATHSIG delivery is immediate; poll briefly to absorb scheduler lag.
+    let start = std::time::Instant::now();
+    loop {
+        if std::net::TcpStream::connect(("127.0.0.1", wallet_port)).is_err() {
+            break;
+        }
+        assert!(
+            start.elapsed() < Duration::from_secs(5),
+            "wallet survived watchdog SIGKILL"
+        );
+        std::thread::sleep(Duration::from_millis(50));
+    }
+}
+
+/// A closed stdout (crashed parent) must not abort the watchdog: the EPIPE'd
+/// event is dropped, and the stdin EOF that follows still runs the orderly
+/// shutdown, so the wallet is stopped rather than orphaned.
+#[test]
+fn stdout_close_does_not_orphan_children() {
+    let dir = TempDir::new("epipe");
+    dir.populate_chain();
+    let (cfg, wallet_port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+
+    let state_dir = cfg["node"]["state_dir"].as_str().expect("node.state_dir");
+    let config_path = std::path::Path::new(state_dir).join("watchdog-config.json");
+    std::fs::write(&config_path, serde_json::to_string_pretty(&cfg).unwrap()).unwrap();
+
+    let mut child = Command::new(WATCHDOG)
+        .arg("--config")
+        .arg(&config_path)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()
+        .expect("spawn watchdog");
+    let mut stdin = child.stdin.take().unwrap();
+    let stdout = child.stdout.take().unwrap();
+
+    // Read events inline (not via event_reader) so this test owns stdout and
+    // can close it deterministically.
+    let mut reader = BufReader::new(stdout);
+    loop {
+        let mut line = String::new();
+        assert!(reader.read_line(&mut line).unwrap() > 0, "unexpected EOF");
+        if line.contains("wallet_ready") {
+            break;
+        }
+    }
+    drop(reader); // close the parent's read end of the watchdog's stdout
+
+    // Trigger an event emission: the probe result's write hits EPIPE.
+    send(&mut stdin, json!({"cmd": "probe_mithril"}));
+    std::thread::sleep(Duration::from_millis(500));
+    assert!(
+        child.try_wait().unwrap().is_none(),
+        "watchdog must survive a broken stdout pipe"
+    );
+    assert!(
+        std::net::TcpStream::connect(("127.0.0.1", wallet_port)).is_ok(),
+        "wallet should still be running"
+    );
+
+    drop(stdin); // EOF → implicit stop → orderly shutdown
+    wait_for_exit(&mut child, Duration::from_secs(15));
+    assert!(
+        std::net::TcpStream::connect(("127.0.0.1", wallet_port)).is_err(),
+        "wallet must not outlive the watchdog"
+    );
+}
+
+// ── Tests: startup log parsing ────────────────────────────────────────────────
+
+/// Node stdout emits startup log lines → watchdog parses and re-emits as
+/// node_startup_status and node_block_sync_progress events.
+#[test]
+fn startup_log_phase_parsing() {
+    let dir = TempDir::new("startup-log");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE_STARTUP_LOG, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+    expect(&rx, "node_started");
+
+    // Startup phases arrive while socket is not yet ready.
+    expect_with(&rx, "node_startup_status", |v| {
+        v["phase"] == "openingImmutableDb"
+    });
+    expect_with(&rx, "node_startup_status", |v| {
+        v["phase"] == "replayingLedger"
+    });
+
+    // Block sync progress from "Replayed block Progress: N%" lines.
+    let prog = expect_with(&rx, "node_block_sync_progress", |v| {
+        v["kind"] == "replayedBlock"
+    });
+    let pct = prog["progress"].as_f64().unwrap();
+    assert!(pct > 0.0 && pct <= 100.0, "unexpected progress {pct}");
+
+    expect_with(&rx, "node_startup_status", |v| v["phase"] == "chainDbReady");
+
+    // Socket created after log lines in this mock.
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── Tests: protocol robustness ────────────────────────────────────────────────
+
+/// Malformed stdin lines are silently discarded; watchdog keeps running.
+#[test]
+fn malformed_stdin_ignored() {
+    let dir = TempDir::new("malformed");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+
+    writeln!(stdin, "not json at all {{{{").unwrap();
+    writeln!(stdin, r#"{{"cmd":"unknown_future_command"}}"#).unwrap();
+    stop(&mut stdin);
+
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A line exceeding the per-line bound is discarded — not treated as EOF —
+/// and later commands still work. (The bound is per line: a lifetime cap
+/// would eventually shut a long session down mid-flight.)
+#[test]
+fn oversized_stdin_line_discarded() {
+    let dir = TempDir::new("oversized");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+
+    // 5 MB without a newline — larger than the 4 MB per-line bound.
+    let junk = vec![b'x'; 5 * 1024 * 1024];
+    stdin.write_all(&junk).unwrap();
+    stdin.write_all(b"\n").unwrap();
+    stdin.flush().unwrap();
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// watchdog_started carries the actual watchdog PID.
+#[test]
+fn watchdog_started_pid() {
+    let dir = TempDir::new("pid");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    let started = expect(&rx, "watchdog_started");
+    let pid = started["pid"].as_u64().unwrap();
+    assert!(pid > 1, "pid {pid} looks wrong");
+    assert_ne!(
+        pid,
+        std::process::id() as u64,
+        "pid should be watchdog, not test"
+    );
+
+    expect(&rx, "wallet_ready");
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// wallet_ready port matches the port in the config.
+#[test]
+fn wallet_ready_port_matches_config() {
+    let dir = TempDir::new("port-check");
+    dir.populate_chain();
+    let (cfg, expected_port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "chain_status");
+    expect(&rx, "node_started");
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    let ready = expect(&rx, "wallet_ready");
+
+    assert_eq!(
+        ready["port"].as_u64().unwrap(),
+        expected_port as u64,
+        "port mismatch"
+    );
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── T5: probe_mithril ─────────────────────────────────────────────────────────
+
+/// probe_mithril while running → certified >> local → mithril_significantly_behind.
+#[test]
+fn probe_mithril_significantly_behind() {
+    let dir = TempDir::new("probe-behind");
+    dir.populate_chain();
+    // Default mock returns certified=999999; local=0 immutables in chain/immutable/
+    // → behind=999999 >= threshold(20) → MithrilSignificantlyBehind
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+
+    send(&mut stdin, json!({"cmd": "probe_mithril"}));
+    let ev = expect(&rx, "mithril_significantly_behind");
+    assert_eq!(ev["local_immutable_count"], 0);
+    assert_eq!(ev["latest_certified_immutable"], 999_999);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// probe_mithril while running → certified close to local → mithril_not_needed.
+#[test]
+fn probe_mithril_not_needed() {
+    let dir = TempDir::new("probe-not-needed");
+    dir.populate_chain();
+    // not-needed mock returns certified=10; local=0 → behind=10 < threshold(20) → NotNeeded
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .mithril_bin(env!("CARGO_BIN_EXE_mock-mithril-client-not-needed"))
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+
+    send(&mut stdin, json!({"cmd": "probe_mithril"}));
+    let ev = expect(&rx, "mithril_not_needed");
+    assert_eq!(ev["latest_certified_immutable"], 10);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── T6: wipe_chain: true ─────────────────────────────────────────────────────
+
+/// start_mithril with wipe_chain:true → chain dir deleted, full bootstrap install, restart.
+#[test]
+fn wipe_chain_full_bootstrap() {
+    let dir = TempDir::new("wipe-chain");
+    dir.populate_chain();
+    let chain_path = dir.path().join("chain");
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+    expect(&rx, "wallet_ready");
+
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "force": true, "wipe_chain": true}),
+    );
+
+    expect(&rx, "node_shutdown_ms");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "installing");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+
+    expect(&rx, "node_started");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    expect(&rx, "wallet_ready");
+
+    assert!(
+        chain_path.exists(),
+        "chain dir should be recreated after install"
+    );
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── T7: node crash after wallet ready ────────────────────────────────────────
+
+/// Node is SIGKILL'd after wallet is ready → watchdog restarts node+wallet → recovers.
+/// This is the core bug fix for Bug 5: previously the watchdog exited instead of restarting.
+#[test]
+fn node_crash_after_wallet_ready() {
+    let dir = TempDir::new("node-crash-post-ready");
+    dir.populate_chain();
+    // Use mock-node-crash-once: first invocation crashes, second succeeds.
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE_CRASH_ONCE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+
+    // First node spawn crashes immediately (before socket ready).
+    expect(&rx, "node_started");
+    let exited = expect(&rx, "node_exited");
+    assert_eq!(exited["code"], 1);
+
+    // Watchdog restarts: second spawn succeeds.
+    expect(&rx, "node_started");
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Mithril configured without an ancillary verification key → the pipeline
+/// refuses to start (before any chain wipe) instead of downloading unverified
+/// ancillary data or failing mid-download.
+#[test]
+fn mithril_without_ancillary_key_fails_fast() {
+    let dir = TempDir::new("no-ancillary-key");
+    dir.populate_chain();
+    let (mut cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    cfg["mithril"]
+        .as_object_mut()
+        .unwrap()
+        .remove("ancillary_vkey");
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "force": true, "wipe_chain": true}),
+    );
+
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "ANCILLARY_VKEY_MISSING");
+    assert!(
+        dir.path().join("chain").exists(),
+        "guard must fire before the chain wipe"
+    );
+
+    // Pipeline returned Cancelled → node/wallet restart normally.
+    expect(&rx, "wallet_ready");
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// The restart-attempt counter resets once the wallet reaches ready, so
+/// non-consecutive crashes never accumulate into wallet_unrecoverable.
+#[test]
+fn wallet_restart_counter_resets_on_ready() {
+    let dir = TempDir::new("restart-counter-reset");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .max_restarts(2)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    let kill_wallet = |rx: &mpsc::Receiver<Value>| {
+        let wallet_ev = expect(rx, "wallet_started");
+        let wallet_pid = wallet_ev["pid"].as_u64().unwrap() as i32;
+        expect(rx, "wallet_ready");
+        nix::sys::signal::kill(
+            nix::unistd::Pid::from_raw(wallet_pid),
+            nix::sys::signal::Signal::SIGKILL,
+        )
+        .unwrap();
+    };
+
+    // Three ready→crash cycles with max_restart_attempts = 2: if the counter
+    // accumulated across recoveries, the third crash would be unrecoverable.
+    for _ in 0..3 {
+        kill_wallet(&rx);
+        let restarting = expect(&rx, "wallet_restarting");
+        assert_eq!(
+            restarting["attempt"], 1,
+            "counter must reset after each successful wallet_ready"
+        );
+    }
+
+    expect(&rx, "wallet_ready");
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── T8: Mithril download failure ─────────────────────────────────────────────
+
+/// Mithril download fails → PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED → re-prompt.
+#[test]
+fn mithril_download_failure() {
+    let dir = TempDir::new("mithril-dl-fail");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .mithril_bin(MOCK_MITHRIL_FAIL)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED");
+
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── T9: Mithril conversion failure ───────────────────────────────────────────
+
+/// Download succeeds but converter fails → PARTIAL_SYNC_CONVERSION_FAILED → re-prompt.
+#[test]
+fn mithril_conversion_failure() {
+    let dir = TempDir::new("mithril-conv-fail");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .converter_bin(MOCK_CONVERTER_FAIL)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "converting");
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PARTIAL_SYNC_CONVERSION_FAILED");
+
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── T10: Marker recovery on startup ──────────────────────────────────────────
+
+/// Stale cutover-in-progress marker + staging dir → watchdog cleans up and starts normally.
+#[test]
+fn marker_recovery_cutover_in_progress() {
+    let dir = TempDir::new("marker-cutover");
+    dir.populate_chain();
+
+    let logs = dir.path().join("Logs");
+    std::fs::create_dir_all(&logs).unwrap();
+    std::fs::write(
+        logs.join("mithril-partial-sync.lock"),
+        r#"{"state":"cutover-in-progress"}"#,
+    )
+    .unwrap();
+    let staging = dir.path().join("mithril-partial-sync");
+    std::fs::create_dir_all(&staging).unwrap();
+    std::fs::write(staging.join("sentinel"), b"").unwrap();
+
+    // Mithril must be configured for the watchdog to read the marker at startup.
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+    expect(&rx, "node_started");
+    expect(&rx, "wallet_ready");
+
+    assert!(
+        !staging.exists(),
+        "staging dir should be cleaned up on startup"
+    );
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Stale installed-awaiting-node-start marker → cleared on startup, node starts normally.
+#[test]
+fn marker_recovery_installed_awaiting_node_start() {
+    let dir = TempDir::new("marker-awaiting");
+    dir.populate_chain();
+
+    let logs = dir.path().join("Logs");
+    std::fs::create_dir_all(&logs).unwrap();
+    std::fs::write(
+        logs.join("mithril-partial-sync.lock"),
+        r#"{"state":"installed-awaiting-node-start"}"#,
+    )
+    .unwrap();
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    let cs = expect(&rx, "chain_status");
+    assert_eq!(cs["has_chain"], true);
+    expect(&rx, "node_started");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── T11: max_restart_attempts = 0 ────────────────────────────────────────────
+
+/// max_restart_attempts=0 → first wallet crash immediately triggers unrecoverable.
+#[test]
+fn max_restart_attempts_zero() {
+    let dir = TempDir::new("max-restart-zero");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET_CRASH)
+        .max_restarts(0)
+        .restart_delay(0)
+        .build();
+    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    let exited = expect(&rx, "wallet_exited");
+    assert_eq!(exited["code"], 1);
+
+    let unrec = expect(&rx, "wallet_unrecoverable");
+    assert_eq!(unrec["attempt"], 1);
+
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── T12: Cancellation during conversion ─────────────────────────────────────
+
+/// Cancel while the converter process is running → converter is killed,
+/// "cancelled" status emitted, cutover marker is NOT written.
+#[test]
+fn cancel_mithril_during_conversion() {
+    let dir = TempDir::new("cancel-converting");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .converter_bin(MOCK_CONVERTER_SLOW)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
+    // Converter is now running (sleeping indefinitely); send cancel.
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "converting");
+    send(&mut stdin, json!({"cmd": "cancel_mithril"}));
+
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "cancelled");
+
+    // Cutover marker must not be written when cancellation occurs before cutover.
+    let marker = dir.path().join("Logs").join("mithril-partial-sync.lock");
+    assert!(
+        !marker.exists(),
+        "cutover marker must not exist after cancel"
+    );
+
+    // Watchdog re-prompts since chain is still empty.
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Converter completes naturally then cancel arrives inside the cutover gate
+/// window — verifies the gate's blocking recv catches it before the cutover
+/// marker is written or install_staged runs.
+///
+/// The sentinel converter writes `lsm/CONVERTER_DONE` as its last act before
+/// exiting 0.  The test polls for that file (proving the converter has exited
+/// and the gate is now the only thing standing between cancel and chain
+/// mutation), then sends cancel into the still-open window.  This exercises a
+/// code path that neither the slow-converter tests nor the old try_recv gate
+/// could exercise.
+#[test]
+fn cancel_before_cutover_gate() {
+    let dir = TempDir::new("cancel-gate");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .converter_bin(MOCK_CONVERTER_SENTINEL)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "converting");
+
+    // Poll for the sentinel written by the converter just before it exits 0.
+    // Visibility of the sentinel means the converter has exited and the
+    // pipeline is now inside the CUTOVER_GATE_MS blocking recv window.
+    let sentinel = dir
+        .path()
+        .join("mithril-partial-sync")
+        .join("download")
+        .join("db")
+        .join("lsm")
+        .join("CONVERTER_DONE");
+    let deadline = std::time::Instant::now() + Duration::from_secs(10);
+    while !sentinel.exists() {
+        assert!(
+            std::time::Instant::now() < deadline,
+            "timeout waiting for converter sentinel"
+        );
+        std::thread::sleep(Duration::from_millis(5));
+    }
+
+    // Converter has exited; send cancel into the open gate window.
+    send(&mut stdin, json!({"cmd": "cancel_mithril"}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "cancelled");
+
+    let marker = dir.path().join("Logs").join("mithril-partial-sync.lock");
+    assert!(
+        !marker.exists(),
+        "cutover marker must not be written when gate catches cancel after natural converter exit"
+    );
+
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── T13: TOCTOU note ─────────────────────────────────────────────────────────
+// free_port() binds port 0, records the port, drops the listener, then passes
+// the port number to the watchdog mock. There is a TOCTOU race window between
+// the listener drop and the mock's bind. The probability of collision is
+// extremely low (linear PID allocation on Linux) but can cause spurious
+// failures on heavily loaded CI machines. Use SO_REUSEPORT if this ever
+// becomes flaky.
+
+// ── Bug-fix regression tests ──────────────────────────────────────────────────
+
+/// Bug 5 regression: node SIGKILL'd before socket ready → watchdog restarts, not exits.
+///
+/// Before the fix the watchdog emitted `stopped` immediately on unexpected node exit.
+/// After the fix it emits `node_exited`, delays, and retries up to max_crash_attempts.
+#[test]
+fn node_sigkill_before_socket_triggers_restart() {
+    let dir = TempDir::new("bug5-sigkill-pre-socket");
+    dir.populate_chain();
+    // crash-once: first spawn exits 1, second spawn succeeds
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE_CRASH_ONCE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+
+    // Attempt 1: node crashes before socket is ready.
+    expect(&rx, "node_started");
+    let exited = expect(&rx, "node_exited");
+    assert_eq!(exited["code"], 1, "expected exit code 1 from mock crash");
+
+    // Watchdog must NOT emit stopped here — it restarts instead.
+    // Attempt 2: node succeeds.
+    expect(&rx, "node_started");
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+
+    // Clean stop.
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Bug 5 regression: node SIGKILL'd while wallet running → watchdog restarts both, not exits.
+#[test]
+fn node_sigkill_post_wallet_ready_triggers_restart() {
+    let dir = TempDir::new("bug5-sigkill-post-ready");
+    dir.populate_chain();
+    // crash-once: first spawn exits 1, second spawn succeeds.
+    // The crash will happen pre-socket on the first spawn.
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE_CRASH_ONCE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+
+    // First spawn crashes.
+    expect(&rx, "node_started");
+    let exited = expect(&rx, "node_exited");
+    assert_eq!(exited["code"], 1);
+
+    // Restart: second spawn runs, wallet comes up.
+    expect(&rx, "node_started");
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+
+    // Clean stop confirms full recovery.
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Bug 5 regression: intentional stop (Cmd::Stop) must still emit stopped, not restart.
+/// This guards against a regression where the fix causes restart on clean shutdown.
+#[test]
+fn intentional_stop_does_not_restart() {
+    let dir = TempDir::new("bug5-intentional-stop");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+    expect(&rx, "node_started");
+    expect(&rx, "node_socket_ready");
+    expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+
+    // Must emit stopped exactly once and then the process exits.
+    expect(&rx, "stopped");
+
+    // No further node_started should arrive — verify by waiting briefly.
+    let extra = rx.recv_timeout(Duration::from_millis(200));
+    assert!(
+        extra.is_err(),
+        "expected no more events after stopped, got: {extra:?}"
+    );
+
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Bug 5 regression: node crash limit — after max_crash_attempts the watchdog
+/// gives up and emits an error + stopped.
+#[test]
+fn node_crash_exceeds_limit_emits_error_and_stops() {
+    let dir = TempDir::new("bug5-crash-limit");
+    dir.populate_chain();
+    // MOCK_NODE_CRASH always exits 1; set limit to 3 to keep test fast.
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE_CRASH, MOCK_WALLET)
+        .node_max_crash_attempts(3)
+        .build();
+    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+
+    for _ in 0..3 {
+        expect(&rx, "node_started");
+        let exited = expect(&rx, "node_exited");
+        assert_eq!(exited["code"], 1);
+    }
+
+    let err = expect(&rx, "error");
+    assert!(
+        err["message"]
+            .as_str()
+            .unwrap_or("")
+            .contains("unrecoverable"),
+        "error message should mention unrecoverable, got: {err}"
+    );
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Bug 5 regression: stopped event is emitted when clean stop is sent during
+/// socket wait (not a restart).
+#[test]
+fn stop_during_socket_wait_does_not_restart() {
+    let dir = TempDir::new("bug5-stop-socket-wait");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE_NO_SOCKET, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+    expect(&rx, "node_started");
+    std::thread::sleep(Duration::from_millis(50));
+
+    stop(&mut stdin);
+    expect(&rx, "node_shutdown_ms");
+    expect(&rx, "stopped");
+
+    let extra = rx.recv_timeout(Duration::from_millis(200));
+    assert!(extra.is_err(), "unexpected events after stopped: {extra:?}");
+
+    drop(stdin);
+    let _ = child.wait();
+}
