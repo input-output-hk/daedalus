@@ -39,6 +39,7 @@ if (!isStartedByLauncher) {
   }
 }
 
+
 type WindowOptionsType = {
   show: boolean;
   width: number;

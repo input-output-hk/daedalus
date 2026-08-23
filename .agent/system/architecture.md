@@ -615,13 +615,29 @@ Hostile remote dApp
   and 13.x without a package policy asset, and Fedora 43 under the task-109
   contract. The RPM's priority-200, cluster-specific module adds no permissions:
   it binds the exact Electron path to `bin_t` and the exact SUID helper path to
-  Fedora's reviewed `chrome_sandbox_exec_t`/`chrome_sandbox_t` policy. Task-005-b
-  installed-artifact evidence proves every supported Ubuntu, Debian, and Fedora
-  exact renderer has no-new-privileges, seccomp-BPF, zero effective capabilities,
-  and separate PID/user namespaces, with exact AppArmor/SELinux state where
-  required. Ubuntu 22.04.x is wallet-only pending separate AppArmor
-  proof. Omitted rows remain wallet-only and dApp-disabled until reviewed and
-  certified. Portable `.bin`, AppImage, Flatpak, and Snap are rejected; see
+  Fedora's reviewed `chrome_sandbox_exec_t`/`chrome_sandbox_t` policy.
+  Task-005-b installed-artifact evidence proves every supported Ubuntu, Debian,
+  and Fedora exact renderer has no-new-privileges, seccomp-BPF, zero effective
+  capabilities, and separate PID/user namespaces, with exact AppArmor/SELinux
+  state where required. Ubuntu 22.04.x and omitted rows remain wallet-only and
+  dApp-disabled until reviewed and certified.
+- The portable `.bin` producer and home-extract updater are retired. Linux
+  release manifests contain paired `linux-deb` and `linux-rpm` artifacts, but
+  neither is application-managed `softwareUpdate` data. Both map to one
+  ordinary Linux release/migration announcement. The application never
+  executes package bytes or escalates privileges; installation and upgrades
+  are manual `apt`/`dnf` operations while Daedalus is stopped.
+- Legacy `$HOME/.daedalus/<cluster>` installations receive announcements only
+  and remain wallet-only until manually migrated. System package lifecycle
+  never mutates `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus`; a custom
+  `XDG_DATA_HOME` must remain consistent across the exact
+  `/usr/bin/daedalus-<cluster>` launch. A verified stale user desktop symlink
+  may be moved aside so it cannot shadow the system entry, but migration never
+  broadly removes the legacy tree or wallet state.
+- Only the fixed `/opt/daedalus/<cluster>` `.deb`/`.rpm` installation can pass
+  Linux production package-identity and sandbox gates. The reusable
+  `daedalus-<cluster>` Nix package is developer-only and wallet-only. Portable
+  `.bin`, AppImage, Flatpak, and Snap are rejected; see
   [research/06-linux-system-package-decision.md](../plans/dapp-browser-cip30/research/06-linux-system-package-decision.md).
 
 ## Security Considerations

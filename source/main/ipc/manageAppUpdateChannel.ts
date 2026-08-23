@@ -1,7 +1,6 @@
 import { app, shell } from 'electron';
 import fs from 'fs';
 import shasum from 'shasum';
-import { spawn } from 'child_process';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { MANAGE_APP_UPDATE } from '../../common/ipc/api';
@@ -30,7 +29,9 @@ const getMessage = (functionPrefix: string, message?: string): string => {
   return formattedMessage;
 };
 
-export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
+export const handleManageAppUpdateRequests = (
+  _window: Pick<BrowserWindow, 'close'>
+) => {
   const response = (
     success: boolean | null | undefined,
     functionPrefix: string,
@@ -192,15 +193,17 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
       });
     });
   };
-
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ filePath, hash: expectedHash ... Remove this comment to see the full error message
   manageAppUpdateChannel.onRequest(async ({ filePath, hash: expectedHash }) => {
     const functionPrefix = 'onRequest';
-    if (launcherConfig.applicationUpdateMode === 'system-package-disabled') {
+    if (
+      environment.isLinux ||
+      launcherConfig.applicationUpdateMode === 'system-package-disabled'
+    ) {
       return response(
         false,
         functionPrefix,
-        'Portable application updates are disabled for system packages.',
+        'Application updates must be installed manually with the system package manager.',
         { info: { reason: 'system-package-update-disabled' } }
       );
     }
@@ -213,10 +216,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
       });
     const installerHash = checkInstallerHash(filePath, expectedHash);
     if (!installerHash) return response(false, functionPrefix);
-    // For linux we execute the installer file
-    if (environment.isLinux)
-      return installUpdate(filePath, launcherConfig.updateRunnerBin);
-    // For other OS we launch the installer file after the app was closed
+    // macOS and Windows open the verified installer after the app has closed.
     app.on('quit', () => {
       shell.openPath(filePath);
     });
