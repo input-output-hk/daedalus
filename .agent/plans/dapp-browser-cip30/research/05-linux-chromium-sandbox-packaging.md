@@ -1,13 +1,15 @@
 # Linux Chromium Sandbox Packaging Evidence
 
-Status: **portable strategy rejected.** This note retains negative evidence from
-the home-directory self-extracting `.bin` spike. The accepted Linux product
-strategy is **system `.deb` and `.rpm` packages**; see
+Status: **historical portable strategy evidence; candidate rejected.** This note
+retains the 2026-08-11 negative evidence from the former home-directory
+self-extracting `.bin` spike. That producer and shipping channel are now
+retired. The accepted Linux product strategy is fixed-path system `.deb` and
+`.rpm` packages; see
 [06-linux-system-package-decision.md](./06-linux-system-package-decision.md).
-Historical task-005 owns this cancelled portable spike. Task-005-a owns the
-system-package, matrix, probe, and fail-closed contracts. Task-005-b completed
-installed `.deb`/`.rpm` exact-renderer certification on 2026-08-23.
-Production dApp launch remains disabled.
+Historical task-005 owns this cancelled spike. Task-005-b completed installed
+`.deb`/`.rpm` exact-renderer certification on 2026-08-23; tasks 103 and 110
+subsequently completed the runtime fail-closed and release/migration cutovers.
+Production dApp launch remains disabled behind the later release gates.
 
 ## Current Task State
 
@@ -22,13 +24,16 @@ Production dApp launch remains disabled.
 - Product decision (2026-08-12): ship Linux as `.deb` and `.rpm` only; reject
   portable `.bin`, AppImage, Flatpak, Snap, and other Linux channels. Durable
   record: research `06`.
-- Portable spike status: package-equivalent Ubuntu 24.04 home install cannot
-  start Chromium sandbox bootstrap (`SIGILL`). A local-only unsandboxed control
-  isolated failure to sandbox startup. That evidence **supports rejecting
-  portable packaging**; it is not proof that system packages work until retested.
-- Production status: task-108's `.deb` launch surfaces are flag-free. Legacy
-  portable and development Linux launch sites still contain downstream-owned
-  bypasses; remote dApp launch remains disabled on every platform.
+- Historical portable spike: the package-equivalent Ubuntu 24.04 home install
+  could not start Chromium sandbox bootstrap (`SIGILL`). A local-only
+  unsandboxed control isolated failure to sandbox startup. That evidence
+  **supports rejecting portable packaging**; it is not system-package
+  certification and is not a live build or verification procedure.
+- Current production boundary: `.deb`/`.rpm` launch surfaces are flag-free,
+  task-103 removed remaining development/legacy bypass defaults and added the
+  fail-closed runtime gate, and task-110 retired `.bin` production and update
+  execution. Remote dApp launch remains disabled on every platform pending the
+  later gates.
 - Cross-platform boundary: this note covers Linux only. Windows and macOS remain
   tasks 802 and 807.
 
@@ -49,25 +54,45 @@ Full decision text, rejections, ownership, and migration notes:
 Automatically adding `--no-sandbox`, retrying unsandboxed, changing host policy
 from the app, or weakening renderer assertions remains forbidden.
 
-Task-005-a freezes the package and evidence contracts. Task-108/109 own
-`.deb`/`.rpm` implementation; task-005-b owns installed-artifact certification;
-those package tasks must produce launchers without sandbox-disabling switches.
-Task-103 then owns remaining development/legacy bypass removal, runtime
-argv/environment rejection, and the pre-remote-content canary. Task-110 owns `.bin` retirement and
-auto-update migration. Task-107, task-802, task-807, and task-903-a own later
-real-guest and release-candidate proof.
+Tasks 005-a, 108, 109, and 005-b completed the package, matrix, and
+installed-artifact certification contracts. Task-103 completed remaining
+development/legacy bypass removal, runtime argv/environment rejection, and the
+pre-remote-content canary. Task-110 completed `.bin` retirement and manual
+release/update migration. Tasks 107, 802, 807, and 903-a own later real-guest
+and release-candidate proof.
 
-## Verified Baseline
+### Current release boundary
 
-- `source/main/webpack.config.js` passes `--disable-setuid-sandbox` and
+Linux release manifests contain the paired `linux-deb` and `linux-rpm`
+artifacts but no Linux `softwareUpdate` entry. Both package formats map to one
+ordinary Linux announcement linking release notes and manual `apt`/`dnf`
+instructions. Legacy portable users receive that announcement only and remain
+wallet-only until installing a system package.
+
+Migration retains `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus`; custom
+`XDG_DATA_HOME` values must be reused on the exact
+`/usr/bin/daedalus-<cluster>` first launch. A verified stale user desktop
+symlink may be moved aside to avoid shadowing the system entry, but neither the
+old executable tree nor wallet state is broadly removed. The developer Nix
+package is also wallet-only. Only installed fixed-path `.deb`/`.rpm` packages
+can satisfy the Linux production package-identity and sandbox gates.
+
+## Historical Verified Baseline (2026-08-11)
+
+The following records the source and artifact exercised by the cancelled
+portable spike. The named `.bin` script and portable launch behavior have since
+been removed and these bullets must not be read as current build instructions:
+
+- `source/main/webpack.config.js` passed `--disable-setuid-sandbox` and
   `--no-sandbox` to development Electron.
-- `nix/internal/x86_64-linux.nix` passes both switches from the packaged
+- `nix/internal/x86_64-linux.nix` passed both switches from the packaged
   `daedalus-frontend` wrapper.
-- `nix/internal/linux-self-extracting-archive.sh` replaces the existing
-  `$HOME/.daedalus/<cluster>` tree and extracts the package as the current user.
-- The package embeds and repairs Electron's ELF interpreter and launches the
-  installed binary through `libexec/electron`; a Nix-store or `node_modules`
-  Electron launch is not package evidence.
+- `nix/internal/linux-self-extracting-archive.sh` replaced the existing
+  `$HOME/.daedalus/<cluster>` tree and extracted the package as the current
+  user.
+- The package embedded and repaired Electron's ELF interpreter and launched the
+  installed binary through `libexec/electron`; Nix-store or `node_modules`
+  Electron was not package evidence.
 - Electron documents that `--no-sandbox` disables Chromium's sandbox for all
   processes and is testing-only. Enabling Node integration also disables a
   renderer's sandbox.
@@ -215,11 +240,11 @@ cover braces/brackets, `file://`, mixed-case identity data, values outside an
 assignment, root tokens, residual rejection, forbidden switches, and timeout.
 Do not include a token reverse map in returned evidence.
 
-## Required Inputs
+## Historical Certification Inputs (fulfilled)
 
-Packaging decision and successor matrix revision `task-108-matrix-2026-08-18` are
-complete; see research `06`. Before task-005-b certification, release/product
-engineering must provide:
+The following inputs were required before task-005-b certification and are
+retained as evidence provenance. Task-005-b completed them against successor
+matrix revision `task-108-matrix-2026-08-18`:
 
 1. One disposable default-policy host for every enabled matrix row.
 2. Snapshotted disposable hosts where each accepted sandbox route or required
@@ -234,10 +259,11 @@ No wallet profile, credentials, funds, Cardano network, hardware wallet, dApp,
 or remote URL is needed. Prefer disposable VMs; do not install proof packages
 over a real wallet-bearing system without a snapshot.
 
-## Package-Equivalent Proof Variant
+## Historical Package-Equivalent Proof Variant (retired)
 
-Task-005 does not remove production bypasses. Build the proof variant in an
-isolated copy of the reviewed task workspace, not in a wallet-bearing checkout:
+This procedure records how task-005 built the portable proof artifact in an
+isolated reviewed workspace. The output and command no longer exist in the live
+Linux release surface and must not be rerun as current package validation:
 
 1. Record the base revision with `git rev-parse HEAD`. If build-relevant task
    changes are applied in the isolated source, record their complete binary diff
@@ -249,27 +275,28 @@ isolated copy of the reviewed task workspace, not in a wallet-bearing checkout:
    `nix/internal/x86_64-linux.nix`.
 3. Save that two-file proof patch and its SHA-256. It must contain no other
    production change.
-4. Build with `nix build -L .#installer-mainnet` or the release-owner-selected
-   cluster output.
+4. At the time, build with `nix build -L .#installer-mainnet` or the
+   release-owner-selected cluster output. That Linux output is now retired.
 5. Record `flake.lock` SHA-256, installer SHA-256, proof patch SHA-256, Electron
    and Chromium versions, and the source identities above.
 
-Call this artifact a **package-equivalent proof variant**, not a production or
-release-candidate artifact. Task-103 must reproduce the reviewed flag removal,
-and later release gates must validate the actual production artifact.
+This was called a **package-equivalent proof variant**, not a production or
+release-candidate artifact. Task-103 later reproduced the reviewed flag removal
+in production and added the fail-closed runtime gate; that does not revive the
+portable artifact.
 
 The executed proof variant is fully identified in Results below. Rebuilding the
 same source is unnecessary unless the packaging strategy or probe changes;
 neither its successful construction nor its fail-closed startup is release
 certification.
 
-## Installed System-Package Certification Handoff
+## Installed System-Package Certification Record
 
-Task-005-b repeats this procedure for the supported Ubuntu 24.04.x/26.04.x,
-Debian 12.x/13.x, and Fedora 43 rows. Ubuntu 22.04.x receives a separate
-wallet-only package lifecycle check. It uses exact installed
-task-108/109 artifacts and never substitutes the historical portable package,
-Nix-store Electron, or `node_modules` Electron.
+Task-005-b repeated the procedure for the supported Ubuntu 24.04.x/26.04.x,
+Debian 12.x/13.x, and Fedora 43 rows. Ubuntu 22.04.x received a separate
+wallet-only package lifecycle check. It used exact installed task-108/109
+artifacts and never substituted the historical portable package, Nix-store
+Electron, or `node_modules` Electron.
 
 1. Install the package in a disposable snapshotted VM with a fresh `HOME`.
 2. Record only allowlisted distro/version, kernel release, session type, and
@@ -397,7 +424,7 @@ matrix certification.
 | Current probe | `89722d43ca8d62a5b1a6f33fe66010ee3c13d0cbcfc5751bee008b6c3b159ae4`; self-test, syntax, and focused formatting checks pass |
 | Runtime versions | Electron package input `41.3.0`; Chromium runtime version was not emitted because default sandbox startup failed and the diagnostic control is not accepted version evidence |
 | ELF interpreter | Installed Electron uses the package-embedded interpreter below `<INSTALL_ROOT>`; the proof exercised the relocated installed path, not Nix-store or `node_modules` Electron |
-| Sandbox bypass | Both proof-only launch sites removed; installed proof wrapper contains neither bypass switch; production source remains unchanged for task-103 |
+| Sandbox bypass | Both proof-only launch sites removed; installed proof wrapper contains neither bypass switch; this historical row records production source before task-103 |
 | Host userns policy | `kernel.unprivileged_userns_clone=1`, `user.max_user_namespaces=959672`, AppArmor unprivileged-userns restriction enabled |
 | Independent userns check | `unshare -Ur true` exits `0` |
 | AppArmor-profile diagnostic | `aa-exec -p unprivileged_userns -- unshare -Ur true` exits `1` while writing `uid_map`; useful profile-sensitivity evidence but not proof of Electron's failed operation |
@@ -429,26 +456,27 @@ same-binary diagnostic with that value reached Electron/JavaScript startup
 without `SIGILL`; this is package startup evidence, not task-005-b renderer
 certification and not permission to add a sandbox bypass to the portable path.
 
-## Unresolved Decisions And Evidence
+## Resolved Decisions And Remaining Release Evidence
 
 **Resolved (2026-08-12):** Linux ships `.deb` and `.rpm` only; portable `.bin`,
 AppImage, Flatpak, and Snap are rejected. See research `06`.
 
-Task-005-a froze the contract, tasks 108 and 109 produced the packages, and
-task-005-b completed the installed-artifact matrix on 2026-08-23. Task-103 is
-therefore dependency-unblocked for remaining bypass removal and the runtime
-canary. This certification does not enable a guest or satisfy later release gates.
+Tasks 005-a, 108, 109, and 005-b completed the package/matrix work. Task-103
+completed bypass removal and the runtime canary; task-110 retired the `.bin`
+producer and Linux update executor in favor of manual package-manager upgrades
+and ordinary announcements. None of those completions enables a guest or
+satisfies the later release gates.
 
 The local-only `--no-sandbox` control must not be repeated as ordinary
 verification, shipped, or cited as containment. Its sole accepted finding for
 the portable spike is that that installed executable could reach a renderer when
 sandbox bootstrap was deliberately bypassed; the probe then failed as designed.
 
-## Provisional Task-103 Contract
+## Completed Task-103 Contract
 
-This contract preserves fail-closed boundaries and assumes the accepted
-`.deb`/`.rpm` install model. Before any remote dApp URL is created or loaded on
-Linux, task-103 must at minimum:
+This fail-closed contract was implemented for the accepted `.deb`/`.rpm`
+installation model. Before any remote dApp URL is created or loaded on Linux,
+the runtime must:
 
 1. Remove both bypass switches from remaining development and legacy portable
    launch paths. Tasks 108 and 109 own flag-free `.deb` and `.rpm` launchers
@@ -478,10 +506,11 @@ that gate.
 ## Revalidation Triggers
 
 Reopen affected package evidence after material changes to Electron/Chromium,
-nixpkgs, `nix-bundle-exe`, ELF interpreter repair, archive extraction, helper
-handling, launcher flags, probe/canary assertions, supported distributions, or
-the release artifact. Task-107, task-802, task-807, and task-903-a own the later
-real-guest, packaged adversarial, release-candidate, and post-pilot checks.
+nixpkgs, `nix-bundle-exe`, ELF interpreter repair, helper handling, launcher
+flags, probe/canary assertions, supported distributions, fixed-path system
+packages, or the release manifest. Task-107, task-802, task-807, and task-903-a
+own the later real-guest, packaged adversarial, release-candidate, and
+post-pilot checks.
 
 ## Installed System-Package Certification Results
 

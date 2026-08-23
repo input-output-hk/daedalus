@@ -24,7 +24,7 @@ The current Electron main renderer cannot host hostile content safely:
 - `source/main/preload.ts` exposes raw IPC, Node HTTP(S), paths, configuration, and logging capabilities.
 - All 77 production privileged IPC channels are recorded in a machine-checkable manifest and use wrappers that retain Electron events, correlate responses, and authenticate the active trusted main WebContents/frame/document. The former raw close/resize listeners have been removed.
 - Popup and external-URL handling is not sufficient for a hostile renderer.
-- Linux system-package launchers, development, and the remaining legacy launcher are free of sandbox-disabling defaults. The legacy portable self-extracting `.bin` still cannot establish the certified package identity required for hostile guests and remains wallet-only pending retirement in task-110.
+- Linux system-package launchers and development paths are free of sandbox-disabling defaults. The portable self-extracting `.bin` producer and Linux in-app executor are retired; new Linux releases ship only fixed-path `.deb` and `.rpm` packages, while legacy home installs remain wallet-only until users migrate without moving or deleting wallet state.
 
 The existing wallet and transaction APIs are also incomplete for CIP-30:
 
@@ -120,7 +120,6 @@ This work matters because a connector that is merely functional but not byte-exa
 - `source/common/config/electron-store.config.ts`
 - `source/common/types/electron-store.types.ts`
 - `nix/internal/x86_64-linux.nix`
-- `nix/internal/linux-self-extracting-archive.sh` (legacy portable path; rejected for shipping)
 - Linux `.deb` / `.rpm` packaging outputs and privileged lifecycle scripts
 - `flake.nix`
 - `flake.lock`
@@ -197,7 +196,7 @@ physical results against exact production artifacts and adapter commits.
 - A checked 77-channel manifest accounts for all production privileged IPC. Every channel uses exact trusted main WebContents/frame/document authentication and correlated caller-targeted responses; raw close/resize listeners and direct renderer callers have been migrated. Production guest launch remains disabled by the independent sandbox, guest, ledger, signing, hardware, and review gates.
 - The global popup handler now denies requests without shell side effects; trusted UI external-link requests accept only parsed credential-free HTTPS URLs with awaited privacy-safe failures.
 - Linux launch paths no longer pass `--disable-setuid-sandbox` or `--no-sandbox`. Main rejects sandbox-disabling argv/environment state and requires supported system-package identity plus a hidden same-PID local renderer canary before future dApp launch can become available.
-- Linux still produces a home-directory self-extracting `.bin` only for migration compatibility pending task-110; that product-rejected path is wallet-only, while supported dApp containment is provided only by installed `.deb` and `.rpm` packages (research `06`).
+- Linux releases now publish only `.deb` and `.rpm` packages. Package-manager upgrades replace files under `/opt/daedalus/<cluster>` without owning `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus`; legacy `.bin` users receive an ordinary migration announcement rather than executable automatic-update bytes.
 
 ### Renderer
 
@@ -780,9 +779,10 @@ migration/rollback, and pin gate; `task-004` for exact-CBOR/body/output and
 supported-era evidence; `task-005-a` for the Linux `.deb`/`.rpm` sandbox contract
 and authoritative support matrix (portable `.bin` rejected; research 06); and `task-006` for
 Ledger/Trezor library, model, firmware, message-signing, and returned-hash
-matrices. Phase 1 packaging follow-through is `task-108` (`.deb`), `task-109`
-(`.rpm`), `task-005-b` (installed-artifact certification), `task-110` (`.bin`
-retirement and auto-update migration), and `task-103` (flag removal and canary).
+matrices. Phase 1 packaging follow-through completed `task-108` (`.deb`),
+`task-109` (`.rpm`), `task-005-b` (installed-artifact certification),
+`task-110` (`.bin` retirement and system-package update migration), and
+`task-103` (flag removal and canary).
 Phases 1 through 9 implement and validate
 privileged IPC, session/network policy, exact semantic review,
 backend/pending-submission behavior, device capability, packaged hostile tests,
@@ -946,7 +946,7 @@ Session requirements:
 - **Deferred package-lifecycle validation decision (2026-08-18):** task-108 is accepted as implementation-complete with automated package checks and live Ubuntu 24.04 install, AppArmor, startup, no-bypass, removal-refusal, rollback, purge, and wallet-preservation evidence. Its unexecuted Ubuntu 22.04/26.04, Debian 12/13, omitted-distribution, reboot, and destructive upgrade/failure fixtures remain mandatory manual release-candidate validation after the full PRD implementation is assembled. This separate lifecycle deferral records missing evidence rather than treating those cases as passed; task-005-b's exact-renderer matrix is complete, but no later packaged release gate is waived.
 - **Task-109 Fedora evidence (2026-08-22):** additive `rpm-installer-{mainnet,preprod,preview,selfnode}` outputs, native RPM install/upgrade/erase scriptlets, the fixed `/opt` layout, root-owned mode-`4755` helper, flag-free YAML-compatible launcher configuration, cluster-specific priority-200 label-only SELinux integration, identity manifest, Hydra/Buildkite wiring, and focused package checks are implemented. An exact installed mainnet candidate on ephemeral Fedora 43 enforcing SELinux launched through the package entry point and passed the exact-renderer probe: no-new-privileges `1`, seccomp mode `2` with a loaded filter, zero effective capabilities, separate PID/user namespaces and UID/GID maps, exact renderer PID stability, exact package hashes/modes, effective exact file contexts, and no sandbox-bypass argv. No Electron AVC was observed. Task-005-b revalidated this exact RPM with the final probe; later package-byte changes still require revalidation.
 - Task-109 final cleanup removes the private Phase-A prototype derivation and CIL from live package outputs; research 09 retains their immutable hashes and failed-checkpoint provenance.
-- Retire the portable `.bin` producer, home-extract installer, and `.bin`-oriented Linux auto-update path; migrate existing home installs to system packages without deleting wallet data under `XDG_DATA_HOME/Daedalus`.
+- **Task-110 Linux release migration (2026-08-23):** new Linux releases expose only distinct `.deb` and `.rpm` artifacts; Hydra, Buildkite, and release manifests no longer expose a portable installer. Linux package URLs are excluded from executable `softwareUpdate` payloads. Existing portable users receive one ordinary release announcement and migrate manually with `apt` or `dnf`, preserving `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus`; fixed `/opt` packages remain the only dApp-capable Linux channel.
 
 ### Existing IPC Hardening
 
@@ -1544,7 +1544,7 @@ Forbidden from observability and non-authoritative storage:
 - `flake.nix`, `flake.lock`: pin the reviewed backend revision.
 - `nix/internal/x86_64-linux.nix`: sandbox-safe `.deb`/`.rpm` launchers and package outputs.
 - Linux `.deb` and `.rpm` packaging (independently proven SUID or userns route, mandatory Ubuntu AppArmor/Fedora 43 SELinux, identity manifest, desktop entries, update path).
-- Retire `nix/internal/linux-self-extracting-archive.sh` and portable `.bin` shipping once task-110 migration completes.
+- Linux release tooling: distinct `.deb`/`.rpm` artifacts, package-manager upgrades, and non-destructive migration from retired portable `.bin` installations.
 - Windows packaging source-map/output cleanup for the added preload where applicable.
 
 ## Implementation Strategy
