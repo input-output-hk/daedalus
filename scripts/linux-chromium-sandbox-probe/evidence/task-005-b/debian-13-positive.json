@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 2,
+  "result": "pass",
+  "matrix": {
+    "revision": "task-108-matrix-2026-08-18",
+    "row": "debian-13",
+    "packageFamily": "deb",
+    "sandboxClass": "combined-unattributed",
+    "policy": "none",
+    "userns": {
+      "available": true,
+      "check": "unshare-Ur"
+    }
+  },
+  "host": {
+    "distributionId": "debian",
+    "versionId": "13",
+    "architecture": "x86_64",
+    "kernel": "6.12.101+deb13-cloud-amd64",
+    "sessionType": "x11"
+  },
+  "versions": {
+    "electron": "41.3.0",
+    "chrome": "146.0.7680.188"
+  },
+  "paths": {
+    "launcher": "<INSTALL_ROOT>/bin/daedalus",
+    "frontend": "<INSTALL_ROOT>/libexec/daedalus-frontend",
+    "wrapper": "<INSTALL_ROOT>/libexec/electron",
+    "electron": "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/electron",
+    "chromeSandbox": "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/chrome-sandbox",
+    "identityManifest": "<INSTALL_ROOT>/share/daedalus-sandbox-identity.json"
+  },
+  "files": {
+    "launcher": {
+      "sha256": "a6243b8cf3462f5d16cbf28fc1dc273e69c3909beb02acf7398611aac5912a69",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "frontend": {
+      "sha256": "33b6a54ceeafba9cc6a554c3b422bf46e689f9bbac04451836843506ac3cbdb6",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "wrapper": {
+      "sha256": "136f93c6222d177c592d5684027cce7213aee9b7c9651cd75d15fab1bae9222b",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "electron": {
+      "sha256": "0b7262678c92a74aa22cbbf41b3e8f705fc5a4643cedb0b5a190d77f72e3db03",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "chromeSandbox": {
+      "sha256": "0abf5cce9b871567e55c1701c9efc64a3db2d8aac028d9ee5ad6b4c7a5e623da",
+      "mode": "4755",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "identityManifest": {
+      "sha256": "a931398e9983a32d257c9b5554913d7120af891c156bbd358dfc66d5520ef499",
+      "mode": "0644",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "probe": {
+      "sha256": "1f0f9188a68acb4c5c3676fb1163dcb1d8b3139dc5caeb8e4022875b9a8d281f",
+      "mode": "0644",
+      "owner": "non-root",
+      "group": "non-root",
+      "regularFile": true,
+      "symlink": false
+    }
+  },
+  "directories": [
+    {
+      "path": "<INSTALL_ROOT>",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    },
+    {
+      "path": "<INSTALL_ROOT>/bin",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    },
+    {
+      "path": "<INSTALL_ROOT>/libexec",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    },
+    {
+      "path": "<INSTALL_ROOT>/libexec/bundle-electron/lib",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    },
+    {
+      "path": "<INSTALL_ROOT>/libexec/bundle-electron",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    },
+    {
+      "path": "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    },
+    {
+      "path": "<INSTALL_ROOT>/share",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    }
+  ],
+  "policy": {
+    "kind": "none",
+    "required": false
+  },
+  "main": {
+    "pid": "<MAIN_PID>",
+    "pidRelationships": {
+      "pidMatchesObserved": true,
+      "parentIsMain": false
+    },
+    "argv": [
+      "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/electron",
+      "<PROBE_ROOT>/main.cjs"
+    ],
+    "status": {
+      "NoNewPrivs": "0",
+      "Seccomp": "0",
+      "Seccomp_filters": "0",
+      "CapEff": "0000000000000000"
+    },
+    "namespaces": {
+      "user": {
+        "sameAsMain": true
+      },
+      "pid": {
+        "sameAsMain": true
+      },
+      "mnt": {
+        "sameAsMain": true
+      }
+    },
+    "maps": {
+      "uid": {
+        "sameAsMain": true,
+        "classification": "identity"
+      },
+      "gid": {
+        "sameAsMain": true,
+        "classification": "identity"
+      }
+    },
+    "securityLabel": null
+  },
+  "renderer": {
+    "pid": "<RENDERER_PID>",
+    "pidRelationships": {
+      "pidMatchesObserved": true,
+      "parentIsMain": false
+    },
+    "argv": [
+      "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/electron",
+      "--type=zygote"
+    ],
+    "status": {
+      "NoNewPrivs": "1",
+      "Seccomp": "2",
+      "Seccomp_filters": "1",
+      "CapEff": "0000000000000000"
+    },
+    "namespaces": {
+      "user": {
+        "sameAsMain": false
+      },
+      "pid": {
+        "sameAsMain": false
+      },
+      "mnt": {
+        "sameAsMain": true
+      }
+    },
+    "maps": {
+      "uid": {
+        "sameAsMain": false,
+        "classification": "identity"
+      },
+      "gid": {
+        "sameAsMain": false,
+        "classification": "identity"
+      }
+    },
+    "securityLabel": null
+  },
+  "assertions": {
+    "noSandboxBypass": true,
+    "exactRendererPid": true,
+    "rendererInstanceStable": true,
+    "chromiumProcessTypeRecorded": true,
+    "noNewPrivs": true,
+    "seccomp": true,
+    "zeroEffectiveCapabilities": true,
+    "separatePidNamespace": true,
+    "mountNamespaceRecorded": true,
+    "separateUserNamespace": true,
+    "separateUserAndGroupMaps": true,
+    "helperContract": true,
+    "policyContract": true
+  },
+  "failure": null,
+  "diagnostics": {
+    "exitCode": 0,
+    "byteCount": 1548,
+    "sha256": "418c56ac8615820eb6a5279a3608317007786cfa5e4f0fb9827dec03773dc9d1",
+    "category": "evidence-invalid",
+    "sanitizedExcerpt": "sandbox-probe-stage:electron-loaded\nsandbox-probe-stage:app-ready\nsandbox-probe-stage:session-created\nsandbox-probe-stage:window-created\nsandbox-probe-stage:renderer-loaded\nsandbox-probe-renderer-type:[\"--type=zygote\"]\nsandbox-probe-stage:renderer-verified\n",
+    "truncated": false,
+    "sanitized": true,
+    "rawHostDataExported": false,
+    "stderrSummaryRequired": false
+  }
+}
