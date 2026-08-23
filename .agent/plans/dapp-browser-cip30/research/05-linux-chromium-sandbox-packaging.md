@@ -5,8 +5,8 @@ the home-directory self-extracting `.bin` spike. The accepted Linux product
 strategy is **system `.deb` and `.rpm` packages**; see
 [06-linux-system-package-decision.md](./06-linux-system-package-decision.md).
 Historical task-005 owns this cancelled portable spike. Task-005-a owns the
-system-package, matrix, probe, and fail-closed contracts. Task-005-b requires
-positive exact-renderer OS sandbox proof on installed `.deb`/`.rpm` artifacts.
+system-package, matrix, probe, and fail-closed contracts. Task-005-b completed
+installed `.deb`/`.rpm` exact-renderer certification on 2026-08-23.
 Production dApp launch remains disabled.
 
 ## Current Task State
@@ -17,8 +17,8 @@ Production dApp launch remains disabled.
   `task-108-matrix-2026-08-18` supersedes its contradicted Ubuntu predicates.
   Ubuntu 22.04.x is wallet-only pending separate proof; Ubuntu 24.04.x/26.04.x
   use row-specific semantic AppArmor checks rather than parser patch equality.
-- Task-005-b status: `pending`; certification requires `.deb`/`.rpm` packaged
-  sandbox proof after tasks 108 and 109 produce installed artifacts.
+- Task-005-b status: `completed`; all five supported rows passed the installed
+  exact-renderer probe, restricted policy/route cases failed closed, and rollback passed.
 - Product decision (2026-08-12): ship Linux as `.deb` and `.rpm` only; reject
   portable `.bin`, AppImage, Flatpak, Snap, and other Linux channels. Durable
   record: research `06`.
@@ -434,18 +434,10 @@ certification and not permission to add a sandbox bypass to the portable path.
 **Resolved (2026-08-12):** Linux ships `.deb` and `.rpm` only; portable `.bin`,
 AppImage, Flatpak, and Snap are rejected. See research `06`.
 
-Still required before the split contract and certification gates can complete:
-
-1. Task-005-a freezes the system-package probe helper assertions, install
-   procedure, postinst contracts, and authoritative `.deb`/`.rpm`
-   distribution/version matrix.
-2. Tasks 108 and 109 produce installable `.deb` and `.rpm` artifacts against
-   that contract.
-3. Task-005-b records passing packaged exact-renderer results on installed `.deb` and `.rpm`
-   artifacts for every supported row, plus snapshotted restricted-sandbox
-   failure/no-retry runs and rollback evidence.
-4. Task-005-b implementation review approves that evidence before task-103 or
-   any production guest enablement work proceeds.
+Task-005-a froze the contract, tasks 108 and 109 produced the packages, and
+task-005-b completed the installed-artifact matrix on 2026-08-23. Task-103 is
+therefore dependency-unblocked for remaining bypass removal and the runtime
+canary. This certification does not enable a guest or satisfy later release gates.
 
 The local-only `--no-sandbox` control must not be repeated as ordinary
 verification, shipped, or cited as containment. Its sole accepted finding for
@@ -490,3 +482,42 @@ nixpkgs, `nix-bundle-exe`, ELF interpreter repair, archive extraction, helper
 handling, launcher flags, probe/canary assertions, supported distributions, or
 the release artifact. Task-107, task-802, task-807, and task-903-a own the later
 real-guest, packaged adversarial, release-candidate, and post-pilot checks.
+
+## Installed System-Package Certification Results
+
+The normalized evidence index is
+`scripts/linux-chromium-sandbox-probe/evidence/task-005-b/index.json`. Raw
+paths, process identifiers, environment, audit output, and stderr remained in
+disposable virtual machines and were not committed.
+
+| Row | Artifact | Result | Required policy |
+|---|---|---|---|
+| Ubuntu 24.04 | `.deb` `7115d83f…75fa7` | pass | exact renderer AppArmor label and profile semantics |
+| Ubuntu 26.04 | `.deb` `7115d83f…75fa7` | pass | exact renderer AppArmor label and profile semantics |
+| Debian 12 | `.deb` `7115d83f…75fa7` | pass | none |
+| Debian 13 | `.deb` `7115d83f…75fa7` | pass | none |
+| Fedora 43 | `.rpm` `09abf160…5c975` | pass | enforcing SELinux, module and exact file/process contexts |
+| Ubuntu 22.04 | `.deb` `7115d83f…75fa7` | expected wallet-only refusal | no Daedalus profile |
+
+Every passing renderer was identified by
+`webContents.getOSProcessId()` and reported `NoNewPrivs=1`, seccomp mode 2 with
+an active filter, zero effective capabilities, and separate PID and user
+namespaces. All installed launch argv were free of sandbox-disabling switches.
+
+Restricted runs unloaded the Ubuntu AppArmor profile, disabled the Fedora
+SELinux module, removed the helper's privileged mode, and denied user
+namespaces. Each run failed without an unsandboxed retry. Every denial record
+binds the exact passing baseline, package/probe identities, independently
+observed scoped mutation, no-retry result, and named rollback record.
+Reapplying the exact profile/module/helper/userns state produced a passing
+probe. Native AppArmor/userns failures retain `missing-probe-evidence` while
+preserving that bounded context and redacting Chromium PID/time prefixes.
+
+Certification exposed and fixed a `.deb` packaging defect: writing the wrapper
+through the bundle's inherited symlink left `libexec/electron` non-regular.
+The builder now removes the symlink and asserts the resulting wrapper is a
+regular file. The probe also preserves fixed assertion/system failure codes,
+uses the exact renderer's kernel-owned AppArmor label rather than the
+root-readable global profile list, parses profiles without reading the
+privileged cache, synchronously flushes pre-probe failures, binds restricted
+context through `--context-json`, and exits immediately on wallet-only rejection.
