@@ -110,9 +110,11 @@ If you get SSL error when running `nix develop` (SSL peer certificate or SSH rem
 
 **Notes:**
 
-Do not work around Chromium sandbox failures with `ELECTRON_DISABLE_SANDBOX` or
-`--no-sandbox`. These switches disable a required security boundary. Use a
-supported system package or diagnose the development host instead.
+Do not work around Chromium sandbox failures with
+`ELECTRON_DISABLE_SANDBOX`, `--no-sandbox`, or
+`--disable-setuid-sandbox`. Daedalus rejects sandbox-disabling configuration
+and never retries without the sandbox. Use a supported system package or
+diagnose the development host instead.
 
 ##### Selfnode
 
@@ -334,6 +336,17 @@ policy is unavailable.
 `nix build -L .#installer-mainnet` still produces the legacy portable `.bin`
 for migration compatibility until task-110. It is not a supported dApp-capable
 Linux artifact.
+
+The dApp sandbox prerequisite is supported only by installed system packages
+on Ubuntu 24.04/26.04, Debian 12/13, and Fedora 43. Ubuntu 22.04, omitted
+distributions, legacy `.bin` installs, and Nix-store production launches are
+wallet-only: they cannot launch dApps. Sandbox-disabling command-line or
+environment configuration, package identity failure, or the hidden local
+renderer canary failing also keeps dApp launch unavailable without preventing
+the wallet from running where Electron itself can start. There is no
+unsandboxed retry. A successful package install and canary do not enable the
+production dApp guest; the remaining guest, ledger, signing, hardware, and
+security-review gates still apply.
 
 ### macOS
 

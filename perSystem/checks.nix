@@ -213,6 +213,20 @@
           touch "$out"
       '';
 
+    linuxRemainingLauncherContract =
+      pkgs.runCommand "linux-remaining-launcher-contract" {} ''
+        set -eu
+        frontend=${internal.newPackage.mainnet}/libexec/daedalus-frontend
+        test -x "$frontend"
+        if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX' "$frontend"; then
+          echo 'sandbox bypass found in remaining Linux launcher' >&2
+          exit 1
+        fi
+        grep -F 'exec electron ' "$frontend"
+        grep -F '"$ENTRYPOINT_DIR"/libexec/daedalus-js "$@"' "$frontend"
+        touch "$out"
+      '';
+
     linuxRpmPackageContract =
       pkgs.runCommand "linux-rpm-package-contract" {
         nativeBuildInputs = [pkgs.jq pkgs.libarchive nodejs pkgs.patchelf pkgs.rpm pkgs.yq-go];
@@ -333,6 +347,7 @@
         shellcheck = pkgs.callPackage ../tests/shellcheck.nix {src = inputs.self;};
         linux-deb-package-contract = linuxDebPackageContract;
         linux-rpm-package-contract = linuxRpmPackageContract;
+        linux-remaining-launcher-contract = linuxRemainingLauncherContract;
       };
   };
 }

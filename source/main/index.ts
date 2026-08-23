@@ -54,6 +54,7 @@ import { containsRTSFlags } from './utils/containsRTSFlags';
 import { parseDeviceScaleFactor } from './utils/parseDeviceScaleFactor';
 import { registerShellIpc } from './ipc/registerShellIpc';
 import { installGlobalPopupPolicy } from './windows/navigationPolicy';
+import { startDappSandboxAvailabilityCheck } from './sandbox/dappSandboxAvailability';
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
@@ -284,6 +285,15 @@ const onAppReady = async () => {
     () => restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
+  startDappSandboxAvailabilityCheck({
+    isDevelopment: isDev,
+    cluster: launcherConfig.cluster,
+  }).then((result) => {
+    logger.info('dApp sandbox availability check completed', {
+      status: result.status,
+      reason: result.status === 'unavailable' ? result.reason : undefined,
+    });
+  });
   const currentRtsFlags = getRtsFlagsSettings(network) || [];
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
   buildAppMenus(mainWindow, userLocale, {

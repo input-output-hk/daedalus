@@ -410,7 +410,7 @@ in rec {
           # equivalent, e.g. `DAEDALUS_ELECTRON_FLAGS=--ozone-platform=wayland`. Left
           # unquoted on purpose, so that several flags can be passed at once.
           # shellcheck disable=SC2086
-          exec electron ''${DAEDALUS_ELECTRON_FLAGS-} --disable-setuid-sandbox --no-sandbox "$ENTRYPOINT_DIR"/libexec/daedalus-js "$@"
+          exec electron ''${DAEDALUS_ELECTRON_FLAGS-} "$ENTRYPOINT_DIR"/libexec/daedalus-js "$@"
         ''} $out/libexec/daedalus-frontend
 
         cp ${pkgs.writeText "update-runner" ''
