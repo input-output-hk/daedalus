@@ -83,6 +83,7 @@ in
     set -eu
     exec '${installRoot}/libexec/electron' '${installRoot}/libexec/daedalus-js' "$@"
     EOF
+    rm -f "$root/libexec/electron"
     cat >"$root/libexec/electron" <<'EOF'
     #!/bin/sh
     set -eu
@@ -91,6 +92,7 @@ in
     export GBM_BACKENDS_PATH='${installRoot}/libexec/bundle-electron/lib/electron/lib'
     exec '${installRoot}/libexec/bundle-electron/lib/electron/electron' "$@"
     EOF
+    test -f "$root/libexec/electron" -a ! -L "$root/libexec/electron"
     chmod 0755 "$root/bin/daedalus" "$root/libexec/daedalus-frontend" "$root/libexec/electron"
 
     jq \

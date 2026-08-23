@@ -152,3 +152,25 @@ Return one normalized result per row containing:
 
 Do not return raw PIDs, usernames, hostnames, paths outside the tokenized package
 roots, audit lines, full traces, environment, or stderr. Keep those host-local.
+
+## Task-005-b Exact-Renderer Certification
+
+Task-005-b rebuilt the mainnet candidate after the frozen probe correctly
+rejected `libexec/electron` as an inherited symlink. The `.deb` builder now
+removes that symlink before writing the wrapper and asserts the wrapper is a
+regular root-owned mode-`0755` file.
+
+- Candidate: `daedalus-11.2.0-86593-mainnet-dirty-x86_64-linux.deb`
+- SHA-256: `7115d83f29c8ed21d8a8c7f8167816ab5107e2071046583487e51965be975fa7`
+- Base revision: `18d523815ac98c9ad68bb5e1c4dff1a0f93a4515`
+- Package build-relevant diff SHA-256: `4faf528ee370537367b43da739519b87593346d61aab2a2e76170640bf43a828`
+- Probe SHA-256: `1f0f9188a68acb4c5c3676fb1163dcb1d8b3139dc5caeb8e4022875b9a8d281f`
+
+The exact installed candidate passed on Ubuntu 24.04, Ubuntu 26.04, Debian 12,
+and Debian 13. Ubuntu 22.04 rejected before renderer evidence with
+`wallet-only-matrix-row:apparmor-policy-proof-pending`. Ubuntu AppArmor
+unload failed closed; restoring the exact profile returned a passing probe.
+Normalized records and immutable host-image identities are in the task-005-b evidence index.
+
+These exact-renderer results do not complete the deferred task-807 package
+lifecycle, reboot, destructive upgrade, or wallet-preservation matrix.

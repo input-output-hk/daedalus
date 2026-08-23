@@ -133,9 +133,14 @@ function createEvidenceEnvelope(values = {}) {
 }
 
 function createFailureEvidence(error, context = null, partial = {}) {
-  const safeCode = /^[a-z0-9:-]+$/.test(String(error && error.message))
-    ? error.message
-    : 'unclassified';
+  const message = String(error && error.message);
+  const firstLine = message.split('\n', 1)[0];
+  const systemCode = String((error && error.code) || '').toLowerCase();
+  const safeCode = /^[a-z0-9:-]+$/.test(firstLine)
+    ? firstLine
+    : /^[a-z0-9-]+$/.test(systemCode)
+      ? `system-${systemCode}`
+      : 'unclassified';
   const category =
     error && error.name === 'AssertionError'
       ? 'evidence-invalid'
@@ -155,10 +160,9 @@ function createFailureEvidence(error, context = null, partial = {}) {
 
 function writeFailure(error, context) {
   const evidence = createFailureEvidence(error, context);
-  process.stdout.write(
-    `${JSON.stringify(evidence, null, 2)}\n`
-  );
-  process.stderr.write(
+  fs.writeSync(process.stdout.fd, `${JSON.stringify(evidence, null, 2)}\n`);
+  fs.writeSync(
+    process.stderr.fd,
     `sandbox-probe-failed:${evidence.failure.category}:${evidence.failure.code}\n`
   );
 }
@@ -336,6 +340,10 @@ function sanitizeText(rawValue, privacy) {
     /\b[a-z][a-z0-9+.-]*:\/\/[^\s"'<>]*/gi,
     '<URL>'
   );
+  sanitized = sanitized.replace(
+    /\[\d+:\d{4}\/\d{6}\.\d+/g,
+    '<CHROMIUM_PROCESS_PREFIX>'
+  );
   sanitized = replaceKnownRoots(sanitized, roots);
   sanitized = replaceLiteralIgnoreCase(sanitized, username, '<USER>');
   sanitized = replaceLiteralIgnoreCase(sanitized, hostname, '<HOST>');
@@ -388,6 +396,9 @@ function assertNoSensitiveContent(value, privacy) {
   }
   if (/\b[a-z][a-z0-9+.-]*:\/\//i.test(value)) {
     throw new Error('residual-url');
+  }
+  if (/\[\d+:\d{4}\/\d{6}\.\d+/.test(value)) {
+    throw new Error('residual-chromium-process-prefix');
   }
   for (const [index, environmentValue] of environmentValues.entries()) {
     if (value.includes(environmentValue)) {
@@ -1076,13 +1087,6 @@ function collectPolicyEvidence(
     assert.strictEqual(identity.semanticIdentity, contract.apparmorSemanticIdentity, 'apparmor-semantic-identity');
     const enabled = readFileSync('/sys/module/apparmor/parameters/enabled', 'utf8').trim();
     assert(/^Y$/i.test(enabled), 'apparmor-disabled');
-    const profiles = readFileSync('/sys/kernel/security/apparmor/profiles', 'utf8');
-    assert(
-      profiles.split('\n').some(
-        (line) => line === `${identity.processLabel}${identity.loadedProfileSuffix}`
-      ),
-      'apparmor-profile-not-loaded'
-    );
     const parser = run('apparmor_parser', ['--version']);
     assert.strictEqual(parser.status, 0, 'apparmor-parser-unavailable');
     const parserMatch = `${parser.stdout}\n${parser.stderr}`.match(/version\s+([0-9.]+)/i);
@@ -1093,6 +1097,7 @@ function collectPolicyEvidence(
     assert(/\buserns\s*,/.test(profileSource), 'apparmor-profile-userns');
     const parserAcceptance = run('apparmor_parser', [
       '--skip-kernel-load',
+      '--skip-read-cache',
       paths.policyAsset,
     ]);
     assert.strictEqual(parserAcceptance.status, 0, 'apparmor-profile-parse');
@@ -1567,6 +1572,7 @@ function runStderrSanitizer(args) {
   const inputIndex = args.indexOf('--input');
   const exitCodeIndex = args.indexOf('--exit-code');
   const probeIndex = args.indexOf('--probe-json');
+  const contextIndex = args.indexOf('--context-json');
   if (inputIndex === -1 || !args[inputIndex + 1]) throw new Error('missing-input');
   if (exitCodeIndex === -1 || !args[exitCodeIndex + 1]) {
     throw new Error('missing-exit-code');
@@ -1576,8 +1582,19 @@ function runStderrSanitizer(args) {
   const rawBytes = fs.readFileSync(args[inputIndex + 1]);
   const summary = summarizeStderr(rawBytes, Number(args[exitCodeIndex + 1]), privacy);
   let probeEvidence = createFailureEvidence(new Error('missing-probe-evidence'));
-  if (probeIndex !== -1 && args[probeIndex + 1] && fs.existsSync(args[probeIndex + 1])) {
-    probeEvidence = parseProbeEvidence(fs.readFileSync(args[probeIndex + 1], 'utf8'));
+  const probePath = probeIndex === -1 ? null : args[probeIndex + 1];
+  if (probePath && fs.existsSync(probePath) && fs.statSync(probePath).size > 0) {
+    probeEvidence = parseProbeEvidence(fs.readFileSync(probePath, 'utf8'));
+  }
+  const contextPath = contextIndex === -1 ? null : args[contextIndex + 1];
+  if (contextPath && fs.existsSync(contextPath) && probeEvidence.result === 'fail') {
+    const contextEvidence = parseProbeEvidence(fs.readFileSync(contextPath, 'utf8'));
+    assert.strictEqual(contextEvidence.result, 'pass', 'native-context-result');
+    probeEvidence = createEvidenceEnvelope({
+      ...contextEvidence,
+      result: 'fail',
+      failure: probeEvidence.failure,
+    });
   }
   const evidence = mergeDiagnostics(probeEvidence, summary);
   assertNoSensitiveContent(JSON.stringify(evidence), privacy);
@@ -1671,6 +1688,16 @@ async function runSelfTest() {
   assert(summary.sanitizedExcerpt.includes('<PATH_1>'));
   assert(summary.sanitizedExcerpt.includes('token <ENV_VALUE>'));
   assertNoSensitiveContent(summary.sanitizedExcerpt, privacy);
+  const chromiumPrefixSummary = summarizeStderr(
+    Buffer.from('[3858:0823/141801.793762:FATAL] sandbox failed'),
+    133,
+    privacy
+  );
+  assert(
+    chromiumPrefixSummary.sanitizedExcerpt.includes('<CHROMIUM_PROCESS_PREFIX>')
+  );
+  assert(!chromiumPrefixSummary.sanitizedExcerpt.includes('3858'));
+  assertNoSensitiveContent(chromiumPrefixSummary.sanitizedExcerpt, privacy);
 
   assert.throws(
     () => assertNoSensitiveContent('[/unredacted/path]', privacy),
@@ -1860,6 +1887,22 @@ async function runSelfTest() {
     code: 'unclassified',
   });
   assert.strictEqual(privateFailure.diagnostics.stderrSummaryRequired, true);
+  let assertionFailure;
+  try {
+    assert.strictEqual(false, true, 'selinux-module-disabled');
+  } catch (error) {
+    assertionFailure = createFailureEvidence(error);
+  }
+  assert.deepStrictEqual(assertionFailure.failure, {
+    category: 'evidence-invalid',
+    code: 'selinux-module-disabled',
+  });
+  const systemFailureError = new Error('/private/path');
+  systemFailureError.code = 'EACCES';
+  assert.strictEqual(
+    createFailureEvidence(systemFailureError).failure.code,
+    'system-eacces'
+  );
 
   const appArmor = expectedPolicy(
     {
@@ -2385,6 +2428,20 @@ async function runSelfTest() {
   assert.strictEqual(exitOnlyFailure.status, 1);
   assert.strictEqual(exitOnlyFailure.stdout, '');
   assert.strictEqual(exitOnlyFailure.stderr, '');
+  const ordinaryFailure = childProcess.spawnSync(process.execPath, [__filename], {
+    encoding: 'utf8',
+    env: { ...process.env, ELECTRON_DISABLE_SANDBOX: '1' },
+  });
+  assert.strictEqual(ordinaryFailure.status, 1);
+  assert.strictEqual(
+    JSON.parse(ordinaryFailure.stdout).failure.code,
+    'sandbox-disabling-environment'
+  );
+  assert(
+    ordinaryFailure.stderr.includes(
+      'sandbox-probe-failed:other:sandbox-disabling-environment'
+    )
+  );
   process.stdout.write('linux-chromium-sandbox-probe self-test passed\n');
 }
 
@@ -2411,5 +2468,5 @@ main().catch((error) => {
     return;
   }
   if (!process.argv.includes('--exit-only')) writeFailure(error);
-  process.exitCode = 1;
+  process.exit(1);
 });

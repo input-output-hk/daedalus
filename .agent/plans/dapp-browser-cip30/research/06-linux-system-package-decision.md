@@ -10,10 +10,10 @@ this repository record serving as the durable approval record. No separate
 reviewer was required by that authority. Normative packaging and sandbox requirements are mirrored in
 [dapp-browser-cip30-prd.md](../dapp-browser-cip30-prd.md) and
 [dapp-browser-cip30-tasks.json](../dapp-browser-cip30-tasks.json). Historical
-task-005 preserves the cancelled portable spike. Task-005-a freezes the package
-and validation contract; task-005-b remains incomplete until packaged
-`.deb`/`.rpm` sandbox proof exists. This note freezes the strategy and contract,
-not package implementation or certification.
+task-005 preserves the cancelled portable spike. Task-005-a froze the package
+and validation contract; task-005-b completed installed `.deb`/`.rpm`
+exact-renderer certification on 2026-08-23. This note remains the authoritative
+strategy and support-matrix record.
 
 ## Decision
 
@@ -154,11 +154,24 @@ Rationale for rejecting the portable `.bin`:
 | Freeze deb/rpm sandbox strategy, authoritative matrix, postinst contract, and probe adaptation | task-005-a |
 | Implement `.deb` package, approved SUID or userns route, mandatory Ubuntu AppArmor, identity manifest, and Nix outputs | task-108 |
 | Implement `.rpm` package and postinst equivalents | task-109 |
-| Certify installed `.deb` and `.rpm` artifacts across the authoritative matrix | task-005-b |
+| Certify installed `.deb` and `.rpm` artifacts across the authoritative matrix | task-005-b (completed 2026-08-23) |
 | Retire `.bin` shipping, migrate Linux auto-update and docs | task-110 |
-| Remove remaining development/legacy sandbox-disabling defaults, add runtime canary, fail-closed dApps | task-103 (depends on task-005-b certification) |
+| Remove remaining development/legacy sandbox-disabling defaults, add runtime canary, fail-closed dApps | task-103 (dependency satisfied; implementation pending) |
 | Real guest and release-candidate packaged proof | task-107, task-802, task-807, task-903-a |
 | Deferred task-108 package lifecycle rows and destructive/reboot fixtures after full PRD implementation | task-807 release-candidate gate; manual evidence remains required |
+
+## Certification
+
+Task-005-b passed the exact installed renderer probe on Ubuntu 24.04/26.04,
+Debian 12/13, and Fedora 43. Ubuntu 22.04 produced its expected wallet-only
+refusal. AppArmor, SELinux, helper-mode, and userns denials failed closed and
+their restorations returned to passing results. Exact package, source, host
+image, probe, and normalized evidence identities are indexed at
+`scripts/linux-chromium-sandbox-probe/evidence/task-005-b/index.json`.
+
+The certification proves this package/matrix baseline only. Task-103 still
+owns runtime rejection and the local canary; every later guest, audit, and
+release-candidate gate remains required.
 
 ## Auto-update and migration
 

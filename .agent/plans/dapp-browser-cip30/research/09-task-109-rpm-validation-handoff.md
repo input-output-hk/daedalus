@@ -2,8 +2,8 @@
 
 Status: **task-109 production RPM implementation and Fedora 43 validation
 passed on 2026-08-22.** The failed dedicated-domain Phase-A history remains
-below as design provenance. Task-005-b still owns full installed-artifact
-matrix certification and any later package-byte change requires revalidation.
+below as design provenance. Task-005-b completed full installed-artifact matrix
+certification on 2026-08-23; any later package-byte change requires revalidation.
 
 ## Production Resolution And Exact Evidence
 
@@ -325,3 +325,26 @@ stderr on the disposable host. Return this normalized record only:
 Phase B remains forbidden until this evidence is reviewed. A failed transition
 or unexplained AVC reopens the policy design; it does not authorize weakening
 SELinux or changing Fedora 43 to supported by assertion.
+
+## Task-005-b Certification
+
+The retained production RPM matched the task-109 handoff SHA-256
+`09abf160f4f4fc1d51759c143987a321b5c92615d6534d03ce63e1845fc5c975`.
+Task-005-b re-ran the complete exact-renderer probe on the same Fedora 43 image
+identity with final probe SHA-256
+`1f0f9188a68acb4c5c3676fb1163dcb1d8b3139dc5caeb8e4022875b9a8d281f`.
+The installed result passed with enforcing SELinux, exact module and file
+contexts, `NoNewPrivs=1`, seccomp mode 2 and an active filter, zero effective
+capabilities, and separate PID/user namespaces.
+
+Disabling the package SELinux module produced the normalized
+`selinux-helper-effective-context` fail-closed result. Removing the helper's
+privileged mode produced `file-mode`. Denying user namespaces caused bounded
+native Chromium sandbox-bootstrap failure without probe JSON or an unsandboxed
+retry. Each denial record binds the exact baseline package/probe identities,
+mutation scope, no-retry observation, and rollback record. Restoring each
+prerequisite returned the exact candidate to a passing result. The normalized denial and rollback records are indexed at
+`scripts/linux-chromium-sandbox-probe/evidence/task-005-b/index.json`.
+
+These results complete task-005-b's Fedora row. Production guest launch and all
+later packaged guest and release-candidate gates remain disabled/pending.
