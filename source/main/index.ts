@@ -19,7 +19,7 @@ import { activateWindow } from './windows/activateWindow';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
-import { pubLogsFolderPath, RTS_FLAGS, stateDirectoryPath } from './config';
+import { cluster, pubLogsFolderPath, RTS_FLAGS, stateDirectoryPath } from './config';
 import { backendLifecycle } from './BackendLifecycle';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { showInstallerLaunchFailure } from './utils/showInstallerLaunchFailure';
@@ -48,6 +48,7 @@ import { containsRTSFlags } from './utils/containsRTSFlags';
 import { parseDeviceScaleFactor } from './utils/parseDeviceScaleFactor';
 import { registerShellIpc } from './ipc/registerShellIpc';
 import { installGlobalPopupPolicy } from './windows/navigationPolicy';
+import { startDappSandboxAvailabilityCheck } from './sandbox/dappSandboxAvailability';
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
@@ -173,6 +174,15 @@ const onAppReady = async () => {
     () => restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
+  startDappSandboxAvailabilityCheck({
+    isDevelopment: isDev,
+    cluster,
+  }).then((result) => {
+    logger.info('dApp sandbox availability check completed', {
+      status: result.status,
+      reason: result.status === 'unavailable' ? result.reason : undefined,
+    });
+  });
   let rtsEnabled = containsRTSFlags(getRtsFlagsSettings(network) || []);
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
   buildAppMenus(mainWindow, userLocale, {
