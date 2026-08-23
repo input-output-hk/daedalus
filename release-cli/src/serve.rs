@@ -14,17 +14,17 @@
 //! All URLs printed at startup can be pasted directly into
 //! launcher-config.yaml for local testing.
 
-use crate::hash::{Hashes, hash_file};
+use crate::hash::{hash_file, Hashes};
 use crate::installers::{InstallerDir, Platform};
 use crate::version_json::VersionJson;
 use anyhow::{Context, Result};
 use axum::{
-    Router,
     body::Body,
     extract::{Path as AxumPath, State},
-    http::{StatusCode, header},
+    http::{header, StatusCode},
     response::IntoResponse,
     routing::get,
+    Router,
 };
 use sha2::{Digest, Sha256};
 use std::{collections::HashMap, net::SocketAddr, path::PathBuf, sync::Arc};
@@ -166,6 +166,18 @@ pub fn build_newsfeed(
     urls: &HashMap<Platform, String>,
 ) -> Result<NewsfeedData> {
     let version = &installer_dir.version;
+    let has_deb = installer_dir
+        .installers
+        .iter()
+        .any(|installer| installer.platform == Platform::LinuxDeb);
+    let has_rpm = installer_dir
+        .installers
+        .iter()
+        .any(|installer| installer.platform == Platform::LinuxRpm);
+    anyhow::ensure!(
+        has_deb == has_rpm,
+        "local newsfeed requires both linux-deb and linux-rpm when Linux is present"
+    );
 
     // Timestamp: current wall-clock time in milliseconds.
     // Using the exact time (not rounded) ensures each run produces a unique
@@ -175,11 +187,19 @@ pub fn build_newsfeed(
         .unwrap_or_default()
         .as_millis() as u64;
 
-    // Build softwareUpdate entries for each platform present.
+    // Linux system packages are intentionally excluded from softwareUpdate.
+    // Their URLs remain independently available in the version manifest.
     let mut software_update = serde_json::Map::new();
-    let mut target_platforms = Vec::new();
+    let mut update_platforms = Vec::new();
+    let mut linux_target = None;
     for inst in &installer_dir.installers {
-        let key = inst.platform.newsfeed_key();
+        if inst.platform.is_linux_package() {
+            linux_target = Some(inst.platform.newsfeed_key());
+            continue;
+        }
+        let Some(key) = inst.platform.software_update_key() else {
+            continue;
+        };
         if let (Some(h), Some(url)) = (hashes.get(&inst.platform), urls.get(&inst.platform)) {
             software_update.insert(
                 key.to_string(),
@@ -189,14 +209,15 @@ pub fn build_newsfeed(
                     "url": url,
                 }),
             );
-            target_platforms.push(key);
+            update_platforms.push(key);
         }
     }
-    target_platforms.sort();
+    update_platforms.sort();
+    update_platforms.dedup();
 
-    let newsfeed = serde_json::json!({
-        "updatedAt": timestamp_ms,
-        "items": [{
+    let mut items = Vec::new();
+    if !software_update.is_empty() {
+        items.push(serde_json::json!({
             "title": {
                 "en-US": format!("Daedalus {version} now available"),
                 "ja-JP": format!("Daedalus {version} 現在配信中"),
@@ -213,7 +234,7 @@ pub fn build_newsfeed(
             },
             "target": {
                 "daedalusVersion": format!("<{version}"),
-                "platforms": target_platforms,
+                "platforms": update_platforms,
             },
             "action": {
                 "label": { "en-US": "", "ja-JP": "" },
@@ -222,7 +243,52 @@ pub fn build_newsfeed(
             "date": timestamp_ms,
             "type": "software-update",
             "softwareUpdate": software_update,
-        }]
+        }));
+    }
+
+    if let Some(linux_target) = linux_target {
+        let release_notes_url =
+            format!("https://github.com/input-output-hk/daedalus/releases/tag/{version}");
+        let release_notes_url_ja = format!("{release_notes_url}#japanese");
+        items.push(serde_json::json!({
+            "title": {
+                "en-US": format!("Daedalus {version} Linux upgrade available"),
+                "ja-JP": format!("Daedalus {version} Linux アップグレード"),
+            },
+            "content": {
+                "en-US": format!(
+                    "Daedalus {version} is available for Linux as .deb and .rpm system packages. \
+                     Close Daedalus and follow the release instructions to upgrade with your \
+                     package manager. Your wallet data remains in place."
+                ),
+                "ja-JP": format!(
+                    "Daedalus {version} は Linux 用 .deb / .rpm システムパッケージとして利用できます。\
+                     Daedalus を終了し、リリース手順に従ってパッケージマネージャーで\
+                     アップグレードしてください。ウォレットデータはそのまま保持されます。"
+                ),
+            },
+            "target": {
+                "daedalusVersion": format!("<{version}"),
+                "platforms": [linux_target],
+            },
+            "action": {
+                "label": {
+                    "en-US": "Linux upgrade instructions",
+                    "ja-JP": "Linux アップグレード手順",
+                },
+                "url": {
+                    "en-US": release_notes_url,
+                    "ja-JP": release_notes_url_ja,
+                },
+            },
+            "date": timestamp_ms,
+            "type": "announcement",
+        }));
+    }
+
+    let newsfeed = serde_json::json!({
+        "updatedAt": timestamp_ms,
+        "items": items,
     });
 
     let bytes = serde_json::to_vec_pretty(&newsfeed)?;
@@ -295,5 +361,159 @@ async fn by_hash_handler(
             }
         },
         None => StatusCode::NOT_FOUND.into_response(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::installers::{Installer, Meta};
+
+    fn filename(platform: Platform) -> &'static str {
+        match platform {
+            Platform::LinuxDeb => "daedalus-6.0.1-mainnet-x86_64-linux.deb",
+            Platform::LinuxRpm => "daedalus-6.0.1-mainnet-x86_64-linux.rpm",
+            Platform::DarwinArm => "daedalus-6.0.1-mainnet-aarch64-darwin.pkg",
+            Platform::DarwinX86 => "daedalus-6.0.1-mainnet-x86_64-darwin.pkg",
+            Platform::Windows => "daedalus-6.0.1-mainnet-x86_64-windows.exe",
+        }
+    }
+
+    fn fixture(
+        platforms: &[Platform],
+    ) -> (
+        InstallerDir,
+        HashMap<Platform, Hashes>,
+        HashMap<Platform, String>,
+    ) {
+        let installers = platforms
+            .iter()
+            .copied()
+            .map(|platform| Installer {
+                path: PathBuf::from(filename(platform)),
+                filename: filename(platform).to_string(),
+                platform,
+            })
+            .collect();
+        let hashes = platforms
+            .iter()
+            .copied()
+            .map(|platform| {
+                (
+                    platform,
+                    Hashes {
+                        blake2b_cbor: format!("{}-blake", platform.json_key()),
+                        sha256: format!("{}-sha", platform.json_key()),
+                    },
+                )
+            })
+            .collect();
+        let urls = platforms
+            .iter()
+            .copied()
+            .map(|platform| {
+                (
+                    platform,
+                    format!("https://updates.example/{}", filename(platform)),
+                )
+            })
+            .collect();
+        let meta = Meta {
+            version: "6.0.1".to_string(),
+            gitrev: None,
+            nar_hash: None,
+            env: Some("mainnet".to_string()),
+            eval_url: None,
+        };
+        (
+            InstallerDir {
+                dir: PathBuf::from("installers"),
+                version: meta.version.clone(),
+                meta,
+                installers,
+            },
+            hashes,
+            urls,
+        )
+    }
+
+    fn newsfeed(platforms: &[Platform]) -> (serde_json::Value, HashMap<Platform, String>) {
+        let (installer_dir, hashes, urls) = fixture(platforms);
+        let data = build_newsfeed(&installer_dir, &hashes, &urls).expect("build local newsfeed");
+        let value = serde_json::from_slice(&data.bytes).expect("parse local newsfeed");
+        assert_eq!(data.sha256_hex, hex::encode(Sha256::digest(&data.bytes)));
+        (value, urls)
+    }
+
+    #[test]
+    fn linux_pair_has_one_announcement_and_no_software_update() {
+        let (newsfeed, urls) = newsfeed(&[Platform::LinuxDeb, Platform::LinuxRpm]);
+        let items = newsfeed["items"].as_array().expect("newsfeed items");
+
+        assert_eq!(items.len(), 1);
+        assert_eq!(items[0]["type"], "announcement");
+        assert_eq!(
+            items[0]["target"]["platforms"],
+            serde_json::json!(["linux"])
+        );
+        assert!(items[0].get("softwareUpdate").is_none());
+
+        let bytes = serde_json::to_string(&newsfeed).unwrap();
+        assert!(!bytes.contains(&urls[&Platform::LinuxDeb]));
+        assert!(!bytes.contains(&urls[&Platform::LinuxRpm]));
+    }
+
+    #[test]
+    fn mixed_feed_keeps_linux_out_of_software_update() {
+        let (newsfeed, urls) = newsfeed(&[
+            Platform::LinuxDeb,
+            Platform::LinuxRpm,
+            Platform::Windows,
+            Platform::DarwinX86,
+        ]);
+        let items = newsfeed["items"].as_array().expect("newsfeed items");
+        let update = items
+            .iter()
+            .find(|item| item["type"] == "software-update")
+            .expect("software update");
+
+        assert_eq!(
+            update["target"]["platforms"],
+            serde_json::json!(["darwin", "win32"])
+        );
+        assert!(update["softwareUpdate"].get("linux").is_none());
+        assert_eq!(
+            update["softwareUpdate"]["win32"]["url"],
+            urls[&Platform::Windows]
+        );
+        let update_json = serde_json::to_string(update).unwrap();
+        assert!(!update_json.contains(&urls[&Platform::LinuxDeb]));
+        assert!(!update_json.contains(&urls[&Platform::LinuxRpm]));
+
+        let linux_announcements = items
+            .iter()
+            .filter(|item| {
+                item["type"] == "announcement"
+                    && item["target"]["platforms"] == serde_json::json!(["linux"])
+            })
+            .count();
+        assert_eq!(linux_announcements, 1);
+    }
+
+    #[test]
+    fn non_linux_local_update_shape_is_unchanged() {
+        let (newsfeed, urls) = newsfeed(&[Platform::Windows]);
+        let items = newsfeed["items"].as_array().expect("newsfeed items");
+
+        assert_eq!(items.len(), 1);
+        assert_eq!(items[0]["type"], "software-update");
+        assert_eq!(
+            items[0]["target"]["platforms"],
+            serde_json::json!(["win32"])
+        );
+        assert_eq!(
+            items[0]["softwareUpdate"]["win32"]["url"],
+            urls[&Platform::Windows]
+        );
     }
 }

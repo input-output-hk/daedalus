@@ -62,7 +62,7 @@
 
         # Hydra jobs
         hydraJobs = {
-          installer = lib.genAttrs (supportedSystems ++ ["x86_64-windows"]) (
+          installer = lib.genAttrs ((lib.remove "x86_64-linux" supportedSystems) ++ ["x86_64-windows"]) (
             targetSystem: self.internal.${targetSystem}.unsignedInstaller
           );
           deb-installer.x86_64-linux = self.internal.x86_64-linux.debInstaller;

@@ -1,19 +1,21 @@
 # Linux System Package Decision (.deb / .rpm)
 
-Status: **accepted package contract and successor support matrix**. The package strategy
-was accepted on 2026-08-12; original matrix revision `task-005-a-matrix-2026-08-14` was
-approved by the user acting as release/product authority on 2026-08-14. Successor
-revision `task-108-matrix-2026-08-18` was approved on 2026-08-18 after
-authoritative Ubuntu policy documentation invalidated the original Ubuntu 22.04
-and exact parser-version assumptions, with
-this repository record serving as the durable approval record. No separate
-reviewer was required by that authority. Normative packaging and sandbox requirements are mirrored in
+Status: **accepted package, release, migration, and successor support-matrix
+contract**. The package strategy was accepted on 2026-08-12; original matrix
+revision `task-005-a-matrix-2026-08-14` was approved by the user acting as
+release/product authority on 2026-08-14. Successor revision
+`task-108-matrix-2026-08-18` was approved on 2026-08-18 after authoritative
+Ubuntu policy documentation invalidated the original Ubuntu 22.04 and exact
+parser-version assumptions, with this repository record serving as the durable
+approval record. No separate reviewer was required by that authority.
+Normative packaging and sandbox requirements are mirrored in
 [dapp-browser-cip30-prd.md](../dapp-browser-cip30-prd.md) and
 [dapp-browser-cip30-tasks.json](../dapp-browser-cip30-tasks.json). Historical
 task-005 preserves the cancelled portable spike. Task-005-a froze the package
 and validation contract; task-005-b completed installed `.deb`/`.rpm`
-exact-renderer certification on 2026-08-23. This note remains the authoritative
-strategy and support-matrix record.
+exact-renderer certification on 2026-08-23. Tasks 103 and 110 completed the
+runtime fail-closed and `.bin` retirement/update-migration boundaries. This
+note remains the authoritative Linux strategy and support-matrix record.
 
 ## Decision
 
@@ -77,7 +79,8 @@ invariants fails package configuration rather than weakening containment.
 ## Frozen Package Contract
 
 - Install root: `/opt/daedalus/<cluster>`.
-- Launcher: `/opt/daedalus/<cluster>/bin/daedalus`.
+- User command: `/usr/bin/daedalus-<cluster>`.
+- Package launcher: `/opt/daedalus/<cluster>/bin/daedalus`.
 - Frontend: `/opt/daedalus/<cluster>/libexec/daedalus-frontend`.
 - Electron wrapper: `/opt/daedalus/<cluster>/libexec/electron`.
 - Resolved Electron: `/opt/daedalus/<cluster>/libexec/bundle-electron/lib/electron/electron`.
@@ -100,10 +103,30 @@ invariants fails package configuration rather than weakening containment.
   state separately and compares live files plus independently observed
   process/file policy state to this manifest.
 - Maintainer scripts are idempotent, perform no network fetch, never inspect or
-  mutate `XDG_DATA_HOME/Daedalus`, and never disable AppArmor/SELinux, alter
-  global userns policy, add permissive domains, or retry Electron unsandboxed.
-- Every desktop, launcher, wrapper, restart, and post-update path is free of
-  `--no-sandbox`, `--disable-setuid-sandbox`, and equivalent bypasses.
+  mutate `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus`, and never disable
+  AppArmor/SELinux, alter global userns policy, add permissive domains, or retry
+  Electron unsandboxed.
+- Linux launcher configuration uses system-package-disabled update mode and
+  omits `updateRunnerBin`. The application does not execute package bytes,
+  invoke `sudo`, or mutate package-manager state.
+- Every desktop, launcher, wrapper, and restart path is free of `--no-sandbox`,
+  `--disable-setuid-sandbox`, and equivalent bypasses.
+
+## Release and upgrade contract
+
+- CI/Hydra expose only
+  `deb-installer.x86_64-linux.<cluster>` and
+  `rpm-installer.x86_64-linux.<cluster>` for Linux releases. There is no Linux
+  generic installer/signing job and no new portable `.bin`.
+- A release manifest carries both packages as separate `linux-deb` and
+  `linux-rpm` entries. Both map to target OS `linux`, require one shared release
+  version, and deduplicate into one ordinary announcement.
+- Neither Linux package appears in `softwareUpdate`. Windows and macOS retain
+  app-managed updates; Linux users close Daedalus and install the matching
+  newer local package with `apt` or `dnf`.
+- Legacy portable clients receive the ordinary announcement and release-notes
+  link only. Their existing installation remains wallet-only and usable until
+  the user manually installs a system package.
 
 ## Explicit rejections
 
@@ -155,8 +178,8 @@ Rationale for rejecting the portable `.bin`:
 | Implement `.deb` package, approved SUID or userns route, mandatory Ubuntu AppArmor, identity manifest, and Nix outputs | task-108 |
 | Implement `.rpm` package and postinst equivalents | task-109 |
 | Certify installed `.deb` and `.rpm` artifacts across the authoritative matrix | task-005-b (completed 2026-08-23) |
-| Retire `.bin` shipping, migrate Linux auto-update and docs | task-110 |
-| Remove remaining development/legacy sandbox-disabling defaults, add runtime canary, fail-closed dApps | task-103 (dependency satisfied; implementation pending) |
+| Retire `.bin` shipping, migrate Linux release/update behavior and docs | task-110 (completed 2026-08-23) |
+| Remove remaining development/legacy sandbox-disabling defaults, add runtime canary, fail-closed dApps | task-103 (completed 2026-08-23) |
 | Real guest and release-candidate packaged proof | task-107, task-802, task-807, task-903-a |
 | Deferred task-108 package lifecycle rows and destructive/reboot fixtures after full PRD implementation | task-807 release-candidate gate; manual evidence remains required |
 
@@ -169,24 +192,33 @@ their restorations returned to passing results. Exact package, source, host
 image, probe, and normalized evidence identities are indexed at
 `scripts/linux-chromium-sandbox-probe/evidence/task-005-b/index.json`.
 
-The certification proves this package/matrix baseline only. Task-103 still
-owns runtime rejection and the local canary; every later guest, audit, and
-release-candidate gate remains required.
+The certification proves this package/matrix baseline only. Task-103 completed
+runtime argv/environment rejection, installed-package identity checks, and the
+local canary; every later guest, audit, and release-candidate gate remains
+required.
 
-## Auto-update and migration
+## Manual migration
 
-Rejecting `.bin` invalidates the current Linux self-extract auto-update path
-(`linux-self-extracting-archive.sh`, home replace, launcher restart semantics
-tied to that artifact). task-110 owns:
+The self-extracting producer, home-replace updater, and launcher-restart
+semantics tied to `.bin` are retired. Migration is deliberately manual and
+non-destructive:
 
-- Stop producing and advertising the portable installer for new releases that
-  enable dApps.
-- Define migration from existing `$HOME/.daedalus/<cluster>` installs to
-  `/opt` system packages without deleting wallet data under
-  `XDG_DATA_HOME/Daedalus`.
-- Replace update-runner / cardano-launcher expectations that assume `.bin`
-  extract.
-- Document upgrade from legacy portable installs.
+1. Fully stop Daedalus and retain
+   `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus` in place. A custom
+   `XDG_DATA_HOME` must be recorded and supplied consistently.
+2. Inspect
+   `$HOME/.local/share/applications/Daedalus-<cluster>.desktop`. Move aside only
+   a verified symlink into the old `$HOME/.daedalus/<cluster>` tree so it
+   cannot shadow the package's system desktop entry.
+3. Install the matching downloaded `.deb` with `apt` or `.rpm` with `dnf`.
+4. First-launch the exact `/usr/bin/daedalus-<cluster>` command with the same
+   `XDG_DATA_HOME`, then confirm wallets and state before considering any
+   legacy executable cleanup.
+
+No package script removes the old home executable, wallet state, or stale
+`XDG_DATA_HOME/Daedalus/<cluster>/namespaceHelper` symlink. The latter may
+remain harmlessly until separately verified. No broad removal is part of the
+migration contract.
 
 ## Non-negotiables preserved
 

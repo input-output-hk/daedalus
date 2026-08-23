@@ -6,9 +6,9 @@
 #                           release-cli development; isolated from the main
 #                           Daedalus devShell so neither breaks the other)
 #   devShells.ops         — minimal shell: just drt + gpg, no Yarn/Node
-#   packages.drt          — the release-cli binary  \  only once
-#   checks.drt-clippy     — workspace clippy          |  Cargo.lock
-#   checks.drt-fmt        — rustfmt check            /   exists
+#   packages.drt          — the release-cli binary
+#   checks.drt-clippy     — workspace clippy
+#   checks.drt-test       — workspace unit tests
 {inputs, ...}: {
   perSystem = {
     inputs',
@@ -63,6 +63,10 @@
           // {
             inherit cargoArtifacts;
             cargoClippyExtraArgs = "--all-targets -- --deny warnings";
+          });
+        drt-test = craneLib.cargoTest (commonArgs
+          // {
+            inherit cargoArtifacts;
           });
       };
     });

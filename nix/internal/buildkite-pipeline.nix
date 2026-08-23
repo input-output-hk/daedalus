@@ -62,7 +62,6 @@ in
         echo '~~~ Generating installer for cluster ‘${cluster}’'
 
         tmpdir=$(mktemp -d)
-        result="$tmpdir"/csl-daedalus
 
         # XXX: `set -x` to give CI users a reproduction, and `| cat`:
         #   • turns off any interactive questions from Nix (e.g. accept-flake-config)
@@ -70,47 +69,62 @@ in
         #   • keeps `derivation-name> ` prefix in logs
         #   • but also kills colors :-(
 
-        (
-          set -x
-          nix build --no-accept-flake-config -L --out-link "$result" .#packages.${buildSystem}.installer-${cluster}${targetSuffix}
-        ) 2>&1 | cat
+        ${
+          if targetSystem == "x86_64-linux"
+          then ''
+            debResult="$tmpdir"/csl-daedalus-deb
+            (
+              set -x
+              nix build --no-accept-flake-config -L --out-link "$debResult" .#packages.${buildSystem}.deb-installer-${cluster}
+            ) 2>&1 | cat
+            echo "Built .deb: $(readlink "$debResult")"
 
-        echo "Built: $(readlink "$result")"
-
-        ${lib.optionalString (targetSystem == "x86_64-linux") ''
-          debResult="$tmpdir"/csl-daedalus-deb
-          (
-            set -x
-            nix build --no-accept-flake-config -L --out-link "$debResult" .#packages.${buildSystem}.deb-installer-${cluster}
-          ) 2>&1 | cat
-          echo "Built .deb: $(readlink "$debResult")"
-          rpmResult="$tmpdir"/csl-daedalus-rpm
-          (
-            set -x
-            nix build --no-accept-flake-config -L --out-link "$rpmResult" .#packages.${buildSystem}.rpm-installer-${cluster}
-          ) 2>&1 | cat
-          echo "Built .rpm: $(readlink "$rpmResult")"
-        ''}
+            rpmResult="$tmpdir"/csl-daedalus-rpm
+            (
+              set -x
+              nix build --no-accept-flake-config -L --out-link "$rpmResult" .#packages.${buildSystem}.rpm-installer-${cluster}
+            ) 2>&1 | cat
+            echo "Built .rpm: $(readlink "$rpmResult")"
+          ''
+          else ''
+            result="$tmpdir"/csl-daedalus
+            (
+              set -x
+              nix build --no-accept-flake-config -L --out-link "$result" .#packages.${buildSystem}.installer-${cluster}${targetSuffix}
+            ) 2>&1 | cat
+            echo "Built: $(readlink "$result")"
+          ''
+        }
 
         if [ -n "''${BUILDKITE_JOB_ID:-}" ]; then
           ${
-          if targetSystem == "x86_64-darwin" || targetSystem == "aarch64-darwin"
+          if targetSystem == "x86_64-linux"
           then ''
-            echo '~~~ Signing installer for cluster ‘${cluster}’'
-            nix run -L .#packages.${buildSystem}.makeSignedInstaller-${cluster}${targetSuffix} | tee make-installer.log
-            rm "$result"
-            mkdir -p "$result"
-            mv $(tail -n 1 make-installer.log) "$result"/
+            echo '~~~ Uploading Linux packages for cluster ‘${cluster}’'
+            (
+              # Keep the artifact globs format-specific so no portable output can be uploaded.
+              cd "$tmpdir"
+              retry 5 buildkite-agent artifact upload "csl-daedalus-deb/*.deb" "''${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
+              retry 5 buildkite-agent artifact upload "csl-daedalus-rpm/*.rpm" "''${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
+            )
           ''
-          else ""
-        }
+          else ''
+            ${lib.optionalString (targetSystem == "x86_64-darwin" || targetSystem == "aarch64-darwin") ''
+              echo '~~~ Signing installer for cluster ‘${cluster}’'
+              nix run -L .#packages.${buildSystem}.makeSignedInstaller-${cluster}${targetSuffix} | tee make-installer.log
+              rm "$result"
+              mkdir -p "$result"
+              mv $(tail -n 1 make-installer.log) "$result"/
+            ''}
 
-          echo '~~~ Uploading installer for cluster ‘${cluster}’'
-          (
-            # XXX: we have to chdir, since buildkite-agent uploads keeping full path
-            cd "$tmpdir"
-            retry 5 buildkite-agent artifact upload */*-${targetSystem}.* "''${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
-          )
+            echo '~~~ Uploading installer for cluster ‘${cluster}’'
+            (
+              # XXX: we have to chdir, since buildkite-agent uploads keeping full path
+              cd "$tmpdir"
+              retry 5 buildkite-agent artifact upload */*-${targetSystem}.* "''${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
+            )
+          ''
+        }
         fi
 
         rm -r "$tmpdir"

@@ -25,7 +25,7 @@ export type SoftwareUpdateInfo = {
   hash: string;
   url: string;
 };
-export type SoftwareUpdate = Record<Platform, SoftwareUpdateInfo>;
+export type SoftwareUpdate = Partial<Record<Platform, SoftwareUpdateInfo>>;
 export type NewsTimestamp = number;
 export type NewsItem = {
   title: NewsTranslations;

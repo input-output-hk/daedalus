@@ -245,31 +245,37 @@ let
 
   # Default configs for launcher from cardano-shell. Most of these do nothing.
   # TODO: get rid of anything we don't need from cardano-shell
-  defaultLauncherConfig = {
-    inherit logsPrefix launcherLogsPrefix tlsConfig;
-    walletLogging = false;
-    daedalusBin = mkBinPath "frontend";
-    updateRunnerBin = mkBinPath "update-runner";
-    # TODO: set when update system is complete
-    updaterArgs = [];
-    updaterPath = "";
-    updateArchive = "";
-    updateWindowsRunner = "";
-    workingDir = dataDir;
-    stateDir = dataDir;
-    tlsPath = "${dataDir}${dirSep}tls";
-    cluster =
-      if __hasAttr network clustersAvailable
-      then clustersAvailable.${network}.cluster
-      else network;
-    networkName =
-      if __hasAttr network clustersAvailable
-      then clustersAvailable.${network}.networkName
-      else network;
-    isFlight = network == "mainnet_flight";
-    isStaging = envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic";
-    nodeImplementation = "cardano";
-  };
+  defaultLauncherConfig =
+    {
+      inherit logsPrefix launcherLogsPrefix tlsConfig;
+      walletLogging = false;
+      daedalusBin = mkBinPath "frontend";
+      # TODO: set when update system is complete
+      updaterArgs = [];
+      updaterPath = "";
+      updateArchive = "";
+      updateWindowsRunner = "";
+      workingDir = dataDir;
+      stateDir = dataDir;
+      tlsPath = "${dataDir}${dirSep}tls";
+      cluster =
+        if __hasAttr network clustersAvailable
+        then clustersAvailable.${network}.cluster
+        else network;
+      networkName =
+        if __hasAttr network clustersAvailable
+        then clustersAvailable.${network}.networkName
+        else network;
+      isFlight = network == "mainnet_flight";
+      isStaging = envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic";
+      nodeImplementation = "cardano";
+    }
+    // lib.optionalAttrs (os == "linux") {
+      applicationUpdateMode = "system-package-disabled";
+    }
+    // lib.optionalAttrs (os != "linux") {
+      updateRunnerBin = mkBinPath "update-runner";
+    };
 
   mkConfigFiles = nodeConfigFiles: launcherConfig: installerConfig:
     runCommand "cfg-files" {

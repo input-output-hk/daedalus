@@ -1,11 +1,13 @@
 //! `drt fetch-installers` — download unsigned installer artifacts from a Hydra eval.
 //!
-//! Job naming in the Daedalus flake: `installer.{system}.{cluster}`
-//! e.g. `installer.x86_64-linux.mainnet`, `installer.x86_64-windows.mainnet`
+//! Linux packages use the exact jobs
+//! `deb-installer.x86_64-linux.{cluster}` and
+//! `rpm-installer.x86_64-linux.{cluster}`. macOS and Windows keep using
+//! `installer.{system}.{cluster}`.
 //!
-//! Downloads one file per platform (.bin / .pkg / .exe) into OUT_DIR and
-//! writes a `meta.json` file.  The SHA-256 from the Hydra API is verified
-//! after each download.
+//! Downloads one file per release artifact (.deb / .rpm / .pkg / .exe) into
+//! OUT_DIR and writes a `meta.json` file. The SHA-256 from the Hydra API is
+//! verified after each download.
 
 use anyhow::{Context, Result};
 use reqwest::Client;
@@ -65,7 +67,7 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
         .context("parsing eval JSON")?;
 
     println!(
-        "Eval has {} builds total; scanning for installer.*.{env} …",
+        "Eval has {} builds total; scanning exact deb/rpm and non-Linux installer jobs for {env} …",
         eval.builds.len()
     );
 
@@ -96,7 +98,8 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
     if installer_builds.is_empty() {
         anyhow::bail!(
             "no finished installer builds found for cluster '{env}' in eval {eval_id}\n\
-             (expected jobs named installer.<system>.{env})"
+             (expected deb-installer.x86_64-linux.{env}, \
+             rpm-installer.x86_64-linux.{env}, or installer.<non-linux-system>.{env})"
         );
     }
 
@@ -109,6 +112,8 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
     std::fs::create_dir_all(out_dir).with_context(|| format!("creating {}", out_dir.display()))?;
 
     let mut version: Option<String> = None;
+    let mut linux_deb_products = 0usize;
+    let mut linux_rpm_products = 0usize;
 
     for build in &installer_builds {
         for (product_nr, product) in &build.buildproducts {
@@ -119,8 +124,23 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
                 .extension()
                 .and_then(|e| e.to_str())
                 .unwrap_or("");
-            if !matches!(ext, "bin" | "pkg" | "exe") {
+            if ext == "bin" {
+                anyhow::bail!(
+                    "Hydra job '{}' exposed retired portable Linux .bin artifact '{}'",
+                    build.job,
+                    product.name
+                );
+            }
+            if !is_supported_product_for_job(&build.job, &product.name) {
                 continue;
+            }
+            validate_hydra_product_policy(&product.name, product.sha256hash.as_deref())?;
+
+            record_version(&mut version, &product.name)?;
+            match linux_job_platform(&build.job) {
+                Some(crate::installers::Platform::LinuxDeb) => linux_deb_products += 1,
+                Some(crate::installers::Platform::LinuxRpm) => linux_rpm_products += 1,
+                _ => {}
             }
 
             let dest = out_dir.join(&product.name);
@@ -132,34 +152,28 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
                     let existing = sha256_file(&dest)?;
                     if existing == *expected {
                         println!("✓ already downloaded");
-                        if version.is_none() {
-                            version = extract_version(&product.name);
-                        }
                         continue;
                     }
-                    // Hash mismatch: check whether the file was already code-signed.
-                    // Signing renames the unsigned original to foo-unsigned.ext and
-                    // places the signed file at foo.ext, so the hash will differ from
-                    // Hydra's unsigned artifact.  If the -unsigned companion exists
-                    // AND its hash matches Hydra's expected value, the main file is
-                    // the genuine signed installer — skip re-downloading.
-                    let unsigned_name = match product.name.rsplit_once('.') {
-                        Some((stem, ext)) => format!("{stem}-unsigned.{ext}"),
-                        None => format!("{}-unsigned", product.name),
-                    };
-                    let unsigned_path = out_dir.join(&unsigned_name);
-                    if unsigned_path.exists() {
-                        let unsigned_hash = sha256_file(&unsigned_path)?;
-                        if unsigned_hash == *expected {
-                            println!("already signed ({}), skipping", unsigned_name);
-                            if version.is_none() {
-                                version = extract_version(&product.name);
+                    if allows_unsigned_companion(&product.name) {
+                        // Remote macOS/Windows code signing preserves the
+                        // Hydra bytes in an unsigned companion.
+                        let unsigned_name = match product.name.rsplit_once('.') {
+                            Some((stem, ext)) => format!("{stem}-unsigned.{ext}"),
+                            None => format!("{}-unsigned", product.name),
+                        };
+                        let unsigned_path = out_dir.join(&unsigned_name);
+                        if unsigned_path.exists() {
+                            let unsigned_hash = sha256_file(&unsigned_path)?;
+                            if unsigned_hash == *expected {
+                                println!("already signed ({}), skipping", unsigned_name);
+                                continue;
                             }
-                            continue;
+                            println!("unsigned companion hash mismatch, re-downloading");
+                        } else {
+                            println!("hash mismatch, re-downloading");
                         }
-                        println!("unsigned companion hash mismatch, re-downloading");
                     } else {
-                        println!("hash mismatch, re-downloading");
+                        println!("Linux package hash mismatch, re-downloading exact Hydra bytes");
                     }
                 }
             }
@@ -184,10 +198,6 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
                     expected
                 );
                 println!("    ✓ sha256 verified");
-            }
-
-            if version.is_none() {
-                version = extract_version(&product.name);
             }
         }
     }
@@ -214,12 +224,19 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
         eval_url: Some(eval_url.to_string()),
     };
 
+    let installer_dir = crate::installers::InstallerDir::from_meta(out_dir, meta)
+        .context("validating downloaded installer set")?;
+    let has_linux = installer_dir
+        .installers
+        .iter()
+        .any(|installer| installer.platform.is_linux_package());
+    validate_linux_job_products(has_linux, linux_deb_products, linux_rpm_products)?;
+
+    let meta_json =
+        serde_json::to_string_pretty(&installer_dir.meta).context("serialising meta.json")? + "\n";
     let meta_path = out_dir.join("meta.json");
-    std::fs::write(
-        &meta_path,
-        serde_json::to_string_pretty(&meta).context("serialising meta.json")? + "\n",
-    )
-    .with_context(|| format!("writing {}", meta_path.display()))?;
+    std::fs::write(&meta_path, meta_json)
+        .with_context(|| format!("writing {}", meta_path.display()))?;
 
     println!("\nVersion : {ver}");
     println!("Output  : {}", out_dir.display());
@@ -257,10 +274,106 @@ async fn fetch_build(client: &Client, base_url: &str, build_id: u64) -> Result<H
 }
 
 fn is_installer_for(env: &str, build: &HydraBuild) -> bool {
-    build.finished == Some(1)
-        && build.buildstatus == Some(0)
-        && build.job.starts_with("installer.")
-        && build.job.ends_with(&format!(".{env}"))
+    if build.finished != Some(1) || build.buildstatus != Some(0) {
+        return false;
+    }
+
+    let mut parts = build.job.split('.');
+    let job = (parts.next(), parts.next(), parts.next(), parts.next());
+    match job {
+        (Some("deb-installer" | "rpm-installer"), Some("x86_64-linux"), Some(cluster), None) => {
+            cluster == env
+        }
+        (Some("installer"), Some(system), Some(cluster), None) => {
+            cluster == env && system != "x86_64-linux"
+        }
+        _ => false,
+    }
+}
+
+fn is_supported_product_for_job(job: &str, filename: &str) -> bool {
+    let extension = Path::new(filename).extension().and_then(|ext| ext.to_str());
+    let mut parts = job.split('.');
+    let job = (parts.next(), parts.next(), parts.next(), parts.next());
+    match job {
+        (Some("deb-installer"), Some("x86_64-linux"), Some(_), None) => extension == Some("deb"),
+        (Some("rpm-installer"), Some("x86_64-linux"), Some(_), None) => extension == Some("rpm"),
+        (Some("installer"), Some(system), Some(_), None) if system != "x86_64-linux" => {
+            matches!(extension, Some("pkg" | "exe"))
+        }
+        _ => false,
+    }
+}
+
+fn allows_unsigned_companion(filename: &str) -> bool {
+    matches!(
+        Path::new(filename).extension().and_then(|ext| ext.to_str()),
+        Some("pkg" | "exe")
+    )
+}
+
+fn validate_hydra_product_policy(filename: &str, expected_sha256: Option<&str>) -> Result<()> {
+    let extension = Path::new(filename).extension().and_then(|ext| ext.to_str());
+    if matches!(extension, Some("deb" | "rpm")) {
+        anyhow::ensure!(
+            !filename.contains("-unsigned."),
+            "Hydra Linux package product '{}' is an unsigned companion; only the main package is allowed",
+            filename
+        );
+        anyhow::ensure!(
+            expected_sha256.is_some(),
+            "Hydra Linux package product '{}' has no SHA-256; exact main-file verification is required",
+            filename
+        );
+    }
+    Ok(())
+}
+
+fn linux_job_platform(job: &str) -> Option<crate::installers::Platform> {
+    let mut parts = job.split('.');
+    match (parts.next(), parts.next(), parts.next(), parts.next()) {
+        (Some("deb-installer"), Some("x86_64-linux"), Some(_), None) => {
+            Some(crate::installers::Platform::LinuxDeb)
+        }
+        (Some("rpm-installer"), Some("x86_64-linux"), Some(_), None) => {
+            Some(crate::installers::Platform::LinuxRpm)
+        }
+        _ => None,
+    }
+}
+
+fn validate_linux_job_products(has_linux: bool, deb_count: usize, rpm_count: usize) -> Result<()> {
+    if has_linux {
+        anyhow::ensure!(
+            deb_count == 1 && rpm_count == 1,
+            "downloaded Linux artifacts require exactly one product from each exact Hydra job; \
+             got deb-installer.x86_64-linux={deb_count}, \
+             rpm-installer.x86_64-linux={rpm_count}"
+        );
+    } else {
+        anyhow::ensure!(
+            deb_count == 0 && rpm_count == 0,
+            "Hydra exposed Linux package products but no validated Linux package pair was downloaded"
+        );
+    }
+    Ok(())
+}
+
+fn record_version(version: &mut Option<String>, filename: &str) -> Result<()> {
+    let artifact_version = crate::installers::release_version_from_filename(filename)
+        .ok_or_else(|| anyhow::anyhow!("could not extract release version from '{filename}'"))?;
+    if let Some(expected) = version {
+        anyhow::ensure!(
+            artifact_version == expected.as_str(),
+            "installer '{}' reports version {}, but earlier artifacts report {}",
+            filename,
+            artifact_version,
+            expected
+        );
+    } else {
+        *version = Some(artifact_version.to_string());
+    }
+    Ok(())
 }
 
 /// Compute the SHA-256 of an existing file on disk.
@@ -341,22 +454,6 @@ async fn download_file(
     Ok(hex::encode(hasher.finalize()))
 }
 
-/// Extract the version from a Daedalus installer filename.
-/// `daedalus-7.3.0-83575-mainnet-fbb43f32c-x86_64-linux.bin` → `"7.3.0"`
-fn extract_version(filename: &str) -> Option<String> {
-    filename
-        .split('-')
-        .skip(1) // skip "daedalus"
-        .find(|part| {
-            part.chars()
-                .next()
-                .map(|c| c.is_ascii_digit())
-                .unwrap_or(false)
-                && part.contains('.')
-        })
-        .map(|s| s.to_string())
-}
-
 /// Extract (gitrev, nar_hash) from a locked flake URL.
 ///
 /// Handles two formats Hydra has used:
@@ -395,6 +492,121 @@ fn percent_decode(s: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn hydra_build(job: &str) -> HydraBuild {
+        HydraBuild {
+            id: 1,
+            job: job.to_string(),
+            buildstatus: Some(0),
+            finished: Some(1),
+            buildproducts: HashMap::new(),
+        }
+    }
+
+    #[test]
+    fn selects_exact_linux_package_and_non_linux_job_families() {
+        for job in [
+            "deb-installer.x86_64-linux.mainnet",
+            "rpm-installer.x86_64-linux.mainnet",
+            "installer.aarch64-darwin.mainnet",
+            "installer.x86_64-darwin.mainnet",
+            "installer.x86_64-windows.mainnet",
+        ] {
+            assert!(is_installer_for("mainnet", &hydra_build(job)), "{job}");
+        }
+    }
+
+    #[test]
+    fn rejects_portable_or_inexact_hydra_jobs() {
+        for job in [
+            "installer.x86_64-linux.mainnet",
+            "deb-installer.aarch64-linux.mainnet",
+            "rpm-installer.x86_64-linux.preview",
+            "prefix.deb-installer.x86_64-linux.mainnet",
+            "installer.x86_64-windows.extra.mainnet",
+        ] {
+            assert!(!is_installer_for("mainnet", &hydra_build(job)), "{job}");
+        }
+
+        let mut failed = hydra_build("deb-installer.x86_64-linux.mainnet");
+        failed.buildstatus = Some(1);
+        assert!(!is_installer_for("mainnet", &failed));
+    }
+
+    #[test]
+    fn filters_products_by_exact_job_family() {
+        assert!(is_supported_product_for_job(
+            "deb-installer.x86_64-linux.mainnet",
+            "daedalus-6.0.1-mainnet-x86_64-linux.deb"
+        ));
+        assert!(!is_supported_product_for_job(
+            "deb-installer.x86_64-linux.mainnet",
+            "daedalus-6.0.1-mainnet-x86_64-linux.rpm"
+        ));
+        assert!(is_supported_product_for_job(
+            "rpm-installer.x86_64-linux.mainnet",
+            "daedalus-6.0.1-mainnet-x86_64-linux.rpm"
+        ));
+        assert!(is_supported_product_for_job(
+            "installer.x86_64-windows.mainnet",
+            "daedalus-6.0.1-mainnet-x86_64-windows.exe"
+        ));
+        assert!(is_supported_product_for_job(
+            "installer.aarch64-darwin.mainnet",
+            "daedalus-6.0.1-mainnet-aarch64-darwin.pkg"
+        ));
+        assert!(!is_supported_product_for_job(
+            "installer.x86_64-linux.mainnet",
+            "daedalus-6.0.1-mainnet-x86_64-linux.bin"
+        ));
+    }
+
+    #[test]
+    fn restricts_unsigned_companions_to_remote_code_signed_formats() {
+        assert!(allows_unsigned_companion("daedalus.pkg"));
+        assert!(allows_unsigned_companion("daedalus.exe"));
+        assert!(!allows_unsigned_companion("daedalus.deb"));
+        assert!(!allows_unsigned_companion("daedalus.rpm"));
+
+        assert!(validate_hydra_product_policy("daedalus.deb", Some("sha")).is_ok());
+        assert!(validate_hydra_product_policy("daedalus.rpm", Some("sha")).is_ok());
+        assert!(validate_hydra_product_policy("daedalus.pkg", None).is_ok());
+        assert!(validate_hydra_product_policy("daedalus.exe", None).is_ok());
+        assert!(validate_hydra_product_policy("daedalus.deb", None)
+            .expect_err("Linux package without Hydra hash must fail")
+            .to_string()
+            .contains("exact main-file verification"));
+        assert!(
+            validate_hydra_product_policy("daedalus-unsigned.rpm", Some("sha"))
+                .expect_err("Linux unsigned companion must fail")
+                .to_string()
+                .contains("only the main package is allowed")
+        );
+    }
+
+    #[test]
+    fn requires_one_product_from_each_linux_hydra_job() {
+        assert!(validate_linux_job_products(true, 1, 1).is_ok());
+        assert!(validate_linux_job_products(false, 0, 0).is_ok());
+
+        for (has_linux, deb_count, rpm_count) in
+            [(true, 1, 0), (true, 0, 1), (true, 0, 0), (true, 2, 1)]
+        {
+            let error = validate_linux_job_products(has_linux, deb_count, rpm_count)
+                .expect_err("incomplete or stale Linux pair must fail");
+            assert!(error.to_string().contains("exactly one product"));
+        }
+    }
+
+    #[test]
+    fn rejects_mixed_artifact_versions() {
+        let mut version = None;
+        record_version(&mut version, "daedalus-6.0.1-mainnet-x86_64-linux.deb")
+            .expect("record first version");
+        let error = record_version(&mut version, "daedalus-6.0.2-mainnet-x86_64-linux.rpm")
+            .expect_err("mixed versions must fail");
+        assert!(error.to_string().contains("earlier artifacts report 6.0.1"));
+    }
 
     #[test]
     fn parse_flake_old_github_format() {

@@ -17,12 +17,19 @@
       (lib.listToAttrs (lib.concatMap (cluster:
         [
           {
+            # Developer-only Nix package; Linux release artifacts are below.
             name = "daedalus-${cluster}${suffix}";
             value = internal.package.${cluster};
           }
+        ]
+        ++ lib.optionals (targetSystem != "x86_64-linux") [
           {
             name = "installer-${cluster}${suffix}";
             value = internal.unsignedInstaller.${cluster};
+          }
+          {
+            name = "makeSignedInstaller-${cluster}${suffix}";
+            value = internal.makeSignedInstaller.${cluster};
           }
         ]
         ++ lib.optionals (targetSystem == "x86_64-linux") [
@@ -36,10 +43,6 @@
           }
         ]
         ++ [
-          {
-            name = "makeSignedInstaller-${cluster}${suffix}";
-            value = internal.makeSignedInstaller.${cluster};
-          }
           {
             name = "daedalus-bridge-${cluster}${suffix}";
             value = internal.common.daedalus-bridge.${cluster};

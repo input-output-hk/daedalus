@@ -80,8 +80,8 @@ type LauncherConfigBase = {
   mithrilAncillaryVkey?: string;
 };
 
-type PortableApplicationUpdateConfig = {
-  applicationUpdateMode?: 'portable';
+type InstallerManagedApplicationUpdateConfig = {
+  applicationUpdateMode?: 'installer-managed';
   updateRunnerBin: string;
 };
 
@@ -91,7 +91,7 @@ type DisabledApplicationUpdateConfig = {
 };
 
 export type LauncherConfig = LauncherConfigBase &
-  (PortableApplicationUpdateConfig | DisabledApplicationUpdateConfig);
+  (InstallerManagedApplicationUpdateConfig | DisabledApplicationUpdateConfig);
 type WindowOptionsType = {
   show: boolean;
   width: number;

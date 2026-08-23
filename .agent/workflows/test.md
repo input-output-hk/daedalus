@@ -207,6 +207,51 @@ Output: `dist/storybook/`
 
 ---
 
+## Linux release and migration checks
+
+Run the focused reproducible checks after Linux package, launcher, CI, or
+release-tool changes:
+
+```bash
+nix build -L .#checks.x86_64-linux.linux-release-artifacts-contract
+nix build -L .#checks.x86_64-linux.linux-deb-package-contract
+nix build -L .#checks.x86_64-linux.linux-rpm-package-contract
+nix build -L .#checks.x86_64-linux.linux-remaining-launcher-contract
+nix build -L .#checks.x86_64-linux.drt-test
+```
+
+These checks cover the declared Linux artifact surface (`.deb`/`.rpm` only),
+package archive/layout contracts, the wallet-only developer launcher, and the
+release CLI's `linux-deb`/`linux-rpm` manifest plus newsfeed behavior. They must
+also ensure no Linux package appears in `softwareUpdate`; Linux receives one
+ordinary release/migration announcement.
+
+Archive and build checks do **not** prove privileged package lifecycle,
+installed Chromium containment, or non-destructive migration. Those require
+approved disposable-host scenarios using exact built artifacts:
+
+1. Fresh-install the `.deb` with `apt` and the `.rpm` with `dnf`, then launch
+   the exact `/usr/bin/daedalus-<cluster>`.
+2. Upgrade from the prior package with the same package manager while Daedalus
+   is fully stopped; verify package files, policy state, and launcher identity.
+3. Seed non-sensitive fixture state under
+   `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus`, preserve its before/after
+   identity, and migrate from a legacy `$HOME/.daedalus/<cluster>` executable
+   without moving or deleting that state.
+4. Repeat migration with a custom `XDG_DATA_HOME`, passing the same value on
+   first launch, and prove the expected fixture state opens.
+5. Create a legacy user desktop symlink, verify that it shadows the system
+   desktop entry, move aside only that verified symlink, and prove the system
+   package launches. Separately verify that a stale `namespaceHelper` symlink
+   can remain without affecting startup.
+
+Never run package lifecycle or destructive rollback experiments on a real
+wallet-bearing host. Record disposable-host install, upgrade, rollback,
+AppArmor/SELinux, exact-renderer, and migration evidence separately from the
+Nix build result.
+
+---
+
 ## Writing New Tests
 
 For guidance on creating new Cucumber BDD tests (feature files, step definitions, helpers), see the [e2e-test-creation skill](../skills/e2e-test-creation/SKILL.md).

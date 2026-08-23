@@ -31,6 +31,50 @@
         dontFixup = true;
       };
 
+    linuxPackages = inputs.self.packages.x86_64-linux;
+    installerClusters = inputs.self.internal.installerClusters;
+
+    linuxReleaseArtifactsContract =
+      assert !(internal ? unsignedInstaller);
+      assert !(internal ? makeSignedInstaller);
+      assert !(internal ? selfExtractingArchive);
+      assert !(internal ? removeOldNixChroot);
+      assert !(internal ? satisfyOldUpdateRunner);
+      assert !(internal ? newBundle);
+      assert !(builtins.pathExists (inputs.self + "/nix/internal/linux-self-extracting-archive.sh"));
+      assert internal ? systemPackageBundle;
+      assert internal ? debInstaller;
+      assert internal ? rpmInstaller;
+      assert lib.all (
+        cluster:
+          !(builtins.hasAttr "installer-${cluster}" linuxPackages)
+          && !(builtins.hasAttr "makeSignedInstaller-${cluster}" linuxPackages)
+          && builtins.hasAttr "deb-installer-${cluster}" linuxPackages
+          && builtins.hasAttr "rpm-installer-${cluster}" linuxPackages
+      )
+      installerClusters;
+      assert !(builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs.installer);
+      assert builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs."deb-installer";
+      assert builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs."rpm-installer";
+      pkgs.runCommand "linux-release-artifacts-contract" {} ''
+          set -eu
+          pipeline=${linuxPackages.buildkitePipeline}/bin/buildkite-pipeline
+
+          for cluster in ${lib.escapeShellArgs installerClusters}; do
+            grep -F ".#packages.x86_64-linux.deb-installer-$cluster" "$pipeline"
+            grep -F ".#packages.x86_64-linux.rpm-installer-$cluster" "$pipeline"
+          done
+          grep -F 'artifact upload "csl-daedalus-deb/*.deb"' "$pipeline"
+          grep -F 'artifact upload "csl-daedalus-rpm/*.rpm"' "$pipeline"
+
+          if grep -E '\.#packages\.x86_64-linux\.(installer|makeSignedInstaller)-|artifact upload \*/\*|\.bin([^[:alnum:]]|$)' "$pipeline"; then
+            echo 'generic Linux installer, signing, upload, or .bin seam found in Buildkite pipeline' >&2
+            exit 1
+          fi
+
+          touch "$out"
+        '';
+
     linuxDebPackageContract =
       pkgs.runCommand "linux-deb-package-contract" {
         nativeBuildInputs = [pkgs.dpkg pkgs.jq pkgs.file pkgs.patchelf];
@@ -46,6 +90,9 @@
           test -x "$root/libexec/daedalus-frontend"
           test -x "$root/libexec/electron"
           test ! -e "$root/libexec/update-runner"
+          test ! -e "$root/libexec/.patchelf-static"
+          test ! -e "$root/share/icon_large.png"
+          test ! -e "$root/share/applications"
           test "$(jq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
           test "$(jq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
           test "$(jq -r .daedalusBin "$root/config/launcher-config.yaml")" = /opt/daedalus/mainnet/libexec/daedalus-frontend
@@ -59,7 +106,7 @@
             "$root/config/launcher-config.yaml" \
             extracted/usr/share/applications/Daedalus-mainnet.desktop \
             control/preinst control/postinst control/prerm control/postrm; do
-            if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX|\.daedalus/.*/bin/daedalus|pre-auto-update' "$surface"; then
+            if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX|\.daedalus/.*/bin/daedalus|pre-auto-update|update-runner|updateRunnerBin|\.patchelf-static' "$surface"; then
               echo "forbidden portable or sandbox-bypass content in $surface" >&2
               exit 1
             fi
@@ -214,12 +261,24 @@
       '';
 
     linuxRemainingLauncherContract =
-      pkgs.runCommand "linux-remaining-launcher-contract" {} ''
+      pkgs.runCommand "linux-remaining-launcher-contract" {
+        nativeBuildInputs = [pkgs.jq];
+      } ''
         set -eu
-        frontend=${internal.newPackage.mainnet}/libexec/daedalus-frontend
+        package=${internal.newPackage.mainnet}
+        launcher="$package/bin/daedalus"
+        frontend="$package/libexec/daedalus-frontend"
+        config="$package/config/launcher-config.yaml"
+
+        test -x "$launcher"
         test -x "$frontend"
-        if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX' "$frontend"; then
-          echo 'sandbox bypass found in remaining Linux launcher' >&2
+        test ! -e "$package/libexec/update-runner"
+        test "$(jq -r .applicationUpdateMode "$config")" = system-package-disabled
+        test "$(jq -r 'has("updateRunnerBin")' "$config")" = false
+
+        if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX|\.daedalus/.*/bin/daedalus|pre-auto-update|update-runner|updateRunnerBin|\.patchelf-static' \
+          "$launcher" "$frontend" "$config"; then
+          echo 'portable updater, home restart, or sandbox bypass found in remaining Linux launcher' >&2
           exit 1
         fi
         grep -F 'exec electron ' "$frontend"
@@ -252,6 +311,9 @@
         test -x "$root/libexec/daedalus-frontend"
         test -x "$root/libexec/electron"
         test ! -e "$root/libexec/update-runner"
+        test ! -e "$root/libexec/.patchelf-static"
+        test ! -e "$root/share/icon_large.png"
+        test ! -e "$root/share/applications"
         test -f "$helper" -a ! -L "$helper"
         rpm -qp --qf '[%{FILENAMES} %{FILEMODES:perms}\n]' "$rpm" >rpm-file-modes
         grep -F '/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/chrome-sandbox -rwsr-xr-x' rpm-file-modes
@@ -289,10 +351,10 @@
           extracted/usr/share/applications/Daedalus-mainnet.desktop
         grep -F "export CHROME_DEVEL_SANDBOX='/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/chrome-sandbox'" \
           "$root/bin/daedalus"
-        if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX' \
+        if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX|\.daedalus/.*/bin/daedalus|pre-auto-update|update-runner|updateRunnerBin|\.patchelf-static' \
           "$root/bin/daedalus" "$root/libexec/daedalus-frontend" \
-          "$root/libexec/electron" "$scripts"; then
-          echo 'sandbox bypass found in RPM launch or lifecycle surface' >&2
+          "$root/libexec/electron" "$root/config/launcher-config.yaml" "$scripts"; then
+          echo 'portable updater, home restart, or sandbox bypass found in RPM launch or lifecycle surface' >&2
           exit 1
         fi
 
@@ -346,6 +408,7 @@
         storybook = mkJsCheck "daedalus-storybook-build" "yarn storybook:build";
         shellcheck = pkgs.callPackage ../tests/shellcheck.nix {src = inputs.self;};
         linux-deb-package-contract = linuxDebPackageContract;
+        linux-release-artifacts-contract = linuxReleaseArtifactsContract;
         linux-rpm-package-contract = linuxRpmPackageContract;
         linux-remaining-launcher-contract = linuxRemainingLauncherContract;
       };

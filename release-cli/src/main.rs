@@ -328,8 +328,11 @@ async fn cmd_sign(
                         }
                     }
                 }
-                installers::Platform::Linux => {
-                    println!("  {} [no code signing for Linux]", inst.filename);
+                installers::Platform::LinuxDeb | installers::Platform::LinuxRpm => {
+                    println!(
+                        "  {} [system package — no remote code signing]",
+                        inst.filename
+                    );
                 }
             }
         }

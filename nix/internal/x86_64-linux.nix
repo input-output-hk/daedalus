@@ -16,12 +16,10 @@ in rec {
 
   package = newPackage;
 
-  unsignedInstaller = selfExtractingArchive;
-
   debInstaller = genClusters (cluster:
     import ./linux-deb.nix {
       inherit pkgs lib cluster;
-      bundle = newBundle.${cluster};
+      bundle = systemPackageBundle.${cluster};
       icon = common.launcherConfigs.${cluster}.installerConfig.iconPath.base + "/512x512.png";
       version = originalPackageJson.version;
       inherit (sourceLib) buildCounter buildRev buildRevShort;
@@ -31,18 +29,12 @@ in rec {
   rpmInstaller = genClusters (cluster:
     import ./linux-rpm.nix {
       inherit pkgs lib cluster;
-      bundle = newBundle.${cluster};
+      bundle = systemPackageBundle.${cluster};
       icon = common.launcherConfigs.${cluster}.installerConfig.iconPath.base + "/512x512.png";
       version = originalPackageJson.version;
       inherit (sourceLib) buildCounter buildRev buildRevShort;
       sourceDateEpoch = inputs.self.lastModified or sourceLib.daedalusEpoch;
     });
-
-  makeSignedInstaller = genClusters (cluster:
-    pkgs.writeShellScriptBin "make-signed-installer-stub" ''
-      echo "We don't sign native code for '${targetSystem}', please, use unsigned 'nix build .#installer-${cluster}'"
-      exit 1
-    '');
 
   # FIXME: for Tullia/Cicero debugging, remove later:
   inherit (sourceLib) buildRev;
@@ -309,11 +301,10 @@ in rec {
     meta.mainProgram = "electron";
   };
 
-  # A completely portable directory that you can run on _any_ Linux:
-  newBundle = genClusters (cluster:
+  # Payload materialized only for the fixed-path .deb and .rpm package builders.
+  systemPackageBundle = genClusters (cluster:
     pkgs.stdenv.mkDerivation {
-      name = "daedalus-bundle";
-      meta.mainProgram = "daedalus";
+      name = "daedalus-system-package-bundle";
       dontUnpack = true;
       buildCommand = ''
         cp -r ${newPackage.${cluster}} $out
@@ -331,25 +322,21 @@ in rec {
             "$file"
         done
 
-        # The electron binary has a Nix store path as its ELF interpreter (PT_INTERP) pointing to
-        # the relocatableElectron derivation. After installing the bundle outside the Nix store, that
-        # path won't exist. Bundle a static patchelf so the installer script can re-patch PT_INTERP
-        # to the installed ld-linux path after extraction.
-        cp ${(pkgs.pkgsStatic.patchelf.overrideAttrs (_: {doCheck = false;}))}/bin/patchelf $out/libexec/.patchelf-static
-        chmod +x $out/libexec/.patchelf-static
-
-        chmod -R +w $out/share/applications/
-        cp ${desktopItemTemplate.${cluster}}/share/applications/*.desktop $out/share/applications/Daedalus-${cluster}.desktop
+        # System package builders install their own fixed-path desktop entries.
+        rm -rf $out/share/applications
+        rm -f $out/share/icon_large.png
+        test ! -e $out/libexec/update-runner
       '';
     });
 
-  # A package that will work only on NixOS; the only differences from the bundle above are:
-  #   • symlinks instead of copying (to not waste /nix/store space when iterating on something),
-  #   • and RPATH of the native *.node modules points to ${relocatableElectron}, not relative to $ORIGIN.
+  # Developer-only Nix-store package. This is not a release artifact or shipping channel.
   newPackage = genClusters (cluster:
     pkgs.stdenv.mkDerivation {
       name = "daedalus";
-      meta.mainProgram = "daedalus";
+      meta = {
+        mainProgram = "daedalus";
+        description = "Developer-only dApp-disabled Daedalus wallet package (not a Linux release artifact)";
+      };
       dontUnpack = true;
       buildCommand = ''
         mkdir -p $out/{bin,libexec,config}
@@ -387,24 +374,12 @@ in rec {
           mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Secrets
           cd "''${DAEDALUS_DIR}/${cluster}/"
 
-          if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update ] ; then
-            rm "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update || true
-          fi
-
           exec cardano-launcher --config "$ENTRYPOINT_DIR/config/launcher-config.yaml"
         ''} $out/bin/daedalus
 
         cp ${pkgs.writeText "daedalus-frontend" ''
           #!/bin/sh
           set -xe
-
-          # `daedalus-frontend` is what `cardano-launcher` restarts during auto-update; let's detect
-          # this case here, and restart the `cardano-launcher` itself, in case we need it to
-          # be updated as well:
-          if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update ] ; then
-            nohup setsid ~/.daedalus/${cluster}/bin/daedalus </dev/null >/dev/null 2>/dev/null &
-            exit 0
-          fi
 
           # Escape hatch for Linux-only Chromium switches that have no cross-platform
           # equivalent, e.g. `DAEDALUS_ELECTRON_FLAGS=--ozone-platform=wayland`. Left
@@ -413,13 +388,7 @@ in rec {
           exec electron ''${DAEDALUS_ELECTRON_FLAGS-} "$ENTRYPOINT_DIR"/libexec/daedalus-js "$@"
         ''} $out/libexec/daedalus-frontend
 
-        cp ${pkgs.writeText "update-runner" ''
-          #!/bin/sh
-          set -xe
-          exec "$1"
-        ''} $out/libexec/update-runner
-
-        chmod +x $out/bin/* $out/libexec/{daedalus-frontend,update-runner}
+        chmod +x $out/bin/* $out/libexec/daedalus-frontend
 
         mkdir -p $out/share/applications
         cp ${common.launcherConfigs.${cluster}.installerConfig.iconPath.large} $out/share/icon_large.png
@@ -443,127 +412,6 @@ in rec {
       icon = "INSERT_ICON_PATH_HERE";
       startupWMClass = common.launcherConfigs.${cluster}.installerConfig.spacedName;
     });
-
-  # On Windows/macOS, auto-update just launches the new installer, and exits the previous Daedalus.
-  #
-  # On Linux, however, it starts `update-runner` on PATH (updateRunnerBin from launcher-config.yaml),
-  # with argv[1] set to the path of the new installer, shows progress, and then exits Daedalus with
-  # code 20. Which is a signal for `cardano-launcher` to restart `daedalus-frontend` on PATH
-  # (daedalusBin from launcher-config.yaml).
-  #
-  # The old `update-runner` (≤5.4.0) has certain expectations about what's in the installer, so we
-  # have to provide a shim, when our installer is being run with `--extract`.
-  #
-  # We also have to change `daedalus-frontend` in the old nix-chroot sandbox to use `escape-hatch` to
-  # start the new `daedalus` with `xdg-run`, and `exit 0`. But first move the `daedalus_lockfile`
-  # to another location, because during the first launch, there will briefly be 2 `cardano-launcher`s.
-  #
-  # Now, if there's no previous nix-chroot, i.e. if the upgrade is from ≥5.5.0 to something newer,
-  # then TODO
-
-  # XXX: Be *super careful* changing this!!! You WILL DELETE user data if you make a mistake.
-  selfExtractingArchive = genClusters (cluster: let
-    scriptTemplate =
-      __replaceStrings [
-        "@CLUSTER@"
-        "@REMOVE_OLD_NIX_CHROOT@"
-      ] [
-        (lib.escapeShellArg cluster)
-        removeOldNixChroot.${cluster}
-      ] (__readFile ./linux-self-extracting-archive.sh);
-    script = __replaceStrings ["1010101010"] [(toString (1000000000 + __stringLength scriptTemplate))] scriptTemplate;
-    version = (builtins.fromJSON (builtins.readFile ../../package.json)).version;
-  in
-    pkgs.runCommand "daedalus-${cluster}-installer" {
-      inherit script;
-      passAsFile = ["script"];
-      meta.mainProgram = "daedalus-${cluster}-installer";
-    } ''
-      mkdir -p $out
-      target=$out/daedalus-${version}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-x86_64-linux.bin
-      cat $scriptPath >$target
-      chmod +x $target
-
-      echo 'Compressing (xz)...'
-      tar -cJf tmp-archive.tar.xz -C ${newBundle.${cluster}} . -C ${satisfyOldUpdateRunner.${cluster}} .
-
-      checksum=$(sha256sum tmp-archive.tar.xz | cut -d' ' -f1)
-      sed -r "s/0000000000000000000000000000000000000000000000000000000000000000/$checksum/g" -i $target
-
-      cat tmp-archive.tar.xz >>$target
-
-      # Create bin directory with hard link for nix run
-      # (symlink won't work for self-extracting archives)
-      mkdir -p $out/bin
-      ln $target $out/bin/daedalus-${cluster}-installer
-
-      # Make it downloadable from Hydra:
-      mkdir -p $out/nix-support
-      echo "file binary-dist \"$target\"" >$out/nix-support/hydra-build-products
-    '');
-
-  # We only want to remove the old nix-chroot, if it contains only one cluster
-  # variant – the one we're updating. Otherwise, we'll break other cluster
-  # installations of that user.
-  removeOldNixChroot = genClusters (cluster: ''
-    old_nix="$HOME"/.daedalus/nix
-    old_etc="$HOME"/.daedalus/etc
-    if [ -e "$old_nix" ] ; then
-      old_clusters=$(ls "$old_nix"/var/nix/profiles/ | grep '^profile-' | grep -v '[0-9]' || true)
-      if [ "$old_clusters" = "profile-${cluster}" ] ; then
-        # If the user *only* used Mainnet (most common), we're safe to remove the whole ~/.daedalus/nix:
-        echo "Found an older non-portable version of Daedalus in $old_nix, removing it..."
-        chmod -R +w "$old_nix"
-        chmod -R +w "$old_etc" || true
-        rm -rf "$old_nix" "$old_etc" || true
-      else
-        # But if it contains more Daedaluses for other networks, we can't risk breaking them:
-        echo "Found older non-portable versions of Daedalus for multiple networks in $old_nix, you are free to remove the directory manually, if you no longer use them."
-      fi
-    fi
-  '');
-
-  satisfyOldUpdateRunner = genClusters (cluster: let
-    tarball = pkgs.callPackage (pkgs.path + "/nixos/lib/make-system-tarball.nix") {
-      fileName = "tarball"; # don't rename
-      contents = [];
-      storeContents = [
-        {
-          symlink = "firstGeneration";
-          object = pkgs.buildEnv {
-            name = "profile";
-            paths = [
-              # We need an auto-update stub to hook into the old auto-update process, and make it launch
-              # our new portable Daedalus outside of `nix-chroot`.
-              #
-              # The previously running `cardano-launcher` (inside the `nix-chroot`) will try to restart
-              # `/bin/daedalus-frontend` after a successful update, so we have to hook here: start the new
-              # independent (nohup, setsid, don't inherit fds) Deadalus (and new cardano-launcher) after
-              # moving the old cardano-launcher's lockfile out of the way. The old launcher will exit
-              # after our `exit 0` below.
-              #
-              # And at the very end we get rid of the previous `nix-chroot`.
-              (pkgs.writeShellScriptBin "daedalus-frontend" ''
-                set -euo pipefail
-                echo -n "$HOME/.daedalus${pkgs.writeScript "escape-and-scrap-chroot" ''
-                  #!/bin/sh
-                  set -eu
-                  nohup setsid ~/.daedalus/${cluster}/bin/daedalus </dev/null >/dev/null 2>/dev/null &
-                  sleep 5
-                  ${removeOldNixChroot.${cluster}}
-                ''}" >/escape-hatch
-                exit 0
-              '')
-            ];
-          };
-        }
-      ];
-    };
-  in
-    pkgs.runCommand "satisfy-old-update-runner" {} ''
-      mkdir -p $out/dat${tarball}
-      cp -r ${tarball}/. $out/dat${tarball}/
-    '');
 
   # Use pkgs.electron.unwrapped (from nixpkgs) directly, no need to download or patchelf.
   # The nixpkgs electron is already patchelf'd for NixOS; nix-bundle-exe will handle

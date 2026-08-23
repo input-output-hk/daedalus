@@ -12,7 +12,7 @@
       },
       "target": {
         "daedalusVersion": ">=2.3.0 <5.1.0",
-        "platforms":["win32","darwin","linux"]
+        "platforms":["win32","darwin"]
       },
       "action": {
         "label": {
@@ -27,11 +27,6 @@
       "date": 1637233200000,
       "type": "software-update",
       "softwareUpdate": {
-        "linux": {
-          "version": "5.1.0",
-          "hash": "611adbfe653ca8c559e3733559590851018d6914800ac3460854f457651e9c10",
-          "url": "https://update-cardano-mainnet.iohk.io/daedalus-4.5.0-mainnet-19689.bin"
-        },
         "darwin": {
           "version": "5.1.0",
           "hash": "2c2e7e46719cf56505a6acaaac8da80345cc3b9c16ed2129489f55dc3f4969e2",
@@ -43,6 +38,32 @@
           "url": "https://update-cardano-mainnet.iohk.io/daedalus-4.5.0-mainnet-19689.pkg"
         }
       }
+    },
+    {
+      "title": {
+        "en-US": "Linux package update available",
+        "ja-JP": "Linuxパッケージ更新のお知らせ"
+      },
+      "content": {
+        "en-US": "Portable Linux updates are no longer available. Close Daedalus and follow the package instructions to install the new .deb or .rpm with your system package manager. Your wallet data stays in the existing Daedalus state directory.",
+        "ja-JP": "Linux向けポータブル更新の提供は終了しました。Daedalusを終了し、パッケージの手順に従ってシステムパッケージマネージャーで新しい.debまたは.rpmをインストールしてください。ウォレットデータは既存のDaedalusステートディレクトリに保持されます。"
+      },
+      "target": {
+        "daedalusVersion": ">=2.3.0 <5.1.0",
+        "platforms":["linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Linux package instructions",
+          "ja-JP": "Linuxパッケージの手順"
+        },
+        "url": {
+          "en-US": "https://github.com/input-output-hk/daedalus#linux",
+          "ja-JP": "https://github.com/input-output-hk/daedalus#linux"
+        }
+      },
+      "date": 1637233200002,
+      "type": "announcement"
     },
     {
       "title": {

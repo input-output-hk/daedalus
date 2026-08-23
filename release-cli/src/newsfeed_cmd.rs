@@ -1,13 +1,13 @@
 //! `drt newsfeed` subcommands: release, publish, message.
 //!
-//! release — add a software-update + announcement pair for a new Daedalus version.
+//! release — add app-managed software updates and ordinary release announcements.
 //! publish — upload the current newsfeed + verification file to an S3 bucket for testing.
 //! message — add a standalone announcement item.
 
 use anyhow::{Context, Result};
 use reqwest::Client;
 use serde::Deserialize;
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::io::{BufRead, Write};
@@ -58,12 +58,7 @@ pub async fn cmd_newsfeed_release(
         .await
         .context("parsing installer JSON")?;
 
-    let version = vj
-        .platforms
-        .values()
-        .next()
-        .map(|p| p.version.clone())
-        .ok_or_else(|| anyhow::anyhow!("installer JSON has no platforms"))?;
+    let version = validate_version_json(&vj)?;
 
     {
         let mut keys: Vec<&str> = vj.platforms.keys().map(String::as_str).collect();
@@ -75,97 +70,20 @@ pub async fn cmd_newsfeed_release(
     let release_notes_url = release_notes_url.map(str::to_owned).unwrap_or_else(|| {
         format!("https://github.com/input-output-hk/daedalus/releases/tag/{version}")
     });
-    let release_notes_url_ja = format!("{release_notes_url}#japanese");
     println!("Notes     : {release_notes_url}");
 
     let (now_ms, updated_at) = timestamps();
-
-    // Build softwareUpdate map and platform list (newsfeed keys).
-    // The version JSON uses "windows"; the newsfeed uses "win32".
-    let mut sw_map = serde_json::Map::new();
-    let mut nf_platforms: Vec<String> = Vec::new();
-
-    let mut entries: Vec<(&String, &VersionPlatform)> = vj.platforms.iter().collect();
-    entries.sort_by_key(|(k, _)| k.as_str());
-
-    for (vj_key, plat) in &entries {
-        let nf_key = if vj_key.as_str() == "windows" {
-            "win32"
-        } else {
-            vj_key.as_str()
-        };
-        nf_platforms.push(nf_key.to_string());
-        sw_map.insert(
-            nf_key.to_string(),
-            json!({ "version": &plat.version, "hash": &plat.sha256, "url": &plat.url }),
-        );
-    }
-    nf_platforms.sort();
-
-    let update_target = format!(">={MIN_AUTO_UPDATE_VERSION} <{version}");
-
-    // Give the two items distinct dates: software-update 30 min before
-    // updatedAt, announcement at updatedAt.
-    const THIRTY_MIN_MS: u64 = 30 * 60 * 1000;
-    let date_update = updated_at - THIRTY_MIN_MS;
-    let date_announce = updated_at;
-
-    let update_item = json!({
-        "title": {
-            "en-US": format!("NEW Daedalus {version} update"),
-            "ja-JP": format!("Daedalus {version} の新バージョンがリリースされました"),
-        },
-        "content": {
-            "en-US": format!(
-                "Daedalus {version} is now available.\n\n\
-                 It is recommended that all Daedalus users upgrade to this version.\n\n\
-                 Please read the release notes for more information."
-            ),
-            "ja-JP": format!(
-                "Daedalus {version} が利用可能になりました。\n\n\
-                 すべてのユーザーに、このバージョンへのアップグレードを推奨します。\n\n\
-                 詳細についてはリリースノートをご確認ください。"
-            ),
-        },
-        "target": { "daedalusVersion": &update_target, "platforms": &nf_platforms },
-        "action": {
-            "label": { "en-US": "", "ja-JP": "" },
-            "url":   { "en-US": "", "ja-JP": "" },
-        },
-        "date": date_update,
-        "type": "software-update",
-        "softwareUpdate": Value::Object(sw_map),
-    });
-
-    let announce_item = json!({
-        "title": {
-            "en-US": format!("Daedalus {version} - Release notes"),
-            "ja-JP": format!("Daedalus {version} リリースノート"),
-        },
-        "content": {
-            "en-US": format!(
-                "Daedalus {version} is now available.\n\n\
-                 It is recommended that all Daedalus users upgrade to this version."
-            ),
-            "ja-JP": format!(
-                "Daedalus {version} が利用可能になりました。\n\n\
-                 すべてのユーザーに、このバージョンへのアップグレードを推奨します。"
-            ),
-        },
-        "target": { "daedalusVersion": &version, "platforms": &nf_platforms },
-        "action": {
-            "label": { "en-US": "Release notes", "ja-JP": "リリースノート" },
-            "url":   { "en-US": release_notes_url, "ja-JP": release_notes_url_ja },
-        },
-        "date": date_announce,
-        "type": "announcement",
-    });
+    let draft = build_release_draft(&vj, &version, &release_notes_url, updated_at)?;
 
     println!();
-    println!("  • Fill in the ja-JP content fields (marked TODO)");
-    println!("  • The softwareUpdate hashes and URLs are pre-filled from the installer JSON");
+    println!("  • Fill in the ja-JP content fields as needed");
+    println!("  • macOS/Windows softwareUpdate hashes and URLs are pre-filled");
+    if vj.platforms.contains_key("linux-deb") {
+        println!("  • Linux receives one ordinary package-manager upgrade announcement");
+    }
 
-    let new_items = open_editor_draft(&json!([update_item, announce_item]), now_ms)?;
+    let new_items = open_editor_draft(&Value::Array(draft.clone()), now_ms)?;
+    validate_release_draft(&new_items, &draft)?;
 
     apply_and_write(
         &mut newsfeed,
@@ -174,6 +92,229 @@ pub async fn cmd_newsfeed_release(
         &newsfeed_path,
         &verify_dir(verification_repo, env),
     )
+}
+
+fn validate_version_json(vj: &VersionJson) -> Result<String> {
+    let version = vj
+        .platforms
+        .values()
+        .next()
+        .map(|platform| platform.version.clone())
+        .ok_or_else(|| anyhow::anyhow!("installer JSON has no platforms"))?;
+
+    for (key, platform) in &vj.platforms {
+        anyhow::ensure!(
+            platform.version == version,
+            "installer JSON mixes versions {} and {}",
+            version,
+            platform.version
+        );
+        if key == "linux" {
+            anyhow::bail!(
+                "installer JSON platform key 'linux' is the retired portable .bin channel; use linux-deb and linux-rpm"
+            );
+        }
+        anyhow::ensure!(
+            matches!(
+                key.as_str(),
+                "linux-deb" | "linux-rpm" | "darwin-arm" | "darwin" | "windows"
+            ),
+            "installer JSON contains unsupported platform key '{key}'"
+        );
+    }
+
+    let has_deb = vj.platforms.contains_key("linux-deb");
+    let has_rpm = vj.platforms.contains_key("linux-rpm");
+    anyhow::ensure!(
+        has_deb == has_rpm,
+        "installer JSON requires both linux-deb and linux-rpm when Linux is present"
+    );
+
+    Ok(version)
+}
+
+fn build_release_draft(
+    vj: &VersionJson,
+    version: &str,
+    release_notes_url: &str,
+    updated_at: u64,
+) -> Result<Vec<Value>> {
+    let release_notes_url_ja = format!("{release_notes_url}#japanese");
+    let update_target = format!(">={MIN_AUTO_UPDATE_VERSION} <{version}");
+    let mut software_update = serde_json::Map::new();
+    let mut app_platforms = Vec::new();
+
+    let mut entries: Vec<(&String, &VersionPlatform)> = vj.platforms.iter().collect();
+    entries.sort_by_key(|(key, _)| key.as_str());
+    for (key, platform) in entries {
+        let software_update_key = match key.as_str() {
+            "linux-deb" | "linux-rpm" => continue,
+            "windows" => "win32",
+            "darwin" => "darwin",
+            "darwin-arm" => "darwin-arm",
+            _ => anyhow::bail!("installer JSON contains unsupported platform key '{key}'"),
+        };
+        app_platforms.push(software_update_key.to_string());
+        software_update.insert(
+            software_update_key.to_string(),
+            json!({
+                "version": &platform.version,
+                "hash": &platform.sha256,
+                "url": &platform.url
+            }),
+        );
+    }
+    app_platforms.sort();
+    app_platforms.dedup();
+
+    const THIRTY_MIN_MS: u64 = 30 * 60 * 1000;
+    let date_update = updated_at.saturating_sub(THIRTY_MIN_MS);
+    let mut items = Vec::new();
+
+    if !software_update.is_empty() {
+        items.push(json!({
+            "title": {
+                "en-US": format!("NEW Daedalus {version} update"),
+                "ja-JP": format!("Daedalus {version} の新バージョンがリリースされました"),
+            },
+            "content": {
+                "en-US": format!(
+                    "Daedalus {version} is now available.\n\n\
+                     It is recommended that all Daedalus users upgrade to this version.\n\n\
+                     Please read the release notes for more information."
+                ),
+                "ja-JP": format!(
+                    "Daedalus {version} が利用可能になりました。\n\n\
+                     すべてのユーザーに、このバージョンへのアップグレードを推奨します。\n\n\
+                     詳細についてはリリースノートをご確認ください。"
+                ),
+            },
+            "target": {
+                "daedalusVersion": &update_target,
+                "platforms": &app_platforms
+            },
+            "action": {
+                "label": { "en-US": "", "ja-JP": "" },
+                "url":   { "en-US": "", "ja-JP": "" },
+            },
+            "date": date_update,
+            "type": "software-update",
+            "softwareUpdate": Value::Object(software_update),
+        }));
+    }
+
+    if vj.platforms.contains_key("linux-deb") {
+        items.push(json!({
+            "title": {
+                "en-US": format!("Daedalus {version} Linux upgrade available"),
+                "ja-JP": format!("Daedalus {version} Linux アップグレード"),
+            },
+            "content": {
+                "en-US": format!(
+                    "Daedalus {version} is available for Linux as .deb and .rpm system packages.\n\n\
+                     Close Daedalus and follow the release instructions to upgrade with your \
+                     package manager. Your wallet data remains in place."
+                ),
+                "ja-JP": format!(
+                    "Daedalus {version} は Linux 用 .deb / .rpm システムパッケージとして利用できます。\n\n\
+                     Daedalus を終了し、リリース手順に従ってパッケージマネージャーで\
+                     アップグレードしてください。ウォレットデータはそのまま保持されます。"
+                ),
+            },
+            "target": {
+                "daedalusVersion": &update_target,
+                "platforms": ["linux"]
+            },
+            "action": {
+                "label": {
+                    "en-US": "Linux upgrade instructions",
+                    "ja-JP": "Linux アップグレード手順"
+                },
+                "url": {
+                    "en-US": release_notes_url,
+                    "ja-JP": &release_notes_url_ja
+                },
+            },
+            "date": updated_at,
+            "type": "announcement",
+        }));
+    }
+
+    if !app_platforms.is_empty() {
+        items.push(json!({
+            "title": {
+                "en-US": format!("Daedalus {version} - Release notes"),
+                "ja-JP": format!("Daedalus {version} リリースノート"),
+            },
+            "content": {
+                "en-US": format!(
+                    "Daedalus {version} is now available.\n\n\
+                     It is recommended that all Daedalus users upgrade to this version."
+                ),
+                "ja-JP": format!(
+                    "Daedalus {version} が利用可能になりました。\n\n\
+                     すべてのユーザーに、このバージョンへのアップグレードを推奨します。"
+                ),
+            },
+            "target": {
+                "daedalusVersion": version,
+                "platforms": &app_platforms
+            },
+            "action": {
+                "label": { "en-US": "Release notes", "ja-JP": "リリースノート" },
+                "url": {
+                    "en-US": release_notes_url,
+                    "ja-JP": &release_notes_url_ja
+                },
+            },
+            "date": updated_at,
+            "type": "announcement",
+        }));
+    }
+
+    Ok(items)
+}
+
+fn immutable_release_structure(item: &Value, index: usize) -> Result<Value> {
+    let mut structure = item.clone();
+    for pointer in ["/title", "/content", "/action/label"] {
+        let copy = structure
+            .pointer_mut(pointer)
+            .and_then(Value::as_object_mut)
+            .ok_or_else(|| {
+                anyhow::anyhow!(
+                    "newsfeed draft item {index} localized copy field '{pointer}' is missing or not an object"
+                )
+            })?;
+        for (locale, value) in copy {
+            anyhow::ensure!(
+                value.is_string(),
+                "newsfeed draft item {index} localized copy '{pointer}/{locale}' is not a string"
+            );
+            *value = Value::Null;
+        }
+    }
+    Ok(structure)
+}
+
+fn validate_release_draft(edited: &[Value], generated: &[Value]) -> Result<()> {
+    anyhow::ensure!(
+        edited.len() == generated.len(),
+        "newsfeed draft item count changed from {} to {}; only localized copy edits are allowed",
+        generated.len(),
+        edited.len()
+    );
+
+    for (index, (edited_item, generated_item)) in edited.iter().zip(generated.iter()).enumerate() {
+        let edited_structure = immutable_release_structure(edited_item, index)?;
+        let generated_structure = immutable_release_structure(generated_item, index)?;
+        anyhow::ensure!(
+            edited_structure == generated_structure,
+            "newsfeed draft item {index} changed immutable release structure; only localized title, content, and action label text may be edited"
+        );
+    }
+
+    Ok(())
 }
 
 // ── newsfeed publish ─────────────────────────────────────────────────────────
@@ -432,4 +573,252 @@ fn confirm(prompt: &str) -> Result<bool> {
         .read_line(&mut answer)
         .context("reading stdin")?;
     Ok(matches!(answer.trim().to_lowercase().as_str(), "y" | "yes"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn platform(version: &str, url: &str, sha256: &str) -> VersionPlatform {
+        VersionPlatform {
+            version: version.to_string(),
+            url: url.to_string(),
+            sha256: sha256.to_string(),
+        }
+    }
+
+    fn linux_manifest() -> VersionJson {
+        VersionJson {
+            platforms: HashMap::from([
+                (
+                    "linux-deb".to_string(),
+                    platform("6.0.1", "https://updates.example/daedalus.deb", "deb-sha"),
+                ),
+                (
+                    "linux-rpm".to_string(),
+                    platform("6.0.1", "https://updates.example/daedalus.rpm", "rpm-sha"),
+                ),
+            ]),
+        }
+    }
+
+    fn assert_immutable_rejected(edited: &[Value], generated: &[Value]) {
+        assert!(validate_release_draft(edited, generated)
+            .expect_err("immutable release mutation must fail")
+            .to_string()
+            .contains("immutable release structure"));
+    }
+
+    #[test]
+    fn linux_pair_creates_one_ordinary_announcement_only() {
+        let manifest = linux_manifest();
+        let version = validate_version_json(&manifest).expect("validate Linux manifest");
+        let items = build_release_draft(
+            &manifest,
+            &version,
+            "https://releases.example/6.0.1",
+            3_600_000,
+        )
+        .expect("build Linux release draft");
+        validate_release_draft(&items, &items).expect("validate generated Linux draft");
+
+        assert_eq!(items.len(), 1);
+        assert_eq!(items[0]["type"], "announcement");
+        assert_eq!(items[0]["target"]["platforms"], json!(["linux"]));
+        assert_eq!(
+            items[0]["target"]["daedalusVersion"],
+            format!(">={MIN_AUTO_UPDATE_VERSION} <6.0.1")
+        );
+        assert!(items[0].get("softwareUpdate").is_none());
+        assert_eq!(
+            items[0]["action"]["url"]["en-US"],
+            "https://releases.example/6.0.1"
+        );
+    }
+
+    #[test]
+    fn mixed_release_excludes_linux_from_software_update() {
+        let mut manifest = linux_manifest();
+        manifest.platforms.insert(
+            "windows".to_string(),
+            platform("6.0.1", "https://updates.example/daedalus.exe", "win-sha"),
+        );
+        manifest.platforms.insert(
+            "darwin".to_string(),
+            platform("6.0.1", "https://updates.example/daedalus.pkg", "mac-sha"),
+        );
+        let version = validate_version_json(&manifest).expect("validate mixed manifest");
+        let items = build_release_draft(
+            &manifest,
+            &version,
+            "https://releases.example/6.0.1",
+            3_600_000,
+        )
+        .expect("build mixed release draft");
+
+        validate_release_draft(&items, &items).expect("validate generated mixed draft");
+        let update = items
+            .iter()
+            .find(|item| item["type"] == "software-update")
+            .expect("software update item");
+        assert_eq!(update["target"]["platforms"], json!(["darwin", "win32"]));
+        assert!(update["softwareUpdate"].get("linux").is_none());
+        assert!(update["softwareUpdate"].get("linux-deb").is_none());
+        assert!(update["softwareUpdate"].get("linux-rpm").is_none());
+        assert_eq!(
+            update["softwareUpdate"]["win32"]["url"],
+            "https://updates.example/daedalus.exe"
+        );
+
+        let linux_targets = items
+            .iter()
+            .filter(|item| {
+                item["target"]["platforms"]
+                    .as_array()
+                    .is_some_and(|platforms| platforms.iter().any(|value| value == "linux"))
+            })
+            .count();
+        assert_eq!(linux_targets, 1);
+    }
+
+    #[test]
+    fn preserves_non_linux_update_and_release_announcement() {
+        let manifest = VersionJson {
+            platforms: HashMap::from([(
+                "windows".to_string(),
+                platform("6.0.1", "https://updates.example/daedalus.exe", "win-sha"),
+            )]),
+        };
+        let version = validate_version_json(&manifest).expect("validate Windows manifest");
+        let items = build_release_draft(
+            &manifest,
+            &version,
+            "https://releases.example/6.0.1",
+            3_600_000,
+        )
+        .expect("build Windows release draft");
+
+        assert_eq!(items.len(), 2);
+        assert_eq!(items[0]["type"], "software-update");
+        assert_eq!(items[0]["target"]["platforms"], json!(["win32"]));
+        assert_eq!(items[1]["type"], "announcement");
+        assert_eq!(items[1]["target"]["platforms"], json!(["win32"]));
+        assert_eq!(items[1]["target"]["daedalusVersion"], "6.0.1");
+    }
+
+    #[test]
+    fn rejects_editor_mutations_of_linux_announcement_contract() {
+        let manifest = linux_manifest();
+        let version = validate_version_json(&manifest).expect("validate Linux manifest");
+        let original = build_release_draft(
+            &manifest,
+            &version,
+            "https://releases.example/6.0.1",
+            3_600_000,
+        )
+        .expect("build Linux release draft");
+
+        let mut localized_copy = original.clone();
+        localized_copy[0]["title"]["en-US"] = json!("Edited Linux upgrade title");
+        localized_copy[0]["content"]["ja-JP"] = json!("編集済み本文");
+        validate_release_draft(&localized_copy, &original)
+            .expect("localized copy edits remain allowed");
+
+        let mut target = original.clone();
+        target[0]["target"]["daedalusVersion"] = json!(">=0.0.0");
+        assert_immutable_rejected(&target, &original);
+
+        let mut action = original.clone();
+        action[0]["action"]["url"]["en-US"] = json!("https://malicious.example/");
+        assert_immutable_rejected(&action, &original);
+
+        let mut item_type = original.clone();
+        item_type[0]["type"] = json!("software-update");
+        assert_immutable_rejected(&item_type, &original);
+
+        assert!(validate_release_draft(&[], &original)
+            .expect_err("removed Linux announcement must fail")
+            .to_string()
+            .contains("item count changed"));
+    }
+
+    #[test]
+    fn rejects_editor_mutations_of_app_update_artifacts() {
+        let mut manifest = linux_manifest();
+        manifest.platforms.insert(
+            "windows".to_string(),
+            platform("6.0.1", "https://updates.example/daedalus.exe", "win-sha"),
+        );
+        manifest.platforms.insert(
+            "darwin".to_string(),
+            platform("6.0.1", "https://updates.example/daedalus.pkg", "mac-sha"),
+        );
+        let version = validate_version_json(&manifest).expect("validate mixed manifest");
+        let original = build_release_draft(
+            &manifest,
+            &version,
+            "https://releases.example/6.0.1",
+            3_600_000,
+        )
+        .expect("build mixed release draft");
+        let update_index = original
+            .iter()
+            .position(|item| item["type"] == "software-update")
+            .expect("software-update item");
+
+        let mut linux_target = original.clone();
+        linux_target[update_index]["target"]["platforms"]
+            .as_array_mut()
+            .unwrap()
+            .push(json!("linux"));
+        assert_immutable_rejected(&linux_target, &original);
+
+        let mut win32_url = original.clone();
+        win32_url[update_index]["softwareUpdate"]["win32"]["url"] =
+            json!("https://malicious.example/daedalus.exe");
+        assert_immutable_rejected(&win32_url, &original);
+
+        let mut darwin_hash = original.clone();
+        darwin_hash[update_index]["softwareUpdate"]["darwin"]["hash"] = json!("changed-mac-sha");
+        assert_immutable_rejected(&darwin_hash, &original);
+
+        let mut removed_win32 = original.clone();
+        removed_win32[update_index]["softwareUpdate"]
+            .as_object_mut()
+            .unwrap()
+            .remove("win32");
+        assert_immutable_rejected(&removed_win32, &original);
+    }
+
+    #[test]
+    fn validates_pair_and_one_release_version() {
+        let mut missing_rpm = linux_manifest();
+        missing_rpm.platforms.remove("linux-rpm");
+        assert!(validate_version_json(&missing_rpm)
+            .expect_err("partial Linux release must fail")
+            .to_string()
+            .contains("requires both linux-deb and linux-rpm"));
+
+        let mut mixed_versions = linux_manifest();
+        mixed_versions
+            .platforms
+            .get_mut("linux-rpm")
+            .unwrap()
+            .version = "6.0.2".to_string();
+        assert!(validate_version_json(&mixed_versions)
+            .expect_err("mixed release versions must fail")
+            .to_string()
+            .contains("mixes versions"));
+
+        let retired = VersionJson {
+            platforms: HashMap::from([(
+                "linux".to_string(),
+                platform("6.0.1", "https://updates.example/daedalus.bin", "bin-sha"),
+            )]),
+        };
+        assert!(validate_version_json(&retired)
+            .expect_err("retired portable manifest must fail")
+            .to_string()
+            .contains("retired portable .bin channel"));
+    }
 }

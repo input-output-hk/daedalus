@@ -32,6 +32,10 @@
 
 ## 11.2.0
 
+### Features
+
+- Linux: releases now ship only fixed-path `.deb` and `.rpm` system packages; the portable `.bin` and its automatic update path are retired. Legacy users receive manual migration announcements, and package-manager installation/upgrades preserve `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus` wallet state.
+
 ### Fixes
 
 - Mithril: kill the snapshot-list process immediately when the user declines, instead of waiting for a DNS timeout (~30 s) that produced spurious errors in Tor/Whonix environments ([PR #3350](https://github.com/input-output-hk/daedalus/pull/3350)).

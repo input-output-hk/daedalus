@@ -266,20 +266,65 @@ softwareupdate --install-rosetta
 
 ### Linux
 
-```bash
-# Ensure user is in correct groups
-sudo usermod -aG nix-users $USER
+Linux has two native shipping outputs for each cluster and no generic
+`installer-<cluster>` output:
 
-# Build either system-package format
+```bash
 nix build -L .#deb-installer-mainnet
 nix build -L .#rpm-installer-mainnet
 ```
 
-Both formats install under `/opt/daedalus/<cluster>`. Privileged lifecycle,
-AppArmor, SELinux, and exact-renderer validation must run only on approved
-disposable hosts; a successful Nix build is not installed-sandbox
-certification. Fedora 43 RPM setup fails closed unless SELinux is enforcing and
-the stock Chrome sandbox policy can label the exact packaged helper path.
+Replace `mainnet` with `preprod`, `preview`, or `selfnode` as needed.
+`nix build .#installer-mainnet` is intentionally unavailable on Linux.
+Portable `.bin`, AppImage, Flatpak, and Snap are not alternative product
+outputs.
+
+The reusable `daedalus-<cluster>` package remains available for wallet
+development:
+
+```bash
+nix run -L .#daedalus-mainnet
+```
+
+It is a developer-only, wallet-only Nix-store package, not a Linux release
+artifact. Only root-installed fixed-path `.deb`/`.rpm` packages are
+dApp-capable once the independent runtime and release gates also pass.
+The system-package launcher config sets
+`applicationUpdateMode: system-package-disabled` and omits `updateRunnerBin`;
+the application cannot execute a downloaded Linux artifact. New versions are
+announced through ordinary news and installed manually with the package
+manager.
+
+Build and archive checks are not installed-host certification. Run the focused
+flake contracts when changing Linux packaging or release exposure:
+
+```bash
+nix build -L .#checks.x86_64-linux.linux-release-artifacts-contract
+nix build -L .#checks.x86_64-linux.linux-deb-package-contract
+nix build -L .#checks.x86_64-linux.linux-rpm-package-contract
+nix build -L .#checks.x86_64-linux.linux-remaining-launcher-contract
+nix build -L .#checks.x86_64-linux.drt-test
+```
+
+The packages install under `/opt/daedalus/<cluster>` and expose
+`/usr/bin/daedalus-<cluster>`. Install a downloaded local package through the
+host package manager:
+
+```bash
+sudo apt install ./DOWNLOADED.deb
+sudo dnf install ./DOWNLOADED.rpm
+```
+
+For an upgrade, fully close Daedalus and run the same command on the newer
+matching cluster/format package from the official release announcement.
+Package lifecycle scripts never inspect, move, or delete
+`${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus`. If `XDG_DATA_HOME` is custom,
+launch `/usr/bin/daedalus-<cluster>` with that same value consistently.
+Privileged lifecycle, AppArmor, SELinux, upgrade, rollback, and exact-renderer
+validation run only on approved disposable hosts; a successful Nix build is not
+installed-sandbox certification. Fedora 43 RPM setup fails closed unless
+SELinux is enforcing and the stock Chrome sandbox policy can label the exact
+packaged helper path.
 
 ### Windows (WSL2)
 

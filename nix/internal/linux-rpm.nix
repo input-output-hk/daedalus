@@ -67,8 +67,10 @@ in
       echo 'Nix-store symlink remains in RPM payload' >&2
       exit 1
     fi
-    rm -f "$root/libexec/.patchelf-static" "$root/libexec/update-runner" "$root/share/icon_large.png"
-    rm -rf "$root/share/applications"
+    test ! -e "$root/libexec/.patchelf-static"
+    test ! -e "$root/libexec/update-runner"
+    test ! -e "$root/share/icon_large.png"
+    test ! -e "$root/share/applications"
 
     electron="$root/libexec/bundle-electron/lib/electron/electron"
     helper="$root/libexec/bundle-electron/lib/electron/chrome-sandbox"
