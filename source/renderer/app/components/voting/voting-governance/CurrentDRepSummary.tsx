@@ -6,6 +6,7 @@ import DRepStatusBadge from '../../governance/_shared/DRepStatusBadge';
 import type { DRepDelegation } from '../../../api/wallets/types';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 import { messages } from './CurrentDRepSummary.messages';
+import { sharedGovernanceMessages } from './shared-messages';
 import styles from './CurrentVoteSummary.scss';
 
 type Props = {
@@ -110,7 +111,9 @@ function CurrentDRepSummary({ currentDRep, drepEntry, intl }: Props) {
             {isAbstain ? '⊘' : '✕'}
           </span>
           {intl.formatMessage(
-            isAbstain ? messages.statusAbstain : messages.statusNoConfidence
+            isAbstain
+              ? sharedGovernanceMessages.abstain
+              : sharedGovernanceMessages.noConfidence
           )}
         </span>
       </div>

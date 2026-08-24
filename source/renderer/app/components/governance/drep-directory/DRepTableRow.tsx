@@ -1,9 +1,9 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
-import globalMessages from '../../../i18n/global-messages';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import globalMessages from '../../../i18n/global-messages';
 import DRepStatusBadge from '../_shared/DRepStatusBadge';
 import DRepVotingPowerShare from '../_shared/DRepVotingPowerShare';
 import DRepIdDisplay from '../_shared/DRepIdDisplay';

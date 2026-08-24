@@ -2847,51 +2847,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!On-chain",
-        "description": "Source label for on-chain DRep data",
-        "id": "governance.drepDirectory.source.onChain"
-      },
-      {
-        "defaultMessage": "!!!On-chain anchor reference",
-        "description": "Source label for the raw anchor URL and hash pair recorded on-chain",
-        "id": "governance.drepDetail.sourceLabel.anchorReference"
-      },
-      {
-        "defaultMessage": "!!!Verified off-chain content",
-        "description": "Source label for hash-verified anchor content",
-        "id": "governance.drepDetail.sourceLabel.verified"
-      },
-      {
-        "defaultMessage": "!!!Fetched from {host}, hash-matched the on-chain anchor hash.",
-        "description": "Tooltip for the verified off-chain content source label",
-        "id": "governance.drepDetail.sourceLabel.verified.tooltip"
-      },
-      {
-        "defaultMessage": "!!!Unverified anchor",
-        "description": "Source label for fetched but not yet hash-verified content",
-        "id": "governance.drepDetail.sourceLabel.unverified"
-      },
-      {
-        "defaultMessage": "!!!Anchor content fetched but not yet hash-verified. Treat as untrusted.",
-        "description": "Tooltip for the unverified anchor source label",
-        "id": "governance.drepDetail.sourceLabel.unverified.tooltip"
-      },
-      {
-        "defaultMessage": "!!!Anchor unavailable",
-        "description": "Source label when the anchor fetch or hash check failed",
-        "id": "governance.drepDetail.sourceLabel.anchorUnavailable"
-      },
-      {
-        "defaultMessage": "!!!The anchor URL could not be retrieved or did not match the on-chain hash. Off-chain profile is not shown.",
-        "description": "Tooltip for the anchor unavailable source label",
-        "id": "governance.drepDetail.sourceLabel.anchorUnavailable.tooltip"
-      }
-    ],
-    "path": "source/renderer/app/components/governance/_shared/DRepSourceLabel.tsx"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Expiring soon",
         "description": "Badge shown when a DRep is close to losing its voting power through inactivity",
         "id": "governance.drepDirectory.expiry.label"
@@ -3097,11 +3052,6 @@
         "id": "governance.drepDetail.anchor.hash"
       },
       {
-        "defaultMessage": "!!!Source",
-        "description": "Label for the anchor source-label row",
-        "id": "governance.drepDetail.anchor.source"
-      },
-      {
         "defaultMessage": "!!!No anchor is recorded on-chain for this DRep.",
         "description": "Shown when the DRep registered without an anchor",
         "id": "governance.drepDetail.anchor.none"
@@ -3125,11 +3075,6 @@
         "defaultMessage": "!!!Read directly from the Cardano ledger by your local node.",
         "description": "Explains what the on-chain data section contains",
         "id": "governance.drepDetail.onchain.title.explanation"
-      },
-      {
-        "defaultMessage": "!!!Source",
-        "description": "Label for the on-chain section source-label row",
-        "id": "governance.drepDetail.onchain.source"
       },
       {
         "defaultMessage": "!!!Status",
@@ -3495,16 +3440,6 @@
         "defaultMessage": "!!!Not delegated",
         "description": "Shown for a wallet with no governance delegation",
         "id": "governance.dashboard.notDelegated"
-      },
-      {
-        "defaultMessage": "!!!Abstain",
-        "description": "Shown for a wallet delegated to the abstain target",
-        "id": "governance.dashboard.target.abstain"
-      },
-      {
-        "defaultMessage": "!!!No confidence",
-        "description": "Shown for a wallet delegated to the no-confidence target",
-        "id": "governance.dashboard.target.noConfidence"
       },
       {
         "defaultMessage": "!!!Loading DRep…",
@@ -6205,16 +6140,6 @@
         "defaultMessage": "!!!Delegated to DRep",
         "description": "Status label when the wallet delegates its voting power to a DRep",
         "id": "voting.governance.currentVote.statusDelegatedToDRep"
-      },
-      {
-        "defaultMessage": "!!!Abstain",
-        "description": "Status label when the wallet voting power is set to Abstain",
-        "id": "voting.governance.currentVote.statusAbstain"
-      },
-      {
-        "defaultMessage": "!!!No Confidence",
-        "description": "Status label when the wallet voting power is set to No Confidence",
-        "id": "voting.governance.currentVote.statusNoConfidence"
       },
       {
         "defaultMessage": "!!!No governance delegation",

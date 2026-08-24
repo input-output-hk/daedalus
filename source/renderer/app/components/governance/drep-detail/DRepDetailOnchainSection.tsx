@@ -28,11 +28,6 @@ const messages = defineMessages({
       '!!!Read directly from the Cardano ledger by your local node.',
     description: 'Explains what the on-chain data section contains',
   },
-  sourceRowLabel: {
-    id: 'governance.drepDetail.onchain.source',
-    defaultMessage: '!!!Source',
-    description: 'Label for the on-chain section source-label row',
-  },
   statusLabel: {
     id: 'governance.drepDetail.status',
     defaultMessage: '!!!Status',

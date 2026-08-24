@@ -264,7 +264,7 @@ exports[`CurrentDRepSummary core states renders abstain with a caption and no DR
       >
         ⊘
       </span>
-      !!!Abstain
+      Abstain
     </span>
   </div>
   <p
@@ -297,7 +297,7 @@ exports[`CurrentDRepSummary core states renders no confidence with a caption and
       >
         ✕
       </span>
-      !!!No Confidence
+      No Confidence
     </span>
   </div>
   <p

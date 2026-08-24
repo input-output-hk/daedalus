@@ -56,11 +56,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Anchor hash',
     description: 'Label for the on-chain anchor hash field',
   },
-  sourceRowLabel: {
-    id: 'governance.drepDetail.anchor.source',
-    defaultMessage: '!!!Source',
-    description: 'Label for the anchor source-label row',
-  },
   none: {
     id: 'governance.drepDetail.anchor.none',
     defaultMessage: '!!!No anchor is recorded on-chain for this DRep.',

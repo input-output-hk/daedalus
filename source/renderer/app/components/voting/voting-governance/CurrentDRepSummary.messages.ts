@@ -12,17 +12,6 @@ export const messages = defineMessages({
     description:
       'Status label when the wallet delegates its voting power to a DRep',
   },
-  statusAbstain: {
-    id: 'voting.governance.currentVote.statusAbstain',
-    defaultMessage: '!!!Abstain',
-    description: 'Status label when the wallet voting power is set to Abstain',
-  },
-  statusNoConfidence: {
-    id: 'voting.governance.currentVote.statusNoConfidence',
-    defaultMessage: '!!!No Confidence',
-    description:
-      'Status label when the wallet voting power is set to No Confidence',
-  },
   noDelegationTitle: {
     id: 'voting.governance.currentVote.noDelegation.title',
     defaultMessage: '!!!No governance delegation',

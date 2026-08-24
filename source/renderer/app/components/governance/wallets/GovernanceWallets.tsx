@@ -1,9 +1,10 @@
 import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
-import globalMessages from '../../../i18n/global-messages';
 import BigNumber from 'bignumber.js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { sharedGovernanceMessages } from '../../voting/voting-governance/shared-messages';
+import globalMessages from '../../../i18n/global-messages';
 import DRepIdDisplay from '../_shared/DRepIdDisplay';
 import DRepStatusBadge from '../_shared/DRepStatusBadge';
 import DRepDirectorySkeleton from '../drep-directory/DRepDirectorySkeleton';
@@ -32,16 +33,6 @@ const messages = defineMessages({
     id: 'governance.dashboard.notDelegated',
     defaultMessage: '!!!Not delegated',
     description: 'Shown for a wallet with no governance delegation',
-  },
-  abstainTarget: {
-    id: 'governance.dashboard.target.abstain',
-    defaultMessage: '!!!Abstain',
-    description: 'Shown for a wallet delegated to the abstain target',
-  },
-  noConfidenceTarget: {
-    id: 'governance.dashboard.target.noConfidence',
-    defaultMessage: '!!!No confidence',
-    description: 'Shown for a wallet delegated to the no-confidence target',
   },
   loadingTarget: {
     id: 'governance.dashboard.target.loading',
@@ -138,10 +129,14 @@ function WalletDelegationRow({
       );
     }
     if (currentDRep.kind === 'abstain') {
-      return <span>{intl.formatMessage(messages.abstainTarget)}</span>;
+      return (
+        <span>{intl.formatMessage(sharedGovernanceMessages.abstain)}</span>
+      );
     }
     if (currentDRep.kind === 'no_confidence') {
-      return <span>{intl.formatMessage(messages.noConfidenceTarget)}</span>;
+      return (
+        <span>{intl.formatMessage(sharedGovernanceMessages.noConfidence)}</span>
+      );
     }
     if (drepEntry == null) {
       return (

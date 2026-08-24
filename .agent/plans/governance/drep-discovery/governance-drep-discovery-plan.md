@@ -66,8 +66,8 @@ Artifact placement decision: this plan and its task tracker are canonical under 
 - [ ] DRep discovery surfaces load the latest local state on entry and provide an explicit refresh control.
 - [ ] DRep favorites persist across app sessions through Electron local store and are not per-wallet or synced.
 - [ ] Slice 4 local discovery renders local on-chain fields and anchor presence only; it does not render anchor-derived profile content.
-- [ ] Verified anchor metadata appears only after hash verification and source labeling are in place.
-- [ ] All anchor-derived content carries a verified off-chain content source label wherever it is rendered.
+- [ ] Verified anchor metadata appears only after hash verification, and the section it appears in says where it came from.
+- [ ] Anchor-derived content is separated from ledger data by the section it sits in rather than by a per-item label. The detail view names its two sections "On-chain data" and "Off-chain metadata", and the off-chain heading states that its contents are shown only after matching the hash recorded on chain. A per-item source badge was built and then dropped: naming the sections says the same thing once, where a badge repeated it on every row.
 - [ ] DRep selector state crosses into the delegation form through React Router `location.state`. `VotingStore` must not read `GovernanceStore` directly.
 - [ ] Delegation submission continues through the existing software-wallet `delegateVotes` request and existing hardware-wallet signing path in `VotingStore`.
 - [ ] Slice 2 confirmation shows the DRep ID only; verified display names are added only after the verified anchor pipeline is active.
@@ -131,7 +131,7 @@ Artifact placement decision: this plan and its task tracker are canonical under 
 | Same-vote prevention | Client-side after canonical-form normalization; server `same_vote` error retained as authoritative safety net. |
 | Storybook isolation | Each `currentVote` knob change uses a pure wallet factory and force-remounts `VotingPowerDelegation` via a React `key`. No mutation of module-level `GOVERNANCE_WALLETS`. |
 | No auto-delegation | Daedalus never sets a default DRep. When a wallet has not delegated, the panel must show the CIP-1694 reward-withdrawal warning and a CTA to choose one. |
-| DRep name source | CIP-119 `body.givenName` only. If the anchor has not been verified, the name is hidden and only the DRep id is shown with an unverified source label. |
+| DRep name source | CIP-119 `body.givenName` only. If the anchor has not been verified, the name is hidden and only the DRep id is shown, with the off-chain section stating why its contents are absent. |
 | Anchor URL display | Show as an external link with `target="_blank" rel="noopener noreferrer"`. Never render the raw anchor JSON inline in the panel; the DRep detail view owns full anchor rendering. |
 
 ---

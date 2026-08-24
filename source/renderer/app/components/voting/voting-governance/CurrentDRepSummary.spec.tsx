@@ -77,7 +77,7 @@ describe('CurrentDRepSummary core states', () => {
 
   it('renders abstain with a caption and no DRep id (snapshot)', () => {
     const { container } = renderSummary({ kind: 'abstain' });
-    expect(screen.getByText('!!!Abstain')).toBeInTheDocument();
+    expect(screen.getByText('Abstain')).toBeInTheDocument();
     expect(
       screen.getByText(
         '!!!Your stake is recorded on chain as not participating in governance.'
@@ -91,7 +91,7 @@ describe('CurrentDRepSummary core states', () => {
 
   it('renders no confidence with a caption and no DRep id (snapshot)', () => {
     const { container } = renderSummary({ kind: 'no_confidence' });
-    expect(screen.getByText('!!!No Confidence')).toBeInTheDocument();
+    expect(screen.getByText('No Confidence')).toBeInTheDocument();
     expect(
       screen.getByText(
         '!!!Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.'
