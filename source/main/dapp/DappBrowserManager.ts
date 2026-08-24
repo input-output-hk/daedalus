@@ -1,6 +1,6 @@
 import path from 'path';
 import { BrowserWindow } from 'electron';
-import type { Session } from 'electron';
+import type { Session, WebPreferences } from 'electron';
 import type { DappEgressPolicy } from './DappEgressPolicy';
 import { requireDappSandboxAvailable } from '../sandbox/dappSandboxAvailability';
 import {
@@ -31,6 +31,84 @@ type ActiveGuest = {
   readonly egressPolicy: DappEgressPolicy;
   initialLoad: boolean;
   teardown?: Promise<void>;
+};
+export const createDappGuestWebPreferences = (
+  guestSession: Session,
+  preload = path.join(__dirname, 'dapp.js')
+): WebPreferences => ({
+  session: guestSession,
+  preload,
+  nodeIntegration: false,
+  nodeIntegrationInWorker: false,
+  nodeIntegrationInSubFrames: false,
+  contextIsolation: true,
+  sandbox: true,
+  webSecurity: true,
+  allowRunningInsecureContent: false,
+  webviewTag: false,
+  devTools: false,
+  plugins: false,
+  spellcheck: false,
+  enableWebSQL: false,
+  navigateOnDragDrop: false,
+  disableDialogs: true,
+  autoplayPolicy: 'document-user-activation-required',
+  disableBlinkFeatures: 'DirectSockets,WebTransport',
+});
+export const installDappGuestLifecyclePolicy = (
+  window: BrowserWindow,
+  entryUrl: string,
+  windowTitle: string,
+  isInitialLoad: () => boolean,
+  isTearingDown: () => boolean,
+  revoke: (reason: DappGuestRevocationReason) => void
+): void => {
+  const { webContents } = window;
+  const denyNavigation = (event: Electron.Event) => {
+    event.preventDefault();
+    revoke('navigation');
+  };
+
+  installGuestDenialHandlers(webContents);
+  webContents.on('will-navigate', denyNavigation);
+  webContents.on('will-frame-navigate', denyNavigation);
+  webContents.on('will-redirect', denyNavigation);
+  webContents.on(
+    'did-start-navigation',
+    (_event, url, _isInPlace, isMainFrame) => {
+      let isExpectedInitialLoad = false;
+      try {
+        isExpectedInitialLoad =
+          isInitialLoad() && isMainFrame && parseDappUrl(url).href === entryUrl;
+      } catch {
+        // Invalid navigation is revoked below.
+      }
+      if (!isExpectedInitialLoad) revoke('navigation');
+    }
+  );
+  webContents.on('did-navigate-in-page', (_event, _url, isMainFrame) => {
+    if (isMainFrame) revoke('navigation');
+  });
+  webContents.on(
+    'did-fail-load',
+    (_event, _code, _description, _url, isMainFrame) => {
+      if (isMainFrame) revoke('load-failed');
+    }
+  );
+  webContents.on('render-process-gone', () => revoke('crashed'));
+  webContents.on('unresponsive', () => revoke('unresponsive'));
+  webContents.on('preload-error', () => revoke('preload-failed'));
+  webContents.on('page-title-updated', (event) => {
+    event.preventDefault();
+    if (!window.isDestroyed()) window.setTitle(windowTitle);
+  });
+  window.on('close', (event) => {
+    if (!isTearingDown()) {
+      event.preventDefault();
+      revoke('closed');
+    }
+  });
+  window.on('closed', () => revoke('closed'));
 };
 
 export class DappBrowserManager {
@@ -77,26 +155,7 @@ export class DappBrowserManager {
         frame: true,
         fullscreenable: false,
         autoHideMenuBar: true,
-        webPreferences: {
-          session: guestSession,
-          preload: path.join(__dirname, 'dapp.js'),
-          nodeIntegration: false,
-          nodeIntegrationInWorker: false,
-          nodeIntegrationInSubFrames: false,
-          contextIsolation: true,
-          sandbox: true,
-          webSecurity: true,
-          allowRunningInsecureContent: false,
-          webviewTag: false,
-          devTools: false,
-          plugins: false,
-          spellcheck: false,
-          enableWebSQL: false,
-          navigateOnDragDrop: false,
-          disableDialogs: true,
-          autoplayPolicy: 'document-user-activation-required',
-          disableBlinkFeatures: 'DirectSockets,WebTransport',
-        },
+        webPreferences: createDappGuestWebPreferences(guestSession),
       });
     } catch {
       await egressPolicy.close();
@@ -111,7 +170,14 @@ export class DappBrowserManager {
       initialLoad: true,
     };
     this.activeGuest = guest;
-    this.installLifecyclePolicy(guest);
+    installDappGuestLifecyclePolicy(
+      guest.window,
+      guest.launch.entryUrl,
+      guest.launch.windowTitle,
+      () => guest.initialLoad,
+      () => guest.teardown !== undefined,
+      (reason) => this.teardown(guest, reason).catch(() => undefined)
+    );
 
     try {
       await guestWindow.loadURL(launch.entryUrl);
@@ -134,61 +200,6 @@ export class DappBrowserManager {
 
   async close(reason: DappGuestRevocationReason = 'closed'): Promise<void> {
     if (this.activeGuest) await this.teardown(this.activeGuest, reason);
-  }
-
-  private installLifecyclePolicy(guest: ActiveGuest): void {
-    const { window, launch } = guest;
-    const { webContents } = window;
-    const revoke = (reason: DappGuestRevocationReason) => {
-      this.teardown(guest, reason).catch(() => undefined);
-    };
-    const denyNavigation = (event: Electron.Event) => {
-      event.preventDefault();
-      revoke('navigation');
-    };
-
-    installGuestDenialHandlers(webContents);
-    webContents.on('will-navigate', denyNavigation);
-    webContents.on('will-frame-navigate', denyNavigation);
-    webContents.on('will-redirect', denyNavigation);
-    webContents.on(
-      'did-start-navigation',
-      (_event, url, _isInPlace, isMainFrame) => {
-        let isExpectedInitialLoad = false;
-        try {
-          isExpectedInitialLoad =
-            guest.initialLoad &&
-            isMainFrame &&
-            parseDappUrl(url).href === launch.entryUrl;
-        } catch {
-          // Invalid navigation is revoked below.
-        }
-        if (!isExpectedInitialLoad) revoke('navigation');
-      }
-    );
-    webContents.on('did-navigate-in-page', (_event, _url, isMainFrame) => {
-      if (isMainFrame) revoke('navigation');
-    });
-    webContents.on(
-      'did-fail-load',
-      (_event, _code, _description, _url, isMainFrame) => {
-        if (isMainFrame) revoke('load-failed');
-      }
-    );
-    webContents.on('render-process-gone', () => revoke('crashed'));
-    webContents.on('unresponsive', () => revoke('unresponsive'));
-    webContents.on('preload-error', () => revoke('preload-failed'));
-    webContents.on('page-title-updated', (event) => {
-      event.preventDefault();
-      if (!window.isDestroyed()) window.setTitle(launch.windowTitle);
-    });
-    window.on('close', (event) => {
-      if (!guest.teardown) {
-        event.preventDefault();
-        revoke('closed');
-      }
-    });
-    window.on('closed', () => revoke('closed'));
   }
 
   private teardown(

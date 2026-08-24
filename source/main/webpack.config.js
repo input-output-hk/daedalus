@@ -50,6 +50,8 @@ module.exports = {
     index: './source/main/index.ts',
     preload: './source/main/preload.ts',
     dapp: './source/main/preloads/dapp.ts',
+    dappGuestSecurityHarness: './source/main/dapp/DappGuestSecurityHarness.ts',
+    dappSecurityHarnessPreload: './source/main/preloads/dappSecurityHarness.ts',
   },
   output: {
     path: path.join(process.cwd(), 'dist/main'),
