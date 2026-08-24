@@ -420,6 +420,7 @@
   "governance.drepDirectory.refreshing": "!!!更新中…",
   "governance.drepDirectory.reroll": "!!!Show different suggestions",
   "governance.drepDirectory.retry": "!!!再試行",
+  "governance.drepDirectory.search.clearTooltip": "!!!取り消す",
   "governance.drepDirectory.search.invalidId": "!!!無効なDRep IDです",
   "governance.drepDirectory.search.minLengthHint": "!!!IDで検索するには8文字以上入力してください",
   "governance.drepDirectory.searchPlaceholder": "!!!DRep IDで検索",

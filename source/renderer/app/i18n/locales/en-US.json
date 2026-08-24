@@ -420,6 +420,7 @@
   "governance.drepDirectory.refreshing": "!!!Refreshing…",
   "governance.drepDirectory.reroll": "!!!Show different suggestions",
   "governance.drepDirectory.retry": "!!!Retry",
+  "governance.drepDirectory.search.clearTooltip": "!!!Clear",
   "governance.drepDirectory.search.invalidId": "!!!Invalid DRep ID",
   "governance.drepDirectory.search.minLengthHint": "!!!Enter at least 8 characters to search by ID",
   "governance.drepDirectory.searchPlaceholder": "!!!Search by DRep ID or name",

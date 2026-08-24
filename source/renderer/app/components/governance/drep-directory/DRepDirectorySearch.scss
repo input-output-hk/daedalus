@@ -6,9 +6,93 @@
   min-width: 0;
 }
 
+// The icon and the clear button sit inside the field rather than beside it, as
+// they do on the stake pools screen: the row is already carrying the view
+// toggle, and furniture that belongs to the field should not read as another
+// control competing with it.
+.field {
+  position: relative;
+}
+
 .input {
   // Fills the row rather than sitting short of the view toggle beside it.
   width: 100%;
+
+  input {
+    // Polymorph takes an input's height from its vertical padding, and the
+    // padding here has to be set to keep the text clear of the icon on one
+    // side and the clear button on the other. So the height is stated rather
+    // than left to fall out of the padding, at the 50px the view toggle beside
+    // it and the search field on the stake pools screen both use.
+    border-radius: 4px;
+    height: 50px;
+    padding: 0 48px 0 45px;
+  }
+}
+
+// Both pieces of furniture are centred on the field rather than offset from its
+// edge, so neither drifts if the field's height is ever changed again.
+.searchIcon {
+  color: var(--theme-gov-search-icon-color);
+  left: 20px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+
+  svg {
+    display: block;
+    opacity: 0.3;
+    width: 15px;
+
+    g > g {
+      fill: var(--theme-gov-search-icon-color);
+    }
+  }
+}
+
+.searchIconFocused {
+  svg {
+    opacity: 0.7;
+  }
+}
+
+.clearSearch {
+  align-items: center;
+  display: flex;
+  position: absolute;
+  right: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.clearSearchButton {
+  align-items: center;
+  background-color: var(--theme-gov-search-clear-button-background-color);
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+
+  &:hover {
+    background-color: var(
+      --theme-gov-search-clear-button-hover-background-color
+    );
+  }
+}
+
+.clearSearchIcon {
+  display: flex;
+
+  > svg {
+    width: 10px;
+
+    > g > g {
+      fill: var(--theme-gov-search-clear-button-color);
+    }
+  }
 }
 
 .hint {

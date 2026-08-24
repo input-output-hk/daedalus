@@ -3540,6 +3540,11 @@
         "defaultMessage": "!!!Invalid DRep ID",
         "description": "Error shown for a full-length DRep ID that fails validation",
         "id": "governance.drepDirectory.search.invalidId"
+      },
+      {
+        "defaultMessage": "!!!Clear",
+        "description": "Tooltip of the button that empties the DRep search field",
+        "id": "governance.drepDirectory.search.clearTooltip"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectorySearch.tsx"

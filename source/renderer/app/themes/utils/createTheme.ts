@@ -1263,6 +1263,19 @@ export const createDaedalusComponentsTheme = (
       '--theme-gov-font-color-regular': `${text.primary}`,
       '--theme-gov-font-color-light': `${chroma(text.primary).alpha(0.7)}`,
       '--theme-gov-font-color-lighter': `${chroma(text.primary).alpha(0.5)}`,
+      // Search field furniture. The stake pools screen fixes the equivalent
+      // clear-button background to one rgba literal, which holds its weight
+      // against that screen's palette and not against the others. These
+      // derive from the theme's own text colour, so the button keeps the same
+      // relationship to its field in every theme.
+      '--theme-gov-search-icon-color': `${text.primary}`,
+      '--theme-gov-search-clear-button-color': `${text.primary}`,
+      '--theme-gov-search-clear-button-background-color': `${chroma(
+        text.primary
+      ).alpha(0.05)}`,
+      '--theme-gov-search-clear-button-hover-background-color': `${chroma(
+        text.primary
+      ).alpha(0.1)}`,
       // Badge colours. The hues are the severity vocabulary this app already
       // fixes for the password strength indicator, kept constant so a warning
       // reads as a warning everywhere; only the lightness moves, so the label

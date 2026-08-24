@@ -610,6 +610,47 @@ describe('DRepDirectory', () => {
     expect(screen.getByLabelText('!!!Inactive')).toBeInTheDocument();
   });
 
+  it('offers the clear button only once the search field holds something', () => {
+    renderComponent({ suggestedDReps: [realEntry(1)] });
+
+    expect(
+      screen.queryByRole('button', { name: '!!!Clear' })
+    ).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByPlaceholderText(/Search by DRep ID/), {
+      target: { value: realDrepId(2).slice(0, 'drep1'.length + 20) },
+    });
+
+    expect(
+      screen.getByRole('button', { name: '!!!Clear' })
+    ).toBeInTheDocument();
+  });
+
+  it('empties the search field and restores the cohort from the clear button', () => {
+    const suggested = realEntry(1);
+    renderComponent({
+      suggestedDReps: [suggested],
+      allDReps: [suggested, realEntry(2), realEntry(3)],
+    });
+
+    const input = screen.getByPlaceholderText(
+      /Search by DRep ID/
+    ) as HTMLInputElement;
+    fireEvent.change(input, {
+      target: { value: realDrepId(2).slice(0, 'drep1'.length + 20) },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: '!!!Clear' }));
+
+    expect(input.value).toBe('');
+    expect(
+      screen.queryByRole('button', { name: '!!!Clear' })
+    ).not.toBeInTheDocument();
+    // Back to the suggested cohort, not to the whole directory the query was
+    // searched against.
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+  });
+
   it('shows the min-length hint below 8 post-HRP characters and leaves the list unfiltered', () => {
     renderComponent({ suggestedDReps: [realEntry(1), realEntry(2)] });
 
@@ -1337,6 +1378,28 @@ describe('DRepDirectory', () => {
       // A favourite that does not match yields no results rather than pulling
       // the non-favourite it matches back into the list.
       expect(screen.queryByText('!!!View details')).not.toBeInTheDocument();
+    });
+
+    it('clears the favorites search from the same button', () => {
+      renderComponent({
+        suggestedDReps: [realEntry(1), realEntry(2)],
+        favoriteDRepIds: new Set([realDrepId(1)]),
+        view: 'favorites',
+      });
+
+      const input = screen.getByPlaceholderText(
+        /Search by DRep ID/
+      ) as HTMLInputElement;
+      fireEvent.change(input, {
+        target: { value: realDrepId(2).slice(0, 'drep1'.length + 20) },
+      });
+
+      expect(screen.queryByText('!!!View details')).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: '!!!Clear' }));
+
+      expect(input.value).toBe('');
+      expect(screen.getAllByText('!!!View details')).toHaveLength(1);
     });
 
     it('shows the noFavorites empty state with a working back-to-directory action', () => {
