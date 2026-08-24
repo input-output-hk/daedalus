@@ -49,6 +49,7 @@ module.exports = {
   entry: {
     index: './source/main/index.ts',
     preload: './source/main/preload.ts',
+    dapp: './source/main/preloads/dapp.ts',
   },
   output: {
     path: path.join(process.cwd(), 'dist/main'),
@@ -59,6 +60,8 @@ module.exports = {
   devtool: isDevelopment ? 'eval-source-map' : 'source-map',
   optimization: {
     minimize: false,
+    splitChunks: false,
+    runtimeChunk: false,
   },
   resolve: {
     symlinks: true, // for native libraries

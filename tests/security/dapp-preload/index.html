@@ -1,0 +1,37 @@
+<!doctype html>
+<script>
+  const providerReadyBeforePageScript = Boolean(window.cardano?.daedalus);
+  const privilegedGlobals = [
+    'ipcRenderer',
+    'require',
+    'process',
+    'Buffer',
+    'module',
+    'exports',
+    '__dirname',
+    '__filename',
+    'http',
+    'https',
+    'os',
+    'environment',
+    'buildLabel',
+    'legacyStateDir',
+    'isFlight',
+    'smashUrl',
+    'electronLog',
+    'spectronRequire',
+  ];
+
+  window.dappPreloadFixtureResult = window.cardano.daedalus
+    .isEnabled()
+    .then(() => {
+      throw new Error('Expected isEnabled to reject');
+    })
+    .catch((rejection) => ({
+      providerReadyBeforePageScript,
+      cardanoKeys: Object.keys(window.cardano),
+      rejection,
+      rejectionWasError: rejection instanceof Error,
+      leakedGlobals: privilegedGlobals.filter((name) => name in window),
+    }));
+</script>
