@@ -24,6 +24,7 @@
     "test:sandbox-canary": "electron --disable-gpu tests/security/sandbox-canary/main.js",
     "test:dapp-session": "electron --disable-gpu tests/security/dapp-session/main.js",
     "test:dapp-egress": "electron --disable-gpu tests/security/dapp-guest/main.js",
+    "test:dapp-security": "node tests/security/dapp-guest/run-installed-package.cjs",
     "test:generate:report": "yarn node-swc tests/reporter.ts",
     "test:unit": "yarn cucumber:run --require 'tests/**/unit/**/steps/**/*.ts' --tags '@unit and not @skip and not @wip'",
     "test:unit:rerun": "yarn cucumber:rerun --require 'tests/**/unit/**/steps/**/*.ts' --tags '@unit and not @skip and not @wip'",
