@@ -214,7 +214,7 @@ physical results against exact production artifacts and adapter commits.
 - The public UTxO APIs cannot produce `transaction_unspent_output` CBOR.
 - `getUTxOByTxIn` can retrieve full ledger outputs for recent eras and is the required full-output foundation.
 - Existing wallet `TxOut` persistence is insufficient because it stores only address and token bundle.
-- Existing software transaction signing does not provide a CIP-30 witness-only response or a validated earlier-transaction overlay within one batch request.
+- The reviewed sibling backend now exposes a dormant witness-only software-signing endpoint bound to the authenticated full-ledger context and ordered exact request bytes; aggregate activation and the Daedalus pin remain gated by task-209.
 - Existing metadata signing is not general CIP-8.
 - Current derivation APIs expose roles 0, 1, and 2 but not a dedicated CIP-105 DRep role.
 - Stake-key registration state is not exposed with sufficient precision for CIP-95.
@@ -1168,17 +1168,18 @@ The UTxO endpoint or replacement context API must query full ledger outputs thro
 
 ### Software Signing
 
-The existing `transactions-sign` endpoint combined with main-process witness-set diffing is the baseline for witness-only responses; a new backend signing endpoint requires written justification from the backend contract validation task.
-
-The backend request binds exact transaction bytes, reviewed context token and
-digest, ordered current-request parents, request index, and `partialSign`. Reuse
-of `transactions-sign` may return its existing full modified transaction only
-after both V1 and V2 paths prove that the body, envelope, and every pre-existing
-witness class are unchanged except for valid newly added VKeys. Daedalus then
-performs task-306 exact-envelope validation and witness differencing. A distinct
-backend witness-only result is permitted only when task-003's path-specific
-reuse evidence justifies the smaller replacement endpoint. In either case the
-value released to CIP-30 is a verified VKey-only witness set.
+The legacy `transactions-sign` seam was rejected for dApp signing because it
+cannot bind the authenticated reviewed context, ordered current-request
+parents, request index, or `partialSign`, and main-process differencing cannot
+repair key selection against the wrong context. Task-203 therefore accepted the
+smaller dormant `POST /v2/wallets/{walletId}/transaction-witnesses` replacement
+at sibling commit `98abca85e9e903b4354b39f34c5a5f421cc45bdf`. It binds the
+task-202 context token/digest and ordered exact transaction bytes, returns only
+fresh locally verified VKey witness-set CBOR plus each expected body hash, and
+never reseals or returns a transaction envelope. The endpoint remains
+unavailable to Daedalus until task-209 completes consolidated upstream review,
+aggregate activation, integration-before-pin evidence, and the exact pin
+update.
 
 - Backend verifies the reviewed context digest, exact body bytes, and wallet ownership evidence before signing, but it does not refresh chain state or require the original chain point to remain current.
 - If chain state advances, rolls back, or spends an input after review, signing may still complete and later node submission may fail normally.
