@@ -1674,7 +1674,7 @@
   "wallet.transaction.type.exchange": "換金",
   "wallet.transaction.unresolvedInputAddressesAdditionalLabel": "アドレスを表示する。",
   "wallet.transaction.unresolvedInputAddressesLinkLabel": "Cardanoエクスプローラーでこのトランザクションを開き",
-  "wallet.transaction.voted": "委任トランザクション",
+  "wallet.transaction.voted": "!!!委任トランザクション",
   "wallet.transactions.csv.column.addressesFrom": "送信元アドレス",
   "wallet.transactions.csv.column.addressesTo": "送信先アドレス",
   "wallet.transactions.csv.column.amount.deposit": "デポジット額（ADA）",
