@@ -412,6 +412,11 @@
         "id": "global.labels.view"
       },
       {
+        "defaultMessage": "!!!View details",
+        "description": "Label of a control that opens a detail view.",
+        "id": "global.labels.viewDetails"
+      },
+      {
         "defaultMessage": "!!!Copy",
         "description": "Copy label.",
         "id": "global.labels.copy"
@@ -2632,11 +2637,6 @@
         "id": "governance.drepDirectory.filter.metadata"
       },
       {
-        "defaultMessage": "!!!All",
-        "description": "Neutral option of every filter dropdown",
-        "id": "governance.drepDirectory.filter.all"
-      },
-      {
         "defaultMessage": "!!!With verified metadata",
         "description": "Metadata filter option: anchor present",
         "id": "governance.drepDirectory.filter.metadata.with"
@@ -3212,86 +3212,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!View details",
-        "description": "Opens the DRep detail view",
-        "id": "governance.drepDirectory.card.viewDetails"
-      },
-      {
-        "defaultMessage": "!!!Wallet",
-        "description": "Column heading for the wallet name",
-        "id": "governance.dashboard.column.wallet"
-      },
-      {
-        "defaultMessage": "!!!Voting power delegated to",
-        "description": "Column heading for the current governance delegation",
-        "id": "governance.dashboard.column.delegatedTo"
-      },
-      {
-        "defaultMessage": "!!!Status",
-        "description": "Column heading for the delegated DRep status",
-        "id": "governance.dashboard.column.status"
-      },
-      {
-        "defaultMessage": "!!!Not delegated",
-        "description": "Shown for a wallet with no governance delegation",
-        "id": "governance.dashboard.notDelegated"
-      },
-      {
-        "defaultMessage": "!!!Abstain",
-        "description": "Shown for a wallet delegated to the abstain target",
-        "id": "governance.dashboard.target.abstain"
-      },
-      {
-        "defaultMessage": "!!!No confidence",
-        "description": "Shown for a wallet delegated to the no-confidence target",
-        "id": "governance.dashboard.target.noConfidence"
-      },
-      {
-        "defaultMessage": "!!!Loading DRep…",
-        "description": "Shown while the delegated DRep is still being resolved",
-        "id": "governance.dashboard.target.loading"
-      },
-      {
-        "defaultMessage": "!!!Create or restore a wallet to participate in Cardano governance.",
-        "description": "Empty state message shown when no wallets exist",
-        "id": "governance.dashboard.noWallets"
-      },
-      {
-        "defaultMessage": "!!!Change delegation",
-        "description": "Button label to navigate to the delegation form for a wallet",
-        "id": "governance.dashboard.changeDelegation"
-      },
-      {
-        "defaultMessage": "!!!Help support Cardano governance by",
-        "description": "Prompt text preceding the \"Choosing a DRep\" link for abstain/no-confidence wallets",
-        "id": "governance.dashboard.chooseDRepPrompt"
-      },
-      {
-        "defaultMessage": "!!!Choosing a DRep",
-        "description": "Link text in the choose-a-DRep prompt",
-        "id": "governance.dashboard.chooseDRepLink"
-      },
-      {
-        "defaultMessage": "!!!No DRep selected",
-        "description": "Heading for wallets with no governance delegation",
-        "id": "governance.dashboard.noDelegation.heading"
-      },
-      {
-        "defaultMessage": "!!!Delegate your voting power to a DRep to participate in Cardano governance.",
-        "description": "Body text for wallets with no governance delegation",
-        "id": "governance.dashboard.noDelegation.body"
-      },
-      {
-        "defaultMessage": "!!!Choose a DRep",
-        "description": "CTA button for wallets with no governance delegation",
-        "id": "governance.dashboard.noDelegation.button"
-      }
-    ],
-    "path": "source/renderer/app/components/governance/wallets/GovernanceWallets.tsx"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Suggestions are drawn at random from the DReps that meet these criteria.",
         "description": "Explanation above the suggestion criteria controls",
         "id": "governance.drepDirectory.cohort.intro"
@@ -3553,6 +3473,81 @@
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectorySkeleton.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Wallet",
+        "description": "Column heading for the wallet name",
+        "id": "governance.dashboard.column.wallet"
+      },
+      {
+        "defaultMessage": "!!!Voting power delegated to",
+        "description": "Column heading for the current governance delegation",
+        "id": "governance.dashboard.column.delegatedTo"
+      },
+      {
+        "defaultMessage": "!!!Status",
+        "description": "Column heading for the delegated DRep status",
+        "id": "governance.dashboard.column.status"
+      },
+      {
+        "defaultMessage": "!!!Not delegated",
+        "description": "Shown for a wallet with no governance delegation",
+        "id": "governance.dashboard.notDelegated"
+      },
+      {
+        "defaultMessage": "!!!Abstain",
+        "description": "Shown for a wallet delegated to the abstain target",
+        "id": "governance.dashboard.target.abstain"
+      },
+      {
+        "defaultMessage": "!!!No confidence",
+        "description": "Shown for a wallet delegated to the no-confidence target",
+        "id": "governance.dashboard.target.noConfidence"
+      },
+      {
+        "defaultMessage": "!!!Loading DRep…",
+        "description": "Shown while the delegated DRep is still being resolved",
+        "id": "governance.dashboard.target.loading"
+      },
+      {
+        "defaultMessage": "!!!Create or restore a wallet to participate in Cardano governance.",
+        "description": "Empty state message shown when no wallets exist",
+        "id": "governance.dashboard.noWallets"
+      },
+      {
+        "defaultMessage": "!!!Change delegation",
+        "description": "Button label to navigate to the delegation form for a wallet",
+        "id": "governance.dashboard.changeDelegation"
+      },
+      {
+        "defaultMessage": "!!!Help support Cardano governance by",
+        "description": "Prompt text preceding the \"Choosing a DRep\" link for abstain/no-confidence wallets",
+        "id": "governance.dashboard.chooseDRepPrompt"
+      },
+      {
+        "defaultMessage": "!!!Choosing a DRep",
+        "description": "Link text in the choose-a-DRep prompt",
+        "id": "governance.dashboard.chooseDRepLink"
+      },
+      {
+        "defaultMessage": "!!!No DRep selected",
+        "description": "Heading for wallets with no governance delegation",
+        "id": "governance.dashboard.noDelegation.heading"
+      },
+      {
+        "defaultMessage": "!!!Delegate your voting power to a DRep to participate in Cardano governance.",
+        "description": "Body text for wallets with no governance delegation",
+        "id": "governance.dashboard.noDelegation.body"
+      },
+      {
+        "defaultMessage": "!!!Choose a DRep",
+        "description": "CTA button for wallets with no governance delegation",
+        "id": "governance.dashboard.noDelegation.button"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/wallets/GovernanceWallets.tsx"
   },
   {
     "descriptors": [

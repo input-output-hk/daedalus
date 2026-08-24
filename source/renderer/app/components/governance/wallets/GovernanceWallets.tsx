@@ -1,5 +1,6 @@
 import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import globalMessages from '../../../i18n/global-messages';
 import BigNumber from 'bignumber.js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -46,11 +47,6 @@ const messages = defineMessages({
     id: 'governance.dashboard.target.loading',
     defaultMessage: '!!!Loading DRep…',
     description: 'Shown while the delegated DRep is still being resolved',
-  },
-  viewDetails: {
-    id: 'governance.drepDirectory.card.viewDetails',
-    defaultMessage: '!!!View details',
-    description: 'Opens the DRep detail view',
   },
   noWallets: {
     id: 'governance.dashboard.noWallets',
@@ -191,7 +187,7 @@ function WalletDelegationRow({
           drepEntry != null && (
             <Button
               className="flat"
-              label={intl.formatMessage(messages.viewDetails)}
+              label={intl.formatMessage(globalMessages.viewDetails)}
               onClick={() => onViewDetails(drepEntry.drepId, walletId)}
               skin={ButtonSkin}
             />

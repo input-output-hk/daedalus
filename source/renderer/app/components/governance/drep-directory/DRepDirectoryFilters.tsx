@@ -1,5 +1,6 @@
 import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import globalMessages from '../../../i18n/global-messages';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import DRepFacetSelect from '../_shared/DRepFacetSelect';
 import type {
@@ -26,11 +27,6 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.filter.metadata',
     defaultMessage: '!!!Metadata',
     description: 'Label of the metadata filter',
-  },
-  optionAll: {
-    id: 'governance.drepDirectory.filter.all',
-    defaultMessage: '!!!All',
-    description: 'Neutral option of every filter dropdown',
   },
   statusActive: {
     id: 'governance.drepDirectory.status.active',
@@ -157,7 +153,7 @@ function DRepDirectoryFilters({
         (next) =>
           onFiltersChange({ ...filters, status: next as DRepStatusFilter }),
         [
-          ['all', intl.formatMessage(messages.optionAll)],
+          ['all', intl.formatMessage(globalMessages.all)],
           ['active', intl.formatMessage(messages.statusActive)],
           ['inactive', intl.formatMessage(messages.statusInactive)],
         ]
@@ -168,7 +164,7 @@ function DRepDirectoryFilters({
         (next) =>
           onFiltersChange({ ...filters, metadata: next as DRepMetadataFilter }),
         [
-          ['all', intl.formatMessage(messages.optionAll)],
+          ['all', intl.formatMessage(globalMessages.all)],
           ['withMetadata', intl.formatMessage(messages.metadataWith)],
           ['withoutMetadata', intl.formatMessage(messages.metadataWithout)],
         ]
@@ -179,7 +175,7 @@ function DRepDirectoryFilters({
         (next) =>
           onFiltersChange({ ...filters, expiry: next as DRepExpiryFilter }),
         [
-          ['all', intl.formatMessage(messages.optionAll)],
+          ['all', intl.formatMessage(globalMessages.all)],
           ['hideLapsingSoon', intl.formatMessage(messages.expiryHideLapsing)],
         ]
       )}

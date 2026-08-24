@@ -1,6 +1,7 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import globalMessages from '../../../i18n/global-messages';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DRepStatusBadge from '../_shared/DRepStatusBadge';
@@ -20,11 +21,6 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.card.favorite.remove',
     defaultMessage: '!!!Remove from favorites',
     description: 'Accessible label of the favorite toggle when favorited',
-  },
-  viewDetails: {
-    id: 'governance.drepDirectory.card.viewDetails',
-    defaultMessage: '!!!View details',
-    description: 'Card CTA that opens the DRep detail view',
   },
   select: {
     id: 'governance.drepDirectory.card.select',
@@ -108,7 +104,7 @@ function DRepTableRow({
       <div className={`${styles.actionsCell} ${styles.colActions}`} role="cell">
         <Button
           className="flat"
-          label={intl.formatMessage(messages.viewDetails)}
+          label={intl.formatMessage(globalMessages.viewDetails)}
           onClick={() => onViewDetails(entry.drepId)}
           skin={ButtonSkin}
         />

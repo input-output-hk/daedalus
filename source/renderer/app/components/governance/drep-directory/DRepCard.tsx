@@ -1,5 +1,6 @@
 import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import globalMessages from '../../../i18n/global-messages';
 import BigNumber from 'bignumber.js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -20,11 +21,6 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.card.select',
     defaultMessage: '!!!Delegate',
     description: 'Row-level CTA that hands the DRep ID to the delegation form',
-  },
-  viewDetails: {
-    id: 'governance.drepDirectory.card.viewDetails',
-    defaultMessage: '!!!View details',
-    description: 'Card CTA that opens the DRep detail view',
   },
   votingPowerLoadingTooltip: {
     id: 'governance.drepDirectory.votingPower.loadingTooltip',
@@ -184,7 +180,7 @@ function DRepCard({
         )}
         <Button
           className="flat"
-          label={intl.formatMessage(messages.viewDetails)}
+          label={intl.formatMessage(globalMessages.viewDetails)}
           onClick={() => onViewDetails(entry.drepId)}
           skin={ButtonSkin}
         />

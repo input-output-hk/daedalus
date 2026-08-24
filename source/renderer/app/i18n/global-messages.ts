@@ -322,6 +322,11 @@ export default defineMessages({
     defaultMessage: '!!!View',
     description: 'View label.',
   },
+  viewDetails: {
+    id: 'global.labels.viewDetails',
+    defaultMessage: '!!!View details',
+    description: 'Label of a control that opens a detail view.',
+  },
   copy: {
     id: 'global.labels.copy',
     defaultMessage: '!!!Copy',
