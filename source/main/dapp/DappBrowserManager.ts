@@ -1,6 +1,7 @@
 import path from 'path';
 import { BrowserWindow } from 'electron';
 import type { Session } from 'electron';
+import type { DappEgressPolicy } from './DappEgressPolicy';
 import { requireDappSandboxAvailable } from '../sandbox/dappSandboxAvailability';
 import {
   clearDappSession,
@@ -27,6 +28,7 @@ type ActiveGuest = {
   readonly window: BrowserWindow;
   readonly session: Session;
   readonly launch: ResolvedCatalogLaunch;
+  readonly egressPolicy: DappEgressPolicy;
   initialLoad: boolean;
   teardown?: Promise<void>;
 };
@@ -56,39 +58,56 @@ export class DappBrowserManager {
     await this.close('replaced');
 
     const guestSession = createDappSession();
-    installDappSessionPolicy(guestSession, launch.allowedResourceOrigins);
+    let egressPolicy: DappEgressPolicy;
+    try {
+      egressPolicy = await installDappSessionPolicy(
+        guestSession,
+        launch.allowedResourceOrigins
+      );
+    } catch {
+      await clearDappSession(guestSession);
+      throw new Error('DApp guest failed to load');
+    }
 
-    const guestWindow = new BrowserWindow({
-      show: false,
-      title: launch.windowTitle,
-      frame: true,
-      fullscreenable: false,
-      autoHideMenuBar: true,
-      webPreferences: {
-        session: guestSession,
-        preload: path.join(__dirname, 'dapp.js'),
-        nodeIntegration: false,
-        nodeIntegrationInWorker: false,
-        nodeIntegrationInSubFrames: false,
-        contextIsolation: true,
-        sandbox: true,
-        webSecurity: true,
-        allowRunningInsecureContent: false,
-        webviewTag: false,
-        devTools: false,
-        plugins: false,
-        spellcheck: false,
-        enableWebSQL: false,
-        navigateOnDragDrop: false,
-        disableDialogs: true,
-        autoplayPolicy: 'document-user-activation-required',
-        disableBlinkFeatures: 'DirectSockets,WebTransport',
-      },
-    });
+    let guestWindow: BrowserWindow;
+    try {
+      guestWindow = new BrowserWindow({
+        show: false,
+        title: launch.windowTitle,
+        frame: true,
+        fullscreenable: false,
+        autoHideMenuBar: true,
+        webPreferences: {
+          session: guestSession,
+          preload: path.join(__dirname, 'dapp.js'),
+          nodeIntegration: false,
+          nodeIntegrationInWorker: false,
+          nodeIntegrationInSubFrames: false,
+          contextIsolation: true,
+          sandbox: true,
+          webSecurity: true,
+          allowRunningInsecureContent: false,
+          webviewTag: false,
+          devTools: false,
+          plugins: false,
+          spellcheck: false,
+          enableWebSQL: false,
+          navigateOnDragDrop: false,
+          disableDialogs: true,
+          autoplayPolicy: 'document-user-activation-required',
+          disableBlinkFeatures: 'DirectSockets,WebTransport',
+        },
+      });
+    } catch {
+      await egressPolicy.close();
+      await clearDappSession(guestSession);
+      throw new Error('DApp guest failed to load');
+    }
     const guest: ActiveGuest = {
       window: guestWindow,
       session: guestSession,
       launch,
+      egressPolicy,
       initialLoad: true,
     };
     this.activeGuest = guest;
@@ -189,6 +208,7 @@ export class DappBrowserManager {
         guest.window.webContents.stop();
         guest.window.destroy();
       }
+      await guest.egressPolicy.close();
       await clearDappSession(guest.session);
     })();
     return guest.teardown;

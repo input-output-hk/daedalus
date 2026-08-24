@@ -193,6 +193,7 @@ physical results against exact production artifacts and adapter commits.
 - The existing preload is privileged and cannot be reused by remote content.
 - `webviewTag` is already disabled.
 - A dedicated self-contained dApp preload synchronously exposes only `window.cardano.daedalus`, removes WebRTC/data-channel, WebTransport, and direct-socket APIs from the hostile page world, validates frozen gateway envelopes, and reconstructs typed public rejections without privileged globals. A disabled-by-construction main-owned browser manager now creates only sandbox-gated hidden guests with fresh nonpersistent sessions, exact secure preferences, local catalog identity/title policy, default-deny permissions and navigation, HTTPS/WSS origin filtering, QUIC disablement, and revoke-before-destroy cleanup. Trusted open/close IPC now consumes only main-staged one-use launches bound to a current route lease; no production launch producer, gateway handler, wallet method, or dApp launch is enabled yet.
+- Each guest session installs a loopback-only fixed CONNECT proxy before its `BrowserWindow` exists. The proxy resolves each HTTPS/WSS tunnel independently, rejects every non-public IPv4/IPv6 result including IPv4-mapped forms, and dials only the validated numeric address with no direct fallback. URL origin allowlisting remains a separate required check, proxy setup failure rejects launch, and teardown closes tunnels before clearing the nonpersistent session. Electron 41 provides no pre-connect peer-address hook, so Chromium Private Network Access is defense in depth rather than the connection-binding proof. Production guest and Diagnostics launch remain disabled by the independent packaged policy and remaining release gates.
 - A checked 79-channel manifest accounts for all production privileged IPC. Every channel uses exact trusted main WebContents/frame/document authentication and correlated caller-targeted responses; raw close/resize listeners and direct renderer callers have been migrated. Production guest launch remains disabled by the independent sandbox, guest, ledger, signing, hardware, and review gates.
 - The global popup handler now denies requests without shell side effects; trusted UI external-link requests accept only parsed credential-free HTTPS URLs with awaited privacy-safe failures.
 - Linux launch paths no longer pass `--disable-setuid-sandbox` or `--no-sandbox`. Main rejects sandbox-disabling argv/environment state and requires supported system-package identity plus a hidden same-PID local renderer canary before future dApp launch can become available.
@@ -783,8 +784,9 @@ matrices. Phase 1 follow-through completed `task-108` (`.deb`),
 `task-109` (`.rpm`), `task-005-b` (installed-artifact certification),
 `task-110` (`.bin` retirement and system-package update migration),
 `task-103` (flag removal and canary), `task-104` (dedicated least-authority
-dApp preload and gateway contract), and `task-105` (nonpersistent guest
-session/window lifecycle and default-deny policy).
+dApp preload and gateway contract), `task-105` (nonpersistent guest
+session/window lifecycle and default-deny policy), and `task-106-a`
+(numeric-destination HTTPS/WSS CONNECT enforcement).
 Phases 1 through 9 implement and validate
 privileged IPC, session/network policy, exact semantic review,
 backend/pending-submission behavior, device capability, packaged hostile tests,
@@ -1881,7 +1883,7 @@ All migrations must be versioned, atomic, and fail closed. Wallet funds remain g
 ## Evidence Gates And Open Questions
 
 - Linux package evidence gate completed: task-005-a froze the contract/matrix and task-005-b proved the installed `.deb`/`.rpm` user-namespace containment plus AppArmor/SELinux strategy across every supported row, with fail-closed restricted cases and rollback. Historical task-005 retains the cancelled portable spike and portable `.bin` remains rejected. Material package, probe, Electron/Chromium, host-policy, or matrix changes trigger revalidation.
-- Prove the connection-level enforcement mechanism, built-in or custom, used to prevent private-network access and DNS rebinding for public HTTPS/WSS guest traffic.
+- Connection-level egress evidence gate completed: task-106-a routes every guest HTTPS/WSS connection through a per-session fixed CONNECT proxy, validates each fresh DNS answer or IP literal with `ipaddr.js` 2.3.0, and opens outbound sockets only to the selected numeric public address. Focused rebinding, forbidden-range, allowlist-override, fail-closed setup, and real Electron HTTPS/WSS tests passed with zero private-target connections. Chromium PNA is defense in depth only; proxy unavailability rejects launch, and production guest/Diagnostics launch remains independently disabled.
 - Determine whether `@cardano-sdk/core@0.41.4` fully decodes all target-era fields; upgrade only if fixture evidence requires it.
 - Confirm exact raw-body and output-span handling for every accepted transaction encoding.
 - Record consolidated upstream maintainer review of the complete task-200-through-task-208 cardano-wallet API range in task-209; upstream acceptance remains the default path before activation and pinning.
