@@ -461,6 +461,20 @@ function DRepDirectory({
     if (!nextShowAll) setSort('recommended');
   };
 
+  // A voting-power sort over the suggested cohort cannot show the largest
+  // DReps. The cohort's own criteria exclude everything above the share
+  // ceiling, so the sort would reorder twenty entries that all sit below it
+  // while the disclosure beside it says the largest come first. Choosing the
+  // sort widens the list to the one the sort describes, and returning to the
+  // suggestions puts the order back, so the two controls agree whichever way
+  // they are moved.
+  const handleSortChange = (nextSort: DRepSortOption) => {
+    setSort(nextSort);
+    if (nextSort === 'votingPowerDesc' || nextSort === 'votingPowerAsc') {
+      setIsShowAll(true);
+    }
+  };
+
   const handleClearFilters = () => {
     setSearchQuery('');
     setFilters(DEFAULT_DREP_FILTER_STATE);
@@ -607,7 +621,7 @@ function DRepDirectory({
                 isShowAll={isShowAll}
                 onShowAllChange={handleShowAllChange}
                 sort={sort}
-                onSortChange={setSort}
+                onSortChange={handleSortChange}
                 isRankingAvailable={isRankingAvailable}
                 isSearchActive={isSearchActive}
               />

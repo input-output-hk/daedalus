@@ -847,6 +847,74 @@ describe('DRepDirectory', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('widens to every DRep when a voting-power sort is chosen', () => {
+    const suggested = realEntry(1);
+    renderComponent({
+      suggestedDReps: [suggested],
+      allDReps: [suggested, realEntry(2), realEntry(3)],
+    });
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+
+    fireEvent.change(screen.getByLabelText('!!!Sort'), {
+      target: { value: 'votingPowerDesc' },
+    });
+
+    // The disclosure beside the sort says the largest DReps come first. Over
+    // the cohort alone that is false, because the share ceiling excludes them,
+    // so the list has to be the one the sort claims to be ordering.
+    expect(screen.getAllByText('!!!View details')).toHaveLength(3);
+    expect(screen.getByText(/Sorted by voting power/)).toBeInTheDocument();
+  });
+
+  it('widens on the ascending voting-power sort too', () => {
+    const suggested = realEntry(1);
+    renderComponent({
+      suggestedDReps: [suggested],
+      allDReps: [suggested, realEntry(2)],
+    });
+
+    fireEvent.change(screen.getByLabelText('!!!Sort'), {
+      target: { value: 'votingPowerAsc' },
+    });
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(2);
+  });
+
+  it('leaves the list at the cohort for a sort that is not about voting power', () => {
+    const suggested = realEntry(1);
+    renderComponent({
+      suggestedDReps: [suggested],
+      allDReps: [suggested, realEntry(2)],
+    });
+
+    fireEvent.change(screen.getByLabelText('!!!Sort'), {
+      target: { value: 'expiryAsc' },
+    });
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+  });
+
+  it('returns to the cohort and the recommended order from a widened power sort', () => {
+    const suggested = realEntry(1);
+    renderComponent({
+      suggestedDReps: [suggested],
+      allDReps: [suggested, realEntry(2)],
+    });
+
+    fireEvent.change(screen.getByLabelText('!!!Sort'), {
+      target: { value: 'votingPowerDesc' },
+    });
+    fireEvent.click(
+      screen.getByRole('button', { name: '!!!Back to suggestions' })
+    );
+
+    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(
+      screen.queryByText(/Sorted by voting power/)
+    ).not.toBeInTheDocument();
+  });
+
   it('offers no voting-power sort when no DRep reports a figure', () => {
     const withoutPower = { votingPower: null };
     renderComponent({
