@@ -302,7 +302,16 @@ function DRepDirectory({
     queryKind === 'exactValid' ||
     queryKind === 'invalidFullForm' ||
     queryKind === 'name';
-  const isRankingAvailable = true;
+  // Both voting-power sorts collapse to the same identifier-ordered list when
+  // no entry carries a figure, so offering them would be two controls that do
+  // nothing and disagree with their own labels about it. Read from the whole
+  // population rather than the visible list: a filter that happens to exclude
+  // every entry holding a figure is not the same as the network not reporting
+  // one.
+  const isRankingAvailable = useMemo(
+    () => allDReps.some((entry) => entry.votingPower != null),
+    [allDReps]
+  );
   const isFavoritesView = view === 'favorites';
 
   // Every view of the directory is drawn from the full list, the suggested

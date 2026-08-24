@@ -5,7 +5,13 @@ import { IntlProvider } from 'react-intl';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../../i18n/locales/en-US.json';
 import jaTranslations from '../../../i18n/locales/ja-JP.json';
@@ -839,6 +845,37 @@ describe('DRepDirectory', () => {
     expect(
       screen.queryByText(/Sorted by voting power/)
     ).not.toBeInTheDocument();
+  });
+
+  it('offers no voting-power sort when no DRep reports a figure', () => {
+    const withoutPower = { votingPower: null };
+    renderComponent({
+      suggestedDReps: [realEntry(1, withoutPower)],
+      allDReps: [realEntry(1, withoutPower), realEntry(2, withoutPower)],
+    });
+
+    const sortControl = screen.getByLabelText('!!!Sort');
+    const options = within(sortControl)
+      .getAllByRole('option')
+      .map((option) => (option as HTMLOptionElement).value);
+
+    expect(options).not.toContain('votingPowerDesc');
+    expect(options).not.toContain('votingPowerAsc');
+    expect(options).toContain('expiryAsc');
+  });
+
+  it('offers the voting-power sort when a single DRep reports a figure', () => {
+    renderComponent({
+      suggestedDReps: [realEntry(1, { votingPower: null })],
+      allDReps: [realEntry(1, { votingPower: null }), realEntry(2)],
+    });
+
+    const options = within(screen.getByLabelText('!!!Sort'))
+      .getAllByRole('option')
+      .map((option) => (option as HTMLOptionElement).value);
+
+    expect(options).toContain('votingPowerDesc');
+    expect(options).toContain('votingPowerAsc');
   });
 
   it('leaves the banner alone when show-all only widens the list', () => {
