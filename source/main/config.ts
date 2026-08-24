@@ -2,6 +2,7 @@ import path from 'path';
 import { app, dialog } from 'electron';
 import { environment } from './environment';
 import { getBuildLabel } from '../common/utils/environmentCheckers';
+import { DappLaunchPolicy } from './dapp/DappLaunchPolicy';
 
 const {
   isTest,
@@ -38,6 +39,7 @@ if (!isStartedByLauncher) {
     throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
   }
 }
+
 
 
 type WindowOptionsType = {

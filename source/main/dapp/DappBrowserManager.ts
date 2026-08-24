@@ -20,7 +20,8 @@ export type DappGuestRevocationReason =
   | 'crashed'
   | 'unresponsive'
   | 'preload-failed'
-  | 'origin-mismatch';
+  | 'origin-mismatch'
+  | 'route-changed';
 
 type ActiveGuest = {
   readonly window: BrowserWindow;
