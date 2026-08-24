@@ -382,7 +382,6 @@ function DRepDirectory({
     return sortDReps(filtered, sort);
   }, [
     suggestedDReps,
-    favoriteDRepIds,
     pinnedFavoriteIds,
     filters,
     isSearchActive,
