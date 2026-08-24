@@ -31,7 +31,10 @@ app
     const guestSession = createDappSession();
     assert.strictEqual(guestSession.isPersistent(), false);
     assert.strictEqual(guestSession.getStoragePath(), null);
-    installDappSessionPolicy(guestSession, new Set(['https://example.com']));
+    const egressPolicy = await installDappSessionPolicy(
+      guestSession,
+      new Set(['https://example.com'])
+    );
 
     const guest = new BrowserWindow({
       show: false,
@@ -92,6 +95,7 @@ app
     assert.strictEqual(app.commandLine.hasSwitch('disable-quic'), true);
 
     guest.destroy();
+    await egressPolicy.close();
     await clearDappSession(guestSession);
     assert.deepStrictEqual(await guestSession.cookies.get({}), []);
 
