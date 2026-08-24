@@ -124,7 +124,7 @@ describe('CurrentDRepSummary DRep status badge', () => {
     expect(screen.getByText('!!!Expiring soon')).toBeInTheDocument();
     expect(
       screen.getByText(
-        "!!!This DRep's voting power will lapse in 4 epochs — consider re-delegating."
+        "!!!This DRep's voting power will lapse in 4 epochs. Consider re-delegating."
       )
     ).toBeInTheDocument();
     expect(screen.queryByText('!!!Active')).not.toBeInTheDocument();
@@ -140,7 +140,7 @@ describe('CurrentDRepSummary DRep status badge', () => {
     expect(screen.getByText('!!!Inactive')).toBeInTheDocument();
     expect(
       screen.getByText(
-        '!!!This DRep is currently inactive. Your voting power is not counted until they record activity again — consider re-delegating.'
+        '!!!This DRep is currently inactive. Your voting power is not counted until they record activity again. Consider re-delegating.'
       )
     ).toBeInTheDocument();
     expect(screen.queryByText('!!!Expiring soon')).not.toBeInTheDocument();

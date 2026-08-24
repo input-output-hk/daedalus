@@ -710,7 +710,7 @@ describe('Current-vote enrichment in the delegation form', () => {
     expect(screen.getByText('!!!Expiring soon')).toBeInTheDocument();
     expect(
       screen.getByText(
-        "!!!This DRep's voting power will lapse in 5 epochs — consider re-delegating."
+        "!!!This DRep's voting power will lapse in 5 epochs. Consider re-delegating."
       )
     ).toBeInTheDocument();
     expect(screen.getByText('!!!Delegate to')).toBeInTheDocument();

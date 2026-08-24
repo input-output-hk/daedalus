@@ -38,7 +38,7 @@ export const messages = defineMessages({
   noDelegationSubline: {
     id: 'voting.governance.currentVote.noDelegation.subline',
     defaultMessage:
-      '!!!Daedalus will not pick a DRep for you — choose how you want your voting power to participate in Cardano governance.',
+      '!!!Daedalus will not pick a DRep for you. Choose how you want your voting power to participate in Cardano governance.',
     description: 'Subline stating Daedalus never auto-delegates voting power',
   },
   noDelegationCta: {
@@ -80,14 +80,14 @@ export const messages = defineMessages({
   statusExpiring: {
     id: 'voting.governance.currentVote.status.expiring',
     defaultMessage:
-      "!!!This DRep's voting power will lapse in {n, plural, one {# epoch} other {# epochs}} — consider re-delegating.",
+      "!!!This DRep's voting power will lapse in {n, plural, one {# epoch} other {# epochs}}. Consider re-delegating.",
     description:
       'Caption shown when the delegated DRep registration lapses soon',
   },
   statusInactive: {
     id: 'voting.governance.currentVote.status.inactive',
     defaultMessage:
-      '!!!This DRep is currently inactive. Your voting power will not be counted until they vote again — consider re-delegating.',
+      '!!!This DRep is currently inactive. Your voting power is not counted until they record activity again. Consider re-delegating.',
     description: 'Caption shown when the delegated DRep is inactive',
   },
   statusUnavailable: {
