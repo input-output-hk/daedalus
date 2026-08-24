@@ -117,4 +117,23 @@ const provider: DaedalusProvider = {
   }) as DaedalusProvider['enable'],
 };
 
+contextBridge.executeInMainWorld({
+  func: () => {
+    [
+      'RTCPeerConnection',
+      'webkitRTCPeerConnection',
+      'RTCDataChannel',
+      'WebTransport',
+      'TCPSocket',
+      'UDPSocket',
+    ].forEach((name) =>
+      Object.defineProperty(globalThis, name, {
+        value: undefined,
+        configurable: false,
+        writable: false,
+      })
+    );
+  },
+});
+
 contextBridge.exposeInMainWorld('cardano', { daedalus: provider });
