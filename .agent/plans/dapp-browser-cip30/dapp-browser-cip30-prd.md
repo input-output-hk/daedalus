@@ -192,7 +192,7 @@ physical results against exact production artifacts and adapter commits.
 - The trusted main renderer is Node-enabled and not context-isolated.
 - The existing preload is privileged and cannot be reused by remote content.
 - `webviewTag` is already disabled.
-- There is no guest `BrowserWindow`, `WebContentsView`, `<webview>`, dApp preload, isolated session, permission policy, or dApp broker.
+- A dedicated self-contained dApp preload now synchronously exposes only `window.cardano.daedalus` through one closed, frozen-envelope-validated gateway and reconstructs typed public rejections without privileged globals. No production gateway handler, guest `BrowserWindow`, `WebContentsView`, `<webview>`, isolated session, permission policy, or dApp broker exists yet.
 - A checked 77-channel manifest accounts for all production privileged IPC. Every channel uses exact trusted main WebContents/frame/document authentication and correlated caller-targeted responses; raw close/resize listeners and direct renderer callers have been migrated. Production guest launch remains disabled by the independent sandbox, guest, ledger, signing, hardware, and review gates.
 - The global popup handler now denies requests without shell side effects; trusted UI external-link requests accept only parsed credential-free HTTPS URLs with awaited privacy-safe failures.
 - Linux launch paths no longer pass `--disable-setuid-sandbox` or `--no-sandbox`. Main rejects sandbox-disabling argv/environment state and requires supported system-package identity plus a hidden same-PID local renderer canary before future dApp launch can become available.
@@ -779,10 +779,11 @@ migration/rollback, and pin gate; `task-004` for exact-CBOR/body/output and
 supported-era evidence; `task-005-a` for the Linux `.deb`/`.rpm` sandbox contract
 and authoritative support matrix (portable `.bin` rejected; research 06); and `task-006` for
 Ledger/Trezor library, model, firmware, message-signing, and returned-hash
-matrices. Phase 1 packaging follow-through completed `task-108` (`.deb`),
+matrices. Phase 1 follow-through completed `task-108` (`.deb`),
 `task-109` (`.rpm`), `task-005-b` (installed-artifact certification),
-`task-110` (`.bin` retirement and system-package update migration), and
-`task-103` (flag removal and canary).
+`task-110` (`.bin` retirement and system-package update migration),
+`task-103` (flag removal and canary), and `task-104` (dedicated least-authority
+dApp preload and gateway contract).
 Phases 1 through 9 implement and validate
 privileged IPC, session/network policy, exact semantic review,
 backend/pending-submission behavior, device capability, packaged hostile tests,
