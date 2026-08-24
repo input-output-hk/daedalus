@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import { session } from 'electron';
 import type { CommandLine, Session, WebContents } from 'electron';
+import { DappEgressPolicy } from './DappEgressPolicy';
 import {
   createDappSession,
   installDappSessionPolicy,
@@ -10,6 +11,9 @@ import {
 
 jest.mock('electron', () => ({
   session: { fromPartition: jest.fn() },
+}));
+jest.mock('./DappEgressPolicy', () => ({
+  DappEgressPolicy: { install: jest.fn() },
 }));
 
 const makeSession = () => {
@@ -80,9 +84,13 @@ describe('DappSessionPolicy', () => {
     expect(firstOptions).toEqual({ cache: false });
   });
 
-  test('denies permissions, devices, display capture, downloads, and other origins', () => {
+  test('denies permissions, devices, display capture, downloads, and other origins', async () => {
     const { guestSession, handlers } = makeSession();
-    installDappSessionPolicy(guestSession, new Set(['https://example.com']));
+    const egressPolicy = { close: jest.fn() };
+    (DappEgressPolicy.install as jest.Mock).mockResolvedValue(egressPolicy);
+    await expect(
+      installDappSessionPolicy(guestSession, new Set(['https://example.com']))
+    ).resolves.toBe(egressPolicy);
 
     expect(handlers.permissionCheck()).toBe(false);
     const permissionCallback = jest.fn();
@@ -120,6 +128,10 @@ describe('DappSessionPolicy', () => {
         ],
       },
     });
+    expect(DappEgressPolicy.install).toHaveBeenCalledWith(
+      guestSession,
+      new Set(['https://example.com'])
+    );
   });
 
   test('denies popups, authentication, certificate exceptions, and client certificates', () => {

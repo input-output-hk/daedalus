@@ -39,6 +39,7 @@ const deferred = () => {
   });
   return { promise, resolve };
 };
+const egressPolicy = { close: jest.fn(() => Promise.resolve()) };
 
 const makeWindow = (load = Promise.resolve()) => {
   const webContents = Object.assign(new EventEmitter(), {
@@ -66,9 +67,11 @@ const flush = () =>
 
 describe('DappBrowserManager', () => {
   beforeEach(() => {
+    egressPolicy.close.mockClear();
     jest.clearAllMocks();
     (requireDappSandboxAvailable as jest.Mock).mockResolvedValue(undefined);
     (createDappSession as jest.Mock).mockReturnValue({ id: 'session' });
+    (installDappSessionPolicy as jest.Mock).mockResolvedValue(egressPolicy);
   });
 
   test('uses the exact hidden secure window and only shows after origin verification', async () => {
@@ -110,6 +113,11 @@ describe('DappBrowserManager', () => {
     expect(installDappSessionPolicy).toHaveBeenCalledWith(
       { id: 'session' },
       new Set(['https://cdn.example.com', 'https://example.com'])
+    );
+    expect(
+      (installDappSessionPolicy as jest.Mock).mock.invocationCallOrder[0]
+    ).toBeLessThan(
+      ((BrowserWindow as unknown) as jest.Mock).mock.invocationCallOrder[0]
     );
     expect(installGuestDenialHandlers).toHaveBeenCalledWith(window.webContents);
     expect(window.loadURL).toHaveBeenCalledWith('https://example.com/app');
@@ -180,9 +188,42 @@ describe('DappBrowserManager', () => {
       expect(window.destroy.mock.invocationCallOrder[0]).toBeLessThan(
         (clearDappSession as jest.Mock).mock.invocationCallOrder[0]
       );
+      expect(egressPolicy.close.mock.invocationCallOrder[0]).toBeLessThan(
+        (clearDappSession as jest.Mock).mock.invocationCallOrder[0]
+      );
       expect(manager.isOpen).toBe(false);
     }
   );
+
+  test('rejects before creating a guest when egress setup fails', async () => {
+    (installDappSessionPolicy as jest.Mock).mockRejectedValue(
+      new Error('proxy unavailable')
+    );
+    const manager = new DappBrowserManager();
+
+    await expect(manager.launch(entry, 'genesis', 'Example')).rejects.toThrow(
+      'DApp guest failed to load'
+    );
+    expect(BrowserWindow).not.toHaveBeenCalled();
+    expect(clearDappSession).toHaveBeenCalledWith({ id: 'session' });
+    expect(manager.isOpen).toBe(false);
+  });
+  test('clears egress state when guest construction fails', async () => {
+    ((BrowserWindow as unknown) as jest.Mock).mockImplementation(() => {
+      throw new Error('window unavailable');
+    });
+    const manager = new DappBrowserManager();
+
+    await expect(manager.launch(entry, 'genesis', 'Example')).rejects.toThrow(
+      'DApp guest failed to load'
+    );
+    expect(egressPolicy.close).toHaveBeenCalled();
+    expect(clearDappSession).toHaveBeenCalledWith({ id: 'session' });
+    expect(egressPolicy.close.mock.invocationCallOrder[0]).toBeLessThan(
+      (clearDappSession as jest.Mock).mock.invocationCallOrder[0]
+    );
+    expect(manager.isOpen).toBe(false);
+  });
 
   test('suppresses page titles in favor of the local catalog title', async () => {
     const { window, webContents } = makeWindow();

@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import { session } from 'electron';
 import type { CommandLine, Session, WebContents } from 'electron';
 import { isAllowedDappResourceUrl } from './urlPolicy';
+import { DappEgressPolicy } from './DappEgressPolicy';
 
 const DISABLED_BLINK_FEATURES = ['DirectSockets', 'WebTransport'];
 
@@ -28,10 +29,10 @@ export const createDappSession = (): Session => {
   return guestSession;
 };
 
-export const installDappSessionPolicy = (
+export const installDappSessionPolicy = async (
   guestSession: Session,
   allowedResourceOrigins: ReadonlySet<string>
-): void => {
+): Promise<DappEgressPolicy> => {
   guestSession.setPermissionCheckHandler(() => false);
   guestSession.setPermissionRequestHandler((_contents, _permission, callback) =>
     callback(false)
@@ -80,6 +81,7 @@ export const installDappSessionPolicy = (
       callback({ responseHeaders });
     }
   );
+  return DappEgressPolicy.install(guestSession, allowedResourceOrigins);
 };
 
 export const installGuestDenialHandlers = (webContents: WebContents): void => {
