@@ -405,13 +405,13 @@
     {
       "id": "slice-5",
       "name": "Slice 5 - Default cohort + category badges + BMVG banner",
-      "description": "Track D. Implement the default-cohort rule (exclude top 35 by voting power, randomize up to the next 200 eligible DReps), the four-category badge, and the BMVG citation banner. GovernanceStore takes ownership of the randomization-seed lifetime, reseed-on-refresh semantics, and the Reshuffle control (previously an unowned risk). In-slice coverage + i18n.",
+      "description": "Track D. Implement the default-cohort rule (exclude DReps at or above a 1.5% voting-power share, draw twenty from those that remain), the status badge, and the cohort criteria panel. GovernanceStore takes ownership of the randomization-seed lifetime, reseed-on-refresh semantics, and the Reshuffle control (previously an unowned risk). In-slice coverage + i18n.",
       "riskLevel": "medium",
       "tasks": [
         {
           "id": "task-118",
           "title": "Implement the default-cohort rule + own randomization seed in GovernanceStore",
-          "description": "Implement the default-cohort rule in the directory: exclude the top 35 DReps by voting power and show up to the next 200 DReps that are active, have remaining drepActivity greater than 6 epochs, and have completed metadata when available, ranked by voting power high to low and displayed in randomized order. Assign ownership of the randomization-seed lifetime, reseed-on-refresh semantics, and the Reshuffle control to GovernanceStore. (Split from task-008: cohort-rule portion, ~2 of task-008's 8h plus seed-ownership work; the remaining 2 of 8 are the show-all/filter portion in slice-6 task-121, so the bare-list/cohort/filter split sums to task-008's original 8h. Reachability filters land in slice-6; doNotList exclusion in anchor-2.)",
+          "description": "Implement the default-cohort rule in the directory: exclude DReps at or above a 1.5% voting-power share and draw twenty from those that are active, have remaining drepActivity greater than 6 epochs, and have verified metadata, banded by standing and shuffled within each band. Assign ownership of the randomization-seed lifetime, reseed-on-refresh semantics, and the Reshuffle control to GovernanceStore. (Split from task-008: cohort-rule portion, ~2 of task-008's 8h plus seed-ownership work; the remaining 2 of 8 are the show-all/filter portion in slice-6 task-121, so the bare-list/cohort/filter split sums to task-008's original 8h. Reachability filters land in slice-6; doNotList exclusion in anchor-2.)",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 3,
@@ -423,11 +423,11 @@
           ],
           "targetPath": "source/renderer/app/stores/",
           "acceptanceCriteria": [
-            "Default view excludes the top 35 DReps by voting power and shows up to the next 200 eligible DReps (active, remaining drepActivity > 6 epochs, completed metadata when available), ranked by voting power high to low and displayed in randomized order.",
+            "Default view excludes DReps at or above a 1.5% voting-power share and draws twenty from those that remain (active, remaining drepActivity > 6 epochs, verified metadata), banded by standing and shuffled within each band.",
             "GovernanceStore owns a single randomization seed per app session; explicit refresh preserves that seed, and Reshuffle reseeds without re-querying.",
             "Refresh reloads latest local state and updates ranking/cohort state.",
             "The production 6-epoch drepActivity floor is binding; fixtures showing sub-6-epoch DReps inside the default cohort are fixture-only and MUST NOT ship.",
-            "Excluded top-35 and non-cohort DReps remain reachable (reachability filters/search land in slice-6; doNotList handling lands in anchor-2).",
+            "DReps above the voting-power ceiling and other non-cohort DReps remain reachable (reachability filters/search land in slice-6; doNotList handling lands in anchor-2).",
             "In-slice Jest covers the cohort ranking/randomization; cohort copy is localized in en-US and ja-JP.",
             "INHERITED sanitization floor: no DRep id / 'abstain' / 'no_confidence' / CIP-129 / CIP-105 string appears in any logger or analytics payload."
           ]
@@ -481,13 +481,13 @@
     {
       "id": "slice-6",
       "name": "Slice 6 - Search & show-all",
-      "description": "Track D. Implement DRep-ID search semantics and the show-all / non-cohort reachability filters so excluded top-35 and non-cohort DReps remain reachable. In-slice coverage + i18n.",
+      "description": "Track D. Implement DRep-ID search semantics and the show-all / non-cohort reachability filters so DReps above the voting-power ceiling and other non-cohort DReps remain reachable. In-slice coverage + i18n.",
       "riskLevel": "medium",
       "tasks": [
         {
           "id": "task-121",
           "title": "Implement DRep ID search + show-all / reachability filters",
-          "description": "Implement DRep-ID search semantics from shared-design-tokens §11 and the show-all / non-cohort reachability filters: minimum 8-character prefix before filtering, prefix matches never auto-select a row, an exact bech32 match opens the DRep detail view directly, both CIP-105 and CIP-129 encodings are searched and deduped by credential, bech32 validation runs in the renderer before IPC, plus the directory filters (active status, expiry threshold, metadata status, top-35 exclusion, default cohort, favorited, search, show-all) that keep excluded/non-cohort DReps reachable. (task-028 plus the show-all/filter portion of task-008; estimate 7 hours = 5 from task-028 + 2 from the task-008 filter portion.)",
+          "description": "Implement DRep-ID search semantics from shared-design-tokens §11 and the show-all / non-cohort reachability filters: minimum 8-character prefix before filtering, prefix matches never auto-select a row, an exact bech32 match opens the DRep detail view directly, both CIP-105 and CIP-129 encodings are searched and deduped by credential, bech32 validation runs in the renderer before IPC, plus the directory filters (active status, expiry threshold, metadata status, the voting-power ceiling, default cohort, favorited, search, show-all) that keep excluded/non-cohort DReps reachable. (task-028 plus the show-all/filter portion of task-008; estimate 7 hours = 5 from task-028 + 2 from the task-008 filter portion.)",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 7,
@@ -502,8 +502,8 @@
           "acceptanceCriteria": [
             "Jest tests cover each rule: 8-char minimum, no auto-select on prefix, exact-match detail open, dual-encoding search, dedupe by credential, pre-IPC bech32 validation.",
             "Cucumber covers the prefix-match list path and the exact-match detail-open path.",
-            "Filters include active status, expiry threshold, metadata status, top-35 exclusion, default cohort, favorited, search, and show-all.",
-            "Excluded top-35 and non-cohort DReps remain reachable through search/show-all filters and direct DRep ID entry.",
+            "Filters include active status, expiry threshold, metadata status, the voting-power ceiling, default cohort, favorited, search, and show-all.",
+            "DReps above the voting-power ceiling and other non-cohort DReps remain reachable through search/show-all filters and direct DRep ID entry.",
             "Search/show-all copy is localized in en-US and ja-JP.",
             "INHERITED sanitization floor: no DRep id / 'abstain' / 'no_confidence' / CIP-129 / CIP-105 string appears in any logger or analytics payload."
           ]

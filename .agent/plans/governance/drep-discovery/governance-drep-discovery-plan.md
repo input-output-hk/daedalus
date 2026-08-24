@@ -59,10 +59,10 @@ Artifact placement decision: this plan and its task tracker are canonical under 
 - [ ] Capture representative `drep-state`, `drep-stake-distribution`, and `gov-state` fixtures before merging DRep query-service implementation.
 - [ ] Own and expose the cardano-node socket path across the launcher lifecycle before the query service is added.
 - [ ] Preserve lovelace precision end to end: parse CLI stdout with a token-preserving JSON parser, represent voting power as `BigNumber | null`, serialize IPC lovelace fields as decimal strings, and rehydrate in the renderer.
-- [ ] Default directory view excludes the top 35 DReps by voting power, then shows up to the next 200 eligible DReps in randomized order. This default IS the "Recommended" sort for the first release; no separate Recommended tab or per-card Recommended badge is introduced.
+- [ ] Default directory view excludes DReps holding 1.5% or more of voting power, then draws a suggested cohort of twenty from those that remain, banded by what delegating would achieve and shuffled within each band. The ceiling is the Target15 figure, the same threshold the voting power badge flags. This default IS the "Recommended" sort for the first release; no separate Recommended tab or per-card Recommended badge is introduced.
 - [ ] Eligible default-cohort DReps must be active, have remaining `drepActivity` of more than 6 epochs, and have completed DRep anchor metadata once verified anchor metadata is available. Mock screenshots showing "Expiring in 3 epochs" entries inside the default cohort are fixture-only and MUST NOT ship; production renders must respect the 6-epoch floor.
-- [ ] Each DRep card in the directory and detail surfaces an informational category badge with a tooltip explaining why the DRep is in that category. Slice-5 ships Primary / Threshold / Non-metadata; High value activates in anchor-1 once verified metadata is available.
-- [ ] The excluded top 35 and non-cohort DReps remain reachable through search/show-all filters and direct DRep ID entry.
+- [ ] Each DRep card in the directory and detail carries a status badge reading active, expiring, or inactive, alongside its voting power share and whether its metadata is verified. There is no category badge set: metadata verification is a yes-or-no fact and expiry is a scale, and a single four-value enum forced the two into one slot under a priority rule that hid whichever lost.
+- [ ] DReps above the voting-power ceiling, and any others outside the cohort, remain reachable through search/show-all filters and direct DRep ID entry.
 - [ ] DRep discovery surfaces load the latest local state on entry and provide an explicit refresh control.
 - [ ] DRep favorites persist across app sessions through Electron local store and are not per-wallet or synced.
 - [ ] Slice 4 local discovery renders local on-chain fields and anchor presence only; it does not render anchor-derived profile content.
@@ -117,11 +117,10 @@ Artifact placement decision: this plan and its task tracker are canonical under 
 | DRep query shape | Bulk `--all-dreps` once per latest-state refresh. Per-DRep CLI invocations are forbidden for directory/detail refresh. |
 | Lovelace precision | `BigNumber | null` in app models; decimal-string serialization across IPC; lossless CLI JSON parsing with `json-bigint`. |
 | DRep selector handoff | Pass `selectedDRepId` through React Router `location.state`. |
-| Default cohort | Exclude top 35 by voting power, then show up to the next 200 eligible DReps in randomized order. The "200 with top-35 excluded" sizing follows the Beyond MVG (BMVG) Simplified one-click-delegation analysis (Phase-1 variant, BMVG 2026-05-19); product copy and documentation cite BMVG when explaining the default. |
+| Default cohort | Exclude DReps at or above a 1.5% voting-power share, then draw twenty from those that remain, banded by standing and shuffled within each band. Every criterion, the ceiling and the cohort size included, is a control in the suggestion criteria panel rather than a constant, and `doNotList` is applied before them and never relaxed. `cohort-selection.md` holds the rule and the order criteria are given up in when too few DReps satisfy all of them. The ceiling replaces an earlier rank-based exclusion of the top 35, which removed a fixed count however stake was actually distributed and said nothing about why; the BMVG sizing that justified "200 with top-35 excluded" no longer describes what ships. |
 | Randomization seed | Reseed once per app session; explicit Reshuffle manually reseeds without a re-query. |
-| Recommended framing | The default cohort IS the "Recommended" sort for this release. No separate Recommended tab, no per-card Recommended badge. The four-category badge set (High value / Primary / Threshold / Non-metadata) acts as the early per-DRep explanation surface and lays the groundwork for a future Recommended badge / section. |
-| High Value badge | Deferred to anchor-1. Slice-5 ships Primary / Threshold / Non-metadata only. |
-| DRep category badges | Each DRep card and the detail view render exactly one informational category badge (High value / Primary / Threshold / Non-metadata) with a tooltip explaining the rule that placed the DRep there. Badges are visual annotation only; they never reorder the cohort or override the randomized default. |
+| Recommended framing | The default cohort IS the "Recommended" sort for this release. No separate Recommended tab, no per-card Recommended badge. |
+| DRep badges | A status badge carrying active, expiring, or inactive, extended to name the remaining epochs while a DRep is expiring. Metadata verification is shown as its own yes-or-no marker, and voting power as a share figure that flags anything at or above the Target15 threshold. The four-category set (High value / Primary / Threshold / Non-metadata) was retired: it forced a binary and a scale into one slot, and High value would have commended the same quantity the share figure warns about. Badges are annotation only; they never reorder the cohort. |
 | Anchor content | Render only after hardened fetch, Blake2b-256 hash verification, immutable hash-keyed caching, parsing, and source labeling. |
 | Delegation boundary | No second delegation backend. Selection only supplies a DRep ID to existing software-wallet and hardware-wallet paths. |
 | Current-state boundary | No historical governance or stale anchor-content views in this release. |
@@ -203,7 +202,7 @@ The initial query-path gate has been folded into this plan as research findings 
 
 - Add DRep directory and detail surfaces under `source/renderer/app/components/`.
 - Directory columns include DRep ID, active/inactive state, expiry status, voting power, metadata status, and favorite toggle.
-- Filters include active status, expiry threshold, metadata status, top-35 exclusion, default cohort, favorited, search, and show-all.
+- Filters include active status, expiry threshold, metadata status, the voting-power ceiling, default cohort, favorited, search, and show-all.
 - Detail view shows local on-chain fields first and remains useful when anchor metadata is unavailable.
 - Add routes for DRep directory and DRep detail if the implementation uses separate routed pages.
 - Integrate a Browse DReps affordance into [source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx](../../../source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.tsx).
