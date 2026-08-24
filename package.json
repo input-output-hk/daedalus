@@ -22,6 +22,7 @@
     "test:trusted-window": "electron --disable-gpu tests/security/trusted-window/main.js",
     "test:trusted-ipc": "electron --disable-gpu tests/security/trusted-ipc/main.js",
     "test:sandbox-canary": "electron --disable-gpu tests/security/sandbox-canary/main.js",
+    "test:dapp-session": "electron --disable-gpu tests/security/dapp-session/main.js",
     "test:generate:report": "yarn node-swc tests/reporter.ts",
     "test:unit": "yarn cucumber:run --require 'tests/**/unit/**/steps/**/*.ts' --tags '@unit and not @skip and not @wip'",
     "test:unit:rerun": "yarn cucumber:rerun --require 'tests/**/unit/**/steps/**/*.ts' --tags '@unit and not @skip and not @wip'",

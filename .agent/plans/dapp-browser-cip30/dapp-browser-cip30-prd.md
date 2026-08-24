@@ -192,7 +192,7 @@ physical results against exact production artifacts and adapter commits.
 - The trusted main renderer is Node-enabled and not context-isolated.
 - The existing preload is privileged and cannot be reused by remote content.
 - `webviewTag` is already disabled.
-- A dedicated self-contained dApp preload now synchronously exposes only `window.cardano.daedalus` through one closed, frozen-envelope-validated gateway and reconstructs typed public rejections without privileged globals. No production gateway handler, guest `BrowserWindow`, `WebContentsView`, `<webview>`, isolated session, permission policy, or dApp broker exists yet.
+- A dedicated self-contained dApp preload synchronously exposes only `window.cardano.daedalus`, removes WebRTC/data-channel, WebTransport, and direct-socket APIs from the hostile page world, validates frozen gateway envelopes, and reconstructs typed public rejections without privileged globals. A disabled-by-construction main-owned browser manager now creates only sandbox-gated hidden guests with fresh nonpersistent sessions, exact secure preferences, local catalog identity/title policy, default-deny permissions and navigation, HTTPS/WSS origin filtering, QUIC disablement, and revoke-before-destroy cleanup. No production gateway handler, trusted launch IPC/route lease, wallet method, or dApp launch is enabled yet.
 - A checked 77-channel manifest accounts for all production privileged IPC. Every channel uses exact trusted main WebContents/frame/document authentication and correlated caller-targeted responses; raw close/resize listeners and direct renderer callers have been migrated. Production guest launch remains disabled by the independent sandbox, guest, ledger, signing, hardware, and review gates.
 - The global popup handler now denies requests without shell side effects; trusted UI external-link requests accept only parsed credential-free HTTPS URLs with awaited privacy-safe failures.
 - Linux launch paths no longer pass `--disable-setuid-sandbox` or `--no-sandbox`. Main rejects sandbox-disabling argv/environment state and requires supported system-package identity plus a hidden same-PID local renderer canary before future dApp launch can become available.
@@ -782,8 +782,9 @@ Ledger/Trezor library, model, firmware, message-signing, and returned-hash
 matrices. Phase 1 follow-through completed `task-108` (`.deb`),
 `task-109` (`.rpm`), `task-005-b` (installed-artifact certification),
 `task-110` (`.bin` retirement and system-package update migration),
-`task-103` (flag removal and canary), and `task-104` (dedicated least-authority
-dApp preload and gateway contract).
+`task-103` (flag removal and canary), `task-104` (dedicated least-authority
+dApp preload and gateway contract), and `task-105` (nonpersistent guest
+session/window lifecycle and default-deny policy).
 Phases 1 through 9 implement and validate
 privileged IPC, session/network policy, exact semantic review,
 backend/pending-submission behavior, device capability, packaged hostile tests,

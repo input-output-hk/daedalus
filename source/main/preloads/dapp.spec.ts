@@ -6,10 +6,11 @@ import type {
 import { DAPP_CIP30_GATEWAY_CHANNEL } from '../../common/ipc/dapp';
 
 const exposeInMainWorld = jest.fn();
+const executeInMainWorld = jest.fn();
 const invoke = jest.fn();
 
 jest.mock('electron', () => ({
-  contextBridge: { exposeInMainWorld },
+  contextBridge: { executeInMainWorld, exposeInMainWorld },
   ipcRenderer: { invoke },
 }));
 
@@ -21,8 +22,31 @@ const exposedCardano = (exposeInMainWorld.mock.calls[0][1] as unknown) as {
   daedalus: DaedalusProvider;
 };
 const provider = exposedCardano.daedalus;
+const transportBlockCallCount = executeInMainWorld.mock.calls.length;
+const transportBlock = executeInMainWorld.mock.calls[0][0];
 
 describe('dApp preload', () => {
+  it('removes bypass transports from the page world', () => {
+    expect(transportBlockCallCount).toBe(1);
+    transportBlock.func();
+    expect(
+      Object.getOwnPropertyDescriptor(globalThis, 'RTCPeerConnection')
+    ).toEqual({
+      value: undefined,
+      configurable: false,
+      enumerable: false,
+      writable: false,
+    });
+    expect(Object.getOwnPropertyDescriptor(globalThis, 'WebTransport')).toEqual(
+      {
+        value: undefined,
+        configurable: false,
+        enumerable: false,
+        writable: false,
+      }
+    );
+  });
+
   beforeEach(() => invoke.mockReset());
 
   it('exposes only window.cardano.daedalus during preload evaluation', () => {
