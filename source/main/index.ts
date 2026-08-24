@@ -50,6 +50,7 @@ import { parseDeviceScaleFactor } from './utils/parseDeviceScaleFactor';
 import { registerShellIpc } from './ipc/registerShellIpc';
 import { installGlobalPopupPolicy } from './windows/navigationPolicy';
 import { startDappSandboxAvailabilityCheck } from './sandbox/dappSandboxAvailability';
+import { installDappTransportRestrictions } from './dapp/DappSessionPolicy';
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
@@ -70,6 +71,7 @@ if (isBlankScreenFixActive) {
   // in DevTools JavaScript console to see if the flag is active
   app.disableHardwareAcceleration();
 }
+installDappTransportRestrictions(app.commandLine);
 
 // Chromium sizes windows in device-independent pixels, so the minimum content
 // size set in `createMainWindow` is multiplied by the device scale factor that
