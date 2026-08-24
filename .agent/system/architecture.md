@@ -569,13 +569,13 @@ dist/
 
 ## Planned dApp Browser Security Boundary
 
-The embedded dApp browser is planned, not implemented. The current main window
-is a privileged legacy renderer (`nodeIntegration: true`, no context isolation)
+The embedded dApp connector remains incomplete. The current main window is a
+privileged legacy renderer (`nodeIntegration: true`, no context isolation)
 and must never host remote content or be reused as its preload/IPC surface.
 Its live policy permits only the canonical local main document, denies all
 subframe navigation and popups, filters policy-aborted load recovery, and opens
 only parsed credential-free HTTPS external links with awaited, privacy-safe
-failure handling. A machine-checked manifest accounts for all 77 production
+failure handling. A machine-checked manifest accounts for all 79 production
 privileged IPC channels. They authenticate the exact active trusted main
 WebContents, main frame, canonical document, and origin, with correlated
 caller-targeted responses, lifecycle cancellation, and current-window targeting.
@@ -600,6 +600,13 @@ Hostile remote dApp
   route/wallet/network authority, immutable bytes, grants, approvals, and
   result validation. The trusted renderer presents broker-authoritative data
   but cannot replace it.
+- Main observes exact trusted in-page `/wallets/:id/dapps` routes and owns a
+  monotonic wallet/network lease. Route, wallet, network, window, and direct
+  hash/history changes revoke staged launches before guest teardown. Authorized
+  submission work may finish after revocation, but stale results are withheld.
+- A revision-1 launcher policy independently gates global launch, preferred
+  catalog launch, Diagnostics, CIP-104, and CIP-142. Packaged defaults are all
+  disabled; only reviewed package/config releases can change them.
 - Existing privileged IPC must authenticate the exact trusted main WebContents
   and main frame. A guest receives only a dedicated scoped gateway, never raw
   Electron/Node APIs or existing IPC.

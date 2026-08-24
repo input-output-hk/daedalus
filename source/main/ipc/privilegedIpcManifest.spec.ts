@@ -754,12 +754,18 @@ const findRawElectronCalls = (
           isElectronType(type, 'WebContents', typeChecker) ||
           isElectronType(type, 'MessagePortMain', typeChecker) ||
           isElectronType(type, 'IpcRenderer', typeChecker));
+      const isDedicatedGuestGateway =
+        relative(sourceFile.fileName) === 'source/main/preloads/dapp.ts' &&
+        method === 'invoke' &&
+        values.length === 1 &&
+        values[0] === 'dapp-cip30-gateway';
       if (
-        (isScopedReceiver && ipcMainMethods.has(method || '')) ||
-        isWebContentsIpcEvent ||
-        isMessagePortReceiver ||
-        isRendererCaller ||
-        unresolvedApplicableCall
+        !isDedicatedGuestGateway &&
+        ((isScopedReceiver && ipcMainMethods.has(method || '')) ||
+          isWebContentsIpcEvent ||
+          isMessagePortReceiver ||
+          isRendererCaller ||
+          unresolvedApplicableCall)
       )
         violations.push(`${relative(sourceFile.fileName)}:${node.getStart()}`);
     });
@@ -770,9 +776,9 @@ const findRawElectronCalls = (
 describe('privileged IPC manifest', () => {
   it('matches every live constructor, transport, and renderer adapter exactly once', () => {
     expect(unresolvedWrapperConstructions).toEqual([]);
-    expect(privilegedIpcManifest).toHaveLength(63);
-    expect(mainConstructions).toHaveLength(63);
-    expect(rendererConstructions).toHaveLength(63);
+    expect(privilegedIpcManifest).toHaveLength(79);
+    expect(mainConstructions).toHaveLength(79);
+    expect(rendererConstructions).toHaveLength(79);
     const expected = privilegedIpcManifest
       .map(({ contract, constructorOwner: owner, transport }) => ({
         contract,

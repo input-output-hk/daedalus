@@ -8,6 +8,7 @@ import {
   spawnWatchdog,
 } from './utils/directLaunch';
 import { parseNetworkMagic } from './utils/chainStorageValidate';
+import { DappLaunchPolicy } from './dapp/DappLaunchPolicy';
 
 const {
   isTest,
@@ -77,6 +78,7 @@ if (!isStartedByLauncher && !isHandedOver) {
     throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
   }
 }
+
 
 
 type WindowOptionsType = {

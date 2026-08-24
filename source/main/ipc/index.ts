@@ -28,6 +28,7 @@ import { handleGovernanceAnchorRequests } from './governanceAnchorChannel';
 import { handleExportWalletsRequests } from './exportWalletsChannel';
 import { handleWindowControlRequests } from './windowControlChannels';
 import { currentWindowSender } from './lib/currentWindowSender';
+import { handleDappBrowserRequests } from './dappBrowser';
 
 const hardwareWalletChannels = createChannels(MainIpcChannel);
 
@@ -54,6 +55,7 @@ export default (window: BrowserWindow) => {
   downloadManagerChannel(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
+  handleDappBrowserRequests(window);
   handleHardwareWalletRequests(window, hardwareWalletChannels);
 
   // Watchdog IPC
