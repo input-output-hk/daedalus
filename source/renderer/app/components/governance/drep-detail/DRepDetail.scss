@@ -118,10 +118,6 @@
   white-space: nowrap;
 }
 
-.anchorLink {
-  color: var(--theme-link-main-color);
-}
-
 .sourceLabel {
   color: var(--theme-gov-font-color-light);
   font-size: 12px;
@@ -214,14 +210,6 @@
 
 .referenceItem {
   margin: 0;
-
-  a {
-    color: var(--theme-link-main-color);
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
 }
 
 .paymentAddressValue {
