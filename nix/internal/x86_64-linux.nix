@@ -147,7 +147,7 @@ in rec {
         # this will just replace all storepaths with an invalid one:
         (
           cd $out/share/daedalus
-          for x in {main,renderer}/{0.,}index.js{,.map} main/preload.js{,.map} main/0.js{,.map} renderer/styles.css.map; do
+          for x in {main,renderer}/{0.,}index.js{,.map} main/{preload,dappGuestSecurityHarness,dappSecurityHarnessPreload}.js{,.map} main/0.js{,.map} renderer/styles.css.map; do
             ${pkgs.nukeReferences}/bin/nuke-refs $x
           done
         )

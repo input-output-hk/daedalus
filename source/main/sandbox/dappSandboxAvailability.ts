@@ -158,6 +158,23 @@ export const validateRendererEvidence = (
     rendererEvidence.namespaces.pid !== mainEvidence.namespaces.pid
   );
 };
+export const validateDappRendererSandbox = (
+  webContents: WebContents
+): boolean => {
+  try {
+    const rendererEvidence = readProcEvidence(webContents.getOSProcessId());
+    return (
+      validateRendererEvidence(
+        readProcEvidence(process.pid),
+        rendererEvidence
+      ) &&
+      readProcEvidence(rendererEvidence.pid).startTime ===
+        rendererEvidence.startTime
+    );
+  } catch {
+    return false;
+  }
+};
 
 const parseOsRelease = (): { id: string; versionId: string } | null => {
   try {
