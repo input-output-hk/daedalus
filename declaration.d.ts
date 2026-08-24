@@ -2,6 +2,7 @@ import { IpcRenderer } from 'electron';
 import type { request as httpRequest } from 'http';
 import type { request as httpsRequest, globalAgent } from 'https';
 import { Environment } from './source/common/types/environment.types';
+import type { DaedalusProvider } from './source/common/ipc/dapp';
 
 declare module '*.svg' {
   const content: any;
@@ -38,13 +39,13 @@ interface Https {
 
 export type $ElementType<
   T extends { [P in K & any]: any },
-  K extends keyof T | number,
+  K extends keyof T | number
 > = T[K];
 
 export type EnumMap<
   K extends string,
   V,
-  O extends Record<string, any> = any,
+  O extends Record<string, any> = any
 > = O & Record<K, V & $ElementType<O, K>>;
 
 declare global {
@@ -52,6 +53,11 @@ declare global {
     interface ProcessEnv {
       WALLET_COUNT: number;
     }
+  }
+  interface Window {
+    cardano: {
+      daedalus: DaedalusProvider;
+    };
   }
   /* eslint-disable no-var, vars-on-top */
   var daedalus: Daedalus;
