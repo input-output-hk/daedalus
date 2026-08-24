@@ -10,6 +10,21 @@
  * hardcoding it would let a governance action silently falsify a claim about a
  * named DRep.
  */
+/**
+ * How close to lapsing a DRep has to be before it is called expiring.
+ *
+ * Six epochs is about a month on mainnet and preprod, whose epochs run five
+ * days: long enough that a delegator has time to notice and re-delegate before
+ * their voting power stops counting.
+ *
+ * Deliberately a count of epochs rather than a span of days, even though days
+ * are what the badge shows a reader. Epoch length is a property of the network
+ * rather than a constant, and the test networks run much shorter epochs than
+ * mainnet for their own reasons. An epoch count stays proportionate to the
+ * activity window on all of them; a fixed number of days would exceed the whole
+ * twenty-epoch window on a short-epoch network, leaving every DRep permanently
+ * marked as expiring.
+ */
 export const LAPSING_SOON_EPOCHS = 6;
 
 const SECONDS_PER_DAY = 86400;
