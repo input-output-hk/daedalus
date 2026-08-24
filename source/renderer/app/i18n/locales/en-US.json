@@ -404,7 +404,6 @@
   "governance.drepDirectory.filter.metadata": "!!!Metadata",
   "governance.drepDirectory.filter.metadata.with": "!!!With metadata",
   "governance.drepDirectory.filter.metadata.without": "!!!Without metadata",
-  "governance.drepDirectory.filters.showAllLabel": "!!!Pool",
   "governance.drepDirectory.idAriaCip105": "!!!CIP-105 DRep ID {value}",
   "governance.drepDirectory.idAriaCip129": "!!!CIP-129 DRep ID {value}",
   "governance.drepDirectory.lastUpdated": "!!!Last updated {time}",

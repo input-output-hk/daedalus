@@ -1,6 +1,7 @@
 import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
+import DRepFacetSelect from '../_shared/DRepFacetSelect';
 import type {
   DRepExpiryFilter,
   DRepFilterState,
@@ -15,11 +16,6 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.cohortBanner.showAll',
     defaultMessage: '!!!Show all DReps',
     description: 'Filter-bar toggle between the cohort and every DRep',
-  },
-  showAllLabel: {
-    id: 'governance.drepDirectory.filters.showAllLabel',
-    defaultMessage: '!!!Pool',
-    description: 'Segment label above the show-all toggle in the filter strip',
   },
   statusLabel: {
     id: 'governance.drepDirectory.filter.active',
@@ -129,26 +125,13 @@ function DRepDirectoryFilters({
     onChange: (next: string) => void,
     options: Array<[string, string]>
   ) => (
-    <div className={styles.facet} key={label}>
-      <span className={styles.facetLabel} aria-hidden="true">
-        {label}
-      </span>
-      <span className={styles.facetControl}>
-        <select
-          className={styles.select}
-          aria-label={label}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-        >
-          {options.map(([optionValue, optionLabel]) => (
-            <option key={optionValue} value={optionValue}>
-              {optionLabel}
-            </option>
-          ))}
-        </select>
-        <span className={styles.chevron} aria-hidden="true" />
-      </span>
-    </div>
+    <DRepFacetSelect
+      key={label}
+      label={label}
+      value={value}
+      onChange={onChange}
+      options={options}
+    />
   );
 
   return (
@@ -156,16 +139,17 @@ function DRepDirectoryFilters({
       {/* Widening the pool governs every facet beside it, so it leads the
           strip. The same state the footer buttons drive: kept here as well
           because this is where someone used to this screen will look. */}
-      <div className={styles.facet}>
-        <span className={styles.facetLabel} aria-hidden="true">
-          {intl.formatMessage(messages.showAllLabel)}
+      <div className={styles.switchFacet}>
+        <span className={styles.switchLabel}>
+          {intl.formatMessage(messages.showAll)}
         </span>
-        <NormalSwitch
-          className={styles.showAllSwitch}
-          checked={isShowAll}
-          label={intl.formatMessage(messages.showAll)}
-          onChange={onShowAllChange}
-        />
+        <div className={styles.switchControl}>
+          <NormalSwitch
+            className={styles.showAllSwitch}
+            checked={isShowAll}
+            onChange={onShowAllChange}
+          />
+        </div>
       </div>
       {facet(
         intl.formatMessage(messages.statusLabel),

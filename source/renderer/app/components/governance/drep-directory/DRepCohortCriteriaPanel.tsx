@@ -1,6 +1,7 @@
 import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
+import DRepFacetSelect from '../_shared/DRepFacetSelect';
 import { LAPSING_SOON_EPOCHS } from '../_shared/drepExpiry';
 import {
   DREP_COHORT_SIZE_OPTIONS,
@@ -80,26 +81,13 @@ function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
     onChange: (next: string) => void,
     options: Array<[string, string]>
   ) => (
-    <div className={styles.facet}>
-      <span className={styles.facetLabel} aria-hidden="true">
-        {label}
-      </span>
-      <span className={styles.facetControl}>
-        <select
-          className={styles.select}
-          aria-label={label}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-        >
-          {options.map(([optionValue, optionLabel]) => (
-            <option key={optionValue} value={optionValue}>
-              {optionLabel}
-            </option>
-          ))}
-        </select>
-        <span className={styles.chevron} aria-hidden="true" />
-      </span>
-    </div>
+    <DRepFacetSelect
+      key={label}
+      label={label}
+      value={value}
+      onChange={onChange}
+      options={options}
+    />
   );
 
   return (

@@ -404,7 +404,6 @@
   "governance.drepDirectory.filter.metadata": "!!!メタデータ",
   "governance.drepDirectory.filter.metadata.with": "!!!検証済みメタデータあり",
   "governance.drepDirectory.filter.metadata.without": "!!!検証済みメタデータなし",
-  "governance.drepDirectory.filters.showAllLabel": "!!!対象範囲",
   "governance.drepDirectory.idAriaCip105": "!!!CIP-105 DRep ID {value}",
   "governance.drepDirectory.idAriaCip129": "!!!CIP-129 DRep ID {value}",
   "governance.drepDirectory.lastUpdated": "!!!最終更新 {time}",

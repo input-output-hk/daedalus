@@ -1,91 +1,51 @@
-@import '../governanceConfig';
-
 // The row above this one is a 50px bordered field and a 50px bordered box of
-// toggle buttons. This row was four bare selects and a checkbox sitting loose
-// on the page background, roughly half that height, which is why it read as
-// unfinished rather than as part of the same screen.
+// toggle buttons. This row is now the app's own select at that same height,
+// one per facet, laid out the way the settings screen lays out its selects:
+// each control labelled and boxed in its own right, with nothing drawn around
+// the group. An outer box would put a border around a row of bordered
+// controls, which is the nesting the strip was carrying before.
 //
-// It is now one bordered strip at the app's control height, divided into
-// segments. The dividers carry meaning: each segment is one independent facet
-// of the query, and the pool toggle leads because widening the pool governs
-// every facet beside it. On a narrow pane the strip scrolls within itself, the
-// way the DRep table already does, rather than wrapping into fragments of a
-// box that no longer reads as one.
+// It wraps rather than scrolls. A control pushed off the end of a scrolling
+// strip is a control nobody knows is there, and keeping every facet visible is
+// the point of putting them in a row instead of behind a filter button.
 .container {
-  @extend %contentBorderAndBackground;
-  align-items: stretch;
+  align-items: flex-start;
   display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
   max-width: 100%;
-  min-height: 46px;
-  overflow-x: auto;
 }
 
-.facet {
-  align-items: flex-start;
-  border-right: 1px solid var(--theme-gov-content-border-color);
+// The pool toggle leads because widening the pool governs every facet beside
+// it. It is a switch rather than a select, so it is built to the same two-part
+// shape by hand: a label of the same weight and spacing, then a control box of
+// the same height with the switch centred in it. Matching the shape rather
+// than nudging the switch by a fixed number of pixels keeps the row aligned if
+// the control height is ever changed again.
+.switchFacet {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  gap: 2px;
-  justify-content: center;
-  padding: 4px 12px;
-
-  &:last-child {
-    border-right: 0;
-  }
 }
 
-.facetLabel {
-  @extend %captionText;
-  line-height: 1.2;
+.switchLabel {
+  color: var(--rp-formfield-label-text-color);
+  display: block;
+  font-family: var(--font-medium);
+  font-size: 16px;
+  line-height: 1.38;
+  margin: 0 0 10px;
   white-space: nowrap;
 }
 
-.facetControl {
+.switchControl {
   align-items: center;
-  display: inline-flex;
-  gap: 6px;
-  position: relative;
+  display: flex;
+  height: 50px;
 }
 
-// The native control keeps its keyboard and screen-reader behaviour; only the
-// operating system's chrome is taken off, so the four read as one instrument.
-.select {
-  appearance: none;
-  background: transparent;
-  border: 0;
-  color: var(--theme-gov-font-color-accent);
-  cursor: pointer;
-  font-family: var(--font-regular);
-  font-size: 14px;
-  line-height: 1.2;
-  padding: 0 18px 0 0;
-
-  &:focus-visible {
-    outline: 1px solid var(--theme-gov-font-color-accent);
-    outline-offset: 2px;
-  }
-}
-
-.chevron {
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 4px solid var(--theme-gov-font-color-lighter);
-  pointer-events: none;
-  position: absolute;
-  right: 2px;
-  top: calc(50% - 2px);
-}
-
-// NormalSwitch is built for a settings row: a 10px margin for its surroundings
-// and a label at the app's body size. Inside a segment the segment's own
-// padding does the first job, and the label has to sit at the same size as
-// every other value in the strip or the toggle's segment shouts over them.
+// NormalSwitch is built for a settings row, where a 10px margin separates it
+// from its surroundings. Here the row's own gap does that.
 .showAllSwitch {
   margin: 0;
-
-  label {
-    font-size: 14px !important;
-    line-height: 1.2 !important;
-  }
 }

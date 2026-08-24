@@ -1,0 +1,20 @@
+// Each facet sizes itself from its content and grows to share whatever the row
+// has left, down to a floor wide enough for the longest option label. Below
+// that the row wraps rather than scrolling: a control pushed off the end of a
+// scrolling strip is a control nobody knows is there, which is the problem the
+// row is meant to solve.
+.facet {
+  flex: 1 1 auto;
+  min-width: 180px;
+
+  // Every theme sets --rp-select-input-bg-color to transparent, so a select
+  // takes the colour of whatever it sits on. Against a page background that
+  // reads as a disabled control rather than an empty one, and it disagrees
+  // with the search field directly above, which is filled. These take the
+  // field's own background so the two rows are visibly the same kind of thing.
+  :global {
+    .SimpleSelect_selectInput input {
+      background-color: var(--rp-input-bg-color);
+    }
+  }
+}

@@ -2622,11 +2622,6 @@
         "id": "governance.drepDirectory.status.inactive"
       },
       {
-        "defaultMessage": "!!!Pool",
-        "description": "Segment label above the show-all toggle in the filter strip",
-        "id": "governance.drepDirectory.filters.showAllLabel"
-      },
-      {
         "defaultMessage": "!!!Status",
         "description": "Label of the status filter",
         "id": "governance.drepDirectory.filter.active"

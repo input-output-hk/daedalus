@@ -188,6 +188,30 @@ const renderComponent = ({
   );
 };
 
+// The app's Select renders its label aria-hidden and its options as
+// presentational list items, so a facet cannot be reached with getByLabelText
+// nor driven with a change event. It is reached through its label text and
+// driven the way a user drives it: open the control, click the option.
+const facetControl = (facetLabel: string): HTMLElement => {
+  const control = screen.getByText(facetLabel).closest('.facet');
+  if (!control) throw new Error(`no facet control for "${facetLabel}"`);
+  return control as HTMLElement;
+};
+
+const facetValue = (facetLabel: string): string =>
+  (facetControl(facetLabel).querySelector('input') as HTMLInputElement).value;
+
+const facetOptions = (facetLabel: string): string[] =>
+  Array.from(facetControl(facetLabel).querySelectorAll('li')).map(
+    (option) => option.textContent ?? ''
+  );
+
+const chooseFacetOption = (facetLabel: string, optionLabel: string) => {
+  const control = facetControl(facetLabel);
+  fireEvent.click(control.querySelector('input') as HTMLInputElement);
+  fireEvent.click(within(control).getByText(optionLabel));
+};
+
 describe('DRepDirectory', () => {
   afterEach(cleanup);
 
@@ -862,9 +886,7 @@ describe('DRepDirectory', () => {
       ],
     });
 
-    fireEvent.change(screen.getByLabelText('!!!Status'), {
-      target: { value: 'inactive' },
-    });
+    chooseFacetOption('!!!Status', '!!!Inactive');
 
     expect(screen.getAllByText('!!!View details')).toHaveLength(1);
   });
@@ -873,15 +895,11 @@ describe('DRepDirectory', () => {
     renderComponent({ suggestedDReps: [realEntry(1)] });
 
     fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
-    fireEvent.change(screen.getByLabelText('!!!Sort'), {
-      target: { value: 'votingPowerDesc' },
-    });
+    chooseFacetOption('!!!Sort', '!!!Voting power (high to low)');
 
     expect(screen.getByText(/Sorted by voting power/)).toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText('!!!Sort'), {
-      target: { value: 'recommended' },
-    });
+    chooseFacetOption('!!!Sort', '!!!Recommended (default)');
 
     expect(
       screen.queryByText(/Sorted by voting power/)
@@ -897,9 +915,7 @@ describe('DRepDirectory', () => {
 
     expect(screen.getAllByText('!!!View details')).toHaveLength(1);
 
-    fireEvent.change(screen.getByLabelText('!!!Sort'), {
-      target: { value: 'votingPowerDesc' },
-    });
+    chooseFacetOption('!!!Sort', '!!!Voting power (high to low)');
 
     // The disclosure beside the sort says the largest DReps come first. Over
     // the cohort alone that is false, because the share ceiling excludes them,
@@ -915,9 +931,7 @@ describe('DRepDirectory', () => {
       allDReps: [suggested, realEntry(2)],
     });
 
-    fireEvent.change(screen.getByLabelText('!!!Sort'), {
-      target: { value: 'votingPowerAsc' },
-    });
+    chooseFacetOption('!!!Sort', '!!!Voting power (low to high)');
 
     expect(screen.getAllByText('!!!View details')).toHaveLength(2);
   });
@@ -929,9 +943,7 @@ describe('DRepDirectory', () => {
       allDReps: [suggested, realEntry(2)],
     });
 
-    fireEvent.change(screen.getByLabelText('!!!Sort'), {
-      target: { value: 'expiryAsc' },
-    });
+    chooseFacetOption('!!!Sort', '!!!Expiry (soonest first)');
 
     expect(screen.getAllByText('!!!View details')).toHaveLength(1);
   });
@@ -943,9 +955,7 @@ describe('DRepDirectory', () => {
       allDReps: [suggested, realEntry(2)],
     });
 
-    fireEvent.change(screen.getByLabelText('!!!Sort'), {
-      target: { value: 'votingPowerDesc' },
-    });
+    chooseFacetOption('!!!Sort', '!!!Voting power (high to low)');
     fireEvent.click(
       screen.getByRole('button', { name: '!!!Back to suggestions' })
     );
@@ -963,14 +973,11 @@ describe('DRepDirectory', () => {
       allDReps: [realEntry(1, withoutPower), realEntry(2, withoutPower)],
     });
 
-    const sortControl = screen.getByLabelText('!!!Sort');
-    const options = within(sortControl)
-      .getAllByRole('option')
-      .map((option) => (option as HTMLOptionElement).value);
+    const options = facetOptions('!!!Sort');
 
-    expect(options).not.toContain('votingPowerDesc');
-    expect(options).not.toContain('votingPowerAsc');
-    expect(options).toContain('expiryAsc');
+    expect(options).not.toContain('!!!Voting power (high to low)');
+    expect(options).not.toContain('!!!Voting power (low to high)');
+    expect(options).toContain('!!!Expiry (soonest first)');
   });
 
   it('offers the voting-power sort when a single DRep reports a figure', () => {
@@ -979,12 +986,10 @@ describe('DRepDirectory', () => {
       allDReps: [realEntry(1, { votingPower: null }), realEntry(2)],
     });
 
-    const options = within(screen.getByLabelText('!!!Sort'))
-      .getAllByRole('option')
-      .map((option) => (option as HTMLOptionElement).value);
+    const options = facetOptions('!!!Sort');
 
-    expect(options).toContain('votingPowerDesc');
-    expect(options).toContain('votingPowerAsc');
+    expect(options).toContain('!!!Voting power (high to low)');
+    expect(options).toContain('!!!Voting power (low to high)');
   });
 
   it('leaves the banner alone when show-all only widens the list', () => {
@@ -1006,9 +1011,7 @@ describe('DRepDirectory', () => {
       suggestedDReps: [realEntry(1), realEntry(2, { status: 'inactive' })],
     });
 
-    fireEvent.change(screen.getByLabelText('!!!Status'), {
-      target: { value: 'active' },
-    });
+    chooseFacetOption('!!!Status', '!!!Active');
 
     expect(
       screen.getByText(/Showing 1 DReps matching your filters/)
@@ -1018,9 +1021,7 @@ describe('DRepDirectory', () => {
   it('recovers from zero results via the Clear filters action', () => {
     renderComponent({ suggestedDReps: [realEntry(1)] });
 
-    fireEvent.change(screen.getByLabelText('!!!Status'), {
-      target: { value: 'inactive' },
-    });
+    chooseFacetOption('!!!Status', '!!!Inactive');
     expect(
       screen.getAllByText(/No DReps match your filters/)[0]
     ).toBeInTheDocument();
@@ -1034,7 +1035,7 @@ describe('DRepDirectory', () => {
     renderComponent({ locale: 'ja-JP' });
 
     expect(screen.getByPlaceholderText('!!!DRep IDで検索')).toBeInTheDocument();
-    // Two controls drive show-all, the filter-bar checkbox and the footer
+    // Two controls drive show-all, the filter-bar toggle and the footer
     // button, and they carry the same words because they do the same thing.
     expect(screen.getAllByText('!!!すべてのDRepを表示')).toHaveLength(2);
   });
@@ -1653,8 +1654,8 @@ describe('DRepDirectory suggestion criteria', () => {
     fireEvent.click(screen.getByText('!!!Suggestion criteria'));
 
     expect(screen.getByText(/drawn at random/)).toBeInTheDocument();
-    expect(screen.getByLabelText('!!!Suggestions shown')).toHaveValue('20');
-    expect(screen.getByLabelText('!!!Voting power under')).toHaveValue('0.015');
+    expect(facetValue('!!!Suggestions shown')).toBe('20');
+    expect(facetValue('!!!Voting power under')).toBe('1.5%');
   });
 
   it('reports a criterion the user turns off', () => {
@@ -1675,9 +1676,7 @@ describe('DRepDirectory suggestion criteria', () => {
     renderComponent({ onCohortCriteriaChange });
     fireEvent.click(screen.getByText('!!!Suggestion criteria'));
 
-    fireEvent.change(screen.getByLabelText('!!!Suggestions shown'), {
-      target: { value: '50' },
-    });
+    chooseFacetOption('!!!Suggestions shown', '50');
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,
@@ -1690,9 +1689,7 @@ describe('DRepDirectory suggestion criteria', () => {
     renderComponent({ onCohortCriteriaChange });
     fireEvent.click(screen.getByText('!!!Suggestion criteria'));
 
-    fireEvent.change(screen.getByLabelText('!!!Voting power under'), {
-      target: { value: 'none' },
-    });
+    chooseFacetOption('!!!Voting power under', '!!!No limit');
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,
@@ -1711,8 +1708,9 @@ describe('DRepDirectory suggestion criteria', () => {
     });
     fireEvent.click(screen.getByText('!!!Suggestion criteria'));
 
-    expect(screen.getByLabelText('!!!Suggestions shown')).toHaveValue('10');
-    expect(screen.getByLabelText('!!!Voting power under')).toHaveValue('none');
+    // The control shows the option's label now, not its underlying value.
+    expect(facetValue('!!!Suggestions shown')).toBe('10');
+    expect(facetValue('!!!Voting power under')).toBe('!!!No limit');
   });
 
   it('says which criteria were relaxed to fill the cohort', () => {
