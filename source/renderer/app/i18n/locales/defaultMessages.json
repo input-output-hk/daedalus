@@ -3142,7 +3142,7 @@
         "id": "governance.drepDetail.expiresIn"
       },
       {
-        "defaultMessage": "!!!{count} epochs",
+        "defaultMessage": "!!!{count, plural, one {# epoch} other {# epochs}}",
         "description": "Remaining epochs until the DRep expires",
         "id": "governance.drepDetail.expiresInEpochs"
       },
@@ -3477,12 +3477,12 @@
         "id": "governance.drepDirectory.refreshing"
       },
       {
-        "defaultMessage": "!!!Showing {n} DReps matching your filters.",
+        "defaultMessage": "!!!Showing {n, plural, one {# DRep} other {# DReps}} matching your filters.",
         "description": "Banner line replacing the cohort claim while filtered",
         "id": "governance.drepDirectory.cohortBanner.filtered"
       },
       {
-        "defaultMessage": "!!!{n} DReps you've favorited. Favorites are stored on this device only.",
+        "defaultMessage": "!!!{n, plural, one {# DRep} other {# DReps}} you've favorited. Favorites are stored on this device only.",
         "description": "Banner line of the favorites view, replacing the cohort claim",
         "id": "governance.drepFavorites.banner"
       }
@@ -6262,12 +6262,12 @@
         "id": "voting.governance.currentVote.noConfidence.caption"
       },
       {
-        "defaultMessage": "!!!Expiring in {n} epochs",
+        "defaultMessage": "!!!Expiring in {n, plural, one {# epoch} other {# epochs}}",
         "description": "Badge label for a delegated DRep whose registration lapses within the remaining-epoch window",
         "id": "voting.governance.currentVote.status.expiringBadge"
       },
       {
-        "defaultMessage": "!!!This DRep's voting power will lapse in {n} epochs — consider re-delegating.",
+        "defaultMessage": "!!!This DRep's voting power will lapse in {n, plural, one {# epoch} other {# epochs}} — consider re-delegating.",
         "description": "Caption shown when the delegated DRep registration lapses soon",
         "id": "voting.governance.currentVote.status.expiring"
       },

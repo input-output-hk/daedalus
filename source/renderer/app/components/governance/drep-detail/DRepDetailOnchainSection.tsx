@@ -45,7 +45,7 @@ const messages = defineMessages({
   },
   expiresInValue: {
     id: 'governance.drepDetail.expiresInEpochs',
-    defaultMessage: '!!!{count} epochs',
+    defaultMessage: '!!!{count, plural, one {# epoch} other {# epochs}}',
     description: 'Remaining epochs until the DRep expires',
   },
   votingPowerShareLabel: {

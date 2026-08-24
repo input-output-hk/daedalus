@@ -72,14 +72,15 @@ export const messages = defineMessages({
   },
   statusExpiringBadge: {
     id: 'voting.governance.currentVote.status.expiringBadge',
-    defaultMessage: '!!!Expiring in {n} epochs',
+    defaultMessage:
+      '!!!Expiring in {n, plural, one {# epoch} other {# epochs}}',
     description:
       'Badge label for a delegated DRep whose registration lapses within the remaining-epoch window',
   },
   statusExpiring: {
     id: 'voting.governance.currentVote.status.expiring',
     defaultMessage:
-      "!!!This DRep's voting power will lapse in {n} epochs — consider re-delegating.",
+      "!!!This DRep's voting power will lapse in {n, plural, one {# epoch} other {# epochs}} — consider re-delegating.",
     description:
       'Caption shown when the delegated DRep registration lapses soon',
   },

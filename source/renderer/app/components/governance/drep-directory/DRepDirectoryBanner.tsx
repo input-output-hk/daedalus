@@ -25,13 +25,14 @@ const messages = defineMessages({
   },
   filtered: {
     id: 'governance.drepDirectory.cohortBanner.filtered',
-    defaultMessage: '!!!Showing {n} DReps matching your filters.',
+    defaultMessage:
+      '!!!Showing {n, plural, one {# DRep} other {# DReps}} matching your filters.',
     description: 'Banner line replacing the cohort claim while filtered',
   },
   favorites: {
     id: 'governance.drepFavorites.banner',
     defaultMessage:
-      "!!!{n} DReps you've favorited. Favorites are stored on this device only.",
+      "!!!{n, plural, one {# DRep} other {# DReps}} you've favorited. Favorites are stored on this device only.",
     description:
       'Banner line of the favorites view, replacing the cohort claim',
   },

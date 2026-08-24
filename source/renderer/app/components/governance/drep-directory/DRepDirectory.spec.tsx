@@ -1014,7 +1014,7 @@ describe('DRepDirectory', () => {
     chooseFacetOption('!!!Status', '!!!Active');
 
     expect(
-      screen.getByText(/Showing 1 DReps matching your filters/)
+      screen.getByText(/Showing 1 DRep matching your filters/)
     ).toBeInTheDocument();
   });
 
@@ -1343,7 +1343,8 @@ describe('DRepDirectory', () => {
       expect(screen.getAllByText('!!!View details')).toHaveLength(1);
       expect(screen.getByText(truncatedDrepId(2))).toBeInTheDocument();
       expect(screen.queryByText(truncatedDrepId(1))).not.toBeInTheDocument();
-      expect(screen.getByText(/DReps you've favorited/)).toBeInTheDocument();
+      // One favourite, so the singular branch: the count and the noun agree.
+      expect(screen.getByText(/1 DRep you've favorited/)).toBeInTheDocument();
     });
 
     it('offers search and the view toggle but not show-all in favorites', () => {
