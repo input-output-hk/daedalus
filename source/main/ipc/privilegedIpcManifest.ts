@@ -95,6 +95,12 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
     capability: 'window',
     receive: 'broadcast',
   }),
+  ...entries(['DAPP_BROWSER_OPEN_CHANNEL', 'DAPP_BROWSER_CLOSE_CHANNEL'], {
+    constructorOwner: 'source/main/ipc/dappBrowser.ts',
+    rendererOwner: 'source/renderer/app/ipc/dappBrowser.ts',
+    registrationOwner: 'source/main/ipc/dappBrowser.ts',
+    capability: 'dapp-browser',
+  }),
   ...entries(['SHOW_UI_PART_CHANNEL'], {
     constructorOwner: 'source/main/ipc/control-ui-parts.ts',
     rendererOwner: 'source/renderer/app/ipc/control-ui-parts.ts',

@@ -269,6 +269,14 @@ let
       isFlight = network == "mainnet_flight";
       isStaging = envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic";
       nodeImplementation = "cardano";
+      dappBrowserPolicy = {
+        revision = 1;
+        globalEnabled = false;
+        preferredCatalogEnabled = false;
+        diagnosticsEnabled = false;
+        cip104Revision = 0;
+        cip142Revision = 0;
+      };
     }
     // lib.optionalAttrs (os == "linux") {
       applicationUpdateMode = "system-package-disabled";

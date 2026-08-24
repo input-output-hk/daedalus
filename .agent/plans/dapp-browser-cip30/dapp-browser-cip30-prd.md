@@ -22,7 +22,7 @@ The current Electron main renderer cannot host hostile content safely:
 
 - `source/main/windows/main.ts` enables Node integration and disables context isolation.
 - `source/main/preload.ts` exposes raw IPC, Node HTTP(S), paths, configuration, and logging capabilities.
-- All 77 production privileged IPC channels are recorded in a machine-checkable manifest and use wrappers that retain Electron events, correlate responses, and authenticate the active trusted main WebContents/frame/document. The former raw close/resize listeners have been removed.
+- All 79 production privileged IPC channels are recorded in a machine-checkable manifest and use wrappers that retain Electron events, correlate responses, and authenticate the active trusted main WebContents/frame/document. The former raw close/resize listeners have been removed.
 - Popup and external-URL handling is not sufficient for a hostile renderer.
 - Linux system-package launchers and development paths are free of sandbox-disabling defaults. The portable self-extracting `.bin` producer and Linux in-app executor are retired; new Linux releases ship only fixed-path `.deb` and `.rpm` packages, while legacy home installs remain wallet-only until users migrate without moving or deleting wallet state.
 
@@ -192,8 +192,8 @@ physical results against exact production artifacts and adapter commits.
 - The trusted main renderer is Node-enabled and not context-isolated.
 - The existing preload is privileged and cannot be reused by remote content.
 - `webviewTag` is already disabled.
-- A dedicated self-contained dApp preload synchronously exposes only `window.cardano.daedalus`, removes WebRTC/data-channel, WebTransport, and direct-socket APIs from the hostile page world, validates frozen gateway envelopes, and reconstructs typed public rejections without privileged globals. A disabled-by-construction main-owned browser manager now creates only sandbox-gated hidden guests with fresh nonpersistent sessions, exact secure preferences, local catalog identity/title policy, default-deny permissions and navigation, HTTPS/WSS origin filtering, QUIC disablement, and revoke-before-destroy cleanup. No production gateway handler, trusted launch IPC/route lease, wallet method, or dApp launch is enabled yet.
-- A checked 77-channel manifest accounts for all production privileged IPC. Every channel uses exact trusted main WebContents/frame/document authentication and correlated caller-targeted responses; raw close/resize listeners and direct renderer callers have been migrated. Production guest launch remains disabled by the independent sandbox, guest, ledger, signing, hardware, and review gates.
+- A dedicated self-contained dApp preload synchronously exposes only `window.cardano.daedalus`, removes WebRTC/data-channel, WebTransport, and direct-socket APIs from the hostile page world, validates frozen gateway envelopes, and reconstructs typed public rejections without privileged globals. A disabled-by-construction main-owned browser manager now creates only sandbox-gated hidden guests with fresh nonpersistent sessions, exact secure preferences, local catalog identity/title policy, default-deny permissions and navigation, HTTPS/WSS origin filtering, QUIC disablement, and revoke-before-destroy cleanup. Trusted open/close IPC now consumes only main-staged one-use launches bound to a current route lease; no production launch producer, gateway handler, wallet method, or dApp launch is enabled yet.
+- A checked 79-channel manifest accounts for all production privileged IPC. Every channel uses exact trusted main WebContents/frame/document authentication and correlated caller-targeted responses; raw close/resize listeners and direct renderer callers have been migrated. Production guest launch remains disabled by the independent sandbox, guest, ledger, signing, hardware, and review gates.
 - The global popup handler now denies requests without shell side effects; trusted UI external-link requests accept only parsed credential-free HTTPS URLs with awaited privacy-safe failures.
 - Linux launch paths no longer pass `--disable-setuid-sandbox` or `--no-sandbox`. Main rejects sandbox-disabling argv/environment state and requires supported system-package identity plus a hidden same-PID local renderer canary before future dApp launch can become available.
 - Linux releases now publish only `.deb` and `.rpm` packages. Package-manager upgrades replace files under `/opt/daedalus/<cluster>` without owning `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus`; legacy `.bin` users receive an ordinary migration announcement rather than executable automatic-update bytes.
@@ -963,7 +963,7 @@ Before guest creation:
 - Trusted authority is inactive during initial load/navigation, reactivates only for the completed canonical main document, and cancels stale pending wrapper requests.
 - Production privileged handlers use explicit authenticated wrapper initialization; the source audit rejects raw Electron ingress and direct renderer bypasses.
 - Wrapper requests use private request IDs, install response listeners before send, clean them up on settlement/cancellation, and reply to the authenticated caller frame.
-- `source/main/ipc/privilegedIpcManifest.ts` records all 77 logical channels, owners, directions, capabilities, settlement policy, and exact-frame authority. Its checker covers global/scoped/frame/service-worker IPC, WebContents IPC events, renderer `postMessage`, MessagePort transfer/listeners, aliases, destructuring, binding, and wrapper promise ownership.
+- `source/main/ipc/privilegedIpcManifest.ts` records all 79 logical channels, owners, directions, capabilities, settlement policy, and exact-frame authority. Its checker covers global/scoped/frame/service-worker IPC, WebContents IPC events, renderer `postMessage`, MessagePort transfer/listeners, aliases, destructuring, binding, and wrapper promise ownership. The dedicated least-authority guest gateway is separately allowlisted to its one fixed channel; no other raw production Electron IPC is accepted.
 - Main-originated wrapper calls explicitly await or consume lifecycle cancellation and resolve their target through the rebound current trusted-window sender. No raw production receiver or direct renderer caller is allowlisted.
 - This closes the privileged-listener audit only. It does not make the broad trusted preload suitable for hostile content or satisfy any separate guest/sandbox/release gate.
 - Do not use legacy `IpcChannel` or `IpcConversation` as the guest protocol.
@@ -990,6 +990,22 @@ type DappRouteLease = {
 - Wallet refresh preserving the same wallet ID keeps the lease.
 - Wallet deletion, replacement, unsupported type, or network change revokes it.
 - Invalid dApp routes do not execute WalletsStore's first-wallet fallback.
+
+Task-106 implements this lease as a main-owned monotonic service observed from
+the trusted window's main-frame in-page navigation events. Trusted open/close
+controls use the authenticated `MainIpcChannel` wrapper and consume one-use
+main-staged launch records bound to the exact lease. Route, wallet, network, or
+window revocation clears staged launches and closes the guest. Submission work
+already authorized by the user is awaited independently, then its result is
+released only if the original lease remains current.
+
+Launcher policy revision 1 independently gates global launch, preferred
+catalog, Diagnostics, CIP-104, and CIP-142. CIP switches expose nonnegative
+activation revisions (`0` means disabled). Missing or malformed policy fails
+all switches closed. Nix-generated development, `.deb`, and `.rpm` launcher
+configurations package the explicit all-disabled defaults; policy changes have
+no environment or remote-runtime override and require the normal reviewed
+package/configuration release path.
 
 ### Extension Registry
 

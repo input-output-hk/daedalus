@@ -3,6 +3,7 @@ import { app, dialog } from 'electron';
 import { environment } from './environment';
 import { readLauncherConfig } from './utils/config';
 import { getBuildLabel } from '../common/utils/environmentCheckers';
+import { DappLaunchPolicy } from './dapp/DappLaunchPolicy';
 
 const {
   isTest,
@@ -78,6 +79,7 @@ type LauncherConfigBase = {
   mithrilAggregatorUrl?: string;
   mithrilGenesisVkey?: string;
   mithrilAncillaryVkey?: string;
+  dappBrowserPolicy?: unknown;
 };
 
 type InstallerManagedApplicationUpdateConfig = {
@@ -124,6 +126,9 @@ export const windowOptions: WindowOptionsType = {
 };
 export const launcherConfig: LauncherConfig = readLauncherConfig(
   LAUNCHER_CONFIG
+);
+export const dappLaunchPolicy = new DappLaunchPolicy(
+  launcherConfig.dappBrowserPolicy
 );
 export const {
   cluster,

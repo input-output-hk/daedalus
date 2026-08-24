@@ -173,6 +173,21 @@ export const OPEN_EXTERNAL_URL_CHANNEL = 'OPEN_EXTERNAL_URL_CHANNEL';
 export type OpenExternalUrlRendererRequest = string;
 export type OpenExternalUrlMainResponse = void;
 
+export const DAPP_BROWSER_OPEN_CHANNEL = 'DAPP_BROWSER_OPEN_CHANNEL';
+export type DappBrowserOpenRendererRequest = {
+  launchId: string;
+  lease: {
+    walletId: string;
+    routeEpoch: number;
+    networkGenesis: string;
+  };
+};
+export type DappBrowserOpenMainResponse = void;
+
+export const DAPP_BROWSER_CLOSE_CHANNEL = 'DAPP_BROWSER_CLOSE_CHANNEL';
+export type DappBrowserCloseRendererRequest = void;
+export type DappBrowserCloseMainResponse = void;
+
 /**
  * Channel for opening a local directory in the default desktop explorer
  */

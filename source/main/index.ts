@@ -56,6 +56,7 @@ import { registerShellIpc } from './ipc/registerShellIpc';
 import { installGlobalPopupPolicy } from './windows/navigationPolicy';
 import { startDappSandboxAvailabilityCheck } from './sandbox/dappSandboxAvailability';
 import { installDappTransportRestrictions } from './dapp/DappSessionPolicy';
+import { closeDappBrowser } from './ipc/dappBrowser';
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
@@ -103,6 +104,7 @@ installGlobalPopupPolicy(app);
 registerShellIpc();
 
 const safeExit = async () => {
+  await closeDappBrowser();
   pauseActiveDownloads();
 
   const exitCode =
