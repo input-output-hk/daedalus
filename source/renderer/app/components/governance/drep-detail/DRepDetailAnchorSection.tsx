@@ -168,7 +168,6 @@ function DRepDetailAnchorSection({
             <DRepDetailAnchorContent
               verifiedName={verifiedName}
               metadata={metadata}
-              anchorUrl={anchor.url}
               network={network}
               onOpenExternalLink={onOpenExternalLink}
             />

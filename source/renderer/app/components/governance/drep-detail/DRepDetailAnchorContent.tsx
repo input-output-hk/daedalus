@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { isHttpsUrl } from '../../../utils/governance/isHttpsUrl';
 import { isAddressForNetwork } from '../../../utils/governance/addressNetwork';
 import DRepExternalLink from '../_shared/DRepExternalLink';
@@ -122,19 +121,9 @@ const messages = defineMessages({
 interface Props {
   verifiedName: string | null;
   metadata: AppDRepDetail['metadata'];
-  anchorUrl: string | null;
   network?: string | null;
   onOpenExternalLink: (url: string) => void;
   intl: intlShape.isRequired;
-}
-
-function deriveHost(anchorUrl: string | null): string {
-  if (!anchorUrl) return '';
-  try {
-    return new URL(anchorUrl).hostname;
-  } catch {
-    return '';
-  }
 }
 
 /**
@@ -203,15 +192,7 @@ function AdditionalFieldList({
   );
 }
 
-function VerifiedFieldRow({
-  host,
-  label,
-  value,
-}: {
-  host: string;
-  label: string;
-  value: string;
-}) {
+function VerifiedFieldRow({ label, value }: { label: string; value: string }) {
   return (
     <div className={styles.proseField}>
       <h4 className={styles.subSectionTitle}>{label}</h4>
@@ -254,7 +235,6 @@ function ReferenceList({
 function DRepDetailAnchorContent({
   verifiedName,
   metadata,
-  anchorUrl,
   network,
   onOpenExternalLink,
   intl,
@@ -281,7 +261,6 @@ function DRepDetailAnchorContent({
 
   if (!metadata && verifiedName == null) return null;
 
-  const host = deriveHost(anchorUrl);
   const references = metadata?.references ?? [];
   const additionalFields = metadata?.additionalFields ?? [];
   const linkReferences = references.filter(
@@ -318,21 +297,18 @@ function DRepDetailAnchorContent({
         <div className={styles.fieldList}>
           {metadata?.objectives != null && (
             <VerifiedFieldRow
-              host={host}
               label={intl.formatMessage(messages.objectives)}
               value={metadata.objectives}
             />
           )}
           {metadata?.motivations != null && (
             <VerifiedFieldRow
-              host={host}
               label={intl.formatMessage(messages.motivations)}
               value={metadata.motivations}
             />
           )}
           {metadata?.qualifications != null && (
             <VerifiedFieldRow
-              host={host}
               label={intl.formatMessage(messages.qualifications)}
               value={metadata.qualifications}
             />
