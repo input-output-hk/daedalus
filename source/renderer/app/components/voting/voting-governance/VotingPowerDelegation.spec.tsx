@@ -35,7 +35,11 @@ const buildWallet = (id: string, name: string, isLegacy: boolean): Wallet =>
 const SHELLEY = buildWallet('shelley-1', 'Shelley wallet', false);
 const BYRON = buildWallet('byron-1', 'Byron legacy wallet', true);
 
-const renderForm = (wallets: Wallet[], selectedWalletId?: string) =>
+const renderForm = (
+  wallets: Wallet[],
+  selectedWalletId?: string,
+  selectedDRepId?: string
+) =>
   render(
     <ThemeProvider
       theme={daedalusTheme}
@@ -51,7 +55,12 @@ const renderForm = (wallets: Wallet[], selectedWalletId?: string) =>
             <VotingPowerDelegation
               drepIndex={new Map()}
               initialFormState={
-                selectedWalletId ? { selectedWalletId } : undefined
+                selectedWalletId
+                  ? {
+                      selectedWalletId,
+                      ...(selectedDRepId ? { selectedDRepId } : {}),
+                    }
+                  : undefined
               }
               getStakePoolById={() => null}
               initiateTransaction={async () => ({
@@ -99,5 +108,48 @@ describe('VotingPowerDelegation', () => {
     renderForm([SHELLEY, BYRON], 'shelley-1');
 
     expect(screen.getAllByText('Shelley wallet').length).toBeGreaterThan(0);
+  });
+
+  it('names Abstain and says what it does, with nothing to copy', () => {
+    // The directory hands this over in the same field as a DRep id, but there
+    // is no credential behind it: an identifier display would offer a copy
+    // button for a word, and a status badge for a registration that does not
+    // exist.
+    renderForm([SHELLEY], 'shelley-1', 'abstain');
+
+    expect(screen.getAllByText('Abstain').length).toBeGreaterThan(0);
+    expect(
+      screen.getByText(
+        '!!!Your stake is recorded on chain as not participating in governance.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText('abstain')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /copy/i })
+    ).not.toBeInTheDocument();
+  });
+
+  it('names No Confidence and says what it does', () => {
+    renderForm([SHELLEY], 'shelley-1', 'no_confidence');
+
+    expect(screen.getAllByText('No Confidence').length).toBeGreaterThan(0);
+    expect(
+      screen.getByText(
+        '!!!Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText('no_confidence')).not.toBeInTheDocument();
+  });
+
+  it('still shows a DRep id as an identifier', () => {
+    const drepId = 'drep1ytnglv2y7s8dxpmylw35egsum63yqzcm0upvkf7qffg4hhqnhj0yh';
+    renderForm([SHELLEY], 'shelley-1', drepId);
+
+    // The sentinel branch must not swallow the case it was carved out of.
+    expect(
+      screen.queryByText(
+        '!!!Your stake is recorded on chain as not participating in governance.'
+      )
+    ).not.toBeInTheDocument();
   });
 });

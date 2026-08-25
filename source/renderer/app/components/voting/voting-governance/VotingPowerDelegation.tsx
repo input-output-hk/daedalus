@@ -16,6 +16,7 @@ import { Separator } from '../../widgets/separator/Separator';
 import { InitializeVPDelegationTxError } from '../../../stores/VotingStore';
 import CurrentDRepSummary from './CurrentDRepSummary';
 import { messages as currentDRepMessages } from './CurrentDRepSummary.messages';
+import { sharedGovernanceMessages } from './shared-messages';
 import { isSameDRep } from '../../../utils/governance/isSameDRep';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 import DRepIdDisplay from '../../governance/_shared/DRepIdDisplay';
@@ -171,6 +172,15 @@ function VotingPowerDelegation({
   const isSameAsCurrent =
     !!selectedDRepId && isSameDRep(selectedDRepId, currentDRep);
 
+  // Abstain and No Confidence arrive in the same field as a DRep id, because
+  // the directory offers all three as things to delegate to. They are not
+  // identifiers though: there is no credential behind them, nothing to copy,
+  // and no registration to report a status for.
+  const selectedSentinel =
+    selectedDRepId === 'abstain' || selectedDRepId === 'no_confidence'
+      ? selectedDRepId
+      : null;
+
   const formIsValid = !!selectedWallet && !!selectedDRepId;
 
   const submitButtonDisabled =
@@ -255,14 +265,40 @@ function VotingPowerDelegation({
               <p className={styles.selectedDRepHeading}>
                 {intl.formatMessage(messages.selectedDRepHeading)}
               </p>
-              {displayName && (
-                <p className={styles.selectedDRepName}>{displayName}</p>
-              )}
-              <DRepIdDisplay drepId={selectedDRepId} />
-              {selectedDRepEntry && (
-                <div className={styles.selectedDRepMeta}>
-                  <DRepStatusBadge status={selectedDRepEntry.status} />
-                </div>
+              {selectedSentinel ? (
+                <>
+                  <p className={styles.selectedDRepName}>
+                    {intl.formatMessage(
+                      selectedSentinel === 'abstain'
+                        ? sharedGovernanceMessages.abstain
+                        : sharedGovernanceMessages.noConfidence
+                    )}
+                  </p>
+                  {/* What the option does to this wallet's stake, in the
+                      same words the current-delegation panel uses for a
+                      wallet already set to it. Neither option is
+                      self-explanatory, and this is the last screen before
+                      the choice is signed. */}
+                  <p className={styles.selectedOptionCaption}>
+                    {intl.formatMessage(
+                      selectedSentinel === 'abstain'
+                        ? currentDRepMessages.abstainCaption
+                        : currentDRepMessages.noConfidenceCaption
+                    )}
+                  </p>
+                </>
+              ) : (
+                <>
+                  {displayName && (
+                    <p className={styles.selectedDRepName}>{displayName}</p>
+                  )}
+                  <DRepIdDisplay drepId={selectedDRepId} />
+                  {selectedDRepEntry && (
+                    <div className={styles.selectedDRepMeta}>
+                      <DRepStatusBadge status={selectedDRepEntry.status} />
+                    </div>
+                  )}
+                </>
               )}
               <div className={styles.selectedDRepChangeRow}>
                 <Link
@@ -295,7 +331,7 @@ function VotingPowerDelegation({
               {isSameAsCurrent && (
                 <p className={styles.sameVoteHint} id={SAME_VOTE_HINT_ID}>
                   {intl.formatMessage(currentDRepMessages.sameVoteHint, {
-                    target: 'drep',
+                    target: selectedSentinel ?? 'drep',
                   })}
                 </p>
               )}

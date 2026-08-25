@@ -104,6 +104,17 @@ span.link {
   margin-bottom: 8px;
 }
 
+// What Abstain or No Confidence does to this wallet's stake. It stands where
+// a DRep's identifier would, so it is set as prose rather than borrowing the
+// monospace treatment that field uses.
+.selectedOptionCaption {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 68ch;
+}
+
 .selectedDRepMeta {
   align-items: center;
   display: flex;
