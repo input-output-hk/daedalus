@@ -36,6 +36,22 @@
   margin-top: 4px;
 }
 
+// The one sentence on this page that is not a wallet's own data. Set at the
+// same measure as the wallet list beside it so it reads as an introduction to
+// that list rather than as a banner across the window.
+.intro {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 20px;
+  max-width: 720px;
+}
+
+.introLink {
+  display: inline;
+  font-size: 14px;
+}
+
 .emptyState {
   color: var(--theme-gov-font-color-regular);
   font-size: 14px;

@@ -6,21 +6,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!CARDANO VOTING POWER DELEGATION',
     description: 'Headline for Governance',
   },
-  paragraph1: {
-    id: 'voting.governance.paragraph1',
-    defaultMessage: '!!!Governance first paragraph',
-    description: 'First paragraph for governance page',
-  },
-  paragraph1LinkUrl: {
-    id: 'voting.governance.paragraph1LinkUrl',
-    defaultMessage: '!!!Governance first paragraph link url',
-    description: 'First paragraph link for governance page',
-  },
-  paragraph1LinkText: {
-    id: 'voting.governance.paragraph1LinkText',
-    defaultMessage: '!!!Governance link label',
-    description: 'Link labels for governance page',
-  },
   selectWalletLabel: {
     id: 'voting.governance.selectWalletLabel',
     defaultMessage: '!!!Select a wallet to delegate from',

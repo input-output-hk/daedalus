@@ -1,8 +1,15 @@
 import React from 'react';
-import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import {
+  defineMessages,
+  FormattedMessage,
+  injectIntl,
+  intlShape,
+} from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { sharedGovernanceMessages } from '../../voting/voting-governance/shared-messages';
 import globalMessages from '../../../i18n/global-messages';
 import DRepIdDisplay from '../_shared/DRepIdDisplay';
@@ -22,6 +29,26 @@ const messages = defineMessages({
     id: 'governance.dashboard.target.loading',
     defaultMessage: '!!!Loading DRep…',
     description: 'Shown while the delegated DRep is still being resolved',
+  },
+  // Kept under the voting.governance namespace of the delegation form these
+  // moved from: the ids are what carry the reviewed English and Japanese, and
+  // renaming them for tidiness would send finished strings back for review.
+  intro: {
+    id: 'voting.governance.paragraph1',
+    defaultMessage:
+      '!!!Register your voting power to withdraw rewards. Learn more about {Link}.',
+    description: 'Why a wallet needs a governance delegation at all',
+  },
+  introLinkUrl: {
+    id: 'voting.governance.paragraph1LinkUrl',
+    defaultMessage:
+      '!!!https://docs.intersectmbo.org/cardano/cardano-governance/overview',
+    description: 'Documentation URL behind the intro link',
+  },
+  introLinkText: {
+    id: 'voting.governance.paragraph1LinkText',
+    defaultMessage: '!!!Cardano Governance',
+    description: 'Text of the intro link out to the governance documentation',
   },
   noWallets: {
     id: 'governance.dashboard.noWallets',
@@ -46,6 +73,7 @@ type Props = {
   onChangeDelegation: (walletId: string) => void;
   onChooseDRep: () => void;
   onViewDetails: (drepId: string, walletId: string) => void;
+  onExternalLinkClick: (url: string, event?: React.MouseEvent) => void;
   intl: intlShape.isRequired;
 };
 
@@ -163,12 +191,38 @@ function GovernanceWallets({
   onChangeDelegation,
   onChooseDRep,
   onViewDetails,
+  onExternalLinkClick,
   intl,
 }: Props) {
+  const introLinkUrl = intl.formatMessage(messages.introLinkUrl);
+
   return (
     <div className={styles.container}>
       {/* No page title here: the governance tab bar already names the page,
-          the way the delegation center relies on its own tabs. */}
+          the way the delegation center relies on its own tabs.
+
+          Why a delegation is needed belongs here, on the first governance
+          screen anyone sees and the one that lists which wallets have none.
+          It used to sit on the delegation form, which is reached only after
+          choosing a wallet, opening the directory and picking a DRep: by then
+          the reader has decided, and the one fact that might have prompted
+          them arrives too late to act on. */}
+      <p className={styles.intro}>
+        <FormattedMessage
+          {...messages.intro}
+          values={{
+            Link: (
+              <Link
+                className={styles.introLink}
+                href={introLinkUrl}
+                label={intl.formatMessage(messages.introLinkText)}
+                onClick={(event) => onExternalLinkClick(introLinkUrl, event)}
+                skin={LinkSkin}
+              />
+            ),
+          }}
+        />
+      </p>
       {wallets.length === 0 ? (
         <p className={styles.emptyState}>
           {intl.formatMessage(messages.noWallets)}

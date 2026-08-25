@@ -215,29 +215,10 @@ function VotingPowerDelegation({
           <h1 className={styles.heading}>
             {intl.formatMessage(messages.heading)}
           </h1>
-          <div className={styles.info}>
-            <p>
-              <FormattedMessage
-                {...messages.paragraph1}
-                values={{
-                  Link: (
-                    <Link
-                      className={styles.link}
-                      href={intl.formatMessage(messages.paragraph1LinkUrl)}
-                      label={intl.formatMessage(messages.paragraph1LinkText)}
-                      onClick={(event) =>
-                        onExternalLinkClick(
-                          intl.formatMessage(messages.paragraph1LinkUrl),
-                          event
-                        )
-                      }
-                    />
-                  ),
-                }}
-              />
-            </p>
-          </div>
-
+          {/* No explanation of why a delegation is needed. This screen is
+              the last step of a flow that starts on the wallets overview,
+              and that is where the reason now sits, in front of someone who
+              has not decided yet. */}
           <Separator />
 
           <WalletsDropdown

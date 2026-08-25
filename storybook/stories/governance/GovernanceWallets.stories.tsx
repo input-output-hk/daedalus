@@ -91,6 +91,7 @@ const render = (walletList: WalletDelegationSummary[]) => (
       onChangeDelegation={action('onChangeDelegation')}
       onChooseDRep={action('onChooseDRep')}
       onViewDetails={action('onViewDetails')}
+      onExternalLinkClick={action('onExternalLinkClick')}
     />
   </GovernanceShell>
 );

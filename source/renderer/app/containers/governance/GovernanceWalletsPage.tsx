@@ -57,7 +57,7 @@ class GovernanceWalletsPage extends React.Component<Props> {
   };
 
   render() {
-    const { wallets, governance } = this.props.stores ?? {};
+    const { app, wallets, governance } = this.props.stores ?? {};
 
     const allWallets: WalletDelegationSummary[] = (
       wallets?.allWallets ?? []
@@ -83,6 +83,7 @@ class GovernanceWalletsPage extends React.Component<Props> {
         onChangeDelegation={this.handleChangeDelegation}
         onChooseDRep={this.handleChooseDRep}
         onViewDetails={this.handleViewDetails}
+        onExternalLinkClick={(url, event) => app?.openExternalLink(url, event)}
       />
     );
   }

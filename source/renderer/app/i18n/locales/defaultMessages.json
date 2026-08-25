@@ -3427,6 +3427,21 @@
         "id": "governance.dashboard.target.loading"
       },
       {
+        "defaultMessage": "!!!Register your voting power to withdraw rewards. Learn more about {Link}.",
+        "description": "Why a wallet needs a governance delegation at all",
+        "id": "voting.governance.paragraph1"
+      },
+      {
+        "defaultMessage": "!!!https://docs.intersectmbo.org/cardano/cardano-governance/overview",
+        "description": "Documentation URL behind the intro link",
+        "id": "voting.governance.paragraph1LinkUrl"
+      },
+      {
+        "defaultMessage": "!!!Cardano Governance",
+        "description": "Text of the intro link out to the governance documentation",
+        "id": "voting.governance.paragraph1LinkText"
+      },
+      {
         "defaultMessage": "!!!Create or restore a wallet to participate in Cardano governance.",
         "description": "Empty state message shown when no wallets exist",
         "id": "governance.dashboard.noWallets"
@@ -6115,21 +6130,6 @@
         "defaultMessage": "!!!CARDANO VOTING POWER DELEGATION",
         "description": "Headline for Governance",
         "id": "voting.governance.heading"
-      },
-      {
-        "defaultMessage": "!!!Governance first paragraph",
-        "description": "First paragraph for governance page",
-        "id": "voting.governance.paragraph1"
-      },
-      {
-        "defaultMessage": "!!!Governance first paragraph link url",
-        "description": "First paragraph link for governance page",
-        "id": "voting.governance.paragraph1LinkUrl"
-      },
-      {
-        "defaultMessage": "!!!Governance link label",
-        "description": "Link labels for governance page",
-        "id": "voting.governance.paragraph1LinkText"
       },
       {
         "defaultMessage": "!!!Select a wallet to delegate from",
