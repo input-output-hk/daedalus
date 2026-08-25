@@ -13,6 +13,7 @@ The feature also introduces full-ledger transaction context, witness-only softwa
 - Companion tasks JSON: [dapp-browser-cip30-tasks.json](./dapp-browser-cip30-tasks.json)
 - This PRD and its companion task graph are the canonical plan for this feature.
 - Implementation progress must update both files together.
+- Task-300 completed on 2026-08-25: shared manifest-backed request, method-result, public-error, approval-decision, and Electron envelope validation now enforces the frozen wire shapes and product limits before IPC/backend access; production broker dispatch remains task-402 scope.
 
 ## Problem Statement
 
@@ -166,7 +167,7 @@ Task-002 freezes the phase-0 inputs consumed by later production validation:
 | `source/common/cip30/contracts/contractFixtures.spec.ts` | Schema, coverage, exact-byte, signature, Bech32, limit, and structured-clone evidence |
 | `research/02-cip30-wire-contract-evidence.md` | Source revisions, conflict resolutions, ecosystem comparison, reproduction commands, and residual gates |
 
-These are contract inputs, not production validators or dispatch code. Task-300 must implement strict shared runtime validators and prove equivalence without silently changing the frozen behavior. CIP-104 remains omitted until task-404 proves one exact positive encoding.
+These remain frozen contract inputs rather than dispatch code. Task-300 now provides their shared strict runtime request and method-result validators, sender-side validated envelope constructors, minimal trusted approval decisions, and defensive preload reconstruction without changing the frozen behavior. CIP-104 remains omitted until task-404 proves one exact positive encoding.
 
 Task-006 freezes a separate static hardware capability contract at
 `source/common/hardware/fixtures/capability-matrix/` with supporting evidence in

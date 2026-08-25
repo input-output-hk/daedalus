@@ -1,65 +1,53 @@
-import Ajv from 'ajv';
 import { contextBridge, ipcRenderer } from 'electron';
-import commonSchema from '../../common/cip30/contracts/schemas/common.schema.json';
-import envelopeSchema from '../../common/cip30/contracts/schemas/envelope.schema.json';
-import errorsSchema from '../../common/cip30/contracts/schemas/errors.schema.json';
+import { reconstructPublicRejection } from '../../common/cip30/errors';
 import {
-  DAPP_CIP30_GATEWAY_CHANNEL,
-  DappCip30Method,
-} from '../../common/ipc/dapp';
+  parseDappCip30GatewayRequest,
+  parseDappCip30ResultEnvelope,
+} from '../../common/cip30/schemas';
 import type {
   ApiError,
   DaedalusApi,
   DaedalusProvider,
-  DappCip30ResultEnvelope,
+  DappCip30Method,
   Extension,
 } from '../../common/ipc/dapp';
+import { DAPP_CIP30_GATEWAY_CHANNEL } from '../../common/ipc/dapp';
 
 const INTERNAL_ERROR: ApiError = {
   code: -2,
   info: 'The wallet connector is unavailable.',
 };
 
-const ajv = new Ajv({ schemaId: 'auto' });
-ajv.addSchema(commonSchema);
-ajv.addSchema(errorsSchema);
-ajv.addSchema(envelopeSchema);
-const validateEnvelope = ajv.compile({
-  $ref: `${envelopeSchema.$id}#/definitions/resultEnvelope`,
-});
-const validateExtensions = ajv.compile({
-  $ref: `${commonSchema.$id}#/definitions/extensions`,
-});
-
 const invokeGateway = async <T>(
   method: DappCip30Method,
   args: unknown[]
 ): Promise<T> => {
+  const request = parseDappCip30GatewayRequest({ method, args });
   let result: unknown;
   try {
-    result = await ipcRenderer.invoke(DAPP_CIP30_GATEWAY_CHANNEL, {
-      method,
-      args,
-    });
+    result = await ipcRenderer.invoke(DAPP_CIP30_GATEWAY_CHANNEL, request);
   } catch {
     throw { ...INTERNAL_ERROR };
   }
 
-  if (!validateEnvelope(result)) throw { ...INTERNAL_ERROR };
-  const envelope = result as DappCip30ResultEnvelope<T>;
-  if (envelope.status === 'rejected') throw envelope.rejection.value;
-  return envelope.value;
+  try {
+    const envelope = parseDappCip30ResultEnvelope(method, result);
+    if (envelope.status === 'rejected') {
+      throw reconstructPublicRejection(envelope.rejection);
+    }
+    return envelope.value as T;
+  } catch (error) {
+    if (!(error instanceof Error)) throw error;
+    throw { ...INTERNAL_ERROR };
+  }
 };
 
 const method = <T extends (...args: never[]) => Promise<unknown>>(
   path: DappCip30Method
 ): T => (((...args: unknown[]) => invokeGateway(path, args)) as unknown) as T;
 
-const getExtensions = async (): Promise<Extension[]> => {
-  const extensions = await invokeGateway<unknown>('api.getExtensions', []);
-  if (!validateExtensions(extensions)) throw { ...INTERNAL_ERROR };
-  return extensions as Extension[];
-};
+const getExtensions = (): Promise<Extension[]> =>
+  invokeGateway('api.getExtensions', []);
 
 const createApi = (extensions: Extension[]): DaedalusApi => {
   const enabled = new Set(extensions.map(({ cip }) => cip));

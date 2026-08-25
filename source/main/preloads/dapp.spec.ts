@@ -1,4 +1,5 @@
 import type {
+  DaedalusApi,
   DaedalusProvider,
   DappCip30GatewayRequest,
   DappCip30Rejection,
@@ -63,6 +64,17 @@ describe('dApp preload', () => {
     ]);
     expect(provider.supportedExtensions).toEqual([]);
   });
+  it('rejects malformed calls before IPC access', async () => {
+    const isEnabled = provider.isEnabled as (
+      ...args: unknown[]
+    ) => Promise<boolean>;
+
+    await expect(isEnabled(undefined)).rejects.toEqual({
+      code: -1,
+      info: 'Invalid request',
+    });
+    expect(invoke).not.toHaveBeenCalled();
+  });
 
   it('routes every adapter through one channel and adds only negotiated namespaces', async () => {
     invoke.mockImplementation(
@@ -73,7 +85,10 @@ describe('dApp preload', () => {
             value: [{ cip: 95 }, { cip: 103 }],
           };
         }
-        return { status: 'fulfilled', value: 0 };
+        return {
+          status: 'fulfilled',
+          value: request.method === 'provider.enable' ? {} : 0,
+        };
       }
     );
 
@@ -90,32 +105,61 @@ describe('dApp preload', () => {
     });
   });
 
-  it.each<DappCip30Rejection>([
-    { type: 'api-error', value: { code: -3, info: 'refused' } },
-    { type: 'paginate-error', value: { maxSize: 3 } },
-    { type: 'tx-sign-error', value: { code: 2, info: 'declined' } },
-    { type: 'data-sign-error', value: { code: 3, info: 'declined' } },
-    { type: 'tx-send-error', value: { code: 1, info: 'refused' } },
-    {
-      type: 'cip103-submit-error',
-      value: [
-        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        { code: 2, info: 'failed' },
-      ],
-    },
-  ])('rejects directly with the typed $type value', async (rejection) => {
-    invoke.mockResolvedValue({ status: 'rejected', rejection });
+  it.each([
+    [
+      { type: 'api-error', value: { code: -3, info: 'refused' } },
+      (api: DaedalusApi) => api.getNetworkId(),
+    ],
+    [
+      { type: 'paginate-error', value: { maxSize: 3 } },
+      (api: DaedalusApi) => api.getUsedAddresses(),
+    ],
+    [
+      { type: 'tx-sign-error', value: { code: 2, info: 'declined' } },
+      (api: DaedalusApi) => api.signTx('00'),
+    ],
+    [
+      { type: 'data-sign-error', value: { code: 3, info: 'declined' } },
+      (api: DaedalusApi) => api.signData('00', ''),
+    ],
+    [
+      { type: 'tx-send-error', value: { code: 1, info: 'refused' } },
+      (api: DaedalusApi) => api.submitTx('00'),
+    ],
+    [
+      {
+        type: 'cip103-submit-error',
+        value: [
+          'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+          { code: 2, info: 'failed' },
+        ],
+      },
+      (api: DaedalusApi) => api.cip103!.submitTxs(['00']),
+    ],
+  ] as Array<[DappCip30Rejection, (api: DaedalusApi) => Promise<unknown>]>)(
+    'rejects directly with a reconstructed plain $type value',
+    async (rejection, call) => {
+      invoke
+        .mockResolvedValueOnce({ status: 'fulfilled', value: {} })
+        .mockResolvedValueOnce({
+          status: 'fulfilled',
+          value: [{ cip: 103 }],
+        })
+        .mockResolvedValueOnce({ status: 'rejected', rejection });
+      const api = await provider.enable();
 
-    let caught: unknown;
-    try {
-      await provider.isEnabled();
-    } catch (error) {
-      caught = error;
+      let caught: unknown;
+      try {
+        await call(api);
+      } catch (error) {
+        caught = error;
+      }
+
+      expect(caught).toEqual(rejection.value);
+      expect(caught).not.toBe(rejection.value);
+      expect(caught).not.toBeInstanceOf(Error);
     }
-
-    expect(caught).toBe(rejection.value);
-    expect(caught).not.toBeInstanceOf(Error);
-  });
+  );
 
   it.each([
     Promise.resolve({ status: 'rejected', rejection: { type: 'api-error' } }),
