@@ -230,6 +230,38 @@ const renderPrefilledPanel = (
   );
 };
 
+// A form that will always fail to initialize, with the error fixed by the
+// story rather than by a knob. The current delegation and the chosen DRep are
+// deliberately different, so the message is read against a screen that does
+// not contradict it.
+const renderErrorPanel = (errorCode: InitializeVPDelegationTxError) => (
+  <div style={CENTERED_STORY_STYLE}>
+    <GovernanceWrapper option="drepVerified">
+      {({ wallets, drepIndex }) => (
+        <VotingPowerDelegation
+          getStakePoolById={getStakePoolById}
+          onFetchDRep={makeFetchDRep(drepIndex)}
+          initiateTransaction={async (params) => {
+            action('initiateTransaction')(params);
+            return { success: false, errorCode };
+          }}
+          initialFormState={{
+            selectedDRepId: VALID_DREP_ID,
+            selectedWalletId: 'governance-wallet-1',
+            voteType: 'drep',
+          }}
+          onBrowseDRepsClick={action('onBrowseDRepsClick')}
+          onCancel={action('onCancel')}
+          onExternalLinkClick={action('onExternalLinkClick')}
+          renderConfirmationDialog={renderGovernanceConfirmationDialog}
+          stakePools={STAKE_POOLS_LIST}
+          wallets={wallets}
+        />
+      )}
+    </GovernanceWrapper>
+  </div>
+);
+
 // The knobs are read here, while the story renders, and the values closed
 // over. Read inside the returned function instead, they run only when a
 // transaction is attempted: addon-knobs registers a knob when its call
@@ -242,7 +274,7 @@ const makeInitiateTransaction = (
   const errorCode = select(
     'Initialization error',
     initializeTxErrorOptions,
-    'same_vote'
+    'generic'
   );
   return async (params: unknown) => {
     action('initiateTransaction')(params);
@@ -482,6 +514,17 @@ storiesOf('Governance / Delegation', module)
   )
   .add('Already delegated to Abstain', () =>
     renderPrefilledPanel('abstain', 'abstain')
+  )
+  // One story per initialization error. The wallet is delegated to one DRep
+  // and the form holds a different one, so nothing on screen contradicts what
+  // the error says. Press Submit to see it.
+  .add('Initialization error - generic', () => renderErrorPanel('generic'))
+  .add('Initialization error - same vote', () => renderErrorPanel('same_vote'))
+  .add('Initialization error - no UTxOs', () =>
+    renderErrorPanel('no_utxos_available')
+  )
+  .add('Initialization error - not enough money', () =>
+    renderErrorPanel('not_enough_money')
   )
   // A wallet with no delegation at all. The current-delegation panel renders
   // nothing here by design, so the form runs straight from the wallet select
