@@ -7,6 +7,12 @@ interface Props {
   label: string;
   value: string;
   options: Array<[string, string]>;
+  /**
+   * Sized to its content rather than sharing the row's spare width. For a
+   * select whose options are all a word or a number, filling the row makes a
+   * small choice look like a large one.
+   */
+  narrow?: boolean;
   onChange: (next: string) => void;
 }
 
@@ -20,10 +26,18 @@ interface Props {
  * not a caption placed above it, so it lines up with the settings screen
  * without a second layout rule saying how.
  */
-function DRepFacetSelect({ label, value, options, onChange }: Props) {
+function DRepFacetSelect({
+  label,
+  value,
+  options,
+  narrow = false,
+  onChange,
+}: Props) {
   return (
     <Select
-      className={styles.facet}
+      className={
+        narrow ? `${styles.facet} ${styles.narrowFacet}` : styles.facet
+      }
       label={label}
       value={value}
       options={options.map(([optionValue, optionLabel]) => ({

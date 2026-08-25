@@ -26,7 +26,7 @@ const messages = defineMessages({
   },
   sizeLabel: {
     id: 'governance.drepDirectory.cohort.sizeLabel',
-    defaultMessage: '!!!Suggestions shown',
+    defaultMessage: '!!!Suggestions',
     description: 'Label of the control setting how many DReps are suggested',
   },
 });
@@ -77,6 +77,7 @@ function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
       value={value}
       onChange={onChange}
       options={options}
+      narrow
     />
   );
 

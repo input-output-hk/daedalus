@@ -1678,7 +1678,7 @@ describe('DRepDirectory suggestion criteria', () => {
     renderComponent({ onCohortCriteriaChange: jest.fn() });
 
     expect(screen.getByText(/drawn at random/)).toBeInTheDocument();
-    expect(facetValue('!!!Suggestions shown')).toBe('20');
+    expect(facetValue('!!!Suggestions')).toBe('20');
     expect(facetNumberValue('!!!Voting power under')).toBe('1.5');
   });
 
@@ -1701,7 +1701,7 @@ describe('DRepDirectory suggestion criteria', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
 
-    chooseFacetOption('!!!Suggestions shown', '50');
+    chooseFacetOption('!!!Suggestions', '50');
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,
@@ -1802,7 +1802,7 @@ describe('DRepDirectory suggestion criteria', () => {
       },
     });
 
-    expect(facetValue('!!!Suggestions shown')).toBe('10');
+    expect(facetValue('!!!Suggestions')).toBe('10');
     // No ceiling reads as the top of the range, which is what it means.
     expect(facetNumberValue('!!!Voting power under')).toBe('100');
   });
@@ -1833,12 +1833,12 @@ describe('DRepDirectory suggestion criteria', () => {
     });
     // The summary and its controls state what the cohort was drawn under.
     expect(screen.getByText(/drawn at random/)).toBeInTheDocument();
-    expect(screen.getByText('!!!Suggestions shown')).toBeInTheDocument();
+    expect(screen.getByText('!!!Suggestions')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
 
     expect(screen.queryByText(/drawn at random/)).not.toBeInTheDocument();
-    expect(screen.queryByText('!!!Suggestions shown')).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Suggestions')).not.toBeInTheDocument();
     expect(screen.queryByText(/Too few DReps met/)).not.toBeInTheDocument();
   });
 });

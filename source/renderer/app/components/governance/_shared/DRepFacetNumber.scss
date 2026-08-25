@@ -2,9 +2,10 @@
 // height whichever kind of control a facet needs.
 .facet {
   flex: 0 1 auto;
-  // Wider than a select: the field has to hold a value, its unit and two
-  // buttons without the number being squeezed into a corner.
-  min-width: 210px;
+  // Wide enough for a value, its unit and two buttons, and no wider: this
+  // sits in a row that has to hold every criterion at once.
+  flex: 0 0 auto;
+  min-width: 190px;
   position: relative;
 }
 

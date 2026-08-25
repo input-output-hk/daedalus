@@ -18,3 +18,10 @@
     }
   }
 }
+
+// Sized to hold its longest option and its label, and no more. A select whose
+// choices are a number does not need the room a status filter does.
+.narrowFacet {
+  flex: 0 0 auto;
+  min-width: 0;
+}

@@ -364,7 +364,7 @@
   "governance.drepDirectory.cohort.criterion.verifiedMetadata": "!!!verified metadata",
   "governance.drepDirectory.cohort.criterion.votingPowerShare": "!!!voting power limit",
   "governance.drepDirectory.cohort.relaxedNotice": "!!!Too few DReps met every suggestion criterion, so these were relaxed to fill the list: {criteria}.",
-  "governance.drepDirectory.cohort.sizeLabel": "!!!Suggestions shown",
+  "governance.drepDirectory.cohort.sizeLabel": "!!!提案数",
   "governance.drepDirectory.cohort.summary": "!!!これらの条件を満たすアクティブなDRepから無作為に{count}件を表示しています。",
   "governance.drepDirectory.cohort.votingPowerDecrement": "!!!投票権の上限を下げる",
   "governance.drepDirectory.cohort.votingPowerIncrement": "!!!投票権の上限を上げる",

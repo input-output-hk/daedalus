@@ -3202,7 +3202,7 @@
         "id": "governance.drepDirectory.cohort.votingPowerLabel"
       },
       {
-        "defaultMessage": "!!!Suggestions shown",
+        "defaultMessage": "!!!Suggestions",
         "description": "Label of the control setting how many DReps are suggested",
         "id": "governance.drepDirectory.cohort.sizeLabel"
       }

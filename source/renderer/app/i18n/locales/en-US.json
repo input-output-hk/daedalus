@@ -364,7 +364,7 @@
   "governance.drepDirectory.cohort.criterion.verifiedMetadata": "!!!verified metadata",
   "governance.drepDirectory.cohort.criterion.votingPowerShare": "!!!voting power limit",
   "governance.drepDirectory.cohort.relaxedNotice": "!!!Too few DReps met every suggestion criterion, so these were relaxed to fill the list: {criteria}.",
-  "governance.drepDirectory.cohort.sizeLabel": "!!!Suggestions shown",
+  "governance.drepDirectory.cohort.sizeLabel": "!!!Suggestions",
   "governance.drepDirectory.cohort.summary": "!!!Showing {count, plural, one {# DRep} other {# DReps}} drawn at random from the active DReps meeting these criteria.",
   "governance.drepDirectory.cohort.votingPowerDecrement": "!!!Lower the voting power ceiling",
   "governance.drepDirectory.cohort.votingPowerIncrement": "!!!Raise the voting power ceiling",
