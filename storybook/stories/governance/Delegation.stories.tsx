@@ -437,6 +437,14 @@ storiesOf('Governance / Delegation', module)
   .add('No Confidence to a DRep', () =>
     renderPrefilledPanel('noConfidence', VERIFIED_CIP129)
   )
+  // And the same two changes in reverse. The directory hands Abstain and No
+  // Confidence to this form as the selected id, the same way it hands over a
+  // DRep, so the form receives the literal strings 'abstain' and
+  // 'no_confidence' where it otherwise receives a bech32 identifier.
+  .add('DRep to Abstain', () => renderPrefilledPanel('drepVerified', 'abstain'))
+  .add('DRep to No Confidence', () =>
+    renderPrefilledPanel('drepVerified', 'no_confidence')
+  )
   // A wallet with no delegation at all. The current-delegation panel renders
   // nothing here by design, so the form runs straight from the wallet select
   // to the DRep selection, and the only thing that mentions rewards is the
