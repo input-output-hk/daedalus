@@ -193,7 +193,7 @@ describe('DRepDetailPage', () => {
       },
     });
 
-    expect(screen.getByText('!!!Status')).toBeInTheDocument();
+    expect(screen.getByText('Status')).toBeInTheDocument();
     expect(screen.getByText('!!!Inactive in')).toBeInTheDocument();
     expect(screen.getByText('!!!Voting power')).toBeInTheDocument();
     expect(screen.getByText('!!!On-chain data')).toBeInTheDocument();
@@ -576,7 +576,7 @@ describe('DRepDetailPage', () => {
     await renderPage({ locale: 'ja-JP' });
 
     expect(screen.queryByText('!!!DRep詳細')).toBeNull();
-    expect(screen.getByText('!!!ステータス')).toBeInTheDocument();
+    expect(screen.getByText('ステータス')).toBeInTheDocument();
     expect(screen.getByText('!!!オフチェーンメタデータ')).toBeInTheDocument();
     expect(screen.getByText('!!!34エポック')).toBeInTheDocument();
   });

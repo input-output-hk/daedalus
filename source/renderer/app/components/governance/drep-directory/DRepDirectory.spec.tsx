@@ -908,7 +908,7 @@ describe('DRepDirectory', () => {
     });
 
     fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
-    chooseFacetOption('!!!Status', '!!!Inactive');
+    chooseFacetOption('Status', '!!!Inactive');
 
     expect(screen.getAllByText('!!!View details')).toHaveLength(1);
   });
@@ -1032,7 +1032,7 @@ describe('DRepDirectory', () => {
     });
 
     fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
-    chooseFacetOption('!!!Status', '!!!Active');
+    chooseFacetOption('Status', '!!!Active');
 
     expect(
       screen.getByText(/Showing 1 DRep matching your filters/)
@@ -1043,7 +1043,7 @@ describe('DRepDirectory', () => {
     renderComponent({ suggestedDReps: [realEntry(1)] });
 
     fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
-    chooseFacetOption('!!!Status', '!!!Inactive');
+    chooseFacetOption('Status', '!!!Inactive');
     expect(
       screen.getAllByText(/No DReps match your filters/)[0]
     ).toBeInTheDocument();
@@ -1677,9 +1677,9 @@ describe('DRepDirectory suggestion criteria', () => {
   it('states the criteria and offers their controls without anything opened', () => {
     renderComponent({ onCohortCriteriaChange: jest.fn() });
 
-    expect(screen.getByText(/drawn at random/)).toBeInTheDocument();
+    expect(screen.getByText(/chosen at random/)).toBeInTheDocument();
     expect(facetValue('!!!Suggestions')).toBe('20');
-    expect(facetNumberValue('!!!Voting power under')).toBe('1.5');
+    expect(facetNumberValue('!!!Voting Power Threshold')).toBe('1.5');
   });
 
   it('reports a criterion the user turns off', () => {
@@ -1713,7 +1713,7 @@ describe('DRepDirectory suggestion criteria', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
 
-    typeFacetNumber('!!!Voting power under', '2.5');
+    typeFacetNumber('!!!Voting Power Threshold', '2.5');
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,
@@ -1727,7 +1727,7 @@ describe('DRepDirectory suggestion criteria', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
 
-    typeFacetNumber('!!!Voting power under', '100');
+    typeFacetNumber('!!!Voting Power Threshold', '100');
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,
@@ -1784,7 +1784,7 @@ describe('DRepDirectory suggestion criteria', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
 
-    typeFacetNumber('!!!Voting power under', '0.1');
+    typeFacetNumber('!!!Voting Power Threshold', '0.1');
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,
@@ -1804,7 +1804,7 @@ describe('DRepDirectory suggestion criteria', () => {
 
     expect(facetValue('!!!Suggestions')).toBe('10');
     // No ceiling reads as the top of the range, which is what it means.
-    expect(facetNumberValue('!!!Voting power under')).toBe('100');
+    expect(facetNumberValue('!!!Voting Power Threshold')).toBe('100');
   });
 
   it('says which criteria were relaxed to fill the cohort', () => {
@@ -1832,12 +1832,12 @@ describe('DRepDirectory suggestion criteria', () => {
       suggestedDReps: [realEntry(1)],
     });
     // The summary and its controls state what the cohort was drawn under.
-    expect(screen.getByText(/drawn at random/)).toBeInTheDocument();
+    expect(screen.getByText(/chosen at random/)).toBeInTheDocument();
     expect(screen.getByText('!!!Suggestions')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
 
-    expect(screen.queryByText(/drawn at random/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/chosen at random/)).not.toBeInTheDocument();
     expect(screen.queryByText('!!!Suggestions')).not.toBeInTheDocument();
     expect(screen.queryByText(/Too few DReps met/)).not.toBeInTheDocument();
   });

@@ -31,16 +31,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Show all DReps',
     description: 'Filter-bar toggle between the cohort and every DRep',
   },
-  statusLabel: {
-    id: 'governance.drepDirectory.filter.active',
-    defaultMessage: '!!!Status',
-    description: 'Label of the status filter',
-  },
-  metadataLabel: {
-    id: 'governance.drepDirectory.filter.metadata',
-    defaultMessage: '!!!Metadata',
-    description: 'Label of the metadata filter',
-  },
   statusActive: {
     id: 'governance.drepDirectory.status.active',
     defaultMessage: '!!!Active',
@@ -65,11 +55,6 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.filter.metadata.without',
     defaultMessage: '!!!Without verified metadata',
     description: 'Metadata filter option: no anchor',
-  },
-  sortLabel: {
-    id: 'governance.drepDirectory.sort.label',
-    defaultMessage: '!!!Sort',
-    description: 'Label of the show-all sort dropdown',
   },
   sortDefault: {
     id: 'governance.drepDirectory.sort.default',
@@ -169,7 +154,7 @@ function DRepDirectoryFilters({
           and the card cannot disagree about one DRep. */}
       {canFilterPopulation &&
         facet(
-          intl.formatMessage(messages.statusLabel),
+          intl.formatMessage(globalMessages.status),
           filters.status,
           (next) =>
             onFiltersChange({ ...filters, status: next as DRepStatusFilter }),
@@ -182,7 +167,7 @@ function DRepDirectoryFilters({
         )}
       {canFilterPopulation &&
         facet(
-          intl.formatMessage(messages.metadataLabel),
+          intl.formatMessage(globalMessages.metadata),
           filters.metadata,
           (next) =>
             onFiltersChange({
@@ -204,7 +189,7 @@ function DRepDirectoryFilters({
       {isShowAll &&
         !isSearchActive &&
         facet(
-          intl.formatMessage(messages.sortLabel),
+          intl.formatMessage(globalMessages.sort),
           sort,
           (next) => onSortChange(next as DRepSortOption),
           [

@@ -385,7 +385,7 @@ describe('GovernanceStore suggested DReps', () => {
     store.setCohortCriteria({
       ...store.cohortCriteria,
       requireVerifiedMetadata: false,
-      excludeInactiveSoon: false,
+      includeInactiveSoon: true,
     });
     expect(store.cohortPool.entries).toHaveLength(1);
   });

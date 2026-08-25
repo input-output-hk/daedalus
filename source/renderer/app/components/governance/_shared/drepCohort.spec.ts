@@ -68,7 +68,7 @@ describe('isEligibleForDRepCohort', () => {
       isEligible(
         { status: 'inactive' },
         {
-          excludeInactiveSoon: false,
+          includeInactiveSoon: false,
           maxVotingPowerShare: null,
           requireVerifiedMetadata: false,
           size: DEFAULT_DREP_COHORT_SIZE,
@@ -81,10 +81,11 @@ describe('isEligibleForDRepCohort', () => {
     expect(isEligible({ drepActivity: INACTIVE_SOON_EPOCHS })).toBe(false);
     expect(isEligible({ drepActivity: 0 })).toBe(false);
     expect(isEligible({ drepActivity: INACTIVE_SOON_EPOCHS + 1 })).toBe(true);
+    // Switched on, the criterion admits them rather than excluding them.
     expect(
       isEligible(
         { drepActivity: 0 },
-        { ...DEFAULT_DREP_COHORT_CRITERIA, excludeInactiveSoon: false }
+        { ...DEFAULT_DREP_COHORT_CRITERIA, includeInactiveSoon: true }
       )
     ).toBe(true);
   });
@@ -122,7 +123,7 @@ describe('isEligibleForDRepCohort', () => {
     // Not one of the criteria: it is the DRep's own instruction, so turning
     // every criterion off still leaves it out.
     const everythingOff = {
-      excludeInactiveSoon: false,
+      includeInactiveSoon: true,
       maxVotingPowerShare: null,
       requireVerifiedMetadata: false,
       size: DEFAULT_DREP_COHORT_SIZE,

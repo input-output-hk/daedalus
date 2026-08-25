@@ -21,7 +21,7 @@ const messages = defineMessages({
   },
   votingPowerLabel: {
     id: 'governance.drepDirectory.cohort.votingPowerLabel',
-    defaultMessage: '!!!Voting power under',
+    defaultMessage: '!!!Voting Power Threshold',
     description: 'Label of the suggestion voting-power ceiling control',
   },
   sizeLabel: {
@@ -93,10 +93,10 @@ function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
           two halves of one question. */}
       <div className={styles.toggleGroup}>
         {toggle(
-          intl.formatMessage(drepCriteriaMessages.notInactiveSoon),
-          criteria.excludeInactiveSoon,
-          (excludeInactiveSoon) =>
-            onCriteriaChange({ ...criteria, excludeInactiveSoon })
+          intl.formatMessage(drepCriteriaMessages.inactiveSoon),
+          criteria.includeInactiveSoon,
+          (includeInactiveSoon) =>
+            onCriteriaChange({ ...criteria, includeInactiveSoon })
         )}
         {toggle(
           intl.formatMessage(drepCriteriaMessages.verifiedMetadata),

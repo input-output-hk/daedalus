@@ -25,10 +25,10 @@ export const DREP_COHORT_SIZE_OPTIONS: readonly number[] = [10, 20, 50];
 
 export interface DRepCohortCriteria {
   /**
-   * Exclude DReps whose voting power lapses within the next few epochs, at the
-   * same threshold the status badge marks.
+   * Whether DReps close to going inactive may be suggested. Off by default:
+   * a delegation to one of them stops counting within a few epochs.
    */
-  excludeInactiveSoon: boolean;
+  includeInactiveSoon: boolean;
   /**
    * Exclusive upper bound on a DRep's share of total delegated voting power.
    * `null` means no ceiling.
@@ -44,7 +44,7 @@ export interface DRepCohortCriteria {
 }
 
 export const DEFAULT_DREP_COHORT_CRITERIA: DRepCohortCriteria = {
-  excludeInactiveSoon: true,
+  includeInactiveSoon: false,
   maxVotingPowerShare: HIGH_VOTING_POWER_THRESHOLD,
   requireVerifiedMetadata: true,
   size: DEFAULT_DREP_COHORT_SIZE,
@@ -114,7 +114,7 @@ export function isEligibleForDRepCohort(
   totalDRepStake: BigNumber | null
 ): boolean {
   if (!isListableDRep(entry)) return false;
-  if (criteria.excludeInactiveSoon && isInactiveSoon(entry.drepActivity)) {
+  if (!criteria.includeInactiveSoon && isInactiveSoon(entry.drepActivity)) {
     return false;
   }
   if (
@@ -135,7 +135,7 @@ export function isDRepCohortCriterionApplied(
 ): boolean {
   switch (criterion) {
     case 'notInactiveSoon':
-      return criteria.excludeInactiveSoon;
+      return !criteria.includeInactiveSoon;
     case 'votingPowerShare':
       return criteria.maxVotingPowerShare != null;
     case 'verifiedMetadata':
@@ -151,7 +151,7 @@ function withoutCriterion(
 ): DRepCohortCriteria {
   switch (criterion) {
     case 'notInactiveSoon':
-      return { ...criteria, excludeInactiveSoon: false };
+      return { ...criteria, includeInactiveSoon: true };
     case 'votingPowerShare':
       return { ...criteria, maxVotingPowerShare: null };
     case 'verifiedMetadata':

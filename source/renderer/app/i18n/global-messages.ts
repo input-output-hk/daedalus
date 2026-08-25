@@ -337,6 +337,16 @@ export default defineMessages({
     defaultMessage: '!!!Status',
     description: 'Label of a field or column naming a status.',
   },
+  metadata: {
+    id: 'global.labels.metadata',
+    defaultMessage: '!!!Metadata',
+    description: 'Label of a field or control concerning metadata.',
+  },
+  sort: {
+    id: 'global.labels.sort',
+    defaultMessage: '!!!Sort',
+    description: 'Label of a control choosing the order of a list.',
+  },
   delegate: {
     id: 'global.labels.delegate',
     defaultMessage: '!!!Delegate',

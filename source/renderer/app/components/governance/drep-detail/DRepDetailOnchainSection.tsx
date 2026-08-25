@@ -3,6 +3,7 @@ import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import globalMessages from '../../../i18n/global-messages';
 import { getNetworkExplorerUrlByType } from '../../../utils/network';
 import DRepStatusBadge from '../_shared/DRepStatusBadge';
 import DRepVotingPowerShare from '../_shared/DRepVotingPowerShare';
@@ -27,11 +28,6 @@ const messages = defineMessages({
     defaultMessage:
       '!!!Read directly from the Cardano ledger by your local node.',
     description: 'Explains what the on-chain data section contains',
-  },
-  statusLabel: {
-    id: 'governance.drepDetail.status',
-    defaultMessage: '!!!Status',
-    description: 'Label for the DRep status field on the detail view',
   },
   inactiveInLabel: {
     id: 'governance.drepDetail.inactiveIn',
@@ -125,7 +121,7 @@ function DRepDetailOnchainSection({
       <dl className={styles.fieldList}>
         <div className={styles.fieldRow}>
           <dt className={styles.fieldLabel}>
-            {intl.formatMessage(messages.statusLabel)}
+            {intl.formatMessage(globalMessages.status)}
           </dt>
           <dd className={styles.fieldValue}>
             <DRepStatusBadge

@@ -427,6 +427,16 @@
         "id": "global.labels.status"
       },
       {
+        "defaultMessage": "!!!Metadata",
+        "description": "Label of a field or control concerning metadata.",
+        "id": "global.labels.metadata"
+      },
+      {
+        "defaultMessage": "!!!Sort",
+        "description": "Label of a control choosing the order of a list.",
+        "id": "global.labels.sort"
+      },
+      {
         "defaultMessage": "!!!Delegate",
         "description": "Label of a control that starts delegating, of stake or of voting power.",
         "id": "global.labels.delegate"
@@ -2672,16 +2682,6 @@
         "id": "governance.drepDirectory.mode.label"
       },
       {
-        "defaultMessage": "!!!Status",
-        "description": "Label of the status filter",
-        "id": "governance.drepDirectory.filter.active"
-      },
-      {
-        "defaultMessage": "!!!Metadata",
-        "description": "Label of the metadata filter",
-        "id": "governance.drepDirectory.filter.metadata"
-      },
-      {
         "defaultMessage": "!!!Inactive Soon",
         "description": "Status filter option for DReps close to going inactive",
         "id": "governance.drepDirectory.status.inactiveSoon"
@@ -2695,11 +2695,6 @@
         "defaultMessage": "!!!Without verified metadata",
         "description": "Metadata filter option: no anchor",
         "id": "governance.drepDirectory.filter.metadata.without"
-      },
-      {
-        "defaultMessage": "!!!Sort",
-        "description": "Label of the show-all sort dropdown",
-        "id": "governance.drepDirectory.sort.label"
       },
       {
         "defaultMessage": "!!!Default",
@@ -2932,9 +2927,9 @@
         "id": "governance.drepDirectory.cohort.criteria.active"
       },
       {
-        "defaultMessage": "!!!Not Inactive Soon",
-        "description": "Suggestion criterion: not close to going inactive",
-        "id": "governance.drepDirectory.cohort.criteria.notInactiveSoon"
+        "defaultMessage": "!!!Inactive Soon",
+        "description": "Suggestion criterion, switched on to admit DReps close to going inactive",
+        "id": "governance.drepDirectory.cohort.criteria.inactiveSoon"
       },
       {
         "defaultMessage": "!!!Verified metadata",
@@ -3132,11 +3127,6 @@
         "id": "governance.drepDetail.onchain.title.explanation"
       },
       {
-        "defaultMessage": "!!!Status",
-        "description": "Label for the DRep status field on the detail view",
-        "id": "governance.drepDetail.status"
-      },
-      {
         "defaultMessage": "!!!Inactive in",
         "description": "Label of the field naming how long before a DRep stops counting",
         "id": "governance.drepDetail.inactiveIn"
@@ -3222,7 +3212,7 @@
         "id": "governance.drepDirectory.cohort.votingPowerIncrement"
       },
       {
-        "defaultMessage": "!!!Voting power under",
+        "defaultMessage": "!!!Voting Power Threshold",
         "description": "Label of the suggestion voting-power ceiling control",
         "id": "governance.drepDirectory.cohort.votingPowerLabel"
       },
@@ -3287,7 +3277,7 @@
         "id": "governance.drepDirectory.showAll.summary"
       },
       {
-        "defaultMessage": "!!!Showing {count, plural, one {# DRep} other {# DReps}} drawn at random from the active DReps meeting these criteria.",
+        "defaultMessage": "!!!Showing {count, plural, one {# active DRep} other {# active DReps}} chosen at random who meet these criteria.",
         "description": "Lead line above the list of criteria the suggested cohort was drawn under",
         "id": "governance.drepDirectory.cohort.summary"
       },
