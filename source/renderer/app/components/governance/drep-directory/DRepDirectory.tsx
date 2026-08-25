@@ -98,6 +98,12 @@ const messages = defineMessages({
     description:
       'Disclosure shown when the eligible pool was too small for the cohort',
   },
+  showAllSummary: {
+    id: 'governance.drepDirectory.showAll.summary',
+    defaultMessage:
+      '!!!Showing {count, plural, one {# DRep} other {# DReps}} of {total}.',
+    description: 'States how much of the full directory is on screen',
+  },
   criteriaSummary: {
     id: 'governance.drepDirectory.cohort.summary',
     defaultMessage:
@@ -595,18 +601,6 @@ function DRepDirectory({
         return (
           <>
             {renderSearchRow()}
-            <div className={styles.controlsRow}>
-              <DRepDirectoryFilters
-                filters={filters}
-                onFiltersChange={setFilters}
-                isShowAll={isShowAll}
-                onShowAllChange={handleShowAllChange}
-                sort={sort}
-                onSortChange={setSort}
-                isRankingAvailable={isRankingAvailable}
-                isSearchActive={isSearchActive}
-              />
-            </div>
             {showErrorBanner && (
               <DRepErrorBanner
                 variant="refreshFailed"
@@ -629,25 +623,50 @@ function DRepDirectory({
                 change it, so the summary is not gated on the handler the
                 controls need. Gating both together meant a caller that only
                 displays the directory lost the explanation as well. */}
-            {isDefaultCohortView && visibleEntries.length > 0 && (
-              <div className={styles.criteriaSummary}>
+            {/* One box, in one place, whichever mode is selected. The mode
+                buttons, the sentence saying what is on screen and the controls
+                that change it all live together, so switching modes swaps what
+                the box says rather than making a row of controls appear above
+                a box that disappears. */}
+            <div className={styles.criteriaSummary}>
+              <DRepDirectoryFilters
+                filters={filters}
+                onFiltersChange={setFilters}
+                isShowAll={isShowAll}
+                onShowAllChange={handleShowAllChange}
+                sort={sort}
+                onSortChange={setSort}
+                isRankingAvailable={isRankingAvailable}
+                isSearchActive={isSearchActive}
+              />
+              {isDefaultCohortView && visibleEntries.length > 0 && (
+                <>
+                  <p className={styles.criteriaSummaryLead}>
+                    {intl.formatMessage(messages.criteriaSummary, {
+                      count: visibleEntries.length,
+                    })}
+                  </p>
+                  {/* Open, not behind a disclosure. The controls name the
+                      criteria and show their state at once, so hiding them hid
+                      the explanation of the list as well as the means of
+                      changing it. */}
+                  {onCohortCriteriaChange && (
+                    <DRepCohortCriteriaPanel
+                      criteria={cohortCriteria}
+                      onCriteriaChange={onCohortCriteriaChange}
+                    />
+                  )}
+                </>
+              )}
+              {isShowAll && !isSearchActive && (
                 <p className={styles.criteriaSummaryLead}>
-                  {intl.formatMessage(messages.criteriaSummary, {
+                  {intl.formatMessage(messages.showAllSummary, {
                     count: visibleEntries.length,
+                    total: allDReps.length,
                   })}
                 </p>
-                {/* Open, not behind a disclosure. The controls name the
-                    criteria and show their state at once, so hiding them hid
-                    the explanation of the list as well as the means of
-                    changing it. */}
-                {onCohortCriteriaChange && (
-                  <DRepCohortCriteriaPanel
-                    criteria={cohortCriteria}
-                    onCriteriaChange={onCohortCriteriaChange}
-                  />
-                )}
-              </div>
-            )}
+              )}
+            </div>
             {/* A cohort assembled under criteria other than the ones the
                 panel shows says so. Silently loosening them would leave the
                 controls describing a list they did not produce. */}

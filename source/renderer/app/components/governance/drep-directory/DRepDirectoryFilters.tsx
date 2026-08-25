@@ -1,7 +1,6 @@
 import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import globalMessages from '../../../i18n/global-messages';
-import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import DRepFacetSelect from '../_shared/DRepFacetSelect';
 import type {
   DRepFilterState,
@@ -12,6 +11,21 @@ import type {
 import styles from './DRepDirectoryFilters.scss';
 
 const messages = defineMessages({
+  modeSuggested: {
+    id: 'governance.drepDirectory.mode.suggested',
+    defaultMessage: '!!!Suggested',
+    description: 'Mode showing a suggested cohort drawn under criteria',
+  },
+  modeAll: {
+    id: 'governance.drepDirectory.mode.all',
+    defaultMessage: '!!!All DReps',
+    description: 'Mode showing every DRep, with filters and ordering',
+  },
+  modeGroupLabel: {
+    id: 'governance.drepDirectory.mode.groupLabel',
+    defaultMessage: '!!!What the directory shows',
+    description: 'Accessible name of the pair of mode buttons',
+  },
   showAll: {
     id: 'governance.drepDirectory.cohortBanner.showAll',
     defaultMessage: '!!!Show all DReps',
@@ -99,6 +113,7 @@ function DRepDirectoryFilters({
   intl,
 }: Props) {
   const canFilterPopulation = isShowAll || isSearchActive;
+  const modeGroupLabel = intl.formatMessage(messages.modeGroupLabel);
   const facet = (
     label: string,
     value: string,
@@ -116,20 +131,27 @@ function DRepDirectoryFilters({
 
   return (
     <div className={styles.container}>
-      {/* Widening the pool governs every facet beside it, so it leads the
-          strip. The same state the footer buttons drive: kept here as well
-          because this is where someone used to this screen will look. */}
-      <div className={styles.switchFacet}>
-        <span className={styles.switchLabel}>
-          {intl.formatMessage(messages.showAll)}
-        </span>
-        <div className={styles.switchControl}>
-          <NormalSwitch
-            className={styles.showAllSwitch}
-            checked={isShowAll}
-            onChange={onShowAllChange}
-          />
-        </div>
+      {/* Two named things rather than one thing switched on: a suggested
+          twenty and every DRep there is. Built as the pair of pressed buttons
+          the view toggle beside the search already uses, because a switch
+          reads as on and off and neither of these is off. */}
+      <div className={styles.modes} role="group" aria-label={modeGroupLabel}>
+        <button
+          type="button"
+          className={!isShowAll ? styles.modeSelected : undefined}
+          aria-pressed={!isShowAll}
+          onClick={() => onShowAllChange(false)}
+        >
+          {intl.formatMessage(messages.modeSuggested)}
+        </button>
+        <button
+          type="button"
+          className={isShowAll ? styles.modeSelected : undefined}
+          aria-pressed={isShowAll}
+          onClick={() => onShowAllChange(true)}
+        >
+          {intl.formatMessage(messages.modeAll)}
+        </button>
       </div>
       {/* Both facets narrow on properties the suggestion criteria already
           decided, so over the cohort they are inert at best: picking Inactive

@@ -1057,9 +1057,11 @@ describe('DRepDirectory', () => {
     renderComponent({ locale: 'ja-JP' });
 
     expect(screen.getByPlaceholderText('!!!DRep IDで検索')).toBeInTheDocument();
-    // Two controls drive show-all, the filter-bar toggle and the footer
-    // button, and they carry the same words because they do the same thing.
-    expect(screen.getAllByText('!!!すべてのDRepを表示')).toHaveLength(2);
+    // The mode buttons name the two states; the footer keeps its own call to
+    // action, which is why the words differ.
+    expect(screen.getByText('!!!すべてのDRep')).toBeInTheDocument();
+    expect(screen.getByText('!!!提案')).toBeInTheDocument();
+    expect(screen.getByText('!!!すべてのDRepを表示')).toBeInTheDocument();
   });
 
   describe('name search', () => {

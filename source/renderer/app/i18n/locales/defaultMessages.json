@@ -2632,6 +2632,21 @@
         "id": "governance.drepDirectory.status.inactive"
       },
       {
+        "defaultMessage": "!!!Suggested",
+        "description": "Mode showing a suggested cohort drawn under criteria",
+        "id": "governance.drepDirectory.mode.suggested"
+      },
+      {
+        "defaultMessage": "!!!All DReps",
+        "description": "Mode showing every DRep, with filters and ordering",
+        "id": "governance.drepDirectory.mode.all"
+      },
+      {
+        "defaultMessage": "!!!What the directory shows",
+        "description": "Accessible name of the pair of mode buttons",
+        "id": "governance.drepDirectory.mode.groupLabel"
+      },
+      {
         "defaultMessage": "!!!Status",
         "description": "Label of the status filter",
         "id": "governance.drepDirectory.filter.active"
@@ -3240,6 +3255,11 @@
         "defaultMessage": "!!!Too few DReps met every suggestion criterion, so these were relaxed to fill the list: {criteria}.",
         "description": "Disclosure shown when the eligible pool was too small for the cohort",
         "id": "governance.drepDirectory.cohort.relaxedNotice"
+      },
+      {
+        "defaultMessage": "!!!Showing {count, plural, one {# DRep} other {# DReps}} of {total}.",
+        "description": "States how much of the full directory is on screen",
+        "id": "governance.drepDirectory.showAll.summary"
       },
       {
         "defaultMessage": "!!!Showing {count, plural, one {# DRep} other {# DReps}} drawn at random from the active DReps that meet:",
