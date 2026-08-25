@@ -426,6 +426,8 @@
   "governance.drepDirectory.votingPower.unavailableTooltip": "!!!Stake distribution unavailable, try again later.",
   "governance.drepDirectory.votingPowerShare.label": "!!!{share}",
   "governance.drepDirectory.votingPowerShare.labelBelowMinimum": "!!!<{share}",
+  "governance.drepDirectory.votingPowerShare.plainValue": "!!!Controls {share} of active voting power ({total}).",
+  "governance.drepDirectory.votingPowerShare.plainValueBelowMinimum": "!!!Controls less than {share} of active voting power ({total}).",
   "governance.drepDirectory.votingPowerShare.tooltip": "!!!This DRep controls {share} of active voting power ({total}).",
   "governance.drepDirectory.votingPowerShare.tooltipBelowMinimum": "!!!This DRep controls less than {share} of active voting power ({total}).",
   "governance.drepFavorites.banner": "!!!{n, plural, one {# DRep} other {# DReps}} you've favorited. Favorites are stored on this device only.",

@@ -36,6 +36,19 @@ const messages = defineMessages({
     description:
       'Tooltip for a DRep whose share is too small to state at the displayed precision',
   },
+  plainValue: {
+    id: 'governance.drepDirectory.votingPowerShare.plainValue',
+    defaultMessage: '!!!Controls {share} of active voting power ({total}).',
+    description:
+      'Share of voting power stated in full as the value of a labelled row',
+  },
+  plainValueBelowMinimum: {
+    id: 'governance.drepDirectory.votingPowerShare.plainValueBelowMinimum',
+    defaultMessage:
+      '!!!Controls less than {share} of active voting power ({total}).',
+    description:
+      'Row value for a DRep whose share is too small to state at the displayed precision',
+  },
 });
 
 interface Props {
@@ -105,22 +118,40 @@ function DRepVotingPowerShare({
   };
   const tooltip = resolveTooltip();
 
-  // The figure alone gives a reader no reason to hover it, and now that it can
-  // render as ordinary text there is nothing about it that suggests more is
-  // available. The icon is that suggestion, and it carries the explanation
-  // itself so the tooltip is reachable by keyboard rather than by pointer
-  // alone. A share past the threshold gets the warning glyph: same control,
-  // same wording, but not the colour of a neutral aside.
+  // In a labelled row there is space to say it outright, so the row says it:
+  // a bare percentage is a figure a reader has to be told the meaning of, and
+  // putting that meaning on an icon made the figure depend on a hover to be
+  // worth anything. Colour still carries the concentration signal.
+  if (variant === 'plain') {
+    return (
+      <span
+        className={classNames(
+          styles.plain,
+          isHigh ? styles.high : styles.normal
+        )}
+      >
+        {intl.formatMessage(
+          isBelowMinimum
+            ? messages.plainValueBelowMinimum
+            : messages.plainValue,
+          { share: isBelowMinimum ? minimumShare : formattedShare, total }
+        )}
+      </span>
+    );
+  }
+
+  // On a card there is room for the figure and nothing else. The icon is what
+  // suggests more is available, and it carries the explanation itself so the
+  // tooltip is reachable by keyboard rather than by pointer alone. A share
+  // past the threshold gets the warning glyph: same control, same wording,
+  // but not the colour of a neutral aside.
   return (
     // The explanation is carried by the whole chip, not only by the icon.
     // Fourteen pixels of glyph is a small thing to find with a pointer, and
     // the figure beside it is the part a reader is already looking at. The
     // icon keeps its own copy so it stays a focusable control with a name.
     <span
-      className={classNames(
-        variant === 'badge' ? styles.share : styles.plain,
-        isHigh ? styles.high : styles.normal
-      )}
+      className={classNames(styles.share, isHigh ? styles.high : styles.normal)}
       title={tooltip}
     >
       <span>{label}</span>

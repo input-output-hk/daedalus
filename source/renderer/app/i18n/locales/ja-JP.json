@@ -426,6 +426,8 @@
   "governance.drepDirectory.votingPower.unavailableTooltip": "!!!ステーク配分を取得できません。しばらくしてから再度お試しください。",
   "governance.drepDirectory.votingPowerShare.label": "!!!{share}",
   "governance.drepDirectory.votingPowerShare.labelBelowMinimum": "!!!<{share}",
+  "governance.drepDirectory.votingPowerShare.plainValue": "!!!アクティブな投票権の{share}を保有しています（全体{total}）。",
+  "governance.drepDirectory.votingPowerShare.plainValueBelowMinimum": "!!!アクティブな投票権の{share}未満を保有しています（全体{total}）。",
   "governance.drepDirectory.votingPowerShare.tooltip": "!!!このDRepはアクティブな投票権の{share}（{total}）を保有しています。",
   "governance.drepDirectory.votingPowerShare.tooltipBelowMinimum": "!!!このDRepはアクティブな投票権の{share}未満（{total}）を保有しています。",
   "governance.drepFavorites.banner": "!!!お気に入りに追加したDRep：{n}件。お気に入りはこのデバイスにのみ保存されます。",

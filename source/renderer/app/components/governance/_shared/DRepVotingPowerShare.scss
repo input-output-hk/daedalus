@@ -19,10 +19,11 @@
   white-space: nowrap;
 }
 
+// The row form carries a whole sentence now, so it sets as text and wraps
+// like text. An inline-flex box with a gap was there to seat an icon beside a
+// figure, and there is no longer either.
 .plain {
-  align-items: baseline;
-  display: inline-flex;
-  gap: 6px;
+  display: inline;
 }
 
 .share.normal {

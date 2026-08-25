@@ -12,13 +12,15 @@ const BELOW = new BigNumber('50000000000000'); // 50M ADA -> 1%
 
 const renderShare = (
   votingPower: BigNumber | null,
-  totalDRepStake: BigNumber | null = TOTAL
+  totalDRepStake: BigNumber | null = TOTAL,
+  variant: 'badge' | 'plain' = 'badge'
 ) =>
   render(
     <IntlProvider locale="en-US" messages={translations}>
       <DRepVotingPowerShare
         votingPower={votingPower}
         totalDRepStake={totalDRepStake}
+        variant={variant}
       />
     </IntlProvider>
   );
@@ -29,6 +31,29 @@ describe('DRepVotingPowerShare', () => {
   it('states the share for every DRep, not only concentrated ones', () => {
     renderShare(BELOW);
     expect(screen.getByText('!!!1%')).toBeInTheDocument();
+  });
+
+  it('states the whole fact in a labelled row instead of hiding it on an icon', () => {
+    renderShare(BELOW, TOTAL, 'plain');
+
+    // A row has the width a card does not, so the figure does not have to be
+    // a bare percentage whose meaning waits behind a hover.
+    expect(
+      screen.getByText('!!!Controls 1% of active voting power (₳ 5.0B).')
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!1%')).not.toBeInTheDocument();
+  });
+
+  it('says "less than" in the row when the share rounds away', () => {
+    // 500 ADA against 5B: real, and far under the precision the row prints.
+    renderShare(new BigNumber('500000000'), TOTAL, 'plain');
+
+    expect(
+      screen.getByText(
+        '!!!Controls less than 0.01% of active voting power (₳ 5.0B).'
+      )
+    ).toBeInTheDocument();
   });
 
   it('names the total the share is measured against, not the share again', () => {
