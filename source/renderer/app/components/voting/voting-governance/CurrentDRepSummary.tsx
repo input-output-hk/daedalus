@@ -15,29 +15,29 @@ type Props = {
   intl: intlShape.isRequired;
 };
 
-// One definition of approaching expiry across the app: the same six-epoch
-// threshold the DRep directory badge and its filter use. This panel had kept
-// its own twelve-epoch window, which is sixty of a DRep's hundred days.
+// One definition of going inactive across the app: the same six-epoch
+// threshold the DRep directory badge and its filter use, read from the same
+// helper. This panel had kept a twelve-epoch window of its own, so a DRep the
+// directory called fine was flagged here, and the two screens disagreed about
+// the same DRep on the same day.
 
-type CurrentVoteBadgeState = 'unavailable' | 'inactive' | 'expiring' | 'active';
+type CurrentVoteBadgeState =
+  | 'unavailable'
+  | 'inactive'
+  | 'inactiveSoon'
+  | 'active';
 
-// This panel shows the wallet's own delegation, which is not cohort-scoped, so
-// the expiring window is the full remaining-epoch threshold rather than the
-// narrower window the directory badge applies to cohort members.
 function deriveCurrentVoteBadgeState(
   drepEntry: AppDRepDirectoryEntry | null | undefined
 ): CurrentVoteBadgeState {
   if (drepEntry == null) return 'unavailable';
   if (drepEntry.status === 'inactive') return 'inactive';
   if (isInactiveSoon(drepEntry.drepActivity)) {
-    return 'expiring';
+    return 'inactiveSoon';
   }
   return 'active';
 }
 
-// The vote-kind chip and the status captions render through the local message
-// set because DRepSourceLabel's variant union cannot express them;
-// DRepSourceLabel renders only the on-chain source label on the DRep state.
 function CurrentDRepSummary({ currentDRep, drepEntry, intl }: Props) {
   if (currentDRep == null) {
     return null;
@@ -61,9 +61,9 @@ function CurrentDRepSummary({ currentDRep, drepEntry, intl }: Props) {
             {intl.formatMessage(messages.statusDelegatedToDRep)}
           </span>
           {/* One badge with three states, the same component the directory
-              and the voting centre use. A bespoke expiring badge beside a
-              status badge was a second implementation of the thing that
-              exists to stop those two contradicting each other. */}
+              uses. A bespoke badge counting down beside a status badge was a
+              second implementation of the thing that exists to stop those two
+              contradicting each other. */}
           {drepEntry && (
             <DRepStatusBadge
               status={drepEntry.status}
@@ -81,8 +81,8 @@ function CurrentDRepSummary({ currentDRep, drepEntry, intl }: Props) {
         </div>
         {badgeState !== 'active' && (
           <p className={styles.caption}>
-            {badgeState === 'expiring'
-              ? intl.formatMessage(messages.statusExpiring, {
+            {badgeState === 'inactiveSoon'
+              ? intl.formatMessage(messages.statusInactiveSoon, {
                   n: drepEntry.drepActivity,
                 })
               : intl.formatMessage(

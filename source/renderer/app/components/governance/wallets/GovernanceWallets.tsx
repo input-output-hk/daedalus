@@ -8,7 +8,6 @@ import globalMessages from '../../../i18n/global-messages';
 import DRepIdDisplay from '../_shared/DRepIdDisplay';
 import DRepStatusBadge from '../_shared/DRepStatusBadge';
 import DRepDirectorySkeleton from '../drep-directory/DRepDirectorySkeleton';
-import CurrentDRepSummary from '../../voting/voting-governance/CurrentDRepSummary';
 import type { DRepDelegation } from '../../../api/wallets/types';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 import styles from './GovernanceWallets.scss';

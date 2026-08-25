@@ -24,8 +24,8 @@ export const messages = defineMessages({
       '!!!Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.',
     description: 'Caption explaining the No Confidence delegation state',
   },
-  statusExpiring: {
-    id: 'voting.governance.currentVote.status.expiring',
+  statusInactiveSoon: {
+    id: 'voting.governance.currentVote.status.inactiveSoon',
     defaultMessage:
       '!!!This DRep becomes inactive in {n, plural, one {# epoch} other {# epochs}}. Consider re-delegating.',
     description:
