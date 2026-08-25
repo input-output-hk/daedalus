@@ -629,26 +629,33 @@ function DRepDirectory({
                 the box says rather than making a row of controls appear above
                 a box that disappears. */}
             <div className={styles.criteriaSummary}>
-              <DRepDirectoryFilters
-                filters={filters}
-                onFiltersChange={setFilters}
-                isShowAll={isShowAll}
-                onShowAllChange={handleShowAllChange}
-                sort={sort}
-                onSortChange={setSort}
-                isRankingAvailable={isRankingAvailable}
-                isSearchActive={isSearchActive}
-              />
-              {/* Open, not behind a disclosure. The controls name the criteria
-                  and show their state at once, so hiding them hid the
-                  explanation of the list as well as the means of changing
-                  it. */}
-              {isDefaultCohortView && onCohortCriteriaChange && (
-                <DRepCohortCriteriaPanel
-                  criteria={cohortCriteria}
-                  onCriteriaChange={onCohortCriteriaChange}
+              {/* One row, whichever mode is selected: the mode control leads
+                  it, and what follows is either the suggestion criteria or the
+                  filters and ordering that replace them. Two rows in one mode
+                  and one in the other made the same box look like two
+                  different screens. */}
+              <div className={styles.controls}>
+                <DRepDirectoryFilters
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  isShowAll={isShowAll}
+                  onShowAllChange={handleShowAllChange}
+                  sort={sort}
+                  onSortChange={setSort}
+                  isRankingAvailable={isRankingAvailable}
+                  isSearchActive={isSearchActive}
                 />
-              )}
+                {/* Open, not behind a disclosure. The controls name the
+                    criteria and show their state at once, so hiding them hid
+                    the explanation of the list as well as the means of
+                    changing it. */}
+                {isDefaultCohortView && onCohortCriteriaChange && (
+                  <DRepCohortCriteriaPanel
+                    criteria={cohortCriteria}
+                    onCriteriaChange={onCohortCriteriaChange}
+                  />
+                )}
+              </div>
               {/* Last line of the box in either mode, so the count sits in one
                   place and only its wording follows what is being counted. A
                   figure that moves when the mode changes is a figure a reader

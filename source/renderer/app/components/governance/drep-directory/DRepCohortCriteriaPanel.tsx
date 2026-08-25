@@ -82,7 +82,9 @@ function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
   );
 
   return (
-    <div className={styles.container}>
+    /* No row of its own: these sit in the row the mode control leads,
+       beside the filters that take their place in the other mode. */
+    <>
       {toggle(
         intl.formatMessage(drepCriteriaMessages.notInactiveSoon),
         criteria.excludeInactiveSoon,
@@ -133,7 +135,7 @@ function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
           intl.formatNumber(size),
         ])
       )}
-    </div>
+    </>
   );
 }
 

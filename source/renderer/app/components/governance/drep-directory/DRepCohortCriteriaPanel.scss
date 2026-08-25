@@ -10,14 +10,6 @@
 // One row, matching the row this panel is replaced by in the other mode. Two
 // stacked rows here and one row there made the box change height whenever the
 // mode changed, which is the jump the single box was meant to remove.
-.container {
-  align-items: flex-end;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 0;
-}
-
 // A switch carries its own label inline, where a select carries one above it.
 // Giving the switch a box of the control height puts the two on the same
 // baseline without a second label that would only repeat the first.

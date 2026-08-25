@@ -130,7 +130,11 @@ function DRepDirectoryFilters({
   );
 
   return (
-    <div className={styles.container}>
+    /* No row of its own: these controls share one row with the suggestion
+       criteria, which occupy the same space in the other mode. Owning a
+       container here put the criteria on a second row and left the modes
+       looking like different shapes of screen. */
+    <>
       {/* Two named things rather than one thing switched on: a suggested
           twenty and every DRep there is. Built as the pair of pressed buttons
           the view toggle beside the search already uses, because a switch
@@ -219,7 +223,7 @@ function DRepDirectoryFilters({
               : []),
           ]
         )}
-    </div>
+    </>
   );
 }
 

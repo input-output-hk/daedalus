@@ -8,14 +8,6 @@
 // It wraps rather than scrolls. A control pushed off the end of a scrolling
 // strip is a control nobody knows is there, and keeping every facet visible is
 // the point of putting them in a row instead of behind a filter button.
-.container {
-  align-items: flex-start;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  max-width: 100%;
-}
-
 // Built to the shape of the selects beside it, because in the all-DReps mode
 // it sits in the same row as them: a label of the same weight and spacing,
 // then a control of the same height.

@@ -69,6 +69,13 @@
 // what the twenty are without opening anything, and the control that changes
 // them sits at the end of the sentence describing them rather than standing
 // alone as a link whose subject has to be guessed.
+.controls {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
 .criteriaSummary {
   @extend %contentBorderAndBackground;
   color: var(--theme-gov-font-color-regular);
