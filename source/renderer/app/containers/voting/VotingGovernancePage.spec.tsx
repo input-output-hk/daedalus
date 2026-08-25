@@ -515,7 +515,7 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
 
     expect(screen.getByText('!!!Currently Delegated To')).toBeInTheDocument();
     expect(
-      screen.getByText('!!!This wallet already votes for this DRep.')
+      screen.getByText(/already delegates to this choice/)
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
     expect(stores.voting.initializeVPDelegationTx).not.toHaveBeenCalled();
@@ -710,7 +710,7 @@ describe('Current-vote enrichment in the delegation form', () => {
     expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
     expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
     expect(
-      screen.getByText('!!!This wallet already votes for this DRep.')
+      screen.getByText(/already delegates to this choice/)
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
     expect(stores.voting.initializeVPDelegationTx).not.toHaveBeenCalled();
@@ -750,7 +750,7 @@ describe('Current-vote enrichment in the delegation form', () => {
     });
 
     expect(
-      screen.getByText('!!!This wallet already votes for this DRep.')
+      screen.getByText(/already delegates to this choice/)
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
   });

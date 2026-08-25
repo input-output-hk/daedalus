@@ -383,7 +383,7 @@ describe('same-vote server error in the delegation form', () => {
 
     expect(
       await screen.findByText(
-        'This voting power delegation choice has already been successfully recorded in a previous transaction. Please change the registration type or DRep ID in order to proceed.'
+        '!!!This wallet already delegates to this choice. Please change delegation in order to proceed.'
       )
     ).toBeInTheDocument();
     expect(initiateTransaction).toHaveBeenCalledWith(

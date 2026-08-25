@@ -23,12 +23,15 @@ export const messages = defineMessages({
   },
   initializeTxErrorSameVote: {
     id: 'voting.governance.initializeTxError.sameVote',
-    defaultMessage: '!!!Chosen same value as previously',
-    description: 'Chosen same value as previously',
+    defaultMessage:
+      '!!!This wallet already delegates to this choice. Please change delegation in order to proceed.',
+    description:
+      'Shown when the wallet is already delegated to the chosen option',
   },
   initializeNotEnoughMoney: {
     id: 'voting.governance.initializeTxError.notEnoughMoney',
-    defaultMessage: '!!!Not enough funds',
+    defaultMessage:
+      '!!!This wallet does not contain the minimum required amount of ADA. The wallet might still be syncing. Please try again later or choose another wallet.',
     description: 'Governance voting error when wallet has not enough funds',
   },
   browseDRepsButton: {

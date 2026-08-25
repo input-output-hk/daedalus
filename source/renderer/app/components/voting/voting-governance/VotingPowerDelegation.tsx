@@ -332,11 +332,13 @@ function VotingPowerDelegation({
                 </p>
               )}
 
+              {/* The same sentence the node returns after a submit that would
+                  change nothing, and drawn the same way. It blocks the submit
+                  button exactly as the server error does, so setting it in
+                  quiet grey said the opposite of what it does. */}
               {isSameAsCurrent && (
-                <p className={styles.sameVoteHint} id={SAME_VOTE_HINT_ID}>
-                  {intl.formatMessage(currentDRepMessages.sameVoteHint, {
-                    target: selectedSentinel ?? 'drep',
-                  })}
+                <p className={styles.generalError} id={SAME_VOTE_HINT_ID}>
+                  {intl.formatMessage(messages.initializeTxErrorSameVote)}
                 </p>
               )}
 
