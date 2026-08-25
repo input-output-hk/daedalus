@@ -33,15 +33,17 @@ const messages = defineMessages({
     defaultMessage: '!!!Status',
     description: 'Label for the DRep status field on the detail view',
   },
-  expiresInLabel: {
-    id: 'governance.drepDetail.expiresIn',
-    defaultMessage: '!!!Expires in',
-    description: 'Label for the remaining-epochs field on the detail view',
+  inactiveInLabel: {
+    id: 'governance.drepDetail.inactiveIn',
+    defaultMessage: '!!!Inactive in',
+    description:
+      'Label of the field naming how long before a DRep stops counting',
   },
-  expiresInValue: {
-    id: 'governance.drepDetail.expiresInEpochs',
+  inactiveInValue: {
+    id: 'governance.drepDetail.inactiveInEpochs',
     defaultMessage: '!!!{count, plural, one {# epoch} other {# epochs}}',
-    description: 'Remaining epochs until the DRep expires',
+    description:
+      'Epochs before a DRep goes inactive, read beside the Inactive in label',
   },
   votingPowerShareLabel: {
     id: 'governance.drepDetail.votingPowerShare',
@@ -134,11 +136,11 @@ function DRepDetailOnchainSection({
         </div>
         <div className={styles.fieldRow}>
           <dt className={styles.fieldLabel}>
-            {intl.formatMessage(messages.expiresInLabel)}
+            {intl.formatMessage(messages.inactiveInLabel)}
           </dt>
           <dd className={styles.fieldValue}>
             {entry.status === 'active' && entry.drepActivity != null
-              ? intl.formatMessage(messages.expiresInValue, {
+              ? intl.formatMessage(messages.inactiveInValue, {
                   count: entry.drepActivity,
                 })
               : '—'}

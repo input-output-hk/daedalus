@@ -25,14 +25,14 @@
  * twenty-epoch window on a short-epoch network, leaving every DRep permanently
  * marked as expiring.
  */
-export const LAPSING_SOON_EPOCHS = 6;
+export const INACTIVE_SOON_EPOCHS = 6;
 
 const SECONDS_PER_DAY = 86400;
 
-export function isLapsingSoon(
+export function isInactiveSoon(
   drepActivity: number | null | undefined
 ): boolean {
-  return drepActivity != null && drepActivity <= LAPSING_SOON_EPOCHS;
+  return drepActivity != null && drepActivity <= INACTIVE_SOON_EPOCHS;
 }
 
 /**
@@ -47,4 +47,28 @@ export function epochsToDays(
 ): number | null {
   if (epochs == null || !epochLength || !slotLength) return null;
   return Math.round((epochs * epochLength * slotLength) / SECONDS_PER_DAY);
+}
+
+/**
+ * A DRep's standing, as one badge rather than several.
+ *
+ * The three states are ordered, not independent: a DRep has to be active to be
+ * close to going inactive, and one that has already lapsed is inactive rather
+ * than both. Two badges side by side let those combinations be rendered, and
+ * the pairings that resulted ("Active" beside "Inactive Soon", or worse
+ * "Inactive" beside it) either restated one another or contradicted each other
+ * outright.
+ *
+ * Named for what happens rather than for expiry. A DRep does not expire: its
+ * voting power stops being counted, and any activity at all, a vote included,
+ * starts it counting again.
+ */
+export type DRepStanding = 'active' | 'inactiveSoon' | 'inactive';
+
+export function getDRepStanding(
+  status: 'active' | 'inactive',
+  drepActivity: number | null | undefined
+): DRepStanding {
+  if (status !== 'active') return 'inactive';
+  return isInactiveSoon(drepActivity) ? 'inactiveSoon' : 'active';
 }

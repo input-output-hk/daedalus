@@ -2587,6 +2587,11 @@
         "id": "governance.drepDirectory.status.selfnodeUnavailable"
       },
       {
+        "defaultMessage": "!!!No DReps on the network currently meet the suggestion criteria. {ShowAll} instead, or loosen the criteria above.",
+        "description": "Empty state when the network holds no DRep the suggestion criteria admit",
+        "id": "governance.drepDirectory.empty.noSuggestions"
+      },
+      {
         "defaultMessage": "!!!No DReps match your filters. {ClearFilters} or {ShowAll}.",
         "description": "Empty state when search/filters match nothing",
         "id": "governance.drepDirectory.empty.noResults"
@@ -2637,19 +2642,14 @@
         "id": "governance.drepDirectory.filter.metadata"
       },
       {
+        "defaultMessage": "!!!Inactive Soon",
+        "description": "Status filter option for DReps close to going inactive",
+        "id": "governance.drepDirectory.status.inactiveSoon"
+      },
+      {
         "defaultMessage": "!!!With verified metadata",
         "description": "Metadata filter option: anchor present",
         "id": "governance.drepDirectory.filter.metadata.with"
-      },
-      {
-        "defaultMessage": "!!!Expiry",
-        "description": "Label of the expiry filter",
-        "id": "governance.drepDirectory.filter.expiry"
-      },
-      {
-        "defaultMessage": "!!!Hide DReps lapsing within 6 epochs",
-        "description": "Filter option that excludes DReps whose voting power lapses soon",
-        "id": "governance.drepDirectory.filter.expiry.hideLapsingSoon"
       },
       {
         "defaultMessage": "!!!Without verified metadata",
@@ -2662,9 +2662,9 @@
         "id": "governance.drepDirectory.sort.label"
       },
       {
-        "defaultMessage": "!!!Recommended (default)",
-        "description": "Default sort: bands by what delegating would achieve, random within each",
-        "id": "governance.drepDirectory.sort.recommended"
+        "defaultMessage": "!!!Default",
+        "description": "Default ordering: grouped by what delegating would achieve, random within each group. Named for its role rather than its mechanism, and kept distinct from the Suggested mode",
+        "id": "governance.drepDirectory.sort.default"
       },
       {
         "defaultMessage": "!!!Voting power (high to low)",
@@ -2675,16 +2675,6 @@
         "defaultMessage": "!!!Voting power (low to high)",
         "description": "Voting power ascending sort option",
         "id": "governance.drepDirectory.sort.votingPowerAsc"
-      },
-      {
-        "defaultMessage": "!!!Expiry (soonest first)",
-        "description": "Soonest-expiry-first sort option",
-        "id": "governance.drepDirectory.sort.expiryAsc"
-      },
-      {
-        "defaultMessage": "!!!Expiry (soonest last)",
-        "description": "Latest-expiry-first sort option",
-        "id": "governance.drepDirectory.sort.expiryDesc"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryFilters.tsx"
@@ -2847,17 +2837,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Expiring soon",
+        "defaultMessage": "!!!Inactive Soon",
         "description": "Badge shown when a DRep is close to losing its voting power through inactivity",
         "id": "governance.drepDirectory.expiry.label"
       },
       {
-        "defaultMessage": "!!!Voting power lapses in {epochs, plural, one {# epoch} other {# epochs}} ({days, plural, one {# day} other {# days}}) unless this DRep records activity by voting, updating its metadata or re-registering.",
+        "defaultMessage": "!!!Becomes inactive in {epochs, plural, one {# epoch} other {# epochs}} ({days, plural, one {# day} other {# days}}) unless this DRep records activity by voting, updating its metadata or re-registering.",
         "description": "Explains when a DRep loses its voting power, in epochs and days",
         "id": "governance.drepDirectory.expiry.detailWithDays"
       },
       {
-        "defaultMessage": "!!!Voting power lapses in {epochs, plural, one {# epoch} other {# epochs}} unless this DRep records activity by voting, updating its metadata or re-registering.",
+        "defaultMessage": "!!!Becomes inactive in {epochs, plural, one {# epoch} other {# epochs}} unless this DRep records activity by voting, updating its metadata or re-registering.",
         "description": "Explains when a DRep loses its voting power when the epoch length is unknown",
         "id": "governance.drepDirectory.expiry.detail"
       }
@@ -2893,6 +2883,31 @@
       }
     ],
     "path": "source/renderer/app/components/governance/_shared/DRepVotingPowerShare.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Active registration",
+        "description": "Suggestion criterion: the DRep registration is active. Always applied",
+        "id": "governance.drepDirectory.cohort.criteria.active"
+      },
+      {
+        "defaultMessage": "!!!Not Inactive Soon",
+        "description": "Suggestion criterion: not close to going inactive",
+        "id": "governance.drepDirectory.cohort.criteria.notInactiveSoon"
+      },
+      {
+        "defaultMessage": "!!!Verified metadata",
+        "description": "Suggestion criterion: metadata was fetched and hash-verified",
+        "id": "governance.drepDirectory.cohort.criteria.verifiedMetadata"
+      },
+      {
+        "defaultMessage": "!!!Voting power under {share}",
+        "description": "Suggestion criterion: below the voting-power ceiling, which the user sets",
+        "id": "governance.drepDirectory.cohort.criteria.votingPowerUnder"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/drepCriteriaMessages.ts"
   },
   {
     "descriptors": [
@@ -3082,14 +3097,14 @@
         "id": "governance.drepDetail.status"
       },
       {
-        "defaultMessage": "!!!Expires in",
-        "description": "Label for the remaining-epochs field on the detail view",
-        "id": "governance.drepDetail.expiresIn"
+        "defaultMessage": "!!!Inactive in",
+        "description": "Label of the field naming how long before a DRep stops counting",
+        "id": "governance.drepDetail.inactiveIn"
       },
       {
         "defaultMessage": "!!!{count, plural, one {# epoch} other {# epochs}}",
-        "description": "Remaining epochs until the DRep expires",
-        "id": "governance.drepDetail.expiresInEpochs"
+        "description": "Epochs before a DRep goes inactive, read beside the Inactive in label",
+        "id": "governance.drepDetail.inactiveInEpochs"
       },
       {
         "defaultMessage": "!!!Share of voting power",
@@ -3157,34 +3172,14 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Suggestions are drawn at random from the DReps that meet these criteria.",
-        "description": "Explanation above the suggestion criteria controls",
-        "id": "governance.drepDirectory.cohort.intro"
-      },
-      {
-        "defaultMessage": "!!!Active registration",
-        "description": "Criterion restricting suggestions to active DReps",
-        "id": "governance.drepDirectory.cohort.activeOnly"
-      },
-      {
-        "defaultMessage": "!!!Not lapsing within {epochs} epochs",
-        "description": "Criterion excluding DReps whose voting power lapses soon",
-        "id": "governance.drepDirectory.cohort.excludeLapsingSoon"
-      },
-      {
-        "defaultMessage": "!!!Verified metadata",
-        "description": "Criterion restricting suggestions to DReps with metadata",
-        "id": "governance.drepDirectory.cohort.requireVerifiedMetadata"
+        "defaultMessage": "!!!No limit",
+        "description": "Option removing the suggestion voting-power ceiling",
+        "id": "governance.drepDirectory.cohort.votingPowerNoLimit"
       },
       {
         "defaultMessage": "!!!Voting power under",
         "description": "Label of the suggestion voting-power ceiling control",
         "id": "governance.drepDirectory.cohort.votingPowerLabel"
-      },
-      {
-        "defaultMessage": "!!!No limit",
-        "description": "Option removing the suggestion voting-power ceiling",
-        "id": "governance.drepDirectory.cohort.votingPowerNoLimit"
       },
       {
         "defaultMessage": "!!!Suggestions shown",
@@ -3232,14 +3227,9 @@
         "id": "governance.drepDirectory.pinnedFavorites.title"
       },
       {
-        "defaultMessage": "!!!Sorted by voting power, so the largest DReps come first. The recommended order randomises within each group instead, which is what stops a position near the top being worth holding.",
+        "defaultMessage": "!!!Sorted by voting power, so the largest DReps come first. The default order randomises within each group instead, which is what stops a position near the top being worth holding.",
         "description": "Disclosure shown while voting-power-descending sort is active",
         "id": "governance.drepDirectory.showAll.sortBiasWarning"
-      },
-      {
-        "defaultMessage": "!!!Suggestion criteria",
-        "description": "Button that reveals the suggestion criteria controls",
-        "id": "governance.drepDirectory.cohort.criteriaToggle"
       },
       {
         "defaultMessage": "!!!Too few DReps met every suggestion criterion, so these were relaxed to fill the list: {criteria}.",
@@ -3247,14 +3237,14 @@
         "id": "governance.drepDirectory.cohort.relaxedNotice"
       },
       {
-        "defaultMessage": "!!!active registration",
-        "description": "Name of the active-registration suggestion criterion",
-        "id": "governance.drepDirectory.cohort.criterion.active"
+        "defaultMessage": "!!!Showing {count, plural, one {# DRep} other {# DReps}} drawn at random from the active DReps that meet:",
+        "description": "Lead line above the list of criteria the suggested cohort was drawn under",
+        "id": "governance.drepDirectory.cohort.summary"
       },
       {
-        "defaultMessage": "!!!not lapsing soon",
-        "description": "Name of the lapsing-soon suggestion criterion",
-        "id": "governance.drepDirectory.cohort.criterion.notLapsingSoon"
+        "defaultMessage": "!!!not inactive soon",
+        "description": "Name of the inactive-soon suggestion criterion",
+        "id": "governance.drepDirectory.cohort.criterion.notInactiveSoon"
       },
       {
         "defaultMessage": "!!!voting power limit",
@@ -6187,7 +6177,7 @@
         "id": "voting.governance.currentVote.status.expiringBadge"
       },
       {
-        "defaultMessage": "!!!This DRep's voting power will lapse in {n, plural, one {# epoch} other {# epochs}}. Consider re-delegating.",
+        "defaultMessage": "!!!This DRep becomes inactive in {n, plural, one {# epoch} other {# epochs}}. Consider re-delegating.",
         "description": "Caption shown when the delegated DRep registration lapses soon",
         "id": "voting.governance.currentVote.status.expiring"
       },

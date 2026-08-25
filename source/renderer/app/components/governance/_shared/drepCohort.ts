@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
-import { isLapsingSoon } from './drepExpiry';
+import { isInactiveSoon } from './drepExpiry';
 import { hasVerifiedMetadata } from './drepMetadata';
 import {
   HIGH_VOTING_POWER_THRESHOLD,
@@ -36,13 +36,11 @@ export const DREP_COHORT_VOTING_POWER_SHARE_OPTIONS: readonly number[] = [
 ];
 
 export interface DRepCohortCriteria {
-  /** Only DReps whose registration is currently active. */
-  activeOnly: boolean;
   /**
    * Exclude DReps whose voting power lapses within the next few epochs, at the
    * same threshold the status badge marks.
    */
-  excludeLapsingSoon: boolean;
+  excludeInactiveSoon: boolean;
   /**
    * Exclusive upper bound on a DRep's share of total delegated voting power.
    * `null` means no ceiling.
@@ -58,16 +56,14 @@ export interface DRepCohortCriteria {
 }
 
 export const DEFAULT_DREP_COHORT_CRITERIA: DRepCohortCriteria = {
-  activeOnly: true,
-  excludeLapsingSoon: true,
+  excludeInactiveSoon: true,
   maxVotingPowerShare: HIGH_VOTING_POWER_THRESHOLD,
   requireVerifiedMetadata: true,
   size: DEFAULT_DREP_COHORT_SIZE,
 };
 
 export type DRepCohortCriterion =
-  | 'active'
-  | 'notLapsingSoon'
+  | 'notInactiveSoon'
   | 'votingPowerShare'
   | 'verifiedMetadata';
 
@@ -84,8 +80,7 @@ export type DRepCohortCriterion =
 export const DREP_COHORT_RELAXATION_ORDER: readonly DRepCohortCriterion[] = [
   'verifiedMetadata',
   'votingPowerShare',
-  'notLapsingSoon',
-  'active',
+  'notInactiveSoon',
 ];
 
 /** How many reseeds a reroll tries before accepting a repeated cohort. */
@@ -97,7 +92,7 @@ export const MAX_COHORT_RESEED_ATTEMPTS = 8;
  * ours, so it is not among the criteria the user can relax.
  */
 export function isListableDRep(entry: AppDRepDirectoryEntry): boolean {
-  return !entry.doNotList;
+  return !entry.doNotList && isActiveDRep(entry);
 }
 
 export function isActiveDRep(entry: AppDRepDirectoryEntry): boolean {
@@ -131,8 +126,7 @@ export function isEligibleForDRepCohort(
   totalDRepStake: BigNumber | null
 ): boolean {
   if (!isListableDRep(entry)) return false;
-  if (criteria.activeOnly && !isActiveDRep(entry)) return false;
-  if (criteria.excludeLapsingSoon && isLapsingSoon(entry.drepActivity)) {
+  if (criteria.excludeInactiveSoon && isInactiveSoon(entry.drepActivity)) {
     return false;
   }
   if (
@@ -152,10 +146,8 @@ export function isDRepCohortCriterionApplied(
   criterion: DRepCohortCriterion
 ): boolean {
   switch (criterion) {
-    case 'active':
-      return criteria.activeOnly;
-    case 'notLapsingSoon':
-      return criteria.excludeLapsingSoon;
+    case 'notInactiveSoon':
+      return criteria.excludeInactiveSoon;
     case 'votingPowerShare':
       return criteria.maxVotingPowerShare != null;
     case 'verifiedMetadata':
@@ -170,10 +162,8 @@ function withoutCriterion(
   criterion: DRepCohortCriterion
 ): DRepCohortCriteria {
   switch (criterion) {
-    case 'active':
-      return { ...criteria, activeOnly: false };
-    case 'notLapsingSoon':
-      return { ...criteria, excludeLapsingSoon: false };
+    case 'notInactiveSoon':
+      return { ...criteria, excludeInactiveSoon: false };
     case 'votingPowerShare':
       return { ...criteria, maxVotingPowerShare: null };
     case 'verifiedMetadata':
@@ -334,7 +324,7 @@ export enum DRepStandingBand {
   /** Everything the cohort criteria ask for. */
   Suggestible = 0,
   /** As above, but its voting power lapses soon unless it records activity. */
-  LapsingSoon = 1,
+  InactiveSoon = 1,
   /** Active and accountable, but already holds a large share of governance. */
   Concentrated = 2,
   /** Active, but has published nothing that verifies against its anchor. */
@@ -359,7 +349,7 @@ export function getDRepStandingBand(
   ) {
     return DRepStandingBand.Concentrated;
   }
-  if (isLapsingSoon(entry.drepActivity)) return DRepStandingBand.LapsingSoon;
+  if (isInactiveSoon(entry.drepActivity)) return DRepStandingBand.InactiveSoon;
   return DRepStandingBand.Suggestible;
 }
 
@@ -389,7 +379,7 @@ export function orderDRepsByStanding(
 
   const ordered: DRepStandingBand[] = [
     DRepStandingBand.Suggestible,
-    DRepStandingBand.LapsingSoon,
+    DRepStandingBand.InactiveSoon,
     DRepStandingBand.Concentrated,
     DRepStandingBand.Unaccountable,
     DRepStandingBand.Inactive,

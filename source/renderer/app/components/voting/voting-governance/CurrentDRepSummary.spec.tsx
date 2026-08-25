@@ -71,7 +71,7 @@ describe('CurrentDRepSummary core states', () => {
     expect(screen.getByText('!!!DRep status is loading.')).toBeInTheDocument();
     expect(screen.queryByText('!!!Active')).not.toBeInTheDocument();
     expect(screen.queryByText('!!!Inactive')).not.toBeInTheDocument();
-    expect(screen.queryByText('!!!Expiring soon')).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Inactive Soon')).not.toBeInTheDocument();
     expect(container.firstChild).toMatchSnapshot();
   });
 
@@ -116,15 +116,15 @@ describe('CurrentDRepSummary DRep status badge', () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it('renders the local expiring badge and caption inside the remaining-epoch window', () => {
+  it('renders the local inactive-soon badge and caption inside the remaining-epoch window', () => {
     const { container } = renderSummary(DREP_VOTE, {
       ...ACTIVE_ENTRY,
       drepActivity: 4,
     });
-    expect(screen.getByText('!!!Expiring soon')).toBeInTheDocument();
+    expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
     expect(
       screen.getByText(
-        "!!!This DRep's voting power will lapse in 4 epochs. Consider re-delegating."
+        '!!!This DRep becomes inactive in 4 epochs. Consider re-delegating.'
       )
     ).toBeInTheDocument();
     expect(screen.queryByText('!!!Active')).not.toBeInTheDocument();
@@ -143,7 +143,7 @@ describe('CurrentDRepSummary DRep status badge', () => {
         '!!!This DRep is currently inactive. Your voting power is not counted until they record activity again. Consider re-delegating.'
       )
     ).toBeInTheDocument();
-    expect(screen.queryByText('!!!Expiring soon')).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Inactive Soon')).not.toBeInTheDocument();
     expect(container.firstChild).toMatchSnapshot();
   });
 
@@ -152,19 +152,19 @@ describe('CurrentDRepSummary DRep status badge', () => {
     // This panel had kept a twelve-epoch window of its own, which is sixty of
     // a DRep's hundred days.
     renderSummary(DREP_VOTE, { ...ACTIVE_ENTRY, drepActivity: 6 });
-    expect(screen.getByText('!!!Expiring soon')).toBeInTheDocument();
+    expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
   });
 
   it('treats one epoch beyond the threshold as active', () => {
     renderSummary(DREP_VOTE, { ...ACTIVE_ENTRY, drepActivity: 7 });
     expect(screen.getByText('!!!Active')).toBeInTheDocument();
-    expect(screen.queryByText('!!!Expiring soon')).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Inactive Soon')).not.toBeInTheDocument();
   });
 
   it('keeps the active badge when the remaining epochs are unknown', () => {
     renderSummary(DREP_VOTE, { ...ACTIVE_ENTRY, drepActivity: null });
     expect(screen.getByText('!!!Active')).toBeInTheDocument();
-    expect(screen.queryByText('!!!Expiring soon')).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Inactive Soon')).not.toBeInTheDocument();
   });
 
   it('renders no status badge or caption for the abstain sentinel', () => {

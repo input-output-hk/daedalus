@@ -7,6 +7,7 @@
 import BigNumber from 'bignumber.js';
 import { Cardano } from '@cardano-sdk/core';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
+import type { DRepSortOption } from './helpers';
 import {
   DEFAULT_DREP_FILTER_STATE,
   buildDRepSearchIndex,
@@ -20,7 +21,7 @@ import {
   sortDReps,
 } from './helpers';
 import { hasVerifiedMetadata } from '../_shared/drepMetadata';
-import { LAPSING_SOON_EPOCHS } from '../_shared/drepExpiry';
+import { INACTIVE_SOON_EPOCHS } from '../_shared/drepExpiry';
 
 // Distinct-from-the-first-byte hashes: prefix queries built from one id
 // must not accidentally match another fixture's id.
@@ -298,7 +299,7 @@ describe('sortDReps', () => {
   it('returns the input untouched for the randomized default', () => {
     const entries = [buildEntry(2), buildEntry(1)];
 
-    expect(sortDReps(entries, 'recommended')).toBe(entries);
+    expect(sortDReps(entries, 'default')).toBe(entries);
   });
 
   it('orders voting power losslessly at one lovelace beyond Number precision', () => {
@@ -335,18 +336,16 @@ describe('sortDReps', () => {
     expect(input.map((e) => e.drepId)).toEqual([cip129At(2), cip129At(1)]);
   });
 
-  it('sorts by soonest expiry first with null activity last', () => {
-    const entries = [
-      buildEntry(1, { drepActivity: 30 }),
-      buildEntry(2, { drepActivity: 8 }),
-      buildEntry(3, { drepActivity: null }),
+  it('offers voting power alone, not an ordering by how soon power lapses', () => {
+    // Sorting by remaining epochs was removed: how close a DRep is to going
+    // inactive is a badge and a filter, not a way anyone picks a
+    // representative.
+    const options: DRepSortOption[] = [
+      'default',
+      'votingPowerDesc',
+      'votingPowerAsc',
     ];
-
-    expect(sortDReps(entries, 'expiryAsc').map((e) => e.drepId)).toEqual([
-      cip129At(2),
-      cip129At(1),
-      cip129At(3),
-    ]);
+    expect(options).toHaveLength(3);
   });
 });
 
@@ -366,43 +365,55 @@ describe('isStaleFavorite', () => {
   });
 });
 
-describe('expiry filter', () => {
-  it('hides DReps at or below the lapsing threshold', () => {
+describe("status filter, on the badge's own states", () => {
+  it('selects the state the badge shows, not the registration status', () => {
     const entries = [
       buildEntry(1, { drepActivity: 20 }),
-      buildEntry(2, { drepActivity: 7 }),
-      buildEntry(3, { drepActivity: 6 }),
-      buildEntry(4, { drepActivity: 1 }),
+      buildEntry(2, { drepActivity: 3 }),
+      buildEntry(3, { status: 'inactive', drepActivity: 20 }),
     ];
+
+    // The middle DRep's registration is active, so a filter reading the raw
+    // status would return it under "active" while its card reads Inactive Soon.
+    expect(
+      filterDReps(entries, {
+        ...DEFAULT_DREP_FILTER_STATE,
+        status: 'active',
+      }).map((e) => e.drepId)
+    ).toEqual([cip129At(1)]);
 
     expect(
       filterDReps(entries, {
         ...DEFAULT_DREP_FILTER_STATE,
-        expiry: 'hideLapsingSoon',
+        status: 'inactiveSoon',
       }).map((e) => e.drepId)
-    ).toEqual([cip129At(1), cip129At(2)]);
+    ).toEqual([cip129At(2)]);
+
+    expect(
+      filterDReps(entries, {
+        ...DEFAULT_DREP_FILTER_STATE,
+        status: 'inactive',
+      }).map((e) => e.drepId)
+    ).toEqual([cip129At(3)]);
   });
 
   it('uses the same threshold the badge uses', () => {
-    // Six epochs, not the seven-to-twelve window the retired Threshold badge
-    // used: dRepActivity is 20 epochs and an epoch is five days, so twelve
-    // remaining is 60 of a DRep's 100 days.
-    expect(LAPSING_SOON_EPOCHS).toBe(6);
-    const atThreshold = buildEntry(1, { drepActivity: LAPSING_SOON_EPOCHS });
+    expect(INACTIVE_SOON_EPOCHS).toBe(6);
+    const atThreshold = buildEntry(1, { drepActivity: INACTIVE_SOON_EPOCHS });
     expect(
       filterDReps([atThreshold], {
         ...DEFAULT_DREP_FILTER_STATE,
-        expiry: 'hideLapsingSoon',
+        status: 'inactiveSoon',
       })
-    ).toHaveLength(0);
+    ).toHaveLength(1);
   });
 
-  it('keeps entries whose remaining epochs are unknown', () => {
+  it('treats an unknown remaining count as active rather than soon', () => {
     const unknown = buildEntry(1, { drepActivity: null });
     expect(
       filterDReps([unknown], {
         ...DEFAULT_DREP_FILTER_STATE,
-        expiry: 'hideLapsingSoon',
+        status: 'active',
       })
     ).toHaveLength(1);
   });
@@ -412,11 +423,11 @@ describe('expiry filter', () => {
     expect(filterDReps(entries, DEFAULT_DREP_FILTER_STATE)).toHaveLength(2);
   });
 
-  it('counts as a non-default filter state', () => {
+  it('counts a chosen state as a non-default filter state', () => {
     expect(
       isDefaultFilterState({
         ...DEFAULT_DREP_FILTER_STATE,
-        expiry: 'hideLapsingSoon',
+        status: 'inactiveSoon',
       })
     ).toBe(false);
   });

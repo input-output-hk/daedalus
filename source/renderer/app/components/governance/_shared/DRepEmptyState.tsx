@@ -28,6 +28,13 @@ const messages = defineMessages({
     description:
       'Directory-level unavailability badge rendered inside the selfnode empty state',
   },
+  noSuggestions: {
+    id: 'governance.drepDirectory.empty.noSuggestions',
+    defaultMessage:
+      '!!!No DReps on the network currently meet the suggestion criteria. {ShowAll} instead, or loosen the criteria above.',
+    description:
+      'Empty state when the network holds no DRep the suggestion criteria admit',
+  },
   noResults: {
     id: 'governance.drepDirectory.empty.noResults',
     defaultMessage:
@@ -65,6 +72,7 @@ const messages = defineMessages({
 
 export type DRepEmptyStateVariant =
   | 'noSync'
+  | 'noSuggestions'
   | 'noResults'
   | 'noFavorites'
   | 'selfnode';
@@ -109,6 +117,33 @@ function DRepEmptyState({
         </span>
         <p className={styles.message}>
           {intl.formatMessage(messages.selfnode)}
+        </p>
+      </div>
+    );
+  }
+
+  // The cohort came back empty because nothing on the network qualifies, not
+  // because a query or a filter excluded everything. Saying "no DReps match
+  // your filters" there names a cause the reader did not create and offers to
+  // clear filters they never set.
+  if (variant === 'noSuggestions') {
+    return (
+      <div className={styles.container} data-variant={variant}>
+        <p className={styles.message}>
+          <FormattedMessage
+            {...messages.noSuggestions}
+            values={{
+              ShowAll: (
+                <Link
+                  className={styles.actionLink}
+                  label={intl.formatMessage(messages.showAll)}
+                  hasIconAfter={false}
+                  onClick={onShowAll}
+                  skin={LinkSkin}
+                />
+              ),
+            }}
+          />
         </p>
       </div>
     );

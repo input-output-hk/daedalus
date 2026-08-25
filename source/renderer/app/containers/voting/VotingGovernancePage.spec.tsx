@@ -707,10 +707,10 @@ describe('Current-vote enrichment in the delegation form', () => {
     await act(async () => {});
 
     expect(screen.getByText('!!!Delegated to DRep')).toBeInTheDocument();
-    expect(screen.getByText('!!!Expiring soon')).toBeInTheDocument();
+    expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
     expect(
       screen.getByText(
-        "!!!This DRep's voting power will lapse in 5 epochs. Consider re-delegating."
+        '!!!This DRep becomes inactive in 5 epochs. Consider re-delegating.'
       )
     ).toBeInTheDocument();
     expect(screen.getByText('!!!Delegate to')).toBeInTheDocument();
@@ -739,7 +739,7 @@ describe('Current-vote enrichment in the delegation form', () => {
     });
     await act(async () => {});
 
-    expect(screen.getByText('!!!Expiring soon')).toBeInTheDocument();
+    expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
     expect(screen.queryByText('!!!DRep status is loading.')).toBeNull();
     expect(screen.getByLabelText(CIP105_DREP_ID)).toBeInTheDocument();
   });

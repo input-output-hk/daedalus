@@ -1,7 +1,8 @@
 import { Cardano } from '@cardano-sdk/core';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 import { hasVerifiedMetadata } from '../_shared/drepMetadata';
-import { isLapsingSoon } from '../_shared/drepExpiry';
+import { getDRepStanding } from '../_shared/drepExpiry';
+import type { DRepStanding } from '../_shared/drepExpiry';
 
 export const MIN_SEARCH_PREFIX_LENGTH = 8;
 export const MIN_NAME_SEARCH_LENGTH = 2;
@@ -178,26 +179,25 @@ export function resolveExactDRepMatch<T>(
   }
 }
 
-export type DRepStatusFilter = 'all' | 'active' | 'inactive';
-export type DRepMetadataFilter = 'all' | 'withMetadata' | 'withoutMetadata';
 /**
- * Excludes DReps whose voting power lapses soon, at the same six-epoch
- * threshold the status badge uses. Note this is inert on the default view by
- * design: the suggested cohort already excludes anything below that floor, so
- * the filter does its work in show-all, search and favourites.
+ * The badge's own three states, plus everything.
+ *
+ * Filtering on the raw registration status let the filter and the badge
+ * disagree: a DRep whose registration is active but whose voting power is
+ * close to lapsing is badged "Inactive Soon", and picking "Active" returned it
+ * anyway. Reading the same standing the badge renders means the two cannot say
+ * different things about one card.
  */
-export type DRepExpiryFilter = 'all' | 'hideLapsingSoon';
-
+export type DRepStatusFilter = 'all' | DRepStanding;
+export type DRepMetadataFilter = 'all' | 'withMetadata' | 'withoutMetadata';
 export interface DRepFilterState {
   status: DRepStatusFilter;
   metadata: DRepMetadataFilter;
-  expiry: DRepExpiryFilter;
 }
 
 export const DEFAULT_DREP_FILTER_STATE: DRepFilterState = {
   metadata: 'all',
   status: 'all',
-  expiry: 'all',
 };
 
 export function filterDReps(
@@ -205,7 +205,10 @@ export function filterDReps(
   filters: DRepFilterState
 ): AppDRepDirectoryEntry[] {
   return entries.filter((entry) => {
-    if (filters.status !== 'all' && entry.status !== filters.status) {
+    if (
+      filters.status !== 'all' &&
+      getDRepStanding(entry.status, entry.drepActivity) !== filters.status
+    ) {
       return false;
     }
     // Verified metadata, not merely an anchor: an anchor is a URL and a hash
@@ -219,60 +222,34 @@ export function filterDReps(
     if (filters.metadata === 'withoutMetadata' && hasVerifiedMetadata(entry)) {
       return false;
     }
-    if (
-      filters.expiry === 'hideLapsingSoon' &&
-      isLapsingSoon(entry.drepActivity)
-    ) {
-      return false;
-    }
     return true;
   });
 }
 
 export function isDefaultFilterState(filters: DRepFilterState): boolean {
-  return (
-    filters.status === 'all' &&
-    filters.metadata === 'all' &&
-    filters.expiry === 'all'
-  );
+  return filters.status === 'all' && filters.metadata === 'all';
 }
 
-export type DRepSortOption =
-  | 'recommended'
-  | 'votingPowerDesc'
-  | 'votingPowerAsc'
-  | 'expiryAsc'
-  | 'expiryDesc';
+export type DRepSortOption = 'default' | 'votingPowerDesc' | 'votingPowerAsc';
 
 /**
- * Opt-in show-all sorts. 'recommended' returns the input untouched (the
- * seeded session order comes from the store). Null voting power and null
- * activity always sort last; BigNumber comparison keeps lovelace lossless.
+ * The opt-in sorts. 'default' returns the input untouched: the banded, seeded
+ * order is built in the store rather than here.
+ *
+ * Voting power only. Ordering by how close a DRep is to going inactive was
+ * offered and taken away again: nobody chooses a representative by how soon
+ * their registration lapses, and the state that matters is already a badge on
+ * every card and a filter beside it. Daedalus is a wallet rather than a
+ * governance explorer, and every option here has to earn a reader's attention.
+ *
+ * Null voting power sorts last; BigNumber comparison keeps lovelace lossless.
  */
 export function sortDReps(
   entries: AppDRepDirectoryEntry[],
   sort: DRepSortOption
 ): AppDRepDirectoryEntry[] {
-  if (sort === 'recommended') return entries;
+  if (sort === 'default') return entries;
   const sorted = [...entries];
-  if (sort === 'expiryAsc' || sort === 'expiryDesc') {
-    // Entries with no epoch count sort last in either direction: an unknown
-    // expiry is not a very early one, nor a very late one.
-    const expiryDirection = sort === 'expiryDesc' ? -1 : 1;
-    sorted.sort((a, b) => {
-      if (a.drepActivity != null && b.drepActivity != null) {
-        if (a.drepActivity !== b.drepActivity) {
-          return (a.drepActivity - b.drepActivity) * expiryDirection;
-        }
-      } else if (a.drepActivity != null) {
-        return -1;
-      } else if (b.drepActivity != null) {
-        return 1;
-      }
-      return compareDRepEntryIdAsc(a, b);
-    });
-    return sorted;
-  }
   const direction = sort === 'votingPowerDesc' ? -1 : 1;
   sorted.sort((a, b) => {
     if (a.votingPower && b.votingPower) {

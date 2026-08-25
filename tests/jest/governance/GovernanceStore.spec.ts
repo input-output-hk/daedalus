@@ -380,8 +380,14 @@ describe('GovernanceStore suggested DReps', () => {
     store.setCohortCriteria({ ...store.cohortCriteria, size: 1 });
     expect(store.suggestedDReps.map((e) => e.drepId)).toEqual([drepIdAt(0)]);
 
-    store.setCohortCriteria({ ...store.cohortCriteria, activeOnly: false });
-    expect(store.cohortPool.entries).toHaveLength(2);
+    // The inactive DRep stays out: active is a pre-filter now, not a
+    // criterion, so there is nothing to turn off that would admit it.
+    store.setCohortCriteria({
+      ...store.cohortCriteria,
+      requireVerifiedMetadata: false,
+      excludeInactiveSoon: false,
+    });
+    expect(store.cohortPool.entries).toHaveLength(1);
   });
 
   it('keeps the criteria when the directory is left and reopened', async () => {

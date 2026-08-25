@@ -73,11 +73,54 @@
   margin-bottom: 12px;
 }
 
+// The criteria said out loud, above the list they produced. A reader learns
+// what the twenty are without opening anything, and the control that changes
+// them sits at the end of the sentence describing them rather than standing
+// alone as a link whose subject has to be guessed.
+.criteriaSummary {
+  @extend %contentBorderAndBackground;
+  color: var(--theme-gov-font-color-regular);
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 8px;
+  line-height: 1.38;
+  padding: 12px 16px;
+}
+
+.criteriaSummaryLead {
+  margin: 0;
+}
+
+// Bulleted rather than run together with commas and an "and": each criterion
+// is then a whole phrase, which is what a translator needs and what a reader
+// scanning for one of them finds fastest.
+.criteriaBullets {
+  color: var(--theme-gov-font-color-light);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    padding-left: 14px;
+    position: relative;
+
+    &::before {
+      content: '•';
+      left: 0;
+      position: absolute;
+    }
+  }
+}
+
 // A disclosure rather than a button: it reveals what is already deciding the
 // list below it, so it sits in the page's own voice instead of competing with
-// the two filled buttons in the footer.
+// the two filled buttons in the footer. Inline here, so it reads as the last
+// clause of the sentence it follows.
 .criteriaToggle {
-  align-self: flex-start;
   background: none;
   border: 0;
   color: var(--theme-gov-font-color-accent);

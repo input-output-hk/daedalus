@@ -4,7 +4,6 @@ import globalMessages from '../../../i18n/global-messages';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import DRepFacetSelect from '../_shared/DRepFacetSelect';
 import type {
-  DRepExpiryFilter,
   DRepFilterState,
   DRepMetadataFilter,
   DRepSortOption,
@@ -33,6 +32,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Active',
     description: 'Active status label',
   },
+  statusInactiveSoon: {
+    id: 'governance.drepDirectory.status.inactiveSoon',
+    defaultMessage: '!!!Inactive Soon',
+    description: 'Status filter option for DReps close to going inactive',
+  },
   statusInactive: {
     id: 'governance.drepDirectory.status.inactive',
     defaultMessage: '!!!Inactive',
@@ -42,17 +46,6 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.filter.metadata.with',
     defaultMessage: '!!!With verified metadata',
     description: 'Metadata filter option: anchor present',
-  },
-  expiryLabel: {
-    id: 'governance.drepDirectory.filter.expiry',
-    defaultMessage: '!!!Expiry',
-    description: 'Label of the expiry filter',
-  },
-  expiryHideLapsing: {
-    id: 'governance.drepDirectory.filter.expiry.hideLapsingSoon',
-    defaultMessage: '!!!Hide DReps lapsing within 6 epochs',
-    description:
-      'Filter option that excludes DReps whose voting power lapses soon',
   },
   metadataWithout: {
     id: 'governance.drepDirectory.filter.metadata.without',
@@ -64,11 +57,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Sort',
     description: 'Label of the show-all sort dropdown',
   },
-  sortRecommended: {
-    id: 'governance.drepDirectory.sort.recommended',
-    defaultMessage: '!!!Recommended (default)',
+  sortDefault: {
+    id: 'governance.drepDirectory.sort.default',
+    defaultMessage: '!!!Default',
     description:
-      'Default sort: bands by what delegating would achieve, random within each',
+      'Default ordering: grouped by what delegating would achieve, random within each group. Named for its role rather than its mechanism, and kept distinct from the Suggested mode',
   },
   sortVotingPowerDesc: {
     id: 'governance.drepDirectory.sort.votingPowerDesc',
@@ -79,16 +72,6 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.sort.votingPowerAsc',
     defaultMessage: '!!!Voting power (low to high)',
     description: 'Voting power ascending sort option',
-  },
-  sortExpiryAsc: {
-    id: 'governance.drepDirectory.sort.expiryAsc',
-    defaultMessage: '!!!Expiry (soonest first)',
-    description: 'Soonest-expiry-first sort option',
-  },
-  sortExpiryDesc: {
-    id: 'governance.drepDirectory.sort.expiryDesc',
-    defaultMessage: '!!!Expiry (soonest last)',
-    description: 'Latest-expiry-first sort option',
   },
 });
 
@@ -115,6 +98,7 @@ function DRepDirectoryFilters({
   isSearchActive,
   intl,
 }: Props) {
+  const canFilterPopulation = isShowAll || isSearchActive;
   const facet = (
     label: string,
     value: string,
@@ -147,45 +131,48 @@ function DRepDirectoryFilters({
           />
         </div>
       </div>
-      {facet(
-        intl.formatMessage(messages.statusLabel),
-        filters.status,
-        (next) =>
-          onFiltersChange({ ...filters, status: next as DRepStatusFilter }),
-        [
-          ['all', intl.formatMessage(globalMessages.all)],
-          ['active', intl.formatMessage(messages.statusActive)],
-          ['inactive', intl.formatMessage(messages.statusInactive)],
-        ]
-      )}
-      {facet(
-        intl.formatMessage(messages.metadataLabel),
-        filters.metadata,
-        (next) =>
-          onFiltersChange({ ...filters, metadata: next as DRepMetadataFilter }),
-        [
-          ['all', intl.formatMessage(globalMessages.all)],
-          ['withMetadata', intl.formatMessage(messages.metadataWith)],
-          ['withoutMetadata', intl.formatMessage(messages.metadataWithout)],
-        ]
-      )}
-      {facet(
-        intl.formatMessage(messages.expiryLabel),
-        filters.expiry,
-        (next) =>
-          onFiltersChange({ ...filters, expiry: next as DRepExpiryFilter }),
-        [
-          ['all', intl.formatMessage(globalMessages.all)],
-          ['hideLapsingSoon', intl.formatMessage(messages.expiryHideLapsing)],
-        ]
-      )}
+      {/* Both facets narrow on properties the suggestion criteria already
+          decided, so over the cohort they are inert at best: picking Inactive
+          there can only ever return nothing, which reads as a broken screen
+          rather than as a filter that had no work to do. They appear where
+          they have something to narrow, which is every DRep and a search over
+          all of them. The states themselves are the badge's own, so the filter
+          and the card cannot disagree about one DRep. */}
+      {canFilterPopulation &&
+        facet(
+          intl.formatMessage(messages.statusLabel),
+          filters.status,
+          (next) =>
+            onFiltersChange({ ...filters, status: next as DRepStatusFilter }),
+          [
+            ['all', intl.formatMessage(globalMessages.all)],
+            ['active', intl.formatMessage(messages.statusActive)],
+            ['inactiveSoon', intl.formatMessage(messages.statusInactiveSoon)],
+            ['inactive', intl.formatMessage(messages.statusInactive)],
+          ]
+        )}
+      {canFilterPopulation &&
+        facet(
+          intl.formatMessage(messages.metadataLabel),
+          filters.metadata,
+          (next) =>
+            onFiltersChange({
+              ...filters,
+              metadata: next as DRepMetadataFilter,
+            }),
+          [
+            ['all', intl.formatMessage(globalMessages.all)],
+            ['withMetadata', intl.formatMessage(messages.metadataWith)],
+            ['withoutMetadata', intl.formatMessage(messages.metadataWithout)],
+          ]
+        )}
       {!isSearchActive &&
         facet(
           intl.formatMessage(messages.sortLabel),
           sort,
           (next) => onSortChange(next as DRepSortOption),
           [
-            ['recommended', intl.formatMessage(messages.sortRecommended)],
+            ['default', intl.formatMessage(messages.sortDefault)],
             ...(isRankingAvailable
               ? ([
                   [
@@ -198,8 +185,6 @@ function DRepDirectoryFilters({
                   ],
                 ] as Array<[string, string]>)
               : []),
-            ['expiryAsc', intl.formatMessage(messages.sortExpiryAsc)],
-            ['expiryDesc', intl.formatMessage(messages.sortExpiryDesc)],
           ]
         )}
     </div>

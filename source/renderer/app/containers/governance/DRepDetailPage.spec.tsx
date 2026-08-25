@@ -194,7 +194,7 @@ describe('DRepDetailPage', () => {
     });
 
     expect(screen.getByText('!!!Status')).toBeInTheDocument();
-    expect(screen.getByText('!!!Expires in')).toBeInTheDocument();
+    expect(screen.getByText('!!!Inactive in')).toBeInTheDocument();
     expect(screen.getByText('!!!Voting power')).toBeInTheDocument();
     expect(screen.getByText('!!!On-chain data')).toBeInTheDocument();
     expect(screen.queryByText('!!!Verified off-chain content')).toBeNull();
@@ -588,7 +588,7 @@ describe('DRepDetailPage', () => {
     // says the same thing the badge said, at greater length and in two places.
     expect(screen.queryByText('!!!No metadata')).toBeNull();
     expect(screen.queryByText('!!!Verified')).toBeNull();
-    expect(screen.queryByText('!!!Expiring soon')).toBeNull();
+    expect(screen.queryByText('!!!Inactive Soon')).toBeNull();
     expect(screen.getByText('!!!Active')).toBeInTheDocument();
   });
 

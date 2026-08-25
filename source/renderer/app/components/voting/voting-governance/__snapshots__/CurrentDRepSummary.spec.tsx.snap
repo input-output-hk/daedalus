@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CurrentDRepSummary DRep status badge renders the local expiring badge and caption inside the remaining-epoch window 1`] = `
+exports[`CurrentDRepSummary DRep status badge renders the local inactive-soon badge and caption inside the remaining-epoch window 1`] = `
 <section
   aria-label="!!!Current delegation"
   class="component"
@@ -25,14 +25,14 @@ exports[`CurrentDRepSummary DRep status badge renders the local expiring badge a
       !!!Delegated to DRep
     </span>
     <span
-      aria-label="!!!Expiring soon. !!!Voting power lapses in 4 epochs unless this DRep records activity by voting, updating its metadata or re-registering."
-      class="badge expiring"
-      title="!!!Voting power lapses in 4 epochs unless this DRep records activity by voting, updating its metadata or re-registering."
+      aria-label="!!!Inactive Soon. !!!Becomes inactive in 4 epochs unless this DRep records activity by voting, updating its metadata or re-registering."
+      class="badge inactiveSoon"
+      title="!!!Becomes inactive in 4 epochs unless this DRep records activity by voting, updating its metadata or re-registering."
     >
       <span
         class="label"
       >
-        !!!Expiring soon
+        !!!Inactive Soon
       </span>
     </span>
   </div>
@@ -78,7 +78,7 @@ exports[`CurrentDRepSummary DRep status badge renders the local expiring badge a
   <p
     class="caption"
   >
-    !!!This DRep's voting power will lapse in 4 epochs. Consider re-delegating.
+    !!!This DRep becomes inactive in 4 epochs. Consider re-delegating.
   </p>
 </section>
 `;

@@ -87,14 +87,9 @@ const messages = defineMessages({
   sortBiasWarning: {
     id: 'governance.drepDirectory.showAll.sortBiasWarning',
     defaultMessage:
-      '!!!Sorted by voting power, so the largest DReps come first. The recommended order randomises within each group instead, which is what stops a position near the top being worth holding.',
+      '!!!Sorted by voting power, so the largest DReps come first. The default order randomises within each group instead, which is what stops a position near the top being worth holding.',
     description:
       'Disclosure shown while voting-power-descending sort is active',
-  },
-  criteriaToggle: {
-    id: 'governance.drepDirectory.cohort.criteriaToggle',
-    defaultMessage: '!!!Suggestion criteria',
-    description: 'Button that reveals the suggestion criteria controls',
   },
   relaxedNotice: {
     id: 'governance.drepDirectory.cohort.relaxedNotice',
@@ -103,15 +98,17 @@ const messages = defineMessages({
     description:
       'Disclosure shown when the eligible pool was too small for the cohort',
   },
-  criterionActive: {
-    id: 'governance.drepDirectory.cohort.criterion.active',
-    defaultMessage: '!!!active registration',
-    description: 'Name of the active-registration suggestion criterion',
+  criteriaSummary: {
+    id: 'governance.drepDirectory.cohort.summary',
+    defaultMessage:
+      '!!!Showing {count, plural, one {# DRep} other {# DReps}} drawn at random from the active DReps that meet:',
+    description:
+      'Lead line above the list of criteria the suggested cohort was drawn under',
   },
-  criterionNotLapsingSoon: {
-    id: 'governance.drepDirectory.cohort.criterion.notLapsingSoon',
-    defaultMessage: '!!!not lapsing soon',
-    description: 'Name of the lapsing-soon suggestion criterion',
+  criterionNotInactiveSoon: {
+    id: 'governance.drepDirectory.cohort.criterion.notInactiveSoon',
+    defaultMessage: '!!!not inactive soon',
+    description: 'Name of the inactive-soon suggestion criterion',
   },
   criterionVotingPowerShare: {
     id: 'governance.drepDirectory.cohort.criterion.votingPowerShare',
@@ -184,10 +181,9 @@ const messages = defineMessages({
 
 const criterionMessages: Record<
   DRepCohortCriterion,
-  typeof messages.criterionActive
+  typeof messages.criterionNotInactiveSoon
 > = {
-  active: messages.criterionActive,
-  notLapsingSoon: messages.criterionNotLapsingSoon,
+  notInactiveSoon: messages.criterionNotInactiveSoon,
   votingPowerShare: messages.criterionVotingPowerShare,
   verifiedMetadata: messages.criterionVerifiedMetadata,
 };
@@ -270,7 +266,6 @@ function DRepDirectory({
   // reader every time an unrelated piece of state changes.
   const [orderSeed] = useState(1);
   const [isShowAll, setIsShowAll] = useState(false);
-  const [isCriteriaOpen, setIsCriteriaOpen] = useState(false);
   // Seeded from the stored preference, which is shared with the stake pools
   // screen so the two cannot disagree, but held locally as well so the toggle
   // responds immediately and the component still works without a store behind
@@ -294,7 +289,7 @@ function DRepDirectory({
   const [filters, setFilters] = useState<DRepFilterState>(
     DEFAULT_DREP_FILTER_STATE
   );
-  const [sort, setSort] = useState<DRepSortOption>('recommended');
+  const [sort, setSort] = useState<DRepSortOption>('default');
 
   const queryKind = getDRepQueryKind(searchQuery);
   const isSearchActive =
@@ -385,7 +380,7 @@ function DRepDirectory({
     // asks a reader to assess each from scratch, so they arrive in bands of
     // what delegating would achieve, randomised inside each band so that no
     // stable position at the top of one is worth holding.
-    if (sort === 'recommended') {
+    if (sort === 'default') {
       return orderDRepsByStanding(filtered, totalDRepStake, orderSeed);
     }
     return sortDReps(filtered, sort);
@@ -458,7 +453,7 @@ function DRepDirectory({
 
   const handleShowAllChange = (nextShowAll: boolean) => {
     setIsShowAll(nextShowAll);
-    if (!nextShowAll) setSort('recommended');
+    if (!nextShowAll) setSort('default');
   };
 
   // A voting-power sort over the suggested cohort cannot show the largest
@@ -478,7 +473,7 @@ function DRepDirectory({
   const handleClearFilters = () => {
     setSearchQuery('');
     setFilters(DEFAULT_DREP_FILTER_STATE);
-    setSort('recommended');
+    setSort('default');
   };
 
   const handleShowAllFromEmptyState = () => {
@@ -644,17 +639,22 @@ function DRepDirectory({
             {/* The criteria belong to the suggested cohort alone: nothing is
                 being suggested while every DRep is listed or a query is being
                 answered, so there is nothing here to state or to adjust. */}
-            {isDefaultCohortView && onCohortCriteriaChange && (
-              <div className={styles.cohortControls}>
-                <button
-                  type="button"
-                  className={styles.criteriaToggle}
-                  aria-expanded={isCriteriaOpen}
-                  onClick={() => setIsCriteriaOpen(!isCriteriaOpen)}
-                >
-                  {intl.formatMessage(messages.criteriaToggle)}
-                </button>
-                {isCriteriaOpen && (
+            {/* Stating what the list is does not depend on being able to
+                change it, so the summary is not gated on the handler the
+                controls need. Gating both together meant a caller that only
+                displays the directory lost the explanation as well. */}
+            {isDefaultCohortView && visibleEntries.length > 0 && (
+              <div className={styles.criteriaSummary}>
+                <p className={styles.criteriaSummaryLead}>
+                  {intl.formatMessage(messages.criteriaSummary, {
+                    count: visibleEntries.length,
+                  })}
+                </p>
+                {/* Open, not behind a disclosure. The controls name the
+                    criteria and show their state at once, so hiding them hid
+                    the explanation of the list as well as the means of
+                    changing it. */}
+                {onCohortCriteriaChange && (
                   <DRepCohortCriteriaPanel
                     criteria={cohortCriteria}
                     onCriteriaChange={onCohortCriteriaChange}
@@ -705,7 +705,13 @@ function DRepDirectory({
             )}
             {visibleEntries.length === 0 ? (
               <DRepEmptyState
-                variant="noResults"
+                variant={
+                  // Nothing was asked for, so nothing was excluded by asking:
+                  // the network simply holds no DRep the criteria admit.
+                  isDefaultCohortView && isDefaultFilterState(filters)
+                    ? 'noSuggestions'
+                    : 'noResults'
+                }
                 onClearFilters={handleClearFilters}
                 onShowAll={handleShowAllFromEmptyState}
               />

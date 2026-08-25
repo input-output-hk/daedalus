@@ -1,6 +1,6 @@
 import React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
-import { isLapsingSoon } from '../../governance/_shared/drepExpiry';
+import { isInactiveSoon } from '../../governance/_shared/drepExpiry';
 import DRepIdDisplay from '../../governance/_shared/DRepIdDisplay';
 import DRepStatusBadge from '../../governance/_shared/DRepStatusBadge';
 import type { DRepDelegation } from '../../../api/wallets/types';
@@ -29,7 +29,7 @@ function deriveCurrentVoteBadgeState(
 ): CurrentVoteBadgeState {
   if (drepEntry == null) return 'unavailable';
   if (drepEntry.status === 'inactive') return 'inactive';
-  if (isLapsingSoon(drepEntry.drepActivity)) {
+  if (isInactiveSoon(drepEntry.drepActivity)) {
     return 'expiring';
   }
   return 'active';

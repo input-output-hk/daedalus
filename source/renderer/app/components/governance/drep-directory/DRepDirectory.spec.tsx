@@ -221,7 +221,11 @@ describe('DRepDirectory', () => {
     // No page title: the governance tab bar already names the directory.
     expect(screen.queryByText('!!!DRep Directory')).toBeNull();
     expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
-    expect(screen.getAllByText('!!!Active')[0]).toBeInTheDocument();
+    // No status badge on an active DRep: the card marks what is exceptional,
+    // and this assertion used to pass by matching the Status filter's own
+    // "Active" option rather than anything on the card.
+    expect(screen.queryByText('!!!Active')).toBeNull();
+    expect(screen.queryByText('!!!Inactive')).toBeNull();
   });
 
   it('renders the DRep name on directory cards and no source label at all', () => {
@@ -369,7 +373,7 @@ describe('DRepDirectory', () => {
     expect(screen.queryByText('!!!DRepディレクトリ')).toBeNull();
     // The sort options name voting power too, so match the card's own label.
     expect(screen.getAllByText('!!!投票権:').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('!!!アクティブ')[0]).toBeInTheDocument();
+    expect(screen.getByText(/無作為/)).toBeInTheDocument();
   });
 
   it('renders the first-load skeleton list instead of a directory row', () => {
@@ -614,13 +618,13 @@ describe('DRepDirectory', () => {
     // 60 of a DRep's 100 days and well above the six-epoch threshold.
     renderComponent();
 
-    expect(screen.queryByText('!!!Expiring soon')).toBeNull();
+    expect(screen.queryByText('!!!Inactive Soon')).toBeNull();
   });
 
-  it('shows the expiry badge when lapsing soon', () => {
+  it('shows the inactive-soon badge when close to lapsing', () => {
     renderComponent({ suggestedDReps: [realEntry(1, { drepActivity: 4 })] });
 
-    expect(screen.getByText('!!!Expiring soon')).toBeInTheDocument();
+    expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
   });
 
   it('leaves the expiry badge off a DRep that has already lapsed', () => {
@@ -630,7 +634,7 @@ describe('DRepDirectory', () => {
 
     // Already inactive, so there is nothing left to expire; the status badge
     // carries the whole story.
-    expect(screen.queryByText('!!!Expiring soon')).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Inactive Soon')).not.toBeInTheDocument();
     expect(screen.getByLabelText('!!!Inactive')).toBeInTheDocument();
   });
 
@@ -886,6 +890,7 @@ describe('DRepDirectory', () => {
       ],
     });
 
+    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
     chooseFacetOption('!!!Status', '!!!Inactive');
 
     expect(screen.getAllByText('!!!View details')).toHaveLength(1);
@@ -899,7 +904,7 @@ describe('DRepDirectory', () => {
 
     expect(screen.getByText(/Sorted by voting power/)).toBeInTheDocument();
 
-    chooseFacetOption('!!!Sort', '!!!Recommended (default)');
+    chooseFacetOption('!!!Sort', '!!!Default');
 
     expect(
       screen.queryByText(/Sorted by voting power/)
@@ -936,19 +941,21 @@ describe('DRepDirectory', () => {
     expect(screen.getAllByText('!!!View details')).toHaveLength(2);
   });
 
-  it('leaves the list at the cohort for a sort that is not about voting power', () => {
+  it('leaves the list at the cohort while the default order is chosen', () => {
     const suggested = realEntry(1);
     renderComponent({
       suggestedDReps: [suggested],
       allDReps: [suggested, realEntry(2)],
     });
 
-    chooseFacetOption('!!!Sort', '!!!Expiry (soonest first)');
+    chooseFacetOption('!!!Sort', '!!!Default');
 
+    // Only the voting-power sorts widen, because only they claim an ordering
+    // the cohort cannot deliver.
     expect(screen.getAllByText('!!!View details')).toHaveLength(1);
   });
 
-  it('returns to the cohort and the recommended order from a widened power sort', () => {
+  it('returns to the cohort and the suggested order from a widened power sort', () => {
     const suggested = realEntry(1);
     renderComponent({
       suggestedDReps: [suggested],
@@ -977,7 +984,9 @@ describe('DRepDirectory', () => {
 
     expect(options).not.toContain('!!!Voting power (high to low)');
     expect(options).not.toContain('!!!Voting power (low to high)');
-    expect(options).toContain('!!!Expiry (soonest first)');
+    // The default order is all that is left to offer, and it still works
+    // without a voting power figure.
+    expect(options).toEqual(['!!!Default']);
   });
 
   it('offers the voting-power sort when a single DRep reports a figure', () => {
@@ -1011,6 +1020,7 @@ describe('DRepDirectory', () => {
       suggestedDReps: [realEntry(1), realEntry(2, { status: 'inactive' })],
     });
 
+    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
     chooseFacetOption('!!!Status', '!!!Active');
 
     expect(
@@ -1021,6 +1031,7 @@ describe('DRepDirectory', () => {
   it('recovers from zero results via the Clear filters action', () => {
     renderComponent({ suggestedDReps: [realEntry(1)] });
 
+    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
     chooseFacetOption('!!!Status', '!!!Inactive');
     expect(
       screen.getAllByText(/No DReps match your filters/)[0]
@@ -1594,8 +1605,10 @@ describe('DRepDirectory view modes', () => {
     renderComponent({ suggestedDReps: [realEntry(1, { drepActivity: 3 })] });
     fireEvent.click(screen.getByLabelText('!!!Table view'));
 
-    expect(screen.getAllByText('!!!Active')[0]).toBeInTheDocument();
-    expect(screen.getByText('!!!Expiring soon')).toBeInTheDocument();
+    // One row, one standing: this DRep is close to going inactive, so that is
+    // the badge it carries. There is no Active badge to find.
+    expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
+    expect(screen.queryByText('!!!Active')).toBeNull();
     expect(
       screen.getByRole('columnheader', { name: '!!!Voting power' })
     ).toBeInTheDocument();
@@ -1644,15 +1657,12 @@ describe('DRepDirectory suggestion criteria', () => {
     renderComponent();
 
     expect(
-      screen.queryByText('!!!Suggestion criteria')
+      screen.queryByText('!!!Change suggestion criteria')
     ).not.toBeInTheDocument();
   });
 
-  it('reveals the criteria behind a disclosure rather than in the filter strip', () => {
+  it('states the criteria and offers their controls without anything opened', () => {
     renderComponent({ onCohortCriteriaChange: jest.fn() });
-
-    expect(screen.queryByText(/drawn at random/)).not.toBeInTheDocument();
-    fireEvent.click(screen.getByText('!!!Suggestion criteria'));
 
     expect(screen.getByText(/drawn at random/)).toBeInTheDocument();
     expect(facetValue('!!!Suggestions shown')).toBe('20');
@@ -1662,9 +1672,11 @@ describe('DRepDirectory suggestion criteria', () => {
   it('reports a criterion the user turns off', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
-    fireEvent.click(screen.getByText('!!!Suggestion criteria'));
 
-    fireEvent.click(screen.getByText('!!!Verified metadata'));
+    const panelToggle = screen
+      .getAllByText('!!!Verified metadata')
+      .find((el) => el.closest('label')) as HTMLElement;
+    fireEvent.click(panelToggle);
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,
@@ -1675,7 +1687,6 @@ describe('DRepDirectory suggestion criteria', () => {
   it('reports a changed cohort size as a number, not the select string', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
-    fireEvent.click(screen.getByText('!!!Suggestion criteria'));
 
     chooseFacetOption('!!!Suggestions shown', '50');
 
@@ -1688,7 +1699,6 @@ describe('DRepDirectory suggestion criteria', () => {
   it('reports removing the voting power ceiling as no ceiling at all', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
-    fireEvent.click(screen.getByText('!!!Suggestion criteria'));
 
     chooseFacetOption('!!!Voting power under', '!!!No limit');
 
@@ -1707,9 +1717,7 @@ describe('DRepDirectory suggestion criteria', () => {
         maxVotingPowerShare: null,
       },
     });
-    fireEvent.click(screen.getByText('!!!Suggestion criteria'));
 
-    // The control shows the option's label now, not its underlying value.
     expect(facetValue('!!!Suggestions shown')).toBe('10');
     expect(facetValue('!!!Voting power under')).toBe('!!!No limit');
   });
@@ -1738,13 +1746,14 @@ describe('DRepDirectory suggestion criteria', () => {
       relaxedCohortCriteria: ['verifiedMetadata'],
       suggestedDReps: [realEntry(1)],
     });
-    expect(screen.getByText('!!!Suggestion criteria')).toBeInTheDocument();
+    // The summary and its controls state what the cohort was drawn under.
+    expect(screen.getByText(/drawn at random/)).toBeInTheDocument();
+    expect(screen.getByText('!!!Suggestions shown')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
 
-    expect(
-      screen.queryByText('!!!Suggestion criteria')
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/drawn at random/)).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Suggestions shown')).not.toBeInTheDocument();
     expect(screen.queryByText(/Too few DReps met/)).not.toBeInTheDocument();
   });
 });

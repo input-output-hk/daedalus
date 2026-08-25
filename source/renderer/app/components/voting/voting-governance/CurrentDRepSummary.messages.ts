@@ -69,7 +69,7 @@ export const messages = defineMessages({
   statusExpiring: {
     id: 'voting.governance.currentVote.status.expiring',
     defaultMessage:
-      "!!!This DRep's voting power will lapse in {n, plural, one {# epoch} other {# epochs}}. Consider re-delegating.",
+      '!!!This DRep becomes inactive in {n, plural, one {# epoch} other {# epochs}}. Consider re-delegating.',
     description:
       'Caption shown when the delegated DRep registration lapses soon',
   },

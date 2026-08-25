@@ -18,7 +18,7 @@ import {
   selectDRepCohortPool,
 } from './drepCohort';
 import { HIGH_VOTING_POWER_THRESHOLD } from './drepVotingPower';
-import { LAPSING_SOON_EPOCHS } from './drepExpiry';
+import { INACTIVE_SOON_EPOCHS } from './drepExpiry';
 
 // A round denominator keeps every share in these tests exact: one unit of
 // voting power below is one hundredth of a percent.
@@ -60,24 +60,31 @@ describe('isEligibleForDRepCohort', () => {
     expect(isEligible({})).toBe(true);
   });
 
-  it('rejects an inactive DRep, and accepts it once the criterion is off', () => {
+  it('never suggests an inactive DRep, whatever the criteria say', () => {
+    // Not one of the criteria: an inactive DRep's voting power is not counted,
+    // so suggesting one wastes the delegation whatever else is asked for.
     expect(isEligible({ status: 'inactive' })).toBe(false);
     expect(
       isEligible(
         { status: 'inactive' },
-        { ...DEFAULT_DREP_COHORT_CRITERIA, activeOnly: false }
+        {
+          excludeInactiveSoon: false,
+          maxVotingPowerShare: null,
+          requireVerifiedMetadata: false,
+          size: DEFAULT_DREP_COHORT_SIZE,
+        }
       )
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it('rejects a DRep lapsing at or within the threshold', () => {
-    expect(isEligible({ drepActivity: LAPSING_SOON_EPOCHS })).toBe(false);
+    expect(isEligible({ drepActivity: INACTIVE_SOON_EPOCHS })).toBe(false);
     expect(isEligible({ drepActivity: 0 })).toBe(false);
-    expect(isEligible({ drepActivity: LAPSING_SOON_EPOCHS + 1 })).toBe(true);
+    expect(isEligible({ drepActivity: INACTIVE_SOON_EPOCHS + 1 })).toBe(true);
     expect(
       isEligible(
         { drepActivity: 0 },
-        { ...DEFAULT_DREP_COHORT_CRITERIA, excludeLapsingSoon: false }
+        { ...DEFAULT_DREP_COHORT_CRITERIA, excludeInactiveSoon: false }
       )
     ).toBe(true);
   });
@@ -115,8 +122,7 @@ describe('isEligibleForDRepCohort', () => {
     // Not one of the criteria: it is the DRep's own instruction, so turning
     // every criterion off still leaves it out.
     const everythingOff = {
-      activeOnly: false,
-      excludeLapsingSoon: false,
+      excludeInactiveSoon: false,
       maxVotingPowerShare: null,
       requireVerifiedMetadata: false,
       size: DEFAULT_DREP_COHORT_SIZE,
@@ -234,14 +240,14 @@ describe('selectDRepCohortPool', () => {
     expect(pool.relaxed).toEqual(['verifiedMetadata']);
     expect(pool.entries).toHaveLength(20);
     expect(pool.criteria.requireVerifiedMetadata).toBe(false);
-    expect(pool.criteria.activeOnly).toBe(true);
   });
 
   it('gives criteria up in the documented order', () => {
     // Nothing satisfies anything, so every criterion is given up and the order
     // it happens in is the whole of what is being asserted.
+    // Active, because inactive is a pre-filter now: these fail every
+    // criterion that can still be given up, and nothing else.
     const entries = entriesAt(3, {
-      status: 'inactive',
       drepActivity: 1,
       verifiedName: null,
       votingPower: powerForShare(0.3),
@@ -257,7 +263,8 @@ describe('selectDRepCohortPool', () => {
   });
 
   it('shows what there is when relaxing everything still falls short', () => {
-    const entries = entriesAt(2, { status: 'inactive' });
+    // Two DReps on the whole network, so no amount of relaxing reaches twenty.
+    const entries = entriesAt(2, { verifiedName: null });
     const pool = selectDRepCohortPool(
       entries,
       DEFAULT_DREP_COHORT_CRITERIA,
@@ -266,6 +273,30 @@ describe('selectDRepCohortPool', () => {
 
     expect(pool.entries).toHaveLength(2);
     expect(drawDRepCohort(pool, 1)).toHaveLength(2);
+  });
+
+  it('suggests nothing at all when every DRep is inactive', () => {
+    // Inactive is not relaxable, so a network of nothing but inactive DReps
+    // yields an empty cohort rather than a cohort of wasted delegations.
+    const pool = selectDRepCohortPool(
+      entriesAt(30, { status: 'inactive' }),
+      DEFAULT_DREP_COHORT_CRITERIA,
+      TOTAL_DREP_STAKE
+    );
+
+    expect(pool.entries).toHaveLength(0);
+    expect(drawDRepCohort(pool, 1)).toHaveLength(0);
+  });
+
+  it('draws fewer than asked for rather than padding with inactive DReps', () => {
+    const pool = selectDRepCohortPool(
+      [...entriesAt(3), ...entriesAt(30, { status: 'inactive' })],
+      DEFAULT_DREP_COHORT_CRITERIA,
+      TOTAL_DREP_STAKE
+    );
+
+    expect(pool.entries).toHaveLength(3);
+    expect(drawDRepCohort(pool, 1)).toHaveLength(3);
   });
 
   it('does not report a criterion the user had already turned off', () => {
@@ -460,7 +491,7 @@ describe('orderDRepsByStanding', () => {
       DRepStandingBand.Suggestible
     );
     expect(getDRepStandingBand(lapsing, TOTAL)).toBe(
-      DRepStandingBand.LapsingSoon
+      DRepStandingBand.InactiveSoon
     );
     expect(getDRepStandingBand(concentratedLow, TOTAL)).toBe(
       DRepStandingBand.Concentrated

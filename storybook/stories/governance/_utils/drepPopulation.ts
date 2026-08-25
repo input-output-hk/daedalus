@@ -199,13 +199,13 @@ export function makeDRepPopulation(
     const index = i + 1;
     const isActive = random() < activeShare;
     const isVerified = random() < verifiedShare;
-    const isLapsingSoon = isActive && random() < lapsingSoonShare;
+    const isInactiveSoon = isActive && random() < lapsingSoonShare;
 
     return {
       drepId: drepIdFor(index),
       status: isActive ? ('active' as const) : ('inactive' as const),
       // Six or fewer epochs is the lapsing window the expiry badge reads.
-      drepActivity: isLapsingSoon
+      drepActivity: isInactiveSoon
         ? 1 + Math.floor(random() * 6)
         : 7 + Math.floor(random() * 14),
       anchor: isVerified ? anchorFor(index) : null,

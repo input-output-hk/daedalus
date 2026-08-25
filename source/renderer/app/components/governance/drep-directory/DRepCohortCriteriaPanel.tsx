@@ -2,45 +2,24 @@ import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import DRepFacetSelect from '../_shared/DRepFacetSelect';
-import { LAPSING_SOON_EPOCHS } from '../_shared/drepExpiry';
 import {
   DREP_COHORT_SIZE_OPTIONS,
   DREP_COHORT_VOTING_POWER_SHARE_OPTIONS,
 } from '../_shared/drepCohort';
 import type { DRepCohortCriteria } from '../_shared/drepCohort';
+import { drepCriteriaMessages } from '../_shared/drepCriteriaMessages';
 import styles from './DRepCohortCriteriaPanel.scss';
 
 const messages = defineMessages({
-  intro: {
-    id: 'governance.drepDirectory.cohort.intro',
-    defaultMessage:
-      '!!!Suggestions are drawn at random from the DReps that meet these criteria.',
-    description: 'Explanation above the suggestion criteria controls',
-  },
-  activeOnly: {
-    id: 'governance.drepDirectory.cohort.activeOnly',
-    defaultMessage: '!!!Active registration',
-    description: 'Criterion restricting suggestions to active DReps',
-  },
-  excludeLapsingSoon: {
-    id: 'governance.drepDirectory.cohort.excludeLapsingSoon',
-    defaultMessage: '!!!Not lapsing within {epochs} epochs',
-    description: 'Criterion excluding DReps whose voting power lapses soon',
-  },
-  requireVerifiedMetadata: {
-    id: 'governance.drepDirectory.cohort.requireVerifiedMetadata',
-    defaultMessage: '!!!Verified metadata',
-    description: 'Criterion restricting suggestions to DReps with metadata',
+  votingPowerNoLimit: {
+    id: 'governance.drepDirectory.cohort.votingPowerNoLimit',
+    defaultMessage: '!!!No limit',
+    description: 'Option removing the suggestion voting-power ceiling',
   },
   votingPowerLabel: {
     id: 'governance.drepDirectory.cohort.votingPowerLabel',
     defaultMessage: '!!!Voting power under',
     description: 'Label of the suggestion voting-power ceiling control',
-  },
-  votingPowerNoLimit: {
-    id: 'governance.drepDirectory.cohort.votingPowerNoLimit',
-    defaultMessage: '!!!No limit',
-    description: 'Option removing the suggestion voting-power ceiling',
   },
   sizeLabel: {
     id: 'governance.drepDirectory.cohort.sizeLabel',
@@ -92,23 +71,15 @@ function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
 
   return (
     <div className={styles.container}>
-      <p className={styles.intro}>{intl.formatMessage(messages.intro)}</p>
       <div className={styles.toggles}>
         {toggle(
-          intl.formatMessage(messages.activeOnly),
-          criteria.activeOnly,
-          (activeOnly) => onCriteriaChange({ ...criteria, activeOnly })
+          intl.formatMessage(drepCriteriaMessages.notInactiveSoon),
+          criteria.excludeInactiveSoon,
+          (excludeInactiveSoon) =>
+            onCriteriaChange({ ...criteria, excludeInactiveSoon })
         )}
         {toggle(
-          intl.formatMessage(messages.excludeLapsingSoon, {
-            epochs: LAPSING_SOON_EPOCHS,
-          }),
-          criteria.excludeLapsingSoon,
-          (excludeLapsingSoon) =>
-            onCriteriaChange({ ...criteria, excludeLapsingSoon })
-        )}
-        {toggle(
-          intl.formatMessage(messages.requireVerifiedMetadata),
+          intl.formatMessage(drepCriteriaMessages.verifiedMetadata),
           criteria.requireVerifiedMetadata,
           (requireVerifiedMetadata) =>
             onCriteriaChange({ ...criteria, requireVerifiedMetadata })
