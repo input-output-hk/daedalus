@@ -273,7 +273,7 @@ function DRepDetailAnchorContent({
         </h3>
       )}
       {hasFieldRows && (
-        <div className={styles.fieldList}>
+        <div className={styles.proseFieldList}>
           {metadata?.objectives != null && (
             <VerifiedFieldRow
               label={intl.formatMessage(messages.objectives)}

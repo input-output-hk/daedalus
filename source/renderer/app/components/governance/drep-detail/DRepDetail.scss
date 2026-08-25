@@ -67,6 +67,15 @@
   display: contents;
 }
 
+// Prose fields have no label column to align, so they do not belong in the
+// grid above: as its children they became grid items and paired up two to a
+// row. They stack in a container of their own.
+.proseFieldList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
 // A prose field stacks instead. Its heading is a peer of References and the
 // payment address, and its value runs to 3,374 characters at the longest on
 // mainnet, which no label column can sit beside.
