@@ -49,12 +49,9 @@ import type {
   DelegateVotesError,
   InitializeVPDelegationTxError,
 } from '../../../source/renderer/app/stores/VotingStore';
-import GovernanceWrapper from '../governance/_utils/GovernanceWrapper';
-import {
-  makeGovernanceWallets,
-  useCurrentVoteKnob,
-} from '../governance/_utils/fixtures';
-import type { CurrentVoteOption } from '../governance/_utils/fixtures';
+import GovernanceWrapper from './_utils/GovernanceWrapper';
+import { makeGovernanceWallets, useCurrentVoteKnob } from './_utils/fixtures';
+import type { CurrentVoteOption } from './_utils/fixtures';
 import { normalizeDRepIdentity } from '../../../source/renderer/app/utils/governance/normalizeDRepIdentity';
 
 const VALID_DREP_ID =
@@ -298,7 +295,7 @@ const renderGovernanceConfirmationDialog = ({
   />
 );
 
-storiesOf('Voting / Governance', module)
+storiesOf('Governance / Delegation', module)
   .addDecorator(governanceStoryDecorator)
   .addDecorator(withKnobs)
   .add(
