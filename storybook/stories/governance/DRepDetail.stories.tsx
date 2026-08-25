@@ -346,6 +346,32 @@ storiesOf('Governance / DRep Detail', module)
       },
     })
   )
+  // Verified, and not empty, though every field a profile is built from is
+  // absent. A document may carry only its author's own vocabulary, and that is
+  // still something published.
+  .add('Loaded — only fields no standard defines', () =>
+    renderDetail({
+      ...withAnchorEntry,
+      verifiedName: null,
+      metadata: {
+        objectives: null,
+        motivations: null,
+        qualifications: null,
+        paymentAddress: null,
+        references: [],
+        additionalFields: [
+          {
+            key: 'twitter',
+            value: { kind: 'text' as const, text: '@example_drep' },
+          },
+          {
+            key: 'telegram',
+            value: { kind: 'text' as const, text: 't.me/example_drep' },
+          },
+        ],
+      },
+    })
+  )
   // Not verified. The wallet holds no content for this anchor, which is what
   // both a hash mismatch and an unreachable host produce: a DRep registered a
   // URL and a hash, and nothing matching came back.

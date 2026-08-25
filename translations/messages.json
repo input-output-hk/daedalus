@@ -3067,17 +3067,17 @@
         "id": "governance.drepDetail.anchor.unverified.badge"
       },
       {
-        "defaultMessage": "!!!This DRep registered an anchor URL and a content hash on chain. Daedalus could not retrieve a document matching that hash, so nothing from it is shown here. The link is left in place so you can look for yourself, but whatever is published there is this DRep's claim alone: Daedalus has not checked it and cannot confirm it.",
+        "defaultMessage": "!!!Daedalus could not match the document at this anchor to its on-chain hash, so nothing from it is shown here. The link is left in place so you can look for yourself. Anything published there is this DRep's own claim.",
         "description": "Explains why the off-chain contents of an unverified anchor are withheld",
         "id": "governance.drepDetail.anchor.unverified.explanation"
       },
       {
-        "defaultMessage": "!!!Published by the DRep at the anchor recorded on-chain, and shown only after it matches the on-chain hash. Everything here is the DRep's own claim: Daedalus verifies that the content is what was published, not that it is true.",
+        "defaultMessage": "!!!Published by the DRep on-chain at the recorded anchor. Shown only if it matches the on-chain hash. Everything here is the DRep's own claim. Daedalus verifies that the content matches, not that it is true.",
         "description": "Explains what the off-chain metadata section contains",
         "id": "governance.drepDetail.anchor.title.explanation"
       },
       {
-        "defaultMessage": "!!!Anchor",
+        "defaultMessage": "!!!Off-Chain Metadata",
         "description": "Heading of the anchor section on the DRep detail view",
         "id": "governance.drepDetail.anchor.title"
       },
@@ -3092,7 +3092,7 @@
         "id": "governance.drepDetail.anchor.hash"
       },
       {
-        "defaultMessage": "!!!No anchor is recorded on-chain for this DRep.",
+        "defaultMessage": "!!!This DRep submitted no off-chain metadata record.",
         "description": "Shown when the DRep registered without an anchor",
         "id": "governance.drepDetail.anchor.none"
       }

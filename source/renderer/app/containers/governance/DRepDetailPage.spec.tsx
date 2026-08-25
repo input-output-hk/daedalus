@@ -172,7 +172,7 @@ describe('DRepDetailPage', () => {
     // DRep published, so each is named for that rather than repeating a small
     // provenance label beside individual fields.
     expect(screen.getByText('!!!On-Chain Data')).toBeInTheDocument();
-    expect(screen.getByText('!!!Off-chain metadata')).toBeInTheDocument();
+    expect(screen.getByText('!!!Off-Chain Metadata')).toBeInTheDocument();
     expect(
       screen.getByLabelText(
         '!!!Read directly from the Cardano ledger by your local node.'
@@ -206,15 +206,14 @@ describe('DRepDetailPage', () => {
     await renderPage();
 
     expect(screen.getByText('!!!Unverified')).toBeInTheDocument();
-    // The blurb has to say what happened, not merely that something did: the
-    // DRep registered an anchor, Daedalus could not match it, the link is
-    // still offered, and nothing behind it has been checked.
+    // The blurb has to say what happened, not merely that something did:
+    // Daedalus could not match the document to the on-chain hash, so nothing
+    // from it is shown, the link is still offered, and what is behind it is
+    // the DRep's own claim.
     expect(
-      screen.getByText(/registered an anchor URL and a content hash on chain/)
+      screen.getByText(/could not match the document at this anchor/)
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/Daedalus has not checked it and cannot confirm it/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/this DRep's own claim/)).toBeInTheDocument();
   });
 
   it('separates a verified but empty document from one that did not verify', async () => {
@@ -235,6 +234,29 @@ describe('DRepDetailPage', () => {
     expect(
       screen.getByText(/matched the anchor hash on chain/)
     ).toBeInTheDocument();
+  });
+
+  it('shows a document that carries only fields no standard defines', async () => {
+    await renderPage({
+      governanceOverrides: {
+        fetchDRep: jest.fn().mockResolvedValue({
+          ...baseDetail,
+          verifiedName: null,
+          metadata: makeMetadata({
+            additionalFields: [
+              { key: 'twitter', value: { kind: 'text', text: '@example' } },
+            ],
+          }),
+        }),
+      },
+    });
+
+    // Every canonical field is absent, but the document is not empty: it
+    // carries a field under the author's own key. Calling that nothing
+    // published would both misstate it and hide the one thing it holds.
+    expect(screen.queryByText('!!!Nothing published')).not.toBeInTheDocument();
+    expect(screen.getByText('twitter')).toBeInTheDocument();
+    expect(screen.getByText('@example')).toBeInTheDocument();
   });
 
   it('warns when a published payment address is for another network', async () => {
@@ -353,7 +375,7 @@ describe('DRepDetailPage', () => {
     ).toBeInTheDocument();
     expect(screen.getByText(baseEntry.anchor!.hash)).toBeInTheDocument();
     // The heading carries the provenance; the row does not repeat it.
-    expect(screen.getByText('!!!Off-chain metadata')).toBeInTheDocument();
+    expect(screen.getByText('!!!Off-Chain Metadata')).toBeInTheDocument();
     expect(screen.queryByText('!!!On-chain anchor reference')).toBeNull();
   });
 
@@ -365,7 +387,7 @@ describe('DRepDetailPage', () => {
     });
 
     expect(
-      screen.getByText('!!!No anchor is recorded on-chain for this DRep.')
+      screen.getByText('!!!This DRep submitted no off-chain metadata record.')
     ).toBeInTheDocument();
     expect(
       screen.queryByText('!!!On-chain anchor reference')
@@ -648,7 +670,7 @@ describe('DRepDetailPage', () => {
     expect(screen.getByText('Fixture qualifications')).toBeInTheDocument();
     // One heading names the provenance for the whole box; the fields no longer
     // each carry a label saying the same thing.
-    expect(screen.getByText('!!!Off-chain metadata')).toBeInTheDocument();
+    expect(screen.getByText('!!!Off-Chain Metadata')).toBeInTheDocument();
     expect(screen.queryByText('!!!Verified off-chain content')).toBeNull();
   });
 

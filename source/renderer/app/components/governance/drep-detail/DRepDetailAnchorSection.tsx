@@ -31,19 +31,19 @@ const messages = defineMessages({
   unverifiedExplanation: {
     id: 'governance.drepDetail.anchor.unverified.explanation',
     defaultMessage:
-      "!!!This DRep registered an anchor URL and a content hash on chain. Daedalus could not retrieve a document matching that hash, so nothing from it is shown here. The link is left in place so you can look for yourself, but whatever is published there is this DRep's claim alone: Daedalus has not checked it and cannot confirm it.",
+      "!!!Daedalus could not match the document at this anchor to its on-chain hash, so nothing from it is shown here. The link is left in place so you can look for yourself. Anything published there is this DRep's own claim.",
     description:
       'Explains why the off-chain contents of an unverified anchor are withheld',
   },
   titleExplanation: {
     id: 'governance.drepDetail.anchor.title.explanation',
     defaultMessage:
-      "!!!Published by the DRep at the anchor recorded on-chain, and shown only after it matches the on-chain hash. Everything here is the DRep's own claim: Daedalus verifies that the content is what was published, not that it is true.",
+      "!!!Published by the DRep on-chain at the recorded anchor. Shown only if it matches the on-chain hash. Everything here is the DRep's own claim. Daedalus verifies that the content matches, not that it is true.",
     description: 'Explains what the off-chain metadata section contains',
   },
   title: {
     id: 'governance.drepDetail.anchor.title',
-    defaultMessage: '!!!Anchor',
+    defaultMessage: '!!!Off-Chain Metadata',
     description: 'Heading of the anchor section on the DRep detail view',
   },
   urlLabel: {
@@ -58,7 +58,7 @@ const messages = defineMessages({
   },
   none: {
     id: 'governance.drepDetail.anchor.none',
-    defaultMessage: '!!!No anchor is recorded on-chain for this DRep.',
+    defaultMessage: '!!!This DRep submitted no off-chain metadata record.',
     description: 'Shown when the DRep registered without an anchor',
   },
 });
@@ -98,7 +98,8 @@ function DRepDetailAnchorSection({
     metadata.motivations == null &&
     metadata.qualifications == null &&
     metadata.paymentAddress == null &&
-    (metadata.references?.length ?? 0) === 0;
+    (metadata.references?.length ?? 0) === 0 &&
+    metadata.additionalFields.length === 0;
 
   return (
     <section
