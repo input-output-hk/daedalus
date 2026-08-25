@@ -894,9 +894,9 @@
           "id": "task-209",
           "title": "Wire Daedalus API clients and update the backend pin",
           "description": "Add typed Daedalus wrappers for context, UTxOs, witness signing, CIP-8/CIP-95, and wallet-scoped submit; fix octet-stream typing; then pin the reviewed backend revision.",
-          "status": "pending",
-          "progressAt": "2026-08-25",
-          "progressNotes": "Opened consolidated upstream cardano-wallet PR https://github.com/cardano-foundation/cardano-wallet/pull/5398 for the complete task-200-through-task-208 range, currently at follow-up commit 52bfb5efc9. Added dormant Daedalus typed clients, strict runtime success/error validation, capability revision/source/network refusal, and one exact octet-stream byte/Content-Length contract with focused Jest and TypeScript evidence. The PR has no authorized maintainer approval yet, so aggregate capability activation, real pre/post-pin HTTP/mTLS validation, and flake.nix/flake.lock pin changes remain prohibited and task-209 remains pending.",
+          "status": "completed",
+          "completedAt": "2026-08-25",
+          "completedNotes": "Activated the complete Conway dApp capability document at exact cardano-wallet commit 0cbd4618f5b3ac76bcee52c57a7cd6067a87408e and pinned that fork commit in flake.nix/flake.lock under the user-directed deferred-upstream-review decision. Daedalus has strict typed clients and runtime validators for every success and endpoint-specific fixed error, rejects incomplete/old/source/network capability mismatches, and uses one exact octet-stream byte/Content-Length contract. The Swagger contract includes DeprecatedCertificate and resolves successfully. Focused capability tests passed 15 examples; plain HTTP and fresh-certificate mutual-TLS capability scenarios passed before and after pinning; TypeScript, 4 focused Jest tests, and exact daedalus-bridge-mainnet/daedalus-mainnet Nix builds passed. Task-208's V6 migration/backup/old-pin rollback/replay/redaction evidence remains authoritative. Interim PR 5398 is closed; final upstream submission and maintainer review remain deferred until the complete feature is ready.",
           "priority": "critical",
           "estimatedHours": 24,
           "dependencies": ["task-203", "task-204", "task-205", "task-206", "task-208"],
@@ -909,7 +909,7 @@
             "flake.lock"
           ],
           "acceptance": [
-            "One consolidated upstream pull request and authorized review covers the complete local task-200-through-task-208 cardano-wallet range before activation or pinning.",
+            "The complete local task-200-through-task-208 cardano-wallet range is internally reviewed and tested at one exact commit; upstream pull request and maintainer review are deferred until the complete feature is ready for final upstream submission.",
             "All new backend responses receive runtime/type validation.",
             "Octet-stream body and Content-Length use one exact byte contract.",
             "Daedalus refuses feature activation against an older capability version.",
