@@ -89,12 +89,22 @@ span.link {
   padding: 16px;
 }
 
+// The action sits with the heading it acts on rather than trailing the
+// content, where a reader met it only after finishing everything above it.
+.selectedDRepHeader {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
 .selectedDRepHeading {
   color: var(--theme-gov-font-color-accent);
   font-family: var(--font-semibold);
   font-size: 13px;
   letter-spacing: 1px;
-  margin-bottom: 12px;
+  margin: 0;
   text-transform: uppercase;
 }
 
@@ -112,7 +122,6 @@ span.link {
   font-size: 13px;
   line-height: 1.5;
   margin: 0;
-  max-width: 68ch;
 }
 
 .selectedDRepMeta {
@@ -123,10 +132,17 @@ span.link {
   margin-top: 8px;
 }
 
-.selectedDRepChangeRow {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 12px;
+// Small, and a button rather than a link: it acts within this wallet, and a
+// link here read as somewhere else to go.
+.selectedDRepChange {
+  flex-shrink: 0;
+
+  button {
+    font-size: 13px;
+    height: 32px;
+    min-width: 0;
+    padding: 0 16px;
+  }
 }
 
 .browseDRepsPrompt {

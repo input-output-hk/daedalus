@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { Link } from 'react-polymorph/lib/components/Link';
 
 import BigNumber from 'bignumber.js';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -262,9 +261,16 @@ function VotingPowerDelegation({
 
           {selectedDRepId && (
             <div className={styles.selectedDRepSection}>
-              <p className={styles.selectedDRepHeading}>
-                {intl.formatMessage(messages.selectedDRepHeading)}
-              </p>
+              <div className={styles.selectedDRepHeader}>
+                <p className={styles.selectedDRepHeading}>
+                  {intl.formatMessage(messages.selectedDRepHeading)}
+                </p>
+                <Button
+                  className={styles.selectedDRepChange}
+                  label={intl.formatMessage(messages.changeDRep)}
+                  onClick={browseDReps}
+                />
+              </div>
               {selectedSentinel ? (
                 <>
                   <p className={styles.selectedDRepName}>
@@ -300,13 +306,6 @@ function VotingPowerDelegation({
                   )}
                 </>
               )}
-              <div className={styles.selectedDRepChangeRow}>
-                <Link
-                  label={intl.formatMessage(messages.changeDRep)}
-                  hasIconAfter={false}
-                  onClick={browseDReps}
-                />
-              </div>
             </div>
           )}
           {!selectedDRepId && selectedWallet && (
