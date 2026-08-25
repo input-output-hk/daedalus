@@ -3117,7 +3117,7 @@
         "id": "governance.drepDetail.inactiveInEpochs"
       },
       {
-        "defaultMessage": "!!!Share of voting power",
+        "defaultMessage": "!!!Voting Power Share",
         "description": "Label for the share of delegated voting power a DRep holds",
         "id": "governance.drepDetail.votingPowerShare"
       },

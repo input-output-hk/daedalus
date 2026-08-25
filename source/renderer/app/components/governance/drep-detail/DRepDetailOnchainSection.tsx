@@ -43,7 +43,7 @@ const messages = defineMessages({
   },
   votingPowerShareLabel: {
     id: 'governance.drepDetail.votingPowerShare',
-    defaultMessage: '!!!Share of voting power',
+    defaultMessage: '!!!Voting Power Share',
     description: 'Label for the share of delegated voting power a DRep holds',
   },
   votingPowerShareUnavailable: {

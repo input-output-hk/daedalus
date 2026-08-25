@@ -337,7 +337,7 @@
   "governance.drepDetail.onchain.title.explanation": "!!!ローカルノードがCardano台帳から直接読み取ったデータです。",
   "governance.drepDetail.votingPower": "!!!投票権",
   "governance.drepDetail.votingPower.unavailable": "!!!ステーク配分を取得できません。しばらくしてから再度お試しください。",
-  "governance.drepDetail.votingPowerShare": "!!!投票権のシェア",
+  "governance.drepDetail.votingPowerShare": "!!!投票権シェア",
   "governance.drepDetail.votingPowerShare.unavailable": "!!!DRepの合計値が利用できないため、このシェアは算出できません。",
   "governance.drepDirectory.abstain.description": "!!!ステークはガバナンスに参加しないものとしてオンチェーンに記録されます。",
   "governance.drepDirectory.backToDirectory": "!!!ディレクトリに戻る",

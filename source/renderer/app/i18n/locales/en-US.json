@@ -337,7 +337,7 @@
   "governance.drepDetail.onchain.title.explanation": "!!!Read directly from the Cardano ledger by your local node.",
   "governance.drepDetail.votingPower": "!!!Voting power",
   "governance.drepDetail.votingPower.unavailable": "!!!Stake distribution unavailable, try again later.",
-  "governance.drepDetail.votingPowerShare": "!!!Share of voting power",
+  "governance.drepDetail.votingPowerShare": "!!!Voting Power Share",
   "governance.drepDetail.votingPowerShare.unavailable": "!!!DRep totals are unavailable, so this share cannot be calculated.",
   "governance.drepDirectory.abstain.description": "!!!Your stake is recorded on chain as not participating in governance.",
   "governance.drepDirectory.backToDirectory": "!!!Back to directory",

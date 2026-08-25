@@ -48,17 +48,23 @@
   text-transform: uppercase;
 }
 
+// A two-column grid rather than a stack of flex rows, so every value starts
+// at the same x however wide the widest label happens to be. A fixed label
+// width would have to be guessed for one language and would be wrong in the
+// next; max-content measures the labels that are actually rendered.
 .fieldList {
-  display: flex;
-  flex-direction: column;
+  align-items: baseline;
+  column-gap: 12px;
+  display: grid;
+  grid-template-columns: max-content 1fr;
   margin: 0;
+  row-gap: 4px;
 }
 
-// The on-chain section's rows, where a short value sits beside its label.
+// The row exists to pair a label with its value in the markup. The grid places
+// them, so the row itself lays out nothing.
 .fieldRow {
-  align-items: baseline;
-  display: flex;
-  gap: 8px;
+  display: contents;
 }
 
 // A prose field stacks instead. Its heading is a peer of References and the
@@ -70,9 +76,7 @@
 
 .fieldLabel {
   color: var(--theme-gov-font-color-regular);
-  flex-shrink: 0;
   font-size: 14px;
-  min-width: 120px;
 }
 
 // CIP-119 prose fields run long: the longest objectives, motivations and
@@ -253,10 +257,12 @@
   width: auto;
 }
 
+// Set apart from the field list above it. This is the one thing in the box
+// that leaves the wallet, and at a row's spacing it read as another row.
 .explorerLink {
   align-self: flex-start;
   font-size: 14px;
-  margin-top: 12px;
+  margin-top: 28px;
 }
 
 .unverifiedNotice {
