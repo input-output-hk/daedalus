@@ -417,6 +417,31 @@
         "id": "global.labels.viewDetails"
       },
       {
+        "defaultMessage": "!!!Wallet",
+        "description": "Label of a field or column naming a wallet.",
+        "id": "global.labels.wallet"
+      },
+      {
+        "defaultMessage": "!!!Status",
+        "description": "Label of a field or column naming a status.",
+        "id": "global.labels.status"
+      },
+      {
+        "defaultMessage": "!!!Delegate",
+        "description": "Label of a control that starts delegating, of stake or of voting power.",
+        "id": "global.labels.delegate"
+      },
+      {
+        "defaultMessage": "!!!Redelegate",
+        "description": "Label of a control that moves an existing delegation.",
+        "id": "global.labels.redelegate"
+      },
+      {
+        "defaultMessage": "!!!Undelegated",
+        "description": "Shown where a wallet has delegated nothing.",
+        "id": "global.labels.undelegated"
+      },
+      {
         "defaultMessage": "!!!Copy",
         "description": "Copy label.",
         "id": "global.labels.copy"
@@ -3437,24 +3462,9 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Wallet",
-        "description": "Column heading for the wallet name",
-        "id": "governance.dashboard.column.wallet"
-      },
-      {
-        "defaultMessage": "!!!Voting power delegated to",
+        "defaultMessage": "!!!Delegated to",
         "description": "Column heading for the current governance delegation",
         "id": "governance.dashboard.column.delegatedTo"
-      },
-      {
-        "defaultMessage": "!!!Status",
-        "description": "Column heading for the delegated DRep status",
-        "id": "governance.dashboard.column.status"
-      },
-      {
-        "defaultMessage": "!!!Not delegated",
-        "description": "Shown for a wallet with no governance delegation",
-        "id": "governance.dashboard.notDelegated"
       },
       {
         "defaultMessage": "!!!Loading DRep…",
@@ -3465,26 +3475,6 @@
         "defaultMessage": "!!!Create or restore a wallet to participate in Cardano governance.",
         "description": "Empty state message shown when no wallets exist",
         "id": "governance.dashboard.noWallets"
-      },
-      {
-        "defaultMessage": "!!!Change delegation",
-        "description": "Button label to navigate to the delegation form for a wallet",
-        "id": "governance.dashboard.changeDelegation"
-      },
-      {
-        "defaultMessage": "!!!No DRep selected",
-        "description": "Heading for wallets with no governance delegation",
-        "id": "governance.dashboard.noDelegation.heading"
-      },
-      {
-        "defaultMessage": "!!!Delegate your voting power to a DRep to participate in Cardano governance.",
-        "description": "Body text for wallets with no governance delegation",
-        "id": "governance.dashboard.noDelegation.body"
-      },
-      {
-        "defaultMessage": "!!!Choose a DRep",
-        "description": "CTA button for wallets with no governance delegation",
-        "id": "governance.dashboard.noDelegation.button"
       }
     ],
     "path": "source/renderer/app/components/governance/wallets/GovernanceWallets.tsx"
@@ -4992,11 +4982,6 @@
         "id": "staking.delegationCenter.walletAmount"
       },
       {
-        "defaultMessage": "!!!Undelegated",
-        "description": "Undelegated label for the Delegation center body section.",
-        "id": "staking.delegationCenter.notDelegated"
-      },
-      {
         "defaultMessage": "!!!Undelegate",
         "description": "Remove delegation label for the Delegation center body section.",
         "id": "staking.delegationCenter.removeDelegation"
@@ -5010,16 +4995,6 @@
         "defaultMessage": "!!!Currently earning rewards",
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "id": "staking.delegationCenter.stakePoolTooltipTickerEarningRewards"
-      },
-      {
-        "defaultMessage": "!!!Delegate",
-        "description": "Delegate label for the Delegation center body section.",
-        "id": "staking.delegationCenter.delegate"
-      },
-      {
-        "defaultMessage": "!!!Redelegate",
-        "description": "Redelegate label for the Delegation center body section.",
-        "id": "staking.delegationCenter.redelegate"
       },
       {
         "defaultMessage": "!!!unknown",

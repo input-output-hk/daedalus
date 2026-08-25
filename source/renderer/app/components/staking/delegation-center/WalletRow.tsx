@@ -5,6 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import globalMessages from '../../../i18n/global-messages';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import { getPendingStakePoolIdForEpoch } from './pendingDelegation';
@@ -35,11 +36,6 @@ const messages = defineMessages({
     description:
       'Amount of each wallet for the Delegation center body section.',
   },
-  notDelegated: {
-    id: 'staking.delegationCenter.notDelegated',
-    defaultMessage: '!!!Undelegated',
-    description: 'Undelegated label for the Delegation center body section.',
-  },
   removeDelegation: {
     id: 'staking.delegationCenter.removeDelegation',
     defaultMessage: '!!!Undelegate',
@@ -57,16 +53,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Currently earning rewards',
     description:
       'Delegated stake pool tooltip ticker for the Delegation center body section.',
-  },
-  delegate: {
-    id: 'staking.delegationCenter.delegate',
-    defaultMessage: '!!!Delegate',
-    description: 'Delegate label for the Delegation center body section.',
-  },
-  redelegate: {
-    id: 'staking.delegationCenter.redelegate',
-    defaultMessage: '!!!Redelegate',
-    description: 'Redelegate label for the Delegation center body section.',
   },
   unknownStakePoolLabel: {
     id: 'staking.delegationCenter.unknownStakePoolLabel',
@@ -204,10 +190,10 @@ class WalletRow extends Component<Props, WalletRowState> {
     // @TODO - remove once quit stake pool delegation is connected with rewards balance
     const isUndelegateBlocked = true;
     const syncingProgress = get(syncState, 'progress.quantity', '');
-    const notDelegatedText = intl.formatMessage(messages.notDelegated);
+    const notDelegatedText = intl.formatMessage(globalMessages.undelegated);
     const removeDelegationText = intl.formatMessage(messages.removeDelegation);
-    const delegateText = intl.formatMessage(messages.delegate);
-    const redelegateText = intl.formatMessage(messages.redelegate);
+    const delegateText = intl.formatMessage(globalMessages.delegate);
+    const redelegateText = intl.formatMessage(globalMessages.redelegate);
     const nextPendingDelegatedStakePoolId = this.getPendingDelegatedStakePoolId(
       nextEpochNumber,
       delegatedStakePoolId

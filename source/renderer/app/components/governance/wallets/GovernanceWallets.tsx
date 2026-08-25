@@ -14,25 +14,10 @@ import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 import styles from './GovernanceWallets.scss';
 
 const messages = defineMessages({
-  columnWallet: {
-    id: 'governance.dashboard.column.wallet',
-    defaultMessage: '!!!Wallet',
-    description: 'Column heading for the wallet name',
-  },
   columnDelegatedTo: {
     id: 'governance.dashboard.column.delegatedTo',
-    defaultMessage: '!!!Voting power delegated to',
+    defaultMessage: '!!!Delegated to',
     description: 'Column heading for the current governance delegation',
-  },
-  columnStatus: {
-    id: 'governance.dashboard.column.status',
-    defaultMessage: '!!!Status',
-    description: 'Column heading for the delegated DRep status',
-  },
-  notDelegated: {
-    id: 'governance.dashboard.notDelegated',
-    defaultMessage: '!!!Not delegated',
-    description: 'Shown for a wallet with no governance delegation',
   },
   loadingTarget: {
     id: 'governance.dashboard.target.loading',
@@ -44,27 +29,6 @@ const messages = defineMessages({
     defaultMessage:
       '!!!Create or restore a wallet to participate in Cardano governance.',
     description: 'Empty state message shown when no wallets exist',
-  },
-  changeDelegation: {
-    id: 'governance.dashboard.changeDelegation',
-    defaultMessage: '!!!Change delegation',
-    description: 'Button label to navigate to the delegation form for a wallet',
-  },
-  noDelegationHeading: {
-    id: 'governance.dashboard.noDelegation.heading',
-    defaultMessage: '!!!No DRep selected',
-    description: 'Heading for wallets with no governance delegation',
-  },
-  noDelegationBody: {
-    id: 'governance.dashboard.noDelegation.body',
-    defaultMessage:
-      '!!!Delegate your voting power to a DRep to participate in Cardano governance.',
-    description: 'Body text for wallets with no governance delegation',
-  },
-  noDelegationButton: {
-    id: 'governance.dashboard.noDelegation.button',
-    defaultMessage: '!!!Choose a DRep',
-    description: 'CTA button for wallets with no governance delegation',
   },
 });
 
@@ -113,7 +77,7 @@ function WalletDelegationRow({
     if (currentDRep == null) {
       return (
         <span className={styles.notDelegated}>
-          {intl.formatMessage(messages.notDelegated)}
+          {intl.formatMessage(globalMessages.undelegated)}
         </span>
       );
     }
@@ -179,8 +143,8 @@ function WalletDelegationRow({
         <Button
           label={intl.formatMessage(
             currentDRep == null
-              ? messages.noDelegationButton
-              : messages.changeDelegation
+              ? globalMessages.delegate
+              : globalMessages.redelegate
           )}
           onClick={() =>
             currentDRep == null ? onChooseDRep() : onChangeDelegation(walletId)
@@ -216,17 +180,17 @@ function GovernanceWallets({
             <thead>
               <tr className={styles.headerRow}>
                 <th className={styles.headerCell} scope="col">
-                  {intl.formatMessage(messages.columnWallet)}
+                  {intl.formatMessage(globalMessages.wallet)}
                 </th>
                 <th className={styles.headerCell} scope="col">
                   {intl.formatMessage(messages.columnDelegatedTo)}
                 </th>
                 <th className={styles.headerCell} scope="col">
-                  {intl.formatMessage(messages.columnStatus)}
+                  {intl.formatMessage(globalMessages.status)}
                 </th>
                 <th className={styles.headerCell} scope="col">
                   <span className={styles.visuallyHidden}>
-                    {intl.formatMessage(messages.changeDelegation)}
+                    {intl.formatMessage(globalMessages.redelegate)}
                   </span>
                 </th>
               </tr>

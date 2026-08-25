@@ -327,6 +327,32 @@ export default defineMessages({
     defaultMessage: '!!!View details',
     description: 'Label of a control that opens a detail view.',
   },
+  wallet: {
+    id: 'global.labels.wallet',
+    defaultMessage: '!!!Wallet',
+    description: 'Label of a field or column naming a wallet.',
+  },
+  status: {
+    id: 'global.labels.status',
+    defaultMessage: '!!!Status',
+    description: 'Label of a field or column naming a status.',
+  },
+  delegate: {
+    id: 'global.labels.delegate',
+    defaultMessage: '!!!Delegate',
+    description:
+      'Label of a control that starts delegating, of stake or of voting power.',
+  },
+  redelegate: {
+    id: 'global.labels.redelegate',
+    defaultMessage: '!!!Redelegate',
+    description: 'Label of a control that moves an existing delegation.',
+  },
+  undelegated: {
+    id: 'global.labels.undelegated',
+    defaultMessage: '!!!Undelegated',
+    description: 'Shown where a wallet has delegated nothing.',
+  },
   copy: {
     id: 'global.labels.copy',
     defaultMessage: '!!!Copy',
