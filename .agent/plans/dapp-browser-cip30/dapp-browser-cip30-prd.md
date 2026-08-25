@@ -216,8 +216,7 @@ physical results against exact production artifacts and adapter commits.
 - Existing wallet `TxOut` persistence is insufficient because it stores only address and token bundle.
 - The reviewed sibling backend now exposes a dormant witness-only software-signing endpoint bound to the authenticated full-ledger context and ordered exact request bytes; aggregate activation and the Daedalus pin remain gated by task-209.
 - The reviewed sibling backend now exposes a dormant exact CIP-8 payment/stake data-signing endpoint with canonical untagged COSE, authenticated V1/V2 child derivation, public-key hash and signature verification, and frozen DataSign errors; it does not reuse Catalyst metadata signing, and aggregate activation plus the Daedalus pin remain gated by task-209.
-- Current derivation APIs expose roles 0, 1, and 2 but not a dedicated CIP-105 DRep role.
-- Stake-key registration state is not exposed with sufficient precision for CIP-95.
+- The reviewed sibling backend now exposes dormant CIP-95 raw stake/DRep public-key state and exact DRep CIP-8 signing: public children derive from the account xpub at fixed role 2/3 paths, confirmed and pending registration effects classify fail closed, raw DRep IDs and matching type-6 addresses normalize to one verified raw-hash COSE identity, and no private material crosses the API. Aggregate activation and the Daedalus pin remain gated by task-209.
 - Existing V2 signing has gaps for collateral and explicit required signers.
 
 ### Hardware
