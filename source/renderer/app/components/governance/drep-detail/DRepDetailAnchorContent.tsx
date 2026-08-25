@@ -19,13 +19,13 @@ type DRepReference = DRepMetadata['references'][number];
 const messages = defineMessages({
   additionalTitle: {
     id: 'governance.drepDetail.anchorContent.additional.title',
-    defaultMessage: '!!!Additional metadata fields',
+    defaultMessage: '!!!Additional Metadata Fields',
     description: 'Heading of the non-canonical anchor content block',
   },
   additionalCaption: {
     id: 'governance.drepDetail.anchorContent.additional.caption',
     defaultMessage:
-      '!!!These fields are not defined by any standard Daedalus recognises, so they appear under the names this DRep gave them and are shown exactly as published. Daedalus has not interpreted them.',
+      '!!!These fields are not defined by any CIP standard. They appear under the names this DRep gave them and are shown exactly as published. Daedalus does not interpret them.',
     description: 'Explains what the non-canonical metadata block contains',
   },
   paymentAddressWrongNetwork: {
@@ -37,13 +37,8 @@ const messages = defineMessages({
   },
   title: {
     id: 'governance.drepDetail.anchorContent.title',
-    defaultMessage: '!!!Canonical metadata fields',
+    defaultMessage: '!!!Canonical Metadata Fields',
     description: 'Heading of the verified anchor content block',
-  },
-  givenName: {
-    id: 'governance.drepDetail.anchorContent.givenName',
-    defaultMessage: '!!!Name',
-    description: 'Label for the verified CIP-119 givenName field',
   },
   objectives: {
     id: 'governance.drepDetail.anchorContent.objectives',
@@ -72,49 +67,37 @@ const messages = defineMessages({
   },
   referencesIdentity: {
     id: 'governance.drepDetail.anchorContent.references.identity',
-    defaultMessage: '!!!Claimed identities',
+    defaultMessage: '!!!Identities',
     description: 'Sub-heading for references typed as Identity',
   },
   referencesIdentityCaption: {
     id: 'governance.drepDetail.anchorContent.references.identityCaption',
     defaultMessage:
-      '!!!These identities are claimed by the DRep and are not verified by Daedalus. Open the link and confirm that this DRep ID is published there before you rely on it.',
+      '!!!Open the link and confirm that this DRep ID is published there before you rely on it.',
     description:
       'Caption stating that an Identity reference is a claim, not a verified identity',
   },
   paymentAddressLabel: {
     id: 'governance.drepDetail.anchorContent.paymentAddress.label',
-    defaultMessage: '!!!Stated payment address',
+    defaultMessage: '!!!Payment Address',
     description: 'Label for the verified CIP-119 paymentAddress field',
   },
   paymentAddressCaption: {
     id: 'governance.drepDetail.anchorContent.paymentAddress.caption',
     defaultMessage:
-      "!!!This address is the DRep's own claim. Delegating your voting power requires no payment to any address.",
+      '!!!Delegating your voting power requires no payment to any address.',
     description:
       'Caption warning that no payment is required to delegate voting power',
   },
-  paymentAddressCopyButton: {
-    id: 'governance.drepDetail.anchorContent.paymentAddress.copyButton',
-    defaultMessage: '!!!Copy',
-    description: 'Copy button label for the stated payment address',
-  },
   paymentAddressCopyLabel: {
     id: 'governance.drepDetail.anchorContent.paymentAddress.copyLabel',
-    defaultMessage: '!!!Copy stated payment address',
+    defaultMessage: '!!!Copy Payment Address',
     description: 'Accessible label for the payment address copy button',
   },
   paymentAddressCopiedToast: {
     id: 'governance.drepDetail.anchorContent.paymentAddress.copiedToast',
     defaultMessage: '!!!Payment address copied',
     description: 'Inline confirmation shown after copying the payment address',
-  },
-  caption: {
-    id: 'governance.drepDetail.anchorContent.caption',
-    defaultMessage:
-      "!!!This name is the DRep's own claim, hash-matched to the anchor recorded on-chain. Daedalus does not verify identity.",
-    description:
-      'Caption stating that a verified name is not verified identity',
   },
 });
 

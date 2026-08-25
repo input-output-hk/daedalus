@@ -260,7 +260,7 @@ describe('DRepDetailPage', () => {
     // And the heading for the standardised fields stays away, since there
     // are none of those to head.
     expect(
-      screen.queryByText('!!!Canonical metadata fields')
+      screen.queryByText('!!!Canonical Metadata Fields')
     ).not.toBeInTheDocument();
   });
 
@@ -319,7 +319,7 @@ describe('DRepDetailPage', () => {
     // nothing under it is what counting the name here produced.
     expect(screen.getByText('Named But Otherwise Empty')).toBeInTheDocument();
     expect(
-      screen.queryByText('!!!Canonical metadata fields')
+      screen.queryByText('!!!Canonical Metadata Fields')
     ).not.toBeInTheDocument();
   });
 
@@ -353,7 +353,7 @@ describe('DRepDetailPage', () => {
       text?.includes('!!!References')
     );
     const additionalAt = headings.findIndex((text) =>
-      text?.includes('!!!Additional metadata fields')
+      text?.includes('!!!Additional Metadata Fields')
     );
 
     expect(referencesAt).toBeGreaterThan(-1);
@@ -703,14 +703,14 @@ describe('DRepDetailPage', () => {
       },
     });
 
-    const identityHeading = screen.getByText('!!!Claimed identities');
+    const identityHeading = screen.getByText('!!!Identities');
     const linkHeading = screen.getByText('!!!Links');
     expect(identityHeading).toBeInTheDocument();
     // The caveat is available on the heading rather than set between the
     // heading and the entries it qualifies.
     expect(
       screen.getByLabelText(
-        '!!!These identities are claimed by the DRep and are not verified by Daedalus. Open the link and confirm that this DRep ID is published there before you rely on it.'
+        '!!!Open the link and confirm that this DRep ID is published there before you rely on it.'
       )
     ).toBeInTheDocument();
 
@@ -744,7 +744,7 @@ describe('DRepDetailPage', () => {
     expect(screen.getByText('!!!Links')).toBeInTheDocument();
     expect(screen.getByText('https://example.org/misc')).toBeInTheDocument();
     expect(screen.queryByText('!!!Other references')).not.toBeInTheDocument();
-    expect(screen.queryByText('!!!Claimed identities')).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Identities')).not.toBeInTheDocument();
   });
 
   it('opens an https reference uri through the external-link handler', async () => {
@@ -811,19 +811,19 @@ describe('DRepDetailPage', () => {
         },
       });
 
-      expect(screen.getByText('!!!Stated payment address')).toBeInTheDocument();
+      expect(screen.getByText('!!!Payment Address')).toBeInTheDocument();
       // The claim caveat is on the heading's info control rather than set
       // between the heading and the address.
       expect(
         screen.getByLabelText(
-          "!!!This address is the DRep's own claim. Delegating your voting power requires no payment to any address."
+          '!!!Delegating your voting power requires no payment to any address.'
         )
       ).toBeInTheDocument();
       expect(screen.getByText(address).tagName).toBe('SPAN');
       expect(screen.queryByDisplayValue(address)).not.toBeInTheDocument();
 
       fireEvent.click(
-        screen.getByRole('button', { name: '!!!Copy stated payment address' })
+        screen.getByRole('button', { name: '!!!Copy Payment Address' })
       );
 
       expect(writeText).toHaveBeenCalledWith(address);
@@ -856,7 +856,7 @@ describe('DRepDetailPage', () => {
         },
       });
       const copyButton = () =>
-        screen.getByRole('button', { name: '!!!Copy stated payment address' });
+        screen.getByRole('button', { name: '!!!Copy Payment Address' });
 
       fireEvent.click(copyButton());
       await screen.findByText('!!!Payment address copied');
@@ -887,13 +887,11 @@ describe('DRepDetailPage', () => {
     // Named for the standard, so the block for fields outside it can be named
     // for that and a reader can tell which labels are ours.
     expect(
-      screen.getByText('!!!Canonical metadata fields')
+      screen.getByText('!!!Canonical Metadata Fields')
     ).toBeInTheDocument();
     expect(screen.getByText('Only objectives')).toBeInTheDocument();
     expect(screen.queryByText('!!!References')).not.toBeInTheDocument();
-    expect(
-      screen.queryByText('!!!Stated payment address')
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText('!!!Payment Address')).not.toBeInTheDocument();
   });
 
   it('renders the profile block with no name when the entry carries only prose', async () => {
@@ -940,10 +938,8 @@ describe('DRepDetailPage', () => {
     });
 
     expect(screen.getByText('!!!目的')).toBeInTheDocument();
-    expect(
-      screen.getByText('!!!申告されたアイデンティティ')
-    ).toBeInTheDocument();
-    expect(screen.getByText('!!!申告された支払いアドレス')).toBeInTheDocument();
+    expect(screen.getByText('!!!アイデンティティ')).toBeInTheDocument();
+    expect(screen.getByText('!!!支払いアドレス')).toBeInTheDocument();
   });
 
   it('opens an https anchor url through the external-link handler', async () => {
