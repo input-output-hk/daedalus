@@ -3057,8 +3057,8 @@
         "id": "governance.drepDetail.anchor.empty.badge"
       },
       {
-        "defaultMessage": "!!!Daedalus retrieved this document and it matched the anchor hash on chain, so it is genuinely this DRep's. It carries none of the fields a profile is built from, so there is nothing here to read.",
-        "description": "Explains that a verified anchor document contained no usable content",
+        "defaultMessage": "!!!Daedalus verified this document against its on-chain hash. It contains no information about this DRep, standard or otherwise.",
+        "description": "Explains that a verified anchor document carried no fields of any kind",
         "id": "governance.drepDetail.anchor.empty.explanation"
       },
       {

@@ -228,11 +228,11 @@ describe('DRepDetailPage', () => {
     });
 
     // Two different facts. This one verified, so nothing is being withheld and
-    // nothing is wrong: the document simply holds no profile.
+    // nothing is wrong: the document holds no fields of any kind.
     expect(screen.getByText('!!!Nothing published')).toBeInTheDocument();
     expect(screen.queryByText('!!!Unverified')).not.toBeInTheDocument();
     expect(
-      screen.getByText(/matched the anchor hash on chain/)
+      screen.getByText(/verified this document against its on-chain hash/)
     ).toBeInTheDocument();
   });
 

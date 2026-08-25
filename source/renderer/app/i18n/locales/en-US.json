@@ -305,7 +305,7 @@
   "governance.dashboard.noWallets": "!!!Create or restore a wallet to participate in Cardano governance.",
   "governance.dashboard.target.loading": "!!!Loading DRep…",
   "governance.drepDetail.anchor.empty.badge": "!!!Nothing published",
-  "governance.drepDetail.anchor.empty.explanation": "!!!Daedalus retrieved this document and it matched the anchor hash on chain, so it is genuinely this DRep's. It carries none of the fields a profile is built from, so there is nothing here to read.",
+  "governance.drepDetail.anchor.empty.explanation": "!!!Daedalus verified this document against its on-chain hash. It contains no information about this DRep, standard or otherwise.",
   "governance.drepDetail.anchor.hash": "!!!Anchor hash",
   "governance.drepDetail.anchor.none": "!!!This DRep submitted no off-chain metadata record.",
   "governance.drepDetail.anchor.title": "!!!Off-Chain Metadata",

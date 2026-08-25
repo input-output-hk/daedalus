@@ -305,7 +305,7 @@
   "governance.dashboard.noWallets": "!!!Create or restore a wallet to participate in Cardano governance.",
   "governance.dashboard.target.loading": "!!!Loading DRep…",
   "governance.drepDetail.anchor.empty.badge": "!!!公開情報なし",
-  "governance.drepDetail.anchor.empty.explanation": "!!!Daedalusはこの文書を取得し、オンチェーンのアンカーハッシュと一致することを確認しました。確かにこのDRepのものですが、プロフィールを構成する項目が一つも含まれていないため、表示できる内容がありません。",
+  "governance.drepDetail.anchor.empty.explanation": "!!!Daedalusはこの文書をオンチェーンのハッシュと照合し、検証しました。この文書には、標準・非標準を問わず、このDRepに関する情報が含まれていません。",
   "governance.drepDetail.anchor.hash": "!!!アンカーハッシュ",
   "governance.drepDetail.anchor.none": "!!!このDRepはオフチェーンのメタデータを提出していません。",
   "governance.drepDetail.anchor.title": "!!!オフチェーンメタデータ",

@@ -18,9 +18,9 @@ const messages = defineMessages({
   emptyExplanation: {
     id: 'governance.drepDetail.anchor.empty.explanation',
     defaultMessage:
-      "!!!Daedalus retrieved this document and it matched the anchor hash on chain, so it is genuinely this DRep's. It carries none of the fields a profile is built from, so there is nothing here to read.",
+      '!!!Daedalus verified this document against its on-chain hash. It contains no information about this DRep, standard or otherwise.',
     description:
-      'Explains that a verified anchor document contained no usable content',
+      'Explains that a verified anchor document carried no fields of any kind',
   },
   unverifiedBadge: {
     id: 'governance.drepDetail.anchor.unverified.badge',
