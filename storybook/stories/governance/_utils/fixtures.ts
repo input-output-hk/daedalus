@@ -15,13 +15,21 @@ export type CurrentVoteOption =
   | 'noDelegation'
   | 'drepVerified'
   | 'drepUnverified'
+  | 'drepInactive'
+  | 'drepUnknown'
   | 'abstain'
   | 'noConfidence';
 
+// The last two exist because the panel has captions for them that no fixture
+// could reach: a DRep that has gone inactive, and one the directory holds no
+// entry for at all. Both are states a delegator can wake up in without having
+// done anything, so both need to be reviewable.
 export const currentVoteOptions: Record<string, CurrentVoteOption> = {
   'Not delegated (warning)': 'noDelegation',
   'DRep — verified anchor': 'drepVerified',
   'DRep — unverified anchor': 'drepUnverified',
+  'DRep — inactive': 'drepInactive',
+  'DRep — not in directory': 'drepUnknown',
   Abstain: 'abstain',
   'No Confidence': 'noConfidence',
 };
@@ -66,6 +74,28 @@ const UNVERIFIED_DREP: DRepIdentity = {
   credentialType: 'key',
 };
 
+const INACTIVE_CIP129 =
+  'drep1y2qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqvzq0zj';
+const INACTIVE_DREP: DRepIdentity = {
+  raw: INACTIVE_CIP129,
+  cip129: INACTIVE_CIP129,
+  cip105: 'drep_vkh1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqsr4gp0',
+  credentialHex: '00000000000000000000000000000000000000000000000000000000',
+  credentialType: 'key',
+};
+
+// Deliberately absent from every drepIndex below: a DRep can deregister after
+// a wallet has delegated to it, and the panel has to say something then.
+const UNKNOWN_CIP129 =
+  'drep1y2zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz7uqcgt';
+const UNKNOWN_DREP: DRepIdentity = {
+  raw: UNKNOWN_CIP129,
+  cip129: UNKNOWN_CIP129,
+  cip105: 'drep_vkh1zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzs7kzcgn',
+  credentialHex: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+  credentialType: 'key',
+};
+
 export function resolveCurrentVote(
   option: CurrentVoteOption
 ): DRepDelegation | null {
@@ -74,6 +104,10 @@ export function resolveCurrentVote(
       return { kind: 'drep', drep: VERIFIED_DREP, source: 'onchain' };
     case 'drepUnverified':
       return { kind: 'drep', drep: UNVERIFIED_DREP, source: 'onchain' };
+    case 'drepInactive':
+      return { kind: 'drep', drep: INACTIVE_DREP, source: 'onchain' };
+    case 'drepUnknown':
+      return { kind: 'drep', drep: UNKNOWN_DREP, source: 'onchain' };
     case 'abstain':
       return { kind: 'abstain' };
     case 'noConfidence':
@@ -163,6 +197,21 @@ export function makeDRepIndex(
       doNotList: false,
     });
   }
+
+  if (option === 'drepInactive') {
+    index.set(INACTIVE_CIP129, {
+      drepId: INACTIVE_CIP129,
+      votingPower: new BigNumber('800000000000'),
+      status: 'inactive',
+      drepActivity: 0,
+      anchor: null,
+      verifiedName: null,
+      doNotList: false,
+    });
+  }
+
+  // 'drepUnknown' adds nothing: the wallet points at a DRep the index has
+  // never heard of, which is the whole state under test.
 
   if (option === 'drepUnverified') {
     index.set(UNVERIFIED_CIP129, {
