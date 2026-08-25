@@ -69,11 +69,16 @@
 // what the twenty are without opening anything, and the control that changes
 // them sits at the end of the sentence describing them rather than standing
 // alone as a link whose subject has to be guessed.
+// Spread rather than packed left. Every suggestion control is sized to its
+// own content, so on a wide pane they left a band of unused space at the end
+// of the row; the all-DReps filters share the spare width between themselves
+// instead, so this only takes effect where there is slack to distribute.
 .controls {
   align-items: flex-end;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  justify-content: space-between;
 }
 
 .criteriaSummary {

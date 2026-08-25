@@ -14,6 +14,12 @@
 // rather than beside it. Polymorph puts a checkbox's label to its right, which
 // left these two sitting under a gap in a row where everything else was
 // labelled, and the row read as two kinds of thing rather than one.
+.toggleGroup {
+  display: flex;
+  flex-shrink: 0;
+  gap: 24px;
+}
+
 .toggleFacet {
   display: flex;
   flex-direction: column;

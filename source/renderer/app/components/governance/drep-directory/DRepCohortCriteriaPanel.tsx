@@ -87,18 +87,24 @@ function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
     /* No row of its own: these sit in the row the mode control leads,
        beside the filters that take their place in the other mode. */
     <>
-      {toggle(
-        intl.formatMessage(drepCriteriaMessages.notInactiveSoon),
-        criteria.excludeInactiveSoon,
-        (excludeInactiveSoon) =>
-          onCriteriaChange({ ...criteria, excludeInactiveSoon })
-      )}
-      {toggle(
-        intl.formatMessage(drepCriteriaMessages.verifiedMetadata),
-        criteria.requireVerifiedMetadata,
-        (requireVerifiedMetadata) =>
-          onCriteriaChange({ ...criteria, requireVerifiedMetadata })
-      )}
+      {/* The two switches wrap as a pair. Left to wrap independently, a
+          narrow pane put one of them beside the mode control and the other on
+          the line below, which read as two unrelated settings rather than the
+          two halves of one question. */}
+      <div className={styles.toggleGroup}>
+        {toggle(
+          intl.formatMessage(drepCriteriaMessages.notInactiveSoon),
+          criteria.excludeInactiveSoon,
+          (excludeInactiveSoon) =>
+            onCriteriaChange({ ...criteria, excludeInactiveSoon })
+        )}
+        {toggle(
+          intl.formatMessage(drepCriteriaMessages.verifiedMetadata),
+          criteria.requireVerifiedMetadata,
+          (requireVerifiedMetadata) =>
+            onCriteriaChange({ ...criteria, requireVerifiedMetadata })
+        )}
+      </div>
       {/* Typed rather than picked from three fixed shares. Where a
             reasonable ceiling sits depends on how stake is spread on the
             network the wallet is pointed at, which is not something a list
