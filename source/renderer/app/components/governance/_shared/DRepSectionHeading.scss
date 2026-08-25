@@ -10,13 +10,9 @@
   margin: 0;
 }
 
-// Long enough to need a measure of its own: the off-chain explanation runs to
-// four clauses, and set to the full width of the pane it reads as a banner
-// rather than as a note on the heading above it.
 .explanation {
   color: var(--theme-gov-font-color-light);
   font-size: 13px;
   line-height: 1.5;
   margin: 4px 0 0;
-  max-width: 68ch;
 }

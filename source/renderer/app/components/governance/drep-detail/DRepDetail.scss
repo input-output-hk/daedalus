@@ -1,5 +1,10 @@
 @import '../governanceConfig';
 
+// One measure for the whole page, matching the wallet list on the Voting
+// Center tab beside it. Without it the boxes ran to the width of the window
+// and the only text with a limit of its own stopped halfway across them,
+// which read as a layout fault rather than as a reading width. Prose here
+// reaches 3,374 characters on mainnet, and a line that long is not read.
 .container {
   @extend %regularText;
   display: flex;
@@ -7,6 +12,7 @@
   flex-direction: column;
   gap: 16px;
   margin: 20px 0 20px 20px;
+  max-width: 720px;
 }
 
 .backLink {
@@ -200,7 +206,6 @@
   font-size: 13px;
   line-height: 1.5;
   margin: 0 0 8px;
-  max-width: 68ch;
   padding-left: 12px;
 }
 
@@ -268,8 +273,12 @@
 
 // Set apart from the field list above it. This is the one thing in the box
 // that leaves the wallet, and at a row's spacing it read as another row.
+//
+// inline-block, not the align-self this carried before: LinkSkin renders a
+// span, the section around it is not a flex container, so align-self applied
+// to nothing and a top margin on an inline box is ignored outright.
 .explorerLink {
-  align-self: flex-start;
+  display: inline-block;
   font-size: 14px;
   margin-top: 28px;
 }
