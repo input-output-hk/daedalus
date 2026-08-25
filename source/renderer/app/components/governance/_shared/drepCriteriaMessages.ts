@@ -19,12 +19,6 @@ export const drepCriteriaMessages = defineMessages({
     description:
       'Suggestion criterion: the DRep registration is active. Always applied',
   },
-  inactiveSoon: {
-    id: 'governance.drepDirectory.cohort.criteria.inactiveSoon',
-    defaultMessage: '!!!Inactive Soon',
-    description:
-      'Suggestion criterion, switched on to admit DReps close to going inactive',
-  },
   verifiedMetadata: {
     id: 'governance.drepDirectory.cohort.criteria.verifiedMetadata',
     defaultMessage: '!!!Verified metadata',

@@ -47,6 +47,7 @@ import listIcon from '../../../assets/images/list-ic.inline.svg';
 import styles from './DRepDirectory.scss';
 import type { ListViewMode } from '../../../types/listViewTypes';
 import { DEFAULT_LIST_VIEW_MODE } from '../../../types/listViewTypes';
+import { governanceSharedMessages } from '../_shared/governanceSharedMessages';
 
 const messages = defineMessages({
   empty: {
@@ -132,11 +133,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Suggested DReps',
     description: 'Label above the randomized cohort of DReps',
   },
-  listTitleAll: {
-    id: 'governance.drepDirectory.listTitle.all',
-    defaultMessage: '!!!All DReps',
-    description: 'Label above the full DRep list in show-all mode',
-  },
   listTitleSearch: {
     id: 'governance.drepDirectory.listTitle.search',
     defaultMessage: '!!!DReps. Search results:',
@@ -152,27 +148,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Back to suggestions',
     description: 'Button that narrows the full DRep list back to the cohort',
   },
-  showAllCta: {
-    id: 'governance.drepDirectory.showAll.cta',
-    defaultMessage: '!!!Show all DReps',
-    description: 'Button beside the reroll control that widens to every DRep',
-  },
   orChoosePredefined: {
     id: 'governance.drepDirectory.orChoosePredefined',
     defaultMessage: '!!!Or choose a predefined option:',
     description: 'Label above the Abstain / No Confidence sentinel cards',
-  },
-  abstainDescription: {
-    id: 'governance.drepDirectory.abstain.description',
-    defaultMessage:
-      '!!!Your stake is recorded on chain as not participating in governance.',
-    description: 'Description shown on the Abstain sentinel card',
-  },
-  noConfidenceDescription: {
-    id: 'governance.drepDirectory.noConfidence.description',
-    defaultMessage:
-      '!!!Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.',
-    description: 'Description shown on the No Confidence sentinel card',
   },
   selectOption: {
     id: 'governance.drepDirectory.sentinelCard.select',
@@ -441,7 +420,7 @@ function DRepDirectory({
   // variant rather than leaving a stale one above the results.
   const resolveMainListTitle = () => {
     if (isSearchActive) return messages.listTitleSearch;
-    if (isShowAll) return messages.listTitleAll;
+    if (isShowAll) return governanceSharedMessages.allDReps;
     return messages.listTitleSuggested;
   };
   const mainListTitleMessage = resolveMainListTitle();
@@ -773,7 +752,9 @@ function DRepDirectory({
                     />
                     <Button
                       className="flat"
-                      label={intl.formatMessage(messages.showAllCta)}
+                      label={intl.formatMessage(
+                        governanceSharedMessages.showAllDReps
+                      )}
                       onClick={() => handleShowAllChange(true)}
                       skin={ButtonSkin}
                     />
@@ -804,7 +785,9 @@ function DRepDirectory({
                       {intl.formatMessage(sharedGovernanceMessages.abstain)}
                     </p>
                     <p className={styles.sentinelCardDescription}>
-                      {intl.formatMessage(messages.abstainDescription)}
+                      {intl.formatMessage(
+                        governanceSharedMessages.abstainDescription
+                      )}
                     </p>
                     <Button
                       className="flat"
@@ -820,7 +803,9 @@ function DRepDirectory({
                       )}
                     </p>
                     <p className={styles.sentinelCardDescription}>
-                      {intl.formatMessage(messages.noConfidenceDescription)}
+                      {intl.formatMessage(
+                        governanceSharedMessages.noConfidenceDescription
+                      )}
                     </p>
                     <Button
                       className="flat"

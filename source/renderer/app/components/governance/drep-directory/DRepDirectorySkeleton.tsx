@@ -2,14 +2,9 @@ import React from 'react';
 import classNames from 'classnames';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import styles from './DRepDirectorySkeleton.scss';
+import { governanceSharedMessages } from '../_shared/governanceSharedMessages';
 
-const messages = defineMessages({
-  loading: {
-    id: 'governance.drepDirectory.loading',
-    defaultMessage: '!!!Loading DRep data…',
-    description: 'Accessible label of the first-load skeleton list',
-  },
-});
+const messages = defineMessages({});
 
 // Mirrors the directory list page size so the first paint holds the height the
 // loaded page will occupy.
@@ -26,7 +21,7 @@ function DRepDirectorySkeleton({ count = SKELETON_CARD_COUNT, intl }: Props) {
       className={styles.skeletonList}
       role="status"
       aria-busy="true"
-      aria-label={intl.formatMessage(messages.loading)}
+      aria-label={intl.formatMessage(governanceSharedMessages.loadingDRepData)}
     >
       {Array.from({ length: count }, (_, index) => (
         <div className={styles.skeletonCard} key={index} aria-hidden="true">

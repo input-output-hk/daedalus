@@ -7,6 +7,7 @@ import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 import { messages } from './CurrentDRepSummary.messages';
 import { sharedGovernanceMessages } from './shared-messages';
 import styles from './CurrentVoteSummary.scss';
+import { governanceSharedMessages } from '../../governance/_shared/governanceSharedMessages';
 
 type Props = {
   currentDRep: DRepDelegation | null;
@@ -88,7 +89,7 @@ function CurrentDRepSummary({
           <p className={styles.caption}>
             {intl.formatMessage(
               lookupState === 'loading'
-                ? messages.statusLoading
+                ? governanceSharedMessages.loadingDRepData
                 : messages.statusUnavailable
             )}
           </p>
@@ -120,7 +121,9 @@ function CurrentDRepSummary({
       </div>
       <p className={styles.caption}>
         {intl.formatMessage(
-          isAbstain ? messages.abstainCaption : messages.noConfidenceCaption
+          isAbstain
+            ? governanceSharedMessages.abstainDescription
+            : governanceSharedMessages.noConfidenceDescription
         )}
       </p>
     </section>

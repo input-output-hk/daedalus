@@ -11,17 +11,13 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { GovernanceRefreshState } from '../../../stores/GovernanceStore';
 import type { AppDRepDetail } from '../../../stores/GovernanceStore';
 import styles from './DRepDetail.scss';
+import { governanceSharedMessages } from '../_shared/governanceSharedMessages';
 
 const messages = defineMessages({
   backToDirectory: {
     id: 'governance.drepDirectory.backToDirectory',
     defaultMessage: '!!!Back to directory',
     description: 'Link from the DRep detail back to the directory',
-  },
-  loading: {
-    id: 'governance.drepDetail.loading',
-    defaultMessage: '!!!Loading DRep data…',
-    description: 'Loading state on the DRep detail page',
   },
   notFound: {
     id: 'governance.drepDetail.notFound',
@@ -86,7 +82,9 @@ function DRepDetail({
           {backLink}
           <div className={styles.stateContainer}>
             <LoadingSpinner />
-            <p>{intl.formatMessage(messages.loading)}</p>
+            <p>
+              {intl.formatMessage(governanceSharedMessages.loadingDRepData)}
+            </p>
           </div>
         </div>
       );

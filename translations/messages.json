@@ -2667,79 +2667,9 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Show all DReps",
-        "description": "Filter-bar toggle between the cohort and every DRep",
-        "id": "governance.drepDirectory.cohortBanner.showAll"
-      },
-      {
-        "defaultMessage": "!!!Active",
-        "description": "Active status label",
-        "id": "governance.drepDirectory.status.active"
-      },
-      {
-        "defaultMessage": "!!!Inactive",
-        "description": "Inactive status label",
-        "id": "governance.drepDirectory.status.inactive"
-      },
-      {
-        "defaultMessage": "!!!Suggested",
-        "description": "Mode showing a suggested cohort drawn under criteria",
-        "id": "governance.drepDirectory.mode.suggested"
-      },
-      {
-        "defaultMessage": "!!!All DReps",
-        "description": "Mode showing every DRep, with filters and ordering",
-        "id": "governance.drepDirectory.mode.all"
-      },
-      {
-        "defaultMessage": "!!!Mode",
-        "description": "Label above the pair of buttons choosing what is listed",
-        "id": "governance.drepDirectory.mode.label"
-      },
-      {
-        "defaultMessage": "!!!Inactive Soon",
-        "description": "Status filter option for DReps close to going inactive",
-        "id": "governance.drepDirectory.status.inactiveSoon"
-      },
-      {
-        "defaultMessage": "!!!With metadata",
-        "description": "Metadata filter option: anchor present",
-        "id": "governance.drepDirectory.filter.metadata.with"
-      },
-      {
-        "defaultMessage": "!!!Without metadata",
-        "description": "Metadata filter option: no anchor",
-        "id": "governance.drepDirectory.filter.metadata.without"
-      },
-      {
-        "defaultMessage": "!!!Default",
-        "description": "Default ordering: grouped by what delegating would achieve, random within each group. Named for its role rather than its mechanism, and kept distinct from the Suggested mode",
-        "id": "governance.drepDirectory.sort.default"
-      },
-      {
-        "defaultMessage": "!!!Voting power (high to low)",
-        "description": "Voting power descending sort option",
-        "id": "governance.drepDirectory.sort.votingPowerDesc"
-      },
-      {
-        "defaultMessage": "!!!Voting power (low to high)",
-        "description": "Voting power ascending sort option",
-        "id": "governance.drepDirectory.sort.votingPowerAsc"
-      }
-    ],
-    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryFilters.tsx"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Back to directory",
         "description": "Link from the DRep detail back to the directory",
         "id": "governance.drepDirectory.backToDirectory"
-      },
-      {
-        "defaultMessage": "!!!Loading DRep data…",
-        "description": "Loading state on the DRep detail page",
-        "id": "governance.drepDetail.loading"
       },
       {
         "defaultMessage": "!!!This DRep was not found in the on-chain data.",
@@ -2817,10 +2747,55 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Inactive Soon",
-        "description": "Badge shown when a DRep is close to losing its voting power through inactivity",
-        "id": "governance.drepDirectory.expiry.label"
+        "defaultMessage": "!!!Active",
+        "description": "Active status label",
+        "id": "governance.drepDirectory.status.active"
       },
+      {
+        "defaultMessage": "!!!Inactive",
+        "description": "Inactive status label",
+        "id": "governance.drepDirectory.status.inactive"
+      },
+      {
+        "defaultMessage": "!!!Suggested",
+        "description": "Mode showing a suggested cohort drawn under criteria",
+        "id": "governance.drepDirectory.mode.suggested"
+      },
+      {
+        "defaultMessage": "!!!Mode",
+        "description": "Label above the pair of buttons choosing what is listed",
+        "id": "governance.drepDirectory.mode.label"
+      },
+      {
+        "defaultMessage": "!!!With metadata",
+        "description": "Metadata filter option: anchor present",
+        "id": "governance.drepDirectory.filter.metadata.with"
+      },
+      {
+        "defaultMessage": "!!!Without metadata",
+        "description": "Metadata filter option: no anchor",
+        "id": "governance.drepDirectory.filter.metadata.without"
+      },
+      {
+        "defaultMessage": "!!!Default",
+        "description": "Default ordering: grouped by what delegating would achieve, random within each group. Named for its role rather than its mechanism, and kept distinct from the Suggested mode",
+        "id": "governance.drepDirectory.sort.default"
+      },
+      {
+        "defaultMessage": "!!!Voting power (high to low)",
+        "description": "Voting power descending sort option",
+        "id": "governance.drepDirectory.sort.votingPowerDesc"
+      },
+      {
+        "defaultMessage": "!!!Voting power (low to high)",
+        "description": "Voting power ascending sort option",
+        "id": "governance.drepDirectory.sort.votingPowerAsc"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectoryFilters.tsx"
+  },
+  {
+    "descriptors": [
       {
         "defaultMessage": "!!!Will become inactive in {epochs, plural, one {# epoch} other {# epochs}} ({days, plural, one {# day} other {# days}}) without on-chain activity.",
         "description": "Explains when a DRep loses its voting power, in epochs and days",
@@ -2877,11 +2852,6 @@
         "id": "governance.drepDirectory.cohort.criteria.active"
       },
       {
-        "defaultMessage": "!!!Inactive Soon",
-        "description": "Suggestion criterion, switched on to admit DReps close to going inactive",
-        "id": "governance.drepDirectory.cohort.criteria.inactiveSoon"
-      },
-      {
         "defaultMessage": "!!!Verified metadata",
         "description": "Suggestion criterion: metadata was fetched and hash-verified",
         "id": "governance.drepDirectory.cohort.criteria.verifiedMetadata"
@@ -2893,6 +2863,51 @@
       }
     ],
     "path": "source/renderer/app/components/governance/_shared/drepCriteriaMessages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Loading DRep data…",
+        "description": "Shown wherever DRep data is still being fetched",
+        "id": "governance.shared.loadingDRepData"
+      },
+      {
+        "defaultMessage": "!!!Voting power",
+        "description": "Label of the stake delegated to a DRep, on cards, in the table and on the detail view",
+        "id": "governance.shared.votingPower"
+      },
+      {
+        "defaultMessage": "!!!Stake distribution unavailable, try again later.",
+        "description": "Shown in place of a voting power that could not be read",
+        "id": "governance.shared.votingPowerUnavailable"
+      },
+      {
+        "defaultMessage": "!!!Inactive Soon",
+        "description": "A DRep within the threshold of going inactive: the badge, the filter and the suggestion criterion all name it this",
+        "id": "governance.shared.inactiveSoon"
+      },
+      {
+        "defaultMessage": "!!!All DReps",
+        "description": "Names the unfiltered population, as a mode and as a heading",
+        "id": "governance.shared.allDReps"
+      },
+      {
+        "defaultMessage": "!!!Show all DReps",
+        "description": "Action that leaves the suggestions for the full population",
+        "id": "governance.shared.showAllDReps"
+      },
+      {
+        "defaultMessage": "!!!Your stake is recorded on chain as not participating in governance.",
+        "description": "What delegating to Abstain does to a wallet stake",
+        "id": "governance.shared.abstainDescription"
+      },
+      {
+        "defaultMessage": "!!!Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.",
+        "description": "What delegating to No Confidence does to a wallet stake",
+        "id": "governance.shared.noConfidenceDescription"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/_shared/governanceSharedMessages.ts"
   },
   {
     "descriptors": [
@@ -3070,16 +3085,6 @@
         "defaultMessage": "!!!DRep totals are unavailable, so this share cannot be calculated.",
         "description": "Shown in place of the share when the network total is missing",
         "id": "governance.drepDetail.votingPowerShare.unavailable"
-      },
-      {
-        "defaultMessage": "!!!Voting power",
-        "description": "Label for the voting power field on the detail view",
-        "id": "governance.drepDetail.votingPower"
-      },
-      {
-        "defaultMessage": "!!!Stake distribution unavailable, try again later.",
-        "description": "Shown in place of the voting power when stake failed to load",
-        "id": "governance.drepDetail.votingPower.unavailable"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-detail/DRepDetailOnchainSection.tsx"
@@ -3087,19 +3092,9 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Voting power",
-        "description": "Label for the voting power column in DRep directory",
-        "id": "governance.drepDirectory.votingPower"
-      },
-      {
         "defaultMessage": "!!!Loading voting power…",
         "description": "Tooltip on the voting-power placeholder during enrichment",
         "id": "governance.drepDirectory.votingPower.loadingTooltip"
-      },
-      {
-        "defaultMessage": "!!!Stake distribution unavailable, try again later.",
-        "description": "Tooltip on the voting-power placeholder when stake failed",
-        "id": "governance.drepDirectory.votingPower.unavailableTooltip"
       },
       {
         "defaultMessage": "!!!This DRep is not actively accepting delegation.",
@@ -3217,11 +3212,6 @@
         "id": "governance.drepDirectory.listTitle.suggested"
       },
       {
-        "defaultMessage": "!!!All DReps",
-        "description": "Label above the full DRep list in show-all mode",
-        "id": "governance.drepDirectory.listTitle.all"
-      },
-      {
         "defaultMessage": "!!!DReps. Search results:",
         "description": "Label above the DRep list while a search is active",
         "id": "governance.drepDirectory.listTitle.search"
@@ -3237,24 +3227,9 @@
         "id": "governance.drepDirectory.showAll.back"
       },
       {
-        "defaultMessage": "!!!Show all DReps",
-        "description": "Button beside the reroll control that widens to every DRep",
-        "id": "governance.drepDirectory.showAll.cta"
-      },
-      {
         "defaultMessage": "!!!Or choose a predefined option:",
         "description": "Label above the Abstain / No Confidence sentinel cards",
         "id": "governance.drepDirectory.orChoosePredefined"
-      },
-      {
-        "defaultMessage": "!!!Your stake is recorded on chain as not participating in governance.",
-        "description": "Description shown on the Abstain sentinel card",
-        "id": "governance.drepDirectory.abstain.description"
-      },
-      {
-        "defaultMessage": "!!!Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.",
-        "description": "Description shown on the No Confidence sentinel card",
-        "id": "governance.drepDirectory.noConfidence.description"
       },
       {
         "defaultMessage": "!!!Select",
@@ -3307,11 +3282,6 @@
         "id": "governance.drepDirectory.table.column.status"
       },
       {
-        "defaultMessage": "!!!Voting power",
-        "description": "Table column heading for voting power and share",
-        "id": "governance.drepDirectory.table.column.votingPower"
-      },
-      {
         "defaultMessage": "!!!Favorite",
         "description": "Table column heading for the favorite toggle",
         "id": "governance.drepDirectory.table.column.favorite"
@@ -3348,16 +3318,6 @@
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectorySearch.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Loading DRep data…",
-        "description": "Accessible label of the first-load skeleton list",
-        "id": "governance.drepDirectory.loading"
-      }
-    ],
-    "path": "source/renderer/app/components/governance/drep-directory/DRepDirectorySkeleton.tsx"
   },
   {
     "descriptors": [
@@ -6030,21 +5990,6 @@
         "defaultMessage": "!!!Currently Delegated To",
         "description": "Header of the current-vote summary panel",
         "id": "voting.governance.currentVote.headerCurrent"
-      },
-      {
-        "defaultMessage": "!!!Your stake is recorded on chain as not participating in governance.",
-        "description": "Caption explaining the Abstain delegation state",
-        "id": "voting.governance.currentVote.abstain.caption"
-      },
-      {
-        "defaultMessage": "!!!Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.",
-        "description": "Caption explaining the No Confidence delegation state",
-        "id": "voting.governance.currentVote.noConfidence.caption"
-      },
-      {
-        "defaultMessage": "!!!Loading DRep data…",
-        "description": "Shown while this wallet's DRep is still being looked up",
-        "id": "voting.governance.currentVote.status.loading"
       },
       {
         "defaultMessage": "!!!Could not load this DRep's data. It may have retired.",

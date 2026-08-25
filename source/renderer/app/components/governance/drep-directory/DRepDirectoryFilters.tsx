@@ -9,6 +9,7 @@ import type {
   DRepStatusFilter,
 } from './helpers';
 import styles from './DRepDirectoryFilters.scss';
+import { governanceSharedMessages } from '../_shared/governanceSharedMessages';
 
 const messages = defineMessages({
   modeSuggested: {
@@ -16,30 +17,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Suggested',
     description: 'Mode showing a suggested cohort drawn under criteria',
   },
-  modeAll: {
-    id: 'governance.drepDirectory.mode.all',
-    defaultMessage: '!!!All DReps',
-    description: 'Mode showing every DRep, with filters and ordering',
-  },
   modeLabel: {
     id: 'governance.drepDirectory.mode.label',
     defaultMessage: '!!!Mode',
     description: 'Label above the pair of buttons choosing what is listed',
   },
-  showAll: {
-    id: 'governance.drepDirectory.cohortBanner.showAll',
-    defaultMessage: '!!!Show all DReps',
-    description: 'Filter-bar toggle between the cohort and every DRep',
-  },
   statusActive: {
     id: 'governance.drepDirectory.status.active',
     defaultMessage: '!!!Active',
     description: 'Active status label',
-  },
-  statusInactiveSoon: {
-    id: 'governance.drepDirectory.status.inactiveSoon',
-    defaultMessage: '!!!Inactive Soon',
-    description: 'Status filter option for DReps close to going inactive',
   },
   statusInactive: {
     id: 'governance.drepDirectory.status.inactive',
@@ -141,7 +127,7 @@ function DRepDirectoryFilters({
             aria-pressed={isShowAll}
             onClick={() => onShowAllChange(true)}
           >
-            {intl.formatMessage(messages.modeAll)}
+            {intl.formatMessage(governanceSharedMessages.allDReps)}
           </button>
         </div>
       </div>
@@ -161,7 +147,10 @@ function DRepDirectoryFilters({
           [
             ['all', intl.formatMessage(globalMessages.all)],
             ['active', intl.formatMessage(messages.statusActive)],
-            ['inactiveSoon', intl.formatMessage(messages.statusInactiveSoon)],
+            [
+              'inactiveSoon',
+              intl.formatMessage(governanceSharedMessages.inactiveSoon),
+            ],
             ['inactive', intl.formatMessage(messages.statusInactive)],
           ]
         )}

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
-
 import BigNumber from 'bignumber.js';
+import { governanceSharedMessages } from '../../governance/_shared/governanceSharedMessages';
 import BorderedBox from '../../widgets/BorderedBox';
 import { messages } from './VotingPowerDelegation.messages';
 import styles from './VotingPowerDelegation.scss';
@@ -306,8 +306,8 @@ function VotingPowerDelegation({
                   <p className={styles.selectedOptionCaption}>
                     {intl.formatMessage(
                       selectedSentinel === 'abstain'
-                        ? currentDRepMessages.abstainCaption
-                        : currentDRepMessages.noConfidenceCaption
+                        ? governanceSharedMessages.abstainDescription
+                        : governanceSharedMessages.noConfidenceDescription
                     )}
                   </p>
                 </>

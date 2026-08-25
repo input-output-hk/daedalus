@@ -10,6 +10,7 @@ import DRepVotingPowerShare from '../_shared/DRepVotingPowerShare';
 import DRepSectionHeading from '../_shared/DRepSectionHeading';
 import type { AppDRepDetail } from '../../../stores/GovernanceStore';
 import styles from './DRepDetail.scss';
+import { governanceSharedMessages } from '../_shared/governanceSharedMessages';
 
 const messages = defineMessages({
   explorerLink: {
@@ -52,16 +53,6 @@ const messages = defineMessages({
       '!!!DRep totals are unavailable, so this share cannot be calculated.',
     description:
       'Shown in place of the share when the network total is missing',
-  },
-  votingPowerLabel: {
-    id: 'governance.drepDetail.votingPower',
-    defaultMessage: '!!!Voting power',
-    description: 'Label for the voting power field on the detail view',
-  },
-  votingPowerUnavailable: {
-    id: 'governance.drepDetail.votingPower.unavailable',
-    defaultMessage: '!!!Stake distribution unavailable, try again later.',
-    description: 'Shown in place of the voting power when stake failed to load',
   },
 });
 
@@ -130,7 +121,7 @@ function DRepDetailOnchainSection({
         </div>
         <div className={styles.fieldRow}>
           <dt className={styles.fieldLabel}>
-            {intl.formatMessage(messages.votingPowerLabel)}
+            {intl.formatMessage(governanceSharedMessages.votingPower)}
           </dt>
           <dd className={styles.fieldValue}>
             {entry.votingPower ? (
@@ -139,7 +130,9 @@ function DRepDetailOnchainSection({
               </span>
             ) : (
               <span className={styles.mutedValue}>
-                {intl.formatMessage(messages.votingPowerUnavailable)}
+                {intl.formatMessage(
+                  governanceSharedMessages.votingPowerUnavailable
+                )}
               </span>
             )}
           </dd>

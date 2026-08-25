@@ -8,6 +8,7 @@ import {
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './DRepEmptyState.scss';
+import { governanceSharedMessages } from './governanceSharedMessages';
 
 const messages = defineMessages({
   noSync: {
@@ -39,11 +40,6 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.empty.noResults.clearFilters',
     defaultMessage: '!!!Clear filters',
     description: 'Action that resets search, filters and sort',
-  },
-  showAll: {
-    id: 'governance.drepDirectory.cohortBanner.showAll',
-    defaultMessage: '!!!Show all DReps',
-    description: 'Toggle that switches from the default cohort to all DReps',
   },
   noFavoritesTitle: {
     id: 'governance.drepFavorites.empty.title',
@@ -110,7 +106,9 @@ function DRepEmptyState({
               ShowAll: (
                 <Link
                   className={styles.actionLink}
-                  label={intl.formatMessage(messages.showAll)}
+                  label={intl.formatMessage(
+                    governanceSharedMessages.showAllDReps
+                  )}
                   hasIconAfter={false}
                   onClick={onShowAll}
                   skin={LinkSkin}
@@ -142,7 +140,9 @@ function DRepEmptyState({
               ShowAll: (
                 <Link
                   className={styles.actionLink}
-                  label={intl.formatMessage(messages.showAll)}
+                  label={intl.formatMessage(
+                    governanceSharedMessages.showAllDReps
+                  )}
                   hasIconAfter={false}
                   onClick={onShowAll}
                   skin={LinkSkin}

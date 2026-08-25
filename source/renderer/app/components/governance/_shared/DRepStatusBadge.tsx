@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { epochsToDays, getDRepStanding } from './drepExpiry';
 import type { DRepStanding } from './drepExpiry';
 import type { DRepStatus } from '../../../../../common/types/governance.types';
+import { governanceSharedMessages } from './governanceSharedMessages';
 import styles from './DRepStatusBadge.scss';
 
 const messages = defineMessages({
@@ -16,12 +17,6 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.status.inactive',
     defaultMessage: '!!!Inactive',
     description: 'DRep inactive status badge label',
-  },
-  inactiveSoon: {
-    id: 'governance.drepDirectory.expiry.label',
-    defaultMessage: '!!!Inactive Soon',
-    description:
-      'Badge shown when a DRep is close to losing its voting power through inactivity',
   },
   expiringDetailWithDays: {
     id: 'governance.drepDirectory.expiry.detailWithDays',
@@ -55,7 +50,14 @@ function DRepStatusBadge({
   intl,
 }: Props) {
   const standing = getDRepStanding(status, drepActivity);
-  const label = intl.formatMessage(messages[standing]);
+  // Resolved by hand rather than by indexing the message set: one of the
+  // three now lives in the shared set, and an index that misses simply hands
+  // formatMessage undefined.
+  const label = intl.formatMessage(
+    standing === 'inactiveSoon'
+      ? governanceSharedMessages.inactiveSoon
+      : messages[standing]
+  );
 
   // Only the expiring state has anything more to say: how long is left, and
   // what a DRep can do about it.

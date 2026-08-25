@@ -5,6 +5,7 @@ import DRepFacetSelect from '../_shared/DRepFacetSelect';
 import DRepFacetNumber from '../_shared/DRepFacetNumber';
 import { DREP_COHORT_SIZE_OPTIONS } from '../_shared/drepCohort';
 import type { DRepCohortCriteria } from '../_shared/drepCohort';
+import { governanceSharedMessages } from '../_shared/governanceSharedMessages';
 import { drepCriteriaMessages } from '../_shared/drepCriteriaMessages';
 import styles from './DRepCohortCriteriaPanel.scss';
 
@@ -93,7 +94,7 @@ function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
           two halves of one question. */}
       <div className={styles.toggleGroup}>
         {toggle(
-          intl.formatMessage(drepCriteriaMessages.inactiveSoon),
+          intl.formatMessage(governanceSharedMessages.inactiveSoon),
           criteria.includeInactiveSoon,
           (includeInactiveSoon) =>
             onCriteriaChange({ ...criteria, includeInactiveSoon })

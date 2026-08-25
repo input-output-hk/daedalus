@@ -10,6 +10,7 @@ import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 import styles from './DRepDirectoryList.scss';
 import tableStyles from './DRepDirectoryTable.scss';
 import type { ListViewMode } from '../../../types/listViewTypes';
+import { governanceSharedMessages } from '../_shared/governanceSharedMessages';
 
 // The cards tile into a grid, so their footprint has to be known up front:
 // react-virtualized sizes rows before it renders them. Stake pools computes
@@ -36,11 +37,6 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.table.column.status',
     defaultMessage: '!!!Status',
     description: 'Table column heading for the DRep status',
-  },
-  columnVotingPower: {
-    id: 'governance.drepDirectory.table.column.votingPower',
-    defaultMessage: '!!!Voting power',
-    description: 'Table column heading for voting power and share',
   },
   columnFavorite: {
     id: 'governance.drepDirectory.table.column.favorite',
@@ -211,7 +207,10 @@ function DRepDirectoryList({
                 [messages.columnFavorite, tableStyles.colFavorite],
                 [messages.columnName, tableStyles.colName],
                 [messages.columnStatus, tableStyles.colStatus],
-                [messages.columnVotingPower, tableStyles.colVotingPower],
+                [
+                  governanceSharedMessages.votingPower,
+                  tableStyles.colVotingPower,
+                ],
                 [messages.columnActions, tableStyles.colActions],
               ].map(([message, columnClass]) => (
                 <div

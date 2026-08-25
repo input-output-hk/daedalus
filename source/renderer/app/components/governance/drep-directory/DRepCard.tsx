@@ -11,22 +11,13 @@ import { formatVotingPower } from '../_shared/drepVotingPower';
 import DRepIdDisplay from '../_shared/DRepIdDisplay';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
 import styles from './DRepCard.scss';
+import { governanceSharedMessages } from '../_shared/governanceSharedMessages';
 
 const messages = defineMessages({
-  votingPowerLabel: {
-    id: 'governance.drepDirectory.votingPower',
-    defaultMessage: '!!!Voting power',
-    description: 'Label for the voting power column in DRep directory',
-  },
   votingPowerLoadingTooltip: {
     id: 'governance.drepDirectory.votingPower.loadingTooltip',
     defaultMessage: '!!!Loading voting power…',
     description: 'Tooltip on the voting-power placeholder during enrichment',
-  },
-  votingPowerUnavailableTooltip: {
-    id: 'governance.drepDirectory.votingPower.unavailableTooltip',
-    defaultMessage: '!!!Stake distribution unavailable, try again later.',
-    description: 'Tooltip on the voting-power placeholder when stake failed',
   },
   favoriteAdd: {
     id: 'governance.drepDirectory.card.favorite.add',
@@ -81,7 +72,7 @@ function DRepCard({
 }: Props) {
   const votingPowerTooltip =
     entry.votingPower === null
-      ? intl.formatMessage(messages.votingPowerUnavailableTooltip)
+      ? intl.formatMessage(governanceSharedMessages.votingPowerUnavailable)
       : undefined;
 
   const standing = getDRepStanding(entry.status, entry.drepActivity);
@@ -148,7 +139,7 @@ function DRepCard({
           together rather than as unrelated facts at opposite ends of a card. */}
       <div className={styles.votingPowerRow}>
         <span className={styles.votingPowerLabel}>
-          {intl.formatMessage(messages.votingPowerLabel)}:
+          {intl.formatMessage(governanceSharedMessages.votingPower)}:
         </span>
         <span
           className={styles.votingPowerValue}
