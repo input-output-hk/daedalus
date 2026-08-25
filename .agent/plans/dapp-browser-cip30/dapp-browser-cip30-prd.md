@@ -214,10 +214,10 @@ physical results against exact production artifacts and adapter commits.
 - The public UTxO APIs cannot produce `transaction_unspent_output` CBOR.
 - `getUTxOByTxIn` can retrieve full ledger outputs for recent eras and is the required full-output foundation.
 - Existing wallet `TxOut` persistence is insufficient because it stores only address and token bundle.
-- The reviewed sibling backend now exposes a dormant witness-only software-signing endpoint bound to the authenticated full-ledger context and ordered exact request bytes; aggregate activation and the Daedalus pin remain gated by task-209.
-- The reviewed sibling backend now exposes a dormant exact CIP-8 payment/stake data-signing endpoint with canonical untagged COSE, authenticated V1/V2 child derivation, public-key hash and signature verification, and frozen DataSign errors; it does not reuse Catalyst metadata signing, and aggregate activation plus the Daedalus pin remain gated by task-209.
-- The reviewed sibling backend now exposes dormant CIP-95 raw stake/DRep public-key state and exact DRep CIP-8 signing: public children derive from the account xpub at fixed role 2/3 paths, confirmed and pending registration effects classify fail closed, raw DRep IDs and matching type-6 addresses normalize to one verified raw-hash COSE identity, and no private material crosses the API. Aggregate activation and the Daedalus pin remain gated by task-209.
-- The reviewed sibling backend now exposes dormant wallet-scoped write-ahead submission backed by one V6 durable submission/claim store. Exact authorized bytes and normal/collateral claims commit before node access; a one-shot non-retrying node client persists submitted, rejected, or outcome-unknown results; exact replay, expiry, rollback, same-tip chain/mempool reconciliation, and log redaction follow the frozen task-003 state machine. Aggregate activation and the Daedalus pin remain gated by task-209.
+- The pinned backend exposes active witness-only software signing bound to authenticated full-ledger context and ordered exact request bytes.
+- The pinned backend exposes exact CIP-8 payment/stake data signing with canonical untagged COSE, authenticated V1/V2 child derivation, public-key hash and signature verification, and frozen DataSign errors; it does not reuse Catalyst metadata signing.
+- The pinned backend exposes CIP-95 raw stake/DRep public-key state and exact DRep CIP-8 signing: public children derive from the account xpub at fixed role 2/3 paths, confirmed and pending registration effects classify fail closed, raw DRep IDs and matching type-6 addresses normalize to one verified raw-hash COSE identity, and no private material crosses the API.
+- The pinned backend exposes wallet-scoped write-ahead submission backed by one V6 durable submission/claim store. Exact authorized bytes and normal/collateral claims commit before node access; a one-shot non-retrying node client persists submitted, rejected, or outcome-unknown results; exact replay, expiry, rollback, same-tip chain/mempool reconciliation, and log redaction follow the frozen task-003 state machine.
 - Existing V2 signing has gaps for collateral and explicit required signers.
 
 ### Hardware
@@ -269,6 +269,7 @@ physical results against exact production artifacts and adapter commits.
 - Feature and extension switches are packaged launcher-configuration values changed through the normal reviewed release process; this plan adds no remote runtime-policy service.
 - Collateral-preparation transactions are explicit and user-approved.
 - Internal security review and external audit are release gates.
+- User-directed sequencing decision (2026-08-25): implementation may continue across Daedalus, `cardano-wallet`, and other upstream repositories using exact local commits and internal review/test evidence. Upstream pull requests and upstream maintainer approval are deferred until the complete feature is ready for final upstream submission. This decision supersedes earlier task sequencing that required an upstream PR or upstream approval before intermediate capability activation or pin updates; it does not waive migration/rollback, integration, security-review, external-audit, or release evidence gates.
 
 ## Scope
 
@@ -1600,17 +1601,21 @@ Forbidden from observability and non-authoritative storage:
 - Add exact CIP-8 software signing.
 - Add CIP-105 DRep derivation and stake-key registration classification.
 - Add wallet-scoped pending submission.
-- Accumulate tasks 200-208 as reviewable local commits in `../cardano-wallet`, then use task-209 for one consolidated upstream review, backend integration, migration/rollback tests, aggregate activation, and the exact Daedalus pin update.
+- Accumulate backend work as reviewable commits in `../cardano-wallet`; task-209 owns backend integration, migration/rollback tests, aggregate activation, and the exact Daedalus pin update. Upstream submission is deferred until the complete feature is ready.
 
-Task-209 opened the consolidated task-200-through-task-208 upstream review as
-[`cardano-wallet#5398`](https://github.com/cardano-foundation/cardano-wallet/pull/5398),
-currently at follow-up commit `52bfb5efc9`. Daedalus now has dormant typed clients
-and strict runtime success/error validators for the complete backend surface,
-rejects incomplete, old, wrong-source, or wrong-network capability documents,
-and sends octet streams using one exact byte/`Content-Length` contract. Focused
-Jest and TypeScript checks pass. No authorized maintainer approval exists yet,
-so capability activation, real aggregate pre/post-pin HTTP/mTLS validation, and
-the `flake.nix`/`flake.lock` update remain prohibited; task-209 remains pending.
+Task-209 completed against exact `cardano-wallet` commit
+`0cbd4618f5b3ac76bcee52c57a7cd6067a87408e`. It briefly opened
+`cardano-wallet#5398`, then closed it under the user-directed 2026-08-25
+sequencing decision; final upstream submission remains deferred. The aggregate
+Conway capability document is active, and Daedalus pins that exact fork commit.
+Strict clients validate every success and endpoint-specific fixed error, reject
+incomplete, old, wrong-source, or wrong-network capability documents, and send
+octet streams using one exact byte/`Content-Length` contract. Focused unit
+tests, plain HTTP and fresh-certificate mutual-TLS capability scenarios both
+before and after pinning, Swagger resolution, TypeScript/Jest, and exact
+`daedalus-bridge-mainnet`/`daedalus-mainnet` Nix builds pass. Task-208's V6
+migration, backup, old-pin rollback, replay, and redaction evidence remains the
+authoritative persistence compatibility proof.
 
 Task-201 has a final local review candidate at `cardano-wallet`
 `3ca15553f96587f1f96688185165b2ede00e30b0` with published decoder
