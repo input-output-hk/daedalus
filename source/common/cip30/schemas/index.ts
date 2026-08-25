@@ -140,6 +140,9 @@ const ownData = (value: unknown, keys: string[]): value is object => {
 const isMethod = (value: unknown): value is DappCip30Method =>
   typeof value === 'string' && methodContracts.has(value as DappCip30Method);
 
+export const hasDappCip30MethodSchema = (method: DappCip30Method): boolean =>
+  methodContracts.has(method);
+
 const withinDecodedLimit = (
   value: unknown,
   maximum: number | undefined
