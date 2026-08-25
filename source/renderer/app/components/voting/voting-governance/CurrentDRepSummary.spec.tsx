@@ -119,33 +119,27 @@ describe('CurrentDRepSummary DRep status badge', () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it('renders the local inactive-soon badge and caption inside the remaining-epoch window', () => {
+  it('leaves the inactive-soon badge to say it, with no caption beneath', () => {
     const { container } = renderSummary(DREP_VOTE, {
       ...ACTIVE_ENTRY,
       drepActivity: 4,
     });
     expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        '!!!Becomes inactive in 4 epochs. Consider redelegating.'
-      )
-    ).toBeInTheDocument();
+    // This panel is on the screen for changing a delegation, so telling the
+    // reader to consider redelegating tells them what they are already doing.
+    expect(screen.queryByText(/redelegating/)).not.toBeInTheDocument();
     expect(screen.queryByText('!!!Active')).not.toBeInTheDocument();
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it('renders the shared inactive badge and caption', () => {
+  it('leaves the inactive badge to say it, with no caption beneath', () => {
     const { container } = renderSummary(DREP_VOTE, {
       ...ACTIVE_ENTRY,
       status: 'inactive',
       drepActivity: 0,
     });
     expect(screen.getByText('!!!Inactive')).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        '!!!Currently inactive. Your voting power does not count. Consider redelegating.'
-      )
-    ).toBeInTheDocument();
+    expect(screen.queryByText(/redelegating/)).not.toBeInTheDocument();
     expect(screen.queryByText('!!!Inactive Soon')).not.toBeInTheDocument();
     expect(container.firstChild).toMatchSnapshot();
   });

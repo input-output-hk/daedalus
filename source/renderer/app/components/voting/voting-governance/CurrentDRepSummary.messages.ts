@@ -18,19 +18,6 @@ export const messages = defineMessages({
       '!!!Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.',
     description: 'Caption explaining the No Confidence delegation state',
   },
-  statusInactiveSoon: {
-    id: 'voting.governance.currentVote.status.inactiveSoon',
-    defaultMessage:
-      '!!!Becomes inactive in {n, plural, one {# epoch} other {# epochs}}. Consider redelegating.',
-    description:
-      'Caption shown when the delegated DRep registration lapses soon',
-  },
-  statusInactive: {
-    id: 'voting.governance.currentVote.status.inactive',
-    defaultMessage:
-      '!!!Currently inactive. Your voting power does not count. Consider redelegating.',
-    description: 'Caption shown when the delegated DRep is inactive',
-  },
   statusLoading: {
     id: 'voting.governance.currentVote.status.loading',
     defaultMessage: '!!!Loading DRep data…',

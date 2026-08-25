@@ -708,11 +708,6 @@ describe('Current-vote enrichment in the delegation form', () => {
 
     expect(screen.getByText('!!!Currently Delegated To')).toBeInTheDocument();
     expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        '!!!Becomes inactive in 5 epochs. Consider redelegating.'
-      )
-    ).toBeInTheDocument();
     expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
     expect(
       screen.getByText('!!!This wallet already votes for this DRep.')

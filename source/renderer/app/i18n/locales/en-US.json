@@ -1028,8 +1028,6 @@
   "voting.governance.currentVote.headerCurrent": "!!!Currently Delegated To",
   "voting.governance.currentVote.noConfidence.caption": "!!!Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.",
   "voting.governance.currentVote.sameVoteHint": "!!!This wallet already votes {target, select, drep {for this DRep} abstain {Abstain} no_confidence {No Confidence} other {the same way}}.",
-  "voting.governance.currentVote.status.inactive": "!!!Currently inactive. Your voting power does not count. Consider redelegating.",
-  "voting.governance.currentVote.status.inactiveSoon": "!!!Becomes inactive in {n, plural, one {# epoch} other {# epochs}}. Consider redelegating.",
   "voting.governance.currentVote.status.loading": "!!!Loading DRep data…",
   "voting.governance.currentVote.status.unavailable": "!!!Could not load this DRep's data. It may have retired.",
   "voting.governance.delegateToDRep": "Delegate to DRep (default)",

@@ -6097,16 +6097,6 @@
         "id": "voting.governance.currentVote.noConfidence.caption"
       },
       {
-        "defaultMessage": "!!!Becomes inactive in {n, plural, one {# epoch} other {# epochs}}. Consider redelegating.",
-        "description": "Caption shown when the delegated DRep registration lapses soon",
-        "id": "voting.governance.currentVote.status.inactiveSoon"
-      },
-      {
-        "defaultMessage": "!!!Currently inactive. Your voting power does not count. Consider redelegating.",
-        "description": "Caption shown when the delegated DRep is inactive",
-        "id": "voting.governance.currentVote.status.inactive"
-      },
-      {
         "defaultMessage": "!!!Loading DRep data…",
         "description": "Shown while this wallet's DRep is still being looked up",
         "id": "voting.governance.currentVote.status.loading"

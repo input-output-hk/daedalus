@@ -1,6 +1,5 @@
 import React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
-import { isInactiveSoon } from '../../governance/_shared/drepExpiry';
 import DRepIdDisplay from '../../governance/_shared/DRepIdDisplay';
 import DRepStatusBadge from '../../governance/_shared/DRepStatusBadge';
 import type { DRepDelegation } from '../../../api/wallets/types';
@@ -20,29 +19,19 @@ type Props = {
   intl: intlShape.isRequired;
 };
 
-// One definition of going inactive across the app: the same six-epoch
-// threshold the DRep directory badge and its filter use, read from the same
-// helper. This panel had kept a twelve-epoch window of its own, so a DRep the
-// directory called fine was flagged here, and the two screens disagreed about
-// the same DRep on the same day.
+// Whether the DRep's directory entry arrived, and nothing more. Classifying
+// how close that DRep is to inactive belongs to the badge, which does it for
+// the directory and the detail view too; deriving it a second time here is
+// how the two screens came to disagree about the same DRep on the same day.
 
-type CurrentVoteBadgeState =
-  | 'loading'
-  | 'unavailable'
-  | 'inactive'
-  | 'inactiveSoon'
-  | 'active';
+type CurrentVoteLookupState = 'loading' | 'unavailable' | 'resolved';
 
-function deriveCurrentVoteBadgeState(
+function deriveLookupState(
   drepEntry: AppDRepDirectoryEntry | null | undefined,
   isLookingUpDRep: boolean
-): CurrentVoteBadgeState {
-  if (drepEntry == null) return isLookingUpDRep ? 'loading' : 'unavailable';
-  if (drepEntry.status === 'inactive') return 'inactive';
-  if (isInactiveSoon(drepEntry.drepActivity)) {
-    return 'inactiveSoon';
-  }
-  return 'active';
+): CurrentVoteLookupState {
+  if (drepEntry != null) return 'resolved';
+  return isLookingUpDRep ? 'loading' : 'unavailable';
 }
 
 function CurrentDRepSummary({
@@ -56,7 +45,7 @@ function CurrentDRepSummary({
   }
 
   if (currentDRep.kind === 'drep') {
-    const badgeState = deriveCurrentVoteBadgeState(drepEntry, isLookingUpDRep);
+    const lookupState = deriveLookupState(drepEntry, isLookingUpDRep);
     return (
       <section
         className={styles.component}
@@ -89,19 +78,19 @@ function CurrentDRepSummary({
         <div className={styles.idRow}>
           <DRepIdDisplay drepId={currentDRep.drep.raw} />
         </div>
-        {badgeState !== 'active' && (
+        {/* Nothing said here about a DRep that is inactive or close to it.
+            The badge above states it, and this panel exists on the screen for
+            changing a delegation, so a sentence telling the reader to consider
+            redelegating tells them to do what they are already doing. What is
+            left is the case the badge cannot show, because there is no entry
+            to draw one from. */}
+        {lookupState !== 'resolved' && (
           <p className={styles.caption}>
-            {badgeState === 'inactiveSoon'
-              ? intl.formatMessage(messages.statusInactiveSoon, {
-                  n: drepEntry.drepActivity,
-                })
-              : intl.formatMessage(
-                  {
-                    inactive: messages.statusInactive,
-                    loading: messages.statusLoading,
-                    unavailable: messages.statusUnavailable,
-                  }[badgeState] ?? messages.statusUnavailable
-                )}
+            {intl.formatMessage(
+              lookupState === 'loading'
+                ? messages.statusLoading
+                : messages.statusUnavailable
+            )}
           </p>
         )}
       </section>

@@ -1028,8 +1028,6 @@
   "voting.governance.currentVote.headerCurrent": "!!!現在の委任先",
   "voting.governance.currentVote.noConfidence.caption": "!!!ステークはすべての不信任動議において賛成票として、その他すべてのガバナンスアクションにおいて反対票として集計されます。",
   "voting.governance.currentVote.sameVoteHint": "!!!このウォレットは{target, select, drep {すでにこのDRepに委任しています} abstain {すでに棄権に設定されています} no_confidence {すでに不信任に設定されています} other {すでに同じ内容で投票しています}}。",
-  "voting.governance.currentVote.status.inactive": "!!!現在非アクティブです。投票権はカウントされません。再委任をご検討ください。",
-  "voting.governance.currentVote.status.inactiveSoon": "!!!あと{n, plural, other {#エポック}}で非アクティブになります。再委任をご検討ください。",
   "voting.governance.currentVote.status.loading": "!!!DRepデータを読み込み中…",
   "voting.governance.currentVote.status.unavailable": "!!!このDRepのデータを読み込めませんでした。すでに引退している可能性があります。",
   "voting.governance.delegateToDRep": "DRepに委任（初期設定）",
