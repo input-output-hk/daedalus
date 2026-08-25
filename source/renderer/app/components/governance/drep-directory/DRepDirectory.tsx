@@ -107,7 +107,7 @@ const messages = defineMessages({
   criteriaSummary: {
     id: 'governance.drepDirectory.cohort.summary',
     defaultMessage:
-      '!!!Showing {count, plural, one {# DRep} other {# DReps}} drawn at random from the active DReps that meet:',
+      '!!!Showing {count, plural, one {# DRep} other {# DReps}} drawn at random from the active DReps meeting these criteria.',
     description:
       'Lead line above the list of criteria the suggested cohort was drawn under',
   },
@@ -639,31 +639,30 @@ function DRepDirectory({
                 isRankingAvailable={isRankingAvailable}
                 isSearchActive={isSearchActive}
               />
-              {isDefaultCohortView && visibleEntries.length > 0 && (
-                <>
-                  <p className={styles.criteriaSummaryLead}>
-                    {intl.formatMessage(messages.criteriaSummary, {
-                      count: visibleEntries.length,
-                    })}
-                  </p>
-                  {/* Open, not behind a disclosure. The controls name the
-                      criteria and show their state at once, so hiding them hid
-                      the explanation of the list as well as the means of
-                      changing it. */}
-                  {onCohortCriteriaChange && (
-                    <DRepCohortCriteriaPanel
-                      criteria={cohortCriteria}
-                      onCriteriaChange={onCohortCriteriaChange}
-                    />
-                  )}
-                </>
+              {/* Open, not behind a disclosure. The controls name the criteria
+                  and show their state at once, so hiding them hid the
+                  explanation of the list as well as the means of changing
+                  it. */}
+              {isDefaultCohortView && onCohortCriteriaChange && (
+                <DRepCohortCriteriaPanel
+                  criteria={cohortCriteria}
+                  onCriteriaChange={onCohortCriteriaChange}
+                />
               )}
-              {isShowAll && !isSearchActive && (
+              {/* Last line of the box in either mode, so the count sits in one
+                  place and only its wording follows what is being counted. A
+                  figure that moves when the mode changes is a figure a reader
+                  has to find again. */}
+              {visibleEntries.length > 0 && (
                 <p className={styles.criteriaSummaryLead}>
-                  {intl.formatMessage(messages.showAllSummary, {
-                    count: visibleEntries.length,
-                    total: allDReps.length,
-                  })}
+                  {isShowAll || isSearchActive
+                    ? intl.formatMessage(messages.showAllSummary, {
+                        count: visibleEntries.length,
+                        total: allDReps.length,
+                      })
+                    : intl.formatMessage(messages.criteriaSummary, {
+                        count: visibleEntries.length,
+                      })}
                 </p>
               )}
             </div>

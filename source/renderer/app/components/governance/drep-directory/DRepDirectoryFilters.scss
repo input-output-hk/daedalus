@@ -16,6 +16,25 @@
   max-width: 100%;
 }
 
+// Built to the shape of the selects beside it, because in the all-DReps mode
+// it sits in the same row as them: a label of the same weight and spacing,
+// then a control of the same height.
+.modeFacet {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.modeLabel {
+  color: var(--rp-formfield-label-text-color);
+  display: block;
+  font-family: var(--font-medium);
+  font-size: 16px;
+  line-height: 1.38;
+  margin: 0 0 10px;
+  white-space: nowrap;
+}
+
 // The same segmented pair as the view toggle beside the search, so the screen
 // has one way of showing a choice between two named states rather than two.
 .modes {
@@ -24,6 +43,7 @@
   border-radius: 4px;
   display: flex;
   flex-shrink: 0;
+  height: 50px;
   overflow: hidden;
 
   button {

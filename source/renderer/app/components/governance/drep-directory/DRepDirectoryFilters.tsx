@@ -21,10 +21,10 @@ const messages = defineMessages({
     defaultMessage: '!!!All DReps',
     description: 'Mode showing every DRep, with filters and ordering',
   },
-  modeGroupLabel: {
-    id: 'governance.drepDirectory.mode.groupLabel',
-    defaultMessage: '!!!What the directory shows',
-    description: 'Accessible name of the pair of mode buttons',
+  modeLabel: {
+    id: 'governance.drepDirectory.mode.label',
+    defaultMessage: '!!!Mode',
+    description: 'Label above the pair of buttons choosing what is listed',
   },
   showAll: {
     id: 'governance.drepDirectory.cohortBanner.showAll',
@@ -113,7 +113,7 @@ function DRepDirectoryFilters({
   intl,
 }: Props) {
   const canFilterPopulation = isShowAll || isSearchActive;
-  const modeGroupLabel = intl.formatMessage(messages.modeGroupLabel);
+  const modeLabel = intl.formatMessage(messages.modeLabel);
   const facet = (
     label: string,
     value: string,
@@ -135,23 +135,26 @@ function DRepDirectoryFilters({
           twenty and every DRep there is. Built as the pair of pressed buttons
           the view toggle beside the search already uses, because a switch
           reads as on and off and neither of these is off. */}
-      <div className={styles.modes} role="group" aria-label={modeGroupLabel}>
-        <button
-          type="button"
-          className={!isShowAll ? styles.modeSelected : undefined}
-          aria-pressed={!isShowAll}
-          onClick={() => onShowAllChange(false)}
-        >
-          {intl.formatMessage(messages.modeSuggested)}
-        </button>
-        <button
-          type="button"
-          className={isShowAll ? styles.modeSelected : undefined}
-          aria-pressed={isShowAll}
-          onClick={() => onShowAllChange(true)}
-        >
-          {intl.formatMessage(messages.modeAll)}
-        </button>
+      <div className={styles.modeFacet}>
+        <span className={styles.modeLabel}>{modeLabel}</span>
+        <div className={styles.modes} role="group" aria-label={modeLabel}>
+          <button
+            type="button"
+            className={!isShowAll ? styles.modeSelected : undefined}
+            aria-pressed={!isShowAll}
+            onClick={() => onShowAllChange(false)}
+          >
+            {intl.formatMessage(messages.modeSuggested)}
+          </button>
+          <button
+            type="button"
+            className={isShowAll ? styles.modeSelected : undefined}
+            aria-pressed={isShowAll}
+            onClick={() => onShowAllChange(true)}
+          >
+            {intl.formatMessage(messages.modeAll)}
+          </button>
+        </div>
       </div>
       {/* Both facets narrow on properties the suggestion criteria already
           decided, so over the cohort they are inert at best: picking Inactive

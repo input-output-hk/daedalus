@@ -2642,9 +2642,9 @@
         "id": "governance.drepDirectory.mode.all"
       },
       {
-        "defaultMessage": "!!!What the directory shows",
-        "description": "Accessible name of the pair of mode buttons",
-        "id": "governance.drepDirectory.mode.groupLabel"
+        "defaultMessage": "!!!Mode",
+        "description": "Label above the pair of buttons choosing what is listed",
+        "id": "governance.drepDirectory.mode.label"
       },
       {
         "defaultMessage": "!!!Status",
@@ -3262,7 +3262,7 @@
         "id": "governance.drepDirectory.showAll.summary"
       },
       {
-        "defaultMessage": "!!!Showing {count, plural, one {# DRep} other {# DReps}} drawn at random from the active DReps that meet:",
+        "defaultMessage": "!!!Showing {count, plural, one {# DRep} other {# DReps}} drawn at random from the active DReps meeting these criteria.",
         "description": "Lead line above the list of criteria the suggested cohort was drawn under",
         "id": "governance.drepDirectory.cohort.summary"
       },
