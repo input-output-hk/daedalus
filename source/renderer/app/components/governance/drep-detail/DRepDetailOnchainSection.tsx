@@ -20,7 +20,7 @@ const messages = defineMessages({
   },
   title: {
     id: 'governance.drepDetail.onchain.title',
-    defaultMessage: '!!!On-chain',
+    defaultMessage: '!!!On-Chain Data',
     description: 'Heading of the on-chain section on the DRep detail view',
   },
   titleExplanation: {
@@ -47,30 +47,21 @@ const messages = defineMessages({
     description: 'Label for the share of delegated voting power a DRep holds',
   },
   votingPowerShareUnavailable: {
-    id: 'governance.drepDetail.votingPowerShare.unavailableTooltip',
+    id: 'governance.drepDetail.votingPowerShare.unavailable',
     defaultMessage:
       '!!!DRep totals are unavailable, so this share cannot be calculated.',
-    description: 'Tooltip on the share placeholder when totals are missing',
+    description:
+      'Shown in place of the share when the network total is missing',
   },
   votingPowerLabel: {
     id: 'governance.drepDetail.votingPower',
     defaultMessage: '!!!Voting power',
     description: 'Label for the voting power field on the detail view',
   },
-  votingPowerLovelace: {
-    id: 'governance.drepDetail.votingPowerLovelace',
-    defaultMessage: '!!!({amount} lovelace)',
-    description: 'Secondary raw-lovelace line under the ADA voting power',
-  },
-  votingPowerLoadingTooltip: {
-    id: 'governance.drepDetail.votingPower.loadingTooltip',
-    defaultMessage: '!!!Loading voting power…',
-    description: 'Tooltip on the voting-power placeholder during enrichment',
-  },
-  votingPowerUnavailableTooltip: {
-    id: 'governance.drepDetail.votingPower.unavailableTooltip',
+  votingPowerUnavailable: {
+    id: 'governance.drepDetail.votingPower.unavailable',
     defaultMessage: '!!!Stake distribution unavailable, try again later.',
-    description: 'Tooltip on the voting-power placeholder when stake failed',
+    description: 'Shown in place of the voting power when stake failed to load',
   },
 });
 
@@ -82,8 +73,8 @@ interface Props {
   intl: intlShape.isRequired;
 }
 
-// Detail-form rendering: full ADA with thousands separators; the raw
-// lovelace renders on a secondary line, never rounded away.
+// Detail-form rendering: full ADA with thousands separators, never
+// abbreviated to a suffix the way the directory cards do.
 function formatAdaExact(lovelace: BigNumber): string {
   return `₳ ${lovelace.div(1_000_000).toFormat()}`;
 }
@@ -103,11 +94,6 @@ function DRepDetailOnchainSection({
         variant="plain"
       />
     ) : null;
-
-  const votingPowerTooltip =
-    entry.votingPower === null
-      ? intl.formatMessage(messages.votingPowerUnavailableTooltip)
-      : undefined;
 
   return (
     <section
@@ -148,14 +134,12 @@ function DRepDetailOnchainSection({
           </dt>
           <dd className={styles.fieldValue}>
             {entry.votingPower ? (
-              <>
-                <span className={styles.votingPowerAda}>
-                  {formatAdaExact(entry.votingPower)}
-                </span>
-              </>
+              <span className={styles.votingPowerAda}>
+                {formatAdaExact(entry.votingPower)}
+              </span>
             ) : (
-              <span title={votingPowerTooltip} aria-label={votingPowerTooltip}>
-                —
+              <span className={styles.mutedValue}>
+                {intl.formatMessage(messages.votingPowerUnavailable)}
               </span>
             )}
           </dd>
@@ -165,16 +149,18 @@ function DRepDetailOnchainSection({
             {intl.formatMessage(messages.votingPowerShareLabel)}
           </dt>
           <dd className={styles.fieldValue}>
-            {shareOfVotingPower ?? (
-              <span
-                title={intl.formatMessage(messages.votingPowerShareUnavailable)}
-                aria-label={intl.formatMessage(
-                  messages.votingPowerShareUnavailable
-                )}
-              >
-                —
-              </span>
-            )}
+            {/* The share needs both halves of the division. When the DRep's
+                own voting power is the missing half, the row above has already
+                said so and repeating it here states one failure twice; only a
+                missing network total is unaccounted for anywhere else. */}
+            {shareOfVotingPower ??
+              (entry.votingPower == null ? (
+                '—'
+              ) : (
+                <span className={styles.mutedValue}>
+                  {intl.formatMessage(messages.votingPowerShareUnavailable)}
+                </span>
+              ))}
           </dd>
         </div>
       </dl>

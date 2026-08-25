@@ -2727,7 +2727,7 @@
         "id": "governance.drepDetail.loading"
       },
       {
-        "defaultMessage": "!!!This DRep was not found in the latest on-chain data.",
+        "defaultMessage": "!!!This DRep was not found in the on-chain data.",
         "description": "Inline error when the requested DRep is not in the index",
         "id": "governance.drepDetail.notFound"
       }
@@ -3107,7 +3107,7 @@
         "id": "governance.drepDetail.explorerLink"
       },
       {
-        "defaultMessage": "!!!On-chain",
+        "defaultMessage": "!!!On-Chain Data",
         "description": "Heading of the on-chain section on the DRep detail view",
         "id": "governance.drepDetail.onchain.title"
       },
@@ -3133,8 +3133,8 @@
       },
       {
         "defaultMessage": "!!!DRep totals are unavailable, so this share cannot be calculated.",
-        "description": "Tooltip on the share placeholder when totals are missing",
-        "id": "governance.drepDetail.votingPowerShare.unavailableTooltip"
+        "description": "Shown in place of the share when the network total is missing",
+        "id": "governance.drepDetail.votingPowerShare.unavailable"
       },
       {
         "defaultMessage": "!!!Voting power",
@@ -3142,19 +3142,9 @@
         "id": "governance.drepDetail.votingPower"
       },
       {
-        "defaultMessage": "!!!({amount} lovelace)",
-        "description": "Secondary raw-lovelace line under the ADA voting power",
-        "id": "governance.drepDetail.votingPowerLovelace"
-      },
-      {
-        "defaultMessage": "!!!Loading voting power…",
-        "description": "Tooltip on the voting-power placeholder during enrichment",
-        "id": "governance.drepDetail.votingPower.loadingTooltip"
-      },
-      {
         "defaultMessage": "!!!Stake distribution unavailable, try again later.",
-        "description": "Tooltip on the voting-power placeholder when stake failed",
-        "id": "governance.drepDetail.votingPower.unavailableTooltip"
+        "description": "Shown in place of the voting power when stake failed to load",
+        "id": "governance.drepDetail.votingPower.unavailable"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-detail/DRepDetailOnchainSection.tsx"

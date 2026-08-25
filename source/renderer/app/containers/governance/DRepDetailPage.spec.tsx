@@ -171,7 +171,7 @@ describe('DRepDetailPage', () => {
     // The two boxes already separate what the ledger reports from what the
     // DRep published, so each is named for that rather than repeating a small
     // provenance label beside individual fields.
-    expect(screen.getByText('!!!On-chain data')).toBeInTheDocument();
+    expect(screen.getByText('!!!On-Chain Data')).toBeInTheDocument();
     expect(screen.getByText('!!!Off-chain metadata')).toBeInTheDocument();
     expect(
       screen.getByLabelText(
@@ -196,7 +196,7 @@ describe('DRepDetailPage', () => {
     expect(screen.getByText('Status')).toBeInTheDocument();
     expect(screen.getByText('!!!Inactive in')).toBeInTheDocument();
     expect(screen.getByText('!!!Voting power')).toBeInTheDocument();
-    expect(screen.getByText('!!!On-chain data')).toBeInTheDocument();
+    expect(screen.getByText('!!!On-Chain Data')).toBeInTheDocument();
     expect(screen.queryByText('!!!Verified off-chain content')).toBeNull();
   });
 
@@ -372,7 +372,7 @@ describe('DRepDetailPage', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('shows — with the unavailable tooltip when stake enrichment failed', async () => {
+  it('says why the voting power is missing when stake enrichment failed', async () => {
     await renderPage({
       governanceOverrides: {
         fetchDRep: jest
@@ -381,16 +381,13 @@ describe('DRepDetailPage', () => {
       },
     });
 
-    // Two rows render an em dash when totals are missing: voting power and,
-    // since it cannot be calculated without them, the share. Target the one
-    // under test by its tooltip rather than by the dash.
-    expect(screen.getAllByText('—')).toHaveLength(2);
+    // The voting power row states the reason as text rather than hiding it
+    // in a tooltip on a dash. The share row below it, which needs that same
+    // figure, is left as a bare dash so the reason is given once.
     expect(
-      screen.getByTitle('!!!Stake distribution unavailable, try again later.')
-    ).toHaveAttribute(
-      'title',
-      '!!!Stake distribution unavailable, try again later.'
-    );
+      screen.getByText('!!!Stake distribution unavailable, try again later.')
+    ).toBeInTheDocument();
+    expect(screen.getAllByText('—')).toHaveLength(1);
   });
 
   it('shows the loading state until fetchDRep resolves', async () => {
@@ -431,7 +428,7 @@ describe('DRepDetailPage', () => {
 
     expect(screen.getByText('!!!Loading DRep data…')).toBeInTheDocument();
     expect(
-      screen.queryByText(/was not found in the latest on-chain data/)
+      screen.queryByText(/was not found in the on-chain data/)
     ).not.toBeInTheDocument();
   });
 
@@ -458,9 +455,7 @@ describe('DRepDetailPage', () => {
     });
 
     expect(
-      screen.getByText(
-        '!!!This DRep was not found in the latest on-chain data.'
-      )
+      screen.getByText('!!!This DRep was not found in the on-chain data.')
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('!!!Back to directory'));

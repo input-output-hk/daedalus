@@ -25,7 +25,7 @@ const messages = defineMessages({
   },
   notFound: {
     id: 'governance.drepDetail.notFound',
-    defaultMessage: '!!!This DRep was not found in the latest on-chain data.',
+    defaultMessage: '!!!This DRep was not found in the on-chain data.',
     description: 'Inline error when the requested DRep is not in the index',
   },
 });
