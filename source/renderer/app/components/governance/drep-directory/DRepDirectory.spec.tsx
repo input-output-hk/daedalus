@@ -1686,10 +1686,10 @@ describe('DRepDirectory suggestion criteria', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
 
-    const panelToggle = screen
-      .getAllByText('!!!Verified metadata')
-      .find((el) => el.closest('label')) as HTMLElement;
-    fireEvent.click(panelToggle);
+    // The switch wears its label above it now, so the control is the input
+    // inside the facet the label heads.
+    const facet = screen.getByText('!!!Verified metadata').closest('div');
+    fireEvent.click(facet?.querySelector('input') as HTMLInputElement);
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,

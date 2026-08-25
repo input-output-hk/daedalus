@@ -1,3 +1,5 @@
+@import '../governanceConfig';
+
 // The row above this one is a 50px bordered field and a 50px bordered box of
 // toggle buttons. This row is now the app's own select at that same height,
 // one per facet, laid out the way the settings screen lays out its selects:
@@ -18,13 +20,7 @@
 }
 
 .modeLabel {
-  color: var(--rp-formfield-label-text-color);
-  display: block;
-  font-family: var(--font-medium);
-  font-size: 16px;
-  line-height: 1.38;
-  margin: 0 0 10px;
-  white-space: nowrap;
+  @extend %facetLabel;
 }
 
 // The same segmented pair as the view toggle beside the search, so the screen

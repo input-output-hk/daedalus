@@ -10,24 +10,28 @@
 // One row, matching the row this panel is replaced by in the other mode. Two
 // stacked rows here and one row there made the box change height whenever the
 // mode changed, which is the jump the single box was meant to remove.
-// A switch carries its own label inline, where a select carries one above it.
-// Giving the switch a box of the control height puts the two on the same
-// baseline without a second label that would only repeat the first.
+// The switch wears its label above it, where its neighbours wear theirs,
+// rather than beside it. Polymorph puts a checkbox's label to its right, which
+// left these two sitting under a gap in a row where everything else was
+// labelled, and the row read as two kinds of thing rather than one.
+.toggleFacet {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.toggleLabel {
+  @extend %facetLabel;
+}
+
 .toggleControl {
   align-items: center;
   display: flex;
-  flex-shrink: 0;
   height: 50px;
 }
 
-// NormalSwitch carries a 10px margin for a settings row and a label at the
-// app's body size. Here the panel's own gap does the spacing, and the label
-// sits at the same size as the values beside it.
+// NormalSwitch carries a 10px margin for a settings row, which the row's own
+// gap does here instead.
 .toggle {
   margin: 0;
-
-  label {
-    font-size: 14px !important;
-    line-height: 1.2 !important;
-  }
 }

@@ -55,13 +55,15 @@ function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
     checked: boolean,
     onChange: (checked: boolean) => void
   ) => (
-    <div className={styles.toggleControl} key={label}>
-      <NormalSwitch
-        className={styles.toggle}
-        checked={checked}
-        label={label}
-        onChange={onChange}
-      />
+    <div className={styles.toggleFacet} key={label}>
+      <span className={styles.toggleLabel}>{label}</span>
+      <div className={styles.toggleControl}>
+        <NormalSwitch
+          className={styles.toggle}
+          checked={checked}
+          onChange={onChange}
+        />
+      </div>
     </div>
   );
 

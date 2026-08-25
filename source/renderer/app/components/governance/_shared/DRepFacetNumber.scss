@@ -16,17 +16,23 @@
     background-color: var(--rp-input-bg-color);
     border-radius: 4px;
     height: 50px;
-    // Room on the right for the unit and the two stepper buttons.
-    padding: 0 100px 0 20px;
+    // Right-aligned so the value meets its unit. Left-aligned, the number sat
+    // at one end of the field and the per-cent sign at the other, and the two
+    // never read as one quantity.
+    padding: 0 88px 0 20px;
+    text-align: right;
   }
 }
 
 // The unit belongs to the value, not to the label: a reader typing 1.5 needs
-// to see what 1.5 is a quantity of without reading back up.
+// to see what 1.5 is a quantity of without reading back up. Set in the weight
+// and colour of the value it follows, so the two read as one figure rather
+// than a number with a mark parked beside it.
 .suffix {
-  bottom: 15px;
-  color: var(--theme-gov-font-color-light);
-  font-size: 14px;
+  bottom: 14px;
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-medium);
+  font-size: 16px;
   line-height: 1.38;
   pointer-events: none;
   position: absolute;

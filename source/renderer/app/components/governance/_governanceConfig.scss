@@ -64,3 +64,16 @@
   font-size: 12px;
   line-height: 1.38;
 }
+
+// The label a facet wears, matching the one react-polymorph renders above its
+// own inputs. Controls that are not polymorph inputs, a mode selector or a
+// switch, wear it by hand so a row of mixed controls reads as one row.
+%facetLabel {
+  color: var(--rp-formfield-label-text-color);
+  display: block;
+  font-family: var(--font-medium);
+  font-size: 16px;
+  line-height: 1.38;
+  margin: 0 0 10px;
+  white-space: nowrap;
+}
