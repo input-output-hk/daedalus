@@ -324,7 +324,6 @@
   "governance.drepDetail.anchorContent.paymentAddress.wrongNetwork": "!!!これは{network}のアドレスではありません。このウォレットから送金しても届きません。",
   "governance.drepDetail.anchorContent.qualifications": "!!!資格",
   "governance.drepDetail.anchorContent.references.identity": "!!!アイデンティティ",
-  "governance.drepDetail.anchorContent.references.identityCaption": "!!!リンク先を開き、このDRep IDがそこに公開されていることを確認してから信頼してください。",
   "governance.drepDetail.anchorContent.references.links": "!!!リンク",
   "governance.drepDetail.anchorContent.references.title": "!!!参照",
   "governance.drepDetail.anchorContent.title": "!!!標準メタデータ項目",

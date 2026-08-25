@@ -70,13 +70,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Identities',
     description: 'Sub-heading for references typed as Identity',
   },
-  referencesIdentityCaption: {
-    id: 'governance.drepDetail.anchorContent.references.identityCaption',
-    defaultMessage:
-      '!!!Open the link and confirm that this DRep ID is published there before you rely on it.',
-    description:
-      'Caption stating that an Identity reference is a claim, not a verified identity',
-  },
   paymentAddressLabel: {
     id: 'governance.drepDetail.anchorContent.paymentAddress.label',
     defaultMessage: '!!!Payment Address',
@@ -363,13 +356,16 @@ function DRepDetailAnchorContent({
           )}
           {identityReferences.length > 0 && (
             <>
+              {/* No caption. Telling a reader to open the link and check
+                  that this DRep ID appears there describes a test that any
+                  page can pass: publishing a string costs an impostor
+                  nothing, and a page built to look like a well-known profile
+                  will show whatever it needs to. Guidance that cannot fail
+                  is worse than none, because a reader who follows it comes
+                  away more confident than before. What these references are
+                  is already stated once, above the whole section. */}
               <h5 className={styles.subSubSectionTitle}>
-                {intl.formatMessage(messages.referencesIdentity)}{' '}
-                <DRepInfoIcon
-                  explanation={intl.formatMessage(
-                    messages.referencesIdentityCaption
-                  )}
-                />
+                {intl.formatMessage(messages.referencesIdentity)}
               </h5>
               <ReferenceList
                 onOpenExternalLink={onOpenExternalLink}

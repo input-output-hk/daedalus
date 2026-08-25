@@ -3007,11 +3007,6 @@
         "id": "governance.drepDetail.anchorContent.references.identity"
       },
       {
-        "defaultMessage": "!!!Open the link and confirm that this DRep ID is published there before you rely on it.",
-        "description": "Caption stating that an Identity reference is a claim, not a verified identity",
-        "id": "governance.drepDetail.anchorContent.references.identityCaption"
-      },
-      {
         "defaultMessage": "!!!Payment Address",
         "description": "Label for the verified CIP-119 paymentAddress field",
         "id": "governance.drepDetail.anchorContent.paymentAddress.label"

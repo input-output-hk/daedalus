@@ -708,15 +708,8 @@ describe('DRepDetailPage', () => {
     const identityHeading = screen.getByText('!!!Identities');
     const linkHeading = screen.getByText('!!!Links');
     expect(identityHeading).toBeInTheDocument();
-    // The caveat is available on the heading rather than set between the
-    // heading and the entries it qualifies.
-    expect(
-      screen.getByLabelText(
-        '!!!Open the link and confirm that this DRep ID is published there before you rely on it.'
-      )
-    ).toBeInTheDocument();
 
-    // The identity entry must sit after the caption, never inside the Links list.
+    // The identity entry must sit under its own heading, never inside Links.
     const identityEntry = screen.getByText('X profile');
     const blogEntry = screen.getByText('Blog');
     expect(identityHeading.compareDocumentPosition(identityEntry)).toBe(

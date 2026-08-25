@@ -324,7 +324,6 @@
   "governance.drepDetail.anchorContent.paymentAddress.wrongNetwork": "!!!This is not a {network} address. Nothing sent from this wallet can reach it.",
   "governance.drepDetail.anchorContent.qualifications": "!!!Qualifications",
   "governance.drepDetail.anchorContent.references.identity": "!!!Identities",
-  "governance.drepDetail.anchorContent.references.identityCaption": "!!!Open the link and confirm that this DRep ID is published there before you rely on it.",
   "governance.drepDetail.anchorContent.references.links": "!!!Links",
   "governance.drepDetail.anchorContent.references.title": "!!!References",
   "governance.drepDetail.anchorContent.title": "!!!Canonical Metadata Fields",
