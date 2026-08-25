@@ -77,3 +77,9 @@
   margin: 0 0 10px;
   white-space: nowrap;
 }
+
+// The floor a facet sized to its own content sits at, rather than to the
+// row's spare width. Set by the longest label such a facet carries, so two
+// controls holding a short value are the same width as each other instead of
+// each being as wide as its own contents happen to make it.
+$narrowFacetWidth: 160px;

@@ -1,3 +1,5 @@
+@import '../governanceConfig';
+
 // Each facet sizes itself from its content and grows to share whatever the row
 // has left, down to a floor wide enough for the longest option label. Below
 // that the row wraps rather than scrolling: a control pushed off the end of a
@@ -23,5 +25,5 @@
 // choices are a number does not need the room a status filter does.
 .narrowFacet {
   flex: 0 0 auto;
-  min-width: 0;
+  min-width: $narrowFacetWidth;
 }

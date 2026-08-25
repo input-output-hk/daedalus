@@ -1,11 +1,13 @@
+@import '../governanceConfig';
+
 // Sized and bounded like the selects beside it, so the row keeps one control
 // height whichever kind of control a facet needs.
 .facet {
   flex: 0 1 auto;
-  // Wide enough for a value, its unit and two buttons, and no wider: this
-  // sits in a row that has to hold every criterion at once.
+  // The same floor as the selects that share its row, rather than whatever
+  // the buttons inside it happen to need.
   flex: 0 0 auto;
-  min-width: 190px;
+  min-width: $narrowFacetWidth;
   position: relative;
 }
 
@@ -19,7 +21,7 @@
     // Right-aligned so the value meets its unit. Left-aligned, the number sat
     // at one end of the field and the per-cent sign at the other, and the two
     // never read as one quantity.
-    padding: 0 88px 0 20px;
+    padding: 0 84px 0 14px;
     text-align: right;
   }
 }
