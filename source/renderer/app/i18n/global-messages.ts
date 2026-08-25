@@ -347,6 +347,11 @@ export default defineMessages({
     defaultMessage: '!!!Sort',
     description: 'Label of a control choosing the order of a list.',
   },
+  retry: {
+    id: 'global.labels.retry',
+    defaultMessage: '!!!Retry',
+    description: 'Label of a control that attempts a failed operation again.',
+  },
   delegate: {
     id: 'global.labels.delegate',
     defaultMessage: '!!!Delegate',

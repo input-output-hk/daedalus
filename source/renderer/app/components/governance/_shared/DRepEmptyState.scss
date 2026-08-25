@@ -24,19 +24,3 @@
   font-size: inherit;
   white-space: nowrap;
 }
-
-.unavailableBadge {
-  @extend %secondaryText;
-  align-items: center;
-  background: var(--theme-gov-badge-neutral-background);
-  border-radius: 4px;
-  color: var(--theme-gov-badge-neutral-color);
-  display: inline-flex;
-  gap: 6px;
-  line-height: 1;
-  padding: 4px 8px;
-}
-
-.unavailableIcon {
-  flex-shrink: 0;
-}

@@ -4,6 +4,7 @@ import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import globalMessages from '../../../i18n/global-messages';
 import DRepDirectoryList from './DRepDirectoryList';
 import DRepCohortCriteriaPanel from './DRepCohortCriteriaPanel';
 import DRepDirectoryBanner from './DRepDirectoryBanner';
@@ -57,11 +58,6 @@ const messages = defineMessages({
     id: 'governance.drepDirectory.error',
     defaultMessage: '!!!Could not load DRep data.',
     description: 'Error state message',
-  },
-  retry: {
-    id: 'governance.drepDirectory.retry',
-    defaultMessage: '!!!Retry',
-    description: 'Retry button label',
   },
   syncing: {
     id: 'governance.drepDirectory.syncing',
@@ -539,7 +535,7 @@ function DRepDirectory({
               <p className={styles.errorDetails}>{error.details}</p>
             )}
             <Button
-              label={intl.formatMessage(messages.retry)}
+              label={intl.formatMessage(globalMessages.retry)}
               onClick={onRefresh}
               skin={ButtonSkin}
             />
@@ -553,7 +549,7 @@ function DRepDirectory({
           <div className={styles.stateContainer}>
             <p>{intl.formatMessage(messages.empty)}</p>
             <Button
-              label={intl.formatMessage(messages.retry)}
+              label={intl.formatMessage(globalMessages.retry)}
               onClick={onRefresh}
               skin={ButtonSkin}
             />
@@ -604,7 +600,7 @@ function DRepDirectory({
             {showErrorBanner && (
               <DRepErrorBanner
                 variant="refreshFailed"
-                retryLabel={intl.formatMessage(messages.retry)}
+                retryLabel={intl.formatMessage(globalMessages.retry)}
                 onRetry={onRefresh}
                 lastFetchedAt={lastFetchedAt}
               />

@@ -437,6 +437,11 @@
         "id": "global.labels.sort"
       },
       {
+        "defaultMessage": "!!!Retry",
+        "description": "Label of a control that attempts a failed operation again.",
+        "id": "global.labels.retry"
+      },
+      {
         "defaultMessage": "!!!Delegate",
         "description": "Label of a control that starts delegating, of stake or of voting power.",
         "id": "global.labels.delegate"
@@ -2617,12 +2622,7 @@
         "id": "governance.drepDirectory.empty.selfnode"
       },
       {
-        "defaultMessage": "!!!DRep data unavailable on selfnode",
-        "description": "Directory-level unavailability badge rendered inside the selfnode empty state",
-        "id": "governance.drepDirectory.status.selfnodeUnavailable"
-      },
-      {
-        "defaultMessage": "!!!No DReps on the network currently meet the suggestion criteria. {ShowAll} instead, or loosen the criteria above.",
+        "defaultMessage": "!!!No DReps meet the suggestion criteria. {ShowAll} instead, or modify the criteria above.",
         "description": "Empty state when the network holds no DRep the suggestion criteria admit",
         "id": "governance.drepDirectory.empty.noSuggestions"
       },
@@ -2642,7 +2642,7 @@
         "id": "governance.drepFavorites.empty.title"
       },
       {
-        "defaultMessage": "!!!DReps you favorite from the directory appear here. Favorites are stored on this device only.",
+        "defaultMessage": "!!!DReps you mark as your favorite from the directory appear here. Favorites are stored on this device only.",
         "description": "Body of the empty favorites view; owns the per-device expectation",
         "id": "governance.drepFavorites.empty.body"
       }
@@ -3225,11 +3225,6 @@
         "defaultMessage": "!!!Could not load DRep data.",
         "description": "Error state message",
         "id": "governance.drepDirectory.error"
-      },
-      {
-        "defaultMessage": "!!!Retry",
-        "description": "Retry button label",
-        "id": "governance.drepDirectory.retry"
       },
       {
         "defaultMessage": "!!!Your node is still syncing ({progress}%). The DRep list may be incomplete until sync completes.",

@@ -22,16 +22,10 @@ const messages = defineMessages({
       '!!!DRep directory data is unavailable on the selfnode cluster.',
     description: 'Directory empty state on the selfnode cluster',
   },
-  selfnodeUnavailable: {
-    id: 'governance.drepDirectory.status.selfnodeUnavailable',
-    defaultMessage: '!!!DRep data unavailable on selfnode',
-    description:
-      'Directory-level unavailability badge rendered inside the selfnode empty state',
-  },
   noSuggestions: {
     id: 'governance.drepDirectory.empty.noSuggestions',
     defaultMessage:
-      '!!!No DReps on the network currently meet the suggestion criteria. {ShowAll} instead, or loosen the criteria above.',
+      '!!!No DReps meet the suggestion criteria. {ShowAll} instead, or modify the criteria above.',
     description:
       'Empty state when the network holds no DRep the suggestion criteria admit',
   },
@@ -59,7 +53,7 @@ const messages = defineMessages({
   noFavoritesBody: {
     id: 'governance.drepFavorites.empty.body',
     defaultMessage:
-      '!!!DReps you favorite from the directory appear here. Favorites are stored on this device only.',
+      '!!!DReps you mark as your favorite from the directory appear here. Favorites are stored on this device only.',
     description:
       'Body of the empty favorites view; owns the per-device expectation',
   },
@@ -95,26 +89,6 @@ function DRepEmptyState({
   if (variant === 'selfnode') {
     return (
       <div className={styles.container} data-variant={variant}>
-        <span className={styles.unavailableBadge}>
-          <svg
-            className={styles.unavailableIcon}
-            aria-hidden="true"
-            width="14"
-            height="14"
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M8 1.5 15 14H1L8 1.5z"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-            />
-            <path d="M8 6v4" stroke="currentColor" strokeWidth="1.5" />
-            <circle cx="8" cy="12" r="0.9" fill="currentColor" />
-          </svg>
-          {intl.formatMessage(messages.selfnodeUnavailable)}
-        </span>
         <p className={styles.message}>
           {intl.formatMessage(messages.selfnode)}
         </p>

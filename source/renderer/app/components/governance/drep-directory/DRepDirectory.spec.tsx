@@ -538,9 +538,6 @@ describe('DRepDirectory', () => {
       )
     ).toBeInTheDocument();
     expect(
-      screen.getByText('!!!DRep data unavailable on selfnode')
-    ).toBeInTheDocument();
-    expect(
       screen.queryByText(/unavailable in selfnode mode/)
     ).not.toBeInTheDocument();
     expect(
@@ -606,7 +603,6 @@ describe('DRepDirectory', () => {
         '!!!selfnodeクラスターではDRepディレクトリのデータを利用できません。'
       )
     ).toBeInTheDocument();
-    expect(screen.getByText('!!!DRepデータ利用不可')).toBeInTheDocument();
   });
 
   it('shows the unavailable tooltip when voting power is null', () => {
