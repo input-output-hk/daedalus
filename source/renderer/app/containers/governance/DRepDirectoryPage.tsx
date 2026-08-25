@@ -77,7 +77,7 @@ class DRepDirectoryPage extends React.Component<Props> {
     if (!isSentinel && !governanceStore?.favoriteDRepIds.has(drepId)) {
       governanceStore?.toggleFavorite(drepId);
     }
-    this.props.history.push(inherited?.from ?? ROUTES.VOTING.GOVERNANCE);
+    this.props.history.push(inherited?.from ?? ROUTES.GOVERNANCE.DELEGATE);
   };
 
   handleViewDetails = (drepId: string) => {

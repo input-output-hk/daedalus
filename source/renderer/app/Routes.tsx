@@ -219,11 +219,6 @@ export const Routes = withRouter(() => (
               path={ROUTES.VOTING.REGISTRATION}
               component={VotingRegistrationPage}
             />
-            <TrackedRoute
-              pageTitle="Voting Governance"
-              path={ROUTES.VOTING.GOVERNANCE}
-              component={VotingGovernancePage}
-            />
           </Voting>
         </Route>
         <Route path={ROUTES.GOVERNANCE.ROOT}>
@@ -238,6 +233,12 @@ export const Routes = withRouter(() => (
               pageTitle="Governance Wallets"
               path={ROUTES.GOVERNANCE.DASHBOARD}
               component={GovernanceWalletsPage}
+            />
+            <TrackedRoute
+              exact
+              pageTitle="Voting Power Delegation"
+              path={ROUTES.GOVERNANCE.DELEGATE}
+              component={VotingGovernancePage}
             />
             <TrackedRoute
               exact

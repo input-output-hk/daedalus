@@ -43,9 +43,7 @@ describe('DRepDirectoryBanner', () => {
     renderBanner();
 
     // Refresh is an icon; its wording lives in the accessible name.
-    expect(
-      screen.getByRole('button', { name: 'Refresh' })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument();
     // The governance tab bar names the page; the banner must not say it again.
     expect(screen.queryByRole('heading')).not.toBeInTheDocument();
   });

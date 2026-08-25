@@ -192,9 +192,12 @@ export default class SidebarStore extends Store {
     const route = this.stores.app.currentRoute;
     this.CATEGORIES.forEach((category) => {
       const isGovernanceCategory = category.route === ROUTES.GOVERNANCE.ROOT;
+      // Governance routes only. This also matched everything under /voting,
+      // back when the delegation form lived there and left the sidebar with
+      // nothing lit; that form is under /governance now, and /voting is
+      // Catalyst, which is a different feature and not this category.
       const matchesGovernanceRoute =
-        route.indexOf(ROUTES.GOVERNANCE.ROOT) === 0 ||
-        route.indexOf(ROUTES.VOTING.ROOT) === 0;
+        route.indexOf(ROUTES.GOVERNANCE.ROOT) === 0;
 
       if (
         (isGovernanceCategory && matchesGovernanceRoute) ||

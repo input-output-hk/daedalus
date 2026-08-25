@@ -53,7 +53,7 @@ class VotingGovernancePage extends Component<Props> {
     // Hash history v4 silently drops location.state on every push, so the store
     // observable is the only reliable transport across route boundaries.
     this.props.stores.governance.setDelegationNavState({
-      from: ROUTES.VOTING.GOVERNANCE,
+      from: ROUTES.GOVERNANCE.DELEGATE,
       selectedWalletId: formState.selectedWalletId,
       voteType: formState.voteType,
     });

@@ -282,9 +282,7 @@ describe('DRepDirectory', () => {
       refreshState: GovernanceRefreshState.Failed,
     });
 
-    expect(
-      screen.getByText('Could not load DRep data.')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Could not load DRep data.')).toBeInTheDocument();
     expect(
       screen.getByText('Cardano node socket path is not available.')
     ).toBeInTheDocument();
@@ -301,9 +299,7 @@ describe('DRepDirectory', () => {
       refreshState: GovernanceRefreshState.Failed,
     });
 
-    expect(
-      screen.getByText('Could not load DRep data.')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Could not load DRep data.')).toBeInTheDocument();
     expect(screen.getByText('DRep state query failed.')).toBeInTheDocument();
     expect(
       screen.getByText('Missing: --mainnet | --testnet-magic NATURAL')
@@ -442,9 +438,7 @@ describe('DRepDirectory', () => {
     const onViewDetails = jest.fn();
     renderComponent({ onViewDetails });
 
-    fireEvent.click(
-      screen.getAllByRole('button', { name: 'View details' })[0]
-    );
+    fireEvent.click(screen.getAllByRole('button', { name: 'View details' })[0]);
 
     expect(onViewDetails).toHaveBeenCalledTimes(1);
     expect(onViewDetails).toHaveBeenCalledWith(baseEntries[0].drepId);
@@ -662,9 +656,7 @@ describe('DRepDirectory', () => {
       target: { value: realDrepId(2).slice(0, 'drep1'.length + 20) },
     });
 
-    expect(
-      screen.getByRole('button', { name: 'Clear' })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Clear' })).toBeInTheDocument();
   });
 
   it('empties the search field and restores the cohort from the clear button', () => {
@@ -725,12 +717,9 @@ describe('DRepDirectory', () => {
       suggestedDReps: [realEntry(1), realEntry(2)],
     });
 
-    fireEvent.change(
-      screen.getByPlaceholderText('Search by DRep ID or name'),
-      {
-        target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
-      }
-    );
+    fireEvent.change(screen.getByPlaceholderText('Search by DRep ID or name'), {
+      target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
+    });
 
     expect(screen.getAllByText('View details')).toHaveLength(1);
     // One ID, in the current form: a search must not turn the card into a
@@ -757,12 +746,9 @@ describe('DRepDirectory', () => {
       onSelectForDelegation,
     });
 
-    fireEvent.change(
-      screen.getByPlaceholderText('Search by DRep ID or name'),
-      {
-        target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
-      }
-    );
+    fireEvent.change(screen.getByPlaceholderText('Search by DRep ID or name'), {
+      target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
+    });
     fireEvent.click(screen.getByText('Delegate'));
 
     expect(onSelectForDelegation).toHaveBeenCalledWith(realDrepId(1));
@@ -772,12 +758,9 @@ describe('DRepDirectory', () => {
     const onViewDetails = jest.fn();
     renderComponent({ suggestedDReps: [realEntry(1)], onViewDetails });
 
-    fireEvent.change(
-      screen.getByPlaceholderText('Search by DRep ID or name'),
-      {
-        target: { value: realDrepId(1) },
-      }
-    );
+    fireEvent.change(screen.getByPlaceholderText('Search by DRep ID or name'), {
+      target: { value: realDrepId(1) },
+    });
 
     expect(onViewDetails).toHaveBeenCalledTimes(1);
     expect(onViewDetails).toHaveBeenCalledWith(realDrepId(1));
@@ -787,12 +770,9 @@ describe('DRepDirectory', () => {
     const onViewDetails = jest.fn();
     renderComponent({ suggestedDReps: [realEntry(1)], onViewDetails });
 
-    fireEvent.change(
-      screen.getByPlaceholderText('Search by DRep ID or name'),
-      {
-        target: { value: realCip105Id(1) },
-      }
-    );
+    fireEvent.change(screen.getByPlaceholderText('Search by DRep ID or name'), {
+      target: { value: realCip105Id(1) },
+    });
 
     expect(onViewDetails).toHaveBeenCalledTimes(1);
     expect(onViewDetails).toHaveBeenCalledWith(realDrepId(1));
@@ -802,12 +782,9 @@ describe('DRepDirectory', () => {
     const onViewDetails = jest.fn();
     renderComponent({ suggestedDReps: [realEntry(1)], onViewDetails });
 
-    fireEvent.change(
-      screen.getByPlaceholderText('Search by DRep ID or name'),
-      {
-        target: { value: `drep1${'q'.repeat(51)}` },
-      }
-    );
+    fireEvent.change(screen.getByPlaceholderText('Search by DRep ID or name'), {
+      target: { value: `drep1${'q'.repeat(51)}` },
+    });
 
     expect(screen.getByText('Invalid DRep ID')).toBeInTheDocument();
     expect(onViewDetails).not.toHaveBeenCalled();
@@ -1188,9 +1165,7 @@ describe('DRepDirectory', () => {
     it('keeps sentinel cards in show-all mode', () => {
       renderComponent({ suggestedDReps: [realEntry(1)] });
 
-      fireEvent.click(
-        screen.getByRole('button', { name: 'Show all DReps' })
-      );
+      fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
 
       // Abstain and No Confidence are standing options rather than members of
       // the suggested cohort, so widening the list must not withdraw them.
@@ -1201,9 +1176,7 @@ describe('DRepDirectory', () => {
     it('hides the reroll control in show-all mode', () => {
       renderComponent({ suggestedDReps: [realEntry(1)] });
 
-      fireEvent.click(
-        screen.getByRole('button', { name: 'Show all DReps' })
-      );
+      fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
 
       // Rerolling picks a fresh cohort, which means nothing once every DRep
       // is already listed.
@@ -1561,12 +1534,9 @@ describe('DRepDirectory pinned favorites', () => {
       favoriteDRepIds: new Set([favorite.drepId]),
     });
 
-    fireEvent.change(
-      screen.getByPlaceholderText('Search by DRep ID or name'),
-      {
-        target: { value: 'drep1abcdefgh' },
-      }
-    );
+    fireEvent.change(screen.getByPlaceholderText('Search by DRep ID or name'), {
+      target: { value: 'drep1abcdefgh' },
+    });
 
     expect(screen.queryByText(/Your favorites \(/)).toBeNull();
   });

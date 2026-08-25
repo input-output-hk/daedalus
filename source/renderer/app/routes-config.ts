@@ -34,11 +34,11 @@ export const ROUTES = {
   VOTING: {
     ROOT: '/voting',
     REGISTRATION: '/voting/registration',
-    GOVERNANCE: '/voting/governance',
   },
   GOVERNANCE: {
     ROOT: '/governance',
     DASHBOARD: '/governance/dashboard',
+    DELEGATE: '/governance/delegate',
     DREPS: '/governance/dreps',
     DREP_DETAIL: '/governance/dreps/:drepId',
     FAVORITES: '/governance/favorites',

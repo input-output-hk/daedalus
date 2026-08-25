@@ -141,7 +141,7 @@ const FLOW_SECTION_STYLE = {
 
 const VOTING_NAV_ITEMS = [
   {
-    id: ROUTES.VOTING.GOVERNANCE,
+    id: ROUTES.GOVERNANCE.DELEGATE,
     label: 'Governance',
   },
   {
@@ -445,9 +445,9 @@ storiesOf('Governance / Delegation', module)
     'Connected flow',
     withState(
       {
-        activeSidebarCategory: ROUTES.VOTING.GOVERNANCE,
-        activeVotingRoute: ROUTES.VOTING.GOVERNANCE,
-        currentContentRoute: ROUTES.VOTING.GOVERNANCE,
+        activeSidebarCategory: ROUTES.GOVERNANCE.DELEGATE,
+        activeVotingRoute: ROUTES.GOVERNANCE.DELEGATE,
+        currentContentRoute: ROUTES.GOVERNANCE.DELEGATE,
       },
       (store) => {
         const option = useCurrentVoteKnob();
@@ -471,11 +471,11 @@ storiesOf('Governance / Delegation', module)
                   onActivateCategory={(category) => {
                     action('onActivateCategory')(category);
 
-                    if (category === ROUTES.VOTING.GOVERNANCE) {
+                    if (category === ROUTES.GOVERNANCE.DELEGATE) {
                       store.set({
-                        activeSidebarCategory: ROUTES.VOTING.GOVERNANCE,
-                        activeVotingRoute: ROUTES.VOTING.GOVERNANCE,
-                        currentContentRoute: ROUTES.VOTING.GOVERNANCE,
+                        activeSidebarCategory: ROUTES.GOVERNANCE.DELEGATE,
+                        activeVotingRoute: ROUTES.GOVERNANCE.DELEGATE,
+                        currentContentRoute: ROUTES.GOVERNANCE.DELEGATE,
                       });
                       return;
                     }
@@ -503,13 +503,14 @@ storiesOf('Governance / Delegation', module)
                       onNavItemClick={(navItemId: string) => {
                         action('onNavItemClick')(navItemId);
                         store.set({
-                          activeSidebarCategory: ROUTES.VOTING.GOVERNANCE,
+                          activeSidebarCategory: ROUTES.GOVERNANCE.DELEGATE,
                           activeVotingRoute: navItemId,
                           currentContentRoute: navItemId,
                         });
                       }}
                     />
-                    {store.state.activeVotingRoute === ROUTES.VOTING.GOVERNANCE
+                    {store.state.activeVotingRoute ===
+                    ROUTES.GOVERNANCE.DELEGATE
                       ? renderGovernancePanel(option)
                       : renderCatalystPanel()}
                   </div>

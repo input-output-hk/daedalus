@@ -68,9 +68,7 @@ describe('CurrentDRepSummary core states', () => {
     // DRepIdDisplay truncates the visible text but exposes the full raw id.
     expect(screen.getByLabelText(KEY_CIP129)).toBeInTheDocument();
     expect(
-      screen.getByText(
-        "Could not load this DRep's data. It may have retired."
-      )
+      screen.getByText("Could not load this DRep's data. It may have retired.")
     ).toBeInTheDocument();
     expect(screen.queryByText('Active')).not.toBeInTheDocument();
     expect(screen.queryByText('Inactive')).not.toBeInTheDocument();

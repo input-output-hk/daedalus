@@ -87,7 +87,7 @@ class DRepDetailPage extends React.Component<Props, State> {
     if (!governanceStore?.favoriteDRepIds.has(drepId)) {
       governanceStore?.toggleFavorite(drepId);
     }
-    this.props.history.push(inherited?.from ?? ROUTES.VOTING.GOVERNANCE);
+    this.props.history.push(inherited?.from ?? ROUTES.GOVERNANCE.DELEGATE);
   };
 
   handleBackToDirectory = () => {

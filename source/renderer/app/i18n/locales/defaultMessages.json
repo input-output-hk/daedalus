@@ -2600,11 +2600,6 @@
         "defaultMessage": "!!!Catalyst Voting",
         "description": "Label for the catalyst voting tab.",
         "id": "voting.tabs.catalyst"
-      },
-      {
-        "defaultMessage": "!!!Governance",
-        "description": "Label for the governance voting tab.",
-        "id": "voting.tabs.governance"
       }
     ],
     "path": "source/renderer/app/containers/voting/Voting.tsx"

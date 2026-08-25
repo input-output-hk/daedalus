@@ -13,11 +13,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Catalyst Voting',
     description: 'Label for the catalyst voting tab.',
   },
-  votingTabGovernance: {
-    id: 'voting.tabs.governance',
-    defaultMessage: '!!!Governance',
-    description: 'Label for the governance voting tab.',
-  },
 });
 
 type Props = InjectedContainerProps & {
@@ -33,40 +28,7 @@ class Voting extends Component<Props> {
   };
 
   render() {
-    const { app } = this.props.stores;
-    const { intl } = this.props;
-    const navItems: Array<NavButtonProps> = [
-      {
-        id: ROUTES.VOTING.GOVERNANCE,
-        label: intl.formatMessage(messages.votingTabGovernance),
-      },
-      {
-        id: ROUTES.VOTING.REGISTRATION,
-        label: intl.formatMessage(messages.votingTabCatalyst),
-      },
-    ];
-    const activeItem = navItems.find((item) => app.currentRoute === item.id);
-    return (
-      <MainLayout>
-        <div style={{ height: '50px' }}>
-          {environment.isMainnet || environment.isDev ? (
-            <Navigation
-              items={navItems}
-              activeItem={activeItem.label}
-              isActiveNavItem={(navItemId: string) =>
-                navItemId === activeItem.id
-              }
-              onNavItemClick={(navItemId: string) => {
-                this.props.actions.router.goToRoute.trigger({
-                  route: navItemId,
-                });
-              }}
-            />
-          ) : null}
-        </div>
-        {this.props.children}
-      </MainLayout>
-    );
+    return <MainLayout>{this.props.children}</MainLayout>;
   }
 }
 

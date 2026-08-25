@@ -190,7 +190,7 @@ const buildStores = ({
   );
   return {
     app: {
-      currentRoute: ROUTES.VOTING.GOVERNANCE,
+      currentRoute: ROUTES.GOVERNANCE.DELEGATE,
       openExternalLink: jest.fn(),
     },
     governance,
@@ -239,7 +239,7 @@ const renderFlow = (
         <IntlProvider locale="en-US" messages={translations}>
           <Router history={history}>
             <Route
-              path={ROUTES.VOTING.GOVERNANCE}
+              path={ROUTES.GOVERNANCE.DELEGATE}
               component={VotingGovernancePage}
             />
             <Route
@@ -274,7 +274,7 @@ const openConfirmation = async (
   storeOverrides: StoreOverrides = {},
   delegationNavStateExtras: Partial<DelegationNavState> = {}
 ) => {
-  const flow = renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+  const flow = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
     ...storeOverrides,
     delegationNavState: {
       selectedDRepId: drepId,
@@ -296,7 +296,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
 
   it('Browse DReps sets delegationNavState with { from, selectedWalletId, voteType } and navigates', () => {
     const { history, stores } = renderFlow(
-      [{ pathname: ROUTES.VOTING.GOVERNANCE }],
+      [{ pathname: ROUTES.GOVERNANCE.DELEGATE }],
       { delegationNavState: { selectedWalletId: WALLET_ID, voteType: 'drep' } }
     );
 
@@ -304,7 +304,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
 
     expect(stores.governance.setDelegationNavState).toHaveBeenCalledWith(
       expect.objectContaining({
-        from: ROUTES.VOTING.GOVERNANCE,
+        from: ROUTES.GOVERNANCE.DELEGATE,
         selectedWalletId: WALLET_ID,
         voteType: 'drep',
       })
@@ -315,7 +315,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
   it('list-row Select returns to the form and restores wallet, vote type, and DRep ID', () => {
     renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
       delegationNavState: {
-        from: ROUTES.VOTING.GOVERNANCE,
+        from: ROUTES.GOVERNANCE.DELEGATE,
         selectedWalletId: WALLET_ID,
         voteType: 'drep',
       },
@@ -329,7 +329,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
   });
 
   it('two-hop Form → Directory → Detail → Form restores wallet + vote type and pre-fills the ID', async () => {
-    renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
       delegationNavState: { selectedWalletId: WALLET_ID, voteType: 'drep' },
     });
 
@@ -349,7 +349,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
       [{ pathname: ROUTES.GOVERNANCE.DREPS }],
       {
         delegationNavState: {
-          from: ROUTES.VOTING.GOVERNANCE,
+          from: ROUTES.GOVERNANCE.DELEGATE,
           selectedWalletId: WALLET_ID,
           voteType: 'drep',
         },
@@ -369,7 +369,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
   it('propagates the selected DRep ID byte-for-byte: row select → confirmation → delegateVotes payload', async () => {
     const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
       delegationNavState: {
-        from: ROUTES.VOTING.GOVERNANCE,
+        from: ROUTES.GOVERNANCE.DELEGATE,
         selectedWalletId: WALLET_ID,
         voteType: 'drep',
       },
@@ -413,7 +413,7 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
   });
 
   const hwNavState: DelegationNavState = {
-    from: ROUTES.VOTING.GOVERNANCE,
+    from: ROUTES.GOVERNANCE.DELEGATE,
     selectedWalletId: HW_WALLET_ID,
     voteType: 'drep',
   };
@@ -503,7 +503,7 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
   ];
 
   it('renders the current delegation with no device connected and blocks the same-vote submit', () => {
-    const { stores } = renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
       hwDeviceStatus: HwDeviceStatuses.CONNECTING_FAILED,
       wallets: [votingHardwareWallet],
       delegationNavState: {
@@ -664,7 +664,7 @@ describe('Auto-favorite current delegation DRep', () => {
   });
 
   it('calls toggleFavorite with the delegated DRep id when a wallet with a DRep vote is selected', async () => {
-    const { stores } = renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
       wallets: [votingSoftwareWallet],
     });
 
@@ -677,7 +677,7 @@ describe('Auto-favorite current delegation DRep', () => {
   });
 
   it('does not call toggleFavorite when the delegated DRep is already in favorites', async () => {
-    const { stores } = renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
       wallets: [votingSoftwareWallet],
     });
     stores.governance.favoriteDRepIds.add(VALID_DREP_ID);
@@ -696,7 +696,7 @@ describe('Current-vote enrichment in the delegation form', () => {
   });
 
   it('shows the current delegation and disables submit while the form matches it', async () => {
-    const { stores } = renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
       wallets: [votingSoftwareWallet],
       delegationNavState: {
         selectedWalletId: WALLET_ID,
@@ -720,7 +720,7 @@ describe('Current-vote enrichment in the delegation form', () => {
     const CIP105_DREP_ID =
       'drep_vkh1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq667pyd';
 
-    renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
       wallets: [
         {
           ...softwareWallet,
@@ -740,7 +740,7 @@ describe('Current-vote enrichment in the delegation form', () => {
   });
 
   it('treats a target differing only in bech32 letter case as the current vote', () => {
-    renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
       wallets: [votingSoftwareWallet],
       delegationNavState: {
         selectedWalletId: WALLET_ID,
@@ -756,7 +756,7 @@ describe('Current-vote enrichment in the delegation form', () => {
   });
 
   it('re-enables submit and opens the confirmation dialog when the target changes', async () => {
-    const { stores } = renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
       wallets: [votingSoftwareWallet],
       delegationNavState: {
         selectedWalletId: WALLET_ID,
@@ -786,7 +786,7 @@ describe('Current-vote enrichment in the delegation form', () => {
       jest.spyOn(logger, 'error').mockImplementation(() => undefined),
     ];
 
-    renderFlow([{ pathname: ROUTES.VOTING.GOVERNANCE }], {
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
       wallets: [votingSoftwareWallet],
       delegationNavState: {
         selectedWalletId: WALLET_ID,

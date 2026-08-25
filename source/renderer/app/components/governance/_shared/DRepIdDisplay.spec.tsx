@@ -240,9 +240,7 @@ describe('DRepIdDisplay deprecated CIP-105 form', () => {
     renderCollapsed(CIP129, 'full');
 
     expect(screen.queryByText('(CIP-105)')).toBeNull();
-    expect(
-      screen.getByText('Show deprecated CIP-105 ID')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Show deprecated CIP-105 ID')).toBeInTheDocument();
   });
 
   it('reveals and hides it again', () => {

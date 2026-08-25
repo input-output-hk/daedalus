@@ -477,7 +477,7 @@ describe('DRepDetailPage', () => {
         fetchDRep: jest.fn().mockRejectedValue(new Error('not found')),
       },
       delegationNavState: {
-        from: ROUTES.VOTING.GOVERNANCE,
+        from: ROUTES.GOVERNANCE.DELEGATE,
         selectedWalletId: 'wallet-1',
         voteType: 'drep',
       },
@@ -495,7 +495,7 @@ describe('DRepDetailPage', () => {
   it('sets delegationNavState with inherited context + byte-equal id on Select for delegation', async () => {
     const { pushSpy, governance } = await renderPage({
       delegationNavState: {
-        from: ROUTES.VOTING.GOVERNANCE,
+        from: ROUTES.GOVERNANCE.DELEGATE,
         selectedWalletId: 'wallet-1',
         voteType: 'drep',
       },
@@ -505,13 +505,13 @@ describe('DRepDetailPage', () => {
 
     expect(governance.setDelegationNavState).toHaveBeenCalledWith(
       expect.objectContaining({
-        from: ROUTES.VOTING.GOVERNANCE,
+        from: ROUTES.GOVERNANCE.DELEGATE,
         selectedDRepId: DREP_ID,
         selectedWalletId: 'wallet-1',
         voteType: 'drep',
       })
     );
-    expect(pushSpy).toHaveBeenCalledWith(ROUTES.VOTING.GOVERNANCE);
+    expect(pushSpy).toHaveBeenCalledWith(ROUTES.GOVERNANCE.DELEGATE);
   });
 
   it('falls back to the governance form route when no delegationNavState was inherited', async () => {
@@ -522,7 +522,7 @@ describe('DRepDetailPage', () => {
     expect(governance.setDelegationNavState).toHaveBeenCalledWith(
       expect.objectContaining({ selectedDRepId: DREP_ID })
     );
-    expect(pushSpy).toHaveBeenCalledWith(ROUTES.VOTING.GOVERNANCE);
+    expect(pushSpy).toHaveBeenCalledWith(ROUTES.GOVERNANCE.DELEGATE);
   });
 
   it('refetches exactly once when the node reaches the tip', async () => {
@@ -879,9 +879,7 @@ describe('DRepDetailPage', () => {
 
     // Named for the standard, so the block for fields outside it can be named
     // for that and a reader can tell which labels are ours.
-    expect(
-      screen.getByText('Canonical Metadata Fields')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Canonical Metadata Fields')).toBeInTheDocument();
     expect(screen.getByText('Only objectives')).toBeInTheDocument();
     expect(screen.queryByText('References')).not.toBeInTheDocument();
     expect(screen.queryByText('Payment Address')).not.toBeInTheDocument();
