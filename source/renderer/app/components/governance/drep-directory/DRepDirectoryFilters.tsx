@@ -166,7 +166,14 @@ function DRepDirectoryFilters({
             ['withoutMetadata', intl.formatMessage(messages.metadataWithout)],
           ]
         )}
-      {!isSearchActive &&
+      {/* Ordering belongs to the list of every DRep. Over the suggested cohort
+          it had nowhere useful to go: the criteria already exclude anything
+          above the ceiling, so a power sort could only reorder twenty entries
+          that all sit below it, and offering it there meant two of the three
+          options silently switched the reader to a different mode. A search
+          returns matches in relevance order and is not re-sorted at all. */}
+      {isShowAll &&
+        !isSearchActive &&
         facet(
           intl.formatMessage(messages.sortLabel),
           sort,

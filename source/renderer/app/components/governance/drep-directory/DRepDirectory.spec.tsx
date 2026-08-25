@@ -928,58 +928,36 @@ describe('DRepDirectory', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('widens to every DRep when a voting-power sort is chosen', () => {
-    const suggested = realEntry(1);
+  it('offers no ordering over the suggested cohort', () => {
+    // The criteria already exclude everything above the ceiling, so a power
+    // sort could only reorder twenty entries that all sit below it. Offering
+    // it here meant two of its three options silently changed mode.
+    renderComponent({ suggestedDReps: [realEntry(1)] });
+
+    expect(screen.queryByText('!!!Sort')).not.toBeInTheDocument();
+  });
+
+  it('offers ordering once every DRep is listed', () => {
     renderComponent({
-      suggestedDReps: [suggested],
-      allDReps: [suggested, realEntry(2), realEntry(3)],
+      suggestedDReps: [realEntry(1)],
+      allDReps: [realEntry(1), realEntry(2)],
     });
 
-    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
 
+    expect(screen.getByText('!!!Sort')).toBeInTheDocument();
+  });
+
+  it('puts the default order back on returning to the suggestions', () => {
+    renderComponent({
+      suggestedDReps: [realEntry(1)],
+      allDReps: [realEntry(1), realEntry(2)],
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
     chooseFacetOption('!!!Sort', '!!!Voting power (high to low)');
-
-    // The disclosure beside the sort says the largest DReps come first. Over
-    // the cohort alone that is false, because the share ceiling excludes them,
-    // so the list has to be the one the sort claims to be ordering.
-    expect(screen.getAllByText('!!!View details')).toHaveLength(3);
     expect(screen.getByText(/Sorted by voting power/)).toBeInTheDocument();
-  });
 
-  it('widens on the ascending voting-power sort too', () => {
-    const suggested = realEntry(1);
-    renderComponent({
-      suggestedDReps: [suggested],
-      allDReps: [suggested, realEntry(2)],
-    });
-
-    chooseFacetOption('!!!Sort', '!!!Voting power (low to high)');
-
-    expect(screen.getAllByText('!!!View details')).toHaveLength(2);
-  });
-
-  it('leaves the list at the cohort while the default order is chosen', () => {
-    const suggested = realEntry(1);
-    renderComponent({
-      suggestedDReps: [suggested],
-      allDReps: [suggested, realEntry(2)],
-    });
-
-    chooseFacetOption('!!!Sort', '!!!Default');
-
-    // Only the voting-power sorts widen, because only they claim an ordering
-    // the cohort cannot deliver.
-    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
-  });
-
-  it('returns to the cohort and the suggested order from a widened power sort', () => {
-    const suggested = realEntry(1);
-    renderComponent({
-      suggestedDReps: [suggested],
-      allDReps: [suggested, realEntry(2)],
-    });
-
-    chooseFacetOption('!!!Sort', '!!!Voting power (high to low)');
     fireEvent.click(
       screen.getByRole('button', { name: '!!!Back to suggestions' })
     );
@@ -990,6 +968,20 @@ describe('DRepDirectory', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('leaves ordering out of a search, which is already ordered by relevance', () => {
+    renderComponent({
+      suggestedDReps: [realEntry(1)],
+      allDReps: [realEntry(1), realEntry(2)],
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
+    fireEvent.change(screen.getByPlaceholderText(/Search by DRep ID/), {
+      target: { value: realDrepId(2).slice(0, 'drep1'.length + 20) },
+    });
+
+    expect(screen.queryByText('!!!Sort')).not.toBeInTheDocument();
+  });
+
   it('offers no voting-power sort when no DRep reports a figure', () => {
     const withoutPower = { votingPower: null };
     renderComponent({
@@ -997,6 +989,7 @@ describe('DRepDirectory', () => {
       allDReps: [realEntry(1, withoutPower), realEntry(2, withoutPower)],
     });
 
+    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
     const options = facetOptions('!!!Sort');
 
     expect(options).not.toContain('!!!Voting power (high to low)');
@@ -1012,6 +1005,7 @@ describe('DRepDirectory', () => {
       allDReps: [realEntry(1, { votingPower: null }), realEntry(2)],
     });
 
+    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
     const options = facetOptions('!!!Sort');
 
     expect(options).toContain('!!!Voting power (high to low)');
