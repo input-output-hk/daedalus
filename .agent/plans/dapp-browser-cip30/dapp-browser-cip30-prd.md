@@ -14,6 +14,7 @@ The feature also introduces full-ledger transaction context, witness-only softwa
 - This PRD and its companion task graph are the canonical plan for this feature.
 - Implementation progress must update both files together.
 - Task-300 completed on 2026-08-25: shared manifest-backed request, method-result, public-error, approval-decision, and Electron envelope validation now enforces the frozen wire shapes and product limits before IPC/backend access; production broker dispatch remains task-402 scope.
+- Task-301 completed on 2026-08-25: the main-process schema-backed extension registry now validates descriptors at startup, keeps known/supported/enabled states separate, composes CIP-103 through the effective CIP-95 `signTx` override, and rechecks backend/network/device/package-policy capability before invocation; CIP-104 remains interoperability-disabled, CIP-142 remains packaged-policy-gated, and CIP-8/CIP-106/CIP-141 have no runtime descriptor.
 
 ## Problem Statement
 
@@ -1035,6 +1036,15 @@ type ExtensionDescriptor = {
 - CIP-103 composes with the active base/CIP-95 signer.
 - CIP-104 and CIP-142 declare Proposed policy gates.
 - CIP-106 and CIP-141 have no runtime descriptor in this plan.
+
+Task-301 implements these descriptors and checks in `source/main/cip30/`.
+Negotiation validates the frozen `provider.enable` schema before consulting
+capabilities, collapses duplicates, returns registry order, and omits unavailable
+extensions. The same fail-closed predicate is evaluated again at invocation.
+Hardware eligibility requires injected exact device model, app, firmware, and
+supported-extension evidence rather than family-wide inference. CIP-104 remains
+disabled independently of its launcher revision until task-404 resolves the
+positive encoding.
 
 ### Capability State
 
