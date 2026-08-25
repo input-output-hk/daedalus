@@ -180,6 +180,17 @@
   padding-left: 24px;
 }
 
+// Aligned with the value it introduces, and set below the sub-heading rather
+// than beside it, so the heading stays scannable in a column of headings.
+.subSectionCaption {
+  color: var(--theme-gov-font-color-light);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0 0 8px;
+  max-width: 68ch;
+  padding-left: 12px;
+}
+
 // Contents sit under the heading they belong to rather than starting again at
 // the block's own margin.
 .nestedGroup {

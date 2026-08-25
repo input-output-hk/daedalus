@@ -807,12 +807,10 @@ describe('DRepDetailPage', () => {
       });
 
       expect(screen.getByText('!!!Payment Address')).toBeInTheDocument();
-      // The claim caveat is on the heading's info control rather than set
-      // between the heading and the address.
+      // As text between the heading and the address, not on an icon: this is
+      // the one field a reader could act on and lose money by.
       expect(
-        screen.getByLabelText(
-          '!!!Delegating your voting power requires no payment to any address.'
-        )
+        screen.getByText(/No payment is required to delegate your voting power/)
       ).toBeInTheDocument();
       expect(screen.getByText(address).tagName).toBe('SPAN');
       expect(screen.queryByDisplayValue(address)).not.toBeInTheDocument();

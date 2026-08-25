@@ -3012,7 +3012,7 @@
         "id": "governance.drepDetail.anchorContent.paymentAddress.label"
       },
       {
-        "defaultMessage": "!!!Delegating your voting power requires no payment to any address.",
+        "defaultMessage": "!!!The DRep's provided payment address. You may choose to send a payment to your DRep for their services. No payment is required to delegate your voting power to any DRep.",
         "description": "Caption warning that no payment is required to delegate voting power",
         "id": "governance.drepDetail.anchorContent.paymentAddress.caption"
       },

@@ -317,7 +317,7 @@
   "governance.drepDetail.anchorContent.additional.title": "!!!Additional Metadata Fields",
   "governance.drepDetail.anchorContent.motivations": "!!!Motivations",
   "governance.drepDetail.anchorContent.objectives": "!!!Objectives",
-  "governance.drepDetail.anchorContent.paymentAddress.caption": "!!!Delegating your voting power requires no payment to any address.",
+  "governance.drepDetail.anchorContent.paymentAddress.caption": "!!!The DRep's provided payment address. You may choose to send a payment to your DRep for their services. No payment is required to delegate your voting power to any DRep.",
   "governance.drepDetail.anchorContent.paymentAddress.copiedToast": "!!!Payment address copied",
   "governance.drepDetail.anchorContent.paymentAddress.copyLabel": "!!!Copy Payment Address",
   "governance.drepDetail.anchorContent.paymentAddress.label": "!!!Payment Address",

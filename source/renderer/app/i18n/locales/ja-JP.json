@@ -317,7 +317,7 @@
   "governance.drepDetail.anchorContent.additional.title": "!!!追加のメタデータ項目",
   "governance.drepDetail.anchorContent.motivations": "!!!動機",
   "governance.drepDetail.anchorContent.objectives": "!!!目的",
-  "governance.drepDetail.anchorContent.paymentAddress.caption": "!!!投票権の委任に、いかなるアドレスへの支払いも必要ありません。",
+  "governance.drepDetail.anchorContent.paymentAddress.caption": "!!!DRepが提示した支払いアドレスです。DRepの活動に対して、任意で支払いを行うことができます。いずれのDRepに投票権を委任する場合も、支払いは必要ありません。",
   "governance.drepDetail.anchorContent.paymentAddress.copiedToast": "!!!支払いアドレスをコピーしました",
   "governance.drepDetail.anchorContent.paymentAddress.copyLabel": "!!!支払いアドレスをコピー",
   "governance.drepDetail.anchorContent.paymentAddress.label": "!!!支払いアドレス",

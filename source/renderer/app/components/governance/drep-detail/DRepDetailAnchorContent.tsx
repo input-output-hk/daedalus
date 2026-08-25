@@ -78,7 +78,7 @@ const messages = defineMessages({
   paymentAddressCaption: {
     id: 'governance.drepDetail.anchorContent.paymentAddress.caption',
     defaultMessage:
-      '!!!Delegating your voting power requires no payment to any address.',
+      "!!!The DRep's provided payment address. You may choose to send a payment to your DRep for their services. No payment is required to delegate your voting power to any DRep.",
     description:
       'Caption warning that no payment is required to delegate voting power',
   },
@@ -303,11 +303,14 @@ function DRepDetailAnchorContent({
       {metadata?.paymentAddress != null && (
         <>
           <h4 className={styles.subSectionTitle}>
-            {intl.formatMessage(messages.paymentAddressLabel)}{' '}
-            <DRepInfoIcon
-              explanation={intl.formatMessage(messages.paymentAddressCaption)}
-            />
+            {intl.formatMessage(messages.paymentAddressLabel)}
           </h4>
+          {/* Text, not an icon. An address next to a delegation control is
+              the one thing on this page a reader could act on and lose money
+              by, and what it is for has to reach them without a hover. */}
+          <p className={styles.subSectionCaption}>
+            {intl.formatMessage(messages.paymentAddressCaption)}
+          </p>
           {addressNetworkMatches === false && (
             // Cheap and worth it: the bech32 prefix carries the network, so a
             // string comparison catches an address nothing on this network can
