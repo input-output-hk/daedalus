@@ -17,7 +17,7 @@ const messages = defineMessages({
   },
   tabDirectory: {
     id: 'governance.tabs.directory',
-    defaultMessage: '!!!DRep Directory',
+    defaultMessage: '!!!Directory',
     description: 'Label for the DRep directory tab.',
   },
   tabFavorites: {

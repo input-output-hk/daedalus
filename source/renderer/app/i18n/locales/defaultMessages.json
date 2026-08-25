@@ -2562,7 +2562,7 @@
         "id": "governance.tabs.dashboard"
       },
       {
-        "defaultMessage": "!!!DRep Directory",
+        "defaultMessage": "!!!Directory",
         "description": "Label for the DRep directory tab.",
         "id": "governance.tabs.directory"
       },
@@ -2687,12 +2687,12 @@
         "id": "governance.drepDirectory.status.inactiveSoon"
       },
       {
-        "defaultMessage": "!!!With verified metadata",
+        "defaultMessage": "!!!With metadata",
         "description": "Metadata filter option: anchor present",
         "id": "governance.drepDirectory.filter.metadata.with"
       },
       {
-        "defaultMessage": "!!!Without verified metadata",
+        "defaultMessage": "!!!Without metadata",
         "description": "Metadata filter option: no anchor",
         "id": "governance.drepDirectory.filter.metadata.without"
       },
@@ -3172,7 +3172,7 @@
         "id": "governance.drepFavorites.staleCaption"
       },
       {
-        "defaultMessage": "!!!Currently delegating",
+        "defaultMessage": "!!!Currently Delegated DRep",
         "description": "Badge shown on the card the user is currently delegated to",
         "id": "governance.drepDirectory.card.currentDelegation"
       }

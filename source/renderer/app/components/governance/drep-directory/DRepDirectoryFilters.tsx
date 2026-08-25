@@ -48,12 +48,12 @@ const messages = defineMessages({
   },
   metadataWith: {
     id: 'governance.drepDirectory.filter.metadata.with',
-    defaultMessage: '!!!With verified metadata',
+    defaultMessage: '!!!With metadata',
     description: 'Metadata filter option: anchor present',
   },
   metadataWithout: {
     id: 'governance.drepDirectory.filter.metadata.without',
-    defaultMessage: '!!!Without verified metadata',
+    defaultMessage: '!!!Without metadata',
     description: 'Metadata filter option: no anchor',
   },
   sortDefault: {

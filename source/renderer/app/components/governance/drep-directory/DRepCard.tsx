@@ -45,7 +45,7 @@ const messages = defineMessages({
   },
   currentDelegation: {
     id: 'governance.drepDirectory.card.currentDelegation',
-    defaultMessage: '!!!Currently delegating',
+    defaultMessage: '!!!Currently Delegated DRep',
     description: 'Badge shown on the card the user is currently delegated to',
   },
 });
