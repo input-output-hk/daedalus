@@ -50,7 +50,11 @@ import type {
   InitializeVPDelegationTxError,
 } from '../../../source/renderer/app/stores/VotingStore';
 import GovernanceWrapper from './_utils/GovernanceWrapper';
-import { makeGovernanceWallets, useCurrentVoteKnob } from './_utils/fixtures';
+import {
+  makeGovernanceWallets,
+  useCurrentVoteKnob,
+  VERIFIED_CIP129,
+} from './_utils/fixtures';
 import type { CurrentVoteOption } from './_utils/fixtures';
 import { normalizeDRepIdentity } from '../../../source/renderer/app/utils/governance/normalizeDRepIdentity';
 
@@ -175,6 +179,38 @@ const governanceStoryDecorator = (story: () => React.ReactNode) => (
       <div style={{ padding: 24 }}>{story()}</div>
     </StoryDecorator>
   </StoryProvider>
+);
+
+// A wallet already chosen and a DRep already in the form, which is how this
+// screen opens when it is reached from the directory rather than the sidebar.
+const renderPrefilledPanel = (
+  option: CurrentVoteOption,
+  selectedDRepId?: string
+) => (
+  <div style={CENTERED_STORY_STYLE}>
+    <GovernanceWrapper option={option}>
+      {({ wallets, drepIndex }) => (
+        <VotingPowerDelegation
+          drepIndex={drepIndex}
+          getStakePoolById={getStakePoolById}
+          initiateTransaction={async (params) => {
+            action('initiateTransaction')(params);
+            return { success: true, fees: new BigNumber('0.174257') };
+          }}
+          initialFormState={{
+            ...(selectedDRepId ? { selectedDRepId } : {}),
+            selectedWalletId: 'governance-wallet-1',
+            voteType: 'drep',
+          }}
+          onBrowseDRepsClick={action('onBrowseDRepsClick')}
+          onExternalLinkClick={action('onExternalLinkClick')}
+          renderConfirmationDialog={renderGovernanceConfirmationDialog}
+          stakePools={STAKE_POOLS_LIST}
+          wallets={wallets}
+        />
+      )}
+    </GovernanceWrapper>
+  </div>
 );
 
 const renderGovernancePanel = (option: CurrentVoteOption) => {
@@ -386,35 +422,26 @@ storiesOf('Governance / Delegation', module)
       <div style={CENTERED_STORY_STYLE}>{renderGovernancePanel(option)}</div>
     );
   })
-  .add('Voting power delegation - prefilled from directory', () => {
-    const option = useCurrentVoteKnob();
-    return (
-      <div style={CENTERED_STORY_STYLE}>
-        <GovernanceWrapper option={option}>
-          {({ wallets, drepIndex }) => (
-            <VotingPowerDelegation
-              drepIndex={drepIndex}
-              getStakePoolById={getStakePoolById}
-              initiateTransaction={async (params) => {
-                action('initiateTransaction')(params);
-                return { success: true, fees: new BigNumber('0.174257') };
-              }}
-              initialFormState={{
-                selectedDRepId: VALID_DREP_ID,
-                selectedWalletId: 'governance-wallet-1',
-                voteType: 'drep',
-              }}
-              onBrowseDRepsClick={action('onBrowseDRepsClick')}
-              onExternalLinkClick={action('onExternalLinkClick')}
-              renderConfirmationDialog={renderGovernanceConfirmationDialog}
-              stakePools={STAKE_POOLS_LIST}
-              wallets={wallets}
-            />
-          )}
-        </GovernanceWrapper>
-      </div>
-    );
-  })
+  .add('Voting power delegation - prefilled from directory', () =>
+    renderPrefilledPanel(useCurrentVoteKnob(), VALID_DREP_ID)
+  )
+  // The two changes of mind that cross vote kinds. A wallet on Abstain or No
+  // Confidence has a delegation already, so the panel above the form states
+  // one thing while the form below it proposes another, and those two have to
+  // read as one screen rather than as a contradiction. Neither was reachable
+  // before: the prefilled story took its current vote from the knob, and the
+  // knob's abstain settings left the form empty.
+  .add('Abstain to a DRep', () =>
+    renderPrefilledPanel('abstain', VERIFIED_CIP129)
+  )
+  .add('No Confidence to a DRep', () =>
+    renderPrefilledPanel('noConfidence', VERIFIED_CIP129)
+  )
+  // A wallet with no delegation at all. The current-delegation panel renders
+  // nothing here by design, so the form runs straight from the wallet select
+  // to the DRep selection, and the only thing that mentions rewards is the
+  // paragraph at the top of the page.
+  .add('Not delegated yet', () => renderPrefilledPanel('noDelegation'))
   .add('Confirmation dialog - software wallet', () => {
     const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
     return (

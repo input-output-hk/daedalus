@@ -44,7 +44,7 @@ export function useCurrentVoteKnob(): CurrentVoteOption {
 // The unverified pair is copied from the committed CurrentVoteSummary story;
 // the verified pair encodes the Cardano Academy preprod DRep key hash. Both
 // stay lower-case: the drepIndex lookup canonicalizes to lower-case CIP-129.
-const VERIFIED_CIP129 =
+export const VERIFIED_CIP129 =
   'drep1ytnglv2y7s8dxpmylw35egsum63yqzcm0upvkf7qffg4hhqnhj0yh';
 const VERIFIED_CIP105 =
   'drep_vkh1u68mz385pmfswe8m5dx2y8x75fqqkxmlqt9j0sz229dac0zl65v';
@@ -182,21 +182,23 @@ export function makeDRepIndex(
 ): Map<string, AppDRepDirectoryEntry> {
   const index = new Map<string, AppDRepDirectoryEntry>();
 
-  if (option === 'drepVerified') {
-    index.set(VERIFIED_CIP129, {
-      drepId: VERIFIED_CIP129,
-      votingPower: new BigNumber('4500000000000'),
-      status: 'active',
-      drepActivity: 30,
-      // Real preprod on-chain anchor pair from the epoch-295 drep-state sample.
-      anchor: {
-        url: 'https://raw.githubusercontent.com/cardano-foundation/cardano-academy/refs/heads/main/Cardano%20Academy.jsonld',
-        hash: '9e8cb2b0f4c2ddbd9dea316b44680d8a989743868aeb40c1e6959982452f38e1',
-      },
-      verifiedName: null,
-      doNotList: false,
-    });
-  }
+  // Always present. What the directory holds does not depend on what this
+  // wallet is currently delegated to, and leaving it out for the abstain and
+  // no-confidence options made a form prefilled with this DRep resolve to
+  // nothing, which is a state the app reaches only for a deregistered DRep.
+  index.set(VERIFIED_CIP129, {
+    drepId: VERIFIED_CIP129,
+    votingPower: new BigNumber('4500000000000'),
+    status: 'active',
+    drepActivity: 30,
+    // Real preprod on-chain anchor pair from the epoch-295 drep-state sample.
+    anchor: {
+      url: 'https://raw.githubusercontent.com/cardano-foundation/cardano-academy/refs/heads/main/Cardano%20Academy.jsonld',
+      hash: '9e8cb2b0f4c2ddbd9dea316b44680d8a989743868aeb40c1e6959982452f38e1',
+    },
+    verifiedName: null,
+    doNotList: false,
+  });
 
   if (option === 'drepInactive') {
     index.set(INACTIVE_CIP129, {
