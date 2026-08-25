@@ -74,13 +74,19 @@ const UNVERIFIED_DREP: DRepIdentity = {
   credentialType: 'key',
 };
 
+// Real-looking credentials, not runs of one digit. Same-vote comparison is
+// keyed on (credentialHex, credentialType), and the DRep id the delegation
+// stories pre-fill decodes to twenty-eight zero bytes, so a fixture credential
+// of twenty-eight zero bytes matched it: the form said the wallet already
+// voted for the DRep it was being asked to change to, while showing two
+// visibly different identifiers.
 const INACTIVE_CIP129 =
   'drep1y2qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqvzq0zj';
 const INACTIVE_DREP: DRepIdentity = {
   raw: INACTIVE_CIP129,
   cip129: INACTIVE_CIP129,
   cip105: 'drep_vkh1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqsr4gp0',
-  credentialHex: '00000000000000000000000000000000000000000000000000000000',
+  credentialHex: '7c3d95e0a2481bf6539ce74d08a1b2f6e5d40c93871a2b6de4f05c18',
   credentialType: 'key',
 };
 
@@ -92,7 +98,7 @@ const UNKNOWN_DREP: DRepIdentity = {
   raw: UNKNOWN_CIP129,
   cip129: UNKNOWN_CIP129,
   cip105: 'drep_vkh1zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzs7kzcgn',
-  credentialHex: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+  credentialHex: '3f91ad7c05e2846bd1c9f30a7e58b246cd0917fa4b83e5620d7c1e94',
   credentialType: 'key',
 };
 
