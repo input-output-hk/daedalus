@@ -1023,7 +1023,6 @@
   "voting.governance.confirmationDialog.signedPayload": "!!!署名対象のペイロード",
   "voting.governance.confirmationDialog.title": "トランザクションの確認",
   "voting.governance.confirmationDialog.verifiedName": "!!!検証済みの名前",
-  "voting.governance.confirmationDialog.verifiedNameSource": "!!!名前:",
   "voting.governance.confirmationDialog.vote": "投票",
   "voting.governance.currentVote.abstain.caption": "!!!ステークはガバナンスに参加しないものとしてオンチェーンに記録されます。",
   "voting.governance.currentVote.headerCurrent": "!!!現在の委任",

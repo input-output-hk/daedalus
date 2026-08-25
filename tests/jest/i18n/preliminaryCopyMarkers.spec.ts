@@ -18,7 +18,6 @@ const PRELIMINARY_CONFIRMATION_KEYS = [
   'voting.governance.confirmationDialog.drepIdCip105',
   'voting.governance.confirmationDialog.signedPayload',
   'voting.governance.confirmationDialog.verifiedName',
-  'voting.governance.confirmationDialog.verifiedNameSource',
 ];
 
 const en: Record<string, string> = enUS;

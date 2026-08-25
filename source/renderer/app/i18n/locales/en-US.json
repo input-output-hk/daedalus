@@ -1023,7 +1023,6 @@
   "voting.governance.confirmationDialog.signedPayload": "!!!Signed payload",
   "voting.governance.confirmationDialog.title": "Confirm Transaction",
   "voting.governance.confirmationDialog.verifiedName": "!!!Verified name",
-  "voting.governance.confirmationDialog.verifiedNameSource": "!!!Name:",
   "voting.governance.confirmationDialog.vote": "Vote",
   "voting.governance.currentVote.abstain.caption": "!!!Your stake is recorded on chain as not participating in governance.",
   "voting.governance.currentVote.headerCurrent": "!!!Current delegation",

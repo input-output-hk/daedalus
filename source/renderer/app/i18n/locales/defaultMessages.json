@@ -2837,11 +2837,6 @@
         "id": "voting.governance.confirmationDialog.verifiedName"
       },
       {
-        "defaultMessage": "!!!Name:",
-        "description": "Prefix joining the on-chain source label to the verified-name source label",
-        "id": "voting.governance.confirmationDialog.verifiedNameSource"
-      },
-      {
         "defaultMessage": "!!!Transaction fee",
         "description": "Fee title",
         "id": "voting.governance.confirmationDialog.fee"
