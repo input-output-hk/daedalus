@@ -53,7 +53,7 @@ describe('DRepStatusBadge', () => {
       slotLength: SLOT_LENGTH,
     });
 
-    const badge = screen.getByLabelText('!!!Active');
+    const badge = screen.getByLabelText('Active');
     expect(badge).toBeInTheDocument();
     expect(badge).not.toHaveAttribute('title');
   });
@@ -61,8 +61,8 @@ describe('DRepStatusBadge', () => {
   it('labels a lapsed DRep inactive rather than inactive soon', () => {
     renderBadge({ status: 'inactive', drepActivity: 4 });
 
-    expect(screen.getByLabelText('!!!Inactive')).toBeInTheDocument();
-    expect(screen.queryByText('!!!Inactive Soon')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Inactive')).toBeInTheDocument();
+    expect(screen.queryByText('Inactive Soon')).not.toBeInTheDocument();
   });
 
   it('states the remaining epochs and days while expiring', () => {
@@ -73,12 +73,12 @@ describe('DRepStatusBadge', () => {
       slotLength: SLOT_LENGTH,
     });
 
-    expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
+    expect(screen.getByText('Inactive Soon')).toBeInTheDocument();
     expect(
-      screen.getByText('!!!Inactive Soon').closest('span[title]')
+      screen.getByText('Inactive Soon').closest('span[title]')
     ).toHaveAttribute(
       'title',
-      '!!!Will become inactive in 4 epochs (20 days) without on-chain activity.'
+      'Will become inactive in 4 epochs (20 days) without on-chain activity.'
     );
   });
 
@@ -86,10 +86,10 @@ describe('DRepStatusBadge', () => {
     renderBadge({ status: 'active', drepActivity: 4 });
 
     expect(
-      screen.getByText('!!!Inactive Soon').closest('span[title]')
+      screen.getByText('Inactive Soon').closest('span[title]')
     ).toHaveAttribute(
       'title',
-      '!!!Will become inactive in 4 epochs without on-chain activity.'
+      'Will become inactive in 4 epochs without on-chain activity.'
     );
   });
 

@@ -2,25 +2,25 @@
 
 exports[`CurrentDRepSummary DRep status badge leaves the inactive badge to say it, with no caption beneath 1`] = `
 <section
-  aria-label="!!!Currently Delegated To"
+  aria-label="Currently Delegated To"
   class="component"
 >
   <h3
     class="header"
   >
-    !!!Currently Delegated To
+    Currently Delegated To
   </h3>
   <div
     class="statusRow"
   >
     <span
-      aria-label="!!!Inactive"
+      aria-label="Inactive"
       class="badge inactive"
     >
       <span
         class="label"
       >
-        !!!Inactive
+        Inactive
       </span>
     </span>
   </div>
@@ -54,9 +54,9 @@ exports[`CurrentDRepSummary DRep status badge leaves the inactive badge to say i
         </code>
       </span>
       <button
-        aria-label="!!!Copy DRep ID"
+        aria-label="Copy DRep ID"
         class="iconButton"
-        title="!!!Copy DRep ID"
+        title="Copy DRep ID"
         type="button"
       >
         <svg />
@@ -68,26 +68,26 @@ exports[`CurrentDRepSummary DRep status badge leaves the inactive badge to say i
 
 exports[`CurrentDRepSummary DRep status badge leaves the inactive-soon badge to say it, with no caption beneath 1`] = `
 <section
-  aria-label="!!!Currently Delegated To"
+  aria-label="Currently Delegated To"
   class="component"
 >
   <h3
     class="header"
   >
-    !!!Currently Delegated To
+    Currently Delegated To
   </h3>
   <div
     class="statusRow"
   >
     <span
-      aria-label="!!!Inactive Soon. !!!Will become inactive in 4 epochs without on-chain activity."
+      aria-label="Inactive Soon. Will become inactive in 4 epochs without on-chain activity."
       class="badge inactiveSoon"
-      title="!!!Will become inactive in 4 epochs without on-chain activity."
+      title="Will become inactive in 4 epochs without on-chain activity."
     >
       <span
         class="label"
       >
-        !!!Inactive Soon
+        Inactive Soon
       </span>
     </span>
   </div>
@@ -121,9 +121,9 @@ exports[`CurrentDRepSummary DRep status badge leaves the inactive-soon badge to 
         </code>
       </span>
       <button
-        aria-label="!!!Copy DRep ID"
+        aria-label="Copy DRep ID"
         class="iconButton"
-        title="!!!Copy DRep ID"
+        title="Copy DRep ID"
         type="button"
       >
         <svg />
@@ -135,25 +135,25 @@ exports[`CurrentDRepSummary DRep status badge leaves the inactive-soon badge to 
 
 exports[`CurrentDRepSummary DRep status badge renders the shared active badge with no status caption 1`] = `
 <section
-  aria-label="!!!Currently Delegated To"
+  aria-label="Currently Delegated To"
   class="component"
 >
   <h3
     class="header"
   >
-    !!!Currently Delegated To
+    Currently Delegated To
   </h3>
   <div
     class="statusRow"
   >
     <span
-      aria-label="!!!Active"
+      aria-label="Active"
       class="badge active"
     >
       <span
         class="label"
       >
-        !!!Active
+        Active
       </span>
     </span>
   </div>
@@ -187,9 +187,9 @@ exports[`CurrentDRepSummary DRep status badge renders the shared active badge wi
         </code>
       </span>
       <button
-        aria-label="!!!Copy DRep ID"
+        aria-label="Copy DRep ID"
         class="iconButton"
-        title="!!!Copy DRep ID"
+        title="Copy DRep ID"
         type="button"
       >
         <svg />
@@ -201,13 +201,13 @@ exports[`CurrentDRepSummary DRep status badge renders the shared active badge wi
 
 exports[`CurrentDRepSummary core states renders abstain with a caption and no DRep id (snapshot) 1`] = `
 <section
-  aria-label="!!!Currently Delegated To"
+  aria-label="Currently Delegated To"
   class="component"
 >
   <h3
     class="header"
   >
-    !!!Currently Delegated To
+    Currently Delegated To
   </h3>
   <div
     class="statusRow"
@@ -227,20 +227,20 @@ exports[`CurrentDRepSummary core states renders abstain with a caption and no DR
   <p
     class="caption"
   >
-    !!!Your stake is recorded on chain as not participating in governance.
+    Your stake is recorded on chain as not participating in governance.
   </p>
 </section>
 `;
 
 exports[`CurrentDRepSummary core states renders no confidence with a caption and no DRep id (snapshot) 1`] = `
 <section
-  aria-label="!!!Currently Delegated To"
+  aria-label="Currently Delegated To"
   class="component"
 >
   <h3
     class="header"
   >
-    !!!Currently Delegated To
+    Currently Delegated To
   </h3>
   <div
     class="statusRow"
@@ -260,20 +260,20 @@ exports[`CurrentDRepSummary core states renders no confidence with a caption and
   <p
     class="caption"
   >
-    !!!Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.
+    Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.
   </p>
 </section>
 `;
 
 exports[`CurrentDRepSummary core states renders the DRep id row with the on-chain label and the neutral status caption when no directory entry is supplied (snapshot) 1`] = `
 <section
-  aria-label="!!!Currently Delegated To"
+  aria-label="Currently Delegated To"
   class="component"
 >
   <h3
     class="header"
   >
-    !!!Currently Delegated To
+    Currently Delegated To
   </h3>
   <div
     class="idRow"
@@ -305,9 +305,9 @@ exports[`CurrentDRepSummary core states renders the DRep id row with the on-chai
         </code>
       </span>
       <button
-        aria-label="!!!Copy DRep ID"
+        aria-label="Copy DRep ID"
         class="iconButton"
-        title="!!!Copy DRep ID"
+        title="Copy DRep ID"
         type="button"
       >
         <svg />
@@ -317,7 +317,7 @@ exports[`CurrentDRepSummary core states renders the DRep id row with the on-chai
   <p
     class="caption"
   >
-    !!!Could not load this DRep's data. It may have retired.
+    Could not load this DRep's data. It may have retired.
   </p>
 </section>
 `;

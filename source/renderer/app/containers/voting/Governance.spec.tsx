@@ -68,7 +68,7 @@ describe('Governance container — duplicate hash-history push guard', () => {
     const { pushSpy } = renderGovernance(ROUTES.GOVERNANCE.DREPS);
 
     // Sub-tab click for the route we are already on.
-    screen.getByText('!!!Directory').click();
+    screen.getByText('Directory').click();
 
     expect(pushSpy).not.toHaveBeenCalled();
   });
@@ -79,7 +79,7 @@ describe('Governance container — duplicate hash-history push guard', () => {
     // passing vacuously.
     const { pushSpy } = renderGovernance(ROUTES.GOVERNANCE.ROOT);
 
-    screen.getByText('!!!Directory').click();
+    screen.getByText('Directory').click();
 
     expect(pushSpy).toHaveBeenCalledTimes(1);
     expect(pushSpy).toHaveBeenCalledWith(ROUTES.GOVERNANCE.DREPS);

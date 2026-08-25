@@ -88,9 +88,9 @@ describe('DRepIdDisplay', () => {
     expect(container.querySelectorAll('code')).toHaveLength(1);
     expect(screen.getByText('drep1yg7…aj8ras')).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: '!!!Copy DRep ID' })
+      screen.getByRole('button', { name: 'Copy DRep ID' })
     ).toBeInTheDocument();
-    expect(screen.queryByText('!!!(CIP-105)')).not.toBeInTheDocument();
+    expect(screen.queryByText('(CIP-105)')).not.toBeInTheDocument();
   });
 
   it('stacks both truncated forms with a copy button each', () => {
@@ -99,12 +99,12 @@ describe('DRepIdDisplay', () => {
     expect(container.querySelectorAll('code')).toHaveLength(2);
     expect(screen.getByText('drep1yg7…aj8ras')).toBeInTheDocument();
     expect(screen.getByText('drep_vkh…6msqtt')).toBeInTheDocument();
-    expect(screen.getByText('!!!(CIP-105)')).toBeInTheDocument();
+    expect(screen.getByText('(CIP-105)')).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: '!!!Copy CIP-129 DRep ID' })
+      screen.getByRole('button', { name: 'Copy CIP-129 DRep ID' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: '!!!Copy CIP-105 DRep ID' })
+      screen.getByRole('button', { name: 'Copy CIP-105 DRep ID' })
     ).toBeInTheDocument();
   });
 
@@ -116,10 +116,10 @@ describe('DRepIdDisplay', () => {
     expect(codes[0]).toHaveTextContent(CIP129);
     expect(codes[1]).toHaveTextContent(CIP105);
     expect(codes[0].getAttribute('aria-label')).toBe(
-      `!!!CIP-129 DRep ID ${CIP129}`
+      `CIP-129 DRep ID ${CIP129}`
     );
     expect(codes[1].getAttribute('aria-label')).toBe(
-      `!!!CIP-105 DRep ID ${CIP105}`
+      `CIP-105 DRep ID ${CIP105}`
     );
   });
 
@@ -139,9 +139,9 @@ describe('DRepIdDisplay', () => {
     const { container } = renderDisplay(UNDECODABLE, 'full');
 
     expect(container.querySelectorAll('code')).toHaveLength(1);
-    expect(screen.queryByText('!!!(CIP-105)')).not.toBeInTheDocument();
+    expect(screen.queryByText('(CIP-105)')).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: '!!!Copy CIP-105 DRep ID' })
+      screen.queryByRole('button', { name: 'Copy CIP-105 DRep ID' })
     ).not.toBeInTheDocument();
   });
 
@@ -155,12 +155,12 @@ describe('DRepIdDisplay', () => {
     renderDisplay(CIP129, 'full');
 
     fireEvent.click(
-      screen.getByRole('button', { name: '!!!Copy CIP-129 DRep ID' })
+      screen.getByRole('button', { name: 'Copy CIP-129 DRep ID' })
     );
     expect(writeText).toHaveBeenLastCalledWith(CIP129);
 
     fireEvent.click(
-      screen.getByRole('button', { name: '!!!Copy CIP-105 DRep ID' })
+      screen.getByRole('button', { name: 'Copy CIP-105 DRep ID' })
     );
     expect(writeText).toHaveBeenLastCalledWith(CIP105);
   });
@@ -170,10 +170,10 @@ describe('DRepIdDisplay', () => {
 
     renderDisplay(CIP129, 'full');
     fireEvent.click(
-      screen.getByRole('button', { name: '!!!Copy CIP-129 DRep ID' })
+      screen.getByRole('button', { name: 'Copy CIP-129 DRep ID' })
     );
     fireEvent.click(
-      screen.getByRole('button', { name: '!!!Copy CIP-105 DRep ID' })
+      screen.getByRole('button', { name: 'Copy CIP-105 DRep ID' })
     );
 
     expect(warn).toHaveBeenCalledTimes(2);
@@ -196,10 +196,10 @@ describe('DRepIdDisplay', () => {
 
     renderDisplay(CIP129, 'full');
     fireEvent.click(
-      screen.getByRole('button', { name: '!!!Copy CIP-129 DRep ID' })
+      screen.getByRole('button', { name: 'Copy CIP-129 DRep ID' })
     );
     fireEvent.click(
-      screen.getByRole('button', { name: '!!!Copy CIP-105 DRep ID' })
+      screen.getByRole('button', { name: 'Copy CIP-105 DRep ID' })
     );
     await Promise.resolve();
     await Promise.resolve();
@@ -239,31 +239,31 @@ describe('DRepIdDisplay deprecated CIP-105 form', () => {
     // default; it stays reachable for matching ids recorded in the older form.
     renderCollapsed(CIP129, 'full');
 
-    expect(screen.queryByText('!!!(CIP-105)')).toBeNull();
+    expect(screen.queryByText('(CIP-105)')).toBeNull();
     expect(
-      screen.getByText('!!!Show deprecated CIP-105 ID')
+      screen.getByText('Show deprecated CIP-105 ID')
     ).toBeInTheDocument();
   });
 
   it('reveals and hides it again', () => {
     renderCollapsed(CIP129, 'full');
 
-    fireEvent.click(screen.getByText('!!!Show deprecated CIP-105 ID'));
-    expect(screen.getByText('!!!(CIP-105)')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Show deprecated CIP-105 ID'));
+    expect(screen.getByText('(CIP-105)')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('!!!Hide deprecated CIP-105 ID'));
-    expect(screen.queryByText('!!!(CIP-105)')).toBeNull();
+    fireEvent.click(screen.getByText('Hide deprecated CIP-105 ID'));
+    expect(screen.queryByText('(CIP-105)')).toBeNull();
   });
 
   it('reports its expanded state to assistive technology', () => {
     renderCollapsed(CIP129, 'full');
-    const toggle = screen.getByText('!!!Show deprecated CIP-105 ID');
+    const toggle = screen.getByText('Show deprecated CIP-105 ID');
 
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
     fireEvent.click(toggle);
     expect(
       screen
-        .getByText('!!!Hide deprecated CIP-105 ID')
+        .getByText('Hide deprecated CIP-105 ID')
         .getAttribute('aria-expanded')
     ).toBe('true');
   });
@@ -271,12 +271,12 @@ describe('DRepIdDisplay deprecated CIP-105 form', () => {
   it('offers no disclosure when the id does not decode', () => {
     renderCollapsed(UNDECODABLE, 'full');
 
-    expect(screen.queryByText('!!!Show deprecated CIP-105 ID')).toBeNull();
+    expect(screen.queryByText('Show deprecated CIP-105 ID')).toBeNull();
   });
 
   it('never offers it on the single-line form, which shows one id only', () => {
     renderCollapsed(CIP129, 'single');
 
-    expect(screen.queryByText('!!!Show deprecated CIP-105 ID')).toBeNull();
+    expect(screen.queryByText('Show deprecated CIP-105 ID')).toBeNull();
   });
 });

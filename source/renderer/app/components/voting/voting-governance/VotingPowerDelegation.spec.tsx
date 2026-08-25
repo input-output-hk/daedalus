@@ -103,7 +103,7 @@ describe('VotingPowerDelegation', () => {
     expect(screen.queryByText('Byron legacy wallet')).not.toBeInTheDocument();
     // Nothing is selected, so the form stops at the wallet select rather than
     // going on to offer a delegation for a wallet that cannot hold one.
-    expect(screen.queryByText('!!!Delegate to')).not.toBeInTheDocument();
+    expect(screen.queryByText('Delegate to')).not.toBeInTheDocument();
   });
 
   it('keeps a preselected Shelley wallet', () => {
@@ -122,7 +122,7 @@ describe('VotingPowerDelegation', () => {
     expect(screen.getAllByText('Abstain').length).toBeGreaterThan(0);
     expect(
       screen.getByText(
-        '!!!Your stake is recorded on chain as not participating in governance.'
+        'Your stake is recorded on chain as not participating in governance.'
       )
     ).toBeInTheDocument();
     expect(screen.queryByText('abstain')).not.toBeInTheDocument();
@@ -137,7 +137,7 @@ describe('VotingPowerDelegation', () => {
     expect(screen.getAllByText('No Confidence').length).toBeGreaterThan(0);
     expect(
       screen.getByText(
-        '!!!Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.'
+        'Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.'
       )
     ).toBeInTheDocument();
     expect(screen.queryByText('no_confidence')).not.toBeInTheDocument();
@@ -160,7 +160,7 @@ describe('VotingPowerDelegation', () => {
     // The sentinel branch must not swallow the case it was carved out of.
     expect(
       screen.queryByText(
-        '!!!Your stake is recorded on chain as not participating in governance.'
+        'Your stake is recorded on chain as not participating in governance.'
       )
     ).not.toBeInTheDocument();
   });

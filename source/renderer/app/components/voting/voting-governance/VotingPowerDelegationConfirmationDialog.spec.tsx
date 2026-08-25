@@ -70,7 +70,7 @@ describe('VotingPowerDelegationConfirmationDialog — DRep identity', () => {
   it('renders the full raw DRep ID (byte-equal) under the Delegate To heading', () => {
     renderDialog();
 
-    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
+    expect(screen.getByText('Delegate To')).toBeInTheDocument();
     const idNode = screen.getByText(VALID_DREP_ID);
     expect(idNode.textContent).toBe(VALID_DREP_ID);
     expect(
@@ -81,7 +81,7 @@ describe('VotingPowerDelegationConfirmationDialog — DRep identity', () => {
   it('still renders the Abstain sentinel label', () => {
     renderDialog({ chosenOption: 'abstain', drepIdentity: null });
 
-    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
+    expect(screen.getByText('Delegate To')).toBeInTheDocument();
     expect(screen.getByText('Abstain')).toBeInTheDocument();
     expect(screen.queryByText(VALID_DREP_ID)).not.toBeInTheDocument();
   });
@@ -274,9 +274,9 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
   it('renders the identifier and the certificate for a key DRep', () => {
     renderIdentity(KEY_CIP129);
 
-    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
+    expect(screen.getByText('Delegate To')).toBeInTheDocument();
     expect(screen.getByText(KEY_CIP129).textContent).toBe(KEY_CIP129);
-    expect(screen.getByText('!!!Delegation certificate')).toBeInTheDocument();
+    expect(screen.getByText('Delegation certificate')).toBeInTheDocument();
     expect(
       screen.getByText(hasCertificate(certificateFor(KEY_CREDENTIAL_HEX)))
     ).toBeInTheDocument();
@@ -286,12 +286,12 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
     // identifier for the same DRep is one more thing to check.
     expect(screen.queryByText(KEY_CIP105)).not.toBeInTheDocument();
     expect(
-      screen.queryByText('!!!Show deprecated CIP-105 ID')
+      screen.queryByText('Show deprecated CIP-105 ID')
     ).not.toBeInTheDocument();
 
     const templateOrder = [
-      '!!!Delegate To',
-      '!!!Delegation certificate',
+      'Delegate To',
+      'Delegation certificate',
       'Transaction fee',
     ];
     expect(
@@ -315,8 +315,8 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
     renderIdentity(SCRIPT_CIP105);
 
     expect(screen.getAllByText(SCRIPT_CIP105)).toHaveLength(1);
-    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
-    expect(screen.getByText('!!!Delegation certificate')).toBeInTheDocument();
+    expect(screen.getByText('Delegate To')).toBeInTheDocument();
+    expect(screen.getByText('Delegation certificate')).toBeInTheDocument();
     expect(
       screen.getByText(hasCertificate(certificateFor(SCRIPT_CREDENTIAL_HEX)))
     ).toBeInTheDocument();
@@ -369,10 +369,10 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
     expect(normalizeDRepIdentity(LEGACY_DREP_ID)).toBeNull();
     renderIdentity(LEGACY_DREP_ID);
 
-    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
+    expect(screen.getByText('Delegate To')).toBeInTheDocument();
     expect(screen.getByText(LEGACY_DREP_ID).textContent).toBe(LEGACY_DREP_ID);
-    expect(screen.queryByText('!!!CIP-105 DRep ID')).not.toBeInTheDocument();
-    expect(screen.queryByText('!!!On-chain')).not.toBeInTheDocument();
+    expect(screen.queryByText('CIP-105 DRep ID')).not.toBeInTheDocument();
+    expect(screen.queryByText('On-chain')).not.toBeInTheDocument();
     // The certificate falls back to the id the decoder refused rather than
     // printing an empty credential.
     expect(
@@ -391,9 +391,9 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
 
       // Named the same way a DRep is, because the certificate is the same
       // kind of certificate.
-      expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
-      expect(screen.queryByText('!!!CIP-105 DRep ID')).not.toBeInTheDocument();
-      expect(screen.queryByText('!!!On-chain')).not.toBeInTheDocument();
+      expect(screen.getByText('Delegate To')).toBeInTheDocument();
+      expect(screen.queryByText('CIP-105 DRep ID')).not.toBeInTheDocument();
+      expect(screen.queryByText('On-chain')).not.toBeInTheDocument();
       expect(
         screen.getByText(
           hasCertificate(JSON.stringify({ vote: { type: option } }, null, 2))
@@ -403,7 +403,7 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
         screen.queryByText('Verified Sentinel Name')
       ).not.toBeInTheDocument();
       expect(
-        screen.queryByText('!!!Verified off-chain content')
+        screen.queryByText('Verified off-chain content')
       ).not.toBeInTheDocument();
     }
   );
@@ -458,9 +458,9 @@ describe('VotingPowerDelegationConfirmationDialog — verified name', () => {
     // The name has no label of its own: it sits under Delegate To, above the
     // identifier it names, which is the order the directory card uses too.
     expect(screen.getByText('Daedalus Test DRep')).toBeInTheDocument();
-    expect(screen.queryByText('!!!Verified name')).not.toBeInTheDocument();
+    expect(screen.queryByText('Verified name')).not.toBeInTheDocument();
 
-    const order = ['!!!Delegate To', 'Daedalus Test DRep'];
+    const order = ['Delegate To', 'Daedalus Test DRep'];
     expect(
       Array.from(document.querySelectorAll('p'))
         .map((node) => node.textContent ?? '')
@@ -483,7 +483,7 @@ describe('VotingPowerDelegationConfirmationDialog — verified name', () => {
 
     expect(screen.queryByText('Daedalus Test DRep')).not.toBeInTheDocument();
     expect(
-      screen.queryByText('!!!Verified off-chain content')
+      screen.queryByText('Verified off-chain content')
     ).not.toBeInTheDocument();
   });
 
@@ -498,9 +498,9 @@ describe('VotingPowerDelegationConfirmationDialog — verified name', () => {
 
       expect(screen.queryByText('Daedalus Test DRep')).not.toBeInTheDocument();
       expect(
-        screen.queryByText('!!!Verified off-chain content')
+        screen.queryByText('Verified off-chain content')
       ).not.toBeInTheDocument();
-      expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
+      expect(screen.getByText('Delegate To')).toBeInTheDocument();
     }
   );
 });

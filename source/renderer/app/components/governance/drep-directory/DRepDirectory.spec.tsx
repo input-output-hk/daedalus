@@ -236,13 +236,13 @@ describe('DRepDirectory', () => {
     renderComponent();
 
     // No page title: the governance tab bar already names the directory.
-    expect(screen.queryByText('!!!DRep Directory')).toBeNull();
-    expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
+    expect(screen.queryByText('DRep Directory')).toBeNull();
+    expect(screen.getByText('Voting power:')).toBeInTheDocument();
     // No status badge on an active DRep: the card marks what is exceptional,
     // and this assertion used to pass by matching the Status filter's own
     // "Active" option rather than anything on the card.
-    expect(screen.queryByText('!!!Active')).toBeNull();
-    expect(screen.queryByText('!!!Inactive')).toBeNull();
+    expect(screen.queryByText('Active')).toBeNull();
+    expect(screen.queryByText('Inactive')).toBeNull();
   });
 
   it('renders the DRep name on directory cards and no source label at all', () => {
@@ -258,17 +258,17 @@ describe('DRepDirectory', () => {
     // a directory card is on-chain, so a label beside one of them implied a
     // contrast that does not exist.
     expect(
-      screen.queryByText('!!!Verified off-chain content')
+      screen.queryByText('Verified off-chain content')
     ).not.toBeInTheDocument();
-    expect(screen.queryByText('!!!On-chain')).not.toBeInTheDocument();
+    expect(screen.queryByText('On-chain')).not.toBeInTheDocument();
   });
 
   it('renders the empty state when no DReps are available', () => {
     renderComponent({ suggestedDReps: [] });
 
-    expect(screen.getByText('!!!No DReps found on-chain.')).toBeInTheDocument();
+    expect(screen.getByText('No DReps found on-chain.')).toBeInTheDocument();
     expect(
-      screen.getAllByRole('button', { name: '!!!Retry' })[0]
+      screen.getAllByRole('button', { name: 'Retry' })[0]
     ).toBeInTheDocument();
   });
 
@@ -283,7 +283,7 @@ describe('DRepDirectory', () => {
     });
 
     expect(
-      screen.getByText('!!!Could not load DRep data.')
+      screen.getByText('Could not load DRep data.')
     ).toBeInTheDocument();
     expect(
       screen.getByText('Cardano node socket path is not available.')
@@ -302,7 +302,7 @@ describe('DRepDirectory', () => {
     });
 
     expect(
-      screen.getByText('!!!Could not load DRep data.')
+      screen.getByText('Could not load DRep data.')
     ).toBeInTheDocument();
     expect(screen.getByText('DRep state query failed.')).toBeInTheDocument();
     expect(
@@ -324,11 +324,11 @@ describe('DRepDirectory', () => {
     expect(
       screen.getByText(/Showing snapshot from a minute ago/)
     ).toBeInTheDocument();
-    expect(screen.getByText('!!!Retry')).toBeInTheDocument();
+    expect(screen.getByText('Retry')).toBeInTheDocument();
     expect(
-      screen.queryByText('!!!Could not load DRep data.')
+      screen.queryByText('Could not load DRep data.')
     ).not.toBeInTheDocument();
-    expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
+    expect(screen.getByText('Voting power:')).toBeInTheDocument();
   });
 
   it('keeps raw query text out of the retained-snapshot banner', () => {
@@ -351,7 +351,7 @@ describe('DRepDirectory', () => {
       )
     ).not.toBeInTheDocument();
     expect(screen.getByText(/Could not refresh DRep data/)).toBeInTheDocument();
-    expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
+    expect(screen.getByText('Voting power:')).toBeInTheDocument();
   });
 
   it('shows the retained-snapshot banner when the refresh times out', () => {
@@ -367,7 +367,7 @@ describe('DRepDirectory', () => {
     expect(
       screen.queryByText('DRep registration query timed out.')
     ).not.toBeInTheDocument();
-    expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
+    expect(screen.getByText('Voting power:')).toBeInTheDocument();
   });
 
   it('offers no pagination controls over a long list', () => {
@@ -376,10 +376,10 @@ describe('DRepDirectory', () => {
     // The list is windowed and scrolled, the way the stake pools lists are,
     // so there are no pages to step through.
     expect(
-      screen.queryByRole('button', { name: '!!!Previous' })
+      screen.queryByRole('button', { name: 'Previous' })
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: '!!!Next' })
+      screen.queryByRole('button', { name: 'Next' })
     ).not.toBeInTheDocument();
     expect(screen.queryByText(/Page \d+ of/)).not.toBeInTheDocument();
   });
@@ -387,7 +387,7 @@ describe('DRepDirectory', () => {
   it('renders the directory in ja-JP locale', () => {
     renderComponent({ locale: 'ja-JP' });
 
-    expect(screen.queryByText('!!!DRepディレクトリ')).toBeNull();
+    expect(screen.queryByText('DRepディレクトリ')).toBeNull();
     // The sort options name voting power too, so match the card's own label.
     expect(screen.getAllByText('!!!投票権:').length).toBeGreaterThan(0);
     expect(screen.getByText(/無作為/)).toBeInTheDocument();
@@ -399,11 +399,11 @@ describe('DRepDirectory', () => {
       refreshState: GovernanceRefreshState.Loading,
     });
 
-    expect(screen.getByLabelText('!!!Loading DRep data…')).toBeInTheDocument();
+    expect(screen.getByLabelText('Loading DRep data…')).toBeInTheDocument();
     expect(container.querySelectorAll('.skeletonCard')).toHaveLength(25);
-    expect(screen.queryByText('!!!Voting power:')).not.toBeInTheDocument();
+    expect(screen.queryByText('Voting power:')).not.toBeInTheDocument();
     expect(
-      screen.queryByText('!!!No DReps found on-chain.')
+      screen.queryByText('No DReps found on-chain.')
     ).not.toBeInTheDocument();
   });
 
@@ -443,7 +443,7 @@ describe('DRepDirectory', () => {
     renderComponent({ onViewDetails });
 
     fireEvent.click(
-      screen.getAllByRole('button', { name: '!!!View details' })[0]
+      screen.getAllByRole('button', { name: 'View details' })[0]
     );
 
     expect(onViewDetails).toHaveBeenCalledTimes(1);
@@ -455,10 +455,10 @@ describe('DRepDirectory', () => {
 
     expect(
       screen.getByText(
-        '!!!Your node is still syncing (87%). The DRep list may be incomplete until sync completes.'
+        'Your node is still syncing (87%). The DRep list may be incomplete until sync completes.'
       )
     ).toBeInTheDocument();
-    expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
+    expect(screen.getByText('Voting power:')).toBeInTheDocument();
   });
 
   it('renders 0% in the syncing banner when syncProgress is null mid-boot', () => {
@@ -482,11 +482,11 @@ describe('DRepDirectory', () => {
 
     expect(
       screen.getByText(
-        '!!!Your node is still syncing. DRep data becomes available once the node reaches the tip.'
+        'Your node is still syncing. DRep data becomes available once the node reaches the tip.'
       )
     ).toBeInTheDocument();
     expect(
-      screen.queryByText('!!!No DReps found on-chain.')
+      screen.queryByText('No DReps found on-chain.')
     ).not.toBeInTheDocument();
   });
 
@@ -508,14 +508,14 @@ describe('DRepDirectory', () => {
       )
     ).toBeInTheDocument();
     expect(
-      screen.queryByText('!!!Could not load DRep data.')
+      screen.queryByText('Could not load DRep data.')
     ).not.toBeInTheDocument();
   });
 
   it('keeps the retained list without the fallback when syncing with data present', () => {
     renderComponent({ isNodeInSync: false, syncProgress: 42 });
 
-    expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
+    expect(screen.getByText('Voting power:')).toBeInTheDocument();
     expect(
       screen.queryByText(/DRep data becomes available/)
     ).not.toBeInTheDocument();
@@ -534,14 +534,14 @@ describe('DRepDirectory', () => {
 
     expect(
       screen.getByText(
-        '!!!DRep directory data is unavailable on the selfnode cluster.'
+        'DRep directory data is unavailable on the selfnode cluster.'
       )
     ).toBeInTheDocument();
     expect(
       screen.queryByText(/unavailable in selfnode mode/)
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText('!!!Could not load DRep data.')
+      screen.queryByText('Could not load DRep data.')
     ).not.toBeInTheDocument();
   });
 
@@ -560,7 +560,7 @@ describe('DRepDirectory', () => {
 
     expect(
       screen.getByText(
-        '!!!DRep directory data is unavailable on the selfnode cluster.'
+        'DRep directory data is unavailable on the selfnode cluster.'
       )
     ).toBeInTheDocument();
     expect(
@@ -580,10 +580,10 @@ describe('DRepDirectory', () => {
 
     expect(
       screen.getByText(
-        '!!!DRep directory data is unavailable on the selfnode cluster.'
+        'DRep directory data is unavailable on the selfnode cluster.'
       )
     ).toBeInTheDocument();
-    expect(screen.queryByText('!!!Voting power:')).not.toBeInTheDocument();
+    expect(screen.queryByText('Voting power:')).not.toBeInTheDocument();
   });
 
   it('renders the selfnode empty state in ja-JP', () => {
@@ -612,7 +612,7 @@ describe('DRepDirectory', () => {
 
     expect(screen.getByText('—')).toHaveAttribute(
       'title',
-      '!!!Stake distribution unavailable, try again later.'
+      'Stake distribution unavailable, try again later.'
     );
   });
 
@@ -622,8 +622,8 @@ describe('DRepDirectory', () => {
     // A card marks what is exceptional. Almost no DRep publishes verified
     // metadata, so the badge is worth carrying; its absence is the ordinary
     // case and needs no marker of its own.
-    expect(screen.queryByText('!!!No metadata')).not.toBeInTheDocument();
-    expect(screen.queryByText('!!!Verified')).not.toBeInTheDocument();
+    expect(screen.queryByText('No metadata')).not.toBeInTheDocument();
+    expect(screen.queryByText('Verified')).not.toBeInTheDocument();
   });
 
   it('leaves the expiry badge off a DRep that is not lapsing soon', () => {
@@ -631,13 +631,13 @@ describe('DRepDirectory', () => {
     // 60 of a DRep's 100 days and well above the six-epoch threshold.
     renderComponent();
 
-    expect(screen.queryByText('!!!Inactive Soon')).toBeNull();
+    expect(screen.queryByText('Inactive Soon')).toBeNull();
   });
 
   it('shows the inactive-soon badge when close to lapsing', () => {
     renderComponent({ suggestedDReps: [realEntry(1, { drepActivity: 4 })] });
 
-    expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
+    expect(screen.getByText('Inactive Soon')).toBeInTheDocument();
   });
 
   it('leaves the expiry badge off a DRep that has already lapsed', () => {
@@ -647,15 +647,15 @@ describe('DRepDirectory', () => {
 
     // Already inactive, so there is nothing left to expire; the status badge
     // carries the whole story.
-    expect(screen.queryByText('!!!Inactive Soon')).not.toBeInTheDocument();
-    expect(screen.getByLabelText('!!!Inactive')).toBeInTheDocument();
+    expect(screen.queryByText('Inactive Soon')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Inactive')).toBeInTheDocument();
   });
 
   it('offers the clear button only once the search field holds something', () => {
     renderComponent({ suggestedDReps: [realEntry(1)] });
 
     expect(
-      screen.queryByRole('button', { name: '!!!Clear' })
+      screen.queryByRole('button', { name: 'Clear' })
     ).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByPlaceholderText(/Search by DRep ID/), {
@@ -663,7 +663,7 @@ describe('DRepDirectory', () => {
     });
 
     expect(
-      screen.getByRole('button', { name: '!!!Clear' })
+      screen.getByRole('button', { name: 'Clear' })
     ).toBeInTheDocument();
   });
 
@@ -681,27 +681,27 @@ describe('DRepDirectory', () => {
       target: { value: realDrepId(2).slice(0, 'drep1'.length + 20) },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Clear' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Clear' }));
 
     expect(input.value).toBe('');
     expect(
-      screen.queryByRole('button', { name: '!!!Clear' })
+      screen.queryByRole('button', { name: 'Clear' })
     ).not.toBeInTheDocument();
     // Back to the suggested cohort, not to the whole directory the query was
     // searched against.
-    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(screen.getAllByText('View details')).toHaveLength(1);
   });
 
   it('shows the min-length hint below 8 post-HRP characters and leaves the list unfiltered', () => {
     renderComponent({ suggestedDReps: [realEntry(1), realEntry(2)] });
 
-    const input = screen.getByPlaceholderText('!!!Search by DRep ID or name');
+    const input = screen.getByPlaceholderText('Search by DRep ID or name');
     fireEvent.change(input, { target: { value: 'drep1abcdefg' } });
 
     expect(
-      screen.getByText('!!!Enter at least 8 characters to search by ID')
+      screen.getByText('Enter at least 8 characters to search by ID')
     ).toBeInTheDocument();
-    expect(screen.getAllByText('!!!View details')).toHaveLength(2);
+    expect(screen.getAllByText('View details')).toHaveLength(2);
   });
 
   it('filters by prefix at 8 characters and never auto-selects, even on Enter with one match', () => {
@@ -711,12 +711,12 @@ describe('DRepDirectory', () => {
       onViewDetails,
     });
 
-    const input = screen.getByPlaceholderText('!!!Search by DRep ID or name');
+    const input = screen.getByPlaceholderText('Search by DRep ID or name');
     const uniquePrefix = realDrepId(1).slice(0, 'drep1'.length + 20);
     fireEvent.change(input, { target: { value: uniquePrefix } });
     fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
-    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(screen.getAllByText('View details')).toHaveLength(1);
     expect(onViewDetails).not.toHaveBeenCalled();
   });
 
@@ -726,27 +726,27 @@ describe('DRepDirectory', () => {
     });
 
     fireEvent.change(
-      screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+      screen.getByPlaceholderText('Search by DRep ID or name'),
       {
         target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
       }
     );
 
-    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(screen.getAllByText('View details')).toHaveLength(1);
     // One ID, in the current form: a search must not turn the card into a
     // taller shape than the grid reserves room for. DRepIdDisplay's own spec
     // covers the CIP-105 disclosure.
     expect(container.querySelectorAll('code')).toHaveLength(1);
-    expect(screen.queryByText('!!!(CIP-105)')).toBeNull();
+    expect(screen.queryByText('(CIP-105)')).toBeNull();
   });
 
   it('keeps exactly one ID form on a directory row', () => {
     const { container } = renderComponent({ suggestedDReps: [realEntry(1)] });
 
     expect(container.querySelectorAll('code')).toHaveLength(1);
-    expect(screen.queryByText('!!!(CIP-105)')).not.toBeInTheDocument();
+    expect(screen.queryByText('(CIP-105)')).not.toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: '!!!Copy DRep ID' })
+      screen.getByRole('button', { name: 'Copy DRep ID' })
     ).toBeInTheDocument();
   });
 
@@ -758,7 +758,7 @@ describe('DRepDirectory', () => {
     });
 
     fireEvent.change(
-      screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+      screen.getByPlaceholderText('Search by DRep ID or name'),
       {
         target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
       }
@@ -773,7 +773,7 @@ describe('DRepDirectory', () => {
     renderComponent({ suggestedDReps: [realEntry(1)], onViewDetails });
 
     fireEvent.change(
-      screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+      screen.getByPlaceholderText('Search by DRep ID or name'),
       {
         target: { value: realDrepId(1) },
       }
@@ -788,7 +788,7 @@ describe('DRepDirectory', () => {
     renderComponent({ suggestedDReps: [realEntry(1)], onViewDetails });
 
     fireEvent.change(
-      screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+      screen.getByPlaceholderText('Search by DRep ID or name'),
       {
         target: { value: realCip105Id(1) },
       }
@@ -803,13 +803,13 @@ describe('DRepDirectory', () => {
     renderComponent({ suggestedDReps: [realEntry(1)], onViewDetails });
 
     fireEvent.change(
-      screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+      screen.getByPlaceholderText('Search by DRep ID or name'),
       {
         target: { value: `drep1${'q'.repeat(51)}` },
       }
     );
 
-    expect(screen.getByText('!!!Invalid DRep ID')).toBeInTheDocument();
+    expect(screen.getByText('Invalid DRep ID')).toBeInTheDocument();
     expect(onViewDetails).not.toHaveBeenCalled();
     expect(
       screen.getAllByText(/No DReps match your filters/)[0]
@@ -825,11 +825,11 @@ describe('DRepDirectory', () => {
       allDReps: [suggestedEntry, extraEntry1, extraEntry2],
     });
 
-    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(screen.getAllByText('View details')).toHaveLength(1);
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
 
-    expect(screen.getAllByText('!!!View details')).toHaveLength(3);
+    expect(screen.getAllByText('View details')).toHaveLength(3);
   });
 
   it('finds and opens a non-suggested entry by ID with show-all off', () => {
@@ -842,12 +842,12 @@ describe('DRepDirectory', () => {
       onViewDetails,
     });
 
-    const input = screen.getByPlaceholderText('!!!Search by DRep ID or name');
+    const input = screen.getByPlaceholderText('Search by DRep ID or name');
     fireEvent.change(input, {
       target: { value: realDrepId(2).slice(0, 'drep1'.length + 20) },
     });
 
-    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(screen.getAllByText('View details')).toHaveLength(1);
     expect(onViewDetails).not.toHaveBeenCalled();
 
     fireEvent.change(input, { target: { value: realDrepId(2) } });
@@ -864,11 +864,11 @@ describe('DRepDirectory', () => {
       allDReps: [suggestedEntry, optedOutEntry],
     });
 
-    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(screen.getAllByText('View details')).toHaveLength(1);
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
 
-    expect(screen.getAllByText('!!!View details')).toHaveLength(2);
+    expect(screen.getAllByText('View details')).toHaveLength(2);
   });
 
   it('opens a doNotList entry from an exact DRep ID with show-all off', () => {
@@ -881,12 +881,12 @@ describe('DRepDirectory', () => {
       onViewDetails,
     });
 
-    const input = screen.getByPlaceholderText('!!!Search by DRep ID or name');
+    const input = screen.getByPlaceholderText('Search by DRep ID or name');
     fireEvent.change(input, {
       target: { value: realDrepId(5).slice(0, 'drep1'.length + 20) },
     });
 
-    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(screen.getAllByText('View details')).toHaveLength(1);
     expect(onViewDetails).not.toHaveBeenCalled();
 
     fireEvent.change(input, { target: { value: realDrepId(5) } });
@@ -903,21 +903,21 @@ describe('DRepDirectory', () => {
       ],
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
-    chooseFacetOption('Status', '!!!Inactive');
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
+    chooseFacetOption('Status', 'Inactive');
 
-    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(screen.getAllByText('View details')).toHaveLength(1);
   });
 
   it('shows the sort-bias disclosure only while voting-power-descending is active', () => {
     renderComponent({ suggestedDReps: [realEntry(1)] });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
-    chooseFacetOption('!!!Sort', '!!!Voting power (high to low)');
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
+    chooseFacetOption('Sort', 'Voting power (high to low)');
 
     expect(screen.getByText(/Sorted by voting power/)).toBeInTheDocument();
 
-    chooseFacetOption('!!!Sort', '!!!Default');
+    chooseFacetOption('Sort', 'Default');
 
     expect(
       screen.queryByText(/Sorted by voting power/)
@@ -930,7 +930,7 @@ describe('DRepDirectory', () => {
     // it here meant two of its three options silently changed mode.
     renderComponent({ suggestedDReps: [realEntry(1)] });
 
-    expect(screen.queryByText('!!!Sort')).not.toBeInTheDocument();
+    expect(screen.queryByText('Sort')).not.toBeInTheDocument();
   });
 
   it('offers ordering once every DRep is listed', () => {
@@ -939,9 +939,9 @@ describe('DRepDirectory', () => {
       allDReps: [realEntry(1), realEntry(2)],
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
 
-    expect(screen.getByText('!!!Sort')).toBeInTheDocument();
+    expect(screen.getByText('Sort')).toBeInTheDocument();
   });
 
   it('puts the default order back on returning to the suggestions', () => {
@@ -950,15 +950,15 @@ describe('DRepDirectory', () => {
       allDReps: [realEntry(1), realEntry(2)],
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
-    chooseFacetOption('!!!Sort', '!!!Voting power (high to low)');
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
+    chooseFacetOption('Sort', 'Voting power (high to low)');
     expect(screen.getByText(/Sorted by voting power/)).toBeInTheDocument();
 
     fireEvent.click(
-      screen.getByRole('button', { name: '!!!Back to suggestions' })
+      screen.getByRole('button', { name: 'Back to suggestions' })
     );
 
-    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(screen.getAllByText('View details')).toHaveLength(1);
     expect(
       screen.queryByText(/Sorted by voting power/)
     ).not.toBeInTheDocument();
@@ -970,12 +970,12 @@ describe('DRepDirectory', () => {
       allDReps: [realEntry(1), realEntry(2)],
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
     fireEvent.change(screen.getByPlaceholderText(/Search by DRep ID/), {
       target: { value: realDrepId(2).slice(0, 'drep1'.length + 20) },
     });
 
-    expect(screen.queryByText('!!!Sort')).not.toBeInTheDocument();
+    expect(screen.queryByText('Sort')).not.toBeInTheDocument();
   });
 
   it('offers no voting-power sort when no DRep reports a figure', () => {
@@ -985,14 +985,14 @@ describe('DRepDirectory', () => {
       allDReps: [realEntry(1, withoutPower), realEntry(2, withoutPower)],
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
-    const options = facetOptions('!!!Sort');
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
+    const options = facetOptions('Sort');
 
-    expect(options).not.toContain('!!!Voting power (high to low)');
-    expect(options).not.toContain('!!!Voting power (low to high)');
+    expect(options).not.toContain('Voting power (high to low)');
+    expect(options).not.toContain('Voting power (low to high)');
     // The default order is all that is left to offer, and it still works
     // without a voting power figure.
-    expect(options).toEqual(['!!!Default']);
+    expect(options).toEqual(['Default']);
   });
 
   it('offers the voting-power sort when a single DRep reports a figure', () => {
@@ -1001,11 +1001,11 @@ describe('DRepDirectory', () => {
       allDReps: [realEntry(1, { votingPower: null }), realEntry(2)],
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
-    const options = facetOptions('!!!Sort');
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
+    const options = facetOptions('Sort');
 
-    expect(options).toContain('!!!Voting power (high to low)');
-    expect(options).toContain('!!!Voting power (low to high)');
+    expect(options).toContain('Voting power (high to low)');
+    expect(options).toContain('Voting power (low to high)');
   });
 
   it('leaves the banner alone when show-all only widens the list', () => {
@@ -1014,7 +1014,7 @@ describe('DRepDirectory', () => {
       allDReps: [realEntry(1), realEntry(2)],
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
 
     // Widening the list narrows nothing and reorders nothing: with randomized
     // still selected the order is still randomized, so there is no caveat to
@@ -1027,8 +1027,8 @@ describe('DRepDirectory', () => {
       suggestedDReps: [realEntry(1), realEntry(2, { status: 'inactive' })],
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
-    chooseFacetOption('Status', '!!!Active');
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
+    chooseFacetOption('Status', 'Active');
 
     expect(
       screen.getByText(/Showing 1 DRep matching your filters/)
@@ -1038,15 +1038,15 @@ describe('DRepDirectory', () => {
   it('recovers from zero results via the Clear filters action', () => {
     renderComponent({ suggestedDReps: [realEntry(1)] });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
-    chooseFacetOption('Status', '!!!Inactive');
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
+    chooseFacetOption('Status', 'Inactive');
     expect(
       screen.getAllByText(/No DReps match your filters/)[0]
     ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('!!!Clear filters'));
+    fireEvent.click(screen.getByText('Clear filters'));
 
-    expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+    expect(screen.getAllByText('View details')).toHaveLength(1);
   });
 
   it('renders the search surface in ja-JP', () => {
@@ -1070,11 +1070,11 @@ describe('DRepDirectory', () => {
       });
 
       fireEvent.change(
-        screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+        screen.getByPlaceholderText('Search by DRep ID or name'),
         { target: { value: 'cardano' } }
       );
 
-      expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+      expect(screen.getAllByText('View details')).toHaveLength(1);
     });
 
     it('applies the name filter case-insensitively', () => {
@@ -1086,11 +1086,11 @@ describe('DRepDirectory', () => {
       });
 
       fireEvent.change(
-        screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+        screen.getByPlaceholderText('Search by DRep ID or name'),
         { target: { value: 'ALICE' } }
       );
 
-      expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+      expect(screen.getAllByText('View details')).toHaveLength(1);
     });
 
     it('excludes ID-only entries (no verified name) from name results', () => {
@@ -1102,11 +1102,11 @@ describe('DRepDirectory', () => {
       });
 
       fireEvent.change(
-        screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+        screen.getByPlaceholderText('Search by DRep ID or name'),
         { target: { value: 'Named' } }
       );
 
-      expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+      expect(screen.getAllByText('View details')).toHaveLength(1);
     });
 
     it('shows the no-results empty state for an unmatched name query', () => {
@@ -1115,14 +1115,14 @@ describe('DRepDirectory', () => {
       });
 
       fireEvent.change(
-        screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+        screen.getByPlaceholderText('Search by DRep ID or name'),
         { target: { value: 'UnknownName' } }
       );
 
       expect(
         document.querySelector('[data-variant="noResults"]')
       ).not.toBeNull();
-      expect(screen.queryByText('!!!View details')).not.toBeInTheDocument();
+      expect(screen.queryByText('View details')).not.toBeInTheDocument();
     });
 
     it('does not activate name search for a single character (below minimum)', () => {
@@ -1131,12 +1131,12 @@ describe('DRepDirectory', () => {
       });
 
       fireEvent.change(
-        screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+        screen.getByPlaceholderText('Search by DRep ID or name'),
         { target: { value: 'A' } }
       );
 
       // 'belowMinimum' leaves the suggested list visible
-      expect(screen.getByText('!!!View details')).toBeInTheDocument();
+      expect(screen.getByText('View details')).toBeInTheDocument();
       // Sentinel cards are still shown (not in search mode)
       expect(screen.getByText('Abstain')).toBeInTheDocument();
     });
@@ -1148,7 +1148,7 @@ describe('DRepDirectory', () => {
       renderComponent({ onReroll });
 
       expect(
-        screen.getByText('!!!Show different suggestions')
+        screen.getByText('Show different suggestions')
       ).toBeInTheDocument();
     });
 
@@ -1156,7 +1156,7 @@ describe('DRepDirectory', () => {
       const onReroll = jest.fn();
       renderComponent({ onReroll });
 
-      fireEvent.click(screen.getByText('!!!Show different suggestions'));
+      fireEvent.click(screen.getByText('Show different suggestions'));
 
       expect(onReroll).toHaveBeenCalledTimes(1);
     });
@@ -1172,7 +1172,7 @@ describe('DRepDirectory', () => {
       renderComponent({ suggestedDReps: [realEntry(1)] });
 
       fireEvent.change(
-        screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+        screen.getByPlaceholderText('Search by DRep ID or name'),
         {
           target: { value: 'no_confidence' },
         }
@@ -1189,7 +1189,7 @@ describe('DRepDirectory', () => {
       renderComponent({ suggestedDReps: [realEntry(1)] });
 
       fireEvent.click(
-        screen.getByRole('button', { name: '!!!Show all DReps' })
+        screen.getByRole('button', { name: 'Show all DReps' })
       );
 
       // Abstain and No Confidence are standing options rather than members of
@@ -1202,13 +1202,13 @@ describe('DRepDirectory', () => {
       renderComponent({ suggestedDReps: [realEntry(1)] });
 
       fireEvent.click(
-        screen.getByRole('button', { name: '!!!Show all DReps' })
+        screen.getByRole('button', { name: 'Show all DReps' })
       );
 
       // Rerolling picks a fresh cohort, which means nothing once every DRep
       // is already listed.
       expect(
-        screen.queryByText('!!!Show different suggestions')
+        screen.queryByText('Show different suggestions')
       ).not.toBeInTheDocument();
     });
 
@@ -1218,7 +1218,7 @@ describe('DRepDirectory', () => {
 
       // The sentinel card Select buttons are distinct from the DRep card CTAs
       const sentinelButtons = screen.getAllByRole('button', {
-        name: '!!!Select',
+        name: 'Select',
       });
       fireEvent.click(sentinelButtons[0]);
 
@@ -1230,7 +1230,7 @@ describe('DRepDirectory', () => {
       renderComponent({ onSelectForDelegation });
 
       const sentinelButtons = screen.getAllByRole('button', {
-        name: '!!!Select',
+        name: 'Select',
       });
       fireEvent.click(sentinelButtons[1]);
 
@@ -1242,7 +1242,7 @@ describe('DRepDirectory', () => {
 
       // 'no_confidence' (13 chars) triggers search → no results for a DRep query
       fireEvent.change(
-        screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+        screen.getByPlaceholderText('Search by DRep ID or name'),
         {
           target: { value: 'no_confidence' },
         }
@@ -1251,7 +1251,7 @@ describe('DRepDirectory', () => {
       const emptyState = document.querySelector('[data-variant="noResults"]');
       expect(emptyState).not.toBeNull();
       expect(emptyState.textContent).not.toContain('No Confidence');
-      expect(screen.queryByText('!!!View details')).not.toBeInTheDocument();
+      expect(screen.queryByText('View details')).not.toBeInTheDocument();
     });
 
     it('keeps every directory and favorites string free of the sentinel labels in both locales', () => {
@@ -1302,7 +1302,7 @@ describe('DRepDirectory', () => {
 
       renderComponent({ suggestedDReps: [realEntry(1)] });
 
-      const input = screen.getByPlaceholderText('!!!Search by DRep ID or name');
+      const input = screen.getByPlaceholderText('Search by DRep ID or name');
       SENTINEL_QUERIES.forEach((query) => {
         fireEvent.change(input, { target: { value: query } });
       });
@@ -1360,7 +1360,7 @@ describe('DRepDirectory', () => {
         view: 'favorites',
       });
 
-      expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+      expect(screen.getAllByText('View details')).toHaveLength(1);
       expect(screen.getByText(truncatedDrepId(2))).toBeInTheDocument();
       expect(screen.queryByText(truncatedDrepId(1))).not.toBeInTheDocument();
       // One favourite, so the singular branch: the count and the noun agree.
@@ -1381,7 +1381,7 @@ describe('DRepDirectory', () => {
         screen.getByPlaceholderText(/Search by DRep ID/)
       ).toBeInTheDocument();
       expect(
-        screen.getByRole('button', { name: '!!!Table view' })
+        screen.getByRole('button', { name: 'Table view' })
       ).toBeInTheDocument();
       expect(screen.queryByText(/Show all DReps/)).not.toBeInTheDocument();
     });
@@ -1399,7 +1399,7 @@ describe('DRepDirectory', () => {
 
       // A favourite that does not match yields no results rather than pulling
       // the non-favourite it matches back into the list.
-      expect(screen.queryByText('!!!View details')).not.toBeInTheDocument();
+      expect(screen.queryByText('View details')).not.toBeInTheDocument();
     });
 
     it('clears the favorites search from the same button', () => {
@@ -1416,12 +1416,12 @@ describe('DRepDirectory', () => {
         target: { value: realDrepId(2).slice(0, 'drep1'.length + 20) },
       });
 
-      expect(screen.queryByText('!!!View details')).not.toBeInTheDocument();
+      expect(screen.queryByText('View details')).not.toBeInTheDocument();
 
-      fireEvent.click(screen.getByRole('button', { name: '!!!Clear' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Clear' }));
 
       expect(input.value).toBe('');
-      expect(screen.getAllByText('!!!View details')).toHaveLength(1);
+      expect(screen.getAllByText('View details')).toHaveLength(1);
     });
 
     it('shows the noFavorites empty state with a working back-to-directory action', () => {
@@ -1479,8 +1479,8 @@ describe('DRepDirectory', () => {
         screen.getAllByText(/not actively accepting delegation/)
       ).toHaveLength(1);
       // Active is the norm and carries no badge, so neither card shows one.
-      expect(screen.queryByLabelText('!!!Active')).not.toBeInTheDocument();
-      expect(screen.getAllByText('!!!View details')).toHaveLength(2);
+      expect(screen.queryByLabelText('Active')).not.toBeInTheDocument();
+      expect(screen.getAllByText('View details')).toHaveLength(2);
       expect(screen.getByText(truncatedDrepId(2))).toBeInTheDocument();
     });
 
@@ -1493,7 +1493,7 @@ describe('DRepDirectory', () => {
       expect(
         screen.queryByText(/not actively accepting delegation/)
       ).not.toBeInTheDocument();
-      expect(screen.getByText('!!!View details')).toBeInTheDocument();
+      expect(screen.getByText('View details')).toBeInTheDocument();
     });
 
     it('renders the favorites empty-state copy in ja-JP', () => {
@@ -1521,14 +1521,14 @@ describe('DRepDirectory pinned favorites', () => {
       favoriteDRepIds: new Set([favorite.drepId]),
     });
 
-    expect(screen.getByText('!!!Your favorites (1)')).toBeInTheDocument();
+    expect(screen.getByText('Your favorites (1)')).toBeInTheDocument();
     expect(screen.getByText('Pinned DRep')).toBeInTheDocument();
   });
 
   it('renders no favorites group when there are none', () => {
     renderComponent();
 
-    expect(screen.queryByText(/!!!Your favorites/)).toBeNull();
+    expect(screen.queryByText(/Your favorites/)).toBeNull();
   });
 
   it('does not show a favorite twice when it is already in the cohort', () => {
@@ -1541,7 +1541,7 @@ describe('DRepDirectory pinned favorites', () => {
 
     // Pinned, and removed from the cohort beneath, so it appears exactly once
     // and always in the same place.
-    expect(screen.getByText(/!!!Your favorites/)).toBeInTheDocument();
+    expect(screen.getByText(/Your favorites/)).toBeInTheDocument();
     expect(screen.getAllByText('Already Listed')).toHaveLength(1);
   });
 
@@ -1552,7 +1552,7 @@ describe('DRepDirectory pinned favorites', () => {
       favoriteDRepIds: new Set([favorite.drepId]),
     });
 
-    expect(screen.queryByText(/!!!Your favorites \(/)).toBeNull();
+    expect(screen.queryByText(/Your favorites \(/)).toBeNull();
   });
 
   it('leaves the group out while searching', () => {
@@ -1562,13 +1562,13 @@ describe('DRepDirectory pinned favorites', () => {
     });
 
     fireEvent.change(
-      screen.getByPlaceholderText('!!!Search by DRep ID or name'),
+      screen.getByPlaceholderText('Search by DRep ID or name'),
       {
         target: { value: 'drep1abcdefgh' },
       }
     );
 
-    expect(screen.queryByText(/!!!Your favorites \(/)).toBeNull();
+    expect(screen.queryByText(/Your favorites \(/)).toBeNull();
   });
 });
 
@@ -1578,48 +1578,48 @@ describe('DRepDirectory view modes', () => {
 
     expect(screen.queryByRole('table')).toBeNull();
     expect(
-      screen.getByLabelText('!!!Card view').getAttribute('aria-pressed')
+      screen.getByLabelText('Card view').getAttribute('aria-pressed')
     ).toBe('true');
   });
 
   it('switches to a table and back', () => {
     renderComponent();
 
-    fireEvent.click(screen.getByLabelText('!!!Table view'));
+    fireEvent.click(screen.getByLabelText('Table view'));
     expect(screen.getByRole('table')).toBeInTheDocument();
     expect(
-      screen.getByLabelText('!!!Table view').getAttribute('aria-pressed')
+      screen.getByLabelText('Table view').getAttribute('aria-pressed')
     ).toBe('true');
 
-    fireEvent.click(screen.getByLabelText('!!!Card view'));
+    fireEvent.click(screen.getByLabelText('Card view'));
     expect(screen.queryByRole('table')).toBeNull();
   });
 
   it('carries no metadata column, the name column having already said it', () => {
     renderComponent();
-    fireEvent.click(screen.getByLabelText('!!!Table view'));
+    fireEvent.click(screen.getByLabelText('Table view'));
 
     // The only thing the app can determine about a DRep's metadata is whether
     // a verified name came back, and the name column shows that name. A tick
     // beside it restated one field in terms of another.
     expect(
-      screen.queryByRole('columnheader', { name: '!!!Metadata' })
+      screen.queryByRole('columnheader', { name: 'Metadata' })
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText(/!!!(No verified metadata|Verified metadata)/)
+      screen.queryByLabelText(/(No verified metadata|Verified metadata)/)
     ).not.toBeInTheDocument();
   });
 
   it('keeps every binding signal in the table view', () => {
     renderComponent({ suggestedDReps: [realEntry(1, { drepActivity: 3 })] });
-    fireEvent.click(screen.getByLabelText('!!!Table view'));
+    fireEvent.click(screen.getByLabelText('Table view'));
 
     // One row, one standing: this DRep is close to going inactive, so that is
     // the badge it carries. There is no Active badge to find.
-    expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
-    expect(screen.queryByText('!!!Active')).toBeNull();
+    expect(screen.getByText('Inactive Soon')).toBeInTheDocument();
+    expect(screen.queryByText('Active')).toBeNull();
     expect(
-      screen.getByRole('columnheader', { name: '!!!Voting power' })
+      screen.getByRole('columnheader', { name: 'Voting power' })
     ).toBeInTheDocument();
   });
 });
@@ -1635,7 +1635,7 @@ describe('DRepDirectory stored view preference', () => {
     const onListViewModeChange = jest.fn();
     renderComponent({ onListViewModeChange });
 
-    fireEvent.click(screen.getByLabelText('!!!Table view'));
+    fireEvent.click(screen.getByLabelText('Table view'));
 
     expect(onListViewModeChange).toHaveBeenCalledWith('table');
   });
@@ -1645,7 +1645,7 @@ describe('DRepDirectory stored view preference', () => {
     // only with a store wired behind it.
     renderComponent();
 
-    fireEvent.click(screen.getByLabelText('!!!Table view'));
+    fireEvent.click(screen.getByLabelText('Table view'));
     expect(screen.getByRole('table')).toBeInTheDocument();
   });
 });
@@ -1666,7 +1666,7 @@ describe('DRepDirectory suggestion criteria', () => {
     renderComponent();
 
     expect(
-      screen.queryByText('!!!Change suggestion criteria')
+      screen.queryByText('Change suggestion criteria')
     ).not.toBeInTheDocument();
   });
 
@@ -1674,8 +1674,8 @@ describe('DRepDirectory suggestion criteria', () => {
     renderComponent({ onCohortCriteriaChange: jest.fn() });
 
     expect(screen.getByText(/chosen at random/)).toBeInTheDocument();
-    expect(facetValue('!!!Suggestions')).toBe('20');
-    expect(facetNumberValue('!!!Voting Power Threshold')).toBe('1.5');
+    expect(facetValue('Suggestions')).toBe('20');
+    expect(facetNumberValue('Voting Power Threshold')).toBe('1.5');
   });
 
   it('reports a criterion the user turns off', () => {
@@ -1684,7 +1684,7 @@ describe('DRepDirectory suggestion criteria', () => {
 
     // The switch wears its label above it now, so the control is the input
     // inside the facet the label heads.
-    const facet = screen.getByText('!!!Verified metadata').closest('div');
+    const facet = screen.getByText('Verified metadata').closest('div');
     fireEvent.click(facet?.querySelector('input') as HTMLInputElement);
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
@@ -1697,7 +1697,7 @@ describe('DRepDirectory suggestion criteria', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
 
-    chooseFacetOption('!!!Suggestions', '50');
+    chooseFacetOption('Suggestions', '50');
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,
@@ -1709,7 +1709,7 @@ describe('DRepDirectory suggestion criteria', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
 
-    typeFacetNumber('!!!Voting Power Threshold', '2.5');
+    typeFacetNumber('Voting Power Threshold', '2.5');
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,
@@ -1723,7 +1723,7 @@ describe('DRepDirectory suggestion criteria', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
 
-    typeFacetNumber('!!!Voting Power Threshold', '100');
+    typeFacetNumber('Voting Power Threshold', '100');
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,
@@ -1737,7 +1737,7 @@ describe('DRepDirectory suggestion criteria', () => {
 
     // A press is a decision, so it lands without the field being left.
     fireEvent.click(
-      screen.getByRole('button', { name: '!!!Raise the voting power ceiling' })
+      screen.getByRole('button', { name: 'Raise the voting power ceiling' })
     );
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
@@ -1751,7 +1751,7 @@ describe('DRepDirectory suggestion criteria', () => {
     renderComponent({ onCohortCriteriaChange });
 
     fireEvent.click(
-      screen.getByRole('button', { name: '!!!Lower the voting power ceiling' })
+      screen.getByRole('button', { name: 'Lower the voting power ceiling' })
     );
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
@@ -1772,7 +1772,7 @@ describe('DRepDirectory suggestion criteria', () => {
 
     // Held rather than hidden, so the row does not reflow at the limit.
     expect(
-      screen.getByRole('button', { name: '!!!Lower the voting power ceiling' })
+      screen.getByRole('button', { name: 'Lower the voting power ceiling' })
     ).toBeDisabled();
   });
 
@@ -1780,7 +1780,7 @@ describe('DRepDirectory suggestion criteria', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
 
-    typeFacetNumber('!!!Voting Power Threshold', '0.1');
+    typeFacetNumber('Voting Power Threshold', '0.1');
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,
@@ -1798,9 +1798,9 @@ describe('DRepDirectory suggestion criteria', () => {
       },
     });
 
-    expect(facetValue('!!!Suggestions')).toBe('10');
+    expect(facetValue('Suggestions')).toBe('10');
     // No ceiling reads as the top of the range, which is what it means.
-    expect(facetNumberValue('!!!Voting Power Threshold')).toBe('100');
+    expect(facetNumberValue('Voting Power Threshold')).toBe('100');
   });
 
   it('says which criteria were relaxed to fill the cohort', () => {
@@ -1809,7 +1809,7 @@ describe('DRepDirectory suggestion criteria', () => {
     });
 
     expect(
-      screen.getByText(/verified metadata, !!!voting power limit/)
+      screen.getByText(/verified metadata, voting power limit/)
     ).toBeInTheDocument();
   });
 
@@ -1829,12 +1829,12 @@ describe('DRepDirectory suggestion criteria', () => {
     });
     // The summary and its controls state what the cohort was drawn under.
     expect(screen.getByText(/chosen at random/)).toBeInTheDocument();
-    expect(screen.getByText('!!!Suggestions')).toBeInTheDocument();
+    expect(screen.getByText('Suggestions')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Show all DReps' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Show all DReps' }));
 
     expect(screen.queryByText(/chosen at random/)).not.toBeInTheDocument();
-    expect(screen.queryByText('!!!Suggestions')).not.toBeInTheDocument();
+    expect(screen.queryByText('Suggestions')).not.toBeInTheDocument();
     expect(screen.queryByText(/Too few DReps met/)).not.toBeInTheDocument();
   });
 });

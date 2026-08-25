@@ -300,7 +300,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
       { delegationNavState: { selectedWalletId: WALLET_ID, voteType: 'drep' } }
     );
 
-    fireEvent.click(screen.getByText('!!!Browse DReps'));
+    fireEvent.click(screen.getByText('Browse DReps'));
 
     expect(stores.governance.setDelegationNavState).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -324,7 +324,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
     fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
     expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
-    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
+    expect(screen.getByText('Delegate To')).toBeInTheDocument();
     expect(screen.getByLabelText(VALID_DREP_ID)).toBeInTheDocument();
   });
 
@@ -333,14 +333,14 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
       delegationNavState: { selectedWalletId: WALLET_ID, voteType: 'drep' },
     });
 
-    fireEvent.click(screen.getByText('!!!Browse DReps'));
-    fireEvent.click(screen.getByRole('button', { name: '!!!View details' }));
+    fireEvent.click(screen.getByText('Browse DReps'));
+    fireEvent.click(screen.getByRole('button', { name: 'View details' }));
     // Wait for fetchDRep to resolve so the detail page transitions out of Loading.
     await act(async () => {});
     fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
     expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
-    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
+    expect(screen.getByText('Delegate To')).toBeInTheDocument();
     expect(screen.getByLabelText(VALID_DREP_ID)).toBeInTheDocument();
   });
 
@@ -356,7 +356,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
       }
     );
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!View details' }));
+    fireEvent.click(screen.getByRole('button', { name: 'View details' }));
 
     expect(history.location.pathname).toBe(
       `${ROUTES.GOVERNANCE.DREPS}/${VALID_DREP_ID}`
@@ -513,7 +513,7 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
       },
     });
 
-    expect(screen.getByText('!!!Currently Delegated To')).toBeInTheDocument();
+    expect(screen.getByText('Currently Delegated To')).toBeInTheDocument();
     expect(
       screen.getByText(/already delegates to this choice/)
     ).toBeInTheDocument();
@@ -706,9 +706,9 @@ describe('Current-vote enrichment in the delegation form', () => {
     });
     await act(async () => {});
 
-    expect(screen.getByText('!!!Currently Delegated To')).toBeInTheDocument();
-    expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
-    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
+    expect(screen.getByText('Currently Delegated To')).toBeInTheDocument();
+    expect(screen.getByText('Inactive Soon')).toBeInTheDocument();
+    expect(screen.getByText('Delegate To')).toBeInTheDocument();
     expect(
       screen.getByText(/already delegates to this choice/)
     ).toBeInTheDocument();
@@ -734,8 +734,8 @@ describe('Current-vote enrichment in the delegation form', () => {
     });
     await act(async () => {});
 
-    expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
-    expect(screen.queryByText('!!!DRep status is loading.')).toBeNull();
+    expect(screen.getByText('Inactive Soon')).toBeInTheDocument();
+    expect(screen.queryByText('DRep status is loading.')).toBeNull();
     expect(screen.getByLabelText(CIP105_DREP_ID)).toBeInTheDocument();
   });
 

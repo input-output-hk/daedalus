@@ -156,9 +156,9 @@ describe('DRepDetailPage', () => {
     await renderPage();
 
     // No generic page title: the tab bar and the back link already place us.
-    expect(screen.queryByText('!!!DRep detail')).toBeNull();
-    expect(screen.getByText('!!!Active')).toBeInTheDocument();
-    expect(screen.getByText('!!!34 epochs')).toBeInTheDocument();
+    expect(screen.queryByText('DRep detail')).toBeNull();
+    expect(screen.getByText('Active')).toBeInTheDocument();
+    expect(screen.getByText('34 epochs')).toBeInTheDocument();
     // The full ADA figure is exact and unabbreviated here, so restating it in
     // lovelace said the same thing twice.
     expect(screen.getByText('₳ 23,137,980.123456')).toBeInTheDocument();
@@ -171,21 +171,21 @@ describe('DRepDetailPage', () => {
     // The two boxes already separate what the ledger reports from what the
     // DRep published, so each is named for that rather than repeating a small
     // provenance label beside individual fields.
-    expect(screen.getByText('!!!On-Chain Data')).toBeInTheDocument();
-    expect(screen.getByText('!!!Off-Chain Metadata')).toBeInTheDocument();
+    expect(screen.getByText('On-Chain Data')).toBeInTheDocument();
+    expect(screen.getByText('Off-Chain Metadata')).toBeInTheDocument();
     // As text under the heading, not on an icon: it governs every field in
     // the box and a reader who hovers nothing still has to meet it.
     expect(
       screen.getByText(
-        '!!!Read directly from the Cardano ledger by your local node.'
+        'Read directly from the Cardano ledger by your local node.'
       )
     ).toBeInTheDocument();
     // The redundant per-row label inside the on-chain box is gone; the anchor
     // box keeps its own, which distinguishes the on-chain pointer from the
     // off-chain content behind it.
     // No provenance labels inside either box: naming the box says it once.
-    expect(screen.queryByText('!!!Source')).toBeNull();
-    expect(screen.queryByText('!!!Verified off-chain content')).toBeNull();
+    expect(screen.queryByText('Source')).toBeNull();
+    expect(screen.queryByText('Verified off-chain content')).toBeNull();
   });
 
   it('keeps the on-chain section complete and labelled with no anchor data', async () => {
@@ -196,10 +196,10 @@ describe('DRepDetailPage', () => {
     });
 
     expect(screen.getByText('Status')).toBeInTheDocument();
-    expect(screen.getByText('!!!Inactive in')).toBeInTheDocument();
-    expect(screen.getByText('!!!Voting power')).toBeInTheDocument();
-    expect(screen.getByText('!!!On-Chain Data')).toBeInTheDocument();
-    expect(screen.queryByText('!!!Verified off-chain content')).toBeNull();
+    expect(screen.getByText('Inactive in')).toBeInTheDocument();
+    expect(screen.getByText('Voting power')).toBeInTheDocument();
+    expect(screen.getByText('On-Chain Data')).toBeInTheDocument();
+    expect(screen.queryByText('Verified off-chain content')).toBeNull();
   });
 
   it('flags an anchor whose contents Daedalus could not verify', async () => {
@@ -207,7 +207,7 @@ describe('DRepDetailPage', () => {
     // the wallet returns when the fetch or the hash check fails.
     await renderPage();
 
-    expect(screen.getByText('!!!Unverified')).toBeInTheDocument();
+    expect(screen.getByText('Unverified')).toBeInTheDocument();
     // The blurb has to say what happened, not merely that something did:
     // Daedalus could not match the document to the on-chain hash, so nothing
     // from it is shown, the link is still offered, and what is behind it is
@@ -231,8 +231,8 @@ describe('DRepDetailPage', () => {
 
     // Two different facts. This one verified, so nothing is being withheld and
     // nothing is wrong: the document holds no fields of any kind.
-    expect(screen.getByText('!!!Nothing published')).toBeInTheDocument();
-    expect(screen.queryByText('!!!Unverified')).not.toBeInTheDocument();
+    expect(screen.getByText('Nothing published')).toBeInTheDocument();
+    expect(screen.queryByText('Unverified')).not.toBeInTheDocument();
     expect(
       screen.getByText(/verified this document against its on-chain hash/)
     ).toBeInTheDocument();
@@ -256,13 +256,13 @@ describe('DRepDetailPage', () => {
     // Every canonical field is absent, but the document is not empty: it
     // carries a field under the author's own key. Calling that nothing
     // published would both misstate it and hide the one thing it holds.
-    expect(screen.queryByText('!!!Nothing published')).not.toBeInTheDocument();
+    expect(screen.queryByText('Nothing published')).not.toBeInTheDocument();
     expect(screen.getByText('twitter')).toBeInTheDocument();
     expect(screen.getByText('@example')).toBeInTheDocument();
     // And the heading for the standardised fields stays away, since there
     // are none of those to head.
     expect(
-      screen.queryByText('!!!Canonical Metadata Fields')
+      screen.queryByText('Canonical Metadata Fields')
     ).not.toBeInTheDocument();
   });
 
@@ -321,7 +321,7 @@ describe('DRepDetailPage', () => {
     // nothing under it is what counting the name here produced.
     expect(screen.getByText('Named But Otherwise Empty')).toBeInTheDocument();
     expect(
-      screen.queryByText('!!!Canonical Metadata Fields')
+      screen.queryByText('Canonical Metadata Fields')
     ).not.toBeInTheDocument();
   });
 
@@ -352,10 +352,10 @@ describe('DRepDetailPage', () => {
       (node) => node.textContent?.trim()
     );
     const referencesAt = headings.findIndex((text) =>
-      text?.includes('!!!References')
+      text?.includes('References')
     );
     const additionalAt = headings.findIndex((text) =>
-      text?.includes('!!!Additional Metadata Fields')
+      text?.includes('Additional Metadata Fields')
     );
 
     expect(referencesAt).toBeGreaterThan(-1);
@@ -371,7 +371,7 @@ describe('DRepDetailPage', () => {
     });
 
     // Nothing was claimed, so there is nothing to have failed to verify.
-    expect(screen.queryByText('!!!Unverified')).not.toBeInTheDocument();
+    expect(screen.queryByText('Unverified')).not.toBeInTheDocument();
   });
 
   it('renders the anchor url and hash under the off-chain heading', async () => {
@@ -382,8 +382,8 @@ describe('DRepDetailPage', () => {
     ).toBeInTheDocument();
     expect(screen.getByText(baseEntry.anchor!.hash)).toBeInTheDocument();
     // The heading carries the provenance; the row does not repeat it.
-    expect(screen.getByText('!!!Off-Chain Metadata')).toBeInTheDocument();
-    expect(screen.queryByText('!!!On-chain anchor reference')).toBeNull();
+    expect(screen.getByText('Off-Chain Metadata')).toBeInTheDocument();
+    expect(screen.queryByText('On-chain anchor reference')).toBeNull();
   });
 
   it('renders the anchor-absent message when no anchor is recorded', async () => {
@@ -394,10 +394,10 @@ describe('DRepDetailPage', () => {
     });
 
     expect(
-      screen.getByText('!!!This DRep submitted no off-chain metadata record.')
+      screen.getByText('This DRep submitted no off-chain metadata record.')
     ).toBeInTheDocument();
     expect(
-      screen.queryByText('!!!On-chain anchor reference')
+      screen.queryByText('On-chain anchor reference')
     ).not.toBeInTheDocument();
   });
 
@@ -414,7 +414,7 @@ describe('DRepDetailPage', () => {
     // in a tooltip on a dash. The share row below it, which needs that same
     // figure, is left as a bare dash so the reason is given once.
     expect(
-      screen.getByText('!!!Stake distribution unavailable, try again later.')
+      screen.getByText('Stake distribution unavailable, try again later.')
     ).toBeInTheDocument();
     expect(screen.getAllByText('—')).toHaveLength(1);
   });
@@ -455,7 +455,7 @@ describe('DRepDetailPage', () => {
       );
     });
 
-    expect(screen.getByText('!!!Loading DRep data…')).toBeInTheDocument();
+    expect(screen.getByText('Loading DRep data…')).toBeInTheDocument();
     expect(
       screen.queryByText(/was not found in the on-chain data/)
     ).not.toBeInTheDocument();
@@ -484,10 +484,10 @@ describe('DRepDetailPage', () => {
     });
 
     expect(
-      screen.getByText('!!!This DRep was not found in the on-chain data.')
+      screen.getByText('This DRep was not found in the on-chain data.')
     ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('!!!Back to directory'));
+    fireEvent.click(screen.getByText('Back to directory'));
 
     expect(pushSpy).toHaveBeenCalledWith(ROUTES.GOVERNANCE.DREPS);
   });
@@ -552,10 +552,10 @@ describe('DRepDetailPage', () => {
       await renderPage();
 
       fireEvent.click(
-        screen.getByRole('button', { name: '!!!Copy CIP-129 DRep ID' })
+        screen.getByRole('button', { name: 'Copy CIP-129 DRep ID' })
       );
 
-      expect(await screen.findByText('!!!DRep ID copied')).toBeInTheDocument();
+      expect(await screen.findByText('DRep ID copied')).toBeInTheDocument();
       expect(writeText).toHaveBeenCalledWith(DREP_ID);
     } finally {
       delete (navigator as any).clipboard;
@@ -576,30 +576,30 @@ describe('DRepDetailPage', () => {
     );
     // CIP-105 is deprecated and sits behind a disclosure now.
     expect(screen.queryByText(DECODABLE_CIP105)).toBeNull();
-    fireEvent.click(screen.getByText('!!!Show deprecated CIP-105 ID'));
+    fireEvent.click(screen.getByText('Show deprecated CIP-105 ID'));
     expect(screen.getByText(DECODABLE_CIP105)).toBeInTheDocument();
-    expect(screen.getByText('!!!(CIP-105)')).toBeInTheDocument();
+    expect(screen.getByText('(CIP-105)')).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: '!!!Copy CIP-105 DRep ID' })
+      screen.getByRole('button', { name: 'Copy CIP-105 DRep ID' })
     ).toBeInTheDocument();
   });
 
   it('renders only the CIP-129 form when the id does not decode', async () => {
     await renderPage();
 
-    expect(screen.queryByText('!!!(CIP-105)')).not.toBeInTheDocument();
+    expect(screen.queryByText('(CIP-105)')).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: '!!!Copy CIP-105 DRep ID' })
+      screen.queryByRole('button', { name: 'Copy CIP-105 DRep ID' })
     ).not.toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: '!!!Copy CIP-129 DRep ID' })
+      screen.getByRole('button', { name: 'Copy CIP-129 DRep ID' })
     ).toBeInTheDocument();
   });
 
   it('renders the detail field labels in ja-JP', async () => {
     await renderPage({ locale: 'ja-JP' });
 
-    expect(screen.queryByText('!!!DRep詳細')).toBeNull();
+    expect(screen.queryByText('DRep詳細')).toBeNull();
     expect(screen.getByText('ステータス')).toBeInTheDocument();
     expect(screen.getByText('!!!オフチェーンメタデータ')).toBeInTheDocument();
     expect(screen.getByText('!!!34エポック')).toBeInTheDocument();
@@ -610,10 +610,10 @@ describe('DRepDetailPage', () => {
 
     // A DRep either has an off-chain metadata section or it does not, which
     // says the same thing the badge said, at greater length and in two places.
-    expect(screen.queryByText('!!!No metadata')).toBeNull();
-    expect(screen.queryByText('!!!Verified')).toBeNull();
-    expect(screen.queryByText('!!!Inactive Soon')).toBeNull();
-    expect(screen.getByText('!!!Active')).toBeInTheDocument();
+    expect(screen.queryByText('No metadata')).toBeNull();
+    expect(screen.queryByText('Verified')).toBeNull();
+    expect(screen.queryByText('Inactive Soon')).toBeNull();
+    expect(screen.getByText('Active')).toBeInTheDocument();
   });
 
   it('renders the verified name with the off-chain label and anchor host tooltip', async () => {
@@ -632,7 +632,7 @@ describe('DRepDetailPage', () => {
     const name = screen.getByText('Daedalus Test DRep');
     expect(name).toBeInTheDocument();
     expect(name.tagName).toBe('H1');
-    expect(screen.queryByText('!!!Verified off-chain content')).toBeNull();
+    expect(screen.queryByText('Verified off-chain content')).toBeNull();
   });
 
   it('renders the verified block in ja-JP', async () => {
@@ -669,16 +669,16 @@ describe('DRepDetailPage', () => {
       },
     });
 
-    expect(screen.getByText('!!!Objectives')).toBeInTheDocument();
+    expect(screen.getByText('Objectives')).toBeInTheDocument();
     expect(screen.getByText('Fixture objectives')).toBeInTheDocument();
-    expect(screen.getByText('!!!Motivations')).toBeInTheDocument();
+    expect(screen.getByText('Motivations')).toBeInTheDocument();
     expect(screen.getByText('Fixture motivations')).toBeInTheDocument();
-    expect(screen.getByText('!!!Qualifications')).toBeInTheDocument();
+    expect(screen.getByText('Qualifications')).toBeInTheDocument();
     expect(screen.getByText('Fixture qualifications')).toBeInTheDocument();
     // One heading names the provenance for the whole box; the fields no longer
     // each carry a label saying the same thing.
-    expect(screen.getByText('!!!Off-Chain Metadata')).toBeInTheDocument();
-    expect(screen.queryByText('!!!Verified off-chain content')).toBeNull();
+    expect(screen.getByText('Off-Chain Metadata')).toBeInTheDocument();
+    expect(screen.queryByText('Verified off-chain content')).toBeNull();
   });
 
   it('renders an identity reference under its heading and never as a plain link', async () => {
@@ -705,8 +705,8 @@ describe('DRepDetailPage', () => {
       },
     });
 
-    const identityHeading = screen.getByText('!!!Identities');
-    const linkHeading = screen.getByText('!!!Links');
+    const identityHeading = screen.getByText('Identities');
+    const linkHeading = screen.getByText('Links');
     expect(identityHeading).toBeInTheDocument();
 
     // The identity entry must sit under its own heading, never inside Links.
@@ -736,10 +736,10 @@ describe('DRepDetailPage', () => {
       },
     });
 
-    expect(screen.getByText('!!!Links')).toBeInTheDocument();
+    expect(screen.getByText('Links')).toBeInTheDocument();
     expect(screen.getByText('https://example.org/misc')).toBeInTheDocument();
-    expect(screen.queryByText('!!!Other references')).not.toBeInTheDocument();
-    expect(screen.queryByText('!!!Identities')).not.toBeInTheDocument();
+    expect(screen.queryByText('Other references')).not.toBeInTheDocument();
+    expect(screen.queryByText('Identities')).not.toBeInTheDocument();
   });
 
   it('opens an https reference uri through the external-link handler', async () => {
@@ -806,7 +806,7 @@ describe('DRepDetailPage', () => {
         },
       });
 
-      expect(screen.getByText('!!!Payment Address')).toBeInTheDocument();
+      expect(screen.getByText('Payment Address')).toBeInTheDocument();
       // As text between the heading and the address, not on an icon: this is
       // the one field a reader could act on and lose money by.
       expect(
@@ -816,12 +816,12 @@ describe('DRepDetailPage', () => {
       expect(screen.queryByDisplayValue(address)).not.toBeInTheDocument();
 
       fireEvent.click(
-        screen.getByRole('button', { name: '!!!Copy Payment Address' })
+        screen.getByRole('button', { name: 'Copy Payment Address' })
       );
 
       expect(writeText).toHaveBeenCalledWith(address);
       expect(
-        await screen.findByText('!!!Payment address copied')
+        await screen.findByText('Payment address copied')
       ).toBeInTheDocument();
     } finally {
       delete (navigator as any).clipboard;
@@ -849,10 +849,10 @@ describe('DRepDetailPage', () => {
         },
       });
       const copyButton = () =>
-        screen.getByRole('button', { name: '!!!Copy Payment Address' });
+        screen.getByRole('button', { name: 'Copy Payment Address' });
 
       fireEvent.click(copyButton());
-      await screen.findByText('!!!Payment address copied');
+      await screen.findByText('Payment address copied');
 
       // The unavailable branch must be as silent as the success branch: no
       // length, no error code, nothing that could carry the address.
@@ -880,11 +880,11 @@ describe('DRepDetailPage', () => {
     // Named for the standard, so the block for fields outside it can be named
     // for that and a reader can tell which labels are ours.
     expect(
-      screen.getByText('!!!Canonical Metadata Fields')
+      screen.getByText('Canonical Metadata Fields')
     ).toBeInTheDocument();
     expect(screen.getByText('Only objectives')).toBeInTheDocument();
-    expect(screen.queryByText('!!!References')).not.toBeInTheDocument();
-    expect(screen.queryByText('!!!Payment Address')).not.toBeInTheDocument();
+    expect(screen.queryByText('References')).not.toBeInTheDocument();
+    expect(screen.queryByText('Payment Address')).not.toBeInTheDocument();
   });
 
   it('renders the profile block with no name when the entry carries only prose', async () => {
@@ -899,11 +899,11 @@ describe('DRepDetailPage', () => {
     });
 
     expect(screen.getByText('Objectives only')).toBeInTheDocument();
-    expect(screen.queryByText('!!!Name')).not.toBeInTheDocument();
+    expect(screen.queryByText('Name')).not.toBeInTheDocument();
     // The name caption is name-specific copy and must not appear without a name.
     expect(
       screen.queryByText(
-        "!!!This name is the DRep's own claim, hash-matched to the anchor recorded on-chain. Daedalus does not verify identity."
+        "This name is the DRep's own claim, hash-matched to the anchor recorded on-chain. Daedalus does not verify identity."
       )
     ).not.toBeInTheDocument();
   });

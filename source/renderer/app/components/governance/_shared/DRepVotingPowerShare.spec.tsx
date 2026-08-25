@@ -30,7 +30,7 @@ describe('DRepVotingPowerShare', () => {
 
   it('states the share for every DRep, not only concentrated ones', () => {
     renderShare(BELOW);
-    expect(screen.getByText('!!!1%')).toBeInTheDocument();
+    expect(screen.getByText('1%')).toBeInTheDocument();
   });
 
   it('states the whole fact in a labelled row instead of hiding it on an icon', () => {
@@ -39,10 +39,10 @@ describe('DRepVotingPowerShare', () => {
     // A row has the width a card does not, so the figure does not have to be
     // a bare percentage whose meaning waits behind a hover.
     expect(
-      screen.getByText('!!!Controls 1% of active voting power (₳ 5.0B).')
+      screen.getByText('Controls 1% of active voting power (₳ 5.0B).')
     ).toBeInTheDocument();
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
-    expect(screen.queryByText('!!!1%')).not.toBeInTheDocument();
+    expect(screen.queryByText('1%')).not.toBeInTheDocument();
   });
 
   it('says "less than" in the row when the share rounds away', () => {
@@ -51,7 +51,7 @@ describe('DRepVotingPowerShare', () => {
 
     expect(
       screen.getByText(
-        '!!!Controls less than 0.01% of active voting power (₳ 5.0B).'
+        'Controls less than 0.01% of active voting power (₳ 5.0B).'
       )
     ).toBeInTheDocument();
   });
@@ -63,7 +63,7 @@ describe('DRepVotingPowerShare', () => {
     // explanation hangs off the icon, which is what tells a reader it exists.
     expect(
       screen.getByRole('button', {
-        name: '!!!This DRep controls 1% of active voting power (₳ 5.0B).',
+        name: 'This DRep controls 1% of active voting power (₳ 5.0B).',
       })
     ).toBeInTheDocument();
   });
@@ -72,7 +72,7 @@ describe('DRepVotingPowerShare', () => {
     renderShare(ABOVE);
     expect(
       screen.getByRole('button', {
-        name: '!!!This DRep controls 2% of active voting power (₳ 5.0B).',
+        name: 'This DRep controls 2% of active voting power (₳ 5.0B).',
       })
     ).toBeInTheDocument();
   });
@@ -88,14 +88,14 @@ describe('DRepVotingPowerShare', () => {
     // 940 ADA against a 5B total rounds to 0% at two decimal places. A DRep
     // that holds voting power does not hold none of it.
     renderShare(new BigNumber('940000000'));
-    expect(screen.getByText('!!!<0.01%')).toBeInTheDocument();
-    expect(screen.queryByText('!!!0%')).toBeNull();
+    expect(screen.getByText('<0.01%')).toBeInTheDocument();
+    expect(screen.queryByText('0%')).toBeNull();
     // The symbol is compact and needs no translation, but a screen reader
     // cannot be relied on to announce it, so the explanation says it in words
     // and does not round the share to zero either.
     expect(
       screen.getByRole('button', {
-        name: '!!!This DRep controls less than 0.01% of active voting power (₳ 5.0B).',
+        name: 'This DRep controls less than 0.01% of active voting power (₳ 5.0B).',
       })
     ).toBeInTheDocument();
   });

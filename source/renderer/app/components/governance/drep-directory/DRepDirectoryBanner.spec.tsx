@@ -44,7 +44,7 @@ describe('DRepDirectoryBanner', () => {
 
     // Refresh is an icon; its wording lives in the accessible name.
     expect(
-      screen.getByRole('button', { name: '!!!Refresh' })
+      screen.getByRole('button', { name: 'Refresh' })
     ).toBeInTheDocument();
     // The governance tab bar names the page; the banner must not say it again.
     expect(screen.queryByRole('heading')).not.toBeInTheDocument();
@@ -54,7 +54,7 @@ describe('DRepDirectoryBanner', () => {
     renderBanner({ isFilteredView: true, displayedCount: 7 });
 
     expect(
-      screen.getByText('!!!Showing 7 DReps matching your filters.')
+      screen.getByText('Showing 7 DReps matching your filters.')
     ).toBeInTheDocument();
   });
 
@@ -78,13 +78,13 @@ describe('DRepDirectoryBanner', () => {
     renderBanner({ isRefreshing: true });
 
     expect(screen.getByText(/Last updated/)).toBeInTheDocument();
-    expect(screen.getByText('!!!Refreshing…')).toBeInTheDocument();
+    expect(screen.getByText('Refreshing…')).toBeInTheDocument();
   });
 
   it('renders no refreshing badge while no refresh is in flight', () => {
     renderBanner();
 
     expect(screen.getByText(/Last updated/)).toBeInTheDocument();
-    expect(screen.queryByText('!!!Refreshing…')).not.toBeInTheDocument();
+    expect(screen.queryByText('Refreshing…')).not.toBeInTheDocument();
   });
 });

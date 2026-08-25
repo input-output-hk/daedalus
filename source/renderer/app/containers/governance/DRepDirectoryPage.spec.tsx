@@ -168,7 +168,7 @@ describe('DRepDirectoryPage', () => {
   it('renders the suggested list and rerolls the cohort in place', () => {
     const { governance } = renderPage();
 
-    fireEvent.click(screen.getByText('!!!Show different suggestions'));
+    fireEvent.click(screen.getByText('Show different suggestions'));
 
     // A reroll redraws from the list already in hand. Refetching would put a
     // request behind a control whose whole point is that it needs none.
@@ -180,7 +180,7 @@ describe('DRepDirectoryPage', () => {
   it('never triggers a store refresh from search interactions', () => {
     const { governance } = renderPage();
 
-    const input = screen.getByPlaceholderText('!!!Search by DRep ID or name');
+    const input = screen.getByPlaceholderText('Search by DRep ID or name');
     fireEvent.change(input, { target: { value: 'drep1abcdefgh' } });
     fireEvent.change(input, { target: { value: `drep1${'q'.repeat(51)}` } });
 
@@ -241,10 +241,10 @@ describe('DRepDirectoryPage', () => {
 
     expect(
       screen.getByText(
-        '!!!DRep directory data is unavailable on the selfnode cluster.'
+        'DRep directory data is unavailable on the selfnode cluster.'
       )
     ).toBeInTheDocument();
-    expect(screen.queryByText('!!!Voting power:')).not.toBeInTheDocument();
+    expect(screen.queryByText('Voting power:')).not.toBeInTheDocument();
     expect(first.governance.refresh).toHaveBeenCalledTimes(1);
     first.unmount();
 
@@ -252,7 +252,7 @@ describe('DRepDirectoryPage', () => {
 
     expect(
       screen.getByText(
-        '!!!DRep directory data is unavailable on the selfnode cluster.'
+        'DRep directory data is unavailable on the selfnode cluster.'
       )
     ).toBeInTheDocument();
     expect(second.governance.refresh).toHaveBeenCalledTimes(1);
@@ -280,9 +280,9 @@ describe('DRepDirectoryPage', () => {
   it('does not call toggleFavorite when a sentinel (Abstain) is selected', () => {
     const { governance } = renderPage();
 
-    // Sentinel cards use '!!!Select' (not 'Delegate')
+    // Sentinel cards use 'Select' (not 'Delegate')
     const sentinelButton = screen.getAllByRole('button', {
-      name: '!!!Select',
+      name: 'Select',
     })[0];
     fireEvent.click(sentinelButton);
 
