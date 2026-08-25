@@ -217,6 +217,7 @@ physical results against exact production artifacts and adapter commits.
 - The reviewed sibling backend now exposes a dormant witness-only software-signing endpoint bound to the authenticated full-ledger context and ordered exact request bytes; aggregate activation and the Daedalus pin remain gated by task-209.
 - The reviewed sibling backend now exposes a dormant exact CIP-8 payment/stake data-signing endpoint with canonical untagged COSE, authenticated V1/V2 child derivation, public-key hash and signature verification, and frozen DataSign errors; it does not reuse Catalyst metadata signing, and aggregate activation plus the Daedalus pin remain gated by task-209.
 - The reviewed sibling backend now exposes dormant CIP-95 raw stake/DRep public-key state and exact DRep CIP-8 signing: public children derive from the account xpub at fixed role 2/3 paths, confirmed and pending registration effects classify fail closed, raw DRep IDs and matching type-6 addresses normalize to one verified raw-hash COSE identity, and no private material crosses the API. Aggregate activation and the Daedalus pin remain gated by task-209.
+- The reviewed sibling backend now exposes dormant wallet-scoped write-ahead submission backed by one V6 durable submission/claim store. Exact authorized bytes and normal/collateral claims commit before node access; a one-shot non-retrying node client persists submitted, rejected, or outcome-unknown results; exact replay, expiry, rollback, same-tip chain/mempool reconciliation, and log redaction follow the frozen task-003 state machine. Aggregate activation and the Daedalus pin remain gated by task-209.
 - Existing V2 signing has gaps for collateral and explicit required signers.
 
 ### Hardware
@@ -382,7 +383,7 @@ physical results against exact production artifacts and adapter commits.
 - [ ] Implement policy-gated CIP-104 account-xpub disclosure after wire interoperability is proven.
 - [ ] Implement policy-gated CIP-142 network magic.
 - [ ] Add complete transaction review for all supported current-era fields.
-- [ ] Reconcile dApp submissions after restart through cardano-wallet pending-submission state.
+- [x] Reconcile dApp submissions after restart through cardano-wallet pending-submission state.
 - [ ] Add ordered batch review with per-item conflict flags.
 - [ ] Add soft collateral preference, preparation, readiness, and replacement flows.
 - [ ] Add Ledger and Trezor arbitrary-CBOR transaction and message signing.
