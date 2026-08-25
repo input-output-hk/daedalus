@@ -215,7 +215,7 @@ physical results against exact production artifacts and adapter commits.
 - `getUTxOByTxIn` can retrieve full ledger outputs for recent eras and is the required full-output foundation.
 - Existing wallet `TxOut` persistence is insufficient because it stores only address and token bundle.
 - The reviewed sibling backend now exposes a dormant witness-only software-signing endpoint bound to the authenticated full-ledger context and ordered exact request bytes; aggregate activation and the Daedalus pin remain gated by task-209.
-- Existing metadata signing is not general CIP-8.
+- The reviewed sibling backend now exposes a dormant exact CIP-8 payment/stake data-signing endpoint with canonical untagged COSE, authenticated V1/V2 child derivation, public-key hash and signature verification, and frozen DataSign errors; it does not reuse Catalyst metadata signing, and aggregate activation plus the Daedalus pin remain gated by task-209.
 - Current derivation APIs expose roles 0, 1, and 2 but not a dedicated CIP-105 DRep role.
 - Stake-key registration state is not exposed with sufficient precision for CIP-95.
 - Existing V2 signing has gaps for collateral and explicit required signers.
