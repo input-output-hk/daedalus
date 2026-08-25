@@ -344,11 +344,6 @@ function VotingPowerDelegation({
                   someone who opened this by accident had no way out that did
                   not look like continuing. */}
               <div className={styles.submitRow}>
-                <Button
-                  className={`flat ${styles.voteCancel}`}
-                  label={intl.formatMessage(globalMessages.cancel)}
-                  onClick={onCancel}
-                />
                 {selectedDRepId && (
                   <Button
                     label={intl.formatMessage(messages.submitLabel)}
@@ -362,6 +357,11 @@ function VotingPowerDelegation({
                     }}
                   />
                 )}
+                <Button
+                  className={`flat ${styles.voteCancel}`}
+                  label={intl.formatMessage(globalMessages.cancel)}
+                  onClick={onCancel}
+                />
               </div>
             </>
           )}

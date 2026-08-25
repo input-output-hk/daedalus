@@ -79,8 +79,16 @@ span.link {
   margin-top: 28px;
 }
 
+// Sized the way the wallet row sizes its own compact buttons: height, line
+// height, padding and width set together, because undoing the theme's full
+// width without restoring the horizontal padding left the label touching
+// both edges.
 .voteCancel {
   flex: 0 0 auto;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 24px;
+  white-space: nowrap;
   width: auto;
 }
 
