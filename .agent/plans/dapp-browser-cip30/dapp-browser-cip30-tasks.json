@@ -895,6 +895,8 @@
           "title": "Wire Daedalus API clients and update the backend pin",
           "description": "Add typed Daedalus wrappers for context, UTxOs, witness signing, CIP-8/CIP-95, and wallet-scoped submit; fix octet-stream typing; then pin the reviewed backend revision.",
           "status": "pending",
+          "progressAt": "2026-08-25",
+          "progressNotes": "Opened consolidated upstream cardano-wallet PR https://github.com/cardano-foundation/cardano-wallet/pull/5398 for the complete task-200-through-task-208 range, currently at follow-up commit 52bfb5efc9. Added dormant Daedalus typed clients, strict runtime success/error validation, capability revision/source/network refusal, and one exact octet-stream byte/Content-Length contract with focused Jest and TypeScript evidence. The PR has no authorized maintainer approval yet, so aggregate capability activation, real pre/post-pin HTTP/mTLS validation, and flake.nix/flake.lock pin changes remain prohibited and task-209 remains pending.",
           "priority": "critical",
           "estimatedHours": 24,
           "dependencies": ["task-203", "task-204", "task-205", "task-206", "task-208"],

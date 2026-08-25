@@ -1602,6 +1602,16 @@ Forbidden from observability and non-authoritative storage:
 - Add wallet-scoped pending submission.
 - Accumulate tasks 200-208 as reviewable local commits in `../cardano-wallet`, then use task-209 for one consolidated upstream review, backend integration, migration/rollback tests, aggregate activation, and the exact Daedalus pin update.
 
+Task-209 opened the consolidated task-200-through-task-208 upstream review as
+[`cardano-wallet#5398`](https://github.com/cardano-foundation/cardano-wallet/pull/5398),
+currently at follow-up commit `52bfb5efc9`. Daedalus now has dormant typed clients
+and strict runtime success/error validators for the complete backend surface,
+rejects incomplete, old, wrong-source, or wrong-network capability documents,
+and sends octet streams using one exact byte/`Content-Length` contract. Focused
+Jest and TypeScript checks pass. No authorized maintainer approval exists yet,
+so capability activation, real aggregate pre/post-pin HTTP/mTLS validation, and
+the `flake.nix`/`flake.lock` update remain prohibited; task-209 remains pending.
+
 Task-201 has a final local review candidate at `cardano-wallet`
 `3ca15553f96587f1f96688185165b2ede00e30b0` with published decoder
 `44e0a32300ec6d6d03b7578b97b8374820802ba1`. Focused HTTP/mTLS success and

@@ -1,6 +1,7 @@
 import { includes, omit, size, values, flatten } from 'lodash';
 import JSONBigInt from 'json-bigint';
 import querystring from 'querystring';
+import type { ParsedUrlQueryInput } from 'querystring';
 import { getContentLength } from '.';
 
 export type RequestOptions = {
@@ -64,10 +65,20 @@ const logSocketStats = (state: string, { sockets, freeSockets }) => {
   });
 };
 
+export const getOctetStreamBody = (
+  value: unknown
+): { body: Uint8Array; contentLength: number } => {
+  if (!Buffer.isBuffer(value) && !(value instanceof Uint8Array)) {
+    throw new TypeError('Octet-stream request body must be bytes');
+  }
+  const body = value as Uint8Array;
+  return { body, contentLength: body.byteLength };
+};
+
 function typedRequest<Response>(
   httpOptions: RequestOptions,
-  queryParams?: {},
-  rawBodyParams?: any,
+  queryParams?: ParsedUrlQueryInput,
+  rawBodyParams?: unknown,
   requestOptions?: {
     returnMeta?: boolean;
     isOctetStreamRequest?: boolean;
@@ -85,20 +96,27 @@ function typedRequest<Response>(
       requestOptions
     );
     let hasRequestBody = false;
-    let requestBody = '';
+    let requestBody: string | Uint8Array = '';
 
     if (queryParams && size(queryParams) > 0) {
       options.path += `?${querystring.stringify(queryParams)}`;
     }
 
     // Handle raw body params
-    if (rawBodyParams) {
+    if (rawBodyParams !== undefined) {
       hasRequestBody = true;
 
       if (isOctetStreamRequest) {
-        requestBody = rawBodyParams;
+        let octetStream;
+        try {
+          octetStream = getOctetStreamBody(rawBodyParams);
+        } catch (error) {
+          reject(error);
+          return;
+        }
+        requestBody = octetStream.body;
         options.headers = {
-          'Content-Length': requestBody.length / 2,
+          'Content-Length': octetStream.contentLength,
           'Content-Type': 'application/octet-stream',
         };
       } else {
@@ -132,11 +150,7 @@ function typedRequest<Response>(
       : global.https.request(options);
 
     if (hasRequestBody) {
-      if (isOctetStreamRequest) {
-        httpsRequest.write(requestBody, 'hex');
-      } else {
-        httpsRequest.write(requestBody);
-      }
+      httpsRequest.write(requestBody);
     }
 
     httpsRequest.on('socket', () => {
@@ -148,11 +162,11 @@ function typedRequest<Response>(
     httpsRequest.on('response', (response) => {
       logSocketStats('response', httpsRequest.agent);
       let body = '';
-      let stream;
-      // cardano-wallet returns chunked requests, so we need to concat them
+      const stream = [];
+      // cardano-wallet returns chunked responses, so concatenate every chunk.
       response.on('data', (chunk) => {
         if (isOctetStreamResponse) {
-          stream = chunk;
+          stream.push(chunk);
         } else {
           body += chunk;
         }
@@ -170,7 +184,7 @@ function typedRequest<Response>(
 
           if (isSuccessResponse) {
             if (isOctetStreamResponse) {
-              resolve(stream);
+              resolve((Buffer.concat(stream) as unknown) as Response);
             } else {
               const data =
                 statusCode === 404
@@ -188,9 +202,11 @@ function typedRequest<Response>(
 
               resolve(JSONBigInt.parse(body));
             }
-          } else if (stream) {
+          } else if (stream.length > 0) {
             // Error response with a stream
-            const parsedStream = JSONBigInt.parse(stream.toString());
+            const parsedStream = JSONBigInt.parse(
+              Buffer.concat(stream).toString()
+            );
             reject(parsedStream);
           } else if (body) {
             // Error response with a body
