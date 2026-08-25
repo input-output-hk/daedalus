@@ -198,46 +198,59 @@ const makeFetchDRep =
 const renderPrefilledPanel = (
   option: CurrentVoteOption,
   selectedDRepId?: string
-) => (
-  <div style={CENTERED_STORY_STYLE}>
-    <GovernanceWrapper option={option}>
-      {({ wallets, drepIndex }) => (
-        <VotingPowerDelegation
-          getStakePoolById={getStakePoolById}
-          onFetchDRep={makeFetchDRep(drepIndex)}
-          initiateTransaction={makeInitiateTransaction()}
-          initialFormState={{
-            ...(selectedDRepId ? { selectedDRepId } : {}),
-            selectedWalletId: 'governance-wallet-1',
-            voteType: 'drep',
-          }}
-          onBrowseDRepsClick={action('onBrowseDRepsClick')}
-          onCancel={action('onCancel')}
-          onExternalLinkClick={action('onExternalLinkClick')}
-          renderConfirmationDialog={renderGovernanceConfirmationDialog}
-          stakePools={STAKE_POOLS_LIST}
-          wallets={wallets}
-        />
-      )}
-    </GovernanceWrapper>
-  </div>
-);
+) => {
+  // Read before the tree is built rather than inside it, so the knobs are
+  // registered by the story itself and appear in the panel from the first
+  // render, whether or not anything has reached the component using them.
+  const initiateTransaction = makeInitiateTransaction();
 
-const makeInitiateTransaction =
-  (fee: BigNumber = new BigNumber('0.174257')) =>
-  async (params: unknown) => {
+  return (
+    <div style={CENTERED_STORY_STYLE}>
+      <GovernanceWrapper option={option}>
+        {({ wallets, drepIndex }) => (
+          <VotingPowerDelegation
+            getStakePoolById={getStakePoolById}
+            onFetchDRep={makeFetchDRep(drepIndex)}
+            initiateTransaction={initiateTransaction}
+            initialFormState={{
+              ...(selectedDRepId ? { selectedDRepId } : {}),
+              selectedWalletId: 'governance-wallet-1',
+              voteType: 'drep',
+            }}
+            onBrowseDRepsClick={action('onBrowseDRepsClick')}
+            onCancel={action('onCancel')}
+            onExternalLinkClick={action('onExternalLinkClick')}
+            renderConfirmationDialog={renderGovernanceConfirmationDialog}
+            stakePools={STAKE_POOLS_LIST}
+            wallets={wallets}
+          />
+        )}
+      </GovernanceWrapper>
+    </div>
+  );
+};
+
+// The knobs are read here, while the story renders, and the values closed
+// over. Read inside the returned function instead, they run only when a
+// transaction is attempted: addon-knobs registers a knob when its call
+// executes, so a knob nothing has executed yet never appears in the panel at
+// all, and changing one drives no re-render.
+const makeInitiateTransaction = (
+  fee: BigNumber = new BigNumber('0.174257')
+) => {
+  const succeeds = boolean('Initialization succeeds', true);
+  const errorCode = select(
+    'Initialization error',
+    initializeTxErrorOptions,
+    'same_vote'
+  );
+  return async (params: unknown) => {
     action('initiateTransaction')(params);
-    return boolean('Initialization succeeds', true)
+    return succeeds
       ? { success: true, fees: fee }
-      : {
-          success: false,
-          errorCode: select(
-            'Initialization error',
-            initializeTxErrorOptions,
-            'same_vote'
-          ),
-        };
+      : { success: false, errorCode };
   };
+};
 
 const renderGovernancePanel = (option: CurrentVoteOption) => {
   const transactionFee = new BigNumber(
@@ -247,6 +260,7 @@ const renderGovernancePanel = (option: CurrentVoteOption) => {
     })
   );
   text('Valid DRep ID fixture', VALID_DREP_ID);
+  const initiateTransaction = makeInitiateTransaction(transactionFee);
 
   return (
     <GovernanceWrapper option={option}>
@@ -254,7 +268,7 @@ const renderGovernancePanel = (option: CurrentVoteOption) => {
         <VotingPowerDelegation
           getStakePoolById={getStakePoolById}
           onFetchDRep={makeFetchDRep(drepIndex)}
-          initiateTransaction={makeInitiateTransaction(transactionFee)}
+          initiateTransaction={initiateTransaction}
           onBrowseDRepsClick={action('onBrowseDRepsClick')}
           onCancel={action('onCancel')}
           onExternalLinkClick={action('onExternalLinkClick')}
