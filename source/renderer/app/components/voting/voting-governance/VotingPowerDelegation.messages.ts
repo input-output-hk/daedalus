@@ -34,7 +34,8 @@ export const messages = defineMessages({
     id: 'voting.governance.initializeTxError.notEnoughMoney',
     defaultMessage:
       '!!!This wallet does not contain the minimum required amount of ADA. The wallet might still be syncing. Please try again later or choose another wallet.',
-    description: 'Governance voting error when wallet has not enough funds',
+    description:
+      'Shown for both not_enough_money and no_utxos_available: to a reader they are one condition, too little in the wallet to build the transaction, and the wording covers a wallet that is merely still syncing',
   },
   browseDRepsButton: {
     id: 'voting.governance.browseDRepsButton',

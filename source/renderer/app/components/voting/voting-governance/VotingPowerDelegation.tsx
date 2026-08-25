@@ -74,6 +74,10 @@ const mapOfTxErrorCodeToIntl: Record<
 > = {
   generic: messages.initializeTxErrorGeneric,
   same_vote: messages.initializeTxErrorSameVote,
+  // Deliberately the same message. Having no spendable outputs and holding
+  // less than the minimum are one condition to a reader: there is not enough
+  // in this wallet to build the transaction, and the wallet may simply still
+  // be syncing. Splitting them would name a distinction only the node makes.
   no_utxos_available: messages.initializeNotEnoughMoney,
   not_enough_money: messages.initializeNotEnoughMoney,
 };
