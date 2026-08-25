@@ -533,6 +533,15 @@ storiesOf('Governance / Delegation', module)
   .add('Not delegated yet', () => renderPrefilledPanel('noDelegation'))
   .add('Confirmation dialog - software wallet', () => {
     const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
+    // Read while the story renders. Inside onSubmit they run only once a
+    // transaction has been submitted, so addon-knobs never registers them and
+    // the panel offers nothing to change.
+    const submissionSucceeds = boolean('Submission succeeds', true);
+    const submissionError = select(
+      'Submission error',
+      delegateVotesErrorOptions,
+      'wrong_encryption_passphrase'
+    );
     return (
       <div style={CENTERED_STORY_STYLE}>
         <VotingPowerDelegationConfirmationDialog
@@ -552,16 +561,37 @@ storiesOf('Governance / Delegation', module)
           onExternalLinkClick={action('onExternalLinkClick')}
           onSubmit={async (passphrase) => {
             action('delegateVotes')({ passphrase });
-            return boolean('Submission succeeds', true)
+            return submissionSucceeds
               ? { success: true }
-              : {
-                  success: false,
-                  errorCode: select(
-                    'Submission error',
-                    delegateVotesErrorOptions,
-                    'wrong_encryption_passphrase'
-                  ),
-                };
+              : { success: false, errorCode: submissionError };
+          }}
+          redirectToWallet={action('redirectToWallet')}
+          selectedWallet={makeGovernanceWallets('noDelegation')[0]}
+          verifiedName={toStoryVerifiedName(voteOption)}
+        />
+      </div>
+    );
+  })
+  .add('Confirmation dialog - submission fails', () => {
+    const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
+    const errorCode = select(
+      'Submission error',
+      delegateVotesErrorOptions,
+      'generic'
+    );
+    return (
+      <div style={CENTERED_STORY_STYLE}>
+        <VotingPowerDelegationConfirmationDialog
+          chosenOption={voteOption}
+          drepIdentity={toStoryDRepIdentity(voteOption)}
+          fees={new BigNumber('0.174257')}
+          hwDeviceStatus={HwDeviceStatuses.READY}
+          isTrezor={false}
+          onClose={action('onClose')}
+          onExternalLinkClick={action('onExternalLinkClick')}
+          onSubmit={async (passphrase) => {
+            action('delegateVotes')({ passphrase });
+            return { success: false, errorCode };
           }}
           redirectToWallet={action('redirectToWallet')}
           selectedWallet={makeGovernanceWallets('noDelegation')[0]}
