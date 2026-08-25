@@ -1,0 +1,78 @@
+// Sized and bounded like the selects beside it, so the row keeps one control
+// height whichever kind of control a facet needs.
+.facet {
+  flex: 0 1 auto;
+  // Wider than a select: the field has to hold a value, its unit and two
+  // buttons without the number being squeezed into a corner.
+  min-width: 210px;
+  position: relative;
+}
+
+.input {
+  width: 100%;
+
+  input {
+    background-color: var(--rp-input-bg-color);
+    border-radius: 4px;
+    height: 50px;
+    // Room on the right for the unit and the two stepper buttons.
+    padding: 0 100px 0 20px;
+  }
+}
+
+// The unit belongs to the value, not to the label: a reader typing 1.5 needs
+// to see what 1.5 is a quantity of without reading back up.
+.suffix {
+  bottom: 15px;
+  color: var(--theme-gov-font-color-light);
+  font-size: 14px;
+  line-height: 1.38;
+  pointer-events: none;
+  position: absolute;
+  right: 76px;
+}
+
+.steppers {
+  bottom: 11px;
+  display: flex;
+  gap: 4px;
+  position: absolute;
+  right: 11px;
+}
+
+.stepper {
+  align-items: center;
+  background-color: var(--theme-gov-search-clear-button-background-color);
+  border: 0;
+  border-radius: 3px;
+  color: var(--theme-gov-font-color-regular);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--font-regular);
+  font-family: var(--font-medium);
+  font-size: 18px;
+  height: 28px;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  width: 28px;
+
+  &:hover:not(:disabled) {
+    background-color: var(
+      --theme-gov-search-clear-button-hover-background-color
+    );
+  }
+
+  // Held at the end of the range rather than hidden: a control that vanishes
+  // moves the one beside it, and a reader cannot tell whether they reached the
+  // limit or lost the button.
+  &:disabled {
+    cursor: default;
+    opacity: 0.4;
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--theme-gov-font-color-accent);
+    outline-offset: 1px;
+  }
+}

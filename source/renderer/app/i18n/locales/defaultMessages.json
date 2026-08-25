@@ -3172,9 +3172,14 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!No limit",
-        "description": "Option removing the suggestion voting-power ceiling",
-        "id": "governance.drepDirectory.cohort.votingPowerNoLimit"
+        "defaultMessage": "!!!Lower the voting power ceiling",
+        "description": "Accessible label of the button that lowers the ceiling",
+        "id": "governance.drepDirectory.cohort.votingPowerDecrement"
+      },
+      {
+        "defaultMessage": "!!!Raise the voting power ceiling",
+        "description": "Accessible label of the button that raises the ceiling",
+        "id": "governance.drepDirectory.cohort.votingPowerIncrement"
       },
       {
         "defaultMessage": "!!!Voting power under",

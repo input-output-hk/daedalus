@@ -2,19 +2,22 @@ import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import DRepFacetSelect from '../_shared/DRepFacetSelect';
-import {
-  DREP_COHORT_SIZE_OPTIONS,
-  DREP_COHORT_VOTING_POWER_SHARE_OPTIONS,
-} from '../_shared/drepCohort';
+import DRepFacetNumber from '../_shared/DRepFacetNumber';
+import { DREP_COHORT_SIZE_OPTIONS } from '../_shared/drepCohort';
 import type { DRepCohortCriteria } from '../_shared/drepCohort';
 import { drepCriteriaMessages } from '../_shared/drepCriteriaMessages';
 import styles from './DRepCohortCriteriaPanel.scss';
 
 const messages = defineMessages({
-  votingPowerNoLimit: {
-    id: 'governance.drepDirectory.cohort.votingPowerNoLimit',
-    defaultMessage: '!!!No limit',
-    description: 'Option removing the suggestion voting-power ceiling',
+  votingPowerDecrement: {
+    id: 'governance.drepDirectory.cohort.votingPowerDecrement',
+    defaultMessage: '!!!Lower the voting power ceiling',
+    description: 'Accessible label of the button that lowers the ceiling',
+  },
+  votingPowerIncrement: {
+    id: 'governance.drepDirectory.cohort.votingPowerIncrement',
+    defaultMessage: '!!!Raise the voting power ceiling',
+    description: 'Accessible label of the button that raises the ceiling',
   },
   votingPowerLabel: {
     id: 'governance.drepDirectory.cohort.votingPowerLabel',
@@ -28,8 +31,17 @@ const messages = defineMessages({
   },
 });
 
-/** Sentinel for "no ceiling" in the select, whose values must be strings. */
-const NO_LIMIT = 'none';
+/**
+ * The ceiling a reader can dial, as a percentage of governance stake.
+ *
+ * Half a percent at the bottom because a ceiling below that admits almost
+ * nobody; a hundred at the top because that is every vote there is, so it
+ * excludes no DRep and stands in for having no ceiling at all.
+ */
+const MIN_SHARE_PERCENT = 0.5;
+const MAX_SHARE_PERCENT = 100;
+const SHARE_STEP_PERCENT = 0.5;
+const SHARE_DECIMALS = 2;
 
 interface Props {
   criteria: DRepCohortCriteria;
@@ -38,9 +50,6 @@ interface Props {
 }
 
 function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
-  const asPercent = (value: number) =>
-    intl.formatNumber(value, { style: 'percent', maximumFractionDigits: 2 });
-
   const toggle = (
     label: string,
     checked: boolean,
@@ -86,23 +95,35 @@ function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
         )}
       </div>
       <div className={styles.facets}>
-        {facet(
-          intl.formatMessage(messages.votingPowerLabel),
-          criteria.maxVotingPowerShare == null
-            ? NO_LIMIT
-            : String(criteria.maxVotingPowerShare),
-          (next) =>
+        {/* Typed rather than picked from three fixed shares. Where a
+            reasonable ceiling sits depends on how stake is spread on the
+            network the wallet is pointed at, which is not something a list
+            written here can anticipate. The top of the range excludes nothing,
+            since no DRep controls every vote, so it doubles as no ceiling at
+            all and there is no separate option meaning the same thing. */}
+        <DRepFacetNumber
+          label={intl.formatMessage(messages.votingPowerLabel)}
+          value={
+            criteria.maxVotingPowerShare == null
+              ? MAX_SHARE_PERCENT
+              : Number(
+                  (criteria.maxVotingPowerShare * 100).toFixed(SHARE_DECIMALS)
+                )
+          }
+          min={MIN_SHARE_PERCENT}
+          max={MAX_SHARE_PERCENT}
+          step={SHARE_STEP_PERCENT}
+          suffix="%"
+          decrementLabel={intl.formatMessage(messages.votingPowerDecrement)}
+          incrementLabel={intl.formatMessage(messages.votingPowerIncrement)}
+          onChange={(percent) =>
             onCriteriaChange({
               ...criteria,
-              maxVotingPowerShare: next === NO_LIMIT ? null : Number(next),
-            }),
-          [
-            [NO_LIMIT, intl.formatMessage(messages.votingPowerNoLimit)],
-            ...DREP_COHORT_VOTING_POWER_SHARE_OPTIONS.map(
-              (share): [string, string] => [String(share), asPercent(share)]
-            ),
-          ]
-        )}
+              maxVotingPowerShare:
+                percent >= MAX_SHARE_PERCENT ? null : percent / 100,
+            })
+          }
+        />
         {facet(
           intl.formatMessage(messages.sizeLabel),
           String(criteria.size),

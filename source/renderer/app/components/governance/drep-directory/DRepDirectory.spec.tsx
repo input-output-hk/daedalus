@@ -206,6 +206,23 @@ const facetOptions = (facetLabel: string): string[] =>
     (option) => option.textContent ?? ''
   );
 
+const facetNumberInput = (facetLabel: string): HTMLInputElement =>
+  screen
+    .getByText(facetLabel)
+    .closest('.facet')
+    ?.querySelector('input') as HTMLInputElement;
+
+const facetNumberValue = (facetLabel: string): string =>
+  facetNumberInput(facetLabel).value;
+
+// The bound is applied when the field is committed, not per keystroke, so the
+// test commits the way a reader does.
+const typeFacetNumber = (facetLabel: string, next: string) => {
+  const input = facetNumberInput(facetLabel);
+  fireEvent.change(input, { target: { value: next } });
+  fireEvent.blur(input);
+};
+
 const chooseFacetOption = (facetLabel: string, optionLabel: string) => {
   const control = facetControl(facetLabel);
   fireEvent.click(control.querySelector('input') as HTMLInputElement);
@@ -1666,7 +1683,7 @@ describe('DRepDirectory suggestion criteria', () => {
 
     expect(screen.getByText(/drawn at random/)).toBeInTheDocument();
     expect(facetValue('!!!Suggestions shown')).toBe('20');
-    expect(facetValue('!!!Voting power under')).toBe('1.5%');
+    expect(facetNumberValue('!!!Voting power under')).toBe('1.5');
   });
 
   it('reports a criterion the user turns off', () => {
@@ -1696,15 +1713,86 @@ describe('DRepDirectory suggestion criteria', () => {
     });
   });
 
-  it('reports removing the voting power ceiling as no ceiling at all', () => {
+  it('reports a typed ceiling as a share rather than a percentage', () => {
     const onCohortCriteriaChange = jest.fn();
     renderComponent({ onCohortCriteriaChange });
 
-    chooseFacetOption('!!!Voting power under', '!!!No limit');
+    typeFacetNumber('!!!Voting power under', '2.5');
+
+    expect(onCohortCriteriaChange).toHaveBeenCalledWith({
+      ...DEFAULT_DREP_COHORT_CRITERIA,
+      maxVotingPowerShare: 0.025,
+    });
+  });
+
+  it('treats the top of the range as no ceiling at all', () => {
+    // Nobody controls every vote, so a hundred per cent excludes no DRep and
+    // there is no second control meaning the same thing.
+    const onCohortCriteriaChange = jest.fn();
+    renderComponent({ onCohortCriteriaChange });
+
+    typeFacetNumber('!!!Voting power under', '100');
 
     expect(onCohortCriteriaChange).toHaveBeenCalledWith({
       ...DEFAULT_DREP_COHORT_CRITERIA,
       maxVotingPowerShare: null,
+    });
+  });
+
+  it('applies a stepper press at once, where typing waits to be committed', () => {
+    const onCohortCriteriaChange = jest.fn();
+    renderComponent({ onCohortCriteriaChange });
+
+    // A press is a decision, so it lands without the field being left.
+    fireEvent.click(
+      screen.getByRole('button', { name: '!!!Raise the voting power ceiling' })
+    );
+
+    expect(onCohortCriteriaChange).toHaveBeenCalledWith({
+      ...DEFAULT_DREP_COHORT_CRITERIA,
+      maxVotingPowerShare: 0.02,
+    });
+  });
+
+  it('steps down by the same amount it steps up', () => {
+    const onCohortCriteriaChange = jest.fn();
+    renderComponent({ onCohortCriteriaChange });
+
+    fireEvent.click(
+      screen.getByRole('button', { name: '!!!Lower the voting power ceiling' })
+    );
+
+    expect(onCohortCriteriaChange).toHaveBeenCalledWith({
+      ...DEFAULT_DREP_COHORT_CRITERIA,
+      maxVotingPowerShare: 0.01,
+    });
+  });
+
+  it('stops stepping at the bottom of the range', () => {
+    const onCohortCriteriaChange = jest.fn();
+    renderComponent({
+      onCohortCriteriaChange,
+      cohortCriteria: {
+        ...DEFAULT_DREP_COHORT_CRITERIA,
+        maxVotingPowerShare: 0.005,
+      },
+    });
+
+    // Held rather than hidden, so the row does not reflow at the limit.
+    expect(
+      screen.getByRole('button', { name: '!!!Lower the voting power ceiling' })
+    ).toBeDisabled();
+  });
+
+  it('holds a typed ceiling inside the range it offers', () => {
+    const onCohortCriteriaChange = jest.fn();
+    renderComponent({ onCohortCriteriaChange });
+
+    typeFacetNumber('!!!Voting power under', '0.1');
+
+    expect(onCohortCriteriaChange).toHaveBeenCalledWith({
+      ...DEFAULT_DREP_COHORT_CRITERIA,
+      maxVotingPowerShare: 0.005,
     });
   });
 
@@ -1719,7 +1807,8 @@ describe('DRepDirectory suggestion criteria', () => {
     });
 
     expect(facetValue('!!!Suggestions shown')).toBe('10');
-    expect(facetValue('!!!Voting power under')).toBe('!!!No limit');
+    // No ceiling reads as the top of the range, which is what it means.
+    expect(facetNumberValue('!!!Voting power under')).toBe('100');
   });
 
   it('says which criteria were relaxed to fill the cohort', () => {

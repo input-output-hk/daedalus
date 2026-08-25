@@ -23,18 +23,6 @@ export const DEFAULT_DREP_COHORT_SIZE = 20;
 /** Cohort sizes the directory offers. */
 export const DREP_COHORT_SIZE_OPTIONS: readonly number[] = [10, 20, 50];
 
-/**
- * Voting-power ceilings the directory offers, as a share of total delegated
- * stake. The middle value is the threshold the high-voting-power warning
- * already uses, so the cohort and the badge cannot disagree about what counts
- * as a large DRep.
- */
-export const DREP_COHORT_VOTING_POWER_SHARE_OPTIONS: readonly number[] = [
-  0.005,
-  HIGH_VOTING_POWER_THRESHOLD,
-  0.05,
-];
-
 export interface DRepCohortCriteria {
   /**
    * Exclude DReps whose voting power lapses within the next few epochs, at the
