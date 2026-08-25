@@ -14,6 +14,7 @@ import StakePool from '../../../domains/StakePool';
 import { Separator } from '../../widgets/separator/Separator';
 import { InitializeVPDelegationTxError } from '../../../stores/VotingStore';
 import CurrentDRepSummary from './CurrentDRepSummary';
+import globalMessages from '../../../i18n/global-messages';
 import { messages as currentDRepMessages } from './CurrentDRepSummary.messages';
 import { sharedGovernanceMessages } from './shared-messages';
 import { isSameDRep } from '../../../utils/governance/isSameDRep';
@@ -50,6 +51,7 @@ type Props = {
     selectedWalletId: string | null;
     voteType: 'drep';
   }) => void;
+  onCancel: () => void;
   onFetchDRep?: (drepId: string) => Promise<AppDRepDirectoryEntry>;
   onEnsureFavorited?: (drepId: string) => void;
 };
@@ -85,6 +87,7 @@ function VotingPowerDelegation({
   intl,
   onBrowseDRepsClick,
   onEnsureFavorited,
+  onCancel,
   onExternalLinkClick,
   onFetchDRep,
   renderConfirmationDialog,
@@ -335,19 +338,31 @@ function VotingPowerDelegation({
                 </p>
               )}
 
-              {selectedDRepId && (
+              {/* Cancel is here whether or not anything has been chosen.
+                  Without it the only control that leaves this screen was
+                  Change, which goes on to the directory rather than back, so
+                  someone who opened this by accident had no way out that did
+                  not look like continuing. */}
+              <div className={styles.submitRow}>
                 <Button
-                  label={intl.formatMessage(messages.submitLabel)}
-                  className={styles.voteSubmit}
-                  disabled={submitButtonDisabled}
-                  aria-describedby={
-                    isSameAsCurrent ? SAME_VOTE_HINT_ID : undefined
-                  }
-                  onClick={() => {
-                    setState({ ...state, status: 'form-submitted' });
-                  }}
+                  className={`flat ${styles.voteCancel}`}
+                  label={intl.formatMessage(globalMessages.cancel)}
+                  onClick={onCancel}
                 />
-              )}
+                {selectedDRepId && (
+                  <Button
+                    label={intl.formatMessage(messages.submitLabel)}
+                    className={styles.voteSubmit}
+                    disabled={submitButtonDisabled}
+                    aria-describedby={
+                      isSameAsCurrent ? SAME_VOTE_HINT_ID : undefined
+                    }
+                    onClick={() => {
+                      setState({ ...state, status: 'form-submitted' });
+                    }}
+                  />
+                )}
+              </div>
             </>
           )}
         </BorderedBox>

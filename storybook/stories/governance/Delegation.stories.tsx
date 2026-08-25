@@ -203,6 +203,7 @@ const renderPrefilledPanel = (
             voteType: 'drep',
           }}
           onBrowseDRepsClick={action('onBrowseDRepsClick')}
+          onCancel={action('onCancel')}
           onExternalLinkClick={action('onExternalLinkClick')}
           renderConfirmationDialog={renderGovernanceConfirmationDialog}
           stakePools={STAKE_POOLS_LIST}
@@ -242,6 +243,7 @@ const renderGovernancePanel = (option: CurrentVoteOption) => {
                 };
           }}
           onBrowseDRepsClick={action('onBrowseDRepsClick')}
+          onCancel={action('onCancel')}
           onExternalLinkClick={action('onExternalLinkClick')}
           renderConfirmationDialog={renderGovernanceConfirmationDialog}
           stakePools={STAKE_POOLS_LIST}

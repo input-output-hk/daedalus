@@ -37,6 +37,14 @@ class VotingGovernancePage extends Component<Props> {
     stores: null,
   };
 
+  // Back to where the flow starts, not back one step: the previous screen is
+  // the directory, and returning there would offer the same choice again to
+  // someone who has just declined to make it.
+  handleCancel = () => {
+    this.props.stores.governance.setDelegationNavState(null);
+    this.props.history.push(ROUTES.GOVERNANCE.DASHBOARD);
+  };
+
   handleBrowseDRepsClick = (formState: {
     selectedWalletId: string | null;
     voteType: VoteType;
@@ -85,6 +93,7 @@ class VotingGovernancePage extends Component<Props> {
         initiateTransaction={voting.initializeVPDelegationTx}
         initialFormState={initialFormState}
         onBrowseDRepsClick={this.handleBrowseDRepsClick}
+        onCancel={this.handleCancel}
         onFetchDRep={(drepId) => governance.fetchDRep(drepId)}
         onEnsureFavorited={(drepId) => {
           if (!governance.favoriteDRepIds.has(drepId)) {

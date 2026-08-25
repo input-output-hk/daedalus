@@ -70,9 +70,22 @@ span.link {
   margin-top: 28px;
 }
 
-.voteSubmit {
+// Cancel beside Submit. Until it was here the only way off this screen was
+// Change, which goes to the directory rather than back, so a reader who had
+// arrived by accident had no way out that did not look like carrying on.
+.submitRow {
+  display: flex;
+  gap: 12px;
   margin-top: 28px;
-  width: 100%;
+}
+
+.voteCancel {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.voteSubmit {
+  flex: 1;
 }
 
 .sameVoteHint {
@@ -133,16 +146,20 @@ span.link {
 }
 
 // Small, and a button rather than a link: it acts within this wallet, and a
-// link here read as somewhere else to go.
+// link here read as somewhere else to go. Changing a choice already made is
+// the rarer action on this card, so it is sized as the secondary one.
+//
+// ButtonSkin puts className on the button element itself, and the simple
+// theme sets --rp-button-width to 100%, so the width has to be undone here
+// rather than in a nested selector that would match nothing.
 .selectedDRepChange {
   flex-shrink: 0;
-
-  button {
-    font-size: 13px;
-    height: 32px;
-    min-width: 0;
-    padding: 0 16px;
-  }
+  font-size: 12px;
+  height: 26px;
+  letter-spacing: 0;
+  min-height: 26px;
+  padding: 0 12px;
+  width: auto;
 }
 
 .browseDRepsPrompt {

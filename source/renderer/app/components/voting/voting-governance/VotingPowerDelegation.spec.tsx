@@ -4,7 +4,7 @@ import { IntlProvider } from 'react-intl';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../../i18n/locales/en-US.json';
 import { daedalusTheme } from '../../../themes/daedalus';
@@ -38,7 +38,8 @@ const BYRON = buildWallet('byron-1', 'Byron legacy wallet', true);
 const renderForm = (
   wallets: Wallet[],
   selectedWalletId?: string,
-  selectedDRepId?: string
+  selectedDRepId?: string,
+  onCancel: () => void = () => undefined
 ) =>
   render(
     <ThemeProvider
@@ -68,6 +69,7 @@ const renderForm = (
                 fees: new BigNumber(0),
               })}
               onBrowseDRepsClick={() => undefined}
+              onCancel={onCancel}
               onExternalLinkClick={() => undefined}
               renderConfirmationDialog={() => <div />}
               stakePools={[]}
@@ -139,6 +141,16 @@ describe('VotingPowerDelegation', () => {
       )
     ).toBeInTheDocument();
     expect(screen.queryByText('no_confidence')).not.toBeInTheDocument();
+  });
+
+  it('offers a way off the screen before anything has been chosen', () => {
+    // Change goes on to the directory rather than back, so without this the
+    // screen has no exit that does not look like continuing.
+    const onCancel = jest.fn();
+    renderForm([SHELLEY], 'shelley-1', undefined, onCancel);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    expect(onCancel).toHaveBeenCalledTimes(1);
   });
 
   it('still shows a DRep id as an identifier', () => {
