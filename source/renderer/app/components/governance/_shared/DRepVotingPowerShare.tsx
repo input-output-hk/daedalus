@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import {
   formatVotingPower,
   getVotingPowerShare,
-  HIGH_VOTING_POWER_THRESHOLD,
   isHighVotingPower,
   MINIMUM_DISPLAYED_SHARE,
 } from './drepVotingPower';
@@ -21,7 +20,7 @@ const messages = defineMessages({
   tooltip: {
     id: 'governance.drepDirectory.votingPowerShare.tooltip',
     defaultMessage:
-      '!!!This DRep controls {share} of the voting power assigned to DReps ({total}).',
+      '!!!This DRep controls {share} of active voting power ({total}).',
     description: 'Tooltip stating a DRep share of delegated voting power',
   },
   labelBelowMinimum: {
@@ -33,16 +32,9 @@ const messages = defineMessages({
   tooltipBelowMinimum: {
     id: 'governance.drepDirectory.votingPowerShare.tooltipBelowMinimum',
     defaultMessage:
-      '!!!This DRep controls less than {share} of the voting power assigned to DReps ({total}).',
+      '!!!This DRep controls less than {share} of active voting power ({total}).',
     description:
       'Tooltip for a DRep whose share is too small to state at the displayed precision',
-  },
-  highTooltip: {
-    id: 'governance.drepDirectory.votingPowerShare.highTooltip',
-    defaultMessage:
-      '!!!This DRep controls {share} of the voting power assigned to DReps ({total}). Above {threshold}, a single DRep concentrates a large part of governance.',
-    description:
-      'Tooltip shown when a DRep holds more than the concentration threshold',
   },
 });
 
@@ -93,17 +85,10 @@ function DRepVotingPowerShare({
   // share itself unanchored: a percentage means nothing without knowing what
   // it is a percentage of.
   const total = formatVotingPower(totalDRepStake ?? null);
+  // No separate wording above the threshold. The share is the fact; whether
+  // it is a lot is the reader's to judge, and the glyph and its colour say
+  // that this one is worth a look without arguing a case.
   const resolveTooltip = () => {
-    if (isHigh) {
-      return intl.formatMessage(messages.highTooltip, {
-        share: formattedShare,
-        total,
-        threshold: intl.formatNumber(HIGH_VOTING_POWER_THRESHOLD, {
-          style: 'percent',
-          maximumFractionDigits: 2,
-        }),
-      });
-    }
     // The same rounding that would have printed 0% on the badge would have
     // printed it here, stating outright that a DRep with voting power holds
     // none of it.
@@ -127,11 +112,16 @@ function DRepVotingPowerShare({
   // alone. A share past the threshold gets the warning glyph: same control,
   // same wording, but not the colour of a neutral aside.
   return (
+    // The explanation is carried by the whole chip, not only by the icon.
+    // Fourteen pixels of glyph is a small thing to find with a pointer, and
+    // the figure beside it is the part a reader is already looking at. The
+    // icon keeps its own copy so it stays a focusable control with a name.
     <span
       className={classNames(
         variant === 'badge' ? styles.share : styles.plain,
         isHigh ? styles.high : styles.normal
       )}
+      title={tooltip}
     >
       <span>{label}</span>
       <DRepInfoIcon

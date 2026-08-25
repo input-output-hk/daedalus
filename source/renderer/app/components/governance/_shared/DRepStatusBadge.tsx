@@ -26,14 +26,14 @@ const messages = defineMessages({
   expiringDetailWithDays: {
     id: 'governance.drepDirectory.expiry.detailWithDays',
     defaultMessage:
-      '!!!Becomes inactive in {epochs, plural, one {# epoch} other {# epochs}} ({days, plural, one {# day} other {# days}}) unless this DRep records activity by voting, updating its metadata or re-registering.',
+      '!!!Will become inactive in {epochs, plural, one {# epoch} other {# epochs}} ({days, plural, one {# day} other {# days}}) without on-chain activity.',
     description:
       'Explains when a DRep loses its voting power, in epochs and days',
   },
   expiringDetail: {
     id: 'governance.drepDirectory.expiry.detail',
     defaultMessage:
-      '!!!Becomes inactive in {epochs, plural, one {# epoch} other {# epochs}} unless this DRep records activity by voting, updating its metadata or re-registering.',
+      '!!!Will become inactive in {epochs, plural, one {# epoch} other {# epochs}} without on-chain activity.',
     description:
       'Explains when a DRep loses its voting power when the epoch length is unknown',
   },

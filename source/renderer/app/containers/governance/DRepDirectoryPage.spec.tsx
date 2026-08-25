@@ -261,7 +261,7 @@ describe('DRepDirectoryPage', () => {
   it('auto-favorites the DRep when it is selected for delegation', () => {
     const { governance } = renderPage();
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
     expect(governance.toggleFavorite).toHaveBeenCalledTimes(1);
     expect(governance.toggleFavorite).toHaveBeenCalledWith(drepEntry.drepId);
@@ -272,7 +272,7 @@ describe('DRepDirectoryPage', () => {
       favoriteDRepIds: new Set([drepEntry.drepId]),
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
     expect(governance.toggleFavorite).not.toHaveBeenCalled();
   });
@@ -280,7 +280,7 @@ describe('DRepDirectoryPage', () => {
   it('does not call toggleFavorite when a sentinel (Abstain) is selected', () => {
     const { governance } = renderPage();
 
-    // Sentinel cards use '!!!Select' (not '!!!Delegate')
+    // Sentinel cards use '!!!Select' (not 'Delegate')
     const sentinelButton = screen.getAllByRole('button', {
       name: '!!!Select',
     })[0];

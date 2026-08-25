@@ -321,7 +321,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
       },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
     expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
     expect(screen.getByText('!!!Delegate to')).toBeInTheDocument();
@@ -337,7 +337,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
     fireEvent.click(screen.getByRole('button', { name: '!!!View details' }));
     // Wait for fetchDRep to resolve so the detail page transitions out of Loading.
     await act(async () => {});
-    fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
     expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
     expect(screen.getByText('!!!Delegate to')).toBeInTheDocument();
@@ -375,7 +375,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
       },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     await screen.findByText('Confirm Transaction');
@@ -425,7 +425,7 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
       delegationNavState: hwNavState,
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     await screen.findByText('Confirm Transaction');
@@ -465,7 +465,7 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
       delegationNavState: hwNavState,
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     await screen.findByText('Confirm Transaction');
@@ -480,7 +480,7 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
       delegationNavState: hwNavState,
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     await screen.findByText('Confirm Transaction');
@@ -530,7 +530,7 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
         delegationNavState: hwNavState,
       });
 
-      fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
       fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
       await screen.findByText('Confirm Transaction');

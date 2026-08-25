@@ -38,16 +38,16 @@ describe('DRepVotingPowerShare', () => {
     // explanation hangs off the icon, which is what tells a reader it exists.
     expect(
       screen.getByRole('button', {
-        name: '!!!This DRep controls 1% of the voting power assigned to DReps (₳ 5.0B).',
+        name: '!!!This DRep controls 1% of active voting power (₳ 5.0B).',
       })
     ).toBeInTheDocument();
   });
 
-  it('explains the rule once the share passes the threshold', () => {
+  it('states the share above the threshold without arguing about it', () => {
     renderShare(ABOVE);
     expect(
       screen.getByRole('button', {
-        name: '!!!This DRep controls 2% of the voting power assigned to DReps (₳ 5.0B). Above 1.5%, a single DRep concentrates a large part of governance.',
+        name: '!!!This DRep controls 2% of active voting power (₳ 5.0B).',
       })
     ).toBeInTheDocument();
   });
@@ -70,7 +70,7 @@ describe('DRepVotingPowerShare', () => {
     // and does not round the share to zero either.
     expect(
       screen.getByRole('button', {
-        name: '!!!This DRep controls less than 0.01% of the voting power assigned to DReps (₳ 5.0B).',
+        name: '!!!This DRep controls less than 0.01% of active voting power (₳ 5.0B).',
       })
     ).toBeInTheDocument();
   });

@@ -22,11 +22,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Remove from favorites',
     description: 'Accessible label of the favorite toggle when favorited',
   },
-  select: {
-    id: 'governance.drepDirectory.card.select',
-    defaultMessage: '!!!Delegate',
-    description: 'Row-level CTA that hands the DRep ID to the delegation form',
-  },
 });
 
 interface Props {
@@ -110,7 +105,7 @@ function DRepTableRow({
         />
         {canDelegate && !isCurrentDRep && (
           <Button
-            label={intl.formatMessage(messages.select)}
+            label={intl.formatMessage(globalMessages.delegate)}
             onClick={() => onSelectForDelegation(entry.drepId)}
             skin={ButtonSkin}
           />

@@ -2,14 +2,10 @@ import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import globalMessages from '../../../i18n/global-messages';
 import styles from './DRepDetail.scss';
 
 const messages = defineMessages({
-  select: {
-    id: 'governance.drepDirectory.card.select',
-    defaultMessage: '!!!Delegate',
-    description: 'CTA that hands the DRep ID to the delegation form',
-  },
   favoriteAdd: {
     id: 'governance.drepDirectory.card.favorite.add',
     defaultMessage: '!!!Add to favorites',
@@ -43,7 +39,7 @@ function DRepDetailActions({
     <div className={styles.actions}>
       {!isCurrentDRep && (
         <Button
-          label={intl.formatMessage(messages.select)}
+          label={intl.formatMessage(globalMessages.delegate)}
           onClick={() => onSelectForDelegation(drepId)}
           skin={ButtonSkin}
         />

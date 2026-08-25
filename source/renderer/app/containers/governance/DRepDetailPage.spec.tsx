@@ -386,10 +386,10 @@ describe('DRepDetailPage', () => {
     // under test by its tooltip rather than by the dash.
     expect(screen.getAllByText('—')).toHaveLength(2);
     expect(
-      screen.getByTitle('!!!Stake distribution unavailable this refresh.')
+      screen.getByTitle('!!!Stake distribution unavailable, try again later.')
     ).toHaveAttribute(
       'title',
-      '!!!Stake distribution unavailable this refresh.'
+      '!!!Stake distribution unavailable, try again later.'
     );
   });
 
@@ -477,7 +477,7 @@ describe('DRepDetailPage', () => {
       },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
     expect(governance.setDelegationNavState).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -493,7 +493,7 @@ describe('DRepDetailPage', () => {
   it('falls back to the governance form route when no delegationNavState was inherited', async () => {
     const { pushSpy, governance } = await renderPage();
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
     expect(governance.setDelegationNavState).toHaveBeenCalledWith(
       expect.objectContaining({ selectedDRepId: DREP_ID })
@@ -960,7 +960,7 @@ describe('DRepDetailPage', () => {
   it('calls toggleFavorite on Select for delegation when the DRep is not already favorited', async () => {
     const { governance } = await renderPage();
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
     expect(governance.toggleFavorite).toHaveBeenCalledTimes(1);
     expect(governance.toggleFavorite).toHaveBeenCalledWith(DREP_ID);
@@ -971,7 +971,7 @@ describe('DRepDetailPage', () => {
       governanceOverrides: { favoriteDRepIds: new Set([DREP_ID]) },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: '!!!Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
     expect(governance.toggleFavorite).not.toHaveBeenCalled();
   });

@@ -78,7 +78,7 @@ describe('DRepStatusBadge', () => {
       screen.getByText('!!!Inactive Soon').closest('span[title]')
     ).toHaveAttribute(
       'title',
-      '!!!Becomes inactive in 4 epochs (20 days) unless this DRep records activity by voting, updating its metadata or re-registering.'
+      '!!!Will become inactive in 4 epochs (20 days) without on-chain activity.'
     );
   });
 
@@ -89,7 +89,7 @@ describe('DRepStatusBadge', () => {
       screen.getByText('!!!Inactive Soon').closest('span[title]')
     ).toHaveAttribute(
       'title',
-      '!!!Becomes inactive in 4 epochs unless this DRep records activity by voting, updating its metadata or re-registering.'
+      '!!!Will become inactive in 4 epochs without on-chain activity.'
     );
   });
 
@@ -102,7 +102,9 @@ describe('DRepStatusBadge', () => {
     });
 
     expect(
-      screen.getByLabelText(/Inactive Soon\. .*Becomes inactive in 2 epochs/)
+      screen.getByLabelText(
+        /Inactive Soon\. .*Will become inactive in 2 epochs/
+      )
     ).toBeInTheDocument();
   });
 });

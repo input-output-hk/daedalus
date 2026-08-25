@@ -25,9 +25,9 @@ exports[`CurrentDRepSummary DRep status badge renders the local inactive-soon ba
       !!!Delegated to DRep
     </span>
     <span
-      aria-label="!!!Inactive Soon. !!!Becomes inactive in 4 epochs unless this DRep records activity by voting, updating its metadata or re-registering."
+      aria-label="!!!Inactive Soon. !!!Will become inactive in 4 epochs without on-chain activity."
       class="badge inactiveSoon"
-      title="!!!Becomes inactive in 4 epochs unless this DRep records activity by voting, updating its metadata or re-registering."
+      title="!!!Will become inactive in 4 epochs without on-chain activity."
     >
       <span
         class="label"

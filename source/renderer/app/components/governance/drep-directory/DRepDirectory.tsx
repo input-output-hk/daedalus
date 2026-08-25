@@ -107,7 +107,7 @@ const messages = defineMessages({
   criteriaSummary: {
     id: 'governance.drepDirectory.cohort.summary',
     defaultMessage:
-      '!!!Showing {count, plural, one {# active DRep} other {# active DReps}} chosen at random who meet these criteria.',
+      '!!!Showing {count, plural, one {# active DRep chosen at random who meets these criteria.} other {# active DReps chosen at random who meet these criteria.}}',
     description:
       'Lead line above the list of criteria the suggested cohort was drawn under',
   },

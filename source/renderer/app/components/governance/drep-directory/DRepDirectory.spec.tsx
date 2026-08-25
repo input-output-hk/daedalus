@@ -432,7 +432,7 @@ describe('DRepDirectory', () => {
     const onSelectForDelegation = jest.fn();
     renderComponent({ onSelectForDelegation });
 
-    fireEvent.click(screen.getAllByRole('button', { name: '!!!Delegate' })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Delegate' })[0]);
 
     expect(onSelectForDelegation).toHaveBeenCalledTimes(1);
     expect(onSelectForDelegation).toHaveBeenCalledWith(baseEntries[0].drepId);
@@ -616,7 +616,7 @@ describe('DRepDirectory', () => {
 
     expect(screen.getByText('—')).toHaveAttribute(
       'title',
-      '!!!Stake distribution unavailable this refresh.'
+      '!!!Stake distribution unavailable, try again later.'
     );
   });
 
@@ -767,7 +767,7 @@ describe('DRepDirectory', () => {
         target: { value: realDrepId(1).slice(0, 'drep1'.length + 20) },
       }
     );
-    fireEvent.click(screen.getByText('!!!Delegate'));
+    fireEvent.click(screen.getByText('Delegate'));
 
     expect(onSelectForDelegation).toHaveBeenCalledWith(realDrepId(1));
   });

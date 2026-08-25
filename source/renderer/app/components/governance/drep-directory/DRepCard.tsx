@@ -18,11 +18,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Voting power',
     description: 'Label for the voting power column in DRep directory',
   },
-  select: {
-    id: 'governance.drepDirectory.card.select',
-    defaultMessage: '!!!Delegate',
-    description: 'Row-level CTA that hands the DRep ID to the delegation form',
-  },
   votingPowerLoadingTooltip: {
     id: 'governance.drepDirectory.votingPower.loadingTooltip',
     defaultMessage: '!!!Loading voting power…',
@@ -30,7 +25,7 @@ const messages = defineMessages({
   },
   votingPowerUnavailableTooltip: {
     id: 'governance.drepDirectory.votingPower.unavailableTooltip',
-    defaultMessage: '!!!Stake distribution unavailable this refresh.',
+    defaultMessage: '!!!Stake distribution unavailable, try again later.',
     description: 'Tooltip on the voting-power placeholder when stake failed',
   },
   favoriteAdd: {
@@ -174,7 +169,7 @@ function DRepCard({
       <div className={styles.actionsRow}>
         {canDelegate && !isCurrentDRep && (
           <Button
-            label={intl.formatMessage(messages.select)}
+            label={intl.formatMessage(globalMessages.delegate)}
             onClick={() => onSelectForDelegation(entry.drepId)}
             skin={ButtonSkin}
           />

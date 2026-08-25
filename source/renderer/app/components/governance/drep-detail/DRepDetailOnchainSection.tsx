@@ -69,7 +69,7 @@ const messages = defineMessages({
   },
   votingPowerUnavailableTooltip: {
     id: 'governance.drepDetail.votingPower.unavailableTooltip',
-    defaultMessage: '!!!Stake distribution unavailable this refresh.',
+    defaultMessage: '!!!Stake distribution unavailable, try again later.',
     description: 'Tooltip on the voting-power placeholder when stake failed',
   },
 });
