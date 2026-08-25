@@ -274,11 +274,12 @@ function DRepDetailAnchorContent({
     metadata?.objectives != null ||
     metadata?.motivations != null ||
     metadata?.qualifications != null;
-  const hasAnyContent =
-    hasFieldRows ||
-    references.length > 0 ||
-    additionalFields.length > 0 ||
-    metadata?.paymentAddress != null;
+  // What the heading below announces, which is not the same as what this
+  // component renders: a document may carry additional fields and no
+  // standardised one, and the heading then names an empty block.
+  const hasCanonicalContent =
+    hasFieldRows || references.length > 0 || metadata?.paymentAddress != null;
+  const hasAnyContent = hasCanonicalContent || additionalFields.length > 0;
 
   if (!hasAnyContent) return null;
 
@@ -290,9 +291,11 @@ function DRepDetailAnchorContent({
           pedantry: these labels are ours and are translated, while a field
           nobody has standardised can only be shown under the key its author
           chose. */}
-      <h3 className={styles.blockTitle}>
-        {intl.formatMessage(messages.title)}
-      </h3>
+      {hasCanonicalContent && (
+        <h3 className={styles.blockTitle}>
+          {intl.formatMessage(messages.title)}
+        </h3>
+      )}
       {hasFieldRows && (
         <div className={styles.fieldList}>
           {metadata?.objectives != null && (

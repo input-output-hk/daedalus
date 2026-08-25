@@ -257,6 +257,11 @@ describe('DRepDetailPage', () => {
     expect(screen.queryByText('!!!Nothing published')).not.toBeInTheDocument();
     expect(screen.getByText('twitter')).toBeInTheDocument();
     expect(screen.getByText('@example')).toBeInTheDocument();
+    // And the heading for the standardised fields stays away, since there
+    // are none of those to head.
+    expect(
+      screen.queryByText('!!!Canonical metadata fields')
+    ).not.toBeInTheDocument();
   });
 
   it('warns when a published payment address is for another network', async () => {
