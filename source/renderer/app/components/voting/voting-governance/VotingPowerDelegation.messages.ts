@@ -17,9 +17,11 @@ export const messages = defineMessages({
     description: 'Placeholder for the wallet select on the governance page',
   },
   initializeTxErrorGeneric: {
-    id: 'voting.governance.initializeTxError.generic',
-    defaultMessage: '!!!Could not initialize transaction. Please try again!',
-    description: 'Generic error for initialize transaction',
+    id: 'voting.governance.transactionError.generic',
+    defaultMessage:
+      '!!!Something went wrong with this transaction. Please try again in a few minutes.',
+    description:
+      'Shown when a delegation transaction fails to build or to submit',
   },
   initializeTxErrorSameVote: {
     id: 'voting.governance.initializeTxError.sameVote',
@@ -38,11 +40,5 @@ export const messages = defineMessages({
     id: 'voting.governance.browseDRepsButton',
     defaultMessage: '!!!Browse DReps',
     description: 'Button that opens the DRep directory to pick a DRep',
-  },
-  selectedDRepHeading: {
-    id: 'voting.governance.selectedDRepHeading',
-    defaultMessage: '!!!Delegate To',
-    description:
-      'Heading above the DRep card the user has selected to delegate to',
   },
 });

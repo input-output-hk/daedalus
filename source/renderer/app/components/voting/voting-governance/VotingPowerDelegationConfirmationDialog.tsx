@@ -13,6 +13,7 @@ import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import styles from './VotingPowerDelegationConfirmationDialog.scss';
 import { DelegateVotesError } from '../../../stores/VotingStore';
 import type { Intl, ReactIntlMessage } from '../../../types/i18nTypes';
+import globalMessages from '../../../i18n/global-messages';
 import { messages } from './VotingPowerDelegationConfirmationDialog.messages';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { VoteType } from './types';
@@ -28,16 +29,12 @@ const mapOfTxErrorCodeToIntl: Record<
   wrong_encryption_passphrase: apiErrorMessage.wrongEncryptionPassphrase,
 };
 
-const mapVoteToIntlMessage = (vote: VoteType | string): ReactIntlMessage => {
-  switch (vote) {
-    case 'abstain':
-      return sharedGovernanceMessages.abstain;
-    case 'no_confidence':
-      return sharedGovernanceMessages.noConfidence;
-    default:
-      return sharedGovernanceMessages.delegateToDRep;
-  }
-};
+// Reached only for the two sentinels: a DRep delegation renders its name and
+// its identifier instead, neither of which is a translated label.
+const mapVoteToIntlMessage = (vote: VoteType | string): ReactIntlMessage =>
+  vote === 'abstain'
+    ? sharedGovernanceMessages.abstain
+    : sharedGovernanceMessages.noConfidence;
 
 /**
  * The verified name plus the host that served the hash-matched bytes. One
@@ -99,7 +96,6 @@ function VotingPowerDelegationConfirmationDialog({
       passphrase: '',
       status: 'awaiting',
     });
-  const [isCip105Shown, setIsCip105Shown] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -131,9 +127,19 @@ function VotingPowerDelegationConfirmationDialog({
   const isSentinelVote =
     chosenOption === 'abstain' || chosenOption === 'no_confidence';
 
+  const certificateJson = JSON.stringify(
+    {
+      vote: isSentinelVote
+        ? { type: chosenOption }
+        : { type: 'drep', id: drepIdentity?.credentialHex ?? chosenOption },
+    },
+    null,
+    2
+  );
+
   const confirmButtonLabel =
     state.status === 'awaiting' ? (
-      intl.formatMessage(messages.buttonConfirm)
+      intl.formatMessage(globalMessages.confirm)
     ) : (
       <LoadingSpinner />
     );
@@ -143,7 +149,7 @@ function VotingPowerDelegationConfirmationDialog({
       title={intl.formatMessage(messages.title)}
       actions={[
         {
-          label: intl.formatMessage(messages.buttonCancel),
+          label: intl.formatMessage(globalMessages.cancel),
           onClick: onClose,
           disabled: state.status !== 'awaiting',
         },
@@ -166,85 +172,47 @@ function VotingPowerDelegationConfirmationDialog({
       ]}
     >
       <div className={styles.content}>
-        {!isSentinelVote ? (
+        {/* One heading for every kind of delegation, named the way the form
+            that proposed it named it. Abstain and No Confidence are targets
+            of a delegation certificate like any DRep, so they are shown the
+            same way rather than under a label of their own. */}
+        <p className={styles.paragraphTitle}>
+          {intl.formatMessage(sharedGovernanceMessages.delegateTo)}
+        </p>
+        {isSentinelVote ? (
+          <p className={styles.paragraphValue}>
+            {intl.formatMessage(mapVoteToIntlMessage(chosenOption))}
+          </p>
+        ) : (
           <>
+            {/* Only the hash-guarded verified projection reaches here; an
+                unverified anchor name never renders on a signing surface. */}
             {verifiedName && (
-              <>
-                {/* Only the hash-guarded verified projection reaches here; an
-                    unverified anchor name never renders on a signing surface. */}
-                <p className={styles.paragraphTitle}>
-                  {intl.formatMessage(messages.verifiedName)}
-                </p>
-                <p className={styles.paragraphValue}>{verifiedName.name}</p>
-              </>
+              <p className={styles.delegateToName}>{verifiedName.name}</p>
             )}
-            <p className={styles.paragraphTitle}>
-              {intl.formatMessage(messages.drepId)}
-            </p>
             <p className={styles.paragraphValue}>
               {/* Rendered untouched: this string must stay byte-equal to
-                  chosenOption and the delegateVotes dRepId. */}
+                  chosenOption and the delegateVotes dRepId.
+
+                  No CIP-105 form here. It is offered on the directory and the
+                  detail view, where someone is cross-referencing an explorer
+                  that may still print the deprecated prefix. This screen is
+                  where they commit, and a second identifier for the same DRep
+                  is one more thing to check and nothing to act on. */}
               <code className={styles.drepIdValue}>
                 {drepIdentity?.raw ?? chosenOption}
               </code>
-            </p>
-            {/* CIP-105 is deprecated, so it is offered rather than shown, as
-                it is everywhere else. The CIP-129 form above stays rendered
-                untouched: this dialog is where a reader checks what they are
-                about to sign. */}
-            {drepIdentity?.cip105 &&
-              drepIdentity.cip105 !== drepIdentity.raw && (
-                <>
-                  <button
-                    type="button"
-                    className={styles.cip105Toggle}
-                    aria-expanded={isCip105Shown}
-                    onClick={() => setIsCip105Shown(!isCip105Shown)}
-                  >
-                    {intl.formatMessage(
-                      isCip105Shown ? messages.hideCip105 : messages.showCip105
-                    )}
-                  </button>
-                  {isCip105Shown && (
-                    <>
-                      <p className={styles.paragraphTitle}>
-                        {intl.formatMessage(messages.drepIdCip105)}
-                      </p>
-                      <p className={styles.paragraphValue}>
-                        <code className={styles.drepIdValue}>
-                          {drepIdentity.cip105}
-                        </code>
-                      </p>
-                    </>
-                  )}
-                </>
-              )}
-            {drepIdentity?.credentialHex && (
-              <>
-                <p className={styles.paragraphTitle}>
-                  {intl.formatMessage(messages.signedPayload)}
-                </p>
-                <p className={styles.paragraphValue}>
-                  <code className={styles.drepIdValue}>
-                    {`{"vote":{"type":"drep","id":"${drepIdentity.credentialHex}"}}`}
-                  </code>
-                </p>
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <p className={styles.paragraphTitle}>
-              {intl.formatMessage(messages.vote)}
-            </p>
-            <p className={styles.paragraphValue}>
-              {intl.formatMessage(mapVoteToIntlMessage(chosenOption))}
             </p>
           </>
         )}
 
         <p className={styles.paragraphTitle}>
-          {intl.formatMessage(messages.fee)}
+          {intl.formatMessage(messages.delegationCertificate)}
+        </p>
+        <pre className={styles.certificateValue}>{certificateJson}</pre>
+
+        <p className={styles.paragraphTitle}>
+          {intl.formatMessage(globalMessages.transactionFee)}
         </p>
         <p className={styles.paragraphValue}>{formattedWalletAmount(fees)}</p>
 
@@ -268,7 +236,7 @@ function VotingPowerDelegationConfirmationDialog({
             }}
             disabled={state.status !== 'awaiting'}
             type={'password'}
-            label={intl.formatMessage(messages.password)}
+            label={intl.formatMessage(globalMessages.spendingPassword)}
             skin={InputSkin}
           />
         )}

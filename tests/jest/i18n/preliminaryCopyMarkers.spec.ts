@@ -15,9 +15,7 @@ const GOVERNANCE_NAMESPACE = 'governance.';
 // Only these confirmation-dialog keys are preliminary; the rest of that
 // namespace predates the feature and is legitimately unmarked.
 const PRELIMINARY_CONFIRMATION_KEYS = [
-  'voting.governance.confirmationDialog.drepIdCip105',
-  'voting.governance.confirmationDialog.signedPayload',
-  'voting.governance.confirmationDialog.verifiedName',
+  'voting.governance.confirmationDialog.delegationCertificate',
 ];
 
 const en: Record<string, string> = enUS;

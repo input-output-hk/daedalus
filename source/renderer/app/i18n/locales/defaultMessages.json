@@ -462,6 +462,21 @@
         "id": "global.labels.undelegated"
       },
       {
+        "defaultMessage": "!!!Confirm",
+        "description": "The word \"confirm\" reused at several places",
+        "id": "global.labels.confirm"
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Label of the spending password field, used app-wide",
+        "id": "global.labels.spendingPassword"
+      },
+      {
+        "defaultMessage": "!!!Transaction fee",
+        "description": "Label of the fee a transaction will cost, used app-wide",
+        "id": "global.labels.transactionFee"
+      },
+      {
         "defaultMessage": "!!!Copy",
         "description": "Copy label.",
         "id": "global.labels.copy"
@@ -2772,6 +2787,16 @@
         "id": "governance.drepDetail.copyIdToast"
       },
       {
+        "defaultMessage": "!!!Show deprecated CIP-105 ID",
+        "description": "Discloses the deprecated CIP-105 form of a DRep id",
+        "id": "governance.drepDirectory.cip105.show"
+      },
+      {
+        "defaultMessage": "!!!Hide deprecated CIP-105 ID",
+        "description": "Hides the deprecated CIP-105 form of a DRep id",
+        "id": "governance.drepDirectory.cip105.hide"
+      },
+      {
         "defaultMessage": "!!!(CIP-105)",
         "description": "Caption in front of the CIP-105 form of a DRep ID",
         "id": "governance.drepDirectory.cip105Caption"
@@ -2798,76 +2823,6 @@
       }
     ],
     "path": "source/renderer/app/components/governance/_shared/DRepIdDisplay.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Show deprecated CIP-105 ID",
-        "description": "Discloses the deprecated CIP-105 form of a DRep ID",
-        "id": "governance.drepDirectory.cip105.show"
-      },
-      {
-        "defaultMessage": "!!!Hide deprecated CIP-105 ID",
-        "description": "Hides the deprecated CIP-105 form of a DRep ID",
-        "id": "governance.drepDirectory.cip105.hide"
-      },
-      {
-        "defaultMessage": "!!!Confirm Transaction",
-        "description": "Title for confirm dialog",
-        "id": "voting.governance.confirmationDialog.title"
-      },
-      {
-        "defaultMessage": "!!!Vote",
-        "description": "Vote title",
-        "id": "voting.governance.confirmationDialog.vote"
-      },
-      {
-        "defaultMessage": "!!!DRep ID",
-        "description": "Label above the DRep ID in the delegation confirmation dialog",
-        "id": "voting.governance.confirmationDialog.drepId"
-      },
-      {
-        "defaultMessage": "!!!CIP-105 DRep ID",
-        "description": "Label above the CIP-105 DRep ID in the delegation confirmation dialog",
-        "id": "voting.governance.confirmationDialog.drepIdCip105"
-      },
-      {
-        "defaultMessage": "!!!Signed payload",
-        "description": "Label above the signed payload vote id in the delegation confirmation dialog",
-        "id": "voting.governance.confirmationDialog.signedPayload"
-      },
-      {
-        "defaultMessage": "!!!Verified name",
-        "description": "Label above the verified off-chain DRep name in the delegation confirmation dialog",
-        "id": "voting.governance.confirmationDialog.verifiedName"
-      },
-      {
-        "defaultMessage": "!!!Transaction fee",
-        "description": "Fee title",
-        "id": "voting.governance.confirmationDialog.fee"
-      },
-      {
-        "defaultMessage": "!!!Spending password",
-        "description": "Label for password input",
-        "id": "voting.governance.confirmationDialog.password"
-      },
-      {
-        "defaultMessage": "!!!Something went wrong during transaction submission. Please try again in a few minutes.",
-        "description": "Generic error message",
-        "id": "voting.governance.confirmationDialog.error.generic"
-      },
-      {
-        "defaultMessage": "!!!Cancel",
-        "description": "Cancel button",
-        "id": "voting.governance.confirmationDialog.button.cancel"
-      },
-      {
-        "defaultMessage": "!!!Confirm",
-        "description": "Confirm button",
-        "id": "voting.governance.confirmationDialog.button.confirm"
-      }
-    ],
-    "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.messages.ts"
   },
   {
     "descriptors": [
@@ -6127,11 +6082,6 @@
         "id": "voting.governance.selectWalletPlaceholder"
       },
       {
-        "defaultMessage": "!!!Could not initialize transaction. Please try again!",
-        "description": "Generic error for initialize transaction",
-        "id": "voting.governance.initializeTxError.generic"
-      },
-      {
         "defaultMessage": "!!!This wallet already delegates to this choice. Please change delegation in order to proceed.",
         "description": "Shown when the wallet is already delegated to the chosen option",
         "id": "voting.governance.initializeTxError.sameVote"
@@ -6145,14 +6095,29 @@
         "defaultMessage": "!!!Browse DReps",
         "description": "Button that opens the DRep directory to pick a DRep",
         "id": "voting.governance.browseDRepsButton"
-      },
-      {
-        "defaultMessage": "!!!Delegate To",
-        "description": "Heading above the DRep card the user has selected to delegate to",
-        "id": "voting.governance.selectedDRepHeading"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Something went wrong with this transaction. Please try again in a few minutes.",
+        "description": "Shown when a delegation transaction fails to build or to submit",
+        "id": "voting.governance.transactionError.generic"
+      },
+      {
+        "defaultMessage": "!!!Confirm Transaction",
+        "description": "Title of the voting power delegation confirmation dialog",
+        "id": "voting.governance.confirmationDialog.title"
+      },
+      {
+        "defaultMessage": "!!!Delegation certificate",
+        "description": "Heading above the delegation this transaction will record",
+        "id": "voting.governance.confirmationDialog.delegationCertificate"
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.messages.ts"
   },
   {
     "descriptors": [
@@ -6162,9 +6127,9 @@
         "id": "voting.governance.abstain"
       },
       {
-        "defaultMessage": "!!!Delegate to DRep",
-        "description": "Translation for the \"delegate to DRep\" governance vote type",
-        "id": "voting.governance.delegateToDRep"
+        "defaultMessage": "!!!Delegate To",
+        "description": "Names what a wallet delegates its voting power to, on the form and again on the confirmation dialog",
+        "id": "voting.governance.selectedDRepHeading"
       },
       {
         "defaultMessage": "!!!No Confidence",

@@ -67,10 +67,10 @@ const renderDialog = (overrides: Record<string, unknown> = {}) =>
 describe('VotingPowerDelegationConfirmationDialog — DRep identity', () => {
   afterEach(cleanup);
 
-  it('renders the full raw DRep ID (byte-equal) instead of the generic label', () => {
+  it('renders the full raw DRep ID (byte-equal) under the Delegate To heading', () => {
     renderDialog();
 
-    expect(screen.getByText('!!!DRep ID')).toBeInTheDocument();
+    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
     const idNode = screen.getByText(VALID_DREP_ID);
     expect(idNode.textContent).toBe(VALID_DREP_ID);
     expect(
@@ -81,7 +81,7 @@ describe('VotingPowerDelegationConfirmationDialog — DRep identity', () => {
   it('still renders the Abstain sentinel label', () => {
     renderDialog({ chosenOption: 'abstain', drepIdentity: null });
 
-    expect(screen.getByText('Vote')).toBeInTheDocument();
+    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
     expect(screen.getByText('Abstain')).toBeInTheDocument();
     expect(screen.queryByText(VALID_DREP_ID)).not.toBeInTheDocument();
   });
@@ -229,6 +229,15 @@ describe('VotingPowerDelegationConfirmationDialog — fee, hardware and passphra
   });
 });
 
+// The certificate is laid out over several lines now, so it is matched on its
+// collapsed text rather than on a one-line literal.
+const certificateFor = (hex: string) =>
+  JSON.stringify({ vote: { type: 'drep', id: hex } }, null, 2);
+
+const hasCertificate =
+  (expected: string) => (_content: string, node: Element) =>
+    node.tagName === 'PRE' && (node.textContent ?? '') === expected;
+
 describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
   const KEY_CIP129 =
     'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
@@ -262,30 +271,29 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
 
   afterEach(cleanup);
 
-  it('renders all four parts for a key DRep', () => {
+  it('renders the identifier and the certificate for a key DRep', () => {
     renderIdentity(KEY_CIP129);
 
-    expect(screen.getByText('!!!DRep ID')).toBeInTheDocument();
+    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
     expect(screen.getByText(KEY_CIP129).textContent).toBe(KEY_CIP129);
-    expect(screen.getByText('!!!Signed payload')).toBeInTheDocument();
+    expect(screen.getByText('!!!Delegation certificate')).toBeInTheDocument();
     expect(
-      screen.getByText(`{"vote":{"type":"drep","id":"${KEY_CREDENTIAL_HEX}"}}`)
+      screen.getByText(hasCertificate(certificateFor(KEY_CREDENTIAL_HEX)))
     ).toBeInTheDocument();
 
-    // CIP-105 is deprecated, so it is offered rather than shown, as it is
-    // everywhere else in the app.
-    expect(screen.queryByText('!!!CIP-105 DRep ID')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByText('!!!Show deprecated CIP-105 ID'));
-    expect(screen.getByText('!!!CIP-105 DRep ID')).toBeInTheDocument();
-    expect(screen.getByText(KEY_CIP105).textContent).toBe(KEY_CIP105);
+    // Not on this screen. The deprecated form is offered where someone is
+    // cross-referencing an explorer; here they are committing, and a second
+    // identifier for the same DRep is one more thing to check.
+    expect(screen.queryByText(KEY_CIP105)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('!!!Show deprecated CIP-105 ID')
+    ).not.toBeInTheDocument();
 
     const templateOrder = [
-      '!!!DRep ID',
-      '!!!CIP-105 DRep ID',
-      '!!!Signed payload',
+      '!!!Delegate To',
+      '!!!Delegation certificate',
       'Transaction fee',
     ];
-    // Disclosed above, so it sits in the order where it always did.
     expect(
       Array.from(document.querySelectorAll('p'))
         .map((node) => node.textContent ?? '')
@@ -293,16 +301,13 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
     ).toEqual(templateOrder);
   });
 
-  it('renders the script CIP-105 form for a script DRep', () => {
+  it('renders the certificate for a script DRep', () => {
     renderIdentity(SCRIPT_CIP129);
 
     expect(screen.getByText(SCRIPT_CIP129).textContent).toBe(SCRIPT_CIP129);
-    fireEvent.click(screen.getByText('!!!Show deprecated CIP-105 ID'));
-    expect(screen.getByText(SCRIPT_CIP105).textContent).toBe(SCRIPT_CIP105);
+    expect(screen.queryByText(SCRIPT_CIP105)).not.toBeInTheDocument();
     expect(
-      screen.getByText(
-        `{"vote":{"type":"drep","id":"${SCRIPT_CREDENTIAL_HEX}"}}`
-      )
+      screen.getByText(hasCertificate(certificateFor(SCRIPT_CREDENTIAL_HEX)))
     ).toBeInTheDocument();
   });
 
@@ -310,13 +315,10 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
     renderIdentity(SCRIPT_CIP105);
 
     expect(screen.getAllByText(SCRIPT_CIP105)).toHaveLength(1);
-    expect(screen.queryByText('!!!CIP-105 DRep ID')).not.toBeInTheDocument();
-    expect(screen.getByText('!!!DRep ID')).toBeInTheDocument();
-    expect(screen.getByText('!!!Signed payload')).toBeInTheDocument();
+    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
+    expect(screen.getByText('!!!Delegation certificate')).toBeInTheDocument();
     expect(
-      screen.getByText(
-        `{"vote":{"type":"drep","id":"${SCRIPT_CREDENTIAL_HEX}"}}`
-      )
+      screen.getByText(hasCertificate(certificateFor(SCRIPT_CREDENTIAL_HEX)))
     ).toBeInTheDocument();
   });
 
@@ -328,16 +330,16 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
     (cip129, cip105) => {
       renderIdentity(cip129);
 
-      fireEvent.click(screen.getByText('!!!Show deprecated CIP-105 ID'));
       const payload = JSON.parse(screen.getByText(/"vote"/).textContent);
       expect(payload.vote.type).toBe('drep');
       expect(payload.vote.id).toHaveLength(56);
       expect(credentialHexOf(screen.getByText(cip129).textContent)).toBe(
         payload.vote.id
       );
-      expect(credentialHexOf(screen.getByText(cip105).textContent)).toBe(
-        payload.vote.id
-      );
+      // The CIP-105 form is not rendered here, so it is decoded directly:
+      // the point is that all three describe one credential, not that the
+      // dialog shows all three.
+      expect(credentialHexOf(cip105)).toBe(payload.vote.id);
     }
   );
 
@@ -358,7 +360,7 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
 
       renderIdentity(cip129);
       expect(
-        screen.getByText(`{"vote":{"type":"drep","id":"${expectedHex}"}}`)
+        screen.getByText(hasCertificate(certificateFor(expectedHex)))
       ).toBeInTheDocument();
     }
   );
@@ -367,12 +369,15 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
     expect(normalizeDRepIdentity(LEGACY_DREP_ID)).toBeNull();
     renderIdentity(LEGACY_DREP_ID);
 
-    expect(screen.getByText('!!!DRep ID')).toBeInTheDocument();
+    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
     expect(screen.getByText(LEGACY_DREP_ID).textContent).toBe(LEGACY_DREP_ID);
     expect(screen.queryByText('!!!CIP-105 DRep ID')).not.toBeInTheDocument();
-    expect(screen.queryByText('!!!Signed payload')).not.toBeInTheDocument();
     expect(screen.queryByText('!!!On-chain')).not.toBeInTheDocument();
-    expect(screen.queryByText('Vote')).not.toBeInTheDocument();
+    // The certificate falls back to the id the decoder refused rather than
+    // printing an empty credential.
+    expect(
+      screen.getByText(hasCertificate(certificateFor(LEGACY_DREP_ID)))
+    ).toBeInTheDocument();
   });
 
   it.each(['abstain', 'no_confidence'])(
@@ -384,11 +389,16 @@ describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
         verifiedName: { host: 'example.org', name: 'Verified Sentinel Name' },
       });
 
-      expect(screen.getByText('Vote')).toBeInTheDocument();
-      expect(screen.queryByText('!!!DRep ID')).not.toBeInTheDocument();
+      // Named the same way a DRep is, because the certificate is the same
+      // kind of certificate.
+      expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
       expect(screen.queryByText('!!!CIP-105 DRep ID')).not.toBeInTheDocument();
-      expect(screen.queryByText('!!!Signed payload')).not.toBeInTheDocument();
       expect(screen.queryByText('!!!On-chain')).not.toBeInTheDocument();
+      expect(
+        screen.getByText(
+          hasCertificate(JSON.stringify({ vote: { type: option } }, null, 2))
+        )
+      ).toBeInTheDocument();
       expect(
         screen.queryByText('Verified Sentinel Name')
       ).not.toBeInTheDocument();
@@ -445,16 +455,12 @@ describe('VotingPowerDelegationConfirmationDialog — verified name', () => {
   it('renders the verified name above the DRep ID', () => {
     renderVerified();
 
-    expect(screen.getByText('!!!Verified name')).toBeInTheDocument();
+    // The name has no label of its own: it sits under Delegate To, above the
+    // identifier it names, which is the order the directory card uses too.
     expect(screen.getByText('Daedalus Test DRep')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('!!!Show deprecated CIP-105 ID'));
+    expect(screen.queryByText('!!!Verified name')).not.toBeInTheDocument();
 
-    const order = [
-      '!!!Verified name',
-      '!!!DRep ID',
-      '!!!CIP-105 DRep ID',
-      '!!!Signed payload',
-    ];
+    const order = ['!!!Delegate To', 'Daedalus Test DRep'];
     expect(
       Array.from(document.querySelectorAll('p'))
         .map((node) => node.textContent ?? '')
@@ -462,21 +468,20 @@ describe('VotingPowerDelegationConfirmationDialog — verified name', () => {
     ).toEqual(order);
   });
 
-  it('keeps CIP-129, CIP-105 and the signed payload byte-equal when a name is added', () => {
+  it('keeps the identifier and the certificate byte-equal when a name is added', () => {
     renderVerified();
 
     expect(screen.getByText(KEY_CIP129).textContent).toBe(KEY_CIP129);
-    fireEvent.click(screen.getByText('!!!Show deprecated CIP-105 ID'));
-    expect(screen.getByText(KEY_CIP105).textContent).toBe(KEY_CIP105);
+    expect(screen.queryByText(KEY_CIP105)).not.toBeInTheDocument();
     expect(
-      screen.getByText(`{"vote":{"type":"drep","id":"${KEY_CREDENTIAL_HEX}"}}`)
+      screen.getByText(hasCertificate(certificateFor(KEY_CREDENTIAL_HEX)))
     ).toBeInTheDocument();
   });
 
   it('renders no name and only the on-chain label when no verified metadata exists', () => {
     renderVerified({ verifiedName: null });
 
-    expect(screen.queryByText('!!!Verified name')).not.toBeInTheDocument();
+    expect(screen.queryByText('Daedalus Test DRep')).not.toBeInTheDocument();
     expect(
       screen.queryByText('!!!Verified off-chain content')
     ).not.toBeInTheDocument();
@@ -491,12 +496,11 @@ describe('VotingPowerDelegationConfirmationDialog — verified name', () => {
         verifiedName: verified,
       });
 
-      expect(screen.queryByText('!!!Verified name')).not.toBeInTheDocument();
       expect(screen.queryByText('Daedalus Test DRep')).not.toBeInTheDocument();
       expect(
         screen.queryByText('!!!Verified off-chain content')
       ).not.toBeInTheDocument();
-      expect(screen.getByText('Vote')).toBeInTheDocument();
+      expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
     }
   );
 });

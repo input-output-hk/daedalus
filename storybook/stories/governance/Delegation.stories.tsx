@@ -344,6 +344,52 @@ const renderNonVotingPlaceholder = (activeSidebarCategory: string) => (
   </BorderedBox>
 );
 
+// One story per device state. The knob that drove these shares its name with
+// the one the in-flow dialog registers, and addon-knobs stores values by name,
+// so a value set while looking at one story arrived in the other and the
+// device appeared to be stuck in whichever state was last chosen.
+const renderHardwareDialog = (hwDeviceStatus: HwDeviceStatus) => (
+  <div style={CENTERED_STORY_STYLE}>
+    <VotingPowerDelegationConfirmationDialog
+      chosenOption={VALID_DREP_ID}
+      drepIdentity={toStoryDRepIdentity(VALID_DREP_ID)}
+      fees={new BigNumber('0.174257')}
+      hwDeviceStatus={hwDeviceStatus}
+      isTrezor={boolean('Is Trezor', false)}
+      onClose={action('onClose')}
+      onExternalLinkClick={action('onExternalLinkClick')}
+      onSubmit={async () => {
+        action('delegateVotes')();
+        return { success: true };
+      }}
+      redirectToWallet={action('redirectToWallet')}
+      selectedWallet={makeGovernanceWallets('noDelegation')[1]}
+      verifiedName={toStoryVerifiedName(VALID_DREP_ID)}
+    />
+  </div>
+);
+
+const renderSentinelDialog = (option: 'abstain' | 'no_confidence') => (
+  <div style={CENTERED_STORY_STYLE}>
+    <VotingPowerDelegationConfirmationDialog
+      chosenOption={option}
+      drepIdentity={null}
+      fees={new BigNumber('0.174257')}
+      hwDeviceStatus={HwDeviceStatuses.READY}
+      isTrezor={false}
+      onClose={action('onClose')}
+      onExternalLinkClick={action('onExternalLinkClick')}
+      onSubmit={async (passphrase) => {
+        action('delegateVotes')({ passphrase });
+        return { success: true };
+      }}
+      redirectToWallet={action('redirectToWallet')}
+      selectedWallet={makeGovernanceWallets('noDelegation')[0]}
+      verifiedName={null}
+    />
+  </div>
+);
+
 const renderGovernanceConfirmationDialog = ({
   chosenOption,
   fees,
@@ -363,7 +409,7 @@ const renderGovernanceConfirmationDialog = ({
       select(
         'Hardware wallet status',
         hwDeviceStatusOptions,
-        HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED
+        HwDeviceStatuses.VERIFYING_TRANSACTION
       ) as HwDeviceStatus
     }
     isTrezor={boolean('Hardware wallet is Trezor', false)}
@@ -572,6 +618,24 @@ storiesOf('Governance / Delegation', module)
       </div>
     );
   })
+  // Abstain and No Confidence reach this dialog exactly as a DRep does, and
+  // are the states most easily missed behind a knob.
+  .add('Hardware wallet - connecting', () =>
+    renderHardwareDialog(HwDeviceStatuses.CONNECTING)
+  )
+  .add('Hardware wallet - verifying', () =>
+    renderHardwareDialog(HwDeviceStatuses.VERIFYING_TRANSACTION)
+  )
+  .add('Hardware wallet - verified', () =>
+    renderHardwareDialog(HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED)
+  )
+  .add('Hardware wallet - verification failed', () =>
+    renderHardwareDialog(HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED)
+  )
+  .add('Confirmation dialog - Abstain', () => renderSentinelDialog('abstain'))
+  .add('Confirmation dialog - No Confidence', () =>
+    renderSentinelDialog('no_confidence')
+  )
   .add('Confirmation dialog - submission fails', () => {
     const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
     const errorCode = select(

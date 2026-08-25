@@ -374,6 +374,21 @@ export default defineMessages({
     defaultMessage: '!!!Undelegated',
     description: 'Shown where a wallet has delegated nothing.',
   },
+  confirm: {
+    id: 'global.labels.confirm',
+    defaultMessage: '!!!Confirm',
+    description: 'The word "confirm" reused at several places',
+  },
+  spendingPassword: {
+    id: 'global.labels.spendingPassword',
+    defaultMessage: '!!!Spending password',
+    description: 'Label of the spending password field, used app-wide',
+  },
+  transactionFee: {
+    id: 'global.labels.transactionFee',
+    defaultMessage: '!!!Transaction fee',
+    description: 'Label of the fee a transaction will cost, used app-wide',
+  },
   copy: {
     id: 'global.labels.copy',
     defaultMessage: '!!!Copy',

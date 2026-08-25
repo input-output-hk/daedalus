@@ -1,74 +1,24 @@
 import { defineMessages } from 'react-intl';
 
 export const messages = defineMessages({
-  showCip105: {
-    id: 'governance.drepDirectory.cip105.show',
-    defaultMessage: '!!!Show deprecated CIP-105 ID',
-    description: 'Discloses the deprecated CIP-105 form of a DRep ID',
-  },
-  hideCip105: {
-    id: 'governance.drepDirectory.cip105.hide',
-    defaultMessage: '!!!Hide deprecated CIP-105 ID',
-    description: 'Hides the deprecated CIP-105 form of a DRep ID',
-  },
   title: {
     id: 'voting.governance.confirmationDialog.title',
     defaultMessage: '!!!Confirm Transaction',
-    description: 'Title for confirm dialog',
+    description: 'Title of the voting power delegation confirmation dialog',
   },
-  vote: {
-    id: 'voting.governance.confirmationDialog.vote',
-    defaultMessage: '!!!Vote',
-    description: 'Vote title',
-  },
-  drepId: {
-    id: 'voting.governance.confirmationDialog.drepId',
-    defaultMessage: '!!!DRep ID',
-    description:
-      'Label above the DRep ID in the delegation confirmation dialog',
-  },
-  drepIdCip105: {
-    id: 'voting.governance.confirmationDialog.drepIdCip105',
-    defaultMessage: '!!!CIP-105 DRep ID',
-    description:
-      'Label above the CIP-105 DRep ID in the delegation confirmation dialog',
-  },
-  signedPayload: {
-    id: 'voting.governance.confirmationDialog.signedPayload',
-    defaultMessage: '!!!Signed payload',
-    description:
-      'Label above the signed payload vote id in the delegation confirmation dialog',
-  },
-  verifiedName: {
-    id: 'voting.governance.confirmationDialog.verifiedName',
-    defaultMessage: '!!!Verified name',
-    description:
-      'Label above the verified off-chain DRep name in the delegation confirmation dialog',
-  },
-  fee: {
-    id: 'voting.governance.confirmationDialog.fee',
-    defaultMessage: '!!!Transaction fee',
-    description: 'Fee title',
-  },
-  password: {
-    id: 'voting.governance.confirmationDialog.password',
-    defaultMessage: '!!!Spending password',
-    description: 'Label for password input',
+  // Not "signed payload": what is signed is a CBOR certificate this dialog
+  // never sees, and calling this that would name a thing it is not. It is a
+  // readable statement of the delegation the certificate will carry.
+  delegationCertificate: {
+    id: 'voting.governance.confirmationDialog.delegationCertificate',
+    defaultMessage: '!!!Delegation certificate',
+    description: 'Heading above the delegation this transaction will record',
   },
   errorGeneric: {
-    id: 'voting.governance.confirmationDialog.error.generic',
+    id: 'voting.governance.transactionError.generic',
     defaultMessage:
-      '!!!Something went wrong during transaction submission. Please try again in a few minutes.',
-    description: 'Generic error message',
-  },
-  buttonCancel: {
-    id: 'voting.governance.confirmationDialog.button.cancel',
-    defaultMessage: '!!!Cancel',
-    description: 'Cancel button',
-  },
-  buttonConfirm: {
-    id: 'voting.governance.confirmationDialog.button.confirm',
-    defaultMessage: '!!!Confirm',
-    description: 'Confirm button',
+      '!!!Something went wrong with this transaction. Please try again in a few minutes.',
+    description:
+      'Shown when a delegation transaction fails to build or to submit',
   },
 });

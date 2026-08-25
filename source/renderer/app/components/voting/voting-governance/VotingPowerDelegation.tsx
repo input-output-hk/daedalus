@@ -277,7 +277,7 @@ function VotingPowerDelegation({
             <div className={styles.selectedDRepSection}>
               <div className={styles.selectedDRepHeader}>
                 <p className={styles.selectedDRepHeading}>
-                  {intl.formatMessage(messages.selectedDRepHeading)}
+                  {intl.formatMessage(sharedGovernanceMessages.delegateTo)}
                 </p>
                 <Button
                   className={styles.selectedDRepChange}
