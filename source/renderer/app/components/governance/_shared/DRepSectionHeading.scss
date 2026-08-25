@@ -1,25 +1,22 @@
 @import '../governanceConfig';
 
-.heading {
-  @extend %accentSemiboldText;
-  align-items: center;
-  display: flex;
-  font-size: 16px;
-  gap: 6px;
-  margin: 0 0 12px;
+.headingBlock {
+  margin: 0 0 16px;
 }
 
-.info {
-  cursor: help;
-  display: inline-flex;
-  line-height: 1;
+.heading {
+  @extend %accentSemiboldText;
+  font-size: 16px;
+  margin: 0;
+}
 
-  svg {
-    height: 14px;
-    width: 14px;
-  }
-
-  path {
-    fill: var(--theme-gov-font-color-lighter);
-  }
+// Long enough to need a measure of its own: the off-chain explanation runs to
+// four clauses, and set to the full width of the pane it reads as a banner
+// rather than as a note on the heading above it.
+.explanation {
+  color: var(--theme-gov-font-color-light);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 4px 0 0;
+  max-width: 68ch;
 }

@@ -173,8 +173,10 @@ describe('DRepDetailPage', () => {
     // provenance label beside individual fields.
     expect(screen.getByText('!!!On-Chain Data')).toBeInTheDocument();
     expect(screen.getByText('!!!Off-Chain Metadata')).toBeInTheDocument();
+    // As text under the heading, not on an icon: it governs every field in
+    // the box and a reader who hovers nothing still has to meet it.
     expect(
-      screen.getByLabelText(
+      screen.getByText(
         '!!!Read directly from the Cardano ledger by your local node.'
       )
     ).toBeInTheDocument();
