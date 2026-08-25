@@ -12,41 +12,6 @@ export const messages = defineMessages({
     description:
       'Status label when the wallet delegates its voting power to a DRep',
   },
-  noDelegationTitle: {
-    id: 'voting.governance.currentVote.noDelegation.title',
-    defaultMessage: '!!!No governance delegation',
-    description: 'Panel title when the wallet has no governance delegation',
-  },
-  noDelegationWarning: {
-    id: 'voting.governance.currentVote.noDelegation.warning',
-    defaultMessage:
-      "!!!Your staking rewards cannot be withdrawn until you delegate this wallet's voting power to a DRep, Abstain, or No Confidence.",
-    description:
-      'Reward-withdrawal warning shown when the wallet has no governance delegation',
-  },
-  noDelegationSubline: {
-    id: 'voting.governance.currentVote.noDelegation.subline',
-    defaultMessage:
-      '!!!Daedalus will not pick a DRep for you. Choose how you want your voting power to participate in Cardano governance.',
-    description: 'Subline stating Daedalus never auto-delegates voting power',
-  },
-  noDelegationCta: {
-    id: 'voting.governance.currentVote.noDelegation.cta',
-    defaultMessage: '!!!Choose a delegation',
-    description: 'Call-to-action to choose a governance delegation',
-  },
-  drepViewDetails: {
-    id: 'voting.governance.currentVote.drep.viewDetails',
-    defaultMessage: '!!!View details',
-    description:
-      'In-app link label to the delegated DRep detail view (rendered in a later slice)',
-  },
-  drepAnchorMetadata: {
-    id: 'voting.governance.currentVote.drep.anchorMetadata',
-    defaultMessage: '!!!Anchor metadata ↗',
-    description:
-      'External link label to the delegated DRep anchor metadata (rendered in a later slice)',
-  },
   abstainCaption: {
     id: 'voting.governance.currentVote.abstain.caption',
     defaultMessage:
@@ -58,13 +23,6 @@ export const messages = defineMessages({
     defaultMessage:
       '!!!Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.',
     description: 'Caption explaining the No Confidence delegation state',
-  },
-  statusExpiringBadge: {
-    id: 'voting.governance.currentVote.status.expiringBadge',
-    defaultMessage:
-      '!!!Expiring in {n, plural, one {# epoch} other {# epochs}}',
-    description:
-      'Badge label for a delegated DRep whose registration lapses within the remaining-epoch window',
   },
   statusExpiring: {
     id: 'voting.governance.currentVote.status.expiring',
