@@ -91,10 +91,17 @@ function VotingPowerDelegation({
   wallets,
   stakePools,
 }: Props) {
+  // A Byron wallet has no stake credential, so no delegation certificate can
+  // be built for it and no amount of choosing a DRep would produce one. The
+  // wallets overview already leaves them out; offering them here let someone
+  // pick one and meet a transaction error instead of an explanation.
+  const delegatableWallets = wallets.filter((wallet) => !wallet.isLegacy);
+
   const [state, setState] = useState<State>(() => {
     const { selectedWalletId } = initialFormState ?? {};
     const initialWallet =
-      (selectedWalletId && wallets.find((w) => w.id === selectedWalletId)) ||
+      (selectedWalletId &&
+        delegatableWallets.find((w) => w.id === selectedWalletId)) ||
       null;
     return { status: 'form', selectedWalletId: initialWallet?.id ?? null };
   });
@@ -102,7 +109,7 @@ function VotingPowerDelegation({
   const selectedDRepId = initialFormState?.selectedDRepId ?? null;
 
   const selectedWallet =
-    wallets.find((w) => w.id === state.selectedWalletId) ?? null;
+    delegatableWallets.find((w) => w.id === state.selectedWalletId) ?? null;
 
   const currentDRep = selectedWallet?.currentDRep ?? null;
   const currentDRepId =
@@ -226,7 +233,7 @@ function VotingPowerDelegation({
             // @ts-ignore ts-migrate(2322) FIXME: Type '{ className: any; label: any; numberOfStakeP... Remove this comment to see the full error message
             label={intl.formatMessage(messages.selectWalletLabel)}
             numberOfStakePools={stakePools.length}
-            wallets={wallets}
+            wallets={delegatableWallets}
             onChange={(walletId: string) => {
               setState({ status: 'form', selectedWalletId: walletId ?? null });
             }}

@@ -124,20 +124,25 @@ type WalletSeed = {
   lovelace: string;
   hasPassword: boolean;
   isHardwareWallet: boolean;
+  isLegacy?: boolean;
   syncState: WalletSyncState;
   votingTarget: DRepDelegation | null;
 };
 
-const buildWallet = ({ lovelace, ...rest }: WalletSeed): Wallet =>
+const buildWallet = ({
+  lovelace,
+  isLegacy = false,
+  ...rest
+}: WalletSeed): Wallet =>
   new Wallet({
     ...rest,
+    isLegacy,
     addressPoolGap: 20,
     amount: new BigNumber(lovelace).dividedBy(LOVELACES_PER_ADA),
     availableAmount: new BigNumber(lovelace).dividedBy(LOVELACES_PER_ADA),
     reward: new BigNumber(0),
     assets: { available: [], total: [] },
     passwordUpdateDate: new Date(),
-    isLegacy: false,
     discovery: 'random',
     delegatedStakePoolId: null,
   });
@@ -159,6 +164,19 @@ export function makeGovernanceWallets(option: CurrentVoteOption): Wallet[] {
       lovelace: '58000000000',
       hasPassword: false,
       isHardwareWallet: true,
+      syncState: { status: WalletSyncStateStatuses.READY },
+      votingTarget: null,
+    }),
+    // Byron. It has no stake credential, so it can hold no delegation and
+    // must never be offered one. Daedalus installs commonly hold both eras
+    // side by side, and nothing here covered that until now.
+    buildWallet({
+      id: 'governance-wallet-byron',
+      name: 'Byron legacy wallet',
+      lovelace: '31000000000',
+      hasPassword: true,
+      isHardwareWallet: false,
+      isLegacy: true,
       syncState: { status: WalletSyncStateStatuses.READY },
       votingTarget: null,
     }),
