@@ -294,8 +294,6 @@
   "global.spendingPasswordLabel": "送金時パスワード",
   "global.spendingPasswordPlaceholder": "パスワード",
   "governance.dashboard.changeDelegation": "!!!Change delegation",
-  "governance.dashboard.chooseDRepLink": "!!!Choosing a DRep",
-  "governance.dashboard.chooseDRepPrompt": "!!!Help support Cardano governance by",
   "governance.dashboard.column.delegatedTo": "!!!Voting power delegated to",
   "governance.dashboard.column.status": "!!!Status",
   "governance.dashboard.column.wallet": "!!!Wallet",

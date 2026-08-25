@@ -3472,16 +3472,6 @@
         "id": "governance.dashboard.changeDelegation"
       },
       {
-        "defaultMessage": "!!!Help support Cardano governance by",
-        "description": "Prompt text preceding the \"Choosing a DRep\" link for abstain/no-confidence wallets",
-        "id": "governance.dashboard.chooseDRepPrompt"
-      },
-      {
-        "defaultMessage": "!!!Choosing a DRep",
-        "description": "Link text in the choose-a-DRep prompt",
-        "id": "governance.dashboard.chooseDRepLink"
-      },
-      {
         "defaultMessage": "!!!No DRep selected",
         "description": "Heading for wallets with no governance delegation",
         "id": "governance.dashboard.noDelegation.heading"

@@ -30,27 +30,6 @@
   margin: 0;
 }
 
-.chooseDRepPrompt {
-  color: var(--theme-gov-font-color-regular);
-  font-size: 14px;
-  line-height: 1.4;
-  margin: 0;
-}
-
-.chooseDRepLink {
-  background: none;
-  border: none;
-  color: var(--theme-link-main-color);
-  cursor: pointer;
-  font-size: 14px;
-  padding: 0;
-  text-decoration: underline;
-
-  &:hover {
-    color: var(--theme-staking-link-color-light);
-  }
-}
-
 .actions {
   display: flex;
   gap: 12px;

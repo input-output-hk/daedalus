@@ -50,17 +50,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Change delegation',
     description: 'Button label to navigate to the delegation form for a wallet',
   },
-  chooseDRepPrompt: {
-    id: 'governance.dashboard.chooseDRepPrompt',
-    defaultMessage: '!!!Help support Cardano governance by',
-    description:
-      'Prompt text preceding the "Choosing a DRep" link for abstain/no-confidence wallets',
-  },
-  chooseDRepLink: {
-    id: 'governance.dashboard.chooseDRepLink',
-    defaultMessage: '!!!Choosing a DRep',
-    description: 'Link text in the choose-a-DRep prompt',
-  },
   noDelegationHeading: {
     id: 'governance.dashboard.noDelegation.heading',
     defaultMessage: '!!!No DRep selected',
