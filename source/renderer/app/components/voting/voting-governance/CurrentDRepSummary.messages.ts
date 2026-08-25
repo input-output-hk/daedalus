@@ -3,14 +3,8 @@ import { defineMessages } from 'react-intl';
 export const messages = defineMessages({
   headerCurrent: {
     id: 'voting.governance.currentVote.headerCurrent',
-    defaultMessage: '!!!Current delegation',
+    defaultMessage: '!!!Currently Delegated To',
     description: 'Header of the current-vote summary panel',
-  },
-  statusDelegatedToDRep: {
-    id: 'voting.governance.currentVote.statusDelegatedToDRep',
-    defaultMessage: '!!!Delegated to DRep',
-    description:
-      'Status label when the wallet delegates its voting power to a DRep',
   },
   abstainCaption: {
     id: 'voting.governance.currentVote.abstain.caption',
@@ -27,19 +21,24 @@ export const messages = defineMessages({
   statusInactiveSoon: {
     id: 'voting.governance.currentVote.status.inactiveSoon',
     defaultMessage:
-      '!!!This DRep becomes inactive in {n, plural, one {# epoch} other {# epochs}}. Consider re-delegating.',
+      '!!!Becomes inactive in {n, plural, one {# epoch} other {# epochs}}. Consider redelegating.',
     description:
       'Caption shown when the delegated DRep registration lapses soon',
   },
   statusInactive: {
     id: 'voting.governance.currentVote.status.inactive',
     defaultMessage:
-      '!!!This DRep is currently inactive. Your voting power is not counted until they record activity again. Consider re-delegating.',
+      '!!!Currently inactive. Your voting power does not count. Consider redelegating.',
     description: 'Caption shown when the delegated DRep is inactive',
+  },
+  statusLoading: {
+    id: 'voting.governance.currentVote.status.loading',
+    defaultMessage: '!!!Loading DRep data…',
+    description: "Shown while this wallet's DRep is still being looked up",
   },
   statusUnavailable: {
     id: 'voting.governance.currentVote.status.unavailable',
-    defaultMessage: '!!!DRep status is loading.',
+    defaultMessage: "!!!Could not load this DRep's data. It may have retired.",
     description:
       'Neutral caption shown when the DRep directory has no record for the delegated DRep yet',
   },

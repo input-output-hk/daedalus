@@ -422,6 +422,11 @@
         "id": "global.labels.wallet"
       },
       {
+        "defaultMessage": "!!!Submit",
+        "description": "The word \"submit\" reused at several places (like submit buttons)",
+        "id": "global.labels.submit"
+      },
+      {
         "defaultMessage": "!!!Status",
         "description": "Label of a field or column naming a status.",
         "id": "global.labels.status"
@@ -6077,14 +6082,9 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Current delegation",
+        "defaultMessage": "!!!Currently Delegated To",
         "description": "Header of the current-vote summary panel",
         "id": "voting.governance.currentVote.headerCurrent"
-      },
-      {
-        "defaultMessage": "!!!Delegated to DRep",
-        "description": "Status label when the wallet delegates its voting power to a DRep",
-        "id": "voting.governance.currentVote.statusDelegatedToDRep"
       },
       {
         "defaultMessage": "!!!Your stake is recorded on chain as not participating in governance.",
@@ -6097,17 +6097,22 @@
         "id": "voting.governance.currentVote.noConfidence.caption"
       },
       {
-        "defaultMessage": "!!!This DRep becomes inactive in {n, plural, one {# epoch} other {# epochs}}. Consider re-delegating.",
+        "defaultMessage": "!!!Becomes inactive in {n, plural, one {# epoch} other {# epochs}}. Consider redelegating.",
         "description": "Caption shown when the delegated DRep registration lapses soon",
         "id": "voting.governance.currentVote.status.inactiveSoon"
       },
       {
-        "defaultMessage": "!!!This DRep is currently inactive. Your voting power is not counted until they record activity again. Consider re-delegating.",
+        "defaultMessage": "!!!Currently inactive. Your voting power does not count. Consider redelegating.",
         "description": "Caption shown when the delegated DRep is inactive",
         "id": "voting.governance.currentVote.status.inactive"
       },
       {
-        "defaultMessage": "!!!DRep status is loading.",
+        "defaultMessage": "!!!Loading DRep data…",
+        "description": "Shown while this wallet's DRep is still being looked up",
+        "id": "voting.governance.currentVote.status.loading"
+      },
+      {
+        "defaultMessage": "!!!Could not load this DRep's data. It may have retired.",
         "description": "Neutral caption shown when the DRep directory has no record for the delegated DRep yet",
         "id": "voting.governance.currentVote.status.unavailable"
       },
@@ -6127,19 +6132,14 @@
         "id": "voting.governance.heading"
       },
       {
-        "defaultMessage": "!!!Select a wallet to delegate from",
+        "defaultMessage": "!!!Delegate From",
         "description": "Label for the wallet select on the governance page",
         "id": "voting.governance.selectWalletLabel"
       },
       {
-        "defaultMessage": "!!!Select a wallet …",
+        "defaultMessage": "!!!Select a wallet…",
         "description": "Placeholder for the wallet select on the governance page",
         "id": "voting.governance.selectWalletPlaceholder"
-      },
-      {
-        "defaultMessage": "!!!Submit",
-        "description": "Label for the submit button on the governance page",
-        "id": "voting.governance.submitLabel"
       },
       {
         "defaultMessage": "!!!Could not initialize transaction. Please try again!",
@@ -6162,14 +6162,9 @@
         "id": "voting.governance.browseDRepsButton"
       },
       {
-        "defaultMessage": "!!!Delegate to",
+        "defaultMessage": "!!!Delegate To",
         "description": "Heading above the DRep card the user has selected to delegate to",
         "id": "voting.governance.selectedDRepHeading"
-      },
-      {
-        "defaultMessage": "!!!Change",
-        "description": "Link that reopens the DRep directory to pick a different DRep",
-        "id": "voting.governance.changeDRep"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.messages.ts"

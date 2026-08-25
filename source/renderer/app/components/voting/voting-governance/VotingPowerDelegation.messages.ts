@@ -8,18 +8,13 @@ export const messages = defineMessages({
   },
   selectWalletLabel: {
     id: 'voting.governance.selectWalletLabel',
-    defaultMessage: '!!!Select a wallet to delegate from',
+    defaultMessage: '!!!Delegate From',
     description: 'Label for the wallet select on the governance page',
   },
   selectWalletPlaceholder: {
     id: 'voting.governance.selectWalletPlaceholder',
-    defaultMessage: '!!!Select a wallet …',
+    defaultMessage: '!!!Select a wallet…',
     description: 'Placeholder for the wallet select on the governance page',
-  },
-  submitLabel: {
-    id: 'voting.governance.submitLabel',
-    defaultMessage: '!!!Submit',
-    description: 'Label for the submit button on the governance page',
   },
   initializeTxErrorGeneric: {
     id: 'voting.governance.initializeTxError.generic',
@@ -43,14 +38,8 @@ export const messages = defineMessages({
   },
   selectedDRepHeading: {
     id: 'voting.governance.selectedDRepHeading',
-    defaultMessage: '!!!Delegate to',
+    defaultMessage: '!!!Delegate To',
     description:
       'Heading above the DRep card the user has selected to delegate to',
-  },
-  changeDRep: {
-    id: 'voting.governance.changeDRep',
-    defaultMessage: '!!!Change',
-    description:
-      'Link that reopens the DRep directory to pick a different DRep',
   },
 });

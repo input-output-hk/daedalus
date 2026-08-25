@@ -65,10 +65,13 @@ describe('CurrentDRepSummary core states', () => {
 
   it('renders the DRep id row with the on-chain label and the neutral status caption when no directory entry is supplied (snapshot)', () => {
     const { container } = renderSummary(DREP_VOTE);
-    expect(screen.getByText('!!!Delegated to DRep')).toBeInTheDocument();
     // DRepIdDisplay truncates the visible text but exposes the full raw id.
     expect(screen.getByLabelText(KEY_CIP129)).toBeInTheDocument();
-    expect(screen.getByText('!!!DRep status is loading.')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "!!!Could not load this DRep's data. It may have retired."
+      )
+    ).toBeInTheDocument();
     expect(screen.queryByText('!!!Active')).not.toBeInTheDocument();
     expect(screen.queryByText('!!!Inactive')).not.toBeInTheDocument();
     expect(screen.queryByText('!!!Inactive Soon')).not.toBeInTheDocument();
@@ -124,7 +127,7 @@ describe('CurrentDRepSummary DRep status badge', () => {
     expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
     expect(
       screen.getByText(
-        '!!!This DRep becomes inactive in 4 epochs. Consider re-delegating.'
+        '!!!Becomes inactive in 4 epochs. Consider redelegating.'
       )
     ).toBeInTheDocument();
     expect(screen.queryByText('!!!Active')).not.toBeInTheDocument();
@@ -140,7 +143,7 @@ describe('CurrentDRepSummary DRep status badge', () => {
     expect(screen.getByText('!!!Inactive')).toBeInTheDocument();
     expect(
       screen.getByText(
-        '!!!This DRep is currently inactive. Your voting power is not counted until they record activity again. Consider re-delegating.'
+        '!!!Currently inactive. Your voting power does not count. Consider redelegating.'
       )
     ).toBeInTheDocument();
     expect(screen.queryByText('!!!Inactive Soon')).not.toBeInTheDocument();

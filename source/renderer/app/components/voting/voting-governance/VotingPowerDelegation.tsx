@@ -128,20 +128,30 @@ function VotingPowerDelegation({
 
   const [currentDRepEntry, setCurrentDRepEntry] =
     useState<AppDRepDirectoryEntry | null>(null);
+  // The lookup settling is the signal, so no timer is needed: a rejection or
+  // an empty result is an answer, and only the wait before one is loading.
+  const [isLookingUpDRep, setIsLookingUpDRep] = useState(false);
 
   useEffect(() => {
     if (currentDRep?.kind !== 'drep' || !onFetchDRep) {
       setCurrentDRepEntry(null);
+      setIsLookingUpDRep(false);
       return undefined;
     }
     const drepIdToFetch = currentDRep.drep.cip129 ?? currentDRep.drep.raw;
     let cancelled = false;
+    setCurrentDRepEntry(null);
+    setIsLookingUpDRep(true);
     onFetchDRep(drepIdToFetch).then(
       (entry) => {
-        if (!cancelled) setCurrentDRepEntry(entry);
+        if (cancelled) return;
+        setCurrentDRepEntry(entry);
+        setIsLookingUpDRep(false);
       },
       () => {
-        if (!cancelled) setCurrentDRepEntry(null);
+        if (cancelled) return;
+        setCurrentDRepEntry(null);
+        setIsLookingUpDRep(false);
       }
     );
     return () => {
@@ -259,6 +269,7 @@ function VotingPowerDelegation({
             <CurrentDRepSummary
               currentDRep={currentDRep}
               drepEntry={currentDRepEntry}
+              isLookingUpDRep={isLookingUpDRep}
             />
           )}
 
@@ -270,7 +281,7 @@ function VotingPowerDelegation({
                 </p>
                 <Button
                   className={styles.selectedDRepChange}
-                  label={intl.formatMessage(messages.changeDRep)}
+                  label={intl.formatMessage(globalMessages.change)}
                   onClick={browseDReps}
                 />
               </div>
@@ -311,15 +322,6 @@ function VotingPowerDelegation({
               )}
             </div>
           )}
-          {!selectedDRepId && selectedWallet && (
-            <div className={styles.browseDRepsPrompt}>
-              <Button
-                label={intl.formatMessage(messages.browseDRepsButton)}
-                onClick={browseDReps}
-              />
-            </div>
-          )}
-
           {selectedWallet && (
             <>
               {state.status === 'form-with-error' && state.txInitError && (
@@ -344,9 +346,16 @@ function VotingPowerDelegation({
                   someone who opened this by accident had no way out that did
                   not look like continuing. */}
               <div className={styles.submitRow}>
+                {!selectedDRepId && (
+                  <Button
+                    className={styles.voteSubmit}
+                    label={intl.formatMessage(messages.browseDRepsButton)}
+                    onClick={browseDReps}
+                  />
+                )}
                 {selectedDRepId && (
                   <Button
-                    label={intl.formatMessage(messages.submitLabel)}
+                    label={intl.formatMessage(globalMessages.submit)}
                     className={styles.voteSubmit}
                     disabled={submitButtonDisabled}
                     aria-describedby={

@@ -332,6 +332,12 @@ export default defineMessages({
     defaultMessage: '!!!Wallet',
     description: 'Label of a field or column naming a wallet.',
   },
+  submit: {
+    id: 'global.labels.submit',
+    defaultMessage: '!!!Submit',
+    description:
+      'The word "submit" reused at several places (like submit buttons)',
+  },
   status: {
     id: 'global.labels.status',
     defaultMessage: '!!!Status',

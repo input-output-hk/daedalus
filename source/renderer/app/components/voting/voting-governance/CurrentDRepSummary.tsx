@@ -12,6 +12,11 @@ import styles from './CurrentVoteSummary.scss';
 type Props = {
   currentDRep: DRepDelegation | null;
   drepEntry?: AppDRepDirectoryEntry | null;
+  // Whether the lookup for this DRep is still outstanding. Without it, a DRep
+  // that has retired and one whose data has not arrived yet are the same
+  // absence, and the panel called both of them loading: a wallet delegated to
+  // a retired DRep said "loading" for as long as it was open.
+  isLookingUpDRep?: boolean;
   intl: intlShape.isRequired;
 };
 
@@ -22,15 +27,17 @@ type Props = {
 // the same DRep on the same day.
 
 type CurrentVoteBadgeState =
+  | 'loading'
   | 'unavailable'
   | 'inactive'
   | 'inactiveSoon'
   | 'active';
 
 function deriveCurrentVoteBadgeState(
-  drepEntry: AppDRepDirectoryEntry | null | undefined
+  drepEntry: AppDRepDirectoryEntry | null | undefined,
+  isLookingUpDRep: boolean
 ): CurrentVoteBadgeState {
-  if (drepEntry == null) return 'unavailable';
+  if (drepEntry == null) return isLookingUpDRep ? 'loading' : 'unavailable';
   if (drepEntry.status === 'inactive') return 'inactive';
   if (isInactiveSoon(drepEntry.drepActivity)) {
     return 'inactiveSoon';
@@ -38,13 +45,18 @@ function deriveCurrentVoteBadgeState(
   return 'active';
 }
 
-function CurrentDRepSummary({ currentDRep, drepEntry, intl }: Props) {
+function CurrentDRepSummary({
+  currentDRep,
+  drepEntry,
+  isLookingUpDRep = false,
+  intl,
+}: Props) {
   if (currentDRep == null) {
     return null;
   }
 
   if (currentDRep.kind === 'drep') {
-    const badgeState = deriveCurrentVoteBadgeState(drepEntry);
+    const badgeState = deriveCurrentVoteBadgeState(drepEntry, isLookingUpDRep);
     return (
       <section
         className={styles.component}
@@ -53,24 +65,22 @@ function CurrentDRepSummary({ currentDRep, drepEntry, intl }: Props) {
         <h3 className={styles.header}>
           {intl.formatMessage(messages.headerCurrent)}
         </h3>
-        <div className={styles.statusRow}>
-          <span className={styles.statusBadge}>
-            <span className={styles.glyph} aria-hidden="true">
-              ●
-            </span>
-            {intl.formatMessage(messages.statusDelegatedToDRep)}
-          </span>
-          {/* One badge with three states, the same component the directory
-              uses. A bespoke badge counting down beside a status badge was a
-              second implementation of the thing that exists to stop those two
-              contradicting each other. */}
-          {drepEntry && (
+        {/* One badge with three states, the same component the directory
+            uses. A bespoke badge counting down beside a status badge was a
+            second implementation of the thing that exists to stop those two
+            contradicting each other.
+
+            No "Delegated to DRep" chip beside it: the heading above already
+            says this wallet is delegated, and the name and id below say to
+            what, so the chip stated the same fact a third time. */}
+        {drepEntry && (
+          <div className={styles.statusRow}>
             <DRepStatusBadge
               status={drepEntry.status}
               drepActivity={drepEntry.drepActivity}
             />
-          )}
-        </div>
+          </div>
+        )}
         {/* The name was fetched and then never shown, so a delegation a user
             had chosen by name read back to them as a truncated identifier. */}
         {drepEntry?.verifiedName && (
@@ -86,9 +96,11 @@ function CurrentDRepSummary({ currentDRep, drepEntry, intl }: Props) {
                   n: drepEntry.drepActivity,
                 })
               : intl.formatMessage(
-                  badgeState === 'inactive'
-                    ? messages.statusInactive
-                    : messages.statusUnavailable
+                  {
+                    inactive: messages.statusInactive,
+                    loading: messages.statusLoading,
+                    unavailable: messages.statusUnavailable,
+                  }[badgeState] ?? messages.statusUnavailable
                 )}
           </p>
         )}

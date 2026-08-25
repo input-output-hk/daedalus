@@ -43,6 +43,7 @@ import type { CatalystFund } from '../../../source/renderer/app/api/voting/types
 import { TESTNET } from '../../../source/common/types/environment.types';
 import type { Locale } from '../../../source/common/types/locales.types';
 import type { DRepIdentity } from '../../../source/common/types/governance.types';
+import type { AppDRepDirectoryEntry } from '../../../source/renderer/app/stores/GovernanceStore';
 import { ROUTES } from '../../../source/renderer/app/routes-config';
 import { FundPhase } from '../../../source/renderer/app/stores/VotingStore';
 import type {
@@ -183,6 +184,17 @@ const governanceStoryDecorator = (story: () => React.ReactNode) => (
 
 // A wallet already chosen and a DRep already in the form, which is how this
 // screen opens when it is reached from the directory rather than the sidebar.
+const makeFetchDRep =
+  (drepIndex: ReadonlyMap<string, AppDRepDirectoryEntry>) =>
+  async (drepId: string) => {
+    const entry = drepIndex.get(drepId.toLowerCase()) ?? null;
+    action('onFetchDRep')(drepId, entry);
+    // Rejecting is what the store does for a DRep it cannot find, and it is
+    // what tells the panel to stop saying "loading".
+    if (entry == null) throw new Error(`No DRep entry for ${drepId}`);
+    return entry;
+  };
+
 const renderPrefilledPanel = (
   option: CurrentVoteOption,
   selectedDRepId?: string
@@ -191,12 +203,9 @@ const renderPrefilledPanel = (
     <GovernanceWrapper option={option}>
       {({ wallets, drepIndex }) => (
         <VotingPowerDelegation
-          drepIndex={drepIndex}
           getStakePoolById={getStakePoolById}
-          initiateTransaction={async (params) => {
-            action('initiateTransaction')(params);
-            return { success: true, fees: new BigNumber('0.174257') };
-          }}
+          onFetchDRep={makeFetchDRep(drepIndex)}
+          initiateTransaction={makeInitiateTransaction()}
           initialFormState={{
             ...(selectedDRepId ? { selectedDRepId } : {}),
             selectedWalletId: 'governance-wallet-1',
@@ -214,6 +223,22 @@ const renderPrefilledPanel = (
   </div>
 );
 
+const makeInitiateTransaction =
+  (fee: BigNumber = new BigNumber('0.174257')) =>
+  async (params: unknown) => {
+    action('initiateTransaction')(params);
+    return boolean('Initialization succeeds', true)
+      ? { success: true, fees: fee }
+      : {
+          success: false,
+          errorCode: select(
+            'Initialization error',
+            initializeTxErrorOptions,
+            'same_vote'
+          ),
+        };
+  };
+
 const renderGovernancePanel = (option: CurrentVoteOption) => {
   const transactionFee = new BigNumber(
     number('Initialized transaction fee', 0.174257, {
@@ -227,21 +252,9 @@ const renderGovernancePanel = (option: CurrentVoteOption) => {
     <GovernanceWrapper option={option}>
       {({ wallets, drepIndex }) => (
         <VotingPowerDelegation
-          drepIndex={drepIndex}
           getStakePoolById={getStakePoolById}
-          initiateTransaction={async (params) => {
-            action('initiateTransaction')(params);
-            return boolean('Initialization succeeds', true)
-              ? { success: true, fees: transactionFee }
-              : {
-                  success: false,
-                  errorCode: select(
-                    'Initialization error',
-                    initializeTxErrorOptions,
-                    'same_vote'
-                  ),
-                };
-          }}
+          onFetchDRep={makeFetchDRep(drepIndex)}
+          initiateTransaction={makeInitiateTransaction(transactionFee)}
           onBrowseDRepsClick={action('onBrowseDRepsClick')}
           onCancel={action('onCancel')}
           onExternalLinkClick={action('onExternalLinkClick')}
@@ -446,6 +459,15 @@ storiesOf('Governance / Delegation', module)
   .add('DRep to Abstain', () => renderPrefilledPanel('drepVerified', 'abstain'))
   .add('DRep to No Confidence', () =>
     renderPrefilledPanel('drepVerified', 'no_confidence')
+  )
+  // Choosing what the wallet already has. The form refuses to submit and says
+  // so, and the sentence it says has a branch per vote kind, so both branches
+  // need somewhere to be read.
+  .add('Already delegated to this DRep', () =>
+    renderPrefilledPanel('drepVerified', VERIFIED_CIP129)
+  )
+  .add('Already delegated to Abstain', () =>
+    renderPrefilledPanel('abstain', 'abstain')
   )
   // A wallet with no delegation at all. The current-delegation panel renders
   // nothing here by design, so the form runs straight from the wallet select

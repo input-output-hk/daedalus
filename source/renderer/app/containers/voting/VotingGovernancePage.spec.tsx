@@ -324,7 +324,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
     fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
     expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
-    expect(screen.getByText('!!!Delegate to')).toBeInTheDocument();
+    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
     expect(screen.getByLabelText(VALID_DREP_ID)).toBeInTheDocument();
   });
 
@@ -340,7 +340,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
     fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
     expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
-    expect(screen.getByText('!!!Delegate to')).toBeInTheDocument();
+    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
     expect(screen.getByLabelText(VALID_DREP_ID)).toBeInTheDocument();
   });
 
@@ -513,7 +513,7 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
       },
     });
 
-    expect(screen.getByText('!!!Delegated to DRep')).toBeInTheDocument();
+    expect(screen.getByText('!!!Currently Delegated To')).toBeInTheDocument();
     expect(
       screen.getByText('!!!This wallet already votes for this DRep.')
     ).toBeInTheDocument();
@@ -706,14 +706,14 @@ describe('Current-vote enrichment in the delegation form', () => {
     });
     await act(async () => {});
 
-    expect(screen.getByText('!!!Delegated to DRep')).toBeInTheDocument();
+    expect(screen.getByText('!!!Currently Delegated To')).toBeInTheDocument();
     expect(screen.getByText('!!!Inactive Soon')).toBeInTheDocument();
     expect(
       screen.getByText(
-        '!!!This DRep becomes inactive in 5 epochs. Consider re-delegating.'
+        '!!!Becomes inactive in 5 epochs. Consider redelegating.'
       )
     ).toBeInTheDocument();
-    expect(screen.getByText('!!!Delegate to')).toBeInTheDocument();
+    expect(screen.getByText('!!!Delegate To')).toBeInTheDocument();
     expect(
       screen.getByText('!!!This wallet already votes for this DRep.')
     ).toBeInTheDocument();
