@@ -30,7 +30,7 @@ import type { GovernancePageState } from './governancePages';
  */
 
 export const GOVERNANCE_TABS = [
-  { id: ROUTES.GOVERNANCE.DASHBOARD, label: 'Voting Center' },
+  { id: ROUTES.GOVERNANCE.DASHBOARD, label: 'Governance Center' },
   { id: ROUTES.GOVERNANCE.DREPS, label: 'DRep Directory' },
   { id: ROUTES.GOVERNANCE.FAVORITES, label: 'Favorites' },
 ];

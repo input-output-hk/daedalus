@@ -8,11 +8,6 @@ import DRepCopyButton from './DRepCopyButton';
 import styles from './DRepIdDisplay.scss';
 
 const messages = defineMessages({
-  copyButton: {
-    id: 'governance.drepDirectory.copyButton',
-    defaultMessage: '!!!Copy',
-    description: 'Copy button label for a DRep ID',
-  },
   copyLabel: {
     id: 'governance.drepDirectory.copyId',
     defaultMessage: '!!!Copy DRep ID',

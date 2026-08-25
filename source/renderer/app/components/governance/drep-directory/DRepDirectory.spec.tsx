@@ -320,9 +320,9 @@ describe('DRepDirectory', () => {
       refreshState: GovernanceRefreshState.Loaded,
     });
 
-    expect(screen.getByText(/Couldn't refresh DRep data/)).toBeInTheDocument();
+    expect(screen.getByText(/Could not refresh DRep data/)).toBeInTheDocument();
     expect(
-      screen.getByText(/Showing last successful snapshot from a minute ago/)
+      screen.getByText(/Showing snapshot from a minute ago/)
     ).toBeInTheDocument();
     expect(screen.getByText('!!!Retry')).toBeInTheDocument();
     expect(
@@ -350,7 +350,7 @@ describe('DRepDirectory', () => {
         'Showing the last successful directory snapshot while refresh retries.'
       )
     ).not.toBeInTheDocument();
-    expect(screen.getByText(/Couldn't refresh DRep data/)).toBeInTheDocument();
+    expect(screen.getByText(/Could not refresh DRep data/)).toBeInTheDocument();
     expect(screen.getByText('!!!Voting power:')).toBeInTheDocument();
   });
 
@@ -363,7 +363,7 @@ describe('DRepDirectory', () => {
       refreshState: GovernanceRefreshState.Loaded,
     });
 
-    expect(screen.getByText(/Couldn't refresh DRep data/)).toBeInTheDocument();
+    expect(screen.getByText(/Could not refresh DRep data/)).toBeInTheDocument();
     expect(
       screen.queryByText('DRep registration query timed out.')
     ).not.toBeInTheDocument();

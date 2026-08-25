@@ -102,7 +102,7 @@
         "id": "api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens"
       },
       {
-        "defaultMessage": "!!!conwayWalletNotDelegatedToDRep",
+        "defaultMessage": "!!!Daedalus cannot process this transaction because staking rewards withdrawals are blocked. To unblock your rewards go to the <a href=\"#/governance/dashboard\">Governance Center</a> and delegate your voting power.",
         "description": "Error message shown when conway era wallet has staking rewards but has not participated in governance yet.",
         "id": "api.errors.conwayWalletNotDelegatedToDRep"
       }
@@ -2577,7 +2577,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Voting Center",
+        "defaultMessage": "!!!Governance Center",
         "description": "Label for the governance wallets tab.",
         "id": "governance.tabs.dashboard"
       },
@@ -2757,12 +2757,12 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Voting power data unavailable this refresh. Ranking-based filters disabled.",
+        "defaultMessage": "!!!Voting power unavailable. Rank-based filters disabled. Please try again later.",
         "description": "Non-blocking banner when the stake phase fails",
         "id": "governance.drepDirectory.error.rankingUnavailable"
       },
       {
-        "defaultMessage": "!!!Couldn't refresh DRep data. {Retry}. Showing last successful snapshot from {time}.",
+        "defaultMessage": "!!!Could not refresh DRep data. {Retry}. Showing snapshot from {time}.",
         "description": "Non-blocking banner when a refresh fails while a retained snapshot is on screen",
         "id": "governance.drepDirectory.error.refresh"
       }
@@ -2771,11 +2771,6 @@
   },
   {
     "descriptors": [
-      {
-        "defaultMessage": "!!!Copy",
-        "description": "Copy button label for a DRep ID",
-        "id": "governance.drepDirectory.copyButton"
-      },
       {
         "defaultMessage": "!!!Copy DRep ID",
         "description": "Accessible label for the DRep ID copy button",

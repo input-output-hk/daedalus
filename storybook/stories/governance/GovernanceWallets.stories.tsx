@@ -96,7 +96,7 @@ const render = (walletList: WalletDelegationSummary[]) => (
   </GovernanceShell>
 );
 
-storiesOf('Governance / Voting Center', module)
+storiesOf('Governance / Governance Center', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>

@@ -14,13 +14,13 @@ const messages = defineMessages({
   rankingUnavailable: {
     id: 'governance.drepDirectory.error.rankingUnavailable',
     defaultMessage:
-      '!!!Voting power data unavailable this refresh. Ranking-based filters disabled.',
+      '!!!Voting power unavailable. Rank-based filters disabled. Please try again later.',
     description: 'Non-blocking banner when the stake phase fails',
   },
   refreshFailed: {
     id: 'governance.drepDirectory.error.refresh',
     defaultMessage:
-      "!!!Couldn't refresh DRep data. {Retry}. Showing last successful snapshot from {time}.",
+      '!!!Could not refresh DRep data. {Retry}. Showing snapshot from {time}.',
     description:
       'Non-blocking banner when a refresh fails while a retained snapshot is on screen',
   },

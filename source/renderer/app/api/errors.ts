@@ -130,7 +130,8 @@ export const messages = defineMessages({
   },
   conwayWalletNotDelegatedToDRep: {
     id: 'api.errors.conwayWalletNotDelegatedToDRep',
-    defaultMessage: '!!!conwayWalletNotDelegatedToDRep',
+    defaultMessage:
+      '!!!Daedalus cannot process this transaction because staking rewards withdrawals are blocked. To unblock your rewards go to the <a href="#/governance/dashboard">Governance Center</a> and delegate your voting power.',
     description:
       'Error message shown when conway era wallet has staking rewards but has not participated in governance yet.',
   },

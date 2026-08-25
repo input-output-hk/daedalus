@@ -12,7 +12,7 @@ import { ROUTES } from '../../routes-config';
 const messages = defineMessages({
   tabDashboard: {
     id: 'governance.tabs.dashboard',
-    defaultMessage: '!!!Voting Center',
+    defaultMessage: '!!!Governance Center',
     description: 'Label for the governance wallets tab.',
   },
   tabDirectory: {
