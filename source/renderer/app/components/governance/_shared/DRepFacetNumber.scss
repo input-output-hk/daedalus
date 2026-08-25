@@ -21,7 +21,10 @@
     // Right-aligned so the value meets its unit. Left-aligned, the number sat
     // at one end of the field and the per-cent sign at the other, and the two
     // never read as one quantity.
-    padding: 0 84px 0 14px;
+    // Clears the unit rather than meeting it: the per-cent sign is offset
+    // from the right edge, so the text has to stop short of the sign's left
+    // edge, not of the offset.
+    padding: 0 94px 0 14px;
     text-align: right;
   }
 }
@@ -38,7 +41,7 @@
   line-height: 1.38;
   pointer-events: none;
   position: absolute;
-  right: 76px;
+  right: 74px;
 }
 
 .steppers {
