@@ -1,28 +1,31 @@
 @import '../governanceConfig';
 
 // The criteria that decide what gets suggested, not the filters that narrow
-// what is already on screen. They are two different questions, so this is a
-// panel of its own rather than more segments in the filter strip: a reader
-// switching a toggle here changes the pool the twenty are drawn from, and the
-// wording above the controls has to be able to say so.
-// No border or background of its own: it sits inside the summary that states
-// what the criteria produced, and a box inside that box was a box too many.
+// what is already on screen. Two different questions, and the wording beneath
+// these controls says which one they answer.
+//
+// No border or background of its own: it sits inside the box that states what
+// the criteria produced, and a box inside that box was a box too many.
+//
+// One row, matching the row this panel is replaced by in the other mode. Two
+// stacked rows here and one row there made the box change height whenever the
+// mode changed, which is the jump the single box was meant to remove.
 .container {
+  align-items: flex-end;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 20px;
   padding: 0;
 }
 
-.intro {
-  @extend %captionText;
-  margin: 0;
-}
-
-.toggles {
+// A switch carries its own label inline, where a select carries one above it.
+// Giving the switch a box of the control height puts the two on the same
+// baseline without a second label that would only repeat the first.
+.toggleControl {
+  align-items: center;
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px 24px;
+  flex-shrink: 0;
+  height: 50px;
 }
 
 // NormalSwitch carries a 10px margin for a settings row and a label at the
@@ -35,11 +38,4 @@
     font-size: 14px !important;
     line-height: 1.2 !important;
   }
-}
-
-.facets {
-  align-items: flex-end;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
 }

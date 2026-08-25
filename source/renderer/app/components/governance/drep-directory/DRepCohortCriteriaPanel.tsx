@@ -55,12 +55,14 @@ function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
     checked: boolean,
     onChange: (checked: boolean) => void
   ) => (
-    <NormalSwitch
-      className={styles.toggle}
-      checked={checked}
-      label={label}
-      onChange={onChange}
-    />
+    <div className={styles.toggleControl} key={label}>
+      <NormalSwitch
+        className={styles.toggle}
+        checked={checked}
+        label={label}
+        onChange={onChange}
+      />
+    </div>
   );
 
   const facet = (
@@ -80,60 +82,56 @@ function DRepCohortCriteriaPanel({ criteria, onCriteriaChange, intl }: Props) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.toggles}>
-        {toggle(
-          intl.formatMessage(drepCriteriaMessages.notInactiveSoon),
-          criteria.excludeInactiveSoon,
-          (excludeInactiveSoon) =>
-            onCriteriaChange({ ...criteria, excludeInactiveSoon })
-        )}
-        {toggle(
-          intl.formatMessage(drepCriteriaMessages.verifiedMetadata),
-          criteria.requireVerifiedMetadata,
-          (requireVerifiedMetadata) =>
-            onCriteriaChange({ ...criteria, requireVerifiedMetadata })
-        )}
-      </div>
-      <div className={styles.facets}>
-        {/* Typed rather than picked from three fixed shares. Where a
+      {toggle(
+        intl.formatMessage(drepCriteriaMessages.notInactiveSoon),
+        criteria.excludeInactiveSoon,
+        (excludeInactiveSoon) =>
+          onCriteriaChange({ ...criteria, excludeInactiveSoon })
+      )}
+      {toggle(
+        intl.formatMessage(drepCriteriaMessages.verifiedMetadata),
+        criteria.requireVerifiedMetadata,
+        (requireVerifiedMetadata) =>
+          onCriteriaChange({ ...criteria, requireVerifiedMetadata })
+      )}
+      {/* Typed rather than picked from three fixed shares. Where a
             reasonable ceiling sits depends on how stake is spread on the
             network the wallet is pointed at, which is not something a list
             written here can anticipate. The top of the range excludes nothing,
             since no DRep controls every vote, so it doubles as no ceiling at
             all and there is no separate option meaning the same thing. */}
-        <DRepFacetNumber
-          label={intl.formatMessage(messages.votingPowerLabel)}
-          value={
-            criteria.maxVotingPowerShare == null
-              ? MAX_SHARE_PERCENT
-              : Number(
-                  (criteria.maxVotingPowerShare * 100).toFixed(SHARE_DECIMALS)
-                )
-          }
-          min={MIN_SHARE_PERCENT}
-          max={MAX_SHARE_PERCENT}
-          step={SHARE_STEP_PERCENT}
-          suffix="%"
-          decrementLabel={intl.formatMessage(messages.votingPowerDecrement)}
-          incrementLabel={intl.formatMessage(messages.votingPowerIncrement)}
-          onChange={(percent) =>
-            onCriteriaChange({
-              ...criteria,
-              maxVotingPowerShare:
-                percent >= MAX_SHARE_PERCENT ? null : percent / 100,
-            })
-          }
-        />
-        {facet(
-          intl.formatMessage(messages.sizeLabel),
-          String(criteria.size),
-          (next) => onCriteriaChange({ ...criteria, size: Number(next) }),
-          DREP_COHORT_SIZE_OPTIONS.map((size): [string, string] => [
-            String(size),
-            intl.formatNumber(size),
-          ])
-        )}
-      </div>
+      <DRepFacetNumber
+        label={intl.formatMessage(messages.votingPowerLabel)}
+        value={
+          criteria.maxVotingPowerShare == null
+            ? MAX_SHARE_PERCENT
+            : Number(
+                (criteria.maxVotingPowerShare * 100).toFixed(SHARE_DECIMALS)
+              )
+        }
+        min={MIN_SHARE_PERCENT}
+        max={MAX_SHARE_PERCENT}
+        step={SHARE_STEP_PERCENT}
+        suffix="%"
+        decrementLabel={intl.formatMessage(messages.votingPowerDecrement)}
+        incrementLabel={intl.formatMessage(messages.votingPowerIncrement)}
+        onChange={(percent) =>
+          onCriteriaChange({
+            ...criteria,
+            maxVotingPowerShare:
+              percent >= MAX_SHARE_PERCENT ? null : percent / 100,
+          })
+        }
+      />
+      {facet(
+        intl.formatMessage(messages.sizeLabel),
+        String(criteria.size),
+        (next) => onCriteriaChange({ ...criteria, size: Number(next) }),
+        DREP_COHORT_SIZE_OPTIONS.map((size): [string, string] => [
+          String(size),
+          intl.formatNumber(size),
+        ])
+      )}
     </div>
   );
 }
