@@ -1,19 +1,11 @@
+import type { DappCatalogEntry } from '../../common/types/dapp.types';
 import {
   canonicalizeDappOrigin,
   canonicalizeDappResourceOrigin,
   parseDappUrl,
 } from './urlPolicy';
 
-export type DappCatalogEntry = Readonly<{
-  id: string;
-  nameMessageId: string;
-  iconAsset: string;
-  entryUrlByNetworkGenesis: Readonly<Record<string, string>>;
-  canonicalOrigin: string;
-  allowedResourceOrigins: readonly string[];
-  supportedWalletKinds: readonly string[];
-  supportedExtensions: readonly number[];
-}>;
+export type { DappCatalogEntry } from '../../common/types/dapp.types';
 
 export type ResolvedCatalogLaunch = Readonly<{
   catalogId: string;

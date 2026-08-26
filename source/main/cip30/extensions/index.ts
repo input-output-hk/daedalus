@@ -1,15 +1,5 @@
 import { DappCip30Method } from '../../../common/cip30/wire';
-
-export type DappScope =
-  | 'connection'
-  | 'read'
-  | 'transaction-signing'
-  | 'data-signing'
-  | 'transaction-submission'
-  | 'governance-key-disclosure'
-  | 'governance-data-signing'
-  | 'governance-transaction-signing'
-  | 'account-public-key-disclosure';
+import { DappScope } from '../../../common/types/dapp.types';
 
 export type MethodDescriptor = Readonly<{
   path: DappCip30Method;
