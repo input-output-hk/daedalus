@@ -1031,6 +1031,19 @@ export default class WalletsStore extends Store {
   }
 
   @computed
+  get activeDappWallet(): Wallet | null {
+    const wallet = this.active;
+    if (
+      !wallet ||
+      wallet.isLegacy ||
+      wallet.isRestoring ||
+      wallet.isNotResponding
+    )
+      return null;
+    return wallet;
+  }
+
+  @computed
   get isWalletRoute(): boolean {
     const { currentRoute } = this.stores.app;
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
@@ -1138,6 +1151,7 @@ export default class WalletsStore extends Store {
     const { currentRoute } = this.stores.app;
     const hasAnyWalletLoaded = this.hasAnyLoaded;
     const isWalletAddPage = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
+    const dappRoute = matchRoute(ROUTES.WALLETS.DAPPS, currentRoute);
     runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
       // There are not wallets loaded (yet) -> unset active and return
       if (isWalletAddPage || !hasAnyWalletLoaded)
@@ -1156,6 +1170,8 @@ export default class WalletsStore extends Store {
           this._setActiveWallet({
             walletId: walletForCurrentRoute.id,
           });
+        } else if (dappRoute) {
+          this._unsetActiveWallet();
         } else if (hasAnyWalletLoaded) {
           // There is no wallet with given id -> pick first wallet
           this._setActiveWallet({
