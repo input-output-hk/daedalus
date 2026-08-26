@@ -1,0 +1,27 @@
+{
+  "id": "semantic-conway-v1-minimal",
+  "description": "Pinned minimal Conway transaction used by task-303 semantic and span regression coverage.",
+  "cborHex": "84a3008001818240000200a0f4f6",
+  "vectors": {
+    "auxiliary": {
+      "cborHex": "a10000",
+      "blake2b256": "6ac0db035614f63e58c78b0932c22ce46c296c26c12fde5e3e160bfa57d23bb4"
+    },
+    "scriptDataV1": {
+      "redeemersHex": "8184000000820000",
+      "datumsHex": "8100",
+      "languageViewMapHex": "a14100439f01ff",
+      "preimageHex": "81840000008200008100a14100439f01ff",
+      "blake2b256": "049ad78cf069c30ffc78f3a61bbd093b9d6b44429f73ba554f232d4a8b1015bb"
+    }
+  },
+  "expected": {
+    "body": { "start": 1, "end": 11 },
+    "outputs": [{ "start": 6, "end": 9 }]
+  },
+  "provenance": {
+    "rule": "Pinned Conway CDDL script_data_hash concatenation and PlutusV1 language-view exception",
+    "source": "source/common/cardano/fixtures/exact-cbor/source-inventory.json",
+    "sourceSha256": "ab2325fea52b97ab7792ccf9fefcc6dafb543e0bc795e9b761d3f2989b223271"
+  }
+}
