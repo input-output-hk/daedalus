@@ -118,7 +118,11 @@ const validatePlutusData = (node: CborItem): void => {
   const child = items(node)[0];
   if ((node.tag === BigInt(2) || node.tag === BigInt(3)) && child.major === 2)
     return;
-  if (node.tag >= BigInt(121) && node.tag <= BigInt(127) && child.major === 4) {
+  if (
+    ((node.tag >= BigInt(121) && node.tag <= BigInt(127)) ||
+      (node.tag >= BigInt(1280) && node.tag <= BigInt(1400))) &&
+    child.major === 4
+  ) {
     array(child).forEach(validatePlutusData);
     return;
   }
@@ -139,8 +143,16 @@ const validateEmbedded = (
 ): void => {
   if (wrapper.major !== 6 || wrapper.tag !== BigInt(24)) invalid();
   const payload = items(wrapper)[0];
-  if (payload.major !== 2 || payload.content === undefined) invalid();
-  const embedded = bytesForSpan(source, payload.content);
+  if (payload.major !== 2) invalid();
+  const embedded = payload.content
+    ? bytesForSpan(source, payload.content)
+    : Buffer.concat(
+        items(payload).map((chunk) =>
+          chunk.major === 2 && chunk.content
+            ? bytesForSpan(source, chunk.content)
+            : invalid()
+        )
+      );
   const item = parseCborItem(embedded);
   if (item.span.end !== embedded.length) invalid();
   if (plutus) validatePlutusData(item);
@@ -299,7 +311,8 @@ const validateBody = (
     )
       unsigned(value);
     else if (number === 7 || number === 11) bytes(value);
-    else if (number === 4 || number === 20) validateSet(value, true, noTags);
+    else if (number === 4 || number === 20)
+      validateSet(value, true, () => undefined);
     else if (number === 13 || number === 18)
       validateSet(value, true, validateInput);
     else if (number === 14)
@@ -311,7 +324,6 @@ const validateBody = (
       const network = unsigned(value);
       if (network > BigInt(1)) invalid();
     } else if (number === 16) validateOutput(source, value);
-    else noTags(value);
   }
   if (!found.has(0) || !found.has(1) || !found.has(2)) invalid();
   const outputList = mapValue(body, 1);
