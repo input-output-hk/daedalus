@@ -140,6 +140,7 @@ export const ALLOWED_LOGS = [
   'Wallet-migration-report.json',
   'cardano-wallet.log',
   'node.log',
+  'watchdog.log',
 ];
 export const ALLOWED_NODE_LOGS = new RegExp(/^node\.log\.\d+$/);
 export const ALLOWED_WALLET_LOGS = new RegExp(/^cardano-wallet\.log\.\d+$/);
