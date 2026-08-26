@@ -220,7 +220,7 @@
       ],
       "successSchemaRef": "common.json#/definitions/utxoResults",
       "rejections": ["apiError"],
-      "semantics": "Pure-ADA current candidates or null; side-effect-free; no Daedalus 5 ADA request cap."
+      "semantics": "Deprecated. Pure-ADA current candidates or null; side-effect-free; no Daedalus 5 ADA request cap."
     },
     {
       "path": "api.getBalance",

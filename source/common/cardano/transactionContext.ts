@@ -53,6 +53,17 @@ export type PreExistingWitness = Readonly<{
   kind: 'vkey' | 'bootstrap';
   cbor: Hex;
 }>;
+export type ContextOutput = Readonly<{
+  outpoint: Readonly<{ transactionId: Hex; index: number }>;
+  sourceCbor: Hex;
+  inputCbor: Hex;
+  canonicalCbor: Hex;
+  unspentCbor: Hex;
+  provenance: readonly ('earlier' | 'pending' | 'node')[];
+  roles: readonly ('normal' | 'collateral' | 'reference' | 'wallet_snapshot')[];
+  walletMember: boolean;
+  pendingState: 'none' | 'outcome_unknown';
+}>;
 export type TransactionContextSnapshot = Readonly<{
   walletId: string;
   network: DappNetwork;
@@ -63,22 +74,11 @@ export type TransactionContextSnapshot = Readonly<{
   contextToken: Hex;
   records: readonly Hex[];
   transactions: readonly Hex[];
+  outputs: readonly ContextOutput[];
   ownership: readonly ContextOwnership[];
   commitmentContexts: readonly CommitmentContext[];
   transactionsSemantic: readonly ReturnType<typeof decodeConwayTransaction>[];
   preExistingWitnesses: readonly PreExistingWitness[];
-}>;
-
-type ContextOutput = Readonly<{
-  outpoint: Readonly<{ transactionId: Hex; index: number }>;
-  sourceCbor: Hex;
-  inputCbor: Hex;
-  canonicalCbor: Hex;
-  unspentCbor: Hex;
-  provenance: readonly ('earlier' | 'pending' | 'node')[];
-  roles: readonly ('normal' | 'collateral' | 'reference' | 'wallet_snapshot')[];
-  walletMember: boolean;
-  pendingState: 'none' | 'outcome_unknown';
 }>;
 type ContextResponse = Readonly<{
   walletId: string;
@@ -1175,6 +1175,7 @@ export const reconcileTransactionContext = (
     contextToken: response.contextToken,
     records: Object.freeze([...response.records]),
     transactions: Object.freeze([...expectation.transactions]),
+    outputs: Object.freeze([...response.outputs]),
     ownership: Object.freeze([...response.ownership]),
     commitmentContexts: Object.freeze(commitmentContexts),
     transactionsSemantic: Object.freeze(transactionsSemantic),
