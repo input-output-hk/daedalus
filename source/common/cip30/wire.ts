@@ -114,6 +114,7 @@ export interface DaedalusApi {
   getExtensions(): Promise<Extension[]>;
   getNetworkId(): Promise<number>;
   getUtxos(amount?: string, paginate?: Paginate): Promise<string[] | null>;
+  /** @deprecated Side-effect-free compatibility API; prefer CIP-40 collateral return. */
   getCollateral(params: { amount: string }): Promise<string[] | null>;
   getBalance(): Promise<string>;
   getUsedAddresses(paginate?: Paginate): Promise<string[]>;

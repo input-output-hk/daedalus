@@ -695,6 +695,10 @@ describe('frozen CIP-30 contracts', () => {
     expect(wireFixtures.baseApi.getCollateral.insufficient).toBeNull();
     expect(wireFixtures.baseApi.getCollateral.sideEffect).toBe('none');
     expect(wireFixtures.baseApi.getCollateral.daedalusAdaCap).toBeNull();
+    expect(
+      manifest.methods.find(({ path }) => path === 'api.getCollateral')
+        ?.semantics
+    ).toMatch(/^Deprecated\./);
   });
 
   it('freezes CIP-103 identity, dependencies, signing, and submission results', () => {

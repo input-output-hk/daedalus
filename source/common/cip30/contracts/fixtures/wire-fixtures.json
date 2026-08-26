@@ -81,8 +81,8 @@
       "hrp": "addr",
       "classification": "unowned-payment-proof-generation",
       "expectedOutcome": "DataSignError.ProofGeneration",
-      "raw": "61ffeeddccbbaa99887766554433221100ffeeddccbbaa9988776655",
-      "bech32": "addr1v8l7ahwvhw4fnzrhve25gvezzyq0lmkaeja64xvgwan92wygune"
+      "raw": "61ffeeddccbbaa99887766554433221100ffeeddccbbaa998877665544",
+      "bech32": "addr1v8l7ahwvhw4fnzrhve25gvezzyq0lmkaeja64xvgwan923qxusmft"
     },
     {
       "name": "mainnet-reward-key",
