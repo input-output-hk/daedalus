@@ -47,6 +47,7 @@ export type Value = Readonly<{
 export type Datum = Readonly<{
   kind: 'hash' | 'inline';
   hash: Hex;
+  cbor?: Hex;
   data?: SemanticValue;
   span: CborSpan;
 }>;
@@ -706,6 +707,7 @@ const decodeOutput = (source: Buffer, item: CborItem): Output => {
           kind: 'inline',
           hash: hash(embeddedSource),
           data: semanticValue(embeddedSource, data),
+          cbor: embeddedSource.toString('hex'),
           span: rawDatum.span,
         };
       }
@@ -746,6 +748,12 @@ const decodeReferenceScript = (source: Buffer, wrapper: CborItem): Script => {
       languageId === 0 ? semanticValue(embeddedSource, parts[1]) : undefined,
     span: wrapper.span,
   };
+};
+
+export const decodeConwayOutput = (cbor: Buffer): Output => {
+  const item = parseCborItem(cbor);
+  if (item.span.end !== cbor.length) fail('trailing transaction output bytes');
+  return decodeOutput(cbor, item);
 };
 const poolParameters = (source: Buffer, item: CborItem): void => {
   const parts = array(item);
