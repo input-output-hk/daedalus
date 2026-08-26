@@ -6572,6 +6572,11 @@
         "id": "wallet.navigation.transactions"
       },
       {
+        "defaultMessage": "!!!DApps",
+        "description": "Label for the \"DApps\" nav button in the wallet navigation.",
+        "id": "wallet.navigation.dapps"
+      },
+      {
         "defaultMessage": "!!!Tokens",
         "description": "Label for the \"Tokens\" nav button in the wallet navigation.",
         "id": "wallet.navigation.tokens"

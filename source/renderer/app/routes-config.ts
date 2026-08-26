@@ -29,6 +29,7 @@ export const ROUTES = {
     RECEIVE: '/wallets/:id/receive',
     TOKENS: '/wallets/:id/tokens',
     SETTINGS: '/wallets/:id/settings',
+    DAPPS: '/wallets/:id/dapps',
     UTXO: '/wallets/:id/utxo',
   },
   VOTING: {
@@ -51,6 +52,7 @@ export const ROUTES = {
     STAKE_POOLS: '/settings/stake-pools',
     TERMS_OF_USE: '/settings/terms-of-service',
     SUPPORT: '/settings/support',
+    DAPP_CONNECTIONS: '/settings/dapp-connections',
     DISPLAY: '/settings/display',
   },
 };

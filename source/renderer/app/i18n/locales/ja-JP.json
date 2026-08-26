@@ -1201,6 +1201,7 @@
   "wallet.import.file.dialog.stateFolderLabel": "Daedalusステータスディレクトリーを選択してください:",
   "wallet.import.file.dialog.title": "ウォレットをインポートする",
   "wallet.legacy.notification.descriptionWithFunds": "!!!\"{transferWalletName}\"\" is a legacy wallet. It does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new, Shelley-compatible wallet. You can create a brand new wallet or move funds to one of the existing wallets.",
+  "wallet.navigation.dapps": "DApps",
   "wallet.navigation.more": "その他",
   "wallet.navigation.receive": "入金",
   "wallet.navigation.send": "送金",
