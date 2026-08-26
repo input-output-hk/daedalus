@@ -755,6 +755,12 @@ export const decodeConwayOutput = (cbor: Buffer): Output => {
   if (item.span.end !== cbor.length) fail('trailing transaction output bytes');
   return decodeOutput(cbor, item);
 };
+
+export const decodeConwayValue = (cbor: Buffer): Value => {
+  const item = parseCborItem(cbor);
+  if (item.span.end !== cbor.length) fail('trailing value bytes');
+  return value(cbor, item);
+};
 const poolParameters = (source: Buffer, item: CborItem): void => {
   const parts = array(item);
   if (parts.length !== 9) fail();

@@ -304,6 +304,13 @@ test('verifies and labels existing witnesses against the exact body hash', () =>
   expect(snapshot.preExistingWitnesses).toEqual([
     { transactionIndex: 0, kind: 'vkey', cbor: witness.toString('hex') },
   ]);
+  expect(snapshot.outputs).toHaveLength(3);
+  expect(snapshot.outputs[0]).toMatchObject({
+    outpoint: { transactionId: signed.inputs[0].transactionId, index: 0 },
+    canonicalCbor: output,
+    walletMember: true,
+  });
+  expect(Object.isFrozen(snapshot.outputs)).toBe(true);
 
   const invalidSignature = Buffer.from(signature);
   invalidSignature[0] ^= 1;
