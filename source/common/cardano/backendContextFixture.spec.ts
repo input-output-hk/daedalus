@@ -3,6 +3,10 @@ import path from 'path';
 import { createHmac } from 'crypto';
 import { blake2b } from 'blakejs';
 import cbor from 'cbor';
+import {
+  computeContextDigest,
+  verifyContextTokenMac,
+} from './transactionContext';
 
 type Outpoint = { transactionId: string; index: number };
 type InputRole = 'normal' | 'collateral' | 'reference';
@@ -229,7 +233,7 @@ test('reproduces backend context records, digest, and token', () => {
   );
   expect(digest.toString('hex')).toBe(digestInput.encoded);
 
-  const token = fixture.token;
+  const { token } = fixture;
   const payload = Buffer.concat([
     u8(1),
     hex(token.processGeneration),
@@ -247,4 +251,34 @@ test('reproduces backend context records, digest, and token', () => {
     )
     .digest();
   expect(Buffer.concat([payload, mac]).toString('hex')).toBe(token.encoded);
+  const expectation = {
+    walletId: digestInput.walletId,
+    network: {
+      networkId: protocol.networkId,
+      networkMagic: protocol.networkMagic,
+      genesisHash: digestInput.genesisHash,
+    },
+    transactions: digestInput.transactions,
+  };
+  expect(
+    computeContextDigest(
+      expectation,
+      {
+        kind: 'block',
+        slot: BigInt(digestInput.chainPoint.slot),
+        blockHash: digestInput.chainPoint.blockHash,
+      },
+      BigInt(digestInput.walletGeneration),
+      BigInt(digestInput.pendingGeneration),
+      sortedRecords.map((item) => item.toString('hex'))
+    )
+  ).toBe(digestInput.encoded);
+  expect(
+    verifyContextTokenMac(
+      token.encoded,
+      expectation,
+      digestInput.encoded,
+      hex(token.key)
+    )
+  ).toBe(true);
 });
