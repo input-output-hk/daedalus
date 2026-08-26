@@ -3,7 +3,7 @@
     "title": "Embedded dApp Browser And CIP-30 Wallet Connector Tasks",
     "created": "2026-08-07",
     "updated": "2026-08-26",
-    "version": "1.7.18",
+    "version": "1.7.19",
     "totalTasks": 86,
     "prdReference": ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
       "description": "Security- and standards-gated implementation graph for a wallet-scoped sandboxed dApp browser with CIP-30, CIP-8, CIP-95, CIP-103, gated CIP-104/CIP-142, software/hardware signing, ordered batch signing and submission, and soft collateral management.",
@@ -1082,13 +1082,15 @@
           "id": "task-306",
           "title": "Implement witness-set extraction, verification, and merge primitives",
           "description": "Decode witness sets, calculate newly generated VKey deltas, deduplicate, verify signer key hashes/signatures, and preserve exact body identity.",
-          "status": "pending",
+          "status": "completed",
+          "completedAt": "2026-08-26",
+          "completedNotes": "Added strict shared VKey witness-set extraction, canonical encoding, exact-body Ed25519 verification, public-key differencing, and byte-preserving merge primitives. Endpoint results reject malformed CBOR, duplicate keys, non-VKey witness classes, body-hash mismatch, and invalid signatures; merges retain every immutable witness field as exact raw CBOR and preserve the original body bytes and transaction ID. Existing transaction-context witness verification now reuses the shared verifier. Focused Jest passed 10 tests; focused ESLint and Prettier checks and TypeScript compilation passed. The accepted task-203 witness-only endpoint does not reuse transactions-sign, so the conditional full-envelope comparator was not introduced.",
           "priority": "critical",
           "estimatedHours": 32,
           "dependencies": ["task-203", "task-302"],
           "targetPaths": [
             "source/common/cardano/witnessSet.ts",
-            "source/common/cardano/signatureVerification.ts"
+            "source/common/cardano/witnessSet.spec.ts"
           ],
           "acceptance": [
             "Only newly generated VKeys are emitted to CIP-30 callers.",

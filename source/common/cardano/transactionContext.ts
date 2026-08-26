@@ -1,4 +1,4 @@
-import { createHmac, createPublicKey, timingSafeEqual, verify } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 import { blake2b } from 'blakejs';
 
 import { bytesForSpan, parseCborItem } from './cborSlices';
@@ -11,6 +11,7 @@ import {
   Script,
 } from './transaction';
 import { parseConwayTransactionEnvelope } from './transactionEnvelope';
+import { verifyVKeyWitness, WitnessSetError } from './witnessSet';
 
 export class TransactionContextError extends Error {
   public constructor(message = 'invalid transaction context') {
@@ -849,23 +850,16 @@ const verifiedWitnesses = (
   const metadata: PreExistingWitness[] = [];
   const check = (kind: 'vkey' | 'bootstrap', cbor: Hex) => {
     const witness = witnessParts(cbor);
-    const publicKey = createPublicKey({
-      key: Buffer.concat([
-        Buffer.from('302a300506032b6570032100', 'hex'),
-        witness.key,
-      ]),
-      format: 'der',
-      type: 'spki',
-    });
-    if (
-      !verify(
-        null,
-        Buffer.from(transactionId, 'hex'),
-        publicKey,
-        witness.signature
-      )
-    )
-      fail('invalid existing witness signature');
+    try {
+      verifyVKeyWitness(Buffer.from(transactionId, 'hex'), {
+        publicKey: witness.key,
+        signature: witness.signature,
+      });
+    } catch (error) {
+      if (error instanceof WitnessSetError)
+        fail('invalid existing witness signature');
+      throw error;
+    }
     set.add(cbor);
     metadata.push({ transactionIndex, kind, cbor });
   };
