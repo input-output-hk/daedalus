@@ -101,6 +101,17 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
     registrationOwner: 'source/main/ipc/dappBrowser.ts',
     capability: 'dapp-browser',
   }),
+  ...entries(['DAPP_CONSENT_RENDER_CHANNEL'], {
+    constructorOwner: 'source/main/ipc/dappConsent.ts',
+    rendererOwner: 'source/renderer/app/ipc/dappConsent.ts',
+    registrationOwner: null,
+    capability: 'dapp-consent',
+    direction: 'main-to-renderer',
+    receive: 'none',
+    settlement: 'awaited',
+    callerOwners: ['source/main/ipc/dappConsent.ts'],
+    callerCount: 2,
+  }),
   ...entries(['SHOW_UI_PART_CHANNEL'], {
     constructorOwner: 'source/main/ipc/control-ui-parts.ts',
     rendererOwner: 'source/renderer/app/ipc/control-ui-parts.ts',
