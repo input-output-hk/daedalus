@@ -338,6 +338,7 @@ Every active plan should include a `*-tasks.json` file next to its PRD. This fil
 | Mithril | [Mithril Partial Sync From Diagnostics](mithril-partial-sync/mithril-partial-sync-prd.md) | Draft | 2026-05-18 |
 | Cardano Backends | [Watchdog Architecture](watchdog/watchdog-prd.md) | Completed | 2026-07-30 |
 | Mithril | [Mithril Sync in Rust Watchdog](mithril-watchdog/mithril-watchdog-prd.md) | Draft | 2026-07-31 |
+| Build & Tooling | [Dependency Hygiene](dependency-hygiene/dependency-hygiene-prd.md) | Draft | 2026-08-26 |
 
 ---
 

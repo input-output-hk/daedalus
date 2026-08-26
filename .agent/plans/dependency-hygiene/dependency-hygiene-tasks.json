@@ -1,0 +1,461 @@
+{
+  "metadata": {
+    "title": "Dependency Hygiene Tasks",
+    "created": "2026-08-26",
+    "updated": "2026-08-26",
+    "version": "2.0.0",
+    "totalTasks": 15,
+    "prdReference": ".agent/plans/dependency-hygiene/dependency-hygiene-prd.md",
+    "description": "Make one prettier version govern the repository, then take the mechanical and consequential runtime dependency bumps behind a known-answer test for seed derivation.",
+    "sourceFiles": [
+      "package.json",
+      "yarn.lock",
+      ".prettierrc",
+      ".prettierignore",
+      "perSystem/formatter.nix",
+      "perSystem/checks.nix",
+      "nix/internal/common.nix",
+      "source/renderer/app/utils/crypto.ts",
+      "source/renderer/webpack.config.js",
+      "tests/wallets/unit/steps/mnemonics.ts",
+      ".agent/skills/theme-management/SKILL.md",
+      ".agent/plans/dependency-hygiene/research/01-measured-divergence.md",
+      ".agent/plans/dependency-hygiene/research/02-dependency-inventory.md"
+    ],
+    "importantNote": "Branch from master as chore/dependency-hygiene; there is no develop branch. Three hard rules. (1) The prettier bump must change package.json and yarn.lock and nothing else; if a source file changes, stop and re-measure rather than committing a reformat. (2) pbkdf2 and lodash are pinned in BOTH dependencies and resolutions; moving only one line leaves the old version installed and the advisory unresolved while the diff looks complete. (3) The crypto known-answer spec lands and is green BEFORE any tier 2 bump, so it witnesses the change rather than being written to match it."
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Formatter version parity",
+      "description": "Move the prettier dependency to the version treefmt already runs, so the local pre-flight and the merge gate stop disagreeing, and repair the CLI flag prettier 3 renamed.",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Bump prettier to 3.6.2",
+          "description": "Change devDependencies.prettier from 2.1.2 to 3.6.2 and regenerate the lockfile. 3.6.2 is what treefmt runs from the pinned nixpkgs, so this closes the gap by moving the dependency rather than by reformatting the tree.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 0.5,
+          "dependencies": [],
+          "targetPaths": ["package.json", "yarn.lock"],
+          "implementationNotes": [
+            "Edit package.json:163.",
+            "Regenerate yarn.lock with yarn install inside the Nix dev shell. Never run yarn install outside the shell: host python3 resolves to an unrelated venv and libudev/libusb are absent, so node-hid and usb build wrong or not at all.",
+            "No fixed-output hash needs updating. node_modules is built from an offline cache derived from yarn.lock at evaluation time (nix/internal/common.nix:298)."
+          ],
+          "acceptance": [
+            "package.json names prettier 3.6.2",
+            "yarn.lock resolves prettier to 3.6.2",
+            "git diff --name-only lists package.json and yarn.lock only"
+          ],
+          "notes": "If any other file appears in git diff, the premise that the tree is already prettier 3 shaped is wrong. Stop and re-measure."
+        },
+        {
+          "id": "task-002",
+          "title": "Rename --loglevel to --log-level in the prettier scripts",
+          "description": "Prettier 3 removed --loglevel in favour of --log-level and ignores the old spelling with a warning, so the intended quieting stops working and every invocation gains a warning line.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.25,
+          "dependencies": ["task-001"],
+          "targetPath": "package.json",
+          "implementationNotes": [
+            "Three call sites: prettier:format (package.json:49), themes:update (:58), themes:copy (:59)."
+          ],
+          "acceptance": [
+            "No script passes --loglevel",
+            "yarn prettier:format emits no unknown-option warning"
+          ]
+        },
+        {
+          "id": "task-003",
+          "title": "Verify the bump reformats nothing",
+          "description": "Confirm both formatters agree on the tree as committed, and that running the format command no longer produces a diff. This is the check that closes the reported problem.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-001", "task-002"],
+          "targetPaths": ["package.json", "yarn.lock"],
+          "testCases": [
+            "yarn prettier:check exits 0",
+            "nix fmt -- --ci reports 0 changed and exits 0",
+            "yarn prettier:format followed by git diff --name-only produces empty output",
+            "git diff --name-only lists package.json and yarn.lock only"
+          ],
+          "acceptance": ["All four checks above hold on a clean checkout of the branch"],
+          "notes": "Baseline measured at 50e6b84b3: yarn prettier:check reported 210 files, nix fmt -- --ci reported 0 changes, and prettier 2 rewriting the tree left 209 files that treefmt reverted plus one it did not."
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "One source of truth for formatting",
+      "description": "Stop the Nix formatter generating its own prettier config and duplicating the ignore rules, so a future edit to .prettierrc or .prettierignore reaches both entry points.",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-004",
+          "title": "Let treefmt read .prettierrc",
+          "description": "Remove programs.prettier.settings from formatter.nix. treefmt-nix generates a config file from those settings and passes it as --config, which stops prettier discovering .prettierrc. With settings empty, treefmt-nix passes no --config and prettier resolves the repository's own file.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-003"],
+          "targetPath": "perSystem/formatter.nix",
+          "implementation": {
+            "change": "Delete the programs.prettier.settings attribute, keeping programs.prettier.enable. Replace the 'Use the settings from .prettierrc' comment with one recording that omitting settings is what makes prettier read .prettierrc, so the comment stops being aspirational."
+          },
+          "implementationNotes": [
+            "treefmt-nix/programs/prettier.nix gates the flag on the settings being non-empty: settingsFile = if settings != { } then ... else null, and options = lib.optionals (settingsFile != null) [\"--config\" ...].",
+            "Read the regenerated treefmt.toml to confirm the prettier options list no longer contains --config."
+          ],
+          "testCases": [
+            "The generated treefmt.toml passes no --config for prettier",
+            "nix fmt -- --ci reports 0 changed"
+          ],
+          "acceptance": [
+            "nix fmt -- --ci is clean with .prettierrc as the only prettier config",
+            "git diff --name-only lists perSystem/formatter.nix only"
+          ],
+          "notes": "A clean run proves .prettierrc supplies the same options the generated file did. The two agree today by hand; this makes them agree by construction."
+        },
+        {
+          "id": "task-005",
+          "title": "Drop the inert prettier include and exclude lists",
+          "description": "The prettier includes and excludes in formatter.nix have no effect. They are written to settings.formatter.prettier.*, which becomes a second definition of the same option as the module default and concatenates with it rather than replacing it. Scope is decided by .prettierignore, which prettier applies even to paths passed explicitly.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-004"],
+          "targetPath": "perSystem/formatter.nix",
+          "implementation": {
+            "change": "Delete settings.formatter.prettier entirely, leaving a comment recording that .prettierignore is the scope gate for prettier under both nix fmt and yarn prettier. Keep settings.global.excludes: alejandra and rustfmt depend on it and are not gated by .prettierignore."
+          },
+          "implementationNotes": [
+            "Removing entries cannot widen scope: the module defaults are a separate definition and stay in place regardless, and every repository entry is already a subset of them.",
+            "The option that would actually override the defaults is programs.prettier.includes, not settings.formatter.prettier.includes. Worth noting in the comment so the next person does not repeat the mistake.",
+            "settings.formatter.alejandra.includes is redundant for the same reason, but alejandra is out of scope for this branch. Leave it."
+          ],
+          "testCases": [
+            "nix fmt -- --ci reports 0 changed",
+            "prettier --ignore-path /dev/null --check README.md tsconfig.json still reports both files, confirming Markdown and top-level JSON remain out of scope"
+          ],
+          "acceptance": [
+            "No prettier scope rules remain in perSystem/formatter.nix",
+            "nix fmt -- --ci is clean and no Markdown or YAML file is reformatted"
+          ],
+          "securityNotes": [
+            "Residual risk, accepted and named once in the PRD: if a future prettier stopped applying .prettierignore to explicitly passed paths, treefmt would begin formatting every Markdown file including CHANGELOG.md. That surfaces as a loud diff on the first nix fmt after such a bump, not as silent corruption, and task-006 makes any prettier version move deliberate."
+          ]
+        },
+        {
+          "id": "task-006",
+          "title": "Add a prettier version parity check",
+          "description": "The treefmt prettier tracks nixpkgs. A nixpkgs bump moves it and reopens the gap with no signal. Assert that the version in package.json and the version treefmt invokes are the same, and fail with a message naming both and saying what to do.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-005"],
+          "targetPath": "perSystem/checks.nix",
+          "implementation": {
+            "change": "Add prettier-version-parity to the x86_64-linux block, next to the other static analysis. Read the binary from config.treefmt.settings.formatter.prettier.command so the check cannot drift from what the formatter runs, and read the pin with jq from package.json.",
+            "logic": [
+              "pinned=$(jq -r '.devDependencies.prettier' ${inputs.self}/package.json)",
+              "actual=$(${config.treefmt.settings.formatter.prettier.command} --version)",
+              "Fail when they differ, printing both values and both remedies",
+              "touch $out on success"
+            ]
+          },
+          "implementationNotes": [
+            "perSystem in checks.nix currently takes {system, lib, pkgs, ...}. Add config to the argument set.",
+            "x86_64-linux only, matching the other static analysis. Every x86_64-linux check is a constituent of hydraJobs.required, so this gates a merge.",
+            "The exact-match comparison assumes the pin stays an exact version rather than a range. That holds for every devDependency today.",
+            "Rejected alternative: pointing treefmt at the prettier in node_modules would make the two identical by construction, but it would make nix fmt depend on building node_modules, which is too slow for a formatter run on every save."
+          ],
+          "testCases": [
+            "nix build .#checks.x86_64-linux.prettier-version-parity succeeds as written",
+            "With package.json temporarily set to 3.6.1, the same build fails and the output names both versions"
+          ],
+          "acceptance": [
+            "The check passes on the branch",
+            "The check demonstrably fails on a deliberate mismatch",
+            "The failure message states both versions and both ways to resolve them"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Close the crypto test gap first",
+      "description": "Give mnemonic and seed derivation a fixed input with a known expected output before any dependency under it moves. Without this, a consistent change in derivation passes every existing check.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-007",
+          "title": "Capture current derivation output as fixtures",
+          "description": "Run the current implementation against fixed inputs and record the exact outputs. These become the expected values. Capturing them before any bump is what makes the later test meaningful.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 0.5,
+          "dependencies": [],
+          "targetPath": "source/renderer/app/utils/crypto.ts",
+          "implementationNotes": [
+            "Use a fixed published test mnemonic, never a real wallet phrase, and record that choice in a comment.",
+            "Cover mnemonicToSeedHex with and without a password, since the salt path differs (salt is `mnemonic` + normalized password).",
+            "Capture on master, before task-001 through task-006 land, so the values cannot be contaminated by anything on this branch."
+          ],
+          "acceptance": [
+            "Expected values recorded for mnemonicToSeedHex with and without a password",
+            "Expected values recorded for the scramble and unscramble round trip",
+            "The mnemonic used is a published test vector, not a generated or real phrase"
+          ],
+          "securityNotes": [
+            "Never commit a mnemonic that has ever held funds. Use a well-known published test vector so the fixture is obviously not a live phrase."
+          ]
+        },
+        {
+          "id": "task-008",
+          "title": "Add crypto.spec.ts with known-answer vectors",
+          "description": "source/renderer/app/utils/crypto.ts derives mnemonics and seeds and has no colocated spec. The only coverage is Cucumber @unit, which generates a mnemonic and validates what it generated, so a consistent change in derivation would pass. This adds the fixed-input assertions that would not.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-007"],
+          "targetPath": "source/renderer/app/utils/crypto.spec.ts",
+          "implementationNotes": [
+            "Colocate as <Unit>.spec.ts; tests/ is Cucumber territory.",
+            "describe names the exported unit with no article; it uses present-tense third person, not 'should'.",
+            "Assert the exact hex string, not a length or a shape. A shape assertion reproduces the gap this task exists to close."
+          ],
+          "testCases": [
+            "mnemonicToSeedHex returns the recorded hex for the fixed mnemonic with no password",
+            "mnemonicToSeedHex returns the recorded hex for the fixed mnemonic with a fixed password",
+            "generateMnemonic returns a phrase of the requested word count drawn from the English word list",
+            "scrambleMnemonics followed by unscrambleMnemonics returns the original input"
+          ],
+          "acceptance": [
+            "yarn jest source/renderer/app/utils/crypto.spec.ts --coverage=false passes",
+            "The spec fails if a derivation output is altered, verified by temporarily changing an expected value",
+            "The spec is committed and green before any tier 2 bump"
+          ],
+          "notes": "This is the branch's one piece of new test code. bip39 3.1.0 replaced its internal hashing implementation, which is exactly the change a round-trip test cannot see."
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Runtime dependency bumps",
+      "description": "Take the mechanical tier, then the consequential tier including both resolutions edits. Grouped so a bisect lands on a category rather than a 20 package diff.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-009",
+          "title": "Record the advisory baseline",
+          "description": "Capture yarn audit output before any dependency moves, so the effect of the tier 2 bumps is measured rather than asserted.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 0.25,
+          "dependencies": [],
+          "targetPath": "package.json",
+          "implementationNotes": [
+            "Record the distinct-advisory count and the per-severity breakdown. Raw totals double-count packages that appear in several trees."
+          ],
+          "acceptance": [
+            "Baseline counts recorded and available to quote in the task-011 commit body"
+          ]
+        },
+        {
+          "id": "task-010",
+          "title": "Take the mechanical runtime bumps",
+          "description": "13 utility packages with no rendering surface, no key material and no arithmetic on user balances. The existing check set covers them: a break shows up as a failed compile, lint, Jest or Cucumber run.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2.0,
+          "dependencies": ["task-003"],
+          "targetPaths": ["package.json", "yarn.lock"],
+          "implementationNotes": [
+            "check-disk-space 3.2.0 to 3.4.0; classnames 2.2.6 to 2.5.1; csv-stringify 5.5.1 to 5.6.5; electron-store 8.0.1 to 8.2.0; form-data 3.0.0 to 3.0.5; fs-extra 9.0.1 to 9.1.0; humanize-duration 3.23.1 to 3.34.1; mime-types 2.1.27 to 2.1.35; node-downloader-helper 1.0.18 to 1.0.19; sanitize-filename 1.6.3 to 1.6.4; semver 7.3.5 to 7.8.5; url 0.11.0 to 0.11.4; validator 13.7.0 to 13.15.35.",
+            "Read each changelog before taking it. The inventory resolved versions from the registry; it did not read release notes.",
+            "electron-store persists application configuration, so its release notes deserve more than a skim.",
+            "validator and form-data are reached through deep imports (validator/lib/isInt, form-data/lib/form_data) and url through a webpack resolve.fallback entry, not through a plain import. Do not conclude any of the three is unused."
+          ],
+          "testCases": [
+            "yarn compile passes",
+            "yarn lint passes",
+            "yarn test:jest passes",
+            "yarn test:unit passes",
+            "yarn storybook:build passes"
+          ],
+          "acceptance": [
+            "All 13 packages at the inventory versions",
+            "The full check set is green",
+            "No source file changed"
+          ]
+        },
+        {
+          "id": "task-011",
+          "title": "Clear the lodash and pbkdf2 advisories",
+          "description": "8 consequential packages, two of which are pinned in resolutions as well as dependencies. lodash needs >=4.18.0 to clear its advisory; pbkdf2 has a fix at 3.1.6. A resolutions entry overrides the whole tree, so both lines must move together.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 2.5,
+          "dependencies": ["task-008", "task-009", "task-010"],
+          "targetPaths": ["package.json", "yarn.lock"],
+          "implementation": {
+            "change": "Bump pbkdf2 3.1.2 to 3.1.6, lodash 4.17.21 to 4.18.1, lodash-es 4.17.15 to 4.18.1, bip39 3.0.4 to 3.1.0, blakejs 1.1.0 to 1.2.1, blake2b 2.1.3 to 2.1.4, bignumber.js 9.0.1 to 9.3.1, cbor 5.0.2 to 5.2.0. Update the resolutions entries '**/**/lodash' and 'pbkdf2' in the same commit."
+          },
+          "implementationNotes": [
+            "Moving only the dependencies line leaves the old version installed and the advisory unresolved, with a diff that looks complete. yarn why is the check that catches it.",
+            "lodash 4.18.1 is the first minor after years at 4.17.21, so it carries more change than the version step suggests.",
+            "bignumber.js reaches 91 import sites and cbor covers transaction and metadata serialization; the Jest and Cucumber suites are what confirm nothing moved.",
+            "Record the before and after advisory counts in the commit body."
+          ],
+          "testCases": [
+            "yarn why lodash reports 4.18.1 installed",
+            "yarn why pbkdf2 reports 3.1.6 installed",
+            "source/renderer/app/utils/crypto.spec.ts still passes with its original expected values",
+            "yarn test:unit passes",
+            "yarn compile && yarn lint && yarn test:jest && yarn storybook:build pass",
+            "yarn audit distinct-advisory count is lower than the task-009 baseline"
+          ],
+          "acceptance": [
+            "All 8 packages at the inventory versions",
+            "Both resolutions entries updated and confirmed by yarn why",
+            "The crypto spec passes unchanged",
+            "The advisory count is recorded before and after"
+          ],
+          "securityNotes": [
+            "If the crypto spec fails, that is the test doing its job. Stop and investigate the bump. Do not update the expected value to match the new output."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "name": "Investigation and acceptance",
+      "description": "Classify the dependencies that look unused, correct the documents naming the removed prettier flag, and prove the branch on a packaged build rather than the check set alone.",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-012",
+          "title": "Classify the runtime dependencies with no first-party import",
+          "description": "17 of 93 declared runtime dependencies have no import of the package or any subpath anywhere in first-party code. Several are explained by build configuration and are correctly declared. The rest may be the same misclassification already corrected for gulp, inquirer and cucumber-html-reporter. This task answers the question; it does not remove anything.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2.0,
+          "dependencies": [],
+          "targetPaths": ["package.json", "source/renderer/webpack.config.js", "nix/internal/runtime-nodejs-deps.json"],
+          "implementationNotes": [
+            "The candidates: @ledgerhq/hw-transport-node-hid, buffer, cardano-launcher, find-process, glob, graceful-fs, nanoid, node-hid, omit-deep-lodash, process, prop-types, rotating-file-stream, source-map-support, tail, tcp-port-used, url, util.",
+            "Already explained, do not re-derive: buffer, process and url are webpack resolve.fallback and ProvidePlugin entries (source/renderer/webpack.config.js:113-130); node-hid and @ledgerhq/hw-transport-node-hid are reached through the transport layer webpack rewrites via NormalModuleReplacementPlugin (:164).",
+            "Two have positive evidence of being stranded: find-process appears only in planning documents as a helper that was considered and not used; omit-deep-lodash is named in a comment at source/common/utils/logging.ts:42 but that file imports only types.",
+            "Absence from nix/internal/runtime-nodejs-deps.json proves nothing on its own. That file describes the main-process runtime closure, and anything webpack bundles into the renderer will not appear in it.",
+            "Each entry needs one of three answers: reached by a build-configuration mechanism, required transitively at runtime and tracked in the packaging closure, or genuinely stranded."
+          ],
+          "acceptance": [
+            "Every one of the 17 has a written classification with its evidence",
+            "No dependency is removed on this branch"
+          ],
+          "notes": "Scoped deliberately narrow. Removal needs its own branch and a packaged build to verify, because a wrongly removed dependency breaks packaging in a way the check set does not catch."
+        },
+        {
+          "id": "task-013",
+          "title": "Record the unused dependency question as a finding",
+          "description": "Write the task-012 result to .agent/findings/, which exists for real problems noticed during other work that would otherwise be lost when the thread ends.",
+          "status": "pending",
+          "priority": "low",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-012"],
+          "targetPath": ".agent/findings/",
+          "implementationNotes": [
+            "Follow the folder's convention: state what is true today, why it matters, and what a fix would have to decide.",
+            "This repository is public. An unused dependency is hygiene, not an exploit surface, so it belongs here rather than being raised privately."
+          ],
+          "acceptance": [
+            "A finding exists naming each stranded dependency and the evidence for it",
+            "The finding states what a removal branch would have to verify"
+          ]
+        },
+        {
+          "id": "task-014",
+          "title": "Update documents naming --loglevel",
+          "description": "The theme management skill documents the prettier invocation used by themes:update and themes:copy, including the flag prettier 3 removed.",
+          "status": "pending",
+          "priority": "low",
+          "estimatedHours": 0.25,
+          "dependencies": ["task-002"],
+          "targetPath": ".agent/skills/theme-management/SKILL.md",
+          "implementationNotes": [
+            "Two references: line 92 describes the flag, line 404 gives a copy-paste command."
+          ],
+          "acceptance": [
+            "grep -rn -- '--loglevel' .agent package.json returns nothing"
+          ]
+        },
+        {
+          "id": "task-015",
+          "title": "Run the full check set and build a packaged installer",
+          "description": "A dependency change that claims to touch nothing must be shown to touch nothing. The check set does not build an installer, and webpack decides what actually ships, so a dependency that resolves and compiles can still fail to bundle.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 2.0,
+          "dependencies": ["task-006", "task-011", "task-013", "task-014"],
+          "targetPaths": ["flake.nix", "package.json", "perSystem/checks.nix"],
+          "testCases": [
+            "nix flake check -L passes",
+            "yarn check:all passes",
+            "yarn build produces a production build",
+            "yarn package produces an installer, and the installed application starts and begins syncing",
+            "The branch diff contains no unexplained source file change"
+          ],
+          "acceptance": [
+            "Every x86_64-linux check is green",
+            "yarn check:all exits 0",
+            "A packaged installer starts and syncs",
+            "Each commit is reviewable on its own and reverts independently"
+          ],
+          "notes": "Darwin checks are built and reported but do not gate. The Windows workflow is reporting-only; a red Windows Jest run after a dependency bump is worth reading rather than dismissing."
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 5,
+    "totalTasks": 15,
+    "estimatedTotalHours": 15.25,
+    "criticalPath": [
+      "task-001",
+      "task-003",
+      "task-010",
+      "task-007",
+      "task-008",
+      "task-011",
+      "task-015"
+    ],
+    "keyFiles": [
+      "package.json",
+      "yarn.lock",
+      "perSystem/formatter.nix",
+      "perSystem/checks.nix",
+      "source/renderer/app/utils/crypto.spec.ts"
+    ],
+    "riskAreas": [
+      "The formatter half rests on the tree already being prettier 3 shaped. Verified at 50e6b84b3, where prettier 3.6.2 reported the tree clean. If task-001 produces source file changes, the measurement is stale and the plan needs revisiting before anything is committed.",
+      "pbkdf2 and lodash are pinned twice. Updating only the dependencies line produces a diff that reviews as correct and installs the vulnerable version. yarn why is the only thing that catches it.",
+      "bip39 3.1.0 replaced its internal hashing implementation. If derivation output changed, every existing check would still pass. task-008 is the only thing standing between that and a shipped wallet that derives different seeds.",
+      "bignumber.js reaches 91 import sites covering every displayed and submitted amount. A rounding or formatting change would be user-visible and is not covered by any assertion on exact output.",
+      "task-006 fails the build the next time a nixpkgs bump moves prettier. That is the intent, but it makes a nixpkgs bump and a package.json edit one atomic change rather than two.",
+      "The check set does not build an installer. A dependency that compiles can still fail to bundle, which is why task-015 requires a packaged build rather than a green flake check.",
+      "Contributors holding in-flight branches containing prettier 2 output will see those hunks disappear on rebase. Intended, but worth saying before the branch merges."
+    ],
+    "testingNotes": "Two different kinds of verification. The formatter half is verified by absence: the decisive check is that yarn prettier:format produces an empty diff, since running that command is what currently breaks the build. The dependency half is verified by assertion: known-answer vectors for seed derivation, yarn why for the resolutions entries, measured advisory counts, and a packaged installer that starts.",
+    "rollbackPlan": "Eight commits, each reverting independently, and the branch reverts cleanly. Reverting the prettier bump alone restores the current formatter divergence, which is a known state rather than a broken one. Reverting the tier 2 commit alone restores the advisories. Nothing user visible changes either way.",
+    "securityNotes": [
+      "The lodash and pbkdf2 advisories are the reason the tier 2 commit exists. Neither is reachable as currently called, per the earlier reachability analysis, so this is hygiene rather than an incident response, and it should not be described as urgent.",
+      "The elliptic pin is deliberately out of scope. It is the only item in the wider audit with a plausible path to user funds, and it stays unquantified until the questions about the Trezor path are answered.",
+      "Fixtures must use a published test mnemonic. Never commit a phrase that has ever held funds."
+    ]
+  }
+}
