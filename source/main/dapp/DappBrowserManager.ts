@@ -126,6 +126,13 @@ export class DappBrowserManager {
     return this.activeGuest !== undefined;
   }
 
+  setHidden(hidden: boolean): void {
+    const guestWindow = this.activeGuest?.window;
+    if (!guestWindow || guestWindow.isDestroyed()) return;
+    if (hidden) guestWindow.hide();
+    else guestWindow.show();
+  }
+
   async launch(
     entry: DappCatalogEntry,
     networkGenesis: string,

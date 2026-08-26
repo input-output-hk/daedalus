@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import contractManifest from '../cip30/contracts/contract-manifest.json';
-import { DAPP_CIP30_METHODS } from './dapp';
+import { DAPP_CIP30_METHODS, parseDappConsentRender } from './dapp';
 
 const preloadPath = path.resolve(__dirname, '../../main/preloads/dapp.ts');
 const webpackPath = path.resolve(__dirname, '../../main/webpack.config.js');
@@ -28,5 +28,42 @@ describe('dApp preload contract', () => {
     expect(config.optimization).toEqual(
       expect.objectContaining({ splitChunks: false, runtimeChunk: false })
     );
+  });
+
+  it('accepts only display-safe consent presentations', () => {
+    expect(
+      parseDappConsentRender({
+        type: 'present',
+        request: {
+          requestId: 'request',
+          kind: 'connection',
+          origin: 'https://example.test',
+          walletName: 'Wallet',
+          networkName: 'Preview',
+          scopes: ['connection', 'read'],
+          extensions: [95],
+        },
+      })
+    ).toEqual(
+      expect.objectContaining({
+        type: 'present',
+        request: expect.objectContaining({ requestId: 'request' }),
+      })
+    );
+    expect(() =>
+      parseDappConsentRender({
+        type: 'present',
+        request: {
+          requestId: 'request',
+          kind: 'connection',
+          origin: 'https://example.test',
+          walletName: 'Wallet',
+          networkName: 'Preview',
+          scopes: ['connection'],
+          extensions: [],
+          args: ['replacement'],
+        },
+      })
+    ).toThrow('Invalid dApp consent presentation');
   });
 });

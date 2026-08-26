@@ -88,14 +88,24 @@ export class DappBrowserController {
     }
   }
 
+  setConsentPending(pending: boolean): void {
+    this.manager.setHidden(pending);
+  }
+
   close(): Promise<void> {
     this.stagedLaunches.clear();
     return this.manager.close();
   }
 }
 
+let onDappLifecycleRevoked = (): void => undefined;
+
+export const setDappConsentLifecycleRevoker = (revoke: () => void): void => {
+  onDappLifecycleRevoked = revoke;
+};
+
 const browserController = new DappBrowserController(
-  new DappBrowserManager(),
+  new DappBrowserManager(() => onDappLifecycleRevoked()),
   launcherConfig.nodeConfig.network.genesisHash
 );
 const openChannel = new MainIpcChannel<
@@ -119,3 +129,5 @@ export const handleDappBrowserRequests = (window: BrowserWindow): void => {
 export const closeDappBrowser = (): Promise<void> => browserController.close();
 export const stageDappLaunch = (launch: StagedDappLaunch): string =>
   browserController.stageLaunch(launch);
+export const setDappBrowserConsentPending = (pending: boolean): void =>
+  browserController.setConsentPending(pending);

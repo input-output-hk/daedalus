@@ -1107,6 +1107,61 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Connect dApp",
+        "description": "Title for a dApp connection approval dialog.",
+        "id": "dapp.consent.connection.title"
+      },
+      {
+        "defaultMessage": "!!!Share wallet public keys",
+        "description": "Title for elevated public-key disclosure approval.",
+        "id": "dapp.consent.keyDisclosure.title"
+      },
+      {
+        "defaultMessage": "!!!Origin: {origin}",
+        "description": "Remote dApp origin requesting consent.",
+        "id": "dapp.consent.origin"
+      },
+      {
+        "defaultMessage": "!!!Wallet: {wallet}",
+        "description": "Wallet selected for a dApp consent request.",
+        "id": "dapp.consent.wallet"
+      },
+      {
+        "defaultMessage": "!!!Network: {network}",
+        "description": "Network selected for a dApp consent request.",
+        "id": "dapp.consent.network"
+      },
+      {
+        "defaultMessage": "!!!Permissions: {scopes}",
+        "description": "Permissions requested by a dApp.",
+        "id": "dapp.consent.scopes"
+      },
+      {
+        "defaultMessage": "!!!Extensions: {extensions}",
+        "description": "CIP extensions requested by a dApp.",
+        "id": "dapp.consent.extensions"
+      },
+      {
+        "defaultMessage": "!!!Public keys can correlate wallet and governance activity. Share them only with a dApp you trust.",
+        "description": "Privacy warning before elevated public-key disclosure.",
+        "id": "dapp.consent.keyDisclosure.warning"
+      },
+      {
+        "defaultMessage": "!!!Reject",
+        "description": "Reject a dApp consent request.",
+        "id": "dapp.consent.reject"
+      },
+      {
+        "defaultMessage": "!!!Approve",
+        "description": "Approve a dApp consent request.",
+        "id": "dapp.consent.approve"
+      }
+    ],
+    "path": "source/renderer/app/components/dapp-consent/DappConsentDialog.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Connect your device and enter your PIN to unlock it",
         "description": "\"Connect your device and enter your PIN to unlock it\" device state",
         "id": "wallet.hardware.deviceStatus.connecting"

@@ -23,6 +23,12 @@ const productionFiles = parsed.fileNames
       file.startsWith(path.join(root, 'source/renderer/'))
   )
   .filter((file) => !/\.(spec|test)\.[jt]sx?$/.test(file));
+// These runtime fixtures deliberately construct wrappers and send raw hostile IPC.
+const wrapperAuditFiles = productionFiles.filter(
+  (file) =>
+    !file.endsWith('/source/main/dapp/DappGuestSecurityHarness.ts') &&
+    !file.endsWith('/source/main/preloads/dappSecurityHarness.ts')
+);
 const program = ts.createProgram(productionFiles, parsed.options);
 const checker = program.getTypeChecker();
 const relative = (file: string) =>
@@ -386,7 +392,7 @@ const {
   main: mainConstructions,
   renderer: rendererConstructions,
   unresolved: unresolvedWrapperConstructions,
-} = collectConstructions(program, productionFiles);
+} = collectConstructions(program, wrapperAuditFiles);
 
 type Registration = {
   contract: string;
@@ -776,9 +782,9 @@ const findRawElectronCalls = (
 describe('privileged IPC manifest', () => {
   it('matches every live constructor, transport, and renderer adapter exactly once', () => {
     expect(unresolvedWrapperConstructions).toEqual([]);
-    expect(privilegedIpcManifest).toHaveLength(79);
-    expect(mainConstructions).toHaveLength(79);
-    expect(rendererConstructions).toHaveLength(79);
+    expect(privilegedIpcManifest).toHaveLength(80);
+    expect(mainConstructions).toHaveLength(80);
+    expect(rendererConstructions).toHaveLength(80);
     const expected = privilegedIpcManifest
       .map(({ contract, constructorOwner: owner, transport }) => ({
         contract,
@@ -854,7 +860,7 @@ describe('privileged IPC manifest', () => {
   });
 
   it('detects the frozen Electron 41 declaration set and evasions', () => {
-    expect(findRawElectronCalls(program, productionFiles)).toEqual([]);
+    expect(findRawElectronCalls(program, wrapperAuditFiles)).toEqual([]);
     expect([
       [...ipcMainMethods].sort(),
       [...rendererMethods].sort(),

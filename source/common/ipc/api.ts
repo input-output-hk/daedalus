@@ -188,6 +188,25 @@ export const DAPP_BROWSER_CLOSE_CHANNEL = 'DAPP_BROWSER_CLOSE_CHANNEL';
 export type DappBrowserCloseRendererRequest = void;
 export type DappBrowserCloseMainResponse = void;
 
+export const DAPP_CONSENT_RENDER_CHANNEL = 'DAPP_CONSENT_RENDER_CHANNEL';
+export type DappConsentKind = 'connection' | 'key-disclosure';
+export type DappConsentPresentation = Readonly<{
+  requestId: string;
+  kind: DappConsentKind;
+  origin: string;
+  walletName: string;
+  networkName: string;
+  scopes: readonly string[];
+  extensions: readonly number[];
+}>;
+export type DappConsentRenderMainRequest =
+  | Readonly<{ type: 'present'; request: DappConsentPresentation }>
+  | Readonly<{ type: 'terminal'; requestId: string }>;
+export type DappConsentRenderRendererResponse = Readonly<{
+  requestId: string;
+  approved: boolean;
+}> | void;
+
 /**
  * Channel for opening a local directory in the default desktop explorer
  */
