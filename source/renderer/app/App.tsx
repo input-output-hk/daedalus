@@ -25,6 +25,7 @@ import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTS
 import { MenuUpdater } from './containers/MenuUpdater';
 import { AnalyticsProvider } from './components/analytics';
 import { AnalyticsTracker } from './analytics';
+import DappConsentDialog from './components/dapp-consent/DappConsentDialog';
 
 @observer
 class App extends Component<{
@@ -40,7 +41,7 @@ class App extends Component<{
 
   render() {
     const { stores, actions, history } = this.props;
-    const { app } = stores;
+    const { app, cip30Consent } = stores;
     const { isActiveDialog, isSetupPage } = app;
     const locale = stores.profile.currentLocale;
     const { currentTheme } = stores.profile;
@@ -90,6 +91,14 @@ class App extends Component<{
                     <ToggleRTSFlagsDialogContainer key="toggleRTSFlagsDialog" />
                   ),
                 ]}
+                {cip30Consent.current && (
+                  <DappConsentDialog
+                    request={cip30Consent.current}
+                    deciding={cip30Consent.deciding}
+                    onApprove={cip30Consent.approve}
+                    onReject={cip30Consent.reject}
+                  />
+                )}
                 <RTSFlagsRecommendationOverlayContainer />
                 <NotificationsContainer />
                 {canShowNews && [

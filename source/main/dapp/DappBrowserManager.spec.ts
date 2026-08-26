@@ -51,6 +51,7 @@ const makeWindow = (load = Promise.resolve()) => {
     webContents,
     loadURL: jest.fn(() => load),
     show: jest.fn(),
+    hide: jest.fn(),
     setTitle: jest.fn(),
     isDestroyed: jest.fn(() => destroyed),
     destroy: jest.fn(() => {
@@ -127,6 +128,20 @@ describe('DappBrowserManager', () => {
     await launched;
     expect(window.show).toHaveBeenCalledTimes(1);
     expect(manager.isOpen).toBe(true);
+  });
+
+  test('hides and restores the active guest for trusted consent', async () => {
+    const { window } = makeWindow();
+    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    const manager = new DappBrowserManager();
+    await manager.launch(entry, 'genesis', 'Example');
+    window.show.mockClear();
+
+    manager.setHidden(true);
+    manager.setHidden(false);
+
+    expect(window.hide).toHaveBeenCalledTimes(1);
+    expect(window.show).toHaveBeenCalledTimes(1);
   });
 
   test('keeps an origin mismatch hidden and clears the guest', async () => {
