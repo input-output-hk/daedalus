@@ -51,7 +51,7 @@ export const deviceDetection = (
 
   const detectDevices = getDetector();
 
-  detectDevices(handleOnAdd, handleOnRemove);
+  return detectDevices(handleOnAdd, handleOnRemove);
 };
 
 export const waitForDevice = () => {

@@ -1003,15 +1003,14 @@
     multiformats "^13.0.1"
     uint8arrays "^5.0.1"
 
-"@cardano-foundation/ledgerjs-hw-app-cardano@7.1.4":
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-7.1.4.tgz#e3e484edf950a871d3d3c87750077565162eee9f"
-  integrity sha512-bkZ78H0m6E22Fe4nN+K0HY0O2lrPk9Pjs/gv0U5xvJyrMqwmR4wm9h8QXd/AwJ084KIhfpCSGDCQ0CN/K++vNw==
+"@cardano-foundation/ledgerjs-hw-app-cardano@8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-8.0.0.tgz#7f6b1dcfcc5b397156507b0c82d25d7595687a68"
+  integrity sha512-hyWBk4HQApPdIvidQOExOP+GxD36WDsgzCz1PAFeJ4heL/b5Bmplyyg03/lA95NDNjjpqgDzN2rJyBHYpqgfmQ==
   dependencies:
     "@ledgerhq/hw-transport" "^6.31.2"
-    base-x "^3.0.5"
-    bech32 "^1.1.4"
-    int64-buffer "^1.0.1"
+    base-x "^5.0.1"
+    bech32 "^2.0.0"
 
 "@cardano-ogmios/client@6.9.0":
   version "6.9.0"
@@ -6494,7 +6493,7 @@ base-x@^3.0.2, base-x@^3.0.5:
   dependencies:
     safe-buffer "^5.0.1"
 
-base-x@^5.0.0:
+base-x@^5.0.0, base-x@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/base-x/-/base-x-5.0.1.tgz#16bf35254be1df8aca15e36b7c1dda74b2aa6b03"
   integrity sha512-M7uio8Zt++eg3jPj+rHMfCC+IuygQHHCOU+IYsVtik6FWjuYpVt/+MRKcgsAMHh8mMFAwnB+Bs+mTrFiXjMzKg==

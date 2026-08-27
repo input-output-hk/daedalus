@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
-  "rootLockSha256": "a5779e15e5f867bf8ecc51e51cedb4be7672d103b89f9c8e59a9d4af9466ac02",
+  "rootLockSha256": "53d018a89212037968c4de3f501ee90c1275e174edd28f915656d61bb92fe889",
   "root": "@trezor/connect@9.7.2:node_modules/@trezor/connect",
-  "graphSha256": "128bf570f72998c57e13c850f9e2e08683155c999f8b9bdba5ebd0e0af78558f",
+  "graphSha256": "af4d4b0f2f3609128440cf90964c38a2b1fad2e40f96123bd8a3a2a3b49916a1",
   "configIdentity": {
     "files": [
       {
@@ -1564,8 +1564,8 @@
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 867,
-        "sha256": "3aa70b3452786d2e4fab6e10999c9c6320f2524d4e21ca06661560a0f2b40f31"
+        "fileCount": 861,
+        "sha256": "40ae492dad786003be42364978917236170b33ed9cf20f29cd0146a418135889"
       }
     },
     {
@@ -1780,8 +1780,8 @@
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 156,
-        "sha256": "6da13b39a2d99c1f751aec919400e0fb638c8f2346da96e60268580b956db69c"
+        "fileCount": 143,
+        "sha256": "c4e81f99b102f7898a90d78a3930a056507301b9cb0b51e92fd555a166dbda25"
       }
     },
     {
@@ -1983,46 +1983,10 @@
       }
     },
     {
-      "id": "base-x@5.0.1:node_modules/@trezor/connect/node_modules/base-x",
+      "id": "base-x@5.0.1:node_modules/base-x",
       "name": "base-x",
       "version": "5.0.1",
-      "path": "node_modules/@trezor/connect/node_modules/base-x",
-      "lockSelectors": ["base-x@^5.0.0"],
-      "lockIdentity": {
-        "resolved": "https://registry.yarnpkg.com/base-x/-/base-x-5.0.1.tgz#16bf35254be1df8aca15e36b7c1dda74b2aa6b03",
-        "sha1": "16bf35254be1df8aca15e36b7c1dda74b2aa6b03",
-        "integrity": "sha512-M7uio8Zt++eg3jPj+rHMfCC+IuygQHHCOU+IYsVtik6FWjuYpVt/+MRKcgsAMHh8mMFAwnB+Bs+mTrFiXjMzKg==",
-        "integritySource": "yarn.lock"
-      },
-      "packageTree": {
-        "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 6,
-        "sha256": "e0ac39262e197f51ee2d9b9ba5255b2570234148a4068ca846adc0e6a02b2a6c"
-      }
-    },
-    {
-      "id": "base-x@5.0.1:node_modules/@trezor/utxo-lib/node_modules/base-x",
-      "name": "base-x",
-      "version": "5.0.1",
-      "path": "node_modules/@trezor/utxo-lib/node_modules/base-x",
-      "lockSelectors": ["base-x@^5.0.0"],
-      "lockIdentity": {
-        "resolved": "https://registry.yarnpkg.com/base-x/-/base-x-5.0.1.tgz#16bf35254be1df8aca15e36b7c1dda74b2aa6b03",
-        "sha1": "16bf35254be1df8aca15e36b7c1dda74b2aa6b03",
-        "integrity": "sha512-M7uio8Zt++eg3jPj+rHMfCC+IuygQHHCOU+IYsVtik6FWjuYpVt/+MRKcgsAMHh8mMFAwnB+Bs+mTrFiXjMzKg==",
-        "integritySource": "yarn.lock"
-      },
-      "packageTree": {
-        "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 6,
-        "sha256": "e0ac39262e197f51ee2d9b9ba5255b2570234148a4068ca846adc0e6a02b2a6c"
-      }
-    },
-    {
-      "id": "base-x@5.0.1:node_modules/bs58check/node_modules/base-x",
-      "name": "base-x",
-      "version": "5.0.1",
-      "path": "node_modules/bs58check/node_modules/base-x",
+      "path": "node_modules/base-x",
       "lockSelectors": ["base-x@^5.0.0"],
       "lockIdentity": {
         "resolved": "https://registry.yarnpkg.com/base-x/-/base-x-5.0.1.tgz#16bf35254be1df8aca15e36b7c1dda74b2aa6b03",
@@ -2266,8 +2230,8 @@
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 75,
-        "sha256": "1e80ce3a40c5c84d635dc161b541967e08a5bc68b98a8890da7c2e88a3028e84"
+        "fileCount": 58,
+        "sha256": "3964985ab6f4d98da8ea4d4adb7122965a02461afd31af16f9cb14f5894ae064"
       }
     },
     {
@@ -2590,8 +2554,8 @@
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 163,
-        "sha256": "f15f90f4caaef1e3ed466523637d6dcebaa96a7ac80545acfa448bec364b65c7"
+        "fileCount": 157,
+        "sha256": "3f7f9af5b6925db58346bc366220f104acb550086804024e1ed568b402071fc5"
       }
     },
     {
@@ -3803,10 +3767,10 @@
       }
     },
     {
-      "id": "int64-buffer@1.1.0:node_modules/@trezor/utxo-lib/node_modules/int64-buffer",
+      "id": "int64-buffer@1.1.0:node_modules/int64-buffer",
       "name": "int64-buffer",
       "version": "1.1.0",
-      "path": "node_modules/@trezor/utxo-lib/node_modules/int64-buffer",
+      "path": "node_modules/int64-buffer",
       "lockSelectors": ["int64-buffer@^1.1.0"],
       "lockIdentity": {
         "resolved": "https://registry.yarnpkg.com/int64-buffer/-/int64-buffer-1.1.0.tgz#7ebe9822196a93bbedf93ec6b73b569561b5ae3a",
@@ -4786,8 +4750,8 @@
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 131,
-        "sha256": "dfa56303154f1c3d9873a774715fe448e56d1a6bfc83e072b570038e11ac9108"
+        "fileCount": 121,
+        "sha256": "fac5c200d19b029dc5bc4a91e6ce31240cd220b761f153edfec152b3fdcaee09"
       }
     },
     {
@@ -5002,8 +4966,8 @@
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 229,
-        "sha256": "fa52445409fc14450eaa2a66264fd4a7a6421d23eede4a3a11de91f6dca7df79"
+        "fileCount": 240,
+        "sha256": "1095dae3bcf3db43b283b096fee55c900606cf471b64caa1e4598eee4d63409c"
       }
     },
     {
@@ -6718,7 +6682,7 @@
     {
       "from": "@trezor/utxo-lib@2.5.0:node_modules/@trezor/utxo-lib",
       "dependency": "int64-buffer",
-      "to": "int64-buffer@1.1.0:node_modules/@trezor/utxo-lib/node_modules/int64-buffer"
+      "to": "int64-buffer@1.1.0:node_modules/int64-buffer"
     },
     {
       "from": "@trezor/utxo-lib@2.5.0:node_modules/@trezor/utxo-lib",
@@ -6963,17 +6927,17 @@
     {
       "from": "bs58@6.0.0:node_modules/@trezor/connect/node_modules/bs58",
       "dependency": "base-x",
-      "to": "base-x@5.0.1:node_modules/@trezor/connect/node_modules/base-x"
+      "to": "base-x@5.0.1:node_modules/base-x"
     },
     {
       "from": "bs58@6.0.0:node_modules/@trezor/utxo-lib/node_modules/bs58",
       "dependency": "base-x",
-      "to": "base-x@5.0.1:node_modules/@trezor/utxo-lib/node_modules/base-x"
+      "to": "base-x@5.0.1:node_modules/base-x"
     },
     {
       "from": "bs58@6.0.0:node_modules/bs58check/node_modules/bs58",
       "dependency": "base-x",
-      "to": "base-x@5.0.1:node_modules/bs58check/node_modules/base-x"
+      "to": "base-x@5.0.1:node_modules/base-x"
     },
     {
       "from": "bs58check@4.0.0:node_modules/bs58check",
