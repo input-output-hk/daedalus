@@ -189,3 +189,5 @@ export const toLedgerAuxiliaryData = (txAuxiliaryData: TxAuxiliaryData) => {
   // Regular tx has no voting metadata
   return null;
 };
+
+export { toExactLedgerSignTransactionRequest } from '../../../common/hardware/ledgerTransaction';

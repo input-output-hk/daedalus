@@ -317,6 +317,12 @@ export type HardwareOwnedAddress = Readonly<{
   paymentPath?: readonly number[];
   stakePath?: readonly number[];
 }>;
+export type HardwareOwnedInput = Readonly<{
+  transactionId: string;
+  index: bigint;
+  path: readonly number[];
+  role: 'normal' | 'collateral';
+}>;
 
 export type HardwareWitnessExpectation = Readonly<{
   requiredKeyHashes: readonly string[];
@@ -333,6 +339,7 @@ export type HardwareExactTransaction = Readonly<{
   network: DappNetwork;
   partialSign: boolean;
   signers: readonly HardwareSigner[];
+  ownedInputs: readonly HardwareOwnedInput[];
   ownedOutputs: readonly HardwareOwnedAddress[];
   witnesses: HardwareWitnessExpectation;
   capability: HardwareTransactionCapability;
