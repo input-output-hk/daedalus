@@ -2,17 +2,29 @@
 
 ## Overview
 
-One branch of dependency work with two halves that belong together.
+One branch of dependency work with three parts that belong together, because
+each one is a case of the same thing: a version or a default that governs
+Daedalus without anything in the repository asserting it.
 
-The first half makes a single prettier version govern the repository. The
+The first part makes a single prettier version govern the repository. The
 version named in `package.json` and the version `nix fmt` runs are different
-majors, and they disagree about 210 files on a clean checkout of `master`. The
-second half takes the runtime dependency bumps that are safe to take now,
-clears two advisories that a `resolutions` block is currently holding shut, and
-adds the known-answer tests the crypto path has never had.
+majors, and they disagree about 210 files on a clean checkout of `master`.
+
+The second part makes wallet entropy and seed derivation provable. Recovery
+phrases are generated in the renderer from an entropy source this repository
+never names, and the `bip39` bump in the third part replaces that source. So the
+conformance assertions are established first, against the published BIP39
+vectors, and the entropy source becomes a first-party module before anything
+underneath it moves.
+
+The third part takes the runtime dependency bumps that are safe to take now and
+clears two advisories a `resolutions` block is currently holding shut, one of
+which is a cryptographic correctness bug in `pbkdf2`.
 
 No formatting option changes. No framework migrations. Nothing that needs
-physical hardware or a human eye to verify.
+physical hardware or a human eye to verify. The one source change outside the
+test tree is the entropy argument at `crypto.ts:54`, and the reasoning for
+taking it is in Locked Planning Decisions.
 
 ## Problem Statement
 
@@ -87,6 +99,59 @@ the output for every input would produce a different seed, validate it happily,
 and leave every check green. `bip39` 3.1.0 replaced its internal hashing
 implementation, which is precisely that kind of change.
 
+### Wallet entropy is a transitive default, and this branch changes it
+
+`AdaApi.getWalletRecoveryPhrase` (`source/renderer/app/api/api.ts:1533`)
+generates the 24-word recovery phrase in the renderer. That phrase is the seed
+for every wallet Daedalus creates. `crypto.ts:54` produces it with
+`bip39.generateMnemonic(ent, null, validWords)`, and the `null` in the second
+position is the entropy source.
+
+The chain behind that `null` is four hops deep, and Daedalus asserts none of it:
+
+```
+crypto.ts:54   bip39.generateMnemonic(256, null, validWords)
+bip39 3.0.4    rng = rng || randomBytes            require('randombytes')
+randombytes    browser.js, because webpack is target: 'web'
+               global.crypto.getRandomValues       Chromium CSPRNG
+               or module.exports = oldBrowser, which throws
+```
+
+Current behaviour is sound. `randombytes/browser.js` fails closed: absent
+`crypto.getRandomValues` it exports a function that throws, and no weaker
+fallback exists anywhere on the path. The problem is that this is inherited
+rather than asserted, and the tier 2 bump replaces it wholesale:
+
+```
+3.0.4:  rng = rng || randomBytes
+3.1.0:  rng = rng || (size => Buffer.from(utils_1.randomBytes(size)))
+```
+
+`bip39` 3.1.0 drops `create-hash`, `pbkdf2` and `randombytes` for
+`@noble/hashes`, whose `randomBytes` also fails closed, so the substitution is
+not itself a weakening. It is a silent replacement of the entropy source for
+every wallet the application creates, arriving as one line of a lockfile diff,
+observed by nothing.
+
+### A skipped test has hidden a broken crypto path since 2021
+
+`generateMnemonic(9)` maps a 9-word request to 96 bits of entropy. BIP39's
+minimum is 128, so `entropyToMnemonic` rejects it and the call throws
+`Invalid entropy`. `generateAdditionalMnemonics` is that call, and
+`WalletsStore._generateCertificate` reaches it at line 1433, so paper wallet
+certificate creation fails.
+
+The scenario covering it,
+`tests/wallets/unit/features/scrambling-and-unscrambling-mnemonics.feature`,
+was retagged from `@unit` to `@unit @skip` on 2021-06-13 in `c6dd7d9fe`, a
+pull request titled "Fix automated tests setup". `test:unit` runs
+`--tags '@unit and not @skip and not @wip'`, so it has not executed since. A
+crypto test was switched off during a test-setup repair and the defect
+underneath it survived five years of green builds.
+
+That is the failure mode this branch is being widened to prevent, already
+realised in this repository.
+
 ### 58 runtime dependencies are behind, and the reasons differ
 
 Of 93 declared runtime dependencies, 58 have a non-major upgrade available.
@@ -106,8 +171,13 @@ sorts them, and this branch takes two of the tiers.
   drift fails a check that names the cause.
 - The `lodash` and `pbkdf2` advisories are cleared in both places they are
   pinned, with the advisory count measured before and after.
-- Mnemonic and seed derivation has a fixed input with a known expected output,
-  so a future dependency change cannot silently alter it.
+- Mnemonic and seed derivation is asserted against the published BIP39 test
+  vectors, on both pbkdf2 resolutions, before the bumps and after them.
+- The entropy behind wallet generation is a first-party module with explicit
+  failure behaviour, not whatever a transitive dependency currently defaults to.
+- Weakening the entropy path cannot happen quietly. It requires visibly editing
+  files named for that purpose, and it fails checks named for that purpose.
+- The crypto assertions run on every CI build, as constituents of `required`.
 - The mechanical and consequential runtime bumps are taken, and everything not
   taken has a written reason.
 
@@ -151,8 +221,17 @@ sorts them, and this branch takes two of the tiers.
 - `perSystem/formatter.nix`, `perSystem/checks.nix`, `flake.nix`
 - `nix/internal/common.nix`, `nix/internal/any-darwin.nix`
 - `source/renderer/app/utils/crypto.ts`
-- `source/renderer/webpack.config.js`
-- `tests/wallets/unit/steps/mnemonics.ts`
+- `source/renderer/app/api/api.ts`, `source/renderer/app/api/utils/mnemonics.ts`
+- `source/renderer/app/stores/WalletsStore.ts`
+- `source/common/config/crypto/valid-words.en.ts`
+- `source/renderer/webpack.config.js`, `jest.config.js`, `.eslintrc`
+- `tests/wallets/unit/steps/mnemonics.ts` and the two `@unit` feature files
+- `node_modules/bip39@3.0.4/src/index.js` and `bip39@3.1.0/src/index.js`
+- `node_modules/randombytes/browser.js`, `@noble/hashes/utils.js`
+- `node_modules/pbkdf2/package.json`, its `browser` field, and both
+  implementations
+- The published BIP39 vectors, `trezor/python-mnemonic`, `vectors.json`
+- The OSV advisory records for `pbkdf2@3.1.2` and `lodash@4.17.21`
 - `treefmt-nix/programs/prettier.nix` from the pinned flake input
 
 ## Locked Planning Decisions
@@ -176,6 +255,20 @@ sorts them, and this branch takes two of the tiers.
   category rather than on a 20 package diff.
 - The unused-dependency question is investigated and written down on this
   branch. No dependency is removed here.
+- The branch takes one source change to the crypto path, and takes it before the
+  tier 2 bumps: entropy generation becomes an explicit first-party dependency of
+  `generateMnemonic` rather than a bip39 default. The earlier constraint
+  excluding source changes was written for a formatter bump, and is wrong for a
+  branch that replaces the entropy source underneath wallet creation.
+- Known-answer values come from the published BIP39 vectors, not from this
+  implementation's current output. A self-captured value proves the output did
+  not change; it cannot prove the output was ever right. Both are available
+  here, so the standard is what the suite asserts.
+- The crypto assertions cover both pbkdf2 resolutions, because
+  `webpack.config.js` is `target: 'web'` and ships `pbkdf2/browser.js`, while
+  Jest resolves `main` and exercises the Node implementation.
+- No crypto test on this branch may be skipped, and deleting one must fail a
+  check rather than reduce coverage silently.
 
 ## Requirements
 
@@ -193,12 +286,32 @@ Formatter parity:
 - [ ] A check fails, naming both versions, when the prettier in `package.json`
       and the prettier treefmt runs differ
 
-Test coverage:
+Crypto assurance:
 
-- [ ] `source/renderer/app/utils/crypto.ts` has a colocated spec asserting
-      `mnemonicToSeedHex` against fixed mnemonic and password inputs with known
-      expected output
-- [ ] That spec is committed and green **before** any tier 2 bump
+- [ ] The 24 published BIP39 English vectors are committed as a fixture with
+      their upstream source recorded
+- [ ] The fixture's entry count is asserted, so removing a vector fails the
+      suite rather than quietly reducing coverage
+- [ ] Every vector is asserted for entropy to mnemonic and for mnemonic to seed
+- [ ] Seed assertions run against both the Node and the browser pbkdf2
+      resolution
+- [ ] `secureRandomBytes` exists as a first-party module, throws when no
+      platform CSPRNG is present, and never falls back to a weaker source
+- [ ] `secureRandomBytes` rejects all-zero output and a repeated draw
+- [ ] `generateMnemonic` takes its entropy from `secureRandomBytes` by explicit
+      argument, not from a bip39 default
+- [ ] A provenance test proves the words shown to the user decode back to
+      exactly the bytes the platform CSPRNG produced, with nothing transformed,
+      truncated or discarded on the way
+- [ ] Lint rejects `Math.random`, `Buffer.allocUnsafe`, and
+      `bip39.generateMnemonic` called anywhere but the entropy module
+- [ ] Coverage of `crypto.ts` and `entropy.ts` is thresholded, so deleting a
+      test fails the build
+- [ ] The crypto assertions are a separately named check inside `required`
+- [ ] No crypto scenario carries `@skip` or `@wip`
+- [ ] Every assertion above has been observed to fail when the thing it protects
+      is broken
+- [ ] All of the above are committed and green **before** any tier 2 bump
 
 Dependencies:
 
@@ -231,6 +344,11 @@ Acceptance:
 - **Evidence over prediction.** Advisory counts are measured, not asserted. A
   claim that a bump changes nothing is backed by a check that would have failed
   if it did.
+- **Crypto assertions are not negotiable.** A failing conformance or provenance
+  assertion stops the branch. It is never resolved by updating the expected
+  value, relaxing a threshold, or skipping the scenario. This branch exists in
+  part because that resolution was chosen once before, in 2021, and held for
+  five years.
 
 ## Technical Design
 
@@ -242,7 +360,16 @@ Acceptance:
 - `perSystem/formatter.nix`: drop `programs.prettier.settings`, drop the inert
   prettier `includes` and `excludes`
 - `perSystem/checks.nix`: add the prettier version parity check
-- `source/renderer/app/utils/crypto.spec.ts`: new
+- `source/renderer/app/utils/entropy.ts`: new, the first-party CSPRNG wrapper
+- `source/renderer/app/utils/entropy.spec.ts`: new, guard and failure-mode tests
+- `source/renderer/app/utils/crypto.ts`: one line, passing `secureRandomBytes`
+  to `bip39.generateMnemonic` in place of `null`
+- `source/renderer/app/utils/crypto.spec.ts`: new, the vector and provenance
+  suite
+- `source/renderer/app/utils/__fixtures__/bip39-vectors.json`: new, the
+  published English vectors
+- `.eslintrc`: restricted globals and properties on the crypto path
+- `jest.config.js`: coverage thresholds for the crypto path
 - `.agent/skills/theme-management/SKILL.md`: `--loglevel` references
 - `.agent/findings/`: new finding for the unused-dependency question
 - `.agent/plans/readme.md`: plan index entry
@@ -331,25 +458,125 @@ Both lines move with their `dependencies` counterparts in the same commit.
 installed version actually moved, because a stale `resolutions` entry produces
 a diff that looks correct and installs the old version.
 
-### Crypto known-answer tests
+### Crypto assurance
 
-The new spec asserts `mnemonicToSeedHex` against a fixed mnemonic and password
-with a known expected hex output, plus `generateMnemonic` and the scramble
-round trip against fixed input. The expected values are captured from the
-current implementation **before** any tier 2 bump, so the test witnesses the
-change rather than being written to match its result.
+The phase opens by asserting where the implementation stands today, against the
+standard rather than against itself, and every later step preserves that
+assertion.
 
-If a tier 2 bump makes the spec fail, that is the test doing its job. The bump
-stops and the change is investigated; the expected value is not updated to
-match.
+**Conformance, measured before anything moves.** The published English vectors
+from `trezor/python-mnemonic` are 24 entries at 12, 18 and 24 words, each giving
+entropy, mnemonic and seed. Current behaviour matches them:
+
+| Assertion | Result |
+|---|---|
+| `mnemonicToSeedHex(vector, 'TREZOR')` | first 32 bytes of the published seed |
+| The same through `pbkdf2/browser.js` | identical |
+| The same with raw `Uint8Array` input | identical |
+| No-password path, `unorm.nfkd(undefined)` | `""`, so the salt is `mnemonic` |
+| `valid-words.en.ts` against `bip39.wordlists.english` | 2048 words, 0 differences |
+
+`mnemonicToSeedHex` returns 32 bytes where BIP39's seed is 64, so the assertion
+is against the leading half of the published value. That truncation is existing
+behaviour and is not changed here.
+
+**Both resolutions.** `webpack.config.js` is `target: 'web'`, so the shipped
+renderer bundles `pbkdf2/browser.js`. Jest has no `browser: true`, so it
+resolves `main` and exercises the Node implementation. A suite that tests only
+what Jest resolves says nothing about what ships. The spec requires
+`pbkdf2/browser.js` explicitly alongside the default resolution and asserts the
+same vectors on both.
 
 The spec is colocated as `source/renderer/app/utils/crypto.spec.ts`, per the
 repository convention that Jest specs sit next to the unit and `tests/` is
 Cucumber territory.
 
+### The entropy module
+
+`source/renderer/app/utils/entropy.ts` exports one function and states its
+guarantee where a reader will find it:
+
+```ts
+export const secureRandomBytes = (size: number): Buffer => {
+  if (!Number.isInteger(size) || size <= 0 || size > MAX_BYTES) throw ...;
+  const source = globalThis.crypto;
+  if (!source || typeof source.getRandomValues !== 'function') throw ...;
+  const bytes = Buffer.alloc(size);
+  source.getRandomValues(bytes);
+  if (bytes.every((b) => b === 0)) throw ...;
+  if (hex === previous) throw ...;
+  previous = hex;
+  return bytes;
+};
+```
+
+`Buffer.alloc` rather than `allocUnsafe` is deliberate. `randombytes` uses
+`allocUnsafe`, so a fill that silently no-ops yields whatever occupied that heap
+page, which looks random and is not. Zero-filled memory trips the next guard
+instead. The all-zero and repeated-draw checks are the continuous health test a
+DRBG is expected to carry. At 32 bytes a genuine all-zero draw has probability
+2^-256, so rejecting it costs nothing and catches the exact failure named in the
+`pbkdf2` advisory this branch clears.
+
+`crypto.ts:54` then reads:
+
+```ts
+return bip39.generateMnemonic(ent, secureRandomBytes, validWords);
+```
+
+After which no dependency bump can change where wallet entropy comes from.
+
+### Proving the part no vector can reach
+
+Randomness cannot be asserted by a known-answer test. The seam around it can,
+and that is where the assurance lives.
+
+The provenance test stubs `crypto.getRandomValues` to emit a known pattern,
+calls `generateMnemonic(24)`, and asserts that `bip39.mnemonicToEntropy` of the
+result equals exactly those bytes. One assertion proves that the entropy came
+from the platform CSPRNG, that all 256 bits reached the phrase, and that nothing
+transformed, truncated or discarded them on the way. It cannot be passed by an
+implementation that sources entropy anywhere else.
+
+Around it sit the failure-mode tests: `secureRandomBytes` throws with no
+`getRandomValues`, throws on all-zero output, throws on a repeated draw, and
+returns the source bytes unmodified. `generateMnemonic(24)` requests exactly 32
+bytes. Fed a vector's entropy, it returns that vector's exact mnemonic, which
+joins the random path to the proven one.
+
+### What stops a single commit from weakening this
+
+No check in a repository can defend itself against a commit that also edits the
+check. The achievable guarantees are narrower than that, and worth stating
+precisely, because overstating them is its own risk.
+
+**Nothing weakens quietly.** Four independent controls have to be defeated, and
+each is named for what it protects:
+
+1. The vector suite fails if derivation output moves.
+2. The provenance test fails if entropy stops coming from the platform CSPRNG.
+3. Lint rejects `Math.random`, `Buffer.allocUnsafe`, and
+   `bip39.generateMnemonic` called anywhere but the entropy module, so the
+   obvious substitutions do not lint clean.
+4. A coverage threshold on `crypto.ts` and `entropy.ts` fails the build when a
+   test is deleted rather than fixed, which is the specific move that hid the
+   9-word defect for five years.
+
+Defeating them means editing `entropy.ts`, `crypto.spec.ts`, `.eslintrc`,
+`jest.config.js` and `perSystem/checks.nix` in one commit. That is not a diff a
+reviewer reads as routine, which is the point. The control is not that
+weakening is impossible; it is that weakening cannot be mistaken for something
+else.
+
+**Weakening requires a second party.** The only control a single commit
+genuinely cannot pass is a human one. This repository has no `CODEOWNERS` file.
+Adding one that names the crypto paths, backed by branch protection, converts
+"conspicuous" into "requires a second approver". It needs repository
+administrator rights, so it is proposed here rather than implemented here.
+
 ## Implementation Strategy
 
-One branch, eight commits, each independently revertible.
+One branch, thirteen commits, each independently revertible.
 
 1. **`chore(deps): move prettier to 3.6.2`.** Bump, regenerate the lockfile,
    rename `--loglevel` to `--log-level` in the three scripts. Verify the diff is
@@ -363,18 +590,34 @@ One branch, eight commits, each independently revertible.
    depend on.
 4. **`ci(nix): fail when prettier versions diverge`.** Add the parity check.
    Verify it passes, then verify it fails by temporarily editing the pin.
-5. **`test(crypto): add known-answer vectors for seed derivation`.** The new
-   spec, capturing current behaviour. Must be green before step 7.
-6. **`chore(deps): take the mechanical runtime bumps`.** The 13 tier 1
-   packages, one commit.
-7. **`chore(deps): clear the lodash and pbkdf2 advisories`.** The 8 tier 2
-   packages, including both `resolutions` edits. `yarn audit` counts recorded in
-   the commit body.
-8. **`docs(agent): record the unused runtime dependency question`.** The
-   investigation result as a finding. No dependency removed.
+5. **`chore(scripts): run the merge gate in check:all`.** `check:all` calls
+   `nix fmt -- --ci` in place of `yarn prettier:check`, so the documented local
+   pre-flight and the required check become the same command.
+6. **`test(crypto): add the published BIP39 vectors as a fixture`.** The 24
+   English vectors with their upstream source recorded, and the count asserted.
+7. **`test(crypto): assert BIP39 conformance on both pbkdf2 resolutions`.** The
+   vector suite, green on the current dependency set. This is the baseline the
+   rest of the branch preserves.
+8. **`feat(crypto): generate wallet entropy through a first-party CSPRNG`.**
+   `entropy.ts`, its failure-mode spec, and the one-line change at
+   `crypto.ts:54`.
+9. **`test(crypto): prove recovery phrase entropy reaches the phrase intact`.**
+   The provenance test.
+10. **`ci: reject weak randomness and untested crypto`.** Lint restrictions,
+    coverage thresholds, and the separately named `crypto-vectors` check.
+11. **`chore(deps): take the mechanical runtime bumps`.** The 13 tier 1
+    packages, one commit.
+12. **`chore(deps): clear the lodash and pbkdf2 advisories`.** The 8 tier 2
+    packages, including both `resolutions` edits. `yarn audit` counts recorded
+    in the commit body. The suites from steps 7 and 9 pass unchanged, or the
+    bump stops.
+13. **`docs(agent): record the unused runtime dependency question`.** The
+    investigation result as a finding. No dependency removed.
 
 Steps 2 and 3 both edit `perSystem/formatter.nix`; keeping them separate makes
-the second reviewable as a pure deletion. Step 5 precedes step 7 by design.
+the second reviewable as a pure deletion. Steps 6 through 10 all precede step 12
+by design, so the assertions witness the bump rather than being written around
+whatever it produced.
 
 ## Testing Strategy
 
@@ -389,12 +632,19 @@ nix build -L .#checks.x86_64-linux.prettier-version-parity
 # then with the pin set to 3.6.1, the same build must fail
 ```
 
-**Crypto spec (step 5):**
+**Crypto assurance (steps 6 to 10):**
 
 ```bash
 yarn jest source/renderer/app/utils/crypto.spec.ts --coverage=false
-yarn test:unit                       # the existing Cucumber @unit features
+yarn jest source/renderer/app/utils/entropy.spec.ts --coverage=false
+yarn test:jest                       # coverage thresholds apply here
+yarn test:unit                       # the Cucumber @unit features
+nix build -L .#checks.x86_64-linux.crypto-vectors
 ```
+
+Each assertion is also verified to fail: alter one expected vector, stub the
+CSPRNG to return zeros, and route entropy around `secureRandomBytes`. A test
+that has never been observed failing is not evidence.
 
 **Dependency steps (6 and 7):**
 
@@ -440,11 +690,15 @@ formatter. That is the intended outcome.
 ## Open Questions
 
 1. **Should `check:all` run the Nix formatter instead of `yarn prettier:check`?**
-   Once the versions agree, `yarn prettier:check` is a strict subset of
-   `checks.treefmt`, which also covers `.nix` and `.rs`. A contributor can pass
-   `yarn check:all` today and still fail the merge gate on a misformatted
-   `.nix` file. Replacing the step with `nix fmt -- --ci` closes that gap at the
-   cost of making the local pre-flight require Nix. Not decided here.
+   **Decided on 2026-08-27: yes.** CI gates on `required`, which collects every
+   derivation in `checks.x86_64-linux`: `treefmt`, `lint`, `compile`,
+   `stylelint`, `i18n`, `storybook`, `shellcheck`, `jest` and `cucumber-unit`.
+   Nothing in CI runs `yarn check:all` or `yarn prettier:check`. So `check:all`
+   is already a local mirror of the required set, and the formatter was the one
+   member it mirrored with the wrong tool. The accepted cost is that
+   `nix fmt -- --ci` writes to the working tree where `yarn prettier:check` only
+   reads, and that the local pre-flight now requires Nix, which every other
+   workflow in this repository already does.
 2. **What happens to the unused-looking dependencies once classified?** Removal
    is the obvious answer for anything genuinely stranded, but it needs its own
    branch and a packaged build to verify, because a wrongly removed dependency
@@ -456,9 +710,29 @@ formatter. That is the intended outcome.
    branch, but it is the only item in the wider audit with a plausible path to
    user funds, and it stays unquantified until the three Trezor questions are
    answered. Sequencing that work is a separate decision.
+5. **What happens to the 9-word paper wallet defect?** `generateMnemonic(9)`
+   throws, so paper wallet certificate creation is broken, and 96 bits would sit
+   below BIP39's floor even if it worked. Removing the `@skip` tag is required
+   by this branch's own rules, and the tag cannot come off while the function it
+   covers throws. Whether that means repairing the flow, retiring it, or
+   narrowing the scenario to the restore path that still works is a product
+   decision rather than a dependency one, and it is the one item here that
+   blocks the branch closing.
+
+## Status Log
+
+Append-only. New entries go at the end.
+
+| Date | Entry |
+|---|---|
+| 2026-08-26 | Plan written, status Draft. Formatter divergence and dependency inventory measured at `50e6b84b3`. |
+| 2026-08-27 | Pre-flight re-measured on `chore/dependency-hygiene` at `27f133935`. `yarn prettier:check` reports 210 files and `nix fmt -- --ci` reports 0 changed on the same tree, so the premise holds. `yarn compile` clean, `yarn lint` 0 errors, Jest harness working, `crypto.ts` loads under Jest. |
+| 2026-08-27 | Found that the dev shell's `yarn build:electron` has been aborting on every shell entry: `scripts/rebuild-native-modules.sh` opens with `chmod -R +w node_modules/` under `set -o errexit`, and `node_modules/.cache/storybook/10.5.10` is root-owned. Native modules are not being rebuilt against Electron's ABI. Blocks the packaged-build acceptance step, not the earlier phases. |
+| 2026-08-27 | Open Question 1 decided: `check:all` runs `nix fmt -- --ci`. Recorded there with the reasoning and the accepted cost. |
+| 2026-08-27 | Scope widened, and the decision to exclude source changes reversed. Investigation found wallet entropy sourced from a `bip39` default that this branch's own bump replaces, and a crypto scenario skipped since 2021 hiding a throwing `generateMnemonic(9)`. Phase 3 becomes a crypto assurance phase, beginning by asserting current conformance against the published BIP39 vectors and ending with controls that make a later weakening conspicuous. Status In Progress. |
 
 ---
 
-**Status:** Draft
-**Date:** 2026-08-26
+**Status:** In Progress
+**Date:** 2026-08-27
 **Author:** Se7en Labs
