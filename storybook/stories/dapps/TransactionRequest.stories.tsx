@@ -73,6 +73,39 @@ storiesOf('dApps / TransactionRequest', module)
       onReject={action('reject')}
     />
   ))
+  .add('Governance signing review', () => (
+    <Cip30TransactionApproval
+      request={request('transaction-sign', {
+        effects: [
+          {
+            index: 0,
+            kind: 'certificate',
+            value: JSON.stringify(
+              {
+                kind: 16,
+                credentialIdentities: [`key:${'33'.repeat(28)}`],
+                targetCredentialIdentities: [],
+              },
+              null,
+              2
+            ),
+          },
+          {
+            index: 1,
+            kind: 'vote',
+            value: JSON.stringify(
+              { voter: `drep-key:${'33'.repeat(28)}`, vote: 'yes' },
+              null,
+              2
+            ),
+          },
+        ],
+      })}
+      deciding={false}
+      onApprove={action('sign governance transaction')}
+      onReject={action('reject')}
+    />
+  ))
   .add('Submission review', () => (
     <Cip30TransactionApproval
       request={request('transaction-submit', {

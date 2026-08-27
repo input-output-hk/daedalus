@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { randomUUID } from 'crypto';
+import { blake2b } from 'blakejs';
 import { ipcMain } from 'electron';
 import type { IpcMainInvokeEvent } from 'electron';
 import {
@@ -406,15 +407,12 @@ export class Cip30Broker {
       throw invalidRequestRejection();
     }
     const { evidence, context } = await this.capabilityEvidence(binding);
-    const current = this.options.sessions.currentForGuest(
-      binding.authority.guestWebContentsId
-    );
-    if (current?.enabledExtensions.includes(95)) throw refusal();
     const capability = this.options.dispatcher.requireCapability(
       request.method,
       binding.authority,
       context
     );
+    const cip95 = capability.enabledExtensions.includes(95);
     if (evidence.walletKind !== 'shelley-software')
       throw txSignRejection(1, 'Proof generation failed');
 
@@ -446,6 +444,22 @@ export class Cip30Broker {
     const transaction = snapshot.transactionsSemantic[0];
     if (!transaction) throw internal();
     const review = createCip30TransactionReview(transaction, 'sign');
+    const requiredDrepKeyHashes =
+      partialSign || !cip95
+        ? []
+        : [
+            ...transaction.certificates.flatMap(({ value }) =>
+              [16, 17, 18].includes(value.kind)
+                ? value.credentialIdentities
+                    .filter((identity) => identity.startsWith('key:'))
+                    .map((identity) => identity.slice(4))
+                : []
+            ),
+            ...transaction.governance.votes
+              .map(({ voter }) => voter.id)
+              .filter((identity) => identity.startsWith('2:'))
+              .map((identity) => identity.slice(2)),
+          ];
     const result = await this.options.consent.request({
       identity: {
         guestWebContentsId: binding.authority.guestWebContentsId,
@@ -461,7 +475,9 @@ export class Cip30Broker {
         origin: binding.authority.origin,
         walletName: evidence.walletName,
         networkName: this.options.networkName,
-        scopes: ['transaction-signing'],
+        scopes: [
+          cip95 ? 'governance-transaction-signing' : 'transaction-signing',
+        ],
         extensions: capability.enabledExtensions,
         review,
       },
@@ -472,12 +488,7 @@ export class Cip30Broker {
           throw txSignRejection(1, 'Proof generation failed');
         this.assertCurrent(binding);
         const latest = await this.capabilityEvidence(binding);
-        if (
-          latest.evidence.walletKind !== 'shelley-software' ||
-          this.options.sessions
-            .currentForGuest(binding.authority.guestWebContentsId)
-            ?.enabledExtensions.includes(95)
-        )
+        if (latest.evidence.walletKind !== 'shelley-software')
           throw txSignRejection(1, 'Proof generation failed');
         this.options.dispatcher.requireCapability(
           request.method,
@@ -512,7 +523,8 @@ export class Cip30Broker {
           return diffVKeyWitnesses(
             transaction.envelope,
             witness.body_hash,
-            Buffer.from(witness.witness_set_cbor, 'hex')
+            Buffer.from(witness.witness_set_cbor, 'hex'),
+            requiredDrepKeyHashes
           ).toString('hex');
         } catch (error) {
           if (error instanceof WitnessSetError) throw internal();
@@ -524,10 +536,23 @@ export class Cip30Broker {
     return result;
   }
 
+  private async drepCredential(binding: Cip30BrokerBinding): Promise<string> {
+    const response = await this.executeWallet(binding, 'cip95-key-state');
+    if (
+      response.status !== 'fulfilled' ||
+      response.operation !== 'cip95-key-state'
+    )
+      throw internal();
+    return Buffer.from(
+      blake2b(Buffer.from(response.value.drep_public_key, 'hex'), undefined, 28)
+    ).toString('hex');
+  }
+
   private async signData(
-    request: DappCip30GatewayRequest<'api.signData'>,
+    request: DappCip30GatewayRequest<'api.signData' | 'api.cip95.signData'>,
     binding: Cip30BrokerBinding
   ) {
+    const cip95 = request.method === 'api.cip95.signData';
     const { evidence, context } = await this.capabilityEvidence(binding);
     const capability = this.options.dispatcher.requireCapability(
       request.method,
@@ -537,10 +562,14 @@ export class Cip30Broker {
     if (evidence.walletKind !== 'shelley-software')
       throw dataSignRejection(1, 'Proof generation failed');
 
+    const drepCredential = cip95
+      ? await this.drepCredential(binding)
+      : undefined;
     let expected: ReturnType<typeof prepareCip8Request>;
     try {
       expected = prepareCip8Request(request.args[0], request.args[1], {
         networkId: binding.authority.network.networkId,
+        ...(drepCredential ? { drepCredential } : {}),
       });
     } catch (error) {
       if (error instanceof Cip8AddressNotPKError)
@@ -563,7 +592,7 @@ export class Cip30Broker {
         origin: binding.authority.origin,
         walletName: evidence.walletName,
         networkName: this.options.networkName,
-        scopes: ['data-signing'],
+        scopes: [cip95 ? 'governance-data-signing' : 'data-signing'],
         extensions: capability.enabledExtensions,
         review,
       },
@@ -581,6 +610,8 @@ export class Cip30Broker {
           binding.authority,
           latest.context
         );
+        if (cip95 && (await this.drepCredential(binding)) !== drepCredential)
+          throw accountChange();
         const response = await this.options.executeWallet({
           operation: 'sign-data',
           walletId: binding.authority.walletId,
@@ -646,7 +677,10 @@ export class Cip30Broker {
         const result = await this.signTx(request, binding);
         return createDappCip30FulfilledEnvelope(request.method, result);
       }
-      if (request.method === 'api.signData') {
+      if (
+        request.method === 'api.signData' ||
+        request.method === 'api.cip95.signData'
+      ) {
         const result = await this.signData(request, binding);
         return createDappCip30FulfilledEnvelope(request.method, result);
       }
