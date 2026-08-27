@@ -2,7 +2,7 @@
 
 ## Overview
 
-Add a wallet-scoped, curated dApp browser to Daedalus with an isolated Electron guest window and a standards-conformant Cardano wallet connector. The connector exposes the current CIP-30 key-wallet API, active key-wallet extensions CIP-95 and CIP-103, and policy-gated proposed extensions CIP-104 and CIP-142. It supports Shelley software wallets, Ledger wallets, and Trezor wallets; Byron wallets are excluded.
+Add a wallet-scoped, curated dApp browser to Daedalus with an isolated Electron guest window and a standards-conformant Cardano wallet connector. The connector exposes the current CIP-30 key-wallet API, active key-wallet extensions CIP-95 and CIP-103, and policy-gated proposed CIP-142. Proposed CIP-104 is terminal-disabled because no interoperable encoding vector was proven. It supports Shelley software wallets, Ledger wallets, and Trezor wallets; Byron wallets are excluded.
 
 Remote dApp content is treated as hostile. It never runs in the existing privileged renderer, never receives the existing preload or IPC surface, and never connects through an external-browser transport. A main-process capability broker authenticates the guest, origin, route-selected wallet, network, negotiated extensions, and exact request bytes. Trusted Daedalus UI owns connection, key-disclosure, signing, data-signing, and submission consent.
 
@@ -27,6 +27,7 @@ The feature also introduces full-ledger transaction context, witness-only softwa
 - Task-401-a completed on 2026-08-26: one main-owned immutable FIFO consent coordinator now issues correlated IDs, retains frozen broker payloads outside the renderer, enforces the five-minute trusted-input inactivity timeout, cancels pre-authorization work on guest/trusted lifecycle loss, lets authorized submissions finish without stale delivery, and hides/restores the guest around global consent. One authenticated awaited trusted-renderer channel drives an App-level MobX dialog with replay-safe decisions, originating-control focus restoration, and localized en-US/ja-JP connection and elevated key-disclosure copy. Focused Jest passed 27 tests, including the 80-channel privileged IPC audit; TypeScript compilation, focused ESLint, i18n validation, and focused Prettier checks passed. Task-402 remains responsible for routing every enable/grant creation or expansion through this coordinator.
 - Task-402 completed on 2026-08-27: the sole guest CIP-30 gateway now authenticates the exact guest top frame, origin, document generation, catalog-or-Diagnostics identity, route lease, wallet, and network before and after every call. Main-owned grants and live sessions compose task-301 capability negotiation with task-401-a-only connection/elevated-disclosure consent; a strict authenticated trusted-renderer executor supplies pinned backend capability, exact empty-transaction context, and source addresses. Provider metadata, `isEnabled`/`enable`/`getExtensions`, network, address, UTxO, balance, pagination, and side-effect-free collateral methods reuse task-300 schemas, task-304 context reconciliation, and task-305 serializers. Future or unnegotiated methods refuse before executor access; offline/sync maps to `InternalError`, account drift suppresses results with `AccountChange`, and node stop/crash revokes sessions. Focused Jest passed 99 tests; TypeScript, focused ESLint/Prettier, and main/renderer builds passed. A direct development Electron preload smoke exited SIGILL under enforced sandboxing; no bypass was used, production launch remains disabled pending tasks 406/407, and installed-package adversarial runtime remains task-802.
 - Task-403 completed on 2026-08-27: the three frozen CIP-95 public-key getters now pass through the existing authenticated broker, capability Dispatcher, and trusted renderer executor only for a negotiated CIP-95 live session with separately persisted `governance-key-disclosure` authority. Strict executor validation accepts only exact lowercase raw 32-byte DRep/stake keys, Daedalus preserves the backend's confirmed/pending/unknown registration classification unchanged, and route/wallet/network drift suppresses stale results. Declined expansion preserves the base grant, while governance disclosure remains independently revocable. The localized global consent now explains stake/DRep governance correlation and separate revocation. Focused Jest passed 53 tests; TypeScript compile, i18n validation, focused ESLint/Prettier, Storybook build, and English/Japanese visual checks passed. Task-504 retains CIP-95 signing.
+- Task-404 completed on 2026-08-27 with the explicit terminal-disabled outcome: the Proposed CIP-104 source, listed implementor references, repository research/history, and pinned backend evidence contain no independently reproducible exact `cbor<Bip32PublicKey>` vector or precise raw-vs-byte-string rule. No positive fixture was invented. The internal known-method contract now records `terminal-disabled`; registry/policy/backend evidence cannot enable 104, the preload omits its namespace even when requested, and direct broker invocation refuses before consent or wallet execution. No xpub, runtime disclosure UI, supported-extension claim, log, telemetry, cache, or backend path exists. Focused contract/registry/preload/broker tests and TypeScript/format checks passed. Reopening requires a separate task with a named implementor release and reproducible byte-exact vector.
 - Task-405 completed on 2026-08-27: the frozen Proposed CIP-142 namespace now reaches the existing authenticated dispatcher without a new schema, backend call, renderer operation, or privileged channel. `api.cip142.getNetworkMagic()` returns the main-owned configured plain-number magic only for a requested and negotiated live CIP-142 capability when the packaged launcher policy has `cip142Revision >= 1`; invocation rechecks the gate, disabled or unnegotiated namespaces remain absent/refused, and a policy change requires a fresh enable handshake. Base `getNetworkId()` is unchanged. Mainnet, preprod, preview, custom, Shelley-genesis, namespace, disabled-policy, and no-executor fixtures passed within 36 focused Jest tests; TypeScript compilation, focused Prettier, and main production build passed. Packaged defaults remain revision 0 disabled.
 - Task-501 completed on 2026-08-27: a strict clone-safe review contract now derives directly from the task-303 `SemanticTransaction`, preserves ordered complete effects and exact body/envelope/witness/isValid/auxiliary identities, and repeats the task-304 completeness gate before approval. The global consent mount routes connection/disclosure and transaction sign/submit presentations without adding another queue or executor. Signing review exposes body identity, warns that `isValid` is unsigned, and shows maximum collateral risk; submission review separately exposes the exact outer envelope. Unknown effects, incomplete commitments, and unresolved collateral disable approval. The obsolete wallet-picker demo and theme token were removed; complete en-US/ja-JP copy and signing/submission/incomplete Storybook states were added. Focused Jest passed 45 tests, TypeScript compilation, i18n validation, focused ESLint/Prettier, and Storybook build passed. Browser verification passed English desktop and Japanese 480px layouts with internal scrolling, correct actions, visible collateral review, and no horizontal overflow. Tasks 503/505 remain the only future review constructors/executors.
 - Task-503 completed on 2026-08-27: base software `api.signTx` now validates exact Conway/network bytes before privileged work, binds one authenticated task-304 context snapshot to the task-501 review, requires fresh global consent and a transient password, and sends the identical original full CBOR/`partialSign` pair to the pinned witness-only backend. Main requires index/body-hash identity, verifies every returned Ed25519 VKey over the exact original body hash, rejects malformed/non-VKey/tampered results, strips existing witnesses, and releases only the canonical fresh VKey delta. Proof/password failure, decline, partial empty `a0`, hardware refusal, and stale authority follow canonical behavior. Negotiated CIP-95 `signTx` remains refused until task-504 installs its override; the task graph now records task-503 as that dependency. Focused Jest passed 61 tests; TypeScript, i18n, focused lint/style/format, Storybook build, and English/Japanese visual interaction checks passed.
@@ -70,7 +71,7 @@ This work matters because a connector that is merely functional but not byte-exa
 - Keep remote content in a separately managed, sandboxed, nonpersistent Electron window.
 - Implement current CIP-30 for key-controlled Shelley wallets.
 - Implement active CIP-30 extensions CIP-95 and CIP-103.
-- Implement proposed CIP-104 and CIP-142 behind explicit policy and interoperability gates.
+- Resolve proposed-extension gates explicitly: CIP-104 is terminal-disabled/omitted; CIP-142 remains policy-gated.
 - Implement exact CIP-8 message signing for base CIP-30 and CIP-95 DRep signing.
 - Support software, Ledger, and Trezor wallets through capability-checked paths.
 - Return exact CIP-30 UTxO, value, address, witness-set, and COSE encodings.
@@ -189,7 +190,7 @@ Task-002 freezes the phase-0 inputs consumed by later production validation:
 | `source/common/cip30/contracts/contractFixtures.spec.ts` | Schema, coverage, exact-byte, signature, Bech32, limit, and structured-clone evidence |
 | `research/02-cip30-wire-contract-evidence.md` | Source revisions, conflict resolutions, ecosystem comparison, reproduction commands, and residual gates |
 
-These remain frozen contract inputs rather than dispatch code. Task-300 now provides their shared strict runtime request and method-result validators, sender-side validated envelope constructors, minimal trusted approval decisions, and defensive preload reconstruction without changing the frozen behavior. CIP-104 remains omitted until task-404 proves one exact positive encoding.
+These remain frozen contract inputs rather than dispatch code. Task-300 now provides their shared strict runtime request and method-result validators, sender-side validated envelope constructors, minimal trusted approval decisions, and defensive preload reconstruction without changing the frozen behavior. Task-404 concluded that CIP-104 remains terminal-disabled and omitted because no exact interoperable encoding was proven.
 
 Task-006 freezes a separate static hardware capability contract at
 `source/common/hardware/fixtures/capability-matrix/` with supporting evidence in
@@ -275,9 +276,9 @@ physical results against exact production artifacts and adapter commits.
 - No nonstandard resolved-results helper is exposed.
 - Daedalus enforces documented product limits: 64 KiB maximum request CBOR for `signTx`/`submitTx` bodies and `signData` payloads, 50 items per CIP-103 batch, and a 100-entry maximum page size, each rejecting with `APIError.InvalidRequest` before side effects; pending consent auto-rejects after five minutes of user inactivity with the canonical declined/refused error.
 - Platform, ledger, backend, and hardware intrinsic capability limits still produce typed failures.
-- Key-wallet extensions in scope are CIP-95, CIP-103, CIP-104, and CIP-142.
+- Key-wallet extensions in scope are CIP-95, CIP-103, and CIP-142; CIP-104 remains a known terminal-disabled contract.
 - CIP-106 and CIP-141 are explicitly excluded and never advertised.
-- CIP-104 and CIP-142 are labeled Proposed and remain policy-gated.
+- CIP-104 and CIP-142 are labeled Proposed; CIP-104 is omitted, while CIP-142 remains policy-gated.
 - CIP-8 is a base/CIP-95 message-signing format, not a negotiated extension.
 - The dApp catalog is bundled and release-versioned initially.
 - Collateral is a persisted soft preference, not a permanent lock.
@@ -298,9 +299,9 @@ physical results against exact production artifacts and adapter commits.
 
 | Wallet kind | Base CIP-30 | CIP-95 | CIP-103 | CIP-104 | CIP-142 |
 |---|---|---|---|---|---|
-| Shelley software | Yes | Yes | Yes | Gated | Gated |
-| Ledger Shelley | Yes, capability checked | Yes, capability checked | Yes, sequential device confirmations | Gated | Gated |
-| Trezor Shelley | Yes, capability checked | Yes, with transaction limitations | Yes, sequential device confirmations | Gated | Gated |
+| Shelley software | Yes | Yes | Yes | Omitted | Gated |
+| Ledger Shelley | Yes, capability checked | Yes, capability checked | Yes, sequential device confirmations | Omitted | Gated |
+| Trezor Shelley | Yes, capability checked | Yes, with transaction limitations | Yes, sequential device confirmations | Omitted | Gated |
 | Byron | No | No | No | No | No |
 | Native-script multisig provider | No | No | No | No | No |
 | Plutus/script wallet provider | No | No | No | No | No |
@@ -312,7 +313,7 @@ physical results against exact production artifacts and adapter commits.
 | CIP-8 | Active | Not an extension | Required by base and CIP-95 `signData` |
 | CIP-95 | Active | Registered | Implement and advertise when fully available |
 | CIP-103 | Active | Registered | Implement and advertise when fully available |
-| CIP-104 | Proposed | Registered | Implement behind proposed-CIP and interoperability gates |
+| CIP-104 | Proposed | Registered | Terminal-disabled and omitted; reopen only with an independently reproducible exact vector |
 | CIP-106 | Proposed | Registered | Excluded; requires a native-script multisig wallet provider |
 | CIP-141 | Proposed | Not registered | Excluded; requires a Plutus/script-wallet provider and has unresolved wire/security defects |
 | CIP-142 | Proposed | Not registered | Implement behind proposed-CIP policy gate |
@@ -398,11 +399,11 @@ physical results against exact production artifacts and adapter commits.
 - [x] Implement base CIP-30 read methods and exact serialization.
 - [x] Implement deprecated `getCollateral` for compatibility while labeling it deprecated internally and in developer documentation.
 - [x] Implement exact CIP-30/CIP-8 `signData`.
-- [ ] Implement witness-only `signTx` for software and hardware wallets.
-- [ ] Implement separately reviewed `submitTx` through wallet-scoped submission.
-- [ ] Implement CIP-95 key getters, DRep `signData`, Conway-aware `signTx`, and error extensions.
+- [x] Implement witness-only `signTx` for software wallets; hardware remains capability-gated.
+- [x] Implement separately reviewed `submitTx` through wallet-scoped submission.
+- [x] Implement CIP-95 key getters, DRep `signData`, Conway-aware `signTx`, and error extensions.
 - [ ] Implement CIP-103 ordered batch signing and submission.
-- [ ] Implement policy-gated CIP-104 account-xpub disclosure after wire interoperability is proven.
+- [x] Resolve CIP-104 interoperability gate: terminal-disabled/omitted because no exact vector was proven.
 - [x] Implement policy-gated CIP-142 network magic.
 - [x] Add complete transaction review for all supported current-era fields.
 - [x] Reconcile dApp submissions after restart through cardano-wallet pending-submission state.
@@ -662,18 +663,12 @@ api.cip103.submitTxs(
 api.cip104.getAccountPub(): Promise<cbor<Bip32PublicKey>>;
 ```
 
-- Return the selected CIP-1852 account xpub at `m/1852'/1815'/account'`.
-- Public key payload is exactly 64 bytes: 32-byte public key plus 32-byte chain code.
-- Convert stored `acct_xvk` or hardware account xpub to raw bytes before encoding.
-- Never expose private or hardened-parent material.
-- Require elevated `account-public-key-disclosure` consent.
-- Explain that disclosure permits indefinite derivation and correlation of past and future non-hardened addresses.
-- Do not log, persist a returned copy, or telemeter the xpub.
-- The grant may persist only when explicitly approved and remains separately revocable.
-
-CIP-104 does not define `Bip32PublicKey` CDDL precisely enough to settle raw bytes versus a CBOR byte string. Daedalus must not advertise CIP-104 until an interoperability task confirms one exact encoding against at least one listed implementor and freezes a golden vector.
-
-Failure to prove one interoperable encoding is a valid terminal gate outcome: CIP-104 remains disabled and omitted, while the rest of the connector may proceed to release.
+- Terminal decision: disabled and omitted.
+- CIP-104 does not define `Bip32PublicKey` CDDL precisely enough to settle raw bytes versus a CBOR byte string.
+- No listed implementor/release supplied an independently reproducible deterministic request/result vector.
+- Daedalus therefore advertises no CIP-104 support, creates no namespace or consent prompt, obtains no xpub, and adds no backend/executor path.
+- The packaged CIP-104 switch cannot override the terminal-disabled descriptor.
+- Future reconsideration requires a new reviewed task with a named implementor/release, deterministic 64-byte account xpub input, exact output CBOR, reproducible command, and byte-for-byte comparison.
 
 ## CIP-142 Contract
 
@@ -1241,11 +1236,10 @@ update.
 
 ### CIP-104 Backend
 
-- Reuse the stored account xpub returned by cardano-wallet's extended account-key API.
-- Hardware account xpubs already stored by Daedalus/cardano-wallet are eligible without reconnecting the device.
-- Decode Bech32 account-xvk form to 64 raw bytes.
-- Encode only after the interoperability task locks the exact CBOR form.
-- Revalidate route account before release.
+No backend path is implemented for the terminal-disabled outcome. The legacy
+account-key API is not connected to the dApp broker and cannot be used as an
+encoding oracle. Future enablement requires the independent vector and privacy
+review described in the CIP-104 contract.
 
 ### Submission
 
@@ -1937,7 +1931,6 @@ All migrations must be versioned, atomic, and fail closed. Wallet funds remain g
 - Confirm exact raw-body and output-span handling for every accepted transaction encoding.
 - Record consolidated upstream maintainer review of the complete task-200-through-task-208 cardano-wallet API range in task-209; upstream acceptance remains the default path before activation and pinning.
 - Confirm volatile-ledger and local-pending snapshot consistency at one chain point.
-- Resolve CIP-104 `Bip32PublicKey` encoding through upstream clarification and interoperability fixtures.
 - Validate Ledger JS 8.x transaction and message behavior before changing the pin.
 - Complete physical Ledger/Trezor firmware/model coverage.
 - Confirm catalog resource allowlists for every preferred dApp.
