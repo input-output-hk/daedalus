@@ -14,9 +14,14 @@ export type ConsentIdentity = Readonly<{
   networkGenesis: string;
 }>;
 
+type ConsentPresentation = DappConsentPresentation extends infer Presentation
+  ? Presentation extends DappConsentPresentation
+    ? Omit<Presentation, 'requestId'>
+    : never
+  : never;
 export type ConsentRequest<T> = Readonly<{
   identity: ConsentIdentity;
-  presentation: Omit<DappConsentPresentation, 'requestId'>;
+  presentation: ConsentPresentation;
   payload: unknown;
   declined: DappCip30Rejection;
   submission?: boolean;

@@ -1052,57 +1052,142 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Transaction request",
-        "description": "\"title\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.title"
+        "defaultMessage": "!!!Review transaction signing request",
+        "description": "Title for a CIP-30 transaction signing review.",
+        "id": "dapp.transaction.approval.signTitle"
       },
       {
-        "defaultMessage": "!!!triggered from {triggeredFrom}",
-        "description": "\"subtitle\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.subtitle"
+        "defaultMessage": "!!!Review transaction submission",
+        "description": "Title for a CIP-30 transaction submission review.",
+        "id": "dapp.transaction.approval.submitTitle"
       },
       {
-        "defaultMessage": "!!!From wallet",
-        "description": "\"fromWalletLabel\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.fromWalletLabel"
+        "defaultMessage": "!!!Sign transaction",
+        "description": "Approve button for transaction signing.",
+        "id": "dapp.transaction.approval.sign"
       },
       {
-        "defaultMessage": "!!!Receiver",
-        "description": "\"receiver\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.receiver.label"
+        "defaultMessage": "!!!Submit transaction",
+        "description": "Approve button for transaction submission.",
+        "id": "dapp.transaction.approval.submit"
       },
       {
-        "defaultMessage": "!!!Select a wallet",
-        "description": "\"walletsDropdownPlaceholder\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.walletsDropdown.placeholder"
+        "defaultMessage": "!!!Reject",
+        "description": "Reject a transaction request.",
+        "id": "dapp.transaction.approval.reject"
       },
       {
-        "defaultMessage": "!!!Add a wallet",
-        "description": "\"addWalletLabel\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.walletsDropdown.addWalletLabel"
+        "defaultMessage": "!!!Request identity",
+        "description": "Heading for dApp, wallet, and network identity.",
+        "id": "dapp.transaction.approval.identity"
       },
       {
-        "defaultMessage": "!!!Transaction fee",
-        "description": "\"transactionFeeLabel\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.transactionFee.label"
+        "defaultMessage": "!!!Transaction effects",
+        "description": "Heading for all decoded transaction effects.",
+        "id": "dapp.transaction.approval.effects"
       },
       {
-        "defaultMessage": "!!!Additional data",
-        "description": "\"additionalDataLabel\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.additionalData.label"
+        "defaultMessage": "!!!Exact-byte verification",
+        "description": "Heading for hashes and exact CBOR.",
+        "id": "dapp.transaction.approval.verification"
       },
       {
-        "defaultMessage": "!!!Meta data",
-        "description": "\"metaDataLabel\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.metaData.label"
+        "defaultMessage": "!!!Signing body hash",
+        "description": "Label for exact transaction body hash.",
+        "id": "dapp.transaction.approval.bodyHash"
       },
       {
-        "defaultMessage": "!!!This wallet does not contain the minimum amount of {adaBalanceRequired} which is required for delegation to be available. Please select a wallet with <b>a minimum amount of {adaBalanceRequired}</b>.",
-        "description": "\"Not enough ada\" error in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.error.notEnoughAda"
+        "defaultMessage": "!!!Exact transaction body CBOR",
+        "description": "Label for exact transaction body bytes.",
+        "id": "dapp.transaction.approval.bodyCbor"
+      },
+      {
+        "defaultMessage": "!!!Submitted envelope digest",
+        "description": "Label for exact full transaction envelope digest.",
+        "id": "dapp.transaction.approval.outerDigest"
+      },
+      {
+        "defaultMessage": "!!!Exact submitted envelope CBOR",
+        "description": "Label for exact full transaction envelope bytes.",
+        "id": "dapp.transaction.approval.outerCbor"
+      },
+      {
+        "defaultMessage": "!!!Exact witness set CBOR",
+        "description": "Label for exact transaction witness-set bytes.",
+        "id": "dapp.transaction.approval.witnesses"
+      },
+      {
+        "defaultMessage": "!!!Exact auxiliary data CBOR",
+        "description": "Label for exact auxiliary-data bytes.",
+        "id": "dapp.transaction.approval.auxiliary"
+      },
+      {
+        "defaultMessage": "!!!Submitted isValid: {value}",
+        "description": "Exact outer transaction isValid value.",
+        "id": "dapp.transaction.approval.isValid"
+      },
+      {
+        "defaultMessage": "!!!Verified auxiliary-data hash",
+        "description": "Label for the verified auxiliary-data commitment.",
+        "id": "dapp.transaction.approval.auxiliaryHash"
+      },
+      {
+        "defaultMessage": "!!!Verified script-data hash",
+        "description": "Label for the verified script-data commitment.",
+        "id": "dapp.transaction.approval.scriptDataHash"
+      },
+      {
+        "defaultMessage": "!!!Verified existing VKey witnesses",
+        "description": "Label for existing verified VKey witnesses.",
+        "id": "dapp.transaction.approval.vkeyWitnesses"
+      },
+      {
+        "defaultMessage": "!!!Verified existing bootstrap witnesses",
+        "description": "Label for existing verified bootstrap witnesses.",
+        "id": "dapp.transaction.approval.bootstrapWitnesses"
+      },
+      {
+        "defaultMessage": "!!!Maximum collateral loss",
+        "description": "Label for maximum collateral at risk.",
+        "id": "dapp.transaction.approval.maximumCollateral"
+      },
+      {
+        "defaultMessage": "!!!No collateral at risk",
+        "description": "Shown when a transaction has no collateral inputs.",
+        "id": "dapp.transaction.approval.noCollateral"
+      },
+      {
+        "defaultMessage": "!!!The isValid flag is not signed. Review the maximum collateral loss as the worst-case signing outcome.",
+        "description": "Signing warning about unsigned isValid and collateral.",
+        "id": "dapp.transaction.approval.collateralWarning"
+      },
+      {
+        "defaultMessage": "!!!All context and byte commitments verified",
+        "description": "Successful commitment verification status.",
+        "id": "dapp.transaction.approval.commitmentsVerified"
+      },
+      {
+        "defaultMessage": "!!!This transaction cannot be approved because review data is incomplete or unsupported.",
+        "description": "Fail-closed transaction review message.",
+        "id": "dapp.transaction.approval.refusal"
+      },
+      {
+        "defaultMessage": "!!!Origin: {value}",
+        "description": "Origin requesting transaction approval.",
+        "id": "dapp.transaction.approval.origin"
+      },
+      {
+        "defaultMessage": "!!!Wallet: {value}",
+        "description": "Wallet selected for transaction approval.",
+        "id": "dapp.transaction.approval.wallet"
+      },
+      {
+        "defaultMessage": "!!!Network: {value}",
+        "description": "Network selected for transaction approval.",
+        "id": "dapp.transaction.approval.network"
       }
     ],
-    "path": "source/renderer/app/components/dapp/DappTransactionRequest.tsx"
+    "path": "source/renderer/app/components/dapp/Cip30TransactionApproval.messages.ts"
   },
   {
     "descriptors": [

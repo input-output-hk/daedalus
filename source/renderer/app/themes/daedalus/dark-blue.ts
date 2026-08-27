@@ -171,9 +171,6 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-connecting-description-color': 'rgba(233, 244, 254, 0.7)',
     '--theme-connecting-sync-progress-color': '#e9f4fe',
   },
-  dapps: {
-    '--theme-dapp-transaction-request-fees-text-color': '#ea4c5b',
-  },
   dataMigration: {
     '--theme-data-migration-layer-background-color': 'rgba(38, 51, 69, 0.96)',
     '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
