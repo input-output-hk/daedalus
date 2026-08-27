@@ -39,7 +39,7 @@ export const messages = defineMessages({
   disclosureWarning: {
     id: 'dapp.consent.keyDisclosure.warning',
     defaultMessage:
-      '!!!Public keys can correlate wallet and governance activity. Share them only with a dApp you trust.',
+      '!!!Stake and DRep public keys can correlate this wallet with governance activity. This permission is separate from the connection and can be revoked independently.',
     description: 'Privacy warning before elevated public-key disclosure.',
   },
   reject: {

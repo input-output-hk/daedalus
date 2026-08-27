@@ -10,6 +10,7 @@ export type Cip30WalletOperation =
   | 'capabilities'
   | 'context'
   | 'addresses'
+  | 'cip95-key-state'
   | 'sign-data';
 
 type Cip30WalletRequestIdentity = Readonly<{
@@ -19,7 +20,9 @@ type Cip30WalletRequestIdentity = Readonly<{
 }>;
 export type Cip30WalletRequest = Cip30WalletRequestIdentity &
   (
-    | Readonly<{ operation: 'capabilities' | 'context' | 'addresses' }>
+    | Readonly<{
+        operation: 'capabilities' | 'context' | 'addresses' | 'cip95-key-state';
+      }>
     | Readonly<{
         operation: 'sign-data';
         address: string;
@@ -46,6 +49,12 @@ export type Cip30WalletAddresses = Readonly<{
   reward: readonly string[];
 }>;
 
+export type Cip30WalletCip95KeyState = Readonly<{
+  drep_public_key: string;
+  registered_stake_public_keys: readonly string[];
+  unregistered_stake_public_keys: readonly string[];
+}>;
+
 export type Cip30WalletResponse =
   | Readonly<{
       status: 'fulfilled';
@@ -61,6 +70,11 @@ export type Cip30WalletResponse =
       status: 'fulfilled';
       operation: 'addresses';
       value: Cip30WalletAddresses;
+    }>
+  | Readonly<{
+      status: 'fulfilled';
+      operation: 'cip95-key-state';
+      value: Cip30WalletCip95KeyState;
     }>
   | Readonly<{
       status: 'fulfilled';
@@ -167,9 +181,13 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
   )
     throw new Error('Invalid CIP-30 wallet request');
   if (
-    !['capabilities', 'context', 'addresses', 'sign-data'].includes(
-      value.operation as string
-    ) ||
+    ![
+      'capabilities',
+      'context',
+      'addresses',
+      'cip95-key-state',
+      'sign-data',
+    ].includes(value.operation as string) ||
     !text(value.walletId) ||
     !hex(value.sourceRevision, 20) ||
     (signData &&
@@ -271,6 +289,31 @@ const parseAddresses = (
   });
 };
 
+const parseCip95KeyState = (value: unknown): Cip30WalletCip95KeyState => {
+  if (
+    !ownData(value, [
+      'drep_public_key',
+      'registered_stake_public_keys',
+      'unregistered_stake_public_keys',
+    ]) ||
+    !hex(value.drep_public_key, 32) ||
+    !Array.isArray(value.registered_stake_public_keys) ||
+    !value.registered_stake_public_keys.every((key) => hex(key, 32)) ||
+    !Array.isArray(value.unregistered_stake_public_keys) ||
+    !value.unregistered_stake_public_keys.every((key) => hex(key, 32))
+  )
+    throw new Error('Invalid CIP-95 key state');
+  return Object.freeze({
+    drep_public_key: value.drep_public_key,
+    registered_stake_public_keys: Object.freeze([
+      ...value.registered_stake_public_keys,
+    ]),
+    unregistered_stake_public_keys: Object.freeze([
+      ...value.unregistered_stake_public_keys,
+    ]),
+  });
+};
+
 const parseDataSignature = (value: unknown): Cip8BackendResponse => {
   if (
     !ownData(value, [
@@ -337,6 +380,12 @@ export const parseCip30WalletResponse = (
       status: 'fulfilled',
       operation: 'addresses',
       value: parseAddresses(value.value, request),
+    });
+  if (request.operation === 'cip95-key-state')
+    return Object.freeze({
+      status: 'fulfilled',
+      operation: 'cip95-key-state',
+      value: parseCip95KeyState(value.value),
     });
   if (request.operation === 'sign-data')
     return Object.freeze({

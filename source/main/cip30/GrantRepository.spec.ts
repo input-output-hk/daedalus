@@ -168,6 +168,34 @@ describe('main-owned dApp authority stores', () => {
     ).toBeUndefined();
     grants.forget(identity(diagnostics));
     expect(grants.list()).toEqual([]);
+    const elevated = grants.put(
+      grant({
+        readScopes: ['connection', 'read', 'governance-key-disclosure'],
+        enabledExtensionScopes: [95],
+      })
+    );
+    expect(
+      grants.find({
+        ...identity(elevated),
+        scopes: ['governance-key-disclosure'],
+        extensions: [95],
+      })
+    ).toEqual(elevated);
+    grants.revokeScopes(identity(elevated), ['governance-key-disclosure']);
+    expect(
+      grants.find({
+        ...identity(elevated),
+        scopes: ['governance-key-disclosure'],
+        extensions: [95],
+      })
+    ).toBeUndefined();
+    expect(
+      grants.find({
+        ...identity(elevated),
+        scopes: ['connection', 'read'],
+      })
+    ).toBeDefined();
+    grants.forget(identity(elevated));
 
     const walletGrant = grants.put(grant());
     grants.removeWallet(walletGrant.walletId);
