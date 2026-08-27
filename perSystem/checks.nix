@@ -1,5 +1,6 @@
 {inputs, ...}: {
   perSystem = {
+    config,
     system,
     lib,
     pkgs,
@@ -77,6 +78,36 @@
         '';
         storybook = mkJsCheck "daedalus-storybook-build" "yarn storybook:build";
         shellcheck = pkgs.callPackage ../tests/shellcheck.nix {src = inputs.self;};
+        # `package.json` and `nix fmt` format the same files, so they must run
+        # the same prettier. They are pinned independently: `devDependencies`
+        # tracks the lockfile, and the formatter's prettier tracks nixpkgs, so a
+        # nixpkgs bump moves one and not the other with no other signal.
+        #
+        # The version is read from the binary treefmt is configured to execute
+        # rather than from a package named a second time here, so this check
+        # cannot itself drift from the formatter it is checking.
+        prettier-version-parity = let
+          pinned =
+            (builtins.fromJSON (builtins.readFile ../package.json))
+            .devDependencies
+            .prettier;
+          prettier = config.treefmt.settings.formatter.prettier.command;
+        in
+          pkgs.runCommand "daedalus-prettier-version-parity" {} ''
+            actual=$(${prettier} --version)
+            if [ "${pinned}" != "$actual" ]; then
+              echo "ERROR: prettier version mismatch."
+              echo "  package.json devDependencies.prettier: ${pinned}"
+              echo "  prettier run by nix fmt:               $actual"
+              echo
+              echo "These format the same files and must be the same version."
+              echo "Update package.json and yarn.lock to $actual, or pin the"
+              echo "formatter's prettier to ${pinned}."
+              exit 1
+            fi
+            echo "prettier ${pinned} in package.json and in nix fmt"
+            touch $out
+          '';
       };
   };
 }
