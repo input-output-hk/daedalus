@@ -13,6 +13,7 @@ export type Cip30WalletOperation =
   | 'addresses'
   | 'cip95-key-state'
   | 'sign-transactions'
+  | 'submit-transaction'
   | 'sign-data';
 type Cip30WalletRequestIdentity = Readonly<{
   walletId: string;
@@ -36,6 +37,10 @@ export type Cip30WalletRequest = Cip30WalletRequestIdentity &
           partialSign: boolean;
         }>[];
         passphrase: string;
+      }>
+    | Readonly<{
+        operation: 'submit-transaction';
+        transaction: string;
       }>
     | Readonly<{
         operation: 'sign-data';
@@ -77,6 +82,19 @@ export type Cip30WalletWitnessResponse = Readonly<{
     witness_set_cbor: string;
   }>[];
 }>;
+export type Cip30WalletSubmissionResponse = Readonly<{
+  revision: 1;
+  transaction_id: string;
+  status:
+    | 'authorized'
+    | 'broadcasting'
+    | 'submitted'
+    | 'rejected'
+    | 'outcome_unknown'
+    | 'in_ledger'
+    | 'expired';
+}>;
+
 export type Cip30WalletResponse =
   | Readonly<{
       status: 'fulfilled';
@@ -110,6 +128,11 @@ export type Cip30WalletResponse =
     }>
   | Readonly<{
       status: 'fulfilled';
+      operation: 'submit-transaction';
+      value: Cip30WalletSubmissionResponse;
+    }>
+  | Readonly<{
+      status: 'fulfilled';
       operation: 'sign-data';
       value: Cip8BackendResponse;
     }>
@@ -122,9 +145,9 @@ export type Cip30WalletResponse =
         | 'address-not-pk'
         | 'proof-generation'
         | 'tx-proof-generation'
-        | 'deprecated-certificate';
+        | 'deprecated-certificate'
+        | 'tx-send-failure';
     }>;
-
 const ownData = (
   value: unknown,
   keys: readonly string[]
@@ -211,6 +234,7 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     keys = [...keys, 'transactions'];
   else if (operation === 'sign-transactions')
     keys = [...keys, 'context', 'transactions', 'passphrase'];
+  else if (operation === 'submit-transaction') keys = [...keys, 'transaction'];
   if (!ownData(value, keys)) throw new Error('Invalid CIP-30 wallet request');
   if (
     ![
@@ -220,6 +244,7 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
       'addresses',
       'cip95-key-state',
       'sign-transactions',
+      'submit-transaction',
       'sign-data',
     ].includes(operation || '') ||
     !text(value.walletId) ||
@@ -274,6 +299,15 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
         )
       ),
       passphrase: value.passphrase,
+    });
+  }
+  if (operation === 'submit-transaction') {
+    if (!transactionCbor(value.transaction))
+      throw new Error('Invalid CIP-30 wallet request');
+    return Object.freeze({
+      ...identity,
+      operation,
+      transaction: value.transaction,
     });
   }
   if (operation === 'sign-data') {
@@ -459,6 +493,27 @@ const parseWitnessResponse = (
   });
 };
 
+const parseSubmissionResponse = (
+  value: unknown
+): Cip30WalletSubmissionResponse => {
+  if (
+    !ownData(value, ['revision', 'transaction_id', 'status']) ||
+    value.revision !== 1 ||
+    !hex(value.transaction_id, 32) ||
+    ![
+      'authorized',
+      'broadcasting',
+      'submitted',
+      'rejected',
+      'outcome_unknown',
+      'in_ledger',
+      'expired',
+    ].includes(value.status as string)
+  )
+    throw new Error('Invalid CIP-30 transaction submission');
+  return Object.freeze(value as Cip30WalletSubmissionResponse);
+};
+
 export const parseCip30WalletResponse = (
   requestValue: Cip30WalletRequest,
   value: unknown
@@ -475,6 +530,7 @@ export const parseCip30WalletResponse = (
       'proof-generation',
       'tx-proof-generation',
       'deprecated-certificate',
+      'tx-send-failure',
     ].includes(value.reason as string)
   )
     return Object.freeze({
@@ -486,7 +542,8 @@ export const parseCip30WalletResponse = (
         | 'address-not-pk'
         | 'proof-generation'
         | 'tx-proof-generation'
-        | 'deprecated-certificate',
+        | 'deprecated-certificate'
+        | 'tx-send-failure',
     });
   if (
     !ownData(value, ['status', 'operation', 'value']) ||
@@ -517,6 +574,12 @@ export const parseCip30WalletResponse = (
       status: 'fulfilled',
       operation: 'sign-transactions',
       value: parseWitnessResponse(value.value, request.transactions.length),
+    });
+  if (request.operation === 'submit-transaction')
+    return Object.freeze({
+      status: 'fulfilled',
+      operation: 'submit-transaction',
+      value: parseSubmissionResponse(value.value),
     });
   if (request.operation === 'sign-data')
     return Object.freeze({

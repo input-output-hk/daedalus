@@ -245,4 +245,41 @@ describe('CIP-30 wallet executor contract', () => {
       })
     ).toThrow('Invalid CIP-30 transaction witnesses');
   });
+
+  it('accepts only exact single-transaction submission contracts', () => {
+    const submitRequest = {
+      ...request,
+      operation: 'submit-transaction' as const,
+      transaction: '84a0a0f5f6',
+    };
+    expect(parseCip30WalletRequest(submitRequest)).toEqual(submitRequest);
+    expect(
+      parseCip30WalletResponse(submitRequest, {
+        status: 'fulfilled',
+        operation: 'submit-transaction',
+        value: {
+          revision: 1,
+          transaction_id: '77'.repeat(32),
+          status: 'outcome_unknown',
+        },
+      })
+    ).toMatchObject({
+      status: 'fulfilled',
+      operation: 'submit-transaction',
+    });
+    expect(() =>
+      parseCip30WalletRequest({ ...submitRequest, transaction: 'A0' })
+    ).toThrow('Invalid CIP-30 wallet request');
+    expect(() =>
+      parseCip30WalletResponse(submitRequest, {
+        status: 'fulfilled',
+        operation: 'submit-transaction',
+        value: {
+          revision: 1,
+          transaction_id: '77'.repeat(32),
+          status: 'unknown',
+        },
+      })
+    ).toThrow('Invalid CIP-30 transaction submission');
+  });
 });
