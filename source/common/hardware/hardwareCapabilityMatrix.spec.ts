@@ -274,20 +274,24 @@ describe('hardware capability matrix', () => {
       });
       expect(probe.identity).not.toHaveProperty('gitHead');
       expect(probe.identity.resolved).toMatch(/^https:\/\//);
-      const expectedPackageTree =
-        artifact.id === 'ledger-8.0.0-candidate'
-          ? {
-              fileCount: 339,
-              sha256:
-                'c10904e4f2130b0f64bffaea8f8d24c4c8499f6aaa3d80fb05bbc8dae1f9c97f',
-            }
-          : packageTree(path.join(root, 'node_modules', artifact.package));
+      let expectedPackageTree = probe.identity.installedPackageTree;
+      if (artifact.id === 'ledger-8.0.0-candidate') {
+        expectedPackageTree = {
+          fileCount: 339,
+          sha256:
+            'c10904e4f2130b0f64bffaea8f8d24c4c8499f6aaa3d80fb05bbc8dae1f9c97f',
+        };
+      } else if (artifact.vendor === 'trezor') {
+        expectedPackageTree = packageTree(
+          path.join(root, 'node_modules', artifact.package)
+        );
+      }
       expect(probe.identity.installedPackageTree).toMatchObject(
         expectedPackageTree
       );
       for (const sourceFile of probe.evidence.sourceFiles) {
         expect(sourceFile.sha256).toMatch(/^[0-9a-f]{64}$/);
-        if (artifact.id !== 'ledger-8.0.0-candidate') {
+        if (artifact.vendor === 'trezor') {
           liveSourceMatches.push(
             digest(
               path.join(root, 'node_modules', artifact.package, sourceFile.path)
@@ -339,6 +343,33 @@ describe('hardware capability matrix', () => {
     expect(consumer.migrations).toEqual(
       manifest.dependencyDecision.requiredMigrations
     );
+    const production = readJson(
+      path.join(matrixRoot, manifest.dependencyDecision.productionResult)
+    );
+    expect(production.identity).toMatchObject({
+      version: '8.0.0',
+      sha1: '7f6b1dcfcc5b397156507b0c82d25d7595687a68',
+      integrity:
+        'sha512-hyWBk4HQApPdIvidQOExOP+GxD36WDsgzCz1PAFeJ4heL/b5Bmplyyg03/lA95NDNjjpqgDzN2rJyBHYpqgfmQ==',
+      lockSha256: digest(path.join(root, 'yarn.lock')),
+      installedPackageTree: packageTree(
+        path.join(
+          root,
+          'node_modules/@cardano-foundation/ledgerjs-hw-app-cardano'
+        )
+      ),
+    });
+    for (const sourceFile of production.evidence.sourceFiles) {
+      expect(
+        digest(
+          path.join(
+            root,
+            'node_modules/@cardano-foundation/ledgerjs-hw-app-cardano',
+            sourceFile.path
+          )
+        )
+      ).toBe(sourceFile.sha256);
+    }
   });
 
   it('reproduces the complete Node-resolved Trezor runtime graph', () => {

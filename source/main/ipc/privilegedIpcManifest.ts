@@ -398,7 +398,7 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
     {
       constructorOwner: 'source/main/ipc/createHardwareWalletIPCChannels.ts',
       rendererOwner: 'source/renderer/app/ipc/getHardwareWalletChannel.ts',
-      registrationOwner: 'source/main/ipc/getHardwareWalletChannel.ts',
+      registrationOwner: 'source/main/hardware/HardwareWalletService.ts',
       capability: 'hardware-wallet',
     }
   ),
@@ -406,12 +406,12 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
     constructorOwner: 'source/main/ipc/createHardwareWalletIPCChannels.ts',
     rendererOwner: 'source/renderer/app/ipc/getHardwareWalletChannel.ts',
     registrationOwner: null,
-    callerOwners: ['source/main/ipc/getHardwareWalletChannel.ts'],
+    callerOwners: ['source/main/hardware/HardwareWalletService.ts'],
     capability: 'hardware-wallet',
     direction: 'main-to-renderer',
     settlement: 'fire-and-forget-owned',
     receive: 'none',
-    callerCount: 4,
+    callerCount: 3,
   }),
   ...entries(['TOGGLE_RTS_FLAGS_MODE_CHANNEL'], {
     constructorOwner: 'source/main/ipc/toggleRTSFlagsModeChannel.ts',

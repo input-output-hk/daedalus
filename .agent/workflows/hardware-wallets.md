@@ -38,11 +38,10 @@ Hardware wallets provide secure transaction signing where private keys never lea
 ├─────────────────────────────────────────────────────────────────────────┤
 │                           Main Process                                  │
 │  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  source/main/ipc/hardwareWallets/                                │   │
-│  │  ├── ledger/                                                     │   │
-│  │  │   ├── deviceDetection/  # USB HID detection                   │   │
-│  │  │   └── api.ts            # Ledger API calls                    │   │
-│  │  └── trezor/               # (via Trezor Connect)                │   │
+│  │  source/main/hardware/HardwareWalletService.ts                    │   │
+│  │  ├── owns Ledger transports, detection and cancellation           │   │
+│  │  ├── owns Trezor listener and cancellation lifecycle              │   │
+│  │  └── serves authenticated legacy UI IPC and main-only connectors  │   │
 │  └──────────────────────────────────────────────────────────────────┘   │
 │                                    │                                    │
 │                                    ▼                                    │
@@ -69,6 +68,7 @@ Hardware wallets provide secure transaction signing where private keys never lea
 
 | File                                                      | Purpose                  |
 |-----------------------------------------------------------|--------------------------|
+| `source/main/hardware/HardwareWalletService.ts`            | Transport lifecycle owner |
 | `source/main/ipc/hardwareWallets/ledger/`                 | Ledger integration       |
 | `source/main/ipc/hardwareWallets/ledger/deviceDetection/` | USB device detection     |
 | `source/main/trezor/connection.ts`                        | Trezor Connect setup     |
@@ -136,6 +136,12 @@ pollingDrivenDetection.ts  // Periodic USB polling
 // Device tracking
 deviceTracker.ts  // Tracks connected devices
 ```
+
+`HardwareWalletService` is the process-lifetime owner. Existing renderer flows
+retain their authenticated IPC contracts; main-only connector code uses its
+transport-scoped operation seam. Cancellation invalidates the operation
+generation before closing the transport, so late results are not released.
+This lifecycle behavior is mocked in Jest and is not physical certification.
 
 ### Signing Flow
 
