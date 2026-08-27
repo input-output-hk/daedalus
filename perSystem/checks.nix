@@ -112,7 +112,7 @@
                 "statements": 100, "branches": 100, "functions": 100, "lines": 100
               },
               "./source/renderer/app/utils/crypto.ts": {
-                "statements": 74.64, "branches": 77.77, "functions": 66.66, "lines": 75.4
+                "statements": 87.32, "branches": 77.77, "functions": 88.88, "lines": 86.88
               }
             }'
         '';

@@ -1,13 +1,16 @@
 import * as bip39 from 'bip39';
 import { Buffer } from 'safe-buffer';
 import bip39Vectors from './__fixtures__/bip39-vectors.json';
+import paperWallet from './__fixtures__/paper-wallet-certificate.json';
 import {
   blake2b224,
   decodeBech32,
   encodeBech32,
   generateMnemonic,
+  getScrambledInput,
   getStakeAddressFromStakeKey,
   mnemonicToSeedHex,
+  unscramblePaperWalletMnemonic,
 } from './crypto';
 import validWords from '../../../common/config/crypto/valid-words.en';
 
@@ -20,6 +23,7 @@ import validWords from '../../../common/config/crypto/valid-words.en';
 const pbkdf2Node = require('pbkdf2');
 const pbkdf2Browser = require('pbkdf2/browser.js');
 const unorm = require('unorm');
+const CardanoCrypto = require('rust-cardano-crypto');
 
 const { passphrase: VECTOR_PASSPHRASE, vectors } = bip39Vectors;
 
@@ -140,6 +144,76 @@ describe('generateMnemonic', () => {
 
   it('does not repeat itself across calls', () => {
     expect(generateMnemonic(24)).not.toBe(generateMnemonic(24));
+  });
+});
+
+describe('paper wallet certificate restore', () => {
+  // Paper wallet creation is retired; restore stays, because a certificate
+  // printed years ago may still be held by someone. It is asserted against a
+  // recorded certificate rather than by scrambling and unscrambling with the
+  // same code, since a round trip proves self-consistency and cannot prove
+  // that an old certificate still opens. The recorded value pins
+  // `rust-cardano-crypto`, which is the implementation that produced the
+  // historical certificates and which this branch does not bump.
+  const { certificate, restoresTo, passphrase } = paperWallet;
+  const words = certificate.split(' ');
+
+  // `rust-cardano-crypto` populates its exported `RustModule` object from a
+  // promise registered at import time, so `await loadRustModule()` returns
+  // while the object is still empty and every call below would fail with
+  // "module.alloc is not a function".
+  beforeAll(async () => {
+    await CardanoCrypto.loadRustModule();
+    for (
+      let i = 0;
+      i < 500 && Object.keys(CardanoCrypto.RustModule).length === 0;
+      i += 1
+    ) {
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => {
+        setTimeout(resolve, 10);
+      });
+    }
+    if (Object.keys(CardanoCrypto.RustModule).length === 0) {
+      throw new Error('rust-cardano-crypto did not become ready');
+    }
+  }, 20000);
+
+  it('carries a 27-word certificate', () => {
+    expect(words).toHaveLength(27);
+    expect(restoresTo.split(' ')).toHaveLength(12);
+  });
+
+  it('derives the recorded passphrase from the last nine words', () => {
+    expect(getScrambledInput(words).passphrase).toBe(passphrase);
+  });
+
+  it('splits the certificate into 18 scrambled words', () => {
+    expect(getScrambledInput(words).scrambledInput.split(' ')).toHaveLength(18);
+  });
+
+  it('restores the recorded certificate to its known phrase', () => {
+    const { passphrase: derived, scrambledInput } = getScrambledInput(words);
+    expect(
+      unscramblePaperWalletMnemonic(derived, scrambledInput).join(' ')
+    ).toBe(restoresTo);
+  });
+
+  it('does not restore a certificate with an altered word', () => {
+    const altered = [...words];
+    altered[0] = altered[0] === 'zebra' ? 'zoo' : 'zebra';
+    const attempt = () => {
+      const { passphrase: derived, scrambledInput } =
+        getScrambledInput(altered);
+      return unscramblePaperWalletMnemonic(derived, scrambledInput).join(' ');
+    };
+    let result: string | null = null;
+    try {
+      result = attempt();
+    } catch (error) {
+      result = null;
+    }
+    expect(result).not.toBe(restoresTo);
   });
 });
 
