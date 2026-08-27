@@ -193,6 +193,10 @@ export class GrantRepository {
     this.update((grant) => grant.walletId !== walletId);
   }
 
+  pruneWallets(walletIds: ReadonlySet<string>): void {
+    this.update((grant) => walletIds.has(grant.walletId));
+  }
+
   pruneCatalog(currentEntries: ReadonlyMap<string, string>): void {
     this.update(
       (grant) =>

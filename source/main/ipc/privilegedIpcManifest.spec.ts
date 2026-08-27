@@ -786,9 +786,9 @@ const findRawElectronCalls = (
 describe('privileged IPC manifest', () => {
   it('matches every live constructor, transport, and renderer adapter exactly once', () => {
     expect(unresolvedWrapperConstructions).toEqual([]);
-    expect(privilegedIpcManifest).toHaveLength(83);
-    expect(mainConstructions).toHaveLength(83);
-    expect(rendererConstructions).toHaveLength(83);
+    expect(privilegedIpcManifest).toHaveLength(84);
+    expect(mainConstructions).toHaveLength(84);
+    expect(rendererConstructions).toHaveLength(84);
     const expected = privilegedIpcManifest
       .map(({ contract, constructorOwner: owner, transport }) => ({
         contract,

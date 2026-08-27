@@ -14,6 +14,7 @@ import SecuritySettingsPage from './containers/settings/categories/SecuritySetti
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
+import DappConnectionsSettingsPage from './containers/settings/categories/DappConnectionsSettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
 import Staking from './containers/staking/Staking';
 import DelegationCenterPage from './containers/staking/DelegationCenterPage';
@@ -164,6 +165,11 @@ export const Routes = withRouter(() => (
               pageTitle="Security Settings"
               path={ROUTES.SETTINGS.SECURITY}
               component={SecuritySettingsPage}
+            />
+            <TrackedRoute
+              pageTitle="dApp Connection Settings"
+              path={ROUTES.SETTINGS.DAPP_CONNECTIONS}
+              component={DappConnectionsSettingsPage}
             />
           </Settings>
         </Route>
