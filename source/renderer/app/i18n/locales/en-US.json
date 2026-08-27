@@ -218,7 +218,7 @@
   "dapp.consent.connection.title": "Connect dApp",
   "dapp.consent.extensions": "Extensions: {extensions}",
   "dapp.consent.keyDisclosure.title": "Share wallet public keys",
-  "dapp.consent.keyDisclosure.warning": "Public keys can correlate wallet and governance activity. Share them only with a dApp you trust.",
+  "dapp.consent.keyDisclosure.warning": "Stake and DRep public keys can correlate this wallet with governance activity. This permission is separate from the connection and can be revoked independently.",
   "dapp.consent.network": "Network: {network}",
   "dapp.consent.origin": "Origin: {origin}",
   "dapp.consent.reject": "Reject",

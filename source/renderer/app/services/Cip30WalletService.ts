@@ -151,6 +151,18 @@ export class Cip30WalletService {
         });
       }
 
+      if (request.operation === 'cip95-key-state') {
+        const keyState = await this.api.ada.getDappCip95KeyState(
+          request.walletId
+        );
+        if (!this.ready(request)) return this.rejection(request, 'unavailable');
+        return Object.freeze({
+          status: 'fulfilled',
+          operation: 'cip95-key-state',
+          value: keyState,
+        });
+      }
+
       if (request.operation === 'context') {
         const context = await this.api.ada.getDappTransactionContext({
           walletId: request.walletId,
@@ -186,6 +198,19 @@ export class Cip30WalletService {
           return Object.freeze({
             status: 'rejected',
             reason: 'account-change',
+          });
+      }
+      if (request.operation === 'cip95-key-state') {
+        const code = (error as { code?: unknown })?.code;
+        if (code === 'dapp_account_changed')
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'account-change',
+          });
+        if (code === 'dapp_context_unavailable')
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'unavailable',
           });
       }
       return this.rejection(request, 'internal');

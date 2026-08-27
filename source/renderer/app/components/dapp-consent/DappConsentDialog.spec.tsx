@@ -37,6 +37,11 @@ describe('DappConsentDialog', () => {
 
     expect(screen.getByText(`Origin: ${request.origin}`)).toBeVisible();
     expect(screen.getByText('Extensions: CIP-95')).toBeVisible();
+    expect(
+      screen.getByText(
+        'Stake and DRep public keys can correlate this wallet with governance activity. This permission is separate from the connection and can be revoked independently.'
+      )
+    ).toBeVisible();
     expect(container.querySelector('script')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Approve' }));
     fireEvent.click(screen.getByRole('button', { name: 'Reject' }));
