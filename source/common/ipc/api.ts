@@ -180,20 +180,17 @@ export type OpenExternalUrlRendererRequest = string;
 export type OpenExternalUrlMainResponse = void;
 
 export const DAPP_BROWSER_OPEN_CHANNEL = 'DAPP_BROWSER_OPEN_CHANNEL';
-export type DappBrowserStagedOpenRendererRequest = Readonly<{
-  launchId: string;
-  lease: {
-    walletId: string;
-    routeEpoch: number;
-    networkGenesis: string;
-  };
+export type DappBrowserDiagnosticsOpenRendererRequest = Readonly<{
+  url: string;
+  walletId: string;
+  localName: string;
 }>;
 export type DappBrowserCatalogOpenRendererRequest = Readonly<{
   catalogId: string;
   localName: string;
 }>;
 export type DappBrowserOpenRendererRequest =
-  | DappBrowserStagedOpenRendererRequest
+  | DappBrowserDiagnosticsOpenRendererRequest
   | DappBrowserCatalogOpenRendererRequest;
 export type DappBrowserOpenMainResponse = void;
 
@@ -206,6 +203,7 @@ export type DappBrowserStatusRendererRequest = void;
 export type DappBrowserStatusMainResponse = Readonly<{
   isOpen: boolean;
   catalogAvailable: boolean;
+  diagnosticsAvailable: boolean;
 }>;
 
 export const DAPP_BROWSER_STATE_CHANNEL = 'DAPP_BROWSER_STATE_CHANNEL';

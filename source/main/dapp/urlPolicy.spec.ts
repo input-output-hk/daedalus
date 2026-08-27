@@ -3,7 +3,9 @@ import type { DappCatalogEntry } from './dappCatalog';
 import {
   canonicalizeDappOrigin,
   isAllowedDappResourceUrl,
+  isAllowedDiagnosticsResourceUrl,
   parseDappUrl,
+  parseDiagnosticsDappUrl,
 } from './urlPolicy';
 
 const entry: DappCatalogEntry = {
@@ -40,6 +42,58 @@ describe('dApp URL and catalog policy', () => {
     'not a url',
   ])('rejects %s', (value) => {
     expect(() => parseDappUrl(value)).toThrow('Invalid dApp URL');
+  });
+
+  test('limits development HTTP to explicit loopback policy', () => {
+    const development = { allowHttpLoopback: true };
+    expect(
+      parseDiagnosticsDappUrl('http://localhost:3000/app', development)
+    ).toEqual({
+      href: 'http://localhost:3000/app',
+      origin: 'http://localhost:3000',
+    });
+    expect(
+      parseDiagnosticsDappUrl('http://[::1]:3000/app', development).origin
+    ).toBe('http://[::1]:3000');
+    expect(() =>
+      parseDiagnosticsDappUrl('http://example.com', development)
+    ).toThrow('Invalid dApp URL');
+    expect(() =>
+      parseDiagnosticsDappUrl('http://127.0.0.1', {
+        allowHttpLoopback: false,
+      })
+    ).toThrow('Invalid dApp URL');
+    expect(canonicalizeDappOrigin('http://LOCALHOST:3000', development)).toBe(
+      'http://localhost:3000'
+    );
+  });
+
+  test('allows only secure or explicit development-loopback diagnostics resources', () => {
+    expect(
+      isAllowedDiagnosticsResourceUrl('https://example.com/a', {
+        allowHttpLoopback: false,
+      })
+    ).toBe(true);
+    expect(
+      isAllowedDiagnosticsResourceUrl('wss://ws.example.com/a', {
+        allowHttpLoopback: false,
+      })
+    ).toBe(true);
+    expect(
+      isAllowedDiagnosticsResourceUrl('http://localhost:3000/a', {
+        allowHttpLoopback: true,
+      })
+    ).toBe(true);
+    expect(
+      isAllowedDiagnosticsResourceUrl('http://example.com/a', {
+        allowHttpLoopback: true,
+      })
+    ).toBe(false);
+    expect(
+      isAllowedDiagnosticsResourceUrl('file:///tmp/dapp.html', {
+        allowHttpLoopback: true,
+      })
+    ).toBe(false);
   });
 
   test('matches only exact secure resource origins', () => {

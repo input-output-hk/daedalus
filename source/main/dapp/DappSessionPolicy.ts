@@ -1,7 +1,11 @@
 import crypto from 'crypto';
 import { session } from 'electron';
 import type { CommandLine, Session, WebContents } from 'electron';
-import { isAllowedDappResourceUrl } from './urlPolicy';
+import {
+  DappUrlPolicy,
+  isAllowedDappResourceUrl,
+  isAllowedDiagnosticsResourceUrl,
+} from './urlPolicy';
 import { DappEgressPolicy } from './DappEgressPolicy';
 
 const DISABLED_BLINK_FEATURES = ['DirectSockets', 'WebTransport'];
@@ -31,7 +35,8 @@ export const createDappSession = (): Session => {
 
 export const installDappSessionPolicy = async (
   guestSession: Session,
-  allowedResourceOrigins: ReadonlySet<string>
+  allowedResourceOrigins: ReadonlySet<string> | undefined,
+  diagnosticsPolicy?: DappUrlPolicy
 ): Promise<DappEgressPolicy> => {
   guestSession.setPermissionCheckHandler(() => false);
   guestSession.setPermissionRequestHandler((_contents, _permission, callback) =>
@@ -63,7 +68,10 @@ export const installDappSessionPolicy = async (
     { urls: ['<all_urls>'] },
     (details, callback) =>
       callback({
-        cancel: !isAllowedDappResourceUrl(details.url, allowedResourceOrigins),
+        cancel: diagnosticsPolicy
+          ? !isAllowedDiagnosticsResourceUrl(details.url, diagnosticsPolicy)
+          : !allowedResourceOrigins ||
+            !isAllowedDappResourceUrl(details.url, allowedResourceOrigins),
       })
   );
   guestSession.webRequest.onHeadersReceived(
@@ -81,7 +89,13 @@ export const installDappSessionPolicy = async (
       callback({ responseHeaders });
     }
   );
-  return DappEgressPolicy.install(guestSession, allowedResourceOrigins);
+  return diagnosticsPolicy
+    ? DappEgressPolicy.install(
+        guestSession,
+        undefined,
+        diagnosticsPolicy.allowHttpLoopback
+      )
+    : DappEgressPolicy.install(guestSession, allowedResourceOrigins);
 };
 
 export const installGuestDenialHandlers = (webContents: WebContents): void => {

@@ -17,12 +17,17 @@ const openRequest = openDappBrowserChannel.request as jest.Mock;
 const bindState = bindDappBrowserState as jest.Mock;
 
 const createStore = () => {
-  const store = new DappStore(null as any, null as any, null as any);
+  const actions = { router: { goToRoute: { trigger: jest.fn() } } };
+  const store = new DappStore(null as never, actions as never, null as never);
   store.configure({
-    wallets: { activeDappWallet: { id: 'wallet-a' } },
+    wallets: {
+      activeDappWallet: { id: 'wallet-a' },
+      eligibleDappWallets: [{ id: 'wallet-a' }],
+      getWalletRoute: (id: string, page: string) => `/wallets/${id}/${page}`,
+    },
     networkStatus: { isSynced: true },
-  } as any);
-  return store;
+  } as never);
+  return { actions, store };
 };
 
 describe('DappStore', () => {
@@ -35,11 +40,15 @@ describe('DappStore', () => {
         resolveStatus = resolve;
       })
     );
-    const store = createStore();
+    const { store } = createStore();
     store.setup();
     const receiveState = bindState.mock.calls[0][0];
     store.teardown();
-    resolveStatus({ catalogAvailable: true, isOpen: true });
+    resolveStatus({
+      catalogAvailable: true,
+      diagnosticsAvailable: true,
+      isOpen: true,
+    });
     receiveState(true);
     await Promise.resolve();
 
@@ -48,9 +57,13 @@ describe('DappStore', () => {
   });
 
   it('uses only an opaque ID and local name after main reports availability', async () => {
-    statusRequest.mockResolvedValue({ catalogAvailable: true, isOpen: false });
+    statusRequest.mockResolvedValue({
+      catalogAvailable: true,
+      diagnosticsAvailable: false,
+      isOpen: false,
+    });
     openRequest.mockResolvedValue(undefined);
-    const store = createStore();
+    const { store } = createStore();
     store.setup();
     await Promise.resolve();
     await store.launch('catalog-id', 'Localized name');
@@ -62,8 +75,35 @@ describe('DappStore', () => {
   });
 
   it('short-circuits launch while preferred catalog is unavailable', async () => {
-    const store = createStore();
+    const { store } = createStore();
     await store.launch('catalog-id', 'Localized name');
     expect(openRequest).not.toHaveBeenCalled();
+  });
+
+  it('stages diagnostics before routing without exposing the URL in the route', async () => {
+    statusRequest.mockResolvedValue({
+      catalogAvailable: false,
+      diagnosticsAvailable: true,
+      isOpen: false,
+    });
+    openRequest.mockResolvedValue(undefined);
+    const { actions, store } = createStore();
+    store.setup();
+    await Promise.resolve();
+
+    await store.launchDiagnostics(
+      'https://example.com/private?value=1',
+      'wallet-a',
+      'Untrusted dApp'
+    );
+
+    expect(openRequest).toHaveBeenCalledWith({
+      url: 'https://example.com/private?value=1',
+      walletId: 'wallet-a',
+      localName: 'Untrusted dApp',
+    });
+    expect(actions.router.goToRoute.trigger).toHaveBeenCalledWith({
+      route: '/wallets/wallet-a/dapps',
+    });
   });
 });

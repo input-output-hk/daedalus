@@ -1,4 +1,5 @@
 import { DappCapability, DappGrantLaunch } from '../../common/types/dapp.types';
+import type { DappUrlPolicy } from '../dapp/urlPolicy';
 import { canonicalizeDappOrigin } from '../dapp/urlPolicy';
 import type { GrantIdentity } from './GrantRepository';
 
@@ -24,10 +25,14 @@ export type CapabilityRequirement = CapabilityIdentity &
     requiredScopes: readonly DappCapability['grantedScopes'][number][];
   }>;
 
-const matches = (capability: DappCapability, identity: CapabilityIdentity) =>
+const matches = (
+  capability: DappCapability,
+  identity: CapabilityIdentity,
+  urlPolicy: DappUrlPolicy
+) =>
   capability.guestWebContentsId === identity.guestWebContentsId &&
   capability.documentGeneration === identity.documentGeneration &&
-  capability.origin === canonicalizeDappOrigin(identity.origin) &&
+  capability.origin === canonicalizeDappOrigin(identity.origin, urlPolicy) &&
   capability.connectionId === identity.connectionId &&
   capability.walletId === identity.walletId &&
   capability.routeEpoch === identity.routeEpoch &&
@@ -42,11 +47,16 @@ const matchesLaunch = (capability: DappCapability, launch: DappGrantLaunch) =>
 
 export class SessionStore {
   private readonly capabilities = new Map<string, DappCapability>();
+  private readonly urlPolicy: DappUrlPolicy;
+
+  constructor(urlPolicy: DappUrlPolicy = { allowHttpLoopback: false }) {
+    this.urlPolicy = urlPolicy;
+  }
 
   create(value: DappCapability): DappCapability {
     const capability = Object.freeze({
       ...value,
-      origin: canonicalizeDappOrigin(value.origin),
+      origin: canonicalizeDappOrigin(value.origin, this.urlPolicy),
       enabledExtensions: Object.freeze([...value.enabledExtensions]),
       grantedScopes: Object.freeze([...value.grantedScopes]),
     });
@@ -59,7 +69,7 @@ export class SessionStore {
     try {
       const capability = this.capabilities.get(requirement.connectionId);
       return capability &&
-        matches(capability, requirement) &&
+        matches(capability, requirement, this.urlPolicy) &&
         matchesLaunch(capability, requirement.launch) &&
         requirement.requiredExtensions.every((cip) =>
           capability.enabledExtensions.includes(cip)
@@ -111,12 +121,12 @@ export class SessionStore {
   }
 
   revokeOrigin(origin: string): void {
-    const canonicalOrigin = canonicalizeDappOrigin(origin);
+    const canonicalOrigin = canonicalizeDappOrigin(origin, this.urlPolicy);
     this.revokeWhere((capability) => capability.origin === canonicalOrigin);
   }
 
   revokeGrant(identity: GrantIdentity): void {
-    const origin = canonicalizeDappOrigin(identity.origin);
+    const origin = canonicalizeDappOrigin(identity.origin, this.urlPolicy);
     this.revokeWhere(
       (capability) =>
         capability.origin === origin &&

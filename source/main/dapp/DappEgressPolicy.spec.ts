@@ -1,5 +1,6 @@
+import http from 'http';
 import dns from 'dns';
-import { EventEmitter } from 'events';
+import { EventEmitter, once } from 'events';
 import net from 'net';
 import type { Session } from 'electron';
 import { DappEgressPolicy, isPublicGuestIp } from './DappEgressPolicy';
@@ -151,5 +152,52 @@ describe('DappEgressPolicy', () => {
     expect(createConnection).not.toHaveBeenCalled();
 
     await policy.close();
+  });
+
+  test('proxies development HTTP only to an actual loopback destination', async () => {
+    const target = http.createServer((_request, response) =>
+      response.end('ok')
+    );
+    target.listen(0, '127.0.0.1');
+    await once(target, 'listening');
+    const targetAddress = target.address();
+    if (!targetAddress || typeof targetAddress === 'string')
+      throw new Error('Expected target address');
+    const guestSession = ({ setProxy: jest.fn() } as unknown) as Session;
+    const policy = await DappEgressPolicy.install(
+      guestSession,
+      undefined,
+      true
+    );
+    // Test-only inspection of the private listener used by the configured proxy.
+    const inspectedPolicy = (policy as unknown) as { server: http.Server };
+    const proxyAddress = inspectedPolicy.server.address();
+    if (!proxyAddress || typeof proxyAddress === 'string')
+      throw new Error('Expected proxy address');
+
+    const body = await new Promise<string>((resolve, reject) => {
+      http
+        .get(
+          {
+            host: '127.0.0.1',
+            port: proxyAddress.port,
+            path: `http://127.0.0.1:${targetAddress.port}/fixture`,
+          },
+          (response) => {
+            let value = '';
+            response.setEncoding('utf8');
+            response.on('data', (chunk) => {
+              value += chunk;
+            });
+            response.once('end', () => resolve(value));
+          }
+        )
+        .once('error', reject);
+    });
+
+    expect(body).toBe('ok');
+    await policy.close();
+    target.close();
+    await once(target, 'close');
   });
 });

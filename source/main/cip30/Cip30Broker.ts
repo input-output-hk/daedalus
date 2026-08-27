@@ -50,6 +50,7 @@ import {
   launcherConfig,
   stateDirectoryPath,
 } from '../config';
+import { environment } from '../environment';
 import type { DappGuestAuthority } from '../dapp/DappBrowserManager';
 import { dappCatalogEntryIdentity } from '../dapp/dappCatalog';
 import type { DappRouteLease } from '../dapp/DappRouteLease';
@@ -869,7 +870,9 @@ const readNetwork = (): Cip30WalletNetwork =>
 
 const registry = new ExtensionRegistry();
 const capabilities = new CapabilityService(registry);
-const sessions = new SessionStore();
+const sessions = new SessionStore({
+  allowHttpLoopback: environment.isDev,
+});
 const negotiator = new Negotiator(registry, capabilities);
 const dispatcher = new Dispatcher(capabilities, sessions);
 let broker: Cip30Broker | undefined;
@@ -878,7 +881,8 @@ let registered = false;
 export const handleCip30BrokerRequests = (): void => {
   if (registered) return;
   const grants = new GrantRepository(
-    path.join(stateDirectoryPath, 'dapp-grants.json')
+    path.join(stateDirectoryPath, 'dapp-grants.json'),
+    { allowHttpLoopback: environment.isDev }
   );
   grants.pruneCatalog(
     new Map(
