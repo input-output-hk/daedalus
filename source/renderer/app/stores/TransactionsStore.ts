@@ -81,6 +81,11 @@ type TransactionFeeRequest = {
   amount: number;
   assets?: ApiTokens;
 };
+export type WalletSendLease = Readonly<{
+  walletId: string;
+  release: () => void;
+}>;
+
 export default class TransactionsStore extends Store {
   @observable
   transactionsRequests: Array<{
@@ -95,13 +100,54 @@ export default class TransactionsStore extends Store {
     this.api.ada.deleteTransaction
   );
   @observable
-  createExternalTransactionRequest: Request<CreateExternalTransactionRequest> =
-    new Request(this.api.ada.createExternalTransaction);
+  createExternalTransactionRequest: Request<
+    CreateExternalTransactionRequest
+  > = new Request(this.api.ada.createExternalTransaction);
   @observable
   _filterOptionsForWallets = {};
   @observable
-  calculateTransactionFeeRequest: Request<GetTransactionFeeRequest> =
-    new Request(this.api.ada.calculateTransactionFee);
+  calculateTransactionFeeRequest: Request<
+    GetTransactionFeeRequest
+  > = new Request(this.api.ada.calculateTransactionFee);
+  private readonly walletSendTails = new Map<string, Promise<void>>();
+
+  acquireWalletSendLock = async (
+    walletId: string
+  ): Promise<WalletSendLease> => {
+    const previous = this.walletSendTails.get(walletId) || Promise.resolve();
+    let unlock = (): void => undefined;
+    const gate = new Promise<void>((resolve) => {
+      unlock = resolve;
+    });
+    const tail = previous.catch(() => undefined).then(() => gate);
+    this.walletSendTails.set(walletId, tail);
+    await previous.catch(() => undefined);
+    let released = false;
+    return Object.freeze({
+      walletId,
+      release: () => {
+        if (released) return;
+        released = true;
+        unlock();
+        tail.finally(() => {
+          if (this.walletSendTails.get(walletId) === tail)
+            this.walletSendTails.delete(walletId);
+        });
+      },
+    });
+  };
+
+  withWalletSendLock = async <T>(
+    walletId: string,
+    work: () => Promise<T>
+  ): Promise<T> => {
+    const lease = await this.acquireWalletSendLock(walletId);
+    try {
+      return await work();
+    } finally {
+      lease.release();
+    }
+  };
 
   setup() {
     const {
