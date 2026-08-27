@@ -18,6 +18,7 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { submitOnEnter } from '../../../utils/form';
 import { formattedWalletAmount } from '../../../utils/formatters';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
@@ -55,11 +56,6 @@ const messages = defineMessages({
   leftoversLearnMoreLabel: {
     id: 'wallet.transferFunds.dialog2.leftovers.LearnMore.label',
     defaultMessage: '!!!Learn more',
-    description: 'Label Leftovers in the transfer funds form',
-  },
-  leftoversLearnMoreUrl: {
-    id: 'wallet.transferFunds.dialog2.leftovers.LearnMore.url',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/articles/',
     description: 'Label Leftovers in the transfer funds form',
   },
   buttonLabel: {
@@ -234,9 +230,7 @@ class TransferFundsStep2Dialog extends Component<Props> {
               <Link
                 className={styles.leftoversLearnMoreLink}
                 onClick={(event: React.MouseEvent<HTMLElement>) =>
-                  onOpenExternalLink(
-                    intl.formatMessage(messages.leftoversLearnMoreUrl, event)
-                  )
+                  onOpenExternalLink(getSupportUrl(intl.locale))
                 }
                 label={intl.formatMessage(messages.leftoversLearnMoreLabel)}
                 skin={LinkSkin}

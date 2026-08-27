@@ -99,8 +99,7 @@ const messages = defineMessages({
   },
   trezor_bridge_failure_link_url: {
     id: 'wallet.hardware.deviceStatus.trezor_bridge_failure.link.url',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693',
+    defaultMessage: '!!!https://wallet.trezor.io/#/bridge',
     description: 'URL for the "Trezor Bridge" update',
   },
   wrong_firmware: {
@@ -115,8 +114,7 @@ const messages = defineMessages({
   },
   wrong_firmware_link_url: {
     id: 'wallet.hardware.deviceStatus.wrong_firmware.link.url',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693',
+    defaultMessage: '!!!https://trezor.io/start/',
     description: 'URL for the "Firmware Update"',
   },
   unsupported_device: {

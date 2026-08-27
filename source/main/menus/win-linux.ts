@@ -6,7 +6,11 @@ import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
-import { generateSupportRequestLink } from '../../common/utils/reporting';
+import {
+  generateSupportRequestLink,
+  SUPPORT_URL,
+  FEATURE_REQUEST_URL,
+} from '../../common/utils/reporting';
 import { buildKnownIssueFixesSubmenu } from './submenuBuilders';
 import { WalletSettingsStateEnum } from '../../common/ipc/api';
 
@@ -178,30 +182,21 @@ export const winLinuxMenu = (
       },
       {
         label: translation('helpSupport.safetyTips'),
+        enabled: false,
+      },
+      {
+        label: translation('helpSupport.featureRequest'),
 
         click() {
-          const safetyTipsLinkUrl = translation('helpSupport.safetyTipsUrl');
-          shell.openExternal(safetyTipsLinkUrl);
+          shell.openExternal(FEATURE_REQUEST_URL);
         },
       },
-      /* {
-    label: translation('helpSupport.featureRequest'),
-    click() {
-      const featureRequestLinkUrl = translation(
-        'helpSupport.featureRequestUrl'
-      );
-      shell.openExternal(featureRequestLinkUrl);
-    },
-  }, */
       {
         label: translation('helpSupport.supportRequest'),
 
         click() {
-          const supportRequestLinkUrl = translation(
-            'helpSupport.supportRequestUrl'
-          );
           const supportUrl = generateSupportRequestLink(
-            supportRequestLinkUrl,
+            SUPPORT_URL,
             environment,
             locale
           );

@@ -17,6 +17,7 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './VotingRegistrationStepsRegister.scss';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
@@ -59,12 +60,6 @@ const messages = defineMessages({
     id: 'voting.votingRegistration.register.step.learnMoreLink',
     defaultMessage: '!!!Learn more',
     description: '"Learn more" link on the "sign" step.',
-  },
-  learntMoreLinkUrl: {
-    id: 'voting.votingRegistration.register.step.learntMoreLinkUrl',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/900006490763',
-    description: 'Learn more" link URL on the "sign" step.',
   },
 });
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -159,7 +154,7 @@ class VotingRegistrationStepsRegister extends Component<Props> {
     } = this.props;
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
-    const learnMoreLinkUrl = intl.formatMessage(messages.learntMoreLinkUrl);
+    const learnMoreLinkUrl = getSupportUrl(intl.locale);
     const selectedWalletName = get(selectedWallet, 'name', '');
     const actions = [
       {

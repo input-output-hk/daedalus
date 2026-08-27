@@ -27,6 +27,7 @@ import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../config/staking
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 import { MnemonicInput } from '../../wallet/mnemonic-input';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 
 const messages = defineMessages({
   title: {
@@ -90,12 +91,6 @@ const messages = defineMessages({
     id: 'staking.redeemItnRewards.step1.learnMoreLink.label',
     defaultMessage: '!!!Learn More',
     description: 'learnMoreLinkLabel for Redeem Incentivized Testnet - Step 1',
-  },
-  learnMoreLinkUrl: {
-    id: 'staking.redeemItnRewards.step1.learnMoreLink.url',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/900001656586',
-    description: 'learnMoreLinkUrl for Redeem Incentivized Testnet - Step 1',
   },
   recoveryPhraseInputHint: {
     id: 'staking.redeemItnRewards.step1.recoveryPhraseInputHint',
@@ -305,9 +300,7 @@ class Step1ConfigurationDialog extends Component<Props, State> {
         },
         {
           onClick: (event: MouseEvent) =>
-            openExternalLink(
-              intl.formatMessage(messages.learnMoreLinkUrl, event)
-            ),
+            openExternalLink(getSupportUrl(intl.locale)),
           label: intl.formatMessage(messages.learnMoreLinkLabel),
           isLink: true,
         },

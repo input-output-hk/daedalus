@@ -25,6 +25,7 @@ import { HW_SHELLEY_CONFIG } from '../../../config/hardwareWalletsConfig';
 import { hardenedPathToDerivationPath } from '../../../utils/hardwareWalletUtils';
 import { AddressVerificationCheckStatuses } from '../../../stores/HardwareWalletsStore';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 import type { AddressVerificationCheckStatus } from '../../../stores/HardwareWalletsStore';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
@@ -73,11 +74,6 @@ const messages = defineMessages({
     id: 'wallet.receive.dialog.supportRequestButtonLabel',
     defaultMessage: '!!!Submit a request to IOHK Support',
     description: 'Support request button label',
-  },
-  supportRequestLinkUrl: {
-    id: 'wallet.receive.dialog.supportRequestLinkUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
-    description: 'Support request link URL',
   },
   invalidAddressConfirmationLabel: {
     id: 'wallet.receive.dialog.invalidAddressConfirmationLabel',
@@ -285,14 +281,11 @@ class WalletReceiveDialog extends Component<Props, State> {
     let actions;
 
     if (isSupportRequestButton) {
-      const supportRequestLinkUrl = intl.formatMessage(
-        messages.supportRequestLinkUrl
-      );
       actions = [
         {
           className: 'attention',
           label: supportButtonLabel,
-          onClick: onSupportRequestClick.bind(this, supportRequestLinkUrl),
+          onClick: onSupportRequestClick.bind(this, getSupportUrl(intl.locale)),
           disabled: !isInvalidAddressConfirmed,
           primary: true,
         },

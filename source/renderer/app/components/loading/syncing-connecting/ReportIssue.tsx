@@ -9,6 +9,7 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './ReportIssue.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/link-ic... Remove this comment to see the full error message
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 
 const messages = defineMessages({
   reportConnectingIssueText: {
@@ -30,17 +31,6 @@ const messages = defineMessages({
     id: 'loading.screen.reportIssue.downloadLogsLinkLabel',
     defaultMessage: '!!!Download logs',
     description: 'Download logs button label on the loading.',
-  },
-  reportIssueButtonUrl: {
-    id: 'loading.screen.reportIssue.reportIssueButtonUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
-    description: 'Link to Open Support page',
-  },
-  connectivityIssueArticleUrl: {
-    id: 'loading.screen.readIssueArticle.connectivityIssueArticleUrl',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913',
-    description: 'Link to connectivity issue article page',
   },
 });
 type Props = {
@@ -76,7 +66,6 @@ export default class ReportIssue extends Component<Props> {
       styles.downloadLogsButton,
       disableDownloadLogs ? styles.disabled : null,
     ]);
-    const readArticleButtonUrl = messages.connectivityIssueArticleUrl;
     return (
       <div className={styles.component}>
         <h1 className={styles.reportIssueText}>
@@ -93,9 +82,7 @@ export default class ReportIssue extends Component<Props> {
               {intl.formatMessage(messages.readArticleButtonLabel)}
             </p>
           }
-          onClick={() =>
-            onOpenExternalLink(intl.formatMessage(readArticleButtonUrl))
-          }
+          onClick={() => onOpenExternalLink(getSupportUrl(intl.locale))}
           skin={ButtonSkin}
         />
         <Button
@@ -109,9 +96,7 @@ export default class ReportIssue extends Component<Props> {
               {intl.formatMessage(messages.reportIssueButtonLabel)}
             </p>
           }
-          onClick={() =>
-            onIssueClick(intl.formatMessage(messages.reportIssueButtonUrl))
-          }
+          onClick={() => onIssueClick(getSupportUrl(intl.locale))}
           skin={ButtonSkin}
         />
         <br />

@@ -19,6 +19,7 @@ import {
 } from '../../../domains/WalletTransaction';
 import WholeSelectionText from '../../widgets/WholeSelectionText';
 import globalMessages from '../../../i18n/global-messages';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 import type {
   TransactionState,
   TransactionType,
@@ -183,12 +184,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Why should I cancel this transaction?',
     description: 'Link to support article for canceling a pending transaction',
   },
-  supportArticleUrl: {
-    id: 'wallet.transaction.pending.supportArticleUrl',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/360038113814',
-    description: 'Url to support article for canceling a pending transaction',
-  },
   noInputAddressesLabel: {
     id: 'wallet.transaction.noInputAddressesLabel',
     defaultMessage: '!!!No addresses',
@@ -304,8 +299,7 @@ export default class Transaction extends Component<Props, State> {
   handleOpenSupportArticle = () => {
     const { intl } = this.context;
     const { onOpenExternalLink } = this.props;
-    const supportArticleUrl = intl.formatMessage(messages.supportArticleUrl);
-    return onOpenExternalLink(supportArticleUrl);
+    return onOpenExternalLink(getSupportUrl(intl.locale));
   };
   deletePendingTransaction = async () => {
     const { data, walletId } = this.props;

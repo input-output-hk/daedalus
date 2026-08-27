@@ -72,16 +72,6 @@
         "id": "api.errors.invalidAddress"
       },
       {
-        "defaultMessage": "!!!Learn more.",
-        "description": "\"Transaction too big due to too many inputs.\" error link label.",
-        "id": "api.errors.TooBigTransactionErrorLinkLabel"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360017733353",
-        "description": "\"Transaction too big due to too many inputs.\" error link URL.",
-        "id": "api.errors.TooBigTransactionErrorLinkURL"
-      },
-      {
         "defaultMessage": "!!!Invalid transaction.",
         "description": "\"Invalid transaction.\" error message",
         "id": "api.errors.utxoTooSmall"
@@ -277,7 +267,7 @@
         "id": "global.dialog.button.continue"
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693",
+        "defaultMessage": "!!!https://daedaluswallet.io/known-issues/",
         "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "id": "settings.support.faq.faqLinkURL"
       },
@@ -1192,7 +1182,7 @@
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure.link.label"
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693",
+        "defaultMessage": "!!!https://wallet.trezor.io/#/bridge",
         "description": "URL for the \"Trezor Bridge\" update",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure.link.url"
       },
@@ -1207,7 +1197,7 @@
         "id": "wallet.hardware.deviceStatus.wrong_firmware.link.label"
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693",
+        "defaultMessage": "!!!https://trezor.io/start/",
         "description": "URL for the \"Firmware Update\"",
         "id": "wallet.hardware.deviceStatus.wrong_firmware.link.url"
       },
@@ -1345,11 +1335,6 @@
         "defaultMessage": "!!!Create a new wallet",
         "description": "Create a new wallet action of legacy notification.",
         "id": "wallet.byron.notification.addWallet"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360038726373",
-        "description": "\"Learn more\" link URL",
-        "id": "wallet.byron.notification.learnMore.url"
       }
     ],
     "path": "source/renderer/app/components/notifications/LegacyNotification.tsx"
@@ -1595,11 +1580,6 @@
         "defaultMessage": "!!!Unknown",
         "description": "Unknown amount of disk space",
         "id": "daedalus.diagnostics.dialog.unknownDiskSpace"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
-        "description": "\"Support\" link URL while disk space is unknown",
-        "id": "daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl"
       },
       {
         "defaultMessage": "!!!Recommended system requirements status",
@@ -2205,11 +2185,6 @@
         "defaultMessage": "!!!read the instructions.",
         "description": "Connecting issue support link",
         "id": "wallet.connect.dialog.connectingIssueSupportLink"
-      },
-      {
-        "defaultMessage": "https://support.ledger.com/hc/en-us/articles/115005165269",
-        "description": "Link to support article",
-        "id": "wallet.connect.dialog.connectingIssueSupportLinkUrl"
       }
     ],
     "path": "source/renderer/app/components/wallet/WalletConnectDialog.tsx"
@@ -2553,26 +2528,6 @@
       }
     ],
     "path": "source/renderer/app/containers/notifications/NotificationsContainer.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
-        "description": "\"Learn more\" link URL in the staking countdown page",
-        "id": "staking.countdown.learnMore.linkUrl"
-      }
-    ],
-    "path": "source/renderer/app/containers/staking/StakingCountdownPage.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!https://staking.cardano.org/",
-        "description": "\"Learn more\" link URL in the staking rewards page",
-        "id": "staking.rewards.learnMore.linkUrl"
-      }
-    ],
-    "path": "source/renderer/app/containers/staking/StakingRewardsPage.tsx"
   },
   {
     "descriptors": [
@@ -3920,16 +3875,6 @@
         "defaultMessage": "!!!Download logs",
         "description": "Download logs button label on the loading.",
         "id": "loading.screen.reportIssue.downloadLogsLinkLabel"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
-        "description": "Link to Open Support page",
-        "id": "loading.screen.reportIssue.reportIssueButtonUrl"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913",
-        "description": "Link to connectivity issue article page",
-        "id": "loading.screen.readIssueArticle.connectivityIssueArticleUrl"
       }
     ],
     "path": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.tsx"
@@ -4217,7 +4162,7 @@
         "id": "systemTime.error.supportPortalLink"
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360010230873",
+        "defaultMessage": "!!!https://daedaluswallet.io/clock-sync/",
         "description": "Link to \"Machine clock out of sync with Cardano network\" support page",
         "id": "systemTime.error.supportPortalLinkUrl"
       },
@@ -5325,11 +5270,6 @@
         "defaultMessage": "!!!Learn more",
         "description": "Button Label for the Decentralization progress notification.",
         "id": "staking.info.buttonLabel"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
-        "description": "\"Learn more\" link URL in the staking info page",
-        "id": "staking.info.learnMore.linkUrl"
       }
     ],
     "path": "source/renderer/app/components/staking/info/StakingInfo.tsx"
@@ -5522,11 +5462,6 @@
         "id": "staking.redeemItnRewards.step1.learnMoreLink.label"
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/900001656586",
-        "description": "learnMoreLinkUrl for Redeem Incentivized Testnet - Step 1",
-        "id": "staking.redeemItnRewards.step1.learnMoreLink.url"
-      },
-      {
         "defaultMessage": "!!!Enter recovery phrase",
         "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "id": "staking.redeemItnRewards.step1.recoveryPhraseInputHint"
@@ -5715,11 +5650,6 @@
         "defaultMessage": "!!!Use the slider to rank the stake pools and check the potential rewards <strong>based on the amount of stake you intend to delegate</strong>.",
         "description": "Ranking description.",
         "id": "staking.stakePools.rankingDescription"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us",
-        "description": "Ranking learn more url.",
-        "id": "staking.stakePools.rankingLearnMoreUrl"
       },
       {
         "defaultMessage": "!!!wallet.",
@@ -6465,11 +6395,6 @@
         "defaultMessage": "!!!Learn more",
         "description": "\"Learn more\" link on the \"sign\" step.",
         "id": "voting.votingRegistration.register.step.learnMoreLink"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/900006490763",
-        "description": "Learn more\" link URL on the \"sign\" step.",
-        "id": "voting.votingRegistration.register.step.learntMoreLinkUrl"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.tsx"
@@ -6690,11 +6615,6 @@
         "defaultMessage": "!!!Submit a support request",
         "description": "Submit Support Request Label on the NotResponding dialog",
         "id": "wallet.notResponding.submitSupportRequestLabel"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
-        "description": "Submit Support Request Url on the NotResponding dialog",
-        "id": "wallet.notResponding.submitSupportRequestUrl"
       }
     ],
     "path": "source/renderer/app/components/wallet/not-responding/NotResponding.tsx"
@@ -7060,11 +6980,6 @@
         "defaultMessage": "!!!Submit a request to IOHK Support",
         "description": "Support request button label",
         "id": "wallet.receive.dialog.supportRequestButtonLabel"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
-        "description": "Support request link URL",
-        "id": "wallet.receive.dialog.supportRequestLinkUrl"
       },
       {
         "defaultMessage": "!!!Yes, I am sure I have compared the address displayed in Daedalus with the address displayed on the {deviceType} device by comparing the beginning and ending of the address.",
@@ -7740,11 +7655,6 @@
         "defaultMessage": "!!!Read support portal article",
         "description": "Label for the recoveryPhraseStep4SupportTitle on wallet settings.",
         "id": "wallet.settings.recoveryPhraseStep4SupportTitle"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360035341914",
-        "description": "Label for the recoveryPhraseStep4SupportUrl on wallet settings.",
-        "id": "wallet.settings.recoveryPhraseStep4SupportUrl"
       }
     ],
     "path": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.tsx"
@@ -8252,11 +8162,6 @@
         "id": "wallet.transaction.pending.cancelPendingTxnSupportArticle"
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360038113814",
-        "description": "Url to support article for canceling a pending transaction",
-        "id": "wallet.transaction.pending.supportArticleUrl"
-      },
-      {
         "defaultMessage": "!!!No addresses",
         "description": "Input Addresses label.",
         "id": "wallet.transaction.noInputAddressesLabel"
@@ -8437,11 +8342,6 @@
         "id": "wallet.transferFunds.dialog2.leftovers.LearnMore.label"
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/",
-        "description": "Label Leftovers in the transfer funds form",
-        "id": "wallet.transferFunds.dialog2.leftovers.LearnMore.url"
-      },
-      {
         "defaultMessage": "!!!Transfer funds",
         "description": "buttonLabel in the transfer funds form.",
         "id": "wallet.transferFunds.dialog2.label.buttonLabel"
@@ -8480,11 +8380,6 @@
         "defaultMessage": "!!!Find out more",
         "description": "\"Find out more\" link on the \"Wallet Utxos\" screen.",
         "id": "wallet.settings.utxos.findOutMoreLink"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360034118013",
-        "description": "\"Find out more\" link URL on the \"Wallet Utxos\" screen.",
-        "id": "wallet.settings.utxos.findOutMoreLinkUrl"
       },
       {
         "defaultMessage": "!!!amount",
@@ -8565,11 +8460,6 @@
         "defaultMessage": "!!!Learn more",
         "description": "Learn more",
         "id": "wallet.import.file.dialog.linkLabel"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/900000623463",
-        "description": "\"Learn more\" link URL on the wallet import file dialog",
-        "id": "wallet.import.file.dialog.linkUrl"
       },
       {
         "defaultMessage": "!!!Import from:",
@@ -8660,11 +8550,6 @@
         "defaultMessage": "!!!Learn more",
         "description": "Learn more",
         "id": "wallet.select.import.dialog.linkLabel"
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/900000623463",
-        "description": "\"Learn more\" link URL on the wallet import file dialog",
-        "id": "wallet.select.import.dialog.linkUrl"
       },
       {
         "defaultMessage": "!!!Close window",
@@ -8911,21 +8796,6 @@
   },
   {
     "descriptors": [
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
-        "description": "\"submit a support request\" link URL in the \"Report a problem\" section on the support settings page.",
-        "id": "settings.support.reportProblem.linkUrl"
-      }
-    ],
-    "path": "source/renderer/app/containers/settings/categories/SupportSettingsPage.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/",
-        "description": "\"Learn more\" link URL on the delegation setup \"intro\" dialog.",
-        "id": "staking.delegationSetup.intro.step.dialog.learnMore.url"
-      },
       {
         "defaultMessage": "!!!Wallet",
         "description": "Step 1 label text on delegation steps dialog.",
