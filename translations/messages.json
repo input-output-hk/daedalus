@@ -1247,6 +1247,71 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Review data signature request",
+        "description": "Title for a CIP-30 data-signing request.",
+        "id": "dapp.dataSign.approval.title"
+      },
+      {
+        "defaultMessage": "!!!Sign data",
+        "description": "Approve a CIP-30 data-signing request.",
+        "id": "dapp.dataSign.approval.approve"
+      },
+      {
+        "defaultMessage": "!!!Reject",
+        "description": "Reject a CIP-30 data-signing request.",
+        "id": "dapp.dataSign.approval.reject"
+      },
+      {
+        "defaultMessage": "!!!Origin: {value}",
+        "description": "Origin requesting a data signature.",
+        "id": "dapp.dataSign.approval.origin"
+      },
+      {
+        "defaultMessage": "!!!Wallet: {value}",
+        "description": "Wallet selected for data signing.",
+        "id": "dapp.dataSign.approval.wallet"
+      },
+      {
+        "defaultMessage": "!!!Network: {value}",
+        "description": "Network selected for data signing.",
+        "id": "dapp.dataSign.approval.network"
+      },
+      {
+        "defaultMessage": "!!!Credential: {value}",
+        "description": "Payment or stake credential selected for signing.",
+        "id": "dapp.dataSign.approval.credential"
+      },
+      {
+        "defaultMessage": "!!!Canonical address bytes",
+        "description": "Label for canonical raw address hex.",
+        "id": "dapp.dataSign.approval.address"
+      },
+      {
+        "defaultMessage": "!!!Exact payload bytes",
+        "description": "Label for exact payload hex.",
+        "id": "dapp.dataSign.approval.payload"
+      },
+      {
+        "defaultMessage": "!!!Safe UTF-8 preview",
+        "description": "Label for safe exact UTF-8 payload preview.",
+        "id": "dapp.dataSign.approval.preview"
+      },
+      {
+        "defaultMessage": "!!!No safe UTF-8 preview is available. Review the exact hex.",
+        "description": "Shown when payload bytes are not safe display text.",
+        "id": "dapp.dataSign.approval.noPreview"
+      },
+      {
+        "defaultMessage": "!!!Wallet spending password",
+        "description": "Label for software wallet spending password.",
+        "id": "dapp.dataSign.approval.password"
+      }
+    ],
+    "path": "source/renderer/app/components/dapp-consent/DappDataSignApproval.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Connect your device and enter your PIN to unlock it",
         "description": "\"Connect your device and enter your PIN to unlock it\" device state",
         "id": "wallet.hardware.deviceStatus.connecting"

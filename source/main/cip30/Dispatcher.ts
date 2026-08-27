@@ -95,7 +95,7 @@ export class Dispatcher {
     private readonly sessions: SessionStore
   ) {}
 
-  private requireCapability(
+  requireCapability(
     method: DappCip30Method,
     authority: Cip30DispatchAuthority,
     context: CapabilityContext

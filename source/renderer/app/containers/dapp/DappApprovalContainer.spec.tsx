@@ -17,6 +17,13 @@ jest.mock(
       return <div data-testid="transaction-consent" />;
     }
 );
+jest.mock(
+  '../../components/dapp-consent/DappDataSignApproval',
+  () =>
+    function DataSignConsent() {
+      return <div data-testid="data-sign-consent" />;
+    }
+);
 
 const identity = {
   requestId: 'request',
@@ -40,6 +47,25 @@ describe('DappApprovalContainer', () => {
       />
     );
     expect(screen.getByTestId('connection-consent')).toBeVisible();
+
+    rerender(
+      <DappApprovalContainer
+        request={{
+          ...identity,
+          kind: 'data-sign',
+          review: {
+            address: `60${'11'.repeat(28)}`,
+            credentialKind: 'payment',
+            payload: '00',
+            utf8Preview: null,
+          },
+        }}
+        deciding={false}
+        onApprove={jest.fn()}
+        onReject={jest.fn()}
+      />
+    );
+    expect(screen.getByTestId('data-sign-consent')).toBeVisible();
 
     rerender(
       <DappApprovalContainer
