@@ -1,0 +1,75 @@
+import { action, computed, observable, runInAction } from 'mobx';
+import {
+  bindDappBrowserState,
+  closeDappBrowserChannel,
+  dappBrowserStatusChannel,
+  openDappBrowserChannel,
+} from '../ipc/dappBrowser';
+import Store from './lib/Store';
+
+export default class DappStore extends Store {
+  @observable catalogAvailable = false;
+  @observable guestOpen = false;
+  @observable isLaunching = false;
+  private generation = 0;
+  private unbind?: () => void;
+
+  @computed
+  get ready(): boolean {
+    return (
+      this.catalogAvailable &&
+      !!this.stores.wallets.activeDappWallet &&
+      this.stores.networkStatus.isSynced
+    );
+  }
+
+  setup(): void {
+    const generation = ++this.generation;
+    this.unbind = bindDappBrowserState((isOpen) => {
+      if (generation === this.generation)
+        runInAction('DappStore::receiveState', () => {
+          this.guestOpen = isOpen;
+        });
+    });
+    dappBrowserStatusChannel.request(undefined).then(
+      (status) => {
+        if (generation !== this.generation) return;
+        runInAction('DappStore::receiveStatus', () => {
+          this.catalogAvailable = status.catalogAvailable;
+          this.guestOpen = status.isOpen;
+        });
+      },
+      () => undefined
+    );
+  }
+
+  teardown(): void {
+    ++this.generation;
+    this.unbind?.();
+    this.unbind = undefined;
+    this.isLaunching = false;
+    super.teardown();
+  }
+
+  @action.bound
+  async launch(catalogId: string, localName: string): Promise<void> {
+    if (!this.ready || this.isLaunching) return;
+    const generation = this.generation;
+    this.isLaunching = true;
+    try {
+      await openDappBrowserChannel.request({ catalogId, localName });
+    } finally {
+      if (generation === this.generation)
+        runInAction('DappStore::finishLaunch', () => {
+          this.isLaunching = false;
+        });
+    }
+  }
+
+  @action.bound
+  async close(): Promise<void> {
+    const generation = this.generation;
+    await closeDappBrowserChannel.request(undefined);
+    if (generation === this.generation) this.guestOpen = false;
+  }
+}

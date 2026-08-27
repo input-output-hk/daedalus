@@ -180,19 +180,37 @@ export type OpenExternalUrlRendererRequest = string;
 export type OpenExternalUrlMainResponse = void;
 
 export const DAPP_BROWSER_OPEN_CHANNEL = 'DAPP_BROWSER_OPEN_CHANNEL';
-export type DappBrowserOpenRendererRequest = {
+export type DappBrowserStagedOpenRendererRequest = Readonly<{
   launchId: string;
   lease: {
     walletId: string;
     routeEpoch: number;
     networkGenesis: string;
   };
-};
+}>;
+export type DappBrowserCatalogOpenRendererRequest = Readonly<{
+  catalogId: string;
+  localName: string;
+}>;
+export type DappBrowserOpenRendererRequest =
+  | DappBrowserStagedOpenRendererRequest
+  | DappBrowserCatalogOpenRendererRequest;
 export type DappBrowserOpenMainResponse = void;
 
 export const DAPP_BROWSER_CLOSE_CHANNEL = 'DAPP_BROWSER_CLOSE_CHANNEL';
 export type DappBrowserCloseRendererRequest = void;
 export type DappBrowserCloseMainResponse = void;
+
+export const DAPP_BROWSER_STATUS_CHANNEL = 'DAPP_BROWSER_STATUS_CHANNEL';
+export type DappBrowserStatusRendererRequest = void;
+export type DappBrowserStatusMainResponse = Readonly<{
+  isOpen: boolean;
+  catalogAvailable: boolean;
+}>;
+
+export const DAPP_BROWSER_STATE_CHANNEL = 'DAPP_BROWSER_STATE_CHANNEL';
+export type DappBrowserStateMainRequest = boolean;
+export type DappBrowserStateRendererResponse = void;
 
 export const DAPP_CONSENT_RENDER_CHANNEL = 'DAPP_CONSENT_RENDER_CHANNEL';
 export type DappConsentKind =

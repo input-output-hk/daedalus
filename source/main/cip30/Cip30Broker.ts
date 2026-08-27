@@ -44,12 +44,14 @@ import type {
   DappGrant,
   DappScope,
 } from '../../common/types/dapp.types';
+import { dappCatalog } from '../../common/config/dappCatalog';
 import {
   dappLaunchPolicy,
   launcherConfig,
   stateDirectoryPath,
 } from '../config';
 import type { DappGuestAuthority } from '../dapp/DappBrowserManager';
+import { dappCatalogEntryIdentity } from '../dapp/dappCatalog';
 import type { DappRouteLease } from '../dapp/DappRouteLease';
 import {
   authenticateDappGuest,
@@ -875,14 +877,20 @@ let registered = false;
 
 export const handleCip30BrokerRequests = (): void => {
   if (registered) return;
+  const grants = new GrantRepository(
+    path.join(stateDirectoryPath, 'dapp-grants.json')
+  );
+  grants.pruneCatalog(
+    new Map(
+      dappCatalog.map((entry) => [entry.id, dappCatalogEntryIdentity(entry)])
+    )
+  );
   broker = new Cip30Broker({
     authenticate: authenticateDappGuest,
     currentLease: getCurrentDappRouteLease,
     executeWallet: executeCip30WalletRequest,
     consent: consentCoordinator,
-    grants: new GrantRepository(
-      path.join(stateDirectoryPath, 'dapp-grants.json')
-    ),
+    grants,
     sessions,
     registry,
     capabilities,
