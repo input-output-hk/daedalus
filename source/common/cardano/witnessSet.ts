@@ -158,7 +158,8 @@ const originalVKeys = (envelope: ExactTransactionEnvelope) =>
 export const diffVKeyWitnesses = (
   envelope: ExactTransactionEnvelope,
   returnedBodyHash: string,
-  returnedWitnessSetCbor: Buffer
+  returnedWitnessSetCbor: Buffer,
+  requiredKeyHashes: readonly string[] = []
 ): Buffer => {
   if (returnedBodyHash !== envelope.transactionId) invalid();
   const bodyBytes = bytesForSpan(envelope.cbor, envelope.spans.body);
@@ -166,6 +167,15 @@ export const diffVKeyWitnesses = (
   const returned = extractVKeyWitnesses(returnedWitnessSetCbor);
   verifyVKeyWitnesses(bodyBytes, original);
   verifyVKeyWitnesses(bodyBytes, returned);
+  const allHashes = new Set(
+    [...original, ...returned].map(({ keyHash }) => keyHash.toString('hex'))
+  );
+  if (
+    requiredKeyHashes.some(
+      (keyHash) => !/^[0-9a-f]{56}$/u.test(keyHash) || !allHashes.has(keyHash)
+    )
+  )
+    invalid();
   const existing = new Set(
     original.map(({ publicKey }) => publicKey.toString('hex'))
   );

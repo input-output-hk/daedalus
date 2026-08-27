@@ -152,6 +152,46 @@ const createTransactionSignatureFixture = () => {
 };
 const transactionSignature = createTransactionSignatureFixture();
 
+const createDrepDataSignatureFixture = () => {
+  const keys = generateKeyPairSync('ed25519');
+  const publicDer = keys.publicKey.export({
+    format: 'der',
+    type: 'spki',
+  }) as Buffer;
+  const publicKey = publicDer.subarray(-32);
+  const credential = Buffer.from(blake2b(publicKey, undefined, 28));
+  const raw = credential.toString('hex');
+  const payload = Buffer.from('Governance', 'utf8').toString('hex');
+  const expected = prepareCip8Request(raw, payload, {
+    networkId: 0,
+    drepCredential: raw,
+  });
+  const signature = signBytes(
+    null,
+    encodeCoseSignatureStructure(
+      encodeCoseProtectedHeader(expected.protectedAddress),
+      expected.payload
+    ),
+    keys.privateKey
+  );
+  const result = serializeCip8(expected, { publicKey, signature });
+  return {
+    publicKey: publicKey.toString('hex'),
+    raw,
+    type6: `60${raw}`,
+    payload,
+    result,
+    response: {
+      revision: 1 as const,
+      credential_kind: 'drep' as const,
+      credential: raw,
+      cose_sign1: result.signature,
+      cose_key: result.key,
+    },
+  };
+};
+const drepDataSignature = createDrepDataSignatureFixture();
+
 const create = () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'cip30-broker-'));
   (transactionContext.reconcileTransactionContext as jest.Mock).mockReturnValue(
@@ -197,14 +237,18 @@ const create = () => {
         : {
             status: 'fulfilled',
             operation: 'sign-data',
-            value: signatureResponse,
+            value:
+              walletRequest.address === drepDataSignature.raw ||
+              walletRequest.address === drepDataSignature.type6
+                ? drepDataSignature.response
+                : signatureResponse,
           };
     if (walletRequest.operation === 'cip95-key-state')
       return {
         status: 'fulfilled',
         operation: 'cip95-key-state',
         value: {
-          drep_public_key: '33'.repeat(32),
+          drep_public_key: drepDataSignature.publicKey,
           registered_stake_public_keys: ['44'.repeat(32)],
           unregistered_stake_public_keys: ['55'.repeat(32)],
         },
@@ -401,7 +445,7 @@ describe('Cip30Broker', () => {
     fixture.executeWallet.mockClear();
 
     for (const [method, expected] of [
-      ['api.cip95.getPubDRepKey', '33'.repeat(32)],
+      ['api.cip95.getPubDRepKey', drepDataSignature.publicKey],
       ['api.cip95.getRegisteredPubStakeKeys', ['44'.repeat(32)]],
       ['api.cip95.getUnregisteredPubStakeKeys', ['55'.repeat(32)]],
     ] as const)
@@ -625,27 +669,43 @@ describe('Cip30Broker', () => {
     fixture.cleanup();
   });
 
-  it('refuses the CIP-95 signTx override before base context access', async () => {
+  it('uses the shared witness path with negotiated CIP-95 governance authority', async () => {
     const fixture = create();
     await fixture.broker.handle(
       event,
       request('provider.enable', [{ extensions: [{ cip: 95 }] }])
     );
     fixture.executeWallet.mockClear();
+    (fixture.consent.request as jest.Mock).mockClear();
     await expect(
       fixture.broker.handle(
         event,
         request('api.signTx', [transactionSignature.cbor])
       )
     ).resolves.toEqual({
-      status: 'rejected',
-      rejection: { type: 'api-error', value: { code: -3, info: 'Refused' } },
+      status: 'fulfilled',
+      value: transactionSignature.witnessSet,
     });
+    expect(
+      (fixture.consent.request as jest.Mock).mock.calls[0][0].presentation
+        .scopes
+    ).toEqual(['governance-transaction-signing']);
     expect(
       fixture.executeWallet.mock.calls.some(
         ([walletRequest]) => walletRequest.operation === 'transaction-context'
       )
-    ).toBe(false);
+    ).toBe(true);
+
+    fixture.setWitnessFailure('deprecated-certificate');
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signTx', [transactionSignature.cbor])
+      )
+    ).resolves.toMatchObject({
+      status: 'rejected',
+      rejection: { type: 'tx-sign-error', value: { code: 3 } },
+    });
     fixture.cleanup();
   });
 
@@ -689,6 +749,82 @@ describe('Cip30Broker', () => {
       passphrase: 'secret',
     });
     fixture.cleanup();
+  });
+
+  it('normalizes negotiated raw and type-6 DRep signing identically', async () => {
+    const fixture = create();
+    await fixture.broker.handle(
+      event,
+      request('provider.enable', [{ extensions: [{ cip: 95 }] }])
+    );
+    (fixture.consent.request as jest.Mock).mockClear();
+    fixture.executeWallet.mockClear();
+    for (const address of [drepDataSignature.raw, drepDataSignature.type6])
+      await expect(
+        fixture.broker.handle(
+          event,
+          request('api.cip95.signData', [address, drepDataSignature.payload])
+        )
+      ).resolves.toEqual({
+        status: 'fulfilled',
+        value: drepDataSignature.result,
+      });
+    expect(fixture.consent.request).toHaveBeenCalledTimes(2);
+    for (const [pending] of (fixture.consent.request as jest.Mock).mock.calls)
+      expect(pending.presentation).toMatchObject({
+        kind: 'data-sign',
+        scopes: ['governance-data-signing'],
+        review: {
+          credentialKind: 'drep',
+          payload: drepDataSignature.payload,
+        },
+      });
+
+    const signCalls = fixture.executeWallet.mock.calls
+      .map(([walletRequest]) => walletRequest)
+      .filter(({ operation }) => operation === 'sign-data');
+    expect(signCalls).toEqual([
+      expect.objectContaining({ address: drepDataSignature.raw }),
+      expect.objectContaining({ address: drepDataSignature.type6 }),
+    ]);
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.cip95.signData', [
+          `00${drepDataSignature.raw.slice(2)}`,
+          drepDataSignature.payload,
+        ])
+      )
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: {
+        type: 'api-error',
+        value: { code: -1, info: 'Invalid request' },
+      },
+    });
+    fixture.cleanup();
+
+    const refused = create();
+    await refused.broker.handle(event, request('provider.enable'));
+    refused.executeWallet.mockClear();
+    await expect(
+      refused.broker.handle(
+        event,
+        request('api.cip95.signData', [
+          drepDataSignature.raw,
+          drepDataSignature.payload,
+        ])
+      )
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: { type: 'api-error', value: { code: -3, info: 'Refused' } },
+    });
+    expect(
+      refused.executeWallet.mock.calls.some(
+        ([walletRequest]) => walletRequest.operation === 'cip95-key-state'
+      )
+    ).toBe(false);
+    refused.cleanup();
   });
 
   it('maps script, hardware, and invalid returned COSE without releasing data', async () => {

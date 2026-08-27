@@ -79,7 +79,8 @@ export const prepareCip8Request = (
       return invalid();
 
     if (hash28.test(address)) {
-      if (drepCredential === undefined) return invalid();
+      if (drepCredential === undefined || address !== drepCredential)
+        return invalid();
       const credential = Buffer.from(address, 'hex');
       return {
         address,
@@ -131,7 +132,7 @@ export const prepareCip8Request = (
 
 export type Cip8DataSignReview = Readonly<{
   address: string;
-  credentialKind: 'payment' | 'stake';
+  credentialKind: Cip8CredentialKind;
   payload: string;
   utf8Preview: string | null;
 }>;
@@ -148,7 +149,6 @@ const safeUtf8Preview = (payload: Buffer): string | null => {
 export const createCip8DataSignReview = (
   expected: Cip8ExpectedRequest
 ): Cip8DataSignReview => {
-  if (expected.credentialKind === 'drep') return invalid();
   const utf8Preview = safeUtf8Preview(expected.payload);
   return Object.freeze({
     address: expected.address,
@@ -169,7 +169,8 @@ export const parseCip8DataSignReview = (value: unknown): Cip8DataSignReview => {
     review.address.length === 0 ||
     !hexBytes.test(review.address) ||
     (review.credentialKind !== 'payment' &&
-      review.credentialKind !== 'stake') ||
+      review.credentialKind !== 'stake' &&
+      review.credentialKind !== 'drep') ||
     typeof review.payload !== 'string' ||
     !hexBytes.test(review.payload) ||
     (review.utf8Preview !== null && typeof review.utf8Preview !== 'string') ||
