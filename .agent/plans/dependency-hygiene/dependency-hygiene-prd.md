@@ -184,7 +184,11 @@ sorts them, and this branch takes two of the tiers.
 ## Non-Goals
 
 - Changing any formatting option. `arrowParens`, print width, quote style and
-  trailing commas stay as they are. The open `arrowParens` question is
+  trailing commas stay as they are. `.prettierrc` does gain `printWidth`,
+  `tabWidth`, `useTabs` and `endOfLine`, all at the values already in force and
+  verified to reformat nothing, because prettier's CLI reads `.editorconfig` by
+  default and those are the four options it can reach. Writing down a value that
+  is already in effect is not a change to it. The open `arrowParens` question is
   deliberately excluded so a style decision and a version artefact never appear
   in the same diff.
 - Reformatting the tree. The prettier change is expected to produce zero file
@@ -814,6 +818,9 @@ Append-only. New entries go at the end.
 | 2026-08-27 | Phase 1 verified green in CI. `ci/hydra-build:required`, `ci/hydra-build:nonrequired`, `ci/eval`, Jest on Windows and Cargo on Windows all SUCCESS on the prettier bump, so `checks.treefmt` passes with prettier 3.6.2. |
 | 2026-08-27 | Phase 2 complete. treefmt reads `.prettierrc`, the inert prettier include and exclude lists are gone, `prettier-version-parity` is in the required set and verified failing as well as passing, and `check:all` runs `nix fmt -- --ci` through a new `fmt:check` script. |
 | 2026-08-27 | Finding while measuring task-005: `settings.global.excludes` directory entries are inert, and `.prettierignore` is the sole gate on prettier's scope. Recorded under Why removing the prettier `includes` block is safe. Not acted on. |
+| 2026-08-27 | `.prettierrc` pinned the four options `.editorconfig` can reach. Measured: prettier's CLI honours `.editorconfig` by default, `.prettierrc` overrides it, and the four keys are `indent_style`, `indent_size`, `max_line_length` and `end_of_line`. With the pins, `indent_size = 4` reformats nothing; without them it puts 1488 files out of conformance. Non-Goals updated. |
+| 2026-08-27 | Measured what fixing `settings.global.excludes` would buy, without doing it: suffixing the ten directory entries with `/**` drops treefmt's emitted set from 1969 files to 1639 and takes `.agent` matches from 326 to 0, with `nix fmt -- --ci` still reporting 0 changed. Awaiting a decision. |
+| 2026-08-27 | Phase 3 started. BIP39 vector fixture committed with provenance pinned to an upstream commit, and the conformance baseline measured: 24/24 on every axis, both pbkdf2 resolutions. |
 | 2026-08-27 | Scope widened, and the decision to exclude source changes reversed. Investigation found wallet entropy sourced from a `bip39` default that this branch's own bump replaces, and a crypto scenario skipped since 2021 hiding a throwing `generateMnemonic(9)`. Phase 3 becomes a crypto assurance phase, beginning by asserting current conformance against the published BIP39 vectors and ending with controls that make a later weakening conspicuous. Status In Progress. |
 
 ---

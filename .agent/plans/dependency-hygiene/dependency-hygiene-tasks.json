@@ -271,7 +271,7 @@
           "id": "task-016",
           "title": "Commit the published BIP39 vectors as a fixture",
           "description": "Bring the 24 published English test vectors into the repository with their upstream source recorded, so anyone can diff the fixture against the standard and rerun the suite themselves. This is what makes the conformance claim checkable from outside.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 0.5,
           "dependencies": [],
@@ -289,13 +289,16 @@
           ],
           "securityNotes": [
             "These are published test vectors and are safe to commit. They must never be presented as, or confused with, a usable wallet phrase."
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.6,
+          "completedNotes": "24 English vectors committed verbatim from trezor/python-mnemonic vectors.json at commit b57a5ad77a981e743f4167ab2f7927a55c1e82a8, with provenance recorded inside the fixture. Pinned to a commit rather than master so the fixture cannot change meaning without changing."
         },
         {
           "id": "task-007",
           "title": "Assert current conformance against the published BIP39 vectors",
           "description": "Establish the baseline by proving what the implementation does today matches the standard, not merely what it happens to output. Run every published English vector through the current code and record the result as the measurement the rest of the branch preserves.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 0.75,
           "dependencies": [
@@ -318,7 +321,10 @@
             "Use only the published vectors. Never a mnemonic that has held funds.",
             "If any vector does not match, stop the branch. A conformance failure on the current dependency set is a live defect, not a planning input."
           ],
-          "notes": "Replaces the original 'capture current output as fixtures'. A self-captured value proves the output did not change; it cannot prove the output was ever right. Both are available here, so the standard is what gets asserted."
+          "notes": "Replaces the original 'capture current output as fixtures'. A self-captured value proves the output did not change; it cannot prove the output was ever right. Both are available here, so the standard is what gets asserted.",
+          "completedAt": "2026-08-27",
+          "actualHours": 0.8,
+          "completedNotes": "All 24 vectors pass against the current implementation on every axis: mnemonicToSeedHex against the published seed, the same through both pbkdf2 resolutions, entropyToMnemonic, and the mnemonicToEntropy round trip. Recorded in research/03-crypto-conformance-baseline.md along with the 32-byte truncation, the no-password salt path, the Jest/webpack pbkdf2 split, and the entropy chain."
         },
         {
           "id": "task-008",
