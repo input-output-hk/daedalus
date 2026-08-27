@@ -8,6 +8,13 @@ import {
   createDappCip30RejectedEnvelope,
   parseDappCip30GatewayRequest,
 } from '../../common/cip30/schemas';
+import {
+  Cip8AddressNotPKError,
+  Cip8Error,
+  createCip8DataSignReview,
+  prepareCip8Request,
+  verifyCip8BackendResponse,
+} from '../../common/cardano/cip8';
 import type { ApiError, DappCip30Rejection } from '../../common/cip30/errors';
 import type {
   Cip30WalletCapabilities,
@@ -79,6 +86,18 @@ const LIVE_BASE_SCOPES: readonly DappScope[] = [
   'transaction-submission',
 ];
 
+const dataSignRejection = (
+  code: 1 | 2 | 3,
+  info: string
+): DappCip30Rejection => ({
+  type: 'data-sign-error',
+  value: { code, info },
+});
+
+const invalidRequestRejection = (): DappCip30Rejection => ({
+  type: 'api-error',
+  value: { code: -1, info: 'Invalid request' },
+});
 const refusal = (): DappCip30Rejection => ({
   type: 'api-error',
   value: { code: -3, info: 'Refused' },
@@ -184,7 +203,7 @@ export class Cip30Broker {
 
   private request(
     binding: Cip30BrokerBinding,
-    operation: Cip30WalletOperation
+    operation: Exclude<Cip30WalletOperation, 'sign-data'>
   ): Cip30WalletRequest {
     return Object.freeze({
       operation,
@@ -196,7 +215,7 @@ export class Cip30Broker {
 
   private async executeWallet(
     binding: Cip30BrokerBinding,
-    operation: Cip30WalletOperation
+    operation: Exclude<Cip30WalletOperation, 'sign-data'>
   ): Promise<Cip30WalletResponse> {
     this.assertCurrent(binding);
     const response = await this.options.executeWallet(
@@ -348,6 +367,94 @@ export class Cip30Broker {
     return {};
   }
 
+  private async signData(
+    request: DappCip30GatewayRequest<'api.signData'>,
+    binding: Cip30BrokerBinding
+  ) {
+    const { evidence, context } = await this.capabilityEvidence(binding);
+    const capability = this.options.dispatcher.requireCapability(
+      request.method,
+      binding.authority,
+      context
+    );
+    if (evidence.walletKind !== 'shelley-software')
+      throw dataSignRejection(1, 'Proof generation failed');
+
+    let expected: ReturnType<typeof prepareCip8Request>;
+    try {
+      expected = prepareCip8Request(request.args[0], request.args[1], {
+        networkId: binding.authority.network.networkId,
+      });
+    } catch (error) {
+      if (error instanceof Cip8AddressNotPKError)
+        throw dataSignRejection(2, 'Address is not a public key');
+      throw invalidRequestRejection();
+    }
+    const review = createCip8DataSignReview(expected);
+    const result = await this.options.consent.request({
+      identity: {
+        guestWebContentsId: binding.authority.guestWebContentsId,
+        documentGeneration: binding.authority.documentGeneration,
+        origin: binding.authority.origin,
+        connectionId: capability.connectionId,
+        walletId: binding.authority.walletId,
+        routeEpoch: binding.authority.routeEpoch,
+        networkGenesis: binding.authority.network.genesisHash,
+      },
+      presentation: {
+        kind: 'data-sign',
+        origin: binding.authority.origin,
+        walletName: evidence.walletName,
+        networkName: this.options.networkName,
+        scopes: ['data-signing'],
+        extensions: capability.enabledExtensions,
+        review,
+      },
+      payload: { address: review.address, payload: review.payload },
+      declined: dataSignRejection(3, 'User declined'),
+      execute: async (_payload, signal, passphrase) => {
+        if (signal.aborted || !passphrase)
+          throw dataSignRejection(1, 'Proof generation failed');
+        this.assertCurrent(binding);
+        const latest = await this.capabilityEvidence(binding);
+        if (latest.evidence.walletKind !== 'shelley-software')
+          throw dataSignRejection(1, 'Proof generation failed');
+        this.options.dispatcher.requireCapability(
+          request.method,
+          binding.authority,
+          latest.context
+        );
+        const response = await this.options.executeWallet({
+          operation: 'sign-data',
+          walletId: binding.authority.walletId,
+          network: binding.authority.network,
+          sourceRevision: this.options.sourceRevision,
+          address: review.address,
+          payload: review.payload,
+          passphrase,
+        });
+        this.assertCurrent(binding);
+        if (response.status === 'rejected') {
+          if (response.reason === 'account-change') throw accountChange();
+          if (response.reason === 'address-not-pk')
+            throw dataSignRejection(2, 'Address is not a public key');
+          if (response.reason === 'proof-generation')
+            throw dataSignRejection(1, 'Proof generation failed');
+          throw internal();
+        }
+        if (response.operation !== 'sign-data') throw internal();
+        try {
+          return verifyCip8BackendResponse(expected, response.value);
+        } catch (error) {
+          if (error instanceof Cip8Error) throw internal();
+          throw error;
+        }
+      },
+    });
+    this.assertCurrent(binding);
+    return result;
+  }
+
   private isEnabled(binding: Cip30BrokerBinding): boolean {
     return (
       this.options.grants.find({
@@ -376,6 +483,10 @@ export class Cip30Broker {
       if (request.method === 'provider.enable') {
         const result = await this.enable(request, binding);
         this.assertCurrent(binding);
+        return createDappCip30FulfilledEnvelope(request.method, result);
+      }
+      if (request.method === 'api.signData') {
+        const result = await this.signData(request, binding);
         return createDappCip30FulfilledEnvelope(request.method, result);
       }
       if (!IMPLEMENTED_METHODS.has(request.method)) throw refusal();

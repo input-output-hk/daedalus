@@ -137,6 +137,24 @@ describe('CIP-30 runtime schemas', () => {
     expect(
       parseDappApprovalDecision({ requestId: 'request', approved: true })
     ).toEqual({ requestId: 'request', approved: true });
+    expect(
+      parseDappApprovalDecision({
+        requestId: 'request',
+        approved: true,
+        passphrase: 'secret',
+      })
+    ).toEqual({
+      requestId: 'request',
+      approved: true,
+      passphrase: 'secret',
+    });
+    expectInvalid(() =>
+      parseDappApprovalDecision({
+        requestId: 'request',
+        approved: false,
+        passphrase: 'secret',
+      })
+    );
     expectInvalid(() =>
       parseDappApprovalDecision({
         requestId: 'request',

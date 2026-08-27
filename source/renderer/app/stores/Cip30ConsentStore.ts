@@ -49,8 +49,11 @@ export default class Cip30ConsentStore extends Store {
   }
 
   @action.bound
-  approve(): void {
-    this.decide(true);
+  approve(passphrase?: string): void {
+    this.decide(
+      true,
+      this.current?.kind === 'data-sign' ? passphrase : undefined
+    );
   }
 
   @action.bound
@@ -58,12 +61,16 @@ export default class Cip30ConsentStore extends Store {
     this.decide(false);
   }
 
-  private decide(approved: boolean): void {
+  private decide(approved: boolean, passphrase?: string): void {
     if (!this.current || this.deciding || !this.resolveDecision) return;
     this.deciding = true;
     const resolve = this.resolveDecision;
     this.resolveDecision = undefined;
-    resolve({ requestId: this.current.requestId, approved });
+    resolve({
+      requestId: this.current.requestId,
+      approved,
+      ...(approved && passphrase ? { passphrase } : {}),
+    });
   }
 
   @action

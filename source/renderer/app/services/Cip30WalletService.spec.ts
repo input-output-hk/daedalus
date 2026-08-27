@@ -17,6 +17,15 @@ const request = (operation: 'capabilities' | 'context' | 'addresses') => ({
   network,
   sourceRevision: '22'.repeat(20),
 });
+const signDataRequest = {
+  operation: 'sign-data' as const,
+  walletId: 'wallet',
+  network,
+  sourceRevision: '22'.repeat(20),
+  address: `60${'11'.repeat(28)}`,
+  payload: '00',
+  passphrase: 'secret',
+};
 
 const create = () => {
   let wallet: Record<string, unknown> | null = {
@@ -33,12 +42,20 @@ const create = () => {
     { id: 'addr-used', used: true, spendingPath: '0' },
     { id: 'addr-unused-1', used: false, spendingPath: '1' },
   ]);
+  const signDappData = jest.fn(async () => ({
+    revision: 1 as const,
+    credential_kind: 'payment' as const,
+    credential: '11'.repeat(28),
+    cose_sign1: '00',
+    cose_key: '00',
+  }));
   const stakeAddresses = { wallet: 'stake-address' };
   const api = ({
     ada: {
       getDappCapabilities,
       getDappTransactionContext,
       getAddresses,
+      signDappData,
     },
   } as unknown) as Api;
   const stores = ({
@@ -66,6 +83,7 @@ const create = () => {
     getDappCapabilities,
     getDappTransactionContext,
     getAddresses,
+    signDappData,
     setWallet: (value: Record<string, unknown> | null) => {
       wallet = value;
     },
@@ -146,5 +164,55 @@ describe('Cip30WalletService', () => {
       walletId: 'wallet',
       isLegacy: false,
     });
+  });
+
+  it('binds exact sign-data bytes and preserves typed backend failures', async () => {
+    const fixture = create();
+    await expect(
+      fixture.service.receive(signDataRequest)
+    ).resolves.toMatchObject({
+      status: 'fulfilled',
+      operation: 'sign-data',
+    });
+    expect(fixture.signDappData).toHaveBeenCalledWith({
+      walletId: 'wallet',
+      request: {
+        revision: 1,
+        network: {
+          network_id: 0,
+          network_magic: 42,
+          genesis_hash: network.genesisHash,
+        },
+        address: signDataRequest.address,
+        payload: '00',
+        passphrase: 'secret',
+      },
+    });
+
+    for (const [code, reason] of [
+      ['dapp_data_address_not_pk', 'address-not-pk'],
+      ['dapp_data_proof_generation', 'proof-generation'],
+      ['dapp_account_changed', 'account-change'],
+    ] as const) {
+      fixture.signDappData.mockRejectedValueOnce({ code });
+      await expect(fixture.service.receive(signDataRequest)).resolves.toEqual({
+        status: 'rejected',
+        reason,
+      });
+    }
+  });
+
+  it('rejects hardware data signing before backend access', async () => {
+    const fixture = create();
+    fixture.setWallet({
+      id: 'wallet',
+      name: 'Hardware',
+      isHardwareWallet: true,
+    });
+    await expect(fixture.service.receive(signDataRequest)).resolves.toEqual({
+      status: 'rejected',
+      reason: 'proof-generation',
+    });
+    expect(fixture.signDappData).not.toHaveBeenCalled();
   });
 });

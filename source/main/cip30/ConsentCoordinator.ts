@@ -25,7 +25,11 @@ export type ConsentRequest<T> = Readonly<{
   payload: unknown;
   declined: DappCip30Rejection;
   submission?: boolean;
-  execute: (payload: unknown, signal: AbortSignal) => Promise<T>;
+  execute: (
+    payload: unknown,
+    signal: AbortSignal,
+    passphrase?: string
+  ) => Promise<T>;
 }>;
 
 type PendingConsent<T = unknown> = {
@@ -35,7 +39,11 @@ type PendingConsent<T = unknown> = {
   readonly payload: unknown;
   readonly declined: DappCip30Rejection;
   readonly submission: boolean;
-  readonly execute: (payload: unknown, signal: AbortSignal) => Promise<T>;
+  readonly execute: (
+    payload: unknown,
+    signal: AbortSignal,
+    passphrase?: string
+  ) => Promise<T>;
   readonly resolve: (value: T) => void;
   readonly reject: (reason: DappCip30Rejection) => void;
   readonly abort: AbortController;
@@ -66,6 +74,19 @@ const freezeValue = (value: unknown): unknown => {
   }
   return value;
 };
+
+const isCip30Rejection = (value: unknown): value is DappCip30Rejection =>
+  !!value &&
+  typeof value === 'object' &&
+  [
+    'api-error',
+    'paginate-error',
+    'tx-sign-error',
+    'data-sign-error',
+    'tx-send-error',
+    'cip103-submit-error',
+  ].includes((value as { type?: string }).type || '') &&
+  Object.prototype.hasOwnProperty.call(value, 'value');
 
 export class ConsentCoordinator {
   private readonly queue: PendingConsent[] = [];
@@ -105,7 +126,7 @@ export class ConsentCoordinator {
     });
   }
 
-  decide(requestId: string, approved: boolean): void {
+  decide(requestId: string, approved: boolean, passphrase?: string): void {
     const active = this.active;
     if (
       !active ||
@@ -121,14 +142,18 @@ export class ConsentCoordinator {
 
     active.state = 'executing';
     active
-      .execute(active.payload, active.abort.signal)
+      .execute(active.payload, active.abort.signal, passphrase)
       .then((value) => {
         if (active.state !== 'settled')
           this.finish(active, active.staleRejection, value);
       })
-      .catch(() => {
+      .catch((error) => {
         if (active.state !== 'settled')
-          this.finish(active, active.staleRejection ?? active.declined);
+          this.finish(
+            active,
+            active.staleRejection ??
+              (isCip30Rejection(error) ? error : active.declined)
+          );
       });
   }
 

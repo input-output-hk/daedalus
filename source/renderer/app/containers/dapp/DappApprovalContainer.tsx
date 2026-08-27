@@ -2,19 +2,22 @@ import React from 'react';
 import type { DappConsentPresentation } from '../../../../common/ipc/api';
 import DappConsentDialog from '../../components/dapp-consent/DappConsentDialog';
 import Cip30TransactionApproval from '../../components/dapp/Cip30TransactionApproval';
+import DappDataSignApproval from '../../components/dapp-consent/DappDataSignApproval';
 
 type Props = {
   request: DappConsentPresentation;
   deciding: boolean;
-  onApprove: () => void;
+  onApprove: (passphrase?: string) => void;
   onReject: () => void;
 };
 
 export default function DappApprovalContainer(props: Props) {
+  if (props.request.kind === 'data-sign')
+    return <DappDataSignApproval {...props} request={props.request} />;
   return props.request.kind === 'transaction-sign' ||
     props.request.kind === 'transaction-submit' ? (
-    <Cip30TransactionApproval {...props} />
+    <Cip30TransactionApproval {...props} request={props.request} />
   ) : (
-    <DappConsentDialog {...props} />
+    <DappConsentDialog {...props} request={props.request} />
   );
 }

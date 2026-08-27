@@ -89,6 +89,7 @@ export type DappCip30ResultEnvelope<T = unknown> =
 export type DappApprovalDecision = {
   requestId: string;
   approved: boolean;
+  passphrase?: string;
 };
 
 export interface Cip95Api {

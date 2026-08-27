@@ -11,6 +11,7 @@ import './staking/Staking.stories';
 import './staking/CountdownParty.stories';
 // dApps
 import './dapps/TransactionRequest.stories';
+import './dapps/DappDataSignApproval.stories';
 // Voting
 import './voting/Voting.stories';
 import './governance/DRepDirectory.stories';

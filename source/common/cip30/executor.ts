@@ -1,17 +1,32 @@
+import type { Cip8BackendResponse } from '../cardano/cip8';
+
 export type Cip30WalletNetwork = Readonly<{
   networkId: 0 | 1;
   networkMagic: number;
   genesisHash: string;
 }>;
 
-export type Cip30WalletOperation = 'capabilities' | 'context' | 'addresses';
+export type Cip30WalletOperation =
+  | 'capabilities'
+  | 'context'
+  | 'addresses'
+  | 'sign-data';
 
-export type Cip30WalletRequest = Readonly<{
-  operation: Cip30WalletOperation;
+type Cip30WalletRequestIdentity = Readonly<{
   walletId: string;
   network: Cip30WalletNetwork;
   sourceRevision: string;
 }>;
+export type Cip30WalletRequest = Cip30WalletRequestIdentity &
+  (
+    | Readonly<{ operation: 'capabilities' | 'context' | 'addresses' }>
+    | Readonly<{
+        operation: 'sign-data';
+        address: string;
+        payload: string;
+        passphrase: string;
+      }>
+  );
 
 export type Cip30WalletCapabilities = Readonly<{
   walletId: string;
@@ -48,8 +63,18 @@ export type Cip30WalletResponse =
       value: Cip30WalletAddresses;
     }>
   | Readonly<{
+      status: 'fulfilled';
+      operation: 'sign-data';
+      value: Cip8BackendResponse;
+    }>
+  | Readonly<{
       status: 'rejected';
-      reason: 'account-change' | 'unavailable' | 'internal';
+      reason:
+        | 'account-change'
+        | 'unavailable'
+        | 'internal'
+        | 'address-not-pk'
+        | 'proof-generation';
     }>;
 
 const ownData = (
@@ -120,14 +145,40 @@ const sameNetwork = (
   left.genesisHash === right.genesisHash;
 
 export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
-  if (!ownData(value, ['operation', 'walletId', 'network', 'sourceRevision']))
+  const signData =
+    !!value &&
+    typeof value === 'object' &&
+    (value as { operation?: unknown }).operation === 'sign-data';
+  if (
+    !ownData(
+      value,
+      signData
+        ? [
+            'operation',
+            'walletId',
+            'network',
+            'sourceRevision',
+            'address',
+            'payload',
+            'passphrase',
+          ]
+        : ['operation', 'walletId', 'network', 'sourceRevision']
+    )
+  )
     throw new Error('Invalid CIP-30 wallet request');
   if (
-    !['capabilities', 'context', 'addresses'].includes(
+    !['capabilities', 'context', 'addresses', 'sign-data'].includes(
       value.operation as string
     ) ||
     !text(value.walletId) ||
-    !hex(value.sourceRevision, 20)
+    !hex(value.sourceRevision, 20) ||
+    (signData &&
+      (!text(value.address) ||
+        !lowerHex.test(value.address) ||
+        typeof value.payload !== 'string' ||
+        (value.payload.length > 0 && !lowerHex.test(value.payload)) ||
+        value.payload.length % 2 !== 0 ||
+        !text(value.passphrase)))
   )
     throw new Error('Invalid CIP-30 wallet request');
   return Object.freeze({
@@ -135,7 +186,14 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     walletId: value.walletId,
     network: parseNetwork(value.network),
     sourceRevision: value.sourceRevision,
-  });
+    ...(signData
+      ? {
+          address: value.address as string,
+          payload: value.payload as string,
+          passphrase: value.passphrase as string,
+        }
+      : {}),
+  }) as Cip30WalletRequest;
 };
 
 const parseCapabilities = (
@@ -213,6 +271,30 @@ const parseAddresses = (
   });
 };
 
+const parseDataSignature = (value: unknown): Cip8BackendResponse => {
+  if (
+    !ownData(value, [
+      'revision',
+      'credential_kind',
+      'credential',
+      'cose_sign1',
+      'cose_key',
+    ]) ||
+    value.revision !== 1 ||
+    !['payment', 'stake', 'drep'].includes(value.credential_kind as string) ||
+    typeof value.credential !== 'string' ||
+    !/^[0-9a-f]{56}$/u.test(value.credential) ||
+    !text(value.cose_sign1) ||
+    !lowerHex.test(value.cose_sign1) ||
+    value.cose_sign1.length % 2 !== 0 ||
+    !text(value.cose_key) ||
+    !lowerHex.test(value.cose_key) ||
+    value.cose_key.length % 2 !== 0
+  )
+    throw new Error('Invalid CIP-30 data signature');
+  return Object.freeze(value as Cip8BackendResponse);
+};
+
 export const parseCip30WalletResponse = (
   requestValue: Cip30WalletRequest,
   value: unknown
@@ -221,13 +303,22 @@ export const parseCip30WalletResponse = (
   if (
     ownData(value, ['status', 'reason']) &&
     value.status === 'rejected' &&
-    ['account-change', 'unavailable', 'internal'].includes(
-      value.reason as string
-    )
+    [
+      'account-change',
+      'unavailable',
+      'internal',
+      'address-not-pk',
+      'proof-generation',
+    ].includes(value.reason as string)
   )
     return Object.freeze({
       status: 'rejected',
-      reason: value.reason as 'account-change' | 'unavailable' | 'internal',
+      reason: value.reason as
+        | 'account-change'
+        | 'unavailable'
+        | 'internal'
+        | 'address-not-pk'
+        | 'proof-generation',
     });
   if (
     !ownData(value, ['status', 'operation', 'value']) ||
@@ -246,6 +337,12 @@ export const parseCip30WalletResponse = (
       status: 'fulfilled',
       operation: 'addresses',
       value: parseAddresses(value.value, request),
+    });
+  if (request.operation === 'sign-data')
+    return Object.freeze({
+      status: 'fulfilled',
+      operation: 'sign-data',
+      value: parseDataSignature(value.value),
     });
   if (!plainData(value.value)) throw new Error('Invalid CIP-30 wallet context');
   return Object.freeze({

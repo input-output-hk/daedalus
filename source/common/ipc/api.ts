@@ -72,6 +72,7 @@ import type {
   Cip30WalletResponse,
 } from '../cip30/executor';
 import type { Cip30TransactionReview } from '../cip30/review';
+import type { Cip8DataSignReview } from '../cardano/cip8';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -197,6 +198,7 @@ export const DAPP_CONSENT_RENDER_CHANNEL = 'DAPP_CONSENT_RENDER_CHANNEL';
 export type DappConsentKind =
   | 'connection'
   | 'key-disclosure'
+  | 'data-sign'
   | 'transaction-sign'
   | 'transaction-submit';
 type DappConsentIdentity = Readonly<{
@@ -214,6 +216,7 @@ export type DappConsentPresentation = DappConsentIdentity &
         kind: 'transaction-sign' | 'transaction-submit';
         review: Cip30TransactionReview;
       }>
+    | Readonly<{ kind: 'data-sign'; review: Cip8DataSignReview }>
   );
 export type DappConsentRenderMainRequest =
   | Readonly<{ type: 'present'; request: DappConsentPresentation }>
@@ -221,6 +224,7 @@ export type DappConsentRenderMainRequest =
 export type DappConsentRenderRendererResponse = Readonly<{
   requestId: string;
   approved: boolean;
+  passphrase?: string;
 }> | void;
 
 export const DAPP_CIP30_WALLET_CHANNEL = 'DAPP_CIP30_WALLET_CHANNEL';
