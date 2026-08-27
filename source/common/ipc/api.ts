@@ -71,6 +71,7 @@ import type {
   Cip30WalletRequest,
   Cip30WalletResponse,
 } from '../cip30/executor';
+import type { Cip30TransactionReview } from '../cip30/review';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -193,16 +194,27 @@ export type DappBrowserCloseRendererRequest = void;
 export type DappBrowserCloseMainResponse = void;
 
 export const DAPP_CONSENT_RENDER_CHANNEL = 'DAPP_CONSENT_RENDER_CHANNEL';
-export type DappConsentKind = 'connection' | 'key-disclosure';
-export type DappConsentPresentation = Readonly<{
+export type DappConsentKind =
+  | 'connection'
+  | 'key-disclosure'
+  | 'transaction-sign'
+  | 'transaction-submit';
+type DappConsentIdentity = Readonly<{
   requestId: string;
-  kind: DappConsentKind;
   origin: string;
   walletName: string;
   networkName: string;
   scopes: readonly string[];
   extensions: readonly number[];
 }>;
+export type DappConsentPresentation = DappConsentIdentity &
+  (
+    | Readonly<{ kind: 'connection' | 'key-disclosure' }>
+    | Readonly<{
+        kind: 'transaction-sign' | 'transaction-submit';
+        review: Cip30TransactionReview;
+      }>
+  );
 export type DappConsentRenderMainRequest =
   | Readonly<{ type: 'present'; request: DappConsentPresentation }>
   | Readonly<{ type: 'terminal'; requestId: string }>;

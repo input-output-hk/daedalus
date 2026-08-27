@@ -2,6 +2,7 @@ import type {
   DappConsentPresentation,
   DappConsentRenderMainRequest,
 } from './api';
+import { parseCip30TransactionReview } from '../cip30/review';
 
 export const DAPP_CIP30_GATEWAY_CHANNEL = 'dapp-cip30-gateway';
 
@@ -13,8 +14,10 @@ const isText = (value: unknown): value is string =>
   typeof value === 'string' && value.length > 0;
 
 const parsePresentation = (value: unknown): DappConsentPresentation => {
+  if (!isRecord(value)) throw new Error('Invalid dApp consent presentation');
+  const transaction =
+    value.kind === 'transaction-sign' || value.kind === 'transaction-submit';
   if (
-    !isRecord(value) ||
     !hasKeys(value, [
       'requestId',
       'kind',
@@ -23,9 +26,15 @@ const parsePresentation = (value: unknown): DappConsentPresentation => {
       'networkName',
       'scopes',
       'extensions',
+      ...(transaction ? ['review'] : []),
     ]) ||
     !isText(value.requestId) ||
-    (value.kind !== 'connection' && value.kind !== 'key-disclosure') ||
+    ![
+      'connection',
+      'key-disclosure',
+      'transaction-sign',
+      'transaction-submit',
+    ].includes(value.kind as string) ||
     !isText(value.origin) ||
     !isText(value.walletName) ||
     !isText(value.networkName) ||
@@ -37,7 +46,7 @@ const parsePresentation = (value: unknown): DappConsentPresentation => {
     )
   )
     throw new Error('Invalid dApp consent presentation');
-  return Object.freeze({
+  const identity = {
     requestId: value.requestId,
     kind: value.kind,
     origin: value.origin,
@@ -45,6 +54,20 @@ const parsePresentation = (value: unknown): DappConsentPresentation => {
     networkName: value.networkName,
     scopes: Object.freeze([...value.scopes]),
     extensions: Object.freeze([...value.extensions]),
+  };
+  if (transaction) {
+    const kind = value.kind as 'transaction-sign' | 'transaction-submit';
+    const review = parseCip30TransactionReview(value.review);
+    if (
+      (kind === 'transaction-sign' && review.mode !== 'sign') ||
+      (kind === 'transaction-submit' && review.mode !== 'submit')
+    )
+      throw new Error('Invalid dApp consent presentation');
+    return Object.freeze({ ...identity, kind, review });
+  }
+  return Object.freeze({
+    ...identity,
+    kind: value.kind as 'connection' | 'key-disclosure',
   });
 };
 

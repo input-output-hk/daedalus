@@ -163,9 +163,6 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-connecting-description-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-connecting-sync-progress-color': '#fff',
   },
-  dapps: {
-    '--theme-dapp-transaction-request-fees-text-color': '#ea4c5b',
-  },
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#36374d',
     '--theme-data-migration-layer-box-shadow-color': '#36374d',

@@ -25,7 +25,7 @@ import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTS
 import { MenuUpdater } from './containers/MenuUpdater';
 import { AnalyticsProvider } from './components/analytics';
 import { AnalyticsTracker } from './analytics';
-import DappConsentDialog from './components/dapp-consent/DappConsentDialog';
+import DappApprovalContainer from './containers/dapp/DappApprovalContainer';
 
 @observer
 class App extends Component<{
@@ -92,7 +92,7 @@ class App extends Component<{
                   ),
                 ]}
                 {cip30Consent.current && (
-                  <DappConsentDialog
+                  <DappApprovalContainer
                     request={cip30Consent.current}
                     deciding={cip30Consent.deciding}
                     onApprove={cip30Consent.approve}

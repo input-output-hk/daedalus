@@ -1,0 +1,41 @@
+.component {
+  color: var(--theme-dialog-fullsize-text-color);
+
+  section {
+    margin-bottom: 24px;
+    max-width: 100%;
+  }
+
+  h2,
+  h3 {
+    color: var(--theme-dialog-fullsize-title-text-color);
+    margin: 16px 0 8px;
+  }
+
+  p,
+  pre {
+    overflow-wrap: anywhere;
+  }
+
+  pre {
+    max-width: 100%;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+.warning,
+.refusal {
+  border: 1px solid var(--theme-dialog-fullsize-text-highlight-color);
+  margin: 16px 0;
+  padding: 16px;
+}
+
+.refusal {
+  color: var(--theme-dialog-fullsize-text-highlight-color);
+}
+
+.verified {
+  color: var(--theme-dialog-fullsize-text-highlight-color);
+  font-family: var(--font-bold);
+}
