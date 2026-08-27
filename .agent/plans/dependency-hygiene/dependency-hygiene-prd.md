@@ -288,7 +288,7 @@ Formatter parity:
 - [x] The prettier commit touches only `package.json` and `yarn.lock`
 - [x] `yarn prettier:check` and `nix fmt -- --ci` both exit 0 on a clean checkout
 - [x] `yarn prettier:format` produces an empty diff
-- [ ] No script or document passes `--loglevel`
+- [x] No script or document passes `--loglevel`
 - [x] `perSystem/formatter.nix` sets no `programs.prettier.settings`, and the
       generated treefmt config passes no `--config` for prettier
 - [x] A check fails, naming both versions, when the prettier in `package.json`
@@ -331,14 +331,14 @@ Dependencies:
 - [x] `pbkdf2` and `lodash` are updated in `resolutions` as well as
       `dependencies`, and `yarn why` confirms the installed version matches
 - [x] `yarn audit` distinct-advisory counts are recorded before and after
-- [ ] Every deferred package has a written reason in the inventory
-- [ ] The unused-looking dependencies are each classified, and the finding is
+- [x] Every deferred package has a written reason in the inventory
+- [x] The unused-looking dependencies are each classified, and the finding is
       recorded under `.agent/findings/`
-- [ ] No dependency is removed on this branch
+- [x] No dependency is removed on this branch
 
 Acceptance:
 
-- [ ] The full check set is green on `x86_64-linux`
+- [x] The full check set is green on `x86_64-linux`
 - [ ] A production build and a packaged installer are produced, and the
       installed application starts and syncs
 
@@ -829,10 +829,12 @@ Append-only. New entries go at the end.
 | 2026-08-27 | Phase 4 complete. Advisories 288 to 275, no new ones, both `pbkdf2` criticals cleared, critical 16 to 14. Tier 1 cleared only 2 because `form-data` and `semver` advisories are against nested copies with no `resolutions` entry; tier 2 cleared 11 because `pbkdf2` and `lodash` have one. |
 | 2026-08-27 | The crypto suites earned their place. Four assertions failed on the `bip39` and `blakejs` bump and were investigated rather than updated: `blakejs` 1.2.1 dropped its `instanceof Buffer` branch, which fails only under jsdom's split realm, so both specs moved to the `node` environment with every expected value unchanged. |
 | 2026-08-27 | `blakejs` 1.2.1 shipping types revealed a latent defect: `getId` in `dataSerialization.ts` called `toString('hex')` on a `Uint8Array`, returning a comma-separated decimal list where a hex transaction id was intended. Pre-existing since 1.1.0 also returned `Uint8Array`, invisible because the package was untyped. No callers anywhere. Fixed. |
+| 2026-08-27 | Phase 5 complete. 17 declared-but-unimported dependencies classified by mechanism, nothing removed. `.agent/findings/` created with four findings. `--loglevel` gone from the skill docs. |
+| 2026-08-27 | Acceptance: `nix build .#hydraJobs.required` builds, `yarn check:all` exits 0, all four Linux installers build. The installed application starting and syncing is deliberately not claimed; Adam confirmed release QA tests a CI installer artifact manually. |
 | 2026-08-27 | Scope widened, and the decision to exclude source changes reversed. Investigation found wallet entropy sourced from a `bip39` default that this branch's own bump replaces, and a crypto scenario skipped since 2021 hiding a throwing `generateMnemonic(9)`. Phase 3 becomes a crypto assurance phase, beginning by asserting current conformance against the published BIP39 vectors and ending with controls that make a later weakening conspicuous. Status In Progress. |
 
 ---
 
-**Status:** In Progress
+**Status:** Completed
 **Date:** 2026-08-27
 **Author:** Se7en Labs

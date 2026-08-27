@@ -797,7 +797,7 @@
           "id": "task-015",
           "title": "Run the full check set and build a packaged installer",
           "description": "A dependency change that claims to touch nothing must be shown to touch nothing. The check set does not build an installer, and webpack decides what actually ships, so a dependency that resolves and compiles can still fail to bundle.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 2.0,
           "dependencies": [
@@ -828,7 +828,10 @@
             "A packaged installer starts and syncs",
             "Each commit is reviewable on its own and reverts independently"
           ],
-          "notes": "Darwin checks are built and reported but do not gate. The Windows workflow is reporting-only; a red Windows Jest run after a dependency bump is worth reading rather than dismissing."
+          "notes": "Darwin checks are built and reported but do not gate. The Windows workflow is reporting-only; a red Windows Jest run after a dependency bump is worth reading rather than dismissing.",
+          "completedAt": "2026-08-27",
+          "actualHours": 2.4,
+          "completedNotes": "nix build .#hydraJobs.required builds every gating check including treefmt at 0 changed. yarn check:all exits 0, now running nix fmt -- --ci as its formatter step. All four Linux installers build: mainnet, preprod, preview, selfnode. Jest 35 files 403 tests, Cucumber @unit 32 scenarios, storybook:build passes. CHANGELOG entries added under 11.2.0 Chores. NOT verified here: the installed application starting and syncing, which needs a display and hours of chain sync. Adam confirmed on 2026-08-27 that CI produces the installer used for manual release testing, so that step is deliberately left to release QA rather than claimed."
         },
         {
           "id": "task-024",
