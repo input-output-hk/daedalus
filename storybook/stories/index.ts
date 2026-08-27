@@ -15,6 +15,7 @@ import './dapps/DappDataSignApproval.stories';
 import './dapps/DappConsentDialog.stories';
 import './dapps/DappCatalog.stories';
 import './dapps/DappConnectionsSettings.stories';
+import './dapps/CollateralPanel.stories';
 // Voting
 import './voting/Voting.stories';
 import './governance/DRepDirectory.stories';

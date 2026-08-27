@@ -72,6 +72,7 @@ const snapshot = (owned = true): TransactionContextSnapshot => ({
     contextOutput(normalId, 'normal'),
     contextOutput(referenceId, 'reference'),
   ],
+  pendingTransactions: [],
   ownership: owned
     ? [
         {

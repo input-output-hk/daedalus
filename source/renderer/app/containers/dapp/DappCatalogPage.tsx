@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
 import { dappCatalogPresentation } from '../../../../common/config/dappCatalog';
 import DappCatalog from '../../components/dapp/DappCatalog';
+import CollateralPanel from '../../components/dapp/collateral/CollateralPanel';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = { stores?: InjectedProps['stores'] };
@@ -11,6 +12,9 @@ type Props = { stores?: InjectedProps['stores'] };
 @observer
 export default class DappCatalogPage extends Component<Props> {
   static contextTypes = { intl: intlShape.isRequired };
+  componentDidMount(): void {
+    this.props.stores!.collateral.refresh();
+  }
 
   launch = (id: string): void => {
     const entry = dappCatalogPresentation.find(
@@ -38,6 +42,20 @@ export default class DappCatalogPage extends Component<Props> {
         ready={dapp.ready}
         isOpen={dapp.guestOpen}
         isLaunching={dapp.isLaunching}
+        beforeEntries={
+          <CollateralPanel
+            preference={this.props.stores!.collateral.snapshot?.preference}
+            corrupt={this.props.stores!.collateral.snapshot?.corrupt ?? false}
+            busy={this.props.stores!.collateral.isLoading}
+            failed={this.props.stores!.collateral.actionFailed}
+            onPrepare={this.props.stores!.collateral.prepare}
+            onCancelPreparation={
+              this.props.stores!.collateral.cancelPreparation
+            }
+            onClear={this.props.stores!.collateral.clear}
+            onRepair={this.props.stores!.collateral.repair}
+          />
+        }
         onLaunch={this.launch}
         onClose={dapp.close}
       />

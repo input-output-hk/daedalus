@@ -73,6 +73,7 @@ const snapshot = (
   records: [],
   transactions: items.map(({ cbor }) => cbor),
   outputs,
+  pendingTransactions: [],
   ownership: [],
   requiredProofs: [],
   commitmentContexts: [],
