@@ -59,42 +59,15 @@
         includes = ["**/*.nix"];
       };
 
-      # Custom overrides for prettier - match .prettierignore includes
-      settings.formatter.prettier = {
-        includes = [
-          "source/**/*.js"
-          "source/**/*.ts"
-          "source/**/*.tsx"
-          "source/**/*.scss"
-          "source/**/*.json"
-          "features/**/*.js"
-          "features/**/*.ts"
-          "features/**/*.tsx"
-          "features/**/*.scss"
-          "features/**/*.json"
-          "storybook/**/*.js"
-          "storybook/**/*.ts"
-          "storybook/**/*.tsx"
-          "storybook/**/*.scss"
-          "storybook/**/*.json"
-          "hardware-wallet-tests/**/*.js"
-          "hardware-wallet-tests/**/*.ts"
-          "hardware-wallet-tests/**/*.tsx"
-          "hardware-wallet-tests/**/*.json"
-          "tests/**/*.js"
-          "tests/**/*.ts"
-          "tests/**/*.tsx"
-          "tests/**/*.scss"
-          "tests/**/*.json"
-          "package.json"
-        ];
-        excludes = [
-          "source/renderer/app/i18n/locales/**"
-          "source/renderer/app/config/newsfeed-files/**"
-          "tests/paper-wallets/e2e/documents/**"
-          "tests/wallets/e2e/documents/**"
-        ];
-      };
+      # No prettier includes or excludes here on purpose. The include list is
+      # controlled by `programs.prettier.includes`, which the treefmt-nix module
+      # already defines; a list written under `settings.formatter.prettier` is a
+      # second definition of the same option and concatenates with it rather
+      # than replacing it, so a repository list can only ever be redundant.
+      # Prettier's scope is decided by `.prettierignore`, which prettier applies
+      # even to paths handed to it explicitly. The directory entries in
+      # `settings.global.excludes` above do not exclude directory contents, so
+      # they are not what is holding this line.
     };
 
     # This makes 'nix fmt' work automatically
