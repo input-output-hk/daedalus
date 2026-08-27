@@ -223,10 +223,10 @@ describe('DRepIdDisplay', () => {
     renderDisplay(CIP129, 'stacked', 'ja-JP');
 
     expect(
-      screen.getByRole('button', { name: '!!!CIP-129 DRep IDをコピー' })
+      screen.getByRole('button', { name: 'CIP-129 DRep IDをコピー' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: '!!!CIP-105 DRep IDをコピー' })
+      screen.getByRole('button', { name: 'CIP-105 DRep IDをコピー' })
     ).toBeInTheDocument();
   });
 });

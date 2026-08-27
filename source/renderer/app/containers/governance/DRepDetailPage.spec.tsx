@@ -601,8 +601,8 @@ describe('DRepDetailPage', () => {
 
     expect(screen.queryByText('DRep詳細')).toBeNull();
     expect(screen.getByText('ステータス')).toBeInTheDocument();
-    expect(screen.getByText('!!!オフチェーンメタデータ')).toBeInTheDocument();
-    expect(screen.getByText('!!!34エポック')).toBeInTheDocument();
+    expect(screen.getByText('オフチェーンメタデータ')).toBeInTheDocument();
+    expect(screen.getByText('34エポック')).toBeInTheDocument();
   });
 
   it('carries no metadata badge, the sections having already said it', async () => {
@@ -650,8 +650,8 @@ describe('DRepDetailPage', () => {
     });
 
     expect(screen.getByText('Daedalus Test DRep')).toBeInTheDocument();
-    expect(screen.getByText('!!!オフチェーンメタデータ')).toBeInTheDocument();
-    expect(screen.getByText('!!!標準メタデータ項目')).toBeInTheDocument();
+    expect(screen.getByText('オフチェーンメタデータ')).toBeInTheDocument();
+    expect(screen.getByText('標準メタデータ項目')).toBeInTheDocument();
   });
 
   it('renders every verified profile field under the one heading', async () => {
@@ -928,9 +928,9 @@ describe('DRepDetailPage', () => {
       },
     });
 
-    expect(screen.getByText('!!!目的')).toBeInTheDocument();
-    expect(screen.getByText('!!!アイデンティティ')).toBeInTheDocument();
-    expect(screen.getByText('!!!支払いアドレス')).toBeInTheDocument();
+    expect(screen.getByText('目標')).toBeInTheDocument();
+    expect(screen.getByText('アイデンティティ')).toBeInTheDocument();
+    expect(screen.getByText('支払いアドレス')).toBeInTheDocument();
   });
 
   it('opens an https anchor url through the external-link handler', async () => {

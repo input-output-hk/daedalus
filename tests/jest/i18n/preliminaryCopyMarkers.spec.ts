@@ -1,9 +1,9 @@
 import enUS from '../../../source/renderer/app/i18n/locales/en-US.json';
 import jaJP from '../../../source/renderer/app/i18n/locales/ja-JP.json';
 
-// The English copy on this branch has been reviewed and its markers cleared.
-// The Japanese has not: every governance string was drafted here rather than
-// translated, so it keeps a leading `!!!` until the translator's pass returns.
+// The English copy on this branch has been reviewed and its markers cleared,
+// and the translator's Japanese pass has returned, so every governance string
+// carries real Japanese rather than the draft it was written against.
 //
 // This one key's ja-JP copy was reviewed before the rule existed, so its
 // en-US marker outlives its ja-JP one; it is the only permitted asymmetry.
@@ -12,18 +12,6 @@ const REVIEWED_JA_JP_EXCEPTIONS = [
 ];
 
 const GOVERNANCE_NAMESPACES = ['governance.', 'voting.governance.'];
-
-// Governance strings that predate this work and that it did not reword. Their
-// Japanese was translated rather than drafted, so it carries no marker.
-const REVIEWED_GOVERNANCE_JA_JP = [
-  'voting.governance.abstain',
-  'voting.governance.confirmationDialog.title',
-  'voting.governance.heading',
-  'voting.governance.noConfidence',
-  'voting.governance.paragraph1',
-  'voting.governance.paragraph1LinkText',
-  'voting.governance.paragraph1LinkUrl',
-];
 
 const en: Record<string, string> = enUS;
 const ja: Record<string, string> = jaJP;
@@ -56,14 +44,12 @@ describe('preliminary copy markers', () => {
     expect(marked).toEqual([]);
   });
 
-  it('keeps the marker on governance Japanese until the translator clears it', () => {
-    // Drafted here rather than translated. Removing a marker is what says a
-    // native speaker has read the string, so it must not happen by accident
-    // when the English beside it is reworded.
-    const unmarked = Object.keys(en)
+  it('ships no governance string with a marker left on its Japanese', () => {
+    // A marker here means a governance string was added or reworded after the
+    // translator's pass and went out with drafted Japanese behind it.
+    const marked = Object.keys(en)
       .filter((key) => GOVERNANCE_NAMESPACES.some((ns) => key.startsWith(ns)))
-      .filter((key) => !REVIEWED_GOVERNANCE_JA_JP.includes(key))
-      .filter((key) => key in ja && !ja[key].startsWith('!!!'));
-    expect(unmarked).toEqual([]);
+      .filter((key) => key in ja && ja[key].startsWith('!!!'));
+    expect(marked).toEqual([]);
   });
 });

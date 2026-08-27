@@ -385,8 +385,8 @@ describe('DRepDirectory', () => {
 
     expect(screen.queryByText('DRepディレクトリ')).toBeNull();
     // The sort options name voting power too, so match the card's own label.
-    expect(screen.getAllByText('!!!投票権:').length).toBeGreaterThan(0);
-    expect(screen.getByText(/無作為/)).toBeInTheDocument();
+    expect(screen.getAllByText('投票力:').length).toBeGreaterThan(0);
+    expect(screen.getByText(/ランダムに選んだ/)).toBeInTheDocument();
   });
 
   it('renders the first-load skeleton list instead of a directory row', () => {
@@ -594,7 +594,7 @@ describe('DRepDirectory', () => {
 
     expect(
       screen.getByText(
-        '!!!selfnodeクラスターではDRepディレクトリのデータを利用できません。'
+        'selfnodeクラスターではDRepディレクトリのデータを利用できません。'
       )
     ).toBeInTheDocument();
   });
@@ -1029,12 +1029,14 @@ describe('DRepDirectory', () => {
   it('renders the search surface in ja-JP', () => {
     renderComponent({ locale: 'ja-JP' });
 
-    expect(screen.getByPlaceholderText('!!!DRep IDで検索')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('DRep IDまたは名前で検索')
+    ).toBeInTheDocument();
     // The mode buttons name the two states; the footer keeps its own call to
     // action, which is why the words differ.
-    expect(screen.getByText('!!!すべてのDRep')).toBeInTheDocument();
-    expect(screen.getByText('!!!提案')).toBeInTheDocument();
-    expect(screen.getByText('!!!すべてのDRepを表示')).toBeInTheDocument();
+    expect(screen.getByText('すべてのDRep')).toBeInTheDocument();
+    expect(screen.getByText('おすすめ')).toBeInTheDocument();
+    expect(screen.getByText('すべてのDRepを表示')).toBeInTheDocument();
   });
 
   describe('name search', () => {
@@ -1477,7 +1479,7 @@ describe('DRepDirectory', () => {
       });
 
       expect(
-        screen.getByText(/お気に入りはまだありません/)
+        screen.getByText(/まだお気に入りはありません/)
       ).toBeInTheDocument();
     });
   });
