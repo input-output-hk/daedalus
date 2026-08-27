@@ -224,6 +224,16 @@ const create = () => {
     | 'tx-proof-generation'
     | 'deprecated-certificate'
     | null = null;
+  let submissionId = transactionSignature.bodyHash;
+  let submissionStatus:
+    | 'authorized'
+    | 'broadcasting'
+    | 'submitted'
+    | 'rejected'
+    | 'outcome_unknown'
+    | 'in_ledger'
+    | 'expired' = 'submitted';
+  let submissionFailure = false;
   const executeWallet = jest.fn<
     Promise<Cip30WalletResponse>,
     [Cip30WalletRequest]
@@ -274,6 +284,18 @@ const create = () => {
                   witness_set_cbor: witnessSet,
                 },
               ],
+            },
+          };
+    if (walletRequest.operation === 'submit-transaction')
+      return submissionFailure
+        ? { status: 'rejected', reason: 'tx-send-failure' }
+        : {
+            status: 'fulfilled',
+            operation: 'submit-transaction',
+            value: {
+              revision: 1,
+              transaction_id: submissionId,
+              status: submissionStatus,
             },
           };
     return {
@@ -342,6 +364,16 @@ const create = () => {
       value: 'tx-proof-generation' | 'deprecated-certificate' | null
     ) => {
       witnessFailure = value;
+    },
+    setSubmission: (
+      id: string,
+      status: typeof submissionStatus = 'submitted'
+    ) => {
+      submissionId = id;
+      submissionStatus = status;
+    },
+    setSubmissionFailure: (value: boolean) => {
+      submissionFailure = value;
     },
     cleanup: () => fs.rmSync(directory, { recursive: true, force: true }),
   };
@@ -483,7 +515,7 @@ describe('Cip30Broker', () => {
     fixture.executeWallet.mockClear();
 
     await expect(
-      fixture.broker.handle(event, request('api.submitTx', ['84a0a0f5f6']))
+      fixture.broker.handle(event, request('api.cip104.getAccountPub'))
     ).resolves.toEqual({
       status: 'rejected',
       rejection: { type: 'api-error', value: { code: -3, info: 'Refused' } },
@@ -563,6 +595,94 @@ describe('Cip30Broker', () => {
       },
     });
     expect(fixture.dispatch).not.toHaveBeenCalled();
+    fixture.cleanup();
+  });
+
+  it('separately reviews and submits the exact full envelope once', async () => {
+    const fixture = create();
+    await fixture.broker.handle(event, request('provider.enable'));
+    (fixture.consent.request as jest.Mock).mockClear();
+    fixture.executeWallet.mockClear();
+    const submitRequest = request('api.submitTx', [transactionSignature.cbor]);
+
+    await expect(fixture.broker.handle(event, submitRequest)).resolves.toEqual({
+      status: 'fulfilled',
+      value: transactionSignature.bodyHash,
+    });
+    await expect(fixture.broker.handle(event, submitRequest)).resolves.toEqual({
+      status: 'fulfilled',
+      value: transactionSignature.bodyHash,
+    });
+    expect(fixture.consent.request).toHaveBeenCalledTimes(2);
+    const pending = (fixture.consent.request as jest.Mock).mock.calls[0][0];
+    expect(pending).toMatchObject({
+      submission: true,
+      presentation: {
+        kind: 'transaction-submit',
+        scopes: ['transaction-submission'],
+        review: {
+          fullCbor: transactionSignature.cbor,
+          transactionId: transactionSignature.bodyHash,
+        },
+      },
+      payload: { cbor: transactionSignature.cbor },
+    });
+    expect(
+      fixture.executeWallet.mock.calls
+        .map(([walletRequest]) => walletRequest)
+        .filter(({ operation }) => operation === 'submit-transaction')
+    ).toEqual([
+      expect.objectContaining({ transaction: transactionSignature.cbor }),
+      expect.objectContaining({ transaction: transactionSignature.cbor }),
+    ]);
+
+    fixture.setSubmission('00'.repeat(32));
+    await expect(fixture.broker.handle(event, submitRequest)).resolves.toEqual({
+      status: 'rejected',
+      rejection: {
+        type: 'api-error',
+        value: { code: -2, info: 'Internal error' },
+      },
+    });
+    fixture.setSubmission(transactionSignature.bodyHash, 'rejected');
+    await expect(
+      fixture.broker.handle(event, submitRequest)
+    ).resolves.toMatchObject({
+      status: 'rejected',
+      rejection: { type: 'tx-send-error', value: { code: 2 } },
+    });
+    fixture.setSubmission(transactionSignature.bodyHash);
+    fixture.setSubmissionFailure(true);
+    await expect(
+      fixture.broker.handle(event, submitRequest)
+    ).resolves.toMatchObject({
+      status: 'rejected',
+      rejection: { type: 'tx-send-error', value: { code: 2 } },
+    });
+    fixture.setSubmissionFailure(false);
+    (fixture.consent.request as jest.Mock).mockRejectedValueOnce({
+      type: 'tx-send-error',
+      value: { code: 1, info: 'User declined' },
+    });
+    await expect(fixture.broker.handle(event, submitRequest)).resolves.toEqual({
+      status: 'rejected',
+      rejection: {
+        type: 'tx-send-error',
+        value: { code: 1, info: 'User declined' },
+      },
+    });
+
+    fixture.executeWallet.mockClear();
+    await expect(
+      fixture.broker.handle(event, request('api.submitTx', ['00']))
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: {
+        type: 'api-error',
+        value: { code: -1, info: 'Invalid request' },
+      },
+    });
+    expect(fixture.executeWallet).not.toHaveBeenCalled();
     fixture.cleanup();
   });
 

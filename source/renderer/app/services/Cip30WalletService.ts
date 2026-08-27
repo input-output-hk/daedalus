@@ -89,12 +89,35 @@ export class Cip30WalletService {
   receive = async (
     request: Cip30WalletRequest
   ): Promise<Cip30WalletResponse> => {
-    if (!this.currentWallet(request))
+    if (
+      request.operation !== 'submit-transaction' &&
+      !this.currentWallet(request)
+    )
       return Object.freeze({ status: 'rejected', reason: 'account-change' });
-    if (!this.ready(request))
+    if (request.operation !== 'submit-transaction' && !this.ready(request))
       return Object.freeze({ status: 'rejected', reason: 'unavailable' });
 
     try {
+      if (request.operation === 'submit-transaction') {
+        const submission = await this.stores.transactions.withWalletSendLock(
+          request.walletId,
+          () =>
+            this.api.ada.submitDappTransaction({
+              walletId: request.walletId,
+              request: {
+                revision: 1,
+                network: backendNetwork(request.network),
+                transaction: request.transaction,
+              },
+            })
+        );
+        return Object.freeze({
+          status: 'fulfilled',
+          operation: 'submit-transaction',
+          value: submission,
+        });
+      }
+
       if (request.operation === 'capabilities') {
         const capabilities = await this.api.ada.getDappCapabilities({
           sourceRevision: request.sourceRevision,
@@ -281,6 +304,19 @@ export class Cip30WalletService {
             status: 'rejected',
             reason: 'unavailable',
           });
+      }
+      if (request.operation === 'submit-transaction') {
+        const code = (error as { code?: unknown })?.code;
+        if (
+          code === 'dapp_submission_failed' ||
+          code === 'dapp_account_changed' ||
+          code === 'dapp_context_unavailable'
+        )
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'tx-send-failure',
+          });
+        return Object.freeze({ status: 'rejected', reason: 'internal' });
       }
       return this.rejection(request, 'internal');
     }

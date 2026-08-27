@@ -116,6 +116,11 @@ const txSignRejection = (
   value: { code, info },
 });
 
+const txSendRejection = (code: 1 | 2, info: string): DappCip30Rejection => ({
+  type: 'tx-send-error',
+  value: { code, info },
+});
+
 const invalidRequestRejection = (): DappCip30Rejection => ({
   type: 'api-error',
   value: { code: -1, info: 'Invalid request' },
@@ -548,6 +553,110 @@ export class Cip30Broker {
     ).toString('hex');
   }
 
+  private async submitTx(
+    request: DappCip30GatewayRequest<'api.submitTx'>,
+    binding: Cip30BrokerBinding
+  ) {
+    const [cbor] = request.args;
+    let local;
+    try {
+      local = decodeConwayTransaction(
+        parseConwayTransactionEnvelope(Buffer.from(cbor, 'hex'))
+      );
+      if (
+        local.networkId !== undefined &&
+        local.networkId !== binding.authority.network.networkId
+      )
+        throw invalidRequestRejection();
+    } catch {
+      throw invalidRequestRejection();
+    }
+    const { evidence, context } = await this.capabilityEvidence(binding);
+    const capability = this.options.dispatcher.requireCapability(
+      request.method,
+      binding.authority,
+      context
+    );
+    this.assertCurrent(binding);
+    const contextResponse = await this.options.executeWallet({
+      operation: 'transaction-context',
+      walletId: binding.authority.walletId,
+      network: binding.authority.network,
+      sourceRevision: this.options.sourceRevision,
+      transactions: Object.freeze([cbor]),
+    });
+    this.assertCurrent(binding);
+    if (contextResponse.status === 'rejected') {
+      if (contextResponse.reason === 'account-change') throw accountChange();
+      throw internal();
+    }
+    if (contextResponse.operation !== 'transaction-context') throw internal();
+    let snapshot;
+    try {
+      snapshot = reconcileTransactionContext(contextResponse.value, {
+        walletId: binding.authority.walletId,
+        network: binding.authority.network,
+        transactions: [cbor],
+      });
+    } catch (error) {
+      if (error instanceof TransactionContextError) throw internal();
+      throw error;
+    }
+    const transaction = snapshot.transactionsSemantic[0];
+    if (!transaction || transaction.transactionId !== local.transactionId)
+      throw internal();
+    const review = createCip30TransactionReview(transaction, 'submit');
+    if (review.fullCbor !== cbor) throw internal();
+    return this.options.consent.request({
+      identity: {
+        guestWebContentsId: binding.authority.guestWebContentsId,
+        documentGeneration: binding.authority.documentGeneration,
+        origin: binding.authority.origin,
+        connectionId: capability.connectionId,
+        walletId: binding.authority.walletId,
+        routeEpoch: binding.authority.routeEpoch,
+        networkGenesis: binding.authority.network.genesisHash,
+      },
+      presentation: {
+        kind: 'transaction-submit',
+        origin: binding.authority.origin,
+        walletName: evidence.walletName,
+        networkName: this.options.networkName,
+        scopes: ['transaction-submission'],
+        extensions: capability.enabledExtensions,
+        review,
+      },
+      payload: Object.freeze({ cbor }),
+      declined: txSendRejection(1, 'User declined'),
+      submission: true,
+      execute: async () => {
+        const response = await this.options.executeWallet({
+          operation: 'submit-transaction',
+          walletId: binding.authority.walletId,
+          network: binding.authority.network,
+          sourceRevision: this.options.sourceRevision,
+          transaction: cbor,
+        });
+        if (response.status === 'rejected') {
+          if (response.reason === 'tx-send-failure')
+            throw txSendRejection(2, 'Transaction submission failed');
+          throw internal();
+        }
+        if (
+          response.operation !== 'submit-transaction' ||
+          response.value.transaction_id !== local.transactionId
+        )
+          throw internal();
+        if (
+          response.value.status === 'rejected' ||
+          response.value.status === 'expired'
+        )
+          throw txSendRejection(2, 'Transaction submission failed');
+        return local.transactionId;
+      },
+    });
+  }
+
   private async signData(
     request: DappCip30GatewayRequest<'api.signData' | 'api.cip95.signData'>,
     binding: Cip30BrokerBinding
@@ -671,6 +780,10 @@ export class Cip30Broker {
       if (request.method === 'provider.enable') {
         const result = await this.enable(request, binding);
         this.assertCurrent(binding);
+        return createDappCip30FulfilledEnvelope(request.method, result);
+      }
+      if (request.method === 'api.submitTx') {
+        const result = await this.submitTx(request, binding);
         return createDappCip30FulfilledEnvelope(request.method, result);
       }
       if (request.method === 'api.signTx') {

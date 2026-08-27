@@ -47,6 +47,13 @@ const signTransactionsRequest = {
   transactions: [{ cbor: '84a0a0f5f6', partialSign: true }],
   passphrase: 'secret',
 };
+const submitTransactionRequest = {
+  operation: 'submit-transaction' as const,
+  walletId: 'wallet',
+  network,
+  sourceRevision: '22'.repeat(20),
+  transaction: '84a0a0f5f6',
+};
 
 const create = () => {
   let wallet: Record<string, unknown> | null = {
@@ -85,6 +92,14 @@ const create = () => {
       },
     ],
   }));
+  const submitDappTransaction = jest.fn(async () => ({
+    revision: 1 as const,
+    transaction_id: '77'.repeat(32),
+    status: 'submitted' as const,
+  }));
+  const withWalletSendLock = jest.fn(
+    async (_walletId: string, work: () => Promise<unknown>) => work()
+  );
   const stakeAddresses = { wallet: 'stake-address' };
   const api = ({
     ada: {
@@ -94,6 +109,7 @@ const create = () => {
       signDappData,
       getDappCip95KeyState,
       signDappTransactions,
+      submitDappTransaction,
     },
   } as unknown) as Api;
   const stores = ({
@@ -115,6 +131,7 @@ const create = () => {
       stakeAddresses,
       _getStakeAddress: jest.fn(async () => undefined),
     },
+    transactions: { withWalletSendLock },
   } as unknown) as StoresMap;
   return {
     service: new Cip30WalletService(api, stores),
@@ -123,6 +140,8 @@ const create = () => {
     getAddresses,
     signDappData,
     getDappCip95KeyState,
+    submitDappTransaction,
+    withWalletSendLock,
     setWallet: (value: Record<string, unknown> | null) => {
       wallet = value;
     },
@@ -313,6 +332,54 @@ describe('Cip30WalletService', () => {
       reason: 'tx-proof-generation',
     });
     expect(fixture.signDappTransactions).not.toHaveBeenCalled();
+  });
+
+  it('submits exact approved bytes under the wallet lock after route loss', async () => {
+    const fixture = create();
+    fixture.setWallet(null);
+    fixture.setReady(false);
+    await expect(
+      fixture.service.receive(submitTransactionRequest)
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      operation: 'submit-transaction',
+      value: {
+        revision: 1,
+        transaction_id: '77'.repeat(32),
+        status: 'submitted',
+      },
+    });
+    expect(fixture.withWalletSendLock).toHaveBeenCalledWith(
+      'wallet',
+      expect.any(Function)
+    );
+    expect(fixture.submitDappTransaction).toHaveBeenCalledWith({
+      walletId: 'wallet',
+      request: {
+        revision: 1,
+        network: {
+          network_id: 0,
+          network_magic: 42,
+          genesis_hash: network.genesisHash,
+        },
+        transaction: '84a0a0f5f6',
+      },
+    });
+  });
+
+  it('maps fixed submission failures after authorization', async () => {
+    const fixture = create();
+    for (const [code, reason] of [
+      ['dapp_submission_failed', 'tx-send-failure'],
+      ['dapp_account_changed', 'tx-send-failure'],
+      ['dapp_context_unavailable', 'tx-send-failure'],
+      ['unexpected', 'internal'],
+    ] as const) {
+      fixture.submitDappTransaction.mockRejectedValueOnce({ code });
+      await expect(
+        fixture.service.receive(submitTransactionRequest)
+      ).resolves.toEqual({ status: 'rejected', reason });
+    }
   });
 
   it('binds exact sign-data bytes and preserves typed backend failures', async () => {
