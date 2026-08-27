@@ -20,15 +20,15 @@
         package = inputs'.fenix.packages.stable.rustfmt;
       };
 
-      # Enable prettier for JS/TS/JSON/SCSS formatting
-      programs.prettier = {
-        enable = true;
-        # Use the settings from .prettierrc
-        settings = {
-          trailingComma = "es5";
-          singleQuote = true;
-        };
-      };
+      # Enable prettier for JS/TS/JSON/SCSS formatting.
+      #
+      # There is deliberately no `settings` block. treefmt-nix generates a
+      # config file from `programs.prettier.settings` and passes it as
+      # `--config`, which stops prettier discovering `.prettierrc`. With no
+      # settings it emits no `--config` at all, so prettier reads `.prettierrc`
+      # the same way `yarn prettier` does and the options have one source of
+      # truth rather than two kept in step by hand.
+      programs.prettier.enable = true;
 
       # Global settings and excludes
       settings.global.excludes = [
