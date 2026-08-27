@@ -724,7 +724,7 @@
           "id": "task-012",
           "title": "Classify the runtime dependencies with no first-party import",
           "description": "17 of 93 declared runtime dependencies have no import of the package or any subpath anywhere in first-party code. Several are explained by build configuration and are correctly declared. The rest may be the same misclassification already corrected for gulp, inquirer and cucumber-html-reporter. This task answers the question; it does not remove anything.",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2.0,
           "dependencies": [],
@@ -744,13 +744,16 @@
             "Every one of the 17 has a written classification with its evidence",
             "No dependency is removed on this branch"
           ],
-          "notes": "Scoped deliberately narrow. Removal needs its own branch and a packaged build to verify, because a wrongly removed dependency breaks packaging in a way the check set does not catch."
+          "notes": "Scoped deliberately narrow. Removal needs its own branch and a packaged build to verify, because a wrongly removed dependency breaks packaging in a way the check set does not catch.",
+          "completedAt": "2026-08-27",
+          "actualHours": 1.6,
+          "completedNotes": "17 of 93 runtime dependencies have no first-party reference of any kind. Classified into build-configuration mechanisms (buffer, process, url, node-hid, cardano-launcher), Nix runtime closure membership (graceful-fs, safe-buffer, source-map-support, glob), a version mismatch (@ledgerhq/hw-transport-node-hid declared but @ledgerhq/hw-transport-node-hid-noevents imported and undeclared), and five with no reference at all. Corrected two inventory errors: omit-deep-lodash IS imported at logging.ts:1, and @iohk-jormungandr/wallet-js is reached by dynamic import. Nothing removed."
         },
         {
           "id": "task-013",
           "title": "Record the unused dependency question as a finding",
           "description": "Write the task-012 result to .agent/findings/, which exists for real problems noticed during other work that would otherwise be lost when the thread ends.",
-          "status": "pending",
+          "status": "completed",
           "priority": "low",
           "estimatedHours": 0.5,
           "dependencies": [
@@ -764,13 +767,16 @@
           "acceptance": [
             "A finding exists naming each stranded dependency and the evidence for it",
             "The finding states what a removal branch would have to verify"
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.9,
+          "completedNotes": "Recorded as .agent/findings/01. Created the .agent/findings/ directory with a readme setting out how it differs from research/ and SOPs/, and indexed it in .agent/readme.md."
         },
         {
           "id": "task-014",
           "title": "Update documents naming --loglevel",
           "description": "The theme management skill documents the prettier invocation used by themes:update and themes:copy, including the flag prettier 3 removed.",
-          "status": "pending",
+          "status": "completed",
           "priority": "low",
           "estimatedHours": 0.25,
           "dependencies": [
@@ -782,7 +788,10 @@
           ],
           "acceptance": [
             "grep -rn -- '--loglevel' .agent package.json returns nothing"
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.2,
+          "completedNotes": "Two --loglevel references in .agent/skills/theme-management/SKILL.md updated to --log-level. The only remaining occurrences are in this plan and its research notes, which describe the pre-bump state deliberately."
         },
         {
           "id": "task-015",
@@ -825,7 +834,7 @@
           "id": "task-024",
           "title": "Record the paper wallet retirement and the wasm readiness race",
           "description": "Two findings for follow-up branches. Neither is acted on here, both are written down with enough detail that the next branch does not have to rediscover them.",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 0.75,
           "dependencies": [
@@ -841,7 +850,10 @@
             "Both findings recorded with the measurements that support them",
             "The retirement finding names what must survive removal, not only what goes",
             "Neither is acted on in this branch"
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.0,
+          "completedNotes": "Recorded as findings 02, 03 and 04: the paper wallet creation retirement with its removal surface and what restore depends on; the rust-cardano-crypto readiness race and the blakejs Buffer narrowing, plus the latent getId defect that was fixed; and that a green required aggregate does not mean the branch ships, since the Linux installers are in nonrequired and are the only job running webpack over the renderer."
         }
       ]
     }
