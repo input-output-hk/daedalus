@@ -78,6 +78,10 @@ import type {
   DappGrantLaunch,
   DappScope,
 } from '../types/dapp.types';
+import type {
+  CollateralRendererRequest,
+  CollateralSnapshot,
+} from '../types/collateral.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -243,6 +247,10 @@ export type DappConnectionsMainResponse = Readonly<{
   corrupt: boolean;
   grants: readonly DappGrant[];
 }>;
+
+export const DAPP_COLLATERAL_CHANNEL = 'DAPP_COLLATERAL_CHANNEL';
+export type DappCollateralRendererRequest = CollateralRendererRequest;
+export type DappCollateralMainResponse = CollateralSnapshot;
 
 export const DAPP_CONSENT_RENDER_CHANNEL = 'DAPP_CONSENT_RENDER_CHANNEL';
 export type DappConsentKind =

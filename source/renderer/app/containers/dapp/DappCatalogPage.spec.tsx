@@ -54,6 +54,16 @@ describe('DappCatalogPage', () => {
               launch,
               close: jest.fn(),
             },
+            collateral: {
+              refresh: jest.fn(),
+              snapshot: undefined,
+              isLoading: false,
+              actionFailed: false,
+              prepare: jest.fn(),
+              cancelPreparation: jest.fn(),
+              clear: jest.fn(),
+              repair: jest.fn(),
+            },
           }}
         >
           <DappCatalogPage />

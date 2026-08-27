@@ -72,6 +72,13 @@ export type ContextOutput = Readonly<{
   walletMember: boolean;
   pendingState: 'none' | 'outcome_unknown';
 }>;
+export type ContextPendingTransaction = Readonly<{
+  transactionId: Hex;
+  transactionCbor: Hex;
+  normalInputs: readonly Readonly<{ transactionId: Hex; index: number }>[];
+  collateralInputs: readonly Readonly<{ transactionId: Hex; index: number }>[];
+  expirySlot: bigint | null;
+}>;
 export type TransactionContextSnapshot = Readonly<{
   walletId: string;
   network: DappNetwork;
@@ -83,6 +90,7 @@ export type TransactionContextSnapshot = Readonly<{
   records: readonly Hex[];
   transactions: readonly Hex[];
   outputs: readonly ContextOutput[];
+  pendingTransactions: readonly ContextPendingTransaction[];
   ownership: readonly ContextOwnership[];
   requiredProofs: readonly ContextRequiredProof[];
   commitmentContexts: readonly CommitmentContext[];
@@ -101,7 +109,7 @@ type ContextResponse = Readonly<{
   outputs: readonly ContextOutput[];
   ownership: readonly ContextOwnership[];
   requiredProofs: readonly ContextRequiredProof[];
-  pendingTransactions: readonly Json[];
+  pendingTransactions: readonly ContextPendingTransaction[];
   records: readonly Hex[];
   contextDigest: Hex;
   contextToken: Hex;
@@ -524,40 +532,56 @@ const parseResponse = (value: unknown): ContextResponse => {
   const pendingTransactions = array(
     pending.transactions,
     'pending transactions'
-  ).map((item) => {
-    const transaction = object(item, 'pending transaction');
-    exactKeys(
-      transaction,
-      [
-        'transaction_id',
-        'state',
-        'transaction_cbor',
-        'normal_inputs',
-        'collateral_inputs',
-        'expiry_slot',
-      ],
-      'pending transaction'
-    );
-    hex(transaction.transaction_id, 'pending transaction id', 32);
-    if (transaction.state !== 'outcome_unknown') fail('invalid pending state');
-    parseCbor(
-      hex(transaction.transaction_cbor, 'pending transaction CBOR'),
-      'pending transaction CBOR'
-    );
-    array(
-      transaction.normal_inputs,
-      'pending normal inputs'
-    ).forEach((candidate) => parseOutpoint(candidate, 'pending normal input'));
-    array(
-      transaction.collateral_inputs,
-      'pending collateral inputs'
-    ).forEach((candidate) =>
-      parseOutpoint(candidate, 'pending collateral input')
-    );
-    if (transaction.expiry_slot !== null)
-      word64(transaction.expiry_slot, 'pending expiry slot');
-    return transaction;
-  });
+  ).map(
+    (item): ContextPendingTransaction => {
+      const transaction = object(item, 'pending transaction');
+      exactKeys(
+        transaction,
+        [
+          'transaction_id',
+          'state',
+          'transaction_cbor',
+          'normal_inputs',
+          'collateral_inputs',
+          'expiry_slot',
+        ],
+        'pending transaction'
+      );
+      const transactionId = hex(
+        transaction.transaction_id,
+        'pending transaction id',
+        32
+      );
+      if (transaction.state !== 'outcome_unknown')
+        fail('invalid pending state');
+      const transactionCbor = hex(
+        transaction.transaction_cbor,
+        'pending transaction CBOR'
+      );
+      parseCbor(transactionCbor, 'pending transaction CBOR');
+      const normalInputs = array(
+        transaction.normal_inputs,
+        'pending normal inputs'
+      ).map((candidate) => parseOutpoint(candidate, 'pending normal input'));
+      const collateralInputs = array(
+        transaction.collateral_inputs,
+        'pending collateral inputs'
+      ).map((candidate) =>
+        parseOutpoint(candidate, 'pending collateral input')
+      );
+      const expirySlot =
+        transaction.expiry_slot === null
+          ? null
+          : word64(transaction.expiry_slot, 'pending expiry slot');
+      return Object.freeze({
+        transactionId,
+        transactionCbor,
+        normalInputs: Object.freeze(normalInputs),
+        collateralInputs: Object.freeze(collateralInputs),
+        expirySlot,
+      });
+    }
+  );
   array(
     pending.spent_wallet_inputs,
     'spent wallet inputs'
@@ -945,33 +969,19 @@ const expectedRequiredProofRecord = (item: ContextRequiredProof): Hex =>
       u8(Number(item.required)),
     ])
   ).toString('hex');
-const expectedPendingRecord = (item: Json): Hex => {
-  const normal = (item.normal_inputs as Json[]).map((candidate) =>
-    outpointBytes({
-      transactionId: candidate.transaction_id as string,
-      index: candidate.index as number,
-    })
-  );
-  const collateral = (item.collateral_inputs as Json[]).map((candidate) =>
-    outpointBytes({
-      transactionId: candidate.transaction_id as string,
-      index: candidate.index as number,
-    })
-  );
-  const expiry = item.expiry_slot;
-  return encodedRecord(
+const expectedPendingRecord = (item: ContextPendingTransaction): Hex =>
+  encodedRecord(
     7,
     Buffer.concat([
-      Buffer.from(item.transaction_id as string, 'hex'),
+      Buffer.from(item.transactionId, 'hex'),
       u8(4),
-      sized(Buffer.from(item.transaction_cbor as string, 'hex')),
-      vector(normal),
-      vector(collateral),
-      u8(Number(expiry !== null)),
-      ...(expiry === null ? [] : [u64(BigInt(expiry as string))]),
+      sized(Buffer.from(item.transactionCbor, 'hex')),
+      vector(item.normalInputs.map(outpointBytes)),
+      vector(item.collateralInputs.map(outpointBytes)),
+      u8(Number(item.expirySlot !== null)),
+      ...(item.expirySlot === null ? [] : [u64(item.expirySlot)]),
     ])
   ).toString('hex');
-};
 
 export const reconcileTransactionContext = (
   value: unknown,
@@ -979,8 +989,7 @@ export const reconcileTransactionContext = (
 ): TransactionContextSnapshot => {
   if (!/^[0-9a-f]{40}$/.test(expectation.walletId))
     fail('invalid expected wallet id');
-  if (!expectation.transactions.length || expectation.transactions.length > 50)
-    fail('invalid transaction count');
+  if (expectation.transactions.length > 50) fail('invalid transaction count');
   expectation.transactions.forEach((item) => {
     const bytes = parseCbor(hex(item, 'transaction'), 'transaction');
     if (bytes.length > 65_536) fail('transaction too large');
@@ -1081,11 +1090,11 @@ export const reconcileTransactionContext = (
     if (output.provenance.includes('pending')) {
       const pending = response.pendingTransactions.find(
         (transaction) =>
-          transaction.transaction_id === output.outpoint.transactionId
+          transaction.transactionId === output.outpoint.transactionId
       );
       if (!pending) fail('unresolved pending output authority');
       const envelope = parseConwayTransactionEnvelope(
-        Buffer.from(pending.transaction_cbor as string, 'hex')
+        Buffer.from(pending.transactionCbor, 'hex')
       );
       if (envelope.transactionId !== output.outpoint.transactionId)
         fail('pending transaction identity mismatch');
@@ -1208,6 +1217,7 @@ export const reconcileTransactionContext = (
     records: Object.freeze([...response.records]),
     transactions: Object.freeze([...expectation.transactions]),
     outputs: Object.freeze([...response.outputs]),
+    pendingTransactions: Object.freeze([...response.pendingTransactions]),
     ownership: Object.freeze([...response.ownership]),
     requiredProofs: Object.freeze([...response.requiredProofs]),
     commitmentContexts: Object.freeze(commitmentContexts),

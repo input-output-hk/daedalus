@@ -62,7 +62,7 @@ const paymentKeyTypes = new Set<Cardano.AddressType>([
   Cardano.AddressType.EnterpriseKey,
 ]);
 
-const isCandidate = (utxo: Cip30Utxo): boolean => {
+export const isCip30CollateralCandidate = (utxo: Cip30Utxo): boolean => {
   try {
     const address = Cardano.Address.fromBytes(
       utxo.address as Parameters<typeof Cardano.Address.fromBytes>[0]
@@ -95,7 +95,7 @@ export const selectCip30Collateral = (
     throw new RangeError('Invalid maxCollateralInputs');
 
   const candidates = utxos
-    .filter(isCandidate)
+    .filter(isCip30CollateralCandidate)
     .sort((left, right) => outpoint(left).localeCompare(outpoint(right)));
   let best: Selection | undefined;
 

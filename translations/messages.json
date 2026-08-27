@@ -2867,6 +2867,86 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Preferred collateral",
+        "description": "Title of the preferred collateral panel.",
+        "id": "dapp.collateral.title"
+      },
+      {
+        "defaultMessage": "!!!Daedalus uses 5 ADA as a compatibility convention, not a protocol maximum. This preference does not reserve the output; ordinary transactions may spend it.",
+        "description": "Explains the soft preferred collateral policy.",
+        "id": "dapp.collateral.convention"
+      },
+      {
+        "defaultMessage": "!!!Checking preferred collateral…",
+        "description": "Collateral state while wallet data is loading.",
+        "id": "dapp.collateral.checking"
+      },
+      {
+        "defaultMessage": "!!!Preferred collateral is ready.",
+        "description": "Collateral state when a suitable wallet output is selected.",
+        "id": "dapp.collateral.ready"
+      },
+      {
+        "defaultMessage": "!!!No suitable preferred collateral is available.",
+        "description": "Collateral state when preparation is available.",
+        "id": "dapp.collateral.notReady"
+      },
+      {
+        "defaultMessage": "!!!Preparation is waiting for a normal confirmed self-transfer. Complete or cancel the Send flow; Daedalus never signs or submits it automatically.",
+        "description": "Collateral state while the user prepares a suitable output.",
+        "id": "dapp.collateral.preparing"
+      },
+      {
+        "defaultMessage": "!!!Preferred collateral is referenced by a pending transaction.",
+        "description": "Collateral state while a pending script transaction uses it.",
+        "id": "dapp.collateral.inUse"
+      },
+      {
+        "defaultMessage": "!!!An approved ordinary transaction will spend the preferred collateral. Spending remains allowed.",
+        "description": "Warning when an ordinary transaction uses preferred collateral.",
+        "id": "dapp.collateral.willBeSpent"
+      },
+      {
+        "defaultMessage": "!!!Preferred collateral was charged by a failed script transaction. A replacement can be prepared.",
+        "description": "Collateral state after collateral was charged.",
+        "id": "dapp.collateral.charged"
+      },
+      {
+        "defaultMessage": "!!!The preferred collateral is no longer available. Clear it or prepare a replacement.",
+        "description": "Collateral state when the preferred output is unavailable.",
+        "id": "dapp.collateral.stale"
+      },
+      {
+        "defaultMessage": "!!!Prepare collateral",
+        "description": "Button opening the normal confirmed Send flow.",
+        "id": "dapp.collateral.prepare"
+      },
+      {
+        "defaultMessage": "!!!Cancel preparation",
+        "description": "Button cancelling a pending collateral preparation intent.",
+        "id": "dapp.collateral.cancelPreparation"
+      },
+      {
+        "defaultMessage": "!!!Clear preference",
+        "description": "Button clearing preferred collateral without a transaction.",
+        "id": "dapp.collateral.clear"
+      },
+      {
+        "defaultMessage": "!!!Repair collateral settings",
+        "description": "Button repairing corrupt collateral preference metadata.",
+        "id": "dapp.collateral.repair"
+      },
+      {
+        "defaultMessage": "!!!Preferred collateral could not be updated.",
+        "description": "Privacy-safe collateral action failure.",
+        "id": "dapp.collateral.failed"
+      }
+    ],
+    "path": "source/renderer/app/components/dapp/collateral/CollateralPanel.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Your node is still syncing. DRep data becomes available once the node reaches the tip.",
         "description": "Directory fallback while the node has not reached the tip",
         "id": "governance.drepDirectory.empty.noSync"

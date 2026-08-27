@@ -575,7 +575,7 @@ and must never host remote content or be reused as its preload/IPC surface.
 Its live policy permits only the canonical local main document, denies all
 subframe navigation and popups, filters policy-aborted load recovery, and opens
 only parsed credential-free HTTPS external links with awaited, privacy-safe
-failure handling. A machine-checked manifest accounts for all 81 production
+failure handling. A machine-checked manifest accounts for all 85 production
 privileged IPC channels. They authenticate the exact active trusted main
 WebContents, main frame, canonical document, and origin, with correlated
 caller-targeted responses, lifecycle cancellation, and current-window targeting.
@@ -617,8 +617,11 @@ Hostile remote dApp
   authenticated main-to-trusted-renderer executor validates the pinned backend,
   exact wallet/network binding, connected/synced state, source addresses, and
   empty-transaction context; main revalidates and serializes all CIP-30 results.
-  Signing, submission, and downstream extension bodies remain explicit refused
-  dispatches until their owning tasks land.
+- Main owns the versioned collateral-preference repository and derives its
+  route-scoped projection from each authenticated empty-transaction wallet
+  context. The renderer caches that projection only. Existing candidates are
+  adopted deterministically; clearing changes metadata only; preparation opens
+  the normal confirmed Send flow and never signs or submits automatically.
 - Guest HTTPS/WSS policy is connection-destination-bound, including redirects,
   subresources, WSS, rebinding, and IPv4/IPv6 forms. Bypass transports remain
   disabled. Packaged Linux sandbox certification completed in task-005-b;

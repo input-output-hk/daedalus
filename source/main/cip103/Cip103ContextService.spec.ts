@@ -60,6 +60,7 @@ const snapshot = (outputs = true): TransactionContextSnapshot => ({
         },
       ]
     : [],
+  pendingTransactions: [],
   ownership: [],
   requiredProofs: [],
   commitmentContexts: [],

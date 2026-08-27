@@ -208,6 +208,50 @@ test('reconciles all input roles into one immutable trusted snapshot', () => {
   expect(Object.isFrozen(snapshot)).toBe(true);
 });
 
+test('reconciles an authenticated wallet snapshot without transaction review', () => {
+  const fixture = makeResponse(
+    makeTransaction(),
+    undefined,
+    cbor.encodeCanonical(new Map([[24, 3]])).toString('hex')
+  );
+  const expectation = { ...fixture.expectation, transactions: [] };
+  const records = fixture.response.records.filter(
+    (encoded) => !encoded.startsWith('01')
+  );
+  const point = { kind: 'block' as const, slot: BigInt(42), blockHash };
+  const digest = computeContextDigest(
+    expectation,
+    point,
+    BigInt(7),
+    BigInt(9),
+    records
+  );
+  const payload = Buffer.concat([
+    u8(1),
+    Buffer.alloc(16, 0x44),
+    u32(1),
+    sized(Buffer.from(walletId)),
+    Buffer.from(genesisHash, 'hex'),
+    Buffer.from(digest, 'hex'),
+  ]);
+  const snapshot = reconcileTransactionContext(
+    {
+      ...fixture.response,
+      outputs: [],
+      records,
+      context_digest: digest,
+      context_token: Buffer.concat([payload, Buffer.alloc(32, 0x55)]).toString(
+        'hex'
+      ),
+    },
+    expectation
+  );
+
+  expect(snapshot.transactions).toEqual([]);
+  expect(snapshot.pendingTransactions).toEqual([]);
+  expect(snapshot.maxCollateralInputs).toBe(3);
+});
+
 test('retains immutable transaction-indexed required proof rows', () => {
   const proof = {
     transaction_index: 0,

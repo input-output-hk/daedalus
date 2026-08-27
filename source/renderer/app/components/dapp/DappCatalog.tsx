@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { injectIntl } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -17,6 +17,7 @@ export type DappCatalogEntry = {
 
 export type DappCatalogProps = {
   entries: readonly DappCatalogEntry[];
+  beforeEntries?: ReactNode;
   available: boolean;
   ready: boolean;
   isOpen: boolean;
@@ -29,6 +30,7 @@ type Props = DappCatalogProps & { intl: Intl };
 
 export function DappCatalog({
   intl,
+  beforeEntries,
   entries,
   available,
   ready,
@@ -52,6 +54,7 @@ export function DappCatalog({
           <p className={styles.disclaimer} role="note">
             {intl.formatMessage(messages.disclaimer)}
           </p>
+          {beforeEntries}
 
           {!ready && !isOpen && (
             <p className={styles.status} role="status">

@@ -9,6 +9,7 @@ import BackendStore from './BackendStore';
 import AppUpdateStore from './AppUpdateStore';
 import AssetsStore from './AssetsStore';
 import Cip30ConsentStore from './Cip30ConsentStore';
+import CollateralStore from './CollateralStore';
 import DappStore from './DappStore';
 import CurrencyStore from './CurrencyStore';
 import HardwareWalletsStore from './HardwareWalletsStore';
@@ -39,6 +40,7 @@ export const storeClasses = {
   backend: BackendStore,
   appUpdate: AppUpdateStore,
   cip30Consent: Cip30ConsentStore,
+  collateral: CollateralStore,
   dapp: DappStore,
   assets: AssetsStore,
   currency: CurrencyStore,
@@ -67,6 +69,7 @@ export type StoresMap = {
   appUpdate: AppUpdateStore;
   currency: CurrencyStore;
   cip30Consent: Cip30ConsentStore;
+  collateral: CollateralStore;
   dapp: DappStore;
   assets: AssetsStore;
   hardwareWallets: HardwareWalletsStore;
@@ -123,6 +126,7 @@ export const setUpStores = action(
       backend: createStoreInstanceOf(BackendStore),
       assets: createStoreInstanceOf(AssetsStore),
       cip30Consent: createStoreInstanceOf(Cip30ConsentStore),
+      collateral: createStoreInstanceOf(CollateralStore),
       dapp: createStoreInstanceOf(DappStore),
       currency: createStoreInstanceOf(CurrencyStore),
       appUpdate: createStoreInstanceOf(AppUpdateStore),
