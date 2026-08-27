@@ -207,6 +207,10 @@ sorts them, and this branch takes two of the tiers.
   path first, and it is not a bump.
 - **Removing** any dependency. The unused-looking set is investigated on this
   branch and acted on separately.
+- Removing the paper wallet creation feature. The decision to retire it is
+  recorded here and the certificate restore vector is captured here, because it
+  must be captured while the scrambling code still exists. Deleting the code
+  removes an IPC channel and is separate work.
 - Framework migrations. `react-intl`, `mobx`, `react`, `storybook`, `jest` and
   `cucumber` each need their own scope.
 
@@ -308,7 +312,10 @@ Crypto assurance:
 - [ ] Coverage of `crypto.ts` and `entropy.ts` is thresholded, so deleting a
       test fails the build
 - [ ] The crypto assertions are a separately named check inside `required`
-- [ ] No crypto scenario carries `@skip` or `@wip`
+- [ ] A recorded paper wallet certificate restores to its known phrase, and the
+      assertion does not depend on the scrambling code existing
+- [ ] No crypto scenario carries `@skip` or `@wip`, and none is left skipped by
+      deleting the coverage rather than moving it
 - [ ] Every assertion above has been observed to fail when the thing it protects
       is broken
 - [ ] All of the above are committed and green **before** any tier 2 bump
@@ -368,6 +375,11 @@ Acceptance:
   suite
 - `source/renderer/app/utils/__fixtures__/bip39-vectors.json`: new, the
   published English vectors
+- `source/renderer/app/utils/__fixtures__/paper-wallet-certificate.json`: new,
+  the recorded restore vector
+- `tests/wallets/unit/features/scrambling-and-unscrambling-mnemonics.feature`
+  and the creation-side steps in `tests/wallets/unit/steps/mnemonics.ts`:
+  removed, their coverage moved to the Jest vector suite
 - `.eslintrc`: restricted globals and properties on the crypto path
 - `jest.config.js`: coverage thresholds for the crypto path
 - `.agent/skills/theme-management/SKILL.md`: `--loglevel` references
@@ -490,6 +502,46 @@ same vectors on both.
 The spec is colocated as `source/renderer/app/utils/crypto.spec.ts`, per the
 repository convention that Jest specs sit next to the unit and `tests/` is
 Cucumber territory.
+
+### The paper wallet restore vector
+
+Paper wallet creation is retired and restore is kept, so restore needs coverage
+that does not depend on the creation path existing. A round trip cannot provide
+it: scrambling and unscrambling with the same code proves self-consistency, not
+that a certificate printed years ago still opens.
+
+A recorded certificate does. Captured on this branch, while the scrambling code
+is still present, from the published `abandon ... about` BIP39 vector as the
+wallet phrase and nine fixed words as the certificate password half:
+
+```
+certificate  soccer cruel cloth apple witness mimic hero resemble entry chase
+             fruit hurry close riot educate idea mom moral
+             legal winner thank year wave sausage worth useful legal
+restores to  abandon abandon abandon abandon abandon abandon
+             abandon abandon abandon abandon abandon about
+passphrase   8c58fb2e030c9664c3cb95097e62755a462fd5a2ed7196fc656f0c67bd446200
+```
+
+Verified deterministic across repeated runs. `getScrambledInput` splits the 27
+words into 18 and 9, derives the passphrase from the second half, and
+`unscramblePaperWalletMnemonic` returns the original phrase. That is exactly the
+path `StepMnemonicsContainer` takes at lines 57 to 60, so the vector exercises
+what a real restore exercises. The scrambling that produced it lives in
+`rust-cardano-crypto`, which this branch does not bump, so the recorded value
+pins the same implementation that produced the historical certificates.
+
+The `abandon ... about` phrase is the canonical published BIP39 test vector and
+is universally recognised as one, which is the property a committed fixture
+needs.
+
+**Module readiness.** `rust-cardano-crypto` populates its exported `RustModule`
+object from a promise registered at import time, so `await loadRustModule()` is
+not sufficient: the object is still empty when that await resolves. A test must
+wait for `RustModule` to be populated. The application calls
+`unscrambleStrings` synchronously with no such guarantee, which works in
+practice because the module loads during startup long before a restore, but it
+is an unguarded race and is recorded as a finding.
 
 ### The entropy module
 
@@ -710,14 +762,21 @@ formatter. That is the intended outcome.
    branch, but it is the only item in the wider audit with a plausible path to
    user funds, and it stays unquantified until the three Trezor questions are
    answered. Sequencing that work is a separate decision.
-5. **What happens to the 9-word paper wallet defect?** `generateMnemonic(9)`
-   throws, so paper wallet certificate creation is broken, and 96 bits would sit
-   below BIP39's floor even if it worked. Removing the `@skip` tag is required
-   by this branch's own rules, and the tag cannot come off while the function it
-   covers throws. Whether that means repairing the flow, retiring it, or
-   narrowing the scenario to the restore path that still works is a product
-   decision rather than a dependency one, and it is the one item here that
-   blocks the branch closing.
+5. **What happens to the 9-word paper wallet defect?**
+   **Decided on 2026-08-27: retire creation, keep and prove restore.** The
+   sidebar category is hard-disabled at `SidebarStore.ts:122`
+   (`PAPER_WALLET_CREATE_CERTIFICATE: false`), so the flow has had no entry
+   point for years, which is why a function that throws went unnoticed. Restore
+   stays, because a certificate printed years ago may still be held by someone,
+   and it gains the fixed vector it never had.
+
+   The creation code itself is not removed on this branch. Removing it means
+   deleting an IPC channel (`generatePaperWalletChannel`), a PDF generator, six
+   PNG assets and a font, roughly 1,900 lines across 24 renderer files, plus
+   i18n keys, Storybook stories, and store, action, route and sidebar wiring.
+   This PRD states that it makes no IPC changes, and that constraint is right:
+   feature removal is not dependency work and deserves its own review and its
+   own QA. It is recorded as a finding instead.
 
 ## Status Log
 
@@ -729,6 +788,9 @@ Append-only. New entries go at the end.
 | 2026-08-27 | Pre-flight re-measured on `chore/dependency-hygiene` at `27f133935`. `yarn prettier:check` reports 210 files and `nix fmt -- --ci` reports 0 changed on the same tree, so the premise holds. `yarn compile` clean, `yarn lint` 0 errors, Jest harness working, `crypto.ts` loads under Jest. |
 | 2026-08-27 | Found that the dev shell's `yarn build:electron` has been aborting on every shell entry: `scripts/rebuild-native-modules.sh` opens with `chmod -R +w node_modules/` under `set -o errexit`, and `node_modules/.cache/storybook/10.5.10` is root-owned. Native modules are not being rebuilt against Electron's ABI. Blocks the packaged-build acceptance step, not the earlier phases. |
 | 2026-08-27 | Open Question 1 decided: `check:all` runs `nix fmt -- --ci`. Recorded there with the reasoning and the accepted cost. |
+| 2026-08-27 | Open Question 5 decided: retire paper wallet creation, keep restore, prove restore with a recorded certificate vector rather than a round trip. Creation code removal is a separate branch, because it deletes an IPC channel and roughly 1,900 lines across 24 files. |
+| 2026-08-27 | Restore vector captured and verified deterministic. Recorded in Technical Design. Captured now because it cannot be captured once the scrambling code is gone. |
+| 2026-08-27 | Root-owned `node_modules/.cache/storybook/10.5.10` cleared, so `yarn build:electron` is no longer aborting on dev shell entry. The task-015 blocker is lifted. |
 | 2026-08-27 | Scope widened, and the decision to exclude source changes reversed. Investigation found wallet entropy sourced from a `bip39` default that this branch's own bump replaces, and a crypto scenario skipped since 2021 hiding a throwing `generateMnemonic(9)`. Phase 3 becomes a crypto assurance phase, beginning by asserting current conformance against the published BIP39 vectors and ending with controls that make a later weakening conspicuous. Status In Progress. |
 
 ---

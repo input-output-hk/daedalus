@@ -3,8 +3,8 @@
     "title": "Dependency Hygiene Tasks",
     "created": "2026-08-26",
     "updated": "2026-08-27",
-    "version": "3.0.0",
-    "totalTasks": 23,
+    "version": "3.1.0",
+    "totalTasks": 24,
     "prdReference": ".agent/plans/dependency-hygiene/dependency-hygiene-prd.md",
     "description": "Make one prettier version govern the repository, prove BIP39 conformance and first-party wallet entropy before anything underneath them moves, then take the mechanical and consequential runtime dependency bumps.",
     "sourceFiles": [
@@ -509,35 +509,47 @@
         },
         {
           "id": "task-022",
-          "title": "Resolve the 9-word paper wallet defect and the skip tag",
-          "description": "generateMnemonic(9) maps to 96 bits, below BIP39's 128 bit floor, so it throws Invalid entropy and paper wallet certificate creation fails. The scenario covering it has been tagged @skip since 2021-06-13 in c6dd7d9fe. This branch's own rule is that no crypto test may be skipped, and the tag cannot come off while the function it covers throws.",
+          "title": "Move paper wallet coverage to a recorded restore vector",
+          "description": "Paper wallet creation is retired: the sidebar category is hard-disabled at SidebarStore.ts:122, which is why generateMnemonic(9) throwing went unnoticed. Restore is kept and gains the fixed vector it never had, so it is provable without the creation path existing. The skipped scenario and its creation-side steps are removed, their coverage moved to Jest.",
           "status": "pending",
-          "priority": "high",
-          "estimatedHours": 1.0,
+          "priority": "critical",
+          "estimatedHours": 1.5,
           "dependencies": [
             "task-008"
           ],
           "targetPaths": [
+            "source/renderer/app/utils/__fixtures__/paper-wallet-certificate.json",
+            "source/renderer/app/utils/crypto.spec.ts",
             "tests/wallets/unit/features/scrambling-and-unscrambling-mnemonics.feature",
-            "source/renderer/app/utils/crypto.ts",
-            "source/renderer/app/api/utils/mnemonics.ts"
+            "tests/wallets/unit/steps/mnemonics.ts"
           ],
           "implementationNotes": [
-            "Measured: generateMnemonic(9) and generateAdditionalMnemonics both throw Invalid entropy. WalletsStore._generateCertificate reaches the second at line 1433.",
-            "The throw happens inside a Promise executor in api.ts, so it rejects the promise rather than reaching the surrounding try/catch. The caller sees a raw Error, not an ApiError.",
-            "The disposition is a product decision, not a dependency one: repair the flow, retire it, or narrow the scenario to the restore path, which does work. Adam decides before the branch closes.",
-            "Whichever is chosen, the outcome must be that no crypto scenario carries @skip or @wip.",
-            "Do not lower the entropy floor to make 96 bits pass. BIP39 sets that floor for a reason."
+            "The vector is captured and verified. Certificate: 'soccer cruel cloth apple witness mimic hero resemble entry chase fruit hurry close riot educate idea mom moral legal winner thank year wave sausage worth useful legal'. It restores to the published BIP39 vector phrase 'abandon' x11 'about'. Derived passphrase 8c58fb2e030c9664c3cb95097e62755a462fd5a2ed7196fc656f0c67bd446200. Deterministic across repeated runs.",
+            "A round trip proves self-consistency, not that an old certificate still opens. Assert the recorded 27-word phrase through getScrambledInput and unscramblePaperWalletMnemonic, which is the path StepMnemonicsContainer takes at lines 57 to 60.",
+            "rust-cardano-crypto populates its exported RustModule object from a promise registered at import time, so `await loadRustModule()` is NOT sufficient: the object is still empty when that await resolves. The spec needs a beforeAll that waits until RustModule has keys, or every paper wallet assertion fails with 'module.alloc is not a function'.",
+            "Capture the fixture on this branch. Once the scrambling code is removed on the retirement branch, it cannot be captured again.",
+            "Record the fixture's provenance beside it: which phrase, which nine words, and that it was generated rather than taken from a real certificate.",
+            "Delete the scrambling scenario and the creation-side steps it used. Do not leave a skipped scenario behind, and do not delete coverage without moving it.",
+            "Do not remove the paper wallet creation feature here. That deletes an IPC channel and is a separate branch; see task-024."
           ],
           "acceptance": [
-            "The disposition is decided and recorded in the PRD",
+            "The restore vector is committed with its provenance",
+            "crypto.spec.ts asserts it and passes",
             "No scenario under tests/wallets/unit carries @skip or @wip",
-            "yarn test:unit passes with the previously skipped scenario in whatever form was decided"
+            "yarn test:unit passes",
+            "Paper wallet creation code is untouched on this branch"
           ],
           "securityNotes": [
-            "96 bits of entropy would be below the standard's minimum even if the call succeeded. Making it work at that strength is not an acceptable outcome."
+            "The wallet phrase in the fixture is the canonical published BIP39 test vector, universally recognised as one. Never use a phrase that has held funds.",
+            "96 bits of entropy would sit below BIP39's minimum even if generateMnemonic(9) succeeded. Do not lower the floor to make it pass; the flow is retired instead."
           ],
-          "notes": "This is the open question that blocks the branch closing."
+          "notes": "Open Question 5, decided 2026-08-27. No longer blocks the branch.",
+          "testCases": [
+            "The recorded certificate restores to its known 12-word phrase",
+            "getScrambledInput derives the recorded passphrase from the certificate's last nine words",
+            "The assertion passes without any call to scramblePaperWalletMnemonic",
+            "The assertion fails if a word in the recorded certificate is altered"
+          ]
         }
       ]
     },
@@ -729,7 +741,8 @@
             "task-013",
             "task-014",
             "task-021",
-            "task-022"
+            "task-022",
+            "task-024"
           ],
           "targetPaths": [
             "flake.nix",
@@ -750,14 +763,36 @@
             "Each commit is reviewable on its own and reverts independently"
           ],
           "notes": "Darwin checks are built and reported but do not gate. The Windows workflow is reporting-only; a red Windows Jest run after a dependency bump is worth reading rather than dismissing."
+        },
+        {
+          "id": "task-024",
+          "title": "Record the paper wallet retirement and the wasm readiness race",
+          "description": "Two findings for follow-up branches. Neither is acted on here, both are written down with enough detail that the next branch does not have to rediscover them.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.75,
+          "dependencies": [
+            "task-022"
+          ],
+          "targetPath": ".agent/findings/",
+          "implementationNotes": [
+            "Finding one, paper wallet creation retirement. The flow has no entry point: SidebarStore.ts:122 sets PAPER_WALLET_CREATE_CERTIFICATE to false. generateMnemonic(9) throws Invalid entropy because 96 bits is below BIP39's 128 bit floor, and the throw happens inside a Promise executor in api.ts so it rejects rather than reaching the surrounding try/catch, meaning the caller sees a raw Error and not an ApiError. Removal surface: roughly 1,900 lines across 24 renderer files, the generatePaperWalletChannel IPC contract on both sides, paper-wallet-request.types.ts, paperWalletPdfGenerator.ts, six PNG assets and a TTF font under source/common/assets/pdf, Storybook stories, i18n keys, and store, action, route and sidebar wiring. Restore must survive: getScrambledInput, unscramblePaperWalletMnemonic, mnemonicToSeedHex, StepMnemonicsContainer, and the vector added by task-022. Only scramblePaperWalletMnemonic and generateAdditionalMnemonics are creation-only.",
+            "Finding two, the rust-cardano-crypto readiness race. The module exports a RustModule object populated by a promise registered at import time, and crypto.ts calls unscrambleStrings synchronously against it with no readiness guarantee. It works in practice because the module loads during startup long before a user restores a wallet, but nothing enforces that ordering. Measured: `await loadRustModule()` returns before RustModule is populated.",
+            "Write each as its own finding. Do not fold them into the dependency finding from task-013."
+          ],
+          "acceptance": [
+            "Both findings recorded with the measurements that support them",
+            "The retirement finding names what must survive removal, not only what goes",
+            "Neither is acted on in this branch"
+          ]
         }
       ]
     }
   ],
   "summary": {
     "totalPhases": 5,
-    "totalTasks": 23,
-    "estimatedTotalHours": 24.0,
+    "totalTasks": 24,
+    "estimatedTotalHours": 25.25,
     "criticalPath": [
       "task-001",
       "task-003",
@@ -792,7 +827,7 @@
       "Contributors holding in-flight branches containing prettier 2 output will see those hunks disappear on rebase. Intended, but worth saying before the branch merges.",
       "Wallet recovery phrase entropy is currently a bip39 default, and this branch replaces that default. Phase 3 exists so the replacement is witnessed rather than absorbed.",
       "A crypto scenario has been skipped since 2021 hiding a throwing generateMnemonic(9). Green builds have not meant what they appeared to mean on this path.",
-      "The dev shell yarn build:electron aborts on a root-owned node_modules/.cache/storybook directory, so native modules are not rebuilt for Electron ABI. Blocks task-015 until cleared with sudo."
+      "The paper wallet restore vector must be captured while the scrambling code still exists. Once the retirement branch removes it, restore becomes untestable without the fixture."
     ],
     "testingNotes": "Two different kinds of verification. The formatter half is verified by absence: the decisive check is that yarn prettier:format produces an empty diff, since running that command is what currently breaks the build. The dependency half is verified by assertion: known-answer vectors for seed derivation, yarn why for the resolutions entries, measured advisory counts, and a packaged installer that starts.",
     "rollbackPlan": "Eight commits, each reverting independently, and the branch reverts cleanly. Reverting the prettier bump alone restores the current formatter divergence, which is a known state rather than a broken one. Reverting the tier 2 commit alone restores the advisories. Nothing user visible changes either way.",
