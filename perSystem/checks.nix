@@ -1,5 +1,6 @@
 {inputs, ...}: {
   perSystem = {
+    config,
     system,
     lib,
     pkgs,
@@ -77,6 +78,66 @@
         '';
         storybook = mkJsCheck "daedalus-storybook-build" "yarn storybook:build";
         shellcheck = pkgs.callPackage ../tests/shellcheck.nix {src = inputs.self;};
+        # `package.json` and `nix fmt` format the same files, so they must run
+        # the same prettier. They are pinned independently: `devDependencies`
+        # tracks the lockfile, and the formatter's prettier tracks nixpkgs, so a
+        # nixpkgs bump moves one and not the other with no other signal.
+        #
+        # The version is read from the binary treefmt is configured to execute
+        # rather than from a package named a second time here, so this check
+        # cannot itself drift from the formatter it is checking.
+        # The crypto assertions get their own named derivation so a reviewer
+        # sees them pass or fail by name on a pull request rather than
+        # inferring it from a generic Jest run. The `jest` check above already
+        # executes these specs; this exists for visibility, and for the
+        # coverage floor.
+        #
+        # The floor is here rather than in `jest.config.js` because a per-file
+        # `coverageThreshold` there makes every partial `yarn jest <file>` run
+        # exit 1, even when its own tests pass, since the threshold's file has
+        # no coverage data in that run. Measured. Scoping it to this check
+        # keeps the guarantee without that cost.
+        #
+        # What the floor buys: deleting a crypto test drops coverage below the
+        # line and fails the build, rather than quietly reducing what is
+        # checked. That is the move that kept a broken paper wallet path green
+        # for five years.
+        crypto-vectors = mkJsCheck "daedalus-crypto-vectors" ''
+          yarn jest \
+            source/renderer/app/utils/crypto.spec.ts \
+            source/renderer/app/utils/entropy.spec.ts \
+            --collectCoverageFrom='source/renderer/app/utils/{crypto,entropy}.ts' \
+            --coverageThreshold='{
+              "./source/renderer/app/utils/entropy.ts": {
+                "statements": 100, "branches": 100, "functions": 100, "lines": 100
+              },
+              "./source/renderer/app/utils/crypto.ts": {
+                "statements": 87.14, "branches": 77.77, "functions": 88.88, "lines": 86.88
+              }
+            }'
+        '';
+        prettier-version-parity = let
+          pinned =
+            (builtins.fromJSON (builtins.readFile ../package.json))
+            .devDependencies
+            .prettier;
+          prettier = config.treefmt.settings.formatter.prettier.command;
+        in
+          pkgs.runCommand "daedalus-prettier-version-parity" {} ''
+            actual=$(${prettier} --version)
+            if [ "${pinned}" != "$actual" ]; then
+              echo "ERROR: prettier version mismatch."
+              echo "  package.json devDependencies.prettier: ${pinned}"
+              echo "  prettier run by nix fmt:               $actual"
+              echo
+              echo "These format the same files and must be the same version."
+              echo "Update package.json and yarn.lock to $actual, or pin the"
+              echo "formatter's prettier to ${pinned}."
+              exit 1
+            fi
+            echo "prettier ${pinned} in package.json and in nix fmt"
+            touch $out
+          '';
       };
   };
 }

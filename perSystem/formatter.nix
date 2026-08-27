@@ -20,17 +20,23 @@
         package = inputs'.fenix.packages.stable.rustfmt;
       };
 
-      # Enable prettier for JS/TS/JSON/SCSS formatting
-      programs.prettier = {
-        enable = true;
-        # Use the settings from .prettierrc
-        settings = {
-          trailingComma = "es5";
-          singleQuote = true;
-        };
-      };
+      # Enable prettier for JS/TS/JSON/SCSS formatting.
+      #
+      # There is deliberately no `settings` block. treefmt-nix generates a
+      # config file from `programs.prettier.settings` and passes it as
+      # `--config`, which stops prettier discovering `.prettierrc`. With no
+      # settings it emits no `--config` at all, so prettier reads `.prettierrc`
+      # the same way `yarn prettier` does and the options have one source of
+      # truth rather than two kept in step by hand.
+      programs.prettier.enable = true;
 
-      # Global settings and excludes
+      # Global settings and excludes.
+      #
+      # Directory entries carry a `/**` suffix because a bare directory name
+      # matches that path and not its contents, so without it these exclude
+      # nothing. Measured: with bare names treefmt handed prettier 1969 files,
+      # including all 326 tracked files under `.agent` and `CHANGELOG.md`, and
+      # only `.prettierignore` stopped them being rewritten.
       settings.global.excludes = [
         "*.lock"
         "*.patch"
@@ -41,17 +47,17 @@
         ".gitmodules"
         "LICENSE"
         # Exclude directories
-        "node_modules"
-        "dist"
-        "release"
-        ".direnv"
-        ".agent"
-        "release-cli/target"
+        "node_modules/**"
+        "dist/**"
+        "release/**"
+        ".direnv/**"
+        ".agent/**"
+        "release-cli/target/**"
         # Exclude specific paths from .prettierignore
-        "source/renderer/app/i18n/locales"
-        "source/renderer/app/config/newsfeed-files"
-        "tests/paper-wallets/e2e/documents"
-        "tests/wallets/e2e/documents"
+        "source/renderer/app/i18n/locales/**"
+        "source/renderer/app/config/newsfeed-files/**"
+        "tests/paper-wallets/e2e/documents/**"
+        "tests/wallets/e2e/documents/**"
       ];
 
       # Custom overrides for alejandra
@@ -59,42 +65,15 @@
         includes = ["**/*.nix"];
       };
 
-      # Custom overrides for prettier - match .prettierignore includes
-      settings.formatter.prettier = {
-        includes = [
-          "source/**/*.js"
-          "source/**/*.ts"
-          "source/**/*.tsx"
-          "source/**/*.scss"
-          "source/**/*.json"
-          "features/**/*.js"
-          "features/**/*.ts"
-          "features/**/*.tsx"
-          "features/**/*.scss"
-          "features/**/*.json"
-          "storybook/**/*.js"
-          "storybook/**/*.ts"
-          "storybook/**/*.tsx"
-          "storybook/**/*.scss"
-          "storybook/**/*.json"
-          "hardware-wallet-tests/**/*.js"
-          "hardware-wallet-tests/**/*.ts"
-          "hardware-wallet-tests/**/*.tsx"
-          "hardware-wallet-tests/**/*.json"
-          "tests/**/*.js"
-          "tests/**/*.ts"
-          "tests/**/*.tsx"
-          "tests/**/*.scss"
-          "tests/**/*.json"
-          "package.json"
-        ];
-        excludes = [
-          "source/renderer/app/i18n/locales/**"
-          "source/renderer/app/config/newsfeed-files/**"
-          "tests/paper-wallets/e2e/documents/**"
-          "tests/wallets/e2e/documents/**"
-        ];
-      };
+      # No prettier includes or excludes here on purpose. The include list is
+      # controlled by `programs.prettier.includes`, which the treefmt-nix module
+      # already defines; a list written under `settings.formatter.prettier` is a
+      # second definition of the same option and concatenates with it rather
+      # than replacing it, so a repository list can only ever be redundant.
+      # Prettier's scope is decided by `.prettierignore`, which prettier applies
+      # even to paths handed to it explicitly. The directory entries in
+      # `settings.global.excludes` above do not exclude directory contents, so
+      # they are not what is holding this line.
     };
 
     # This makes 'nix fmt' work automatically

@@ -1,5 +1,4 @@
 import * as bip39 from 'bip39';
-import { Buffer } from 'safe-buffer';
 import { blake2b } from 'blakejs';
 import { bech32 } from 'bech32';
 import crypto from 'crypto';
@@ -9,6 +8,7 @@ import * as unorm from 'unorm';
 import CardanoCrypto from 'rust-cardano-crypto';
 import validWords from '../../../common/config/crypto/valid-words.en';
 import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
+import { secureRandomBytes } from './entropy';
 
 /**
   CS = ENT / 32
@@ -51,7 +51,11 @@ export const generateMnemonic = (ms: number | null | undefined = 15) => {
       ent = 128;
   }
 
-  return bip39.generateMnemonic(ent, null, validWords);
+  // The entropy source is passed explicitly rather than left to bip39's
+  // default. That default is a transitive dependency's choice: 3.0.4 used the
+  // `randombytes` package, 3.1.0 uses `@noble/hashes`. Naming it here means a
+  // version bump cannot change where the seed for a wallet comes from.
+  return bip39.generateMnemonic(ent, secureRandomBytes, validWords);
 };
 export const scramblePaperWalletMnemonic = (
   passphrase: string,
@@ -106,7 +110,12 @@ export const mnemonicToSeedHex = (
   const saltBuffer = Buffer.from(salt, 'utf8');
   return pbkdf2(mnemonicBuffer, saltBuffer, 2048, 32, 'sha512').toString('hex');
 };
-export const blake2b224 = (data: Buffer): Buffer => blake2b(data, null, 28);
+// blakejs returns a Uint8Array, not a Buffer. 1.1.0 shipped no type
+// declarations so this went unchecked; 1.2.1 ships them and the signature has
+// to say what the function actually returns. Callers wrap in `Buffer.from`
+// where they need Buffer methods.
+export const blake2b224 = (data: Uint8Array): Uint8Array =>
+  blake2b(data, null, 28);
 export const decodeBech32 = (data: string): Buffer =>
   Buffer.from(bech32.fromWords(bech32.decode(data).words));
 export const encodeBech32 = (prefix: string, data: Buffer): string =>
@@ -116,7 +125,7 @@ export const getStakeAddressFromStakeKey = (stakeKey: string): string => {
   const { isMainnet, isStaging, isSelfnode } = global.environment;
   const isMainnetLikeNetwork = isMainnet || isStaging || isSelfnode;
   const stakeKeyHex: Buffer = decodeBech32(stakeKey);
-  const stakeKeyHash: Buffer = blake2b224(stakeKeyHex);
+  const stakeKeyHash: Uint8Array = blake2b224(stakeKeyHex);
   const networkPrefix = Buffer.from(isMainnetLikeNetwork ? 'e1' : 'e0', 'hex');
   const addressPrefix = isMainnetLikeNetwork ? 'stake' : 'stake_test';
   const stakeAddress = encodeBech32(

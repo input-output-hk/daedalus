@@ -20,6 +20,14 @@
 
 - Nix: split `relocatableElectron` into `electronBundleExe` + `relocatableElectron`.
 
+- Dependencies: moved `prettier` to 3.6.2, matching the version `nix fmt` already enforces, so the local pre-flight and the merge gate stop disagreeing about 210 files. `.prettierrc` is now the single source of formatting options, and a check fails the build if the two prettiers ever diverge again ([PR #3390](https://github.com/input-output-hk/daedalus/pull/3390)).
+
+- Security: wallet recovery phrase entropy now comes from a first-party CSPRNG that fails closed, rather than from whichever default `bip39` happens to ship. Mnemonic and seed derivation is asserted against the published BIP39 test vectors on both `pbkdf2` implementations, and a provenance test proves the words shown to the user decode back to exactly the bytes the platform CSPRNG produced ([PR #3390](https://github.com/input-output-hk/daedalus/pull/3390)).
+
+- Dependencies: took 21 runtime bumps and cleared 13 advisories, including two critical `pbkdf2` issues, by moving `pbkdf2` and `lodash` in `resolutions` as well as `dependencies` ([PR #3390](https://github.com/input-output-hk/daedalus/pull/3390)).
+
+- Paper wallets: certificate creation is retired, having been unreachable in the UI for years and broken underneath. Restoring an existing paper wallet is unaffected and is now covered by a recorded certificate vector ([PR #3390](https://github.com/input-output-hk/daedalus/pull/3390)).
+
 ## 11.1.0
 
 ### Features

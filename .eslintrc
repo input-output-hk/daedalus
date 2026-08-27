@@ -113,6 +113,52 @@
   },
   "overrides": [
     {
+      // The shipped application. Storybook and utils are demo and tooling
+      // code and are deliberately not covered by these.
+      "files": ["source/**/*.ts", "source/**/*.tsx"],
+      "rules": {
+        "no-restricted-properties": [
+          "error",
+          {
+            "object": "Math",
+            "property": "random",
+            "message": "Math.random is not a CSPRNG. For key material, entropy, or anything a wallet's security depends on, use secureRandomBytes from source/renderer/app/utils/entropy."
+          },
+          {
+            "object": "Buffer",
+            "property": "allocUnsafe",
+            "message": "Buffer.allocUnsafe returns uninitialised memory, which looks random and is not. Use Buffer.alloc, or new Uint8Array, which is zero-filled by specification."
+          },
+          {
+            "object": "bip39",
+            "property": "generateMnemonic",
+            "message": "Call generateMnemonic from source/renderer/app/utils/crypto, which passes an explicit entropy source. Calling bip39 directly takes whatever rng that version of bip39 happens to default to."
+          }
+        ]
+      }
+    },
+    {
+      // The one module allowed to call bip39.generateMnemonic, because it is
+      // the module that supplies the entropy source. The other restrictions
+      // still apply here.
+      "files": ["source/renderer/app/utils/crypto.ts"],
+      "rules": {
+        "no-restricted-properties": [
+          "error",
+          {
+            "object": "Math",
+            "property": "random",
+            "message": "Math.random is not a CSPRNG. Use secureRandomBytes from ./entropy."
+          },
+          {
+            "object": "Buffer",
+            "property": "allocUnsafe",
+            "message": "Buffer.allocUnsafe returns uninitialised memory. Use Buffer.alloc, or new Uint8Array."
+          }
+        ]
+      }
+    },
+    {
       "files": "**/*.ts",
       "rules": {
           "no-useless-constructor": "off",

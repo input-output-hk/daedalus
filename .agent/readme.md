@@ -12,6 +12,7 @@ This folder contains all the documentation needed for AI agents to effectively a
 |-------------------------------|----------------------------------------|----------------------------------------------------------------------------|
 | [`/system`](./system/)        | Architecture, APIs, state management   | **First**, for any architectural decisions or understanding system design  |
 | [`/plans`](./plans/)          | PRDs and implementation plans history  | When implementing new features similar to past work                        |
+| [`/findings`](./findings/)    | Known defects and open questions       | Before starting work in an area, to see what is already known about it     |
 | [`/SOPs`](./SOPs/)            | Standard Operating Procedures          | When encountering known issues or following established patterns           |
 | [`/skills`](./skills/)        | Reusable task-specific playbooks       | When making domain-specific changes (CLI, frontend, testing)               |
 | [`/workflows`](./workflows/)  | Step-by-step development workflows     | When executing specific development tasks                                  |
@@ -47,6 +48,21 @@ Before implementing a feature:
 3. Follow established patterns from successful implementations
 
 This folder uses subdirectories per major feature/task. Subdirectories may also include companion design specs and research notes when a task needed deeper implementation detail or source-of-truth investigation.
+
+---
+
+### `/findings` — Known Defects and Open Questions
+
+**Things discovered while doing something else, written down rather than acted on.**
+
+Read before starting work in an area, so a known defect is not rediscovered and
+a branch does not quietly grow to cover something outside its scope. Each finding
+records the measurement that establishes it, what it does and does not affect,
+which area would own it, and what was deliberately not done.
+
+A finding graduates out of the folder when it becomes a plan, an SOP, or a
+commit, and is deleted when fixed rather than marked resolved in place. See
+[`findings/readme.md`](./findings/readme.md).
 
 ---
 
