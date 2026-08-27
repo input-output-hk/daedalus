@@ -285,9 +285,9 @@ Formatter parity:
 - [x] `yarn prettier:check` and `nix fmt -- --ci` both exit 0 on a clean checkout
 - [x] `yarn prettier:format` produces an empty diff
 - [ ] No script or document passes `--loglevel`
-- [ ] `perSystem/formatter.nix` sets no `programs.prettier.settings`, and the
+- [x] `perSystem/formatter.nix` sets no `programs.prettier.settings`, and the
       generated treefmt config passes no `--config` for prettier
-- [ ] A check fails, naming both versions, when the prettier in `package.json`
+- [x] A check fails, naming both versions, when the prettier in `package.json`
       and the prettier treefmt runs differ
 
 Crypto assurance:
@@ -407,6 +407,12 @@ package a second time, so it cannot itself drift from what the formatter runs.
 executes; `perSystem` must take `config` in its argument set, which
 `perSystem/checks.nix` does not do today.
 
+Implemented with a deviation from the sketch below: the pinned version is read
+with `builtins.readFile ../package.json` at evaluation time rather than with
+`jq` at build time. That drops the `jq` dependency, avoids taking a dependency
+on the whole flake source through `${inputs.self}`, and lets the failure message
+embed the pinned version directly.
+
 ```nix
 prettier-version-parity =
   pkgs.runCommand "daedalus-prettier-version-parity" {
@@ -448,9 +454,20 @@ already a subset of them. Scope is decided by `.prettierignore`, which prettier
 applies to explicitly passed paths. This is documented prettier behaviour and
 the same mechanism that makes `yarn prettier "**/*.*"` correct.
 
-The residual risk is that a future prettier could stop applying `.prettierignore`
-to explicit paths, at which point treefmt would begin formatting every Markdown
-file in the tree, `CHANGELOG.md` included. That would be a loud diff on the
+Measured after the removal, and larger than this section originally assumed.
+treefmt now hands prettier 1969 files rather than 1955; the 14 are the locale,
+newsfeed and e2e document files the deleted `excludes` had covered, which
+prettier declines through `.prettierignore`. More significant, the directory
+entries in `settings.global.excludes` do not exclude directory contents at all:
+treefmt matches prettier against all 326 tracked files under `.agent`, and
+against `CHANGELOG.md`. `prettier --file-info` reports `ignored: true` for every
+one of them, so `.prettierignore` is the only thing holding that line, and it
+was the only thing holding it before this change too.
+
+The residual risk is therefore not hypothetical bookkeeping. If a future prettier
+stopped applying `.prettierignore` to explicit paths, treefmt would begin
+formatting every Markdown file in the tree, `CHANGELOG.md` and this plan
+included. That would be a loud diff on the
 first `nix fmt` after such a bump rather than a silent corruption, and the
 parity check makes any prettier version move deliberate. Naming it once is the
 proportionate response; a duplicated exclude list is what this change removes.
@@ -743,8 +760,10 @@ formatter. That is the intended outcome.
 
 1. **Should `check:all` run the Nix formatter instead of `yarn prettier:check`?**
    **Decided on 2026-08-27: yes.** CI gates on `required`, which collects every
-   derivation in `checks.x86_64-linux`: `treefmt`, `lint`, `compile`,
-   `stylelint`, `i18n`, `storybook`, `shellcheck`, `jest` and `cucumber-unit`.
+   derivation in `checks.x86_64-linux`, which is a longer list than this document
+   originally recorded: `treefmt`, `lint`, `compile`, `stylelint`, `i18n`,
+   `storybook`, `shellcheck`, `jest`, `cucumber-unit`, `bundle-integrity`,
+   `drt-clippy`, `watchdog-clippy` and `watchdog-test`.
    Nothing in CI runs `yarn check:all` or `yarn prettier:check`. So `check:all`
    is already a local mirror of the required set, and the formatter was the one
    member it mirrored with the wrong tool. The accepted cost is that
@@ -792,6 +811,9 @@ Append-only. New entries go at the end.
 | 2026-08-27 | Restore vector captured and verified deterministic. Recorded in Technical Design. Captured now because it cannot be captured once the scrambling code is gone. |
 | 2026-08-27 | Root-owned `node_modules/.cache/storybook/10.5.10` cleared, so `yarn build:electron` is no longer aborting on dev shell entry. The task-015 blocker is lifted. |
 | 2026-08-27 | Phase 1 complete. prettier moved to 3.6.2, the three `--loglevel` scripts renamed, lockfile regenerated in the Nix dev shell. `yarn prettier:check` exits 0, `nix fmt -- --ci` reports 0 changed, and `yarn prettier:format` leaves only `package.json` and `yarn.lock` changed. The premise held; no re-measure was needed. |
+| 2026-08-27 | Phase 1 verified green in CI. `ci/hydra-build:required`, `ci/hydra-build:nonrequired`, `ci/eval`, Jest on Windows and Cargo on Windows all SUCCESS on the prettier bump, so `checks.treefmt` passes with prettier 3.6.2. |
+| 2026-08-27 | Phase 2 complete. treefmt reads `.prettierrc`, the inert prettier include and exclude lists are gone, `prettier-version-parity` is in the required set and verified failing as well as passing, and `check:all` runs `nix fmt -- --ci` through a new `fmt:check` script. |
+| 2026-08-27 | Finding while measuring task-005: `settings.global.excludes` directory entries are inert, and `.prettierignore` is the sole gate on prettier's scope. Recorded under Why removing the prettier `includes` block is safe. Not acted on. |
 | 2026-08-27 | Scope widened, and the decision to exclude source changes reversed. Investigation found wallet entropy sourced from a `bip39` default that this branch's own bump replaces, and a crypto scenario skipped since 2021 hiding a throwing `generateMnemonic(9)`. Phase 3 becomes a crypto assurance phase, beginning by asserting current conformance against the published BIP39 vectors and ending with controls that make a later weakening conspicuous. Status In Progress. |
 
 ---

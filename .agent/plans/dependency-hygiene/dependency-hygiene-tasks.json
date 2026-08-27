@@ -129,7 +129,7 @@
           "id": "task-004",
           "title": "Let treefmt read .prettierrc",
           "description": "Remove programs.prettier.settings from formatter.nix. treefmt-nix generates a config file from those settings and passes it as --config, which stops prettier discovering .prettierrc. With settings empty, treefmt-nix passes no --config and prettier resolves the repository's own file.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 0.5,
           "dependencies": [
@@ -151,13 +151,16 @@
             "nix fmt -- --ci is clean with .prettierrc as the only prettier config",
             "git diff --name-only lists perSystem/formatter.nix only"
           ],
-          "notes": "A clean run proves .prettierrc supplies the same options the generated file did. The two agree today by hand; this makes them agree by construction."
+          "notes": "A clean run proves .prettierrc supplies the same options the generated file did. The two agree today by hand; this makes them agree by construction.",
+          "completedAt": "2026-08-27",
+          "actualHours": 0.7,
+          "completedNotes": "Removed programs.prettier.settings. Confirmed the two configs were already identical before removing anything: the generated /nix/store/...-prettierrc.json held exactly {\"singleQuote\": true, \"trailingComma\": \"es5\"} and .prettierrc holds the same two keys. The treefmt-nix module emits --config only when the settings attrset filters to non-empty, so removal drops the flag rather than passing an empty config; the rebuilt config shows options = [\"--write\"]. Proof that .prettierrc is now honoured: the same prettier binary passes --check on crypto.ts and fails it with --no-config, because prettier 3 defaults to singleQuote false and trailingComma all."
         },
         {
           "id": "task-005",
           "title": "Drop the inert prettier include and exclude lists",
           "description": "The prettier includes and excludes in formatter.nix have no effect. They are written to settings.formatter.prettier.*, which becomes a second definition of the same option as the module default and concatenates with it rather than replacing it. Scope is decided by .prettierignore, which prettier applies even to paths passed explicitly.",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 0.5,
           "dependencies": [
@@ -182,13 +185,16 @@
           ],
           "securityNotes": [
             "Residual risk, accepted and named once in the PRD: if a future prettier stopped applying .prettierignore to explicitly passed paths, treefmt would begin formatting every Markdown file including CHANGELOG.md. That surfaces as a loud diff on the first nix fmt after such a bump, not as silent corruption, and task-006 makes any prettier version move deliberate."
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.8,
+          "completedNotes": "Removed the 25 include entries and the 4 exclude entries. Generated-config diff confirms the includes concatenated rather than replaced: the module's 16 extension globs remain and cover every extension the repository list named. Measured side effect not predicted by the plan: treefmt now emits 1969 files to prettier rather than 1955, the 14 being the formerly excluded locale, newsfeed and e2e document files, which prettier declines via .prettierignore. nix fmt -- --ci still reports 0 changed."
         },
         {
           "id": "task-006",
           "title": "Add a prettier version parity check",
           "description": "The treefmt prettier tracks nixpkgs. A nixpkgs bump moves it and reopens the gap with no signal. Assert that the version in package.json and the version treefmt invokes are the same, and fail with a message naming both and saying what to do.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 1.5,
           "dependencies": [
@@ -218,13 +224,16 @@
             "The check passes on the branch",
             "The check demonstrably fails on a deliberate mismatch",
             "The failure message states both versions and both ways to resolve them"
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.0,
+          "completedNotes": "Added prettier-version-parity to checks.nix and config to the perSystem argument set. Deviation from the planned design: the pinned version is read with builtins.readFile ../package.json at evaluation time rather than with jq at build time, which drops the jq dependency, avoids taking a dependency on the whole flake source, and lets the error message embed both versions. Verified passing (prints \"prettier 3.6.2 in package.json and in nix fmt\") and verified failing with the pin temporarily at 3.6.1. Confirmed present in hydraJobs.checks.x86_64-linux, which required collects."
         },
         {
           "id": "task-006-a",
           "title": "Run the merge gate in check:all",
           "description": "Replace yarn prettier:check with nix fmt -- --ci in check:all, so the documented local pre-flight and the check that actually gates a merge are the same command. Resolves Open Question 1.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 0.5,
           "dependencies": [
@@ -245,7 +254,10 @@
             "check:all invokes nix fmt -- --ci",
             "prettier:check still exists as its own script",
             "The write behaviour is documented in the commit body"
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.5,
+          "completedNotes": "check:all now calls a new fmt:check script running nix fmt -- --ci; prettier:check kept standalone. Verified: on a clean tree fmt:check reports 0 changed; with a .nix file deliberately misformatted, prettier:check still exits 0 while fmt:check exits 1."
         }
       ]
     },
