@@ -311,16 +311,16 @@ Crypto assurance:
 - [x] A provenance test proves the words shown to the user decode back to
       exactly the bytes the platform CSPRNG produced, with nothing transformed,
       truncated or discarded on the way
-- [ ] Lint rejects `Math.random`, `Buffer.allocUnsafe`, and
+- [x] Lint rejects `Math.random`, `Buffer.allocUnsafe`, and
       `bip39.generateMnemonic` called anywhere but the entropy module
-- [ ] Coverage of `crypto.ts` and `entropy.ts` is thresholded, so deleting a
+- [x] Coverage of `crypto.ts` and `entropy.ts` is thresholded, so deleting a
       test fails the build
-- [ ] The crypto assertions are a separately named check inside `required`
-- [ ] A recorded paper wallet certificate restores to its known phrase, and the
+- [x] The crypto assertions are a separately named check inside `required`
+- [x] A recorded paper wallet certificate restores to its known phrase, and the
       assertion does not depend on the scrambling code existing
-- [ ] No crypto scenario carries `@skip` or `@wip`, and none is left skipped by
+- [x] No crypto scenario carries `@skip` or `@wip`, and none is left skipped by
       deleting the coverage rather than moving it
-- [ ] Every assertion above has been observed to fail when the thing it protects
+- [x] Every assertion above has been observed to fail when the thing it protects
       is broken
 - [ ] All of the above are committed and green **before** any tier 2 bump
 
@@ -824,6 +824,8 @@ Append-only. New entries go at the end.
 | 2026-08-27 | Vector suite landed. 90 assertions, all 24 vectors on both pbkdf2 resolutions plus the entropy mapping, blake2b224, bech32 and both stake address branches. Verified failing under four separate injections before being trusted. |
 | 2026-08-27 | Entropy module landed and wired in. Deviation: `jest.setup.js` was needed, because `jest-environment-jsdom` at this version provides no `globalThis.crypto`. That is also a prediction about the `bip39` 3.1.0 bump, which needs the same global through `@noble/hashes`. |
 | 2026-08-27 | Provenance test landed, verified against three separate weakenings of `crypto.ts`. Three published vectors use all-zero entropy, which `secureRandomBytes` refuses; asserted as refusals rather than excepted from the guard. |
+| 2026-08-27 | Phase 3 complete. Lint restrictions, the `crypto-vectors` check with its coverage floor, and the paper wallet restore vector all landed and were verified failing as well as passing. No crypto scenario is skipped. |
+| 2026-08-27 | `settings.global.excludes` fixed with `/**` suffixes, on Adam's decision. Emitted set 1976 to 1645, prettier matches under `.agent` 326 to 0, 0 changed, and alejandra and rustfmt still match all 35 `.nix` and 33 `.rs` files. |
 | 2026-08-27 | Scope widened, and the decision to exclude source changes reversed. Investigation found wallet entropy sourced from a `bip39` default that this branch's own bump replaces, and a crypto scenario skipped since 2021 hiding a throwing `generateMnemonic(9)`. Phase 3 becomes a crypto assurance phase, beginning by asserting current conformance against the published BIP39 vectors and ending with controls that make a later weakening conspicuous. Status In Progress. |
 
 ---

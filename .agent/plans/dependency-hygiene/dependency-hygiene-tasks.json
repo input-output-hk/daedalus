@@ -492,7 +492,7 @@
           "id": "task-020",
           "title": "Reject weak randomness and untested crypto in lint and coverage",
           "description": "Structural controls, so that weakening the crypto path cannot be done quietly. Lint rejects the obvious substitutions; a coverage threshold makes deleting a test fail the build instead of reducing coverage.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 1.5,
           "dependencies": [
@@ -518,13 +518,16 @@
           "acceptance": [
             "All four cases above verified, including the three that must fail",
             "The full check set is still green"
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.7,
+          "completedNotes": "Lint restricts Math.random, Buffer.allocUnsafe and bip39.generateMnemonic across source, with crypto.ts the single named exception for the last. Each verified failing by injection. randomInRange in numbers.ts is the only pre-existing Math.random under source, has no callers anywhere, and is annotated rather than removed. Deviation: the coverage floor moved into the crypto-vectors check instead of jest.config.js, because a per-file coverageThreshold there makes every partial yarn jest <file> run exit 1 even when its tests pass. Measured before choosing."
         },
         {
           "id": "task-021",
           "title": "Add a separately named crypto-vectors check",
           "description": "Give the crypto assertions their own named derivation in checks.x86_64-linux, so they appear by name on every pull request rather than folded into a generic Jest run.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 1.0,
           "dependencies": [
@@ -544,13 +547,16 @@
           "acceptance": [
             "The check exists, passes, and has been observed failing",
             "nix flake check -L is green"
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.2,
+          "completedNotes": "crypto-vectors added to checks.x86_64-linux, confirmed present in hydraJobs so required collects it. Runs both crypto specs, 142 tests, with coverage floors of 100 on entropy.ts and the measured figures on crypto.ts. Verified failing by deleting the failure-behaviour block, which drops entropy.ts to 90 percent statements and fails with the threshold named."
         },
         {
           "id": "task-022",
           "title": "Move paper wallet coverage to a recorded restore vector",
           "description": "Paper wallet creation is retired: the sidebar category is hard-disabled at SidebarStore.ts:122, which is why generateMnemonic(9) throwing went unnoticed. Restore is kept and gains the fixed vector it never had, so it is provable without the creation path existing. The skipped scenario and its creation-side steps are removed, their coverage moved to Jest.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 1.5,
           "dependencies": [
@@ -588,7 +594,10 @@
             "getScrambledInput derives the recorded passphrase from the certificate's last nine words",
             "The assertion passes without any call to scramblePaperWalletMnemonic",
             "The assertion fails if a word in the recorded certificate is altered"
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.8,
+          "completedNotes": "Recorded certificate fixture committed with provenance, asserted through getScrambledInput and unscramblePaperWalletMnemonic, the path StepMnemonicsContainer takes. The skipped feature and its seven orphaned steps are removed; no scenario under tests/wallets/unit carries @skip or @wip. crypto.ts coverage rose from 74.64 to 87.32 percent of statements, and the floor was raised to match. The suite waits for rust-cardano-crypto RustModule to be populated, since await loadRustModule() returns while it is still empty."
         }
       ]
     },
