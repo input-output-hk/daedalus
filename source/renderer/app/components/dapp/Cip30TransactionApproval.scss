@@ -39,3 +39,21 @@
   color: var(--theme-dialog-fullsize-text-highlight-color);
   font-family: var(--font-bold);
 }
+
+.passwordLabel {
+  color: var(--theme-dialog-fullsize-title-text-color);
+  display: block;
+  font-family: var(--font-bold);
+  margin: 18px 0 8px;
+}
+
+.password {
+  background: var(--theme-dialog-fullsize-field-background-color);
+  border: 1px solid var(--theme-dialog-fullsize-text-color);
+  color: var(--theme-dialog-fullsize-text-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  min-height: 44px;
+  padding: 8px 12px;
+  width: 100%;
+}

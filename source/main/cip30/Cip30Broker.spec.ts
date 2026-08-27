@@ -1,5 +1,6 @@
 import { generateKeyPairSync, sign as signBytes } from 'crypto';
 import { blake2b } from 'blakejs';
+import cbor from 'cbor';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -13,6 +14,11 @@ import {
   encodeCoseProtectedHeader,
   encodeCoseSignatureStructure,
 } from '../../common/cardano/cose';
+import semanticFixture from '../../common/cardano/fixtures/exact-cbor/semantic-conway-v1.json';
+import { bytesForSpan } from '../../common/cardano/cborSlices';
+import { decodeConwayTransaction } from '../../common/cardano/transaction';
+import { parseConwayTransactionEnvelope } from '../../common/cardano/transactionEnvelope';
+import * as transactionContext from '../../common/cardano/transactionContext';
 
 import { CapabilityService } from './CapabilityService';
 import { Cip30Broker, parseConfiguredNetwork } from './Cip30Broker';
@@ -25,6 +31,11 @@ import { SessionStore } from './SessionStore';
 import type { DappGuestAuthority } from '../dapp/DappBrowserManager';
 import type { DappRouteLease } from '../dapp/DappRouteLease';
 import type { ConsentRequest } from './ConsentCoordinator';
+
+jest.mock('../../common/cardano/transactionContext', () => ({
+  ...(jest.requireActual('../../common/cardano/transactionContext') as object),
+  reconcileTransactionContext: jest.fn(),
+}));
 
 jest.mock('../config', () => {
   const { DappLaunchPolicy } = jest.requireActual('../dapp/DappLaunchPolicy');
@@ -114,8 +125,40 @@ const createDataSignatureFixture = () => {
 };
 const dataSignature = createDataSignatureFixture();
 
+const createTransactionSignatureFixture = () => {
+  const envelope = parseConwayTransactionEnvelope(
+    Buffer.from(semanticFixture.cborHex, 'hex')
+  );
+  const transaction = decodeConwayTransaction(envelope);
+  const keys = generateKeyPairSync('ed25519');
+  const publicDer = keys.publicKey.export({
+    format: 'der',
+    type: 'spki',
+  }) as Buffer;
+  const publicKey = publicDer.subarray(-32);
+  const bodyHash = Buffer.from(
+    blake2b(bytesForSpan(envelope.cbor, envelope.spans.body), undefined, 32)
+  );
+  const signature = signBytes(null, bodyHash, keys.privateKey);
+  const witnessSet = cbor
+    .encodeCanonical(new Map([[0, [[publicKey, signature]]]]))
+    .toString('hex');
+  return {
+    cbor: semanticFixture.cborHex,
+    transaction,
+    bodyHash: envelope.transactionId,
+    witnessSet,
+  };
+};
+const transactionSignature = createTransactionSignatureFixture();
+
 const create = () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'cip30-broker-'));
+  (transactionContext.reconcileTransactionContext as jest.Mock).mockReturnValue(
+    {
+      transactionsSemantic: [transactionSignature.transaction],
+    }
+  );
   const currentLease: DappRouteLease | null = lease;
   let guestCurrent = true;
   const guest: DappGuestAuthority = {
@@ -136,6 +179,11 @@ const create = () => {
   let walletKind: 'shelley-software' | 'ledger' = 'shelley-software';
   let signatureResponse = dataSignature.response;
   let signatureFailure: 'address-not-pk' | 'proof-generation' | null = null;
+  let witnessSet = transactionSignature.witnessSet;
+  let witnessFailure:
+    | 'tx-proof-generation'
+    | 'deprecated-certificate'
+    | null = null;
   const executeWallet = jest.fn<
     Promise<Cip30WalletResponse>,
     [Cip30WalletRequest]
@@ -161,6 +209,29 @@ const create = () => {
           unregistered_stake_public_keys: ['55'.repeat(32)],
         },
       };
+    if (walletRequest.operation === 'transaction-context')
+      return {
+        status: 'fulfilled',
+        operation: 'transaction-context',
+        value: { revision: 1, context_digest: 'context' },
+      };
+    if (walletRequest.operation === 'sign-transactions')
+      return witnessFailure
+        ? { status: 'rejected', reason: witnessFailure }
+        : {
+            status: 'fulfilled',
+            operation: 'sign-transactions',
+            value: {
+              revision: 1,
+              witnesses: [
+                {
+                  transaction_index: 0,
+                  body_hash: transactionSignature.bodyHash,
+                  witness_set_cbor: witnessSet,
+                },
+              ],
+            },
+          };
     return {
       status: 'fulfilled',
       operation: 'capabilities',
@@ -219,6 +290,14 @@ const create = () => {
       value: 'address-not-pk' | 'proof-generation' | null
     ) => {
       signatureFailure = value;
+    },
+    setWitnessSet: (value: string) => {
+      witnessSet = value;
+    },
+    setWitnessFailure: (
+      value: 'tx-proof-generation' | 'deprecated-certificate' | null
+    ) => {
+      witnessFailure = value;
     },
     cleanup: () => fs.rmSync(directory, { recursive: true, force: true }),
   };
@@ -360,7 +439,7 @@ describe('Cip30Broker', () => {
     fixture.executeWallet.mockClear();
 
     await expect(
-      fixture.broker.handle(event, request('api.signTx', ['84a0a0f5f6']))
+      fixture.broker.handle(event, request('api.submitTx', ['84a0a0f5f6']))
     ).resolves.toEqual({
       status: 'rejected',
       rejection: { type: 'api-error', value: { code: -3, info: 'Refused' } },
@@ -440,6 +519,133 @@ describe('Cip30Broker', () => {
       },
     });
     expect(fixture.dispatch).not.toHaveBeenCalled();
+    fixture.cleanup();
+  });
+
+  it('reviews exact bytes and releases only verified fresh software witnesses', async () => {
+    const fixture = create();
+    await fixture.broker.handle(event, request('provider.enable'));
+    (fixture.consent.request as jest.Mock).mockClear();
+    fixture.executeWallet.mockClear();
+    const signRequest = request('api.signTx', [
+      transactionSignature.cbor,
+      true,
+    ]);
+
+    await expect(fixture.broker.handle(event, signRequest)).resolves.toEqual({
+      status: 'fulfilled',
+      value: transactionSignature.witnessSet,
+    });
+    const pending = (fixture.consent.request as jest.Mock).mock.calls[0][0];
+    expect(pending.presentation).toMatchObject({
+      kind: 'transaction-sign',
+      scopes: ['transaction-signing'],
+      review: {
+        transactionId: transactionSignature.bodyHash,
+        fullCbor: transactionSignature.cbor,
+      },
+    });
+    expect(transactionContext.reconcileTransactionContext).toHaveBeenCalledWith(
+      { revision: 1, context_digest: 'context' },
+      {
+        walletId: 'wallet',
+        network,
+        transactions: [transactionSignature.cbor],
+      }
+    );
+    expect(
+      fixture.executeWallet.mock.calls
+        .map(([walletRequest]) => walletRequest)
+        .filter(
+          ({ operation }) =>
+            operation === 'transaction-context' ||
+            operation === 'sign-transactions'
+        )
+    ).toEqual([
+      expect.objectContaining({
+        operation: 'transaction-context',
+        transactions: [transactionSignature.cbor],
+      }),
+      expect.objectContaining({
+        operation: 'sign-transactions',
+        context: { revision: 1, context_digest: 'context' },
+        transactions: [{ cbor: transactionSignature.cbor, partialSign: true }],
+        passphrase: 'secret',
+      }),
+    ]);
+
+    fixture.setWitnessSet('a0');
+    await expect(fixture.broker.handle(event, signRequest)).resolves.toEqual({
+      status: 'fulfilled',
+      value: 'a0',
+    });
+    fixture.setWitnessFailure('tx-proof-generation');
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signTx', [transactionSignature.cbor, false])
+      )
+    ).resolves.toMatchObject({
+      status: 'rejected',
+      rejection: { type: 'tx-sign-error', value: { code: 1 } },
+    });
+    fixture.setWitnessFailure(null);
+    fixture.setWitnessSet('a10080');
+    await expect(fixture.broker.handle(event, signRequest)).resolves.toEqual({
+      status: 'rejected',
+      rejection: {
+        type: 'api-error',
+        value: { code: -2, info: 'Internal error' },
+      },
+    });
+    fixture.setWitnessSet(transactionSignature.witnessSet);
+    (fixture.consent.request as jest.Mock).mockRejectedValueOnce({
+      type: 'tx-sign-error',
+      value: { code: 2, info: 'User declined' },
+    });
+    await expect(fixture.broker.handle(event, signRequest)).resolves.toEqual({
+      status: 'rejected',
+      rejection: {
+        type: 'tx-sign-error',
+        value: { code: 2, info: 'User declined' },
+      },
+    });
+
+    fixture.executeWallet.mockClear();
+    await expect(
+      fixture.broker.handle(event, request('api.signTx', ['00']))
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: {
+        type: 'api-error',
+        value: { code: -1, info: 'Invalid request' },
+      },
+    });
+    expect(fixture.executeWallet).not.toHaveBeenCalled();
+    fixture.cleanup();
+  });
+
+  it('refuses the CIP-95 signTx override before base context access', async () => {
+    const fixture = create();
+    await fixture.broker.handle(
+      event,
+      request('provider.enable', [{ extensions: [{ cip: 95 }] }])
+    );
+    fixture.executeWallet.mockClear();
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signTx', [transactionSignature.cbor])
+      )
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: { type: 'api-error', value: { code: -3, info: 'Refused' } },
+    });
+    expect(
+      fixture.executeWallet.mock.calls.some(
+        ([walletRequest]) => walletRequest.operation === 'transaction-context'
+      )
+    ).toBe(false);
     fixture.cleanup();
   });
 
