@@ -12,12 +12,20 @@ export type DappScope =
 export type DappCatalogEntry = Readonly<{
   id: string;
   nameMessageId: string;
+  descriptionMessageId: string;
   iconAsset: string;
   entryUrlByNetworkGenesis: Readonly<Record<string, string>>;
   canonicalOrigin: string;
   allowedResourceOrigins: readonly string[];
   supportedWalletKinds: readonly string[];
   supportedExtensions: readonly number[];
+}>;
+
+export type DappCatalogPresentationEntry = Readonly<{
+  id: string;
+  nameMessageId: string;
+  descriptionMessageId: string;
+  iconAsset: string;
 }>;
 
 export type DappGrantLaunch =

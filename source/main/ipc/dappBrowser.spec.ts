@@ -15,6 +15,7 @@ jest.mock('./lib/MainIpcChannel', () => ({
 const entry: DappCatalogEntry = {
   id: 'example',
   nameMessageId: 'dapp.example.name',
+  descriptionMessageId: 'dapp.example.description',
   iconAsset: 'example.svg',
   entryUrlByNetworkGenesis: { genesis: 'https://example.com/app' },
   canonicalOrigin: 'https://example.com',
@@ -40,6 +41,7 @@ const requireLease = (lease: DappRouteLease | null): DappRouteLease => {
 
 describe('DappBrowserController', () => {
   const makeManager = () => ({
+    isOpen: false,
     launch: jest.fn(() => Promise.resolve()),
     close: jest.fn(() => Promise.resolve()),
   });
@@ -95,6 +97,68 @@ describe('DappBrowserController', () => {
     );
     expect(manager.launch).not.toHaveBeenCalled();
     expect(enabledPolicy(false, true).allows('diagnostics')).toBe(true);
+  });
+  it('exposes preferred availability without enabling diagnostics or requiring an entry', () => {
+    const manager = makeManager();
+    const preferred = new DappBrowserController(
+      (manager as unknown) as DappBrowserManager,
+      'genesis',
+      enabledPolicy(true, false),
+      []
+    );
+    const diagnosticsOnly = new DappBrowserController(
+      (manager as unknown) as DappBrowserManager,
+      'genesis',
+      enabledPolicy(false, true),
+      [entry]
+    );
+
+    expect(preferred.status).toEqual({
+      isOpen: false,
+      catalogAvailable: true,
+    });
+    expect(diagnosticsOnly.status.catalogAvailable).toBe(false);
+  });
+
+  it('resolves a preferred catalog ID only from the injected main catalog', async () => {
+    const manager = makeManager();
+    const controller = new DappBrowserController(
+      (manager as unknown) as DappBrowserManager,
+      'genesis',
+      enabledPolicy(),
+      [entry]
+    );
+    controller.routeLease.observeTrustedRoute(
+      'file:///app/index.html#/wallets/wallet-a/dapps'
+    );
+
+    await controller.open({ catalogId: 'example', localName: 'Example' });
+
+    expect(manager.launch).toHaveBeenCalledWith(entry, 'genesis', 'Example');
+    await expect(
+      controller.open({ catalogId: 'unknown', localName: 'Unknown' })
+    ).rejects.toThrow('Unknown dApp catalog entry');
+  });
+
+  it('reports state only after a successful launch and when explicitly closed', async () => {
+    const manager = makeManager();
+    const state = jest.fn();
+    const controller = new DappBrowserController(
+      (manager as unknown) as DappBrowserManager,
+      'genesis',
+      enabledPolicy(),
+      [entry],
+      state
+    );
+    controller.routeLease.observeTrustedRoute(
+      'file:///app/index.html#/wallets/wallet-a/dapps'
+    );
+
+    await controller.open({ catalogId: 'example', localName: 'Example' });
+    await controller.close();
+
+    expect(state).toHaveBeenNthCalledWith(1, true);
+    expect(state).toHaveBeenNthCalledWith(2, false);
   });
 
   it('closes the guest and clears staged launches when the route changes', async () => {

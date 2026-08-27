@@ -25,6 +25,7 @@ jest.mock('./DappSessionPolicy', () => ({
 const entry: DappCatalogEntry = {
   id: 'example',
   nameMessageId: 'dapp.example.name',
+  descriptionMessageId: 'dapp.example.description',
   iconAsset: 'example.svg',
   entryUrlByNetworkGenesis: { genesis: 'https://example.com/app' },
   canonicalOrigin: 'https://example.com',

@@ -95,11 +95,29 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
     capability: 'window',
     receive: 'broadcast',
   }),
-  ...entries(['DAPP_BROWSER_OPEN_CHANNEL', 'DAPP_BROWSER_CLOSE_CHANNEL'], {
+  ...entries(
+    [
+      'DAPP_BROWSER_OPEN_CHANNEL',
+      'DAPP_BROWSER_CLOSE_CHANNEL',
+      'DAPP_BROWSER_STATUS_CHANNEL',
+    ],
+    {
+      constructorOwner: 'source/main/ipc/dappBrowser.ts',
+      rendererOwner: 'source/renderer/app/ipc/dappBrowser.ts',
+      registrationOwner: 'source/main/ipc/dappBrowser.ts',
+      capability: 'dapp-browser',
+    }
+  ),
+  ...entries(['DAPP_BROWSER_STATE_CHANNEL'], {
     constructorOwner: 'source/main/ipc/dappBrowser.ts',
     rendererOwner: 'source/renderer/app/ipc/dappBrowser.ts',
-    registrationOwner: 'source/main/ipc/dappBrowser.ts',
+    registrationOwner: null,
     capability: 'dapp-browser',
+    direction: 'main-to-renderer',
+    receive: 'none',
+    settlement: 'fire-and-forget-owned',
+    callerOwners: ['source/main/ipc/dappBrowser.ts'],
+    callerCount: 1,
   }),
   ...entries(['DAPP_CONSENT_RENDER_CHANNEL'], {
     constructorOwner: 'source/main/ipc/dappConsent.ts',
