@@ -76,7 +76,7 @@ const capabilityContext = {
   }),
 };
 
-const create = () => {
+const create = (enabledExtensions: number[] = []) => {
   (transactionContext.reconcileTransactionContext as jest.Mock).mockReturnValue(
     snapshot
   );
@@ -94,7 +94,7 @@ const create = () => {
     networkId: network.networkId,
     networkMagic: network.networkMagic,
     networkGenesis: network.genesisHash,
-    enabledExtensions: [],
+    enabledExtensions,
     grantedScopes: [
       'connection',
       'read',
@@ -197,6 +197,68 @@ describe('CIP-30 Dispatcher', () => {
       type: 'paginate-error',
       value: { maxSize: 1 },
     });
+  });
+
+  it('returns configured CIP-142 magic only for negotiated policy-enabled sessions', async () => {
+    const enabledContext = {
+      ...capabilityContext,
+      policy: new DappLaunchPolicy({
+        revision: 1,
+        globalEnabled: true,
+        preferredCatalogEnabled: true,
+        diagnosticsEnabled: true,
+        cip104Revision: 0,
+        cip142Revision: 1,
+      }),
+    };
+    const enabled = create([142]);
+    await expect(
+      enabled.dispatcher.dispatch(
+        parseDappCip30GatewayRequest({
+          method: 'api.cip142.getNetworkMagic',
+          args: [],
+        }),
+        authority,
+        enabledContext,
+        enabled.execute
+      )
+    ).resolves.toBe(764824073);
+    await expect(
+      enabled.dispatcher.dispatch(
+        parseDappCip30GatewayRequest({
+          method: 'api.getNetworkId',
+          args: [],
+        }),
+        authority,
+        enabledContext,
+        enabled.execute
+      )
+    ).resolves.toBe(1);
+    expect(enabled.execute).not.toHaveBeenCalled();
+
+    for (const [extensions, context] of [
+      [[142], capabilityContext],
+      [[], enabledContext],
+    ] as const) {
+      const fixture = create([...extensions]);
+      const error = await fixture.dispatcher
+        .dispatch(
+          parseDappCip30GatewayRequest({
+            method: 'api.cip142.getNetworkMagic',
+            args: [],
+          }),
+          authority,
+          context,
+          fixture.execute
+        )
+        .catch((value) => value);
+      expect(error).toBeInstanceOf(Cip30DispatchRejection);
+      expect((error as Cip30DispatchRejection).rejection).toMatchObject({
+        type: 'api-error',
+        value: { code: -3 },
+      });
+      expect(fixture.execute).not.toHaveBeenCalled();
+    }
   });
 
   it('rejects unnegotiated methods before executor access', async () => {

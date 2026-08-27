@@ -3,6 +3,8 @@ import type { DappCip30Rejection } from './errors';
 
 export type { TransactionSignatureRequest } from '../types/cip103.types';
 
+export const DAPP_CIP30_GATEWAY_CHANNEL = 'dapp-cip30-gateway';
+
 export const DAPP_CIP30_METHODS = [
   'provider.isEnabled',
   'provider.enable',

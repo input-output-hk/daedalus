@@ -1,17 +1,17 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { reconstructPublicRejection } from '../../common/cip30/errors';
+import type { ApiError } from '../../common/cip30/errors';
 import {
   parseDappCip30GatewayRequest,
   parseDappCip30ResultEnvelope,
 } from '../../common/cip30/schemas';
+import { DAPP_CIP30_GATEWAY_CHANNEL } from '../../common/cip30/wire';
 import type {
-  ApiError,
   DaedalusApi,
   DaedalusProvider,
   DappCip30Method,
   Extension,
-} from '../../common/ipc/dapp';
-import { DAPP_CIP30_GATEWAY_CHANNEL } from '../../common/ipc/dapp';
+} from '../../common/cip30/wire';
 
 const INTERNAL_ERROR: ApiError = {
   code: -2,
