@@ -5,6 +5,8 @@ import {
   CIP36VoteRegistrationFormat,
   TxAuxiliaryDataType,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import type { SemanticTransaction } from '../cardano/transaction';
+import type { DappNetwork, ProofKind } from '../cardano/transactionContext';
 
 // BridgeInfo was removed from @trezor/connect API; define locally for error payloads
 type BridgeInfo = Record<string, unknown>;
@@ -151,8 +153,9 @@ export type StakingBlockchainPointer = {
   txIndex: number;
   certificateIndex: number;
 };
-export type LedgerSignTransactionInputsType =
-  Array<LedgerSignTransactionInputType>;
+export type LedgerSignTransactionInputsType = Array<
+  LedgerSignTransactionInputType
+>;
 export type LedgerSignTransactionOutputsType =
   | []
   | Array<LedgerOutputTypeAddress | LedgerOutputTypeChange>;
@@ -284,3 +287,82 @@ export type HardwareWalletConnectionRequest = {
   };
   eventType?: DeviceEvent;
 };
+
+export type HardwareExactBodyDisposition =
+  | 'representable'
+  | 'reject_pre_device'
+  | 'unresolved';
+
+export type HardwareTransactionCapability = Readonly<{
+  matrixRevision: string;
+  artifactId: string;
+  rowId: string;
+  vendor: DeviceType;
+  staticallyRepresentable: boolean;
+  staticGatesPassed: boolean;
+  physicalCertified: boolean;
+  productEnabled: boolean;
+  familyDispositions: Readonly<Record<string, HardwareExactBodyDisposition>>;
+}>;
+
+export type HardwareSigner = Readonly<{
+  credentialKind: 'payment' | 'stake' | 'drep' | 'policy';
+  keyHash: string;
+  path: readonly number[];
+  proofKinds: readonly ProofKind[];
+}>;
+
+export type HardwareOwnedAddress = Readonly<{
+  address: string;
+  paymentPath?: readonly number[];
+  stakePath?: readonly number[];
+}>;
+
+export type HardwareWitnessExpectation = Readonly<{
+  requiredKeyHashes: readonly string[];
+  preExistingKeyHashes: readonly string[];
+  requestedDeviceKeyHashes: readonly string[];
+  missingKeyHashes: readonly string[];
+  unexpectedKeyHashes: readonly string[];
+}>;
+
+export type HardwareExactTransaction = Readonly<{
+  transaction: SemanticTransaction;
+  bodyHash: string;
+  contextDigest: string;
+  network: DappNetwork;
+  partialSign: boolean;
+  signers: readonly HardwareSigner[];
+  ownedOutputs: readonly HardwareOwnedAddress[];
+  witnesses: HardwareWitnessExpectation;
+  capability: HardwareTransactionCapability;
+}>;
+
+export type HardwareTransactionPreparation =
+  | Readonly<{
+      status: 'ready';
+      deviceInteraction: true;
+      exact: HardwareExactTransaction;
+    }>
+  | Readonly<{
+      status: 'empty';
+      deviceInteraction: false;
+      witnessSetCbor: string;
+      exact: HardwareExactTransaction;
+    }>
+  | Readonly<{
+      status: 'rejected';
+      deviceInteraction: false;
+      reasons: readonly string[];
+      exact: HardwareExactTransaction;
+    }>;
+
+export type HardwareReturnedVKeyWitness = Readonly<{
+  publicKey: string;
+  signature: string;
+}>;
+
+export type HardwareTransactionWitnessResponse = Readonly<{
+  bodyHash: string;
+  witnesses: readonly HardwareReturnedVKeyWitness[];
+}>;

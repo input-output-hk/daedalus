@@ -58,7 +58,14 @@ const makeTransaction = (
 const makeResponse = (
   transaction: ReturnType<typeof makeTransaction>,
   transactionOverride?: string,
-  protocolParametersCbor = 'a0'
+  protocolParametersCbor = 'a0',
+  requiredProofs: Array<{
+    transaction_index: number;
+    proof_kind: 'normal_input';
+    credential_kind: 'payment';
+    credential: string;
+    required: boolean;
+  }> = []
 ) => {
   const transactions = [transactionOverride || transaction.cbor];
   const expectation: ContextExpectation = {
@@ -115,6 +122,20 @@ const makeResponse = (
       ])
     )
   );
+  records.push(
+    ...requiredProofs.map((proof) =>
+      record(
+        6,
+        Buffer.concat([
+          u32(proof.transaction_index),
+          u8(1),
+          u8(1),
+          sized(Buffer.from(proof.credential, 'hex')),
+          u8(Number(proof.required)),
+        ])
+      )
+    )
+  );
   records.sort();
   const point = { kind: 'block' as const, slot: BigInt(42), blockHash };
   const digest = computeContextDigest(
@@ -155,7 +176,7 @@ const makeResponse = (
         produced_wallet_outputs: [],
       },
       ownership: [],
-      required_wallet_proofs: [],
+      required_wallet_proofs: requiredProofs,
       batch_overlay: { dependencies: [], conflicts: [] },
       records,
       context_digest: digest,
@@ -185,6 +206,32 @@ test('reconciles all input roles into one immutable trusted snapshot', () => {
   expect(snapshot.walletGeneration).toBe(BigInt(7));
   expect(snapshot.maxCollateralInputs).toBe(3);
   expect(Object.isFrozen(snapshot)).toBe(true);
+});
+
+test('retains immutable transaction-indexed required proof rows', () => {
+  const proof = {
+    transaction_index: 0,
+    proof_kind: 'normal_input' as const,
+    credential_kind: 'payment' as const,
+    credential: 'aa'.repeat(28),
+    required: true,
+  };
+  const fixture = makeResponse(makeTransaction(), undefined, 'a0', [proof]);
+  const snapshot = reconcileTransactionContext(
+    fixture.response,
+    fixture.expectation
+  );
+  expect(snapshot.requiredProofs).toEqual([
+    {
+      transactionIndex: 0,
+      proofKind: 'normal_input',
+      credentialKind: 'payment',
+      credential: proof.credential,
+      required: true,
+    },
+  ]);
+  expect(Object.isFrozen(snapshot.requiredProofs)).toBe(true);
+  expect(Object.isFrozen(snapshot.requiredProofs[0])).toBe(true);
 });
 
 test('fails closed on identity, digest, token, record, and output mutations', () => {

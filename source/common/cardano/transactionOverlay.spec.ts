@@ -74,6 +74,7 @@ const snapshot = (
   transactions: items.map(({ cbor }) => cbor),
   outputs,
   ownership: [],
+  requiredProofs: [],
   commitmentContexts: [],
   transactionsSemantic: items.map(({ transaction: item }) => item),
   preExistingWitnesses: [],
