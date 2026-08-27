@@ -16,11 +16,11 @@ import type {
   Cip30WalletRequest,
   Cip30WalletResponse,
 } from '../../common/cip30/executor';
+import { DAPP_CIP30_GATEWAY_CHANNEL } from '../../common/cip30/wire';
 import type {
   DappCip30GatewayRequest,
   DappCip30Method,
 } from '../../common/cip30/wire';
-import { DAPP_CIP30_GATEWAY_CHANNEL } from '../../common/ipc/dapp';
 import type {
   DappCapability,
   DappGrant,
@@ -56,6 +56,7 @@ export const CARDANO_WALLET_SOURCE_REVISION =
 const IMPLEMENTED_METHODS = new Set<DappCip30Method>([
   'api.getExtensions',
   'api.getNetworkId',
+  'api.cip142.getNetworkMagic',
   'api.getUtxos',
   'api.getCollateral',
   'api.getBalance',

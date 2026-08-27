@@ -289,7 +289,26 @@ describe('Cip30Broker', () => {
     fixture.cleanup();
   });
 
-  it('derives the configured identity from Shelley or packaged Byron genesis', () => {
+  it.each([
+    ['mainnet', 764824073, 1],
+    ['preprod', 1, 0],
+    ['preview', 2, 0],
+    ['custom', 1097911063, 0],
+  ])('derives configured %s network magic', (cluster, magic, networkId) => {
+    expect(
+      parseConfiguredNetwork(
+        { protocolConsts: { protocolMagic: magic } },
+        cluster,
+        network.genesisHash
+      )
+    ).toEqual({
+      networkId,
+      networkMagic: magic,
+      genesisHash: network.genesisHash,
+    });
+  });
+
+  it('accepts Shelley genesis and rejects missing configured magic', () => {
     expect(
       parseConfiguredNetwork(
         { networkMagic: 42 },
@@ -297,17 +316,6 @@ describe('Cip30Broker', () => {
         network.genesisHash
       )
     ).toEqual(network);
-    expect(
-      parseConfiguredNetwork(
-        { protocolConsts: { protocolMagic: 764824073 } },
-        'mainnet',
-        network.genesisHash
-      )
-    ).toEqual({
-      networkId: 1,
-      networkMagic: 764824073,
-      genesisHash: network.genesisHash,
-    });
     expect(() =>
       parseConfiguredNetwork({}, 'testnet', network.genesisHash)
     ).toThrow('Invalid configured network identity');

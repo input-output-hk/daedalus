@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import contractManifest from '../cip30/contracts/contract-manifest.json';
-import { DAPP_CIP30_METHODS, parseDappConsentRender } from './dapp';
+import { DAPP_CIP30_METHODS } from '../cip30/wire';
+import { parseDappConsentRender } from './dapp';
 
 const preloadPath = path.resolve(__dirname, '../../main/preloads/dapp.ts');
 const webpackPath = path.resolve(__dirname, '../../main/webpack.config.js');

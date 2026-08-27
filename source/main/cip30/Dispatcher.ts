@@ -174,6 +174,8 @@ export class Dispatcher {
         return capability.enabledExtensions.map((cip) => ({ cip }));
       case 'api.getNetworkId':
         return authority.network.networkId;
+      case 'api.cip142.getNetworkMagic':
+        return authority.network.networkMagic;
       case 'api.getUtxos': {
         const [amount, paginate] = request.args;
         const result = getCip30Utxos(

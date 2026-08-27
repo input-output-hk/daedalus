@@ -1,10 +1,10 @@
+import type { DappCip30Rejection } from '../../common/cip30/errors';
+import { DAPP_CIP30_GATEWAY_CHANNEL } from '../../common/cip30/wire';
 import type {
   DaedalusApi,
   DaedalusProvider,
   DappCip30GatewayRequest,
-  DappCip30Rejection,
-} from '../../common/ipc/dapp';
-import { DAPP_CIP30_GATEWAY_CHANNEL } from '../../common/ipc/dapp';
+} from '../../common/cip30/wire';
 
 const exposeInMainWorld = jest.fn();
 const executeInMainWorld = jest.fn();
@@ -101,6 +101,25 @@ describe('dApp preload', () => {
     await api.getNetworkId();
     expect(invoke).toHaveBeenLastCalledWith(DAPP_CIP30_GATEWAY_CHANNEL, {
       method: 'api.getNetworkId',
+      args: [],
+    });
+  });
+
+  it('exposes CIP-142 only from the authoritative negotiated set', async () => {
+    invoke.mockImplementation(
+      async (_channel: string, request: DappCip30GatewayRequest) =>
+        request.method === 'api.getExtensions'
+          ? { status: 'fulfilled', value: [{ cip: 142 }] }
+          : {
+              status: 'fulfilled',
+              value: request.method === 'provider.enable' ? {} : 42,
+            }
+    );
+    const api = await provider.enable({ extensions: [{ cip: 142 }] });
+    expect(Object.prototype.hasOwnProperty.call(api, 'cip142')).toBe(true);
+    await expect(api.cip142!.getNetworkMagic()).resolves.toBe(42);
+    expect(invoke).toHaveBeenLastCalledWith(DAPP_CIP30_GATEWAY_CHANNEL, {
+      method: 'api.cip142.getNetworkMagic',
       args: [],
     });
   });
