@@ -61,6 +61,7 @@ const snapshot = (outputs = true): TransactionContextSnapshot => ({
       ]
     : [],
   ownership: [],
+  requiredProofs: [],
   commitmentContexts: [],
   transactionsSemantic: batch.items.map(({ transaction }) => transaction),
   preExistingWitnesses: [],

@@ -49,6 +49,13 @@ export type ProofKind =
   | 'required_signer'
   | 'native_script'
   | 'policy';
+export type ContextRequiredProof = Readonly<{
+  transactionIndex: number;
+  proofKind: ProofKind;
+  credentialKind: 'payment' | 'stake' | 'drep' | 'policy';
+  credential: Hex;
+  required: boolean;
+}>;
 export type PreExistingWitness = Readonly<{
   transactionIndex: number;
   kind: 'vkey' | 'bootstrap';
@@ -77,6 +84,7 @@ export type TransactionContextSnapshot = Readonly<{
   transactions: readonly Hex[];
   outputs: readonly ContextOutput[];
   ownership: readonly ContextOwnership[];
+  requiredProofs: readonly ContextRequiredProof[];
   commitmentContexts: readonly CommitmentContext[];
   transactionsSemantic: readonly ReturnType<typeof decodeConwayTransaction>[];
   preExistingWitnesses: readonly PreExistingWitness[];
@@ -92,7 +100,7 @@ type ContextResponse = Readonly<{
   protocolParametersCbor: Hex;
   outputs: readonly ContextOutput[];
   ownership: readonly ContextOwnership[];
-  requiredProofs: readonly Json[];
+  requiredProofs: readonly ContextRequiredProof[];
   pendingTransactions: readonly Json[];
   records: readonly Hex[];
   contextDigest: Hex;
@@ -564,34 +572,40 @@ const parseResponse = (value: unknown): ContextResponse => {
   const requiredProofs = array(
     response.required_wallet_proofs,
     'required wallet proofs'
-  ).map((item) => {
-    const proof = object(item, 'required wallet proof');
-    exactKeys(
-      proof,
-      [
-        'transaction_index',
-        'proof_kind',
-        'credential_kind',
-        'credential',
-        'required',
-      ],
-      'required wallet proof'
-    );
-    uint32(proof.transaction_index, 'proof transaction index');
-    enumValue(
-      proof.proof_kind,
-      parseProofKinds([proof.proof_kind]),
-      'proof kind'
-    );
-    enumValue(
-      proof.credential_kind,
-      ['payment', 'stake', 'drep', 'policy'] as const,
-      'proof credential kind'
-    );
-    hex(proof.credential, 'proof credential', 28);
-    boolean(proof.required, 'proof required');
-    return proof;
-  });
+  ).map(
+    (item): ContextRequiredProof => {
+      const proof = object(item, 'required wallet proof');
+      exactKeys(
+        proof,
+        [
+          'transaction_index',
+          'proof_kind',
+          'credential_kind',
+          'credential',
+          'required',
+        ],
+        'required wallet proof'
+      );
+      return Object.freeze({
+        transactionIndex: uint32(
+          proof.transaction_index,
+          'proof transaction index'
+        ),
+        proofKind: enumValue(
+          proof.proof_kind,
+          parseProofKinds([proof.proof_kind]),
+          'proof kind'
+        ),
+        credentialKind: enumValue(
+          proof.credential_kind,
+          ['payment', 'stake', 'drep', 'policy'] as const,
+          'proof credential kind'
+        ),
+        credential: hex(proof.credential, 'proof credential', 28),
+        required: boolean(proof.required, 'proof required'),
+      });
+    }
+  );
   const batch = object(response.batch_overlay, 'batch overlay');
   exactKeys(batch, ['dependencies', 'conflicts'], 'batch overlay');
   array(batch.dependencies, 'dependencies').forEach((item) =>
@@ -920,14 +934,14 @@ const expectedOwnershipRecord = (item: ContextOwnership): Hex =>
       u32(item.proofKinds.reduce((bits, proof) => bits | proofBits[proof], 0)),
     ])
   ).toString('hex');
-const expectedRequiredProofRecord = (item: Json): Hex =>
+const expectedRequiredProofRecord = (item: ContextRequiredProof): Hex =>
   encodedRecord(
     6,
     Buffer.concat([
-      u32(item.transaction_index as number),
-      u8(proofKinds[item.proof_kind as ProofKind]),
-      u8(credentialKinds[item.credential_kind as keyof typeof credentialKinds]),
-      sized(Buffer.from(item.credential as string, 'hex')),
+      u32(item.transactionIndex),
+      u8(proofKinds[item.proofKind]),
+      u8(credentialKinds[item.credentialKind]),
+      sized(Buffer.from(item.credential, 'hex')),
       u8(Number(item.required)),
     ])
   ).toString('hex');
@@ -1195,6 +1209,7 @@ export const reconcileTransactionContext = (
     transactions: Object.freeze([...expectation.transactions]),
     outputs: Object.freeze([...response.outputs]),
     ownership: Object.freeze([...response.ownership]),
+    requiredProofs: Object.freeze([...response.requiredProofs]),
     commitmentContexts: Object.freeze(commitmentContexts),
     transactionsSemantic: Object.freeze(transactionsSemantic),
     preExistingWitnesses: Object.freeze(preExistingWitnesses),
