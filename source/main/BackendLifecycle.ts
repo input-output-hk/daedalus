@@ -21,6 +21,7 @@ import {
   consumeIpcResponse,
   currentWindowSender,
 } from './ipc/lib/currentWindowSender';
+import { revokeCip30Sessions } from './cip30/runtime';
 
 type EventHandler = (event: Record<string, unknown>) => void;
 
@@ -104,6 +105,7 @@ class BackendLifecycle {
           'NODE_BLOCK_SYNC_PROGRESS_CHANNEL'
         );
       } else if (eventType === 'stopped') {
+        revokeCip30Sessions();
         consumeIpcResponse(
           watchdogStoppedChannel.send(
             undefined,
@@ -147,8 +149,7 @@ class BackendLifecycle {
         );
       })
       .catch((reason) => {
-        // When watchdog exits it also kills Electron (via tether_to_watchdog),
-        // so there is nothing useful to do here except log the reason.
+        revokeCip30Sessions();
         logger.error('BackendLifecycle: watchdog stopped', { reason });
       });
   }
@@ -172,6 +173,7 @@ class BackendLifecycle {
   // ---------------------------------------------------------------------------
 
   async stop(): Promise<void> {
+    revokeCip30Sessions();
     if (!this.manager) return;
     const manager = this.manager;
     this.manager = null;

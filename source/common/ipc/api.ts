@@ -67,6 +67,10 @@ import type {
   DRepAnchorPresence,
   DRepAnchorResult,
 } from '../types/governance.types';
+import type {
+  Cip30WalletRequest,
+  Cip30WalletResponse,
+} from '../cip30/executor';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -206,6 +210,10 @@ export type DappConsentRenderRendererResponse = Readonly<{
   requestId: string;
   approved: boolean;
 }> | void;
+
+export const DAPP_CIP30_WALLET_CHANNEL = 'DAPP_CIP30_WALLET_CHANNEL';
+export type DappCip30WalletMainRequest = Cip30WalletRequest;
+export type DappCip30WalletRendererResponse = Cip30WalletResponse;
 
 /**
  * Channel for opening a local directory in the default desktop explorer

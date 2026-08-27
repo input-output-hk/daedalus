@@ -761,10 +761,14 @@ const findRawElectronCalls = (
           isElectronType(type, 'MessagePortMain', typeChecker) ||
           isElectronType(type, 'IpcRenderer', typeChecker));
       const isDedicatedGuestGateway =
-        relative(sourceFile.fileName) === 'source/main/preloads/dapp.ts' &&
-        method === 'invoke' &&
-        values.length === 1 &&
-        values[0] === 'dapp-cip30-gateway';
+        (relative(sourceFile.fileName) === 'source/main/preloads/dapp.ts' &&
+          method === 'invoke' &&
+          values.length === 1 &&
+          values[0] === 'dapp-cip30-gateway') ||
+        (relative(sourceFile.fileName) === 'source/main/cip30/Cip30Broker.ts' &&
+          method === 'handle' &&
+          values.length === 1 &&
+          values[0] === 'dapp-cip30-gateway');
       if (
         !isDedicatedGuestGateway &&
         ((isScopedReceiver && ipcMainMethods.has(method || '')) ||
@@ -782,9 +786,9 @@ const findRawElectronCalls = (
 describe('privileged IPC manifest', () => {
   it('matches every live constructor, transport, and renderer adapter exactly once', () => {
     expect(unresolvedWrapperConstructions).toEqual([]);
-    expect(privilegedIpcManifest).toHaveLength(80);
-    expect(mainConstructions).toHaveLength(80);
-    expect(rendererConstructions).toHaveLength(80);
+    expect(privilegedIpcManifest).toHaveLength(81);
+    expect(mainConstructions).toHaveLength(81);
+    expect(rendererConstructions).toHaveLength(81);
     const expected = privilegedIpcManifest
       .map(({ contract, constructorOwner: owner, transport }) => ({
         contract,

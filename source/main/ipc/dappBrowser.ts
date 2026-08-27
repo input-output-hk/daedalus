@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import type { BrowserWindow } from 'electron';
+import type { BrowserWindow, IpcMainInvokeEvent } from 'electron';
 import {
   DAPP_BROWSER_CLOSE_CHANNEL,
   DAPP_BROWSER_OPEN_CHANNEL,
@@ -77,11 +77,20 @@ export class DappBrowserController {
     if (!this.policy.allows(launch.mode))
       throw new Error('DApp launch is disabled');
 
-    await this.manager.launch(
-      launch.entry,
-      launch.lease.networkGenesis,
-      launch.localName
-    );
+    if (launch.mode === 'diagnostics') {
+      await this.manager.launch(
+        launch.entry,
+        launch.lease.networkGenesis,
+        launch.localName,
+        { kind: 'diagnostics' }
+      );
+    } else {
+      await this.manager.launch(
+        launch.entry,
+        launch.lease.networkGenesis,
+        launch.localName
+      );
+    }
     if (!this.routeLease.isCurrent(launch.lease)) {
       await this.manager.close('route-changed');
       throw new Error('DApp route lease is stale');
@@ -96,16 +105,28 @@ export class DappBrowserController {
     this.stagedLaunches.clear();
     return this.manager.close();
   }
+
+  authenticate(event: IpcMainInvokeEvent) {
+    return this.manager.authenticate(event);
+  }
 }
 
-let onDappLifecycleRevoked = (): void => undefined;
+let onDappConsentLifecycleRevoked = (): void => undefined;
+let onDappBrokerLifecycleRevoked = (): void => undefined;
 
 export const setDappConsentLifecycleRevoker = (revoke: () => void): void => {
-  onDappLifecycleRevoked = revoke;
+  onDappConsentLifecycleRevoked = revoke;
+};
+
+export const setDappBrokerLifecycleRevoker = (revoke: () => void): void => {
+  onDappBrokerLifecycleRevoked = revoke;
 };
 
 const browserController = new DappBrowserController(
-  new DappBrowserManager(() => onDappLifecycleRevoked()),
+  new DappBrowserManager(() => {
+    onDappConsentLifecycleRevoked();
+    onDappBrokerLifecycleRevoked();
+  }),
   launcherConfig.nodeConfig.network.genesisHash
 );
 const openChannel = new MainIpcChannel<
@@ -131,3 +152,7 @@ export const stageDappLaunch = (launch: StagedDappLaunch): string =>
   browserController.stageLaunch(launch);
 export const setDappBrowserConsentPending = (pending: boolean): void =>
   browserController.setConsentPending(pending);
+export const authenticateDappGuest = (event: IpcMainInvokeEvent) =>
+  browserController.authenticate(event);
+export const getCurrentDappRouteLease = (): DappRouteLease | null =>
+  browserController.routeLease.current;
