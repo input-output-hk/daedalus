@@ -17,7 +17,7 @@
     "signDataAddresses": {
       "id": "task-002-wire-addresses",
       "path": "source/common/cip30/contracts/fixtures/wire-fixtures.json",
-      "sha256": "b8c8b6a098150a7770391ace43f15021f9ddb23a4055d55455876758f51150aa"
+      "sha256": "b3830f68ec36c2f3d81ef42ad05485e21bb1f8f1bc9342fd1630d11a8563a3da"
     },
     "signTx": {
       "id": "task-004-conway-regression",
@@ -72,22 +72,23 @@
       "version": "9.7.2",
       "sha1": "bb6e06f1a28bac41266ef936fea38f653122afa3",
       "integrity": "sha512-Sn6F4mNH+yi2vAHy29kwhs50bRLn92drg3znm3pkY+8yEBxI4MmuP8sKYjdgUEJnQflWh80KlcvEDeVa4olVRA==",
-      "lockSha256": "a5779e15e5f867bf8ecc51e51cedb4be7672d103b89f9c8e59a9d4af9466ac02",
+      "lockSha256": "53d018a89212037968c4de3f501ee90c1275e174edd28f915656d61bb92fe889",
       "runtimeIdentity": "trezor-9.7.2-runtime-identity.json",
       "probe": "trezor-9.7.2-library-results.json"
     }
   ],
   "runtimeProvenance": {
     "artifactId": "trezor-connect-9.7.2",
-    "runtimeGraphSha256": "128bf570f72998c57e13c850f9e2e08683155c999f8b9bdba5ebd0e0af78558f",
+    "runtimeGraphSha256": "af4d4b0f2f3609128440cf90964c38a2b1fad2e40f96123bd8a3a2a3b49916a1",
     "configIdentitySha256": "fee4c314dbfcf63b54c22d2285e2a6e6f2f96e53a3aae8ea007b0ccc9443426a"
   },
   "dependencyDecision": {
-    "decision": "recommend-ledger-8.0.0-for-task-600",
-    "reason": "The lock-verified isolated candidate loads the public API, every Daedalus deep import, and the app-v7/app-v8 validator paths. The current TypeScript program fails only at exactly three removed utils.hex_to_buf call sites, which are the bounded task-600 migration. Main and renderer webpack builds pass with an in-memory candidate alias and no production dependency replacement. Physical evidence remains not_run, so exact-body hash gates and task-607 certification are still mandatory.",
-    "productionDependencyChanged": false,
+    "decision": "applied-ledger-8.0.0-for-task-600",
+    "reason": "Production now pins the lock-verified Ledger 8.0.0 artifact after migrating the three removed utils.hex_to_buf call sites. The main-owned HardwareWalletService preserves existing trusted UI behavior and exposes cancellable transport-scoped operations; physical certification, exact adapters, and product enablement remain downstream gates.",
+    "productionDependencyChanged": true,
     "owner": "task-600",
     "consumerResult": "ledger-8.0.0-consumer-results.json",
+    "productionResult": "ledger-8.0.0-production-results.json",
     "requiredMigrations": [
       "Replace the three removed Ledger utils.hex_to_buf call sites with strict validated Buffer conversion."
     ]

@@ -121,14 +121,16 @@
         "productionDependencyChanged",
         "owner",
         "consumerResult",
+        "productionResult",
         "requiredMigrations"
       ],
       "properties": {
         "decision": { "$ref": "#/definitions/nonEmpty" },
         "reason": { "$ref": "#/definitions/nonEmpty" },
-        "productionDependencyChanged": { "const": false },
+        "productionDependencyChanged": { "const": true },
         "owner": { "const": "task-600" },
         "consumerResult": { "$ref": "#/definitions/path" },
+        "productionResult": { "$ref": "#/definitions/path" },
         "requiredMigrations": {
           "type": "array",
           "minItems": 1,

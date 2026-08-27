@@ -6,7 +6,7 @@
     "artifactId": "ledger-8.0.0-candidate",
     "artifactDigest": "76a2dc5d058d920f4b31562097880ddcbbcb59cf598b69b5a076ce85dd6c0706",
     "productionLockDigest": "20494ce8d821e7bb2d84a6a7516601d9063898415ae06aebd95a313566c2a75a",
-    "configDigest": "4f39bf86506272ece945f473a66babb8e97178ec743309793838da56ffab28fe",
+    "configDigest": "0bb528e8ceecbf974346dea48b265fc18b8ad1e682371fce5af504737ff74a00",
     "runtimeGraphSha256": null,
     "configIdentitySha256": null,
     "library": {
@@ -51,7 +51,7 @@
     "artifactId": "ledger-8.0.0-candidate",
     "artifactDigest": "76a2dc5d058d920f4b31562097880ddcbbcb59cf598b69b5a076ce85dd6c0706",
     "productionLockDigest": "20494ce8d821e7bb2d84a6a7516601d9063898415ae06aebd95a313566c2a75a",
-    "configDigest": "4f39bf86506272ece945f473a66babb8e97178ec743309793838da56ffab28fe",
+    "configDigest": "0bb528e8ceecbf974346dea48b265fc18b8ad1e682371fce5af504737ff74a00",
     "runtimeGraphSha256": null,
     "configIdentitySha256": null,
     "library": {

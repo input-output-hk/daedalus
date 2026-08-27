@@ -6,7 +6,7 @@ import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
-import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
+import { hardwareWalletService } from '../ipc/getHardwareWalletChannel';
 import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
 import {
   bindWindowRecovery,
@@ -156,12 +156,11 @@ export const createMainWindow = (
   });
   // 'closed' fires after the window is destroyed and takes no parameters
   window.on('closed', () => {
-    if (ledgerStatus.listening && !!ledgerStatus.Listener) {
-      ledgerStatus.Listener.unsubscribe();
-      setTimeout(() => app.quit(), 5000);
-    } else {
+    const quitTimer = setTimeout(() => app.quit(), 5000);
+    hardwareWalletService.dispose().finally(() => {
+      clearTimeout(quitTimer);
       app.quit();
-    }
+    });
   });
   installFailedLoadRecovery(window.webContents, (event) =>
     rendererErrorHandler.onError('did-fail-load', event)
