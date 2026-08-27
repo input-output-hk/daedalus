@@ -50,4 +50,27 @@ describe('Cip30ConsentStore', () => {
       approved: false,
     });
   });
+
+  it('forwards a transient passphrase only for approved data signing', async () => {
+    const store = createStore();
+    const decision = store.receive({
+      type: 'present',
+      request: {
+        ...request,
+        kind: 'data-sign',
+        review: {
+          address: `60${'11'.repeat(28)}`,
+          credentialKind: 'payment',
+          payload: '00',
+          utf8Preview: null,
+        },
+      },
+    });
+    store.approve('secret');
+    await expect(decision).resolves.toEqual({
+      requestId: request.requestId,
+      approved: true,
+      passphrase: 'secret',
+    });
+  });
 });

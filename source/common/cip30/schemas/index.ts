@@ -238,14 +238,31 @@ export const createDappCip30RejectedEnvelope = <M extends DappCip30Method>(
 export const parseDappApprovalDecision = (
   value: unknown
 ): DappApprovalDecision => {
-  if (!ownData(value, ['requestId', 'approved'])) throw invalidRequest();
-  const { requestId, approved } = value as DappApprovalDecision;
+  const hasPassphrase =
+    !!value &&
+    typeof value === 'object' &&
+    Object.prototype.hasOwnProperty.call(value, 'passphrase');
+  if (
+    !ownData(
+      value,
+      hasPassphrase
+        ? ['requestId', 'approved', 'passphrase']
+        : ['requestId', 'approved']
+    )
+  )
+    throw invalidRequest();
+  const { requestId, approved, passphrase } = value as DappApprovalDecision;
   if (
     typeof requestId !== 'string' ||
     requestId.length === 0 ||
-    typeof approved !== 'boolean'
-  ) {
+    typeof approved !== 'boolean' ||
+    (hasPassphrase &&
+      (!approved || typeof passphrase !== 'string' || passphrase.length === 0))
+  )
     throw invalidRequest();
-  }
-  return { requestId, approved };
+  return {
+    requestId,
+    approved,
+    ...(hasPassphrase ? { passphrase } : {}),
+  };
 };

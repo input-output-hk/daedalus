@@ -1,8 +1,11 @@
 import fixture from '../cip30/contracts/fixtures/cip8-cip95-fixture.json';
 import wireFixtures from '../cip30/contracts/fixtures/wire-fixtures.json';
 import {
+  Cip8AddressNotPKError,
   Cip8BackendResponse,
   Cip8Error,
+  createCip8DataSignReview,
+  parseCip8DataSignReview,
   prepareCip8Request,
   serializeCip8,
   verifyCip8BackendResponse,
@@ -140,10 +143,41 @@ describe('CIP-8', () => {
     ).toThrow(Cip8Error);
     expect(() =>
       prepareCip8Request(`71${fixture.drepId}`, '', options)
-    ).toThrow(Cip8Error);
+    ).toThrow(Cip8AddressNotPKError);
     expect(() =>
       prepareCip8Request(fixture.drepId, '', { networkId: 1 })
     ).toThrow(Cip8Error);
+  });
+
+  it('shows UTF-8 preview only for exact display-safe payload bytes', () => {
+    const payment = address('mainnet-enterprise-matching-drep');
+    const safe = prepareCip8Request(
+      payment.raw,
+      Buffer.from('Hello, Cardano', 'utf8').toString('hex'),
+      { networkId: 1 }
+    );
+    expect(createCip8DataSignReview(safe)).toEqual({
+      address: payment.raw,
+      credentialKind: 'payment',
+      payload: Buffer.from('Hello, Cardano', 'utf8').toString('hex'),
+      utf8Preview: 'Hello, Cardano',
+    });
+    for (const payload of [
+      Buffer.from('line\nbreak', 'utf8').toString('hex'),
+      'ff',
+      Buffer.from('\u202eunsafe', 'utf8').toString('hex'),
+    ])
+      expect(
+        createCip8DataSignReview(
+          prepareCip8Request(payment.raw, payload, { networkId: 1 })
+        ).utf8Preview
+      ).toBeNull();
+    expect(() =>
+      parseCip8DataSignReview({
+        ...createCip8DataSignReview(safe),
+        utf8Preview: 'Different bytes',
+      })
+    ).toThrow('Invalid CIP-8 data');
   });
 
   it('rejects each malformed or unbound backend result', () => {

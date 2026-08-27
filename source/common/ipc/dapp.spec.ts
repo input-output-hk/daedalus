@@ -51,6 +51,37 @@ describe('dApp preload contract', () => {
         request: expect.objectContaining({ requestId: 'request' }),
       })
     );
+    expect(
+      parseDappConsentRender({
+        type: 'present',
+        request: {
+          requestId: 'sign',
+          kind: 'data-sign',
+          origin: 'https://example.test',
+          walletName: 'Wallet',
+          networkName: 'Preview',
+          scopes: ['data-signing'],
+          extensions: [95],
+          review: {
+            address: `60${'11'.repeat(28)}`,
+            credentialKind: 'payment',
+            payload: '4869',
+            utf8Preview: 'Hi',
+          },
+        },
+      })
+    ).toEqual(
+      expect.objectContaining({
+        type: 'present',
+        request: expect.objectContaining({
+          kind: 'data-sign',
+          review: expect.objectContaining({
+            payload: '4869',
+            utf8Preview: 'Hi',
+          }),
+        }),
+      })
+    );
     expect(() =>
       parseDappConsentRender({
         type: 'present',

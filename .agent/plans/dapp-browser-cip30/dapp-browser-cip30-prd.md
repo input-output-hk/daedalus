@@ -391,7 +391,7 @@ physical results against exact production artifacts and adapter commits.
 - [ ] Add connection/key-disclosure revocation and wallet deletion cleanup.
 - [x] Implement base CIP-30 read methods and exact serialization.
 - [x] Implement deprecated `getCollateral` for compatibility while labeling it deprecated internally and in developer documentation.
-- [ ] Implement exact CIP-30/CIP-8 `signData`.
+- [x] Implement exact CIP-30/CIP-8 `signData`.
 - [ ] Implement witness-only `signTx` for software and hardware wallets.
 - [ ] Implement separately reviewed `submitTx` through wallet-scoped submission.
 - [ ] Implement CIP-95 key getters, DRep `signData`, Conway-aware `signTx`, and error extensions.

@@ -3,6 +3,7 @@ import type {
   DappConsentRenderMainRequest,
 } from './api';
 import { parseCip30TransactionReview } from '../cip30/review';
+import { parseCip8DataSignReview } from '../cardano/cip8';
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -15,6 +16,7 @@ const parsePresentation = (value: unknown): DappConsentPresentation => {
   if (!isRecord(value)) throw new Error('Invalid dApp consent presentation');
   const transaction =
     value.kind === 'transaction-sign' || value.kind === 'transaction-submit';
+  const hasReview = transaction || value.kind === 'data-sign';
   if (
     !hasKeys(value, [
       'requestId',
@@ -24,12 +26,13 @@ const parsePresentation = (value: unknown): DappConsentPresentation => {
       'networkName',
       'scopes',
       'extensions',
-      ...(transaction ? ['review'] : []),
+      ...(hasReview ? ['review'] : []),
     ]) ||
     !isText(value.requestId) ||
     ![
       'connection',
       'key-disclosure',
+      'data-sign',
       'transaction-sign',
       'transaction-submit',
     ].includes(value.kind as string) ||
@@ -63,6 +66,12 @@ const parsePresentation = (value: unknown): DappConsentPresentation => {
       throw new Error('Invalid dApp consent presentation');
     return Object.freeze({ ...identity, kind, review });
   }
+  if (value.kind === 'data-sign')
+    return Object.freeze({
+      ...identity,
+      kind: 'data-sign',
+      review: parseCip8DataSignReview(value.review),
+    });
   return Object.freeze({
     ...identity,
     kind: value.kind as 'connection' | 'key-disclosure',

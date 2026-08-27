@@ -80,4 +80,42 @@ describe('CIP-30 wallet executor contract', () => {
       })
     ).toThrow('Invalid CIP-30 wallet response');
   });
+
+  it('accepts only exact transient sign-data requests and fixed results', () => {
+    const signDataRequest = {
+      ...request,
+      operation: 'sign-data' as const,
+      address: `60${'11'.repeat(28)}`,
+      payload: '00',
+      passphrase: 'secret',
+    };
+    expect(parseCip30WalletRequest(signDataRequest)).toEqual(signDataRequest);
+    for (const value of [
+      { ...signDataRequest, passphrase: 1 },
+      { ...signDataRequest, payload: '0' },
+      { ...signDataRequest, replacement: '00' },
+    ])
+      expect(() => parseCip30WalletRequest(value)).toThrow(
+        'Invalid CIP-30 wallet request'
+      );
+    expect(
+      parseCip30WalletResponse(signDataRequest, {
+        status: 'fulfilled',
+        operation: 'sign-data',
+        value: {
+          revision: 1,
+          credential_kind: 'payment',
+          credential: '11'.repeat(28),
+          cose_sign1: '00',
+          cose_key: '00',
+        },
+      })
+    ).toMatchObject({ status: 'fulfilled', operation: 'sign-data' });
+    expect(
+      parseCip30WalletResponse(signDataRequest, {
+        status: 'rejected',
+        reason: 'proof-generation',
+      })
+    ).toEqual({ status: 'rejected', reason: 'proof-generation' });
+  });
 });

@@ -73,7 +73,8 @@ describe('ConsentCoordinator', () => {
     await expect(first).resolves.toEqual({ bytes: 'aabb', nested: ['fixed'] });
     expect(firstExecute).toHaveBeenCalledWith(
       { bytes: 'aabb', nested: ['fixed'] },
-      expect.any(AbortSignal)
+      expect.any(AbortSignal),
+      undefined
     );
     expect(terminal).toEqual([presented[0].requestId]);
     expect(presented).toHaveLength(2);
@@ -112,7 +113,7 @@ describe('ConsentCoordinator', () => {
     expect(terminal).toEqual([requestId]);
   });
 
-  it('cancels matching pre-authorization work and aborts execution', async () => {
+  it('cancels matching work with the exact lifecycle rejection', async () => {
     const { coordinator, presented } = setup();
     let signal: AbortSignal | undefined;
     const pending = request(coordinator, async (_payload, nextSignal) => {
@@ -120,10 +121,17 @@ describe('ConsentCoordinator', () => {
       return new Promise(() => undefined);
     });
     coordinator.decide(presented[0].requestId, true);
+    const accountChanged: DappCip30Rejection = {
+      type: 'api-error',
+      value: { code: -4, info: 'Account changed' },
+    };
 
-    coordinator.cancel((candidate) => candidate.walletId === 'wallet');
+    coordinator.cancel(
+      (candidate) => candidate.walletId === 'wallet',
+      accountChanged
+    );
 
-    await expect(pending).rejects.toEqual(declined);
+    await expect(pending).rejects.toEqual(accountChanged);
     expect(signal?.aborted).toBe(true);
   });
 
@@ -141,5 +149,24 @@ describe('ConsentCoordinator', () => {
     finish('transaction-id');
 
     await expect(pending).rejects.toEqual(declined);
+  });
+
+  it('passes transient passphrase once and preserves typed execution errors', async () => {
+    const { coordinator, presented } = setup();
+    const typedError = Object.assign(new Error('Proof generation failed'), {
+      type: 'data-sign-error' as const,
+      value: { code: 1, info: 'Proof generation failed' },
+    });
+    const execute = jest.fn(async () => {
+      throw typedError;
+    });
+    const pending = request(coordinator, execute);
+    coordinator.decide(presented[0].requestId, true, 'secret');
+    await expect(pending).rejects.toBe(typedError);
+    expect(execute).toHaveBeenCalledWith(
+      { bytes: 'aabb' },
+      expect.any(AbortSignal),
+      'secret'
+    );
   });
 });

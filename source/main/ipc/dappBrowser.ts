@@ -12,6 +12,7 @@ import type {
 } from '../../common/ipc/api';
 import { dappLaunchPolicy, launcherConfig } from '../config';
 import { DappBrowserManager } from '../dapp/DappBrowserManager';
+import type { DappGuestRevocationReason } from '../dapp/DappBrowserManager';
 import type { DappCatalogEntry } from '../dapp/dappCatalog';
 import type { DappLaunchMode } from '../dapp/DappLaunchPolicy';
 import { DappRouteLeaseService } from '../dapp/DappRouteLease';
@@ -111,10 +112,14 @@ export class DappBrowserController {
   }
 }
 
-let onDappConsentLifecycleRevoked = (): void => undefined;
+let onDappConsentLifecycleRevoked = (
+  _reason: DappGuestRevocationReason
+): void => undefined;
 let onDappBrokerLifecycleRevoked = (): void => undefined;
 
-export const setDappConsentLifecycleRevoker = (revoke: () => void): void => {
+export const setDappConsentLifecycleRevoker = (
+  revoke: (reason: DappGuestRevocationReason) => void
+): void => {
   onDappConsentLifecycleRevoked = revoke;
 };
 
@@ -123,8 +128,8 @@ export const setDappBrokerLifecycleRevoker = (revoke: () => void): void => {
 };
 
 const browserController = new DappBrowserController(
-  new DappBrowserManager(() => {
-    onDappConsentLifecycleRevoked();
+  new DappBrowserManager((reason) => {
+    onDappConsentLifecycleRevoked(reason);
     onDappBrokerLifecycleRevoked();
   }),
   launcherConfig.nodeConfig.network.genesisHash

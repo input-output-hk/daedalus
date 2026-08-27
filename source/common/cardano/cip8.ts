@@ -23,6 +23,13 @@ export class Cip8Error extends Error {
   }
 }
 
+export class Cip8AddressNotPKError extends Cip8Error {
+  public constructor() {
+    super();
+    this.name = 'Cip8AddressNotPKError';
+  }
+}
+
 const invalid = (): never => {
   throw new Cip8Error();
 };
@@ -103,6 +110,8 @@ export const prepareCip8Request = (
         credentialKind = 'drep';
         protectedAddress = credential;
       }
+    } else if ([1, 3, 5, 7, 15].includes(type)) {
+      throw new Cip8AddressNotPKError();
     } else {
       return invalid();
     }
@@ -118,6 +127,57 @@ export const prepareCip8Request = (
     if (error instanceof Cip8Error) throw error;
     throw new Cip8Error();
   }
+};
+
+export type Cip8DataSignReview = Readonly<{
+  address: string;
+  credentialKind: 'payment' | 'stake';
+  payload: string;
+  utf8Preview: string | null;
+}>;
+
+const unsafePreview = /[\p{Cc}\p{Cf}\p{Cs}\p{Co}\p{Cn}\p{Zl}\p{Zp}]/u;
+const safeUtf8Preview = (payload: Buffer): string | null => {
+  const decoded = payload.toString('utf8');
+  return Buffer.from(decoded, 'utf8').equals(payload) &&
+    !unsafePreview.test(decoded)
+    ? decoded
+    : null;
+};
+
+export const createCip8DataSignReview = (
+  expected: Cip8ExpectedRequest
+): Cip8DataSignReview => {
+  if (expected.credentialKind === 'drep') return invalid();
+  const utf8Preview = safeUtf8Preview(expected.payload);
+  return Object.freeze({
+    address: expected.address,
+    credentialKind: expected.credentialKind,
+    payload: expected.payload.toString('hex'),
+    utf8Preview,
+  });
+};
+
+export const parseCip8DataSignReview = (value: unknown): Cip8DataSignReview => {
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    return invalid();
+  const review = value as Record<string, unknown>;
+  if (
+    Object.keys(review).sort().join(',') !==
+      'address,credentialKind,payload,utf8Preview' ||
+    typeof review.address !== 'string' ||
+    review.address.length === 0 ||
+    !hexBytes.test(review.address) ||
+    (review.credentialKind !== 'payment' &&
+      review.credentialKind !== 'stake') ||
+    typeof review.payload !== 'string' ||
+    !hexBytes.test(review.payload) ||
+    (review.utf8Preview !== null && typeof review.utf8Preview !== 'string') ||
+    review.utf8Preview !==
+      safeUtf8Preview(Buffer.from(review.payload as string, 'hex'))
+  )
+    return invalid();
+  return Object.freeze(review as Cip8DataSignReview);
 };
 
 const verifyEd25519 = (

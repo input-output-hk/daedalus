@@ -125,6 +125,32 @@ export class Cip30WalletService {
         });
       }
 
+      if (request.operation === 'sign-data') {
+        const wallet = this.currentWallet(request);
+        if (!wallet) return this.rejection(request, 'unavailable');
+        if (wallet.isHardwareWallet)
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'proof-generation',
+          });
+        const signature = await this.api.ada.signDappData({
+          walletId: request.walletId,
+          request: {
+            revision: 1,
+            network: backendNetwork(request.network),
+            address: request.address,
+            payload: request.payload,
+            passphrase: request.passphrase,
+          },
+        });
+        if (!this.ready(request)) return this.rejection(request, 'unavailable');
+        return Object.freeze({
+          status: 'fulfilled',
+          operation: 'sign-data',
+          value: signature,
+        });
+      }
+
       if (request.operation === 'context') {
         const context = await this.api.ada.getDappTransactionContext({
           walletId: request.walletId,
@@ -143,7 +169,25 @@ export class Cip30WalletService {
       }
 
       return await this.addresses(request);
-    } catch {
+    } catch (error) {
+      if (request.operation === 'sign-data') {
+        const code = (error as { code?: unknown })?.code;
+        if (code === 'dapp_data_address_not_pk')
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'address-not-pk',
+          });
+        if (code === 'dapp_data_proof_generation')
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'proof-generation',
+          });
+        if (code === 'dapp_account_changed')
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'account-change',
+          });
+      }
       return this.rejection(request, 'internal');
     }
   };
