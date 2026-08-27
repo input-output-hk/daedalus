@@ -30,7 +30,13 @@
       # truth rather than two kept in step by hand.
       programs.prettier.enable = true;
 
-      # Global settings and excludes
+      # Global settings and excludes.
+      #
+      # Directory entries carry a `/**` suffix because a bare directory name
+      # matches that path and not its contents, so without it these exclude
+      # nothing. Measured: with bare names treefmt handed prettier 1969 files,
+      # including all 326 tracked files under `.agent` and `CHANGELOG.md`, and
+      # only `.prettierignore` stopped them being rewritten.
       settings.global.excludes = [
         "*.lock"
         "*.patch"
@@ -41,17 +47,17 @@
         ".gitmodules"
         "LICENSE"
         # Exclude directories
-        "node_modules"
-        "dist"
-        "release"
-        ".direnv"
-        ".agent"
-        "release-cli/target"
+        "node_modules/**"
+        "dist/**"
+        "release/**"
+        ".direnv/**"
+        ".agent/**"
+        "release-cli/target/**"
         # Exclude specific paths from .prettierignore
-        "source/renderer/app/i18n/locales"
-        "source/renderer/app/config/newsfeed-files"
-        "tests/paper-wallets/e2e/documents"
-        "tests/wallets/e2e/documents"
+        "source/renderer/app/i18n/locales/**"
+        "source/renderer/app/config/newsfeed-files/**"
+        "tests/paper-wallets/e2e/documents/**"
+        "tests/wallets/e2e/documents/**"
       ];
 
       # Custom overrides for alejandra
