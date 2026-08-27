@@ -125,6 +125,39 @@ describe('main-owned dApp authority stores', () => {
     ).toThrow('Invalid dApp origin');
   });
 
+  it('keeps development loopback authority policy-bound and origin-only', () => {
+    const root = directory();
+    directories.push(root);
+    const file = path.join(root, 'grants.json');
+    const development = { allowHttpLoopback: true };
+    const grants = new GrantRepository(file, development);
+    const stored = grants.put(
+      grant({
+        origin: 'http://LOCALHOST:3000',
+        launch: { kind: 'diagnostics' },
+      })
+    );
+
+    expect(stored.origin).toBe('http://localhost:3000');
+    expect(fs.readFileSync(file, 'utf8')).not.toContain('/private');
+    expect(new GrantRepository(file).isCorrupt).toBe(true);
+    expect(new GrantRepository(file, development).list()).toEqual([stored]);
+
+    const sessions = new SessionStore(development);
+    const live = sessions.create(
+      capability({
+        dappId: undefined,
+        origin: 'http://LOCALHOST:3000',
+      })
+    );
+    expect(
+      sessions.get({
+        ...capabilityRequirement(live),
+        launch: { kind: 'diagnostics' },
+      })
+    ).toEqual(live);
+  });
+
   it('fails closed on corruption until explicit repair', () => {
     const root = directory();
     directories.push(root);

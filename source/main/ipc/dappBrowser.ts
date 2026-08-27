@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import type { BrowserWindow, IpcMainInvokeEvent } from 'electron';
 import {
   DAPP_BROWSER_CLOSE_CHANNEL,
@@ -8,6 +7,7 @@ import {
 } from '../../common/ipc/api';
 import type {
   DappBrowserCatalogOpenRendererRequest,
+  DappBrowserDiagnosticsOpenRendererRequest,
   DappBrowserCloseMainResponse,
   DappBrowserCloseRendererRequest,
   DappBrowserOpenMainResponse,
@@ -23,21 +23,22 @@ import {
 } from '../../common/config/dappCatalog';
 import type { DappCatalogEntry } from '../../common/types/dapp.types';
 import { dappLaunchPolicy, launcherConfig } from '../config';
+import { environment } from '../environment';
 import { DappBrowserManager } from '../dapp/DappBrowserManager';
 import type { DappGuestRevocationReason } from '../dapp/DappBrowserManager';
-import type { DappLaunchMode } from '../dapp/DappLaunchPolicy';
 import { DappRouteLeaseService } from '../dapp/DappRouteLease';
 import type { DappRouteLease } from '../dapp/DappRouteLease';
+import { parseDiagnosticsDappUrl } from '../dapp/urlPolicy';
+import type { ParsedDappUrl } from '../dapp/urlPolicy';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
   consumeIpcResponse,
   currentWindowSender,
 } from './lib/currentWindowSender';
 
-export type StagedDappLaunch = Readonly<{
-  lease: DappRouteLease;
-  mode: DappLaunchMode;
-  entry: DappCatalogEntry;
+type PendingDiagnosticsLaunch = Readonly<{
+  url: ParsedDappUrl;
+  walletId: string;
   localName: string;
 }>;
 
@@ -53,9 +54,22 @@ const isCatalogOpenRequest = (
   );
 };
 
+const isDiagnosticsOpenRequest = (
+  value: DappBrowserOpenRendererRequest
+): value is DappBrowserDiagnosticsOpenRendererRequest => {
+  if (!value || typeof value !== 'object') return false;
+  const candidate = value as Record<string, unknown>;
+  return (
+    Object.keys(candidate).sort().join('\0') === 'localName\0url\0walletId' &&
+    typeof candidate.url === 'string' &&
+    typeof candidate.walletId === 'string' &&
+    typeof candidate.localName === 'string'
+  );
+};
+
 export class DappBrowserController {
   readonly routeLease: DappRouteLeaseService;
-  private readonly stagedLaunches = new Map<string, StagedDappLaunch>();
+  private pendingDiagnosticsLaunch?: PendingDiagnosticsLaunch;
   private readonly manager: DappBrowserManager;
   private readonly policy: typeof dappLaunchPolicy;
   private readonly catalog: readonly DappCatalogEntry[];
@@ -73,13 +87,16 @@ export class DappBrowserController {
     this.catalog = catalog;
     this.onState = onState;
     this.routeLease = new DappRouteLeaseService(networkGenesis, () => {
-      this.stagedLaunches.clear();
       this.manager.close('route-changed').catch(() => undefined);
     });
   }
 
   observeWindow(window: BrowserWindow): void {
-    const observe = (url: string) => this.routeLease.observeTrustedRoute(url);
+    const observe = (url: string) => {
+      const lease = this.routeLease.observeTrustedRoute(url);
+      if (this.pendingDiagnosticsLaunch)
+        this.consumeDiagnosticsLaunch(lease).catch(() => undefined);
+    };
     window.webContents.on(
       'did-navigate-in-page',
       (_event, url, isMainFrame) => {
@@ -89,20 +106,17 @@ export class DappBrowserController {
     window.webContents.on('did-frame-finish-load', (_event, isMainFrame) => {
       if (isMainFrame) observe(window.webContents.getURL());
     });
-    window.webContents.once('destroyed', () => this.routeLease.revoke());
-  }
-
-  stageLaunch(launch: StagedDappLaunch): string {
-    this.routeLease.requireCurrent(launch.lease);
-    const launchId = randomUUID();
-    this.stagedLaunches.set(launchId, Object.freeze(launch));
-    return launchId;
+    window.webContents.once('destroyed', () => {
+      this.pendingDiagnosticsLaunch = undefined;
+      this.routeLease.revoke();
+    });
   }
 
   get status(): DappBrowserStatusMainResponse {
     return Object.freeze({
       isOpen: this.manager.isOpen,
       catalogAvailable: this.policy.allows('preferred'),
+      diagnosticsAvailable: this.policy.allows('diagnostics'),
     });
   }
 
@@ -124,32 +138,45 @@ export class DappBrowserController {
       this.onState(true);
       return;
     }
-    if (!request || typeof request.launchId !== 'string' || !request.lease)
+    if (!isDiagnosticsOpenRequest(request))
       throw new Error('Invalid dApp browser request');
-    const launch = this.stagedLaunches.get(request.launchId);
-    if (!launch) throw new Error('Unknown dApp launch');
-    this.stagedLaunches.delete(request.launchId);
-
-    this.routeLease.requireCurrent(request.lease);
-    this.routeLease.requireCurrent(launch.lease);
-    if (!this.policy.allows(launch.mode))
+    if (!this.policy.allows('diagnostics'))
       throw new Error('DApp launch is disabled');
+    if (request.walletId === '')
+      throw new Error('Invalid dApp browser request');
+    const url = parseDiagnosticsDappUrl(request.url, {
+      allowHttpLoopback: environment.isDev,
+    });
+    this.pendingDiagnosticsLaunch = Object.freeze({
+      url,
+      walletId: request.walletId,
+      localName: request.localName,
+    });
+    const lease = this.routeLease.current;
+    if (lease?.walletId === request.walletId)
+      await this.consumeDiagnosticsLaunch(lease);
+  }
 
-    if (launch.mode === 'diagnostics') {
-      await this.manager.launch(
-        launch.entry,
-        launch.lease.networkGenesis,
-        launch.localName,
-        { kind: 'diagnostics' }
-      );
-    } else {
-      await this.manager.launch(
-        launch.entry,
-        launch.lease.networkGenesis,
-        launch.localName
-      );
-    }
-    if (!this.routeLease.isCurrent(launch.lease)) {
+  private async consumeDiagnosticsLaunch(
+    lease: DappRouteLease | null
+  ): Promise<void> {
+    const launch = this.pendingDiagnosticsLaunch;
+    this.pendingDiagnosticsLaunch = undefined;
+    if (
+      !launch ||
+      !lease ||
+      launch.walletId !== lease.walletId ||
+      !this.policy.allows('diagnostics')
+    )
+      return;
+
+    await this.manager.launchDiagnostics(
+      launch.url.href,
+      launch.url.origin,
+      launch.localName,
+      { allowHttpLoopback: environment.isDev }
+    );
+    if (!this.routeLease.isCurrent(lease)) {
       await this.manager.close('route-changed');
       throw new Error('DApp route lease is stale');
     }
@@ -161,7 +188,7 @@ export class DappBrowserController {
   }
 
   async close(): Promise<void> {
-    this.stagedLaunches.clear();
+    this.pendingDiagnosticsLaunch = undefined;
     const wasOpen = this.manager.isOpen;
     await this.manager.close();
     if (!wasOpen) this.onState(false);
@@ -232,8 +259,6 @@ export const handleDappBrowserRequests = (window: BrowserWindow): void => {
 };
 
 export const closeDappBrowser = (): Promise<void> => browserController.close();
-export const stageDappLaunch = (launch: StagedDappLaunch): string =>
-  browserController.stageLaunch(launch);
 export const setDappBrowserConsentPending = (pending: boolean): void =>
   browserController.setConsentPending(pending);
 export const authenticateDappGuest = (event: IpcMainInvokeEvent) =>

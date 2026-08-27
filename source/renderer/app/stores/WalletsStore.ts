@@ -1043,16 +1043,18 @@ export default class WalletsStore extends Store {
   }
 
   @computed
+  get eligibleDappWallets(): Array<Wallet> {
+    return this.allWallets.filter(
+      (wallet) => !wallet.isRestoring && !wallet.isNotResponding
+    );
+  }
+
+  @computed
   get activeDappWallet(): Wallet | null {
-    const wallet = this.active;
-    if (
-      !wallet ||
-      wallet.isLegacy ||
-      wallet.isRestoring ||
-      wallet.isNotResponding
-    )
-      return null;
-    return wallet;
+    const activeId = this.active?.id;
+    return (
+      this.eligibleDappWallets.find((wallet) => wallet.id === activeId) ?? null
+    );
   }
 
   @computed

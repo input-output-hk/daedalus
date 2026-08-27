@@ -17,7 +17,7 @@ export type ResolvedCatalogLaunch = Readonly<{
   catalogIdentity: string;
 }>;
 
-const localWindowTitle = (name: string): string => {
+export const localDappWindowTitle = (name: string): string => {
   if (
     typeof name !== 'string' ||
     name.trim() === '' ||
@@ -74,7 +74,7 @@ export const resolveCatalogLaunch = (
     entryUrl: entryUrl.href,
     canonicalOrigin,
     allowedResourceOrigins,
-    windowTitle: localWindowTitle(localName),
+    windowTitle: localDappWindowTitle(localName),
     catalogIdentity: dappCatalogEntryIdentity(entry),
   });
 };

@@ -141,6 +141,35 @@ describe('DappBrowserManager', () => {
     expect(manager.isOpen).toBe(true);
   });
 
+  test('uses the same isolated lifecycle and diagnostics grant identity', async () => {
+    const { window, webContents, frame } = makeWindow();
+    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    const manager = new DappBrowserManager();
+    const policy = { allowHttpLoopback: false };
+
+    await manager.launchDiagnostics(
+      'https://example.com/app',
+      'https://example.com',
+      'Untrusted dApp',
+      policy
+    );
+
+    expect(installDappSessionPolicy).toHaveBeenCalledWith(
+      { id: 'session' },
+      undefined,
+      policy
+    );
+    expect(
+      manager.authenticate(({
+        sender: webContents,
+        senderFrame: frame,
+      } as unknown) as IpcMainInvokeEvent)
+    ).toMatchObject({
+      origin: 'https://example.com',
+      launch: { kind: 'diagnostics' },
+    });
+  });
+
   test('hides and restores the active guest for trusted consent', async () => {
     const { window } = makeWindow();
     ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);

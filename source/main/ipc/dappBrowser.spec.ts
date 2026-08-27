@@ -1,12 +1,14 @@
 import type { DappBrowserManager } from '../dapp/DappBrowserManager';
 import type { DappCatalogEntry } from '../dapp/dappCatalog';
 import { DappLaunchPolicy } from '../dapp/DappLaunchPolicy';
-import type { DappRouteLease } from '../dapp/DappRouteLease';
 import { DappBrowserController } from './dappBrowser';
 
 jest.mock('../config', () => ({
   dappLaunchPolicy: { allows: () => false },
   launcherConfig: { nodeConfig: { network: { genesisHash: 'genesis' } } },
+}));
+jest.mock('../environment', () => ({
+  environment: { isDev: false },
 }));
 jest.mock('./lib/MainIpcChannel', () => ({
   MainIpcChannel: jest.fn(() => ({ onRequest: jest.fn() })),
@@ -34,69 +36,77 @@ const enabledPolicy = (preferred = true, diagnostics = true) =>
     cip142Revision: 0,
   });
 
-const requireLease = (lease: DappRouteLease | null): DappRouteLease => {
-  if (!lease) throw new Error('Expected route lease');
-  return lease;
-};
-
 describe('DappBrowserController', () => {
   const makeManager = () => ({
     isOpen: false,
     launch: jest.fn(() => Promise.resolve()),
+    launchDiagnostics: jest.fn(() => Promise.resolve()),
     close: jest.fn(() => Promise.resolve()),
   });
 
-  it('opens only a main-staged launch bound to the current lease', async () => {
+  it('stages diagnostics until the exact wallet route commits and consumes it once', async () => {
     const manager = makeManager();
     const controller = new DappBrowserController(
       (manager as unknown) as DappBrowserManager,
       'genesis',
       enabledPolicy()
     );
-    const lease = requireLease(
-      controller.routeLease.observeTrustedRoute(
-        'file:///app/index.html#/wallets/wallet-a/dapps'
-      )
-    );
-    const launchId = controller.stageLaunch({
-      lease,
-      mode: 'preferred',
-      entry,
-      localName: 'Example',
+    let navigate:
+      | ((_event: unknown, url: string, isMainFrame: boolean) => void)
+      | undefined;
+    controller.observeWindow(({
+      webContents: {
+        on: jest.fn((name, callback) => {
+          if (name === 'did-navigate-in-page') navigate = callback;
+        }),
+        once: jest.fn(),
+        getURL: jest.fn(),
+      },
+    } as unknown) as Electron.BrowserWindow);
+
+    await controller.open({
+      url: 'https://example.com/app',
+      walletId: 'wallet-a',
+      localName: 'Untrusted dApp',
     });
+    expect(manager.launchDiagnostics).not.toHaveBeenCalled();
 
-    await controller.open({ launchId, lease });
+    navigate?.({}, 'file:///app/index.html#/wallets/wallet-a/dapps', true);
+    await Promise.resolve();
 
-    expect(manager.launch).toHaveBeenCalledWith(entry, 'genesis', 'Example');
-    await expect(controller.open({ launchId, lease })).rejects.toThrow(
-      'Unknown dApp launch'
+    expect(manager.launchDiagnostics).toHaveBeenCalledTimes(1);
+    expect(
+      manager.launchDiagnostics
+    ).toHaveBeenCalledWith(
+      'https://example.com/app',
+      'https://example.com',
+      'Untrusted dApp',
+      { allowHttpLoopback: false }
     );
   });
 
-  it('rejects the disabled mode without affecting the other mode', async () => {
+  it('rejects diagnostics independently without affecting preferred launch', async () => {
     const manager = makeManager();
     const controller = new DappBrowserController(
       (manager as unknown) as DappBrowserManager,
       'genesis',
-      enabledPolicy(false, true)
+      enabledPolicy(true, false),
+      [entry]
     );
-    const lease = requireLease(
-      controller.routeLease.observeTrustedRoute(
-        'file:///app/index.html#/wallets/wallet-a/dapps'
-      )
+    controller.routeLease.observeTrustedRoute(
+      'file:///app/index.html#/wallets/wallet-a/dapps'
     );
-    const launchId = controller.stageLaunch({
-      lease,
-      mode: 'preferred',
-      entry,
-      localName: 'Example',
-    });
 
-    await expect(controller.open({ launchId, lease })).rejects.toThrow(
-      'DApp launch is disabled'
-    );
-    expect(manager.launch).not.toHaveBeenCalled();
-    expect(enabledPolicy(false, true).allows('diagnostics')).toBe(true);
+    await expect(
+      controller.open({
+        url: 'https://example.com',
+        walletId: 'wallet-a',
+        localName: 'Untrusted dApp',
+      })
+    ).rejects.toThrow('DApp launch is disabled');
+    await controller.open({ catalogId: 'example', localName: 'Example' });
+    expect(manager.launch).toHaveBeenCalledWith(entry, 'genesis', 'Example');
+    expect(manager.launchDiagnostics).not.toHaveBeenCalled();
   });
   it('exposes preferred availability without enabling diagnostics or requiring an entry', () => {
     const manager = makeManager();
@@ -116,8 +126,13 @@ describe('DappBrowserController', () => {
     expect(preferred.status).toEqual({
       isOpen: false,
       catalogAvailable: true,
+      diagnosticsAvailable: false,
     });
-    expect(diagnosticsOnly.status.catalogAvailable).toBe(false);
+    expect(diagnosticsOnly.status).toEqual({
+      isOpen: false,
+      catalogAvailable: false,
+      diagnosticsAvailable: true,
+    });
   });
 
   it('resolves a preferred catalog ID only from the injected main catalog', async () => {
@@ -161,32 +176,36 @@ describe('DappBrowserController', () => {
     expect(state).toHaveBeenNthCalledWith(2, false);
   });
 
-  it('closes the guest and clears staged launches when the route changes', async () => {
+  it('consumes a pending diagnostics launch on a wrong-wallet route', async () => {
     const manager = makeManager();
     const controller = new DappBrowserController(
       (manager as unknown) as DappBrowserManager,
       'genesis',
       enabledPolicy()
     );
-    const lease = requireLease(
-      controller.routeLease.observeTrustedRoute(
-        'file:///app/index.html#/wallets/wallet-a/dapps'
-      )
-    );
-    const launchId = controller.stageLaunch({
-      lease,
-      mode: 'preferred',
-      entry,
-      localName: 'Example',
+    let navigate:
+      | ((_event: unknown, url: string, isMainFrame: boolean) => void)
+      | undefined;
+    controller.observeWindow(({
+      webContents: {
+        on: jest.fn((name, callback) => {
+          if (name === 'did-navigate-in-page') navigate = callback;
+        }),
+        once: jest.fn(),
+        getURL: jest.fn(),
+      },
+    } as unknown) as Electron.BrowserWindow);
+    await controller.open({
+      url: 'https://example.com',
+      walletId: 'wallet-a',
+      localName: 'Untrusted dApp',
     });
 
-    controller.routeLease.observeTrustedRoute(
-      'file:///app/index.html#/wallets/wallet-b/dapps'
-    );
+    navigate?.({}, 'file:///app/index.html#/wallets/wallet-b/dapps', true);
+    await Promise.resolve();
+    navigate?.({}, 'file:///app/index.html#/wallets/wallet-a/dapps', true);
+    await Promise.resolve();
 
-    expect(manager.close).toHaveBeenCalledWith('route-changed');
-    await expect(controller.open({ launchId, lease })).rejects.toThrow(
-      'Unknown dApp launch'
-    );
+    expect(manager.launchDiagnostics).not.toHaveBeenCalled();
   });
 });

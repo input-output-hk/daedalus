@@ -9,6 +9,7 @@ import Store from './lib/Store';
 
 export default class DappStore extends Store {
   @observable catalogAvailable = false;
+  @observable diagnosticsAvailable = false;
   @observable guestOpen = false;
   @observable isLaunching = false;
   private generation = 0;
@@ -19,6 +20,15 @@ export default class DappStore extends Store {
     return (
       this.catalogAvailable &&
       !!this.stores.wallets.activeDappWallet &&
+      this.stores.networkStatus.isSynced
+    );
+  }
+
+  @computed
+  get diagnosticsReady(): boolean {
+    return (
+      this.diagnosticsAvailable &&
+      this.stores.wallets.eligibleDappWallets.length > 0 &&
       this.stores.networkStatus.isSynced
     );
   }
@@ -36,6 +46,7 @@ export default class DappStore extends Store {
         if (generation !== this.generation) return;
         runInAction('DappStore::receiveStatus', () => {
           this.catalogAvailable = status.catalogAvailable;
+          this.diagnosticsAvailable = status.diagnosticsAvailable;
           this.guestOpen = status.isOpen;
         });
       },
@@ -61,6 +72,35 @@ export default class DappStore extends Store {
     } finally {
       if (generation === this.generation)
         runInAction('DappStore::finishLaunch', () => {
+          this.isLaunching = false;
+        });
+    }
+  }
+
+  @action.bound
+  async launchDiagnostics(
+    url: string,
+    walletId: string,
+    localName: string
+  ): Promise<void> {
+    if (
+      !this.diagnosticsReady ||
+      this.isLaunching ||
+      !this.stores.wallets.eligibleDappWallets.some(
+        (wallet) => wallet.id === walletId
+      )
+    )
+      return;
+    const generation = this.generation;
+    this.isLaunching = true;
+    try {
+      await openDappBrowserChannel.request({ url, walletId, localName });
+      this.actions.router.goToRoute.trigger({
+        route: this.stores.wallets.getWalletRoute(walletId, 'dapps'),
+      });
+    } finally {
+      if (generation === this.generation)
+        runInAction('DappStore::finishDiagnosticsLaunch', () => {
           this.isLaunching = false;
         });
     }

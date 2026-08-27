@@ -134,6 +134,29 @@ describe('DappSessionPolicy', () => {
     );
   });
 
+  test('routes diagnostics resources through public and explicit loopback policy', async () => {
+    const { guestSession, handlers } = makeSession();
+    const egressPolicy = { close: jest.fn() };
+    (DappEgressPolicy.install as jest.Mock).mockResolvedValue(egressPolicy);
+    const policy = { allowHttpLoopback: true };
+    await installDappSessionPolicy(guestSession, undefined, policy);
+
+    const publicHttps = jest.fn();
+    handlers.beforeRequest({ url: 'https://public.example/a' }, publicHttps);
+    expect(publicHttps).toHaveBeenCalledWith({ cancel: false });
+    const loopbackHttp = jest.fn();
+    handlers.beforeRequest({ url: 'http://localhost:3000/a' }, loopbackHttp);
+    expect(loopbackHttp).toHaveBeenCalledWith({ cancel: false });
+    const publicHttp = jest.fn();
+    handlers.beforeRequest({ url: 'http://public.example/a' }, publicHttp);
+    expect(publicHttp).toHaveBeenCalledWith({ cancel: true });
+    expect(DappEgressPolicy.install).toHaveBeenCalledWith(
+      guestSession,
+      undefined,
+      true
+    );
+  });
+
   test('denies popups, authentication, certificate exceptions, and client certificates', () => {
     const events = new EventEmitter();
     const setWindowOpenHandler = jest.fn();

@@ -14,10 +14,26 @@ import {
   installDappSessionPolicy,
   installGuestDenialHandlers,
 } from './DappSessionPolicy';
-import { resolveCatalogLaunch } from './dappCatalog';
+import { localDappWindowTitle, resolveCatalogLaunch } from './dappCatalog';
 import type { DappCatalogEntry, ResolvedCatalogLaunch } from './dappCatalog';
-import { parseDappUrl } from './urlPolicy';
+import { parseDappUrl, parseDiagnosticsDappUrl } from './urlPolicy';
+import type { DappUrlPolicy, ParsedDappUrl } from './urlPolicy';
 import type { DappGrantLaunch } from '../../common/types/dapp.types';
+
+type ResolvedDappLaunch = Readonly<
+  Pick<
+    ResolvedCatalogLaunch,
+    'entryUrl' | 'canonicalOrigin' | 'allowedResourceOrigins' | 'windowTitle'
+  >
+>;
+
+const parseLaunchUrl = (
+  value: string,
+  diagnosticsPolicy?: DappUrlPolicy
+): ParsedDappUrl =>
+  diagnosticsPolicy
+    ? parseDiagnosticsDappUrl(value, diagnosticsPolicy)
+    : parseDappUrl(value);
 
 export type DappGuestRevocationReason =
   | 'closed'
@@ -41,12 +57,13 @@ export type DappGuestAuthority = Readonly<{
 type ActiveGuest = {
   readonly window: BrowserWindow;
   readonly session: Session;
-  readonly launch: ResolvedCatalogLaunch;
+  readonly launch: ResolvedDappLaunch;
   readonly egressPolicy: DappEgressPolicy;
   initialLoad: boolean;
   readonly documentGeneration: number;
   readonly grantLaunch: DappGrantLaunch;
   teardown?: Promise<void>;
+  readonly diagnosticsPolicy?: DappUrlPolicy;
 };
 export const createDappGuestWebPreferences = (
   guestSession: Session,
@@ -77,7 +94,8 @@ export const installDappGuestLifecyclePolicy = (
   windowTitle: string,
   isInitialLoad: () => boolean,
   isTearingDown: () => boolean,
-  revoke: (reason: DappGuestRevocationReason) => void
+  revoke: (reason: DappGuestRevocationReason) => void,
+  diagnosticsPolicy?: DappUrlPolicy
 ): void => {
   const { webContents } = window;
   const denyNavigation = (event: Electron.Event) => {
@@ -95,7 +113,9 @@ export const installDappGuestLifecyclePolicy = (
       let isExpectedInitialLoad = false;
       try {
         isExpectedInitialLoad =
-          isInitialLoad() && isMainFrame && parseDappUrl(url).href === entryUrl;
+          isInitialLoad() &&
+          isMainFrame &&
+          parseLaunchUrl(url, diagnosticsPolicy).href === entryUrl;
       } catch {
         // Invalid navigation is revoked below.
       }
@@ -188,7 +208,10 @@ export class DappBrowserManager {
     )
       return false;
     try {
-      return parseDappUrl(frame.url).origin === guest.launch.canonicalOrigin;
+      return (
+        parseLaunchUrl(frame.url, guest.diagnosticsPolicy).origin ===
+        guest.launch.canonicalOrigin
+      );
     } catch {
       return false;
     }
@@ -197,20 +220,58 @@ export class DappBrowserManager {
   async launch(
     entry: DappCatalogEntry,
     networkGenesis: string,
+    localName: string
+  ): Promise<void> {
+    const launch = resolveCatalogLaunch(entry, networkGenesis, localName);
+    return this.launchResolved(
+      launch,
+      Object.freeze({
+        kind: 'catalog',
+        catalogEntryId: launch.catalogId,
+        catalogEntryIdentity: launch.catalogIdentity,
+      })
+    );
+  }
+
+  async launchDiagnostics(
+    entryUrl: string,
+    canonicalOrigin: string,
     localName: string,
-    grantLaunch?: DappGrantLaunch
+    policy: DappUrlPolicy
+  ): Promise<void> {
+    return this.launchResolved(
+      Object.freeze({
+        entryUrl,
+        canonicalOrigin,
+        allowedResourceOrigins: new Set<string>(),
+        windowTitle: localDappWindowTitle(localName),
+      }),
+      Object.freeze({ kind: 'diagnostics' }),
+      policy
+    );
+  }
+
+  private async launchResolved(
+    launch: ResolvedDappLaunch,
+    grantLaunch: DappGrantLaunch,
+    diagnosticsPolicy?: DappUrlPolicy
   ): Promise<void> {
     await requireDappSandboxAvailable();
-    const launch = resolveCatalogLaunch(entry, networkGenesis, localName);
     await this.close('replaced');
 
     const guestSession = createDappSession();
     let egressPolicy: DappEgressPolicy;
     try {
-      egressPolicy = await installDappSessionPolicy(
-        guestSession,
-        launch.allowedResourceOrigins
-      );
+      egressPolicy = diagnosticsPolicy
+        ? await installDappSessionPolicy(
+            guestSession,
+            undefined,
+            diagnosticsPolicy
+          )
+        : await installDappSessionPolicy(
+            guestSession,
+            launch.allowedResourceOrigins
+          );
     } catch {
       await clearDappSession(guestSession);
       throw new Error('DApp guest failed to load');
@@ -237,14 +298,9 @@ export class DappBrowserManager {
       launch,
       egressPolicy,
       initialLoad: true,
+      diagnosticsPolicy,
       documentGeneration: ++this.nextDocumentGeneration,
-      grantLaunch:
-        grantLaunch ??
-        Object.freeze({
-          kind: 'catalog',
-          catalogEntryId: launch.catalogId,
-          catalogEntryIdentity: launch.catalogIdentity,
-        }),
+      grantLaunch,
     };
     this.activeGuest = guest;
     installDappGuestLifecyclePolicy(
@@ -253,7 +309,8 @@ export class DappBrowserManager {
       guest.launch.windowTitle,
       () => guest.initialLoad,
       () => guest.teardown !== undefined,
-      (reason) => this.teardown(guest, reason).catch(() => undefined)
+      (reason) => this.teardown(guest, reason).catch(() => undefined),
+      diagnosticsPolicy
     );
 
     try {
@@ -262,8 +319,8 @@ export class DappBrowserManager {
       if (this.activeGuest !== guest || guestWindow.isDestroyed())
         throw new Error('DApp guest closed during load');
       if (
-        parseDappUrl(guestWindow.webContents.getURL()).origin !==
-        launch.canonicalOrigin
+        parseLaunchUrl(guestWindow.webContents.getURL(), diagnosticsPolicy)
+          .origin !== launch.canonicalOrigin
       ) {
         await this.teardown(guest, 'origin-mismatch');
         throw new Error('DApp origin verification failed');

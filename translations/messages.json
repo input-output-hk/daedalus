@@ -2182,6 +2182,41 @@
         "id": "daedalus.diagnostics.dialog.lastSynchronizedBlock"
       },
       {
+        "defaultMessage": "!!!UNTRUSTED DAPP BROWSER",
+        "description": "Heading for the Diagnostics arbitrary dApp launcher.",
+        "id": "daedalus.diagnostics.dialog.dappBrowser"
+      },
+      {
+        "defaultMessage": "!!!This opens an untrusted website. Daedalus does not audit or endorse it. Review every wallet request.",
+        "description": "Security warning above the Diagnostics dApp launcher.",
+        "id": "daedalus.diagnostics.dialog.dappBrowserWarning"
+      },
+      {
+        "defaultMessage": "!!!DApp URL",
+        "description": "Label for the Diagnostics dApp URL field.",
+        "id": "daedalus.diagnostics.dialog.dappBrowserUrl"
+      },
+      {
+        "defaultMessage": "!!!Wallet",
+        "description": "Label for the Diagnostics dApp wallet selector.",
+        "id": "daedalus.diagnostics.dialog.dappBrowserWallet"
+      },
+      {
+        "defaultMessage": "!!!Launch untrusted dApp",
+        "description": "Button that launches an arbitrary Diagnostics dApp.",
+        "id": "daedalus.diagnostics.dialog.dappBrowserLaunch"
+      },
+      {
+        "defaultMessage": "!!!The dApp could not be opened.",
+        "description": "Privacy-safe Diagnostics dApp launch failure.",
+        "id": "daedalus.diagnostics.dialog.dappBrowserLaunchFailed"
+      },
+      {
+        "defaultMessage": "!!!Untrusted dApp",
+        "description": "Local native window title for a Diagnostics dApp.",
+        "id": "daedalus.diagnostics.dialog.dappBrowserWindowTitle"
+      },
+      {
         "defaultMessage": "!!!epoch",
         "description": "epoch",
         "id": "daedalus.diagnostics.dialog.epoch"
