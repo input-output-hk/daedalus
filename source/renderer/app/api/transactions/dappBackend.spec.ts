@@ -147,6 +147,13 @@ describe('dApp backend client contracts', () => {
         transaction: 'sensitive',
       })
     ).toThrow('Invalid dApp backend response');
+    expect(() =>
+      validateDappCip95KeyState({
+        drep_public_key: 'A'.repeat(64),
+        registered_stake_public_keys: [],
+        unregistered_stake_public_keys: [],
+      })
+    ).toThrow('Invalid dApp backend response');
 
     const canonical = {
       code: 'dapp_context_unavailable',

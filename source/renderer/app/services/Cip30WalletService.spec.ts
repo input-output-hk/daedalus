@@ -11,7 +11,9 @@ const network = {
   networkMagic: 42,
   genesisHash: '11'.repeat(32),
 };
-const request = (operation: 'capabilities' | 'context' | 'addresses') => ({
+const request = (
+  operation: 'capabilities' | 'context' | 'addresses' | 'cip95-key-state'
+) => ({
   operation,
   walletId: 'wallet',
   network,
@@ -49,6 +51,11 @@ const create = () => {
     cose_sign1: '00',
     cose_key: '00',
   }));
+  const getDappCip95KeyState = jest.fn(async () => ({
+    drep_public_key: '33'.repeat(32),
+    registered_stake_public_keys: ['44'.repeat(32)],
+    unregistered_stake_public_keys: ['55'.repeat(32)],
+  }));
   const stakeAddresses = { wallet: 'stake-address' };
   const api = ({
     ada: {
@@ -56,6 +63,7 @@ const create = () => {
       getDappTransactionContext,
       getAddresses,
       signDappData,
+      getDappCip95KeyState,
     },
   } as unknown) as Api;
   const stores = ({
@@ -84,6 +92,7 @@ const create = () => {
     getDappTransactionContext,
     getAddresses,
     signDappData,
+    getDappCip95KeyState,
     setWallet: (value: Record<string, unknown> | null) => {
       wallet = value;
     },
@@ -164,6 +173,47 @@ describe('Cip30WalletService', () => {
       walletId: 'wallet',
       isLegacy: false,
     });
+  });
+
+  it('returns authoritative CIP-95 registration classification unchanged', async () => {
+    const fixture = create();
+    await expect(
+      fixture.service.receive(request('cip95-key-state'))
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      operation: 'cip95-key-state',
+      value: {
+        drep_public_key: '33'.repeat(32),
+        registered_stake_public_keys: ['44'.repeat(32)],
+        unregistered_stake_public_keys: ['55'.repeat(32)],
+      },
+    });
+    expect(fixture.getDappCip95KeyState).toHaveBeenCalledWith('wallet');
+
+    fixture.getDappCip95KeyState.mockImplementationOnce(async () => {
+      fixture.setWallet(null);
+      return {
+        drep_public_key: '33'.repeat(32),
+        registered_stake_public_keys: [],
+        unregistered_stake_public_keys: [],
+      };
+    });
+    await expect(
+      fixture.service.receive(request('cip95-key-state'))
+    ).resolves.toEqual({ status: 'rejected', reason: 'account-change' });
+  });
+  it('maps fixed CIP-95 key-state backend failures', async () => {
+    const fixture = create();
+    for (const [code, reason] of [
+      ['dapp_account_changed', 'account-change'],
+      ['dapp_context_unavailable', 'unavailable'],
+      ['unexpected', 'internal'],
+    ] as const) {
+      fixture.getDappCip95KeyState.mockRejectedValueOnce({ code });
+      await expect(
+        fixture.service.receive(request('cip95-key-state'))
+      ).resolves.toEqual({ status: 'rejected', reason });
+    }
   });
 
   it('binds exact sign-data bytes and preserves typed backend failures', async () => {

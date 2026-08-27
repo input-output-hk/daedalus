@@ -151,6 +151,16 @@ const create = () => {
             operation: 'sign-data',
             value: signatureResponse,
           };
+    if (walletRequest.operation === 'cip95-key-state')
+      return {
+        status: 'fulfilled',
+        operation: 'cip95-key-state',
+        value: {
+          drep_public_key: '33'.repeat(32),
+          registered_stake_public_keys: ['44'.repeat(32)],
+          unregistered_stake_public_keys: ['55'.repeat(32)],
+        },
+      };
     return {
       status: 'fulfilled',
       operation: 'capabilities',
@@ -271,6 +281,77 @@ describe('Cip30Broker', () => {
     });
     expect(fixture.dispatch).toHaveBeenCalledTimes(1);
     fixture.cleanup();
+  });
+
+  it('preserves a base grant when elevated CIP-95 disclosure is declined', async () => {
+    const fixture = create();
+    await fixture.broker.handle(event, request('provider.enable'));
+    (fixture.consent.request as jest.Mock).mockRejectedValueOnce({
+      type: 'api-error',
+      value: { code: -3, info: 'Refused' },
+    });
+
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('provider.enable', [{ extensions: [{ cip: 95 }] }])
+      )
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: { type: 'api-error', value: { code: -3, info: 'Refused' } },
+    });
+    expect(fixture.options.grants.list()).toEqual([
+      expect.objectContaining({
+        readScopes: ['connection', 'read'],
+        enabledExtensionScopes: [],
+      }),
+    ]);
+    await expect(
+      fixture.broker.handle(event, request('provider.isEnabled'))
+    ).resolves.toEqual({ status: 'fulfilled', value: true });
+    fixture.cleanup();
+  });
+
+  it('releases CIP-95 getters only through a negotiated elevated session', async () => {
+    const fixture = create();
+    fixture.dispatch.mockRestore();
+    await fixture.broker.handle(
+      event,
+      request('provider.enable', [{ extensions: [{ cip: 95 }] }])
+    );
+    fixture.executeWallet.mockClear();
+
+    for (const [method, expected] of [
+      ['api.cip95.getPubDRepKey', '33'.repeat(32)],
+      ['api.cip95.getRegisteredPubStakeKeys', ['44'.repeat(32)]],
+      ['api.cip95.getUnregisteredPubStakeKeys', ['55'.repeat(32)]],
+    ] as const)
+      await expect(
+        fixture.broker.handle(event, request(method))
+      ).resolves.toEqual({ status: 'fulfilled', value: expected });
+    expect(
+      fixture.executeWallet.mock.calls.filter(
+        ([walletRequest]) => walletRequest.operation === 'cip95-key-state'
+      )
+    ).toHaveLength(3);
+    fixture.cleanup();
+
+    const refused = create();
+    refused.dispatch.mockRestore();
+    await refused.broker.handle(event, request('provider.enable'));
+    refused.executeWallet.mockClear();
+    await expect(
+      refused.broker.handle(event, request('api.cip95.getPubDRepKey'))
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: { type: 'api-error', value: { code: -3, info: 'Refused' } },
+    });
+    expect(
+      refused.executeWallet.mock.calls.some(
+        ([walletRequest]) => walletRequest.operation === 'cip95-key-state'
+      )
+    ).toBe(false);
+    refused.cleanup();
   });
 
   it('refuses future methods before backend work and maps stale authority to AccountChange', async () => {

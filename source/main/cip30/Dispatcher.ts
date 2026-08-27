@@ -43,7 +43,7 @@ export type Cip30DispatchAuthority = Readonly<{
 }>;
 
 export type Cip30WalletExecutor = (
-  operation: 'context' | 'addresses'
+  operation: 'context' | 'addresses' | 'cip95-key-state'
 ) => Promise<Cip30WalletResponse>;
 
 const apiError = (code: ApiError['code'], info: string): never => {
@@ -176,6 +176,21 @@ export class Dispatcher {
         return authority.network.networkId;
       case 'api.cip142.getNetworkMagic':
         return authority.network.networkMagic;
+      case 'api.cip95.getPubDRepKey':
+      case 'api.cip95.getRegisteredPubStakeKeys':
+      case 'api.cip95.getUnregisteredPubStakeKeys': {
+        const response = await execute('cip95-key-state');
+        if (
+          response.status !== 'fulfilled' ||
+          response.operation !== 'cip95-key-state'
+        )
+          return executorFailure(response);
+        if (request.method === 'api.cip95.getPubDRepKey')
+          return response.value.drep_public_key;
+        if (request.method === 'api.cip95.getRegisteredPubStakeKeys')
+          return response.value.registered_stake_public_keys;
+        return response.value.unregistered_stake_public_keys;
+      }
       case 'api.getUtxos': {
         const [amount, paginate] = request.args;
         const result = getCip30Utxos(

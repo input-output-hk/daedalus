@@ -118,4 +118,56 @@ describe('CIP-30 wallet executor contract', () => {
       })
     ).toEqual({ status: 'rejected', reason: 'proof-generation' });
   });
+  it('accepts only exact raw CIP-95 key-state results', () => {
+    const keyStateRequest = {
+      ...request,
+      operation: 'cip95-key-state' as const,
+    };
+    expect(parseCip30WalletRequest(keyStateRequest)).toEqual(keyStateRequest);
+    const keyState = {
+      drep_public_key: '33'.repeat(32),
+      registered_stake_public_keys: ['44'.repeat(32)],
+      unregistered_stake_public_keys: ['55'.repeat(32)],
+    };
+    expect(
+      parseCip30WalletResponse(keyStateRequest, {
+        status: 'fulfilled',
+        operation: 'cip95-key-state',
+        value: keyState,
+      })
+    ).toEqual({
+      status: 'fulfilled',
+      operation: 'cip95-key-state',
+      value: keyState,
+    });
+    for (const value of [
+      { ...keyState, drep_public_key: '33'.repeat(31) },
+      {
+        ...keyState,
+        registered_stake_public_keys: ['AA'.repeat(32)],
+      },
+      { ...keyState, extra: true },
+    ])
+      expect(() =>
+        parseCip30WalletResponse(keyStateRequest, {
+          status: 'fulfilled',
+          operation: 'cip95-key-state',
+          value,
+        })
+      ).toThrow('Invalid CIP-95 key state');
+    const getter = jest.fn(() => '33'.repeat(32));
+    const malicious = { ...keyState } as Record<string, unknown>;
+    Object.defineProperty(malicious, 'drep_public_key', {
+      enumerable: true,
+      get: getter,
+    });
+    expect(() =>
+      parseCip30WalletResponse(keyStateRequest, {
+        status: 'fulfilled',
+        operation: 'cip95-key-state',
+        value: malicious,
+      })
+    ).toThrow('Invalid CIP-95 key state');
+    expect(getter).not.toHaveBeenCalled();
+  });
 });

@@ -76,7 +76,10 @@ const capabilityContext = {
   }),
 };
 
-const create = (enabledExtensions: number[] = []) => {
+const create = (
+  enabledExtensions: number[] = [],
+  elevated = enabledExtensions.includes(95)
+) => {
   (transactionContext.reconcileTransactionContext as jest.Mock).mockReturnValue(
     snapshot
   );
@@ -101,32 +104,43 @@ const create = (enabledExtensions: number[] = []) => {
       'transaction-signing',
       'data-signing',
       'transaction-submission',
+      ...(elevated ? (['governance-key-disclosure'] as const) : []),
     ],
   });
-  const execute = jest.fn(async (operation) =>
-    operation === 'context'
-      ? {
-          status: 'fulfilled' as const,
-          operation: 'context' as const,
-          value: {},
-        }
-      : {
-          status: 'fulfilled' as const,
-          operation: 'addresses' as const,
-          value: {
-            walletId: 'wallet',
-            network,
-            used: [address.raw],
-            unused: [address.raw],
-            change: address.raw,
-            reward: [
-              wireFixtures.addresses.find(
-                ({ name }) => name === 'mainnet-reward-key'
-              )!.raw,
-            ],
-          },
-        }
-  );
+  const execute = jest.fn(async (operation) => {
+    if (operation === 'context')
+      return {
+        status: 'fulfilled' as const,
+        operation: 'context' as const,
+        value: {},
+      };
+    if (operation === 'cip95-key-state')
+      return {
+        status: 'fulfilled' as const,
+        operation: 'cip95-key-state' as const,
+        value: {
+          drep_public_key: '33'.repeat(32),
+          registered_stake_public_keys: ['44'.repeat(32)],
+          unregistered_stake_public_keys: ['55'.repeat(32)],
+        },
+      };
+    return {
+      status: 'fulfilled' as const,
+      operation: 'addresses' as const,
+      value: {
+        walletId: 'wallet',
+        network,
+        used: [address.raw],
+        unused: [address.raw],
+        change: address.raw,
+        reward: [
+          wireFixtures.addresses.find(
+            ({ name }) => name === 'mainnet-reward-key'
+          )!.raw,
+        ],
+      },
+    };
+  });
   return { dispatcher: new Dispatcher(capabilities, sessions), execute };
 };
 
@@ -197,6 +211,45 @@ describe('CIP-30 Dispatcher', () => {
       type: 'paginate-error',
       value: { maxSize: 1 },
     });
+  });
+
+  it('returns exact CIP-95 keys only with negotiated disclosure authority', async () => {
+    const enabled = create([95]);
+    for (const [method, expected] of [
+      ['api.cip95.getPubDRepKey', '33'.repeat(32)],
+      ['api.cip95.getRegisteredPubStakeKeys', ['44'.repeat(32)]],
+      ['api.cip95.getUnregisteredPubStakeKeys', ['55'.repeat(32)]],
+    ] as const)
+      await expect(
+        enabled.dispatcher.dispatch(
+          parseDappCip30GatewayRequest({ method, args: [] }),
+          authority,
+          capabilityContext,
+          enabled.execute
+        )
+      ).resolves.toEqual(expected);
+    expect(enabled.execute).toHaveBeenCalledTimes(3);
+    expect(enabled.execute).toHaveBeenCalledWith('cip95-key-state');
+
+    for (const fixture of [create(), create([95], false)]) {
+      const error = await fixture.dispatcher
+        .dispatch(
+          parseDappCip30GatewayRequest({
+            method: 'api.cip95.getPubDRepKey',
+            args: [],
+          }),
+          authority,
+          capabilityContext,
+          fixture.execute
+        )
+        .catch((value) => value);
+      expect(error).toBeInstanceOf(Cip30DispatchRejection);
+      expect((error as Cip30DispatchRejection).rejection).toEqual({
+        type: 'api-error',
+        value: { code: -3, info: 'Refused' },
+      });
+      expect(fixture.execute).not.toHaveBeenCalled();
+    }
   });
 
   it('returns configured CIP-142 magic only for negotiated policy-enabled sessions', async () => {
