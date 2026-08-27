@@ -43,7 +43,7 @@
           "id": "task-001",
           "title": "Bump prettier to 3.6.2",
           "description": "Change devDependencies.prettier from 2.1.2 to 3.6.2 and regenerate the lockfile. 3.6.2 is what treefmt runs from the pinned nixpkgs, so this closes the gap by moving the dependency rather than by reformatting the tree.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 0.5,
           "dependencies": [],
@@ -61,13 +61,16 @@
             "yarn.lock resolves prettier to 3.6.2",
             "git diff --name-only lists package.json and yarn.lock only"
           ],
-          "notes": "If any other file appears in git diff, the premise that the tree is already prettier 3 shaped is wrong. Stop and re-measure."
+          "notes": "If any other file appears in git diff, the premise that the tree is already prettier 3 shaped is wrong. Stop and re-measure.",
+          "completedAt": "2026-08-27",
+          "actualHours": 0.6,
+          "completedNotes": "package.json names prettier 3.6.2 and yarn.lock resolves to it. The lockfile diff is confined to the top-level prettier entry; @storybook/csf-tools keeps a nested prettier 2.3.0 that formats nothing here. Regenerated with yarn install inside nix develop .#mainnet, node v24.15.0, yarn 1.22.22."
         },
         {
           "id": "task-002",
           "title": "Rename --loglevel to --log-level in the prettier scripts",
           "description": "Prettier 3 removed --loglevel in favour of --log-level and ignores the old spelling with a warning, so the intended quieting stops working and every invocation gains a warning line.",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 0.25,
           "dependencies": [
@@ -80,13 +83,16 @@
           "acceptance": [
             "No script passes --loglevel",
             "yarn prettier:format emits no unknown-option warning"
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.1,
+          "completedNotes": "prettier:format, themes:update and themes:copy now pass --log-level. The remaining --loglevel references are in .agent/skills/theme-management/SKILL.md, which is task-014."
         },
         {
           "id": "task-003",
           "title": "Verify the bump reformats nothing",
           "description": "Confirm both formatters agree on the tree as committed, and that running the format command no longer produces a diff. This is the check that closes the reported problem.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 0.5,
           "dependencies": [
@@ -106,7 +112,10 @@
           "acceptance": [
             "All four checks above hold on a clean checkout of the branch"
           ],
-          "notes": "Baseline measured at 50e6b84b3: yarn prettier:check reported 210 files, nix fmt -- --ci reported 0 changes, and prettier 2 rewriting the tree left 209 files that treefmt reverted plus one it did not."
+          "notes": "Baseline measured at 50e6b84b3: yarn prettier:check reported 210 files, nix fmt -- --ci reported 0 changes, and prettier 2 rewriting the tree left 209 files that treefmt reverted plus one it did not.",
+          "completedAt": "2026-08-27",
+          "actualHours": 0.4,
+          "completedNotes": "Verified: yarn prettier:check reports all matched files conform and exits 0; nix fmt -- --ci formats 1955 files with 0 changed; yarn prettier:format followed by git diff --name-only lists package.json and yarn.lock only. No source file changed, so the premise held and no re-measure was needed."
         }
       ]
     },

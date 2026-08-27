@@ -280,10 +280,10 @@ sorts them, and this branch takes two of the tiers.
 
 Formatter parity:
 
-- [ ] `package.json` names `prettier` at `3.6.2`, and `yarn.lock` resolves to it
-- [ ] The prettier commit touches only `package.json` and `yarn.lock`
-- [ ] `yarn prettier:check` and `nix fmt -- --ci` both exit 0 on a clean checkout
-- [ ] `yarn prettier:format` produces an empty diff
+- [x] `package.json` names `prettier` at `3.6.2`, and `yarn.lock` resolves to it
+- [x] The prettier commit touches only `package.json` and `yarn.lock`
+- [x] `yarn prettier:check` and `nix fmt -- --ci` both exit 0 on a clean checkout
+- [x] `yarn prettier:format` produces an empty diff
 - [ ] No script or document passes `--loglevel`
 - [ ] `perSystem/formatter.nix` sets no `programs.prettier.settings`, and the
       generated treefmt config passes no `--config` for prettier
@@ -791,6 +791,7 @@ Append-only. New entries go at the end.
 | 2026-08-27 | Open Question 5 decided: retire paper wallet creation, keep restore, prove restore with a recorded certificate vector rather than a round trip. Creation code removal is a separate branch, because it deletes an IPC channel and roughly 1,900 lines across 24 files. |
 | 2026-08-27 | Restore vector captured and verified deterministic. Recorded in Technical Design. Captured now because it cannot be captured once the scrambling code is gone. |
 | 2026-08-27 | Root-owned `node_modules/.cache/storybook/10.5.10` cleared, so `yarn build:electron` is no longer aborting on dev shell entry. The task-015 blocker is lifted. |
+| 2026-08-27 | Phase 1 complete. prettier moved to 3.6.2, the three `--loglevel` scripts renamed, lockfile regenerated in the Nix dev shell. `yarn prettier:check` exits 0, `nix fmt -- --ci` reports 0 changed, and `yarn prettier:format` leaves only `package.json` and `yarn.lock` changed. The premise held; no re-measure was needed. |
 | 2026-08-27 | Scope widened, and the decision to exclude source changes reversed. Investigation found wallet entropy sourced from a `bip39` default that this branch's own bump replaces, and a crypto scenario skipped since 2021 hiding a throwing `generateMnemonic(9)`. Phase 3 becomes a crypto assurance phase, beginning by asserting current conformance against the published BIP39 vectors and ending with controls that make a later weakening conspicuous. Status In Progress. |
 
 ---
