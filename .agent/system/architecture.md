@@ -575,12 +575,13 @@ and must never host remote content or be reused as its preload/IPC surface.
 Its live policy permits only the canonical local main document, denies all
 subframe navigation and popups, filters policy-aborted load recovery, and opens
 only parsed credential-free HTTPS external links with awaited, privacy-safe
-failure handling. A machine-checked manifest accounts for all 79 production
+failure handling. A machine-checked manifest accounts for all 81 production
 privileged IPC channels. They authenticate the exact active trusted main
 WebContents, main frame, canonical document, and origin, with correlated
 caller-targeted responses, lifecycle cancellation, and current-window targeting.
-The raw close/resize listeners and direct renderer sends have been removed.
-Production guest launch remains disabled by the independent PRD gates.
+The sole raw guest gateway is separately audited and authenticates the exact
+active guest top frame, origin, document generation, and route lease before
+dispatch. Production guest launch remains disabled by the independent PRD gates.
 
 The accepted target, defined normatively in the [dApp browser threat model and
 ADR](../plans/dapp-browser-cip30/dapp-browser-cip30-prd.md#hostile-renderer-threat-model-and-architecture-adr), is:
@@ -610,6 +611,14 @@ Hostile remote dApp
 - Existing privileged IPC must authenticate the exact trusted main WebContents
   and main frame. A guest receives only a dedicated scoped gateway, never raw
   Electron/Node APIs or existing IPC.
+- The active base-read broker persists only exact-origin read/key-disclosure
+  grants, keeps live capabilities memory-only, and routes every grant creation
+  or expansion through the correlated trusted consent coordinator. One
+  authenticated main-to-trusted-renderer executor validates the pinned backend,
+  exact wallet/network binding, connected/synced state, source addresses, and
+  empty-transaction context; main revalidates and serializes all CIP-30 results.
+  Signing, submission, and downstream extension bodies remain explicit refused
+  dispatches until their owning tasks land.
 - Guest HTTPS/WSS policy is connection-destination-bound, including redirects,
   subresources, WSS, rebinding, and IPv4/IPv6 forms. Bypass transports remain
   disabled. Packaged Linux sandbox certification completed in task-005-b;

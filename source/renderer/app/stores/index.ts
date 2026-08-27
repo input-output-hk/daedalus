@@ -30,6 +30,7 @@ import GovernanceStore from './GovernanceStore';
 import { AnalyticsTracker } from '../analytics';
 import { Api } from '../api';
 import { ActionsMap } from '../actions';
+import { Cip30WalletService } from '../services/Cip30WalletService';
 
 export const storeClasses = {
   addresses: AddressesStore,
@@ -85,6 +86,7 @@ export type StoresMap = {
   window: WindowStore;
 };
 let stores: StoresMap | null | undefined = null;
+let cip30WalletService: Cip30WalletService | undefined;
 const storeNames = Object.keys(storeClasses);
 
 // Helpers
@@ -107,6 +109,7 @@ export const setUpStores = action(
       return new StoreSubClass(api, actions, analyticsTracker);
     }
 
+    cip30WalletService?.teardown();
     // Teardown existing stores
     if (stores) executeOnEveryStore((store) => store.teardown());
     // Create fresh instances of all stores
@@ -143,6 +146,8 @@ export const setUpStores = action(
       if (stores) store.configure(stores);
     });
     executeOnEveryStore((store) => store.initialize());
+    cip30WalletService = new Cip30WalletService(api, stores);
+    cip30WalletService.setup();
     return stores;
   }
 );

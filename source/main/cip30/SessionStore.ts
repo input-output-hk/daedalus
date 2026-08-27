@@ -74,6 +74,14 @@ export class SessionStore {
     }
   }
 
+  currentForGuest(guestWebContentsId: number): DappCapability | undefined {
+    for (const capability of this.capabilities.values()) {
+      if (capability.guestWebContentsId === guestWebContentsId)
+        return capability;
+    }
+    return undefined;
+  }
+
   revoke(connectionId: string): void {
     this.capabilities.delete(connectionId);
   }

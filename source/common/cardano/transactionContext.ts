@@ -80,6 +80,7 @@ export type TransactionContextSnapshot = Readonly<{
   commitmentContexts: readonly CommitmentContext[];
   transactionsSemantic: readonly ReturnType<typeof decodeConwayTransaction>[];
   preExistingWitnesses: readonly PreExistingWitness[];
+  maxCollateralInputs?: number;
 }>;
 type ContextResponse = Readonly<{
   walletId: string;
@@ -632,6 +633,25 @@ const parseResponse = (value: unknown): ContextResponse => {
   };
 };
 
+const maxCollateralInputs = (encoded: Hex): number | undefined => {
+  const bytes = Buffer.from(encoded, 'hex');
+  const item = parseCborItem(bytes);
+  if (item.span.end !== bytes.length || item.major !== 5 || !item.entries)
+    fail('invalid protocol parameters CBOR');
+  const value = item.entries.find(
+    ({ key }) => key.major === 0 && key.value === BigInt(24)
+  )?.value;
+  if (!value) return undefined;
+  if (
+    value.major !== 0 ||
+    value.value === undefined ||
+    value.value < BigInt(1) ||
+    value.value > BigInt(Number.MAX_SAFE_INTEGER)
+  )
+    fail('invalid max collateral inputs');
+  return Number(value.value);
+};
+
 const decodeRecord = (encoded: Hex): DecodedRecord => {
   const bytes = Buffer.from(encoded, 'hex');
   const reader = new Reader(bytes);
@@ -1158,6 +1178,7 @@ export const reconcileTransactionContext = (
   );
   if (transactionsSemantic.some(({ review }) => !review.complete))
     fail('incomplete authenticated transaction review');
+  const collateralLimit = maxCollateralInputs(response.protocolParametersCbor);
 
   return Object.freeze({
     walletId: response.walletId,
@@ -1167,6 +1188,9 @@ export const reconcileTransactionContext = (
     pendingGeneration: response.pendingGeneration,
     contextDigest: response.contextDigest,
     contextToken: response.contextToken,
+    ...(collateralLimit === undefined
+      ? {}
+      : { maxCollateralInputs: collateralLimit }),
     records: Object.freeze([...response.records]),
     transactions: Object.freeze([...expectation.transactions]),
     outputs: Object.freeze([...response.outputs]),

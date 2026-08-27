@@ -1,6 +1,11 @@
 import path from 'path';
 import { BrowserWindow } from 'electron';
-import type { Session, WebPreferences } from 'electron';
+import type {
+  IpcMainInvokeEvent,
+  Session,
+  WebFrameMain,
+  WebPreferences,
+} from 'electron';
 import type { DappEgressPolicy } from './DappEgressPolicy';
 import { requireDappSandboxAvailable } from '../sandbox/dappSandboxAvailability';
 import {
@@ -12,6 +17,7 @@ import {
 import { resolveCatalogLaunch } from './dappCatalog';
 import type { DappCatalogEntry, ResolvedCatalogLaunch } from './dappCatalog';
 import { parseDappUrl } from './urlPolicy';
+import type { DappGrantLaunch } from '../../common/types/dapp.types';
 
 export type DappGuestRevocationReason =
   | 'closed'
@@ -24,12 +30,22 @@ export type DappGuestRevocationReason =
   | 'origin-mismatch'
   | 'route-changed';
 
+export type DappGuestAuthority = Readonly<{
+  guestWebContentsId: number;
+  documentGeneration: number;
+  origin: string;
+  launch: DappGrantLaunch;
+  isCurrent: () => boolean;
+}>;
+
 type ActiveGuest = {
   readonly window: BrowserWindow;
   readonly session: Session;
   readonly launch: ResolvedCatalogLaunch;
   readonly egressPolicy: DappEgressPolicy;
   initialLoad: boolean;
+  readonly documentGeneration: number;
+  readonly grantLaunch: DappGrantLaunch;
   teardown?: Promise<void>;
 };
 export const createDappGuestWebPreferences = (
@@ -113,6 +129,7 @@ export const installDappGuestLifecyclePolicy = (
 
 export class DappBrowserManager {
   private activeGuest?: ActiveGuest;
+  private nextDocumentGeneration = 0;
 
   readonly onRevoke: (_reason: DappGuestRevocationReason) => void;
 
@@ -133,10 +150,55 @@ export class DappBrowserManager {
     else guestWindow.show();
   }
 
+  authenticate(event: IpcMainInvokeEvent): DappGuestAuthority | null {
+    const guest = this.activeGuest;
+    const frame = event.senderFrame;
+    if (
+      !guest ||
+      !frame ||
+      event.sender !== guest.window.webContents ||
+      !this.isCurrentFrame(guest, frame, event.sender.id)
+    )
+      return null;
+    return Object.freeze({
+      guestWebContentsId: guest.window.webContents.id,
+      documentGeneration: guest.documentGeneration,
+      origin: guest.launch.canonicalOrigin,
+      launch: guest.grantLaunch,
+      isCurrent: () =>
+        this.isCurrentFrame(guest, frame, guest.window.webContents.id),
+    });
+  }
+
+  private isCurrentFrame(
+    guest: ActiveGuest,
+    frame: WebFrameMain,
+    senderId: number
+  ): boolean {
+    if (
+      this.activeGuest !== guest ||
+      guest.teardown !== undefined ||
+      guest.window.isDestroyed() ||
+      guest.window.webContents.isDestroyed() ||
+      guest.window.webContents.id !== senderId ||
+      frame !== guest.window.webContents.mainFrame ||
+      frame.detached ||
+      frame.isDestroyed() ||
+      frame.origin !== guest.launch.canonicalOrigin
+    )
+      return false;
+    try {
+      return parseDappUrl(frame.url).origin === guest.launch.canonicalOrigin;
+    } catch {
+      return false;
+    }
+  }
+
   async launch(
     entry: DappCatalogEntry,
     networkGenesis: string,
-    localName: string
+    localName: string,
+    grantLaunch?: DappGrantLaunch
   ): Promise<void> {
     await requireDappSandboxAvailable();
     const launch = resolveCatalogLaunch(entry, networkGenesis, localName);
@@ -175,6 +237,14 @@ export class DappBrowserManager {
       launch,
       egressPolicy,
       initialLoad: true,
+      documentGeneration: ++this.nextDocumentGeneration,
+      grantLaunch:
+        grantLaunch ??
+        Object.freeze({
+          kind: 'catalog',
+          catalogEntryId: launch.catalogId,
+          catalogEntryIdentity: launch.catalogIdentity,
+        }),
     };
     this.activeGuest = guest;
     installDappGuestLifecyclePolicy(

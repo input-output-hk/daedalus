@@ -24,6 +24,7 @@ import {
   consumeIpcResponse,
   currentWindowSender,
 } from './ipc/lib/currentWindowSender';
+import { revokeCip30Sessions } from './cip30/runtime';
 
 export type { WatchdogConfig };
 
@@ -122,6 +123,7 @@ class BackendLifecycle {
           'NODE_BLOCK_SYNC_PROGRESS_CHANNEL'
         );
       } else if (eventType === 'stopped') {
+        revokeCip30Sessions();
         consumeIpcResponse(
           watchdogStoppedChannel.send(
             undefined,
@@ -168,6 +170,7 @@ class BackendLifecycle {
         );
       })
       .catch((reason) => {
+        revokeCip30Sessions();
         logger.error('BackendLifecycle: startup failed, scheduling restart', {
           reason,
         });
@@ -218,6 +221,7 @@ class BackendLifecycle {
   // ---------------------------------------------------------------------------
 
   async stop(): Promise<void> {
+    revokeCip30Sessions();
     if (!this.manager) return;
     const manager = this.manager;
     this.manager = null;

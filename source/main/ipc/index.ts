@@ -29,6 +29,7 @@ import { handleWindowControlRequests } from './windowControlChannels';
 import { currentWindowSender } from './lib/currentWindowSender';
 import { handleDappBrowserRequests } from './dappBrowser';
 import { handleDappConsentRequests } from './dappConsent';
+import { handleCip30BrokerRequests } from '../cip30/Cip30Broker';
 
 const hardwareWalletChannels = createChannels(MainIpcChannel);
 
@@ -56,6 +57,7 @@ export default (window: BrowserWindow) => {
   handleElectronStoreChannel();
   handleDappBrowserRequests(window);
   handleDappConsentRequests(window);
+  handleCip30BrokerRequests();
   handleHardwareWalletRequests(window, hardwareWalletChannels);
 
   // Watchdog IPC

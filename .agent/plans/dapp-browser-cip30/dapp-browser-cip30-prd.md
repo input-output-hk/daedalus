@@ -25,12 +25,13 @@ The feature also introduces full-ledger transaction context, witness-only softwa
 - Task-400 completed on 2026-08-26: canonical `/wallets/:id/dapps` and `/settings/dapp-connections` identities now support localized Shelley-only wallet navigation, invalid dApp hashes clear route authority instead of selecting the first wallet, and one route-selected eligibility gate excludes Byron, restoring, nonresponding, and deleted wallets. Existing main-owned route observation still revokes and closes the guest on navigation or wallet switches. Focused renderer and main route-lease Jest suites, TypeScript compilation, and i18n catalog validation passed; task-406 and task-408 retain ownership of the concrete catalog and connection-settings pages.
 - Task-401 completed on 2026-08-26: a dedicated main-only grant repository now validates and atomically persists only canonical exact-origin, wallet, network-genesis, read/key-disclosure, extension, and catalog-identity-or-Diagnostics authority with restrictive file permissions, fail-closed corruption repair, and explicit wallet/catalog/forget/scope invalidation. Live capabilities remain memory-only and require exact guest, document, origin, connection, route, wallet, and network identity; lifecycle revocation suppresses stale delivery without owning authorized submission execution. Existing startup launcher policy and negotiation continue to omit disabled CIP-104/CIP-142 namespaces. Focused Jest passed 5 tests; TypeScript compilation and focused formatting passed.
 - Task-401-a completed on 2026-08-26: one main-owned immutable FIFO consent coordinator now issues correlated IDs, retains frozen broker payloads outside the renderer, enforces the five-minute trusted-input inactivity timeout, cancels pre-authorization work on guest/trusted lifecycle loss, lets authorized submissions finish without stale delivery, and hides/restores the guest around global consent. One authenticated awaited trusted-renderer channel drives an App-level MobX dialog with replay-safe decisions, originating-control focus restoration, and localized en-US/ja-JP connection and elevated key-disclosure copy. Focused Jest passed 27 tests, including the 80-channel privileged IPC audit; TypeScript compilation, focused ESLint, i18n validation, and focused Prettier checks passed. Task-402 remains responsible for routing every enable/grant creation or expansion through this coordinator.
+- Task-402 completed on 2026-08-27: the sole guest CIP-30 gateway now authenticates the exact guest top frame, origin, document generation, catalog-or-Diagnostics identity, route lease, wallet, and network before and after every call. Main-owned grants and live sessions compose task-301 capability negotiation with task-401-a-only connection/elevated-disclosure consent; a strict authenticated trusted-renderer executor supplies pinned backend capability, exact empty-transaction context, and source addresses. Provider metadata, `isEnabled`/`enable`/`getExtensions`, network, address, UTxO, balance, pagination, and side-effect-free collateral methods reuse task-300 schemas, task-304 context reconciliation, and task-305 serializers. Future or unnegotiated methods refuse before executor access; offline/sync maps to `InternalError`, account drift suppresses results with `AccountChange`, and node stop/crash revokes sessions. Focused Jest passed 99 tests; TypeScript, focused ESLint/Prettier, and main/renderer builds passed. A direct development Electron preload smoke exited SIGILL under enforced sandboxing; no bypass was used, production launch remains disabled pending tasks 406/407, and installed-package adversarial runtime remains task-802.
 - Task-600 completed on 2026-08-27: production now pins the validated `@cardano-foundation/ledgerjs-hw-app-cardano@8.0.0` artifact and root Yarn identity, with the three removed hex helpers migrated to strict decoding and lock-bound Ledger/Trezor evidence refreshed. One main-owned `HardwareWalletService` now owns detection subscriptions, transports, idempotent disposal, explicit Ledger/Trezor cancellation, and generation-based late-result suppression; all existing UI calls retain authenticated trusted IPC and no guest channel was added. Focused lifecycle/IPC Jest passed 7 tests, the 14-test capability matrix passed, TypeScript and focused ESLint/Prettier passed, and main/renderer production bundles built. Tasks 601-607 retain exact transaction/path models, vendor adapters, proof verification, integration, and physical certification.
 - Task-700 completed on 2026-08-27: canonical CIP-103 request/result/error/preflight contracts now drive manifest-backed clone-safe sign/submit adapters and pure immutable ordered batch preflight. Every item validates exact bounded Conway CBOR and explicit network identity before side effects, preserves independent full-CBOR digest/body hash/index identities without deduplication, normalizes `partialSign`, and uses one stable first-failing index formatter. Focused Jest passed 10 tests; focused ESLint and Prettier checks and TypeScript compilation passed. Tasks 701-707 retain context resolution, conflict detection, review, signing, and submission.
 
 ## Problem Statement
 
-Daedalus has no runtime dApp connector, embedded remote-content boundary, or CIP-30 provider. The existing `DappTransactionRequest` component is Storybook-only and cannot safely decode or review arbitrary current-era transactions.
+The connector now has a disabled authenticated broker and base read executor, but Daedalus still has no production dApp catalog/Diagnostics launch path or complete signing/review flow. The existing `DappTransactionRequest` component is Storybook-only and cannot safely decode or review arbitrary current-era transactions.
 
 The current Electron main renderer cannot host hostile content safely:
 
@@ -141,10 +142,10 @@ This work matters because a connector that is merely functional but not byte-exa
 
 ### Pinned Backend And Dependencies
 
-- cardano-wallet `v2026-07-23`, revision `724be55dc66cf67bc4427e8f1a9657a9d1d33d71`
+- cardano-wallet task-209 aggregate revision `0cbd4618f5b3ac76bcee52c57a7cd6067a87408e`
 - cardano-wallet implementation work lands in the sibling `../cardano-wallet` checkout (`/home/westbam/Development/cardano-wallet` in the current workspace); Daedalus consumes only a reviewed commit through its Nix pin.
 - Electron `41.3.0`
-- `@cardano-foundation/ledgerjs-hw-app-cardano@7.1.4`
+- `@cardano-foundation/ledgerjs-hw-app-cardano@8.0.0`
 - `@trezor/connect@9.7.2`
 - `@cardano-sdk/core@0.41.4`
 - `cbor@5.0.2`
@@ -206,9 +207,9 @@ physical results against exact production artifacts and adapter commits.
 - The trusted main renderer is Node-enabled and not context-isolated.
 - The existing preload is privileged and cannot be reused by remote content.
 - `webviewTag` is already disabled.
-- A dedicated self-contained dApp preload synchronously exposes only `window.cardano.daedalus`, removes WebRTC/data-channel, WebTransport, and direct-socket APIs from the hostile page world, validates frozen gateway envelopes, and reconstructs typed public rejections without privileged globals. A disabled-by-construction main-owned browser manager now creates only sandbox-gated hidden guests with fresh nonpersistent sessions, exact secure preferences, local catalog identity/title policy, default-deny permissions and navigation, HTTPS/WSS origin filtering, QUIC disablement, and revoke-before-destroy cleanup. Trusted open/close IPC now consumes only main-staged one-use launches bound to a current route lease; no production launch producer, gateway handler, wallet method, or dApp launch is enabled yet.
+- A dedicated self-contained dApp preload synchronously exposes only `window.cardano.daedalus`, removes WebRTC/data-channel, WebTransport, and direct-socket APIs from the hostile page world, validates frozen gateway envelopes, and reconstructs typed public rejections without privileged globals. The main broker authenticates the exact guest top frame/origin/document/route and uses main-owned grants, live sessions, registry capability checks, correlated trusted consent, and one authenticated trusted-renderer wallet executor. Base read methods return exact task-305 encodings and recheck authority before result release; signing, submission, extension bodies beyond base negotiation, catalog launch, and Diagnostics launch remain disabled in their downstream tasks.
 - Each guest session installs a loopback-only fixed CONNECT proxy before its `BrowserWindow` exists. The proxy resolves each HTTPS/WSS tunnel independently, rejects every non-public IPv4/IPv6 result including IPv4-mapped forms, and dials only the validated numeric address with no direct fallback. URL origin allowlisting remains a separate required check, proxy setup failure rejects launch, and teardown closes tunnels before clearing the nonpersistent session. Electron 41 provides no pre-connect peer-address hook, so Chromium Private Network Access is defense in depth rather than the connection-binding proof. Production guest and Diagnostics launch remain disabled by the independent packaged policy and remaining release gates.
-- A checked 79-channel manifest accounts for all production privileged IPC. Every channel uses exact trusted main WebContents/frame/document authentication and correlated caller-targeted responses; raw close/resize listeners and direct renderer callers have been migrated. Production guest launch remains disabled by the independent sandbox, guest, ledger, signing, hardware, and review gates.
+- A checked 81-channel manifest accounts for all production privileged IPC, including the new main-to-trusted-renderer wallet executor. Every privileged channel uses exact trusted main WebContents/frame/document authentication and correlated caller-targeted responses; the sole raw guest gateway is separately audited and exact-guest authenticated. Production guest launch remains disabled by the independent catalog, signing, hardware, review, and release gates.
 - A production-bundled hostile-renderer harness now drives the real Electron policies against every incoming privileged IPC channel, wrong senders and subframes, lifecycle revocation, popup/download/permission/device/certificate attempts, transport removal, DevTools denial, packaged launcher-policy variants, and fresh-session storage cleanup. It validates the actual guest renderer PID with the same `/proc` invariants as the runtime sandbox canary. Final Nix `.deb` and `.rpm` artifacts include both harness bundles; the exact installed Ubuntu 24.04 package runtime passed, while task-005-b remains the authoritative installed-artifact containment evidence for Fedora 43 and the other supported rows. This validation surface does not enable production guest launch.
 - The global popup handler now denies requests without shell side effects; trusted UI external-link requests accept only parsed credential-free HTTPS URLs with awaited privacy-safe failures.
 - Linux launch paths no longer pass `--disable-setuid-sandbox` or `--no-sandbox`. Main rejects sandbox-disabling argv/environment state and requires supported system-package identity plus a hidden same-PID local renderer canary before future dApp launch can become available.
@@ -218,9 +219,8 @@ physical results against exact production artifacts and adapter commits.
 
 - `WalletsStore.active` remains route-derived, but exact invalid dApp routes now clear authority instead of silently falling back to the first wallet. A shared selector exposes only the exact active Shelley wallet when it is present, restored, and responding.
 - Canonical wallet-scoped dApp and connection-settings route identities exist, and localized wallet navigation exposes DApps only for Shelley wallets. Concrete catalog and connection-settings page content remains task-406 and task-408 scope.
-- Existing dialog stores do not provide a correlated, app-global request queue.
+- A correlated app-global consent queue and strict trusted `Cip30WalletService` executor are active. The executor gates on the exact route-selected wallet and connected/synced node, validates the pinned backend capability/context contracts, returns only source addresses or raw authenticated context, and logs no address results.
 - `DappTransactionRequest` is static and cannot review arbitrary scripts, governance, collateral, minting, certificates, withdrawals, or batch dependencies.
-- Network readiness is split between `NetworkStatusStore.isConnected` and `NetworkStatusStore.isSynced`.
 
 ### cardano-wallet
 
@@ -379,16 +379,16 @@ physical results against exact production artifacts and adapter commits.
 
 ### Functional Requirements
 
-- [ ] Add `/wallets/:id/dapps` and a wallet-navigation item hidden for Byron wallets.
+- [x] Add `/wallets/:id/dapps` and a wallet-navigation item hidden for Byron wallets.
 - [ ] Add a bundled, release-versioned curated dApp catalog.
 - [ ] Add arbitrary HTTPS launch through a one-use Diagnostics-to-wallet-dApp-route handoff.
-- [ ] Create an isolated nonpersistent guest window and dedicated preload.
-- [ ] Inject `window.cardano.daedalus` before remote page scripts execute.
-- [ ] Implement provider metadata, `isEnabled`, `enable`, and extension negotiation.
-- [ ] Persist exact-origin read grants in a main-owned repository.
+- [x] Create an isolated nonpersistent guest window and dedicated preload.
+- [x] Inject `window.cardano.daedalus` before remote page scripts execute.
+- [x] Implement provider metadata, `isEnabled`, `enable`, and extension negotiation.
+- [x] Persist exact-origin read grants in a main-owned repository.
 - [ ] Add connection/key-disclosure revocation and wallet deletion cleanup.
-- [ ] Implement base CIP-30 read methods and exact serialization.
-- [ ] Implement deprecated `getCollateral` for compatibility while labeling it deprecated internally and in developer documentation.
+- [x] Implement base CIP-30 read methods and exact serialization.
+- [x] Implement deprecated `getCollateral` for compatibility while labeling it deprecated internally and in developer documentation.
 - [ ] Implement exact CIP-30/CIP-8 `signData`.
 - [ ] Implement witness-only `signTx` for software and hardware wallets.
 - [ ] Implement separately reviewed `submitTx` through wallet-scoped submission.

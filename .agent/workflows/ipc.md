@@ -223,6 +223,18 @@ consumeIpcResponse(
 );
 ```
 
+The hostile dApp renderer has one exception to the trusted-renderer wrapper:
+`dapp-cip30-gateway`. Its sole raw `ipcMain.handle` owner is
+`source/main/cip30/Cip30Broker.ts`, and the IPC audit permits only that exact
+channel after broker authentication of the active guest top frame, canonical
+origin, document generation, and route lease. Never add another raw guest
+channel or route guest calls through `MainIpcChannel`, whose authority is the
+trusted main renderer.
+
+Broker-selected wallet work uses `DAPP_CIP30_WALLET_CHANNEL` in the opposite
+direction through `MainIpcChannel`: main sends an immutable request to the
+authenticated trusted renderer and independently validates its response.
+
 ---
 
 ## Channel Categories

@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { BrowserWindow } from 'electron';
+import type { IpcMainInvokeEvent } from 'electron';
 import { requireDappSandboxAvailable } from '../sandbox/dappSandboxAvailability';
 import {
   clearDappSession,
@@ -42,8 +43,17 @@ const deferred = () => {
 const egressPolicy = { close: jest.fn(() => Promise.resolve()) };
 
 const makeWindow = (load = Promise.resolve()) => {
+  const frame = {
+    url: 'https://example.com/app',
+    origin: 'https://example.com',
+    detached: false,
+    isDestroyed: jest.fn(() => false),
+  };
   const webContents = Object.assign(new EventEmitter(), {
+    id: 17,
+    mainFrame: frame,
     getURL: jest.fn(() => 'https://example.com/app'),
+    isDestroyed: jest.fn(() => false),
     stop: jest.fn(),
   });
   let destroyed = false;
@@ -58,7 +68,7 @@ const makeWindow = (load = Promise.resolve()) => {
       destroyed = true;
     }),
   });
-  return { window, webContents };
+  return { window, webContents, frame };
 };
 
 const flush = () =>
@@ -142,6 +152,44 @@ describe('DappBrowserManager', () => {
 
     expect(window.hide).toHaveBeenCalledTimes(1);
     expect(window.show).toHaveBeenCalledTimes(1);
+  });
+
+  test('authenticates only the live exact guest top frame and origin', async () => {
+    const { window, webContents, frame } = makeWindow();
+    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    const manager = new DappBrowserManager();
+    await manager.launch(entry, 'genesis', 'Example');
+    const event = ({
+      sender: webContents,
+      senderFrame: frame,
+    } as unknown) as IpcMainInvokeEvent;
+
+    const authority = manager.authenticate(event);
+    expect(authority).toMatchObject({
+      guestWebContentsId: 17,
+      documentGeneration: 1,
+      origin: 'https://example.com',
+      launch: {
+        kind: 'catalog',
+        catalogEntryId: 'example',
+      },
+    });
+    expect(authority?.isCurrent()).toBe(true);
+    expect(
+      manager.authenticate(({
+        sender: webContents,
+        senderFrame: { ...frame },
+      } as unknown) as IpcMainInvokeEvent)
+    ).toBeNull();
+    expect(
+      manager.authenticate(({
+        sender: { id: 18 },
+        senderFrame: frame,
+      } as unknown) as IpcMainInvokeEvent)
+    ).toBeNull();
+
+    frame.origin = 'https://evil.test';
+    expect(authority?.isCurrent()).toBe(false);
   });
 
   test('keeps an origin mismatch hidden and clears the guest', async () => {
