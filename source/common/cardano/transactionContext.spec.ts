@@ -57,7 +57,8 @@ const makeTransaction = (
 
 const makeResponse = (
   transaction: ReturnType<typeof makeTransaction>,
-  transactionOverride?: string
+  transactionOverride?: string,
+  protocolParametersCbor = 'a0'
 ) => {
   const transactions = [transactionOverride || transaction.cbor];
   const expectation: ContextExpectation = {
@@ -110,7 +111,7 @@ const makeResponse = (
         u32(42),
         u32(9),
         u32(0),
-        sized(Buffer.from('a0', 'hex')),
+        sized(Buffer.from(protocolParametersCbor, 'hex')),
       ])
     )
   );
@@ -142,7 +143,7 @@ const makeResponse = (
       pending_generation: '9',
       era: 'conway',
       protocol_version: { major: 9, minor: 0 },
-      protocol_parameters_cbor: 'a0',
+      protocol_parameters_cbor: protocolParametersCbor,
       volatile_delta: {
         point: { kind: 'block', slot: '43', block_hash: '03'.repeat(32) },
         node_transaction_inputs: [],
@@ -166,7 +167,11 @@ const makeResponse = (
 };
 
 test('reconciles all input roles into one immutable trusted snapshot', () => {
-  const fixture = makeResponse(makeTransaction());
+  const fixture = makeResponse(
+    makeTransaction(),
+    undefined,
+    cbor.encodeCanonical(new Map([[24, 3]])).toString('hex')
+  );
   const snapshot = reconcileTransactionContext(
     fixture.response,
     fixture.expectation
@@ -178,6 +183,7 @@ test('reconciles all input roles into one immutable trusted snapshot', () => {
   });
   expect(snapshot.commitmentContexts[0].resolvedInputs).toHaveLength(3);
   expect(snapshot.walletGeneration).toBe(BigInt(7));
+  expect(snapshot.maxCollateralInputs).toBe(3);
   expect(Object.isFrozen(snapshot)).toBe(true);
 });
 

@@ -27,6 +27,8 @@ const invokeGateway = async <T>(
   try {
     result = await ipcRenderer.invoke(DAPP_CIP30_GATEWAY_CHANNEL, request);
   } catch {
+    // Public CIP errors are plain values by the frozen CIP-30 contract.
+    // eslint-disable-next-line no-throw-literal
     throw { ...INTERNAL_ERROR };
   }
 
@@ -38,6 +40,8 @@ const invokeGateway = async <T>(
     return envelope.value as T;
   } catch (error) {
     if (!(error instanceof Error)) throw error;
+    // Public CIP errors are plain values by the frozen CIP-30 contract.
+    // eslint-disable-next-line no-throw-literal
     throw { ...INTERNAL_ERROR };
   }
 };
@@ -97,7 +101,7 @@ const provider: DaedalusProvider = {
   name: 'Daedalus',
   icon:
     'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"/>',
-  supportedExtensions: [],
+  supportedExtensions: [{ cip: 95 }, { cip: 103 }],
   isEnabled: method('provider.isEnabled'),
   enable: (async (...args: unknown[]) => {
     await invokeGateway('provider.enable', args);

@@ -62,7 +62,7 @@ describe('dApp preload', () => {
       'isEnabled',
       'enable',
     ]);
-    expect(provider.supportedExtensions).toEqual([]);
+    expect(provider.supportedExtensions).toEqual([{ cip: 95 }, { cip: 103 }]);
   });
   it('rejects malformed calls before IPC access', async () => {
     const isEnabled = provider.isEnabled as (

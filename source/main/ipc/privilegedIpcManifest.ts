@@ -112,6 +112,17 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
     callerOwners: ['source/main/ipc/dappConsent.ts'],
     callerCount: 2,
   }),
+  ...entries(['DAPP_CIP30_WALLET_CHANNEL'], {
+    constructorOwner: 'source/main/ipc/cip30Wallet.ts',
+    rendererOwner: 'source/renderer/app/ipc/cip30Wallet.ts',
+    registrationOwner: null,
+    capability: 'dapp-wallet-executor',
+    direction: 'main-to-renderer',
+    receive: 'none',
+    settlement: 'awaited',
+    callerOwners: ['source/main/ipc/cip30Wallet.ts'],
+    callerCount: 1,
+  }),
   ...entries(['SHOW_UI_PART_CHANNEL'], {
     constructorOwner: 'source/main/ipc/control-ui-parts.ts',
     rendererOwner: 'source/renderer/app/ipc/control-ui-parts.ts',

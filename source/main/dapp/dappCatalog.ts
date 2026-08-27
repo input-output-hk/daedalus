@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import type { DappCatalogEntry } from '../../common/types/dapp.types';
 import {
   canonicalizeDappOrigin,
@@ -13,6 +14,7 @@ export type ResolvedCatalogLaunch = Readonly<{
   canonicalOrigin: string;
   allowedResourceOrigins: ReadonlySet<string>;
   windowTitle: string;
+  catalogIdentity: string;
 }>;
 
 const localWindowTitle = (name: string): string => {
@@ -27,6 +29,26 @@ const localWindowTitle = (name: string): string => {
     throw new Error('Invalid local dApp title');
   return `${name.trim()} — Daedalus`;
 };
+
+export const dappCatalogEntryIdentity = (entry: DappCatalogEntry): string =>
+  createHash('sha256')
+    .update(
+      JSON.stringify({
+        id: entry.id,
+        nameMessageId: entry.nameMessageId,
+        iconAsset: entry.iconAsset,
+        entryUrlByNetworkGenesis: Object.entries(
+          entry.entryUrlByNetworkGenesis
+        ).sort(([left], [right]) => left.localeCompare(right)),
+        canonicalOrigin: entry.canonicalOrigin,
+        allowedResourceOrigins: [...entry.allowedResourceOrigins].sort(),
+        supportedWalletKinds: [...entry.supportedWalletKinds].sort(),
+        supportedExtensions: [...entry.supportedExtensions].sort(
+          (left, right) => left - right
+        ),
+      })
+    )
+    .digest('hex');
 
 export const resolveCatalogLaunch = (
   entry: DappCatalogEntry,
@@ -52,5 +74,6 @@ export const resolveCatalogLaunch = (
     canonicalOrigin,
     allowedResourceOrigins,
     windowTitle: localWindowTitle(localName),
+    catalogIdentity: dappCatalogEntryIdentity(entry),
   });
 };

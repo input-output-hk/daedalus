@@ -548,9 +548,7 @@ export default class AdaApi {
   getAddresses = async (
     request: GetAddressesRequest
   ): Promise<Array<WalletAddress>> => {
-    logger.debug('AdaApi::getAddresses called', {
-      parameters: filterLogData(request),
-    });
+    logger.debug('AdaApi::getAddresses called');
     const { walletId, queryParams, isLegacy } = request;
 
     try {
@@ -567,14 +565,10 @@ export default class AdaApi {
         response.reverse();
       }
 
-      logger.debug('AdaApi::getAddresses success', {
-        addresses: response,
-      });
+      logger.debug('AdaApi::getAddresses success');
       return response.map(_createAddressFromServerData);
     } catch (error) {
-      logger.error('AdaApi::getAddresses error', {
-        error,
-      });
+      logger.error('AdaApi::getAddresses error');
       throw new ApiError(error);
     }
   };

@@ -30,6 +30,7 @@ import {
   consumeIpcResponse,
   currentWindowSender,
 } from './ipc/lib/currentWindowSender';
+import { revokeCip30Sessions } from './cip30/runtime';
 
 type EventHandler = (event: Record<string, unknown>) => void;
 
@@ -159,6 +160,7 @@ class BackendLifecycle {
           'NODE_BLOCK_SYNC_PROGRESS_CHANNEL'
         );
       } else if (eventType === 'stopped') {
+        revokeCip30Sessions();
         consumeIpcResponse(
           watchdogStoppedChannel.send(
             undefined,
@@ -180,6 +182,7 @@ class BackendLifecycle {
     // above covers subsequent wallet restarts. Keep the promise for callers
     // (e.g. BackendLifecycle.getWalletPort()) but the port push is now event-driven.
     manager.walletReadyPromise.catch((reason) => {
+      revokeCip30Sessions();
       // When watchdog exits it also kills Electron (via tether_to_watchdog),
       // so there is nothing useful to do here except log the reason.
       logger.error('BackendLifecycle: watchdog stopped', { reason });
@@ -232,6 +235,7 @@ class BackendLifecycle {
   // exits, so the renderer keeps receiving state and progress while the window
   // shows the shutdown status. Repeated calls share one stop.
   stop(): Promise<void> {
+    revokeCip30Sessions();
     const { manager } = this;
     if (!manager) return Promise.resolve();
     if (this._stopPromise === null) {
