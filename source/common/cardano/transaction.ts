@@ -93,6 +93,8 @@ export type GovernanceProposal = DecodedItem<Hex> &
   Readonly<{ policyScriptHashes: readonly Hex[] }>;
 export type Certificate = Readonly<{
   kind: number;
+  credentialIdentities: readonly string[];
+  targetCredentialIdentities: readonly string[];
   scriptCredentialHashes: readonly Hex[];
   targetScriptHashes: readonly Hex[];
 }>;
@@ -422,20 +424,31 @@ const plutusData = (item: CborItem, source: Buffer): void => {
   }
   fail();
 };
+const credentialIdentity = (
+  source: Buffer,
+  item: CborItem,
+  allowDrep = false
+): string => {
+  const parts = array(item);
+  const kind = uint(parts[0]);
+  if (kind <= BigInt(1)) {
+    if (parts.length !== 2) fail();
+    return `${kind === BigInt(0) ? 'key' : 'script'}:${hex(
+      source,
+      parts[1],
+      28
+    )}`;
+  }
+  if (!allowDrep || kind > BigInt(3) || parts.length !== 1) fail();
+  return kind === BigInt(2) ? 'always-abstain' : 'always-no-confidence';
+};
 const credential = (
   source: Buffer,
   item: CborItem,
   allowDrep = false
 ): Hex | undefined => {
-  const parts = array(item);
-  const kind = uint(parts[0]);
-  if (kind <= BigInt(1)) {
-    if (parts.length !== 2) fail();
-    const hashValue = hex(source, parts[1], 28);
-    return kind === BigInt(1) ? hashValue : undefined;
-  }
-  if (!allowDrep || kind > BigInt(3) || parts.length !== 1) fail();
-  return undefined;
+  const identity = credentialIdentity(source, item, allowDrep);
+  return identity.startsWith('script:') ? identity.slice(7) : undefined;
 };
 const actionId = (source: Buffer, item: CborItem): string => {
   const parts = array(item);
@@ -890,13 +903,19 @@ const certificate = (source: Buffer, item: CborItem): Certificate => {
   if (arity[tag] !== parts.length) fail();
   const scriptCredentialHashes: Hex[] = [];
   const targetScriptHashes: Hex[] = [];
+  const credentialIdentities: string[] = [];
+  const targetCredentialIdentities: string[] = [];
   const collect = (candidate: CborItem, allowDrep = false) => {
-    const script = credential(source, candidate, allowDrep);
-    if (script) scriptCredentialHashes.push(script);
+    const identity = credentialIdentity(source, candidate, allowDrep);
+    credentialIdentities.push(identity);
+    if (identity.startsWith('script:'))
+      scriptCredentialHashes.push(identity.slice(7));
   };
   const collectTarget = (candidate: CborItem, allowDrep = false) => {
-    const script = credential(source, candidate, allowDrep);
-    if (script) targetScriptHashes.push(script);
+    const identity = credentialIdentity(source, candidate, allowDrep);
+    targetCredentialIdentities.push(identity);
+    if (identity.startsWith('script:'))
+      targetScriptHashes.push(identity.slice(7));
   };
   if ([0, 1, 2, 7, 8, 9, 10, 11, 12, 13].includes(tag)) collect(parts[1]);
   if ([14, 15, 16, 17, 18].includes(tag)) collect(parts[1]);
@@ -922,6 +941,8 @@ const certificate = (source: Buffer, item: CborItem): Certificate => {
     kind: tag,
     scriptCredentialHashes: [...new Set(scriptCredentialHashes)],
     targetScriptHashes: [...new Set(targetScriptHashes)],
+    credentialIdentities: [...new Set(credentialIdentities)],
+    targetCredentialIdentities: [...new Set(targetCredentialIdentities)],
   };
 };
 const voter = (

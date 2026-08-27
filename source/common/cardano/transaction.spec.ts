@@ -324,6 +324,18 @@ describe('Conway semantic transaction', () => {
       18,
     ]);
     expect(
+      transaction.certificates
+        .slice(-3)
+        .map(({ value }) => value.credentialIdentities)
+    ).toEqual([
+      [`key:${keyHash.toString('hex')}`],
+      [`key:${keyHash.toString('hex')}`],
+      [`key:${keyHash.toString('hex')}`],
+    ]);
+    expect(
+      transaction.certificates[7].value.targetCredentialIdentities
+    ).toEqual(['always-abstain']);
+    expect(
       transaction.certificates.every(({ decoded }) => decoded.kind === 'array')
     ).toBe(true);
     expect(transaction.governance.proposals).toHaveLength(7);

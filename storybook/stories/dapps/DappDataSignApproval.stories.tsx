@@ -48,4 +48,20 @@ storiesOf('dApps / DataSignApproval', module)
       onApprove={action('approve')}
       onReject={action('reject')}
     />
+  ))
+  .add('DRep governance payload', () => (
+    <DappDataSignApproval
+      request={{
+        ...request('Governance authorization'),
+        scopes: ['governance-data-signing'],
+        review: {
+          ...request('Governance authorization').review,
+          address: '33'.repeat(28),
+          credentialKind: 'drep',
+        },
+      }}
+      deciding={false}
+      onApprove={action('approve DRep signature')}
+      onReject={action('reject')}
+    />
   ));

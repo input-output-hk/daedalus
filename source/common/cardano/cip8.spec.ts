@@ -108,6 +108,10 @@ describe('CIP-8', () => {
       expect(prepared.credentialKind).toBe('drep');
       expect(prepared.credential.toString('hex')).toBe(fixture.drepId);
       expect(prepared.protectedAddress.toString('hex')).toBe(fixture.drepId);
+      expect(
+        parseCip8DataSignReview(createCip8DataSignReview(prepared))
+          .credentialKind
+      ).toBe('drep');
       expect(verifyCip8BackendResponse(prepared, response())).toEqual({
         signature: fixture.coseSign1,
         key: fixture.coseKey,
@@ -146,6 +150,9 @@ describe('CIP-8', () => {
     ).toThrow(Cip8AddressNotPKError);
     expect(() =>
       prepareCip8Request(fixture.drepId, '', { networkId: 1 })
+    ).toThrow(Cip8Error);
+    expect(() =>
+      prepareCip8Request(`00${fixture.drepId.slice(2)}`, '', options)
     ).toThrow(Cip8Error);
   });
 

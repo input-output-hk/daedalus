@@ -65,4 +65,30 @@ describe('DappDataSignApproval', () => {
       )
     ).toBeVisible();
   });
+
+  it('shows the normalized DRep credential identity', () => {
+    const drep = {
+      ...request('Governance'),
+      scopes: ['governance-data-signing'],
+      review: {
+        ...request('Governance').review,
+        address: '33'.repeat(28),
+        credentialKind: 'drep' as const,
+      },
+    };
+    render(
+      <StoryDecorator>
+        <IntlProvider locale="en-US" messages={translations}>
+          <DappDataSignApproval
+            request={drep}
+            deciding={false}
+            onApprove={jest.fn()}
+            onReject={jest.fn()}
+          />
+        </IntlProvider>
+      </StoryDecorator>
+    );
+    expect(screen.getByText('Credential: drep')).toBeVisible();
+    expect(screen.getByText(drep.review.address)).toBeVisible();
+  });
 });

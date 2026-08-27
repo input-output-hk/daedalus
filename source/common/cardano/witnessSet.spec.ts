@@ -166,6 +166,15 @@ test('returns only fresh VKeys and preserves exact immutable fields on merge', (
   expect(extractVKeyWitnesses(delta).map((item) => item.publicKey)).toEqual([
     freshKeys.publicKey,
   ]);
+  const required = extractVKeyWitnesses(delta)[0].keyHash.toString('hex');
+  expect(() =>
+    diffVKeyWitnesses(original, original.transactionId, returned, [required])
+  ).not.toThrow();
+  expect(() =>
+    diffVKeyWitnesses(original, original.transactionId, returned, [
+      'ff'.repeat(28),
+    ])
+  ).toThrow(WitnessSetError);
   expect(() => diffVKeyWitnesses(original, '00'.repeat(32), returned)).toThrow(
     WitnessSetError
   );
