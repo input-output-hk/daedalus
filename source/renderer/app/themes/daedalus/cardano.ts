@@ -172,9 +172,6 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-connecting-description-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-connecting-sync-progress-color': '#fff',
   },
-  dapps: {
-    '--theme-dapp-transaction-request-fees-text-color': '#ea4c5b',
-  },
   dataMigration: {
     '--theme-data-migration-layer-background-color': 'rgba(32, 34, 37, 0.96)',
     '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
