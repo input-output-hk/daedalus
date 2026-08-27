@@ -43,6 +43,9 @@
     overflow-y: overlay;
   }
 
+  &.dappBrowserAvailable {
+    overflow-y: auto;
+  }
   .tables {
     color: var(--theme-network-window-white-color);
     display: flex;
@@ -175,6 +178,42 @@
       border: 0;
       border-top: 1px solid var(--theme-network-window-border-color);
     }
+  }
+
+  .dappBrowser {
+    color: var(--theme-network-window-text-color);
+    display: grid;
+    gap: 8px;
+
+    label {
+      font-family: var(--font-regular);
+      opacity: 0.7;
+    }
+
+    input,
+    select {
+      background: var(--theme-network-window-button-background-color);
+      border: 1px solid var(--theme-network-window-border-color);
+      border-radius: 4px;
+      color: var(--theme-network-window-text-color);
+      font-family: var(--font-regular);
+      min-width: 0;
+      padding: 6px 8px;
+      width: 100%;
+    }
+
+    button {
+      height: 28px;
+      justify-self: start;
+      margin-top: 4px;
+    }
+  }
+
+  .dappBrowserWarning {
+    color: var(--theme-network-window-text-color);
+    font-family: var(--font-regular);
+    line-height: 1.4;
+    margin: 0;
   }
 
   .error {

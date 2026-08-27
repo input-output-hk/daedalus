@@ -82,6 +82,17 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
   onStartMithrilPartialSync: async () => {
     action('onStartMithrilPartialSync')();
   },
+  diagnosticsWallets: [
+    { id: 'wallet-a', name: 'Personal wallet' },
+    { id: 'wallet-b', name: 'Hardware wallet' },
+  ],
+  defaultDiagnosticsWalletId: 'wallet-a',
+  diagnosticsAvailable: true,
+  diagnosticsReady: true,
+  isDappLaunching: false,
+  onLaunchDapp: async (url, walletId, localName) => {
+    action('onLaunchDapp')({ url, walletId, localName });
+  },
 };
 
 type ConfirmationProps = ComponentProps<typeof MithrilPartialSyncConfirmation>;

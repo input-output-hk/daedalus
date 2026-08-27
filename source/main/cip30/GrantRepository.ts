@@ -5,6 +5,7 @@ import {
   DappGrantLaunch,
   DappScope,
 } from '../../common/types/dapp.types';
+import type { DappUrlPolicy } from '../dapp/urlPolicy';
 import { canonicalizeDappOrigin } from '../dapp/urlPolicy';
 
 export const DAPP_GRANT_SCHEMA_VERSION = 1;
@@ -43,7 +44,11 @@ const parseLaunch = (value: unknown): DappGrantLaunch => {
   throw new Error('Invalid grant');
 };
 
-const parseGrant = (value: unknown, canonical = true): DappGrant => {
+const parseGrant = (
+  value: unknown,
+  canonical = true,
+  urlPolicy: DappUrlPolicy = { allowHttpLoopback: false }
+): DappGrant => {
   if (
     !isObject(value) ||
     !ownKeysAre(value, [
@@ -75,7 +80,7 @@ const parseGrant = (value: unknown, canonical = true): DappGrant => {
   )
     throw new Error('Invalid grant');
 
-  const origin = canonicalizeDappOrigin(value.origin);
+  const origin = canonicalizeDappOrigin(value.origin, urlPolicy);
   if (canonical && origin !== value.origin) throw new Error('Invalid grant');
   return Object.freeze({
     schemaVersion: DAPP_GRANT_SCHEMA_VERSION,
@@ -112,8 +117,12 @@ const sameLaunch = (left: DappGrantLaunch, right: DappGrantLaunch) =>
       left.catalogEntryId === right.catalogEntryId &&
       left.catalogEntryIdentity === right.catalogEntryIdentity));
 
-const sameIdentity = (grant: DappGrant, identity: GrantIdentity) =>
-  grant.origin === canonicalizeDappOrigin(identity.origin) &&
+const sameIdentity = (
+  grant: DappGrant,
+  identity: GrantIdentity,
+  urlPolicy: DappUrlPolicy
+) =>
+  grant.origin === canonicalizeDappOrigin(identity.origin, urlPolicy) &&
   grant.walletId === identity.walletId &&
   grant.networkGenesis === identity.networkGenesis &&
   sameLaunch(grant.launch, identity.launch);
@@ -122,9 +131,14 @@ export class GrantRepository {
   private grants: readonly DappGrant[] = [];
   private corrupt = false;
   private readonly filePath: string;
+  private readonly urlPolicy: DappUrlPolicy;
 
-  constructor(filePath: string) {
+  constructor(
+    filePath: string,
+    urlPolicy: DappUrlPolicy = { allowHttpLoopback: false }
+  ) {
     this.filePath = filePath;
+    this.urlPolicy = urlPolicy;
     this.load();
   }
 
@@ -141,7 +155,7 @@ export class GrantRepository {
     try {
       return this.grants.find(
         (grant) =>
-          sameIdentity(grant, requirement) &&
+          sameIdentity(grant, requirement, this.urlPolicy) &&
           (requirement.scopes ?? []).every((scope) =>
             grant.readScopes.includes(scope)
           ) &&
@@ -158,10 +172,13 @@ export class GrantRepository {
     if (this.corrupt) throw new Error('Grant repository requires repair');
     const grant = parseGrant(
       { ...value, schemaVersion: DAPP_GRANT_SCHEMA_VERSION },
-      false
+      false,
+      this.urlPolicy
     );
     const next = [
-      ...this.grants.filter((current) => !sameIdentity(current, grant)),
+      ...this.grants.filter(
+        (current) => !sameIdentity(current, grant, this.urlPolicy)
+      ),
       grant,
     ];
     this.save(next);
@@ -169,7 +186,7 @@ export class GrantRepository {
   }
 
   forget(identity: GrantIdentity): void {
-    this.update((grant) => !sameIdentity(grant, identity));
+    this.update((grant) => !sameIdentity(grant, identity, this.urlPolicy));
   }
 
   removeWallet(walletId: string): void {
@@ -189,7 +206,7 @@ export class GrantRepository {
     const revoked = new Set(scopes);
     this.replace(
       this.grants.map((grant) =>
-        sameIdentity(grant, identity)
+        sameIdentity(grant, identity, this.urlPolicy)
           ? Object.freeze({
               ...grant,
               readScopes: Object.freeze(
@@ -218,10 +235,14 @@ export class GrantRepository {
         !Array.isArray(stored.grants)
       )
         throw new Error('Invalid grant repository');
-      const grants = stored.grants.map((grant) => parseGrant(grant));
+      const grants = stored.grants.map((grant) =>
+        parseGrant(grant, true, this.urlPolicy)
+      );
       if (
         grants.some((grant, index) =>
-          grants.slice(index + 1).some((other) => sameIdentity(other, grant))
+          grants
+            .slice(index + 1)
+            .some((other) => sameIdentity(other, grant, this.urlPolicy))
         )
       )
         throw new Error('Duplicate grant');

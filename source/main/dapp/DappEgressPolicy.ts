@@ -26,7 +26,10 @@ export const isPublicGuestIp = (value: string): boolean => {
 const destinationKey = ({ host, port }: Destination): string =>
   `${host.toLowerCase()}:${port}`;
 
-const parseDestination = (authority: string): Destination | undefined => {
+const parseDestination = (
+  authority: string,
+  defaultPort = 443
+): Destination | undefined => {
   if (
     typeof authority !== 'string' ||
     authority === '' ||
@@ -37,7 +40,7 @@ const parseDestination = (authority: string): Destination | undefined => {
   try {
     const url = new URL(`https://${authority}`);
     const host = url.hostname.replace(/^\[|\]$/gu, '');
-    const port = Number(url.port || '443');
+    const port = Number(url.port || defaultPort);
     if (!host || !Number.isInteger(port) || port < 1 || port > 65535)
       return undefined;
     return { host, port };
@@ -62,7 +65,9 @@ const allowedDestinations = (
 export class DappEgressPolicy {
   private readonly server: http.Server;
 
-  private readonly allowed: ReadonlySet<string>;
+  private readonly allowed?: ReadonlySet<string>;
+
+  private readonly allowHttpLoopback: boolean;
 
   private readonly sockets = new Set<net.Socket>();
 
@@ -70,25 +75,38 @@ export class DappEgressPolicy {
 
   private constructor(
     server: http.Server,
-    allowedResourceOrigins: ReadonlySet<string>
+    allowedResourceOrigins: ReadonlySet<string> | undefined,
+    allowHttpLoopback: boolean
   ) {
     this.server = server;
-    this.allowed = allowedDestinations(allowedResourceOrigins);
+    this.allowed = allowedResourceOrigins
+      ? allowedDestinations(allowedResourceOrigins)
+      : undefined;
+    this.allowHttpLoopback = allowHttpLoopback;
     server.on('connect', (request, socket, head) => {
       this.handleConnect(request.url, socket as net.Socket, head).catch(() => {
         socket.destroy();
+      });
+    });
+    server.on('request', (request, response) => {
+      this.handleHttpRequest(request, response).catch(() => {
+        if (!response.headersSent) response.writeHead(403);
+        response.end();
       });
     });
   }
 
   static async install(
     guestSession: Session,
-    allowedResourceOrigins: ReadonlySet<string>
+    allowedResourceOrigins?: ReadonlySet<string>,
+    allowHttpLoopback = false
   ): Promise<DappEgressPolicy> {
-    const server = http.createServer((_request, response) => {
-      response.writeHead(403).end();
-    });
-    const policy = new DappEgressPolicy(server, allowedResourceOrigins);
+    const server = http.createServer();
+    const policy = new DappEgressPolicy(
+      server,
+      allowedResourceOrigins,
+      allowHttpLoopback
+    );
 
     try {
       server.listen(0, PROXY_HOST);
@@ -129,7 +147,7 @@ export class DappEgressPolicy {
     if (
       this.closed ||
       !destination ||
-      !this.allowed.has(destinationKey(destination))
+      (this.allowed && !this.allowed.has(destinationKey(destination)))
     ) {
       client.end('HTTP/1.1 403 Forbidden\r\n\r\n');
       return;
@@ -137,7 +155,7 @@ export class DappEgressPolicy {
 
     this.sockets.add(client);
     client.once('close', () => this.sockets.delete(client));
-    const target = await this.connect(destination);
+    const target = await this.connect(destination, false);
     if (this.closed) {
       target.destroy();
       client.destroy();
@@ -156,13 +174,61 @@ export class DappEgressPolicy {
     target.once('error', destroyPair);
   }
 
-  private async connect({ host, port }: Destination): Promise<net.Socket> {
+  private async handleHttpRequest(
+    request: http.IncomingMessage,
+    response: http.ServerResponse
+  ): Promise<void> {
+    if (!this.allowHttpLoopback || !request.url) throw new Error('Forbidden');
+    const url = new URL(request.url);
+    const destination = parseDestination(url.host, 80);
+    if (
+      url.protocol !== 'http:' ||
+      url.username !== '' ||
+      url.password !== '' ||
+      !destination
+    )
+      throw new Error('Forbidden');
+
+    const target = await this.connect(destination, true);
+    const headers = { ...request.headers };
+    delete headers['proxy-authorization'];
+    delete headers['proxy-connection'];
+    const upstream = http.request({
+      hostname: destination.host,
+      port: destination.port,
+      method: request.method,
+      path: `${url.pathname}${url.search}`,
+      headers,
+      agent: false,
+      createConnection: () => target,
+    });
+    upstream.once('response', (upstreamResponse) => {
+      response.writeHead(
+        upstreamResponse.statusCode || 502,
+        upstreamResponse.headers
+      );
+      upstreamResponse.pipe(response);
+    });
+    upstream.once('error', () => response.destroy());
+    request.pipe(upstream);
+  }
+
+  private async connect(
+    { host, port }: Destination,
+    requireLoopback = false
+  ): Promise<net.Socket> {
     const addresses = net.isIP(host)
       ? [{ address: host, family: net.isIPv6(host) ? 6 : 4 }]
       : await dns.promises.lookup(host, { all: true, verbatim: true });
-    const candidates = addresses.filter(({ address }) =>
-      isPublicGuestIp(address)
-    );
+    const candidates = addresses.filter(({ address }) => {
+      if (requireLoopback)
+        try {
+          return ipaddr.process(address).range() === 'loopback';
+        } catch {
+          return false;
+        }
+      return isPublicGuestIp(address);
+    });
 
     for (const candidate of candidates) {
       try {
