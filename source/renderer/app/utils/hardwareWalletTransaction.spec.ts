@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { generateKeyPairSync, sign } from 'crypto';
 import { blake2b } from 'blakejs';
 import cbor from 'cbor';
@@ -6,11 +8,17 @@ import type {
   ContextOutput,
   TransactionContextSnapshot,
 } from '../../../common/cardano/transactionContext';
-import type { HardwareTransactionCapability } from '../../../common/types/hardware-wallets.types';
-import { WitnessSetError } from '../../../common/cardano/witnessSet';
+import type {
+  HardwareExactTransaction,
+  HardwareTransactionCapability,
+} from '../../../common/types/hardware-wallets.types';
+import {
+  verifyHardwareTransactionWitnesses,
+  WitnessSetError,
+} from '../../../common/cardano/witnessSet';
 import { preflightCip103Sign } from '../domains/Cip103Batch';
 import { prepareHardwareTransaction } from './hardwareWalletTransaction';
-import { verifyHardwareTransactionWitnesses } from './hardwareWalletWitnessSet';
+import { toExactLedgerSignTransactionRequest } from './shelleyLedger';
 
 const keys = generateKeyPairSync('ed25519');
 const publicKey = (keys.publicKey.export({
@@ -111,6 +119,33 @@ const readyCapability: HardwareTransactionCapability = {
   familyDispositions: { 'root-envelope': 'representable' },
 };
 
+const ledgerReadyCapability: HardwareTransactionCapability = {
+  ...readyCapability,
+  artifactId: 'ledger-8.0.0-candidate',
+};
+
+const exactTransaction = (cborHex: string): HardwareExactTransaction => {
+  const preflight = preflightCip103Sign([{ cbor: cborHex }], 0).items[0];
+  return {
+    transaction: preflight.transaction,
+    bodyHash: preflight.bodyHash,
+    contextDigest: 'cc'.repeat(32),
+    network: { networkId: 0, networkMagic: 42, genesisHash: 'bb'.repeat(32) },
+    partialSign: true,
+    signers: [],
+    ownedInputs: [],
+    ownedOutputs: [],
+    witnesses: {
+      requiredKeyHashes: [],
+      preExistingKeyHashes: [],
+      requestedDeviceKeyHashes: [],
+      missingKeyHashes: [],
+      unexpectedKeyHashes: [],
+    },
+    capability: ledgerReadyCapability,
+  };
+};
+
 describe('hardware transaction preparation', () => {
   it('derives exact trusted paths and rejects current matrix rows pre-device', () => {
     const result = prepareHardwareTransaction(
@@ -129,6 +164,14 @@ describe('hardware transaction preparation', () => {
         proofKinds: ['normal_input'],
         path: [0x8000073c, 0x80000717, 0x80000000, 0, 0],
       }),
+    ]);
+    expect(result.exact.ownedInputs).toEqual([
+      {
+        transactionId: normalId,
+        index: BigInt(0),
+        path: [0x8000073c, 0x80000717, 0x80000000, 0, 0],
+        role: 'normal',
+      },
     ]);
     expect(result.exact.ownedOutputs).toEqual([
       expect.objectContaining({ address, paymentPath: expect.any(Array) }),
@@ -194,6 +237,109 @@ describe('hardware transaction preparation', () => {
     expect(result).toMatchObject({ status: 'ready', deviceInteraction: true });
     expect(result.exact).not.toHaveProperty('coinSelection');
     expect(result.exact).not.toHaveProperty('vendorRequest');
+  });
+
+  it('maps the immutable body with its owned input and unowned reference', () => {
+    const result = prepareHardwareTransaction(
+      snapshot(),
+      0,
+      false,
+      ledgerReadyCapability
+    );
+    if (result.status !== 'ready') throw new Error('Expected ready model');
+    const request = toExactLedgerSignTransactionRequest(result.exact);
+    expect(request.tx.inputs).toEqual([
+      expect.objectContaining({
+        txHashHex: normalId,
+        outputIndex: 0,
+        path: [0x8000073c, 0x80000717, 0x80000000, 0, 0],
+      }),
+    ]);
+    expect(request.tx.referenceInputs).toEqual([
+      expect.objectContaining({
+        txHashHex: referenceId,
+        outputIndex: 0,
+        path: null,
+      }),
+    ]);
+  });
+
+  it('proves canonical Plutus reconstruction and rejects the locked noncanonical fixture', () => {
+    const input = [Buffer.from(normalId, 'hex'), 0];
+    const collateral = [Buffer.from('44'.repeat(32), 'hex'), 0];
+    const reference = [Buffer.from(referenceId, 'hex'), 0];
+    const output = [Buffer.from(address, 'hex'), 900_000];
+    const plutusBody = new Map<number, unknown>([
+      [0, new cbor.Tagged(258, [input])],
+      [1, [output]],
+      [2, 100_000],
+      [13, new cbor.Tagged(258, [collateral])],
+      [16, output],
+      [17, 100_000],
+      [18, new cbor.Tagged(258, [reference])],
+    ]);
+    const plutus = cbor
+      .encodeCanonical([plutusBody, new Map(), true, null])
+      .toString('hex');
+    const request = toExactLedgerSignTransactionRequest(
+      exactTransaction(plutus)
+    );
+    expect(request.tx).toMatchObject({
+      collateralInputs: expect.any(Array),
+      collateralOutput: expect.any(Object),
+      totalCollateral: expect.any(String),
+    });
+    expect(request.signingMode).toBe('plutus_transaction');
+    expect(request.options).toEqual({ tagCborSets: true });
+
+    const fixture = JSON.parse(
+      fs.readFileSync(
+        path.join(
+          __dirname,
+          '../../../common/cardano/fixtures/exact-cbor/conway-regression.json'
+        ),
+        'utf8'
+      )
+    );
+    expect(() =>
+      toExactLedgerSignTransactionRequest(exactTransaction(fixture.cborHex))
+    ).toThrow(/body reconstruction/u);
+  });
+
+  it('rejects non-reconstructible and proposal bodies before device use', () => {
+    const nonCanonicalBody = new Map<number, unknown>([
+      [2, 100_000],
+      [0, [[Buffer.from(normalId, 'hex'), 0]]],
+      [1, [[Buffer.from(address, 'hex'), 900_000]]],
+    ]);
+    const nonCanonical = cbor
+      .encode([nonCanonicalBody, new Map(), true, null])
+      .toString('hex');
+    expect(() =>
+      toExactLedgerSignTransactionRequest(exactTransaction(nonCanonical))
+    ).toThrow(/body reconstruction/u);
+
+    const exact = exactTransaction(transactionCbor);
+    const proposal: HardwareExactTransaction = {
+      ...exact,
+      transaction: {
+        ...exact.transaction,
+        governance: {
+          ...exact.transaction.governance,
+          proposals: [
+            {
+              value: '',
+              decoded: { kind: 'array', items: [] },
+              span: { start: 0, end: 0 },
+              policyScriptHashes: [],
+            },
+          ],
+        },
+      },
+    };
+    expect(() => toExactLedgerSignTransactionRequest(proposal)).toThrow(
+      /proposal procedure/u
+    );
   });
 
   it('verifies the exact expected hardware witness set and rejects drift', () => {
