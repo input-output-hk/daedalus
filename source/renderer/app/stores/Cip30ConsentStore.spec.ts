@@ -73,4 +73,37 @@ describe('Cip30ConsentStore', () => {
       passphrase: 'secret',
     });
   });
+
+  it('forwards a passphrase for signing but never submission', async () => {
+    const signing = createStore();
+    const signDecision = signing.receive({
+      type: 'present',
+      request: {
+        ...request,
+        kind: 'transaction-sign',
+        review: {},
+      } as any,
+    });
+    signing.approve('secret');
+    await expect(signDecision).resolves.toEqual({
+      requestId: request.requestId,
+      approved: true,
+      passphrase: 'secret',
+    });
+
+    const submission = createStore();
+    const submitDecision = submission.receive({
+      type: 'present',
+      request: {
+        ...request,
+        kind: 'transaction-submit',
+        review: {},
+      } as any,
+    });
+    submission.approve('must-not-cross');
+    await expect(submitDecision).resolves.toEqual({
+      requestId: request.requestId,
+      approved: true,
+    });
+  });
 });

@@ -5,6 +5,9 @@ import { Cip30WalletService } from './Cip30WalletService';
 jest.mock('../ipc/cip30Wallet', () => ({
   bindCip30WalletRenderer: jest.fn(() => jest.fn()),
 }));
+jest.mock('../api/transactions/dappBackend', () => ({
+  validateDappTransactionContext: jest.fn((value) => value),
+}));
 
 const network = {
   networkId: 0 as const,
@@ -26,6 +29,22 @@ const signDataRequest = {
   sourceRevision: '22'.repeat(20),
   address: `60${'11'.repeat(28)}`,
   payload: '00',
+  passphrase: 'secret',
+};
+const transactionContextRequest = {
+  operation: 'transaction-context' as const,
+  walletId: 'wallet',
+  network,
+  sourceRevision: '22'.repeat(20),
+  transactions: ['84a0a0f5f6'],
+};
+const signTransactionsRequest = {
+  operation: 'sign-transactions' as const,
+  walletId: 'wallet',
+  network,
+  sourceRevision: '22'.repeat(20),
+  context: { revision: 1 },
+  transactions: [{ cbor: '84a0a0f5f6', partialSign: true }],
   passphrase: 'secret',
 };
 
@@ -56,6 +75,16 @@ const create = () => {
     registered_stake_public_keys: ['44'.repeat(32)],
     unregistered_stake_public_keys: ['55'.repeat(32)],
   }));
+  const signDappTransactions = jest.fn(async () => ({
+    revision: 1 as const,
+    witnesses: [
+      {
+        transaction_index: 0,
+        body_hash: '66'.repeat(32),
+        witness_set_cbor: 'a0',
+      },
+    ],
+  }));
   const stakeAddresses = { wallet: 'stake-address' };
   const api = ({
     ada: {
@@ -64,6 +93,7 @@ const create = () => {
       getAddresses,
       signDappData,
       getDappCip95KeyState,
+      signDappTransactions,
     },
   } as unknown) as Api;
   const stores = ({
@@ -100,6 +130,7 @@ const create = () => {
       connected = value;
       synced = value;
     },
+    signDappTransactions,
   };
 };
 
@@ -214,6 +245,74 @@ describe('Cip30WalletService', () => {
         fixture.service.receive(request('cip95-key-state'))
       ).resolves.toEqual({ status: 'rejected', reason });
     }
+  });
+
+  it('forwards exact transaction context and software witness requests', async () => {
+    const fixture = create();
+    await expect(
+      fixture.service.receive(transactionContextRequest)
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      operation: 'transaction-context',
+      value: { context: true },
+    });
+    expect(fixture.getDappTransactionContext).toHaveBeenLastCalledWith({
+      walletId: 'wallet',
+      request: {
+        revision: 1,
+        network: {
+          network_id: 0,
+          network_magic: 42,
+          genesis_hash: network.genesisHash,
+        },
+        transactions: ['84a0a0f5f6'],
+      },
+    });
+
+    await expect(
+      fixture.service.receive(signTransactionsRequest)
+    ).resolves.toMatchObject({
+      status: 'fulfilled',
+      operation: 'sign-transactions',
+    });
+    expect(fixture.signDappTransactions).toHaveBeenCalledWith({
+      walletId: 'wallet',
+      request: {
+        revision: 1,
+        context: { revision: 1 },
+        transactions: [{ cbor: '84a0a0f5f6', partial_sign: true }],
+        passphrase: 'secret',
+      },
+    });
+  });
+
+  it('maps transaction witness errors and rejects hardware before signing', async () => {
+    const fixture = create();
+    for (const [code, reason] of [
+      ['dapp_tx_proof_generation', 'tx-proof-generation'],
+      ['dapp_deprecated_certificate', 'deprecated-certificate'],
+      ['dapp_account_changed', 'account-change'],
+      ['dapp_context_unavailable', 'unavailable'],
+      ['unexpected', 'internal'],
+    ] as const) {
+      fixture.signDappTransactions.mockRejectedValueOnce({ code });
+      await expect(
+        fixture.service.receive(signTransactionsRequest)
+      ).resolves.toEqual({ status: 'rejected', reason });
+    }
+    fixture.setWallet({
+      id: 'wallet',
+      name: 'Hardware',
+      isHardwareWallet: true,
+    });
+    fixture.signDappTransactions.mockClear();
+    await expect(
+      fixture.service.receive(signTransactionsRequest)
+    ).resolves.toEqual({
+      status: 'rejected',
+      reason: 'tx-proof-generation',
+    });
+    expect(fixture.signDappTransactions).not.toHaveBeenCalled();
   });
 
   it('binds exact sign-data bytes and preserves typed backend failures', async () => {

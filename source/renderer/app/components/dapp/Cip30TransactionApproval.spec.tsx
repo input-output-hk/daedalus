@@ -91,8 +91,14 @@ describe('Cip30TransactionApproval', () => {
     expect(screen.getByText('Maximum collateral loss')).toBeVisible();
     expect(screen.getByText(/isValid flag is not signed/u)).toBeVisible();
     expect(container.querySelector('script')).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: 'Sign transaction' }));
-    expect(onApprove).toHaveBeenCalledTimes(1);
+    const approve = screen.getByRole('button', { name: 'Sign transaction' });
+    expect(approve).toBeDisabled();
+    const password = screen.getByLabelText('Wallet spending password');
+    fireEvent.change(password, { target: { value: 'secret' } });
+    expect(approve).toBeEnabled();
+    fireEvent.click(approve);
+    expect(onApprove).toHaveBeenCalledWith('secret');
+    expect(password).toHaveValue('');
   });
 
   it('shows exact outer submission identity separately from the body', () => {
@@ -111,6 +117,9 @@ describe('Cip30TransactionApproval', () => {
     expect(
       screen.getByRole('button', { name: 'Submit transaction' })
     ).toBeEnabled();
+    expect(
+      screen.queryByLabelText('Wallet spending password')
+    ).not.toBeInTheDocument();
   });
 
   it('fails closed for incomplete, unknown, or unresolved collateral review', () => {

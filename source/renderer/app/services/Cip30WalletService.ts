@@ -7,6 +7,7 @@ import type { Api } from '../api';
 import type WalletAddress from '../domains/WalletAddress';
 import { bindCip30WalletRenderer } from '../ipc/cip30Wallet';
 import type { StoresMap } from '../stores';
+import { validateDappTransactionContext } from '../api/transactions/dappBackend';
 
 const backendNetwork = (network: Cip30WalletNetwork) => ({
   network_id: network.networkId,
@@ -163,6 +164,51 @@ export class Cip30WalletService {
         });
       }
 
+      if (request.operation === 'transaction-context') {
+        const context = await this.api.ada.getDappTransactionContext({
+          walletId: request.walletId,
+          request: {
+            revision: 1,
+            network: backendNetwork(request.network),
+            transactions: [...request.transactions],
+          },
+        });
+        if (!this.ready(request)) return this.rejection(request, 'unavailable');
+        return Object.freeze({
+          status: 'fulfilled',
+          operation: 'transaction-context',
+          value: context,
+        });
+      }
+
+      if (request.operation === 'sign-transactions') {
+        const wallet = this.currentWallet(request);
+        if (!wallet) return this.rejection(request, 'unavailable');
+        if (wallet.isHardwareWallet)
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'tx-proof-generation',
+          });
+        const witnesses = await this.api.ada.signDappTransactions({
+          walletId: request.walletId,
+          request: {
+            revision: 1,
+            context: validateDappTransactionContext(request.context),
+            transactions: request.transactions.map(({ cbor, partialSign }) => ({
+              cbor,
+              partial_sign: partialSign,
+            })),
+            passphrase: request.passphrase,
+          },
+        });
+        if (!this.ready(request)) return this.rejection(request, 'unavailable');
+        return Object.freeze({
+          status: 'fulfilled',
+          operation: 'sign-transactions',
+          value: witnesses,
+        });
+      }
+
       if (request.operation === 'context') {
         const context = await this.api.ada.getDappTransactionContext({
           walletId: request.walletId,
@@ -202,6 +248,29 @@ export class Cip30WalletService {
       }
       if (request.operation === 'cip95-key-state') {
         const code = (error as { code?: unknown })?.code;
+        if (code === 'dapp_account_changed')
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'account-change',
+          });
+        if (code === 'dapp_context_unavailable')
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'unavailable',
+          });
+      }
+      if (request.operation === 'sign-transactions') {
+        const code = (error as { code?: unknown })?.code;
+        if (code === 'dapp_tx_proof_generation')
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'tx-proof-generation',
+          });
+        if (code === 'dapp_deprecated_certificate')
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'deprecated-certificate',
+          });
         if (code === 'dapp_account_changed')
           return Object.freeze({
             status: 'rejected',

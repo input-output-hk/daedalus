@@ -9,10 +9,11 @@ export type Cip30WalletNetwork = Readonly<{
 export type Cip30WalletOperation =
   | 'capabilities'
   | 'context'
+  | 'transaction-context'
   | 'addresses'
   | 'cip95-key-state'
+  | 'sign-transactions'
   | 'sign-data';
-
 type Cip30WalletRequestIdentity = Readonly<{
   walletId: string;
   network: Cip30WalletNetwork;
@@ -22,6 +23,19 @@ export type Cip30WalletRequest = Cip30WalletRequestIdentity &
   (
     | Readonly<{
         operation: 'capabilities' | 'context' | 'addresses' | 'cip95-key-state';
+      }>
+    | Readonly<{
+        operation: 'transaction-context';
+        transactions: readonly string[];
+      }>
+    | Readonly<{
+        operation: 'sign-transactions';
+        context: unknown;
+        transactions: readonly Readonly<{
+          cbor: string;
+          partialSign: boolean;
+        }>[];
+        passphrase: string;
       }>
     | Readonly<{
         operation: 'sign-data';
@@ -55,6 +69,14 @@ export type Cip30WalletCip95KeyState = Readonly<{
   unregistered_stake_public_keys: readonly string[];
 }>;
 
+export type Cip30WalletWitnessResponse = Readonly<{
+  revision: 1;
+  witnesses: readonly Readonly<{
+    transaction_index: number;
+    body_hash: string;
+    witness_set_cbor: string;
+  }>[];
+}>;
 export type Cip30WalletResponse =
   | Readonly<{
       status: 'fulfilled';
@@ -78,6 +100,16 @@ export type Cip30WalletResponse =
     }>
   | Readonly<{
       status: 'fulfilled';
+      operation: 'transaction-context';
+      value: unknown;
+    }>
+  | Readonly<{
+      status: 'fulfilled';
+      operation: 'sign-transactions';
+      value: Cip30WalletWitnessResponse;
+    }>
+  | Readonly<{
+      status: 'fulfilled';
       operation: 'sign-data';
       value: Cip8BackendResponse;
     }>
@@ -88,7 +120,9 @@ export type Cip30WalletResponse =
         | 'unavailable'
         | 'internal'
         | 'address-not-pk'
-        | 'proof-generation';
+        | 'proof-generation'
+        | 'tx-proof-generation'
+        | 'deprecated-certificate';
     }>;
 
 const ownData = (
@@ -158,60 +192,109 @@ const sameNetwork = (
   left.networkMagic === right.networkMagic &&
   left.genesisHash === right.genesisHash;
 
+const transactionCbor = (value: unknown): value is string =>
+  typeof value === 'string' &&
+  value.length > 0 &&
+  value.length % 2 === 0 &&
+  value.length <= 65_536 * 2 &&
+  lowerHex.test(value);
+
 export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
-  const signData =
-    !!value &&
-    typeof value === 'object' &&
-    (value as { operation?: unknown }).operation === 'sign-data';
-  if (
-    !ownData(
-      value,
-      signData
-        ? [
-            'operation',
-            'walletId',
-            'network',
-            'sourceRevision',
-            'address',
-            'payload',
-            'passphrase',
-          ]
-        : ['operation', 'walletId', 'network', 'sourceRevision']
-    )
-  )
+  if (!value || typeof value !== 'object' || Array.isArray(value))
     throw new Error('Invalid CIP-30 wallet request');
+  const descriptor = Object.getOwnPropertyDescriptor(value, 'operation');
+  const operation = descriptor?.value as Cip30WalletOperation | undefined;
+  let keys = ['operation', 'walletId', 'network', 'sourceRevision'];
+  if (operation === 'sign-data')
+    keys = [...keys, 'address', 'payload', 'passphrase'];
+  else if (operation === 'transaction-context')
+    keys = [...keys, 'transactions'];
+  else if (operation === 'sign-transactions')
+    keys = [...keys, 'context', 'transactions', 'passphrase'];
+  if (!ownData(value, keys)) throw new Error('Invalid CIP-30 wallet request');
   if (
     ![
       'capabilities',
       'context',
+      'transaction-context',
       'addresses',
       'cip95-key-state',
+      'sign-transactions',
       'sign-data',
-    ].includes(value.operation as string) ||
+    ].includes(operation || '') ||
     !text(value.walletId) ||
-    !hex(value.sourceRevision, 20) ||
-    (signData &&
-      (!text(value.address) ||
-        !lowerHex.test(value.address) ||
-        typeof value.payload !== 'string' ||
-        (value.payload.length > 0 && !lowerHex.test(value.payload)) ||
-        value.payload.length % 2 !== 0 ||
-        !text(value.passphrase)))
+    !hex(value.sourceRevision, 20)
   )
     throw new Error('Invalid CIP-30 wallet request');
-  return Object.freeze({
-    operation: value.operation as Cip30WalletOperation,
+  const identity = {
+    operation: operation as Cip30WalletOperation,
     walletId: value.walletId,
     network: parseNetwork(value.network),
     sourceRevision: value.sourceRevision,
-    ...(signData
-      ? {
-          address: value.address as string,
-          payload: value.payload as string,
-          passphrase: value.passphrase as string,
-        }
-      : {}),
-  }) as Cip30WalletRequest;
+  };
+  if (operation === 'transaction-context') {
+    if (
+      !Array.isArray(value.transactions) ||
+      value.transactions.length < 1 ||
+      value.transactions.length > 50 ||
+      !value.transactions.every(transactionCbor)
+    )
+      throw new Error('Invalid CIP-30 wallet request');
+    return Object.freeze({
+      ...identity,
+      operation,
+      transactions: Object.freeze([...value.transactions]),
+    });
+  }
+  if (operation === 'sign-transactions') {
+    if (
+      !plainData(value.context) ||
+      !Array.isArray(value.transactions) ||
+      value.transactions.length < 1 ||
+      value.transactions.length > 50 ||
+      !value.transactions.every(
+        (transaction) =>
+          ownData(transaction, ['cbor', 'partialSign']) &&
+          transactionCbor(transaction.cbor) &&
+          typeof transaction.partialSign === 'boolean'
+      ) ||
+      !text(value.passphrase)
+    )
+      throw new Error('Invalid CIP-30 wallet request');
+    return Object.freeze({
+      ...identity,
+      operation,
+      context: value.context,
+      transactions: Object.freeze(
+        value.transactions.map((transaction) =>
+          Object.freeze({
+            cbor: (transaction as { cbor: string }).cbor,
+            partialSign: (transaction as { partialSign: boolean }).partialSign,
+          })
+        )
+      ),
+      passphrase: value.passphrase,
+    });
+  }
+  if (operation === 'sign-data') {
+    if (
+      !text(value.address) ||
+      !lowerHex.test(value.address) ||
+      typeof value.payload !== 'string' ||
+      (value.payload.length > 0 && !lowerHex.test(value.payload)) ||
+      value.payload.length % 2 !== 0 ||
+      !text(value.passphrase)
+    )
+      throw new Error('Invalid CIP-30 wallet request');
+    return Object.freeze({
+      ...identity,
+      operation,
+      address: value.address,
+      payload: value.payload,
+      passphrase: value.passphrase,
+    });
+  }
+  return Object.freeze(identity) as Cip30WalletRequest;
 };
 
 const parseCapabilities = (
@@ -338,6 +421,44 @@ const parseDataSignature = (value: unknown): Cip8BackendResponse => {
   return Object.freeze(value as Cip8BackendResponse);
 };
 
+const parseWitnessResponse = (
+  value: unknown,
+  expectedCount: number
+): Cip30WalletWitnessResponse => {
+  if (
+    !ownData(value, ['revision', 'witnesses']) ||
+    value.revision !== 1 ||
+    !Array.isArray(value.witnesses) ||
+    value.witnesses.length !== expectedCount ||
+    !value.witnesses.every(
+      (witness, index) =>
+        ownData(witness, [
+          'transaction_index',
+          'body_hash',
+          'witness_set_cbor',
+        ]) &&
+        witness.transaction_index === index &&
+        hex(witness.body_hash, 32) &&
+        transactionCbor(witness.witness_set_cbor)
+    )
+  )
+    throw new Error('Invalid CIP-30 transaction witnesses');
+  return Object.freeze({
+    revision: 1,
+    witnesses: Object.freeze(
+      value.witnesses.map((witness) =>
+        Object.freeze({
+          transaction_index: (witness as { transaction_index: number })
+            .transaction_index,
+          body_hash: (witness as { body_hash: string }).body_hash,
+          witness_set_cbor: (witness as { witness_set_cbor: string })
+            .witness_set_cbor,
+        })
+      )
+    ),
+  });
+};
+
 export const parseCip30WalletResponse = (
   requestValue: Cip30WalletRequest,
   value: unknown
@@ -352,6 +473,8 @@ export const parseCip30WalletResponse = (
       'internal',
       'address-not-pk',
       'proof-generation',
+      'tx-proof-generation',
+      'deprecated-certificate',
     ].includes(value.reason as string)
   )
     return Object.freeze({
@@ -361,7 +484,9 @@ export const parseCip30WalletResponse = (
         | 'unavailable'
         | 'internal'
         | 'address-not-pk'
-        | 'proof-generation',
+        | 'proof-generation'
+        | 'tx-proof-generation'
+        | 'deprecated-certificate',
     });
   if (
     !ownData(value, ['status', 'operation', 'value']) ||
@@ -387,6 +512,12 @@ export const parseCip30WalletResponse = (
       operation: 'cip95-key-state',
       value: parseCip95KeyState(value.value),
     });
+  if (request.operation === 'sign-transactions')
+    return Object.freeze({
+      status: 'fulfilled',
+      operation: 'sign-transactions',
+      value: parseWitnessResponse(value.value, request.transactions.length),
+    });
   if (request.operation === 'sign-data')
     return Object.freeze({
       status: 'fulfilled',
@@ -394,9 +525,14 @@ export const parseCip30WalletResponse = (
       value: parseDataSignature(value.value),
     });
   if (!plainData(value.value)) throw new Error('Invalid CIP-30 wallet context');
+  if (
+    request.operation !== 'context' &&
+    request.operation !== 'transaction-context'
+  )
+    throw new Error('Invalid CIP-30 wallet response');
   return Object.freeze({
     status: 'fulfilled',
-    operation: 'context',
+    operation: request.operation,
     value: value.value,
   });
 };
