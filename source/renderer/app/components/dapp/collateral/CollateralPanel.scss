@@ -1,0 +1,56 @@
+.component {
+  background: var(--theme-button-flat-background-color);
+  border-radius: 4px;
+  color: var(--theme-button-flat-text-color);
+  margin-bottom: 24px;
+  padding: 20px;
+
+  h2,
+  p {
+    margin: 0;
+  }
+
+  h2 {
+    font-family: var(--font-medium);
+    font-size: 18px;
+    line-height: 1.33;
+    margin-bottom: 8px;
+  }
+}
+
+.convention,
+.status,
+.error {
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.convention {
+  margin-bottom: 12px !important;
+}
+
+.status {
+  font-family: var(--font-semibold);
+}
+
+.error {
+  margin-top: 12px !important;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+
+  > * {
+    --rp-button-height: 44px;
+    --rp-button-width: auto;
+    background-color: var(--theme-button-primary-background-color);
+    color: var(--theme-button-primary-text-color);
+    min-width: 140px;
+    padding: 0 20px;
+    width: auto;
+  }
+}

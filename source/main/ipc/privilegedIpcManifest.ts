@@ -114,6 +114,12 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
     registrationOwner: 'source/main/ipc/dappConnections.ts',
     capability: 'dapp-connections',
   }),
+  ...entries(['DAPP_COLLATERAL_CHANNEL'], {
+    constructorOwner: 'source/main/ipc/collateral.ts',
+    rendererOwner: 'source/renderer/app/ipc/collateral.ts',
+    registrationOwner: 'source/main/ipc/collateral.ts',
+    capability: 'dapp-collateral',
+  }),
   ...entries(['DAPP_BROWSER_STATE_CHANNEL'], {
     constructorOwner: 'source/main/ipc/dappBrowser.ts',
     rendererOwner: 'source/renderer/app/ipc/dappBrowser.ts',
