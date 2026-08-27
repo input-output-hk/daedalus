@@ -1,0 +1,144 @@
+.component {
+  color: var(--theme-main-body-messages-color);
+  font-family: var(--font-regular);
+  padding: 32px;
+
+  h1,
+  h2,
+  p {
+    margin: 0;
+  }
+}
+
+.header {
+  margin-bottom: 24px;
+
+  h1 {
+    font-family: var(--font-medium);
+    font-size: 24px;
+    line-height: 1.33;
+  }
+}
+
+.disclaimer,
+.openStatus,
+.status,
+.unavailable {
+  border-radius: 4px;
+  line-height: 1.5;
+  padding: 16px;
+}
+
+.disclaimer {
+  background: var(--theme-button-flat-background-color);
+  border-left: 4px solid var(--theme-button-primary-background-color);
+  color: var(--theme-button-flat-text-color);
+  font-family: var(--font-semibold);
+  margin-bottom: 24px !important;
+}
+
+.status,
+.unavailable {
+  background: var(--theme-button-flat-background-color);
+  color: var(--theme-button-flat-text-color);
+}
+
+.status {
+  margin-bottom: 8px !important;
+}
+
+.openStatus {
+  align-items: center;
+  background: var(--theme-button-flat-background-color);
+  color: var(--theme-button-flat-text-color);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.entry {
+  align-items: center;
+  border-bottom: 1px solid var(--theme-button-flat-background-color);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 24px 0;
+}
+
+.icon {
+  align-items: center;
+  background: var(--theme-button-flat-background-color);
+  border-radius: 8px;
+  display: flex;
+  flex: 0 0 56px;
+  height: 56px;
+  justify-content: center;
+  overflow: hidden;
+
+  :global {
+    .SVGInline {
+      height: 40px;
+      width: 40px;
+    }
+  }
+
+  svg {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.fallbackIcon {
+  color: var(--theme-button-flat-text-color);
+  font-family: var(--font-semibold);
+  font-size: 24px;
+}
+
+.details {
+  flex: 1 1 240px;
+  min-width: 0;
+
+  h2 {
+    font-family: var(--font-medium);
+    font-size: 18px;
+    line-height: 1.33;
+    margin-bottom: 8px;
+    overflow-wrap: anywhere;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+}
+
+.launchButton,
+.closeButton {
+  --rp-button-height: 48px;
+  --rp-button-width: auto;
+  background-color: var(--theme-button-primary-background-color);
+  color: var(--theme-button-primary-text-color);
+  flex: 0 0 auto;
+  font-family: var(--font-medium);
+  min-width: 120px;
+  padding: 0 24px;
+  width: auto;
+
+  &:hover {
+    background-color: var(--theme-button-primary-background-color-hover);
+  }
+
+  &:disabled {
+    background-color: var(--theme-button-primary-background-color-disabled);
+    color: var(--theme-button-primary-text-color-disabled);
+  }
+}

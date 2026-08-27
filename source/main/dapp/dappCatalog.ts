@@ -36,6 +36,7 @@ export const dappCatalogEntryIdentity = (entry: DappCatalogEntry): string =>
       JSON.stringify({
         id: entry.id,
         nameMessageId: entry.nameMessageId,
+        descriptionMessageId: entry.descriptionMessageId,
         iconAsset: entry.iconAsset,
         entryUrlByNetworkGenesis: Object.entries(
           entry.entryUrlByNetworkGenesis

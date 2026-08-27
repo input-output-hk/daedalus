@@ -1192,6 +1192,51 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Preferred dApps",
+        "description": "Heading for the local preferred dApp catalog.",
+        "id": "dapp.catalog.title"
+      },
+      {
+        "defaultMessage": "!!!Preferred dApps have been compatibility-tested by Daedalus. This does not mean they have been security audited or endorsed.",
+        "description": "Security disclaimer shown above every available catalog.",
+        "id": "dapp.catalog.disclaimer"
+      },
+      {
+        "defaultMessage": "!!!The preferred dApp catalog is unavailable in this Daedalus build.",
+        "description": "Shown instead of catalog entries when the feature is unavailable.",
+        "id": "dapp.catalog.unavailable"
+      },
+      {
+        "defaultMessage": "!!!Finish wallet setup and synchronization before launching a dApp.",
+        "description": "Explains why catalog launch controls are disabled.",
+        "id": "dapp.catalog.notReady"
+      },
+      {
+        "defaultMessage": "!!!A dApp session is open.",
+        "description": "Status shown while a trusted dApp session is open.",
+        "id": "dapp.catalog.open"
+      },
+      {
+        "defaultMessage": "!!!Launch",
+        "description": "Button label for launching a trusted dApp.",
+        "id": "dapp.catalog.launch"
+      },
+      {
+        "defaultMessage": "!!!Launching…",
+        "description": "Button label while a trusted dApp is launching.",
+        "id": "dapp.catalog.launching"
+      },
+      {
+        "defaultMessage": "!!!Close dApp",
+        "description": "Button label for closing the open dApp session.",
+        "id": "dapp.catalog.close"
+      }
+    ],
+    "path": "source/renderer/app/components/dapp/DappCatalog.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Connect dApp",
         "description": "Title for a dApp connection approval dialog.",
         "id": "dapp.consent.connection.title"

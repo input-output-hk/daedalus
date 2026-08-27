@@ -13,6 +13,7 @@ import './staking/CountdownParty.stories';
 import './dapps/TransactionRequest.stories';
 import './dapps/DappDataSignApproval.stories';
 import './dapps/DappConsentDialog.stories';
+import './dapps/DappCatalog.stories';
 // Voting
 import './voting/Voting.stories';
 import './governance/DRepDirectory.stories';
