@@ -683,6 +683,7 @@ export default class WalletsStore extends Store {
       walletId: params.walletId,
       isLegacy: params.isLegacy || false,
     });
+    await this.stores.dapp.removeWalletConnections(params.walletId);
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.walletsRequest.patch((result) => {
       result.splice(indexOfWalletToDelete, 1);
@@ -1269,6 +1270,9 @@ export default class WalletsStore extends Store {
       }
 
       if (!result) return;
+      await this.stores.dapp.pruneWalletConnections(
+        result.map((wallet: Wallet) => wallet.id)
+      );
       const walletIds = result
         .filter(
           ({ syncState }: Wallet) =>

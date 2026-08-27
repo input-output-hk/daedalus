@@ -37,6 +37,12 @@ function SettingsMenu({ intl, onItemClick, isActiveItem, isFlight }: Props) {
           className="wallets"
         />
         <SettingsMenuItem
+          label={intl.formatMessage(messages.dappConnections)}
+          onClick={() => onItemClick(ROUTES.SETTINGS.DAPP_CONNECTIONS)}
+          active={isActiveItem(ROUTES.SETTINGS.DAPP_CONNECTIONS)}
+          className="dappConnections"
+        />
+        <SettingsMenuItem
           label={intl.formatMessage(messages.stakePools)}
           onClick={() => onItemClick(ROUTES.SETTINGS.STAKE_POOLS)}
           active={isActiveItem(ROUTES.SETTINGS.STAKE_POOLS)}

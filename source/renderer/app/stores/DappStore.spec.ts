@@ -4,6 +4,7 @@ import {
   dappBrowserStatusChannel,
   openDappBrowserChannel,
 } from '../ipc/dappBrowser';
+import { dappConnectionsChannel } from '../ipc/dappConnections';
 
 jest.mock('../ipc/dappBrowser', () => ({
   bindDappBrowserState: jest.fn(() => jest.fn()),
@@ -11,10 +12,14 @@ jest.mock('../ipc/dappBrowser', () => ({
   dappBrowserStatusChannel: { request: jest.fn() },
   openDappBrowserChannel: { request: jest.fn() },
 }));
+jest.mock('../ipc/dappConnections', () => ({
+  dappConnectionsChannel: { request: jest.fn() },
+}));
 
 const statusRequest = dappBrowserStatusChannel.request as jest.Mock;
 const openRequest = openDappBrowserChannel.request as jest.Mock;
 const bindState = bindDappBrowserState as jest.Mock;
+const connectionsRequest = dappConnectionsChannel.request as jest.Mock;
 
 const createStore = () => {
   const actions = { router: { goToRoute: { trigger: jest.fn() } } };
@@ -104,6 +109,52 @@ describe('DappStore', () => {
     });
     expect(actions.router.goToRoute.trigger).toHaveBeenCalledWith({
       route: '/wallets/wallet-a/dapps',
+    });
+  });
+
+  it('projects main-owned connections and sends exact revocation identities', async () => {
+    const grant = {
+      schemaVersion: 1 as const,
+      origin: 'https://example.com',
+      walletId: 'wallet-a',
+      networkGenesis: 'genesis-a',
+      networkMagic: 1,
+      readScopes: ['connection', 'read', 'governance-key-disclosure'] as const,
+      enabledExtensionScopes: [95],
+      launch: { kind: 'diagnostics' as const },
+      grantedAt: '2026-08-27T00:00:00.000Z',
+    };
+    connectionsRequest.mockResolvedValue({ corrupt: false, grants: [grant] });
+    const { store } = createStore();
+
+    await store.refreshConnections();
+    await store.revokeConnectionScope(grant, 'governance-key-disclosure');
+
+    expect(store.connections).toEqual([grant]);
+    expect(connectionsRequest).toHaveBeenLastCalledWith({
+      type: 'revoke-scope',
+      identity: {
+        origin: grant.origin,
+        walletId: grant.walletId,
+        networkGenesis: grant.networkGenesis,
+        launch: grant.launch,
+      },
+      scope: 'governance-key-disclosure',
+    });
+  });
+
+  it('prunes only when the authoritative wallet ID set changes', async () => {
+    connectionsRequest.mockResolvedValue({ corrupt: false, grants: [] });
+    const { store } = createStore();
+
+    await store.pruneWalletConnections(['wallet-b', 'wallet-a']);
+    await store.pruneWalletConnections(['wallet-a', 'wallet-b']);
+    await store.pruneWalletConnections(['wallet-a']);
+
+    expect(connectionsRequest).toHaveBeenCalledTimes(2);
+    expect(connectionsRequest).toHaveBeenLastCalledWith({
+      type: 'prune-wallets',
+      walletIds: ['wallet-a'],
     });
   });
 });

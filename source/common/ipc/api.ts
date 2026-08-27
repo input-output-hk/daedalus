@@ -73,6 +73,11 @@ import type {
 } from '../cip30/executor';
 import type { Cip30TransactionReview } from '../cip30/review';
 import type { Cip8DataSignReview } from '../cardano/cip8';
+import type {
+  DappGrant,
+  DappGrantLaunch,
+  DappScope,
+} from '../types/dapp.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -209,6 +214,35 @@ export type DappBrowserStatusMainResponse = Readonly<{
 export const DAPP_BROWSER_STATE_CHANNEL = 'DAPP_BROWSER_STATE_CHANNEL';
 export type DappBrowserStateMainRequest = boolean;
 export type DappBrowserStateRendererResponse = void;
+
+export const DAPP_CONNECTIONS_CHANNEL = 'DAPP_CONNECTIONS_CHANNEL';
+export type DappConnectionIdentity = Readonly<{
+  origin: string;
+  walletId: string;
+  networkGenesis: string;
+  launch: DappGrantLaunch;
+}>;
+export type DappConnectionScope = Extract<
+  DappScope,
+  'governance-key-disclosure' | 'account-public-key-disclosure'
+>;
+export type DappConnectionsRendererRequest =
+  | Readonly<{ type: 'list' | 'repair' }>
+  | Readonly<{
+      type: 'disconnect' | 'forget';
+      identity: DappConnectionIdentity;
+    }>
+  | Readonly<{
+      type: 'revoke-scope';
+      identity: DappConnectionIdentity;
+      scope: DappConnectionScope;
+    }>
+  | Readonly<{ type: 'remove-wallet'; walletId: string }>
+  | Readonly<{ type: 'prune-wallets'; walletIds: readonly string[] }>;
+export type DappConnectionsMainResponse = Readonly<{
+  corrupt: boolean;
+  grants: readonly DappGrant[];
+}>;
 
 export const DAPP_CONSENT_RENDER_CHANNEL = 'DAPP_CONSENT_RENDER_CHANNEL';
 export type DappConsentKind =

@@ -4672,6 +4672,116 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!dApp connections",
+        "description": "Title of the dApp connection settings page.",
+        "id": "settings.dappConnections.title"
+      },
+      {
+        "defaultMessage": "!!!Close dApp closes the browser window but remembers this connection.",
+        "description": "Explanation of closing a dApp browser.",
+        "id": "settings.dappConnections.closeDescription"
+      },
+      {
+        "defaultMessage": "!!!Disconnect ends the current wallet session but remembers this connection.",
+        "description": "Explanation of disconnecting a live dApp wallet session.",
+        "id": "settings.dappConnections.disconnectDescription"
+      },
+      {
+        "defaultMessage": "!!!Forget connection disconnects the dApp and permanently removes its saved permissions.",
+        "description": "Explanation of forgetting a dApp connection.",
+        "id": "settings.dappConnections.forgetDescription"
+      },
+      {
+        "defaultMessage": "!!!No saved dApp connections.",
+        "description": "Empty state for dApp connection settings.",
+        "id": "settings.dappConnections.empty"
+      },
+      {
+        "defaultMessage": "!!!Wallet connection and read access",
+        "description": "Label for the base CIP-30 connection permission.",
+        "id": "settings.dappConnections.baseAccess"
+      },
+      {
+        "defaultMessage": "!!!CIP-95 governance public-key disclosure",
+        "description": "Label for the separately revocable CIP-95 disclosure scope.",
+        "id": "settings.dappConnections.cip95"
+      },
+      {
+        "defaultMessage": "!!!CIP-104 account public-key disclosure is unavailable and grants no access.",
+        "description": "Terminal-disabled CIP-104 status.",
+        "id": "settings.dappConnections.cip104Unavailable"
+      },
+      {
+        "defaultMessage": "!!!Legacy CIP-104 account public-key disclosure",
+        "description": "Label for a defensive legacy CIP-104 disclosure scope.",
+        "id": "settings.dappConnections.cip104Legacy"
+      },
+      {
+        "defaultMessage": "!!!Disconnect {origin}",
+        "description": "Button label to disconnect a dApp origin.",
+        "id": "settings.dappConnections.disconnect"
+      },
+      {
+        "defaultMessage": "!!!Forget {origin}",
+        "description": "Button label to forget a dApp origin.",
+        "id": "settings.dappConnections.forget"
+      },
+      {
+        "defaultMessage": "!!!Wallet",
+        "description": "Wallet field label for a saved dApp connection.",
+        "id": "settings.dappConnections.wallet"
+      },
+      {
+        "defaultMessage": "!!!Network magic",
+        "description": "Network magic field label for a saved dApp connection.",
+        "id": "settings.dappConnections.networkMagic"
+      },
+      {
+        "defaultMessage": "!!!Source",
+        "description": "Launch source field label for a saved dApp connection.",
+        "id": "settings.dappConnections.source"
+      },
+      {
+        "defaultMessage": "!!!Granted",
+        "description": "Grant date field label for a saved dApp connection.",
+        "id": "settings.dappConnections.granted"
+      },
+      {
+        "defaultMessage": "!!!Revoke {scope} for {origin}",
+        "description": "Button label to revoke one dApp disclosure scope.",
+        "id": "settings.dappConnections.revoke"
+      },
+      {
+        "defaultMessage": "!!!Saved dApp connections are damaged. Access is blocked until the empty connection store is repaired.",
+        "description": "Fail-closed corrupted grant store message.",
+        "id": "settings.dappConnections.corrupt"
+      },
+      {
+        "defaultMessage": "!!!Repair and remove saved connections",
+        "description": "Button label to repair the corrupted dApp grant store.",
+        "id": "settings.dappConnections.repair"
+      },
+      {
+        "defaultMessage": "!!!The connection change could not be completed.",
+        "description": "Generic connection management failure.",
+        "id": "settings.dappConnections.failed"
+      },
+      {
+        "defaultMessage": "!!!Preferred catalog",
+        "description": "Label for a preferred catalog dApp connection.",
+        "id": "settings.dappConnections.catalog"
+      },
+      {
+        "defaultMessage": "!!!Diagnostics",
+        "description": "Label for an arbitrary diagnostics dApp connection.",
+        "id": "settings.dappConnections.diagnostics"
+      }
+    ],
+    "path": "source/renderer/app/components/settings/categories/DappConnectionsSettings.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Theme",
         "description": "Label for the \"Theme\" selection on the display settings page.",
         "id": "settings.display.themeLabel"
@@ -4905,6 +5015,11 @@
         "defaultMessage": "!!!Wallets",
         "description": "Label for the \"Wallets\" link in the settings menu.",
         "id": "settings.menu.wallets.link.label"
+      },
+      {
+        "defaultMessage": "!!!dApp connections",
+        "description": "Label for the dApp connections link in the settings menu.",
+        "id": "settings.menu.dappConnections.link.label"
       },
       {
         "defaultMessage": "!!!Stake Pools",

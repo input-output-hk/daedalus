@@ -5,6 +5,13 @@ import {
   dappBrowserStatusChannel,
   openDappBrowserChannel,
 } from '../ipc/dappBrowser';
+import { dappConnectionsChannel } from '../ipc/dappConnections';
+import type {
+  DappConnectionIdentity,
+  DappConnectionScope,
+  DappConnectionsRendererRequest,
+} from '../../../common/ipc/api';
+import type { DappGrant } from '../../../common/types/dapp.types';
 import Store from './lib/Store';
 
 export default class DappStore extends Store {
@@ -12,6 +19,12 @@ export default class DappStore extends Store {
   @observable diagnosticsAvailable = false;
   @observable guestOpen = false;
   @observable isLaunching = false;
+  @observable connections: readonly DappGrant[] = [];
+  @observable connectionsCorrupt = false;
+  @observable isManagingConnections = false;
+  @observable connectionActionFailed = false;
+  private connectionRequestGeneration = 0;
+  private prunedWalletIds?: string;
   private generation = 0;
   private unbind?: () => void;
 
@@ -56,9 +69,12 @@ export default class DappStore extends Store {
 
   teardown(): void {
     ++this.generation;
+    ++this.connectionRequestGeneration;
     this.unbind?.();
     this.unbind = undefined;
     this.isLaunching = false;
+    this.isManagingConnections = false;
+    this.prunedWalletIds = undefined;
     super.teardown();
   }
 
@@ -111,5 +127,92 @@ export default class DappStore extends Store {
     const generation = this.generation;
     await closeDappBrowserChannel.request(undefined);
     if (generation === this.generation) this.guestOpen = false;
+  }
+
+  refreshConnections(): Promise<boolean> {
+    return this.manageConnections({ type: 'list' });
+  }
+
+  disconnectConnection(grant: DappGrant): Promise<boolean> {
+    return this.manageConnections({
+      type: 'disconnect',
+      identity: this.identity(grant),
+    });
+  }
+
+  forgetConnection(grant: DappGrant): Promise<boolean> {
+    return this.manageConnections({
+      type: 'forget',
+      identity: this.identity(grant),
+    });
+  }
+
+  revokeConnectionScope(
+    grant: DappGrant,
+    scope: DappConnectionScope
+  ): Promise<boolean> {
+    return this.manageConnections({
+      type: 'revoke-scope',
+      identity: this.identity(grant),
+      scope,
+    });
+  }
+
+  repairConnections(): Promise<boolean> {
+    return this.manageConnections({ type: 'repair' });
+  }
+
+  removeWalletConnections(walletId: string): Promise<boolean> {
+    this.prunedWalletIds = undefined;
+    return this.manageConnections({ type: 'remove-wallet', walletId });
+  }
+
+  async pruneWalletConnections(walletIds: readonly string[]): Promise<void> {
+    const fingerprint = [...walletIds].sort().join('\0');
+    if (this.prunedWalletIds === fingerprint) return;
+    const succeeded = await this.manageConnections({
+      type: 'prune-wallets',
+      walletIds,
+    });
+    if (succeeded) this.prunedWalletIds = fingerprint;
+  }
+
+  private identity(grant: DappGrant): DappConnectionIdentity {
+    return {
+      origin: grant.origin,
+      walletId: grant.walletId,
+      networkGenesis: grant.networkGenesis,
+      launch: grant.launch,
+    };
+  }
+
+  private async manageConnections(
+    request: DappConnectionsRendererRequest
+  ): Promise<boolean> {
+    const requestGeneration = ++this.connectionRequestGeneration;
+    runInAction('DappStore::startConnectionAction', () => {
+      this.isManagingConnections = true;
+      this.connectionActionFailed = false;
+    });
+    try {
+      const snapshot = await dappConnectionsChannel.request(request);
+      if (requestGeneration !== this.connectionRequestGeneration) return false;
+      runInAction('DappStore::receiveConnections', () => {
+        this.connections = snapshot.grants;
+        this.connectionsCorrupt = snapshot.corrupt;
+      });
+      return true;
+    } catch {
+      if (requestGeneration === this.connectionRequestGeneration)
+        runInAction('DappStore::connectionActionFailed', () => {
+          this.connectionActionFailed = true;
+        });
+      return false;
+    } finally {
+      if (requestGeneration === this.connectionRequestGeneration)
+        runInAction('DappStore::finishConnectionAction', () => {
+          this.isManagingConnections = false;
+        });
+    }
   }
 }

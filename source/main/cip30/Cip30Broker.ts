@@ -69,6 +69,7 @@ import { ExtensionRegistry } from './ExtensionRegistry';
 import { GrantRepository } from './GrantRepository';
 import { Negotiator } from './Negotiator';
 import { SessionStore } from './SessionStore';
+import { DappConnectionService } from './DappConnectionService';
 import { setCip30SessionRevoker } from './runtime';
 
 export const CARDANO_WALLET_SOURCE_REVISION =
@@ -877,6 +878,12 @@ const negotiator = new Negotiator(registry, capabilities);
 const dispatcher = new Dispatcher(capabilities, sessions);
 let broker: Cip30Broker | undefined;
 let registered = false;
+let connectionService: DappConnectionService | undefined;
+
+export const getDappConnectionService = (): DappConnectionService => {
+  if (!connectionService) throw new Error('CIP-30 broker is not initialized');
+  return connectionService;
+};
 
 export const handleCip30BrokerRequests = (): void => {
   if (registered) return;
@@ -888,6 +895,11 @@ export const handleCip30BrokerRequests = (): void => {
     new Map(
       dappCatalog.map((entry) => [entry.id, dappCatalogEntryIdentity(entry)])
     )
+  );
+  connectionService = new DappConnectionService(
+    grants,
+    sessions,
+    consentCoordinator
   );
   broker = new Cip30Broker({
     authenticate: authenticateDappGuest,

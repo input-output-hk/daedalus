@@ -108,6 +108,12 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
       capability: 'dapp-browser',
     }
   ),
+  ...entries(['DAPP_CONNECTIONS_CHANNEL'], {
+    constructorOwner: 'source/main/ipc/dappConnections.ts',
+    rendererOwner: 'source/renderer/app/ipc/dappConnections.ts',
+    registrationOwner: 'source/main/ipc/dappConnections.ts',
+    capability: 'dapp-connections',
+  }),
   ...entries(['DAPP_BROWSER_STATE_CHANNEL'], {
     constructorOwner: 'source/main/ipc/dappBrowser.ts',
     rendererOwner: 'source/renderer/app/ipc/dappBrowser.ts',

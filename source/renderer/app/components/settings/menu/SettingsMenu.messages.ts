@@ -16,6 +16,11 @@ export default defineMessages({
     defaultMessage: '!!!Wallets',
     description: 'Label for the "Wallets" link in the settings menu.',
   },
+  dappConnections: {
+    id: 'settings.menu.dappConnections.link.label',
+    defaultMessage: '!!!dApp connections',
+    description: 'Label for the dApp connections link in the settings menu.',
+  },
   stakePools: {
     id: 'settings.menu.stakePools.link.label',
     defaultMessage: '!!!Stake Pools',
