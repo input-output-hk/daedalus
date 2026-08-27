@@ -105,6 +105,24 @@ describe('dApp preload', () => {
     });
   });
 
+  it('terminally omits requested CIP-104 from the authoritative API', async () => {
+    invoke.mockImplementation(
+      async (_channel: string, gateway: DappCip30GatewayRequest) =>
+        gateway.method === 'api.getExtensions'
+          ? { status: 'fulfilled', value: [] }
+          : { status: 'fulfilled', value: {} }
+    );
+    const api = await provider.enable({ extensions: [{ cip: 104 }] });
+    expect(Object.prototype.hasOwnProperty.call(api, 'cip104')).toBe(false);
+    expect(
+      ((api as unknown) as Record<string, unknown>).cip104
+    ).toBeUndefined();
+    expect(invoke).toHaveBeenCalledWith(DAPP_CIP30_GATEWAY_CHANNEL, {
+      method: 'provider.enable',
+      args: [{ extensions: [{ cip: 104 }] }],
+    });
+  });
+
   it('exposes CIP-142 only from the authoritative negotiated set', async () => {
     invoke.mockImplementation(
       async (_channel: string, request: DappCip30GatewayRequest) =>

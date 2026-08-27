@@ -513,6 +513,7 @@ describe('Cip30Broker', () => {
     const fixture = create();
     await fixture.broker.handle(event, request('provider.enable'));
     fixture.executeWallet.mockClear();
+    (fixture.consent.request as jest.Mock).mockClear();
 
     await expect(
       fixture.broker.handle(event, request('api.cip104.getAccountPub'))
@@ -521,6 +522,7 @@ describe('Cip30Broker', () => {
       rejection: { type: 'api-error', value: { code: -3, info: 'Refused' } },
     });
     expect(fixture.executeWallet).not.toHaveBeenCalled();
+    expect(fixture.consent.request).not.toHaveBeenCalled();
 
     fixture.executeWallet.mockResolvedValueOnce({
       status: 'rejected',
@@ -911,7 +913,9 @@ describe('Cip30Broker', () => {
       fixture.broker.handle(
         event,
         request('api.cip95.signData', [
-          `00${drepDataSignature.raw.slice(2)}`,
+          `${
+            drepDataSignature.raw.startsWith('00') ? '01' : '00'
+          }${drepDataSignature.raw.slice(2)}`,
           drepDataSignature.payload,
         ])
       )

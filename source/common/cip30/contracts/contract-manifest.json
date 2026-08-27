@@ -51,7 +51,7 @@
         "overrides": [],
         "dependencies": [],
         "incompatibleWith": [],
-        "reason": "Positive cbor<Bip32PublicKey> encoding remains gated by task-404."
+        "reason": "Terminal-disabled: no independent interoperable cbor<Bip32PublicKey> vector or precise encoding was proven by task-404."
       },
       {
         "cip": 142,
@@ -431,13 +431,13 @@
     {
       "path": "api.cip104.getAccountPub",
       "extension": 104,
-      "availability": "disabled-until-task-404",
+      "availability": "terminal-disabled",
       "minArgs": 0,
       "maxArgs": 0,
       "args": [],
       "successSchemaRef": "common.json#/definitions/nonEmptyHexBytes",
       "rejections": ["apiError"],
-      "unresolved": "Exact cbor<Bip32PublicKey> positive encoding."
+      "terminalDecision": "No exact interoperable cbor<Bip32PublicKey> encoding was proven; no positive vector is frozen."
     },
     {
       "path": "api.cip142.getNetworkMagic",

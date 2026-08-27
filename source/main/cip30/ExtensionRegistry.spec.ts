@@ -166,6 +166,15 @@ describe('CIP-30 extension engine', () => {
       ).enabledExtensions
     ).toEqual([{ cip: 142 }]);
     expect(
+      thrownBy(() =>
+        capabilities.requireInvocation(
+          'api.cip104.getAccountPub',
+          [104],
+          enabledPolicy
+        )
+      )
+    ).toEqual({ code: -3, info: 'Refused' });
+    expect(
       capabilities.requireInvocation(
         'api.cip142.getNetworkMagic',
         [142],

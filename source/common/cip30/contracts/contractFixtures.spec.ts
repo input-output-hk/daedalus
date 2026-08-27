@@ -209,6 +209,24 @@ describe('frozen CIP-30 contracts', () => {
     expect(manifest.methods.map(({ path }) => path)).toEqual(expectedPaths);
     expect(manifest.extensions.explicitlyAbsent).toEqual([8, 106, 141]);
     expect(manifest.extensions.registryOrder).toEqual([95, 103, 104, 142]);
+    const cip104Descriptor = manifest.extensions.descriptors.find(
+      ({ cip }) => cip === 104
+    );
+    const cip104Method = manifest.methods.find(
+      ({ path: methodPath }) => methodPath === 'api.cip104.getAccountPub'
+    ) as Record<string, unknown>;
+    expect(cip104Descriptor).toMatchObject({
+      status: 'proposed-disabled',
+      reason: expect.stringContaining('Terminal-disabled'),
+    });
+    expect(cip104Method).toMatchObject({
+      availability: 'terminal-disabled',
+      terminalDecision: expect.stringContaining(
+        'No exact interoperable cbor<Bip32PublicKey> encoding was proven'
+      ),
+    });
+    expect(cip104Method).not.toHaveProperty('positiveFixture');
+    expect(cip104Method).not.toHaveProperty('unresolved');
 
     manifest.methods.forEach(({ rejections }) => {
       rejections.forEach((rejection) => {
