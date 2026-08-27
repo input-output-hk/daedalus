@@ -143,6 +143,93 @@ describe('generateMnemonic', () => {
   });
 });
 
+describe('recovery phrase entropy provenance', () => {
+  const realCrypto = globalThis.crypto;
+
+  const setSource = (value: unknown) =>
+    Object.defineProperty(globalThis, 'crypto', {
+      value,
+      configurable: true,
+      writable: true,
+    });
+
+  // Feeds the platform CSPRNG a known answer, so what comes out of
+  // `generateMnemonic` can be traced back to what went in.
+  const feedEntropy = (entropyHex: string) => {
+    const bytes = Buffer.from(entropyHex, 'hex');
+    setSource({
+      getRandomValues: (view: Uint8Array) => {
+        expect(view).toHaveLength(bytes.length);
+        for (let i = 0; i < view.length; i += 1) {
+          view[i] = bytes[i];
+        }
+        return view;
+      },
+    });
+  };
+
+  afterEach(() => setSource(realCrypto));
+
+  // Randomness itself cannot be asserted by a known-answer test. What can be
+  // asserted is that every bit the platform CSPRNG produced reaches the phrase
+  // shown to the user, with nothing transformed, truncated or discarded on the
+  // way. An implementation that sourced entropy anywhere else, or that reduced
+  // it, cannot satisfy this.
+  it.each([
+    [12, 16],
+    [15, 20],
+    [18, 24],
+    [21, 28],
+    [24, 32],
+  ])(
+    'carries every bit of %i-word entropy into the phrase',
+    (words, byteLength) => {
+      const entropyHex = Buffer.from(
+        Array.from({ length: byteLength }, (_, i) => (i * 7 + words) % 256)
+      ).toString('hex');
+      feedEntropy(entropyHex);
+      expect(bip39.mnemonicToEntropy(generateMnemonic(words), validWords)).toBe(
+        entropyHex
+      );
+    }
+  );
+
+  // Three published vectors use all-zero entropy. `secureRandomBytes` refuses
+  // an all-zero draw, so those cannot round-trip through it, and they are
+  // asserted below as refusals instead. The entropy encoding itself is still
+  // covered for them, against bip39 directly, where no health check applies.
+  const isAllZero = (entropyHex: string) => /^0+$/.test(entropyHex);
+
+  it.each(
+    vectors
+      .filter(([entropyHex]) => !isAllZero(entropyHex))
+      .map(([entropyHex, mnemonic]) => [entropyHex, mnemonic])
+  )(
+    'returns the published mnemonic when the source yields entropy %s',
+    (entropyHex: string, mnemonic: string) => {
+      feedEntropy(entropyHex);
+      expect(generateMnemonic(mnemonic.split(' ').length)).toBe(mnemonic);
+    }
+  );
+
+  it.each(
+    vectors
+      .filter(([entropyHex]) => isAllZero(entropyHex))
+      .map(([entropyHex, mnemonic]) => [entropyHex, mnemonic.split(' ').length])
+  )(
+    'refuses to build a phrase from all-zero entropy %s',
+    (entropyHex: string, words: number) => {
+      feedEntropy(entropyHex);
+      expect(() => generateMnemonic(words)).toThrow('returned all zeros');
+    }
+  );
+
+  it('refuses to produce a phrase when the platform has no CSPRNG', () => {
+    setSource(undefined);
+    expect(() => generateMnemonic(24)).toThrow('no platform CSPRNG available');
+  });
+});
+
 describe('blake2b224', () => {
   // Expectations produced by an independent BLAKE2b implementation, not by
   // blakejs. `blakejs` moves from 1.1.0 to 1.2.1 on this branch and this is
