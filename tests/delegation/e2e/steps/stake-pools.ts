@@ -1,6 +1,6 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import {
   delegationCentreStakingHelper,
   getStakePoolByRanking,
