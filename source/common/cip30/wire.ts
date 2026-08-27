@@ -1,4 +1,7 @@
+import type { TransactionSignatureRequest } from '../types/cip103.types';
 import type { DappCip30Rejection } from './errors';
+
+export type { TransactionSignatureRequest } from '../types/cip103.types';
 
 export const DAPP_CIP30_METHODS = [
   'provider.isEnabled',
@@ -30,10 +33,6 @@ export type Extension = { cip: number };
 export type EnableOptions = { extensions?: Extension[] };
 export type Paginate = { page: number; limit: number };
 export type DataSignature = { signature: string; key: string };
-export type TransactionSignatureRequest = {
-  cbor: string;
-  partialSign?: boolean;
-};
 
 export interface DappCip30MethodMap {
   'provider.isEnabled': { args: []; result: boolean };
