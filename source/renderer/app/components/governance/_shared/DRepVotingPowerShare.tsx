@@ -20,7 +20,7 @@ const messages = defineMessages({
   tooltip: {
     id: 'governance.drepDirectory.votingPowerShare.tooltip',
     defaultMessage:
-      '!!!This DRep controls {share} of active voting power ({total}).',
+      '!!!This DRep controls {share} of {total} delegated to DReps.',
     description: 'Tooltip stating a DRep share of delegated voting power',
   },
   labelBelowMinimum: {
@@ -32,20 +32,20 @@ const messages = defineMessages({
   tooltipBelowMinimum: {
     id: 'governance.drepDirectory.votingPowerShare.tooltipBelowMinimum',
     defaultMessage:
-      '!!!This DRep controls less than {share} of active voting power ({total}).',
+      '!!!This DRep controls less than {share} of {total} delegated to DReps.',
     description:
       'Tooltip for a DRep whose share is too small to state at the displayed precision',
   },
   plainValue: {
     id: 'governance.drepDirectory.votingPowerShare.plainValue',
-    defaultMessage: '!!!Controls {share} of active voting power ({total}).',
+    defaultMessage: '!!!Controls {share} of {total} delegated to DReps.',
     description:
       'Share of voting power stated in full as the value of a labelled row',
   },
   plainValueBelowMinimum: {
     id: 'governance.drepDirectory.votingPowerShare.plainValueBelowMinimum',
     defaultMessage:
-      '!!!Controls less than {share} of active voting power ({total}).',
+      '!!!Controls less than {share} of {total} delegated to DReps.',
     description:
       'Row value for a DRep whose share is too small to state at the displayed precision',
   },
