@@ -370,7 +370,7 @@
           "id": "task-017",
           "title": "Add the first-party entropy module",
           "description": "source/renderer/app/utils/entropy.ts exporting secureRandomBytes: an explicit CSPRNG wrapper with stated failure behaviour, replacing an entropy source Daedalus currently inherits from a transitive dependency default.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 1.5,
           "dependencies": [
@@ -412,13 +412,16 @@
           "securityNotes": [
             "This module is the entropy source for every wallet Daedalus creates. It fails closed by design: an error reaching the user is the correct outcome when no CSPRNG is available.",
             "Never add a fallback. A weaker source that works is worse than an error that stops."
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.8,
+          "completedNotes": "entropy.ts exports secureRandomBytes, reading globalThis.crypto.getRandomValues and throwing with no fallback. Allocation is new Uint8Array, zero-filled by specification and with no unsafe variant, rather than Buffer.allocUnsafe as randombytes uses. Rejects all-zero and repeated draws. 17 assertions; removing the zero guard fails 2, removing the repeat guard fails 1, adding a Math.random fallback fails 3. Deviation: jest.setup.js was required, because jest-environment-jsdom at this version provides no globalThis.crypto at all. Measured. That also predicts bip39 3.1.0 failing under Jest without it, since @noble/hashes reads the same global."
         },
         {
           "id": "task-018",
           "title": "Take wallet entropy from secureRandomBytes",
           "description": "Change crypto.ts:54 from bip39.generateMnemonic(ent, null, validWords) to pass secureRandomBytes. The null delegates the entropy source for every wallet the application creates to whatever bip39 currently defaults to, and this branch's own bip39 bump replaces that default.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 0.5,
           "dependencies": [
@@ -442,13 +445,16 @@
           ],
           "securityNotes": [
             "This is the single highest-consequence line on the branch. It decides where the seed for every Daedalus wallet comes from."
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.6,
+          "completedNotes": "crypto.ts:54 passes secureRandomBytes instead of null. The Cucumber 10,000-mnemonic property scenario passes, and 10,000 calls produce 10,000 distinct phrases in 145ms. Caught late: the first version returned safe-buffer's Buffer type, which bip39's typings reject, and yarn compile was not re-run after the wiring edit. Fixed by using the global Buffer, which six other renderer modules already rely on through webpack's ProvidePlugin, and the commit was amended before being pushed."
         },
         {
           "id": "task-019",
           "title": "Prove recovery phrase entropy reaches the phrase intact",
           "description": "The provenance test. Randomness cannot be asserted by a known-answer test, but the seam around it can, and that is where the assurance lives.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 1.5,
           "dependencies": [
@@ -477,7 +483,10 @@
           ],
           "securityNotes": [
             "This is the assertion that a weakened entropy path cannot satisfy. If a future change makes it awkward, the change is the problem."
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.6,
+          "completedNotes": "Provenance block in crypto.spec.ts. Feeds getRandomValues a known pattern and asserts mnemonicToEntropy of the phrase equals exactly those bytes, across all five lengths and against the published vectors. Three published vectors use all-zero entropy, which secureRandomBytes refuses; those are asserted as refusals rather than excepted from the guard. Verified against three weakenings of crypto.ts: reverting to null (30 failures), rehashing entropy (27), halving and duplicating it (29)."
         },
         {
           "id": "task-020",

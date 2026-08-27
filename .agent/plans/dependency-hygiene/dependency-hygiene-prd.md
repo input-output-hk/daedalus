@@ -303,12 +303,12 @@ Crypto assurance:
 - [x] Every vector is asserted for entropy to mnemonic and for mnemonic to seed
 - [x] Seed assertions run against both the Node and the browser pbkdf2
       resolution
-- [ ] `secureRandomBytes` exists as a first-party module, throws when no
+- [x] `secureRandomBytes` exists as a first-party module, throws when no
       platform CSPRNG is present, and never falls back to a weaker source
-- [ ] `secureRandomBytes` rejects all-zero output and a repeated draw
-- [ ] `generateMnemonic` takes its entropy from `secureRandomBytes` by explicit
+- [x] `secureRandomBytes` rejects all-zero output and a repeated draw
+- [x] `generateMnemonic` takes its entropy from `secureRandomBytes` by explicit
       argument, not from a bip39 default
-- [ ] A provenance test proves the words shown to the user decode back to
+- [x] A provenance test proves the words shown to the user decode back to
       exactly the bytes the platform CSPRNG produced, with nothing transformed,
       truncated or discarded on the way
 - [ ] Lint rejects `Math.random`, `Buffer.allocUnsafe`, and
@@ -822,6 +822,8 @@ Append-only. New entries go at the end.
 | 2026-08-27 | Measured what fixing `settings.global.excludes` would buy, without doing it: suffixing the ten directory entries with `/**` drops treefmt's emitted set from 1969 files to 1639 and takes `.agent` matches from 326 to 0, with `nix fmt -- --ci` still reporting 0 changed. Awaiting a decision. |
 | 2026-08-27 | Phase 3 started. BIP39 vector fixture committed with provenance pinned to an upstream commit, and the conformance baseline measured: 24/24 on every axis, both pbkdf2 resolutions. |
 | 2026-08-27 | Vector suite landed. 90 assertions, all 24 vectors on both pbkdf2 resolutions plus the entropy mapping, blake2b224, bech32 and both stake address branches. Verified failing under four separate injections before being trusted. |
+| 2026-08-27 | Entropy module landed and wired in. Deviation: `jest.setup.js` was needed, because `jest-environment-jsdom` at this version provides no `globalThis.crypto`. That is also a prediction about the `bip39` 3.1.0 bump, which needs the same global through `@noble/hashes`. |
+| 2026-08-27 | Provenance test landed, verified against three separate weakenings of `crypto.ts`. Three published vectors use all-zero entropy, which `secureRandomBytes` refuses; asserted as refusals rather than excepted from the guard. |
 | 2026-08-27 | Scope widened, and the decision to exclude source changes reversed. Investigation found wallet entropy sourced from a `bip39` default that this branch's own bump replaces, and a crypto scenario skipped since 2021 hiding a throwing `generateMnemonic(9)`. Phase 3 becomes a crypto assurance phase, beginning by asserting current conformance against the published BIP39 vectors and ending with controls that make a later weakening conspicuous. Status In Progress. |
 
 ---
