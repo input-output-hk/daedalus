@@ -330,7 +330,7 @@
           "id": "task-008",
           "title": "Add crypto.spec.ts asserting every vector on both pbkdf2 resolutions",
           "description": "The vector suite. Asserts entropy to mnemonic and mnemonic to seed for all 24 published vectors, against both the Node and the browser pbkdf2 implementation, because webpack.config.js is target: 'web' and ships pbkdf2/browser.js while Jest resolves main.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 2.0,
           "dependencies": [
@@ -361,7 +361,10 @@
             "The suite fails when a vector is removed from the fixture",
             "Committed and green before any tier 2 bump"
           ],
-          "notes": "bip39 3.1.0 replaced create-hash, pbkdf2 and randombytes with @noble/hashes. The checksum path inside entropyToMnemonic is exactly the kind of change a round-trip test cannot see and a vector can."
+          "notes": "bip39 3.1.0 replaced create-hash, pbkdf2 and randombytes with @noble/hashes. The checksum path inside entropyToMnemonic is exactly the kind of change a round-trip test cannot see and a vector can.",
+          "completedAt": "2026-08-27",
+          "actualHours": 2.2,
+          "completedNotes": "90 assertions in source/renderer/app/utils/crypto.spec.ts. Covers all 24 vectors for mnemonicToSeedHex, for both pbkdf2 resolutions, and for the entropyToMnemonic and mnemonicToEntropy pair; plus the no-password salt path, blake2b224, bech32 encode and decode, and both network branches of getStakeAddressFromStakeKey. Expectations outside the published set come from independent implementations, not from the code under test. Verified failing under four injections: altered seed (2 failures), altered entropy (1), deleted vector (fixture guard), 2048 iterations changed to 2047 (26). Full Jest suite 34 files, 327 passed, 3 skipped."
         },
         {
           "id": "task-017",
