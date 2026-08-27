@@ -4,8 +4,6 @@ import type {
 } from './api';
 import { parseCip30TransactionReview } from '../cip30/review';
 
-export const DAPP_CIP30_GATEWAY_CHANNEL = 'dapp-cip30-gateway';
-
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
 const hasKeys = (value: Record<string, unknown>, keys: readonly string[]) =>
@@ -88,6 +86,3 @@ export const parseDappConsentRender = (
     });
   throw new Error('Invalid dApp consent render request');
 };
-
-export * from '../cip30/errors';
-export * from '../cip30/wire';
