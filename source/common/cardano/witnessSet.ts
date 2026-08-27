@@ -155,6 +155,10 @@ const originalVKeys = (envelope: ExactTransactionEnvelope) =>
     false
   );
 
+export const extractEnvelopeVKeyWitnesses = (
+  envelope: ExactTransactionEnvelope
+): readonly VKeyWitness[] => originalVKeys(envelope);
+
 export const diffVKeyWitnesses = (
   envelope: ExactTransactionEnvelope,
   returnedBodyHash: string,

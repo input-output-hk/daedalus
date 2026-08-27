@@ -6,6 +6,7 @@ import { parseConwayTransactionEnvelope } from './transactionEnvelope';
 import {
   diffVKeyWitnesses,
   encodeVKeyWitnessSet,
+  extractEnvelopeVKeyWitnesses,
   extractVKeyWitnesses,
   mergeVKeyWitnesses,
   verifyVKeyWitnesses,
@@ -161,6 +162,9 @@ test('returns only fresh VKeys and preserves exact immutable fields on merge', (
     [7, [Buffer.from([3])]],
   ]);
   const original = envelopeWith(immutable);
+  expect(
+    extractEnvelopeVKeyWitnesses(original).map(({ publicKey }) => publicKey)
+  ).toEqual([oldKeys.publicKey]);
   const returned = encodeVKeyWitnessSet([oldWitness, freshWitness]);
   const delta = diffVKeyWitnesses(original, original.transactionId, returned);
   expect(extractVKeyWitnesses(delta).map((item) => item.publicKey)).toEqual([
