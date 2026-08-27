@@ -326,11 +326,11 @@ Crypto assurance:
 
 Dependencies:
 
-- [ ] The 13 tier 1 packages are at the versions in the inventory
-- [ ] The 8 tier 2 packages are at the versions in the inventory
-- [ ] `pbkdf2` and `lodash` are updated in `resolutions` as well as
+- [x] The 13 tier 1 packages are at the versions in the inventory
+- [x] The 8 tier 2 packages are at the versions in the inventory
+- [x] `pbkdf2` and `lodash` are updated in `resolutions` as well as
       `dependencies`, and `yarn why` confirms the installed version matches
-- [ ] `yarn audit` distinct-advisory counts are recorded before and after
+- [x] `yarn audit` distinct-advisory counts are recorded before and after
 - [ ] Every deferred package has a written reason in the inventory
 - [ ] The unused-looking dependencies are each classified, and the finding is
       recorded under `.agent/findings/`
@@ -826,6 +826,9 @@ Append-only. New entries go at the end.
 | 2026-08-27 | Provenance test landed, verified against three separate weakenings of `crypto.ts`. Three published vectors use all-zero entropy, which `secureRandomBytes` refuses; asserted as refusals rather than excepted from the guard. |
 | 2026-08-27 | Phase 3 complete. Lint restrictions, the `crypto-vectors` check with its coverage floor, and the paper wallet restore vector all landed and were verified failing as well as passing. No crypto scenario is skipped. |
 | 2026-08-27 | `settings.global.excludes` fixed with `/**` suffixes, on Adam's decision. Emitted set 1976 to 1645, prettier matches under `.agent` 326 to 0, 0 changed, and alejandra and rustfmt still match all 35 `.nix` and 33 `.rs` files. |
+| 2026-08-27 | Phase 4 complete. Advisories 288 to 275, no new ones, both `pbkdf2` criticals cleared, critical 16 to 14. Tier 1 cleared only 2 because `form-data` and `semver` advisories are against nested copies with no `resolutions` entry; tier 2 cleared 11 because `pbkdf2` and `lodash` have one. |
+| 2026-08-27 | The crypto suites earned their place. Four assertions failed on the `bip39` and `blakejs` bump and were investigated rather than updated: `blakejs` 1.2.1 dropped its `instanceof Buffer` branch, which fails only under jsdom's split realm, so both specs moved to the `node` environment with every expected value unchanged. |
+| 2026-08-27 | `blakejs` 1.2.1 shipping types revealed a latent defect: `getId` in `dataSerialization.ts` called `toString('hex')` on a `Uint8Array`, returning a comma-separated decimal list where a hex transaction id was intended. Pre-existing since 1.1.0 also returned `Uint8Array`, invisible because the package was untyped. No callers anywhere. Fixed. |
 | 2026-08-27 | Scope widened, and the decision to exclude source changes reversed. Investigation found wallet entropy sourced from a `bip39` default that this branch's own bump replaces, and a crypto scenario skipped since 2021 hiding a throwing `generateMnemonic(9)`. Phase 3 becomes a crypto assurance phase, beginning by asserting current conformance against the published BIP39 vectors and ending with controls that make a later weakening conspicuous. Status In Progress. |
 
 ---

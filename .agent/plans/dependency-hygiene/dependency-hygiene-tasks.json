@@ -611,7 +611,7 @@
           "id": "task-009",
           "title": "Record the advisory baseline",
           "description": "Capture yarn audit output before any dependency moves, so the effect of the tier 2 bumps is measured rather than asserted.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 0.25,
           "dependencies": [],
@@ -621,13 +621,16 @@
           ],
           "acceptance": [
             "Baseline counts recorded and available to quote in the task-011 commit body"
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.4,
+          "completedNotes": "288 distinct advisories at branch start: 16 critical, 131 high, 108 moderate, 33 low. Recorded in research/04-advisory-baseline.md, with ownership by future arc in research/05-advisory-ownership.md."
         },
         {
           "id": "task-010",
           "title": "Take the mechanical runtime bumps",
           "description": "13 utility packages with no rendering surface, no key material and no arithmetic on user balances. The existing check set covers them: a break shows up as a failed compile, lint, Jest or Cucumber run.",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2.0,
           "dependencies": [
@@ -654,13 +657,16 @@
             "All 13 packages at the inventory versions",
             "The full check set is green",
             "No source file changed"
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 2.3,
+          "completedNotes": "All 13 at inventory versions, only package.json and yarn.lock changed, full check set green including storybook:build. Behavioural baseline for humanize-duration in both locales, validator/lib/isInt and the url fallback API captured before and identical after. Cleared 2 advisories, both validator. The form-data and semver advisories did not clear, because those are against nested copies under storybook, jest-environment-jsdom, webdriverio, axios and @trezor/connect; the direct dependencies are clean. The plan and my earlier reporting both overstated what this tier would clear."
         },
         {
           "id": "task-011",
           "title": "Clear the lodash and pbkdf2 advisories",
           "description": "8 consequential packages, two of which are pinned in resolutions as well as dependencies. lodash needs >=4.18.0 to clear its advisory; pbkdf2 has a fix at 3.1.6. A resolutions entry overrides the whole tree, so both lines must move together.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 2.5,
           "dependencies": [
@@ -701,7 +707,10 @@
           "securityNotes": [
             "If the crypto spec fails, that is the test doing its job. Stop and investigate the bump. Do not update the expected value to match the new output.",
             "bip39 3.1.0 replaces create-hash, pbkdf2 and randombytes with @noble/hashes, which changes the default rng. task-018 makes that irrelevant by passing the entropy source explicitly. Confirm the provenance test still passes rather than assuming it."
-          ]
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 3.5,
+          "completedNotes": "All 8 at inventory versions with both resolutions entries moved alongside dependencies. yarn why confirms exactly one copy each of pbkdf2 3.1.6 and lodash 4.18.1 in the whole tree. Advisories 288 to 275, no new ones, both pbkdf2 criticals cleared. Crypto suites pass with original expectations; the only deleted line across both specs is an import. Two consequences of the bump: blakejs 1.2.1 dropped its instanceof Buffer branch, which fails only under jsdom, so the specs moved to the node environment; and blakejs shipping types for the first time revealed that getId in dataSerialization.ts called toString(hex) on a Uint8Array and returned a comma-separated decimal list. Pre-existing, no callers, fixed. bignumber.js and cbor behaviour identical before and after."
         }
       ]
     },
