@@ -17,12 +17,17 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { find, get, includes, last } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
+import { blake2b } from 'blakejs';
+import { verifyHardwareTransactionWitnesses } from '../../common/cardano/witnessSet';
+import { toExactLedgerSignTransactionRequest } from '../../common/hardware/ledgerTransaction';
 import {
   deviceDetection,
   waitForDevice,
 } from '../ipc/hardwareWallets/ledger/deviceDetection';
 import { logger } from '../utils/logging';
 import {
+  HardwareExactTransaction,
+  HardwareTransactionWitnessResponse,
   HardwareWalletTransportDeviceRequest,
   LedgerDevicePayload,
   LedgerSignTransactionResponse,
@@ -169,6 +174,62 @@ export class HardwareWalletService {
     }
     this.assertCurrentOperation(path, record, generation);
     return result;
+  };
+
+  public signExactLedgerTransaction = async (
+    devicePath: string,
+    exact: HardwareExactTransaction
+  ): Promise<string> => {
+    const request = toExactLedgerSignTransactionRequest(exact);
+    const expected = exact.signers
+      .filter(({ keyHash }) =>
+        exact.witnesses.requestedDeviceKeyHashes.includes(keyHash)
+      )
+      .map(({ path, keyHash }) => ({
+        path: path.join('/'),
+        keyHash,
+      }));
+    return this.withLedgerOperation(devicePath, async (connection) => {
+      const signed = await connection.signTransaction(request);
+      if (
+        signed.txHashHex !== exact.bodyHash ||
+        !/^[0-9a-f]{64}$/u.test(signed.txHashHex)
+      )
+        throw new Error('Ledger returned an unexpected transaction hash');
+      const seen = new Set<string>();
+      const witnesses: HardwareTransactionWitnessResponse['witnesses'][number][] = [];
+      for (const witness of signed.witnesses) {
+        const path = witness.path.join('/');
+        const expectedWitness = expected.find(
+          (candidate) => candidate.path === path
+        );
+        if (!expectedWitness || seen.has(path))
+          throw new Error('Ledger returned an unexpected witness path');
+        seen.add(path);
+        if (!/^[0-9a-f]{128}$/u.test(witness.witnessSignatureHex))
+          throw new Error('Ledger returned an invalid witness signature');
+        const key = await connection.getExtendedPublicKey({
+          path: witness.path,
+        });
+        if (!/^[0-9a-f]{64}$/u.test(key.publicKeyHex))
+          throw new Error('Ledger returned an invalid public key');
+        const keyHash = Buffer.from(
+          blake2b(Buffer.from(key.publicKeyHex, 'hex'), undefined, 28)
+        ).toString('hex');
+        if (keyHash !== expectedWitness.keyHash)
+          throw new Error('Ledger returned an unexpected public key');
+        witnesses.push({
+          publicKey: key.publicKeyHex,
+          signature: witness.witnessSignatureHex,
+        });
+      }
+      if (seen.size !== expected.length)
+        throw new Error('Ledger omitted a requested witness path');
+      return verifyHardwareTransactionWitnesses(exact, {
+        bodyHash: signed.txHashHex,
+        witnesses,
+      });
+    });
   };
 
   public cancelLedgerOperation = async (path?: string): Promise<void> => {

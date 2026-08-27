@@ -10,6 +10,7 @@ import {
 } from '../../../common/cardano/witnessSet';
 import type {
   HardwareExactTransaction,
+  HardwareOwnedInput,
   HardwareOwnedAddress,
   HardwareSigner,
   HardwareTransactionCapability,
@@ -174,6 +175,29 @@ export const prepareHardwareTransaction = (
       outputBinding(address, snapshot.ownership, snapshot.network.networkId)
     )
     .filter((value): value is HardwareOwnedAddress => value !== null);
+  const ownedInputs: HardwareOwnedInput[] = [];
+  (['normal', 'collateral'] as const).forEach((role) => {
+    transaction.inputs[role].forEach((input) => {
+      const output = resolved.get(outpoint(input.transactionId, input.index));
+      if (!output) return;
+      const credential = paymentCredential(
+        decodeConwayOutput(Buffer.from(output.sourceCbor, 'hex')).address,
+        snapshot.network.networkId
+      );
+      const ownership =
+        credential && ownedKey(snapshot.ownership, 'payment', credential);
+      const proofKind = role === 'normal' ? 'normal_input' : 'collateral';
+      if (!ownership?.proofKinds.includes(proofKind)) return;
+      ownedInputs.push(
+        Object.freeze({
+          transactionId: input.transactionId,
+          index: input.index,
+          path: Object.freeze([...ownership.derivationPath]),
+          role,
+        })
+      );
+    });
+  });
   const exact: HardwareExactTransaction = Object.freeze({
     transaction,
     bodyHash: transaction.transactionId,
@@ -181,6 +205,7 @@ export const prepareHardwareTransaction = (
     network: snapshot.network,
     partialSign,
     signers: Object.freeze(signers),
+    ownedInputs: Object.freeze(ownedInputs),
     ownedOutputs: Object.freeze(ownedOutputs),
     witnesses: Object.freeze({
       requiredKeyHashes: Object.freeze(requiredKeyHashes),
