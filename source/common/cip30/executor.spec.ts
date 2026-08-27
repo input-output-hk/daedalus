@@ -170,4 +170,79 @@ describe('CIP-30 wallet executor contract', () => {
     ).toThrow('Invalid CIP-95 key state');
     expect(getter).not.toHaveBeenCalled();
   });
+  it('binds exact transaction context and transient witness signing data', () => {
+    const transactionContextRequest = {
+      ...request,
+      operation: 'transaction-context' as const,
+      transactions: ['84a0a0f5f6'],
+    };
+    expect(parseCip30WalletRequest(transactionContextRequest)).toEqual(
+      transactionContextRequest
+    );
+    expect(
+      parseCip30WalletResponse(transactionContextRequest, {
+        status: 'fulfilled',
+        operation: 'transaction-context',
+        value: { revision: 1, outputs: [] },
+      })
+    ).toMatchObject({
+      status: 'fulfilled',
+      operation: 'transaction-context',
+    });
+
+    const signRequest = {
+      ...request,
+      operation: 'sign-transactions' as const,
+      context: { revision: 1, outputs: [] },
+      transactions: [{ cbor: '84a0a0f5f6', partialSign: true }],
+      passphrase: 'secret',
+    };
+    expect(parseCip30WalletRequest(signRequest)).toEqual(signRequest);
+    expect(
+      parseCip30WalletResponse(signRequest, {
+        status: 'fulfilled',
+        operation: 'sign-transactions',
+        value: {
+          revision: 1,
+          witnesses: [
+            {
+              transaction_index: 0,
+              body_hash: '66'.repeat(32),
+              witness_set_cbor: 'a0',
+            },
+          ],
+        },
+      })
+    ).toMatchObject({
+      status: 'fulfilled',
+      operation: 'sign-transactions',
+    });
+    for (const value of [
+      { ...signRequest, passphrase: '' },
+      { ...signRequest, transactions: [] },
+      {
+        ...signRequest,
+        transactions: [{ cbor: 'A0', partialSign: true }],
+      },
+    ])
+      expect(() => parseCip30WalletRequest(value)).toThrow(
+        'Invalid CIP-30 wallet request'
+      );
+    expect(() =>
+      parseCip30WalletResponse(signRequest, {
+        status: 'fulfilled',
+        operation: 'sign-transactions',
+        value: {
+          revision: 1,
+          witnesses: [
+            {
+              transaction_index: 1,
+              body_hash: '66'.repeat(32),
+              witness_set_cbor: 'a0',
+            },
+          ],
+        },
+      })
+    ).toThrow('Invalid CIP-30 transaction witnesses');
+  });
 });

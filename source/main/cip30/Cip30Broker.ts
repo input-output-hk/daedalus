@@ -15,11 +15,21 @@ import {
   prepareCip8Request,
   verifyCip8BackendResponse,
 } from '../../common/cardano/cip8';
+import {
+  reconcileTransactionContext,
+  TransactionContextError,
+} from '../../common/cardano/transactionContext';
+import {
+  diffVKeyWitnesses,
+  WitnessSetError,
+} from '../../common/cardano/witnessSet';
+import { createCip30TransactionReview } from '../../common/cip30/review';
+import { decodeConwayTransaction } from '../../common/cardano/transaction';
+import { parseConwayTransactionEnvelope } from '../../common/cardano/transactionEnvelope';
 import type { ApiError, DappCip30Rejection } from '../../common/cip30/errors';
 import type {
   Cip30WalletCapabilities,
   Cip30WalletNetwork,
-  Cip30WalletOperation,
   Cip30WalletRequest,
   Cip30WalletResponse,
 } from '../../common/cip30/executor';
@@ -94,6 +104,14 @@ const dataSignRejection = (
   info: string
 ): DappCip30Rejection => ({
   type: 'data-sign-error',
+  value: { code, info },
+});
+
+const txSignRejection = (
+  code: 1 | 2 | 3,
+  info: string
+): DappCip30Rejection => ({
+  type: 'tx-sign-error',
   value: { code, info },
 });
 
@@ -206,7 +224,7 @@ export class Cip30Broker {
 
   private request(
     binding: Cip30BrokerBinding,
-    operation: Exclude<Cip30WalletOperation, 'sign-data'>
+    operation: 'capabilities' | 'context' | 'addresses' | 'cip95-key-state'
   ): Cip30WalletRequest {
     return Object.freeze({
       operation,
@@ -218,7 +236,7 @@ export class Cip30Broker {
 
   private async executeWallet(
     binding: Cip30BrokerBinding,
-    operation: Exclude<Cip30WalletOperation, 'sign-data'>
+    operation: 'capabilities' | 'context' | 'addresses' | 'cip95-key-state'
   ): Promise<Cip30WalletResponse> {
     this.assertCurrent(binding);
     const response = await this.options.executeWallet(
@@ -370,6 +388,142 @@ export class Cip30Broker {
     return {};
   }
 
+  private async signTx(
+    request: DappCip30GatewayRequest<'api.signTx'>,
+    binding: Cip30BrokerBinding
+  ) {
+    const [cbor, partialSign = false] = request.args;
+    try {
+      const preliminary = decodeConwayTransaction(
+        parseConwayTransactionEnvelope(Buffer.from(cbor, 'hex'))
+      );
+      if (
+        preliminary.networkId !== undefined &&
+        preliminary.networkId !== binding.authority.network.networkId
+      )
+        throw invalidRequestRejection();
+    } catch {
+      throw invalidRequestRejection();
+    }
+    const { evidence, context } = await this.capabilityEvidence(binding);
+    const current = this.options.sessions.currentForGuest(
+      binding.authority.guestWebContentsId
+    );
+    if (current?.enabledExtensions.includes(95)) throw refusal();
+    const capability = this.options.dispatcher.requireCapability(
+      request.method,
+      binding.authority,
+      context
+    );
+    if (evidence.walletKind !== 'shelley-software')
+      throw txSignRejection(1, 'Proof generation failed');
+
+    this.assertCurrent(binding);
+    const contextResponse = await this.options.executeWallet({
+      operation: 'transaction-context',
+      walletId: binding.authority.walletId,
+      network: binding.authority.network,
+      sourceRevision: this.options.sourceRevision,
+      transactions: Object.freeze([cbor]),
+    });
+    this.assertCurrent(binding);
+    if (contextResponse.status === 'rejected') {
+      if (contextResponse.reason === 'account-change') throw accountChange();
+      throw internal();
+    }
+    if (contextResponse.operation !== 'transaction-context') throw internal();
+    let snapshot;
+    try {
+      snapshot = reconcileTransactionContext(contextResponse.value, {
+        walletId: binding.authority.walletId,
+        network: binding.authority.network,
+        transactions: [cbor],
+      });
+    } catch (error) {
+      if (error instanceof TransactionContextError) throw internal();
+      throw error;
+    }
+    const transaction = snapshot.transactionsSemantic[0];
+    if (!transaction) throw internal();
+    const review = createCip30TransactionReview(transaction, 'sign');
+    const result = await this.options.consent.request({
+      identity: {
+        guestWebContentsId: binding.authority.guestWebContentsId,
+        documentGeneration: binding.authority.documentGeneration,
+        origin: binding.authority.origin,
+        connectionId: capability.connectionId,
+        walletId: binding.authority.walletId,
+        routeEpoch: binding.authority.routeEpoch,
+        networkGenesis: binding.authority.network.genesisHash,
+      },
+      presentation: {
+        kind: 'transaction-sign',
+        origin: binding.authority.origin,
+        walletName: evidence.walletName,
+        networkName: this.options.networkName,
+        scopes: ['transaction-signing'],
+        extensions: capability.enabledExtensions,
+        review,
+      },
+      payload: { cbor, partialSign, context: contextResponse.value },
+      declined: txSignRejection(2, 'User declined'),
+      execute: async (_payload, signal, passphrase) => {
+        if (signal.aborted || !passphrase)
+          throw txSignRejection(1, 'Proof generation failed');
+        this.assertCurrent(binding);
+        const latest = await this.capabilityEvidence(binding);
+        if (
+          latest.evidence.walletKind !== 'shelley-software' ||
+          this.options.sessions
+            .currentForGuest(binding.authority.guestWebContentsId)
+            ?.enabledExtensions.includes(95)
+        )
+          throw txSignRejection(1, 'Proof generation failed');
+        this.options.dispatcher.requireCapability(
+          request.method,
+          binding.authority,
+          latest.context
+        );
+        const response = await this.options.executeWallet({
+          operation: 'sign-transactions',
+          walletId: binding.authority.walletId,
+          network: binding.authority.network,
+          sourceRevision: this.options.sourceRevision,
+          context: contextResponse.value,
+          transactions: Object.freeze([Object.freeze({ cbor, partialSign })]),
+          passphrase,
+        });
+        this.assertCurrent(binding);
+        if (response.status === 'rejected') {
+          if (response.reason === 'account-change') throw accountChange();
+          if (response.reason === 'tx-proof-generation')
+            throw txSignRejection(1, 'Proof generation failed');
+          if (response.reason === 'deprecated-certificate')
+            throw txSignRejection(3, 'Deprecated certificate');
+          throw internal();
+        }
+        if (
+          response.operation !== 'sign-transactions' ||
+          response.value.witnesses.length !== 1
+        )
+          throw internal();
+        const witness = response.value.witnesses[0];
+        try {
+          return diffVKeyWitnesses(
+            transaction.envelope,
+            witness.body_hash,
+            Buffer.from(witness.witness_set_cbor, 'hex')
+          ).toString('hex');
+        } catch (error) {
+          if (error instanceof WitnessSetError) throw internal();
+          throw error;
+        }
+      },
+    });
+    this.assertCurrent(binding);
+    return result;
+  }
+
   private async signData(
     request: DappCip30GatewayRequest<'api.signData'>,
     binding: Cip30BrokerBinding
@@ -486,6 +640,10 @@ export class Cip30Broker {
       if (request.method === 'provider.enable') {
         const result = await this.enable(request, binding);
         this.assertCurrent(binding);
+        return createDappCip30FulfilledEnvelope(request.method, result);
+      }
+      if (request.method === 'api.signTx') {
+        const result = await this.signTx(request, binding);
         return createDappCip30FulfilledEnvelope(request.method, result);
       }
       if (request.method === 'api.signData') {
