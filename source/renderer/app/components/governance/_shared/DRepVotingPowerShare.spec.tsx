@@ -1,0 +1,110 @@
+import React from 'react';
+import BigNumber from 'bignumber.js';
+import { IntlProvider } from 'react-intl';
+import { cleanup, render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import translations from '../../../i18n/locales/en-US.json';
+import DRepVotingPowerShare from './DRepVotingPowerShare';
+
+const TOTAL = new BigNumber('5000000000000000'); // 5B ADA in lovelace
+const ABOVE = new BigNumber('100000000000000'); // 100M ADA -> 2%
+const BELOW = new BigNumber('50000000000000'); // 50M ADA -> 1%
+
+const renderShare = (
+  votingPower: BigNumber | null,
+  totalDRepStake: BigNumber | null = TOTAL,
+  variant: 'badge' | 'plain' = 'badge'
+) =>
+  render(
+    <IntlProvider locale="en-US" messages={translations}>
+      <DRepVotingPowerShare
+        votingPower={votingPower}
+        totalDRepStake={totalDRepStake}
+        variant={variant}
+      />
+    </IntlProvider>
+  );
+
+describe('DRepVotingPowerShare', () => {
+  afterEach(cleanup);
+
+  it('states the share for every DRep, not only concentrated ones', () => {
+    renderShare(BELOW);
+    expect(screen.getByText('1%')).toBeInTheDocument();
+  });
+
+  it('states the whole fact in a labelled row instead of hiding it on an icon', () => {
+    renderShare(BELOW, TOTAL, 'plain');
+
+    // A row has the width a card does not, so the figure does not have to be
+    // a bare percentage whose meaning waits behind a hover.
+    expect(
+      screen.getByText('Controls 1% of ₳ 5.0B delegated to DReps.')
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    expect(screen.queryByText('1%')).not.toBeInTheDocument();
+  });
+
+  it('says "less than" in the row when the share rounds away', () => {
+    // 500 ADA against 5B: real, and far under the precision the row prints.
+    renderShare(new BigNumber('500000000'), TOTAL, 'plain');
+
+    expect(
+      screen.getByText('Controls less than 0.01% of ₳ 5.0B delegated to DReps.')
+    ).toBeInTheDocument();
+  });
+
+  it('names the total the share is measured against, not the share again', () => {
+    renderShare(BELOW);
+    // 5B is the denominator; the DRep's own 50M is already on screen beside
+    // the badge, so repeating it would leave the percentage unanchored. The
+    // explanation hangs off the icon, which is what tells a reader it exists.
+    expect(
+      screen.getByRole('button', {
+        name: 'This DRep controls 1% of ₳ 5.0B delegated to DReps.',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('states the share above the threshold without arguing about it', () => {
+    renderShare(ABOVE);
+    expect(
+      screen.getByRole('button', {
+        name: 'This DRep controls 2% of ₳ 5.0B delegated to DReps.',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('offers the explanation as a focusable control, not a hover target', () => {
+    // A figure gives a reader no reason to hover it, and a pointer-only
+    // tooltip is unreachable by keyboard either way.
+    renderShare(BELOW);
+    expect(screen.getByRole('button')).toBeInTheDocument();
+  });
+
+  it('reports a share too small to display as under the minimum, never as zero', () => {
+    // 940 ADA against a 5B total rounds to 0% at two decimal places. A DRep
+    // that holds voting power does not hold none of it.
+    renderShare(new BigNumber('940000000'));
+    expect(screen.getByText('<0.01%')).toBeInTheDocument();
+    expect(screen.queryByText('0%')).toBeNull();
+    // The symbol is compact and needs no translation, but a screen reader
+    // cannot be relied on to announce it, so the explanation says it in words
+    // and does not round the share to zero either.
+    expect(
+      screen.getByRole('button', {
+        name: 'This DRep controls less than 0.01% of ₳ 5.0B delegated to DReps.',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('renders nothing when the DRep totals are unavailable', () => {
+    const { container } = renderShare(ABOVE, null);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('renders nothing when the voting power is unknown', () => {
+    const { container } = renderShare(null);
+    expect(container).toBeEmptyDOMElement();
+  });
+});

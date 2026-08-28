@@ -2,6 +2,7 @@ import { action, computed, observable } from 'mobx';
 import { debounce, get } from 'lodash';
 import { sidebarConfig } from '../config/sidebarConfig';
 import type { SidebarCategoryInfo } from '../config/sidebarConfig';
+import { ROUTES } from '../routes-config';
 import type {
   SidebarWalletType,
   WalletSortConfig,
@@ -123,7 +124,7 @@ export default class SidebarStore extends Store {
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: false,
       [categories.STAKING.name]: true,
       [categories.SETTINGS.name]: true,
-      [categories.VOTING.name]: true,
+      [categories.GOVERNANCE.name]: true,
       [categories.NETWORK_INFO.name]: isFlight,
     };
     const categoriesFilteredList: Array<SidebarCategoryInfo> = list.filter(
@@ -190,9 +191,20 @@ export default class SidebarStore extends Store {
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
     this.CATEGORIES.forEach((category) => {
-      // If the current route starts with the root of the category
-      if (route.indexOf(category.route) === 0)
+      const isGovernanceCategory = category.route === ROUTES.GOVERNANCE.ROOT;
+      // Governance routes only. This also matched everything under /voting,
+      // back when the delegation form lived there and left the sidebar with
+      // nothing lit; that form is under /governance now, and /voting is
+      // Catalyst, which is a different feature and not this category.
+      const matchesGovernanceRoute =
+        route.indexOf(ROUTES.GOVERNANCE.ROOT) === 0;
+
+      if (
+        (isGovernanceCategory && matchesGovernanceRoute) ||
+        (!isGovernanceCategory && route.indexOf(category.route) === 0)
+      ) {
         this._setActivateSidebarCategory(category.route);
+      }
     });
   };
   _syncSidebarItemsWithShelleyActivation = () => {

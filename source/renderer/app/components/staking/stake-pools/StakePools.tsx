@@ -13,6 +13,7 @@ import BackToTopButton from '../../widgets/BackToTopButton';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
+import type { ListViewMode } from '../../../types/listViewTypes';
 import { getFilteredStakePoolsList } from './helpers';
 import { formattedNumber } from '../../../utils/formatters';
 import StakePool from '../../../domains/StakePool';
@@ -91,6 +92,8 @@ type Props = {
   stakePoolsList: Array<StakePool>;
   updateDelegatingStake: (...args: Array<any>) => any;
   wallets: Array<Wallet>;
+  listViewMode?: ListViewMode;
+  onListViewModeChange?: (mode: ListViewMode) => void;
 };
 type State = {
   search: string;
@@ -115,7 +118,15 @@ class StakePools extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  state = { ...initialState };
+  // Seeded from the stored preference so the choice survives a restart. It is
+  // the same preference the DRep directory reads, so the two list screens
+  // cannot disagree about which view the user prefers. The rewards grid is a
+  // sub-mode of the grid and is deliberately not persisted.
+  state = {
+    ...initialState,
+    isGridView: this.props.listViewMode !== 'table',
+    isListView: this.props.listViewMode === 'table',
+  };
 
   sendSearchAnalyticsEvent = debounce(
     () =>
@@ -145,6 +156,7 @@ class StakePools extends Component<Props, State> {
       isGridRewardsView: false,
       isListView: false,
     });
+    this.props.onListViewModeChange?.('cards');
 
     this.props.analyticsTracker.sendEvent(
       EventCategories.STAKE_POOLS,
@@ -169,6 +181,7 @@ class StakePools extends Component<Props, State> {
       isGridRewardsView: false,
       isListView: true,
     });
+    this.props.onListViewModeChange?.('table');
 
     this.props.analyticsTracker.sendEvent(
       EventCategories.STAKE_POOLS,

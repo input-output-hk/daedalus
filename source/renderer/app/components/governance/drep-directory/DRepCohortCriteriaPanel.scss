@@ -1,0 +1,43 @@
+@import '../governanceConfig';
+
+// The criteria that decide what gets suggested, not the filters that narrow
+// what is already on screen. Two different questions, and the wording beneath
+// these controls says which one they answer.
+//
+// No border or background of its own: it sits inside the box that states what
+// the criteria produced, and a box inside that box was a box too many.
+//
+// One row, matching the row this panel is replaced by in the other mode. Two
+// stacked rows here and one row there made the box change height whenever the
+// mode changed, which is the jump the single box was meant to remove.
+// The switch wears its label above it, where its neighbours wear theirs,
+// rather than beside it. Polymorph puts a checkbox's label to its right, which
+// left these two sitting under a gap in a row where everything else was
+// labelled, and the row read as two kinds of thing rather than one.
+.toggleGroup {
+  display: flex;
+  flex-shrink: 0;
+  gap: 24px;
+}
+
+.toggleFacet {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.toggleLabel {
+  @extend %facetLabel;
+}
+
+.toggleControl {
+  align-items: center;
+  display: flex;
+  height: 50px;
+}
+
+// NormalSwitch carries a 10px margin for a settings row, which the row's own
+// gap does here instead.
+.toggle {
+  margin: 0;
+}

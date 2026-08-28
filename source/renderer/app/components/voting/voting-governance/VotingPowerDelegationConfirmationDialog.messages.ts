@@ -4,37 +4,21 @@ export const messages = defineMessages({
   title: {
     id: 'voting.governance.confirmationDialog.title',
     defaultMessage: '!!!Confirm Transaction',
-    description: 'Title for confirm dialog',
+    description: 'Title of the voting power delegation confirmation dialog',
   },
-  vote: {
-    id: 'voting.governance.confirmationDialog.vote',
-    defaultMessage: '!!!Vote',
-    description: 'Vote title',
-  },
-  fee: {
-    id: 'voting.governance.confirmationDialog.fee',
-    defaultMessage: '!!!Transaction fee',
-    description: 'Fee title',
-  },
-  password: {
-    id: 'voting.governance.confirmationDialog.password',
-    defaultMessage: '!!!Spending password',
-    description: 'Label for password input',
+  // Not "signed payload": what is signed is a CBOR certificate this dialog
+  // never sees, and calling this that would name a thing it is not. It is a
+  // readable statement of the delegation the certificate will carry.
+  delegationCertificate: {
+    id: 'voting.governance.confirmationDialog.delegationCertificate',
+    defaultMessage: '!!!Delegation certificate',
+    description: 'Heading above the delegation this transaction will record',
   },
   errorGeneric: {
-    id: 'voting.governance.confirmationDialog.error.generic',
+    id: 'voting.governance.transactionError.generic',
     defaultMessage:
-      '!!!Something went wrong during transaction submission. Please try again in a few minutes.',
-    description: 'Generic error message',
-  },
-  buttonCancel: {
-    id: 'voting.governance.confirmationDialog.button.cancel',
-    defaultMessage: '!!!Cancel',
-    description: 'Cancel button',
-  },
-  buttonConfirm: {
-    id: 'voting.governance.confirmationDialog.button.confirm',
-    defaultMessage: '!!!Confirm',
-    description: 'Confirm button',
+      '!!!Something went wrong with this transaction. Please try again in a few minutes.',
+    description:
+      'Shown when a delegation transaction fails to build or to submit',
   },
 });

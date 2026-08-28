@@ -10,3 +10,9 @@ insert_final_newline = true
 
 [*.md]
 trim_trailing_whitespace = false
+
+# `yarn i18n:manage` regenerates these and writes no final newline. CI compares
+# the regenerated output against what is committed byte for byte, so adding one
+# here fails the build.
+[source/renderer/app/i18n/locales/*.json]
+insert_final_newline = false

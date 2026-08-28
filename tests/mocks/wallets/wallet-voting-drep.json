@@ -1,0 +1,34 @@
+{
+  "id": "1111111111111111111111111111111111111111",
+  "address_pool_gap": 20,
+  "name": "cv1 fixture voting drep",
+  "balance": {
+    "available": {
+      "quantity": 10000000000,
+      "unit": "lovelace"
+    },
+    "total": {
+      "quantity": 10000000000,
+      "unit": "lovelace"
+    },
+    "reward": {
+      "quantity": 0,
+      "unit": "lovelace"
+    }
+  },
+  "assets": {
+    "available": [],
+    "total": []
+  },
+  "delegation": {
+    "active": {
+      "status": "voting",
+      "voting": "drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy"
+    },
+    "next": []
+  },
+  "state": {
+    "status": "ready"
+  },
+  "discovery": "sequential"
+}

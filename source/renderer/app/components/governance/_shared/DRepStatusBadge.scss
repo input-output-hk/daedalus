@@ -1,0 +1,32 @@
+// A badge is one word and the colour behind it. The leading dot repeated that
+// colour a third time and read as a bullet, which implies a list: it belonged
+// to a badge that carried several signals at once, and this one carries a
+// single state.
+.badge {
+  align-items: center;
+  border-radius: 4px;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+.label {
+  white-space: nowrap;
+}
+
+.active {
+  background: var(--theme-gov-badge-success-background);
+  color: var(--theme-gov-badge-success-color);
+}
+
+.inactiveSoon {
+  background: var(--theme-gov-badge-warning-background);
+  color: var(--theme-gov-badge-warning-color);
+}
+
+.inactive {
+  background: var(--theme-gov-badge-neutral-background);
+  color: var(--theme-gov-badge-neutral-color);
+}

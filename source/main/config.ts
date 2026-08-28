@@ -136,6 +136,7 @@ export const ALLOWED_LOGS = [
   'System-info.json',
   'Daedalus-versions.json',
   'State-snapshot.json',
+  'DRep-state-snapshot.json',
   'Wallet-migration-report.json',
   'cardano-wallet.log',
   'node.log',

@@ -1,0 +1,90 @@
+@import '../governanceConfig';
+
+// Sized and bounded like the selects beside it, so the row keeps one control
+// height whichever kind of control a facet needs.
+.facet {
+  flex: 0 1 auto;
+  // The same floor as the selects that share its row, rather than whatever
+  // the buttons inside it happen to need.
+  flex: 0 0 auto;
+  min-width: $narrowFacetWidth;
+  position: relative;
+}
+
+.input {
+  width: 100%;
+
+  input {
+    background-color: var(--rp-input-bg-color);
+    border-radius: 4px;
+    height: 50px;
+    // Right-aligned so the value meets its unit. Left-aligned, the number sat
+    // at one end of the field and the per-cent sign at the other, and the two
+    // never read as one quantity.
+    // Clears the unit rather than meeting it: the per-cent sign is offset
+    // from the right edge, so the text has to stop short of the sign's left
+    // edge, not of the offset.
+    padding: 0 94px 0 14px;
+    text-align: right;
+  }
+}
+
+// The unit belongs to the value, not to the label: a reader typing 1.5 needs
+// to see what 1.5 is a quantity of without reading back up. Set in the weight
+// and colour of the value it follows, so the two read as one figure rather
+// than a number with a mark parked beside it.
+.suffix {
+  bottom: 14px;
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-medium);
+  font-size: 16px;
+  line-height: 1.38;
+  pointer-events: none;
+  position: absolute;
+  right: 74px;
+}
+
+.steppers {
+  bottom: 11px;
+  display: flex;
+  gap: 4px;
+  position: absolute;
+  right: 11px;
+}
+
+.stepper {
+  align-items: center;
+  background-color: var(--theme-gov-search-clear-button-background-color);
+  border: 0;
+  border-radius: 3px;
+  color: var(--theme-gov-font-color-regular);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--font-regular);
+  font-family: var(--font-medium);
+  font-size: 18px;
+  height: 28px;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  width: 28px;
+
+  &:hover:not(:disabled) {
+    background-color: var(
+      --theme-gov-search-clear-button-hover-background-color
+    );
+  }
+
+  // Held at the end of the range rather than hidden: a control that vanishes
+  // moves the one beside it, and a reader cannot tell whether they reached the
+  // limit or lost the button.
+  &:disabled {
+    cursor: default;
+    opacity: 0.4;
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--theme-gov-font-color-accent);
+    outline-offset: 1px;
+  }
+}

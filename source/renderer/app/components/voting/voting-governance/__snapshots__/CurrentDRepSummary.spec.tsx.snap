@@ -1,0 +1,323 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CurrentDRepSummary DRep status badge leaves the inactive badge to say it, with no caption beneath 1`] = `
+<section
+  aria-label="Currently Delegated To"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    Currently Delegated To
+  </h3>
+  <div
+    class="statusRow"
+  >
+    <span
+      aria-label="Inactive"
+      class="badge inactive"
+    >
+      <span
+        class="label"
+      >
+        Inactive
+      </span>
+    </span>
+  </div>
+  <div
+    class="idRow"
+  >
+    <span
+      class="container"
+    >
+      <span
+        class="root isShowingOnHover"
+      >
+        <div
+          class="bubble alignLeft nowrap root openUpward transparent"
+        >
+          <div
+            class="bubble"
+            data-bubble-container="true"
+          >
+            drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy
+          </div>
+          <span
+            data-bubble-arrow="true"
+          />
+        </div>
+        <code
+          aria-label="drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy"
+          class="id"
+        >
+          drep1y2s…23nmjy
+        </code>
+      </span>
+      <button
+        aria-label="Copy DRep ID"
+        class="iconButton"
+        title="Copy DRep ID"
+        type="button"
+      >
+        <svg />
+      </button>
+    </span>
+  </div>
+</section>
+`;
+
+exports[`CurrentDRepSummary DRep status badge leaves the inactive-soon badge to say it, with no caption beneath 1`] = `
+<section
+  aria-label="Currently Delegated To"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    Currently Delegated To
+  </h3>
+  <div
+    class="statusRow"
+  >
+    <span
+      aria-label="Inactive Soon. Will become inactive in 4 epochs without on-chain activity."
+      class="badge inactiveSoon"
+      title="Will become inactive in 4 epochs without on-chain activity."
+    >
+      <span
+        class="label"
+      >
+        Inactive Soon
+      </span>
+    </span>
+  </div>
+  <div
+    class="idRow"
+  >
+    <span
+      class="container"
+    >
+      <span
+        class="root isShowingOnHover"
+      >
+        <div
+          class="bubble alignLeft nowrap root openUpward transparent"
+        >
+          <div
+            class="bubble"
+            data-bubble-container="true"
+          >
+            drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy
+          </div>
+          <span
+            data-bubble-arrow="true"
+          />
+        </div>
+        <code
+          aria-label="drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy"
+          class="id"
+        >
+          drep1y2s…23nmjy
+        </code>
+      </span>
+      <button
+        aria-label="Copy DRep ID"
+        class="iconButton"
+        title="Copy DRep ID"
+        type="button"
+      >
+        <svg />
+      </button>
+    </span>
+  </div>
+</section>
+`;
+
+exports[`CurrentDRepSummary DRep status badge renders the shared active badge with no status caption 1`] = `
+<section
+  aria-label="Currently Delegated To"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    Currently Delegated To
+  </h3>
+  <div
+    class="statusRow"
+  >
+    <span
+      aria-label="Active"
+      class="badge active"
+    >
+      <span
+        class="label"
+      >
+        Active
+      </span>
+    </span>
+  </div>
+  <div
+    class="idRow"
+  >
+    <span
+      class="container"
+    >
+      <span
+        class="root isShowingOnHover"
+      >
+        <div
+          class="bubble alignLeft nowrap root openUpward transparent"
+        >
+          <div
+            class="bubble"
+            data-bubble-container="true"
+          >
+            drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy
+          </div>
+          <span
+            data-bubble-arrow="true"
+          />
+        </div>
+        <code
+          aria-label="drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy"
+          class="id"
+        >
+          drep1y2s…23nmjy
+        </code>
+      </span>
+      <button
+        aria-label="Copy DRep ID"
+        class="iconButton"
+        title="Copy DRep ID"
+        type="button"
+      >
+        <svg />
+      </button>
+    </span>
+  </div>
+</section>
+`;
+
+exports[`CurrentDRepSummary core states renders abstain with a caption and no DRep id (snapshot) 1`] = `
+<section
+  aria-label="Currently Delegated To"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    Currently Delegated To
+  </h3>
+  <div
+    class="statusRow"
+  >
+    <span
+      class="statusBadge"
+    >
+      <span
+        aria-hidden="true"
+        class="glyph"
+      >
+        ⊘
+      </span>
+      Abstain
+    </span>
+  </div>
+  <p
+    class="caption"
+  >
+    Your stake is recorded on chain as not participating in governance.
+  </p>
+</section>
+`;
+
+exports[`CurrentDRepSummary core states renders no confidence with a caption and no DRep id (snapshot) 1`] = `
+<section
+  aria-label="Currently Delegated To"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    Currently Delegated To
+  </h3>
+  <div
+    class="statusRow"
+  >
+    <span
+      class="statusBadge"
+    >
+      <span
+        aria-hidden="true"
+        class="glyph"
+      >
+        ✕
+      </span>
+      No Confidence
+    </span>
+  </div>
+  <p
+    class="caption"
+  >
+    Your stake counts as Yes on every motion of no confidence, and as No on every other governance action.
+  </p>
+</section>
+`;
+
+exports[`CurrentDRepSummary core states renders the DRep id row with the on-chain label and the neutral status caption when no directory entry is supplied (snapshot) 1`] = `
+<section
+  aria-label="Currently Delegated To"
+  class="component"
+>
+  <h3
+    class="header"
+  >
+    Currently Delegated To
+  </h3>
+  <div
+    class="idRow"
+  >
+    <span
+      class="container"
+    >
+      <span
+        class="root isShowingOnHover"
+      >
+        <div
+          class="bubble alignLeft nowrap root openUpward transparent"
+        >
+          <div
+            class="bubble"
+            data-bubble-container="true"
+          >
+            drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy
+          </div>
+          <span
+            data-bubble-arrow="true"
+          />
+        </div>
+        <code
+          aria-label="drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy"
+          class="id"
+        >
+          drep1y2s…23nmjy
+        </code>
+      </span>
+      <button
+        aria-label="Copy DRep ID"
+        class="iconButton"
+        title="Copy DRep ID"
+        type="button"
+      >
+        <svg />
+      </button>
+    </span>
+  </div>
+  <p
+    class="caption"
+  >
+    Could not load this DRep's data. It may have retired.
+  </p>
+</section>
+`;

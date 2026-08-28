@@ -322,6 +322,73 @@ export default defineMessages({
     defaultMessage: '!!!View',
     description: 'View label.',
   },
+  viewDetails: {
+    id: 'global.labels.viewDetails',
+    defaultMessage: '!!!View details',
+    description: 'Label of a control that opens a detail view.',
+  },
+  wallet: {
+    id: 'global.labels.wallet',
+    defaultMessage: '!!!Wallet',
+    description: 'Label of a field or column naming a wallet.',
+  },
+  submit: {
+    id: 'global.labels.submit',
+    defaultMessage: '!!!Submit',
+    description:
+      'The word "submit" reused at several places (like submit buttons)',
+  },
+  status: {
+    id: 'global.labels.status',
+    defaultMessage: '!!!Status',
+    description: 'Label of a field or column naming a status.',
+  },
+  metadata: {
+    id: 'global.labels.metadata',
+    defaultMessage: '!!!Metadata',
+    description: 'Label of a field or control concerning metadata.',
+  },
+  sort: {
+    id: 'global.labels.sort',
+    defaultMessage: '!!!Sort',
+    description: 'Label of a control choosing the order of a list.',
+  },
+  retry: {
+    id: 'global.labels.retry',
+    defaultMessage: '!!!Retry',
+    description: 'Label of a control that attempts a failed operation again.',
+  },
+  delegate: {
+    id: 'global.labels.delegate',
+    defaultMessage: '!!!Delegate',
+    description:
+      'Label of a control that starts delegating, of stake or of voting power.',
+  },
+  redelegate: {
+    id: 'global.labels.redelegate',
+    defaultMessage: '!!!Redelegate',
+    description: 'Label of a control that moves an existing delegation.',
+  },
+  undelegated: {
+    id: 'global.labels.undelegated',
+    defaultMessage: '!!!Undelegated',
+    description: 'Shown where a wallet has delegated nothing.',
+  },
+  confirm: {
+    id: 'global.labels.confirm',
+    defaultMessage: '!!!Confirm',
+    description: 'The word "confirm" reused at several places',
+  },
+  spendingPassword: {
+    id: 'global.labels.spendingPassword',
+    defaultMessage: '!!!Spending password',
+    description: 'Label of the spending password field, used app-wide',
+  },
+  transactionFee: {
+    id: 'global.labels.transactionFee',
+    defaultMessage: '!!!Transaction fee',
+    description: 'Label of the fee a transaction will cost, used app-wide',
+  },
   copy: {
     id: 'global.labels.copy',
     defaultMessage: '!!!Copy',

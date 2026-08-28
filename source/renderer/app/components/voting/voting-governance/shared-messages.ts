@@ -6,10 +6,11 @@ export const sharedGovernanceMessages = defineMessages({
     defaultMessage: '!!!Abstain',
     description: 'Translation for the "abstain" governance vote type',
   },
-  delegateToDRep: {
-    id: 'voting.governance.delegateToDRep',
-    defaultMessage: '!!!Delegate to DRep',
-    description: 'Translation for the "delegate to DRep" governance vote type',
+  delegateTo: {
+    id: 'voting.governance.selectedDRepHeading',
+    defaultMessage: '!!!Delegate To',
+    description:
+      'Names what a wallet delegates its voting power to, on the form and again on the confirmation dialog',
   },
   noConfidence: {
     id: 'voting.governance.noConfidence',

@@ -1,0 +1,401 @@
+@import '../governanceConfig';
+
+// One measure for the whole page, matching the wallet list on the Voting
+// Center tab beside it. Without it the boxes ran to the width of the window
+// and the only text with a limit of its own stopped halfway across them,
+// which read as a layout fault rather than as a reading width. Prose here
+// reaches 3,374 characters on mainnet, and a line that long is not read.
+.container {
+  @extend %regularText;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  margin: 20px 0 20px 20px;
+  max-width: 720px;
+}
+
+.backLink {
+  align-self: flex-start;
+  font-size: 14px;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.drepName {
+  @extend %accentSemiboldText;
+  font-size: 20px;
+  margin: 0;
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.section {
+  @extend %contentBorderAndBackground;
+  padding: 16px;
+}
+
+.sectionTitle {
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-semibold);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+// A two-column grid rather than a stack of flex rows, so every value starts
+// at the same x however wide the widest label happens to be. A fixed label
+// width would have to be guessed for one language and would be wrong in the
+// next; max-content measures the labels that are actually rendered.
+.fieldList {
+  align-items: baseline;
+  column-gap: 12px;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  margin: 0;
+  row-gap: 4px;
+}
+
+// The row exists to pair a label with its value in the markup. The grid places
+// them, so the row itself lays out nothing.
+.fieldRow {
+  display: contents;
+}
+
+// Prose fields have no label column to align, so they do not belong in the
+// grid above: as its children they became grid items and paired up two to a
+// row. They stack in a container of their own.
+.proseFieldList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+// A prose field stacks instead. Its heading is a peer of References and the
+// payment address, and its value runs to 3,374 characters at the longest on
+// mainnet, which no label column can sit beside.
+.proseField {
+  display: block;
+}
+
+.fieldLabel {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+}
+
+// CIP-119 prose fields run long: the longest objectives, motivations and
+// qualifications on mainnet reach roughly 3,400 characters, and a third of
+// them are non-Latin. min-width lets a flex child wrap at all, and
+// overflow-wrap catches an unbroken token that no wrap point can split.
+.fieldValue {
+  color: var(--theme-gov-font-color-accent);
+  font-size: 14px;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.mutedValue {
+  color: var(--theme-gov-font-color-light);
+  font-size: 14px;
+  margin: 0;
+}
+
+.votingPowerAda {
+  color: var(--theme-gov-font-color-accent);
+  display: block;
+  font-family: var(--font-semibold);
+}
+
+.anchorValue {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  // A 64-character hash at the body size does not fit the box. It is read by
+  // comparison rather than by reading, so it is sized to fit on one line and
+  // scrolls only if the pane is narrower than that.
+  font-size: 12px;
+  margin: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.actions {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+.favoriteToggle {
+  background: transparent;
+  border: none;
+  color: var(--theme-gov-font-color-light);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  padding: 2px 4px;
+
+  &[aria-pressed='true'] {
+    color: var(--theme-gov-badge-warning-color);
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.stateContainer {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 40px 0;
+}
+
+.errorMessage {
+  color: var(--theme-color-error);
+  font-family: var(--font-semibold);
+}
+
+// Three levels of heading live inside the off-chain section, and they used to
+// share one class: the block heading, the groups within it and the groups
+// within those all rendered at 14px semibold in the same colour. Nesting that
+// is real in the markup was invisible on screen, so References and Payment
+// address read as siblings of the block they sit inside rather than as its
+// contents. The section heading above them all is 16px accent, so these three
+// step down from there.
+.blockTitle {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 15px;
+  margin: 20px 0 10px;
+}
+
+.subSectionTitle {
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-semibold);
+  font-size: 13px;
+  margin: 14px 0 6px;
+  padding-left: 12px;
+}
+
+.subSubSectionTitle {
+  color: var(--theme-gov-font-color-light);
+  font-family: var(--font-regular);
+  font-size: 12px;
+  margin: 10px 0 4px;
+  padding-left: 24px;
+}
+
+// Aligned with the value it introduces, and set below the sub-heading rather
+// than beside it, so the heading stays scannable in a column of headings.
+.subSectionCaption {
+  color: var(--theme-gov-font-color-light);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0 0 8px;
+  padding-left: 12px;
+}
+
+// Contents sit under the heading they belong to rather than starting again at
+// the block's own margin.
+.nestedGroup {
+  padding-left: 12px;
+}
+
+.referenceList {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 24px;
+  word-break: break-all;
+}
+
+.referenceItem {
+  margin: 0;
+}
+
+.paymentAddressValue {
+  align-items: baseline;
+  color: var(--theme-gov-font-color-accent);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 14px;
+  gap: 8px;
+  margin: 0;
+  padding-left: 12px;
+  word-break: break-all;
+}
+
+.copyButton {
+  font-size: 12px;
+}
+
+.copiedConfirmation {
+  color: var(--theme-gov-font-color-light);
+  font-size: 12px;
+}
+
+.favoriteIcon {
+  // Large enough to read as the control's subject rather than as punctuation
+  // beside its label.
+  font-size: 22px;
+  line-height: 1;
+}
+
+.favoriteLabel {
+  white-space: nowrap;
+}
+
+.actions button {
+  height: 36px;
+  line-height: 36px;
+  padding: 0 20px;
+  white-space: nowrap;
+  width: auto;
+}
+
+// Set apart from the field list above it. This is the one thing in the box
+// that leaves the wallet, and at a row's spacing it read as another row.
+//
+// inline-block, not the align-self this carried before: LinkSkin renders a
+// span, the section around it is not a flex container, so align-self applied
+// to nothing and a top margin on an inline box is ignored outright.
+.explorerLink {
+  display: inline-block;
+  font-size: 14px;
+  margin-top: 28px;
+}
+
+.unverifiedNotice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.unverifiedBadge {
+  align-items: center;
+  align-self: flex-start;
+  background: var(--theme-gov-badge-warning-background);
+  border-radius: 4px;
+  color: var(--theme-gov-badge-warning-color);
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 6px;
+  line-height: 1;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.unverifiedExplanation {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+// A document that verified and held nothing is not a warning. It is worth
+// saying, but it is not the DRep's fault and nothing is being withheld.
+.emptyBadge {
+  align-items: center;
+  align-self: flex-start;
+  background: var(--theme-gov-badge-neutral-background);
+  border-radius: 4px;
+  color: var(--theme-gov-badge-neutral-color);
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.wrongNetworkWarning {
+  color: var(--theme-gov-badge-danger-color);
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0 0 4px;
+  padding-left: 12px;
+}
+
+// A CIP-119 prose field's value. Full width under its own heading rather than
+// beside a label column: the longest on mainnet runs to 3,374 characters, and
+// overflow-wrap catches an unbroken token no wrap point can split.
+.proseValue {
+  color: var(--theme-gov-font-color-accent);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: anywhere;
+  padding-left: 12px;
+}
+
+// The non-canonical block, set apart from the one above it. A rule rather than
+// a panel: it is the DRep's own material, so it should not look like a feature
+// of the wallet.
+.additionalBlock {
+  border-top: 1px solid var(--theme-gov-content-border-color);
+  margin-top: 20px;
+}
+
+// The author's key, verbatim. Monospace because the app uses it for strings it
+// did not write, so the key does not pass for one of our labels. Read at the
+// same size and colour as a canonical heading all the same: the block being
+// subordinate is carried by its boundary and its caption, and is not a reason
+// to make a DRep's own words hard to read.
+.additionalKey {
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 13px;
+  font-weight: 600;
+  margin: 14px 0 6px;
+  overflow-wrap: anywhere;
+  padding-left: 12px;
+}
+
+.additionalValue {
+  color: var(--theme-gov-font-color-accent);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: anywhere;
+  padding-left: 12px;
+}
+
+// One field the DRep invented, at whatever depth it sits.
+.additionalField {
+  display: block;
+}
+
+// Nested structure, indented so containment is visible without a border for
+// every level. List markers are kept: they are what says "these are several of
+// the same thing" rather than one value that happens to wrap.
+.additionalList {
+  list-style: disc;
+  margin: 0;
+  padding: 0 0 0 28px;
+}
+
+.additionalListItem {
+  color: var(--theme-gov-font-color-light);
+  margin: 2px 0;
+}

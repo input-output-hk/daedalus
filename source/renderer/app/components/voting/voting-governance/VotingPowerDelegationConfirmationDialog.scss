@@ -15,7 +15,49 @@
   margin-bottom: 36px;
 }
 
+// The DRep's name and its identifier are one field, so they sit together. At
+// the spacing between fields they read as two unrelated things.
+.delegateToName {
+  @extend %regularText;
+  font-family: var(--font-semibold);
+  margin-bottom: 4px;
+}
+
 .error {
   margin-top: 24px;
   @include error-message;
+}
+
+// The delegation this transaction will record, laid out rather than run
+// together on one line: it is the last thing a reader can check before
+// signing, so it is worth being able to read.
+.certificateValue {
+  background: var(--theme-gov-content-background-color);
+  border: 1px solid var(--theme-gov-content-border-color);
+  border-radius: 4px;
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0 0 20px;
+  overflow-x: auto;
+  padding: 12px;
+}
+
+.drepIdValue {
+  font-family: monospace;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+// The disclosure for the deprecated ID form. A link rather than a button in
+// appearance: it reveals text already on the page's terms, it does not act.
+.cip105Toggle {
+  background: none;
+  border: 0;
+  color: var(--theme-link-main-color);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0;
+  text-align: left;
 }

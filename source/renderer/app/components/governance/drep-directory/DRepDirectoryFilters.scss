@@ -1,0 +1,63 @@
+@import '../governanceConfig';
+
+// The row above this one is a 50px bordered field and a 50px bordered box of
+// toggle buttons. This row is now the app's own select at that same height,
+// one per facet, laid out the way the settings screen lays out its selects:
+// each control labelled and boxed in its own right, with nothing drawn around
+// the group. An outer box would put a border around a row of bordered
+// controls, which is the nesting the strip was carrying before.
+//
+// It wraps rather than scrolls. A control pushed off the end of a scrolling
+// strip is a control nobody knows is there, and keeping every facet visible is
+// the point of putting them in a row instead of behind a filter button.
+// Built to the shape of the selects beside it, because in the all-DReps mode
+// it sits in the same row as them: a label of the same weight and spacing,
+// then a control of the same height.
+.modeFacet {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.modeLabel {
+  @extend %facetLabel;
+}
+
+// The same segmented pair as the view toggle beside the search, so the screen
+// has one way of showing a choice between two named states rather than two.
+.modes {
+  align-items: stretch;
+  border: solid 1px var(--theme-gov-content-border-color);
+  border-radius: 4px;
+  display: flex;
+  flex-shrink: 0;
+  height: 50px;
+  overflow: hidden;
+
+  button {
+    background: var(--theme-gov-content-background-color);
+    border: 0;
+    color: var(--theme-gov-font-color-light);
+    cursor: pointer;
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 1.2;
+    padding: 0 18px;
+    white-space: nowrap;
+
+    &:hover:not(.modeSelected) {
+      color: var(--theme-gov-font-color-regular);
+    }
+
+    &:focus-visible {
+      outline: 1px solid var(--theme-gov-font-color-accent);
+      outline-offset: -2px;
+    }
+  }
+}
+
+.modeSelected {
+  background: var(--theme-gov-badge-neutral-background) !important;
+  color: var(--theme-gov-font-color-regular) !important;
+  font-family: var(--font-medium) !important;
+}

@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Input } from 'react-polymorph/lib/components/Input';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { Link } from 'react-polymorph/lib/components/Link';
-
 import BigNumber from 'bignumber.js';
-import { Cardano } from '@cardano-sdk/core';
+import { governanceSharedMessages } from '../../governance/_shared/governanceSharedMessages';
 import BorderedBox from '../../widgets/BorderedBox';
 import { messages } from './VotingPowerDelegation.messages';
 import styles from './VotingPowerDelegation.scss';
@@ -14,11 +11,16 @@ import type { Intl } from '../../../types/i18nTypes';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
-import ItemsDropdown from '../../widgets/forms/ItemsDropdown';
 import { Separator } from '../../widgets/separator/Separator';
 import { InitializeVPDelegationTxError } from '../../../stores/VotingStore';
-import { VoteType } from './types';
+import CurrentDRepSummary from './CurrentDRepSummary';
+import globalMessages from '../../../i18n/global-messages';
+import { messages as currentDRepMessages } from './CurrentDRepSummary.messages';
 import { sharedGovernanceMessages } from './shared-messages';
+import { isSameDRep } from '../../../utils/governance/isSameDRep';
+import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
+import DRepIdDisplay from '../../governance/_shared/DRepIdDisplay';
+import DRepStatusBadge from '../../governance/_shared/DRepStatusBadge';
 
 type Props = {
   getStakePoolById: (...args: Array<any>) => any;
@@ -39,38 +41,32 @@ type Props = {
     onClose: () => void;
     selectedWallet: Wallet;
   }) => React.ReactElement;
-};
-
-type FormData = {
-  selectedWallet: Wallet;
-  selectedVoteType: VoteType;
-  drepInputState: {
-    dirty: boolean;
-    value: string;
+  initialFormState?: {
+    selectedWalletId?: string | null;
+    selectedDRepId?: string;
+    selectedDRepVerifiedName?: string | null;
+    selectedDRepAnchorUrl?: string | null;
   };
+  onBrowseDRepsClick: (formState: {
+    selectedWalletId: string | null;
+    voteType: 'drep';
+  }) => void;
+  onCancel: () => void;
+  onFetchDRep?: (drepId: string) => Promise<AppDRepDirectoryEntry>;
+  onEnsureFavorited?: (drepId: string) => void;
+};
+
+type State = {
+  status:
+    | 'form'
+    | 'form-with-error'
+    | 'form-submitted'
+    | 'form-initiating-tx'
+    | 'confirmation';
+  selectedWalletId: string | null;
   fees?: BigNumber;
+  txInitError?: InitializeVPDelegationTxError;
 };
-
-type Form = Omit<FormData, 'selectedWallet'> & {
-  selectedWallet: Wallet | null;
-  status: 'form';
-};
-
-type FormWithError = Omit<FormData, 'status'> & {
-  txInitError: InitializeVPDelegationTxError;
-  status: 'form-with-error';
-};
-
-type StateFormComplete = FormData & {
-  status: 'form-submitted' | 'form-initiating-tx';
-};
-
-type StateConfirmation = Omit<FormData, 'fee'> & {
-  fees: BigNumber;
-  status: 'confirmation';
-};
-
-type State = Form | FormWithError | StateFormComplete | StateConfirmation;
 
 const mapOfTxErrorCodeToIntl: Record<
   InitializeVPDelegationTxError,
@@ -78,81 +74,152 @@ const mapOfTxErrorCodeToIntl: Record<
 > = {
   generic: messages.initializeTxErrorGeneric,
   same_vote: messages.initializeTxErrorSameVote,
+  // Deliberately the same message. Having no spendable outputs and holding
+  // less than the minimum are one condition to a reader: there is not enough
+  // in this wallet to build the transaction, and the wallet may simply still
+  // be syncing. Splitting them would name a distinction only the node makes.
   no_utxos_available: messages.initializeNotEnoughMoney,
   not_enough_money: messages.initializeNotEnoughMoney,
 };
 
-const initialState: State = {
-  status: 'form',
-  selectedWallet: null,
-  selectedVoteType: 'drep',
-  drepInputState: {
-    dirty: false,
-    value: '',
-  },
-};
+const SAME_VOTE_HINT_ID = 'votingPowerDelegationSameVoteHint';
 
 function VotingPowerDelegation({
   getStakePoolById,
   initiateTransaction,
+  initialFormState,
   intl,
+  onBrowseDRepsClick,
+  onEnsureFavorited,
+  onCancel,
   onExternalLinkClick,
+  onFetchDRep,
   renderConfirmationDialog,
   wallets,
   stakePools,
 }: Props) {
-  const [state, setState] = useState<State>(initialState);
+  // A Byron wallet has no stake credential, so no delegation certificate can
+  // be built for it and no amount of choosing a DRep would produce one. The
+  // wallets overview already leaves them out; offering them here let someone
+  // pick one and meet a transaction error instead of an explanation.
+  const delegatableWallets = wallets.filter((wallet) => !wallet.isLegacy);
 
-  const drepInputIsValid = Cardano.DRepID.isValid(state.drepInputState.value);
+  const [state, setState] = useState<State>(() => {
+    const { selectedWalletId } = initialFormState ?? {};
+    const initialWallet =
+      (selectedWalletId &&
+        delegatableWallets.find((w) => w.id === selectedWalletId)) ||
+      null;
+    return { status: 'form', selectedWalletId: initialWallet?.id ?? null };
+  });
 
-  const formIsValid =
-    !!state.selectedWallet &&
-    (state.selectedVoteType === 'drep' ? drepInputIsValid : true);
+  const selectedDRepId = initialFormState?.selectedDRepId ?? null;
+
+  const selectedWallet =
+    delegatableWallets.find((w) => w.id === state.selectedWalletId) ?? null;
+
+  const currentDRep = selectedWallet?.currentDRep ?? null;
+  const currentDRepId =
+    currentDRep?.kind === 'drep' ? currentDRep.drep.raw : null;
+
+  // Auto-favorite the current delegation DRep when a wallet is selected, so
+  // DReps delegated to before the auto-favorite feature was introduced get
+  // added to favorites without needing to re-select them.
+  useEffect(() => {
+    if (currentDRep?.kind !== 'drep' || !onEnsureFavorited) return;
+    onEnsureFavorited(currentDRep.drep.cip129 ?? currentDRep.drep.raw);
+  }, [currentDRepId, onEnsureFavorited]);
+
+  const [currentDRepEntry, setCurrentDRepEntry] =
+    useState<AppDRepDirectoryEntry | null>(null);
+  // The lookup settling is the signal, so no timer is needed: a rejection or
+  // an empty result is an answer, and only the wait before one is loading.
+  const [isLookingUpDRep, setIsLookingUpDRep] = useState(false);
+
+  useEffect(() => {
+    if (currentDRep?.kind !== 'drep' || !onFetchDRep) {
+      setCurrentDRepEntry(null);
+      setIsLookingUpDRep(false);
+      return undefined;
+    }
+    const drepIdToFetch = currentDRep.drep.cip129 ?? currentDRep.drep.raw;
+    let cancelled = false;
+    setCurrentDRepEntry(null);
+    setIsLookingUpDRep(true);
+    onFetchDRep(drepIdToFetch).then(
+      (entry) => {
+        if (cancelled) return;
+        setCurrentDRepEntry(entry);
+        setIsLookingUpDRep(false);
+      },
+      () => {
+        if (cancelled) return;
+        setCurrentDRepEntry(null);
+        setIsLookingUpDRep(false);
+      }
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [currentDRepId, onFetchDRep]);
+
+  const [selectedDRepEntry, setSelectedDRepEntry] =
+    useState<AppDRepDirectoryEntry | null>(null);
+
+  useEffect(() => {
+    if (!selectedDRepId || !onFetchDRep) {
+      setSelectedDRepEntry(null);
+      return undefined;
+    }
+    let cancelled = false;
+    onFetchDRep(selectedDRepId).then(
+      (entry) => {
+        if (!cancelled) setSelectedDRepEntry(entry);
+      },
+      () => {
+        if (!cancelled) setSelectedDRepEntry(null);
+      }
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedDRepId, onFetchDRep]);
+
+  const isSameAsCurrent =
+    !!selectedDRepId && isSameDRep(selectedDRepId, currentDRep);
+
+  // Abstain and No Confidence arrive in the same field as a DRep id, because
+  // the directory offers all three as things to delegate to. They are not
+  // identifiers though: there is no credential behind them, nothing to copy,
+  // and no registration to report a status for.
+  const selectedSentinel =
+    selectedDRepId === 'abstain' || selectedDRepId === 'no_confidence'
+      ? selectedDRepId
+      : null;
+
+  const formIsValid = !!selectedWallet && !!selectedDRepId;
 
   const submitButtonDisabled =
     !formIsValid ||
+    isSameAsCurrent ||
     state.status === 'form-submitted' ||
-    state.status === 'form-with-error' ||
     state.status === 'form-initiating-tx';
-
-  const voteTypes: { value: VoteType; label: string }[] = [
-    {
-      value: 'abstain',
-      label: intl.formatMessage(sharedGovernanceMessages.abstain),
-    },
-    {
-      value: 'no_confidence',
-      label: intl.formatMessage(sharedGovernanceMessages.noConfidence),
-    },
-    {
-      value: 'drep',
-      label: intl.formatMessage(sharedGovernanceMessages.delegateToDRep),
-    },
-  ];
-
-  const chosenOption =
-    state.selectedVoteType === 'drep'
-      ? state.drepInputState.value
-      : state.selectedVoteType;
 
   useEffect(() => {
     (async () => {
-      if (state.status !== 'form-submitted') return;
-      setState({
-        ...state,
-        status: 'form-initiating-tx',
-      });
+      if (
+        state.status !== 'form-submitted' ||
+        !selectedWallet ||
+        !selectedDRepId
+      )
+        return;
+      setState({ ...state, status: 'form-initiating-tx' });
       const result = await initiateTransaction({
-        chosenOption,
-        wallet: state.selectedWallet,
+        chosenOption: selectedDRepId,
+        wallet: selectedWallet,
       });
-
       if (result.success === true) {
-        setState({
-          ...state,
-          fees: result.fees,
-          status: 'confirmation',
-        });
+        setState({ ...state, fees: result.fees, status: 'confirmation' });
       } else {
         setState({
           ...state,
@@ -161,7 +228,18 @@ function VotingPowerDelegation({
         });
       }
     })();
-  }, [initiateTransaction, intl, state]);
+  }, [initiateTransaction, state]);
+
+  const displayName =
+    selectedDRepEntry?.verifiedName ??
+    initialFormState?.selectedDRepVerifiedName ??
+    null;
+
+  const browseDReps = () =>
+    onBrowseDRepsClick({
+      selectedWalletId: selectedWallet?.id ?? null,
+      voteType: 'drep',
+    });
 
   return (
     <>
@@ -170,29 +248,10 @@ function VotingPowerDelegation({
           <h1 className={styles.heading}>
             {intl.formatMessage(messages.heading)}
           </h1>
-          <div className={styles.info}>
-            <p>
-              <FormattedMessage
-                {...messages.paragraph1}
-                values={{
-                  Link: (
-                    <Link
-                      className={styles.link}
-                      href={intl.formatMessage(messages.paragraph1LinkUrl)}
-                      label={intl.formatMessage(messages.paragraph1LinkText)}
-                      onClick={(event) =>
-                        onExternalLinkClick(
-                          intl.formatMessage(messages.paragraph1LinkUrl),
-                          event
-                        )
-                      }
-                    />
-                  ),
-                }}
-              />
-            </p>
-          </div>
-
+          {/* No explanation of why a delegation is needed. This screen is
+              the last step of a flow that starts on the wallets overview,
+              and that is where the reason now sits, in front of someone who
+              has not decided yet. */}
           <Separator />
 
           <WalletsDropdown
@@ -200,118 +259,139 @@ function VotingPowerDelegation({
             // @ts-ignore ts-migrate(2322) FIXME: Type '{ className: any; label: any; numberOfStakeP... Remove this comment to see the full error message
             label={intl.formatMessage(messages.selectWalletLabel)}
             numberOfStakePools={stakePools.length}
-            wallets={wallets}
+            wallets={delegatableWallets}
             onChange={(walletId: string) => {
-              const selectedWallet = wallets.find((w) => w.id === walletId);
-              setState({
-                ...initialState,
-                selectedWallet,
-              });
+              setState({ status: 'form', selectedWalletId: walletId ?? null });
             }}
             placeholder={intl.formatMessage(messages.selectWalletPlaceholder)}
-            value={state.selectedWallet?.id || null}
+            value={selectedWallet?.id || null}
             getStakePoolById={getStakePoolById}
             disableSyncingWallets
           />
 
-          {state.selectedWallet && (
-            <ItemsDropdown
-              className={styles.voteTypeSelect}
-              label={intl.formatMessage(messages.selectVotingTypeLabel)}
-              options={voteTypes}
-              handleChange={(option) =>
-                setState({
-                  ...state,
-                  selectedVoteType: option.value,
-                  status: 'form',
-                })
-              }
-              value={state.selectedVoteType}
+          {selectedWallet && (
+            <CurrentDRepSummary
+              currentDRep={currentDRep}
+              drepEntry={currentDRepEntry}
+              isLookingUpDRep={isLookingUpDRep}
             />
           )}
 
-          {state.selectedWallet && state.selectedVoteType === 'drep' && (
-            <Input
-              className={styles.drepInput}
-              onChange={(value) => {
-                setState({
-                  ...state,
-                  drepInputState: {
-                    dirty: true,
-                    value,
-                  },
-                  status: 'form',
-                });
-              }}
-              spellCheck={false}
-              value={state.drepInputState.value}
-              label={
-                <FormattedMessage
-                  {...(environment.isPreprod
-                    ? messages.drepInputLabelPreprod
-                    : messages.drepInputLabel)}
-                  values={{
-                    drepDirectoryLink: (
-                      <Link
-                        className={styles.link}
-                        label={intl.formatMessage(
-                          messages.drepInputLabelLinkText
-                        )}
-                        href="#"
-                        onClick={(event) =>
-                          onExternalLinkClick(
-                            intl.formatMessage(
-                              environment.isMainnet
-                                ? messages.drepInputLabelLinkUrl
-                                : messages.drepInputLabelLinkUrlPreview
-                            ),
-                            event
-                          )
-                        }
-                      />
-                    ),
-                  }}
+          {selectedDRepId && (
+            <div className={styles.selectedDRepSection}>
+              <div className={styles.selectedDRepHeader}>
+                <p className={styles.selectedDRepHeading}>
+                  {intl.formatMessage(sharedGovernanceMessages.delegateTo)}
+                </p>
+                <Button
+                  className={styles.selectedDRepChange}
+                  label={intl.formatMessage(globalMessages.change)}
+                  onClick={browseDReps}
                 />
-              }
-              placeholder={intl.formatMessage(messages.drepInputPlaceholder)}
-              error={
-                state.drepInputState.dirty && !drepInputIsValid
-                  ? intl.formatMessage(messages.drepInputError)
-                  : undefined
-              }
-            />
+              </div>
+              {selectedSentinel ? (
+                <>
+                  <p className={styles.selectedDRepName}>
+                    {intl.formatMessage(
+                      selectedSentinel === 'abstain'
+                        ? sharedGovernanceMessages.abstain
+                        : sharedGovernanceMessages.noConfidence
+                    )}
+                  </p>
+                  {/* What the option does to this wallet's stake, in the
+                      same words the current-delegation panel uses for a
+                      wallet already set to it. Neither option is
+                      self-explanatory, and this is the last screen before
+                      the choice is signed. */}
+                  <p className={styles.selectedOptionCaption}>
+                    {intl.formatMessage(
+                      selectedSentinel === 'abstain'
+                        ? governanceSharedMessages.abstainDescription
+                        : governanceSharedMessages.noConfidenceDescription
+                    )}
+                  </p>
+                </>
+              ) : (
+                <>
+                  {displayName && (
+                    <p className={styles.selectedDRepName}>{displayName}</p>
+                  )}
+                  <DRepIdDisplay drepId={selectedDRepId} />
+                  {selectedDRepEntry && (
+                    <div className={styles.selectedDRepMeta}>
+                      <DRepStatusBadge status={selectedDRepEntry.status} />
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           )}
+          {selectedWallet && (
+            <>
+              {state.status === 'form-with-error' && state.txInitError && (
+                <p className={styles.generalError}>
+                  {intl.formatMessage(
+                    mapOfTxErrorCodeToIntl[state.txInitError]
+                  )}
+                </p>
+              )}
 
-          {state.status === 'form-with-error' && (
-            <p className={styles.generalError}>
-              {intl.formatMessage(mapOfTxErrorCodeToIntl[state.txInitError])}
-            </p>
+              {/* The same sentence the node returns after a submit that would
+                  change nothing, and drawn the same way. It blocks the submit
+                  button exactly as the server error does, so setting it in
+                  quiet grey said the opposite of what it does. */}
+              {isSameAsCurrent && (
+                <p className={styles.generalError} id={SAME_VOTE_HINT_ID}>
+                  {intl.formatMessage(messages.initializeTxErrorSameVote)}
+                </p>
+              )}
+
+              {/* Cancel is here whether or not anything has been chosen.
+                  Without it the only control that leaves this screen was
+                  Change, which goes on to the directory rather than back, so
+                  someone who opened this by accident had no way out that did
+                  not look like continuing. */}
+              <div className={styles.submitRow}>
+                {!selectedDRepId && (
+                  <Button
+                    className={styles.voteSubmit}
+                    label={intl.formatMessage(messages.browseDRepsButton)}
+                    onClick={browseDReps}
+                  />
+                )}
+                {selectedDRepId && (
+                  <Button
+                    label={intl.formatMessage(globalMessages.submit)}
+                    className={styles.voteSubmit}
+                    disabled={submitButtonDisabled}
+                    aria-describedby={
+                      isSameAsCurrent ? SAME_VOTE_HINT_ID : undefined
+                    }
+                    onClick={() => {
+                      setState({ ...state, status: 'form-submitted' });
+                    }}
+                  />
+                )}
+                <Button
+                  className={`flat ${styles.voteCancel}`}
+                  label={intl.formatMessage(globalMessages.cancel)}
+                  onClick={onCancel}
+                />
+              </div>
+            </>
           )}
-
-          <Button
-            label={intl.formatMessage(messages.submitLabel)}
-            className={styles.voteSubmit}
-            disabled={submitButtonDisabled}
-            onClick={() => {
-              setState({
-                ...state,
-                status: 'form-submitted',
-              });
-            }}
-          />
         </BorderedBox>
       </div>
       {state.status === 'confirmation' &&
+        selectedWallet &&
+        selectedDRepId &&
         renderConfirmationDialog({
-          chosenOption,
-          fees: state.fees,
+          chosenOption: selectedDRepId,
+          fees: state.fees!,
           onClose: () => {
-            setState({
-              ...state,
-              status: 'form',
-            });
+            setState({ ...state, status: 'form' });
           },
-          selectedWallet: state.selectedWallet,
+          selectedWallet,
         })}
     </>
   );

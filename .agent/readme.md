@@ -13,6 +13,7 @@ This folder contains all the documentation needed for AI agents to effectively a
 | [`/system`](./system/)        | Architecture, APIs, state management   | **First**, for any architectural decisions or understanding system design  |
 | [`/plans`](./plans/)          | PRDs and implementation plans history  | When implementing new features similar to past work                        |
 | [`/SOPs`](./SOPs/)            | Standard Operating Procedures          | When encountering known issues or following established patterns           |
+| [`/findings`](./findings/)    | Problems noticed but deliberately not fixed yet | When a review turns up something real and out of scope. Not for exploit surfaces in shipped code: this repository is public |
 | [`/skills`](./skills/)        | Reusable task-specific playbooks       | When making domain-specific changes (CLI, frontend, testing)               |
 | [`/workflows`](./workflows/)  | Step-by-step development workflows     | When executing specific development tasks                                  |
 
@@ -63,6 +64,19 @@ When an issue is resolved or a complex integration succeeds:
 > "Generate SOP for [task/integration name]"
 
 ---
+
+### `/findings` — Deferred Problems
+
+**Real problems noticed during other work, recorded rather than fixed on the spot.**
+
+A finding belongs here when it is out of scope for whatever turned it up and
+would otherwise be lost when that thread ends. Each states what is true today,
+why it matters, and what a fix would have to decide. A finding that gets picked
+up should grow a plan in `/plans`.
+
+This repository is public. A weakness in shipped code that has not been fixed
+yet is raised privately instead, because a write-up here would be published more
+durably than an issue and could not be withdrawn.
 
 ### `/skills` — Reusable Skills
 

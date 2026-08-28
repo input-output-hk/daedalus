@@ -19,6 +19,35 @@ Contrast rule: every badge must meet **WCAG 2.1 AA 4.5:1** in both themes. Color
 
 **Where the status badge is rendered.** The status badge appears on every DRep card in the directory, on the DRep detail view, and on the `CurrentVoteSummary` panel's `drep` state. Surfacing it on `CurrentVoteSummary` is binding: users must be able to tell at a glance whether the DRep they currently delegate to is still active or about to lapse.
 
+
+> **Revised 2026-08-21 (PR #3355 review item 3).** The category enum below is
+> superseded. Metadata verification and expiry are separate signals on separate
+> scales and are now separate badges, so a DRep with verified metadata that is
+> also close to lapsing shows both facts rather than one hiding the other.
+>
+> - **Metadata** is a boolean: `Verified` or `No metadata` on a card, a checkmark
+>   column in the table view, both reading `hasVerifiedMetadata`.
+> - **Expiry** is its own badge at six or fewer epochs remaining, the same
+>   threshold the directory filter and the delegation form's current-DRep panel
+>   use. `dRepActivity` is 20 epochs and an epoch is five days, so the
+>   seven-to-twelve window this document specified was 60 of a DRep's 100 days.
+>   Its copy leads with inactivity, because the counter resets whenever the DRep
+>   votes, and states the lapse in epochs and days. The elapsed count is not
+>   shown: it needs the `dRepActivity` protocol parameter, which the wallet API
+>   does not serve.
+> - **High value** was never built and is retired rather than implemented. Its
+>   rule was voting power above the cohort median, which the Target15 threshold
+>   now treats as the property to move away from; one badge commending what
+>   another warns about is not a signal. Voting power is reported once, as a
+>   share, with a warning above 1.5%.
+> - **Threshold** and **Primary** are retired with the enum.
+>
+> Badge colours come from `--theme-gov-badge-*`, defined in every theme. They
+> previously referenced `--badge-*`, which no theme defined, so every badge
+> painted a hardcoded fallback and could not follow a theme. All thirty-six
+> badge and theme combinations are measured at WCAG AA 4.5:1 against their own
+> theme's content background.
+
 ## 1a. Category Badges (per-card informational)
 
 Every DRep card in the directory and the DRep detail view renders **exactly one** category badge, drawn from the four-value enum below. The badge is informational only — it never reorders the cohort and never overrides the randomized default sort. A tooltip on the badge explains the rule that placed the DRep in that category. The category set is the agreed early stand-in for a future "Recommended" badge; the default cohort itself IS the recommended sort in Phase 1 (no separate Recommended tab or per-card Recommended badge ships in this release).

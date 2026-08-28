@@ -5,9 +5,10 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import Wallet, { WalletDelegationStatuses } from '../../../domains/Wallet';
-import type { WalletNextDelegation } from '../../../api/wallets/types';
+import globalMessages from '../../../i18n/global-messages';
+import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
+import { getPendingStakePoolIdForEpoch } from './pendingDelegation';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/ada-sym... Remove this comment to see the full error message
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
@@ -35,11 +36,6 @@ const messages = defineMessages({
     description:
       'Amount of each wallet for the Delegation center body section.',
   },
-  notDelegated: {
-    id: 'staking.delegationCenter.notDelegated',
-    defaultMessage: '!!!Undelegated',
-    description: 'Undelegated label for the Delegation center body section.',
-  },
   removeDelegation: {
     id: 'staking.delegationCenter.removeDelegation',
     defaultMessage: '!!!Undelegate',
@@ -57,16 +53,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Currently earning rewards',
     description:
       'Delegated stake pool tooltip ticker for the Delegation center body section.',
-  },
-  delegate: {
-    id: 'staking.delegationCenter.delegate',
-    defaultMessage: '!!!Delegate',
-    description: 'Delegate label for the Delegation center body section.',
-  },
-  redelegate: {
-    id: 'staking.delegationCenter.redelegate',
-    defaultMessage: '!!!Redelegate',
-    description: 'Redelegate label for the Delegation center body section.',
   },
   unknownStakePoolLabel: {
     id: 'staking.delegationCenter.unknownStakePoolLabel',
@@ -169,33 +155,12 @@ class WalletRow extends Component<Props, WalletRowState> {
   getPendingDelegatedStakePoolId = (
     epochNumber: number,
     fallbackStakePoolId: string | null | undefined
-  ): string | null | undefined => {
-    const {
-      wallet: { pendingDelegations },
-    } = this.props;
-
-    if (!pendingDelegations || !pendingDelegations.length) {
-      return fallbackStakePoolId;
-    }
-
-    const foundDelegation = pendingDelegations.find(
-      (delegation: WalletNextDelegation) =>
-        get(delegation, ['changes_at', 'epoch_number'], 0) === epochNumber
+  ): string | null | undefined =>
+    getPendingStakePoolIdForEpoch(
+      this.props.wallet.pendingDelegations,
+      epochNumber,
+      fallbackStakePoolId
     );
-
-    if (!foundDelegation) {
-      return fallbackStakePoolId;
-    }
-
-    const isDelegating =
-      get(foundDelegation, 'status') === WalletDelegationStatuses.DELEGATING;
-
-    if (!isDelegating) {
-      return null;
-    }
-
-    return get(foundDelegation, 'target', null);
-  };
 
   render() {
     const { intl } = this.context;
@@ -225,10 +190,10 @@ class WalletRow extends Component<Props, WalletRowState> {
     // @TODO - remove once quit stake pool delegation is connected with rewards balance
     const isUndelegateBlocked = true;
     const syncingProgress = get(syncState, 'progress.quantity', '');
-    const notDelegatedText = intl.formatMessage(messages.notDelegated);
+    const notDelegatedText = intl.formatMessage(globalMessages.undelegated);
     const removeDelegationText = intl.formatMessage(messages.removeDelegation);
-    const delegateText = intl.formatMessage(messages.delegate);
-    const redelegateText = intl.formatMessage(messages.redelegate);
+    const delegateText = intl.formatMessage(globalMessages.delegate);
+    const redelegateText = intl.formatMessage(globalMessages.redelegate);
     const nextPendingDelegatedStakePoolId = this.getPendingDelegatedStakePoolId(
       nextEpochNumber,
       delegatedStakePoolId

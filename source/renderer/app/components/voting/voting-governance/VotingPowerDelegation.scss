@@ -34,7 +34,10 @@ span.link {
   }
 }
 
+// Space below as well as above: the current-delegation box sits directly
+// beneath and read as attached to the selector without it.
 .walletSelect {
+  margin-bottom: 20px;
   margin-top: 20px;
 
   &.error {
@@ -64,19 +67,98 @@ span.link {
 
 .generalError {
   @include error-message;
-}
-
-.voteTypeSelect,
-.drepInput,
-.generalError {
-  margin-top: 40px;
-}
-
-.generalError,
-.voteSubmit {
   margin-top: 28px;
 }
 
+// Cancel beside Submit. Until it was here the only way off this screen was
+// Change, which goes to the directory rather than back, so a reader who had
+// arrived by accident had no way out that did not look like carrying on.
+.submitRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+// Sized the way the wallet row sizes its own compact buttons: height, line
+// height, padding and width set together, because undoing the theme's full
+// width without restoring the horizontal padding left the label touching
+// both edges.
+.voteCancel {
+  flex: 0 0 auto;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 24px;
+  white-space: nowrap;
+  width: auto;
+}
+
 .voteSubmit {
-  width: 100%;
+  flex: 1;
+}
+
+.selectedDRepSection {
+  border: 1px solid var(--theme-gov-content-border-color);
+  border-radius: 4px;
+  margin-top: 20px;
+  padding: 16px;
+}
+
+// The action sits with the heading it acts on rather than trailing the
+// content, where a reader met it only after finishing everything above it.
+.selectedDRepHeader {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.selectedDRepHeading {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 13px;
+  letter-spacing: 1px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.selectedDRepName {
+  font-family: var(--font-semibold);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+// What Abstain or No Confidence does to this wallet's stake. It stands where
+// a DRep's identifier would, so it is set as prose rather than borrowing the
+// monospace treatment that field uses.
+.selectedOptionCaption {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.selectedDRepMeta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+// Small, and a button rather than a link: it acts within this wallet, and a
+// link here read as somewhere else to go. Changing a choice already made is
+// the rarer action on this card, so it is sized as the secondary one.
+//
+// ButtonSkin puts className on the button element itself, and the simple
+// theme sets --rp-button-width to 100%, so the width has to be undone here
+// rather than in a nested selector that would match nothing.
+.selectedDRepChange {
+  flex-shrink: 0;
+  font-size: 12px;
+  height: 26px;
+  letter-spacing: 0;
+  min-height: 26px;
+  padding: 0 12px;
+  width: auto;
 }

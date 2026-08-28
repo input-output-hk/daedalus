@@ -63,6 +63,10 @@ import type {
   TrezorDeviceErrorPayload,
   TrezorDevicePayload,
 } from '../types/hardware-wallets.types';
+import type {
+  DRepAnchorPresence,
+  DRepAnchorResult,
+} from '../types/governance.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -527,3 +531,13 @@ export type ValidateChainStorageMainResponse =
 export const CONFIRM_CHAIN_STORAGE_CHANNEL = 'CONFIRM_CHAIN_STORAGE_CHANNEL';
 export type ConfirmChainStorageRendererRequest = { customPath: string | null };
 export type ConfirmChainStorageMainResponse = void;
+
+/**
+ * ====================== GOVERNANCE IPC CHANNELS ======================
+ * Channels for DRep governance data.
+ * =====================================================================
+ */
+
+export const GOVERNANCE_DREP_ANCHOR_CHANNEL = 'GOVERNANCE_DREP_ANCHOR_CHANNEL';
+export type GovernanceDRepAnchorRendererRequest = DRepAnchorPresence;
+export type GovernanceDRepAnchorMainResponse = DRepAnchorResult;

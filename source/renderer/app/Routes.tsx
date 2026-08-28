@@ -38,6 +38,11 @@ import AnalyticsConsentPage from './containers/profile/AnalyticsConsentPage';
 import TrackedRoute from './analytics/TrackedRoute';
 import Voting from './containers/voting/Voting';
 import VotingGovernancePage from './containers/voting/VotingGovernancePage';
+import Governance from './containers/voting/Governance';
+import DRepDirectoryPage from './containers/governance/DRepDirectoryPage';
+import DRepDetailPage from './containers/governance/DRepDetailPage';
+import GovernanceWalletsPage from './containers/governance/GovernanceWalletsPage';
+import GovernanceRootRedirect from './containers/governance/GovernanceRootRedirect';
 
 export const Routes = withRouter(() => (
   <Route path={ROUTES.ROOT}>
@@ -214,12 +219,45 @@ export const Routes = withRouter(() => (
               path={ROUTES.VOTING.REGISTRATION}
               component={VotingRegistrationPage}
             />
+          </Voting>
+        </Route>
+        <Route path={ROUTES.GOVERNANCE.ROOT}>
+          <Governance>
+            <Route
+              exact
+              path={ROUTES.GOVERNANCE.ROOT}
+              component={GovernanceRootRedirect}
+            />
             <TrackedRoute
-              pageTitle="Voting Governance"
-              path={ROUTES.VOTING.GOVERNANCE}
+              exact
+              pageTitle="Governance Wallets"
+              path={ROUTES.GOVERNANCE.DASHBOARD}
+              component={GovernanceWalletsPage}
+            />
+            <TrackedRoute
+              exact
+              pageTitle="Voting Power Delegation"
+              path={ROUTES.GOVERNANCE.DELEGATE}
               component={VotingGovernancePage}
             />
-          </Voting>
+            <TrackedRoute
+              exact
+              pageTitle="DRep Directory"
+              path={ROUTES.GOVERNANCE.DREPS}
+              component={DRepDirectoryPage}
+            />
+            <TrackedRoute
+              exact
+              pageTitle="DRep Favorites"
+              path={ROUTES.GOVERNANCE.FAVORITES}
+              component={DRepDirectoryPage}
+            />
+            <TrackedRoute
+              pageTitle="DRep Detail"
+              path={ROUTES.GOVERNANCE.DREP_DETAIL}
+              component={DRepDetailPage}
+            />
+          </Governance>
         </Route>
       </Switch>
     </Root>

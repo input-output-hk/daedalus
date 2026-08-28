@@ -1,0 +1,85 @@
+// Shared governance typography and surfaces, mirroring _stakingConfig.scss so
+// the two sections of the app speak the same visual language. Governance
+// previously set its own sizes in every file, including a 13px step that
+// appears nowhere else in Daedalus.
+
+%contentBorderAndBackground {
+  background-color: var(--theme-gov-content-background-color);
+  border: solid 1px var(--theme-gov-content-border-color);
+  border-radius: 4px;
+}
+
+%baseTypography {
+  font-size: 16px;
+  line-height: 1.38;
+}
+
+%accentText {
+  @extend %baseTypography;
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-medium);
+}
+
+%accentBoldText {
+  @extend %baseTypography;
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-bold);
+}
+
+// Governance headings consistently use semibold, which the app's font set
+// provides. Kept as its own placeholder rather than folded into %accentText so
+// the weight is a deliberate choice rather than an accident of which
+// placeholder was nearest.
+%accentSemiboldText {
+  @extend %baseTypography;
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+}
+
+%regularText {
+  @extend %baseTypography;
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-light);
+}
+
+%regularLightColorText {
+  @extend %baseTypography;
+  color: var(--theme-gov-font-color-light);
+  font-family: var(--font-regular);
+}
+
+// Secondary text: labels, badges and table cells. 14px is the app's second
+// step, used the same way in staking.
+%secondaryText {
+  color: var(--theme-gov-font-color-regular);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.38;
+}
+
+// Captions and provenance notes.
+%captionText {
+  color: var(--theme-gov-font-color-light);
+  font-family: var(--font-regular);
+  font-size: 12px;
+  line-height: 1.38;
+}
+
+// The label a facet wears, matching the one react-polymorph renders above its
+// own inputs. Controls that are not polymorph inputs, a mode selector or a
+// switch, wear it by hand so a row of mixed controls reads as one row.
+%facetLabel {
+  color: var(--rp-formfield-label-text-color);
+  display: block;
+  font-family: var(--font-medium);
+  font-size: 16px;
+  line-height: 1.38;
+  margin: 0 0 10px;
+  white-space: nowrap;
+}
+
+// The floor a facet sized to its own content sits at, rather than to the
+// row's spare width. Set by the longest label such a facet carries, so two
+// controls holding a short value are the same width as each other instead of
+// each being as wide as its own contents happen to make it.
+$narrowFacetWidth: 172px;

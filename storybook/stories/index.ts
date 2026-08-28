@@ -13,7 +13,10 @@ import './staking/CountdownParty.stories';
 import './dapps/TransactionRequest.stories';
 // Voting
 import './voting/Voting.stories';
-import './voting/Governance.stories';
+import './governance/DRepDirectory.stories';
+import './governance/DRepDetail.stories';
+import './governance/Delegation.stories';
+import './governance/GovernanceWallets.stories';
 // Settings
 import './settings';
 // Assets

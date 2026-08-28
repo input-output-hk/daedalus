@@ -1,0 +1,138 @@
+@import '../governanceConfig';
+
+.container {
+  @extend %regularText;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 20px 0 20px 20px;
+}
+
+.walletList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 720px;
+}
+
+.walletSection {
+  @extend %contentBorderAndBackground;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+}
+
+.walletName {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 16px;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+// The one sentence on this page that is not a wallet's own data. Set at the
+// same measure as the wallet list beside it so it reads as an introduction to
+// that list rather than as a banner across the window.
+.intro {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 20px;
+  max-width: 720px;
+}
+
+.introLink {
+  display: inline;
+  font-size: 14px;
+}
+
+.emptyState {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.scrollContainer {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.walletTable {
+  @extend %contentBorderAndBackground;
+  @extend %secondaryText;
+  border-collapse: collapse;
+  min-width: 720px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.headerRow {
+  border-bottom: 1px solid var(--theme-gov-content-border-color);
+}
+
+.headerCell {
+  @extend %captionText;
+  padding: 12px 16px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.row {
+  border-bottom: 1px solid var(--theme-gov-content-border-color);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.cell {
+  padding: 12px 16px;
+  vertical-align: middle;
+}
+
+.actionsCell {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 12px 16px;
+}
+
+.targetCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.targetName {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+}
+
+.notDelegated {
+  color: var(--theme-gov-font-color-light);
+}
+
+.visuallyHidden {
+  clip: rect(0 0 0 0);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.actionsCell button {
+  height: 36px;
+  line-height: 36px;
+  padding: 0 20px;
+  white-space: nowrap;
+  width: auto;
+}

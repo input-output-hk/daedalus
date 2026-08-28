@@ -1,0 +1,126 @@
+@import '../governanceConfig';
+
+// A fixed height, because the cards tile into a grid and a virtualized grid
+// needs to know how tall a row is before it renders one. Everything inside is
+// sized so the tallest combination still fits.
+.card {
+  @extend %contentBorderAndBackground;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  overflow: hidden;
+  padding: 14px;
+  transition: box-shadow 0.15s;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.identityRow {
+  align-items: flex-start;
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.drepName {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 15px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drepIdRow {
+  color: var(--theme-gov-font-color-light);
+  font-size: 12px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+// Badges qualify the identity above them, so they sit on their own line and
+// wrap rather than competing with the name for the same row.
+.badgeRow {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.currentDelegationBadge {
+  color: var(--theme-gov-badge-success-color);
+  font-family: var(--font-semibold);
+  font-size: 12px;
+}
+
+.votingPowerRow {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 13px;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.votingPowerLabel {
+  color: var(--theme-gov-font-color-regular);
+}
+
+.votingPowerValue {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+}
+
+// Row-level actions: 32px inside a tiled card, below the 36px the staking
+// screens give actions inside a full-width list row.
+// Left-aligned, with everything else in the card. Right-aligning actions is a
+// full-width-row habit, where the distance from the content is what separates
+// them; in a narrow card it only leaves a ragged gap in the middle.
+.actionsRow {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+
+  button {
+    font-size: 13px;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 14px;
+    width: auto;
+  }
+}
+
+// Larger than the badges beside it: the star is the card's one persistent
+// control, and at badge size it read as another status marker.
+.favoriteToggle {
+  background: transparent;
+  border: none;
+  color: var(--theme-gov-font-color-light);
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 22px;
+  line-height: 1;
+  padding: 0;
+
+  &[aria-pressed='true'] {
+    color: var(--theme-gov-badge-warning-color);
+  }
+}
+
+.staleCaption {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 12px;
+  margin: 0;
+}

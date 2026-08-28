@@ -1,0 +1,204 @@
+import React from 'react';
+import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import globalMessages from '../../../i18n/global-messages';
+import DRepFacetSelect from '../_shared/DRepFacetSelect';
+import type {
+  DRepFilterState,
+  DRepMetadataFilter,
+  DRepSortOption,
+  DRepStatusFilter,
+} from './helpers';
+import styles from './DRepDirectoryFilters.scss';
+import { governanceSharedMessages } from '../_shared/governanceSharedMessages';
+
+const messages = defineMessages({
+  modeSuggested: {
+    id: 'governance.drepDirectory.mode.suggested',
+    defaultMessage: '!!!Suggested',
+    description: 'Mode showing a suggested cohort drawn under criteria',
+  },
+  modeLabel: {
+    id: 'governance.drepDirectory.mode.label',
+    defaultMessage: '!!!Mode',
+    description: 'Label above the pair of buttons choosing what is listed',
+  },
+  statusActive: {
+    id: 'governance.drepDirectory.status.active',
+    defaultMessage: '!!!Active',
+    description: 'Active status label',
+  },
+  statusInactive: {
+    id: 'governance.drepDirectory.status.inactive',
+    defaultMessage: '!!!Inactive',
+    description: 'Inactive status label',
+  },
+  metadataWith: {
+    id: 'governance.drepDirectory.filter.metadata.with',
+    defaultMessage: '!!!With metadata',
+    description: 'Metadata filter option: anchor present',
+  },
+  metadataWithout: {
+    id: 'governance.drepDirectory.filter.metadata.without',
+    defaultMessage: '!!!Without metadata',
+    description: 'Metadata filter option: no anchor',
+  },
+  sortDefault: {
+    id: 'governance.drepDirectory.sort.default',
+    defaultMessage: '!!!Default',
+    description:
+      'Default ordering: grouped by what delegating would achieve, random within each group. Named for its role rather than its mechanism, and kept distinct from the Suggested mode',
+  },
+  sortVotingPowerDesc: {
+    id: 'governance.drepDirectory.sort.votingPowerDesc',
+    defaultMessage: '!!!Voting power (high to low)',
+    description: 'Voting power descending sort option',
+  },
+  sortVotingPowerAsc: {
+    id: 'governance.drepDirectory.sort.votingPowerAsc',
+    defaultMessage: '!!!Voting power (low to high)',
+    description: 'Voting power ascending sort option',
+  },
+});
+
+interface Props {
+  filters: DRepFilterState;
+  onFiltersChange: (filters: DRepFilterState) => void;
+  isShowAll: boolean;
+  onShowAllChange: (isShowAll: boolean) => void;
+  sort: DRepSortOption;
+  onSortChange: (sort: DRepSortOption) => void;
+  isRankingAvailable: boolean;
+  isSearchActive: boolean;
+  intl: intlShape.isRequired;
+}
+
+function DRepDirectoryFilters({
+  filters,
+  onFiltersChange,
+  isShowAll,
+  onShowAllChange,
+  sort,
+  onSortChange,
+  isRankingAvailable,
+  isSearchActive,
+  intl,
+}: Props) {
+  const canFilterPopulation = isShowAll || isSearchActive;
+  const modeLabel = intl.formatMessage(messages.modeLabel);
+  const facet = (
+    label: string,
+    value: string,
+    onChange: (next: string) => void,
+    options: Array<[string, string]>
+  ) => (
+    <DRepFacetSelect
+      key={label}
+      label={label}
+      value={value}
+      onChange={onChange}
+      options={options}
+    />
+  );
+
+  return (
+    /* No row of its own: these controls share one row with the suggestion
+       criteria, which occupy the same space in the other mode. Owning a
+       container here put the criteria on a second row and left the modes
+       looking like different shapes of screen. */
+    <>
+      {/* Two named things rather than one thing switched on: a suggested
+          twenty and every DRep there is. Built as the pair of pressed buttons
+          the view toggle beside the search already uses, because a switch
+          reads as on and off and neither of these is off. */}
+      <div className={styles.modeFacet}>
+        <span className={styles.modeLabel}>{modeLabel}</span>
+        <div className={styles.modes} role="group" aria-label={modeLabel}>
+          <button
+            type="button"
+            className={!isShowAll ? styles.modeSelected : undefined}
+            aria-pressed={!isShowAll}
+            onClick={() => onShowAllChange(false)}
+          >
+            {intl.formatMessage(messages.modeSuggested)}
+          </button>
+          <button
+            type="button"
+            className={isShowAll ? styles.modeSelected : undefined}
+            aria-pressed={isShowAll}
+            onClick={() => onShowAllChange(true)}
+          >
+            {intl.formatMessage(governanceSharedMessages.allDReps)}
+          </button>
+        </div>
+      </div>
+      {/* Both facets narrow on properties the suggestion criteria already
+          decided, so over the cohort they are inert at best: picking Inactive
+          there can only ever return nothing, which reads as a broken screen
+          rather than as a filter that had no work to do. They appear where
+          they have something to narrow, which is every DRep and a search over
+          all of them. The states themselves are the badge's own, so the filter
+          and the card cannot disagree about one DRep. */}
+      {canFilterPopulation &&
+        facet(
+          intl.formatMessage(globalMessages.status),
+          filters.status,
+          (next) =>
+            onFiltersChange({ ...filters, status: next as DRepStatusFilter }),
+          [
+            ['all', intl.formatMessage(globalMessages.all)],
+            ['active', intl.formatMessage(messages.statusActive)],
+            [
+              'inactiveSoon',
+              intl.formatMessage(governanceSharedMessages.inactiveSoon),
+            ],
+            ['inactive', intl.formatMessage(messages.statusInactive)],
+          ]
+        )}
+      {canFilterPopulation &&
+        facet(
+          intl.formatMessage(globalMessages.metadata),
+          filters.metadata,
+          (next) =>
+            onFiltersChange({
+              ...filters,
+              metadata: next as DRepMetadataFilter,
+            }),
+          [
+            ['all', intl.formatMessage(globalMessages.all)],
+            ['withMetadata', intl.formatMessage(messages.metadataWith)],
+            ['withoutMetadata', intl.formatMessage(messages.metadataWithout)],
+          ]
+        )}
+      {/* Ordering belongs to the list of every DRep. Over the suggested cohort
+          it had nowhere useful to go: the criteria already exclude anything
+          above the ceiling, so a power sort could only reorder twenty entries
+          that all sit below it, and offering it there meant two of the three
+          options silently switched the reader to a different mode. A search
+          returns matches in relevance order and is not re-sorted at all. */}
+      {isShowAll &&
+        !isSearchActive &&
+        facet(
+          intl.formatMessage(globalMessages.sort),
+          sort,
+          (next) => onSortChange(next as DRepSortOption),
+          [
+            ['default', intl.formatMessage(messages.sortDefault)],
+            ...(isRankingAvailable
+              ? ([
+                  [
+                    'votingPowerDesc',
+                    intl.formatMessage(messages.sortVotingPowerDesc),
+                  ],
+                  [
+                    'votingPowerAsc',
+                    intl.formatMessage(messages.sortVotingPowerAsc),
+                  ],
+                ] as Array<[string, string]>)
+              : []),
+          ]
+        )}
+    </>
+  );
+}
+
+export default injectIntl(DRepDirectoryFilters);

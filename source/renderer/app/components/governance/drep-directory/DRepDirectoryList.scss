@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// One windowed row of tiled cards. The gap below sits inside the row's
+// measured height, so the grid spaces itself without the list having to know
+// about margins.
+.cardRow {
+  box-sizing: border-box;
+  display: grid;
+  gap: 12px;
+  height: 100%;
+  padding-bottom: 12px;
+}
+
+// The unwindowed grid. Same card footprint as a windowed row, so a list that
+// crosses the threshold does not change shape as it does so.
+.cardGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.cardGrid > * {
+  min-height: 200px;
+}

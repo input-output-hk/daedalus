@@ -1256,6 +1256,59 @@ export const createDaedalusComponentsTheme = (
         'transparent',
       '--theme-staking-progress-label-light': `${text.secondary}`,
     },
+    governance: {
+      '--theme-gov-content-background-color': `${background.primary.lightest}`,
+      '--theme-gov-content-border-color': `${border}`,
+      '--theme-gov-font-color-accent': `${focus}`,
+      '--theme-gov-font-color-regular': `${text.primary}`,
+      '--theme-gov-font-color-light': `${chroma(text.primary).alpha(0.7)}`,
+      '--theme-gov-font-color-lighter': `${chroma(text.primary).alpha(0.5)}`,
+      // Search field furniture. The stake pools screen fixes the equivalent
+      // clear-button background to one rgba literal, which holds its weight
+      // against that screen's palette and not against the others. These
+      // derive from the theme's own text colour, so the button keeps the same
+      // relationship to its field in every theme.
+      '--theme-gov-search-icon-color': `${text.primary}`,
+      '--theme-gov-search-clear-button-color': `${text.primary}`,
+      '--theme-gov-search-clear-button-background-color': `${chroma(
+        text.primary
+      ).alpha(0.05)}`,
+      '--theme-gov-search-clear-button-hover-background-color': `${chroma(
+        text.primary
+      ).alpha(0.1)}`,
+      // Badge colours. The hues are the severity vocabulary this app already
+      // fixes for the password strength indicator, kept constant so a warning
+      // reads as a warning everywhere; only the lightness moves, so the label
+      // clears WCAG AA against its own theme's content background. Neutral and
+      // informational badges derive from the theme's own text and focus
+      // colours rather than from a fixed hue.
+      '--theme-gov-badge-neutral-background': `${chroma(text.primary).alpha(
+        0.08
+      )}`,
+      '--theme-gov-badge-neutral-color': `${chroma(text.primary).alpha(0.95)}`,
+      '--theme-gov-badge-success-background': `${chroma('#2dc06c').alpha(
+        0.12
+      )}`,
+      '--theme-gov-badge-success-color': `${
+        chroma(background.primary.lightest).luminance() > 0.5
+          ? chroma('#2dc06c').darken(1.6)
+          : chroma('#2dc06c').brighten(0.4)
+      }`,
+      '--theme-gov-badge-warning-background': `${chroma('#f2a218').alpha(
+        0.12
+      )}`,
+      '--theme-gov-badge-warning-color': `${
+        chroma(background.primary.lightest).luminance() > 0.5
+          ? chroma('#f2a218').darken(1.7)
+          : chroma('#f2a218').brighten(0.4)
+      }`,
+      '--theme-gov-badge-danger-background': `${chroma('#ea4c5b').alpha(0.12)}`,
+      '--theme-gov-badge-danger-color': `${
+        chroma(background.primary.lightest).luminance() > 0.5
+          ? chroma('#ea4c5b').darken(1.0)
+          : chroma('#ea4c5b').brighten(1.0)
+      }`,
+    },
     staking: {
       '--theme-staking-content-background-color': `${background.primary.lightest}`,
       '--theme-staking-content-border-color': `${border}`,

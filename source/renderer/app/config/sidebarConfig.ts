@@ -55,11 +55,11 @@ export const CATEGORIES_BY_NAME = {
     icon: networkInfoLogo,
     route: ROUTES.NETWORK_INFO,
   },
-  VOTING: {
-    name: 'VOTING',
+  GOVERNANCE: {
+    name: 'GOVERNANCE',
     icon: votingIcon,
-    route: ROUTES.VOTING.GOVERNANCE,
-    tooltipTextId: 'voting',
+    route: ROUTES.GOVERNANCE.ROOT,
+    tooltipTextId: 'governance',
   },
 };
 export const CATEGORIES_WITH_DELEGATION_COUNTDOWN = [
@@ -78,7 +78,7 @@ export const CATEGORIES_LIST = [
   CATEGORIES_BY_NAME.WALLETS,
   CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
   CATEGORIES_BY_NAME.STAKING,
-  CATEGORIES_BY_NAME.VOTING,
+  CATEGORIES_BY_NAME.GOVERNANCE,
   CATEGORIES_BY_NAME.SETTINGS,
   CATEGORIES_BY_NAME.NETWORK_INFO,
 ];

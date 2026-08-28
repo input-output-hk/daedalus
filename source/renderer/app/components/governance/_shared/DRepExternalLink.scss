@@ -1,0 +1,36 @@
+// A link carries its own colour. Left to the cascade, a bare anchor takes the
+// browser's default blue: the reset lists `a` but sets no colour, so the user
+// agent rule wins and the surrounding text colour never applies. The one place
+// this component looked right did so by accident, because a descendant
+// selector on the references list happened to catch it.
+.externalLink {
+  align-items: center;
+  color: var(--theme-link-main-color);
+  display: inline-flex;
+  gap: 5px;
+  min-width: 0;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.label {
+  overflow-wrap: anywhere;
+}
+
+// Sized to sit with 14px text rather than to be noticed on its own: the icon
+// says where the link goes, it does not compete with what the link says.
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+
+  svg {
+    height: 10px;
+    width: 10px;
+  }
+
+  path {
+    fill: currentColor;
+  }
+}
