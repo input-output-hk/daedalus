@@ -181,19 +181,32 @@ describe('CIP-30 Dispatcher', () => {
     ).resolves.toEqual([contextOutput.unspentCbor]);
   });
 
-  it('normalizes address results and returns typed pagination failure', async () => {
-    const { dispatcher, execute } = create();
-    await expect(
-      dispatcher.dispatch(
-        parseDappCip30GatewayRequest({
-          method: 'api.getUsedAddresses',
-          args: [{ page: 0, limit: 1 }],
-        }),
-        authority,
-        capabilityContext,
-        execute
-      )
-    ).resolves.toEqual([address.raw]);
+  it('returns every base address read and typed pagination failure', async () => {
+    const { dispatcher, execute } = create([95]);
+    for (const [method, args, expected] of [
+      ['api.getExtensions', [], [{ cip: 95 }]],
+      ['api.getNetworkId', [], 1],
+      ['api.getUsedAddresses', [{ page: 0, limit: 1 }], [address.raw]],
+      ['api.getUnusedAddresses', [], [address.raw]],
+      ['api.getChangeAddress', [], address.raw],
+      [
+        'api.getRewardAddresses',
+        [],
+        [
+          wireFixtures.addresses.find(
+            ({ name }) => name === 'mainnet-reward-key'
+          )!.raw,
+        ],
+      ],
+    ] as const)
+      await expect(
+        dispatcher.dispatch(
+          parseDappCip30GatewayRequest({ method, args }),
+          authority,
+          capabilityContext,
+          execute
+        )
+      ).resolves.toEqual(expected);
 
     const error = await dispatcher
       .dispatch(
@@ -210,6 +223,46 @@ describe('CIP-30 Dispatcher', () => {
     expect((error as Cip30DispatchRejection).rejection).toEqual({
       type: 'paginate-error',
       value: { maxSize: 1 },
+    });
+  });
+
+  it('keeps deprecated collateral reads nullable and side-effect free', async () => {
+    const { dispatcher, execute } = create();
+    (transactionContext.reconcileTransactionContext as jest.Mock).mockReturnValue(
+      { ...snapshot, outputs: [] }
+    );
+
+    await expect(
+      dispatcher.dispatch(
+        parseDappCip30GatewayRequest({
+          method: 'api.getCollateral',
+          args: [{ amount: '01' }],
+        }),
+        authority,
+        capabilityContext,
+        execute
+      )
+    ).resolves.toBeNull();
+    expect(execute).toHaveBeenCalledTimes(1);
+    expect(execute).toHaveBeenCalledWith('context');
+
+    (transactionContext.reconcileTransactionContext as jest.Mock).mockReturnValue(
+      { ...snapshot, maxCollateralInputs: undefined }
+    );
+    const error = await dispatcher
+      .dispatch(
+        parseDappCip30GatewayRequest({
+          method: 'api.getCollateral',
+          args: [{ amount: '01' }],
+        }),
+        authority,
+        capabilityContext,
+        execute
+      )
+      .catch((value) => value);
+    expect((error as Cip30DispatchRejection).rejection).toEqual({
+      type: 'api-error',
+      value: { code: -2, info: 'Internal error' },
     });
   });
 

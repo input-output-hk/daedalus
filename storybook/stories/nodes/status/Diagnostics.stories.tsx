@@ -159,8 +159,12 @@ storiesOf('Nodes / Diagnostic', module)
       mithrilBehindByEpochs={undefined}
     />
   ))
-  .add('Partial Sync Confirmation', () => (
-    <AutoOpenedPartialSyncConfirmation />
+  .add('Partial Sync Confirmation', () => <AutoOpenedPartialSyncConfirmation />)
+  .add('DApp Browser Not Ready', () => (
+    <DaedalusDiagnostics {...baseProps} diagnosticsReady={false} />
+  ))
+  .add('DApp Browser Unavailable', () => (
+    <DaedalusDiagnostics {...baseProps} diagnosticsAvailable={false} />
   ));
 
 storiesOf('Nodes / Diagnostic / Mithril Partial Sync Confirmation', module)
