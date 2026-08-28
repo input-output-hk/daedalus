@@ -671,24 +671,38 @@ const parseResponse = (value: unknown): ContextResponse => {
   };
 };
 
-const maxCollateralInputs = (encoded: Hex): number | undefined => {
+const protocolParameterUint = (
+  encoded: Hex,
+  key: bigint,
+  name: string
+): bigint | undefined => {
   const bytes = Buffer.from(encoded, 'hex');
   const item = parseCborItem(bytes);
   if (item.span.end !== bytes.length || item.major !== 5 || !item.entries)
     fail('invalid protocol parameters CBOR');
   const value = item.entries.find(
-    ({ key }) => key.major === 0 && key.value === BigInt(24)
+    ({ key: candidate }) => candidate.major === 0 && candidate.value === key
   )?.value;
   if (!value) return undefined;
-  if (
-    value.major !== 0 ||
-    value.value === undefined ||
-    value.value < BigInt(1) ||
-    value.value > BigInt(Number.MAX_SAFE_INTEGER)
-  )
-    fail('invalid max collateral inputs');
-  return Number(value.value);
+  if (value.major !== 0 || value.value === undefined || value.value < BigInt(1))
+    fail(`invalid ${name}`);
+  return value.value;
 };
+
+const maxCollateralInputs = (encoded: Hex): number | undefined => {
+  const value = protocolParameterUint(
+    encoded,
+    BigInt(24),
+    'max collateral inputs'
+  );
+  if (value === undefined) return undefined;
+  if (value > BigInt(Number.MAX_SAFE_INTEGER))
+    fail('invalid max collateral inputs');
+  return Number(value);
+};
+
+const collateralPercentage = (encoded: Hex): bigint | undefined =>
+  protocolParameterUint(encoded, BigInt(23), 'collateral percentage');
 
 const decodeRecord = (encoded: Hex): DecodedRecord => {
   const bytes = Buffer.from(encoded, 'hex');
@@ -1138,6 +1152,18 @@ export const reconcileTransactionContext = (
   });
 
   const preExistingWitnesses: PreExistingWitness[] = [];
+  const collateralLimit = maxCollateralInputs(response.protocolParametersCbor);
+  const minimumCollateralPercentage = collateralPercentage(
+    response.protocolParametersCbor
+  );
+  const ownedPaymentCredentials = new Set(
+    response.ownership
+      .filter(
+        ({ credentialKind, ownership }) =>
+          credentialKind === 'payment' && ownership === 'owned_key'
+      )
+      .map(({ credential }) => credential)
+  );
   const commitmentContexts = parsed.map((transaction, transactionIndex) => {
     const verified = verifiedWitnesses(
       transactionIndex,
@@ -1172,6 +1198,7 @@ export const reconcileTransactionContext = (
         datum,
         scriptHash: scriptCredential(decoded.address),
         referenceScript: decoded.referenceScript,
+        walletMember: output.walletMember,
       };
     });
     const referenceScripts = resolvedInputs
@@ -1187,10 +1214,14 @@ export const reconcileTransactionContext = (
       )
       .map((language) => (Number(language.slice(-1)) - 1) as 0 | 1 | 2)
       .filter((item, index, values) => values.indexOf(item) === index);
+
     return {
       resolvedInputs,
       usedPlutusLanguages,
       verifiedWitnesses: verified.set,
+      ownedPaymentCredentials,
+      maxCollateralInputs: collateralLimit,
+      collateralPercentage: minimumCollateralPercentage,
     };
   });
   const transactionsSemantic = expectation.transactions.map((item, index) =>
@@ -1201,7 +1232,6 @@ export const reconcileTransactionContext = (
   );
   if (transactionsSemantic.some(({ review }) => !review.complete))
     fail('incomplete authenticated transaction review');
-  const collateralLimit = maxCollateralInputs(response.protocolParametersCbor);
 
   return Object.freeze({
     walletId: response.walletId,

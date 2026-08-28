@@ -7,6 +7,7 @@ import {
 import { reconcileTransactionContext } from '../../common/cardano/transactionContext';
 import type {
   Cip30WalletNetwork,
+  Cip30WalletOutpoint,
   Cip30WalletRequest,
   Cip30WalletResponse,
 } from '../../common/cip30/executor';
@@ -38,7 +39,7 @@ const preference = (
 ): CollateralPreference => Object.freeze({ ...record, state });
 
 export class CollateralService {
-  private readonly preparing = new Set<string>();
+  private readonly preparing = new Map<string, string | undefined>();
 
   public constructor(
     private readonly records: CollateralPreferenceStore,
@@ -69,6 +70,33 @@ export class CollateralService {
     });
     const utxos = controlledCip30Utxos(context);
 
+    if (this.preparing.has(key)) {
+      const transactionId = this.preparing.get(key);
+      const selected =
+        transactionId === undefined
+          ? null
+          : this.select(
+              utxos.filter(
+                ({ context: output }) =>
+                  output.outpoint.transactionId === transactionId &&
+                  output.pendingState === 'none'
+              ),
+              context.maxCollateralInputs
+            );
+      if (selected) {
+        const adopted = this.records.put({
+          walletId: lease.walletId,
+          networkGenesis: lease.networkGenesis,
+          targetLovelace: DEFAULT_COLLATERAL_TARGET_LOVELACE,
+          preferredInputs: selected,
+          generation: (record?.generation ?? 0) + 1,
+        });
+        this.preparing.delete(key);
+        return this.project(lease, adopted, 'ready');
+      }
+      return this.project(lease, record, 'preparing');
+    }
+
     if (record) {
       const pendingState = this.pendingState(
         record,
@@ -77,44 +105,76 @@ export class CollateralService {
       if (pendingState) return this.project(lease, record, pendingState);
       if (this.recordReady(record, utxos))
         return this.project(lease, record, 'ready');
+      const history = await this.executeWallet({
+        operation: 'collateral-history',
+        walletId: lease.walletId,
+        network: this.network,
+        sourceRevision: this.sourceRevision,
+        preferredInputs: record.preferredInputs,
+      });
+      if (
+        history.status === 'fulfilled' &&
+        history.operation === 'collateral-history' &&
+        history.value.transactions.some(
+          (transaction) =>
+            transaction.status === 'in_ledger' &&
+            transaction.scriptValidity === 'invalid' &&
+            transaction.collateralInputs.some((input) =>
+              record.preferredInputs.some((preferred) =>
+                sameInput(preferred, input)
+              )
+            )
+        )
+      )
+        return this.project(lease, record, 'charged');
       return this.project(lease, record, 'stale');
     }
 
-    const selected =
-      context.maxCollateralInputs === undefined
-        ? null
-        : selectCip30Collateral(
-            utxos,
-            DEFAULT_TARGET_CBOR,
-            context.maxCollateralInputs
-          );
+    const selected = this.select(utxos, context.maxCollateralInputs);
     if (selected) {
-      const selectedSet = new Set(selected);
-      const preferredInputs = utxos
-        .filter(({ context: output }) => selectedSet.has(output.unspentCbor))
-        .map(({ context: output }) => Object.freeze({ ...output.outpoint }));
       const adopted = this.records.put({
         walletId: lease.walletId,
         networkGenesis: lease.networkGenesis,
         targetLovelace: DEFAULT_COLLATERAL_TARGET_LOVELACE,
-        preferredInputs: Object.freeze(preferredInputs),
+        preferredInputs: selected,
         generation: 1,
       });
-      this.preparing.delete(key);
       return this.project(lease, adopted, 'ready');
     }
-
-    return this.project(
-      lease,
-      undefined,
-      this.preparing.has(key) ? 'preparing' : 'not-ready'
-    );
+    return this.project(lease, undefined, 'not-ready');
   }
 
   public prepare(lease: DappRouteLease): Promise<CollateralSnapshot> {
     this.assertLease(lease);
-    this.preparing.add(this.key(lease));
+    this.preparing.set(this.key(lease), undefined);
     return this.snapshot(lease);
+  }
+
+  public trackPreparation(
+    lease: DappRouteLease,
+    transactionId: string
+  ): Promise<CollateralSnapshot> {
+    this.assertLease(lease);
+    if (!/^[0-9a-f]{64}$/u.test(transactionId))
+      throw new Error('Invalid collateral preparation transaction');
+    const key = this.key(lease);
+    if (!this.preparing.has(key))
+      throw new Error('Collateral preparation is not active');
+    this.preparing.set(key, transactionId);
+    return this.snapshot(lease);
+  }
+
+  public spendsPreference(
+    lease: DappRouteLease,
+    inputs: readonly Cip30WalletOutpoint[]
+  ): boolean {
+    this.assertLease(lease);
+    const record = this.records.get(lease.walletId, lease.networkGenesis);
+    return (
+      record?.preferredInputs.some((preferred) =>
+        inputs.some((input) => sameInput(preferred, input))
+      ) ?? false
+    );
   }
 
   public cancelPreparation(lease: DappRouteLease): Promise<CollateralSnapshot> {
@@ -171,6 +231,25 @@ export class CollateralService {
     )
       return 'in-use';
     return undefined;
+  }
+
+  private select(
+    utxos: readonly Cip30Utxo[],
+    maxCollateralInputs: number | undefined
+  ): readonly CollateralInput[] | null {
+    if (maxCollateralInputs === undefined) return null;
+    const selected = selectCip30Collateral(
+      utxos,
+      DEFAULT_TARGET_CBOR,
+      maxCollateralInputs
+    );
+    if (!selected) return null;
+    const selectedSet = new Set(selected);
+    return Object.freeze(
+      utxos
+        .filter(({ context: output }) => selectedSet.has(output.unspentCbor))
+        .map(({ context: output }) => Object.freeze({ ...output.outpoint }))
+    );
   }
 
   private recordReady(

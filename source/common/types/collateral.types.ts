@@ -33,6 +33,8 @@ export type CollateralSnapshot = Readonly<{
   preference: CollateralPreference;
 }>;
 
-export type CollateralRendererRequest = Readonly<{
-  type: 'snapshot' | 'prepare' | 'cancel-preparation' | 'clear' | 'repair';
-}>;
+export type CollateralRendererRequest =
+  | Readonly<{
+      type: 'snapshot' | 'prepare' | 'cancel-preparation' | 'clear' | 'repair';
+    }>
+  | Readonly<{ type: 'track-preparation'; transactionId: string }>;

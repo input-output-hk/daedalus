@@ -52,6 +52,9 @@ export type Transaction = {
   inputs: Array<TransactionInputs>;
   outputs: Array<TransactionOutputs>;
   withdrawals: Array<TransactionWithdrawals>;
+  collateral?: Array<TransactionInputs>;
+  collateral_outputs?: Array<TransactionOutputs>;
+  script_validity?: 'valid' | 'invalid' | null;
   status: TransactionState;
   metadata?: TransactionMetadata;
   certificates?: Array<{

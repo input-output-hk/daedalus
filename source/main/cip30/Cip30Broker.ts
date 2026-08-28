@@ -26,6 +26,7 @@ import {
 } from '../../common/cardano/witnessSet';
 import { createCip30TransactionReview } from '../../common/cip30/review';
 import { decodeConwayTransaction } from '../../common/cardano/transaction';
+import type { SemanticTransaction } from '../../common/cardano/transaction';
 import { parseConwayTransactionEnvelope } from '../../common/cardano/transactionEnvelope';
 import type { ApiError, DappCip30Rejection } from '../../common/cip30/errors';
 import type {
@@ -169,6 +170,7 @@ export type Cip30BrokerOptions = Readonly<{
   authenticate: (event: IpcMainInvokeEvent) => DappGuestAuthority | null;
   currentLease: () => DappRouteLease | null;
   executeWallet: (request: Cip30WalletRequest) => Promise<Cip30WalletResponse>;
+  collateral?: Pick<CollateralService, 'spendsPreference'>;
   consent: ConsentCoordinator;
   grants: GrantRepository;
   sessions: SessionStore;
@@ -400,6 +402,29 @@ export class Cip30Broker {
     return {};
   }
 
+  private preferredCollateralEffects(
+    binding: Cip30BrokerBinding,
+    transaction: SemanticTransaction
+  ): SemanticTransaction['effects'] {
+    const inputs = transaction.inputs.normal.map(
+      ({ transactionId, index }) => ({
+        transactionId,
+        index: Number(index),
+      })
+    );
+    if (
+      inputs.some(({ index }) => !Number.isSafeInteger(index)) ||
+      !this.options.collateral?.spendsPreference(binding.lease, inputs)
+    )
+      return [];
+    return Object.freeze([
+      Object.freeze({
+        kind: 'preferred-collateral-spend',
+        value: Object.freeze({ state: 'will-be-spent' }),
+      }),
+    ]);
+  }
+
   private async signTx(
     request: DappCip30GatewayRequest<'api.signTx'>,
     binding: Cip30BrokerBinding
@@ -454,7 +479,11 @@ export class Cip30Broker {
     }
     const transaction = snapshot.transactionsSemantic[0];
     if (!transaction) throw internal();
-    const review = createCip30TransactionReview(transaction, 'sign');
+    const review = createCip30TransactionReview(
+      transaction,
+      'sign',
+      this.preferredCollateralEffects(binding, transaction)
+    );
     const requiredDrepKeyHashes =
       partialSign || !cip95
         ? []
@@ -611,7 +640,11 @@ export class Cip30Broker {
     const transaction = snapshot.transactionsSemantic[0];
     if (!transaction || transaction.transactionId !== local.transactionId)
       throw internal();
-    const review = createCip30TransactionReview(transaction, 'submit');
+    const review = createCip30TransactionReview(
+      transaction,
+      'submit',
+      this.preferredCollateralEffects(binding, transaction)
+    );
     if (review.fullCbor !== cbor) throw internal();
     return this.options.consent.request({
       identity: {
@@ -932,6 +965,7 @@ export const handleCip30BrokerRequests = (): void => {
     network,
     networkName: launcherConfig.cluster,
     sourceRevision: CARDANO_WALLET_SOURCE_REVISION,
+    collateral: collateralService,
   });
   setDappBrokerLifecycleRevoker(() => broker?.revoke());
   setCip30SessionRevoker(() => broker?.revoke());

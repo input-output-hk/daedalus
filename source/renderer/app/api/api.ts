@@ -162,6 +162,7 @@ import type {
 // Transactions Types
 import {
   Transaction,
+  Transactions,
   TransactionFee,
   TransactionWithdrawals,
   GetTransactionFeeRequest,
@@ -597,6 +598,9 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
+  getDappCollateralHistory = async (walletId: string): Promise<Transactions> =>
+    getTransactionHistory(this.config, walletId, { order: 'descending' });
+
   getTransactions = async (
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
