@@ -638,6 +638,22 @@ describe('Cip30Broker', () => {
       expect.objectContaining({ transaction: transactionSignature.cbor }),
     ]);
 
+    for (const status of [
+      'authorized',
+      'broadcasting',
+      'submitted',
+      'outcome_unknown',
+      'in_ledger',
+    ] as const) {
+      fixture.setSubmission(transactionSignature.bodyHash, status);
+      await expect(
+        fixture.broker.handle(event, submitRequest)
+      ).resolves.toEqual({
+        status: 'fulfilled',
+        value: transactionSignature.bodyHash,
+      });
+    }
+
     fixture.setSubmission('00'.repeat(32));
     await expect(fixture.broker.handle(event, submitRequest)).resolves.toEqual({
       status: 'rejected',
@@ -1028,6 +1044,61 @@ describe('Cip30Broker', () => {
         value: { code: -2, info: 'Internal error' },
       },
     });
+    fixture.cleanup();
+  });
+
+  it('returns fixed public errors without request or credential material', async () => {
+    const fixture = create();
+    await fixture.broker.handle(event, request('provider.enable'));
+    const secret = Buffer.from('wallet-password-and-private-payload').toString(
+      'hex'
+    );
+
+    fixture.setSignatureFailure('proof-generation');
+    fixture.setWitnessFailure('tx-proof-generation');
+    fixture.setSubmissionFailure(true);
+    const results = await Promise.all([
+      fixture.broker.handle(
+        event,
+        request('api.signData', [dataSignature.address, secret])
+      ),
+      fixture.broker.handle(
+        event,
+        request('api.signTx', [transactionSignature.cbor])
+      ),
+      fixture.broker.handle(
+        event,
+        request('api.submitTx', [transactionSignature.cbor])
+      ),
+    ]);
+
+    expect(results).toEqual([
+      {
+        status: 'rejected',
+        rejection: {
+          type: 'data-sign-error',
+          value: { code: 1, info: 'Proof generation failed' },
+        },
+      },
+      {
+        status: 'rejected',
+        rejection: {
+          type: 'tx-sign-error',
+          value: { code: 1, info: 'Proof generation failed' },
+        },
+      },
+      {
+        status: 'rejected',
+        rejection: {
+          type: 'tx-send-error',
+          value: { code: 2, info: 'Transaction submission failed' },
+        },
+      },
+    ]);
+    const serialized = JSON.stringify(results);
+    expect(serialized).not.toContain(secret);
+    expect(serialized).not.toContain(transactionSignature.cbor);
+    expect(serialized).not.toContain('secret');
     fixture.cleanup();
   });
 
