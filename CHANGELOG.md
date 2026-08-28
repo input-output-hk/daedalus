@@ -1,5 +1,35 @@
 # Changelog
 
+## 11.3.0
+
+### Features
+
+- **Governance — DRep discovery, selection, and delegation**: The Governance Center now includes a full DRep directory with search, sorting (by voting power, name, status), and filtering by activity and voting-power ceiling. Users can delegate their voting power to any DRep, switch between DReps, and delegate to Abstain or No Confidence. The confirmation dialog shows fee, deposit, and epoch timing. DRep detail pages display off-chain metadata, verification status, and on-chain provenance. Inactive DReps are badged and distinguished from retired ones.
+
+- **Daedalus Ariadne Support Portal**: Se7en Labs is taking over full Daedalus support from IOG. All in-app support links now point to the new portal at `daedalus.support.se7enlabs.com`. The IOG Zendesk portal should no longer be used for Daedalus support requests.
+
+- **Rust process watchdog**: A new Rust-based process supervisor replaces the TypeScript cardano-launcher and Mithril services. The watchdog manages the full lifecycle of `cardano-node`, `cardano-wallet`, and Mithril — startup sequencing, log rotation, restart on crash, and graceful shutdown. It exposes restart commands (`restart_node`, `restart_wallet`) and gates wallet startup on chain-DB readiness.
+
+- **Mithril proactive prompt**: When Daedalus detects the node is significantly behind the certified Mithril tip during ledger replay, it now prompts the user to switch to Mithril fast-forward without requiring a restart. An interrupt button is shown throughout replay.
+
+- **Linux GPU disable escape hatch**: A new `DAEDALUS_DISABLE_GPU` environment variable bypasses GPU hardware acceleration at startup, providing a recovery path for users who hit GPU-related crashes (e.g. some AMD configurations).
+
+### Fixes
+
+- Chain-storage: resolved relative symlink targets to absolute paths; report a read-only directory as not-writable and an unresolvable link as not-found; verify created links on all platforms; never leave a broken created link; fixed cross-device move fallback; report a looping path as not found; do not block directory validation on the free-space probe; roll back a failed migration even if the journal cannot be written.
+
+- Explorer: updated links to the current `explorer.cardano.org` layout; removed dead testnet and staging explorer endpoints.
+
+- Loading screen: fixed dark background and progress display for Mithril and chain-storage screens.
+
+- Mithril: always remove a stale LSM snapshot directory when installing a new ledger snapshot.
+
+### Chores
+
+- Support zip now includes `watchdog.log`; log collection limited to the current log and the three most recent rotated files (`.1`–`.3`) per log type.
+
+- Bump `cardano-wallet` to v2026-08-21.
+
 ## 11.2.0
 
 ### Fixes
