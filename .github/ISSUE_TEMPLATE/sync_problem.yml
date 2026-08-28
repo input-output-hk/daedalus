@@ -1,0 +1,125 @@
+name: Sync or Connection Problem
+description: Report Daedalus failing to sync, connect, or start its node
+title: "[SYNC] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form when Daedalus will not connect, will not finish syncing, or the node stops or restarts on its own.
+
+        Sync problems are usually explained by the machine and the storage rather than by the steps taken, so the fields below ask about both.
+
+        If you need individual help rather than to report a defect, please review the [Daedalus support guidance](https://github.com/input-output-hk/daedalus/blob/master/SUPPORT.md).
+
+        Never include a wallet recovery phrase, seed phrase, private key, spending password or other wallet secret in a GitHub issue.
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: |
+        In Daedalus, open `Help` > `Daedalus Diagnostics`, copy the diagnostic information using the copy control, and paste it here.
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: symptom
+    attributes:
+      label: What happens
+      options:
+        - Sync starts but never completes
+        - Sync percentage goes backwards or resets
+        - Daedalus reports it cannot connect to the node
+        - The node stops or restarts repeatedly
+        - Daedalus stays on the loading screen
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: sync-percentage
+    attributes:
+      label: Sync percentage reached
+      description: The highest percentage Daedalus reached, if it reports one.
+      placeholder: "Example: 43%"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: storage-volume
+    attributes:
+      label: Where is the blockchain stored
+      description: |
+        The location is shown as the Daedalus state directory in `Help` > `Daedalus Diagnostics`. Do not paste the path itself; it contains your account name.
+      options:
+        - The default location on the system drive
+        - A different folder on the same internal drive
+        - A second internal drive
+        - An external USB or Thunderbolt drive
+        - A network drive, NAS, or mapped network location
+        - A cloud-synced folder, such as OneDrive, Dropbox or iCloud Drive
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: storage-link
+    attributes:
+      label: Was the storage location moved
+      description: Daedalus stores the blockchain in its state directory. Moving it elsewhere is usually done with a symbolic link or junction.
+      options:
+        - "No, it is where Daedalus put it"
+        - "Yes, moved using the setting in Daedalus"
+        - "Yes, moved manually with a symbolic link or junction"
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: onset
+    attributes:
+      label: When did this start
+      options:
+        - On a fresh installation
+        - After updating Daedalus
+        - After restoring or adding a wallet
+        - After moving the blockchain storage
+        - After an unexpected shutdown, crash or power loss
+        - It has always behaved this way
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe what you see, including any error text Daedalus displays.
+
+        If the problem is intermittent, say how often it happens and what tends to precede it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What you have already tried
+      description: For example restarting, reinstalling, deleting the blockchain and resyncing, or moving the storage back to the default location.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the existing Daedalus issues and did not find one describing the same problem.
+          required: true
+        - label: I have not included a recovery phrase, seed phrase, private key, spending password or other wallet secret.
+          required: true
+        - label: I understand that this issue and anything I submit here will be publicly visible.
+          required: true
