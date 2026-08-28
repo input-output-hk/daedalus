@@ -97,6 +97,15 @@ const create = () => {
     transaction_id: '77'.repeat(32),
     status: 'submitted' as const,
   }));
+  const getDappCollateralHistory = jest.fn(async () => [
+    {
+      id: '88'.repeat(32),
+      status: 'in_ledger' as const,
+      script_validity: 'invalid' as const,
+      inputs: [],
+      collateral: [{ id: '99'.repeat(32), index: 1 }],
+    },
+  ]);
   const withWalletSendLock = jest.fn(
     async (_walletId: string, work: () => Promise<unknown>) => work()
   );
@@ -110,6 +119,7 @@ const create = () => {
       getDappCip95KeyState,
       signDappTransactions,
       submitDappTransaction,
+      getDappCollateralHistory,
     },
   } as unknown) as Api;
   const stores = ({
@@ -141,6 +151,7 @@ const create = () => {
     signDappData,
     getDappCip95KeyState,
     submitDappTransaction,
+    getDappCollateralHistory,
     withWalletSendLock,
     setWallet: (value: Record<string, unknown> | null) => {
       wallet = value;
@@ -154,6 +165,28 @@ const create = () => {
 };
 
 describe('Cip30WalletService', () => {
+  it('returns only history that consumes the requested preferred input', async () => {
+    const fixture = create();
+    await expect(
+      fixture.service.receive({
+        ...request('context'),
+        operation: 'collateral-history',
+        preferredInputs: [{ transactionId: '99'.repeat(32), index: 1 }],
+      })
+    ).resolves.toMatchObject({
+      status: 'fulfilled',
+      operation: 'collateral-history',
+      value: {
+        transactions: [
+          {
+            transactionId: '88'.repeat(32),
+            scriptValidity: 'invalid',
+            collateralInputs: [{ transactionId: '99'.repeat(32), index: 1 }],
+          },
+        ],
+      },
+    });
+  });
   it('fails closed before backend access while disconnected or on account drift', async () => {
     const fixture = create();
     fixture.setReady(false);

@@ -14,6 +14,7 @@ import DialogCloseButton from '../../../../components/widgets/DialogCloseButton'
 import { shouldShowEmptyWalletWarning } from '../../../../utils/walletUtils';
 import { hasTokensLeftAfterTransaction } from '../../../../utils/assets';
 import LoadingSpinner from '../../../../components/widgets/LoadingSpinner';
+import collateralMessages from '../../../../components/dapp/collateral/CollateralPanel.messages';
 import { ViewProps as Props } from './types';
 import { useForm } from './hooks';
 import {
@@ -42,6 +43,8 @@ function View({
   isTrezor,
   isSubmitting,
   isHardwareWallet,
+  isCollateralPreparation,
+  spendsPreferredCollateral,
   onExternalLinkClick,
   onCancel,
   onSubmitCb,
@@ -62,6 +65,7 @@ function View({
     receiver,
     selectedAssets,
     isHardwareWallet,
+    isCollateralPreparation,
     onSubmitCb,
   });
   const isSendingAssets = !!selectedAssets.length;
@@ -105,6 +109,19 @@ function View({
       className={styles.root}
       closeButton={<DialogCloseButton />}
     >
+      {isCollateralPreparation && (
+        <div className={styles.warning}>
+          <FormattedHTMLMessage {...collateralMessages.preparing} tagName="p" />
+        </div>
+      )}
+      {spendsPreferredCollateral && (
+        <div className={styles.warning} role="alert">
+          <FormattedHTMLMessage
+            {...collateralMessages.willBeSpent}
+            tagName="p"
+          />
+        </div>
+      )}
       {shouldShowEmptyWalletWarning(
         totalAmount,
         wallet,

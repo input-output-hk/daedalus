@@ -812,6 +812,7 @@ export default class WalletsStore extends Store {
     assets,
     assetsAmounts: assetsAmountsStr,
     hasAssetsRemainingAfterTransaction,
+    isCollateralPreparation = false,
   }: {
     receiver: string;
     amount: string;
@@ -819,6 +820,7 @@ export default class WalletsStore extends Store {
     assets?: Array<AssetToken>;
     assetsAmounts?: Array<string>;
     hasAssetsRemainingAfterTransaction?: boolean;
+    isCollateralPreparation?: boolean;
   }) => {
     const assetsAmounts = assetsAmountsStr
       ? assetsAmountsStr.map((assetAmount) => new BigNumber(assetAmount))
@@ -836,15 +838,23 @@ export default class WalletsStore extends Store {
         : null;
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
+    if (
+      isCollateralPreparation &&
+      (amount !== '5000000' ||
+        !!formattedAssets?.length ||
+        !this.stores.addresses.all.some(({ id }) => id === receiver))
+    )
+      throw new Error('Invalid collateral preparation transaction');
 
     /**
      * Do not try to catch the request error here, its intended to throw
      * a localized error created in app/api/api.ts
      */
+    let transaction: WalletTransaction | undefined;
     // @ts-ignore
     await this.stores.transactions.withWalletSendLock(wallet.id, async () => {
       // @ts-ignore
-      await this.sendMoneyRequest.execute({
+      transaction = await this.sendMoneyRequest.execute({
         address: receiver,
         amount: parseInt(amount, 10),
         passphrase,
@@ -854,6 +864,10 @@ export default class WalletsStore extends Store {
         hasAssetsRemainingAfterTransaction,
       });
     });
+    if (isCollateralPreparation) {
+      if (!transaction) throw new Error('Collateral preparation was not sent');
+      await this.stores.collateral.trackPreparation(transaction.id);
+    }
     // The following code will not be executed if the request above fails
     this.analytics.sendEvent(
       EventCategories.WALLETS,

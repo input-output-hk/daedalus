@@ -30,6 +30,20 @@ describe('CIP-30 transaction review', () => {
     expect(parseCip30TransactionReview(submission)).toEqual(submission);
   });
 
+  it('warns about preferred collateral spending without blocking approval', () => {
+    const review = createCip30TransactionReview(transaction, 'sign', [
+      {
+        kind: 'preferred-collateral-spend',
+        value: { state: 'will-be-spent' },
+      },
+    ]);
+
+    expect(review.effects).toContainEqual(
+      expect.objectContaining({ kind: 'preferred-collateral-spend' })
+    );
+    expect(review.approvable).toBe(true);
+  });
+
   it('refuses incomplete, unknown, and unresolved collateral semantics', () => {
     const incomplete = createCip30TransactionReview(
       {

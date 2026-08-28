@@ -32,7 +32,7 @@ const context = (pendingTransactions: readonly unknown[] = []) => ({
   maxCollateralInputs: 3,
 });
 const utxo = {
-  context: { outpoint: input, unspentCbor: 'utxo' },
+  context: { outpoint: input, unspentCbor: 'utxo', pendingState: 'none' },
   value: { coin: BigInt(5_000_000), assets: [] },
 };
 
@@ -85,6 +85,98 @@ describe('CollateralService', () => {
       targetLovelace: '5000000',
       preferredInputs: [input],
     });
+  });
+
+  it('records preparation only after its exact output is confirmed', async () => {
+    await service.prepare(lease);
+    (serialization.controlledCip30Utxos as jest.Mock).mockReturnValue([
+      {
+        ...utxo,
+        context: { ...utxo.context, pendingState: 'outcome_unknown' },
+      },
+    ]);
+    (selection.selectCip30Collateral as jest.Mock).mockImplementation((utxos) =>
+      utxos.length ? ['utxo'] : null
+    );
+
+    await expect(
+      service.trackPreparation(lease, input.transactionId)
+    ).resolves.toMatchObject({
+      preference: { state: 'preparing', preferredInputs: [] },
+    });
+    expect(records.get(walletId, genesisHash)).toBeUndefined();
+
+    (serialization.controlledCip30Utxos as jest.Mock).mockReturnValue([utxo]);
+    await expect(service.snapshot(lease)).resolves.toMatchObject({
+      preference: { state: 'ready', preferredInputs: [input] },
+    });
+  });
+
+  it('derives charged state from accepted invalid collateral history', async () => {
+    records.put({
+      walletId,
+      networkGenesis: genesisHash,
+      targetLovelace: '5000000',
+      preferredInputs: [input],
+      generation: 1,
+    });
+    executeWallet.mockImplementation(({ operation }) =>
+      Promise.resolve(
+        operation === 'context'
+          ? { status: 'fulfilled', operation, value: {} }
+          : {
+              status: 'fulfilled',
+              operation,
+              value: {
+                transactions: [
+                  {
+                    transactionId: '12'.repeat(32),
+                    status: 'in_ledger',
+                    scriptValidity: 'invalid',
+                    normalInputs: [],
+                    collateralInputs: [input],
+                  },
+                ],
+              },
+            }
+      )
+    );
+
+    await expect(service.snapshot(lease)).resolves.toMatchObject({
+      preference: { state: 'charged' },
+    });
+  });
+
+  it('restores ready after rollback makes the preferred output visible', async () => {
+    records.put({
+      walletId,
+      networkGenesis: genesisHash,
+      targetLovelace: '5000000',
+      preferredInputs: [input],
+      generation: 1,
+    });
+    (serialization.controlledCip30Utxos as jest.Mock).mockReturnValue([utxo]);
+
+    await expect(service.snapshot(lease)).resolves.toMatchObject({
+      preference: { state: 'ready' },
+    });
+  });
+
+  it('detects ordinary preferred-input spending without changing selection', () => {
+    records.put({
+      walletId,
+      networkGenesis: genesisHash,
+      targetLovelace: '5000000',
+      preferredInputs: [input],
+      generation: 1,
+    });
+
+    expect(service.spendsPreference(lease, [input])).toBe(true);
+    expect(
+      service.spendsPreference(lease, [
+        { transactionId: '01'.repeat(32), index: 0 },
+      ])
+    ).toBe(false);
   });
 
   it.each([

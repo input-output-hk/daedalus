@@ -10,6 +10,7 @@ export type Cip30WalletOperation =
   | 'capabilities'
   | 'context'
   | 'transaction-context'
+  | 'collateral-history'
   | 'addresses'
   | 'cip95-key-state'
   | 'sign-transactions'
@@ -24,6 +25,10 @@ export type Cip30WalletRequest = Cip30WalletRequestIdentity &
   (
     | Readonly<{
         operation: 'capabilities' | 'context' | 'addresses' | 'cip95-key-state';
+      }>
+    | Readonly<{
+        operation: 'collateral-history';
+        preferredInputs: readonly Cip30WalletOutpoint[];
       }>
     | Readonly<{
         operation: 'transaction-context';
@@ -49,6 +54,21 @@ export type Cip30WalletRequest = Cip30WalletRequestIdentity &
         passphrase: string;
       }>
   );
+
+export type Cip30WalletOutpoint = Readonly<{
+  transactionId: string;
+  index: number;
+}>;
+
+export type Cip30WalletCollateralHistory = Readonly<{
+  transactions: readonly Readonly<{
+    transactionId: string;
+    status: 'pending' | 'in_ledger' | 'expired';
+    scriptValidity: 'valid' | 'invalid' | null;
+    normalInputs: readonly Cip30WalletOutpoint[];
+    collateralInputs: readonly Cip30WalletOutpoint[];
+  }>[];
+}>;
 
 export type Cip30WalletCapabilities = Readonly<{
   walletId: string;
@@ -105,6 +125,11 @@ export type Cip30WalletResponse =
       status: 'fulfilled';
       operation: 'context';
       value: unknown;
+    }>
+  | Readonly<{
+      status: 'fulfilled';
+      operation: 'collateral-history';
+      value: Cip30WalletCollateralHistory;
     }>
   | Readonly<{
       status: 'fulfilled';
@@ -191,6 +216,19 @@ const hex = (value: unknown, bytes: number): value is string =>
   value.length === bytes * 2 &&
   lowerHex.test(value);
 
+const parseOutpoint = (value: unknown): Cip30WalletOutpoint => {
+  if (
+    !ownData(value, ['transactionId', 'index']) ||
+    !hex(value.transactionId, 32) ||
+    !uint32(value.index)
+  )
+    throw new Error('Invalid CIP-30 wallet outpoint');
+  return Object.freeze({
+    transactionId: value.transactionId,
+    index: value.index,
+  });
+};
+
 const parseNetwork = (value: unknown): Cip30WalletNetwork => {
   if (!ownData(value, ['networkId', 'networkMagic', 'genesisHash']))
     throw new Error('Invalid CIP-30 wallet network');
@@ -232,15 +270,18 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     keys = [...keys, 'address', 'payload', 'passphrase'];
   else if (operation === 'transaction-context')
     keys = [...keys, 'transactions'];
+  else if (operation === 'collateral-history')
+    keys = [...keys, 'preferredInputs'];
   else if (operation === 'sign-transactions')
     keys = [...keys, 'context', 'transactions', 'passphrase'];
   else if (operation === 'submit-transaction') keys = [...keys, 'transaction'];
-  if (!ownData(value, keys)) throw new Error('Invalid CIP-30 wallet request');
   if (
+    !ownData(value, keys) ||
     ![
       'capabilities',
       'context',
       'transaction-context',
+      'collateral-history',
       'addresses',
       'cip95-key-state',
       'sign-transactions',
@@ -257,6 +298,19 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     network: parseNetwork(value.network),
     sourceRevision: value.sourceRevision,
   };
+  if (operation === 'collateral-history') {
+    if (
+      !Array.isArray(value.preferredInputs) ||
+      value.preferredInputs.length < 1 ||
+      value.preferredInputs.length > 3
+    )
+      throw new Error('Invalid CIP-30 wallet request');
+    return Object.freeze({
+      ...identity,
+      operation,
+      preferredInputs: Object.freeze(value.preferredInputs.map(parseOutpoint)),
+    });
+  }
   if (operation === 'transaction-context') {
     if (
       !Array.isArray(value.transactions) ||
@@ -493,6 +547,51 @@ const parseWitnessResponse = (
   });
 };
 
+const parseCollateralHistory = (
+  value: unknown
+): Cip30WalletCollateralHistory => {
+  if (!ownData(value, ['transactions']) || !Array.isArray(value.transactions))
+    throw new Error('Invalid CIP-30 collateral history');
+  const transactions = value.transactions.map((candidate) => {
+    if (
+      !ownData(candidate, [
+        'transactionId',
+        'status',
+        'scriptValidity',
+        'normalInputs',
+        'collateralInputs',
+      ]) ||
+      !hex(candidate.transactionId, 32) ||
+      !Array.isArray(candidate.normalInputs) ||
+      !Array.isArray(candidate.collateralInputs)
+    )
+      throw new Error('Invalid CIP-30 collateral history');
+    let status: 'pending' | 'in_ledger' | 'expired';
+    if (
+      candidate.status === 'pending' ||
+      candidate.status === 'in_ledger' ||
+      candidate.status === 'expired'
+    )
+      status = candidate.status;
+    else throw new Error('Invalid CIP-30 collateral history');
+    let scriptValidity: 'valid' | 'invalid' | null;
+    if (candidate.scriptValidity === null) scriptValidity = null;
+    else if (candidate.scriptValidity === 'valid') scriptValidity = 'valid';
+    else if (candidate.scriptValidity === 'invalid') scriptValidity = 'invalid';
+    else throw new Error('Invalid CIP-30 collateral history');
+    return Object.freeze({
+      transactionId: candidate.transactionId,
+      status,
+      scriptValidity,
+      normalInputs: Object.freeze(candidate.normalInputs.map(parseOutpoint)),
+      collateralInputs: Object.freeze(
+        candidate.collateralInputs.map(parseOutpoint)
+      ),
+    });
+  });
+  return Object.freeze({ transactions: Object.freeze(transactions) });
+};
+
 const parseSubmissionResponse = (
   value: unknown
 ): Cip30WalletSubmissionResponse => {
@@ -568,6 +667,12 @@ export const parseCip30WalletResponse = (
       status: 'fulfilled',
       operation: 'cip95-key-state',
       value: parseCip95KeyState(value.value),
+    });
+  if (request.operation === 'collateral-history')
+    return Object.freeze({
+      status: 'fulfilled',
+      operation: 'collateral-history',
+      value: parseCollateralHistory(value.value),
     });
   if (request.operation === 'sign-transactions')
     return Object.freeze({

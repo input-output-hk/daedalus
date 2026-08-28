@@ -15,6 +15,15 @@ const backendNetwork = (network: Cip30WalletNetwork) => ({
   genesis_hash: network.genesisHash,
 });
 
+const outpointMatches = (
+  preferred: readonly Readonly<{ transactionId: string; index: number }>[],
+  input: Readonly<{ id: string; index: number }>
+): boolean =>
+  preferred.some(
+    ({ transactionId, index }) =>
+      transactionId === input.id && index === input.index
+  );
+
 export class Cip30WalletService {
   private unbind?: () => void;
 
@@ -184,6 +193,55 @@ export class Cip30WalletService {
           status: 'fulfilled',
           operation: 'cip95-key-state',
           value: keyState,
+        });
+      }
+
+      if (request.operation === 'collateral-history') {
+        const history = await this.api.ada.getDappCollateralHistory(
+          request.walletId
+        );
+        if (!this.ready(request)) return this.rejection(request, 'unavailable');
+        return Object.freeze({
+          status: 'fulfilled',
+          operation: 'collateral-history',
+          value: Object.freeze({
+            transactions: Object.freeze(
+              history
+                .filter(
+                  ({ inputs, collateral = [] }) =>
+                    inputs.some((input) =>
+                      outpointMatches(request.preferredInputs, input)
+                    ) ||
+                    collateral.some((input) =>
+                      outpointMatches(request.preferredInputs, input)
+                    )
+                )
+                .map(
+                  ({
+                    id,
+                    status,
+                    script_validity: scriptValidity = null,
+                    inputs,
+                    collateral = [],
+                  }) =>
+                    Object.freeze({
+                      transactionId: id,
+                      status,
+                      scriptValidity,
+                      normalInputs: Object.freeze(
+                        inputs.map(({ id: transactionId, index }) =>
+                          Object.freeze({ transactionId, index })
+                        )
+                      ),
+                      collateralInputs: Object.freeze(
+                        collateral.map(({ id: transactionId, index }) =>
+                          Object.freeze({ transactionId, index })
+                        )
+                      ),
+                    })
+                )
+            ),
+          }),
         });
       }
 

@@ -97,7 +97,14 @@ class WalletSendPage extends Component<Props, State> {
       });
     }
 
-    this.setState({ confirmationDialogData: { ...data } });
+    this.setState({
+      confirmationDialogData: {
+        ...data,
+        spendsPreferredCollateral:
+          !!coinSelection &&
+          this.props.stores.collateral.spendsPreference(coinSelection.inputs),
+      },
+    });
   };
 
   openTokenPickerDialog = () => {
@@ -126,6 +133,8 @@ class WalletSendPage extends Component<Props, State> {
       profile,
       hardwareWallets,
       assets: assetsStore,
+      addresses,
+      collateral,
     } = stores;
     const { isValidAddress, isAddressFromSameWallet } = wallets;
     const { validateAmount, validateAssetAmount } = transactions;
@@ -146,6 +155,8 @@ class WalletSendPage extends Component<Props, State> {
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
+    const isCollateralPreparation = collateral.preparationFormActive;
+    const preparationAddress = addresses.active?.id ?? addresses.all[0]?.id;
     return (
       <WalletSendForm
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
@@ -164,9 +175,9 @@ class WalletSendPage extends Component<Props, State> {
         validateAmount={validateAmount}
         validateAssetAmount={validateAssetAmount}
         addressValidator={isValidAddress}
-        assets={assetTokens}
-        hasAssets={hasAssetsEnabled && hasRawAssets}
-        selectedAsset={selectedAsset}
+        assets={isCollateralPreparation ? [] : assetTokens}
+        hasAssets={!isCollateralPreparation && hasAssetsEnabled && hasRawAssets}
+        selectedAsset={isCollateralPreparation ? null : selectedAsset}
         isLoadingAssets={isLoadingAssets}
         isDialogOpen={uiDialogs.isOpen}
         isRestoreActive={wallet.isRestoring}
@@ -184,6 +195,11 @@ class WalletSendPage extends Component<Props, State> {
         onTokenPickerDialogClose={this.closeTokenPickerDialog}
         analyticsTracker={this.props.analyticsTracker}
         confirmationDialogData={this.state.confirmationDialogData}
+        initialReceiver={
+          isCollateralPreparation ? preparationAddress : undefined
+        }
+        initialAmount={isCollateralPreparation ? '5' : undefined}
+        isCollateralPreparation={isCollateralPreparation}
       />
     );
   }
