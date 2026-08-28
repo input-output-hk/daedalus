@@ -35,6 +35,7 @@ import ButtonLink from '../../widgets/ButtonLink';
 import { Slider } from '../../widgets/Slider';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import styles from './StakePoolsRanking.scss';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 
 const messages = defineMessages({
   rankingAllWallets: {
@@ -58,11 +59,6 @@ const messages = defineMessages({
     defaultMessage:
       '!!!Use the slider to rank the stake pools and check the potential rewards <strong>based on the amount of stake you intend to delegate</strong>.',
     description: 'Ranking description.',
-  },
-  rankingLearnMoreUrl: {
-    id: 'staking.stakePools.rankingLearnMoreUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us',
-    description: 'Ranking learn more url.',
   },
   rankingOneWalletEnd: {
     id: 'staking.stakePools.rankingOneWalletEnd',
@@ -263,7 +259,7 @@ class StakePoolsRanking extends Component<Props, State> {
       styles.walletSelectorContainer,
       styles.col,
     ]);
-    const learnMoreUrl = intl.formatMessage(messages.rankingLearnMoreUrl);
+    const learnMoreUrl = getSupportUrl(intl.locale);
     let walletSelectionStart = null;
     let walletSelectionEnd = null;
 

@@ -23,6 +23,7 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletUtxo.scss';
 import type { TickProps } from './WalletUtxoTick';
 import { WalletUtxoDescription } from './WalletUtxoDescription';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 
 export const messages = defineMessages({
   title: {
@@ -46,12 +47,6 @@ export const messages = defineMessages({
     id: 'wallet.settings.utxos.findOutMoreLink',
     defaultMessage: '!!!Find out more',
     description: '"Find out more" link on the "Wallet Utxos" screen.',
-  },
-  findOutMoreLinkUrl: {
-    id: 'wallet.settings.utxos.findOutMoreLinkUrl',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/360034118013',
-    description: '"Find out more" link URL on the "Wallet Utxos" screen.',
   },
   labelX: {
     id: 'wallet.settings.utxos.labelX',
@@ -129,7 +124,7 @@ export default class WalletUtxo extends Component<Props, State> {
       styles.component,
       isEmpty ? styles.isEmpty : null,
     ]);
-    const findOutMoreLinkUrl = intl.formatMessage(messages.findOutMoreLinkUrl);
+    const findOutMoreLinkUrl = getSupportUrl(intl.locale);
     const findOutMoreLink = (
       <Link
         className={styles.externalLink}

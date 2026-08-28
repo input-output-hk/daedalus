@@ -28,6 +28,7 @@ import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 import Dialog from '../../widgets/Dialog';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 
 const messages = defineMessages({
   title: {
@@ -102,12 +103,6 @@ const messages = defineMessages({
     id: 'wallet.select.import.dialog.linkLabel',
     defaultMessage: '!!!Learn more',
     description: 'Learn more',
-  },
-  linkUrl: {
-    id: 'wallet.select.import.dialog.linkUrl',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/900000623463',
-    description: '"Learn more" link URL on the wallet import file dialog',
   },
   closeWindow: {
     id: 'wallet.select.import.dialog.closeWindow',
@@ -304,8 +299,7 @@ class WalletSelectImportDialog extends Component<Props> {
     );
     const linkLabel = intl.formatMessage(messages.linkLabel);
 
-    const onLinkClick = () =>
-      onOpenExternalLink(intl.formatMessage(messages.linkUrl));
+    const onLinkClick = () => onOpenExternalLink(getSupportUrl(intl.locale));
 
     const walletsWithNames = exportedWallets.filter(
       ({ hasName }: ExportedByronWallet) => hasName

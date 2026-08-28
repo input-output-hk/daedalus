@@ -4,6 +4,7 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ButtonLink from '../../widgets/ButtonLink';
 import styles from './StakingInfo.scss';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 
 const messages = defineMessages({
   heading: {
@@ -29,11 +30,6 @@ const messages = defineMessages({
     id: 'staking.info.buttonLabel',
     defaultMessage: '!!!Learn more',
     description: 'Button Label for the Decentralization progress notification.',
-  },
-  learnMoreLinkUrl: {
-    id: 'staking.info.learnMore.linkUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc',
-    description: '"Learn more" link URL in the staking info page',
   },
 });
 type Props = {
@@ -124,9 +120,7 @@ class StakingInfo extends Component<Props, State> {
             <ButtonLink
               // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               className={styles.learnMoreButton}
-              onClick={() =>
-                onLearnMoreClick(intl.formatMessage(messages.learnMoreLinkUrl))
-              }
+              onClick={() => onLearnMoreClick(getSupportUrl(intl.locale))}
               skin={ButtonSkin}
               label={buttonLabel}
               linkProps={{

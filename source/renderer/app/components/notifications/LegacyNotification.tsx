@@ -7,6 +7,7 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import ButtonLink from '../widgets/ButtonLink';
 import styles from './LegacyNotification.scss';
+import { getSupportUrl } from '../../../../common/utils/reporting';
 
 const messages = defineMessages({
   moveFundsTitle: {
@@ -70,12 +71,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Create a new wallet',
     description: 'Create a new wallet action of legacy notification.',
   },
-  learnMoreLinkUrl: {
-    id: 'wallet.byron.notification.learnMore.url',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/360038726373',
-    description: '"Learn more" link URL',
-  },
 });
 type Props = {
   activeWalletName: string;
@@ -92,8 +87,7 @@ class LegacyNotification extends Component<Props> {
   };
   onLearnMore = () => {
     const { intl } = this.context;
-    const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
-    this.props.onLearnMore(learnMoreLinkUrl);
+    this.props.onLearnMore(getSupportUrl(intl.locale));
   };
   getValue = (
     messageHasRewardsWallets: string,

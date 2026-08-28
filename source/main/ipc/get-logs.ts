@@ -6,9 +6,8 @@ import {
   ALLOWED_LOGS,
   ALLOWED_NODE_LOGS,
   ALLOWED_WALLET_LOGS,
+  ALLOWED_WATCHDOG_LOGS,
   ALLOWED_LAUNCHER_LOGS,
-  MAX_NODE_LOGS_ALLOWED,
-  MAX_WALLET_LOGS_ALLOWED,
   MAX_LAUNCHER_LOGS_ALLOWED,
 } from '../config';
 import { MainIpcChannel } from './lib/MainIpcChannel';
@@ -46,16 +45,17 @@ const isOldDaedalusLog = (fileName: string) => {
 const isFileAllowed = (fileName: string) =>
   includes(ALLOWED_LOGS, fileName) || isOldDaedalusLog(fileName);
 
-const isFileNodeLog = (fileName: string, nodeLogsIncluded: number) =>
-  ALLOWED_NODE_LOGS.test(fileName) && nodeLogsIncluded < MAX_NODE_LOGS_ALLOWED;
+const isFileNodeLog = (fileName: string) => ALLOWED_NODE_LOGS.test(fileName);
 
-const isFileWalletLog = (fileName: string, walletLogsIncluded: number) =>
-  ALLOWED_WALLET_LOGS.test(fileName) &&
-  walletLogsIncluded < MAX_WALLET_LOGS_ALLOWED;
+const isFileWalletLog = (fileName: string) =>
+  ALLOWED_WALLET_LOGS.test(fileName);
 
-const isFileLauncherLog = (fileName: string, nodeLogsIncluded: number) =>
+const isFileWatchdogLog = (fileName: string) =>
+  ALLOWED_WATCHDOG_LOGS.test(fileName);
+
+const isFileLauncherLog = (fileName: string, launcherLogsIncluded: number) =>
   ALLOWED_LAUNCHER_LOGS.test(fileName) &&
-  nodeLogsIncluded < MAX_LAUNCHER_LOGS_ALLOWED;
+  launcherLogsIncluded < MAX_LAUNCHER_LOGS_ALLOWED;
 
 export default () => {
   getLogsChannel.onRequest(() => {
@@ -64,8 +64,6 @@ export default () => {
 
     if (fs.existsSync(pubLogsFolderPath)) {
       const files = fs.readdirSync(pubLogsFolderPath).sort().reverse();
-      let nodeLogsIncluded = 0;
-      let walletLogsIncluded = 0;
       let launcherLogsIncluded = 0;
 
       for (let i = 0; i < files.length; i++) {
@@ -76,12 +74,12 @@ export default () => {
 
           if (isFileAllowed(fileName)) {
             logFiles.push(fileName);
-          } else if (isFileNodeLog(fileName, nodeLogsIncluded)) {
+          } else if (isFileNodeLog(fileName)) {
             logFiles.push(fileName);
-            nodeLogsIncluded++;
-          } else if (isFileWalletLog(fileName, walletLogsIncluded)) {
+          } else if (isFileWalletLog(fileName)) {
             logFiles.push(fileName);
-            walletLogsIncluded++;
+          } else if (isFileWatchdogLog(fileName)) {
+            logFiles.push(fileName);
           } else if (isFileLauncherLog(fileName, launcherLogsIncluded)) {
             logFiles.push(fileName);
             launcherLogsIncluded++;

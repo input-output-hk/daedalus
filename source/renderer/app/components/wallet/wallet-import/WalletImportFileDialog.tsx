@@ -21,6 +21,7 @@ import type { ImportFromOption } from '../../../types/walletExportTypes';
 import Dialog from '../../widgets/Dialog';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 
 const messages = defineMessages({
   title: {
@@ -68,12 +69,6 @@ const messages = defineMessages({
     id: 'wallet.import.file.dialog.linkLabel',
     defaultMessage: '!!!Learn more',
     description: 'Learn more',
-  },
-  linkUrl: {
-    id: 'wallet.import.file.dialog.linkUrl',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/900000623463',
-    description: '"Learn more" link URL on the wallet import file dialog',
   },
   importFromLabel: {
     id: 'wallet.import.file.dialog.importFromLabel',
@@ -170,8 +165,7 @@ class WalletImportFileDialog extends Component<Props, State> {
       messages[`${importFrom}NoWallets`]
     );
 
-    const onLinkClick = () =>
-      onOpenExternalLink(intl.formatMessage(messages.linkUrl));
+    const onLinkClick = () => onOpenExternalLink(getSupportUrl(intl.locale));
 
     const error = exportErrors !== '';
     const inputClasses = classNames([

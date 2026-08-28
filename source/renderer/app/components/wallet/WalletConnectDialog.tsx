@@ -21,6 +21,7 @@ import DialogCloseButton from '../widgets/DialogCloseButton';
 import LocalizableError from '../../i18n/LocalizableError';
 import Dialog from '../widgets/Dialog';
 import styles from './WalletConnectDialog.scss';
+import { getSupportUrl } from '../../../../common/utils/reporting';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
 import {
@@ -68,11 +69,6 @@ const messages = defineMessages({
     id: 'wallet.connect.dialog.connectingIssueSupportLink',
     defaultMessage: '!!!read the instructions.',
     description: 'Connecting issue support link',
-  },
-  connectingIssueSupportLinkUrl: {
-    id: 'wallet.connect.dialog.connectingIssueSupportLinkUrl',
-    defaultMessage: 'https://support.ledger.com/hc/en-us/articles/115005165269',
-    description: 'Link to support article',
   },
 });
 type Props = {
@@ -154,11 +150,7 @@ class WalletConnectDialog extends Component<Props> {
     const supportLink = (
       <Link
         className={styles.externalLink}
-        onClick={() =>
-          onExternalLinkClick(
-            intl.formatMessage(messages.connectingIssueSupportLinkUrl)
-          )
-        }
+        onClick={() => onExternalLinkClick(getSupportUrl(intl.locale))}
         label={intl.formatMessage(messages.connectingIssueSupportLink)}
         skin={LinkSkin}
       />

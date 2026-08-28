@@ -8,6 +8,7 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/not-res... Remove this comment to see the full error message
 import icon from '../../../assets/images/not-responding.inline.svg';
 import styles from './NotResponding.scss';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 
 type Props = {
   walletName: string;
@@ -35,11 +36,6 @@ const messages = defineMessages({
     id: 'wallet.notResponding.submitSupportRequestLabel',
     defaultMessage: '!!!Submit a support request',
     description: 'Submit Support Request Label on the NotResponding dialog',
-  },
-  submitSupportRequestUrl: {
-    id: 'wallet.notResponding.submitSupportRequestUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
-    description: 'Submit Support Request Url on the NotResponding dialog',
   },
 });
 export default class NotResponding extends Component<Props> {
@@ -73,11 +69,7 @@ export default class NotResponding extends Component<Props> {
           />
           <Link
             className={styles.submitSupportLink}
-            onClick={() =>
-              onOpenExternalLink(
-                intl.formatMessage(messages.submitSupportRequestUrl)
-              )
-            }
+            onClick={() => onOpenExternalLink(getSupportUrl(intl.locale))}
             label={intl.formatMessage(messages.submitSupportRequestLabel)}
             skin={LinkSkin}
           />

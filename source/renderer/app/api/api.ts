@@ -1056,10 +1056,7 @@ export default class AdaApi {
         .inc('message', 'ConwayWdrlNotDelegatedToDRep')
         .set('conwayWalletNotDelegatedToDRep')
         .where('code', 'withdrawal_not_possible_without_vote')
-        .set('transactionIsTooBig', true, {
-          linkLabel: 'tooBigTransactionErrorLinkLabel',
-          linkURL: 'tooBigTransactionErrorLinkURL',
-        })
+        .set('transactionIsTooBig', true)
         .where('code', 'transaction_is_too_big');
 
       const { requiresAdaToRemainToSupportNativeTokens, adaToProceed } =
@@ -1159,10 +1156,7 @@ export default class AdaApi {
           .set('wrongEncryptionPassphrase')
           .where('code', 'bad_request')
           .inc('message', 'passphrase is too short')
-          .set('transactionIsTooBig', true, {
-            linkLabel: 'tooBigTransactionErrorLinkLabel',
-            linkURL: 'tooBigTransactionErrorLinkURL',
-          })
+          .set('transactionIsTooBig', true)
           .where('code', 'transaction_is_too_big')
           .result();
       }
@@ -3017,10 +3011,7 @@ export default class AdaApi {
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
-        .set('transactionIsTooBig', true, {
-          linkLabel: 'tooBigTransactionErrorLinkLabel',
-          linkURL: 'tooBigTransactionErrorLinkURL',
-        })
+        .set('transactionIsTooBig', true)
         .where('code', 'transaction_is_too_big')
         .result();
     }

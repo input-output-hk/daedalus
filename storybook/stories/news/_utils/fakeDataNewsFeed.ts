@@ -26,7 +26,7 @@ export const getNewsItem = (
     },
     action: {
       label: 'Visit en-US',
-      url: 'https://iohk.zendesk.com/hc/en-us/articles/',
+      url: 'https://daedalus.support.se7enlabs.com/',
     },
     date: new Date().getTime() - 100 - id,
     type,

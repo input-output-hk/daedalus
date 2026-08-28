@@ -1,18 +1,12 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import { StakingRewards } from '../../components/staking/rewards/StakingRewards';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { ellipsis } from '../../utils/strings';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
+import { getSupportUrl } from '../../../../common/utils/reporting';
 
-const messages = defineMessages({
-  learnMoreLinkUrl: {
-    id: 'staking.rewards.learnMore.linkUrl',
-    defaultMessage: '!!!https://staking.cardano.org/',
-    description: '"Learn more" link URL in the staking rewards page',
-  },
-});
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
@@ -28,8 +22,7 @@ class StakingRewardsPage extends Component<Props> {
   handleLearnMoreClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
-    const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
-    this.props.stores.app.openExternalLink(learnMoreLinkUrl);
+    this.props.stores.app.openExternalLink(getSupportUrl(intl.locale));
   };
   onOpenExternalLink = (rewardsAddress: string) => {
     const { app } = this.props.stores;

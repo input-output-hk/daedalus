@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { find, get, take } from 'lodash';
 import BigNumber from 'bignumber.js';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import {
   MIN_DELEGATION_FUNDS,
@@ -14,12 +15,6 @@ import type { InjectedDialogContainerProps } from '../../../types/injectedPropsT
 import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
-  learnMoreLinkUrl: {
-    id: 'staking.delegationSetup.intro.step.dialog.learnMore.url',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/',
-    description:
-      '"Learn more" link URL on the delegation setup "intro" dialog.',
-  },
   delegationSetupStep1Label: {
     id: 'staking.delegationSetup.steps.step.1.label',
     defaultMessage: '!!!Wallet',
@@ -130,8 +125,7 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
   handleLearnMoreClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
-    const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
-    this.props.stores.app.openExternalLink(learnMoreLinkUrl);
+    this.props.stores.app.openExternalLink(getSupportUrl(intl.locale));
   };
   handleConfirm = (
     spendingPassword: string | null | undefined,

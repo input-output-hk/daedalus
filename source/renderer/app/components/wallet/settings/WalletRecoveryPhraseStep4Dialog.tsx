@@ -7,6 +7,7 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
 
 export const messages = defineMessages({
   recoveryPhraseStep4Title: {
@@ -38,13 +39,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Read support portal article',
     description:
       'Label for the recoveryPhraseStep4SupportTitle on wallet settings.',
-  },
-  recoveryPhraseStep4SupportUrl: {
-    id: 'wallet.settings.recoveryPhraseStep4SupportUrl',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/360035341914',
-    description:
-      'Label for the recoveryPhraseStep4SupportUrl on wallet settings.',
   },
 });
 type Props = {
@@ -90,10 +84,7 @@ class WalletRecoveryPhraseStep4Dialog extends Component<Props> {
         <div className={styles.supportPortalContainer}>
           <Link
             onClick={(event: MouseEvent) =>
-              openExternalLink(
-                intl.formatMessage(messages.recoveryPhraseStep4SupportUrl),
-                event
-              )
+              openExternalLink(getSupportUrl(intl.locale), event)
             }
             label={intl.formatMessage(messages.recoveryPhraseStep4SupportTitle)}
             skin={LinkSkin}

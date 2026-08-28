@@ -17,6 +17,7 @@ import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
+import { getSupportUrl } from '../../../../common/utils/reporting';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
@@ -61,11 +62,6 @@ export const messages = defineMessages({
     id: 'daedalus.diagnostics.dialog.unknownDiskSpace',
     defaultMessage: '!!!Unknown',
     description: 'Unknown amount of disk space',
-  },
-  unknownDiskSpaceSupportUrl: {
-    id: 'daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc',
-    description: '"Support" link URL while disk space is unknown',
   },
   hasMetHardwareRequirementsLabel: {
     id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatus',
@@ -630,9 +626,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
     const { isNodeRestarting, isWalletRestarting } = this.state;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError as ErrorType;
-    const unknownDiskSpaceSupportUrl = intl.formatMessage(
-      messages.unknownDiskSpaceSupportUrl
-    );
+    const unknownDiskSpaceSupportUrl = getSupportUrl(intl.locale);
     const formattedSyncPercentage = formattedNumber(syncPercentage, 2);
     const cardanoNetworkValue = intl.formatMessage(
       globalMessages[`network_${cardanoNetwork}`]

@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import StakingCountdown from '../../components/staking/countdown/StakingCountdown';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { getSupportUrl } from '../../../../common/utils/reporting';
 
-const messages = defineMessages({
-  learnMoreLinkUrl: {
-    id: 'staking.countdown.learnMore.linkUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc',
-    description: '"Learn more" link URL in the staking countdown page',
-  },
-});
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
@@ -26,8 +20,7 @@ class StakingCountdownPage extends Component<Props> {
   handleLearnMoreClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
-    const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
-    this.props.stores.app.openExternalLink(learnMoreLinkUrl);
+    this.props.stores.app.openExternalLink(getSupportUrl(intl.locale));
   };
 
   render() {

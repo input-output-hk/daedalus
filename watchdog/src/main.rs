@@ -112,7 +112,7 @@ async fn main() -> Result<()> {
         let file = Mutex::new(FileRotate::new(
             &watchdog_log_path,
             AppendCount::new(4),
-            ContentLimit::Bytes(10 * 1024 * 1024),
+            ContentLimit::Bytes(5 * 1024 * 1024),
             Compression::None,
             None,
         ));

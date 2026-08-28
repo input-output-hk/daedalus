@@ -187,8 +187,7 @@ export default defineMessages({
   },
   faqLinkUrl: {
     id: 'settings.support.faq.faqLinkURL',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693',
+    defaultMessage: '!!!https://daedaluswallet.io/known-issues/',
     description:
       'URL for the "Known Issues" link in the "Help and support" section on the support settings page',
   },

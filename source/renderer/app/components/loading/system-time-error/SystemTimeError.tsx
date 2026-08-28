@@ -48,8 +48,7 @@ const messages = defineMessages({
   },
   supportPortalLinkUrl: {
     id: 'systemTime.error.supportPortalLinkUrl',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/360010230873',
+    defaultMessage: '!!!https://daedaluswallet.io/clock-sync/',
     description:
       'Link to "Machine clock out of sync with Cardano network" support page',
   },
