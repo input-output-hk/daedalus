@@ -30,6 +30,7 @@ export const CIP30_REVIEW_EFFECTS = [
   'donation',
   'maximum-collateral-loss',
   'maximum-collateral-loss-unresolved',
+  'preferred-collateral-spend',
 ] as const;
 
 export type Cip30ReviewEffectKind = typeof CIP30_REVIEW_EFFECTS[number];
@@ -77,19 +78,21 @@ const display = (value: unknown): string =>
 
 export const createCip30TransactionReview = (
   transaction: SemanticTransaction,
-  mode: 'sign' | 'submit'
+  mode: 'sign' | 'submit',
+  additionalEffects: SemanticTransaction['effects'] = []
 ): Cip30TransactionReview => {
   const { envelope } = transaction;
   const bodyCbor = bytesForSpan(envelope.cbor, envelope.spans.body).toString(
     'hex'
   );
   const fullCbor = envelope.cbor.toString('hex');
+  const effects = [...transaction.effects, ...additionalEffects];
   const refusalReasons = transaction.review.complete
     ? []
     : transaction.review.requirements.map(
         ({ kind, target, reason }) => `${kind}:${target}:${reason}`
       );
-  transaction.effects.forEach(({ kind }) => {
+  effects.forEach(({ kind }) => {
     if (!(CIP30_REVIEW_EFFECTS as readonly string[]).includes(kind))
       refusalReasons.push(`unsupported-effect:${kind}`);
     if (kind === 'maximum-collateral-loss-unresolved')
@@ -116,7 +119,7 @@ export const createCip30TransactionReview = (
     ).toString('hex'),
     isValid: envelope.isValid,
     effects: Object.freeze(
-      transaction.effects.map(({ kind, value }, index) =>
+      effects.map(({ kind, value }, index) =>
         Object.freeze({ index, kind, value: display(value) })
       )
     ),

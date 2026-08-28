@@ -74,6 +74,8 @@ export interface FormData {
   totalAmount: BigNumber;
   transactionFee: BigNumber;
   adaAmount: number;
+  isCollateralPreparation?: boolean;
+  spendsPreferredCollateral?: boolean;
 }
 
 export type ConfirmationDialogData = Omit<FormData, 'coinSelection'>;
@@ -114,6 +116,9 @@ type Props = {
   onTokenPickerDialogClose: (...args: Array<any>) => any;
   analyticsTracker: AnalyticsTracker;
   confirmationDialogData?: ConfirmationDialogData;
+  initialReceiver?: string;
+  initialAmount?: string;
+  isCollateralPreparation?: boolean;
   validationDebounceWait?: number;
 };
 
@@ -209,6 +214,9 @@ class WalletSendForm extends Component<Props, State> {
         }
       });
     }
+    const { initialReceiver, initialAmount } = this.props;
+    if (initialReceiver) this.form.$('receiver').onChange(initialReceiver);
+    if (initialAmount) this.form.$('adaAmount').onChange(initialAmount);
   }
 
   componentWillUnmount() {
@@ -292,6 +300,7 @@ class WalletSendForm extends Component<Props, State> {
       totalAmount: adaAmount.plus(this.state.transactionFee),
       transactionFee: this.state.transactionFee,
       adaAmount: this.state.adaAmount,
+      isCollateralPreparation: !!this.props.isCollateralPreparation,
     });
   };
 
@@ -651,8 +660,11 @@ class WalletSendForm extends Component<Props, State> {
     }
 
     try {
-      const { fee, minimumAda, coinSelection } =
-        await this.props.calculateTransactionFee(receiver, adaAmount, assets);
+      const {
+        fee,
+        minimumAda,
+        coinSelection,
+      } = await this.props.calculateTransactionFee(receiver, adaAmount, assets);
 
       if (this._isMounted && !requestToken.aborted) {
         const minimumAdaValue = minimumAda || new BigNumber(0);
@@ -700,8 +712,9 @@ class WalletSendForm extends Component<Props, State> {
 
             if (shouldUpdateMinimumAdaAmount) {
               const minimumAdaValue = new BigNumber(minimumAda);
-              const adaInputState =
-                await this.checkAdaInputState(minimumAdaValue);
+              const adaInputState = await this.checkAdaInputState(
+                minimumAdaValue
+              );
               this.trySetMinimumAdaAmount(adaInputState, minimumAdaValue);
               this.setState({
                 ...nextState,
@@ -736,8 +749,11 @@ class WalletSendForm extends Component<Props, State> {
   checkAdaInputState = async (
     minimumAda: BigNumber
   ): Promise<AdaInputState> => {
-    const { adaAmountInputTrack, selectedAssetUniqueIds, adaInputState } =
-      this.state;
+    const {
+      adaAmountInputTrack,
+      selectedAssetUniqueIds,
+      adaInputState,
+    } = this.state;
 
     if (
       adaAmountInputTrack.gte(minimumAda) &&
@@ -1357,10 +1373,16 @@ class WalletSendForm extends Component<Props, State> {
             )}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
+            isCollateralPreparation={
+              confirmationDialogData.isCollateralPreparation
+            }
             onExternalLinkClick={onExternalLinkClick}
             formattedTotalAmount={confirmationDialogData.totalAmount.toFormat(
               currencyMaxFractionalDigits
             )}
+            spendsPreferredCollateral={
+              confirmationDialogData.spendsPreferredCollateral
+            }
           />
         ) : null}
         {isDialogOpen(WalletTokenPicker) && (

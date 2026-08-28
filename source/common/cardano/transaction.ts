@@ -133,6 +133,7 @@ export type CommitmentContext = Readonly<{
       datum?: ResolvedDatum;
       scriptHash?: Hex;
       referenceScript?: Script;
+      walletMember?: boolean;
     }>
   >;
   /** Languages proven by the same authenticated context to execute this transaction. */
@@ -141,6 +142,9 @@ export type CommitmentContext = Readonly<{
   redeemerScriptHashes?: ReadonlyMap<string, Hex>;
   /** Existing witness CBOR values independently verified against the exact body hash. */
   verifiedWitnesses?: ReadonlySet<Hex>;
+  ownedPaymentCredentials?: ReadonlySet<Hex>;
+  maxCollateralInputs?: number;
+  collateralPercentage?: bigint;
 }>;
 
 export type SemanticTransaction = Readonly<{
@@ -676,6 +680,12 @@ const collateralLoss = (inputs: readonly Value[], returned?: Value): Value => {
   if (coin < BigInt(0))
     fail('collateral return exceeds collateral input value');
   return { coin, assets: [] };
+};
+const paymentKeyCredential = (address: Hex): Hex | undefined => {
+  const bytes = Buffer.from(address, 'hex');
+  if (bytes.length < 29 || ![0, 2, 4, 6].includes(bytes[0] >> 4))
+    return undefined;
+  return bytes.subarray(1, 29).toString('hex');
 };
 const decodeOutput = (source: Buffer, item: CborItem): Output => {
   let address: Hex;
@@ -1525,6 +1535,34 @@ export const decodeConwayTransaction = (
   )
     fail('collateral accounting requires collateral inputs');
   if (collateralInputs.length) {
+    if (context.resolvedInputs) {
+      if (
+        context.maxCollateralInputs !== undefined &&
+        collateralInputs.length > context.maxCollateralInputs
+      )
+        fail('collateral input count exceeds protocol limit');
+      const resolvedCollateral = collateralInputs.map((input) =>
+        context.resolvedInputs?.find(
+          ({ outpoint }) =>
+            outpoint.transactionId === input.transactionId &&
+            outpoint.index === input.index
+        )
+      );
+      if (
+        resolvedCollateral.some(
+          (resolved) => !resolved || resolved.walletMember === false
+        )
+      )
+        fail('collateral input is not payment-key controlled by the wallet');
+      if (collateralReturn) {
+        const credential = paymentKeyCredential(collateralReturn.address);
+        if (
+          context.ownedPaymentCredentials &&
+          (!credential || !context.ownedPaymentCredentials.has(credential))
+        )
+          fail('collateral return is not owned by the active wallet');
+      }
+    }
     const values = collateralInputs.map(
       (input) =>
         resolvedById.get(`${input.transactionId}:${input.index}`)?.value
@@ -1541,6 +1579,12 @@ export const decodeConwayTransaction = (
         totalCollateral !== calculatedCollateralLoss.coin
       )
         fail('declared total collateral is inconsistent');
+      if (
+        context.collateralPercentage !== undefined &&
+        calculatedCollateralLoss.coin <
+          (fee * context.collateralPercentage + BigInt(99)) / BigInt(100)
+      )
+        fail('collateral charge is below the protocol minimum');
     }
   }
   const maximumLossRequirement =

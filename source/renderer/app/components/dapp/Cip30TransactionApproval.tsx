@@ -8,6 +8,7 @@ import { CollapsibleSection } from '../widgets/collapsible-section/CollapsibleSe
 import { MonospaceTextBlock } from '../widgets/monospace-text-block/MonospaceTextBlock';
 import { messages } from './Cip30TransactionApproval.messages';
 import { messages as dataSignMessages } from '../dapp-consent/DappDataSignApproval.messages';
+import collateralMessages from './collateral/CollateralPanel.messages';
 import styles from './Cip30TransactionApproval.scss';
 
 type TransactionPresentation = Extract<
@@ -97,6 +98,14 @@ export function Cip30TransactionApproval({
             <MonospaceTextBlock key={reason}>{reason}</MonospaceTextBlock>
           ))}
         </div>
+      )}
+
+      {review.effects.some(
+        ({ kind }) => kind === 'preferred-collateral-spend'
+      ) && (
+        <p className={styles.refusal} role="alert">
+          {intl.formatMessage(collateralMessages.willBeSpent)}
+        </p>
       )}
 
       <section aria-labelledby="cip30-review-effects">

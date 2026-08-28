@@ -18,6 +18,8 @@ export function Containter({
   hwDeviceStatus,
   isHardwareWallet,
   formattedTotalAmount,
+  isCollateralPreparation,
+  spendsPreferredCollateral,
 }: Props) {
   const { isFlight } = global;
   const {
@@ -30,6 +32,7 @@ export function Containter({
       checkIsTrezorByWalletId,
       initiateTransaction,
     },
+    collateral,
   } = stores;
   const {
     assets: { onCopyAssetParam },
@@ -86,7 +89,14 @@ export function Containter({
     resetHardwareWalletTransaction({
       cancelDeviceAction: true,
     });
-  }, [sendMoneyRequest, closeActiveDialog, resetHardwareWalletTransaction]);
+    if (isCollateralPreparation) collateral.cancelPreparation();
+  }, [
+    sendMoneyRequest,
+    closeActiveDialog,
+    resetHardwareWalletTransaction,
+    isCollateralPreparation,
+    collateral,
+  ]);
 
   return (
     <WalletSendConfirmationDialogView
@@ -106,6 +116,8 @@ export function Containter({
       isFlight={isFlight}
       isSubmitting={isSubmitting}
       isHardwareWallet={isHardwareWallet}
+      isCollateralPreparation={isCollateralPreparation}
+      spendsPreferredCollateral={spendsPreferredCollateral}
       isTrezor={checkIsTrezorByWalletId(activeWallet.id)}
       onCancel={onCancel}
       onSubmitCb={onSubmitCb}

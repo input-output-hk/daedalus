@@ -81,6 +81,53 @@ describe('CIP-30 wallet executor contract', () => {
     ).toThrow('Invalid CIP-30 wallet response');
   });
 
+  it('validates bounded collateral history without renderer summaries', () => {
+    const preferred = { transactionId: '33'.repeat(32), index: 0 };
+    const historyRequest = {
+      ...request,
+      operation: 'collateral-history' as const,
+      preferredInputs: [preferred],
+    };
+    expect(parseCip30WalletRequest(historyRequest)).toEqual(historyRequest);
+    expect(
+      parseCip30WalletResponse(historyRequest, {
+        status: 'fulfilled',
+        operation: 'collateral-history',
+        value: {
+          transactions: [
+            {
+              transactionId: '44'.repeat(32),
+              status: 'in_ledger',
+              scriptValidity: 'invalid',
+              normalInputs: [],
+              collateralInputs: [preferred],
+            },
+          ],
+        },
+      })
+    ).toMatchObject({
+      status: 'fulfilled',
+      operation: 'collateral-history',
+    });
+    expect(() =>
+      parseCip30WalletResponse(historyRequest, {
+        status: 'fulfilled',
+        operation: 'collateral-history',
+        value: {
+          transactions: [
+            {
+              transactionId: '44'.repeat(32),
+              status: 'in_ledger',
+              scriptValidity: 'unknown',
+              normalInputs: [],
+              collateralInputs: [preferred],
+            },
+          ],
+        },
+      })
+    ).toThrow('Invalid CIP-30 collateral history');
+  });
+
   it('accepts only exact transient sign-data requests and fixed results', () => {
     const signDataRequest = {
       ...request,

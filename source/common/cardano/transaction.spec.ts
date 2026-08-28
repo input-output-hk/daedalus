@@ -739,6 +739,56 @@ describe('Conway semantic transaction', () => {
     ).toThrow('collateral return must preserve every non-ADA asset');
   });
 
+  it('rejects foreign collateral returns and insufficient declared charge', () => {
+    const collateral = input(12);
+    const ownedCredential = '44'.repeat(28);
+    const foreignAddress = Buffer.from(`60${'55'.repeat(28)}`, 'hex');
+    const envelope = parse(
+      new Map<number, unknown>([
+        [0, []],
+        [1, [[Buffer.alloc(0), 0]]],
+        [2, 1],
+        [13, [collateral]],
+        [16, [foreignAddress, 1]],
+        [17, 1],
+      ])
+    );
+    const unresolved = decodeConwayTransaction(envelope);
+    const context = {
+      resolvedInputs: [
+        {
+          outpoint: unresolved.inputs.collateral[0],
+          value: { coin: BigInt(2), assets: [] },
+          walletMember: true,
+        },
+      ],
+      maxCollateralInputs: 3,
+      collateralPercentage: BigInt(100),
+      ownedPaymentCredentials: new Set([ownedCredential]),
+    };
+
+    expect(() => decodeConwayTransaction(envelope, context)).toThrow(
+      'collateral return is not owned by the active wallet'
+    );
+
+    const ownedEnvelope = parse(
+      new Map<number, unknown>([
+        [0, []],
+        [1, [[Buffer.alloc(0), 0]]],
+        [2, 1],
+        [13, [collateral]],
+        [16, [Buffer.from(`60${ownedCredential}`, 'hex'), 1]],
+        [17, 1],
+      ])
+    );
+    expect(() =>
+      decodeConwayTransaction(ownedEnvelope, {
+        ...context,
+        collateralPercentage: BigInt(200),
+      })
+    ).toThrow('collateral charge is below the protocol minimum');
+  });
+
   it('accepts admitted high constructor tags in indefinite tag-24 bytes', () => {
     const encoded =
       '84a300800181a300400100028201d8185f42d905420080ff0200a0f4f6';
