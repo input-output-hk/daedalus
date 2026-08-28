@@ -6,6 +6,8 @@ import type TransportNodeHid from '@ledgerhq/hw-transport-node-hid-noevents';
 import TrezorConnect from '@trezor/connect';
 
 import type { HardwareExactTransaction } from '../../common/types/hardware-wallets.types';
+import { toExactTrezorSignTransactionRequest } from '../../common/hardware/trezorTransaction';
+
 import type { HardwareWalletChannels } from '../ipc/createHardwareWalletIPCChannels';
 import type { DeviceDetectionPayload } from '../ipc/hardwareWallets/ledger/deviceDetection/deviceDetection';
 import { handleHardwareWalletRequests } from '../ipc/getHardwareWalletChannel';
@@ -30,6 +32,9 @@ jest.mock('@cardano-foundation/ledgerjs-hw-app-cardano', () => ({
 jest.mock('../../common/hardware/ledgerTransaction', () => ({
   toExactLedgerSignTransactionRequest: jest.fn(() => ({ tx: {} })),
 }));
+jest.mock('../../common/hardware/trezorTransaction', () => ({
+  toExactTrezorSignTransactionRequest: jest.fn(() => ({})),
+}));
 
 jest.mock('@trezor/connect', () => ({
   __esModule: true,
@@ -37,6 +42,7 @@ jest.mock('@trezor/connect', () => ({
     removeAllListeners: jest.fn(),
     cancel: jest.fn(),
     on: jest.fn(),
+    cardanoSignTransaction: jest.fn(),
   },
   DEVICE: { CONNECT: 'connect', DISCONNECT: 'disconnect', CHANGED: 'changed' },
   DEVICE_EVENT: 'device-event',
@@ -296,8 +302,119 @@ describe('HardwareWalletService', () => {
     ).rejects.toThrow();
   });
 
+  it('releases only verified exact Shelley witnesses from Trezor', async () => {
+    const keys = generateKeyPairSync('ed25519');
+    const publicKey = (keys.publicKey.export({
+      format: 'der',
+      type: 'spki',
+    }) as Buffer).subarray(-32);
+    const keyHash = Buffer.from(blake2b(publicKey, undefined, 28)).toString(
+      'hex'
+    );
+    const bodyHash = 'cd'.repeat(32);
+    const signature = sign(
+      null,
+      Buffer.from(bodyHash, 'hex'),
+      keys.privateKey
+    ).toString('hex');
+    const exact = ({
+      bodyHash,
+      partialSign: false,
+      signers: [{ keyHash, path: [0x8000073c, 0x80000717, 0x80000000, 0, 0] }],
+      witnesses: {
+        requiredKeyHashes: [keyHash],
+        preExistingKeyHashes: [],
+        requestedDeviceKeyHashes: [keyHash],
+        missingKeyHashes: [],
+        unexpectedKeyHashes: [],
+      },
+    } as unknown) as HardwareExactTransaction;
+    const signTransaction = TrezorConnect.cardanoSignTransaction as jest.Mock;
+    signTransaction.mockResolvedValue({
+      success: true,
+      payload: {
+        hash: bodyHash,
+        witnesses: [{ type: 1, pubKey: publicKey.toString('hex'), signature }],
+      },
+    });
+    const service = new HardwareWalletService();
+
+    await expect(service.signExactTrezorTransaction(exact)).resolves.toMatch(
+      /^a10081825820/u
+    );
+
+    for (const payload of [
+      { hash: '00'.repeat(32), witnesses: [] },
+      { hash: bodyHash, witnesses: [] },
+      {
+        hash: bodyHash,
+        witnesses: [{ type: 0, pubKey: publicKey.toString('hex'), signature }],
+      },
+      {
+        hash: bodyHash,
+        witnesses: [{ type: 1, pubKey: '00'.repeat(31), signature }],
+      },
+      {
+        hash: bodyHash,
+        witnesses: [{ type: 1, pubKey: '00'.repeat(32), signature }],
+      },
+      {
+        hash: bodyHash,
+        witnesses: [
+          { type: 1, pubKey: publicKey.toString('hex'), signature },
+          { type: 1, pubKey: publicKey.toString('hex'), signature },
+        ],
+      },
+      {
+        hash: bodyHash,
+        witnesses: [
+          {
+            type: 1,
+            pubKey: publicKey.toString('hex'),
+            signature: '00'.repeat(64),
+          },
+        ],
+      },
+      {
+        hash: bodyHash,
+        witnesses: [
+          {
+            type: 1,
+            pubKey: publicKey.toString('hex'),
+            signature,
+            chainCode: '00'.repeat(32),
+          },
+        ],
+      },
+      {
+        hash: bodyHash,
+        witnesses: [{ type: 1, pubKey: publicKey.toString('hex'), signature }],
+        auxiliaryDataSupplement: {
+          type: 0,
+          auxiliaryDataHash: '00'.repeat(32),
+        },
+      },
+    ]) {
+      signTransaction.mockResolvedValueOnce({ success: true, payload });
+      await expect(service.signExactTrezorTransaction(exact)).rejects.toThrow();
+    }
+    signTransaction.mockResolvedValueOnce({ success: false, payload: {} });
+    await expect(service.signExactTrezorTransaction(exact)).rejects.toThrow();
+
+    (toExactTrezorSignTransactionRequest as jest.Mock).mockImplementationOnce(
+      () => {
+        throw new Error('preflight');
+      }
+    );
+    const calls = signTransaction.mock.calls.length;
+    await expect(service.signExactTrezorTransaction(exact)).rejects.toThrow(
+      'preflight'
+    );
+    expect(signTransaction).toHaveBeenCalledTimes(calls);
+  });
   it('keeps every legacy trusted channel behind one service registration', async () => {
     const { channels, handlers } = createChannels();
+
     const service = ({
       register: jest.fn(() => Promise.resolve()),
     } as unknown) as HardwareWalletService;

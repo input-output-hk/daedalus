@@ -18,8 +18,10 @@ import TrezorConnect, {
 import { find, get, includes, last } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 import { blake2b } from 'blakejs';
+import type { CardanoSignedTxData } from '@trezor/connect';
 import { verifyHardwareTransactionWitnesses } from '../../common/cardano/witnessSet';
 import { toExactLedgerSignTransactionRequest } from '../../common/hardware/ledgerTransaction';
+import { toExactTrezorSignTransactionRequest } from '../../common/hardware/trezorTransaction';
 import {
   deviceDetection,
   waitForDevice,
@@ -229,6 +231,40 @@ export class HardwareWalletService {
         bodyHash: signed.txHashHex,
         witnesses,
       });
+    });
+  };
+
+  public signExactTrezorTransaction = async (
+    exact: HardwareExactTransaction
+  ): Promise<string> => {
+    const request = toExactTrezorSignTransactionRequest(exact);
+    const result = await TrezorConnect.cardanoSignTransaction(request);
+    if (!result.success)
+      throw new Error('Trezor failed to sign the exact transaction');
+    const payload = result.payload as CardanoSignedTxData;
+    if (
+      !payload ||
+      payload.auxiliaryDataSupplement !== undefined ||
+      payload.hash !== exact.bodyHash ||
+      !/^[0-9a-f]{64}$/u.test(payload.hash) ||
+      !Array.isArray(payload.witnesses)
+    )
+      throw new Error('Trezor returned an unexpected transaction hash');
+    const witnesses: HardwareTransactionWitnessResponse['witnesses'][number][] = payload.witnesses.map(
+      ({ type, pubKey, signature, chainCode }) => {
+        if (
+          chainCode !== undefined ||
+          type !== 1 ||
+          !/^[0-9a-f]{64}$/u.test(pubKey) ||
+          !/^[0-9a-f]{128}$/u.test(signature)
+        )
+          throw new Error('Trezor returned an invalid Shelley witness');
+        return { publicKey: pubKey, signature };
+      }
+    );
+    return verifyHardwareTransactionWitnesses(exact, {
+      bodyHash: payload.hash,
+      witnesses,
     });
   };
 

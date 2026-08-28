@@ -19,6 +19,10 @@ import {
 import { preflightCip103Sign } from '../domains/Cip103Batch';
 import { prepareHardwareTransaction } from './hardwareWalletTransaction';
 import { toExactLedgerSignTransactionRequest } from './shelleyLedger';
+import {
+  assertExactTrezorBody,
+  toExactTrezorSignTransactionRequest,
+} from '../../../common/hardware/trezorTransaction';
 
 const keys = generateKeyPairSync('ed25519');
 const publicKey = (keys.publicKey.export({
@@ -124,6 +128,12 @@ const ledgerReadyCapability: HardwareTransactionCapability = {
   ...readyCapability,
   artifactId: 'ledger-8.0.0-candidate',
 };
+const trezorReadyCapability: HardwareTransactionCapability = {
+  ...readyCapability,
+  artifactId: 'trezor-connect-9.7.2',
+  vendor: 'trezor',
+  rowId: 'trezor-signTx',
+};
 
 const exactTransaction = (cborHex: string): HardwareExactTransaction => {
   const preflight = preflightCip103Sign([{ cbor: cborHex }], 0).items[0];
@@ -146,6 +156,11 @@ const exactTransaction = (cborHex: string): HardwareExactTransaction => {
     capability: ledgerReadyCapability,
   };
 };
+
+const exactTrezorTransaction = (cborHex: string): HardwareExactTransaction => ({
+  ...exactTransaction(cborHex),
+  capability: trezorReadyCapability,
+});
 
 describe('hardware transaction preparation', () => {
   it('derives exact trusted paths and rejects current matrix rows pre-device', () => {
@@ -305,6 +320,276 @@ describe('hardware transaction preparation', () => {
     expect(() =>
       toExactLedgerSignTransactionRequest(exactTransaction(fixture.cborHex))
     ).toThrow(/body reconstruction/u);
+  });
+  it('maps frozen ordinary, Plutus, and supported Conway Trezor fields', () => {
+    const ordinaryBody = new Map<number, unknown>([
+      [0, [[Buffer.from(normalId, 'hex'), 0]]],
+      [1, [[Buffer.from(address, 'hex'), 900_000]]],
+      [2, 100_000],
+      [4, [[7, [0, Buffer.from(credential, 'hex')], 2_000_000]]],
+      [8, 10],
+      [15, 0],
+    ]);
+    const ordinary = cbor
+      .encodeCanonical([ordinaryBody, new Map(), true, null])
+      .toString('hex');
+    const ordinaryExact = exactTrezorTransaction(ordinary);
+    const ordinaryRequest = toExactTrezorSignTransactionRequest(ordinaryExact);
+    expect(ordinaryRequest).toMatchObject({
+      certificates: [{ type: 7, keyHash: credential, deposit: '2000000' }],
+      validityIntervalStart: '10',
+      includeNetworkId: true,
+    });
+    const ordinaryOutput = ordinaryRequest.outputs[0];
+    if (!('address' in ordinaryOutput))
+      throw new Error('Expected external Trezor output');
+    expect(ordinaryOutput.address).toMatch(/^addr_test1/u);
+    expect(() =>
+      assertExactTrezorBody(ordinaryExact, {
+        ...ordinaryRequest,
+        fee: '1',
+      })
+    ).toThrow(/body reconstruction/u);
+
+    const plutusBody = new Map<number, unknown>([
+      [0, new cbor.Tagged(258, [[Buffer.from(normalId, 'hex'), 0]])],
+      [1, [[Buffer.from(address, 'hex'), 900_000]]],
+      [2, 100_000],
+      [11, Buffer.from('33'.repeat(32), 'hex')],
+      [13, new cbor.Tagged(258, [[Buffer.from('44'.repeat(32), 'hex'), 0]])],
+      [16, [Buffer.from(address, 'hex'), 900_000]],
+      [17, 100_000],
+      [18, new cbor.Tagged(258, [[Buffer.from(referenceId, 'hex'), 0]])],
+    ]);
+    const plutus = cbor
+      .encodeCanonical([plutusBody, new Map(), true, null])
+      .toString('hex');
+    expect(
+      toExactTrezorSignTransactionRequest(exactTrezorTransaction(plutus))
+    ).toMatchObject({
+      signingMode: 3,
+      scriptDataHash: '33'.repeat(32),
+      collateralInputs: expect.any(Array),
+      collateralReturn: expect.any(Object),
+      referenceInputs: expect.any(Array),
+    });
+    const mixedSets = new Map(plutusBody);
+    mixedSets.set(0, [[Buffer.from(normalId, 'hex'), 0]]);
+    const mixed = cbor
+      .encodeCanonical([mixedSets, new Map(), true, null])
+      .toString('hex');
+    expect(() =>
+      toExactTrezorSignTransactionRequest(exactTrezorTransaction(mixed))
+    ).toThrow(/mixed set tagging/u);
+  });
+
+  it('maps the complete frozen Trezor field and certificate inventory', () => {
+    const paymentCredential = [0, Buffer.from(credential, 'hex')];
+    const baseEntries: Array<[number, unknown]> = [
+      [0, [[Buffer.from(normalId, 'hex'), 0]]],
+      [1, [[Buffer.from(address, 'hex'), 900_000]]],
+      [2, 100_000],
+    ];
+    const requestFor = (entries: Array<[number, unknown]>) => {
+      const body = new Map<number, unknown>(baseEntries);
+      entries.forEach(([key, value]) => body.set(key, value));
+      return toExactTrezorSignTransactionRequest(
+        exactTrezorTransaction(
+          cbor.encodeCanonical([body, new Map(), true, null]).toString('hex')
+        )
+      );
+    };
+    const rewardAccount = Buffer.from(`e0${credential}`, 'hex');
+    const policyId = Buffer.from('55'.repeat(28), 'hex');
+    const fieldsRequest = requestFor([
+      [3, 500],
+      [5, new Map([[rewardAccount, 7]])],
+      [8, 10],
+      [9, new Map([[policyId, new Map([[Buffer.from('01', 'hex'), 2]])]])],
+      [14, [Buffer.from(credential, 'hex')]],
+      [15, 0],
+    ]);
+    expect(fieldsRequest).toMatchObject({
+      ttl: '500',
+      withdrawals: [{ keyHash: credential, amount: '7' }],
+      validityIntervalStart: '10',
+      mint: [
+        {
+          policyId: '55'.repeat(28),
+          tokenAmounts: [{ assetNameBytes: '01', mintAmount: '2' }],
+        },
+      ],
+      requiredSigners: [{ keyHash: credential }],
+      includeNetworkId: true,
+    });
+
+    const supportedCertificates: Array<[number, unknown[], object]> = [
+      [0, [paymentCredential], { type: 0, keyHash: credential }],
+      [1, [paymentCredential], { type: 1, keyHash: credential }],
+      [
+        2,
+        [paymentCredential, Buffer.from('66'.repeat(28), 'hex')],
+        { type: 2, keyHash: credential, pool: '66'.repeat(28) },
+      ],
+      [
+        7,
+        [paymentCredential, 2_000_000],
+        { type: 7, keyHash: credential, deposit: '2000000' },
+      ],
+      [
+        8,
+        [paymentCredential, 2_000_000],
+        { type: 8, keyHash: credential, deposit: '2000000' },
+      ],
+      [9, [paymentCredential, [2]], { type: 9, dRep: { type: 2 } }],
+    ];
+    supportedCertificates.forEach(([tag, parts, expected]) => {
+      expect(requestFor([[4, [[tag, ...parts]]]])).toMatchObject({
+        certificates: [expected],
+      });
+    });
+
+    const poolCertificate = [
+      3,
+      [
+        Buffer.from('77'.repeat(28), 'hex'),
+        Buffer.from('88'.repeat(32), 'hex'),
+        1,
+        2,
+        new cbor.Tagged(30, [1, 2]),
+        rewardAccount,
+        new cbor.Tagged(258, [Buffer.from(credential, 'hex')]),
+        [
+          [
+            0,
+            3000,
+            Buffer.from([192, 0, 2, 1]),
+            Buffer.from('20010db8000000000000000000000001', 'hex'),
+          ],
+        ],
+        null,
+      ],
+    ];
+    const poolBody = new Map<number, unknown>([
+      [0, new cbor.Tagged(258, [[Buffer.from(normalId, 'hex'), 0]])],
+      [1, [[Buffer.from(address, 'hex'), 900_000]]],
+      [2, 100_000],
+      [4, new cbor.Tagged(258, [poolCertificate])],
+    ]);
+    const poolParsed = exactTrezorTransaction(
+      cbor.encodeCanonical([poolBody, new Map(), true, null]).toString('hex')
+    );
+    const poolExact: HardwareExactTransaction = {
+      ...poolParsed,
+      signers: [
+        {
+          credentialKind: 'stake',
+          keyHash: credential,
+          path: [0x8000073c, 0x80000717, 0x80000000, 2, 0],
+          proofKinds: ['certificate'],
+        },
+      ],
+      witnesses: {
+        requiredKeyHashes: [credential],
+        preExistingKeyHashes: [],
+        requestedDeviceKeyHashes: [credential],
+        missingKeyHashes: [],
+        unexpectedKeyHashes: [],
+      },
+    };
+    expect(toExactTrezorSignTransactionRequest(poolExact)).toMatchObject({
+      signingMode: 1,
+      certificates: [
+        {
+          type: 3,
+          poolParameters: {
+            owners: [{ stakingKeyPath: expect.any(Array) }],
+            relays: [
+              {
+                ipv4Address: '192.0.2.1',
+                ipv6Address: '2001:0db8:0000:0000:0000:0000:0000:0001',
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    const mapOutputRequest = requestFor([
+      [
+        1,
+        [
+          new Map<number, unknown>([
+            [0, Buffer.from(address, 'hex')],
+            [1, 900_000],
+          ]),
+        ],
+      ],
+    ]);
+    expect(mapOutputRequest.outputs).toEqual([
+      expect.objectContaining({ format: 1 }),
+    ]);
+  });
+
+  it('rejects locked Trezor governance and unsupported certificate boundaries', () => {
+    const exact = exactTrezorTransaction(transactionCbor);
+    for (const key of [19, 20, 21, 22]) {
+      const transaction = {
+        ...exact.transaction,
+        governance: {
+          ...exact.transaction.governance,
+          ...(key === 19 ? { votes: [{}] } : {}),
+          ...(key === 20
+            ? {
+                proposals: [
+                  {
+                    value: '',
+                    decoded: { kind: 'array', items: [] },
+                    span: { start: 0, end: 0 },
+                    policyScriptHashes: [],
+                  },
+                ],
+              }
+            : {}),
+          ...(key === 21 ? { treasuryValue: BigInt(1) } : {}),
+          ...(key === 22 ? { donation: BigInt(1) } : {}),
+        },
+      };
+      expect(() =>
+        toExactTrezorSignTransactionRequest({
+          ...exact,
+          transaction: transaction as HardwareExactTransaction['transaction'],
+        })
+      ).toThrow(/governance/u);
+    }
+    const stake = [0, Buffer.from(credential, 'hex')];
+    const pool = Buffer.from('44'.repeat(28), 'hex');
+    const unsupportedCertificates: Record<number, unknown[]> = {
+      4: [pool, 1],
+      10: [stake, pool, [2]],
+      11: [stake, pool, 1],
+      12: [stake, [2], 1],
+      13: [stake, pool, [2], 1],
+      14: [stake, stake],
+      15: [stake, null],
+      16: [stake, 1, null],
+      17: [stake, 1],
+      18: [stake, null],
+    };
+    for (const [tag, parts] of Object.entries(unsupportedCertificates)) {
+      const unsupportedBody = new Map<number, unknown>([
+        [0, [[Buffer.from(normalId, 'hex'), 0]]],
+        [1, [[Buffer.from(address, 'hex'), 900_000]]],
+        [2, 100_000],
+        [4, [[Number(tag), ...parts]]],
+      ]);
+      const unsupported = cbor
+        .encodeCanonical([unsupportedBody, new Map(), true, null])
+        .toString('hex');
+      expect(() =>
+        toExactTrezorSignTransactionRequest(exactTrezorTransaction(unsupported))
+      ).toThrow(/certificate/u);
+    }
   });
 
   it('rejects non-reconstructible and proposal bodies before device use', () => {
