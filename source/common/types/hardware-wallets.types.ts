@@ -373,3 +373,30 @@ export type HardwareTransactionWitnessResponse = Readonly<{
   bodyHash: string;
   witnesses: readonly HardwareReturnedVKeyWitness[];
 }>;
+
+export type HardwareMessageAddress =
+  | Readonly<{ kind: 'key_hash'; value: string }>
+  | Readonly<{
+      kind: 'address';
+      value: string;
+      addressType: 0 | 2 | 4 | 6 | 14;
+      paymentPath?: readonly number[];
+      stakePath?: readonly number[];
+      stakeKeyHash?: string;
+      stakeScriptHash?: string;
+      pointer?: Readonly<{
+        blockIndex: number;
+        txIndex: number;
+        certificateIndex: number;
+      }>;
+    }>;
+
+export type HardwareMessageRequest = Readonly<{
+  address: HardwareMessageAddress;
+  credentialKind: 'payment' | 'stake' | 'drep';
+  credential: string;
+  protectedAddress: string;
+  payload: string;
+  path: readonly number[];
+  network: DappNetwork;
+}>;
