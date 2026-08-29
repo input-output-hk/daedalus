@@ -1,7 +1,12 @@
 import TransportNodeHid, {
   getDevices,
 } from '@ledgerhq/hw-transport-node-hid-noevents';
-import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import AppAda, {
+  AddressType,
+  MessageAddressFieldType,
+  utils,
+} from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import type { DeviceOwnedAddress } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { str_to_path } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
 import TrezorConnect, {
   DEVICE,
@@ -18,10 +23,15 @@ import TrezorConnect, {
 import { find, get, includes, last } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 import { blake2b } from 'blakejs';
-import type { CardanoSignedTxData } from '@trezor/connect';
+import type {
+  CardanoSignedMessage,
+  CardanoSignedTxData,
+} from '@trezor/connect';
 import { verifyHardwareTransactionWitnesses } from '../../common/cardano/witnessSet';
 import { toExactLedgerSignTransactionRequest } from '../../common/hardware/ledgerTransaction';
 import { toExactTrezorSignTransactionRequest } from '../../common/hardware/trezorTransaction';
+import { serializeCip8 } from '../../common/cardano/cip8';
+import type { Cip8ExpectedRequest } from '../../common/cardano/cip8';
 import {
   deviceDetection,
   waitForDevice,
@@ -29,6 +39,8 @@ import {
 import { logger } from '../utils/logging';
 import {
   HardwareExactTransaction,
+  HardwareMessageAddress,
+  HardwareMessageRequest,
   HardwareTransactionWitnessResponse,
   HardwareWalletTransportDeviceRequest,
   LedgerDevicePayload,
@@ -72,6 +84,103 @@ const ledgerDefaults: LedgerServiceDependencies = {
 const decodeHex = (value: string): Buffer => {
   if (!/^(?:[0-9a-fA-F]{2})+$/.test(value)) throw new Error('Invalid hex');
   return Buffer.from(value, 'hex');
+};
+
+const expectedHardwareMessage = (
+  request: HardwareMessageRequest
+): Cip8ExpectedRequest => ({
+  address: request.address.value,
+  credentialKind: request.credentialKind,
+  credential: decodeHex(request.credential),
+  protectedAddress: decodeHex(request.protectedAddress),
+  payload: request.payload.length
+    ? decodeHex(request.payload)
+    : Buffer.alloc(0),
+});
+const ledgerMessageAddress = (
+  address: Extract<HardwareMessageAddress, { kind: 'address' }>
+): DeviceOwnedAddress => {
+  const paymentPath = address.paymentPath && [...address.paymentPath];
+  const stakePath = address.stakePath && [...address.stakePath];
+  switch (address.addressType) {
+    case 0:
+      if (!paymentPath || (!stakePath && !address.stakeKeyHash))
+        throw new Error('Missing Ledger base address binding');
+      return {
+        type: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        params: {
+          spendingPath: paymentPath,
+          ...(stakePath
+            ? { stakingPath: stakePath }
+            : { stakingKeyHashHex: address.stakeKeyHash }),
+        },
+      };
+    case 2:
+      if (!paymentPath || !address.stakeScriptHash)
+        throw new Error('Missing Ledger base address binding');
+      return {
+        type: AddressType.BASE_PAYMENT_KEY_STAKE_SCRIPT,
+        params: {
+          spendingPath: paymentPath,
+          stakingScriptHashHex: address.stakeScriptHash,
+        },
+      };
+    case 4:
+      if (!paymentPath || !address.pointer)
+        throw new Error('Missing Ledger pointer address binding');
+      return {
+        type: AddressType.POINTER_KEY,
+        params: {
+          spendingPath: paymentPath,
+          stakingBlockchainPointer: address.pointer,
+        },
+      };
+    case 6:
+      if (!paymentPath) throw new Error('Missing Ledger payment path');
+      return {
+        type: AddressType.ENTERPRISE_KEY,
+        params: { spendingPath: paymentPath },
+      };
+    case 14:
+      if (!stakePath) throw new Error('Missing Ledger stake path');
+      return {
+        type: AddressType.REWARD_KEY,
+        params: { stakingPath: stakePath },
+      };
+    default:
+      throw new Error('Unsupported Ledger message address');
+  }
+};
+
+const trezorMessageAddress = (
+  address: Extract<HardwareMessageAddress, { kind: 'address' }>
+) => ({
+  addressType: address.addressType,
+  ...(address.paymentPath ? { path: [...address.paymentPath] } : {}),
+  ...(address.stakePath ? { stakingPath: [...address.stakePath] } : {}),
+  ...(address.stakeKeyHash ? { stakingKeyHash: address.stakeKeyHash } : {}),
+  ...(address.stakeScriptHash
+    ? { stakingScriptHash: address.stakeScriptHash }
+    : {}),
+  ...(address.pointer ? { certificatePointer: address.pointer } : {}),
+});
+
+const verifiedHardwareMessage = (
+  request: HardwareMessageRequest,
+  publicKeyHex: string,
+  signatureHex: string,
+  addressFieldHex: string
+) => {
+  if (
+    !/^[0-9a-f]{64}$/u.test(publicKeyHex) ||
+    !/^[0-9a-f]{128}$/u.test(signatureHex) ||
+    addressFieldHex !== request.address.value
+  )
+    throw new Error('Hardware wallet returned invalid message proof');
+  return serializeCip8(expectedHardwareMessage(request), {
+    publicKey: Buffer.from(publicKeyHex, 'hex'),
+    signature: Buffer.from(signatureHex, 'hex'),
+  });
 };
 
 export class HardwareWalletOperationCancelled extends Error {
@@ -266,6 +375,71 @@ export class HardwareWalletService {
       bodyHash: payload.hash,
       witnesses,
     });
+  };
+
+  public signLedgerMessage = async (
+    devicePath: string,
+    request: HardwareMessageRequest
+  ) =>
+    this.withLedgerOperation(devicePath, async (connection) => {
+      const signed = await connection.signMessage(
+        request.address.kind === 'key_hash'
+          ? {
+              messageHex: request.payload,
+              signingPath: [...request.path],
+              hashPayload: false,
+              preferHexDisplay: false,
+              addressFieldType: MessageAddressFieldType.KEY_HASH,
+            }
+          : {
+              messageHex: request.payload,
+              signingPath: [...request.path],
+              hashPayload: false,
+              preferHexDisplay: false,
+              addressFieldType: MessageAddressFieldType.ADDRESS,
+              address: ledgerMessageAddress(request.address),
+              network: {
+                networkId: request.network.networkId,
+                protocolMagic: request.network.networkMagic,
+              },
+            }
+      );
+      return verifiedHardwareMessage(
+        request,
+        signed.signingPublicKeyHex,
+        signed.signatureHex,
+        signed.addressFieldHex
+      );
+    });
+
+  public signTrezorMessage = async (request: HardwareMessageRequest) => {
+    const result = await TrezorConnect.cardanoSignMessage({
+      path: [...request.path],
+      payload: request.payload,
+      preferHexDisplay: false,
+      networkId: request.network.networkId,
+      protocolMagic: request.network.networkMagic,
+      ...(request.address.kind === 'address'
+        ? { addressParameters: trezorMessageAddress(request.address) }
+        : {}),
+    });
+    if (!result.success) throw new Error('Trezor failed to sign message');
+    const signed = result.payload as CardanoSignedMessage;
+    if (
+      !signed ||
+      signed.payload !== request.payload ||
+      signed.headers?.protected?.[1] !== -8 ||
+      signed.headers.protected.address !== request.address.value ||
+      signed.headers.unprotected?.hashed !== false ||
+      signed.headers.unprotected.version !== 1
+    )
+      throw new Error('Trezor returned invalid message metadata');
+    return verifiedHardwareMessage(
+      request,
+      signed.pubKey,
+      signed.signature,
+      signed.headers.protected.address
+    );
   };
 
   public cancelLedgerOperation = async (path?: string): Promise<void> => {

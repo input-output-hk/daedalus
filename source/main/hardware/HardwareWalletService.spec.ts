@@ -5,8 +5,15 @@ import type AppAda from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import type TransportNodeHid from '@ledgerhq/hw-transport-node-hid-noevents';
 import TrezorConnect from '@trezor/connect';
 
-import type { HardwareExactTransaction } from '../../common/types/hardware-wallets.types';
+import type {
+  HardwareExactTransaction,
+  HardwareMessageRequest,
+} from '../../common/types/hardware-wallets.types';
 import { toExactTrezorSignTransactionRequest } from '../../common/hardware/trezorTransaction';
+import {
+  encodeCoseProtectedHeader,
+  encodeCoseSignatureStructure,
+} from '../../common/cardano/cose';
 
 import type { HardwareWalletChannels } from '../ipc/createHardwareWalletIPCChannels';
 import type { DeviceDetectionPayload } from '../ipc/hardwareWallets/ledger/deviceDetection/deviceDetection';
@@ -26,6 +33,14 @@ jest.mock('@ledgerhq/hw-transport-node-hid-noevents', () => ({
 jest.mock('@cardano-foundation/ledgerjs-hw-app-cardano', () => ({
   __esModule: true,
   default: class {},
+  AddressType: {
+    BASE_PAYMENT_KEY_STAKE_KEY: 0,
+    BASE_PAYMENT_KEY_STAKE_SCRIPT: 2,
+    POINTER_KEY: 4,
+    ENTERPRISE_KEY: 6,
+    REWARD_KEY: 14,
+  },
+  MessageAddressFieldType: { ADDRESS: 'address', KEY_HASH: 'key_hash' },
   utils: { bech32_encodeAddress: jest.fn(), buf_to_hex: jest.fn() },
 }));
 
@@ -43,6 +58,7 @@ jest.mock('@trezor/connect', () => ({
     cancel: jest.fn(),
     on: jest.fn(),
     cardanoSignTransaction: jest.fn(),
+    cardanoSignMessage: jest.fn(),
   },
   DEVICE: { CONNECT: 'connect', DISCONNECT: 'disconnect', CHANGED: 'changed' },
   DEVICE_EVENT: 'device-event',
@@ -412,6 +428,164 @@ describe('HardwareWalletService', () => {
     );
     expect(signTransaction).toHaveBeenCalledTimes(calls);
   });
+
+  it('rebuilds verified CIP-8 from exact Ledger and Trezor message proofs', async () => {
+    const keys = generateKeyPairSync('ed25519');
+    const publicKey = (keys.publicKey.export({
+      format: 'der',
+      type: 'spki',
+    }) as Buffer).subarray(-32);
+    const credential = Buffer.from(blake2b(publicKey, undefined, 28)).toString(
+      'hex'
+    );
+    const path = [0x8000073c, 0x80000717, 0x80000000, 3, 0];
+    const network = {
+      networkId: 1 as const,
+      networkMagic: 764824073,
+      genesisHash: '00'.repeat(32),
+    };
+    const request = (kind: 'address' | 'key_hash'): HardwareMessageRequest => ({
+      credentialKind: kind === 'address' ? 'payment' : 'drep',
+      credential,
+      protectedAddress: kind === 'address' ? `61${credential}` : credential,
+      payload: 'deadbeef',
+      path,
+      network,
+      address:
+        kind === 'address'
+          ? {
+              kind,
+              value: `61${credential}`,
+              addressType: 6,
+              paymentPath: path,
+            }
+          : { kind, value: credential },
+    });
+    const proof = (message: HardwareMessageRequest) => {
+      const protectedHeader = encodeCoseProtectedHeader(
+        Buffer.from(message.protectedAddress, 'hex')
+      );
+      return {
+        publicKey: publicKey.toString('hex'),
+        signature: sign(
+          null,
+          encodeCoseSignatureStructure(
+            protectedHeader,
+            Buffer.from(message.payload, 'hex')
+          ),
+          keys.privateKey
+        ).toString('hex'),
+      };
+    };
+    const signMessage = jest.fn();
+    const connection = ({ signMessage } as unknown) as AppAda;
+    let onAdd: ((payload: DeviceDetectionPayload) => void) | undefined;
+    const service = new HardwareWalletService({
+      open: jest.fn(() =>
+        Promise.resolve(({
+          close: jest.fn(() => Promise.resolve()),
+        } as unknown) as TransportNodeHid)
+      ),
+      list: jest.fn(() => Promise.resolve(['ledger-path'])),
+      getDevices: jest.fn(() => [detectedDevice.device]),
+      detect: jest.fn((add) => {
+        onAdd = add;
+        return jest.fn();
+      }),
+      wait: jest.fn(() => Promise.resolve(detectedDevice)),
+      createApp: jest.fn(() => connection),
+    });
+    const { channels, handlers } = createChannels();
+    await service.register(channels);
+    await handlers.get('handleInitLedgerConnectChannel')!();
+    onAdd!(detectedDevice);
+    await flush();
+
+    const addressRequest = request('address');
+    const addressProof = proof(addressRequest);
+    signMessage.mockResolvedValueOnce({
+      signingPublicKeyHex: addressProof.publicKey,
+      signatureHex: addressProof.signature,
+      addressFieldHex: addressRequest.address.value,
+    });
+    await expect(
+      service.signLedgerMessage('ledger-path', addressRequest)
+    ).resolves.toMatchObject({ key: expect.stringMatching(/^a401/u) });
+    expect(signMessage).toHaveBeenLastCalledWith({
+      messageHex: 'deadbeef',
+      signingPath: path,
+      hashPayload: false,
+      preferHexDisplay: false,
+      addressFieldType: 'address',
+      address: {
+        type: 6,
+        params: { spendingPath: path },
+      },
+      network: { networkId: 1, protocolMagic: 764824073 },
+    });
+
+    const drepRequest = request('key_hash');
+    const drepProof = proof(drepRequest);
+    signMessage.mockResolvedValueOnce({
+      signingPublicKeyHex: drepProof.publicKey,
+      signatureHex: drepProof.signature,
+      addressFieldHex: credential,
+    });
+    const ledgerResult = await service.signLedgerMessage(
+      'ledger-path',
+      drepRequest
+    );
+    expect(signMessage).toHaveBeenLastCalledWith({
+      messageHex: 'deadbeef',
+      signingPath: path,
+      hashPayload: false,
+      preferHexDisplay: false,
+      addressFieldType: 'key_hash',
+    });
+
+    const trezorSignMessage = TrezorConnect.cardanoSignMessage as jest.Mock;
+    trezorSignMessage.mockResolvedValue({
+      success: true,
+      payload: {
+        headers: {
+          protected: { 1: -8, address: credential },
+          unprotected: { hashed: false, version: 1 },
+        },
+        payload: drepRequest.payload,
+        signature: drepProof.signature,
+        pubKey: drepProof.publicKey,
+        coseSignature: 'poison',
+        coseKey: 'poison',
+      },
+    });
+    await expect(service.signTrezorMessage(drepRequest)).resolves.toEqual(
+      ledgerResult
+    );
+    expect(trezorSignMessage).toHaveBeenCalledWith({
+      path,
+      payload: 'deadbeef',
+      preferHexDisplay: false,
+      networkId: 1,
+      protocolMagic: 764824073,
+    });
+
+    trezorSignMessage.mockResolvedValueOnce({
+      success: true,
+      payload: {
+        headers: {
+          protected: { 1: -8, address: credential },
+          unprotected: { hashed: false, version: 1 },
+        },
+        payload: drepRequest.payload,
+        signature: '00'.repeat(64),
+        pubKey: drepProof.publicKey,
+      },
+    });
+    await expect(service.signTrezorMessage(drepRequest)).rejects.toThrow(
+      'Invalid CIP-8 data signature'
+    );
+  });
+
   it('keeps every legacy trusted channel behind one service registration', async () => {
     const { channels, handlers } = createChannels();
 
