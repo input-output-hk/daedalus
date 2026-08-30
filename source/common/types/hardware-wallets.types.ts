@@ -305,6 +305,31 @@ export type HardwareTransactionCapability = Readonly<{
   familyDispositions: Readonly<Record<string, HardwareExactBodyDisposition>>;
 }>;
 
+export const HARDWARE_CONNECTOR_MATRIX_REVISION = 'task-006-matrix-2026-08-14';
+
+export const hardwareConnectorRowId = (
+  vendor: DeviceType,
+  model: string,
+  version: string
+): string => `${vendor}:${model}:${version}:signData`;
+
+export type HardwareConnectorCapabilityEvidence = Readonly<{
+  matrixRevision: string;
+  rowId: string;
+  vendor: DeviceType;
+  model: string;
+  appVersion?: string;
+  firmwareVersion?: string;
+  certifiedExtensions: readonly number[];
+  physicalCertified: boolean;
+}>;
+
+export type HardwareConnectorActivation = Readonly<
+  HardwareConnectorCapabilityEvidence & {
+    packagedEnabled: boolean;
+  }
+>;
+
 export type HardwareSigner = Readonly<{
   credentialKind: 'payment' | 'stake' | 'drep' | 'policy';
   keyHash: string;

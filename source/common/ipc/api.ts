@@ -46,13 +46,16 @@ import type {
   ResumeDownloadResponse,
 } from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
+import type { DataSignature } from '../cip30/wire';
 import type {
   IntrospectAddressRequest,
   IntrospectAddressResponse,
 } from '../types/address-introspection.types';
 import type {
   DeviceType,
+  HardwareConnectorActivation,
   HardwareExactTransaction,
+  HardwareMessageRequest,
   HardwareWalletCardanoAdaAppResponse,
   HardwareWalletConnectionRequest,
   HardwareWalletExtendedPublicKeyRequest,
@@ -564,6 +567,15 @@ export type SignExactHardwareTransactionRendererRequest = Readonly<{
   exact: HardwareExactTransaction;
 }>;
 export type SignExactHardwareTransactionMainResponse = string;
+export const SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL =
+  'SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL';
+export type SignExactHardwareMessageRendererRequest = Readonly<{
+  vendor: DeviceType;
+  ledgerPath?: string;
+  capability: HardwareConnectorActivation;
+  message: HardwareMessageRequest;
+}>;
+export type SignExactHardwareMessageMainResponse = DataSignature;
 export const GET_INIT_TREZOR_CONNECT_CHANNEL =
   'GET_INIT_TREZOR_CONNECT_CHANNEL';
 export type handleInitTrezorConnectRendererRequest = void;

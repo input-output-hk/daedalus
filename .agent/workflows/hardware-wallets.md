@@ -14,8 +14,9 @@ Daedalus currently supports two hardware wallet families:
 
 Safe/Core devices are planned dApp-connector certification targets, not current
 support claims. The static capability contract is frozen in
-`source/common/hardware/fixtures/capability-matrix/`; physical model, app and
-firmware evidence remains task-607 work.
+`source/common/hardware/fixtures/capability-matrix/`. Exact transaction and
+CIP-8 connector routing is implemented, but certified and packaged activation
+rows remain empty pending task-607 physical model, app, and firmware evidence.
 
 Hardware wallets provide secure transaction signing where private keys never leave the device.
 
@@ -31,6 +32,8 @@ Hardware wallets provide secure transaction signing where private keys never lea
 │  │  - Device connection state                                       │   │
 │  │  - Extended public key caching                                   │   │
 │  │  - Transaction signing flow                                      │   │
+│  │  - Exact connector transaction and CIP-8 message signing            │   │
+│  │  - Runtime vendor/model/app-or-firmware capability evidence         │   │
 │  └──────────────────────────────────────────────────────────────────┘   │
 │                                    │                                    │
 │                                    │ IPC Channels                       │
@@ -103,12 +106,18 @@ Hardware wallets provide secure transaction signing where private keys never lea
 | `DERIVE_ADDRESS_CHANNEL`          | R → M     | Derive address from xpub     |
 | `SHOW_ADDRESS_CHANNEL`            | R → M     | Verify address on device     |
 
-### Transaction Signing
+### Exact Connector Signing
 
-| Channel                           | Direction | Purpose          |
-|-----------------------------------|-----------|------------------|
-| `SIGN_TRANSACTION_LEDGER_CHANNEL` | R → M     | Sign with Ledger |
-| `SIGN_TRANSACTION_TREZOR_CHANNEL` | R → M     | Sign with Trezor |
+| Channel                                   | Direction | Purpose                            |
+|-------------------------------------------|-----------|------------------------------------|
+| `SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL` | R → M     | Sign exact authenticated model     |
+| `SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL`     | R → M     | Sign exact CIP-8 message request   |
+| `SIGN_TRANSACTION_LEDGER_CHANNEL`         | R → M     | Legacy Ledger transaction signing  |
+| `SIGN_TRANSACTION_TREZOR_CHANNEL`         | R → M     | Legacy Trezor transaction signing  |
+
+Connector calls require matching runtime capability evidence and a main-owned
+certified packaged row before device interaction. Both production row lists
+default to empty.
 
 ### Initialization
 

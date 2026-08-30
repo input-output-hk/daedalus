@@ -9,10 +9,10 @@ import { expect } from 'chai';
 
 import { bytesForSpan } from '../../../../source/common/cardano/cborSlices';
 import {
-  prepareCip8Request,
   serializeCip8,
   verifyCip8BackendResponse,
 } from '../../../../source/common/cardano/cip8';
+import { prepareCip8Request } from '../../../../source/common/cardano/cip8Request';
 import {
   encodeCoseProtectedHeader,
   encodeCoseSignatureStructure,

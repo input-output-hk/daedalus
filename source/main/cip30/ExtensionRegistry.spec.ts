@@ -203,11 +203,14 @@ describe('CIP-30 extension engine', () => {
         context({
           walletKind: 'ledger',
           device: {
-            deviceType: 'ledger',
-            model: 'Nano S Plus',
+            matrixRevision: 'task-006-matrix-2026-08-14',
+            rowId: 'ledger:nanoSP:8.0.0:signData',
+            vendor: 'ledger',
+            model: 'nanoSP',
             appVersion: '8.0.0',
-            firmwareVersion: '1.1.2',
-            supportedExtensions: [95],
+            certifiedExtensions: [95],
+            physicalCertified: true,
+            packagedEnabled: true,
           },
         })
       )
