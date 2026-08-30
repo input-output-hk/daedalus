@@ -33,7 +33,7 @@ import { parseConwayTransactionEnvelope } from '../../common/cardano/transaction
 import { toExactLedgerSignTransactionRequest } from '../../common/hardware/ledgerTransaction';
 import { toExactTrezorSignTransactionRequest } from '../../common/hardware/trezorTransaction';
 import { serializeCip8 } from '../../common/cardano/cip8';
-import type { Cip8ExpectedRequest } from '../../common/cardano/cip8';
+import type { Cip8ExpectedRequest } from '../../common/cardano/cip8Request';
 import {
   deviceDetection,
   waitForDevice,
@@ -48,6 +48,8 @@ import {
   LedgerDevicePayload,
   LedgerSignTransactionResponse,
   TransportDevice,
+  HARDWARE_CONNECTOR_MATRIX_REVISION,
+  hardwareConnectorRowId,
 } from '../../common/types/hardware-wallets.types';
 
 import { HardwareWalletChannels } from '../ipc/createHardwareWalletIPCChannels';
@@ -58,6 +60,7 @@ import {
 import { Device } from '../ipc/hardwareWallets/ledger/deviceDetection/types';
 import { DeviceDetectionPayload } from '../ipc/hardwareWallets/ledger/deviceDetection/deviceDetection';
 import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
+import { dappLaunchPolicy } from '../config';
 
 type LedgerConnection = {
   device: Device;
@@ -746,6 +749,7 @@ export class HardwareWalletService {
     signTransactionLedgerChannel,
     signTransactionTrezorChannel,
     signExactHardwareTransactionChannel,
+    signExactHardwareMessageChannel,
     resetTrezorActionChannel,
     handleInitTrezorConnectChannel,
     handleInitLedgerConnectChannel,
@@ -1441,6 +1445,36 @@ export class HardwareWalletService {
         if (ledgerPath !== undefined)
           throw new Error('Trezor must not receive a Ledger path');
         return this.signExactTrezorTransaction(restored);
+      }
+    );
+
+    signExactHardwareMessageChannel.onRequest(
+      async ({ vendor, ledgerPath, capability, message }) => {
+        const version =
+          capability.vendor === 'ledger'
+            ? capability.appVersion
+            : capability.firmwareVersion;
+        if (
+          vendor !== capability.vendor ||
+          capability.matrixRevision !== HARDWARE_CONNECTOR_MATRIX_REVISION ||
+          capability.rowId !==
+            hardwareConnectorRowId(
+              capability.vendor,
+              capability.model,
+              version || ''
+            ) ||
+          !capability.physicalCertified ||
+          !capability.packagedEnabled ||
+          !dappLaunchPolicy.hardwareConnectorEnabled(capability.rowId)
+        )
+          throw new Error('Hardware connector is not enabled');
+        if (vendor === 'ledger') {
+          if (!ledgerPath) throw new Error('Ledger device not connected');
+          return this.signLedgerMessage(ledgerPath, message);
+        }
+        if (ledgerPath !== undefined)
+          throw new Error('Trezor must not receive a Ledger path');
+        return this.signTrezorMessage(message);
       }
     );
 

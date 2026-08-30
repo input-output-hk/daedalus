@@ -575,7 +575,7 @@ and must never host remote content or be reused as its preload/IPC surface.
 Its live policy permits only the canonical local main document, denies all
 subframe navigation and popups, filters policy-aborted load recovery, and opens
 only parsed credential-free HTTPS external links with awaited, privacy-safe
-failure handling. A machine-checked manifest accounts for all 85 production
+failure handling. A machine-checked manifest accounts for all 87 production
 privileged IPC channels. They authenticate the exact active trusted main
 WebContents, main frame, canonical document, and origin, with correlated
 caller-targeted responses, lifecycle cancellation, and current-window targeting.
@@ -617,6 +617,12 @@ Hostile remote dApp
   authenticated main-to-trusted-renderer executor validates the pinned backend,
   exact wallet/network binding, connected/synced state, source addresses, and
   empty-transaction context; main revalidates and serializes all CIP-30 results.
+- Hardware transaction and CIP-8 message signing use separate authenticated
+  privileged channels and only the exact Ledger/Trezor adapters. Connector
+  capability and invocation both require matching vendor/model/app-or-firmware,
+  matrix, physical-certification, certified-extension, and packaged-activation
+  evidence. Certified and packaged row lists are empty until task-607 and a
+  later reviewed release configuration.
 - Main owns the versioned collateral-preference repository and derives its
   route-scoped projection from each authenticated empty-transaction wallet
   context. The renderer caches that projection only. Existing candidates are

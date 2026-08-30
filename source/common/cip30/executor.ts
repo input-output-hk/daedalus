@@ -1,4 +1,8 @@
 import type { Cip8BackendResponse } from '../cardano/cip8';
+import type {
+  HardwareConnectorActivation,
+  HardwareConnectorCapabilityEvidence,
+} from '../types/hardware-wallets.types';
 
 export type Cip30WalletNetwork = Readonly<{
   networkId: 0 | 1;
@@ -51,7 +55,9 @@ export type Cip30WalletRequest = Cip30WalletRequestIdentity &
         operation: 'sign-data';
         address: string;
         payload: string;
-        passphrase: string;
+        passphrase?: string;
+        hardware?: HardwareConnectorActivation;
+        drepCredential?: string;
       }>
   );
 
@@ -77,6 +83,7 @@ export type Cip30WalletCapabilities = Readonly<{
   network: Cip30WalletNetwork;
   backendApiVersion: 1;
   backendExtensions: readonly number[];
+  hardware?: HardwareConnectorCapabilityEvidence;
 }>;
 
 export type Cip30WalletAddresses = Readonly<{
@@ -169,6 +176,7 @@ export type Cip30WalletResponse =
         | 'internal'
         | 'address-not-pk'
         | 'proof-generation'
+        | 'user-declined'
         | 'tx-proof-generation'
         | 'deprecated-certificate'
         | 'tx-send-failure';
@@ -215,6 +223,58 @@ const hex = (value: unknown, bytes: number): value is string =>
   typeof value === 'string' &&
   value.length === bytes * 2 &&
   lowerHex.test(value);
+
+const parseHardwareCapability = (
+  value: unknown,
+  activation: boolean
+): HardwareConnectorCapabilityEvidence | HardwareConnectorActivation => {
+  const candidate = value as Record<string, unknown>;
+  const vendor = candidate?.vendor;
+  let versionKey = '';
+  if (vendor === 'ledger') versionKey = 'appVersion';
+  if (vendor === 'trezor') versionKey = 'firmwareVersion';
+  const keys = [
+    'matrixRevision',
+    'rowId',
+    'vendor',
+    'model',
+    versionKey,
+    'certifiedExtensions',
+    'physicalCertified',
+    ...(activation ? ['packagedEnabled'] : []),
+  ];
+  const modelValid =
+    (vendor === 'ledger' &&
+      ['nanoS', 'nanoSP', 'nanoX'].includes(candidate?.model as string)) ||
+    (vendor === 'trezor' && ['1', 'T'].includes(candidate?.model as string));
+  if (
+    !versionKey ||
+    !ownData(value, keys) ||
+    !text(candidate.matrixRevision) ||
+    !text(candidate.rowId) ||
+    !modelValid ||
+    !text(candidate[versionKey]) ||
+    !Array.isArray(candidate.certifiedExtensions) ||
+    new Set(candidate.certifiedExtensions).size !==
+      candidate.certifiedExtensions.length ||
+    !candidate.certifiedExtensions.every(
+      (cip) => Number.isSafeInteger(cip) && Number(cip) > 0
+    ) ||
+    typeof candidate.physicalCertified !== 'boolean' ||
+    (activation && typeof candidate.packagedEnabled !== 'boolean')
+  )
+    throw new Error('Invalid hardware connector capability');
+  return Object.freeze({
+    matrixRevision: candidate.matrixRevision,
+    rowId: candidate.rowId,
+    vendor,
+    model: candidate.model,
+    [versionKey]: candidate[versionKey],
+    certifiedExtensions: Object.freeze([...candidate.certifiedExtensions]),
+    physicalCertified: candidate.physicalCertified,
+    ...(activation ? { packagedEnabled: candidate.packagedEnabled } : {}),
+  }) as HardwareConnectorCapabilityEvidence | HardwareConnectorActivation;
+};
 
 const parseOutpoint = (value: unknown): Cip30WalletOutpoint => {
   if (
@@ -266,9 +326,15 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
   const descriptor = Object.getOwnPropertyDescriptor(value, 'operation');
   const operation = descriptor?.value as Cip30WalletOperation | undefined;
   let keys = ['operation', 'walletId', 'network', 'sourceRevision'];
-  if (operation === 'sign-data')
-    keys = [...keys, 'address', 'payload', 'passphrase'];
-  else if (operation === 'transaction-context')
+  if (operation === 'sign-data') {
+    keys = [...keys, 'address', 'payload'];
+    if (Object.prototype.hasOwnProperty.call(value, 'passphrase'))
+      keys = [...keys, 'passphrase'];
+    if (Object.prototype.hasOwnProperty.call(value, 'hardware'))
+      keys = [...keys, 'hardware'];
+    if (Object.prototype.hasOwnProperty.call(value, 'drepCredential'))
+      keys = [...keys, 'drepCredential'];
+  } else if (operation === 'transaction-context')
     keys = [...keys, 'transactions'];
   else if (operation === 'collateral-history')
     keys = [...keys, 'preferredInputs'];
@@ -374,21 +440,47 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     });
   }
   if (operation === 'sign-data') {
+    const hasPassphrase = Object.prototype.hasOwnProperty.call(
+      value,
+      'passphrase'
+    );
+    const hasHardware = Object.prototype.hasOwnProperty.call(value, 'hardware');
+    const hasDrepCredential = Object.prototype.hasOwnProperty.call(
+      value,
+      'drepCredential'
+    );
     if (
       !text(value.address) ||
       !lowerHex.test(value.address) ||
       typeof value.payload !== 'string' ||
       (value.payload.length > 0 && !lowerHex.test(value.payload)) ||
       value.payload.length % 2 !== 0 ||
-      !text(value.passphrase)
+      hasPassphrase === hasHardware ||
+      (hasPassphrase && !text(value.passphrase)) ||
+      (hasDrepCredential && (!hasHardware || !hex(value.drepCredential, 28)))
     )
       throw new Error('Invalid CIP-30 wallet request');
+    let hardware: HardwareConnectorActivation | undefined;
+    try {
+      hardware = hasHardware
+        ? (parseHardwareCapability(
+            value.hardware,
+            true
+          ) as HardwareConnectorActivation)
+        : undefined;
+    } catch {
+      throw new Error('Invalid CIP-30 wallet request');
+    }
     return Object.freeze({
       ...identity,
       operation,
       address: value.address,
       payload: value.payload,
-      passphrase: value.passphrase,
+      ...(hasPassphrase ? { passphrase: value.passphrase as string } : {}),
+      ...(hardware ? { hardware } : {}),
+      ...(hasDrepCredential
+        ? { drepCredential: value.drepCredential as string }
+        : {}),
     });
   }
   return Object.freeze(identity) as Cip30WalletRequest;
@@ -398,15 +490,18 @@ const parseCapabilities = (
   value: unknown,
   request: Cip30WalletRequest
 ): Cip30WalletCapabilities => {
+  const hasHardware = Object.prototype.hasOwnProperty.call(value, 'hardware');
+  const keys = [
+    'walletId',
+    'walletName',
+    'walletKind',
+    'network',
+    'backendApiVersion',
+    'backendExtensions',
+    ...(hasHardware ? ['hardware'] : []),
+  ];
   if (
-    !ownData(value, [
-      'walletId',
-      'walletName',
-      'walletKind',
-      'network',
-      'backendApiVersion',
-      'backendExtensions',
-    ]) ||
+    !ownData(value, keys) ||
     value.walletId !== request.walletId ||
     !text(value.walletName) ||
     !['shelley-software', 'ledger', 'trezor'].includes(
@@ -430,6 +525,14 @@ const parseCapabilities = (
     network,
     backendApiVersion: 1,
     backendExtensions: Object.freeze([...value.backendExtensions]),
+    ...(hasHardware
+      ? {
+          hardware: parseHardwareCapability(
+            value.hardware,
+            false
+          ) as HardwareConnectorCapabilityEvidence,
+        }
+      : {}),
   });
 };
 
@@ -636,6 +739,7 @@ export const parseCip30WalletResponse = (
       'internal',
       'address-not-pk',
       'proof-generation',
+      'user-declined',
       'tx-proof-generation',
       'deprecated-certificate',
       'tx-send-failure',
@@ -649,6 +753,7 @@ export const parseCip30WalletResponse = (
         | 'internal'
         | 'address-not-pk'
         | 'proof-generation'
+        | 'user-declined'
         | 'tx-proof-generation'
         | 'deprecated-certificate'
         | 'tx-send-failure',

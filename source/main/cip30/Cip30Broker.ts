@@ -10,12 +10,14 @@ import {
   parseDappCip30GatewayRequest,
 } from '../../common/cip30/schemas';
 import {
-  Cip8AddressNotPKError,
-  Cip8Error,
   createCip8DataSignReview,
-  prepareCip8Request,
   verifyCip8BackendResponse,
 } from '../../common/cardano/cip8';
+import {
+  Cip8AddressNotPKError,
+  Cip8Error,
+  prepareCip8Request,
+} from '../../common/cardano/cip8Request';
 import {
   reconcileTransactionContext,
   TransactionContextError,
@@ -285,6 +287,16 @@ export class Cip30Broker {
         backendExtensions: evidence.backendExtensions,
         networkSupported: true,
         policy: dappLaunchPolicy,
+        ...(evidence.hardware
+          ? {
+              device: Object.freeze({
+                ...evidence.hardware,
+                packagedEnabled: dappLaunchPolicy.hardwareConnectorEnabled(
+                  evidence.hardware.rowId
+                ),
+              }),
+            }
+          : {}),
       }),
     };
   }
@@ -712,8 +724,6 @@ export class Cip30Broker {
       binding.authority,
       context
     );
-    if (evidence.walletKind !== 'shelley-software')
-      throw dataSignRejection(1, 'Proof generation failed');
 
     const drepCredential = cip95
       ? await this.drepCredential(binding)
@@ -729,6 +739,7 @@ export class Cip30Broker {
         throw dataSignRejection(2, 'Address is not a public key');
       throw invalidRequestRejection();
     }
+    const software = evidence.walletKind === 'shelley-software';
     const review = createCip8DataSignReview(expected);
     const result = await this.options.consent.request({
       identity: {
@@ -752,11 +763,30 @@ export class Cip30Broker {
       payload: { address: review.address, payload: review.payload },
       declined: dataSignRejection(3, 'User declined'),
       execute: async (_payload, signal, passphrase) => {
-        if (signal.aborted || !passphrase)
+        if (signal.aborted || (software && !passphrase))
           throw dataSignRejection(1, 'Proof generation failed');
         this.assertCurrent(binding);
         const latest = await this.capabilityEvidence(binding);
-        if (latest.evidence.walletKind !== 'shelley-software')
+        if (latest.evidence.walletKind !== evidence.walletKind)
+          throw dataSignRejection(1, 'Proof generation failed');
+        const initialHardware = evidence.hardware;
+        const latestHardware = latest.evidence.hardware;
+        if (
+          !software &&
+          (!initialHardware ||
+            !latestHardware ||
+            initialHardware.matrixRevision !== latestHardware.matrixRevision ||
+            initialHardware.rowId !== latestHardware.rowId ||
+            initialHardware.vendor !== latestHardware.vendor ||
+            initialHardware.model !== latestHardware.model ||
+            initialHardware.appVersion !== latestHardware.appVersion ||
+            initialHardware.firmwareVersion !==
+              latestHardware.firmwareVersion ||
+            initialHardware.physicalCertified !==
+              latestHardware.physicalCertified ||
+            initialHardware.certifiedExtensions.join(',') !==
+              latestHardware.certifiedExtensions.join(','))
+        )
           throw dataSignRejection(1, 'Proof generation failed');
         this.options.dispatcher.requireCapability(
           request.method,
@@ -765,6 +795,15 @@ export class Cip30Broker {
         );
         if (cip95 && (await this.drepCredential(binding)) !== drepCredential)
           throw accountChange();
+        const hardware = latest.context.device;
+        if (!software && !hardware)
+          throw dataSignRejection(1, 'Proof generation failed');
+        const signer = software
+          ? { passphrase: passphrase as string }
+          : {
+              hardware: hardware as NonNullable<typeof hardware>,
+              ...(drepCredential ? { drepCredential } : {}),
+            };
         const response = await this.options.executeWallet({
           operation: 'sign-data',
           walletId: binding.authority.walletId,
@@ -772,13 +811,15 @@ export class Cip30Broker {
           sourceRevision: this.options.sourceRevision,
           address: review.address,
           payload: review.payload,
-          passphrase,
+          ...signer,
         });
         this.assertCurrent(binding);
         if (response.status === 'rejected') {
           if (response.reason === 'account-change') throw accountChange();
           if (response.reason === 'address-not-pk')
             throw dataSignRejection(2, 'Address is not a public key');
+          if (response.reason === 'user-declined')
+            throw dataSignRejection(3, 'User declined');
           if (response.reason === 'proof-generation')
             throw dataSignRejection(1, 'Proof generation failed');
           throw internal();

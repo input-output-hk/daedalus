@@ -1,5 +1,5 @@
-import { prepareCip8Request } from '../../../common/cardano/cip8';
-import type { Cip8ExpectedRequest } from '../../../common/cardano/cip8';
+import { prepareCip8Request } from '../../../common/cardano/cip8Request';
+import type { Cip8ExpectedRequest } from '../../../common/cardano/cip8Request';
 import type {
   ContextOwnership,
   DappNetwork,

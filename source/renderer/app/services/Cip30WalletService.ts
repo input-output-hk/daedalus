@@ -10,6 +10,7 @@ import type { StoresMap } from '../stores';
 import { validateDappTransactionContext } from '../api/transactions/dappBackend';
 import { reconcileTransactionContext } from '../../../common/cardano/transactionContext';
 import { prepareHardwareTransaction } from '../utils/hardwareWalletTransaction';
+import { prepareHardwareMessage } from '../utils/hardwareWalletMessage';
 
 const backendNetwork = (network: Cip30WalletNetwork) => ({
   network_id: network.networkId,
@@ -146,6 +147,9 @@ export class Cip30WalletService {
             ? 'trezor'
             : 'ledger';
         }
+        const hardware = wallet.isHardwareWallet
+          ? this.stores.hardwareWallets.getDappConnectorCapability(wallet.id)
+          : undefined;
         return Object.freeze({
           status: 'fulfilled',
           operation: 'capabilities',
@@ -156,6 +160,7 @@ export class Cip30WalletService {
             network: request.network,
             backendApiVersion: capabilities.api_version,
             backendExtensions: Object.freeze([95, 103]),
+            ...(hardware ? { hardware } : {}),
           }),
         });
       }
@@ -163,7 +168,52 @@ export class Cip30WalletService {
       if (request.operation === 'sign-data') {
         const wallet = this.currentWallet(request);
         if (!wallet) return this.rejection(request, 'unavailable');
-        if (wallet.isHardwareWallet)
+        if (wallet.isHardwareWallet) {
+          if (!request.hardware)
+            return Object.freeze({
+              status: 'rejected',
+              reason: 'proof-generation',
+            });
+          const context = await this.api.ada.getDappTransactionContext({
+            walletId: request.walletId,
+            request: {
+              revision: 1,
+              network: backendNetwork(request.network),
+              transactions: [],
+            },
+          });
+          const snapshot = reconcileTransactionContext(context, {
+            walletId: request.walletId,
+            network: request.network,
+            transactions: [],
+          });
+          const message = prepareHardwareMessage(
+            request.address,
+            request.payload,
+            request.network,
+            snapshot.ownership,
+            request.drepCredential
+          );
+          const signature = await this.stores.hardwareWallets.signDappData(
+            wallet.id,
+            message,
+            request.hardware
+          );
+          if (!this.ready(request))
+            return this.rejection(request, 'unavailable');
+          return Object.freeze({
+            status: 'fulfilled',
+            operation: 'sign-data',
+            value: Object.freeze({
+              revision: 1 as const,
+              credential_kind: message.credentialKind,
+              credential: message.credential,
+              cose_sign1: signature.signature,
+              cose_key: signature.key,
+            }),
+          });
+        }
+        if (!request.passphrase)
           return Object.freeze({
             status: 'rejected',
             reason: 'proof-generation',
@@ -369,6 +419,16 @@ export class Cip30WalletService {
             reason: 'address-not-pk',
           });
         if (code === 'dapp_data_proof_generation')
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'proof-generation',
+          });
+        if (code === 'DataSignError.UserDeclined')
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'user-declined',
+          });
+        if (code === 'DataSignError.ProofGeneration')
           return Object.freeze({
             status: 'rejected',
             reason: 'proof-generation',

@@ -32,6 +32,7 @@ import {
   signTransactionLedgerChannel,
   signTransactionTrezorChannel,
   signExactHardwareTransactionChannel,
+  signExactHardwareMessageChannel,
   handleInitTrezorConnectChannel,
   handleInitLedgerConnectChannel,
   resetTrezorActionChannel,
@@ -70,6 +71,8 @@ import {
   DeviceEvents,
   TrezorDevicePayload,
   LedgerDevicePayload,
+  HARDWARE_CONNECTOR_MATRIX_REVISION,
+  hardwareConnectorRowId,
 } from '../../../common/types/hardware-wallets.types';
 import { formattedAmountToLovelace } from '../utils/formatters';
 import {
@@ -114,6 +117,9 @@ import type {
   DeviceType,
   HardwareTransactionCapability,
   HardwareTransactionPreparation,
+  HardwareConnectorActivation,
+  HardwareConnectorCapabilityEvidence,
+  HardwareMessageRequest,
 } from '../../../common/types/hardware-wallets.types';
 import { logger } from '../utils/logging';
 import { EventCategories } from '../analytics';
@@ -174,6 +180,23 @@ const dappHardwareCapability = (
     physicalCertified: false,
     productEnabled: false,
     familyDispositions: Object.freeze({}),
+  });
+
+const dappHardwareConnectorCapability = (
+  vendor: DeviceType,
+  model: string,
+  version: string
+): HardwareConnectorCapabilityEvidence =>
+  Object.freeze({
+    matrixRevision: HARDWARE_CONNECTOR_MATRIX_REVISION,
+    rowId: hardwareConnectorRowId(vendor, model, version),
+    vendor,
+    model,
+    ...(vendor === DeviceTypes.LEDGER
+      ? { appVersion: version }
+      : { firmwareVersion: version }),
+    certifiedExtensions: Object.freeze([]),
+    physicalCertified: false,
   });
 
 interface ResetInitiatedConnectionArgs {
@@ -361,6 +384,7 @@ export default class HardwareWalletsStore extends Store {
     string,
     LedgerDevicePayload | TrezorDevicePayload
   > = new Map();
+  private readonly ledgerAppVersions = new Map<string, string>();
 
   setup() {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -444,6 +468,95 @@ export default class HardwareWalletsStore extends Store {
     );
     if (!connection) throw new Error('Hardware wallet is not paired');
     return dappHardwareCapability(connection.device.deviceType);
+  };
+
+  getDappConnectorCapability = (
+    walletId: string
+  ): HardwareConnectorCapabilityEvidence | undefined => {
+    const connection = find(
+      this.hardwareWalletsConnectionData,
+      (connectionData) => connectionData.id === walletId
+    );
+    const path = connection?.device.path;
+    const connected = path && this.connectedHardwareWalletsDevices.get(path);
+    if (
+      !connection ||
+      !path ||
+      connection.disconnected ||
+      !connected ||
+      connected.disconnected ||
+      connected.deviceType !== connection.device.deviceType
+    )
+      return undefined;
+    const model = connection.device.deviceModel;
+    const version =
+      connection.device.deviceType === DeviceTypes.LEDGER
+        ? this.ledgerAppVersions.get(path)
+        : connection.device.firmwareVersion;
+    if (
+      !model ||
+      !version ||
+      (connection.device.deviceType === DeviceTypes.LEDGER &&
+        ![
+          DeviceModels.LEDGER_NANO_S,
+          DeviceModels.LEDGER_NANO_S_PLUS,
+          DeviceModels.LEDGER_NANO_X,
+        ].includes(model as LedgerModel)) ||
+      (connection.device.deviceType === DeviceTypes.TREZOR &&
+        ![DeviceModels.TREZOR_ONE, DeviceModels.TREZOR_T].includes(
+          model as TrezorModel
+        ))
+    )
+      return undefined;
+    return dappHardwareConnectorCapability(
+      connection.device.deviceType,
+      model,
+      version
+    );
+  };
+
+  signDappData = async (
+    walletId: string,
+    message: HardwareMessageRequest,
+    activation: HardwareConnectorActivation
+  ) => {
+    const current = this.getDappConnectorCapability(walletId);
+    if (
+      !current ||
+      !activation.packagedEnabled ||
+      !activation.physicalCertified ||
+      current.matrixRevision !== activation.matrixRevision ||
+      current.rowId !== activation.rowId ||
+      current.vendor !== activation.vendor ||
+      current.model !== activation.model ||
+      current.appVersion !== activation.appVersion ||
+      current.firmwareVersion !== activation.firmwareVersion ||
+      current.physicalCertified !== activation.physicalCertified ||
+      current.certifiedExtensions.join(',') !==
+        activation.certifiedExtensions.join(',')
+    )
+      throw new Error('Hardware connector capability changed');
+    const connection = find(
+      this.hardwareWalletsConnectionData,
+      (connectionData) => connectionData.id === walletId
+    );
+    const path = connection?.device.path;
+    const connected = path && this.connectedHardwareWalletsDevices.get(path);
+    if (
+      !connection ||
+      !path ||
+      connection.disconnected ||
+      !connected ||
+      connected.disconnected ||
+      connected.deviceType !== activation.vendor
+    )
+      throw new Error('Hardware wallet is not connected');
+    return signExactHardwareMessageChannel.request({
+      vendor: activation.vendor,
+      ...(activation.vendor === DeviceTypes.LEDGER ? { ledgerPath: path } : {}),
+      capability: activation,
+      message,
+    });
   };
 
   signDappTransaction = async (
@@ -1296,6 +1409,7 @@ export default class HardwareWalletsStore extends Store {
         logger.debug('[HW-DEBUG] HWStore - cardanoAdaApp - Set device');
         // Check is Cardano App version supported
         const cardanoAppVersion = `${cardanoAdaApp.major}.${cardanoAdaApp.minor}.${cardanoAdaApp.patch}`;
+        if (path) this.ledgerAppVersions.set(path, cardanoAppVersion);
         const isValidAppVersion = semver.gte(
           cardanoAppVersion,
           MINIMAL_CARDANO_APP_VERSION

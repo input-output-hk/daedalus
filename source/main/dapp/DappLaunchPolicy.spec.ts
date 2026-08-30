@@ -49,4 +49,23 @@ describe('DappLaunchPolicy', () => {
     expect(policy.extensionRevision(142)).toBe(2);
     expect(Object.isFrozen(policy.config)).toBe(true);
   });
+
+  it('activates only exact task-607-certified hardware rows', () => {
+    const row = 'ledger:nanoSP:8.0.0:signData';
+    expect(
+      new DappLaunchPolicy({
+        ...enabled,
+        hardwareConnectorRows: [row],
+      }).hardwareConnectorEnabled(row)
+    ).toBe(false);
+    const policy = new DappLaunchPolicy(
+      { ...enabled, hardwareConnectorRows: [row] },
+      [row]
+    );
+    expect(policy.hardwareConnectorEnabled(row)).toBe(true);
+    expect(policy.hardwareConnectorEnabled('ledger:nanoX:8.0.0:signData')).toBe(
+      false
+    );
+    expect(Object.isFrozen(policy.config.hardwareConnectorRows)).toBe(true);
+  });
 });

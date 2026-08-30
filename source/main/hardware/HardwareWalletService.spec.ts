@@ -70,6 +70,9 @@ jest.mock('@trezor/connect', () => ({
   UI: { REQUEST_PASSPHRASE: 'request-passphrase' },
   UI_EVENT: 'ui-event',
 }));
+jest.mock('../config', () => ({
+  dappLaunchPolicy: { hardwareConnectorEnabled: jest.fn(() => false) },
+}));
 
 const channelNames: Array<keyof HardwareWalletChannels> = [
   'getHardwareWalletTransportChannel',
@@ -79,6 +82,7 @@ const channelNames: Array<keyof HardwareWalletChannels> = [
   'signTransactionLedgerChannel',
   'signTransactionTrezorChannel',
   'signExactHardwareTransactionChannel',
+  'signExactHardwareMessageChannel',
   'resetTrezorActionChannel',
   'handleInitTrezorConnectChannel',
   'handleInitLedgerConnectChannel',
@@ -301,6 +305,32 @@ describe('HardwareWalletService', () => {
     ).rejects.toThrow('Hardware exact transaction is not enabled');
     expect(ledger).toHaveBeenCalledTimes(1);
     expect(trezor).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects uncertified packaged message rows before device invocation', async () => {
+    const service = new HardwareWalletService();
+    const { channels, handlers } = createChannels();
+    await service.register(channels);
+    const ledger = jest.spyOn(service, 'signLedgerMessage');
+    const request = handlers.get('signExactHardwareMessageChannel')!;
+    await expect(
+      request({
+        vendor: 'ledger',
+        ledgerPath: 'ledger-path',
+        capability: {
+          matrixRevision: 'task-006-matrix-2026-08-14',
+          rowId: 'ledger:nanoSP:8.0.0:signData',
+          vendor: 'ledger',
+          model: 'nanoSP',
+          appVersion: '8.0.0',
+          certifiedExtensions: [95],
+          physicalCertified: true,
+          packagedEnabled: true,
+        },
+        message: {} as HardwareMessageRequest,
+      })
+    ).rejects.toThrow('Hardware connector is not enabled');
+    expect(ledger).not.toHaveBeenCalled();
   });
 
   it('releases only exact Ledger witnesses', async () => {

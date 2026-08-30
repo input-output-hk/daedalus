@@ -1,25 +1,22 @@
 import { ApiError } from '../../common/cip30/errors';
 import { DappCip30Method } from '../../common/cip30/wire';
+import {
+  HARDWARE_CONNECTOR_MATRIX_REVISION,
+  hardwareConnectorRowId,
+} from '../../common/types/hardware-wallets.types';
+import type { HardwareConnectorActivation } from '../../common/types/hardware-wallets.types';
 import { DappLaunchPolicy } from '../dapp/DappLaunchPolicy';
 import { ExtensionRegistry, ResolvedMethod } from './ExtensionRegistry';
 import { ExtensionDescriptor } from './extensions';
 
 export type DappWalletKind = 'shelley-software' | 'ledger' | 'trezor' | 'byron';
 
-export type HardwareCapabilityEvidence = Readonly<{
-  deviceType: 'ledger' | 'trezor';
-  model: string;
-  appVersion: string;
-  firmwareVersion: string;
-  supportedExtensions: readonly number[];
-}>;
-
 export type CapabilityContext = Readonly<{
   walletKind: DappWalletKind;
   backendApiVersion: number;
   backendExtensions: readonly number[];
   networkSupported: boolean;
-  device?: HardwareCapabilityEvidence;
+  device?: HardwareConnectorActivation;
   policy: DappLaunchPolicy;
 }>;
 
@@ -33,7 +30,9 @@ export class CapabilityService {
     return (
       context.walletKind !== 'byron' &&
       context.backendApiVersion === 1 &&
-      context.networkSupported
+      context.networkSupported &&
+      (context.walletKind === 'shelley-software' ||
+        this.deviceAllows(undefined, context))
     );
   }
 
@@ -93,16 +92,37 @@ export class CapabilityService {
     );
   }
 
-  private deviceAllows(cip: number, context: CapabilityContext): boolean {
+  private deviceAllows(
+    cip: number | undefined,
+    context: CapabilityContext
+  ): boolean {
     if (context.walletKind === 'shelley-software') return true;
-    const device = context.device;
+    const { device } = context;
+    let version: string | undefined;
+    let versionMatches = false;
+    if (device?.vendor === 'ledger') {
+      version = device.appVersion;
+      versionMatches =
+        hasText(version || '') && device.firmwareVersion === undefined;
+    }
+    if (device?.vendor === 'trezor') {
+      version = device.firmwareVersion;
+      versionMatches =
+        hasText(version || '') && device.appVersion === undefined;
+    }
     return (
       device !== undefined &&
-      device.deviceType === context.walletKind &&
+      device.vendor === context.walletKind &&
+      hasText(device.matrixRevision) &&
+      hasText(device.rowId) &&
       hasText(device.model) &&
-      hasText(device.appVersion) &&
-      hasText(device.firmwareVersion) &&
-      device.supportedExtensions.includes(cip)
+      device.matrixRevision === HARDWARE_CONNECTOR_MATRIX_REVISION &&
+      device.rowId ===
+        hardwareConnectorRowId(device.vendor, device.model, version || '') &&
+      versionMatches &&
+      device.physicalCertified &&
+      device.packagedEnabled &&
+      (cip === undefined || device.certifiedExtensions.includes(cip))
     );
   }
 }
