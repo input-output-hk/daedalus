@@ -125,6 +125,15 @@ const flush = async (): Promise<void> => {
   await Promise.resolve();
 };
 
+const withResolvers = <T>() =>
+  ((Promise as unknown) as {
+    withResolvers<U>(): {
+      promise: Promise<U>;
+      resolve: (value: U | PromiseLike<U>) => void;
+      reject: (reason?: unknown) => void;
+    };
+  }).withResolvers<T>();
+
 describe('HardwareWalletService', () => {
   it('owns detection, transport cancellation, and late-result suppression', async () => {
     let onAdd: ((payload: DeviceDetectionPayload) => void) | undefined;
@@ -213,8 +222,7 @@ describe('HardwareWalletService', () => {
     const bodyHash = 'ab'.repeat(32);
     const path = [0x8000073c, 0x80000717, 0x80000000, 0, 0];
     const signature = sign(null, Buffer.from(bodyHash, 'hex'), keys.privateKey);
-    const signTransaction = jest.fn(() =>
-      Promise.resolve({
+    const validLedgerPayload = {
         txHashHex: bodyHash,
         witnesses: [
           {
@@ -223,8 +231,8 @@ describe('HardwareWalletService', () => {
           },
         ],
         auxiliaryDataSupplement: null,
-      })
-    );
+    };
+    const signTransaction = jest.fn(() => Promise.resolve(validLedgerPayload));
     const getExtendedPublicKey = jest.fn(() =>
       Promise.resolve({
         publicKeyHex: publicKey.toString('hex'),
@@ -301,7 +309,7 @@ describe('HardwareWalletService', () => {
     });
     await expect(
       service.signExactLedgerTransaction('ledger-path', exact)
-    ).rejects.toThrow('unexpected public key');
+    ).rejects.toMatchObject({ code: 'TxSignError.ProofGeneration' });
 
     signTransaction.mockResolvedValueOnce({
       txHashHex: bodyHash,
@@ -316,6 +324,27 @@ describe('HardwareWalletService', () => {
     await expect(
       service.signExactLedgerTransaction('ledger-path', exact)
     ).rejects.toThrow();
+
+    signTransaction.mockRejectedValueOnce({ code: 0x6985 });
+    await expect(
+      service.signExactLedgerTransaction('ledger-path', exact)
+    ).rejects.toMatchObject({ code: 'TxSignError.UserDeclined' });
+    signTransaction.mockRejectedValueOnce({ code: 0x6b00 });
+    await expect(
+      service.signExactLedgerTransaction('ledger-path', exact)
+    ).rejects.toMatchObject({ code: 'TxSignError.ProofGeneration' });
+
+    const lateLedger = withResolvers<typeof validLedgerPayload>();
+    signTransaction.mockReturnValueOnce(lateLedger.promise);
+    const cancelledLedger = service.signExactLedgerTransaction(
+      'ledger-path',
+      exact
+    );
+    await service.cancelLedgerOperation('ledger-path');
+    lateLedger.resolve(validLedgerPayload);
+    await expect(cancelledLedger).rejects.toMatchObject({
+      code: 'TxSignError.UserDeclined',
+    });
   });
 
   it('releases only verified exact Shelley witnesses from Trezor', async () => {
@@ -346,12 +375,13 @@ describe('HardwareWalletService', () => {
       },
     } as unknown) as HardwareExactTransaction;
     const signTransaction = TrezorConnect.cardanoSignTransaction as jest.Mock;
-    signTransaction.mockResolvedValue({
-      success: true,
-      payload: {
+    const validPayload = {
         hash: bodyHash,
         witnesses: [{ type: 1, pubKey: publicKey.toString('hex'), signature }],
-      },
+    };
+    signTransaction.mockResolvedValue({
+      success: true,
+      payload: validPayload,
     });
     const service = new HardwareWalletService();
 
@@ -423,10 +453,48 @@ describe('HardwareWalletService', () => {
       }
     );
     const calls = signTransaction.mock.calls.length;
-    await expect(service.signExactTrezorTransaction(exact)).rejects.toThrow(
-      'preflight'
-    );
+    await expect(
+      service.signExactTrezorTransaction(exact)
+    ).rejects.toMatchObject({ code: 'TxSignError.ProofGeneration' });
     expect(signTransaction).toHaveBeenCalledTimes(calls);
+
+    signTransaction.mockResolvedValueOnce({
+      success: false,
+      payload: {
+        code: 'Failure_ActionCancelled',
+        error: 'Action cancelled by user',
+      },
+    });
+    await expect(
+      service.signExactTrezorTransaction(exact)
+    ).rejects.toMatchObject({ code: 'TxSignError.UserDeclined' });
+
+    signTransaction.mockResolvedValueOnce({
+      success: false,
+      payload: { code: 'Failure_ProcessError', error: 'Device unavailable' },
+    });
+    await expect(
+      service.signExactTrezorTransaction(exact)
+    ).rejects.toMatchObject({ code: 'TxSignError.ProofGeneration' });
+
+    signTransaction.mockRejectedValueOnce(new Error('unexpected vendor error'));
+    await expect(
+      service.signExactTrezorTransaction(exact)
+    ).rejects.toMatchObject({ code: 'APIError.InternalError' });
+
+    const lateTransaction = withResolvers<unknown>();
+    signTransaction.mockReturnValueOnce(lateTransaction.promise);
+    const cancelledTransaction = service.signExactTrezorTransaction(exact);
+    service.cancelTrezorOperation();
+    lateTransaction.resolve({ success: true, payload: validPayload });
+    await expect(cancelledTransaction).rejects.toMatchObject({
+      code: 'TxSignError.UserDeclined',
+    });
+
+    const callsBeforeRestart = signTransaction.mock.calls.length;
+    expect(new HardwareWalletService()).toBeInstanceOf(HardwareWalletService);
+    await flush();
+    expect(signTransaction).toHaveBeenCalledTimes(callsBeforeRestart);
   });
 
   it('rebuilds verified CIP-8 from exact Ledger and Trezor message proofs', async () => {
@@ -544,9 +612,7 @@ describe('HardwareWalletService', () => {
     });
 
     const trezorSignMessage = TrezorConnect.cardanoSignMessage as jest.Mock;
-    trezorSignMessage.mockResolvedValue({
-      success: true,
-      payload: {
+    const trezorProofPayload = {
         headers: {
           protected: { 1: -8, address: credential },
           unprotected: { hashed: false, version: 1 },
@@ -556,7 +622,10 @@ describe('HardwareWalletService', () => {
         pubKey: drepProof.publicKey,
         coseSignature: 'poison',
         coseKey: 'poison',
-      },
+    };
+    trezorSignMessage.mockResolvedValue({
+      success: true,
+      payload: trezorProofPayload,
     });
     await expect(service.signTrezorMessage(drepRequest)).resolves.toEqual(
       ledgerResult
@@ -581,9 +650,29 @@ describe('HardwareWalletService', () => {
         pubKey: drepProof.publicKey,
       },
     });
-    await expect(service.signTrezorMessage(drepRequest)).rejects.toThrow(
-      'Invalid CIP-8 data signature'
-    );
+    await expect(service.signTrezorMessage(drepRequest)).rejects.toMatchObject({
+      code: 'DataSignError.ProofGeneration',
+    });
+
+    trezorSignMessage.mockResolvedValueOnce({
+      success: false,
+      payload: {
+        code: 'Failure_ActionCancelled',
+        error: 'Action cancelled by user',
+      },
+    });
+    await expect(service.signTrezorMessage(drepRequest)).rejects.toMatchObject({
+      code: 'DataSignError.UserDeclined',
+    });
+
+    const lateMessage = withResolvers<unknown>();
+    trezorSignMessage.mockReturnValueOnce(lateMessage.promise);
+    const disconnectedMessage = service.signTrezorMessage(drepRequest);
+    service.cancelTrezorOperation('device');
+    lateMessage.resolve({ success: true, payload: trezorProofPayload });
+    await expect(disconnectedMessage).rejects.toMatchObject({
+      code: 'DataSignError.ProofGeneration',
+    });
   });
 
   it('keeps every legacy trusted channel behind one service registration', async () => {
