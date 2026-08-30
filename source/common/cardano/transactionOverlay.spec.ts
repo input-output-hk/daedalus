@@ -9,6 +9,7 @@ import {
   Cip103OverlayError,
   resolveCip103TransactionOverlay,
 } from './transactionOverlay';
+import { createCip103BatchReview } from '../cip30/cip103Review';
 import { preflightCip103Sign } from '../../renderer/app/domains/Cip103Batch';
 import type { Cip103PreflightItem } from '../types/cip103.types';
 
@@ -118,7 +119,7 @@ const expectOverlayFailure = (
 describe('CIP-103 transaction overlay', () => {
   it('preserves ordered normal, collateral, and reference parent resolution', () => {
     const parent = preflightCip103Sign([{ cbor: transaction({}) }], 0).items[0];
-    const items = preflightCip103Sign(
+    const batch = preflightCip103Sign(
       [
         { cbor: parent.cbor },
         { cbor: transaction({ normal: [parent.bodyHash] }) },
@@ -136,7 +137,8 @@ describe('CIP-103 transaction overlay', () => {
         },
       ],
       0
-    ).items;
+    );
+    const { items } = batch;
     const exactParentOutput = parentOutput(items[0]);
     const result = resolveCip103TransactionOverlay(
       items,
@@ -188,6 +190,29 @@ describe('CIP-103 transaction overlay', () => {
       outcome: 'valid',
       produced: [{ kind: 'output', outputIndex: 0 }],
     });
+    const review = createCip103BatchReview(
+      batch,
+      result,
+      items.map(({ transaction: item }) => item)
+    );
+    expect(review.items[1].dependencies).toEqual([
+      expect.objectContaining({
+        source: 'current-batch',
+        inputRole: 'normal',
+        sourceTransactionIndex: 0,
+      }),
+    ]);
+    expect(review.items[2].conflicts).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          inputRole: 'collateral',
+          earlierTransactionIndex: 1,
+        }),
+      ])
+    );
+    expect(review.items[0].transaction.effects).not.toBe(
+      review.items[1].transaction.effects
+    );
     expect(Object.isFrozen(result)).toBe(true);
     expect(Object.isFrozen(result.items)).toBe(true);
     expect(Object.isFrozen(result.items[3].inputs.reference)).toBe(true);

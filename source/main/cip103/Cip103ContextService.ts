@@ -4,6 +4,10 @@ import {
   Cip103Resolution,
   resolveCip103TransactionOverlay,
 } from '../../common/cardano/transactionOverlay';
+import {
+  Cip103BatchReview,
+  createCip103BatchReview,
+} from '../../common/cip30/cip103Review';
 import type { Cip103PreflightBatch } from '../../common/types/cip103.types';
 import {
   DappContextBinding,
@@ -29,6 +33,7 @@ export type Cip103ResolvedBatch = Readonly<{
   operation: 'sign' | 'submit';
   snapshot: TransactionContextSnapshot;
   resolution: Cip103Resolution;
+  review: Cip103BatchReview;
 }>;
 
 type ContextCapture = Pick<DappTransactionContextService, 'capture'>;
@@ -51,11 +56,17 @@ export class Cip103ContextService {
       )
         throw new Cip103ContextError('internal_error');
       const resolution = resolveCip103TransactionOverlay(batch.items, snapshot);
+      const review = createCip103BatchReview(
+        batch,
+        resolution,
+        snapshot.transactionsSemantic
+      );
       return Object.freeze({
         state: 'context-resolved',
         operation: batch.operation,
         snapshot,
         resolution,
+        review,
       });
     } catch (error) {
       if (error instanceof Cip103OverlayError)
