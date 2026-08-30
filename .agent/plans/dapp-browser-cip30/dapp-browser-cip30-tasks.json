@@ -3,8 +3,8 @@
     "title": "Embedded dApp Browser And CIP-30 Wallet Connector Tasks",
     "created": "2026-08-07",
     "updated": "2026-08-30",
-    "version": "1.7.27",
-    "totalTasks": 86,
+    "version": "1.7.28",
+    "totalTasks": 87,
     "prdReference": ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
       "description": "Security- and standards-gated implementation graph for a wallet-scoped sandboxed dApp browser with CIP-30, CIP-8, CIP-95, CIP-103, gated CIP-104/CIP-142, software/hardware signing, ordered batch signing and submission, and soft collateral management.",
     "sourceFiles": [
@@ -1756,22 +1756,50 @@
           ]
         },
         {
+          "id": "task-608",
+          "title": "Wire hardware data signing and capability evidence",
+          "description": "Connect the task-604 Ledger/Trezor CIP-8 adapters to base and CIP-95 DRep connector signing, propagate exact device and certified-row evidence into capability checks, and add a packaged default-disabled activation value without enabling any hardware row.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 24,
+          "dependencies": ["task-604", "task-605", "task-606"],
+          "targetPaths": [
+            "source/main/cip30/Cip30Broker.ts",
+            "source/main/cip30/CapabilityService.ts",
+            "source/renderer/app/services/Cip30WalletService.ts",
+            "source/renderer/app/stores/HardwareWalletsStore.ts",
+            "source/common/types/hardware-wallets.types.ts",
+            "nix/internal/launcher-config.nix"
+          ],
+          "acceptance": [
+            "Base payment/stake and CIP-95 direct-DRep/matching-type-6-DRep signData requests reach only the task-604 exact hardware adapters, with no software, passphrase, backend-signing, or vendor-COSE fallback.",
+            "Capability evidence binds the exact vendor, model, app or firmware, matrix revision, certified extensions, and packaged activation state before negotiation and again before device invocation.",
+            "Uncertified, unsupported, malformed, or product-disabled rows remain omitted from negotiation and fail closed before device interaction.",
+            "The packaged hardware connector activation defaults to disabled and can name only task-607-certified rows through the normal reviewed release process.",
+            "Focused end-to-end tests cover payment, stake, raw DRep, matching type-6 DRep, cancellation, stale completion, and disabled-row behavior without enabling production hardware support."
+          ],
+          "securityNotes": [
+            "Implementation must remain product-disabled until task-607 records final physical certification and a later reviewed release configuration activates an exact certified row."
+          ]
+        },
+        {
           "id": "task-607",
-          "title": "Complete mocked and physical hardware certification",
-          "description": "Run every task-607-owned executable or promotable task-006 case against the exact production dependency lock and adapter commit, then record reviewer-approved mocked and physical model/app/firmware results without setting product enablement; tasks 602/603 own nonphysical static-source assertions.",
+          "title": "Complete final mocked and physical hardware certification",
+          "description": "After the single-operation connector cutover and CIP-103 hardware queue are complete, run every task-607-owned executable or promotable task-006 case against the exact production dependency lock, public routing, adapter/service commit, and packaged disabled/enabled-row configurations, then record reviewer-approved mocked and physical model/app/firmware results without setting product enablement.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 48,
-          "dependencies": ["task-606"],
+          "dependencies": ["task-608", "task-705"],
           "targetPaths": [
             "hardware-wallet-tests/",
             "tests/dapps/hardware/",
             ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md"
           ],
           "acceptance": [
-            "Evidence records matrix revision, case IDs, production lock/config digests, adapter commit, exact model/app-or-firmware row, opaque operator/reviewer IDs, and reviewer disposition.",
-            "Every promoted transaction row returns the exact immutable body hash; every unsupported representation fails before confirmation without omission.",
-            "Payment, stake, direct-DRep and matching-type-6-DRep vectors prove frozen encoding, identity, public-key association and signature verification without vendor COSE pass-through.",
+            "Evidence records matrix revision, case IDs, production lock/config digests, adapter/service commit, exact model/app-or-firmware row, packaged activation identity, opaque operator/reviewer IDs, and reviewer disposition.",
+            "Every promoted single or batch transaction row returns the exact immutable body hash; every unsupported representation fails before confirmation without omission.",
+            "Payment, stake, direct-DRep and matching-type-6-DRep vectors traverse the public connector and prove frozen encoding, identity, public-key association and signature verification without backend signing or vendor COSE pass-through.",
+            "Ordered batches prove success, canonical empty-witness items, cancellation, and physical rejection at every batch position without releasing staged witnesses.",
             "Negative, refusal, disconnect, cancellation, transport-close and stale/late-result cases use the privacy-safe schema; task-607 sets physical results only and later release policy owns product enablement."
           ]
         }
@@ -1894,7 +1922,7 @@
         {
           "id": "task-705",
           "title": "Implement staged sequential hardware batch signing",
-          "description": "Queue exact Ledger/Trezor requests in order, allow per-transaction device confirmation, stage verified results, cancel safely, and release only on total success.",
+          "description": "Queue exact Ledger/Trezor requests in order, allow per-transaction device confirmation, stage verified results, cancel safely, and release only on total success; this task uses deterministic mocked/emulator coverage while task-607 owns final physical certification.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 32,
@@ -1909,7 +1937,7 @@
             "A partial-sign item with no applicable owned hardware path stages a canonical empty witness set without a device confirmation.",
             "Cancellation stops the queue and suppresses late results.",
             "No staged witness is persisted or guest-released on failure.",
-            "Physical tests cover rejection at every batch position."
+            "Mocked/emulator tests cover rejection at every batch position; task-607 repeats the final matrix on physical devices against the complete service commit."
           ]
         },
         {
@@ -1936,11 +1964,11 @@
         {
           "id": "task-708",
           "title": "Complete CIP-103 conformance, fault, and E2E coverage",
-          "description": "Test software/hardware linear chains, conflicts, partialSign, cancellation, attempt-all submission, mixed rejection, idempotent retry, pending-state reconciliation, rollback, and boundary enforcement at the documented product limits.",
+          "description": "Test software/hardware linear chains, conflicts, partialSign, cancellation, attempt-all submission, mixed rejection, idempotent retry, pending-state reconciliation, rollback, boundary enforcement, and the atomic CIP-103 availability cutover at the documented product limits.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 40,
-          "dependencies": ["task-704", "task-705", "task-707"],
+          "dependencies": ["task-607", "task-704", "task-705", "task-707"],
           "targetPaths": [
             "tests/dapps/cip103/",
             "source/main/cip103/*.spec.ts",
@@ -1955,7 +1983,9 @@
             "A child transaction resolves an earlier output in the same request.",
             "Cucumber covers software and mocked Ledger/Trezor batches.",
             "Storybook/Jest cover en-US/ja-JP, themes, focus restoration, device progress, recovery, and mixed-error states.",
-            "Requests beyond the documented product limits reject with typed errors before side effects."
+            "Requests beyond the documented product limits reject with typed errors before side effects.",
+            "Before this task completes, CIP-103 remains unavailable in the extension registry and absent from provider supportedExtensions even if its wire schemas exist.",
+            "One final cutover enables CIP-103 advertisement, negotiation, namespace construction, signTxs, and submitTxs together; tests prove no advertised-but-unexecutable state exists."
           ]
         }
       ]
@@ -1969,7 +1999,7 @@
         {
           "id": "task-800",
           "title": "Run differential ledger tests and parser fuzzing",
-          "description": "Compare exact parsing/effects/witness/collateral/graph behavior with pinned ledger implementations and fuzz malformed/ambiguous CBOR and COSE inputs.",
+          "description": "Compare exact single-transaction parsing, effects, witness, and collateral behavior with pinned ledger implementations and fuzz malformed/ambiguous CBOR and COSE inputs; task-708 owns CIP-103 dependency/conflict graph differential coverage.",
           "status": "pending",
           "priority": "critical",
           "estimatedHours": 40,
