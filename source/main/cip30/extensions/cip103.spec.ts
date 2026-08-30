@@ -66,6 +66,7 @@ const review = Object.freeze({
         transaction: Object.freeze({
           transactionId: bodyHash,
           fullCborDigest,
+          fullCbor: batch.items[index].cbor,
         }),
       })
     )

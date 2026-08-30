@@ -17,7 +17,7 @@ import type {
 } from '../../../common/types/cip103.types';
 import {
   Cip103HardwareSigningError,
-  Cip103SigningReview,
+  Cip103ExecutionReview,
   signCip103HardwareBatch,
 } from './cip103';
 
@@ -50,7 +50,7 @@ const batch: Cip103PreflightBatch = Object.freeze({
   operation: 'sign',
   items: Object.freeze([item(0, false), item(1, true), item(2, false)]),
 });
-const review: Cip103SigningReview = Object.freeze({
+const review: Cip103ExecutionReview = Object.freeze({
   mode: 'sign',
   approvable: true,
   items: Object.freeze(
@@ -60,6 +60,7 @@ const review: Cip103SigningReview = Object.freeze({
         transaction: Object.freeze({
           transactionId: bodyHash,
           fullCborDigest,
+          fullCbor: batch.items[index].cbor,
         }),
       })
     )
