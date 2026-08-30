@@ -2,16 +2,23 @@ import type {
   Cip30WalletNetwork,
   Cip30WalletRequest,
   Cip30WalletResponse,
+  Cip30WalletSubmissionResponse,
 } from '../../../common/cip30/executor';
 import { diffVKeyWitnesses } from '../../../common/cardano/witnessSet';
 import type {
+  Cip103Operation,
   Cip103PreflightBatch,
   Cip103SignResult,
+  Cip103SubmitResult,
 } from '../../../common/types/cip103.types';
 import type {
   HardwareExactTransaction,
   HardwareTransactionPreparation,
 } from '../../../common/types/hardware-wallets.types';
+import type {
+  Cip103SubmitError,
+  TxSendError,
+} from '../../../common/cip30/errors';
 
 type ExecuteWallet = (
   _request: Cip30WalletRequest
@@ -34,7 +41,7 @@ export class Cip103SoftwareSigningError extends Error {
   }
 }
 
-export type Cip103SigningReview = Readonly<{
+export type Cip103ExecutionReview = Readonly<{
   mode: 'sign' | 'submit';
   approvable: boolean;
   items: readonly Readonly<{
@@ -42,6 +49,7 @@ export type Cip103SigningReview = Readonly<{
     transaction: Readonly<{
       transactionId: string;
       fullCborDigest: string;
+      fullCbor: string;
     }>;
   }>[];
 }>;
@@ -51,7 +59,7 @@ export type Cip103SoftwareSigningRequest = Readonly<{
   network: Cip30WalletNetwork;
   sourceRevision: string;
   batch: Cip103PreflightBatch;
-  review: Cip103SigningReview;
+  review: Cip103ExecutionReview;
   signingContext: unknown;
   passphrase: string;
   requiredKeyHashes?: readonly (readonly string[])[];
@@ -64,19 +72,21 @@ const internal = (transactionIndex?: number): never => {
 const validKeyHash = (value: string): boolean => /^[0-9a-f]{56}$/u.test(value);
 const reviewedBatch = (
   batch: Cip103PreflightBatch,
-  review: Cip103SigningReview
+  review: Cip103ExecutionReview,
+  operation: Cip103Operation
 ): boolean =>
-  batch.operation === 'sign' &&
+  batch.operation === operation &&
   batch.items.length >= 1 &&
   batch.items.length <= 50 &&
-  review.mode === 'sign' &&
+  review.mode === operation &&
   review.approvable &&
   review.items.length === batch.items.length &&
   review.items.every(
     (item, index) =>
       item.index === index &&
       item.transaction.transactionId === batch.items[index]?.bodyHash &&
-      item.transaction.fullCborDigest === batch.items[index]?.fullCborDigest
+      item.transaction.fullCborDigest === batch.items[index]?.fullCborDigest &&
+      item.transaction.fullCbor === batch.items[index]?.cbor
   );
 
 export const signCip103SoftwareBatch = async (
@@ -85,7 +95,7 @@ export const signCip103SoftwareBatch = async (
 ): Promise<Cip103SignResult> => {
   const { batch, passphrase, requiredKeyHashes, review } = request;
   if (
-    !reviewedBatch(batch, review) ||
+    !reviewedBatch(batch, review, 'sign') ||
     !passphrase ||
     (requiredKeyHashes && requiredKeyHashes.length !== batch.items.length) ||
     requiredKeyHashes?.some((hashes) =>
@@ -170,7 +180,7 @@ export class Cip103HardwareSigningError extends Error {
 
 export type Cip103HardwareSigningRequest = Readonly<{
   batch: Cip103PreflightBatch;
-  review: Cip103SigningReview;
+  review: Cip103ExecutionReview;
   signal: AbortSignal;
   prepare: (_index: number) => HardwareTransactionPreparation;
   signTransaction: (
@@ -200,7 +210,7 @@ export const signCip103HardwareBatch = async (
   request: Cip103HardwareSigningRequest
 ): Promise<Cip103SignResult> => {
   const { batch, review, signal } = request;
-  if (!reviewedBatch(batch, review)) hardwareFailure('internal', 0);
+  if (!reviewedBatch(batch, review, 'sign')) hardwareFailure('internal', 0);
   let cancelStarted = false;
   const cancel = async (transactionIndex: number): Promise<never> => {
     if (!cancelStarted) {
@@ -281,4 +291,75 @@ export const signCip103HardwareBatch = async (
   }
   if (signal.aborted) await cancel(preparations.length - 1);
   return Object.freeze(staged);
+};
+
+export type Cip103BatchSubmissionRequest = Readonly<{
+  batch: Cip103PreflightBatch;
+  review: Cip103ExecutionReview;
+  submitTransaction: (
+    _cbor: string,
+    _index: number
+  ) => Promise<Cip30WalletSubmissionResponse>;
+}>;
+
+const failedSubmission = (): TxSendError =>
+  Object.freeze({ code: 2, info: 'Transaction submission failed' });
+
+const submissionError = (error: unknown): TxSendError => {
+  if (
+    error &&
+    typeof error === 'object' &&
+    'code' in error &&
+    'info' in error
+  ) {
+    const { code, info } = error;
+    if (
+      (code === 1 || code === 2) &&
+      typeof info === 'string' &&
+      info.length > 0
+    )
+      return Object.freeze({ code, info });
+  }
+  return failedSubmission();
+};
+
+export const submitCip103Batch = async (
+  request: Cip103BatchSubmissionRequest
+): Promise<Cip103SubmitResult> => {
+  const { batch, review } = request;
+  if (!reviewedBatch(batch, review, 'submit')) {
+    const rejection: Cip103SubmitError = batch.items.map(failedSubmission);
+    // Public CIP-103 rejects with the aligned array itself, never an Error.
+    // eslint-disable-next-line no-throw-literal
+    throw rejection;
+  }
+
+  const results: Array<string | TxSendError> = [];
+  const hashes: string[] = [];
+  // Guest lifecycle is deliberately absent: authorization owns this ordered loop.
+  for (const [index, item] of batch.items.entries()) {
+    try {
+      const response = await request.submitTransaction(item.cbor, index);
+      if (
+        response.revision !== 1 ||
+        response.transaction_id !== item.bodyHash ||
+        response.status === 'rejected' ||
+        response.status === 'expired'
+      ) {
+        results.push(failedSubmission());
+      } else {
+        results.push(item.bodyHash);
+        hashes.push(item.bodyHash);
+      }
+    } catch (error) {
+      results.push(submissionError(error));
+    }
+  }
+
+  if (results.some((result) => typeof result !== 'string')) {
+    // Public CIP-103 rejects with the aligned array itself, never an Error.
+    // eslint-disable-next-line no-throw-literal
+    throw results;
+  }
+  return Object.freeze(hashes);
 };
