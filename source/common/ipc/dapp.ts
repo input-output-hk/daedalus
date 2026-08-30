@@ -3,6 +3,7 @@ import type {
   DappConsentRenderMainRequest,
 } from './api';
 import { parseCip30TransactionReview } from '../cip30/review';
+import { parseCip103BatchReview } from '../cip30/cip103Review';
 import { parseCip8DataSignReview } from '../cardano/cip8';
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -16,7 +17,8 @@ const parsePresentation = (value: unknown): DappConsentPresentation => {
   if (!isRecord(value)) throw new Error('Invalid dApp consent presentation');
   const transaction =
     value.kind === 'transaction-sign' || value.kind === 'transaction-submit';
-  const hasReview = transaction || value.kind === 'data-sign';
+  const batch = value.kind === 'batch-sign' || value.kind === 'batch-submit';
+  const hasReview = transaction || batch || value.kind === 'data-sign';
   if (
     !hasKeys(value, [
       'requestId',
@@ -35,6 +37,8 @@ const parsePresentation = (value: unknown): DappConsentPresentation => {
       'data-sign',
       'transaction-sign',
       'transaction-submit',
+      'batch-sign',
+      'batch-submit',
     ].includes(value.kind as string) ||
     !isText(value.origin) ||
     !isText(value.walletName) ||
@@ -62,6 +66,16 @@ const parsePresentation = (value: unknown): DappConsentPresentation => {
     if (
       (kind === 'transaction-sign' && review.mode !== 'sign') ||
       (kind === 'transaction-submit' && review.mode !== 'submit')
+    )
+      throw new Error('Invalid dApp consent presentation');
+    return Object.freeze({ ...identity, kind, review });
+  }
+  if (batch) {
+    const kind = value.kind as 'batch-sign' | 'batch-submit';
+    const review = parseCip103BatchReview(value.review);
+    if (
+      (kind === 'batch-sign' && review.mode !== 'sign') ||
+      (kind === 'batch-submit' && review.mode !== 'submit')
     )
       throw new Error('Invalid dApp consent presentation');
     return Object.freeze({ ...identity, kind, review });

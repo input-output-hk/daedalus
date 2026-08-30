@@ -1,0 +1,81 @@
+.component {
+  color: var(--theme-dialog-fullsize-text-color);
+
+  section {
+    margin-bottom: 24px;
+  }
+
+  h2,
+  h3 {
+    color: var(--theme-dialog-fullsize-title-text-color);
+    margin: 16px 0 8px;
+  }
+
+  p,
+  pre {
+    overflow-wrap: anywhere;
+  }
+
+  pre {
+    max-width: 100%;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  border-top: 1px solid var(--theme-dialog-fullsize-text-color);
+  padding: 16px 0 24px;
+
+  > header {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    justify-content: space-between;
+  }
+}
+
+.notice,
+.warning,
+.refusal,
+.conflicts {
+  border: 1px solid var(--theme-dialog-fullsize-text-highlight-color);
+  margin: 16px 0;
+  padding: 16px;
+}
+
+.refusal,
+.blocked,
+.conflicts {
+  color: var(--theme-dialog-fullsize-text-highlight-color);
+}
+
+.ready,
+.blocked {
+  font-family: var(--font-bold);
+}
+
+.passwordLabel {
+  color: var(--theme-dialog-fullsize-title-text-color);
+  display: block;
+  font-family: var(--font-bold);
+  margin: 18px 0 8px;
+}
+
+.password {
+  background: var(--theme-dialog-fullsize-field-background-color);
+  border: 1px solid var(--theme-dialog-fullsize-text-color);
+  color: var(--theme-dialog-fullsize-text-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  min-height: 44px;
+  padding: 8px 12px;
+  width: 100%;
+}

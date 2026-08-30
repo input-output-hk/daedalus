@@ -1,3 +1,7 @@
+import type { DappConsentPresentation } from '../../../common/ipc/api';
+import type { Api } from '../api';
+import type { ActionsMap } from '../actions';
+import type { AnalyticsTracker } from '../analytics';
 import Cip30ConsentStore from './Cip30ConsentStore';
 
 jest.mock('../ipc/dappConsent', () => ({
@@ -15,7 +19,28 @@ const request = {
 };
 
 const createStore = () =>
-  new Cip30ConsentStore(undefined as any, undefined as any, undefined as any);
+  new Cip30ConsentStore(
+    (undefined as unknown) as Api,
+    (undefined as unknown) as ActionsMap,
+    (undefined as unknown) as AnalyticsTracker
+  );
+
+const transactionReview = {
+  mode: 'sign' as const,
+  transactionId: '11'.repeat(32),
+  bodyCbor: 'a0',
+  fullCbor: '84a0a0f5f6',
+  fullCborDigest: '22'.repeat(32),
+  witnessSetCbor: 'a0',
+  auxiliaryDataCbor: 'f6',
+  isValid: true,
+  effects: [],
+  existingVkeyWitnesses: [],
+  existingBootstrapWitnesses: [],
+  commitmentsVerified: true,
+  approvable: true,
+  refusalReasons: [],
+};
 
 describe('Cip30ConsentStore', () => {
   it('correlates approval by main-issued ID and restores trusted focus', async () => {
@@ -74,15 +99,16 @@ describe('Cip30ConsentStore', () => {
     });
   });
 
-  it('forwards a passphrase for signing but never submission', async () => {
+  it('forwards a passphrase for single/batch signing but never submission', async () => {
     const signing = createStore();
+    const signRequest: DappConsentPresentation = {
+      ...request,
+      kind: 'transaction-sign',
+      review: transactionReview,
+    };
     const signDecision = signing.receive({
       type: 'present',
-      request: {
-        ...request,
-        kind: 'transaction-sign',
-        review: {},
-      } as any,
+      request: signRequest,
     });
     signing.approve('secret');
     await expect(signDecision).resolves.toEqual({
@@ -91,14 +117,36 @@ describe('Cip30ConsentStore', () => {
       passphrase: 'secret',
     });
 
+    const batchSigning = createStore();
+    const batchSignRequest: DappConsentPresentation = {
+      ...request,
+      kind: 'batch-sign',
+      review: {
+        mode: 'sign',
+        approvable: true,
+        items: [],
+      },
+    };
+    const batchSignDecision = batchSigning.receive({
+      type: 'present',
+      request: batchSignRequest,
+    });
+    batchSigning.approve('batch-secret');
+    await expect(batchSignDecision).resolves.toEqual({
+      requestId: request.requestId,
+      approved: true,
+      passphrase: 'batch-secret',
+    });
+
     const submission = createStore();
+    const submitRequest: DappConsentPresentation = {
+      ...request,
+      kind: 'transaction-submit',
+      review: { ...transactionReview, mode: 'submit' },
+    };
     const submitDecision = submission.receive({
       type: 'present',
-      request: {
-        ...request,
-        kind: 'transaction-submit',
-        review: {},
-      } as any,
+      request: submitRequest,
     });
     submission.approve('must-not-cross');
     await expect(submitDecision).resolves.toEqual({

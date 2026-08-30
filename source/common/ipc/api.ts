@@ -77,6 +77,7 @@ import type {
   Cip30WalletResponse,
 } from '../cip30/executor';
 import type { Cip30TransactionReview } from '../cip30/review';
+import type { Cip103BatchReview } from '../cip30/cip103Review';
 import type { Cip8DataSignReview } from '../cardano/cip8';
 import type {
   DappGrant,
@@ -263,7 +264,9 @@ export type DappConsentKind =
   | 'key-disclosure'
   | 'data-sign'
   | 'transaction-sign'
-  | 'transaction-submit';
+  | 'transaction-submit'
+  | 'batch-sign'
+  | 'batch-submit';
 type DappConsentIdentity = Readonly<{
   requestId: string;
   origin: string;
@@ -278,6 +281,10 @@ export type DappConsentPresentation = DappConsentIdentity &
     | Readonly<{
         kind: 'transaction-sign' | 'transaction-submit';
         review: Cip30TransactionReview;
+      }>
+    | Readonly<{
+        kind: 'batch-sign' | 'batch-submit';
+        review: Cip103BatchReview;
       }>
     | Readonly<{ kind: 'data-sign'; review: Cip8DataSignReview }>
   );
