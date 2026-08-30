@@ -1,4 +1,5 @@
 import { bytesForSpan } from './cborSlices';
+import type { Output, SemanticTransaction } from './transaction';
 import type {
   ContextOutput,
   TransactionContextSnapshot,
@@ -36,6 +37,30 @@ export type Cip103ResolvedInput = Readonly<{
   provenance: readonly Cip103InputSource[];
 }>;
 
+export type Cip103Conflict = Readonly<{
+  transactionIndex: number;
+  inputRole: Cip103InputRole;
+  outpoint: Readonly<{ transactionId: string; index: number }>;
+  earlierTransactionIndex: number;
+}>;
+
+export type Cip103ProducedOutput = Readonly<{
+  transactionIndex: number;
+  outputIndex: number;
+  kind: 'output' | 'collateral-return';
+  outpoint: Readonly<{ transactionId: string; index: number }>;
+  sourceCbor: string;
+  value: Output;
+}>;
+
+export type Cip103ItemEffects = Readonly<{
+  outcome: 'valid' | 'invalid';
+  spent: readonly Cip103ResolvedInput[];
+  referenced: readonly Cip103ResolvedInput[];
+  produced: readonly Cip103ProducedOutput[];
+  semantic: SemanticTransaction['effects'];
+}>;
+
 export type Cip103Resolution = Readonly<{
   state: 'resolved';
   items: readonly Readonly<{
@@ -47,6 +72,8 @@ export type Cip103Resolution = Readonly<{
       collateral: readonly Cip103ResolvedInput[];
       reference: readonly Cip103ResolvedInput[];
     }>;
+    conflicts: readonly Cip103Conflict[];
+    effects: Cip103ItemEffects;
   }>[];
 }>;
 
@@ -71,6 +98,64 @@ const outputMap = (
     result.set(id, output);
   });
   return result;
+};
+
+const producedOutputAt = (
+  item: Cip103PreflightItem,
+  outputIndex: number
+):
+  | Readonly<{ kind: Cip103ProducedOutput['kind']; value: Output }>
+  | undefined => {
+  if (item.envelope.isValid) {
+    const value = item.transaction.outputs[outputIndex];
+    return value ? { kind: 'output', value } : undefined;
+  }
+  return outputIndex === item.transaction.outputs.length &&
+    item.transaction.collateral.return
+    ? { kind: 'collateral-return', value: item.transaction.collateral.return }
+    : undefined;
+};
+
+const producedOutputs = (
+  item: Cip103PreflightItem
+): readonly Cip103ProducedOutput[] => {
+  let values: readonly Readonly<{
+    kind: Cip103ProducedOutput['kind'];
+    value: Output;
+  }>[] = [];
+  if (item.envelope.isValid)
+    values = item.transaction.outputs.map((value) => ({
+      kind: 'output',
+      value,
+    }));
+  else if (item.transaction.collateral.return)
+    values = [
+      {
+        kind: 'collateral-return',
+        value: item.transaction.collateral.return,
+      },
+    ];
+  const firstIndex = item.envelope.isValid
+    ? 0
+    : item.transaction.outputs.length;
+  return Object.freeze(
+    values.map(({ kind: outputKind, value }, offset) => {
+      const outputIndex = firstIndex + offset;
+      return Object.freeze({
+        transactionIndex: item.index,
+        outputIndex,
+        kind: outputKind,
+        outpoint: Object.freeze({
+          transactionId: item.bodyHash,
+          index: outputIndex,
+        }),
+        sourceCbor: bytesForSpan(item.envelope.cbor, value.exactSpan).toString(
+          'hex'
+        ),
+        value,
+      });
+    })
+  );
 };
 
 export const resolveCip103TransactionOverlay = (
@@ -110,12 +195,12 @@ export const resolveCip103TransactionOverlay = (
         let source: Cip103InputSource;
         let sourceTransactionIndex: number | undefined;
         if (parent) {
-          const produced = parent.transaction.outputs[outputIndex];
+          const produced = producedOutputAt(parent, outputIndex);
           if (!produced || !output.provenance.includes('earlier'))
             return fail(item.index, inputRole, 'unresolved_input');
           const parentCbor = bytesForSpan(
             parent.envelope.cbor,
-            produced.exactSpan
+            produced.value.exactSpan
           ).toString('hex');
           if (parentCbor !== output.sourceCbor)
             return fail(item.index, inputRole, 'source_conflict');
@@ -147,21 +232,51 @@ export const resolveCip103TransactionOverlay = (
       })
     );
 
+  const claimed = new Map<string, number>();
+  const resolvedItems = items.map((item) => {
+    const inputs = Object.freeze({
+      normal: resolveRole(item, 'normal'),
+      collateral: resolveRole(item, 'collateral'),
+      reference: resolveRole(item, 'reference'),
+    });
+    const conflicts: Cip103Conflict[] = [];
+    [...inputs.normal, ...inputs.collateral].forEach((input) => {
+      const earlierTransactionIndex = claimed.get(
+        key(input.outpoint.transactionId, input.outpoint.index)
+      );
+      if (earlierTransactionIndex !== undefined)
+        conflicts.push(
+          Object.freeze({
+            transactionIndex: item.index,
+            inputRole: input.inputRole,
+            outpoint: input.outpoint,
+            earlierTransactionIndex,
+          })
+        );
+    });
+    const spent = item.envelope.isValid ? inputs.normal : inputs.collateral;
+    spent.forEach((input) => {
+      const id = key(input.outpoint.transactionId, input.outpoint.index);
+      if (!claimed.has(id)) claimed.set(id, item.index);
+    });
+    return Object.freeze({
+      transactionIndex: item.index,
+      bodyHash: item.bodyHash,
+      fullCborDigest: item.fullCborDigest,
+      inputs,
+      conflicts,
+      effects: Object.freeze({
+        outcome: item.envelope.isValid ? 'valid' : 'invalid',
+        spent: Object.freeze([...spent]),
+        referenced: Object.freeze([...inputs.reference]),
+        produced: producedOutputs(item),
+        semantic: Object.freeze([...item.transaction.effects]),
+      }),
+    });
+  });
+
   return Object.freeze({
     state: 'resolved',
-    items: Object.freeze(
-      items.map((item) =>
-        Object.freeze({
-          transactionIndex: item.index,
-          bodyHash: item.bodyHash,
-          fullCborDigest: item.fullCborDigest,
-          inputs: Object.freeze({
-            normal: resolveRole(item, 'normal'),
-            collateral: resolveRole(item, 'collateral'),
-            reference: resolveRole(item, 'reference'),
-          }),
-        })
-      )
-    ),
+    items: Object.freeze(resolvedItems),
   });
 };
