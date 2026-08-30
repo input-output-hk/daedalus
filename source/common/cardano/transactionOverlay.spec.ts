@@ -15,40 +15,48 @@ import type { Cip103PreflightItem } from '../types/cip103.types';
 const address = Buffer.from(`60${'aa'.repeat(28)}`, 'hex');
 const nodeId = '11'.repeat(32);
 
+type Input = string | readonly [string, number];
+
+const encodedInput = (input: Input): [Buffer, number] =>
+  typeof input === 'string'
+    ? [Buffer.from(input, 'hex'), 0]
+    : [Buffer.from(input[0], 'hex'), input[1]];
+
 const transaction = ({
   normal = [nodeId],
   collateral = [],
   reference = [],
+  valid = true,
+  collateralReturn = false,
 }: {
-  normal?: string[];
-  collateral?: string[];
-  reference?: string[];
+  normal?: Input[];
+  collateral?: Input[];
+  reference?: Input[];
+  valid?: boolean;
+  collateralReturn?: boolean;
 }): string => {
   const body = new Map<number, unknown>([
-    [0, normal.map((id) => [Buffer.from(id, 'hex'), 0])],
+    [0, normal.map(encodedInput)],
     [1, [[address, 900_000]]],
     [2, 100_000],
   ]);
-  if (collateral.length)
-    body.set(
-      13,
-      collateral.map((id) => [Buffer.from(id, 'hex'), 0])
-    );
-  if (reference.length)
-    body.set(
-      18,
-      reference.map((id) => [Buffer.from(id, 'hex'), 0])
-    );
-  return cbor.encodeCanonical([body, new Map(), true, null]).toString('hex');
+  if (collateral.length) body.set(13, collateral.map(encodedInput));
+  if (reference.length) body.set(18, reference.map(encodedInput));
+  if (collateralReturn) {
+    body.set(16, [address, 400_000]);
+    body.set(17, 500_000);
+  }
+  return cbor.encodeCanonical([body, new Map(), valid, null]).toString('hex');
 };
 
 const contextOutput = (
   transactionId: string,
   sourceCbor: string,
   provenance: ContextOutput['provenance'],
-  roles: ContextOutput['roles']
+  roles: ContextOutput['roles'],
+  index = 0
 ): ContextOutput => ({
-  outpoint: { transactionId, index: 0 },
+  outpoint: { transactionId, index },
   sourceCbor,
   inputCbor: '',
   canonicalCbor: sourceCbor,
@@ -86,6 +94,12 @@ const parentOutput = (item: Cip103PreflightItem): string =>
     item.envelope.cbor,
     item.transaction.outputs[0].exactSpan
   ).toString('hex');
+
+const collateralReturnOutput = (item: Cip103PreflightItem): string => {
+  const output = item.transaction.collateral.return;
+  if (!output) throw new Error('Missing collateral return');
+  return bytesForSpan(item.envelope.cbor, output.exactSpan).toString('hex');
+};
 
 const expectOverlayFailure = (
   callback: () => unknown,
@@ -152,9 +166,132 @@ describe('CIP-103 transaction overlay', () => {
       'pending',
       'node',
     ]);
+    expect(result.items[2].conflicts).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          inputRole: 'collateral',
+          earlierTransactionIndex: 1,
+        }),
+      ])
+    );
+    expect(
+      result.items.some(({ conflicts }) =>
+        conflicts.some(({ inputRole }) => inputRole === 'reference')
+      )
+    ).toBe(false);
+    expect(result.items[3].effects.referenced).toHaveLength(1);
+    expect(result.items[3].effects.spent).not.toContain(
+      result.items[3].inputs.reference[0]
+    );
+    expect(result.items[0].effects).not.toBe(result.items[1].effects);
+    expect(result.items[0].effects).toMatchObject({
+      outcome: 'valid',
+      produced: [{ kind: 'output', outputIndex: 0 }],
+    });
     expect(Object.isFrozen(result)).toBe(true);
     expect(Object.isFrozen(result.items)).toBe(true);
     expect(Object.isFrozen(result.items[3].inputs.reference)).toBe(true);
+  });
+
+  it('uses invalid collateral claims and produces only collateral return', () => {
+    const collateralId = '33'.repeat(32);
+    const parent = preflightCip103Sign(
+      [
+        {
+          cbor: transaction({
+            normal: [nodeId],
+            collateral: [collateralId],
+            valid: false,
+            collateralReturn: true,
+          }),
+        },
+      ],
+      0
+    ).items[0];
+    const items = preflightCip103Sign(
+      [
+        { cbor: parent.cbor },
+        {
+          cbor: transaction({ normal: [[parent.bodyHash, 1]] }),
+        },
+        { cbor: transaction({ normal: [collateralId] }) },
+      ],
+      0
+    ).items;
+    const normalOutput = parentOutput(parent);
+    const returnedOutput = collateralReturnOutput(parent);
+    const result = resolveCip103TransactionOverlay(
+      items,
+      snapshot(items, [
+        contextOutput(nodeId, normalOutput, ['node'], ['normal']),
+        contextOutput(
+          collateralId,
+          normalOutput,
+          ['node'],
+          ['normal', 'collateral']
+        ),
+        contextOutput(
+          parent.bodyHash,
+          returnedOutput,
+          ['earlier'],
+          ['normal'],
+          1
+        ),
+      ])
+    );
+
+    expect(result.items[0].effects).toMatchObject({
+      outcome: 'invalid',
+      spent: [
+        {
+          inputRole: 'collateral',
+          outpoint: { transactionId: collateralId, index: 0 },
+        },
+      ],
+      produced: [
+        {
+          kind: 'collateral-return',
+          outputIndex: 1,
+          sourceCbor: returnedOutput,
+        },
+      ],
+    });
+    expect(result.items[1].inputs.normal[0]).toMatchObject({
+      source: 'earlier',
+      sourceTransactionIndex: 0,
+    });
+    expect(result.items[2].conflicts).toEqual([
+      expect.objectContaining({
+        inputRole: 'normal',
+        earlierTransactionIndex: 0,
+      }),
+    ]);
+
+    const invalidOutputChild = preflightCip103Sign(
+      [
+        { cbor: parent.cbor },
+        { cbor: transaction({ normal: [[parent.bodyHash, 0]] }) },
+      ],
+      0
+    ).items;
+    expectOverlayFailure(
+      () =>
+        resolveCip103TransactionOverlay(
+          invalidOutputChild,
+          snapshot(invalidOutputChild, [
+            contextOutput(nodeId, normalOutput, ['node'], ['normal']),
+            contextOutput(collateralId, normalOutput, ['node'], ['collateral']),
+            contextOutput(
+              parent.bodyHash,
+              normalOutput,
+              ['earlier'],
+              ['normal']
+            ),
+          ])
+        ),
+      'unresolved_input',
+      1
+    );
   });
 
   it('rejects self, forward, unresolved, role, and exact-byte conflicts under partial signing', () => {
