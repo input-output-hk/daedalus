@@ -28,6 +28,8 @@ import type {
   CardanoSignedTxData,
 } from '@trezor/connect';
 import { verifyHardwareTransactionWitnesses } from '../../common/cardano/witnessSet';
+import { decodeConwayTransaction } from '../../common/cardano/transaction';
+import { parseConwayTransactionEnvelope } from '../../common/cardano/transactionEnvelope';
 import { toExactLedgerSignTransactionRequest } from '../../common/hardware/ledgerTransaction';
 import { toExactTrezorSignTransactionRequest } from '../../common/hardware/trezorTransaction';
 import { serializeCip8 } from '../../common/cardano/cip8';
@@ -250,6 +252,19 @@ export class HardwareWalletOperationCancelled extends Error {
     this.name = 'HardwareWalletOperationCancelled';
   }
 }
+const restoreExactTransaction = (
+  exact: HardwareExactTransaction
+): HardwareExactTransaction => {
+  const transaction = decodeConwayTransaction(
+    parseConwayTransactionEnvelope(Buffer.from(exact.transaction.envelope.cbor))
+  );
+  if (
+    transaction.transactionId !== exact.bodyHash ||
+    exact.transaction.transactionId !== exact.bodyHash
+  )
+    throw new Error('Hardware transaction body mismatch');
+  return Object.freeze({ ...exact, transaction });
+};
 
 export class HardwareWalletService {
   private devicesMemo: Record<string, LedgerConnection> = {};
@@ -438,7 +453,7 @@ export class HardwareWalletService {
       } else {
         this.activeLedgerOperations.delete(key);
         this.ledgerInvalidations.delete(key);
-    }
+      }
     }
   };
 
@@ -460,7 +475,7 @@ export class HardwareWalletService {
     try {
       const result = await execute();
       this.assertCurrentTrezorOperation(generation);
-    return result;
+      return result;
     } catch (error) {
       this.assertCurrentTrezorOperation(generation);
       throw error;
@@ -486,55 +501,55 @@ export class HardwareWalletService {
       } catch {
         throw this.operationError('signTx', 'proof-generation');
       }
-    const expected = exact.signers
-      .filter(({ keyHash }) =>
-        exact.witnesses.requestedDeviceKeyHashes.includes(keyHash)
-      )
-      .map(({ path, keyHash }) => ({
-        path: path.join('/'),
-        keyHash,
-      }));
-    return this.withLedgerOperation(devicePath, async (connection) => {
-      const signed = await connection.signTransaction(request);
-      if (
-        signed.txHashHex !== exact.bodyHash ||
-        !/^[0-9a-f]{64}$/u.test(signed.txHashHex)
-      )
+      const expected = exact.signers
+        .filter(({ keyHash }) =>
+          exact.witnesses.requestedDeviceKeyHashes.includes(keyHash)
+        )
+        .map(({ path, keyHash }) => ({
+          path: path.join('/'),
+          keyHash,
+        }));
+      return this.withLedgerOperation(devicePath, async (connection) => {
+        const signed = await connection.signTransaction(request);
+        if (
+          signed.txHashHex !== exact.bodyHash ||
+          !/^[0-9a-f]{64}$/u.test(signed.txHashHex)
+        )
           throw this.operationError('signTx', 'proof-generation');
-      const seen = new Set<string>();
-      const witnesses: HardwareTransactionWitnessResponse['witnesses'][number][] = [];
-      for (const witness of signed.witnesses) {
-        const path = witness.path.join('/');
-        const expectedWitness = expected.find(
-          (candidate) => candidate.path === path
-        );
-        if (!expectedWitness || seen.has(path))
+        const seen = new Set<string>();
+        const witnesses: HardwareTransactionWitnessResponse['witnesses'][number][] = [];
+        for (const witness of signed.witnesses) {
+          const path = witness.path.join('/');
+          const expectedWitness = expected.find(
+            (candidate) => candidate.path === path
+          );
+          if (!expectedWitness || seen.has(path))
             throw this.operationError('signTx', 'proof-generation');
-        seen.add(path);
-        if (!/^[0-9a-f]{128}$/u.test(witness.witnessSignatureHex))
+          seen.add(path);
+          if (!/^[0-9a-f]{128}$/u.test(witness.witnessSignatureHex))
             throw this.operationError('signTx', 'proof-generation');
-        const key = await connection.getExtendedPublicKey({
-          path: witness.path,
-        });
-        if (!/^[0-9a-f]{64}$/u.test(key.publicKeyHex))
+          const key = await connection.getExtendedPublicKey({
+            path: witness.path,
+          });
+          if (!/^[0-9a-f]{64}$/u.test(key.publicKeyHex))
             throw this.operationError('signTx', 'proof-generation');
-        const keyHash = Buffer.from(
-          blake2b(Buffer.from(key.publicKeyHex, 'hex'), undefined, 28)
-        ).toString('hex');
-        if (keyHash !== expectedWitness.keyHash)
+          const keyHash = Buffer.from(
+            blake2b(Buffer.from(key.publicKeyHex, 'hex'), undefined, 28)
+          ).toString('hex');
+          if (keyHash !== expectedWitness.keyHash)
             throw this.operationError('signTx', 'proof-generation');
-        witnesses.push({
-          publicKey: key.publicKeyHex,
-          signature: witness.witnessSignatureHex,
-        });
-      }
-      if (seen.size !== expected.length)
+          witnesses.push({
+            publicKey: key.publicKeyHex,
+            signature: witness.witnessSignatureHex,
+          });
+        }
+        if (seen.size !== expected.length)
           throw this.operationError('signTx', 'proof-generation');
         try {
-      return verifyHardwareTransactionWitnesses(exact, {
-        bodyHash: signed.txHashHex,
-        witnesses,
-      });
+          return verifyHardwareTransactionWitnesses(exact, {
+            bodyHash: signed.txHashHex,
+            witnesses,
+          });
         } catch {
           throw this.operationError('signTx', 'proof-generation');
         }
@@ -552,7 +567,7 @@ export class HardwareWalletService {
         throw this.operationError('signTx', 'proof-generation');
       }
       return this.withTrezorOperation(async () => {
-    const result = await TrezorConnect.cardanoSignTransaction(request);
+        const result = await TrezorConnect.cardanoSignTransaction(request);
         if (!result.success) {
           const code = vendorErrorCode(result.payload);
           if (typeof code !== 'string')
@@ -562,32 +577,32 @@ export class HardwareWalletService {
             trezorRefusalCodes.has(code) ? 'user-declined' : 'proof-generation'
           );
         }
-    const payload = result.payload as CardanoSignedTxData;
-    if (
-      !payload ||
-      payload.auxiliaryDataSupplement !== undefined ||
-      payload.hash !== exact.bodyHash ||
-      !/^[0-9a-f]{64}$/u.test(payload.hash) ||
-      !Array.isArray(payload.witnesses)
-    )
-          throw this.operationError('signTx', 'proof-generation');
-    const witnesses: HardwareTransactionWitnessResponse['witnesses'][number][] = payload.witnesses.map(
-      ({ type, pubKey, signature, chainCode }) => {
+        const payload = result.payload as CardanoSignedTxData;
         if (
-          chainCode !== undefined ||
-          type !== 1 ||
-          !/^[0-9a-f]{64}$/u.test(pubKey) ||
-          !/^[0-9a-f]{128}$/u.test(signature)
+          !payload ||
+          payload.auxiliaryDataSupplement !== undefined ||
+          payload.hash !== exact.bodyHash ||
+          !/^[0-9a-f]{64}$/u.test(payload.hash) ||
+          !Array.isArray(payload.witnesses)
         )
+          throw this.operationError('signTx', 'proof-generation');
+        const witnesses: HardwareTransactionWitnessResponse['witnesses'][number][] = payload.witnesses.map(
+          ({ type, pubKey, signature, chainCode }) => {
+            if (
+              chainCode !== undefined ||
+              type !== 1 ||
+              !/^[0-9a-f]{64}$/u.test(pubKey) ||
+              !/^[0-9a-f]{128}$/u.test(signature)
+            )
               throw this.operationError('signTx', 'proof-generation');
-        return { publicKey: pubKey, signature };
-      }
-    );
+            return { publicKey: pubKey, signature };
+          }
+        );
         try {
-    return verifyHardwareTransactionWitnesses(exact, {
-      bodyHash: payload.hash,
-      witnesses,
-    });
+          return verifyHardwareTransactionWitnesses(exact, {
+            bodyHash: payload.hash,
+            witnesses,
+          });
         } catch {
           throw this.operationError('signTx', 'proof-generation');
         }
@@ -599,36 +614,36 @@ export class HardwareWalletService {
     request: HardwareMessageRequest
   ) =>
     this.withNormalizedOperation('signData', 'ledger', () =>
-    this.withLedgerOperation(devicePath, async (connection) => {
-      const signed = await connection.signMessage(
-        request.address.kind === 'key_hash'
-          ? {
-              messageHex: request.payload,
-              signingPath: [...request.path],
-              hashPayload: false,
-              preferHexDisplay: false,
-              addressFieldType: MessageAddressFieldType.KEY_HASH,
-            }
-          : {
-              messageHex: request.payload,
-              signingPath: [...request.path],
-              hashPayload: false,
-              preferHexDisplay: false,
-              addressFieldType: MessageAddressFieldType.ADDRESS,
-              address: ledgerMessageAddress(request.address),
-              network: {
-                networkId: request.network.networkId,
-                protocolMagic: request.network.networkMagic,
-              },
-            }
-      );
+      this.withLedgerOperation(devicePath, async (connection) => {
+        const signed = await connection.signMessage(
+          request.address.kind === 'key_hash'
+            ? {
+                messageHex: request.payload,
+                signingPath: [...request.path],
+                hashPayload: false,
+                preferHexDisplay: false,
+                addressFieldType: MessageAddressFieldType.KEY_HASH,
+              }
+            : {
+                messageHex: request.payload,
+                signingPath: [...request.path],
+                hashPayload: false,
+                preferHexDisplay: false,
+                addressFieldType: MessageAddressFieldType.ADDRESS,
+                address: ledgerMessageAddress(request.address),
+                network: {
+                  networkId: request.network.networkId,
+                  protocolMagic: request.network.networkMagic,
+                },
+              }
+        );
         try {
-      return verifiedHardwareMessage(
-        request,
-        signed.signingPublicKeyHex,
-        signed.signatureHex,
-        signed.addressFieldHex
-      );
+          return verifiedHardwareMessage(
+            request,
+            signed.signingPublicKeyHex,
+            signed.signatureHex,
+            signed.addressFieldHex
+          );
         } catch {
           throw this.operationError('signData', 'proof-generation');
         }
@@ -638,16 +653,16 @@ export class HardwareWalletService {
   public signTrezorMessage = (request: HardwareMessageRequest) =>
     this.withNormalizedOperation('signData', 'trezor', () =>
       this.withTrezorOperation(async () => {
-    const result = await TrezorConnect.cardanoSignMessage({
-      path: [...request.path],
-      payload: request.payload,
-      preferHexDisplay: false,
-      networkId: request.network.networkId,
-      protocolMagic: request.network.networkMagic,
-      ...(request.address.kind === 'address'
-        ? { addressParameters: trezorMessageAddress(request.address) }
-        : {}),
-    });
+        const result = await TrezorConnect.cardanoSignMessage({
+          path: [...request.path],
+          payload: request.payload,
+          preferHexDisplay: false,
+          networkId: request.network.networkId,
+          protocolMagic: request.network.networkMagic,
+          ...(request.address.kind === 'address'
+            ? { addressParameters: trezorMessageAddress(request.address) }
+            : {}),
+        });
         if (!result.success) {
           const code = vendorErrorCode(result.payload);
           if (typeof code !== 'string')
@@ -657,23 +672,23 @@ export class HardwareWalletService {
             trezorRefusalCodes.has(code) ? 'user-declined' : 'proof-generation'
           );
         }
-    const signed = result.payload as CardanoSignedMessage;
-    if (
-      !signed ||
-      signed.payload !== request.payload ||
-      signed.headers?.protected?.[1] !== -8 ||
-      signed.headers.protected.address !== request.address.value ||
-      signed.headers.unprotected?.hashed !== false ||
-      signed.headers.unprotected.version !== 1
-    )
+        const signed = result.payload as CardanoSignedMessage;
+        if (
+          !signed ||
+          signed.payload !== request.payload ||
+          signed.headers?.protected?.[1] !== -8 ||
+          signed.headers.protected.address !== request.address.value ||
+          signed.headers.unprotected?.hashed !== false ||
+          signed.headers.unprotected.version !== 1
+        )
           throw this.operationError('signData', 'proof-generation');
         try {
-    return verifiedHardwareMessage(
-      request,
-      signed.pubKey,
-      signed.signature,
-      signed.headers.protected.address
-    );
+          return verifiedHardwareMessage(
+            request,
+            signed.pubKey,
+            signed.signature,
+            signed.headers.protected.address
+          );
         } catch {
           throw this.operationError('signData', 'proof-generation');
         }
@@ -730,6 +745,7 @@ export class HardwareWalletService {
     getHardwareWalletConnectionChannel,
     signTransactionLedgerChannel,
     signTransactionTrezorChannel,
+    signExactHardwareTransactionChannel,
     resetTrezorActionChannel,
     handleInitTrezorConnectChannel,
     handleInitLedgerConnectChannel,
@@ -1408,6 +1424,25 @@ export class HardwareWalletService {
         TrezorConnect.cardanoSignTransaction(dataToSign)
       );
     });
+
+    signExactHardwareTransactionChannel.onRequest(
+      async ({ vendor, ledgerPath, exact }) => {
+        if (
+          vendor !== exact.capability.vendor ||
+          !exact.capability.physicalCertified ||
+          !exact.capability.productEnabled
+        )
+          throw new Error('Hardware exact transaction is not enabled');
+        const restored = restoreExactTransaction(exact);
+        if (vendor === 'ledger') {
+          if (!ledgerPath) throw new Error('Ledger device not connected');
+          return this.signExactLedgerTransaction(ledgerPath, restored);
+        }
+        if (ledgerPath !== undefined)
+          throw new Error('Trezor must not receive a Ledger path');
+        return this.signExactTrezorTransaction(restored);
+      }
+    );
 
     resetTrezorActionChannel.onRequest(async () => {
       logger.info('[TREZOR-CONNECT] Called TrezorConnect.cancel()');
