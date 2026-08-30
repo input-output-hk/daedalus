@@ -449,8 +449,6 @@ export class Cip30Broker {
       context
     );
     const cip95 = capability.enabledExtensions.includes(95);
-    if (evidence.walletKind !== 'shelley-software')
-      throw txSignRejection(1, 'Proof generation failed');
 
     this.assertCurrent(binding);
     const contextResponse = await this.options.executeWallet({
@@ -466,9 +464,10 @@ export class Cip30Broker {
       throw internal();
     }
     if (contextResponse.operation !== 'transaction-context') throw internal();
+    const signingContext = contextResponse.value;
     let snapshot;
     try {
-      snapshot = reconcileTransactionContext(contextResponse.value, {
+      snapshot = reconcileTransactionContext(signingContext, {
         walletId: binding.authority.walletId,
         network: binding.authority.network,
         transactions: [cbor],
@@ -500,6 +499,7 @@ export class Cip30Broker {
               .filter((identity) => identity.startsWith('2:'))
               .map((identity) => identity.slice(2)),
           ];
+    const software = evidence.walletKind === 'shelley-software';
     const result = await this.options.consent.request({
       identity: {
         guestWebContentsId: binding.authority.guestWebContentsId,
@@ -521,14 +521,14 @@ export class Cip30Broker {
         extensions: capability.enabledExtensions,
         review,
       },
-      payload: { cbor, partialSign, context: contextResponse.value },
+      payload: { cbor, partialSign, context: signingContext },
       declined: txSignRejection(2, 'User declined'),
       execute: async (_payload, signal, passphrase) => {
-        if (signal.aborted || !passphrase)
+        if (signal.aborted || (software && !passphrase))
           throw txSignRejection(1, 'Proof generation failed');
         this.assertCurrent(binding);
         const latest = await this.capabilityEvidence(binding);
-        if (latest.evidence.walletKind !== 'shelley-software')
+        if (latest.evidence.walletKind !== evidence.walletKind)
           throw txSignRejection(1, 'Proof generation failed');
         this.options.dispatcher.requireCapability(
           request.method,
@@ -540,9 +540,14 @@ export class Cip30Broker {
           walletId: binding.authority.walletId,
           network: binding.authority.network,
           sourceRevision: this.options.sourceRevision,
-          context: contextResponse.value,
-          transactions: Object.freeze([Object.freeze({ cbor, partialSign })]),
-          passphrase,
+          context: signingContext,
+          transactions: Object.freeze([
+            Object.freeze({
+              cbor,
+              partialSign,
+            }),
+          ]),
+          ...(software ? { passphrase } : {}),
         });
         this.assertCurrent(binding);
         if (response.status === 'rejected') {

@@ -250,6 +250,8 @@ export const prepareHardwareTransaction = (
   const capabilityReasons = [
     ...(!capability.staticallyRepresentable ? ['not-representable'] : []),
     ...(!capability.staticGatesPassed ? ['static-gate'] : []),
+    ...(!capability.physicalCertified ? ['physical-certification'] : []),
+    ...(!capability.productEnabled ? ['product-disabled'] : []),
     ...Object.entries(capability.familyDispositions)
       .filter(([, disposition]) => disposition !== 'representable')
       .map(([family, disposition]) => `${family}:${disposition}`),

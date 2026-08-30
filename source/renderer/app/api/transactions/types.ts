@@ -304,10 +304,16 @@ export type VotingDataType = {
 
 export type ConstructTransactionData = {
   walletId: string;
-  data: {
-    // 'abstain' | 'no_confidence' | dRepId
-    vote?: string;
-  };
+  data:
+    | {
+        vote?: string;
+      }
+    | {
+        encoding: 'base16';
+        payments: Array<TransactionPaymentData>;
+        withdrawal?: TransactionWithdrawalType;
+        metadata?: VotingMetadataType | null;
+      };
 };
 
 export type ConstructTransactionResponse = {

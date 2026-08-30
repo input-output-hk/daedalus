@@ -807,6 +807,43 @@ describe('Cip30Broker', () => {
     fixture.cleanup();
   });
 
+  it('releases only verified hardware witnesses from the reviewed context', async () => {
+    const fixture = create();
+    fixture.setWalletKind('ledger');
+    await fixture.broker.handle(event, request('provider.enable'));
+    fixture.executeWallet.mockClear();
+    (fixture.consent.request as jest.Mock).mockClear();
+
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signTx', [transactionSignature.cbor, true])
+      )
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      value: transactionSignature.witnessSet,
+    });
+    const calls = fixture.executeWallet.mock.calls
+      .map(([walletRequest]) => walletRequest)
+      .filter(({ operation }) => operation === 'sign-transactions');
+    expect(calls).toEqual([
+      expect.objectContaining({
+        context: { revision: 1, context_digest: 'context' },
+        transactions: [{ cbor: transactionSignature.cbor, partialSign: true }],
+      }),
+    ]);
+    expect(calls[0]).not.toHaveProperty('passphrase');
+    expect(transactionContext.reconcileTransactionContext).toHaveBeenCalledWith(
+      { revision: 1, context_digest: 'context' },
+      {
+        walletId: 'wallet',
+        network,
+        transactions: [transactionSignature.cbor],
+      }
+    );
+    fixture.cleanup();
+  });
+
   it('uses the shared witness path with negotiated CIP-95 governance authority', async () => {
     const fixture = create();
     await fixture.broker.handle(

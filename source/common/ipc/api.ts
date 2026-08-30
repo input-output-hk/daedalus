@@ -51,6 +51,8 @@ import type {
   IntrospectAddressResponse,
 } from '../types/address-introspection.types';
 import type {
+  DeviceType,
+  HardwareExactTransaction,
   HardwareWalletCardanoAdaAppResponse,
   HardwareWalletConnectionRequest,
   HardwareWalletExtendedPublicKeyRequest,
@@ -554,6 +556,14 @@ export type signTransactionTrezorRendererRequest = CommonParams &
 export type signTransactionTrezorMainResponse =
   | Success<CardanoSignedTxData>
   | Unsuccessful;
+export const SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL =
+  'SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL';
+export type SignExactHardwareTransactionRendererRequest = Readonly<{
+  vendor: DeviceType;
+  ledgerPath?: string;
+  exact: HardwareExactTransaction;
+}>;
+export type SignExactHardwareTransactionMainResponse = string;
 export const GET_INIT_TREZOR_CONNECT_CHANNEL =
   'GET_INIT_TREZOR_CONNECT_CHANNEL';
 export type handleInitTrezorConnectRendererRequest = void;

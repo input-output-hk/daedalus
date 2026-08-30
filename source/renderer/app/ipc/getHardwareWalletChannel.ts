@@ -6,6 +6,7 @@ import {
   GET_HARDWARE_WALLET_CONNECTION_CHANNEL,
   SIGN_TRANSACTION_LEDGER_CHANNEL,
   SIGN_TRANSACTION_TREZOR_CHANNEL,
+  SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL,
   GET_INIT_TREZOR_CONNECT_CHANNEL,
   GET_INIT_LEDGER_CONNECT_CHANNEL,
   RESET_ACTION_TREZOR_CHANNEL,
@@ -27,6 +28,8 @@ import type {
   signTransactionLedgerRendererRequest,
   signTransactionTrezorMainResponse,
   signTransactionTrezorRendererRequest,
+  SignExactHardwareTransactionMainResponse,
+  SignExactHardwareTransactionRendererRequest,
   getCardanoAdaAppMainResponse,
   getCardanoAdaAppRendererRequest,
   handleInitTrezorConnectMainResponse,
@@ -72,6 +75,10 @@ export const signTransactionTrezorChannel: RendererIpcChannel<
   signTransactionTrezorMainResponse,
   signTransactionTrezorRendererRequest
 > = new RendererIpcChannel(SIGN_TRANSACTION_TREZOR_CHANNEL);
+export const signExactHardwareTransactionChannel: RendererIpcChannel<
+  SignExactHardwareTransactionMainResponse,
+  SignExactHardwareTransactionRendererRequest
+> = new RendererIpcChannel(SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL);
 export const handleInitTrezorConnectChannel: RendererIpcChannel<
   handleInitTrezorConnectMainResponse,
   handleInitTrezorConnectRendererRequest

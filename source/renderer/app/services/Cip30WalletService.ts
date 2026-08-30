@@ -8,6 +8,8 @@ import type WalletAddress from '../domains/WalletAddress';
 import { bindCip30WalletRenderer } from '../ipc/cip30Wallet';
 import type { StoresMap } from '../stores';
 import { validateDappTransactionContext } from '../api/transactions/dappBackend';
+import { reconcileTransactionContext } from '../../../common/cardano/transactionContext';
+import { prepareHardwareTransaction } from '../utils/hardwareWalletTransaction';
 
 const backendNetwork = (network: Cip30WalletNetwork) => ({
   network_id: network.networkId,
@@ -265,7 +267,57 @@ export class Cip30WalletService {
       if (request.operation === 'sign-transactions') {
         const wallet = this.currentWallet(request);
         if (!wallet) return this.rejection(request, 'unavailable');
-        if (wallet.isHardwareWallet)
+        if (wallet.isHardwareWallet) {
+          const snapshot = reconcileTransactionContext(request.context, {
+            walletId: request.walletId,
+            network: request.network,
+            transactions: request.transactions.map(({ cbor }) => cbor),
+          });
+          const witnesses = [];
+          for (const [
+            index,
+            { partialSign },
+          ] of request.transactions.entries()) {
+            const preparation = prepareHardwareTransaction(
+              snapshot,
+              index,
+              partialSign,
+              this.stores.hardwareWallets.getDappTransactionCapability(
+                wallet.id
+              )
+            );
+            let witnessSetCbor: string;
+            try {
+              witnessSetCbor = await this.stores.hardwareWallets.signDappTransaction(
+                wallet.id,
+                preparation
+              );
+            } catch {
+              return Object.freeze({
+                status: 'rejected',
+                reason: 'tx-proof-generation',
+              });
+            }
+            witnesses.push(
+              Object.freeze({
+                transaction_index: index,
+                body_hash: preparation.exact.bodyHash,
+                witness_set_cbor: witnessSetCbor,
+              })
+            );
+          }
+          if (!this.ready(request))
+            return this.rejection(request, 'unavailable');
+          return Object.freeze({
+            status: 'fulfilled',
+            operation: 'sign-transactions',
+            value: Object.freeze({
+              revision: 1 as const,
+              witnesses: Object.freeze(witnesses),
+            }),
+          });
+        }
+        if (!request.passphrase)
           return Object.freeze({
             status: 'rejected',
             reason: 'tx-proof-generation',
