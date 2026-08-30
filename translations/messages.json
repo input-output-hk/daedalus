@@ -1192,6 +1192,111 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Review batch signing request",
+        "description": "Title for an ordered CIP-103 batch signing review.",
+        "id": "dapp.batch.approval.signTitle"
+      },
+      {
+        "defaultMessage": "!!!Review batch submission",
+        "description": "Title for an ordered CIP-103 batch submission review.",
+        "id": "dapp.batch.approval.submitTitle"
+      },
+      {
+        "defaultMessage": "!!!Sign all transactions",
+        "description": "Approve button for CIP-103 batch signing.",
+        "id": "dapp.batch.approval.sign"
+      },
+      {
+        "defaultMessage": "!!!Submit all transactions",
+        "description": "Approve button for CIP-103 batch submission.",
+        "id": "dapp.batch.approval.submit"
+      },
+      {
+        "defaultMessage": "!!!Item {current} of {total}",
+        "description": "Ordered position of one transaction in a CIP-103 batch.",
+        "id": "dapp.batch.approval.itemPosition"
+      },
+      {
+        "defaultMessage": "!!!Ready for approval",
+        "description": "Status for a supported batch item.",
+        "id": "dapp.batch.approval.itemReady"
+      },
+      {
+        "defaultMessage": "!!!Cannot be approved",
+        "description": "Status for an unsupported or incomplete batch item.",
+        "id": "dapp.batch.approval.itemBlocked"
+      },
+      {
+        "defaultMessage": "!!!Item {current} cannot be approved. No host or hardware confirmation will start.",
+        "description": "Fail-closed batch review message naming the first blocked item.",
+        "id": "dapp.batch.approval.refusal"
+      },
+      {
+        "defaultMessage": "!!!Dependencies",
+        "description": "Heading for current-batch and pending transaction dependencies.",
+        "id": "dapp.batch.approval.dependencies"
+      },
+      {
+        "defaultMessage": "!!!No current-batch or pending submission dependencies",
+        "description": "Shown when a batch item has no dependency.",
+        "id": "dapp.batch.approval.noDependencies"
+      },
+      {
+        "defaultMessage": "!!!{role} input depends on item {current}",
+        "description": "Dependency on an earlier item in the current ordered batch.",
+        "id": "dapp.batch.approval.currentDependency"
+      },
+      {
+        "defaultMessage": "!!!{role} input depends on a pending wallet submission",
+        "description": "Dependency on a cardano-wallet pending submission.",
+        "id": "dapp.batch.approval.pendingDependency"
+      },
+      {
+        "defaultMessage": "!!!Conflicts",
+        "description": "Heading for non-blocking sequential batch conflicts.",
+        "id": "dapp.batch.approval.conflicts"
+      },
+      {
+        "defaultMessage": "!!!{role} input is already claimed by item {current}",
+        "description": "Conflict flag naming the first earlier claiming item.",
+        "id": "dapp.batch.approval.conflict"
+      },
+      {
+        "defaultMessage": "!!!Effects for this item only",
+        "description": "Heading emphasizing that effects are not aggregated.",
+        "id": "dapp.batch.approval.effects"
+      },
+      {
+        "defaultMessage": "!!!Review each item separately. Conflicting effects are never combined into a batch total.",
+        "description": "Warning against treating conflicting batch effects as one total.",
+        "id": "dapp.batch.approval.perItemNotice"
+      },
+      {
+        "defaultMessage": "!!!Hardware wallets confirm supported items on the device one at a time in this order. No witness set is released unless every item succeeds.",
+        "description": "Ordered hardware batch signing and all-or-nothing release guidance.",
+        "id": "dapp.batch.approval.deviceSigning"
+      },
+      {
+        "defaultMessage": "!!!Software wallets use this one password approval for the ordered batch. No witness set is released unless every item succeeds.",
+        "description": "Single-password software batch signing guidance.",
+        "id": "dapp.batch.approval.softwareSigning"
+      },
+      {
+        "defaultMessage": "!!!After approval, every item is attempted in order. If some fail, the result identifies the hash or error for every item.",
+        "description": "Attempt-all CIP-103 submission guidance.",
+        "id": "dapp.batch.approval.submission"
+      },
+      {
+        "defaultMessage": "!!!If Daedalus closes, unattempted items are not submitted. Pending wallet history remains the recovery record for attempted items.",
+        "description": "Batch submission recovery guidance.",
+        "id": "dapp.batch.approval.recovery"
+      }
+    ],
+    "path": "source/renderer/app/components/dapp/DappBatchReviewDialog.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Preferred dApps",
         "description": "Heading for the local preferred dApp catalog.",
         "id": "dapp.catalog.title"

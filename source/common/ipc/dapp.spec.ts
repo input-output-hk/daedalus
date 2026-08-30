@@ -7,6 +7,45 @@ import { parseDappConsentRender } from './dapp';
 const preloadPath = path.resolve(__dirname, '../../main/preloads/dapp.ts');
 const webpackPath = path.resolve(__dirname, '../../main/webpack.config.js');
 
+const transactionReview = {
+  mode: 'sign',
+  transactionId: '11'.repeat(32),
+  bodyCbor: 'a0',
+  fullCbor: '84a0a0f5f6',
+  fullCborDigest: '22'.repeat(32),
+  witnessSetCbor: 'a0',
+  auxiliaryDataCbor: 'f6',
+  isValid: true,
+  effects: [{ index: 0, kind: 'input', value: '{}' }],
+  existingVkeyWitnesses: [],
+  existingBootstrapWitnesses: [],
+  commitmentsVerified: true,
+  approvable: true,
+  refusalReasons: [],
+};
+
+const batchPresentation = {
+  requestId: 'batch',
+  kind: 'batch-sign',
+  origin: 'https://example.test',
+  walletName: 'Wallet',
+  networkName: 'Preview',
+  scopes: ['transaction-signing'],
+  extensions: [103],
+  review: {
+    mode: 'sign',
+    approvable: true,
+    items: [
+      {
+        index: 0,
+        dependencies: [],
+        conflicts: [],
+        transaction: transactionReview,
+      },
+    ],
+  },
+};
+
 describe('dApp preload contract', () => {
   it('keeps the gateway dispatch surface equal to the frozen manifest', () => {
     expect(DAPP_CIP30_METHODS).toEqual(
@@ -82,6 +121,46 @@ describe('dApp preload contract', () => {
         }),
       })
     );
+    expect(
+      parseDappConsentRender({
+        type: 'present',
+        request: batchPresentation,
+      })
+    ).toEqual(
+      expect.objectContaining({
+        request: expect.objectContaining({
+          kind: 'batch-sign',
+          review: expect.objectContaining({
+            approvable: true,
+            items: [expect.objectContaining({ index: 0 })],
+          }),
+        }),
+      })
+    );
+    expect(() =>
+      parseDappConsentRender({
+        type: 'present',
+        request: {
+          ...batchPresentation,
+          review: {
+            ...batchPresentation.review,
+            items: [
+              {
+                ...batchPresentation.review.items[0],
+                dependencies: [
+                  {
+                    source: 'current-batch',
+                    inputRole: 'normal',
+                    outpoint: { transactionId: '33'.repeat(32), index: 0 },
+                    sourceTransactionIndex: 0,
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      })
+    ).toThrow('Invalid CIP-103 batch review');
     expect(() =>
       parseDappConsentRender({
         type: 'present',

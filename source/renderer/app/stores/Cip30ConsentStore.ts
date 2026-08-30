@@ -53,7 +53,8 @@ export default class Cip30ConsentStore extends Store {
     this.decide(
       true,
       this.current?.kind === 'data-sign' ||
-        this.current?.kind === 'transaction-sign'
+        this.current?.kind === 'transaction-sign' ||
+        this.current?.kind === 'batch-sign'
         ? passphrase
         : undefined
     );

@@ -5,6 +5,8 @@ import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import Notification from '../../../source/renderer/app/components/notifications/Notification';
 import Cip30TransactionApproval from '../../../source/renderer/app/components/dapp/Cip30TransactionApproval';
+import DappBatchReviewDialog from '../../../source/renderer/app/components/dapp/DappBatchReviewDialog';
+import type { DappConsentPresentation } from '../../../source/common/ipc/api';
 import { CIP30_REVIEW_EFFECTS } from '../../../source/common/cip30/review';
 
 const review = {
@@ -56,6 +58,83 @@ const request = (
     ...review,
     mode: kind === 'transaction-sign' ? ('sign' as const) : ('submit' as const),
     ...overrides,
+  },
+});
+
+type BatchPresentation = Extract<
+  DappConsentPresentation,
+  { kind: 'batch-sign' | 'batch-submit' }
+>;
+
+const batchRequest = (
+  kind: 'batch-sign' | 'batch-submit',
+  blocked = false
+): BatchPresentation => ({
+  requestId: 'storybook-batch-review',
+  kind,
+  origin: 'https://example.test',
+  walletName: 'Storybook wallet',
+  networkName: 'Preview',
+  scopes: [],
+  extensions: [103],
+  review: {
+    mode: kind === 'batch-sign' ? 'sign' : 'submit',
+    approvable: !blocked,
+    ...(blocked ? { refusalIndex: 1 } : {}),
+    items: [0, 1, 2].map((index) => ({
+      index,
+      dependencies:
+        index === 0
+          ? []
+          : [
+              {
+                source: 'current-batch' as const,
+                inputRole:
+                  index === 2 ? ('reference' as const) : ('normal' as const),
+                outpoint: {
+                  transactionId: String(index).repeat(64),
+                  index: 0,
+                },
+                sourceTransactionIndex: index - 1,
+              },
+            ],
+      conflicts:
+        index === 2
+          ? [
+              {
+                inputRole: 'collateral' as const,
+                outpoint: { transactionId: '11'.repeat(32), index: 0 },
+                earlierTransactionIndex: 0,
+              },
+            ]
+          : [],
+      transaction: {
+        ...review,
+        mode: kind === 'batch-sign' ? ('sign' as const) : ('submit' as const),
+        transactionId: String(index + 1).padStart(64, '0'),
+        fullCborDigest: String(index + 11).padStart(64, '0'),
+        effects: [
+          {
+            index: 0,
+            kind: 'input',
+            value: JSON.stringify({ item: index + 1 }),
+          },
+          {
+            index: 1,
+            kind: 'output',
+            value: JSON.stringify({ item: index + 1 }),
+          },
+        ],
+        ...(blocked && index === 1
+          ? {
+              commitmentsVerified: false,
+              approvable: false,
+              refusalReasons: ['unsupported-effect:future-effect'],
+              effects: [{ index: 0, kind: 'future-effect', value: '{}' }],
+            }
+          : {}),
+      },
+    })),
   },
 });
 
@@ -129,6 +208,22 @@ storiesOf('dApps / TransactionRequest', module)
         approvable: false,
         refusalReasons: ['datum:missing:unavailable'],
       })}
+      deciding={false}
+      onApprove={action('blocked')}
+      onReject={action('reject')}
+    />
+  ))
+  .add('Ordered batch signing review', () => (
+    <DappBatchReviewDialog
+      request={batchRequest('batch-sign')}
+      deciding={false}
+      onApprove={action('sign batch')}
+      onReject={action('reject')}
+    />
+  ))
+  .add('Blocked batch submission review', () => (
+    <DappBatchReviewDialog
+      request={batchRequest('batch-submit', true)}
       deciding={false}
       onApprove={action('blocked')}
       onReject={action('reject')}

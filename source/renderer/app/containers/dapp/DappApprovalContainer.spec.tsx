@@ -18,6 +18,13 @@ jest.mock(
     }
 );
 jest.mock(
+  '../../components/dapp/DappBatchReviewDialog',
+  () =>
+    function BatchConsent() {
+      return <div data-testid="batch-consent" />;
+    }
+);
+jest.mock(
   '../../components/dapp-consent/DappDataSignApproval',
   () =>
     function DataSignConsent() {
@@ -95,5 +102,24 @@ describe('DappApprovalContainer', () => {
       />
     );
     expect(screen.getByTestId('transaction-consent')).toBeVisible();
+
+    rerender(
+      <DappApprovalContainer
+        request={{
+          ...identity,
+          kind: 'batch-sign',
+          review: {
+            mode: 'sign',
+            approvable: false,
+            refusalIndex: 0,
+            items: [],
+          },
+        }}
+        deciding={false}
+        onApprove={jest.fn()}
+        onReject={jest.fn()}
+      />
+    );
+    expect(screen.getByTestId('batch-consent')).toBeVisible();
   });
 });
