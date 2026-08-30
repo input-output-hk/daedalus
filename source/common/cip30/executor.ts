@@ -41,7 +41,7 @@ export type Cip30WalletRequest = Cip30WalletRequestIdentity &
           cbor: string;
           partialSign: boolean;
         }>[];
-        passphrase: string;
+        passphrase?: string;
       }>
     | Readonly<{
         operation: 'submit-transaction';
@@ -272,9 +272,12 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     keys = [...keys, 'transactions'];
   else if (operation === 'collateral-history')
     keys = [...keys, 'preferredInputs'];
-  else if (operation === 'sign-transactions')
-    keys = [...keys, 'context', 'transactions', 'passphrase'];
-  else if (operation === 'submit-transaction') keys = [...keys, 'transaction'];
+  else if (operation === 'sign-transactions') {
+    keys = [...keys, 'context', 'transactions'];
+    if (Object.prototype.hasOwnProperty.call(value, 'passphrase'))
+      keys = [...keys, 'passphrase'];
+  } else if (operation === 'submit-transaction')
+    keys = [...keys, 'transaction'];
   if (
     !ownData(value, keys) ||
     ![
@@ -326,6 +329,12 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     });
   }
   if (operation === 'sign-transactions') {
+    const hasPassphrase = Object.prototype.hasOwnProperty.call(
+      value,
+      'passphrase'
+    );
+    const passphrase =
+      hasPassphrase && text(value.passphrase) ? value.passphrase : undefined;
     if (
       !plainData(value.context) ||
       !Array.isArray(value.transactions) ||
@@ -337,13 +346,13 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
           transactionCbor(transaction.cbor) &&
           typeof transaction.partialSign === 'boolean'
       ) ||
-      !text(value.passphrase)
+      (hasPassphrase && !passphrase)
     )
       throw new Error('Invalid CIP-30 wallet request');
     return Object.freeze({
       ...identity,
       operation,
-      context: value.context,
+      context: JSON.parse(JSON.stringify(value.context)),
       transactions: Object.freeze(
         value.transactions.map((transaction) =>
           Object.freeze({
@@ -352,7 +361,7 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
           })
         )
       ),
-      passphrase: value.passphrase,
+      ...(passphrase ? { passphrase } : {}),
     });
   }
   if (operation === 'submit-transaction') {

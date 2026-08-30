@@ -1,5 +1,12 @@
 import type { Api } from '../api';
 import type { StoresMap } from '../stores';
+import type { TransactionContextSnapshot } from '../../../common/cardano/transactionContext';
+import type {
+  HardwareTransactionCapability,
+  HardwareTransactionPreparation,
+} from '../../../common/types/hardware-wallets.types';
+import * as transactionContext from '../../../common/cardano/transactionContext';
+import { prepareHardwareTransaction } from '../utils/hardwareWalletTransaction';
 import { Cip30WalletService } from './Cip30WalletService';
 
 jest.mock('../ipc/cip30Wallet', () => ({
@@ -7,6 +14,15 @@ jest.mock('../ipc/cip30Wallet', () => ({
 }));
 jest.mock('../api/transactions/dappBackend', () => ({
   validateDappTransactionContext: jest.fn((value) => value),
+}));
+jest.mock('../../../common/cardano/transactionContext', () => ({
+  ...(jest.requireActual(
+    '../../../common/cardano/transactionContext'
+  ) as object),
+  reconcileTransactionContext: jest.fn(),
+}));
+jest.mock('../utils/hardwareWalletTransaction', () => ({
+  prepareHardwareTransaction: jest.fn(),
 }));
 
 const network = {
@@ -40,6 +56,7 @@ const transactionContextRequest = {
 };
 const signTransactionsRequest = {
   operation: 'sign-transactions' as const,
+
   walletId: 'wallet',
   network,
   sourceRevision: '22'.repeat(20),
@@ -47,6 +64,24 @@ const signTransactionsRequest = {
   transactions: [{ cbor: '84a0a0f5f6', partialSign: true }],
   passphrase: 'secret',
 };
+
+const hardwareCapability: HardwareTransactionCapability = {
+  matrixRevision: 'test',
+  artifactId: 'test',
+  rowId: 'test',
+  vendor: 'ledger',
+  staticallyRepresentable: true,
+  staticGatesPassed: true,
+  physicalCertified: true,
+  productEnabled: true,
+  familyDispositions: {},
+};
+const hardwarePreparation = ({
+  status: 'ready' as const,
+  deviceInteraction: true,
+  exact: { bodyHash: '66'.repeat(32) },
+} as unknown) as HardwareTransactionPreparation;
+const hardwareSnapshot = {} as TransactionContextSnapshot;
 const submitTransactionRequest = {
   operation: 'submit-transaction' as const,
   walletId: 'wallet',
@@ -63,6 +98,12 @@ const create = () => {
   };
   let connected = true;
   let synced = true;
+  (transactionContext.reconcileTransactionContext as jest.Mock).mockReturnValue(
+    hardwareSnapshot
+  );
+  (prepareHardwareTransaction as jest.Mock).mockReturnValue(
+    hardwarePreparation
+  );
   const getDappCapabilities = jest.fn(async () => ({ api_version: 1 }));
   const getDappTransactionContext = jest.fn(async () => ({ context: true }));
   const getAddresses = jest.fn(async () => [
@@ -92,6 +133,8 @@ const create = () => {
       },
     ],
   }));
+  const getDappTransactionCapability = jest.fn(() => hardwareCapability);
+  const signDappTransaction = jest.fn(async () => 'a0');
   const submitDappTransaction = jest.fn(async () => ({
     revision: 1 as const,
     transaction_id: '77'.repeat(32),
@@ -136,7 +179,11 @@ const create = () => {
         return synced;
       },
     },
-    hardwareWallets: { checkIsTrezorByWalletId: jest.fn(() => false) },
+    hardwareWallets: {
+      checkIsTrezorByWalletId: jest.fn(() => false),
+      getDappTransactionCapability,
+      signDappTransaction,
+    },
     addresses: {
       stakeAddresses,
       _getStakeAddress: jest.fn(async () => undefined),
@@ -153,6 +200,8 @@ const create = () => {
     submitDappTransaction,
     getDappCollateralHistory,
     withWalletSendLock,
+    getDappTransactionCapability,
+    signDappTransaction,
     setWallet: (value: Record<string, unknown> | null) => {
       wallet = value;
     },
@@ -336,9 +385,19 @@ describe('Cip30WalletService', () => {
         passphrase: 'secret',
       },
     });
+    await expect(
+      fixture.service.receive({
+        ...signTransactionsRequest,
+        passphrase: undefined,
+      })
+    ).resolves.toEqual({
+      status: 'rejected',
+      reason: 'tx-proof-generation',
+    });
+    expect(fixture.signDappTransactions).toHaveBeenCalledTimes(1);
   });
 
-  it('maps transaction witness errors and rejects hardware before signing', async () => {
+  it('maps transaction witness errors', async () => {
     const fixture = create();
     for (const [code, reason] of [
       ['dapp_tx_proof_generation', 'tx-proof-generation'],
@@ -352,14 +411,106 @@ describe('Cip30WalletService', () => {
         fixture.service.receive(signTransactionsRequest)
       ).resolves.toEqual({ status: 'rejected', reason });
     }
+  });
+
+  it('signs reviewed hardware context without a passphrase or backend fallback', async () => {
+    const fixture = create();
     fixture.setWallet({
       id: 'wallet',
       name: 'Hardware',
       isHardwareWallet: true,
     });
-    fixture.signDappTransactions.mockClear();
+    const hardwareRequest = {
+      operation: 'sign-transactions' as const,
+      walletId: 'wallet',
+      network,
+      sourceRevision: '22'.repeat(20),
+      context: { revision: 1 },
+      transactions: [{ cbor: '84a0a0f5f6', partialSign: true }],
+    };
+    await expect(fixture.service.receive(hardwareRequest)).resolves.toEqual({
+      status: 'fulfilled',
+      operation: 'sign-transactions',
+      value: {
+        revision: 1,
+        witnesses: [
+          {
+            transaction_index: 0,
+            body_hash: '66'.repeat(32),
+            witness_set_cbor: 'a0',
+          },
+        ],
+      },
+    });
+    expect(transactionContext.reconcileTransactionContext).toHaveBeenCalledWith(
+      hardwareRequest.context,
+      {
+        walletId: 'wallet',
+        network,
+        transactions: ['84a0a0f5f6'],
+      }
+    );
+    expect(prepareHardwareTransaction).toHaveBeenCalledWith(
+      hardwareSnapshot,
+      0,
+      true,
+      hardwareCapability
+    );
+    expect(fixture.signDappTransaction).toHaveBeenCalledWith(
+      'wallet',
+      hardwarePreparation
+    );
+    expect(fixture.signDappTransactions).not.toHaveBeenCalled();
+  });
+
+  it('rejects disabled hardware preparation before device work', async () => {
+    const fixture = create();
+    fixture.setWallet({
+      id: 'wallet',
+      name: 'Hardware',
+      isHardwareWallet: true,
+    });
+    (prepareHardwareTransaction as jest.Mock).mockReturnValueOnce({
+      ...hardwarePreparation,
+      status: 'rejected',
+      deviceInteraction: false,
+      reasons: ['product-disabled'],
+    });
+    fixture.signDappTransaction.mockRejectedValueOnce(
+      new Error('product-disabled')
+    );
     await expect(
-      fixture.service.receive(signTransactionsRequest)
+      fixture.service.receive({
+        ...signTransactionsRequest,
+        passphrase: undefined,
+      })
+    ).resolves.toEqual({
+      status: 'rejected',
+      reason: 'tx-proof-generation',
+    });
+    expect(fixture.signDappTransaction).toHaveBeenCalledWith(
+      'wallet',
+      expect.objectContaining({
+        status: 'rejected',
+        reasons: ['product-disabled'],
+      })
+    );
+    expect(fixture.signDappTransactions).not.toHaveBeenCalled();
+  });
+
+  it('maps hardware device failures to proof generation', async () => {
+    const fixture = create();
+    fixture.setWallet({
+      id: 'wallet',
+      name: 'Hardware',
+      isHardwareWallet: true,
+    });
+    fixture.signDappTransaction.mockRejectedValueOnce(new Error('device'));
+    await expect(
+      fixture.service.receive({
+        ...signTransactionsRequest,
+        passphrase: undefined,
+      })
     ).resolves.toEqual({
       status: 'rejected',
       reason: 'tx-proof-generation',

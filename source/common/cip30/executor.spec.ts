@@ -245,6 +245,21 @@ describe('CIP-30 wallet executor contract', () => {
       passphrase: 'secret',
     };
     expect(parseCip30WalletRequest(signRequest)).toEqual(signRequest);
+    const hardwareSignRequest = {
+      ...request,
+      operation: 'sign-transactions' as const,
+      context: { revision: 1, outputs: [] },
+      transactions: [{ cbor: '84a0a0f5f6', partialSign: true }],
+    };
+    const parsedHardwareRequest = parseCip30WalletRequest(hardwareSignRequest);
+    if (parsedHardwareRequest.operation !== 'sign-transactions')
+      throw new Error('Expected sign-transactions request');
+    expect(parsedHardwareRequest).toEqual(hardwareSignRequest);
+    expect(parsedHardwareRequest).not.toBe(hardwareSignRequest);
+    expect(parsedHardwareRequest.transactions).not.toBe(
+      hardwareSignRequest.transactions
+    );
+    expect(parsedHardwareRequest.context).not.toBe(hardwareSignRequest.context);
     expect(
       parseCip30WalletResponse(signRequest, {
         status: 'fulfilled',
@@ -266,6 +281,7 @@ describe('CIP-30 wallet executor contract', () => {
     });
     for (const value of [
       { ...signRequest, passphrase: '' },
+      { ...signRequest, passphrase: undefined },
       { ...signRequest, transactions: [] },
       {
         ...signRequest,

@@ -45,30 +45,38 @@ class WalletSendPage extends Component<Props, State> {
     isHardwareWallet: boolean;
     selectedAssets?: ApiTokens;
   }) => {
-    const { walletId, address, amount, isHardwareWallet, selectedAssets } =
-      params;
+    const {
+      walletId,
+      address,
+      amount,
+      isHardwareWallet,
+      selectedAssets,
+    } = params;
 
     if (isHardwareWallet) {
-      const coinSelection: CoinSelectionsResponse =
-        await this.props.stores.hardwareWallets.selectCoins({
+      const coinSelection: CoinSelectionsResponse = await this.props.stores.hardwareWallets.selectCoins(
+        {
           walletId,
           address,
           amount,
           assets: selectedAssets,
-        });
+        }
+      );
       return {
         fee: coinSelection.fee,
         coinSelection,
       };
     }
 
-    const { fee, minimumAda } =
-      await this.props.stores.transactions.calculateTransactionFee({
-        walletId,
-        address,
-        amount,
-        assets: selectedAssets,
-      });
+    const {
+      fee,
+      minimumAda,
+    } = await this.props.stores.transactions.calculateTransactionFee({
+      walletId,
+      address,
+      amount,
+      assets: selectedAssets,
+    });
 
     return {
       fee,
@@ -81,21 +89,16 @@ class WalletSendPage extends Component<Props, State> {
     walletId: string,
     { coinSelection, ...data }: FormData
   ) => {
-    const { isFlight } = global;
-
     if (isHardwareWallet) {
-      this.props.stores.hardwareWallets.updateTxSignRequest(coinSelection);
+      this.props.stores.hardwareWallets.updateTxSignRequest(
+        coinSelection,
+        this.props.stores.collateral.preparationFormActive
+      );
     }
 
     this.props.actions.dialogs.open.trigger({
       dialog: WalletSendConfirmationDialogView,
     });
-
-    if (isHardwareWallet && !isFlight) {
-      this.props.stores.hardwareWallets.initiateTransaction({
-        walletId,
-      });
-    }
 
     this.setState({
       confirmationDialogData: {

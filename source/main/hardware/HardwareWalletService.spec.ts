@@ -4,6 +4,7 @@ import type { BrowserWindow } from 'electron';
 import type AppAda from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import type TransportNodeHid from '@ledgerhq/hw-transport-node-hid-noevents';
 import TrezorConnect from '@trezor/connect';
+import cbor from 'cbor';
 
 import type {
   HardwareExactTransaction,
@@ -14,6 +15,8 @@ import {
   encodeCoseProtectedHeader,
   encodeCoseSignatureStructure,
 } from '../../common/cardano/cose';
+import { decodeConwayTransaction } from '../../common/cardano/transaction';
+import { parseConwayTransactionEnvelope } from '../../common/cardano/transactionEnvelope';
 
 import type { HardwareWalletChannels } from '../ipc/createHardwareWalletIPCChannels';
 import type { DeviceDetectionPayload } from '../ipc/hardwareWallets/ledger/deviceDetection/deviceDetection';
@@ -75,6 +78,7 @@ const channelNames: Array<keyof HardwareWalletChannels> = [
   'getHardwareWalletConnectionChannel',
   'signTransactionLedgerChannel',
   'signTransactionTrezorChannel',
+  'signExactHardwareTransactionChannel',
   'resetTrezorActionChannel',
   'handleInitTrezorConnectChannel',
   'handleInitLedgerConnectChannel',
@@ -210,6 +214,95 @@ describe('HardwareWalletService', () => {
     expect(TrezorConnect.cancel).toHaveBeenCalledTimes(1);
   });
 
+  it('routes enabled exact signing only to the matching hardware vendor', async () => {
+    const service = new HardwareWalletService();
+    const { channels, handlers } = createChannels();
+    await service.register(channels);
+    const ledger = jest
+      .spyOn(service, 'signExactLedgerTransaction')
+      .mockResolvedValue('ledger-witnesses');
+    const trezor = jest
+      .spyOn(service, 'signExactTrezorTransaction')
+      .mockResolvedValue('trezor-witnesses');
+    const request = handlers.get('signExactHardwareTransactionChannel')!;
+    const transactionCbor = cbor.encodeCanonical([
+      new Map<number, unknown>([
+        [0, [[Buffer.alloc(32), 0]]],
+        [1, [[Buffer.concat([Buffer.from('60', 'hex'), Buffer.alloc(28)]), 1]]],
+        [2, 0],
+      ]),
+      new Map(),
+      true,
+      null,
+    ]);
+    const transaction = decodeConwayTransaction(
+      parseConwayTransactionEnvelope(transactionCbor)
+    );
+    const exact = ({
+      transaction,
+      bodyHash: transaction.transactionId,
+      capability: {
+        vendor: 'ledger',
+        physicalCertified: true,
+        productEnabled: true,
+      },
+    } as unknown) as HardwareExactTransaction;
+
+    await expect(
+      request({ vendor: 'ledger', ledgerPath: 'ledger-path', exact })
+    ).resolves.toBe('ledger-witnesses');
+    expect(ledger).toHaveBeenCalledWith(
+      'ledger-path',
+      expect.objectContaining({
+        bodyHash: transaction.transactionId,
+        transaction: expect.objectContaining({
+          transactionId: transaction.transactionId,
+        }),
+      })
+    );
+    await expect(request({ vendor: 'ledger', exact })).rejects.toThrow(
+      'Ledger device not connected'
+    );
+    await expect(request({ vendor: 'trezor', exact })).rejects.toThrow(
+      'Hardware exact transaction is not enabled'
+    );
+
+    const trezorExact = ({
+      ...exact,
+      capability: { ...exact.capability, vendor: 'trezor' },
+    } as unknown) as HardwareExactTransaction;
+    await expect(
+      request({ vendor: 'trezor', exact: trezorExact })
+    ).resolves.toBe('trezor-witnesses');
+    expect(trezor).toHaveBeenCalledWith(
+      expect.objectContaining({
+        bodyHash: transaction.transactionId,
+        transaction: expect.objectContaining({
+          transactionId: transaction.transactionId,
+        }),
+      })
+    );
+    await expect(
+      request({
+        vendor: 'trezor',
+        ledgerPath: 'ledger-path',
+        exact: trezorExact,
+      })
+    ).rejects.toThrow('Trezor must not receive a Ledger path');
+    await expect(
+      request({
+        vendor: 'ledger',
+        ledgerPath: 'ledger-path',
+        exact: {
+          ...exact,
+          capability: { ...exact.capability, productEnabled: false },
+        },
+      })
+    ).rejects.toThrow('Hardware exact transaction is not enabled');
+    expect(ledger).toHaveBeenCalledTimes(1);
+    expect(trezor).toHaveBeenCalledTimes(1);
+  });
+
   it('releases only exact Ledger witnesses', async () => {
     const keys = generateKeyPairSync('ed25519');
     const publicKey = (keys.publicKey.export({
@@ -223,14 +316,14 @@ describe('HardwareWalletService', () => {
     const path = [0x8000073c, 0x80000717, 0x80000000, 0, 0];
     const signature = sign(null, Buffer.from(bodyHash, 'hex'), keys.privateKey);
     const validLedgerPayload = {
-        txHashHex: bodyHash,
-        witnesses: [
-          {
-            path,
-            witnessSignatureHex: signature.toString('hex'),
-          },
-        ],
-        auxiliaryDataSupplement: null,
+      txHashHex: bodyHash,
+      witnesses: [
+        {
+          path,
+          witnessSignatureHex: signature.toString('hex'),
+        },
+      ],
+      auxiliaryDataSupplement: null,
     };
     const signTransaction = jest.fn(() => Promise.resolve(validLedgerPayload));
     const getExtendedPublicKey = jest.fn(() =>
@@ -376,8 +469,8 @@ describe('HardwareWalletService', () => {
     } as unknown) as HardwareExactTransaction;
     const signTransaction = TrezorConnect.cardanoSignTransaction as jest.Mock;
     const validPayload = {
-        hash: bodyHash,
-        witnesses: [{ type: 1, pubKey: publicKey.toString('hex'), signature }],
+      hash: bodyHash,
+      witnesses: [{ type: 1, pubKey: publicKey.toString('hex'), signature }],
     };
     signTransaction.mockResolvedValue({
       success: true,
@@ -613,15 +706,15 @@ describe('HardwareWalletService', () => {
 
     const trezorSignMessage = TrezorConnect.cardanoSignMessage as jest.Mock;
     const trezorProofPayload = {
-        headers: {
-          protected: { 1: -8, address: credential },
-          unprotected: { hashed: false, version: 1 },
-        },
-        payload: drepRequest.payload,
-        signature: drepProof.signature,
-        pubKey: drepProof.publicKey,
-        coseSignature: 'poison',
-        coseKey: 'poison',
+      headers: {
+        protected: { 1: -8, address: credential },
+        unprotected: { hashed: false, version: 1 },
+      },
+      payload: drepRequest.payload,
+      signature: drepProof.signature,
+      pubKey: drepProof.publicKey,
+      coseSignature: 'poison',
+      coseKey: 'poison',
     };
     trezorSignMessage.mockResolvedValue({
       success: true,

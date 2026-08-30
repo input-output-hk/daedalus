@@ -121,6 +121,8 @@ const readyCapability: HardwareTransactionCapability = {
   artifactId: 'test-only-ready',
   staticallyRepresentable: true,
   staticGatesPassed: true,
+  physicalCertified: true,
+  productEnabled: true,
   familyDispositions: { 'root-envelope': 'representable' },
 };
 
@@ -220,6 +222,21 @@ describe('hardware transaction preparation', () => {
       expect(current.status).toBe('rejected');
       expect(current.deviceInteraction).toBe(false);
     }
+  });
+
+  it.each([
+    ['physicalCertified', 'physical-certification'],
+    ['productEnabled', 'product-disabled'],
+  ] as const)('rejects %s before device interaction', (gate, reason) => {
+    const result = prepareHardwareTransaction(snapshot(), 0, true, {
+      ...readyCapability,
+      [gate]: false,
+    });
+    expect(result).toMatchObject({
+      status: 'rejected',
+      deviceInteraction: false,
+      reasons: expect.arrayContaining([reason]),
+    });
   });
 
   it('never derives a reference signer and returns partial empty before gating', () => {
