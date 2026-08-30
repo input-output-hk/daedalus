@@ -41,6 +41,7 @@ The feature also introduces full-ledger transaction context, witness-only softwa
 - Task-604 completed on 2026-08-29: exact Ledger and Trezor CIP-8 message adapters now consume one trusted path/address preparation model for payment, stake, pointer, enterprise, raw DRep, and matching type-6 DRep inputs. Both DRep forms bind the exact role-3 credential/path and normalize to device key-hash mode; base signing retains full address parameters. Vendor requests preserve the exact payload without silent hashing, raw public-key/signature/address material is validated, Trezor vendor COSE is ignored, and task-307 primitives reconstruct and independently verify canonical untagged Daedalus COSE before release. The 65,536-byte boundary remains accepted and 65,537 bytes fail before device work. Focused Jest passed 28 tests, TypeScript compilation, focused ESLint/Prettier, and the main production build passed. Public hardware routing and exact Trezor model/firmware product enablement remain disabled pending tasks 606/607.
 - Task-605 completed on 2026-08-30: one main-owned Ledger/Trezor operation lifecycle now distinguishes host cancellation, device/transport invalidation, and unexplained stale generations across exact transaction, exact CIP-8, and legacy signing. Every completion rechecks its captured generation before releasing witnesses or COSE; cancellation invalidates before closing/cancelling transports, and concurrent operations retain the terminal reason until all settle. Frozen task-006 mappings now expose operation-specific UserDeclined for explicit device or host refusal, ProofGeneration for device/transport/capability/proof failures, and InternalError for malformed/unclassifiable or unexplained stale failures. Signing state remains memory-only and a fresh service/startup never resumes an operation. Focused Jest passed 5 lifecycle/adapter tests plus the 14-test capability matrix; TypeScript compilation and focused ESLint passed.
 - Task-606 completed on 2026-08-30: dApp and native hardware transaction flows now retain task-304 context through trusted review, route the unchanged task-601 exact model through one authenticated main IPC channel, and merge only independently verified fresh VKey witnesses into the original envelope. Hardware wallets never enter software signing or passphrase paths. Native payments and explicit collateral preparation use the same base16 construct/context/sign/durable-submit path, shared wallet send lease, collateral tracking, and pending/history reconciliation. Task-006 physical/product gates remain disabled until task-607. Focused Jest passed 65 tests, TypeScript compilation and main/renderer production builds passed, and focused ESLint completed with zero errors.
+- Planning revision 1.7.28 on 2026-08-30 adds task-608 for the missing public Ledger/Trezor base and CIP-95 data-signing bridge plus exact certified-row capability evidence; keeps hardware activation packaged and default-disabled; moves final physical certification in task-607 after task-608 and the task-705 batch queue; assigns task-705 deterministic mocked/emulator coverage and task-607 the final physical single/batch matrix; makes task-708 the atomic CIP-103 advertisement/negotiation/execution cutover; and narrows task-800 to single-transaction ledger/parser/COSE differential and fuzz coverage while task-708 owns CIP-103 graph coverage.
 - Task-700 completed on 2026-08-27: canonical CIP-103 request/result/error/preflight contracts now drive manifest-backed clone-safe sign/submit adapters and pure immutable ordered batch preflight. Every item validates exact bounded Conway CBOR and explicit network identity before side effects, preserves independent full-CBOR digest/body hash/index identities without deduplication, normalizes `partialSign`, and uses one stable first-failing index formatter. Focused Jest passed 10 tests; focused ESLint and Prettier checks and TypeScript compilation passed. Tasks 701-707 retain context resolution, conflict detection, review, signing, and submission.
 - Task-701 completed on 2026-08-27: one pure ordered overlay now resolves every normal, collateral, and reference input from exact strict-earlier output spans or the authenticated backend pending/node snapshot while retaining source provenance and caller order. One main-owned coordinator freezes the original full-CBOR vector, captures exactly one task-304 context, checks vector identity, and returns the immutable indexed resolution without recapture. Duplicate items remain independent; self/forward/unresolved inputs, role mismatches, and exact-byte conflicts reject the whole batch at the original index even with `partialSign=true`. Focused Jest passed 24 tests; TypeScript compilation and focused ESLint/Prettier passed. Tasks 702-707 retain conflict flags, review, witness staging, and submission.
 - Task-407 completed on 2026-08-27: Diagnostics now offers a localized explicitly untrusted arbitrary-dApp launcher over the existing authenticated browser channel, with shared Shelley-wallet eligibility, independent packaged-policy availability, one-use main-memory URL staging, and an exact-wallet dApp-route handoff consumed only after the main-owned lease commits. Main accepts credential-free HTTPS in production and explicit loopback HTTP only in development, retains only canonical origins in normal diagnostics grants, and extends the fixed proxy with numeric public diagnostics tunnels plus numeric loopback-only development HTTP forwarding. Focused Jest passed 114 tests; TypeScript, focused lint/style/format, i18n, main/renderer/Storybook builds, English/Japanese browser checks, and the in-process proxy smoke passed. The direct development Electron fixture exited SIGILL under enforced sandboxing; no bypass was used.
@@ -52,7 +53,7 @@ The feature also introduces full-ledger transaction context, witness-only softwa
 
 ## Problem Statement
 
-The connector now has authenticated read, software and product-disabled exact hardware signing, submission, preferred-catalog, Diagnostics launch, and collateral execution/recovery paths, but Daedalus still has no release-approved preferred entry, hardware product enablement, or CIP-103 execution.
+The connector now has authenticated read, software and product-disabled exact hardware transaction signing, submission, preferred-catalog, Diagnostics launch, and collateral execution/recovery paths, but Daedalus still has no public hardware base/CIP-95 data-signing bridge, final physical hardware certification or product enablement, release-approved preferred entry, or CIP-103 execution.
 
 The current Electron main renderer cannot host hostile content safely:
 
@@ -209,8 +210,9 @@ Task-006 freezes a separate static hardware capability contract at
 `research/07-hardware-wallet-capability-contract.md`. It recommends exact Ledger
 JS 8.0.0 to task-600 but does not change the production pin. Static
 representability never certifies a model/app/firmware row or enables a method;
-tasks 600-606 remain product-disabled and task-607 alone records reviewed
-physical results against exact production artifacts and adapter commits.
+tasks 600-608 remain product-disabled; task-608 owns the public hardware
+data-signing/capability-evidence bridge, and task-607 records final reviewed
+single/batch physical results against the complete production artifacts and service commit.
 
 ### Collateral Comparisons
 
@@ -262,7 +264,7 @@ physical results against exact production artifacts and adapter commits.
 - Production pins Ledger JS 8.0.0. A main-owned `HardwareWalletService` owns Ledger/Trezor transport, detection, cancellation, disposal, and exact transaction routing while every UI call remains behind authenticated trusted IPC.
 - Ledger JS 8.0.0 supports app-major-8 routing, unrestricted transaction mode, and multiple voters/votes. The exact adapter maps its frozen static inventory and rejects proposal procedures and non-reconstructible bodies before device interaction; static/mocked proof is not physical certification.
 - Trezor Connect 9.7.2 supports fewer Conway/governance fields and cannot represent DRep registration/update/deregistration, governance voting procedures, proposals, treasury, or donation.
-- Both installed libraries expose message signing. Exact Ledger/Trezor transaction adapters are integrated but remain pre-device product-disabled pending task-607 physical certification; Daedalus still has no hardware CIP-8 bridge.
+- Both installed libraries expose message signing. Exact Ledger/Trezor transaction and CIP-8 adapters exist, but the public base/CIP-95 hardware data-signing bridge remains absent until task-608. Every hardware connector row remains product-disabled until task-607 certifies the final single/batch service commit and a later reviewed packaged release configuration activates that exact row.
 
 ## Locked Planning Decisions
 
@@ -1287,8 +1289,9 @@ For each transaction:
 Ledger requirements:
 
 - Task-006 recommends exact Ledger JS 8.0.0 for task-600 based on immutable
-  static evidence; task-600 owns the production update and task-607 owns physical
-  app-v7/v8 certification.
+  static evidence; task-600 owns the production update, task-608 owns the public
+  capability/data-signing cutover, and task-607 owns final app-v7/v8 certification
+  after the CIP-103 hardware queue is complete.
 - Preserve support for app v7 where certified.
 - Support input/output datum/reference scripts, mint, script-data hash, collateral, required signers, network ID, reference inputs, supported certificates, DRep certificates, supported voting, treasury, and donation.
 - Reject proposal procedures and unsupported multi-voter/multi-vote structures.
@@ -1706,12 +1709,12 @@ upstream review and pin ownership.
 
 ### Phase 6: Hardware Signing
 
-- Apply the frozen static Ledger JS recommendation; task-607 performs physical model/app/firmware certification.
+- Apply the frozen static Ledger JS recommendation.
 - Extract hardware service and add vendor-neutral arbitrary-CBOR adapters.
 - Add exact transaction hash/witness verification.
-- Add base and DRep CIP-8 hardware signing.
+- Add base and DRep CIP-8 hardware adapters, then task-608 wires their public connector routing and exact certified-row capability evidence behind a packaged default-disabled activation value.
 - Add cancellation and late-result suppression.
-- Complete physical model/firmware capability matrix.
+- Complete the task-705 mocked/emulator batch queue before task-607 runs one final physical single/batch model/firmware capability matrix against the complete service commit.
 
 ### Phase 7: CIP-103
 
@@ -1720,12 +1723,13 @@ upstream review and pin ownership.
 - Add all-or-nothing software/hardware witness staging.
 - Add idempotent retry through cardano-wallet pending-submission state.
 - Add normative attempt-all submission and mixed-array rejection.
+- Keep CIP-103 unavailable in the registry and absent from provider `supportedExtensions` until task-708 atomically enables advertisement, negotiation, namespace construction, `signTxs`, and `submitTxs` after all implementation, certification, and conformance gates pass.
 
 ### Phase 8: Hardening And Audit
 
 - Complete packaged hostile-renderer suite.
-- Complete differential/fuzz/conformance/interoperability tests.
-- Complete physical hardware matrix.
+- Complete single-transaction ledger/parser/COSE differential and fuzz coverage in task-800; task-708 owns CIP-103 dependency/conflict graph coverage.
+- Complete extension conformance, interoperability, privacy, and final physical hardware evidence before review.
 - Perform internal security review.
 - Perform independent external audit and remediation.
 - Confirm current Electron/Chromium security posture.
