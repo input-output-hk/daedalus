@@ -103,6 +103,7 @@ const testPackagedPolicy = (value: unknown): void => {
     diagnosticsEnabled: false,
     cip104Revision: 0,
     cip142Revision: 0,
+    hardwareConnectorRows: [],
   });
   const enabled = {
     revision: DAPP_POLICY_REVISION,

@@ -9,7 +9,8 @@ import type {
   Cip30WalletRequest,
   Cip30WalletResponse,
 } from '../../common/cip30/executor';
-import { prepareCip8Request, serializeCip8 } from '../../common/cardano/cip8';
+import { serializeCip8 } from '../../common/cardano/cip8';
+import { prepareCip8Request } from '../../common/cardano/cip8Request';
 import {
   encodeCoseProtectedHeader,
   encodeCoseSignatureStructure,
@@ -40,14 +41,18 @@ jest.mock('../../common/cardano/transactionContext', () => ({
 jest.mock('../config', () => {
   const { DappLaunchPolicy } = jest.requireActual('../dapp/DappLaunchPolicy');
   return {
-    dappLaunchPolicy: new DappLaunchPolicy({
-      revision: 1,
-      globalEnabled: true,
-      preferredCatalogEnabled: true,
-      diagnosticsEnabled: true,
-      cip104Revision: 0,
-      cip142Revision: 0,
-    }),
+    dappLaunchPolicy: new DappLaunchPolicy(
+      {
+        revision: 1,
+        globalEnabled: true,
+        preferredCatalogEnabled: true,
+        diagnosticsEnabled: true,
+        cip104Revision: 0,
+        cip142Revision: 0,
+        hardwareConnectorRows: ['ledger:nanoSP:8.0.0:signData'],
+      },
+      ['ledger:nanoSP:8.0.0:signData']
+    ),
     launcherConfig: {
       cluster: 'testnet',
       nodeConfig: {
@@ -217,6 +222,25 @@ const create = () => {
     .spyOn(dispatcher, 'dispatch')
     .mockResolvedValue([{ cip: 95 }, { cip: 103 }]);
   let walletKind: 'shelley-software' | 'ledger' = 'shelley-software';
+  let hardware:
+    | {
+        matrixRevision: string;
+        rowId: string;
+        vendor: 'ledger';
+        model: 'nanoSP';
+        appVersion: string;
+        certifiedExtensions: number[];
+        physicalCertified: boolean;
+      }
+    | undefined = {
+    matrixRevision: 'task-006-matrix-2026-08-14',
+    rowId: 'ledger:nanoSP:8.0.0:signData',
+    vendor: 'ledger',
+    model: 'nanoSP',
+    appVersion: '8.0.0',
+    certifiedExtensions: [95],
+    physicalCertified: true,
+  };
   let signatureResponse = dataSignature.response;
   let signatureFailure: 'address-not-pk' | 'proof-generation' | null = null;
   let witnessSet = transactionSignature.witnessSet;
@@ -308,6 +332,7 @@ const create = () => {
         network,
         backendApiVersion: 1,
         backendExtensions: [95, 103],
+        ...(walletKind === 'ledger' && hardware ? { hardware } : {}),
       },
     };
   });
@@ -345,6 +370,9 @@ const create = () => {
     },
     setWalletKind: (value: 'shelley-software' | 'ledger') => {
       walletKind = value;
+    },
+    setHardware: (value: typeof hardware) => {
+      hardware = value;
     },
     tamperSignature: () => {
       signatureResponse = {
@@ -926,6 +954,69 @@ describe('Cip30Broker', () => {
     fixture.cleanup();
   });
 
+  it('routes exact hardware payment and DRep data signing without a passphrase', async () => {
+    const fixture = create();
+    fixture.setWalletKind('ledger');
+    await fixture.broker.handle(
+      event,
+      request('provider.enable', [{ extensions: [{ cip: 95 }] }])
+    );
+    fixture.executeWallet.mockClear();
+
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signData', [dataSignature.address, dataSignature.payload])
+      )
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      value: dataSignature.result,
+    });
+    for (const address of [drepDataSignature.raw, drepDataSignature.type6])
+      await expect(
+        fixture.broker.handle(
+          event,
+          request('api.cip95.signData', [address, drepDataSignature.payload])
+        )
+      ).resolves.toEqual({
+        status: 'fulfilled',
+        value: drepDataSignature.result,
+      });
+
+    const hardwareCalls = fixture.executeWallet.mock.calls
+      .map(([walletRequest]) => walletRequest)
+      .filter(({ operation }) => operation === 'sign-data');
+    expect(hardwareCalls).toHaveLength(3);
+    expect(hardwareCalls).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          address: dataSignature.address,
+          hardware: expect.objectContaining({
+            vendor: 'ledger',
+            model: 'nanoSP',
+            appVersion: '8.0.0',
+            matrixRevision: 'task-006-matrix-2026-08-14',
+            certifiedExtensions: [95],
+            physicalCertified: true,
+            packagedEnabled: true,
+          }),
+        }),
+        expect.objectContaining({
+          address: drepDataSignature.raw,
+          drepCredential: drepDataSignature.raw,
+        }),
+        expect.objectContaining({
+          address: drepDataSignature.type6,
+          drepCredential: drepDataSignature.raw,
+        }),
+      ])
+    );
+    hardwareCalls.forEach((walletRequest) =>
+      expect(walletRequest).not.toHaveProperty('passphrase')
+    );
+    fixture.cleanup();
+  });
+
   it('normalizes negotiated raw and type-6 DRep signing identically', async () => {
     const fixture = create();
     await fixture.broker.handle(
@@ -1020,6 +1111,7 @@ describe('Cip30Broker', () => {
     expect(fixture.consent.request).not.toHaveBeenCalled();
 
     fixture.setWalletKind('ledger');
+    fixture.setHardware(undefined);
     await expect(
       fixture.broker.handle(
         event,
@@ -1027,7 +1119,7 @@ describe('Cip30Broker', () => {
       )
     ).resolves.toMatchObject({
       status: 'rejected',
-      rejection: { type: 'data-sign-error', value: { code: 1 } },
+      rejection: { type: 'api-error', value: { code: -3 } },
     });
     expect(fixture.consent.request).not.toHaveBeenCalled();
 

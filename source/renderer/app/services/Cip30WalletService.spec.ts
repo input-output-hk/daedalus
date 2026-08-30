@@ -4,9 +4,13 @@ import type { TransactionContextSnapshot } from '../../../common/cardano/transac
 import type {
   HardwareTransactionCapability,
   HardwareTransactionPreparation,
+  HardwareConnectorActivation,
+  HardwareConnectorCapabilityEvidence,
+  HardwareMessageRequest,
 } from '../../../common/types/hardware-wallets.types';
 import * as transactionContext from '../../../common/cardano/transactionContext';
 import { prepareHardwareTransaction } from '../utils/hardwareWalletTransaction';
+import { prepareHardwareMessage } from '../utils/hardwareWalletMessage';
 import { Cip30WalletService } from './Cip30WalletService';
 
 jest.mock('../ipc/cip30Wallet', () => ({
@@ -23,6 +27,9 @@ jest.mock('../../../common/cardano/transactionContext', () => ({
 }));
 jest.mock('../utils/hardwareWalletTransaction', () => ({
   prepareHardwareTransaction: jest.fn(),
+}));
+jest.mock('../utils/hardwareWalletMessage', () => ({
+  prepareHardwareMessage: jest.fn(),
 }));
 
 const network = {
@@ -46,6 +53,14 @@ const signDataRequest = {
   address: `60${'11'.repeat(28)}`,
   payload: '00',
   passphrase: 'secret',
+};
+const hardwareSignDataRequest = {
+  operation: 'sign-data' as const,
+  walletId: 'wallet',
+  network,
+  sourceRevision: '22'.repeat(20),
+  address: signDataRequest.address,
+  payload: signDataRequest.payload,
 };
 const transactionContextRequest = {
   operation: 'transaction-context' as const,
@@ -82,6 +97,28 @@ const hardwarePreparation = ({
   exact: { bodyHash: '66'.repeat(32) },
 } as unknown) as HardwareTransactionPreparation;
 const hardwareSnapshot = {} as TransactionContextSnapshot;
+const connectorEvidence: HardwareConnectorCapabilityEvidence = {
+  matrixRevision: 'task-006-matrix-2026-08-14',
+  rowId: 'ledger:nanoSP:8.0.0:signData',
+  vendor: 'ledger',
+  model: 'nanoSP',
+  appVersion: '8.0.0',
+  certifiedExtensions: [95],
+  physicalCertified: true,
+};
+const connectorActivation: HardwareConnectorActivation = {
+  ...connectorEvidence,
+  packagedEnabled: true,
+};
+const hardwareMessage = ({
+  address: { kind: 'address', value: signDataRequest.address, addressType: 6 },
+  credentialKind: 'payment',
+  credential: '11'.repeat(28),
+  protectedAddress: signDataRequest.address,
+  payload: signDataRequest.payload,
+  path: [1852, 1815, 0, 0, 0],
+  network,
+} as unknown) as HardwareMessageRequest;
 const submitTransactionRequest = {
   operation: 'submit-transaction' as const,
   walletId: 'wallet',
@@ -104,6 +141,7 @@ const create = () => {
   (prepareHardwareTransaction as jest.Mock).mockReturnValue(
     hardwarePreparation
   );
+  (prepareHardwareMessage as jest.Mock).mockReturnValue(hardwareMessage);
   const getDappCapabilities = jest.fn(async () => ({ api_version: 1 }));
   const getDappTransactionContext = jest.fn(async () => ({ context: true }));
   const getAddresses = jest.fn(async () => [
@@ -135,6 +173,11 @@ const create = () => {
   }));
   const getDappTransactionCapability = jest.fn(() => hardwareCapability);
   const signDappTransaction = jest.fn(async () => 'a0');
+  const getDappConnectorCapability = jest.fn(() => connectorEvidence);
+  const signDappDataHardware = jest.fn(async () => ({
+    signature: 'hardware-signature',
+    key: 'hardware-key',
+  }));
   const submitDappTransaction = jest.fn(async () => ({
     revision: 1 as const,
     transaction_id: '77'.repeat(32),
@@ -183,6 +226,8 @@ const create = () => {
       checkIsTrezorByWalletId: jest.fn(() => false),
       getDappTransactionCapability,
       signDappTransaction,
+      getDappConnectorCapability,
+      signDappData: signDappDataHardware,
     },
     addresses: {
       stakeAddresses,
@@ -202,6 +247,8 @@ const create = () => {
     withWalletSendLock,
     getDappTransactionCapability,
     signDappTransaction,
+    getDappConnectorCapability,
+    signDappDataHardware,
     setWallet: (value: Record<string, unknown> | null) => {
       wallet = value;
     },
@@ -283,6 +330,26 @@ describe('Cip30WalletService', () => {
       operation: 'context',
       value: { context: true },
     });
+  });
+
+  it('returns exact hardware identity without claiming packaged activation', async () => {
+    const fixture = create();
+    fixture.setWallet({
+      id: 'wallet',
+      name: 'Hardware',
+      isHardwareWallet: true,
+    });
+    await expect(
+      fixture.service.receive(request('capabilities'))
+    ).resolves.toMatchObject({
+      status: 'fulfilled',
+      operation: 'capabilities',
+      value: {
+        walletKind: 'ledger',
+        hardware: connectorEvidence,
+      },
+    });
+    expect(fixture.getDappConnectorCapability).toHaveBeenCalledWith('wallet');
   });
 
   it('returns ordered source addresses without CIP-30 serialization', async () => {
@@ -564,6 +631,104 @@ describe('Cip30WalletService', () => {
         fixture.service.receive(submitTransactionRequest)
       ).resolves.toEqual({ status: 'rejected', reason });
     }
+  });
+
+  it('routes payment, stake, and both DRep forms only through hardware message signing', async () => {
+    const fixture = create();
+    fixture.setWallet({
+      id: 'wallet',
+      name: 'Hardware',
+      isHardwareWallet: true,
+    });
+    const drepCredential = '22'.repeat(28);
+    const cases = [
+      {
+        address: signDataRequest.address,
+        credentialKind: 'payment' as const,
+      },
+      { address: `e0${'33'.repeat(28)}`, credentialKind: 'stake' as const },
+      {
+        address: drepCredential,
+        credentialKind: 'drep' as const,
+        drepCredential,
+      },
+      {
+        address: `60${drepCredential}`,
+        credentialKind: 'drep' as const,
+        drepCredential,
+      },
+    ];
+
+    for (const item of cases) {
+      const message = {
+        ...hardwareMessage,
+        address: { ...hardwareMessage.address, value: item.address },
+        credentialKind: item.credentialKind,
+        credential:
+          item.credentialKind === 'drep'
+            ? drepCredential
+            : hardwareMessage.credential,
+        protectedAddress: item.address,
+      } as HardwareMessageRequest;
+      (prepareHardwareMessage as jest.Mock).mockReturnValueOnce(message);
+      await expect(
+        fixture.service.receive({
+          ...hardwareSignDataRequest,
+          address: item.address,
+          hardware: connectorActivation,
+          ...(item.drepCredential
+            ? { drepCredential: item.drepCredential }
+            : {}),
+        })
+      ).resolves.toEqual({
+        status: 'fulfilled',
+        operation: 'sign-data',
+        value: {
+          revision: 1,
+          credential_kind: item.credentialKind,
+          credential: message.credential,
+          cose_sign1: 'hardware-signature',
+          cose_key: 'hardware-key',
+        },
+      });
+      expect(prepareHardwareMessage).toHaveBeenLastCalledWith(
+        item.address,
+        signDataRequest.payload,
+        network,
+        hardwareSnapshot.ownership,
+        item.drepCredential
+      );
+      expect(fixture.signDappDataHardware).toHaveBeenLastCalledWith(
+        'wallet',
+        message,
+        connectorActivation
+      );
+    }
+    expect(fixture.signDappData).not.toHaveBeenCalled();
+    expect(fixture.getDappTransactionContext).toHaveBeenCalledTimes(4);
+  });
+
+  it('maps hardware cancellation and stale completion without backend fallback', async () => {
+    const fixture = create();
+    fixture.setWallet({
+      id: 'wallet',
+      name: 'Hardware',
+      isHardwareWallet: true,
+    });
+    for (const [code, reason] of [
+      ['DataSignError.UserDeclined', 'user-declined'],
+      ['DataSignError.ProofGeneration', 'proof-generation'],
+      ['APIError.InternalError', 'internal'],
+    ] as const) {
+      fixture.signDappDataHardware.mockRejectedValueOnce({ code });
+      await expect(
+        fixture.service.receive({
+          ...hardwareSignDataRequest,
+          hardware: connectorActivation,
+        })
+      ).resolves.toEqual({ status: 'rejected', reason });
+    }
+    expect(fixture.signDappData).not.toHaveBeenCalled();
   });
 
   it('binds exact sign-data bytes and preserves typed backend failures', async () => {

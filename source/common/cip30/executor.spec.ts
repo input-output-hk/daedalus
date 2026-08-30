@@ -42,6 +42,34 @@ describe('CIP-30 wallet executor contract', () => {
         },
       })
     ).toMatchObject({ status: 'fulfilled', operation: 'capabilities' });
+    const hardware = {
+      matrixRevision: 'task-006-matrix-2026-08-14',
+      rowId: 'trezor:T:2.8.10:signData',
+      vendor: 'trezor',
+      model: 'T',
+      firmwareVersion: '2.8.10',
+      certifiedExtensions: [95],
+      physicalCertified: false,
+    };
+    expect(
+      parseCip30WalletResponse(request, {
+        status: 'fulfilled',
+        operation: 'capabilities',
+        value: {
+          walletId: 'wallet',
+          walletName: 'Hardware',
+          walletKind: 'trezor',
+          network,
+          backendApiVersion: 1,
+          backendExtensions: [95, 103],
+          hardware,
+        },
+      })
+    ).toMatchObject({
+      status: 'fulfilled',
+      operation: 'capabilities',
+      value: { hardware },
+    });
     expect(() =>
       parseCip30WalletResponse(request, {
         status: 'fulfilled',
@@ -137,6 +165,35 @@ describe('CIP-30 wallet executor contract', () => {
       passphrase: 'secret',
     };
     expect(parseCip30WalletRequest(signDataRequest)).toEqual(signDataRequest);
+    const hardware = {
+      matrixRevision: 'task-006-matrix-2026-08-14',
+      rowId: 'ledger:nanoSP:8.0.0:signData',
+      vendor: 'ledger' as const,
+      model: 'nanoSP',
+      appVersion: '8.0.0',
+      certifiedExtensions: [95],
+      physicalCertified: true,
+      packagedEnabled: true,
+    };
+    const hardwareRequest = {
+      ...request,
+      operation: 'sign-data' as const,
+      address: `60${'11'.repeat(28)}`,
+      payload: '00',
+      hardware,
+    };
+    expect(parseCip30WalletRequest(hardwareRequest)).toEqual(hardwareRequest);
+    for (const value of [
+      { ...hardwareRequest, passphrase: 'secret' },
+      {
+        ...hardwareRequest,
+        hardware: { ...hardware, firmwareVersion: '1.0.0' },
+      },
+      { ...hardwareRequest, drepCredential: '11'.repeat(27) },
+    ])
+      expect(() => parseCip30WalletRequest(value)).toThrow(
+        'Invalid CIP-30 wallet request'
+      );
     for (const value of [
       { ...signDataRequest, passphrase: 1 },
       { ...signDataRequest, payload: '0' },

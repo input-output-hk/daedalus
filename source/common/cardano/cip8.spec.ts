@@ -1,15 +1,17 @@
 import fixture from '../cip30/contracts/fixtures/cip8-cip95-fixture.json';
 import wireFixtures from '../cip30/contracts/fixtures/wire-fixtures.json';
 import {
-  Cip8AddressNotPKError,
   Cip8BackendResponse,
-  Cip8Error,
   createCip8DataSignReview,
   parseCip8DataSignReview,
-  prepareCip8Request,
   serializeCip8,
   verifyCip8BackendResponse,
 } from './cip8';
+import {
+  Cip8AddressNotPKError,
+  Cip8Error,
+  prepareCip8Request,
+} from './cip8Request';
 import {
   decodeCoseKey,
   decodeCoseSign1,
