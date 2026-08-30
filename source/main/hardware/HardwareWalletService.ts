@@ -183,8 +183,69 @@ const verifiedHardwareMessage = (
   });
 };
 
+export type HardwareWalletOperation = 'signTx' | 'signData';
+export type HardwareWalletOperationErrorCode =
+  | 'APIError.InternalError'
+  | 'TxSignError.ProofGeneration'
+  | 'TxSignError.UserDeclined'
+  | 'DataSignError.ProofGeneration'
+  | 'DataSignError.UserDeclined';
+
+type OperationInvalidation = 'host' | 'device';
+
+const operationErrorCode = (
+  operation: HardwareWalletOperation,
+  outcome: 'internal' | 'proof-generation' | 'user-declined'
+): HardwareWalletOperationErrorCode => {
+  if (outcome === 'internal') return 'APIError.InternalError';
+  if (operation === 'signTx')
+    return outcome === 'user-declined'
+      ? 'TxSignError.UserDeclined'
+      : 'TxSignError.ProofGeneration';
+  return outcome === 'user-declined'
+    ? 'DataSignError.UserDeclined'
+    : 'DataSignError.ProofGeneration';
+};
+
+const vendorErrorCode = (error: unknown): string | number | undefined => {
+  if (!error || typeof error !== 'object') return undefined;
+  const code = (error as { code?: unknown }).code;
+  return typeof code === 'string' || typeof code === 'number'
+    ? code
+    : undefined;
+};
+
+const ledgerRefusalCodes = new Set([0x6e09, 0x6985]);
+const ledgerProofCodes = new Set([
+  'DEVICE_NOT_CONNECTED',
+  'DEVICE_PATH_CHANGED',
+  'NO_DEVICE_PATHS',
+]);
+const ledgerTransportErrors = new Set([
+  'DisconnectedDevice',
+  'DisconnectedDeviceDuringOperation',
+  'TransportError',
+  'TransportStatusError',
+]);
+const trezorRefusalCodes = new Set([
+  'Failure_ActionCancelled',
+  'Failure_PinCancelled',
+]);
+
+export class HardwareWalletOperationError extends Error {
+  constructor(
+    public readonly operation: HardwareWalletOperation,
+    public readonly code: HardwareWalletOperationErrorCode
+  ) {
+    super(code);
+    this.name = 'HardwareWalletOperationError';
+  }
+}
+
 export class HardwareWalletOperationCancelled extends Error {
-  constructor() {
+  constructor(
+    public readonly reason: OperationInvalidation | 'stale' = 'stale'
+  ) {
     super('Hardware wallet operation cancelled');
     this.name = 'HardwareWalletOperationCancelled';
   }
@@ -193,6 +254,11 @@ export class HardwareWalletOperationCancelled extends Error {
 export class HardwareWalletService {
   private devicesMemo: Record<string, LedgerConnection> = {};
   private generations = new Map<string, number>();
+  private activeLedgerOperations = new Map<string, number>();
+  private ledgerInvalidations = new Map<string, OperationInvalidation>();
+  private trezorGeneration = 0;
+  private activeTrezorGenerations = new Map<number, number>();
+  private trezorInvalidations = new Map<number, OperationInvalidation>();
   private detectorUnsubscribe: (() => void) | null = null;
   private disposed = false;
 
@@ -203,8 +269,12 @@ export class HardwareWalletService {
   private generation = (path: string): number =>
     this.generations.get(path) || 0;
 
-  private invalidate = (path: string): void => {
-    this.generations.set(path, this.generation(path) + 1);
+  private invalidate = (path: string, reason: OperationInvalidation): void => {
+    const generation = this.generation(path);
+    const key = `${path}:${generation}`;
+    if (this.activeLedgerOperations.has(key))
+      this.ledgerInvalidations.set(key, reason);
+    this.generations.set(path, generation + 1);
   };
 
   private notifyLedger = async (
@@ -241,7 +311,7 @@ export class HardwareWalletService {
           AdaConnection: this.ledger.createApp(transport),
         };
       } else {
-        await this.cancelLedgerOperation(device.path);
+        await this.cancelLedgerOperation(device.path, 'device');
       }
 
       consumeIpcResponse(
@@ -255,7 +325,74 @@ export class HardwareWalletService {
     }
   };
 
-  private assertCurrentOperation = (
+  private operationError = (
+    operation: HardwareWalletOperation,
+    outcome: 'internal' | 'proof-generation' | 'user-declined'
+  ): HardwareWalletOperationError =>
+    new HardwareWalletOperationError(
+      operation,
+      operationErrorCode(operation, outcome)
+    );
+
+  private normalizeOperationError = (
+    operation: HardwareWalletOperation,
+    vendor: 'ledger' | 'trezor',
+    error: unknown
+  ): HardwareWalletOperationError => {
+    if (error instanceof HardwareWalletOperationError) return error;
+    if (error instanceof HardwareWalletOperationCancelled) {
+      let outcome: 'internal' | 'proof-generation' | 'user-declined' =
+        'internal';
+      if (error.reason === 'host') outcome = 'user-declined';
+      if (error.reason === 'device') outcome = 'proof-generation';
+      return this.operationError(operation, outcome);
+    }
+
+    const code = vendorErrorCode(error);
+    if (
+      (vendor === 'ledger' &&
+        typeof code === 'number' &&
+        ledgerRefusalCodes.has(code)) ||
+      (vendor === 'trezor' &&
+        typeof code === 'string' &&
+        trezorRefusalCodes.has(code))
+    )
+      return this.operationError(operation, 'user-declined');
+
+    const name =
+      error && typeof error === 'object'
+        ? (error as { name?: unknown }).name
+        : undefined;
+    if (
+      (vendor === 'ledger' && typeof code === 'number') ||
+      (vendor === 'ledger' &&
+        typeof code === 'string' &&
+        ledgerProofCodes.has(code)) ||
+      (vendor === 'ledger' &&
+        typeof name === 'string' &&
+        ledgerTransportErrors.has(name)) ||
+      (vendor === 'trezor' &&
+        typeof code === 'string' &&
+        /^(Failure|Device|Transport)_/u.test(code))
+    )
+      return this.operationError(operation, 'proof-generation');
+
+    return this.operationError(operation, 'internal');
+  };
+
+  private withNormalizedOperation = async <T>(
+    operation: HardwareWalletOperation,
+    vendor: 'ledger' | 'trezor',
+    execute: () => Promise<T>
+  ): Promise<T> => {
+    try {
+      return await execute();
+    } catch (error) {
+      throw this.normalizeOperationError(operation, vendor, error);
+    }
+  };
+
+  private assertCurrentLedgerOperation = (
     path: string,
     record: LedgerConnection,
     generation: number
@@ -265,7 +402,10 @@ export class HardwareWalletService {
       generation !== this.generation(path) ||
       this.devicesMemo[path] !== record
     ) {
-      throw new HardwareWalletOperationCancelled();
+      const key = `${path}:${generation}`;
+      throw new HardwareWalletOperationCancelled(
+        this.ledgerInvalidations.get(key) || 'stale'
+      );
     }
   };
 
@@ -274,24 +414,78 @@ export class HardwareWalletService {
     execute: (connection: AppAda) => Promise<T>
   ): Promise<T> => {
     const record = this.devicesMemo[path];
-    if (!record) throw new Error('Ledger device not connected');
+    if (!record)
+      throw Object.assign(new Error('Ledger device not connected'), {
+        code: 'DEVICE_NOT_CONNECTED',
+      });
     const generation = this.generation(path);
-    let result: T;
+    const key = `${path}:${generation}`;
+    this.activeLedgerOperations.set(
+      key,
+      (this.activeLedgerOperations.get(key) || 0) + 1
+    );
     try {
-      result = await execute(record.AdaConnection);
+      const result = await execute(record.AdaConnection);
+      this.assertCurrentLedgerOperation(path, record, generation);
+      return result;
     } catch (error) {
-      this.assertCurrentOperation(path, record, generation);
+      this.assertCurrentLedgerOperation(path, record, generation);
       throw error;
+    } finally {
+      const remaining = (this.activeLedgerOperations.get(key) || 1) - 1;
+      if (remaining) {
+        this.activeLedgerOperations.set(key, remaining);
+      } else {
+        this.activeLedgerOperations.delete(key);
+        this.ledgerInvalidations.delete(key);
     }
-    this.assertCurrentOperation(path, record, generation);
-    return result;
+    }
   };
 
-  public signExactLedgerTransaction = async (
+  private assertCurrentTrezorOperation = (generation: number): void => {
+    if (this.disposed || generation !== this.trezorGeneration)
+      throw new HardwareWalletOperationCancelled(
+        this.trezorInvalidations.get(generation) || 'stale'
+      );
+  };
+
+  private withTrezorOperation = async <T>(
+    execute: () => Promise<T>
+  ): Promise<T> => {
+    const generation = this.trezorGeneration;
+    this.activeTrezorGenerations.set(
+      generation,
+      (this.activeTrezorGenerations.get(generation) || 0) + 1
+    );
+    try {
+      const result = await execute();
+      this.assertCurrentTrezorOperation(generation);
+    return result;
+    } catch (error) {
+      this.assertCurrentTrezorOperation(generation);
+      throw error;
+    } finally {
+      const remaining = (this.activeTrezorGenerations.get(generation) || 1) - 1;
+      if (remaining) {
+        this.activeTrezorGenerations.set(generation, remaining);
+      } else {
+        this.activeTrezorGenerations.delete(generation);
+        this.trezorInvalidations.delete(generation);
+      }
+    }
+  };
+
+  public signExactLedgerTransaction = (
     devicePath: string,
     exact: HardwareExactTransaction
-  ): Promise<string> => {
-    const request = toExactLedgerSignTransactionRequest(exact);
+  ): Promise<string> =>
+    this.withNormalizedOperation('signTx', 'ledger', async () => {
+      let request: ReturnType<typeof toExactLedgerSignTransactionRequest>;
+      try {
+        request = toExactLedgerSignTransactionRequest(exact);
+      } catch {
+        throw this.operationError('signTx', 'proof-generation');
+      }
     const expected = exact.signers
       .filter(({ keyHash }) =>
         exact.witnesses.requestedDeviceKeyHashes.includes(keyHash)
@@ -306,7 +500,7 @@ export class HardwareWalletService {
         signed.txHashHex !== exact.bodyHash ||
         !/^[0-9a-f]{64}$/u.test(signed.txHashHex)
       )
-        throw new Error('Ledger returned an unexpected transaction hash');
+          throw this.operationError('signTx', 'proof-generation');
       const seen = new Set<string>();
       const witnesses: HardwareTransactionWitnessResponse['witnesses'][number][] = [];
       for (const witness of signed.witnesses) {
@@ -315,41 +509,59 @@ export class HardwareWalletService {
           (candidate) => candidate.path === path
         );
         if (!expectedWitness || seen.has(path))
-          throw new Error('Ledger returned an unexpected witness path');
+            throw this.operationError('signTx', 'proof-generation');
         seen.add(path);
         if (!/^[0-9a-f]{128}$/u.test(witness.witnessSignatureHex))
-          throw new Error('Ledger returned an invalid witness signature');
+            throw this.operationError('signTx', 'proof-generation');
         const key = await connection.getExtendedPublicKey({
           path: witness.path,
         });
         if (!/^[0-9a-f]{64}$/u.test(key.publicKeyHex))
-          throw new Error('Ledger returned an invalid public key');
+            throw this.operationError('signTx', 'proof-generation');
         const keyHash = Buffer.from(
           blake2b(Buffer.from(key.publicKeyHex, 'hex'), undefined, 28)
         ).toString('hex');
         if (keyHash !== expectedWitness.keyHash)
-          throw new Error('Ledger returned an unexpected public key');
+            throw this.operationError('signTx', 'proof-generation');
         witnesses.push({
           publicKey: key.publicKeyHex,
           signature: witness.witnessSignatureHex,
         });
       }
       if (seen.size !== expected.length)
-        throw new Error('Ledger omitted a requested witness path');
+          throw this.operationError('signTx', 'proof-generation');
+        try {
       return verifyHardwareTransactionWitnesses(exact, {
         bodyHash: signed.txHashHex,
         witnesses,
       });
+        } catch {
+          throw this.operationError('signTx', 'proof-generation');
+        }
+      });
     });
-  };
 
-  public signExactTrezorTransaction = async (
+  public signExactTrezorTransaction = (
     exact: HardwareExactTransaction
-  ): Promise<string> => {
-    const request = toExactTrezorSignTransactionRequest(exact);
+  ): Promise<string> =>
+    this.withNormalizedOperation('signTx', 'trezor', async () => {
+      let request: ReturnType<typeof toExactTrezorSignTransactionRequest>;
+      try {
+        request = toExactTrezorSignTransactionRequest(exact);
+      } catch {
+        throw this.operationError('signTx', 'proof-generation');
+      }
+      return this.withTrezorOperation(async () => {
     const result = await TrezorConnect.cardanoSignTransaction(request);
-    if (!result.success)
-      throw new Error('Trezor failed to sign the exact transaction');
+        if (!result.success) {
+          const code = vendorErrorCode(result.payload);
+          if (typeof code !== 'string')
+            throw this.operationError('signTx', 'internal');
+          throw this.operationError(
+            'signTx',
+            trezorRefusalCodes.has(code) ? 'user-declined' : 'proof-generation'
+          );
+        }
     const payload = result.payload as CardanoSignedTxData;
     if (
       !payload ||
@@ -358,7 +570,7 @@ export class HardwareWalletService {
       !/^[0-9a-f]{64}$/u.test(payload.hash) ||
       !Array.isArray(payload.witnesses)
     )
-      throw new Error('Trezor returned an unexpected transaction hash');
+          throw this.operationError('signTx', 'proof-generation');
     const witnesses: HardwareTransactionWitnessResponse['witnesses'][number][] = payload.witnesses.map(
       ({ type, pubKey, signature, chainCode }) => {
         if (
@@ -367,20 +579,26 @@ export class HardwareWalletService {
           !/^[0-9a-f]{64}$/u.test(pubKey) ||
           !/^[0-9a-f]{128}$/u.test(signature)
         )
-          throw new Error('Trezor returned an invalid Shelley witness');
+              throw this.operationError('signTx', 'proof-generation');
         return { publicKey: pubKey, signature };
       }
     );
+        try {
     return verifyHardwareTransactionWitnesses(exact, {
       bodyHash: payload.hash,
       witnesses,
     });
-  };
+        } catch {
+          throw this.operationError('signTx', 'proof-generation');
+        }
+      });
+    });
 
-  public signLedgerMessage = async (
+  public signLedgerMessage = (
     devicePath: string,
     request: HardwareMessageRequest
   ) =>
+    this.withNormalizedOperation('signData', 'ledger', () =>
     this.withLedgerOperation(devicePath, async (connection) => {
       const signed = await connection.signMessage(
         request.address.kind === 'key_hash'
@@ -404,15 +622,22 @@ export class HardwareWalletService {
               },
             }
       );
+        try {
       return verifiedHardwareMessage(
         request,
         signed.signingPublicKeyHex,
         signed.signatureHex,
         signed.addressFieldHex
       );
-    });
+        } catch {
+          throw this.operationError('signData', 'proof-generation');
+        }
+      })
+    );
 
-  public signTrezorMessage = async (request: HardwareMessageRequest) => {
+  public signTrezorMessage = (request: HardwareMessageRequest) =>
+    this.withNormalizedOperation('signData', 'trezor', () =>
+      this.withTrezorOperation(async () => {
     const result = await TrezorConnect.cardanoSignMessage({
       path: [...request.path],
       payload: request.payload,
@@ -423,7 +648,15 @@ export class HardwareWalletService {
         ? { addressParameters: trezorMessageAddress(request.address) }
         : {}),
     });
-    if (!result.success) throw new Error('Trezor failed to sign message');
+        if (!result.success) {
+          const code = vendorErrorCode(result.payload);
+          if (typeof code !== 'string')
+            throw this.operationError('signData', 'internal');
+          throw this.operationError(
+            'signData',
+            trezorRefusalCodes.has(code) ? 'user-declined' : 'proof-generation'
+          );
+        }
     const signed = result.payload as CardanoSignedMessage;
     if (
       !signed ||
@@ -433,20 +666,28 @@ export class HardwareWalletService {
       signed.headers.unprotected?.hashed !== false ||
       signed.headers.unprotected.version !== 1
     )
-      throw new Error('Trezor returned invalid message metadata');
+          throw this.operationError('signData', 'proof-generation');
+        try {
     return verifiedHardwareMessage(
       request,
       signed.pubKey,
       signed.signature,
       signed.headers.protected.address
     );
-  };
+        } catch {
+          throw this.operationError('signData', 'proof-generation');
+        }
+      })
+    );
 
-  public cancelLedgerOperation = async (path?: string): Promise<void> => {
+  public cancelLedgerOperation = async (
+    path?: string,
+    reason: OperationInvalidation = 'host'
+  ): Promise<void> => {
     const paths = path ? [path] : Object.keys(this.devicesMemo);
     await Promise.all(
       paths.map(async (devicePath) => {
-        this.invalidate(devicePath);
+        this.invalidate(devicePath, reason);
         const record = this.devicesMemo[devicePath];
         delete this.devicesMemo[devicePath];
         if (record) {
@@ -462,7 +703,13 @@ export class HardwareWalletService {
     );
   };
 
-  public cancelTrezorOperation = (): void => {
+  public cancelTrezorOperation = (
+    reason: OperationInvalidation = 'host'
+  ): void => {
+    const generation = this.trezorGeneration;
+    if (this.activeTrezorGenerations.has(generation))
+      this.trezorInvalidations.set(generation, reason);
+    this.trezorGeneration += 1;
     TrezorConnect.cancel('Method_Cancel');
   };
 
@@ -526,6 +773,7 @@ export class HardwareWalletService {
             '[TREZOR-CONNECT] Received TRANSPORT_EVENT: transport-error',
             event.payload
           );
+          if (!isNoDevicePollingNoise) this.cancelTrezorOperation('device');
 
           // Send Transport error to Renderer
           consumeIpcResponse(
@@ -551,6 +799,8 @@ export class HardwareWalletService {
           event.type === DEVICE.CHANGED;
         const isAcquired = get(event, ['payload', 'type'], '') === 'acquired';
         const deviceError = get(event, ['payload', 'error']);
+        if (event.type === DEVICE.DISCONNECT)
+          this.cancelTrezorOperation('device');
 
         if (deviceError) {
           throw new Error(deviceError);
@@ -1154,7 +1404,9 @@ export class HardwareWalletService {
         '[TREZOR-CONNECT] Calling TrezorConnect.cardanoSignTransaction()'
       );
 
-      return TrezorConnect.cardanoSignTransaction(dataToSign);
+      return this.withTrezorOperation(() =>
+        TrezorConnect.cardanoSignTransaction(dataToSign)
+      );
     });
 
     resetTrezorActionChannel.onRequest(async () => {
