@@ -2,21 +2,21 @@ import { blake2b } from 'blakejs';
 import {
   decodeConwayTransaction,
   SemanticTransaction,
-} from '../../../common/cardano/transaction';
+} from '../cardano/transaction';
 import {
   ExactTransactionEnvelope,
   parseConwayTransactionEnvelope,
-} from '../../../common/cardano/transactionEnvelope';
-import { invalidRequest } from '../../../common/cip30/errors';
+} from '../cardano/transactionEnvelope';
+import { invalidRequest } from './errors';
 import {
   parseCip103SignRequest,
   parseCip103SubmitRequest,
-} from '../../../common/cip30/schemas/cip103';
+} from './schemas/cip103';
 import type {
   Cip103Operation,
   Cip103PreflightBatch,
   Cip103PreflightItem,
-} from '../../../common/types/cip103.types';
+} from '../types/cip103.types';
 
 const inspect = (
   cbor: string,

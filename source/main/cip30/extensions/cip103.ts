@@ -54,14 +54,15 @@ export type Cip103ExecutionReview = Readonly<{
   }>[];
 }>;
 
-export type Cip103SoftwareSigningRequest = Readonly<{
+export type Cip103WalletSigningRequest = Readonly<{
   walletId: string;
+  walletKind: 'shelley-software' | 'ledger' | 'trezor';
   network: Cip30WalletNetwork;
   sourceRevision: string;
   batch: Cip103PreflightBatch;
   review: Cip103ExecutionReview;
   signingContext: unknown;
-  passphrase: string;
+  passphrase?: string;
   requiredKeyHashes?: readonly (readonly string[])[];
 }>;
 
@@ -89,14 +90,14 @@ const reviewedBatch = (
       item.transaction.fullCbor === batch.items[index]?.cbor
   );
 
-export const signCip103SoftwareBatch = async (
+export const signCip103WalletBatch = async (
   executeWallet: ExecuteWallet,
-  request: Cip103SoftwareSigningRequest
+  request: Cip103WalletSigningRequest
 ): Promise<Cip103SignResult> => {
-  const { batch, passphrase, requiredKeyHashes, review } = request;
+  const { batch, passphrase, requiredKeyHashes, review, walletKind } = request;
   if (
     !reviewedBatch(batch, review, 'sign') ||
-    !passphrase ||
+    (walletKind === 'shelley-software' && !passphrase) ||
     (requiredKeyHashes && requiredKeyHashes.length !== batch.items.length) ||
     requiredKeyHashes?.some((hashes) =>
       hashes.some((hash) => !validKeyHash(hash))
@@ -117,7 +118,7 @@ export const signCip103SoftwareBatch = async (
           Object.freeze({ cbor, partialSign: partialSign ?? false })
         )
       ),
-      passphrase,
+      ...(walletKind === 'shelley-software' ? { passphrase } : {}),
     });
   } catch {
     internal();

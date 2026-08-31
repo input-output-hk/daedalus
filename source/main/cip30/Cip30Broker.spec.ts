@@ -153,9 +153,48 @@ const createTransactionSignatureFixture = () => {
     transaction,
     bodyHash: envelope.transactionId,
     witnessSet,
+    privateKey: keys.privateKey,
+    publicKey,
   };
 };
 const transactionSignature = createTransactionSignatureFixture();
+const cip103Transaction = (fee: number): string =>
+  cbor
+    .encodeCanonical([
+      new Map<number, unknown>([
+        [0, []],
+        [1, []],
+        [2, fee],
+      ]),
+      new Map(),
+      true,
+      null,
+    ])
+    .toString('hex');
+
+const transactionWitness = (transactionCbor: string): string => {
+  const envelope = parseConwayTransactionEnvelope(
+    Buffer.from(transactionCbor, 'hex')
+  );
+  const bodyHash = Buffer.from(
+    blake2b(bytesForSpan(envelope.cbor, envelope.spans.body), undefined, 32)
+  );
+  return cbor
+    .encodeCanonical(
+      new Map([
+        [
+          0,
+          [
+            [
+              transactionSignature.publicKey,
+              signBytes(null, bodyHash, transactionSignature.privateKey),
+            ],
+          ],
+        ],
+      ])
+    )
+    .toString('hex');
+};
 
 const createDrepDataSignatureFixture = () => {
   const keys = generateKeyPairSync('ed25519');
@@ -199,9 +238,38 @@ const drepDataSignature = createDrepDataSignatureFixture();
 
 const create = () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'cip30-broker-'));
-  (transactionContext.reconcileTransactionContext as jest.Mock).mockReturnValue(
-    {
-      transactionsSemantic: [transactionSignature.transaction],
+  (transactionContext.reconcileTransactionContext as jest.Mock).mockImplementation(
+    (
+      _value,
+      expectation: {
+        walletId: string;
+        network: typeof network;
+        transactions: string[];
+      }
+    ) => {
+      const transactions = [...expectation.transactions];
+      return {
+        walletId: expectation.walletId,
+        network: expectation.network,
+        chainPoint: { kind: 'genesis' },
+        walletGeneration: BigInt(1),
+        pendingGeneration: BigInt(1),
+        contextDigest: '33'.repeat(32),
+        contextToken: '44'.repeat(32),
+        records: [],
+        transactions,
+        outputs: [],
+        pendingTransactions: [],
+        ownership: [],
+        requiredProofs: [],
+        commitmentContexts: [],
+        transactionsSemantic: transactions.map((cborHex) =>
+          decodeConwayTransaction(
+            parseConwayTransactionEnvelope(Buffer.from(cborHex, 'hex'))
+          )
+        ),
+        preExistingWitnesses: [],
+      };
     }
   );
   const currentLease: DappRouteLease | null = lease;
@@ -243,12 +311,12 @@ const create = () => {
   };
   let signatureResponse = dataSignature.response;
   let signatureFailure: 'address-not-pk' | 'proof-generation' | null = null;
-  let witnessSet = transactionSignature.witnessSet;
+  let witnessSet: string | undefined;
   let witnessFailure:
     | 'tx-proof-generation'
     | 'deprecated-certificate'
     | null = null;
-  let submissionId = transactionSignature.bodyHash;
+  let submissionId: string | undefined;
   let submissionStatus:
     | 'authorized'
     | 'broadcasting'
@@ -258,6 +326,8 @@ const create = () => {
     | 'in_ledger'
     | 'expired' = 'submitted';
   let submissionFailure = false;
+  let submissionCalls = 0;
+  let failedSubmissionIndexes = new Set<number>();
   const executeWallet = jest.fn<
     Promise<Cip30WalletResponse>,
     [Cip30WalletRequest]
@@ -301,16 +371,29 @@ const create = () => {
             operation: 'sign-transactions',
             value: {
               revision: 1,
-              witnesses: [
-                {
-                  transaction_index: 0,
-                  body_hash: transactionSignature.bodyHash,
-                  witness_set_cbor: witnessSet,
-                },
-              ],
+              witnesses: walletRequest.transactions.map(
+                ({ cbor: transactionCbor }, transactionIndex) => {
+                  const envelope = parseConwayTransactionEnvelope(
+                    Buffer.from(transactionCbor, 'hex')
+                  );
+                  return {
+                    transaction_index: transactionIndex,
+                    body_hash: envelope.transactionId,
+                    witness_set_cbor:
+                      witnessSet ?? transactionWitness(transactionCbor),
+                  };
+                }
+              ),
             },
           };
-    if (walletRequest.operation === 'submit-transaction')
+    if (walletRequest.operation === 'submit-transaction') {
+      const callIndex = submissionCalls;
+      submissionCalls += 1;
+      const transactionId =
+        submissionId ??
+        parseConwayTransactionEnvelope(
+          Buffer.from(walletRequest.transaction, 'hex')
+        ).transactionId;
       return submissionFailure
         ? { status: 'rejected', reason: 'tx-send-failure' }
         : {
@@ -318,10 +401,13 @@ const create = () => {
             operation: 'submit-transaction',
             value: {
               revision: 1,
-              transaction_id: submissionId,
-              status: submissionStatus,
+              transaction_id: transactionId,
+              status: failedSubmissionIndexes.has(callIndex)
+                ? 'rejected'
+                : submissionStatus,
             },
           };
+    }
     return {
       status: 'fulfilled',
       operation: 'capabilities',
@@ -403,6 +489,10 @@ const create = () => {
     setSubmissionFailure: (value: boolean) => {
       submissionFailure = value;
     },
+    setFailedSubmissionIndexes: (indexes: number[]) => {
+      submissionCalls = 0;
+      failedSubmissionIndexes = new Set(indexes);
+    },
     cleanup: () => fs.rmSync(directory, { recursive: true, force: true }),
   };
 };
@@ -463,6 +553,109 @@ describe('Cip30Broker', () => {
       value: [{ cip: 95 }, { cip: 103 }],
     });
     expect(fixture.dispatch).toHaveBeenCalledTimes(1);
+    fixture.cleanup();
+  });
+
+  it('cuts over CIP-103 negotiation, signing, and submission together', async () => {
+    const fixture = create();
+    fixture.dispatch.mockRestore();
+    const transactions = [cip103Transaction(1), cip103Transaction(2)];
+    const transactionIds = transactions.map(
+      (value) =>
+        parseConwayTransactionEnvelope(Buffer.from(value, 'hex')).transactionId
+    );
+
+    await fixture.broker.handle(
+      event,
+      request('provider.enable', [{ extensions: [{ cip: 103 }] }])
+    );
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.cip103.signTxs', [
+          transactions.map((cborHex) => ({ cbor: cborHex })),
+        ])
+      )
+    ).resolves.toMatchObject({
+      status: 'fulfilled',
+      value: [expect.stringMatching(/^a100/u), expect.stringMatching(/^a100/u)],
+    });
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.cip103.submitTxs', [transactions])
+      )
+    ).resolves.toEqual({ status: 'fulfilled', value: transactionIds });
+
+    expect(fixture.sessions.currentForGuest(9)?.enabledExtensions).toEqual([
+      103,
+    ]);
+    expect(
+      (fixture.consent.request as jest.Mock).mock.calls.map(
+        ([pending]) => pending.presentation.kind
+      )
+    ).toEqual(['connection', 'batch-sign', 'batch-submit']);
+    expect(
+      fixture.executeWallet.mock.calls
+        .map(([walletRequest]) => walletRequest.operation)
+        .filter((operation) => operation === 'sign-transactions')
+    ).toHaveLength(1);
+    expect(
+      fixture.executeWallet.mock.calls
+        .map(([walletRequest]) => walletRequest.operation)
+        .filter((operation) => operation === 'submit-transaction')
+    ).toHaveLength(2);
+    fixture.cleanup();
+  });
+
+  it('rejects oversized CIP-103 requests before side effects and preserves mixed submission errors', async () => {
+    const fixture = create();
+    fixture.dispatch.mockRestore();
+    const transactions = [cip103Transaction(3), cip103Transaction(4)];
+    await fixture.broker.handle(
+      event,
+      request('provider.enable', [{ extensions: [{ cip: 103 }] }])
+    );
+    fixture.executeWallet.mockClear();
+
+    for (const oversized of [
+      request('api.cip103.signTxs', [
+        Array.from({ length: 51 }, () => ({ cbor: transactions[0] })),
+      ]),
+      request('api.cip103.submitTxs', [
+        Array.from({ length: 51 }, () => transactions[0]),
+      ]),
+    ])
+      await expect(fixture.broker.handle(event, oversized)).resolves.toEqual({
+        status: 'rejected',
+        rejection: {
+          type: 'api-error',
+          value: { code: -1, info: 'Invalid request' },
+        },
+      });
+    expect(fixture.executeWallet).not.toHaveBeenCalled();
+
+    fixture.setFailedSubmissionIndexes([1]);
+    const firstId = parseConwayTransactionEnvelope(
+      Buffer.from(transactions[0], 'hex')
+    ).transactionId;
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.cip103.submitTxs', [transactions])
+      )
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: {
+        type: 'cip103-submit-error',
+        value: [firstId, { code: 2, info: 'Transaction submission failed' }],
+      },
+    });
+    expect(
+      fixture.executeWallet.mock.calls
+        .map(([walletRequest]) => walletRequest.operation)
+        .filter((operation) => operation === 'submit-transaction')
+    ).toHaveLength(2);
     fixture.cleanup();
   });
 
