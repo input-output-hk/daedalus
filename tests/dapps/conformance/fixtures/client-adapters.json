@@ -1,0 +1,86 @@
+{
+  "revision": 1,
+  "observedAt": "2026-08-31",
+  "standards": [
+    {
+      "name": "CIP-30",
+      "status": "Active",
+      "revision": "86b89208d3b2aabb5dcc5b778dfbe09096b4e114"
+    },
+    {
+      "name": "CIP-95",
+      "status": "Active",
+      "revision": "20c819b25abee6551a3ef51778b975e7463e1269"
+    },
+    {
+      "name": "CIP-103",
+      "status": "Active",
+      "revision": "86b89208d3b2aabb5dcc5b778dfbe09096b4e114"
+    },
+    {
+      "name": "CIP-104",
+      "status": "Proposed; terminal-disabled in Daedalus",
+      "revision": "86b89208d3b2aabb5dcc5b778dfbe09096b4e114"
+    },
+    {
+      "name": "CIP-142",
+      "status": "Proposed; packaged-policy-gated in Daedalus",
+      "revision": "86b89208d3b2aabb5dcc5b778dfbe09096b4e114"
+    }
+  ],
+  "extensionRegisterRevision": "aa314c019b857cbaea38e16b1570af90cecefd38",
+  "fixtureHashes": {
+    "contract-manifest.json": "40a75c3b5ca105d11afb15bda9aa96e83a1af821d405ffb290d9a8976de2e0a6",
+    "cip8-cip95-fixture.json": "e5a1e69b229e3f6e10874238772e8aea219e29f397fb1d6cbf6ead7d33704541",
+    "cip103-fixtures.json": "53adf71090d75c4e5cb254df72ec59721ce4d465cffe0d80b75867210681a6f2"
+  },
+  "adapters": [
+    {
+      "id": "cardano-js-sdk-cip95",
+      "availability": "source-verified",
+      "repository": "input-output-hk/cardano-js-sdk",
+      "revision": "0c0e700237ca524d8bd73054e3518fb182d09e46",
+      "source": "packages/key-management/src/cip8/cip30signData.ts",
+      "test": "packages/key-management/test/cip8/cip30signData.test.ts",
+      "observed": "A matching type-6 enterprise key address selects the DRep derivation path. CIP-95 methods are invoked through api.cip95.",
+      "daedalusDelta": "Daedalus normalizes matching type-6 and raw DRep-ID inputs to the same raw 28-byte protected address header."
+    },
+    {
+      "id": "cip103-reference-client",
+      "availability": "source-verified",
+      "repository": "cardano-foundation/CIPs",
+      "revision": "86b89208d3b2aabb5dcc5b778dfbe09096b4e114",
+      "source": "CIP-0103/README.md",
+      "observed": "Clients invoke api.cip103 and catch a rejected aligned hash-or-TxSendError array directly after attempt-all submission.",
+      "daedalusDelta": null
+    }
+  ],
+  "liveWallets": [
+    {
+      "name": "Lace",
+      "availability": "unavailable",
+      "reason": "No reproducible automated extension adapter or pinned release fixture was available in this checkout."
+    },
+    {
+      "name": "Yoroi",
+      "availability": "unavailable",
+      "reason": "No reproducible automated extension adapter or pinned release fixture was available in this checkout."
+    },
+    {
+      "name": "Eternl",
+      "availability": "unavailable",
+      "reason": "No reproducible automated CIP-103 or CIP-104 release fixture was available."
+    },
+    {
+      "name": "Typhon",
+      "availability": "unavailable",
+      "reason": "No reproducible automated CIP-103 release fixture was available."
+    },
+    {
+      "name": "Lucid",
+      "availability": "unavailable",
+      "reason": "No released CIP-103 client adapter with a reproducible mixed-rejection fixture was available."
+    }
+  ],
+  "upstreamDeltas": []
+}
