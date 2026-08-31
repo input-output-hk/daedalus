@@ -54,17 +54,17 @@
     "cardano-wallet": {
       "flake": false,
       "locked": {
-        "lastModified": 1787691392,
-        "narHash": "sha256-6DE75QRsNFF9GnmnHOqfaNybz1x8wxmRcZcNWMaiIDI=",
+        "lastModified": 1788211514,
+        "narHash": "sha256-cPs4H/6+vRdo42w0R1Hljlg9I9jAOW7a8sX3C/qAuKM=",
         "owner": "AndrewWestberg",
         "repo": "cardano-wallet",
-        "rev": "0cbd4618f5b3ac76bcee52c57a7cd6067a87408e",
+        "rev": "bc9b5b9c62cbf526a4806857f7692c3c9d2d2f5e",
         "type": "github"
       },
       "original": {
         "owner": "AndrewWestberg",
         "repo": "cardano-wallet",
-        "rev": "0cbd4618f5b3ac76bcee52c57a7cd6067a87408e",
+        "rev": "bc9b5b9c62cbf526a4806857f7692c3c9d2d2f5e",
         "type": "github"
       }
     },
