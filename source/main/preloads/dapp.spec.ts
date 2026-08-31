@@ -1,4 +1,5 @@
 import type { DappCip30Rejection } from '../../common/cip30/errors';
+import cip103Fixtures from '../../common/cip30/contracts/fixtures/cip103-fixtures.json';
 import { DAPP_CIP30_GATEWAY_CHANNEL } from '../../common/cip30/wire';
 import type {
   DaedalusApi,
@@ -103,6 +104,33 @@ describe('dApp preload', () => {
       method: 'api.getNetworkId',
       args: [],
     });
+  });
+
+  it('preserves normative CIP-103 client success shapes', async () => {
+    invoke
+      .mockResolvedValueOnce({ status: 'fulfilled', value: {} })
+      .mockResolvedValueOnce({
+        status: 'fulfilled',
+        value: [{ cip: 103 }],
+      })
+      .mockResolvedValueOnce({
+        status: 'fulfilled',
+        value: cip103Fixtures.signing.allSuccessWitnesses,
+      })
+      .mockResolvedValueOnce({
+        status: 'fulfilled',
+        value: cip103Fixtures.submission.allSuccessHashes,
+      });
+    const api = await provider.enable({ extensions: [{ cip: 103 }] });
+
+    await expect(
+      api.cip103!.signTxs(
+        cip103Fixtures.transactions.duplicateIdentity.map((cbor) => ({ cbor }))
+      )
+    ).resolves.toEqual(cip103Fixtures.signing.allSuccessWitnesses);
+    await expect(
+      api.cip103!.submitTxs(cip103Fixtures.transactions.duplicateIdentity)
+    ).resolves.toEqual(cip103Fixtures.submission.allSuccessHashes);
   });
 
   it('terminally omits requested CIP-104 from the authoritative API', async () => {

@@ -16,7 +16,7 @@ import {
   verifyHardwareTransactionWitnesses,
   WitnessSetError,
 } from '../../../common/cardano/witnessSet';
-import { preflightCip103Sign } from '../domains/Cip103Batch';
+import { preflightCip103Sign } from '../../../common/cip30/cip103Batch';
 import { prepareHardwareTransaction } from './hardwareWalletTransaction';
 import { toExactLedgerSignTransactionRequest } from './shelleyLedger';
 import {

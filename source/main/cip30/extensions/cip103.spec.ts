@@ -17,8 +17,8 @@ import type {
 } from '../../../common/types/cip103.types';
 import {
   Cip103SoftwareSigningError,
-  Cip103SoftwareSigningRequest,
-  signCip103SoftwareBatch,
+  Cip103WalletSigningRequest,
+  signCip103WalletBatch,
 } from './cip103';
 
 const network = {
@@ -79,8 +79,9 @@ const signingContext = Object.freeze({
 
 const signingRequest = (
   requiredKeyHashes?: readonly (readonly string[])[]
-): Cip103SoftwareSigningRequest => ({
+): Cip103WalletSigningRequest => ({
   walletId: 'wallet',
+  walletKind: 'shelley-software',
   network,
   sourceRevision: 'revision',
   batch,
@@ -148,7 +149,7 @@ describe('CIP-103 software batch signing', () => {
     };
     const executeWallet = executor(fulfilled(witnesses));
 
-    const result = await signCip103SoftwareBatch(
+    const result = await signCip103WalletBatch(
       executeWallet,
       signingRequest([[], [second.keyHash]])
     );
@@ -200,7 +201,7 @@ describe('CIP-103 software batch signing', () => {
     ],
   ])('releases no result for a %s', async (_label, witnesses) => {
     let released: readonly string[] | undefined;
-    const error = await signCip103SoftwareBatch(
+    const error = await signCip103WalletBatch(
       executor(fulfilled(witnesses)),
       signingRequest()
     ).catch((failure) => {
@@ -215,7 +216,7 @@ describe('CIP-103 software batch signing', () => {
   it('discards an earlier staged witness when a later CIP-95 proof is missing', async () => {
     const required = signedWitness(1).keyHash;
     let released: readonly string[] | undefined;
-    const error = await signCip103SoftwareBatch(
+    const error = await signCip103WalletBatch(
       executor(fulfilled(emptyWitnesses())),
       signingRequest([[], [required]])
     )
@@ -235,7 +236,7 @@ describe('CIP-103 software batch signing', () => {
   it.each(['tx-proof-generation', 'deprecated-certificate'] as const)(
     'preserves the backend %s failure without releasing witnesses',
     async (reason) => {
-      const error = await signCip103SoftwareBatch(
+      const error = await signCip103WalletBatch(
         executor({ status: 'rejected', reason }),
         signingRequest()
       ).catch((failure) => failure);
@@ -248,25 +249,25 @@ describe('CIP-103 software batch signing', () => {
     const executeWallet = executor(fulfilled(emptyWitnesses()));
 
     await expect(
-      signCip103SoftwareBatch(executeWallet, {
+      signCip103WalletBatch(executeWallet, {
         ...signingRequest(),
         passphrase: '',
       })
     ).rejects.toMatchObject({ failure: 'internal' });
     await expect(
-      signCip103SoftwareBatch(
+      signCip103WalletBatch(
         executeWallet,
         signingRequest([[], ['not-a-key-hash']])
       )
     ).rejects.toMatchObject({ failure: 'internal' });
     await expect(
-      signCip103SoftwareBatch(executeWallet, {
+      signCip103WalletBatch(executeWallet, {
         ...signingRequest(),
         review: { ...review, approvable: false },
       })
     ).rejects.toMatchObject({ failure: 'internal' });
     await expect(
-      signCip103SoftwareBatch(executeWallet, {
+      signCip103WalletBatch(executeWallet, {
         ...signingRequest(),
         review: { ...review, mode: 'submit' },
       })

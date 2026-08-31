@@ -221,6 +221,22 @@ storiesOf('dApps / TransactionRequest', module)
       onReject={action('reject')}
     />
   ))
+  .add('Hardware batch device progress', () => (
+    <DappBatchReviewDialog
+      request={batchRequest('batch-sign')}
+      deciding
+      onApprove={action('device batch in progress')}
+      onReject={action('cancel device batch')}
+    />
+  ))
+  .add('Mixed batch submission recovery', () => (
+    <DappBatchReviewDialog
+      request={batchRequest('batch-submit')}
+      deciding={false}
+      onApprove={action('retry exact batch')}
+      onReject={action('close recovery')}
+    />
+  ))
   .add('Blocked batch submission review', () => (
     <DappBatchReviewDialog
       request={batchRequest('batch-submit', true)}

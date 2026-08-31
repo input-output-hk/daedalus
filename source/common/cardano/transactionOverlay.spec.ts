@@ -10,7 +10,7 @@ import {
   resolveCip103TransactionOverlay,
 } from './transactionOverlay';
 import { createCip103BatchReview } from '../cip30/cip103Review';
-import { preflightCip103Sign } from '../../renderer/app/domains/Cip103Batch';
+import { preflightCip103Sign } from '../cip30/cip103Batch';
 import type { Cip103PreflightItem } from '../types/cip103.types';
 
 const address = Buffer.from(`60${'aa'.repeat(28)}`, 'hex');
