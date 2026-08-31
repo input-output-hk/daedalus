@@ -85,6 +85,35 @@ describe('DappBrowserController', () => {
     );
   });
 
+  it('revokes the guest before a trusted renderer reload', () => {
+    const manager = makeManager();
+    const controller = new DappBrowserController(
+      (manager as unknown) as DappBrowserManager,
+      'genesis',
+      enabledPolicy()
+    );
+    let startNavigation:
+      | ((_event: { isMainFrame: boolean; isSameDocument: boolean }) => void)
+      | undefined;
+    controller.observeWindow(({
+      webContents: {
+        on: jest.fn((name, callback) => {
+          if (name === 'did-start-navigation') startNavigation = callback;
+        }),
+        once: jest.fn(),
+        getURL: jest.fn(),
+      },
+    } as unknown) as Electron.BrowserWindow);
+    controller.routeLease.observeTrustedRoute(
+      'file:///app/index.html#/wallets/wallet-a/dapps'
+    );
+
+    startNavigation?.({ isMainFrame: true, isSameDocument: false });
+
+    expect(controller.routeLease.current).toBeNull();
+    expect(manager.close).toHaveBeenCalledWith('route-changed');
+  });
+
   it('rejects diagnostics independently without affecting preferred launch', async () => {
     const manager = makeManager();
     const controller = new DappBrowserController(
