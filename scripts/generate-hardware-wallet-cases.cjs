@@ -300,9 +300,13 @@ const dataExpectation = (support) =>
     errorCode: 'DataSignError.ProofGeneration',
     preDevice: true,
   });
-const requestFields = (item, message) => {
+const messageRequestBranch = (artifact, message) =>
+  artifact.vendor === 'ledger' && message.id === 'drep-type6'
+    ? 'key-hash'
+    : message.requestBranch;
+const requestFields = (item, message, requestBranch) => {
   const branch = item.messageRequest.branches.find(
-    (entry) => entry.id === message.requestBranch
+    (entry) => entry.id === requestBranch
   );
   return {
     required: [...item.messageRequest.required, ...(branch?.required || [])],
@@ -310,9 +314,10 @@ const requestFields = (item, message) => {
     forbidden: branch?.forbidden || [],
   };
 };
-const executionLayer = (operation, category, expected, recipe) => {
+const executionLayer = (operation, category, expected, recipe, physical) => {
   if (recipe.kind === 'static-source-assertion') return 'source-probe';
   if (category === 'synthetic-golden') return 'synthetic-verifier';
+  if (physical) return 'physical-device';
   if (category === 'error') return 'adapter-mock';
   if (expected.preDevice) return 'pre-device-validator';
   return operation === 'signData' ? 'physical-device' : 'adapter-mock';
@@ -344,6 +349,7 @@ const messageRecipe = (message, artifact) => {
   };
   const derivationPath = paths[message.id];
   const stakingPath = [2147485500, 2147485463, 2147483648, 2, 0];
+  const requestBranch = messageRequestBranch(artifact, message);
   const role = message.id.startsWith('drep')
     ? 'drep'
     : message.id === 'stake-address'
@@ -365,8 +371,6 @@ const messageRecipe = (message, artifact) => {
         }
       : message.id === 'stake-address'
       ? { type: 14, params: { stakingPath: derivationPath } }
-      : message.id === 'drep-type6'
-      ? { type: 6, params: { spendingPath: derivationPath } }
       : null;
   const requestTemplate =
     artifact.vendor === 'trezor'
@@ -387,9 +391,8 @@ const messageRecipe = (message, artifact) => {
           messageHex: dataFixtureSource.payload,
           hashPayload: false,
           preferHexDisplay: false,
-          addressFieldType:
-            message.requestBranch === 'address' ? 'address' : 'key_hash',
-          ...(message.requestBranch === 'address'
+          addressFieldType: requestBranch === 'address' ? 'address' : 'key_hash',
+          ...(requestBranch === 'address'
             ? {
                 address: ledgerAddress,
                 network: { networkId: 1, protocolMagic: 764824073 },
@@ -401,23 +404,27 @@ const messageRecipe = (message, artifact) => {
     'physical-message-request',
     {
       operation: 'signData',
-      derivationPath,
-      requestTemplate,
+      messageMode: message.id,
+      request: {
+        method: requestTemplate.method,
+        credentialKind: requestBranch,
+        hasBoundCredential: requestBranch === 'address',
+        hashPayload: false,
+      },
       credentialBinding: {
         role,
         predicate:
           message.id === 'drep-type6'
             ? 'type-6-payment-key-hash-equals-drep-key-hash'
             : message.id === 'drep-direct'
-            ? 'direct-drep-key-hash-owned-by-derivation-path'
-            : 'full-address-credential-owned-by-derivation-path-role',
+            ? 'direct-drep-key-hash-owned-by-role'
+            : 'full-address-credential-owned-by-role',
       },
-      payloadHex: dataFixtureSource.payload,
       payloadSha256: hexDigest(dataFixtureSource.payload),
       vendorParserValidation:
         artifact.vendor === 'ledger'
-          ? 'ledger-7.1.4-parseMessageData-pass'
-          : 'trezor-9.7.2-schema-derived-template',
+          ? 'ledger-message-parser-pass'
+          : 'trezor-schema-derived-template',
     },
     {
       boundOutputsExcludedFromInputDigest: [
@@ -474,8 +481,25 @@ const transactionRecipe = (artifact, category, subject) => {
     : sourceAssertionRecipe(artifact, category, subject);
 };
 
+const physicalTransactionRecipe = (subject) =>
+  canonicalJsonRecipe('physical-transaction-request', {
+    operation: 'signTx',
+    contextFixture: 'task-607-ordinary-ledger-context-v1',
+    execution:
+      subject.name === 'ordered-batch' ? 'ordered-batch' : 'single-transaction',
+    ...(subject.name === 'ordered-batch'
+      ? {
+          itemKinds: ['ready', 'canonical-empty-witness-set', 'ready'],
+          signedIndices: [0, 2],
+          release: 'all-after-success',
+          refusalIndices: [0, 1, 2],
+        }
+      : {}),
+    verification: 'immutable-body-hash-and-witnesses',
+  });
 const caseRecipe = (artifact, operation, category, subject, message) => {
   if (category === 'synthetic-golden') return syntheticGoldenRecipe();
+  if (category === 'physical-transaction') return physicalTransactionRecipe(subject);
   if (category === 'limit') {
     if (operation === 'signTx') {
       return txBoundaries.get(Number(subject.name.replace('decoded-bytes-', '')));
@@ -494,6 +518,8 @@ const caseRecipe = (artifact, operation, category, subject, message) => {
   });
 };
 
+const physicalModelRowId = 'ledger-8-library-nano-x-app7';
+const observedPhysicalRuntimeVersion = [7, 3, 0];
 const positiveMessageProof = [
   'identityVerified',
   'publicKeyAssociated',
@@ -502,12 +528,23 @@ const positiveMessageProof = [
   'returnedPublicKeyDigest',
   'returnedSignatureDigest',
 ];
+const positiveTransactionProof = [
+  'bodyHashVerified',
+  'publicKeyAssociated',
+  'signatureVerified',
+  'returnedBodyHashDigest',
+  'returnedPublicKeyDigest',
+  'returnedSignatureDigest',
+  'witnessCount',
+];
 const certificationTarget = (model, operation, category, state, inputRecipe) => {
   if (
-    operation !== 'signData' ||
-    !['message-mode', 'model-version'].includes(category) ||
+    model.id !== physicalModelRowId ||
     state.libraryRepresentability !== 'representable' ||
-    state.deterministicProbe !== 'pass'
+    !(
+      (operation === 'signData' && category === 'message-mode') ||
+      (operation === 'signTx' && category === 'physical-transaction')
+    )
   ) {
     return null;
   }
@@ -520,6 +557,7 @@ const certificationTarget = (model, operation, category, state, inputRecipe) => 
     productEnablement: 'disabled-until-later-release-policy',
     reviewerDisposition: 'approved',
   };
+  const transaction = operation === 'signTx';
   return {
     outcome: 'pass',
     errorCode: 'none',
@@ -527,13 +565,19 @@ const certificationTarget = (model, operation, category, state, inputRecipe) => 
     inputRecipeSha256: inputRecipe.recipeSha256,
     prerequisiteState,
     prerequisiteStateSha256: sha256(JSON.stringify(canonicalize(prerequisiteState))),
-    requiredProof: positiveMessageProof,
-    forbiddenProof: [
-      'bodyHashVerified',
-      'returnedBodyHashDigest',
-      'witnessCount',
-      'vendorCosePassedThrough',
-    ],
+    requiredProof: transaction ? positiveTransactionProof : positiveMessageProof,
+    forbiddenProof: transaction
+      ? [
+          'identityVerified',
+          'localCoseVerified',
+          'vendorCosePassedThrough',
+        ]
+      : [
+          'bodyHashVerified',
+          'returnedBodyHashDigest',
+          'witnessCount',
+          'vendorCosePassedThrough',
+        ],
   };
 };
 
@@ -596,9 +640,17 @@ const add = ({ model, operation, category, subject, expected, message }) => {
     inputRecipe.kind === 'static-source-assertion'
       ? { outcome: 'static-source-assertion', errorCode: 'none', preDevice: true }
       : expected;
-  const layer = executionLayer(operation, category, effectiveExpected, inputRecipe);
-  const dataPass = operation === 'signData' && effectiveExpected.outcome === 'pass';
   const target = certificationTarget(model, operation, category, state, inputRecipe);
+  const layer = executionLayer(
+    operation,
+    category,
+    effectiveExpected,
+    inputRecipe,
+    Boolean(target)
+  );
+  const dataPass = operation === 'signData' && effectiveExpected.outcome === 'pass';
+  const transactionPass =
+    operation === 'signTx' && effectiveExpected.outcome === 'pass';
   const idParts = [
     model.id,
     operation.toLowerCase(),
@@ -640,8 +692,8 @@ const add = ({ model, operation, category, subject, expected, message }) => {
         kind:
           inputRecipe.kind === 'static-source-assertion'
             ? 'source-assertion'
-            : inputRecipe.kind === 'physical-message-request'
-            ? 'message-request'
+            : inputRecipe.kind === 'physical-transaction-request'
+            ? 'transaction-context'
             : inputRecipe.kind === 'synthetic-golden'
             ? 'synthetic-golden'
             : fixture.selectedInput.kind,
@@ -657,9 +709,16 @@ const add = ({ model, operation, category, subject, expected, message }) => {
     },
     inputRecipe,
     signingBinding: {
-      requestBranch: operation === 'signTx' ? 'transaction' : message.requestBranch,
+      requestBranch:
+        operation === 'signTx'
+          ? 'transaction'
+          : messageRequestBranch(artifact, message),
       signingMode:
-        operation === 'signTx' ? 'exact-body-reject' : 'unhashed-message',
+        operation === 'signTx'
+          ? category === 'physical-transaction'
+            ? 'exact-body'
+            : 'exact-body-reject'
+          : 'unhashed-message',
       displayMode: effectiveExpected.preDevice
         ? 'none-pre-device-rejection'
         : 'device-confirmation-required',
@@ -672,23 +731,30 @@ const add = ({ model, operation, category, subject, expected, message }) => {
                 optional: [],
                 forbidden: ['cborHex'],
               }
+            : inputRecipe.kind === 'physical-transaction-request'
+            ? {
+                required: ['contextFixture', 'execution', 'verification'],
+                optional: ['itemKinds', 'signedIndices', 'release', 'refusalIndices'],
+                forbidden: ['cborHex'],
+              }
             : { required: ['cborHex'], optional: [], forbidden: [] }
-          : requestFields(item, message),
+          : requestFields(item, message, messageRequestBranch(artifact, message)),
     },
     expected: effectiveExpected,
     proofBinding: {
       vendorResponse: operation === 'signTx' ? item.transactionProof : item.messageProof,
-      required: dataPass
+      required: transactionPass
+        ? positiveTransactionProof
+        : dataPass
+        ? positiveMessageProof
+        : [],
+      forbidden: transactionPass
         ? [
             'identityVerified',
-            'publicKeyAssociated',
-            'signatureVerified',
             'localCoseVerified',
-            'returnedPublicKeyDigest',
-            'returnedSignatureDigest',
+            'vendorCosePassedThrough',
           ]
-        : [],
-      forbidden: dataPass
+        : dataPass
         ? ['vendorCosePassedThrough']
         : [
             'bodyHashVerified',
@@ -766,6 +832,17 @@ for (const model of manifest.modelRows) {
         });
       }
     }
+    if (model.id === physicalModelRowId) {
+      for (const name of ['single-transaction', 'ordered-batch']) {
+        add({
+          model,
+          operation: 'signTx',
+          category: 'physical-transaction',
+          subject: { kind: 'physical-transaction', name },
+          expected: { outcome: 'pass', errorCode: 'none', preDevice: false },
+        });
+      }
+    }
   }
 
   for (const operation of ['signTx', 'signData']) {
@@ -789,7 +866,10 @@ for (const model of manifest.modelRows) {
         category: 'message-mode',
         subject: { kind: 'message-mode', name: message.id },
         message,
-        expected: dataExpectation('representable'),
+        expected:
+          model.id === physicalModelRowId
+            ? { outcome: 'pass', errorCode: 'none', preDevice: false }
+            : dataExpectation('representable'),
       });
     }
     add({
@@ -860,6 +940,37 @@ const proofConstraint = (field, required) => {
   if (field === 'vendorCosePassedThrough') return { const: false };
   return { const: required };
 };
+const runtimeVersionGate = (testCase) => {
+  const model = manifest.modelRows.find(
+    (item) => item.id === testCase.capabilityRowId
+  );
+  const minimum = testCase.modelBinding.certificationVersion;
+  if (!model || !minimum) throw new Error(`Missing runtime gate for ${testCase.id}`);
+  return {
+    oneOf: [
+      {
+        type: 'array',
+        minItems: 3,
+        maxItems: 3,
+        items: [
+          { const: model.versionMajor },
+          { const: minimum[1] },
+          { type: 'integer', minimum: minimum[2], maximum: 65535 },
+        ],
+      },
+      {
+        type: 'array',
+        minItems: 3,
+        maxItems: 3,
+        items: [
+          { const: model.versionMajor },
+          { type: 'integer', minimum: minimum[1] + 1, maximum: 65535 },
+          { type: 'integer', minimum: 0, maximum: 65535 },
+        ],
+      },
+    ],
+  };
+};
 const evidenceBinding = (testCase) => {
   const artifact = artifacts.get(testCase.artifactBinding.id);
   const proofProperties = (required, forbidden) => {
@@ -892,7 +1003,7 @@ const evidenceBinding = (testCase) => {
       vendor: { const: testCase.artifactBinding.vendor },
       model: { const: testCase.modelBinding.model },
       versionKind: { const: testCase.modelBinding.versionKind },
-      version: { const: testCase.modelBinding.certificationVersion },
+      minimumVersion: { const: testCase.modelBinding.certificationVersion },
       operation: { const: testCase.operation },
       inputDigest: { const: testCase.fixtureBinding.selectedInput.sha256 },
       inputRecipeSha256: { const: testCase.inputRecipe.recipeSha256 },
@@ -911,7 +1022,9 @@ const evidenceBinding = (testCase) => {
       'vendor',
       'model',
       'versionKind',
+      'minimumVersion',
       'version',
+      'executionKind',
       'operation',
       'inputDigest',
       'inputRecipeSha256',
@@ -923,6 +1036,8 @@ const evidenceBinding = (testCase) => {
   const current = {
     properties: {
       ...sharedProperties,
+      version: { const: null },
+      executionKind: { const: 'mock' },
       outcome: { const: testCase.expected.outcome },
       errorCode: { const: testCase.expected.errorCode },
       prerequisiteAttestation: { type: 'null' },
@@ -952,6 +1067,8 @@ const evidenceBinding = (testCase) => {
     {
         properties: {
           ...sharedProperties,
+          version: runtimeVersionGate(testCase),
+          executionKind: { const: 'physical' },
           adapterCommit: {
             type: 'string',
             pattern: '^(?!0{40}$)[0-9a-f]{40}$',
@@ -973,7 +1090,21 @@ const evidenceBinding = (testCase) => {
 
 if (evidenceSchemaPath) {
   const schema = readJson(evidenceSchemaPath);
+  schema.definitions.version = {
+    type: 'array',
+    minItems: 3,
+    maxItems: 3,
+    items: { type: 'integer', minimum: 0, maximum: 65535 },
+  };
   schema.properties.caseId = { type: 'string', minLength: 1 };
+  schema.required = [...new Set([...schema.required, 'minimumVersion', 'executionKind'])];
+  schema.properties.minimumVersion = {
+    oneOf: [{ $ref: '#/definitions/version' }, { type: 'null' }],
+  };
+  schema.properties.version = {
+    oneOf: [{ $ref: '#/definitions/version' }, { type: 'null' }],
+  };
+  schema.properties.executionKind = { enum: ['mock', 'physical'] };
   const bindings = cases
     .filter((testCase) => testCase.evidenceOwner === 'task-607')
     .flatMap(evidenceBinding);
@@ -987,21 +1118,29 @@ if (evidenceExamplesPath) {
   if (!evidenceSchemaPath) throw new Error('Evidence examples require evidence schema');
   const passCase = cases.find(
     (item) =>
+      item.capabilityRowId === physicalModelRowId &&
       item.operation === 'signData' &&
       item.category === 'message-mode' &&
       item.subject.name === 'drep-direct'
   );
+  const mockCase = cases.find(
+    (item) =>
+      item.capabilityRowId === physicalModelRowId &&
+      item.operation === 'signData' &&
+      item.category === 'limit' &&
+      item.subject.name === 'decoded-bytes-65537'
+  );
   const artifact = artifacts.get(passCase.artifactBinding.id);
   const valid = {
     matrixRevision: manifest.revision,
-    caseId: passCase.id,
-    capabilityRowId: passCase.capabilityRowId,
+    caseId: mockCase.id,
+    capabilityRowId: mockCase.capabilityRowId,
     artifactId: artifact.id,
     artifactDigest: artifactDigest(artifact),
     productionLockDigest: artifact.lockSha256,
     configDigest: manifestDigest,
-    runtimeGraphSha256: passCase.artifactBinding.runtimeGraphSha256,
-    configIdentitySha256: passCase.artifactBinding.configIdentitySha256,
+    runtimeGraphSha256: mockCase.artifactBinding.runtimeGraphSha256,
+    configIdentitySha256: mockCase.artifactBinding.configIdentitySha256,
     library: {
       name: artifact.package,
       version: artifact.version,
@@ -1010,15 +1149,17 @@ if (evidenceExamplesPath) {
     },
     adapterCommit: '0000000000000000000000000000000000000000',
     vendor: artifact.vendor,
-    model: passCase.modelBinding.model,
-    versionKind: passCase.modelBinding.versionKind,
-    version: passCase.modelBinding.certificationVersion,
+    model: mockCase.modelBinding.model,
+    versionKind: mockCase.modelBinding.versionKind,
+    minimumVersion: mockCase.modelBinding.certificationVersion,
+    version: null,
+    executionKind: 'mock',
     transport: artifact.vendor === 'ledger' ? 'hid' : 'bridge',
-    operation: passCase.operation,
-    inputDigest: passCase.fixtureBinding.selectedInput.sha256,
-    inputRecipeSha256: passCase.inputRecipe.recipeSha256,
-    outcome: passCase.expected.outcome,
-    errorCode: passCase.expected.errorCode,
+    operation: mockCase.operation,
+    inputDigest: mockCase.fixtureBinding.selectedInput.sha256,
+    inputRecipeSha256: mockCase.inputRecipe.recipeSha256,
+    outcome: mockCase.expected.outcome,
+    errorCode: mockCase.expected.errorCode,
     prerequisiteAttestation: null,
     proof: {
       bodyHashVerified: false,
@@ -1039,6 +1180,13 @@ if (evidenceExamplesPath) {
   };
   const promotedValid = {
     ...valid,
+    caseId: passCase.id,
+    capabilityRowId: passCase.capabilityRowId,
+    minimumVersion: passCase.modelBinding.certificationVersion,
+    inputDigest: passCase.fixtureBinding.selectedInput.sha256,
+    inputRecipeSha256: passCase.inputRecipe.recipeSha256,
+    version: observedPhysicalRuntimeVersion,
+    executionKind: 'physical',
     adapterCommit: '1111111111111111111111111111111111111111',
     outcome: passCase.certificationTarget.outcome,
     errorCode: passCase.certificationTarget.errorCode,
@@ -1085,6 +1233,7 @@ if (evidenceExamplesPath) {
     ['zero-adapter-commit', 'adapterCommit', '0000000000000000000000000000000000000000'],
     ['missing-prerequisites', 'prerequisiteAttestation', null],
     ['reviewer-rejected-promotion', 'reviewDisposition', 'rejected'],
+    ['mock-cannot-attest-physical-pass', 'executionKind', 'mock'],
     ['missing-promoted-proof', 'signatureVerified', false, 'proof'],
   ].map(([name, property, value, target]) => ({ name, property, value, ...(target ? { target } : {}) }));
   fs.writeFileSync(

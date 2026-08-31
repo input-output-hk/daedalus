@@ -4,26 +4,42 @@
   "additionalProperties": false,
   "required": ["schemaVersion", "matrixRevision", "cases"],
   "properties": {
-    "schemaVersion": { "const": 4 },
-    "matrixRevision": { "const": "task-006-matrix-2026-08-14" },
+    "schemaVersion": {
+      "const": 4
+    },
+    "matrixRevision": {
+      "const": "task-006-matrix-2026-08-14"
+    },
     "cases": {
       "type": "array",
       "minItems": 100,
-      "items": { "$ref": "#/definitions/case" }
+      "items": {
+        "$ref": "#/definitions/case"
+      }
     }
   },
   "definitions": {
-    "digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
     "stringSet": {
       "type": "array",
       "uniqueItems": true,
-      "items": { "type": "string", "minLength": 1 }
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
     },
     "version": {
       "type": "array",
       "minItems": 3,
       "maxItems": 3,
-      "items": { "type": "integer", "minimum": 0, "maximum": 65535 }
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 65535
+      }
     },
     "artifactBinding": {
       "type": "object",
@@ -46,21 +62,31 @@
             "trezor-connect-9.7.2"
           ]
         },
-        "vendor": { "enum": ["ledger", "trezor"] },
+        "vendor": {
+          "enum": ["ledger", "trezor"]
+        },
         "package": {
           "enum": [
             "@cardano-foundation/ledgerjs-hw-app-cardano",
             "@trezor/connect"
           ]
         },
-        "version": { "enum": ["7.1.4", "8.0.0", "9.7.2"] },
+        "version": {
+          "enum": ["7.1.4", "8.0.0", "9.7.2"]
+        },
         "integrity": {
           "type": "string",
           "pattern": "^sha512-[A-Za-z0-9+/]+={0,2}$"
         },
-        "lockSha256": { "$ref": "#/definitions/digest" },
-        "runtimeGraphSha256": { "$ref": "#/definitions/nullableDigest" },
-        "configIdentitySha256": { "$ref": "#/definitions/nullableDigest" }
+        "lockSha256": {
+          "$ref": "#/definitions/digest"
+        },
+        "runtimeGraphSha256": {
+          "$ref": "#/definitions/nullableDigest"
+        },
+        "configIdentitySha256": {
+          "$ref": "#/definitions/nullableDigest"
+        }
       }
     },
     "modelBinding": {
@@ -87,14 +113,25 @@
             "trezor-t3w1"
           ]
         },
-        "versionKind": { "enum": ["ledger-cardano-app", "trezor-firmware"] },
+        "versionKind": {
+          "enum": ["ledger-cardano-app", "trezor-firmware"]
+        },
         "certificationVersion": {
-          "oneOf": [{ "$ref": "#/definitions/version" }, { "type": "null" }]
+          "oneOf": [
+            {
+              "$ref": "#/definitions/version"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "support": {
           "enum": ["representable", "not_representable", "unresolved"]
         },
-        "state": { "$ref": "#/definitions/operationState" }
+        "state": {
+          "$ref": "#/definitions/operationState"
+        }
       }
     },
     "operationState": {
@@ -119,12 +156,18 @@
         "emulatorEvidence": {
           "enum": ["pass", "fail", "unavailable", "not_run"]
         },
-        "physicalCertification": { "enum": ["pass", "fail", "not_run"] },
+        "physicalCertification": {
+          "enum": ["pass", "fail", "not_run"]
+        },
         "adapterImplementation": {
           "enum": ["pass", "fail", "not_implemented"]
         },
-        "productEnablement": { "enum": ["enabled", "disabled"] },
-        "productUsable": { "type": "boolean" }
+        "productEnablement": {
+          "enum": ["enabled", "disabled"]
+        },
+        "productUsable": {
+          "type": "boolean"
+        }
       }
     },
     "selectedInput": {
@@ -141,14 +184,24 @@
             "reward-address",
             "message-request",
             "source-assertion",
-            "synthetic-golden"
+            "synthetic-golden",
+            "transaction-context"
           ]
         },
-        "sha256": { "$ref": "#/definitions/digest" }
+        "sha256": {
+          "$ref": "#/definitions/digest"
+        }
       }
     },
     "nullableDigest": {
-      "oneOf": [{ "$ref": "#/definitions/digest" }, { "type": "null" }]
+      "oneOf": [
+        {
+          "$ref": "#/definitions/digest"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "inputRecipe": {
       "type": "object",
@@ -163,34 +216,60 @@
             "synthetic-golden",
             "transaction-cbor",
             "authoritative-transaction-fixture",
-            "repeated-byte-pattern"
+            "repeated-byte-pattern",
+            "physical-transaction-request"
           ]
         },
-        "canonicalJson": { "type": "string", "minLength": 2 },
-        "cborHex": { "type": "string", "pattern": "^(?:[0-9a-f]{2})+$" },
+        "canonicalJson": {
+          "type": "string",
+          "minLength": 2
+        },
+        "cborHex": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{2})+$"
+        },
         "fixturePath": {
           "const": "hardware-wallet-tests/capability-matrix/input-recipes.json"
         },
-        "fixtureSha256": { "$ref": "#/definitions/digest" },
+        "fixtureSha256": {
+          "$ref": "#/definitions/digest"
+        },
         "fixtureEntry": {
           "enum": ["valid-conway-65536-bytes", "valid-conway-65537-bytes"]
         },
-        "assertion": { "type": "object" },
-        "structuralValidation": { "type": "object" },
+        "assertion": {
+          "type": "object"
+        },
+        "structuralValidation": {
+          "type": "object"
+        },
         "boundOutputsExcludedFromInputDigest": {
           "type": "array",
           "uniqueItems": true,
-          "items": { "type": "string", "minLength": 1 }
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         },
-        "patternHex": { "const": "a5" },
-        "repetitions": { "type": "integer", "minimum": 1, "maximum": 65537 },
+        "patternHex": {
+          "const": "a5"
+        },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65537
+        },
         "decodedByteLength": {
           "type": "integer",
           "minimum": 1,
           "maximum": 1000000
         },
-        "inputSha256": { "$ref": "#/definitions/digest" },
-        "recipeSha256": { "$ref": "#/definitions/digest" }
+        "inputSha256": {
+          "$ref": "#/definitions/digest"
+        },
+        "recipeSha256": {
+          "$ref": "#/definitions/digest"
+        }
       },
       "allOf": [
         {
@@ -201,21 +280,36 @@
                   "deterministic-harness-input",
                   "physical-message-request",
                   "static-source-assertion",
-                  "synthetic-golden"
+                  "synthetic-golden",
+                  "physical-transaction-request"
                 ]
               }
             }
           },
-          "then": { "required": ["canonicalJson"] }
+          "then": {
+            "required": ["canonicalJson"]
+          }
         },
         {
           "if": {
-            "properties": { "kind": { "const": "repeated-byte-pattern" } }
+            "properties": {
+              "kind": {
+                "const": "repeated-byte-pattern"
+              }
+            }
           },
-          "then": { "required": ["patternHex", "repetitions"] }
+          "then": {
+            "required": ["patternHex", "repetitions"]
+          }
         },
         {
-          "if": { "properties": { "kind": { "const": "transaction-cbor" } } },
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "transaction-cbor"
+              }
+            }
+          },
           "then": {
             "required": ["cborHex", "assertion", "structuralValidation"]
           }
@@ -223,7 +317,9 @@
         {
           "if": {
             "properties": {
-              "kind": { "const": "authoritative-transaction-fixture" }
+              "kind": {
+                "const": "authoritative-transaction-fixture"
+              }
             }
           },
           "then": {
@@ -268,13 +364,27 @@
             "source/common/cip30/contracts/fixtures/wire-fixtures.json"
           ]
         },
-        "fileSha256": { "$ref": "#/definitions/digest" },
-        "selectedInput": { "$ref": "#/definitions/selectedInput" },
-        "payloadSha256": { "$ref": "#/definitions/nullableDigest" },
-        "identitySha256": { "$ref": "#/definitions/nullableDigest" },
-        "publicKeySha256": { "$ref": "#/definitions/nullableDigest" },
-        "signatureSha256": { "$ref": "#/definitions/nullableDigest" },
-        "provenanceFixtureSha256": { "$ref": "#/definitions/nullableDigest" }
+        "fileSha256": {
+          "$ref": "#/definitions/digest"
+        },
+        "selectedInput": {
+          "$ref": "#/definitions/selectedInput"
+        },
+        "payloadSha256": {
+          "$ref": "#/definitions/nullableDigest"
+        },
+        "identitySha256": {
+          "$ref": "#/definitions/nullableDigest"
+        },
+        "publicKeySha256": {
+          "$ref": "#/definitions/nullableDigest"
+        },
+        "signatureSha256": {
+          "$ref": "#/definitions/nullableDigest"
+        },
+        "provenanceFixtureSha256": {
+          "$ref": "#/definitions/nullableDigest"
+        }
       }
     },
     "requestFields": {
@@ -282,9 +392,15 @@
       "additionalProperties": false,
       "required": ["required", "optional", "forbidden"],
       "properties": {
-        "required": { "$ref": "#/definitions/stringSet" },
-        "optional": { "$ref": "#/definitions/stringSet" },
-        "forbidden": { "$ref": "#/definitions/stringSet" }
+        "required": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "optional": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "forbidden": {
+          "$ref": "#/definitions/stringSet"
+        }
       }
     },
     "signingBinding": {
@@ -298,8 +414,12 @@
         "requestFields"
       ],
       "properties": {
-        "requestBranch": { "enum": ["transaction", "address", "key-hash"] },
-        "signingMode": { "enum": ["exact-body-reject", "unhashed-message"] },
+        "requestBranch": {
+          "enum": ["transaction", "address", "key-hash"]
+        },
+        "signingMode": {
+          "enum": ["exact-body-reject", "unhashed-message", "exact-body"]
+        },
         "displayMode": {
           "enum": ["device-confirmation-required", "none-pre-device-rejection"]
         },
@@ -312,7 +432,9 @@
             "synthetic-verifier"
           ]
         },
-        "requestFields": { "$ref": "#/definitions/requestFields" }
+        "requestFields": {
+          "$ref": "#/definitions/requestFields"
+        }
       }
     },
     "subject": {
@@ -330,31 +452,72 @@
             "synthetic-golden",
             "model-version",
             "error",
-            "limit"
+            "limit",
+            "physical-transaction"
           ]
         },
-        "name": { "type": "string", "minLength": 1 },
-        "key": { "type": "integer", "minimum": 0 },
-        "tag": { "type": "integer", "minimum": 0 },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "key": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tag": {
+          "type": "integer",
+          "minimum": 0
+        },
         "alternative": {
-          "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }]
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "minimum": {
-          "oneOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }]
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "maximum": {
-          "oneOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }]
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "ordering": {
           "oneOf": [
-            { "enum": ["canonical-policy-id", "canonical-asset-name"] },
-            { "type": "null" }
+            {
+              "enum": ["canonical-policy-id", "canonical-asset-name"]
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "support": {
           "enum": ["representable", "not_representable", "unresolved"]
         },
-        "predicate": { "type": "string", "minLength": 1 }
+        "predicate": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "expected": {
@@ -386,7 +549,9 @@
             "discard-no-second-settlement"
           ]
         },
-        "preDevice": { "type": "boolean" }
+        "preDevice": {
+          "type": "boolean"
+        }
       }
     },
     "witnessProof": {
@@ -394,10 +559,20 @@
       "additionalProperties": false,
       "required": ["required", "minimum", "keyAssociation"],
       "properties": {
-        "required": { "$ref": "#/definitions/stringSet" },
-        "optional": { "$ref": "#/definitions/stringSet" },
-        "minimum": { "type": "integer", "minimum": 1 },
-        "keyAssociation": { "type": "string", "minLength": 1 }
+        "required": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "optional": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "minimum": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "keyAssociation": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "auxiliaryProof": {
@@ -405,9 +580,15 @@
       "additionalProperties": false,
       "required": ["nullable", "requiredWhenPresent"],
       "properties": {
-        "nullable": { "const": true },
-        "requiredWhenPresent": { "$ref": "#/definitions/stringSet" },
-        "optionalWhenPresent": { "$ref": "#/definitions/stringSet" }
+        "nullable": {
+          "const": true
+        },
+        "requiredWhenPresent": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "optionalWhenPresent": {
+          "$ref": "#/definitions/stringSet"
+        }
       }
     },
     "transactionVendorResponse": {
@@ -415,10 +596,18 @@
       "additionalProperties": false,
       "required": ["required", "witness", "auxiliarySupplement"],
       "properties": {
-        "required": { "$ref": "#/definitions/stringSet" },
-        "optional": { "$ref": "#/definitions/stringSet" },
-        "witness": { "$ref": "#/definitions/witnessProof" },
-        "auxiliarySupplement": { "$ref": "#/definitions/auxiliaryProof" }
+        "required": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "optional": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "witness": {
+          "$ref": "#/definitions/witnessProof"
+        },
+        "auxiliarySupplement": {
+          "$ref": "#/definitions/auxiliaryProof"
+        }
       }
     },
     "messageVendorResponse": {
@@ -431,11 +620,22 @@
         "localCoseRequired"
       ],
       "properties": {
-        "required": { "$ref": "#/definitions/stringSet" },
-        "keyAssociation": { "type": "string", "minLength": 1 },
-        "signature": { "const": "ed25519" },
-        "localCoseRequired": { "const": true },
-        "vendorCoseAccepted": { "const": false }
+        "required": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "keyAssociation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "signature": {
+          "const": "ed25519"
+        },
+        "localCoseRequired": {
+          "const": true
+        },
+        "vendorCoseAccepted": {
+          "const": false
+        }
       }
     },
     "proofField": {
@@ -459,25 +659,35 @@
       "properties": {
         "vendorResponse": {
           "oneOf": [
-            { "$ref": "#/definitions/transactionVendorResponse" },
-            { "$ref": "#/definitions/messageVendorResponse" }
+            {
+              "$ref": "#/definitions/transactionVendorResponse"
+            },
+            {
+              "$ref": "#/definitions/messageVendorResponse"
+            }
           ]
         },
         "required": {
           "type": "array",
           "uniqueItems": true,
-          "items": { "$ref": "#/definitions/proofField" }
+          "items": {
+            "$ref": "#/definitions/proofField"
+          }
         },
         "forbidden": {
           "type": "array",
           "uniqueItems": true,
-          "items": { "$ref": "#/definitions/proofField" }
+          "items": {
+            "$ref": "#/definitions/proofField"
+          }
         }
       }
     },
     "certificationTarget": {
       "oneOf": [
-        { "type": "null" },
+        {
+          "type": "null"
+        },
         {
           "type": "object",
           "additionalProperties": false,
@@ -492,10 +702,18 @@
             "forbiddenProof"
           ],
           "properties": {
-            "outcome": { "const": "pass" },
-            "errorCode": { "const": "none" },
-            "physicalExecution": { "const": true },
-            "inputRecipeSha256": { "$ref": "#/definitions/digest" },
+            "outcome": {
+              "const": "pass"
+            },
+            "errorCode": {
+              "const": "none"
+            },
+            "physicalExecution": {
+              "const": true
+            },
+            "inputRecipeSha256": {
+              "$ref": "#/definitions/digest"
+            },
             "prerequisiteState": {
               "type": "object",
               "additionalProperties": false,
@@ -509,32 +727,46 @@
                 "reviewerDisposition"
               ],
               "properties": {
-                "libraryRepresentability": { "const": "representable" },
-                "deterministicProbe": { "const": "pass" },
+                "libraryRepresentability": {
+                  "const": "representable"
+                },
+                "deterministicProbe": {
+                  "const": "pass"
+                },
                 "emulatorEvidence": {
                   "enum": ["pass", "unavailable", "not_run"]
                 },
-                "adapterImplementation": { "const": "pass" },
+                "adapterImplementation": {
+                  "const": "pass"
+                },
                 "physicalCertification": {
                   "const": "pass-from-this-reviewed-case"
                 },
                 "productEnablement": {
                   "const": "disabled-until-later-release-policy"
                 },
-                "reviewerDisposition": { "const": "approved" }
+                "reviewerDisposition": {
+                  "const": "approved"
+                }
               }
             },
-            "prerequisiteStateSha256": { "$ref": "#/definitions/digest" },
+            "prerequisiteStateSha256": {
+              "$ref": "#/definitions/digest"
+            },
             "requiredProof": {
               "type": "array",
-              "minItems": 6,
+              "minItems": 3,
               "uniqueItems": true,
-              "items": { "$ref": "#/definitions/proofField" }
+              "items": {
+                "$ref": "#/definitions/proofField"
+              }
             },
             "forbiddenProof": {
               "type": "array",
               "uniqueItems": true,
-              "items": { "$ref": "#/definitions/proofField" }
+              "items": {
+                "$ref": "#/definitions/proofField"
+              }
             }
           }
         }
@@ -562,11 +794,23 @@
         "evidenceOwner"
       ],
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z0-9.-]+$" },
-        "matrixRevision": { "const": "task-006-matrix-2026-08-14" },
-        "capabilityRowId": { "type": "string", "minLength": 3 },
-        "artifactBinding": { "$ref": "#/definitions/artifactBinding" },
-        "operation": { "enum": ["signTx", "signData"] },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9.-]+$"
+        },
+        "matrixRevision": {
+          "const": "task-006-matrix-2026-08-14"
+        },
+        "capabilityRowId": {
+          "type": "string",
+          "minLength": 3
+        },
+        "artifactBinding": {
+          "$ref": "#/definitions/artifactBinding"
+        },
+        "operation": {
+          "enum": ["signTx", "signData"]
+        },
         "category": {
           "enum": [
             "body-field",
@@ -577,24 +821,49 @@
             "synthetic-golden",
             "model-version",
             "error",
-            "limit"
+            "limit",
+            "physical-transaction"
           ]
         },
-        "subject": { "$ref": "#/definitions/subject" },
-        "modelBinding": { "$ref": "#/definitions/modelBinding" },
-        "fixtureBinding": { "$ref": "#/definitions/fixtureBinding" },
-        "inputRecipe": { "$ref": "#/definitions/inputRecipe" },
-        "signingBinding": { "$ref": "#/definitions/signingBinding" },
-        "expected": { "$ref": "#/definitions/expected" },
-        "proofBinding": { "$ref": "#/definitions/proofBinding" },
-        "physicalExecution": { "type": "boolean" },
-        "certificationTarget": { "$ref": "#/definitions/certificationTarget" },
-        "evidenceOwner": { "enum": ["task-602", "task-603", "task-607"] }
+        "subject": {
+          "$ref": "#/definitions/subject"
+        },
+        "modelBinding": {
+          "$ref": "#/definitions/modelBinding"
+        },
+        "fixtureBinding": {
+          "$ref": "#/definitions/fixtureBinding"
+        },
+        "inputRecipe": {
+          "$ref": "#/definitions/inputRecipe"
+        },
+        "signingBinding": {
+          "$ref": "#/definitions/signingBinding"
+        },
+        "expected": {
+          "$ref": "#/definitions/expected"
+        },
+        "proofBinding": {
+          "$ref": "#/definitions/proofBinding"
+        },
+        "physicalExecution": {
+          "type": "boolean"
+        },
+        "certificationTarget": {
+          "$ref": "#/definitions/certificationTarget"
+        },
+        "evidenceOwner": {
+          "enum": ["task-602", "task-603", "task-607"]
+        }
       },
       "allOf": [
         {
           "if": {
-            "properties": { "operation": { "const": "signTx" } },
+            "properties": {
+              "operation": {
+                "const": "signTx"
+              }
+            },
             "required": ["operation"]
           },
           "then": {
@@ -604,16 +873,28 @@
                   "fixtureId": {
                     "const": "task-004:conway-regression-collateral"
                   },
-                  "payloadSha256": { "type": "null" },
-                  "identitySha256": { "type": "null" },
-                  "publicKeySha256": { "type": "null" },
-                  "signatureSha256": { "type": "null" }
+                  "payloadSha256": {
+                    "type": "null"
+                  },
+                  "identitySha256": {
+                    "type": "null"
+                  },
+                  "publicKeySha256": {
+                    "type": "null"
+                  },
+                  "signatureSha256": {
+                    "type": "null"
+                  }
                 }
               },
               "signingBinding": {
                 "properties": {
-                  "requestBranch": { "const": "transaction" },
-                  "signingMode": { "const": "exact-body-reject" }
+                  "requestBranch": {
+                    "const": "transaction"
+                  },
+                  "signingMode": {
+                    "enum": ["exact-body-reject", "exact-body"]
+                  }
                 }
               }
             }
@@ -629,15 +910,29 @@
                       "task-002-wire:mainnet-reward-key"
                     ]
                   },
-                  "payloadSha256": { "$ref": "#/definitions/digest" },
-                  "identitySha256": { "$ref": "#/definitions/nullableDigest" },
-                  "publicKeySha256": { "$ref": "#/definitions/nullableDigest" },
-                  "signatureSha256": { "$ref": "#/definitions/nullableDigest" },
-                  "provenanceFixtureSha256": { "type": "null" }
+                  "payloadSha256": {
+                    "$ref": "#/definitions/digest"
+                  },
+                  "identitySha256": {
+                    "$ref": "#/definitions/nullableDigest"
+                  },
+                  "publicKeySha256": {
+                    "$ref": "#/definitions/nullableDigest"
+                  },
+                  "signatureSha256": {
+                    "$ref": "#/definitions/nullableDigest"
+                  },
+                  "provenanceFixtureSha256": {
+                    "type": "null"
+                  }
                 }
               },
               "signingBinding": {
-                "properties": { "signingMode": { "const": "unhashed-message" } }
+                "properties": {
+                  "signingMode": {
+                    "const": "unhashed-message"
+                  }
+                }
               }
             }
           }
@@ -646,7 +941,11 @@
           "if": {
             "properties": {
               "artifactBinding": {
-                "properties": { "id": { "const": "trezor-connect-9.7.2" } }
+                "properties": {
+                  "id": {
+                    "const": "trezor-connect-9.7.2"
+                  }
+                }
               }
             }
           },
@@ -654,13 +953,23 @@
             "properties": {
               "artifactBinding": {
                 "properties": {
-                  "vendor": { "const": "trezor" },
-                  "package": { "const": "@trezor/connect" },
-                  "version": { "const": "9.7.2" }
+                  "vendor": {
+                    "const": "trezor"
+                  },
+                  "package": {
+                    "const": "@trezor/connect"
+                  },
+                  "version": {
+                    "const": "9.7.2"
+                  }
                 }
               },
               "modelBinding": {
-                "properties": { "versionKind": { "const": "trezor-firmware" } }
+                "properties": {
+                  "versionKind": {
+                    "const": "trezor-firmware"
+                  }
+                }
               }
             }
           },
@@ -668,7 +977,9 @@
             "properties": {
               "artifactBinding": {
                 "properties": {
-                  "vendor": { "const": "ledger" },
+                  "vendor": {
+                    "const": "ledger"
+                  },
                   "package": {
                     "const": "@cardano-foundation/ledgerjs-hw-app-cardano"
                   }
@@ -676,7 +987,9 @@
               },
               "modelBinding": {
                 "properties": {
-                  "versionKind": { "const": "ledger-cardano-app" }
+                  "versionKind": {
+                    "const": "ledger-cardano-app"
+                  }
                 }
               }
             }

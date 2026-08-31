@@ -2,9 +2,9 @@
   "metadata": {
     "title": "Embedded dApp Browser And CIP-30 Wallet Connector Tasks",
     "created": "2026-08-07",
-    "updated": "2026-08-30",
-    "version": "1.7.35",
-    "totalTasks": 87,
+    "updated": "2026-08-31",
+    "version": "1.7.36",
+    "totalTasks": 88,
     "prdReference": ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
       "description": "Security- and standards-gated implementation graph for a wallet-scoped sandboxed dApp browser with CIP-30, CIP-8, CIP-95, CIP-103, gated CIP-104/CIP-142, software/hardware signing, ordered batch signing and submission, and soft collateral management.",
     "sourceFiles": [
@@ -1786,9 +1786,11 @@
         },
         {
           "id": "task-607",
-          "title": "Complete final mocked and physical hardware certification",
-          "description": "After the single-operation connector cutover and CIP-103 hardware queue are complete, run every task-607-owned executable or promotable task-006 case against the exact production dependency lock, public routing, adapter/service commit, and packaged disabled/enabled-row configurations, then record reviewer-approved mocked and physical model/app/firmware results without setting product enablement.",
-          "status": "pending",
+          "title": "Complete scoped mocked and Nano X hardware certification",
+          "description": "Close the current hardware gate with the completed mocked public-routing coverage from tasks 608 and 705 plus reviewer-approved physical Ledger Nano X/Cardano app 7.3.0 evidence against the production Ledger JS 8.0.0 lock and exact adapters. Other Ledger models/app-major-8 rows and all Trezor rows are explicitly deferred to task-906 and do not block subsequent development.",
+          "status": "completed",
+          "completedAt": "2026-08-31",
+          "completedNotes": "Added a permanent privacy-safe Ledger certification runner and promoted six production-Ledger-8 Nano X/app-7 cases: payment, stake, direct DRep, matching type-6 DRep, one exact transaction, and one ordered batch with a canonical empty-witness item. Physical execution on Cardano app 7.3.0 verified immutable body hashes, witness keys/signatures, locally reconstructed COSE, refusal at every batch position, cancellation without staged-result release, disconnect/reconnect recovery, and reviewer-approved schema-valid evidence. Focused task-607 Jest passed 3 tests and TypeScript compilation passed. Product activation remains disabled; all other hardware rows moved to task-906 by explicit operator decision.",
           "priority": "critical",
           "estimatedHours": 48,
           "dependencies": ["task-608", "task-705"],
@@ -1798,11 +1800,11 @@
             ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md"
           ],
           "acceptance": [
-            "Evidence records matrix revision, case IDs, production lock/config digests, adapter/service commit, exact model/app-or-firmware row, packaged activation identity, opaque operator/reviewer IDs, and reviewer disposition.",
-            "Every promoted single or batch transaction row returns the exact immutable body hash; every unsupported representation fails before confirmation without omission.",
-            "Payment, stake, direct-DRep and matching-type-6-DRep vectors traverse the public connector and prove frozen encoding, identity, public-key association and signature verification without backend signing or vendor COSE pass-through.",
-            "Ordered batches prove success, canonical empty-witness items, cancellation, and physical rejection at every batch position without releasing staged witnesses.",
-            "Negative, refusal, disconnect, cancellation, transport-close and stale/late-result cases use the privacy-safe schema; task-607 sets physical results only and later release policy owns product enablement."
+            "The scoped evidence records matrix revision, case IDs, production lock/config digests, adapter/service commit, the exact Nano X/app-7 row, opaque operator/reviewer IDs, and approved reviewer disposition.",
+            "The promoted single and ordered-batch transaction cases return the exact immutable body hashes and independently verified witness key/signature digests.",
+            "Payment, stake, direct-DRep and matching-type-6-DRep physical vectors prove frozen encoding, identity, public-key association and signature verification without backend signing or vendor COSE pass-through; tasks 608 and 705 retain mocked public-routing coverage.",
+            "The ordered Nano X batch proves success, a canonical empty-witness item, cancellation, and physical rejection at every batch position without releasing staged witnesses.",
+            "Product enablement remains disabled, and task-906 owns all deferred Ledger model/app-major-8 and Trezor physical certification without blocking tasks that depend on task-607."
           ]
         }
       ]
@@ -2329,14 +2331,34 @@
             "PRD status and task completion reflect actual rollout evidence.",
             "Deployment uses the exact task-903-a Diagnostics-enabled package hash and launcher configuration; any difference blocks activation and reopens task-903-a change control."
           ]
+        },
+        {
+          "id": "task-906",
+          "title": "Complete deferred multi-model hardware certification",
+          "description": "At the tail end of the delivery program, run the frozen physical certification matrix for the deferred Ledger Nano S, Nano S Plus, Ledger app-major-8, and representable Trezor model/firmware rows against the then-final production artifacts and service commit. Record reviewer-approved privacy-safe evidence without enabling any product row.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 48,
+          "dependencies": ["task-905"],
+          "targetPaths": [
+            "hardware-wallet-tests/",
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
+            ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-tasks.json"
+          ],
+          "acceptance": [
+            "Every deferred representable Ledger and Trezor model/app-or-firmware row is executed against the final production lock, configuration identity, and adapter/service commit.",
+            "Single transaction, ordered batch, payment, stake, direct-DRep, matching-type-6-DRep, refusal, cancellation, disconnect, transport-close, and stale-result evidence is captured where the exact row supports that operation.",
+            "Every record validates against the privacy-safe evidence schema and has opaque operator/reviewer identities plus approved reviewer disposition.",
+            "Unsupported or unresolved rows remain fail-closed, no result is inferred across device families, and product enablement remains a separate release-policy decision."
+          ]
         }
       ]
     }
   ],
   "summary": {
     "totalPhases": 10,
-    "totalTasks": 86,
-    "estimatedTotalHours": 2464,
+    "totalTasks": 88,
+    "estimatedTotalHours": 2512,
     "criticalPath": [
       "task-001",
       "task-002",

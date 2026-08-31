@@ -211,22 +211,35 @@ const mockSignedTx = {
 };
 ```
 
-### Hardware Wallet Test Script
+### Hardware Wallet Test Scripts
 
 ```bash
 yarn test:hardware-wallets
+yarn hardware:ledger:task607 inspect --operator reviewer-run-01
+yarn hardware:ledger:task607 sign-data --operator reviewer-run-01
+yarn hardware:ledger:task607 sign-tx --operator reviewer-run-01
+yarn hardware:ledger:task607 batch-success --operator reviewer-run-01
+yarn hardware:ledger:task607 batch-reject --index 0|1|2 --operator reviewer-run-01
+yarn hardware:ledger:task607 batch-cancel --operator reviewer-run-01
 ```
 
-Runs `hardware-wallet-tests/index.ts`, a legacy interactive Ledger
-connection/public-key/disconnect diagnostic. It is not a Trezor, transaction,
-CIP-8, cancellation or physical-certification suite.
+`test:hardware-wallets` runs `hardware-wallet-tests/index.ts`, a legacy
+interactive Ledger connection/public-key/disconnect diagnostic. It is not a
+Trezor, transaction, CIP-8, cancellation or physical-certification suite.
+
+The task-607 runner requires one unlocked Nano X with the Cardano app open.
+It emits fixed approval tokens before device calls and privacy-safe runtime
+evidence, digests and booleans afterwards. For `batch-cancel`, send `SIGINT`
+during the pending device request, then physically disconnect it; host
+cancellation alone does not interrupt an in-flight HID APDU. The operator
+records the result and a separate reviewer approves it. Neither role enables
+product support.
 
 ### Debugging
 
 Diagnostics may log a fixed operation/status enum, but must not log USB paths,
 serials, labels, addresses, xpubs, raw requests/responses or arbitrary vendor
 errors. Keep physical evidence in the normalized task-607 schema.
-
 ---
 
 ## Common Issues
