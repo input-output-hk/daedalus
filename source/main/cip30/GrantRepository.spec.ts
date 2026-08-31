@@ -123,6 +123,9 @@ describe('main-owned dApp authority stores', () => {
     expect(() =>
       grants.put(grant({ origin: 'https://example.com/path' }))
     ).toThrow('Invalid dApp origin');
+    grants.forget(identity(stored));
+    expect(fs.readFileSync(file, 'utf8')).not.toContain(stored.origin);
+    expect(fs.statSync(file).mode & 0o777).toBe(0o600);
   });
 
   it('keeps development loopback authority policy-bound and origin-only', () => {
