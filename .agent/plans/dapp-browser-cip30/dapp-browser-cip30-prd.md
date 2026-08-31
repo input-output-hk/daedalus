@@ -63,10 +63,11 @@ The feature also introduces full-ledger transaction context, witness-only softwa
 - Task-801 completed on 2026-08-31: current authoritative CIP-30/CIP-95/CIP-103/CIP-104/CIP-142 and extension-register revisions still match the frozen task-002 baseline, with no upstream contract delta. A fixture-hash-bound Cucumber suite now runs source-compatible Cardano JS SDK CIP-95 and normative CIP-103 client adapters against the exact public namespaces, raw/type-6 DRep COSE vector, and direct aligned mixed submission rejection. CIP-104 remains terminal-disabled and omitted; CIP-142 remains Proposed and package-policy-gated, and both statuses are release-visible. No reproducible automated Lace, Yoroi, Eternl, Typhon, or Lucid extension adapter was available, so those live-wallet rows are explicitly unavailable rather than reported as passes. Focused Cucumber passed 4 scenarios/14 steps, focused Jest passed 86 tests, and TypeScript compilation passed.
 - Task-802 completed under the operator-directed Ubuntu 24.04 scope on 2026-08-31: the exact installed mainnet `.deb` built from `2a31e2c424fafe4dfcc983d902cd78868c1aa7bf` passed the packaged adversarial harness across 80 privileged IPC channels, sender/subframe and lifecycle rejection, permission/device/popup/download/certificate/DevTools denial, transport restrictions, nonpersistent storage, zero privileged side effects, and zero unhandled rejections. The independent schema-v2 exact-renderer probe passed with AppArmor identity, `NoNewPrivs=1`, seccomp mode 2/filter, zero effective capabilities, separate PID/user namespaces, package/helper identity, and no sandbox bypass. Source-tree Electron fixtures exited `SIGILL` and were not retried unsandboxed. By explicit operator decision, Windows/macOS, remaining Linux rows, and the unexecuted expanded live transport, destination-binding, broker-authority, and authorization-race matrix are deferred to task-807 and remain release blockers rather than inferred passes.
 - Task-805 completed on 2026-08-31: internal security and transaction-integrity review remediated four high findings and independent re-review found no unresolved critical/high issue. Trusted-renderer cross-document navigation now synchronously revokes the dApp route lease and guest; software witnesses are restricted to authenticated owned/required key hashes; unapprovable single sign/submit reviews fail before consent; and exact hardware signTx requires compiled matrix identity plus the main-owned product gate. One medium diagnostic limitation remains: a whole-batch backend rejection cannot identify its actual item and defaults the public error index to zero. The implementation review records code/test evidence, product/lifecycle boundaries, the local frozen Trezor runtime-tree mismatch that task-807 must reproduce against the exact release candidate, and the external audit, Electron/CVE, hardware promotion, baseline, and post-audit gates that still block rollout.
+- Task-806 completed on 2026-08-31: independent `ExternalAudit806` reviewed Electron containment, hostile guest-to-privileged IPC, exact approval-byte binding, Cardano/CIP parsing and signing, hardware gates, persistence/recovery, collateral, privacy, and the exact pinned cardano-wallet context/submission/V6 migration boundary. It found no critical/high issue. One medium backend log-suppression finding was fixed, independently re-reviewed, and covered by 6 focused passing Hspec examples at cardano-wallet `bc9b5b9c62cbf526a4806857f7692c3c9d2d2f5e`; Daedalus now pins that commit. The accepted residuals are the existing medium CIP-103 batch failure-index diagnostic limitation and a low retained V6 migration-evidence gap. Exact release-candidate package hashes, dependency/CVE currency, and post-audit baseline change control remain task-807.
 
 ## Problem Statement
 
-The connector now has authenticated read, software signing, product-disabled exact hardware transaction and data signing, single and ordered CIP-103 batch submission, preferred-catalog, Diagnostics launch, and collateral execution/recovery paths, but Daedalus still lacks hardware product activation, a release-approved preferred entry, final security review/audit evidence, and release-gate completion.
+The connector now has authenticated read, software signing, product-disabled exact hardware transaction and data signing, single and ordered CIP-103 batch submission, preferred-catalog, Diagnostics launch, collateral execution/recovery paths, and completed internal/external security review, but Daedalus still lacks hardware product activation, a release-approved preferred entry, and final release-gate completion.
 
 The current Electron main renderer cannot host hostile content safely:
 
@@ -177,7 +178,7 @@ This work matters because a connector that is merely functional but not byte-exa
 
 ### Pinned Backend And Dependencies
 
-- cardano-wallet task-209 aggregate revision `0cbd4618f5b3ac76bcee52c57a7cd6067a87408e`
+- cardano-wallet task-806 audited remediation revision `bc9b5b9c62cbf526a4806857f7692c3c9d2d2f5e`, based on task-209 aggregate `0cbd4618f5b3ac76bcee52c57a7cd6067a87408e`
 - cardano-wallet implementation work lands in the sibling `../cardano-wallet` checkout (`/home/westbam/Development/cardano-wallet` in the current workspace); Daedalus consumes only a reviewed commit through its Nix pin.
 - Electron `41.3.0`
 - `@cardano-foundation/ledgerjs-hw-app-cardano@8.0.0`
@@ -1662,15 +1663,16 @@ Task-209 completed against exact `cardano-wallet` commit
 `0cbd4618f5b3ac76bcee52c57a7cd6067a87408e`. It briefly opened
 `cardano-wallet#5398`, then closed it under the user-directed 2026-08-25
 sequencing decision; final upstream submission remains deferred. The aggregate
-Conway capability document is active, and Daedalus pins that exact fork commit.
-Strict clients validate every success and endpoint-specific fixed error, reject
-incomplete, old, wrong-source, or wrong-network capability documents, and send
-octet streams using one exact byte/`Content-Length` contract. Focused unit
-tests, plain HTTP and fresh-certificate mutual-TLS capability scenarios both
-before and after pinning, Swagger resolution, TypeScript/Jest, and exact
-`daedalus-bridge-mainnet`/`daedalus-mainnet` Nix builds pass. Task-208's V6
-migration, backup, old-pin rollback, replay, and redaction evidence remains the
-authoritative persistence compatibility proof.
+Conway capability document is active. Task-806 independently audited the
+backend boundary, remediated dApp API detail logging, and advanced the Daedalus
+pin to `bc9b5b9c62cbf526a4806857f7692c3c9d2d2f5e`. Strict clients validate every
+success and endpoint-specific fixed error, reject incomplete, old, wrong-source,
+or wrong-network capability documents, and send octet streams using one exact
+byte/`Content-Length` contract. Focused unit, plain HTTP, fresh-certificate
+mutual-TLS, Swagger, TypeScript/Jest, and Nix evidence remains recorded by the
+owning tasks. The external audit source-reviewed task-208's V6 migration,
+backup, rollback, replay, and redaction implementation; a retained focused
+migration/old-pin recovery artifact remains a low task-807 release-evidence gap.
 
 Task-201 has a final local review candidate at `cardano-wallet`
 `3ca15553f96587f1f96688185165b2ede00e30b0` with published decoder
@@ -1885,7 +1887,7 @@ Release remains blocked until:
 15. The exact release-candidate source/dependency/backend/package/catalog baseline is recorded.
 16. No material post-audit or pilot change remains outside affected retesting and security re-review.
 
-Task-805 closed internal gate 12 on 2026-08-31 after remediation and re-review of four high findings. This does not close physical hardware gate 11 or downstream gates 13-16; the exact release-candidate environment must also resolve or deliberately replace the frozen Trezor runtime-tree identity under task-807 evidence.
+Task-805 closed internal gate 12 and task-806 closed external gate 13 on 2026-08-31 after remediation and independent re-review found no open critical/high finding. This does not close physical hardware gate 11 or downstream gates 14-16; task-807 still owns current dependency/CVE review, exact release-candidate source/package/catalog identities, the retained V6 migration evidence gap, remaining platform/package evidence, and the frozen Trezor runtime-tree identity.
 
 ## Rollout / Migration / Rollback
 

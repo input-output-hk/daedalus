@@ -96,7 +96,7 @@ import {
 import { setCip30SessionRevoker } from './runtime';
 
 export const CARDANO_WALLET_SOURCE_REVISION =
-  '0cbd4618f5b3ac76bcee52c57a7cd6067a87408e';
+  'bc9b5b9c62cbf526a4806857f7692c3c9d2d2f5e';
 
 const IMPLEMENTED_METHODS = new Set<DappCip30Method>([
   'api.getExtensions',
