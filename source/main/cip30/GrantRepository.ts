@@ -229,6 +229,13 @@ export class GrantRepository {
   private load(): void {
     if (!fs.existsSync(this.filePath)) return;
     try {
+      fs.chmodSync(this.filePath, 0o600);
+    } catch {
+      this.grants = [];
+      this.corrupt = true;
+      return;
+    }
+    try {
       const stored: unknown = JSON.parse(
         fs.readFileSync(this.filePath, 'utf8')
       );
@@ -274,6 +281,7 @@ export class GrantRepository {
     fs.mkdirSync(path.dirname(this.filePath), { recursive: true, mode: 0o700 });
     const temporaryPath = `${this.filePath}.tmp`;
     const descriptor = fs.openSync(temporaryPath, 'w', 0o600);
+    fs.fchmodSync(descriptor, 0o600);
     try {
       fs.writeFileSync(
         descriptor,
