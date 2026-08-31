@@ -216,7 +216,8 @@ export const diffVKeyWitnesses = (
   envelope: ExactTransactionEnvelope,
   returnedBodyHash: string,
   returnedWitnessSetCbor: Buffer,
-  requiredKeyHashes: readonly string[] = []
+  requiredKeyHashes: readonly string[] = [],
+  allowedKeyHashes: readonly string[] | undefined = undefined
 ): Buffer => {
   if (returnedBodyHash !== envelope.transactionId) invalid();
   const bodyBytes = bytesForSpan(envelope.cbor, envelope.spans.body);
@@ -230,7 +231,11 @@ export const diffVKeyWitnesses = (
   if (
     requiredKeyHashes.some(
       (keyHash) => !/^[0-9a-f]{56}$/u.test(keyHash) || !allHashes.has(keyHash)
-    )
+    ) ||
+    (allowedKeyHashes &&
+      returned.some(
+        ({ keyHash }) => !allowedKeyHashes.includes(keyHash.toString('hex'))
+      ))
   )
     invalid();
   const existing = new Set(

@@ -71,7 +71,9 @@ jest.mock('@trezor/connect', () => ({
   UI_EVENT: 'ui-event',
 }));
 jest.mock('../config', () => ({
-  dappLaunchPolicy: { hardwareConnectorEnabled: jest.fn(() => false) },
+  dappLaunchPolicy: {
+    hardwareConnectorEnabled: jest.fn((rowId) => rowId.endsWith('-signTx')),
+  },
 }));
 
 const channelNames: Array<keyof HardwareWalletChannels> = [
@@ -242,13 +244,35 @@ describe('HardwareWalletService', () => {
     const transaction = decodeConwayTransaction(
       parseConwayTransactionEnvelope(transactionCbor)
     );
-    const exact = ({
+    const incomplete = ({
       transaction,
       bodyHash: transaction.transactionId,
       capability: {
         vendor: 'ledger',
         physicalCertified: true,
         productEnabled: true,
+      },
+    } as unknown) as HardwareExactTransaction;
+    await expect(
+      request({
+        vendor: 'ledger',
+        ledgerPath: 'ledger-path',
+        exact: incomplete,
+      })
+    ).rejects.toThrow('Hardware exact transaction is not enabled');
+    expect(ledger).not.toHaveBeenCalled();
+    const exact = ({
+      ...incomplete,
+      capability: {
+        matrixRevision: 'task-006-matrix-2026-08-14',
+        artifactId: 'ledger-8.0.0-candidate',
+        rowId: 'ledger-signTx',
+        vendor: 'ledger',
+        staticallyRepresentable: true,
+        staticGatesPassed: true,
+        physicalCertified: true,
+        productEnabled: true,
+        familyDispositions: {},
       },
     } as unknown) as HardwareExactTransaction;
 
@@ -273,7 +297,12 @@ describe('HardwareWalletService', () => {
 
     const trezorExact = ({
       ...exact,
-      capability: { ...exact.capability, vendor: 'trezor' },
+      capability: {
+        ...exact.capability,
+        artifactId: 'trezor-connect-9.7.2',
+        rowId: 'trezor-signTx',
+        vendor: 'trezor',
+      },
     } as unknown) as HardwareExactTransaction;
     await expect(
       request({ vendor: 'trezor', exact: trezorExact })

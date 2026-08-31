@@ -22,6 +22,7 @@ import {
   reconcileTransactionContext,
   TransactionContextError,
 } from '../../common/cardano/transactionContext';
+import type { TransactionContextSnapshot } from '../../common/cardano/transactionContext';
 import {
   diffVKeyWitnesses,
   WitnessSetError,
@@ -473,6 +474,45 @@ export class Cip30Broker {
     });
     return hashes;
   }
+  private softwareWitnessKeyHashes(
+    snapshot: TransactionContextSnapshot,
+    transactionIndex: number,
+    transaction: SemanticTransaction,
+    partialSign: boolean,
+    cip95: boolean
+  ): Readonly<{ required: readonly string[]; allowed: readonly string[] }> {
+    const owned = new Set(
+      snapshot.ownership
+        .filter(({ ownership }) => ownership === 'owned_key')
+        .map(({ credential }) => credential)
+    );
+    const indexedProofs = snapshot.requiredProofs.filter(
+      ({ transactionIndex: index }) => index === transactionIndex
+    );
+    if (
+      indexedProofs.some(
+        ({ credential, required }) => required && !owned.has(credential)
+      )
+    )
+      throw internal();
+    const proofs = indexedProofs.filter(({ credential }) =>
+      owned.has(credential)
+    );
+    const drep = this.requiredDrepKeyHashes(transaction, partialSign, cip95);
+    return Object.freeze({
+      required: Object.freeze([
+        ...new Set([
+          ...proofs
+            .filter(({ required }) => required && !partialSign)
+            .map(({ credential }) => credential),
+          ...drep,
+        ]),
+      ]),
+      allowed: Object.freeze([
+        ...new Set([...proofs.map(({ credential }) => credential), ...drep]),
+      ]),
+    });
+  }
 
   private async captureCip103Context(
     binding: Cip30BrokerBinding,
@@ -553,9 +593,11 @@ export class Cip30Broker {
       throw internal();
     }
     const { resolved, signingContext } = captured;
-    const requiredKeyHashes = resolved.snapshot.transactionsSemantic.map(
+    const witnessKeyHashes = resolved.snapshot.transactionsSemantic.map(
       (transaction, index) =>
-        this.requiredDrepKeyHashes(
+        this.softwareWitnessKeyHashes(
+          resolved.snapshot,
+          index,
           transaction,
           batch.items[index].partialSign ?? false,
           cip95
@@ -613,7 +655,8 @@ export class Cip30Broker {
             review: resolved.review,
             signingContext,
             ...(software ? { passphrase } : {}),
-            requiredKeyHashes,
+            requiredKeyHashes: witnessKeyHashes.map(({ required }) => required),
+            allowedKeyHashes: witnessKeyHashes.map(({ allowed }) => allowed),
           });
         } catch (error) {
           if (error instanceof Cip103SoftwareSigningError) {
@@ -775,7 +818,10 @@ export class Cip30Broker {
       'sign',
       this.preferredCollateralEffects(binding, transaction)
     );
-    const requiredDrepKeyHashes = this.requiredDrepKeyHashes(
+    if (!review.approvable) throw txSignRejection(1, 'Proof generation failed');
+    const witnessKeyHashes = this.softwareWitnessKeyHashes(
+      snapshot,
+      0,
       transaction,
       partialSign,
       cip95
@@ -850,7 +896,8 @@ export class Cip30Broker {
             transaction.envelope,
             witness.body_hash,
             Buffer.from(witness.witness_set_cbor, 'hex'),
-            requiredDrepKeyHashes
+            witnessKeyHashes.required,
+            witnessKeyHashes.allowed
           ).toString('hex');
         } catch (error) {
           if (error instanceof WitnessSetError) throw internal();
@@ -932,6 +979,8 @@ export class Cip30Broker {
       this.preferredCollateralEffects(binding, transaction)
     );
     if (review.fullCbor !== cbor) throw internal();
+    if (!review.approvable)
+      throw txSendRejection(2, 'Transaction submission failed');
     return this.options.consent.request({
       identity: {
         guestWebContentsId: binding.authority.guestWebContentsId,

@@ -179,6 +179,19 @@ test('returns only fresh VKeys and preserves exact immutable fields on merge', (
       'ff'.repeat(28),
     ])
   ).toThrow(WitnessSetError);
+  const oldHash = extractVKeyWitnesses(returned)[0].keyHash.toString('hex');
+  expect(() =>
+    diffVKeyWitnesses(
+      original,
+      original.transactionId,
+      returned,
+      [required],
+      [oldHash, required]
+    )
+  ).not.toThrow();
+  expect(() =>
+    diffVKeyWitnesses(original, original.transactionId, returned, [], [oldHash])
+  ).toThrow(WitnessSetError);
   expect(() => diffVKeyWitnesses(original, '00'.repeat(32), returned)).toThrow(
     WitnessSetError
   );
