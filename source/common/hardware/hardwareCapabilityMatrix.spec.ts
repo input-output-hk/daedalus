@@ -699,6 +699,100 @@ describe('hardware capability matrix', () => {
     }
   });
 
+  it('binds task-607 physical targets to the reviewed Nano X runtime only', () => {
+    const targetRowId = 'ledger-8-library-nano-x-app7';
+    const expectedIds = [
+      'ledger-8-library-nano-x-app7-signdata-message-mode-drep-direct',
+      'ledger-8-library-nano-x-app7-signdata-message-mode-drep-type6',
+      'ledger-8-library-nano-x-app7-signdata-message-mode-payment-address',
+      'ledger-8-library-nano-x-app7-signdata-message-mode-stake-address',
+      'ledger-8-library-nano-x-app7-signtx-physical-transaction-ordered-batch',
+      'ledger-8-library-nano-x-app7-signtx-physical-transaction-single-transaction',
+    ];
+    const targets = casesDocument.cases.filter(
+      (testCase) => testCase.certificationTarget
+    );
+    const runtime = readJson(
+      path.join(
+        root,
+        'hardware-wallet-tests/capability-matrix/evidence-examples.json'
+      )
+    ).promotedValid.version;
+    expect(targets.map((testCase) => testCase.id)).toEqual(expectedIds);
+    expect(runtime).toEqual([7, 3, 0]);
+    for (const testCase of targets) {
+      const row = manifest.modelRows.find(
+        (item) => item.id === testCase.capabilityRowId
+      );
+      const minimum = testCase.modelBinding.certificationVersion;
+      expect(testCase.capabilityRowId).toBe(targetRowId);
+      expect(testCase.expected).toEqual({
+        outcome: 'pass',
+        errorCode: 'none',
+        preDevice: false,
+      });
+      expect(testCase.physicalExecution).toBe(true);
+      expect(testCase.signingBinding.executionLayer).toBe('physical-device');
+      expect(runtime[0]).toBe(row.versionMajor);
+      const firstDifference = runtime.findIndex(
+        (part, index) => part !== minimum[index]
+      );
+      expect(firstDifference).toBeGreaterThanOrEqual(0);
+      expect(runtime[firstDifference]).toBeGreaterThan(
+        minimum[firstDifference]
+      );
+    }
+    expect(
+      targets
+        .filter((testCase) => testCase.operation === 'signTx')
+        .map((testCase) => testCase.signingBinding.signingMode)
+    ).toEqual(['exact-body', 'exact-body']);
+    const batch = targets.find(
+      (testCase) => testCase.subject.name === 'ordered-batch'
+    );
+    expect(JSON.parse(batch.inputRecipe.canonicalJson)).toMatchObject({
+      contextFixture: 'task-607-ordinary-ledger-context-v1',
+      execution: 'ordered-batch',
+      itemKinds: ['ready', 'canonical-empty-witness-set', 'ready'],
+      signedIndices: [0, 2],
+      release: 'all-after-success',
+      refusalIndices: [0, 1, 2],
+    });
+    const direct = targets.find(
+      (testCase) => testCase.subject.name === 'drep-direct'
+    )!;
+    const type6 = targets.find(
+      (testCase) => testCase.subject.name === 'drep-type6'
+    )!;
+    const directRequest = JSON.parse(direct.inputRecipe.canonicalJson).request;
+    const type6Request = JSON.parse(type6.inputRecipe.canonicalJson).request;
+    expect(type6Request).toEqual(directRequest);
+    expect(direct.signingBinding.requestBranch).toBe('key-hash');
+    expect(type6.signingBinding.requestBranch).toBe('key-hash');
+    expect(direct.fixtureBinding.selectedInput.kind).toBe('drep-key-hash');
+    expect(type6.fixtureBinding.selectedInput.kind).toBe('enterprise-address');
+    expect(
+      casesDocument.cases
+        .filter(
+          (testCase) =>
+            testCase.operation === 'signTx' &&
+            [
+              'body-field',
+              'certificate',
+              'exact-body-family',
+              'nested-constraint',
+              'model-version',
+            ].includes(testCase.category)
+        )
+        .every(
+          (testCase) =>
+            ['pre-device-reject', 'static-source-assertion'].includes(
+              testCase.expected.outcome
+            ) && !testCase.physicalExecution
+        )
+    ).toBe(true);
+  });
+
   it('reproduces concrete cases and binds authoritative fixture digests', () => {
     const secondPath = path.join(
       os.tmpdir(),
@@ -1002,6 +1096,36 @@ describe('hardware capability matrix', () => {
         .map((testCase) => testCase.id)
     );
     expect(validate(examples.valid)).toBe(true);
+    expect(examples.valid.executionKind).toBe('mock');
+    expect(examples.valid.version).toBeNull();
+    expect(examples.promotedValid.executionKind).toBe('physical');
+    expect(examples.promotedValid.version).toEqual([7, 3, 0]);
+    expect(validate(examples.promotedValid)).toBe(true);
+    const certificationRoot = path.join(
+      root,
+      'hardware-wallet-tests/certification/task-607/ledger-nano-x-app7'
+    );
+    const certificationRecords = fs
+      .readdirSync(certificationRoot)
+      .sort()
+      .map((fileName) => readJson(path.join(certificationRoot, fileName)));
+    expect(certificationRecords.map((record) => record.caseId)).toEqual(
+      casesDocument.cases
+        .filter((testCase) => testCase.certificationTarget)
+        .map((testCase) => testCase.id)
+    );
+    for (const record of certificationRecords) {
+      expect(validate(record)).toBe(true);
+    }
+    for (const invalid of examples.promotedInvalid) {
+      const candidate = JSON.parse(JSON.stringify(examples.promotedValid));
+      if (invalid.target === 'proof') {
+        candidate.proof[invalid.property] = invalid.value;
+      } else {
+        candidate[invalid.property] = invalid.value;
+      }
+      expect(validate(candidate)).toBe(false);
+    }
     expect(
       casesDocument.cases.some(
         (testCase) => testCase.id === examples.valid.caseId
@@ -1030,6 +1154,9 @@ describe('hardware capability matrix', () => {
         'returned-digest-on-pre-device-rejection',
         'witness-on-pre-device-rejection',
       ])
+    );
+    expect(examples.promotedInvalid.map((item) => item.name)).toContain(
+      'mock-cannot-attest-physical-pass'
     );
     const wrongOperationError = JSON.parse(JSON.stringify(examples.valid));
     wrongOperationError.outcome = 'proof-generation';
