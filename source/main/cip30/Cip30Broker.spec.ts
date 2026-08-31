@@ -158,6 +158,9 @@ const createTransactionSignatureFixture = () => {
   };
 };
 const transactionSignature = createTransactionSignatureFixture();
+const transactionSignerHash = Buffer.from(
+  blake2b(transactionSignature.publicKey, undefined, 28)
+).toString('hex');
 const cip103Transaction = (fee: number): string =>
   cbor
     .encodeCanonical([
@@ -237,6 +240,8 @@ const createDrepDataSignatureFixture = () => {
 const drepDataSignature = createDrepDataSignatureFixture();
 
 const create = () => {
+  let unapprovableReview = false;
+  let omitProofOwnership = false;
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'cip30-broker-'));
   (transactionContext.reconcileTransactionContext as jest.Mock).mockImplementation(
     (
@@ -260,14 +265,36 @@ const create = () => {
         transactions,
         outputs: [],
         pendingTransactions: [],
-        ownership: [],
-        requiredProofs: [],
+        ownership: omitProofOwnership
+          ? []
+          : [
+              {
+                credentialKind: 'payment',
+                credential: transactionSignerHash,
+                ownership: 'owned_key',
+                derivationPath: [],
+                proofKinds: ['normal_input'],
+              },
+            ],
+        requiredProofs: transactions.map((_transaction, transactionIndex) => ({
+          transactionIndex,
+          proofKind: 'normal_input',
+          credentialKind: 'payment',
+          credential: transactionSignerHash,
+          required: true,
+        })),
         commitmentContexts: [],
-        transactionsSemantic: transactions.map((cborHex) =>
-          decodeConwayTransaction(
+        transactionsSemantic: transactions.map((cborHex) => {
+          const transaction = decodeConwayTransaction(
             parseConwayTransactionEnvelope(Buffer.from(cborHex, 'hex'))
-          )
-        ),
+          );
+          return unapprovableReview
+            ? {
+                ...transaction,
+                review: { ...transaction.review, signable: false },
+              }
+            : transaction;
+        }),
         preExistingWitnesses: [],
       };
     }
@@ -492,6 +519,12 @@ const create = () => {
     setFailedSubmissionIndexes: (indexes: number[]) => {
       submissionCalls = 0;
       failedSubmissionIndexes = new Set(indexes);
+    },
+    setUnapprovableReview: (value: boolean) => {
+      unapprovableReview = value;
+    },
+    setOmitProofOwnership: (value: boolean) => {
+      omitProofOwnership = value;
     },
     cleanup: () => fs.rmSync(directory, { recursive: true, force: true }),
   };
@@ -925,6 +958,71 @@ describe('Cip30Broker', () => {
     fixture.cleanup();
   });
 
+  it('rejects unapprovable single-transaction reviews before consent', async () => {
+    const fixture = create();
+    await fixture.broker.handle(event, request('provider.enable'));
+    fixture.setUnapprovableReview(true);
+    (fixture.consent.request as jest.Mock).mockClear();
+    fixture.executeWallet.mockClear();
+
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signTx', [transactionSignature.cbor, false])
+      )
+    ).resolves.toMatchObject({
+      status: 'rejected',
+      rejection: { type: 'tx-sign-error', value: { code: 1 } },
+    });
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.submitTx', [transactionSignature.cbor])
+      )
+    ).resolves.toMatchObject({
+      status: 'rejected',
+      rejection: { type: 'tx-send-error', value: { code: 2 } },
+    });
+
+    expect(fixture.consent.request).not.toHaveBeenCalled();
+    expect(
+      fixture.executeWallet.mock.calls.some(
+        ([walletRequest]) =>
+          walletRequest.operation === 'sign-transactions' ||
+          walletRequest.operation === 'submit-transaction'
+      )
+    ).toBe(false);
+    fixture.cleanup();
+  });
+
+  it('rejects required wallet proofs without authenticated key ownership', async () => {
+    const fixture = create();
+    await fixture.broker.handle(event, request('provider.enable'));
+    fixture.setOmitProofOwnership(true);
+    (fixture.consent.request as jest.Mock).mockClear();
+    fixture.executeWallet.mockClear();
+
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signTx', [transactionSignature.cbor, false])
+      )
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: {
+        type: 'api-error',
+        value: { code: -2, info: 'Internal error' },
+      },
+    });
+    expect(fixture.consent.request).not.toHaveBeenCalled();
+    expect(
+      fixture.executeWallet.mock.calls.some(
+        ([walletRequest]) => walletRequest.operation === 'sign-transactions'
+      )
+    ).toBe(false);
+    fixture.cleanup();
+  });
+
   it('reviews exact bytes and releases only verified fresh software witnesses', async () => {
     const fixture = create();
     await fixture.broker.handle(event, request('provider.enable'));
@@ -981,6 +1079,26 @@ describe('Cip30Broker', () => {
     await expect(fixture.broker.handle(event, signRequest)).resolves.toEqual({
       status: 'fulfilled',
       value: 'a0',
+    });
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signTx', [transactionSignature.cbor, false])
+      )
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: {
+        type: 'api-error',
+        value: { code: -2, info: 'Internal error' },
+      },
+    });
+    fixture.setWitnessSet(createTransactionSignatureFixture().witnessSet);
+    await expect(fixture.broker.handle(event, signRequest)).resolves.toEqual({
+      status: 'rejected',
+      rejection: {
+        type: 'api-error',
+        value: { code: -2, info: 'Internal error' },
+      },
     });
     fixture.setWitnessFailure('tx-proof-generation');
     await expect(

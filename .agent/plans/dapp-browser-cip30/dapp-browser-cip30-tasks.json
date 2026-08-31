@@ -2110,7 +2110,7 @@
           "id": "task-805",
           "title": "Perform internal security and transaction-integrity review",
           "description": "Review the complete implementation, threat-model coverage, exact-byte proofs, backend consistency, hardware adapters, grants, collateral, submission recovery, tests, and release gates; remediate findings.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 48,
           "dependencies": ["task-607", "task-800", "task-801", "task-802", "task-803"],
@@ -2128,7 +2128,9 @@
             "Every threat-model invariant has code and test evidence.",
             "Product-limit and lifecycle behavior is not misclassified as a signing/security guarantee.",
             "PRD/tasks record material deviations and remediations."
-          ]
+          ],
+          "completedAt": "2026-08-31",
+          "completedNotes": "Internal review closed four high findings: trusted-renderer reload now synchronously revokes guest authority; software witnesses are bound to authenticated owned/required key hashes; unapprovable single sign/submit reviews fail before consent; and exact hardware signTx requires compiled matrix identity plus main-owned product policy. Independent re-review found no open critical/high issue. The review and implementation artifacts record the remaining medium batch-error index limitation, frozen Trezor runtime-tree mismatch for task-807 release-baseline reproduction, hardware promotion evidence, product/lifecycle boundaries, and downstream external audit/release gates. Final focused Jest passed 54 tests, the post-remediation broker run passed 24 tests, Cucumber passed 12 scenarios/50 steps, and TypeScript/backend checks passed."
         },
         {
           "id": "task-806",

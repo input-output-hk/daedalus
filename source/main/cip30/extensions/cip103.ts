@@ -64,6 +64,7 @@ export type Cip103WalletSigningRequest = Readonly<{
   signingContext: unknown;
   passphrase?: string;
   requiredKeyHashes?: readonly (readonly string[])[];
+  allowedKeyHashes?: readonly (readonly string[])[];
 }>;
 
 const internal = (transactionIndex?: number): never => {
@@ -94,12 +95,20 @@ export const signCip103WalletBatch = async (
   executeWallet: ExecuteWallet,
   request: Cip103WalletSigningRequest
 ): Promise<Cip103SignResult> => {
-  const { batch, passphrase, requiredKeyHashes, review, walletKind } = request;
+  const {
+    allowedKeyHashes,
+    batch,
+    passphrase,
+    requiredKeyHashes,
+    review,
+    walletKind,
+  } = request;
   if (
     !reviewedBatch(batch, review, 'sign') ||
     (walletKind === 'shelley-software' && !passphrase) ||
     (requiredKeyHashes && requiredKeyHashes.length !== batch.items.length) ||
-    requiredKeyHashes?.some((hashes) =>
+    (allowedKeyHashes && allowedKeyHashes.length !== batch.items.length) ||
+    [...(requiredKeyHashes || []), ...(allowedKeyHashes || [])].some((hashes) =>
       hashes.some((hash) => !validKeyHash(hash))
     )
   )
@@ -152,7 +161,8 @@ export const signCip103WalletBatch = async (
           item.envelope,
           witness.body_hash,
           Buffer.from(witness.witness_set_cbor, 'hex'),
-          requiredKeyHashes?.[index] || []
+          requiredKeyHashes?.[index] || [],
+          allowedKeyHashes?.[index]
         ).toString('hex')
       );
     } catch {

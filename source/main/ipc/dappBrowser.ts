@@ -97,6 +97,9 @@ export class DappBrowserController {
       if (this.pendingDiagnosticsLaunch)
         this.consumeDiagnosticsLaunch(lease).catch(() => undefined);
     };
+    window.webContents.on('did-start-navigation', (event) => {
+      if (event.isMainFrame && !event.isSameDocument) this.routeLease.revoke();
+    });
     window.webContents.on(
       'did-navigate-in-page',
       (_event, url, isMainFrame) => {

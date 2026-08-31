@@ -1431,10 +1431,21 @@ export class HardwareWalletService {
 
     signExactHardwareTransactionChannel.onRequest(
       async ({ vendor, ledgerPath, exact }) => {
+        const capability = exact.capability;
+        const artifactId =
+          vendor === 'ledger'
+            ? 'ledger-8.0.0-candidate'
+            : 'trezor-connect-9.7.2';
         if (
-          vendor !== exact.capability.vendor ||
-          !exact.capability.physicalCertified ||
-          !exact.capability.productEnabled
+          vendor !== capability.vendor ||
+          capability.matrixRevision !== HARDWARE_CONNECTOR_MATRIX_REVISION ||
+          capability.artifactId !== artifactId ||
+          capability.rowId !== `${vendor}-signTx` ||
+          !capability.staticallyRepresentable ||
+          !capability.staticGatesPassed ||
+          !capability.physicalCertified ||
+          !capability.productEnabled ||
+          !dappLaunchPolicy.hardwareConnectorEnabled(capability.rowId)
         )
           throw new Error('Hardware exact transaction is not enabled');
         const restored = restoreExactTransaction(exact);
