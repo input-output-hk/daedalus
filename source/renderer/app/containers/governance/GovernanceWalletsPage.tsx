@@ -46,10 +46,6 @@ class GovernanceWalletsPage extends React.Component<Props> {
     this.props.history.push(ROUTES.GOVERNANCE.DREPS);
   };
 
-  handleChooseDRep = () => {
-    this.props.history.push(ROUTES.GOVERNANCE.DREPS);
-  };
-
   handleViewDetails = (drepId: string, walletId: string) => {
     const { governance } = this.props.stores ?? {};
     governance?.setDelegationNavState({ selectedWalletId: walletId });
@@ -81,7 +77,6 @@ class GovernanceWalletsPage extends React.Component<Props> {
         totalDRepStake={governance?.drepSummary?.totalDRepStake ?? null}
         onToggleFavorite={(drepId) => governance?.toggleFavorite(drepId)}
         onChangeDelegation={this.handleChangeDelegation}
-        onChooseDRep={this.handleChooseDRep}
         onViewDetails={this.handleViewDetails}
         onExternalLinkClick={(url, event) => app?.openExternalLink(url, event)}
       />

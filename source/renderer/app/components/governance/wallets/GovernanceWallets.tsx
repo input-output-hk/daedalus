@@ -71,7 +71,6 @@ type Props = {
   totalDRepStake?: BigNumber | null;
   onToggleFavorite: (drepId: string) => void;
   onChangeDelegation: (walletId: string) => void;
-  onChooseDRep: () => void;
   onViewDetails: (drepId: string, walletId: string) => void;
   onExternalLinkClick: (url: string, event?: React.MouseEvent) => void;
   intl: intlShape.isRequired;
@@ -88,13 +87,11 @@ type Props = {
 function WalletDelegationRow({
   wallet,
   onChangeDelegation,
-  onChooseDRep,
   onViewDetails,
   intl,
 }: {
   wallet: WalletDelegationSummary;
   onChangeDelegation: (walletId: string) => void;
-  onChooseDRep: () => void;
   onViewDetails: (drepId: string, walletId: string) => void;
   intl: intlShape.isRequired;
 }) {
@@ -173,9 +170,7 @@ function WalletDelegationRow({
               ? globalMessages.delegate
               : globalMessages.redelegate
           )}
-          onClick={() =>
-            currentDRep == null ? onChooseDRep() : onChangeDelegation(walletId)
-          }
+          onClick={() => onChangeDelegation(walletId)}
           skin={ButtonSkin}
         />
       </td>
@@ -189,7 +184,6 @@ function GovernanceWallets({
   totalDRepStake = null,
   onToggleFavorite,
   onChangeDelegation,
-  onChooseDRep,
   onViewDetails,
   onExternalLinkClick,
   intl,
@@ -254,7 +248,6 @@ function GovernanceWallets({
                   key={wallet.walletId}
                   wallet={wallet}
                   onChangeDelegation={onChangeDelegation}
-                  onChooseDRep={onChooseDRep}
                   onViewDetails={onViewDetails}
                   intl={intl}
                 />
