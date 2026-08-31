@@ -2,7 +2,7 @@ import cbor from 'cbor';
 
 import { bytesForSpan } from '../../common/cardano/cborSlices';
 import type { TransactionContextSnapshot } from '../../common/cardano/transactionContext';
-import { preflightCip103Sign } from '../../renderer/app/domains/Cip103Batch';
+import { preflightCip103Sign } from '../../common/cip30/cip103Batch';
 import {
   DappContextBinding,
   DappTransactionContextServiceError,

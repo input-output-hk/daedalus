@@ -21,7 +21,7 @@ import type {
   HardwareTransactionCapability,
 } from '../source/common/types/hardware-wallets.types';
 import { signCip103HardwareBatch } from '../source/main/cip30/extensions/cip103';
-import { preflightCip103Sign } from '../source/renderer/app/domains/Cip103Batch';
+import { preflightCip103Sign } from '../source/common/cip30/cip103Batch';
 import { prepareHardwareTransaction } from '../source/renderer/app/utils/hardwareWalletTransaction';
 
 type Mode =

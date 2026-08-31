@@ -1,8 +1,8 @@
 import cbor from 'cbor';
 
-import semanticFixture from '../../../common/cardano/fixtures/exact-cbor/semantic-conway-v1.json';
-import { formatCip103FailureInfo } from '../../../common/types/cip103.types';
-import { preflightCip103Sign, preflightCip103Submit } from './Cip103Batch';
+import semanticFixture from '../cardano/fixtures/exact-cbor/semantic-conway-v1.json';
+import { formatCip103FailureInfo } from '../types/cip103.types';
+import { preflightCip103Sign, preflightCip103Submit } from './cip103Batch';
 
 const invalidRequest = { code: -1, info: 'Invalid request' };
 const expectInvalid = (callback: () => unknown): void => {

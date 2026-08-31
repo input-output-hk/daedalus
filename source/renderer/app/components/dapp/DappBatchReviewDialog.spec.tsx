@@ -104,14 +104,15 @@ const presentation = (
 const renderDialog = (
   request: BatchPresentation,
   locale: 'en-US' | 'ja-JP' = 'en-US',
-  onApprove = jest.fn()
+  onApprove = jest.fn(),
+  deciding = false
 ) => {
   const result = render(
     <StoryDecorator>
       <IntlProvider locale={locale} messages={locale === 'en-US' ? en : ja}>
         <DappBatchReviewDialog
           request={request}
-          deciding={false}
+          deciding={deciding}
           onApprove={onApprove}
           onReject={jest.fn()}
         />
@@ -167,6 +168,17 @@ describe('DappBatchReviewDialog', () => {
     expect(
       screen.getByRole('button', { name: 'Submit all transactions' })
     ).toBeEnabled();
+  });
+
+  it('keeps device-progress controls disabled while the approved batch executes', () => {
+    renderDialog(presentation('batch-sign'), 'en-US', jest.fn(), true);
+
+    expect(screen.getByText(/one at a time in this order/u)).toBeVisible();
+    expect(screen.getByLabelText('Wallet spending password')).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'Sign all transactions' })
+    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Reject' })).toBeDisabled();
   });
 
   it('blocks the whole review before confirmation when one item is unsupported', () => {

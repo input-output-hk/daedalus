@@ -30,6 +30,12 @@ import { createCip30TransactionReview } from '../../common/cip30/review';
 import { decodeConwayTransaction } from '../../common/cardano/transaction';
 import type { SemanticTransaction } from '../../common/cardano/transaction';
 import { parseConwayTransactionEnvelope } from '../../common/cardano/transactionEnvelope';
+import {
+  preflightCip103Sign,
+  preflightCip103Submit,
+} from '../../common/cip30/cip103Batch';
+import { formatCip103FailureInfo } from '../../common/types/cip103.types';
+import type { Cip103PreflightBatch } from '../../common/types/cip103.types';
 import type { ApiError, DappCip30Rejection } from '../../common/cip30/errors';
 import type {
   Cip30WalletCapabilities,
@@ -64,6 +70,7 @@ import {
 } from '../ipc/dappBrowser';
 import { consentCoordinator } from '../ipc/dappConsent';
 import { executeCip30WalletRequest } from '../ipc/cip30Wallet';
+import { DappTransactionContextServiceError } from '../cardano/DappTransactionContextService';
 import { CapabilityContext, CapabilityService } from './CapabilityService';
 import { ConsentCoordinator } from './ConsentCoordinator';
 import { Dispatcher, Cip30DispatchRejection } from './Dispatcher';
@@ -75,6 +82,16 @@ import { CollateralService } from './CollateralService';
 import { Negotiator } from './Negotiator';
 import { SessionStore } from './SessionStore';
 import { DappConnectionService } from './DappConnectionService';
+import {
+  Cip103ContextError,
+  Cip103ContextService,
+} from '../cip103/Cip103ContextService';
+import type { Cip103ResolvedBatch } from '../cip103/Cip103ContextService';
+import {
+  Cip103SoftwareSigningError,
+  signCip103WalletBatch,
+  submitCip103Batch,
+} from './extensions/cip103';
 import { setCip30SessionRevoker } from './runtime';
 
 export const CARDANO_WALLET_SOURCE_REVISION =
@@ -94,6 +111,8 @@ const IMPLEMENTED_METHODS = new Set<DappCip30Method>([
   'api.getUnusedAddresses',
   'api.getChangeAddress',
   'api.getRewardAddresses',
+  'api.cip103.signTxs',
+  'api.cip103.submitTxs',
 ]);
 const PERSISTED_SCOPES = new Set<DappScope>([
   'connection',
@@ -436,6 +455,267 @@ export class Cip30Broker {
       }),
     ]);
   }
+  private requiredDrepKeyHashes(
+    transaction: SemanticTransaction,
+    partialSign: boolean,
+    cip95: boolean
+  ): string[] {
+    if (partialSign || !cip95) return [];
+    const hashes: string[] = [];
+    transaction.certificates.forEach(({ value }) => {
+      if (![16, 17, 18].includes(value.kind)) return;
+      value.credentialIdentities.forEach((identity) => {
+        if (identity.startsWith('key:')) hashes.push(identity.slice(4));
+      });
+    });
+    transaction.governance.votes.forEach(({ voter }) => {
+      if (voter.startsWith('2:')) hashes.push(voter.slice(2));
+    });
+    return hashes;
+  }
+
+  private async captureCip103Context(
+    binding: Cip30BrokerBinding,
+    batch: Cip103PreflightBatch
+  ): Promise<
+    Readonly<{ resolved: Cip103ResolvedBatch; signingContext: unknown }>
+  > {
+    let signingContext: unknown;
+    const service = new Cip103ContextService({
+      capture: async (_expected, transactions) => {
+        this.assertCurrent(binding);
+        const response = await this.options.executeWallet({
+          operation: 'transaction-context',
+          walletId: binding.authority.walletId,
+          network: binding.authority.network,
+          sourceRevision: this.options.sourceRevision,
+          transactions,
+        });
+        this.assertCurrent(binding);
+        if (response.status === 'rejected') {
+          if (response.reason === 'account-change')
+            throw new DappTransactionContextServiceError('account_changed');
+          if (response.reason === 'unavailable')
+            throw new DappTransactionContextServiceError('context_unavailable');
+          throw new DappTransactionContextServiceError('internal_error');
+        }
+        if (response.operation !== 'transaction-context')
+          throw new DappTransactionContextServiceError('internal_error');
+        signingContext = response.value;
+        return reconcileTransactionContext(response.value, {
+          walletId: binding.authority.walletId,
+          network: binding.authority.network,
+          transactions,
+        });
+      },
+    });
+    const resolved = await service.capture(
+      {
+        walletId: binding.authority.walletId,
+        network: binding.authority.network,
+        generation: binding.authority.routeEpoch,
+      },
+      batch
+    );
+    if (signingContext === undefined) throw internal();
+    return Object.freeze({ resolved, signingContext });
+  }
+
+  private async signTxs(
+    request: DappCip30GatewayRequest<'api.cip103.signTxs'>,
+    binding: Cip30BrokerBinding
+  ) {
+    const batch = preflightCip103Sign(
+      request.args[0],
+      binding.authority.network.networkId
+    );
+    const { evidence, context } = await this.capabilityEvidence(binding);
+    const capability = this.options.dispatcher.requireCapability(
+      request.method,
+      binding.authority,
+      context
+    );
+    const cip95 = capability.enabledExtensions.includes(95);
+    let captured;
+    try {
+      captured = await this.captureCip103Context(binding, batch);
+    } catch (error) {
+      if (error instanceof Cip103ContextError) {
+        if (error.failure === 'account_changed') throw accountChange();
+        if (error.failure === 'invalid_request')
+          throw invalidRequestRejection();
+        if (error.failure === 'resolution_failed')
+          throw txSignRejection(
+            1,
+            formatCip103FailureInfo(error.transactionIndex ?? 0)
+          );
+      }
+      throw internal();
+    }
+    const { resolved, signingContext } = captured;
+    const requiredKeyHashes = resolved.snapshot.transactionsSemantic.map(
+      (transaction, index) =>
+        this.requiredDrepKeyHashes(
+          transaction,
+          batch.items[index].partialSign ?? false,
+          cip95
+        )
+    );
+    const software = evidence.walletKind === 'shelley-software';
+    const result = await this.options.consent.request({
+      identity: {
+        guestWebContentsId: binding.authority.guestWebContentsId,
+        documentGeneration: binding.authority.documentGeneration,
+        origin: binding.authority.origin,
+        connectionId: capability.connectionId,
+        walletId: binding.authority.walletId,
+        routeEpoch: binding.authority.routeEpoch,
+        networkGenesis: binding.authority.network.genesisHash,
+      },
+      presentation: {
+        kind: 'batch-sign',
+        origin: binding.authority.origin,
+        walletName: evidence.walletName,
+        networkName: this.options.networkName,
+        scopes: [
+          cip95 ? 'governance-transaction-signing' : 'transaction-signing',
+        ],
+        extensions: capability.enabledExtensions,
+        review: resolved.review,
+      },
+      payload: {
+        transactions: batch.items.map(({ cbor, partialSign }) => ({
+          cbor,
+          partialSign: partialSign ?? false,
+        })),
+        context: signingContext,
+      },
+      declined: txSignRejection(2, 'User declined'),
+      execute: async (_payload, signal, passphrase) => {
+        if (signal.aborted || (software && !passphrase))
+          throw txSignRejection(1, formatCip103FailureInfo(0));
+        this.assertCurrent(binding);
+        const latest = await this.capabilityEvidence(binding);
+        if (latest.evidence.walletKind !== evidence.walletKind)
+          throw txSignRejection(1, formatCip103FailureInfo(0));
+        this.options.dispatcher.requireCapability(
+          request.method,
+          binding.authority,
+          latest.context
+        );
+        try {
+          return await signCip103WalletBatch(this.options.executeWallet, {
+            walletId: binding.authority.walletId,
+            walletKind: evidence.walletKind,
+            network: binding.authority.network,
+            sourceRevision: this.options.sourceRevision,
+            batch,
+            review: resolved.review,
+            signingContext,
+            ...(software ? { passphrase } : {}),
+            requiredKeyHashes,
+          });
+        } catch (error) {
+          if (error instanceof Cip103SoftwareSigningError) {
+            if (error.failure === 'account-change') throw accountChange();
+            throw txSignRejection(
+              error.failure === 'deprecated-certificate' ? 3 : 1,
+              formatCip103FailureInfo(error.transactionIndex ?? 0)
+            );
+          }
+          throw internal();
+        }
+      },
+    });
+    this.assertCurrent(binding);
+    return result;
+  }
+
+  private async submitTxs(
+    request: DappCip30GatewayRequest<'api.cip103.submitTxs'>,
+    binding: Cip30BrokerBinding
+  ) {
+    const batch = preflightCip103Submit(
+      request.args[0],
+      binding.authority.network.networkId
+    );
+    const { evidence, context } = await this.capabilityEvidence(binding);
+    const capability = this.options.dispatcher.requireCapability(
+      request.method,
+      binding.authority,
+      context
+    );
+    let resolved: Cip103ResolvedBatch;
+    try {
+      ({ resolved } = await this.captureCip103Context(binding, batch));
+    } catch (error) {
+      if (error instanceof Cip103ContextError) {
+        if (error.failure === 'account_changed') throw accountChange();
+        if (
+          error.failure === 'invalid_request' ||
+          error.failure === 'resolution_failed'
+        )
+          throw invalidRequestRejection();
+      }
+      throw internal();
+    }
+    return this.options.consent.request({
+      identity: {
+        guestWebContentsId: binding.authority.guestWebContentsId,
+        documentGeneration: binding.authority.documentGeneration,
+        origin: binding.authority.origin,
+        connectionId: capability.connectionId,
+        walletId: binding.authority.walletId,
+        routeEpoch: binding.authority.routeEpoch,
+        networkGenesis: binding.authority.network.genesisHash,
+      },
+      presentation: {
+        kind: 'batch-submit',
+        origin: binding.authority.origin,
+        walletName: evidence.walletName,
+        networkName: this.options.networkName,
+        scopes: ['transaction-submission'],
+        extensions: capability.enabledExtensions,
+        review: resolved.review,
+      },
+      payload: { transactions: batch.items.map(({ cbor }) => cbor) },
+      declined: txSendRejection(1, 'User declined'),
+      submission: true,
+      execute: async () => {
+        try {
+          return await submitCip103Batch({
+            batch,
+            review: resolved.review,
+            submitTransaction: async (cbor) => {
+              const response = await this.options.executeWallet({
+                operation: 'submit-transaction',
+                walletId: binding.authority.walletId,
+                network: binding.authority.network,
+                sourceRevision: this.options.sourceRevision,
+                transaction: cbor,
+              });
+              if (
+                response.status === 'rejected' ||
+                response.operation !== 'submit-transaction'
+              )
+                throw new Error('Transaction submission failed');
+              return response.value;
+            },
+          });
+        } catch (error) {
+          if (Array.isArray(error)) {
+            // CIP-103 rejects with a plain aligned result array, not an Error.
+            // eslint-disable-next-line no-throw-literal
+            throw {
+              type: 'cip103-submit-error',
+              value: error,
+            } as DappCip30Rejection;
+          }
+          throw error;
+        }
+      },
+    });
+  }
 
   private async signTx(
     request: DappCip30GatewayRequest<'api.signTx'>,
@@ -495,22 +775,11 @@ export class Cip30Broker {
       'sign',
       this.preferredCollateralEffects(binding, transaction)
     );
-    const requiredDrepKeyHashes =
-      partialSign || !cip95
-        ? []
-        : [
-            ...transaction.certificates.flatMap(({ value }) =>
-              [16, 17, 18].includes(value.kind)
-                ? value.credentialIdentities
-                    .filter((identity) => identity.startsWith('key:'))
-                    .map((identity) => identity.slice(4))
-                : []
-            ),
-            ...transaction.governance.votes
-              .map(({ voter }) => voter.id)
-              .filter((identity) => identity.startsWith('2:'))
-              .map((identity) => identity.slice(2)),
-          ];
+    const requiredDrepKeyHashes = this.requiredDrepKeyHashes(
+      transaction,
+      partialSign,
+      cip95
+    );
     const software = evidence.walletKind === 'shelley-software';
     const result = await this.options.consent.request({
       identity: {
@@ -865,6 +1134,14 @@ export class Cip30Broker {
       if (request.method === 'provider.enable') {
         const result = await this.enable(request, binding);
         this.assertCurrent(binding);
+        return createDappCip30FulfilledEnvelope(request.method, result);
+      }
+      if (request.method === 'api.cip103.submitTxs') {
+        const result = await this.submitTxs(request, binding);
+        return createDappCip30FulfilledEnvelope(request.method, result);
+      }
+      if (request.method === 'api.cip103.signTxs') {
+        const result = await this.signTxs(request, binding);
         return createDappCip30FulfilledEnvelope(request.method, result);
       }
       if (request.method === 'api.submitTx') {
