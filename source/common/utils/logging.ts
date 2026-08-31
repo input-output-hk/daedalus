@@ -17,10 +17,17 @@ const stringifyMessageBody = (messageBody: MessageBody): string => {
   const spacing = isProd ? 0 : 2;
   return JSON.stringify(messageBody, null, spacing);
 };
+const URL = /\bhttps?:\/\/[^\s"'<>]+/giu;
+const LONG_HEX = /\b[0-9a-f]{56,}\b/giu;
+const CARDANO_ADDRESS = /\b(?:addr|stake|drep)(?:_test)?1[0-9a-z]{20,}\b/giu;
 
-export const filterLogData = (
-  data: Record<string, any>
-): Record<string, any> => {
+export const redactLogText = (value: string): string =>
+  value
+    .replace(URL, '[redacted-url]')
+    .replace(LONG_HEX, '[redacted-hex]')
+    .replace(CARDANO_ADDRESS, '[redacted-address]');
+
+export const filterLogData = (data: object): Record<string, unknown> => {
   const sensitiveData = [
     'spendingPassword',
     'oldPassword',
@@ -29,14 +36,54 @@ export const filterLogData = (
     'recoveryPhrase',
     'passphrase',
     'password',
+    'error',
+    'stack',
+    'url',
+    'entryUrl',
+    'href',
+    'origin',
+    'canonicalOrigin',
+    'address',
+    'addressId',
+    'addresses',
+    'rewardAddress',
+    'utxo',
+    'utxos',
+    'inputCbor',
+    'sourceCbor',
+    'canonicalCbor',
+    'unspentCbor',
+    'cbor',
+    'fullCbor',
+    'fullCborDigest',
+    'bodyHash',
+    'transactionId',
+    'transaction',
+    'transactions',
+    'signedTransactionBlob',
+    'asset',
+    'assets',
+    'metadata',
     'votingKey',
     'stakeKey',
-    'signature',
+    'drepPublicKey',
+    'stakePublicKey',
     'accountPublicKey',
     'extendedPublicKey',
+    'xpub',
     'publicKeyHex',
     'chainCodeHex',
-    'signedTransactionBlob',
+    'cose',
+    'cose_sign1',
+    'cose_key',
+    'signature',
+    'signatures',
+    'witness',
+    'witnesses',
+    'witnessSet',
+    'serialNumber',
+    'deviceId',
+    'devicePath',
     'withdrawal',
     // Governance vote target redaction (slice-1 sanitization floor).
     // omit-deep-lodash recurses by key name at any depth, so these
@@ -93,9 +140,26 @@ export const filterLogData = (
 
   return redact(data);
 };
-export const stringifyData = (data: any) => JSON.stringify(data, null, 2);
-export const stringifyError = (error: any) =>
-  JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
+export const stringifyData = (data: unknown) => JSON.stringify(data, null, 2);
+export const stringifyError = (error: unknown) => {
+  const errorRecord =
+    error !== null && typeof error === 'object' ? error : undefined;
+  const name =
+    errorRecord &&
+    'name' in errorRecord &&
+    typeof errorRecord.name === 'string' &&
+    /^[A-Za-z][A-Za-z0-9]*$/u.test(errorRecord.name)
+      ? errorRecord.name
+      : 'Error';
+  const code =
+    errorRecord &&
+    'code' in errorRecord &&
+    typeof errorRecord.code === 'string' &&
+    /^[A-Z0-9_]+$/u.test(errorRecord.code)
+      ? errorRecord.code
+      : undefined;
+  return JSON.stringify({ name, ...(code ? { code } : {}) }, null, 2);
+};
 export const formatContext = (context: FormatMessageContextParams): string => {
   const { appName, electronProcess, level, network } = context;
   return `[${appName}.*${network}*:${level}:${electronProcess}]`;

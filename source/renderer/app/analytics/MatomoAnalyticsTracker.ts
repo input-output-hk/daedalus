@@ -6,6 +6,7 @@ import { MatomoClient } from './MatomoClient';
 import { NoopAnalyticsClient } from './noopAnalyticsClient';
 import AdaApi from '../api/api';
 import { logger } from '../utils/logging';
+import { redactLogText } from '../../../common/utils/logging';
 
 export class MatomoAnalyticsTracker implements AnalyticsTracker {
   #analyticsClient: AnalyticsClient;
@@ -33,26 +34,22 @@ export class MatomoAnalyticsTracker implements AnalyticsTracker {
 
   sendPageNavigationEvent(pageTitle: string) {
     return this.#analyticsClient
-      .sendPageNavigationEvent(pageTitle)
-      .catch((error) => {
-        logger.warn('MatomoAnalyticsTracker: page navigation event failed', {
-          error,
-          pageTitle,
-        });
+      .sendPageNavigationEvent(redactLogText(pageTitle))
+      .catch(() => {
+        logger.warn('MatomoAnalyticsTracker: page navigation event failed');
       });
   }
 
   sendEvent(category: string, name: string, action?: string, value?: number) {
     return this.#analyticsClient
-      .sendEvent(category, name, action, value)
-      .catch((error) => {
-        logger.warn('MatomoAnalyticsTracker: analytics event failed', {
-          error,
-          category,
-          name,
-          action,
-          value,
-        });
+      .sendEvent(
+        redactLogText(category),
+        redactLogText(name),
+        action === undefined ? undefined : redactLogText(action),
+        value
+      )
+      .catch(() => {
+        logger.warn('MatomoAnalyticsTracker: analytics event failed');
       });
   }
 
