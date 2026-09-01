@@ -277,7 +277,7 @@
         test ! -e "$package/libexec/update-runner"
         test "$(jq -r .applicationUpdateMode "$config")" = system-package-disabled
         test "$(jq -r 'has("updateRunnerBin")' "$config")" = false
-        jq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0}' \
+        jq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0,"hardwareConnectorRows":[]}' \
           "$config" >/dev/null
 
         if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX|\.daedalus/.*/bin/daedalus|pre-auto-update|update-runner|updateRunnerBin|\.patchelf-static' \
