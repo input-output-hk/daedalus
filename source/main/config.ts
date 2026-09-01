@@ -48,6 +48,7 @@ export type NodeConfig = {
   network: {
     configFile: string;
     genesisFile: string;
+    genesisHash: string;
     topologyFile: string;
   };
   signingKey?: string;
