@@ -42,8 +42,10 @@ const DIRTY_REV: &str = "dirty";
 /// The build counter is decimal and therefore also valid hex, so matching on
 /// "looks like a hex string" would be ambiguous. Position is not.
 pub fn rev_from_filename(filename: &str) -> Option<&str> {
-    let stem = filename.rsplit_once('.').map_or(filename, |(stem, _)| stem);
-
+    let stem = filename
+        .strip_suffix(".pkg.tar.zst")
+        .or_else(|| filename.rsplit_once('.').map(|(stem, _)| stem))
+        .unwrap_or(filename);
     let without_system = KNOWN_SYSTEMS.iter().find_map(|system| {
         stem.strip_suffix(system)
             .and_then(|rest| rest.strip_suffix('-'))
@@ -259,6 +261,10 @@ mod tests {
     fn rev_from_linux_installer_name() {
         assert_eq!(
             rev_from_filename("daedalus-11.2.0-86185-mainnet-8f9737937-x86_64-linux.bin"),
+            Some("8f9737937")
+        );
+        assert_eq!(
+            rev_from_filename("daedalus-11.2.0-86185-mainnet-8f9737937-x86_64-linux.pkg.tar.zst"),
             Some("8f9737937")
         );
     }

@@ -1,0 +1,77 @@
+#!/bin/sh
+set -eu
+
+cluster='@CLUSTER@'
+install_root='/opt/daedalus/@CLUSTER@'
+helper_path="$install_root/libexec/bundle-electron/lib/electron/chrome-sandbox"
+manifest_base="$install_root/share/daedalus-sandbox-identity.base.json"
+manifest_path="$install_root/share/daedalus-sandbox-identity.json"
+
+fail() {
+  printf '%s\n' "daedalus-${cluster}: $*" >&2
+  exit 1
+}
+
+verify_package() {
+  [ -f "$helper_path" ] && [ ! -L "$helper_path" ] || fail 'missing chrome-sandbox helper'
+  [ "$(stat -c %u:%g "$helper_path")" = 0:0 ] || fail 'chrome-sandbox must be root-owned'
+  [ "$(stat -c %a "$helper_path")" = 755 ] || fail 'chrome-sandbox must use user namespaces, not setuid'
+  if find "$install_root" -xdev -type f -perm /6000 -print -quit | grep -q .; then
+    fail 'package contains an unexpected privileged file'
+  fi
+  if command -v getcap >/dev/null 2>&1 && getcap -r "$install_root" 2>/dev/null | grep -q .; then
+    fail 'package contains an unexpected file capability'
+  fi
+}
+
+configure_manifest() {
+  ID=
+  VERSION_ID=
+  BUILD_ID=
+  if [ -r /etc/os-release ]; then
+    . /etc/os-release
+  fi
+  kernel=$(uname -r)
+  case "${ID:-}:${VERSION_ID:-}:${BUILD_ID:-}:$kernel" in
+    arch::rolling:7.2.2-arch1-1)
+      matrix_row=arch-2026.09.01
+      distribution='{"id":"arch","versionId":"2026.09.01","buildId":"rolling","kernelRelease":"7.2.2-arch1-1"}'
+      support_state=supported
+      reason=supported
+      ;;
+    omarchy:4.0.2:4.0.2:7.1.9-arch1-2)
+      matrix_row=omarchy-4.0.2
+      distribution='{"id":"omarchy","versionId":"4.0.2","buildId":"4.0.2","kernelRelease":"7.1.9-arch1-2"}'
+      support_state=supported
+      reason=supported
+      ;;
+    *)
+      matrix_row=
+      distribution='{"id":"unknown","versionId":"unknown","buildId":"unknown","kernelRelease":"unknown"}'
+      support_state=wallet-only
+      reason=unsupported-distro-version
+      ;;
+  esac
+  jq --arg matrixRow "$matrix_row" --argjson distribution "$distribution" \
+    --arg supportState "$support_state" --arg reason "$reason" \
+    '.matrixRow = (if $matrixRow == "" then null else $matrixRow end) | .distribution = $distribution | .supportState = $supportState | .reason = $reason' \
+    "$manifest_base" >"$manifest_path.new"
+  chown root:root "$manifest_path.new"
+  chmod 0644 "$manifest_path.new"
+  mv "$manifest_path.new" "$manifest_path"
+}
+
+post_install() {
+  verify_package
+  configure_manifest
+}
+
+post_upgrade() {
+  verify_package
+  configure_manifest
+}
+
+post_remove() {
+  rm -f "$manifest_path"
+  rmdir "$install_root/share" "$install_root" 2>/dev/null || true
+}

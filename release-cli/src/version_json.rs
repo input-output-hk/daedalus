@@ -5,10 +5,11 @@
 //! ```json
 //! {
 //!   "platforms": {
-//!     "linux-deb": { "version": "6.0.1", "URL": "https://...deb", "hash": "<blake2b-cbor-hex>", "SHA256": "<sha256-hex>", "signature": "..." },
-//!     "linux-rpm": { "version": "6.0.1", "URL": "https://...rpm", "hash": "<blake2b-cbor-hex>", "SHA256": "<sha256-hex>", "signature": "..." },
-//!     "darwin":    { ... },
-//!     "windows":   { ... }
+//!     "linux-deb":  { "version": "6.0.1", "URL": "https://...deb", "hash": "<blake2b-cbor-hex>", "SHA256": "<sha256-hex>", "signature": "..." },
+//!     "linux-rpm":  { "version": "6.0.1", "URL": "https://...rpm", "hash": "<blake2b-cbor-hex>", "SHA256": "<sha256-hex>", "signature": "..." },
+//!     "linux-arch": { "version": "6.0.1", "URL": "https://...pkg.tar.zst", "hash": "<blake2b-cbor-hex>", "SHA256": "<sha256-hex>", "signature": "..." },
+//!     "darwin":     { ... },
+//!     "windows":    { ... }
 //!   },
 //!   "release_notes": null
 //! }
@@ -82,10 +83,11 @@ mod tests {
     }
 
     #[test]
-    fn emits_independent_linux_deb_and_rpm_entries() {
+    fn emits_independent_linux_package_entries() {
         let artifact_hashes = HashMap::from([
             (Platform::LinuxDeb, hashes("deb-blake", "deb-sha")),
             (Platform::LinuxRpm, hashes("rpm-blake", "rpm-sha")),
+            (Platform::LinuxArch, hashes("arch-blake", "arch-sha")),
         ]);
         let urls = HashMap::from([
             (
@@ -96,10 +98,15 @@ mod tests {
                 Platform::LinuxRpm,
                 "https://updates.example/daedalus.rpm".to_string(),
             ),
+            (
+                Platform::LinuxArch,
+                "https://updates.example/daedalus.pkg.tar.zst".to_string(),
+            ),
         ]);
         let signatures = HashMap::from([
             (Platform::LinuxDeb, Some("deb-signature".to_string())),
             (Platform::LinuxRpm, Some("rpm-signature".to_string())),
+            (Platform::LinuxArch, Some("arch-signature".to_string())),
         ]);
 
         let value = serde_json::to_value(VersionJson::build(
@@ -132,8 +139,19 @@ mod tests {
             value["platforms"]["linux-rpm"]["signature"],
             "rpm-signature"
         );
+        assert_eq!(
+            value["platforms"]["linux-arch"]["URL"],
+            "https://updates.example/daedalus.pkg.tar.zst"
+        );
+        assert_eq!(value["platforms"]["linux-arch"]["hash"], "arch-blake");
+        assert_eq!(value["platforms"]["linux-arch"]["SHA256"], "arch-sha");
+        assert_eq!(
+            value["platforms"]["linux-arch"]["signature"],
+            "arch-signature"
+        );
         assert_eq!(value["platforms"]["linux-deb"]["version"], "6.0.1");
         assert_eq!(value["platforms"]["linux-rpm"]["version"], "6.0.1");
+        assert_eq!(value["platforms"]["linux-arch"]["version"], "6.0.1");
     }
 
     #[test]

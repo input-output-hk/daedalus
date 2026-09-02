@@ -14,8 +14,8 @@ pub enum Commands {
     /// and push daedalus-latest-version.json.
     ///
     /// Expects an INSTALLERS_DIR containing:
-    ///   - installer files (.deb, .rpm, .pkg, .exe)
-    ///   - both .deb and .rpm whenever Linux is included
+    ///   - installer files (.deb, .rpm, .pkg.tar.zst, .pkg, .exe)
+    ///   - Linux .deb, .rpm, and .pkg.tar.zst artifacts whenever Linux is included
     ///   - a 'meta.json' file (written by `drt fetch-installers`, or manually)
     ///   - (optional) pre-existing .asc signature files from `drt sign`
     ///
@@ -67,7 +67,7 @@ pub enum Commands {
     },
 
     /// Code-sign macOS (.pkg) and/or Windows (.exe) installers via SSH
-    /// signing hosts, and/or GPG-sign all installers, including .deb/.rpm.
+    /// signing hosts, and/or GPG-sign all installers, including Linux packages.
     ///
     /// Signing hosts are read from environment variables:
     ///   OSX_SIGN_HOST — SSH host for macOS .pkg signing
@@ -123,11 +123,13 @@ pub enum Commands {
     /// Download unsigned installer artifacts from a Hydra eval into a local
     /// directory, ready for `drt sign` / `drt release`.
     ///
-    /// Fetches `deb-installer.x86_64-linux.<env>` and
-    /// `rpm-installer.x86_64-linux.<env>` plus non-Linux
-    /// `installer.<system>.<env>` builds. Downloads .deb / .rpm / .pkg / .exe,
-    /// verifies SHA-256, validates the complete set, and writes `meta.json`.
-    /// The retired `installer.x86_64-linux.<env>` / .bin path is never accepted.
+    /// Fetches `deb-installer.x86_64-linux.<env>`,
+    /// `rpm-installer.x86_64-linux.<env>`, and
+    /// `arch-installer.x86_64-linux.<env>` plus non-Linux
+    /// `installer.<system>.<env>` builds. Downloads .deb / .rpm / .pkg.tar.zst /
+    /// .pkg / .exe, verifies SHA-256, validates the complete set, and writes
+    /// `meta.json`. The retired `installer.x86_64-linux.<env>` / .bin path is
+    /// never accepted.
     FetchInstallers {
         /// Hydra eval URL (e.g. https://ci.iog.io/eval/107478).
         #[arg(long)]
@@ -163,8 +165,8 @@ pub enum Commands {
         #[arg(long, default_value = "127.0.0.1")]
         host: String,
 
-        /// Directory with .deb/.rpm/.pkg/.exe files and a 'meta.json' file.
-        /// Linux requires the complete .deb/.rpm pair; .bin is rejected.
+        /// Directory with .deb/.rpm/.pkg.tar.zst/.pkg/.exe files and a
+        /// 'meta.json' file. Linux requires the complete package set; .bin is rejected.
         #[arg(long, default_value = "installers")]
         installers: PathBuf,
 
@@ -205,10 +207,10 @@ pub enum NewsfeedCommands {
     /// Add release newsfeed entries for a new Daedalus release.
     ///
     /// Fetches installer metadata (version, SHA-256, URLs) from the installer
-    /// JSON. macOS/Windows receive software-update data; a Linux .deb/.rpm pair
-    /// receives one ordinary package-manager upgrade announcement and no
-    /// executable update payload. Opens $EDITOR before writing the newsfeed
-    /// JSON and verification file.
+    /// JSON. macOS/Windows receive software-update data; Linux .deb/.rpm/
+    /// .pkg.tar.zst packages receive one ordinary package-manager upgrade
+    /// announcement and no executable update payload. Opens $EDITOR before
+    /// writing the newsfeed JSON and verification file.
     ///
     /// NEWSFEED_INSTALLER_JSON — overrides --installer-json
     Release {

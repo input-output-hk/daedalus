@@ -41,6 +41,10 @@
             name = "rpm-installer-${cluster}${suffix}";
             value = internal.rpmInstaller.${cluster};
           }
+          {
+            name = "arch-installer-${cluster}${suffix}";
+            value = internal.archInstaller.${cluster};
+          }
         ]
         ++ [
           {

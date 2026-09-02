@@ -111,13 +111,13 @@ fn validate_version_json(vj: &VersionJson) -> Result<String> {
         );
         if key == "linux" {
             anyhow::bail!(
-                "installer JSON platform key 'linux' is the retired portable .bin channel; use linux-deb and linux-rpm"
+                "installer JSON platform key 'linux' is the retired portable .bin channel; use linux-deb, linux-rpm, and linux-arch"
             );
         }
         anyhow::ensure!(
             matches!(
                 key.as_str(),
-                "linux-deb" | "linux-rpm" | "darwin-arm" | "darwin" | "windows"
+                "linux-deb" | "linux-rpm" | "linux-arch" | "darwin-arm" | "darwin" | "windows"
             ),
             "installer JSON contains unsupported platform key '{key}'"
         );
@@ -125,9 +125,10 @@ fn validate_version_json(vj: &VersionJson) -> Result<String> {
 
     let has_deb = vj.platforms.contains_key("linux-deb");
     let has_rpm = vj.platforms.contains_key("linux-rpm");
+    let has_arch = vj.platforms.contains_key("linux-arch");
     anyhow::ensure!(
-        has_deb == has_rpm,
-        "installer JSON requires both linux-deb and linux-rpm when Linux is present"
+        has_deb == has_rpm && has_rpm == has_arch,
+        "installer JSON requires linux-deb, linux-rpm, and linux-arch when Linux is present"
     );
 
     Ok(version)
@@ -148,7 +149,7 @@ fn build_release_draft(
     entries.sort_by_key(|(key, _)| key.as_str());
     for (key, platform) in entries {
         let software_update_key = match key.as_str() {
-            "linux-deb" | "linux-rpm" => continue,
+            "linux-deb" | "linux-rpm" | "linux-arch" => continue,
             "windows" => "win32",
             "darwin" => "darwin",
             "darwin-arm" => "darwin-arm",
@@ -211,12 +212,12 @@ fn build_release_draft(
             },
             "content": {
                 "en-US": format!(
-                    "Daedalus {version} is available for Linux as .deb and .rpm system packages.\n\n\
+                    "Daedalus {version} is available for Linux as .deb, .rpm, and Arch .pkg.tar.zst system packages.\n\n\
                      Close Daedalus and follow the release instructions to upgrade with your \
                      package manager. Your wallet data remains in place."
                 ),
                 "ja-JP": format!(
-                    "Daedalus {version} は Linux 用 .deb / .rpm システムパッケージとして利用できます。\n\n\
+                    "Daedalus {version} は Linux 用 .deb / .rpm / Arch .pkg.tar.zst システムパッケージとして利用できます。\n\n\
                      Daedalus を終了し、リリース手順に従ってパッケージマネージャーで\
                      アップグレードしてください。ウォレットデータはそのまま保持されます。"
                 ),
@@ -598,6 +599,14 @@ mod tests {
                     "linux-rpm".to_string(),
                     platform("6.0.1", "https://updates.example/daedalus.rpm", "rpm-sha"),
                 ),
+                (
+                    "linux-arch".to_string(),
+                    platform(
+                        "6.0.1",
+                        "https://updates.example/daedalus.pkg.tar.zst",
+                        "arch-sha",
+                    ),
+                ),
             ]),
         }
     }
@@ -665,6 +674,7 @@ mod tests {
         assert!(update["softwareUpdate"].get("linux").is_none());
         assert!(update["softwareUpdate"].get("linux-deb").is_none());
         assert!(update["softwareUpdate"].get("linux-rpm").is_none());
+        assert!(update["softwareUpdate"].get("linux-arch").is_none());
         assert_eq!(
             update["softwareUpdate"]["win32"]["url"],
             "https://updates.example/daedalus.exe"
@@ -791,13 +801,13 @@ mod tests {
     }
 
     #[test]
-    fn validates_pair_and_one_release_version() {
-        let mut missing_rpm = linux_manifest();
-        missing_rpm.platforms.remove("linux-rpm");
-        assert!(validate_version_json(&missing_rpm)
+    fn validates_linux_package_set_and_one_release_version() {
+        let mut missing_arch = linux_manifest();
+        missing_arch.platforms.remove("linux-arch");
+        assert!(validate_version_json(&missing_arch)
             .expect_err("partial Linux release must fail")
             .to_string()
-            .contains("requires both linux-deb and linux-rpm"));
+            .contains("requires linux-deb, linux-rpm, and linux-arch"));
 
         let mut mixed_versions = linux_manifest();
         mixed_versions

@@ -1,11 +1,13 @@
 import crypto from 'crypto';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import type EventEmitter from 'events';
 import { BrowserWindow, session } from 'electron';
 import type { Session, WebContents } from 'electron';
 
 const MATRIX_REVISION = 'task-108-matrix-2026-08-18';
+const ARCH_MATRIX_REVISION = 'task-111-matrix-2026-09-02';
 const CANARY_URL =
   'data:text/html;charset=utf-8,%3C!doctype%20html%3E%3Cmeta%20http-equiv%3D%22Content-Security-Policy%22%20content%3D%22default-src%20%27none%27%22%3E%3Ctitle%3EDaedalus%20sandbox%20canary%3C%2Ftitle%3E';
 const CANARY_TIMEOUT_MS = 10_000;
@@ -56,15 +58,37 @@ type ProcEvidence = {
   namespaces: Record<'pid' | 'user' | 'mnt', string>;
 };
 
+type HostIdentity = {
+  id: string;
+  versionId?: string;
+  buildId?: string;
+  kernelRelease?: string;
+  imageId?: string;
+  imageVersion?: string;
+};
+
 type PackageManifest = {
   schemaVersion?: unknown;
   packageFamily?: unknown;
   matrixRevision?: unknown;
   matrixRow?: unknown;
-  distribution?: { id?: unknown; versionId?: unknown };
+  distribution?: {
+    id?: unknown;
+    versionId?: unknown;
+    buildId?: unknown;
+    kernelRelease?: unknown;
+    imageId?: unknown;
+    imageVersion?: unknown;
+  };
   supportState?: unknown;
   cluster?: unknown;
+  policy?: { kind?: unknown };
   helper?: { mode?: unknown; sha256?: unknown };
+};
+
+type PackageValidation = {
+  failure: DappSandboxUnavailableReason | null;
+  usernsOnly: boolean;
 };
 
 let availability: DappSandboxAvailability = Object.freeze({
@@ -140,7 +164,8 @@ const readProcEvidence = (pid: number): ProcEvidence => {
 
 export const validateRendererEvidence = (
   mainEvidence: ProcEvidence,
-  rendererEvidence: ProcEvidence
+  rendererEvidence: ProcEvidence,
+  requireUserNamespace = false
 ): boolean => {
   const chromiumType = rendererEvidence.argv.find((argument) =>
     argument.startsWith('--type=')
@@ -155,7 +180,9 @@ export const validateRendererEvidence = (
     rendererEvidence.status.Seccomp === '2' &&
     (filterCount === undefined || Number(filterCount) > 0) &&
     /^0+$/.test(rendererEvidence.status.CapEff || '') &&
-    rendererEvidence.namespaces.pid !== mainEvidence.namespaces.pid
+    rendererEvidence.namespaces.pid !== mainEvidence.namespaces.pid &&
+    (!requireUserNamespace ||
+      rendererEvidence.namespaces.user !== mainEvidence.namespaces.user)
   );
 };
 export const validateDappRendererSandbox = (
@@ -176,7 +203,7 @@ export const validateDappRendererSandbox = (
   }
 };
 
-const parseOsRelease = (): { id: string; versionId: string } | null => {
+const parseOsRelease = (): HostIdentity | null => {
   try {
     const values: Record<string, string> = {};
     fs.readFileSync('/etc/os-release', 'utf8')
@@ -189,28 +216,138 @@ const parseOsRelease = (): { id: string; versionId: string } | null => {
           .replace(/^['"]|['"]$/g, '')
           .toLowerCase();
       });
-    return values.ID && values.VERSION_ID
-      ? { id: values.ID, versionId: values.VERSION_ID }
+    const versionId = values.VERSION_ID || values.IMAGE_VERSION;
+    return values.ID
+      ? {
+          id: values.ID,
+          versionId,
+          buildId: values.BUILD_ID,
+          kernelRelease: os.release(),
+          imageId: values.IMAGE_ID,
+          imageVersion: values.IMAGE_VERSION,
+        }
       : null;
   } catch {
     return null;
   }
 };
 
+type HostContract = {
+  row: string;
+  packageFamily: string;
+  matrixRevision: string;
+  fingerprint: HostIdentity;
+  manifestFingerprint?: HostIdentity;
+  helperMode: number;
+  usernsOnly?: true;
+};
+
 const supportedHost = (
-  host: { id: string; versionId: string },
+  host: HostIdentity,
   packageFamily: unknown
-): string | null => {
-  const key = `${host.id}-${host.versionId}`;
-  const rows: Record<string, { row: string; packageFamily: string }> = {
-    'ubuntu-24.04': { row: 'ubuntu-24.04', packageFamily: 'deb' },
-    'ubuntu-26.04': { row: 'ubuntu-26.04', packageFamily: 'deb' },
-    'debian-12': { row: 'debian-12', packageFamily: 'deb' },
-    'debian-13': { row: 'debian-13', packageFamily: 'deb' },
-    'fedora-43': { row: 'fedora-43', packageFamily: 'rpm' },
-  };
-  const match = rows[key];
-  return match && match.packageFamily === packageFamily ? match.row : null;
+): HostContract | null => {
+  const rows: readonly HostContract[] = [
+    {
+      row: 'ubuntu-24.04',
+      packageFamily: 'deb',
+      matrixRevision: MATRIX_REVISION,
+      fingerprint: { id: 'ubuntu', versionId: '24.04' },
+      helperMode: 0o4755,
+    },
+    {
+      row: 'ubuntu-26.04',
+      packageFamily: 'deb',
+      matrixRevision: MATRIX_REVISION,
+      fingerprint: { id: 'ubuntu', versionId: '26.04' },
+      helperMode: 0o4755,
+    },
+    {
+      row: 'debian-12',
+      packageFamily: 'deb',
+      matrixRevision: MATRIX_REVISION,
+      fingerprint: { id: 'debian', versionId: '12' },
+      helperMode: 0o4755,
+    },
+    {
+      row: 'debian-13',
+      packageFamily: 'deb',
+      matrixRevision: MATRIX_REVISION,
+      fingerprint: { id: 'debian', versionId: '13' },
+      helperMode: 0o4755,
+    },
+    {
+      row: 'fedora-43',
+      packageFamily: 'rpm',
+      matrixRevision: MATRIX_REVISION,
+      fingerprint: { id: 'fedora', versionId: '43' },
+      helperMode: 0o4755,
+    },
+    {
+      row: 'arch-2026.09.01',
+      packageFamily: 'arch',
+      matrixRevision: ARCH_MATRIX_REVISION,
+      fingerprint: {
+        id: 'arch',
+        buildId: 'rolling',
+        kernelRelease: '7.2.2-arch1-1',
+      },
+      manifestFingerprint: {
+        id: 'arch',
+        versionId: '2026.09.01',
+        buildId: 'rolling',
+        kernelRelease: '7.2.2-arch1-1',
+      },
+      helperMode: 0o755,
+      usernsOnly: true,
+    },
+    {
+      row: 'omarchy-4.0.2',
+      packageFamily: 'arch',
+      matrixRevision: ARCH_MATRIX_REVISION,
+      fingerprint: {
+        id: 'omarchy',
+        versionId: '4.0.2',
+        buildId: '4.0.2',
+        kernelRelease: '7.1.9-arch1-2',
+      },
+      helperMode: 0o755,
+      usernsOnly: true,
+    },
+  ];
+  return (
+    rows.find(
+      (row) =>
+        row.packageFamily === packageFamily &&
+        Object.entries(row.fingerprint).every(
+          ([key, value]) => host[key as keyof HostIdentity] === value
+        )
+    ) || null
+  );
+};
+
+export const validatePackageIdentity = (
+  manifest: PackageManifest,
+  host: HostIdentity,
+  cluster: string
+): HostContract | null => {
+  const contract = supportedHost(host, manifest.packageFamily);
+  if (
+    !contract ||
+    manifest.schemaVersion !== 2 ||
+    manifest.matrixRevision !== contract.matrixRevision ||
+    manifest.matrixRow !== contract.row ||
+    manifest.supportState !== 'supported' ||
+    manifest.cluster !== cluster ||
+    manifest.helper?.mode !==
+      contract.helperMode.toString(8).padStart(4, '0') ||
+    (contract.usernsOnly && manifest.policy?.kind !== 'none') ||
+    Object.entries(contract.manifestFingerprint || contract.fingerprint).some(
+      ([key, value]) =>
+        manifest.distribution?.[key as keyof HostIdentity] !== value
+    )
+  )
+    return null;
+  return contract;
 };
 
 const sha256 = (filePath: string): string =>
@@ -219,15 +356,19 @@ const sha256 = (filePath: string): string =>
 const validateProductionPackage = (
   cluster: string,
   configuredInstallRoot?: string
-): DappSandboxUnavailableReason | null => {
+): PackageValidation => {
+  const unsupportedPackage = {
+    failure: 'unsupported-package' as const,
+    usernsOnly: false,
+  };
   const expectedRoot = `/opt/daedalus/${cluster}`;
   const installRoot = configuredInstallRoot || process.env.ENTRYPOINT_DIR;
   if (!installRoot || path.resolve(installRoot) !== expectedRoot)
-    return 'unsupported-package';
+    return unsupportedPackage;
 
   try {
     if (fs.realpathSync(installRoot) !== expectedRoot)
-      return 'unsupported-package';
+      return unsupportedPackage;
     const manifestPath = path.join(
       expectedRoot,
       'share/daedalus-sandbox-identity.json'
@@ -240,25 +381,18 @@ const validateProductionPackage = (
       manifestStat.gid !== 0 ||
       (manifestStat.mode & 0o7777) !== 0o644
     )
-      return 'unsupported-package';
+      return unsupportedPackage;
 
     const manifest = JSON.parse(
       fs.readFileSync(manifestPath, 'utf8')
     ) as PackageManifest;
     const host = parseOsRelease();
-    if (!host) return 'unsupported-host';
-    const matrixRow = supportedHost(host, manifest.packageFamily);
-    if (!matrixRow) return 'unsupported-host';
-    if (
-      manifest.schemaVersion !== 2 ||
-      manifest.matrixRevision !== MATRIX_REVISION ||
-      manifest.matrixRow !== matrixRow ||
-      manifest.supportState !== 'supported' ||
-      manifest.cluster !== cluster ||
-      manifest.distribution?.id !== host.id ||
-      manifest.distribution?.versionId !== host.versionId
-    )
-      return 'unsupported-package';
+    if (!host) return { failure: 'unsupported-host', usernsOnly: false };
+    const hostContract = supportedHost(host, manifest.packageFamily);
+    if (!hostContract)
+      return { failure: 'unsupported-host', usernsOnly: false };
+    const contract = validatePackageIdentity(manifest, host, cluster);
+    if (!contract) return unsupportedPackage;
 
     const electronPath = path.join(
       expectedRoot,
@@ -281,16 +415,16 @@ const validateProductionPackage = (
       helperStat.isSymbolicLink() ||
       helperStat.uid !== 0 ||
       helperStat.gid !== 0 ||
-      ![0o755, 0o4755].includes(helperMode) ||
+      helperMode !== contract.helperMode ||
       (helperStat.mode & 0o7777) !== helperMode ||
       !/^[a-f0-9]{64}$/.test(String(manifest.helper?.sha256)) ||
       sha256(helperPath) !== manifest.helper?.sha256
     )
-      return 'unsupported-package';
+      return unsupportedPackage;
+    return { failure: null, usernsOnly: contract.usernsOnly === true };
   } catch {
-    return 'unsupported-package';
+    return unsupportedPackage;
   }
-  return null;
 };
 
 const waitForLifecycleFailure = (
@@ -334,7 +468,9 @@ const clearCanarySession = async (canarySession: Session): Promise<void> => {
   await canarySession.closeAllConnections();
 };
 
-const runCanary = async (): Promise<DappSandboxUnavailableReason | null> => {
+const runCanary = async (
+  requireUserNamespace = false
+): Promise<DappSandboxUnavailableReason | null> => {
   const partition = `daedalus-dapp-sandbox-canary-${crypto
     .randomBytes(16)
     .toString('hex')}`;
@@ -405,7 +541,11 @@ const runCanary = async (): Promise<DappSandboxUnavailableReason | null> => {
     const rendererEvidence = readProcEvidence(rendererPid);
     if (
       mainEvidence.status.Pid !== String(process.pid) ||
-      !validateRendererEvidence(mainEvidence, rendererEvidence)
+      !validateRendererEvidence(
+        mainEvidence,
+        rendererEvidence,
+        requireUserNamespace
+      )
     )
       throw new Error('invalid sandbox evidence');
 
@@ -454,21 +594,22 @@ const checkAvailability = async (
   if (hasSandboxBypass([...process.argv, ...procArgv], process.env))
     return { status: 'unavailable', reason: 'sandbox-bypass' };
 
+  let requireUserNamespace = false;
   if (!options.isDevelopment) {
-    const packageFailure = validateProductionPackage(
+    const packageValidation = validateProductionPackage(
       options.cluster,
       options.installRoot
     );
-    if (packageFailure)
-      return { status: 'unavailable', reason: packageFailure };
+    if (packageValidation.failure)
+      return { status: 'unavailable', reason: packageValidation.failure };
+    requireUserNamespace = packageValidation.usernsOnly;
   }
 
-  const canaryFailure = await runCanary();
+  const canaryFailure = await runCanary(requireUserNamespace);
   return canaryFailure
     ? { status: 'unavailable', reason: canaryFailure }
     : { status: 'available' };
 };
-
 export const startDappSandboxAvailabilityCheck = (
   options: DappSandboxAvailabilityOptions
 ): Promise<DappSandboxAvailability> => {

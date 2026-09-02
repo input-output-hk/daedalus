@@ -10,6 +10,7 @@ use std::{
 pub enum Platform {
     LinuxDeb,
     LinuxRpm,
+    LinuxArch,
     DarwinArm, // aarch64-darwin (Apple Silicon)
     DarwinX86, // x86_64-darwin  (Intel)
     Windows,
@@ -23,6 +24,7 @@ impl Platform {
         match ext {
             "deb" => Some(Self::LinuxDeb),
             "rpm" => Some(Self::LinuxRpm),
+            "zst" if filename.ends_with(".pkg.tar.zst") => Some(Self::LinuxArch),
             "exe" => Some(Self::Windows),
             "pkg" if filename.contains("aarch64-darwin") => Some(Self::DarwinArm),
             "pkg" if filename.contains("x86_64-darwin") => Some(Self::DarwinX86),
@@ -35,6 +37,7 @@ impl Platform {
         match self {
             Platform::LinuxDeb => "linux-deb",
             Platform::LinuxRpm => "linux-rpm",
+            Platform::LinuxArch => "linux-arch",
             Platform::DarwinArm => "darwin-arm",
             Platform::DarwinX86 => "darwin",
             Platform::Windows => "windows",
@@ -45,17 +48,18 @@ impl Platform {
         match self {
             Platform::LinuxDeb => "Linux (.deb)",
             Platform::LinuxRpm => "Linux (.rpm)",
+            Platform::LinuxArch => "Linux (Arch .pkg.tar.zst)",
             Platform::DarwinArm => "macOS (Apple Silicon)",
             Platform::DarwinX86 => "macOS (Intel)",
             Platform::Windows => "Windows",
         }
     }
 
-    /// Key used to target ordinary newsfeed items. Both Linux package formats
-    /// target the same operating system and must be deduplicated by callers.
+    /// Key used to target ordinary newsfeed items. Linux package formats target
+    /// the same operating system and must be deduplicated by callers.
     pub fn newsfeed_key(self) -> &'static str {
         match self {
-            Platform::LinuxDeb | Platform::LinuxRpm => "linux",
+            Platform::LinuxDeb | Platform::LinuxRpm | Platform::LinuxArch => "linux",
             Platform::DarwinArm => "darwin-arm",
             Platform::DarwinX86 => "darwin",
             Platform::Windows => "win32",
@@ -63,10 +67,10 @@ impl Platform {
     }
 
     /// Key used for executable software updates. Linux system packages are
-    /// deliberately excluded because upgrades are mediated by apt or dnf.
+    /// deliberately excluded because upgrades are mediated by their package manager.
     pub fn software_update_key(self) -> Option<&'static str> {
         match self {
-            Platform::LinuxDeb | Platform::LinuxRpm => None,
+            Platform::LinuxDeb | Platform::LinuxRpm | Platform::LinuxArch => None,
             Platform::DarwinArm => Some("darwin-arm"),
             Platform::DarwinX86 => Some("darwin"),
             Platform::Windows => Some("win32"),
@@ -74,7 +78,10 @@ impl Platform {
     }
 
     pub fn is_linux_package(self) -> bool {
-        matches!(self, Platform::LinuxDeb | Platform::LinuxRpm)
+        matches!(
+            self,
+            Platform::LinuxDeb | Platform::LinuxRpm | Platform::LinuxArch
+        )
     }
 }
 
@@ -150,8 +157,9 @@ pub struct InstallerDir {
 }
 
 impl InstallerDir {
-    /// Scan `dir` for installer files (.deb / .rpm / .pkg / .exe) and read
-    /// metadata. Tries `meta.json` first; falls back to a plain `version` file.
+    /// Scan `dir` for installer files (.deb / .rpm / .pkg.tar.zst / .pkg /
+    /// .exe) and read metadata. Tries `meta.json` first; falls back to a plain
+    /// `version` file.
     pub fn load(dir: &Path) -> Result<Self> {
         let meta_path = dir.join("meta.json");
         let meta = if meta_path.exists() {
@@ -202,7 +210,7 @@ impl InstallerDir {
             let ext = path.extension().and_then(|ext| ext.to_str());
             if ext == Some("bin") {
                 anyhow::bail!(
-                    "portable Linux .bin installer '{}' is retired; release Linux as a matched .deb/.rpm pair",
+                    "portable Linux .bin installer '{}' is retired; release Linux as a matched .deb/.rpm/.pkg.tar.zst set",
                     filename
                 );
             }
@@ -211,7 +219,7 @@ impl InstallerDir {
             // their Hydra products.
             if filename.contains("-unsigned.") {
                 anyhow::ensure!(
-                    !matches!(ext, Some("deb" | "rpm")),
+                    !matches!(ext, Some("deb" | "rpm")) && !filename.ends_with(".pkg.tar.zst"),
                     "Linux package unsigned companion '{}' is forbidden",
                     filename
                 );
@@ -253,25 +261,27 @@ impl InstallerDir {
 
         anyhow::ensure!(
             !installers.is_empty(),
-            "no installer files (.deb, .rpm, .pkg, .exe) found in {}",
+            "no installer files (.deb, .rpm, .pkg.tar.zst, .pkg, .exe) found in {}",
             dir.display()
         );
 
         let has_deb = seen.contains_key(&Platform::LinuxDeb);
         let has_rpm = seen.contains_key(&Platform::LinuxRpm);
+        let has_arch = seen.contains_key(&Platform::LinuxArch);
         anyhow::ensure!(
-            has_deb == has_rpm,
-            "Linux releases require a matched .deb/.rpm pair; found {} only",
-            if has_deb { ".deb" } else { ".rpm" }
+            has_deb == has_rpm && has_rpm == has_arch,
+            "Linux releases require matched .deb/.rpm/.pkg.tar.zst artifacts"
         );
         if has_deb {
             let deb_identity = linux_artifact_identity(&seen[&Platform::LinuxDeb])?;
             let rpm_identity = linux_artifact_identity(&seen[&Platform::LinuxRpm])?;
+            let arch_identity = linux_artifact_identity(&seen[&Platform::LinuxArch])?;
             anyhow::ensure!(
-                deb_identity == rpm_identity,
-                "Linux .deb/.rpm identity mismatch: .deb is {:?}, .rpm is {:?}",
+                deb_identity == rpm_identity && rpm_identity == arch_identity,
+                "Linux package identity mismatch: .deb is {:?}, .rpm is {:?}, .pkg.tar.zst is {:?}",
                 deb_identity,
-                rpm_identity
+                rpm_identity,
+                arch_identity
             );
             let expected_env = meta.env.as_deref().ok_or_else(|| {
                 anyhow::anyhow!("Linux releases require meta.json to declare the target env")
@@ -315,12 +325,13 @@ fn linux_artifact_identity(filename: &str) -> Result<LinuxArtifactIdentity<'_>> 
         .extension()
         .and_then(|extension| extension.to_str());
     anyhow::ensure!(
-        matches!(extension, Some("deb" | "rpm")),
+        matches!(extension, Some("deb" | "rpm")) || filename.ends_with(".pkg.tar.zst"),
         "unsupported Linux package filename '{filename}'"
     );
     let stem = filename
         .strip_suffix(".deb")
         .or_else(|| filename.strip_suffix(".rpm"))
+        .or_else(|| filename.strip_suffix(".pkg.tar.zst"))
         .and_then(|stem| stem.strip_suffix("-linux"))
         .ok_or_else(|| anyhow::anyhow!("invalid Linux package filename '{filename}'"))?;
     let (identity, architecture) = stem
@@ -417,6 +428,14 @@ mod tests {
             Some(Platform::LinuxRpm)
         );
         assert_eq!(
+            Platform::from_filename("daedalus-6.0.1-mainnet-x86_64-linux.pkg.tar.zst"),
+            Some(Platform::LinuxArch)
+        );
+        assert_eq!(
+            Platform::from_filename("daedalus-6.0.1-mainnet-x86_64-linux.zst"),
+            None
+        );
+        assert_eq!(
             Platform::from_filename("daedalus-6.0.1-mainnet-aarch64-darwin.pkg"),
             Some(Platform::DarwinArm)
         );
@@ -443,38 +462,39 @@ mod tests {
     }
 
     #[test]
-    fn requires_linux_deb_and_rpm_pair() {
-        for (filename, expected) in [
-            (
-                "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.deb",
-                "found .deb only",
-            ),
-            (
-                "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.rpm",
-                "found .rpm only",
-            ),
+    fn requires_all_linux_package_artifacts() {
+        for filename in [
+            "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.deb",
+            "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.rpm",
+            "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.pkg.tar.zst",
         ] {
             let fixture = Fixture::new("6.0.1", &[filename]);
-            assert!(fixture.load_error().contains(expected));
+            assert!(fixture
+                .load_error()
+                .contains("matched .deb/.rpm/.pkg.tar.zst"));
         }
     }
 
     #[test]
-    fn accepts_linux_pair_as_independent_artifacts() {
+    fn accepts_linux_packages_as_independent_artifacts() {
         let fixture = Fixture::new(
             "6.0.1",
             &[
                 "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.deb",
                 "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.rpm",
+                "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.pkg.tar.zst",
             ],
         );
-        let dir = InstallerDir::load(&fixture.0).expect("load Linux package pair");
+        let dir = InstallerDir::load(&fixture.0).expect("load Linux package set");
         let platforms: Vec<_> = dir
             .installers
             .iter()
             .map(|installer| installer.platform)
             .collect();
-        assert_eq!(platforms, vec![Platform::LinuxDeb, Platform::LinuxRpm]);
+        assert_eq!(
+            platforms,
+            vec![Platform::LinuxDeb, Platform::LinuxArch, Platform::LinuxRpm]
+        );
     }
 
     #[test]
@@ -507,12 +527,13 @@ mod tests {
     }
 
     #[test]
-    fn rejects_linux_pair_identity_mismatch() {
+    fn rejects_linux_package_identity_mismatch() {
         let fixture = Fixture::new(
             "6.0.1",
             &[
                 "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.deb",
-                "daedalus-6.0.1-101-mainnet-abcdef0-x86_64-linux.rpm",
+                "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.rpm",
+                "daedalus-6.0.1-101-mainnet-abcdef0-x86_64-linux.pkg.tar.zst",
             ],
         );
         assert!(fixture.load_error().contains("identity mismatch"));
@@ -525,6 +546,7 @@ mod tests {
             &[
                 "daedalus-6.0.1-100-mainnet-abcdef0-aarch64-linux.deb",
                 "daedalus-6.0.1-100-mainnet-abcdef0-aarch64-linux.rpm",
+                "daedalus-6.0.1-100-mainnet-abcdef0-aarch64-linux.pkg.tar.zst",
             ],
         );
         assert!(fixture
@@ -538,8 +560,9 @@ mod tests {
             "6.0.1",
             &[
                 "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.deb",
-                "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux-unsigned.deb",
                 "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.rpm",
+                "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.pkg.tar.zst",
+                "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux-unsigned.pkg.tar.zst",
             ],
         );
         assert!(fixture
@@ -554,6 +577,7 @@ mod tests {
             &[
                 "daedalus-6.0.1-100-preview-abcdef0-x86_64-linux.deb",
                 "daedalus-6.0.1-100-preview-abcdef0-x86_64-linux.rpm",
+                "daedalus-6.0.1-100-preview-abcdef0-x86_64-linux.pkg.tar.zst",
             ],
         );
         assert!(fixture
@@ -562,12 +586,13 @@ mod tests {
     }
 
     #[test]
-    fn requires_metadata_env_for_linux_pair() {
+    fn requires_metadata_env_for_linux_packages() {
         let fixture = Fixture::new_with_env(
             "6.0.1",
             &[
                 "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.deb",
                 "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.rpm",
+                "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.pkg.tar.zst",
             ],
             None,
         );

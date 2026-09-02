@@ -1,0 +1,43 @@
+{
+  "boundedStartup": {
+    "displayProtocol": "wayland",
+    "minimumObservedSeconds": 8,
+    "ozonePlatform": "wayland",
+    "result": "pass",
+    "session": "active",
+    "waylandDisplay": "wayland-1"
+  },
+  "checks": {
+    "install": "pass",
+    "liveRemovalRefusedAndPackageRetained": "pass",
+    "reboot": "pass",
+    "reinstall": "pass",
+    "rollback": "pass",
+    "stoppedRemovalAndInstallRootCleanup": "pass",
+    "upgrade": "pass",
+    "walletStatePreserved": "pass"
+  },
+  "date": "2026-09-02",
+  "exactFinalProbeAndAdversarialPass": true,
+  "finalCandidateReinstalledAfterLifecycle": true,
+  "finalCandidateSha256": "53977dd420569759067f794468ed2ae28e7296a76cd7b4bcfcb45193896429e3",
+  "host": {
+    "buildId": "4.0.2",
+    "id": "omarchy",
+    "kernelRelease": "7.1.9-arch1-2",
+    "versionId": "4.0.2"
+  },
+  "matrixRow": "omarchy-4.0.2",
+  "packageFamily": "arch",
+  "packageSha256": "53f9b34a987f820c28e8e98145acece61669aee36fcd08ef95a4b497f0ca6dd1",
+  "packageVersion": "11.3.0-1",
+  "postRebootBootTime": "2026-09-02T14:49:10Z",
+  "schemaVersion": 1,
+  "task": "task-111",
+  "upgradeFixtureVersion": "11.3.0-2",
+  "walletSentinel": {
+    "mode": "0600",
+    "sha256": "15faf55d112584cfa3546ce2eec369795f7857ace7c6fde216952164df68f9a6",
+    "unchanged": true
+  }
+}

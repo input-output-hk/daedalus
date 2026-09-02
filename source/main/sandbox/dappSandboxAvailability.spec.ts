@@ -1,9 +1,9 @@
 import {
   hasSandboxBypass,
   requireDappSandboxAvailable,
+  validatePackageIdentity,
   validateRendererEvidence,
 } from './dappSandboxAvailability';
-
 const mainEvidence = {
   pid: 10,
   argv: ['/electron', '.'],
@@ -32,6 +32,23 @@ const rendererEvidence = {
     user: 'user:[20]',
     mnt: 'mnt:[20]',
   },
+};
+
+const archManifest = {
+  schemaVersion: 2,
+  packageFamily: 'arch',
+  matrixRevision: 'task-111-matrix-2026-09-02',
+  matrixRow: 'arch-2026.09.01',
+  distribution: {
+    id: 'arch',
+    versionId: '2026.09.01',
+    buildId: 'rolling',
+    kernelRelease: '7.2.2-arch1-1',
+  },
+  supportState: 'supported',
+  cluster: 'mainnet',
+  policy: { kind: 'none' },
+  helper: { mode: '0755' },
 };
 
 describe('dApp sandbox availability', () => {
@@ -63,6 +80,82 @@ describe('dApp sandbox availability', () => {
         argv: ['/electron', '--type=zygote'],
       })
     ).toBe(true);
+  });
+
+  test('requires a distinct user namespace for Arch packages', () => {
+    expect(validateRendererEvidence(mainEvidence, rendererEvidence, true)).toBe(
+      true
+    );
+    expect(
+      validateRendererEvidence(
+        mainEvidence,
+        {
+          ...rendererEvidence,
+          namespaces: { ...rendererEvidence.namespaces, user: 'user:[10]' },
+        },
+        true
+      )
+    ).toBe(false);
+  });
+
+  test.each([
+    {
+      name: 'the exact Arch snapshot',
+      manifest: archManifest,
+      host: archManifest.distribution,
+      accepted: true,
+    },
+    {
+      name: 'the exact Omarchy snapshot',
+      manifest: {
+        ...archManifest,
+        matrixRow: 'omarchy-4.0.2',
+        distribution: {
+          id: 'omarchy',
+          versionId: '4.0.2',
+          buildId: '4.0.2',
+          kernelRelease: '7.1.9-arch1-2',
+        },
+      },
+      host: {
+        id: 'omarchy',
+        versionId: '4.0.2',
+        buildId: '4.0.2',
+        kernelRelease: '7.1.9-arch1-2',
+      },
+      accepted: true,
+    },
+    {
+      name: 'a stale Arch kernel',
+      manifest: archManifest,
+      host: { ...archManifest.distribution, kernelRelease: '7.2.3-arch1-1' },
+      accepted: false,
+    },
+    {
+      name: 'an Arch manifest with setuid helper policy',
+      manifest: { ...archManifest, helper: { mode: '4755' } },
+      host: archManifest.distribution,
+      accepted: false,
+    },
+    {
+      name: 'an Arch manifest with a non-none policy',
+      manifest: { ...archManifest, policy: { kind: 'apparmor' } },
+      host: archManifest.distribution,
+      accepted: false,
+    },
+    {
+      name: 'a stale matrix revision',
+      manifest: {
+        ...archManifest,
+        matrixRevision: 'task-108-matrix-2026-08-18',
+      },
+      host: archManifest.distribution,
+      accepted: false,
+    },
+  ])('handles $name', ({ manifest, host, accepted }) => {
+    expect(Boolean(validatePackageIdentity(manifest, host, 'mainnet'))).toBe(
+      accepted
+    );
   });
 
   test.each([

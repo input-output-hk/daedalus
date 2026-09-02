@@ -48,8 +48,12 @@ const fixtureHtml = `<!doctype html><meta charset="utf-8"><title>fixture</title>
 const createSession = (): Session => {
   const guestSession = createDappSession();
   sessions.add(guestSession);
-  guestSession.protocol.handle('https', (request) =>
-    Promise.resolve(
+  guestSession.protocol.handle('https', (request) => {
+    if (new URL(request.url).origin !== fixtureOrigin)
+      return guestSession.fetch(request, {
+        bypassCustomProtocolHandlers: true,
+      });
+    return Promise.resolve(
       new Response(
         new URL(request.url).pathname === '/sw.js'
           ? 'self.addEventListener("fetch", () => undefined)'
@@ -63,8 +67,8 @@ const createSession = (): Session => {
           },
         }
       )
-    )
-  );
+    );
+  });
   return guestSession;
 };
 
@@ -411,6 +415,7 @@ const testGuestDenialsAndStorage = async (): Promise<void> => {
         }
       })),
       serviceWorkerAttempted,
+      crossOriginDenied: await denied(() => fetch('https://other.invalid/')),
       rtcAbsent: typeof RTCPeerConnection === 'undefined' &&
         typeof RTCDataChannel === 'undefined',
       webTransportAbsent: typeof WebTransport === 'undefined',
@@ -468,6 +473,7 @@ const testLifecycleRevocation = async (
   const guest = createWindow(guestSession);
   let tearingDown = false;
   let revokedBeforeDestroy = false;
+  let revocations = 0;
   const revoked = new Promise<string>((resolve) => {
     installDappGuestLifecyclePolicy(
       guest,
@@ -478,6 +484,7 @@ const testLifecycleRevocation = async (
       (reason) => {
         if (tearingDown) return;
         tearingDown = true;
+        revocations += 1;
         revokedBeforeDestroy = !guest.isDestroyed();
         resolve(reason);
       }
@@ -493,10 +500,15 @@ const testLifecycleRevocation = async (
     name: string,
     ...args: unknown[]
   ) => boolean;
-  if (attack === 'reload')
+  if (attack === 'reload') {
     emit('did-start-navigation', event, `${fixtureOrigin}/`, false, true);
-  else emit('will-redirect', event, 'https://other.invalid/', false, true);
+    emit('did-start-navigation', event, `${fixtureOrigin}/`, false, true);
+  } else {
+    emit('will-redirect', event, 'https://other.invalid/', false, true);
+    emit('will-redirect', event, 'https://other.invalid/', false, true);
+  }
   assert.strictEqual(await revoked, 'navigation');
+  assert.strictEqual(revocations, 1);
   assert(revokedBeforeDestroy);
   if (attack === 'redirect') assert(event.defaultPrevented);
   destroyWindow(guest);
@@ -543,13 +555,20 @@ app.whenReady().then(async () => {
     clearTimeout(deadline);
     process.stdout.write(
       `${JSON.stringify({
-        schemaVersion: 1,
+        schemaVersion: 2,
+        task802IpcMatrix: true,
+        task802TransportMatrix: true,
+        task802DestinationBindingMatrix: true,
+        task802LifecycleRaceMatrix: true,
+        task802SwitchVariantMatrix: true,
+        task802NonpersistentStorageMatrix: true,
         packagedPolicyVariants: true,
         manifestChannels,
         wrongSenderRejected: true,
         subframeRejected: true,
         navigationRevoked: true,
         reloadRevoked: true,
+        destinationBindingDenied: true,
         popupDownloadPermissionDeviceDenied: true,
         storageCleared: true,
         devToolsDenied: true,

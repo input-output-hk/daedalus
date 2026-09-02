@@ -10,6 +10,7 @@ const path = require('path');
 const SCHEMA_VERSION = 2;
 const IDENTITY_SCHEMA_VERSION = 2;
 const MATRIX_REVISION = 'task-108-matrix-2026-08-18';
+const ARCH_MATRIX_REVISION = 'task-111-matrix-2026-09-02';
 const APPARMOR_LOADED_PROFILE_SUFFIX = ' (unconfined)';
 const STDERR_LIMIT_BYTES = 8192;
 const PROBE_TIMEOUT_MS = 15000;
@@ -82,6 +83,43 @@ const SUPPORT_MATRIX = {
     helperMode: '4755',
     distributionId: 'fedora',
     versionPattern: /^43$/,
+  },
+  'arch-2026.09.01': {
+    packageFamily: 'arch',
+    policy: 'none',
+    supportState: 'supported',
+    reason: 'supported',
+    helperMode: '0755',
+    matrixRevision: ARCH_MATRIX_REVISION,
+    distributionId: 'arch',
+    versionPattern: /^2026\.09\.01$/,
+    fingerprint: {
+      id: 'arch',
+      buildId: 'rolling',
+      kernelRelease: '7.2.2-arch1-1',
+    },
+    manifestFingerprint: {
+      id: 'arch',
+      versionId: '2026.09.01',
+      buildId: 'rolling',
+      kernelRelease: '7.2.2-arch1-1',
+    },
+  },
+  'omarchy-4.0.2': {
+    packageFamily: 'arch',
+    policy: 'none',
+    supportState: 'supported',
+    reason: 'supported',
+    helperMode: '0755',
+    matrixRevision: ARCH_MATRIX_REVISION,
+    distributionId: 'omarchy',
+    versionPattern: /^4\.0\.2$/,
+    fingerprint: {
+      id: 'omarchy',
+      versionId: '4.0.2',
+      buildId: '4.0.2',
+      kernelRelease: '7.1.9-arch1-2',
+    },
   },
 };
 const FORBIDDEN_SWITCHES = [
@@ -769,9 +807,12 @@ function readContractSelection(installRoot) {
   const sandboxClass = requiredEnvironment('DAEDALUS_PROBE_SANDBOX_CLASS');
   const cluster = requiredEnvironment('DAEDALUS_PROBE_CLUSTER');
   const row = SUPPORT_MATRIX[matrixRow];
-  if (matrixRevision !== MATRIX_REVISION) throw new Error('unsupported-matrix-revision');
   if (!row) throw new Error('unsupported-matrix-row');
+  if (matrixRevision !== (row.matrixRevision || MATRIX_REVISION))
+    throw new Error('unsupported-matrix-revision');
   if (row.supportState !== 'supported') throw new Error(`wallet-only-matrix-row:${row.reason}`);
+  if (row.packageFamily === 'arch')
+    assert.strictEqual(sandboxClass, 'userns-only', 'arch-requires-userns-only');
   if (!SANDBOX_CLASSES.has(sandboxClass)) throw new Error('unsupported-sandbox-class');
   if (!/^[a-z0-9][a-z0-9-]*$/.test(cluster)) throw new Error('invalid-cluster');
   assert.strictEqual(
@@ -780,11 +821,11 @@ function readContractSelection(installRoot) {
     'unexpected-install-root'
   );
   return {
+    ...row,
     matrixRow,
     matrixRevision,
     sandboxClass,
     cluster,
-    ...row,
   };
 }
 
@@ -802,19 +843,35 @@ function parseOsRelease(value) {
     }
     fields[match[1]] = fieldValue;
   }
-  return { id: fields.ID, versionId: fields.VERSION_ID };
+  return {
+    id: fields.ID,
+    versionId: fields.VERSION_ID || fields.IMAGE_VERSION,
+    buildId: fields.BUILD_ID,
+    imageId: fields.IMAGE_ID,
+    imageVersion: fields.IMAGE_VERSION,
+  };
 }
 
 function assertHostContract(contract, host) {
   assert.strictEqual(process.arch, 'x64', 'x86-64-required');
   assert.strictEqual(host.id, contract.distributionId, 'matrix-distribution-mismatch');
-  assert(contract.versionPattern.test(host.versionId || ''), 'matrix-version-mismatch');
+  if (host.versionId !== undefined || !contract.fingerprint) {
+    assert(contract.versionPattern.test(host.versionId || ''), 'matrix-version-mismatch');
+  }
+  if (contract.fingerprint) {
+    for (const [name, value] of Object.entries(contract.fingerprint)) {
+      assert.strictEqual(host[name], value, `matrix-${name}-mismatch`);
+    }
+  }
 }
 
 function readHostContract(contract) {
-  const host = parseOsRelease(fs.readFileSync('/etc/os-release', 'utf8'));
+  const host = {
+    ...parseOsRelease(fs.readFileSync('/etc/os-release', 'utf8')),
+    kernelRelease: os.release(),
+  };
   assertHostContract(contract, host);
-  return { distributionId: host.id, versionId: host.versionId, architecture: 'x86_64' };
+  return { ...host, distributionId: host.id, architecture: 'x86_64' };
 }
 
 function exactPackagePaths(installRoot, cluster, policy) {
@@ -862,7 +919,11 @@ function loadIdentityManifest(manifestPath, contract) {
 function assertIdentityManifest(manifest, contract) {
   assert.strictEqual(manifest.schemaVersion, IDENTITY_SCHEMA_VERSION, 'identity-schema-version');
   assert.strictEqual(manifest.packageFamily, contract.packageFamily, 'identity-package-family');
-  assert.strictEqual(manifest.matrixRevision, MATRIX_REVISION, 'identity-matrix-revision');
+  assert.strictEqual(
+    manifest.matrixRevision,
+    contract.matrixRevision || MATRIX_REVISION,
+    'identity-matrix-revision'
+  );
   assert.strictEqual(manifest.matrixRow, contract.matrixRow, 'identity-matrix-row');
   assert.strictEqual(manifest.supportState, contract.supportState, 'identity-support-state');
   assert.strictEqual(manifest.reason, contract.reason, 'identity-support-reason');
@@ -875,6 +936,15 @@ function assertIdentityManifest(manifest, contract) {
     contract.versionPattern.test(manifest.distribution.versionId || ''),
     'identity-distribution-version'
   );
+  for (const [name, value] of Object.entries(
+    contract.manifestFingerprint || contract.fingerprint || {}
+  )) {
+    assert.strictEqual(
+      manifest.distribution[name],
+      value,
+      `identity-distribution-${name}`
+    );
+  }
   assert.strictEqual(manifest.cluster, contract.cluster, 'identity-cluster');
   assert.strictEqual(manifest.policy && manifest.policy.kind, contract.policy, 'identity-policy');
   assert.strictEqual(manifest.helper && manifest.helper.mode, contract.helperMode, 'identity-helper-mode');
@@ -1355,6 +1425,7 @@ async function runElectronProbe({ transitionOnly = false, exitOnly = false } = {
           packageFamily: contract.packageFamily,
           policy: contract.policy,
           mode: 'transition-only',
+          snapshotFingerprint: contract.fingerprint || null,
         },
         host,
         paths: Object.fromEntries(
@@ -1473,6 +1544,7 @@ async function runElectronProbe({ transitionOnly = false, exitOnly = false } = {
         sandboxClass: contract.sandboxClass,
         policy: contract.policy,
         userns,
+        snapshotFingerprint: contract.fingerprint || null,
       },
       host,
       versions: {
@@ -2044,6 +2116,8 @@ async function runSelfTest() {
     'debian-12',
     'debian-13',
     'fedora-43',
+    'arch-2026.09.01',
+    'omarchy-4.0.2',
   ]);
   assert.strictEqual(SUPPORT_MATRIX['ubuntu-24.04'].policy, 'apparmor');
   assert.strictEqual(SUPPORT_MATRIX['ubuntu-22.04'].supportState, 'wallet-only');
@@ -2052,9 +2126,13 @@ async function runSelfTest() {
   assert.strictEqual(SUPPORT_MATRIX['ubuntu-24.04'].supportState, 'supported');
   assert.strictEqual(SUPPORT_MATRIX['debian-13'].policy, 'none');
   assert.strictEqual(SUPPORT_MATRIX['fedora-43'].policy, 'selinux');
+  assert.strictEqual(SUPPORT_MATRIX['arch-2026.09.01'].policy, 'none');
+  assert.strictEqual(SUPPORT_MATRIX['arch-2026.09.01'].helperMode, '0755');
+  assert.strictEqual(SUPPORT_MATRIX['omarchy-4.0.2'].matrixRevision, ARCH_MATRIX_REVISION);
   assert.strictEqual(SUPPORT_MATRIX['fedora-42'], undefined);
   assert.strictEqual(SUPPORT_MATRIX['opensuse-leap-15.6'], undefined);
   assert.strictEqual(MATRIX_REVISION, 'task-108-matrix-2026-08-18');
+  assert.strictEqual(ARCH_MATRIX_REVISION, 'task-111-matrix-2026-09-02');
   const matrixVersionFixtures = {
     'ubuntu-22.04': ['22.04', '22.04.5', '24.04'],
     'ubuntu-24.04': ['24.04', '24.04.3', '25.10'],
@@ -2062,6 +2140,8 @@ async function runSelfTest() {
     'debian-12': ['12', '12.11', '13'],
     'debian-13': ['13', '13.1', '12'],
     'fedora-43': ['43', '43', '42'],
+    'arch-2026.09.01': ['2026.09.01', '2026.09.01', '2026.09.02'],
+    'omarchy-4.0.2': ['4.0.2', '4.0.2', '4.0.3'],
   };
   for (const [rowName, [base, point, rejected]] of Object.entries(
     matrixVersionFixtures
@@ -2098,7 +2178,13 @@ async function runSelfTest() {
       versionPattern: /^24\.04(?:\.\d+)?$/,
     });
     const parsedHost = parseOsRelease('ID=ubuntu\nVERSION_ID="24.04"\nHOME_URL="https://example.invalid"\n');
-    assert.deepStrictEqual(parsedHost, { id: 'ubuntu', versionId: '24.04' });
+    assert.deepStrictEqual(parsedHost, {
+      id: 'ubuntu',
+      versionId: '24.04',
+      buildId: undefined,
+      imageId: undefined,
+      imageVersion: undefined,
+    });
     assertHostContract(readContractSelection('/opt/daedalus/mainnet'), parsedHost);
     assert.throws(
       () =>
@@ -2129,6 +2215,32 @@ async function runSelfTest() {
     assert.throws(
       () => readContractSelection('/opt/daedalus/mainnet'),
       /wallet-only-matrix-row:apparmor-policy-proof-pending/
+    );
+    Object.assign(process.env, {
+      DAEDALUS_PROBE_MATRIX_ROW: 'arch-2026.09.01',
+      DAEDALUS_PROBE_MATRIX_REVISION: ARCH_MATRIX_REVISION,
+      DAEDALUS_PROBE_SANDBOX_CLASS: 'userns-only',
+    });
+    const archContract = readContractSelection('/opt/daedalus/mainnet');
+    assert.strictEqual(archContract.packageFamily, 'arch');
+    assert.strictEqual(archContract.policy, 'none');
+    const archHost = {
+      ...parseOsRelease('ID=arch\nBUILD_ID=rolling\n'),
+      kernelRelease: '7.2.2-arch1-1',
+    };
+    assertHostContract(archContract, archHost);
+    assert.throws(
+      () =>
+        assertHostContract(archContract, {
+          ...archHost,
+          kernelRelease: '7.2.3-arch1-1',
+        }),
+      /matrix-kernelRelease-mismatch/
+    );
+    process.env.DAEDALUS_PROBE_SANDBOX_CLASS = 'suid-only';
+    assert.throws(
+      () => readContractSelection('/opt/daedalus/mainnet'),
+      /arch-requires-userns-only/
     );
   } finally {
     for (const [name, value] of Object.entries(originalEnvironment)) {
@@ -2195,6 +2307,64 @@ async function runSelfTest() {
   assert.throws(
     () => assertIdentityManifest({ ...fixtureManifest, cluster: 'preview' }, fixtureContract),
     /identity-cluster/
+  );
+
+  const archFixtureContract = {
+    matrixRevision: ARCH_MATRIX_REVISION,
+    matrixRow: 'arch-2026.09.01',
+    cluster: 'mainnet',
+    packageFamily: 'arch',
+    supportState: 'supported',
+    reason: 'supported',
+    helperMode: '0755',
+    policy: 'none',
+    distributionId: 'arch',
+    versionPattern: /^2026\.09\.01$/,
+    fingerprint: SUPPORT_MATRIX['arch-2026.09.01'].fingerprint,
+    manifestFingerprint:
+      SUPPORT_MATRIX['arch-2026.09.01'].manifestFingerprint,
+  };
+  const archFixtureManifest = {
+    ...fixtureManifest,
+    packageFamily: 'arch',
+    matrixRevision: ARCH_MATRIX_REVISION,
+    matrixRow: 'arch-2026.09.01',
+    distribution: {
+      ...SUPPORT_MATRIX['arch-2026.09.01'].manifestFingerprint,
+    },
+    helper: { mode: '0755', sha256: 'a'.repeat(64) },
+    policy: { kind: 'none' },
+  };
+  assertIdentityManifest(archFixtureManifest, archFixtureContract);
+  assert.throws(
+    () =>
+      assertIdentityManifest(
+        {
+          ...archFixtureManifest,
+          distribution: {
+            ...archFixtureManifest.distribution,
+            kernelRelease: '7.2.3-arch1-1',
+          },
+        },
+        archFixtureContract
+      ),
+    /identity-distribution-kernelRelease/
+  );
+  assert.throws(
+    () =>
+      assertIdentityManifest(
+        { ...archFixtureManifest, helper: { mode: '4755' } },
+        archFixtureContract
+      ),
+    /identity-helper-mode/
+  );
+  assert.throws(
+    () =>
+      assertIdentityManifest(
+        { ...archFixtureManifest, policy: { kind: 'apparmor' } },
+        archFixtureContract
+      ),
+    /identity-policy/
   );
   const observedFixtureModes = {};
   const verifiedPackage = verifyPackageFiles(

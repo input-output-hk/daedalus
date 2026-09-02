@@ -67,6 +67,7 @@
           );
           deb-installer.x86_64-linux = self.internal.x86_64-linux.debInstaller;
           rpm-installer.x86_64-linux = self.internal.x86_64-linux.rpmInstaller;
+          arch-installer.x86_64-linux = self.internal.x86_64-linux.archInstaller;
           devshell = lib.genAttrs supportedSystems (system: self.devShells.${system}.default);
           # Exposing these DLLs for easier development/debugging on Windows:
           nativeModules.x86_64-windows = self.internal.x86_64-windows.nativeModulesZip;
@@ -92,6 +93,7 @@
               lib.collect lib.isDerivation self.hydraJobs.installer
               ++ lib.collect lib.isDerivation self.hydraJobs.deb-installer
               ++ lib.collect lib.isDerivation self.hydraJobs.rpm-installer
+              ++ lib.collect lib.isDerivation self.hydraJobs.arch-installer
               ++ lib.collect lib.isDerivation self.hydraJobs.devshell
               ++ lib.collect lib.isDerivation
               (removeAttrs self.hydraJobs.checks ["x86_64-linux"]);

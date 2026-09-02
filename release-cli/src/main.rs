@@ -328,7 +328,9 @@ async fn cmd_sign(
                         }
                     }
                 }
-                installers::Platform::LinuxDeb | installers::Platform::LinuxRpm => {
+                installers::Platform::LinuxDeb
+                | installers::Platform::LinuxRpm
+                | installers::Platform::LinuxArch => {
                     println!(
                         "  {} [system package — no remote code signing]",
                         inst.filename

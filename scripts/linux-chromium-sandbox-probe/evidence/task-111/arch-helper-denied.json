@@ -1,0 +1,29 @@
+{
+  "assertions": null,
+  "diagnostics": {
+    "rawHostDataExported": false,
+    "sanitized": true,
+    "stderrSummaryRequired": true
+  },
+  "directories": null,
+  "failure": {
+    "category": "evidence-invalid",
+    "code": "file-mode"
+  },
+  "files": null,
+  "host": null,
+  "main": null,
+  "matrix": {
+    "packageFamily": "arch",
+    "policy": "none",
+    "revision": "task-111-matrix-2026-09-02",
+    "row": "arch-2026.09.01",
+    "sandboxClass": "userns-only"
+  },
+  "paths": null,
+  "policy": null,
+  "renderer": null,
+  "result": "fail",
+  "schemaVersion": 2,
+  "versions": null
+}

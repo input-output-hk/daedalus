@@ -36,6 +36,16 @@ in rec {
       sourceDateEpoch = inputs.self.lastModified or sourceLib.daedalusEpoch;
     });
 
+  archInstaller = genClusters (cluster:
+    import ./linux-arch.nix {
+      inherit pkgs lib cluster;
+      bundle = systemPackageBundle.${cluster};
+      icon = common.launcherConfigs.${cluster}.installerConfig.iconPath.base + "/512x512.png";
+      version = originalPackageJson.version;
+      inherit (sourceLib) buildCounter buildRev buildRevShort;
+      sourceDateEpoch = inputs.self.lastModified or sourceLib.daedalusEpoch;
+    });
+
   # FIXME: for Tullia/Cicero debugging, remove later:
   inherit (sourceLib) buildRev;
 

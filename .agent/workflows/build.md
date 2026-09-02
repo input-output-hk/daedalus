@@ -247,20 +247,23 @@ Creates `.dmg` installer.
 # In Nix shell; choose the required cluster suffix
 nix build -L .#deb-installer-mainnet
 nix build -L .#rpm-installer-mainnet
+nix build -L .#arch-installer-mainnet
 ```
 
-These are the complete native Linux release output set. They create the
-root-installable system `.deb` and `.rpm` outputs under `result/`; cluster
-variants use `deb-installer-{mainnet,preprod,preview,selfnode}` and
-`rpm-installer-{mainnet,preprod,preview,selfnode}`. Linux has no
+These are the complete native Linux release output set. They create
+root-installable system `.deb`, `.rpm`, and `.pkg.tar.zst` outputs under
+`result/`; cluster variants use
+`{deb,rpm,arch}-installer-{mainnet,preprod,preview,selfnode}`. Linux has no
 `installer-<cluster>` or `makeSignedInstaller-<cluster>` output. The
 `daedalus-<cluster>` Nix package remains a wallet-only developer artifact, not a
 shipping channel.
 
-The `.deb`/`.rpm` packages install under fixed
-`/opt/daedalus/<cluster>` paths. Only those installed fixed-path packages can
-satisfy the Linux dApp package-identity and sandbox gates. Portable `.bin`,
-AppImage, Flatpak, and Snap are rejected product formats.
+The native packages install under fixed `/opt/daedalus/<cluster>` paths. Only
+those installed fixed-path packages can satisfy the Linux dApp package-identity
+and sandbox gates. Arch support is limited to the certified Arch 2026.09.01 and
+Omarchy 4.0.2 snapshots; later snapshots remain wallet-only pending
+recertification. Portable `.bin`, AppImage, Flatpak, and Snap are rejected
+product formats.
 
 ---
 
@@ -273,12 +276,14 @@ nix </dev/null run --no-accept-flake-config -L .#packages.x86_64-linux.buildkite
 ```
 
 For each cluster, that pipeline builds and uploads only
-`deb-installer-<cluster>` and `rpm-installer-<cluster>` on Linux. Hydra exposes
-the same artifacts under these exact job families:
+`deb-installer-<cluster>`, `rpm-installer-<cluster>`, and
+`arch-installer-<cluster>` on Linux. Hydra exposes the same artifacts under
+these exact job families:
 
 ```text
 deb-installer.x86_64-linux.<cluster>
 rpm-installer.x86_64-linux.<cluster>
+arch-installer.x86_64-linux.<cluster>
 ```
 
 Non-Linux Hydra artifacts continue to use
@@ -293,10 +298,10 @@ drt serve --installers installers/<cluster>/
 drt release installers/<cluster>/ --bucket <bucket> --bucket-url <public-host>
 ```
 
-The release manifest records the two Linux packages independently as
-`linux-deb` and `linux-rpm`; the pair must be present together and all artifacts
-must report one release version. Neither package is emitted in
-`softwareUpdate`. Both map to target OS `linux`.
+The release manifest records the three Linux packages independently as
+`linux-deb`, `linux-rpm`, and `linux-arch`; the trio must be present together
+and all artifacts must report one release identity. None is emitted in
+`softwareUpdate`. All map to target OS `linux`.
 
 **`drt release` alone does not notify legacy Linux users.** After the published
 `daedalus-latest-version.json` is reachable, generate the production newsfeed
@@ -314,7 +319,7 @@ drt newsfeed release \
 `drt newsfeed release` opens the operator's editor before writing. Review the
 resulting content and verification files together: macOS/Windows keep their
 app-managed software-update entries, Linux has no `softwareUpdate` URL/hash,
-and the deb/rpm pair is deduplicated into one ordinary Linux
+and the three native packages are deduplicated into one ordinary Linux
 release/migration announcement linking the release notes and manual
 package-manager instructions. Verify target versions/platforms and the
 verification file before publication.
@@ -340,8 +345,8 @@ ordinary announcement visible to legacy portable users.
 
 The Linux application never executes package bytes or invokes a package
 manager. Users close Daedalus and manually install each newer local package
-with `apt` or `dnf`; legacy `.bin` users receive the published announcement but
-no new portable artifact.
+with `apt`, `dnf`, or `pacman -U`; legacy `.bin` users receive the published
+announcement but no new portable artifact.
 
 ### Build Caching
 

@@ -298,8 +298,8 @@ Build and run the wallet-only developer Nix package:
 Cluster variants replace `mainnet` with `preprod`, `preview`, or `selfnode`.
 This Nix-store package is for development only: it is not a Linux release
 artifact, is not supported for production installation, and cannot enable the
-dApp guest. Only installed fixed-path `.deb`/`.rpm` packages can satisfy the
-Linux dApp package-identity and Chromium-sandbox gates.
+dApp guest. Only installed fixed-path `.deb`, `.rpm`, or `.pkg.tar.zst`
+packages can satisfy the Linux dApp package-identity and Chromium-sandbox gates.
 
 ### macOS (Intel, and Apple Silicon)
 
@@ -323,29 +323,32 @@ These commands require [Nix](https://nixos.org/nix/), optionally configured with
 
 ### Linux
 
-Linux releases ship only the root-installable system `.deb` and `.rpm`
-packages. Build either format on Linux:
+Linux releases ship only root-installable native `.deb`, `.rpm`, and
+`.pkg.tar.zst` packages. Build a format on Linux:
 
     nix build -L .#deb-installer-mainnet
     nix build -L .#rpm-installer-mainnet
+    nix build -L .#arch-installer-mainnet
 
 The results contain
-`daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.deb` and
-`daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.rpm`. Cluster variants
-replace `mainnet` with `preprod`, `preview`, or `selfnode`. There is no Linux
-`installer-<cluster>` output, so `nix build -L .#installer-mainnet` is not
+`daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.deb`,
+`daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.rpm`, and
+`daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.pkg.tar.zst`. Cluster
+variants replace `mainnet` with `preprod`, `preview`, or `selfnode`. There is no
+Linux `installer-<cluster>` output, so `nix build -L .#installer-mainnet` is not
 available on Linux. Portable `.bin`, AppImage, Flatpak, and Snap artifacts are
 not supported shipping channels.
 
-Both system formats install under `/opt/daedalus/<cluster>` and provide the
-exact `/usr/bin/daedalus-<cluster>` launcher. They do not enable the dApp guest
-by themselves. The dApp sandbox prerequisite is supported only by installed
-system packages on Ubuntu 24.04/26.04, Debian 12/13, and Fedora 43. Ubuntu
-22.04, omitted distributions, legacy portable installs, and the developer Nix
-package are wallet-only. Sandbox-disabling configuration, package identity
-failure, or the local renderer canary failing also keeps dApp launch
-unavailable. There is no unsandboxed retry, and the remaining guest and release
-gates still apply.
+All three formats install under `/opt/daedalus/<cluster>` and provide the exact
+`/usr/bin/daedalus-<cluster>` launcher. They do not enable the dApp guest by
+themselves. The dApp sandbox prerequisite is supported only by installed system
+packages on Ubuntu 24.04/26.04, Debian 12/13, Fedora 43, Arch Linux installed
+from the 2026.09.01 ISO, and Omarchy 4.0.2 installed from its 2026.08.31 image.
+Later Arch or Omarchy snapshots and every other omitted distribution are
+wallet-only until separately certified. Sandbox-disabling configuration,
+package identity failure, or the local renderer canary failing also keeps dApp
+launch unavailable. There is no unsandboxed retry, and the remaining guest and
+release gates still apply.
 
 #### Migrate a legacy portable installation
 
@@ -389,9 +392,12 @@ Use these non-destructive steps separately for each installed cluster:
 
        sudo apt install ./daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.deb
        sudo dnf install ./daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.rpm
+       sudo pacman -U ./daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.pkg.tar.zst
 
-   Use `apt` on Debian/Ubuntu or `dnf` on Fedora. Installation and package
-   lifecycle scripts do not move, replace, or delete wallet state.
+   Use `apt` on Debian/Ubuntu, `dnf` on Fedora, or `pacman -U` on the exact
+   certified Arch/Omarchy snapshots. The Arch package aborts upgrades and
+   removal while its exact packaged Electron process is running. Installation
+   and package lifecycle scripts do not move, replace, or delete wallet state.
 4. First launch the system package by its exact cluster command, for example:
 
        /usr/bin/daedalus-mainnet
@@ -416,12 +422,14 @@ Use these non-destructive steps separately for each installed cluster:
 
 Linux package upgrades are package-manager-mediated, not performed by
 Electron. Fully close Daedalus, download the newer package for the same cluster
-and format from the official release announcement, run `sudo apt install
-./DOWNLOADED.deb` or `sudo dnf install ./DOWNLOADED.rpm`, and restart through
-the same `/usr/bin/daedalus-<cluster>` launcher with the same
-`XDG_DATA_HOME`. Leave the Daedalus state directory untouched throughout.
-Daedalus never executes downloaded Linux package bytes, invokes `sudo`, or
-mutates package-manager state.
+and format from the official release announcement, then run `sudo apt install
+./DOWNLOADED.deb`, `sudo dnf install ./DOWNLOADED.rpm`, or `sudo pacman -U
+./DOWNLOADED.pkg.tar.zst`. Roll back an Arch package with the same `pacman -U`
+command and the retained older package. Restart through the same
+`/usr/bin/daedalus-<cluster>` launcher with the same `XDG_DATA_HOME`. Leave the
+Daedalus state directory untouched throughout. Daedalus never executes
+downloaded Linux package bytes, invokes `sudo`, or mutates package-manager
+state.
 
 ### macOS
 

@@ -45,17 +45,20 @@
       assert internal ? systemPackageBundle;
       assert internal ? debInstaller;
       assert internal ? rpmInstaller;
+      assert internal ? archInstaller;
       assert lib.all (
         cluster:
           !(builtins.hasAttr "installer-${cluster}" linuxPackages)
           && !(builtins.hasAttr "makeSignedInstaller-${cluster}" linuxPackages)
           && builtins.hasAttr "deb-installer-${cluster}" linuxPackages
           && builtins.hasAttr "rpm-installer-${cluster}" linuxPackages
+          && builtins.hasAttr "arch-installer-${cluster}" linuxPackages
       )
       installerClusters;
       assert !(builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs.installer);
       assert builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs."deb-installer";
       assert builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs."rpm-installer";
+      assert builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs."arch-installer";
       pkgs.runCommand "linux-release-artifacts-contract" {} ''
           set -eu
           pipeline=${linuxPackages.buildkitePipeline}/bin/buildkite-pipeline
@@ -63,9 +66,11 @@
           for cluster in ${lib.escapeShellArgs installerClusters}; do
             grep -F ".#packages.x86_64-linux.deb-installer-$cluster" "$pipeline"
             grep -F ".#packages.x86_64-linux.rpm-installer-$cluster" "$pipeline"
+            grep -F ".#packages.x86_64-linux.arch-installer-$cluster" "$pipeline"
           done
           grep -F 'artifact upload "csl-daedalus-deb/*.deb"' "$pipeline"
           grep -F 'artifact upload "csl-daedalus-rpm/*.rpm"' "$pipeline"
+          grep -F 'artifact upload "csl-daedalus-arch/*.pkg.tar.zst"' "$pipeline"
 
           if grep -E '\.#packages\.x86_64-linux\.(installer|makeSignedInstaller)-|artifact upload \*/\*|\.bin([^[:alnum:]]|$)' "$pipeline"; then
             echo 'generic Linux installer, signing, upload, or .bin seam found in Buildkite pipeline' >&2
@@ -290,6 +295,90 @@
         touch "$out"
       '';
 
+    linuxArchPackageContract =
+      pkgs.runCommand "linux-arch-package-contract" {
+        nativeBuildInputs = [pkgs.jq pkgs.libarchive pkgs.pacman pkgs.patchelf pkgs.yq-go];
+      } ''
+        set -eu
+        package=$(printf '%s\n' ${internal.archInstaller.mainnet}/*.pkg.tar.zst)
+        sha256sum -c ${internal.archInstaller.mainnet}/SHA256SUMS
+        grep -F 'binary-dist' ${internal.archInstaller.mainnet}/nix-support/hydra-build-products
+        mkdir extracted metadata
+        (
+          cd extracted
+          bsdtar --no-same-permissions -xf "$package"
+        )
+        bsdtar -xOf "$package" .PKGINFO >metadata/PKGINFO
+        bsdtar -xOf "$package" .INSTALL >metadata/INSTALL
+        bsdtar -tf "$package" >metadata/files
+
+        root=extracted/opt/daedalus/mainnet
+        helper="$root/libexec/bundle-electron/lib/electron/chrome-sandbox"
+        electron="$root/libexec/bundle-electron/lib/electron/electron"
+        manifest="$root/share/daedalus-sandbox-identity.base.json"
+        removal_hook=extracted/usr/share/libalpm/hooks/daedalus-mainnet-refuse-live.hook
+        removal_guard=extracted/usr/share/libalpm/scripts/daedalus-mainnet-refuse-live
+
+        grep -Fx 'pkgname = daedalus-mainnet' metadata/PKGINFO
+        grep -Fx 'arch = x86_64' metadata/PKGINFO
+        grep -Fx 'depend = jq' metadata/PKGINFO
+        grep -Fx '.INSTALL' metadata/files
+        grep -Fx '.MTREE' metadata/files
+        test -x "$root/bin/daedalus"
+        test -x "$root/libexec/daedalus-frontend"
+        test -x "$root/libexec/electron"
+        test -f "$helper" -a ! -L "$helper"
+        test "$(stat -c %a "$helper")" = 755
+        test "$(patchelf --print-interpreter "$electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
+        test ! -e "$root/libexec/update-runner"
+        test ! -e "$root/libexec/.patchelf-static"
+        test ! -e "$root/share/icon_large.png"
+        test ! -e "$root/share/applications"
+        if find extracted -type l -lname '/nix/store/*' -print -quit | grep -q .; then
+          echo 'Nix-store link remains in Arch archive' >&2
+          exit 1
+        fi
+        test "$(yq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
+        test "$(yq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
+        jq -e '
+          .packageFamily == "arch"
+          and .matrixRevision == "task-111-matrix-2026-09-02"
+          and .matrixRow == "arch-2026.09.01"
+          and .supportState == "supported"
+          and .distribution == {"id":"arch","versionId":"2026.09.01","buildId":"rolling","kernelRelease":"7.2.2-arch1-1"}
+          and .helper.mode == "0755"
+          and .policy.kind == "none"
+          and .sandbox.mode == "userns-only"
+        ' "$manifest" >/dev/null
+        grep -F 'Exec=/opt/daedalus/mainnet/bin/daedalus' extracted/usr/share/applications/Daedalus-mainnet.desktop
+        grep -Fx 'post_install() {' metadata/INSTALL
+        grep -Fx 'post_upgrade() {' metadata/INSTALL
+        grep -Fx 'post_remove() {' metadata/INSTALL
+        grep -F 'arch::rolling:7.2.2-arch1-1)' metadata/INSTALL
+        grep -F 'omarchy:4.0.2:4.0.2:7.1.9-arch1-2)' metadata/INSTALL
+        grep -F 'support_state=wallet-only' metadata/INSTALL
+        grep -F 'chmod 0644 "$manifest_path.new"' metadata/INSTALL
+        test -x "$removal_guard"
+        grep -F 'Operation = Upgrade' "$removal_hook"
+        grep -F 'Operation = Remove' "$removal_hook"
+        grep -F 'When = PreTransaction' "$removal_hook"
+        grep -F 'AbortOnFail' "$removal_hook"
+        grep -F 'Exec = /usr/share/libalpm/scripts/daedalus-mainnet-refuse-live' "$removal_hook"
+        grep -F "electron='/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/electron'" "$removal_guard"
+        grep -F 'exit 1' "$removal_guard"
+        if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX|DAEDALUS_ELECTRON_FLAGS|update-runner|updateRunnerBin|/nix/store' \
+          "$root/bin/daedalus" "$root/libexec/daedalus-frontend" "$root/libexec/electron" \
+          "$root/config/launcher-config.yaml"; then
+          echo 'Arch package contains a sandbox bypass, updater, or Nix link' >&2
+          exit 1
+        fi
+        if grep -E -- 'XDG_DATA_HOME|\.local/share|/Daedalus|rm -rf' metadata/INSTALL "$removal_guard" "$removal_hook"; then
+          echo 'Arch lifecycle accesses wallet state or removes recursively' >&2
+          exit 1
+        fi
+        touch "$out"
+      '';
+
     linuxRpmPackageContract =
       pkgs.runCommand "linux-rpm-package-contract" {
         nativeBuildInputs = [pkgs.jq pkgs.libarchive nodejs pkgs.patchelf pkgs.rpm pkgs.yq-go];
@@ -416,6 +505,7 @@
         linux-deb-package-contract = linuxDebPackageContract;
         linux-release-artifacts-contract = linuxReleaseArtifactsContract;
         linux-rpm-package-contract = linuxRpmPackageContract;
+        linux-arch-package-contract = linuxArchPackageContract;
         linux-remaining-launcher-contract = linuxRemainingLauncherContract;
       };
   };

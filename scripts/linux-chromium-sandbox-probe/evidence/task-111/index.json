@@ -1,0 +1,73 @@
+{
+  "date": "2026-09-02",
+  "evidence": [
+    "arch-2026.09.01-adversarial.json",
+    "arch-2026.09.01-lifecycle.json",
+    "arch-2026.09.01-positive.json",
+    "arch-helper-denied.json",
+    "arch-helper-rollback.json",
+    "arch-kernel-mismatch-denied.json",
+    "arch-kernel-mismatch-rollback.json",
+    "arch-stale-identity-denied.json",
+    "arch-stale-identity-rollback.json",
+    "arch-userns-denied.json",
+    "arch-userns-rollback.json",
+    "omarchy-4.0.2-adversarial.json",
+    "omarchy-4.0.2-lifecycle.json",
+    "omarchy-4.0.2-positive.json"
+  ],
+  "hosts": [
+    {
+      "distribution": {
+        "buildId": "rolling",
+        "id": "arch",
+        "kernelRelease": "7.2.2-arch1-1",
+        "versionId": "2026.09.01"
+      },
+      "row": "arch-2026.09.01"
+    },
+    {
+      "distribution": {
+        "buildId": "4.0.2",
+        "id": "omarchy",
+        "kernelRelease": "7.1.9-arch1-2",
+        "versionId": "4.0.2"
+      },
+      "row": "omarchy-4.0.2",
+      "waylandStartupObserved": true
+    }
+  ],
+  "matrixRevision": "task-111-matrix-2026-09-02",
+  "officialImages": [
+    {
+      "filename": "archlinux-2026.09.01-x86_64.iso",
+      "row": "arch-2026.09.01",
+      "sha256": "be8458032f8105e60ee2a3067f950b6e3c007ee51b38dac50e8b48e765561c91"
+    },
+    {
+      "filename": "omarchy-4.0.2.iso",
+      "row": "omarchy-4.0.2",
+      "sha256": "2ef8e624aa1bec7e277e28056b8535a6c9373ba48d7ede3f1a01cb6d2373cfb8"
+    }
+  ],
+  "packageCandidate": {
+    "allClustersBuilt": true,
+    "archiveContractPassed": true,
+    "exactFinalAdversarialMatrixPassed": true,
+    "exactFinalInstalledProbePassed": true,
+    "reproducibilityInputs": {
+      "archiveContractPassed": true,
+      "singleThreadedZstd": true,
+      "sourceDateEpochPinned": true
+    },
+    "sha256": "53977dd420569759067f794468ed2ae28e7296a76cd7b4bcfcb45193896429e3",
+    "version": "11.3.0-1"
+  },
+  "packageFamily": "arch",
+  "privacy": {
+    "rawHostDataExported": false,
+    "sanitized": true
+  },
+  "schemaVersion": 1,
+  "task": "task-111"
+}

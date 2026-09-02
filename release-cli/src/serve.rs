@@ -174,9 +174,13 @@ pub fn build_newsfeed(
         .installers
         .iter()
         .any(|installer| installer.platform == Platform::LinuxRpm);
+    let has_arch = installer_dir
+        .installers
+        .iter()
+        .any(|installer| installer.platform == Platform::LinuxArch);
     anyhow::ensure!(
-        has_deb == has_rpm,
-        "local newsfeed requires both linux-deb and linux-rpm when Linux is present"
+        has_deb == has_rpm && has_rpm == has_arch,
+        "local newsfeed requires linux-deb, linux-rpm, and linux-arch when Linux is present"
     );
 
     // Timestamp: current wall-clock time in milliseconds.
@@ -257,12 +261,12 @@ pub fn build_newsfeed(
             },
             "content": {
                 "en-US": format!(
-                    "Daedalus {version} is available for Linux as .deb and .rpm system packages. \
+                    "Daedalus {version} is available for Linux as .deb, .rpm, and Arch .pkg.tar.zst system packages. \
                      Close Daedalus and follow the release instructions to upgrade with your \
                      package manager. Your wallet data remains in place."
                 ),
                 "ja-JP": format!(
-                    "Daedalus {version} は Linux 用 .deb / .rpm システムパッケージとして利用できます。\
+                    "Daedalus {version} は Linux 用 .deb / .rpm / Arch .pkg.tar.zst システムパッケージとして利用できます。\
                      Daedalus を終了し、リリース手順に従ってパッケージマネージャーで\
                      アップグレードしてください。ウォレットデータはそのまま保持されます。"
                 ),
@@ -371,8 +375,9 @@ mod tests {
 
     fn filename(platform: Platform) -> &'static str {
         match platform {
-            Platform::LinuxDeb => "daedalus-6.0.1-mainnet-x86_64-linux.deb",
-            Platform::LinuxRpm => "daedalus-6.0.1-mainnet-x86_64-linux.rpm",
+            Platform::LinuxDeb => "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.deb",
+            Platform::LinuxRpm => "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.rpm",
+            Platform::LinuxArch => "daedalus-6.0.1-100-mainnet-abcdef0-x86_64-linux.pkg.tar.zst",
             Platform::DarwinArm => "daedalus-6.0.1-mainnet-aarch64-darwin.pkg",
             Platform::DarwinX86 => "daedalus-6.0.1-mainnet-x86_64-darwin.pkg",
             Platform::Windows => "daedalus-6.0.1-mainnet-x86_64-windows.exe",
@@ -446,8 +451,9 @@ mod tests {
     }
 
     #[test]
-    fn linux_pair_has_one_announcement_and_no_software_update() {
-        let (newsfeed, urls) = newsfeed(&[Platform::LinuxDeb, Platform::LinuxRpm]);
+    fn linux_packages_have_one_announcement_and_no_software_update() {
+        let (newsfeed, urls) =
+            newsfeed(&[Platform::LinuxDeb, Platform::LinuxRpm, Platform::LinuxArch]);
         let items = newsfeed["items"].as_array().expect("newsfeed items");
 
         assert_eq!(items.len(), 1);
@@ -461,6 +467,7 @@ mod tests {
         let bytes = serde_json::to_string(&newsfeed).unwrap();
         assert!(!bytes.contains(&urls[&Platform::LinuxDeb]));
         assert!(!bytes.contains(&urls[&Platform::LinuxRpm]));
+        assert!(!bytes.contains(&urls[&Platform::LinuxArch]));
     }
 
     #[test]
@@ -468,6 +475,7 @@ mod tests {
         let (newsfeed, urls) = newsfeed(&[
             Platform::LinuxDeb,
             Platform::LinuxRpm,
+            Platform::LinuxArch,
             Platform::Windows,
             Platform::DarwinX86,
         ]);
@@ -489,6 +497,7 @@ mod tests {
         let update_json = serde_json::to_string(update).unwrap();
         assert!(!update_json.contains(&urls[&Platform::LinuxDeb]));
         assert!(!update_json.contains(&urls[&Platform::LinuxRpm]));
+        assert!(!update_json.contains(&urls[&Platform::LinuxArch]));
 
         let linux_announcements = items
             .iter()

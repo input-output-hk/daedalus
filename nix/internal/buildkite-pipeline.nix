@@ -85,6 +85,13 @@ in
               nix build --no-accept-flake-config -L --out-link "$rpmResult" .#packages.${buildSystem}.rpm-installer-${cluster}
             ) 2>&1 | cat
             echo "Built .rpm: $(readlink "$rpmResult")"
+
+            archResult="$tmpdir"/csl-daedalus-arch
+            (
+              set -x
+              nix build --no-accept-flake-config -L --out-link "$archResult" .#packages.${buildSystem}.arch-installer-${cluster}
+            ) 2>&1 | cat
+            echo "Built .pkg.tar.zst: $(readlink "$archResult")"
           ''
           else ''
             result="$tmpdir"/csl-daedalus
@@ -106,6 +113,7 @@ in
               cd "$tmpdir"
               retry 5 buildkite-agent artifact upload "csl-daedalus-deb/*.deb" "''${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
               retry 5 buildkite-agent artifact upload "csl-daedalus-rpm/*.rpm" "''${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
+              retry 5 buildkite-agent artifact upload "csl-daedalus-arch/*.pkg.tar.zst" "''${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
             )
           ''
           else ''

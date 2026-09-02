@@ -1,13 +1,14 @@
 //! `drt fetch-installers` — download unsigned installer artifacts from a Hydra eval.
 //!
 //! Linux packages use the exact jobs
-//! `deb-installer.x86_64-linux.{cluster}` and
-//! `rpm-installer.x86_64-linux.{cluster}`. macOS and Windows keep using
+//! `deb-installer.x86_64-linux.{cluster}`,
+//! `rpm-installer.x86_64-linux.{cluster}`, and
+//! `arch-installer.x86_64-linux.{cluster}`. macOS and Windows keep using
 //! `installer.{system}.{cluster}`.
 //!
-//! Downloads one file per release artifact (.deb / .rpm / .pkg / .exe) into
-//! OUT_DIR and writes a `meta.json` file. The SHA-256 from the Hydra API is
-//! verified after each download.
+//! Downloads one file per release artifact (.deb / .rpm / .pkg.tar.zst / .pkg /
+//! .exe) into OUT_DIR and writes a `meta.json` file. The SHA-256 from the Hydra
+//! API is verified after each download.
 
 use anyhow::{Context, Result};
 use reqwest::Client;
@@ -67,7 +68,7 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
         .context("parsing eval JSON")?;
 
     println!(
-        "Eval has {} builds total; scanning exact deb/rpm and non-Linux installer jobs for {env} …",
+        "Eval has {} builds total; scanning exact deb/rpm/arch and non-Linux installer jobs for {env} …",
         eval.builds.len()
     );
 
@@ -99,7 +100,8 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
         anyhow::bail!(
             "no finished installer builds found for cluster '{env}' in eval {eval_id}\n\
              (expected deb-installer.x86_64-linux.{env}, \
-             rpm-installer.x86_64-linux.{env}, or installer.<non-linux-system>.{env})"
+             rpm-installer.x86_64-linux.{env}, \
+             arch-installer.x86_64-linux.{env}, or installer.<non-linux-system>.{env})"
         );
     }
 
@@ -114,6 +116,7 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
     let mut version: Option<String> = None;
     let mut linux_deb_products = 0usize;
     let mut linux_rpm_products = 0usize;
+    let mut linux_arch_products = 0usize;
 
     for build in &installer_builds {
         for (product_nr, product) in &build.buildproducts {
@@ -140,6 +143,7 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
             match linux_job_platform(&build.job) {
                 Some(crate::installers::Platform::LinuxDeb) => linux_deb_products += 1,
                 Some(crate::installers::Platform::LinuxRpm) => linux_rpm_products += 1,
+                Some(crate::installers::Platform::LinuxArch) => linux_arch_products += 1,
                 _ => {}
             }
 
@@ -230,7 +234,12 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
         .installers
         .iter()
         .any(|installer| installer.platform.is_linux_package());
-    validate_linux_job_products(has_linux, linux_deb_products, linux_rpm_products)?;
+    validate_linux_job_products(
+        has_linux,
+        linux_deb_products,
+        linux_rpm_products,
+        linux_arch_products,
+    )?;
 
     let meta_json =
         serde_json::to_string_pretty(&installer_dir.meta).context("serialising meta.json")? + "\n";
@@ -281,9 +290,12 @@ fn is_installer_for(env: &str, build: &HydraBuild) -> bool {
     let mut parts = build.job.split('.');
     let job = (parts.next(), parts.next(), parts.next(), parts.next());
     match job {
-        (Some("deb-installer" | "rpm-installer"), Some("x86_64-linux"), Some(cluster), None) => {
-            cluster == env
-        }
+        (
+            Some("deb-installer" | "rpm-installer" | "arch-installer"),
+            Some("x86_64-linux"),
+            Some(cluster),
+            None,
+        ) => cluster == env,
         (Some("installer"), Some(system), Some(cluster), None) => {
             cluster == env && system != "x86_64-linux"
         }
@@ -298,6 +310,9 @@ fn is_supported_product_for_job(job: &str, filename: &str) -> bool {
     match job {
         (Some("deb-installer"), Some("x86_64-linux"), Some(_), None) => extension == Some("deb"),
         (Some("rpm-installer"), Some("x86_64-linux"), Some(_), None) => extension == Some("rpm"),
+        (Some("arch-installer"), Some("x86_64-linux"), Some(_), None) => {
+            filename.ends_with(".pkg.tar.zst")
+        }
         (Some("installer"), Some(system), Some(_), None) if system != "x86_64-linux" => {
             matches!(extension, Some("pkg" | "exe"))
         }
@@ -313,8 +328,9 @@ fn allows_unsigned_companion(filename: &str) -> bool {
 }
 
 fn validate_hydra_product_policy(filename: &str, expected_sha256: Option<&str>) -> Result<()> {
-    let extension = Path::new(filename).extension().and_then(|ext| ext.to_str());
-    if matches!(extension, Some("deb" | "rpm")) {
+    if crate::installers::Platform::from_filename(filename)
+        .is_some_and(|platform| platform.is_linux_package())
+    {
         anyhow::ensure!(
             !filename.contains("-unsigned."),
             "Hydra Linux package product '{}' is an unsigned companion; only the main package is allowed",
@@ -338,22 +354,31 @@ fn linux_job_platform(job: &str) -> Option<crate::installers::Platform> {
         (Some("rpm-installer"), Some("x86_64-linux"), Some(_), None) => {
             Some(crate::installers::Platform::LinuxRpm)
         }
+        (Some("arch-installer"), Some("x86_64-linux"), Some(_), None) => {
+            Some(crate::installers::Platform::LinuxArch)
+        }
         _ => None,
     }
 }
 
-fn validate_linux_job_products(has_linux: bool, deb_count: usize, rpm_count: usize) -> Result<()> {
+fn validate_linux_job_products(
+    has_linux: bool,
+    deb_count: usize,
+    rpm_count: usize,
+    arch_count: usize,
+) -> Result<()> {
     if has_linux {
         anyhow::ensure!(
-            deb_count == 1 && rpm_count == 1,
+            deb_count == 1 && rpm_count == 1 && arch_count == 1,
             "downloaded Linux artifacts require exactly one product from each exact Hydra job; \
              got deb-installer.x86_64-linux={deb_count}, \
-             rpm-installer.x86_64-linux={rpm_count}"
+             rpm-installer.x86_64-linux={rpm_count}, \
+             arch-installer.x86_64-linux={arch_count}"
         );
     } else {
         anyhow::ensure!(
-            deb_count == 0 && rpm_count == 0,
-            "Hydra exposed Linux package products but no validated Linux package pair was downloaded"
+            deb_count == 0 && rpm_count == 0 && arch_count == 0,
+            "Hydra exposed Linux package products but no validated Linux package set was downloaded"
         );
     }
     Ok(())
@@ -508,6 +533,7 @@ mod tests {
         for job in [
             "deb-installer.x86_64-linux.mainnet",
             "rpm-installer.x86_64-linux.mainnet",
+            "arch-installer.x86_64-linux.mainnet",
             "installer.aarch64-darwin.mainnet",
             "installer.x86_64-darwin.mainnet",
             "installer.x86_64-windows.mainnet",
@@ -522,6 +548,7 @@ mod tests {
             "installer.x86_64-linux.mainnet",
             "deb-installer.aarch64-linux.mainnet",
             "rpm-installer.x86_64-linux.preview",
+            "arch-installer.x86_64-linux.preview",
             "prefix.deb-installer.x86_64-linux.mainnet",
             "installer.x86_64-windows.extra.mainnet",
         ] {
@@ -548,6 +575,14 @@ mod tests {
             "daedalus-6.0.1-mainnet-x86_64-linux.rpm"
         ));
         assert!(is_supported_product_for_job(
+            "arch-installer.x86_64-linux.mainnet",
+            "daedalus-6.0.1-mainnet-x86_64-linux.pkg.tar.zst"
+        ));
+        assert!(!is_supported_product_for_job(
+            "arch-installer.x86_64-linux.mainnet",
+            "daedalus-6.0.1-mainnet-x86_64-linux.zst"
+        ));
+        assert!(is_supported_product_for_job(
             "installer.x86_64-windows.mainnet",
             "daedalus-6.0.1-mainnet-x86_64-windows.exe"
         ));
@@ -567,17 +602,20 @@ mod tests {
         assert!(allows_unsigned_companion("daedalus.exe"));
         assert!(!allows_unsigned_companion("daedalus.deb"));
         assert!(!allows_unsigned_companion("daedalus.rpm"));
+        assert!(!allows_unsigned_companion("daedalus.pkg.tar.zst"));
 
         assert!(validate_hydra_product_policy("daedalus.deb", Some("sha")).is_ok());
         assert!(validate_hydra_product_policy("daedalus.rpm", Some("sha")).is_ok());
+        assert!(validate_hydra_product_policy("daedalus.pkg.tar.zst", Some("sha")).is_ok());
+        assert!(validate_hydra_product_policy("daedalus.zst", None).is_ok());
         assert!(validate_hydra_product_policy("daedalus.pkg", None).is_ok());
         assert!(validate_hydra_product_policy("daedalus.exe", None).is_ok());
-        assert!(validate_hydra_product_policy("daedalus.deb", None)
+        assert!(validate_hydra_product_policy("daedalus.pkg.tar.zst", None)
             .expect_err("Linux package without Hydra hash must fail")
             .to_string()
             .contains("exact main-file verification"));
         assert!(
-            validate_hydra_product_policy("daedalus-unsigned.rpm", Some("sha"))
+            validate_hydra_product_policy("daedalus-unsigned.pkg.tar.zst", Some("sha"))
                 .expect_err("Linux unsigned companion must fail")
                 .to_string()
                 .contains("only the main package is allowed")
@@ -586,14 +624,18 @@ mod tests {
 
     #[test]
     fn requires_one_product_from_each_linux_hydra_job() {
-        assert!(validate_linux_job_products(true, 1, 1).is_ok());
-        assert!(validate_linux_job_products(false, 0, 0).is_ok());
+        assert!(validate_linux_job_products(true, 1, 1, 1).is_ok());
+        assert!(validate_linux_job_products(false, 0, 0, 0).is_ok());
 
-        for (has_linux, deb_count, rpm_count) in
-            [(true, 1, 0), (true, 0, 1), (true, 0, 0), (true, 2, 1)]
-        {
-            let error = validate_linux_job_products(has_linux, deb_count, rpm_count)
-                .expect_err("incomplete or stale Linux pair must fail");
+        for (has_linux, deb_count, rpm_count, arch_count) in [
+            (true, 1, 1, 0),
+            (true, 1, 0, 1),
+            (true, 0, 1, 1),
+            (true, 0, 0, 0),
+            (true, 2, 1, 1),
+        ] {
+            let error = validate_linux_job_products(has_linux, deb_count, rpm_count, arch_count)
+                .expect_err("incomplete or stale Linux set must fail");
             assert!(error.to_string().contains("exactly one product"));
         }
     }

@@ -1,4 +1,4 @@
-# Linux System Package Decision (.deb / .rpm)
+# Linux System Package Decision (.deb / .rpm / .pkg.tar.zst)
 
 Status: **accepted package, release, migration, and successor support-matrix
 contract**. The package strategy was accepted on 2026-08-12; original matrix
@@ -6,16 +6,19 @@ revision `task-005-a-matrix-2026-08-14` was approved by the user acting as
 release/product authority on 2026-08-14. Successor revision
 `task-108-matrix-2026-08-18` was approved on 2026-08-18 after authoritative
 Ubuntu policy documentation invalidated the original Ubuntu 22.04 and exact
-parser-version assumptions, with this repository record serving as the durable
-approval record. No separate reviewer was required by that authority.
+parser-version assumptions. Revision `task-111-matrix-2026-09-02` adds only the
+installed Arch 2026.09.01 and Omarchy 4.0.2 snapshots; no support is inferred
+for later rolling snapshots or other derivatives. This repository record is
+the durable approval record.
 Normative packaging and sandbox requirements are mirrored in
 [dapp-browser-cip30-prd.md](../dapp-browser-cip30-prd.md) and
 [dapp-browser-cip30-tasks.json](../dapp-browser-cip30-tasks.json). Historical
 task-005 preserves the cancelled portable spike. Task-005-a froze the package
 and validation contract; task-005-b completed installed `.deb`/`.rpm`
 exact-renderer certification on 2026-08-23. Tasks 103 and 110 completed the
-runtime fail-closed and `.bin` retirement/update-migration boundaries. This
-note remains the authoritative Linux strategy and support-matrix record.
+runtime fail-closed and `.bin` retirement/update-migration boundaries.
+Task-111 adds the native Arch package and exact Arch/Omarchy certification.
+This note remains the authoritative Linux strategy and support-matrix record.
 
 ## Decision
 
@@ -25,6 +28,7 @@ Daedalus on Linux ships **system packages only**:
 |--------|------|
 | **`.deb`** | Primary package for Debian/Ubuntu-class desktops |
 | **`.rpm`** | Package for the approved Fedora 43 row in this revision |
+| **`.pkg.tar.zst`** | Native package for the two exact task-111 Arch/Omarchy snapshots |
 
 Install layout uses **`/opt/daedalus/<cluster>`**, where `<cluster>` is the
 build-time installer cluster slug, not `$HOME/.daedalus/<cluster>`.
@@ -42,8 +46,9 @@ model used by Electron desktop apps (electron-builder pattern):
 3. Supported Ubuntu 24.04.x/26.04.x rows require a package-owned exact-path
    AppArmor `flags=(default_allow)` profile with `userns,`, selected by reviewed
    semantic ABI/features rather than exact parser patch-version equality. Fedora 43 requires package-owned SELinux policy
-   and exact Electron/helper file contexts. Debian rows require neither policy
-   asset unless a later reviewed matrix revision and certification add it.
+   and exact Electron/helper file contexts. Debian and the certified
+   Arch/Omarchy rows require no package policy asset; the latter use only the
+   proven user-namespace route with a root-owned mode-`0755` helper.
 4. Launchers **must not** pass `--no-sandbox` or `--disable-setuid-sandbox`.
 5. Runtime dApp availability remains fail-closed when sandbox-disabling
    argv/environment is present or the task-103 local sandbox canary fails.
@@ -51,11 +56,13 @@ model used by Electron desktop apps (electron-builder pattern):
 
 ## Authoritative Support Matrix
 
-Revision: `task-108-matrix-2026-08-18`, superseding only the contradicted Ubuntu
-predicates in `task-005-a-matrix-2026-08-14`.
+Revision: `task-111-matrix-2026-09-02`, extending
+`task-108-matrix-2026-08-18` with two exact native Arch-package rows.
 
 All rows are x86_64. Version-series rows include vendor point/security updates;
 material kernel, Electron/Chromium, or host-policy changes trigger revalidation.
+Arch-family rows are immutable snapshots; any later snapshot or kernel requires
+a new reviewed row and installed-artifact certification.
 
 | Distribution/version | Package | Accepted sandbox routes | Required host-policy integration |
 |---|---|---|---|
@@ -65,6 +72,8 @@ material kernel, Electron/Chromium, or host-policy changes trigger revalidation.
 | Debian 12.x | `.deb` | independently proven SUID or userns | none by default |
 | Debian 13.x | `.deb` | independently proven SUID or userns | none by default |
 | Fedora 43 | `.rpm` | independently proven SUID or userns | SELinux process and exact-file contexts |
+| Arch Linux 2026.09.01 (`7.2.2-arch1-1`) | `.pkg.tar.zst` | userns only | none; exact installed host identity required |
+| Omarchy 4.0.2 (`7.1.9-arch1-2`) | `.pkg.tar.zst` | userns only | none; exact installed host identity and Wayland startup required |
 
 No Ubuntu interim release is in this revision. Product intent is to support
 vendor-supported interim releases, but each exact interim version must first be
@@ -86,6 +95,8 @@ invariants fails package configuration rather than weakening containment.
 - Resolved Electron: `/opt/daedalus/<cluster>/libexec/bundle-electron/lib/electron/electron`.
 - Helper: `/opt/daedalus/<cluster>/libexec/bundle-electron/lib/electron/chrome-sandbox`.
 - Identity manifest: `/opt/daedalus/<cluster>/share/daedalus-sandbox-identity.json`.
+- Arch package changes: a package-owned pacman pre-transaction hook aborts
+  upgrade or removal while the exact packaged Electron executable is running.
 - AppArmor asset: `/etc/apparmor.d/opt.daedalus.<cluster>.electron`.
 - SELinux asset: `/usr/share/selinux/packages/daedalus-<cluster>.cil`. Task-109
   installs it at cluster-specific priority 200. The module is deliberately
@@ -115,15 +126,16 @@ invariants fails package configuration rather than weakening containment.
 ## Release and upgrade contract
 
 - CI/Hydra expose only
-  `deb-installer.x86_64-linux.<cluster>` and
-  `rpm-installer.x86_64-linux.<cluster>` for Linux releases. There is no Linux
+  `deb-installer.x86_64-linux.<cluster>`,
+  `rpm-installer.x86_64-linux.<cluster>`, and
+  `arch-installer.x86_64-linux.<cluster>` for Linux releases. There is no Linux
   generic installer/signing job and no new portable `.bin`.
-- A release manifest carries both packages as separate `linux-deb` and
-  `linux-rpm` entries. Both map to target OS `linux`, require one shared release
-  version, and deduplicate into one ordinary announcement.
-- Neither Linux package appears in `softwareUpdate`. Windows and macOS retain
+- A release manifest carries the three packages as separate `linux-deb`,
+  `linux-rpm`, and `linux-arch` entries. All map to target OS `linux`, require
+  one shared release identity, and deduplicate into one ordinary announcement.
+- No Linux package appears in `softwareUpdate`. Windows and macOS retain
   app-managed updates; Linux users close Daedalus and install the matching
-  newer local package with `apt` or `dnf`.
+  newer local package with `apt`, `dnf`, or `pacman -U`.
 - Legacy portable clients receive the ordinary announcement and release-notes
   link only. Their existing installation remains wallet-only and usable until
   the user manually installs a system package.
