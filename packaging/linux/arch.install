@@ -39,9 +39,9 @@ configure_manifest() {
       support_state=supported
       reason=supported
       ;;
-    omarchy:4.0.2:4.0.2:7.1.9-arch1-2)
+    omarchy:4.0.2:4.0.2:7.1.8-arch1-Watanare-T2-3-t2)
       matrix_row=omarchy-4.0.2
-      distribution='{"id":"omarchy","versionId":"4.0.2","buildId":"4.0.2","kernelRelease":"7.1.9-arch1-2"}'
+      distribution='{"id":"omarchy","versionId":"4.0.2","buildId":"4.0.2","kernelRelease":"7.1.8-arch1-Watanare-T2-3-t2"}'
       support_state=supported
       reason=supported
       ;;

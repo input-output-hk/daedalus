@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
-  "rootLockSha256": "53d018a89212037968c4de3f501ee90c1275e174edd28f915656d61bb92fe889",
+  "rootLockSha256": "41c3a1da2b8f85b6be6eed791bb99fa3f0fa112c81f8852c80a07319c3c4205b",
   "root": "@trezor/connect@9.7.2:node_modules/@trezor/connect",
-  "graphSha256": "af4d4b0f2f3609128440cf90964c38a2b1fad2e40f96123bd8a3a2a3b49916a1",
+  "graphSha256": "dc627f48e33fdcb942eb4d8fe1d6b808c7659028f6cd2fb2f118edd0a2aea7c9",
   "configIdentity": {
     "files": [
       {
@@ -1384,8 +1384,8 @@
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 109,
-        "sha256": "b43e6fed11d263ed8ec10bc0878083141ab00520fd0ad3570fedaa0afa96dec7"
+        "fileCount": 92,
+        "sha256": "5404f9c3cd82c5cfe18813d512a5c3133e29ef276cc34d558861aa30bdb33b0d"
       }
     },
     {
@@ -1402,8 +1402,8 @@
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 691,
-        "sha256": "5eda5481db346f097b14f9c04648004eb57d3a029c03748efc0c2ff528d676b2"
+        "fileCount": 678,
+        "sha256": "0afbb3de63a915990e8ac0dff55be06329be095b5eac843b351b6632da378398"
       }
     },
     {
@@ -2230,8 +2230,8 @@
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 58,
-        "sha256": "3964985ab6f4d98da8ea4d4adb7122965a02461afd31af16f9cb14f5894ae064"
+        "fileCount": 75,
+        "sha256": "7748ea7c02ebd469cfb3c39b947700672466a76b4e95f78cc68016d17138fd38"
       }
     },
     {
@@ -2724,9 +2724,9 @@
       }
     },
     {
-      "id": "cipher-base@1.0.4:node_modules/cipher-base",
+      "id": "cipher-base@1.0.5:node_modules/cipher-base",
       "name": "cipher-base",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "path": "node_modules/cipher-base",
       "lockSelectors": [
         "cipher-base@^1.0.0",
@@ -2734,15 +2734,15 @@
         "cipher-base@^1.0.3"
       ],
       "lockIdentity": {
-        "resolved": "https://registry.yarnpkg.com/cipher-base/-/cipher-base-1.0.4.tgz#8760e4ecc272f4c363532f926d874aae2c1397de",
-        "sha1": "8760e4ecc272f4c363532f926d874aae2c1397de",
-        "integrity": "sha1-h2Dk7MJy9MNjUy+SbYdKriwTl94=",
-        "integritySource": "yarn.lock-resolved-sha1"
+        "resolved": "https://registry.yarnpkg.com/cipher-base/-/cipher-base-1.0.5.tgz#749f80731c7821e9a5fabd51f6998b696f296686",
+        "sha1": "749f80731c7821e9a5fabd51f6998b696f296686",
+        "integrity": "sha512-xq7ICKB4TMHUx7Tz1L9O2SGKOhYMOTR32oir45Bq28/AQTpHogKgHcoYFSdRbMtddl+ozNXfXY9jWcgYKmde0w==",
+        "integritySource": "yarn.lock"
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
         "fileCount": 8,
-        "sha256": "7cdea4ed896a5ca3741d09073063414d77c596fe4b4a094e18730263e9c59cc8"
+        "sha256": "2cedbb21ef62323fac2a853ae000938bb79f3f29d4be8aae8904d15c6cd9f112"
       }
     },
     {
@@ -2800,15 +2800,29 @@
       }
     },
     {
+      "id": "create-hash@1.1.3:node_modules/pbkdf2/node_modules/create-hash",
+      "name": "create-hash",
+      "version": "1.1.3",
+      "path": "node_modules/pbkdf2/node_modules/create-hash",
+      "lockSelectors": ["create-hash@~1.1.3"],
+      "lockIdentity": {
+        "resolved": "https://registry.yarnpkg.com/create-hash/-/create-hash-1.1.3.tgz#606042ac8b9262750f483caddab0f5819172d8fd",
+        "sha1": "606042ac8b9262750f483caddab0f5819172d8fd",
+        "integrity": "sha512-snRpch/kwQhcdlnZKYanNF1m0RDlrCdSKQaH87w1FCFPVPNCQ/Il9QJKAX2jVBZddRdaHBMC+zXa9Gw9tmkNUA==",
+        "integritySource": "yarn.lock"
+      },
+      "packageTree": {
+        "algorithm": "sha256(path\\0content-sha256\\n)",
+        "fileCount": 19,
+        "sha256": "dab9ea2ddc6acbcafa0b8f9fe2a3ae6a8969afbf640adcd300111a34113b3bee"
+      }
+    },
+    {
       "id": "create-hash@1.2.0:node_modules/create-hash",
       "name": "create-hash",
       "version": "1.2.0",
       "path": "node_modules/create-hash",
-      "lockSelectors": [
-        "create-hash@^1.1.0",
-        "create-hash@^1.1.2",
-        "create-hash@^1.2.0"
-      ],
+      "lockSelectors": ["create-hash@^1.1.0", "create-hash@^1.2.0"],
       "lockIdentity": {
         "resolved": "https://registry.yarnpkg.com/create-hash/-/create-hash-1.2.0.tgz#889078af11a63756bcfb59bd221996be3a9ef196",
         "sha1": "889078af11a63756bcfb59bd221996be3a9ef196",
@@ -2826,11 +2840,7 @@
       "name": "create-hmac",
       "version": "1.1.7",
       "path": "node_modules/create-hmac",
-      "lockSelectors": [
-        "create-hmac@^1.1.0",
-        "create-hmac@^1.1.4",
-        "create-hmac@^1.1.7"
-      ],
+      "lockSelectors": ["create-hmac@^1.1.0", "create-hmac@^1.1.7"],
       "lockIdentity": {
         "resolved": "https://registry.yarnpkg.com/create-hmac/-/create-hmac-1.1.7.tgz#69170c78b3ab957147b2b8b04572e47ead2243ff",
         "sha1": "69170c78b3ab957147b2b8b04572e47ead2243ff",
@@ -3024,21 +3034,21 @@
       }
     },
     {
-      "id": "elliptic@6.5.4:node_modules/elliptic",
+      "id": "elliptic@6.6.1:node_modules/elliptic",
       "name": "elliptic",
-      "version": "6.5.4",
+      "version": "6.6.1",
       "path": "node_modules/elliptic",
       "lockSelectors": ["elliptic@^6.4.0", "elliptic@^6.5.3"],
       "lockIdentity": {
-        "resolved": "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.4.tgz#da37cebd31e79a1367e941b592ed1fbebd58abbb",
-        "sha1": "da37cebd31e79a1367e941b592ed1fbebd58abbb",
-        "integrity": "sha1-2jfOvTHnmhNn6UG1ku0fvr1Yq7s=",
-        "integritySource": "yarn.lock-resolved-sha1"
+        "resolved": "https://registry.yarnpkg.com/elliptic/-/elliptic-6.6.1.tgz#3b8ffb02670bf69e382c7f65bf524c97c5405c06",
+        "sha1": "3b8ffb02670bf69e382c7f65bf524c97c5405c06",
+        "integrity": "sha512-RaddvvMatK2LJHqFJ+YA4WysVN5Ita9E35botqIYspQ4TkRAlCicdzKOjlyv/1Za5RyTNn7di//eEV0uTAfe3g==",
+        "integritySource": "yarn.lock"
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
         "fileCount": 21,
-        "sha256": "ff9af11d74fa024a8f65aa9019a2def05f1ae84dcc5991bbb99290ed90d1b1bd"
+        "sha256": "4d7795e44d63da32cdb644f02c3236ccf9b5368dfea9c51e51565319bbadd6c3"
       }
     },
     {
@@ -3294,10 +3304,10 @@
       }
     },
     {
-      "id": "form-data@4.0.5:node_modules/@stellar/stellar-sdk/node_modules/form-data",
+      "id": "form-data@4.0.5:node_modules/form-data",
       "name": "form-data",
       "version": "4.0.5",
-      "path": "node_modules/@stellar/stellar-sdk/node_modules/form-data",
+      "path": "node_modules/form-data",
       "lockSelectors": ["form-data@^4.0.5"],
       "lockIdentity": {
         "resolved": "https://registry.yarnpkg.com/form-data/-/form-data-4.0.5.tgz#b49e48858045ff4cbf6b03e1805cebcad3679053",
@@ -3307,8 +3317,8 @@
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 8,
-        "sha256": "a5a290e8e1b0c4a967e4f4a6dc034a1225e6ace0b8ee9a7a876c5a2fd0f5ad31"
+        "fileCount": 13,
+        "sha256": "0358362f09e62a7b21fd846f2fb8e8a43e0507accb2078c524e1fdfc69829468"
       }
     },
     {
@@ -3600,6 +3610,24 @@
       }
     },
     {
+      "id": "hash-base@2.0.2:node_modules/pbkdf2/node_modules/hash-base",
+      "name": "hash-base",
+      "version": "2.0.2",
+      "path": "node_modules/pbkdf2/node_modules/hash-base",
+      "lockSelectors": ["hash-base@^2.0.0"],
+      "lockIdentity": {
+        "resolved": "https://registry.yarnpkg.com/hash-base/-/hash-base-2.0.2.tgz#66ea1d856db4e8a5470cadf6fce23ae5244ef2e1",
+        "sha1": "66ea1d856db4e8a5470cadf6fce23ae5244ef2e1",
+        "integrity": "sha512-0TROgQ1/SxE6KmxWSvXHvRj90/Xo1JvZShofnYF+f6ZsGtR4eES7WfrQzPalmyagfKZCXpVnitiRebZulWsbiw==",
+        "integritySource": "yarn.lock"
+      },
+      "packageTree": {
+        "algorithm": "sha256(path\\0content-sha256\\n)",
+        "fileCount": 3,
+        "sha256": "348bcca52d3d6d2a2a0a04ab9e89fdaa22487561a162e741703571c7ec4d7265"
+      }
+    },
+    {
       "id": "hash-base@3.1.0:node_modules/hash-base",
       "name": "hash-base",
       "version": "3.1.0",
@@ -3615,6 +3643,24 @@
         "algorithm": "sha256(path\\0content-sha256\\n)",
         "fileCount": 29,
         "sha256": "b37e14a6ea8db4eba5efed5556cccc672d1f2064d50bbf12cc33d7135c016bc5"
+      }
+    },
+    {
+      "id": "hash-base@3.1.0:node_modules/pbkdf2/node_modules/create-hash/node_modules/hash-base",
+      "name": "hash-base",
+      "version": "3.1.0",
+      "path": "node_modules/pbkdf2/node_modules/create-hash/node_modules/hash-base",
+      "lockSelectors": ["hash-base@^3.0.0"],
+      "lockIdentity": {
+        "resolved": "https://registry.yarnpkg.com/hash-base/-/hash-base-3.1.0.tgz#55c381d9e06e1d2997a883b4a3fddfe7f0d3af33",
+        "sha1": "55c381d9e06e1d2997a883b4a3fddfe7f0d3af33",
+        "integrity": "sha1-VcOB2eBuHSmXqIO0o/3f5/DTrzM=",
+        "integritySource": "yarn.lock-resolved-sha1"
+      },
+      "packageTree": {
+        "algorithm": "sha256(path\\0content-sha256\\n)",
+        "fileCount": 4,
+        "sha256": "f7384a78e712a5f5500e4394c20476fb55724744e09482098c6039cc3ef4f67f"
       }
     },
     {
@@ -4037,16 +4083,16 @@
       }
     },
     {
-      "id": "mime-types@2.1.35:node_modules/@stellar/stellar-sdk/node_modules/mime-types",
+      "id": "mime-types@2.1.35:node_modules/form-data/node_modules/mime-types",
       "name": "mime-types",
       "version": "2.1.35",
-      "path": "node_modules/@stellar/stellar-sdk/node_modules/mime-types",
+      "path": "node_modules/form-data/node_modules/mime-types",
       "lockSelectors": ["mime-types@^2.1.12"],
       "lockIdentity": {
         "resolved": "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.35.tgz#381a871b62a734450660ae3deee44813f70d959a",
         "sha1": "381a871b62a734450660ae3deee44813f70d959a",
-        "integrity": "sha1-OBqHG2KnNEUGYK497uRIE/cNlZo=",
-        "integritySource": "yarn.lock-resolved-sha1"
+        "integrity": "sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==",
+        "integritySource": "yarn.lock"
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
@@ -4256,21 +4302,21 @@
       }
     },
     {
-      "id": "pbkdf2@3.1.2:node_modules/pbkdf2",
+      "id": "pbkdf2@3.1.3:node_modules/pbkdf2",
       "name": "pbkdf2",
-      "version": "3.1.2",
+      "version": "3.1.3",
       "path": "node_modules/pbkdf2",
       "lockSelectors": ["pbkdf2@^3.0.3"],
       "lockIdentity": {
-        "resolved": "https://registry.yarnpkg.com/pbkdf2/-/pbkdf2-3.1.2.tgz#dd822aa0887580e52f1a039dc3eda108efae3075",
-        "sha1": "dd822aa0887580e52f1a039dc3eda108efae3075",
-        "integrity": "sha1-3YIqoIh1gOUvGgOdw+2hCO+uMHU=",
-        "integritySource": "yarn.lock-resolved-sha1"
+        "resolved": "https://registry.yarnpkg.com/pbkdf2/-/pbkdf2-3.1.3.tgz#8be674d591d65658113424592a95d1517318dd4b",
+        "sha1": "8be674d591d65658113424592a95d1517318dd4b",
+        "integrity": "sha512-wfRLBZ0feWRhCIkoMB6ete7czJcnNnqRpcoWQBLqatqXXmelSRqfdDK4F3u9T2s2cXas/hQJcryI/4lAL+XTlA==",
+        "integritySource": "yarn.lock"
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 12,
-        "sha256": "49e86e34de9ea45d2cc9551224fc78d1b1480a6aa8dd4fc31bc0b41db4392d1b"
+        "fileCount": 68,
+        "sha256": "079f47067f40465b910920e7eb23bcd0a6350fc82625e06dfb4b5bdacbb6b8fc"
       }
     },
     {
@@ -4292,21 +4338,21 @@
       }
     },
     {
-      "id": "protobufjs@7.4.0:node_modules/protobufjs",
+      "id": "protobufjs@7.5.5:node_modules/protobufjs",
       "name": "protobufjs",
-      "version": "7.4.0",
+      "version": "7.5.5",
       "path": "node_modules/protobufjs",
       "lockSelectors": ["protobufjs@7.4.0"],
       "lockIdentity": {
-        "resolved": "https://registry.yarnpkg.com/protobufjs/-/protobufjs-7.4.0.tgz#7efe324ce9b3b61c82aae5de810d287bc08a248a",
-        "sha1": "7efe324ce9b3b61c82aae5de810d287bc08a248a",
-        "integrity": "sha512-mRUWCc3KUU4w1jU8sGxICXH/gNS94DvI1gxqDvBzhj1JpcsimQkYiOJfwsPUykUI5ZaspFbSgmBLER8IrQ3tqw==",
+        "resolved": "https://registry.yarnpkg.com/protobufjs/-/protobufjs-7.5.5.tgz#b7089ca4410374c75150baf277353ef76db69f96",
+        "sha1": "b7089ca4410374c75150baf277353ef76db69f96",
+        "integrity": "sha512-3wY1AxV+VBNW8Yypfd1yQY9pXnqTAN+KwQxL8iYm3/BjKYMNg4i0owhEe26PWDOMaIrzeeF98Lqd5NGz4omiIg==",
         "integritySource": "yarn.lock"
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
         "fileCount": 139,
-        "sha256": "086abe6b090df263a0bbc794390c7d300994a91a5cca8afb2218dbf39416ea1b"
+        "sha256": "d1bba235c500519566a7def227acc79bdbab665eac6613275b941538b00917d5"
       }
     },
     {
@@ -4459,6 +4505,24 @@
       }
     },
     {
+      "id": "readable-stream@3.6.0:node_modules/pbkdf2/node_modules/readable-stream",
+      "name": "readable-stream",
+      "version": "3.6.0",
+      "path": "node_modules/pbkdf2/node_modules/readable-stream",
+      "lockSelectors": ["readable-stream@^3.6.0"],
+      "lockIdentity": {
+        "resolved": "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.6.0.tgz#337bbda3adc0706bd3e024426a286d4b4b2c9198",
+        "sha1": "337bbda3adc0706bd3e024426a286d4b4b2c9198",
+        "integrity": "sha1-M3u9o63AcGvT4CRCaihtS0sskZg=",
+        "integritySource": "yarn.lock-resolved-sha1"
+      },
+      "packageTree": {
+        "algorithm": "sha256(path\\0content-sha256\\n)",
+        "fileCount": 25,
+        "sha256": "5d13ba4a1495c8a6bb72c4c27674956cbb2b877c24af7f71d4bb51a1fe6a721e"
+      }
+    },
+    {
       "id": "readable-stream@3.6.0:node_modules/stream-browserify/node_modules/readable-stream",
       "name": "readable-stream",
       "version": "3.6.0",
@@ -4474,6 +4538,42 @@
         "algorithm": "sha256(path\\0content-sha256\\n)",
         "fileCount": 25,
         "sha256": "5d13ba4a1495c8a6bb72c4c27674956cbb2b877c24af7f71d4bb51a1fe6a721e"
+      }
+    },
+    {
+      "id": "ripemd160@2.0.1:node_modules/pbkdf2/node_modules/ripemd160",
+      "name": "ripemd160",
+      "version": "2.0.1",
+      "path": "node_modules/pbkdf2/node_modules/ripemd160",
+      "lockSelectors": ["ripemd160@=2.0.1"],
+      "lockIdentity": {
+        "resolved": "https://registry.yarnpkg.com/ripemd160/-/ripemd160-2.0.1.tgz#0f4584295c53a3628af7e6d79aca21ce57d1c6e7",
+        "sha1": "0f4584295c53a3628af7e6d79aca21ce57d1c6e7",
+        "integrity": "sha512-J7f4wutN8mdbV08MJnXibYpCOPHR+yzy+iQ/AsjMv2j8cLavQ8VGagDFUwwTAdF8FmRKVeNpbTTEwNHCW1g94w==",
+        "integritySource": "yarn.lock"
+      },
+      "packageTree": {
+        "algorithm": "sha256(path\\0content-sha256\\n)",
+        "fileCount": 5,
+        "sha256": "b271db1dc56ca89cff8d357c19a0bdbfc669769454e11811ff38e69bda13ee4f"
+      }
+    },
+    {
+      "id": "ripemd160@2.0.2:node_modules/pbkdf2/node_modules/create-hash/node_modules/ripemd160",
+      "name": "ripemd160",
+      "version": "2.0.2",
+      "path": "node_modules/pbkdf2/node_modules/create-hash/node_modules/ripemd160",
+      "lockSelectors": ["ripemd160@^2.0.0"],
+      "lockIdentity": {
+        "resolved": "https://registry.yarnpkg.com/ripemd160/-/ripemd160-2.0.2.tgz#a1c1a6f624751577ba5d07914cbc92850585890c",
+        "sha1": "a1c1a6f624751577ba5d07914cbc92850585890c",
+        "integrity": "sha1-ocGm9iR1FXe6XQeRTLyShQWFiQw=",
+        "integritySource": "yarn.lock-resolved-sha1"
+      },
+      "packageTree": {
+        "algorithm": "sha256(path\\0content-sha256\\n)",
+        "fileCount": 5,
+        "sha256": "d3b1a0e959e3e5542760486abd7dd04cd462462e733a1bb996ce07c672ff33b5"
       }
     },
     {
@@ -4611,29 +4711,16 @@
       }
     },
     {
-      "id": "sha.js@2.4.11:node_modules/sha.js",
-      "name": "sha.js",
-      "version": "2.4.11",
-      "path": "node_modules/sha.js",
-      "lockSelectors": ["sha.js@^2.4.0", "sha.js@^2.4.8"],
-      "lockIdentity": {
-        "resolved": "https://registry.yarnpkg.com/sha.js/-/sha.js-2.4.11.tgz#37a5cf0b81ecbc6943de109ba2960d1b26584ae7",
-        "sha1": "37a5cf0b81ecbc6943de109ba2960d1b26584ae7",
-        "integrity": "sha1-N6XPC4HsvGlD3hCbopYNGyZYSuc=",
-        "integritySource": "yarn.lock-resolved-sha1"
-      },
-      "packageTree": {
-        "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 16,
-        "sha256": "bb62588811b2813ad4772f9a1d9c0565363c4953077a7ad6bd5833d2a9403811"
-      }
-    },
-    {
-      "id": "sha.js@2.4.12:node_modules/@stellar/stellar-base/node_modules/sha.js",
+      "id": "sha.js@2.4.12:node_modules/sha.js",
       "name": "sha.js",
       "version": "2.4.12",
-      "path": "node_modules/@stellar/stellar-base/node_modules/sha.js",
-      "lockSelectors": ["sha.js@^2.4.12"],
+      "path": "node_modules/sha.js",
+      "lockSelectors": [
+        "sha.js@^2.4.0",
+        "sha.js@^2.4.11",
+        "sha.js@^2.4.12",
+        "sha.js@^2.4.8"
+      ],
       "lockIdentity": {
         "resolved": "https://registry.yarnpkg.com/sha.js/-/sha.js-2.4.12.tgz#eb8b568bf383dfd1867a32c3f2b74eb52bdbf23f",
         "sha1": "eb8b568bf383dfd1867a32c3f2b74eb52bdbf23f",
@@ -4750,8 +4837,8 @@
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 121,
-        "sha256": "fac5c200d19b029dc5bc4a91e6ce31240cd220b761f153edfec152b3fdcaee09"
+        "fileCount": 134,
+        "sha256": "b2b633ed6c8795c1f8ddb0bb6a1962433adfd132805e6bc2f1cc834f1963f935"
       }
     },
     {
@@ -4966,8 +5053,8 @@
       },
       "packageTree": {
         "algorithm": "sha256(path\\0content-sha256\\n)",
-        "fileCount": 240,
-        "sha256": "1095dae3bcf3db43b283b096fee55c900606cf471b64caa1e4598eee4d63409c"
+        "fileCount": 268,
+        "sha256": "cd6b332631b695c5c26dc0ebb6f470460504786e34d19caf369dd0e4df53b046"
       }
     },
     {
@@ -6112,7 +6199,7 @@
     {
       "from": "@stellar/stellar-base@14.1.0:node_modules/@stellar/stellar-base",
       "dependency": "sha.js",
-      "to": "sha.js@2.4.12:node_modules/@stellar/stellar-base/node_modules/sha.js"
+      "to": "sha.js@2.4.12:node_modules/sha.js"
     },
     {
       "from": "@stellar/stellar-sdk@14.2.0:node_modules/@stellar/stellar-sdk",
@@ -6562,7 +6649,7 @@
     {
       "from": "@trezor/protobuf@1.5.1:node_modules/@trezor/blockchain-link/node_modules/@trezor/protobuf",
       "dependency": "protobufjs",
-      "to": "protobufjs@7.4.0:node_modules/protobufjs"
+      "to": "protobufjs@7.5.5:node_modules/protobufjs"
     },
     {
       "from": "@trezor/protobuf@1.5.2:node_modules/@trezor/protobuf",
@@ -6577,7 +6664,7 @@
     {
       "from": "@trezor/protobuf@1.5.2:node_modules/@trezor/protobuf",
       "dependency": "protobufjs",
-      "to": "protobufjs@7.4.0:node_modules/protobufjs"
+      "to": "protobufjs@7.5.5:node_modules/protobufjs"
     },
     {
       "from": "@trezor/schema-utils@1.4.0:node_modules/@trezor/schema-utils",
@@ -6777,7 +6864,7 @@
     {
       "from": "axios@1.15.2:node_modules/@stellar/stellar-sdk/node_modules/axios",
       "dependency": "form-data",
-      "to": "form-data@4.0.5:node_modules/@stellar/stellar-sdk/node_modules/form-data"
+      "to": "form-data@4.0.5:node_modules/form-data"
     },
     {
       "from": "axios@1.15.2:node_modules/@stellar/stellar-sdk/node_modules/axios",
@@ -6812,7 +6899,7 @@
     {
       "from": "browserify-aes@1.2.0:node_modules/browserify-aes",
       "dependency": "cipher-base",
-      "to": "cipher-base@1.0.4:node_modules/cipher-base"
+      "to": "cipher-base@1.0.5:node_modules/cipher-base"
     },
     {
       "from": "browserify-aes@1.2.0:node_modules/browserify-aes",
@@ -6852,7 +6939,7 @@
     {
       "from": "browserify-des@1.0.2:node_modules/browserify-des",
       "dependency": "cipher-base",
-      "to": "cipher-base@1.0.4:node_modules/cipher-base"
+      "to": "cipher-base@1.0.5:node_modules/cipher-base"
     },
     {
       "from": "browserify-des@1.0.2:node_modules/browserify-des",
@@ -6902,7 +6989,7 @@
     {
       "from": "browserify-sign@4.2.1:node_modules/browserify-sign",
       "dependency": "elliptic",
-      "to": "elliptic@6.5.4:node_modules/elliptic"
+      "to": "elliptic@6.6.1:node_modules/elliptic"
     },
     {
       "from": "browserify-sign@4.2.1:node_modules/browserify-sign",
@@ -7010,12 +7097,12 @@
       "to": "nofilter@3.1.0:node_modules/@trezor/connect/node_modules/nofilter"
     },
     {
-      "from": "cipher-base@1.0.4:node_modules/cipher-base",
+      "from": "cipher-base@1.0.5:node_modules/cipher-base",
       "dependency": "inherits",
       "to": "inherits@2.0.4:node_modules/inherits"
     },
     {
-      "from": "cipher-base@1.0.4:node_modules/cipher-base",
+      "from": "cipher-base@1.0.5:node_modules/cipher-base",
       "dependency": "safe-buffer",
       "to": "safe-buffer@5.2.1:node_modules/safe-buffer"
     },
@@ -7032,12 +7119,32 @@
     {
       "from": "create-ecdh@4.0.4:node_modules/create-ecdh",
       "dependency": "elliptic",
-      "to": "elliptic@6.5.4:node_modules/elliptic"
+      "to": "elliptic@6.6.1:node_modules/elliptic"
+    },
+    {
+      "from": "create-hash@1.1.3:node_modules/pbkdf2/node_modules/create-hash",
+      "dependency": "cipher-base",
+      "to": "cipher-base@1.0.5:node_modules/cipher-base"
+    },
+    {
+      "from": "create-hash@1.1.3:node_modules/pbkdf2/node_modules/create-hash",
+      "dependency": "inherits",
+      "to": "inherits@2.0.4:node_modules/inherits"
+    },
+    {
+      "from": "create-hash@1.1.3:node_modules/pbkdf2/node_modules/create-hash",
+      "dependency": "ripemd160",
+      "to": "ripemd160@2.0.2:node_modules/pbkdf2/node_modules/create-hash/node_modules/ripemd160"
+    },
+    {
+      "from": "create-hash@1.1.3:node_modules/pbkdf2/node_modules/create-hash",
+      "dependency": "sha.js",
+      "to": "sha.js@2.4.12:node_modules/sha.js"
     },
     {
       "from": "create-hash@1.2.0:node_modules/create-hash",
       "dependency": "cipher-base",
-      "to": "cipher-base@1.0.4:node_modules/cipher-base"
+      "to": "cipher-base@1.0.5:node_modules/cipher-base"
     },
     {
       "from": "create-hash@1.2.0:node_modules/create-hash",
@@ -7057,12 +7164,12 @@
     {
       "from": "create-hash@1.2.0:node_modules/create-hash",
       "dependency": "sha.js",
-      "to": "sha.js@2.4.11:node_modules/sha.js"
+      "to": "sha.js@2.4.12:node_modules/sha.js"
     },
     {
       "from": "create-hmac@1.1.7:node_modules/create-hmac",
       "dependency": "cipher-base",
-      "to": "cipher-base@1.0.4:node_modules/cipher-base"
+      "to": "cipher-base@1.0.5:node_modules/cipher-base"
     },
     {
       "from": "create-hmac@1.1.7:node_modules/create-hmac",
@@ -7087,7 +7194,7 @@
     {
       "from": "create-hmac@1.1.7:node_modules/create-hmac",
       "dependency": "sha.js",
-      "to": "sha.js@2.4.11:node_modules/sha.js"
+      "to": "sha.js@2.4.12:node_modules/sha.js"
     },
     {
       "from": "cross-fetch@4.0.0:node_modules/cross-fetch",
@@ -7132,7 +7239,7 @@
     {
       "from": "crypto-browserify@3.12.0:node_modules/crypto-browserify",
       "dependency": "pbkdf2",
-      "to": "pbkdf2@3.1.2:node_modules/pbkdf2"
+      "to": "pbkdf2@3.1.3:node_modules/pbkdf2"
     },
     {
       "from": "crypto-browserify@3.12.0:node_modules/crypto-browserify",
@@ -7215,37 +7322,37 @@
       "to": "safe-buffer@5.2.1:node_modules/safe-buffer"
     },
     {
-      "from": "elliptic@6.5.4:node_modules/elliptic",
+      "from": "elliptic@6.6.1:node_modules/elliptic",
       "dependency": "bn.js",
       "to": "bn.js@4.12.0:node_modules/elliptic/node_modules/bn.js"
     },
     {
-      "from": "elliptic@6.5.4:node_modules/elliptic",
+      "from": "elliptic@6.6.1:node_modules/elliptic",
       "dependency": "brorand",
       "to": "brorand@1.1.0:node_modules/brorand"
     },
     {
-      "from": "elliptic@6.5.4:node_modules/elliptic",
+      "from": "elliptic@6.6.1:node_modules/elliptic",
       "dependency": "hash.js",
       "to": "hash.js@1.1.7:node_modules/hash.js"
     },
     {
-      "from": "elliptic@6.5.4:node_modules/elliptic",
+      "from": "elliptic@6.6.1:node_modules/elliptic",
       "dependency": "hmac-drbg",
       "to": "hmac-drbg@1.0.1:node_modules/hmac-drbg"
     },
     {
-      "from": "elliptic@6.5.4:node_modules/elliptic",
+      "from": "elliptic@6.6.1:node_modules/elliptic",
       "dependency": "inherits",
       "to": "inherits@2.0.4:node_modules/inherits"
     },
     {
-      "from": "elliptic@6.5.4:node_modules/elliptic",
+      "from": "elliptic@6.6.1:node_modules/elliptic",
       "dependency": "minimalistic-assert",
       "to": "minimalistic-assert@1.0.1:node_modules/minimalistic-assert"
     },
     {
-      "from": "elliptic@6.5.4:node_modules/elliptic",
+      "from": "elliptic@6.6.1:node_modules/elliptic",
       "dependency": "minimalistic-crypto-utils",
       "to": "minimalistic-crypto-utils@1.0.1:node_modules/minimalistic-crypto-utils"
     },
@@ -7300,29 +7407,29 @@
       "to": "is-callable@1.2.7:node_modules/typed-array-buffer/node_modules/is-callable"
     },
     {
-      "from": "form-data@4.0.5:node_modules/@stellar/stellar-sdk/node_modules/form-data",
+      "from": "form-data@4.0.5:node_modules/form-data",
       "dependency": "asynckit",
       "to": "asynckit@0.4.0:node_modules/asynckit"
     },
     {
-      "from": "form-data@4.0.5:node_modules/@stellar/stellar-sdk/node_modules/form-data",
+      "from": "form-data@4.0.5:node_modules/form-data",
       "dependency": "combined-stream",
       "to": "combined-stream@1.0.8:node_modules/combined-stream"
     },
     {
-      "from": "form-data@4.0.5:node_modules/@stellar/stellar-sdk/node_modules/form-data",
+      "from": "form-data@4.0.5:node_modules/form-data",
       "dependency": "es-set-tostringtag",
       "to": "es-set-tostringtag@2.1.0:node_modules/es-set-tostringtag"
     },
     {
-      "from": "form-data@4.0.5:node_modules/@stellar/stellar-sdk/node_modules/form-data",
+      "from": "form-data@4.0.5:node_modules/form-data",
       "dependency": "hasown",
       "to": "hasown@2.0.3:node_modules/hasown"
     },
     {
-      "from": "form-data@4.0.5:node_modules/@stellar/stellar-sdk/node_modules/form-data",
+      "from": "form-data@4.0.5:node_modules/form-data",
       "dependency": "mime-types",
-      "to": "mime-types@2.1.35:node_modules/@stellar/stellar-sdk/node_modules/mime-types"
+      "to": "mime-types@2.1.35:node_modules/form-data/node_modules/mime-types"
     },
     {
       "from": "get-intrinsic@1.2.4:node_modules/es-define-property/node_modules/get-intrinsic",
@@ -7480,6 +7587,11 @@
       "to": "has-symbols@1.0.3:node_modules/has-symbols"
     },
     {
+      "from": "hash-base@2.0.2:node_modules/pbkdf2/node_modules/hash-base",
+      "dependency": "inherits",
+      "to": "inherits@2.0.4:node_modules/inherits"
+    },
+    {
       "from": "hash-base@3.1.0:node_modules/hash-base",
       "dependency": "inherits",
       "to": "inherits@2.0.4:node_modules/inherits"
@@ -7491,6 +7603,21 @@
     },
     {
       "from": "hash-base@3.1.0:node_modules/hash-base",
+      "dependency": "safe-buffer",
+      "to": "safe-buffer@5.2.1:node_modules/safe-buffer"
+    },
+    {
+      "from": "hash-base@3.1.0:node_modules/pbkdf2/node_modules/create-hash/node_modules/hash-base",
+      "dependency": "inherits",
+      "to": "inherits@2.0.4:node_modules/inherits"
+    },
+    {
+      "from": "hash-base@3.1.0:node_modules/pbkdf2/node_modules/create-hash/node_modules/hash-base",
+      "dependency": "readable-stream",
+      "to": "readable-stream@3.6.0:node_modules/pbkdf2/node_modules/readable-stream"
+    },
+    {
+      "from": "hash-base@3.1.0:node_modules/pbkdf2/node_modules/create-hash/node_modules/hash-base",
       "dependency": "safe-buffer",
       "to": "safe-buffer@5.2.1:node_modules/safe-buffer"
     },
@@ -7595,7 +7722,7 @@
       "to": "brorand@1.1.0:node_modules/brorand"
     },
     {
-      "from": "mime-types@2.1.35:node_modules/@stellar/stellar-sdk/node_modules/mime-types",
+      "from": "mime-types@2.1.35:node_modules/form-data/node_modules/mime-types",
       "dependency": "mime-db",
       "to": "mime-db@1.52.0:node_modules/mime-db"
     },
@@ -7622,7 +7749,7 @@
     {
       "from": "parse-asn1@5.1.6:node_modules/parse-asn1",
       "dependency": "pbkdf2",
-      "to": "pbkdf2@3.1.2:node_modules/pbkdf2"
+      "to": "pbkdf2@3.1.3:node_modules/pbkdf2"
     },
     {
       "from": "parse-asn1@5.1.6:node_modules/parse-asn1",
@@ -7630,87 +7757,92 @@
       "to": "safe-buffer@5.2.1:node_modules/safe-buffer"
     },
     {
-      "from": "pbkdf2@3.1.2:node_modules/pbkdf2",
+      "from": "pbkdf2@3.1.3:node_modules/pbkdf2",
       "dependency": "create-hash",
-      "to": "create-hash@1.2.0:node_modules/create-hash"
+      "to": "create-hash@1.1.3:node_modules/pbkdf2/node_modules/create-hash"
     },
     {
-      "from": "pbkdf2@3.1.2:node_modules/pbkdf2",
+      "from": "pbkdf2@3.1.3:node_modules/pbkdf2",
       "dependency": "create-hmac",
       "to": "create-hmac@1.1.7:node_modules/create-hmac"
     },
     {
-      "from": "pbkdf2@3.1.2:node_modules/pbkdf2",
+      "from": "pbkdf2@3.1.3:node_modules/pbkdf2",
       "dependency": "ripemd160",
-      "to": "ripemd160@2.0.2:node_modules/ripemd160"
+      "to": "ripemd160@2.0.1:node_modules/pbkdf2/node_modules/ripemd160"
     },
     {
-      "from": "pbkdf2@3.1.2:node_modules/pbkdf2",
+      "from": "pbkdf2@3.1.3:node_modules/pbkdf2",
       "dependency": "safe-buffer",
       "to": "safe-buffer@5.2.1:node_modules/safe-buffer"
     },
     {
-      "from": "pbkdf2@3.1.2:node_modules/pbkdf2",
+      "from": "pbkdf2@3.1.3:node_modules/pbkdf2",
       "dependency": "sha.js",
-      "to": "sha.js@2.4.11:node_modules/sha.js"
+      "to": "sha.js@2.4.12:node_modules/sha.js"
     },
     {
-      "from": "protobufjs@7.4.0:node_modules/protobufjs",
+      "from": "pbkdf2@3.1.3:node_modules/pbkdf2",
+      "dependency": "to-buffer",
+      "to": "to-buffer@1.2.2:node_modules/to-buffer"
+    },
+    {
+      "from": "protobufjs@7.5.5:node_modules/protobufjs",
       "dependency": "@protobufjs/aspromise",
       "to": "@protobufjs/aspromise@1.1.2:node_modules/@protobufjs/aspromise"
     },
     {
-      "from": "protobufjs@7.4.0:node_modules/protobufjs",
+      "from": "protobufjs@7.5.5:node_modules/protobufjs",
       "dependency": "@protobufjs/base64",
       "to": "@protobufjs/base64@1.1.2:node_modules/@protobufjs/base64"
     },
     {
-      "from": "protobufjs@7.4.0:node_modules/protobufjs",
+      "from": "protobufjs@7.5.5:node_modules/protobufjs",
       "dependency": "@protobufjs/codegen",
       "to": "@protobufjs/codegen@2.0.4:node_modules/@protobufjs/codegen"
     },
     {
-      "from": "protobufjs@7.4.0:node_modules/protobufjs",
+      "from": "protobufjs@7.5.5:node_modules/protobufjs",
       "dependency": "@protobufjs/eventemitter",
       "to": "@protobufjs/eventemitter@1.1.0:node_modules/@protobufjs/eventemitter"
     },
     {
-      "from": "protobufjs@7.4.0:node_modules/protobufjs",
+      "from": "protobufjs@7.5.5:node_modules/protobufjs",
       "dependency": "@protobufjs/fetch",
       "to": "@protobufjs/fetch@1.1.0:node_modules/@protobufjs/fetch"
     },
     {
-      "from": "protobufjs@7.4.0:node_modules/protobufjs",
+      "from": "protobufjs@7.5.5:node_modules/protobufjs",
       "dependency": "@protobufjs/float",
       "to": "@protobufjs/float@1.0.2:node_modules/@protobufjs/float"
     },
     {
-      "from": "protobufjs@7.4.0:node_modules/protobufjs",
+      "from": "protobufjs@7.5.5:node_modules/protobufjs",
       "dependency": "@protobufjs/inquire",
       "to": "@protobufjs/inquire@1.1.0:node_modules/@protobufjs/inquire"
     },
     {
-      "from": "protobufjs@7.4.0:node_modules/protobufjs",
+      "from": "protobufjs@7.5.5:node_modules/protobufjs",
       "dependency": "@protobufjs/path",
       "to": "@protobufjs/path@1.1.2:node_modules/@protobufjs/path"
     },
     {
-      "from": "protobufjs@7.4.0:node_modules/protobufjs",
+      "from": "protobufjs@7.5.5:node_modules/protobufjs",
       "dependency": "@protobufjs/pool",
       "to": "@protobufjs/pool@1.1.0:node_modules/@protobufjs/pool"
     },
     {
-      "from": "protobufjs@7.4.0:node_modules/protobufjs",
+      "from": "protobufjs@7.5.5:node_modules/protobufjs",
       "dependency": "@protobufjs/utf8",
       "to": "@protobufjs/utf8@1.1.0:node_modules/@protobufjs/utf8"
     },
     {
-      "from": "protobufjs@7.4.0:node_modules/protobufjs",
+      "from": "protobufjs@7.5.5:node_modules/protobufjs",
       "dependency": "@types/node",
       "to": "@types/node@17.0.35:node_modules/protobufjs/node_modules/@types/node"
     },
     {
-      "from": "protobufjs@7.4.0:node_modules/protobufjs",
+      "from": "protobufjs@7.5.5:node_modules/protobufjs",
       "dependency": "long",
       "to": "long@5.2.3:node_modules/protobufjs/node_modules/long"
     },
@@ -7810,6 +7942,21 @@
       "to": "util-deprecate@1.0.2:node_modules/util-deprecate"
     },
     {
+      "from": "readable-stream@3.6.0:node_modules/pbkdf2/node_modules/readable-stream",
+      "dependency": "inherits",
+      "to": "inherits@2.0.4:node_modules/inherits"
+    },
+    {
+      "from": "readable-stream@3.6.0:node_modules/pbkdf2/node_modules/readable-stream",
+      "dependency": "string_decoder",
+      "to": "string_decoder@1.3.0:node_modules/string_decoder"
+    },
+    {
+      "from": "readable-stream@3.6.0:node_modules/pbkdf2/node_modules/readable-stream",
+      "dependency": "util-deprecate",
+      "to": "util-deprecate@1.0.2:node_modules/util-deprecate"
+    },
+    {
       "from": "readable-stream@3.6.0:node_modules/stream-browserify/node_modules/readable-stream",
       "dependency": "inherits",
       "to": "inherits@2.0.4:node_modules/inherits"
@@ -7823,6 +7970,26 @@
       "from": "readable-stream@3.6.0:node_modules/stream-browserify/node_modules/readable-stream",
       "dependency": "util-deprecate",
       "to": "util-deprecate@1.0.2:node_modules/util-deprecate"
+    },
+    {
+      "from": "ripemd160@2.0.1:node_modules/pbkdf2/node_modules/ripemd160",
+      "dependency": "hash-base",
+      "to": "hash-base@2.0.2:node_modules/pbkdf2/node_modules/hash-base"
+    },
+    {
+      "from": "ripemd160@2.0.1:node_modules/pbkdf2/node_modules/ripemd160",
+      "dependency": "inherits",
+      "to": "inherits@2.0.4:node_modules/inherits"
+    },
+    {
+      "from": "ripemd160@2.0.2:node_modules/pbkdf2/node_modules/create-hash/node_modules/ripemd160",
+      "dependency": "hash-base",
+      "to": "hash-base@3.1.0:node_modules/pbkdf2/node_modules/create-hash/node_modules/hash-base"
+    },
+    {
+      "from": "ripemd160@2.0.2:node_modules/pbkdf2/node_modules/create-hash/node_modules/ripemd160",
+      "dependency": "inherits",
+      "to": "inherits@2.0.4:node_modules/inherits"
     },
     {
       "from": "ripemd160@2.0.2:node_modules/ripemd160",
@@ -7905,27 +8072,17 @@
       "to": "has-property-descriptors@1.0.2:node_modules/has-property-descriptors"
     },
     {
-      "from": "sha.js@2.4.11:node_modules/sha.js",
+      "from": "sha.js@2.4.12:node_modules/sha.js",
       "dependency": "inherits",
       "to": "inherits@2.0.4:node_modules/inherits"
     },
     {
-      "from": "sha.js@2.4.11:node_modules/sha.js",
+      "from": "sha.js@2.4.12:node_modules/sha.js",
       "dependency": "safe-buffer",
       "to": "safe-buffer@5.2.1:node_modules/safe-buffer"
     },
     {
-      "from": "sha.js@2.4.12:node_modules/@stellar/stellar-base/node_modules/sha.js",
-      "dependency": "inherits",
-      "to": "inherits@2.0.4:node_modules/inherits"
-    },
-    {
-      "from": "sha.js@2.4.12:node_modules/@stellar/stellar-base/node_modules/sha.js",
-      "dependency": "safe-buffer",
-      "to": "safe-buffer@5.2.1:node_modules/safe-buffer"
-    },
-    {
-      "from": "sha.js@2.4.12:node_modules/@stellar/stellar-base/node_modules/sha.js",
+      "from": "sha.js@2.4.12:node_modules/sha.js",
       "dependency": "to-buffer",
       "to": "to-buffer@1.2.2:node_modules/to-buffer"
     },
@@ -7987,7 +8144,7 @@
     {
       "from": "tiny-secp256k1@1.1.7:node_modules/tiny-secp256k1",
       "dependency": "elliptic",
-      "to": "elliptic@6.5.4:node_modules/elliptic"
+      "to": "elliptic@6.6.1:node_modules/elliptic"
     },
     {
       "from": "tiny-secp256k1@1.1.7:node_modules/tiny-secp256k1",

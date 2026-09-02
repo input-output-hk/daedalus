@@ -39,3 +39,9 @@ Product limits are not security claims: preferred-catalog availability, Diagnost
 ## Remaining release gates
 
 Internal gate 12 is closed. Release remains blocked by the external audit, current Electron/Chromium security review, exact release-candidate baseline, physical hardware promotion evidence, post-audit change control, and the platform/matrix coverage explicitly deferred by task 802. The dormant hardware batch helper still lacks production integration evidence; task 607/708 product activation remains gated, so this is not a current reachable signing path.
+
+## Task 807 change-control re-review
+
+Completed: 2026-09-02
+
+The task-807 dependency, Electron, Nix/package-lifecycle, hardware-manifest, and final-artifact delta replayed the affected internal review scope. Exact CBOR/era coverage passed 46 examples, hardware capability/certification coverage passed 15 examples, trusted IPC and dApp session/egress/sandbox harnesses passed, and every supported final Linux package passed the hostile matrix. No critical or high internal security or transaction-integrity issue remains. The medium whole-batch failure-index diagnostic limitation is unchanged; hardware product activation remains disabled. Exact inputs, package hashes, platform evidence, and the macOS-only operator waiver are recorded in [the task-807 release candidate](../research/10-task-807-release-candidate.md).

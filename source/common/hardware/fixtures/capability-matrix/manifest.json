@@ -72,14 +72,14 @@
       "version": "9.7.2",
       "sha1": "bb6e06f1a28bac41266ef936fea38f653122afa3",
       "integrity": "sha512-Sn6F4mNH+yi2vAHy29kwhs50bRLn92drg3znm3pkY+8yEBxI4MmuP8sKYjdgUEJnQflWh80KlcvEDeVa4olVRA==",
-      "lockSha256": "53d018a89212037968c4de3f501ee90c1275e174edd28f915656d61bb92fe889",
+      "lockSha256": "41c3a1da2b8f85b6be6eed791bb99fa3f0fa112c81f8852c80a07319c3c4205b",
       "runtimeIdentity": "trezor-9.7.2-runtime-identity.json",
       "probe": "trezor-9.7.2-library-results.json"
     }
   ],
   "runtimeProvenance": {
     "artifactId": "trezor-connect-9.7.2",
-    "runtimeGraphSha256": "af4d4b0f2f3609128440cf90964c38a2b1fad2e40f96123bd8a3a2a3b49916a1",
+    "runtimeGraphSha256": "dc627f48e33fdcb942eb4d8fe1d6b808c7659028f6cd2fb2f118edd0a2aea7c9",
     "configIdentitySha256": "fee4c314dbfcf63b54c22d2285e2a6e6f2f96e53a3aae8ea007b0ccc9443426a"
   },
   "dependencyDecision": {
