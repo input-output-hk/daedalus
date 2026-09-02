@@ -13,8 +13,15 @@
       if targetSystem == "x86_64-windows"
       then "x86_64-linux"
       else targetSystem;
+    basePkgs = inputs.nixpkgs.legacyPackages.${system};
+    electron = basePkgs.callPackage (inputs.nixpkgs + "/pkgs/development/tools/electron/binary/generic.nix") {} electronVersion {
+      x86_64-linux = "sha256-onKR1QKxYXD+SdFL6raMTZoQQBklAOFkOpqwsRJ08HU=";
+      x86_64-darwin = "sha256-8UrnxIVRobAl7/ttTJIb0F8vW4xQ1y83EIFXJvKUzlY=";
+      aarch64-darwin = "sha256-ZZukJTyhTwvY501aLaLW2j5z5EwCCdLDtebKZaxAVYo=";
+      headers = "1nvq3xvz38xr64r1z7xa6wdmf6zykdsbl7angmy7bvr5rw4pi897";
+    };
   in
-    inputs.nixpkgs.legacyPackages.${system};
+    basePkgs.extend (_final: _prev: {inherit electron;});
   # Note: The systemd patch for Ledger detection was removed during nixos-25.11 upgrade
   # TODO: Verify Ledger hardware wallet detection still works without the patch
   # If not, the patch needs to be updated for systemd 258.3
@@ -383,7 +390,7 @@
     electronShaSums = pkgs.fetchurl {
       name = "electronShaSums-${electronVersion}"; # cache invalidation
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/SHASUMS256.txt";
-      hash = "sha256-+tI8kWgYS9VrI+DRiXkhN0Nt1CT3yAWxcw8N72XrUE8=";
+      hash = "sha256-qnbxSwPj5VU+5sN1J8RJ61TiXq34m4yUTKiUuA5r4ro=";
     };
 
     electronCacheHash =
@@ -393,7 +400,7 @@
     electronChromedriverShaSums = pkgs.fetchurl {
       name = "electronChromedriverShaSums-${electronChromedriverVersion}"; # cache invalidation
       url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/SHASUMS256.txt";
-      hash = "sha256-+tI8kWgYS9VrI+DRiXkhN0Nt1CT3yAWxcw8N72XrUE8=";
+      hash = "sha256-qnbxSwPj5VU+5sN1J8RJ61TiXq34m4yUTKiUuA5r4ro=";
     };
 
     electronChromedriverCacheHash =

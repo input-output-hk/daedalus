@@ -218,6 +218,7 @@ in rec {
         ${pkgs.pciutils}/lib/libpci.so.3
         ${pkgs.libva.out}/lib/*.so.2
         ${pkgs.atk}/lib/libatk-bridge-2.0.so
+        ${pkgs.sqlite.out}/lib/libsqlite3.so
         ${pkgs.libgbm}/lib/libgbm.so.1
         ${pkgs.mesa}/lib/gbm/dri_gbm.so
         $(find ${pkgs.glibc}/lib -type l)
@@ -255,6 +256,7 @@ in rec {
       # at lib/electron/ (exe_dir) and lib/electron/lib/ (lib_dir):
       cp -R ${electronBundleExe}/lib/electron $out/lib/
       chmod -R +w $out/lib/electron
+      mkdir -p $out/lib/electron/lib
 
       # Overlay the raw electron app assets (resources, locales, etc.); -n ensures
       # the patched binary and bundled libs from electronBundleExe are not clobbered:
@@ -265,15 +267,16 @@ in rec {
       ( cd $out/lib/electron && mv libffmpeg.so lib/libffmpeg.so && ln -s lib/libffmpeg.so libffmpeg.so ; )
       ( cd $out/lib/electron/lib && ln -s libatk-bridge-2.0.so libatk-bridge.so ; )
 
-      # nixpkgs-25.11: libgtk-3 now depends on libtinysparql, which has libsqlite3.so
-      # as a full-path DT_NEEDED that was nuked to eeee... Replace with a soname so
-      # the bundled sqlite copy can satisfy it.
+      # libtinysparql carries an absolute sqlite DT_NEEDED from Electron's
       cp ${pkgs.sqlite.out}/lib/libsqlite3.so.0 $out/lib/electron/lib/
       for f in $out/lib/electron/lib/libtinysparql-3.0.so*; do
-        patchelf --replace-needed \
-          '/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-sqlite-3.50.4/lib/libsqlite3.so' \
-          'libsqlite3.so.0' \
-          "$f"
+        patchelf --print-needed "$f" | while IFS= read -r needed; do
+          case "$needed" in
+            /nix/store/*-sqlite-*/lib/libsqlite3.so)
+              patchelf --replace-needed "$needed" libsqlite3.so.0 "$f"
+              ;;
+          esac
+        done
       done
 
       patchelf --set-rpath '$ORIGIN/lib:$ORIGIN' $out/lib/electron/electron
@@ -423,12 +426,10 @@ in rec {
       startupWMClass = common.launcherConfigs.${cluster}.installerConfig.spacedName;
     });
 
-  # Use pkgs.electron.unwrapped (from nixpkgs) directly, no need to download or patchelf.
-  # The nixpkgs electron is already patchelf'd for NixOS; nix-bundle-exe will handle
-  # bundling its shared-library deps for the relocatable build.
+  # Use the pinned official Electron binary wrapped by the stable package set.
   electronBin = pkgs.runCommand "electron-${electronVersion}" {} ''
     mkdir -p $out/lib $out/bin
-    cp -r ${pkgs.electron.unwrapped}/libexec/electron $out/lib/
+    cp -r ${pkgs.electron}/libexec/electron $out/lib/
     ln -sf $out/lib/electron/electron $out/bin/electron
   '';
 }

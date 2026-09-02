@@ -56,3 +56,9 @@ The Daedalus task commit containing this statement is the remediation-tree ident
 - The V6 retained migration-evidence gap remains a task-807 release gate.
 - Hardware product activation, preferred catalog entries, CIP-104, and CIP-142 remain disabled/empty as documented.
 - Dependency/CVE currency, exact package hashes, remaining platform/package lifecycle evidence, and post-audit baseline change control remain task-807 gates.
+
+## Task 807 post-audit change control
+
+Completed: 2026-09-02
+
+Independent reviewer `Task807DeltaAudit` re-examined the task-806 boundaries affected by task 807: production dependency resolutions, fixed-output Electron packaging, Linux package rollback, hostile-renderer authority, hardware fail-closed activation, and the exact backend migration evidence. It found no evidence-backed critical or high security or transaction-integrity issue. Backend production source remains the audited and pinned `bc9b5b9...`; test-only commit `859f894...` adds a passing V6 commit/backup/malformed-rollback/restore check, while existing durable-store tests cover active-claim conflicts. The V6 retained-evidence gap is therefore closed. The batch-index residual and privileged trusted-renderer legacy debt are unchanged. Full identities, package hashes, platform runs, and launcher variants are recorded in [the task-807 release candidate](../research/10-task-807-release-candidate.md).

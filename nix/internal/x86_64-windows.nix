@@ -812,7 +812,7 @@ in rec {
   windowsSources = {
     electron = pkgs.fetchurl {
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-win32-x64.zip";
-      hash = "sha256-CLYOSvnzmAm46Z8UA2pdFQhx9ejiXgLJV8Kg9U7M0Q0=";
+      hash = "sha256-VEfFDRlsIifjlnFuqWmGnB5bqhK2r3+zP3WuiXpoU6o=";
     };
 
     # XXX: normally, node-gyp would download it only for Windows,
@@ -820,7 +820,7 @@ in rec {
     node-lib = pkgs.fetchurl {
       name = "node.lib-${electronVersion}"; # cache invalidation
       url = "https://electronjs.org/headers/v${electronVersion}/win-x64/node.lib";
-      hash = "sha256-fmQN5y5hrEf2gbaf+Jc2PF7gEIixrSyAs9S62hu1v4g=";
+      hash = "sha256-pKM7AL77T8wPNW+YEuRjdi9VosOM6S2QnAm/h40mPaQ=";
     };
   };
 }

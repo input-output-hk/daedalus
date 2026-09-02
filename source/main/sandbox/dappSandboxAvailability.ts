@@ -308,7 +308,7 @@ const supportedHost = (
         id: 'omarchy',
         versionId: '4.0.2',
         buildId: '4.0.2',
-        kernelRelease: '7.1.9-arch1-2',
+        kernelRelease: '7.1.8-arch1-Watanare-T2-3-t2',
       },
       helperMode: 0o755,
       usernsOnly: true,

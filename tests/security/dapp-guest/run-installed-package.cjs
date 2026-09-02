@@ -40,7 +40,7 @@ const expectedDistribution =
         id: 'omarchy',
         versionId: '4.0.2',
         buildId: '4.0.2',
-        kernelRelease: '7.1.9-arch1-2',
+        kernelRelease: '7.1.8-arch1-Watanare-T2-3-t2',
       };
 assert.deepStrictEqual(identity.distribution, expectedDistribution);
 assert.strictEqual(identity.helper && identity.helper.mode, '0755');
