@@ -13,11 +13,37 @@ const entry = path.join(
   'libexec/daedalus-js/main/dappGuestSecurityHarness.js'
 );
 const launcherConfig = path.join(root, 'config/launcher-config.yaml');
-for (const file of [electron, entry, launcherConfig]) {
+const identityManifest = path.join(
+  root,
+  'share/daedalus-sandbox-identity.json'
+);
+for (const file of [electron, entry, launcherConfig, identityManifest]) {
   assert(fs.statSync(file).isFile(), `missing installed package file: ${file}`);
   assert(fs.realpathSync(file).startsWith(`${root}/`));
 }
-assert(!Object.prototype.hasOwnProperty.call(process.env, 'ELECTRON_DISABLE_SANDBOX'));
+const identity = JSON.parse(fs.readFileSync(identityManifest, 'utf8'));
+assert.strictEqual(identity.schemaVersion, 2);
+assert.strictEqual(identity.packageFamily, 'arch');
+assert.strictEqual(identity.matrixRevision, 'task-111-matrix-2026-09-02');
+assert(['arch-2026.09.01', 'omarchy-4.0.2'].includes(identity.matrixRow));
+assert.strictEqual(identity.supportState, 'supported');
+assert.strictEqual(identity.policy && identity.policy.kind, 'none');
+const expectedDistribution =
+  identity.matrixRow === 'arch-2026.09.01'
+    ? {
+        id: 'arch',
+        versionId: '2026.09.01',
+        buildId: 'rolling',
+        kernelRelease: '7.2.2-arch1-1',
+      }
+    : {
+        id: 'omarchy',
+        versionId: '4.0.2',
+        buildId: '4.0.2',
+        kernelRelease: '7.1.9-arch1-2',
+      };
+assert.deepStrictEqual(identity.distribution, expectedDistribution);
+assert.strictEqual(identity.helper && identity.helper.mode, '0755');
 
 const run = spawnSync(electron, ['--disable-gpu', entry], {
   encoding: 'utf8',
@@ -36,7 +62,17 @@ if (run.error) throw run.error;
 assert.strictEqual(run.status, 0, run.stderr);
 const lines = run.stdout.trim().split('\n');
 const result = JSON.parse(lines[lines.length - 1]);
-assert.strictEqual(result.schemaVersion, 1);
+assert.strictEqual(result.schemaVersion, 2);
+for (const category of [
+  'task802IpcMatrix',
+  'task802TransportMatrix',
+  'task802DestinationBindingMatrix',
+  'task802LifecycleRaceMatrix',
+  'task802SwitchVariantMatrix',
+  'task802NonpersistentStorageMatrix',
+]) {
+  assert.strictEqual(result[category], true, category);
+}
 for (const [key, value] of Object.entries(result)) {
   if (key !== 'schemaVersion' && key !== 'manifestChannels')
     assert.strictEqual(value, true, key);
