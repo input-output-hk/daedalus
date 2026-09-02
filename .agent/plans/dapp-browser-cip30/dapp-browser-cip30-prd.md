@@ -67,6 +67,7 @@ The feature also introduces full-ledger transaction context, witness-only softwa
 - Task-111 completed on 2026-09-02: native pacman `.pkg.tar.zst` outputs now cover all four clusters with fixed `/opt` identity, userns-only containment, ALPM live-process guards, and distinct release/Hydra/Buildkite exposure. Exact installed Arch 2026.09.01 and Omarchy 4.0.2 candidates passed package lifecycle, reboot, wallet preservation, exact-renderer sandbox proof, and the full task-802 hostile matrix; sanitized positive/failure/rollback evidence is recorded under `scripts/linux-chromium-sandbox-probe/evidence/task-111`. Matrix revision `task-111-matrix-2026-09-02` remains snapshot-specific; later rolling releases and other derivatives remain wallet-only until separately certified.
 - Task-807 completed on 2026-09-02: the release candidate updates to Electron 41.10.6/Chromium 146.0.7680.216 and exact critical dependency resolutions, retains the audited cardano-wallet revision-1 Conway pin, and records zero critical production audit findings. Final Windows x64, DEB, RPM, Arch, and Omarchy artifacts passed their applicable installed lifecycle, rollback/recovery, reboot, exact-renderer, and hostile matrices; macOS x64/arm64 are explicitly operator-waived rather than inferred passes. Post-change internal and independent delta review found no critical/high issue. The immutable locks, pins, catalog, disabled launcher variants, artifact hashes, platform fingerprints, and evidence links are recorded in `research/10-task-807-release-candidate.md`.
 - Windows production activation completed on 2026-09-02: the rebuilt x64 mainnet NSIS package installed at the protected default Program Files root, exposed only the Diagnostics dApp path, passed native renderer sandbox attestation and the unchanged packaged hostile matrix, rejected `--no-sandbox`, and restored its installed harness byte-for-byte. Preferred-catalog, CIP-104, CIP-142, hardware, custom-install, and macOS activation remain disabled.
+- Task-900 completed on 2026-09-02: the [dApp browser recovery runbook](../../ops/dapp-browser-cip30-recovery-runbook.md) now fixes role-based ownership, independent packaged launcher controls, baseline-preserving emergency disable/restore, catalog approval and removal, guest teardown, grant invalidation, sandbox/backend/device recovery, and ambiguous-submission reconciliation. It changes no source, package, catalog, resource policy, hardware row, or activation value from the task-807 baseline and recorded Windows-only Diagnostics activation.
 
 ## Problem Statement
 
@@ -446,7 +447,7 @@ Ledger model/app-major-8 and Trezor matrix without blocking current development.
 - [ ] Add Ledger and Trezor arbitrary-CBOR transaction and message signing.
 - [ ] Add connection, approval, batch, collateral, offline, error, and settings UX in en-US and ja-JP.
 - [x] Add settings to inspect and forget dApp connections and elevated key grants.
-- [ ] Add a feature kill switch and fail-closed sandbox availability gate.
+- [x] Add a feature kill switch and fail-closed sandbox availability gate.
 
 ### Non-Functional Requirements
 
@@ -1776,6 +1777,7 @@ upstream review and pin ownership.
 - Enable curated mainnet catalog only after audit closure.
 - Enable arbitrary diagnostics launch last.
 - Preserve a launcher-config kill switch that prevents launch without deleting grants or interfering with pending-submission reconciliation. Applying it through a normal update/restart also tears down any guest from the prior process.
+- Operate, disable, and recover the released feature through the [dApp browser recovery runbook](../../ops/dapp-browser-cip30-recovery-runbook.md). The Release Owner owns packaged policy and restore decisions; the Catalog Steward proposes catalog changes; the Security Owner approves origin/resource changes and emergency disposition; Backend and Device Compatibility Owners own their respective recovery evidence.
 
 ## Testing Strategy
 
@@ -1915,6 +1917,8 @@ Task-805 closed internal gate 12 and task-806 closed external gate 13 on 2026-08
 
 All switches are main-owned launcher-configuration inputs implemented and tested before the audited release-candidate baseline. They are packaged and changed only through the normal reviewed release process; there is no remote runtime-policy service. Disabled launch modes reject new guests, and disabled proposed extensions are omitted from negotiation. The rollout manifest records the exact package/configuration variants used at each stage.
 
+The global, preferred-catalog, Diagnostics, CIP-104, and CIP-142 controls are independent policy inputs. Global remains the master launch gate; CIP-104 remains terminal-disabled regardless of policy input; no extension switch bypasses launch, sandbox, route, grant, or consent gates. Exact baseline values, ownership, catalog governance, and response procedures are fixed by the [dApp browser recovery runbook](../../ops/dapp-browser-cip30-recovery-runbook.md).
+
 ### Migrations
 
 - Main-owned dApp grant and collateral-preference schema.
@@ -1932,6 +1936,8 @@ All migrations must be versioned, atomic, and fail closed. Wallet funds remain g
 - Continue reconciling collateral preference against wallet state even while browser launch is disabled.
 - Revert a backend pin only when its database/API migration is backward-compatible or a separate rollback migration exists.
 - Do not fall back to unsandboxed guest launch, legacy IPC, incomplete transaction review, proxy submission, or reconstructed hardware bodies.
+
+The [dApp browser recovery runbook](../../ops/dapp-browser-cip30-recovery-runbook.md) defines the evidence-preserving disable/restore sequence and incident procedures for sandbox failure, backend incompatibility, device regression, ambiguous submission state, catalog removal, guest teardown, and grant invalidation.
 
 ## Risks And Mitigations
 

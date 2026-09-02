@@ -13,6 +13,7 @@ This folder contains all the documentation needed for AI agents to effectively a
 | [`/system`](./system/)        | Architecture, APIs, state management   | **First**, for any architectural decisions or understanding system design  |
 | [`/plans`](./plans/)          | PRDs and implementation plans history  | When implementing new features similar to past work                        |
 | [`/SOPs`](./SOPs/)            | Standard Operating Procedures          | When encountering known issues or following established patterns           |
+| [`/ops`](./ops/)              | Release operations and recovery runbooks | When operating or recovering reviewed production features                 |
 | [`/findings`](./findings/)    | Problems noticed but deliberately not fixed yet | When a review turns up something real and out of scope. Not for exploit surfaces in shipped code: this repository is public |
 | [`/skills`](./skills/)        | Reusable task-specific playbooks       | When making domain-specific changes (CLI, frontend, testing)               |
 | [`/workflows`](./workflows/)  | Step-by-step development workflows     | When executing specific development tasks                                  |
@@ -62,6 +63,15 @@ When an issue is resolved or a complex integration succeeds:
 
 **To create a new SOP**, ask the agent:
 > "Generate SOP for [task/integration name]"
+
+---
+
+### `/ops` — Release Operations
+
+**Reviewed procedures for operating, disabling, and recovering production features.**
+
+Use these runbooks to preserve release evidence and security boundaries during incidents and staged rollout:
+- `dapp-browser-cip30-recovery-runbook.md` — dApp launcher controls, catalog governance, teardown, rollback, and submission recovery
 
 ---
 
