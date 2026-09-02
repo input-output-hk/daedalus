@@ -1,8 +1,11 @@
+import type { ProcessMetric } from 'electron';
 import {
   hasSandboxBypass,
   requireDappSandboxAvailable,
   validatePackageIdentity,
   validateRendererEvidence,
+  validateWindowsPackageIdentity,
+  validateWindowsRendererEvidence,
 } from './dappSandboxAvailability';
 const mainEvidence = {
   pid: 10,
@@ -50,6 +53,26 @@ const archManifest = {
   policy: { kind: 'none' },
   helper: { mode: '0755' },
 };
+
+const windowsPackage = {
+  appName: 'Daedalus Mainnet',
+  appPath: 'C:\\Program Files\\Daedalus Mainnet\\resources\\app',
+  architecture: 'x64',
+  executablePath: 'C:\\Program Files\\Daedalus Mainnet\\Daedalus Mainnet.exe',
+  installRoot: 'C:\\Program Files\\Daedalus Mainnet',
+  isPackaged: true,
+  launcherConfigPath:
+    'C:\\Program Files\\Daedalus Mainnet\\launcher-config.yaml',
+  resourcesPath: 'C:\\Program Files\\Daedalus Mainnet\\resources',
+};
+
+const windowsRendererMetric = {
+  creationTime: 100,
+  integrityLevel: 'low',
+  pid: 20,
+  sandboxed: true,
+  type: 'Tab',
+} as ProcessMetric;
 
 describe('dApp sandbox availability', () => {
   test.each([
@@ -156,6 +179,94 @@ describe('dApp sandbox availability', () => {
     expect(Boolean(validatePackageIdentity(manifest, host, 'mainnet'))).toBe(
       accepted
     );
+  });
+
+  test('accepts only the exact protected Windows package layout', () => {
+    expect(validateWindowsPackageIdentity(windowsPackage, 'mainnet')).toBe(
+      true
+    );
+    expect(
+      validateWindowsPackageIdentity(
+        {
+          ...windowsPackage,
+          executablePath: 'C:\\Users\\alice\\Daedalus Mainnet.exe',
+        },
+        'mainnet'
+      )
+    ).toBe(false);
+    expect(
+      validateWindowsPackageIdentity(
+        { ...windowsPackage, installRoot: 'D:\\Daedalus Mainnet' },
+        'mainnet'
+      )
+    ).toBe(false);
+    expect(validateWindowsPackageIdentity(windowsPackage, 'preview')).toBe(
+      false
+    );
+    expect(
+      validateWindowsPackageIdentity(
+        { ...windowsPackage, isPackaged: false },
+        'mainnet'
+      )
+    ).toBe(false);
+  });
+
+  test.each([
+    ['mainnet', 'Daedalus Mainnet'],
+    ['preprod', 'Daedalus Pre-Prod'],
+    ['preview', 'Daedalus Preview'],
+    ['selfnode', 'Daedalus Selfnode'],
+  ])('accepts the shipped Windows %s package identity', (cluster, appName) => {
+    const installRoot = `C:\\Program Files\\${appName}`;
+    expect(
+      validateWindowsPackageIdentity(
+        {
+          ...windowsPackage,
+          appName,
+          appPath: `${installRoot}\\resources\\app`,
+          executablePath: `${installRoot}\\${appName}.exe`,
+          installRoot,
+          launcherConfigPath: `${installRoot}\\launcher-config.yaml`,
+          resourcesPath: `${installRoot}\\resources`,
+        },
+        cluster
+      )
+    ).toBe(true);
+  });
+
+  test.each([
+    {
+      name: 'an unsandboxed renderer',
+      metric: { ...windowsRendererMetric, sandboxed: false },
+    },
+    {
+      name: 'a medium-integrity renderer',
+      metric: { ...windowsRendererMetric, integrityLevel: 'medium' },
+    },
+    {
+      name: 'a browser process',
+      metric: { ...windowsRendererMetric, type: 'Browser' },
+    },
+    {
+      name: 'a different process',
+      metric: { ...windowsRendererMetric, pid: 21 },
+    },
+  ])('rejects Windows evidence with $name', ({ metric }) => {
+    expect(
+      validateWindowsRendererEvidence([metric] as ProcessMetric[], 20)
+    ).toBe(false);
+  });
+
+  test('accepts native Windows sandbox evidence for the exact renderer', () => {
+    expect(validateWindowsRendererEvidence([windowsRendererMetric], 20)).toBe(
+      true
+    );
+    expect(
+      validateWindowsRendererEvidence(
+        [{ ...windowsRendererMetric, integrityLevel: 'untrusted' }],
+        20
+      )
+    ).toBe(true);
   });
 
   test.each([

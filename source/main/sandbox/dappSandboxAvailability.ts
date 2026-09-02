@@ -3,8 +3,8 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import type EventEmitter from 'events';
-import { BrowserWindow, session } from 'electron';
-import type { Session, WebContents } from 'electron';
+import { app, BrowserWindow, session } from 'electron';
+import type { ProcessMetric, Session, WebContents } from 'electron';
 
 const MATRIX_REVISION = 'task-108-matrix-2026-08-18';
 const ARCH_MATRIX_REVISION = 'task-111-matrix-2026-09-02';
@@ -21,6 +21,14 @@ const FORBIDDEN_SWITCHES = [
   '--no-sandbox',
   '--single-process',
 ] as const;
+const WINDOWS_PROGRAM_FILES = 'C:\\Program Files';
+const WINDOWS_PRODUCT_NAMES: Readonly<Record<string, string>> = {
+  mainnet: 'Daedalus Mainnet',
+  mainnet_flight: 'Daedalus Flight',
+  preprod: 'Daedalus Pre-Prod',
+  preview: 'Daedalus Preview',
+  selfnode: 'Daedalus Selfnode',
+};
 const STATUS_FIELDS: Record<string, true> = {
   Pid: true,
   NoNewPrivs: true,
@@ -91,6 +99,17 @@ type PackageValidation = {
   usernsOnly: boolean;
 };
 
+type WindowsPackageIdentity = {
+  appName: string;
+  appPath: string;
+  architecture: string;
+  executablePath: string;
+  installRoot: string;
+  isPackaged: boolean;
+  launcherConfigPath: string;
+  resourcesPath: string;
+};
+
 let availability: DappSandboxAvailability = Object.freeze({
   status: 'not-started',
 });
@@ -118,6 +137,54 @@ export const hasSandboxBypass = (
 ): boolean =>
   argv.some(argumentIsForbidden) ||
   Object.prototype.hasOwnProperty.call(environment, 'ELECTRON_DISABLE_SANDBOX');
+
+const normalizeWindowsPath = (value: string): string =>
+  path.win32.normalize(value).toLowerCase();
+
+export const validateWindowsPackageIdentity = (
+  identity: WindowsPackageIdentity,
+  cluster: string
+): boolean => {
+  const productName = WINDOWS_PRODUCT_NAMES[cluster];
+  if (!productName) return false;
+  const expectedRoot = path.win32.join(WINDOWS_PROGRAM_FILES, productName);
+  return (
+    identity.isPackaged &&
+    identity.architecture === 'x64' &&
+    identity.appName === productName &&
+    normalizeWindowsPath(identity.installRoot) ===
+      normalizeWindowsPath(expectedRoot) &&
+    normalizeWindowsPath(identity.executablePath) ===
+      normalizeWindowsPath(
+        path.win32.join(expectedRoot, `${productName}.exe`)
+      ) &&
+    normalizeWindowsPath(identity.resourcesPath) ===
+      normalizeWindowsPath(path.win32.join(expectedRoot, 'resources')) &&
+    normalizeWindowsPath(identity.appPath) ===
+      normalizeWindowsPath(path.win32.join(expectedRoot, 'resources', 'app')) &&
+    normalizeWindowsPath(identity.launcherConfigPath) ===
+      normalizeWindowsPath(
+        path.win32.join(expectedRoot, 'launcher-config.yaml')
+      )
+  );
+};
+
+const findWindowsRendererMetric = (
+  metrics: readonly ProcessMetric[],
+  rendererPid: number
+): ProcessMetric | undefined =>
+  metrics.find(
+    (metric) =>
+      metric.pid === rendererPid &&
+      metric.type === 'Tab' &&
+      metric.sandboxed === true &&
+      (metric.integrityLevel === 'low' || metric.integrityLevel === 'untrusted')
+  );
+
+export const validateWindowsRendererEvidence = (
+  metrics: readonly ProcessMetric[],
+  rendererPid: number
+): boolean => Boolean(findWindowsRendererMetric(metrics, rendererPid));
 
 const parseStatus = (statusText: string): Record<string, string> => {
   const result: Record<string, string> = {};
@@ -188,8 +255,12 @@ export const validateRendererEvidence = (
 export const validateDappRendererSandbox = (
   webContents: WebContents
 ): boolean => {
+  const rendererPid = webContents.getOSProcessId();
+  if (process.platform === 'win32')
+    return validateWindowsRendererEvidence(app.getAppMetrics(), rendererPid);
+  if (process.platform !== 'linux') return false;
   try {
-    const rendererEvidence = readProcEvidence(webContents.getOSProcessId());
+    const rendererEvidence = readProcEvidence(rendererPid);
     return (
       validateRendererEvidence(
         readProcEvidence(process.pid),
@@ -427,6 +498,58 @@ const validateProductionPackage = (
   }
 };
 
+const validateWindowsProductionPackage = (
+  cluster: string,
+  configuredInstallRoot?: string
+): PackageValidation => {
+  const unsupportedPackage = {
+    failure: 'unsupported-package' as const,
+    usernsOnly: false,
+  };
+  const installRoot =
+    configuredInstallRoot || path.win32.dirname(process.execPath);
+  const launcherConfigPath = process.env.LAUNCHER_CONFIG || '';
+  if (
+    !validateWindowsPackageIdentity(
+      {
+        appName: app.getName(),
+        appPath: app.getAppPath(),
+        architecture: process.arch,
+        executablePath: process.execPath,
+        installRoot,
+        isPackaged: app.isPackaged,
+        launcherConfigPath,
+        resourcesPath: process.resourcesPath,
+      },
+      cluster
+    )
+  )
+    return unsupportedPackage;
+
+  try {
+    const entries: ReadonlyArray<readonly [string, 'file' | 'directory']> = [
+      [installRoot, 'directory'],
+      [process.execPath, 'file'],
+      [process.resourcesPath, 'directory'],
+      [app.getAppPath(), 'directory'],
+      [launcherConfigPath, 'file'],
+    ];
+    if (
+      entries.some(([entryPath, kind]) => {
+        const stat = fs.lstatSync(entryPath);
+        return (
+          stat.isSymbolicLink() ||
+          (kind === 'file' ? !stat.isFile() : !stat.isDirectory())
+        );
+      })
+    )
+      return unsupportedPackage;
+    return { failure: null, usernsOnly: false };
+  } catch {
+    return unsupportedPackage;
+  }
+};
+
 const waitForLifecycleFailure = (
   webContents: WebContents,
   window: BrowserWindow
@@ -537,17 +660,28 @@ const runCanary = async (
     const rendererPid = canaryWindow.webContents.getOSProcessId();
     if (!Number.isSafeInteger(rendererPid) || rendererPid <= 1)
       throw new Error('invalid renderer pid');
-    const mainEvidence = readProcEvidence(process.pid);
-    const rendererEvidence = readProcEvidence(rendererPid);
-    if (
-      mainEvidence.status.Pid !== String(process.pid) ||
-      !validateRendererEvidence(
-        mainEvidence,
-        rendererEvidence,
-        requireUserNamespace
+    let rendererStartIdentity: number | string;
+    if (process.platform === 'win32') {
+      const metric = findWindowsRendererMetric(
+        app.getAppMetrics(),
+        rendererPid
+      );
+      if (!metric) throw new Error('invalid Windows sandbox evidence');
+      rendererStartIdentity = metric.creationTime;
+    } else {
+      const mainEvidence = readProcEvidence(process.pid);
+      const rendererEvidence = readProcEvidence(rendererPid);
+      if (
+        mainEvidence.status.Pid !== String(process.pid) ||
+        !validateRendererEvidence(
+          mainEvidence,
+          rendererEvidence,
+          requireUserNamespace
+        )
       )
-    )
-      throw new Error('invalid sandbox evidence');
+        throw new Error('invalid Linux sandbox evidence');
+      rendererStartIdentity = rendererEvidence.startTime;
+    }
 
     await new Promise<void>((resolve) => {
       setImmediate(resolve);
@@ -558,12 +692,18 @@ const runCanary = async (
       canaryWindow.webContents.getOSProcessId() !== rendererPid
     )
       throw new Error('renderer changed');
-    const finalEvidence = readProcEvidence(rendererPid);
-    if (
-      finalEvidence.status.Pid !== rendererEvidence.status.Pid ||
-      finalEvidence.startTime !== rendererEvidence.startTime
-    )
-      throw new Error('renderer instance changed');
+    if (process.platform === 'win32') {
+      const finalMetric = findWindowsRendererMetric(
+        app.getAppMetrics(),
+        rendererPid
+      );
+      if (!finalMetric || finalMetric.creationTime !== rendererStartIdentity)
+        throw new Error('renderer instance changed');
+    } else {
+      const finalEvidence = readProcEvidence(rendererPid);
+      if (finalEvidence.startTime !== rendererStartIdentity)
+        throw new Error('renderer instance changed');
+    }
   } catch {
     canaryFailed = true;
   } finally {
@@ -583,23 +723,30 @@ const runCanary = async (
 const checkAvailability = async (
   options: DappSandboxAvailabilityOptions
 ): Promise<DappSandboxAvailability> => {
-  if (process.platform !== 'linux')
+  if (process.platform !== 'linux' && process.platform !== 'win32')
     return { status: 'unavailable', reason: 'unsupported-host' };
-  let procArgv: string[] = [];
-  try {
-    procArgv = readProcEvidence(process.pid).argv;
-  } catch {
-    return { status: 'unavailable', reason: 'canary-failed' };
+  let argv = process.argv;
+  if (process.platform === 'linux') {
+    try {
+      argv = [...argv, ...readProcEvidence(process.pid).argv];
+    } catch {
+      return { status: 'unavailable', reason: 'canary-failed' };
+    }
   }
-  if (hasSandboxBypass([...process.argv, ...procArgv], process.env))
+  if (
+    hasSandboxBypass(argv, process.env) ||
+    FORBIDDEN_SWITCHES.some((argument) =>
+      app.commandLine.hasSwitch(argument.slice(2))
+    )
+  )
     return { status: 'unavailable', reason: 'sandbox-bypass' };
 
   let requireUserNamespace = false;
   if (!options.isDevelopment) {
-    const packageValidation = validateProductionPackage(
-      options.cluster,
-      options.installRoot
-    );
+    const packageValidation =
+      process.platform === 'win32'
+        ? validateWindowsProductionPackage(options.cluster, options.installRoot)
+        : validateProductionPackage(options.cluster, options.installRoot);
     if (packageValidation.failure)
       return { status: 'unavailable', reason: packageValidation.failure };
     requireUserNamespace = packageValidation.usernsOnly;

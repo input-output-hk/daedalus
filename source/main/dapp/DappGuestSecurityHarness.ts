@@ -99,12 +99,13 @@ const createWindow = (
 };
 
 const testPackagedPolicy = (value: unknown): void => {
+  const windowsDiagnosticsEnabled = process.platform === 'win32';
   const packagedPolicy = new DappLaunchPolicy(value);
   assert.deepStrictEqual(packagedPolicy.config, {
     revision: DAPP_POLICY_REVISION,
-    globalEnabled: false,
+    globalEnabled: windowsDiagnosticsEnabled,
     preferredCatalogEnabled: false,
-    diagnosticsEnabled: false,
+    diagnosticsEnabled: windowsDiagnosticsEnabled,
     cip104Revision: 0,
     cip142Revision: 0,
     hardwareConnectorRows: [],
@@ -530,7 +531,9 @@ app.whenReady().then(async () => {
     const packageCluster = launcherConfig.cluster;
     if (typeof packageCluster !== 'string')
       throw new Error('Invalid packaged cluster');
-    const installRoot = path.dirname(path.dirname(launcherConfigPath));
+    const installRoot =
+      process.env.ENTRYPOINT_DIR ||
+      path.dirname(path.dirname(launcherConfigPath));
     assert.deepStrictEqual(
       await startDappSandboxAvailabilityCheck({
         isDevelopment: false,

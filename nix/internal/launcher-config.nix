@@ -271,9 +271,9 @@ let
       nodeImplementation = "cardano";
       dappBrowserPolicy = {
         revision = 1;
-        globalEnabled = false;
+        globalEnabled = os == "windows";
         preferredCatalogEnabled = false;
-        diagnosticsEnabled = false;
+        diagnosticsEnabled = os == "windows";
         cip104Revision = 0;
         cip142Revision = 0;
         hardwareConnectorRows = [ ];
