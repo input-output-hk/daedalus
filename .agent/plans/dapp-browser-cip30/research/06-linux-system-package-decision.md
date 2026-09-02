@@ -73,7 +73,7 @@ a new reviewed row and installed-artifact certification.
 | Debian 13.x | `.deb` | independently proven SUID or userns | none by default |
 | Fedora 43 | `.rpm` | independently proven SUID or userns | SELinux process and exact-file contexts |
 | Arch Linux 2026.09.01 (`7.2.2-arch1-1`) | `.pkg.tar.zst` | userns only | none; exact installed host identity required |
-| Omarchy 4.0.2 (`7.1.9-arch1-2`) | `.pkg.tar.zst` | userns only | none; exact installed host identity and Wayland startup required |
+| Omarchy 4.0.2 (`7.1.8-arch1-Watanare-T2-3-t2`) | `.pkg.tar.zst` | userns only | none; exact installed host identity and Wayland startup required |
 
 No Ubuntu interim release is in this revision. Product intent is to support
 vendor-supported interim releases, but each exact interim version must first be
