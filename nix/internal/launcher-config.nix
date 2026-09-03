@@ -274,7 +274,7 @@ let
         globalEnabled = os == "windows";
         preferredCatalogEnabled = false;
         diagnosticsEnabled = os == "windows";
-        cip104Revision = 0;
+        cip104Revision = 1;
         cip142Revision = 0;
         hardwareConnectorRows = [ ];
       };

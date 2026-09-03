@@ -109,13 +109,29 @@ describe('CIP-30 wallet executor contract', () => {
     ).toThrow('Invalid CIP-30 wallet response');
   });
 
-  it('requires a transient passphrase for account public-key access', () => {
+  it('requires software credentials or certified hardware for account keys', () => {
     const accountRequest = {
       ...request,
       operation: 'account-public-key' as const,
       passphrase: 'secret',
     };
+    const hardware = {
+      matrixRevision: 'task-006-matrix-2026-08-14',
+      rowId: 'ledger:nanoSP:8.0.0:signData',
+      vendor: 'ledger' as const,
+      model: 'nanoSP',
+      appVersion: '8.0.0',
+      certifiedExtensions: [104],
+      physicalCertified: true,
+      packagedEnabled: true,
+    };
+    const hardwareRequest = {
+      ...request,
+      operation: 'account-public-key' as const,
+      hardware,
+    };
     expect(parseCip30WalletRequest(accountRequest)).toEqual(accountRequest);
+    expect(parseCip30WalletRequest(hardwareRequest)).toEqual(hardwareRequest);
     expect(
       parseCip30WalletResponse(accountRequest, {
         status: 'fulfilled',
@@ -127,9 +143,14 @@ describe('CIP-30 wallet executor contract', () => {
       operation: 'account-public-key',
       value: 'acct_xvk1account',
     });
-    expect(() =>
-      parseCip30WalletRequest({ ...accountRequest, passphrase: '' })
-    ).toThrow('Invalid CIP-30 wallet request');
+    for (const invalid of [
+      { ...accountRequest, passphrase: '' },
+      { ...accountRequest, hardware },
+      { ...request, operation: 'account-public-key' },
+    ])
+      expect(() => parseCip30WalletRequest(invalid)).toThrow(
+        'Invalid CIP-30 wallet request'
+      );
   });
 
   it('validates bounded collateral history without renderer summaries', () => {

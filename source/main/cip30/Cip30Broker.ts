@@ -446,7 +446,7 @@ export class Cip30Broker {
       binding.authority,
       context
     );
-    if (evidence.walletKind !== 'shelley-software') throw refusal();
+    const softwareWallet = evidence.walletKind === 'shelley-software';
     return this.options.consent.request({
       identity: {
         guestWebContentsId: binding.authority.guestWebContentsId,
@@ -459,7 +459,7 @@ export class Cip30Broker {
       },
       presentation: {
         kind: 'key-disclosure',
-        requiresPassphrase: true,
+        requiresPassphrase: softwareWallet,
         origin: binding.authority.origin,
         walletName: evidence.walletName,
         networkName: this.options.networkName,
@@ -469,22 +469,39 @@ export class Cip30Broker {
       payload: {},
       declined: refusal(),
       execute: async (_payload, signal, passphrase) => {
-        if (signal.aborted || !passphrase) throw refusal();
+        if (signal.aborted || (softwareWallet && !passphrase)) throw refusal();
         this.assertCurrent(binding);
         const latest = await this.capabilityEvidence(binding);
-        if (latest.evidence.walletKind !== 'shelley-software') throw refusal();
+        if (
+          (latest.evidence.walletKind === 'shelley-software') !==
+          softwareWallet
+        )
+          throw refusal();
         this.options.dispatcher.requireCapability(
           request.method,
           binding.authority,
           latest.context
         );
-        const response = await this.options.executeWallet({
-          operation: 'account-public-key',
+        const requestIdentity = {
+          operation: 'account-public-key' as const,
           walletId: binding.authority.walletId,
           network: binding.authority.network,
           sourceRevision: this.options.sourceRevision,
-          passphrase,
-        });
+        };
+        let walletRequest: Cip30WalletRequest;
+        if (softwareWallet)
+          walletRequest = {
+            ...requestIdentity,
+            passphrase: passphrase as string,
+          };
+        else {
+          if (!latest.context.device) throw refusal();
+          walletRequest = {
+            ...requestIdentity,
+            hardware: latest.context.device,
+          };
+        }
+        const response = await this.options.executeWallet(walletRequest);
         this.assertCurrent(binding);
         if (response.status === 'rejected') {
           if (response.reason === 'account-change') throw accountChange();
