@@ -33,7 +33,8 @@ export type Cip30WalletRequest = Cip30WalletRequestIdentity &
       }>
     | Readonly<{
         operation: 'account-public-key';
-        passphrase: string;
+        passphrase?: string;
+        hardware?: HardwareConnectorActivation;
       }>
     | Readonly<{
         operation: 'collateral-history';
@@ -345,7 +346,10 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     if (Object.prototype.hasOwnProperty.call(value, 'drepCredential'))
       keys = [...keys, 'drepCredential'];
   } else if (operation === 'account-public-key') {
-    keys = [...keys, 'passphrase'];
+    if (Object.prototype.hasOwnProperty.call(value, 'passphrase'))
+      keys = [...keys, 'passphrase'];
+    if (Object.prototype.hasOwnProperty.call(value, 'hardware'))
+      keys = [...keys, 'hardware'];
   } else if (operation === 'transaction-context')
     keys = [...keys, 'transactions'];
   else if (operation === 'collateral-history')
@@ -381,12 +385,32 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     sourceRevision: value.sourceRevision,
   };
   if (operation === 'account-public-key') {
-    if (!text(value.passphrase))
+    const hasPassphrase = Object.prototype.hasOwnProperty.call(
+      value,
+      'passphrase'
+    );
+    const hasHardware = Object.prototype.hasOwnProperty.call(value, 'hardware');
+    if (
+      hasPassphrase === hasHardware ||
+      (hasPassphrase && !text(value.passphrase))
+    )
       throw new Error('Invalid CIP-30 wallet request');
+    let hardware: HardwareConnectorActivation | undefined;
+    try {
+      hardware = hasHardware
+        ? (parseHardwareCapability(
+            value.hardware,
+            true
+          ) as HardwareConnectorActivation)
+        : undefined;
+    } catch {
+      throw new Error('Invalid CIP-30 wallet request');
+    }
     return Object.freeze({
       ...identity,
       operation,
-      passphrase: value.passphrase,
+      ...(hasPassphrase ? { passphrase: value.passphrase as string } : {}),
+      ...(hardware ? { hardware } : {}),
     });
   }
   if (operation === 'collateral-history') {

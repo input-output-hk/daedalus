@@ -106,3 +106,14 @@ The reviewed `defaultLauncherConfig` is shared by every cluster and package prod
 The task-807 rows above remain the immutable baseline they describe. A subsequent Windows-only production gate supersedes the Windows launcher-policy statement: Linux and macOS remain disabled, while shipped x64 NSIS packages at the exact protected default Program Files root now set `globalEnabled=true` and `diagnosticsEnabled=true`. `preferredCatalogEnabled=false`, `cip104Revision=0`, `cip142Revision=0`, and `hardwareConnectorRows=[]` remain unchanged.
 
 The rebuilt mainnet candidate `daedalus-11.3.0-86861-mainnet-dirty-x86_64-windows.exe` has SHA-256 `2a48d55d5599739f24a1a3156de3a1f14cbfb7f14980abbea533e7e319631398`. On Windows 11 Enterprise Evaluation build `10.0.26200.0` AMD64, the installed package at `C:\Program Files\Daedalus Mainnet` passed exact package identity, Electron 41.10.6 native OS-sandbox/integrity attestation, the unchanged packaged hostile matrices, explicit `--no-sandbox` refusal, and byte-for-byte harness restoration. The installed executable SHA-256 was `17932bde662f2cf4258f10ebbf987f92d590afee11d473b338361a983c6fc26a`. Custom installation roots remain wallet-only.
+
+## Subsequent CIP-104 activation
+
+On 2026-09-03 the deterministic `newm-chain` account-xpub vector superseded
+the CIP-104 revision-0 baseline. Every package variant now carries
+`cip104Revision=1`; variants whose global dApp launch gate remains disabled
+still cannot expose it. Software wallets require a transient spending
+password. Hardware wallets require an independently certified and packaged
+connector row advertising CIP-104 and use the account xpub retained during
+pairing. `cip142Revision=0`, `preferredCatalogEnabled=false`, and
+`hardwareConnectorRows=[]` remain unchanged.

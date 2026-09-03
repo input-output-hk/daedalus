@@ -2,7 +2,7 @@
 
 ## Overview
 
-Add a wallet-scoped, curated dApp browser to Daedalus with an isolated Electron guest window and a standards-conformant Cardano wallet connector. The connector exposes the current CIP-30 key-wallet API, active key-wallet extensions CIP-95 and CIP-103, and policy-gated proposed CIP-104 and CIP-142. CIP-104 is available to software wallets when its packaged revision gate is enabled; hardware remains capability-gated. It supports Shelley software wallets, Ledger wallets, and Trezor wallets; Byron wallets are excluded.
+Add a wallet-scoped, curated dApp browser to Daedalus with an isolated Electron guest window and a standards-conformant Cardano wallet connector. The connector exposes the current CIP-30 key-wallet API, active key-wallet extensions CIP-95 and CIP-103, packaged-enabled proposed CIP-104, and policy-gated proposed CIP-142. CIP-104 is available to software wallets and to hardware wallets whose connector capability is certified and packaged. It supports Shelley software wallets, Ledger wallets, and Trezor wallets; Byron wallets are excluded.
 
 Remote dApp content is treated as hostile. It never runs in the existing privileged renderer, never receives the existing preload or IPC surface, and never connects through an external-browser transport. A main-process capability broker authenticates the guest, origin, route-selected wallet, network, negotiated extensions, and exact request bytes. Trusted Daedalus UI owns connection, key-disclosure, signing, data-signing, and submission consent.
 
@@ -66,8 +66,8 @@ The feature also introduces full-ledger transaction context, witness-only softwa
 - Task-806 completed on 2026-08-31: independent `ExternalAudit806` reviewed Electron containment, hostile guest-to-privileged IPC, exact approval-byte binding, Cardano/CIP parsing and signing, hardware gates, persistence/recovery, collateral, privacy, and the exact pinned cardano-wallet context/submission/V6 migration boundary. It found no critical/high issue. One medium backend log-suppression finding was fixed, independently re-reviewed, and covered by 6 focused passing Hspec examples at cardano-wallet `bc9b5b9c62cbf526a4806857f7692c3c9d2d2f5e`; Daedalus now pins that commit. The accepted residuals are the existing medium CIP-103 batch failure-index diagnostic limitation and a low retained V6 migration-evidence gap. Exact release-candidate package hashes, dependency/CVE currency, and post-audit baseline change control remain task-807.
 - Task-111 completed on 2026-09-02: native pacman `.pkg.tar.zst` outputs now cover all four clusters with fixed `/opt` identity, userns-only containment, ALPM live-process guards, and distinct release/Hydra/Buildkite exposure. Exact installed Arch 2026.09.01 and Omarchy 4.0.2 candidates passed package lifecycle, reboot, wallet preservation, exact-renderer sandbox proof, and the full task-802 hostile matrix; sanitized positive/failure/rollback evidence is recorded under `scripts/linux-chromium-sandbox-probe/evidence/task-111`. Matrix revision `task-111-matrix-2026-09-02` remains snapshot-specific; later rolling releases and other derivatives remain wallet-only until separately certified.
 - Task-807 completed on 2026-09-02: the release candidate updates to Electron 41.10.6/Chromium 146.0.7680.216 and exact critical dependency resolutions, retains the audited cardano-wallet revision-1 Conway pin, and records zero critical production audit findings. Final Windows x64, DEB, RPM, Arch, and Omarchy artifacts passed their applicable installed lifecycle, rollback/recovery, reboot, exact-renderer, and hostile matrices; macOS x64/arm64 are explicitly operator-waived rather than inferred passes. Post-change internal and independent delta review found no critical/high issue. The immutable locks, pins, catalog, disabled launcher variants, artifact hashes, platform fingerprints, and evidence links are recorded in `research/10-task-807-release-candidate.md`.
-- Windows production activation completed on 2026-09-02: the rebuilt x64 mainnet NSIS package installed at the protected default Program Files root, exposed only the Diagnostics dApp path, passed native renderer sandbox attestation and the unchanged packaged hostile matrix, rejected `--no-sandbox`, and restored its installed harness byte-for-byte. Preferred-catalog, CIP-104, CIP-142, hardware, custom-install, and macOS activation remain disabled.
-- CIP-104 reopened on 2026-09-03 after `newm-chain` supplied the missing deterministic 64-byte account-xpub vector. Daedalus now policy-gates a software-wallet `api.cip104.getAccountPub()` path that validates cardano-wallet's `acct_xvk`, returns a definite-length CBOR byte string, requires separate irreversible-disclosure consent plus a transient spending password, and never logs or caches the key. Packaged revision defaults remain disabled; hardware remains omitted until certified extension evidence includes CIP-104.
+- Windows production activation completed on 2026-09-02: the rebuilt x64 mainnet NSIS package installed at the protected default Program Files root, exposed only the Diagnostics dApp path, passed native renderer sandbox attestation and the unchanged packaged hostile matrix, rejected `--no-sandbox`, and restored its installed harness byte-for-byte. Preferred-catalog, CIP-142, hardware, custom-install, and macOS activation remain disabled. CIP-104 was enabled in packaged policy on 2026-09-03.
+- CIP-104 reopened on 2026-09-03 after `newm-chain` supplied the missing deterministic 64-byte account-xpub vector. Daedalus now exposes negotiated `api.cip104.getAccountPub()` for software wallets and capability-certified hardware wallets. Both paths validate and return the same definite-length CBOR byte string under separate irreversible-disclosure consent; software requires a transient spending password, while hardware uses the already-paired account xpub without requesting one. The packaged CIP-104 revision defaults to enabled; the independent hardware connector row gate remains fail-closed.
 - Task-900 completed on 2026-09-02: the [dApp browser recovery runbook](../../ops/dapp-browser-cip30-recovery-runbook.md) now fixes role-based ownership, independent packaged launcher controls, baseline-preserving emergency disable/restore, catalog approval and removal, guest teardown, grant invalidation, sandbox/backend/device recovery, and ambiguous-submission reconciliation. It changes no source, package, catalog, resource policy, hardware row, or activation value from the task-807 baseline and recorded Windows-only Diagnostics activation.
 
 ## Problem Statement
@@ -314,7 +314,7 @@ Ledger model/app-major-8 and Trezor matrix without blocking current development.
 - Platform, ledger, backend, and hardware intrinsic capability limits still produce typed failures.
 - Key-wallet extensions in scope are CIP-95, CIP-103, CIP-104, and CIP-142.
 - CIP-106 and CIP-141 are explicitly excluded and never advertised.
-- CIP-104 and CIP-142 are labeled Proposed and remain policy-gated; CIP-104 is software-wallet-only until hardware capability evidence exists.
+- CIP-104 and CIP-142 are labeled Proposed. CIP-104 is packaged-enabled; CIP-142 remains policy-gated.
 - CIP-8 is a base/CIP-95 message-signing format, not a negotiated extension.
 - The dApp catalog is bundled and release-versioned initially.
 - Collateral is a persisted soft preference, not a permanent lock.
@@ -335,9 +335,9 @@ Ledger model/app-major-8 and Trezor matrix without blocking current development.
 
 | Wallet kind | Base CIP-30 | CIP-95 | CIP-103 | CIP-104 | CIP-142 |
 |---|---|---|---|---|---|
-| Shelley software | Yes | Yes | Yes | Gated | Gated |
-| Ledger Shelley | Yes, capability checked | Yes, capability checked | Yes, sequential device confirmations | Omitted | Gated |
-| Trezor Shelley | Yes, capability checked | Yes, with transaction limitations | Yes, sequential device confirmations | Omitted | Gated |
+| Shelley software | Yes | Yes | Yes | Yes | Gated |
+| Ledger Shelley | Yes, capability checked | Yes, capability checked | Yes, sequential device confirmations | Yes, capability checked | Gated |
+| Trezor Shelley | Yes, capability checked | Yes, with transaction limitations | Yes, sequential device confirmations | Yes, capability checked | Gated |
 | Byron | No | No | No | No | No |
 | Native-script multisig provider | No | No | No | No | No |
 | Plutus/script wallet provider | No | No | No | No | No |
@@ -349,7 +349,7 @@ Ledger model/app-major-8 and Trezor matrix without blocking current development.
 | CIP-8 | Active | Not an extension | Required by base and CIP-95 `signData` |
 | CIP-95 | Active | Registered | Implement and advertise when fully available |
 | CIP-103 | Active | Registered | Implement and advertise when fully available |
-| CIP-104 | Proposed | Registered | Implement for software wallets behind the proposed-CIP policy gate; omit hardware without certified capability evidence |
+| CIP-104 | Proposed | Registered | Implement and package-enable for software wallets and capability-certified hardware wallets |
 | CIP-106 | Proposed | Registered | Excluded; requires a native-script multisig wallet provider |
 | CIP-141 | Proposed | Not registered | Excluded; requires a Plutus/script-wallet provider and has unresolved wire/security defects |
 | CIP-142 | Proposed | Not registered | Implement behind proposed-CIP policy gate |
@@ -702,9 +702,9 @@ api.cip104.getAccountPub(): Promise<cbor<Bip32PublicKey>>;
 - Negotiate with `{cip: 104}` and expose only `api.cip104.getAccountPub`.
 - Decode cardano-wallet's extended account key only when it is an `acct_xvk` carrying exactly 64 bytes.
 - Return lowercase hex for one definite-length CBOR byte string: prefix `5840` followed by the 64-byte extended public key.
-- Require separately persisted `account-public-key-disclosure` authority, fresh trusted consent, and a transient spending password for every call.
-- Never log, persist, cache, or expose the Bech32 account key; revocation cannot make a dApp forget a disclosed key.
-- Keep packaged revision defaults disabled. Software wallets are eligible; hardware wallets are omitted until certified extension capability evidence includes CIP-104.
+- Require separately persisted `account-public-key-disclosure` authority and fresh trusted consent for every call. Software wallets also require a transient spending password; certified hardware wallets use the account xpub already stored during pairing.
+- Never log, persist anew, cache, or expose the Bech32 account key; revocation cannot make a dApp forget a disclosed key.
+- Package revision 1 by default. Hardware still requires a certified and packaged connector row; unsupported hardware omits CIP-104.
 
 ## CIP-142 Contract
 
@@ -1010,7 +1010,7 @@ Session requirements:
 
 ### Windows Sandbox And Packaging
 
-- Windows Diagnostics dApp launch is enabled only for shipped x64 NSIS packages installed at the exact cluster-specific `C:\Program Files\Daedalus <Network>` path. Preferred-catalog launch, CIP-104, CIP-142, and hardware connector rows remain disabled.
+- Windows Diagnostics dApp launch is enabled only for shipped x64 NSIS packages installed at the exact cluster-specific `C:\Program Files\Daedalus <Network>` path. CIP-104 revision 1 is packaged in every variant but remains inert where the global launch gate is disabled. Preferred-catalog launch, CIP-142, and hardware connector rows remain disabled.
 - The production gate binds the cluster to the exact executable name, `resources\app`, and co-located `launcher-config.yaml`; requires Electron packaged mode and x64; and rejects files, directories, symlinks, or junctions that do not match that protected layout. Custom or user-writable installation paths remain wallet-only.
 - The hidden canary binds `webContents.getOSProcessId()` to Electron's native `app.getAppMetrics()` entry, requires process type `Tab`, `sandboxed=true`, and Windows integrity `low` or `untrusted`, then rechecks the same PID and creation time after a later event-loop turn. Every guest independently requires the same exact-PID native sandbox and integrity evidence. Missing, elevated, replaced, or unsandboxed evidence fails closed and is cached without retry.
 - **Windows production evidence (2026-09-02):** `daedalus-11.3.0-86861-mainnet-dirty-x86_64-windows.exe` (`SHA-256 2a48d55d5599739f24a1a3156de3a1f14cbfb7f14980abbea533e7e319631398`) was installed at `C:\Program Files\Daedalus Mainnet` on Windows 11 Enterprise Evaluation build `10.0.26200.0` AMD64. Its packaged Electron 41.10.6 harness passed native sandbox availability, all hostile matrices, zero privileged side effects, zero unhandled rejections, the enabled global/Diagnostics and disabled preferred-catalog policy, explicit `--no-sandbox` refusal, and byte-for-byte harness restoration. Installed executable SHA-256 was `17932bde662f2cf4258f10ebbf987f92d590afee11d473b338361a983c6fc26a`.

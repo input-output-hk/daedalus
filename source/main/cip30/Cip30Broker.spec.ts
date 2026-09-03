@@ -337,7 +337,7 @@ const create = () => {
     vendor: 'ledger',
     model: 'nanoSP',
     appVersion: '8.0.0',
-    certifiedExtensions: [95],
+    certifiedExtensions: [95, 104],
     physicalCertified: true,
   };
   let signatureResponse = dataSignature.response;
@@ -804,6 +804,45 @@ describe('Cip30Broker', () => {
         passphrase: 'secret',
       })
     );
+    fixture.cleanup();
+  });
+
+  it('uses certified hardware account keys without requesting a password', async () => {
+    const fixture = create();
+    fixture.setWalletKind('ledger');
+    await fixture.broker.handle(
+      event,
+      request('provider.enable', [{ extensions: [{ cip: 104 }] }])
+    );
+    fixture.executeWallet.mockClear();
+    (fixture.consent.request as jest.Mock).mockClear();
+
+    await expect(
+      fixture.broker.handle(event, request('api.cip104.getAccountPub'))
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      value: accountPublicKeyCbor,
+    });
+    expect(fixture.consent.request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        presentation: expect.objectContaining({
+          requiresPassphrase: false,
+        }),
+      })
+    );
+    const accountRequest = fixture.executeWallet.mock.calls.find(
+      ([walletRequest]) => walletRequest.operation === 'account-public-key'
+    )?.[0];
+    expect(accountRequest).toEqual(
+      expect.objectContaining({
+        operation: 'account-public-key',
+        hardware: expect.objectContaining({
+          certifiedExtensions: [95, 104],
+          packagedEnabled: true,
+        }),
+      })
+    );
+    expect(accountRequest).not.toHaveProperty('passphrase');
     fixture.cleanup();
   });
 
@@ -1340,7 +1379,7 @@ describe('Cip30Broker', () => {
             model: 'nanoSP',
             appVersion: '8.0.0',
             matrixRevision: 'task-006-matrix-2026-08-14',
-            certifiedExtensions: [95],
+            certifiedExtensions: [95, 104],
             physicalCertified: true,
             packagedEnabled: true,
           }),
