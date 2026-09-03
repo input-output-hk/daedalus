@@ -18,6 +18,10 @@
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
     },
+    "accountPublicKey": {
+      "type": "string",
+      "pattern": "^5840[0-9a-f]{128}$"
+    },
     "drepId": {
       "type": "string",
       "pattern": "^[0-9a-f]{56}$"

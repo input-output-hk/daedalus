@@ -17,6 +17,7 @@ export type Cip30WalletOperation =
   | 'collateral-history'
   | 'addresses'
   | 'cip95-key-state'
+  | 'account-public-key'
   | 'sign-transactions'
   | 'submit-transaction'
   | 'sign-data';
@@ -29,6 +30,10 @@ export type Cip30WalletRequest = Cip30WalletRequestIdentity &
   (
     | Readonly<{
         operation: 'capabilities' | 'context' | 'addresses' | 'cip95-key-state';
+      }>
+    | Readonly<{
+        operation: 'account-public-key';
+        passphrase: string;
       }>
     | Readonly<{
         operation: 'collateral-history';
@@ -147,6 +152,11 @@ export type Cip30WalletResponse =
       status: 'fulfilled';
       operation: 'cip95-key-state';
       value: Cip30WalletCip95KeyState;
+    }>
+  | Readonly<{
+      status: 'fulfilled';
+      operation: 'account-public-key';
+      value: string;
     }>
   | Readonly<{
       status: 'fulfilled';
@@ -334,6 +344,8 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
       keys = [...keys, 'hardware'];
     if (Object.prototype.hasOwnProperty.call(value, 'drepCredential'))
       keys = [...keys, 'drepCredential'];
+  } else if (operation === 'account-public-key') {
+    keys = [...keys, 'passphrase'];
   } else if (operation === 'transaction-context')
     keys = [...keys, 'transactions'];
   else if (operation === 'collateral-history')
@@ -353,6 +365,7 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
       'collateral-history',
       'addresses',
       'cip95-key-state',
+      'account-public-key',
       'sign-transactions',
       'submit-transaction',
       'sign-data',
@@ -367,6 +380,15 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     network: parseNetwork(value.network),
     sourceRevision: value.sourceRevision,
   };
+  if (operation === 'account-public-key') {
+    if (!text(value.passphrase))
+      throw new Error('Invalid CIP-30 wallet request');
+    return Object.freeze({
+      ...identity,
+      operation,
+      passphrase: value.passphrase,
+    });
+  }
   if (operation === 'collateral-history') {
     if (
       !Array.isArray(value.preferredInputs) ||
@@ -782,6 +804,15 @@ export const parseCip30WalletResponse = (
       operation: 'cip95-key-state',
       value: parseCip95KeyState(value.value),
     });
+  if (request.operation === 'account-public-key') {
+    if (!text(value.value))
+      throw new Error('Invalid CIP-30 account public key response');
+    return Object.freeze({
+      status: 'fulfilled',
+      operation: 'account-public-key',
+      value: value.value,
+    });
+  }
   if (request.operation === 'collateral-history')
     return Object.freeze({
       status: 'fulfilled',

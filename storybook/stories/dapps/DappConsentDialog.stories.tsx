@@ -26,4 +26,21 @@ storiesOf('dApps / Consent', module)
       onApprove={action('approve')}
       onReject={action('reject')}
     />
+  ))
+  .add('CIP-104 account-key disclosure', () => (
+    <DappConsentDialog
+      request={{
+        requestId: 'cip104-disclosure',
+        kind: 'key-disclosure',
+        origin: 'https://example.dapp.test',
+        walletName: 'My wallet',
+        networkName: 'Preview',
+        scopes: ['account-public-key-disclosure'],
+        extensions: [104],
+        requiresPassphrase: true,
+      }}
+      deciding={false}
+      onApprove={action('approve')}
+      onReject={action('reject')}
+    />
   ));

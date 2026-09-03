@@ -39,16 +39,10 @@ export default defineMessages({
     defaultMessage: '!!!CIP-95 governance public-key disclosure',
     description: 'Label for the separately revocable CIP-95 disclosure scope.',
   },
-  cip104Unavailable: {
-    id: 'settings.dappConnections.cip104Unavailable',
-    defaultMessage:
-      '!!!CIP-104 account public-key disclosure is unavailable and grants no access.',
-    description: 'Terminal-disabled CIP-104 status.',
-  },
-  cip104Legacy: {
-    id: 'settings.dappConnections.cip104Legacy',
-    defaultMessage: '!!!Legacy CIP-104 account public-key disclosure',
-    description: 'Label for a defensive legacy CIP-104 disclosure scope.',
+  cip104: {
+    id: 'settings.dappConnections.cip104',
+    defaultMessage: '!!!CIP-104 account public-key disclosure',
+    description: 'Label for the separately revocable CIP-104 disclosure scope.',
   },
   disconnect: {
     id: 'settings.dappConnections.disconnect',

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Add a wallet-scoped, curated dApp browser to Daedalus with an isolated Electron guest window and a standards-conformant Cardano wallet connector. The connector exposes the current CIP-30 key-wallet API, active key-wallet extensions CIP-95 and CIP-103, and policy-gated proposed CIP-142. Proposed CIP-104 is terminal-disabled because no interoperable encoding vector was proven. It supports Shelley software wallets, Ledger wallets, and Trezor wallets; Byron wallets are excluded.
+Add a wallet-scoped, curated dApp browser to Daedalus with an isolated Electron guest window and a standards-conformant Cardano wallet connector. The connector exposes the current CIP-30 key-wallet API, active key-wallet extensions CIP-95 and CIP-103, and policy-gated proposed CIP-104 and CIP-142. CIP-104 is available to software wallets when its packaged revision gate is enabled; hardware remains capability-gated. It supports Shelley software wallets, Ledger wallets, and Trezor wallets; Byron wallets are excluded.
 
 Remote dApp content is treated as hostile. It never runs in the existing privileged renderer, never receives the existing preload or IPC surface, and never connects through an external-browser transport. A main-process capability broker authenticates the guest, origin, route-selected wallet, network, negotiated extensions, and exact request bytes. Trusted Daedalus UI owns connection, key-disclosure, signing, data-signing, and submission consent.
 
@@ -67,6 +67,7 @@ The feature also introduces full-ledger transaction context, witness-only softwa
 - Task-111 completed on 2026-09-02: native pacman `.pkg.tar.zst` outputs now cover all four clusters with fixed `/opt` identity, userns-only containment, ALPM live-process guards, and distinct release/Hydra/Buildkite exposure. Exact installed Arch 2026.09.01 and Omarchy 4.0.2 candidates passed package lifecycle, reboot, wallet preservation, exact-renderer sandbox proof, and the full task-802 hostile matrix; sanitized positive/failure/rollback evidence is recorded under `scripts/linux-chromium-sandbox-probe/evidence/task-111`. Matrix revision `task-111-matrix-2026-09-02` remains snapshot-specific; later rolling releases and other derivatives remain wallet-only until separately certified.
 - Task-807 completed on 2026-09-02: the release candidate updates to Electron 41.10.6/Chromium 146.0.7680.216 and exact critical dependency resolutions, retains the audited cardano-wallet revision-1 Conway pin, and records zero critical production audit findings. Final Windows x64, DEB, RPM, Arch, and Omarchy artifacts passed their applicable installed lifecycle, rollback/recovery, reboot, exact-renderer, and hostile matrices; macOS x64/arm64 are explicitly operator-waived rather than inferred passes. Post-change internal and independent delta review found no critical/high issue. The immutable locks, pins, catalog, disabled launcher variants, artifact hashes, platform fingerprints, and evidence links are recorded in `research/10-task-807-release-candidate.md`.
 - Windows production activation completed on 2026-09-02: the rebuilt x64 mainnet NSIS package installed at the protected default Program Files root, exposed only the Diagnostics dApp path, passed native renderer sandbox attestation and the unchanged packaged hostile matrix, rejected `--no-sandbox`, and restored its installed harness byte-for-byte. Preferred-catalog, CIP-104, CIP-142, hardware, custom-install, and macOS activation remain disabled.
+- CIP-104 reopened on 2026-09-03 after `newm-chain` supplied the missing deterministic 64-byte account-xpub vector. Daedalus now policy-gates a software-wallet `api.cip104.getAccountPub()` path that validates cardano-wallet's `acct_xvk`, returns a definite-length CBOR byte string, requires separate irreversible-disclosure consent plus a transient spending password, and never logs or caches the key. Packaged revision defaults remain disabled; hardware remains omitted until certified extension evidence includes CIP-104.
 - Task-900 completed on 2026-09-02: the [dApp browser recovery runbook](../../ops/dapp-browser-cip30-recovery-runbook.md) now fixes role-based ownership, independent packaged launcher controls, baseline-preserving emergency disable/restore, catalog approval and removal, guest teardown, grant invalidation, sandbox/backend/device recovery, and ambiguous-submission reconciliation. It changes no source, package, catalog, resource policy, hardware row, or activation value from the task-807 baseline and recorded Windows-only Diagnostics activation.
 
 ## Problem Statement
@@ -102,7 +103,7 @@ This work matters because a connector that is merely functional but not byte-exa
 - Keep remote content in a separately managed, sandboxed, nonpersistent Electron window.
 - Implement current CIP-30 for key-controlled Shelley wallets.
 - Implement active CIP-30 extensions CIP-95 and CIP-103.
-- Resolve proposed-extension gates explicitly: CIP-104 is terminal-disabled/omitted; CIP-142 remains policy-gated.
+- Resolve proposed-extension gates explicitly: CIP-104 and CIP-142 remain policy-gated.
 - Implement exact CIP-8 message signing for base CIP-30 and CIP-95 DRep signing.
 - Support software, Ledger, and Trezor wallets through capability-checked paths.
 - Return exact CIP-30 UTxO, value, address, witness-set, and COSE encodings.
@@ -222,7 +223,7 @@ Task-002 freezes the phase-0 inputs consumed by later production validation:
 | `source/common/cip30/contracts/contractFixtures.spec.ts` | Schema, coverage, exact-byte, signature, Bech32, limit, and structured-clone evidence |
 | `research/02-cip30-wire-contract-evidence.md` | Source revisions, conflict resolutions, ecosystem comparison, reproduction commands, and residual gates |
 
-These remain frozen contract inputs rather than dispatch code. Task-300 now provides their shared strict runtime request and method-result validators, sender-side validated envelope constructors, minimal trusted approval decisions, and defensive preload reconstruction without changing the frozen behavior. Task-404 concluded that CIP-104 remains terminal-disabled and omitted because no exact interoperable encoding was proven.
+These remain frozen contract inputs rather than dispatch code. Task-300 provides their shared strict runtime request and method-result validators, sender-side validated envelope constructors, minimal trusted approval decisions, and defensive preload reconstruction. Task-404's original CIP-104 terminal outcome was superseded on 2026-09-03 by the deterministic `newm-chain` account-xpub vector and exact CBOR byte-string contract.
 
 Task-006 freezes a separate static hardware capability contract at
 `source/common/hardware/fixtures/capability-matrix/` with supporting evidence in
@@ -311,9 +312,9 @@ Ledger model/app-major-8 and Trezor matrix without blocking current development.
 - No nonstandard resolved-results helper is exposed.
 - Daedalus enforces documented product limits: 64 KiB maximum request CBOR for `signTx`/`submitTx` bodies and `signData` payloads, 50 items per CIP-103 batch, and a 100-entry maximum page size, each rejecting with `APIError.InvalidRequest` before side effects; pending consent auto-rejects after five minutes of user inactivity with the canonical declined/refused error.
 - Platform, ledger, backend, and hardware intrinsic capability limits still produce typed failures.
-- Key-wallet extensions in scope are CIP-95, CIP-103, and CIP-142; CIP-104 remains a known terminal-disabled contract.
+- Key-wallet extensions in scope are CIP-95, CIP-103, CIP-104, and CIP-142.
 - CIP-106 and CIP-141 are explicitly excluded and never advertised.
-- CIP-104 and CIP-142 are labeled Proposed; CIP-104 is omitted, while CIP-142 remains policy-gated.
+- CIP-104 and CIP-142 are labeled Proposed and remain policy-gated; CIP-104 is software-wallet-only until hardware capability evidence exists.
 - CIP-8 is a base/CIP-95 message-signing format, not a negotiated extension.
 - The dApp catalog is bundled and release-versioned initially.
 - Collateral is a persisted soft preference, not a permanent lock.
@@ -334,7 +335,7 @@ Ledger model/app-major-8 and Trezor matrix without blocking current development.
 
 | Wallet kind | Base CIP-30 | CIP-95 | CIP-103 | CIP-104 | CIP-142 |
 |---|---|---|---|---|---|
-| Shelley software | Yes | Yes | Yes | Omitted | Gated |
+| Shelley software | Yes | Yes | Yes | Gated | Gated |
 | Ledger Shelley | Yes, capability checked | Yes, capability checked | Yes, sequential device confirmations | Omitted | Gated |
 | Trezor Shelley | Yes, capability checked | Yes, with transaction limitations | Yes, sequential device confirmations | Omitted | Gated |
 | Byron | No | No | No | No | No |
@@ -348,7 +349,7 @@ Ledger model/app-major-8 and Trezor matrix without blocking current development.
 | CIP-8 | Active | Not an extension | Required by base and CIP-95 `signData` |
 | CIP-95 | Active | Registered | Implement and advertise when fully available |
 | CIP-103 | Active | Registered | Implement and advertise when fully available |
-| CIP-104 | Proposed | Registered | Terminal-disabled and omitted; reopen only with an independently reproducible exact vector |
+| CIP-104 | Proposed | Registered | Implement for software wallets behind the proposed-CIP policy gate; omit hardware without certified capability evidence |
 | CIP-106 | Proposed | Registered | Excluded; requires a native-script multisig wallet provider |
 | CIP-141 | Proposed | Not registered | Excluded; requires a Plutus/script-wallet provider and has unresolved wire/security defects |
 | CIP-142 | Proposed | Not registered | Implement behind proposed-CIP policy gate |
@@ -438,7 +439,7 @@ Ledger model/app-major-8 and Trezor matrix without blocking current development.
 - [x] Implement separately reviewed `submitTx` through wallet-scoped submission.
 - [x] Implement CIP-95 key getters, DRep `signData`, Conway-aware `signTx`, and error extensions.
 - [x] Implement CIP-103 ordered batch signing and submission.
-- [x] Resolve CIP-104 interoperability gate: terminal-disabled/omitted because no exact vector was proven.
+- [x] Implement policy-gated software-wallet CIP-104 using the deterministic `newm-chain` account-xpub vector and exact CBOR byte-string encoding.
 - [x] Implement policy-gated CIP-142 network magic.
 - [x] Add complete transaction review for all supported current-era fields.
 - [x] Reconcile dApp submissions after restart through cardano-wallet pending-submission state.
@@ -698,12 +699,12 @@ api.cip103.submitTxs(
 api.cip104.getAccountPub(): Promise<cbor<Bip32PublicKey>>;
 ```
 
-- Terminal decision: disabled and omitted.
-- CIP-104 does not define `Bip32PublicKey` CDDL precisely enough to settle raw bytes versus a CBOR byte string.
-- No listed implementor/release supplied an independently reproducible deterministic request/result vector.
-- Daedalus therefore advertises no CIP-104 support, creates no namespace or consent prompt, obtains no xpub, and adds no backend/executor path.
-- The packaged CIP-104 switch cannot override the terminal-disabled descriptor.
-- Future reconsideration requires a new reviewed task with a named implementor/release, deterministic 64-byte account xpub input, exact output CBOR, reproducible command, and byte-for-byte comparison.
+- Negotiate with `{cip: 104}` and expose only `api.cip104.getAccountPub`.
+- Decode cardano-wallet's extended account key only when it is an `acct_xvk` carrying exactly 64 bytes.
+- Return lowercase hex for one definite-length CBOR byte string: prefix `5840` followed by the 64-byte extended public key.
+- Require separately persisted `account-public-key-disclosure` authority, fresh trusted consent, and a transient spending password for every call.
+- Never log, persist, cache, or expose the Bech32 account key; revocation cannot make a dApp forget a disclosed key.
+- Keep packaged revision defaults disabled. Software wallets are eligible; hardware wallets are omitted until certified extension capability evidence includes CIP-104.
 
 ## CIP-142 Contract
 
@@ -1280,10 +1281,11 @@ update.
 
 ### CIP-104 Backend
 
-No backend path is implemented for the terminal-disabled outcome. The legacy
-account-key API is not connected to the dApp broker and cannot be used as an
-encoding oracle. Future enablement requires the independent vector and privacy
-review described in the CIP-104 contract.
+Reuse the existing authenticated cardano-wallet extended account-key endpoint
+for software-wallet account `0H`. The trusted renderer supplies the transient
+password and raw `acct_xvk`; the main-process broker validates its 64-byte
+payload and performs the exact CBOR encoding. No new backend endpoint, key
+cache, or logging path is introduced. Hardware remains capability-gated.
 
 ### Submission
 
@@ -1917,7 +1919,7 @@ Task-805 closed internal gate 12 and task-806 closed external gate 13 on 2026-08
 
 All switches are main-owned launcher-configuration inputs implemented and tested before the audited release-candidate baseline. They are packaged and changed only through the normal reviewed release process; there is no remote runtime-policy service. Disabled launch modes reject new guests, and disabled proposed extensions are omitted from negotiation. The rollout manifest records the exact package/configuration variants used at each stage.
 
-The global, preferred-catalog, Diagnostics, CIP-104, and CIP-142 controls are independent policy inputs. Global remains the master launch gate; CIP-104 remains terminal-disabled regardless of policy input; no extension switch bypasses launch, sandbox, route, grant, or consent gates. Exact baseline values, ownership, catalog governance, and response procedures are fixed by the [dApp browser recovery runbook](../../ops/dapp-browser-cip30-recovery-runbook.md).
+The global, preferred-catalog, Diagnostics, CIP-104, and CIP-142 controls are independent policy inputs. Global remains the master launch gate; disabled proposed extensions are omitted from metadata, negotiation, and namespace properties, and no extension switch bypasses launch, sandbox, route, grant, or consent gates. Exact baseline values, ownership, catalog governance, and response procedures are fixed by the [dApp browser recovery runbook](../../ops/dapp-browser-cip30-recovery-runbook.md).
 
 ### Migrations
 

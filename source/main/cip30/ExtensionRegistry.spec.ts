@@ -156,24 +156,23 @@ describe('CIP-30 extension engine', () => {
     expect(negotiator.supported(enabledPolicy)).toEqual([
       { cip: 95 },
       { cip: 103 },
+      { cip: 104 },
       { cip: 142 },
     ]);
-    expect(capabilities.isSupported(104, enabledPolicy)).toBe(false);
+    expect(capabilities.isSupported(104, enabledPolicy)).toBe(true);
     expect(
       negotiator.negotiate(
         { extensions: [{ cip: 104 }, { cip: 142 }] },
         enabledPolicy
       ).enabledExtensions
-    ).toEqual([{ cip: 142 }]);
+    ).toEqual([{ cip: 104 }, { cip: 142 }]);
     expect(
-      thrownBy(() =>
-        capabilities.requireInvocation(
-          'api.cip104.getAccountPub',
-          [104],
-          enabledPolicy
-        )
-      )
-    ).toEqual({ code: -3, info: 'Refused' });
+      capabilities.requireInvocation(
+        'api.cip104.getAccountPub',
+        [104],
+        enabledPolicy
+      ).extension
+    ).toBe(104);
     expect(
       capabilities.requireInvocation(
         'api.cip142.getNetworkMagic',
