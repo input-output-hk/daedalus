@@ -106,7 +106,7 @@ const testPackagedPolicy = (value: unknown): void => {
     globalEnabled: windowsDiagnosticsEnabled,
     preferredCatalogEnabled: false,
     diagnosticsEnabled: windowsDiagnosticsEnabled,
-    cip104Revision: 0,
+    cip104Revision: 1,
     cip142Revision: 0,
     hardwareConnectorRows: [],
   });

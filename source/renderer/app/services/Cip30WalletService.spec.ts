@@ -110,7 +110,7 @@ const connectorEvidence: HardwareConnectorCapabilityEvidence = {
   vendor: 'ledger',
   model: 'nanoSP',
   appVersion: '8.0.0',
-  certifiedExtensions: [95],
+  certifiedExtensions: [95, 104],
   physicalCertified: true,
 };
 const connectorActivation: HardwareConnectorActivation = {
@@ -182,6 +182,7 @@ const create = () => {
   const getDappTransactionCapability = jest.fn(() => hardwareCapability);
   const signDappTransaction = jest.fn(async () => 'a0');
   const getDappConnectorCapability = jest.fn(() => connectorEvidence);
+  const getDappAccountPublicKey = jest.fn(() => 'acct_xvk1hardware');
   const signDappDataHardware = jest.fn(async () => ({
     signature: 'hardware-signature',
     key: 'hardware-key',
@@ -236,6 +237,7 @@ const create = () => {
       getDappTransactionCapability,
       signDappTransaction,
       getDappConnectorCapability,
+      getDappAccountPublicKey,
       signDappData: signDappDataHardware,
     },
     addresses: {
@@ -258,6 +260,7 @@ const create = () => {
     getDappTransactionCapability,
     signDappTransaction,
     getDappConnectorCapability,
+    getDappAccountPublicKey,
     signDappDataHardware,
     setWallet: (value: Record<string, unknown> | null) => {
       wallet = value;
@@ -384,7 +387,7 @@ describe('Cip30WalletService', () => {
     });
   });
 
-  it('returns the extended account-zero public key for software wallets', async () => {
+  it('returns the account-zero public key for software and certified hardware', async () => {
     const fixture = create();
     await expect(
       fixture.service.receive(accountPublicKeyRequest)
@@ -406,11 +409,22 @@ describe('Cip30WalletService', () => {
       isHardwareWallet: true,
     });
     await expect(
-      fixture.service.receive(accountPublicKeyRequest)
+      fixture.service.receive({
+        operation: 'account-public-key',
+        walletId: 'wallet',
+        network,
+        sourceRevision: '22'.repeat(20),
+        hardware: connectorActivation,
+      })
     ).resolves.toEqual({
-      status: 'rejected',
-      reason: 'proof-generation',
+      status: 'fulfilled',
+      operation: 'account-public-key',
+      value: 'acct_xvk1hardware',
     });
+    expect(fixture.getDappAccountPublicKey).toHaveBeenCalledWith(
+      'wallet',
+      connectorActivation
+    );
     expect(fixture.getAccountPublicKey).toHaveBeenCalledTimes(1);
   });
 

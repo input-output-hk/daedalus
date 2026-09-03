@@ -238,17 +238,29 @@ export class Cip30WalletService {
 
       if (request.operation === 'account-public-key') {
         const wallet = this.currentWallet(request);
-        if (!wallet || wallet.isHardwareWallet)
+        if (!wallet)
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'account-change',
+          });
+        let accountPublicKey: string | null = null;
+        if (wallet.isHardwareWallet && request.hardware)
+          accountPublicKey = this.stores.hardwareWallets.getDappAccountPublicKey(
+            wallet.id,
+            request.hardware
+          );
+        if (!wallet.isHardwareWallet && request.passphrase)
+          accountPublicKey = await this.api.ada.getAccountPublicKey({
+            walletId: request.walletId,
+            index: '0H',
+            passphrase: request.passphrase,
+            extended: true,
+          });
+        if (!accountPublicKey)
           return Object.freeze({
             status: 'rejected',
             reason: 'proof-generation',
           });
-        const accountPublicKey = await this.api.ada.getAccountPublicKey({
-          walletId: request.walletId,
-          index: '0H',
-          passphrase: request.passphrase,
-          extended: true,
-        });
         if (!this.ready(request)) return this.rejection(request, 'unavailable');
         return Object.freeze({
           status: 'fulfilled',

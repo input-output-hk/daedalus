@@ -85,6 +85,7 @@ import {
   getParamsFromPath,
   CachedDeriveXpubFactory,
   deriveXpub,
+  bech32EncodePublicKey,
 } from '../utils/hardwareWalletUtils';
 import type { HwDeviceStatus } from '../domains/Wallet';
 import type {
@@ -195,7 +196,7 @@ const dappHardwareConnectorCapability = (
     ...(vendor === DeviceTypes.LEDGER
       ? { appVersion: version }
       : { firmwareVersion: version }),
-    certifiedExtensions: Object.freeze([]),
+    certifiedExtensions: Object.freeze([104]),
     physicalCertified: false,
   });
 
@@ -512,6 +513,43 @@ export default class HardwareWalletsStore extends Store {
       connection.device.deviceType,
       model,
       version
+    );
+  };
+
+  getDappAccountPublicKey = (
+    walletId: string,
+    activation: HardwareConnectorActivation
+  ): string => {
+    const current = this.getDappConnectorCapability(walletId);
+    if (
+      !current ||
+      !activation.packagedEnabled ||
+      !activation.physicalCertified ||
+      current.matrixRevision !== activation.matrixRevision ||
+      current.rowId !== activation.rowId ||
+      current.vendor !== activation.vendor ||
+      current.model !== activation.model ||
+      current.appVersion !== activation.appVersion ||
+      current.firmwareVersion !== activation.firmwareVersion ||
+      current.physicalCertified !== activation.physicalCertified ||
+      current.certifiedExtensions.join(',') !==
+        activation.certifiedExtensions.join(',') ||
+      !activation.certifiedExtensions.includes(104)
+    )
+      throw new Error('Hardware connector capability changed');
+    const connection = find(
+      this.hardwareWalletsConnectionData,
+      (connectionData) => connectionData.id === walletId
+    );
+    const publicKeyHex = connection?.extendedPublicKey.publicKeyHex;
+    const chainCodeHex = connection?.extendedPublicKey.chainCodeHex;
+    if (
+      !/^[0-9a-fA-F]{64}$/.test(publicKeyHex || '') ||
+      !/^[0-9a-fA-F]{64}$/.test(chainCodeHex || '')
+    )
+      throw new Error('Invalid hardware account public key');
+    return bech32EncodePublicKey(
+      Buffer.from(`${publicKeyHex}${chainCodeHex}`, 'hex')
     );
   };
 

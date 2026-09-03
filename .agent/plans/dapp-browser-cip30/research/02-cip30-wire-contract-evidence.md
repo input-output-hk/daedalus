@@ -30,7 +30,7 @@ pins.
 | CIP-95 type-6 DRep form | Cardano JS SDK commit `0c0e700237ca524d8bd73054e3518fb182d09e46`, `packages/key-management/src/cip8/cip30signData.ts`, selects `DREP_KEY_DERIVATION_PATH` when a type-6 enterprise credential equals the DRep key hash. Its matching test is in `packages/key-management/test/cip8/cip30signData.test.ts`. The SDK preserves the complete address in COSE headers. | A matching route-valid type-6 address selects the DRep key, proving the compatibility form. Daedalus then applies the PRD's stricter normalization: matching type-6 and direct raw DRep-ID input both produce the raw 28-byte DRep hash in the protected `address` header. A nonmatching type-6 address keeps ordinary payment semantics. |
 | CIP-8 output profile | CIP-8 permits more general forms and hashing; CIP-30 fixes un-hashed address signing. | Produce untagged `COSE_Sign1`, attached exact payload, empty external AAD, `alg:-8`, `hashed:false`, `version:1`, and no `kid`. Never produce the legacy missing-version form. |
 | CIP-103 failure | CIP-103 requires caller order, all-or-nothing witness disclosure, attempt-all submission, and a thrown aligned mixed array. | Preserve order and indexes. Signing uses `Transaction at index <n> failed`. Submission rejects directly with the mixed array after attempts begin; the Electron envelope carries it as plain data. |
-| CIP-104 encoding | The Proposed CIP returns hex-encoded CBOR of the extended account public key. `newm-chain` publishes a deterministic 64-byte account xpub consumed by its child-key derivation flow. | Encode the decoded `acct_xvk` payload as one definite-length CBOR byte string: prefix `5840` followed by 64 bytes. Keep CIP-104 policy-gated and software-wallet-only; require separate account-key disclosure consent and a transient spending password. |
+| CIP-104 encoding | The Proposed CIP returns hex-encoded CBOR of the extended account public key. `newm-chain` publishes a deterministic 64-byte account xpub consumed by its child-key derivation flow. | Encode the decoded `acct_xvk` payload as one definite-length CBOR byte string: prefix `5840` followed by 64 bytes. Package-enable CIP-104. Require separate account-key disclosure consent; software also requires a transient spending password, while certified hardware uses its paired account xpub. |
 | CIP-142 namespace | Prose says `cip-142`; the JavaScript example uses `api.cip142`. | Use negotiated `api.cip142`; return a finite Word32 JavaScript number. |
 
 ## CIP-104 Reopened Decision
@@ -45,13 +45,14 @@ Applying the CIP's hex-encoded `cbor<Bip32PublicKey>` contract yields the
 definite-length 64-byte CBOR string
 `58407900a6795f03efefcef6745e7e11514c8113d45c4b09985f5bfdbf30ed8fa9cd03f462cd66e83cc909ee7f37d2699c8dd1b01fbef00f9968d786f1b2fccdf846`.
 
-Daedalus exposes the namespace only when CIP-104 revision policy is enabled
-and the caller negotiates `{cip: 104}`. Each call uses the existing
-cardano-wallet extended account-key endpoint for account `0H`, validates an
-`acct_xvk` 64-byte payload, and CBOR-encodes it without logging or caching the
-key. Software wallets require trusted account-key disclosure consent plus a
-transient spending password. Hardware wallets remain omitted until their
-certified extension capability includes CIP-104.
+Daedalus package-enables the namespace, but exposes it only when the caller
+negotiates `{cip: 104}`. Software calls use the existing cardano-wallet
+extended account-key endpoint for account `0H` and require a transient
+spending password. Hardware calls require a certified and packaged connector
+capability advertising CIP-104, then use the same account xpub stored during
+wallet pairing without requesting a password. Both paths validate an
+`acct_xvk` 64-byte payload and CBOR-encode it without logging or caching the
+key.
 
 ## Golden Evidence
 
