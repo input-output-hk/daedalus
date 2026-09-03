@@ -60,26 +60,39 @@ describe('DappConnectionsSettings', () => {
     expect(props.onForget).toHaveBeenCalledWith(grant);
   });
 
-  it('shows CIP-95 separately and never presents CIP-104 as available', () => {
-    const props = renderPage();
+  it('shows independently revocable CIP-95 and CIP-104 scopes', () => {
+    const accountGrant = {
+      ...grant,
+      readScopes: [
+        ...grant.readScopes,
+        'account-public-key-disclosure' as const,
+      ],
+      enabledExtensionScopes: [95, 104],
+    };
+    const props = renderPage({
+      connections: [{ grant: accountGrant, walletName: 'Main wallet' }],
+    });
 
-    expect(
-      screen.getByText(
-        'CIP-104 account public-key disclosure is unavailable and grants no access.'
-      )
-    ).toBeVisible();
     fireEvent.click(
       screen.getByRole('button', {
         name: /Revoke CIP-95 governance public-key disclosure/,
       })
     );
-    expect(props.onRevoke).toHaveBeenCalledWith(
-      grant,
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: /Revoke CIP-104 account public-key disclosure/,
+      })
+    );
+    expect(props.onRevoke).toHaveBeenNthCalledWith(
+      1,
+      accountGrant,
       'governance-key-disclosure'
     );
-    expect(
-      screen.queryByRole('button', { name: /Legacy CIP-104/ })
-    ).not.toBeInTheDocument();
+    expect(props.onRevoke).toHaveBeenNthCalledWith(
+      2,
+      accountGrant,
+      'account-public-key-disclosure'
+    );
   });
 
   it('fails closed on corruption and exposes only repair', () => {

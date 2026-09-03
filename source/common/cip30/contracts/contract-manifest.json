@@ -46,12 +46,11 @@
       },
       {
         "cip": 104,
-        "status": "proposed-disabled",
+        "status": "proposed-policy-gated",
         "namespace": "cip104",
         "overrides": [],
         "dependencies": [],
-        "incompatibleWith": [],
-        "reason": "Terminal-disabled: no independent interoperable cbor<Bip32PublicKey> vector or precise encoding was proven by task-404."
+        "incompatibleWith": []
       },
       {
         "cip": 142,
@@ -431,13 +430,18 @@
     {
       "path": "api.cip104.getAccountPub",
       "extension": 104,
-      "availability": "terminal-disabled",
+      "availability": "policy-gated",
       "minArgs": 0,
       "maxArgs": 0,
       "args": [],
-      "successSchemaRef": "common.json#/definitions/nonEmptyHexBytes",
+      "successSchemaRef": "common.json#/definitions/accountPublicKey",
       "rejections": ["apiError"],
-      "terminalDecision": "No exact interoperable cbor<Bip32PublicKey> encoding was proven; no positive vector is frozen."
+      "positiveFixture": {
+        "provenance": "newm-chain README account_xpub_key example",
+        "accountXpubBech32": "xpub10yq2v72lq0h7lnhkw308uy23fjq384zufvyesh6mlklnpmv048xs8arze4nws0xfp8h87d7jdxwgm5dsr7l0qruedrtcdudjlnxls3sm0qlln",
+        "raw": "7900a6795f03efefcef6745e7e11514c8113d45c4b09985f5bfdbf30ed8fa9cd03f462cd66e83cc909ee7f37d2699c8dd1b01fbef00f9968d786f1b2fccdf846",
+        "cbor": "58407900a6795f03efefcef6745e7e11514c8113d45c4b09985f5bfdbf30ed8fa9cd03f462cd66e83cc909ee7f37d2699c8dd1b01fbef00f9968d786f1b2fccdf846"
+      }
     },
     {
       "path": "api.cip142.getNetworkMagic",

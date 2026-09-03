@@ -159,7 +159,7 @@ export class Cip30WalletService {
             walletKind,
             network: request.network,
             backendApiVersion: capabilities.api_version,
-            backendExtensions: Object.freeze([95, 103]),
+            backendExtensions: Object.freeze([95, 103, 104]),
             ...(hardware ? { hardware } : {}),
           }),
         });
@@ -233,6 +233,27 @@ export class Cip30WalletService {
           status: 'fulfilled',
           operation: 'sign-data',
           value: signature,
+        });
+      }
+
+      if (request.operation === 'account-public-key') {
+        const wallet = this.currentWallet(request);
+        if (!wallet || wallet.isHardwareWallet)
+          return Object.freeze({
+            status: 'rejected',
+            reason: 'proof-generation',
+          });
+        const accountPublicKey = await this.api.ada.getAccountPublicKey({
+          walletId: request.walletId,
+          index: '0H',
+          passphrase: request.passphrase,
+          extended: true,
+        });
+        if (!this.ready(request)) return this.rejection(request, 'unavailable');
+        return Object.freeze({
+          status: 'fulfilled',
+          operation: 'account-public-key',
+          value: accountPublicKey,
         });
       }
 

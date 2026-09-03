@@ -99,6 +99,26 @@ describe('Cip30ConsentStore', () => {
     });
   });
 
+  it('forwards a transient passphrase for account-key disclosure', async () => {
+    const store = createStore();
+    const decision = store.receive({
+      type: 'present',
+      request: {
+        ...request,
+        kind: 'key-disclosure',
+        scopes: ['account-public-key-disclosure'],
+        extensions: [104],
+        requiresPassphrase: true,
+      },
+    });
+    store.approve('secret');
+    await expect(decision).resolves.toEqual({
+      requestId: request.requestId,
+      approved: true,
+      passphrase: 'secret',
+    });
+  });
+
   it('forwards a passphrase for single/batch signing but never submission', async () => {
     const signing = createStore();
     const signRequest: DappConsentPresentation = {
