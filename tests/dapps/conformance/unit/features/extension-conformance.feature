@@ -20,5 +20,5 @@ Feature: CIP extension conformance
 
   Scenario: Proposed extensions retain their release gates
     Given the frozen extension registry
-    Then CIP-104 remains terminal-disabled and omitted
+    Then CIP-104 remains proposed and policy-gated
     And CIP-142 remains proposed and policy-gated

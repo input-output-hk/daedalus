@@ -1378,8 +1378,18 @@
       },
       {
         "defaultMessage": "!!!Stake and DRep public keys can correlate this wallet with governance activity. This permission is separate from the connection and can be revoked independently.",
-        "description": "Privacy warning before elevated public-key disclosure.",
-        "id": "dapp.consent.keyDisclosure.warning"
+        "description": "Privacy warning before governance public-key disclosure.",
+        "id": "dapp.consent.keyDisclosure.governanceWarning"
+      },
+      {
+        "defaultMessage": "!!!The account public key reveals this wallet’s complete address history and future derivation paths. Revoking permission cannot make a dApp forget a key it already copied.",
+        "description": "Irreversible privacy warning before CIP-104 disclosure.",
+        "id": "dapp.consent.keyDisclosure.accountWarning"
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Password requested before software-wallet CIP-104 disclosure.",
+        "id": "dapp.consent.keyDisclosure.password"
       },
       {
         "defaultMessage": "!!!Reject",
@@ -4892,14 +4902,9 @@
         "id": "settings.dappConnections.cip95"
       },
       {
-        "defaultMessage": "!!!CIP-104 account public-key disclosure is unavailable and grants no access.",
-        "description": "Terminal-disabled CIP-104 status.",
-        "id": "settings.dappConnections.cip104Unavailable"
-      },
-      {
-        "defaultMessage": "!!!Legacy CIP-104 account public-key disclosure",
-        "description": "Label for a defensive legacy CIP-104 disclosure scope.",
-        "id": "settings.dappConnections.cip104Legacy"
+        "defaultMessage": "!!!CIP-104 account public-key disclosure",
+        "description": "Label for the separately revocable CIP-104 disclosure scope.",
+        "id": "settings.dappConnections.cip104"
       },
       {
         "defaultMessage": "!!!Disconnect {origin}",

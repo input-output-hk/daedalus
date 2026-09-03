@@ -36,11 +36,23 @@ export const messages = defineMessages({
     defaultMessage: '!!!Extensions: {extensions}',
     description: 'CIP extensions requested by a dApp.',
   },
-  disclosureWarning: {
-    id: 'dapp.consent.keyDisclosure.warning',
+  governanceDisclosureWarning: {
+    id: 'dapp.consent.keyDisclosure.governanceWarning',
     defaultMessage:
       '!!!Stake and DRep public keys can correlate this wallet with governance activity. This permission is separate from the connection and can be revoked independently.',
-    description: 'Privacy warning before elevated public-key disclosure.',
+    description: 'Privacy warning before governance public-key disclosure.',
+  },
+  accountDisclosureWarning: {
+    id: 'dapp.consent.keyDisclosure.accountWarning',
+    defaultMessage:
+      '!!!The account public key reveals this wallet’s complete address history and future derivation paths. Revoking permission cannot make a dApp forget a key it already copied.',
+    description: 'Irreversible privacy warning before CIP-104 disclosure.',
+  },
+  password: {
+    id: 'dapp.consent.keyDisclosure.password',
+    defaultMessage: '!!!Spending password',
+    description:
+      'Password requested before software-wallet CIP-104 disclosure.',
   },
   reject: {
     id: 'dapp.consent.reject',

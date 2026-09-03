@@ -40,9 +40,7 @@ export function DappConnectionsSettings({
 }: Props) {
   const scopeLabel = (scope: DappConnectionScope) =>
     intl.formatMessage(
-      scope === 'governance-key-disclosure'
-        ? messages.cip95
-        : messages.cip104Legacy
+      scope === 'governance-key-disclosure' ? messages.cip95 : messages.cip104
     );
 
   return (
@@ -53,7 +51,6 @@ export function DappConnectionsSettings({
         <li>{intl.formatMessage(messages.disconnectDescription)}</li>
         <li>{intl.formatMessage(messages.forgetDescription)}</li>
       </ul>
-      <p>{intl.formatMessage(messages.cip104Unavailable)}</p>
 
       {failed && (
         <p className={styles.status} role="status">

@@ -165,15 +165,18 @@ Given('the frozen extension registry', async function () {
   this.context.extensions = manifest.extensions.descriptors;
 });
 
-Then('CIP-104 remains terminal-disabled and omitted', async function () {
+Then('CIP-104 remains proposed and policy-gated', async function () {
   const cip104 = this.context.extensions.find(({ cip }) => cip === 104);
-  expect(cip104.status).to.equal('proposed-disabled');
-  expect(
-    manifest.methods.find(({ path }) => path === 'api.cip104.getAccountPub')
-      ?.availability
-  ).to.equal('terminal-disabled');
-  expect(manifest.extensions.negotiation.policyDisabledMetadata).to.contain(
-    'Omit'
+  const method = manifest.methods.find(
+    ({ path }) => path === 'api.cip104.getAccountPub'
+  ) as {
+    availability: string;
+    positiveFixture: { raw: string; cbor: string };
+  };
+  expect(cip104.status).to.equal('proposed-policy-gated');
+  expect(method.availability).to.equal('policy-gated');
+  expect(method.positiveFixture.cbor).to.equal(
+    `5840${method.positiveFixture.raw}`
   );
 });
 

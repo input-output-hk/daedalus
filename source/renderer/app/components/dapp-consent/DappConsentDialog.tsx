@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import type { DappConsentPresentation } from '../../../../common/ipc/api';
 import type { Intl } from '../../types/i18nTypes';
@@ -9,7 +9,7 @@ type Props = {
   intl: Intl;
   request: DappConsentPresentation;
   deciding: boolean;
-  onApprove: () => void;
+  onApprove: (passphrase?: string) => void;
   onReject: () => void;
 };
 
@@ -20,6 +20,18 @@ function DappConsentDialog({
   onApprove,
   onReject,
 }: Props) {
+  const [passphrase, setPassphrase] = useState('');
+  const requiresPassphrase =
+    request.kind === 'key-disclosure' && request.requiresPassphrase === true;
+  const approve = () => {
+    const value = passphrase;
+    setPassphrase('');
+    onApprove(requiresPassphrase ? value : undefined);
+  };
+  const reject = () => {
+    setPassphrase('');
+    onReject();
+  };
   return (
     <Dialog
       title={intl.formatMessage(
@@ -30,13 +42,13 @@ function DappConsentDialog({
       actions={[
         {
           label: intl.formatMessage(messages.reject),
-          onClick: onReject,
+          onClick: reject,
           disabled: deciding,
         },
         {
           label: intl.formatMessage(messages.approve),
-          onClick: onApprove,
-          disabled: deciding,
+          onClick: approve,
+          disabled: deciding || (requiresPassphrase && passphrase.length === 0),
           primary: true,
         },
       ]}
@@ -65,8 +77,28 @@ function DappConsentDialog({
           })}
         </p>
       )}
-      {request.kind === 'key-disclosure' && (
-        <p>{intl.formatMessage(messages.disclosureWarning)}</p>
+      {request.kind === 'key-disclosure' &&
+        request.scopes.includes('governance-key-disclosure') && (
+          <p>{intl.formatMessage(messages.governanceDisclosureWarning)}</p>
+        )}
+      {request.kind === 'key-disclosure' &&
+        request.scopes.includes('account-public-key-disclosure') && (
+          <p>{intl.formatMessage(messages.accountDisclosureWarning)}</p>
+        )}
+      {requiresPassphrase && (
+        <>
+          <label htmlFor="cip104-account-public-key-password">
+            {intl.formatMessage(messages.password)}
+          </label>
+          <input
+            id="cip104-account-public-key-password"
+            type="password"
+            value={passphrase}
+            onChange={(event) => setPassphrase(event.target.value)}
+            autoComplete="current-password"
+            disabled={deciding}
+          />
+        </>
       )}
     </Dialog>
   );

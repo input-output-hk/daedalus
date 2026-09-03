@@ -21,6 +21,10 @@ const schemaByFile = {
   'envelope.json': envelopeSchema,
 };
 
+const cip104Fixture = manifest.methods.find(
+  ({ path }) => path === 'api.cip104.getAccountPub'
+)?.positiveFixture as Record<string, string>;
+
 const schemaIdByFile = {
   'common.json': commonSchema.$id,
   'errors.json': errorsSchema.$id,
@@ -216,17 +220,20 @@ describe('frozen CIP-30 contracts', () => {
       ({ path: methodPath }) => methodPath === 'api.cip104.getAccountPub'
     ) as Record<string, unknown>;
     expect(cip104Descriptor).toMatchObject({
-      status: 'proposed-disabled',
-      reason: expect.stringContaining('Terminal-disabled'),
+      status: 'proposed-policy-gated',
     });
+
     expect(cip104Method).toMatchObject({
-      availability: 'terminal-disabled',
-      terminalDecision: expect.stringContaining(
-        'No exact interoperable cbor<Bip32PublicKey> encoding was proven'
-      ),
+      availability: 'policy-gated',
+      successSchemaRef: 'common.json#/definitions/accountPublicKey',
     });
-    expect(cip104Method).not.toHaveProperty('positiveFixture');
-    expect(cip104Method).not.toHaveProperty('unresolved');
+    const decodedNewm = bech32.decode(cip104Fixture.accountXpubBech32, 1000);
+    expect(
+      Buffer.from(bech32.fromWords(decodedNewm.words)).toString('hex')
+    ).toBe(cip104Fixture.raw);
+    expect(
+      cbor.decodeFirstSync(Buffer.from(cip104Fixture.cbor, 'hex'))
+    ).toEqual(Buffer.from(cip104Fixture.raw, 'hex'));
 
     manifest.methods.forEach(({ rejections }) => {
       rejections.forEach((rejection) => {
@@ -302,6 +309,7 @@ describe('frozen CIP-30 contracts', () => {
         nonEmptyHexBytes: ['a0', ''],
         hash32: [hash, 'aa'],
         publicKey32: [cip8Fixture.publicKey, 'aa'],
+        accountPublicKey: [cip104Fixture.cbor, cip104Fixture.raw],
         drepId: [cip8Fixture.drepId, 'aa'],
         addressInput: [address, '0x00'],
         addressResult: [address, 'addr1invalid'],
@@ -442,7 +450,10 @@ describe('frozen CIP-30 contracts', () => {
       'APIError.InvalidRequest'
     );
     expect(negotiate([{ cip: 9999 }], [95, 103])).toEqual([]);
-    expect(negotiate([{ cip: 104 }, { cip: 142 }], [104, 142])).toEqual([142]);
+    expect(negotiate([{ cip: 104 }, { cip: 142 }], [104, 142])).toEqual([
+      104,
+      142,
+    ]);
 
     const syntheticDescriptors = [
       { cip: 1, status: 'active', dependencies: [], incompatibleWith: [] },
@@ -462,16 +473,14 @@ describe('frozen CIP-30 contracts', () => {
       manifest.extensions.registryOrder.map((cip) => ({ cip })),
       [95, 103, 104, 142]
     );
-    expect(metadata).toEqual([95, 103, 142]);
+    expect(metadata).toEqual([95, 103, 104, 142]);
 
-    const firstApi = makeApi([95, 103], 1);
+    const firstApi = makeApi([95, 103, 104], 1);
     expect(firstApi.signTx).toBe('cip95-signTx');
     expect(
       (firstApi.cip103 as { effectiveSigner: string }).effectiveSigner
     ).toBe('cip95-signTx');
-    expect(Object.prototype.hasOwnProperty.call(firstApi, 'cip104')).toBe(
-      false
-    );
+    expect(Object.prototype.hasOwnProperty.call(firstApi, 'cip104')).toBe(true);
     const secondApi = makeApi([103], 2);
     firstApi.active = false;
     expect(firstApi.active).toBe(false);

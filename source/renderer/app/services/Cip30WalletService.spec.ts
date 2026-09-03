@@ -45,6 +45,13 @@ const request = (
   network,
   sourceRevision: '22'.repeat(20),
 });
+const accountPublicKeyRequest = {
+  operation: 'account-public-key' as const,
+  walletId: 'wallet',
+  network,
+  sourceRevision: '22'.repeat(20),
+  passphrase: 'secret',
+};
 const signDataRequest = {
   operation: 'sign-data' as const,
   walletId: 'wallet',
@@ -149,6 +156,7 @@ const create = () => {
     { id: 'addr-used', used: true, spendingPath: '0' },
     { id: 'addr-unused-1', used: false, spendingPath: '1' },
   ]);
+  const getAccountPublicKey = jest.fn(async () => 'acct_xvk1account');
   const signDappData = jest.fn(async () => ({
     revision: 1 as const,
     credential_kind: 'payment' as const,
@@ -203,6 +211,7 @@ const create = () => {
       getAddresses,
       signDappData,
       getDappCip95KeyState,
+      getAccountPublicKey,
       signDappTransactions,
       submitDappTransaction,
       getDappCollateralHistory,
@@ -242,6 +251,7 @@ const create = () => {
     getAddresses,
     signDappData,
     getDappCip95KeyState,
+    getAccountPublicKey,
     submitDappTransaction,
     getDappCollateralHistory,
     withWalletSendLock,
@@ -313,7 +323,7 @@ describe('Cip30WalletService', () => {
         walletKind: 'shelley-software',
         network,
         backendApiVersion: 1,
-        backendExtensions: [95, 103],
+        backendExtensions: [95, 103, 104],
       },
     });
     expect(fixture.getDappCapabilities).toHaveBeenCalledWith({
@@ -372,6 +382,36 @@ describe('Cip30WalletService', () => {
       walletId: 'wallet',
       isLegacy: false,
     });
+  });
+
+  it('returns the extended account-zero public key for software wallets', async () => {
+    const fixture = create();
+    await expect(
+      fixture.service.receive(accountPublicKeyRequest)
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      operation: 'account-public-key',
+      value: 'acct_xvk1account',
+    });
+    expect(fixture.getAccountPublicKey).toHaveBeenCalledWith({
+      walletId: 'wallet',
+      index: '0H',
+      passphrase: 'secret',
+      extended: true,
+    });
+
+    fixture.setWallet({
+      id: 'wallet',
+      name: 'Wallet',
+      isHardwareWallet: true,
+    });
+    await expect(
+      fixture.service.receive(accountPublicKeyRequest)
+    ).resolves.toEqual({
+      status: 'rejected',
+      reason: 'proof-generation',
+    });
+    expect(fixture.getAccountPublicKey).toHaveBeenCalledTimes(1);
   });
 
   it('returns authoritative CIP-95 registration classification unchanged', async () => {

@@ -109,6 +109,29 @@ describe('CIP-30 wallet executor contract', () => {
     ).toThrow('Invalid CIP-30 wallet response');
   });
 
+  it('requires a transient passphrase for account public-key access', () => {
+    const accountRequest = {
+      ...request,
+      operation: 'account-public-key' as const,
+      passphrase: 'secret',
+    };
+    expect(parseCip30WalletRequest(accountRequest)).toEqual(accountRequest);
+    expect(
+      parseCip30WalletResponse(accountRequest, {
+        status: 'fulfilled',
+        operation: 'account-public-key',
+        value: 'acct_xvk1account',
+      })
+    ).toEqual({
+      status: 'fulfilled',
+      operation: 'account-public-key',
+      value: 'acct_xvk1account',
+    });
+    expect(() =>
+      parseCip30WalletRequest({ ...accountRequest, passphrase: '' })
+    ).toThrow('Invalid CIP-30 wallet request');
+  });
+
   it('validates bounded collateral history without renderer summaries', () => {
     const preferred = { transactionId: '33'.repeat(32), index: 0 };
     const historyRequest = {

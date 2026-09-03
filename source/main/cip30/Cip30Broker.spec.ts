@@ -47,7 +47,7 @@ jest.mock('../config', () => {
         globalEnabled: true,
         preferredCatalogEnabled: true,
         diagnosticsEnabled: true,
-        cip104Revision: 0,
+        cip104Revision: 1,
         cip142Revision: 0,
         hardwareConnectorRows: ['ledger:nanoSP:8.0.0:signData'],
       },
@@ -80,6 +80,10 @@ const network = {
   networkMagic: 42,
   genesisHash: '11'.repeat(32),
 };
+const accountPublicKey =
+  'acct_xvk10yq2v72lq0h7lnhkw308uy23fjq384zufvyesh6mlklnpmv048xs8arze4nws0xfp8h87d7jdxwgm5dsr7l0qruedrtcdudjlnxls3sgsdluv';
+const accountPublicKeyCbor =
+  '58407900a6795f03efefcef6745e7e11514c8113d45c4b09985f5bfdbf30ed8fa9cd03f462cd66e83cc909ee7f37d2699c8dd1b01fbef00f9968d786f1b2fccdf846';
 const lease: DappRouteLease = {
   walletId: 'wallet',
   routeEpoch: 7,
@@ -374,6 +378,12 @@ const create = () => {
                 ? drepDataSignature.response
                 : signatureResponse,
           };
+    if (walletRequest.operation === 'account-public-key')
+      return {
+        status: 'fulfilled',
+        operation: 'account-public-key',
+        value: accountPublicKey,
+      };
     if (walletRequest.operation === 'cip95-key-state')
       return {
         status: 'fulfilled',
@@ -444,7 +454,7 @@ const create = () => {
         walletKind,
         network,
         backendApiVersion: 1,
-        backendExtensions: [95, 103],
+        backendExtensions: [95, 103, 104],
         ...(walletKind === 'ledger' && hardware ? { hardware } : {}),
       },
     };
@@ -763,21 +773,44 @@ describe('Cip30Broker', () => {
     refused.cleanup();
   });
 
-  it('refuses future methods before backend work and maps stale authority to AccountChange', async () => {
+  it('releases CIP-104 only through negotiated elevated consent', async () => {
     const fixture = create();
-    await fixture.broker.handle(event, request('provider.enable'));
+    await fixture.broker.handle(
+      event,
+      request('provider.enable', [{ extensions: [{ cip: 104 }] }])
+    );
     fixture.executeWallet.mockClear();
     (fixture.consent.request as jest.Mock).mockClear();
 
     await expect(
       fixture.broker.handle(event, request('api.cip104.getAccountPub'))
     ).resolves.toEqual({
-      status: 'rejected',
-      rejection: { type: 'api-error', value: { code: -3, info: 'Refused' } },
+      status: 'fulfilled',
+      value: accountPublicKeyCbor,
     });
-    expect(fixture.executeWallet).not.toHaveBeenCalled();
-    expect(fixture.consent.request).not.toHaveBeenCalled();
+    expect(fixture.consent.request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        presentation: expect.objectContaining({
+          kind: 'key-disclosure',
+          requiresPassphrase: true,
+          scopes: ['account-public-key-disclosure'],
+          extensions: [104],
+        }),
+      })
+    );
+    expect(fixture.executeWallet).toHaveBeenCalledWith(
+      expect.objectContaining({
+        operation: 'account-public-key',
+        passphrase: 'secret',
+      })
+    );
+    fixture.cleanup();
+  });
 
+  it('maps wallet failures and stale authority without leaking data', async () => {
+    const fixture = create();
+    await fixture.broker.handle(event, request('provider.enable'));
+    fixture.executeWallet.mockClear();
     fixture.executeWallet.mockResolvedValueOnce({
       status: 'rejected',
       reason: 'unavailable',

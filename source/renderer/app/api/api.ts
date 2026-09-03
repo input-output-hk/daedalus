@@ -531,9 +531,7 @@ export default class AdaApi {
         passphrase,
         extended,
       });
-      logger.debug('AdaApi::getAccountPublicKey success', {
-        accountPublicKey,
-      });
+      logger.debug('AdaApi::getAccountPublicKey success');
       return accountPublicKey;
     } catch (error) {
       logger.error('AdaApi::getAccountPublicKey error', {

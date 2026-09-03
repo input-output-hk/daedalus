@@ -277,7 +277,11 @@ type DappConsentIdentity = Readonly<{
 }>;
 export type DappConsentPresentation = DappConsentIdentity &
   (
-    | Readonly<{ kind: 'connection' | 'key-disclosure' }>
+    | Readonly<{ kind: 'connection' }>
+    | Readonly<{
+        kind: 'key-disclosure';
+        requiresPassphrase?: boolean;
+      }>
     | Readonly<{
         kind: 'transaction-sign' | 'transaction-submit';
         review: Cip30TransactionReview;
@@ -620,19 +624,16 @@ export type GetCachedBackendStatusRendererRequest = void;
 // Import WatchdogState from watchdog.types — but since api.ts uses inline types,
 // define the response type as a re-export of WatchdogState:
 export type { WatchdogState } from '../types/watchdog.types';
-export type GetCachedBackendStatusMainResponse =
-  import('../types/watchdog.types').WatchdogState;
+export type GetCachedBackendStatusMainResponse = import('../types/watchdog.types').WatchdogState;
 
 // Command: renderer sends MithrilCommand to main (forwarded to watchdog)
 export const MITHRIL_COMMAND_CHANNEL = 'MITHRIL_COMMAND_CHANNEL';
-export type MithrilCommandRendererRequest =
-  import('../types/watchdog.types').MithrilCommand;
+export type MithrilCommandRendererRequest = import('../types/watchdog.types').MithrilCommand;
 export type MithrilCommandMainResponse = void;
 
 // Push: main → renderer mithril_progress events
 export const MITHRIL_PROGRESS_CHANNEL = 'MITHRIL_PROGRESS_CHANNEL';
-export type MithrilProgressMainRequest =
-  import('../types/watchdog.types').MithrilProgress;
+export type MithrilProgressMainRequest = import('../types/watchdog.types').MithrilProgress;
 export type MithrilProgressRendererResponse = void;
 
 // Push: main → renderer mithril_status events
@@ -672,8 +673,7 @@ export type WatchdogStoppedRendererResponse = void;
 // Chain storage: renderer asks main to validate a candidate path
 export const VALIDATE_CHAIN_STORAGE_CHANNEL = 'VALIDATE_CHAIN_STORAGE_CHANNEL';
 export type ValidateChainStorageRendererRequest = { path: string };
-export type ValidateChainStorageMainResponse =
-  import('../types/watchdog.types').ChainStorageValidation;
+export type ValidateChainStorageMainResponse = import('../types/watchdog.types').ChainStorageValidation;
 
 // Chain storage: renderer asks main to apply a new chain path and restart watchdog
 export const CONFIRM_CHAIN_STORAGE_CHANNEL = 'CONFIRM_CHAIN_STORAGE_CHANNEL';

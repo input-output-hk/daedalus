@@ -133,21 +133,25 @@ describe('dApp preload', () => {
     ).resolves.toEqual(cip103Fixtures.submission.allSuccessHashes);
   });
 
-  it('terminally omits requested CIP-104 from the authoritative API', async () => {
+  it('exposes CIP-104 only from the authoritative negotiated set', async () => {
+    const accountPub = `5840${'11'.repeat(64)}`;
     invoke.mockImplementation(
-      async (_channel: string, gateway: DappCip30GatewayRequest) =>
-        gateway.method === 'api.getExtensions'
-          ? { status: 'fulfilled', value: [] }
-          : { status: 'fulfilled', value: {} }
+      async (_channel: string, gateway: DappCip30GatewayRequest) => {
+        if (gateway.method === 'api.getExtensions')
+          return { status: 'fulfilled', value: [{ cip: 104 }] };
+        return {
+          status: 'fulfilled',
+          value:
+            gateway.method === 'api.cip104.getAccountPub' ? accountPub : {},
+        };
+      }
     );
     const api = await provider.enable({ extensions: [{ cip: 104 }] });
-    expect(Object.prototype.hasOwnProperty.call(api, 'cip104')).toBe(false);
-    expect(
-      ((api as unknown) as Record<string, unknown>).cip104
-    ).toBeUndefined();
-    expect(invoke).toHaveBeenCalledWith(DAPP_CIP30_GATEWAY_CHANNEL, {
-      method: 'provider.enable',
-      args: [{ extensions: [{ cip: 104 }] }],
+    expect(Object.prototype.hasOwnProperty.call(api, 'cip104')).toBe(true);
+    await expect(api.cip104!.getAccountPub()).resolves.toBe(accountPub);
+    expect(invoke).toHaveBeenLastCalledWith(DAPP_CIP30_GATEWAY_CHANNEL, {
+      method: 'api.cip104.getAccountPub',
+      args: [],
     });
   });
 

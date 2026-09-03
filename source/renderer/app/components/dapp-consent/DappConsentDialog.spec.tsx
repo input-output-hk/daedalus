@@ -48,4 +48,36 @@ describe('DappConsentDialog', () => {
     expect(onApprove).toHaveBeenCalledTimes(1);
     expect(onReject).toHaveBeenCalledTimes(1);
   });
+
+  it('requires a password for irreversible account-key disclosure', () => {
+    const onApprove = jest.fn();
+    render(
+      <StoryDecorator>
+        <IntlProvider locale="en-US" messages={translations}>
+          <DappConsentDialog
+            request={{
+              ...request,
+              scopes: ['account-public-key-disclosure'],
+              extensions: [104],
+              requiresPassphrase: true,
+            }}
+            deciding={false}
+            onApprove={onApprove}
+            onReject={jest.fn()}
+          />
+        </IntlProvider>
+      </StoryDecorator>
+    );
+
+    const approve = screen.getByRole('button', { name: 'Approve' });
+    expect(approve).toBeDisabled();
+    expect(
+      screen.getByText(/complete address history and future derivation paths/)
+    ).toBeVisible();
+    fireEvent.change(screen.getByLabelText('Spending password'), {
+      target: { value: 'secret' },
+    });
+    fireEvent.click(approve);
+    expect(onApprove).toHaveBeenCalledWith('secret');
+  });
 });

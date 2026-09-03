@@ -106,7 +106,7 @@ export const EXTENSION_DESCRIPTORS: readonly ExtensionDescriptor[] = Object.free
         method('api.cip104.getAccountPub', 'account-public-key-disclosure'),
       ],
       baseOverrides: [],
-      availability: 'disabled',
+      availability: 'available',
       requiresBackend: true,
       requiresDevice: true,
       policyRevision: 1,

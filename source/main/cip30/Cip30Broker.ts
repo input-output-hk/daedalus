@@ -9,6 +9,7 @@ import {
   createDappCip30RejectedEnvelope,
   parseDappCip30GatewayRequest,
 } from '../../common/cip30/schemas';
+import { encodeCip104AccountPub } from '../../common/cip30/cip104';
 import {
   createCip8DataSignReview,
   verifyCip8BackendResponse,
@@ -105,6 +106,7 @@ const IMPLEMENTED_METHODS = new Set<DappCip30Method>([
   'api.cip95.getPubDRepKey',
   'api.cip95.getRegisteredPubStakeKeys',
   'api.cip95.getUnregisteredPubStakeKeys',
+  'api.cip104.getAccountPub',
   'api.getUtxos',
   'api.getCollateral',
   'api.getBalance',
@@ -432,6 +434,66 @@ export class Cip30Broker {
     };
     this.options.sessions.create(capability);
     return {};
+  }
+
+  private async getAccountPub(
+    request: DappCip30GatewayRequest<'api.cip104.getAccountPub'>,
+    binding: Cip30BrokerBinding
+  ): Promise<string> {
+    const { evidence, context } = await this.capabilityEvidence(binding);
+    const capability = this.options.dispatcher.requireCapability(
+      request.method,
+      binding.authority,
+      context
+    );
+    if (evidence.walletKind !== 'shelley-software') throw refusal();
+    return this.options.consent.request({
+      identity: {
+        guestWebContentsId: binding.authority.guestWebContentsId,
+        documentGeneration: binding.authority.documentGeneration,
+        origin: binding.authority.origin,
+        connectionId: capability.connectionId,
+        walletId: binding.authority.walletId,
+        routeEpoch: binding.authority.routeEpoch,
+        networkGenesis: binding.authority.network.genesisHash,
+      },
+      presentation: {
+        kind: 'key-disclosure',
+        requiresPassphrase: true,
+        origin: binding.authority.origin,
+        walletName: evidence.walletName,
+        networkName: this.options.networkName,
+        scopes: ['account-public-key-disclosure'],
+        extensions: [104],
+      },
+      payload: {},
+      declined: refusal(),
+      execute: async (_payload, signal, passphrase) => {
+        if (signal.aborted || !passphrase) throw refusal();
+        this.assertCurrent(binding);
+        const latest = await this.capabilityEvidence(binding);
+        if (latest.evidence.walletKind !== 'shelley-software') throw refusal();
+        this.options.dispatcher.requireCapability(
+          request.method,
+          binding.authority,
+          latest.context
+        );
+        const response = await this.options.executeWallet({
+          operation: 'account-public-key',
+          walletId: binding.authority.walletId,
+          network: binding.authority.network,
+          sourceRevision: this.options.sourceRevision,
+          passphrase,
+        });
+        this.assertCurrent(binding);
+        if (response.status === 'rejected') {
+          if (response.reason === 'account-change') throw accountChange();
+          throw internal();
+        }
+        if (response.operation !== 'account-public-key') throw internal();
+        return encodeCip104AccountPub(response.value);
+      },
+    });
   }
 
   private preferredCollateralEffects(
@@ -1206,6 +1268,10 @@ export class Cip30Broker {
         request.method === 'api.cip95.signData'
       ) {
         const result = await this.signData(request, binding);
+        return createDappCip30FulfilledEnvelope(request.method, result);
+      }
+      if (request.method === 'api.cip104.getAccountPub') {
+        const result = await this.getAccountPub(request, binding);
         return createDappCip30FulfilledEnvelope(request.method, result);
       }
       if (!IMPLEMENTED_METHODS.has(request.method)) throw refusal();

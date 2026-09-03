@@ -30,25 +30,28 @@ pins.
 | CIP-95 type-6 DRep form | Cardano JS SDK commit `0c0e700237ca524d8bd73054e3518fb182d09e46`, `packages/key-management/src/cip8/cip30signData.ts`, selects `DREP_KEY_DERIVATION_PATH` when a type-6 enterprise credential equals the DRep key hash. Its matching test is in `packages/key-management/test/cip8/cip30signData.test.ts`. The SDK preserves the complete address in COSE headers. | A matching route-valid type-6 address selects the DRep key, proving the compatibility form. Daedalus then applies the PRD's stricter normalization: matching type-6 and direct raw DRep-ID input both produce the raw 28-byte DRep hash in the protected `address` header. A nonmatching type-6 address keeps ordinary payment semantics. |
 | CIP-8 output profile | CIP-8 permits more general forms and hashing; CIP-30 fixes un-hashed address signing. | Produce untagged `COSE_Sign1`, attached exact payload, empty external AAD, `alg:-8`, `hashed:false`, `version:1`, and no `kid`. Never produce the legacy missing-version form. |
 | CIP-103 failure | CIP-103 requires caller order, all-or-nothing witness disclosure, attempt-all submission, and a thrown aligned mixed array. | Preserve order and indexes. Signing uses `Transaction at index <n> failed`. Submission rejects directly with the mixed array after attempts begin; the Electron envelope carries it as plain data. |
-| CIP-104 encoding | `cbor<Bip32PublicKey>` has no precise CDDL, byte-string rule, or independent golden vector in the Proposed CIP or committed implementor evidence. | Terminal-disabled by task-404. Omit CIP-104 from metadata, negotiation, namespaces, consent, and backend access. Reopen only with a named implementor release and reproducible exact output for a deterministic 64-byte account xpub. |
+| CIP-104 encoding | The Proposed CIP returns hex-encoded CBOR of the extended account public key. `newm-chain` publishes a deterministic 64-byte account xpub consumed by its child-key derivation flow. | Encode the decoded `acct_xvk` payload as one definite-length CBOR byte string: prefix `5840` followed by 64 bytes. Keep CIP-104 policy-gated and software-wallet-only; require separate account-key disclosure consent and a transient spending password. |
 | CIP-142 namespace | Prose says `cip-142`; the JavaScript example uses `api.cip142`. | Use negotiated `api.cip142`; return a finite Word32 JavaScript number. |
 
-## CIP-104 Terminal Decision
+## CIP-104 Reopened Decision
 
-On 2026-08-27, task-404 closed with the disabled outcome. The Proposed CIP
-names Eternl, newm-chain, and Gero as implementors but provides no
-`Bip32PublicKey` CDDL or reproducible request/result vector. Repository
-contracts, task-002 research, committed history, and the pinned cardano-wallet
-capability evidence contain no independent 64-byte account-xpub CBOR result.
-Raw 64 bytes, a CBOR byte string, and any other encoding therefore remain
-intentionally undecided.
+Task-404's 2026-08-27 terminal decision was superseded on 2026-09-03 after
+operator-provided `newm-chain` evidence supplied the missing deterministic
+64-byte account xpub. The published
+`xpub10yq2v72lq0h7lnhkw308uy23fjq384zufvyesh6mlklnpmv048xs8arze4nws0xfp8h87d7jdxwgm5dsr7l0qruedrtcdudjlnxls3sm0qlln`
+decodes to
+`7900a6795f03efefcef6745e7e11514c8113d45c4b09985f5bfdbf30ed8fa9cd03f462cd66e83cc909ee7f37d2699c8dd1b01fbef00f9968d786f1b2fccdf846`.
+Applying the CIP's hex-encoded `cbor<Bip32PublicKey>` contract yields the
+definite-length 64-byte CBOR string
+`58407900a6795f03efefcef6745e7e11514c8113d45c4b09985f5bfdbf30ed8fa9cd03f462cd66e83cc909ee7f37d2699c8dd1b01fbef00f9968d786f1b2fccdf846`.
 
-Daedalus exposes no CIP-104 namespace, method, disclosure prompt, supported
-extension claim, executor operation, or backend request. No xpub can enter the
-dApp logging, telemetry, grants, or response-cache path. Future enablement
-requires a new reviewed task with a named implementor/release, deterministic
-input, exact output, reproducible command, and byte-for-byte Daedalus
-comparison; this terminal record must not be reinterpreted as support.
+Daedalus exposes the namespace only when CIP-104 revision policy is enabled
+and the caller negotiates `{cip: 104}`. Each call uses the existing
+cardano-wallet extended account-key endpoint for account `0H`, validates an
+`acct_xvk` 64-byte payload, and CBOR-encodes it without logging or caching the
+key. Software wallets require trusted account-key disclosure consent plus a
+transient spending password. Hardware wallets remain omitted until their
+certified extension capability includes CIP-104.
 
 ## Golden Evidence
 
