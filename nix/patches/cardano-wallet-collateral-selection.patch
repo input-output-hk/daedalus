@@ -1,0 +1,1195 @@
+diff --git a/lib/api/src/Cardano/Wallet/Api.hs b/lib/api/src/Cardano/Wallet/Api.hs
+index a142a14394..1a6b18b8df 100644
+--- a/lib/api/src/Cardano/Wallet/Api.hs
++++ b/lib/api/src/Cardano/Wallet/Api.hs
+@@ -323,6 +323,9 @@ import Control.Tracer
+ import Data.ByteString
+     ( ByteString
+     )
++import Data.Text
++    ( Text
++    )
+ import Data.Generics.Internal.VL.Lens
+     ( Lens'
+     )
+@@ -843,6 +846,7 @@ type DelegationFee =
+     "wallets"
+         :> Capture "walletId" (ApiT WalletId)
+         :> "delegation-fees"
++        :> QueryParam "preferred_collateral" Text
+         :> Get '[JSON] ApiFee
+ 
+ type ListStakeKeys n =
+diff --git a/lib/api/src/Cardano/Wallet/Api/Http/Server.hs b/lib/api/src/Cardano/Wallet/Api/Http/Server.hs
+index 815070a346..4cea5f14d7 100644
+--- a/lib/api/src/Cardano/Wallet/Api/Http/Server.hs
++++ b/lib/api/src/Cardano/Wallet/Api/Http/Server.hs
+@@ -422,7 +422,7 @@ server byron icarus shelley multisig spl drepLayer ntp blockchainSource dappBack
+         ( \wid -> \case
+             ApiSelectForPayment ascp ->
+                 selectCoins shelley (delegationAddressS @n) wid ascp
+-            ApiSelectForDelegation (ApiSelectCoinsAction action) ->
++            ApiSelectForDelegation (ApiSelectCoinsAction action reservedInputs) ->
+                 case action of
+                     Join pid ->
+                         selectCoinsForJoin
+@@ -431,8 +431,9 @@ server byron icarus shelley multisig spl drepLayer ntp blockchainSource dappBack
+                             (getPoolLifeCycleStatus spl)
+                             (getApiT pid)
+                             (getApiT wid)
++                            reservedInputs
+                     Quit ->
+-                        selectCoinsForQuit shelley wid
++                        selectCoinsForQuit shelley wid reservedInputs
+         )
+ 
+     shelleyTransactions :: Server (ShelleyTransactions n)
+diff --git a/lib/api/src/Cardano/Wallet/Api/Http/Shelley/Server.hs b/lib/api/src/Cardano/Wallet/Api/Http/Shelley/Server.hs
+index 3114c4cf16..988eda8741 100644
+--- a/lib/api/src/Cardano/Wallet/Api/Http/Shelley/Server.hs
++++ b/lib/api/src/Cardano/Wallet/Api/Http/Shelley/Server.hs
+@@ -1056,6 +1056,8 @@ import qualified Data.List.NonEmpty as NE
+ import qualified Data.Map.Strict as Map
+ import qualified Data.Sequence as Seq
+ import qualified Data.Set as Set
++import qualified Data.Aeson as Aeson
++import qualified Data.Text.Encoding as TE
+ import qualified Data.Text as T
+ import qualified Network.Ntp as Ntp
+ 
+@@ -2326,6 +2328,8 @@ selectCoins ctx@ApiLayer{..} argGenChange (ApiT walletId) body = do
+                     { txWithdrawal = withdrawal
+                     , txMetadata = getApiT <$> body ^. #metadata
+                     , txDeposit = Just $ W.getStakeKeyDeposit pp
++                    , txPreferredCollateral = Set.fromList $ map getApiT $
++                        fromMaybe [] (body ^. #preferredCollateral)
+                     }
+ 
+         (tx, walletState) <-
+@@ -2383,8 +2387,9 @@ selectCoinsForJoin
+     -> (PoolId -> IO PoolLifeCycleStatus)
+     -> PoolId
+     -> WalletId
++    -> Maybe [ApiT TxIn]
+     -> Handler (Api.ApiCoinSelection n)
+-selectCoinsForJoin ctx knownPools getPoolStatus poolId walletId = do
++selectCoinsForJoin ctx knownPools getPoolStatus poolId walletId preferredCollateral = do
+     poolStatus <- liftIO $ getPoolStatus poolId
+     pools <- liftIO knownPools
+     withWorkerCtx ctx walletId liftE liftE $ \workerCtx -> liftIO $ do
+@@ -2394,6 +2399,7 @@ selectCoinsForJoin ctx knownPools getPoolStatus poolId walletId = do
+                 pools
+                 poolId
+                 poolStatus
++                (Set.fromList $ map getApiT $ fromMaybe [] preferredCollateral)
+         pure
+             ApiCoinSelection
+                 { inputs = mkApiCoinSelectionInput <$> inputs
+@@ -2420,11 +2426,13 @@ selectCoinsForQuit
+        )
+     => ApiLayer (SeqState n k)
+     -> ApiT WalletId
++    -> Maybe [ApiT TxIn]
+     -> Handler (ApiCoinSelection n)
+-selectCoinsForQuit ctx (ApiT walletId) = do
++selectCoinsForQuit ctx (ApiT walletId) preferredCollateral = do
+     withWorkerCtx ctx walletId liftE liftE $ \workerCtx -> liftIO $ do
+         W.CoinSelection{..} <-
+             IODeleg.selectCoinsForQuit workerCtx
++                (Set.fromList $ map getApiT $ fromMaybe [] preferredCollateral)
+         pure
+             ApiCoinSelection
+                 { inputs = mkApiCoinSelectionInput <$> inputs
+@@ -2732,6 +2740,8 @@ postTransactionOld ctx@ApiLayer{..} argGenChange (ApiT wid) body = do
+                     { txWithdrawal = wdrl
+                     , txMetadata = md
+                     , txValidityInterval = (Nothing, ttl)
++                    , txPreferredCollateral = Set.fromList $ map getApiT $
++                        fromMaybe [] (body ^. #preferredCollateral)
+                     }
+         (BuiltTx{..}, txTime) <-
+             atomicallyWithHandler
+@@ -2955,6 +2965,8 @@ postTransactionFeeOld ctx@ApiLayer{..} (ApiT walletId) body = do
+                                 . traverse
+                                 . #txMetadataWithSchema_metadata
+                         , txValidityInterval = (Nothing, ttl)
++                        , txPreferredCollateral = Set.fromList $ map getApiT $
++                            fromMaybe [] (body ^. #preferredCollateral)
+                         }
+                     PreSelection{outputs}
+         pure
+@@ -3000,7 +3012,7 @@ constructTransaction
+     -> ApiConstructTransactionData n
+     -> Handler (ApiConstructTransaction n)
+ constructTransaction api knownPools poolStatus apiWalletId body = do
+-    body & \(ApiConstructTransactionData _ _ _ _ _ _ _ _ _ _) ->
++    body & \(ApiConstructTransactionData _ _ _ _ _ _ _ _ _ _ _) ->
+         -- Above is the way to get a compiler error when number of fields changes,
+         -- in order not to forget to update the pattern below:
+         case body of
+@@ -3090,6 +3102,8 @@ constructTransaction api knownPools poolStatus apiWalletId body = do
+                     , txDeposit = Just $ W.getStakeKeyDeposit pp
+                     , txMetadata = metadata
+                     , txValidityInterval = first Just validityInterval
++                    , txPreferredCollateral = Set.fromList $ map getApiT $
++                        fromMaybe [] (body ^. #preferredCollateral)
+                     }
+ 
+         let transactionCtx1 =
+@@ -3260,6 +3274,7 @@ constructTransaction api knownPools poolStatus apiWalletId body = do
+                     wrk
+                     pp
+                     timeTranslation
++                    (txPreferredCollateral transactionCtx3)
+                     Write.PartialTx
+                         { tx = fromCardanoApiTx $ Cardano.Tx unbalancedTx []
+                         , extraUTxO = mempty
+@@ -3732,6 +3747,7 @@ constructSharedTransaction
+                                 wrk
+                                 pp
+                                 timeTranslation
++                                (Set.fromList $ map getApiT $ fromMaybe [] (body ^. #preferredCollateral))
+                                 Write.PartialTx
+                                     { tx =
+                                         fromCardanoApiTx
+@@ -3949,6 +3965,7 @@ balanceTransaction ctx (ApiT wid) body = do
+                     wrk
+                     pp
+                     timeTranslation
++                    Set.empty
+                     partialTx
+         return $ toApiSerialisedTransaction (body ^. #encoding) balancedTx
+   where
+@@ -4457,6 +4474,7 @@ joinStakePool
+                         poolId
+                         poolStatus
+                         (coerce $ getApiT $ body ^. #passphrase)
++                        (Set.fromList $ map getApiT $ fromMaybe [] (body ^. #preferredCollateral))
+             mkApiTransaction
+                 ti
+                 wrk
+@@ -4762,14 +4780,22 @@ delegationFee
+        )
+     => ApiLayer s
+     -> ApiT WalletId
++    -> Maybe T.Text
+     -> Handler ApiFee
+-delegationFee ctx@ApiLayer{..} (ApiT walletId) = do
++delegationFee ctx@ApiLayer{..} (ApiT walletId) preferredCollateral = do
++    preferred <- case preferredCollateral of
++        Nothing -> pure Set.empty
++        Just encoded -> case Aeson.eitherDecodeStrict' (TE.encodeUtf8 encoded) of
++            Left _ -> Handler $ throwE $
++                apiError err400 BadRequest "Invalid preferred_collateral inputs"
++            Right inputs -> pure $ Set.fromList $ map (getApiT :: ApiT TxIn -> TxIn) inputs
+     withWorkerCtx ctx walletId liftE liftE $ \workerCtx -> liftIO $ do
+         W.DelegationFee{feePercentiles, deposit} <-
+             W.delegationFee @s
+                 (workerCtx ^. dbLayer)
+                 netLayer
+                 (W.defaultChangeAddressGen (delegationAddressS @n))
++                preferred
+         pure $ mkApiFee (Just deposit) [] feePercentiles
+ 
+ quitStakePool
+@@ -4795,6 +4821,7 @@ quitStakePool ctx@ApiLayer{..} (ApiT walletId) body = do
+                     wrk
+                     walletId
+                     (coerce $ getApiT $ body ^. #passphrase)
++                    (Set.fromList $ map getApiT $ fromMaybe [] (body ^. #preferredCollateral))
+ 
+         mkApiTransaction
+             ti
+diff --git a/lib/api/src/Cardano/Wallet/Api/Http/Shelley/TransactionContext.hs b/lib/api/src/Cardano/Wallet/Api/Http/Shelley/TransactionContext.hs
+index baa719f5fb..97e109ce22 100644
+--- a/lib/api/src/Cardano/Wallet/Api/Http/Shelley/TransactionContext.hs
++++ b/lib/api/src/Cardano/Wallet/Api/Http/Shelley/TransactionContext.hs
+@@ -421,8 +421,6 @@ captureContext worker =
+             pending <-
+                 first (const DappContextUnavailableError)
+                     $ mapM decodeDurable (filter hasLiveClaim durable)
+-            requireEither DappContextUnavailableError
+-                $ all noNormalCollateralOverlap pending
+             checkpoint <-
+                 Set.fromList
+                     <$> first
+@@ -502,7 +500,7 @@ decodeDappTx :: ApiDappHex -> Either DappError DecodedTx
+ decodeDappTx value@(ApiDappHex bytes) =
+     case decodeTx value of
+         Right decoded -> do
+-            requireEither InvalidDappRequest $ noNormalCollateralOverlap decoded
++            -- Spending and collateral are alternative ledger paths and may overlap.
+             requireEither InvalidDappRequest decoded.valid
+             requireEither InvalidDappRequest $ supportedCredentialSurfaces decoded
+             Right decoded
+@@ -521,9 +519,6 @@ decodeDappTx value@(ApiDappHex bytes) =
+         CertificateOther MIRCertificate -> True
+         _ -> False
+ 
+-noNormalCollateralOverlap :: DecodedTx -> Bool
+-noNormalCollateralOverlap DecodedTx{normal, collateral} = Set.disjoint normal collateral
+-
+ validVKeyWitnessHashes :: Read.Tx Read.Conway -> Set ByteString
+ validVKeyWitnessHashes (Read.Tx ledgerTx) = Set.fromList
+     [ Crypto.hashToBytes hash
+diff --git a/lib/api/src/Cardano/Wallet/Api/Link.hs b/lib/api/src/Cardano/Wallet/Api/Link.hs
+index 06226d4960..71831566cd 100644
+--- a/lib/api/src/Cardano/Wallet/Api/Link.hs
++++ b/lib/api/src/Cardano/Wallet/Api/Link.hs
+@@ -951,7 +951,7 @@ quitStakePool w = endpoint @(Api.QuitStakePool Net) (wid &)
+ 
+ getDelegationFee
+     :: forall w. HasType (ApiT WalletId) w => w -> (Method, Text)
+-getDelegationFee w = endpoint @Api.DelegationFee (wid &)
++getDelegationFee w = endpoint @Api.DelegationFee (\mk -> mk wid Nothing)
+   where
+     wid = w ^. typed @(ApiT WalletId)
+ 
+diff --git a/lib/api/src/Cardano/Wallet/Api/Types.hs b/lib/api/src/Cardano/Wallet/Api/Types.hs
+index de9dc201b5..95e55c3cdf 100644
+--- a/lib/api/src/Cardano/Wallet/Api/Types.hs
++++ b/lib/api/src/Cardano/Wallet/Api/Types.hs
+@@ -922,14 +922,16 @@ data ApiSelectCoinsPayments (n :: NetworkDiscriminant) = ApiSelectCoinsPayments
+     { payments :: NonEmpty (ApiTxOutput n)
+     , withdrawal :: !(Maybe ApiWithdrawalPostData)
+     , metadata :: !(Maybe (ApiT TxMetadata))
++    , preferredCollateral :: !(Maybe [ApiT TxIn])
+     }
+     deriving (Eq, Generic, Show)
+     deriving
+         (FromJSON, ToJSON)
+         via DefaultRecord (ApiSelectCoinsPayments n)
+ 
+-newtype ApiSelectCoinsAction = ApiSelectCoinsAction
++data ApiSelectCoinsAction = ApiSelectCoinsAction
+     { delegationAction :: ApiDelegationAction
++    , preferredCollateral :: !(Maybe [ApiT TxIn])
+     }
+     deriving (Eq, Generic)
+     deriving (FromJSON, ToJSON) via DefaultRecord ApiSelectCoinsAction
+@@ -1065,8 +1067,9 @@ data ApiWalletDelegationStatus
+     deriving (FromJSON, ToJSON) via DefaultSum ApiWalletDelegationStatus
+     deriving anyclass (NFData)
+ 
+-newtype ApiWalletPassphrase = ApiWalletPassphrase
++data ApiWalletPassphrase = ApiWalletPassphrase
+     { passphrase :: ApiT (Passphrase "lenient")
++    , preferredCollateral :: !(Maybe [ApiT TxIn])
+     }
+     deriving (Eq, Generic)
+     deriving (FromJSON, ToJSON) via DefaultRecord ApiWalletPassphrase
+@@ -1322,6 +1325,7 @@ data ApiConstructTransactionData (n :: NetworkDiscriminant)
+     , validityInterval :: !(Maybe ApiValidityInterval)
+     , referencePolicyScriptTemplate :: !(Maybe (ApiT (Script Cosigner)))
+     , encoding :: !(Maybe ApiSealedTxEncoding)
++    , preferredCollateral :: !(Maybe [ApiT TxIn])
+     }
+     deriving (Eq, Generic, Show)
+     deriving
+@@ -1389,6 +1393,7 @@ data PostTransactionOldData (n :: NetworkDiscriminant) = PostTransactionOldData
+     , withdrawal :: !(Maybe ApiWithdrawalPostData)
+     , metadata :: !(Maybe TxMetadataWithSchema)
+     , timeToLive :: !(Maybe (Quantity "second" NominalDiffTime))
++    , preferredCollateral :: !(Maybe [ApiT TxIn])
+     }
+     deriving (Eq, Generic, Show)
+     deriving
+@@ -1402,6 +1407,7 @@ data PostTransactionFeeOldData (n :: NetworkDiscriminant)
+     , withdrawal :: !(Maybe ApiWithdrawalPostData)
+     , metadata :: !(Maybe TxMetadataWithSchema)
+     , timeToLive :: !(Maybe (Quantity "second" NominalDiffTime))
++    , preferredCollateral :: !(Maybe [ApiT TxIn])
+     }
+     deriving (Eq, Generic, Show)
+     deriving
+diff --git a/lib/benchmarks/exe/api-bench.hs b/lib/benchmarks/exe/api-bench.hs
+index 6b934f3c45..ee1f8fb4ce 100644
+--- a/lib/benchmarks/exe/api-bench.hs
++++ b/lib/benchmarks/exe/api-bench.hs
+@@ -400,6 +400,7 @@ benchmarksSeq reporter BenchmarkConfig{benchmarkName, ctx} = do
+             (W.dbLayer_ ctx)
+             (W.networkLayer_ ctx)
+             (W.defaultChangeAddressGen (delegationAddressS @n))
++            mempty
+ 
+     let seqResult =
+             BenchSeqResults
+diff --git a/lib/benchmarks/exe/latency-bench.hs b/lib/benchmarks/exe/latency-bench.hs
+index d9000fe487..5e52b07767 100644
+--- a/lib/benchmarks/exe/latency-bench.hs
++++ b/lib/benchmarks/exe/latency-bench.hs
+@@ -459,6 +459,7 @@ repeatPostTx wDest amtToSend batchSize amtExp = do
+                         , withdrawal = Nothing
+                         , metadata = Nothing
+                         , timeToLive = Nothing
++                        , preferredCollateral = Nothing
+                         }
+             request $ C.postTransaction wSrcId payload
+ 
+@@ -549,6 +550,7 @@ runScenario reporter scenario = lift . runResourceT $ do
+                 , withdrawal = Nothing
+                 , metadata = Nothing
+                 , timeToLive = Nothing
++                , preferredCollateral = Nothing
+                 }
+     sceneOfClientMR "postTransactionFee"
+         $ C.postTransactionFee wal1Id payload
+@@ -561,6 +563,7 @@ runScenario reporter scenario = lift . runResourceT $ do
+                 , withdrawal = Nothing
+                 , metadata = Nothing
+                 , timeToLive = Nothing
++                , preferredCollateral = Nothing
+                 }
+     sceneOfClientMR "postTransaction" $ C.postTransaction wal1Id payloadTx
+     waitForChange
+@@ -579,6 +582,7 @@ runScenario reporter scenario = lift . runResourceT $ do
+                 , withdrawal = Nothing
+                 , metadata = Nothing
+                 , timeToLive = Nothing
++                , preferredCollateral = Nothing
+                 }
+     sceneOfClientMR "postTransactionTo5Addrs"
+         $ C.postTransaction wal1Id payloadTxTo5Addr
+@@ -601,6 +605,7 @@ runScenario reporter scenario = lift . runResourceT $ do
+                 , withdrawal = Nothing
+                 , metadata = Nothing
+                 , timeToLive = Nothing
++                , preferredCollateral = Nothing
+                 }
+     -- Todo ADP-3293
+     pend
+diff --git a/lib/integration/framework/Test/Integration/Framework/DSL/Wallet.hs b/lib/integration/framework/Test/Integration/Framework/DSL/Wallet.hs
+index 5613c228d3..d4810b6235 100644
+--- a/lib/integration/framework/Test/Integration/Framework/DSL/Wallet.hs
++++ b/lib/integration/framework/Test/Integration/Framework/DSL/Wallet.hs
+@@ -241,6 +241,7 @@ fundWallet amt = do
+                         , withdrawal = Nothing
+                         , metadata = Nothing
+                         , timeToLive = Nothing
++                        , preferredCollateral = Nothing
+                         }
+             submitTx payload
+ 
+diff --git a/lib/unit/test/unit/Cardano/Wallet/Api/TypesSpec.hs b/lib/unit/test/unit/Cardano/Wallet/Api/TypesSpec.hs
+index 663f9278e4..ae6cfaf5ae 100644
+--- a/lib/unit/test/unit/Cardano/Wallet/Api/TypesSpec.hs
++++ b/lib/unit/test/unit/Cardano/Wallet/Api/TypesSpec.hs
+@@ -2295,6 +2295,7 @@ instance HasSNetworkId n => Arbitrary (PostTransactionOldData n) where
+             <*> elements [Just SelfWithdrawal, Nothing]
+             <*> arbitrary
+             <*> arbitrary
++            <*> arbitrary
+ 
+ instance Arbitrary TxMetadataWithSchema where
+     arbitrary =
+@@ -2366,6 +2367,7 @@ instance HasSNetworkId n => Arbitrary (ApiConstructTransactionData n) where
+             <*> pure Nothing
+             <*> pure Nothing
+             <*> elements [Just HexEncoded, Just Base64Encoded, Nothing]
++            <*> arbitrary
+ 
+ instance HasSNetworkId n => Arbitrary (ApiExternalInput n) where
+     arbitrary =
+@@ -2706,6 +2708,7 @@ instance HasSNetworkId n => Arbitrary (PostTransactionFeeOldData n) where
+             <*> elements [Just SelfWithdrawal, Nothing]
+             <*> arbitrary
+             <*> arbitrary
++            <*> arbitrary
+ 
+ selectFromPreparedBinaries :: Gen ByteString
+ selectFromPreparedBinaries =
+diff --git a/lib/unit/test/unit/Cardano/Wallet/DB/Store/Submissions/StoreSpec.hs b/lib/unit/test/unit/Cardano/Wallet/DB/Store/Submissions/StoreSpec.hs
+index 2302e111df..72802d6ad0 100644
+--- a/lib/unit/test/unit/Cardano/Wallet/DB/Store/Submissions/StoreSpec.hs
++++ b/lib/unit/test/unit/Cardano/Wallet/DB/Store/Submissions/StoreSpec.hs
+@@ -70,6 +70,9 @@ import Cryptography.Hash.Core
+ import Data.Quantity
+     ( Quantity (..)
+     )
++import Database.Persist.Sql
++    ( rawExecute
++    )
+ import System.Random
+     ( Random
+     )
+@@ -97,12 +100,14 @@ spec = do
+         describe "submissions via API for a single wallet store" $ do
+             it "respects store laws"
+                 $ property . prop_SingleWalletStoreLawsOperations
+-            it "classifies exact replay and releases a conflicting claim" $ \db -> do
++            it "locks shared inputs once while preserving replay and conflict handling" $ \db -> do
+                 let wid = WalletId $ hash @BS.ByteString "submission-test-wallet"
+                     tx1 = TxId $ Hash $ BS.replicate 32 1
+                     tx2 = TxId $ Hash $ BS.replicate 32 2
+                     source = TxId $ Hash $ BS.replicate 32 3
+                     claim = DurableSubmissionInput source 0 NormalInputE
++                    collateral = DurableSubmissionInput source 0 CollateralInputE
++                    shared = [claim, collateral]
+                     submission tx sealed =
+                         DurableSubmission
+                             wid
+@@ -118,14 +123,18 @@ spec = do
+                             Nothing
+                 outcomes <- runQuery db $ do
+                     initializeWalletTable wid
++                    rawExecute
++                        "CREATE UNIQUE INDEX IF NOT EXISTS dapp_submission_claim ON dapp_submission_input \
++                        \(wallet_id, source_tx_id, source_index) WHERE active = 1"
++                        []
+                     invalid <-
+                         insertOrClassifyDurableSubmission
+                             (submission tx1 "one")
+                             [claim, claim]
+                     empty <- length <$> readDurableSubmissions wid
+-                    first <- insertOrClassifyDurableSubmission (submission tx1 "one") [claim]
+-                    replay <- insertOrClassifyDurableSubmission (submission tx1 "one") [claim]
+-                    conflict <- insertOrClassifyDurableSubmission (submission tx2 "two") [claim]
++                    first <- insertOrClassifyDurableSubmission (submission tx1 "one") shared
++                    replay <- insertOrClassifyDurableSubmission (submission tx1 "one") (reverse shared)
++                    conflict <- insertOrClassifyDurableSubmission (submission tx2 "two") [collateral]
+                     updateDurableSubmission
+                         (submission tx1 "one")
+                             { durableAuthorized = False
+@@ -197,7 +206,8 @@ spec = do
+                             { durableStatus = OutcomeUnknownE
+                             , durableBroadcastStarted = Nothing
+                             }
+-                    durableStatus . head <$> readDurableSubmissions wid
++                    [stored] <- readDurableSubmissions wid
++                    pure $ durableStatus stored
+                 status `shouldBe` OutcomeUnknownE
+ 
+ deriving instance Random SlotNo
+diff --git a/lib/unit/test/unit/Cardano/WalletSpec.hs b/lib/unit/test/unit/Cardano/WalletSpec.hs
+index dc7a98a3fc..4faf65fe2d 100644
+--- a/lib/unit/test/unit/Cardano/WalletSpec.hs
++++ b/lib/unit/test/unit/Cardano/WalletSpec.hs
+@@ -155,9 +155,6 @@ import Cardano.Wallet.DB.Fixtures
+ import Cardano.Wallet.DB.Layer
+     ( newBootDBLayerInMemory
+     )
+-import Cardano.Wallet.DB.Store.Submissions.Operations
+-    ( TxSubmissionsStatus
+-    )
+ import Cardano.Wallet.DummyTarget.Primitive.Types
+     ( block0
+     , dummyNetworkLayer
+@@ -501,14 +498,11 @@ import qualified Cardano.Wallet.Address.Derivation.Icarus as Icarus
+ import qualified Cardano.Wallet.Api.Http.Shelley.TransactionContext as DappResolver
+ import qualified Cardano.Wallet.Api.Types.Dapp.Context as Dapp
+ import qualified Cardano.Wallet.Balance.Migration as Migration
+-import qualified Cardano.Wallet.DB.Sqlite.Types as DB
+ import qualified Cardano.Wallet.DB.Store.Checkpoints.Store as Sqlite
+ import qualified Cardano.Wallet.Primitive.Types.TokenBundle as TokenBundle
+ import qualified Cardano.Wallet.Primitive.Types.TokenMap as TokenMap
+ import qualified Cardano.Wallet.Read as Read
+ import qualified Cardano.Wallet.Read.Hash as Hash
+-import qualified Cardano.Wallet.Submissions.Submissions as Smbs
+-import qualified Cardano.Wallet.Submissions.TxStatus as Sbms
+ import qualified Data.ByteArray as BA
+ import qualified Data.ByteArray.Encoding as BAE
+ import qualified Data.ByteString as BS
+diff --git a/lib/wallet/src/Cardano/Wallet.hs b/lib/wallet/src/Cardano/Wallet.hs
+index 4714b0ff0a..9bd7f61455 100644
+--- a/lib/wallet/src/Cardano/Wallet.hs
++++ b/lib/wallet/src/Cardano/Wallet.hs
+@@ -1012,6 +1012,7 @@ import qualified Data.Foldable as F
+ import qualified Data.Functor
+ import qualified Data.List as L
+ import qualified Data.List.NonEmpty as NE
++import qualified Data.Map.Strict as Map
+ import qualified Data.Set as Set
+ import qualified Data.Text as T
+ import qualified Data.Vector as V
+@@ -2815,11 +2816,12 @@ balanceTx
+     => WalletLayer IO s
+     -> Write.PParams era
+     -> TimeTranslation
++    -> Set TxIn
+     -> Write.PartialTx era
+     -> IO (Write.Tx era)
+-balanceTx wrk pp timeTranslation partialTx = do
++balanceTx wrk pp timeTranslation preferredCollateral partialTx = do
+     (utxo, wallet, _txs) <- liftIO $ readWalletUTxO wrk
+-    let utxoIndex = utxoIndexFromWalletUTxO utxo
++    let (utxoIndex, fallback) = collateralSelectionIndexes preferredCollateral utxo
+ 
+     -- Resolve inputs using LSQ. Useful for foreign reference inputs supplied by
+     -- the user when calling transactions-construct, or in transactions-balance.
+@@ -2844,13 +2846,12 @@ balanceTx wrk pp timeTranslation partialTx = do
+                     )
+ 
+     let changeState = getState wallet
+-    (tx, _changeState') <-
+-        throwBalanceTxErr
+-            $ Write.balanceTx
++        balance index =
++            Write.balanceTx
+                 pp
+                 timeTranslation
+                 utxoAssumptions
+-                utxoIndex
++                index
+                 (defaultChangeAddressGen argGenChange)
+                 changeState
+                 -- In case of conflicts, the data looked up from the node will win.
+@@ -2858,6 +2859,10 @@ balanceTx wrk pp timeTranslation partialTx = do
+                     & over #extraUTxO (lookedUpUTxO <>)
+                     & over #stakeKeyDeposits (lookedUpDeposits <>)
+                 )
++    (tx, _changeState') <-
++        throwBalanceTxErr $
++            balance utxoIndex `catchE` \err ->
++                maybe (throwE err) balance fallback
+ 
+     return tx
+   where
+@@ -3462,23 +3467,25 @@ buildTransactionPure
+                         )
+                         (Left preSelection)
+                         (Coin 0)
+-            let utxoIndex :: Write.UTxOIndex era
+-                utxoIndex = utxoIndexFromWalletUTxO utxo
+-            withExceptT Left
+-                $ Write.balanceTx @_ @_ @s
+-                    pparams
+-                    timeTranslation
+-                    (utxoAssumptionsForWallet (walletFlavor @s))
+-                    utxoIndex
+-                    changeAddrGen
+-                    (getState wallet)
+-                    Write.PartialTx
+-                        { tx = unsignedTx
+-                        , extraUTxO = Write.UTxO mempty
+-                        , redeemers = []
+-                        , timelockKeyWitnessCounts = mempty
+-                        , stakeKeyDeposits = Write.StakeKeyDepositAssumeCurrent
+-                        }
++            let (utxoIndex, fallback) = collateralSelectionIndexes (txPreferredCollateral txCtx) utxo
++                balance index =
++                    Write.balanceTx @_ @_ @s
++                        pparams
++                        timeTranslation
++                        (utxoAssumptionsForWallet (walletFlavor @s))
++                        index
++                        changeAddrGen
++                        (getState wallet)
++                        Write.PartialTx
++                            { tx = unsignedTx
++                            , extraUTxO = Write.UTxO mempty
++                            , redeemers = []
++                            , timelockKeyWitnessCounts = mempty
++                            , stakeKeyDeposits = Write.StakeKeyDepositAssumeCurrent
++                            }
++            withExceptT Left $
++                balance utxoIndex `catchE` \err ->
++                    maybe (throwE err) balance fallback
+ 
+ -- HACK: 'mkUnsignedTransaction' takes a reward account 'XPub' even when the
+ -- wallet is a Byron wallet, and doesn't actually have a reward account.
+@@ -3848,7 +3855,6 @@ submitWalletScoped tr DBLayer{..} nw tx sealed expiration = do
+     let normal = claim NormalInputE <$> map fst (resolvedInputs tx)
+         collateral = claim CollateralInputE <$> map fst (resolvedCollateralInputs tx)
+         claims = normal <> collateral
+-        outpoints = Set.fromList . fmap claimOutpoint
+         submission =
+             DurableSubmission
+                 walletId_
+@@ -3862,8 +3868,6 @@ submitWalletScoped tr DBLayer{..} nw tx sealed expiration = do
+                 Nothing
+                 Nothing
+                 Nothing
+-    when (not $ Set.disjoint (outpoints normal) (outpoints collateral))
+-        $ throwE ErrSubmitTxInputConflict
+     decision <-
+         lift
+             $ atomicallyWithContextChange PendingContextChange
+@@ -3878,8 +3882,6 @@ submitWalletScoped tr DBLayer{..} nw tx sealed expiration = do
+   where
+     claim role TxIn{inputId, inputIx} =
+         DurableSubmissionInput (Sql.TxId inputId) inputIx role
+-    claimOutpoint DurableSubmissionInput{durableInputTxId, durableInputIndex} =
+-        (durableInputTxId, durableInputIndex)
+     broadcast authorized = do
+         started <- lift getCurrentTime
+         mBroadcasting <-
+@@ -4482,8 +4484,9 @@ delegationFee
+     => DBLayer IO s
+     -> NetworkLayer IO Read.ConsensusBlock
+     -> ChangeAddressGen s
++    -> Set TxIn
+     -> IO DelegationFee
+-delegationFee db@DBLayer{..} netLayer changeAddressGen = do
++delegationFee db@DBLayer{..} netLayer changeAddressGen preferredCollateral = do
+     (Write.PParamsInAnyRecentEra _era protocolParams, timeTranslation) <-
+         readNodeTipStateForTxWrite netLayer
+     feePercentiles <-
+@@ -4494,6 +4497,7 @@ delegationFee db@DBLayer{..} netLayer changeAddressGen = do
+             changeAddressGen
+             defaultTransactionCtx
+                 { txDeposit = Just $ toWallet $ Write.stakeKeyDeposit protocolParams
++                , txPreferredCollateral = preferredCollateral
+                 }
+             -- It would seem that we should add a delegation action
+             -- to the partial tx we construct, this was not done
+@@ -4535,6 +4539,8 @@ transactionFee
+             liftIO . atomically
+                 $ readDBVar walletState
+                 <&> WalletState.getLatest
++        let (primaryIndex, fallback) =
++                collateralSelectionIndexes (txPreferredCollateral txCtx) (availableUTxO mempty wallet)
+         utxoIndex <-
+             -- Important:
+             --
+@@ -4550,9 +4556,7 @@ transactionFee
+             -- fully evaluated, as all fields of the 'UTxOIndex' type are
+             -- strict, and each field is defined in terms of 'Data.Map.Strict'.
+             --
+-            evaluate
+-                $ utxoIndexFromWalletUTxO
+-                $ availableUTxO mempty wallet
++            evaluate primaryIndex
+         let era = Write.recentEra @era
+             network =
+                 sNetworkIdToLedger
+@@ -4612,17 +4616,19 @@ transactionFee
+                     , stakeKeyDeposits = Write.StakeKeyDepositAssumeCurrent
+                     }
+ 
++        let balance index =
++                Write.balanceTx @_ @_ @s
++                    protocolParams
++                    timeTranslation
++                    (utxoAssumptionsForWallet (walletFlavor @s))
++                    index
++                    changeAddressGen
++                    (getState wallet)
++                    ptx
+         wrapErrBalanceTx $ calculateFeePercentiles $ do
+-            res <-
+-                runExceptT
+-                    $ Write.balanceTx @_ @_ @s
+-                        protocolParams
+-                        timeTranslation
+-                        (utxoAssumptionsForWallet (walletFlavor @s))
+-                        utxoIndex
+-                        changeAddressGen
+-                        (getState wallet)
+-                        ptx
++            res <- runExceptT $
++                balance utxoIndex `catchE` \err ->
++                    maybe (throwE err) balance fallback
+             case fst <$> res of
+                 Right tx ->
+                     pure $ Fee $ Convert.toWallet $ tx ^. bodyTxL . feeTxBodyL
+@@ -5319,6 +5325,23 @@ normalizeSharedAddress st addr = case Shared.ready st of
+                                    Helpers
+ -------------------------------------------------------------------------------}
+ 
++-- Preserve designated collateral whenever ordinary UTxO can balance the request.
++-- The full index is shared and remains unevaluated unless the fallback is needed.
++collateralSelectionIndexes
++    :: Write.IsRecentEra era
++    => Set TxIn
++    -> UTxO
++    -> (Write.UTxOIndex era, Maybe (Write.UTxOIndex era))
++collateralSelectionIndexes preferred original@(UTxO entries)
++    | Map.size ordinary == Map.size entries =
++        (utxoIndexFromWalletUTxO original, Nothing)
++    | otherwise =
++        ( utxoIndexFromWalletUTxO (UTxO ordinary)
++        , Just (utxoIndexFromWalletUTxO original)
++        )
++  where
++    ordinary = Map.withoutKeys entries preferred
++
+ utxoIndexFromWalletUTxO
+     :: forall era. Write.IsRecentEra era => UTxO -> Write.UTxOIndex era
+ utxoIndexFromWalletUTxO utxo =
+diff --git a/lib/wallet/src/Cardano/Wallet/DB/Store/Submissions/Migrations/V6/Migration.hs b/lib/wallet/src/Cardano/Wallet/DB/Store/Submissions/Migrations/V6/Migration.hs
+index dace25ba50..6d42f72d25 100644
+--- a/lib/wallet/src/Cardano/Wallet/DB/Store/Submissions/Migrations/V6/Migration.hs
++++ b/lib/wallet/src/Cardano/Wallet/DB/Store/Submissions/Migrations/V6/Migration.hs
+@@ -52,6 +52,7 @@ import Prelude
+ import qualified Cardano.Wallet.Read as Read
+ import qualified Data.Text as T
+ import qualified Data.ByteString as BS
++import qualified Data.Set as Set
+ 
+ import qualified Database.Sqlite as Sqlite
+ 
+@@ -106,13 +107,18 @@ insertLiveClaims conn walletId submissionId bytes = do
+     sealed <- either (fail . show) pure $ sealedTxFromBytes bytes
+     let tx = case unsafeReadTx sealed of
+             Read.EraValue readTx -> walletTx $ getTxExtended readTx
++        normal = Set.fromList $ fst <$> resolvedInputs tx
+     if toText (txId tx) /= submissionId
+         then fail "V5 submission transaction id does not match its sealed body"
+         else do
+             forM_ (resolvedInputs tx) $ \(txIn, _) ->
+                 insertClaim conn walletId submissionId 0 txIn
+-            forM_ (resolvedCollateralInputs tx) $ \(txIn, _) ->
+-                insertClaim conn walletId submissionId 1 txIn
++            forM_
++                [ input
++                | (input, _) <- resolvedCollateralInputs tx
++                , input `Set.notMember` normal
++                ]
++                $ insertClaim conn walletId submissionId 1
+ 
+ insertClaim :: Sqlite.Connection -> Text -> Text -> Int -> TxIn -> IO ()
+ insertClaim conn walletId submissionId role TxIn{inputId, inputIx} =
+diff --git a/lib/wallet/src/Cardano/Wallet/DB/Store/Submissions/Operations.hs b/lib/wallet/src/Cardano/Wallet/DB/Store/Submissions/Operations.hs
+index d2b487851b..d030b90dbd 100644
+--- a/lib/wallet/src/Cardano/Wallet/DB/Store/Submissions/Operations.hs
++++ b/lib/wallet/src/Cardano/Wallet/DB/Store/Submissions/Operations.hs
+@@ -206,20 +206,26 @@ insertOrClassifyDurableSubmission
+     -> SqlPersistT IO DurableSubmissionInsert
+ insertOrClassifyDurableSubmission submission@DurableSubmission{..} inputs = do
+     let requestedInputs = sort inputs
++        -- One active lock per outpoint; exact roles remain in the sealed transaction.
++        claims = Map.elems $ Map.fromListWith min
++            [ ((durableInputTxId input, durableInputIndex input), input)
++            | input <- requestedInputs
++            ]
+     existing <- selectList [DappSubmissionWallet ==. durableWalletId, DappSubmissionTxId ==. durableTxId] []
+     case existing of
+         [Entity _ stored] -> do
+             storedInputs <- readDurableInputs durableWalletId durableTxId
+             pure
+                 $ if sameDurableIdentity stored submission
+-                        && sort storedInputs == requestedInputs
++                        && requestedInputs == nub requestedInputs
++                        && sort storedInputs == claims
+                     then DurableSubmissionReplay (durableFromRow stored)
+                     else DurableSubmissionIdentityConflict
+         []
+             | length requestedInputs /= length (nub requestedInputs) ->
+                 pure DurableSubmissionInputConflict
+             | otherwise -> do
+-                claimed <- fmap concat $ mapM claimOwners requestedInputs
++                claimed <- fmap concat $ mapM claimOwners claims
+                 if null claimed
+                     then do
+                         _ <- insert
+@@ -235,7 +241,7 @@ insertOrClassifyDurableSubmission submission@DurableSubmission{..} inputs = do
+                                 durableBroadcastStarted
+                                 durableAcceptance
+                                 durableRejectionCode
+-                        forM_ requestedInputs $ \DurableSubmissionInput{..} ->
++                        forM_ claims $ \DurableSubmissionInput{..} ->
+                             insert
+                                 $ DappSubmissionInput
+                                     durableWalletId
+diff --git a/lib/wallet/src/Cardano/Wallet/IO/Delegation.hs b/lib/wallet/src/Cardano/Wallet/IO/Delegation.hs
+index fb1f1bd7a6..fa0793c68a 100644
+--- a/lib/wallet/src/Cardano/Wallet/IO/Delegation.hs
++++ b/lib/wallet/src/Cardano/Wallet/IO/Delegation.hs
+@@ -96,6 +96,9 @@ import Cardano.Wallet.Primitive.Types.DRep
+ import Cardano.Wallet.Primitive.Types.RewardAccount
+     ( RewardAccount
+     )
++import Cardano.Wallet.Primitive.Types.Tx.TxIn
++    ( TxIn
++    )
+ import Cardano.Wallet.Transaction
+     ( PreSelection (..)
+     , TransactionCtx (..)
+@@ -237,8 +240,9 @@ selectCoinsForJoin
+     -> Set PoolId
+     -> PoolId
+     -> PoolLifeCycleStatus
++    -> Set TxIn
+     -> IO W.CoinSelection
+-selectCoinsForJoin ctx pools poolId poolStatus = do
++selectCoinsForJoin ctx pools poolId poolStatus preferredCollateral = do
+     (Write.PParamsInAnyRecentEra era pp, timeTranslation) <-
+         W.readNodeTipStateForTxWrite netLayer
+     currentEpochSlotting <- W.getCurrentEpochSlotting netLayer
+@@ -267,6 +271,7 @@ selectCoinsForJoin ctx pools poolId poolStatus = do
+                 { txDelegationAction = Just action
+                 , txVotingAction = optionalVoteAction
+                 , txDeposit = Just $ W.getStakeKeyDeposit pp
++                , txPreferredCollateral = preferredCollateral
+                 }
+ 
+     let paymentOuts = []
+@@ -303,8 +308,9 @@ selectCoinsForQuit
+        , DelegationAddress k 'CredFromKeyK
+        )
+     => WalletLayer IO s
++    -> Set TxIn
+     -> IO W.CoinSelection
+-selectCoinsForQuit ctx = do
++selectCoinsForQuit ctx preferredCollateral = do
+     (Write.PParamsInAnyRecentEra era pp, timeTranslation) <-
+         W.readNodeTipStateForTxWrite netLayer
+     currentEpochSlotting <- W.getCurrentEpochSlotting netLayer
+@@ -325,6 +331,7 @@ selectCoinsForQuit ctx = do
+                 { txDelegationAction = Just action
+                 , txWithdrawal = withdrawal
+                 , txDeposit = Just $ W.getStakeKeyDeposit pp
++                , txPreferredCollateral = preferredCollateral
+                 }
+ 
+     let paymentOuts = []
+@@ -416,8 +423,9 @@ joinStakePool
+     -> PoolId
+     -> PoolLifeCycleStatus
+     -> Passphrase "user"
++    -> Set TxIn
+     -> IO (W.BuiltTx, UTCTime)
+-joinStakePool ctx wid pools poolId poolStatus passphrase = do
++joinStakePool ctx wid pools poolId poolStatus passphrase preferredCollateral = do
+     pp <- currentProtocolParameters netLayer
+     currentEpochSlotting <- W.getCurrentEpochSlotting netLayer
+     calculateWalletDelegations <-
+@@ -443,6 +451,7 @@ joinStakePool ctx wid pools poolId poolStatus passphrase = do
+                 , txDelegationAction = Just delegation
+                 , txVotingAction = votingM
+                 , txDeposit = Just $ stakeKeyDeposit pp
++                , txPreferredCollateral = preferredCollateral
+                 }
+ 
+     let changeAddrGen = W.defaultChangeAddressGen @s (delegationAddressS @n)
+@@ -512,8 +521,9 @@ quitStakePool
+     => WalletLayer IO s
+     -> WalletId
+     -> Passphrase "user"
++    -> Set TxIn
+     -> IO (W.BuiltTx, UTCTime)
+-quitStakePool ctx walletId passphrase = do
++quitStakePool ctx walletId passphrase preferredCollateral = do
+     (rewardAccount, _, derivationPath) <- W.readRewardAccount db
+     withdrawal <-
+         WithdrawalSelf rewardAccount derivationPath
+@@ -532,6 +542,7 @@ quitStakePool ctx walletId passphrase = do
+                 , txValidityInterval = (Nothing, ttl)
+                 , txDelegationAction = Just action
+                 , txDeposit = Just $ stakeKeyDeposit pp
++                , txPreferredCollateral = preferredCollateral
+                 }
+ 
+     let changeAddrGen = W.defaultChangeAddressGen (delegationAddressS @n)
+diff --git a/lib/wallet/src/Cardano/Wallet/Transaction.hs b/lib/wallet/src/Cardano/Wallet/Transaction.hs
+index fd6de1da9d..b80d653f46 100644
+--- a/lib/wallet/src/Cardano/Wallet/Transaction.hs
++++ b/lib/wallet/src/Cardano/Wallet/Transaction.hs
+@@ -160,6 +160,9 @@ import Data.Map.Strict
+ import Data.Monoid.Monus
+     ( (<\>)
+     )
++import Data.Set
++    ( Set
++    )
+ import Data.Text
+     ( Text
+     )
+@@ -177,6 +180,7 @@ import qualified Cardano.Wallet.Primitive.Types.Tx.TxOut as TxOut
+ import qualified Cardano.Wallet.Read as Read
+ import qualified Data.Foldable as F
+ import qualified Data.Map.Strict as Map
++import qualified Data.Set as Set
+ 
+ data TransactionLayer (k :: Depth -> Type -> Type) ktype tx = TransactionLayer
+     { addVkWitnesses
+@@ -241,6 +245,8 @@ data TransactionCtx = TransactionCtx
+     -- ^ A map of script hashes related to inputs. Only for multisig wallets
+     , txReferenceScript :: Maybe (Script KeyHash)
+     -- ^ The reference script.
++    , txPreferredCollateral :: Set TxIn
++    -- ^ Exclude these inputs from ordinary selection unless balancing requires them.
+     }
+     deriving (Generic)
+ 
+@@ -336,6 +342,7 @@ defaultTransactionCtx =
+         , txStakingCredentialScriptTemplate = Nothing
+         , txNativeScriptInputs = Map.empty
+         , txReferenceScript = Nothing
++        , txPreferredCollateral = Set.empty
+         }
+ 
+ -- | User-requested action related to a delegation
+diff --git a/specifications/api/swagger.yaml b/specifications/api/swagger.yaml
+index a50e9e19b3..8e8a56578f 100644
+--- a/specifications/api/swagger.yaml
++++ b/specifications/api/swagger.yaml
+@@ -2583,6 +2583,23 @@ components:
+         execution_unit_prices:
+           <<: *executionUnitPrices
+ 
++    ApiPreferredCollateral: &ApiPreferredCollateral
++      type: array
++      description: |
++        Wallet outpoints to preserve as collateral when selecting ordinary inputs.
++        Selection first balances without them, then retries with the complete
++        available UTxO if necessary. Unknown or unavailable outpoints have no
++        effect. This preference does not lock funds.
++      items:
++        type: object
++        required: [id, index]
++        properties:
++          id: *transactionId
++          index:
++            type: integer
++            minimum: 0
++            maximum: 4294967295
++
+     ApiSelectCoinsPayments: &ApiSelectCoinsPayments
+       type: object
+       required:
+@@ -2591,6 +2608,7 @@ components:
+         payments: *transactionOutputs
+         withdrawal: *transactionWithdrawalRequestSelf
+         metadata: *transactionMetadata
++        preferred_collateral: *ApiPreferredCollateral
+ 
+     ApiSelectCoinsRedemption: &ApiSelectCoinsRedemption
+       type: object
+@@ -2601,6 +2619,7 @@ components:
+         payments: *transactionOutputs
+         withdrawal: *transactionRedemptionRequest
+         metadata: *transactionMetadata
++        preferred_collateral: *ApiPreferredCollateral
+ 
+     ApiSelectCoinsAction: &ApiSelectCoinsAction
+       type: object
+@@ -2608,6 +2627,7 @@ components:
+         - delegation_action
+       properties:
+         delegation_action: *delegationAction
++        preferred_collateral: *ApiPreferredCollateral
+ 
+     ApiSelectCoinsData: &ApiSelectCoinsData
+       type: object
+@@ -3665,6 +3685,7 @@ components:
+         passphrase:
+           <<: *lenientPassphrase
+           description: The source wallet's master passphrase.
++        preferred_collateral: *ApiPreferredCollateral
+ 
+     ApiWalletMigrationPlanPostData: &ApiWalletMigrationPlanPostData
+       type: object
+@@ -4048,6 +4069,7 @@ components:
+         withdrawal: *transactionWithdrawalRequestSelf
+         metadata: *transactionMetadata
+         time_to_live: *transactionTTL
++        preferred_collateral: *ApiPreferredCollateral
+ 
+     # ADP-908 Deprecated
+     ApiPostRedemptionData: &ApiPostRedemptionData
+@@ -4062,6 +4084,7 @@ components:
+           description: The wallet's master passphrase.
+         payments: *transactionOutputs
+         withdrawal: *transactionRedemptionRequest
++        preferred_collateral: *ApiPreferredCollateral
+ 
+     # ADP-910 Deprecated
+     ApiPostTransactionFeeDataByron: &ApiPostTransactionFeeDataByron
+@@ -4081,6 +4104,7 @@ components:
+         withdrawal: *transactionWithdrawalRequestSelf
+         metadata: *transactionMetadata
+         time_to_live: *transactionTTL
++        preferred_collateral: *ApiPreferredCollateral
+ 
+     # ADP-910 Deprecated
+     ApiPostRedemptionFeeData: &ApiPostRedemptionFeeData
+@@ -4091,6 +4115,7 @@ components:
+       properties:
+         payments: *transactionOutputs
+         withdrawal: *transactionRedemptionRequest
++        preferred_collateral: *ApiPreferredCollateral
+ 
+     ApiPostRandomAddressData: &ApiPostRandomAddressData
+       type: object
+@@ -4173,6 +4198,7 @@ components:
+         withdrawal: *transactionWithdrawalRequestSelf
+         metadata: *transactionMetadata
+         encrypt_metadata: *encryptMetadata
++        preferred_collateral: *ApiPreferredCollateral
+         mint_burn:
+           type: array
+           items: *ApiMintBurnData
+@@ -8431,6 +8457,12 @@ paths:
+         fees can only be estimated.
+       parameters:
+         - *parametersWalletId
++        - name: preferred_collateral
++          in: query
++          required: false
++          description: JSON-encoded ApiPreferredCollateral array.
++          schema:
++            type: string
+       responses: *responsesGetDelegationFee
+ 
+   /stake-pools/*/wallets/{walletId}:
+--- a/lib/unit/test/unit/Cardano/Wallet/DB/Sqlite/Migration/NewSpec.hs
++++ b/lib/unit/test/unit/Cardano/Wallet/DB/Sqlite/Migration/NewSpec.hs
+@@ -18,8 +18,8 @@
+     , Version (..)
+     )
+ import Cardano.Wallet.DB.Sqlite.Migration.New
+-    ( latestVersion
+-    , newMigrationInterface
++    ( newMigrationInterface
++    , runNewStyleMigrations
+     )
+ import Control.Tracer
+     ( nullTracer
+@@ -31,17 +31,20 @@
+     ( Text
+     )
+ import System.Directory
+-    ( listDirectory
++    ( copyFile
++    , listDirectory
+     )
+ import System.IO.Temp
+     ( withSystemTempDirectory
+     )
+ import Test.Hspec
+     ( Spec
++    , anyException
+     , describe
+     , it
+     , shouldBe
+     , shouldReturn
++    , shouldThrow
+     )
+ import Test.Hspec.Extra
+     ( itWithDiagnosticTimeout
+@@ -53,6 +56,8 @@
+     ( (.)
+     )
+ 
++import qualified Data.ByteString as BS
++import qualified Data.Text as T
+ import qualified Database.Persist.Sqlite as Sqlite
+ 
+ {-----------------------------------------------------------------------------
+@@ -61,8 +66,30 @@
+ spec :: Spec
+ spec = do
+     describe "new migrations" $ do
+-        it "targets durable-submission schema version six"
+-            $ latestVersion `shouldBe` Version 6
++        it "backs up V5 and migrates shared spending/collateral claims" $
++            withSystemTempDirectory "test" $ \dir -> do
++                let dbf = dir <> "/wallet.sqlite"
++                createV5Database dbf False
++                v5 <- BS.readFile dbf
++                runNewStyleMigrations nullTracer dbf
++                schemaVersion dbf `shouldReturn` 6
++                claims <- Sqlite.runSqlite (T.pack dbf) $
++                    Sqlite.rawSql
++                        "SELECT source_tx_id, source_index FROM dapp_submission_input WHERE active = 1"
++                        []
++                claims `shouldBe` [(Sqlite.Single $ T.replicate 32 "11", Sqlite.Single (0 :: Int))]
++                BS.readFile (dbf <> ".v5.bak") `shouldReturn` v5
++        it "rolls back malformed V5 submissions and leaves a restorable backup" $
++            withSystemTempDirectory "test" $ \dir -> do
++                let dbf = dir <> "/wallet.sqlite"
++                createV5Database dbf True
++                v5 <- BS.readFile dbf
++                runNewStyleMigrations nullTracer dbf `shouldThrow` anyException
++                schemaVersion dbf `shouldReturn` 5
++                durableSubmissionTableCount dbf `shouldReturn` 0
++                BS.readFile (dbf <> ".v5.bak") `shouldReturn` v5
++                copyFile (dbf <> ".v5.bak") dbf
++                schemaVersion dbf `shouldReturn` 5
+         itWithDiagnosticTimeout
+             60
+             "handles backupDatabaseFile and withDatabaseFile"
+@@ -143,3 +170,43 @@
+ populateTable :: Text
+ populateTable =
+     "INSERT INTO test (name) VALUES ('hello')"
++
++createV5Database :: FilePath -> Bool -> IO ()
++createV5Database dbf malformedLiveSubmission =
++    Sqlite.runSqlite (T.pack dbf) $ do
++        Sqlite.rawExecute
++            "CREATE TABLE database_schema_version (name TEXT PRIMARY KEY, version INTEGER NOT NULL)"
++            []
++        Sqlite.rawExecute
++            "INSERT INTO database_schema_version (name, version) VALUES ('schema', 5)"
++            []
++        Sqlite.rawExecute "CREATE TABLE wallet (wallet_id TEXT PRIMARY KEY)" []
++        Sqlite.rawExecute
++            "CREATE TABLE submissions (wallet_id TEXT NOT NULL, tx_id TEXT NOT NULL, tx BLOB NOT NULL, expiration INTEGER NULL, status INTEGER NOT NULL, acceptance INTEGER NULL)"
++            []
++        Sqlite.rawExecute "INSERT INTO wallet (wallet_id) VALUES ('00')" []
++        if malformedLiveSubmission
++            then Sqlite.rawExecute
++                "INSERT INTO submissions (wallet_id, tx_id, tx, expiration, status, acceptance) VALUES ('00', '00', X'00', NULL, 0, NULL)"
++                []
++            else Sqlite.rawExecute
++                "INSERT INTO submissions (wallet_id, tx_id, tx, expiration, status, acceptance) VALUES ('00', '309bcb04da03b16436e65709c2e5ad2d75a1ebfec3c0b328e0a7a7e10b398aae', X'84a40081825820111111111111111111111111111111111111111111111111111111111111111100018182581d60aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1a000f424002000d81825820111111111111111111111111111111111111111111111111111111111111111100a0f5f6', NULL, 0, NULL)"
++                []
++
++schemaVersion :: FilePath -> IO Int
++schemaVersion dbf = do
++    [Sqlite.Single version] <-
++        Sqlite.runSqlite (T.pack dbf)
++            $ Sqlite.rawSql
++                "SELECT version FROM database_schema_version WHERE name = 'schema'"
++                []
++    pure version
++
++durableSubmissionTableCount :: FilePath -> IO Int
++durableSubmissionTableCount dbf = do
++    [Sqlite.Single count] <-
++        Sqlite.runSqlite (T.pack dbf)
++            $ Sqlite.rawSql
++                "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = 'dapp_submission'"
++                []
++    pure count
+--- a/lib/api/test/dapp-context-test.hs
++++ b/lib/api/test/dapp-context-test.hs
+@@ -66,11 +66,12 @@
+     , validateDataSignRequest
+     )
+ import Cardano.Wallet.Api.Http.Shelley.TransactionContext
+-    ( DecodedTx (txId, valid)
++    ( DecodedTx (collateral, normal, txId, valid)
+     , ProofInventory (..)
+     , ProofObligation (DirectProofObligation, NativeProofObligation)
+     , ProofObligationResult (..)
+     , candidateOwnershipAssociations
++    , contextSets
+     , decodeDappTx
+     , decodeTx
+     , dependencySource
+@@ -367,11 +368,11 @@
+ 
+         describe "DAPP_WITNESS_SIGNING" $ do
+             it "accepts collateral-only and explicit required-signer proofs" $ do
+-                let collateral = evaluateObligation mempty (Set.singleton proofHash)
++                let collateralProof = evaluateObligation mempty (Set.singleton proofHash)
+                         $ DirectProofObligation 0 CollateralProof proofHash
+                     requiredSignerProof = evaluateObligation mempty (Set.singleton proofHash)
+                         $ DirectProofObligation 1 RequiredSignerProof proofHash
+-                collateral.satisfied `shouldBe` True
++                collateralProof.satisfied `shouldBe` True
+                 requiredSignerProof.satisfied `shouldBe` True
+ 
+             it "permits incomplete partial items but rejects an atomic batch failure" $ do
+@@ -401,6 +402,18 @@
+                 )
+                 (error "duplicate rejection must not inspect the response")
+                 `shouldBe` Left "duplicate transaction envelopes differ"
++
++        it "preserves shared spending/collateral inputs and their pending claim" $ do
++            let transaction = hex
++                    "84a40081825820111111111111111111111111111111111111111111111111111111111111111100018182581d60aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1a000f424002000d81825820111111111111111111111111111111111111111111111111111111111111111100a0f5f6"
++            fmap
++                (\tx ->
++                    ( Set.size tx.normal
++                    , tx.normal == tx.collateral
++                    , contextSets tx.normal [tx] [] == (Set.empty, tx.normal, Set.empty)
++                    ))
++                (decodeDappTx $ ApiDappHex transaction)
++                `shouldBe` Right (1, True, True)
+ 
+         it "recognizes supported Conway certificate constructors" $ do
+             let stakeCredential = KeyHashObj $ coerce $ witnessKeyHash proofHash

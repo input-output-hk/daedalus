@@ -67,8 +67,16 @@ export default class PinCode extends Component<Props> {
   }
 
   generatePinCodeInput = () => {
-    const { id, name, type, autoFocus, length, error, value, disabled } =
-      this.props;
+    const {
+      id,
+      name,
+      type,
+      autoFocus,
+      length,
+      error,
+      value,
+      disabled,
+    } = this.props;
     const pinCodeClasses = classNames([
       styles.pinCode,
       error ? styles.error : null,

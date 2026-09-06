@@ -1169,9 +1169,12 @@ export const decodeConwayTransaction = (
     ? decodeInputs(source, body.get(18)!, true)
     : [];
   const occupiedInputs = new Set(
-    normal.map((input) => `${input.transactionId}:${input.index}`)
+    normal
+      .concat(collateralInputs)
+      .map((input) => `${input.transactionId}:${input.index}`)
   );
-  for (const input of collateralInputs.concat(referenceInputs)) {
+  // Spending and collateral are alternative ledger paths, not a double spend.
+  for (const input of referenceInputs) {
     const id = `${input.transactionId}:${input.index}`;
     if (occupiedInputs.has(id)) fail('input appears in multiple roles');
     occupiedInputs.add(id);

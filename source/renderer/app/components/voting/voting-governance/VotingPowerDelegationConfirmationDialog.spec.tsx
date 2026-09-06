@@ -234,9 +234,10 @@ describe('VotingPowerDelegationConfirmationDialog — fee, hardware and passphra
 const certificateFor = (hex: string) =>
   JSON.stringify({ vote: { type: 'drep', id: hex } }, null, 2);
 
-const hasCertificate =
-  (expected: string) => (_content: string, node: Element) =>
-    node.tagName === 'PRE' && (node.textContent ?? '') === expected;
+const hasCertificate = (expected: string) => (
+  _content: string,
+  node: Element
+) => node.tagName === 'PRE' && (node.textContent ?? '') === expected;
 
 describe('VotingPowerDelegationConfirmationDialog — identity block', () => {
   const KEY_CIP129 =

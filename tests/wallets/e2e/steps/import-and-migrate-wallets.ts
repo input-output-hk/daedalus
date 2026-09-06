@@ -86,15 +86,14 @@ When(/^I should see import selection label:$/, async function (dataTable) {
   const expectedLabel = await this.intl(labelId);
   expect(selectedImportOption).to.equal(expectedLabel);
 });
-When(
-  /^I should see import file selection error message:$/,
-  async function (dataTable) {
-    const errorOnScreen = await this.waitAndGetText(NO_WALLETS_SELECTOR);
-    const errorId = dataTable.hashes()[0].message;
-    const expectedError = await this.intl(errorId);
-    expect(errorOnScreen).to.equal(expectedError);
-  }
-);
+When(/^I should see import file selection error message:$/, async function (
+  dataTable
+) {
+  const errorOnScreen = await this.waitAndGetText(NO_WALLETS_SELECTOR);
+  const errorId = dataTable.hashes()[0].message;
+  const expectedError = await this.intl(errorId);
+  expect(errorOnScreen).to.equal(expectedError);
+});
 When(
   /^I should see Daedalus State directory as predefined import path$/,
   async function () {
@@ -207,53 +206,51 @@ When(
     }
   }
 );
-When(
-  /^I select all (named|unnamed) wallets for import$/,
-  async function (_type) {
-    const selector = `.${_type}WalletsRow .SimpleCheckbox_root`;
-    const walletCheckboxes = await this.client.elements(selector);
-    const selectedNamedWallets = this.exportedWallets.filter(
-      (wallet) => wallet.hasName
-    );
+When(/^I select all (named|unnamed) wallets for import$/, async function (
+  _type
+) {
+  const selector = `.${_type}WalletsRow .SimpleCheckbox_root`;
+  const walletCheckboxes = await this.client.elements(selector);
+  const selectedNamedWallets = this.exportedWallets.filter(
+    (wallet) => wallet.hasName
+  );
 
-    for (let i = 0; i < walletCheckboxes.value.length; i++) {
-      const walletCheckbox = walletCheckboxes.value[i].ELEMENT;
-      await this.client.elementIdClick(walletCheckbox);
-    }
-
-    const walletNames = [];
-    const walletInputElements = await this.client.elements(
-      `.${_type}WalletsRow .SimpleInput_input`
-    );
-
-    for (let i = 0; i < walletInputElements.value.length; i++) {
-      const walletInputElement = walletInputElements.value[i].ELEMENT;
-      const walletName = await this.client.elementIdAttribute(
-        walletInputElement,
-        'value'
-      );
-      walletNames.push(walletName.value);
-    }
-
-    if (!this.selectedWallets) {
-      this.selectedWallets = walletNames;
-    } else {
-      walletNames.map((walletName) => {
-        this.selectedWallets.push(walletName);
-      });
-    }
-  }
-);
-When(
-  'I select wallet with index {int} for import',
-  async function (walletIndex) {
-    const walletCheckboxes = await this.client.elements(
-      NAMED_WALLET_CHECKBOXES_SELECTOR
-    );
-    const walletCheckbox = walletCheckboxes.value[walletIndex].ELEMENT;
+  for (let i = 0; i < walletCheckboxes.value.length; i++) {
+    const walletCheckbox = walletCheckboxes.value[i].ELEMENT;
     await this.client.elementIdClick(walletCheckbox);
   }
-);
+
+  const walletNames = [];
+  const walletInputElements = await this.client.elements(
+    `.${_type}WalletsRow .SimpleInput_input`
+  );
+
+  for (let i = 0; i < walletInputElements.value.length; i++) {
+    const walletInputElement = walletInputElements.value[i].ELEMENT;
+    const walletName = await this.client.elementIdAttribute(
+      walletInputElement,
+      'value'
+    );
+    walletNames.push(walletName.value);
+  }
+
+  if (!this.selectedWallets) {
+    this.selectedWallets = walletNames;
+  } else {
+    walletNames.map((walletName) => {
+      this.selectedWallets.push(walletName);
+    });
+  }
+});
+When('I select wallet with index {int} for import', async function (
+  walletIndex
+) {
+  const walletCheckboxes = await this.client.elements(
+    NAMED_WALLET_CHECKBOXES_SELECTOR
+  );
+  const walletCheckbox = walletCheckboxes.value[walletIndex].ELEMENT;
+  await this.client.elementIdClick(walletCheckbox);
+});
 When(
   'I hover import selection checkbox for wallet with index {int}',
   async function (walletIndex) {
@@ -371,35 +368,34 @@ Then(
     }
   }
 );
-Then(
-  /^I should see that all (named|unnamed) already exists$/,
-  async function (state) {
-    const walletRows = await this.client.elements(`.${state}WalletsRow`);
+Then(/^I should see that all (named|unnamed) already exists$/, async function (
+  state
+) {
+  const walletRows = await this.client.elements(`.${state}WalletsRow`);
 
-    for (let i = 0; i < walletRows.value.length; i++) {
-      const walletRow = walletRows.value[i].ELEMENT;
-      // Check if imported wallet checkeckmark checked
-      const checkmarkElement = await this.client.elementIdElement(
-        walletRow,
-        STATUS_ICON_CHECKMARK_SELECTOR
-      );
-      expect(checkmarkElement.value).to.not.be.empty; // Checkmark checked
+  for (let i = 0; i < walletRows.value.length; i++) {
+    const walletRow = walletRows.value[i].ELEMENT;
+    // Check if imported wallet checkeckmark checked
+    const checkmarkElement = await this.client.elementIdElement(
+      walletRow,
+      STATUS_ICON_CHECKMARK_SELECTOR
+    );
+    expect(checkmarkElement.value).to.not.be.empty; // Checkmark checked
 
-      // Check if "Wallet already exist" label is presented
-      const statusLabel = await this.client.elementIdElement(
-        walletRow,
-        WALLET_STATUS_LABEL_SELECTOR
-      );
-      const statusLabelText = await this.client.elementIdText(
-        statusLabel.value.ELEMENT
-      );
-      const expectedLabel = await this.intl(
-        'wallet.select.import.dialog.walletExists'
-      );
-      expect(statusLabelText.value).to.equal(expectedLabel); // Wallet imported label
-    }
+    // Check if "Wallet already exist" label is presented
+    const statusLabel = await this.client.elementIdElement(
+      walletRow,
+      WALLET_STATUS_LABEL_SELECTOR
+    );
+    const statusLabelText = await this.client.elementIdText(
+      statusLabel.value.ELEMENT
+    );
+    const expectedLabel = await this.intl(
+      'wallet.select.import.dialog.walletExists'
+    );
+    expect(statusLabelText.value).to.equal(expectedLabel); // Wallet imported label
   }
-);
+});
 Then(/^I should not see the import wallet dialog anymore$/, function () {
   return this.client.waitForVisible(
     IMPORT_WALLETS_OVERLAY_IMPORT_CHOICE_LABEL_SELECTOR,

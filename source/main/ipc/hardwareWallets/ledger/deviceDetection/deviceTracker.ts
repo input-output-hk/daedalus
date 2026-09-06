@@ -19,16 +19,16 @@ export class DeviceTracker {
     const device = DeviceTracker.getDeviceByPath(path);
 
     const descriptor: string = device.path;
-    const deviceModel = identifyUSBProductId(
+    const deviceModel = (identifyUSBProductId(
       device.productId
-    ) as unknown as DeviceModel;
+    ) as unknown) as DeviceModel;
 
     return { device, deviceModel, descriptor } as TrackedDevice;
   }
 
   static getDevices(): (Device & { deviceName?: string })[] {
     // Cast needed: node-hid Device.path is optional but we only use devices with paths
-    return getDevices() as unknown as (Device & { deviceName?: string })[];
+    return (getDevices() as unknown) as (Device & { deviceName?: string })[];
   }
 
   constructor() {

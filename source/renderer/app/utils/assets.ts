@@ -153,63 +153,64 @@ export const getNonZeroAssetTokens = (
  * @param sortBy - sorting parameter
  * @param sortDirection - should it sort in ascending or descending direction
  */
-export const sortAssets =
-  (sortBy: SortBy, sortDirection: SortDirection) =>
-  (asset1: AssetToken, asset2: AssetToken) => {
-    const {
-      quantity: unformattedQuantity1,
-      fingerprint: fingerprint1,
-      metadata: metadata1,
-      decimals: decimals1,
-    } = asset1;
-    const quantity1 = formattedTokenDecimals(unformattedQuantity1, decimals1);
-    const { name: name1 } = metadata1 || {};
-    const {
-      quantity: unformattedQuantity2,
-      fingerprint: fingerprint2,
-      metadata: metadata2,
-      decimals: decimals2,
-    } = asset2;
-    const quantity2 = formattedTokenDecimals(unformattedQuantity2, decimals2);
-    const { name: name2 } = metadata2 || {};
+export const sortAssets = (sortBy: SortBy, sortDirection: SortDirection) => (
+  asset1: AssetToken,
+  asset2: AssetToken
+) => {
+  const {
+    quantity: unformattedQuantity1,
+    fingerprint: fingerprint1,
+    metadata: metadata1,
+    decimals: decimals1,
+  } = asset1;
+  const quantity1 = formattedTokenDecimals(unformattedQuantity1, decimals1);
+  const { name: name1 } = metadata1 || {};
+  const {
+    quantity: unformattedQuantity2,
+    fingerprint: fingerprint2,
+    metadata: metadata2,
+    decimals: decimals2,
+  } = asset2;
+  const quantity2 = formattedTokenDecimals(unformattedQuantity2, decimals2);
+  const { name: name2 } = metadata2 || {};
 
-    if (sortBy === 'token') {
-      if (name1 && !name2) return -1;
-      if (!name1 && name2) return 1;
+  if (sortBy === 'token') {
+    if (name1 && !name2) return -1;
+    if (!name1 && name2) return 1;
 
-      if (name1 && name2) {
-        if (sortDirection === 'asc') {
-          return name1.localeCompare(name2);
-        }
-
-        return name2.localeCompare(name1);
-      }
-
+    if (name1 && name2) {
       if (sortDirection === 'asc') {
-        return fingerprint1.localeCompare(fingerprint2);
+        return name1.localeCompare(name2);
       }
 
-      return fingerprint2.localeCompare(fingerprint1);
+      return name2.localeCompare(name1);
     }
 
-    if (sortBy === 'fingerprint') {
-      if (sortDirection === 'asc') {
-        return fingerprint1.localeCompare(fingerprint2);
-      }
-
-      return fingerprint2.localeCompare(fingerprint1);
+    if (sortDirection === 'asc') {
+      return fingerprint1.localeCompare(fingerprint2);
     }
 
-    if (sortBy === 'quantity') {
-      if (sortDirection === 'asc') {
-        return quantity1.isLessThan(quantity2) ? -1 : 1;
-      }
+    return fingerprint2.localeCompare(fingerprint1);
+  }
 
-      return quantity1.isLessThan(quantity2) ? 1 : -1;
+  if (sortBy === 'fingerprint') {
+    if (sortDirection === 'asc') {
+      return fingerprint1.localeCompare(fingerprint2);
     }
 
-    return 0;
-  };
+    return fingerprint2.localeCompare(fingerprint1);
+  }
+
+  if (sortBy === 'quantity') {
+    if (sortDirection === 'asc') {
+      return quantity1.isLessThan(quantity2) ? -1 : 1;
+    }
+
+    return quantity1.isLessThan(quantity2) ? 1 : -1;
+  }
+
+  return 0;
+};
 
 /**
  * Check if after the transactions your wallet has some assets left
@@ -266,8 +267,13 @@ export const searchAssets = (
   }
 
   return filter(assets, (asset) => {
-    const { policyId, assetName, assetNameASCII, fingerprint, metadata } =
-      asset;
+    const {
+      policyId,
+      assetName,
+      assetNameASCII,
+      fingerprint,
+      metadata,
+    } = asset;
     const { name, ticker, description } = metadata || {};
     const checkList = [
       policyId,

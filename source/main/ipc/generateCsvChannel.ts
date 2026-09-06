@@ -8,8 +8,10 @@ import type {
 } from '../../common/ipc/api';
 
 export const generateCsvChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcChannel<GenerateCsvRendererRequest, GenerateCsvMainResponse> =
-  new MainIpcChannel(GENERATE_CSV_CHANNEL);
+MainIpcChannel<
+  GenerateCsvRendererRequest,
+  GenerateCsvMainResponse
+> = new MainIpcChannel(GENERATE_CSV_CHANNEL);
 export const handleRewardsCsvRequests = () => {
   generateCsvChannel.onReceive(
     (request: GenerateCsvRendererRequest) =>

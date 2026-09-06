@@ -4,8 +4,7 @@ import {
   StaleDappRouteLeaseError,
 } from './DappRouteLease';
 
-const route = (walletId: string) =>
-  `file:///app/index.html#/wallets/${walletId}/dapps`;
+const route = (walletId: string) => `file:///app/index.html#/apps/${walletId}`;
 
 const requireLease = (lease: DappRouteLease | null): DappRouteLease => {
   if (!lease) throw new Error('Expected route lease');
@@ -28,8 +27,8 @@ describe('DappRouteLeaseService', () => {
 
   it.each([
     'file:///app/index.html#/wallets/wallet-a/summary',
-    'file:///app/index.html#/wallets//dapps',
-    'file:///app/index.html#/wallets/wallet-a/dapps?fallback=true',
+    'file:///app/index.html#/apps/',
+    'file:///app/index.html#/apps/wallet-a?fallback=true',
     'not a url',
   ])('revokes without route fallback for %s', (invalidRoute) => {
     const revoked = jest.fn();

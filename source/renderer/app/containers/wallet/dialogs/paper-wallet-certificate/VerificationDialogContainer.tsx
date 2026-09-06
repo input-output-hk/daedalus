@@ -21,8 +21,10 @@ class VerificationDialogContainer extends Component<Props> {
 
   render() {
     const { wallets } = this.props.stores;
-    const { walletCertificateRecoveryPhrase, additionalMnemonicWords } =
-      wallets;
+    const {
+      walletCertificateRecoveryPhrase,
+      additionalMnemonicWords,
+    } = wallets;
 
     if (!walletCertificateRecoveryPhrase || !additionalMnemonicWords) {
       throw new Error(

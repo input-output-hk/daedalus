@@ -50,25 +50,29 @@ const messages = defineMessages({
     description: 'Label for the "labelDaedalusWalletKind" checkbox.',
   },
   labelDaedalusWalletKind12WordByron: {
-    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind12WordByron',
+    id:
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind12WordByron',
     defaultMessage: '!!!12 words <em>(Byron legacy wallet)</em>',
     description: 'Label for the "labelDaedalusWalletKind12WordByron" checkbox.',
   },
   labelDaedalusWalletKind15WordShelley: {
-    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley',
+    id:
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley',
     defaultMessage:
       '!!!15 words <em>(Incentivized Testnet Rewards wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind15WordShelley" checkbox.',
   },
   labelDaedalusWalletKind24WordShelley: {
-    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind24WordShelley',
+    id:
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind24WordShelley',
     defaultMessage: '!!!24 words <em>(Shelley wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind24WordShelley" checkbox.',
   },
   labelDaedalusWalletKind27WordPaper: {
-    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind27WordPaper',
+    id:
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind27WordPaper',
     defaultMessage: '!!!27 words - paper wallet (Byron legacy wallet)</em>',
     description: 'Label for the "labelDaedalusWalletKind27WordPaper" checkbox.',
   },
@@ -78,12 +82,14 @@ const messages = defineMessages({
     description: 'Label for the "labelYoroiWalletKind" checkbox.',
   },
   labelYoroiWalletKind15WordByron: {
-    id: 'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word',
+    id:
+      'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word',
     defaultMessage: '!!!15 words <em>(Byron legacy wallet)</em>',
     description: 'Label for the "labelDaedalusWalletKind15WordByron" checkbox.',
   },
   labelYoroiWalletKind15WordShelley: {
-    id: 'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word',
+    id:
+      'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word',
     defaultMessage: '!!!15 words <em>(Shelley wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind15WordShelley" checkbox.',

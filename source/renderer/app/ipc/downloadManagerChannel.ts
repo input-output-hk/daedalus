@@ -26,11 +26,15 @@ import type {
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 
 export const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
-RendererIpcChannel<DownloadMainResponse, DownloadRendererRequest> =
-  new RendererIpcChannel(REQUEST_DOWNLOAD);
+RendererIpcChannel<
+  DownloadMainResponse,
+  DownloadRendererRequest
+> = new RendererIpcChannel(REQUEST_DOWNLOAD);
 export const requestResumeDownloadChannel: // IpcChannel<Incoming, Outgoing>
-RendererIpcChannel<ResumeDownloadMainResponse, ResumeDownloadRendererRequest> =
-  new RendererIpcChannel(RESUME_DOWNLOAD);
+RendererIpcChannel<
+  ResumeDownloadMainResponse,
+  ResumeDownloadRendererRequest
+> = new RendererIpcChannel(RESUME_DOWNLOAD);
 export const deleteDownloadedFile: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   DeleteDownloadedFileMainResponse,

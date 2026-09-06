@@ -1,10 +1,8 @@
 import React, { ReactNode } from 'react';
 import { injectIntl } from 'react-intl';
-import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import type { Intl } from '../../types/i18nTypes';
-import adaLogo from '../../assets/images/ada-logo.inline.svg';
 import messages from './DappCatalog.messages';
 import styles from './DappCatalog.scss';
 
@@ -78,8 +76,8 @@ export function DappCatalog({
             {entries.map((entry) => (
               <li className={styles.entry} key={entry.id}>
                 <div className={styles.icon} aria-hidden="true">
-                  {entry.iconAsset === 'cardano' ? (
-                    <SVGInline svg={adaLogo} />
+                  {entry.iconAsset === 'liqwid' ? (
+                    <span className={styles.liqwidIcon} />
                   ) : (
                     <span className={styles.fallbackIcon}>?</span>
                   )}

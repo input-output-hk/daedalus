@@ -164,16 +164,22 @@ export class CollateralService {
     return this.snapshot(lease);
   }
 
+  public preferredInputs(walletId: string): readonly Cip30WalletOutpoint[] {
+    if (this.records.isCorrupt)
+      throw new Error('Collateral preferences require repair');
+    return (
+      this.records.get(walletId, this.network.genesisHash)?.preferredInputs ??
+      []
+    );
+  }
+
   public spendsPreference(
     lease: DappRouteLease,
     inputs: readonly Cip30WalletOutpoint[]
   ): boolean {
     this.assertLease(lease);
-    const record = this.records.get(lease.walletId, lease.networkGenesis);
-    return (
-      record?.preferredInputs.some((preferred) =>
-        inputs.some((input) => sameInput(preferred, input))
-      ) ?? false
+    return this.preferredInputs(lease.walletId).some((preferred) =>
+      inputs.some((input) => sameInput(preferred, input))
     );
   }
 

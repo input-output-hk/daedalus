@@ -25,14 +25,13 @@ Then(
 Then(/^I should not see the report issue notification$/, async function () {
   await this.client.waitForVisible(SELECTORS.REPORT_ISSUE_HEADER, null, true);
 });
-Then(
-  /^The report issue button should be (hidden|visible)$/,
-  async function (state) {
-    const waitForHidden = state === 'hidden';
-    await this.client.waitForVisible(
-      SELECTORS.REPORT_ISSUE_BTN,
-      null,
-      waitForHidden
-    );
-  }
-);
+Then(/^The report issue button should be (hidden|visible)$/, async function (
+  state
+) {
+  const waitForHidden = state === 'hidden';
+  await this.client.waitForVisible(
+    SELECTORS.REPORT_ISSUE_BTN,
+    null,
+    waitForHidden
+  );
+});

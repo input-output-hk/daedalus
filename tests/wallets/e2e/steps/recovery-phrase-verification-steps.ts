@@ -73,23 +73,22 @@ When(
     }
   }
 );
-When(
-  /^I enter the "([^"]*)" recovery phrase mnemonics$/,
-  async function (_recoveryPhrase) {
-    const recoveryPhrase = _recoveryPhrase.split(' ');
+When(/^I enter the "([^"]*)" recovery phrase mnemonics$/, async function (
+  _recoveryPhrase
+) {
+  const recoveryPhrase = _recoveryPhrase.split(' ');
 
-    for (let i = 0; i < recoveryPhrase.length; i++) {
-      const word = recoveryPhrase[i];
-      await this.client.setValue(
-        '.AutocompleteOverrides_autocompleteWrapper input',
-        word
-      );
-      await this.client.waitForVisible(`//li[text()="${word}"]`);
-      await this.waitAndClick(`//li[text()="${word}"]`);
-      await this.client.waitForVisible(`//span[text()="${word}"]`);
-    }
+  for (let i = 0; i < recoveryPhrase.length; i++) {
+    const word = recoveryPhrase[i];
+    await this.client.setValue(
+      '.AutocompleteOverrides_autocompleteWrapper input',
+      word
+    );
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
+    await this.waitAndClick(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
-);
+});
 When(/^I click the verify button$/, async function () {
   await this.client.waitForEnabled(DIALOG_VERIFY_BUTTON_SELECTOR);
   return this.waitAndClick(DIALOG_VERIFY_BUTTON_SELECTOR);

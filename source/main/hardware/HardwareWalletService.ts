@@ -27,9 +27,21 @@ import type {
   CardanoSignedMessage,
   CardanoSignedTxData,
 } from '@trezor/connect';
-import { verifyHardwareTransactionWitnesses } from '../../common/cardano/witnessSet';
+import {
+  verifyHardwareTransactionWitnesses,
+  extractVKeyWitnesses,
+  mergeVKeyWitnesses,
+  verifyVKeyWitness,
+} from '../../common/cardano/witnessSet';
+import { requestElectronStore } from '../ipc/electronStoreConversation';
+import {
+  STORAGE_KEYS,
+  STORAGE_TYPES,
+} from '../../common/config/electron-store.config';
+import type { HardwareWalletLocalData } from '../../renderer/app/types/localDataTypes';
 import { decodeConwayTransaction } from '../../common/cardano/transaction';
 import { parseConwayTransactionEnvelope } from '../../common/cardano/transactionEnvelope';
+import { parseCborItem } from '../../common/cardano/cborSlices';
 import { toExactLedgerSignTransactionRequest } from '../../common/hardware/ledgerTransaction';
 import { toExactTrezorSignTransactionRequest } from '../../common/hardware/trezorTransaction';
 import { serializeCip8 } from '../../common/cardano/cip8';
@@ -57,13 +69,17 @@ import {
   consumeIpcResponse,
   currentWindowSender,
 } from '../ipc/lib/currentWindowSender';
-import { Device } from '../ipc/hardwareWallets/ledger/deviceDetection/types';
+import {
+  Device,
+  DeviceModel,
+} from '../ipc/hardwareWallets/ledger/deviceDetection/types';
 import { DeviceDetectionPayload } from '../ipc/hardwareWallets/ledger/deviceDetection/deviceDetection';
 import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
 import { dappLaunchPolicy } from '../config';
 
 type LedgerConnection = {
   device: Device;
+  deviceModel?: DeviceModel;
   transport: TransportNodeHid;
   AdaConnection: AppAda;
 };
@@ -89,6 +105,53 @@ const ledgerDefaults: LedgerServiceDependencies = {
 const decodeHex = (value: string): Buffer => {
   if (!/^(?:[0-9a-fA-F]{2})+$/.test(value)) throw new Error('Invalid hex');
   return Buffer.from(value, 'hex');
+};
+
+const pairedAccountXpub = (walletId: string, vendor: string): Buffer => {
+  if (!/^[0-9a-f]{40}$/u.test(walletId))
+    throw new Error('Invalid paired wallet identity');
+  const pairing = requestElectronStore({
+    type: STORAGE_TYPES.GET,
+    key: STORAGE_KEYS.HARDWARE_WALLETS,
+    id: walletId,
+  }) as HardwareWalletLocalData | undefined;
+  const key = pairing?.extendedPublicKey;
+  if (
+    pairing?.id !== walletId ||
+    pairing.device?.deviceType !== vendor ||
+    !key ||
+    !/^[0-9a-f]{64}$/iu.test(key.publicKeyHex) ||
+    !/^[0-9a-f]{64}$/iu.test(key.chainCodeHex)
+  )
+    throw new Error(
+      'Paired account key unavailable; repair pairing before signing'
+    );
+  return Buffer.from(key.publicKeyHex + key.chainCodeHex, 'hex');
+};
+
+const accountPublicKey = (
+  accountXpub: Buffer,
+  path: readonly number[]
+): Buffer => {
+  if (
+    path.length !== 5 ||
+    path[0] !== 0x8000073c ||
+    path[1] !== 0x80000717 ||
+    path[2] !== 0x80000000 ||
+    path
+      .slice(3)
+      .some(
+        (index) => !Number.isInteger(index) || index < 0 || index >= 0x80000000
+      )
+  )
+    throw new Error(
+      'Signer requires an account key not paired with this wallet'
+    );
+  return deriveChildXpub(
+    deriveChildXpub(accountXpub, path[3], 2),
+    path[4],
+    2
+  ).subarray(0, 32);
 };
 
 const expectedHardwareMessage = (
@@ -325,6 +388,7 @@ export class HardwareWalletService {
         }
         this.devicesMemo[device.path] = {
           device,
+          deviceModel,
           transport,
           AdaConnection: this.ledger.createApp(transport),
         };
@@ -495,7 +559,8 @@ export class HardwareWalletService {
 
   public signExactLedgerTransaction = (
     devicePath: string,
-    exact: HardwareExactTransaction
+    exact: HardwareExactTransaction,
+    walletId: string
   ): Promise<string> =>
     this.withNormalizedOperation('signTx', 'ledger', async () => {
       let request: ReturnType<typeof toExactLedgerSignTransactionRequest>;
@@ -504,14 +569,24 @@ export class HardwareWalletService {
       } catch {
         throw this.operationError('signTx', 'proof-generation');
       }
+      const accountXpub = pairedAccountXpub(walletId, 'ledger');
       const expected = exact.signers
         .filter(({ keyHash }) =>
           exact.witnesses.requestedDeviceKeyHashes.includes(keyHash)
         )
-        .map(({ path, keyHash }) => ({
-          path: path.join('/'),
-          keyHash,
-        }));
+        .map(({ path, keyHash }) => {
+          const publicKey = accountPublicKey(accountXpub, path);
+          if (
+            Buffer.from(blake2b(publicKey, undefined, 28)).toString('hex') !==
+            keyHash
+          )
+            throw this.operationError('signTx', 'proof-generation');
+          return {
+            path: path.join('/'),
+            keyHash,
+            publicKey: publicKey.toString('hex'),
+          };
+        });
       return this.withLedgerOperation(devicePath, async (connection) => {
         const signed = await connection.signTransaction(request);
         if (
@@ -531,18 +606,8 @@ export class HardwareWalletService {
           seen.add(path);
           if (!/^[0-9a-f]{128}$/u.test(witness.witnessSignatureHex))
             throw this.operationError('signTx', 'proof-generation');
-          const key = await connection.getExtendedPublicKey({
-            path: witness.path,
-          });
-          if (!/^[0-9a-f]{64}$/u.test(key.publicKeyHex))
-            throw this.operationError('signTx', 'proof-generation');
-          const keyHash = Buffer.from(
-            blake2b(Buffer.from(key.publicKeyHex, 'hex'), undefined, 28)
-          ).toString('hex');
-          if (keyHash !== expectedWitness.keyHash)
-            throw this.operationError('signTx', 'proof-generation');
           witnesses.push({
-            publicKey: key.publicKeyHex,
+            publicKey: expectedWitness.publicKey,
             signature: witness.witnessSignatureHex,
           });
         }
@@ -750,6 +815,7 @@ export class HardwareWalletService {
     signTransactionTrezorChannel,
     signExactHardwareTransactionChannel,
     signExactHardwareMessageChannel,
+    verifyHardwareTransactionChannel,
     resetTrezorActionChannel,
     handleInitTrezorConnectChannel,
     handleInitLedgerConnectChannel,
@@ -758,6 +824,77 @@ export class HardwareWalletService {
     showAddressChannel,
     waitForLedgerDevicesToConnectChannel,
   }: HardwareWalletChannels): Promise<void> => {
+    verifyHardwareTransactionChannel.onRequest(
+      async ({
+        walletId,
+        vendor,
+        unsignedTransaction,
+        signedTransaction,
+        signerPaths,
+      }) => {
+        if (vendor !== 'ledger' && vendor !== 'trezor')
+          throw new Error('Unknown hardware vendor');
+        const account = pairedAccountXpub(walletId, vendor);
+        const expectedKeys = new Set(
+          signerPaths.map((path) =>
+            accountPublicKey(account, path).toString('hex')
+          )
+        );
+        if (!expectedKeys.size)
+          throw new Error('Missing expected hardware witnesses');
+        const unsigned = parseConwayTransactionEnvelope(
+          decodeHex(unsignedTransaction)
+        );
+        let signedBytes = decodeHex(signedTransaction);
+        const root = parseCborItem(signedBytes);
+        // Older Trezor firmware returns the pre-Alonzo three-field envelope.
+        if (
+          root.major === 4 &&
+          root.items?.length === 3 &&
+          root.span.end === signedBytes.length
+        ) {
+          const [body, witnesses, auxiliary] = root.items;
+          signedBytes = Buffer.concat([
+            Buffer.from([0x84]),
+            signedBytes.subarray(body.span.start, witnesses.span.end),
+            Buffer.from([0xf5]),
+            signedBytes.subarray(auxiliary.span.start, auxiliary.span.end),
+          ]);
+        }
+        const signed = parseConwayTransactionEnvelope(signedBytes);
+        for (const field of ['body', 'isValid', 'auxiliaryData'] as const) {
+          const left = unsigned.spans[field],
+            right = signed.spans[field];
+          if (
+            !unsigned.cbor
+              .subarray(left.start, left.end)
+              .equals(signed.cbor.subarray(right.start, right.end))
+          )
+            throw new Error('Hardware signed a different transaction');
+        }
+        const witnessBytes = signed.cbor.subarray(
+          signed.spans.witnessSet.start,
+          signed.spans.witnessSet.end
+        );
+        if (
+          parseCborItem(witnessBytes).entries?.some(
+            ({ key }) => key.major !== 0 || key.value !== BigInt(0)
+          )
+        )
+          throw new Error('Unexpected legacy hardware witness type');
+        const witnesses = extractVKeyWitnesses(witnessBytes);
+        if (witnesses.length !== expectedKeys.size)
+          throw new Error('Missing or duplicate hardware witness');
+        for (const witness of witnesses) {
+          if (!expectedKeys.delete(witness.publicKey.toString('hex')))
+            throw new Error(
+              'Hardware witness does not belong to paired wallet'
+            );
+          verifyVKeyWitness(Buffer.from(signed.transactionId, 'hex'), witness);
+        }
+        return signedTransaction;
+      }
+    );
     const resetTrezorListeners = () => {
       // Remove all listeners if exist - e.g. on app refresh
       TrezorConnect.removeAllListeners();
@@ -934,7 +1071,8 @@ export class HardwareWalletService {
 
           const openTransportLayer = async (
             pathToOpen: string,
-            device: Device
+            device: Device,
+            deviceModel?: DeviceModel
           ) => {
             await this.cancelLedgerOperation(pathToOpen);
             const generation = this.generation(pathToOpen);
@@ -947,6 +1085,7 @@ export class HardwareWalletService {
             lastConnectedPath = pathToOpen;
             this.devicesMemo[pathToOpen] = {
               device,
+              deviceModel,
               transport,
               AdaConnection: this.ledger.createApp(transport),
             };
@@ -957,34 +1096,46 @@ export class HardwareWalletService {
             try {
               logger.info('[HW-DEBUG] INIT NEW transport');
 
-              const { device } = await this.ledger.wait();
+              const { device, deviceModel } = await this.ledger.wait();
 
-              await openTransportLayer(device.path, device);
+              await openTransportLayer(
+                device.path,
+                device,
+                deviceModel as DeviceModel
+              );
             } catch (e) {
               logger.info('[HW-DEBUG] INIT NEW transport - ERROR');
               throw e;
             }
-          } else if (!devicePath || !this.devicesMemo[devicePath]) {
-            // Use first like native usb nodeHID
-            lastConnectedPath = transportList[0]; // eslint-disable-line
-            logger.info('[HW-DEBUG] USE First transport', {
-              lastConnectedPath,
-            });
-
-            if (this.devicesMemo[lastConnectedPath]) {
-              await openTransportLayer(
-                lastConnectedPath,
-                this.devicesMemo[lastConnectedPath].device
-              );
-            } else {
-              throw new Error('Device not connected!');
-            }
           } else {
-            logger.info('[HW-DEBUG] USE CURRENT CONNECTION');
-            hw = this.devicesMemo[devicePath].transport;
+            const pathToOpen =
+              devicePath && transportList.includes(devicePath)
+                ? devicePath
+                : transportList[0];
+            const currentConnection = this.devicesMemo[pathToOpen];
+
+            if (currentConnection) {
+              logger.info('[HW-DEBUG] USE CURRENT CONNECTION');
+              hw = currentConnection.transport;
+              lastConnectedPath = pathToOpen;
+            } else {
+              const enumeratedDevice = this.ledger
+                .getDevices()
+                .find((candidate) => candidate.path === pathToOpen);
+              logger.info('[HW-DEBUG] OPEN ENUMERATED transport', {
+                pathToOpen,
+              });
+
+              if (!enumeratedDevice) throw new Error('Device not connected!');
+              await openTransportLayer(pathToOpen, {
+                ...enumeratedDevice,
+                path: pathToOpen,
+              });
+            }
           }
 
-          const { deviceModel } = hw;
+          const deviceModel =
+            this.devicesMemo[lastConnectedPath]?.deviceModel || hw.deviceModel;
 
           if (deviceModel) {
             const { id, productName } = deviceModel;
@@ -1009,7 +1160,12 @@ export class HardwareWalletService {
 
           throw new Error('Missing device info');
         } catch (error) {
-          logger.info('[HW-DEBUG] ERROR on getHardwareWalletTransportChannel');
+          logger.error(
+            '[HW-DEBUG] ERROR on getHardwareWalletTransportChannel',
+            {
+              error: String(error),
+            }
+          );
           throw error;
         }
       }
@@ -1430,7 +1586,7 @@ export class HardwareWalletService {
     });
 
     signExactHardwareTransactionChannel.onRequest(
-      async ({ vendor, ledgerPath, exact }) => {
+      async ({ vendor, ledgerPath, exact, walletId }) => {
         const capability = exact.capability;
         const artifactId =
           vendor === 'ledger'
@@ -1440,7 +1596,6 @@ export class HardwareWalletService {
           vendor !== capability.vendor ||
           capability.matrixRevision !== HARDWARE_CONNECTOR_MATRIX_REVISION ||
           capability.artifactId !== artifactId ||
-          capability.rowId !== `${vendor}-signTx` ||
           !capability.staticallyRepresentable ||
           !capability.staticGatesPassed ||
           !capability.physicalCertified ||
@@ -1449,13 +1604,24 @@ export class HardwareWalletService {
         )
           throw new Error('Hardware exact transaction is not enabled');
         const restored = restoreExactTransaction(exact);
+        let witnessSetCbor: string;
         if (vendor === 'ledger') {
           if (!ledgerPath) throw new Error('Ledger device not connected');
-          return this.signExactLedgerTransaction(ledgerPath, restored);
+          witnessSetCbor = await this.signExactLedgerTransaction(
+            ledgerPath,
+            restored,
+            walletId
+          );
+        } else {
+          if (ledgerPath !== undefined)
+            throw new Error('Trezor must not receive a Ledger path');
+          witnessSetCbor = await this.signExactTrezorTransaction(restored);
         }
-        if (ledgerPath !== undefined)
-          throw new Error('Trezor must not receive a Ledger path');
-        return this.signExactTrezorTransaction(restored);
+        const signedTransactionCbor = mergeVKeyWitnesses(
+          restored.transaction.envelope,
+          extractVKeyWitnesses(Buffer.from(witnessSetCbor, 'hex'))
+        ).toString('hex');
+        return { witnessSetCbor, signedTransactionCbor };
       }
     );
 

@@ -601,7 +601,7 @@ Hostile remote dApp
   route/wallet/network authority, immutable bytes, grants, approvals, and
   result validation. The trusted renderer presents broker-authoritative data
   but cannot replace it.
-- Main observes exact trusted in-page `/wallets/:id/dapps` routes and owns a
+- Main observes exact trusted in-page `/apps/:id` routes and owns a
   monotonic wallet/network lease. Route, wallet, network, window, and direct
   hash/history changes revoke staged launches before guest teardown. Authorized
   submission work may finish after revocation, but stale results are withheld.

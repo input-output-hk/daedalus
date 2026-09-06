@@ -114,7 +114,7 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
     registrationOwner: 'source/main/ipc/dappConnections.ts',
     capability: 'dapp-connections',
   }),
-  ...entries(['DAPP_COLLATERAL_CHANNEL'], {
+  ...entries(['DAPP_COLLATERAL_CHANNEL', 'WALLET_INPUT_SELECTION_CHANNEL'], {
     constructorOwner: 'source/main/ipc/collateral.ts',
     rendererOwner: 'source/renderer/app/ipc/collateral.ts',
     registrationOwner: 'source/main/ipc/collateral.ts',
@@ -358,7 +358,11 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
     receive: 'broadcast',
   }),
   ...entries(
-    ['MITHRIL_PROGRESS_CHANNEL', 'MITHRIL_STATUS_CHANNEL', 'WALLET_PORT_CHANNEL'],
+    [
+      'MITHRIL_PROGRESS_CHANNEL',
+      'MITHRIL_STATUS_CHANNEL',
+      'WALLET_PORT_CHANNEL',
+    ],
     {
       constructorOwner: 'source/main/ipc/mithrilPushChannel.ts',
       rendererOwner: 'source/renderer/app/ipc/mithrilPushChannel.ts',
@@ -430,6 +434,7 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
       'SIGN_TRANSACTION_TREZOR_CHANNEL',
       'SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL',
       'SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL',
+      'VERIFY_HARDWARE_TRANSACTION_CHANNEL',
       'GET_INIT_TREZOR_CONNECT_CHANNEL',
       'GET_INIT_LEDGER_CONNECT_CHANNEL',
       'DERIVE_XPUB_CHANNEL',

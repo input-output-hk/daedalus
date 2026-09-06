@@ -112,7 +112,7 @@ export default class DappStore extends Store {
     try {
       await openDappBrowserChannel.request({ url, walletId, localName });
       this.actions.router.goToRoute.trigger({
-        route: this.stores.wallets.getWalletRoute(walletId, 'dapps'),
+        route: `/apps/${encodeURIComponent(walletId)}`,
       });
     } finally {
       if (generation === this.generation)

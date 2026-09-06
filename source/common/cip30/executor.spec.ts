@@ -211,10 +211,10 @@ describe('CIP-30 wallet executor contract', () => {
     expect(parseCip30WalletRequest(signDataRequest)).toEqual(signDataRequest);
     const hardware = {
       matrixRevision: 'task-006-matrix-2026-08-14',
-      rowId: 'ledger:nanoSP:8.0.0:signData',
+      rowId: 'ledger:europa:7.3.1:signData',
       vendor: 'ledger' as const,
-      model: 'nanoSP',
-      appVersion: '8.0.0',
+      model: 'europa',
+      appVersion: '7.3.1',
       certifiedExtensions: [95],
       physicalCertified: true,
       packagedEnabled: true,

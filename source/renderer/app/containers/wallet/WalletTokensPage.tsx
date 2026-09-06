@@ -17,10 +17,17 @@ const WalletTokensPage = inject(
   observer((props: Props) => {
     const { actions, stores } = props;
     const { assets, profile, wallets, app } = stores;
-    const { all, favorites, insertingAssetUniqueId, removingAssetUniqueId } =
-      assets;
-    const { setEditedAsset, onOpenAssetSend, onToggleFavorite } =
-      actions.assets;
+    const {
+      all,
+      favorites,
+      insertingAssetUniqueId,
+      removingAssetUniqueId,
+    } = assets;
+    const {
+      setEditedAsset,
+      onOpenAssetSend,
+      onToggleFavorite,
+    } = actions.assets;
     const { open } = actions.dialogs;
     const { active: activeWallet } = wallets;
     const { currentLocale } = profile;

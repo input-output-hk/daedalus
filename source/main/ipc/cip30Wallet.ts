@@ -23,7 +23,7 @@ export const executeCip30WalletRequest = async (
 ): Promise<DappCip30WalletRendererResponse> => {
   const request = parseCip30WalletRequest(requestValue);
   const response = await awaitIpcResponse(
-    channel.send(request, currentWindowSender.sender)
+    channel.request(request, currentWindowSender.sender)
   );
   if (response === undefined) throw new Error('CIP-30 wallet unavailable');
   return parseCip30WalletResponse(request, response);

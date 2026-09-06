@@ -271,8 +271,10 @@ export default class SyncingConnectingStatus extends Component<Props> {
     } = this.props;
     if (!hasLoadedCurrentLocale) return null;
 
-    const { connectingMessage, connectingDescription } =
-      this._getConnectingMessage();
+    const {
+      connectingMessage,
+      connectingDescription,
+    } = this._getConnectingMessage();
 
     if (
       (cardanoNodeState === CardanoNodeStates.RUNNING ||
@@ -299,8 +301,8 @@ export default class SyncingConnectingStatus extends Component<Props> {
 
     const startupPhaseLabel =
       cardanoNodeState === CardanoNodeStates.STARTING && nodeStartupPhase
-        ? (NODE_STARTUP_PHASE_LABELS[nodeStartupPhase as NodeStartupPhase] ??
-          nodeStartupPhase)
+        ? NODE_STARTUP_PHASE_LABELS[nodeStartupPhase as NodeStartupPhase] ??
+          nodeStartupPhase
         : null;
 
     const stopProgressMessage =

@@ -171,8 +171,13 @@ class Asset extends Component<Props, State> {
       hasWarning,
       hasError,
     } = this.props;
-    const { fingerprint, metadata, decimals, recommendedDecimals, assetName } =
-      asset;
+    const {
+      fingerprint,
+      metadata,
+      decimals,
+      recommendedDecimals,
+      assetName,
+    } = asset;
     const hasMetadataName = !!metadata?.name;
     const name =
       metadata?.name || (assetName && `ASCII: ${hexToString(assetName)}`) || '';

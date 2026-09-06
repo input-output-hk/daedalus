@@ -34,7 +34,7 @@ const changesAccount = (reason: DappGuestRevocationReason): boolean =>
 export const consentCoordinator = new ConsentCoordinator({
   present: async (request) => {
     const value = await awaitIpcResponse(
-      renderChannel.send(
+      renderChannel.request(
         { type: 'present', request },
         currentWindowSender.sender
       )
@@ -48,7 +48,7 @@ export const consentCoordinator = new ConsentCoordinator({
   },
   terminal: async (requestId) => {
     await awaitIpcResponse(
-      renderChannel.send(
+      renderChannel.request(
         { type: 'terminal', requestId },
         currentWindowSender.sender
       )

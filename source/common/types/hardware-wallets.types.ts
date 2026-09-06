@@ -22,7 +22,7 @@ type UdevInfo = {
 };
 
 export type BIP32Path = Array<number>;
-export type LedgerModel = 'nanoS' | 'nanoSP' | 'nanoX';
+export type LedgerModel = 'nanoS' | 'nanoSP' | 'nanoX' | 'europa';
 export type TrezorModel = '1' | 'T';
 export type DeviceType = 'ledger' | 'trezor';
 export type DeviceEvent =
@@ -47,12 +47,14 @@ export const DeviceModels: {
   LEDGER_NANO_S: LedgerModel;
   LEDGER_NANO_S_PLUS: LedgerModel;
   LEDGER_NANO_X: LedgerModel;
+  LEDGER_FLEX: LedgerModel;
   TREZOR_ONE: TrezorModel;
   TREZOR_T: TrezorModel;
 } = {
   LEDGER_NANO_S: 'nanoS',
   LEDGER_NANO_S_PLUS: 'nanoSP',
   LEDGER_NANO_X: 'nanoX',
+  LEDGER_FLEX: 'europa',
   TREZOR_ONE: '1',
   TREZOR_T: 'T',
 };
@@ -339,6 +341,7 @@ export type HardwareSigner = Readonly<{
 
 export type HardwareOwnedAddress = Readonly<{
   address: string;
+  outputIndex?: number;
   paymentPath?: readonly number[];
   stakePath?: readonly number[];
 }>;

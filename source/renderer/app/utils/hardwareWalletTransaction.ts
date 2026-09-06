@@ -1,3 +1,7 @@
+import { blake2b } from 'blakejs';
+import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import type { CoinSelectionOutput } from '../api/transactions/types';
+import { CachedDeriveXpubFactory } from './hardwareWalletUtils';
 import { decodeConwayOutput } from '../../../common/cardano/transaction';
 import type {
   ContextOwnership,
@@ -264,4 +268,95 @@ export const prepareHardwareTransaction = (
       exact,
     });
   return Object.freeze({ status: 'ready', deviceInteraction: true, exact });
+};
+
+// Construction marks change; ownership alone must not hide a self-payment.
+export const bindPaymentChange = async (
+  exact: HardwareExactTransaction,
+  outputs: readonly CoinSelectionOutput[],
+  accountXpub: string
+): Promise<HardwareExactTransaction> => {
+  if (!/^[0-9a-f]{128}$/iu.test(accountXpub))
+    throw new Error('Invalid change account public key');
+  const derive = CachedDeriveXpubFactory(async () =>
+    Buffer.from(accountXpub, 'hex')
+  );
+  const ownedOutputs: HardwareOwnedAddress[] = [];
+  const remaining = new Set(exact.transaction.outputs.map((_, index) => index));
+  for (const output of outputs) {
+    if (
+      !Number.isSafeInteger(output.amount.quantity) ||
+      output.amount.quantity < 0
+    )
+      throw new Error('Invalid payment output amount');
+    const assets = output.assets || [];
+    if (
+      assets.some(
+        ({ quantity }) => !Number.isSafeInteger(quantity) || quantity < 0
+      )
+    )
+      throw new Error('Invalid payment output asset quantity');
+    const address = Buffer.from(
+      utils.bech32_decodeAddress(output.address)
+    ).toString('hex');
+    const index = [...remaining].find((candidate) => {
+      const actual = exact.transaction.outputs[candidate];
+      return (
+        actual.address === address &&
+        actual.value.coin === BigInt(output.amount.quantity) &&
+        actual.value.assets.length === assets.length &&
+        actual.value.assets.every((asset) =>
+          assets.some(
+            (expected) =>
+              expected.policyId === asset.policyId &&
+              expected.assetName === asset.assetName &&
+              BigInt(expected.quantity) === asset.quantity
+          )
+        )
+      );
+    });
+    if (index === undefined)
+      throw new Error('Payment output does not match exact transaction');
+    remaining.delete(index);
+    if (!output.derivationPath) continue;
+    const path = output.derivationPath;
+    if (
+      path.length !== 5 ||
+      path[0] !== '1852H' ||
+      path[1] !== '1815H' ||
+      path[2] !== '0H' ||
+      path[3] !== '1' ||
+      !/^(0|[1-9][0-9]*)$/u.test(path[4]) ||
+      !Number.isSafeInteger(Number(path[4])) ||
+      Number(path[4]) >= 0x80000000
+    )
+      throw new Error('Invalid payment change path');
+    const paymentPath = [
+      0x8000073c,
+      0x80000717,
+      0x80000000,
+      1,
+      Number(path[4]),
+    ];
+    const stakePath = [0x8000073c, 0x80000717, 0x80000000, 2, 0];
+    const paymentKey = await derive(paymentPath, accountXpub);
+    const stakeKey = await derive(stakePath, accountXpub);
+    const derived = Buffer.concat([
+      Buffer.from([exact.network.networkId]),
+      Buffer.from(blake2b(paymentKey.subarray(0, 32), undefined, 28)),
+      Buffer.from(blake2b(stakeKey.subarray(0, 32), undefined, 28)),
+    ]).toString('hex');
+    if (derived !== address)
+      throw new Error('Change address does not belong to paired wallet');
+    ownedOutputs.push(
+      Object.freeze({
+        address,
+        outputIndex: index,
+        paymentPath: Object.freeze(paymentPath),
+        stakePath: Object.freeze(stakePath),
+      })
+    );
+  }
+  if (remaining.size) throw new Error('Unaccounted exact payment output');
+  return Object.freeze({ ...exact, ownedOutputs: Object.freeze(ownedOutputs) });
 };

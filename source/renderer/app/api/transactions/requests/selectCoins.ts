@@ -8,6 +8,7 @@ import type {
 } from '../types';
 import type { DelegationAction } from '../../../types/stakingTypes';
 import { request } from '../../utils/request';
+import { walletInputSelectionChannel } from '../../../ipc/collateral';
 
 export type PaymentsType = {
   payments: Array<TransactionPaymentData>;
@@ -64,7 +65,7 @@ export type SelectCoinsResponseType = {
   }>;
   metadata?: string;
 };
-export const selectCoins = (
+export const selectCoins = async (
   config: RequestConfig,
   { walletId, data }: SelectCoinsRequestType
 ): Promise<SelectCoinsResponseType> => {
@@ -75,6 +76,6 @@ export const selectCoins = (
       ...config,
     },
     {},
-    data
+    { ...data, ...(await walletInputSelectionChannel.request({ walletId })) }
   );
 };

@@ -1,8 +1,7 @@
 import ExtendableError from 'es6-error';
 import type { ReactIntlMessageShape } from './types';
 
-type KnownErrorType =
-  'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens';
+type KnownErrorType = 'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens';
 
 export default class LocalizableError extends ExtendableError {
   id: KnownErrorType | string;

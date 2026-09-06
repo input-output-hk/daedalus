@@ -207,9 +207,26 @@ const validatePaginate = (paginate: Paginate): void => {
 export const getCip30Utxos = (
   snapshot: Pick<TransactionContextSnapshot, 'outputs'>,
   amount?: string,
-  paginate?: Paginate
+  paginate?: Paginate,
+  preferredInputs: readonly ContextOutput['outpoint'][] = []
 ): Cip30UtxoPage | null => {
-  const available = controlledCip30Utxos(snapshot);
+  let available = controlledCip30Utxos(snapshot);
+  if (preferredInputs.length) {
+    const reserved = new Set(
+      preferredInputs.map(
+        ({ transactionId, index }) => `${transactionId}:${index}`
+      )
+    );
+    const ordinary: Cip30Utxo[] = [];
+    const collateral: Cip30Utxo[] = [];
+    for (const utxo of available) {
+      const { transactionId, index } = utxo.context.outpoint;
+      (reserved.has(`${transactionId}:${index}`) ? collateral : ordinary).push(
+        utxo
+      );
+    }
+    available = ordinary.concat(collateral);
+  }
   let selected = available;
   if (amount !== undefined) {
     const requested = decodeCip30Value(amount);

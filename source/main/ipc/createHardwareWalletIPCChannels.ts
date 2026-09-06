@@ -28,6 +28,8 @@ import {
   SignExactHardwareTransactionRendererRequest,
   SignExactHardwareMessageMainResponse,
   SignExactHardwareMessageRendererRequest,
+  VerifyHardwareTransactionRequest,
+  VERIFY_HARDWARE_TRANSACTION_CHANNEL,
   DERIVE_ADDRESS_CHANNEL,
   DERIVE_XPUB_CHANNEL,
   GET_CARDANO_ADA_APP_CHANNEL,
@@ -84,6 +86,10 @@ export interface HardwareWalletChannels {
     SignExactHardwareMessageRendererRequest,
     SignExactHardwareMessageMainResponse
   >;
+  verifyHardwareTransactionChannel: IpcChannel<
+    VerifyHardwareTransactionRequest,
+    string
+  >;
 
   resetTrezorActionChannel: IpcChannel<
     resetTrezorActionRendererRequest,
@@ -137,6 +143,9 @@ export const createChannels = (
     signTransactionTrezorChannel: new Channel(SIGN_TRANSACTION_TREZOR_CHANNEL),
     signExactHardwareTransactionChannel: new Channel(
       SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL
+    ),
+    verifyHardwareTransactionChannel: new Channel(
+      VERIFY_HARDWARE_TRANSACTION_CHANNEL
     ),
     signExactHardwareMessageChannel: new Channel(
       SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL

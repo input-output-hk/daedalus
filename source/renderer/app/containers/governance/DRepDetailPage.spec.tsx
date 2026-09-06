@@ -348,9 +348,9 @@ describe('DRepDetailPage', () => {
 
     // References is a field CIP-119 defines. With the additional heading above
     // it, it read as something the DRep invented.
-    const headings = Array.from(document.querySelectorAll('h3, h4')).map(
-      (node) => node.textContent?.trim()
-    );
+    const headings = Array.from(
+      document.querySelectorAll('h3, h4')
+    ).map((node) => node.textContent?.trim());
     const referencesAt = headings.findIndex((text) =>
       text?.includes('References')
     );

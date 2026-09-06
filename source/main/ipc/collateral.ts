@@ -2,6 +2,9 @@ import {
   DAPP_COLLATERAL_CHANNEL,
   DappCollateralMainResponse,
   DappCollateralRendererRequest,
+  WALLET_INPUT_SELECTION_CHANNEL,
+  WalletInputSelectionMainResponse,
+  WalletInputSelectionRendererRequest,
 } from '../../common/ipc/api';
 import { getCollateralService } from '../cip30/Cip30Broker';
 import { getCurrentDappRouteLease } from './dappBrowser';
@@ -11,6 +14,11 @@ const channel = new MainIpcChannel<
   DappCollateralRendererRequest,
   DappCollateralMainResponse
 >(DAPP_COLLATERAL_CHANNEL);
+
+const inputSelectionChannel = new MainIpcChannel<
+  WalletInputSelectionRendererRequest,
+  WalletInputSelectionMainResponse
+>(WALLET_INPUT_SELECTION_CHANNEL);
 
 export const parseDappCollateralRequest = (
   value: unknown
@@ -49,6 +57,23 @@ export const parseDappCollateralRequest = (
 };
 
 export const handleDappCollateralRequests = (): void => {
+  inputSelectionChannel.onRequest(async (request) => {
+    if (
+      !request ||
+      Object.getPrototypeOf(request) !== Object.prototype ||
+      Object.keys(request).length !== 1
+    )
+      throw new Error('Invalid wallet input selection request');
+    const walletId = Object.getOwnPropertyDescriptor(request, 'walletId')
+      ?.value;
+    if (typeof walletId !== 'string' || !/^[0-9a-f]{40}$/u.test(walletId))
+      throw new Error('Invalid wallet input selection request');
+    return {
+      preferred_collateral: getCollateralService()
+        .preferredInputs(walletId)
+        .map(({ transactionId, index }) => ({ id: transactionId, index })),
+    };
+  });
   channel.onRequest(async (unknownRequest) => {
     const request = parseDappCollateralRequest(unknownRequest);
     const lease = getCurrentDappRouteLease();

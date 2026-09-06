@@ -1,10 +1,12 @@
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
+import { spawn } from 'child_process';
 import cbor from 'cbor';
 import { blake2b } from 'blakejs';
 import TransportNodeHid, {
   getDevices,
 } from '@ledgerhq/hw-transport-node-hid-noevents';
+import { identifyUSBProductId } from '@ledgerhq/devices';
 import AppAda, {
   AddressType,
   MessageAddressFieldType,
@@ -45,6 +47,12 @@ type Case = Readonly<{
   }>;
 }>;
 
+type Target = Readonly<{
+  id: 'nano-x-app7' | 'flex-app7';
+  deviceModel: 'nanoX' | 'europa';
+  appVersion: readonly [number, number, number];
+}>;
+
 type CasesDocument = Readonly<{
   matrixRevision: string;
   cases: readonly Case[];
@@ -53,9 +61,19 @@ type CasesDocument = Readonly<{
 type Ledger = Readonly<{ transport: TransportNodeHid; app: AppAda }>;
 
 const APPROVAL = 'LEDGER_APPROVAL_REQUIRED';
-const PRODUCT_ID_NANO_X = 0x4000;
 const RUNTIME_VERSION = '8.0.0';
-const APP_VERSION = [7, 3, 0] as const;
+const TARGETS: Readonly<Record<Target['id'], Target>> = Object.freeze({
+  'nano-x-app7': Object.freeze({
+    id: 'nano-x-app7',
+    deviceModel: 'nanoX',
+    appVersion: [7, 3, 0] as const,
+  }),
+  'flex-app7': Object.freeze({
+    id: 'flex-app7',
+    deviceModel: 'europa',
+    appVersion: [7, 3, 1] as const,
+  }),
+});
 const PAYMENT_PATH = [0x8000073c, 0x80000717, 0x80000000, 0, 0];
 const STAKE_PATH = [0x8000073c, 0x80000717, 0x80000000, 2, 0];
 const DREP_PATH = [0x8000073c, 0x80000717, 0x80000000, 3, 0];
@@ -88,6 +106,7 @@ const emit = (value: Record<string, unknown>): void => {
 const parseArgs = (): Readonly<{
   mode: Mode;
   operator: string;
+  target: Target;
   index?: 0 | 1 | 2;
 }> => {
   const [, , mode, ...rest] = process.argv;
@@ -108,14 +127,20 @@ const parseArgs = (): Readonly<{
   }
   const operator = args.get('--operator');
   assert(operator && /^[a-z0-9][a-z0-9-]{2,63}$/u.test(operator));
+  const targetId = args.get('--target') ?? 'nano-x-app7';
+  assert(targetId === 'nano-x-app7' || targetId === 'flex-app7');
   const indexValue = args.get('--index');
-  assert(args.size === 1 || (args.size === 2 && indexValue !== undefined));
+  assert(
+    args.size ===
+      1 + Number(args.has('--target')) + Number(indexValue !== undefined)
+  );
   if (mode === 'batch-reject')
     assert(indexValue === '0' || indexValue === '1' || indexValue === '2');
   else assert(indexValue === undefined);
   return {
     mode,
     operator,
+    target: TARGETS[targetId],
     ...(indexValue === undefined
       ? {}
       : { index: Number(indexValue) as 0 | 1 | 2 }),
@@ -127,7 +152,11 @@ const casesDocument = (): CasesDocument =>
     readFileSync('hardware-wallet-tests/capability-matrix/cases.json', 'utf8')
   ) as CasesDocument;
 
-const selectedCase = (document: CasesDocument, id: string): Case => {
+const selectedCase = (
+  document: CasesDocument,
+  id: string,
+  target: Target
+): Case => {
   const selected = document.cases.filter(
     (candidate) =>
       candidate.id === id &&
@@ -144,12 +173,12 @@ const selectedCase = (document: CasesDocument, id: string): Case => {
   );
   assert(
     result.modelBinding.certificationVersion.length === 3 &&
-      result.modelBinding.certificationVersion[0] === APP_VERSION[0]
+      result.modelBinding.certificationVersion[0] === target.appVersion[0]
   );
   assert(
-    result.modelBinding.certificationVersion[1] < APP_VERSION[1] ||
-      (result.modelBinding.certificationVersion[1] === APP_VERSION[1] &&
-        result.modelBinding.certificationVersion[2] <= APP_VERSION[2])
+    result.modelBinding.certificationVersion[1] < target.appVersion[1] ||
+      (result.modelBinding.certificationVersion[1] === target.appVersion[1] &&
+        result.modelBinding.certificationVersion[2] <= target.appVersion[2])
   );
   return result;
 };
@@ -159,9 +188,10 @@ const approval = async <T>(execute: () => Promise<T>): Promise<T> => {
   return execute();
 };
 
-const openLedger = async (): Promise<Ledger> => {
+const openLedger = async (target: Target): Promise<Ledger> => {
   const devices = getDevices().filter(
-    (device) => device.productId === PRODUCT_ID_NANO_X
+    (device) =>
+      identifyUSBProductId(device.productId)?.id === target.deviceModel
   );
   assert(devices.length === 1);
   const transport = await approval(() =>
@@ -170,12 +200,15 @@ const openLedger = async (): Promise<Ledger> => {
   return { transport, app: new AppAda(transport) };
 };
 
-const checkVersion = async (ledger: Ledger): Promise<string> => {
+const checkVersion = async (
+  ledger: Ledger,
+  target: Target
+): Promise<string> => {
   const { version } = await approval(() => ledger.app.getVersion());
   assert(
-    version.major === APP_VERSION[0] &&
-      version.minor === APP_VERSION[1] &&
-      version.patch === APP_VERSION[2]
+    version.major === target.appVersion[0] &&
+      version.minor === target.appVersion[1] &&
+      version.patch === target.appVersion[2]
   );
   return `${version.major}.${version.minor}.${version.patch}`;
 };
@@ -561,13 +594,14 @@ const runMessageCases = async (
   ledger: Ledger,
   document: CasesDocument,
   operatorDigest: string,
-  observedRuntimeVersion: string
+  observedRuntimeVersion: string,
+  target: Target
 ): Promise<void> => {
   const requests = [
-    [selectedCase(document, CASE_IDS.payment), 'payment'],
-    [selectedCase(document, CASE_IDS.stake), 'stake'],
-    [selectedCase(document, CASE_IDS.drep), 'drep'],
-    [selectedCase(document, CASE_IDS.drepType6), 'drepType6'],
+    [selectedCase(document, CASE_IDS.payment, target), 'payment'],
+    [selectedCase(document, CASE_IDS.stake, target), 'stake'],
+    [selectedCase(document, CASE_IDS.drep, target), 'drep'],
+    [selectedCase(document, CASE_IDS.drepType6, target), 'drepType6'],
   ] as const;
   const drep = messageRecipe(requests[2][0], 'drep-direct', 'key-hash', false);
   const drepType6 = messageRecipe(
@@ -586,6 +620,8 @@ const runMessageCases = async (
     ok: true,
     operatorDigest,
     observedRuntimeVersion,
+    target: target.id,
+    deviceModel: target.deviceModel,
     caseProofs: proofs,
     drepNormalized:
       proofs[2].proof.returnedPublicKeyDigest ===
@@ -599,9 +635,10 @@ const runTransaction = async (
   ledger: Ledger,
   document: CasesDocument,
   operatorDigest: string,
-  observedRuntimeVersion: string
+  observedRuntimeVersion: string,
+  target: Target
 ): Promise<void> => {
-  const selected = selectedCase(document, CASE_IDS.transaction);
+  const selected = selectedCase(document, CASE_IDS.transaction, target);
   const credential = keyHash(await key(ledger, PAYMENT_PATH));
   transactionRecipe(selected, 'single-transaction');
   const cborHex = ordinaryCbor(0x11, credential);
@@ -618,6 +655,8 @@ const runTransaction = async (
     ok: true,
     operatorDigest,
     observedRuntimeVersion,
+    target: target.id,
+    deviceModel: target.deviceModel,
     caseId: selected.id,
     inputDigest: selected.fixtureBinding.selectedInput.sha256,
     inputRecipeSha256: selected.inputRecipe.recipeSha256,
@@ -639,10 +678,11 @@ const runBatch = async (
   document: CasesDocument,
   operatorDigest: string,
   observedRuntimeVersion: string,
-  mode: 'batch-success' | 'batch-reject' | 'batch-cancel',
+  target: Target,
+  mode: 'batch-success' | 'batch-reject',
   rejectedIndex?: 0 | 1 | 2
 ): Promise<void> => {
-  const selected = selectedCase(document, CASE_IDS.batch);
+  const selected = selectedCase(document, CASE_IDS.batch, target);
   const credential = keyHash(await key(ledger, PAYMENT_PATH));
   transactionRecipe(selected, 'ordered-batch');
   const cbors = [
@@ -650,8 +690,7 @@ const runBatch = async (
     ordinaryCbor(0x22, credential),
     ordinaryCbor(0x33, credential),
   ];
-  const requiredIndexes =
-    mode === 'batch-success' || mode === 'batch-cancel' ? [0, 2] : [0, 1, 2];
+  const requiredIndexes = mode === 'batch-success' ? [0, 2] : [0, 1, 2];
   const transactionSnapshot = snapshot(cbors, credential, requiredIndexes);
   const batch = preflightCip103Sign(
     cbors.map((cbor) => ({ cbor, partialSign: true })),
@@ -670,7 +709,6 @@ const runBatch = async (
     })),
   };
   const controller = new AbortController();
-  if (mode === 'batch-cancel') process.once('SIGINT', () => controller.abort());
   let released = false;
   const transactionProofs: TransactionProof[] = [];
   try {
@@ -705,6 +743,8 @@ const runBatch = async (
       ok: true,
       operatorDigest,
       observedRuntimeVersion,
+      target: target.id,
+      deviceModel: target.deviceModel,
       caseId: selected.id,
       inputDigest: selected.fixtureBinding.selectedInput.sha256,
       inputRecipeSha256: selected.inputRecipe.recipeSha256,
@@ -759,23 +799,91 @@ const runBatch = async (
         ? error.transactionIndex
         : undefined;
     assert(
-      (mode === 'batch-reject' &&
+      mode === 'batch-reject' &&
         failure === 'user-declined' &&
-        transactionIndex === rejectedIndex) ||
-        (mode === 'batch-cancel' && failure === 'cancelled')
+        transactionIndex === rejectedIndex
     );
     emit({
       mode,
       ok: true,
       operatorDigest,
       observedRuntimeVersion,
+      target: target.id,
+      deviceModel: target.deviceModel,
       released,
-      rejectedIndex: mode === 'batch-reject' ? rejectedIndex : undefined,
-      cancelled: mode === 'batch-cancel',
-      physicalDisconnectRequired: mode === 'batch-cancel',
+      rejectedIndex,
+      cancelled: false,
+      physicalDisconnectRequired: false,
     });
   }
 };
+
+const runCancellation = (operator: string, target: Target): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const child = spawn(
+      process.execPath,
+      [
+        '-r',
+        '@swc-node/register',
+        __filename,
+        'batch-success',
+        '--operator',
+        operator,
+        '--target',
+        target.id,
+      ],
+      {
+        stdio: ['ignore', 'pipe', 'inherit'],
+      }
+    );
+    assert(child.stdout);
+    let approvals = 0;
+    let ready = false;
+    let cancellationRequested = false;
+    let released = false;
+    let pending = '';
+    child.stdout.setEncoding('utf8');
+    child.stdout.on('data', (chunk: string) => {
+      process.stdout.write(chunk);
+      pending += chunk;
+      const lines = pending.split('\n');
+      pending = lines.pop() ?? '';
+      for (const line of lines) {
+        if (line === APPROVAL) approvals += 1;
+        if (line.includes('"mode":"batch-success","ok":true')) released = true;
+      }
+      if (approvals >= 4 && !ready) {
+        ready = true;
+        process.stdout.write('HOST_CANCELLATION_READY\n');
+        process.stdin.resume();
+        process.stdin.once('data', () => {
+          cancellationRequested = true;
+          child.kill('SIGTERM');
+          process.stdin.pause();
+        });
+      }
+    });
+    child.once('error', reject);
+    child.once('close', () => {
+      process.stdin.pause();
+      if (!cancellationRequested || released) {
+        reject(new Error('task607-cancellation-failed'));
+        return;
+      }
+      emit({
+        mode: 'batch-cancel',
+        ok: true,
+        operatorDigest: digest(operator),
+        observedRuntimeVersion: target.appVersion.join('.'),
+        target: target.id,
+        deviceModel: target.deviceModel,
+        released: false,
+        cancelled: true,
+        physicalDisconnectRequired: true,
+      });
+      resolve();
+    });
+  });
 
 const run = async (): Promise<void> => {
   const args = parseArgs();
@@ -786,9 +894,13 @@ const run = async (): Promise<void> => {
     version?: unknown;
   };
   assert(ledgerPackage.version === RUNTIME_VERSION);
-  const ledger = await openLedger();
+  if (args.mode === 'batch-cancel') {
+    await runCancellation(args.operator, args.target);
+    return;
+  }
+  const ledger = await openLedger(args.target);
   try {
-    const observedRuntimeVersion = await checkVersion(ledger);
+    const observedRuntimeVersion = await checkVersion(ledger, args.target);
     if (args.mode === 'inspect') {
       emit({
         mode: args.mode,
@@ -797,20 +909,24 @@ const run = async (): Promise<void> => {
         observedRuntimeVersion,
         runtimeVersion: RUNTIME_VERSION,
         operatorDigest,
+        target: args.target.id,
+        deviceModel: args.target.deviceModel,
       });
     } else if (args.mode === 'sign-data') {
       await runMessageCases(
         ledger,
         document,
         operatorDigest,
-        observedRuntimeVersion
+        observedRuntimeVersion,
+        args.target
       );
     } else if (args.mode === 'sign-tx') {
       await runTransaction(
         ledger,
         document,
         operatorDigest,
-        observedRuntimeVersion
+        observedRuntimeVersion,
+        args.target
       );
     } else {
       await runBatch(
@@ -818,6 +934,7 @@ const run = async (): Promise<void> => {
         document,
         operatorDigest,
         observedRuntimeVersion,
+        args.target,
         args.mode,
         args.index
       );

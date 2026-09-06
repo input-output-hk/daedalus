@@ -170,6 +170,36 @@ describe('CIP-30 UTxO reads', () => {
     expect(getCip30Utxos(snapshot, '00')).toEqual({ kind: 'page', items: [] });
   });
 
+  test('uses reserved collateral only after ordinary inputs cannot cover the requested value', () => {
+    const reserved = [outputs[1].outpoint];
+    const ordinary = [outputs[2].unspentCbor, outputs[0].unspentCbor];
+    const inventory = [...ordinary, outputs[1].unspentCbor];
+    expect(getCip30Utxos(snapshot, '06', undefined, reserved)).toEqual({
+      kind: 'page',
+      items: ordinary,
+    });
+    expect(getCip30Utxos(snapshot, '0d', undefined, reserved)).toEqual({
+      kind: 'page',
+      items: inventory,
+    });
+    const tokenAmount = serializeCip30Value({
+      coin: BigInt(0),
+      assets: [{ policyId, assetName: 'aa', quantity: BigInt(1) }],
+    });
+    expect(getCip30Utxos(snapshot, tokenAmount, undefined, reserved)).toEqual({
+      kind: 'page',
+      items: inventory,
+    });
+    expect(getCip30Utxos(snapshot, '0f', undefined, reserved)).toBeNull();
+    expect(getCip30Utxos(snapshot, undefined, undefined, reserved)).toEqual({
+      kind: 'page',
+      items: inventory,
+    });
+    expect(
+      getCip30Utxos(snapshot, undefined, { page: 1, limit: 2 }, reserved)
+    ).toEqual({ kind: 'page', items: [outputs[1].unspentCbor] });
+  });
+
   test('paginates after selection without capping the result set', () => {
     expect(getCip30Utxos(snapshot, undefined, { page: 1, limit: 2 })).toEqual({
       kind: 'page',

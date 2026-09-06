@@ -24,7 +24,7 @@ invalidation. Main handlers run only for the exact active trusted main
 `WebContents`, main frame, canonical document, and origin, and respond through
 the originating frame via `event.reply`.
 
-`source/main/ipc/privilegedIpcManifest.ts` accounts for all 77 production
+`source/main/ipc/privilegedIpcManifest.ts` accounts for production
 `MainIpcChannel` and `MainIpcConversation` contracts, their constructor,
 registration and caller owners, direction, capability, settlement policy, and
 exact-frame authority. A TypeScript-checker audit rejects raw Electron ingress,
@@ -132,6 +132,35 @@ Generate a new address (for Byron wallets).
 ---
 
 ## Transaction Endpoints
+
+### Preferred collateral and ordinary input selection
+
+`WALLET_INPUT_SELECTION_CHANNEL` accepts `{ walletId }` from the trusted renderer.
+Main reads that wallet's saved collateral preference for the running network;
+the renderer cannot select a different genesis identity. Corrupt preferences
+must be repaired rather than silently treated as empty.
+
+Native payment construction, coin selection, fee estimation, and stake-pool
+join/quit requests include optional `preferred_collateral: [{ id, index }]`.
+Delegation-fee GET requests encode the same array as a JSON query parameter.
+The packaged backend first balances without those outpoints and retries with
+the complete available UTxO only if the ordinary-only attempt fails. This
+requires `nix/patches/cardano-wallet-collateral-selection.patch`, applied by
+`nix/internal/common.nix`; an unpatched backend does not implement the policy.
+
+CIP-30 amount-qualified `getUtxos` selects ordinary inputs before preferred
+collateral. Unqualified inventory remains complete, with collateral last;
+external dApps still control their own input selection. Spending/collateral
+overlap is valid because those inputs apply on alternative ledger paths.
+The backend accepts both roles in requested and pending transaction contexts.
+Submission journaling and legacy migration retain one active lock per outpoint;
+the sealed transaction preserves both roles. Daedalus still rejects same-role
+duplicates and reference-input overlap. The backend still rejects conflicting
+claims from different transactions.
+
+This does not relax Plutus script-data commitment validation. The production
+context adapter does not yet supply pinned language views, so transactions
+requiring that material still fail closed with an incomplete authenticated review.
 
 ### GET `/v2/wallets/{walletId}/transactions`
 List wallet transactions.

@@ -4,8 +4,9 @@ import {
   ConstructTransactionResponse,
 } from '../types';
 import { request } from '../../utils/request';
+import { walletInputSelectionChannel } from '../../../ipc/collateral';
 
-export const constructTransaction = (
+export const constructTransaction = async (
   config: RequestConfig,
   { walletId, data }: ConstructTransactionData
 ): Promise<ConstructTransactionResponse> =>
@@ -16,5 +17,5 @@ export const constructTransaction = (
       ...config,
     },
     {},
-    data
+    { ...data, ...(await walletInputSelectionChannel.request({ walletId })) }
   );

@@ -98,7 +98,23 @@ export const installDappGuestLifecyclePolicy = (
   diagnosticsPolicy?: DappUrlPolicy
 ): void => {
   const { webContents } = window;
-  const denyNavigation = (event: Electron.Event) => {
+  const launchOrigin = parseLaunchUrl(entryUrl, diagnosticsPolicy).origin;
+  const denyNavigation = (event: {
+    url?: string;
+    isMainFrame?: boolean;
+    preventDefault: () => void;
+  }) => {
+    try {
+      if (
+        isInitialLoad() &&
+        event.isMainFrame !== false &&
+        event.url &&
+        parseLaunchUrl(event.url, diagnosticsPolicy).href === entryUrl
+      )
+        return;
+    } catch {
+      // Invalid navigation is revoked below.
+    }
     event.preventDefault();
     revoke('navigation');
   };
@@ -109,21 +125,29 @@ export const installDappGuestLifecyclePolicy = (
   webContents.on('will-redirect', denyNavigation);
   webContents.on(
     'did-start-navigation',
-    (_event, url, _isInPlace, isMainFrame) => {
-      let isExpectedInitialLoad = false;
+    (_event, url, isInPlace, isMainFrame) => {
+      let isAllowedNavigation = false;
       try {
-        isExpectedInitialLoad =
-          isInitialLoad() &&
+        const parsed = parseLaunchUrl(url, diagnosticsPolicy);
+        isAllowedNavigation =
           isMainFrame &&
-          parseLaunchUrl(url, diagnosticsPolicy).href === entryUrl;
+          ((isInitialLoad() && parsed.href === entryUrl) ||
+            (isInPlace && parsed.origin === launchOrigin));
       } catch {
         // Invalid navigation is revoked below.
       }
-      if (!isExpectedInitialLoad) revoke('navigation');
+      if (!isAllowedNavigation) revoke('navigation');
     }
   );
-  webContents.on('did-navigate-in-page', (_event, _url, isMainFrame) => {
-    if (isMainFrame) revoke('navigation');
+  webContents.on('did-navigate-in-page', (_event, url, isMainFrame) => {
+    if (!isMainFrame) return;
+    try {
+      if (parseLaunchUrl(url, diagnosticsPolicy).origin === launchOrigin)
+        return;
+    } catch {
+      // Invalid navigation is revoked below.
+    }
+    revoke('navigation');
   });
   webContents.on(
     'did-fail-load',
@@ -258,6 +282,9 @@ export class DappBrowserManager {
   ): Promise<void> {
     await requireDappSandboxAvailable();
     await this.close('replaced');
+    const windowTitle = `${
+      parseLaunchUrl(launch.entryUrl, diagnosticsPolicy).origin
+    } — ${launch.windowTitle}`;
 
     const guestSession = createDappSession();
     let egressPolicy: DappEgressPolicy;
@@ -281,7 +308,7 @@ export class DappBrowserManager {
     try {
       guestWindow = new BrowserWindow({
         show: false,
-        title: launch.windowTitle,
+        title: windowTitle,
         frame: true,
         fullscreenable: false,
         autoHideMenuBar: true,
@@ -306,7 +333,7 @@ export class DappBrowserManager {
     installDappGuestLifecyclePolicy(
       guest.window,
       guest.launch.entryUrl,
-      guest.launch.windowTitle,
+      windowTitle,
       () => guest.initialLoad,
       () => guest.teardown !== undefined,
       (reason) => this.teardown(guest, reason).catch(() => undefined),
