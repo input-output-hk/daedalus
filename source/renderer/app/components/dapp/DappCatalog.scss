@@ -90,9 +90,11 @@
     }
   }
 
-  svg {
-    height: 100%;
-    width: 100%;
+  .liqwidIcon {
+    background: url('../../assets/images/dapp/liqwid.png') center / contain
+      no-repeat;
+    height: 40px;
+    width: 40px;
   }
 }
 

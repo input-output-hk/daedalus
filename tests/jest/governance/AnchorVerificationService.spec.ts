@@ -403,8 +403,8 @@ describe('AnchorVerificationService', () => {
       value.kind === 'group'
         ? 1 + Math.max(...value.fields.map((f: any) => depthOf(f.value)))
         : value.kind === 'list'
-          ? 1 + Math.max(...value.items.map(depthOf))
-          : 0;
+        ? 1 + Math.max(...value.items.map(depthOf))
+        : 0;
     const runaway = fields.find((f: any) => f.key === 'runaway');
     if (runaway) expect(depthOf(runaway.value)).toBeLessThanOrEqual(8);
   });

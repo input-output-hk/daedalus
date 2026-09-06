@@ -690,9 +690,12 @@ class WalletSendForm extends Component<Props, State> {
       }
     } catch (error) {
       if (this._isMounted && !requestToken.aborted) {
-        const errorHasLink = !!get(error, ['values', 'linkLabel']);
         let transactionFeeError;
-        let localizableError = error;
+        let localizableError =
+          error && typeof error.id === 'string'
+            ? error
+            : apiErrorMessages.walletInternalError;
+        const errorHasLink = !!get(localizableError, ['values', 'linkLabel']);
         let values;
         let nextState = {
           isCalculatingTransactionFee: false,

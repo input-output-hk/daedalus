@@ -59,8 +59,10 @@ Given(
   /^the "([^"]*)" wallet was delegated to the first Stake Pool$/,
   async function (walletName) {
     await this.client.waitUntil(async () => {
-      const { value: stakePoolsListIsLoaded } = await this.client.executeAsync(
-        (done) => done(daedalus.stores.staking.stakePools.length > 0)
+      const {
+        value: stakePoolsListIsLoaded,
+      } = await this.client.executeAsync((done) =>
+        done(daedalus.stores.staking.stakePools.length > 0)
       );
       return stakePoolsListIsLoaded;
     });
@@ -180,17 +182,16 @@ Then(
     );
   }
 );
-Then(
-  /^I should see the "([^"]*)" wallet as undelegated$/,
-  async function (walletName) {
-    await this.client.waitForVisible(
-      `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`
-    );
-    const selector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_ticker tickerText"]`;
-    const visibleStakePoolTicker = await this.waitAndGetText(selector);
-    expect(visibleStakePoolTicker).to.equal('UNDELEGATED');
-  }
-);
+Then(/^I should see the "([^"]*)" wallet as undelegated$/, async function (
+  walletName
+) {
+  await this.client.waitForVisible(
+    `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`
+  );
+  const selector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_ticker tickerText"]`;
+  const visibleStakePoolTicker = await this.waitAndGetText(selector);
+  expect(visibleStakePoolTicker).to.equal('UNDELEGATED');
+});
 Given(
   /^I start the wallet delegation process for the "([^"]*)" wallet$/,
   async function (walletName) {
@@ -264,10 +265,12 @@ Given(
   async function (adaAmount, walletFrom, walletTo) {
     await this.client.executeAsync(
       (amount, senderName, receiverName, done) => {
-        const walletSender =
-          daedalus.stores.wallets.getWalletByName(senderName);
-        const walletReceiver =
-          daedalus.stores.wallets.getWalletByName(receiverName);
+        const walletSender = daedalus.stores.wallets.getWalletByName(
+          senderName
+        );
+        const walletReceiver = daedalus.stores.wallets.getWalletByName(
+          receiverName
+        );
 
         if (
           !walletSender ||
@@ -316,16 +319,15 @@ Then(/^I choose the first stake pool$/, async function () {
   await this.client.waitForEnabled(selector);
   await this.waitAndClick(selector);
 });
-Then(
-  /^I enter "([^"]*)" as the spending password$/,
-  async function (spendingPassword) {
-    await this.client.waitForVisible('.SimpleInput_input');
-    const input = this.client.element('.SimpleInput_input');
-    input.setValue(spendingPassword);
-    await timeout(2000);
-    this.client.click('.confirmButton');
-  }
-);
+Then(/^I enter "([^"]*)" as the spending password$/, async function (
+  spendingPassword
+) {
+  await this.client.waitForVisible('.SimpleInput_input');
+  const input = this.client.element('.SimpleInput_input');
+  input.setValue(spendingPassword);
+  await timeout(2000);
+  this.client.click('.confirmButton');
+});
 Then(
   /^I should see a "Loading stake pools" message until the Stake Pools are loaded$/,
   async function () {

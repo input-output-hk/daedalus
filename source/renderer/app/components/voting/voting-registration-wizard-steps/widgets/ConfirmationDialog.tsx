@@ -21,13 +21,15 @@ const messages = defineMessages({
       'Content for the voting registration cancellation confirmation dialog.',
   },
   cancelButtonLabel: {
-    id: 'voting.votingRegistration.dialog.confirmation.button.cancelButtonLabel',
+    id:
+      'voting.votingRegistration.dialog.confirmation.button.cancelButtonLabel',
     defaultMessage: '!!!Cancel registration',
     description:
       '"Cancel registration" button label for the voting registration cancellation confirmation dialog.',
   },
   confirmButtonLabel: {
-    id: 'voting.votingRegistration.dialog.confirmation.button.confirmButtonLabel',
+    id:
+      'voting.votingRegistration.dialog.confirmation.button.confirmButtonLabel',
     defaultMessage: '!!!Continue registration',
     description:
       '"Continue registration" button label for the voting registration cancellation confirmation dialog.',

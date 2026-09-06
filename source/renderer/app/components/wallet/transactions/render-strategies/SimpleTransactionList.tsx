@@ -39,16 +39,14 @@ class SimpleTransactionList extends Component<Props> {
             className={styles.component}
             onScroll={(evt) => this.onListScroll(context, evt)}
           >
-            {rows.map(
-              (
-                row,
-                index // eslint-disable-next-line react/no-array-index-key
-              ) => (
-                <div key={`simple-transaction-list-row-${index}`}>
-                  {renderRow(row)}
-                </div>
-              )
-            )}
+            {rows.map((
+              row,
+              index // eslint-disable-next-line react/no-array-index-key
+            ) => (
+              <div key={`simple-transaction-list-row-${index}`}>
+                {renderRow(row)}
+              </div>
+            ))}
           </div>
         )}
       </WalletTransactionsListScrollContext.Consumer>

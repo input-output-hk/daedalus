@@ -19,14 +19,13 @@ import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../../source/renderer/a
 const isValidWalletRecoveryPhrase = (mnemonic) =>
   isValidMnemonic(mnemonic, WALLET_RECOVERY_PHRASE_WORD_COUNT);
 
-Given(
-  'I generate {int} wallet recovery mnemonics',
-  function (numberOfMnemonics) {
-    this.context.mnemonics = range(numberOfMnemonics).map(() =>
-      generateAccountMnemonics(WALLET_RECOVERY_PHRASE_WORD_COUNT).join(' ')
-    );
-  }
-);
+Given('I generate {int} wallet recovery mnemonics', function (
+  numberOfMnemonics
+) {
+  this.context.mnemonics = range(numberOfMnemonics).map(() =>
+    generateAccountMnemonics(WALLET_RECOVERY_PHRASE_WORD_COUNT).join(' ')
+  );
+});
 Given('I generate {int} word mnemonic', function (numberOfWords) {
   this.context.mnemonic = generateMnemonic(numberOfWords);
 });
@@ -61,8 +60,9 @@ Given(
   }
 );
 When('I generate additional mnemonic words', function () {
-  this.context.additionalMnemonicWords =
-    generateAdditionalMnemonics().join(' ');
+  this.context.additionalMnemonicWords = generateAdditionalMnemonics().join(
+    ' '
+  );
 });
 When('I generate spending password from 9-word mnemonic', function () {
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.

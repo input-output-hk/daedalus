@@ -50,7 +50,14 @@ describe('DappLaunchPolicy', () => {
     expect(Object.isFrozen(policy.config)).toBe(true);
   });
 
-  it('activates only exact task-607-certified hardware rows', () => {
+  it('activates only exact physically certified hardware rows', () => {
+    const flex = 'ledger:europa:7.3.1:signData';
+    expect(
+      new DappLaunchPolicy({
+        ...enabled,
+        hardwareConnectorRows: [flex],
+      }).hardwareConnectorEnabled(flex)
+    ).toBe(true);
     const row = 'ledger:nanoSP:8.0.0:signData';
     expect(
       new DappLaunchPolicy({

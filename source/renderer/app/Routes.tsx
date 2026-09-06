@@ -34,6 +34,8 @@ import WalletTokensPage from './containers/wallet/WalletTokensPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
 import DappCatalogPage from './containers/dapp/DappCatalogPage';
+import AppsRootRedirect from './containers/dapp/AppsRootRedirect';
+import Apps from './containers/dapp/Apps';
 import VotingRegistrationPage from './containers/voting/VotingRegistrationPage';
 import { IS_STAKING_INFO_PAGE_AVAILABLE } from './config/stakingConfig';
 import AnalyticsConsentPage from './containers/profile/AnalyticsConsentPage';
@@ -74,6 +76,17 @@ export const Routes = withRouter(() => (
           path={ROUTES.WALLETS.ADD}
           component={WalletAddPage}
         />
+        <Route path={ROUTES.APPS.ROOT}>
+          <Apps>
+            <Route exact path={ROUTES.APPS.ROOT} component={AppsRootRedirect} />
+            <TrackedRoute
+              exact
+              pageTitle="Apps"
+              path={ROUTES.APPS.PAGE}
+              component={DappCatalogPage}
+            />
+          </Apps>
+        </Route>
         <Route path={ROUTES.WALLETS.ROOT}>
           <Wallet>
             <Route
@@ -115,12 +128,6 @@ export const Routes = withRouter(() => (
               pageTitle="Wallet UTxO distribution"
               path={ROUTES.WALLETS.UTXO}
               component={WalletUtxoPage}
-            />
-            <TrackedRoute
-              exact
-              pageTitle="DApps"
-              path={ROUTES.WALLETS.DAPPS}
-              component={DappCatalogPage}
             />
           </Wallet>
         </Route>

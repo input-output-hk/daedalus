@@ -329,8 +329,9 @@ describe('VotingStore hardware-wallet delegation branches', () => {
   });
 });
 
-const DelegationForm =
-  VotingPowerDelegation as unknown as React.ComponentType<any>;
+const DelegationForm = (VotingPowerDelegation as unknown) as React.ComponentType<
+  any
+>;
 
 describe('same-vote server error in the delegation form', () => {
   afterEach(cleanup);

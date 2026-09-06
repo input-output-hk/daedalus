@@ -1,8 +1,11 @@
 import { EventEmitter } from 'events';
+import type { IpcMainEvent } from 'electron';
 import {
   authorizeTrustedRenderer,
   bindTrustedRenderer,
   clearTrustedRendererForTests,
+  isTrustedRendererEvent,
+  onTrustedRendererInvalidated,
 } from './trustedRendererIpcAuthority';
 
 const createWindow = () => {
@@ -33,13 +36,12 @@ const activate = (webContents: any) => {
     1,
     2
   );
-  webContents.emit('did-frame-finish-load', {}, true, 1, 2);
 };
 
 describe('trustedRendererIpcAuthority', () => {
   afterEach(clearTrustedRendererForTests);
 
-  it('rejects until the canonical main frame finishes loading', () => {
+  it('accepts the canonical main frame as soon as navigation commits', () => {
     const { window, webContents, frame } = createWindow();
     bindTrustedRenderer(window, new URL('http://127.0.0.1:8080/'));
     const event = { sender: webContents, senderFrame: frame } as any;
@@ -47,6 +49,27 @@ describe('trustedRendererIpcAuthority', () => {
 
     activate(webContents);
     expect(authorizeTrustedRenderer(event)).not.toBeNull();
+  });
+
+  it('holds outgoing IPC until the committed frame finishes loading', () => {
+    const { window, webContents, frame } = createWindow();
+    bindTrustedRenderer(window, new URL('http://127.0.0.1:8080/'));
+    activate(webContents);
+    const event = ({
+      sender: webContents,
+      senderFrame: frame,
+    } as unknown) as IpcMainEvent;
+    const cancelledBeforeReady = jest.fn();
+
+    onTrustedRendererInvalidated(cancelledBeforeReady);
+    expect(cancelledBeforeReady).toHaveBeenCalledTimes(1);
+    expect(isTrustedRendererEvent(event)).toBe(false);
+
+    webContents.emit('did-frame-finish-load', {}, true, 1, 2);
+    const cancelledAfterReady = jest.fn();
+    onTrustedRendererInvalidated(cancelledAfterReady);
+    expect(cancelledAfterReady).not.toHaveBeenCalled();
+    expect(isTrustedRendererEvent(event)).toBe(true);
   });
 
   it('accepts Electron file frame origins for packaged documents', () => {

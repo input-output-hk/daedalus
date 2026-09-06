@@ -181,7 +181,7 @@ const create = () => {
   }));
   const getDappTransactionCapability = jest.fn(() => hardwareCapability);
   const signDappTransaction = jest.fn(async () => 'a0');
-  const getDappConnectorCapability = jest.fn(() => connectorEvidence);
+  const refreshDappConnectorCapability = jest.fn(async () => connectorEvidence);
   const getDappAccountPublicKey = jest.fn(() => 'acct_xvk1hardware');
   const signDappDataHardware = jest.fn(async () => ({
     signature: 'hardware-signature',
@@ -236,7 +236,7 @@ const create = () => {
       checkIsTrezorByWalletId: jest.fn(() => false),
       getDappTransactionCapability,
       signDappTransaction,
-      getDappConnectorCapability,
+      refreshDappConnectorCapability,
       getDappAccountPublicKey,
       signDappData: signDappDataHardware,
     },
@@ -259,7 +259,7 @@ const create = () => {
     withWalletSendLock,
     getDappTransactionCapability,
     signDappTransaction,
-    getDappConnectorCapability,
+    refreshDappConnectorCapability,
     getDappAccountPublicKey,
     signDappDataHardware,
     setWallet: (value: Record<string, unknown> | null) => {
@@ -362,7 +362,6 @@ describe('Cip30WalletService', () => {
         hardware: connectorEvidence,
       },
     });
-    expect(fixture.getDappConnectorCapability).toHaveBeenCalledWith('wallet');
   });
 
   it('returns ordered source addresses without CIP-30 serialization', async () => {

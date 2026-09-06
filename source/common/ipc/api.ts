@@ -258,6 +258,14 @@ export const DAPP_COLLATERAL_CHANNEL = 'DAPP_COLLATERAL_CHANNEL';
 export type DappCollateralRendererRequest = CollateralRendererRequest;
 export type DappCollateralMainResponse = CollateralSnapshot;
 
+export const WALLET_INPUT_SELECTION_CHANNEL = 'WALLET_INPUT_SELECTION_CHANNEL';
+export type WalletInputSelectionRendererRequest = Readonly<{
+  walletId: string;
+}>;
+export type WalletInputSelectionMainResponse = Readonly<{
+  preferred_collateral: readonly Readonly<{ id: string; index: number }>[];
+}>;
+
 export const DAPP_CONSENT_RENDER_CHANNEL = 'DAPP_CONSENT_RENDER_CHANNEL';
 export type DappConsentKind =
   | 'connection'
@@ -573,11 +581,24 @@ export type signTransactionTrezorMainResponse =
 export const SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL =
   'SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL';
 export type SignExactHardwareTransactionRendererRequest = Readonly<{
+  walletId: string;
   vendor: DeviceType;
   ledgerPath?: string;
   exact: HardwareExactTransaction;
 }>;
-export type SignExactHardwareTransactionMainResponse = string;
+export type SignExactHardwareTransactionMainResponse = Readonly<{
+  witnessSetCbor: string;
+  signedTransactionCbor: string;
+}>;
+export const VERIFY_HARDWARE_TRANSACTION_CHANNEL =
+  'VERIFY_HARDWARE_TRANSACTION_CHANNEL';
+export type VerifyHardwareTransactionRequest = Readonly<{
+  walletId: string;
+  vendor: DeviceType;
+  unsignedTransaction: string;
+  signedTransaction: string;
+  signerPaths: readonly (readonly number[])[];
+}>;
 export const SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL =
   'SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL';
 export type SignExactHardwareMessageRendererRequest = Readonly<{

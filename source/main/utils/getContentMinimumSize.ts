@@ -23,8 +23,10 @@ export const getContentMinimumSize = (
 ): getContentMinimumSizeResponse => {
   const { isWindows } = environment;
   const { width: frameWidth, height: frameHeight } = window.getBounds();
-  const { width: contentWidth, height: contentHeight } =
-    window.getContentBounds();
+  const {
+    width: contentWidth,
+    height: contentHeight,
+  } = window.getContentBounds();
   const paddingWidth = frameWidth - contentWidth || 0;
   let paddingHeight = frameHeight - contentHeight || 0;
 

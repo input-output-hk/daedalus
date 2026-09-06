@@ -673,16 +673,14 @@ const parseResponse = (value: unknown): ContextResponse => {
 
 const protocolParameterUint = (
   encoded: Hex,
-  key: bigint,
+  index: number,
   name: string
 ): bigint | undefined => {
   const bytes = Buffer.from(encoded, 'hex');
   const item = parseCborItem(bytes);
-  if (item.span.end !== bytes.length || item.major !== 5 || !item.entries)
+  if (item.span.end !== bytes.length || item.major !== 4 || !item.items)
     fail('invalid protocol parameters CBOR');
-  const value = item.entries.find(
-    ({ key: candidate }) => candidate.major === 0 && candidate.value === key
-  )?.value;
+  const value = item.items[index];
   if (!value) return undefined;
   if (value.major !== 0 || value.value === undefined || value.value < BigInt(1))
     fail(`invalid ${name}`);
@@ -690,11 +688,7 @@ const protocolParameterUint = (
 };
 
 const maxCollateralInputs = (encoded: Hex): number | undefined => {
-  const value = protocolParameterUint(
-    encoded,
-    BigInt(24),
-    'max collateral inputs'
-  );
+  const value = protocolParameterUint(encoded, 21, 'max collateral inputs');
   if (value === undefined) return undefined;
   if (value > BigInt(Number.MAX_SAFE_INTEGER))
     fail('invalid max collateral inputs');
@@ -702,7 +696,7 @@ const maxCollateralInputs = (encoded: Hex): number | undefined => {
 };
 
 const collateralPercentage = (encoded: Hex): bigint | undefined =>
-  protocolParameterUint(encoded, BigInt(23), 'collateral percentage');
+  protocolParameterUint(encoded, 20, 'collateral percentage');
 
 const decodeRecord = (encoded: Hex): DecodedRecord => {
   const bytes = Buffer.from(encoded, 'hex');

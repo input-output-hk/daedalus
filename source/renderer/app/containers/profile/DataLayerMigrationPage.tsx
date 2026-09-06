@@ -16,8 +16,9 @@ class DataLayerMigrationPage extends Component<InjectedProps> {
   };
 
   render() {
-    const { setDataLayerMigrationAcceptanceRequest } =
-      this.props.stores.profile;
+    const {
+      setDataLayerMigrationAcceptanceRequest,
+    } = this.props.stores.profile;
     return (
       <CenteredLayout>
         <DataLayerMigrationForm

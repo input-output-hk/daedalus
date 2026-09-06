@@ -122,17 +122,14 @@ export const filterLogData = (data: object): Record<string, unknown> => {
     }
 
     if (value && typeof value === 'object') {
-      return Object.keys(value).reduce(
-        (result, key) => {
-          if (sensitiveData.includes(key)) {
-            return result;
-          }
-
-          result[key] = redact(value[key]);
+      return Object.keys(value).reduce((result, key) => {
+        if (sensitiveData.includes(key)) {
           return result;
-        },
-        {} as Record<string, any>
-      );
+        }
+
+        result[key] = redact(value[key]);
+        return result;
+      }, {} as Record<string, any>);
     }
 
     return value;

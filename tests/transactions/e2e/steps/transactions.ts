@@ -192,20 +192,19 @@ When(/^I enter the following filter values:$/, async function (filterTable) {
     await this.client.setValue(selector, filterValue);
   }
 });
-Then(
-  /^I should see the following filter values:$/,
-  async function (filterTable) {
-    const filterValues = filterTable.hashes();
+Then(/^I should see the following filter values:$/, async function (
+  filterTable
+) {
+  const filterValues = filterTable.hashes();
 
-    for (let i = 0; i < filterValues.length; i++) {
-      const { param: filterParam, value: expectedValue } = filterValues[i];
-      const selector = screenElementSelectors[filterParam];
-      let currentValue = await this.client.getValue(selector);
-      if (Array.isArray(currentValue)) currentValue = currentValue[0];
-      expect(currentValue).to.equal(expectedValue);
-    }
+  for (let i = 0; i < filterValues.length; i++) {
+    const { param: filterParam, value: expectedValue } = filterValues[i];
+    const selector = screenElementSelectors[filterParam];
+    let currentValue = await this.client.getValue(selector);
+    if (Array.isArray(currentValue)) currentValue = currentValue[0];
+    expect(currentValue).to.equal(expectedValue);
   }
-);
+});
 Then(
   /^I should see the following error messages on the wallet send form:$/,
   async function (data) {

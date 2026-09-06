@@ -61,6 +61,15 @@ describe('CollateralPanel', () => {
     renderPanel({ preference: preference(state) });
     expect(screen.getByRole('status')).toHaveTextContent(copy);
   });
+  it('replaces an unresolved checking state with the failure', () => {
+    renderPanel({ preference: undefined, failed: true });
+    expect(
+      screen.queryByText('Checking preferred collateral…')
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Preferred collateral could not be updated'
+    );
+  });
 
   it('explains the preferred 5 ADA convention without implying reservation', () => {
     renderPanel();

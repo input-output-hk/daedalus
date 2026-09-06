@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useEffect, useMemo, useCallback, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import compose from 'lodash/fp/compose';
 import { getNonZeroAssetTokens } from '../../../../utils/assets';
@@ -58,6 +58,13 @@ export function Containter({
   const error = isHardwareWallet
     ? sendMoneyExternalRequest.error
     : sendMoneyRequest.error;
+  useEffect(() => {
+    if (isHardwareWallet && !isFlight) {
+      initiateTransaction({
+        walletId: activeWallet.id,
+      });
+    }
+  }, [activeWallet.id, isFlight, isHardwareWallet, initiateTransaction]);
 
   const onSubmitCb = useCallback(
     (values: SubmitPayload) => {

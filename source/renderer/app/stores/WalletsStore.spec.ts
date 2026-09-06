@@ -31,10 +31,7 @@ const createStore = (wallets: Wallet[], currentRoute: string) => {
 
 describe('WalletsStore dApp routes', () => {
   it('does not retarget a direct invalid dApp hash', () => {
-    const { store } = createStore(
-      [wallet('wallet-a')],
-      '/wallets/missing/dapps'
-    );
+    const { store } = createStore([wallet('wallet-a')], '/apps/missing');
 
     store._updateActiveWalletOnRouteChanges();
 
@@ -46,11 +43,11 @@ describe('WalletsStore dApp routes', () => {
   it('selects the wallet named by each dApp route', () => {
     const { app, store } = createStore(
       [wallet('wallet-a'), wallet('wallet-b')],
-      '/wallets/wallet-a/dapps'
+      '/apps/wallet-a'
     );
 
     store._updateActiveWalletOnRouteChanges();
-    app.currentRoute = '/wallets/wallet-b/dapps';
+    app.currentRoute = '/apps/wallet-b';
     store._updateActiveWalletOnRouteChanges();
 
     expect(store._setActiveWallet).toHaveBeenNthCalledWith(1, {
@@ -68,14 +65,14 @@ describe('WalletsStore dApp routes', () => {
     ['nonresponding', { isNotResponding: true }],
   ])('blocks %s wallets from dApp launch', (_state, override) => {
     const active = Object.assign(wallet('wallet-a'), override);
-    const { store } = createStore([active], '/wallets/wallet-a/dapps');
+    const { store } = createStore([active], '/apps/wallet-a');
     store.active = active;
 
     expect(store.activeDappWallet).toBeNull();
   });
 
   it('blocks a deleted wallet from dApp launch', () => {
-    const { store } = createStore([], '/wallets/wallet-a/dapps');
+    const { store } = createStore([], '/apps/wallet-a');
     store.active = null;
 
     expect(store.activeDappWallet).toBeNull();

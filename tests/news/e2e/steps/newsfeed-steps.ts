@@ -84,17 +84,18 @@ export function resetTestNews(client) {
   });
 }
 // GIVEN STEPS
-Given(
-  /^there (?:are|is)\s?(\d+)? (read|unread) (\w+?)s?$/,
-  async function (count, read, newsType) {
-    await prepareNewsOfType(
-      this,
-      newsType,
-      parseInt(count || 2, 10),
-      read === 'read'
-    );
-  }
-);
+Given(/^there (?:are|is)\s?(\d+)? (read|unread) (\w+?)s?$/, async function (
+  count,
+  read,
+  newsType
+) {
+  await prepareNewsOfType(
+    this,
+    newsType,
+    parseInt(count || 2, 10),
+    read === 'read'
+  );
+});
 Given('there is no news', async function () {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
     daedalus.api.ada.setTestingNewsFeed({
@@ -176,17 +177,17 @@ Then('the alert disappears', async function () {
 Then('the alert overlay opens', async function () {
   await this.client.waitForVisible('.AlertsOverlay_component');
 });
-Then(
-  /^the newsfeed contains (\d+) read (\w+?)s$/,
-  async function (expectedReadNewsCount, newsType) {
-    setNewsFeedIsOpen(this.client, true);
-    const readNewsCount = await getVisibleElementsCountForSelector(
-      this.client,
-      `.NewsItem_${newsType}.NewsItem_isRead`
-    );
-    expect(readNewsCount).to.equal(expectedReadNewsCount);
-  }
-);
+Then(/^the newsfeed contains (\d+) read (\w+?)s$/, async function (
+  expectedReadNewsCount,
+  newsType
+) {
+  setNewsFeedIsOpen(this.client, true);
+  const readNewsCount = await getVisibleElementsCountForSelector(
+    this.client,
+    `.NewsItem_${newsType}.NewsItem_isRead`
+  );
+  expect(readNewsCount).to.equal(expectedReadNewsCount);
+});
 Then(/^the (\w+?) content is shown$/, async function (type) {
   setNewsFeedIsOpen(this.client, true);
   await this.client.waitForVisible(

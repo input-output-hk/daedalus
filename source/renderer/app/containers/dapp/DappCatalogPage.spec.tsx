@@ -20,15 +20,19 @@ jest.mock(
   () =>
     function DappCatalog(props: {
       entries: readonly { id: string; name: string; description: string }[];
+      beforeEntries: React.ReactNode;
       onLaunch: (id: string) => void;
     }) {
       return (
-        <button
-          type="button"
-          onClick={() => props.onLaunch(props.entries[0].id)}
-        >
-          {props.entries[0].name}:{props.entries[0].description}
-        </button>
+        <>
+          {props.beforeEntries}
+          <button
+            type="button"
+            onClick={() => props.onLaunch(props.entries[0].id)}
+          >
+            {props.entries[0].name}:{props.entries[0].description}
+          </button>
+        </>
       );
     }
 );
@@ -36,6 +40,7 @@ jest.mock(
 describe('DappCatalogPage', () => {
   it('localizes presentation entries and launches with an opaque ID', () => {
     const launch = jest.fn();
+    const refresh = jest.fn();
     render(
       <IntlProvider
         locale="en"
@@ -55,7 +60,7 @@ describe('DappCatalogPage', () => {
               close: jest.fn(),
             },
             collateral: {
-              refresh: jest.fn(),
+              refresh,
               snapshot: undefined,
               isLoading: false,
               actionFailed: false,
@@ -64,6 +69,8 @@ describe('DappCatalogPage', () => {
               clear: jest.fn(),
               repair: jest.fn(),
             },
+            wallets: { activeDappWallet: { id: 'wallet-a' } },
+            networkStatus: { isConnected: true, isSynced: true },
           }}
         >
           <DappCatalogPage />
@@ -71,7 +78,8 @@ describe('DappCatalogPage', () => {
       </IntlProvider>
     );
 
-    fireEvent.click(screen.getByRole('button'));
+    fireEvent.click(screen.getByRole('button', { name: /Catalog name/ }));
     expect(launch).toHaveBeenCalledWith('catalog-id', 'Catalog name');
+    expect(refresh).toHaveBeenCalledTimes(1);
   });
 });

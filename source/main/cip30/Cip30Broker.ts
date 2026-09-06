@@ -194,7 +194,7 @@ export type Cip30BrokerOptions = Readonly<{
   authenticate: (event: IpcMainInvokeEvent) => DappGuestAuthority | null;
   currentLease: () => DappRouteLease | null;
   executeWallet: (request: Cip30WalletRequest) => Promise<Cip30WalletResponse>;
-  collateral?: Pick<CollateralService, 'spendsPreference'>;
+  collateral?: Pick<CollateralService, 'spendsPreference' | 'preferredInputs'>;
   consent: ConsentCoordinator;
   grants: GrantRepository;
   sessions: SessionStore;
@@ -1298,7 +1298,10 @@ export class Cip30Broker {
         request,
         binding.authority,
         context,
-        (operation) => this.executeWallet(binding, operation)
+        (operation) => this.executeWallet(binding, operation),
+        request.method === 'api.getUtxos'
+          ? this.options.collateral?.preferredInputs(binding.lease.walletId)
+          : undefined
       );
       this.assertCurrent(binding);
       return createDappCip30FulfilledEnvelope(request.method, result);

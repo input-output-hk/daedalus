@@ -97,7 +97,7 @@ describe('DappBrowserManager', () => {
     expect(requireDappSandboxAvailable).toHaveBeenCalled();
     expect(BrowserWindow).toHaveBeenCalledWith({
       show: false,
-      title: 'Example — Daedalus',
+      title: expect.stringMatching(/^https:\/\/example\.com — /u),
       frame: true,
       fullscreenable: false,
       autoHideMenuBar: true,
@@ -239,6 +239,53 @@ describe('DappBrowserManager', () => {
     expect(manager.isOpen).toBe(false);
   });
 
+  test('keeps exact initial and same-document canonical-origin navigation open', async () => {
+    const load = deferred();
+    const { window, webContents } = makeWindow(load.promise);
+    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    const onRevoke = jest.fn();
+    const manager = new DappBrowserManager(onRevoke);
+    const launched = manager.launch(entry, 'genesis', 'Example');
+    await flush();
+
+    const preventDefault = jest.fn();
+    webContents.emit('will-navigate', {
+      url: 'https://example.com/app',
+      preventDefault,
+    });
+    expect(preventDefault).not.toHaveBeenCalled();
+    expect(manager.isOpen).toBe(true);
+
+    load.resolve();
+    await launched;
+    webContents.emit(
+      'did-start-navigation',
+      {},
+      'https://example.com/markets',
+      true,
+      true
+    );
+    webContents.emit(
+      'did-navigate-in-page',
+      {},
+      'https://example.com/markets',
+      true
+    );
+    await flush();
+    expect(onRevoke).not.toHaveBeenCalled();
+    expect(manager.isOpen).toBe(true);
+
+    webContents.emit(
+      'did-navigate-in-page',
+      {},
+      'https://evil.test/markets',
+      true
+    );
+    await flush();
+    expect(onRevoke).toHaveBeenCalledWith('navigation');
+    expect(manager.isOpen).toBe(false);
+  });
+
   test.each([
     [
       'close',
@@ -318,16 +365,23 @@ describe('DappBrowserManager', () => {
     expect(manager.isOpen).toBe(false);
   });
 
-  test('suppresses page titles in favor of the local catalog title', async () => {
+  test('keeps the validated origin visible when the page attempts to spoof the title', async () => {
     const { window, webContents } = makeWindow();
     ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
     const manager = new DappBrowserManager();
     await manager.launch(entry, 'genesis', 'Example');
     const event = { preventDefault: jest.fn() };
 
-    webContents.emit('page-title-updated', event, 'Hostile title', true);
+    webContents.emit(
+      'page-title-updated',
+      event,
+      'https://attacker.test',
+      true
+    );
 
     expect(event.preventDefault).toHaveBeenCalled();
-    expect(window.setTitle).toHaveBeenCalledWith('Example — Daedalus');
+    const restoredTitle = window.setTitle.mock.calls[0][0];
+    expect(restoredTitle.startsWith('https://example.com — ')).toBe(true);
+    expect(restoredTitle).not.toContain('attacker.test');
   });
 });

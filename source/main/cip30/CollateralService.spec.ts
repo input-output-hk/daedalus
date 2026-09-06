@@ -179,6 +179,25 @@ describe('CollateralService', () => {
     ).toBe(false);
   });
 
+  it('scopes native selection preferences to the wallet and current network', () => {
+    records.put({
+      walletId,
+      networkGenesis: genesisHash,
+      targetLovelace: '5000000',
+      preferredInputs: [input],
+      generation: 1,
+    });
+    const otherNetwork = new CollateralService(
+      records,
+      executeWallet,
+      { ...network, genesisHash: '02'.repeat(32) },
+      '01'.repeat(20)
+    );
+    expect(service.preferredInputs(walletId)).toEqual([input]);
+    expect(service.preferredInputs('03'.repeat(20))).toEqual([]);
+    expect(otherNetwork.preferredInputs(walletId)).toEqual([]);
+  });
+
   it.each([
     ['normalInputs', 'will-be-spent'],
     ['collateralInputs', 'in-use'],

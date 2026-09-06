@@ -34,7 +34,7 @@ describe('getAddressNetwork', () => {
     expect(getAddressNetwork('DdzFFzCqrht_byron_era_address')).toBe('unknown');
     // The value is DRep-supplied, so the guard is for real input rather than
     // for the type system.
-    expect(getAddressNetwork(null as unknown as string)).toBe('unknown');
+    expect(getAddressNetwork((null as unknown) as string)).toBe('unknown');
   });
 });
 

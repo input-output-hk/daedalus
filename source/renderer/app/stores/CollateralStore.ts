@@ -5,6 +5,7 @@ import type {
 } from '../../../common/types/collateral.types';
 import { dappCollateralChannel } from '../ipc/collateral';
 import Store from './lib/Store';
+const COLLATERAL_REQUEST_TIMEOUT_MS = 30_000;
 
 export default class CollateralStore extends Store {
   @observable snapshot?: CollateralSnapshot;
@@ -84,8 +85,17 @@ export default class CollateralStore extends Store {
       this.isLoading = true;
       this.actionFailed = false;
     });
+    let timer: number | undefined;
     try {
-      const snapshot = await dappCollateralChannel.request(request);
+      const snapshot = await Promise.race([
+        dappCollateralChannel.request(request),
+        new Promise<never>((_resolve, reject) => {
+          timer = window.setTimeout(
+            () => reject(new Error('Collateral request timed out')),
+            COLLATERAL_REQUEST_TIMEOUT_MS
+          );
+        }),
+      ]);
       if (generation !== this.generation) return undefined;
       runInAction('CollateralStore::receiveSnapshot', () => {
         this.snapshot = snapshot;
@@ -98,6 +108,7 @@ export default class CollateralStore extends Store {
         });
       return undefined;
     } finally {
+      window.clearTimeout(timer);
       if (generation === this.generation)
         runInAction('CollateralStore::finishRequest', () => {
           this.isLoading = false;

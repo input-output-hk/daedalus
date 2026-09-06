@@ -146,7 +146,9 @@ function DRepDirectoryList({
   // is what actually scrolls, so WindowScroller is pointed at it rather than
   // the window, exactly as the stake pools lists are pointed at theirs.
   const renderWindowedList = (
-    build: (width: number) => {
+    build: (
+      width: number
+    ) => {
       rowCount: number;
       rowHeight: number;
       rowRenderer: (args: any) => React.ReactNode;

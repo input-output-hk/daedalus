@@ -3,6 +3,10 @@ export const ROUTES = {
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
   REDEEM_ITN_REWARDS: '/redeem-itn-wallets',
   NETWORK_INFO: '/network-info',
+  APPS: {
+    ROOT: '/apps',
+    PAGE: '/apps/:id',
+  },
   STAKING: {
     ROOT: '/staking',
     COUNTDOWN: '/staking/countdown',
@@ -29,7 +33,6 @@ export const ROUTES = {
     RECEIVE: '/wallets/:id/receive',
     TOKENS: '/wallets/:id/tokens',
     SETTINGS: '/wallets/:id/settings',
-    DAPPS: '/wallets/:id/dapps',
     UTXO: '/wallets/:id/utxo',
   },
   VOTING: {

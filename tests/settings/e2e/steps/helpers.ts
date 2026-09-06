@@ -208,8 +208,11 @@ export const chooseCustomOptionsByIndex = async function (
 };
 export const getSelectedCustomOptions = async function () {
   const selectedValues = await this.client.execute(() => {
-    const { currentNumberFormat, currentDateFormat, currentTimeFormat } =
-      daedalus.stores.profile;
+    const {
+      currentNumberFormat,
+      currentDateFormat,
+      currentTimeFormat,
+    } = daedalus.stores.profile;
     return {
       currentNumberFormat,
       currentDateFormat,

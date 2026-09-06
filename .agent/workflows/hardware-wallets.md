@@ -163,6 +163,47 @@ This lifecycle behavior is mocked in Jest and is not physical certification.
 7. **Signed transaction returned** to renderer
 8. **Transaction submitted** to cardano-wallet
 
+Normal Ledger payments use `SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL`.
+Before signing, `bindPaymentChange` matches construction outputs to the exact
+transaction (address, ADA, and assets), derives account-0 internal payment and
+stake keys from the paired account xpub using local public-key derivation IPC,
+and requires the reconstructed change address to match byte-for-byte.
+Only construction-marked change receives an output-indexed `DEVICE_OWNED`
+binding; an explicit self-payment remains a recipient even at the same address.
+Change paths do not become witness requests. Address/path/network/value
+mismatches reject before Ledger interaction. This does not change Trezor or
+dApp output classification; device review behavior still requires a physical
+Ledger retest.
+
+Exact Ledger signing resolves the account xpub from network-scoped persisted
+pairing data in the main process, keyed by wallet ID. Witness keys are derived
+locally below `1852'/1815'/0'` and checked against expected signer hashes before
+device interaction. Missing pairing data, another account, or hardened child
+paths fail without an automatic key export. Pairing remains the explicit
+account-key export step.
+
+The exact-signing IPC response contains `witnessSetCbor` and
+`signedTransactionCbor`. Native main-process crypto verifies returned signatures
+and merges witnesses without changing the transaction body; the renderer uses
+the signed transaction directly for payments and returns the witness set for
+dApps. Do not move this verification back into renderer `crypto-browserify`,
+which lacks Node's Ed25519 `createPublicKey` and `verify` APIs.
+
+Paired Ledger and Trezor operations use `_resumePairedOperation`; they do not
+export the account key to identify the device again. The same route handles
+legacy delegation/voting transactions, address verification, and reconnect
+retries. Address verification first derives and checks the full address
+locally, then retains device address derivation/display to detect a different
+connected wallet. Missing pairing data fails rather than initiating an export.
+
+Legacy signed transactions must pass `VERIFY_HARDWARE_TRANSACTION_CHANNEL`
+before the store reports success. The trusted main process requires an unchanged
+body, validity flag, and auxiliary data, verifies every signature with native
+crypto, and requires exactly the locally derived input/withdrawal/certificate
+witness keys. Registration-only certificates do not request an extra witness.
+Older Trezor three-field envelopes are validated with the same checks. Transport
+IDs and device model names are connection hints, not proof of wallet ownership.
+
 ---
 
 ## Trezor Integration

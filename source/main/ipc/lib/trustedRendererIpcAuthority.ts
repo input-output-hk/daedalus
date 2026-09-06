@@ -13,7 +13,7 @@ type Binding = {
   webContents: WebContents;
   trustedUrl: NodeUrl;
   frame: WebFrameMain | null;
-  committedFrameId: string | null;
+  ready: boolean;
   invalidationListeners: Set<() => void>;
 };
 
@@ -23,7 +23,7 @@ let binding: Binding | null = null;
 const invalidate = (current: Binding | null): void => {
   if (!current) return;
   current.frame = null;
-  current.committedFrameId = null;
+  current.ready = false;
   const listeners = [...current.invalidationListeners];
   current.invalidationListeners.clear();
   for (const listener of listeners) {
@@ -61,7 +61,7 @@ export const bindTrustedRenderer = (
     webContents: window.webContents,
     trustedUrl,
     frame: null,
-    committedFrameId: null,
+    ready: false,
     invalidationListeners: new Set(),
   };
   binding = current;
@@ -82,19 +82,10 @@ export const bindTrustedRenderer = (
         !isTrustedDocumentUrl(url, trustedUrl)
       )
         return;
-      current.committedFrameId = frameId(processId, routingId);
-    }
-  );
-  window.webContents.on(
-    'did-frame-finish-load',
-    (_event, isMainFrame, frameProcessId, frameRoutingId) => {
-      if (binding !== current || !isMainFrame) return;
-      if (current.committedFrameId !== frameId(frameProcessId, frameRoutingId))
-        return;
       const frame = window.webContents.mainFrame;
       if (
-        frame.processId !== frameProcessId ||
-        frame.routingId !== frameRoutingId ||
+        frame.processId !== processId ||
+        frame.routingId !== routingId ||
         !isTrustedDocumentUrl(frame.url, trustedUrl) ||
         frame.origin !== getExpectedOrigin(trustedUrl) ||
         frame.detached ||
@@ -102,6 +93,19 @@ export const bindTrustedRenderer = (
       )
         return;
       current.frame = frame;
+    }
+  );
+  window.webContents.on(
+    'did-frame-finish-load',
+    (_event, isMainFrame, processId, routingId) => {
+      if (
+        binding === current &&
+        isMainFrame &&
+        current.frame?.processId === processId &&
+        current.frame.routingId === routingId &&
+        isLiveFrame(current, current.frame)
+      )
+        current.ready = true;
     }
   );
   const clear = () => {
@@ -137,13 +141,13 @@ export const authorizeTrustedRenderer = (
 };
 
 export const isTrustedRendererEvent = (event: IpcMainEvent): boolean =>
-  authorizeTrustedRenderer(event) !== null;
+  binding?.ready === true && authorizeTrustedRenderer(event) !== null;
 
 export const onTrustedRendererInvalidated = (
   listener: () => void
 ): (() => void) => {
   const current = binding;
-  if (!current || !current.frame) {
+  if (!current || !current.frame || !current.ready) {
     listener();
     return () => {};
   }

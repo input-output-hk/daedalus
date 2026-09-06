@@ -15,17 +15,20 @@ const commonUpdateData = {
     darwin: {
       version: availableAppVersion,
       hash: '97d336d45b022b0390446497dbe8b43bb6174436df12d43c4fc2b953ce22b703',
-      url: 'https://update-cardano-mainnet.iohk.io/daedalus-2.0.0-mainnet-13980.pkg',
+      url:
+        'https://update-cardano-mainnet.iohk.io/daedalus-2.0.0-mainnet-13980.pkg',
     },
     win32: {
       version: availableAppVersion,
       hash: '97d336d45b022b0390446497dbe8b43bb6174436df12d43c4fc2b953ce22b703',
-      url: 'https://update-cardano-mainnet.iohk.io/daedalus-2.0.0-mainnet-13980.exe',
+      url:
+        'https://update-cardano-mainnet.iohk.io/daedalus-2.0.0-mainnet-13980.exe',
     },
     linux: {
       version: availableAppVersion,
       hash: '97d336d45b022b0390446497dbe8b43bb6174436df12d43c4fc2b953ce22b703',
-      url: 'https://update-cardano-mainnet.iohk.io/daedalus-2.0.0-mainnet-13980.bin',
+      url:
+        'https://update-cardano-mainnet.iohk.io/daedalus-2.0.0-mainnet-13980.bin',
     },
   },
   type: 'software-update',

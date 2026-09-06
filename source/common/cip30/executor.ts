@@ -256,7 +256,9 @@ const parseHardwareCapability = (
   ];
   const modelValid =
     (vendor === 'ledger' &&
-      ['nanoS', 'nanoSP', 'nanoX'].includes(candidate?.model as string)) ||
+      ['nanoS', 'nanoSP', 'nanoX', 'europa'].includes(
+        candidate?.model as string
+      )) ||
     (vendor === 'trezor' && ['1', 'T'].includes(candidate?.model as string));
   if (
     !versionKey ||

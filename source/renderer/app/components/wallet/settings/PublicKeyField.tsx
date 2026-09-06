@@ -57,10 +57,9 @@ function PublicKeyField(props: Props) {
   useEffect(() => {
     setPublicKeyHidden(true);
   }, []);
-  const handleCopyPublicKey = useCallback(
-    () => onCopyPublicKey(publicKey),
-    [publicKey]
-  );
+  const handleCopyPublicKey = useCallback(() => onCopyPublicKey(publicKey), [
+    publicKey,
+  ]);
   const fieldStyles = classnames([
     styles.field,
     publicKeyHidden || !publicKey ? styles.valueHidden : styles.valueShown,

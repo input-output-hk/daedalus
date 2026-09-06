@@ -1,0 +1,85 @@
+{
+  "taskId": "task-901",
+  "scope": "operator-directed single-user Mainnet pilot",
+  "executedAt": "2026-09-03T16:36:51+00:00",
+  "operatorDigest": "b70d9a7b954eea2242a7278d73177dbf6932ce53647ada6e9d4ad9fb2db13bc3",
+  "device": {
+    "vendor": "ledger",
+    "model": "europa",
+    "productName": "Ledger Flex",
+    "osVersion": "1.6.1",
+    "cardanoAppVersion": "7.3.1",
+    "transport": "hid"
+  },
+  "library": {
+    "name": "@cardano-foundation/ledgerjs-hw-app-cardano",
+    "version": "8.0.0"
+  },
+  "results": {
+    "identityInspection": "pass",
+    "signDataPaymentAddress": "pass",
+    "signDataStakeAddress": "pass",
+    "signDataDrepDirect": "pass",
+    "signDataDrepType6": "pass",
+    "localCoseVerification": "pass",
+    "singleTransaction": "pass",
+    "orderedBatch": "pass",
+    "batchRejectionIndices": [0, 1, 2],
+    "batchRejectionReleased": false,
+    "hostCancellation": {
+      "result": "pass",
+      "released": false,
+      "cancelled": true,
+      "deviceReviewRemainedOpen": true,
+      "physicalDisconnectRequired": true
+    }
+  },
+  "certifiedExtensions": [95],
+  "cip104Certified": false,
+  "cip142Certified": false,
+  "pilot": {
+    "platform": "Ubuntu 24.04 x86_64",
+    "packageSha256": "f5b8f0816a09a566d9d2594f91a134d56f6d30f59e74bdd8f1eb969015b36ade",
+    "startupVerifiedAt": "2026-09-03T17:37:35+00:00",
+    "windowOpened": true,
+    "mithrilSyncStarted": true,
+    "pairingAttempt": {
+      "result": "failed",
+      "cause": "renderer IPC authority activated after startup hardware requests",
+      "correctivePackageSha256": "673c8578119238722cc27066b200df5b1de0d91109f9fb97543d0d19815e326b",
+      "retest": "device-detected; pairing blocked by backend startup regression"
+    },
+    "correctiveStartup": {
+      "sandboxAvailability": "available",
+      "rendererIpcInitialization": "pass",
+      "ledgerFlexDetection": "pass",
+      "backend": "failed: startup awaited a main-to-renderer disk-space request before renderer receivers were ready",
+      "cause": "trusted frame commitment incorrectly also authorized outgoing IPC before did-frame-finish-load",
+      "correctivePackageSha256": "172d39c407c5895dbca4e6a15fe3f66a7c4d7ccd62b670ced3b70f4b77ad6711",
+      "retest": "pass: backend started and the paired wallet began synchronizing"
+    },
+    "pairingUx": {
+      "result": "failed: an unrecognized device was created immediately with an automatic name",
+      "correctivePackageSha256": "65d03e4003fd225b8746b68458638925ca58769b6c0249e40a3e61bb045d4657",
+      "retest": "pass: an unrecognized Ledger Flex X2 stopped for an operator-provided wallet name before pairing"
+    },
+    "appsUx": {
+      "result": "partial: standalone Apps navigation, Liqwid icon, and same-origin SPA launch passed; preferred collateral remained indefinitely checking and Liqwid wallet connection did not complete",
+      "correctivePackageSha256": "65d03e4003fd225b8746b68458638925ca58769b6c0249e40a3e61bb045d4657",
+      "collateralFollowupPackageSha256": "5379a8a552b2a18fc1f1065ac9727d30a15d5d1057fecc9d8bb9e6348dc9c2fd",
+      "sendCrashFollowupPackageSha256": "de8dd7736bc09db011a774cf71628f9b44535808e28153a915e34f944ee07d6a",
+      "feeCalculationFollowupPackageSha256": "0e42cd90db26a3aac4b15c079e714e83cfe1f5b8b0ab5f62964b450696bfed01",
+      "confirmationMountFollowupPackageSha256": "0b7220a48519259bdffbd9bc9b12f7d69a67b03e51b6b2cefb0ec6dd3d1a5a9f",
+      "activeEnumerationFollowupPackageSha256": "07d69104eaf5aa57d49b0cceb75164d5acbf3b68f047809322e4e312c036b155",
+      "currentPathFollowupPackageSha256": "13da361e35a6fa298495afbbe081a0065a627a7a95a5b043f16b3b6790779676",
+      "transportReuseFollowupPackageSha256": "cd2734633152a0a68784a39c37442f98ae8969c0d7426fc7f14af086e1920fd0",
+      "detectedModelFollowupPackageSha256": "31c24f64fe2d78a24882a523a6e44b795e21786c148a284f5687a5ee7bb1b3fc",
+      "retest": "fee pass; transport-reuse follow-up failed: the reused HID transport had no deviceModel property, so transport initialization threw Missing device info and Cardano app polling fell back to stale /dev/hidraw9; detected-model follow-up pending"
+    },
+    "killSwitchPackageSha256": "ff1571e5275d897027b125cdc3f0d6357ebdc5256d4906157cfbfe0d12f9d169"
+  },
+  "review": {
+    "independentReviewer": false,
+    "disposition": "approved for the operator-directed single-user pilot only"
+  }
+}

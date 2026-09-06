@@ -3,8 +3,8 @@ import { defineMessages } from 'react-intl';
 export const messages = defineMessages({
   title: {
     id: 'dapp.catalog.title',
-    defaultMessage: '!!!Preferred dApps',
-    description: 'Heading for the local preferred dApp catalog.',
+    defaultMessage: '!!!Apps',
+    description: 'Heading for the local apps catalog.',
   },
   disclaimer: {
     id: 'dapp.catalog.disclaimer',

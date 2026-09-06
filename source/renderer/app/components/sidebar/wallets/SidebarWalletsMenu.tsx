@@ -85,8 +85,10 @@ class SidebarWalletsMenu extends Component<Props> {
     <div {...props} className={styles.scrollbarThumb} />
   );
   walletSort = (sortBy: WalletSortByOptions) => {
-    const { sortOrder = WalletSortOrder.asc, onWalletSortBy = noop } =
-      this.props;
+    const {
+      sortOrder = WalletSortOrder.asc,
+      onWalletSortBy = noop,
+    } = this.props;
     return onWalletSortBy({
       sortBy,
       sortOrder,

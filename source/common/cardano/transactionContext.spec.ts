@@ -14,6 +14,9 @@ const genesisHash = '01'.repeat(32);
 const blockHash = '02'.repeat(32);
 const address = Buffer.from(`60${'aa'.repeat(28)}`, 'hex');
 const output = cbor.encodeCanonical([address, 1_000_000]).toString('hex');
+const protocolParameters = cbor
+  .encodeCanonical([...Array(20).fill(null), 100, 3])
+  .toString('hex');
 const u8 = (value: number) => Buffer.from([value]);
 const u32 = (value: number) => {
   const result = Buffer.alloc(4);
@@ -58,7 +61,7 @@ const makeTransaction = (
 const makeResponse = (
   transaction: ReturnType<typeof makeTransaction>,
   transactionOverride?: string,
-  protocolParametersCbor = 'a0',
+  protocolParametersCbor = '80',
   requiredProofs: Array<{
     transaction_index: number;
     proof_kind: 'normal_input';
@@ -191,7 +194,7 @@ test('reconciles all input roles into one immutable trusted snapshot', () => {
   const fixture = makeResponse(
     makeTransaction(),
     undefined,
-    cbor.encodeCanonical(new Map([[24, 3]])).toString('hex')
+    protocolParameters
   );
   const snapshot = reconcileTransactionContext(
     fixture.response,
@@ -212,7 +215,7 @@ test('reconciles an authenticated wallet snapshot without transaction review', (
   const fixture = makeResponse(
     makeTransaction(),
     undefined,
-    cbor.encodeCanonical(new Map([[24, 3]])).toString('hex')
+    protocolParameters
   );
   const expectation = { ...fixture.expectation, transactions: [] };
   const records = fixture.response.records.filter(
@@ -260,7 +263,7 @@ test('retains immutable transaction-indexed required proof rows', () => {
     credential: 'aa'.repeat(28),
     required: true,
   };
-  const fixture = makeResponse(makeTransaction(), undefined, 'a0', [proof]);
+  const fixture = makeResponse(makeTransaction(), undefined, '80', [proof]);
   const snapshot = reconcileTransactionContext(
     fixture.response,
     fixture.expectation

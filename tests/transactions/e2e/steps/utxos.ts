@@ -12,18 +12,18 @@ const selectors = {
   walletAmount: `${container} > p b:nth-child(1)`,
   walletUtxosAmount: `${container} > p b:nth-child(2)`,
 };
-Then(
-  'the {string} element renders the following text:',
-  async function (element, data) {
-    const [expectedTextData] = data.hashes();
-    const [renderedText] = await getVisibleTextsForSelector(
-      this.client,
-      selectors[element]
-    );
-    const expectedText = await this.intl(expectedTextData.message);
-    expect(renderedText).to.equal(expectedText);
-  }
-);
+Then('the {string} element renders the following text:', async function (
+  element,
+  data
+) {
+  const [expectedTextData] = data.hashes();
+  const [renderedText] = await getVisibleTextsForSelector(
+    this.client,
+    selectors[element]
+  );
+  const expectedText = await this.intl(expectedTextData.message);
+  expect(renderedText).to.equal(expectedText);
+});
 Then(
   'the page description displays the correct wallet and UTXOs amount',
   async function () {

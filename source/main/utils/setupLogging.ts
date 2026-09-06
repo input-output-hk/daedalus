@@ -123,8 +123,13 @@ export const logStateSnapshot = (
 ): MessageBody => {
   const { ...data } = props;
   const { currentTime: at, systemInfo, coreInfo } = data;
-  const { platform, platformVersion, cpu, ram, availableDiskSpace } =
-    systemInfo;
+  const {
+    platform,
+    platformVersion,
+    cpu,
+    ram,
+    availableDiskSpace,
+  } = systemInfo;
   const {
     daedalusVersion,
     daedalusProcessID,

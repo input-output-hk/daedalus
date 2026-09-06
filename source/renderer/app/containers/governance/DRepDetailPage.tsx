@@ -106,8 +106,8 @@ class DRepDetailPage extends React.Component<Props, State> {
     const selectedWalletId =
       stores.governance.delegationNavState?.selectedWalletId;
     const selectedWallet = selectedWalletId
-      ? (stores.wallets?.allWallets?.find((w) => w.id === selectedWalletId) ??
-        null)
+      ? stores.wallets?.allWallets?.find((w) => w.id === selectedWalletId) ??
+        null
       : null;
     const isCurrentDRep =
       detail != null && selectedWallet?.currentDRep != null

@@ -111,7 +111,7 @@ function DRepIdDisplay({
     () =>
       variant === 'single'
         ? null
-        : (normalizeDRepIdentity(drepId)?.cip105 ?? null),
+        : normalizeDRepIdentity(drepId)?.cip105 ?? null,
     [drepId, variant]
   );
 

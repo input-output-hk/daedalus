@@ -56,7 +56,7 @@ const capabilities = {
     'transaction-context',
     'reviewed-context-signing',
     'cip8-cip95',
-    'wallet-scoped-submission',
+    'durable-wallet-submit',
   ].map((name) => ({ name, revision: 1, available_eras: ['conway'] })),
 };
 
