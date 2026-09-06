@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- Correct transaction CSV exports to label expired transactions as failed instead of confirmed.
+- Correct transaction CSV exports to label expired transactions as failed instead of confirmed ([PR #3399](https://github.com/input-output-hk/daedalus/pull/3399)).
 
 ## 11.3.0
 
