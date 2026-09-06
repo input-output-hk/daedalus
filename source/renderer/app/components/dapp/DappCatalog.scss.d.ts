@@ -8,6 +8,7 @@ export const fallbackIcon: string;
 export const header: string;
 export const icon: string;
 export const launchButton: string;
+export const liqwidIcon: string;
 export const openStatus: string;
 export const status: string;
 export const unavailable: string;

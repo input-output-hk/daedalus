@@ -200,10 +200,14 @@ const assetGroups = (
 
 const outputDestination = (
   exact: HardwareExactTransaction,
-  address: string
+  address: string,
+  outputIndex: number
 ): TxOutput['destination'] => {
   const owned = exact.ownedOutputs.find(
-    (candidate) => candidate.address === address
+    (candidate) =>
+      candidate.address === address &&
+      (candidate.outputIndex === undefined ||
+        candidate.outputIndex === outputIndex)
   );
   const bytes = Buffer.from(address, 'hex');
   const type = bytes[0] >> 4;
@@ -242,7 +246,11 @@ const exactOutput = (
     encoded[0] >> 5 === 5
       ? TxOutputFormat.MAP_BABBAGE
       : TxOutputFormat.ARRAY_LEGACY;
-  const destination = outputDestination(exact, output.address);
+  const destination = outputDestination(
+    exact,
+    output.address,
+    exact.transaction.outputs.indexOf(output)
+  );
   const tokenBundle = assetGroups(output.value.assets);
   if (format === TxOutputFormat.ARRAY_LEGACY) {
     if (output.datum?.kind === 'inline' || output.referenceScript)
@@ -771,7 +779,13 @@ const ledgerPathHash = (
   const signer = exact.signers.find(
     (candidate) => candidate.path.join('/') === key
   );
-  return signer ? ledgerHex(signer.keyHash) : exactFail('unbound Ledger path');
+  if (signer) return ledgerHex(signer.keyHash);
+  for (const output of exact.ownedOutputs) {
+    const address = ledgerHex(output.address);
+    if (output.paymentPath?.join('/') === key) return address.subarray(1, 29);
+    if (output.stakePath?.join('/') === key) return address.subarray(29, 57);
+  }
+  return exactFail('unbound Ledger path');
 };
 const ledgerCredential = (
   exact: HardwareExactTransaction,

@@ -8,8 +8,11 @@ import {
 import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 
-const { stakingButtonVisible, clickStakingButton, delegationCenterVisible } =
-  delegationCentreStakingHelper;
+const {
+  stakingButtonVisible,
+  clickStakingButton,
+  delegationCenterVisible,
+} = delegationCentreStakingHelper;
 const LOADING_MESSAGE_SELECTOR =
   '.StakePools_component.StakePools_isLoading .StakePools_loadingBlockWrapper p';
 const STAKE_POOL_TAB_BUTTON =
@@ -103,14 +106,13 @@ When(/^I see the stake pools search input field/, function () {
 When(/^I enter "([^"]*)" in search input field/, function (data) {
   return this.client.setValue(STAKE_POOLS_SEARCH_SELECTOR, data);
 });
-When(
-  /^I click on stake pool with order number "([^"]*)"/,
-  function (rankNumber) {
-    return this.waitAndClick(
-      `.StakePoolsList_component .ThumbPool_component:nth-child(${rankNumber})`
-    );
-  }
-);
+When(/^I click on stake pool with order number "([^"]*)"/, function (
+  rankNumber
+) {
+  return this.waitAndClick(
+    `.StakePoolsList_component .ThumbPool_component:nth-child(${rankNumber})`
+  );
+});
 When(/^I click "continue" button/, async function () {
   await this.client.waitForEnabled(DIALOG_CONTINUE_SELECTOR);
   return this.waitAndClick(DIALOG_CONTINUE_SELECTOR);
@@ -205,15 +207,14 @@ Then(/^I choose "([^"]*)" wallet$/, function (walletName) {
 Then(/^I should see step 2 of 3 screen/, function () {
   return this.client.waitForVisible(DELEGATION_WALLET_SECOND_STEP_SELECTOR);
 });
-Then(
-  /^I see following label on the dialog: "([^"]*)"$/,
-  async function (message) {
-    const selectedStakePoolLabel = await this.waitAndGetText(
-      SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR
-    );
-    expect(selectedStakePoolLabel.toString().split('.')[0]).to.equal(message);
-  }
-);
+Then(/^I see following label on the dialog: "([^"]*)"$/, async function (
+  message
+) {
+  const selectedStakePoolLabel = await this.waitAndGetText(
+    SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR
+  );
+  expect(selectedStakePoolLabel.toString().split('.')[0]).to.equal(message);
+});
 Then(
   /^I see delegation status message for stake pool with rank "([^"]*)"$/,
   async function (stakePoolRank) {
@@ -283,15 +284,14 @@ Then(/^I should see the following loading message:$/, async function (message) {
   const expectedLoadingMsg = await this.intl(loadingMsg.message);
   expect(loadingMsgOnScreen).to.equal(expectedLoadingMsg);
 });
-Then(
-  /^I should see search label with text: "([^"]*)"$/,
-  async function (message) {
-    const searchResultsMessages = await this.waitAndGetText(
-      SEARCH_RESULTS_LABEL_SELECTOR
-    );
-    expect(searchResultsMessages).to.equal(message);
-  }
-);
+Then(/^I should see search label with text: "([^"]*)"$/, async function (
+  message
+) {
+  const searchResultsMessages = await this.waitAndGetText(
+    SEARCH_RESULTS_LABEL_SELECTOR
+  );
+  expect(searchResultsMessages).to.equal(message);
+});
 Then(/^I should see stake pool with slug "([^"]*)"$/, async function (slug) {
   const stakePoolSlug = await this.waitAndGetText(STAKE_POOL_SLUG_SELECTOR);
   expect(stakePoolSlug).to.equal(slug);

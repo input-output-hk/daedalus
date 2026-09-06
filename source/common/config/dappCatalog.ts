@@ -5,7 +5,7 @@ import type {
 
 export type { DappCatalogPresentationEntry } from '../types/dapp.types';
 
-export const DAPP_CATALOG_REVISION = 1;
+export const DAPP_CATALOG_REVISION = 2;
 
 export const defineDappCatalog = (
   entries: readonly DappCatalogEntry[]
@@ -33,8 +33,26 @@ export const defineDappCatalog = (
   );
 };
 
-// Revision 1 deliberately ships no external dApp until a release-approved entry exists.
-export const dappCatalog = defineDappCatalog([]);
+export const dappCatalog = defineDappCatalog([
+  {
+    id: 'liqwid-finance',
+    nameMessageId: 'dapp.catalog.liqwid.name',
+    descriptionMessageId: 'dapp.catalog.liqwid.description',
+    iconAsset: 'liqwid',
+    entryUrlByNetworkGenesis: {
+      '5f20df933584822601f9e3f8c024eb5eb252fe8cefb24d1317dc3d432e940ebb':
+        'https://app.liqwid.finance/',
+    },
+    canonicalOrigin: 'https://app.liqwid.finance',
+    allowedResourceOrigins: [
+      'https://key-value-storage.liqwid.finance',
+      'https://public.liqwid.finance',
+      'https://v2.api.liqwid.finance',
+    ],
+    supportedWalletKinds: ['ledger'],
+    supportedExtensions: [],
+  },
+]);
 
 export const dappCatalogPresentation: readonly DappCatalogPresentationEntry[] = Object.freeze(
   dappCatalog.map(({ id, nameMessageId, descriptionMessageId, iconAsset }) =>

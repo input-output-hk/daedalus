@@ -93,7 +93,8 @@ describe('DRepVotingPowerShare', () => {
     // and does not round the share to zero either.
     expect(
       screen.getByRole('button', {
-        name: 'This DRep controls less than 0.01% of ₳ 5.0B delegated to DReps.',
+        name:
+          'This DRep controls less than 0.01% of ₳ 5.0B delegated to DReps.',
       })
     ).toBeInTheDocument();
   });

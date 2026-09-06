@@ -3,6 +3,10 @@ import path from 'path';
 import { generateKeyPairSync, sign } from 'crypto';
 import { blake2b } from 'blakejs';
 import cbor from 'cbor';
+import { derivePublic } from 'cardano-crypto.js';
+import { bech32 } from 'bech32';
+import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
+import { WalletUnits } from '../domains/Wallet';
 
 import type {
   ContextOutput,
@@ -17,7 +21,10 @@ import {
   WitnessSetError,
 } from '../../../common/cardano/witnessSet';
 import { preflightCip103Sign } from '../../../common/cip30/cip103Batch';
-import { prepareHardwareTransaction } from './hardwareWalletTransaction';
+import {
+  bindPaymentChange,
+  prepareHardwareTransaction,
+} from './hardwareWalletTransaction';
 import { toExactLedgerSignTransactionRequest } from './shelleyLedger';
 import {
   assertExactTrezorBody,
@@ -680,5 +687,158 @@ describe('hardware transaction preparation', () => {
       expect(() =>
         verifyHardwareTransactionWitnesses(prepared.exact, changed)
       ).toThrow(WitnessSetError);
+  });
+});
+
+describe('verified payment change', () => {
+  const account = Buffer.concat([publicKey, Buffer.alloc(32, 7)]);
+  const childHash = (role: number, index: number) =>
+    Buffer.from(
+      blake2b(
+        derivePublic(derivePublic(account, role, 2), index, 2).subarray(0, 32),
+        undefined,
+        28
+      )
+    );
+  const changeAddress = Buffer.concat([
+    Buffer.from([0]),
+    childHash(1, 0),
+    childHash(2, 0),
+  ]);
+  const encodedAddress = bech32.encode(
+    'addr_test',
+    bech32.toWords(changeAddress),
+    1000
+  );
+  const paymentOutput = {
+    address: encodedAddress,
+    amount: { quantity: 5_000_000, unit: WalletUnits.LOVELACE as const },
+    derivationPath: null,
+  };
+  const changeOutput = {
+    address: encodedAddress,
+    amount: { quantity: 410_080_283, unit: WalletUnits.LOVELACE as const },
+    derivationPath: ['1852H', '1815H', '0H', '1', '0'],
+  };
+  const payment = () =>
+    exactTransaction(
+      cbor
+        .encodeCanonical([
+          new Map<number, unknown>([
+            [0, [[Buffer.from(normalId, 'hex'), 0]]],
+            // Same owned address deliberately: only the change output may be hidden.
+            [
+              1,
+              [
+                [changeAddress, 410_080_283],
+                [changeAddress, 5_000_000],
+              ],
+            ],
+            [2, 174_565],
+          ]),
+          new Map(),
+          true,
+          null,
+        ])
+        .toString('hex')
+    );
+
+  beforeEach(() => {
+    jest
+      .spyOn(deriveXpubChannel, 'request')
+      .mockImplementation(async (request) =>
+        derivePublic(
+          Buffer.from(request.parentXpubHex, 'hex'),
+          request.lastIndex,
+          request.derivationScheme
+        ).toString('hex')
+      );
+  });
+  afterEach(() => jest.restoreAllMocks());
+
+  it('preserves the exact body and recipient review without requesting change witnesses', async () => {
+    const original = payment();
+    const bound = await bindPaymentChange(
+      original,
+      [paymentOutput, changeOutput],
+      account.toString('hex')
+    );
+    const request = toExactLedgerSignTransactionRequest(bound);
+    expect(
+      request.tx.outputs.map((output) => output.destination.type)
+    ).toEqual(['device_owned', 'third_party']);
+    expect(request.tx.outputs.map((output) => output.amount)).toEqual([
+      '410080283',
+      '5000000',
+    ]);
+    expect(bound.bodyHash).toBe(original.bodyHash);
+    expect(
+      bound.transaction.envelope.cbor.equals(original.transaction.envelope.cbor)
+    ).toBe(true);
+    expect(bound.signers).toEqual([]);
+    expect(request.additionalWitnessPaths || []).toEqual([]);
+  });
+
+  it('rejects a different change path, address, network, or amount before signing', async () => {
+    const original = payment();
+    await expect(
+      bindPaymentChange(
+        original,
+        [
+          paymentOutput,
+          {
+            ...changeOutput,
+            derivationPath: ['1852H', '1815H', '0H', '1', '1'],
+          },
+        ],
+        account.toString('hex')
+      )
+    ).rejects.toThrow('does not belong');
+    await expect(
+      bindPaymentChange(
+        original,
+        [
+          paymentOutput,
+          {
+            ...changeOutput,
+            address: bech32.encode(
+              'addr_test',
+              bech32.toWords(
+                Buffer.concat([
+                  Buffer.from([0]),
+                  childHash(1, 1),
+                  childHash(2, 0),
+                ])
+              ),
+              1000
+            ),
+          },
+        ],
+        account.toString('hex')
+      )
+    ).rejects.toThrow('does not match');
+    await expect(
+      bindPaymentChange(
+        {
+          ...original,
+          network: { ...original.network, networkId: 1 },
+        },
+        [paymentOutput, changeOutput],
+        account.toString('hex')
+      )
+    ).rejects.toThrow('does not belong');
+    await expect(
+      bindPaymentChange(
+        original,
+        [
+          paymentOutput,
+          {
+            ...changeOutput,
+            amount: { ...changeOutput.amount, quantity: 410_080_284 },
+          },
+        ],
+        account.toString('hex')
+      )
+    ).rejects.toThrow('does not match');
   });
 });

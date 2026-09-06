@@ -8,6 +8,7 @@ import {
   SIGN_TRANSACTION_TREZOR_CHANNEL,
   SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL,
   SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL,
+  VERIFY_HARDWARE_TRANSACTION_CHANNEL,
   GET_INIT_TREZOR_CONNECT_CHANNEL,
   GET_INIT_LEDGER_CONNECT_CHANNEL,
   RESET_ACTION_TREZOR_CHANNEL,
@@ -33,6 +34,7 @@ import type {
   SignExactHardwareTransactionRendererRequest,
   SignExactHardwareMessageMainResponse,
   SignExactHardwareMessageRendererRequest,
+  VerifyHardwareTransactionRequest,
   getCardanoAdaAppMainResponse,
   getCardanoAdaAppRendererRequest,
   handleInitTrezorConnectMainResponse,
@@ -114,3 +116,7 @@ export const waitForLedgerDevicesToConnectChannel: RendererIpcChannel<
   waitForLedgerDevicesResponse,
   waitForLedgerDevicesRequest
 > = new RendererIpcChannel(WAIT_FOR_LEDGER_DEVICES);
+export const verifyHardwareTransactionChannel = new RendererIpcChannel<
+  string,
+  VerifyHardwareTransactionRequest
+>(VERIFY_HARDWARE_TRANSACTION_CHANNEL);

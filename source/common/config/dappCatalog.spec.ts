@@ -20,10 +20,27 @@ const entry = (id: string): DappCatalogEntry => ({
 });
 
 describe('dapp catalog', () => {
-  it('ships an explicit empty revision and exposes only presentation fields', () => {
-    expect(DAPP_CATALOG_REVISION).toBe(1);
-    expect(dappCatalog).toEqual([]);
-    expect(dappCatalogPresentation).toEqual([]);
+  it('ships the Mainnet Liqwid Ledger pilot and exposes only presentation fields', () => {
+    expect(DAPP_CATALOG_REVISION).toBe(2);
+    expect(dappCatalog).toEqual([
+      expect.objectContaining({
+        id: 'liqwid-finance',
+        entryUrlByNetworkGenesis: {
+          '5f20df933584822601f9e3f8c024eb5eb252fe8cefb24d1317dc3d432e940ebb':
+            'https://app.liqwid.finance/',
+        },
+        supportedWalletKinds: ['ledger'],
+        supportedExtensions: [],
+      }),
+    ]);
+    expect(dappCatalogPresentation).toEqual([
+      {
+        id: 'liqwid-finance',
+        nameMessageId: 'dapp.catalog.liqwid.name',
+        descriptionMessageId: 'dapp.catalog.liqwid.description',
+        iconAsset: 'liqwid',
+      },
+    ]);
   });
 
   it('rejects duplicate IDs and resolves injected entries by opaque ID', () => {

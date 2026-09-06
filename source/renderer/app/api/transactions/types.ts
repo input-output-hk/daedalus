@@ -238,6 +238,7 @@ export type CoinSelectionsResponse = {
   withdrawals: Array<CoinSelectionWithdrawal>;
   fee: BigNumber;
   metadata: string | null | undefined;
+  unsignedTransaction?: string;
 };
 export type CreateExternalTransactionRequest = {
   signedTransactionBlob: Buffer;

@@ -1297,8 +1297,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Preferred dApps",
-        "description": "Heading for the local preferred dApp catalog.",
+        "defaultMessage": "!!!Apps",
+        "description": "Heading for the local apps catalog.",
         "id": "dapp.catalog.title"
       },
       {
@@ -1720,6 +1720,11 @@
         "defaultMessage": "!!!Wallets",
         "description": "Text for the tooltip of wallets category",
         "id": "sidebar.categoryTooltip.wallets"
+      },
+      {
+        "defaultMessage": "!!!Apps",
+        "description": "Text for the tooltip of apps category",
+        "id": "sidebar.categoryTooltip.apps"
       },
       {
         "defaultMessage": "!!!Staking",
@@ -2567,7 +2572,7 @@
         "id": "wallet.connect.dialog.button.cancel"
       },
       {
-        "defaultMessage": "!!!<p>Daedalus currently supports Ledger Nano S, Ledger Nano X, and Trezor Model T hardware wallet devices.</p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>",
+        "defaultMessage": "!!!<p>Daedalus currently supports Ledger Nano S, Ledger Nano S Plus, Ledger Nano X, Ledger Flex, and Trezor Model T hardware wallet devices.</p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>",
         "description": "Follow instructions label",
         "id": "wallet.connect.dialog.instructions"
       },
@@ -2585,6 +2590,21 @@
         "defaultMessage": "!!!read the instructions.",
         "description": "Connecting issue support link",
         "id": "wallet.connect.dialog.connectingIssueSupportLink"
+      },
+      {
+        "defaultMessage": "!!!Wallet name",
+        "description": "Label for the hardware wallet name field.",
+        "id": "wallet.connect.dialog.walletName"
+      },
+      {
+        "defaultMessage": "!!!Enter wallet name",
+        "description": "Placeholder for the hardware wallet name field.",
+        "id": "wallet.connect.dialog.walletNameHint"
+      },
+      {
+        "defaultMessage": "!!!Pair wallet",
+        "description": "Label for the button that creates the hardware wallet.",
+        "id": "wallet.connect.dialog.button.pair"
       }
     ],
     "path": "source/renderer/app/components/wallet/WalletConnectDialog.tsx"
@@ -2868,6 +2888,21 @@
       }
     ],
     "path": "source/renderer/app/components/widgets/NodeSyncStatusIcon.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Liqwid Finance",
+        "description": "Name of the Liqwid Finance dApp in the curated catalog.",
+        "id": "dapp.catalog.liqwid.name"
+      },
+      {
+        "defaultMessage": "!!!Borrow, lend, and earn yield on Cardano.",
+        "description": "Description of Liqwid Finance in the curated dApp catalog.",
+        "id": "dapp.catalog.liqwid.description"
+      }
+    ],
+    "path": "source/renderer/app/containers/dapp/DappCatalogPage.tsx"
   },
   {
     "descriptors": [
@@ -7160,11 +7195,6 @@
         "defaultMessage": "!!!Transactions",
         "description": "Label for the \"Transactions\" nav button in the wallet navigation.",
         "id": "wallet.navigation.transactions"
-      },
-      {
-        "defaultMessage": "!!!DApps",
-        "description": "Label for the \"DApps\" nav button in the wallet navigation.",
-        "id": "wallet.navigation.dapps"
       },
       {
         "defaultMessage": "!!!Tokens",

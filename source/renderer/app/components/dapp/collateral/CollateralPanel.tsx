@@ -46,9 +46,10 @@ export function CollateralPanel({
   onClear,
   onRepair,
 }: Props) {
-  const state = preference?.state ?? 'checking';
+  const state = preference?.state ?? (busy ? 'checking' : 'not-ready');
   const canPrepare =
-    state === 'not-ready' || state === 'charged' || state === 'stale';
+    !failed &&
+    (state === 'not-ready' || state === 'charged' || state === 'stale');
   const canClear = !!preference?.preferredInputs.length;
 
   return (
@@ -57,9 +58,11 @@ export function CollateralPanel({
       <p className={styles.convention}>
         {intl.formatMessage(messages.convention)}
       </p>
-      <p className={styles.status} role="status">
-        {intl.formatMessage(stateMessage(state))}
-      </p>
+      {(!failed || preference) && (
+        <p className={styles.status} role="status">
+          {intl.formatMessage(stateMessage(state))}
+        </p>
+      )}
       {failed && (
         <p className={styles.error} role="alert">
           {intl.formatMessage(messages.failed)}

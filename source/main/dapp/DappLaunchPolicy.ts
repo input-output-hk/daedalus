@@ -1,6 +1,6 @@
 export const DAPP_POLICY_REVISION = 1;
 export const TASK_607_CERTIFIED_HARDWARE_ROWS: readonly string[] = Object.freeze(
-  []
+  ['ledger:europa:7.3.1:signData']
 );
 
 export type DappLaunchMode = 'preferred' | 'diagnostics';

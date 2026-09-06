@@ -11,6 +11,8 @@ import {
 import SVGInline from 'react-svg-inline';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { get } from 'lodash';
 import ledgerIcon from '../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
 import ledgerSpIcon from '../../assets/images/hardware-wallet/ledgerSP-cropped.inline.svg';
@@ -23,6 +25,8 @@ import Dialog from '../widgets/Dialog';
 import styles from './WalletConnectDialog.scss';
 import { getSupportUrl } from '../../../../common/utils/reporting';
 import LoadingSpinner from '../widgets/LoadingSpinner';
+import { isValidWalletName } from '../../utils/validations';
+import globalMessages from '../../i18n/global-messages';
 import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
 import {
   isLedgerEnabled,
@@ -33,6 +37,7 @@ import {
   DeviceTypes,
 } from '../../../../common/types/hardware-wallets.types';
 import type { TransportDevice } from '../../../../common/types/hardware-wallets.types';
+import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 
 const messages = defineMessages({
@@ -50,7 +55,7 @@ const messages = defineMessages({
   instructions: {
     id: 'wallet.connect.dialog.instructions',
     defaultMessage:
-      '!!!<p>Daedalus currently supports Ledger Nano S, Ledger Nano X, and Trezor Model T hardware wallet devices.</p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>',
+      '!!!<p>Daedalus currently supports Ledger Nano S, Ledger Nano S Plus, Ledger Nano X, Ledger Flex, and Trezor Model T hardware wallet devices.</p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>',
     description: 'Follow instructions label',
   },
   instructionsTrezorOnly: {
@@ -70,6 +75,21 @@ const messages = defineMessages({
     defaultMessage: '!!!read the instructions.',
     description: 'Connecting issue support link',
   },
+  walletName: {
+    id: 'wallet.connect.dialog.walletName',
+    defaultMessage: '!!!Wallet name',
+    description: 'Label for the hardware wallet name field.',
+  },
+  walletNameHint: {
+    id: 'wallet.connect.dialog.walletNameHint',
+    defaultMessage: '!!!Enter wallet name',
+    description: 'Placeholder for the hardware wallet name field.',
+  },
+  pairButton: {
+    id: 'wallet.connect.dialog.button.pair',
+    defaultMessage: '!!!Pair wallet',
+    description: 'Label for the button that creates the hardware wallet.',
+  },
 });
 type Props = {
   onClose: (...args: Array<any>) => any;
@@ -78,42 +98,60 @@ type Props = {
   transportDevice: TransportDevice | null | undefined;
   error: LocalizableError | null | undefined;
   onExternalLinkClick: (...args: Array<any>) => any;
+  onPairWallet: (walletName: string) => void;
+};
+type State = {
+  walletName: string;
 };
 
 @observer
-class WalletConnectDialog extends Component<Props> {
+class WalletConnectDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+  state = {
+    walletName: '',
   };
 
   render() {
     const { intl } = this.context;
     const {
       onClose,
+      onPairWallet,
       isSubmitting,
       hwDeviceStatus,
       transportDevice,
       onExternalLinkClick,
       error,
     } = this.props;
+    const { walletName } = this.state;
     const deviceType = get(transportDevice, 'deviceType');
     const deviceModel = get(transportDevice, 'deviceModel');
     const isLedger = deviceType === DeviceTypes.LEDGER;
     const isTrezor = deviceType === DeviceTypes.TREZOR;
+    const isReadyToPair = hwDeviceStatus === HwDeviceStatuses.READY;
     const dialogClasses = classnames([styles.component, 'WalletConnectDialog']);
-    const buttonLabel = !isSubmitting ? (
-      this.context.intl.formatMessage(messages.cancelButton)
-    ) : (
-      <LoadingSpinner />
-    );
-    const actions = [
-      {
-        disabled: isSubmitting,
-        label: buttonLabel,
-        primary: false,
-        onClick: onClose,
-      },
-    ];
+    const cancelAction = {
+      disabled: isSubmitting,
+      label: intl.formatMessage(messages.cancelButton),
+      primary: false,
+      onClick: onClose,
+    };
+    const actions = isReadyToPair
+      ? [
+          cancelAction,
+          {
+            disabled: isSubmitting || !isValidWalletName(walletName),
+            label: isSubmitting ? (
+              <LoadingSpinner />
+            ) : (
+              intl.formatMessage(messages.pairButton)
+            ),
+            primary: true,
+            onClick: () => onPairWallet(walletName),
+          },
+        ]
+      : [cancelAction];
 
     const renderUnknownDevice = () => {
       let unknownDeviceElement;
@@ -169,7 +207,8 @@ class WalletConnectDialog extends Component<Props> {
             renderUnknownDevice()}
           {isLedger && isLedgerEnabled && (
             <div className={styles.hardwareWalletLedger}>
-              {deviceModel === DeviceModels.LEDGER_NANO_X && (
+              {(deviceModel === DeviceModels.LEDGER_NANO_X ||
+                deviceModel === DeviceModels.LEDGER_FLEX) && (
                 <SVGInline svg={ledgerXIcon} className={styles.ledgerXIcon} />
               )}
               {deviceModel === DeviceModels.LEDGER_NANO_S && (
@@ -201,16 +240,35 @@ class WalletConnectDialog extends Component<Props> {
                   isTrezor={isTrezor}
                 />
               </div>
-              <div className={styles.hardwareWalletIssueArticleWrapper}>
-                <p>
-                  <FormattedMessage
-                    {...messages.connectingIssueSupportLabel}
-                    values={{
-                      supportLink,
-                    }}
-                  />
-                </p>
-              </div>
+              {isReadyToPair ? (
+                <Input
+                  className="walletName"
+                  aria-label={intl.formatMessage(messages.walletName)}
+                  label={intl.formatMessage(messages.walletName)}
+                  placeholder={intl.formatMessage(messages.walletNameHint)}
+                  value={walletName}
+                  onChange={(value) =>
+                    this.setState({ walletName: value || '' })
+                  }
+                  error={
+                    walletName && !isValidWalletName(walletName)
+                      ? intl.formatMessage(globalMessages.invalidWalletName)
+                      : null
+                  }
+                  skin={InputSkin}
+                />
+              ) : (
+                <div className={styles.hardwareWalletIssueArticleWrapper}>
+                  <p>
+                    <FormattedMessage
+                      {...messages.connectingIssueSupportLabel}
+                      values={{
+                        supportLink,
+                      }}
+                    />
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -42,8 +42,11 @@ class StakingCountdown extends Component<Props> {
   };
 
   render() {
-    const { redirectToStakingInfo, startDateTime, onLearnMoreClick } =
-      this.props;
+    const {
+      redirectToStakingInfo,
+      startDateTime,
+      onLearnMoreClick,
+    } = this.props;
     const { intl } = this.context;
     const heading = intl.formatMessage(messages.heading);
     const description = intl.formatMessage(messages.description);

@@ -112,8 +112,9 @@ export default class ProfileStore extends Store {
     this.api.localStorage.setTermsOfUseAcceptance
   );
   @observable
-  getAnalyticsAcceptanceRequest: Request<AnalyticsAcceptanceStatus> =
-    new Request(this.api.localStorage.getAnalyticsAcceptance);
+  getAnalyticsAcceptanceRequest: Request<
+    AnalyticsAcceptanceStatus
+  > = new Request(this.api.localStorage.getAnalyticsAcceptance);
   @observable
   setAnalyticsAcceptanceRequest: Request<string> = new Request(
     this.api.localStorage.setAnalyticsAcceptance
@@ -586,8 +587,9 @@ export default class ProfileStore extends Store {
     }
   };
   _compressLogs = action(async ({ logs }) => {
-    const { fileName = generateFileNameWithTimestamp() } =
-      this.compressedLogsStatus;
+    const {
+      fileName = generateFileNameWithTimestamp(),
+    } = this.compressedLogsStatus;
 
     try {
       const outputPath = await compressLogsChannel.request({

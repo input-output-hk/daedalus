@@ -16,6 +16,8 @@
 
 ### Fixes
 
+- Collateral: preserve preferred collateral during native payment/delegation selection and fee estimation, with fallback when ordinary inputs cannot balance the request. Keep CIP-30 inventory complete with collateral last, and accept valid spending/collateral input overlap.
+
 - Chain-storage: resolved relative symlink targets to absolute paths; report a read-only directory as not-writable and an unresolvable link as not-found; verify created links on all platforms; never leave a broken created link; fixed cross-device move fallback; report a looping path as not found; do not block directory validation on the free-space probe; roll back a failed migration even if the journal cannot be written.
 
 - Explorer: updated links to the current `explorer.cardano.org` layout; removed dead testnet and staging explorer endpoints.

@@ -118,7 +118,8 @@ export const messages = defineMessages({
       'Label for the recoveryPhraseVerificationButton on wallet settings.',
   },
   timeUntilWarningReplacement: {
-    id: 'wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement',
+    id:
+      'wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement',
     defaultMessage: '!!!ヶ月,か月',
     description:
       'Label for the recoveryPhraseVerificationButton on wallet settings.',
@@ -225,8 +226,12 @@ class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
       recoveryPhraseVerificationDate,
       isLegacy,
     } = this.props;
-    const { icon, message, timeAgo, timeUntilWarning } =
-      this.recoveryPhraseStatus;
+    const {
+      icon,
+      message,
+      timeAgo,
+      timeUntilWarning,
+    } = this.recoveryPhraseStatus;
     const { recoveryPhraseVerificationStatus } = getStatusFromWalletData({
       creationDate,
       recoveryPhraseVerificationDate,

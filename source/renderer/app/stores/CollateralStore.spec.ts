@@ -49,6 +49,19 @@ describe('CollateralStore', () => {
     expect(store.snapshot).toEqual(projected);
     expect(store.state).toBe('ready');
   });
+  it('stops checking when collateral IPC does not settle', async () => {
+    jest.useFakeTimers();
+    request.mockReturnValue(new Promise(() => undefined));
+    const { store } = createStore();
+
+    const refresh = store.refresh();
+    jest.advanceTimersByTime(30_000);
+    await refresh;
+
+    expect(store.isLoading).toBe(false);
+    expect(store.actionFailed).toBe(true);
+    jest.useRealTimers();
+  });
 
   it('detects an exact preferred input in an ordinary selection', async () => {
     const projected = snapshot('ready');

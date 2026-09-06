@@ -52,8 +52,9 @@ Given('I pass the following props to the function:', function (data) {
   expectedProps = pickBy(expectedProps, identity);
   if (expectedProps.isUTC)
     expectedProps.isUTC = Boolean(expectedProps.isUTC === 'should');
-  const { filename, extension, prefix, isUTC } =
-    getDataFromFunction(expectedProps);
+  const { filename, extension, prefix, isUTC } = getDataFromFunction(
+    expectedProps
+  );
   this.context.filename = filename;
   this.context.extension = extension;
   this.context.prefix = prefix;

@@ -113,14 +113,16 @@ const WalletTokensList = observer((props: Props) => {
     },
     [sortDirection, hasSorting, sortBy]
   );
-  const onSortByToken = useCallback(
-    () => onSortBy('token'),
-    [sortDirection, sortBy, hasSorting]
-  );
-  const onSortByAmount = useCallback(
-    () => onSortBy('quantity'),
-    [sortDirection, sortBy, hasSorting]
-  );
+  const onSortByToken = useCallback(() => onSortBy('token'), [
+    sortDirection,
+    sortBy,
+    hasSorting,
+  ]);
+  const onSortByAmount = useCallback(() => onSortBy('quantity'), [
+    sortDirection,
+    sortBy,
+    hasSorting,
+  ]);
   const hasTokens = assets.length || isLoadingAssets;
   if (!hasTokens)
     return (

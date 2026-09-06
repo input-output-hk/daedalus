@@ -94,8 +94,13 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
 
   render() {
     const { actions, stores, onExternalLinkClick } = this.props;
-    const { wallets, staking, networkStatus, profile, hardwareWallets } =
-      stores;
+    const {
+      wallets,
+      staking,
+      networkStatus,
+      profile,
+      hardwareWallets,
+    } = stores;
     const { futureEpoch } = networkStatus;
     const { currentLocale } = profile;
     const {
@@ -116,8 +121,10 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
     if (!walletToBeUndelegated) return null;
     const isTrezor = checkIsTrezorByWalletId(walletToBeUndelegated.id);
     const { name: walletName } = walletToBeUndelegated;
-    const { lastDelegatedStakePoolId, delegatedStakePoolId } =
-      walletToBeUndelegated;
+    const {
+      lastDelegatedStakePoolId,
+      delegatedStakePoolId,
+    } = walletToBeUndelegated;
     const stakePoolId = lastDelegatedStakePoolId || delegatedStakePoolId || '';
 
     if (

@@ -93,16 +93,15 @@ When(/^I fill out the send form:$/, async function (table) {
   values.address = this.certificateWalletAddress;
   return fillOutWalletSendForm.call(this, values);
 });
-When(
-  /^I should see the following field error message:$/,
-  async function (data) {
-    const error = data.hashes()[0];
-    await waitUntilTextInSelector(this.client, {
-      selector: '.VerificationDialog_recoveryPhrase .SimpleFormField_error',
-      text: await this.intl(error.message),
-    });
-  }
-);
+When(/^I should see the following field error message:$/, async function (
+  data
+) {
+  const error = data.hashes()[0];
+  await waitUntilTextInSelector(this.client, {
+    selector: '.VerificationDialog_recoveryPhrase .SimpleFormField_error',
+    text: await this.intl(error.message),
+  });
+});
 When(/^Verify certificate checkboxes should be disabled$/, async function () {
   const chk1 = !(await this.client.isEnabled('.storingUnderstandance input'));
   const chk2 = !(await this.client.isEnabled(

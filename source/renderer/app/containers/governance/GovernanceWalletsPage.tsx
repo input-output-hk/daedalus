@@ -64,13 +64,13 @@ class GovernanceWalletsPage extends React.Component<Props> {
     ).map((w) => {
       const drepId =
         w.currentDRep?.kind === 'drep'
-          ? (w.currentDRep.drep.cip129 ?? w.currentDRep.drep.raw)
+          ? w.currentDRep.drep.cip129 ?? w.currentDRep.drep.raw
           : null;
       return {
         walletId: w.id,
         walletName: w.name,
         currentDRep: w.currentDRep,
-        drepEntry: drepId ? (governance?.lookupDRep(drepId) ?? null) : null,
+        drepEntry: drepId ? governance?.lookupDRep(drepId) ?? null : null,
       };
     });
 

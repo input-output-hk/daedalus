@@ -16,7 +16,7 @@ export type DappCapabilities = {
       | 'transaction-context'
       | 'reviewed-context-signing'
       | 'cip8-cip95'
-      | 'wallet-scoped-submission';
+      | 'durable-wallet-submit';
     revision: 1;
     available_eras: ['conway'];
   }>;
@@ -25,6 +25,7 @@ export type DappCapabilities = {
 export type DappTransactionContextRequest = {
   revision: 1;
   network: DappNetwork;
+  // Empty requests return a read-only wallet snapshot, not a signing batch.
   transactions: string[];
 };
 
@@ -182,7 +183,7 @@ const REQUIRED_CAPABILITIES = [
   'transaction-context',
   'reviewed-context-signing',
   'cip8-cip95',
-  'wallet-scoped-submission',
+  'durable-wallet-submit',
 ];
 const DAPP_ERRORS = {
   dapp_invalid_request: 'Invalid backend request',

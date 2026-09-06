@@ -404,8 +404,12 @@ export default class Transaction extends Component<Props, State> {
   }
 
   get assetsList(): Array<AssetToken> {
-    const { assetTokens, data, isInternalAddress, hasAssetsEnabled } =
-      this.props;
+    const {
+      assetTokens,
+      data,
+      isInternalAddress,
+      hasAssetsEnabled,
+    } = this.props;
 
     if (!hasAssetsEnabled) {
       return [];
@@ -422,8 +426,9 @@ export default class Transaction extends Component<Props, State> {
     const type = this.hasAssets ? data.type : null;
 
     if (addresses && addresses.length > 0) {
-      const hasUnresolvedAddresses =
-        this.includesUnresolvedAddresses(addresses);
+      const hasUnresolvedAddresses = this.includesUnresolvedAddresses(
+        addresses
+      );
       return type !== TransactionTypes.EXPEND && hasUnresolvedAddresses ? (
         <div className={styles.explorerLinkRow}>
           <Link
@@ -623,20 +628,19 @@ export default class Transaction extends Component<Props, State> {
                 <h2>{intl.formatMessage(messages.toAddresses)}</h2>
                 {this.addressesList(get(data, 'addresses.to', []))}
 
-                {data.type === TransactionTypes.EXPEND &&
-                  !data.fee.isZero() && (
-                    <>
-                      <h2>{intl.formatMessage(messages.transactionFee)}</h2>
-                      <div>
-                        <div className={styles.transactionFeeValue}>
-                          {formattedWalletAmount(data.fee, false)}&nbsp;
-                          <span>
-                            {intl.formatMessage(globalMessages.adaUnit)}
-                          </span>
-                        </div>
+                {data.type === TransactionTypes.EXPEND && !data.fee.isZero() && (
+                  <>
+                    <h2>{intl.formatMessage(messages.transactionFee)}</h2>
+                    <div>
+                      <div className={styles.transactionFeeValue}>
+                        {formattedWalletAmount(data.fee, false)}&nbsp;
+                        <span>
+                          {intl.formatMessage(globalMessages.adaUnit)}
+                        </span>
                       </div>
-                    </>
-                  )}
+                    </div>
+                  </>
+                )}
 
                 {!data.deposit.isZero() && (
                   <>

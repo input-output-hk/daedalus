@@ -8,15 +8,14 @@ Given(/^I open the "Diagnostic" screen$/, async function () {
   );
   return this.client.waitForVisible('.DaedalusDiagnostics_component');
 });
-Then(
-  /^I should see the Cardano Node state is "([^"]*)"$/,
-  async function (message) {
-    await waitUntilTextInSelector(this.client, {
-      selector: CARDANO_NODE_STATE,
-      text: message,
-    });
-  }
-);
+Then(/^I should see the Cardano Node state is "([^"]*)"$/, async function (
+  message
+) {
+  await waitUntilTextInSelector(this.client, {
+    selector: CARDANO_NODE_STATE,
+    text: message,
+  });
+});
 When(/^I click on the "Restart Cardano Node" button$/, function () {
   return this.client.click('.DaedalusDiagnostics_cardanoNodeStatusBtn');
 });

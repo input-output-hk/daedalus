@@ -17,7 +17,7 @@ const walletIdFromRoute = (url: string): string | null => {
   } catch {
     return null;
   }
-  const match = /^#\/wallets\/([^/?#]+)\/dapps$/u.exec(hash);
+  const match = /^#\/apps\/([^/?#]+)$/u.exec(hash);
   if (!match) return null;
   try {
     const walletId = decodeURIComponent(match[1]);

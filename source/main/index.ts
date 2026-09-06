@@ -291,7 +291,7 @@ const onAppReady = async () => {
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
   startDappSandboxAvailabilityCheck({
     isDevelopment: isDev,
-    cluster: launcherConfig.cluster,
+    cluster: launcherConfig.dappSandboxPackageCluster || launcherConfig.cluster,
   }).then((result) => {
     logger.info('dApp sandbox availability check completed', {
       status: result.status,

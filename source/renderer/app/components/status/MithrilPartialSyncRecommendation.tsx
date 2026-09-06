@@ -14,7 +14,8 @@ const messages = defineMessages({
       'Tooltip copy shown on hover over the Mithril Sync button in diagnostics',
   },
   recommendationAtOrPastSnapshot: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationAtOrPastSnapshot',
+    id:
+      'daedalus.diagnostics.dialog.mithrilPartialSyncRecommendationAtOrPastSnapshot',
     defaultMessage:
       '!!!Your node is at or past the latest Mithril snapshot. Blockchain Sync will finish the remaining blocks on its own. If sync seems slow or runs into verification issues, Mithril Sync can restore a verified ledger state.',
     description:

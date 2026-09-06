@@ -12,6 +12,7 @@ import {
 } from '../../common/cardano/transactionContext';
 import type {
   Cip30WalletAddresses,
+  Cip30WalletOutpoint,
   Cip30WalletResponse,
 } from '../../common/cip30/executor';
 import type { ApiError, DappCip30Rejection } from '../../common/cip30/errors';
@@ -162,7 +163,8 @@ export class Dispatcher {
     request: DappCip30GatewayRequest,
     authority: Cip30DispatchAuthority,
     context: CapabilityContext,
-    execute: Cip30WalletExecutor
+    execute: Cip30WalletExecutor,
+    preferredInputs: readonly Cip30WalletOutpoint[] = []
   ): Promise<unknown> {
     const capability = this.requireCapability(
       request.method,
@@ -196,7 +198,8 @@ export class Dispatcher {
         const result = getCip30Utxos(
           await this.snapshot(authority, execute),
           amount,
-          paginate
+          paginate,
+          preferredInputs
         );
         if (result?.kind === 'paginate-error') {
           throw new Cip30DispatchRejection({

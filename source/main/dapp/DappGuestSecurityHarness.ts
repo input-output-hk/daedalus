@@ -41,6 +41,7 @@ const fixtureOrigin = 'https://fixture.invalid';
 type HarnessLauncherConfig = {
   cluster?: unknown;
   dappBrowserPolicy?: unknown;
+  dappSandboxPackageCluster?: unknown;
 };
 
 const fixtureHtml = `<!doctype html><meta charset="utf-8"><title>fixture</title><body>fixture</body>`;
@@ -528,7 +529,8 @@ app.whenReady().then(async () => {
     const launcherConfig = JSON.parse(
       fs.readFileSync(launcherConfigPath, 'utf8')
     ) as HarnessLauncherConfig;
-    const packageCluster = launcherConfig.cluster;
+    const packageCluster =
+      launcherConfig.dappSandboxPackageCluster || launcherConfig.cluster;
     if (typeof packageCluster !== 'string')
       throw new Error('Invalid packaged cluster');
     const installRoot =

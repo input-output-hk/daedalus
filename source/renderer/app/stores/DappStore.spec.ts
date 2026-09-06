@@ -108,7 +108,7 @@ describe('DappStore', () => {
       localName: 'Untrusted dApp',
     });
     expect(actions.router.goToRoute.trigger).toHaveBeenCalledWith({
-      route: '/wallets/wallet-a/dapps',
+      route: '/apps/wallet-a',
     });
   });
 

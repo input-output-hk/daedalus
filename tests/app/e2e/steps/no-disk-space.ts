@@ -20,14 +20,13 @@ When(/^I check the disk space$/, function () {
     daedalus.stores.networkStatus._checkDiskSpace();
   }, diskSpaceRequired);
 });
-Then(
-  /^The No Disk Space overlay should be (hidden|visible)$/,
-  function (state) {
-    const waitForHidden = state === 'hidden';
-    return this.client.waitForVisible(
-      NO_DISK_SPACE_COMPONENT,
-      null,
-      waitForHidden
-    );
-  }
-);
+Then(/^The No Disk Space overlay should be (hidden|visible)$/, function (
+  state
+) {
+  const waitForHidden = state === 'hidden';
+  return this.client.waitForVisible(
+    NO_DISK_SPACE_COMPONENT,
+    null,
+    waitForHidden
+  );
+});

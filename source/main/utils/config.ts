@@ -58,7 +58,9 @@ export const readLauncherConfig = (
   configPath: string | null | undefined
 ): LauncherConfig => {
   const inputYaml = configPath ? readFileSync(configPath, 'utf8') : '';
-  const parsed = yamljs.parse(inputYaml);
+  const parsed = inputYaml.trimStart().startsWith('{')
+    ? JSON.parse(inputYaml)
+    : yamljs.parse(inputYaml);
   const finalYaml = recurseReplace(parsed);
   // @ts-ignore
   if (finalYaml === null || finalYaml === []) {

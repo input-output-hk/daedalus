@@ -71,7 +71,7 @@ describe('DappBrowserController', () => {
     });
     expect(manager.launchDiagnostics).not.toHaveBeenCalled();
 
-    navigate?.({}, 'file:///app/index.html#/wallets/wallet-a/dapps', true);
+    navigate?.({}, 'file:///app/index.html#/apps/wallet-a', true);
     await Promise.resolve();
 
     expect(manager.launchDiagnostics).toHaveBeenCalledTimes(1);
@@ -105,7 +105,7 @@ describe('DappBrowserController', () => {
       },
     } as unknown) as Electron.BrowserWindow);
     controller.routeLease.observeTrustedRoute(
-      'file:///app/index.html#/wallets/wallet-a/dapps'
+      'file:///app/index.html#/apps/wallet-a'
     );
 
     startNavigation?.({ isMainFrame: true, isSameDocument: false });
@@ -123,7 +123,7 @@ describe('DappBrowserController', () => {
       [entry]
     );
     controller.routeLease.observeTrustedRoute(
-      'file:///app/index.html#/wallets/wallet-a/dapps'
+      'file:///app/index.html#/apps/wallet-a'
     );
 
     await expect(
@@ -173,7 +173,7 @@ describe('DappBrowserController', () => {
       [entry]
     );
     controller.routeLease.observeTrustedRoute(
-      'file:///app/index.html#/wallets/wallet-a/dapps'
+      'file:///app/index.html#/apps/wallet-a'
     );
 
     await controller.open({ catalogId: 'example', localName: 'Example' });
@@ -195,7 +195,7 @@ describe('DappBrowserController', () => {
       state
     );
     controller.routeLease.observeTrustedRoute(
-      'file:///app/index.html#/wallets/wallet-a/dapps'
+      'file:///app/index.html#/apps/wallet-a'
     );
 
     await controller.open({ catalogId: 'example', localName: 'Example' });
@@ -230,9 +230,9 @@ describe('DappBrowserController', () => {
       localName: 'Untrusted dApp',
     });
 
-    navigate?.({}, 'file:///app/index.html#/wallets/wallet-b/dapps', true);
+    navigate?.({}, 'file:///app/index.html#/apps/wallet-b', true);
     await Promise.resolve();
-    navigate?.({}, 'file:///app/index.html#/wallets/wallet-a/dapps', true);
+    navigate?.({}, 'file:///app/index.html#/apps/wallet-a', true);
     await Promise.resolve();
 
     expect(manager.launchDiagnostics).not.toHaveBeenCalled();

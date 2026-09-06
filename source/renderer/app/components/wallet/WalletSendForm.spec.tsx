@@ -242,6 +242,22 @@ describe('wallet/Wallet Send Form', () => {
     return waitForElementToBeRemoved(transactionFeeSpinner);
   }
 
+  test('renders a fallback when fee failure has no message descriptor', async () => {
+    render(
+      <SetupWallet
+        calculateTransactionFee={jest.fn().mockRejectedValue(new Error('boom'))}
+        validationDebounceWait={0}
+      />
+    );
+    enterReceiverAddress();
+    fireEvent.change(await findInput('Ada'), { target: { value: '5' } });
+    fireEvent.mouseEnter(getInput('Ada'));
+
+    expect(
+      await screen.findByText(/wallet service encountered an internal error/i)
+    ).toBeInTheDocument();
+  });
+
   test('should update Ada input field to minimum required and restore to original value when tokens are removed', async () => {
     expect.assertions(4);
 
@@ -477,7 +493,7 @@ describe('wallet/Wallet Send Form', () => {
     Array<[number, number]>,
     [number, number],
     Array<[number, number]>,
-    [string, string, number],
+    [string, string, number]
   ];
 
   const cases: Cases[] = [

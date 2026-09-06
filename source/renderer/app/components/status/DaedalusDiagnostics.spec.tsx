@@ -77,7 +77,6 @@ const renderComponent = (overrides = {}) =>
 describe('DaedalusDiagnostics', () => {
   afterEach(cleanup);
 
-
   it('labels and launches an arbitrary URL as untrusted with the selected wallet', async () => {
     const onLaunchDapp = jest.fn(() => Promise.resolve());
     renderComponent({

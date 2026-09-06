@@ -20,14 +20,16 @@ const messages = defineMessages({
       'Behind-ness context line (epochs behind the blockchain tip) for the Mithril partial sync confirmation modal',
   },
   behindUnknown: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehindUnknown',
+    id:
+      'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationBehindUnknown',
     defaultMessage:
       '!!!Your node is behind the latest verified snapshot. Mithril Sync will restore verified chain data to help your node sync faster.',
     description:
       'Behind-ness context line shown when the epochs-behind figure is unavailable (tips/epoch missing)',
   },
   atOrPastSnapshot: {
-    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationAtOrPastSnapshot',
+    id:
+      'daedalus.diagnostics.dialog.mithrilPartialSyncConfirmationAtOrPastSnapshot',
     defaultMessage:
       '!!!Your node is at or past the latest Mithril snapshot, so Blockchain Sync can finish the remaining blocks on its own. If sync seems slow or runs into verification issues, continuing will restore a verified ledger state at the snapshot position.',
     description:

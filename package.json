@@ -38,6 +38,7 @@
     "test:e2e:watch:once": "KEEP_APP_AFTER_TESTS=true yarn test:e2e --tags '@e2e and @watch'",
     "test:hardware-wallets": "cross-env ELECTRON_RUN_AS_NODE=1 electron -r @swc-node/register hardware-wallet-tests/index.ts",
     "hardware:ledger:task607": "cross-env ELECTRON_RUN_AS_NODE=1 electron -r @swc-node/register hardware-wallet-tests/task607-ledger.ts",
+    "hardware:ledger:flex-interactive": "cross-env ELECTRON_RUN_AS_NODE=1 electron -r @swc-node/register hardware-wallet-tests/ledger-flex-interactive.ts",
     "cucumber": "cross-env NODE_ENV=test cucumber-js --require-module '@swc-node/register' --require 'tests/setup-common.ts' -f json:tests-report/report-data.json -f summary:tests-report/summary.log -f node_modules/cucumber-pretty:tests-report/results.log --format-options '{\"snippetInterface\": \"async-await\"}' -f node_modules/cucumber-pretty --format-options '{\"snippetInterface\": \"async-await\"}' -f rerun:tests/@rerun.txt",
     "cucumber:run": "yarn cucumber tests",
     "cucumber:fail-fast": "yarn cucumber tests --fail-fast",

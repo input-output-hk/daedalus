@@ -436,7 +436,7 @@ export default class GovernanceStore extends Store {
               label: reference.label,
               uri: reference.uri,
             }))
-          : (detail.metadata?.references ?? []),
+          : detail.metadata?.references ?? [],
         // Only our own read produces these. The wallet reports the canonical
         // fields and nothing else, so there is nothing to fall back to.
         additionalFields: content.additionalFields,

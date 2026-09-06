@@ -308,17 +308,16 @@ export default class BackendStore extends Store {
   };
 
   @action
-  resetChainStorageDirectory =
-    async (): Promise<ChainStorageValidation | null> => {
-      await confirmChainStorageChannel.send({ customPath: null });
-      runInAction(
-        'set chainPathConfirmed after resetChainStorageDirectory',
-        () => {
-          this.chainPathConfirmed = true;
-        }
-      );
-      return null;
-    };
+  resetChainStorageDirectory = async (): Promise<ChainStorageValidation | null> => {
+    await confirmChainStorageChannel.send({ customPath: null });
+    runInAction(
+      'set chainPathConfirmed after resetChainStorageDirectory',
+      () => {
+        this.chainPathConfirmed = true;
+      }
+    );
+    return null;
+  };
 
   @action
   confirmStorageLocation = () => {

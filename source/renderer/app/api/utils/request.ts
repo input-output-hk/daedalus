@@ -123,7 +123,7 @@ function typedRequest<Response>(
         requestBody = JSONBigInt.stringify(rawBodyParams);
         options.headers = {
           'Content-Length': getContentLength(requestBody),
-          'Content-Type': 'application/json; charset=utf-8',
+          'Content-Type': 'application/json',
         };
       }
 
@@ -132,7 +132,7 @@ function typedRequest<Response>(
         // @ts-ignore ts-migrate(2322) FIXME: Type '{ Accept: string; 'Content-Type': string; 'C... Remove this comment to see the full error message
         Accept: isOctetStreamResponse
           ? 'application/octet-stream'
-          : 'application/json; charset=utf-8',
+          : 'application/json',
       };
     }
 

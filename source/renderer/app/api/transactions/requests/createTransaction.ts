@@ -1,8 +1,9 @@
 import type { RequestConfig } from '../../common/types';
 import type { Transaction, TransactionParams } from '../types';
 import { request } from '../../utils/request';
+import { walletInputSelectionChannel } from '../../../ipc/collateral';
 
-export const createTransaction = (
+export const createTransaction = async (
   config: RequestConfig,
   { walletId, data }: TransactionParams
 ): Promise<Transaction> =>
@@ -13,5 +14,5 @@ export const createTransaction = (
       ...config,
     },
     {},
-    data
+    { ...data, ...(await walletInputSelectionChannel.request({ walletId })) }
   );

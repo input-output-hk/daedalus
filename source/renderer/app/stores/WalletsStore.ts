@@ -1180,15 +1180,14 @@ export default class WalletsStore extends Store {
     const { currentRoute } = this.stores.app;
     const hasAnyWalletLoaded = this.hasAnyLoaded;
     const isWalletAddPage = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
-    const dappRoute = matchRoute(ROUTES.WALLETS.DAPPS, currentRoute);
+    const dappRoute = matchRoute(ROUTES.APPS.PAGE, currentRoute);
     runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
       // There are not wallets loaded (yet) -> unset active and return
       if (isWalletAddPage || !hasAnyWalletLoaded)
         return this._unsetActiveWallet();
-      const match = matchRoute(
-        `${ROUTES.WALLETS.ROOT}/:id(*page)`,
-        currentRoute
-      );
+      const match =
+        dappRoute ||
+        matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
 
       if (match) {
         // We have a route for a specific wallet -> let's try to find it

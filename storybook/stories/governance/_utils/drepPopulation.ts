@@ -271,7 +271,8 @@ export const LARGEST_KNOWN_DREP_METADATA = {
     {
       type: 'link',
       label: 'DRep Voting Framework for a Sustainable Cardano Ecosystem',
-      uri: 'https://governance.example.org/notes/drep-voting-framework-for-a-sustainable-ecosystem/index.html',
+      uri:
+        'https://governance.example.org/notes/drep-voting-framework-for-a-sustainable-ecosystem/index.html',
     },
     { type: 'identity', label: 'X (Twitter)', uri: 'https://x.com/example' },
     { type: 'link', label: 'Website', uri: 'https://example.org/' },

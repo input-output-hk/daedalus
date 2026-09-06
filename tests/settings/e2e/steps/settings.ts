@@ -7,13 +7,12 @@ Given(/^I am on the settings screen$/, async function () {
   await navigateTo.call(this, '/settings');
   return this.client.waitForVisible('.SettingsLayout_component');
 });
-Given(
-  /^I should see the "([^"]*)" wallet password dialog$/,
-  function (dialogType) {
-    const selector = `.${dialogType}PasswordDialog`;
-    return this.client.waitForVisible(selector);
-  }
-);
+Given(/^I should see the "([^"]*)" wallet password dialog$/, function (
+  dialogType
+) {
+  const selector = `.${dialogType}PasswordDialog`;
+  return this.client.waitForVisible(selector);
+});
 When(/^I click on the "([^"]*)" password label$/, function (label) {
   const selector = `.${label}Label button`;
   return this.client.click(selector);

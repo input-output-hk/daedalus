@@ -14,7 +14,9 @@ export const getSupportUrl = (locale: string): string => {
   if (locale === 'en-US') return SUPPORT_URL;
   const localeCode = locale.replace('-', '_');
   const supportLanguage = localesFillForm[locale] ?? locale;
-  return `${SUPPORT_URL}?locale=${localeCode}&supportLanguage=${encodeURIComponent(supportLanguage)}`;
+  return `${SUPPORT_URL}?locale=${localeCode}&supportLanguage=${encodeURIComponent(
+    supportLanguage
+  )}`;
 };
 export const generateSupportRequestLink = (
   baseUrl: string,

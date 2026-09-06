@@ -2,8 +2,9 @@ import type { RequestConfig } from '../../common/types';
 import type { QuitStakePoolRequest } from '../types';
 import type { Transaction } from '../../transactions/types';
 import { request } from '../../utils/request';
+import { walletInputSelectionChannel } from '../../../ipc/collateral';
 
-export const quitStakePool = (
+export const quitStakePool = async (
   config: RequestConfig,
   { walletId, passphrase }: QuitStakePoolRequest
 ): Promise<Transaction> =>
@@ -16,5 +17,6 @@ export const quitStakePool = (
     {},
     {
       passphrase,
+      ...(await walletInputSelectionChannel.request({ walletId })),
     }
   );

@@ -5,6 +5,8 @@
   runCommand,
   lib,
   devShell ? false,
+  dappPilot ? false,
+  dappPilotEnabled ? dappPilot,
   topologyOverride ? null,
   configOverride ? null,
   genesisOverride ? null,
@@ -102,9 +104,12 @@ let
       else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
+  mkSpacedName = _: "Daedalus ${installDirectorySuffix}";
 
-  mkSpacedName = network: "Daedalus ${installDirectorySuffix}";
-  spacedName = mkSpacedName network;
+  spacedName =
+    if dappPilot
+    then "Daedalus Mainnet dApp Pilot"
+    else mkSpacedName network;
 
   frontendBinPath = let
     frontendBin.linux = "daedalus-frontend";
@@ -191,7 +196,11 @@ let
   };
 
   dataDir = let
-    path.linux = "\${XDG_DATA_HOME}/Daedalus/${network}";
+    path.linux = "\${XDG_DATA_HOME}/Daedalus/${
+      if dappPilot
+      then "mainnet-dapp-pilot"
+      else network
+    }";
     path.macos64 = "\${HOME}/Library/Application Support/${spacedName}";
     path.macos64-arm = "\${HOME}/Library/Application Support/${spacedName}";
     path.windows = "\${APPDATA}\\${spacedName}";
@@ -271,16 +280,24 @@ let
       nodeImplementation = "cardano";
       dappBrowserPolicy = {
         revision = 1;
-        globalEnabled = os == "windows";
-        preferredCatalogEnabled = false;
+        globalEnabled = os == "windows" || dappPilotEnabled;
+        preferredCatalogEnabled = dappPilotEnabled;
         diagnosticsEnabled = os == "windows";
-        cip104Revision = 1;
+        cip104Revision =
+          if dappPilot
+          then 0
+          else 1;
         cip142Revision = 0;
-        hardwareConnectorRows = [ ];
+        hardwareConnectorRows =
+          lib.optional dappPilotEnabled "ledger:europa:7.3.1:signData";
       };
     }
     // lib.optionalAttrs (os == "linux") {
       applicationUpdateMode = "system-package-disabled";
+    }
+    // lib.optionalAttrs dappPilot {
+      dappSandboxPackageCluster = "mainnet-dapp-pilot";
+      electronStoreDir = "${dataDir}${dirSep}electron-store";
     }
     // lib.optionalAttrs (os != "linux") {
       updateRunnerBin = mkBinPath "update-runner";
@@ -344,25 +361,23 @@ let
         mkNetworkCfg "pre-release-preview"
         "https://aggregator.pre-release-preview.api.mithril.network/aggregator";
     };
-    nodeConfig = let
-      nodeConfigAttrs =
-        if (configOverride == null)
-        then envCfg.nodeConfig
-        else __fromJSON (__readFile configOverride);
-    in
-      builtins.toJSON (filterMonitoring (nodeConfigAttrs
-        // (lib.optionalAttrs (!devShell || network == "local") ({
-            ByronGenesisFile = "genesis-byron.json";
-            ShelleyGenesisFile = "genesis-shelley.json";
-            AlonzoGenesisFile = "genesis-alonzo.json";
+    nodeConfigAttrs =
+      if (configOverride == null)
+      then envCfg.nodeConfig
+      else __fromJSON (__readFile configOverride);
+    nodeConfig = builtins.toJSON (filterMonitoring (nodeConfigAttrs
+      // (lib.optionalAttrs (!devShell || network == "local") ({
+          ByronGenesisFile = "genesis-byron.json";
+          ShelleyGenesisFile = "genesis-shelley.json";
+          AlonzoGenesisFile = "genesis-alonzo.json";
+        }
+        // (
+          if nodeConfigAttrs ? ConwayGenesisFile
+          then {
+            ConwayGenesisFile = "genesis-conway.json";
           }
-          // (
-            if nodeConfigAttrs ? ConwayGenesisFile
-            then {
-              ConwayGenesisFile = "genesis-conway.json";
-            }
-            else {}
-          )))));
+          else {}
+        )))));
     genesisFile = let
       genesisFile'.selfnode = ../../utils/cardano/selfnode/genesis.json;
       genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;
@@ -413,7 +428,9 @@ let
       '';
 
     legacyStateDir =
-      if (network == "mainnet_flight") || (network == "mainnet")
+      if
+        !dappPilot
+        && ((network == "mainnet_flight") || (network == "mainnet"))
       then legacyDataDir
       else dataDir;
 
@@ -456,6 +473,10 @@ let
           network = {
             configFile = mkConfigPath nodeConfigFiles "config.yaml";
             genesisFile = mkConfigPath nodeConfigFiles "genesis.json";
+            genesisHash =
+              if nodeConfigAttrs ? ByronGenesisHash
+              then nodeConfigAttrs.ByronGenesisHash
+              else builtins.hashFile "sha256" genesisFile;
             topologyFile = mkConfigPath nodeConfigFiles "topology.yaml";
           };
         };

@@ -45,7 +45,6 @@ class BackendLifecycle {
   // Setup
   // ---------------------------------------------------------------------------
 
-
   setChainPaths(
     defaultChainPath: string | null,
     customChainPath: string | null
@@ -98,7 +97,7 @@ class BackendLifecycle {
       } else if (eventType === 'mithril_status') {
         consumeIpcResponse(
           mithrilStatusChannel.send(
-            event as unknown as MithrilStatusMainRequest,
+            (event as unknown) as MithrilStatusMainRequest,
             currentWindowSender.sender
           ),
           'MITHRIL_STATUS_CHANNEL'
@@ -125,10 +124,7 @@ class BackendLifecycle {
       } else if (eventType === 'stopped') {
         revokeCip30Sessions();
         consumeIpcResponse(
-          watchdogStoppedChannel.send(
-            undefined,
-            currentWindowSender.sender
-          ),
+          watchdogStoppedChannel.send(undefined, currentWindowSender.sender),
           'WATCHDOG_STOPPED_CHANNEL'
         );
       }

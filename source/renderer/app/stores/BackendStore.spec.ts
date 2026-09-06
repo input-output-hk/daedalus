@@ -9,8 +9,8 @@ import { noopAnalyticsTracker } from '../analytics';
 // registered.  We exercise observable state and action handlers directly.
 
 function makeStore() {
-  const api = { ada: jest.fn(), localStorage: jest.fn() } as unknown as Api;
-  const actions = jest.fn() as unknown as ActionsMap;
+  const api = ({ ada: jest.fn(), localStorage: jest.fn() } as unknown) as Api;
+  const actions = (jest.fn() as unknown) as ActionsMap;
   return new BackendStore(api, actions, noopAnalyticsTracker);
 }
 

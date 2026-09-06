@@ -8,8 +8,10 @@ import type {
 } from '../../common/ipc/api';
 
 export const generateFileMetaChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcChannel<GenerateFileMetaRendererRequest, GenerateFileMetaMainResponse> =
-  new MainIpcChannel(GENERATE_FILE_META_CHANNEL);
+MainIpcChannel<
+  GenerateFileMetaRendererRequest,
+  GenerateFileMetaMainResponse
+> = new MainIpcChannel(GENERATE_FILE_META_CHANNEL);
 export const handleFileMetaRequests = () => {
   generateFileMetaChannel.onReceive(
     (request: GenerateFileMetaRendererRequest) =>

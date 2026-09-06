@@ -185,7 +185,8 @@ storiesOf('Governance / DRep Detail', module)
             key: 'bio',
             value: {
               kind: 'text' as const,
-              text: "I'm a Cardano contributor and stake pool operator, active in Catalyst since fund 8 and voting on every governance action since the Chang hard fork.",
+              text:
+                "I'm a Cardano contributor and stake pool operator, active in Catalyst since fund 8 and voting on every governance action since the Chang hard fork.",
             },
           },
           {
@@ -200,7 +201,8 @@ storiesOf('Governance / DRep Detail', module)
             key: 'rationale',
             value: {
               kind: 'text' as const,
-              text: 'My rationale for decision-making starts from the constitution and the long-term health of the treasury rather than from short-term price.',
+              text:
+                'My rationale for decision-making starts from the constitution and the long-term health of the treasury rather than from short-term price.',
             },
           },
           {
@@ -228,7 +230,8 @@ storiesOf('Governance / DRep Detail', module)
             key: 'proofOfWorkStatementIdentifierWithNoWordBreaksAnywhereAtAll',
             value: {
               kind: 'text' as const,
-              text: 'aVeryLongUnbrokenTokenWithNoSpacesOrHyphensThatMustNotPushTheColumnOffTheRightEdgeOfTheCardOrTheDialogItIsRenderedInsideOfAnywhereAtAll',
+              text:
+                'aVeryLongUnbrokenTokenWithNoSpacesOrHyphensThatMustNotPushTheColumnOffTheRightEdgeOfTheCardOrTheDialogItIsRenderedInsideOfAnywhereAtAll',
             },
           },
           // A key shaped like markup and a claim shaped like an endorsement:
@@ -391,8 +394,10 @@ storiesOf('Governance / DRep Detail', module)
       verifiedName: null,
       metadata: null,
       anchor: {
-        url: 'ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi',
-        hash: '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
+        url:
+          'ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi',
+        hash:
+          '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
       },
     })
   )

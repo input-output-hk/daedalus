@@ -6,6 +6,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!Wallets',
     description: 'Text for the tooltip of wallets category',
   },
+  apps: {
+    id: 'sidebar.categoryTooltip.apps',
+    defaultMessage: '!!!Apps',
+    description: 'Text for the tooltip of apps category',
+  },
   staking: {
     id: 'sidebar.categoryTooltip.staking',
     defaultMessage: '!!!Staking',

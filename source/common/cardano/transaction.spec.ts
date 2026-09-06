@@ -109,6 +109,31 @@ describe('Conway semantic transaction', () => {
     });
   });
 
+  it('preserves a shared spending/collateral input while rejecting reference overlap', () => {
+    const shared = input(1);
+    const bodyValue = new Map<number, unknown>([
+      [0, [shared]],
+      [1, []],
+      [2, 0],
+      [13, [shared]],
+    ]);
+    const transaction = decodeConwayTransaction(parse(bodyValue));
+    const expectedInput = {
+      transactionId: Buffer.alloc(32, 1).toString('hex'),
+      index: BigInt(0),
+    };
+    expect(transaction.inputs.normal).toMatchObject([expectedInput]);
+    expect(transaction.inputs.collateral).toMatchObject([expectedInput]);
+    bodyValue.set(18, [shared]);
+    expect(() => decodeConwayTransaction(parse(bodyValue))).toThrow(
+      TransactionSemanticError
+    );
+    bodyValue.set(0, [input(2)]);
+    expect(() => decodeConwayTransaction(parse(bodyValue))).toThrow(
+      TransactionSemanticError
+    );
+  });
+
   it('normalizes every Conway body field without consulting hardware support', () => {
     const nativeScript = [0, keyHash];
     const policyId = Buffer.from(

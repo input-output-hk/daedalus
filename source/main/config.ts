@@ -81,6 +81,8 @@ type LauncherConfigBase = {
   mithrilGenesisVkey?: string;
   mithrilAncillaryVkey?: string;
   dappBrowserPolicy?: unknown;
+  dappSandboxPackageCluster?: string;
+  electronStoreDir?: string;
 };
 
 type InstallerManagedApplicationUpdateConfig = {

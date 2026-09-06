@@ -83,13 +83,15 @@ const toStoryVerifiedName = (option: string) =>
         name: text('Verified name', 'Daedalus Test DRep'),
       };
 
-const initializeTxErrorOptions: Record<string, InitializeVPDelegationTxError> =
-  {
-    Generic: 'generic',
-    'Same vote': 'same_vote',
-    'No UTxOs available': 'no_utxos_available',
-    'Not enough money': 'not_enough_money',
-  };
+const initializeTxErrorOptions: Record<
+  string,
+  InitializeVPDelegationTxError
+> = {
+  Generic: 'generic',
+  'Same vote': 'same_vote',
+  'No UTxOs available': 'no_utxos_available',
+  'Not enough money': 'not_enough_money',
+};
 
 const delegateVotesErrorOptions: Record<string, DelegateVotesError> = {
   Generic: 'generic',
@@ -103,7 +105,7 @@ const hwDeviceStatusOptions = {
   Failed: HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED,
 };
 
-const STAKE_POOLS_LIST = STAKE_POOLS as unknown as Array<StakePool>;
+const STAKE_POOLS_LIST = (STAKE_POOLS as unknown) as Array<StakePool>;
 
 const mockFundInfo: CatalystFund = {
   current: {
@@ -184,16 +186,16 @@ const governanceStoryDecorator = (story: () => React.ReactNode) => (
 
 // A wallet already chosen and a DRep already in the form, which is how this
 // screen opens when it is reached from the directory rather than the sidebar.
-const makeFetchDRep =
-  (drepIndex: ReadonlyMap<string, AppDRepDirectoryEntry>) =>
-  async (drepId: string) => {
-    const entry = drepIndex.get(drepId.toLowerCase()) ?? null;
-    action('onFetchDRep')(drepId, entry);
-    // Rejecting is what the store does for a DRep it cannot find, and it is
-    // what tells the panel to stop saying "loading".
-    if (entry == null) throw new Error(`No DRep entry for ${drepId}`);
-    return entry;
-  };
+const makeFetchDRep = (
+  drepIndex: ReadonlyMap<string, AppDRepDirectoryEntry>
+) => async (drepId: string) => {
+  const entry = drepIndex.get(drepId.toLowerCase()) ?? null;
+  action('onFetchDRep')(drepId, entry);
+  // Rejecting is what the store does for a DRep it cannot find, and it is
+  // what tells the panel to stop saying "loading".
+  if (entry == null) throw new Error(`No DRep entry for ${drepId}`);
+  return entry;
+};
 
 const renderPrefilledPanel = (
   option: CurrentVoteOption,
