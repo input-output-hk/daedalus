@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- Correct transaction CSV exports to label expired transactions as failed instead of confirmed.
+
 ## 11.3.0
 
 ### Features

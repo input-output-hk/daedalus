@@ -627,6 +627,11 @@
         "id": "wallet.transactions.csv.value.statusPending"
       },
       {
+        "defaultMessage": "!!!Failed",
+        "description": "Transactions CSV value - Status Failed",
+        "id": "wallet.transactions.csv.value.statusFailed"
+      },
+      {
         "defaultMessage": "!!!Transactions",
         "description": "Transactions CSV \"Transactions\" filename",
         "id": "wallet.transactions.csv.filenamePrefix"
