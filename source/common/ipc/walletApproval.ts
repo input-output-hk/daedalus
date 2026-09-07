@@ -1,6 +1,6 @@
 import type {
-  DappConsentPresentation,
-  DappConsentRenderMainRequest,
+  WalletApprovalPresentation,
+  WalletApprovalRenderMainRequest,
 } from './api';
 import { parseCip30TransactionReview } from '../cip30/review';
 import { parseCip103BatchReview } from '../cip30/cip103Review';
@@ -12,8 +12,23 @@ const hasKeys = (value: Record<string, unknown>, keys: readonly string[]) =>
   Object.keys(value).sort().join('\0') === [...keys].sort().join('\0');
 const isText = (value: unknown): value is string =>
   typeof value === 'string' && value.length > 0;
+const parseAuthorization = (value: unknown) => {
+  if (!isRecord(value))
+    throw new Error('Invalid wallet approval authorization');
+  if (value.kind === 'software' && hasKeys(value, ['kind']))
+    return Object.freeze({ kind: 'software' as const });
+  if (
+    value.kind === 'hardware' &&
+    (value.vendor === 'ledger' || value.vendor === 'trezor') &&
+    hasKeys(value, ['kind', 'vendor'])
+  )
+    return Object.freeze({ kind: 'hardware' as const, vendor: value.vendor });
+  if (value.kind === 'none' && hasKeys(value, ['kind']))
+    return Object.freeze({ kind: 'none' as const });
+  throw new Error('Invalid wallet approval authorization');
+};
 
-const parsePresentation = (value: unknown): DappConsentPresentation => {
+const parsePresentation = (value: unknown): WalletApprovalPresentation => {
   if (!isRecord(value)) throw new Error('Invalid dApp consent presentation');
   const transaction =
     value.kind === 'transaction-sign' || value.kind === 'transaction-submit';
@@ -29,6 +44,7 @@ const parsePresentation = (value: unknown): DappConsentPresentation => {
       'scopes',
       'extensions',
       ...(hasReview ? ['review'] : []),
+      ...(transaction || batch ? ['authorization'] : []),
     ]) ||
     !isText(value.requestId) ||
     ![
@@ -63,22 +79,28 @@ const parsePresentation = (value: unknown): DappConsentPresentation => {
   if (transaction) {
     const kind = value.kind as 'transaction-sign' | 'transaction-submit';
     const review = parseCip30TransactionReview(value.review);
+    const authorization = parseAuthorization(value.authorization);
     if (
-      (kind === 'transaction-sign' && review.mode !== 'sign') ||
-      (kind === 'transaction-submit' && review.mode !== 'submit')
+      (kind === 'transaction-sign' &&
+        (review.mode !== 'sign' || authorization.kind === 'none')) ||
+      (kind === 'transaction-submit' &&
+        (review.mode !== 'submit' || authorization.kind !== 'none'))
     )
-      throw new Error('Invalid dApp consent presentation');
-    return Object.freeze({ ...identity, kind, review });
+      throw new Error('Invalid wallet approval presentation');
+    return Object.freeze({ ...identity, kind, authorization, review });
   }
   if (batch) {
     const kind = value.kind as 'batch-sign' | 'batch-submit';
     const review = parseCip103BatchReview(value.review);
+    const authorization = parseAuthorization(value.authorization);
     if (
-      (kind === 'batch-sign' && review.mode !== 'sign') ||
-      (kind === 'batch-submit' && review.mode !== 'submit')
+      (kind === 'batch-sign' &&
+        (review.mode !== 'sign' || authorization.kind === 'none')) ||
+      (kind === 'batch-submit' &&
+        (review.mode !== 'submit' || authorization.kind !== 'none'))
     )
-      throw new Error('Invalid dApp consent presentation');
-    return Object.freeze({ ...identity, kind, review });
+      throw new Error('Invalid wallet approval presentation');
+    return Object.freeze({ ...identity, kind, authorization, review });
   }
   if (value.kind === 'data-sign')
     return Object.freeze({
@@ -92,9 +114,9 @@ const parsePresentation = (value: unknown): DappConsentPresentation => {
   });
 };
 
-export const parseDappConsentRender = (
+export const parseWalletApprovalRender = (
   value: unknown
-): DappConsentRenderMainRequest => {
+): WalletApprovalRenderMainRequest => {
   if (!isRecord(value)) throw new Error('Invalid dApp consent render request');
   if (
     value.type === 'terminal' &&
@@ -102,6 +124,33 @@ export const parseDappConsentRender = (
     hasKeys(value, ['type', 'requestId'])
   )
     return Object.freeze({ type: 'terminal', requestId: value.requestId });
+  if (
+    value.type === 'progress' &&
+    isText(value.requestId) &&
+    ['signing', 'waiting-for-device', 'submitting'].includes(
+      value.phase as string
+    ) &&
+    typeof value.submissionAuthorized === 'boolean' &&
+    (value.itemIndex === undefined ||
+      (Number.isSafeInteger(value.itemIndex) &&
+        Number(value.itemIndex) >= 0)) &&
+    hasKeys(value, [
+      'type',
+      'requestId',
+      'phase',
+      ...(value.itemIndex === undefined ? [] : ['itemIndex']),
+      'submissionAuthorized',
+    ])
+  )
+    return Object.freeze({
+      type: 'progress',
+      requestId: value.requestId,
+      phase: value.phase as 'signing' | 'waiting-for-device' | 'submitting',
+      ...(value.itemIndex === undefined
+        ? {}
+        : { itemIndex: Number(value.itemIndex) }),
+      submissionAuthorized: value.submissionAuthorized,
+    });
   if (value.type === 'present' && hasKeys(value, ['type', 'request']))
     return Object.freeze({
       type: 'present',

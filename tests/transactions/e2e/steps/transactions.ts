@@ -153,23 +153,23 @@ When(/^I click on the next button in the wallet send form$/, async function () {
   return this.client.click(submitButton);
 });
 When(/^I see send money confirmation dialog$/, function () {
-  return this.client.waitForVisible('.WalletSendConfirmationDialog_dialog');
+  return this.client.waitForVisible('.TransactionApprovalDialog_component');
 });
 When(
   /^I enter wallet spending password in confirmation dialog "([^"]*)"$/,
   async function (password) {
     await this.client.setValue(
-      '.WalletSendConfirmationDialog_passphrase input',
+      '.TransactionApprovalDialog_component input[type="password"]',
       password
     );
   }
 );
 When(/^I submit the wallet send form$/, async function () {
   await this.client.waitForEnabled(
-    '.WalletSendConfirmationDialog_dialog .confirmButton'
+    '.TransactionApprovalDialog_component .confirmButton'
   );
   return this.client.click(
-    '.WalletSendConfirmationDialog_dialog .confirmButton'
+    '.TransactionApprovalDialog_component .confirmButton'
   );
 });
 When(/^I open the transactions filter$/, async function () {
@@ -223,7 +223,7 @@ Then(
   /^I should see the following error messages on the wallet send confirmation dialog:$/,
   async function (data) {
     const errorSelector =
-      '.WalletSendConfirmationDialog_dialog .WalletSendConfirmationDialog_error';
+      '.TransactionApprovalDialog_component .TransactionApprovalDialog_error';
     let errorsOnScreen = await this.waitAndGetText(errorSelector);
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();

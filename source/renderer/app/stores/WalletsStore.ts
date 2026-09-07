@@ -3,7 +3,10 @@ import { get, find, findIndex, isEqual, includes } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
+import Wallet, {
+  WalletSyncStateStatuses,
+  WalletUnits,
+} from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
@@ -52,6 +55,8 @@ import type {
   TransferFundsRequest,
 } from '../api/wallets/types';
 import type { QuitStakePoolRequest } from '../api/staking/types';
+import type { ConstructTransactionData } from '../api/transactions/types';
+import type { NativeTransactionAction } from '../../../common/transactions/nativePlan';
 import type {
   TransportDevice,
   HardwareWalletExtendedPublicKeyResponse,
@@ -59,6 +64,10 @@ import type {
 import { NetworkMagics } from '../../../common/types/cardano-node.types';
 import { EventCategories } from '../analytics';
 import { getEventNameFromWallet } from '../analytics/utils/getEventNameFromWallet';
+import { LOVELACES_PER_ADA } from '../config/numbersConfig';
+import { getHardwareWalletsNetworkConfig } from '../config/hardwareWalletsConfig';
+import { reconcileTransactionContext } from '../../../common/cardano/transactionContext';
+import { verifySignedNativeTransaction } from '../../../common/transactions/nativeSigning';
 /* eslint-disable consistent-return */
 
 /**
@@ -805,6 +814,121 @@ export default class WalletsStore extends Store {
       });
     }
   };
+  submitConstructedNativeTransaction = async ({
+    walletId,
+    data,
+    action: nativeAction,
+  }: {
+    walletId: string;
+    data: ConstructTransactionData['data'];
+    action: NativeTransactionAction;
+  }): Promise<{ id: string }> => {
+    const wallet = this.getWalletById(walletId);
+    if (!wallet)
+      throw new Error('Wallet required before preparing transaction');
+    const networkConfig = getHardwareWalletsNetworkConfig(
+      global.environment.network
+    );
+    const genesisHash = this.stores.networkStatus.genesisBlockHash;
+    if (!genesisHash || !/^[0-9a-f]{64}$/u.test(genesisHash))
+      throw new Error('Network genesis hash is unavailable');
+    const network = {
+      networkId: networkConfig.networkId as 0 | 1,
+      networkMagic: networkConfig.protocolMagic,
+      genesisHash,
+    };
+    const result = await this.stores.walletApproval.nativeTransactions.run({
+      walletId,
+      ownerSignal: new AbortController().signal,
+      prepare: async () => {
+        const constructed = await this.api.ada.constructTransaction({
+          walletId,
+          data,
+        });
+        const rawContext = await this.api.ada.getDappTransactionContext({
+          walletId,
+          request: {
+            revision: 1,
+            network: {
+              network_id: network.networkId,
+              network_magic: network.networkMagic,
+              genesis_hash: network.genesisHash,
+            },
+            transactions: [constructed.transaction],
+          },
+        });
+        const snapshot = reconcileTransactionContext(rawContext, {
+          walletId,
+          network,
+          transactions: [constructed.transaction],
+        });
+        return Object.freeze({
+          walletId,
+          network,
+          action: nativeAction,
+          authorization: 'software' as const,
+          items: Object.freeze([
+            Object.freeze({
+              kind: 'exact-cbor' as const,
+              cbor: constructed.transaction,
+              transactionContext: snapshot,
+              selectionFacts: Object.freeze({
+                deposits: constructed.coinSelection.deposits
+                  .times(LOVELACES_PER_ADA)
+                  .toFixed(0),
+                refunds: constructed.coinSelection.depositsReclaimed
+                  .times(LOVELACES_PER_ADA)
+                  .toFixed(0),
+              }),
+            }),
+          ]),
+          context: Object.freeze({
+            walletName: wallet.name,
+            networkName: global.environment.network,
+          }),
+        });
+      },
+      execute: async (prepared, passphrase, signal, markSubmitting) => {
+        const item = prepared.items[0];
+        if (item.kind !== 'exact-cbor')
+          return Object.freeze({
+            status: 'rejected' as const,
+            errorCode: 'transaction_plan_changed',
+          });
+        const signed = await this.api.ada.signTransaction({
+          walletId,
+          transaction: item.cbor,
+          passphrase: passphrase || '',
+        });
+        const transaction = verifySignedNativeTransaction(
+          item.cbor,
+          signed.transaction
+        );
+        if (signal.aborted)
+          return Object.freeze({
+            status: 'rejected' as const,
+            errorCode: 'cancelled',
+          });
+        await markSubmitting();
+        const submitted = await this.api.ada.submitTransaction({
+          walletId,
+          transaction,
+        });
+        return Object.freeze({
+          status: 'submitted' as const,
+          transactionIds: Object.freeze([submitted.id]),
+        });
+      },
+    });
+    if (result.status !== 'submitted')
+      throw new Error(
+        'errorCode' in result
+          ? result.errorCode
+          : 'Transaction was not submitted'
+      );
+    return { id: result.transactionIds[0] };
+  };
+
   _sendMoney = async ({
     receiver,
     amount,
@@ -816,7 +940,7 @@ export default class WalletsStore extends Store {
   }: {
     receiver: string;
     amount: string;
-    passphrase: string;
+    passphrase?: string;
     assets?: Array<AssetToken>;
     assetsAmounts?: Array<string>;
     hasAssetsRemainingAfterTransaction?: boolean;
@@ -850,20 +974,37 @@ export default class WalletsStore extends Store {
      * Do not try to catch the request error here, its intended to throw
      * a localized error created in app/api/api.ts
      */
-    let transaction: WalletTransaction | undefined;
-    // @ts-ignore
-    await this.stores.transactions.withWalletSendLock(wallet.id, async () => {
-      // @ts-ignore
+    let transaction: { id: string } | undefined;
+    if (wallet.isLegacy) {
       transaction = await this.sendMoneyRequest.execute({
         address: receiver,
         amount: parseInt(amount, 10),
-        passphrase,
+        passphrase: passphrase || '',
         walletId: wallet.id,
-        isLegacy: wallet.isLegacy,
+        isLegacy: true,
         assets: formattedAssets,
         hasAssetsRemainingAfterTransaction,
+      }).promise;
+    } else {
+      transaction = await this.submitConstructedNativeTransaction({
+        walletId: wallet.id,
+        action: isCollateralPreparation ? 'collateral-preparation' : 'payment',
+        data: {
+          encoding: 'base16',
+          payments: [
+            {
+              address: receiver,
+              amount: {
+                quantity: new BigNumber(amount),
+                unit: WalletUnits.LOVELACE,
+              },
+              ...(formattedAssets?.length ? { assets: formattedAssets } : {}),
+            },
+          ],
+          withdrawal: 'self',
+        },
       });
-    });
+    }
     if (isCollateralPreparation) {
       if (!transaction) throw new Error('Collateral preparation was not sent');
       await this.stores.collateral.trackPreparation(transaction.id);

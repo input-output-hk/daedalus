@@ -1,8 +1,8 @@
 import type { BrowserWindow } from 'electron';
-import { DAPP_CONSENT_RENDER_CHANNEL } from '../../common/ipc/api';
+import { WALLET_APPROVAL_RENDER_CHANNEL } from '../../common/ipc/api';
 import type {
-  DappConsentRenderMainRequest,
-  DappConsentRenderRendererResponse,
+  WalletApprovalRenderMainRequest,
+  WalletApprovalRenderRendererResponse,
 } from '../../common/ipc/api';
 import { parseDappApprovalDecision } from '../../common/cip30/schemas';
 import { ConsentCoordinator } from '../cip30/ConsentCoordinator';
@@ -18,9 +18,9 @@ import {
 } from './lib/currentWindowSender';
 
 const renderChannel = new MainIpcChannel<
-  DappConsentRenderRendererResponse,
-  DappConsentRenderMainRequest
->(DAPP_CONSENT_RENDER_CHANNEL);
+  WalletApprovalRenderRendererResponse,
+  WalletApprovalRenderMainRequest
+>(WALLET_APPROVAL_RENDER_CHANNEL);
 const accountChange = Object.freeze({
   type: 'api-error' as const,
   value: Object.freeze({ code: -4, info: 'Account changed' }),
@@ -46,6 +46,20 @@ export const consentCoordinator = new ConsentCoordinator({
       decision.passphrase
     );
   },
+  progress: async (requestId, phase, itemIndex, submissionAuthorized) => {
+    await awaitIpcResponse(
+      renderChannel.request(
+        {
+          type: 'progress',
+          requestId,
+          phase,
+          ...(itemIndex === undefined ? {} : { itemIndex }),
+          submissionAuthorized,
+        },
+        currentWindowSender.sender
+      )
+    );
+  },
   terminal: async (requestId) => {
     await awaitIpcResponse(
       renderChannel.request(
@@ -57,10 +71,10 @@ export const consentCoordinator = new ConsentCoordinator({
   setGuestHidden: setDappBrowserConsentPending,
 });
 
-export const handleDappConsentRequests = (window: BrowserWindow): void => {
+export const handleWalletApprovalRequests = (window: BrowserWindow): void => {
   setDappConsentLifecycleRevoker((reason) =>
     consentCoordinator.cancel(
-      () => true,
+      (identity) => identity.kind === 'dapp',
       changesAccount(reason) ? accountChange : undefined
     )
   );

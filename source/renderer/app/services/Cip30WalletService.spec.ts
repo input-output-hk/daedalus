@@ -16,6 +16,9 @@ import { Cip30WalletService } from './Cip30WalletService';
 jest.mock('../ipc/cip30Wallet', () => ({
   bindCip30WalletRenderer: jest.fn(() => jest.fn()),
 }));
+jest.mock('../ipc/nativeTransactionApproval', () => ({
+  reportWalletApprovalProgress: jest.fn(async () => ({ status: 'accepted' })),
+}));
 jest.mock('../api/transactions/dappBackend', () => ({
   validateDappTransactionContext: jest.fn((value) => value),
 }));
@@ -78,6 +81,7 @@ const transactionContextRequest = {
 };
 const signTransactionsRequest = {
   operation: 'sign-transactions' as const,
+  approvalRequestId: 'approval',
 
   walletId: 'wallet',
   network,
@@ -542,6 +546,7 @@ describe('Cip30WalletService', () => {
     });
     const hardwareRequest = {
       operation: 'sign-transactions' as const,
+      approvalRequestId: 'approval',
       walletId: 'wallet',
       network,
       sourceRevision: '22'.repeat(20),

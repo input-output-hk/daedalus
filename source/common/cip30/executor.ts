@@ -46,6 +46,7 @@ export type Cip30WalletRequest = Cip30WalletRequestIdentity &
       }>
     | Readonly<{
         operation: 'sign-transactions';
+        approvalRequestId: string;
         context: unknown;
         transactions: readonly Readonly<{
           cbor: string;
@@ -357,7 +358,7 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
   else if (operation === 'collateral-history')
     keys = [...keys, 'preferredInputs'];
   else if (operation === 'sign-transactions') {
-    keys = [...keys, 'context', 'transactions'];
+    keys = [...keys, 'approvalRequestId', 'context', 'transactions'];
     if (Object.prototype.hasOwnProperty.call(value, 'passphrase'))
       keys = [...keys, 'passphrase'];
   } else if (operation === 'submit-transaction')
@@ -450,6 +451,7 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     const passphrase =
       hasPassphrase && text(value.passphrase) ? value.passphrase : undefined;
     if (
+      !text(value.approvalRequestId) ||
       !plainData(value.context) ||
       !Array.isArray(value.transactions) ||
       value.transactions.length < 1 ||
@@ -466,6 +468,7 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     return Object.freeze({
       ...identity,
       operation,
+      approvalRequestId: value.approvalRequestId as string,
       context: JSON.parse(JSON.stringify(value.context)),
       transactions: Object.freeze(
         value.transactions.map((transaction) =>

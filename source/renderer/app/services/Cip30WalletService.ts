@@ -6,6 +6,7 @@ import type {
 import type { Api } from '../api';
 import type WalletAddress from '../domains/WalletAddress';
 import { bindCip30WalletRenderer } from '../ipc/cip30Wallet';
+import { reportWalletApprovalProgress } from '../ipc/nativeTransactionApproval';
 import type { StoresMap } from '../stores';
 import { validateDappTransactionContext } from '../api/transactions/dappBackend';
 import { reconcileTransactionContext } from '../../../common/cardano/transactionContext';
@@ -363,6 +364,11 @@ export class Cip30WalletService {
             index,
             { partialSign },
           ] of request.transactions.entries()) {
+            await reportWalletApprovalProgress(
+              request.approvalRequestId,
+              'waiting-for-device',
+              index
+            ).catch(() => undefined);
             const preparation = prepareHardwareTransaction(
               snapshot,
               index,
@@ -402,6 +408,10 @@ export class Cip30WalletService {
             }),
           });
         }
+        await reportWalletApprovalProgress(
+          request.approvalRequestId,
+          'signing'
+        ).catch(() => undefined);
         if (!request.passphrase)
           return Object.freeze({
             status: 'rejected',

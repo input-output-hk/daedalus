@@ -59,7 +59,8 @@ export class Cip103ContextService {
       const review = createCip103BatchReview(
         batch,
         resolution,
-        snapshot.transactionsSemantic
+        snapshot.transactionsSemantic,
+        snapshot
       );
       return Object.freeze({
         state: 'context-resolved',

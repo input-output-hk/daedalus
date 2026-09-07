@@ -66,7 +66,6 @@ import type {
 } from './transactions/dappBackend';
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
-import { delegateVotes } from './voting/requests/delegateVotes';
 import { getCatalystFund } from './voting/requests/getCatalystFund';
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
@@ -241,9 +240,7 @@ import type {
 import type {
   CreateVotingRegistrationRequest,
   CreateWalletSignatureRequest,
-  GetCatalystFundResponse,
   CatalystFund,
-  DelegateVotesParams,
 } from './voting/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import { TlsCertificateNotValidError } from './nodes/errors';
@@ -266,6 +263,8 @@ import { doesWalletRequireAdaToRemainToSupportTokens } from './utils/apiHelpers'
 import { AssetLocalData } from '../types/localDataTypes';
 import { handleNotEnoughMoneyError } from './errors';
 import { constructTransaction } from './transactions/requests/constructTransaction';
+import { signTransaction as signFrozenTransaction } from './transactions/requests/signTransaction';
+import { submitTransaction as submitFrozenTransaction } from './transactions/requests/submitTransaction';
 
 const parseCoinSelectionResponse = ({
   delegation,
@@ -327,6 +326,7 @@ const parseCoinSelectionResponse = ({
         certificateType: certificate.certificate_type,
         rewardAccountPath: certificate.reward_account_path,
         pool: certificate.pool || null,
+        ...(certificate.vote ? { vote: certificate.vote } : {}),
       };
       // @ts-ignore ts-migrate(2339) FIXME: Property 'push' does not exist on type '{}'.
       certificatesData.push(certificateData);
@@ -344,12 +344,12 @@ const parseCoinSelectionResponse = ({
   const deposits = depositsArray.length
     ? BigNumber.sum.apply(null, depositsArray)
     : new BigNumber(0);
-  // @TODO - Use API response
-  // https://bump.sh/doc/cardano-wallet-diff/changes/c11ebb1b-39c1-40b6-96b9-610705c62cb8#operation-selectcoins-200-deposits_returned
-  const depositsReclaimed =
-    delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
-      ? new BigNumber(DELEGATION_DEPOSIT).multipliedBy(LOVELACES_PER_ADA)
-      : new BigNumber(0);
+  const depositsReturned = map(response.deposits_returned, (deposit) =>
+    deposit.quantity.toString()
+  );
+  const depositsReclaimed = depositsReturned.length
+    ? BigNumber.sum.apply(null, depositsReturned)
+    : new BigNumber(0);
   const withdrawalsArray = map(response.withdrawals, (withdrawal) =>
     withdrawal.amount.quantity.toString()
   );
@@ -1339,7 +1339,7 @@ export default class AdaApi {
   };
 
   constructTransaction = async (params: ConstructTransactionData) => {
-    logger.debug('AdaApi::delegateVotes called', {
+    logger.debug('AdaApi::constructTransaction called', {
       parameters: filterLogData(params),
     });
 
@@ -1368,6 +1368,28 @@ export default class AdaApi {
         error,
       });
 
+      throw new ApiError(error).result();
+    }
+  };
+  signTransaction = async (params: {
+    walletId: string;
+    transaction: string;
+    passphrase: string;
+  }): Promise<{ transaction: string }> => {
+    try {
+      return await signFrozenTransaction(this.config, params);
+    } catch (error) {
+      throw new ApiError(error).result();
+    }
+  };
+
+  submitTransaction = async (params: {
+    walletId: string;
+    transaction: string;
+  }): Promise<{ id: string }> => {
+    try {
+      return await submitFrozenTransaction(this.config, params);
+    } catch (error) {
       throw new ApiError(error).result();
     }
   };
@@ -2963,27 +2985,6 @@ export default class AdaApi {
         error,
       });
       throw new ApiError(error);
-    }
-  };
-
-  delegateVotes = async (params: DelegateVotesParams) => {
-    logger.debug('AdaApi::delegateVotes called', {
-      parameters: filterLogData(params),
-    });
-
-    try {
-      const response = await delegateVotes(this.config, params);
-      logger.debug('AdaApi::delegateVotes success', {
-        response,
-      });
-
-      return response;
-    } catch (error) {
-      logger.error('AdaApi::delegateVotes error', {
-        error,
-      });
-
-      throw new ApiError(error).result();
     }
   };
 

@@ -5,7 +5,7 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import StakingUnavailable from '../../components/staking/StakingUnavailable';
 import StakingWithNavigation from '../../components/staking/layouts/StakingWithNavigation';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
-import UndelegateWalletConfirmationDialog from '../../components/wallet/settings/UndelegateWalletConfirmationDialog';
+import UndelegateWalletDialogContainer from '../wallet/dialogs/settings/UndelegateWalletDialogContainer';
 import { ROUTES } from '../../routes-config';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
@@ -94,7 +94,7 @@ class Staking extends Component<Props> {
       DelegationSetupWizardDialog
     );
     const isUndelegationWizardOpen = uiDialogs.isOpen(
-      UndelegateWalletConfirmationDialog
+      UndelegateWalletDialogContainer
     );
 
     if (!isSynced && !(isDelegationWizardOpen || isUndelegationWizardOpen)) {

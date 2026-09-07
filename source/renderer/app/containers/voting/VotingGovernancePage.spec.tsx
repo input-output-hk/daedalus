@@ -21,8 +21,6 @@ import { daedalusTheme } from '../../themes/daedalus';
 import { themeOverrides } from '../../themes/overrides';
 import { ROUTES } from '../../routes-config';
 import { logger } from '../../utils/logging';
-import { HwDeviceStatuses } from '../../domains/Wallet';
-import type { HwDeviceStatus } from '../../domains/Wallet';
 import { GovernanceRefreshState } from '../../stores/GovernanceStore';
 import type { DelegationNavState } from '../../stores/GovernanceStore';
 import { DEFAULT_DREP_COHORT_CRITERIA } from '../../components/governance/_shared/drepCohort';
@@ -61,27 +59,6 @@ jest.mock('../../components/widgets/forms/WalletsDropdown', () => {
   };
 });
 
-const mockDialogProps: Array<Record<string, unknown>> = [];
-
-// The recorder wraps the real dialog, so the rendered DOM the other flow tests
-// assert on is unchanged; only the prop object is captured.
-jest.mock(
-  '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog',
-  () => {
-    const actual = jest.requireActual(
-      '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog'
-    );
-    const { createElement } = jest.requireActual('react');
-    return {
-      __esModule: true,
-      default: function DialogPropsRecorder(props: Record<string, unknown>) {
-        mockDialogProps.push(props);
-        return createElement(actual.default, props);
-      },
-    };
-  }
-);
-
 const VALID_DREP_ID =
   'drep1ygqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq7vlc9n';
 const OTHER_DREP_ID =
@@ -92,14 +69,6 @@ const softwareWallet = {
   id: WALLET_ID,
   name: 'Software Wallet',
   isHardwareWallet: false,
-} as any;
-
-const HW_WALLET_ID = 'hw-wallet-1';
-
-const hardwareWallet = {
-  id: HW_WALLET_ID,
-  name: 'HW Flow Wallet',
-  isHardwareWallet: true,
 } as any;
 
 const drepEntry = {
@@ -137,21 +106,12 @@ const votingSoftwareWallet = {
   currentDRep: currentVoteForValidDRep,
 };
 
-const votingHardwareWallet = {
-  ...hardwareWallet,
-  currentDRep: currentVoteForValidDRep,
-};
-
 type StoreOverrides = {
-  hwDeviceStatus?: HwDeviceStatus;
-  isTrezor?: boolean;
   wallets?: any[];
   delegationNavState?: DelegationNavState | null;
 };
 
 const buildStores = ({
-  hwDeviceStatus = HwDeviceStatuses.READY,
-  isTrezor = false,
   wallets = [softwareWallet],
   delegationNavState = null,
 }: StoreOverrides = {}) => {
@@ -194,10 +154,7 @@ const buildStores = ({
       openExternalLink: jest.fn(),
     },
     governance,
-    hardwareWallets: {
-      checkIsTrezorByWalletId: jest.fn(() => isTrezor),
-      hwDeviceStatus,
-    },
+    hardwareWallets: {},
     networkStatus: {
       isNodeInSync: true,
       isSynced: true,
@@ -366,7 +323,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
     expect(stores.governance.setDelegationNavState).not.toHaveBeenCalled();
   });
 
-  it('propagates the selected DRep ID byte-for-byte: row select → confirmation → delegateVotes payload', async () => {
+  it('propagates the selected DRep ID byte-for-byte to delegateVotes', async () => {
     const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
       delegationNavState: {
         from: ROUTES.GOVERNANCE.DELEGATE,
@@ -378,282 +335,13 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
     fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
-    await screen.findByText('Confirm Transaction');
-    // The confirmation renders the selected ID itself, byte-equal.
-    expect(screen.getAllByText(VALID_DREP_ID)[0].textContent).toBe(
-      VALID_DREP_ID
-    );
-
-    const passwordInput = document.querySelector('input[type="password"]');
-    expect(passwordInput).not.toBeNull();
-    fireEvent.change(passwordInput as Element, {
-      target: { value: 'secret123' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
-
     await waitFor(() =>
       expect(stores.voting.delegateVotes).toHaveBeenCalledTimes(1)
     );
-    expect(stores.voting.delegateVotes).toHaveBeenCalledWith(
-      expect.objectContaining({
-        chosenOption: VALID_DREP_ID,
-        passphrase: 'secret123',
-      })
-    );
-    expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
-      expect.objectContaining({ chosenOption: VALID_DREP_ID })
-    );
-  });
-});
-
-describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState handoff', () => {
-  afterEach(() => {
-    cleanup();
-    jest.restoreAllMocks();
-  });
-
-  const hwNavState: DelegationNavState = {
-    from: ROUTES.GOVERNANCE.DELEGATE,
-    selectedWalletId: HW_WALLET_ID,
-    voteType: 'drep',
-  };
-
-  it('propagates the selected DRep ID byte-for-byte into the HW signing payload (Ledger)', async () => {
-    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
-      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED,
-      wallets: [hardwareWallet],
-      delegationNavState: hwNavState,
+    expect(stores.voting.delegateVotes).toHaveBeenCalledWith({
+      chosenOption: VALID_DREP_ID,
+      wallet: expect.objectContaining({ id: WALLET_ID }),
     });
-
-    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
-
-    await screen.findByText('Confirm Transaction');
-    expect(screen.getAllByText(VALID_DREP_ID)[0].textContent).toBe(
-      VALID_DREP_ID
-    );
-    // The HW confirmation collects no passphrase: signing happened on-device.
-    expect(document.querySelector('input[type="password"]')).toBeNull();
-    expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
-      expect.objectContaining({
-        chosenOption: VALID_DREP_ID,
-        wallet: expect.objectContaining({
-          id: HW_WALLET_ID,
-          isHardwareWallet: true,
-        }),
-      })
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
-
-    await waitFor(() =>
-      expect(stores.voting.delegateVotes).toHaveBeenCalledTimes(1)
-    );
-    expect(stores.voting.delegateVotes).toHaveBeenCalledWith(
-      expect.objectContaining({
-        chosenOption: VALID_DREP_ID,
-        passphrase: '',
-        wallet: expect.objectContaining({ id: HW_WALLET_ID }),
-      })
-    );
-  });
-
-  it('keeps Confirm disabled until the device reports signing success', async () => {
-    renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
-      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION,
-      wallets: [hardwareWallet],
-      delegationNavState: hwNavState,
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
-
-    await screen.findByText('Confirm Transaction');
-    expect(screen.getByRole('button', { name: 'Confirm' })).toBeDisabled();
-  });
-
-  it('applies the Trezor status treatment for Trezor devices', async () => {
-    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
-      hwDeviceStatus: HwDeviceStatuses.VERIFYING_TRANSACTION,
-      isTrezor: true,
-      wallets: [hardwareWallet],
-      delegationNavState: hwNavState,
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
-
-    await screen.findByText('Confirm Transaction');
-    expect(stores.hardwareWallets.checkIsTrezorByWalletId).toHaveBeenCalledWith(
-      HW_WALLET_ID
-    );
-    expect(screen.getByText('Enter passphrase if needed')).toBeInTheDocument();
-  });
-
-  const deviceStates: Array<[HwDeviceStatus, RegExp]> = [
-    [
-      HwDeviceStatuses.CONNECTING_FAILED,
-      /Disconnect and reconnect your hardware wallet/,
-    ],
-    [HwDeviceStatuses.CONNECTING, /enter your PIN to unlock it/],
-    [
-      HwDeviceStatuses.LAUNCHING_CARDANO_APP,
-      /Launch Cardano application on your device/,
-    ],
-  ];
-
-  it('renders the current delegation with no device connected and blocks the same-vote submit', () => {
-    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
-      hwDeviceStatus: HwDeviceStatuses.CONNECTING_FAILED,
-      wallets: [votingHardwareWallet],
-      delegationNavState: {
-        selectedWalletId: HW_WALLET_ID,
-        voteType: 'drep',
-        selectedDRepId: VALID_DREP_ID,
-      },
-    });
-
-    expect(screen.getByText('Currently Delegated To')).toBeInTheDocument();
-    expect(
-      screen.getByText(/already delegates to this choice/)
-    ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
-    expect(stores.voting.initializeVPDelegationTx).not.toHaveBeenCalled();
-  });
-
-  it.each(deviceStates)(
-    'surfaces the %s device state in the confirmation dialog and keeps Confirm disabled',
-    async (hwDeviceStatus, expectedCopy) => {
-      renderFlow([{ pathname: ROUTES.GOVERNANCE.DREPS }], {
-        hwDeviceStatus,
-        wallets: [hardwareWallet],
-        delegationNavState: hwNavState,
-      });
-
-      fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
-      fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
-
-      await screen.findByText('Confirm Transaction');
-      expect(screen.getByText(expectedCopy)).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Confirm' })).toBeDisabled();
-    }
-  );
-});
-
-describe('Confirmation dialog identity derivation', () => {
-  const SCRIPT_DREP_ID =
-    'drep1ydwykw3frpmsda0y60ptrgyl3e7kck628y5pwph4unfu9vg6sn5zd';
-  const LEGACY_DREP_ID =
-    'drep1pu0z60zttf5h3puk5k6v85hp7q83utfufddxj7y8j6jmg4v077e';
-
-  beforeEach(() => {
-    mockDialogProps.length = 0;
-  });
-
-  afterEach(() => {
-    cleanup();
-    jest.restoreAllMocks();
-  });
-
-  it('classifies a CIP-129 script DRep by its header byte', async () => {
-    await openConfirmation(SCRIPT_DREP_ID);
-
-    const props = mockDialogProps[mockDialogProps.length - 1];
-    expect(props.drepIdentity).toEqual(
-      expect.objectContaining({
-        credentialType: 'script',
-        raw: SCRIPT_DREP_ID,
-      })
-    );
-    expect(props.chosenOption).toBe(SCRIPT_DREP_ID);
-  });
-
-  it('passes a null identity for an id the decoder rejects and still submits it byte-for-byte', async () => {
-    const { stores } = await openConfirmation(LEGACY_DREP_ID);
-
-    expect(mockDialogProps[mockDialogProps.length - 1].drepIdentity).toBeNull();
-    expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
-      expect.objectContaining({ chosenOption: LEGACY_DREP_ID })
-    );
-  });
-
-  it('passes the hash-guarded verified name and its anchor host to the dialog', async () => {
-    const { stores } = await openConfirmation(
-      VALID_DREP_ID,
-      {},
-      {
-        selectedDRepVerifiedName: 'Daedalus Test DRep',
-        selectedDRepAnchorUrl:
-          'https://raw.githubusercontent.com/example/drep.jsonld',
-      }
-    );
-
-    expect(mockDialogProps[mockDialogProps.length - 1].verifiedName).toEqual({
-      host: 'raw.githubusercontent.com',
-      name: 'Daedalus Test DRep',
-    });
-    expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
-      expect.objectContaining({ chosenOption: VALID_DREP_ID })
-    );
-  });
-
-  it('passes a null verified name when the entry carries none', async () => {
-    await openConfirmation(
-      VALID_DREP_ID,
-      {},
-      {
-        selectedDRepVerifiedName: null,
-        selectedDRepAnchorUrl:
-          'https://raw.githubusercontent.com/example/drep.jsonld',
-      }
-    );
-
-    expect(mockDialogProps[mockDialogProps.length - 1].verifiedName).toBeNull();
-  });
-});
-
-describe('Confirmation dialog prop contract', () => {
-  const EXPECTED_DIALOG_PROPS = [
-    'chosenOption',
-    'drepIdentity',
-    'fees',
-    'hwDeviceStatus',
-    'isTrezor',
-    'onClose',
-    'onExternalLinkClick',
-    'onSubmit',
-    'redirectToWallet',
-    'selectedWallet',
-    'verifiedName',
-  ];
-
-  beforeEach(() => {
-    mockDialogProps.length = 0;
-  });
-
-  afterEach(() => {
-    cleanup();
-    jest.restoreAllMocks();
-  });
-
-  it('hands the dialog exactly the current-target prop set', async () => {
-    await openConfirmation(VALID_DREP_ID);
-
-    const props = mockDialogProps[mockDialogProps.length - 1];
-    expect(Object.keys(props).sort()).toEqual(
-      [...EXPECTED_DIALOG_PROPS].sort()
-    );
-  });
-
-  it('passes no historical vote-target prop', async () => {
-    await openConfirmation(VALID_DREP_ID);
-
-    const props = mockDialogProps[mockDialogProps.length - 1];
-    ['previousVote', 'newVote', 'previousDRepId', 'currentVote'].forEach(
-      (key) => {
-        expect(props).not.toHaveProperty(key);
-      }
-    );
   });
 });
 
@@ -755,7 +443,7 @@ describe('Current-vote enrichment in the delegation form', () => {
     expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
   });
 
-  it('re-enables submit and opens the confirmation dialog when the target changes', async () => {
+  it('re-enables submit and delegates when the target changes', async () => {
     const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
       wallets: [votingSoftwareWallet],
       delegationNavState: {
@@ -769,12 +457,11 @@ describe('Current-vote enrichment in the delegation form', () => {
     expect(submit).not.toBeDisabled();
     fireEvent.click(submit);
 
-    await screen.findByText('Confirm Transaction');
-    expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
-      expect.objectContaining({ chosenOption: OTHER_DREP_ID })
-    );
-    expect(screen.getAllByText(OTHER_DREP_ID)[0].textContent).toBe(
-      OTHER_DREP_ID
+    await waitFor(() =>
+      expect(stores.voting.delegateVotes).toHaveBeenCalledWith({
+        chosenOption: OTHER_DREP_ID,
+        wallet: expect.objectContaining({ id: WALLET_ID }),
+      })
     );
   });
 
@@ -786,7 +473,7 @@ describe('Current-vote enrichment in the delegation form', () => {
       jest.spyOn(logger, 'error').mockImplementation(() => undefined),
     ];
 
-    renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
+    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
       wallets: [votingSoftwareWallet],
       delegationNavState: {
         selectedWalletId: WALLET_ID,
@@ -796,7 +483,9 @@ describe('Current-vote enrichment in the delegation form', () => {
     });
 
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
-    await screen.findByText('Confirm Transaction');
+    await waitFor(() =>
+      expect(stores.voting.delegateVotes).toHaveBeenCalledTimes(1)
+    );
 
     const logged = JSON.stringify(spies.map((spy) => spy.mock.calls));
     expect(logged).not.toContain(VALID_DREP_ID);

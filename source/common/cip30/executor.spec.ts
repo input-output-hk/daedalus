@@ -341,6 +341,7 @@ describe('CIP-30 wallet executor contract', () => {
     const signRequest = {
       ...request,
       operation: 'sign-transactions' as const,
+      approvalRequestId: 'approval',
       context: { revision: 1, outputs: [] },
       transactions: [{ cbor: '84a0a0f5f6', partialSign: true }],
       passphrase: 'secret',
@@ -349,6 +350,7 @@ describe('CIP-30 wallet executor contract', () => {
     const hardwareSignRequest = {
       ...request,
       operation: 'sign-transactions' as const,
+      approvalRequestId: 'approval',
       context: { revision: 1, outputs: [] },
       transactions: [{ cbor: '84a0a0f5f6', partialSign: true }],
     };

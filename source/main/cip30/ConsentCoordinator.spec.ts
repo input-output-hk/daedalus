@@ -1,12 +1,13 @@
 import type { DappCip30Rejection } from '../../common/cip30/errors';
-import type { DappConsentPresentation } from '../../common/ipc/api';
-import { ConsentCoordinator } from './ConsentCoordinator';
+import type { WalletApprovalPresentation } from '../../common/ipc/api';
+import { ConsentCoordinator, ConsentRequest } from './ConsentCoordinator';
 
 const declined: DappCip30Rejection = {
   type: 'api-error',
   value: { code: -3, info: 'Refused' },
 };
 const identity = {
+  kind: 'dapp' as const,
   guestWebContentsId: 7,
   documentGeneration: 2,
   origin: 'https://example.test',
@@ -25,12 +26,16 @@ const presentation = {
 };
 
 const setup = (timeout = 300_000) => {
-  const presented: DappConsentPresentation[] = [];
+  const presented: WalletApprovalPresentation[] = [];
   const terminal: string[] = [];
   const hidden: boolean[] = [];
+  const progress: unknown[] = [];
   const coordinator = new ConsentCoordinator({
     present: async (request) => {
       presented.push(request);
+    },
+    progress: async (...value) => {
+      progress.push(value);
     },
     terminal: async (requestId) => {
       terminal.push(requestId);
@@ -38,12 +43,12 @@ const setup = (timeout = 300_000) => {
     setGuestHidden: (value) => hidden.push(value),
     inactivityTimeoutMs: timeout,
   });
-  return { coordinator, presented, terminal, hidden };
+  return { coordinator, presented, terminal, hidden, progress };
 };
 
 const request = <T>(
   coordinator: ConsentCoordinator,
-  execute: (payload: unknown, signal: AbortSignal) => Promise<T>,
+  execute: ConsentRequest<T>['execute'],
   options: { payload?: unknown; submission?: boolean } = {}
 ) =>
   coordinator.request({
@@ -74,7 +79,11 @@ describe('ConsentCoordinator', () => {
     expect(firstExecute).toHaveBeenCalledWith(
       { bytes: 'aabb', nested: ['fixed'] },
       expect.any(AbortSignal),
-      undefined
+      undefined,
+      expect.objectContaining({
+        requestId: presented[0].requestId,
+        reportProgress: expect.any(Function),
+      })
     );
     expect(terminal).toEqual([presented[0].requestId]);
     expect(presented).toHaveLength(2);
@@ -151,6 +160,34 @@ describe('ConsentCoordinator', () => {
     await expect(pending).rejects.toEqual(declined);
   });
 
+  it('correlates progress to the executing request and valid item', async () => {
+    const { coordinator, presented, progress } = setup();
+    let finish: (value: string) => void = () => undefined;
+    const pending = request(
+      coordinator,
+      async (_payload, _signal, _passphrase, context) => {
+        context.reportProgress('signing', 0);
+        return new Promise<string>((resolve) => {
+          finish = resolve;
+        });
+      }
+    );
+    const requestId = presented[0].requestId;
+    coordinator.decide(requestId, true);
+    await Promise.resolve();
+
+    expect(progress).toContainEqual([requestId, 'signing', 0, false]);
+    expect(coordinator.reportProgress('stale', 'submitting', 0)).toBe('stale');
+    expect(coordinator.reportProgress(requestId, 'submitting', 1)).toBe(
+      'stale'
+    );
+    expect(coordinator.reportProgress(requestId, 'submitting', 0)).toBe(
+      'accepted'
+    );
+    finish('done');
+    await expect(pending).resolves.toBe('done');
+  });
+
   it('passes transient passphrase once and preserves typed execution errors', async () => {
     const { coordinator, presented } = setup();
     const typedError = Object.assign(new Error('Proof generation failed'), {
@@ -166,7 +203,11 @@ describe('ConsentCoordinator', () => {
     expect(execute).toHaveBeenCalledWith(
       { bytes: 'aabb' },
       expect.any(AbortSignal),
-      'secret'
+      'secret',
+      expect.objectContaining({
+        requestId: presented[0].requestId,
+        reportProgress: expect.any(Function),
+      })
     );
   });
 });

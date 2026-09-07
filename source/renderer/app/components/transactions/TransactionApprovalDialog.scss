@@ -1,0 +1,224 @@
+.component {
+  color: var(--theme-dialog-fullsize-text-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.5;
+  min-width: 0;
+  width: 100%;
+
+  section {
+    margin-top: 24px;
+    min-width: 0;
+  }
+  h2 {
+    color: var(--theme-dialog-fullsize-title-text-color);
+    font-family: var(--font-semibold);
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  h3 {
+    font-family: var(--font-semibold);
+    font-size: 14px;
+  }
+  code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+    user-select: text;
+  }
+  button:focus,
+  summary:focus,
+  h2:focus {
+    outline: 2px solid var(--theme-dialog-fullsize-text-highlight-color);
+    outline-offset: 2px;
+  }
+  :global(.Dialog_contentWrapper) {
+    box-sizing: border-box;
+    min-width: 0;
+    width: 100%;
+  }
+}
+.component :global(.Dialog_title) h1 {
+  font-family: var(--font-semibold);
+  font-size: 22px;
+  text-align: left;
+  text-transform: none;
+}
+
+.identity {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 16px;
+  min-width: 0;
+}
+.identity strong {
+  grid-column: 1 / -1;
+}
+.riskStrip {
+  border: 1px solid var(--theme-dialog-fullsize-text-color);
+  border-radius: 8px;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding: 12px 16px;
+}
+.riskStrip div {
+  display: flex;
+  flex-direction: column;
+}
+.riskStrip span {
+  font-size: 12px;
+}
+.impactGrid,
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+}
+.impactCard,
+.entryCard,
+.actionCard {
+  background: var(--theme-dialog-fullsize-field-background-color);
+  border: 1px solid var(--theme-dialog-fullsize-text-color);
+  border-radius: 8px;
+  min-width: 0;
+  padding: 16px;
+}
+.impactCard h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.primaryAmount {
+  font-family: var(--font-medium);
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.amount {
+  font-family: var(--font-medium);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.calculation {
+  margin-top: 8px;
+}
+.entryGrid {
+  display: grid;
+  gap: 16px;
+}
+.entryCard header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+.badge {
+  border: 1px solid currentColor;
+  border-radius: 12px;
+  font-size: 12px;
+  padding: 1px 8px;
+}
+.fullText {
+  display: block;
+  margin: 8px 0;
+  white-space: normal;
+  word-break: break-all;
+}
+.copy {
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  padding: 4px 8px;
+}
+.assetRow {
+  border-top: 1px solid var(--theme-dialog-fullsize-text-color);
+  margin-top: 8px;
+  padding-top: 8px;
+}
+.assetRow > code {
+  display: block;
+}
+.actionCard {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+.notice,
+.warning,
+.refusal {
+  border: 1px solid var(--theme-dialog-fullsize-text-highlight-color);
+  border-radius: 8px;
+  margin-top: 16px;
+  padding: 12px 16px;
+}
+.warning {
+  background: var(--theme-background-color-error);
+}
+.refusal {
+  color: var(--theme-color-error);
+}
+.refusal code {
+  display: block;
+}
+.checked {
+  font-family: var(--font-semibold);
+}
+.acknowledgements label {
+  align-items: flex-start;
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.acknowledgements input {
+  flex: none;
+  margin-top: 4px;
+}
+.technical {
+  min-width: 0;
+}
+.item + .item {
+  border-top: 1px solid var(--theme-dialog-fullsize-text-color);
+  margin-top: 32px;
+  padding-top: 24px;
+}
+.footer {
+  border-top: 1px solid var(--theme-dialog-fullsize-text-color);
+  padding: 12px 0;
+}
+.footer label {
+  display: block;
+  font-family: var(--font-semibold);
+}
+.footer input {
+  background: var(--theme-dialog-fullsize-field-background-color);
+  border: 1px solid var(--theme-dialog-fullsize-text-color);
+  color: inherit;
+  display: block;
+  font: inherit;
+  margin-top: 6px;
+  min-height: 40px;
+  padding: 8px 12px;
+  width: 100%;
+}
+.error {
+  color: var(--theme-color-error);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .impactGrid,
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .riskStrip {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

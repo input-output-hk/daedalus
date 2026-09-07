@@ -4,8 +4,7 @@ import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import Notification from '../../../source/renderer/app/components/notifications/Notification';
-import Cip30TransactionApproval from '../../../source/renderer/app/components/dapp/Cip30TransactionApproval';
-import DappBatchReviewDialog from '../../../source/renderer/app/components/dapp/DappBatchReviewDialog';
+import WalletApprovalContainer from '../../../source/renderer/app/containers/transactions/WalletApprovalContainer';
 import type { DappConsentPresentation } from '../../../source/common/ipc/api';
 import { CIP30_REVIEW_EFFECTS } from '../../../source/common/cip30/review';
 
@@ -20,6 +19,25 @@ const review = {
   witnessSetCbor: 'a0',
   auxiliaryDataCbor: 'f6',
   isValid: true,
+  display: {
+    entries: [],
+    walletInputs: null,
+    walletOutputs: null,
+    walletChange: null,
+    fee: '300000',
+    deposits: null,
+    refunds: null,
+    maximumCollateralLoss: {
+      coin: '500000',
+      assets: [],
+    },
+    mint: [],
+    withdrawals: [],
+    certificates: [],
+    votes: [],
+    proposalCount: 0,
+    donation: null,
+  },
   effects: CIP30_REVIEW_EFFECTS.filter(
     (kind) => kind !== 'maximum-collateral-loss-unresolved'
   ).map((kind, index) => ({
@@ -43,6 +61,10 @@ const request = (
   kind: 'transaction-sign' | 'transaction-submit',
   overrides = {}
 ) => ({
+  authorization:
+    kind === 'transaction-sign'
+      ? { kind: 'hardware' as const, vendor: 'ledger' as const }
+      : { kind: 'none' as const },
   requestId: 'storybook-review',
   kind,
   origin: 'https://example.test',
@@ -72,6 +94,10 @@ const batchRequest = (
 ): BatchPresentation => ({
   requestId: 'storybook-batch-review',
   kind,
+  authorization:
+    kind === 'batch-sign'
+      ? { kind: 'hardware' as const, vendor: 'ledger' as const }
+      : { kind: 'none' as const },
   origin: 'https://example.test',
   walletName: 'Storybook wallet',
   networkName: 'Preview',
@@ -137,6 +163,28 @@ const batchRequest = (
     })),
   },
 });
+const Approval = ({
+  request: approval,
+  deciding = false,
+  onApprove,
+  onReject,
+}: {
+  request: DappConsentPresentation;
+  deciding?: boolean;
+  onApprove: (passphrase?: string) => void;
+  onReject: () => void;
+}) => (
+  <WalletApprovalContainer
+    request={approval}
+    assetDetails={{}}
+    deciding={deciding}
+    phase={deciding ? 'waiting-for-device' : 'ready'}
+    activeItemIndex={deciding ? 1 : undefined}
+    submissionAuthorized={false}
+    onApprove={onApprove}
+    onReject={onReject}
+  />
+);
 
 storiesOf('dApps / TransactionRequest', module)
   .addDecorator((story) => (
@@ -145,7 +193,7 @@ storiesOf('dApps / TransactionRequest', module)
     </StoryProvider>
   ))
   .add('Signing review', () => (
-    <Cip30TransactionApproval
+    <Approval
       request={request('transaction-sign')}
       deciding={false}
       onApprove={action('sign')}
@@ -153,7 +201,7 @@ storiesOf('dApps / TransactionRequest', module)
     />
   ))
   .add('Governance signing review', () => (
-    <Cip30TransactionApproval
+    <Approval
       request={request('transaction-sign', {
         effects: [
           {
@@ -186,7 +234,7 @@ storiesOf('dApps / TransactionRequest', module)
     />
   ))
   .add('Submission review', () => (
-    <Cip30TransactionApproval
+    <Approval
       request={request('transaction-submit', {
         isValid: false,
         witnessSetCbor: 'a10081825820',
@@ -198,7 +246,7 @@ storiesOf('dApps / TransactionRequest', module)
     />
   ))
   .add('Incomplete review', () => (
-    <Cip30TransactionApproval
+    <Approval
       request={request('transaction-sign', {
         effects: [
           { index: 0, kind: 'maximum-collateral-loss-unresolved', value: '{}' },
@@ -214,7 +262,7 @@ storiesOf('dApps / TransactionRequest', module)
     />
   ))
   .add('Ordered batch signing review', () => (
-    <DappBatchReviewDialog
+    <Approval
       request={batchRequest('batch-sign')}
       deciding={false}
       onApprove={action('sign batch')}
@@ -222,7 +270,7 @@ storiesOf('dApps / TransactionRequest', module)
     />
   ))
   .add('Hardware batch device progress', () => (
-    <DappBatchReviewDialog
+    <Approval
       request={batchRequest('batch-sign')}
       deciding
       onApprove={action('device batch in progress')}
@@ -230,7 +278,7 @@ storiesOf('dApps / TransactionRequest', module)
     />
   ))
   .add('Mixed batch submission recovery', () => (
-    <DappBatchReviewDialog
+    <Approval
       request={batchRequest('batch-submit')}
       deciding={false}
       onApprove={action('retry exact batch')}
@@ -238,7 +286,7 @@ storiesOf('dApps / TransactionRequest', module)
     />
   ))
   .add('Blocked batch submission review', () => (
-    <DappBatchReviewDialog
+    <Approval
       request={batchRequest('batch-submit', true)}
       deciding={false}
       onApprove={action('blocked')}

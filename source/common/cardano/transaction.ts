@@ -93,6 +93,7 @@ export type GovernanceProposal = DecodedItem<Hex> &
   Readonly<{ policyScriptHashes: readonly Hex[] }>;
 export type Certificate = Readonly<{
   kind: number;
+  poolId?: Hex;
   credentialIdentities: readonly string[];
   targetCredentialIdentities: readonly string[];
   scriptCredentialHashes: readonly Hex[];
@@ -915,6 +916,7 @@ const certificate = (source: Buffer, item: CborItem): Certificate => {
   const targetScriptHashes: Hex[] = [];
   const credentialIdentities: string[] = [];
   const targetCredentialIdentities: string[] = [];
+  let poolId: Hex | undefined;
   const collect = (candidate: CborItem, allowDrep = false) => {
     const identity = credentialIdentity(source, candidate, allowDrep);
     credentialIdentities.push(identity);
@@ -929,15 +931,18 @@ const certificate = (source: Buffer, item: CborItem): Certificate => {
   };
   if ([0, 1, 2, 7, 8, 9, 10, 11, 12, 13].includes(tag)) collect(parts[1]);
   if ([14, 15, 16, 17, 18].includes(tag)) collect(parts[1]);
-  if ([2, 10, 11, 13].includes(tag)) width(source, parts[2], 28);
+  if ([2, 10, 11, 13].includes(tag)) poolId = hex(source, parts[2], 28);
   if ([9, 10, 12, 13].includes(tag))
     collectTarget(
       parts[tag === 9 ? 2 : tag === 10 ? 3 : tag === 12 ? 2 : 3],
       true
     );
-  if (tag === 3) poolParameters(source, parts[1]);
+  if (tag === 3) {
+    poolParameters(source, parts[1]);
+    poolId = hex(source, array(parts[1])[0], 28);
+  }
   if (tag === 4) {
-    width(source, parts[1], 28);
+    poolId = hex(source, parts[1], 28);
     uint(parts[2]);
   }
   if (tag === 14) collectTarget(parts[2]);
@@ -949,6 +954,7 @@ const certificate = (source: Buffer, item: CborItem): Certificate => {
   if (tag === 16) nullableAnchor(source, parts[3]);
   return {
     kind: tag,
+    ...(poolId ? { poolId } : {}),
     scriptCredentialHashes: [...new Set(scriptCredentialHashes)],
     targetScriptHashes: [...new Set(targetScriptHashes)],
     credentialIdentities: [...new Set(credentialIdentities)],

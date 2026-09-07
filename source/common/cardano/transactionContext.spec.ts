@@ -211,6 +211,104 @@ test('reconciles all input roles into one immutable trusted snapshot', () => {
   expect(Object.isFrozen(snapshot)).toBe(true);
 });
 
+test('verifies script-data commitments against authenticated Plutus V1/V2/V3 cost models', () => {
+  const scripts = [Buffer.alloc(9, 1), Buffer.alloc(9, 2), Buffer.alloc(9, 3)];
+  const policies = scripts.map((script, language) =>
+    Buffer.from(
+      blake2b(Buffer.concat([u8(language + 1), script]), undefined, 28)
+    )
+  );
+  const redeemers = new Map(
+    [0, 1, 2].map((index) => [
+      [1, index],
+      [0, [1, 1]],
+    ])
+  );
+  const witnesses = new Map<number, unknown>([
+    [3, [scripts[0]]],
+    [6, [scripts[1]]],
+    [7, [scripts[2]]],
+    [5, redeemers],
+  ]);
+  const transaction = makeTransaction(undefined, witnesses);
+  transaction.body.set(
+    9,
+    new Map(policies.map((policy) => [policy, new Map([[Buffer.alloc(0), 1]])]))
+  );
+  // Ledger language views: V2/V3 definite lists, then V1's byte-string key
+  // and byte-string-wrapped indefinite list, in short-lexicographic key order.
+  const languageViews = Buffer.from(
+    'a3' +
+      '018500201a800000001b7fffffffffffffff3b7fffffffffffffff' +
+      '028500201a800000001b7fffffffffffffff3b7fffffffffffffff' +
+      '4100581b9f00201a800000001b7fffffffffffffff3b7fffffffffffffffff',
+    'hex'
+  );
+  transaction.body.set(
+    11,
+    Buffer.from(
+      blake2b(
+        Buffer.concat([cbor.encodeCanonical(redeemers), languageViews]),
+        undefined,
+        32
+      )
+    )
+  );
+  transaction.cbor = cbor
+    .encodeCanonical([transaction.body, witnesses, true, null])
+    .toString('hex');
+  const coefficients = [
+    0,
+    -1,
+    2147483648,
+    BigInt('9223372036854775807'),
+    BigInt('-9223372036854775808'),
+  ];
+  const models = new Map<number, unknown>(
+    [0, 1, 2].map((language) => [language, coefficients])
+  );
+  const fixtureFor = (costModels: Map<number, unknown>) =>
+    makeResponse(
+      transaction,
+      undefined,
+      cbor
+        .encodeOne(
+          [...Array(15).fill(null), costModels, ...Array(4).fill(null), 100, 3],
+          { canonical: true, collapseBigIntegers: true }
+        )
+        .toString('hex')
+    );
+  const fixture = fixtureFor(models);
+  expect(
+    reconcileTransactionContext(fixture.response, fixture.expectation)
+      .transactionsSemantic[0].review
+  ).toEqual({ complete: true, signable: true, requirements: [] });
+
+  const missingLanguage = new Map(models);
+  missingLanguage.delete(1);
+  for (const costModels of [
+    new Map(models).set(0, [1, ...coefficients.slice(1)]),
+    missingLanguage,
+    new Map(models).set(0, [1.5]),
+    new Map(models).set(0, [BigInt('9223372036854775808')]),
+  ]) {
+    const rejected = fixtureFor(costModels);
+    expect(() =>
+      reconcileTransactionContext(rejected.response, rejected.expectation)
+    ).toThrow();
+  }
+  expect(() =>
+    reconcileTransactionContext(
+      {
+        ...fixture.response,
+        protocol_parameters_cbor: fixtureFor(missingLanguage).response
+          .protocol_parameters_cbor,
+      },
+      fixture.expectation
+    )
+  ).toThrow();
+});
+
 test('reconciles an authenticated wallet snapshot without transaction review', () => {
   const fixture = makeResponse(
     makeTransaction(),

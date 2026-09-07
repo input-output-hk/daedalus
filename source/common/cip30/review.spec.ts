@@ -9,11 +9,24 @@ import {
 const transaction = decodeConwayTransaction(
   parseConwayTransactionEnvelope(Buffer.from(semanticFixture.cborHex, 'hex'))
 );
+const context = {
+  outputs: [],
+  ownership: [],
+  network: {
+    networkId: 0 as const,
+    networkMagic: 42,
+    genesisHash: '00'.repeat(32),
+  },
+};
 
 describe('CIP-30 transaction review', () => {
   it('binds sign review to exact body bytes and submit review to the full envelope', () => {
-    const signing = createCip30TransactionReview(transaction, 'sign');
-    const submission = createCip30TransactionReview(transaction, 'submit');
+    const signing = createCip30TransactionReview(transaction, 'sign', context);
+    const submission = createCip30TransactionReview(
+      transaction,
+      'submit',
+      context
+    );
 
     expect(signing.transactionId).toBe(transaction.transactionId);
     expect(signing.bodyCbor).toBe(
@@ -31,7 +44,7 @@ describe('CIP-30 transaction review', () => {
   });
 
   it('warns about preferred collateral spending without blocking approval', () => {
-    const review = createCip30TransactionReview(transaction, 'sign', [
+    const review = createCip30TransactionReview(transaction, 'sign', context, [
       {
         kind: 'preferred-collateral-spend',
         value: { state: 'will-be-spent' },
@@ -61,7 +74,8 @@ describe('CIP-30 transaction review', () => {
           ],
         },
       },
-      'sign'
+      'sign',
+      context
     );
     expect(incomplete.approvable).toBe(false);
     expect(incomplete.refusalReasons).toEqual(
@@ -74,7 +88,7 @@ describe('CIP-30 transaction review', () => {
   });
 
   it('rejects malformed renderer review values', () => {
-    const value = createCip30TransactionReview(transaction, 'submit');
+    const value = createCip30TransactionReview(transaction, 'submit', context);
     expect(() =>
       parseCip30TransactionReview({ ...value, fullCborDigest: '00' })
     ).toThrow('Invalid CIP-30 transaction review');

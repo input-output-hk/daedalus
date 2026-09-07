@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import contractManifest from '../cip30/contracts/contract-manifest.json';
 import { DAPP_CIP30_METHODS } from '../cip30/wire';
-import { parseDappConsentRender } from './dapp';
+import { parseWalletApprovalRender } from './walletApproval';
 
 const preloadPath = path.resolve(__dirname, '../../main/preloads/dapp.ts');
 const webpackPath = path.resolve(__dirname, '../../main/webpack.config.js');
@@ -16,6 +16,22 @@ const transactionReview = {
   witnessSetCbor: 'a0',
   auxiliaryDataCbor: 'f6',
   isValid: true,
+  display: {
+    entries: [],
+    walletInputs: null,
+    walletOutputs: null,
+    walletChange: null,
+    fee: '0',
+    deposits: null,
+    refunds: null,
+    maximumCollateralLoss: null,
+    mint: [],
+    withdrawals: [],
+    certificates: [],
+    votes: [],
+    proposalCount: 0,
+    donation: null,
+  },
   effects: [{ index: 0, kind: 'input', value: '{}' }],
   existingVkeyWitnesses: [],
   existingBootstrapWitnesses: [],
@@ -32,6 +48,7 @@ const batchPresentation = {
   networkName: 'Preview',
   scopes: ['transaction-signing'],
   extensions: [103],
+  authorization: { kind: 'software' },
   review: {
     mode: 'sign',
     approvable: true,
@@ -72,7 +89,7 @@ describe('dApp preload contract', () => {
 
   it('accepts only display-safe consent presentations', () => {
     expect(
-      parseDappConsentRender({
+      parseWalletApprovalRender({
         type: 'present',
         request: {
           requestId: 'request',
@@ -91,7 +108,7 @@ describe('dApp preload contract', () => {
       })
     );
     expect(
-      parseDappConsentRender({
+      parseWalletApprovalRender({
         type: 'present',
         request: {
           requestId: 'sign',
@@ -122,7 +139,7 @@ describe('dApp preload contract', () => {
       })
     );
     expect(
-      parseDappConsentRender({
+      parseWalletApprovalRender({
         type: 'present',
         request: batchPresentation,
       })
@@ -138,7 +155,7 @@ describe('dApp preload contract', () => {
       })
     );
     expect(() =>
-      parseDappConsentRender({
+      parseWalletApprovalRender({
         type: 'present',
         request: {
           ...batchPresentation,
@@ -162,7 +179,7 @@ describe('dApp preload contract', () => {
       })
     ).toThrow('Invalid CIP-103 batch review');
     expect(() =>
-      parseDappConsentRender({
+      parseWalletApprovalRender({
         type: 'present',
         request: {
           requestId: 'request',

@@ -164,10 +164,6 @@ export default class VotingStore extends Store {
     this.api.ada.createWalletSignature
   );
   @observable
-  delegateVotesRequest: Request<Buffer> = new Request(
-    this.api.ada.delegateVotes
-  );
-  @observable
   constructTxRequest: Request<
     ReturnType<typeof this.api.ada.constructTransaction>
   > = new Request(this.api.ada.constructTransaction);
@@ -279,156 +275,47 @@ export default class VotingStore extends Store {
     this.qrCode = value;
   };
 
-  initializeVPDelegationTx = async ({
-    chosenOption,
-    wallet,
-  }: {
-    chosenOption: string;
-    wallet: Wallet;
-  }) => {
-    let poolId: string;
-
-    if (wallet.isDelegating) {
-      const { lastDelegatedStakePoolId, delegatedStakePoolId } = wallet;
-      const currentPoolId = lastDelegatedStakePoolId || delegatedStakePoolId;
-      poolId = this.stores.staking.stakePools.find(
-        (stakePool) => stakePool.id !== currentPoolId
-      ).id;
-    } else {
-      const [{ id }] = this.stores.staking.stakePools;
-      poolId = id;
-    }
-
-    try {
-      let coinSelection = await this.stores.hardwareWallets.selectDelegationCoins(
-        {
-          walletId: wallet.id,
-          delegationAction: 'join',
-          poolId,
-        }
-      );
-
-      if (wallet.isHardwareWallet) {
-        let certificates: object[] = [
-          {
-            certificateType: 'cast_vote',
-            rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
-            vote: chosenOption,
-          },
-        ];
-
-        const walletNeedsRegisteringRewardAccount = coinSelection.certificates.some(
-          (c) => c.certificateType === 'register_reward_account'
-        );
-        if (walletNeedsRegisteringRewardAccount) {
-          certificates = [
-            {
-              certificateType: 'register_reward_account',
-              rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
-            },
-            ...certificates,
-          ];
-        }
-
-        coinSelection = {
-          ...coinSelection,
-          certificates,
-        };
-
-        this.stores.hardwareWallets.updateTxSignRequest(coinSelection);
-        this.stores.hardwareWallets.initiateTransaction({
-          walletId: wallet.id,
-        });
-      }
-
-      return {
-        success: true,
-        fees: coinSelection.fee,
-      };
-    } catch (error) {
-      const errorCode = parseApiCode(
-        expectedInitializeVPDelegationTxErrors,
-        error
-      );
-      // Device and API error messages can embed the vote target; log only the
-      // derived code so no DRep id or sentinel ever reaches the log file.
-      logger.error(
-        'VotingStore: error while initializing VP delegation TX with HW',
-        {
-          errorCode,
-        }
-      );
-      return {
-        success: false,
-        errorCode,
-      };
-    }
-  };
-
   delegateVotes = async ({
     chosenOption,
-    passphrase,
     wallet,
   }: {
     chosenOption: string;
-    passphrase: string;
+    passphrase?: string;
     wallet: Wallet;
   }) => {
     if (wallet.isHardwareWallet) {
       try {
-        await this.stores.hardwareWallets._sendMoney({
-          selectedWalletId: wallet.id,
+        await this.stores.hardwareWallets.submitConstructedNativeTransaction({
+          walletId: wallet.id,
+          action: 'drep-delegation',
+          data: {
+            encoding: 'base16',
+            vote: chosenOption,
+          },
         });
-
-        await new Promise<void>((resolve) => {
-          const wait = () => {
-            setTimeout(() => {
-              const {
-                sendMoneyRequest,
-                isTransactionPending,
-              } = this.stores.hardwareWallets;
-              if (sendMoneyRequest.isExecuting || isTransactionPending) {
-                wait();
-                return;
-              }
-
-              resolve();
-            }, 2000);
-          };
-
-          wait();
-        });
-
         this.analytics.sendEvent(
           EventCategories.VOTING,
           'Casted governance vote',
-          this._getVoteKind(chosenOption) // 'drep' | 'abstain' | 'no_confidence'
+          this._getVoteKind(chosenOption)
         );
-
-        return {
-          success: true,
-        };
+        return { success: true };
       } catch {
         const errorCode: GenericErrorCode = 'generic';
-        // Device and API error messages can embed the vote target; log only the
-        // derived code so no DRep id or sentinel ever reaches the log file.
         logger.error('VotingStore: error while delegating vote with HW', {
           errorCode,
         });
-        return {
-          success: false,
-          errorCode,
-        };
+        return { success: false, errorCode };
       }
     }
-
-    this.delegateVotesRequest.reset();
     try {
-      await this.delegateVotesRequest.execute({
-        dRepId: chosenOption,
-        passphrase,
+      await this.stores.wallets.submitConstructedNativeTransaction({
         walletId: wallet.id,
-      }).promise;
+        action: 'drep-delegation',
+        data: {
+          encoding: 'base16',
+          vote: chosenOption,
+        },
+      });
 
       this.analytics.sendEvent(
         EventCategories.VOTING,

@@ -64,14 +64,11 @@ const renderForm = (
                   : undefined
               }
               getStakePoolById={() => null}
-              initiateTransaction={async () => ({
-                success: true,
-                fees: new BigNumber(0),
-              })}
+              submitTransaction={async () => ({ success: true })}
               onBrowseDRepsClick={() => undefined}
               onCancel={onCancel}
               onExternalLinkClick={() => undefined}
-              renderConfirmationDialog={() => <div />}
+              onSuccess={() => undefined}
               stakePools={[]}
               wallets={wallets}
             />

@@ -364,7 +364,7 @@ export default class StakingStore extends Store {
   };
   @action
   _joinStakePool = async (request: JoinStakePoolRequest) => {
-    const { walletId, stakePoolId, passphrase, isHardwareWallet } = request;
+    const { walletId, stakePoolId, isHardwareWallet } = request;
     // Set join transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
 
@@ -372,18 +372,34 @@ export default class StakingStore extends Store {
       let joinTransaction;
 
       if (isHardwareWallet) {
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-        joinTransaction = await this.stores.hardwareWallets._sendMoney({
-          isDelegationTransaction: true,
-          selectedWalletId: walletId,
-        });
+        joinTransaction = await this.stores.hardwareWallets.submitConstructedNativeTransaction(
+          {
+            walletId,
+            action: this.stores.wallets.getWalletById(walletId).isDelegating
+              ? 'redelegate'
+              : 'delegate',
+            data: {
+              encoding: 'base16',
+              delegations: [
+                { join: { pool: stakePoolId, stake_key_index: '0H' } },
+              ],
+            },
+          }
+        );
       } else {
-        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-        joinTransaction = await this.joinStakePoolRequest.execute({
-          walletId,
-          stakePoolId,
-          passphrase,
-        });
+        const wallet = this.stores.wallets.getWalletById(walletId);
+        joinTransaction = await this.stores.wallets.submitConstructedNativeTransaction(
+          {
+            walletId,
+            action: wallet.isDelegating ? 'redelegate' : 'delegate',
+            data: {
+              encoding: 'base16',
+              delegations: [
+                { join: { pool: stakePoolId, stake_key_index: '0H' } },
+              ],
+            },
+          }
+        );
       }
 
       // Start interval to check transaction state every second
@@ -413,7 +429,7 @@ export default class StakingStore extends Store {
   };
   @action
   _quitStakePool = async (request: QuitStakePoolRequest) => {
-    const { walletId, passphrase, isHardwareWallet } = request;
+    const { walletId, isHardwareWallet } = request;
     // Set quit transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
 
@@ -421,17 +437,29 @@ export default class StakingStore extends Store {
       let quitTransaction;
 
       if (isHardwareWallet) {
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-        quitTransaction = await this.stores.hardwareWallets._sendMoney({
-          isDelegationTransaction: true,
-          selectedWalletId: walletId,
-        });
+        quitTransaction = await this.stores.hardwareWallets.submitConstructedNativeTransaction(
+          {
+            walletId,
+            action: 'undelegate',
+            data: {
+              encoding: 'base16',
+              delegations: [{ quit: { stake_key_index: '0H' } }],
+              withdrawal: 'self',
+            },
+          }
+        );
       } else {
-        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-        quitTransaction = await this.quitStakePoolRequest.execute({
-          walletId,
-          passphrase,
-        });
+        quitTransaction = await this.stores.wallets.submitConstructedNativeTransaction(
+          {
+            walletId,
+            action: 'undelegate',
+            data: {
+              encoding: 'base16',
+              delegations: [{ quit: { stake_key_index: '0H' } }],
+              withdrawal: 'self',
+            },
+          }
+        );
       }
 
       // Start interval to check transaction state every second

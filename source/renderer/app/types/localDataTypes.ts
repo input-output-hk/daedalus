@@ -27,6 +27,8 @@ export type HardwareWalletLocalData = {
   id: string;
   deviceType: DeviceType;
   device: TransportDevice;
+  /** Transport path retained by legacy connection updates. */
+  path?: string | null;
   extendedPublicKey: HardwareWalletExtendedPublicKeyResponse;
   disconnected: boolean;
 };

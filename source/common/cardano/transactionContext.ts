@@ -1,7 +1,8 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { blake2b } from 'blakejs';
+import cborEncoder from 'cbor';
 
-import { bytesForSpan, parseCborItem } from './cborSlices';
+import { bytesForSpan, CborItem, parseCborItem } from './cborSlices';
 import {
   CommitmentContext,
   decodeConwayOutput,
@@ -671,32 +672,85 @@ const parseResponse = (value: unknown): ContextResponse => {
   };
 };
 
-const protocolParameterUint = (
-  encoded: Hex,
-  index: number,
-  name: string
-): bigint | undefined => {
+const protocolParameters = (encoded: Hex): readonly CborItem[] => {
   const bytes = Buffer.from(encoded, 'hex');
   const item = parseCborItem(bytes);
   if (item.span.end !== bytes.length || item.major !== 4 || !item.items)
     fail('invalid protocol parameters CBOR');
-  const value = item.items[index];
+  return item.items;
+};
+
+const protocolParameterUint = (
+  parameters: readonly CborItem[],
+  index: number,
+  name: string
+): bigint | undefined => {
+  const value = parameters[index];
   if (!value) return undefined;
   if (value.major !== 0 || value.value === undefined || value.value < BigInt(1))
     fail(`invalid ${name}`);
   return value.value;
 };
 
-const maxCollateralInputs = (encoded: Hex): number | undefined => {
-  const value = protocolParameterUint(encoded, 21, 'max collateral inputs');
+const maxCollateralInputs = (
+  parameters: readonly CborItem[]
+): number | undefined => {
+  const value = protocolParameterUint(parameters, 21, 'max collateral inputs');
   if (value === undefined) return undefined;
   if (value > BigInt(Number.MAX_SAFE_INTEGER))
     fail('invalid max collateral inputs');
   return Number(value);
 };
 
-const collateralPercentage = (encoded: Hex): bigint | undefined =>
-  protocolParameterUint(encoded, 20, 'collateral percentage');
+const collateralPercentage = (
+  parameters: readonly CborItem[]
+): bigint | undefined =>
+  protocolParameterUint(parameters, 20, 'collateral percentage');
+
+const protocolLanguageViews = (
+  parameters: readonly CborItem[]
+): ReadonlyMap<number, Buffer> => {
+  // Conway's full PParams array uses index 15, not the update-map key 18.
+  const models = parameters[15];
+  if (models?.major !== 5 || !models.entries)
+    return fail('missing or invalid protocol cost models');
+  const views = new Map<number, Buffer>();
+  const maxInt64 = BigInt('9223372036854775807');
+  models.entries.forEach(({ key, value }) => {
+    if (key.major !== 0 || key.value === undefined)
+      fail('invalid protocol cost model language');
+    if (key.value > BigInt(2)) return;
+    if (value.major !== 4 || !value.items) fail('invalid protocol cost model');
+    const coefficients = value.items.map((coefficient) => {
+      if (
+        (coefficient.major !== 0 && coefficient.major !== 1) ||
+        coefficient.value === undefined ||
+        coefficient.value < -maxInt64 - BigInt(1) ||
+        coefficient.value > maxInt64
+      )
+        return fail('invalid protocol cost model coefficient');
+      return coefficient.value;
+    });
+    let encoded = cborEncoder.encodeOne(coefficients, {
+      canonical: true,
+      collapseBigIntegers: true,
+    });
+    if (key.value === BigInt(0)) {
+      // Ledger's Plutus V1 view wraps an indefinite-length list in a byte string.
+      const start =
+        parseCborItem(encoded).items?.[0]?.span.start ?? encoded.length;
+      encoded = cborEncoder.encodeCanonical(
+        Buffer.concat([
+          Buffer.from([0x9f]),
+          encoded.subarray(start),
+          Buffer.from([0xff]),
+        ])
+      );
+    }
+    views.set(Number(key.value), encoded);
+  });
+  return views;
+};
 
 const decodeRecord = (encoded: Hex): DecodedRecord => {
   const bytes = Buffer.from(encoded, 'hex');
@@ -1146,10 +1200,14 @@ export const reconcileTransactionContext = (
   });
 
   const preExistingWitnesses: PreExistingWitness[] = [];
-  const collateralLimit = maxCollateralInputs(response.protocolParametersCbor);
-  const minimumCollateralPercentage = collateralPercentage(
-    response.protocolParametersCbor
-  );
+  const parameters = protocolParameters(response.protocolParametersCbor);
+  const collateralLimit = maxCollateralInputs(parameters);
+  const minimumCollateralPercentage = collateralPercentage(parameters);
+  const languageViews = parsed.some(
+    (transaction) => transaction.commitments.scriptDataHash
+  )
+    ? protocolLanguageViews(parameters)
+    : undefined;
   const ownedPaymentCredentials = new Set(
     response.ownership
       .filter(
@@ -1212,6 +1270,7 @@ export const reconcileTransactionContext = (
     return {
       resolvedInputs,
       usedPlutusLanguages,
+      languageViews,
       verifiedWitnesses: verified.set,
       ownedPaymentCredentials,
       maxCollateralInputs: collateralLimit,

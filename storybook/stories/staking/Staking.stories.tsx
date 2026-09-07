@@ -24,10 +24,7 @@ import {
   NoWalletsDialogDialogStory,
   RedemptionUnavailableDialogDialogStory,
 } from './RedeemItnWallets.stories';
-import {
-  StakingUndelegateConfirmationStory,
-  StakingUndelegateConfirmationResultStory,
-} from './Undelegate.stories';
+import { StakingUndelegateConfirmationResultStory } from './Undelegate.stories';
 import { StakePoolsTableStory } from './StakePoolsTable.stories';
 
 const defaultPercentage = 10;
@@ -242,27 +239,6 @@ storiesOf('Decentralization / Staking', module)
     (_, props) => <StakingDelegationSteps {...props} isDisabled />,
     {
       id: 'wizard',
-    }
-  )
-  .add(
-    'Undelegate Confirmation',
-    (_, props) => (
-      <StakingUndelegateConfirmationStory
-        {...props}
-        isHardwareWallet={boolean('isHardwareWallet', false)}
-      />
-    ),
-    {
-      id: 'undelegate-confirmation',
-    }
-  )
-  .add(
-    'Undelegate Confirmation - unknownn stake pool',
-    (_, props) => (
-      <StakingUndelegateConfirmationStory {...props} unknownStakePool />
-    ),
-    {
-      id: 'undelegate-confirmation-unknown-pool',
     }
   )
   .add(

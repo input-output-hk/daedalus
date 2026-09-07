@@ -70,7 +70,7 @@ import {
   getCurrentDappRouteLease,
   setDappBrokerLifecycleRevoker,
 } from '../ipc/dappBrowser';
-import { consentCoordinator } from '../ipc/dappConsent';
+import { consentCoordinator } from '../ipc/walletApproval';
 import { executeCip30WalletRequest } from '../ipc/cip30Wallet';
 import { DappTransactionContextServiceError } from '../cardano/DappTransactionContextService';
 import { CapabilityContext, CapabilityService } from './CapabilityService';
@@ -377,6 +377,7 @@ export class Cip30Broker {
       };
       grant = await this.options.consent.request({
         identity: {
+          kind: 'dapp',
           guestWebContentsId: binding.authority.guestWebContentsId,
           documentGeneration: binding.authority.documentGeneration,
           origin: binding.authority.origin,
@@ -449,6 +450,7 @@ export class Cip30Broker {
     const softwareWallet = evidence.walletKind === 'shelley-software';
     return this.options.consent.request({
       identity: {
+        kind: 'dapp',
         guestWebContentsId: binding.authority.guestWebContentsId,
         documentGeneration: binding.authority.documentGeneration,
         origin: binding.authority.origin,
@@ -685,6 +687,7 @@ export class Cip30Broker {
     const software = evidence.walletKind === 'shelley-software';
     const result = await this.options.consent.request({
       identity: {
+        kind: 'dapp',
         guestWebContentsId: binding.authority.guestWebContentsId,
         documentGeneration: binding.authority.documentGeneration,
         origin: binding.authority.origin,
@@ -694,6 +697,9 @@ export class Cip30Broker {
         networkGenesis: binding.authority.network.genesisHash,
       },
       presentation: {
+        authorization: software
+          ? { kind: 'software' }
+          : { kind: 'hardware', vendor: evidence.walletKind },
         kind: 'batch-sign',
         origin: binding.authority.origin,
         walletName: evidence.walletName,
@@ -712,7 +718,7 @@ export class Cip30Broker {
         context: signingContext,
       },
       declined: txSignRejection(2, 'User declined'),
-      execute: async (_payload, signal, passphrase) => {
+      execute: async (_payload, signal, passphrase, approval) => {
         if (signal.aborted || (software && !passphrase))
           throw txSignRejection(1, formatCip103FailureInfo(0));
         this.assertCurrent(binding);
@@ -727,6 +733,7 @@ export class Cip30Broker {
         try {
           return await signCip103WalletBatch(this.options.executeWallet, {
             walletId: binding.authority.walletId,
+            approvalRequestId: approval.requestId,
             walletKind: evidence.walletKind,
             network: binding.authority.network,
             sourceRevision: this.options.sourceRevision,
@@ -783,6 +790,7 @@ export class Cip30Broker {
     }
     return this.options.consent.request({
       identity: {
+        kind: 'dapp',
         guestWebContentsId: binding.authority.guestWebContentsId,
         documentGeneration: binding.authority.documentGeneration,
         origin: binding.authority.origin,
@@ -792,6 +800,7 @@ export class Cip30Broker {
         networkGenesis: binding.authority.network.genesisHash,
       },
       presentation: {
+        authorization: { kind: 'none' },
         kind: 'batch-submit',
         origin: binding.authority.origin,
         walletName: evidence.walletName,
@@ -803,12 +812,13 @@ export class Cip30Broker {
       payload: { transactions: batch.items.map(({ cbor }) => cbor) },
       declined: txSendRejection(1, 'User declined'),
       submission: true,
-      execute: async () => {
+      execute: async (_payload, _signal, _passphrase, approval) => {
         try {
           return await submitCip103Batch({
             batch,
             review: resolved.review,
-            submitTransaction: async (cbor) => {
+            submitTransaction: async (cbor, index) => {
+              approval.reportProgress('submitting', index);
               const response = await this.options.executeWallet({
                 operation: 'submit-transaction',
                 walletId: binding.authority.walletId,
@@ -895,6 +905,7 @@ export class Cip30Broker {
     const review = createCip30TransactionReview(
       transaction,
       'sign',
+      snapshot,
       this.preferredCollateralEffects(binding, transaction)
     );
     if (!review.approvable) throw txSignRejection(1, 'Proof generation failed');
@@ -908,6 +919,7 @@ export class Cip30Broker {
     const software = evidence.walletKind === 'shelley-software';
     const result = await this.options.consent.request({
       identity: {
+        kind: 'dapp',
         guestWebContentsId: binding.authority.guestWebContentsId,
         documentGeneration: binding.authority.documentGeneration,
         origin: binding.authority.origin,
@@ -917,6 +929,9 @@ export class Cip30Broker {
         networkGenesis: binding.authority.network.genesisHash,
       },
       presentation: {
+        authorization: software
+          ? { kind: 'software' }
+          : { kind: 'hardware', vendor: evidence.walletKind },
         kind: 'transaction-sign',
         origin: binding.authority.origin,
         walletName: evidence.walletName,
@@ -929,7 +944,7 @@ export class Cip30Broker {
       },
       payload: { cbor, partialSign, context: signingContext },
       declined: txSignRejection(2, 'User declined'),
-      execute: async (_payload, signal, passphrase) => {
+      execute: async (_payload, signal, passphrase, approval) => {
         if (signal.aborted || (software && !passphrase))
           throw txSignRejection(1, 'Proof generation failed');
         this.assertCurrent(binding);
@@ -943,6 +958,7 @@ export class Cip30Broker {
         );
         const response = await this.options.executeWallet({
           operation: 'sign-transactions',
+          approvalRequestId: approval.requestId,
           walletId: binding.authority.walletId,
           network: binding.authority.network,
           sourceRevision: this.options.sourceRevision,
@@ -1055,6 +1071,7 @@ export class Cip30Broker {
     const review = createCip30TransactionReview(
       transaction,
       'submit',
+      snapshot,
       this.preferredCollateralEffects(binding, transaction)
     );
     if (review.fullCbor !== cbor) throw internal();
@@ -1062,6 +1079,7 @@ export class Cip30Broker {
       throw txSendRejection(2, 'Transaction submission failed');
     return this.options.consent.request({
       identity: {
+        kind: 'dapp',
         guestWebContentsId: binding.authority.guestWebContentsId,
         documentGeneration: binding.authority.documentGeneration,
         origin: binding.authority.origin,
@@ -1071,6 +1089,7 @@ export class Cip30Broker {
         networkGenesis: binding.authority.network.genesisHash,
       },
       presentation: {
+        authorization: { kind: 'none' },
         kind: 'transaction-submit',
         origin: binding.authority.origin,
         walletName: evidence.walletName,
@@ -1082,7 +1101,8 @@ export class Cip30Broker {
       payload: Object.freeze({ cbor }),
       declined: txSendRejection(1, 'User declined'),
       submission: true,
-      execute: async () => {
+      execute: async (_payload, _signal, _passphrase, approval) => {
+        approval.reportProgress('submitting', 0);
         const response = await this.options.executeWallet({
           operation: 'submit-transaction',
           walletId: binding.authority.walletId,
@@ -1140,6 +1160,7 @@ export class Cip30Broker {
     const review = createCip8DataSignReview(expected);
     const result = await this.options.consent.request({
       identity: {
+        kind: 'dapp',
         guestWebContentsId: binding.authority.guestWebContentsId,
         documentGeneration: binding.authority.documentGeneration,
         origin: binding.authority.origin,

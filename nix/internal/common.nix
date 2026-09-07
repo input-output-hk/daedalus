@@ -64,6 +64,7 @@
             +                `shouldSatisfy` isRight
           '')
           ../patches/cardano-wallet-collateral-selection.patch
+          ../patches/cardano-wallet-review-ownership.patch
         ];
       };
     }).defaultNix;

@@ -18,6 +18,10 @@
 
 - Collateral: preserve preferred collateral during native payment/delegation selection and fee estimation, with fallback when ordinary inputs cannot balance the request. Keep CIP-30 inventory complete with collateral last, and accept valid spending/collateral input overlap.
 
+- dApp connector: derive pinned Plutus language views from authenticated protocol parameters, allowing valid script-data commitments (including Liqwid transactions) to complete review while rejecting missing cost models and commitment mismatches.
+
+- Ledger dApp connection: recover a live, previously recorded USB path when the paired device path is stale, and update the canonical path after checking the Cardano app version. Connection approval and signing safeguards remain required.
+
 - Chain-storage: resolved relative symlink targets to absolute paths; report a read-only directory as not-writable and an unresolvable link as not-found; verify created links on all platforms; never leave a broken created link; fixed cross-device move fallback; report a looping path as not found; do not block directory validation on the free-space probe; roll back a failed migration even if the journal cannot be written.
 
 - Explorer: updated links to the current `explorer.cardano.org` layout; removed dead testnet and staging explorer endpoints.

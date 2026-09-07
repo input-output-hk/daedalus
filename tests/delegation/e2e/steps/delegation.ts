@@ -322,8 +322,8 @@ Then(/^I choose the first stake pool$/, async function () {
 Then(/^I enter "([^"]*)" as the spending password$/, async function (
   spendingPassword
 ) {
-  await this.client.waitForVisible('.SimpleInput_input');
-  const input = this.client.element('.SimpleInput_input');
+  await this.client.waitForVisible('input[type="password"]');
+  const input = this.client.element('input[type="password"]');
   input.setValue(spendingPassword);
   await timeout(2000);
   this.client.click('.confirmButton');
@@ -344,7 +344,7 @@ Then(
   /^I should see the following error messages on the delegation process dialog:$/,
   async function (data) {
     let errorsOnScreen = await this.waitAndGetText(
-      '.DelegationStepsConfirmationDialog_error'
+      '.TransactionApprovalDialog_error'
     );
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();

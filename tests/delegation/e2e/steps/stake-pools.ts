@@ -59,7 +59,7 @@ const DELEGATION_WALLET_DROPDOWN_SELECTOR =
 const SELECTED_STAKE_POOLS_DELEGATION_WALLET_DIALOG_SELECTOR =
   '.DelegationStepsChooseStakePoolDialog_selectStakePoolLabel span';
 const DELEGATION_WALLET_LAST_STEP_SELECTOR =
-  '.DelegationSteps_content.DelegationStepsConfirmationDialog_content #spendingPassword--1';
+  '.TransactionApprovalDialog_footer input[type="password"]';
 const STAKE_POOLS_DELEGATING_LABEL =
   '.StakePools_component .StakePools_listTitle';
 Given(/^I am on the Delegation Center screen/, async function () {

@@ -9,12 +9,6 @@
  * This is the sanitization floor established in slice-1. Every later slice
  * inherits this invariant as a non-negotiable acceptance check.
  */
-jest.mock(
-  '../../../source/renderer/app/api/voting/requests/delegateVotes',
-  () => ({
-    delegateVotes: jest.fn(() => Promise.resolve(Buffer.from('ok'))),
-  })
-);
 
 jest.mock(
   '../../../source/renderer/app/api/wallets/requests/getWallets',
@@ -357,37 +351,6 @@ describe('Governance sanitization — call boundaries', () => {
     jest.restoreAllMocks();
   });
 
-  it('redacts DRep IDs before logger payloads are emitted by AdaApi', async () => {
-    (global as any).environment = {
-      ...(global as any).environment,
-      isSelfnode: false,
-    };
-    (global as any).https = require('https');
-
-    const loggerSpy = jest
-      .spyOn(rendererLogger, 'debug')
-      .mockImplementation(() => undefined);
-    // eslint-disable-next-line global-require
-    const AdaApi = require('../../../source/renderer/app/api/api').default;
-    const api = new AdaApi(false, {} as any);
-
-    await api.delegateVotes({
-      dRepId: CIP129_DREP,
-      passphrase: 'test-passphrase',
-      walletId: 'wallet-1',
-    });
-
-    const delegateVotesLog = loggerSpy.mock.calls.find(
-      ([message]) => message === 'AdaApi::delegateVotes called'
-    );
-
-    expect(delegateVotesLog).toBeDefined();
-    expect(JSON.stringify(delegateVotesLog?.[1])).not.toContain(CIP129_DREP);
-    expect(JSON.stringify(delegateVotesLog?.[1])).not.toContain(
-      'test-passphrase'
-    );
-  });
-
   it('redacts the vote target from the AdaApi wallet-list poll log', async () => {
     const FIXTURE_DREP =
       'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
@@ -439,6 +402,11 @@ describe('Governance sanitization — call boundaries', () => {
       {} as any,
       analytics as any
     );
+    store.configure({
+      wallets: {
+        submitConstructedNativeTransaction: jest.fn(async () => ({ id: 'tx' })),
+      },
+    } as any);
 
     await store.delegateVotes({
       chosenOption: CIP129_DREP,
@@ -458,52 +426,6 @@ describe('Governance sanitization — call boundaries', () => {
     expect(analytics.sendEvent.mock.calls[0]).toHaveLength(3);
   });
 
-  it('keeps DRep IDs and sentinel literals out of logger payloads when HW VP-delegation initialization fails', async () => {
-    const errorSpy = jest
-      .spyOn(rendererLogger, 'error')
-      .mockImplementation(() => undefined);
-    const store = new VotingStore(
-      { ada: {} } as any,
-      {} as any,
-      {
-        sendEvent: jest.fn(),
-      } as any
-    );
-    store.configure({
-      hardwareWallets: {
-        selectDelegationCoins: jest.fn(async () => ({
-          certificates: [],
-          fee: new BigNumber('0.2'),
-        })),
-        updateTxSignRequest: jest.fn(),
-        // Adversarial error: embeds the vote target the way an uncontrolled
-        // device or API message could.
-        initiateTransaction: jest.fn(() => {
-          throw new Error(
-            `Wallet not paired for ${CIP129_DREP} after abstain and no_confidence checks`
-          );
-        }),
-      },
-      staking: { stakePools: [{ id: 'pool-1' }] },
-    } as any);
-
-    const result = await store.initializeVPDelegationTx({
-      chosenOption: CIP129_DREP,
-      wallet: {
-        id: 'wallet-1',
-        isDelegating: false,
-        isHardwareWallet: true,
-      } as any,
-    });
-
-    expect(result).toEqual({ success: false, errorCode: 'generic' });
-    expect(errorSpy).toHaveBeenCalled();
-    const logged = jsonStrWithErrors(errorSpy.mock.calls);
-    expect(logged).not.toContain(CIP129_DREP);
-    expect(logged).not.toContain('abstain');
-    expect(logged).not.toContain('no_confidence');
-  });
-
   it('keeps DRep IDs and sentinel literals out of logger payloads when HW vote submission fails', async () => {
     const errorSpy = jest
       .spyOn(rendererLogger, 'error')
@@ -517,13 +439,11 @@ describe('Governance sanitization — call boundaries', () => {
     );
     store.configure({
       hardwareWallets: {
-        _sendMoney: jest.fn(async () => {
+        submitConstructedNativeTransaction: jest.fn(async () => {
           throw new Error(
             `submission failed for ${CIP129_DREP} after abstain and no_confidence checks`
           );
         }),
-        sendMoneyRequest: { isExecuting: false },
-        isTransactionPending: false,
       },
     } as any);
 
@@ -542,53 +462,39 @@ describe('Governance sanitization — call boundaries', () => {
   });
 
   it('sends only the sanitized vote-kind analytics field for HW governance votes', async () => {
-    jest.useFakeTimers();
-    try {
-      const analytics = {
-        disableTracking: jest.fn(),
-        enableTracking: jest.fn(),
-        sendEvent: jest.fn(),
-        sendPageNavigationEvent: jest.fn(),
-      };
-      const store = new VotingStore(
-        { ada: { delegateVotes: jest.fn() } } as any,
-        {} as any,
-        analytics as any
-      );
-      store.configure({
-        hardwareWallets: {
-          _sendMoney: jest.fn(async () => undefined),
-          sendMoneyRequest: { isExecuting: false },
-          isTransactionPending: false,
-        },
-      } as any);
+    const analytics = {
+      disableTracking: jest.fn(),
+      enableTracking: jest.fn(),
+      sendEvent: jest.fn(),
+      sendPageNavigationEvent: jest.fn(),
+    };
+    const store = new VotingStore(
+      { ada: { delegateVotes: jest.fn() } } as any,
+      {} as any,
+      analytics as any
+    );
+    store.configure({
+      hardwareWallets: {
+        submitConstructedNativeTransaction: jest.fn(async () => ({ id: 'tx' })),
+      },
+    } as any);
 
-      const resultPromise = store.delegateVotes({
+    await expect(
+      store.delegateVotes({
         chosenOption: CIP129_DREP,
         passphrase: '',
         wallet: { id: 'wallet-1', isHardwareWallet: true } as any,
-      });
-
-      // Flush microtasks so the 2s polling timer arms, then run its one tick.
-      await Promise.resolve();
-      await Promise.resolve();
-      await Promise.resolve();
-      jest.advanceTimersByTime(2000);
-
-      const result = await resultPromise;
-      expect(result).toEqual({ success: true });
-      expect(analytics.sendEvent).toHaveBeenCalledWith(
-        EventCategories.VOTING,
-        'Casted governance vote',
-        'drep'
-      );
-      expect(analytics.sendEvent.mock.calls[0]).toHaveLength(3);
-      expect(JSON.stringify(analytics.sendEvent.mock.calls)).not.toContain(
-        CIP129_DREP
-      );
-    } finally {
-      jest.useRealTimers();
-    }
+      })
+    ).resolves.toEqual({ success: true });
+    expect(analytics.sendEvent).toHaveBeenCalledWith(
+      EventCategories.VOTING,
+      'Casted governance vote',
+      'drep'
+    );
+    expect(analytics.sendEvent.mock.calls[0]).toHaveLength(3);
+    expect(JSON.stringify(analytics.sendEvent.mock.calls)).not.toContain(
+      CIP129_DREP
+    );
   });
 
   it('reduces a sentinel delegation to the vote kind in the analytics payload', async () => {
@@ -613,6 +519,11 @@ describe('Governance sanitization — call boundaries', () => {
       {} as any,
       analytics as any
     );
+    store.configure({
+      wallets: {
+        submitConstructedNativeTransaction: jest.fn(async () => ({ id: 'tx' })),
+      },
+    } as any);
 
     await store.delegateVotes({
       chosenOption: 'abstain',

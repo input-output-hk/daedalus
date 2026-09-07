@@ -7,9 +7,8 @@ import {
 } from '../../config/numbersConfig';
 import WalletSendForm, {
   FormData,
-  ConfirmationDialogData,
 } from '../../components/wallet/WalletSendForm';
-import { WalletSendConfirmationDialogView } from './dialogs/send-confirmation/SendConfirmation.view';
+import { WalletSendConfirmationDialogContainer } from './dialogs/send-confirmation/SendConfirmation.container';
 import WalletTokenPicker from '../../components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
@@ -20,22 +19,16 @@ import {
   WithAnalyticsTrackerProps,
 } from '../../components/analytics/withAnalytics';
 import { CoinSelectionsResponse } from '../../api/transactions/types';
+import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
 
 type Props = InjectedProps & WithAnalyticsTrackerProps;
-type State = {
-  confirmationDialogData: ConfirmationDialogData;
-};
 
 @inject('stores', 'actions')
 @observer
-class WalletSendPage extends Component<Props, State> {
+class WalletSendPage extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
-  };
-
-  state: State = {
-    confirmationDialogData: null,
   };
 
   calculateTransactionFee = async (params: {
@@ -89,24 +82,50 @@ class WalletSendPage extends Component<Props, State> {
     walletId: string,
     { coinSelection, ...data }: FormData
   ) => {
+    const wallet = this.props.stores.wallets.getWalletById(walletId);
+    if (!wallet) throw new Error('Wallet required before sending.');
+    if (wallet.isLegacy) {
+      this.props.actions.dialogs.open.trigger({
+        dialog: WalletSendConfirmationDialogContainer,
+        props: {
+          amount: data.amount.toFixed(),
+          selectedAssets: data.selectedAssets,
+          assetsAmounts: data.assetsAmounts,
+          receiver: data.receiver,
+          totalAmount: data.totalAmount,
+          transactionFee: data.transactionFee.toFixed(),
+          hwDeviceStatus: this.props.stores.hardwareWallets.hwDeviceStatus,
+          isHardwareWallet,
+          formattedTotalAmount: data.totalAmount.toFixed(),
+          onExternalLinkClick: this.props.stores.app.openExternalLink,
+        },
+      });
+      return;
+    }
+    const amount = data.amount.times(LOVELACES_PER_ADA).toFixed(0);
+    const hasAssetsRemainingAfterTransaction = data.selectedAssets.length
+      ? !(
+          data.selectedAssets.length === wallet.assets.total.length &&
+          data.selectedAssets.every(({ quantity }, index) =>
+            quantity.isEqualTo(data.assetsAmounts[index])
+          )
+        )
+      : wallet.assets.total.length > 0;
     if (isHardwareWallet) {
       this.props.stores.hardwareWallets.updateTxSignRequest(
         coinSelection,
         this.props.stores.collateral.preparationFormActive
       );
+      this.props.actions.hardwareWallets.sendMoney.trigger();
+      return;
     }
-
-    this.props.actions.dialogs.open.trigger({
-      dialog: WalletSendConfirmationDialogView,
-    });
-
-    this.setState({
-      confirmationDialogData: {
-        ...data,
-        spendsPreferredCollateral:
-          !!coinSelection &&
-          this.props.stores.collateral.spendsPreference(coinSelection.inputs),
-      },
+    this.props.actions.wallets.sendMoney.trigger({
+      receiver: data.receiver,
+      amount,
+      assets: data.selectedAssets,
+      assetsAmounts: data.assetsAmounts,
+      hasAssetsRemainingAfterTransaction,
+      isCollateralPreparation: data.isCollateralPreparation,
     });
   };
 
@@ -184,8 +203,6 @@ class WalletSendPage extends Component<Props, State> {
         isLoadingAssets={isLoadingAssets}
         isDialogOpen={uiDialogs.isOpen}
         isRestoreActive={wallet.isRestoring}
-        isHardwareWallet={isHardwareWallet}
-        hwDeviceStatus={hwDeviceStatus}
         onSubmit={(data: FormData) =>
           this.submit(isHardwareWallet, wallet.id, data)
         }
@@ -197,7 +214,6 @@ class WalletSendPage extends Component<Props, State> {
         onTokenPickerDialogOpen={this.openTokenPickerDialog}
         onTokenPickerDialogClose={this.closeTokenPickerDialog}
         analyticsTracker={this.props.analyticsTracker}
-        confirmationDialogData={this.state.confirmationDialogData}
         initialReceiver={
           isCollateralPreparation ? preparationAddress : undefined
         }
