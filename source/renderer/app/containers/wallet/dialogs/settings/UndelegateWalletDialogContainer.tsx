@@ -1,39 +1,23 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { get, find } from 'lodash';
-import BigNumber from 'bignumber.js';
+import { get } from 'lodash';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
-import type { DelegationCalculateFeeResponse } from '../../../../api/staking/types';
-import UndelegateWalletConfirmationDialog from '../../../../components/wallet/settings/UndelegateWalletConfirmationDialog';
 import UndelegateWalletSuccessDialog from '../../../../components/wallet/settings/UndelegateWalletSuccessDialog';
-import {
-  DELEGATION_ACTIONS,
-  DELEGATION_DEPOSIT,
-} from '../../../../config/stakingConfig';
 
-type Props = InjectedProps & {
-  onExternalLinkClick: (...args: Array<any>) => any;
-};
-type State = {
-  stakePoolQuitFee: DelegationCalculateFeeResponse | null | undefined;
-};
+type Props = InjectedProps;
 
 @inject('actions', 'stores')
 @observer
-class UndelegateWalletDialogContainer extends Component<Props, State> {
+class UndelegateWalletDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
-  };
-  state = {
-    stakePoolQuitFee: null,
   };
   _isMounted = false;
 
   componentDidMount() {
     this._isMounted = true;
-
-    this._handleCalculateTransactionFee();
+    this.submit();
   }
 
   componentWillUnmount() {
@@ -48,90 +32,36 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
     );
   }
 
-  async _handleCalculateTransactionFee() {
-    const { staking, wallets, hardwareWallets } = this.props.stores;
-    const { calculateDelegationFee } = staking;
-    const selectedWallet = find(
-      wallets.allWallets,
-      (wallet) => wallet.id === this.selectedWalletId
+  submit = async () => {
+    const wallet = this.props.stores.wallets.getWalletById(
+      this.selectedWalletId
     );
-    const { lastDelegatedStakePoolId, delegatedStakePoolId } = selectedWallet;
-    const poolId = lastDelegatedStakePoolId || delegatedStakePoolId || '';
-    let stakePoolQuitFee;
-
-    if (selectedWallet.isHardwareWallet) {
-      const coinsSelection = await hardwareWallets.selectDelegationCoins({
-        walletId: this.selectedWalletId,
-        poolId,
-        delegationAction: DELEGATION_ACTIONS.QUIT,
+    if (!wallet) return;
+    try {
+      await this.props.stores.wallets._undelegateWallet({
+        walletId: wallet.id,
+        passphrase: '',
+        isHardwareWallet: wallet.isHardwareWallet,
       });
-      const { deposits, depositsReclaimed, fee } = coinsSelection;
-      stakePoolQuitFee = {
-        deposits,
-        depositsReclaimed,
-        fee,
-      };
-      hardwareWallets.initiateTransaction({
-        walletId: this.selectedWalletId,
-      });
-    } else {
-      stakePoolQuitFee = await calculateDelegationFee({
-        walletId: this.selectedWalletId,
-      });
-
-      // @TODO Remove this when api returns depositsReclaimed value
-      if (stakePoolQuitFee) {
-        stakePoolQuitFee.depositsReclaimed = new BigNumber(DELEGATION_DEPOSIT);
-      }
+    } catch {
+      if (this._isMounted)
+        this.props.actions.dialogs.closeActiveDialog.trigger();
     }
-
-    if (this._isMounted && stakePoolQuitFee) {
-      this.setState({
-        stakePoolQuitFee,
-      });
-    }
-  }
+  };
 
   render() {
-    const { actions, stores, onExternalLinkClick } = this.props;
-    const {
-      wallets,
-      staking,
-      networkStatus,
-      profile,
-      hardwareWallets,
-    } = stores;
+    const { actions, stores } = this.props;
+    const { wallets, staking, networkStatus, profile } = stores;
     const { futureEpoch } = networkStatus;
     const { currentLocale } = profile;
-    const {
-      getStakePoolById,
-      quitStakePoolRequest,
-      isDelegationTransactionPending,
-    } = staking;
+    const { quitStakePoolRequest } = staking;
     const { getWalletById, undelegateWalletSubmissionSuccess } = wallets;
-    const {
-      hwDeviceStatus,
-      sendMoneyRequest,
-      selectCoinsRequest,
-      checkIsTrezorByWalletId,
-    } = hardwareWallets;
-    const { stakePoolQuitFee } = this.state;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
     const walletToBeUndelegated = getWalletById(this.selectedWalletId);
     if (!walletToBeUndelegated) return null;
-    const isTrezor = checkIsTrezorByWalletId(walletToBeUndelegated.id);
     const { name: walletName } = walletToBeUndelegated;
-    const {
-      lastDelegatedStakePoolId,
-      delegatedStakePoolId,
-    } = walletToBeUndelegated;
-    const stakePoolId = lastDelegatedStakePoolId || delegatedStakePoolId || '';
 
-    if (
-      (!stakePoolId || !isDelegationTransactionPending) &&
-      undelegateWalletSubmissionSuccess &&
-      !quitStakePoolRequest.error
-    ) {
+    if (undelegateWalletSubmissionSuccess && !quitStakePoolRequest.error) {
       return (
         <UndelegateWalletSuccessDialog
           walletName={walletName}
@@ -148,44 +78,7 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
       );
     }
 
-    const delegatedStakePool = getStakePoolById(stakePoolId);
-    const stakePoolName = get(delegatedStakePool, 'name', '');
-    const stakePoolTicker = get(delegatedStakePool, 'ticker');
-    return (
-      <UndelegateWalletConfirmationDialog
-        selectedWallet={walletToBeUndelegated}
-        stakePoolName={stakePoolName}
-        stakePoolTicker={stakePoolTicker}
-        onConfirm={(passphrase: string, isHardwareWallet: boolean) => {
-          actions.wallets.undelegateWallet.trigger({
-            walletId: this.selectedWalletId,
-            passphrase,
-            isHardwareWallet,
-          });
-        }}
-        onCancel={() => {
-          actions.dialogs.closeActiveDialog.trigger();
-          quitStakePoolRequest.reset();
-          actions.wallets.setUndelegateWalletSubmissionSuccess.trigger({
-            result: false,
-          });
-        }}
-        onExternalLinkClick={onExternalLinkClick}
-        isSubmitting={
-          quitStakePoolRequest.isExecuting ||
-          sendMoneyRequest.isExecuting ||
-          isDelegationTransactionPending
-        }
-        error={
-          quitStakePoolRequest.error ||
-          sendMoneyRequest.error ||
-          selectCoinsRequest.error
-        }
-        fees={stakePoolQuitFee}
-        hwDeviceStatus={hwDeviceStatus}
-        isTrezor={isTrezor}
-      />
-    );
+    return null;
   }
 }
 

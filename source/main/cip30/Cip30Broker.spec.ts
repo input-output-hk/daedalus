@@ -70,7 +70,7 @@ jest.mock('../ipc/dappBrowser', () => ({
   getCurrentDappRouteLease: jest.fn(),
   setDappBrokerLifecycleRevoker: jest.fn(),
 }));
-jest.mock('../ipc/dappConsent', () => ({ consentCoordinator: {} }));
+jest.mock('../ipc/walletApproval', () => ({ consentCoordinator: {} }));
 jest.mock('../ipc/cip30Wallet', () => ({
   executeCip30WalletRequest: jest.fn(),
 }));
@@ -461,7 +461,10 @@ const create = () => {
   });
   const consent = ({
     request: jest.fn(async (pending: ConsentRequest<unknown>) =>
-      pending.execute(pending.payload, new AbortController().signal, 'secret')
+      pending.execute(pending.payload, new AbortController().signal, 'secret', {
+        requestId: 'approval',
+        reportProgress: jest.fn(),
+      })
     ),
   } as unknown) as Cip30BrokerOptions['consent'];
   const options: Cip30BrokerOptions = {

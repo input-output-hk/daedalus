@@ -8,9 +8,7 @@ import DelegationSetupWizardDialog from '../../../components/staking/delegation-
 import {
   MIN_DELEGATION_FUNDS,
   RECENT_STAKE_POOLS_COUNT,
-  DELEGATION_ACTIONS,
 } from '../../../config/stakingConfig';
-import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 import StakePool from '../../../domains/StakePool';
 
@@ -35,7 +33,6 @@ type State = {
   activeStep: number;
   selectedWalletId: string;
   selectedPoolId: string;
-  stakePoolJoinFee: DelegationCalculateFeeResponse | null | undefined;
 };
 type Props = InjectedDialogContainerProps;
 
@@ -93,7 +90,6 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
     activeStep: 0,
     selectedWalletId: this.selectedWalletId,
     selectedPoolId: this.selectedPoolId,
-    stakePoolJoinFee: null,
   };
   STEPS_LIST = [
     this.context.intl.formatMessage(messages.delegationSetupStep1Label),
@@ -127,19 +123,6 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
     const { intl } = this.context;
     this.props.stores.app.openExternalLink(getSupportUrl(intl.locale));
   };
-  handleConfirm = (
-    spendingPassword: string | null | undefined,
-    isHardwareWallet: boolean
-  ) => {
-    const { selectedPoolId, selectedWalletId } = this.state;
-    this.props.stores.staking.joinStakePoolRequest.reset();
-    this.props.actions.staking.joinStakePool.trigger({
-      stakePoolId: selectedPoolId,
-      walletId: selectedWalletId,
-      passphrase: spendingPassword,
-      isHardwareWallet,
-    });
-  };
   handleSelectWallet = (walletId: string) => {
     this.setState({
       selectedWalletId: walletId,
@@ -152,41 +135,33 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
       selectedPoolId: poolId,
     });
   };
-  handleSelectPool = (pool: StakePool) => {
-    this._handleCalculateTransactionFee(pool.id);
-
-    this.handleContinue();
+  handleSelectPool = async (pool: StakePool) => {
+    const { selectedWalletId } = this.state;
+    const wallet = this.props.stores.wallets.getWalletById(selectedWalletId);
+    if (!wallet) return;
+    this.setState({ selectedPoolId: pool.id, activeStep: 3 });
+    try {
+      await this.props.stores.staking._joinStakePool({
+        stakePoolId: pool.id,
+        walletId: selectedWalletId,
+        passphrase: '',
+        isHardwareWallet: wallet.isHardwareWallet,
+      });
+      if (this._isMounted) this.setState({ activeStep: 4 });
+    } catch {
+      if (this._isMounted) this.setState({ activeStep: 2 });
+    }
   };
 
   render() {
-    const {
-      activeStep,
-      selectedWalletId,
-      selectedPoolId,
-      stakePoolJoinFee,
-    } = this.state;
-    const {
-      app,
-      staking,
-      wallets,
-      profile,
-      networkStatus,
-      hardwareWallets,
-    } = this.props.stores;
+    const { activeStep, selectedWalletId, selectedPoolId } = this.state;
+    const { app, staking, wallets, profile, networkStatus } = this.props.stores;
     const { futureEpoch } = networkStatus;
     const { currentTheme, currentLocale } = profile;
     const {
-      hwDeviceStatus,
-      sendMoneyRequest,
-      selectCoinsRequest,
-      checkIsTrezorByWalletId,
-    } = hardwareWallets;
-    const {
       stakePools,
       recentStakePools,
-      joinStakePoolRequest,
       getStakePoolById,
-      isDelegationTransactionPending,
       maxDelegationFunds,
     } = staking;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
@@ -198,11 +173,6 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
     const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>
       this.handleIsWalletAcceptable(amount, reward)
     );
-    let isTrezor = false;
-
-    if (selectedWallet) {
-      isTrezor = checkIsTrezorByWalletId(selectedWallet.id);
-    }
 
     return (
       <DelegationSetupWizardDialog
@@ -217,7 +187,6 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
         selectedPool={selectedPool || null}
         stakePoolsList={stakePools}
         recentStakePools={take(recentStakePools, RECENT_STAKE_POOLS_COUNT)}
-        stakePoolJoinFee={stakePoolJoinFee}
         futureEpochStartTime={futureEpochStartTime}
         currentLocale={currentLocale}
         onOpenExternalLink={app.openExternalLink}
@@ -229,69 +198,9 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
         onThumbPoolSelect={this.handleChoosePool}
         onBack={this.onBack}
         onLearnMoreClick={this.handleLearnMoreClick}
-        onConfirm={this.handleConfirm}
         getStakePoolById={getStakePoolById}
-        isSubmitting={
-          joinStakePoolRequest.isExecuting ||
-          sendMoneyRequest.isExecuting ||
-          isDelegationTransactionPending
-        }
-        error={
-          joinStakePoolRequest.error ||
-          sendMoneyRequest.error ||
-          selectCoinsRequest.error
-        }
-        hwDeviceStatus={hwDeviceStatus}
-        isTrezor={isTrezor}
       />
     );
-  }
-
-  async _handleCalculateTransactionFee(poolId: string) {
-    const { staking, uiDialogs, wallets, hardwareWallets } = this.props.stores;
-    const { isOpen } = uiDialogs;
-    const { calculateDelegationFee } = staking;
-    const { selectedWalletId } = this.state;
-    const selectedWallet = find(
-      wallets.allWallets,
-      (wallet) => wallet.id === selectedWalletId
-    );
-    let stakePoolJoinFee;
-
-    if (selectedWallet.isHardwareWallet) {
-      // Calculate fee from coins selections
-      const coinsSelection = await hardwareWallets.selectDelegationCoins({
-        walletId: selectedWallet.id,
-        poolId,
-        delegationAction: DELEGATION_ACTIONS.JOIN,
-      });
-      const { deposits, depositsReclaimed, fee } = coinsSelection;
-      stakePoolJoinFee = {
-        deposits,
-        depositsReclaimed,
-        fee,
-      };
-      // Initiate Transaction (Delegation)
-      hardwareWallets.initiateTransaction({
-        walletId: selectedWalletId,
-      });
-    } else {
-      stakePoolJoinFee = await calculateDelegationFee({
-        walletId: selectedWalletId,
-      });
-    }
-
-    // Update state only if DelegationSetupWizardDialog is still mounted and active
-    // and fee calculation was successful
-    if (
-      this._isMounted &&
-      isOpen(DelegationSetupWizardDialog) &&
-      stakePoolJoinFee
-    ) {
-      this.setState({
-        stakePoolJoinFee,
-      });
-    }
   }
 }
 

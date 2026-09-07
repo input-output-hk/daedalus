@@ -3,7 +3,6 @@ import { observer, inject } from 'mobx-react';
 import DelegationCenter from '../../components/staking/delegation-center/DelegationCenter';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
 import UndelegateWalletDialogContainer from '../wallet/dialogs/settings/UndelegateWalletDialogContainer';
-import UndelegateWalletConfirmationDialog from '../../components/wallet/settings/UndelegateWalletConfirmationDialog';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import DelegationCenterNoWallets from '../../components/staking/delegation-center/DelegationCenterNoWallets';
 import { ROUTES } from '../../routes-config';
@@ -48,7 +47,7 @@ class DelegationCenterPage extends Component<Props, State> {
   handleUndelegate = async (walletId: string) => {
     const { dialogs } = this.props.actions;
     dialogs.open.trigger({
-      dialog: UndelegateWalletConfirmationDialog,
+      dialog: UndelegateWalletDialogContainer,
     });
     dialogs.updateDataForActiveDialog.trigger({
       data: {
@@ -115,10 +114,8 @@ class DelegationCenterPage extends Component<Props, State> {
           containerClassName="StakingWithNavigation_page"
           setListActive={this.handleSetListActive}
         />
-        {uiDialogs.isOpen(UndelegateWalletConfirmationDialog) ? (
-          <UndelegateWalletDialogContainer
-            onExternalLinkClick={app.openExternalLink}
-          />
+        {uiDialogs.isOpen(UndelegateWalletDialogContainer) ? (
+          <UndelegateWalletDialogContainer />
         ) : null}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />

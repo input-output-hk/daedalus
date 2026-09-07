@@ -75,6 +75,32 @@
     }
   }
 }
+.review {
+  align-items: stretch;
+
+  dd {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .copyIcon {
+    opacity: 1;
+  }
+}
+
+.reviewCopy {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  text-align: left;
+
+  &:focus {
+    outline: 2px solid var(--theme-dialog-fullsize-text-highlight-color);
+    outline-offset: 2px;
+  }
+}
 
 .fingerprint {
   background: var(--theme-widgets-asset-token-fingerprint-background-color);

@@ -15,13 +15,13 @@ jest.mock('./dappBrowser', () => ({
 import { EventEmitter } from 'events';
 import { ipcMain } from 'electron';
 import { IpcChannel } from '../../common/ipc/lib/IpcChannel';
-import { DAPP_CONSENT_RENDER_CHANNEL } from '../../common/ipc/api';
+import { WALLET_APPROVAL_RENDER_CHANNEL } from '../../common/ipc/api';
 import type {
-  DappConsentRenderMainRequest,
-  DappConsentRenderRendererResponse,
+  WalletApprovalRenderMainRequest,
+  WalletApprovalRenderRendererResponse,
 } from '../../common/ipc/api';
 import { currentWindowSender } from './lib/currentWindowSender';
-import { consentCoordinator } from './dappConsent';
+import { consentCoordinator } from './walletApproval';
 
 afterEach(() => {
   consentCoordinator.cancel(() => true);
@@ -47,23 +47,28 @@ it('presents consent and dismisses it after a renderer refusal without executing
   // The renderer has its own module registry in the real application.
   IpcChannel._instances = {};
   const endpoint = new IpcChannel<
-    DappConsentRenderMainRequest,
-    DappConsentRenderRendererResponse
-  >(DAPP_CONSENT_RENDER_CHANNEL);
+    WalletApprovalRenderMainRequest,
+    WalletApprovalRenderRendererResponse
+  >(WALLET_APPROVAL_RENDER_CHANNEL);
   let visible: string | undefined;
   let presentedOrigin: string | undefined;
   endpoint.onRequest(async (message) => {
-    if (message.type === 'present') {
+    if (
+      message.type === 'present' &&
+      message.request.kind !== 'native-transaction'
+    ) {
       visible = message.request.requestId;
       presentedOrigin = message.request.origin;
       return { requestId: visible, approved: false };
     }
-    if (visible === message.requestId) visible = undefined;
+    if (message.type !== 'present' && visible === message.requestId)
+      visible = undefined;
   }, renderer);
   const execute = jest.fn(async () => 'must not execute');
   await expect(
     consentCoordinator.request({
       identity: {
+        kind: 'dapp',
         guestWebContentsId: 7,
         documentGeneration: 1,
         origin: 'https://example.test',

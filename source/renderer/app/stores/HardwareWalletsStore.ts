@@ -27,6 +27,7 @@ import {
 } from '../config/hardwareWalletsConfig';
 import { DEVICE_NOT_CONNECTED } from '../../../common/ipc/api';
 import { TIME_TO_LIVE } from '../config/txnsConfig';
+import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
   getHardwareWalletTransportChannel,
   getExtendedPublicKeyChannel,
@@ -99,6 +100,8 @@ import type {
   CoinSelectionsResponse,
   VotingDataType,
 } from '../api/transactions/types';
+import type { ConstructTransactionData } from '../api/transactions/types';
+import type { NativeTransactionAction } from '../../../common/transactions/nativePlan';
 import { reconcileTransactionContext } from '../../../common/cardano/transactionContext';
 import {
   bindPaymentChange,
@@ -490,6 +493,20 @@ export default class HardwareWalletsStore extends Store {
       connector?.physicalCertified
     );
   };
+  private getNativeTransactionCapability = (
+    walletId: string
+  ): HardwareTransactionCapability => {
+    const connection = find(
+      this.hardwareWalletsConnectionData,
+      (connectionData) => connectionData.id === walletId
+    );
+    if (!connection) throw new Error('Hardware wallet is not paired');
+    return dappHardwareCapability(
+      connection.device.deviceType,
+      `${connection.device.deviceType}-native`,
+      true
+    );
+  };
 
   refreshDappConnectorCapability = async (
     walletId: string
@@ -497,13 +514,18 @@ export default class HardwareWalletsStore extends Store {
     const current = this.getDappConnectorCapability(walletId);
     if (current) return current;
     const connection = this.hardwareWalletsConnectionData[walletId];
-    const path = connection?.device.path;
+    const storedPath = connection?.device.path;
+    const path =
+      storedPath && this.connectedHardwareWalletsDevices.has(storedPath)
+        ? storedPath
+        : connection?.path;
     const connected = path && this.connectedHardwareWalletsDevices.get(path);
     if (
       path &&
       connected &&
       !connected.disconnected &&
       connected.deviceType === DeviceTypes.LEDGER &&
+      connected.deviceModel === connection.device.deviceModel &&
       connection.device.deviceType === DeviceTypes.LEDGER
     ) {
       this.ledgerAppVersions.delete(path);
@@ -514,10 +536,13 @@ export default class HardwareWalletsStore extends Store {
         path,
         `${version.major}.${version.minor}.${version.patch}`
       );
-      if (connection.disconnected) {
+      if (connection.disconnected || connection.device.path !== path) {
         await this._setHardwareWalletLocalData({
           walletId,
-          data: { disconnected: false },
+          data: {
+            disconnected: false,
+            device: { ...connection.device, path },
+          },
         });
       }
     }
@@ -809,7 +834,7 @@ export default class HardwareWalletsStore extends Store {
     await this._refreshHardwareWalletsLocalData();
     await this._refreshHardwareWalletDevices();
   };
-  private signExactPayment = async (walletId: string) => {
+  private prepareExactPayment = async (walletId: string) => {
     const exactPayment = this.txSignRequest.exactPayment;
     if (!exactPayment)
       throw new Error('Exact hardware transaction is unavailable');
@@ -851,7 +876,13 @@ export default class HardwareWalletsStore extends Store {
       );
       preparation = { ...preparation, exact };
     }
+    return { exactPayment, snapshot, preparation };
+  };
 
+  private signExactPayment = async (walletId: string) => {
+    const { exactPayment, preparation } = await this.prepareExactPayment(
+      walletId
+    );
     runInAction('HardwareWalletsStore:: verify exact transaction', () => {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     });
@@ -893,6 +924,138 @@ export default class HardwareWalletsStore extends Store {
     });
   };
 
+  submitConstructedNativeTransaction = async ({
+    walletId,
+    data,
+    action: nativeAction,
+  }: {
+    walletId: string;
+    data: ConstructTransactionData['data'];
+    action: NativeTransactionAction;
+  }): Promise<{ id: string }> => {
+    const wallet = this.stores.wallets.getWalletById(walletId);
+    if (!wallet)
+      throw new Error('Wallet required before preparing transaction');
+    let hardwarePreparation: HardwareTransactionPreparation | undefined;
+    const result = await this.stores.walletApproval.nativeTransactions.run({
+      walletId,
+      ownerSignal: new AbortController().signal,
+      prepare: async () => {
+        const constructed = await this.api.ada.constructTransaction({
+          walletId,
+          data,
+        });
+        const network = this.dappNetwork();
+        const rawContext = await this.api.ada.getDappTransactionContext({
+          walletId,
+          request: {
+            revision: 1,
+            network,
+            transactions: [constructed.transaction],
+          },
+        });
+        const snapshot = reconcileTransactionContext(rawContext, {
+          walletId,
+          network: {
+            networkId: network.network_id,
+            networkMagic: network.network_magic,
+            genesisHash: network.genesis_hash,
+          },
+          transactions: [constructed.transaction],
+        });
+        let preparation = prepareHardwareTransaction(
+          snapshot,
+          0,
+          false,
+          this.getNativeTransactionCapability(walletId)
+        );
+        if (preparation.status !== 'ready')
+          throw new Error('Hardware exact transaction is not enabled');
+        if (preparation.exact.capability.vendor === DeviceTypes.LEDGER) {
+          const connection = get(this.hardwareWalletsConnectionData, walletId);
+          const key = connection?.extendedPublicKey;
+          const exact = await bindPaymentChange(
+            preparation.exact,
+            constructed.coinSelection.outputs,
+            `${key?.publicKeyHex}${key?.chainCodeHex}`
+          );
+          preparation = { ...preparation, exact };
+        }
+        hardwarePreparation = preparation;
+        return Object.freeze({
+          walletId,
+          network: {
+            networkId: network.network_id,
+            networkMagic: network.network_magic,
+            genesisHash: network.genesis_hash,
+          },
+          action: nativeAction,
+          authorization: preparation.exact.capability.vendor,
+          items: Object.freeze([
+            Object.freeze({
+              kind: 'exact-cbor' as const,
+              cbor: constructed.transaction,
+              transactionContext: snapshot,
+              selectionFacts: Object.freeze({
+                deposits: constructed.coinSelection.deposits
+                  .times(LOVELACES_PER_ADA)
+                  .toFixed(0),
+                refunds: constructed.coinSelection.depositsReclaimed
+                  .times(LOVELACES_PER_ADA)
+                  .toFixed(0),
+              }),
+            }),
+          ]),
+          context: Object.freeze({
+            walletName: wallet.name,
+            networkName: global.environment.network,
+          }),
+        });
+      },
+      execute: async (_prepared, _passphrase, signal, markSubmitting) => {
+        if (!hardwarePreparation)
+          return Object.freeze({
+            status: 'rejected' as const,
+            errorCode: 'transaction_plan_changed',
+          });
+        const signed = await this.signExactTransaction(
+          walletId,
+          hardwarePreparation
+        );
+        if (signal.aborted)
+          return Object.freeze({
+            status: 'rejected' as const,
+            errorCode: 'cancelled',
+          });
+        await markSubmitting();
+        const network = this.dappNetwork();
+        const submission = await this.api.ada.submitDappTransaction({
+          walletId,
+          request: {
+            revision: 1,
+            network,
+            transaction: signed.signedTransactionCbor,
+          },
+        });
+        if (submission.status === 'rejected' || submission.status === 'expired')
+          return Object.freeze({
+            status: 'rejected' as const,
+            errorCode: submission.status,
+          });
+        return Object.freeze({
+          status: 'submitted' as const,
+          transactionIds: Object.freeze([submission.transaction_id]),
+        });
+      },
+    });
+    if (result.status !== 'submitted')
+      throw new Error(
+        'errorCode' in result
+          ? result.errorCode
+          : 'Transaction was not submitted'
+      );
+    return { id: result.transactionIds[0] };
+  };
   _sendMoney = async (params?: {
     isDelegationTransaction?: boolean;
     isVotingRegistrationTransaction?: boolean;
@@ -910,20 +1073,112 @@ export default class HardwareWalletsStore extends Store {
     if (!walletId) {
       throw new Error('Active wallet required before sending.');
     }
-    if (!this.walletSendLease) await this.acquireWalletSendLease(walletId);
-
-    this.setTransactionPendingState(true);
+    let transaction: CreateExternalTransactionResponse;
+    const exactPayment = this.txSignRequest.exactPayment;
+    if (
+      exactPayment &&
+      !isDelegationTransaction &&
+      !isVotingRegistrationTransaction
+    ) {
+      const owner = new AbortController();
+      let hardwarePreparation: HardwareTransactionPreparation | undefined;
+      const result = await this.stores.walletApproval.nativeTransactions.run({
+        walletId,
+        ownerSignal: owner.signal,
+        prepare: async () => {
+          const prepared = await this.prepareExactPayment(walletId);
+          hardwarePreparation = prepared.preparation;
+          const network = this.dappNetwork();
+          return Object.freeze({
+            walletId,
+            network: Object.freeze({
+              networkId: network.network_id,
+              networkMagic: network.network_magic,
+              genesisHash: network.genesis_hash,
+            }),
+            action: exactPayment.isCollateralPreparation
+              ? ('collateral-preparation' as const)
+              : ('payment' as const),
+            authorization: prepared.preparation.exact.capability.vendor,
+            items: Object.freeze([
+              Object.freeze({
+                kind: 'exact-cbor' as const,
+                cbor: exactPayment.unsignedTransaction,
+                transactionContext: prepared.snapshot,
+                selectionFacts: Object.freeze({
+                  deposits: this.txSignRequest.coinSelection.deposits
+                    .times(LOVELACES_PER_ADA)
+                    .toFixed(0),
+                  refunds: this.txSignRequest.coinSelection.depositsReclaimed
+                    .times(LOVELACES_PER_ADA)
+                    .toFixed(0),
+                }),
+              }),
+            ]),
+            context: Object.freeze({
+              walletName:
+                this.stores.wallets.getWalletById(walletId)?.name || walletId,
+              networkName: global.environment.network,
+            }),
+          });
+        },
+        execute: async (_prepared, _passphrase, signal, markSubmitting) => {
+          if (!hardwarePreparation)
+            return Object.freeze({
+              status: 'rejected' as const,
+              errorCode: 'transaction_plan_changed',
+            });
+          this.setTransactionPendingState(true);
+          const signed = await this.signExactTransaction(
+            walletId,
+            hardwarePreparation
+          );
+          if (signal.aborted)
+            return Object.freeze({
+              status: 'rejected' as const,
+              errorCode: 'cancelled',
+            });
+          runInAction(
+            'HardwareWalletsStore:: retain approved signature',
+            () => {
+              this.txSignRequest = {
+                ...this.txSignRequest,
+                exactPayment: {
+                  ...exactPayment,
+                  signedTransaction: signed.signedTransactionCbor,
+                },
+              };
+            }
+          );
+          await markSubmitting();
+          const submitted = await this.submitExactPayment(walletId);
+          return Object.freeze({
+            status: 'submitted' as const,
+            transactionIds: Object.freeze([submitted.id]),
+          });
+        },
+      });
+      if (result.status !== 'submitted')
+        throw new Error(
+          'errorCode' in result
+            ? result.errorCode
+            : 'Transaction was not submitted'
+        );
+      transaction = { id: result.transactionIds[0] };
+    } else {
+      if (!this.walletSendLease) await this.acquireWalletSendLease(walletId);
+      this.setTransactionPendingState(true);
+      try {
+        transaction = await ((this.sendMoneyRequest.execute({
+          signedTransactionBlob: this.signedTx,
+        }) as unknown) as Promise<CreateExternalTransactionResponse>);
+      } finally {
+        this.releaseWalletSendLease();
+      }
+    }
 
     try {
-      const transaction =
-        isDelegationTransaction || isVotingRegistrationTransaction
-          ? await ((this.sendMoneyRequest.execute({
-              signedTransactionBlob: this.signedTx,
-            }) as unknown) as Promise<CreateExternalTransactionResponse>)
-          : await this.submitExactPayment(walletId);
-
       if (!isDelegationTransaction) {
-        // Start interval to check transaction state every second
         this.checkTransactionTimeInterval = setInterval(
           this.checkTransaction,
           1000,
@@ -933,7 +1188,6 @@ export default class HardwareWalletsStore extends Store {
             isVotingRegistrationTransaction,
           }
         );
-
         this.analytics.sendEvent(
           EventCategories.WALLETS,
           'Transaction made',
@@ -942,21 +1196,12 @@ export default class HardwareWalletsStore extends Store {
       } else {
         this.setTransactionPendingState(false);
       }
-
       this.stores.wallets.refreshWalletsData();
       this.sendMoneyRequest.reset();
       return transaction;
     } catch (e) {
       this.setTransactionPendingState(false);
-      runInAction('HardwareWalletsStore:: reset Transaction verifying', () => {
-        this.signedTx = null;
-        this.activeDevicePath = null;
-        this.unfinishedWalletTxSigning = null;
-        this.votingData = null;
-      });
       throw e;
-    } finally {
-      this.releaseWalletSendLease();
     }
   };
   // Check stake pool transaction state and reset pending state when transaction is "in_ledger"
@@ -1047,7 +1292,6 @@ export default class HardwareWalletsStore extends Store {
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
-    await this.acquireWalletSendLease(walletId);
 
     try {
       const {
@@ -1076,7 +1320,6 @@ export default class HardwareWalletsStore extends Store {
           this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
         }
       );
-      this.releaseWalletSendLease();
       throw e;
     }
   };

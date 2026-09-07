@@ -10,6 +10,7 @@ import {
   cleanup,
   within,
   waitForElementToBeRemoved,
+  waitFor,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import en from 'react-intl/locale-data/en';
@@ -22,33 +23,6 @@ import { HwDeviceStatuses } from '../../domains/Wallet';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import WalletSendForm, { FormData } from './WalletSendForm';
 import { noopAnalyticsTracker } from '../../analytics';
-
-jest.mock(
-  '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.container',
-  () => {
-    function Dialog({
-      amount,
-      formattedTotalAmount,
-    }: {
-      amount: number;
-      formattedTotalAmount: number;
-    }) {
-      return (
-        <div>
-          <span data-testid="confirmation-dialog-ada-amount">{amount}</span>
-          <span data-testid="confirmation-dialog-total-amount">
-            {formattedTotalAmount}
-          </span>
-        </div>
-      );
-    }
-
-    return {
-      __esModule: true,
-      WalletSendConfirmationDialogContainer: Dialog,
-    };
-  }
-);
 
 describe('wallet/Wallet Send Form', () => {
   beforeEach(() => addLocaleData([...en]));
@@ -81,18 +55,16 @@ describe('wallet/Wallet Send Form', () => {
     validationDebounceWait,
     validateAmount = jest.fn().mockResolvedValue(true),
     onTransactionFeeChange = jest.fn(),
+    onSubmit = jest.fn(),
   }: {
     calculateTransactionFee: (...args: Array<any>) => any;
     validateAmount?: (amount: string) => Promise<boolean>;
     currentNumberFormat?: string;
     validationDebounceWait?: number;
     onTransactionFeeChange?: () => Promise<void>;
+    onSubmit?: (data: FormData) => void;
   }) {
     const [tokenPickerOpen, setTokenPickerOpen] = useState<boolean>(false);
-    const [state, setState] = useState<{
-      isDialogOpen: boolean;
-      formData: FormData;
-    }>({ isDialogOpen: false, formData: null });
 
     return (
       <TestDecorator>
@@ -109,12 +81,9 @@ describe('wallet/Wallet Send Form', () => {
                 walletAmount={new BigNumber(123)}
                 assets={assets}
                 addressValidator={() => true}
-                onSubmit={(formData) =>
-                  setState({ isDialogOpen: true, formData })
-                }
+                onSubmit={onSubmit}
                 isDialogOpen={(dialog) =>
-                  (dialog === WalletTokenPicker && tokenPickerOpen) ||
-                  state.isDialogOpen
+                  dialog === WalletTokenPicker && tokenPickerOpen
                 }
                 isRestoreActive={false}
                 hwDeviceStatus={HwDeviceStatuses.READY}
@@ -130,7 +99,6 @@ describe('wallet/Wallet Send Form', () => {
                 onTokenPickerDialogClose={() => setTokenPickerOpen(false)}
                 onTokenPickerDialogOpen={() => setTokenPickerOpen(true)}
                 analyticsTracker={noopAnalyticsTracker}
-                confirmationDialogData={state.formData}
                 validationDebounceWait={validationDebounceWait}
                 onTransactionFeeChange={onTransactionFeeChange}
               />
@@ -549,10 +517,9 @@ describe('wallet/Wallet Send Form', () => {
       idx
     ) => {
       test(`case ${idx}: should not allow to submit before fees are calculated`, async () => {
-        expect.assertions(5);
-
         const validationDebounceWait = 0;
         const onTransactionFeeChangeSpy = jest.fn();
+        const onSubmitSpy = jest.fn();
 
         const calculateTransactionFeeMock = jest.fn();
 
@@ -587,6 +554,7 @@ describe('wallet/Wallet Send Form', () => {
             calculateTransactionFee={calculateTransactionFeeMock}
             validationDebounceWait={validationDebounceWait}
             onTransactionFeeChange={onTransactionFeeChangeSpy}
+            onSubmit={onSubmitSpy}
           />
         );
 
@@ -618,19 +586,10 @@ describe('wallet/Wallet Send Form', () => {
           target: adaField,
         });
 
-        const adaAmountConfirmation = await screen.findByTestId(
-          'confirmation-dialog-ada-amount',
-          {}
-        );
-
-        expect(adaAmountConfirmation).toHaveTextContent(expectedAdaAmount);
-
-        const totalAmountConfirmation = screen.getByTestId(
-          'confirmation-dialog-total-amount',
-          {}
-        );
-
-        expect(totalAmountConfirmation).toHaveTextContent(expectedTotalAmount);
+        await waitFor(() => expect(onSubmitSpy).toHaveBeenCalledTimes(1));
+        const submitted = onSubmitSpy.mock.calls[0][0] as FormData;
+        expect(submitted.amount.toFixed(6)).toBe(expectedAdaAmount);
+        expect(submitted.totalAmount.toFixed(6)).toBe(expectedTotalAmount);
         expect(onTransactionFeeChangeSpy).toHaveBeenCalledTimes(
           expectedTimesFeeCalled
         );

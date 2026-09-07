@@ -2,10 +2,10 @@ import type { DappConsentPresentation } from '../../../common/ipc/api';
 import type { Api } from '../api';
 import type { ActionsMap } from '../actions';
 import type { AnalyticsTracker } from '../analytics';
-import Cip30ConsentStore from './Cip30ConsentStore';
+import WalletApprovalStore from './WalletApprovalStore';
 
-jest.mock('../ipc/dappConsent', () => ({
-  bindDappConsentRenderer: jest.fn(() => jest.fn()),
+jest.mock('../ipc/walletApproval', () => ({
+  bindWalletApprovalRenderer: jest.fn(() => jest.fn()),
 }));
 
 const request = {
@@ -19,7 +19,7 @@ const request = {
 };
 
 const createStore = () =>
-  new Cip30ConsentStore(
+  new WalletApprovalStore(
     (undefined as unknown) as Api,
     (undefined as unknown) as ActionsMap,
     (undefined as unknown) as AnalyticsTracker
@@ -34,6 +34,22 @@ const transactionReview = {
   witnessSetCbor: 'a0',
   auxiliaryDataCbor: 'f6',
   isValid: true,
+  display: {
+    entries: [],
+    walletInputs: null,
+    walletOutputs: null,
+    walletChange: null,
+    fee: '0',
+    deposits: null,
+    refunds: null,
+    maximumCollateralLoss: null,
+    mint: [],
+    withdrawals: [],
+    certificates: [],
+    votes: [],
+    proposalCount: 0,
+    donation: null,
+  },
   effects: [],
   existingVkeyWitnesses: [],
   existingBootstrapWitnesses: [],
@@ -42,7 +58,7 @@ const transactionReview = {
   refusalReasons: [],
 };
 
-describe('Cip30ConsentStore', () => {
+describe('WalletApprovalStore', () => {
   it('correlates approval by main-issued ID and restores trusted focus', async () => {
     const store = createStore();
     const origin = document.createElement('button');
@@ -124,6 +140,7 @@ describe('Cip30ConsentStore', () => {
     const signRequest: DappConsentPresentation = {
       ...request,
       kind: 'transaction-sign',
+      authorization: { kind: 'software' },
       review: transactionReview,
     };
     const signDecision = signing.receive({
@@ -141,6 +158,7 @@ describe('Cip30ConsentStore', () => {
     const batchSignRequest: DappConsentPresentation = {
       ...request,
       kind: 'batch-sign',
+      authorization: { kind: 'software' },
       review: {
         mode: 'sign',
         approvable: true,
@@ -162,6 +180,7 @@ describe('Cip30ConsentStore', () => {
     const submitRequest: DappConsentPresentation = {
       ...request,
       kind: 'transaction-submit',
+      authorization: { kind: 'none' },
       review: { ...transactionReview, mode: 'submit' },
     };
     const submitDecision = submission.receive({
@@ -173,5 +192,40 @@ describe('Cip30ConsentStore', () => {
       requestId: request.requestId,
       approved: true,
     });
+  });
+  it('accepts only correlated execution progress for the active item', async () => {
+    const store = createStore();
+    const decision = store.receive({
+      type: 'present',
+      request: {
+        ...request,
+        kind: 'transaction-sign',
+        authorization: { kind: 'hardware', vendor: 'ledger' },
+        review: transactionReview,
+      },
+    });
+    store.approve();
+    await decision;
+
+    await store.receive({
+      type: 'progress',
+      requestId: request.requestId,
+      phase: 'waiting-for-device',
+      itemIndex: 0,
+      submissionAuthorized: false,
+    });
+    expect(store.phase).toBe('waiting-for-device');
+    expect(store.activeItemIndex).toBe(0);
+
+    await store.receive({
+      type: 'progress',
+      requestId: 'stale',
+      phase: 'submitting',
+      itemIndex: 0,
+      submissionAuthorized: true,
+    });
+    expect(store.phase).toBe('waiting-for-device');
+    await store.receive({ type: 'terminal', requestId: request.requestId });
+    expect(store.current).toBeNull();
   });
 });

@@ -154,7 +154,7 @@ export type TransactionParams = {
   };
 };
 export type TransactionFeeAmount = {
-  quantity: number;
+  quantity: number | BigNumber;
   unit: WalletUnits.LOVELACE;
 };
 export type GetTransactionFeeParams = {
@@ -175,7 +175,7 @@ export type TransactionFee = {
   minimum_coins: Array<TransactionFeeAmount>;
 };
 export type CoinSelectionAmount = {
-  quantity: number;
+  quantity: number | BigNumber;
   unit: WalletUnits.LOVELACE;
 };
 export type CoinSelectionInput = {
@@ -305,16 +305,21 @@ export type VotingDataType = {
 
 export type ConstructTransactionData = {
   walletId: string;
-  data:
-    | {
-        vote?: string;
-      }
-    | {
-        encoding: 'base16';
-        payments: Array<TransactionPaymentData>;
-        withdrawal?: TransactionWithdrawalType;
-        metadata?: VotingMetadataType | null;
-      };
+  data: {
+    encoding: 'base16';
+    payments?: Array<TransactionPaymentData>;
+    withdrawal?: 'self';
+    metadata?: VotingMetadataType | null;
+    delegations?: Array<
+      | { join: { pool: string; stake_key_index: '0H' } }
+      | { quit: { stake_key_index: '0H' } }
+    >;
+    vote?: string;
+    validity_interval?: {
+      invalid_before: { quantity: number | BigNumber; unit: 'slot' } | null;
+      invalid_hereafter: { quantity: number | BigNumber; unit: 'slot' } | null;
+    };
+  };
 };
 
 export type ConstructTransactionResponse = {

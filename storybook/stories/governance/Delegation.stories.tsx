@@ -15,7 +15,6 @@ import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import Navigation from '../../../source/renderer/app/components/navigation/Navigation';
 import VotingPowerDelegation from '../../../source/renderer/app/components/voting/voting-governance/VotingPowerDelegation';
-import VotingPowerDelegationConfirmationDialog from '../../../source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog';
 import VotingUnavailable from '../../../source/renderer/app/components/voting/VotingUnavailable';
 import VotingInfo from '../../../source/renderer/app/components/voting/voting-info/VotingInfo';
 import { VotingFooterLinks } from '../../../source/renderer/app/components/voting/VotingFooterLinks';
@@ -213,7 +212,7 @@ const renderPrefilledPanel = (
           <VotingPowerDelegation
             getStakePoolById={getStakePoolById}
             onFetchDRep={makeFetchDRep(drepIndex)}
-            initiateTransaction={initiateTransaction}
+            submitTransaction={initiateTransaction}
             initialFormState={{
               ...(selectedDRepId ? { selectedDRepId } : {}),
               selectedWalletId: 'governance-wallet-1',
@@ -222,7 +221,7 @@ const renderPrefilledPanel = (
             onBrowseDRepsClick={action('onBrowseDRepsClick')}
             onCancel={action('onCancel')}
             onExternalLinkClick={action('onExternalLinkClick')}
-            renderConfirmationDialog={renderGovernanceConfirmationDialog}
+            onSuccess={action('onSuccess')}
             stakePools={STAKE_POOLS_LIST}
             wallets={wallets}
           />
@@ -243,8 +242,8 @@ const renderErrorPanel = (errorCode: InitializeVPDelegationTxError) => (
         <VotingPowerDelegation
           getStakePoolById={getStakePoolById}
           onFetchDRep={makeFetchDRep(drepIndex)}
-          initiateTransaction={async (params) => {
-            action('initiateTransaction')(params);
+          submitTransaction={async (params) => {
+            action('submitTransaction')(params);
             return { success: false, errorCode };
           }}
           initialFormState={{
@@ -255,7 +254,7 @@ const renderErrorPanel = (errorCode: InitializeVPDelegationTxError) => (
           onBrowseDRepsClick={action('onBrowseDRepsClick')}
           onCancel={action('onCancel')}
           onExternalLinkClick={action('onExternalLinkClick')}
-          renderConfirmationDialog={renderGovernanceConfirmationDialog}
+          onSuccess={action('onSuccess')}
           stakePools={STAKE_POOLS_LIST}
           wallets={wallets}
         />
@@ -302,11 +301,11 @@ const renderGovernancePanel = (option: CurrentVoteOption) => {
         <VotingPowerDelegation
           getStakePoolById={getStakePoolById}
           onFetchDRep={makeFetchDRep(drepIndex)}
-          initiateTransaction={initiateTransaction}
+          submitTransaction={initiateTransaction}
           onBrowseDRepsClick={action('onBrowseDRepsClick')}
           onCancel={action('onCancel')}
           onExternalLinkClick={action('onExternalLinkClick')}
-          renderConfirmationDialog={renderGovernanceConfirmationDialog}
+          onSuccess={action('onSuccess')}
           stakePools={STAKE_POOLS_LIST}
           wallets={wallets}
         />
@@ -344,100 +343,6 @@ const renderNonVotingPlaceholder = (activeSidebarCategory: string) => (
       back into the connected governance flow.
     </p>
   </BorderedBox>
-);
-
-// One story per device state. The knob that drove these shares its name with
-// the one the in-flow dialog registers, and addon-knobs stores values by name,
-// so a value set while looking at one story arrived in the other and the
-// device appeared to be stuck in whichever state was last chosen.
-const renderHardwareDialog = (hwDeviceStatus: HwDeviceStatus) => (
-  <div style={CENTERED_STORY_STYLE}>
-    <VotingPowerDelegationConfirmationDialog
-      chosenOption={VALID_DREP_ID}
-      drepIdentity={toStoryDRepIdentity(VALID_DREP_ID)}
-      fees={new BigNumber('0.174257')}
-      hwDeviceStatus={hwDeviceStatus}
-      isTrezor={boolean('Is Trezor', false)}
-      onClose={action('onClose')}
-      onExternalLinkClick={action('onExternalLinkClick')}
-      onSubmit={async () => {
-        action('delegateVotes')();
-        return { success: true };
-      }}
-      redirectToWallet={action('redirectToWallet')}
-      selectedWallet={makeGovernanceWallets('noDelegation')[1]}
-      verifiedName={toStoryVerifiedName(VALID_DREP_ID)}
-    />
-  </div>
-);
-
-const renderSentinelDialog = (option: 'abstain' | 'no_confidence') => (
-  <div style={CENTERED_STORY_STYLE}>
-    <VotingPowerDelegationConfirmationDialog
-      chosenOption={option}
-      drepIdentity={null}
-      fees={new BigNumber('0.174257')}
-      hwDeviceStatus={HwDeviceStatuses.READY}
-      isTrezor={false}
-      onClose={action('onClose')}
-      onExternalLinkClick={action('onExternalLinkClick')}
-      onSubmit={async (passphrase) => {
-        action('delegateVotes')({ passphrase });
-        return { success: true };
-      }}
-      redirectToWallet={action('redirectToWallet')}
-      selectedWallet={makeGovernanceWallets('noDelegation')[0]}
-      verifiedName={null}
-    />
-  </div>
-);
-
-const renderGovernanceConfirmationDialog = ({
-  chosenOption,
-  fees,
-  onClose,
-  selectedWallet,
-}: {
-  chosenOption: string;
-  fees: BigNumber;
-  onClose: () => void;
-  selectedWallet: Wallet;
-}) => (
-  <VotingPowerDelegationConfirmationDialog
-    chosenOption={chosenOption}
-    drepIdentity={toStoryDRepIdentity(chosenOption)}
-    fees={fees}
-    hwDeviceStatus={
-      select(
-        'Hardware wallet status',
-        hwDeviceStatusOptions,
-        HwDeviceStatuses.VERIFYING_TRANSACTION
-      ) as HwDeviceStatus
-    }
-    isTrezor={boolean('Hardware wallet is Trezor', false)}
-    onClose={onClose}
-    onExternalLinkClick={action('onExternalLinkClick')}
-    onSubmit={async (passphrase) => {
-      action('delegateVotes')({
-        chosenOption,
-        passphrase,
-        walletId: selectedWallet.id,
-      });
-      return boolean('Delegation submission succeeds', true)
-        ? { success: true }
-        : {
-            success: false,
-            errorCode: select(
-              'Delegation submission error',
-              delegateVotesErrorOptions,
-              'wrong_encryption_passphrase'
-            ),
-          };
-    }}
-    redirectToWallet={action('redirectToWallet')}
-    selectedWallet={selectedWallet}
-    verifiedName={toStoryVerifiedName(chosenOption)}
-  />
 );
 
 storiesOf('Governance / Delegation', module)
@@ -580,129 +485,6 @@ storiesOf('Governance / Delegation', module)
   // to the DRep selection, and the only thing that mentions rewards is the
   // paragraph at the top of the page.
   .add('Not delegated yet', () => renderPrefilledPanel('noDelegation'))
-  .add('Confirmation dialog - software wallet', () => {
-    const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
-    // Read while the story renders. Inside onSubmit they run only once a
-    // transaction has been submitted, so addon-knobs never registers them and
-    // the panel offers nothing to change.
-    const submissionSucceeds = boolean('Submission succeeds', true);
-    const submissionError = select(
-      'Submission error',
-      delegateVotesErrorOptions,
-      'wrong_encryption_passphrase'
-    );
-    return (
-      <div style={CENTERED_STORY_STYLE}>
-        <VotingPowerDelegationConfirmationDialog
-          chosenOption={voteOption}
-          drepIdentity={toStoryDRepIdentity(voteOption)}
-          fees={
-            new BigNumber(
-              number('Transaction fee', 0.174257, {
-                min: 0,
-                step: 0.000001,
-              })
-            )
-          }
-          hwDeviceStatus={HwDeviceStatuses.READY}
-          isTrezor={false}
-          onClose={action('onClose')}
-          onExternalLinkClick={action('onExternalLinkClick')}
-          onSubmit={async (passphrase) => {
-            action('delegateVotes')({ passphrase });
-            return submissionSucceeds
-              ? { success: true }
-              : { success: false, errorCode: submissionError };
-          }}
-          redirectToWallet={action('redirectToWallet')}
-          selectedWallet={makeGovernanceWallets('noDelegation')[0]}
-          verifiedName={toStoryVerifiedName(voteOption)}
-        />
-      </div>
-    );
-  })
-  // Abstain and No Confidence reach this dialog exactly as a DRep does, and
-  // are the states most easily missed behind a knob.
-  .add('Hardware wallet - connecting', () =>
-    renderHardwareDialog(HwDeviceStatuses.CONNECTING)
-  )
-  .add('Hardware wallet - verifying', () =>
-    renderHardwareDialog(HwDeviceStatuses.VERIFYING_TRANSACTION)
-  )
-  .add('Hardware wallet - verified', () =>
-    renderHardwareDialog(HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED)
-  )
-  .add('Hardware wallet - verification failed', () =>
-    renderHardwareDialog(HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED)
-  )
-  .add('Confirmation dialog - Abstain', () => renderSentinelDialog('abstain'))
-  .add('Confirmation dialog - No Confidence', () =>
-    renderSentinelDialog('no_confidence')
-  )
-  .add('Confirmation dialog - submission fails', () => {
-    const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
-    const errorCode = select(
-      'Submission error',
-      delegateVotesErrorOptions,
-      'generic'
-    );
-    return (
-      <div style={CENTERED_STORY_STYLE}>
-        <VotingPowerDelegationConfirmationDialog
-          chosenOption={voteOption}
-          drepIdentity={toStoryDRepIdentity(voteOption)}
-          fees={new BigNumber('0.174257')}
-          hwDeviceStatus={HwDeviceStatuses.READY}
-          isTrezor={false}
-          onClose={action('onClose')}
-          onExternalLinkClick={action('onExternalLinkClick')}
-          onSubmit={async (passphrase) => {
-            action('delegateVotes')({ passphrase });
-            return { success: false, errorCode };
-          }}
-          redirectToWallet={action('redirectToWallet')}
-          selectedWallet={makeGovernanceWallets('noDelegation')[0]}
-          verifiedName={toStoryVerifiedName(voteOption)}
-        />
-      </div>
-    );
-  })
-  .add('Confirmation dialog - hardware wallet', () => {
-    const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
-    return (
-      <div style={CENTERED_STORY_STYLE}>
-        <VotingPowerDelegationConfirmationDialog
-          chosenOption={voteOption}
-          drepIdentity={toStoryDRepIdentity(voteOption)}
-          fees={
-            new BigNumber(
-              number('Transaction fee', 0.174257, {
-                min: 0,
-                step: 0.000001,
-              })
-            )
-          }
-          hwDeviceStatus={
-            select(
-              'Hardware wallet status',
-              hwDeviceStatusOptions,
-              HwDeviceStatuses.VERIFYING_TRANSACTION
-            ) as HwDeviceStatus
-          }
-          isTrezor={boolean('Is Trezor', false)}
-          onClose={action('onClose')}
-          onExternalLinkClick={action('onExternalLinkClick')}
-          onSubmit={async () => {
-            action('delegateVotes')();
-            return { success: true };
-          }}
-          redirectToWallet={action('redirectToWallet')}
-          selectedWallet={makeGovernanceWallets('noDelegation')[1]}
-          verifiedName={toStoryVerifiedName(voteOption)}
-        />
-      </div>
-    );
-  })
   .add('Unavailable while syncing', () => (
     <div style={CENTERED_STORY_STYLE}>
       <VotingUnavailable

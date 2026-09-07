@@ -56,6 +56,7 @@ export type Cip103ExecutionReview = Readonly<{
 
 export type Cip103WalletSigningRequest = Readonly<{
   walletId: string;
+  approvalRequestId: string;
   walletKind: 'shelley-software' | 'ledger' | 'trezor';
   network: Cip30WalletNetwork;
   sourceRevision: string;
@@ -118,6 +119,7 @@ export const signCip103WalletBatch = async (
   try {
     response = await executeWallet({
       operation: 'sign-transactions',
+      approvalRequestId: request.approvalRequestId,
       walletId: request.walletId,
       network: request.network,
       sourceRevision: request.sourceRevision,

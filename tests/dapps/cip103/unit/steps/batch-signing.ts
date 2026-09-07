@@ -104,6 +104,7 @@ When(/^the user approves the CIP-103 batch$/, async function () {
   };
   const result = await signCip103WalletBatch(executeWallet, {
     walletId: 'wallet',
+    approvalRequestId: 'approval',
     walletKind,
     network,
     sourceRevision: 'revision',

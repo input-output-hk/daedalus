@@ -92,6 +92,7 @@ export class DappConnectionService {
     origin: string
   ): boolean {
     return (
+      pending.kind === 'dapp' &&
       pending.origin === origin &&
       pending.walletId === identity.walletId &&
       pending.networkGenesis === identity.networkGenesis

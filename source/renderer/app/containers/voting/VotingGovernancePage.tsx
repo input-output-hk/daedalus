@@ -4,28 +4,9 @@ import { withRouter } from 'react-router-dom';
 import type { RouteComponentProps } from 'react-router-dom';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingPowerDelegation from '../../components/voting/voting-governance/VotingPowerDelegation';
-import VotingPowerDelegationConfirmationDialog from '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog';
 import { ROUTES } from '../../routes-config';
 import VotingUnavailable from '../../components/voting/VotingUnavailable';
 import type { VoteType } from '../../components/voting/voting-governance/types';
-import { normalizeDRepIdentity } from '../../utils/governance/normalizeDRepIdentity';
-import type { DRepIdentity } from '../../../../common/types/governance.types';
-import type { VerifiedDRepNameSource } from '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog';
-
-// The verified-off-chain label names the host that served the bytes; redirects
-// are off, so the anchor URL's host is that host. A name whose host will not
-// parse is dropped rather than labelled with a blank source.
-const resolveVerifiedName = (
-  verifiedName: string | null | undefined,
-  anchorUrl: string | null | undefined
-): VerifiedDRepNameSource | null => {
-  if (verifiedName == null || anchorUrl == null) return null;
-  try {
-    return { host: new URL(anchorUrl).host, name: verifiedName };
-  } catch {
-    return null;
-  }
-};
 
 type Props = InjectedProps & RouteComponentProps;
 
@@ -66,7 +47,6 @@ class VotingGovernancePage extends Component<Props> {
       staking,
       app,
       voting,
-      hardwareWallets,
       networkStatus,
       governance,
     } = this.props.stores;
@@ -90,7 +70,7 @@ class VotingGovernancePage extends Component<Props> {
     return (
       <VotingPowerDelegation
         onExternalLinkClick={openExternalLink}
-        initiateTransaction={voting.initializeVPDelegationTx}
+        submitTransaction={voting.delegateVotes}
         initialFormState={initialFormState}
         onBrowseDRepsClick={this.handleBrowseDRepsClick}
         onCancel={this.handleCancel}
@@ -103,60 +83,11 @@ class VotingGovernancePage extends Component<Props> {
         wallets={wallets.all}
         stakePools={staking.stakePools}
         getStakePoolById={staking.getStakePoolById}
-        renderConfirmationDialog={({
-          chosenOption,
-          fees,
-          onClose,
-          selectedWallet,
-        }) => {
-          // Sentinels carry no identity; a drep target is decoded for display
-          // only — the rendered and submitted string stays chosenOption itself,
-          // untouched.
-          const isSentinel =
-            chosenOption === 'abstain' || chosenOption === 'no_confidence';
-          const drepIdentity: DRepIdentity | null = isSentinel
-            ? null
-            : normalizeDRepIdentity(chosenOption);
-          // verifiedName is threaded through GovernanceStore.delegationNavState
-          // by the directory/detail pages; it is only valid for the DRep that
-          // was just selected.
-          const verifiedName =
-            isSentinel || chosenOption !== initialFormState?.selectedDRepId
-              ? null
-              : resolveVerifiedName(
-                  initialFormState.selectedDRepVerifiedName,
-                  initialFormState.selectedDRepAnchorUrl
-                );
-          return (
-            <VotingPowerDelegationConfirmationDialog
-              chosenOption={chosenOption}
-              drepIdentity={drepIdentity}
-              fees={fees}
-              hwDeviceStatus={hardwareWallets.hwDeviceStatus}
-              isTrezor={hardwareWallets.checkIsTrezorByWalletId(
-                selectedWallet.id
-              )}
-              onClose={onClose}
-              onExternalLinkClick={openExternalLink}
-              onSubmit={(passphrase) =>
-                voting.delegateVotes({
-                  chosenOption,
-                  passphrase,
-                  wallet: selectedWallet,
-                })
-              }
-              redirectToWallet={(id) => {
-                this.props.actions.router.goToRoute.trigger({
-                  route: ROUTES.WALLETS.SUMMARY,
-                  params: {
-                    id,
-                  },
-                });
-              }}
-              selectedWallet={selectedWallet}
-              verifiedName={verifiedName}
-            />
-          );
+        onSuccess={(id) => {
+          this.props.actions.router.goToRoute.trigger({
+            route: ROUTES.WALLETS.SUMMARY,
+            params: { id },
+          });
         }}
       />
     );

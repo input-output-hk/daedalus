@@ -58,10 +58,11 @@ export default class WalletsActions {
   sendMoney: Action<{
     receiver: string;
     amount: string;
-    passphrase: string;
+    passphrase?: string;
     assets?: Array<AssetToken>;
     assetsAmounts?: Array<string>;
     hasAssetsRemainingAfterTransaction?: boolean;
+    isCollateralPreparation?: boolean;
   }> = new Action();
   chooseWalletExportType: Action<{
     walletExportType: WalletExportTypeChoices;
