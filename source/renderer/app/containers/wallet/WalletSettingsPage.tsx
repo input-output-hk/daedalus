@@ -174,13 +174,7 @@ class WalletSettingsPage extends Component<Props> {
           icoPublicKeyQRCodeDialogContainer={
             <PublicKeyQRCodeDialogContainer isICO />
           }
-          undelegateWalletDialogContainer={
-            <UndelegateWalletDialogContainer
-              onExternalLinkClick={app.openExternalLink}
-              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-              isTrezor={isHardwareWallet && isTrezor}
-            />
-          }
+          undelegateWalletDialogContainer={<UndelegateWalletDialogContainer />}
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
           unpairWalletDialogContainer={<UnpairWalletDialogContainer />}
           exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}

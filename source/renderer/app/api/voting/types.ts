@@ -53,9 +53,3 @@ export type CatalystFund = {
     registrationSnapshotTime: Date;
   };
 };
-
-export type DelegateVotesParams = {
-  dRepId: string;
-  passphrase: string;
-  walletId: string;
-};

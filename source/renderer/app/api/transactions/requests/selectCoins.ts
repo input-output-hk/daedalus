@@ -1,3 +1,4 @@
+import type BigNumber from 'bignumber.js';
 import { WalletUnits } from '../../../domains/Wallet';
 import type { RequestConfig } from '../../common/types';
 import type {
@@ -54,13 +55,14 @@ export type SelectCoinsResponseType = {
     pool?: string;
     certificate_type: DelegationAction;
     reward_account_path: Array<string>;
+    vote?: string;
   }>;
   deposits_taken?: Array<{
-    quantity: number;
+    quantity: number | BigNumber;
     unit: WalletUnits.LOVELACE;
   }>;
   deposits_returned?: Array<{
-    quantity: number;
+    quantity: number | BigNumber;
     unit: WalletUnits.LOVELACE;
   }>;
   metadata?: string;

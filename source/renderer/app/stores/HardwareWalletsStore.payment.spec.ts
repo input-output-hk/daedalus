@@ -1,4 +1,3 @@
-jest.mock('@trezor/connect', () => ({}));
 import {
   _seedToKeypairV2,
   derivePrivate,
@@ -9,8 +8,17 @@ import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import {
   deriveXpubChannel,
   deriveAddressChannel,
+  getCardanoAdaAppChannel,
+  getHardwareWalletTransportChannel,
 } from '../ipc/getHardwareWalletChannel';
 import { getHardwareWalletsNetworkConfig } from '../config/hardwareWalletsConfig';
+
+import HardwareWalletsStore from './HardwareWalletsStore';
+import type { Api } from '../api';
+import type { ActionsMap } from '../actions';
+import type { AnalyticsTracker } from '../analytics';
+
+jest.mock('@trezor/connect', () => ({}));
 jest.mock('../utils/logging', () => ({
   logger: {
     debug: jest.fn(),
@@ -19,15 +27,6 @@ jest.mock('../utils/logging', () => ({
     warn: jest.fn(),
   },
 }));
-
-import HardwareWalletsStore from './HardwareWalletsStore';
-import type { Api } from '../api';
-import type { ActionsMap } from '../actions';
-import type { AnalyticsTracker } from '../analytics';
-import {
-  getCardanoAdaAppChannel,
-  getHardwareWalletTransportChannel,
-} from '../ipc/getHardwareWalletChannel';
 
 const coinSelection = {
   inputs: [],
@@ -47,7 +46,7 @@ describe('HardwareWalletsStore payment construction', () => {
       coinSelection,
     });
     const getDappTransactionContext = jest.fn();
-    const release = jest.fn();
+    const acquireWalletSendLock = jest.fn();
     const request = jest.fn();
     const store = new HardwareWalletsStore(
       ({
@@ -77,7 +76,7 @@ describe('HardwareWalletsStore payment construction', () => {
     (store as any).stores = {
       wallets: { getWalletById: () => ({ id: 'wallet' }) },
       transactions: {
-        acquireWalletSendLock: jest.fn().mockResolvedValue({ release }),
+        acquireWalletSendLock,
       },
     };
 
@@ -96,8 +95,7 @@ describe('HardwareWalletsStore payment construction', () => {
       unsignedTransaction: '84a0a0f5f6',
       isCollateralPreparation: true,
     });
-    (store as any).releaseWalletSendLease();
-    expect(release).toHaveBeenCalledTimes(1);
+    expect(acquireWalletSendLock).not.toHaveBeenCalled();
   });
 
   it('refreshes a Ledger path before every transaction', async () => {
@@ -366,10 +364,11 @@ describe('HardwareWalletsStore payment construction', () => {
       wallet: {
         id: 'wallet',
         disconnected: true,
+        path: 'ledger-path',
         device: {
           deviceType: 'ledger',
           deviceModel: 'europa',
-          path: 'ledger-path',
+          path: 'stale-ledger-path',
         },
       },
     } as any;

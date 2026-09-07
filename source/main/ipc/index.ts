@@ -29,10 +29,11 @@ import { handleExportWalletsRequests } from './exportWalletsChannel';
 import { handleWindowControlRequests } from './windowControlChannels';
 import { currentWindowSender } from './lib/currentWindowSender';
 import { handleDappBrowserRequests } from './dappBrowser';
-import { handleDappConsentRequests } from './dappConsent';
+import { handleWalletApprovalRequests } from './walletApproval';
 import { handleCip30BrokerRequests } from '../cip30/Cip30Broker';
 import { handleDappConnectionRequests } from './dappConnections';
 import { handleDappCollateralRequests } from './collateral';
+import { handleNativeTransactionApprovalRequests } from './nativeTransactionApproval';
 
 const hardwareWalletChannels = createChannels(MainIpcChannel);
 
@@ -60,10 +61,11 @@ export default (window: BrowserWindow) => {
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
   handleDappBrowserRequests(window);
-  handleDappConsentRequests(window);
+  handleWalletApprovalRequests(window);
   handleCip30BrokerRequests();
   handleDappConnectionRequests();
   handleDappCollateralRequests();
+  handleNativeTransactionApprovalRequests();
   handleHardwareWalletRequests(window, hardwareWalletChannels);
 
   // Watchdog IPC

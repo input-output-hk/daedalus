@@ -4,7 +4,6 @@ import type {
   TransactionAddresses,
   TransactionType,
   TransactionState,
-  TransactionWithdrawalType,
 } from '../api/transactions/types';
 import type { Tokens } from '../api/assets/types';
 import type { TransactionMetadata } from '../types/TransactionMetadata';
@@ -23,7 +22,7 @@ export const TransactionTypes: EnumMap<string, TransactionType> = {
   EXCHANGE: 'exchange',
   VOTE: 'vote',
 };
-export const TransactionWithdrawal: TransactionWithdrawalType = 'self';
+export const TransactionWithdrawal = 'self' as const;
 export class WalletTransaction {
   @observable
   id = '';

@@ -1,3 +1,5 @@
+/** @jest-environment node */
+
 import cbor from 'cbor';
 
 import { bytesForSpan } from './cborSlices';
@@ -193,7 +195,16 @@ describe('CIP-103 transaction overlay', () => {
     const review = createCip103BatchReview(
       batch,
       result,
-      items.map(({ transaction: item }) => item)
+      items.map(({ transaction: item }) => item),
+      {
+        outputs: [],
+        ownership: [],
+        network: {
+          networkId: 0,
+          networkMagic: 42,
+          genesisHash: '00'.repeat(32),
+        },
+      }
     );
     expect(review.items[1].dependencies).toEqual([
       expect.objectContaining({

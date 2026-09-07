@@ -159,8 +159,11 @@ duplicates and reference-input overlap. The backend still rejects conflicting
 claims from different transactions.
 
 This does not relax Plutus script-data commitment validation. The production
-context adapter does not yet supply pinned language views, so transactions
-requiring that material still fail closed with an incomplete authenticated review.
+context adapter derives Plutus V1/V2/V3 language views from the authenticated
+Conway protocol-parameter CBOR (cost models at full-array index 15). V1 retains
+the ledger's byte-string-wrapped indefinite list; V2/V3 use definite lists.
+Coefficients retain signed 64-bit precision. Missing or malformed required cost
+models and mismatched script-data commitments fail closed.
 
 ### GET `/v2/wallets/{walletId}/transactions`
 List wallet transactions.
@@ -455,6 +458,13 @@ Daedalus uses type-safe IPC channels for main/renderer communication. All channe
 | `GET_INIT_LEDGER_CONNECT_CHANNEL`        | Renderer → Main | Init Ledger       |
 | `DERIVE_XPUB_CHANNEL`                    | Renderer → Main | Derive xpub       |
 | `RESET_ACTION_TREZOR_CHANNEL`            | Renderer → Main | Reset Trezor      |
+
+Ledger dApp capability refresh prefers the paired `device.path` while it is
+connected. If that path is stale, it may recover the legacy top-level `path`
+only when a connected Ledger of the paired model is present there. A successful
+Cardano app-version query updates `device.path` and clears the disconnected
+flag. This does not export account keys, choose an arbitrary USB device, or
+bypass connection approval.
 
 ### File Operation Channels
 

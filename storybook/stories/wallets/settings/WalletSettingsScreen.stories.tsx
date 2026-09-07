@@ -16,7 +16,6 @@ import WalletSettings from '../../../../source/renderer/app/components/wallet/se
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import PublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog';
 import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
-import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import WalletSettingsRemoveConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
@@ -322,34 +321,7 @@ export default function (props: { locale: Locale }) {
           derivationPath={ICO_PUBLIC_KEY_DERIVATION_PATH}
         />
       }
-      undelegateWalletDialogContainer={
-        <UndelegateWalletConfirmationDialog
-          selectedWallet={selectedWallet}
-          stakePoolName={text(
-            'UndelegateWalletConfirmationDialog: Stake Pool Name',
-            'Stake Pool Name'
-          )}
-          stakePoolTicker={text(
-            'UndelegateWalletConfirmationDialog: Stake Pool Ticker',
-            'Stake Pool Ticker'
-          )}
-          onConfirm={action('Undelegate Wallet - onConfirm')}
-          onCancel={action('Undelegate Wallet - onCancel')}
-          onExternalLinkClick={action(
-            'Undelegate Wallet - onExternalLinkClick'
-          )}
-          isSubmitting={boolean(
-            'Undelegate Wallet - submitting',
-            false,
-            undelegateWalletId
-          )}
-          error={null}
-          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-          fees={new BigNumber(10)}
-          hwDeviceStatus="ready"
-          isTrezor={boolean('isTrezor', false)}
-        />
-      }
+      undelegateWalletDialogContainer={null}
       deleteWalletDialogContainer={
         <WalletSettingsRemoveConfirmationDialog
           walletName={text(

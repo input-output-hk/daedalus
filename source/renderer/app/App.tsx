@@ -25,7 +25,7 @@ import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTS
 import { MenuUpdater } from './containers/MenuUpdater';
 import { AnalyticsProvider } from './components/analytics';
 import { AnalyticsTracker } from './analytics';
-import DappApprovalContainer from './containers/dapp/DappApprovalContainer';
+import WalletApprovalContainer from './containers/transactions/WalletApprovalContainer';
 
 @observer
 class App extends Component<{
@@ -41,7 +41,7 @@ class App extends Component<{
 
   render() {
     const { stores, actions, history } = this.props;
-    const { app, cip30Consent } = stores;
+    const { app, walletApproval } = stores;
     const { isActiveDialog, isSetupPage } = app;
     const locale = stores.profile.currentLocale;
     const { currentTheme } = stores.profile;
@@ -91,12 +91,19 @@ class App extends Component<{
                     <ToggleRTSFlagsDialogContainer key="toggleRTSFlagsDialog" />
                   ),
                 ]}
-                {cip30Consent.current && (
-                  <DappApprovalContainer
-                    request={cip30Consent.current}
-                    deciding={cip30Consent.deciding}
-                    onApprove={cip30Consent.approve}
-                    onReject={cip30Consent.reject}
+                {walletApproval.current && (
+                  <WalletApprovalContainer
+                    key={walletApproval.current.requestId}
+                    assetDetails={stores.assets.details}
+                    request={walletApproval.current}
+                    deciding={walletApproval.deciding}
+                    phase={walletApproval.phase}
+                    activeItemIndex={walletApproval.activeItemIndex}
+                    submissionAuthorized={walletApproval.submissionAuthorized}
+                    cancelling={walletApproval.cancelling}
+                    onApprove={walletApproval.approve}
+                    onReject={walletApproval.reject}
+                    onCancel={walletApproval.cancel}
                   />
                 )}
                 <RTSFlagsRecommendationOverlayContainer />

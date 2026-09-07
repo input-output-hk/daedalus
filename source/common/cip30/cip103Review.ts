@@ -3,6 +3,7 @@ import type {
   Cip103Resolution,
 } from '../cardano/transactionOverlay';
 import type { SemanticTransaction } from '../cardano/transaction';
+import type { TransactionReviewContext } from '../transactions/reviewDisplay';
 import type { Cip103PreflightBatch } from '../types/cip103.types';
 import {
   createCip30TransactionReview,
@@ -42,7 +43,8 @@ const invalid = (): never => {
 export const createCip103BatchReview = (
   batch: Cip103PreflightBatch,
   resolution: Cip103Resolution,
-  transactions: readonly SemanticTransaction[]
+  transactions: readonly SemanticTransaction[],
+  context: TransactionReviewContext
 ): Cip103BatchReview => {
   if (
     batch.items.length !== resolution.items.length ||
@@ -59,7 +61,11 @@ export const createCip103BatchReview = (
       item.fullCborDigest !== resolved.fullCborDigest
     )
       return invalid();
-    const transaction = createCip30TransactionReview(transactions[index], mode);
+    const transaction = createCip30TransactionReview(
+      transactions[index],
+      mode,
+      context
+    );
     if (
       transaction.transactionId !== item.bodyHash ||
       transaction.fullCborDigest !== item.fullCborDigest

@@ -1,7 +1,7 @@
 import React from 'react';
 import { cleanup, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import DappApprovalContainer from './DappApprovalContainer';
+import WalletApprovalContainer from './WalletApprovalContainer';
 
 jest.mock(
   '../../components/dapp-consent/DappConsentDialog',
@@ -11,17 +11,18 @@ jest.mock(
     }
 );
 jest.mock(
-  '../../components/dapp/Cip30TransactionApproval',
+  '../../components/transactions/TransactionApprovalDialog',
   () =>
-    function TransactionConsent() {
-      return <div data-testid="transaction-consent" />;
-    }
-);
-jest.mock(
-  '../../components/dapp/DappBatchReviewDialog',
-  () =>
-    function BatchConsent() {
-      return <div data-testid="batch-consent" />;
+    function TransactionConsent({ request }: any) {
+      return (
+        <div
+          data-testid={
+            request.collection === 'single'
+              ? 'transaction-consent'
+              : 'batch-consent'
+          }
+        />
+      );
     }
 );
 jest.mock(
@@ -40,13 +41,22 @@ const identity = {
   scopes: [],
   extensions: [],
 };
+const shared = {
+  assetDetails: {},
+  deciding: false,
+  phase: 'ready' as const,
+  submissionAuthorized: false,
+  onApprove: jest.fn(),
+  onReject: jest.fn(),
+};
 
-describe('DappApprovalContainer', () => {
+describe('WalletApprovalContainer', () => {
   afterEach(cleanup);
 
   it('routes connection and transaction presentations through one global mount', () => {
     const { rerender } = render(
-      <DappApprovalContainer
+      <WalletApprovalContainer
+        {...shared}
         request={{ ...identity, kind: 'connection' }}
         deciding={false}
         onApprove={jest.fn()}
@@ -56,7 +66,8 @@ describe('DappApprovalContainer', () => {
     expect(screen.getByTestId('connection-consent')).toBeVisible();
 
     rerender(
-      <DappApprovalContainer
+      <WalletApprovalContainer
+        {...shared}
         request={{
           ...identity,
           kind: 'data-sign',
@@ -75,10 +86,12 @@ describe('DappApprovalContainer', () => {
     expect(screen.getByTestId('data-sign-consent')).toBeVisible();
 
     rerender(
-      <DappApprovalContainer
+      <WalletApprovalContainer
+        {...shared}
         request={{
           ...identity,
           kind: 'transaction-sign',
+          authorization: { kind: 'software' },
           review: {
             mode: 'sign',
             transactionId: '11'.repeat(32),
@@ -88,6 +101,22 @@ describe('DappApprovalContainer', () => {
             witnessSetCbor: 'a0',
             auxiliaryDataCbor: 'f6',
             isValid: true,
+            display: {
+              entries: [],
+              walletInputs: null,
+              walletOutputs: null,
+              walletChange: null,
+              fee: '0',
+              deposits: null,
+              refunds: null,
+              maximumCollateralLoss: null,
+              mint: [],
+              withdrawals: [],
+              certificates: [],
+              votes: [],
+              proposalCount: 0,
+              donation: null,
+            },
             effects: [],
             existingVkeyWitnesses: [],
             existingBootstrapWitnesses: [],
@@ -104,10 +133,12 @@ describe('DappApprovalContainer', () => {
     expect(screen.getByTestId('transaction-consent')).toBeVisible();
 
     rerender(
-      <DappApprovalContainer
+      <WalletApprovalContainer
+        {...shared}
         request={{
           ...identity,
           kind: 'batch-sign',
+          authorization: { kind: 'software' },
           review: {
             mode: 'sign',
             approvable: false,

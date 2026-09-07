@@ -303,7 +303,7 @@ export const bindPaymentChange = async (
       const actual = exact.transaction.outputs[candidate];
       return (
         actual.address === address &&
-        actual.value.coin === BigInt(output.amount.quantity) &&
+        actual.value.coin === BigInt(output.amount.quantity.toString()) &&
         actual.value.assets.length === assets.length &&
         actual.value.assets.every((asset) =>
           assets.some(

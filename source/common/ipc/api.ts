@@ -88,6 +88,12 @@ import type {
   CollateralRendererRequest,
   CollateralSnapshot,
 } from '../types/collateral.types';
+import type {
+  NativeApprovalResult,
+  NativePreparedApproval,
+  NativeTransactionAction,
+} from '../transactions/nativePlan';
+import type { TransactionReviewDisplay } from '../transactions/reviewDisplay';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -266,7 +272,7 @@ export type WalletInputSelectionMainResponse = Readonly<{
   preferred_collateral: readonly Readonly<{ id: string; index: number }>[];
 }>;
 
-export const DAPP_CONSENT_RENDER_CHANNEL = 'DAPP_CONSENT_RENDER_CHANNEL';
+export const WALLET_APPROVAL_RENDER_CHANNEL = 'WALLET_APPROVAL_RENDER_CHANNEL';
 export type DappConsentKind =
   | 'connection'
   | 'key-disclosure'
@@ -283,6 +289,10 @@ type DappConsentIdentity = Readonly<{
   scopes: readonly string[];
   extensions: readonly number[];
 }>;
+export type TransactionAuthorization =
+  | Readonly<{ kind: 'software' }>
+  | Readonly<{ kind: 'hardware'; vendor: 'ledger' | 'trezor' }>
+  | Readonly<{ kind: 'none' }>;
 export type DappConsentPresentation = DappConsentIdentity &
   (
     | Readonly<{ kind: 'connection' }>
@@ -292,22 +302,103 @@ export type DappConsentPresentation = DappConsentIdentity &
       }>
     | Readonly<{
         kind: 'transaction-sign' | 'transaction-submit';
+        authorization: TransactionAuthorization;
         review: Cip30TransactionReview;
       }>
     | Readonly<{
         kind: 'batch-sign' | 'batch-submit';
+        authorization: TransactionAuthorization;
         review: Cip103BatchReview;
       }>
     | Readonly<{ kind: 'data-sign'; review: Cip8DataSignReview }>
   );
-export type DappConsentRenderMainRequest =
-  | Readonly<{ type: 'present'; request: DappConsentPresentation }>
+export type NativeTransactionAcknowledgement =
+  | 'flight-mainnet-funds'
+  | 'undelegation-network-support'
+  | 'undelegation-rewards';
+export type NativeTransactionPresentation = Readonly<{
+  kind: 'native-transaction';
+  requestId: string;
+  attemptId: string;
+  walletName: string;
+  networkName: string;
+  action: NativeTransactionAction;
+  authorization: Exclude<TransactionAuthorization, Readonly<{ kind: 'none' }>>;
+  collection: 'single' | 'migration';
+  destinationWalletName?: string;
+  acknowledgements: readonly NativeTransactionAcknowledgement[];
+  items: readonly (
+    | Readonly<{ kind: 'exact-cbor'; review: Cip30TransactionReview }>
+    | Readonly<{
+        kind: 'native-plan';
+        display: TransactionReviewDisplay;
+        planCbor: string;
+        planDigest: string;
+      }>
+  )[];
+}>;
+export type WalletApprovalPresentation =
+  | DappConsentPresentation
+  | NativeTransactionPresentation;
+export type WalletApprovalProgressPhase =
+  | 'signing'
+  | 'waiting-for-device'
+  | 'submitting';
+export type WalletApprovalRenderMainRequest =
+  | Readonly<{ type: 'present'; request: WalletApprovalPresentation }>
+  | Readonly<{
+      type: 'progress';
+      requestId: string;
+      phase: WalletApprovalProgressPhase;
+      itemIndex?: number;
+      submissionAuthorized: boolean;
+    }>
   | Readonly<{ type: 'terminal'; requestId: string }>;
-export type DappConsentRenderRendererResponse = Readonly<{
+export type WalletApprovalRenderRendererResponse = Readonly<{
   requestId: string;
   approved: boolean;
   passphrase?: string;
 }> | void;
+export const WALLET_TRANSACTION_APPROVAL_CHANNEL =
+  'WALLET_TRANSACTION_APPROVAL_CHANNEL';
+export type WalletTransactionApprovalRendererRequest =
+  | Readonly<{
+      type: 'request-native';
+      attemptId: string;
+      walletId: string;
+      network: NativePreparedApproval['network'];
+      prepared: NativePreparedApproval;
+    }>
+  | Readonly<{ type: 'cancel-native'; attemptId: string; requestId?: string }>
+  | Readonly<{
+      type: 'commit-native-submission';
+      attemptId: string;
+      requestId: string;
+    }>
+  | Readonly<{
+      type: 'progress';
+      requestId: string;
+      phase: WalletApprovalProgressPhase;
+      itemIndex?: number;
+    }>;
+export type WalletTransactionApprovalMainResponse = Readonly<{
+  status: 'accepted' | 'stale' | 'submission-authorized';
+  requestId?: string;
+  bindingDigest?: string;
+  result?: NativeApprovalResult;
+}>;
+export const NATIVE_TRANSACTION_EXECUTE_CHANNEL =
+  'NATIVE_TRANSACTION_EXECUTE_CHANNEL';
+export type NativeTransactionExecuteMainRequest =
+  | Readonly<{
+      type: 'execute';
+      attemptId: string;
+      requestId: string;
+      bindingDigest: string;
+      passphrase?: string;
+    }>
+  | Readonly<{ type: 'cancel'; attemptId: string; requestId: string }>;
+export type NativeTransactionExecuteRendererResponse = NativeApprovalResult;
 
 export const DAPP_CIP30_WALLET_CHANNEL = 'DAPP_CIP30_WALLET_CHANNEL';
 export type DappCip30WalletMainRequest = Cip30WalletRequest;

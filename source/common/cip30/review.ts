@@ -1,6 +1,12 @@
 import { blake2b } from 'blakejs';
 import { bytesForSpan } from '../cardano/cborSlices';
 import type { SemanticTransaction } from '../cardano/transaction';
+import type { TransactionReviewContext } from '../transactions/reviewDisplay';
+import {
+  createTransactionReviewDisplay,
+  parseTransactionReviewDisplay,
+  TransactionReviewDisplay,
+} from '../transactions/reviewDisplay';
 
 export const CIP30_REVIEW_EFFECTS = [
   'input',
@@ -43,6 +49,7 @@ export type Cip30TransactionReview = Readonly<{
   witnessSetCbor: string;
   auxiliaryDataCbor: string;
   isValid: boolean;
+  display: TransactionReviewDisplay;
   effects: readonly Readonly<{
     index: number;
     kind: string;
@@ -79,6 +86,7 @@ const display = (value: unknown): string =>
 export const createCip30TransactionReview = (
   transaction: SemanticTransaction,
   mode: 'sign' | 'submit',
+  context: TransactionReviewContext,
   additionalEffects: SemanticTransaction['effects'] = []
 ): Cip30TransactionReview => {
   const { envelope } = transaction;
@@ -118,6 +126,7 @@ export const createCip30TransactionReview = (
       envelope.spans.auxiliaryData
     ).toString('hex'),
     isValid: envelope.isValid,
+    display: createTransactionReviewDisplay(transaction, context, mode),
     effects: Object.freeze(
       effects.map(({ kind, value }, index) =>
         Object.freeze({ index, kind, value: display(value) })
@@ -181,6 +190,7 @@ export const parseCip30TransactionReview = (
         'witnessSetCbor',
         'auxiliaryDataCbor',
         'isValid',
+        'display',
         'effects',
         'maximumCollateralLoss',
         'existingVkeyWitnesses',
@@ -219,5 +229,6 @@ export const parseCip30TransactionReview = (
     !texts(value.refusalReasons)
   )
     throw new Error('Invalid CIP-30 transaction review');
+  parseTransactionReviewDisplay(value.display);
   return Object.freeze(value as Cip30TransactionReview);
 };

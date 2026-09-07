@@ -1,0 +1,275 @@
+--- a/lib/api/cardano-wallet-api.cabal
++++ b/lib/api/cardano-wallet-api.cabal
+@@ -146,6 +146,7 @@
+   main-is:            dapp-context-test.hs
+   ghc-options:        -Wall
+   build-depends:
++    , address-derivation-discovery
+     , aeson
+     , base
+     , binary
+@@ -154,9 +155,12 @@
+     , cardano-ledger-allegra
+     , cardano-ledger-core
+     , cardano-ledger-conway
++    , cardano-ledger-read
+     , cardano-strict-containers
+     , cardano-wallet-api
+     , cardano-wallet
++    , cardano-wallet-primitive
++    , cardano-wallet-read
+     , cardano-wallet-secrets
+     , containers
+     , crypto-primitives
+--- a/lib/api/src/Cardano/Wallet/Api/Http/Shelley/TransactionContext.hs
++++ b/lib/api/src/Cardano/Wallet/Api/Http/Shelley/TransactionContext.hs
+@@ -116,6 +116,7 @@
+ import Cardano.Ledger.BaseTypes
+     ( Network (Mainnet, Testnet)
+     , ProtVer (ProtVer)
++    , StrictMaybe (SJust, SNothing)
+     , TxIx (TxIx)
+     )
+ import Cardano.Ledger.Hashes
+@@ -141,6 +142,10 @@
+ import Cardano.Read.Ledger.Tx.ReferenceInputs
+     ( ReferenceInputs (ReferenceInputs)
+     , getEraReferenceInputs
++    )
++import Cardano.Read.Ledger.Tx.CollateralOutputs
++    ( CollateralOutputs (..)
++    , getEraCollateralOutputs
+     )
+ import Cardano.Wallet.Primitive.Ledger.Read.Tx.Features.Certificates
+     ( getCertificates
+@@ -732,7 +737,7 @@
+     :: forall n
+      . HasSNetworkId n
+     => SeqState n ShelleyKey
+-    -> [(ByteString, ApiDappContextOutput, Output Read.Conway)]
++    -> [([ApiDappRole], Output Read.Conway)]
+     -> Either DappError (SeqState n ShelleyKey, [ApiDappOwnership])
+ paymentOwnership initial values =
+     fmap (\(discovery, found) -> (discovery, sort $ Map.elems found))
+@@ -746,14 +751,16 @@
+         :: ( SeqState n ShelleyKey
+            , Map (ByteString, ApiDappOwnershipKind, [Word32]) ApiDappOwnership
+            )
+-        -> (ByteString, ApiDappContextOutput, Output Read.Conway)
++        -> ([ApiDappRole], Output Read.Conway)
+         -> Either DappError
+             ( SeqState n ShelleyKey
+             , Map (ByteString, ApiDappOwnershipKind, [Word32]) ApiDappOwnership
+             )
+-    classify (discovery, found) (_, ApiDappContextOutput{roles}, Output ledgerOutput) =
++    classify state@(discovery, found) (roles, Output ledgerOutput) =
+         case ledgerOutput ^. addrTxOutL of
+-            AddrBootstrap{} -> Left InvalidDappRequest
++            AddrBootstrap{}
++                | null roles -> pure state
++                | otherwise -> Left InvalidDappRequest
+             address@(Addr _ credential _) -> case credential of
+                 ScriptHashObj (Ledger.ScriptHash hash) ->
+                     pure (discovery, insert (Crypto.hashToBytes hash) ScriptOwned [] [] found)
+@@ -812,7 +819,10 @@
+     -> [(ByteString, ApiDappContextOutput, Output Read.Conway)]
+     -> Either DappError ProofInventory
+ buildProofInventory configured discovery requested resolved = do
+-    (discoveryAfterPayment, payment) <- paymentOwnership discovery resolved
++    (discoveryAfterPayment, payment) <-
++        paymentOwnership discovery
++            $ [ (value.roles, output) | (_, value, output) <- resolved ]
++                <> concatMap requestedOutputs requested
+     let stake = stakeEvidence discovery requested
+     (discoveryAfterSigners, signers) <- signerEvidence configured discoveryAfterPayment requested
+     (native, nativeObligations) <- nativeEvidence configured discoveryAfterSigners requested resolved
+@@ -822,6 +832,12 @@
+     candidates <- mapM (uncurry $ candidateFromOwnership discovery)
+         $ candidateOwnershipAssociations obligations ownership
+     proofInventory requested obligations candidates ownership
++  where
++    requestedOutputs DecodedTx{transaction, outputs} =
++        [([], output) | (output, _) <- Map.elems outputs]
++            <> case getEraCollateralOutputs transaction of
++                CollateralOutputs SNothing -> []
++                CollateralOutputs (SJust output) -> [([], Output output)]
+ 
+ buildReviewedProofInventory
+     :: [DecodedTx]
+--- a/lib/api/test/dapp-context-test.hs
++++ b/lib/api/test/dapp-context-test.hs
+@@ -1,8 +1,11 @@
++{-# LANGUAGE DataKinds #-}
++{-# LANGUAGE NamedFieldPuns #-}
+ {-# LANGUAGE DuplicateRecordFields #-}
+ {-# LANGUAGE LambdaCase #-}
+ {-# LANGUAGE OverloadedStrings #-}
+ {-# LANGUAGE OverloadedRecordDot #-}
+ 
++{-# LANGUAGE TypeApplications #-}
+ module Main (main) where
+ 
+ 
+@@ -19,6 +22,7 @@
+     ( ApiDappBatchOverlay (..)
+     , ApiDappChainPoint (..)
+     , ApiDappContextNetwork (..)
++    , ApiDappContextOutput (..)
+     , ApiDappDataSignRequest (..)
+     , ApiDappDataSignResponse (..)
+     , ApiDappHex (..)
+@@ -70,6 +74,7 @@
+     , ProofInventory (..)
+     , ProofObligation (DirectProofObligation, NativeProofObligation)
+     , ProofObligationResult (..)
++    , buildProofInventory
+     , candidateOwnershipAssociations
+     , contextSets
+     , decodeDappTx
+@@ -83,6 +88,39 @@
+     , validatePendingProvenance
+     , validateTransactionContextResponseForRequest
+     )
++import Cardano.Read.Ledger.Tx.Output
++    ( Output
++    , deserializeOutput
++    )
++import qualified Cardano.Wallet.Address.Derivation.Shelley as Shelley
++import Cardano.Wallet.Address.Discovery
++    ( ChangeAddressMode (IncreasingChangeAddresses)
++    , KnownAddresses (knownAddresses)
++    )
++import Cardano.Wallet.Address.Discovery.Sequential
++    ( SeqState
++    , mkAddressPoolGap
++    , purposeCIP1852
++    )
++import Cardano.Wallet.Address.Keys.SequentialAny
++    ( mkSeqStateFromRootXPrv
++    )
++import Cardano.Wallet.Flavor
++    ( KeyFlavorS (ShelleyKeyS)
++    )
++import Cardano.Wallet.Primitive.NetworkId
++    ( NetworkDiscriminant (Mainnet)
++    )
++import Cardano.Wallet.Primitive.Types.Address
++    ( Address (Address)
++    )
++import Cardano.Wallet.Primitive.Types.Credentials
++    ( RootCredentials (RootCredentials)
++    )
++import Cardano.Wallet.Unsafe
++    ( someDummyMnemonic
++    )
++import qualified Cardano.Wallet.Read as Read
+ import Cardano.Ledger.Allegra.Scripts
+     ( ValidityInterval (..)
+     , mkRequireAllOfTimelock
+@@ -130,6 +168,9 @@
+     )
+ import Servant.Server
+     ( ServerError (errBody, errHTTPCode)
++    )
++import Data.Proxy
++    ( Proxy (Proxy)
+     )
+ import Test.Hspec
+     ( describe
+@@ -167,6 +208,20 @@
+                 (ApiDappTransactionContextRequest 1 dappNetwork [])
+                 (validDappWitnessContext [])
+                 `shouldSatisfy` isRight
++        it "classifies requested outputs without adding signer proofs" $ do
++            let ownAddress = case knownAddresses reviewDiscovery of
++                    (Address address, _, _) : _ -> address
++                    [] -> error "review discovery has no addresses"
++                cases =
++                    [ (BS.cons 0x61 $ BS.replicate 28 0xcc, Unowned)
++                    , (BS.cons 0x71 $ BS.replicate 28 0xbb, ScriptOwned)
++                    , (ownAddress, OwnedKey)
++                    ]
++            forM_ cases $ \(address, expected) ->
++                outputOnlyOwnership address
++                    `shouldSatisfy` elem (expected, [])
++        it "keeps a requested Byron destination accepted and unclassified" $ do
++            outputOnlyOwnership byronAddress `shouldBe` []
+         it "strictly validates the closed request schema" $ do
+             decodeRequest validRequest `shouldSatisfy` isRight
+             mapM_
+@@ -991,6 +1046,75 @@
+         . BAE.convertFromBase BAE.Base16
+         . T.encodeUtf8
+ 
++reviewDiscovery :: SeqState 'Mainnet Shelley.ShelleyKey
++reviewDiscovery =
++    mkSeqStateFromRootXPrv
++        ShelleyKeyS
++        ( RootCredentials
++            (Shelley.unsafeGenerateKeyFromSeed (someDummyMnemonic $ Proxy @12, Nothing) mempty)
++            mempty
++        )
++        purposeCIP1852
++        (either (error . show) id $ mkAddressPoolGap 20)
++        IncreasingChangeAddresses
++
++outputOnlyOwnership :: ByteString -> [(ApiDappOwnershipKind, [ApiDappProofKind])]
++outputOnlyOwnership address =
++    [ (ownership, proofKinds)
++    | ApiDappOwnership
++        { ownership
++        , proofKinds
++        } <- ownershipEvidence inventory
++    , null proofKinds
++    ]
++  where
++    requested = either error pure $ decodeTx $ ApiDappHex $ transactionTo address
++    inventory =
++        either (error . show) id
++            $ buildProofInventory dappNetwork reviewDiscovery requested [resolvedInput]
++
++resolvedInput :: (ByteString, ApiDappContextOutput, Output Read.Conway)
++resolvedInput =
++    ( ""
++    , ApiDappContextOutput
++        { outpoint = ApiDappOutpoint (ApiDappHex $ BS.replicate 32 0x11) 0
++        , transactionInputCbor = ApiDappHex ""
++        , sourceTransactionOutputCbor = ApiDappHex source
++        , canonicalTransactionOutputCbor = ApiDappHex source
++        , transactionUnspentOutputCbor = ApiDappHex ""
++        , provenance = [Node]
++        , roles = [Normal]
++        , walletMember = False
++        , pendingState = None
++        }
++    , either (error . show) id $ deserializeOutput $ BL8.fromStrict source
++    )
++  where
++    source = hex "82581d61aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1a000f4240"
++
++transactionTo :: ByteString -> ByteString
++transactionTo address =
++    BS.concat
++        [ hex "84a30081825820"
++        , BS.replicate 32 0x11
++        , hex "00018182"
++        , encodeBytes address
++        , hex "1a000f42400200a0f5f6"
++        ]
++
++encodeBytes :: ByteString -> ByteString
++encodeBytes bytes
++    | BS.length bytes < 24 =
++        BS.cons (0x40 + fromIntegral (BS.length bytes)) bytes
++    | BS.length bytes <= 255 =
++        BS.pack [0x58, fromIntegral $ BS.length bytes] <> bytes
++    | otherwise = error "test address is too long"
++
++byronAddress :: ByteString
++byronAddress =
++    hex
++        "82d818584283581ca08bcb9e5e8cd30d5aea6d434c46abd8604fe4907d56b9730ca28ce5a101581e581c22e25f2464ec7295b556d86d0ec33bc1a681e7656da92dbc0582f5e4001a3abe2aa5"
++
+ isLeft :: Either a b -> Bool
+ isLeft = either (const True) (const False)
+ 

@@ -15,7 +15,7 @@ import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
 import UndelegateWalletButton from './UndelegateWalletButton';
 import DelegateWalletButton from './DelegateWalletButton';
-import UndelegateWalletConfirmationDialog from './UndelegateWalletConfirmationDialog';
+import UndelegateWalletDialogContainer from '../../../containers/wallet/dialogs/settings/UndelegateWalletDialogContainer';
 import WalletSettingsActionConfirmationDialog from './WalletSettingsRemoveConfirmationDialog';
 import UnpairWallet from './UnpairWallet';
 import DeleteWallet from './DeleteWallet';
@@ -188,7 +188,7 @@ class WalletSettings extends Component<Props, State> {
     } = this.props;
     this.onBlockForm();
     openDialogAction({
-      dialog: UndelegateWalletConfirmationDialog,
+      dialog: UndelegateWalletDialogContainer,
     });
     updateDataForActiveDialogAction({
       data: {
@@ -251,7 +251,7 @@ class WalletSettings extends Component<Props, State> {
             )}
           </div>
         </BorderedBox>
-        {isDialogOpen(UndelegateWalletConfirmationDialog)
+        {isDialogOpen(UndelegateWalletDialogContainer)
           ? undelegateWalletDialogContainer
           : false}
       </>

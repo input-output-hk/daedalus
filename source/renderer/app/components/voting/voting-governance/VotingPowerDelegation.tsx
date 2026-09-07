@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
-import BigNumber from 'bignumber.js';
 import { governanceSharedMessages } from '../../governance/_shared/governanceSharedMessages';
 import BorderedBox from '../../widgets/BorderedBox';
 import { messages } from './VotingPowerDelegation.messages';
@@ -24,23 +23,15 @@ import DRepStatusBadge from '../../governance/_shared/DRepStatusBadge';
 
 type Props = {
   getStakePoolById: (...args: Array<any>) => any;
-  initiateTransaction: (params: {
+  submitTransaction: (params: {
     chosenOption: string;
     wallet: Wallet;
-  }) => Promise<
-    | { success: true; fees: BigNumber }
-    | { success: false; errorCode: InitializeVPDelegationTxError }
-  >;
+  }) => Promise<{ success: true } | { success: false; errorCode: string }>;
   intl: Intl;
   onExternalLinkClick: (...args: Array<any>) => any;
   stakePools: Array<StakePool>;
   wallets: Array<Wallet>;
-  renderConfirmationDialog: (params: {
-    chosenOption: string;
-    fees: BigNumber;
-    onClose: () => void;
-    selectedWallet: Wallet;
-  }) => React.ReactElement;
+  onSuccess: (walletId: string) => void;
   initialFormState?: {
     selectedWalletId?: string | null;
     selectedDRepId?: string;
@@ -57,14 +48,8 @@ type Props = {
 };
 
 type State = {
-  status:
-    | 'form'
-    | 'form-with-error'
-    | 'form-submitted'
-    | 'form-initiating-tx'
-    | 'confirmation';
+  status: 'form' | 'form-with-error' | 'form-submitted' | 'form-initiating-tx';
   selectedWalletId: string | null;
-  fees?: BigNumber;
   txInitError?: InitializeVPDelegationTxError;
 };
 
@@ -86,7 +71,7 @@ const SAME_VOTE_HINT_ID = 'votingPowerDelegationSameVoteHint';
 
 function VotingPowerDelegation({
   getStakePoolById,
-  initiateTransaction,
+  submitTransaction,
   initialFormState,
   intl,
   onBrowseDRepsClick,
@@ -94,7 +79,7 @@ function VotingPowerDelegation({
   onCancel,
   onExternalLinkClick,
   onFetchDRep,
-  renderConfirmationDialog,
+  onSuccess,
   wallets,
   stakePools,
 }: Props) {
@@ -218,21 +203,25 @@ function VotingPowerDelegation({
       )
         return;
       setState({ ...state, status: 'form-initiating-tx' });
-      const result = await initiateTransaction({
+      const result = await submitTransaction({
         chosenOption: selectedDRepId,
         wallet: selectedWallet,
       });
       if (result.success === true) {
-        setState({ ...state, fees: result.fees, status: 'confirmation' });
+        onSuccess(selectedWallet.id);
+        return;
       } else {
         setState({
-          ...state,
-          txInitError: result.errorCode,
+          selectedWalletId: selectedWallet.id,
+          txInitError:
+            result.errorCode in mapOfTxErrorCodeToIntl
+              ? (result.errorCode as InitializeVPDelegationTxError)
+              : 'generic',
           status: 'form-with-error',
         });
       }
     })();
-  }, [initiateTransaction, state]);
+  }, [onSuccess, selectedDRepId, selectedWallet, state, submitTransaction]);
 
   const displayName =
     selectedDRepEntry?.verifiedName ??
@@ -386,17 +375,6 @@ function VotingPowerDelegation({
           )}
         </BorderedBox>
       </div>
-      {state.status === 'confirmation' &&
-        selectedWallet &&
-        selectedDRepId &&
-        renderConfirmationDialog({
-          chosenOption: selectedDRepId,
-          fees: state.fees!,
-          onClose: () => {
-            setState({ ...state, status: 'form' });
-          },
-          selectedWallet,
-        })}
     </>
   );
 }
