@@ -140,7 +140,7 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
     receive: 'none',
     settlement: 'awaited',
     callerOwners: ['source/main/ipc/walletApproval.ts'],
-    callerCount: 2,
+    callerCount: 3,
   }),
   ...entries(['WALLET_TRANSACTION_APPROVAL_CHANNEL'], {
     constructorOwner: 'source/main/ipc/nativeTransactionApproval.ts',

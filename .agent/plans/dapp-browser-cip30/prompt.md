@@ -62,7 +62,7 @@ Source of truth
 Fixed decisions
 - Remote dApp content is always hostile, including catalogued dApps, and must run only in a separately managed sandboxed `BrowserWindow` with a fresh nonpersistent session and dedicated least-authority preload.
 - The existing privileged renderer never hosts remote content and existing privileged IPC must authenticate the exact trusted sender and main frame before any production guest is enabled.
-- The connector wallet is the route-selected eligible Shelley wallet at `/wallets/:id/dapps`; invalid routes never fall back to another wallet, and Byron wallets are excluded.
+- The connector wallet is the route-selected eligible Shelley wallet at `/apps/:id`; invalid routes never fall back to another wallet, and Byron wallets are excluded.
 - Trusted Daedalus UI owns connection, key-disclosure, signing, data-signing, transaction review, and submission consent. Every signing and submission call requires fresh trusted consent, and signing never waives submission confirmation.
 - Main owns guest lifecycle, origin/frame/session/route authority, immutable request bytes, capability state, grants, approval correlation, and result validation before guest release.
 - Exact transaction-body and output bytes must survive parsing, review, software or hardware signing, witness verification, and submission without semantic reserialization changing the approved bytes.
