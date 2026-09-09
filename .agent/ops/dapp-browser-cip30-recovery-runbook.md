@@ -4,7 +4,7 @@
 
 This runbook controls the already-audited dApp browser release. It does not authorize source, dependency, backend, package, catalog, resource-policy, hardware-row, or activation changes.
 
-The immutable task-807 release-candidate identities and evidence are recorded in [the release-candidate gate](../plans/dapp-browser-cip30/research/10-task-807-release-candidate.md). Its packaged policy has the global, preferred-catalog, Diagnostics, CIP-104, CIP-142, and hardware controls disabled, and catalog revision 1 has no entries. The later recorded Windows x64 production artifact supersedes only that platform's global and Diagnostics values; preferred catalog, CIP-104, CIP-142, and hardware remain disabled. Linux and macOS remain disabled.
+The immutable task-807 release-candidate identities and evidence are recorded in [the release-candidate gate](../plans/dapp-browser-cip30/research/10-task-807-release-candidate.md). Its original packaged policy had every dApp control disabled and catalog revision 1 had no entries. Later reviewed releases enabled Windows global/Diagnostics launch and CIP-104 revision 1, while task-901's separate operator-directed mainnet pilot enables global/preferred launch with CIP-104 and CIP-142 disabled. Linux and macOS production launch remain disabled.
 
 Every policy, catalog, backend-pin, or hardware-row change requires a reviewed release artifact and application restart. There is no remote or in-process policy service. Compare every proposed change with the task-807 baseline and rerun the affected package, security, backend, hardware, and interoperability gates before rollout.
 
@@ -29,7 +29,7 @@ The launcher supplies one immutable `dappBrowserPolicy`. Invalid or absent polic
 | `globalEnabled` | Master gate. Both preferred and Diagnostics launch require it. | Disable to stop all new guest launch. It does not delete durable grants, collateral metadata, or cardano-wallet submission evidence. |
 | `preferredCatalogEnabled` | Gates only preferred-catalog launch. | Independent of Diagnostics. A disabled preferred mode does not remove catalog-bound grants; removed or identity-changed entries are pruned separately. |
 | `diagnosticsEnabled` | Gates only arbitrary Diagnostics URL staging and launch. | Independent of preferred catalog. Staged Diagnostics URLs are main-memory, one-use values and disappear on teardown/restart. |
-| `cip104Revision` | Proposed-extension policy input. | CIP-104 is terminal-disabled by the frozen [contract manifest](../../source/common/cip30/contracts/contract-manifest.json). No revision value currently enables or advertises it. Reopening requires a new interoperability task and security-reviewed release. |
+| `cip104Revision` | Gates CIP-104 negotiation at the descriptor's required revision. | Reviewed package variants use revision 1 after the recorded interoperability gate; task-901's separate pilot keeps revision 0. It never bypasses launch, wallet-kind, hardware-row, or disclosure-consent gates. |
 | `cip142Revision` | Gates CIP-142 negotiation at the descriptor's required revision. | Independent of launch-mode controls. It never creates a guest or bypasses route, sandbox, grant, or consent checks. Task-807 baseline and the recorded Windows activation use revision 0. |
 | `hardwareConnectorRows` | Enables only exact compiled, physically certified hardware rows. | Empty in the baseline and recorded Windows activation. Never substitute software signing or a different device row during recovery. |
 | Per-entry network/resource policy | Limits a bundled catalog entry's network URLs and permitted destinations. | A catalog release change, not a remote switch. Origin or resource-policy changes create a new entry identity and require review. |
@@ -47,7 +47,7 @@ The launcher supplies one immutable `dappBrowserPolicy`. Invalid or absent polic
    - Diagnostics only: set `diagnosticsEnabled=false`;
    - CIP-142 only: set `cip142Revision=0`;
    - hardware row only: remove the exact row from `hardwareConnectorRows`.
-   CIP-104 is already terminal-disabled.
+   - CIP-104 only: set `cip104Revision=0`.
 3. Produce and review a normal packaged launcher update. Do not patch a running process or introduce a remote flag.
 4. Install the update and restart Daedalus. Restart tears down the prior process and guest. Confirm new launch attempts are refused for the disabled mode.
 5. Preserve the grant repository, collateral preference, wallet database, and cardano-wallet pending-submission records. Do not use connection repair or delete wallet state as part of launch disablement.

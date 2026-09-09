@@ -2,8 +2,8 @@
   "metadata": {
     "title": "Embedded dApp Browser And CIP-30 Wallet Connector Tasks",
     "created": "2026-08-07",
-    "updated": "2026-09-03",
-    "version": "1.7.45",
+    "updated": "2026-09-09",
+    "version": "1.7.47",
     "totalTasks": 89,
     "prdReference": ".agent/plans/dapp-browser-cip30/dapp-browser-cip30-prd.md",
     "description": "Security- and standards-gated implementation graph for a wallet-scoped sandboxed dApp browser with CIP-30, CIP-8, CIP-95, CIP-103, packaged CIP-104, gated CIP-142, software/hardware signing, ordered batch signing and submission, and soft collateral management.",
@@ -625,7 +625,7 @@
         {
           "id": "task-106",
           "title": "Add route lease, trusted browser controls, and launcher switches",
-          "description": "Bind guest lifecycle to a main-owned monotonic `/wallets/:id/dapps` route lease, authenticate trusted open/close commands, and implement independently enforceable launcher-configuration switches for global launch, preferred catalog, Diagnostics, CIP-104, and CIP-142.",
+          "description": "Bind guest lifecycle to a main-owned monotonic `/apps/:id` route lease, authenticate trusted open/close commands, and implement independently enforceable launcher-configuration switches for global launch, preferred catalog, Diagnostics, CIP-104, and CIP-142.",
           "status": "completed",
           "completedAt": "2026-08-24",
           "completedNotes": "Implemented a main-owned monotonic exact-route lease, one-use staged launches, authenticated trusted-frame open/close controls, route/window/wallet/network revocation with revoke-before-teardown, and stale-result suppression that does not cancel authorized submission work. Added immutable fail-closed launcher policy revision 1 with independent global, preferred-catalog, Diagnostics, CIP-104, and CIP-142 activation values; Nix development, .deb, and .rpm configurations package explicit all-disabled defaults with release-equivalent contract checks. Focused Jest, TypeScript, production main build, exact Electron trusted-IPC/session smokes, and Linux package/launcher contracts passed. No production launch producer, guest gateway handler, wallet method, remote policy service, or dApp launch was enabled.",
@@ -1175,7 +1175,7 @@
         {
           "id": "task-400",
           "title": "Add wallet-scoped dApp and connection-settings routes",
-          "description": "Add `/wallets/:id/dapps`, wallet navigation, legacy exclusion, settings route, and invalid-route behavior without first-wallet fallback.",
+          "description": "Add `/apps/:id`, global Apps navigation, legacy exclusion, settings route, and invalid-route behavior without first-wallet fallback.",
           "status": "completed",
           "completedAt": "2026-08-26",
           "completedNotes": "Added canonical wallet-scoped dApp and connection-settings route identities, localized Shelley-only wallet navigation, a single route-selected eligible-wallet gate for Byron/restoring/nonresponding/deleted states, and fail-closed invalid dApp route handling without first-wallet retargeting. Focused renderer navigation/store and existing main route-lease Jest suites passed; TypeScript compilation and i18n catalog validation passed. Catalog and connection-settings page content remain task-406/task-408 scope.",
@@ -2262,9 +2262,11 @@
         },
         {
           "id": "task-901",
-          "title": "Run internal builds and curated testnet pilot",
-          "description": "Enable the feature for internal users and selected preprod/preview catalog entries, collect compatibility evidence, and validate kill-switch/recovery operation.",
-          "status": "pending",
+          "title": "Run internal builds and operator-directed mainnet pilot",
+          "description": "Use the existing packaged mainnet pilot and curated Liqwid entry to collect operator compatibility evidence and validate kill-switch/recovery operation before broader rollout.",
+          "status": "completed",
+          "completedAt": "2026-09-09",
+          "completedNotes": "Completed under the user's explicit operator-directed mainnet scope and accepted evidence boundary. Existing Liqwid deposit/withdrawal and later native Ledger flows plus the Ledger Flex certification record cover live pilot behavior; 88 focused Jest tests, 12 Cucumber scenarios/50 steps, TypeScript, scoped formatting, and enabled/kill-switch build-87031 packages cover software/CIP-95/CIP-103, disabled CIP-104/CIP-142 policy, kill-switch execution, pending-submission reconciliation, and package identities. The checks found and fixed the stale /apps route fixture and an unowned native execution IPC call. Material task-807 deltas received security and independent review with no critical/high finding in the inspected boundaries. Installed restart/restore, final-package physical retesting, hostile installed-package matrices, and release approval remain task-903-a gates by explicit user decision.",
           "priority": "critical",
           "estimatedHours": 40,
           "dependencies": ["task-900"],
@@ -2273,10 +2275,10 @@
             ".agent/plans/dapp-browser-cip30/"
           ],
           "acceptance": [
-            "Software and supported hardware complete end-to-end testnet flows.",
-            "CIP-95/103/142 behavior matches pilot dApps.",
-            "CIP-104 remains gated unless its interoperability evidence is complete.",
-            "Kill switch and pending-submission reconciliation are exercised, not just inspected.",
+            "The operator-directed Liqwid mainnet pilot completes end-to-end Ledger flows, and existing software-path conformance remains green.",
+            "Base CIP-30 behavior matches Liqwid; CIP-95 and CIP-103 retain certified/conformance evidence, while CIP-142 remains disabled for this pilot.",
+            "CIP-104 remains disabled in the pilot launcher even though its separate interoperability gate is complete.",
+            "Kill-switch policy and pending-submission reconciliation are exercised by focused automated tests; installed restart/restore and final-package physical retesting remain task-903-a release gates.",
             "Any material pilot fix is classified against the recorded baseline and cannot bypass affected retesting/re-review."
           ]
         },

@@ -22,7 +22,7 @@ The feature also introduces full-ledger transaction context, witness-only softwa
 - Task-305 completed on 2026-08-26: pure common serializers now normalize route-valid Shelley addresses, preserve exact authenticated UTxO-pair bytes, canonically encode Value/Coin results, aggregate every controlled UTxO, select deterministic covering prefixes, enforce CIP-30 pagination errors and limits without an item cap, and choose smallest sufficient payment-key pure-ADA collateral combinations without preparation or a 5 ADA ceiling. The implementation also corrected one frozen positive enterprise-address fixture whose credential was one byte short, labels `getCollateral` deprecated, and retains authenticated snapshot outputs for later task-402 dispatch. Focused Jest passed 40 tests; TypeScript compilation and focused formatting checks passed.
 - Task-306 completed on 2026-08-26: strict shared witness primitives now decode only bounded VKey witness-set results, derive signer key hashes, verify every Ed25519 signature over the Blake2b-256 hash of the exact original body bytes, emit canonical VKey-only deltas, and merge fresh witnesses without changing body identity or any raw script, datum, redeemer, bootstrap, or other immutable witness field. Existing context verification reuses the same signature primitive. The accepted task-203 endpoint already returns witness-only CBOR plus the expected body hash, so the conditional legacy `transactions-sign` full-envelope comparator remains absent. Focused Jest passed 10 tests; focused ESLint and Prettier checks and TypeScript compilation passed.
 - Task-307 completed on 2026-08-26: strict profile-only CIP-8/COSE primitives now canonically produce and independently verify untagged COSE_Sign1 and COSE_Key bytes, exact protected and unprotected headers, attached payloads, empty external AAD, normalized payment/stake/DRep credentials, public-key hashes, and Ed25519 signatures. Raw DRep IDs and matching type-6 raw/Bech32 addresses normalize identically; malformed request hex fails before a signer-ready request exists; legacy missing-version output is accepted only through an explicit verification-only option. Focused Jest passed 15 tests across the implementation and frozen task-002 contracts; focused ESLint, Prettier, and TypeScript compilation passed.
-- Task-400 completed on 2026-08-26: canonical `/wallets/:id/dapps` and `/settings/dapp-connections` identities now support localized Shelley-only wallet navigation, invalid dApp hashes clear route authority instead of selecting the first wallet, and one route-selected eligibility gate excludes Byron, restoring, nonresponding, and deleted wallets. Existing main-owned route observation still revokes and closes the guest on navigation or wallet switches. Focused renderer and main route-lease Jest suites, TypeScript compilation, and i18n catalog validation passed; task-406 and task-408 retain ownership of the concrete catalog and connection-settings pages.
+- Task-400 completed on 2026-08-26: canonical `/apps/:id` and `/settings/dapp-connections` identities now support localized Shelley-only wallet selection, invalid dApp routes clear authority instead of selecting the first wallet, and one route-selected eligibility gate excludes Byron, restoring, nonresponding, and deleted wallets. Existing main-owned route observation still revokes and closes the guest on navigation or wallet switches. Focused renderer and main route-lease Jest suites, TypeScript compilation, and i18n catalog validation passed; task-406 and task-408 retain ownership of the concrete catalog and connection-settings pages.
 - Task-401 completed on 2026-08-26: a dedicated main-only grant repository now validates and atomically persists only canonical exact-origin, wallet, network-genesis, read/key-disclosure, extension, and catalog-identity-or-Diagnostics authority with restrictive file permissions, fail-closed corruption repair, and explicit wallet/catalog/forget/scope invalidation. Live capabilities remain memory-only and require exact guest, document, origin, connection, route, wallet, and network identity; lifecycle revocation suppresses stale delivery without owning authorized submission execution. Existing startup launcher policy and negotiation continue to omit disabled CIP-104/CIP-142 namespaces. Focused Jest passed 5 tests; TypeScript compilation and focused formatting passed.
 - Task-401-a completed on 2026-08-26: one main-owned immutable FIFO consent coordinator now issues correlated IDs, retains frozen broker payloads outside the renderer, enforces the five-minute trusted-input inactivity timeout, cancels pre-authorization work on guest/trusted lifecycle loss, lets authorized submissions finish without stale delivery, and hides/restores the guest around global consent. One authenticated awaited trusted-renderer channel drives an App-level MobX dialog with replay-safe decisions, originating-control focus restoration, and localized en-US/ja-JP connection and elevated key-disclosure copy. Focused Jest passed 27 tests, including the 80-channel privileged IPC audit; TypeScript compilation, focused ESLint, i18n validation, and focused Prettier checks passed. Task-402 remains responsible for routing every enable/grant creation or expansion through this coordinator.
 - Task-402 completed on 2026-08-27: the sole guest CIP-30 gateway now authenticates the exact guest top frame, origin, document generation, catalog-or-Diagnostics identity, route lease, wallet, and network before and after every call. Main-owned grants and live sessions compose task-301 capability negotiation with task-401-a-only connection/elevated-disclosure consent; a strict authenticated trusted-renderer executor supplies pinned backend capability, exact empty-transaction context, and source addresses. Provider metadata, `isEnabled`/`enable`/`getExtensions`, network, address, UTxO, balance, pagination, and side-effect-free collateral methods reuse task-300 schemas, task-304 context reconciliation, and task-305 serializers. Future or unnegotiated methods refuse before executor access; offline/sync maps to `InternalError`, account drift suppresses results with `AccountChange`, and node stop/crash revokes sessions. Focused Jest passed 99 tests; TypeScript, focused ESLint/Prettier, and main/renderer builds passed. A direct development Electron preload smoke exited SIGILL under enforced sandboxing; no bypass was used, production launch remains disabled pending tasks 406/407, and installed-package adversarial runtime remains task-802.
@@ -69,6 +69,7 @@ The feature also introduces full-ledger transaction context, witness-only softwa
 - Windows production activation completed on 2026-09-02: the rebuilt x64 mainnet NSIS package installed at the protected default Program Files root, exposed only the Diagnostics dApp path, passed native renderer sandbox attestation and the unchanged packaged hostile matrix, rejected `--no-sandbox`, and restored its installed harness byte-for-byte. Preferred-catalog, CIP-142, hardware, custom-install, and macOS activation remain disabled. CIP-104 was enabled in packaged policy on 2026-09-03.
 - CIP-104 reopened on 2026-09-03 after `newm-chain` supplied the missing deterministic 64-byte account-xpub vector. Daedalus now exposes negotiated `api.cip104.getAccountPub()` for software wallets and capability-certified hardware wallets. Both paths validate and return the same definite-length CBOR byte string under separate irreversible-disclosure consent; software requires a transient spending password, while hardware uses the already-paired account xpub without requesting one. The packaged CIP-104 revision defaults to enabled; the independent hardware connector row gate remains fail-closed.
 - Task-900 completed on 2026-09-02: the [dApp browser recovery runbook](../../ops/dapp-browser-cip30-recovery-runbook.md) now fixes role-based ownership, independent packaged launcher controls, baseline-preserving emergency disable/restore, catalog approval and removal, guest teardown, grant invalidation, sandbox/backend/device recovery, and ambiguous-submission reconciliation. It changes no source, package, catalog, resource policy, hardware row, or activation value from the task-807 baseline and recorded Windows-only Diagnostics activation.
+- Task-901 completed on 2026-09-09 under the user's explicit operator-directed Liqwid mainnet/Ledger scope and accepted evidence boundary. Existing live flows and Ledger certification, 88 focused Jest tests, 12 Cucumber scenarios/50 steps, TypeScript, scoped formatting, and exact enabled/kill-switch build-87031 package identities cover the bounded internal pilot, software/CIP-95/CIP-103 conformance, disabled pilot CIP-104/CIP-142 policy, kill-switch execution, and pending-submission reconciliation. Material changes received security and independent delta review with no critical/high finding in the inspected boundaries. Installed restart/restore, final-package physical retesting, hostile installed-package matrices, and release approval remain task-903-a gates.
 
 ## Problem Statement
 
@@ -98,7 +99,7 @@ This work matters because a connector that is merely functional but not byte-exa
 
 ## Goals
 
-- Provide a curated, wallet-scoped dApp browser at `/wallets/:id/dapps`.
+- Provide a curated, wallet-scoped dApp browser at `/apps/:id`.
 - Provide arbitrary HTTPS dApp launch through Daedalus Diagnostics with the same connector API on every configured Cardano network.
 - Keep remote content in a separately managed, sandboxed, nonpersistent Electron window.
 - Implement current CIP-30 for key-controlled Shelley wallets.
@@ -289,7 +290,7 @@ Ledger model/app-major-8 and Trezor matrix without blocking current development.
 
 ## Locked Planning Decisions
 
-- The dApp catalog route is `/wallets/:id/dapps`.
+- The dApp catalog route is `/apps/:id`.
 - The route-selected active wallet is the connector wallet.
 - Invalid dApp wallet routes do not fall back to another wallet.
 - Remote content opens in a separately managed sandboxed `BrowserWindow`.
@@ -381,7 +382,7 @@ Ledger model/app-major-8 and Trezor matrix without blocking current development.
 2. User confirms or selects an eligible Shelley wallet; the current eligible active wallet is the default.
 3. User enters an HTTPS URL.
 4. Main validates and normalizes it, stores it only as an in-memory one-use pending launch, and never places the full URL in a route or grant.
-5. Trusted navigation moves to `/wallets/{walletId}/dapps`.
+5. Trusted navigation moves to `/apps/{walletId}`.
 6. Main waits for that exact route/wallet lease to commit, consumes the pending launch, and creates the guest.
 7. The exact origin becomes the capability identity.
 8. The launch is labeled untrusted and receives no preferred-dApp branding.
@@ -424,7 +425,7 @@ Ledger model/app-major-8 and Trezor matrix without blocking current development.
 
 ### Functional Requirements
 
-- [x] Add `/wallets/:id/dapps` and a wallet-navigation item hidden for Byron wallets.
+- [x] Add `/apps/:id` and a global navigation item hidden when no eligible Shelley wallet exists.
 - [x] Add the bundled, release-versioned curated dApp catalog contract and page; production revision 1 remains empty until task-806 approves exact external entries.
 - [x] Add arbitrary HTTPS launch through a one-use Diagnostics-to-wallet-dApp-route handoff.
 - [x] Create an isolated nonpersistent guest window and dedicated preload.
@@ -1047,7 +1048,7 @@ type DappRouteLease = {
 ```
 
 - Main observes trusted in-page route changes and maintains a monotonic epoch.
-- Guest launch is valid only for an exact `/wallets/:id/dapps` route.
+- Guest launch is valid only for an exact `/apps/:id` route.
 - Diagnostics creates an in-memory one-use pending launch bound to a selected eligible wallet, navigates trusted UI to that wallet's dApp route, and launches only after the matching lease commits.
 - A pending Diagnostics URL is consumed once, cancelled on any route/wallet mismatch, and never permits launch directly from the Diagnostics route.
 - Every enable, approval, signing execution, and submission authorization revalidates the lease. Result release also revalidates it.
@@ -1501,9 +1502,9 @@ type CollateralPreference = {
 
 #### Routes And Navigation
 
-- Add `ROUTES.WALLETS.DAPPS = '/wallets/:id/dapps'`.
-- Add dApps to wallet navigation, excluded for legacy wallets.
-- Keep catalog and collateral readiness under the active wallet route.
+- Add `ROUTES.APPS.PAGE = '/apps/:id'`.
+- Add global Apps navigation and exclude ineligible legacy wallets from selection.
+- Keep catalog and collateral readiness bound to the route-selected wallet.
 - Add `/settings/dapp-connections` for global grant inspection/revocation.
 - Add diagnostics URL entry without placing the full URL in route/query persistence.
 
@@ -1771,8 +1772,9 @@ upstream review and pin ownership.
 ### Phase 9: Rollout
 
 - Ship disabled internal builds first.
-- Enable curated testnet entries for staff and partners.
-- Validate preprod and preview software/hardware flows.
+- Run the explicitly operator-directed Liqwid mainnet/Ledger pilot under its separate internal package identity; this task-901 exception replaces the original preprod/preview pilot scope without authorizing production activation.
+- Reuse the existing software conformance and exact Ledger physical-certification gates while recording the live Liqwid base CIP-30 result; keep CIP-104 and CIP-142 disabled in the pilot launcher.
+- Task-901 closes its bounded internal-pilot scope with the existing operator-reported mainnet flows plus automated kill-switch and pending-submission recovery exercises; task-903-a still requires installed restart/restore and final-package physical retesting before producing rollout artifacts.
 - Compare every pilot/release-QA change against the audited baseline and rerun affected automated, packaged, hardware, internal-review, and external-audit gates before mainnet enablement.
 - Task 903-a produces the final reviewed source commit, catalog contents, and exact packaged launcher-configuration variants for curated-mainnet and later Diagnostics rollout. Tasks 904 and 905 deploy only those reviewed artifacts through the normal release process.
 - Any change required during tasks 904 or 905 returns to task 903-a change control and affected security review before activation continues.
