@@ -9,14 +9,24 @@ import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import { WalletTransaction } from '../domains/WalletTransaction';
+import {
+  TransactionStates,
+  TransactionTypes,
+  WalletTransaction,
+} from '../domains/WalletTransaction';
 import type {
   GetTransactionFeeRequest,
   DeleteTransactionRequest,
   GetTransactionsResponse,
   CreateExternalTransactionRequest,
   GetWithdrawalsResponse,
+  TransactionState,
 } from '../api/transactions/types';
+import type { TransactionReviewDisplay } from '../../../common/transactions/reviewDisplay';
+import type {
+  SubmissionTransactionRecord,
+  SubmissionTransactionsData,
+} from '../../../common/types/electron-store.types';
 import {
   isValidAmountInLovelaces,
   isValidAssetAmountInNaturalUnits,
@@ -29,6 +39,7 @@ import {
 } from '../utils/transaction';
 import type { ApiTokens } from '../api/assets/types';
 import { EventCategories } from '../analytics';
+import { logger } from '../utils/logging';
 
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
 
@@ -86,6 +97,18 @@ export type WalletSendLease = Readonly<{
   release: () => void;
 }>;
 
+export type TrackSubmissionRequest = Readonly<{
+  walletId: string;
+  transactionId: string;
+  state: TransactionState;
+  display?: TransactionReviewDisplay;
+  payment?: Readonly<{ address: string; amount: string }>;
+}>;
+export type SelectedTransaction = Readonly<{
+  walletId: string;
+  transactionId: string;
+}>;
+
 export default class TransactionsStore extends Store {
   @observable
   transactionsRequests: Array<{
@@ -110,6 +133,16 @@ export default class TransactionsStore extends Store {
     GetTransactionFeeRequest
   > = new Request(this.api.ada.calculateTransactionFee);
   private readonly walletSendTails = new Map<string, Promise<void>>();
+  @observable
+  selectedTransaction: SelectedTransaction | undefined;
+  @observable
+  private submissionsByWallet: Record<
+    string,
+    SubmissionTransactionRecord[]
+  > = {};
+  private readonly submissionLoads = new Map<string, Promise<void>>();
+  private readonly submissionWrites = new Map<string, Promise<void>>();
+  private readonly currentSessionSubmissions = new Set<string>();
 
   acquireWalletSendLock = async (
     walletId: string
@@ -157,6 +190,7 @@ export default class TransactionsStore extends Store {
     transactionActions.filterTransactions.listen(this._updateFilterOptions);
     // transactionActions.loadMoreTransactions.listen(this._increaseSearchLimit);
     transactionActions.requestCSVFile.listen(this._requestCSVFile);
+    this._loadKnownWalletSubmissions();
     this.registerReactions([this._ensureFilterOptionsForActiveWallet]);
   }
 
@@ -200,18 +234,14 @@ export default class TransactionsStore extends Store {
     return withdrawals;
   }
 
-  @computed
   get all(): Array<WalletTransaction> {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
-
     const request = this._getTransactionsAllRequest(wallet.id);
-
-    if (!request.result) {
-      return [];
-    }
-
-    return request.result.transactions || [];
+    return this._mergeTransactions(
+      wallet.id,
+      request.result ? request.result.transactions : []
+    );
   }
 
   @computed
@@ -242,10 +272,11 @@ export default class TransactionsStore extends Store {
   get recent(): Array<WalletTransaction> {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
-
     const results = this._getTransactionsRecentRequest(wallet.id).result;
-
-    return results ? results.transactions : [];
+    return this._mergeTransactions(
+      wallet.id,
+      results ? results.transactions : []
+    );
   }
 
   @computed
@@ -257,12 +288,7 @@ export default class TransactionsStore extends Store {
 
   @computed
   get hasAnyFiltered(): boolean {
-    const wallet = this.stores.wallets.active;
-    if (!wallet) return false;
-
-    const results = this._getTransactionsAllRequest(wallet.id).result;
-
-    return results ? results.transactions.length > 0 : false;
+    return this.all.length > 0;
   }
 
   @computed
@@ -270,9 +296,7 @@ export default class TransactionsStore extends Store {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
 
-    const results = this._getTransactionsRecentRequest(wallet.id).result;
-
-    return results ? results.total > 0 : false;
+    return this.recent.length > 0;
   }
 
   @computed
@@ -280,25 +304,197 @@ export default class TransactionsStore extends Store {
     const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
 
-    const results = this._getTransactionsAllRequest(wallet.id).result;
-
-    return results ? results.total : 0;
+    return this.all.length;
   }
 
   @computed
   get totalFilteredAvailable(): number {
-    const wallet = this.stores.wallets.active;
-    if (!wallet) return 0;
-
-    const results = this._getTransactionsAllRequest(wallet.id).result;
-
-    return results ? results.transactions.length : 0;
+    return this.allFiltered.length;
   }
 
   @computed
   get pendingTransactionsCount(): number {
     return this.recent.filter(({ state }) => state === 'pending').length;
   }
+  getTransaction = (
+    walletId: string,
+    transactionId: string
+  ): WalletTransaction | undefined => {
+    const recent = this._getTransactionsRecentRequest(walletId).result;
+    const all = this._getTransactionsAllRequest(walletId).result;
+    const candidates = [
+      recent?.transactions.find(({ id }) => id === transactionId),
+      all?.transactions.find(({ id }) => id === transactionId),
+    ].filter((transaction): transaction is WalletTransaction => !!transaction);
+    return this._mergeTransactions(walletId, candidates).find(
+      ({ id }) => id === transactionId
+    );
+  };
+
+  @action
+  trackSubmission = async ({
+    walletId,
+    transactionId,
+    state,
+    display,
+    payment,
+  }: TrackSubmissionRequest): Promise<void> => {
+    if (
+      !/^[A-Za-z0-9_-]{1,128}$/u.test(walletId) ||
+      !/^[0-9a-f]{64}$/u.test(transactionId)
+    )
+      throw new Error('Invalid submitted transaction identity');
+    if (
+      ![
+        TransactionStates.PENDING,
+        TransactionStates.OK,
+        TransactionStates.EXPIRED,
+        TransactionStates.FAILED,
+        TransactionStates.SUBMISSION_UNKNOWN,
+      ].includes(state)
+    )
+      throw new Error('Invalid submitted transaction state');
+    if (
+      payment &&
+      (payment.address.length > 256 ||
+        !/^(?:0|[1-9]\d*)$/u.test(payment.amount))
+    )
+      throw new Error('Invalid submitted transaction payment');
+    this.currentSessionSubmissions.add(`${walletId}:${transactionId}`);
+
+    const previous = this._submissionRecord(walletId, transactionId);
+    const walletChange = display ? display.walletChange : null;
+    const amount = walletChange
+      ? new BigNumber(walletChange.coin).dividedBy(1000000)
+      : new BigNumber(0);
+    const normalInputs =
+      display?.entries.filter(({ role }) => role === 'input') || [];
+    const normalOutputs =
+      display?.entries.filter(({ role }) => role === 'output') || [];
+    const matchedPayment =
+      payment &&
+      normalOutputs.find(
+        (entry) =>
+          entry.address === payment.address &&
+          entry.value?.coin === payment.amount
+      );
+    const isKnownPureAdaSelfTransfer =
+      !!display &&
+      normalInputs.length > 0 &&
+      normalOutputs.length > 0 &&
+      [...normalInputs, ...normalOutputs].every(
+        ({ ownership, value }) =>
+          ownership === 'wallet' && value !== null && value.assets.length === 0
+      ) &&
+      display.walletChange !== null &&
+      display.walletChange.assets.length === 0 &&
+      display.mint.length === 0 &&
+      display.certificates.length === 0 &&
+      display.withdrawals.every(({ ownership }) => ownership === 'wallet');
+    const presentationAddress =
+      payment?.address ||
+      display?.entries.find(
+        (entry) =>
+          entry.role === 'output' &&
+          entry.address &&
+          entry.ownership === (amount.isGreaterThan(0) ? 'wallet' : 'other')
+      )?.address ||
+      previous?.toAddress;
+    let type = previous?.type || TransactionTypes.EXPEND;
+    let title = previous?.title || 'Ada sent';
+    if (walletChange) {
+      type = amount.isGreaterThan(0)
+        ? TransactionTypes.INCOME
+        : TransactionTypes.EXPEND;
+      title = amount.isGreaterThan(0) ? 'Ada received' : 'Ada sent';
+    }
+    if (isKnownPureAdaSelfTransfer) title = 'Transfer within this wallet';
+    let transferAmount = previous?.transferAmount;
+    let isSelfTransfer = previous?.isSelfTransfer;
+    if (matchedPayment && payment) {
+      transferAmount = new BigNumber(payment.amount)
+        .dividedBy(1000000)
+        .toString();
+      isSelfTransfer = isKnownPureAdaSelfTransfer || undefined;
+    }
+    const record: SubmissionTransactionRecord = {
+      transactionId,
+      state,
+      createdAt: previous?.createdAt || new Date().toISOString(),
+      amount: walletChange ? amount.toString() : previous?.amount || '0',
+      fee: display
+        ? new BigNumber(display.fee).dividedBy(1000000).toString()
+        : previous?.fee || '0',
+      ...(transferAmount ? { transferAmount } : {}),
+      ...(isSelfTransfer === undefined ? {} : { isSelfTransfer }),
+      amountIsKnown: walletChange !== null || previous?.amountIsKnown === true,
+      hasCertificates:
+        (display ? display.certificates.length > 0 : undefined) ??
+        previous?.hasCertificates ??
+        false,
+      type,
+      title,
+      ...(presentationAddress ? { toAddress: presentationAddress } : {}),
+      assets: walletChange
+        ? walletChange.assets.map(({ policyId, assetName, quantity }) => ({
+            policyId,
+            assetName,
+            quantity: new BigNumber(quantity).absoluteValue().toString(),
+          }))
+        : previous?.assets || [],
+      dismissed: previous?.dismissed || false,
+      notified: previous?.notified || false,
+    };
+    this._setSubmissionRecord(walletId, record);
+    await this._ensureSubmissionsLoaded(walletId);
+    await this._persistSubmissions(walletId);
+  };
+
+  @action
+  dismissReceipt = (
+    walletId: string,
+    transactionIds: readonly string[]
+  ): void => {
+    const ids = new Set(transactionIds);
+    const confirmedIds = new Set(
+      transactionIds.filter(
+        (transactionId) =>
+          this.getTransaction(walletId, transactionId)?.state ===
+          TransactionStates.OK
+      )
+    );
+    const records = this.submissionsByWallet[walletId] || [];
+    let changed = false;
+    const next = records.map((record) => {
+      if (!ids.has(record.transactionId)) return record;
+      const notified =
+        record.notified || confirmedIds.has(record.transactionId);
+      if (record.dismissed && notified === record.notified) return record;
+      changed = true;
+      return { ...record, dismissed: true, notified };
+    });
+    if (!changed) return;
+    this.submissionsByWallet = {
+      ...this.submissionsByWallet,
+      [walletId]: next,
+    };
+    this._persistSubmissions(walletId).catch((error) => {
+      logger.warn('Transaction receipt dismissal could not be persisted', {
+        error,
+      });
+    });
+  };
+
+  @action
+  openTransaction = (walletId: string, transactionId: string): void => {
+    this._filterOptionsForWallets[walletId] = {
+      ...emptyTransactionFilterOptions,
+    };
+    this.selectedTransaction = { walletId, transactionId };
+    this.actions.router.goToRoute.trigger({
+      route: this.stores.wallets.getWalletRoute(walletId, 'transactions'),
+    });
+  };
 
   @action
   _refreshTransactionData = async () => {
@@ -306,43 +502,40 @@ export default class TransactionsStore extends Store {
       const { all: wallets } = this.stores.wallets;
 
       for (const wallet of wallets) {
-        const recentRequest = this._getTransactionsRecentRequest(wallet.id);
+        this._ensureSubmissionsLoaded(wallet.id);
+        const reconcile = (request: Request<GetTransactionsResponse>) => {
+          request.promise
+            ?.then(() =>
+              this._reconcileSubmissions(wallet.id, [
+                ...(recentRequest.result?.transactions || []),
+                ...(allRequest.result?.transactions || []),
+              ])
+            )
+            .catch(() => undefined);
+        };
 
+        const recentRequest = this._getTransactionsRecentRequest(wallet.id);
         recentRequest.execute({
           walletId: wallet.id,
           order: 'descending',
           fromDate: null,
           toDate: null,
-          isLegacy: wallet.isLegacy, // @API TODO - Params "pending" for V2
-          // limit: this.RECENT_TRANSACTIONS_LIMIT,
-          // skip: 0,
-          // searchTerm: '',
-          // isFirstLoad: !recentRequest.wasExecuted,
-          // isRestoreActive,
-          // isRestoreCompleted,
-          // cachedTransactions: get(recentRequest, 'result.transactions', []),
+          isLegacy: wallet.isLegacy,
         });
+        reconcile(recentRequest);
 
         const allRequest = this._getTransactionsAllRequest(wallet.id);
-
         allRequest.execute({
           walletId: wallet.id,
           order: 'descending',
           fromDate: null,
           toDate: null,
-          isLegacy: wallet.isLegacy, // @API TODO - Params "pending" for V2
-          // limit: this.INITIAL_SEARCH_LIMIT,
-          // skip: 0,
-          // searchTerm: '',
-          // isFirstLoad: !allRequest.wasExecuted,
-          // isRestoreActive,
-          // isRestoreCompleted,
-          // cachedTransactions: get(allRequest, 'result.transactions', []),
+          isLegacy: wallet.isLegacy,
         });
+        reconcile(allRequest);
 
         if (!wallet.isLegacy) {
           const withdrawalsRequest = this._getWithdrawalsRequest(wallet.id);
-
           withdrawalsRequest.execute({
             walletId: wallet.id,
           });
@@ -395,6 +588,20 @@ export default class TransactionsStore extends Store {
       transactionId,
       isLegacy,
     });
+    await this._ensureSubmissionsLoaded(walletId);
+    const records = this.submissionsByWallet[walletId] || [];
+    const next = records.filter(
+      (record) => record.transactionId !== transactionId
+    );
+    if (next.length !== records.length) {
+      runInAction('TransactionsStore::removeSubmission', () => {
+        this.submissionsByWallet = {
+          ...this.submissionsByWallet,
+          [walletId]: next,
+        };
+      });
+      await this._persistSubmissions(walletId);
+    }
     this.stores.wallets.refreshWalletsData();
   };
   validateAmount = (amountInLovelaces: string): Promise<boolean> =>
@@ -468,6 +675,281 @@ export default class TransactionsStore extends Store {
     });
     this.stores.wallets.refreshWalletsData();
   };
+  private _submissionRecord = (
+    walletId: string,
+    transactionId: string
+  ): SubmissionTransactionRecord | undefined =>
+    (this.submissionsByWallet[walletId] || []).find(
+      (record) => record.transactionId === transactionId
+    );
+
+  private _limitSubmissionRecords = (
+    records: SubmissionTransactionRecord[]
+  ): SubmissionTransactionRecord[] => {
+    if (records.length <= 100) return records;
+    const unresolved = records.filter(
+      ({ state }) =>
+        state === TransactionStates.PENDING ||
+        state === TransactionStates.SUBMISSION_UNKNOWN
+    );
+    return [
+      ...unresolved.slice(0, 100),
+      ...records
+        .filter(
+          ({ state }) =>
+            state !== TransactionStates.PENDING &&
+            state !== TransactionStates.SUBMISSION_UNKNOWN
+        )
+        .slice(0, Math.max(0, 100 - unresolved.length)),
+    ];
+  };
+
+  @action
+  private _setSubmissionRecord = (
+    walletId: string,
+    record: SubmissionTransactionRecord
+  ): void => {
+    const previous = this._submissionRecord(walletId, record.transactionId);
+    let nextRecord = record;
+    if (
+      this.currentSessionSubmissions.has(
+        `${walletId}:${record.transactionId}`
+      ) &&
+      previous &&
+      previous.state !== TransactionStates.OK &&
+      record.state === TransactionStates.OK &&
+      previous.dismissed &&
+      !previous.notified
+    ) {
+      this.actions.transactions.transactionConfirmed.trigger({
+        walletId,
+        transactionId: record.transactionId,
+      });
+      nextRecord = { ...record, notified: true };
+    }
+    this.submissionsByWallet = {
+      ...this.submissionsByWallet,
+      [walletId]: this._limitSubmissionRecords([
+        nextRecord,
+        ...(this.submissionsByWallet[walletId] || []).filter(
+          ({ transactionId }) => transactionId !== record.transactionId
+        ),
+      ]),
+    };
+  };
+
+  private _createSubmissionTransaction = (
+    record: SubmissionTransactionRecord
+  ): WalletTransaction =>
+    new WalletTransaction({
+      id: record.transactionId,
+      type: record.type,
+      title: record.title,
+      amount: new BigNumber(record.amount),
+      fee: new BigNumber(record.fee),
+      deposit: new BigNumber(0),
+      date: new Date(record.createdAt),
+      assets: record.assets.map(({ policyId, assetName, quantity }) => ({
+        policyId,
+        assetName,
+        uniqueId: `${policyId}${assetName}`,
+        quantity: new BigNumber(quantity),
+        ...(record.toAddress ? { address: record.toAddress } : {}),
+      })),
+      description: '',
+      addresses: {
+        from: [],
+        to: record.toAddress ? [record.toAddress] : [],
+        withdrawals: [],
+      },
+      state: record.state,
+      confirmations: 0,
+      slotNumber: null,
+      epochNumber: null,
+      metadata: null,
+      ...(record.transferAmount
+        ? { transferAmount: new BigNumber(record.transferAmount) }
+        : {}),
+      ...(record.isSelfTransfer === undefined
+        ? {}
+        : { isSelfTransfer: record.isSelfTransfer }),
+      amountIsKnown: record.amountIsKnown,
+      hasCertificates: record.hasCertificates,
+      localSubmission: true,
+    });
+
+  private _mergeTransactions = (
+    walletId: string,
+    backendTransactions: WalletTransaction[]
+  ): WalletTransaction[] => {
+    const walletAddresses = this.stores.addresses._getAddressesAllRequest(
+      walletId
+    ).result;
+    const ownedAddresses = new Set(
+      walletAddresses ? walletAddresses.map(({ id }) => id) : []
+    );
+    const backendById = new Map<string, WalletTransaction>();
+    backendTransactions.forEach((transaction) => {
+      let displayed = transaction;
+      const inputAddresses = transaction.addresses.from;
+      const outputAddresses = transaction.addresses.to;
+      if (
+        transaction.hasOnlyAda === true &&
+        transaction.hasCertificates === false &&
+        transaction.addresses.withdrawals.length === 0 &&
+        inputAddresses.length > 0 &&
+        outputAddresses.length > 0 &&
+        [...inputAddresses, ...outputAddresses].every(
+          (address): address is string =>
+            typeof address === 'string' &&
+            address.length > 0 &&
+            ownedAddresses.has(address)
+        )
+      )
+        displayed = new WalletTransaction({
+          ...transaction,
+          isSelfTransfer: true,
+          title: 'Transfer within this wallet',
+        });
+      const previous = backendById.get(transaction.id);
+      const previousIsUnresolved =
+        previous?.state === TransactionStates.PENDING ||
+        previous?.state === TransactionStates.SUBMISSION_UNKNOWN;
+      const transactionIsResolved =
+        transaction.state !== TransactionStates.PENDING &&
+        transaction.state !== TransactionStates.SUBMISSION_UNKNOWN;
+      if (!previous || (previousIsUnresolved && transactionIsResolved))
+        backendById.set(transaction.id, displayed);
+    });
+    const records = this.submissionsByWallet[walletId] || [];
+    records.forEach((record) => {
+      const backend = backendById.get(record.transactionId);
+      if (backend) {
+        const backendIsUnresolved =
+          backend.state === TransactionStates.PENDING ||
+          backend.state === TransactionStates.SUBMISSION_UNKNOWN;
+        const recordIsResolved =
+          record.state !== TransactionStates.PENDING &&
+          record.state !== TransactionStates.SUBMISSION_UNKNOWN;
+        backendById.set(
+          record.transactionId,
+          new WalletTransaction({
+            ...backend,
+            ...(backendIsUnresolved && recordIsResolved
+              ? { state: record.state }
+              : {}),
+            localSubmission: true,
+            ...(record.transferAmount
+              ? { transferAmount: new BigNumber(record.transferAmount) }
+              : {}),
+            ...(record.isSelfTransfer === undefined
+              ? {}
+              : { isSelfTransfer: record.isSelfTransfer }),
+          })
+        );
+      } else {
+        backendById.set(
+          record.transactionId,
+          this._createSubmissionTransaction(record)
+        );
+      }
+    });
+    return Array.from(backendById.values()).sort(
+      (left, right) =>
+        (right.date ? right.date.getTime() : 0) -
+        (left.date ? left.date.getTime() : 0)
+    );
+  };
+
+  @action
+  private _reconcileSubmissions = async (
+    walletId: string,
+    transactions: WalletTransaction[]
+  ): Promise<void> => {
+    await this._ensureSubmissionsLoaded(walletId);
+    const backendById = new Map<string, WalletTransaction>();
+    transactions.forEach((transaction) => {
+      const previous = backendById.get(transaction.id);
+      const previousIsUnresolved =
+        previous?.state === TransactionStates.PENDING ||
+        previous?.state === TransactionStates.SUBMISSION_UNKNOWN;
+      const transactionIsResolved =
+        transaction.state !== TransactionStates.PENDING &&
+        transaction.state !== TransactionStates.SUBMISSION_UNKNOWN;
+      if (!previous || (previousIsUnresolved && transactionIsResolved))
+        backendById.set(transaction.id, transaction);
+    });
+    const records = this.submissionsByWallet[walletId] || [];
+    let changed = false;
+    records.forEach((record) => {
+      const backend = backendById.get(record.transactionId);
+      if (!backend) return;
+      if (
+        backend.state === record.state &&
+        (backend.hasCertificates === true) === record.hasCertificates
+      )
+        return;
+      changed = true;
+      this._setSubmissionRecord(walletId, {
+        ...record,
+        state: backend.state,
+        hasCertificates: backend.hasCertificates === true,
+      });
+    });
+    if (changed) await this._persistSubmissions(walletId);
+  };
+
+  @action
+  private _ensureSubmissionsLoaded = (walletId: string): Promise<void> => {
+    const existing = this.submissionLoads.get(walletId);
+    if (existing) return existing;
+    const load = this.api.localStorage
+      .getSubmissionTransactions(walletId)
+      .then(
+        action(
+          'TransactionsStore::loadSubmissions',
+          (data: SubmissionTransactionsData) => {
+            const current = this.submissionsByWallet[walletId] || [];
+            const currentIds = new Set(
+              current.map(({ transactionId }) => transactionId)
+            );
+            this.submissionsByWallet = {
+              ...this.submissionsByWallet,
+              [walletId]: this._limitSubmissionRecords([
+                ...current,
+                ...data.records.filter(
+                  ({ transactionId }) => !currentIds.has(transactionId)
+                ),
+              ]),
+            };
+          }
+        )
+      )
+      .catch(() => undefined);
+    this.submissionLoads.set(walletId, load);
+    return load;
+  };
+
+  private _loadKnownWalletSubmissions = async (): Promise<void> => {
+    await Promise.all(
+      this.stores.wallets.all.map(({ id }) => this._ensureSubmissionsLoaded(id))
+    );
+  };
+
+  private _persistSubmissions = (walletId: string): Promise<void> => {
+    const previous = this.submissionWrites.get(walletId) || Promise.resolve();
+    const next = previous
+      .catch(() => undefined)
+      .then(() =>
+        this.api.localStorage.setSubmissionTransactions(walletId, {
+          version: 1,
+          records: this.submissionsByWallet[walletId] || [],
+        })
+      );
+    this.submissionWrites.set(walletId, next);
+    return next;
+  };
+
   _getTransactionsRecentRequest = (
     walletId: string
   ): Request<GetTransactionsResponse> => {

@@ -44,8 +44,10 @@ import type {
   Cip30WalletNetwork,
   Cip30WalletRequest,
   Cip30WalletResponse,
+  Cip30WalletSubmissionResponse,
 } from '../../common/cip30/executor';
 import { DAPP_CIP30_GATEWAY_CHANNEL } from '../../common/cip30/wire';
+import type { WalletApprovalResult } from '../../common/ipc/api';
 import type {
   DappCip30GatewayRequest,
   DappCip30Method,
@@ -151,6 +153,51 @@ const txSendRejection = (code: 1 | 2, info: string): DappCip30Rejection => ({
   type: 'tx-send-error',
   value: { code, info },
 });
+type SubmissionObservation = 'submitted' | 'unknown' | 'failed';
+
+const observeSubmission = (
+  status: Cip30WalletSubmissionResponse['status']
+): SubmissionObservation => {
+  if (status === 'submitted' || status === 'in_ledger') return 'submitted';
+  if (status === 'rejected' || status === 'expired') return 'failed';
+  return 'unknown';
+};
+
+const submissionResult = (
+  transactionIds: readonly string[],
+  observations: readonly SubmissionObservation[]
+): WalletApprovalResult => {
+  const failedIndex = observations.indexOf('failed');
+  if (failedIndex < 0)
+    return Object.freeze({
+      status: observations.includes('unknown')
+        ? 'submission-unknown'
+        : 'submitted',
+      transactionIds: Object.freeze([...transactionIds]),
+    });
+  const retainedIds = transactionIds.filter(
+    (_transactionId, index) => observations[index] !== 'failed'
+  );
+  if (!retainedIds.length)
+    return Object.freeze({ status: 'rejected', errorCode: 'failed' });
+  if (
+    failedIndex > 0 &&
+    observations
+      .slice(0, failedIndex)
+      .every((value) => value === 'submitted') &&
+    observations.slice(failedIndex).every((value) => value === 'failed')
+  )
+    return Object.freeze({
+      status: 'partial',
+      transactionIds: Object.freeze(transactionIds.slice(0, failedIndex)),
+      failedIndex,
+      errorCode: 'failed',
+    });
+  return Object.freeze({
+    status: 'submission-unknown',
+    transactionIds: Object.freeze(retainedIds),
+  });
+};
 
 const invalidRequestRejection = (): DappCip30Rejection => ({
   type: 'api-error',
@@ -813,8 +860,11 @@ export class Cip30Broker {
       declined: txSendRejection(1, 'User declined'),
       submission: true,
       execute: async (_payload, _signal, _passphrase, approval) => {
+        const observations: SubmissionObservation[] = batch.items.map(
+          () => 'unknown'
+        );
         try {
-          return await submitCip103Batch({
+          const result = await submitCip103Batch({
             batch,
             review: resolved.review,
             submitTransaction: async (cbor, index) => {
@@ -826,15 +876,31 @@ export class Cip30Broker {
                 sourceRevision: this.options.sourceRevision,
                 transaction: cbor,
               });
-              if (
-                response.status === 'rejected' ||
-                response.operation !== 'submit-transaction'
-              )
+              if (response.status === 'rejected')
                 throw new Error('Transaction submission failed');
+              if (response.operation !== 'submit-transaction')
+                throw new Error('Transaction submission failed');
+              observations[index] =
+                response.value.transaction_id === batch.items[index].bodyHash
+                  ? observeSubmission(response.value.status)
+                  : 'unknown';
               return response.value;
             },
           });
+          approval.reportResult(
+            submissionResult(
+              batch.items.map(({ bodyHash }) => bodyHash),
+              observations
+            )
+          );
+          return result;
         } catch (error) {
+          approval.reportResult(
+            submissionResult(
+              batch.items.map(({ bodyHash }) => bodyHash),
+              observations
+            )
+          );
           if (Array.isArray(error)) {
             // CIP-103 rejects with a plain aligned result array, not an Error.
             // eslint-disable-next-line no-throw-literal
@@ -1103,14 +1169,25 @@ export class Cip30Broker {
       submission: true,
       execute: async (_payload, _signal, _passphrase, approval) => {
         approval.reportProgress('submitting', 0);
-        const response = await this.options.executeWallet({
-          operation: 'submit-transaction',
-          walletId: binding.authority.walletId,
-          network: binding.authority.network,
-          sourceRevision: this.options.sourceRevision,
-          transaction: cbor,
-        });
+        let response: Cip30WalletResponse;
+        try {
+          response = await this.options.executeWallet({
+            operation: 'submit-transaction',
+            walletId: binding.authority.walletId,
+            network: binding.authority.network,
+            sourceRevision: this.options.sourceRevision,
+            transaction: cbor,
+          });
+        } catch {
+          approval.reportResult(
+            submissionResult([local.transactionId], ['unknown'])
+          );
+          throw internal();
+        }
         if (response.status === 'rejected') {
+          approval.reportResult(
+            submissionResult([local.transactionId], ['unknown'])
+          );
           if (response.reason === 'tx-send-failure')
             throw txSendRejection(2, 'Transaction submission failed');
           throw internal();
@@ -1118,12 +1195,17 @@ export class Cip30Broker {
         if (
           response.operation !== 'submit-transaction' ||
           response.value.transaction_id !== local.transactionId
-        )
+        ) {
+          approval.reportResult(
+            submissionResult([local.transactionId], ['unknown'])
+          );
           throw internal();
-        if (
-          response.value.status === 'rejected' ||
-          response.value.status === 'expired'
-        )
+        }
+        const observation = observeSubmission(response.value.status);
+        approval.reportResult(
+          submissionResult([local.transactionId], [observation])
+        );
+        if (observation === 'failed')
           throw txSendRejection(2, 'Transaction submission failed');
         return local.transactionId;
       },

@@ -1,5 +1,8 @@
 import React from 'react';
-import type { WalletApprovalPresentation } from '../../../../common/ipc/api';
+import type {
+  WalletApprovalPresentation,
+  WalletApprovalResult,
+} from '../../../../common/ipc/api';
 import { CIP30_REVIEW_EFFECTS } from '../../../../common/cip30/review';
 import type { Asset } from '../../api/assets/types';
 import DappConsentDialog from '../../components/dapp-consent/DappConsentDialog';
@@ -8,6 +11,7 @@ import TransactionApprovalDialog from '../../components/transactions/Transaction
 import type {
   TransactionApprovalItem,
   TransactionApprovalRequest,
+  TransactionReceiptDetails,
 } from '../../components/transactions/TransactionApprovalDialog.types';
 
 const approvable = (
@@ -131,9 +135,13 @@ type Props = {
   activeItemIndex?: number;
   submissionAuthorized: boolean;
   cancelling?: boolean;
+  result?: WalletApprovalResult;
+  receipts?: readonly TransactionReceiptDetails[];
   onApprove: (passphrase?: string) => void;
   onReject: () => void;
   onCancel?: () => void;
+  onDismiss?: () => void;
+  onViewTransaction?: (transactionId: string) => void;
 };
 
 export default function WalletApprovalContainer(props: Props) {
@@ -147,9 +155,13 @@ export default function WalletApprovalContainer(props: Props) {
         activeItemIndex={props.activeItemIndex}
         canCancel={props.deciding && !props.submissionAuthorized}
         cancelling={props.cancelling === true}
+        result={props.result}
+        receipts={props.receipts}
         onApprove={props.onApprove}
         onReject={props.onReject}
         onCancel={props.onCancel || props.onReject}
+        onDismiss={props.onDismiss}
+        onViewTransaction={props.onViewTransaction}
       />
     );
   if (props.request.kind === 'data-sign')
@@ -169,6 +181,10 @@ export default function WalletApprovalContainer(props: Props) {
         activeItemIndex={props.activeItemIndex}
         canCancel={false}
         cancelling={false}
+        result={props.result}
+        receipts={props.receipts}
+        onDismiss={props.onDismiss}
+        onViewTransaction={props.onViewTransaction}
         onApprove={props.onApprove}
         onReject={props.onReject}
         onCancel={props.onReject}

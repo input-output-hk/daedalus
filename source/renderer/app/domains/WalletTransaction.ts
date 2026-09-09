@@ -12,7 +12,9 @@ import type { TransactionMetadata } from '../types/TransactionMetadata';
 export const TransactionStates: EnumMap<string, TransactionState> = {
   PENDING: 'pending',
   OK: 'in_ledger',
-  FAILED: 'expired',
+  EXPIRED: 'expired',
+  FAILED: 'failed',
+  SUBMISSION_UNKNOWN: 'submission-unknown',
 };
 // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
 export const TransactionTypes: EnumMap<string, TransactionType> = {
@@ -58,6 +60,18 @@ export class WalletTransaction {
   epochNumber: number | null | undefined;
   @observable
   metadata: TransactionMetadata | null | undefined;
+  @observable
+  transferAmount?: BigNumber;
+  @observable
+  isSelfTransfer?: boolean;
+  @observable
+  amountIsKnown?: boolean;
+  @observable
+  hasCertificates?: boolean;
+  @observable
+  localSubmission?: boolean;
+  // Raw backend evidence used before wallet ownership is applied in the store.
+  hasOnlyAda?: boolean;
 
   constructor(data: {
     id: string;
@@ -75,6 +89,12 @@ export class WalletTransaction {
     slotNumber: number | null | undefined;
     epochNumber: number | null | undefined;
     metadata: TransactionMetadata | null | undefined;
+    transferAmount?: BigNumber;
+    isSelfTransfer?: boolean;
+    amountIsKnown?: boolean;
+    hasCertificates?: boolean;
+    localSubmission?: boolean;
+    hasOnlyAda?: boolean;
   }) {
     Object.assign(this, data);
   }

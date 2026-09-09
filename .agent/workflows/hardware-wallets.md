@@ -175,6 +175,28 @@ mismatches reject before Ledger interaction. This does not change Trezor or
 dApp output classification; device review behavior still requires a physical
 Ledger retest.
 
+Shared native approval no longer opens the legacy send confirmation dialog.
+Native Ledger execution refreshes the paired device path and Cardano app
+evidence before its live-connection check. The main exact-signing handler admits
+the matching `ledger-native` or `trezor-native` capability without the dApp
+connector allow-list; dApp rows remain allow-listed. Vendor/artifact/static
+gates, paired-account identity, exact-body reconstruction, and signature
+verification still apply. Native connection refresh does not export keys.
+
+Native terminal outcomes remain in the shared approval dialog until **Done**.
+The execution caller settles immediately; only the next queued approval waits
+for result dismissal. Wrong-password retries bypass terminal-result retention.
+`TxSignError.UserDeclined` alone identifies an explicit device refusal;
+`TxSignError.ProofGeneration` remains a signing/verification failure. Unexpected
+errors after submission authorization, or backend `authorized`, `broadcasting`,
+and `outcome_unknown` statuses, produce an unknown-submission result rather
+than claiming success or definite non-submission. Submitted does not mean
+confirmed on-chain.
+
+Address verification awaits device display completion and owns its failure
+state. Closing or replacing address verification invalidates its captured
+parameters, so a late device response cannot overwrite a newer operation.
+
 Exact Ledger signing resolves the account xpub from network-scoped persisted
 pairing data in the main process, keyed by wallet ID. Witness keys are derived
 locally below `1852'/1815'/0'` and checked against expected signer hashes before

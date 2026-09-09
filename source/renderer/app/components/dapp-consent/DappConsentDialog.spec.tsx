@@ -8,6 +8,7 @@ import DappConsentDialog from './DappConsentDialog';
 
 const request = {
   requestId: 'request',
+  walletId: 'aa'.repeat(20),
   kind: 'key-disclosure' as const,
   origin: 'https://evil.test/<script>',
   walletName: 'Wallet',

@@ -13,6 +13,7 @@ import { createCip30TransactionReview } from '../../common/cip30/review';
 import {
   createNativePlanReviewDisplay,
   nativeApprovalBindingDigest,
+  parseNativeApprovalResult,
   parseNativePreparedApproval,
   parseNativeTransactionPlan,
 } from '../../common/transactions/nativePlan';
@@ -47,7 +48,7 @@ const nativeFailure = (code: string, info = code) =>
 const presentation = (
   attemptId: string,
   prepared: NativePreparedApproval
-): Omit<NativeTransactionPresentation, 'requestId'> => {
+): Omit<NativeTransactionPresentation, 'requestId' | 'walletId'> => {
   const items: Array<NativeTransactionPresentation['items'][number]> = [];
   prepared.items.forEach((item) => {
     if (item.kind === 'native-plan') {
@@ -64,8 +65,14 @@ const presentation = (
       );
       return;
     }
+    const transactionIndex = item.transactionContext.transactions.indexOf(
+      item.cbor
+    );
+    if (transactionIndex < 0)
+      throw new Error('Native exact transaction context mismatch');
     const transaction = decodeConwayTransaction(
-      parseConwayTransactionEnvelope(Buffer.from(item.cbor, 'hex'))
+      parseConwayTransactionEnvelope(Buffer.from(item.cbor, 'hex')),
+      item.transactionContext.commitmentContexts[transactionIndex]
     );
     const review = createCip30TransactionReview(
       transaction,
@@ -169,15 +176,17 @@ const requestNative = async (
       },
       execute: async (_payload, signal, passphrase, context) => {
         if (signal.aborted) throw nativeFailure('cancelled');
-        const result = await executor.request(
-          {
-            type: 'execute',
-            attemptId: raw.attemptId,
-            requestId: context.requestId,
-            bindingDigest,
-            ...(passphrase === undefined ? {} : { passphrase }),
-          },
-          sender
+        const result = parseNativeApprovalResult(
+          await executor.request(
+            {
+              type: 'execute',
+              attemptId: raw.attemptId,
+              requestId: context.requestId,
+              bindingDigest,
+              ...(passphrase === undefined ? {} : { passphrase }),
+            },
+            sender
+          )
         );
         if (signal.aborted && !attempt.submissionAuthorized)
           throw nativeFailure('cancelled');

@@ -9,7 +9,10 @@ import Wallet, {
 } from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
 import { WalletTransaction } from '../domains/WalletTransaction';
-import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
+import {
+  MAX_ADA_WALLETS_COUNT,
+  LOVELACES_PER_ADA,
+} from '../config/numbersConfig';
 import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex, getScrambledInput } from '../utils/crypto';
 import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
@@ -64,7 +67,6 @@ import type {
 import { NetworkMagics } from '../../../common/types/cardano-node.types';
 import { EventCategories } from '../analytics';
 import { getEventNameFromWallet } from '../analytics/utils/getEventNameFromWallet';
-import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import { getHardwareWalletsNetworkConfig } from '../config/hardwareWalletsConfig';
 import { reconcileTransactionContext } from '../../../common/cardano/transactionContext';
 import { verifySignedNativeTransaction } from '../../../common/transactions/nativeSigning';
@@ -840,6 +842,15 @@ export default class WalletsStore extends Store {
     const result = await this.stores.walletApproval.nativeTransactions.run({
       walletId,
       ownerSignal: new AbortController().signal,
+      payment:
+        nativeAction === 'payment' && data.payments?.length === 1
+          ? {
+              address: data.payments[0].address,
+              amount: new BigNumber(data.payments[0].amount.quantity).toFixed(
+                0
+              ),
+            }
+          : undefined,
       prepare: async () => {
         const constructed = await this.api.ada.constructTransaction({
           walletId,

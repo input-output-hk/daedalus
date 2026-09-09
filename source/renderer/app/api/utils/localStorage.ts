@@ -15,7 +15,11 @@ import type {
   TransportDevice,
   HardwareWalletExtendedPublicKeyResponse,
 } from '../../../../common/types/hardware-wallets.types';
-import type { StorageKey } from '../../../../common/types/electron-store.types';
+import type {
+  StorageKey,
+  SubmissionTransactionRecord,
+  SubmissionTransactionsData,
+} from '../../../../common/types/electron-store.types';
 import type { Currency, DeprecatedCurrency } from '../../types/currencyTypes';
 import {
   CURRENCY_DEFAULT_SELECTED,
@@ -43,6 +47,119 @@ export type SetHardwareWalletDeviceRequestType = {
   deviceId: string | null | undefined;
   // @TODO - mark as mandatory parameter once Ledger improver
   data: UnpairedHardwareWalletData;
+};
+
+const SUBMISSION_RECORD_LIMIT = 100;
+const SUBMISSION_ASSET_LIMIT = 1000;
+const submissionStates: Record<string, true> = {
+  pending: true,
+  in_ledger: true,
+  expired: true,
+  failed: true,
+  'submission-unknown': true,
+};
+const decimal = /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/u;
+const integer = /^-?(?:0|[1-9]\d*)$/u;
+const ownKeysAreAllowed = (value: Record<string, unknown>, allowed: string[]) =>
+  Object.keys(value).every((key) => allowed.includes(key));
+const text = (value: unknown, maximum: number): value is string =>
+  typeof value === 'string' && value.length <= maximum;
+const storageId = /^[A-Za-z0-9_-]{1,128}$/u;
+
+const isSubmissionAsset = (
+  value: unknown
+): value is SubmissionTransactionRecord['assets'][number] => {
+  if (!value || typeof value !== 'object') return false;
+  const asset = value as Record<string, unknown>;
+  return (
+    ownKeysAreAllowed(asset, ['policyId', 'assetName', 'quantity']) &&
+    text(asset.policyId, 56) &&
+    /^[0-9a-f]{56}$/u.test(asset.policyId) &&
+    text(asset.assetName, 64) &&
+    /^(?:[0-9a-f]{2})*$/u.test(asset.assetName) &&
+    text(asset.quantity, 128) &&
+    integer.test(asset.quantity)
+  );
+};
+
+const isSubmissionRecord = (
+  value: unknown
+): value is SubmissionTransactionRecord => {
+  if (!value || typeof value !== 'object') return false;
+  const record = value as Record<string, unknown>;
+  return (
+    ownKeysAreAllowed(record, [
+      'transactionId',
+      'state',
+      'createdAt',
+      'amount',
+      'fee',
+      'transferAmount',
+      'isSelfTransfer',
+      'amountIsKnown',
+      'hasCertificates',
+      'type',
+      'title',
+      'toAddress',
+      'assets',
+      'dismissed',
+      'notified',
+    ]) &&
+    text(record.transactionId, 64) &&
+    /^[0-9a-f]{64}$/u.test(record.transactionId) &&
+    typeof record.state === 'string' &&
+    submissionStates[record.state] === true &&
+    text(record.createdAt, 32) &&
+    Number.isFinite(Date.parse(record.createdAt)) &&
+    text(record.amount, 128) &&
+    decimal.test(record.amount) &&
+    text(record.fee, 128) &&
+    decimal.test(record.fee) &&
+    (record.transferAmount === undefined ||
+      (text(record.transferAmount, 128) &&
+        decimal.test(record.transferAmount))) &&
+    (record.isSelfTransfer === undefined ||
+      typeof record.isSelfTransfer === 'boolean') &&
+    typeof record.amountIsKnown === 'boolean' &&
+    typeof record.hasCertificates === 'boolean' &&
+    (record.type === 'expend' || record.type === 'income') &&
+    text(record.title, 128) &&
+    (record.toAddress === undefined || text(record.toAddress, 256)) &&
+    Array.isArray(record.assets) &&
+    record.assets.length <= SUBMISSION_ASSET_LIMIT &&
+    record.assets.every(isSubmissionAsset) &&
+    typeof record.dismissed === 'boolean' &&
+    typeof record.notified === 'boolean'
+  );
+};
+
+export const isSubmissionTransactionsData = (
+  value: unknown
+): value is SubmissionTransactionsData => {
+  if (!value || typeof value !== 'object') return false;
+  const root = value as Record<string, unknown>;
+  return (
+    ownKeysAreAllowed(root, ['version', 'records']) &&
+    root.version === 1 &&
+    Array.isArray(root.records) &&
+    root.records.length <= SUBMISSION_RECORD_LIMIT &&
+    root.records.every(isSubmissionRecord)
+  );
+};
+
+export const parseSubmissionTransactionsData = (
+  value: unknown
+): SubmissionTransactionsData => {
+  if (!value || typeof value !== 'object') return { version: 1, records: [] };
+  const root = value as Record<string, unknown>;
+  if (root.version !== 1 || !Array.isArray(root.records))
+    return { version: 1, records: [] };
+  return {
+    version: 1,
+    records: root.records
+      .slice(0, SUBMISSION_RECORD_LIMIT)
+      .filter(isSubmissionRecord),
+  };
 };
 
 /**
@@ -89,6 +206,26 @@ export default class LocalStorageApi {
       key: keys.RESET,
     });
   };
+  getSubmissionTransactions = async (
+    walletId: string
+  ): Promise<SubmissionTransactionsData> => {
+    if (!storageId.test(walletId))
+      throw new Error('Invalid submission storage wallet identity');
+    return parseSubmissionTransactionsData(
+      await LocalStorageApi.get(keys.SUBMISSION_TRANSACTIONS, null, walletId)
+    );
+  };
+  setSubmissionTransactions = async (
+    walletId: string,
+    data: SubmissionTransactionsData
+  ): Promise<void> => {
+    if (!storageId.test(walletId))
+      throw new Error('Invalid submission storage wallet identity');
+    if (!isSubmissionTransactionsData(data))
+      throw new Error('Invalid submission transactions data');
+    await LocalStorageApi.set(keys.SUBMISSION_TRANSACTIONS, data, walletId);
+  };
+
   getUserLocale = (): Promise<string> => LocalStorageApi.get(keys.USER_LOCALE);
   setUserLocale = (locale: string): Promise<void> =>
     LocalStorageApi.set(keys.USER_LOCALE, locale);

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import classnames from 'classnames';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { injectIntl } from 'react-intl';
@@ -22,7 +23,7 @@ import type {
 } from './TransactionApprovalDialog.types';
 import styles from './TransactionApprovalDialog.scss';
 
-const unsafeText = /[\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/gu;
+const unsafeText = /[\p{Cc}\u202a-\u202e\u2066-\u2069]/gu;
 const safeText = (value: string) => value.replace(unsafeText, '�');
 const preview = (value: string) =>
   value.length > 24 ? `${value.slice(0, 12)}…${value.slice(-8)}` : value;
@@ -34,14 +35,6 @@ const ada = (lovelace: string) =>
   );
 const signedAda = (lovelace: string, sign: '+' | '−') =>
   `${sign}${ada(new BigNumber(lovelace).absoluteValue().toFixed(0))}`;
-const badge = (entry: TransactionReviewEntry, intl: Intl) =>
-  entry.ownership === 'wallet'
-    ? intl.formatMessage(messages.thisWallet)
-    : entry.control === 'script'
-    ? intl.formatMessage(messages.script)
-    : entry.ownership === 'other'
-    ? intl.formatMessage(messages.other)
-    : intl.formatMessage(messages.ownershipUnknown);
 
 const certificateNames: Record<number, string> = {
   0: 'Stake registration',
@@ -63,9 +56,23 @@ const certificateNames: Record<number, string> = {
   18: 'DRep update',
 };
 
+const entryMessages = {
+  input: messages.input,
+  output: messages.output,
+  'reference-input': messages.referenceInput,
+  'collateral-input': messages.collateralInput,
+  'collateral-return': messages.collateralReturnEntry,
+};
+
+const operationMessages = {
+  sign: messages.sign,
+  submit: messages.submit,
+  'sign-and-submit': messages.signAndSend,
+};
+
 type Props = TransactionApprovalDialogProps & { intl: Intl };
 
-const AssetRow = ({
+function AssetRow({
   asset,
   props,
   sign,
@@ -73,7 +80,7 @@ const AssetRow = ({
   asset: TransactionReviewAsset;
   props: Props;
   sign?: '+' | '−';
-}) => {
+}) {
   const descriptor = props.assetDetails[`${asset.policyId}${asset.assetName}`];
   const decimals = descriptor?.decimals;
   const validDecimals =
@@ -96,50 +103,92 @@ const AssetRow = ({
     policyId: asset.policyId,
     uniqueId: `${asset.policyId}${asset.assetName}`,
   };
+  const signedAmount = `${sign || ''}${amount}`;
+  const rawQuantity = `${sign || ''}${quantity.toFixed(0)}`;
   return (
-    <div className={styles.assetRow}>
-      <div>
-        <span className={styles.amount}>
-          {sign || ''}
-          {amount}
-        </span>{' '}
+    <details
+      className={classnames(styles.assetRow, {
+        [styles.outgoing]: sign === '−',
+        [styles.incoming]: sign === '+',
+      })}
+    >
+      <summary
+        aria-label={`${props.intl.formatMessage(messages.assetDetails)}: ${
+          asset.fingerprint
+        }`}
+      >
+        <span className={styles.assetAmount}>{signedAmount}</span>
         <bdi>{name}</bdi>
-      </div>
-      <code>{asset.fingerprint}</code>
-      <details>
-        <summary>{asset.fingerprint}</summary>
+        <code>{preview(asset.fingerprint)}</code>
+      </summary>
+      <div className={styles.assetDetails}>
         <AssetContent asset={details} displayMode="review" />
         <p>
-          <code>{asset.quantity}</code> base units
+          {props.intl.formatMessage(messages.rawUnits, {
+            value: rawQuantity,
+          })}
         </p>
-      </details>
-    </div>
+      </div>
+    </details>
   );
-};
+}
 
-const ValueRows = ({
+function ValueRows({
   value,
   props,
+  sign,
+  limitAssets = false,
 }: {
   value: TransactionReviewValue | null;
   props: Props;
-}) =>
-  value ? (
-    <>
-      <div className={styles.amount}>{ada(value.coin)}</div>
-      {value.assets.map((asset) => (
+  sign?: '+' | '−';
+  limitAssets?: boolean;
+}) {
+  if (!value)
+    return <p>{props.intl.formatMessage(messages.valueUnavailable)}</p>;
+  const visibleAssets = limitAssets ? value.assets.slice(0, 2) : value.assets;
+  const hiddenAssets = limitAssets ? value.assets.slice(2) : [];
+  return (
+    <div className={styles.valueRows}>
+      <div
+        className={classnames(styles.amount, {
+          [styles.outgoingText]: sign === '−',
+          [styles.incomingText]: sign === '+',
+        })}
+      >
+        {sign || ''}
+        {ada(value.coin)}
+      </div>
+      {visibleAssets.map((asset) => (
         <AssetRow
           key={`${asset.policyId}:${asset.assetName}`}
           asset={asset}
           props={props}
+          sign={sign}
         />
       ))}
-    </>
-  ) : (
-    <p>{props.intl.formatMessage(messages.valueUnavailable)}</p>
+      {hiddenAssets.length > 0 && (
+        <details className={styles.moreAssets}>
+          <summary>
+            {props.intl.formatMessage(messages.moreAssets, {
+              count: hiddenAssets.length,
+            })}
+          </summary>
+          {hiddenAssets.map((asset) => (
+            <AssetRow
+              key={`${asset.policyId}:${asset.assetName}`}
+              asset={asset}
+              props={props}
+              sign={sign}
+            />
+          ))}
+        </details>
+      )}
+    </div>
   );
+}
 
-const ImpactCard = ({
+function ImpactCard({
   direction,
   value,
   props,
@@ -147,15 +196,19 @@ const ImpactCard = ({
   direction: 'leaving' | 'coming';
   value: TransactionReviewValue | null;
   props: Props;
-}) => {
+}) {
+  const leaving = direction === 'leaving';
   if (!value)
     return (
-      <div className={styles.impactCard}>
+      <div
+        className={`${styles.impactCard} ${
+          leaving ? styles.outgoing : styles.incoming
+        }`}
+      >
         <h3>{props.intl.formatMessage(messages[direction])}</h3>
         <p>{props.intl.formatMessage(messages.unavailable)}</p>
       </div>
     );
-  const leaving = direction === 'leaving';
   const coinMatches = leaving
     ? new BigNumber(value.coin).isNegative()
     : new BigNumber(value.coin).isPositive();
@@ -165,7 +218,11 @@ const ImpactCard = ({
       : new BigNumber(quantity).isPositive()
   );
   return (
-    <div className={styles.impactCard}>
+    <div
+      className={`${styles.impactCard} ${
+        leaving ? styles.outgoing : styles.incoming
+      }`}
+    >
       <h3>{props.intl.formatMessage(messages[direction])}</h3>
       {!coinMatches && assets.length === 0 && (
         <p>
@@ -189,48 +246,87 @@ const ImpactCard = ({
       ))}
     </div>
   );
-};
+}
 
-const EntryCard = ({
+function AddressDisclosure({
+  address,
+  props,
+}: {
+  address: string;
+  props: Props;
+}) {
+  const split = Math.max(0, address.length - 8);
+  return (
+    <details className={styles.address}>
+      <summary>
+        <code>{address.slice(0, split)}</code>
+        <strong>{address.slice(split)}</strong>
+      </summary>
+      <code className={styles.fullText}>{address}</code>
+      <CopyToClipboard text={address}>
+        <button type="button" className={styles.copy}>
+          {props.intl.formatMessage(messages.copyAddress)}
+        </button>
+      </CopyToClipboard>
+    </details>
+  );
+}
+
+function EntryCard({
   entry,
   props,
 }: {
   entry: TransactionReviewEntry;
   props: Props;
-}) => {
-  const address = entry.address;
+}) {
   const point = entry.outpoint
     ? `${entry.outpoint.transactionId}#${entry.outpoint.index}`
     : null;
-  const output = entry.role === 'output' || entry.role === 'collateral-return';
+  const message = entryMessages[entry.role];
+  let sign: '+' | '−' | undefined;
+  if (entry.role === 'input') sign = '−';
+  if (entry.role === 'output') sign = '+';
+  let ownershipMessage = messages.ownershipUnknown;
+  if (entry.ownership === 'wallet') {
+    ownershipMessage =
+      entry.role === 'output' ? messages.returnedToWallet : messages.thisWallet;
+  } else if (entry.ownership === 'other') {
+    ownershipMessage = messages.other;
+  }
   return (
     <article className={styles.entryCard}>
       <header>
         <h3>
-          {props.intl.formatMessage(output ? messages.output : messages.input, {
+          {props.intl.formatMessage(message, {
             value: entry.position + 1,
           })}
         </h3>
-        <span className={styles.badge}>{badge(entry, props.intl)}</span>
+        <div className={styles.badges}>
+          <span className={styles.badge}>
+            {props.intl.formatMessage(ownershipMessage)}
+          </span>
+          {entry.control === 'script' && (
+            <span className={styles.badge}>
+              {props.intl.formatMessage(messages.script)}
+            </span>
+          )}
+        </div>
       </header>
-      <ValueRows value={entry.value} props={props} />
-      {address && (
-        <details>
-          <summary>{preview(address)}</summary>
-          <code className={styles.fullText}>{address}</code>
-          <CopyToClipboard text={address}>
-            <button type="button" className={styles.copy}>
-              {props.intl.formatMessage(messages.copyAddress)}
-            </button>
-          </CopyToClipboard>
-        </details>
+      <ValueRows
+        value={entry.value}
+        props={props}
+        sign={sign}
+        limitAssets={entry.role === 'input' || entry.role === 'output'}
+      />
+      {entry.address && (
+        <AddressDisclosure address={entry.address} props={props} />
       )}
       {point && (
         <div className={styles.identity}>
           <span>{props.intl.formatMessage(messages.outpoint)}</span>
           <code>{preview(point)}</code>
           <details>
-            <summary>{props.intl.formatMessage(messages.fullAddress)}</summary>
+            <summary>{props.intl.formatMessage(messages.fullOutpoint)}</summary>
             <code className={styles.fullText}>{point}</code>
             <CopyToClipboard text={point}>
               <button type="button" className={styles.copy}>
@@ -246,20 +342,32 @@ const EntryCard = ({
       )}
     </article>
   );
-};
+}
 
-const EntrySection = ({
+function EntrySection({
   entries,
   title,
   props,
+  initiallyOpen = false,
+  warning = false,
 }: {
   entries: readonly TransactionReviewEntry[];
   title: string;
   props: Props;
-}) =>
-  entries.length ? (
-    <section>
-      <h2 tabIndex={-1}>{title}</h2>
+  initiallyOpen?: boolean;
+  warning?: boolean;
+}) {
+  return entries.length ? (
+    <details
+      className={`${styles.entrySection} ${warning ? styles.warningGroup : ''}`}
+      open={initiallyOpen}
+    >
+      <summary>
+        {props.intl.formatMessage(messages.entrySection, {
+          title,
+          count: entries.length,
+        })}
+      </summary>
       <div className={styles.entryGrid}>
         {entries.map((entry) => (
           <EntryCard
@@ -269,16 +377,17 @@ const EntrySection = ({
           />
         ))}
       </div>
-    </section>
+    </details>
   ) : null;
+}
 
-const OtherActions = ({
+function OtherActions({
   item,
   props,
 }: {
   item: TransactionApprovalItem;
   props: Props;
-}) => {
+}) {
   const { display } = item;
   const present =
     display.mint.length ||
@@ -354,23 +463,26 @@ const OtherActions = ({
       {display.donation !== null && <p>Donation: {ada(display.donation)}</p>}
     </section>
   );
-};
+}
 
-const ItemReview = ({
+function ItemReview({
   item,
   props,
 }: {
   item: TransactionApprovalItem;
   props: Props;
-}) => {
+}) {
   const { display } = item;
   const inputs = display.entries.filter(({ role }) => role === 'input');
   const outputs = display.entries.filter(({ role }) => role === 'output');
   const references = display.entries.filter(
     ({ role }) => role === 'reference-input'
   );
-  const collateral = display.entries.filter(
-    ({ role }) => role === 'collateral-input' || role === 'collateral-return'
+  const collateralInputs = display.entries.filter(
+    ({ role }) => role === 'collateral-input'
+  );
+  const collateralReturns = display.entries.filter(
+    ({ role }) => role === 'collateral-return'
   );
   return (
     <article className={styles.item}>
@@ -411,18 +523,19 @@ const ItemReview = ({
         </div>
       )}
       <div className={styles.riskStrip}>
-        <div>
+        <div className={styles.fee}>
           <span>{props.intl.formatMessage(messages.fee)}</span>
-          <strong>{ada(display.fee)}</strong>
+          <strong>−{ada(display.fee)}</strong>
         </div>
         {display.maximumCollateralLoss && (
-          <div>
+          <div className={styles.collateralRisk}>
             <span>{props.intl.formatMessage(messages.collateral)}</span>
             <strong>
               {props.intl.formatMessage(messages.upTo, {
                 value: ada(display.maximumCollateralLoss.coin),
               })}
             </strong>
+            <small>{props.intl.formatMessage(messages.collateralHelp)}</small>
           </div>
         )}
       </div>
@@ -454,29 +567,45 @@ const ItemReview = ({
           </details>
         )}
       </section>
-      <div className={styles.columns}>
-        <EntrySection
-          entries={inputs}
-          title={props.intl.formatMessage(messages.inputs)}
-          props={props}
-        />
-        <EntrySection
-          entries={outputs}
-          title={props.intl.formatMessage(messages.outputs)}
-          props={props}
-        />
-      </div>
-      <EntrySection
-        entries={references}
-        title={props.intl.formatMessage(messages.referenceInputs)}
-        props={props}
-      />
-      <EntrySection
-        entries={collateral}
-        title={props.intl.formatMessage(messages.collateralEntries)}
-        props={props}
-      />
       <OtherActions item={item} props={props} />
+      <p className={styles.grossFlowHelp}>
+        {props.intl.formatMessage(messages.grossFlowHelp)}
+      </p>
+      <div className={styles.columns}>
+        <div className={styles.entryStack}>
+          <EntrySection
+            entries={inputs}
+            title={props.intl.formatMessage(messages.inputs)}
+            props={props}
+            initiallyOpen
+          />
+          <EntrySection
+            entries={references}
+            title={props.intl.formatMessage(messages.referenceInputs)}
+            props={props}
+          />
+          <EntrySection
+            entries={collateralInputs}
+            title={props.intl.formatMessage(messages.collateralInputs)}
+            props={props}
+            warning
+          />
+        </div>
+        <div className={styles.entryStack}>
+          <EntrySection
+            entries={outputs}
+            title={props.intl.formatMessage(messages.outputs)}
+            props={props}
+            initiallyOpen
+          />
+          <EntrySection
+            entries={collateralReturns}
+            title={props.intl.formatMessage(messages.collateralReturn)}
+            props={props}
+            warning
+          />
+        </div>
+      </div>
       <CollapsibleSection
         header={props.intl.formatMessage(messages.technical)}
         contentId={`transaction-technical-${props.request.requestId}-${item.index}`}
@@ -526,7 +655,226 @@ const ItemReview = ({
       </CollapsibleSection>
     </article>
   );
-};
+}
+
+function ResultSummary({
+  result,
+  request,
+  receipts = [],
+  onViewTransaction,
+  intl,
+}: Pick<Props, 'request' | 'receipts' | 'onViewTransaction' | 'intl'> & {
+  result: NonNullable<Props['result']>;
+}) {
+  const errorCode =
+    result.status === 'rejected' || result.status === 'partial'
+      ? result.errorCode
+      : undefined;
+  const deviceRejected = errorCode === 'TxSignError.UserDeclined';
+  const cancelled = errorCode === 'cancelled' || errorCode === 'user_declined';
+  const failedItem =
+    result.status === 'partial' ? result.failedIndex + 1 : undefined;
+  const transactionIds =
+    result.status === 'rejected'
+      ? receipts.map(({ id }) => id)
+      : result.transactionIds;
+  const allKnown =
+    transactionIds.length > 0 && receipts.length === transactionIds.length;
+  let title = messages.rejectedTitle;
+  let message = messages.rejectedMessage;
+  let variant = styles.resultFailure;
+  if (result.status === 'signed') {
+    title = messages.signedTitle;
+    message = messages.signedMessage;
+    variant = styles.resultPending;
+  } else if (result.status === 'partial') {
+    title = messages.partialTitle;
+    message = messages.partialMessage;
+    if (cancelled) message = messages.partialCancelledMessage;
+    else if (deviceRejected) message = messages.partialDeviceRejectedMessage;
+  } else if (allKnown && receipts.every(({ state }) => state === 'in_ledger')) {
+    title = messages.confirmedTitle;
+    message = messages.confirmedMessage;
+    variant = styles.resultSuccess;
+  } else if (
+    errorCode === 'expired' ||
+    (allKnown && receipts.every(({ state }) => state === 'expired'))
+  ) {
+    title = messages.expiredTitle;
+    message = messages.expiredMessage;
+  } else if (allKnown && receipts.every(({ state }) => state === 'failed')) {
+    title = messages.failedTitle;
+    message = messages.failedMessage;
+  } else if (
+    receipts.some(({ state }) => state === 'expired' || state === 'failed')
+  ) {
+    title = messages.updatedTitle;
+    message = messages.updatedMessage;
+    variant = styles.resultUnknown;
+  } else if (
+    (result.status === 'submitted' &&
+      !receipts.some(({ state }) => state === 'submission-unknown')) ||
+    (allKnown &&
+      receipts.every(
+        ({ state }) => state === 'pending' || state === 'in_ledger'
+      ))
+  ) {
+    title = messages.submittedTitle;
+    message = messages.submittedMessage;
+    variant = styles.resultPending;
+  } else if (
+    result.status === 'submission-unknown' ||
+    receipts.some(({ state }) => state === 'submission-unknown')
+  ) {
+    title = messages.submissionUnknownTitle;
+    message = messages.submissionUnknownMessage;
+    variant = styles.resultUnknown;
+  } else if (cancelled) {
+    title = messages.cancelledTitle;
+    message = messages.cancelledMessage;
+  } else if (deviceRejected) {
+    title = messages.deviceRejectedTitle;
+    message = messages.deviceRejectedMessage;
+  }
+  const failure = variant === styles.resultFailure;
+  const stateMessages = {
+    pending: messages.awaitingConfirmation,
+    in_ledger: messages.confirmedStatus,
+    expired: messages.expiredStatus,
+    failed: messages.failedStatus,
+    'submission-unknown': messages.submissionUnknownTitle,
+  };
+
+  return (
+    <section
+      className={`${styles.result} ${variant}`}
+      role={failure ? 'alert' : 'status'}
+      aria-live={failure ? 'assertive' : 'polite'}
+    >
+      <h2>{intl.formatMessage(title)}</h2>
+      <p>
+        {intl.formatMessage(
+          message,
+          failedItem === undefined ? undefined : { failedItem }
+        )}
+      </p>
+      {transactionIds.length > 0 && (
+        <div className={styles.resultIds}>
+          <ol>
+            {transactionIds.map((transactionId, index) => {
+              const receipt = receipts.find(({ id }) => id === transactionId);
+              const item =
+                request.items.find(
+                  ({ evidence }) =>
+                    evidence.kind === 'exact-cbor' &&
+                    evidence.review.transactionId === transactionId
+                ) ||
+                (request.items[index]?.evidence.kind === 'native-plan'
+                  ? request.items[index]
+                  : undefined);
+              let fee: string | undefined;
+              if (receipt?.amountIsKnown !== false && receipt?.fee) {
+                fee = formattedWalletAmount(receipt.fee, true, true);
+              } else if (item) {
+                fee = ada(item.display.fee);
+              }
+              let walletChange: string | undefined;
+              if (receipt?.amount && receipt.amountIsKnown !== false) {
+                walletChange = formattedWalletAmount(
+                  receipt.amount,
+                  true,
+                  true
+                );
+              } else if (item?.display.walletChange) {
+                walletChange = ada(item.display.walletChange.coin);
+              }
+              let stateMessage = messages.awaitingConfirmation;
+              if (result.status === 'signed')
+                stateMessage = messages.signedTitle;
+              if (result.status === 'submission-unknown') {
+                stateMessage = messages.submissionUnknownTitle;
+              }
+              if (receipt) stateMessage = stateMessages[receipt.state];
+              return (
+                <li key={`${transactionId}:${index}`}>
+                  <div className={styles.receiptState}>
+                    <strong>{intl.formatMessage(stateMessage)}</strong>
+                    {receipt?.state === 'in_ledger' &&
+                      receipt.confirmations !== undefined && (
+                        <span>
+                          {intl.formatMessage(messages.confirmations, {
+                            count: receipt.confirmations,
+                          })}
+                        </span>
+                      )}
+                  </div>
+                  {receipt?.isSelfTransfer && (
+                    <p>{intl.formatMessage(messages.withinWallet)}</p>
+                  )}
+                  {result.status !== 'signed' &&
+                    (fee !== undefined || walletChange !== undefined) && (
+                      <dl className={styles.receiptFacts}>
+                        {receipt?.transferAmount && (
+                          <>
+                            <dt>
+                              {intl.formatMessage(messages.transferAmount)}
+                            </dt>
+                            <dd>
+                              {formattedWalletAmount(
+                                receipt.transferAmount,
+                                true,
+                                true
+                              )}
+                            </dd>
+                          </>
+                        )}
+                        {fee !== undefined && (
+                          <>
+                            <dt>{intl.formatMessage(messages.networkFee)}</dt>
+                            <dd>{fee}</dd>
+                          </>
+                        )}
+                        {walletChange !== undefined && (
+                          <>
+                            <dt>{intl.formatMessage(messages.walletChange)}</dt>
+                            <dd>{walletChange}</dd>
+                          </>
+                        )}
+                      </dl>
+                    )}
+                  <span>
+                    {intl.formatMessage(messages.transactionId, {
+                      value: index + 1,
+                    })}
+                  </span>
+                  <code>{safeText(transactionId)}</code>
+                  <div className={styles.receiptActions}>
+                    <CopyToClipboard text={transactionId}>
+                      <button type="button" className={styles.copy}>
+                        {intl.formatMessage(messages.copyTransactionId)}
+                      </button>
+                    </CopyToClipboard>
+                    {transactionIds.length > 1 &&
+                      request.operation !== 'sign' &&
+                      onViewTransaction && (
+                        <button
+                          type="button"
+                          className={styles.copy}
+                          onClick={() => onViewTransaction(transactionId)}
+                        >
+                          {intl.formatMessage(messages.viewTransaction)}
+                        </button>
+                      )}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      )}
+    </section>
+  );
+}
 
 const acknowledgementMessages: Record<
   TransactionApprovalRequest['acknowledgements'][number],
@@ -549,16 +897,21 @@ export function TransactionApprovalDialog(props: Props) {
     setPassphrase('');
     setAcknowledgements(new Set());
     const timeout = setTimeout(() => {
-      const heading = scrollRef.current?.parentElement?.querySelector(
-        'h1'
-      ) as HTMLElement | null;
+      if (props.result && scrollRef.current) scrollRef.current.scrollTop = 0;
+      const heading = (props.result
+        ? scrollRef.current?.querySelector(
+            '[role="status"] h2, [role="alert"] h2'
+          )
+        : scrollRef.current?.parentElement?.querySelector(
+            'h1'
+          )) as HTMLElement | null;
       if (heading) {
         heading.tabIndex = -1;
         heading.focus();
       }
     });
     return () => clearTimeout(timeout);
-  }, [request.requestId]);
+  }, [request.requestId, props.result]);
 
   const approvable =
     request.items.length > 0 &&
@@ -568,34 +921,29 @@ export function TransactionApprovalDialog(props: Props) {
   );
   const software = request.authorization.kind === 'software';
   const total = request.items.length;
-  const status = useMemo(
-    () =>
-      props.phase === 'waiting-for-device'
-        ? intl.formatMessage(messages.waiting)
-        : props.phase === 'signing'
-        ? intl.formatMessage(messages.signing)
-        : props.phase === 'submitting'
-        ? intl.formatMessage(messages.submitting, {
-            current: (props.activeItemIndex || 0) + 1,
-            total,
-          })
-        : null,
-    [props.phase, props.activeItemIndex, total, intl]
-  );
-  const approveLabel =
-    request.authorization.kind === 'hardware'
-      ? intl.formatMessage(
-          request.operation === 'sign-and-submit'
-            ? messages.deviceAndSend
-            : messages.device
-        )
-      : intl.formatMessage(
-          request.operation === 'submit'
-            ? messages.submit
-            : request.operation === 'sign-and-submit'
-            ? messages.signAndSend
-            : messages.sign
-        );
+  const status = useMemo(() => {
+    switch (props.phase) {
+      case 'waiting-for-device':
+        return intl.formatMessage(messages.waiting);
+      case 'signing':
+        return intl.formatMessage(messages.signing);
+      case 'submitting':
+        return intl.formatMessage(messages.submitting, {
+          current: (props.activeItemIndex || 0) + 1,
+          total,
+        });
+      default:
+        return null;
+    }
+  }, [props.phase, props.activeItemIndex, total, intl]);
+  let approveMessage = operationMessages[request.operation];
+  if (request.authorization.kind === 'hardware') {
+    approveMessage =
+      request.operation === 'sign-and-submit'
+        ? messages.deviceAndSend
+        : messages.device;
+  }
+  const approveLabel = intl.formatMessage(approveMessage);
   const approve = () => {
     const value = passphrase;
     setPassphrase('');
@@ -609,65 +957,102 @@ export function TransactionApprovalDialog(props: Props) {
     request.requester.kind === 'dapp'
       ? request.requester.origin
       : `Daedalus · ${request.requester.action}`;
+  let receiptIds: readonly string[] = [];
+  if (props.result) {
+    receiptIds =
+      'transactionIds' in props.result
+        ? props.result.transactionIds
+        : (props.receipts || []).map(({ id }) => id);
+  }
 
   return (
     <Dialog
       className={styles.component}
-      title={intl.formatMessage(messages.title)}
+      title={intl.formatMessage(
+        props.result ? messages.receiptTitle : messages.title
+      )}
       fullSize
+      wide
       closeOnOverlayClick={false}
       primaryButtonAutoFocus={false}
       scrollWrapperRef={scrollRef}
       footer={
-        <div className={styles.footer}>
-          {software && props.phase === 'ready' && (
-            <label>
-              {intl.formatMessage(messages.password)}
-              <input
-                type="password"
-                value={passphrase}
-                onChange={(event) => setPassphrase(event.target.value)}
-                autoComplete="current-password"
-                disabled={props.deciding || !approvable}
-              />
-            </label>
-          )}
-          {props.errorCode && (
-            <p className={styles.error} role="alert">
-              {props.errorCode}
+        props.result ? undefined : (
+          <div className={styles.footer}>
+            {software && props.phase === 'ready' && (
+              <label htmlFor="transaction-approval-password">
+                {intl.formatMessage(messages.password)}
+                <input
+                  id="transaction-approval-password"
+                  type="password"
+                  value={passphrase}
+                  onChange={(event) => setPassphrase(event.target.value)}
+                  autoComplete="current-password"
+                  disabled={props.deciding || !approvable}
+                />
+              </label>
+            )}
+            {props.errorCode && (
+              <p className={styles.error} role="alert">
+                {props.errorCode}
+              </p>
+            )}
+            <p aria-live="polite">
+              {status ||
+                intl.formatMessage(
+                  request.operation === 'sign'
+                    ? messages.signingGuidance
+                    : messages.submissionGuidance
+                )}
             </p>
-          )}
-          <p>
-            {status ||
-              intl.formatMessage(
-                request.operation === 'sign'
-                  ? messages.signingGuidance
-                  : messages.submissionGuidance
-              )}
-          </p>
-        </div>
+          </div>
+        )
       }
-      actions={[
-        {
-          label:
-            props.deciding && props.canCancel
-              ? 'Cancel'
-              : intl.formatMessage(messages.reject),
-          onClick: props.deciding && props.canCancel ? props.onCancel : reject,
-          disabled: props.cancelling || (props.deciding && !props.canCancel),
-        },
-        {
-          className: 'confirmButton',
-          label: approveLabel,
-          onClick: approve,
-          disabled:
-            props.deciding ||
-            !approvable ||
-            !acknowledged ||
-            (software && !passphrase),
-          primary: true,
-        },
-      ]}
+      actions={
+        props.result
+          ? [
+              ...(request.operation !== 'sign' &&
+              receiptIds.length === 1 &&
+              props.onViewTransaction
+                ? [
+                    {
+                      label: intl.formatMessage(messages.viewTransaction),
+                      onClick: () => props.onViewTransaction?.(receiptIds[0]),
+                    },
+                  ]
+                : []),
+              {
+                className: 'confirmButton',
+                label: intl.formatMessage(messages.done),
+                onClick: props.onDismiss,
+                disabled: !props.onDismiss,
+                primary: true,
+              },
+            ]
+          : [
+              {
+                label:
+                  props.deciding && props.canCancel
+                    ? intl.formatMessage(messages.cancel)
+                    : intl.formatMessage(messages.reject),
+                onClick:
+                  props.deciding && props.canCancel ? props.onCancel : reject,
+                disabled:
+                  props.cancelling || (props.deciding && !props.canCancel),
+              },
+              {
+                className: 'confirmButton',
+                label: approveLabel,
+                onClick: approve,
+                disabled:
+                  props.deciding ||
+                  !approvable ||
+                  !acknowledged ||
+                  (software && !passphrase),
+                primary: true,
+              },
+            ]
+      }
     >
       <div className={styles.identity}>
         <bdi>{requester}</bdi>
@@ -682,14 +1067,40 @@ export function TransactionApprovalDialog(props: Props) {
           })}
         </strong>
       </div>
-      {request.items.map((reviewItem) => (
-        <ItemReview key={reviewItem.index} item={reviewItem} props={props} />
-      ))}
-      {request.acknowledgements.length > 0 && (
+      {props.result ? (
+        <>
+          <ResultSummary
+            result={props.result}
+            request={request}
+            receipts={props.receipts}
+            onViewTransaction={props.onViewTransaction}
+            intl={intl}
+          />
+          <details className={styles.reviewedDetails}>
+            <summary>{intl.formatMessage(messages.reviewedDetails)}</summary>
+            {request.items.map((reviewItem) => (
+              <ItemReview
+                key={reviewItem.index}
+                item={reviewItem}
+                props={props}
+              />
+            ))}
+          </details>
+        </>
+      ) : (
+        request.items.map((reviewItem) => (
+          <ItemReview key={reviewItem.index} item={reviewItem} props={props} />
+        ))
+      )}
+      {!props.result && request.acknowledgements.length > 0 && (
         <section className={styles.acknowledgements}>
           {request.acknowledgements.map((value) => (
-            <label key={value}>
+            <label
+              key={value}
+              htmlFor={`transaction-approval-${request.requestId}-${value}`}
+            >
               <input
+                id={`transaction-approval-${request.requestId}-${value}`}
                 type="checkbox"
                 checked={acknowledgements.has(value)}
                 onChange={(event) => {

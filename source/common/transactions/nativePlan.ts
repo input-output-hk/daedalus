@@ -15,7 +15,7 @@ import type {
 
 const MAX_WORD64 = (BigInt(1) << BigInt(64)) - BigInt(1);
 const MAX_WORD32 = (BigInt(1) << BigInt(32)) - BigInt(1);
-const ACTIONS = [
+export const NATIVE_TRANSACTION_ACTIONS = [
   'payment',
   'collateral-preparation',
   'byron-payment',
@@ -28,7 +28,7 @@ const ACTIONS = [
   'itn-redemption',
 ] as const;
 
-export type NativeTransactionAction = typeof ACTIONS[number];
+export type NativeTransactionAction = typeof NATIVE_TRANSACTION_ACTIONS[number];
 export type NativeTransactionAuthorization = 'software' | 'ledger' | 'trezor';
 export type NativeApprovalResult =
   | Readonly<{ status: 'submitted'; transactionIds: readonly string[] }>
@@ -370,7 +370,8 @@ export const parseNativeTransactionPlan = (
     genesisHash: hexBytes(source, networkValues[2], 32),
   });
   const action = text(source, values[4]) as NativeTransactionAction;
-  if (!(ACTIONS as readonly string[]).includes(action)) fail();
+  if (!(NATIVE_TRANSACTION_ACTIONS as readonly string[]).includes(action))
+    fail();
   const validityValues = parts(values[6], 2);
   const parsed = Object.freeze({
     walletId,
@@ -433,6 +434,67 @@ const object = (value: unknown): JsonObject => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) fail();
   return value as JsonObject;
 };
+
+const isNativeResultCode = (value: unknown): value is string =>
+  typeof value === 'string' &&
+  value.length <= 128 &&
+  (/^[a-z][a-z0-9_-]*$/u.test(value) ||
+    value === 'TxSignError.UserDeclined' ||
+    value === 'TxSignError.ProofGeneration');
+const parseTransactionIds = (value: unknown): readonly string[] => {
+  if (
+    !Array.isArray(value) ||
+    !value.every(
+      (transactionId) =>
+        typeof transactionId === 'string' &&
+        /^[0-9a-f]{64}$/u.test(transactionId)
+    )
+  )
+    return fail('Invalid native approval result');
+  return Object.freeze([...value]);
+};
+
+export const parseNativeApprovalResult = (
+  value: unknown
+): NativeApprovalResult => {
+  const result = object(value);
+  if (result.status === 'submitted') {
+    exactKeys(result, ['status', 'transactionIds']);
+    const transactionIds = parseTransactionIds(result.transactionIds);
+    if (!transactionIds.length) fail('Invalid native approval result');
+    return Object.freeze({ status: 'submitted', transactionIds });
+  }
+  if (result.status === 'submission-unknown') {
+    exactKeys(result, ['status', 'transactionIds']);
+    const transactionIds = parseTransactionIds(result.transactionIds);
+    return Object.freeze({ status: 'submission-unknown', transactionIds });
+  }
+  if (result.status === 'partial') {
+    exactKeys(result, ['status', 'transactionIds', 'failedIndex', 'errorCode']);
+    const transactionIds = parseTransactionIds(result.transactionIds);
+    if (
+      !transactionIds.length ||
+      !Number.isSafeInteger(result.failedIndex) ||
+      Number(result.failedIndex) < 0 ||
+      Number(result.failedIndex) !== transactionIds.length ||
+      !isNativeResultCode(result.errorCode)
+    )
+      return fail('Invalid native approval result');
+    return Object.freeze({
+      status: 'partial',
+      transactionIds,
+      failedIndex: Number(result.failedIndex),
+      errorCode: result.errorCode,
+    });
+  }
+  if (result.status === 'rejected') {
+    exactKeys(result, ['status', 'errorCode']);
+    if (!isNativeResultCode(result.errorCode))
+      return fail('Invalid native approval result');
+    return Object.freeze({ status: 'rejected', errorCode: result.errorCode });
+  }
+  return fail('Invalid native approval result');
+};
 const isTransactionContextSnapshot = (
   value: unknown
 ): value is TransactionContextSnapshot => {
@@ -475,7 +537,9 @@ export const parseNativePreparedApproval = (
     typeof preparedValue.walletId !== 'string' ||
     !preparedValue.walletId ||
     typeof preparedValue.action !== 'string' ||
-    !(ACTIONS as readonly string[]).includes(preparedValue.action) ||
+    !(NATIVE_TRANSACTION_ACTIONS as readonly string[]).includes(
+      preparedValue.action
+    ) ||
     !['software', 'ledger', 'trezor'].includes(
       String(preparedValue.authorization)
     ) ||

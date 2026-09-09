@@ -3,9 +3,11 @@ import type { Cip30TransactionReview } from '../../../../common/cip30/review';
 import type {
   NativeTransactionAcknowledgement,
   TransactionAuthorization,
+  WalletApprovalResult,
 } from '../../../../common/ipc/api';
 import type { TransactionReviewDisplay } from '../../../../common/transactions/reviewDisplay';
 import type { Asset } from '../../api/assets/types';
+import type { WalletTransaction } from '../../domains/WalletTransaction';
 
 export type TransactionApprovalItem = Readonly<{
   index: number;
@@ -39,6 +41,21 @@ export type TransactionApprovalRequest = Readonly<{
   acknowledgements: readonly NativeTransactionAcknowledgement[];
 }>;
 
+export type TransactionReceiptDetails = Readonly<
+  Pick<WalletTransaction, 'id' | 'state'> &
+    Partial<
+      Pick<
+        WalletTransaction,
+        | 'amount'
+        | 'fee'
+        | 'confirmations'
+        | 'transferAmount'
+        | 'isSelfTransfer'
+        | 'amountIsKnown'
+      >
+    >
+>;
+
 export type TransactionApprovalDialogProps = Readonly<{
   request: TransactionApprovalRequest;
   assetDetails: Readonly<Record<string, Asset>>;
@@ -48,7 +65,11 @@ export type TransactionApprovalDialogProps = Readonly<{
   canCancel: boolean;
   cancelling: boolean;
   errorCode?: string;
+  result?: WalletApprovalResult;
+  receipts?: readonly TransactionReceiptDetails[];
   onApprove: (passphrase?: string) => void;
   onReject: () => void;
   onCancel: () => void;
+  onDismiss?: () => void;
+  onViewTransaction?: (transactionId: string) => void;
 }>;

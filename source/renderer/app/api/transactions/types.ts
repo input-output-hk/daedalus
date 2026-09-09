@@ -55,7 +55,7 @@ export type Transaction = {
   collateral?: Array<TransactionInputs>;
   collateral_outputs?: Array<TransactionOutputs>;
   script_validity?: 'valid' | 'invalid' | null;
-  status: TransactionState;
+  status: 'pending' | 'in_ledger' | 'expired';
   metadata?: TransactionMetadata;
   certificates?: Array<{
     pool?: string;
@@ -65,7 +65,7 @@ export type Transaction = {
 };
 export type Transactions = Array<Transaction>;
 export type TransactionInputs = {
-  address: string;
+  address: string | null;
   amount?: TransactionAmount;
   assets?: ApiTokens;
   id: string;
@@ -81,7 +81,12 @@ export type TransactionWithdrawals = {
   amount: TransactionAmount;
 };
 export type TransactionWithdrawalType = 'self' | Array<string>;
-export type TransactionState = 'pending' | 'in_ledger' | 'expired';
+export type TransactionState =
+  | 'pending'
+  | 'in_ledger'
+  | 'expired'
+  | 'failed'
+  | 'submission-unknown';
 export type TransactionAddresses = {
   from: Array<string | null | undefined>;
   to: Array<string>;

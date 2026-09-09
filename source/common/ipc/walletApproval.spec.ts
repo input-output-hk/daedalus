@@ -7,6 +7,7 @@ import { parseWalletApprovalRender } from './walletApproval';
 const preloadPath = path.resolve(__dirname, '../../main/preloads/dapp.ts');
 const webpackPath = path.resolve(__dirname, '../../main/webpack.config.js');
 
+const walletId = 'aa'.repeat(20);
 const transactionReview = {
   mode: 'sign',
   transactionId: '11'.repeat(32),
@@ -42,6 +43,7 @@ const transactionReview = {
 
 const batchPresentation = {
   requestId: 'batch',
+  walletId,
   kind: 'batch-sign',
   origin: 'https://example.test',
   walletName: 'Wallet',
@@ -93,6 +95,7 @@ describe('dApp preload contract', () => {
         type: 'present',
         request: {
           requestId: 'request',
+          walletId,
           kind: 'connection',
           origin: 'https://example.test',
           walletName: 'Wallet',
@@ -103,15 +106,30 @@ describe('dApp preload contract', () => {
       })
     ).toEqual(
       expect.objectContaining({
-        type: 'present',
-        request: expect.objectContaining({ requestId: 'request' }),
+        request: expect.objectContaining({ requestId: 'request', walletId }),
       })
     );
+    expect(() =>
+      parseWalletApprovalRender({
+        type: 'present',
+        request: {
+          requestId: 'request',
+          walletId: 'AA'.repeat(20),
+          kind: 'connection',
+          origin: 'https://example.test',
+          walletName: 'Wallet',
+          networkName: 'Preview',
+          scopes: ['connection'],
+          extensions: [],
+        },
+      })
+    ).toThrow('Invalid dApp consent presentation');
     expect(
       parseWalletApprovalRender({
         type: 'present',
         request: {
           requestId: 'sign',
+          walletId,
           kind: 'data-sign',
           origin: 'https://example.test',
           walletName: 'Wallet',
@@ -183,6 +201,7 @@ describe('dApp preload contract', () => {
         type: 'present',
         request: {
           requestId: 'request',
+          walletId,
           kind: 'connection',
           origin: 'https://example.test',
           walletName: 'Wallet',
@@ -193,5 +212,59 @@ describe('dApp preload contract', () => {
         },
       })
     ).toThrow('Invalid dApp consent presentation');
+  });
+
+  it('validates native outcomes carried by terminal messages', () => {
+    expect(
+      parseWalletApprovalRender({
+        type: 'terminal',
+        requestId: 'native-request',
+        result: {
+          status: 'submission-unknown',
+          transactionIds: [],
+        },
+      })
+    ).toEqual({
+      type: 'terminal',
+      requestId: 'native-request',
+      result: {
+        status: 'submission-unknown',
+        transactionIds: [],
+      },
+    });
+    expect(() =>
+      parseWalletApprovalRender({
+        type: 'terminal',
+        requestId: 'native-request',
+        result: {
+          status: 'rejected',
+          errorCode: 'Raw device rejection',
+        },
+      })
+    ).toThrow('Invalid native approval result');
+    expect(
+      parseWalletApprovalRender({
+        type: 'terminal',
+        requestId: 'sign-request',
+        result: {
+          status: 'signed',
+          transactionIds: ['44'.repeat(32)],
+        },
+      })
+    ).toEqual({
+      type: 'terminal',
+      requestId: 'sign-request',
+      result: {
+        status: 'signed',
+        transactionIds: ['44'.repeat(32)],
+      },
+    });
+    expect(() =>
+      parseWalletApprovalRender({
+        type: 'terminal',
+        requestId: 'sign-request',
+        result: { status: 'signed', transactionIds: [] },
+      })
+    ).toThrow('Invalid native approval result');
   });
 });
