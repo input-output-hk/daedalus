@@ -97,3 +97,30 @@ Two build-87031 packages were produced from the final runtime source:
 Automated recovery execution passed 77 focused catalog, launcher-policy, extension, broker, CIP-103 submission, transaction-reconciliation, and hardware-matrix Jest tests plus 12 dApp Cucumber scenarios/50 steps. The route scenario initially exposed a stale `/wallets/:id/dapps` fixture after the product's `/apps/:id` cutover; the corrected fixture passed. The affected privileged-IPC run then exposed an unowned native execution request: `NATIVE_TRANSACTION_EXECUTE_CHANNEL` now uses the current trusted window and lifecycle-aware awaited response, and the manifest records all three wallet-approval render calls. Its 11 focused IPC/native-approval tests passed. TypeScript compilation and scoped formatting passed.
 
 The pilot delta is material relative to task-807: catalog/resource origins, pilot launcher variants and Ledger row, `/apps/:id` authority, native exact approval/signing/submission, and receipt/history reconciliation changed. A security review and an independent delta review found no critical/high issue in the inspected boundaries; the independent follow-up found no concern in the native IPC lifecycle correction. Per the user's accepted evidence boundary, installed enabled-to-disabled restart/restore, final-package physical Ledger/Liqwid retesting, hostile installed-package matrices, and release approval remain task-903-a gates rather than inferred passes.
+
+## Task-902 bounded interoperability closure — 2026-09-09
+
+The user explicitly accepted the existing task-901 Liqwid mainnet and Ledger Flex records plus focused automated collateral and fail-closed hardware coverage as sufficient for task-902. This bounded closure does not claim a Trezor or additional ecosystem-client pilot, final-package physical retesting, installed restart/restore, or production release approval; those remain unavailable or assigned to task-903-a/task-906.
+
+### Preferred dApp compatibility
+
+| dApp | Network | Entry and resource policy | API/extensions | Result |
+|---|---|---|---|---|
+| Liqwid Finance | Mainnet (`5f20df933584822601f9e3f8c024eb5eb252fe8cefb24d1317dc3d432e940ebb`) | `https://app.liqwid.finance/`; exact resource origins `https://key-value-storage.liqwid.finance`, `https://public.liqwid.finance`, and `https://v2.api.liqwid.finance` | Base CIP-30; no negotiated extensions | Deposit and withdrawal passed under the unchanged revision-2 catalog policy using the task-901 Ledger pilot |
+
+No additional preferred dApp exists in the catalog. The live transaction IDs, package identities, Ledger Flex 7.3.1 identity, and review disposition remain recorded above and in `hardware-wallet-tests/certification/task-901-ledger-flex-app7.json`. Lace, Yoroi, Eternl, Typhon, and Lucid remain explicitly unavailable in `tests/dapps/conformance/fixtures/client-adapters.json`; no result was promoted without reproducible evidence.
+
+### Hardware and collateral disposition
+
+- The selected Ledger Flex row retains its physically observed base transaction, CIP-8/CIP-95, ordered batch, rejection, and cancellation results. Unsupported exact representations remain pre-device failures with no released witness or COSE under the frozen capability matrix.
+- Trezor did not participate and remains unavailable for this pilot. It is absent from Liqwid's `supportedWalletKinds`; no product row or extension was enabled. Broader model/firmware coverage remains task-906.
+- Existing collateral behavior was accepted as the representative evidence boundary: explicit preparation requires the normal confirmed Send flow; preference adoption waits for confirmation; exact review warns without blocking when preferred collateral will be spent; and service reconciliation covers replacement/not-ready outcomes. No live Liqwid collateral result is claimed.
+
+### Baseline delta and security disposition
+
+Task-902 introduces no source, dependency, package, catalog, origin, resource, protocol-policy, hardware-row, or security-boundary delta from the task-901/build-87031 baseline. The revision-2 Liqwid entry remains exact and requires no wildcard, insecure scheme, privileged IPC, WebRTC, WebTransport, QUIC, direct socket, or other global-policy relaxation. Task-901's material deltas and no-critical/high review disposition remain authoritative; task-903-a still owns final rollout change control and affected retesting.
+
+### Verification
+
+- Seven focused Jest suites passed 54 tests covering the exact catalog/identity, transaction-review collateral warning, collateral lifecycle, collateral UI states, hardware capability matrix, and no-invocation hardware failures.
+- Focused Cucumber passed 7 scenarios and 30 steps covering frozen CIP-30/CIP-95/CIP-103 client contracts, unavailable-client honesty, proposed-extension gates, software connect/read/sign/submit, governance signing, and confirmation-gated collateral preparation.
